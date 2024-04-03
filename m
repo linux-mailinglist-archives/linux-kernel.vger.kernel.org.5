@@ -1,122 +1,115 @@
-Return-Path: <linux-kernel+bounces-130592-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130593-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DE1A897A33
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:45:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E504F897A35
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:45:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92239B2AFAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:45:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A002A28D86E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:45:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EADD3156997;
-	Wed,  3 Apr 2024 20:40:06 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7564114C5B3;
+	Wed,  3 Apr 2024 20:41:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="BySGX9+L"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4341715697E;
-	Wed,  3 Apr 2024 20:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1A7156678;
+	Wed,  3 Apr 2024 20:41:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712176806; cv=none; b=TMPILrkRuj2JCSILkz4Yf9A0dBNVciEff8BjNHtGlWwWSZ/5MIk9+sQabhZYiDo8r8KiRlVWhbx5xqyaByKFQ5yBF0PFOKnvh65oTXcxBcB7O6A6HEbdg4gg9EMGuuGyY7LYsY6Uq4Nart9+Eua5lOYULkJe02X3boH3Z8qXxpU=
+	t=1712176896; cv=none; b=sZRoiz8rvKQ/5nzpsFM+xngGzddXhRjJufvbrS7ALKZZ8Uigx682PaKN9y/74jaCdEZTf9efMus7xp4WWGb7cv7mTcxrwEGZWsKP9482SW6tH8yPXSlvaSN2P0NmTS5hES6xzpGPYpyA6HabrfQmSpXUTqcWWrJVVSMNQxzZBiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712176806; c=relaxed/simple;
-	bh=qgljfKihg3TTZ+DcxNAtMO2QNJhWdpZgN0ADjmVw1dw=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e9aoZIHDE7JqS+8PZ9YpwILaoboTxlI4ZWRtFQ0ToA3gncR+ym6IwbCw0MS0XMkFaj0Ly0KprFQoV/U+9FNrk74IRV/ngMCzZ+gh/vpl0FmUhyUyg5a0NF+i3Fy2loyuACOXP0gqrjGoF+i5ySmZRKK8JfcTKBvhUian+g5SKU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V8xMZ35Cnz6DBMD;
-	Thu,  4 Apr 2024 04:35:22 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 92FDB140B67;
-	Thu,  4 Apr 2024 04:40:00 +0800 (CST)
-Received: from localhost (10.126.171.13) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 3 Apr
- 2024 21:39:59 +0100
-Date: Wed, 3 Apr 2024 21:39:58 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Ira Weiny <ira.weiny@intel.com>
-CC: fan <nifan.cxl@gmail.com>, Dave Jiang <dave.jiang@intel.com>, Fan Ni
-	<fan.ni@samsung.com>, Navneet Singh <navneet.singh@intel.com>, Dan Williams
-	<dan.j.williams@intel.com>, Davidlohr Bueso <dave@stgolabs.net>, "Alison
- Schofield" <alison.schofield@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, <linux-btrfs@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Chris Mason
-	<clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
-	<dsterba@suse.com>
-Subject: Re: [PATCH 00/26] DCD: Add support for Dynamic Capacity Devices
- (DCD)
-Message-ID: <20240403213958.00000f0d@Huawei.com>
-In-Reply-To: <6604fe2dae8ea_2089029486@iweiny-mobl.notmuch>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-	<ZgHPUggTfSCIx8cI@debian>
-	<6604fe2dae8ea_2089029486@iweiny-mobl.notmuch>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712176896; c=relaxed/simple;
+	bh=WBi+jMy/cPJPoUYrHvBCMEz4c/n+8y/p4u1tYF4xRno=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RqqxbuK7r7HeedaDSWDa5OjMRGOyV5/Q8Gv56WWalndJf6dPKb/kc5w3CcJvDWiw4gBPBgUM33kTEKuAsaVDYfWIuQXMLOmowbykh+vVFv4UuiI8T14/QO5A9G0oc5fmiJf1fMi/R9dLEQUzsOGpqrsnRcz5v5auatjy28nuRPs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=BySGX9+L; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id BE54340E019C;
+	Wed,  3 Apr 2024 20:41:31 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id zNPoDRuXVeZZ; Wed,  3 Apr 2024 20:41:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1712176887; bh=SudQJGK2u0OMPdgM7lq3lvNT9ANcyHz0cK1GxOTp9BE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=BySGX9+LYW3pLRDpGHmCEpj8LlqR+z//OiqByTtalHc4xBd75tW8b5V0Jr34TA/3W
+	 yjx9cCKdcBvMFuXU3C+ZU3d0CrJQnoG5nVrD8Pns+U9MMXhmfZeETmT51nvXb4DTB9
+	 j0qZKmvJnrw4uIE57DNd8oQldFYPBtIedgZDFUSCnQsRrwdrvtjn2eOHv/E1nbMSRh
+	 NdhKh630+Ly9kS2clCBCQZzJbGvhFdKIOm3d8hl0GEzZXcp1lIOILFyl7GYJ9aRsPt
+	 +j+PXD9NCDmj/8ERs111FN4tm4IPGRHXOEb1WZoljJdiljRfy6yn0sibBrlCk2gtYg
+	 qo1G76qZ9SZNgFocPNU+3unM2u2ryoMyrAIbn2K0ucnWtFjZPQmJ4gtvt57lhcwyC9
+	 9rlSzswBDovoHu+9YC5MdOjBsbA9UGVnfAtnKhii6hUIUqkUBbWRpNGU7gXqtaQ+aT
+	 JtkDXdYYpE51eecfTba+NJMpfcLdm6e4rRKeVz8t0KuW2GY/8Vrm1YZiRcSA1FAVh5
+	 MII2IBShIxaFWToN0C9aUb4IjiJOcZI4yv1gvOC0S5CZiCDV/Uuvs0uLOW9kbGxmho
+	 W6VsPS8/2tsBFKH8jP1tGZKJ146cfvI6OfRhUa6nlQzuQo3/rfJgkqi+/WLOZO0PEr
+	 DUHg+CcFLgIzLVRHRfsBCYYk=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6D26440E00F4;
+	Wed,  3 Apr 2024 20:41:18 +0000 (UTC)
+Date: Wed, 3 Apr 2024 22:41:13 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Klara Modin <klarasmodin@gmail.com>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
+	"Kaplan, David" <David.Kaplan@amd.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	"x86@kernel.org" <x86@kernel.org>,
+	David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH -v2] x86/retpoline: Ensure default return thunk isn't
+ used at runtime
+Message-ID: <20240403204113.GLZg2-6f0nH0Ne9CQt@fat_crate.local>
+References: <20240104131210.GDZZauqoeKoZGpYwDd@fat_crate.local>
+ <20240104132446.GEZZaxnrIgIyat0pqf@fat_crate.local>
+ <20240104132623.GFZZax/wyf5Y3rMX5G@fat_crate.local>
+ <20240207175010.nrr34b2pp3ewe3ga@treble>
+ <20240207185328.GEZcPRqPsNInRXyNMj@fat_crate.local>
+ <20240207194919.qw4jk2ykadjn5d4e@treble>
+ <20240212104348.GCZcn2ZPr445KUyQ7k@fat_crate.local>
+ <78e0d19c-b77a-4169-a80f-2eef91f4a1d6@gmail.com>
+ <20240403173059.GJZg2SUwS8MXw7CdwF@fat_crate.local>
+ <f37a111b-f5c5-4337-8eaf-46a2c28f01da@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f37a111b-f5c5-4337-8eaf-46a2c28f01da@gmail.com>
 
-On Wed, 27 Mar 2024 22:20:45 -0700
-Ira Weiny <ira.weiny@intel.com> wrote:
+On Wed, Apr 03, 2024 at 10:26:19PM +0200, Klara Modin wrote:
+> Probably, I don't have much knowledge about this stuff. The machine can at
+> least be useful for testing still :)
 
-> fan wrote:
-> > On Sun, Mar 24, 2024 at 04:18:03PM -0700, ira.weiny@intel.com wrote:  
-> > > A git tree of this series can be found here:  
-> 
-> [snip]
-> 
-> > >   
-> > 
-> > Hi Ira,
-> > Have not got a chance to check the code yet, but I noticed one thing
-> > when testing with my DCD emulation code.
-> > Currently, if we do partial release, it seems the whole extent will be
-> > removed. Is it designed intentionally?
-> >   
-> 
-> Yes that is my intent.  I specifically called that out in patch 18.
-> 
-> https://lore.kernel.org/all/20240324-dcd-type2-upstream-v1-18-b7b00d623625@intel.com/
-> 
-> I thought we discussed this in one of the collaboration calls.  Mainly
-> this is to simplify by not attempting any split of the extents the host is
-> tracking.  It really is expected that the FM/device is going to keep those
-> extents offered and release them in their entirety.  I understand this may
-> complicate the device because it may see a release of memory prior to the
-> request of that release.  And perhaps this complicates the device.  But in
-> that case it (or the FM really) should not attempt to release partial
-> extents.
+I wouldn't use it if I were you as it wouldn't even justify the
+electricity wasted. No one cares about 32-bit x86 kernels anymore and we
+barely keep them alive.
 
-It was discussed at some point as you say. Feels like something that might not
-be set in stone for ever, but for now it is a reasonable simplifying assumption.
-The device might not maintain the separation of neighboring extents
-but the FM probably will.  If it turns out real use models are different,
-then we 'guessed' wrong and get to write more complex code. 
+It'll be a lot more helpful if you'd test 64-bit kernels on 64-bit hw.
 
-Device always has to cope with unsolicited release so don't think this adds
-any burden.  That includes a race where the host releases capacity when
-it hasn't yet seen the event the device has sent to release part of the same
-capacity.  There is text about async release always being possible in the
-spec to cover these overlapping cases but upshot of that one is it must be
-permissible to release a containing capacity as you are doing.
+:-)
 
-Jonathan
+Thx.
 
-> Ira
-> 
-> [snip]
+-- 
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
 
