@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-130271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B240897627
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:17:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DEEF89762F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:18:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4C7281C285A4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:17:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93E081C28617
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:18:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DEFC154C03;
-	Wed,  3 Apr 2024 17:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58562155302;
+	Wed,  3 Apr 2024 17:16:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lZ0H/IOx"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WPGzCHnp"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88511153507;
-	Wed,  3 Apr 2024 17:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D299153572;
+	Wed,  3 Apr 2024 17:16:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164561; cv=none; b=MxAjn/f+4DtDk3W5uk/tSMMMxu+4qT+H2T/u2RjkMDip67fS52dbMx2PvpFOJlCAeDwenC4wrMJHposIKkqK4nml9j/wMg3ezBrM2s+yOO6B/YfuBJ4AhfEbIhd9+ePfIuLu6tnadabwZUyE9NBDrNvXm0B0I5uYvYxLcwjMHKo=
+	t=1712164562; cv=none; b=FBGqQ4O9XdJsDsHoObb9in9TlZz0D1oXJm6uChs3IVuv741yVu/xL0jgVzYac5aYVfb4d/D1ed6fet+Tcbu0W1s1LvhojhXdSXG3iEJPQqBCbVc9ayvHZrcx0uXP9hgXt98OhyyIrWVGr/N9TLe7uHkpofwPhpDLvlqnACKjr/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164561; c=relaxed/simple;
-	bh=PM761U8KlFurCf4B7pY6nAuxa2K6lOSBEcR+3UzRD20=;
+	s=arc-20240116; t=1712164562; c=relaxed/simple;
+	bh=me4cMeii27/KaK0gEtLaIGUNWbUm95Gjy18PkqtFUnE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XywLQszwqcsO7zOHkKe+0NgQ5Tu+3MX3Ot8HqjP8ofONraz9AjOcqvF0NdE8KD2+3d2VXI1ruJKN5Z/j6msWZeqQZkanSHG/NOgMG+OUuAY1D6H2u7YJq3zxgURM22xWbS+3ixXb7vVoG0Zj/ax0Z5XO7J0WE3LCoXRBNpMqOBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lZ0H/IOx; arc=none smtp.client-ip=198.175.65.12
+	 MIME-Version; b=ad9Vp1wTCENqvqlb7SkDY9rRvfrPY/vHjDcZFI5ylF6Tn8a/J+Ki0cWcIZKI9sjq3uboJ5+RmmNhrgWAYd1wh9WtO1mAkl9rCqXxdvKT/LphC46TM0kkt+n4/nkQMFNbYhYJyCjPzah/VrYfZOgOmM2GTPwN8WYBENmW/Y+EWl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WPGzCHnp; arc=none smtp.client-ip=198.175.65.12
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
@@ -35,29 +35,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1712164561; x=1743700561;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=PM761U8KlFurCf4B7pY6nAuxa2K6lOSBEcR+3UzRD20=;
-  b=lZ0H/IOxp/ZD6oNtttO2WOo+m1yiGKvuAL5RPbXbTbdwHyD/qxzRydSb
-   oSQuMbB8krRV/Hh4S9aZPdns1+pGJmhuiEzEhtDwHKfjJdJj4P4Y9LVzz
-   85YoJGJFF5PR1Qn6yR3CFpMYGcNxvStfmOjeTBdIeIHrqt76LyVzVTPZa
-   4vsmzNaiSHu8ILzbEmnCzutrlJlB1Ga57fkLz9V4nJOxJhZOIB5O4p/S5
-   XC8R/NUDz/8yST1QzO73lRbhKKhcK1l5ElUCwizXrEg+aWMlBKs9cfoKI
-   vmZorbU1k2CLRz9BAyGOTiIbI2fY5Z5uDQ84Izd/ZXMOGbBCla5e2QTEv
+  bh=me4cMeii27/KaK0gEtLaIGUNWbUm95Gjy18PkqtFUnE=;
+  b=WPGzCHnpDiYTqX3vwPpWpNNAbSfzh5JCMwtlbISb2lXwb6WsVp3+AAyf
+   8WGK9mFYpYV0DMp/sbM9ROT4FRXMchZkJj8YNCNIlreUckmOzUkf+GEtY
+   ey/t1MTWZ2Bjiyxifc5bd5uSIDqUbBrrMWEanSiWPc44B4/f0WNRsib5w
+   9GtNrCiAdS+5adIbPSNqFmzacbnYZ+3M1Tcnx9ROsMTfCooXCNmPwsC22
+   oFL7XUMU31+xkAr4WUphEREHW/c1QR9XFAs3UquLbw0htmNJuO4fPPxGO
+   ZDF1FJnvCDWS7RMn4hQpMBmSaQQJJgQiAA2IZ0oUkSGphuJGdRRMS857c
    w==;
-X-CSE-ConnectionGUID: ZrWsYpGyQEu6KZegQ3Ascg==
-X-CSE-MsgGUID: ERtfGtX0TYGC14gL/KHPoQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18863562"
+X-CSE-ConnectionGUID: nw8DCGwFQEGOIVFRV7sXxQ==
+X-CSE-MsgGUID: E3jdQWR8R1eFIXMHvcVxug==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18863578"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="18863562"
+   d="scan'208";a="18863578"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 10:15:57 -0700
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 10:16:00 -0700
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="937085340"
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="937085342"
 X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="937085340"
+   d="scan'208";a="937085342"
 Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 03 Apr 2024 10:15:54 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 03 Apr 2024 10:15:57 -0700
 Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id BE03D670; Wed,  3 Apr 2024 20:15:53 +0300 (EEST)
+	id CCAAE812; Wed,  3 Apr 2024 20:15:53 +0300 (EEST)
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	linux-arm-kernel@lists.infradead.org,
@@ -67,9 +67,9 @@ Cc: Daniel Mack <daniel@zonque.org>,
 	Haojian Zhuang <haojian.zhuang@gmail.com>,
 	Robert Jarzmik <robert.jarzmik@free.fr>,
 	Mark Brown <broonie@kernel.org>
-Subject: [PATCH v1 4/5] spi: pxa2xx: Remove timeout field from struct chip_data
-Date: Wed,  3 Apr 2024 20:06:38 +0300
-Message-ID: <20240403171550.1074644-5-andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 5/5] spi: pxa2xx: Don't provide struct chip_data for others
+Date: Wed,  3 Apr 2024 20:06:39 +0300
+Message-ID: <20240403171550.1074644-6-andriy.shevchenko@linux.intel.com>
 X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 In-Reply-To: <20240403171550.1074644-1-andriy.shevchenko@linux.intel.com>
 References: <20240403171550.1074644-1-andriy.shevchenko@linux.intel.com>
@@ -81,49 +81,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The timeout field is used only once and assigned to a predefined
-constant. Replace all that by using the constant directly.
+Now the struct chip_data is local to spi-pxa2xx.c, move
+its definition to the C file. This will slightly speed up
+a build and also hide badly named data type (too generic).
 
 Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- drivers/spi/spi-pxa2xx.c | 4 +---
- drivers/spi/spi-pxa2xx.h | 1 -
- 2 files changed, 1 insertion(+), 4 deletions(-)
+ drivers/spi/spi-pxa2xx.c | 8 ++++++++
+ drivers/spi/spi-pxa2xx.h | 8 --------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/spi/spi-pxa2xx.c b/drivers/spi/spi-pxa2xx.c
-index 3ba0f5816f7f..030afb17e606 100644
+index 030afb17e606..efe76d0c21bb 100644
 --- a/drivers/spi/spi-pxa2xx.c
 +++ b/drivers/spi/spi-pxa2xx.c
-@@ -1058,7 +1058,7 @@ static int pxa2xx_spi_transfer_one(struct spi_controller *controller,
- 		pxa_ssp_disable(drv_data->ssp);
+@@ -66,6 +66,14 @@ MODULE_ALIAS("platform:pxa2xx-spi");
+ 				| CE4100_SSCR1_RFT | CE4100_SSCR1_TFT | SSCR1_MWDS \
+ 				| SSCR1_SPH | SSCR1_SPO | SSCR1_LBM)
  
- 	if (!pxa25x_ssp_comp(drv_data))
--		pxa2xx_spi_write(drv_data, SSTO, chip->timeout);
-+		pxa2xx_spi_write(drv_data, SSTO, TIMOUT_DFLT);
- 
- 	/* First set CR1 without interrupt and service enables */
- 	pxa2xx_spi_update(drv_data, SSCR1, change_mask, cr1);
-@@ -1200,8 +1200,6 @@ static int setup(struct spi_device *spi)
- 		chip = kzalloc(sizeof(struct chip_data), GFP_KERNEL);
- 		if (!chip)
- 			return -ENOMEM;
--
--		chip->timeout = TIMOUT_DFLT;
- 	}
- 
- 	chip->cr1 = 0;
++struct chip_data {
++	u32 cr1;
++	u32 dds_rate;
++	u32 threshold;
++	u16 lpss_rx_threshold;
++	u16 lpss_tx_threshold;
++};
++
+ #define LPSS_GENERAL_REG_RXTO_HOLDOFF_DISABLE	BIT(24)
+ #define LPSS_CS_CONTROL_SW_MODE			BIT(0)
+ #define LPSS_CS_CONTROL_CS_HIGH			BIT(1)
 diff --git a/drivers/spi/spi-pxa2xx.h b/drivers/spi/spi-pxa2xx.h
-index 10294ef209d9..5f741bb30240 100644
+index 5f741bb30240..93e1e471e1c6 100644
 --- a/drivers/spi/spi-pxa2xx.h
 +++ b/drivers/spi/spi-pxa2xx.h
-@@ -78,7 +78,6 @@ struct driver_data {
- struct chip_data {
- 	u32 cr1;
- 	u32 dds_rate;
--	u32 timeout;
- 	u32 threshold;
- 	u16 lpss_rx_threshold;
- 	u16 lpss_tx_threshold;
+@@ -75,14 +75,6 @@ struct driver_data {
+ 	struct gpio_desc *gpiod_ready;
+ };
+ 
+-struct chip_data {
+-	u32 cr1;
+-	u32 dds_rate;
+-	u32 threshold;
+-	u16 lpss_rx_threshold;
+-	u16 lpss_tx_threshold;
+-};
+-
+ static inline u32 pxa2xx_spi_read(const struct driver_data *drv_data, u32 reg)
+ {
+ 	return pxa_ssp_read_reg(drv_data->ssp, reg);
 -- 
 2.43.0.rc1.1.gbec44491f096
 
