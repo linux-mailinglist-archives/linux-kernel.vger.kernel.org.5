@@ -1,378 +1,249 @@
-Return-Path: <linux-kernel+bounces-130548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F35948979C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:27:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4920889798D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:06:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A9C582823BF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:27:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C862D1F24403
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:06:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F3315623D;
-	Wed,  3 Apr 2024 20:27:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FDC15573F;
+	Wed,  3 Apr 2024 20:05:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="Twxq+8BP"
-Received: from mail-m6014.netease.com (mail-m6014.netease.com [210.79.60.14])
+	dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b="CaeWQ/MK"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2071.outbound.protection.outlook.com [40.92.22.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E59C1552FF;
-	Wed,  3 Apr 2024 20:27:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.79.60.14
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712176028; cv=none; b=shrPSNjZ0FTdg1ij9j3JIGJFOrLftBl5ARZ/JT1PMm0mWrypHJi5MXB8S5jpOMibTj386Euw/qEup0CR9qBlyf3BH30C5pxKwvbEmn6ME4Ol/ib/1Iol8W2ArgVUYGKRGH2YfYc3qA5mX7igaou4QkkVsOvU7d41v4Ac3tejIyI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712176028; c=relaxed/simple;
-	bh=/fFUjDe76W88FMC5zvU+GYanZ0TGzOUQc4hmIjl9S2Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=d27ywi60B982j3vJL3RzjeqXxD/F/ootLqgbI4e5q94e88tI36TxJI19dqn2C5shaJ+PSG67PI/NgfBJOdT8CIz0mroOJXAt0L2eRW8jwO6TYqsqgdClJmEtzDXhyVrZ6JQk/+CXVoDIYVy7O8VJf5alnlBsI1bY6yBtBwznrIE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=Twxq+8BP; arc=none smtp.client-ip=210.79.60.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
-DKIM-Signature: a=rsa-sha256;
-	b=Twxq+8BPn6Ew6c5IN41J2dg9vFrin0dSix2y8CIvTY1GtleMVkxEpYB/TmfQxC0Z6wYGNC08+CUxJnbOfJu61UpUl/M4b3IwVS4YAeHuCcMh2Q2yeNt8WLYbEfmYZozaPuMiMdJuTi+redM69s7AY2sZytu+/N/UHq/zwYBmg0k=;
-	c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-	bh=iQCUiAuXJ8P2qSP0ti96ZUK9aMT1CGaxFKIO+tNeXmE=;
-	h=date:mime-version:subject:message-id:from;
-Received: from localhost.localdomain (unknown [58.22.7.114])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id 321A47C034A;
-	Wed,  3 Apr 2024 21:18:49 +0800 (CST)
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-To: heiko@sntech.de,
-	vkoul@kernel.org
-Cc: linux-rockchip@lists.infradead.org,
-	Sugar Zhang <sugar.zhang@rock-chips.com>,
-	dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] dmaengine: pl330: Add support for audio interleaved transfer
-Date: Wed,  3 Apr 2024 21:18:23 +0800
-Message-Id: <20240403211810.v2.2.I27a3219694d4d2a43fcfb35e1b069340dc94a5f0@changeid>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1712150304-60832-1-git-send-email-sugar.zhang@rock-chips.com>
-References: <1712150304-60832-1-git-send-email-sugar.zhang@rock-chips.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGklPSVZPS0keQ09LT0tKTU9VEwETFh
-	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk5DTUtIVUpLS1VKQl
-	kG
-X-HM-Tid: 0a8ea41cb89409d2kunm321a47c034a
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Mio6ECo6ITMKATVKTDc*HhUK
-	CwpPFDBVSlVKTEpJSk5LSElCQkNJVTMWGhIXVQgOHBoJVQETGhUcOwkUGBBWGBMSCwhVGBQWRVlX
-	WRILWUFZTkNVSUlVTFVKSk9ZV1kIAVlBSktOTkM3Bg++
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9776154BE8;
+	Wed,  3 Apr 2024 20:05:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.22.71
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712174750; cv=fail; b=YfdaC+F9slyv7UPczkFKB6EXlKf98GtuBdWCVwwuVgCCiYdU3jKvoKNG52Dr0NA8+bjYTbsk0K2qPjVMHaOabLNjsxh+jhd4SSUJbZjzM9ZF5Y4KkFEWbILEFRuhb2XCYcJkF4V+7aY0mZvvhVMvzXf+DW8HCO7EdrPlH3X238Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712174750; c=relaxed/simple;
+	bh=6PRegIcfTnDyUmIFda++r8kJul5aUnLcVNrKnArbcuQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=iGRzwIZvdBBDKpZ339IhUxpIcIer/2zlX2ajxAjAHpOcd7MlIue6/3et41DsOgRL3swlOMuS39TCwNdZAcUhV36ExeNrIJn6gwVMfZ47D4uHBH/re3sceimcP6DGG9wFv5zFyFZ7BJq4ICux16IMm59xU6K5D8URecwJYHY8DR8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com; spf=pass smtp.mailfrom=hotmail.com; dkim=pass (2048-bit key) header.d=hotmail.com header.i=@hotmail.com header.b=CaeWQ/MK; arc=fail smtp.client-ip=40.92.22.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=hotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hotmail.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HrTFHCHtLTRLWHRfVYiaXKnOUjekv756nTBbQs+lcCXW4F2OpKh/xPRNR0nf3CBUZiLuNL8PRmCU/P92w2ztb57S3s8Bc8rKVIotSxoIZ641OFFLFfNipWm9dPi6HIZbzNz3SYrRdnHCb2+VWlcLXRyI36R9HVwIKwfidCWGh2IDnOGjmKEf0+RuMRB41HzhD9ViPVf5HBLPh3Km92br+5R3446gyt3cs/snVXw9LKTLphsp+lA9zrIsXKyxTVOP9VK1xqF5ZtMZpccyiO9XOrpRHhufdgTBkQOywtLiziWMv141MARBkWJnrXjbWBnMN4hWdiNH/c7ES2B8HW5H1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ggJQzvswQafjwqR4CsFKqtF+uFnYuxy8dPqpEwmXwic=;
+ b=H9gw7UTebIYjG5gmny8mzh8MRRXQmBP3Iuo+QKQCleAOizXrRHl71zeUvX10/nGtuG6P0SFiE4hdJOnU1+lVnWNXR7Y8ThjO60xSob7HOBcHY806TVB05YTj7ypH1YERNyErCGTXRtrPG90f4wK5OTA+CW14ZY9Rcozr2BxbXk8bMTWO9sxRTTEREyV+HQPzhMhFZIiT21Y9tMGoClYUxy1B2WhY+vkSfX8W8fU5hdxCz/tRNK/12WBNTKw5FW9YawE8z/Z1Rue2XKwkZzPiaSKz7Ef7YkjqB1gJmaCxbEfTpjljH1PpqZi7dtkUkNQ5/XwOflwBiNGraSCMNooMVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ggJQzvswQafjwqR4CsFKqtF+uFnYuxy8dPqpEwmXwic=;
+ b=CaeWQ/MKEQb+vYkHhv4Z4N+VW9jbBxcCQve3nJY36uDYAVP+67y94euYPE9xriE5P1hV8Wkl9XonrsqBXfcKbEql9CuGwz3ZEmwaatPqgApBh67yVf4EuykIdobzqeWbNYvyFjCznItcrTauEu4hxBRSQoJJNMYlZQWparZ6XFfq5fhUji16cOyU6V0+Qdgt5dmuxc/Gq67pg3lvomckwk7A2K5E8o3K0gfbSOTCZfly70kMA9vY0T4fzjs23uVMVlXngiJin4WNiST3e4sEC2KmySrDO/V/oBOLxnleTqChcYO2a5XN9ClLXZUjgAAS/7L+Lt2Hy7txeZZ1vF9x1A==
+Received: from LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM (2603:10b6:408:1ac::6)
+ by SJ2P220MB1216.NAMP220.PROD.OUTLOOK.COM (2603:10b6:a03:589::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.40; Wed, 3 Apr
+ 2024 20:05:46 +0000
+Received: from LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
+ ([fe80::57aa:102b:db4b:e05]) by LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
+ ([fe80::57aa:102b:db4b:e05%7]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
+ 20:05:40 +0000
+From: Min Li <lnimi@hotmail.com>
+To: richardcochran@gmail.com,
+	lee@kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	Min Li <min.li.xe@renesas.com>
+Subject: [PATCH net 1/1] ptp: 82p33: move register definitions out of ptp folder
+Date: Wed,  3 Apr 2024 16:05:16 -0400
+Message-ID:
+ <LV3P220MB12022BEFC410BCBCD52DD891A03D2@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN: [eHg9lsO8pHOroNFQtd8UttRD5K7BkD1W]
+X-ClientProxiedBy: YQZPR01CA0025.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c01:86::22) To LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:408:1ac::6)
+X-Microsoft-Original-Message-ID: <20240403200516.7665-1-lnimi@hotmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: LV3P220MB1202:EE_|SJ2P220MB1216:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9c7dfb67-80c8-4b0a-b73c-08dc54196fbc
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	xo2M2sfB9RRfvB56wKhA6zwS9jF11fZEqP/RABlOINKaL8qFhQ1QnLvU9D33dlRZhEv8k+8gwdirTKlC9RYeHAka9Rmo4ljOD8+bAYahek+R4AdwYf8sBz1VHQDfLbewC3WqFyQkCamntASe8zRrTPJwLQPv3B4Ga7DeqRqX0wAft8gtYcE/rj49GGeWsgFU7Rs+LGj992IGqUdNkPaRfZZN94lNWQsaYjj66/brsB+EMKIkAVRADEtpXZxt0IYBxS1pwrIEH4kpf55XYmyefviASiE7ei7pmJ8txJMqaAJvXMX9vre+nyd/YnogINPzBIU2GUb1p+nxKPa7DKM9lRQ2svygEa2SGvBwwEYjbMyYltxBzAZnQxBjh1hp7z4AITUbMSCggqHK7qR8v3YTff70JwcH5X/uQkzNObUVV47oC0mcMEWZ/yjvt3cs++5478emr7GEs1PDh2jsxvKOXjQJjpbYkZfMo7RSSgIcHO0omuU8vItSycZeuHijMj5o1YyGV4addWxljP4PjRMfrjSNjkqEVSvvAUfht38Dk1OzHHUeYnDhlk2QepNRYYuy
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?KYPfzkcEZ5bhc8dDpaK34KXm3PEZmCzkCtwrb6g7o/s8Hz32I7g/La0btXof?=
+ =?us-ascii?Q?AL/UE0axHeAkgE8iMRWG1dANp4RQuA+n3vQhpXkW+QlV3W50n+elnWLHUo01?=
+ =?us-ascii?Q?lFK/y0CP3S3utPE7xYCIqbvXuKbxk2eMjinkinyOYtSAxbAxrgSyk9gBn/VJ?=
+ =?us-ascii?Q?ZhJFxBXK3OITV+3nSoT+2kVFMVyqQKQqW+/hAPyF3d8uHFYJqI1JrDVPNiZQ?=
+ =?us-ascii?Q?Ugf++AN5/kLyAq9y8ROckUBLyXTZHOBlGorVfeiTVXzaaQeidprycLLDdx+o?=
+ =?us-ascii?Q?3BdEVqt1kDeJ+srRlSnWMLjnB4cHQMsF5uS02tYuC6YFStx226U8U1sahHFC?=
+ =?us-ascii?Q?r4pJnBG8qUbep5bsvGD7TqlFiu9N0f5p98RtrbZSjwDmIK1wdeJDT5SSfvA8?=
+ =?us-ascii?Q?bL31Ko+jW5AZJc4BEOFHVzH0/o7Z/8jMzEHWJZMYLh1I9zYn0+tNEaBYHSvN?=
+ =?us-ascii?Q?P4oPCW5mRrePu46NHzAzhBGXy3Ekz4Frir+AvSY6QcdeF5JQs76vF9PT2ChL?=
+ =?us-ascii?Q?MPxJ6heuM273nnCoit/spybS87EXDNF5TEpdNC4gGkk+6bEOdGpW6U9ZD1b8?=
+ =?us-ascii?Q?UVXtw4UHmToehrPY4+YWyVNcdMZRRpv1spky1QdMXp2tKu1C+nin1PmHVgmT?=
+ =?us-ascii?Q?80eeaisx8bIiJbC1jb+MZGvOL/2bkTe1u9mrYPejPLKfruw4scu/SSX24aLE?=
+ =?us-ascii?Q?MHCzX0oKUIvdgqcj9jJSBCAmDA6DNPzD1nvigHsWPSeuf/jyWTOX9e3T0GcQ?=
+ =?us-ascii?Q?6NQkgQ1KvbIothisNdXVh+l+mTtyd8geYnB1op9fntTBVjjI99nZBjxRZK3d?=
+ =?us-ascii?Q?3mos40u7tJ1kcETKlJuJYe1JWWwMFKBZ6S8A19mBdYnkRR/hpy5Egurb+7cT?=
+ =?us-ascii?Q?6sE+u5XCk/m4jP753xS4rdf7TevFaN2SPuDNDCf0l7FS2rCKyIulwSIFvGdK?=
+ =?us-ascii?Q?vtIzx/o6C/koDZGwBUDBDMNMrokkZEzxsT+zx5UUZO1+DatsC0Sm6/ik4Tq0?=
+ =?us-ascii?Q?GFgVEbDbZaGGgmR/h1r9wnOzxDh5XhX/tqbmxM0+1W7RMCMP86ccg4+JGnjy?=
+ =?us-ascii?Q?3OQMqxCATe7+Q3qteIWyfjjALHux0dlACpTi1Q745HenXYwQm+0AODlLBB7C?=
+ =?us-ascii?Q?zlxXmHUrsrd95mDIzKWaEvp5wJsKfM+8NKgghrhk2txGPHIssAeBpuhlzKJp?=
+ =?us-ascii?Q?nbMSCQ4twkVvo3RUEmQoPxzKVDMnBx3SY5xeL+KksxlQpyVkDPsM9Jnd3e0?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-3458f.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c7dfb67-80c8-4b0a-b73c-08dc54196fbc
+X-MS-Exchange-CrossTenant-AuthSource: LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 20:05:40.8461
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2P220MB1216
 
-This patch add support for interleaved transfer which used
-for interleaved audio or 2d video data transfer.
+From: Min Li <min.li.xe@renesas.com>
 
-for audio situation, we add 'nump' for number of period frames.
+Relocate register definitions so that other multi-functional
+devices can access.
 
-e.g. combine 2 stream into a union one by 2D dma.
-
-DAI0: 16CH
-+-------------------------------------------------------------+
-| Frame-1 | Frame-2 | Frame-3 | Frame-4 | ...... Frame-'numf' |
-+-------------------------------------------------------------+
-
-DAI1: 16CH
-+-------------------------------------------------------------+
-| Frame-1 | Frame-2 | Frame-3 | Frame-4 | ...... Frame-'numf' |
-+-------------------------------------------------------------+
-
-DAI0 + DAI1: 32CH
-
-+-------------------------------------------------------------+
-| DAI0-F1 | DAI1-F1 | DAI0-F2 | DAI1-F2 | ......              |
-+-------------------------------------------------------------+
-|      Frame-1      |      Frame-2      | ...... Frame-'numf' |
-
-For audio situation, we have buffer_size and period_size,
-the 'numf' is the buffer_size. so, we need another one for
-period_size, e.g. 'nump'.
-
-| Frame-1 | ~ | Frame-'nump' | ~ | Frame-'nump+1' | ~ |  Frame-'numf' |
-|
-
-As the above shown:
-
-each DAI0 transfer 1 Frame, should skip a gap size (DAI1-F1)
-each DAI1 transfer 1 Frame, should skip a gap size (DAI0-F1)
-
-So, the interleaved template describe as follows:
-
-DAI0:
-
-struct dma_interleaved_template *xt;
-
-xt->sgl[0].size = DAI0-F1;
-xt->sgl[0].icg =  DAI1-F1;
-xt->nump = nump; //the period_size in frames
-xt->numf = numf; //the buffer_size in frames
-
-DAI1:
-
-struct dma_interleaved_template *xt;
-
-xt->sgl[0].size = DAI1-F1;
-xt->sgl[0].icg =  DAI0-F1;
-xt->nump = nump; //the period_size in frames
-xt->numf = numf; //the buffer_size in frames
-
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+Signed-off-by: Min Li <min.li.xe@renesas.com>
 ---
+ drivers/ptp/ptp_idt82p33.h       | 27 -----------------------
+ include/linux/mfd/idt82p33_reg.h | 38 +++++++++++++++++++++++++++++---
+ 2 files changed, 35 insertions(+), 30 deletions(-)
 
-(no changes since v1)
-
- drivers/dma/pl330.c | 169 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 163 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/dma/pl330.c b/drivers/dma/pl330.c
-index 5f6d7f1..449ed6b 100644
---- a/drivers/dma/pl330.c
-+++ b/drivers/dma/pl330.c
-@@ -239,6 +239,7 @@ enum pl330_byteswap {
+diff --git a/drivers/ptp/ptp_idt82p33.h b/drivers/ptp/ptp_idt82p33.h
+index 6a63c14b6966..b4f3ee40389f 100644
+--- a/drivers/ptp/ptp_idt82p33.h
++++ b/drivers/ptp/ptp_idt82p33.h
+@@ -23,25 +23,6 @@
+ #define DDCO_THRESHOLD_NS	(5)
+ #define IDT82P33_MAX_WRITE_COUNT	(512)
  
- #define BYTE_TO_BURST(b, ccr)	((b) / BRST_SIZE(ccr) / BRST_LEN(ccr))
- #define BURST_TO_BYTE(c, ccr)	((c) * BRST_SIZE(ccr) * BRST_LEN(ccr))
-+#define BYTE_MOD_BURST_LEN(b, ccr)	(((b) / BRST_SIZE(ccr)) % BRST_LEN(ccr))
- 
- /*
-  * With 256 bytes, we can do more than 2.5MB and 5MB xfers per req
-@@ -545,6 +546,8 @@ struct dma_pl330_desc {
- 	unsigned peri:5;
- 	/* Hook to attach to DMAC's list of reqs with due callback */
- 	struct list_head rqd;
-+	/* interleaved size */
-+	struct data_chunk sgl;
+-#define PLLMASK_ADDR_HI	0xFF
+-#define PLLMASK_ADDR_LO	0xA5
+-
+-#define PLL0_OUTMASK_ADDR_HI	0xFF
+-#define PLL0_OUTMASK_ADDR_LO	0xB0
+-
+-#define PLL1_OUTMASK_ADDR_HI	0xFF
+-#define PLL1_OUTMASK_ADDR_LO	0xB2
+-
+-#define PLL2_OUTMASK_ADDR_HI	0xFF
+-#define PLL2_OUTMASK_ADDR_LO	0xB4
+-
+-#define PLL3_OUTMASK_ADDR_HI	0xFF
+-#define PLL3_OUTMASK_ADDR_LO	0xB6
+-
+-#define DEFAULT_PLL_MASK	(0x01)
+-#define DEFAULT_OUTPUT_MASK_PLL0	(0xc0)
+-#define DEFAULT_OUTPUT_MASK_PLL1	DEFAULT_OUTPUT_MASK_PLL0
+-
+ /**
+  * @brief Maximum absolute value for write phase offset in nanoseconds
+  */
+@@ -103,12 +84,4 @@ struct idt82p33 {
+ 	s64			tod_write_overhead_ns;
  };
  
- struct _xfer_spec {
-@@ -577,6 +580,22 @@ static inline u32 get_revision(u32 periph_id)
- 	return (periph_id >> PERIPH_REV_SHIFT) & PERIPH_REV_MASK;
- }
+-/* firmware interface */
+-struct idt82p33_fwrc {
+-	u8 hiaddr;
+-	u8 loaddr;
+-	u8 value;
+-	u8 reserved;
+-} __packed;
+-
+ #endif /* PTP_IDT82P33_H */
+diff --git a/include/linux/mfd/idt82p33_reg.h b/include/linux/mfd/idt82p33_reg.h
+index 1db532feeb91..15828e205fa8 100644
+--- a/include/linux/mfd/idt82p33_reg.h
++++ b/include/linux/mfd/idt82p33_reg.h
+@@ -22,6 +22,12 @@
+ #define DPLL1_OPERATING_MODE_CNFG 0x120
+ #define DPLL2_OPERATING_MODE_CNFG 0x1A0
  
-+static inline u32 _emit_ADDH(unsigned dry_run, u8 buf[],
-+		enum pl330_dst da, u16 val)
-+{
-+	if (dry_run)
-+		return SZ_DMAADDH;
++#define DPLL1_HOLDOVER_MODE_CNFG_LSB 0x12A
++#define DPLL1_HOLDOVER_MODE_CNFG_MSB 0x12B
 +
-+	buf[0] = CMD_DMAADDH;
-+	buf[0] |= (da << 1);
-+	*((__le16 *)&buf[1]) = cpu_to_le16(val);
++#define DPLL2_HOLDOVER_MODE_CNFG_LSB 0x1A9
++#define DPLL2_HOLDOVER_MODE_CNFG_MSB 0x1AA
 +
-+	PL330_DBGCMD_DUMP(SZ_DMAADDH, "\tDMAADDH %s %u\n",
-+		da == 1 ? "DA" : "SA", val);
-+
-+	return SZ_DMAADDH;
-+}
-+
- static inline u32 _emit_END(unsigned dry_run, u8 buf[])
- {
- 	if (dry_run)
-@@ -1190,7 +1209,7 @@ static inline int _ldst_peripheral(struct pl330_dmac *pl330,
- 				 const struct _xfer_spec *pxs, int cyc,
- 				 enum pl330_cond cond)
- {
--	int off = 0;
-+	int off = 0, i = 0, burstn = 1;
+ #define DPLL1_HOLDOVER_FREQ_CNFG 0x12C
+ #define DPLL2_HOLDOVER_FREQ_CNFG 0x1AC
  
- 	/*
- 	 * do FLUSHP at beginning to clear any stale dma requests before the
-@@ -1198,12 +1217,36 @@ static inline int _ldst_peripheral(struct pl330_dmac *pl330,
- 	 */
- 	if (!(pl330->quirks & PL330_QUIRK_BROKEN_NO_FLUSHP))
- 		off += _emit_FLUSHP(dry_run, &buf[off], pxs->desc->peri);
-+
-+	if (pxs->desc->sgl.size) {
-+		WARN_ON(BYTE_MOD_BURST_LEN(pxs->desc->sgl.size, pxs->ccr));
-+		burstn = BYTE_TO_BURST(pxs->desc->sgl.size, pxs->ccr);
-+	}
-+
- 	while (cyc--) {
--		off += _emit_WFP(dry_run, &buf[off], cond, pxs->desc->peri);
--		off += _emit_load(dry_run, &buf[off], cond, pxs->desc->rqtype,
--			pxs->desc->peri);
--		off += _emit_store(dry_run, &buf[off], cond, pxs->desc->rqtype,
--			pxs->desc->peri);
-+		for (i = 0; i < burstn; i++) {
-+			off += _emit_WFP(dry_run, &buf[off], cond, pxs->desc->peri);
-+			off += _emit_load(dry_run, &buf[off], cond, pxs->desc->rqtype,
-+				pxs->desc->peri);
-+			off += _emit_store(dry_run, &buf[off], cond, pxs->desc->rqtype,
-+				pxs->desc->peri);
-+		}
-+
-+		switch (pxs->desc->rqtype) {
-+		case DMA_DEV_TO_MEM:
-+			if (pxs->desc->sgl.dst_icg)
-+				off += _emit_ADDH(dry_run, &buf[off], DST,
-+						  pxs->desc->sgl.dst_icg);
-+			break;
-+		case DMA_MEM_TO_DEV:
-+			if (pxs->desc->sgl.src_icg)
-+				off += _emit_ADDH(dry_run, &buf[off], SRC,
-+						  pxs->desc->sgl.src_icg);
-+			break;
-+		default:
-+			WARN_ON(1);
-+			break;
-+		}
- 	}
+@@ -43,7 +49,6 @@
+ #define REG_SOFT_RESET 0X381
  
- 	return off;
-@@ -1382,6 +1425,9 @@ static inline int _setup_loops(struct pl330_dmac *pl330,
- 		BRST_SIZE(ccr);
- 	int off = 0;
+ #define OUT_MUX_CNFG(outn) REG_ADDR(0x6, (0xC * (outn)))
+-#define TOD_TRIGGER(wr_trig, rd_trig) ((wr_trig & 0xf) << 4 | (rd_trig & 0xf))
  
-+	if (pxs->desc->sgl.size)
-+		bursts = x->bytes / pxs->desc->sgl.size;
-+
- 	while (bursts) {
- 		c = bursts;
- 		off += _loop(pl330, dry_run, &buf[off], &c, pxs);
-@@ -2624,6 +2670,9 @@ static struct dma_pl330_desc *pl330_get_desc(struct dma_pl330_chan *pch)
+ /* Register bit definitions */
+ #define SYNC_TOD BIT(1)
+@@ -101,7 +106,7 @@ enum hw_tod_trig_sel {
+ 	WR_TRIG_SEL_MAX = HW_TOD_WR_TRIG_SEL_MSB_TOD_CNFG,
+ };
  
- 	desc->peri = peri_id ? pch->chan.chan_id : 0;
- 	desc->rqcfg.pcfg = &pch->dmac->pcfg;
-+	desc->sgl.size = 0;
-+	desc->sgl.src_icg = 0;
-+	desc->sgl.dst_icg = 0;
+-/** @brief Enumerated type listing DPLL operational modes */
++/* Enumerated type listing DPLL operational modes */
+ enum dpll_state {
+ 	DPLL_STATE_FREERUN = 1,
+ 	DPLL_STATE_HOLDOVER = 2,
+@@ -109,7 +114,34 @@ enum dpll_state {
+ 	DPLL_STATE_PRELOCKED2 = 5,
+ 	DPLL_STATE_PRELOCKED = 6,
+ 	DPLL_STATE_LOSTPHASE = 7,
+-	DPLL_STATE_MAX
++	DPLL_STATE_MAX = DPLL_STATE_LOSTPHASE,
+ };
  
- 	dma_async_tx_descriptor_init(&desc->txd, &pch->chan);
- 
-@@ -2774,6 +2823,110 @@ static struct dma_async_tx_descriptor *pl330_prep_dma_cyclic(
- 	return &desc->txd;
- }
- 
-+static struct dma_async_tx_descriptor *pl330_prep_interleaved_dma(
-+	struct dma_chan *chan, struct dma_interleaved_template *xt,
-+	unsigned long flags)
-+{
-+	struct dma_pl330_desc *desc = NULL, *first = NULL;
-+	struct dma_pl330_chan *pch = to_pchan(chan);
-+	struct pl330_dmac *pl330 = pch->dmac;
-+	unsigned int i;
-+	dma_addr_t dst;
-+	dma_addr_t src;
-+	size_t size, src_icg, dst_icg, period_bytes, buffer_bytes, full_period_bytes;
-+	size_t nump = 0, numf = 0;
++/* firmware interface */
++struct idt82p33_fwrc {
++	u8 hiaddr;
++	u8 loaddr;
++	u8 value;
++	u8 reserved;
++} __packed;
 +
-+	if (!xt->numf || !xt->sgl[0].size || xt->frame_size != 1)
-+		return NULL;
-+	nump = xt->nump;
-+	numf = xt->numf;
-+	size = xt->sgl[0].size;
-+	period_bytes = size * nump;
-+	buffer_bytes = size * numf;
++#define PLLMASK_ADDR_HI	0xFF
++#define PLLMASK_ADDR_LO	0xA5
 +
-+	if (flags & DMA_PREP_REPEAT && (!nump || (numf % nump)))
-+		return NULL;
++#define PLL0_OUTMASK_ADDR_HI	0xFF
++#define PLL0_OUTMASK_ADDR_LO	0xB0
 +
-+	src_icg = dmaengine_get_src_icg(xt, &xt->sgl[0]);
-+	dst_icg = dmaengine_get_dst_icg(xt, &xt->sgl[0]);
++#define PLL1_OUTMASK_ADDR_HI	0xFF
++#define PLL1_OUTMASK_ADDR_LO	0xB2
 +
-+	pl330_config_write(chan, &pch->slave_config, xt->dir);
++#define PLL2_OUTMASK_ADDR_HI	0xFF
++#define PLL2_OUTMASK_ADDR_LO	0xB4
 +
-+	if (!pl330_prep_slave_fifo(pch, xt->dir))
-+		return NULL;
++#define PLL3_OUTMASK_ADDR_HI	0xFF
++#define PLL3_OUTMASK_ADDR_LO	0xB6
 +
-+	for (i = 0; i < numf / nump; i++) {
-+		desc = pl330_get_desc(pch);
-+		if (!desc) {
-+			unsigned long iflags;
++#define DEFAULT_PLL_MASK	(0x01)
++#define DEFAULT_OUTPUT_MASK_PLL0	(0xc0)
++#define DEFAULT_OUTPUT_MASK_PLL1	DEFAULT_OUTPUT_MASK_PLL0
 +
-+			dev_err(pch->dmac->ddma.dev, "%s:%d Unable to fetch desc\n",
-+				__func__, __LINE__);
-+
-+			if (!first)
-+				return NULL;
-+
-+			spin_lock_irqsave(&pl330->pool_lock, iflags);
-+
-+			while (!list_empty(&first->node)) {
-+				desc = list_entry(first->node.next,
-+						struct dma_pl330_desc, node);
-+				list_move_tail(&desc->node, &pl330->desc_pool);
-+			}
-+
-+			list_move_tail(&first->node, &pl330->desc_pool);
-+
-+			spin_unlock_irqrestore(&pl330->pool_lock, iflags);
-+
-+			return NULL;
-+		}
-+
-+		switch (xt->dir) {
-+		case DMA_MEM_TO_DEV:
-+			desc->rqcfg.src_inc = 1;
-+			desc->rqcfg.dst_inc = 0;
-+			src = xt->src_start + period_bytes * i;
-+			dst = pch->fifo_dma;
-+			full_period_bytes = (size + src_icg) * nump;
-+			break;
-+		case DMA_DEV_TO_MEM:
-+			desc->rqcfg.src_inc = 0;
-+			desc->rqcfg.dst_inc = 1;
-+			src = pch->fifo_dma;
-+			dst = xt->dst_start + period_bytes * i;
-+			full_period_bytes = (size + dst_icg) * nump;
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		desc->rqtype = xt->dir;
-+		desc->rqcfg.brst_size = pch->burst_sz;
-+		desc->rqcfg.brst_len = pch->burst_len;
-+		desc->bytes_requested = full_period_bytes;
-+		desc->sgl.size = size;
-+		desc->sgl.src_icg = src_icg;
-+		desc->sgl.dst_icg = dst_icg;
-+		fill_px(&desc->px, dst, src, period_bytes);
-+
-+		if (!first)
-+			first = desc;
-+		else
-+			list_add_tail(&desc->node, &first->node);
-+	}
-+
-+	if (!desc)
-+		return NULL;
-+
-+	if (flags & DMA_PREP_REPEAT)
-+		pch->cyclic = true;
-+
-+	dev_dbg(chan->device->dev, "size: %zu, src_icg: %zu, dst_icg: %zu, nump: %zu, numf: %zu\n",
-+		size, src_icg, dst_icg, nump, numf);
-+
-+	return &desc->txd;
-+}
-+
- static struct dma_async_tx_descriptor *
- pl330_prep_dma_memcpy(struct dma_chan *chan, dma_addr_t dst,
- 		dma_addr_t src, size_t len, unsigned long flags)
-@@ -3129,12 +3282,16 @@ pl330_probe(struct amba_device *adev, const struct amba_id *id)
- 		dma_cap_set(DMA_SLAVE, pd->cap_mask);
- 		dma_cap_set(DMA_CYCLIC, pd->cap_mask);
- 		dma_cap_set(DMA_PRIVATE, pd->cap_mask);
-+		dma_cap_set(DMA_INTERLEAVE, pd->cap_mask);
-+		dma_cap_set(DMA_REPEAT, pd->cap_mask);
-+		dma_cap_set(DMA_LOAD_EOT, pd->cap_mask);
- 	}
- 
- 	pd->device_alloc_chan_resources = pl330_alloc_chan_resources;
- 	pd->device_free_chan_resources = pl330_free_chan_resources;
- 	pd->device_prep_dma_memcpy = pl330_prep_dma_memcpy;
- 	pd->device_prep_dma_cyclic = pl330_prep_dma_cyclic;
-+	pd->device_prep_interleaved_dma = pl330_prep_interleaved_dma;
- 	pd->device_tx_status = pl330_tx_status;
- 	pd->device_prep_slave_sg = pl330_prep_slave_sg;
- 	pd->device_config = pl330_config;
+ #endif
 -- 
-2.7.4
+2.39.2
 
 
