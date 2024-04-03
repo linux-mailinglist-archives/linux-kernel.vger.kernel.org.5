@@ -1,143 +1,96 @@
-Return-Path: <linux-kernel+bounces-129009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81906896318
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:40:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3653A896320
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:43:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2B511C221E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:40:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67E831C221E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D2D405F2;
-	Wed,  3 Apr 2024 03:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="kjhZyHul"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97A503F9FC;
+	Wed,  3 Apr 2024 03:43:48 +0000 (UTC)
+Received: from cstnet.cn (smtp84.cstnet.cn [159.226.251.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894CF3E48E;
-	Wed,  3 Apr 2024 03:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01D544C87;
+	Wed,  3 Apr 2024 03:43:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712115597; cv=none; b=JHXxD3Ry4L+rEmGCnm5xQ0fD0cB2ZitB5lWNMWY1tOMjq4I52ab41AB/0/qpOEseM2LUoXZnqLAT+cZmAVhnwrd1zXbZZLpVfd9z8tZwmNwRGhNLhPv97Srr+44ptWfuE/Lsk+DZQ0udNqXjEfAHq3dbbDufvZwK1N7wqaohuSI=
+	t=1712115828; cv=none; b=p3Fo07ZnyBkabxYeuVohnZD8SI0REMz+5omgB/3mKNZ1TJib2iHNc/3W3QJKOvLCA5lruwDPuxnrGQkpkLg/tAoV2ehjuLyvZ+0L6PHhrmgw5DZoT82PFL/5eTYh/bYmMVAHr8q3vyWO7BKUOFU/ruASkboHtcqB6v8GtMQbiYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712115597; c=relaxed/simple;
-	bh=vsYTyHZbz3YwYaV3ajc98Gk+zAeEUCnLJQKC3yldWmo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A2Wy/eHoRv3XYBsy1OfjhKTntME/9Mw7w4bDr9ATPR2m17Mrxzmaa7ELf5V4EUmDOVOesasI+w0XGsw57ksdmtCO3UNHTSRa+Hqa/DcHbKapi2GJAMgyiqOYAdHAwHzSRJUfLKkoggBsjYK3cByu8ziIskLsuTpmHirQDbvdQB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=kjhZyHul; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 432K3FI4029252;
-	Tue, 2 Apr 2024 20:39:37 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=pfpt0220; bh=/BY57IBLf+yABTirJWi18E
-	+1Z/d+IYDmnVTMqS6JZfQ=; b=kjhZyHulAB+3lmLlWr/x1liznmQTLqF6MI3g6s
-	juedvaHYkO/DSp3R6AcV651ivy0hBeMvnHDjrtcnYF1KMgrgvijS8ffFrDhddxvG
-	V8vMOUDb11z6ZgOzoKjrFnN952TuMpHeyc64M62qPLtRZPZ57h+nUmrFh0iULYus
-	vS29qb3/ILPaEvJUXGkZo8eOTe9UV05fFXgJ231TI7VVMYkSCaEB7aY9d+/Cikfm
-	9kenj/FL8pm+mRQAeIDlwGRpiQ+lLFaCv3n4DI4rWBWmcbRafCODhyE/T7RcLgEe
-	WfLK2Hhu4De3VS1tw+yqmbUcqNVjkQLgG2mC8vFEFiiu1F1w==
-Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x809fx762-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 02 Apr 2024 20:39:37 -0700 (PDT)
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Tue, 2 Apr 2024 20:39:37 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
- (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
- Transport; Tue, 2 Apr 2024 20:39:36 -0700
-Received: from maili.marvell.com (unknown [10.28.36.165])
-	by maili.marvell.com (Postfix) with SMTP id ADB2D3F7044;
-	Tue,  2 Apr 2024 20:39:33 -0700 (PDT)
-Date: Wed, 3 Apr 2024 09:09:32 +0530
-From: Ratheesh Kannoth <rkannoth@marvell.com>
-To: Paul Barker <paul.barker.ct@bp.renesas.com>
-CC: Sergey Shtylyov <s.shtylyov@omp.ru>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Niklas
- =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund+renesas@ragnatech.se>,
-        <netdev@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] net: ravb: Always process TX descriptor ring
-Message-ID: <20240403033932.GA1652207@maili.marvell.com>
-References: <20240402145305.82148-1-paul.barker.ct@bp.renesas.com>
+	s=arc-20240116; t=1712115828; c=relaxed/simple;
+	bh=cCZHvqKkhlOhXtkzMr3sHyNUhpsIPdpG23hP2ekDxno=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=F40tHsOy6o43/UpYhPKLM8O6PjQY87sCysoJLaPdnaXqVy8O+eO0fSRORLAPduHtHAjOVFT3pPiOWw/o0ju/nbrgT3ch2vWRwBzXc415QRCbFQARGvgyiK6JTGeaee5DQgX6S0R3n9fHGqQ8gApFy0VCux5uvnIGYausvBInzq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost (unknown [124.16.138.129])
+	by APP-05 (Coremail) with SMTP id zQCowAC3RBJr0Axm87geAQ--.6190S2;
+	Wed, 03 Apr 2024 11:43:40 +0800 (CST)
+From: Chen Ni <nichen@iscas.ac.cn>
+To: linus.walleij@linaro.org,
+	dlemoal@kernel.org,
+	cassel@kernel.org
+Cc: linux-ide@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH] ata: sata_gemini: Add check for clk_enable
+Date: Wed,  3 Apr 2024 03:43:14 +0000
+Message-Id: <20240403034314.3623830-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240402145305.82148-1-paul.barker.ct@bp.renesas.com>
-X-Proofpoint-GUID: lwwmbmCWzRzUI69ZRDR5BWE6p3BzwolQ
-X-Proofpoint-ORIG-GUID: lwwmbmCWzRzUI69ZRDR5BWE6p3BzwolQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_02,2024-04-01_01,2023-05-22_02
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:zQCowAC3RBJr0Axm87geAQ--.6190S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7Xr47tF1xGF13Gw4UArWrXwb_yoW3Grc_Ca
+	y7XwnavryYgr4UK3W7Wry5ZFy0kw4vvrn7ua4IgFZxt3yUJr4kXrWjvwn8Aw1qgr18Wr9I
+	yF4DJ3sYkryfujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbz8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
+	Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+	0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU5WlkUUUUU
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
 
-On 2024-04-02 at 20:23:04, Paul Barker (paul.barker.ct@bp.renesas.com) wrote:
-> The TX queue should be serviced each time the poll function is called,
-> even if the full RX work budget has been consumed. This prevents
-> starvation of the TX queue when RX bandwidth usage is high.
->
-> Fixes: c156633f1353 ("Renesas Ethernet AVB driver proper")
-> Signed-off-by: Paul Barker <paul.barker.ct@bp.renesas.com>
-> ---
-> Changes from v1:
->   * Use the correct 'Fixes' tag.
->   * Call the new variable 'unmask' and drop the unnecessary initializer,
->     as requested by Sergey.
->
->  drivers/net/ethernet/renesas/ravb_main.c | 7 +++++--
->  1 file changed, 5 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/ethernet/renesas/ravb_main.c
-> index d1be030c8848..48803050abdb 100644
-> --- a/drivers/net/ethernet/renesas/ravb_main.c
-> +++ b/drivers/net/ethernet/renesas/ravb_main.c
-> @@ -1324,12 +1324,12 @@ static int ravb_poll(struct napi_struct *napi, int budget)
->  	int q = napi - priv->napi;
->  	int mask = BIT(q);
->  	int quota = budget;
-> +	bool unmask;
->
->  	/* Processing RX Descriptor Ring */
->  	/* Clear RX interrupt */
->  	ravb_write(ndev, ~(mask | RIS0_RESERVED), RIS0);
-> -	if (ravb_rx(ndev, &quota, q))
-> -		goto out;
-> +	unmask = !ravb_rx(ndev, &quota, q);
->
->  	/* Processing TX Descriptor Ring */
-AFAIU, TX is processed without any budget. This wont result in rx work starvation if
-TX traffic is more ?
+As the potential failure of the clk_enable(), it should be better to
+check it and return error if fails.
 
->  	spin_lock_irqsave(&priv->lock, flags);
-> @@ -1339,6 +1339,9 @@ static int ravb_poll(struct napi_struct *napi, int budget)
->  	netif_wake_subqueue(ndev, q);
->  	spin_unlock_irqrestore(&priv->lock, flags);
->
-> +	if (!unmask)
-> +		goto out;
-> +
->  	napi_complete(napi);
->
->  	/* Re-enable RX/TX interrupts */
->
-> base-commit: ea2a1cfc3b2019bdea6324acd3c03606b60d71ad
-> --
-> 2.39.2
->
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
+---
+ drivers/ata/sata_gemini.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/ata/sata_gemini.c b/drivers/ata/sata_gemini.c
+index 400b22ee99c3..4c270999ba3c 100644
+--- a/drivers/ata/sata_gemini.c
++++ b/drivers/ata/sata_gemini.c
+@@ -200,7 +200,10 @@ int gemini_sata_start_bridge(struct sata_gemini *sg, unsigned int bridge)
+ 		pclk = sg->sata0_pclk;
+ 	else
+ 		pclk = sg->sata1_pclk;
+-	clk_enable(pclk);
++	ret = clk_enable(pclk);
++	if (ret)
++		return ret;
++
+ 	msleep(10);
+ 
+ 	/* Do not keep clocking a bridge that is not online */
+-- 
+2.25.1
+
 
