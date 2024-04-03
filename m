@@ -1,615 +1,150 @@
-Return-Path: <linux-kernel+bounces-130494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94B808978E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:17:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A75918978EE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:21:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E73F1F23F5A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:17:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 355A8289DE0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:21:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 559FF155302;
-	Wed,  3 Apr 2024 19:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E26A155308;
+	Wed,  3 Apr 2024 19:21:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="H6cbqR4O"
-Received: from mail-108-mta9.mxroute.com (mail-108-mta9.mxroute.com [136.175.108.9])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="daF348jd"
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E2B1D54B
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 19:17:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D31D31D54B;
+	Wed,  3 Apr 2024 19:21:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712171859; cv=none; b=q4lGHo8ynHdjkr3mIG+xTL/WM+h+t5chPTgDSlUnChruR8MjZxDYPXCqNZjO/upFruaOapspss6LnRQ60B7qmJGN9Ek/Ll1NgG7fUsuO9mCurui+ULx0ZpQstOhR/0mVmq33lCt7Yu9MDtfkYygOzcccRLIdxURpJsg3jhI+0YA=
+	t=1712172102; cv=none; b=sNJ5IIOcASOElpbQPpXOSwDJ7aHmLepmudENfHQAfz++5lZs5fRej5RAAWRMlpYl5kfFmTeYakmzC68orfRv7Ffp+YuAFIXNFtrZHC9fLf0tvSadGe7C/pePci0vrTvMJWeX7szDlwb9LWuyFRH+1VYYzGrDZ+w7tWOP+gwX3r8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712171859; c=relaxed/simple;
-	bh=Va/GMMblzjick2D+/98nzNcRnhTMSe6/mO0DiRrlPh8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FVToWgXXCRwGfeDxxe5X3hvAdnqZQVkWyI1lz4yQ5UtuRH00Wh1lntxGIZUwo+FVnXEcFjr5fYUhJdEfBnMmJWOWRM8TwXNw4GxDea+n08yqQfkZkZz9udWTcNbFO5XyxJs3WaQVyi8OWdLZ5AtRiGxWAEnZg4/+K1TBf4zABaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=H6cbqR4O; arc=none smtp.client-ip=136.175.108.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta9.mxroute.com (ZoneMTA) with ESMTPSA id 18ea5651e440003bea.010
- for <linux-kernel@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Wed, 03 Apr 2024 19:17:31 +0000
-X-Zone-Loop: 2d67dad10b6c1fdb37f722a8a95acc7c78255582f609
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=luigi311.com; s=x; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-	From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=zIzVREEoH+Ex+ZGUxI5Dn9GXIwihfJfWyqXF+I95Qqo=; b=H6cbqR4OqbmKe0oTturCNzODqp
-	5zWs4jixY1wjz6cnJ+vEMdQi+Ivj85baJQz11XKf/0/WEEAkR2Y1t/+uGJu2dWaM31U9j0HcnK8kD
-	COIRwDF+rFZZcVWMwoS6SXg/9RGXPkglYEil3KJOjNc7jL58oBJD9/9k19XmTTiNvSC9Wrld5sAR5
-	EmKw975C8IP6hRwhTUu8kaywAtEANgnpJKJ5i2VgGTYIACn9TYzBuYF44/Ul15dnyddjfFn8DuREn
-	5K8gA704rfyynfLJYxQy2mtqrgy2AG+BOXWtTOTRw/Y0guuxIpDhLodos8LLAO7VqS7V9xD4NnMss
-	tlRocoHQ==;
-Message-ID: <df8c245a-40e9-4bf5-b870-7efe321d820a@luigi311.com>
-Date: Wed, 3 Apr 2024 13:17:26 -0600
+	s=arc-20240116; t=1712172102; c=relaxed/simple;
+	bh=FT1fbad1bza7YjyFyg9rJscq3rr7vUNVyBiRRdR2aNk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HDGq+k7+HmbRu7HZH/AmiezRS/1Ndgg6OyymDUMqVnmeIK0iT4wM2JGOU5MDYb9GZc5Z6i/3p2hEKviEFMqaRVEzrf+Gr5AqVosOYmy5updVmcg24HXQsVsNSLQ2bObKD8rvl3l113iUqKOu1wgseBFdzCUG5mS4Jq2zMZrXKno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=daF348jd; arc=none smtp.client-ip=209.85.161.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5a480985625so165824eaf.0;
+        Wed, 03 Apr 2024 12:21:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712172100; x=1712776900; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=71eP4QlMczx2Y4yJ5dvBU+fua5ttQveVgsrybppYBU4=;
+        b=daF348jdUZFfbPB4Q8yX3Ebv1pNgRAV6RBOUAxcqzjgMVoMJcd7p8TYgN1kdrGz/D/
+         m1aNnjUkFNEfUnbT3RnIh56RJU8evSOlDTzhWegA0lLz7VgVkIsvTjnXTz2lpl8ioJF/
+         iytjyIZ7rYiP802fEcQtCYxWKAKa9WIOavUWUnQhzv5+bis2sfV1EmS04BXNZkIBy++f
+         7DUx63P5J2zjiFYVJFvPQjMp22yb2FDlBqCYa5rSUp/ACPuJLKCGcNQBSFAugv/eqUUL
+         lKwfiiFNzFTb/5HluEE3Qy9gqMUvohkXXdxxaIDibRNQvXxCSL17kH0Oz/c6vsz9OGae
+         QC+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712172100; x=1712776900;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=71eP4QlMczx2Y4yJ5dvBU+fua5ttQveVgsrybppYBU4=;
+        b=H9ELw6clOHUWrgSxeVuWqAcsCUHFo/Cbih0WW8MbB94CaxUFSXpK7NB65fZcRyyR7j
+         b8qdm0f0GVGTbMb1Vh7+T2D33Xa9bcFTn8m1Bjz6kE3sG8cwrUtLMIH7UyaieB2qmWWR
+         PxVZUxThm6DwBtiImHL+ceatv3CGgnE1GuyIsNXcG7rWTKY/HKqkIbASjg50OWPmUyle
+         E3ETI/xHB3GFj1AnKWhgiR4D2yeHSqk9eoXcely+OF7SvYCGXZqMVY7WsCRiesSdK4W1
+         PzXT01k32PnsE4SnVnRhdayvDuuWH+ynpLzzIq9ZkfAe77Zdcj7KRNT6RP4FXvK+6DX9
+         pqaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV80zxeTN0upq7/QO56jgBM3JS0AR+ylDAJsZ/m/a+FveCzP0s1fdw0kbP0h0wdIHfoVteawXejOzmNpA4alEhbno0ZTahPvQRg7Dna/ZapBi6EAAF4v+1WUDO9w5pS+3qWfLepYJJndwLDCA==
+X-Gm-Message-State: AOJu0YzLdFUdwtzKpnE6c1HQEkb8wEVtsA/oLkH4q3R+T3uf7+snUfHw
+	Hz8Ny+pM0r5wyPVqRcnZv+n8y3W1ly8FYyZgYfUin6ivA53he67no0A8EC66
+X-Google-Smtp-Source: AGHT+IEe45VMj3vsXzq43ZjMpWFWOEnem3jMe583txSo/lZHOb7SmqUEVgxDZIs/8Im/4WJlUGV84Q==
+X-Received: by 2002:a05:6870:238e:b0:22e:9e53:3fd2 with SMTP id e14-20020a056870238e00b0022e9e533fd2mr300149oap.28.1712172099688;
+        Wed, 03 Apr 2024 12:21:39 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:25ab])
+        by smtp.gmail.com with ESMTPSA id l11-20020a62be0b000000b006e567c81d14sm12115035pff.43.2024.04.03.12.21.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 12:21:39 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 3 Apr 2024 09:21:37 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Jan Kara <jack@suse.cz>, Kemeng Shi <shikemeng@huaweicloud.com>,
+	akpm@linux-foundation.org, willy@infradead.org, bfoster@redhat.com,
+	dsterba@suse.com, mjguzik@gmail.com, dhowells@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] Improve visibility of writeback
+Message-ID: <Zg2sQTIDom21q4i9@slm.duckdns.org>
+References: <ZgXFrabAqunDctVp@slm.duckdns.org>
+ <n2znv2ioy62rrrzz4nl2x7x5uighuxf2fgozhpfdkj6ialdiqe@a3mnfez7mitl>
+ <ZgXJH9XQNqda7fpz@slm.duckdns.org>
+ <wgec7wbhdn7ilvwddcalkbgxzjutp6h7dgfrijzffb64pwpksz@e6tqcybzfu2f>
+ <ZgXPZ1uJSUCF79Ef@slm.duckdns.org>
+ <qv3vv6355aw5fkzw5yvuwlnyceypcsfl5kkcrvlipxwfl3nuyg@7cqwaqpxn64t>
+ <ZgXXKaZlmOWC-3mn@slm.duckdns.org>
+ <20240403162716.icjbicvtbleiymjy@quack3>
+ <Zg2jdcochRXNdDZX@slm.duckdns.org>
+ <qemects2mglzjdig7y5uufhoqdhoccwlrwrtfhe4jy6gbadj6n@dnnbzymtxpyj>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 21/25] drivers: media: i2c: imx258: Use macros
-To: Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc: linux-media@vger.kernel.org, dave.stevenson@raspberrypi.com,
- jacopo.mondi@ideasonboard.com, mchehab@kernel.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, shawnguo@kernel.org,
- s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
- devicetree@vger.kernel.org, imx@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- pavel@ucw.cz, phone-devel@vger.kernel.org, Ondrej Jirman <megi@xff.cz>
-References: <20240403150355.189229-1-git@luigi311.com>
- <20240403150355.189229-22-git@luigi311.com>
- <Zg2CirmwL3JfjA8s@kekkonen.localdomain>
-Content-Language: en-US
-From: Luigi311 <git@luigi311.com>
-In-Reply-To: <Zg2CirmwL3JfjA8s@kekkonen.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Id: git@luigi311.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <qemects2mglzjdig7y5uufhoqdhoccwlrwrtfhe4jy6gbadj6n@dnnbzymtxpyj>
 
-On 4/3/24 10:23, Sakari Ailus wrote:
-> Hi Luis,
-> 
-> On Wed, Apr 03, 2024 at 09:03:50AM -0600, git@luigi311.com wrote:
->> From: Luis Garcia <git@luigi311.com>
->>
->> Use understandable macros instead of raw values.
->>
->> Signed-off-by: Ondrej Jirman <megi@xff.cz>
->> Signed-off-by: Luis Garcia <git@luigi311.com>
->> ---
->>  drivers/media/i2c/imx258.c | 434 ++++++++++++++++++-------------------
->>  1 file changed, 207 insertions(+), 227 deletions(-)
->>
->> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
->> index e2ecf6109516..30352c33f63c 100644
->> --- a/drivers/media/i2c/imx258.c
->> +++ b/drivers/media/i2c/imx258.c
->> @@ -33,8 +33,6 @@
->>  #define IMX258_VTS_30FPS_VGA		0x034c
->>  #define IMX258_VTS_MAX			65525
->>  
->> -#define IMX258_REG_VTS			0x0340
->> -
->>  /* HBLANK control - read only */
->>  #define IMX258_PPL_DEFAULT		5352
->>  
->> @@ -90,6 +88,53 @@
->>  #define IMX258_PIXEL_ARRAY_WIDTH	4208U
->>  #define IMX258_PIXEL_ARRAY_HEIGHT	3120U
->>  
->> +/* regs */
->> +#define IMX258_REG_PLL_MULT_DRIV                  0x0310
->> +#define IMX258_REG_IVTPXCK_DIV                    0x0301
->> +#define IMX258_REG_IVTSYCK_DIV                    0x0303
->> +#define IMX258_REG_PREPLLCK_VT_DIV                0x0305
->> +#define IMX258_REG_IOPPXCK_DIV                    0x0309
->> +#define IMX258_REG_IOPSYCK_DIV                    0x030b
->> +#define IMX258_REG_PREPLLCK_OP_DIV                0x030d
->> +#define IMX258_REG_PHASE_PIX_OUTEN                0x3030
->> +#define IMX258_REG_PDPIX_DATA_RATE                0x3032
->> +#define IMX258_REG_SCALE_MODE                     0x0401
->> +#define IMX258_REG_SCALE_MODE_EXT                 0x3038
->> +#define IMX258_REG_AF_WINDOW_MODE                 0x7bcd
->> +#define IMX258_REG_FRM_LENGTH_CTL                 0x0350
->> +#define IMX258_REG_CSI_LANE_MODE                  0x0114
->> +#define IMX258_REG_X_EVN_INC                      0x0381
->> +#define IMX258_REG_X_ODD_INC                      0x0383
->> +#define IMX258_REG_Y_EVN_INC                      0x0385
->> +#define IMX258_REG_Y_ODD_INC                      0x0387
->> +#define IMX258_REG_BINNING_MODE                   0x0900
->> +#define IMX258_REG_BINNING_TYPE_V                 0x0901
->> +#define IMX258_REG_FORCE_FD_SUM                   0x300d
->> +#define IMX258_REG_DIG_CROP_X_OFFSET              0x0408
->> +#define IMX258_REG_DIG_CROP_Y_OFFSET              0x040a
->> +#define IMX258_REG_DIG_CROP_IMAGE_WIDTH           0x040c
->> +#define IMX258_REG_DIG_CROP_IMAGE_HEIGHT          0x040e
->> +#define IMX258_REG_SCALE_M                        0x0404
->> +#define IMX258_REG_X_OUT_SIZE                     0x034c
->> +#define IMX258_REG_Y_OUT_SIZE                     0x034e
->> +#define IMX258_REG_X_ADD_STA                      0x0344
->> +#define IMX258_REG_Y_ADD_STA                      0x0346
->> +#define IMX258_REG_X_ADD_END                      0x0348
->> +#define IMX258_REG_Y_ADD_END                      0x034a
->> +#define IMX258_REG_EXCK_FREQ                      0x0136
->> +#define IMX258_REG_CSI_DT_FMT                     0x0112
->> +#define IMX258_REG_LINE_LENGTH_PCK                0x0342
->> +#define IMX258_REG_SCALE_M_EXT                    0x303a
->> +#define IMX258_REG_FRM_LENGTH_LINES               0x0340
->> +#define IMX258_REG_FINE_INTEG_TIME                0x0200
->> +#define IMX258_REG_PLL_IVT_MPY                    0x0306
->> +#define IMX258_REG_PLL_IOP_MPY                    0x030e
->> +#define IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H       0x0820
->> +#define IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L       0x0822
->> +
->> +#define REG8(a, v) { a, v }
->> +#define REG16(a, v) { a, ((v) >> 8) & 0xff }, { (a) + 1, (v) & 0xff }
-> 
-> The patch is nice but these macros are better replaced by the V4L2 CCI
-> helper that also offers register access functions. Could you add a patch to
-> convert the driver to use it (maybe after this one)?
-> 
+Hello,
 
-Ohh perfect, using something else would be great. Ill go ahead and see
-if I can get that working.
+On Wed, Apr 03, 2024 at 03:06:56PM -0400, Kent Overstreet wrote:
+..
+> That's how it should be if you just make a point of making your internal
+> state easy to view and introspect, but when I'm debugging issues that
+> run into the wider block layer, or memory reclaim, we often hit a wall.
 
->> +
->>  struct imx258_reg {
->>  	u16 address;
->>  	u8 val;
->> @@ -145,179 +190,139 @@ struct imx258_mode {
->>   * lane data rate when using 2 lanes, thus allowing a maximum of 15fps.
->>   */
->>  static const struct imx258_reg mipi_1267mbps_19_2mhz_2l[] = {
->> -	{ 0x0136, 0x13 },
->> -	{ 0x0137, 0x33 },
->> -	{ 0x0301, 0x0A },
->> -	{ 0x0303, 0x02 },
->> -	{ 0x0305, 0x03 },
->> -	{ 0x0306, 0x00 },
->> -	{ 0x0307, 0xC6 },
->> -	{ 0x0309, 0x0A },
->> -	{ 0x030B, 0x01 },
->> -	{ 0x030D, 0x02 },
->> -	{ 0x030E, 0x00 },
->> -	{ 0x030F, 0xD8 },
->> -	{ 0x0310, 0x00 },
->> -
->> -	{ 0x0114, 0x01 },
->> -	{ 0x0820, 0x09 },
->> -	{ 0x0821, 0xa6 },
->> -	{ 0x0822, 0x66 },
->> -	{ 0x0823, 0x66 },
->> +	REG16(IMX258_REG_EXCK_FREQ, 0x1333),
->> +	REG8(IMX258_REG_IVTPXCK_DIV, 10),
->> +	REG8(IMX258_REG_IVTSYCK_DIV, 2),
->> +	REG8(IMX258_REG_PREPLLCK_VT_DIV, 3),
->> +	REG16(IMX258_REG_PLL_IVT_MPY, 0x00C6),
->> +	REG8(IMX258_REG_IOPPXCK_DIV, 10),
->> +	REG8(IMX258_REG_IOPSYCK_DIV, 1),
->> +	REG8(IMX258_REG_PREPLLCK_OP_DIV, 2),
->> +	REG16(IMX258_REG_PLL_IOP_MPY, 0x00D8),
->> +	REG8(IMX258_REG_PLL_MULT_DRIV, 0),
->> +
->> +	REG8(IMX258_REG_CSI_LANE_MODE, 1),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 0x09A6),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0x6666),
->>  };
->>  
->>  static const struct imx258_reg mipi_1267mbps_19_2mhz_4l[] = {
->> -	{ 0x0136, 0x13 },
->> -	{ 0x0137, 0x33 },
->> -	{ 0x0301, 0x05 },
->> -	{ 0x0303, 0x02 },
->> -	{ 0x0305, 0x03 },
->> -	{ 0x0306, 0x00 },
->> -	{ 0x0307, 0xC6 },
->> -	{ 0x0309, 0x0A },
->> -	{ 0x030B, 0x01 },
->> -	{ 0x030D, 0x02 },
->> -	{ 0x030E, 0x00 },
->> -	{ 0x030F, 0xD8 },
->> -	{ 0x0310, 0x00 },
->> -
->> -	{ 0x0114, 0x03 },
->> -	{ 0x0820, 0x13 },
->> -	{ 0x0821, 0x4C },
->> -	{ 0x0822, 0xCC },
->> -	{ 0x0823, 0xCC },
->> +	REG16(IMX258_REG_EXCK_FREQ, 0x1333),
->> +	REG8(IMX258_REG_IVTPXCK_DIV, 5),
->> +	REG8(IMX258_REG_IVTSYCK_DIV, 2),
->> +	REG8(IMX258_REG_PREPLLCK_VT_DIV, 3),
->> +	REG16(IMX258_REG_PLL_IVT_MPY, 0x00C6),
->> +	REG8(IMX258_REG_IOPPXCK_DIV, 10),
->> +	REG8(IMX258_REG_IOPSYCK_DIV, 1),
->> +	REG8(IMX258_REG_PREPLLCK_OP_DIV, 2),
->> +	REG16(IMX258_REG_PLL_IOP_MPY, 0x00D8),
->> +	REG8(IMX258_REG_PLL_MULT_DRIV, 0),
->> +
->> +	REG8(IMX258_REG_CSI_LANE_MODE, 3),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 0x134C),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0xCCCC),
->>  };
->>  
->>  static const struct imx258_reg mipi_1272mbps_24mhz_2l[] = {
->> -	{ 0x0136, 0x18 },
->> -	{ 0x0137, 0x00 },
->> -	{ 0x0301, 0x0a },
->> -	{ 0x0303, 0x02 },
->> -	{ 0x0305, 0x04 },
->> -	{ 0x0306, 0x00 },
->> -	{ 0x0307, 0xD4 },
->> -	{ 0x0309, 0x0A },
->> -	{ 0x030B, 0x01 },
->> -	{ 0x030D, 0x02 },
->> -	{ 0x030E, 0x00 },
->> -	{ 0x030F, 0xD8 },
->> -	{ 0x0310, 0x00 },
->> -
->> -	{ 0x0114, 0x01 },
->> -	{ 0x0820, 0x13 },
->> -	{ 0x0821, 0x4C },
->> -	{ 0x0822, 0xCC },
->> -	{ 0x0823, 0xCC },
->> +	REG16(IMX258_REG_EXCK_FREQ, 0x1800),
->> +	REG8(IMX258_REG_IVTPXCK_DIV, 10),
->> +	REG8(IMX258_REG_IVTSYCK_DIV, 2),
->> +	REG8(IMX258_REG_PREPLLCK_VT_DIV, 4),
->> +	REG16(IMX258_REG_PLL_IVT_MPY, 0x00D4),
->> +	REG8(IMX258_REG_IOPPXCK_DIV, 10),
->> +	REG8(IMX258_REG_IOPSYCK_DIV, 1),
->> +	REG8(IMX258_REG_PREPLLCK_OP_DIV, 2),
->> +	REG16(IMX258_REG_PLL_IOP_MPY, 0x00D8),
->> +	REG8(IMX258_REG_PLL_MULT_DRIV, 0),
->> +
->> +	REG8(IMX258_REG_CSI_LANE_MODE, 1),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 0x134C),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0xCCCC),
->>  };
->>  
->>  static const struct imx258_reg mipi_1272mbps_24mhz_4l[] = {
->> -	{ 0x0136, 0x18 },
->> -	{ 0x0137, 0x00 },
->> -	{ 0x0301, 0x05 },
->> -	{ 0x0303, 0x02 },
->> -	{ 0x0305, 0x04 },
->> -	{ 0x0306, 0x00 },
->> -	{ 0x0307, 0xD4 },
->> -	{ 0x0309, 0x0A },
->> -	{ 0x030B, 0x01 },
->> -	{ 0x030D, 0x02 },
->> -	{ 0x030E, 0x00 },
->> -	{ 0x030F, 0xD8 },
->> -	{ 0x0310, 0x00 },
->> -
->> -	{ 0x0114, 0x03 },
->> -	{ 0x0820, 0x13 },
->> -	{ 0x0821, 0xE0 },
->> -	{ 0x0822, 0x00 },
->> -	{ 0x0823, 0x00 },
->> +	REG16(IMX258_REG_EXCK_FREQ, 0x1800),
->> +	REG8(IMX258_REG_IVTPXCK_DIV, 5),
->> +	REG8(IMX258_REG_IVTSYCK_DIV, 2),
->> +	REG8(IMX258_REG_PREPLLCK_VT_DIV, 4),
->> +	REG16(IMX258_REG_PLL_IVT_MPY, 0x00D4),
->> +	REG8(IMX258_REG_IOPPXCK_DIV, 10),
->> +	REG8(IMX258_REG_IOPSYCK_DIV, 1),
->> +	REG8(IMX258_REG_PREPLLCK_OP_DIV, 2),
->> +	REG16(IMX258_REG_PLL_IOP_MPY, 0x00D8),
->> +	REG8(IMX258_REG_PLL_MULT_DRIV, 0),
->> +
->> +	REG8(IMX258_REG_CSI_LANE_MODE, 3),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 0x13E0),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0x0000),
->>  };
->>  
->>  static const struct imx258_reg mipi_640mbps_19_2mhz_2l[] = {
->> -	{ 0x0136, 0x13 },
->> -	{ 0x0137, 0x33 },
->> -	{ 0x0301, 0x05 },
->> -	{ 0x0303, 0x02 },
->> -	{ 0x0305, 0x03 },
->> -	{ 0x0306, 0x00 },
->> -	{ 0x0307, 0x64 },
->> -	{ 0x0309, 0x0A },
->> -	{ 0x030B, 0x01 },
->> -	{ 0x030D, 0x02 },
->> -	{ 0x030E, 0x00 },
->> -	{ 0x030F, 0xD8 },
->> -	{ 0x0310, 0x00 },
->> -
->> -	{ 0x0114, 0x01 },
->> -	{ 0x0820, 0x05 },
->> -	{ 0x0821, 0x00 },
->> -	{ 0x0822, 0x00 },
->> -	{ 0x0823, 0x00 },
->> +	REG16(IMX258_REG_EXCK_FREQ, 0x1333),
->> +	REG8(IMX258_REG_IVTPXCK_DIV, 5),
->> +	REG8(IMX258_REG_IVTSYCK_DIV, 2),
->> +	REG8(IMX258_REG_PREPLLCK_VT_DIV, 3),
->> +	REG16(IMX258_REG_PLL_IVT_MPY, 0x0064),
->> +	REG8(IMX258_REG_IOPPXCK_DIV, 10),
->> +	REG8(IMX258_REG_IOPSYCK_DIV, 1),
->> +	REG8(IMX258_REG_PREPLLCK_OP_DIV, 2),
->> +	REG16(IMX258_REG_PLL_IOP_MPY, 0x00D8),
->> +	REG8(IMX258_REG_PLL_MULT_DRIV, 0),
->> +
->> +	REG8(IMX258_REG_CSI_LANE_MODE, 1),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 0x0500),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0x0000),
->>  };
->>  
->>  static const struct imx258_reg mipi_640mbps_19_2mhz_4l[] = {
->> -	{ 0x0136, 0x13 },
->> -	{ 0x0137, 0x33 },
->> -	{ 0x0301, 0x05 },
->> -	{ 0x0303, 0x02 },
->> -	{ 0x0305, 0x03 },
->> -	{ 0x0306, 0x00 },
->> -	{ 0x0307, 0x64 },
->> -	{ 0x0309, 0x0A },
->> -	{ 0x030B, 0x01 },
->> -	{ 0x030D, 0x02 },
->> -	{ 0x030E, 0x00 },
->> -	{ 0x030F, 0xD8 },
->> -	{ 0x0310, 0x00 },
->> -
->> -	{ 0x0114, 0x03 },
->> -	{ 0x0820, 0x0A },
->> -	{ 0x0821, 0x00 },
->> -	{ 0x0822, 0x00 },
->> -	{ 0x0823, 0x00 },
->> +	REG16(IMX258_REG_EXCK_FREQ, 0x1333),
->> +	REG8(IMX258_REG_IVTPXCK_DIV, 5),
->> +	REG8(IMX258_REG_IVTSYCK_DIV, 2),
->> +	REG8(IMX258_REG_PREPLLCK_VT_DIV, 3),
->> +	REG16(IMX258_REG_PLL_IVT_MPY, 0x0064),
->> +	REG8(IMX258_REG_IOPPXCK_DIV, 10),
->> +	REG8(IMX258_REG_IOPSYCK_DIV, 1),
->> +	REG8(IMX258_REG_PREPLLCK_OP_DIV, 2),
->> +	REG16(IMX258_REG_PLL_IOP_MPY, 0x00D8),
->> +	REG8(IMX258_REG_PLL_MULT_DRIV, 0),
->> +
->> +	REG8(IMX258_REG_CSI_LANE_MODE, 3),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 0x0A00),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0x0000),
->>  };
->>  
->>  static const struct imx258_reg mipi_642mbps_24mhz_2l[] = {
->> -	{ 0x0136, 0x18 },
->> -	{ 0x0137, 0x00 },
->> -	{ 0x0301, 0x05 },
->> -	{ 0x0303, 0x02 },
->> -	{ 0x0305, 0x04 },
->> -	{ 0x0306, 0x00 },
->> -	{ 0x0307, 0x6B },
->> -	{ 0x0309, 0x0A },
->> -	{ 0x030B, 0x01 },
->> -	{ 0x030D, 0x02 },
->> -	{ 0x030E, 0x00 },
->> -	{ 0x030F, 0xD8 },
->> -	{ 0x0310, 0x00 },
->> -
->> -	{ 0x0114, 0x01 },
->> -	{ 0x0820, 0x0A },
->> -	{ 0x0821, 0x00 },
->> -	{ 0x0822, 0x00 },
->> -	{ 0x0823, 0x00 },
->> +	REG16(IMX258_REG_EXCK_FREQ, 0x1800),
->> +	REG8(IMX258_REG_IVTPXCK_DIV, 5),
->> +	REG8(IMX258_REG_IVTSYCK_DIV, 2),
->> +	REG8(IMX258_REG_PREPLLCK_VT_DIV, 4),
->> +	REG16(IMX258_REG_PLL_IVT_MPY, 0x006B),
->> +	REG8(IMX258_REG_IOPPXCK_DIV, 10),
->> +	REG8(IMX258_REG_IOPSYCK_DIV, 1),
->> +	REG8(IMX258_REG_PREPLLCK_OP_DIV, 2),
->> +	REG16(IMX258_REG_PLL_IOP_MPY, 0x00D8),
->> +	REG8(IMX258_REG_PLL_MULT_DRIV, 0),
->> +
->> +	REG8(IMX258_REG_CSI_LANE_MODE, 1),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 0x0A00),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0x0000),
->>  };
->>  
->>  static const struct imx258_reg mipi_642mbps_24mhz_4l[] = {
->> -	{ 0x0136, 0x18 },
->> -	{ 0x0137, 0x00 },
->> -	{ 0x0301, 0x05 },
->> -	{ 0x0303, 0x02 },
->> -	{ 0x0305, 0x04 },
->> -	{ 0x0306, 0x00 },
->> -	{ 0x0307, 0x6B },
->> -	{ 0x0309, 0x0A },
->> -	{ 0x030B, 0x01 },
->> -	{ 0x030D, 0x02 },
->> -	{ 0x030E, 0x00 },
->> -	{ 0x030F, 0xD8 },
->> -	{ 0x0310, 0x00 },
->> -
->> -	{ 0x0114, 0x03 },
->> -	{ 0x0820, 0x0A },
->> -	{ 0x0821, 0x00 },
->> -	{ 0x0822, 0x00 },
->> -	{ 0x0823, 0x00 },
->> +	REG16(IMX258_REG_EXCK_FREQ, 0x1800),
->> +	REG8(IMX258_REG_IVTPXCK_DIV, 5),
->> +	REG8(IMX258_REG_IVTSYCK_DIV, 2),
->> +	REG8(IMX258_REG_PREPLLCK_VT_DIV, 4),
->> +	REG16(IMX258_REG_PLL_IVT_MPY, 0x006B),
->> +	REG8(IMX258_REG_IOPPXCK_DIV, 10),
->> +	REG8(IMX258_REG_IOPSYCK_DIV, 1),
->> +	REG8(IMX258_REG_PREPLLCK_OP_DIV, 2),
->> +	REG16(IMX258_REG_PLL_IOP_MPY, 0x00D8),
->> +	REG8(IMX258_REG_PLL_MULT_DRIV, 0),
->> +
->> +	REG8(IMX258_REG_CSI_LANE_MODE, 3),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_H, 0x0A00),
->> +	REG16(IMX258_REG_REQ_LINK_BIT_RATE_MBPS_L, 0x0000),
->>  };
->>  
->>  static const struct imx258_reg mode_common_regs[] = {
->> @@ -363,45 +368,29 @@ static const struct imx258_reg mode_common_regs[] = {
->>  	{ 0x7423, 0xD7 },
->>  	{ 0x5F04, 0x00 },
->>  	{ 0x5F05, 0xED },
->> -	{ 0x0112, 0x0A },
->> -	{ 0x0113, 0x0A },
->> -	{ 0x0342, 0x14 },
->> -	{ 0x0343, 0xE8 },
->> -	{ 0x0344, 0x00 },
->> -	{ 0x0345, 0x00 },
->> -	{ 0x0346, 0x00 },
->> -	{ 0x0347, 0x00 },
->> -	{ 0x0348, 0x10 },
->> -	{ 0x0349, 0x6F },
->> -	{ 0x034A, 0x0C },
->> -	{ 0x034B, 0x2F },
->> -	{ 0x0381, 0x01 },
->> -	{ 0x0383, 0x01 },
->> -	{ 0x0385, 0x01 },
->> -	{ 0x0387, 0x01 },
->> -	{ 0x0404, 0x00 },
->> -	{ 0x0408, 0x00 },
->> -	{ 0x0409, 0x00 },
->> -	{ 0x040A, 0x00 },
->> -	{ 0x040B, 0x00 },
->> -	{ 0x040C, 0x10 },
->> -	{ 0x040D, 0x70 },
->> -	{ 0x3038, 0x00 },
->> -	{ 0x303A, 0x00 },
->> -	{ 0x303B, 0x10 },
->> -	{ 0x300D, 0x00 },
->> -	{ 0x0350, 0x00 },
->> -	{ 0x0204, 0x00 },
->> -	{ 0x0205, 0x00 },
->> -	{ 0x020E, 0x01 },
->> -	{ 0x020F, 0x00 },
->> -	{ 0x0210, 0x01 },
->> -	{ 0x0211, 0x00 },
->> -	{ 0x0212, 0x01 },
->> -	{ 0x0213, 0x00 },
->> -	{ 0x0214, 0x01 },
->> -	{ 0x0215, 0x00 },
->> -	{ 0x7BCD, 0x00 },
->> +	REG16(IMX258_REG_CSI_DT_FMT, 0x0a0a),
->> +	REG16(IMX258_REG_LINE_LENGTH_PCK, 5352),
->> +	REG16(IMX258_REG_X_ADD_STA, 0),
->> +	REG16(IMX258_REG_Y_ADD_STA, 0),
->> +	REG16(IMX258_REG_X_ADD_END, 4207),
->> +	REG16(IMX258_REG_Y_ADD_END, 3119),
->> +	REG8(IMX258_REG_X_EVN_INC, 1),
->> +	REG8(IMX258_REG_X_ODD_INC, 1),
->> +	REG8(IMX258_REG_Y_EVN_INC, 1),
->> +	REG8(IMX258_REG_Y_ODD_INC, 1),
->> +	REG16(IMX258_REG_DIG_CROP_X_OFFSET, 0),
->> +	REG16(IMX258_REG_DIG_CROP_Y_OFFSET, 0),
->> +	REG16(IMX258_REG_DIG_CROP_IMAGE_WIDTH, 4208),
->> +	REG8(IMX258_REG_SCALE_MODE_EXT, 0),
->> +	REG16(IMX258_REG_SCALE_M_EXT, 16),
->> +	REG8(IMX258_REG_FORCE_FD_SUM, 0),
->> +	REG8(IMX258_REG_FRM_LENGTH_CTL, 0),
->> +	REG16(IMX258_REG_ANALOG_GAIN, 0),
->> +	REG16(IMX258_REG_GR_DIGITAL_GAIN, 256),
->> +	REG16(IMX258_REG_R_DIGITAL_GAIN, 256),
->> +	REG16(IMX258_REG_B_DIGITAL_GAIN, 256),
->> +	REG16(IMX258_REG_GB_DIGITAL_GAIN, 256),
->> +	REG8(IMX258_REG_AF_WINDOW_MODE, 0),
->>  	{ 0x94DC, 0x20 },
->>  	{ 0x94DD, 0x20 },
->>  	{ 0x94DE, 0x20 },
->> @@ -414,48 +403,39 @@ static const struct imx258_reg mode_common_regs[] = {
->>  	{ 0x941B, 0x50 },
->>  	{ 0x9519, 0x50 },
->>  	{ 0x951B, 0x50 },
->> -	{ 0x3030, 0x00 },
->> -	{ 0x3032, 0x00 },
->> -	{ 0x0220, 0x00 },
->> +	REG8(IMX258_REG_PHASE_PIX_OUTEN, 0),
->> +	REG8(IMX258_REG_PDPIX_DATA_RATE, 0),
->> +	REG8(IMX258_REG_HDR, 0),
->>  };
->>  
->>  static const struct imx258_reg mode_4208x3120_regs[] = {
->> -	{ 0x0900, 0x00 },
->> -	{ 0x0901, 0x11 },
->> -	{ 0x0401, 0x00 },
->> -	{ 0x0405, 0x10 },
->> -	{ 0x040E, 0x0C },
->> -	{ 0x040F, 0x30 },
->> -	{ 0x034C, 0x10 },
->> -	{ 0x034D, 0x70 },
->> -	{ 0x034E, 0x0C },
->> -	{ 0x034F, 0x30 },
->> +	REG8(IMX258_REG_BINNING_MODE, 0),
->> +	REG8(IMX258_REG_BINNING_TYPE_V, 0x11),
->> +	REG8(IMX258_REG_SCALE_MODE, 0),
->> +	REG16(IMX258_REG_SCALE_M, 16),
->> +	REG16(IMX258_REG_DIG_CROP_IMAGE_HEIGHT, 3120),
->> +	REG16(IMX258_REG_X_OUT_SIZE, 4208),
->> +	REG16(IMX258_REG_Y_OUT_SIZE, 3120),
->>  };
->>  
->>  static const struct imx258_reg mode_2104_1560_regs[] = {
->> -	{ 0x0900, 0x01 },
->> -	{ 0x0901, 0x12 },
->> -	{ 0x0401, 0x01 },
->> -	{ 0x0405, 0x20 },
->> -	{ 0x040E, 0x06 },
->> -	{ 0x040F, 0x18 },
->> -	{ 0x034C, 0x08 },
->> -	{ 0x034D, 0x38 },
->> -	{ 0x034E, 0x06 },
->> -	{ 0x034F, 0x18 },
->> +	REG8(IMX258_REG_BINNING_MODE, 1),
->> +	REG8(IMX258_REG_BINNING_TYPE_V, 0x12),
->> +	REG8(IMX258_REG_SCALE_MODE, 1),
->> +	REG16(IMX258_REG_SCALE_M, 32),
->> +	REG16(IMX258_REG_DIG_CROP_IMAGE_HEIGHT, 1560),
->> +	REG16(IMX258_REG_X_OUT_SIZE, 2104),
->> +	REG16(IMX258_REG_Y_OUT_SIZE, 1560),
->>  };
->>  
->>  static const struct imx258_reg mode_1048_780_regs[] = {
->> -	{ 0x0900, 0x01 },
->> -	{ 0x0901, 0x14 },
->> -	{ 0x0401, 0x01 },
->> -	{ 0x0405, 0x40 },
->> -	{ 0x040E, 0x03 },
->> -	{ 0x040F, 0x0C },
->> -	{ 0x034C, 0x04 },
->> -	{ 0x034D, 0x18 },
->> -	{ 0x034E, 0x03 },
->> -	{ 0x034F, 0x0C },
->> +	REG8(IMX258_REG_BINNING_MODE, 1),
->> +	REG8(IMX258_REG_BINNING_TYPE_V, 0x14),
->> +	REG8(IMX258_REG_SCALE_MODE, 1),
->> +	REG16(IMX258_REG_SCALE_M, 64),
->> +	REG16(IMX258_REG_DIG_CROP_IMAGE_HEIGHT, 780),
->> +	REG16(IMX258_REG_X_OUT_SIZE, 1048),
->> +	REG16(IMX258_REG_Y_OUT_SIZE, 780),
->>  };
->>  
->>  struct imx258_variant_cfg {
->> @@ -923,7 +903,7 @@ static int imx258_set_ctrl(struct v4l2_ctrl *ctrl)
->>  		}
->>  		break;
->>  	case V4L2_CID_VBLANK:
->> -		ret = imx258_write_reg(imx258, IMX258_REG_VTS,
->> +		ret = imx258_write_reg(imx258, IMX258_REG_FRM_LENGTH_LINES,
->>  				       IMX258_REG_VALUE_16BIT,
->>  				       imx258->cur_mode->height + ctrl->val);
->>  		break;
+Try drgn:
+
+  https://drgn.readthedocs.io/en/latest/
+
+I've been adding drgn scripts under tools/ directory for introspection.
+They're easy to write, deploy and ask users to run.
+
+> Writeback throttling was buggy for _months_, no visibility or
+> introspection or concerns for debugging, and that's a small chunk of
+> code. io_uring - had to disable it. I _still_ have people bringing
+> issues to me that are clearly memory reclaim related but I don't have
+> the tools.
 > 
+> It's not like any of this code exports much in the way of useful
+> tracepoints either, but tracepoints often just aren't what you want;
+> what you want just to be able to see internal state (_without_ having to
+> use a debugger, because that's completely impractical outside highly
+> controlled environments) - and tracing is also never the first thing you
+> want to reach for when you have a user asking you "hey, this thing went
+> wonky, what's it doing?" - tracing automatically turns it into a multi
+> step process of decide what you want to look at, run the workload more
+> to collect data, iterate.
+> 
+> Think more about "what would make code easier to debug" and less about
+> "how do I shove this round peg through the square tracing/BPF slot".
+> There's _way_ more we could be doing that would just make our lives
+> easier.
 
+Maybe it'd help classifying visibility into the the following categories:
+
+1. Current state introspection.
+2. Dynamic behavior tracing.
+3. Accumluative behavior profiling.
+
+drgn is great for #1. Tracing and BPF stuff is great for #2 especially when
+things get complicated. #3 is the trickest. Static stuff is useful in a lot
+of cases but BPF can also be useful in other cases.
+
+I agree that it's all about using the right tool for the problem.
+
+-- 
+tejun
 
