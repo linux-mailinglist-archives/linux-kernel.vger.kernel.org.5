@@ -1,255 +1,317 @@
-Return-Path: <linux-kernel+bounces-129963-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20D62897296
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:27:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7957A897293
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:27:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3CCDD1C20F5E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:27:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F381281520
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:27:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 181F614A09D;
-	Wed,  3 Apr 2024 14:27:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9146148853;
+	Wed,  3 Apr 2024 14:27:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JndjP0Aw"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2094.outbound.protection.outlook.com [40.107.93.94])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wGiw9mTI"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CA5C14A081
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:27:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.94
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712154424; cv=fail; b=MSitCwhPxd9VRZIC8Fq64rzyAeudZ+JM7veXWtIP7rQiPppofLP2rIBytiAbNlRRBZDUYx9N9AkikzxnOA2/9Ssad0r5qDp7ceXJkLFXmX/ldibrF0TwQqPa9+fia5w0qRfRc92FgRi3181PSGv+hObjSXOn1eAnfdvclgTVU04=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712154424; c=relaxed/simple;
-	bh=UVhO4Y/yGh9IDwMQTtuldweApvCSbXQnfnY8VSkq1YA=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=hBMxD1Rf/wYgGX1V1SfZXrO3yb9+gP63xrtNBKuqjfAbbeqAXlVnNfd3bWHr1Ut8Z3Wu+0BDh77f0jhV7y8V7r7T+sR1PUyQ0SXQ9SlBDpsODKLt0rA4jJPIdSvj4I/LpaLaGIW8w2CAaZChHTGNxguMeIS+Pjeeext8kwTqAYQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JndjP0Aw; arc=fail smtp.client-ip=40.107.93.94
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BVBO/ywu4J3LfKkM9zYnvfdR81K+rlohb2YjToQvyjROe22vN6fvLgtbgRlDUSjSQdhB0GLATecX0onZPMOwI6dfoEpUiB4Kz1PHWk3rUJYqzPXGT0iqJgtlefGVNpHPydA4cciNCcuUdzY2UD6dE/m8/+5XtferCvIMWSHpcBWxAgHPMU4sbESj+Y5C545uwLPwRMBR0YccfZ2isIYFbnF8IY67LMfb8OrMqQjIYOL9Y0yQvPcG1IBihmF41K1mR9+wwfiYNuadpdlrNgo7qo/s4RECZPalMssKLZhJx7im9qSWGcwmXlHScAHgZBzfoTUQABSbfCXK46j6qP5q8w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ZlfLAZIJp09mkpStccyb8rB1wQixxLxcTVybXjAT+sE=;
- b=N/GA0BrnzkHZZ7pSA7NToNwLHgQfJndvLMjEt6k1uqv4CdUQrKRlyUHSqD21BhrJa7QkeQiC+hTlEK3UxD1rV6Pa5joa+SFbJOMyGZUhZDoC1yYEGNOnmaMQpkeiqrkwTRFKZawH5mFVwCBBPTbIFdcU5oT6F4xuFeDDp6CxQZdby5Gc9mOtmyK+3Mbvpcue03NRoWwoQqIn5MuNMlQMLrFjP6S4WYhhpZwNX2quhPn9zrIviHPMwxFf8uCsGu4X7M+Dz9YJ+wojeyTbJxS/bz4TTlyz5SIwcUBisLapHH8dskRKXfzXhZWuspWCudJjPoy3RkBXW+qVe7WcxTQ/uA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZlfLAZIJp09mkpStccyb8rB1wQixxLxcTVybXjAT+sE=;
- b=JndjP0AwytpKQgcZOFqE23xuvo4db96MKieDyRwY5dE2kV0jptesrNuxyNZ7pA+H1JSw6Nsp47XHV9uW3AQRcMjHSmzpCkGbkCtsqfKOsCJF8Ia26p0/hOIYUSGoZpJa8XnLEqwfiCYQ2Tc3HwleIZVcne+aPWzBmqSmxS7qExk=
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by DS0PR12MB9038.namprd12.prod.outlook.com (2603:10b6:8:f2::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
- 2024 14:27:00 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::f2b6:1034:76e8:f15a%6]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
- 14:27:00 +0000
-Message-ID: <53f3afba-4759-4ea1-b408-8a929b26280c@amd.com>
-Date: Wed, 3 Apr 2024 16:26:44 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v0 02/14] drm/amdgpu,drm/radeon: Make I2C terminology more
- inclusive
-To: Jani Nikula <jani.nikula@linux.intel.com>,
- =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
- Andi Shyti <andi.shyti@linux.intel.com>
-Cc: Easwar Hariharan <eahariha@linux.microsoft.com>,
- Alex Deucher <alexander.deucher@amd.com>, "Pan, Xinhui"
- <Xinhui.Pan@amd.com>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Harry Wentland <harry.wentland@amd.com>,
- Leo Li <sunpeng.li@amd.com>, Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
- Evan Quan <evan.quan@amd.com>, Hawking Zhang <Hawking.Zhang@amd.com>,
- Candice Li <candice.li@amd.com>, Ran Sun <sunran001@208suo.com>,
- Alexander Richards <electrodeyt@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Heiner Kallweit <hkallweit1@gmail.com>, Hamza Mahfooz
- <hamza.mahfooz@amd.com>, Ruan Jinjie <ruanjinjie@huawei.com>,
- Alan Liu <haoping.liu@amd.com>, Aurabindo Pillai <aurabindo.pillai@amd.com>,
- Wayne Lin <wayne.lin@amd.com>, Samson Tam <samson.tam@amd.com>,
- Alvin Lee <alvin.lee2@amd.com>, Charlene Liu <charlene.liu@amd.com>,
- Sohaib Nadeem <sohaib.nadeem@amd.com>, Lewis Huang <lewis.huang@amd.com>,
- Tom Chung <chiahsuan.chung@amd.com>,
- Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
- Meenakshikumar Somasundaram <meenakshikumar.somasundaram@amd.com>,
- George Shen <george.shen@amd.com>, Aric Cyr <aric.cyr@amd.com>,
- Jun Lei <jun.lei@amd.com>, Nicholas Kazlauskas
- <nicholas.kazlauskas@amd.com>, Qingqing Zhuo <Qingqing.Zhuo@amd.com>,
- Dillon Varone <dillon.varone@amd.com>, Le Ma <Le.Ma@amd.com>,
- Lijo Lazar <lijo.lazar@amd.com>, Asad kamal <asad.kamal@amd.com>,
- Kenneth Feng <kenneth.feng@amd.com>, Ma Jun <Jun.Ma2@amd.com>,
- Mario Limonciello <mario.limonciello@amd.com>,
- Yang Wang <kevinyang.wang@amd.com>, Darren Powell <darren.powell@amd.com>,
- Yifan Zhang <yifan1.zhang@amd.com>,
- "open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>,
- "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
- open list <linux-kernel@vger.kernel.org>, Wolfram Sang <wsa@kernel.org>
-References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
- <20240329170038.3863998-3-eahariha@linux.microsoft.com>
- <Zgb3VYsgLjhJ2HKs@ashyti-mobl2.lan>
- <ceeaafe1-49d5-4602-8251-eed63a1be2b6@linux.microsoft.com>
- <Zgb8gieDzZtZmg2q@ashyti-mobl2.lan> <Zg1NW0jqwFn4lvEP@intel.com>
- <87sf02d1zf.fsf@intel.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <87sf02d1zf.fsf@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1PR0902CA0035.eurprd09.prod.outlook.com
- (2603:10a6:802:1::24) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6F15149C77
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:26:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712154419; cv=none; b=OTTZ9HTq23p0X/S23L15UQ8AYJF5auWgp1hLZgzm1KIKeON9jwmUXFoZ3eEq0l9j2OwF/IfwAnV+fNJlWb9Sqv28dqIe4buylk4ORk6eM7zKJ0UccRg/x9jYZbAlhdkyIjF3dWCFqBXM1Zykj1t0S/cKJTc6Ok3EJK4LFASSf3Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712154419; c=relaxed/simple;
+	bh=A0OBSuVgDt/J2xUutO6+JvqHERv/I/K2G5EsyXT9MgA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZNdImDO83KQP8NCjKVFWK2/IIamYxfUDvdmv92G2vwizYFzvg2ScwQcu87cmNrwSuj9Mw5mucSZcoJGHqCrN8SOtXQfFkeF2IF4izT1qVsG6ZaKo5UWlw2YgdMnMZ2B2oXCobwFc4eNDiCf6SB7qk2nGXV9y+1qQao0L8lPUVSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wGiw9mTI; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e034607879so51641385ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:26:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712154417; x=1712759217; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=itlOmnEuPReodbeFIXg0Q+nLMyOtH/Tv3WRy/9hE3rM=;
+        b=wGiw9mTIeqXyTzwEsHSDyKzeuXcVxYgq9Ly1yqiuvUm+trfcG5PQPLf44krQvMFGPJ
+         nJKBXcLjl942EE1iPjZhX19qmHOgsztFRayRXr1CJqcwMif25yuyKjIxFzQbDJLtAlMr
+         KZaBWhWjecPscnEDaWg4ulMt1xo8wzBeUdVrH4nxXs7QvieIyWFLt6mdWlcATusnP5cR
+         0E1kMkZU1A93NVoMFyQu1MKm9tBRFwf+uHufm+mJOI0mTUbqRb8oS6lvPO3cWQ76Q+HO
+         VA+FToxDdQDRLuSIP/vYSMdDI0RaEnCBfEOurotS9NIW77a5xL2dAYdODpmEg9oM+CvZ
+         M0gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712154417; x=1712759217;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=itlOmnEuPReodbeFIXg0Q+nLMyOtH/Tv3WRy/9hE3rM=;
+        b=el/quq+xCpv20NdEAE0w42MC215z6/iI1TOKD8u7ku06jh5ggXIZRkOu+IIMbwgoZi
+         0C8UEpOMB984/nDnT8Sja+tpdAdtuDGp6T5KjUbgxILrf6SWbWbup4DcvLqaeh11SwL6
+         /vKmE17D7stTj7TcZgmWQTr7e10NS9rPLZ+G1ZHg6L27+JIE0Ttm6RNoCG2ZixvN8UrZ
+         SMcQ1yiF8T10QZ511h5tzxs4H5dXhmQP9t9hc7QO2/+eRJKvCOp6hXNtBvAQGd3HPv+/
+         n2/3zpl4znLyg3GdUp8dsxEMAyDlRMZdj7DqG7jp30zTFgOM1AEsRSzGFE422smJVH6O
+         QTZg==
+X-Forwarded-Encrypted: i=1; AJvYcCW+br3GPyisFlKzq6G3Oh7aRzn3EA78t0OZPXi6/iyFAUjN9F4gzym6+BVlg0WykrNle5tfTHMX0Fhvsxp57Ym/XBb23FTG20Ef9WEz
+X-Gm-Message-State: AOJu0Yw9ILoj9D33a7we4myrP4kVzydbqeymWuKtTmyudmlNFghpkEbz
+	3c/nOHTQ0BkfJy1gyVw9SkaAAwpmpteMkcEjYMcsXBkAXtYyAlfx6WRrUkDsSw==
+X-Google-Smtp-Source: AGHT+IEha+Q/6vakGDqGjU0ND2M37sfFKFFSdBt5vgbo+vLYkuo7MuB+eCFLaHlH3A+uF1Yf4hVGOA==
+X-Received: by 2002:a17:903:210c:b0:1e2:a414:fe94 with SMTP id o12-20020a170903210c00b001e2a414fe94mr52411ple.15.1712154416796;
+        Wed, 03 Apr 2024 07:26:56 -0700 (PDT)
+Received: from thinkpad ([103.28.246.48])
+        by smtp.gmail.com with ESMTPSA id j10-20020a170902f24a00b001e2a0d33fbbsm376458plc.219.2024.04.03.07.26.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 07:26:56 -0700 (PDT)
+Date: Wed, 3 Apr 2024 19:56:50 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	mhi@lists.linux.dev, linux-tegra@vger.kernel.org,
+	Niklas Cassel <cassel@kernel.org>
+Subject: Re: [PATCH v2 02/10] PCI: endpoint: Decouple EPC and PCIe bus
+ specific events
+Message-ID: <20240403142650.GA72531@thinkpad>
+References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
+ <20240401-pci-epf-rework-v2-2-970dbe90b99d@linaro.org>
+ <45b2db99-2d03-469b-aa37-bc6c63cef141@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|DS0PR12MB9038:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	JKTi7FgZqau3yIko/NzpfJBC9GXNsLV9HkP53TKAVzIViaaMBbZjEyPiCB3SRn0Yc3UWfWD5DyHtfmbnCGSJvP9Dt5Zu8tfiTg0wYzGeggc/crNd9+IVCYGl1d3CjZzqfYPH5XfoUFqDO1QDD6MBUQk+zuN1DCPiceL9DQjpvSRL7pcU8O+zAB0alwZuj++4njSD3KrDnK0GE4m9cSQoTMoCMSF+cZDkYjFAOh2+LjpGTrLVPUnxFR1NF+uNUdZrBqqUovvWUlcL20gPyjeW3kq5yDNUp56JI/BLZsGfXL8NXyB8foBVv9eLeoTVCZ2RcdwoqHIFhRLrdPsoUiR+RYkcvNhKmJYaV0+xJqEXrpUyNl26ZkRSX3uiBvz7ao+qAsXztVtEL7wkJLa/pTs2zL0QKxi2ec4WH8/WW5fzE7WgLhpBwmAG2TUV7ByZlxvNx+CG6bkKC7cGF1RfFpOyGfsU3IDFv7tzJpEzbw1IT5WfGy9MsCtmxNAUtZIQYvGgMUc4AI50nnxoLyci8IEkJs8aVdt02rabLDIpFLLIQccmaJZgbx3HKC8Sdo7R20xaG2n9kW2bwode0t8xemQpT3xVd9Rxi/TS9SDaVQJip6Jb39KaJl3LO4gO4+aWkEEyl71Josr26/ly60Ab2cHD5j+UanvrNfp91C+W01jN/QA=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Slc5M2U1cW10REpWVnJrdzlDb2REdG5pV1RudS9oNlZ1TGkvSzNjUFNabkVU?=
- =?utf-8?B?REwvQnpJaVhEdkRRcTk3TUY5SVZWRkhrNERsWnFjeWtiSXpwTUF0d1czVUMw?=
- =?utf-8?B?ZXIyRlp6RDlnZmNqelB0Z0ZkcERzN3RpbGVucmMvdW51Mm5VNTVmTzkyT0Yz?=
- =?utf-8?B?SVdEcWdUK0dQdnV4YmVtVDFreUtkbGZMVTlpc2orSEptcGsvY2QxeTFqMHVW?=
- =?utf-8?B?dkNIMDZyZ2pOVzN5RUNCeElyNVlOMXNWTkQvWWYrSzVKczhXYmUrck1VeUpj?=
- =?utf-8?B?c2ZhUVpDOFkraWgwUnEvWSsxUnBEVGFhRnR2OGt6UmZxSWpQZmNNWFRPVndV?=
- =?utf-8?B?Uk90S2p4MHZZcHFMZ2lxT0ZtMUhSTkYxQlgvY1ZGODFkVjZHU2djL2h3YnZM?=
- =?utf-8?B?WTdibGJUU2pKcHVZWi91bDNUS2pwR1BBS3ZtMWl4MmpTOU1JTVN3SHVBS3F2?=
- =?utf-8?B?R1JNZEtQZHVRVXhIeWF5V1FxODhoRmJIa2hsaEhxaVpDYnNSMEp3TFFZVTBY?=
- =?utf-8?B?amFLU2F1eWtsMTdvYW5ITmpzT0Q4NVhoNlJyS2VaQjJsSXhxS2JySXVNMDRK?=
- =?utf-8?B?cmo5ei9RTkJKMWJqcjd6Z21na3FSRHNYT3FaVkxtWWNYU3VBVDBTMXp3NXJi?=
- =?utf-8?B?UEorYU5GSVBqV011THB5MkVMUnhVUGx5a3cva0J4ZTRsMStQZ0svVGN6SWJU?=
- =?utf-8?B?TnlVelFrcHcwYjcwQXUxOW5rL2VQRjh5RkJ0dUhEL3Y2TjZkZ09GaWJzbHJI?=
- =?utf-8?B?L2E4dUxBSk84d2NTSmdoQkdQVjNVUFJtTXlJYlpXSXBLZXU4VHdLTE5lejk0?=
- =?utf-8?B?OHAyMG9pU0orT2djclFSeFBsZkNaM0ZyMVFzRDE5K0tldEl1Zm1PbmUrY0Zu?=
- =?utf-8?B?WUYwdXpEajE1V2VDNHNqOENXSGRWcnBzQ3ExK0c5VlFHOHJMTkJ5czZYWEpv?=
- =?utf-8?B?aytwbE8yUHhSMlhXYisrakVhTy9aMVhtOWRSZ2QyaUJkQzNiR09vZjFEWkxN?=
- =?utf-8?B?cjMvbHNJTEV2MjYwY3ByMFJ1eU03dU9RN2Nqdy9VcTJZT29DTnc3ZUtldFNP?=
- =?utf-8?B?cDdleWN1Yis1a0xJQlVwU0pNK1JsWERvUGdYcEEzNjJPeUhTQU1wUEdlT2hG?=
- =?utf-8?B?aC9nUCtVMmdtd0xSV3BkRmg5RTQzRXoyTXZnRFdackpZd0tkR1dyQnI0UXRI?=
- =?utf-8?B?UFQzVldHRE5SMzJTZVJnYXA5amxVM1J6R3pETFVqRjVsWncwL2dBb3J1M3BO?=
- =?utf-8?B?YWpjaEovQWN0eWgwUnZxdmpiNkt4K1o4YXNYUVhSSFFTZGlJVncxb293eUZV?=
- =?utf-8?B?U1FJUGFkR2g3Z3FsV0hsT1BtOEtEQW5kNG1XcDZ6S1plOFArSFplSDdvekl2?=
- =?utf-8?B?a1JERzl6Z1hCWWVWeVF6WlRDcjBLQ1lFeTdFczFkb3ArUWN6dzdqUjVQWS9l?=
- =?utf-8?B?V1JvZWRUNkRjMFlkV0Z3dGtKeUQvWkZjK093azhLNTVnQk96anNxaUt5Y0VE?=
- =?utf-8?B?TzN5UWNDZ3M4b2FadHFDQVdaenRUVVp4MXZocjVNbmJNZ1plTnc4MmhQK0pS?=
- =?utf-8?B?OURFT3VvNFFBbTM3ZytaYWpqTEozaXlrd0t5UVlPOGRCR0lRQ1NQcGtlb1p5?=
- =?utf-8?B?dTZCNno0RTFWbHFydW85VlhMNVh2NllNSHQ4bloybWxpNDdoNXJSVmJNdmFz?=
- =?utf-8?B?ZUlHb2U0UUlkTVZwaWd0MXRqTUFhcHBicUZCYW9sSUlTaHhCNEp6ZXhBVFBp?=
- =?utf-8?B?dHBxZ1ZEUTN0UUZwTGxEdjZnUkFoTWNlNEJuSVladzVJNHdjdjl4SWdLR1hD?=
- =?utf-8?B?OHlTcm96cExseUhYd05WOU15cEhyRXQwdEUrUGdzdk44US9LL2hHYTdyY0tZ?=
- =?utf-8?B?Ym1qeGVJK1g0RnNCa1U3VFd3bXg3Uzl5eCtldkc1dU5KL2JrTXh4dUdmaStt?=
- =?utf-8?B?M25BR1h6c1dKYVZ1TjNJZVRsRktUcUhxRlo3WjRSZXk5c3VyYW1FVmVLOVFU?=
- =?utf-8?B?R1ArblFFeVczVTB5d254elY0UWdiRXNxeTRhYi9CMkhSeUZaNVM1TmxCM0ds?=
- =?utf-8?B?NjNhSnQzVVNGTi9kN1NBd1pBZjErSmhlRzhYZDJrODlIYnlBVnY2NVl4QlZY?=
- =?utf-8?Q?zvyY05yUsYD69l1J7CU+Myylz?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6756c8b5-902d-488c-db44-08dc53ea1f98
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 14:26:59.9222
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rreBfafSxtVurBuIAA4q31122OzlMWG7bk2mmpgKWjuEjKR33b0iRxLPB+UY9o9a
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9038
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <45b2db99-2d03-469b-aa37-bc6c63cef141@kernel.org>
 
-Am 03.04.24 um 15:12 schrieb Jani Nikula:
-> On Wed, 03 Apr 2024, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
->> On Fri, Mar 29, 2024 at 06:38:10PM +0100, Andi Shyti wrote:
->>> Hi,
->>>
->>> On Fri, Mar 29, 2024 at 10:28:14AM -0700, Easwar Hariharan wrote:
->>>> On 3/29/2024 10:16 AM, Andi Shyti wrote:
->>>>> Hi Easwar,
->>>>>
->>>>> On Fri, Mar 29, 2024 at 05:00:26PM +0000, Easwar Hariharan wrote:
->>>>>> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
->>>>> I don't understand why we forget that i3c is 1.1.1 :-)
->>>> That's because it's a copy-paste error from Wolfram's cover letter. :) I'll update
->>>> next go-around.
->>> not a binding comment, though. Just for completeness, because we
->>> are giving the version to the i2c and smbus, but not i3c.
->>>
->>>>>> with more appropriate terms. Inspired by and following on to Wolfram's
->>>>>> series to fix drivers/i2c/[1], fix the terminology for users of
->>>>>> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
->>>>>> in the specification.
->>>>> The specification talks about:
->>>>>
->>>>>   - master -> controller
->>>>>   - slave -> target (and not client)
->>>>>
->>>>> But both you and Wolfram have used client. I'd like to reach
->>>>> some more consistency here.
->>>> I had the impression that remote targets (i.e external to the device) were to be called clients,
->>>> e.g. the QSFP FRUs in drivers/infiniband, and internal ones targets.
->>>> I chose the terminology according to that understanding, but now I can't find where I got that
->>>> information.
->>> The word "client" does not even appear in the documentation (only
->>> one instance in the i3c document), so that the change is not
->>> related to the document as stated in the commit log. Unless, of
->>> course, I am missing something.
->>>
->>> I'm OK with choosing a "customized" naming, but we need to reach
->>> an agreement.
->>>
->>> I raised the same question to Wolfram.
->> I don't know where that discussion happened, but my opinion
->> is NAK to "client". Life is already confusing enough with
->> these renames, so let's not make it even more confusing by
->> inventing new names nowhere to be found in the spec.
->>
->> And let's especially not invent names that don't even fit
->> the purpose. "Client" makes me think of "client/server" or
->> some real world analogy. Neither of which seem to have any
->> resemblence to how the term would be used for i2c.
-> Agreed.
->
-> I2C 7.0, I3C 1.1.1, and SMBus 3.2 have all switched to controller/target
-> terminology. The SMBus spec has additionally converted generic host
-> references to controller.
->
-> At least for i915 where I have some say in the matter, controller/target
-> it shall be.
+On Tue, Apr 02, 2024 at 09:14:20AM +0900, Damien Le Moal wrote:
+> On 4/2/24 00:50, Manivannan Sadhasivam wrote:
+> > Currently, 'struct pci_epc_event_ops' has a bunch of events that are sent
+> > from the EPC driver to EPF driver. But those events are a mix of EPC
+> > specific events like core_init and PCIe bus specific events like LINK_UP,
+> > LINK_DOWN, BME etc...
+> > 
+> > Let's decouple them to respective structs (pci_epc_event_ops,
+> > pci_epc_bus_event_ops) to make the separation clear.
+> 
+> I fail to see the benefits here. The event operation names are quite clear and,
+> in my opinion, it is clear if an event op applies to the controller or to the
+> bus/link. If anything, "core_init" could a little more clear, so renaming that
+> "ep_controller_init" or something like that (clearly spelling out what is being
+> initialized) seems enough to me. Similarly, the "bme" op name is very criptic.
+> Renaming that to "bus_master_enable" would go a long way clarifying the code.
+> For link events, "link_up", "link_down" are clear. So I think there is no need
+> to split the event op struct like this. Renaming the ops is better.
+> 
+> Note that I am not opposed to this patch, but I think it is just code churn
+> that does not really bring any fundamental improvement. Regardless, renaming
+> "core_init" and "bme" ops is I think desired.
+> 
 
-+1 for using the same vocabulary in amdgpu as in the specifications.
+Niklas shared the same view during v1, but I hate to see the events being mixed
+in a single ops. Especially that it will confuse the developers who are not
+familiar with the EP subsystem.
 
-My personal opinion is that master/slave was actually a pretty good 
-description of the relationship.
+But since the argument is coming twice, I've decided to drop this for now and
+just rename the 'core_init' callback to 'epc_init' and name the deinit callback
+as 'epc_deinit'.
 
-The "slave" or rather target of the communication is forced into 
-operation, can't speak back and potentially won't get any payment for 
-the serving.
+Let's see how long the callback list goes...
 
-If we remove the word slave from our vocabulary society will just sooner 
-or later start to forget the meaning, and that is probably not a good thing.
+- Mani
 
-Regards,
-Christian.
+> > 
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  drivers/pci/endpoint/functions/pci-epf-mhi.c  |  8 ++++++--
+> >  drivers/pci/endpoint/functions/pci-epf-test.c |  8 ++++++--
+> >  drivers/pci/endpoint/pci-epc-core.c           | 20 ++++++++++----------
+> >  include/linux/pci-epf.h                       | 23 ++++++++++++++++-------
+> >  4 files changed, 38 insertions(+), 21 deletions(-)
+> > 
+> > diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > index 2c54d80107cf..280863c0eeb9 100644
+> > --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
+> > @@ -896,8 +896,11 @@ static void pci_epf_mhi_unbind(struct pci_epf *epf)
+> >  	pci_epc_clear_bar(epc, epf->func_no, epf->vfunc_no, epf_bar);
+> >  }
+> >  
+> > -static const struct pci_epc_event_ops pci_epf_mhi_event_ops = {
+> > +static const struct pci_epc_event_ops pci_epf_mhi_epc_event_ops = {
+> >  	.core_init = pci_epf_mhi_core_init,
+> > +};
+> > +
+> > +static const struct pci_epc_bus_event_ops pci_epf_mhi_bus_event_ops = {
+> >  	.link_up = pci_epf_mhi_link_up,
+> >  	.link_down = pci_epf_mhi_link_down,
+> >  	.bme = pci_epf_mhi_bme,
+> > @@ -919,7 +922,8 @@ static int pci_epf_mhi_probe(struct pci_epf *epf,
+> >  	epf_mhi->info = info;
+> >  	epf_mhi->epf = epf;
+> >  
+> > -	epf->event_ops = &pci_epf_mhi_event_ops;
+> > +	epf->epc_event_ops = &pci_epf_mhi_epc_event_ops;
+> > +	epf->bus_event_ops = &pci_epf_mhi_bus_event_ops;
+> >  
+> >  	mutex_init(&epf_mhi->lock);
+> >  
+> > diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
+> > index 977fb79c1567..973db0b1bde2 100644
+> > --- a/drivers/pci/endpoint/functions/pci-epf-test.c
+> > +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
+> > @@ -798,8 +798,11 @@ static int pci_epf_test_link_up(struct pci_epf *epf)
+> >  	return 0;
+> >  }
+> >  
+> > -static const struct pci_epc_event_ops pci_epf_test_event_ops = {
+> > +static const struct pci_epc_event_ops pci_epf_test_epc_event_ops = {
+> >  	.core_init = pci_epf_test_core_init,
+> > +};
+> > +
+> > +static const struct pci_epc_bus_event_ops pci_epf_test_bus_event_ops = {
+> >  	.link_up = pci_epf_test_link_up,
+> >  };
+> >  
+> > @@ -916,7 +919,8 @@ static int pci_epf_test_probe(struct pci_epf *epf,
+> >  
+> >  	INIT_DELAYED_WORK(&epf_test->cmd_handler, pci_epf_test_cmd_handler);
+> >  
+> > -	epf->event_ops = &pci_epf_test_event_ops;
+> > +	epf->epc_event_ops = &pci_epf_test_epc_event_ops;
+> > +	epf->bus_event_ops = &pci_epf_test_bus_event_ops;
+> >  
+> >  	epf_set_drvdata(epf, epf_test);
+> >  	return 0;
+> > diff --git a/drivers/pci/endpoint/pci-epc-core.c b/drivers/pci/endpoint/pci-epc-core.c
+> > index 47d27ec7439d..f202ae07ffa9 100644
+> > --- a/drivers/pci/endpoint/pci-epc-core.c
+> > +++ b/drivers/pci/endpoint/pci-epc-core.c
+> > @@ -692,8 +692,8 @@ void pci_epc_linkup(struct pci_epc *epc)
+> >  	mutex_lock(&epc->list_lock);
+> >  	list_for_each_entry(epf, &epc->pci_epf, list) {
+> >  		mutex_lock(&epf->lock);
+> > -		if (epf->event_ops && epf->event_ops->link_up)
+> > -			epf->event_ops->link_up(epf);
+> > +		if (epf->bus_event_ops && epf->bus_event_ops->link_up)
+> > +			epf->bus_event_ops->link_up(epf);
+> >  		mutex_unlock(&epf->lock);
+> >  	}
+> >  	mutex_unlock(&epc->list_lock);
+> > @@ -718,8 +718,8 @@ void pci_epc_linkdown(struct pci_epc *epc)
+> >  	mutex_lock(&epc->list_lock);
+> >  	list_for_each_entry(epf, &epc->pci_epf, list) {
+> >  		mutex_lock(&epf->lock);
+> > -		if (epf->event_ops && epf->event_ops->link_down)
+> > -			epf->event_ops->link_down(epf);
+> > +		if (epf->bus_event_ops && epf->bus_event_ops->link_down)
+> > +			epf->bus_event_ops->link_down(epf);
+> >  		mutex_unlock(&epf->lock);
+> >  	}
+> >  	mutex_unlock(&epc->list_lock);
+> > @@ -744,8 +744,8 @@ void pci_epc_init_notify(struct pci_epc *epc)
+> >  	mutex_lock(&epc->list_lock);
+> >  	list_for_each_entry(epf, &epc->pci_epf, list) {
+> >  		mutex_lock(&epf->lock);
+> > -		if (epf->event_ops && epf->event_ops->core_init)
+> > -			epf->event_ops->core_init(epf);
+> > +		if (epf->epc_event_ops && epf->epc_event_ops->core_init)
+> > +			epf->epc_event_ops->core_init(epf);
+> >  		mutex_unlock(&epf->lock);
+> >  	}
+> >  	epc->init_complete = true;
+> > @@ -767,8 +767,8 @@ void pci_epc_notify_pending_init(struct pci_epc *epc, struct pci_epf *epf)
+> >  {
+> >  	if (epc->init_complete) {
+> >  		mutex_lock(&epf->lock);
+> > -		if (epf->event_ops && epf->event_ops->core_init)
+> > -			epf->event_ops->core_init(epf);
+> > +		if (epf->epc_event_ops && epf->epc_event_ops->core_init)
+> > +			epf->epc_event_ops->core_init(epf);
+> >  		mutex_unlock(&epf->lock);
+> >  	}
+> >  }
+> > @@ -792,8 +792,8 @@ void pci_epc_bme_notify(struct pci_epc *epc)
+> >  	mutex_lock(&epc->list_lock);
+> >  	list_for_each_entry(epf, &epc->pci_epf, list) {
+> >  		mutex_lock(&epf->lock);
+> > -		if (epf->event_ops && epf->event_ops->bme)
+> > -			epf->event_ops->bme(epf);
+> > +		if (epf->bus_event_ops && epf->bus_event_ops->bme)
+> > +			epf->bus_event_ops->bme(epf);
+> >  		mutex_unlock(&epf->lock);
+> >  	}
+> >  	mutex_unlock(&epc->list_lock);
+> > diff --git a/include/linux/pci-epf.h b/include/linux/pci-epf.h
+> > index adee6a1b35db..77399fecaeb5 100644
+> > --- a/include/linux/pci-epf.h
+> > +++ b/include/linux/pci-epf.h
+> > @@ -69,14 +69,21 @@ struct pci_epf_ops {
+> >  };
+> >  
+> >  /**
+> > - * struct pci_epc_event_ops - Callbacks for capturing the EPC events
+> > - * @core_init: Callback for the EPC initialization complete event
+> > - * @link_up: Callback for the EPC link up event
+> > - * @link_down: Callback for the EPC link down event
+> > - * @bme: Callback for the EPC BME (Bus Master Enable) event
+> > + * struct pci_epc_event_ops - Callbacks for capturing the EPC specific events
+> > + * @core_init: Callback for the EPC initialization event
+> >   */
+> >  struct pci_epc_event_ops {
+> >  	int (*core_init)(struct pci_epf *epf);
+> > +};
+> > +
+> > +/**
+> > + * struct pci_epc_bus_event_ops - Callbacks for capturing the PCIe bus specific
+> > + *                               events
+> > + * @link_up: Callback for the PCIe bus link up event
+> > + * @link_down: Callback for the PCIe bus link down event
+> > + * @bme: Callback for the PCIe bus BME (Bus Master Enable) event
+> > + */
+> > +struct pci_epc_bus_event_ops {
+> >  	int (*link_up)(struct pci_epf *epf);
+> >  	int (*link_down)(struct pci_epf *epf);
+> >  	int (*bme)(struct pci_epf *epf);
+> > @@ -150,7 +157,8 @@ struct pci_epf_bar {
+> >   * @is_vf: true - virtual function, false - physical function
+> >   * @vfunction_num_map: bitmap to manage virtual function number
+> >   * @pci_vepf: list of virtual endpoint functions associated with this function
+> > - * @event_ops: Callbacks for capturing the EPC events
+> > + * @epc_event_ops: Callbacks for capturing the EPC events
+> > + * @bus_event_ops: Callbacks for capturing the PCIe bus events
+> >   */
+> >  struct pci_epf {
+> >  	struct device		dev;
+> > @@ -180,7 +188,8 @@ struct pci_epf {
+> >  	unsigned int		is_vf;
+> >  	unsigned long		vfunction_num_map;
+> >  	struct list_head	pci_vepf;
+> > -	const struct pci_epc_event_ops *event_ops;
+> > +	const struct pci_epc_event_ops *epc_event_ops;
+> > +	const struct pci_epc_bus_event_ops *bus_event_ops;
+> >  };
+> >  
+> >  /**
+> > 
+> 
+> -- 
+> Damien Le Moal
+> Western Digital Research
+> 
 
->
->
-> BR,
-> Jani.
->
->
-
+-- 
+மணிவண்ணன் சதாசிவம்
 
