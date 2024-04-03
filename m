@@ -1,119 +1,206 @@
-Return-Path: <linux-kernel+bounces-129852-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 700E1897148
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:36:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39E4589714E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:38:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A18BB1C20948
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:36:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3A66B266AF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA8E148315;
-	Wed,  3 Apr 2024 13:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94697143863;
+	Wed,  3 Apr 2024 13:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U6uUKMFm"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S1u/UPEX"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55B12146D65;
-	Wed,  3 Apr 2024 13:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87CE148308
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:38:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712151389; cv=none; b=tuMr3mqWr/yLVkbr9xfX3v/1/7mvGzLl2CTgUKt6H4Rb+3InNp+k9TO/vWjYxtucaqq4Hfy4yUFy0tsgPe+ddIvQchAbBCtLhxeemRNIoihhURlUltgDBpJc03LH+RGVEbXzdrApPcR1inSR2jx3npt/BLsb8rT5qjH1yTF6xCw=
+	t=1712151499; cv=none; b=hcDY/gmXUvqcu6qoFm0Qpo+cUiw/Empj4sD4T9SlHkeL4xAenp1Zh6bJH4H+RiXPaWmMbcqDdxog6sd8yWVgI7Q4bIQTIzOvWYopgqF3JwyhUjqUfY6XEglczSCRnD3iHtiUU+Opbe7dppPmy6X7fJhLq5kEjShlVmXJ1lL560A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712151389; c=relaxed/simple;
-	bh=67RSiyH5ZhNEcNRXgJOJ6KcqQm2hSkTQG2+vbhBdG2c=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=rnsAaOPsmMi7ktdt/Flnk5RRg22LHqCeoUaIidxdDeSG8MqX593CGXimnixKf585UDumm4Xz4cZpgAQIGks+AdwhXKdOiZrecaRfY7yzJBj9SmmiYs0t5kmIjeuQoKuz+rQwYCXAWGVkXsEUp7mQU5dG0BlCWxGWOIr8JRBm+PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U6uUKMFm; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-3416df43cabso4470582f8f.3;
-        Wed, 03 Apr 2024 06:36:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712151387; x=1712756187; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eQbQ3sWtqjTwtf4KGjxXKOIIihdDWIlW3qsePHEDCsQ=;
-        b=U6uUKMFm/xneSc73ifigPmpIlwU11k4oMWT/nijWy7tjaZBf0mI7BjFXb38zCW2lRi
-         GXw7h2UcI6NzBicqZpU9yhBuvhFRzH7D8ZPra4gU3JF0pLHKwY6JCyZKcvgpOQqzIyVC
-         l1RTyfGm6sw7246YTqe1JIWJDt644WAXfc+MTdLlq5d8gQZ/E1PK2P30FMwAj0rSUD2T
-         KZz2NM5zqSOLcV2wOSijj1j8/19uVvFIgNNpKJ6Hy3pGeUArcvmpJTRgPU0UhlNyudbr
-         7G2jkrLLt+2Mh+obhJFm0D9Z5Ja6X/6aTy0TDCxoWkapJX2vbJaUYcVE4mDq+wD3WhF+
-         igHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712151387; x=1712756187;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:to:from:subject:message-id:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=eQbQ3sWtqjTwtf4KGjxXKOIIihdDWIlW3qsePHEDCsQ=;
-        b=GfCw2kXwczTC8AWOBnfSW4CrEiOh9yY7jCsL+VLbve5dXVhQbQev1BfWEJl6dd8d3D
-         cs6qk3x06JxfxLmKkIfRyX8UShTtxZ7fda8WwlY0oKUXZ3tQF9Wk/YpXGy2WnhYuW4pn
-         jIYa/pw3SVnfQpqQjstI8yIRBDnjlCu1YFmi+KjFDyqQ8hfalZysRb8LfP+Otm5MA1sm
-         C7R3xNE7MqF5fBW39xeGA97FwsV/7VsIAdY8VTe/3MYTyShRr49YofiOCK+1B4FowSYt
-         U43wxYW7mvvrSN73hZ1cjkwAzNy7cLrvxIgVM3r8IgCHi3muELD65BIu1Et6LF3wkZFX
-         hpDA==
-X-Forwarded-Encrypted: i=1; AJvYcCXkLpu44CfTvE+SLVVwBQTK3FrOEO/T5NEAZjewqFIruoLmcgNW5CYHlZs7MqtC/oujFyhYATE7rzuM4KQdMWow+gUHnzGofYrfHAaO52tcrIQUSMNGbx+XkJfkLYjiIu7/zdvRKjKe
-X-Gm-Message-State: AOJu0YwLwByYMaVeXzCAm+ehUzogSKnNtliRfMlTwn6imPFJOiLC3Oij
-	Xq4FseBmk9rbRg2M4imO5Pcjv3jCb4qKO+ylZCJ0KO74/YgvJlDIQ+m0LVsUexY=
-X-Google-Smtp-Source: AGHT+IHsUm5/draOpcd2OPbP7/J4b9FvpKBgNz3W2auRFwut4xnMy4fib7QvtY7NqPNsMZTt0xoY5w==
-X-Received: by 2002:a5d:4e8b:0:b0:343:65a8:406d with SMTP id e11-20020a5d4e8b000000b0034365a8406dmr1948648wru.64.1712151386374;
-        Wed, 03 Apr 2024 06:36:26 -0700 (PDT)
-Received: from ?IPv6:2001:a61:343e:8301:d737:22b0:7431:8d01? ([2001:a61:343e:8301:d737:22b0:7431:8d01])
-        by smtp.gmail.com with ESMTPSA id cs2-20020a056000088200b003418016b04csm17342603wrb.76.2024.04.03.06.36.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 06:36:26 -0700 (PDT)
-Message-ID: <42641ec96d5c393e4c8bfe9164b8643af2f04426.camel@gmail.com>
-Subject: Re: [PATCH 1/1] iio:imu: adis16475: Fix sync mode setting
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Ramona Gradinariu <ramona.gradinariu@analog.com>, 
-	linux-kernel@vger.kernel.org, jic23@kernel.org, nuno.sa@analog.com, 
-	linux-iio@vger.kernel.org
-Date: Wed, 03 Apr 2024 15:36:25 +0200
-In-Reply-To: <20240403111357.1074511-2-ramona.gradinariu@analog.com>
-References: <20240403111357.1074511-1-ramona.gradinariu@analog.com>
-	 <20240403111357.1074511-2-ramona.gradinariu@analog.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1712151499; c=relaxed/simple;
+	bh=fc44alx6ixMvABvuzSw1H/vxeKtpLRA87cm9053YDi0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QFJ5Y6Y2RL4afLnbIAUgsZe/x7uYs3MySaLNW7nVUSKLt+GCVNr4KgBxgILZn7V9HMew9dXfJAYADfJ+08J38RIh/2YBjSchFleKuYI8YgTtOyyIu5044wyHZKY1HMtPKDRewDUh169AOAVqv1mek2DcLUyrg5cD0hz4XAAyN9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S1u/UPEX; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712151495;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fHyJRjgVmTGCMo07LoD/tMuHI6RHWzQ+RhCuYOZGrSo=;
+	b=S1u/UPEX+xM+2PexJDTc9A7cb7L4lhrWn/b4Bg4l/JgjOUjas3Ne6rgobqyk1BLnjxCdZC
+	LpXcu2VEXUO30cYWr9sCFCIFOGdl9rxhe+6rVyxEJsIfY6faBtHjFI01fiQVkp1Z5iG2mW
+	YK0sC26Z9Fww/1oF/56z+vTDpKOpmHo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-182-kH5gHBtEONuE9qsgCBskLQ-1; Wed, 03 Apr 2024 09:38:10 -0400
+X-MC-Unique: kH5gHBtEONuE9qsgCBskLQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DB0EB8828C0;
+	Wed,  3 Apr 2024 13:38:08 +0000 (UTC)
+Received: from [10.22.33.218] (unknown [10.22.33.218])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 4D9E21074E;
+	Wed,  3 Apr 2024 13:38:07 +0000 (UTC)
+Message-ID: <7e62b37d-6c9c-4e55-a01a-175695475cb5@redhat.com>
+Date: Wed, 3 Apr 2024 09:38:07 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] cgroup/cpuset: Make cpuset hotplug processing
+ synchronous
+Content-Language: en-US
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+ Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Peter Zijlstra <peterz@infradead.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Len Brown <len.brown@intel.com>,
+ Pavel Machek <pavel@ucw.cz>, Shuah Khan <shuah@kernel.org>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-pm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ Frederic Weisbecker <frederic@kernel.org>,
+ "Paul E. McKenney" <paulmck@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+ Valentin Schneider <vschneid@redhat.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Alex Shi <alexs@kernel.org>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Barry Song <song.bao.hua@hisilicon.com>
+References: <20240401145858.2656598-1-longman@redhat.com>
+ <20240401145858.2656598-2-longman@redhat.com>
+ <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
+ <548efd52-e45f-41fa-a477-bc5112d7b00c@redhat.com>
+ <u3naomgv34t5rnc7pmyy4zjppgf36skeo45orss2xnqcvtrcez@m74tsl2ws76f>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <u3naomgv34t5rnc7pmyy4zjppgf36skeo45orss2xnqcvtrcez@m74tsl2ws76f>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-On Wed, 2024-04-03 at 14:13 +0300, Ramona Gradinariu wrote:
-> Fix sync mode setting by applying the necessary shift bits.
->=20
-> Fixes: fff7352bf7a3 ("iio: imu: Add support for adis16475")
-> Signed-off-by: Ramona Gradinariu <ramona.gradinariu@analog.com>
-> ---
+On 4/3/24 08:02, Michal Koutný wrote:
+> On Tue, Apr 02, 2024 at 11:30:11AM -0400, Waiman Long <longman@redhat.com> wrote:
+>> Yes, there is a potential that a cpus_read_lock() may be called leading to
+>> deadlock. So unless we reverse the current cgroup_mutex --> cpu_hotplug_lock
+>> ordering, it is not safe to call cgroup_transfer_tasks() directly.
+> I see that cgroup_transfer_tasks() has the only user -- cpuset. What
+> about bending it for the specific use like:
+>
+> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+> index 34aaf0e87def..64deb7212c5c 100644
+> --- a/include/linux/cgroup.h
+> +++ b/include/linux/cgroup.h
+> @@ -109,7 +109,7 @@ struct cgroup *cgroup_get_from_fd(int fd);
+>   struct cgroup *cgroup_v1v2_get_from_fd(int fd);
+>   
+>   int cgroup_attach_task_all(struct task_struct *from, struct task_struct *);
+> -int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from);
+> +int cgroup_transfer_tasks_locked(struct cgroup *to, struct cgroup *from);
+>   
+>   int cgroup_add_dfl_cftypes(struct cgroup_subsys *ss, struct cftype *cfts);
+>   int cgroup_add_legacy_cftypes(struct cgroup_subsys *ss, struct cftype *cfts);
+> diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+> index 520a11cb12f4..f97025858c7a 100644
+> --- a/kernel/cgroup/cgroup-v1.c
+> +++ b/kernel/cgroup/cgroup-v1.c
+> @@ -91,7 +91,8 @@ EXPORT_SYMBOL_GPL(cgroup_attach_task_all);
+>    *
+>    * Return: %0 on success or a negative errno code on failure
+>    */
+> -int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
+> +int cgroup_transfer_tasks_locked(struct cgroup *to, struct cgroup *from)
+>   {
+>   	DEFINE_CGROUP_MGCTX(mgctx);
+>   	struct cgrp_cset_link *link;
+> @@ -106,9 +106,11 @@ int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
+>   	if (ret)
+>   		return ret;
+>   
+> -	cgroup_lock();
+> -
+> -	cgroup_attach_lock(true);
+> +	/* The locking rules serve specific purpose of v1 cpuset hotplug
+> +	 * migration, see hotplug_update_tasks_legacy() and
+> +	 * cgroup_attach_lock() */
+> +	lockdep_assert_held(&cgroup_mutex);
+> +	lockdep_assert_cpus_held();
+> +	percpu_down_write(&cgroup_threadgroup_rwsem);
+>   
+>   	/* all tasks in @from are being moved, all csets are source */
+>   	spin_lock_irq(&css_set_lock);
+> @@ -144,8 +146,7 @@ int cgroup_transfer_tasks(struct cgroup *to, struct cgroup *from)
+>   	} while (task && !ret);
+>   out_err:
+>   	cgroup_migrate_finish(&mgctx);
+> -	cgroup_attach_unlock(true);
+> -	cgroup_unlock();
+> +	percpu_up_write(&cgroup_threadgroup_rwsem);
+>   	return ret;
+>   }
+>   
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 13d27b17c889..94fb8b26f038 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -4331,7 +4331,7 @@ static void remove_tasks_in_empty_cpuset(struct cpuset *cs)
+>   			nodes_empty(parent->mems_allowed))
+>   		parent = parent_cs(parent);
+>   
+> -	if (cgroup_transfer_tasks(parent->css.cgroup, cs->css.cgroup)) {
+> +	if (cgroup_transfer_tasks_locked(parent->css.cgroup, cs->css.cgroup)) {
+>   		pr_err("cpuset: failed to transfer tasks out of empty cpuset ");
+>   		pr_cont_cgroup_name(cs->css.cgroup);
+>   		pr_cont("\n");
+> @@ -4376,21 +4376,9 @@ hotplug_update_tasks_legacy(struct cpuset *cs,
+>   
+>   	/*
+>   	 * Move tasks to the nearest ancestor with execution resources,
+> -	 * This is full cgroup operation which will also call back into
+> -	 * cpuset. Execute it asynchronously using workqueue.
+>   	 */
+> -	if (is_empty && css_tryget_online(&cs->css)) {
+> -		struct cpuset_remove_tasks_struct *s;
+> -
+> -		s = kzalloc(sizeof(*s), GFP_KERNEL);
+> -		if (WARN_ON_ONCE(!s)) {
+> -			css_put(&cs->css);
+> -			return;
+> -		}
+> -
+> -		s->cs = cs;
+> -		INIT_WORK(&s->work, cpuset_migrate_tasks_workfn);
+> -		schedule_work(&s->work);
+> +	if (is_empty)
+> +		remove_tasks_in_empty_cpuset(cs);
+>   	}
+>   }
+>   
 
-Ups...
+It still won't work because of the possibility of mutiple tasks 
+involving in a circular locking dependency. The hotplug thread always 
+acquire the cpu_hotplug_lock first before acquiring cpuset_mutex or 
+cgroup_mtuex in this case (cpu_hotplug_lock --> cgroup_mutex). Other 
+tasks calling into cgroup code will acquire the pair in the order 
+cgroup_mutex --> cpu_hotplug_lock. This may lead to a deadlock if these 
+2 locking sequences happen at the same time. Lockdep will certainly 
+spill out a splat because of this. So unless we change all the relevant 
+cgroup code to the new cpu_hotplug_lock --> cgroup_mutex locking order, 
+the hotplug code can't call cgroup_transfer_tasks() directly.
 
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-
-> =C2=A0drivers/iio/imu/adis16475.c | 3 ++-
-> =C2=A01 file changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
-> index 01f55cc902fa..bd30c3469d9a 100644
-> --- a/drivers/iio/imu/adis16475.c
-> +++ b/drivers/iio/imu/adis16475.c
-> @@ -1351,7 +1351,8 @@ static int adis16475_config_sync_mode(struct adis16=
-475 *st)
-> =C2=A0	 * in chip_info.
-> =C2=A0	 */
-> =C2=A0	ret =3D __adis_update_bits(&st->adis, ADIS16475_REG_MSG_CTRL,
-> -				 ADIS16475_SYNC_MODE_MASK, sync->sync_mode);
-> +				 ADIS16475_SYNC_MODE_MASK,
-> +				 ADIS16475_SYNC_MODE(sync->sync_mode));
-> =C2=A0	if (ret)
-> =C2=A0		return ret;
-> =C2=A0
+Cheers,
+Longman
 
 
