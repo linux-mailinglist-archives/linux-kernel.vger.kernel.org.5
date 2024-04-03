@@ -1,427 +1,213 @@
-Return-Path: <linux-kernel+bounces-129831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2ABB8970F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:28:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE32A8970E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:28:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C69E31C2088C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:28:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 409531F2348A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:28:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F327D14831E;
-	Wed,  3 Apr 2024 13:26:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07667146A7E;
+	Wed,  3 Apr 2024 13:25:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ETVAFgaE"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="yhurcTnk"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2111.outbound.protection.outlook.com [40.107.220.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB571487D0;
-	Wed,  3 Apr 2024 13:26:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712150793; cv=none; b=nPR0l6CXHMB++B3bR3KjU0ZukEe6wBKNDM5PvKVHIhIGycvRC1MMLZysnL2seKf0oXu9TyXhivVuKkGoypbTbzzhjnztC4rEtSCXiQT5akjWECsNgXS8xq7zuushOrhn5V5SuRpVLjU3E18VKcBrSR3CxvUnebfjmc6EeAFAW0I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712150793; c=relaxed/simple;
-	bh=/3wLZxf5xRA3Th1RKCb6GEQOSFpocSLbzEOho5yeuOI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YEewkP7k3ekE8grP6njJwZaWVlvtj9dGt1xr7nQAbJB9Hmd5wSMkZ+W1l5WaGsuTvuyc4f/8ngwHbfevhbDZcraKl0vSLyAbyaNgto++frNJ637TDsKevQMrPfOL28FJeXxLSAdmw0Jgnbcn5BRnSNLn/miobm6z+s6bBfO/UcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ETVAFgaE; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712150792; x=1743686792;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/3wLZxf5xRA3Th1RKCb6GEQOSFpocSLbzEOho5yeuOI=;
-  b=ETVAFgaEIEiQr5pZFDfYUMwZ1xP+4qL3iowqwVPPRdgiy8bT0a3z7QjD
-   B5HG18b7O1e63G1KW+SxORr7SD6pN2otoQ8ABosBrnrIJlxxGIDPPAGzh
-   BEmxPzmigyrynRuJbF1JD33v0uhWJUKEI8LtajdkJyio17Fzh9wZ8AYHK
-   GoDOT0y8wSSaT8fECrpqKLI7bJTAKuPe4BqUimeUnpSo6L6S9efrNVy9v
-   iRQKJ1rSBJKMOsw34hI5OcuOtsHcaebS/nVKJSwzbF1E9IYFoKGuzDfR2
-   ymKG/F64Aq3GbwpEU9VvwwFnL3+kAaFqFjWwSpyRJYVJL7dC4kVPoqz7F
-   w==;
-X-CSE-ConnectionGUID: KcVctqcxTeGgcArekqYMlw==
-X-CSE-MsgGUID: wtRcT4T6QjiQ6AVx9N1YrA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="10349259"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="10349259"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 06:26:31 -0700
-X-CSE-ConnectionGUID: Lm2iEyKMTdGeGcwEwGbkJw==
-X-CSE-MsgGUID: SUfJ7OZ6SxuSVi++MSNQog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="22921457"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by fmviesa003.fm.intel.com with ESMTP; 03 Apr 2024 06:26:27 -0700
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Dmitry Safonov <dima@arista.com>,
-	Francesco Ruggeri <fruggeri@arista.com>,
-	Salam Noureddine <noureddine@arista.com>,
-	David Ahern <dsahern@kernel.org>,
-	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net/tcp: move TCP hash fail messages out of line
-Date: Wed,  3 Apr 2024 15:24:56 +0200
-Message-ID: <20240403132456.41709-1-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.44.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590DE1482FA;
+	Wed,  3 Apr 2024 13:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.111
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712150755; cv=fail; b=OgRDSqdba6g1On+tVsbkvHzr/txU+13S4wXOaJMChs0/Cl2vj5ZOAu1RXYN8MbnQ83iWOKjV3FklKrIZ1kGFcBt20BCOndVYUuVIMBz0fjlKrn5Hqe4drDlSz3FCm7cLSgeC8RAMh8Q11/8GmkR26F3sVtbK3rsxQe5pyMMfnkw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712150755; c=relaxed/simple;
+	bh=HiGfjZ+d5X/USkdbdXaPDZeXkyOPVsrYIWY1gbiS+qw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=FRuQvuh/GauxYh8FKQsCYjtKVqdlNHU39WvW8AYeFCFRFN8IrWsUI2aw9Gwc+Aly2hTkbfym7goXX8r7l0KVu/BE+xS9cgQJ8uvm4MEiX7KaPakuHX/AiAv1UBUgJHqllVsCwvqXwztWMWIDgenrLRchwwqFtvcV0G7EvLMc098=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=yhurcTnk; arc=fail smtp.client-ip=40.107.220.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=F2Rcd5YHUPttzGVt8EWCflUKkAm+AYj8UfCDfji0lOw7DJ5QjEPrAs3QlWEzyYgqvaJOaixrV0xUOK7imxRqrgiXJeQQyh4W3oBkXQA4YoPC8pPhyRSFrjjoPKkSM2CtQI2UsilRA77aSPT+8ezap2rt1/Rc00Cfv398sUUw7R5b6At9bdYbwfwaNg2i8HKaiy7BydeOHqe01lWZxRLd2RKVZ6hm/ComuRFKoT3d3R4gAnRjkc3JJpNWhfb3JPo2ZBmlqTLelh2+j+extu8soasBWnLks8zf3VNCsjr/vmHdkgutbkuSEyPLVvoL+jP0Mz2Hr3dEjtJIONn/a6G0bA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sQUkQ7rHA8RYI2xu/Uvvi9GfRQsi9n3vLAUOgU6MqXc=;
+ b=ZYsXdXHqdYEqMmhKNRtJGoH9Ko62AF4P1hztR/llsdqc6los6mQYMYBmgwMqJHMRfUvEwTHJ9E2zNyDhToOazMEIHz5596V6m2VbtmQXecCAqvixU4K2wWCQ/8TwVPIr4dglu3WBzth22d/bFfK4Lc/RXPQZmnB1reOKAO3wyGSrOHfeuu/JwD2mjoT650yKob7dnRUE89RiPqUjC4csQKGhDymMJl9oRz6pFGPqFiAM3lZ3JRaZ3bylXVMJzXahgShbmjGNVVo8BLSvvfY/gtlvvbaFh0cnFrrKiXmsSA8r2UpeLAoxdRl7U35gVf8iJNQ9bcTPg5IuFQoFRNZ3MA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sQUkQ7rHA8RYI2xu/Uvvi9GfRQsi9n3vLAUOgU6MqXc=;
+ b=yhurcTnkRBTwkZ9Mf93O/CB2P/O+QRK8JYLuHtme1VDF+tiw9D8+eY09RfcUy9cf57djS6MfBbRUpLzwnR1mE8l3yjZCuch4/iwWoC1T571wthNXLhFfoXe2fdUkkAcLGD42HmDrgqXaT6UKixCw2RbCj/dS6ZVJN9+ZoWduaZE=
+Received: from DM4PR12MB6207.namprd12.prod.outlook.com (2603:10b6:8:a6::10) by
+ SJ2PR12MB7944.namprd12.prod.outlook.com (2603:10b6:a03:4c5::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
+ 2024 13:25:51 +0000
+Received: from DM4PR12MB6207.namprd12.prod.outlook.com
+ ([fe80::d380:b56b:46dd:8758]) by DM4PR12MB6207.namprd12.prod.outlook.com
+ ([fe80::d380:b56b:46dd:8758%4]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
+ 13:25:51 +0000
+Message-ID: <77f5c5ed-881e-c9a8-cfdb-200c322fb55d@amd.com>
+Date: Wed, 3 Apr 2024 14:25:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH v2 bpf-next] bpf: Fix latent unsoundness in and/or/xor
+ value tracking
+Content-Language: en-US
+To: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>,
+ ast@kernel.org
+Cc: harishankar.vishwanathan@rutgers.edu, paul@isovalent.com,
+ Matan Shachnai <m.shachnai@rutgers.edu>,
+ Srinivas Narayana <srinivas.narayana@rutgers.edu>,
+ Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>,
+ Daniel Borkmann <daniel@iogearbox.net>,
+ John Fastabend <john.fastabend@gmail.com>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+ Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>, bpf@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Edward Cree <ecree.xilinx@gmail.com>
+References: <20240402212039.51815-1-harishankar.vishwanathan@gmail.com>
+From: Edward Cree <ecree@amd.com>
+In-Reply-To: <20240402212039.51815-1-harishankar.vishwanathan@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0004.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:150::9) To DM4PR12MB6207.namprd12.prod.outlook.com
+ (2603:10b6:8:a6::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM4PR12MB6207:EE_|SJ2PR12MB7944:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	haBopKVD2q1feeUoF4MnYPWnpNVt/RENC2WOJykRskTItl3dQsFdKxUfJoiBfxRsoiKedE0ACJ+6pB3jKONLqKfF32FTdl6GVKwg2SO8n30Xcunx64kkJjsWHXbzUMn0kSxQg8TW8ChSrWw6PAn9xZl1P6uSQvlJTl7sn3nuCi6SAYqn9ZSP1/RMpYIICiWGyP8SGSHtFDwTFhl7uTDAsLYyr/OeGOT7kAeMshKoie+i0/sNuq4gG1VAt0STFQ8RwYHGIcb9LRXGD2Gfmn4rDf+VOF8m9Snrgn6NOylKZrZLZ+QY+EVd1Utd2bazVXbLLhVUEG7QZln4+ok+tanXqeNxab56CfjT1SxB97cUw+TMgxLKd9cxPqo77Ui83JU4rWJcmXwcz5nYXjyVqFt6dq0hgPCO+ak5GYNoUft/YUgQez0o3LAi75obCUWmQ63ogJxYxTN6n1a2qKsITKIU3wmsra3ANkcJfUKf2RJn5iGD96LGY7QSg0y0nBNgYdIWONg3/DlmoqgHrqhzNex7SJg1gmB9CdfmNMZ6JPIxf/7stqiE5u1lCfIULlE+A3tz115T3bKup5dzqH+xFlGYkrFSxdzVg2OiRuDM6JRoZK18VUA2MKQwBsvYL44hzayv5gtqHb30VcA4W0p2OpeRKKLjxImeAekA0aRkPbp3Nic=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6207.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RXZqOXBBc1BTc2NrczA0ZGkzbGNVdG5iaHJwMG1XWFJuRk1DZ1VvQWhDUHpI?=
+ =?utf-8?B?VWpNMGNtK1dIWUZzVXZDbk1GNlZHbElTYXMzaWZXaDZ5TWdqWVJtaDdzWjhi?=
+ =?utf-8?B?UXhWU2hhWElzUHh2UDduaXRBVFRnTWZiTFlFV2pVZWgzcld5cnJaTXB2aGRU?=
+ =?utf-8?B?REM4amhIMldzREVuN2dVQk9Qck5oQ2dFeXJ5Qmk5R01lRy9FUmhiTXliSDZS?=
+ =?utf-8?B?OVYvZmlobGo4cnYvcE9WWE8xbitzZDM5cXR1VWI5cnFLV3d4WEh4bVJIclY1?=
+ =?utf-8?B?Y1VHQzlyclBPa1F2UjB5YmNKbGpqSHBIQ0tkRVRoTGlYWFZ3cGhqdzUzMVdJ?=
+ =?utf-8?B?NXNqMllCaWt6WHFzdFpJSHNBRkhBUTY0SHRQeEVnQkRMLytpZW1kSk11NkF6?=
+ =?utf-8?B?MlYyVEVEK3JMcDBiTHhrSkl3OG9MQWdhZVRHTTZQTVFuNGR5cjY3V01FeUc3?=
+ =?utf-8?B?OWFBdFgyY3RwMzRSVkZOOE0rMlF1c2RDOW9PZG9rN255T2hBSW9LSkMrUlpY?=
+ =?utf-8?B?TCtYbjVwU0NkNWo0S1hoTjNYM2RzaXMvMmJQc0xyM1JNY0VCQjVNdmY0SE9x?=
+ =?utf-8?B?Zm8vbGdIaXlmTkZVa0VXbmttaXRyU0tNc3RFWkg0Z08xemlnbW5ac0xlM0Fh?=
+ =?utf-8?B?WE41SW5wdzJzUEJNR29YczhibklEdjhHbTR3MHgwb1hXcCt4NHgxb08xNGRp?=
+ =?utf-8?B?Tnd0NFhBRDdzd3I0LzR5aUpHVGlaeFA5MjB4TVIzSzB3YnJEdUhhUUxjUlV1?=
+ =?utf-8?B?L2VYVEFzZW02ME1Ua3J5b2hEcStPNElMemxNTm45Z1d4NUtncEpBSHpUUlRU?=
+ =?utf-8?B?dS9ESnZLbzJXeHhwNVlBTWpJeWtYUVVhWjlEOHBXbERFU1Y1eUNpTlpFeTN4?=
+ =?utf-8?B?aEEwWS8xVUFVZVNDYVliQytZZkt1bTFlWEFqdmpCV1Z1Ty80cXNJcjB0bkkw?=
+ =?utf-8?B?WS9LY3hpUkFiMXc0d1dDS1NIY1RuNGpDanh6NjRDVEw5RHBQVzZ2V2dCSU5t?=
+ =?utf-8?B?RHBMUGVWNWptaHVWeEVFZFdJTFFocVZBWDV6bnQwSGx4a3FMZzNrbkdLS2Zr?=
+ =?utf-8?B?akNLQWxlYzNHMjVTTW91eGxSUUpLRzB4dXFwRTNCcksweGgyVElWVEcyYmtK?=
+ =?utf-8?B?dkthT01MZzh3NmR4bGR4YjY1Z0VoTUJXYm1hMWxLTGswTndLQnNFM1k5bnN6?=
+ =?utf-8?B?aUd1akN0U3NWK2R2N1ZkN0VtL2hjZTgyN3REeGhvMXJwUXdaZXAxTTR6czlM?=
+ =?utf-8?B?ZzA0Z1VqTytDdWt1NS81akhkZG81emFwWnlMdzM1elJUaU8rVUkzSUlEdExu?=
+ =?utf-8?B?SmJodWRFU3F0WWNDaUV3ZHBNQ2NZUkR2WGlSSmN0RXY5bXZkWFIza25tRk9o?=
+ =?utf-8?B?OFlIWHlteU1rU0lwVjdKNGl3NXB0cXZWeUVCcm9kYkFuMlI1UUFLM2JYVE5K?=
+ =?utf-8?B?dUw3anpDOU11RUVLWG13T3dyOWRPN1dWSHZSUUlmcFB2NnVaNXVGZXB1SWFi?=
+ =?utf-8?B?aXg2NlpaSFFUeFNEc2ZhRG81YysyV0FzMUVkZ2NJWC8zQURBcnZxOW9STTJT?=
+ =?utf-8?B?ZUhubXBPMzAyalZacHBYa2FqRFUwM2M5dGFscEhURWdsb2MzQzgvMHluVmpz?=
+ =?utf-8?B?aFZJMGRnWStvalFYbDZVUy9kUFZrR25hd3NSMHFDNjZGb21PQWh0UnUrUFdi?=
+ =?utf-8?B?dVB2UGtzcXpZcStncVBOenNIMFhLUzdTdDdveEpXRXlZMmRUOTZTRnc1V2M2?=
+ =?utf-8?B?UDBoVG80WnV4c2xYSEw2QlpzOFpRZUlPWnBHSDVhWUtmZFhDbWExQVVsbGxo?=
+ =?utf-8?B?MmUzTXJVMjU0dHBxK0ZwZjJRVVJMSnE4VU5pSUx6ZmdCaU5rWDdxUnFTWVNM?=
+ =?utf-8?B?RXpSOUJndzlRMVM4L2lPNisrUUk4WXNLMEhXWnY5WU95SXZXT3E4dXBTWVRW?=
+ =?utf-8?B?Vm1pck8xQ3V5ZHdKaUZDZEo0UVVwRlpWQ0Jrd2FtMUtHazdCbGVMRUsxV011?=
+ =?utf-8?B?TmZCSndwY2x6TEs3dC92YXo2eHZNanJWWVhlZEtmZ0YxOFF3MjdDSFpzNXJ0?=
+ =?utf-8?B?bnE0UHEzc2VrTEVUc1U0ZTNUcE5kazY3VnJUTDJQSXBITGh5dlNQS3lobVFk?=
+ =?utf-8?Q?gslk=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c27d5cd7-480d-4d0b-0014-08dc53e194ed
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6207.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 13:25:51.3783
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: MOQrC/UydIbFkfYyskhNOR6VF56BV+tXmwWVRsJG0+BRMtQDB5H38keED9VYUTR+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7944
 
-tcp_hash_fail() is used multiple times on hotpath, including static
-inlines. It contains a couple branches and a lot of code, which all
-gets inlined into the call sites. For example, one call emits two
-calls to net_ratelimit() etc.
-Move as much as we can out of line to a new global function. Use enum
-to determine the type of failure. Check for net_ratelimit() only once,
-format common fields only once as well to pass only unique strings to
-pr_info().
-The result for vmlinux with Clang 19:
+On 4/2/24 22:20, Harishankar Vishwanathan wrote:
+> Previous works [1, 2] have discovered and reported this issue. Our tool
+> Agni [2, 3] consideres it a false positive. This is because, during the
+> verification of the abstract operator scalar_min_max_and(), Agni restricts
+> its inputs to those passing through reg_bounds_sync(). This mimics
+> real-world verifier behavior, as reg_bounds_sync() is invariably executed
+> at the tail of every abstract operator. Therefore, such behavior is
+> unlikely in an actual verifier execution.
+> 
+> However, it is still unsound for an abstract operator to set signed bounds
+> such that smin_value > smax_value. This patch fixes it, making the abstract
+> operator sound for all (well-formed) inputs.
 
-add/remove: 2/0 grow/shrink: 0/4 up/down: 773/-4908 (-4135)
-Function                                     old     new   delta
-__tcp_hash_fail                                -     757    +757
-__pfx___tcp_hash_fail                          -      16     +16
-tcp_inbound_ao_hash                         1819    1062    -757
-tcp_ao_verify_hash                          1217     451    -766
-tcp_inbound_md5_hash                        1591     374   -1217
-tcp_inbound_hash                            3566    1398   -2168
+Just to check I'm understanding correctly: you're saying that the existing
+ code has an undocumented precondition, that's currently maintained by the
+ callers, and your patch removes the precondition in case a future patch
+ (or cosmic rays?) makes a call without satisfying it?
+Or is it in principle possible (just "unlikely") for a program to induce
+ the current verifier to call scalar_min_max_foo() on a register that
+ hasn't been through reg_bounds_sync()?
+If the former, I think Fixes: is inappropriate here as there is no need to
+ backport this change to stable kernels, although I agree the change is
+ worth making in -next.
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
----
- include/net/tcp.h    |  15 ++---
- include/net/tcp_ao.h |  58 ++++++++-----------
- net/ipv4/tcp.c       | 129 +++++++++++++++++++++++++++++++++++++------
- net/ipv4/tcp_ao.c    |  13 ++---
- 4 files changed, 148 insertions(+), 67 deletions(-)
+> It is worth noting that we can update the signed bounds using the unsigned
+> bounds whenever the unsigned bounds do not cross the sign boundary (not
+> just when the input signed bounds are positive, as was the case
+> previously). This patch does exactly that
+Commit message could also make clearer that the new code considers whether
+ the *output* ubounds cross sign, rather than looking at the input bounds
+ as the previous code did.  At first I was confused as to why XOR didn't
+ need special handling (since -ve xor -ve is +ve).
 
-diff --git a/include/net/tcp.h b/include/net/tcp.h
-index 9ab5b37e9d53..fa2303c788cf 100644
---- a/include/net/tcp.h
-+++ b/include/net/tcp.h
-@@ -2809,17 +2809,14 @@ tcp_inbound_hash(struct sock *sk, const struct request_sock *req,
- 
- 	/* Invalid option or two times meet any of auth options */
- 	if (tcp_parse_auth_options(th, &md5_location, &aoh)) {
--		tcp_hash_fail("TCP segment has incorrect auth options set",
--			      family, skb, "");
-+		tcp_hash_fail(TCP_HASH_FAIL_OPTS, family, skb);
- 		return SKB_DROP_REASON_TCP_AUTH_HDR;
- 	}
- 
- 	if (req) {
- 		if (tcp_rsk_used_ao(req) != !!aoh) {
- 			NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOBAD);
--			tcp_hash_fail("TCP connection can't start/end using TCP-AO",
--				      family, skb, "%s",
--				      !aoh ? "missing AO" : "AO signed");
-+			tcp_hash_fail(TCP_HASH_FAIL_CONN, family, skb, !aoh);
- 			return SKB_DROP_REASON_TCP_AOFAILURE;
- 		}
- 	}
-@@ -2837,14 +2834,14 @@ tcp_inbound_hash(struct sock *sk, const struct request_sock *req,
- 		 * always at least one current_key.
- 		 */
- 		if (tcp_ao_required(sk, saddr, family, l3index, true)) {
--			tcp_hash_fail("AO hash is required, but not found",
--					family, skb, "L3 index %d", l3index);
-+			tcp_hash_fail(TCP_HASH_FAIL_NOAO, family, skb,
-+				      l3index);
- 			return SKB_DROP_REASON_TCP_AONOTFOUND;
- 		}
- 		if (unlikely(tcp_md5_do_lookup(sk, l3index, saddr, family))) {
- 			NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMD5NOTFOUND);
--			tcp_hash_fail("MD5 Hash not found",
--				      family, skb, "L3 index %d", l3index);
-+			tcp_hash_fail(TCP_HASH_FAIL_NOMD5, family, skb,
-+				      l3index);
- 			return SKB_DROP_REASON_TCP_MD5NOTFOUND;
- 		}
- 		return SKB_NOT_DROPPED_YET;
-diff --git a/include/net/tcp_ao.h b/include/net/tcp_ao.h
-index 471e177362b4..a00d765be30b 100644
---- a/include/net/tcp_ao.h
-+++ b/include/net/tcp_ao.h
-@@ -143,42 +143,32 @@ extern struct static_key_false_deferred tcp_ao_needed;
- #define static_branch_tcp_ao()	false
- #endif
- 
--static inline bool tcp_hash_should_produce_warnings(void)
--{
--	return static_branch_tcp_md5() || static_branch_tcp_ao();
--}
-+enum {
-+	TCP_HASH_FAIL_OPTS,
-+	TCP_HASH_FAIL_CONN,
-+	TCP_HASH_FAIL_NOAO,
-+	TCP_HASH_FAIL_NOMD5,
-+	TCP_HASH_FAIL_UNEXP,
-+	TCP_HASH_FAIL_INET,
-+	TCP_HASH_FAIL_LEN,
-+	TCP_HASH_FAIL_MIS,
-+	TCP_HASH_FAIL_NOKEY,
-+	TCP_HASH_FAIL_NOID,
-+};
-+
-+void __tcp_hash_fail(u8 reason, u8 family, const struct sk_buff *skb,
-+		     int arg0, int arg1, int arg2);
- 
--#define tcp_hash_fail(msg, family, skb, fmt, ...)			\
--do {									\
--	const struct tcphdr *th = tcp_hdr(skb);				\
--	char hdr_flags[6];						\
--	char *f = hdr_flags;						\
--									\
--	if (!tcp_hash_should_produce_warnings())			\
--		break;							\
--	if (th->fin)							\
--		*f++ = 'F';						\
--	if (th->syn)							\
--		*f++ = 'S';						\
--	if (th->rst)							\
--		*f++ = 'R';						\
--	if (th->psh)							\
--		*f++ = 'P';						\
--	if (th->ack)							\
--		*f++ = '.';						\
--	*f = 0;								\
--	if ((family) == AF_INET) {					\
--		net_info_ratelimited("%s for %pI4.%d->%pI4.%d [%s] " fmt "\n", \
--				msg, &ip_hdr(skb)->saddr, ntohs(th->source), \
--				&ip_hdr(skb)->daddr, ntohs(th->dest),	\
--				hdr_flags, ##__VA_ARGS__);		\
--	} else {							\
--		net_info_ratelimited("%s for [%pI6c].%d->[%pI6c].%d [%s]" fmt "\n", \
--				msg, &ipv6_hdr(skb)->saddr, ntohs(th->source), \
--				&ipv6_hdr(skb)->daddr, ntohs(th->dest),	\
--				hdr_flags, ##__VA_ARGS__);		\
--	}								\
-+#define _tcp_hash_fail(reason, family, skb, ua, ...) do {		    \
-+	if (static_branch_tcp_md5() || static_branch_tcp_ao()) {	    \
-+		int ua[] = { __VA_ARGS__ + 0, 0, 0, 0, };		    \
-+									    \
-+		__tcp_hash_fail(reason, family, skb, ua[0], ua[1], ua[2]);  \
-+	}								    \
- } while (0)
-+#define tcp_hash_fail(reason, family, skb, ...)				    \
-+	_tcp_hash_fail(reason, family, skb, __UNIQUE_ID(args_),		    \
-+		       ##__VA_ARGS__)
- 
- #ifdef CONFIG_TCP_AO
- /* TCP-AO structures and functions */
-diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
-index e767721b3a58..a8a9e0f7f768 100644
---- a/net/ipv4/tcp.c
-+++ b/net/ipv4/tcp.c
-@@ -4379,6 +4379,116 @@ int tcp_getsockopt(struct sock *sk, int level, int optname, char __user *optval,
- }
- EXPORT_SYMBOL(tcp_getsockopt);
- 
-+#if defined(CONFIG_TCP_MD5SIG) || defined(CONFIG_TCP_AO)
-+static const char *tcp_hash_fail_common(u8 family, const struct sk_buff *skb)
-+{
-+	const struct tcphdr *th = tcp_hdr(skb);
-+	char hdr_flags[6];
-+	char *f = hdr_flags;
-+
-+	if (th->fin)
-+		*f++ = 'F';
-+	if (th->syn)
-+		*f++ = 'S';
-+	if (th->rst)
-+		*f++ = 'R';
-+	if (th->psh)
-+		*f++ = 'P';
-+	if (th->ack)
-+		*f++ = '.';
-+	*f = '\0';
-+
-+	if (family == AF_INET)
-+		return kasprintf(GFP_ATOMIC,
-+				 " for %pI4.%d->%pI4.%d [%s] ",
-+				 &ip_hdr(skb)->saddr, ntohs(th->source),
-+				 &ip_hdr(skb)->daddr, ntohs(th->dest),
-+				 hdr_flags);
-+	else
-+		return kasprintf(GFP_ATOMIC,
-+				 " for [%pI6c].%d->[%pI6c].%d [%s] ",
-+				 &ipv6_hdr(skb)->saddr, ntohs(th->source),
-+				 &ipv6_hdr(skb)->daddr, ntohs(th->dest),
-+				 hdr_flags);
-+}
-+
-+void __tcp_hash_fail(u8 reason, u8 family, const struct sk_buff *skb,
-+		     int arg0, int arg1, int arg2)
-+{
-+	const char *common __free(kfree) = NULL;
-+
-+	if (!net_ratelimit())
-+		return;
-+
-+	common = tcp_hash_fail_common(family, skb);
-+	if (!common)
-+		return;
-+
-+#define tcp_hash_fail_msg(msg, common, fmt, ...)		\
-+	pr_info(msg "%s" fmt "\n", common, ##__VA_ARGS__)
-+	switch (reason) {
-+	case TCP_HASH_FAIL_OPTS:
-+		tcp_hash_fail_msg("TCP segment has incorrect auth options set",
-+				  common, "");
-+		break;
-+	case TCP_HASH_FAIL_CONN:
-+		tcp_hash_fail_msg("TCP connection can't start/end using TCP-AO",
-+				  common, "%s",
-+				  arg0 ? "missing AO" : "AO signed");
-+		break;
-+	case TCP_HASH_FAIL_NOAO:
-+		tcp_hash_fail_msg("AO hash is required, but not found",
-+				  common, "L3 index %d", arg0);
-+		break;
-+	case TCP_HASH_FAIL_NOMD5:
-+		tcp_hash_fail_msg("MD5 Hash not found", common, "L3 index %d",
-+				  arg0);
-+		break;
-+	case TCP_HASH_FAIL_UNEXP:
-+		tcp_hash_fail_msg("Unexpected MD5 Hash found", common, "");
-+		break;
-+	case TCP_HASH_FAIL_INET:
-+		if (family == AF_INET) {
-+			tcp_hash_fail_msg("MD5 Hash failed", common,
-+					  "%s L3 index %d",
-+					  arg0 ?
-+					  "tcp_v4_calc_md5_hash failed" : "",
-+					  arg1);
-+		} else {
-+			if (arg0)
-+				tcp_hash_fail_msg("MD5 Hash failed",
-+						  common, "L3 index %d",
-+						  arg1);
-+			else
-+				tcp_hash_fail_msg("MD5 Hash mismatch",
-+						  common, "L3 index %d",
-+						  arg1);
-+		}
-+		break;
-+	case TCP_HASH_FAIL_LEN:
-+		tcp_hash_fail_msg("AO hash wrong length", common,
-+				  "%u != %d L3 index: %d", arg0, arg1, arg2);
-+		break;
-+	case TCP_HASH_FAIL_MIS:
-+		tcp_hash_fail_msg("AO hash mismatch", common, "L3 index: %d",
-+				  arg0);
-+		break;
-+	case TCP_HASH_FAIL_NOKEY:
-+		tcp_hash_fail_msg("AO key not found", common,
-+				  "keyid: %u L3 index: %d", arg0, arg1);
-+		break;
-+	case TCP_HASH_FAIL_NOID:
-+		tcp_hash_fail_msg("Requested by the peer AO key id not found",
-+				  common, "L3 index: %d", arg0);
-+		break;
-+	default:
-+		break;
-+	}
-+#undef tcp_hash_fail_msg
-+}
-+EXPORT_SYMBOL(__tcp_hash_fail);
-+#endif /* CONFIG_TCP_MD5SIG || CONFIG_TCP_AO */
-+
- #ifdef CONFIG_TCP_MD5SIG
- int tcp_md5_sigpool_id = -1;
- EXPORT_SYMBOL_GPL(tcp_md5_sigpool_id);
-@@ -4450,7 +4560,7 @@ tcp_inbound_md5_hash(const struct sock *sk, const struct sk_buff *skb,
- 
- 	if (!key && hash_location) {
- 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMD5UNEXPECTED);
--		tcp_hash_fail("Unexpected MD5 Hash found", family, skb, "");
-+		tcp_hash_fail(TCP_HASH_FAIL_UNEXP, family, skb);
- 		return SKB_DROP_REASON_TCP_MD5UNEXPECTED;
- 	}
- 
-@@ -4465,21 +4575,8 @@ tcp_inbound_md5_hash(const struct sock *sk, const struct sk_buff *skb,
- 							 NULL, skb);
- 	if (genhash || memcmp(hash_location, newhash, 16) != 0) {
- 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPMD5FAILURE);
--		if (family == AF_INET) {
--			tcp_hash_fail("MD5 Hash failed", AF_INET, skb, "%s L3 index %d",
--				      genhash ? "tcp_v4_calc_md5_hash failed"
--				      : "", l3index);
--		} else {
--			if (genhash) {
--				tcp_hash_fail("MD5 Hash failed",
--					      AF_INET6, skb, "L3 index %d",
--					      l3index);
--			} else {
--				tcp_hash_fail("MD5 Hash mismatch",
--					      AF_INET6, skb, "L3 index %d",
--					      l3index);
--			}
--		}
-+		tcp_hash_fail(TCP_HASH_FAIL_INET, family, skb, genhash,
-+			      l3index);
- 		return SKB_DROP_REASON_TCP_MD5FAILURE;
- 	}
- 	return SKB_NOT_DROPPED_YET;
-diff --git a/net/ipv4/tcp_ao.c b/net/ipv4/tcp_ao.c
-index 3afeeb68e8a7..f4dbb23e549b 100644
---- a/net/ipv4/tcp_ao.c
-+++ b/net/ipv4/tcp_ao.c
-@@ -892,8 +892,7 @@ tcp_ao_verify_hash(const struct sock *sk, const struct sk_buff *skb,
- 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOBAD);
- 		atomic64_inc(&info->counters.pkt_bad);
- 		atomic64_inc(&key->pkt_bad);
--		tcp_hash_fail("AO hash wrong length", family, skb,
--			      "%u != %d L3index: %d", maclen,
-+		tcp_hash_fail(TCP_HASH_FAIL_LEN, family, skb, maclen,
- 			      tcp_ao_maclen(key), l3index);
- 		return SKB_DROP_REASON_TCP_AOFAILURE;
- 	}
-@@ -909,8 +908,7 @@ tcp_ao_verify_hash(const struct sock *sk, const struct sk_buff *skb,
- 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOBAD);
- 		atomic64_inc(&info->counters.pkt_bad);
- 		atomic64_inc(&key->pkt_bad);
--		tcp_hash_fail("AO hash mismatch", family, skb,
--			      "L3index: %d", l3index);
-+		tcp_hash_fail(TCP_HASH_FAIL_MIS, family, skb, l3index);
- 		kfree(hash_buf);
- 		return SKB_DROP_REASON_TCP_AOFAILURE;
- 	}
-@@ -938,8 +936,8 @@ tcp_inbound_ao_hash(struct sock *sk, const struct sk_buff *skb,
- 	info = rcu_dereference(tcp_sk(sk)->ao_info);
- 	if (!info) {
- 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOKEYNOTFOUND);
--		tcp_hash_fail("AO key not found", family, skb,
--			      "keyid: %u L3index: %d", aoh->keyid, l3index);
-+		tcp_hash_fail(TCP_HASH_FAIL_NOKEY, family, skb, aoh->keyid,
-+			      l3index);
- 		return SKB_DROP_REASON_TCP_AOUNEXPECTED;
- 	}
- 
-@@ -1041,8 +1039,7 @@ tcp_inbound_ao_hash(struct sock *sk, const struct sk_buff *skb,
- key_not_found:
- 	NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPAOKEYNOTFOUND);
- 	atomic64_inc(&info->counters.key_not_found);
--	tcp_hash_fail("Requested by the peer AO key id not found",
--		      family, skb, "L3index: %d", l3index);
-+	tcp_hash_fail(TCP_HASH_FAIL_NOID, family, skb, l3index);
- 	return SKB_DROP_REASON_TCP_AOKEYNOTFOUND;
- }
- 
--- 
-2.44.0
+> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> index fcb62300f407..a7404a7d690f 100644
+> --- a/kernel/bpf/verifier.c
+> +++ b/kernel/bpf/verifier.c
+> @@ -13326,23 +13326,21 @@ static void scalar32_min_max_and(struct bpf_reg_state *dst_reg,
+>                 return;
+>         }
+> 
+> -       /* We get our minimum from the var_off, since that's inherently
+> +       /* We get our minimum from the var32_off, since that's inherently
+>          * bitwise.  Our maximum is the minimum of the operands' maxima.
+>          */
 
+This change, adjusting a comment to match the existing code, should probably
+ be in a separate patch.
+> @@ -13395,23 +13391,21 @@ static void scalar32_min_max_or(struct bpf_reg_state *dst_reg,
+>                 return;
+>         }
+> 
+> -       /* We get our maximum from the var_off, and our minimum is the
+> -        * maximum of the operands' minima
+> +       /* We get our maximum from the var32_off, and our minimum is the
+> +        * maximum of the operands' minima.
+>          */
+
+Same here.
+
+Apart from that,
+Acked-by: Edward Cree <ecree.xilinx@gmail.com>
 
