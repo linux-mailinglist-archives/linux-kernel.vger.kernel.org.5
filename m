@@ -1,131 +1,205 @@
-Return-Path: <linux-kernel+bounces-130014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB92989733B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:59:17 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CDD3897341
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:00:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CAA21F21A2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:59:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 406201C211E6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:59:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A11149E1B;
-	Wed,  3 Apr 2024 14:59:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759E5149E18;
+	Wed,  3 Apr 2024 14:59:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="NTgGLUkm"
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EOcAjgyF"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B730149C77
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:58:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ADB159B67;
+	Wed,  3 Apr 2024 14:59:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712156341; cv=none; b=Jn/EvxXvcV28gGsads32GNWwgBc7UR123OuY7T2Z8qDIwOFbSWxoYxd9RXi+hvgeCun3qg65cd7UChzNJuoxfhu0sDJ8EjbpMQ/xF6R5cgqipjt+W8kozkZarBHoBzwqFDO8HWHxeEtcSWdLqvrO8v8GY+hlIVQWOstMh3U9qP4=
+	t=1712156388; cv=none; b=MyLrdPfDY3vy3aXTUR4GoJSut9ccL1GewtPUAFO3rJcP+58lzDe2D00/lptbM19GCiw6LNaC7VftoB7S6jtvtXn1eE5cwv639adkPhWCo6gRwX9IS3RDBZrxK7CLaHQxmdi2rKYb3swaokLKeXRK+gssJYttwuBGHjWV8R82iCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712156341; c=relaxed/simple;
-	bh=bA08xc5rb3BdVwkyNJ3oXMMCv+codCJF7wxqAsTEmbM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uSZgbpjNS+wPODYr6giATIPf9y4jajKAd5OZ3DGWB5jwcd8MQzWJqJiWvWYxyhU6eqjCOE1kPkwoe2GNXXXS4VEWyHoSsTM+2RloUollD3fSVmWa5EMC9pqAePiHfcXQY/GcR/aPigzkM+vYNhWhvnLD7Zy8s6PBjrZPq1FqHwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=NTgGLUkm; arc=none smtp.client-ip=209.85.128.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-61495e769bdso31607357b3.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:58:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1712156338; x=1712761138; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N6ozn8GWGaymICONfaql8z8aBGhL/vcq5PD2xm3yHTg=;
-        b=NTgGLUkmp+mD862RxBHk1Uizuyvzo0bnE4KI+UdiJDaO1+vrbFUwPNSgGT5lOL/wvP
-         aV2EW/WE46eGtubOBk10gQJ1m6nm0aCoQ+Btrc3bxvCS7WZr/kqsZ5CB0WcRqmvfLtoY
-         8vv0D/2HFC4qr4kvXmD4aQ0qyeVEwSOQ49Kzhul3jd6F6yiz/SkGzSzPGPgkkMivA5M8
-         GVYzVGzczxBfUBzjE5b83d5qJAlaVgSppSzmkzmmj9z1KWZLjI/fe9+trzKkns8IN4zt
-         1foAqoJrbFc3e5+yVtOpEjVHAahVO2I3I3qJupKJGELRWPvqt9YbaEngxNgG3Co/W3W+
-         0mfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712156338; x=1712761138;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=N6ozn8GWGaymICONfaql8z8aBGhL/vcq5PD2xm3yHTg=;
-        b=egFuhr6j2fLhZ4bf8IU4pfI55iBKnhoCQvTZ8V47hMZZFARjq+4b3TByvSlRZH8UPS
-         2ZI9YXAyO8oPvtwSPGeR11GmweXrmRni/r6akOe5El2EBTn9iyJiL8lPSAdBQe69R6Xt
-         SelTLDKb5h7h/+LTWVfmWgSKhKwz5meh5NsIQdI6GFUnwR5PdwuKxnr31mplvP9HeIDY
-         NEQeDEdt2rDIKEp8L8QtkIt58vGnx8cWv40tKwpxsec6OFz96Vxd7m/7gBfHo7bUukxD
-         rPJCiPXwD4n0ACg2Mait8Zq27ketXSnT9yVCbZ1qkhgyZXnUM3u3qdXRglAbaWMqSFFj
-         v/Qw==
-X-Forwarded-Encrypted: i=1; AJvYcCUuFHsGPQTfy/jY4VeGlJQcyIsSWe9DmptBb1CM18rS9TeNDFcOM0m/gVGeK5cOPF326jKXnqU8z5Lco5I/CPS/Q01pdcCwSbBQp5Vk
-X-Gm-Message-State: AOJu0YwL2yZ5zMOMpxQN3U33loeU5RaVwsWrYQSeIS2w0J0Blh5N1CFP
-	skwYnIQP5xwlx1yyjLt/sD7JL8rDESOg4DHy9vhjjxJzIdMnCO80BQFZd6n2V49ZeSFeS2qL/8K
-	6mrVVZD7lf0rwVsJ5HErA4kBBHIvrj9O/B+EN
-X-Google-Smtp-Source: AGHT+IGNgAodpsrYQT2AbEmyPbb+UGOULWYqBs8jhyUUwdxQtLywey14p1gGYRWmBh3FA7fTEozafbxC8444+PUG35M=
-X-Received: by 2002:a0d:d5c1:0:b0:615:144f:1f5c with SMTP id
- x184-20020a0dd5c1000000b00615144f1f5cmr6498090ywd.47.1712156338103; Wed, 03
- Apr 2024 07:58:58 -0700 (PDT)
+	s=arc-20240116; t=1712156388; c=relaxed/simple;
+	bh=QIT4Ex7GyF+BHrfMmNs1ExDsS8kFe+3O5Qth8kwlp4U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=NCNPQ0D9kDiwDKkyr/FDX/l8yhUxym6VPyII/ObfFKNQke5MvAWellkFo2Sp+iO4mOd6IACi+orsCgWdGhv87KEbbB2EL4HjBu8mAb7DWk+R7ruJ2DanCNEIRCmYK4XvjVlU+iJt8NKvQsEIoSvsiDL2uWfqG8BlVwQ15xJUngU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EOcAjgyF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23F00C433C7;
+	Wed,  3 Apr 2024 14:59:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712156388;
+	bh=QIT4Ex7GyF+BHrfMmNs1ExDsS8kFe+3O5Qth8kwlp4U=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=EOcAjgyFZUCVR4EnR+SCCB820JDwkI/Cgni50UoLACTXX9v0Nk2F0gBo00ugbCyKp
+	 JYxh1zhQA022f4gKnyZSRQgsECaubonNp1PVIglaPYrc8kpL9dp6hdzj5YYtQELLIC
+	 OTpJeduSFKk3vsHELIFA3qUOQ0iBbf63YHd3FPcB5/HXELINRLvs6ZmMR+icV2qrQb
+	 SFm7xPBzyq1g9ZXjtW5J42ud0jsfGTAokciVCpQn0JLixZP3EFFCE/Ue/26P8YYLDE
+	 P2ano1m7xjxQtrgIwNmoRVSfnLrblarbDyEPFuAg+w3XvdtcD+oZHeYPwlXEV57MJj
+	 h5yT7RKqXWU5g==
+Message-ID: <58c9b754-b9a7-444d-9545-9e6648010630@kernel.org>
+Date: Wed, 3 Apr 2024 16:59:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403075729.2888084-1-roberto.sassu@huaweicloud.com>
-In-Reply-To: <20240403075729.2888084-1-roberto.sassu@huaweicloud.com>
-From: Paul Moore <paul@paul-moore.com>
-Date: Wed, 3 Apr 2024 10:58:47 -0400
-Message-ID: <CAHC9VhRFsvBs0ysZ1rwqaz0TvMQf9JFQTBTA1cym08nbvoTVEg@mail.gmail.com>
-Subject: Re: [PATCH v3] security: Place security_path_post_mknod() where the
- original IMA call was
-To: Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz, 
-	jmorris@namei.org, serge@hallyn.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	linux-cifs@vger.kernel.org, pc@manguebit.com, christian@brauner.io, 
-	torvalds@linux-foundation.org, Roberto Sassu <roberto.sassu@huawei.com>, 
-	Steve French <smfrench@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 1/5] dt-bindings: interconnect: Add Qualcomm IPQ9574
+ support
+To: Varadarajan Narayanan <quic_varada@quicinc.com>, andersson@kernel.org,
+ konrad.dybcio@linaro.org, mturquette@baylibre.com, sboyd@kernel.org,
+ robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, djakov@kernel.org,
+ dmitry.baryshkov@linaro.org, quic_anusha@quicinc.com,
+ linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org
+References: <20240403104220.1092431-1-quic_varada@quicinc.com>
+ <20240403104220.1092431-2-quic_varada@quicinc.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240403104220.1092431-2-quic_varada@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 3, 2024 at 3:57=E2=80=AFAM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
->
-> From: Roberto Sassu <roberto.sassu@huawei.com>
->
-> Commit 08abce60d63f ("security: Introduce path_post_mknod hook")
-> introduced security_path_post_mknod(), to replace the IMA-specific call t=
-o
-> ima_post_path_mknod().
->
-> For symmetry with security_path_mknod(), security_path_post_mknod() was
-> called after a successful mknod operation, for any file type, rather than
-> only for regular files at the time there was the IMA call.
->
-> However, as reported by VFS maintainers, successful mknod operation does
-> not mean that the dentry always has an inode attached to it (for example,
-> not for FIFOs on a SAMBA mount).
->
-> If that condition happens, the kernel crashes when
-> security_path_post_mknod() attempts to verify if the inode associated to
-> the dentry is private.
->
-> Move security_path_post_mknod() where the ima_post_path_mknod() call was,
-> which is obviously correct from IMA/EVM perspective. IMA/EVM are the only
-> in-kernel users, and only need to inspect regular files.
->
-> Reported-by: Steve French <smfrench@gmail.com>
-> Closes: https://lore.kernel.org/linux-kernel/CAH2r5msAVzxCUHHG8VKrMPUKQHm=
-BpE6K9_vjhgDa1uAvwx4ppw@mail.gmail.com/
-> Suggested-by: Al Viro <viro@zeniv.linux.org.uk>
-> Fixes: 08abce60d63f ("security: Introduce path_post_mknod hook")
-> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+On 03/04/2024 12:42, Varadarajan Narayanan wrote:
+> Add interconnect-cells to clock provider so that it can be
+> used as icc provider.
+> 
+> Add master/slave ids for Qualcomm IPQ9574 Network-On-Chip
+> interfaces. This will be used by the gcc-ipq9574 driver
+> that will for providing interconnect services using the
+> icc-clk framework.
+> 
+> Signed-off-by: Varadarajan Narayanan <quic_varada@quicinc.com>
 > ---
->  fs/namei.c          | 7 ++-----
->  security/security.c | 4 ++--
->  2 files changed, 4 insertions(+), 7 deletions(-)
+> v7:
+> Fix macro names to be consistent with other bindings
+> v6:
+> Removed Reviewed-by: Krzysztof Kozlowski
+> Redefine the bindings such that driver and DT can share them
+> 
+> v3:
+> Squash Documentation/ and include/ changes into same patch
+> 
+> qcom,ipq9574.h
+> 	Move 'first id' to clock driver
+> 
+> ---
+>  .../bindings/clock/qcom,ipq9574-gcc.yaml      |  3 +
+>  .../dt-bindings/interconnect/qcom,ipq9574.h   | 87 +++++++++++++++++++
+>  2 files changed, 90 insertions(+)
+>  create mode 100644 include/dt-bindings/interconnect/qcom,ipq9574.h
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
+> index 944a0ea79cd6..824781cbdf34 100644
+> --- a/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
+> +++ b/Documentation/devicetree/bindings/clock/qcom,ipq9574-gcc.yaml
+> @@ -33,6 +33,9 @@ properties:
+>        - description: PCIE30 PHY3 pipe clock source
+>        - description: USB3 PHY pipe clock source
+>  
+> +  '#interconnect-cells':
+> +    const: 1
+> +
+>  required:
+>    - compatible
+>    - clocks
+> diff --git a/include/dt-bindings/interconnect/qcom,ipq9574.h b/include/dt-bindings/interconnect/qcom,ipq9574.h
+> new file mode 100644
+> index 000000000000..0b076b0cf880
+> --- /dev/null
+> +++ b/include/dt-bindings/interconnect/qcom,ipq9574.h
+> @@ -0,0 +1,87 @@
+> +/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
+> +#ifndef INTERCONNECT_QCOM_IPQ9574_H
+> +#define INTERCONNECT_QCOM_IPQ9574_H
+> +
+> +#define ICC_ANOC_PCIE0		0
+> +#define ICC_SNOC_PCIE0		1
+> +#define ICC_ANOC_PCIE1		2
+> +#define ICC_SNOC_PCIE1		3
+> +#define ICC_ANOC_PCIE2		4
+> +#define ICC_SNOC_PCIE2		5
+> +#define ICC_ANOC_PCIE3		6
+> +#define ICC_SNOC_PCIE3		7
+> +#define ICC_SNOC_USB		8
+> +#define ICC_ANOC_USB_AXI	9
+> +#define ICC_NSSNOC_NSSCC	10
+> +#define ICC_NSSNOC_SNOC_0	11
+> +#define ICC_NSSNOC_SNOC_1	12
+> +#define ICC_NSSNOC_PCNOC_1	13
+> +#define ICC_NSSNOC_QOSGEN_REF	14
+> +#define ICC_NSSNOC_TIMEOUT_REF	15
+> +#define ICC_NSSNOC_XO_DCD	16
+> +#define ICC_NSSNOC_ATB		17
+> +#define ICC_MEM_NOC_NSSNOC	18
+> +#define ICC_NSSNOC_MEMNOC	19
+> +#define ICC_NSSNOC_MEM_NOC_1	20
+> +
+> +#define ICC_NSSNOC_PPE		0
+> +#define ICC_NSSNOC_PPE_CFG	1
+> +#define ICC_NSSNOC_NSS_CSR	2
+> +#define ICC_NSSNOC_IMEM_QSB	3
+> +#define ICC_NSSNOC_IMEM_AHB	4
+> +
+> +#define MASTER_ANOC_PCIE0		(ICC_ANOC_PCIE0 * 2)
+> +#define SLAVE_ANOC_PCIE0		((ICC_ANOC_PCIE0 * 2) + 1)
 
-Acked-by: Paul Moore <paul@paul-moore.com>
+Which existing Qualcomm platform has such code?
 
---=20
-paul-moore.com
+This is the third time I am asking for consistent headers. Open
+existing, recently added headers and look how it is done there. Why?
+Because I am against such calculations and see no reason for them.
+
+Best regards,
+Krzysztof
+
 
