@@ -1,174 +1,130 @@
-Return-Path: <linux-kernel+bounces-129884-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129885-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A89A89719F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:52:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D5C78971A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:52:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F268428820F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:52:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 24A27284E28
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:52:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3973D148820;
-	Wed,  3 Apr 2024 13:51:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C8B4149007;
+	Wed,  3 Apr 2024 13:52:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PND15TIU"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="tGaRFaNU"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD3061487FF
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:51:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14879148318;
+	Wed,  3 Apr 2024 13:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152315; cv=none; b=NvbG18h8w4sVSZSPovAn602jZjq09/zMZFag6GqhW6ZEoNFE+9qUsVfDknVpoR/U1xD07H2gnjCqjn1GpjgS4P/JHpcrv9Z3hrglKK62WYnu+sdQNiWxG7H84OmGV3y3UQuhiaHzNH/cLQedoCLg+ktI3Bk15an8xqWt/wLf8hY=
+	t=1712152322; cv=none; b=Rvoc5Pm4CltGTy669hFURPvH62T9TfhvHzdz03YT9Ux63g+eY7pZQuwTzokRzcRal0QeLt2PNGA6NjW7mj4jpkpDpMDjUCJbgS3C6SJranr6zwcKBwxZrilfn1iQ7OOQyQhXFywXna//7/yqrsb/hKEUkWG8zQEWYWm0TS0qtm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152315; c=relaxed/simple;
-	bh=pHG2tsAWxZn37gkN2Ny9kczSaLWLC3JNDuMK3nNmWfk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D39PEpDrsCl+byWcGawCNf+zSE05f3J7qZOfvZzTxeHQuyxT/RIu9hvVxHPTfkqN+zysQm8HsE0r98jMyfXBmnMZOrkt4uIQdzTjMT+7JGfRNuB0b6SqbKTqvlvrlnhPvYGGESz5bAZyuVaoVsbmfF+eagcvXx/WZkU25HwiJkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PND15TIU; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712152312;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PllW2rrzDmRw3e0KEKEhY+erPYkfL+5VU6NwuszEdv4=;
-	b=PND15TIUNZamv5rJnsaaywSgReJ3PURFIWzcGhp73BUexl82vlFNyBES0qWlyN4ff2jhfV
-	GvDNSYPgAkdoBbasLlO/DceiH29/ZntLPh84DI6dTCDO5eid/JzJQkFX9m7l8sPdrkkKAO
-	iMog5ww4Qyxog4dQONN4nzfqW7yz4Mw=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-271-VpdpYk3KMV-H449pwJ6bOw-1; Wed, 03 Apr 2024 09:51:49 -0400
-X-MC-Unique: VpdpYk3KMV-H449pwJ6bOw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CB85B8828C2;
-	Wed,  3 Apr 2024 13:51:48 +0000 (UTC)
-Received: from localhost (unknown [10.39.194.118])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id F351BC04122;
-	Wed,  3 Apr 2024 13:51:47 +0000 (UTC)
-Date: Wed, 3 Apr 2024 09:51:42 -0400
-From: Stefan Hajnoczi <stefanha@redhat.com>
-To: Eric Blake <eblake@redhat.com>
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alasdair Kergon <agk@redhat.com>,
-	Mikulas Patocka <mpatocka@redhat.com>, dm-devel@lists.linux.dev,
-	David Teigland <teigland@redhat.com>,
-	Mike Snitzer <snitzer@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-	Christoph Hellwig <hch@lst.de>, Joe Thornber <ejt@redhat.com>
-Subject: Re: [RFC 3/9] selftests: block_seek_hole: add loop block driver tests
-Message-ID: <20240403135142.GC2524049@fedora>
-References: <20240328203910.2370087-1-stefanha@redhat.com>
- <20240328203910.2370087-4-stefanha@redhat.com>
- <6mssvnoq4bpaf53kkla45np5lijptyh4c2orayqx4mqacj572u@6s4y6bhdtcpm>
+	s=arc-20240116; t=1712152322; c=relaxed/simple;
+	bh=5kpPFNQ9hey0wtu6FPTQxZ2nne63r+uHCH8qOkaxR64=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tD9LXHOvXaKxL++P6eK95U0kpZFzkWBIvoNesMhhIfZdUjKQDSQFCwMQYETsameYJHK/c2IweTdneX5GQdB3rRP++MmuCb+wTS7yQcnEX5/zmQF3xFJf77Qo6+5VethUTgeTN/+R4y2SwL/SiAfSx99y8RYFicD8yPg0+5GfjVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=tGaRFaNU; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 433DUVu0007150;
+	Wed, 3 Apr 2024 13:52:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=81vB5rVDUlQxHkJtgz4MbO4SKniyJUcv6K8MS+gKQTg=;
+ b=tGaRFaNUMVSb7n84E8VxtZ4Y7EkuCAyEo4zKd8bDRJCbdor7A31dmD7b+c3B9sVYIhII
+ R3Cp6T7rZfevQjQn6lEMW6ftPljJ006bdCv8l8i1uBXjJf2YxIFuqINA/ehSHhyZedMb
+ QXrDdyRGnWOwL4r0aHH7Ivtvs/2c9Y7C6jea4osv1c00s2c58JdscLbqDEzryhK8Xlc+
+ hJm3Qv/KqXAga3IPCLeaY8St0KmL4DBsbG+u1YUF8LrDLgrWjIr275SzG3KfVA9Vq7Fr
+ I0/77Y5WytJJk/X1/GeH1gG+SSErGUJyhWJ2oN43k1UXWKUM+npJ6o/HTWACfRv3i/ke Vg== 
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9826r1m8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 13:51:59 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 433CK0FC002203;
+	Wed, 3 Apr 2024 13:51:59 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x6xjmneeb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 13:51:58 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 433Dptbb44958168
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 3 Apr 2024 13:51:57 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E3D2E20040;
+	Wed,  3 Apr 2024 13:51:54 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B73452004B;
+	Wed,  3 Apr 2024 13:51:54 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  3 Apr 2024 13:51:54 +0000 (GMT)
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: linux-bluetooth@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH 0/1] Bluetooth: Handle HAS_IOPORT dependencies
+Date: Wed,  3 Apr 2024 15:51:53 +0200
+Message-Id: <20240403135154.905614-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: JxEHLm0qEGtkoJrXV7a2X9hs_Yvh4pv5
+X-Proofpoint-GUID: JxEHLm0qEGtkoJrXV7a2X9hs_Yvh4pv5
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="x2om3oEq6ukG/tIJ"
-Content-Disposition: inline
-In-Reply-To: <6mssvnoq4bpaf53kkla45np5lijptyh4c2orayqx4mqacj572u@6s4y6bhdtcpm>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-03_13,2024-04-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 mlxscore=0
+ lowpriorityscore=0 clxscore=1011 phishscore=0 priorityscore=1501
+ malwarescore=0 mlxlogscore=999 spamscore=0 adultscore=0 impostorscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2404030095
 
+Hi Marcel, Luiz,
 
---x2om3oEq6ukG/tIJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This is a follow up in my ongoing effort of making inb()/outb() and
+similar I/O port accessors compile-time optional. Previously I sent this
+as a treewide series titled "treewide: Remove I/O port accessors for
+HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
+subset of patches merged I've changed over to per-subsystem series. These
+series are stand alone and should be merged via the relevant tree such
+that with all subsystems complete we can follow this up with the final
+patch that will make the I/O port accessors compile-time optional.
 
-On Fri, Mar 29, 2024 at 07:38:17AM -0500, Eric Blake wrote:
-> On Thu, Mar 28, 2024 at 04:39:04PM -0400, Stefan Hajnoczi wrote:
-> > Run the tests with:
-> >=20
-> >   $ make TARGETS=3Dblock_seek_hole -C tools/selftests run_tests
-> >=20
-> > Signed-off-by: Stefan Hajnoczi <stefanha@redhat.com>
-> > ---
-> >  tools/testing/selftests/Makefile              |   1 +
-> >  .../selftests/block_seek_hole/Makefile        |  17 +++
-> >  .../testing/selftests/block_seek_hole/config  |   1 +
-> >  .../selftests/block_seek_hole/map_holes.py    |  37 +++++++
-> >  .../testing/selftests/block_seek_hole/test.py | 103 ++++++++++++++++++
-> >  5 files changed, 159 insertions(+)
-> >  create mode 100644 tools/testing/selftests/block_seek_hole/Makefile
-> >  create mode 100644 tools/testing/selftests/block_seek_hole/config
-> >  create mode 100755 tools/testing/selftests/block_seek_hole/map_holes.py
-> >  create mode 100755 tools/testing/selftests/block_seek_hole/test.py
-> >=20
->=20
-> > +
-> > +def map_holes(fd):
-> > +    end =3D os.lseek(fd, 0, os.SEEK_END)
-> > +    offset =3D 0
-> > +
-> > +    print('TYPE START END SIZE')
-> > +
-> > +    while offset < end:
-> > +        contents =3D 'DATA'
-> > +        new_offset =3D os.lseek(fd, offset, os.SEEK_HOLE)
-> > +        if new_offset =3D=3D offset:
-> > +            contents =3D 'HOLE'
-> > +            try:
-> > +              new_offset =3D os.lseek(fd, offset, os.SEEK_DATA)
-> > +            except OSError as err:
-> > +                if err.errno =3D=3D errno.ENXIO:
-> > +                    new_offset =3D end
-> > +                else:
-> > +                    raise err
-> > +            assert new_offset !=3D offset
-> > +        print(f'{contents} {offset} {new_offset} {new_offset - offset}=
-')
-> > +        offset =3D new_offset
->=20
-> Over the years, I've seen various SEEK_HOLE implementation bugs where
-> things work great on the initial boundary, but fail when requested on
-> an offset not aligned to the start of the extent boundary.  It would
-> probably be worth enhancing the test to prove that:
->=20
-> if lseek(fd, offset, SEEK_HOLE) =3D=3D offset:
->   new_offset =3D lseek(fd, offset, SEEK_DATA)
->   assert new_offset > offset
->   assert lseek(fd, new_offset - 1, SEEK_HOLE) =3D=3D new_offset - 1
-> else:
->   assert lseek(fd, offset, SEEK_DATA) =3D=3D offset
->   new_offset =3D lseek(fd, offset, SEEK_HOLE)
->   assert new_offset > offset
->   assert lseek(fd, new_offset - 1, SEEK_DATA) =3D=3D new_offset - 1
->=20
-> Among other things, this would prove that even though block devices
-> generally operate on a minimum granularity of a sector, lseek() still
-> gives byte-accurate results for a random offset that falls in the
-> middle of a sector, and doesn't accidentally round down reporting an
-> offset less than the value passed in to the request.
+The current state of the full series with changes to the remaining
+subsystems and the aforementioned final patch can be found for your
+convenience on my git.kernel.org tree in the has_ioport_v6 branch[1] with
+signed tags. As for compile-time vs runtime see Linus' reply to my first
+attempt[2].
 
-Sure. I'll add a test for that.
+Thanks,
+Niklas
 
-Stefan
+[0] https://lore.kernel.org/all/20230522105049.1467313-1-schnelle@linux.ibm.com/
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=has_ioport_v6
+[2] https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
 
---x2om3oEq6ukG/tIJ
-Content-Type: application/pgp-signature; name="signature.asc"
+Niklas Schnelle (1):
+  Bluetooth: add HAS_IOPORT dependencies
 
------BEGIN PGP SIGNATURE-----
+ drivers/bluetooth/Kconfig | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmYNXu4ACgkQnKSrs4Gr
-c8jiRAgAlRZwKBwtx8HTSPWTyPF1aDumwwjfPHI+L3n47d0TYnJk8hmb5wCBUAnr
-FLm8+SC46srUixEQEdwLL9DdVEu3QHMKHJtQVWU3ShF+izCE3rlGT9BhNl+ZyBDY
-xWrnBy8kgmdxqvjwyca49jOTLmnS/LaM6uBybK3hk9zQZgcI36phl+OZCwyct7dj
-3L3UuOAYCwnqxDdNvm9mVhCeAAnf5F8WECCR8ZUfw7ejPASc9Gzw90tyDn7RrQKU
-Gubm9DS0I0vTe5XWwnDY0PtUxE/Y+waT1YIkwE9FrE//uswssKJ01cZT0FW8HZhD
-1Z4wdIuFUendZtJhVZpMcXp+cUM9lg==
-=chJ4
------END PGP SIGNATURE-----
-
---x2om3oEq6ukG/tIJ--
+-- 
+2.40.1
 
 
