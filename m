@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-130632-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130633-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80EAF897AC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:31:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1B75897AC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:32:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A643CB275DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:31:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D53828A4E3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:32:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C75D2157A48;
-	Wed,  3 Apr 2024 21:29:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABEC9157A7A;
+	Wed,  3 Apr 2024 21:29:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="eUxuJd75"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="RW7mPEVs"
 Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2117.outbound.protection.outlook.com [40.107.96.117])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E771F156F3B;
-	Wed,  3 Apr 2024 21:29:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D6B6156881;
+	Wed,  3 Apr 2024 21:29:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.117
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712179795; cv=fail; b=n/JmH84EuWZyfbJ4h2WDXcPUBr13L1K0qyv09wEJjs/6myrq2jCHPnOYkaD928Rx1yGFm3oC3eDP5T+9NNb7m5WKzGrqL17GdHSVXg3aS2rnEOzxrB22W9BubOi9LyCLFMeUEfPH+NUR1l+HzHtWmalNT0yfF+7Q7z7JvUYzXdg=
+	t=1712179797; cv=fail; b=MaQLiYFAOEDmEGKr+2sxuYlMLUhLgQ61R5fRQny50DnRXoVEIp6Bo+JSCebq18U1WA5T3iw9gvPoBlFYCqARHYOyIzJQGuR0pqDynt5YjE6xWLt/I5tVCk6aID9y0Dof4YoJz9ZIVgZlmToBc5B5Mf8+ZKnAlQZDkzaNY0uRJ/s=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712179795; c=relaxed/simple;
-	bh=i37RrI0Yfd+qpbhqvBQb0KwqxFEgy6CsR2rSzcv5NG8=;
+	s=arc-20240116; t=1712179797; c=relaxed/simple;
+	bh=dN7L214BHKIN2vsw9rUU5smGx6bsG0dlxyQaFVdsgpw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Dg9go6ZxFgO7TrLm3IpmPBhzcnRVRE1pR1VzIy6j+8cvBhrOQ1z2PsfLEzCFSJ6XHJHjyMjkOclIhxEN6swcC6BGlxXwHwNuaEnqo6Fjl31XqtmdgF6c1DZli++UCHBKNcYHKzaYhahdQYjZy6Jv9n5Uh4xPRgdmonmaab8yiEs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=eUxuJd75; arc=fail smtp.client-ip=40.107.96.117
+	 Content-Type:MIME-Version; b=VN2/UxiFFkofqbDKZvZ5sTw8mYiGb3m0GFsrTEE8PmHRPMtSAfmMw8pJYKTlIaCy/INmYKh2Eh/KMn4udVSVEz0Htu92TUO7kx8buwlSYOyH+wsy7yT5JlN4tpjzfO72Uf+N57TwyUOXTOVbtp5txFVglXFfMxHyWF8vb5xfqO8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=RW7mPEVs; arc=fail smtp.client-ip=40.107.96.117
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kMvj8Q7dB6vTqSENFLy/+8BOcws4YzQjywnA7hDSPPWWVfTTVNlNKzHymaRaxgSeRCEvRZnWEUIqt1BMuV833OdSfQKEpCExjD7B8nL45dSdflLemhJIV+3PSZejO8zkL6whbZmLXhYzkT7mx3FC+0SIBCnRPCKvBghfFeGBPvJZnWtILm0b0Dm8IGsgD2cZ6ZsGeMWVeWBlx9JH1tt238UGmoP/JqEC+wtzMa03wbp/F9uapaZh5TsRKiaBwhyDgnWLJ6wy7R4VFf7dg09gE7AZOg0pBYyFjAPSPCTWweGPvD6850/3oWDQ2q7J8IzKG6s4iKiUJt7ehvLX8GoF9g==
+ b=FWyvJTLt8r/WeaH2dd3p6mMBQR+IBv6ypUjaYFoRH4TQbDuW3bwPjezz9Ct2EhlJ9c8ihd4pUEpOUaX6vCmD7DNAvmBVtNX7hkNnYtc67DLyqwORJ4KYmf++TaHDAbfVOzKeXiSuQAFPk/K/3ieKDLnwu7Au3u7H8Dpw6XlIGIIDneRnunwwdNDY3rpthVCH//uqEvWYr/Lmfm7iQCOQF1uurSAuvFgpDdUImU3EtgzpHQVt2QUJfIbM/es9gGpWKqgDQqi76xbDt6Jys9+hUGL3zQSHZeOMrSF1GbvZfn0Uab1i2MBPJS77sGRTj1+KEekIZZEYu0W0lPGJpomTbg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1bZiNK+KNKQ4yMz90KgKJ+Sq/gR08XGQsI5wDFJnBIQ=;
- b=lXWf5PmbLr5VEmZT6WX+pBeWNQlet0Rv9NRE3eATAfnZ/85NSjpOzVBS1bwNIEdmuh/gw3/AiBuMdlUOtkK3iOLHOTPSeavmBULEXpbMv2edJKOgWe5dEWt61KIbCA8E89z0Qt2v5VKfphJQYgbISiY199kx+O4O0VFeKQbHCP4T5amz+FPUA5Upq7GF3DJbj3NWb3v8wcyrE/3/BNl9OGgYKnuJUItWA9jFxkGF1xEYjx11Gh1vG31gbPplZWD6MDsamhiCCrBOkxO/TuQ2Aa45J+WrpQ5wmRo6PQ4HM73FwN/VcXwRV0c+ReOERko4adcIUrC1YjjfsXzE4UYR2g==
+ bh=cbQRyhr40BMu2hpzbzg904a3AKx8411K4Ou5gTxN+aU=;
+ b=WdUT5y1rX7KbFe2sK6MC5hdDZVmLH9VuIKfm69bKnS+2QdllslGlJkNK8RjIWlbYJslMDdFIz68A5NLLZVgIgMa1TAX+uCV86+/pw5H4ulnI/gJexogzPEYit2taov7sTeTVH4Q7s5SkbtWRWqGKe5esRHTSvr8/705h4xth0nnGYqj0pCsF2PR0v8FDntRWPuAvht80kSlprSjajrg3O1zLZTOtOwP+1xPdDXrlK4cDJfDhwbqkKUJfgRmUCF0B9pjih0s1+vG+89vfBnksYolaZXmkbAgfwoKogpwvp60H6AYQQyeHY3BcmySJl62UojBDLzujRiRj4J4oLIl6nw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
  dkim=pass header.d=nvidia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1bZiNK+KNKQ4yMz90KgKJ+Sq/gR08XGQsI5wDFJnBIQ=;
- b=eUxuJd75JVRz/vQ9kiV4CEgJnE3l7Dgi1VISWa7DRmBN/HwbUbY7iuCvhSyAkb5cyWpdeCw5aS77Zk4W5aXX0sIymekzSTu0iy262VsVfOm/pd0uwYmT980uY8Go6ndnKVREGsJKiOu6mcf+7H8z3QJP9EI+hqyEn4uPsmx2XHwS5syYYjrwLU7JcBVJegUaORErms7rMVJa73Yxavk8LJb8uZfwoPjLMXMhgmKsv4g1Zf0d9a0MU/Knpw8EvofehjFXaKvgoU23B1dYQbHH3ZMjZFDWffl/rGtgoi2q2C9IZ92bDgg+Bf45Ip25vePDJ/gnugKTLj8P1jiI0HngvQ==
+ bh=cbQRyhr40BMu2hpzbzg904a3AKx8411K4Ou5gTxN+aU=;
+ b=RW7mPEVs3G+6Z3Sdtj1anqOx5E4A0QiG2382f5mpSuW9lR+5xPAXVSetLBIcBUBfjqAz3U4NtAWr1+d0joMCmNfxqWa6p43gYDAQ3g5ZM+3lJASKCmELL6Zo3GrskBopwTnqv36SH8xrcxyVfST02BGrnOulXhfSxiFVXWEZS3NnjpBom11OZUqhM+7rl5baeH8N1jIUYuvOBH8huN4h3nOhhVJ0RsvPlLpAoGbgL06QW38A3vwKZvI3LjJLdANcGQ0N23Vv+/NMumAl4fJSpNVRGy4pOVNZb2IipujDA4VUF8x4zVNsf2BDwv3h6s8+DEwIFodff51wr4rIOeceZg==
 Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
  by IA1PR12MB8586.namprd12.prod.outlook.com (2603:10b6:208:44e::9) with
  Microsoft SMTP Server (version=TLS1_2,
@@ -89,16 +89,16 @@ Cc: ahmed.zaki@intel.com,
 	vladimir.oltean@nxp.com,
 	wojciech.drewek@intel.com,
 	Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Subject: [PATCH net-next v2 5/6] netlink: specs: ethtool: add header-flags enumeration
-Date: Wed,  3 Apr 2024 14:28:43 -0700
-Message-ID: <20240403212931.128541-6-rrameshbabu@nvidia.com>
+Subject: [PATCH RFC v2 5/6] tools: ynl: ethtool.py: Make tool invokable from any CWD
+Date: Wed,  3 Apr 2024 14:28:44 -0700
+Message-ID: <20240403212931.128541-7-rrameshbabu@nvidia.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20240403212931.128541-1-rrameshbabu@nvidia.com>
 References: <20240403212931.128541-1-rrameshbabu@nvidia.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SJ0PR05CA0025.namprd05.prod.outlook.com
- (2603:10b6:a03:33b::30) To BYAPR12MB2743.namprd12.prod.outlook.com
+X-ClientProxiedBy: BY3PR05CA0003.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::8) To BYAPR12MB2743.namprd12.prod.outlook.com
  (2603:10b6:a03:61::28)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -112,107 +112,87 @@ X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	SpHkT7t/3Kiepobv35DCP2jusXLI8OxNwWCX61XZb2cMGky1CZgchXmJgl7uVVCdM2Q67BrwR/as3lSTuI0DpphdTNzZlrTey2vPEcKec4fiPiTk1HnR3Fw7POHQSeZL+JNXUm6Gb3aVQxFNa5YpOzwu/hhTCrY6UbhVFduP8x8lsnPRjpPYNL6nz6QrIA3l7F9p37JE5U7hPYF8VSRZ21DHT/bAefDEM3hTPY9DPzXvimp4txT9D4SdmEyPexrSaE3oLw7QsWwW+iGitgNH0vQe+lXQ/OUgqDkweodo46Qn4T0I//gGJDbksTO6Dgd27FSS3BhugBVbjNmDQIEK05moHlgJguNkK6ILX7dSneTvJRhLf6ukO6PST65lwOHMGFuBUcpQHb/d0bPb6QC2judDn4QfaMI/qoSZTwBep1YHaQadR67rTVsnUmGeXUhimpNY4gmSVbuMNsMpwCTZPolVAhThpfChS9KkGtdW9Rf6+g0zzhJtYdTc5kDyaOu3DvGxcWsrAH0AeXnQzPiSJgDoJtDKwF16+IdDRJk/nFEWIAPXYQgtMPGdnNtsLVoqO+K1d0xmEtQPauoKTutQZ+polyopKDJI7kcnJOsCt0agoyOIwR2AJfl2BtJuXkTz1YQqzBtLHojp51yt8tR2eAs5+4GgygNPszxONWGV+tA=
+	zdT7vgOP9tXO2s2SE3Do6CMut4nSBVO0X4QtyHZIUFBfoeMZ0LS0yQYRYrADn1LtaoVjnFqX9R7hEJpsfdBez2Y/bKO9rygnFEVqJu4bQFcxGRFUMIU2/8cCEqv7atvJIlVZdi1P4l34D+98/vNX5KGOeoVcei7lcYz54p3QS16s0DPYqmDKunZSsVMlweP4tF5Nuo0hc42if0T8uByd5/aQmsFKDPSLC9Qx1ljMWekXBzcpNPiNFdXssxeJNCgIDeW7tzjt2JLwrCwyHkikm1CmedKFNuWR+CRz+0rODHXsvBdJnawLfACfmXhHToAB6vZnBxl66KHGah5MzMyO0ZHBSfUptSR0aOX9eohIO19wZl46v7tOT208GLjQcN6SH4cOMDR3/eCm3btneIK4YeFLYynCRT/1ZNGrA+NS6oGxsNCxYoeXd4/C5A3lqdiJOKR9wK6Rf5Fd/Tt+KsAbchvqT41gUuppyd/kXIq4Db6tTn/r7mASS/qkv8h4fbtWKCAsSZLwc5rVyaqXzkgeTdiGt0O36D7U9TKg4DUG3OT1vtTu0IYycXPSmKixKTIjQWB2WhwZbokKWPjbh5NTS97r+vrUIJGbBTW4fUkXAwlFEJLrK5RMwpG9vPQZblBt5BAUBqWD4eKLP9rKvO0q93Uz5TMi8jmQW46OBzKS9GA=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?55bsp0A+DZFUp3tNdN/6EWsq/W9VYAbkbYpUo73GjacqgJA36rYf/GKnV0KW?=
- =?us-ascii?Q?0aEiT41fEwx896q5SU/daCgTOScJA4LksT3viRnULNeb9IHtQ8Ml2XtjvEf3?=
- =?us-ascii?Q?xFLUYSY+KHhcGMQHQQZFF9bk7C8Z6BYG4RaTnn+xLx6ZUU8iYzSp0cf4GFzb?=
- =?us-ascii?Q?2PeOHlrnhPIRzGq8g0MdSQukrpL6SIbGStMUZRIRikshtZgekGAibiKTzDUl?=
- =?us-ascii?Q?TjCDi7QX8clRRVp4pK6ZjE2+bwxZ0XrRfdlpBO7wX7z/9h6WxDCVciCRBNZ/?=
- =?us-ascii?Q?+V4zb783WCkgq1+6qz1JFczPxr2DniJLNeq0UVRQwaoCLxU4APCTXMxmZVCk?=
- =?us-ascii?Q?NYYTPqUSsEE9lRSmYZF7z400dwrldoND8yMDr/cAwGa5DpAt3pof5WC5jLoL?=
- =?us-ascii?Q?aH/801MKAx4MQGUoiPgtHjfGKX2DQWS6NDvq8D6bFndwE70YzDUWEdkHVNUv?=
- =?us-ascii?Q?Ir9VhNvI7vD3aHNT8N+Cdnv1pPJkmN8gimUtIrLWQcMsb56Valxq/YGcJG2r?=
- =?us-ascii?Q?82umXIHrOCkogfwBXwg8klDq7XwnT91dcxxRf6GMVqbAkcNQJlXJAZNMmfQH?=
- =?us-ascii?Q?yncB/MMEQI4VTQNrffGbJoIJEYnILBQ7DEaQmirJTjtB7IwNgH5cshY4sp7C?=
- =?us-ascii?Q?px8NnQ0z/dRx0SjZSPoddJqpYVhdGX0gSSmjQL/tn78qfV38ldjdItfAfaEN?=
- =?us-ascii?Q?L/HTl84AcawNnmDE9zqA8jjo9qb1y59gp25gMeclLfEz3c/NVKSuGX5MMPX9?=
- =?us-ascii?Q?+caS7ttz0pzUlxvqcVhVvnHCdApwNbyGwPn6ovAhXrn94ibvT76mvVspd0bD?=
- =?us-ascii?Q?uY+AwYp4akS63czMepvQMcsHXGZwK0EODcVyRr52kk3Je5rbdQOv0QAP3x0n?=
- =?us-ascii?Q?TzVKZf7mCZMpBDAaLWFJo2OzvUE0i+KIDTNag1cHJQ1nTeZUSqqH0/In97oN?=
- =?us-ascii?Q?Eg53Co9/xKeGF7wO59LacbTFiP2wU3tDrD24Eqxg/5Sg4WWb5r+WhPFs88Q/?=
- =?us-ascii?Q?J/H8nzpaOT3OjUZ94Pqpp4f9XlPDlxWo3GjgWjYRofHIh0SfUlf2qICUGU96?=
- =?us-ascii?Q?ra8oOJ5rDGy2mX9AM7nvln31WLtUdV+5IlRZRmpz1JZ+kgqYXD2BvhQghhNy?=
- =?us-ascii?Q?vrImSPJ0X9aTp3tFzgYEW9Ei1w9Sfg2gpbvIOrqM+LsRcHxRH84aWM+t6/6e?=
- =?us-ascii?Q?vfDQcChKDM74DxRKy0xSgArRkM70+2qgS1XJWKoMmjDN/IeIpd/9rIar91+L?=
- =?us-ascii?Q?p42pH3wkIVBY5ya6q5fGYP7CKeb1Nu446xIB75evNzwunIhkEnfnOng04M0y?=
- =?us-ascii?Q?kIG/QqoruwudRmJfLTE9WLCdf2DmqHQgAXwbkSmzF6IqLBH699ALuhGG5B7a?=
- =?us-ascii?Q?ZbOUP8mCaY71sHacC7VPqRBxbGL0PeOOuzLCsPvB2TFmxUBF2FmFmTJKER+r?=
- =?us-ascii?Q?pZYx20+uLRbGM6NHSECzyKlj22jSE8LpZ4HQQ1gRBKexO21AUj8WRF+NF1Oy?=
- =?us-ascii?Q?FJPNcV+SLlPI5mE4Li46HiJomjgsOvx02AhYowrclwgtMpZhqsJT5yFKPwqC?=
- =?us-ascii?Q?jZBJ77k87GHVyDIkvmS4qxF55s/xn0kg+srtPfuhIWy6yYGgSd4tzDoVtz9Z?=
- =?us-ascii?Q?fQ=3D=3D?=
+	=?us-ascii?Q?oOPUOGY9gdjdR6oYQnrWBveYAG6BqghQEqtOQsOUMWR9GPyaXjSp0QxK4BgG?=
+ =?us-ascii?Q?0yQjdJ08KDbXL98Z/5rt9LIpNh8ra+U7IAwwtdroh/gh5s/DDI6k9DhGBlEK?=
+ =?us-ascii?Q?r1v8T2RWE4UjsUczkzzLrU99tcDAqyqFCMI9w39KtYfWMwVd+42O9xPp0CuG?=
+ =?us-ascii?Q?Ta4o0XpEIkKbRCvRN3rUiSOcb/uja2dvzqzn+UHFAcVLk1dPg/mPSEzQc6me?=
+ =?us-ascii?Q?1jSn9y2EVvzqplNezLjZksx+HMAS0nsTCQzwMXu/ljfSiAweKTRHvXV/vaJw?=
+ =?us-ascii?Q?3pgRg0kpmj6757UFts8xR8dLlIZ01yYemhuKIcNepj+zMJP0G7rGODkGSVGt?=
+ =?us-ascii?Q?zYY4MXqLzAa4WUH80BcylMn7vbBO0tEsabV61G5YP5myn6SJ7qOxnn4LNJqb?=
+ =?us-ascii?Q?v+cU8Cvf9rkHd1vAeVUbDpuEEl27PmHIwmXpXgnkB1aYYXvCzqAj7N2XYbEE?=
+ =?us-ascii?Q?gxeNpeNjo7ivX8Fn7KBT75wT2rADkcovsVJqyJZk0nHyCcI86pMK8OSumMYR?=
+ =?us-ascii?Q?hY8pZU7GcT7y1Sku1qawl3mD754IiJf4D9cWKI8NZOB2+HY7/OoxVy2vP8hf?=
+ =?us-ascii?Q?VOHJd4DmD8Q/mKBrhmk80sQiBUYO/BWgqGZtX6M4MxwQkXmzQ+sbQWKjOBab?=
+ =?us-ascii?Q?tio8xRfqBHQ1U75HiNEBFknpn2Bas2xCrpVJzFbbLK01V4Do4HmeWTZnoG6r?=
+ =?us-ascii?Q?pfgsf9ri/BNDloVgCzX3Vce6qMRi8YKo96IzGJpq63T8+rzHXh5TvSAjpATL?=
+ =?us-ascii?Q?acZm6FTGM5EEr0Ci+pguWBOmJxoACMaGNvLh/4PZxj3Oaf9dVl1p8+NUZJvG?=
+ =?us-ascii?Q?gZQ++RNu8JV3yxENgGq0F5agKd2pqlVsiE8LeNvpI6KYc227jTJrABmC+5RK?=
+ =?us-ascii?Q?mUSDDq+cQc5VQeJgWfcIDRNPIpeNHdepZjXp6kJHotqqo3KB9iQIjA8Rs9Df?=
+ =?us-ascii?Q?ZPoPhO8iQ3XrTW6anpB5IEpN8mBmUYEfpzpFNbXcaDjMXZoQZ4XFpgLkDpTT?=
+ =?us-ascii?Q?zncoUuMIv8qo1p2Vbiy5ALMQWtbAMbDBd9Koy312Uz3cPlCXYNYxSYMzkvpj?=
+ =?us-ascii?Q?r5fZHoYa2bK7p9AxlBz4E82AZUNQmbS7nKJfKR3D6H/TegWNBmIMy1w5HXNY?=
+ =?us-ascii?Q?x+VjwfjcRGw/PgsW0ns7qXJqJDaz+aGtVtmYYGdHOM/zgXSkC/A4VZ2A9AIn?=
+ =?us-ascii?Q?KAs8UFyklhGm7f4ZAtDs2RFQnEK/QjZRw/NszNbSMo8nehS9tFWUueiD3DX8?=
+ =?us-ascii?Q?B3vwiz4v/erMq7c+R0jNaxKXRbCC7Sy6wrNIMPF55T7j6BltALnb+9zZ3HXR?=
+ =?us-ascii?Q?bYPCKaKUZgVaOEMcfJKf6o8lUvNAljtAWz9lYPuhyesDqQNnatZRcUMyWm5O?=
+ =?us-ascii?Q?KjiV+LmHt0zYffi7JPiNCQ/HqAGA+wgwds7JN1kHjn/yA52dsT6Drjj8afqd?=
+ =?us-ascii?Q?wq6GyZVbo2HHciS5O5EK9oEOqFJAucR/fzvfx4rw5n+689vEqLOsaq4gLh0t?=
+ =?us-ascii?Q?USQWN1j73EIgGNvb4VW53wVg0aldpSa5a7JKIaZzmwc2e1DFMajvOHqX7+1g?=
+ =?us-ascii?Q?TBWStXPzKlP3eTjSrJpmpYwA+gBTqqzEx/MYRjLW/DF4q6OlK6XlP05JNVq+?=
+ =?us-ascii?Q?Wg=3D=3D?=
 X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d617e90a-83f2-4fdc-1c0e-08dc54252bcd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 57adfbfa-580c-4eb0-bc32-08dc54252c5d
 X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 21:29:40.6332
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 21:29:41.5978
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /B23eES0EGZeFyALx96uvqV4moIFu8e3j5WPalOTPRzyBob1k5xPaCraS34f5cDFoE2QFVj26qxHC2bWTMAQXw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: dNwf5Ou27LYaxP4Ev/zAFKc/7/+0U84Xp9n46mnIeP7vwww8rmS8uvcr7TK0M7lf7/kahrIOtUTpBMfKtNGhwQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8586
 
-Enable specifying header flags using enumerated entries in the spec file
-rather than raw flag values.
+ethtool.py depends on yml files in a specific location of the linux kernel
+tree. Using relative lookup for those files means that ethtool.py would
+need to be run under tools/net/ynl/. Lookup needed yml files without
+depending on the current working directory that ethtool.py is invoked from.
 
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Reviewed-by: Dragos Tatulea <dtatulea@nvidia.com>
 ---
- Documentation/netlink/specs/ethtool.yaml |  5 +++++
- include/uapi/linux/ethtool_netlink.h     | 11 +++++------
- 2 files changed, 10 insertions(+), 6 deletions(-)
+ tools/net/ynl/ethtool.py | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
-index f5aa1e7f3383..bae3bb013787 100644
---- a/Documentation/netlink/specs/ethtool.yaml
-+++ b/Documentation/netlink/specs/ethtool.yaml
-@@ -16,6 +16,10 @@ definitions:
-     name: stringset
-     type: enum
-     entries: []
-+  -
-+    name: header-flags
-+    type: flags
-+    entries: [ compact-bitset, omit-reply, stats ]
+diff --git a/tools/net/ynl/ethtool.py b/tools/net/ynl/ethtool.py
+index 6c9f7e31250c..44ba3ba58ed9 100755
+--- a/tools/net/ynl/ethtool.py
++++ b/tools/net/ynl/ethtool.py
+@@ -6,6 +6,7 @@ import json
+ import pprint
+ import sys
+ import re
++import os
  
- attribute-sets:
-   -
-@@ -30,6 +34,7 @@ attribute-sets:
-       -
-         name: flags
-         type: u32
-+        enum: header-flags
+ from lib import YnlFamily
  
-   -
-     name: bitset-bit
-diff --git a/include/uapi/linux/ethtool_netlink.h b/include/uapi/linux/ethtool_netlink.h
-index 8dfd714c2308..34a4a64262b2 100644
---- a/include/uapi/linux/ethtool_netlink.h
-+++ b/include/uapi/linux/ethtool_netlink.h
-@@ -117,12 +117,11 @@ enum {
+@@ -152,8 +153,11 @@ def main():
+     global args
+     args = parser.parse_args()
  
- /* request header */
+-    spec = '../../../Documentation/netlink/specs/ethtool.yaml'
+-    schema = '../../../Documentation/netlink/genetlink-legacy.yaml'
++    script_abs_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
++    spec = os.path.join(script_abs_dir,
++                        '../../../Documentation/netlink/specs/ethtool.yaml')
++    schema = os.path.join(script_abs_dir,
++                          '../../../Documentation/netlink/genetlink-legacy.yaml')
  
--/* use compact bitsets in reply */
--#define ETHTOOL_FLAG_COMPACT_BITSETS	(1 << 0)
--/* provide optional reply for SET or ACT requests */
--#define ETHTOOL_FLAG_OMIT_REPLY	(1 << 1)
--/* request statistics, if supported by the driver */
--#define ETHTOOL_FLAG_STATS		(1 << 2)
-+enum ethtool_header_flags {
-+	ETHTOOL_FLAG_COMPACT_BITSETS	= 1 << 0,	/* use compact bitsets in reply */
-+	ETHTOOL_FLAG_OMIT_REPLY		= 1 << 1,	/* provide optional reply for SET or ACT requests */
-+	ETHTOOL_FLAG_STATS		= 1 << 2,	/* request statistics, if supported by the driver */
-+};
+     ynl = YnlFamily(spec, schema)
  
- #define ETHTOOL_FLAG_ALL (ETHTOOL_FLAG_COMPACT_BITSETS | \
- 			  ETHTOOL_FLAG_OMIT_REPLY | \
 -- 
 2.42.0
 
