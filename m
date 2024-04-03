@@ -1,56 +1,65 @@
-Return-Path: <linux-kernel+bounces-129280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9906789682A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:16:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CB3B89682B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:16:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C346E1C25B75
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:16:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E37A1F21D16
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:16:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB09581207;
-	Wed,  3 Apr 2024 08:08:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6181382D98;
+	Wed,  3 Apr 2024 08:08:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UAlVLpOE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k4jY7OjU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289CD82C76
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D81082C76;
+	Wed,  3 Apr 2024 08:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131680; cv=none; b=uE49ILQ87C+d8Dd+Xoh2xyTBUf2vmAlBJJ0rf6jM6KbXTgk8/oGCHUk6AACWgqVwX4NGP+UVW5XCVmEMn6HvQg96lwGWh8saJbbW3XfzbsEpULHa3dvbmvFUCvGQSt5AQyhe1qJytrivcAYpbQoS0Lbx76Q3Cir+MiRNxB2Pmnc=
+	t=1712131691; cv=none; b=mHybvi4QBenUL9DfiAVEr3dZghyB1UxnWd1IDTSp6rC3iQyEMNbD3pzhCQkJlplzGyV90mYl2YXAM315giJRn1J5w4qTQtRcYG1PgKSLGzRKY33tV5qy5JqgI2I6fDpQjJvhOIZ7c8YyINxJmq4CRGXF9l8zWF5pUfiWGrA+bps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131680; c=relaxed/simple;
-	bh=+RZZEkb1FuJEVe5kPWRemc+Kjc4SmXvUOzkLd/XEDLw=;
+	s=arc-20240116; t=1712131691; c=relaxed/simple;
+	bh=nBMKcbCHM6WSePIKZgnN+NmyDRmfcmwdi7Q6UrA4R0s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=T3G0VKEgiHegotLctAld8LQB1Scuf1wXIonwUvJeHjrBcPvwn/3mPROTwKLb/OnWYxiHwFUkG1bnuvBGY91Nssm0LDCfYaZyp8yxgO2AP3DSpQDWHsPWW15StqdDjW22Ov/BJXAFgkzeiPzxJ1Z0e1bERjhuOSaieHqy0wHWoM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UAlVLpOE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16C2CC433C7;
-	Wed,  3 Apr 2024 08:07:57 +0000 (UTC)
+	 MIME-Version; b=QJJAzcHhKYzW8yQ8XH/5nDD3mshVRG4eK6x4SilGQt02nS+uoGH5CDjtxC28y1/9zN0quCd8v+hg4X+vXfZ6NAtkCjO7cAtrWYfhNRgr11v8v73nE/Tk+BPhCXGcO9dFyH5dFs2y0YDfPy2ufbw+W62DbplzURy3VUKpHg61Yms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k4jY7OjU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB065C433C7;
+	Wed,  3 Apr 2024 08:08:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712131679;
-	bh=+RZZEkb1FuJEVe5kPWRemc+Kjc4SmXvUOzkLd/XEDLw=;
+	s=k20201202; t=1712131691;
+	bh=nBMKcbCHM6WSePIKZgnN+NmyDRmfcmwdi7Q6UrA4R0s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UAlVLpOES8BpHSPX9xir8ZtWnkI77GoKSccDd8F6+Lk5tHErVvCS9G6JNPltXMnym
-	 rw6JRTNWTdPa5bZKdSJ0J85vD98lmiNtbSSQlOIX2sLHXEq5Sn2VUDYE3dYun2NXTX
-	 69JmjTv/12GuEiqIxNPjAsBBfE3znOnNROub0nUFLF5j0n2ti8dQ1JmVenQn+YcJcn
-	 yACPEXgXsCS5/igxN4eicNYihVjW3GKeuNcp2rAc/hTetqC0CMP63kOVJKFP3f/iJv
-	 /TANOdMIz3qmKZX+lUUUhuDWVHO+koGyTXMsGF2dubT63flnfqpvQk4yUr36PZSPla
-	 cmPMc8C010LUw==
+	b=k4jY7OjUHYSY173pVi7rXHQ/+qCdzAB94GAS0OIudJs8w1C5MNgJM5F/DWrpAsXbr
+	 +viQNaZ3Mx2NwGj2Gp9Udbo2+/Z6sdBJpSexHqFLT9J09VE/8sMJVROyWyfIjc4+0a
+	 DY1wWn54ExMb1B2r49X2T0djEZAhQbkykDGH+9Oiqku4LJxDq8R9UnqPDw4ZvB/ImD
+	 jmIq2XfMa0x+NRh57QyUE3qFSPP3T3NtiuG9u/em6ujBNDdR/VVQeWha5Ad+u49JdI
+	 syuhZlrYyG5MgcWtiVnX+sHvxOOrO+9e1Qa9eRXW66OIaFRDCpCYklDjECafr6LVna
+	 PDjNa9kHcKhsA==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
-	Alan Cox <alan@linux.intel.com>,
-	Jason Hu <jia-cheng.hu@intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jin Qian <jinqian@android.com>
+	Andi Shyti <andi.shyti@kernel.org>,
+	Russell King <rmk+kernel@arm.linux.org.uk>,
+	Holger Schurig <h.schurig@mn-solutions.de>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Subject: [PATCH 03/34] platform: goldfish: remove ACPI_PTR() annotations
-Date: Wed,  3 Apr 2024 10:06:21 +0200
-Message-Id: <20240403080702.3509288-4-arnd@kernel.org>
+	Wolfram Sang <wsa@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Yangtao Li <frank.li@vivo.com>,
+	Robert Marko <robert.marko@sartura.hr>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Liao Chang <liaochang1@huawei.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Rob Herring <robh@kernel.org>,
+	linux-i2c@vger.kernel.org
+Subject: [PATCH 04/34] i2c: pxa: hide unused icr_bits[] variable
+Date: Wed,  3 Apr 2024 10:06:22 +0200
+Message-Id: <20240403080702.3509288-5-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
 References: <20240403080702.3509288-1-arnd@kernel.org>
@@ -64,36 +73,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-On platforms without ACPI support, this causes a W=1 warning from gcc when
-the driver is built-in:
+The function using this is hidden in an #ifdef, so the variable
+needs the same one for a clean W=1 build:
 
-drivers/platform/goldfish/goldfish_pipe.c:925:36: warning: 'goldfish_pipe_acpi_match' defined but not used [-Wunused-const-variable=]
-  925 | static const struct acpi_device_id goldfish_pipe_acpi_match[] = {
-      |                                    ^~~~~~~~~~~~~~~~~~~~~~~~
+drivers/i2c/busses/i2c-pxa.c:327:26: error: 'icr_bits' defined but not used [-Werror=unused-const-variable=]
 
-There is no real harm in just keeping the small table around, so rather
-than adding more #ifdef checks, just reference it unconditionally to avoid
-the warning.
-
-Fixes: d62f324b0ac8 ("goldfish: Enable ACPI-based enumeration for android pipe")
+Fixes: d6a7b5f84b5c ("[ARM] 4827/1: fix two warnings in drivers/i2c/busses/i2c-pxa.c")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- drivers/platform/goldfish/goldfish_pipe.c | 2 +-
+ drivers/i2c/busses/i2c-pxa.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/platform/goldfish/goldfish_pipe.c b/drivers/platform/goldfish/goldfish_pipe.c
-index 061aa9647c19..6a0a42887857 100644
---- a/drivers/platform/goldfish/goldfish_pipe.c
-+++ b/drivers/platform/goldfish/goldfish_pipe.c
-@@ -940,7 +940,7 @@ static struct platform_driver goldfish_pipe_driver = {
- 	.driver = {
- 		.name = "goldfish_pipe",
- 		.of_match_table = goldfish_pipe_of_match,
--		.acpi_match_table = ACPI_PTR(goldfish_pipe_acpi_match),
-+		.acpi_match_table = goldfish_pipe_acpi_match,
- 	}
+diff --git a/drivers/i2c/busses/i2c-pxa.c b/drivers/i2c/busses/i2c-pxa.c
+index 76f79b68cef8..888ca636f3f3 100644
+--- a/drivers/i2c/busses/i2c-pxa.c
++++ b/drivers/i2c/busses/i2c-pxa.c
+@@ -324,6 +324,7 @@ static void decode_ISR(unsigned int val)
+ 	decode_bits(KERN_DEBUG "ISR", isr_bits, ARRAY_SIZE(isr_bits), val);
+ }
+ 
++#ifdef CONFIG_I2C_PXA_SLAVE
+ static const struct bits icr_bits[] = {
+ 	PXA_BIT(ICR_START,  "START",	NULL),
+ 	PXA_BIT(ICR_STOP,   "STOP",	NULL),
+@@ -342,7 +343,6 @@ static const struct bits icr_bits[] = {
+ 	PXA_BIT(ICR_UR,     "UR",		"ur"),
  };
  
+-#ifdef CONFIG_I2C_PXA_SLAVE
+ static void decode_ICR(unsigned int val)
+ {
+ 	decode_bits(KERN_DEBUG "ICR", icr_bits, ARRAY_SIZE(icr_bits), val);
 -- 
 2.39.2
 
