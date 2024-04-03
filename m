@@ -1,58 +1,64 @@
-Return-Path: <linux-kernel+bounces-130299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3AA189768D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:26:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96D3189768F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:27:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4EEA1C28B52
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:26:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 362151F21F88
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:27:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F254415884B;
-	Wed,  3 Apr 2024 17:17:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186EE15886B;
+	Wed,  3 Apr 2024 17:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lEqQeOgS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ulb12ZgW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A92B1586FA;
-	Wed,  3 Apr 2024 17:17:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54093158860;
+	Wed,  3 Apr 2024 17:17:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164668; cv=none; b=uHmRLylpGIWjtQ0wOGA+kEb3vc5WnGL9TRuXVWbfb1KEzwUeHeZgNKQ1nEOQKYvT1L8cUklxob5ArmYrzFa/qx00+nWfWX5gGyc8V4JVqbJf/s4Hm8ziNFpzRTCgn/XlprOCxEugyvTFfA9lS1r3ahHMRjdwczXjRLO8M1L5pew=
+	t=1712164671; cv=none; b=HFnEAzM8jPuWH2Vz7qWTBEG2z0hEhLWYmwFneHtCUftv2/Jbu0XUaAQeMzzQjDbsk6R/xw1pzpVOdXZB0HCFOPbjZDVs8ky/cUmwsAVswj5bLTbnlPoW3tgN0TRYRBpaf0m22ZwgM5dlHr21ktV0ssf+eIKi/8C27wtAeWpLYr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164668; c=relaxed/simple;
-	bh=hpvSuFBNptZidQwfefjWF5ZfybfxvIK+yhTcUOeTRwo=;
+	s=arc-20240116; t=1712164671; c=relaxed/simple;
+	bh=swLYWF+zuzZuzar6dZuK7XxalBoEyFnUH/kVyvk0etI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nJQhvdIzgVUsdIe5hw3gBelIlOuD/KIYJqIhUZ3JAIxqK44Bl2Yqf6Ol8EpNkfB7WXrnnMPicjrAnvvgoNYE+fxHLjJQq9nFNtiXqLXSpjCHgD2YT47G/w4t9YmbM6ZRHGxT8i2QQtp/few9QaKNrAretiOtPCqER8ITyQA/kP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lEqQeOgS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CA6BDC433A6;
-	Wed,  3 Apr 2024 17:17:46 +0000 (UTC)
+	 MIME-Version; b=A/sQDjYsvxNyw0G4FWuYW5NxldoeRPwiYAW0G0Bwh40qiz0dV621lO6b+Vb0QyA94M3y/by5WK8wbNoOsLzV3oEGa9LZpqqe4Qi0fKezd2ozhoj/XPBuX+119z07blkMzUE1Foba1UdrZdjV5KIzwbPuPqBXHEzjxnpg1O8IwaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ulb12ZgW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB80AC433F1;
+	Wed,  3 Apr 2024 17:17:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164667;
-	bh=hpvSuFBNptZidQwfefjWF5ZfybfxvIK+yhTcUOeTRwo=;
+	s=k20201202; t=1712164671;
+	bh=swLYWF+zuzZuzar6dZuK7XxalBoEyFnUH/kVyvk0etI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lEqQeOgSFPMiRgpBF1qKb+G38gRjx9007SNB23JnpyaMYOe9N5ENqWfzWqg0EHzyx
-	 VGmxPZ4RRxbhpSRvk8ANVQ/mq6PECAC/D0Ew8sUqE3Br1M/Vy9D6dqAP9FIaDjPAFf
-	 mMw37o0t9El6WKeZh87nUIkjMH8/Lw1J0SfsRi8TewAClRcyfpmOFTvhvWVEXf6gM9
-	 +EqRPKjUPYQa1nbKkSu4KNEjKyD4TC7nejTQahVQ7U9Ztte0LQjmD/MUG/QqXuCfxn
-	 QZ6XztRI8ZLOcsJ80pZdChbvqll8ebksmx+La6vo4bcq6H6ssNx/Z931iQSvBKLi3i
-	 j6buQj4XnFq3A==
+	b=Ulb12ZgW+ax3sbFmDWOXg+0KBgc9spJA3E0Iilr3uXn/frr2t2xco+CgHUFb7mOD4
+	 F8IVCGD7U64XaiLia4PKbgMpd4+RrJZrx1u5wQxpPQmj3/1Fuie3O3chj3Znt7nzx2
+	 MYN1gmoQngumBcSQSqMZW6mJ88kbz8C0tWqR9bwe6KOAx/Pq2WMFGNxD4R8Bqk8GRo
+	 YzZKIf+1sVqBWvugazdTJwEyGQRjxw4gujsQF8gSCtcz4uYeuQsaryWfomwabqjXAe
+	 lJKaUpmmJBi8NA9scuemSLxOo7tf1z1jFdZB2vhBzkwdSqIHbSXPONB3nAmMpuUPFO
+	 S9/odexS4+2TA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Roman Smirnov <r.smirnov@omp.ru>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Helge Deller <deller@gmx.de>,
+Cc: Tim Crawford <tcrawford@system76.com>,
+	Jeremy Soller <jeremy@system76.com>,
+	Takashi Iwai <tiwai@suse.de>,
 	Sasha Levin <sashal@kernel.org>,
-	daniel@ffwll.ch,
-	linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.8 25/28] fbmon: prevent division by zero in fb_videomode_from_videomode()
-Date: Wed,  3 Apr 2024 13:16:27 -0400
-Message-ID: <20240403171656.335224-25-sashal@kernel.org>
+	perex@perex.cz,
+	tiwai@suse.com,
+	sbinding@opensource.cirrus.com,
+	kailang@realtek.com,
+	luke@ljones.dev,
+	shenghao-ding@ti.com,
+	foss@athaariq.my.id,
+	rf@opensource.cirrus.com,
+	linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 26/28] ALSA: hda/realtek: Add quirks for some Clevo laptops
+Date: Wed,  3 Apr 2024 13:16:28 -0400
+Message-ID: <20240403171656.335224-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403171656.335224-1-sashal@kernel.org>
 References: <20240403171656.335224-1-sashal@kernel.org>
@@ -67,49 +73,53 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.3
 Content-Transfer-Encoding: 8bit
 
-From: Roman Smirnov <r.smirnov@omp.ru>
+From: Tim Crawford <tcrawford@system76.com>
 
-[ Upstream commit c2d953276b8b27459baed1277a4fdd5dd9bd4126 ]
+[ Upstream commit 33affa7fb46c0c07f6c49d4ddac9dd436715064c ]
 
-The expression htotal * vtotal can have a zero value on
-overflow. It is necessary to prevent division by zero like in
-fb_var_to_videomode().
+Add audio quirks to fix speaker output and headset detection on some new
+Clevo models:
 
-Found by Linux Verification Center (linuxtesting.org) with Svace.
+- L240TU (ALC245)
+- PE60SNE-G (ALC1220)
+- V350SNEQ (ALC245)
 
-Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-Signed-off-by: Helge Deller <deller@gmx.de>
+Co-authored-by: Jeremy Soller <jeremy@system76.com>
+Signed-off-by: Tim Crawford <tcrawford@system76.com>
+Message-ID: <20240319212726.62888-1-tcrawford@system76.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/core/fbmon.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ sound/pci/hda/patch_realtek.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/video/fbdev/core/fbmon.c b/drivers/video/fbdev/core/fbmon.c
-index 79e5bfbdd34c2..0a26399dbc899 100644
---- a/drivers/video/fbdev/core/fbmon.c
-+++ b/drivers/video/fbdev/core/fbmon.c
-@@ -1311,7 +1311,7 @@ int fb_get_mode(int flags, u32 val, struct fb_var_screeninfo *var, struct fb_inf
- int fb_videomode_from_videomode(const struct videomode *vm,
- 				struct fb_videomode *fbmode)
- {
--	unsigned int htotal, vtotal;
-+	unsigned int htotal, vtotal, total;
- 
- 	fbmode->xres = vm->hactive;
- 	fbmode->left_margin = vm->hback_porch;
-@@ -1344,8 +1344,9 @@ int fb_videomode_from_videomode(const struct videomode *vm,
- 	vtotal = vm->vactive + vm->vfront_porch + vm->vback_porch +
- 		 vm->vsync_len;
- 	/* prevent division by zero */
--	if (htotal && vtotal) {
--		fbmode->refresh = vm->pixelclock / (htotal * vtotal);
-+	total = htotal * vtotal;
-+	if (total) {
-+		fbmode->refresh = vm->pixelclock / total;
- 	/* a mode must have htotal and vtotal != 0 or it is invalid */
- 	} else {
- 		fbmode->refresh = 0;
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index a1facdb98d9a0..3e66c8971a039 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2646,6 +2646,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1558, 0x65f1, "Clevo PC50HS", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x65f5, "Clevo PD50PN[NRT]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x66a2, "Clevo PE60RNE", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
++	SND_PCI_QUIRK(0x1558, 0x66a6, "Clevo PE60SN[CDE]-[GS]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67d1, "Clevo PB71[ER][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e1, "Clevo PB71[DE][CDF]", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+ 	SND_PCI_QUIRK(0x1558, 0x67e5, "Clevo PC70D[PRS](?:-D|-G)?", ALC1220_FIXUP_CLEVO_PB51ED_PINS),
+@@ -10145,12 +10146,14 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1462, 0xb120, "MSI Cubi MS-B120", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x1462, 0xb171, "Cubi N 8GL (MS-B171)", ALC283_FIXUP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x152d, 0x1082, "Quanta NL3", ALC269_FIXUP_LIFEBOOK),
++	SND_PCI_QUIRK(0x1558, 0x0353, "Clevo V35[05]SN[CDE]Q", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1323, "Clevo N130ZU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1325, "Clevo N15[01][CW]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1401, "Clevo L140[CZ]U", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1403, "Clevo N140CU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x1404, "Clevo N150CU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x14a1, "Clevo L141MU", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x1558, 0x2624, "Clevo L240TU", ALC256_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x4018, "Clevo NV40M[BE]", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x4019, "Clevo NV40MZ", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1558, 0x4020, "Clevo NV40MB", ALC293_FIXUP_SYSTEM76_MIC_NO_PRESENCE),
 -- 
 2.43.0
 
