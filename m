@@ -1,137 +1,153 @@
-Return-Path: <linux-kernel+bounces-130173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA0908974EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:11:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 098B58974F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:13:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9F22E1F222B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:11:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A89A1C27702
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:13:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 453E514E2F2;
-	Wed,  3 Apr 2024 16:11:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gjPhTdrk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB46014F11C;
+	Wed,  3 Apr 2024 16:13:27 +0000 (UTC)
+Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A73714B073
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:11:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 877973D96B;
+	Wed,  3 Apr 2024 16:13:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.206.34.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712160664; cv=none; b=PrDGrv5Spk8tEALL8q6A5LxLNegdsSnapjlDxSEOQZX55SYOibkK0q/H4mibOr23rToVYLWvqCktFY/y9WLkHjJGBeGY13//4jTVwwCZBZ2EwSfSO9bPVAMHme+vJZlgctxCovlrGZkNSyL8MXPutIjotkYb4nIoaQmBip6fkOs=
+	t=1712160807; cv=none; b=MwLJqFrPMp6SG2Bcl1ouO+sg1VhBonULxIlhFxR+JbSHCPrBb+QTONKbXnXANPFNeNhi5tAmQT+sKsPP19MsdqGmShkBEn5a/zvFEZwObN3h+na3bb0+8CLQYTCMyjI8ZpTYFoq5L3yYIfazztoNvssV7eoRAZoZKb5sEA6AUDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712160664; c=relaxed/simple;
-	bh=nyU0F3ej83LHBArYWvHTmUMX9HPrzUZJ7A/Qsu6qybw=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=sR3gUkVP1gE7vDeIl6Plv8BXlXHlJFYASBcHf1HAffhGVTjeOoHyggRA2dYQRjQXAKveAvhYyaqqSgzzUVbwKu8ZQdve3wHZBkESItpsjwBDOp9BhOtQXfkUw7lmN7Fjy2hj8vch/XQl19pgLXPan3JVLV66RYh4surQjQNlBmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gjPhTdrk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 167ACC433C7;
-	Wed,  3 Apr 2024 16:10:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712160664;
-	bh=nyU0F3ej83LHBArYWvHTmUMX9HPrzUZJ7A/Qsu6qybw=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=gjPhTdrkX6vjBSuS+zaKuaiyoGR/UHwImYh5jczdwkYJGVKzTI8yf2hpvYuYivheF
-	 9cAasLK2QGmMR19zPptwl9h0ZbUmVIMRICLp23Kjwu2VcYz0+/6ZeLdy4bzT59PDc2
-	 l63iyGVEr2qZXLKQT6+2lXJITHV3yENnPasAhVdiRKDDtUBVDx+h/fqVo0cbFGV7t1
-	 u7dlbbHFhMewEnqBVLHRm7gTFbvCN1GWPuV+Llr16q96XepFSjlvVBfIIp39cnhcMb
-	 LqkfZqDv4tft76m0tI2QRTWTUo2DDnMJBAR90COOO/G7XwDSHBgrqRskp2gieKHvJt
-	 RLvt1DTrQcT8g==
+	s=arc-20240116; t=1712160807; c=relaxed/simple;
+	bh=U2g+9sCqmUZQJJQi6TnXCI2sXHoZ1gVewHiZfEHydQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tKHgPCcBgx3XT40q0HO60ZZXHBl+VpONUhlCeMAA33LtFn0D7F3NpB+AePZGt6Ko4PCmDagmdd0cGCdiadTeI16CzvWjfCt/QlQT7XsDwanV5Xh2OtIKu7aSZH3GOnS3CC0trn1sW5Lc5RigIqnCvQ00I2Gfq91sRJybX6UXnl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.206.34.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
+X-QQ-mid: bizesmtpsz12t1712160713tbgjzf
+X-QQ-Originating-IP: +cdGCqhc9XLXPV1xZHXG+yJaAHZ4lfeDteMTgsseDHM=
+Received: from localhost ( [112.0.147.175])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Thu, 04 Apr 2024 00:11:52 +0800 (CST)
+X-QQ-SSF: 01400000000000704000000A0000000
+X-QQ-FEAT: DoD8xN2rKow7K9mxo9zdVlLyDzzKK6iu8xNUc/iF96AuScOXF4+/sBdF/a9hz
+	IhLjBwMhjiYP2CQE+gZvlO3r0le/JduQCVeA1LslTnrTZ3mxRqr6Hrblcl5Nl6sP81I35UI
+	2mr6A9kWQR2TzF4iFX47dR1pUfybV23GVonLPgJYQZC6WATR0qBO7vF2rz15Hp3aEwV6RVl
+	Rw4HExZVMEy012Z/EoWKRl4JXk/LJkvTuHW/BCGOHnhAqPyQqvwUZ1iEAS5w+26tkyYujg0
+	AnR/BfrBs9jlbtHtsV4OH/rL46183JtGluUDwM6yAmTnMyh8VVDNgMJr38rD06wqZJrzHcv
+	Wot9SLoaSTD6ABtuqrtpW+oRTNnBBdEVf/5H3AaskpwLD7/1r9x/ffLlSY2SA==
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 13472035299235303404
+Date: Thu, 4 Apr 2024 00:11:51 +0800
+From: Dawei Li <dawei.li@shingroup.cn>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: will@kernel.org, yury.norov@gmail.com, linux@rasmusvillemoes.dk,
+	xueshuai@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+	yangyicong@hisilicon.com, jonathan.cameron@huawei.com,
+	andersson@kernel.org, konrad.dybcio@linaro.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 00/10] perf: Avoid placing cpumask var on stack
+Message-ID: <5BCB924A8FA6320A+Zg1/xw9C493rZ868@centos8>
+References: <20240403125109.2054881-1-dawei.li@shingroup.cn>
+ <Zg1qgxqrEi3sX3CA@FVFF77S0Q05N>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 03 Apr 2024 19:10:58 +0300
-Message-Id: <D0AMARUFBCNN.21GJ0PXUDK0F6@kernel.org>
-Cc: <agordeev@linux.ibm.com>, <anil.s.keshavamurthy@intel.com>,
- <aou@eecs.berkeley.edu>, <bp@alien8.de>, <catalin.marinas@arm.com>,
- <dave.hansen@linux.intel.com>, <davem@davemloft.net>, <gor@linux.ibm.com>,
- <hca@linux.ibm.com>, <jcalvinowens@gmail.com>,
- <linux-arm-kernel@lists.infradead.org>, <mhiramat@kernel.org>,
- <mingo@redhat.com>, <mpe@ellerman.id.au>, <naveen.n.rao@linux.ibm.com>,
- <palmer@dabbelt.com>, <paul.walmsley@sifive.com>, <tglx@linutronix.de>,
- <will@kernel.org>
-Subject: Re: [PATCH 4/4] kprobes: Remove core dependency on modules
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Mark Rutland" <mark.rutland@arm.com>, <linux-kernel@vger.kernel.org>
-X-Mailer: aerc 0.17.0
-References: <20240326163624.3253157-1-mark.rutland@arm.com>
- <20240326163624.3253157-5-mark.rutland@arm.com>
- <Zg07hrb_RMUu2tq7@FVFF77S0Q05N>
-In-Reply-To: <Zg07hrb_RMUu2tq7@FVFF77S0Q05N>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg1qgxqrEi3sX3CA@FVFF77S0Q05N>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpsz:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
-On Wed Apr 3, 2024 at 2:20 PM EEST, Mark Rutland wrote:
-> On Tue, Mar 26, 2024 at 04:36:24PM +0000, Mark Rutland wrote:
-> > From: Jarkko Sakkinen <jarkko@kernel.org>
-> >=20
-> > Tracing with kprobes while running a monolithic kernel is currently
-> > impossible because KPROBES depends on MODULES. While this dependency is
-> > necessary when KPROBES_USE_MODULE_ALLOC=3Dy, all the other module-speci=
-fic
-> > code only exist to handle the case when MODULES=3Dy, and can be hidden
-> > behind ifdeffery.
-> >=20
-> > Add the necessary ifdeffery, and remove the dependency on MODULES=3DN w=
-hen
-> > KPROBES_USE_MODULE_ALLOC=3Dn.
-> >=20
-> > Currently this allows kprobes to be used when CONFIG_MODULES=3Dn on arm=
-64
-> > and riscv, and other architectures can enable support by implementing
-> > their own kprobes_alloc_insn_page() and kprobes_free_insn_page() which
-> > do not depend on MODULES.
-> >=20
-> > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > Link: https://lore.kernel.org/all/20240326012102.27438-1-jarkko@kernel.=
-org/
-> > [Mark: Remove execmem changes, depend on !KPROBES_USE_MODULE_ALLOC]
-> > Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> > Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
-> > Cc: David S. Miller <davem@davemloft.net>
-> > Cc: Jarkko Sakkinen <jarkko@kernel.org>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
-> > ---
-> >  arch/Kconfig                |  2 +-
-> >  kernel/kprobes.c            | 12 +++++++++++-
-> >  kernel/trace/trace_kprobe.c | 15 +++++++++++++--
-> >  3 files changed, 25 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/arch/Kconfig b/arch/Kconfig
-> > index 85bb59f7b8c07..cf43de9ffb5b9 100644
-> > --- a/arch/Kconfig
-> > +++ b/arch/Kconfig
-> > @@ -52,7 +52,7 @@ config GENERIC_ENTRY
-> > =20
-> >  config KPROBES
-> >  	bool "Kprobes"
-> > -	depends on MODULES
-> > +	depends on MODULES || !KPROBES_USE_MODULE_ALLOC
->
-> Whoops; that should be:
->
-> 	depends on MODULES || HAVE_KPROBES_ALLOC
->
-> ... with similar fixups in the commit message to describe HAVE_KPROBES_AL=
-LOC
-> rather than KPROBES_USE_MODULE_ALLOC (which does not exist in any version=
- of
-> the series that got sent to the list).
->
-> I'll send a v2 with that fixed (and the other changes from Jarkko's v7 ba=
-se
-> patch) once I've locally tested that for architectures with and without
-> HAVE_KPROBES_ALLOC.
+Hi Mark,
 
-OK, please put to me to the CC list as I'm not ATM subscribed
-to the tracing list.
+On Wed, Apr 03, 2024 at 03:41:07PM +0100, Mark Rutland wrote:
+> On Wed, Apr 03, 2024 at 08:50:59PM +0800, Dawei Li wrote:
+> > Hi all,
+> 
+> Hi,
+> 
+> > This is v2 of [1] and [2] which basically eliminate cpumask var allocation
+> > on stack for perf subsystem.
+> > 
+> > Change since v1:
+> > - Change from dynamic allocation to a temporary var free helper:
+> >   cpumask_any_and_but().	[Mark]
+> > 
+> > - Some minor coding style improvements, reverse chrismas tree e.g.
+> > 
+> > - For cpumask_any_and_but() itself:
+> >   - Moved to cpumask.h, just like other helpers.
+> >   - Return value converted to unsigned int.
+> >   - Remove EXPORT_SYMBOL, for obvious reason.
+> 
+> Thanks for this!
+> 
+> The logic all looks good; if you can spin a v3 with the updated commit messages
+> I reckon we can queue this up shortly.
 
-BR, Jarkko
+Thanks for review.
+
+v3 respinned:
+https://lore.kernel.org/lkml/20240403155950.2068109-1-dawei.li@shingroup.cn/
+
+If it's going through perf tree, do we need Acked-by from bitmap
+maintainers for patch[1]?
+
+Thanks,
+
+    Dawei
+
+> 
+> Mark.
+> 
+> > 
+> > [1]:
+> > https://lore.kernel.org/lkml/20240402105610.1695644-1-dawei.li@shingroup.cn/
+> > 
+> > [2]:
+> > https://lore.kernel.org/lkml/1486381132-5610-1-git-send-email-mark.rutland@arm.com/
+> > 
+> > Dawei Li (9):
+> >   perf/alibaba_uncore_drw: Avoid placing cpumask var on stack
+> >   perf/arm-cmn: Avoid placing cpumask var on stack
+> >   perf/arm_cspmu: Avoid placing cpumask var on stack
+> >   perf/arm_dsu: Avoid placing cpumask var on stack
+> >   perf/dwc_pcie: Avoid placing cpumask var on stack
+> >   perf/hisi_pcie: Avoid placing cpumask var on stack
+> >   perf/hisi_uncore: Avoid placing cpumask var on stack
+> >   perf/qcom_l2: Avoid placing cpumask var on stack
+> >   perf/thunderx2: Avoid placing cpumask var on stack
+> > 
+> > Mark Rutland (1):
+> >   cpumask: add cpumask_any_and_but()
+> > 
+> >  drivers/perf/alibaba_uncore_drw_pmu.c    | 10 +++-------
+> >  drivers/perf/arm-cmn.c                   | 10 +++++-----
+> >  drivers/perf/arm_cspmu/arm_cspmu.c       |  8 +++-----
+> >  drivers/perf/arm_dsu_pmu.c               | 19 ++++++-------------
+> >  drivers/perf/dwc_pcie_pmu.c              | 10 ++++------
+> >  drivers/perf/hisilicon/hisi_pcie_pmu.c   |  9 ++++-----
+> >  drivers/perf/hisilicon/hisi_uncore_pmu.c |  6 ++----
+> >  drivers/perf/qcom_l2_pmu.c               |  8 +++-----
+> >  drivers/perf/thunderx2_pmu.c             | 10 +++-------
+> >  include/linux/cpumask.h                  | 23 +++++++++++++++++++++++
+> >  10 files changed, 56 insertions(+), 57 deletions(-)
+> > 
+> > Thanks,
+> > 
+> >     Dawei
+> > 
+> > -- 
+> > 2.27.0
+> > 
+> 
 
