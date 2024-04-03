@@ -1,88 +1,83 @@
-Return-Path: <linux-kernel+bounces-129877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D538A897186
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:48:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B9EE389718A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:49:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 629471F21B5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:48:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46D461F22B07
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:49:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 841771487F0;
-	Wed,  3 Apr 2024 13:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0373148834;
+	Wed,  3 Apr 2024 13:48:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="SDtq65k/"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="oy6vBAjo";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="dMSZN9SO"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 325741487EA
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:48:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151F51487E0;
+	Wed,  3 Apr 2024 13:48:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152112; cv=none; b=VZkvzt2Hsn8I8jwrO0NUcUj+HAPwFTy9NJ9FrgM3d4fTfElGeU3d1Z1+CSewlFABSnaWdABrA8qSluo17rxQiW2KxYoqXqxI/n31U5XB6sEbEqww5OzOKpbsZjI2ERAViNz7CroHsIbxsxJpcRlthsYvuir7sHkBZKUpP2JuOJU=
+	t=1712152136; cv=none; b=H2EU761yLj/E15F90edItcfk8gmMa7tAAilDkB7dFwbJ4r4Y6S73yw3qiSta2Y+xZuYAre2yMhsHTIc0TopWDnMscdDAW/vhxZOtBNR282v4/7npjsQJH9fw4Xle6y6khnbP7k+rblsJ//9axFBCtwtjVctRTZ6/nS0w3SdLCfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152112; c=relaxed/simple;
-	bh=fvKLwKU3KWCORD/8PD/VwUpCx2RAkGiPOHgcgK0dHSs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ifhe4lG+8zAC2ShjxNAHDwdPD5fJj6kwVRpEiIEbevuFJrEnSAum3Dy/6/bDawHq0/30r6riGsdh947P14pZtqihXRK5s3JDwAmuZh4qQ+b6ilUWbsfdAlshp+355b/8LZBLmbjX+LmsKKIoofjJwoJdqmGlUXZ6wjd+XLODa80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=SDtq65k/; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e0d82c529fso54722265ad.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 06:48:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712152110; x=1712756910; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=7b50vJkoLiWoH+ssMmq08Gs/zjVCDhawPZcPztNxgJk=;
-        b=SDtq65k/8Qr5eQv/BZ5PrgHkGEwpERgIvEA4T7snlXkn1SNi/Y5pNtXye+I38P8MQv
-         PCBjY0BFxUlyzV7MxZQPvJb+4nZsMIqfWavNr4cn1SxVVFR7VIfxbc8aB/mMcNUE/6Q5
-         5CBdykVkzgL+CHR5GJM2tPVOL2XKDlOJmblHY8tSoWPNMT2fOkzy2xU1InLLzrxC8q4o
-         mkn6zoQTCiKPbyTPQrn+0p9piecZSxFRdMgm3Wk3cN5mz06wSebcJFhe/5Eb7YNkUB3t
-         gFuYTY8MzdfP27+/gbuCcwmOxq4lWxRkYispo3Ura2Kvn6zXE7Rt0gg8qP95gmpGFxzK
-         1byg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712152110; x=1712756910;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7b50vJkoLiWoH+ssMmq08Gs/zjVCDhawPZcPztNxgJk=;
-        b=ENv2XezBFscE8rB49lv51+g61Sj3mRa/VPwxod4Xo1ylly0Epii/4XZc1/d4FwDC33
-         XskxBWy8gG/wy195sjuOridTFnWcMApf6n9BvFaSLsQPoFwHS0DypTE2CV5YD6jWpwci
-         X6aWV9dikm+Ne2LbvB3TwSgFejSDba+U1t+vchVv3AnsodQCKau+3mxZFdUzkZoEb8sx
-         lmno69psFWDOtKy301JH3HzcoiI+TyWk/sEO7RHw/GuLJ2BUj2LDASNjp8IdZivwHL5z
-         MhE6LQWYvAdifkT0mAYH5Gq98u6Av4HqlbTDtALPdoc96uOm39jhs7VUaxJEGTcH1Ov+
-         mokw==
-X-Forwarded-Encrypted: i=1; AJvYcCWR2zr0jVDa9w9AUneRYW/JJA7c26ToaJ6+ZNCTfZNmXoU01BXafiKPbI4abbkUllFCHjlQ+f45Va8V47NNjF9LwaCcfbYjdhNr1cub
-X-Gm-Message-State: AOJu0YxlS47ZE1u0G086YdjueFlngYssU7VZ7uQ8e57Bhgdk/sfwVlB7
-	RIHUTEMh6/5PBZ1jukTKemIMqiq+z4is1qGCo+PEKpwhAWFUKndeO1q71WIPcg==
-X-Google-Smtp-Source: AGHT+IGXV+jQUuyUhwPLCje+0fj8XIZ3KQtQiZTK53j+7cd8QBLHXxtfW6qNqfI4owlQNalec+sXsg==
-X-Received: by 2002:a17:902:e84c:b0:1e0:9ee1:d4cf with SMTP id t12-20020a170902e84c00b001e09ee1d4cfmr15834926plg.41.1712152110147;
-        Wed, 03 Apr 2024 06:48:30 -0700 (PDT)
-Received: from thinkpad ([103.28.246.48])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902c18500b001dddce2291esm13281068pld.31.2024.04.03.06.48.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 06:48:29 -0700 (PDT)
-Date: Wed, 3 Apr 2024 19:18:25 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 00/10] PCI: endpoint: Make host reboot handling more
- robust
-Message-ID: <20240403134825.GM25309@thinkpad>
-References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
- <ZgvSrLpvChG4jqQl@ryzen>
+	s=arc-20240116; t=1712152136; c=relaxed/simple;
+	bh=qoTFFleE42BgrSkvKarf5pCVIY29rDDpqfsHaC7hnc4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=DbG+SG7UMjorrLj/SqvSlsrs/E63jKC8d6+8Fhrf4fBux+52UYbEAX0lk/+n3EdQs+0HB7g2LFfSwesrpTB/jo7q6Tvh7n9mR2X0JgKh6VD/EKCllDtuhLvzPZIPsHqrGA3Ob9KlpWyVZRWkefDdCUUASPO7HPTkFAeEYbbjy8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=oy6vBAjo; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=dMSZN9SO; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712152132;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e7kLxvWk/5gRltzRCZSO2/VhtuBBFwcoV8m7fx6icxE=;
+	b=oy6vBAjox1TNAs+TZf+sluJyIhyG+yUvn4oR5PmJNKXZgJRpLiUL8ueqPNp11qni1Sgji0
+	C1dZpA4PrxvLDIjWNzybh4s97wN0RB7g6l5zSgoyzVTyn46APfr4Pdgfw5/q6iSR2pwNib
+	EI4JoU2J2MbavCyfuLMtjcZO17ty2AWmnHGkBFtJbBLyrABDRnOF+V2Xrky0dDrBHc50F3
+	0N2uehmxvltD/2eeiHwbSWrB87AL0y+jhgGKU/JqMhvAF0NL9QSwRWASew/93Yezpnms+l
+	IOo6gGF+KgJnEjGVf61SG1xQLOx/bx0UxeTi1cIa8a8wsHeNgzXoK3TphkBDig==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712152132;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=e7kLxvWk/5gRltzRCZSO2/VhtuBBFwcoV8m7fx6icxE=;
+	b=dMSZN9SOEbyPVeTuY2xmvA7+bdIbzh65aIqcDnmKw45YoP7FeZHZuu6ZtEdkGIRAEoE+9C
+	ebusyTmb9oxT05Aw==
+To: =?utf-8?B?TWFoZXNoIEJhbmRld2FyICjgpK7gpLngpYfgpLYg4KSs4KSC4KSh4KWH4KS1?=
+ =?utf-8?B?4KS+4KSwKQ==?= <maheshb@google.com>
+Cc: Sagi Maimon <maimon.sagi@gmail.com>, richardcochran@gmail.com,
+ luto@kernel.org, mingo@redhat.com, bp@alien8.de,
+ dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com, arnd@arndb.de,
+ geert@linux-m68k.org, peterz@infradead.org, hannes@cmpxchg.org,
+ sohil.mehta@intel.com, rick.p.edgecombe@intel.com, nphamcs@gmail.com,
+ palmer@sifive.com, keescook@chromium.org, legion@kernel.org,
+ mark.rutland@arm.com, mszeredi@redhat.com, casey@schaufler-ca.com,
+ reibax@gmail.com, davem@davemloft.net, brauner@kernel.org,
+ linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+ linux-arch@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v7] posix-timers: add clock_compare system call
+In-Reply-To: <CAF2d9jjg0PEgPorXdrBHVkvz-fmUV7UXUPqnpQGVEvgXTpHY0A@mail.gmail.com>
+References: <CAMuE1bHBky9NGP22PVHKdi2+WniwxiLSmMnwRM6wm36sU8W4jA@mail.gmail.com>
+ <878r29hjds.ffs@tglx>
+ <CAMuE1bF9ioo39_08Eh26X4WOtnvJ1geJ=WRVt5DhU8gEbYJNdA@mail.gmail.com>
+ <87o7asdd65.ffs@tglx>
+ <CAF2d9jjA8iM1AoPUhQPK62tdd7gPnCnt51f_NMhOAs546rU3dA@mail.gmail.com>
+ <87il10ce1g.ffs@tglx>
+ <CAF2d9jj6km7aVSqgcOE-b-A-WDH2TJNGzGy-5MRyw5HrzbqhaA@mail.gmail.com>
+ <877chfcrx3.ffs@tglx>
+ <CAF2d9jjg0PEgPorXdrBHVkvz-fmUV7UXUPqnpQGVEvgXTpHY0A@mail.gmail.com>
+Date: Wed, 03 Apr 2024 15:48:51 +0200
+Message-ID: <871q7md0ak.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,104 +85,138 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZgvSrLpvChG4jqQl@ryzen>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 02, 2024 at 11:41:00AM +0200, Niklas Cassel wrote:
-> On Mon, Apr 01, 2024 at 09:20:26PM +0530, Manivannan Sadhasivam wrote:
-> > Hello,
-> > 
-> > This is the follow up series of [1], to improve the handling of host reboot in
-> > the endpoint subsystem. This involves refining the PERST# and Link Down event
-> > handling in both the controller and function drivers.
-> > 
-> > Testing
-> > =======
-> > 
-> > This series is tested on Qcom SM8450 based development board with both MHI_EPF
-> > and EPF_TEST function drivers.
-> > 
-> > Dependency
-> > ==========
-> > 
-> > This series depends on [1] and [2].
-> > 
-> > - Mani
-> 
-> Hello Mani,
-> 
-> > [1] https://lore.kernel.org/linux-pci/20240314-pci-dbi-rework-v10-0-14a45c5a938e@linaro.org/
-> > [2] https://lore.kernel.org/linux-pci/20240320113157.322695-1-cassel@kernel.org/
-> 
-> AFAICT both these series [1] (DBI rework v12, not v10) and [2] are fully
-> reviewed and seem to be ready to go.
-> 
-> Considering that we have patches depending on [1] and [2],
-> namely the series in $subject, but also:
-> https://lore.kernel.org/linux-pci/20240330041928.1555578-1-dlemoal@kernel.org/T/#t
-> 
-> I think it would be a good idea if you could apply [1] and [2] to the
-> pci/endpoint branch.
-> 
+On Tue, Apr 02 2024 at 16:37, Mahesh Bandewar (=E0=A4=AE=E0=A4=B9=E0=A5=87=
+=E0=A4=B6 =E0=A4=AC=E0=A4=82=E0=A4=A1=E0=A5=87=E0=A4=B5=E0=A4=BE=E0=A4=B0) =
+wrote:
+> On Tue, Apr 2, 2024 at 3:37=E2=80=AFPM Thomas Gleixner <tglx@linutronix.d=
+e> wrote:
+> The modification that you have proposed (in a couple of posts back)
+> would work but it's still not ideal since the pre/post ts are not
+> close enough as they are currently  (properly implemented!)
+> gettimex64() would have. The only way to do that would be to have
+> another ioctl as I have proposed which is a superset of current
+> gettimex64 and pre-post collection is the closest possible.
 
-Unfortunately, I cannot merge the patches outside 'pci/endpoint' even though
-these are related to the PCI Endpoint subsystem. But I have delegated these 2
-series to Krzysztof, so hopefully he'll apply it soon.
+Errm. What I posted as sketch _is_ using gettimex64() with the extra
+twist of the flag vs. a clockid (which is an implementation detail) and
+the difference that I carry the information in ptp_system_timestamp
+instead of needing a new argument clockid to all existing callbacks
+because the modification to ptp_read_prets() and postts() will just be
+sufficient, no?
 
-- Mani
+For the case where the driver does not provide gettimex64() then the
+extension of the original offset ioctl is still providing a better
+mechanism than the proposed syscall.
 
-> (It is not easy for people to know that they will need to rebase their work on
-> these (fully reviewed) series, when they have not been applied.)
-> 
-> 
-> Kind regards,
-> Niklas
-> 
-> 
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> > Changes in v2:
-> > - Dropped the {start/stop}_link rework patches
-> > - Incorporated comments from Niklas
-> > - Collected review tags
-> > - Rebased on top of v6.9-rc1 and https://lore.kernel.org/linux-pci/20240320113157.322695-1-cassel@kernel.org/
-> > - Link to v1: https://lore.kernel.org/r/20240314-pci-epf-rework-v1-0-6134e6c1d491@linaro.org
-> > 
-> > ---
-> > Manivannan Sadhasivam (10):
-> >       PCI: qcom-ep: Disable resources unconditionally during PERST# assert
-> >       PCI: endpoint: Decouple EPC and PCIe bus specific events
-> >       PCI: endpoint: Rename core_init() callback in 'struct pci_epc_event_ops' to init()
-> >       PCI: epf-test: Refactor pci_epf_test_unbind() function
-> >       PCI: epf-{mhi/test}: Move DMA initialization to EPC init callback
-> >       PCI: endpoint: Introduce EPC 'deinit' event and notify the EPF drivers
-> >       PCI: dwc: ep: Add a generic dw_pcie_ep_linkdown() API to handle Link Down event
-> >       PCI: qcom-ep: Use the generic dw_pcie_ep_linkdown() API to handle Link Down event
-> >       PCI: epf-test: Handle Link Down event
-> >       PCI: qcom: Implement shutdown() callback to properly reset the endpoint devices
-> > 
-> >  drivers/pci/controller/dwc/pcie-designware-ep.c |  99 ++++++++++++++---------
-> >  drivers/pci/controller/dwc/pcie-designware.h    |   5 ++
-> >  drivers/pci/controller/dwc/pcie-qcom-ep.c       |   9 +--
-> >  drivers/pci/controller/dwc/pcie-qcom.c          |   8 ++
-> >  drivers/pci/controller/dwc/pcie-tegra194.c      |   1 +
-> >  drivers/pci/endpoint/functions/pci-epf-mhi.c    |  47 ++++++++---
-> >  drivers/pci/endpoint/functions/pci-epf-test.c   | 103 +++++++++++++++++-------
-> >  drivers/pci/endpoint/pci-epc-core.c             |  53 ++++++++----
-> >  include/linux/pci-epc.h                         |   1 +
-> >  include/linux/pci-epf.h                         |  27 +++++--
-> >  10 files changed, 248 insertions(+), 105 deletions(-)
-> > ---
-> > base-commit: e6377605ca734126533a0f8e4de2b4bac881f076
-> > change-id: 20240314-pci-epf-rework-a6e65b103a79
-> > 
-> > Best regards,
-> > -- 
-> > Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > 
+I also clearly said that all drivers should be converted over to
+gettimex64().
 
--- 
-மணிவண்ணன் சதாசிவம்
+> Having said that, the 'flag' modification proposal is a good backup
+> for the drivers that don't have good implementation (close enough but
+> not ideal). Also, you don't need a new ioctl-op. So if we really want
+> precision, I believe, we need a new ioctl op (with supporting
+> implementation similar to the mlx4 code above). but we want to save
+> the new ioctl-op and have less precision then proposed modification
+> would work fine.
+
+I disagree. The existing gettimex64() is good enough if the driver
+implements it correctly today. If not then those drivers need to be
+fixed independent of this.
+
+So assumed that a driver does:
+
+gettimex64()
+   ptp_prets(sts);
+   read_clock();
+   ptp_postts(sts);
+=20=20=20
+today then having:
+
+static inline void ptp_read_system_prets(struct ptp_system_timestamp *sts)
+{
+	if (sts) {
+		if (sts->flags & PTP_SYS_OFFSET_MONO_RAW)
+			ktime_get_raw_ts64(&sts->pre_ts);
+		else
+			ktime_get_real_ts64(&sts->pre_ts);
+	}
+}
+
+static inline void ptp_read_system_postts(struct ptp_system_timestamp *sts)
+{
+	if (sts) {
+		if (sts->flags & PTP_SYS_OFFSET_MONO_RAW)
+			ktime_get_raw_ts64(&sts->post_ts);
+		else
+			ktime_get_real_ts64(&sts->post_ts);
+	}
+}
+
+or
+
+static inline void ptp_read_system_prets(struct ptp_system_timestamp *sts)
+{
+	if (sts) {
+		switch (sts->clockid) {
+                case CLOCK_MONOTONIC_RAW:
+                	time_get_raw_ts64(&sts->pre_ts);
+                        break;
+                case CLOCK_REALTIME:
+			ktime_get_real_ts64(&sts->pre_ts);
+                        break;
+                }=20=20=20=20=20=20=20=20
+	}
+}
+
+static inline void ptp_read_system_postts(struct ptp_system_timestamp *sts)
+{
+	if (sts) {
+		switch (sts->clockid) {
+                case CLOCK_MONOTONIC_RAW:
+                	time_get_raw_ts64(&sts->post_ts);
+                        break;
+                case CLOCK_REALTIME:
+			ktime_get_real_ts64(&sts->post_ts);
+                        break;
+                }=20=20=20=20=20=20=20=20
+	}
+}
+
+is doing the exact same thing as your proposal but without touching any
+driver which implements gettimex64() correctly at all.
+
+While your proposal requires to touch every single driver for no reason,
+no?
+
+It is just an implementation detail whether you use a flag or a
+clockid. You can carry the clockid for the clocks which actually can be
+read in that context in a reserved field of PTP_SYS_OFFSET_EXTENDED:
+
+struct ptp_sys_offset_extended {
+	unsigned int	n_samples; /* Desired number of measurements. */
+	clockid_t	clockid;
+	unsigned int	rsv[2];    /* Reserved for future use. */
+};
+
+and in the IOCTL:
+
+        if (extoff->clockid !=3D CLOCK_MONOTONIC_RAW)
+        	return -EINVAL;
+
+	sts.clockid =3D extoff->clockid;
+
+and it all just works, no?
+
+I have no problem to decide that PTP_SYS_OFFSET will not get this
+treatment and the drivers have to be converted over to
+PTP_SYS_OFFSET_EXTENDED.
+
+But adding yet another callback just to carry a clockid as argument is a
+more than pointless exercise as I demonstrated.
+
+Thanks,
+
+        tglx
 
