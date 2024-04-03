@@ -1,108 +1,167 @@
-Return-Path: <linux-kernel+bounces-130006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130007-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70083897316
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:54:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02D2C89731A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:55:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A192F1C22634
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:54:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E66F5B2A3A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A501C14901F;
-	Wed,  3 Apr 2024 14:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A8D25CDC9;
+	Wed,  3 Apr 2024 14:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U/tdlNpT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="pN9EiLN+"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEB65B66E;
-	Wed,  3 Apr 2024 14:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F93148FE8;
+	Wed,  3 Apr 2024 14:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712156047; cv=none; b=BMubEThR2YiJM8Vcoq5yheNfyntVbBhwojyayXMmJL39DQ7CcWsbPuONKbNk9fe91y6HsWmefwZjOJy/r7Ched01sR7fbvAvvu9UZMQn7qz4Yp03E0XyLyR5mWvh/fEheT9yAhsEJ6s4i3J69cMUX/QiXB9CZrb1j98H5CmGizs=
+	t=1712156069; cv=none; b=pBSFSuygiIdZ6mkJI90qMD674gKm8pS+i33SsNk5PsxNJNaEfXPV34iwI+ljRSb0y7zbJTKq8FKxW6x4sXUXQ/36fJQhzMsN29FiHfzDMDxVtiM8Tf6yWv0+pEiFSxGWEiLEO0ZgE8Gho+/N6/agAgxYK/LqZ4ulH89uQ/e3GmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712156047; c=relaxed/simple;
-	bh=ZdTDkDvhWvcbpl14yhv4Zh3E+B9iU9jq8RS0OPet/qk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JY0mGNp5b8bVypgRXDGQ/4i+rALUs9d5hwCg1E0YcJg1aAvwKw3GMGfWC8obFPTwxD+Mrkbs+TpWKE4LH0P8JAELfZaqxelqDvAFxnnEdWvcSKRmDl/Rl9w/ABp+nJUcmclAL85p63uAF+9ubnzrMUVoHsXinVhTKqSDHYwXHlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U/tdlNpT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FEC8C43330;
-	Wed,  3 Apr 2024 14:54:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712156046;
-	bh=ZdTDkDvhWvcbpl14yhv4Zh3E+B9iU9jq8RS0OPet/qk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=U/tdlNpTBq1FIZNucUpHv1Shfrzlz6A6JDsb3C/dFBS/BPQ/goXG8Wxl37GTR2XZB
-	 DUdQ2DgcVSubHnJSVCKkxowp1zaVQ7BVsQfgBciBAlD0XPmGKsbFFoS4/m+0nY99Ep
-	 g+9pi59J2ZRwRtop3PW6dX7z3gDaYHfN+Z0mgojq0cXg+lGUP7K8aw2RDxt7gWwPYX
-	 Z1/qts9tU9XO5Sp8aKYeDqIQNXXt/DxCSkBFhA7dyEjHDs2AJQsVWTFyEysnPtEB0f
-	 4m4KeT44xmuN2v8xXRKEpj29dhU+pK/BpKI01I7tYNZXDRDjDjHqkBW3HYHvfn/Efm
-	 pm0ICA78yxaiQ==
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5a4930d9c48so1260257eaf.1;
-        Wed, 03 Apr 2024 07:54:06 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXmgSdhCIO7AbhnREeWMbsVF+10KQGTCQQ4D6DnVqcf5d2PWNO+5PZbRgPePk2o4L80/W2CHlssbMpLJcIS84eiaZCgMEJvTbEFhZniOBGZySyh3Rktws30tURRLfwRrG/F0G6RiEMXW4XV0gRyB/c7i7bMU2lqfBc0zwj0Vgggh/0=
-X-Gm-Message-State: AOJu0YwCWneVtsdQNqaUZqqbaikhVZy3l7wbxPybyelPfNX9pf7e0Adu
-	BQCiuJy8ziNCq9BCaKPUVTA3fuuIQX+RW82uSvjt7o6LrYy/O2CTaEiZNAd5eKwEZGJORokXLLL
-	KRNGJr3s/BlG7P43QZZn030V59Eg=
-X-Google-Smtp-Source: AGHT+IFmeAIEBKNUUeBrXb8QHVZbYefZ5snm1WkS62JAtwDxMTixZzYn3yPdg2hhGm/NjUu67k5wzWnJytCmygYN01k=
-X-Received: by 2002:a05:6820:2289:b0:5a4:6e23:e335 with SMTP id
- ck9-20020a056820228900b005a46e23e335mr18125057oob.0.1712156045715; Wed, 03
- Apr 2024 07:54:05 -0700 (PDT)
+	s=arc-20240116; t=1712156069; c=relaxed/simple;
+	bh=FiNmi7tHU8LCxNQpULgn4kNN5KVMjzNkfB/llFUlLW0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=X8cFcaAq25dMkcrnq7SwPRwKWMYJrILGwyw5FKdtlELxzmk1/CFCrruj8hx5yHByCol7xrAXJoq5T6BlKkTA/VjEV13x4fKKidBCqz+mDJJf2g+hs+wKxnNKxGulzcaZUqHRUriC62Z9cavEssElNBkP+FwcHAsdobHMUEeHsiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=pN9EiLN+; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A03A9371BB;
+	Wed,  3 Apr 2024 14:54:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1712156065; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=L0WbLD5l/t9iedAnyVn1INK22TgmOVbQD9aZe2QlLvI=;
+	b=pN9EiLN+i4rF1gJsFqxla+MO3HuIbs0l6XLPl+uROOaIHhrUJiGYZpphGQwbFz6FOvT3ji
+	xlm2JJg9V37LdzAd504GUH9LqXvO4+TBoN8mdf8LsgSrzQrQThZ8nUGt+Ba9dW7BEHjPlp
+	diTzeU0eOQs7bKO5ijG97x9HyZ/6Dtw=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8A00F13357;
+	Wed,  3 Apr 2024 14:54:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id BeB+IaFtDWZ+aQAAn2gu4w
+	(envelope-from <mkoutny@suse.com>); Wed, 03 Apr 2024 14:54:25 +0000
+Date: Wed, 3 Apr 2024 16:54:20 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Valentin Schneider <vschneid@redhat.com>
+Cc: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>, 
+	Zefan Li <lizefan.x@bytedance.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, 
+	"Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>, 
+	Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-pm@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Frederic Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>, 
+	Ingo Molnar <mingo@kernel.org>, Anna-Maria Behnsen <anna-maria@linutronix.de>, 
+	Alex Shi <alexs@kernel.org>, Vincent Guittot <vincent.guittot@linaro.org>, 
+	Barry Song <song.bao.hua@hisilicon.com>
+Subject: Re: Re: [PATCH 1/2] cgroup/cpuset: Make cpuset hotplug processing
+ synchronous
+Message-ID: <mhwbjfm3zsoinm2eozz6d7djtflf6tbpmfzsbbsscv3u5aijtr@p2edxl6voxoa>
+References: <20240401145858.2656598-1-longman@redhat.com>
+ <20240401145858.2656598-2-longman@redhat.com>
+ <kce74bx6aafxfuw5yovaschym4ze4kommfk74eq5totojytest@mdxnfvl2kdol>
+ <548efd52-e45f-41fa-a477-bc5112d7b00c@redhat.com>
+ <u3naomgv34t5rnc7pmyy4zjppgf36skeo45orss2xnqcvtrcez@m74tsl2ws76f>
+ <7e62b37d-6c9c-4e55-a01a-175695475cb5@redhat.com>
+ <xhsmhedbmbjz5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318151631.1621881-1-d-gole@ti.com>
-In-Reply-To: <20240318151631.1621881-1-d-gole@ti.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Wed, 3 Apr 2024 16:53:54 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0iOEkmE741_hAmprYYxmi5p9WZPrxOu59Y3FqzLM9oJwg@mail.gmail.com>
-Message-ID: <CAJZ5v0iOEkmE741_hAmprYYxmi5p9WZPrxOu59Y3FqzLM9oJwg@mail.gmail.com>
-Subject: Re: [PATCH V2 0/2] PM: wakeup: make device_wakeup_disable return void
-To: Dhruva Gole <d-gole@ti.com>
-Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Tony Lindgren <tony@atomide.com>, Len Brown <len.brown@intel.com>, 
-	Pavel Machek <pavel@ucw.cz>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Viresh Kumar <viresh.kumar@linaro.org>, theo.lebrun@bootlin.com, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4oauttmks2s2kyvd"
+Content-Disposition: inline
+In-Reply-To: <xhsmhedbmbjz5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+X-Spam-Score: -3.72
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-3.72 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-0.993];
+	 SIGNED_PGP(-2.00)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+,1:+,2:~];
+	 BAYES_HAM(-2.51)[97.79%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 RCPT_COUNT_TWELVE(0.00)[22];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:98:from];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Level: 
+X-Rspamd-Queue-Id: A03A9371BB
+
+
+--4oauttmks2s2kyvd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 4:17=E2=80=AFPM Dhruva Gole <d-gole@ti.com> wrote:
->
-> This is a follow up patch based on discussions with Rafael[0] on a previo=
-us
-> patch I sent to propagate return value from device_wakeup_disable
-> further upward inside device_init_wakeup
->
-> However, it doesn't seem like today any return values from
-> device_wakeup_disable are very useful to the caller.
->
-> I could only spot one caller of this function that was actually
-> propagating the return value upward other than the PM core calls. I have
-> tried to update sdhci-pci-core to work with the new changes
->
-> [0] https://lore.kernel.org/all/CAJZ5v0jbHwiZemtNAoM-jmgB_58VqmKUkqv4P7qr=
-PkxWzBzMyQ@mail.gmail.com/
->
-> Changelog:
->
-> v1 --> v2:
-> * Squashed the mmc fix into first patch [Rafael]
->
-> Dhruva Gole (2):
->   PM: wakeup: make device_wakeup_disable return void
->   PM: wakeup: Remove unnecessary else from device_init_wakeup
->
->  drivers/base/power/wakeup.c       | 11 +++++++----
->  drivers/mmc/host/sdhci-pci-core.c |  2 +-
->  include/linux/pm_wakeup.h         | 12 +++++-------
->  3 files changed, 13 insertions(+), 12 deletions(-)
->
-> --
+On Wed, Apr 03, 2024 at 04:26:38PM +0200, Valentin Schneider <vschneid@redh=
+at.com> wrote:
+> Also, I gave Michal's patch a try and it looks like it's introducing a
 
-Both patches applied as 6.10 material, thanks!
+Thank you.
+
+>   cgroup_threadgroup_rwsem -> cpuset_mutex
+> ordering from
+>   cgroup_transfer_tasks_locked()
+>   `\
+>     percpu_down_write(&cgroup_threadgroup_rwsem);
+>     cgroup_migrate()
+>     `\
+>       cgroup_migrate_execute()
+>       `\
+>         ss->can_attach() // cpuset_can_attach()
+>         `\
+>           mutex_lock(&cpuset_mutex);
+>=20
+> which is invalid, see below.
+
+_This_ should be the right order (cpuset_mutex inside
+cgroup_threadgroup_rwsem), at least in my mental model. Thus I missed
+that cpuset_mutex must have been taken somewhere higher up in the
+hotplug code (CPU 0 in the lockdep dump, I can't easily see where from)
+:-/.
+
+Michal
+
+--4oauttmks2s2kyvd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQpEWyjXuwGT2dDBqAGvrMr/1gcjgUCZg1tmgAKCRAGvrMr/1gc
+jkuBAQCOU5ydo9y0TCnjqjAp/O4I1OLjgDDV/yffUbpaHCtEQwD+JkXKjW2H8u/w
+FTxiJwyMy2sI6p0otQdxSBa7Bpu0Vgs=
+=vBqH
+-----END PGP SIGNATURE-----
+
+--4oauttmks2s2kyvd--
 
