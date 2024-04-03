@@ -1,132 +1,106 @@
-Return-Path: <linux-kernel+bounces-129328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F37689689E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:30:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC2E48968A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:31:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 445821F2920B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:30:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75246287608
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7666BFCE;
-	Wed,  3 Apr 2024 08:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1ED9E6EB7C;
+	Wed,  3 Apr 2024 08:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="PMCfSvDi";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="F1E7dnUo"
-Received: from wfhigh6-smtp.messagingengine.com (wfhigh6-smtp.messagingengine.com [64.147.123.157])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="R9aXz0Ht"
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EAF26773B;
-	Wed,  3 Apr 2024 08:25:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6903E48E;
+	Wed,  3 Apr 2024 08:29:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.113
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712132717; cv=none; b=rn0o5X9NkhaCdFNg6+PChfFjjFDc+8LunVvLJew9dxJSaLcT5hVTCGlnSVIqDw3S1v7xrO1SUWRWt1Sfi3WjnUNl/wwogNejGZk0RkJvlEmkXKSXJ9G8LwYexu1RQ7aNeCBkICW0dKXn/PWcDJ+9GfEC6eFZSREXjNryhNdAObg=
+	t=1712132969; cv=none; b=ho6+ijI8R78pxaONgStjw4TUFIkPxn6vGz4Yxltvkzw8nbwGdLlI0EBE3QGakhnH9RZfdxRD1tZr3UKMQumBzzHSsCEl5parC41U1k6dEBkF3Q2PGxPY8YfjH/z1xC6td8SFhudA383whBZjNMWEoKpCEAyerTif96X5kTxmwYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712132717; c=relaxed/simple;
-	bh=eDMSGeYKsWweu456Jo9u7QgAQKWHGkUYnY4GIJaQvzA=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=Ph2wu2ghnDl4bSGYqi2XQo8s8Fw/IG5mLst/UT6SOkeN/1f7JTD0Heik6vhDMeEejGDAybRpBH+NzCzxENCLP48kbwrQD2HgBj+bVDw4kgLNzvYDcu39rtU9fCeRt65NIpv0IBmWf6rHlled1CsRy6y55iMRehA1eIbemsv37Lk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=PMCfSvDi; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=F1E7dnUo; arc=none smtp.client-ip=64.147.123.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 2356F18000AC;
-	Wed,  3 Apr 2024 04:25:14 -0400 (EDT)
-Received: from imap41 ([10.202.2.91])
-  by compute2.internal (MEProxy); Wed, 03 Apr 2024 04:25:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1712132713;
-	 x=1712219113; bh=eDMSGeYKsWweu456Jo9u7QgAQKWHGkUYnY4GIJaQvzA=; b=
-	PMCfSvDi56urkReUUrEASAtbEneww3GcjqzSxZP0uLqJDXJNbyQv9XNjl+uj+8eI
-	CPVVtOMg9Qr6QIY9w2S81nmBsycCP+8hcT76FlXFt+RX0gx7SdiCHrweWL4K3WCr
-	JV1C/+b5PcfRV+X1AMH9ePv6hob48ultKNAOxl28tOMjYBnvUF5VOG8oYV6BsjZW
-	W8YvVTKtMnL5nDRocvqX27Zr7g7xUKuqwOJXl8duEneGx6/RLNo5wLvqv2ASqxy0
-	4038ULSU0+jLRgv3QXeMpBfmDryjFnwweMpicXfiK0ikrKLigSTRCCHP8kmG7lo8
-	55Qe1iZ9E2Nek4VgOOIj0Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712132713; x=
-	1712219113; bh=eDMSGeYKsWweu456Jo9u7QgAQKWHGkUYnY4GIJaQvzA=; b=F
-	1E7dnUoqOoX6pT1h674HmvhLZjf72WHuJj92JEEL+Gazlma6dn9XGEYVKUhk1MH6
-	+LLLmoCgYtts+zotII7vFwIr0xnpQ1ZFk6anCnFXh1jkVRPAsvoeWcleBP8uupRH
-	NTUsuV2RzzF4e0HxehU3vqd7n0YHWHJSMao+2kfGzFKX0GZoiGJ9CMWjUJquhGds
-	HF50/Utr1wgaEzGNshnn0c2yv5HfZ2nrjZ9tNU8WzgeXB50oP7EG5IGFa0fJI3HB
-	gG9BLU5pOKZUBsPbSjQWNfOlRyqNW8vT2cguxxAbSHosIeCXrCnDSbwY8ZYQDtEy
-	WHFv/RM4WuRp0KpKNyJBQ==
-X-ME-Sender: <xms:aRINZkE-iuha8qIqIgRxvWKPTjGr_ScjF-Gg27CyX9DI31TFaYricQ>
-    <xme:aRINZtUDrUAsafbizR6l5HuTk9zG4PZ4_TR5sQBcaJkb6Rzte_rVf39oK9zVeCxgY
-    IQ9Uf7s5z6MmNiaxyY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefgedgtdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfn
-    uhhkvgculfhonhgvshdfuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrth
-    htvghrnhepfeeugffhvdeufeehieelvdegfeffveegleehtddvheegkeetueegtdegueeh
-    vdelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplh
-    hukhgvsehljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:aRINZuJX2DCKDf49-4ySfItQm1kgdRJfoFs08zIpH6Br2yJAEOheiA>
-    <xmx:aRINZmHjTXApn9mXZd-M7xnylVN3W444m7fSf63qtf7bOtUnQ19EXg>
-    <xmx:aRINZqW6IsP-puRgXc64_Qx6ojTKp48o_8GqRLyM7_lu2Di5rrQ9yg>
-    <xmx:aRINZpNSfPB8-TpUDoxtNg1L-bZ37PI7LzJCulLBW_tiKaY3iAEXQQ>
-    <xmx:aRINZozhQqJnSUx1gF-Og0pVIJ-6mbKSaYHtr4M-ugKEE6J2J6Bgxw4u>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 3D2972340080; Wed,  3 Apr 2024 04:25:13 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
+	s=arc-20240116; t=1712132969; c=relaxed/simple;
+	bh=Ldfjw0TveG1bC27L02CGJ1El9aX9iApZ9fZGyu1A5wg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=HQuM189R0MWqJgf153p1wXmA2Lq/2s5TiMbkAmh8H2O3SfOOqiNt3cR2wuWoHaKnvd6S2BgsjlWLR69JtPANyo+Jc1WZVg3oinOXY1M1ic3Z2ZywYbIQs6qACB2V+ZBYG55azUMvi0O1+ey+n7VT5WOWKDgAp93LUu6t1xWIvX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=R9aXz0Ht; arc=none smtp.client-ip=115.124.30.113
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712132958; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=6ARyxKsG7GVlym8JkJymXRlceZpVJP0pu/mDsnbzovQ=;
+	b=R9aXz0HtchVxIj0OkVENOP7cn2AfFizRkz0mdt8mvI73FcWSx0ysGaFPOaN+ZaHguEqXNlsr/eeR24y4bKKSzrI8BZ373JQxfl/fwJPrV4hYPSVbj6wg7FluO1tL1kw8ugKsABUjFoL8ZiB7LZ0EV3h0tQaP03EESXs0Njme5JM=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0W3r6Fd3_1712132955;
+Received: from 30.97.48.165(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W3r6Fd3_1712132955)
+          by smtp.aliyun-inc.com;
+          Wed, 03 Apr 2024 16:29:16 +0800
+Message-ID: <dce83785-af96-4ff8-9552-56d73b5daf98@linux.alibaba.com>
+Date: Wed, 3 Apr 2024 16:29:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <a64cd887-423a-4dd7-92eb-42d9485aea3d@app.fastmail.com>
-In-Reply-To: <e48c5226-9a25-ff24-45d8-5cc73d7d914e@linux.intel.com>
-References: <20240403002917.2870959-1-luke@ljones.dev>
- <20240403002917.2870959-6-luke@ljones.dev>
- <e48c5226-9a25-ff24-45d8-5cc73d7d914e@linux.intel.com>
-Date: Wed, 03 Apr 2024 21:24:53 +1300
-From: "Luke Jones" <luke@ljones.dev>
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: "Hans de Goede" <hdegoede@redhat.com>, corentin.chary@gmail.com,
- platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 5/9] platform/x86: asus-wmi: store a min default for ppt options
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 00/13] fiemap extension for more physical information
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+ Jonathan Corbet <corbet@lwn.net>, Kent Overstreet
+ <kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Chao Yu <chao@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+ =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ kernel-team@meta.com
+References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, 3 Apr 2024, at 9:23 PM, Ilpo J=C3=A4rvinen wrote:
-> On Wed, 3 Apr 2024, Luke D. Jones wrote:
->=20
-> > Laptops with any of the ppt or nv tunables default to the minimum se=
-tting
-> > on boot so we can safely assume a stored value is correct.
-> >=20
-> > This patch adds storing of those values in the local struct, and ena=
-bles
-> > reading of those values back. To prevent creating a series of byte h=
-oles
-> > in the struct the "<name>_available" bool is removed and
-> > `asus_sysfs_is_visible()` uses the `ASUS_WMI_DEVID_<name>` directly.
-> >=20
-> > Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
-> > Signed-off-by: Luke D. Jones <luke@ljones.dev>
->=20
-> Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
->=20
-> (I know it is already among the tags but I had not given it until now.)
->=20
-> --=20
-> i.
->=20
+Hi,
 
-Understood, very sorry about making that assumption.
+On 2024/4/3 15:22, Sweet Tea Dorminy wrote:
+> For many years, various btrfs users have written programs to discover
+> the actual disk space used by files, using root-only interfaces.
+> However, this information is a great fit for fiemap: it is inherently
+> tied to extent information, all filesystems can use it, and the
+> capabilities required for FIEMAP make sense for this additional
+> information also.
+> 
+> Hence, this patchset adds various additional information to fiemap,
+> and extends filesystems (but not iomap) to return it.  This uses some of
+> the reserved padding in the fiemap extent structure, so programs unaware
+> of the changes will be unaffected.
 
-Luke.
+I'm not sure why here iomap was excluded technically or I'm missing some
+previous comments?
+
+> 
+> This is based on next-20240403. I've tested the btrfs part of this with
+> the standard btrfs testing matrix locally and manually, and done minimal
+> testing of the non-btrfs parts.
+> 
+> I'm unsure whether btrfs should be returning the entire physical extent
+> referenced by a particular logical range, or just the part of the
+> physical extent referenced by that range. The v2 thread has a discussion
+> of this.
+
+Could you also make iomap support new FIEMAP physical extent information?
+since compressed EROFS uses iomap FIEMAP interface to report compressed
+extents ("z_erofs_iomap_report_ops") but there is no way to return
+correct compressed lengths, that is unexpected.
+
+Thanks,
+Gao Xiang
+
 
