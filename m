@@ -1,128 +1,156 @@
-Return-Path: <linux-kernel+bounces-129800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129895-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A29E897011
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:18:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 250218971C9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:57:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EC141C27539
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:18:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5AB4282055
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:57:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4EC147C9C;
-	Wed,  3 Apr 2024 13:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2876148856;
+	Wed,  3 Apr 2024 13:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="EvFPEsjb"
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="WL9AME1F"
+Received: from mail-m49253.qiye.163.com (mail-m49253.qiye.163.com [45.254.49.253])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84B9E147C89;
-	Wed,  3 Apr 2024 13:17:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E2B147C78;
+	Wed,  3 Apr 2024 13:57:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.253
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712150273; cv=none; b=srVof8D23pRCeXKtwX/zPDJ3bWI0+l1HR0ftTXK8a/OGZzkaCYAecv0xxRNIFjVXMckitv+BUA2rhKNTyI1QyapLfTgRQWbEe0pnQPAEX1KZrtBDZq+lxzx5xnE/1vYl+5W8AJfPIODO2sn2yWSEbx4XPH31TPkbamSECC4EEYI=
+	t=1712152638; cv=none; b=oRjSUejf9g9PDn12CwC7SMHLz92s6yAps/cQ2HNmyVqFuw774DyOeZXsbyiFCNgGOXcJlQaGSyrbwlO7SIIBVYh4mwUewhUPrDtIINfQHQeJTytpYLzQSYAlYKw4PDqPgtzXS6JOl+hzdwgX9rLm0dToricFUyVvOvtf2N8TtsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712150273; c=relaxed/simple;
-	bh=/GQ4nlYWXIxaFwy7GEB/PMFxbW1s4CmxkzraRVC432c=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FvaQcpS2SzDBMRhmuOfrgoYTRRUXkWkQXMMbi2TLSE3BRQCFnnLzZYHm0mevQ0LDDDJWeNTdjbzCxG5mIHwwicYgwUnwGvslRXAPDxnqfMQNmKdMZrV7dcNltd0BN6jr/dJ6IVAioohzDn8V2I0H6bbOEO3yEcp4WTNk3UPdL9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=EvFPEsjb; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 930E047C42
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1712150266; bh=vtB2kvFb83ghMvG0XB3eZHkEo5w776S5gMAFRtOloHo=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=EvFPEsjb6+voJdd1pI3kYT1oQzfUUXg693BhE5Xb4wwM6dOUVZDs/yd6M4M/mrxC3
-	 QpF84qYNcccFfyJvPURNO1Fmd0nnyaOL6EZXwwsX/Hz1I8qANp/JTFRai4+nrjMOZn
-	 CCW6KxlU6AMyeBk2ZYhPxql23DlYxDtbyY4MgL0ffq87On0Rgpe7dSUGPKX5BTXES1
-	 pIAUOWM4z+0sFUvr+1llbuz7aiIPnnOX0KSqgEWem9wzP+DiSJdblpK1Ea95phW5P7
-	 U+uMFMl80TG1LppJLYslg/j8SCEPEqQNRhxa8ThJ0hFfDs21Ge15fUwLbA9r0EYZKH
-	 +Kih6f33AVbxQ==
-Received: from localhost (unknown [IPv6:2601:280:5e00:625::646])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 930E047C42;
-	Wed,  3 Apr 2024 13:17:46 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>, Carlos Bilbao
- <carlos.bilbao@amd.com>
-Cc: linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Kaiwan N
- Billimoria <kaiwan.billimoria@gmail.com>
-Subject: Re: [PATCH] docs: Add relevant kernel publications to list of
- books; LKP 2E
-In-Reply-To: <20240403050824.166787-1-kaiwan.billimoria@gmail.com>
-References: <20240403050824.166787-1-kaiwan.billimoria@gmail.com>
-Date: Wed, 03 Apr 2024 07:17:45 -0600
-Message-ID: <8734s2twjq.fsf@meer.lwn.net>
+	s=arc-20240116; t=1712152638; c=relaxed/simple;
+	bh=Yi2rfy/c/FEfpMRtlXRZ23HDICk1lcPrg8Fy+0GTG60=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=VW9GNYaaB4R3EPQO8S0zPtg1XFfec1mN3MTSOYjnCs0uM0et6XrO6AK7qf/mEwmOMKFh4WH3ZtjxTyj9Ys1/li0PYSvN41lYZwhQFVFHlYBOQhV6EedZkXYjFQ3118XS6c2ShPdlDJMtmHMA3yHcUtmOEUrm85SLgh51c81GQZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=WL9AME1F; arc=none smtp.client-ip=45.254.49.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
+DKIM-Signature: a=rsa-sha256;
+	b=WL9AME1FbN3qwG5Wk/f79Xhi/AskTVfgq4tjVjSPsooez9x8BryWqJeBNcj8nT7Cip+10fOlPiHqsHn8OL6mSsNN5q36mI+y2RXFwcfUM3ELmMp1gzB+DCuJ32O/rK9vlsmI9opkB5wX7NvQcY5vCQd4rypsKVxDSSE7JkQ2MLE=;
+	c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
+	bh=hVhk+TI4SRZhbF4gUP3nkD3PWMY3UDprkFnGH1+J064=;
+	h=date:mime-version:subject:message-id:from;
+Received: from localhost.localdomain (unknown [58.22.7.114])
+	by smtp.qiye.163.com (Hmail) with ESMTPA id C6D807C03A7;
+	Wed,  3 Apr 2024 21:18:44 +0800 (CST)
+From: Sugar Zhang <sugar.zhang@rock-chips.com>
+To: heiko@sntech.de,
+	vkoul@kernel.org
+Cc: linux-rockchip@lists.infradead.org,
+	Sugar Zhang <sugar.zhang@rock-chips.com>,
+	dmaengine@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] dmaengine: Add support for audio interleaved transfer
+Date: Wed,  3 Apr 2024 21:18:22 +0800
+Message-Id: <20240403211810.v2.1.I502ea9c86c8403dc5b1f38abf40be8b6ee13c1dc@changeid>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1712150304-60832-1-git-send-email-sugar.zhang@rock-chips.com>
+References: <1712150304-60832-1-git-send-email-sugar.zhang@rock-chips.com>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQ09IT1ZNHx0aTU8YHksfSh5VEwETFh
+	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQk
+	tLWQY+
+X-HM-Tid: 0a8ea41ca76e09d2kunmc6d807c03a7
+X-HM-MType: 1
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NjY6CDo*DTMTATUZNTFJHhdD
+	LCoKCR1VSlVKTEpJSk5LSElOT09OVTMWGhIXVQgOHBoJVQETGhUcOwkUGBBWGBMSCwhVGBQWRVlX
+	WRILWUFZTkNVSUlVTFVKSk9ZV1kIAVlBSENJTDcG
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
 
-Kaiwan N Billimoria <kaiwan.billimoria@gmail.com> writes:
+This patch add support for interleaved transfer which used
+for interleaved audio or 2d video data transfer.
 
-> Hi Carlos, Jon,
-> As the 2nd edition of my 'Linux Kernel Programming' book is recently
-> published (29 Feb 2024), this patch is to request it's addition to the
-> book list.
-> I've currently kept the 1st edition as well (in reverse chronological
-> order); if this isn't required, pl let me know..
->
-> Regards,
-> Kaiwan
+for audio situation, we add 'nump' for number of period frames.
 
-Happy to add the book but ... surely the author of said book wants to
-set a good example by sending a properly written patch?
+e.g. combine 2 stream into a union one by 2D dma.
 
-- A changelog in the kernel style saying simply what is to be done and
-  why
+DAI0: 16CH
++-------------------------------------------------------------+
+| Frame-1 | Frame-2 | Frame-3 | Frame-4 | ...... Frame-'numf' |
++-------------------------------------------------------------+
 
-- Stick to the 80-character limit (we still really try to do that for
-  text)
+DAI1: 16CH
++-------------------------------------------------------------+
+| Frame-1 | Frame-2 | Frame-3 | Frame-4 | ...... Frame-'numf' |
++-------------------------------------------------------------+
 
-Thanks,
+DAI0 + DAI1: 32CH
 
-jon
++-------------------------------------------------------------+
+| DAI0-F1 | DAI1-F1 | DAI0-F2 | DAI1-F2 | ......              |
++-------------------------------------------------------------+
+|      Frame-1      |      Frame-2      | ...... Frame-'numf' |
 
-> Signed-off-by: Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
-> ---
->  Documentation/process/kernel-docs.rst | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/Documentation/process/kernel-docs.rst b/Documentation/process/kernel-docs.rst
-> index 8660493b91d0..f73671b65a71 100644
-> --- a/Documentation/process/kernel-docs.rst
-> +++ b/Documentation/process/kernel-docs.rst
-> @@ -75,6 +75,15 @@ On-line docs
->  Published books
->  ---------------
->  
-> +    * Title: **Linux Kernel Programming: A Comprehensive and practical guide to Kernel Internals, Writing Modules, and Kernel Synchronization**
-> +
-> +      :Author: Kaiwan N Billimoria
-> +      :Publisher: Packt Publishing Ltd
-> +      :Date: February, 2024
-> +      :Pages: 826
-> +      :ISBN: 978-1803232225
-> +      :Notes: 2nd Edition
-> +
->      * Title: **Linux Kernel Debugging: Leverage proven tools and advanced techniques to effectively debug Linux kernels and kernel modules**
->  
->        :Author: Kaiwan N Billimoria
-> @@ -91,6 +100,7 @@ Published books
->        :Date: March, 2021
->        :Pages: 754
->        :ISBN: 978-1789953435
-> +      :Notes: 1st Edition
->  
->      * Title: **Linux Kernel Programming Part 2 - Char Device Drivers and Kernel Synchronization: Create user-kernel interfaces, work with peripheral I/O, and handle hardware interrupts**
->  
-> -- 
-> 2.40.1
+For audio situation, we have buffer_size and period_size,
+the 'numf' is the buffer_size. so, we need another one for
+period_size, e.g. 'nump'.
+
+| Frame-1 | ~ | Frame-'nump' | ~ | Frame-'nump+1' | ~ |  Frame-'numf' |
+|
+
+As the above shown:
+
+each DAI0 transfer 1 Frame, should skip a gap size (DAI1-F1)
+each DAI1 transfer 1 Frame, should skip a gap size (DAI0-F1)
+
+So, the interleaved template describe as follows:
+
+DAI0:
+
+struct dma_interleaved_template *xt;
+
+xt->sgl[0].size = DAI0-F1;
+xt->sgl[0].icg =  DAI1-F1;
+xt->nump = nump; //the period_size in frames
+xt->numf = numf; //the buffer_size in frames
+
+DAI1:
+
+struct dma_interleaved_template *xt;
+
+xt->sgl[0].size = DAI1-F1;
+xt->sgl[0].icg =  DAI0-F1;
+xt->nump = nump; //the period_size in frames
+xt->numf = numf; //the buffer_size in frames
+
+Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
+---
+
+Changes in v2:
+- Add the pl330 interleaved transfer
+
+ include/linux/dmaengine.h | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
+index 752dbde..5263cde 100644
+--- a/include/linux/dmaengine.h
++++ b/include/linux/dmaengine.h
+@@ -144,6 +144,7 @@ struct data_chunk {
+  *		Otherwise, destination is filled contiguously (icg ignored).
+  *		Ignored if dst_inc is false.
+  * @numf: Number of frames in this template.
++ * @nump: Number of period frames in this template.
+  * @frame_size: Number of chunks in a frame i.e, size of sgl[].
+  * @sgl: Array of {chunk,icg} pairs that make up a frame.
+  */
+@@ -156,6 +157,7 @@ struct dma_interleaved_template {
+ 	bool src_sgl;
+ 	bool dst_sgl;
+ 	size_t numf;
++	size_t nump;
+ 	size_t frame_size;
+ 	struct data_chunk sgl[];
+ };
+-- 
+2.7.4
+
 
