@@ -1,119 +1,139 @@
-Return-Path: <linux-kernel+bounces-129368-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129371-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1370A89698C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:51:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F34F7896996
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:52:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C332C28A904
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:51:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AEF3028AA65
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:52:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DC7E71747;
-	Wed,  3 Apr 2024 08:51:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 050CB71B3B;
+	Wed,  3 Apr 2024 08:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L0Po71sp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="LGR2quk6";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Cjwd4uNr"
+Received: from fhigh2-smtp.messagingengine.com (fhigh2-smtp.messagingengine.com [103.168.172.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFF096FE38;
-	Wed,  3 Apr 2024 08:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C92F6E2BE;
+	Wed,  3 Apr 2024 08:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712134262; cv=none; b=dT+/MeTJR1s5HO0w+eksDX3i/Aewmpyj2CmMrwjfhbaGm5G1c49s+xRXZ/4piabaQU77m+0yxYvV2DCRTQZTo9LKjIceQLMjKJbBilqnt6kCZpimcJRM5cixCUex7Ap3FyUgUxKy+jbgnAn7V0NsJQMciChmcgKiitdH6VGOt0E=
+	t=1712134291; cv=none; b=Kwy2IvJsTmI3A60a43je0J3Qbo6s8MAaIxnmgJcao16Z4bxLBZXzVPjdUOGe1FwpYrNjDvtICZiQI6C5MPQvblob/bQhlqTNs3szJh3NzUess7z8fQn2BAm4+ffX8zJJiMAWALtFUVJPRR1TEHGsuPhVxP3/lK055AxUUdZGr3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712134262; c=relaxed/simple;
-	bh=R9D1+elmOmrZeynx4Rov9K9jGhBvCyfaXLdimDufyJU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CkvV0l5ULgdEWGLJc+AumAz4wSl8bKUimR7fG+1q47a0fQYI8pJMRoBUITD8W7l+P5tD2VCf77hmueYEON4HQmtxNdCiQ+cc3CHLDFc8OJyK6rFqctTAMNght5WoLx/ef3GBRD6VibPywaVkixktAkHPBFBhp0OeJaokQquRiHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L0Po71sp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0434C43399;
-	Wed,  3 Apr 2024 08:50:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712134262;
-	bh=R9D1+elmOmrZeynx4Rov9K9jGhBvCyfaXLdimDufyJU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=L0Po71spXlZPgaNBqPSdKQy6XlDjR98o191JsfZhlyj7lm0qm4cFpUs6qITUDPpd5
-	 433H036omrV8RPf0d++00swNJu7LztP/r8MBz2dwY7NiW3qsE7QmbqPWLTtP37sqm2
-	 NSo419J1WHhnsEwofUgUTRTssmVYlGl4BuELzCQXzdZkCV4DmrLeS9wB2SFg31BgbM
-	 pgz1Ty9KAi5fWBouX5MeNnSUQzKOufuy9Y1wxQRoU+nwQKod7MUF4in7Xrud7Wj1B1
-	 SxjO3PY/FLG2gscBhS5qhyLN26ZMi1SAlKixgbDylGyEpPfA3A3bTzBTa19osQtKEO
-	 PcHTyIIfYrdFA==
-Date: Wed, 3 Apr 2024 10:50:55 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Edward Adam Davis <eadavis@qq.com>, 
-	syzbot+4139435cb1b34cf759c2@syzkaller.appspotmail.com, amir73il@gmail.com, chuck.lever@oracle.com, jack@suse.cz, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk, 
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH next] fs: fix oob in do_handle_open
-Message-ID: <20240403-radau-trubel-97587e8799c4@brauner>
-References: <000000000000f075b9061520cbbe@google.com>
- <tencent_A7845DD769577306D813742365E976E3A205@qq.com>
- <72d7604e38ee9a37bcb33a6a537758e4412488ee.camel@kernel.org>
+	s=arc-20240116; t=1712134291; c=relaxed/simple;
+	bh=P1cwV2YXIakKbwCYEURhjXiCMMQo/OuU51t31+urNz8=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=EsaJoWVrAnFKJypGMKl/u/u6isb07il9U+//9Orw7AvsW3BBQMWzy/Nw+PAyruHu+G1bKOMNQxKeanvL18TjOGUFAEd/bVA7B0CieEDePuw3iW233EFJ2wH/BZY/11p4Jt5nIwVOKgXESoPp/i2DHGfrilnICEWCSeQ58F4kyHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=LGR2quk6; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Cjwd4uNr; arc=none smtp.client-ip=103.168.172.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 71FE91140094;
+	Wed,  3 Apr 2024 04:51:28 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 03 Apr 2024 04:51:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1712134288; x=1712220688; bh=IDm9a9kuZK
+	Gr8VNhzI80ELq/9SON+I1L85BL3jH3M48=; b=LGR2quk6JYv7Fnxq/DHuNB2s1l
+	6Ys8LLJKriPHlHTWOxFB9RsOvILxcS/KYYwjrIGkGBfhIuC6uJxiMQywv0+g1Aqi
+	8FYEiccMNVK/JM+9/wvFtP5Fw1F8kgaiZ6gliWPO1A6/eOeKOJLqvcUF3ylLAAlv
+	zwl1mP7HPfWIKsePCNEMejjKQxudWNwarD9rLsx0koyjvFwDf/honupj9EX9XCjy
+	bNtk0jDvVnb/Sz0cSkLE5K7XZ2/agL3OccZ2Mc0uvhAkMZaWp7AXYNG4koim1/JO
+	NWrCRHyNlg3Ew+NUDtI2loKoT+PAc519YKeQkoNdJP594Qu6z51d5uFo9lYQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712134288; x=1712220688; bh=IDm9a9kuZKGr8VNhzI80ELq/9SON
+	+I1L85BL3jH3M48=; b=Cjwd4uNr7CNtFCTbVUASdb/gpU8laqnra9RJirerO12G
+	5SOUnLJXyFizzdU931oTSlEXaZ0BkAg60Baud6Aj/II0MKvLDLlSYr2oJBrvT07G
+	+41EN83FkxhBNyCusJQyF0Hwit7nA3+A7ni28b/dAWW0S2T/fi7/3JLNiwWI6FoM
+	YlAJWV4vEHbP5nGTTmFZ15WoWraZadPrWUGtI7m/NHC7urjFsHeHkIwB8EZOLTct
+	1GrnBaR/+9Aw4G6lbtigODY6AK3nVq5QtixWUZ0iFYpkvPsWxvRW1PEUrhe7hs5X
+	XZ7rx4ckokuvMkOPVe83besvIx+NGyfZTgpqQOR2Pg==
+X-ME-Sender: <xms:hhgNZtXvNOjkAzXlKU2S-mCW9u3j5wLIVQfd5wC8qQmSq_qnAnwCQg>
+    <xme:hhgNZtmXVYTJFf-Tmxh3x3SMEs7vMRyTW6prvF-Gfft6gVtGtUbGPSiOOrBngiLDr
+    mmjTcWDG7DgKC58IiM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefgedgtdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:hhgNZpb1SmAvdwDtaADdU7RCPeYtj3G-cjcl8MCqc_LXkz2OARytAw>
+    <xmx:hhgNZgXBuhcrfqmG4oNJ2oFuxNGGyBa9wI4cai7SSYjP1L2zioJT4A>
+    <xmx:hhgNZnlxzmaOiuIsGolQHygyhiSevEVET7FbwOtq09HTP5LYdMRPNA>
+    <xmx:hhgNZteiS0q-w0Bl5BoF7ggzLACbmrTGyhZP_YKTekkOW1XRrD78cw>
+    <xmx:kBgNZszUXsOXBABkIH0w079vQIq-Q6q7U_daNQWZ5wEu3CUNv6LzgMn7>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 2F269B6008F; Wed,  3 Apr 2024 04:51:18 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <72d7604e38ee9a37bcb33a6a537758e4412488ee.camel@kernel.org>
+Message-Id: <78731619-58a3-406b-9112-5eb991bc6e7e@app.fastmail.com>
+In-Reply-To: <a1ca8aa3-d122-4ec9-b239-8180a02106e1@kernel.org>
+References: <20240403080702.3509288-1-arnd@kernel.org>
+ <20240403080702.3509288-31-arnd@kernel.org>
+ <a1ca8aa3-d122-4ec9-b239-8180a02106e1@kernel.org>
+Date: Wed, 03 Apr 2024 10:50:57 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Damien Le Moal" <dlemoal@kernel.org>, "Arnd Bergmann" <arnd@kernel.org>,
+ linux-kernel@vger.kernel.org, "Niklas Cassel" <cassel@kernel.org>,
+ "Saeed Bishara" <saeed@ubuntu-saeed.il.marvell.com>
+Cc: "Ma Ke" <make_ruc2021@163.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ "Sergey Shtylyov" <s.shtylyov@omp.ru>,
+ "Christophe JAILLET" <christophe.jaillet@wanadoo.fr>,
+ "Jeff Garzik" <jeff@garzik.org>, linux-ide@vger.kernel.org
+Subject: Re: [PATCH 30/34] sata: mv: drop unnecessary #ifdef checks
+Content-Type: text/plain
 
-On Wed, Apr 03, 2024 at 04:48:17AM -0400, Jeff Layton wrote:
-> On Wed, 2024-04-03 at 14:54 +0800, Edward Adam Davis wrote:
-> > [Syzbot reported]
-> > BUG: KASAN: slab-out-of-bounds in instrument_copy_from_user_before include/linux/instrumented.h:129 [inline]
-> > BUG: KASAN: slab-out-of-bounds in _copy_from_user+0x7b/0xe0 lib/usercopy.c:22
-> > Write of size 48 at addr ffff88802b8cbc88 by task syz-executor333/5090
-> > 
-> > CPU: 0 PID: 5090 Comm: syz-executor333 Not tainted 6.9.0-rc2-next-20240402-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-> > Call Trace:
-> >  <TASK>
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
-> >  print_address_description mm/kasan/report.c:377 [inline]
-> >  print_report+0x169/0x550 mm/kasan/report.c:488
-> >  kasan_report+0x143/0x180 mm/kasan/report.c:601
-> >  kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
-> >  instrument_copy_from_user_before include/linux/instrumented.h:129 [inline]
-> >  _copy_from_user+0x7b/0xe0 lib/usercopy.c:22
-> >  copy_from_user include/linux/uaccess.h:183 [inline]
-> >  handle_to_path fs/fhandle.c:203 [inline]
-> >  do_handle_open+0x204/0x660 fs/fhandle.c:226
-> >  do_syscall_64+0xfb/0x240
-> >  entry_SYSCALL_64_after_hwframe+0x72/0x7a
-> > [Fix] 
-> > When copying data to f_handle, the length of the copied data should not include
-> > the length of "struct file_handle".
-> > 
-> > Reported-by: syzbot+4139435cb1b34cf759c2@syzkaller.appspotmail.com
-> > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> > ---
-> >  fs/fhandle.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/fhandle.c b/fs/fhandle.c
-> > index 53ed54711cd2..8a7f86c2139a 100644
-> > --- a/fs/fhandle.c
-> > +++ b/fs/fhandle.c
-> > @@ -202,7 +202,7 @@ static int handle_to_path(int mountdirfd, struct file_handle __user *ufh,
-> >  	*handle = f_handle;
-> >  	if (copy_from_user(&handle->f_handle,
-> >  			   &ufh->f_handle,
-> > -			   struct_size(ufh, f_handle, f_handle.handle_bytes))) {
-> > +			   f_handle.handle_bytes)) {
-> >  		retval = -EFAULT;
-> >  		goto out_handle;
-> >  	}
-> 
-> cc'ing Gustavo, since it looks like his patch in -next is what broke
-> this.
+On Wed, Apr 3, 2024, at 10:32, Damien Le Moal wrote:
+> On 4/3/24 17:06, Arnd Bergmann wrote:
+>> From: Arnd Bergmann <arnd@arndb.de>
+>> 
+>> Building with W=1 shows a warning for an unused variable when CONFIG_PCI
+>> is diabled:
+>> 
+>> drivers/ata/sata_mv.c:790:35: error: unused variable 'mv_pci_tbl' [-Werror,-Wunused-const-variable]
+>> static const struct pci_device_id mv_pci_tbl[] = {
+>> 
+>> Move the table into the same block that containsn the pci_driver
+>> definition.
+>> 
+>> Fixes: 7bb3c5290ca0 ("sata_mv: Remove PCI dependency")
+>> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+>
+> The patch title is also not describing what the patch does.
+> Are you OK with changing that to:
+>
+> ata: sata_mv: Fix PCI device ID table declaration warning
+>
+> ?
 
-I'ved folded the fix into Gustavo's patch. Please see
-https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git/commit/?h=vfs.misc&id=02426828cde24cd5b6cf5f30467cea085118f657
+Yes, please do, thanks!
+
+I had first tried to remove all the #ifdef checks and just
+rely on dead-code-elimination doing the same when
+pci_register_driver() is stubbed out and IS_ENABLED(CONFIG_OF)
+checks turn off the rest. Unfortunately, the include/linux/pci.h
+interfaces are not all stubbed out here and cause compile-time
+failures without CONFIG_PCI, so that didn't work out.
+
+     Arnd
 
