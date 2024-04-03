@@ -1,233 +1,134 @@
-Return-Path: <linux-kernel+bounces-129817-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129818-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1523B8970B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:24:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50B308970B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:25:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66EC8B25B7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:24:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82C321C2649D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4073148834;
-	Wed,  3 Apr 2024 13:20:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28710148849;
+	Wed,  3 Apr 2024 13:20:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LMfafsMs"
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oZPTkmoF"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3310914E2DA;
-	Wed,  3 Apr 2024 13:20:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE5F2150990
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712150410; cv=none; b=QFLqO2hJQUpl+LwXu2UUjB7vmb63QHXmDLuwEazRtrvHhzS5UlK6ZDHzqnO82sBoUv848Fy5MTIjX9GG+2D+dyN3Ow8o9ll9falBLrwvJDWJosChXujMvgJ72SyQYmg2OYmTpXjofY7GRs1/dPQLrL1EROn815x7vZoJAl651+0=
+	t=1712150415; cv=none; b=lMMDWtx90mMMie0oM2E2fnHtb79QSjcxxl83fayw3YJ2G4Zy/PTN1GuUySfDkgw+BfbZX9lit+1/2FZ14uZCDOYync4Ylk3EsTrSCIcUdWy9ufD7m1+pMe9EmLwU5uJo5pkiB5E/lxnpucFmNwWdZRbrQeP9LP93NefgJujWFyw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712150410; c=relaxed/simple;
-	bh=fEOGTP44ht/ZhSieHBOxh1TKRJM2QPU3A8FjedSkZo4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=cAs8z/4I1YJe8czr0u3qB5xokbINSu9uNTOkIxuWnUuWNpAZVEDT2/f3F/2irR0cpXwV+8K6isbO1kTk9m6nEJhAm1OrQgRRC7KtU/jMMFGy6GMWbBN4rTLI8GcVr3P+DtkOpEoFfNostj/UG+DpckL0dBTBLh1wnwiSEn5Ugyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LMfafsMs; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1e27c303573so13523555ad.3;
-        Wed, 03 Apr 2024 06:20:08 -0700 (PDT)
+	s=arc-20240116; t=1712150415; c=relaxed/simple;
+	bh=I/WssGKzx2pu9m1OGtbWNQp8YlFg6iKJZjVi11y1FHs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=TgpxSUNSESnt0NJSAxWhs2gtjGhEqihq995L0Re7aHc1t5NQGuUny0qrlH3tWrCLXaFPoXyPDC9FnoF8X28d7cY8cBAvlPXMdAULg9KKBm0DnhcKuWsWDNt7mOICbKOqwC1DoIaylxpTZTtR8Udc7CuECE2KYLsKdWLJOMFs2TM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oZPTkmoF; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6e8f765146fso5403428b3a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 06:20:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712150407; x=1712755207; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wn5Y6haDMX+KFeDZiuG3bLreTNkdvF0hb2IVOihuo/Q=;
-        b=LMfafsMsnVCLJvAyLc/fI3aGiQpHUzPkwdjpXDSRK7GwuJEP2pChmNhUwLZIgdgiqq
-         t35PWXnlEeCdPi/VuDeOWkuhtCeDqKwA96QB4wLtqb4Igqs7jlFs8aJTkZU45PQVTWA8
-         YA+KioJca5uZoP8ZXtbkS8iV0x4cc9vurQkXAol3dURtE0H3Z+7uarf5MnE7yb6aNKHJ
-         mZNFuVX5dv74BL6eL4VDgTXJIP7b3bZLPbl1OxsngNJqRuqBqy6V8SqGKVITMc0im8oJ
-         OG5XSTUJvQN1f71PEsAIiUYutsr6WFqx6ElCWqw+7vXRa8CVk0YIs/xF5eUKCNNO9xtg
-         WY6w==
+        d=linaro.org; s=google; t=1712150413; x=1712755213; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JEsqOJgrZKfiF2/lAe/0WeYJIosNuSPi2rFlnClcirQ=;
+        b=oZPTkmoFnRDD0YGlx/b7FzKkhWl6Z+m7h4hniLRZELTDa2C0jeYjittfFrbZKrfzww
+         +xyReQkZivoTWqLcsc39/GYXMuFuhnudE1yx5P+F8SrZtM5Tq5zDpSfr6Bj+5ge2qVT4
+         sz8CioULMUeNlqOWjvN7w9Hh9eLACNylY1EzEYHQXwg/UKkmYFLXlmQhgZNCy30uwgpk
+         r7RlY/Mud8ehE3sCI5Yh9UVgSBM+SkVhJH6sokzi6StJdmhFVcPDDt27nJhcXdsh+Vr7
+         /n0c60M57/lnuvBGpG+6XjY4GIueLBe3qlXaJiFM2GKMJaTd6eKWmExu3aj6xGKsYFNG
+         pX8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712150407; x=1712755207;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Wn5Y6haDMX+KFeDZiuG3bLreTNkdvF0hb2IVOihuo/Q=;
-        b=WNjuHhgRDUG+Qy02C4q4AKg3PfgBT67BBoROAaW85+yJL6pBNDzqPAevHnlKbUwBuL
-         Rzh6iADH5WMdVDdqfjVJ3BTT6mLfyDh6vf5Yy9pUQX0X2gn4Gnt+3TDAFMmWwDsUiRsm
-         n0K5ZGzzRcg3g/ZA7pFY/AJxlYAbDYQYtR/mOJAZqeWte71vRzGGBvVrs7Sby8Z4HYhv
-         0W3FEOPdgw4irHiFRpkvNkcynbnc1t2ClbWUcXaW6/vQIDQ+2tIBTOLLfNzobewRfZT6
-         gkfznRTr38ptxG4Hxte3Uql40CepZ/nKpYHM/NngcEq3fAaREv3HL6V0MGLRxw46HjRQ
-         zIJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWDSjDTqC33iH8rfS5sgmZppAqUKyzdGMI03wGBl11g2DXQyYUkXlACnm0JTJ7uvh1BiddRUvpryx7Lt6HXuXsh3LmnohwJSXNJ9rzvh25+DuJzNSIs/TA4VvNICF0BPbJP+VOzKP8wiY3qJmz2pMqT7xkFxkRegmIyJSp+aD1nTy8yPUV2QfwvqpAMNLWSYJS1b7fitx+4xsId2vONHdVxSFF5gIT+ROSqkUspXRgTMibZTIwu/Y+oIaPtoL1dgithT31ssk55vSXf1SkYtmvbzsKuMQ3GrZNRFV8KnKiF4kfOBU3vYfuPCIGiicJ2lg==
-X-Gm-Message-State: AOJu0Yww/iQKLc7NNFNMVdA6G4l+fOXDc7xpi7QwbWj/JsdV9ZtpvSl7
-	6qsZjKukWujUXCW8YMxqM8oSd/+50FLeBksQM4vi8P2K6fuAv2ZNv0RWrMgh
-X-Google-Smtp-Source: AGHT+IHWmvXbtJ9fAm6MAldmvpyAC7gyMYuUNuumU3VUQ5OUfg6iZFWTqXY0l/Y7ponpfkrN4lhaag==
-X-Received: by 2002:a17:902:e74f:b0:1e0:d630:f054 with SMTP id p15-20020a170902e74f00b001e0d630f054mr18958233plf.7.1712150407580;
-        Wed, 03 Apr 2024 06:20:07 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id k12-20020a170902c40c00b001e0b3a87dbbsm1705074plk.177.2024.04.03.06.20.06
+        d=1e100.net; s=20230601; t=1712150413; x=1712755213;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JEsqOJgrZKfiF2/lAe/0WeYJIosNuSPi2rFlnClcirQ=;
+        b=E1T0E72HpkZEx9EIdpsxDvNyW5Ol98hnExheH8iRldHvj9yCiACvRvkpNxZDuo3evM
+         +RkKKrU2x1UNN3aeyxxalTar2ozmdkY1kEte0rUyYzU3TS1bWdSN2KT8TeucOpxdEM9W
+         LeoLyGj7K9TJn98iRRkpiJAqM3qqJrD1ojH/Tn/Yy71YAbvPFGQA6OiNmlQGNVA+JDnW
+         qAB2NWrBqNMZ+vHxH4md8zH+AKY28CS3aRJcrc+Ehw/ZUcal888ch7rBfK6k/CexHMBn
+         Z7hXjTvD8eq2xLztdXcOo5tRZu0O28zhy9B1wlmuyHZXMWTIlHEfdje1kyr87JRZnPsH
+         UmnA==
+X-Forwarded-Encrypted: i=1; AJvYcCXNRl80/Lja/tt0CzuQiQ70NzHy+geg5/I/7s91IfamiAKITnTQCwovpG0NH/CVuesOQ12qyPa1z1mGld0dT1S99jhYFnGzVqWV6fZb
+X-Gm-Message-State: AOJu0YxWsiRn+p7IHD3CpnhO3ZrFKNJM8A+sNEmv0g1hCMeU60o0djvB
+	gKPjSo0sgfTSLDhVTfYrJlbhdVOHBtitfEhEgHYgs0qY2N6BsUhZGqKdFlYOhQ==
+X-Google-Smtp-Source: AGHT+IE+mv0vqUVj752A8+B5uK4aKOSeJFS0d13jC9TEMRJbt33Mn6Zcv6SnMhyVyxPHw+XjYiPyLQ==
+X-Received: by 2002:a05:6a00:4b46:b0:6ea:f369:f204 with SMTP id kr6-20020a056a004b4600b006eaf369f204mr12783329pfb.5.1712150413075;
+        Wed, 03 Apr 2024 06:20:13 -0700 (PDT)
+Received: from [127.0.1.1] ([103.28.246.48])
+        by smtp.gmail.com with ESMTPSA id r1-20020aa78441000000b006e69a142458sm11640518pfn.213.2024.04.03.06.20.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 06:20:07 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From: Guenter Roeck <linux@roeck-us.net>
-To: linux-kselftest@vger.kernel.org
-Cc: David Airlie <airlied@gmail.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	=?UTF-8?q?Ma=C3=ADra=20Canal?= <mcanal@igalia.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>,
-	Kees Cook <keescook@chromium.org>,
-	Daniel Diaz <daniel.diaz@linaro.org>,
-	David Gow <davidgow@google.com>,
-	Arthur Grillo <arthurgrillo@riseup.net>,
-	Brendan Higgins <brendan.higgins@linux.dev>,
-	Naresh Kamboju <naresh.kamboju@linaro.org>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Maxime Ripard <mripard@kernel.org>,
-	=?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org,
-	kunit-dev@googlegroups.com,
-	linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-parisc@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org,
-	loongarch@lists.linux.dev,
-	netdev@vger.kernel.org,
-	x86@kernel.org,
-	Guenter Roeck <linux@roeck-us.net>,
-	Linux Kernel Functional Testing <lkft@linaro.org>,
-	Michael Ellerman <mpe@ellerman.id.au>
-Subject: [PATCH v3 15/15] powerpc: Add support for suppressing warning backtraces
-Date: Wed,  3 Apr 2024 06:19:36 -0700
-Message-Id: <20240403131936.787234-16-linux@roeck-us.net>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240403131936.787234-1-linux@roeck-us.net>
-References: <20240403131936.787234-1-linux@roeck-us.net>
+        Wed, 03 Apr 2024 06:20:12 -0700 (PDT)
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v2 0/2] scsi: ufs: qcom: Add missing interconnect bandwidth
+ values for Gear 5
+Date: Wed, 03 Apr 2024 18:50:02 +0530
+Message-Id: <20240403-ufs-icc-fix-v2-0-958412a5eb45@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIJXDWYC/22MQQrCMBAAv1L27Eo2jRQ8+Q/pIUk37YI0ktSgl
+ Pzd2LPHGZjZIXMSznDtdkhcJEtcG+hTB36x68woU2PQShtlFOErZBTvMcgbSfd+8JYcmwu04pm
+ 46eN2HxsvkreYPse80M/+/xRCwt5Zb8hNwQ729pDVpniOaYax1voFL2GfbacAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ "James E.J. Bottomley" <jejb@linux.ibm.com>, 
+ "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-scsi@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, 
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
+ Amit Pundir <amit.pundir@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=896;
+ i=manivannan.sadhasivam@linaro.org; h=from:subject:message-id;
+ bh=I/WssGKzx2pu9m1OGtbWNQp8YlFg6iKJZjVi11y1FHs=;
+ b=owEBbQGS/pANAwAKAVWfEeb+kc71AcsmYgBmDVeJnTVsB5vVtzC1XXd+71BouXk1NUPDkQH8U
+ XZE4J+Gjk6JATMEAAEKAB0WIQRnpUMqgUjL2KRYJ5dVnxHm/pHO9QUCZg1XiQAKCRBVnxHm/pHO
+ 9cW5B/sFuhC43fGkXLgFBtBpf9x+bFYfUF6omoJDt7oqWbnol3Lx66367osNuqO0sYm/sv0XGQ/
+ ZhrBvtltB37VYds+n2KStqf2qOjNvxpDhCPYyHTlnyZm4F1ZQFXbtpNYYy5S3GUOwL0XBaAwUkM
+ WNb2Jy8eiHEGElIfZi8qGeVM94X03RXe2Ihw8lyV043M2tQo6YNP9Q00IPn0VUwJFVQIGNOc5fU
+ tt5tNPI/qSusT4yIjlCyeyhfKVQ8sjYH9nc75942mJ/ftHs9ff3StuFij/1FkJBqEPcpESyLtcK
+ n3zKHOD6dMuac8unAvfEkUGFPwvoKAOajqJgdTPrfslZ2R/7
+X-Developer-Key: i=manivannan.sadhasivam@linaro.org; a=openpgp;
+ fpr=C668AEC3C3188E4C611465E7488550E901166008
 
-Add name of functions triggering warning backtraces to the __bug_table
-object section to enable support for suppressing WARNING backtraces.
+Hi,
 
-To limit image size impact, the pointer to the function name is only added
-to the __bug_table section if both CONFIG_KUNIT_SUPPRESS_BACKTRACE and
-CONFIG_DEBUG_BUGVERBOSE are enabled. Otherwise, the __func__ assembly
-parameter is replaced with a (dummy) NULL parameter to avoid an image size
-increase due to unused __func__ entries (this is necessary because __func__
-is not a define but a virtual variable).
+This series adds the interconnect bandwidth values for Gear 5 to the Qcom
+driver and also adds the check for the unsupported gear/lane values.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-Acked-by: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+- Mani
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 ---
-v2:
-- Rebased to v6.9-rc1
-- Added Tested-by:, Acked-by:, and Reviewed-by: tags
-- Introduced KUNIT_SUPPRESS_BACKTRACE configuration option
-v3:
-- Rebased to v6.9-rc2
+Changes in v2:
+- Added sanity check for gear/lane values
+- Collected tags
+- Link to v1: https://lore.kernel.org/r/20240401-ufs-icc-fix-v1-1-3bac41bdfa7a@linaro.org
 
- arch/powerpc/include/asm/bug.h | 37 +++++++++++++++++++++++++---------
- 1 file changed, 28 insertions(+), 9 deletions(-)
+---
+Manivannan Sadhasivam (2):
+      scsi: ufs: qcom: Add missing interconnect bandwidth values for Gear 5
+      scsi: ufs: qcom: Add sanity checks for gear/lane values during ICC scaling
 
-diff --git a/arch/powerpc/include/asm/bug.h b/arch/powerpc/include/asm/bug.h
-index 1db485aacbd9..5b06745d20aa 100644
---- a/arch/powerpc/include/asm/bug.h
-+++ b/arch/powerpc/include/asm/bug.h
-@@ -14,6 +14,9 @@
- 	 .section __bug_table,"aw"
- 5001:	 .4byte \addr - .
- 	 .4byte 5002f - .
-+#ifdef CONFIG_KUNIT_SUPPRESS_BACKTRACE
-+	 .4byte 0
-+#endif
- 	 .short \line, \flags
- 	 .org 5001b+BUG_ENTRY_SIZE
- 	 .previous
-@@ -32,30 +35,46 @@
- #endif /* verbose */
- 
- #else /* !__ASSEMBLY__ */
--/* _EMIT_BUG_ENTRY expects args %0,%1,%2,%3 to be FILE, LINE, flags and
--   sizeof(struct bug_entry), respectively */
-+/* _EMIT_BUG_ENTRY expects args %0,%1,%2,%3,%4 to be FILE, __func__, LINE, flags
-+   and sizeof(struct bug_entry), respectively */
- #ifdef CONFIG_DEBUG_BUGVERBOSE
-+
-+#ifdef CONFIG_KUNIT_SUPPRESS_BACKTRACE
-+# define HAVE_BUG_FUNCTION
-+# define __BUG_FUNC_PTR	"	.4byte %1 - .\n"
-+#else
-+# define __BUG_FUNC_PTR
-+#endif /* CONFIG_KUNIT_SUPPRESS_BACKTRACE */
-+
- #define _EMIT_BUG_ENTRY				\
- 	".section __bug_table,\"aw\"\n"		\
- 	"2:	.4byte 1b - .\n"		\
- 	"	.4byte %0 - .\n"		\
--	"	.short %1, %2\n"		\
--	".org 2b+%3\n"				\
-+	__BUG_FUNC_PTR				\
-+	"	.short %2, %3\n"		\
-+	".org 2b+%4\n"				\
- 	".previous\n"
- #else
- #define _EMIT_BUG_ENTRY				\
- 	".section __bug_table,\"aw\"\n"		\
- 	"2:	.4byte 1b - .\n"		\
--	"	.short %2\n"			\
--	".org 2b+%3\n"				\
-+	"	.short %3\n"			\
-+	".org 2b+%4\n"				\
- 	".previous\n"
- #endif
- 
-+#ifdef HAVE_BUG_FUNCTION
-+# define __BUG_FUNC	__func__
-+#else
-+# define __BUG_FUNC	NULL
-+#endif
-+
- #define BUG_ENTRY(insn, flags, ...)			\
- 	__asm__ __volatile__(				\
- 		"1:	" insn "\n"			\
- 		_EMIT_BUG_ENTRY				\
--		: : "i" (__FILE__), "i" (__LINE__),	\
-+		: : "i" (__FILE__), "i" (__BUG_FUNC),	\
-+		  "i" (__LINE__),			\
- 		  "i" (flags),				\
- 		  "i" (sizeof(struct bug_entry)),	\
- 		  ##__VA_ARGS__)
-@@ -80,7 +99,7 @@
- 		if (x)						\
- 			BUG();					\
- 	} else {						\
--		BUG_ENTRY(PPC_TLNEI " %4, 0", 0, "r" ((__force long)(x)));	\
-+		BUG_ENTRY(PPC_TLNEI " %5, 0", 0, "r" ((__force long)(x)));	\
- 	}							\
- } while (0)
- 
-@@ -90,7 +109,7 @@
- 		if (__ret_warn_on)				\
- 			__WARN();				\
- 	} else {						\
--		BUG_ENTRY(PPC_TLNEI " %4, 0",			\
-+		BUG_ENTRY(PPC_TLNEI " %5, 0",			\
- 			  BUGFLAG_WARNING | BUGFLAG_TAINT(TAINT_WARN),	\
- 			  "r" (__ret_warn_on));	\
- 	}							\
+ drivers/ufs/host/ufs-qcom.c | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+---
+base-commit: 4cece764965020c22cff7665b18a012006359095
+change-id: 20240401-ufs-icc-fix-123c7ca1be45
+
+Best regards,
 -- 
-2.39.2
+Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
 
