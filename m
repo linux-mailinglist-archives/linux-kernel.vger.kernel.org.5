@@ -1,53 +1,56 @@
-Return-Path: <linux-kernel+bounces-128895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E99F896193
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:44:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A67F896191
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:44:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D8211C2226D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:44:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD34E28493D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:44:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61DAED29B;
-	Wed,  3 Apr 2024 00:44:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B35ECA6B;
+	Wed,  3 Apr 2024 00:44:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b="EjzsYTj6"
-Received: from mail-177132.yeah.net (mail-177132.yeah.net [123.58.177.132])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CADF417C8;
-	Wed,  3 Apr 2024 00:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=123.58.177.132
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DEkL8ide"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A49217C8;
+	Wed,  3 Apr 2024 00:44:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712105059; cv=none; b=UrfPLBvz/EwTvlZD043Z0A3hwLAvVKazP6+GKJdCtzKNzAI8WZAse35JtUCphagTvR4PRp8McI4oc1rZGA08pMd1TdwvB/UoE6O/5HtmWVIVQWAzNAUvTPdIxNDbISNvr3C9g4tQVMdNWD5cPVCX0kJN2JgSrwOgcBfWHvGUzMg=
+	t=1712105046; cv=none; b=XU/2jYlns+88Kn1L9Pe7TTr/3V8ai4ElcRkHg0QRWXZygah5VrChTgPBjvQIeKiMMb5Y/ilvnyntF9kNAjp7DJLVKGe7DiYCq4HjcXIa7d1waO0O7BX7ONDQRn2c12efQvwXEOn3dBdJZc5qEHuKD/j5bAurn+QtNco1BSGoLXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712105059; c=relaxed/simple;
-	bh=LR99gG5LNLc23ySSEXkTJVAntBAds+rXUifHCtQe2rM=;
+	s=arc-20240116; t=1712105046; c=relaxed/simple;
+	bh=V61TCSZ0jUsTPk8qUFp6mxf+YZJrztTwe0Nf/jw49Do=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fCbJ5NHzmkQuOOKvX2u2pdiBOKcUK9s36NCv1wPHLlsvU4GWHFL2bmMR+MnOjQkHUymQoDOMgHj/6FiITFI/5+mCK6sluDDTZlyJ87K+iM60SJDsGVQHoIVKlanN/xH+QY0nOM6RXawcIZ2fqG4grKe6l5KPGmOIevzsQZdQj/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net; spf=pass smtp.mailfrom=yeah.net; dkim=pass (1024-bit key) header.d=yeah.net header.i=@yeah.net header.b=EjzsYTj6; arc=none smtp.client-ip=123.58.177.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yeah.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yeah.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yeah.net;
-	s=s110527; h=Date:From:Subject:Message-ID:MIME-Version:
-	Content-Type; bh=V8Qan3vHh6zRqpFSLvYPjs8bOeaOc0YWEP6aFIgm3OI=;
-	b=EjzsYTj6IL2j8EWBlji8fjHVghR5ngdCS0mbH9zznASj8rxb/LxJTV5uZt41DV
-	bM76JwY9zp5fNlZ473qw19nTnDnLjawcMSaQShu8SquK3+XPSTN6enq11QkcxXJF
-	rbbaU5t3VfUkEAbQpXFMCp5/hJ9eeP48fCmcdXbskDpok=
-Received: from dragon (unknown [223.68.79.243])
-	by smtp2 (Coremail) with SMTP id C1UQrAC3n2hHpgxmDFOyAg--.55910S3;
-	Wed, 03 Apr 2024 08:43:52 +0800 (CST)
-Date: Wed, 3 Apr 2024 08:43:47 +0800
-From: Shawn Guo <shawnguo2@yeah.net>
-To: carlos.song@nxp.com
-Cc: shawnguo@kernel.org, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, frank.li@nxp.com,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: lx2160a: add pinmux and i2c gpio to support
- bus recovery
-Message-ID: <ZgymQ8D4JxviBJzP@dragon>
-References: <20240328061419.1956329-1-carlos.song@nxp.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=G9UbuO/Ej/sjxvkrMahGG3Jccz7NLybMlUGvmT5ZWDT9qardScfCE2np8uwlmAF1DclZjaprMmzoTjpIRJKXqRn2Cfthi9KPv4/NRZ1LE6hHDlzqpms3+/y9Z8TXZrnsRwuNaI0hw99nFAPmeFOC73XQctGoYFhRaFFyeGhhEqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DEkL8ide; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D74EC433F1;
+	Wed,  3 Apr 2024 00:44:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712105045;
+	bh=V61TCSZ0jUsTPk8qUFp6mxf+YZJrztTwe0Nf/jw49Do=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DEkL8ideA+nykk4WpPhrpK+jwhG0lxLaujjNf0+Wm98BlPGJaQsH6m+BIg0Wxncb5
+	 Ykj8+km41Q6RjP4468XKa2u6tdMi5FNiVl8NAHFCXxb4AOnynnwa28GPLPB79BPhUj
+	 Au6aLcMtpZxvOVQrCisSOy6uYbkr/WW72FD8a6xI12rQOqNKJYgsCsDfU3qSmte/yx
+	 s4KpUAgmT9xq0Jd+LAEdRUrG4UXZNnfAwp8+8HnAzUf7pjbGp1BOeVafD5DRcHOIeU
+	 fNqomtEXTS7zT8+oqCmfx5AW+Amji6I79Woeqex7AvHoIb2Nc21iUZreX+eyWsggt7
+	 xce0l8terT+bA==
+Date: Tue, 2 Apr 2024 17:44:04 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Ard Biesheuvel <ardb@kernel.org>
+Cc: linux-crypto@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+	"Chang S . Bae" <chang.seok.bae@intel.com>
+Subject: Re: [PATCH v2 0/6] Faster AES-XTS on modern x86_64 CPUs
+Message-ID: <20240403004404.GC2576@sol.localdomain>
+References: <20240329080355.2871-1-ebiggers@kernel.org>
+ <CAMj1kXEupfkpe98PdtbxQbtx1z5J_fZFPzT7wJ2tsJnCT9uaxA@mail.gmail.com>
+ <20240329093130.GA65937@sol.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,24 +59,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240328061419.1956329-1-carlos.song@nxp.com>
-X-CM-TRANSID:C1UQrAC3n2hHpgxmDFOyAg--.55910S3
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUs6pBUUUUU
-X-CM-SenderInfo: pvkd40hjxrjqh1hdxhhqhw/1tbiFQq1ZV6NnBsUdgAAs5
+In-Reply-To: <20240329093130.GA65937@sol.localdomain>
 
-On Thu, Mar 28, 2024 at 02:14:19PM +0800, carlos.song@nxp.com wrote:
-> From: Carlos Song <carlos.song@nxp.com>
+On Fri, Mar 29, 2024 at 02:31:30AM -0700, Eric Biggers wrote:
+> > I wouldn't mind retiring the existing xts(aesni)
+> > code entirely, and using the xts() wrapper around ecb-aes-aesni on
+> > 32-bit and on non-AVX uarchs with AES-NI.
 > 
-> I2C bus recovery need a pinmux and gpio. So i2c driver can switch
-> gpio mode to toggle scl to recovery bus.
-> 
-> Add pinctrl-single node to every i2c bus on fsl-ls2160 layerscape
-> platform.
-> 
-> Signed-off-by: Carlos Song <carlos.song@nxp.com>
-> Reviewed-by: Frank Li <frank.li@nxp.com>
+> Yes, it will need to be benchmarked, but that probably makes sense.  If
+> Wikipedia is to be trusted, on the Intel side only Westmere (from 2010) has
+> AES-NI but not AVX, and on the AMD side all CPUs with AES-NI have AVX...
 
-Applied, thanks!
+It looks like I missed some low-power CPUs.  Intel's Silvermont (2013), Goldmont
+(2016), Goldmont Plus (2017), and Tremont (2020) support AES-NI but not AVX.
+Their successor, Gracemont (2021), supports AVX.
 
+I don't have any one of those immediately available to run a test on.  But just
+doing a quick benchmark on Zen 1, xts-aes-aesni has 62% higher throughput than
+xts(ecb-aes-aesni).  The significant difference seems expected, since there's a
+lot of API overhead in the xts template, and it computes all the tweaks twice in
+C code.
+
+So I'm thinking we'll need to keep xts-aes-aesni around for now, alongside
+xts-aes-aesni-avx.
+
+(And with all the SIMD instructions taking a different number of arguments and
+having different names for AVX vs non-AVX, I don't see a clean way to unify them
+in assembly.  They could be unified if we used C intrinsics instead of assembly
+and compiled a C function with and without the "avx" target.  However,
+intrinsics bring their own issues and make it hard to control the generated
+code.  I don't really want to rely on intrinsics for this code.)
+
+- Eric
 
