@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-129577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8AF7A896CC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:40:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAA2B896CC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:40:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40945287C95
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:40:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0548285E4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:40:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E890F142E77;
-	Wed,  3 Apr 2024 10:38:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4566C148309;
+	Wed,  3 Apr 2024 10:38:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NI/LdOUp"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gx4CqlzS"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 335CB146D5E;
-	Wed,  3 Apr 2024 10:38:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1B8147C94;
+	Wed,  3 Apr 2024 10:38:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712140698; cv=none; b=Pzs4L4X7rY8C0EJKnTodr+ggCM760lx7IwVjLfjM3A84fT+Zs2aqyLliGwevTKJN/eIwDS1zBvsCbxDF4oTWg/7TiWQ8kMuws77VCSrahNAS+OFmYCQKTPU3L0AjOHtc7jWzlg5Cl+/yEZCql31OZ1uX2ofritwGL4gLMM3WUqU=
+	t=1712140701; cv=none; b=udYAEAK+fLUcMx9PzOOjcfBp0cyDzEl8n1l9FA/JKQ5yVKG3ldMbzfucVew824BwP0zGhw8gkTjVv1SXxysDgWrVWBxz01sKP38VpA17IfCXdQPrZbH5XHL6+SkYKfadOoltbh7gerHfK6hGn8AKQrzvQ0JYRBNnui8aKwjswzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712140698; c=relaxed/simple;
-	bh=GZjXmqsxTl886s48CtB/uBgr4u+1gG1/6bdKIonGezg=;
+	s=arc-20240116; t=1712140701; c=relaxed/simple;
+	bh=/1PYhY8+2O5h3/1dpp5yGpsQ3rsJbn94bpYR2AU12xc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rpBmvaH1jbBFwJmS4xvr0UbuVxkQxlQXRq6urwAEtMhjB+eZSM7P6kbNc8iE+cUCXmQaaN5gVygmEkL2jcP/Bcmk48RrZgiFTsIl80fAkIERJrt8YxbZ1tBeX0/SHp5fvuiOBBhpiFJuL62pjkZE+t9+sP0om3OVaUQocIUmDNU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NI/LdOUp; arc=none smtp.client-ip=209.85.218.48
+	 MIME-Version; b=kWfVXVllesnA2g6OS8hSj65l9K6gwiPdrUjy6gJXWnuJQum58qe+0J2ioxbL4svJbKXGj2TZzIP/A/qv3gLfhxdAjlpSzVDWzaqWguIVKvwyiXgGC5aIl0oWjsBCxCX92szmT44diAWApGSj2PPtvkgtAsatzv8u0bpqgmVJYoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gx4CqlzS; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a4a387ff7acso753948366b.2;
-        Wed, 03 Apr 2024 03:38:15 -0700 (PDT)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a44ad785a44so710710366b.3;
+        Wed, 03 Apr 2024 03:38:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712140694; x=1712745494; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712140697; x=1712745497; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Msw6XT9KO7yx5p18PrVia4phRl71DU7zcjCvgmrHJ+k=;
-        b=NI/LdOUpCYDTyMoM4bGhRn9HHQGLeEwzKitVWmV+BLyXxjfq9HKG+VCwdX8qodEjup
-         9YDD37yU7Lwp+2WsNoze1i4nziu65gtYcJLinufeDuTEiV+s4Cu4rdWcCikJ9BXU4hyH
-         ivCxPZbcDqbE6siEhoBatHkybYhPjvq9i6aFmLo2zz8mXBEdUZIILnLxRnv68zB1S30d
-         k0cVmvWEh4Obaoo1NXiDa9rz53ZRc4KJY1Ubt9QPo1GoJcHvFR75d1cOhfmnQ+iv90q8
-         CIu0ZaxsQUWYj3xUZxfk3vOT9SaZ+3hjvBdWYpMPNYPJfqk6kzq3rEqKvlWxdx0CMUoB
-         GsnQ==
+        bh=63Sv42NZ4UQ21VsUCZjz4D7LimPpZB9TqWKZW2m0UhA=;
+        b=Gx4CqlzSzxxocRJJG/hRuPNwHWWw/fmxDMTHZrW7QPftAn6Mgli+o2kvesfmXawT4p
+         3fc7AsBlmL2bwya7ZCQpX2u1eQONPub3mAx61klyEQF4tBi7319zvVWMw2FQZ1XAfv7v
+         SnNMm1lWHHB9eKZi+1ijzPpsorh03TN4vaXRGtSc9Sf0Ra3jaEn1FoSE+F+n4DALInLc
+         mvShlV19oMBM/36BxdhWD9gaA6uDV6dN1ZFlje/MzO7YP03hOU0LBL0uniN0ATHBXSDJ
+         n0MBlC98z2t9DZuN1uL081a6DW2eLqjfPAuib35zAwrNDPBj7+c3rraqNPSvfrEWNFU9
+         qvpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712140694; x=1712745494;
+        d=1e100.net; s=20230601; t=1712140697; x=1712745497;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Msw6XT9KO7yx5p18PrVia4phRl71DU7zcjCvgmrHJ+k=;
-        b=bVaiYH5uEE/2fDWuHeuXCWIG9zv3vHex92F99DxBKArbXb0A77kRDysWJosTq3gxf+
-         WxloVfg5AxzKPp/1XfBC8x679Ef8Z7BLEKxMT5mcskNgWMKswnAiBbPOC+CWZKmSFIxI
-         tKAQxL72Km237C+te+WfvUhn/PcIK0qb1K9SVGid4qHFLkE9szRy2ZU5p8+dpXa9SXEk
-         5zpqfDUmoXEK20T8hP0BWi17uD/iZDt3l3Jflvd/ljWo83nZuoOZNoKHxqg1CXb27l2l
-         0xW07EP9IdIz2cT459/uSSjDQkECxU+rspl+B5245ziS2/LA3HoCYF73a3m1EyjrY2UV
-         jYGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXwMh+YG7QXhlQopEIxUFJogropdmAK6bbfQNblYkNjt+2pjjLwCjAonRkYvub08YRNMD6iLj0Ls4mR2+sMCTEMUXE5OoJAEL3t3qnK
-X-Gm-Message-State: AOJu0YxqDHaKAuqro/5Rk1kftljFFiTIGShjHPjuFinqsSJK1/tz5d5v
-	CN/0Axb3QF6iiPVjG2s/dcR/3/MGKoXh71+0qczvXh4kKUyIRUtgJUxokm8lhSE=
-X-Google-Smtp-Source: AGHT+IHWqya/PqeDmwRmotS0YDYDb/yYj0rY27pQLSyCl7ZKXU+UZUlVImdTPzmhSBwJB0tWtkigdQ==
-X-Received: by 2002:a17:906:1c4b:b0:a44:1fcf:9b97 with SMTP id l11-20020a1709061c4b00b00a441fcf9b97mr1531020ejg.24.1712140694239;
-        Wed, 03 Apr 2024 03:38:14 -0700 (PDT)
+        bh=63Sv42NZ4UQ21VsUCZjz4D7LimPpZB9TqWKZW2m0UhA=;
+        b=Bfzxq8//RlhgOTIdjUyB1rWZfKYTo0Cd+9IIxSSP+GjLSK8GnDkJyqa7bQ7TOfQwjd
+         gyVB2SUgDa3SOnhyrNNqAWNeZdrnEYN4sA9sCWL1YwptZowOWrZwM3/BRz80hJaCHxfj
+         z2HS4ZyVbcyHH50UJ4a5jNqpUQh90UhMOIPSinb+aJav68qtFAnOdycn+uomY0Caf7u2
+         WlX5uBO32Qpvl2OgvRS03y9j1UvSXMEIgq0hkKh7daBXCsRfG5lNSaT4EhYLB+wElWsm
+         T5DgQmMkOLsYiL5aFN4HUmaCLsGLkeCU9GKb+tWOnzANsJ7EM6T7KjmRKz/gkjr7TnS8
+         3fmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWwbVexRiIVj2K7E+5KoPvDrmlDqRsctJEhdLmWoICq/zFDVMr0G5SRGbUnuqGtIeRb3/QsLFvSlX9N6M96Pckp5IcvwILqEL79Rq41
+X-Gm-Message-State: AOJu0YzOXf2LvzhM5CmDg7COBvPjpYNiIdfuW8SRdYciKUkg7NbssKZy
+	JQtvQbdZ7lUEccEm4pyqLRGQ9axvy5iM9nBWsOnxnCMKWZ9QFM4hp7znqM21KNU=
+X-Google-Smtp-Source: AGHT+IEReqsxkMC1HywoA3Hap9Dg/HfcE9vt/Jd6gu61bvvTo+O0NmYMvp5P81PGu9l9NPkeGChzDA==
+X-Received: by 2002:a17:906:c109:b0:a4e:3b78:ed1f with SMTP id do9-20020a170906c10900b00a4e3b78ed1fmr11134901ejc.47.1712140697518;
+        Wed, 03 Apr 2024 03:38:17 -0700 (PDT)
 Received: from WBEC325.dom.lan ([185.188.71.122])
-        by smtp.gmail.com with ESMTPSA id xd2-20020a170907078200b00a4e2e16805bsm6858169ejb.11.2024.04.03.03.38.13
+        by smtp.gmail.com with ESMTPSA id xd2-20020a170907078200b00a4e2e16805bsm6858169ejb.11.2024.04.03.03.38.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 03:38:13 -0700 (PDT)
+        Wed, 03 Apr 2024 03:38:17 -0700 (PDT)
 From: Pawel Dembicki <paweldembicki@gmail.com>
 To: netdev@vger.kernel.org
 Cc: Linus Walleij <linus.walleij@linaro.org>,
@@ -84,9 +84,9 @@ Cc: Linus Walleij <linus.walleij@linaro.org>,
 	UNGLinuxDriver@microchip.com,
 	Russell King <linux@armlinux.org.uk>,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v8 08/16] net: dsa: tag_sja1105: absorb logic for not overwriting precise info into dsa_8021q_rcv()
-Date: Wed,  3 Apr 2024 12:37:24 +0200
-Message-Id: <20240403103734.3033398-9-paweldembicki@gmail.com>
+Subject: [PATCH net-next v8 09/16] net: dsa: tag_sja1105: absorb entire sja1105_vlan_rcv() into dsa_8021q_rcv()
+Date: Wed,  3 Apr 2024 12:37:25 +0200
+Message-Id: <20240403103734.3033398-10-paweldembicki@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240403103734.3033398-1-paweldembicki@gmail.com>
 References: <20240403103734.3033398-1-paweldembicki@gmail.com>
@@ -100,20 +100,16 @@ Content-Transfer-Encoding: 8bit
 
 From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-In both sja1105_rcv() and sja1110_rcv(), we may have precise source port
-information coming from parallel hardware mechanisms, in addition to the
-tag_8021q header.
+tag_sja1105 has a wrapper over dsa_8021q_rcv(): sja1105_vlan_rcv(),
+which determines whether the packet came from a bridge with
+vlan_filtering=1 (the case resolved via
+dsa_find_designated_bridge_port_by_vid()), or if it contains a tag_8021q
+header.
 
-Only sja1105_rcv() has extra logic to not overwrite that precise info
-with what's present in the VLAN tag. This is because sja1110_rcv() gets
-by, by having a reversed set of checks when assigning skb->dev. When the
-source port is imprecise (vbid >=1), source_port and switch_id will be
-set to zeroes by dsa_8021q_rcv(), which might be problematic. But by
-checking for vbid >= 1 first, sja1110_rcv() fends that off.
-
-We would like to make more code common between sja1105_rcv() and
-sja1110_rcv(), and for that, we need to make sure that sja1110_rcv()
-also goes through the precise source port preservation logic.
+Looking at a new tagger implementation for vsc73xx, based also on
+tag_8021q, it is becoming clear that the logic is needed there as well.
+So instead of forcing each tagger to wrap around dsa_8021q_rcv(), let's
+merge the logic into the core.
 
 Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
@@ -125,103 +121,176 @@ v5:
 v4:
   - introduced patch
 
- net/dsa/tag_8021q.c   | 32 +++++++++++++++++++++++++++++---
- net/dsa/tag_sja1105.c | 23 +++--------------------
- 2 files changed, 32 insertions(+), 23 deletions(-)
+ net/dsa/tag_8021q.c        | 34 ++++++++++++++++++++++++++++------
+ net/dsa/tag_8021q.h        |  2 +-
+ net/dsa/tag_ocelot_8021q.c |  2 +-
+ net/dsa/tag_sja1105.c      | 32 ++++----------------------------
+ 4 files changed, 34 insertions(+), 36 deletions(-)
 
 diff --git a/net/dsa/tag_8021q.c b/net/dsa/tag_8021q.c
-index 71b26ae6db39..3cb0293793a5 100644
+index 3cb0293793a5..332b0ae02645 100644
 --- a/net/dsa/tag_8021q.c
 +++ b/net/dsa/tag_8021q.c
-@@ -497,9 +497,21 @@ struct net_device *dsa_tag_8021q_find_port_by_vbid(struct net_device *conduit,
- }
- EXPORT_SYMBOL_GPL(dsa_tag_8021q_find_port_by_vbid);
- 
-+/**
-+ * dsa_8021q_rcv - Decode source information from tag_8021q header
-+ * @skb: RX socket buffer
-+ * @source_port: pointer to storage for precise source port information.
-+ *	If this is known already from outside tag_8021q, the pre-initialized
-+ *	value is preserved. If not known, pass -1.
-+ * @switch_id: similar to source_port.
-+ * @vbid: pointer to storage for imprecise bridge ID. Must be pre-initialized
-+ *	with -1. If a positive value is returned, the source_port and switch_id
-+ *	are invalid.
-+ */
+@@ -507,27 +507,39 @@ EXPORT_SYMBOL_GPL(dsa_tag_8021q_find_port_by_vbid);
+  * @vbid: pointer to storage for imprecise bridge ID. Must be pre-initialized
+  *	with -1. If a positive value is returned, the source_port and switch_id
+  *	are invalid.
++ * @vid: pointer to storage for original VID, in case tag_8021q decoding failed.
++ *
++ * If the packet has a tag_8021q header, decode it and set @source_port,
++ * @switch_id and @vbid, and strip the header. Otherwise set @vid and keep the
++ * header in the hwaccel area of the packet.
+  */
  void dsa_8021q_rcv(struct sk_buff *skb, int *source_port, int *switch_id,
- 		   int *vbid)
+-		   int *vbid)
++		   int *vbid, int *vid)
  {
-+	int tmp_source_port, tmp_switch_id, tmp_vbid;
- 	u16 vid, tci;
+ 	int tmp_source_port, tmp_switch_id, tmp_vbid;
+-	u16 vid, tci;
++	__be16 vlan_proto;
++	u16 tmp_vid, tci;
  
  	if (skb_vlan_tag_present(skb)) {
-@@ -513,11 +525,25 @@ void dsa_8021q_rcv(struct sk_buff *skb, int *source_port, int *switch_id,
- 
- 	vid = tci & VLAN_VID_MASK;
- 
--	*source_port = dsa_8021q_rx_source_port(vid);
--	*switch_id = dsa_8021q_rx_switch_id(vid);
-+	tmp_source_port = dsa_8021q_rx_source_port(vid);
-+	tmp_switch_id = dsa_8021q_rx_switch_id(vid);
-+	tmp_vbid = dsa_tag_8021q_rx_vbid(vid);
++		vlan_proto = skb->vlan_proto;
+ 		tci = skb_vlan_tag_get(skb);
+ 		__vlan_hwaccel_clear_tag(skb);
+ 	} else {
++		struct vlan_ethhdr *hdr = vlan_eth_hdr(skb);
 +
-+	/* Precise source port information is unknown when receiving from a
-+	 * VLAN-unaware bridging domain, and tmp_source_port and tmp_switch_id
-+	 * are zeroes in this case.
-+	 *
-+	 * Preserve the source information from hardware-specific mechanisms,
-+	 * if available. This allows us to not overwrite a valid source port
-+	 * and switch ID with less precise values.
-+	 */
-+	if (tmp_vbid == 0 && *source_port == -1)
-+		*source_port = tmp_source_port;
-+	if (tmp_vbid == 0 && *switch_id == -1)
-+		*switch_id = tmp_switch_id;
++		vlan_proto = hdr->h_vlan_proto;
+ 		skb_push_rcsum(skb, ETH_HLEN);
+ 		__skb_vlan_pop(skb, &tci);
+ 		skb_pull_rcsum(skb, ETH_HLEN);
+ 	}
  
- 	if (vbid)
--		*vbid = dsa_tag_8021q_rx_vbid(vid);
-+		*vbid = tmp_vbid;
+-	vid = tci & VLAN_VID_MASK;
++	tmp_vid = tci & VLAN_VID_MASK;
++	if (!vid_is_dsa_8021q(tmp_vid))
++		goto not_tag_8021q;
+ 
+-	tmp_source_port = dsa_8021q_rx_source_port(vid);
+-	tmp_switch_id = dsa_8021q_rx_switch_id(vid);
+-	tmp_vbid = dsa_tag_8021q_rx_vbid(vid);
++	tmp_source_port = dsa_8021q_rx_source_port(tmp_vid);
++	tmp_switch_id = dsa_8021q_rx_switch_id(tmp_vid);
++	tmp_vbid = dsa_tag_8021q_rx_vbid(tmp_vid);
+ 
+ 	/* Precise source port information is unknown when receiving from a
+ 	 * VLAN-unaware bridging domain, and tmp_source_port and tmp_switch_id
+@@ -546,5 +558,15 @@ void dsa_8021q_rcv(struct sk_buff *skb, int *source_port, int *switch_id,
+ 		*vbid = tmp_vbid;
  
  	skb->priority = (tci & VLAN_PRIO_MASK) >> VLAN_PRIO_SHIFT;
++	return;
++
++not_tag_8021q:
++	if (vid)
++		*vid = tmp_vid;
++	if (vbid)
++		*vbid = -1;
++
++	/* Put the tag back */
++	__vlan_hwaccel_put_tag(skb, vlan_proto, tci);
  }
+ EXPORT_SYMBOL_GPL(dsa_8021q_rcv);
+diff --git a/net/dsa/tag_8021q.h b/net/dsa/tag_8021q.h
+index 41f7167ac520..0c6671d7c1c2 100644
+--- a/net/dsa/tag_8021q.h
++++ b/net/dsa/tag_8021q.h
+@@ -14,7 +14,7 @@ struct sk_buff *dsa_8021q_xmit(struct sk_buff *skb, struct net_device *netdev,
+ 			       u16 tpid, u16 tci);
+ 
+ void dsa_8021q_rcv(struct sk_buff *skb, int *source_port, int *switch_id,
+-		   int *vbid);
++		   int *vbid, int *vid);
+ 
+ struct net_device *dsa_tag_8021q_find_port_by_vbid(struct net_device *conduit,
+ 						   int vbid);
+diff --git a/net/dsa/tag_ocelot_8021q.c b/net/dsa/tag_ocelot_8021q.c
+index b059381310fe..8e8b1bef6af6 100644
+--- a/net/dsa/tag_ocelot_8021q.c
++++ b/net/dsa/tag_ocelot_8021q.c
+@@ -81,7 +81,7 @@ static struct sk_buff *ocelot_rcv(struct sk_buff *skb,
+ {
+ 	int src_port, switch_id;
+ 
+-	dsa_8021q_rcv(skb, &src_port, &switch_id, NULL);
++	dsa_8021q_rcv(skb, &src_port, &switch_id, NULL, NULL);
+ 
+ 	skb->dev = dsa_conduit_find_user(netdev, switch_id, src_port);
+ 	if (!skb->dev)
 diff --git a/net/dsa/tag_sja1105.c b/net/dsa/tag_sja1105.c
-index 1aba1d05c27a..48886d4b7e3e 100644
+index 48886d4b7e3e..7639ccb94d35 100644
 --- a/net/dsa/tag_sja1105.c
 +++ b/net/dsa/tag_sja1105.c
-@@ -524,30 +524,13 @@ static struct sk_buff *sja1105_rcv(struct sk_buff *skb,
- 	/* Normal data plane traffic and link-local frames are tagged with
+@@ -472,37 +472,14 @@ static bool sja1110_skb_has_inband_control_extension(const struct sk_buff *skb)
+ 	return ntohs(eth_hdr(skb)->h_proto) == ETH_P_SJA1110;
+ }
+ 
+-/* If the VLAN in the packet is a tag_8021q one, set @source_port and
+- * @switch_id and strip the header. Otherwise set @vid and keep it in the
+- * packet.
+- */
+-static void sja1105_vlan_rcv(struct sk_buff *skb, int *source_port,
+-			     int *switch_id, int *vbid, u16 *vid)
+-{
+-	struct vlan_ethhdr *hdr = vlan_eth_hdr(skb);
+-	u16 vlan_tci;
+-
+-	if (skb_vlan_tag_present(skb))
+-		vlan_tci = skb_vlan_tag_get(skb);
+-	else
+-		vlan_tci = ntohs(hdr->h_vlan_TCI);
+-
+-	if (vid_is_dsa_8021q(vlan_tci & VLAN_VID_MASK))
+-		return dsa_8021q_rcv(skb, source_port, switch_id, vbid);
+-
+-	/* Try our best with imprecise RX */
+-	*vid = vlan_tci & VLAN_VID_MASK;
+-}
+-
+ static struct sk_buff *sja1105_rcv(struct sk_buff *skb,
+ 				   struct net_device *netdev)
+ {
+-	int source_port = -1, switch_id = -1, vbid = -1;
++	int source_port = -1, switch_id = -1, vbid = -1, vid = -1;
+ 	struct sja1105_meta meta = {0};
+ 	struct ethhdr *hdr;
+ 	bool is_link_local;
+ 	bool is_meta;
+-	u16 vid;
+ 
+ 	hdr = eth_hdr(skb);
+ 	is_link_local = sja1105_is_link_local(skb);
+@@ -525,7 +502,7 @@ static struct sk_buff *sja1105_rcv(struct sk_buff *skb,
  	 * a tag_8021q VLAN which we have to strip
  	 */
--	if (sja1105_skb_has_tag_8021q(skb)) {
--		int tmp_source_port = -1, tmp_switch_id = -1;
--
--		sja1105_vlan_rcv(skb, &tmp_source_port, &tmp_switch_id, &vbid,
--				 &vid);
--		/* Preserve the source information from the INCL_SRCPT option,
--		 * if available. This allows us to not overwrite a valid source
--		 * port and switch ID with zeroes when receiving link-local
--		 * frames from a VLAN-unaware bridged port (non-zero vbid) or a
--		 * VLAN-aware bridged port (non-zero vid). Furthermore, the
--		 * tag_8021q source port information is only of trust when the
--		 * vbid is 0 (precise port). Otherwise, tmp_source_port and
--		 * tmp_switch_id will be zeroes.
--		 */
--		if (vbid == 0 && source_port == -1)
--			source_port = tmp_source_port;
--		if (vbid == 0 && switch_id == -1)
--			switch_id = tmp_switch_id;
--	} else if (source_port == -1 && switch_id == -1) {
-+	if (sja1105_skb_has_tag_8021q(skb))
-+		sja1105_vlan_rcv(skb, &source_port, &switch_id, &vbid, &vid);
-+	else if (source_port == -1 && switch_id == -1)
+ 	if (sja1105_skb_has_tag_8021q(skb))
+-		sja1105_vlan_rcv(skb, &source_port, &switch_id, &vbid, &vid);
++		dsa_8021q_rcv(skb, &source_port, &switch_id, &vbid, &vid);
+ 	else if (source_port == -1 && switch_id == -1)
  		/* Packets with no source information have no chance of
  		 * getting accepted, drop them straight away.
- 		 */
- 		return NULL;
--	}
+@@ -660,9 +637,8 @@ static struct sk_buff *sja1110_rcv_inband_control_extension(struct sk_buff *skb,
+ static struct sk_buff *sja1110_rcv(struct sk_buff *skb,
+ 				   struct net_device *netdev)
+ {
+-	int source_port = -1, switch_id = -1, vbid = -1;
++	int source_port = -1, switch_id = -1, vbid = -1, vid = -1;
+ 	bool host_only = false;
+-	u16 vid = 0;
  
- 	if (source_port != -1 && switch_id != -1)
- 		skb->dev = dsa_conduit_find_user(netdev, switch_id, source_port);
+ 	if (sja1110_skb_has_inband_control_extension(skb)) {
+ 		skb = sja1110_rcv_inband_control_extension(skb, &source_port,
+@@ -674,7 +650,7 @@ static struct sk_buff *sja1110_rcv(struct sk_buff *skb,
+ 
+ 	/* Packets with in-band control extensions might still have RX VLANs */
+ 	if (likely(sja1105_skb_has_tag_8021q(skb)))
+-		sja1105_vlan_rcv(skb, &source_port, &switch_id, &vbid, &vid);
++		dsa_8021q_rcv(skb, &source_port, &switch_id, &vbid, &vid);
+ 
+ 	if (vbid >= 1)
+ 		skb->dev = dsa_tag_8021q_find_port_by_vbid(netdev, vbid);
 -- 
 2.34.1
 
