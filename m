@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-129759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1868896F92
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:56:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEF72896F94
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:56:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB33028DF6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:56:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 79EA81F291A6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E48F14900B;
-	Wed,  3 Apr 2024 12:54:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C669C1494A2;
+	Wed,  3 Apr 2024 12:54:49 +0000 (UTC)
 Received: from smtpbgau2.qq.com (smtpbgau2.qq.com [54.206.34.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F667148841;
-	Wed,  3 Apr 2024 12:54:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A88E14900F;
+	Wed,  3 Apr 2024 12:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.206.34.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712148878; cv=none; b=DPGm7ed+xBgVUMAWKb2LS+axm7uTaRZILNajLawIi4VbIj+/a7xhtuwPrnFZLI7eIh5p17FNiKpaLthzeVUUqN10dCnID7shnLBct/TuYgJOYv8cxs9Ll7PLxsIMAN1J1MggVzd7cCtYgP+pG08URx8zRTv3H2sLv0awMtatQpA=
+	t=1712148889; cv=none; b=OUXBnnmTn9hPCRNj8yv0oE2XW87uo2hb338t/23YAzVurpC+bANO+sA8UPNG1p9PakelgCtwYP6g5UTlgiqMNkh0LW+9W37nvmy8PMPcPlehiIkIoWzZHvHygMcQq6RfvVTLNLGxC0uOz9FBLjA9EBk63Kd71uibf9pIdEVkIG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712148878; c=relaxed/simple;
-	bh=YPbYnG00R6gzJY3wQosCsmzl+ZE2k9Rcp+wAlH+Q/vQ=;
+	s=arc-20240116; t=1712148889; c=relaxed/simple;
+	bh=xXJvc27158uMzeJNX4bgx6mUDVSgnlq9ce9aZe5v3B4=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KqCC14rph7n3a/navJUIStgHlsyCRizq3WyV3sDU+RRYvZHvZ2sXDUWQ1GZpUc4DDmfIpdiGFnNl+JXgZSBqcmWd2dEFCBoVZ3gtI4hZ8PLsA63obxnG94TnIzrShmI4HPYUmj0PVQ9bj/Td0Ey7v5JG9fOrA0x439TwEjNnIhk=
+	 MIME-Version; b=IlYhUpU2w0C4JRLtPrXLij458ZEHLIltfTx0VH6eDn2MK7D/kDeza49HLXhKmxtppc8Vf8RydM4Ut9udDFOaXUKlbXA06Qd/U3U3J9ghKRYpPFEHIKwsVpnIiGDXqpjHPZlymczP0Gt2TvHlOomqxFzxHWuFm1bEoKmLwQ4KC5Y=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn; spf=pass smtp.mailfrom=shingroup.cn; arc=none smtp.client-ip=54.206.34.216
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=shingroup.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shingroup.cn
-X-QQ-mid: bizesmtp79t1712148775teye1u3j
-X-QQ-Originating-IP: xdXNA6zp8ZSrFbbqKwC7auWvxA+9gSLqEpXCtDjvsc8=
+X-QQ-mid: bizesmtpsz1t1712148785t9jh8zy
+X-QQ-Originating-IP: glNtj0eRp0IOBFLCOi1CaGqaaEumMkerNThHocu9b+k=
 Received: from localhost ( [112.0.147.175])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 03 Apr 2024 20:52:54 +0800 (CST)
+	id ; Wed, 03 Apr 2024 20:53:04 +0800 (CST)
 X-QQ-SSF: 01400000000000704000000A0000000
-X-QQ-FEAT: RmQi6iQXyoPI3227xPNYQoydQAD/PwEqenSojQohu5757FSm3x7ceIiKbAVGu
-	412DzCp1YWMrlYllY6gv9ImMEfEWAD5DsWbtLmD1KDWtDGmFg2aMGLi0Zj5JQVC+1aXtngL
-	u2nerBQMgjZ1JaIt5LAA20jmq5u0EV9XnXuTDItDmDBcZMz4dhmUgaEr7djBrbtW95ZRsN6
-	2f4bQNLDOB527dcnzaBSi5y/7qjTjHKvftRFlJ8z/GdorcYD1HH7QedXtJNW2Neb7QNAhuz
-	0hoK/CAOWuZzThYCMs1Hl3aalSKlRTobx5IxOE3giObFjp5Pno08NUN7R6YKJ/M7KoeAmOe
-	m83vrEBDYEwqYIdXMIB/n5acoCF4TyirSZKmSVzR45oKz6Tff4ZyjojIOaUh6Mu1e8xgmpb
-	27ARI95bBrMpObXtXUtTNG3idfP/MYs+
+X-QQ-FEAT: +ynUkgUhZJkR1+2Xpbw3pa6lG4d42cKOBYOKy4eBM/Jbqbkv0AiQwK85DK9n1
+	983cnBzJioQLx2jW5n10h586uD5pFDBsC+v12PpxJYaKBi3CSH/AmSm88+X9mOQQH8/QZ63
+	PG3ju17FiN2Dd4TWCF7X1iXJfg63o8upsKBrlHBlhEbSbLEySN06aN/oYGc5jgiBcG8X5Bp
+	1lABsa0QVpzkBNFCbrjCZcdBy7xoNDq1ADjdWQkMU0CNhITXi0yskRVq33PqVBthi6fTNSt
+	IzpNnzIqNNQRwXPQN80AGwyXXnm3YBgOIxP8o71LF5W4AFOgcKSD/GXhC0ne4Zx83dF2qUs
+	DVPirTGQv4Rbo7GV7MzZpG3r4bkNn+xF135c0YgkOHUZKhO9xWOsAz+OjtOg5jvd7rZuX1h
+	qA68Tfvh8S+vNUKQNWDDAAbW7BaVf2NZ
 X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 4365670256005717423
+X-BIZMAIL-ID: 17308809335922861107
 From: Dawei Li <dawei.li@shingroup.cn>
 To: will@kernel.org,
 	mark.rutland@arm.com,
@@ -58,9 +58,9 @@ Cc: xueshuai@linux.alibaba.com,
 	linux-kernel@vger.kernel.org,
 	linux-arm-msm@vger.kernel.org,
 	Dawei Li <dawei.li@shingroup.cn>
-Subject: [PATCH v2 09/10] perf/qcom_l2: Avoid placing cpumask var on stack
-Date: Wed,  3 Apr 2024 20:51:08 +0800
-Message-Id: <20240403125109.2054881-10-dawei.li@shingroup.cn>
+Subject: [PATCH v2 10/10] perf/thunderx2: Avoid placing cpumask var on stack
+Date: Wed,  3 Apr 2024 20:51:09 +0800
+Message-Id: <20240403125109.2054881-11-dawei.li@shingroup.cn>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20240403125109.2054881-1-dawei.li@shingroup.cn>
 References: <20240403125109.2054881-1-dawei.li@shingroup.cn>
@@ -72,7 +72,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
+Feedback-ID: bizesmtpsz:shingroup.cn:qybglogicsvrgz:qybglogicsvrgz5a-1
 
 For CONFIG_CPUMASK_OFFSTACK=y kernel, explicit allocation of cpumask
 variable on stack is not recommended since it can cause potential stack
@@ -96,36 +96,38 @@ the cpumask var is allocated.
 Suggested-by: Mark Rutland <mark.rutland@arm.com>
 Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
 ---
- drivers/perf/qcom_l2_pmu.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ drivers/perf/thunderx2_pmu.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/perf/qcom_l2_pmu.c b/drivers/perf/qcom_l2_pmu.c
-index 148df5ae8ef8..b5a44dc1dc3a 100644
---- a/drivers/perf/qcom_l2_pmu.c
-+++ b/drivers/perf/qcom_l2_pmu.c
-@@ -801,9 +801,8 @@ static int l2cache_pmu_online_cpu(unsigned int cpu, struct hlist_node *node)
- 
- static int l2cache_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
+diff --git a/drivers/perf/thunderx2_pmu.c b/drivers/perf/thunderx2_pmu.c
+index e16d10c763de..b3377b662ffc 100644
+--- a/drivers/perf/thunderx2_pmu.c
++++ b/drivers/perf/thunderx2_pmu.c
+@@ -932,9 +932,8 @@ static int tx2_uncore_pmu_online_cpu(unsigned int cpu,
+ static int tx2_uncore_pmu_offline_cpu(unsigned int cpu,
+ 		struct hlist_node *hpnode)
  {
--	struct cluster_pmu *cluster;
- 	struct l2cache_pmu *l2cache_pmu;
--	cpumask_t cluster_online_cpus;
-+	struct cluster_pmu *cluster;
- 	unsigned int target;
+-	int new_cpu;
+ 	struct tx2_uncore_pmu *tx2_pmu;
+-	struct cpumask cpu_online_mask_temp;
++	unsigned int new_cpu;
  
- 	l2cache_pmu = hlist_entry_safe(node, struct l2cache_pmu, node);
-@@ -820,9 +819,8 @@ static int l2cache_pmu_offline_cpu(unsigned int cpu, struct hlist_node *node)
- 	cluster->on_cpu = -1;
+ 	tx2_pmu = hlist_entry_safe(hpnode,
+ 			struct tx2_uncore_pmu, hpnode);
+@@ -945,11 +944,8 @@ static int tx2_uncore_pmu_offline_cpu(unsigned int cpu,
+ 	if (tx2_pmu->hrtimer_callback)
+ 		hrtimer_cancel(&tx2_pmu->hrtimer);
  
- 	/* Any other CPU for this cluster which is still online */
--	cpumask_and(&cluster_online_cpus, &cluster->cluster_cpus,
--		    cpu_online_mask);
--	target = cpumask_any_but(&cluster_online_cpus, cpu);
-+	target = cpumask_any_and_but(&cluster->cluster_cpus,
-+				     cpu_online_mask, cpu);
- 	if (target >= nr_cpu_ids) {
- 		disable_irq(cluster->irq);
- 		return 0;
+-	cpumask_copy(&cpu_online_mask_temp, cpu_online_mask);
+-	cpumask_clear_cpu(cpu, &cpu_online_mask_temp);
+-	new_cpu = cpumask_any_and(
+-			cpumask_of_node(tx2_pmu->node),
+-			&cpu_online_mask_temp);
++	new_cpu = cpumask_any_and_but(cpumask_of_node(tx2_pmu->node),
++				      cpu_online_mask, cpu);
+ 
+ 	tx2_pmu->cpu = new_cpu;
+ 	if (new_cpu >= nr_cpu_ids)
 -- 
 2.27.0
 
