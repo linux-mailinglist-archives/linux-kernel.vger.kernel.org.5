@@ -1,92 +1,130 @@
-Return-Path: <linux-kernel+bounces-130753-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130754-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93AFC897CB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:51:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E9B38897CBD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:55:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CACCF28CE44
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:51:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D5ADB267FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:55:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4960C156C60;
-	Wed,  3 Apr 2024 23:51:05 +0000 (UTC)
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436B5156C54;
+	Wed,  3 Apr 2024 23:55:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CSX60lOJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E3AE156662
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 23:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78CE5139D;
+	Wed,  3 Apr 2024 23:55:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712188264; cv=none; b=dLcdwQhj5pW4eor/oQIqLWe/dsd2F85gjHgrfPr6C/pV/pJECHwe+rAmXcbKWKuJm1owab+2NFF9ER6i3YTi7aoB0rqbhRKOFQLvFM8NeiiieyCGWEL2zNSSqGe9zDgJvwKnVFVG0FHcEfxKfM+jjCeeSD+3lzuTVA8TmciXJOo=
+	t=1712188527; cv=none; b=Pjep+Y285hmdQrpRGvzNbVIlX4UP7FyUuPNIL+tVpnNEux1rQ3p/9xDOIdFhQjouieI651+CDmackOAaIqEJ6KMvnw/+YLopiL0wc2tVAjWiFXHOnJrxsItC7fBHzwahqVE8eldmsFZ66dgeR06Eu9LxzwBOS/VA1DRK/v5EeX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712188264; c=relaxed/simple;
-	bh=7ip0uxWOp6WecD8HYk9xKfo5g7Q5QDWOV6mON1A9o6Q=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=IuDVSZRhTldtJHfA6j/TaejmLTDTQXqghT9fJUrfrf0mLba8fUNpZMXAbLFgrYBHyz8NOLRlMRBNrc+mvjAOz946O0xBCT4wpLK9iQz/SfJaTxnMm8vq2cc7HGXvcDqPLEIHy6OPstCe3SG2Al0x3bNvCk3XSo0avRMcGnvFyWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-369e344227bso2546085ab.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 16:51:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712188262; x=1712793062;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/jC4YnFvifP/yHXxrC7XuUJyFpMsXOBNgCQBG5wdRFQ=;
-        b=gRySsv3jLGRfgJnUbsOxigLPs/02w98QgZPp6vGMaB+eF6WOzt1MZ8mgZ+oO2t+jE+
-         mGSHBUOIlCS8jIZo8cJmQ8gXfDf1mbPNugydcYSeItvaOu0qP+LkKRw0mXTbqsF1XIu2
-         wmxjRZ91TVAHTmW/hWuH/XtRYJUMKIaHNx6Gcpzps0QId0gJysTuPSeDf4F6Pg9z9Q6i
-         4OjoNs5R2GnFA/K58mMHFN0typxzjHIOqV3wEm1Cm6wiR6ywtz1kIyp0Zrjjj8Jt7uI1
-         X3oeJpzXwc3zECn/6d4bMBJQLguybp9OxY25GBeunT31ywi+bxvVxw5iGFXA5zn2kdFp
-         20mA==
-X-Forwarded-Encrypted: i=1; AJvYcCUavfk+d0DxgFDOVwqrtBskXAoXtPE399vAWQYcg87+AlvIu69yEGBidU/ivJkxCj3I678fGErtdJswAH/EvL1be0ODiGu2p1g4eeDR
-X-Gm-Message-State: AOJu0YyZNLJeRQzAa2XPT8p6vrCCDx4eSSsnRRE/76a263/cVfkAZ8Wd
-	DQ4ZDbvSsix7166AL0o4m25lWOxpy2FOHbWO64jt4tCKTCmxqzmsLB7+PhcteJGUGz248AcAYIl
-	aRs/GJ4ZXEgkpSOYRYkpLWoAqDkp/lCeObYhzOzY12uQWBsb2V5GLniM=
-X-Google-Smtp-Source: AGHT+IEPilzz/Msv9bs1Mliga9g/dWfYMw9Di7/yPVPKV6N4GrfprHzjRBALpFuinDYc9680MMfz8pX7uCCb8L6K+oyeroVyXbJJ
+	s=arc-20240116; t=1712188527; c=relaxed/simple;
+	bh=HWHBdM5a47wfjfWmcaNM3oH6e3DQ6PEyk5hcv30TTn4=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Z3yjUGBxLT+6xIM3Pad87pn8Gkkm3z13t+ogbdasqtHK3oxFvfcPObUQbmT+CtNidQfDRLOWXbfADgXG9Dg/uaOW/fGDT4DCU73eYKx+zKR4gZ1YsQxyONRe6D3pOyiv8OoS/SjhX2W7WQx6H0JqSXA1zmdc7ADMGZab3HJu/7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CSX60lOJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AA36C433F1;
+	Wed,  3 Apr 2024 23:55:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712188527;
+	bh=HWHBdM5a47wfjfWmcaNM3oH6e3DQ6PEyk5hcv30TTn4=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CSX60lOJpUVt/g+VfUjC5n6QM20vfeqZCF2mvJKXLloZhBG936KkYNAcXK+zfkdAv
+	 PaRjfysfe4887jJeoKZEMTi98/a4k+GGVYzo8mK9/HfgLq61PQAqL9ZAdjHAlE/y49
+	 yMlb4uhUFsgTjDtx4zVhaBmDLUYDBHAOnPp26e9zA4aNGBwUsp/sTV1I/3/UpKY1T7
+	 ep3zamJcF8CQb87lD/8pnVVBw3zQWM96tQpf5YV6uTbPSrzTvJcwM7sr9g13PJa4KH
+	 N2PPaaJy9liGDBBq2eB7ptHxYHi58CgxGo0m5r606yKUkq19M8P3LhmSqCvDaNU9K9
+	 8AT4CSreSSMGg==
+Date: Thu, 4 Apr 2024 08:55:22 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Zhenhua Huang <quic_zhenhuah@quicinc.com>,
+ Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH fs/proc/bootconfig] remove redundant comments from
+ /proc/bootconfig
+Message-Id: <20240404085522.63bf8cce6f961c07c8ce3f17@kernel.org>
+In-Reply-To: <f036c5b0-20cc-40c1-85f9-69fa9edd0c95@paulmck-laptop>
+References: <f036c5b0-20cc-40c1-85f9-69fa9edd0c95@paulmck-laptop>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:178c:b0:369:f9c6:359d with SMTP id
- y12-20020a056e02178c00b00369f9c6359dmr83958ilu.2.1712188262648; Wed, 03 Apr
- 2024 16:51:02 -0700 (PDT)
-Date: Wed, 03 Apr 2024 16:51:02 -0700
-In-Reply-To: <00000000000098f75506153551a1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002f2066061539e54b@google.com>
-Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
-From: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>
-To: gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org, 
-	valesini@yandex-team.ru
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-syzbot has bisected this issue to:
+On Wed, 3 Apr 2024 12:16:28 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-commit 0fedefd4c4e33dd24f726b13b5d7c143e2b483be
-Author: Valentine Sinitsyn <valesini@yandex-team.ru>
-Date:   Mon Sep 25 08:40:12 2023 +0000
+> commit 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to
+> /proc/bootconfig") adds bootloader argument comments into /proc/bootconfig.
+> 
+> /proc/bootconfig shows boot_command_line[] multiple times following
+> every xbc key value pair, that's duplicated and not necessary.
+> Remove redundant ones.
+> 
+> Output before and after the fix is like:
+> key1 = value1
+> *bootloader argument comments*
+> key2 = value2
+> *bootloader argument comments*
+> key3 = value3
+> *bootloader argument comments*
+> ...
+> 
+> key1 = value1
+> key2 = value2
+> key3 = value3
+> *bootloader argument comments*
+> ...
+> 
+> Fixes: 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to /proc/bootconfig")
+> Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: <linux-trace-kernel@vger.kernel.org>
+> Cc: <linux-fsdevel@vger.kernel.org>
 
-    kernfs: sysfs: support custom llseek method for sysfs entries
+OOps, good catch! Let me pick it.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17cb5e03180000
-start commit:   fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=142b5e03180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=102b5e03180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
-dashboard link: https://syzkaller.appspot.com/bug?extid=9a5b0ced8b1bfb238b56
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f1d93d180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c38139180000
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
-Reported-by: syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com
-Fixes: 0fedefd4c4e3 ("kernfs: sysfs: support custom llseek method for sysfs entries")
+Thank you!
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+> index 902b326e1e560..e5635a6b127b0 100644
+> --- a/fs/proc/bootconfig.c
+> +++ b/fs/proc/bootconfig.c
+> @@ -62,12 +62,12 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+>  				break;
+>  			dst += ret;
+>  		}
+> -		if (ret >= 0 && boot_command_line[0]) {
+> -			ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+> -				       boot_command_line);
+> -			if (ret > 0)
+> -				dst += ret;
+> -		}
+> +	}
+> +	if (ret >= 0 && boot_command_line[0]) {
+> +		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+> +			       boot_command_line);
+> +		if (ret > 0)
+> +			dst += ret;
+>  	}
+>  out:
+>  	kfree(key);
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
