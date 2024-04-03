@@ -1,127 +1,131 @@
-Return-Path: <linux-kernel+bounces-130429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 234E38977ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:15:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB4E28977F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:16:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2825285A1B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:15:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 619D71F21721
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C419153593;
-	Wed,  3 Apr 2024 18:15:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF3015356D;
+	Wed,  3 Apr 2024 18:16:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O+mF5tSo"
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="rGrjwiBa"
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B021534F5
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:15:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADFD41534F2
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:16:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712168130; cv=none; b=ri3FYIwBRtKonbgJ04YMaypdGada5ZT1otdW/rkiwnbvLekJHiS+Zk8UdgDMLminpaEUz5SXrMEgjtXjXShftw/bvazENNOj+g1rly2FaSu5hH9qlIt/FGbMopzaSQ/jyD6Z5+vb2e6T/gZDHt3RieZWcqaSuaIafQncILKEKeM=
+	t=1712168188; cv=none; b=iDHVHWEbupJOsWewbjqR6HmA4PiEa6BHU0/by5nCinu2cpQgVhA6ekPqzJnMFU66/m2s4/L8SRndkLhMFuNgMS2iDzOl8WwIepXZT9DWWoea/TH1bvyBSpJcKblpNp+iF20o/l9Yltm1fnRaz8TqkOV98wREl7w0t9fjC9N4Fkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712168130; c=relaxed/simple;
-	bh=1oV7F1jBmYRZsA6svOOmuWXQI3vYZavB0QFuGC36KRM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KhRD1TAjOG1U9rzvAca1q9Z/kEEdEowZF0+ME8ZUjCZ4pmsrtHEl49Lwey0duZKWIF0NaWd8+EmMyCST2vQsyJ7FRA476/Ofx4TOfURUaSOJy46sx79ggJOMUqgXgv7StQf52mcFWnztD2bwIn+CNKqxNhHHH2NaTABwEHj/hRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O+mF5tSo; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 3 Apr 2024 14:15:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712168126;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KugM06W/s0lb++bW7levKHgpFLyEAtmCAECxADz00LA=;
-	b=O+mF5tSo+kQ3evl6evxwBacTiXzfRDinz7tasCBoCXvkVzg71Eg2Tj11aOOQOvAn2VtbKa
-	4xDUzXt3vcUN1q4BynOenQTSxBZUR+PUrwJNN863OgeLxrPH8kAqph+irAR/22JqAk8WiC
-	UUHnl3AUbkMRomaUH0xPDBYfDm7mIPM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Brian Foster <bfoster@redhat.com>
-Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>, 
-	Jonathan Corbet <corbet@lwn.net>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, kernel-team@meta.com
-Subject: Re: [PATCH v3 11/13] bcachefs: fiemap: return correct extent
- physical length
-Message-ID: <qf3rldn7sha5nbwz7iidkzb6secoyebwldgq56tfx4sunmthxo@qdap46g7lfsc>
-References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
- <b9b795987a485afa0fdb8f0decc09405691d9320.1712126039.git.sweettea-kernel@dorminy.me>
- <Zg2LG1_2-ac1GlsG@bfoster>
+	s=arc-20240116; t=1712168188; c=relaxed/simple;
+	bh=VFiK45j2Q+k25OG6ST/L3ExJ/1D7WWKaEd9JXrngPjI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oSKV4Q8UNVlRf6Eqt4Hjv5i2kEmkRZcTsptnbhazjCK2sXbdIuE8QAnnltOMEYokLKLLzhB3ZP0QUj2fJBLi11JLNA16mVIys+Jlkf7fBf1GxwaPcwgRn31XtKhVcKLx4uaAjFRwzUgqfJxVdLqaXy+xLURe5zMQXOL3aL6invY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=rGrjwiBa; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e0c7f7ba3so2914a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:16:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712168185; x=1712772985; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wNELuWdWa80XXRXdRCDWUU8putHnEOf7PvgbPFwUh3I=;
+        b=rGrjwiBamwokjHSr0LoUryiPjR1nKxLARzz67P808l9jQ0HOgpcvi+wqRkEFN80JU4
+         ne6A6MOVWyFM2YNKc7Jqm9COE5RJ4oFlWmxc97Vpe9H9tNJaz5JFZi0Ab3ciswUvuzAF
+         jJsNkx1QIiuRCFzJ0Kl7bU3rh1txCUtoxIK+Y0vatw6B4UFn0UjC+eJlBnp9nIDK1EGy
+         3dVyy+k9XTg7PMT/RABZeOBWYDNbn9+S+1CV2BVEyQNg55GKXup1urMZxdS7/3XF7OYp
+         qEOAaBeL/7aO4xAq4Nh1Jp76tSIxyt70HoiiAQXUz+6e1+6HvXZyyISPRDtF20+HuEri
+         aF5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712168185; x=1712772985;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=wNELuWdWa80XXRXdRCDWUU8putHnEOf7PvgbPFwUh3I=;
+        b=D7Cw9jT+yZjP1eUFcqnzF3uyv5OrN1l1mW9jhx975MUO0FOr0M7q3st4BAKyRoPh+M
+         6xOMyYXVymzhY3Nl/wucKipbtpzbXrHWqHFZHcvsB+toZCZEF6Tp+V44rmxZJl3NCAdy
+         mxI5QRihQI+iFHTaqivsblZXprORHQFwj3bUx6tkZJ+aaYGULW9lixoJDsuPuUm5AtY/
+         X2kZzJd3opt6WyBVwxPpNQc82Yp3yM8rmD0FGjHO1TRB7Ief/qia3UHg0fF7/z++6+uc
+         LMeLmRVD4SvTAi0N4WEatlJ0KQmNP779281qk0SpbebqFSWm3wKnB+rJNcxZD66+AOqv
+         rNGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVZ4bQZ/62CDdv+kBVGhPkz9wwtkhhtMDP3KMXNXQ7STR+OOZne0jCnwEqQcXfu6aVRLElDuMIVz2P1FBvuy9UC2rHU0sfjxBZk+2sa
+X-Gm-Message-State: AOJu0YxKLTAwuVdf2vfiPgiM5faJjxmVeLF/ZDbxxwwF68SfVqHNDTm2
+	5C4jqO0/sP8flSwfDbgOYaLJmeOckVpuirODPl7OY88dxUhOCEA99n3DXDBHYwbzL5KoyTnoWth
+	QPVH5aSygc4+S4fkvqSUItGEd9iQkPREpN98=
+X-Google-Smtp-Source: AGHT+IGfHejWu5qYzjBmQ79n3dfe2V1iyaclIyCvbL1++S3ixo7/rHPVQXjlJIE+9sKOojX5U+IOl4Fuki4ckmOFfxc=
+X-Received: by 2002:aa7:d645:0:b0:56c:5a43:5a66 with SMTP id
+ v5-20020aa7d645000000b0056c5a435a66mr236161edr.7.1712168184752; Wed, 03 Apr
+ 2024 11:16:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zg2LG1_2-ac1GlsG@bfoster>
-X-Migadu-Flow: FLOW_OUT
+References: <87sf02bgez.ffs@tglx> <87r0fmbe65.ffs@tglx>
+In-Reply-To: <87r0fmbe65.ffs@tglx>
+From: John Stultz <jstultz@google.com>
+Date: Wed, 3 Apr 2024 11:16:12 -0700
+Message-ID: <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
+ current thread
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Oleg Nesterov <oleg@redhat.com>, Marco Elver <elver@google.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
+	"Eric W. Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>, 
+	kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>, 
+	Carlos Llamas <cmllamas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 03, 2024 at 01:00:11PM -0400, Brian Foster wrote:
-> On Wed, Apr 03, 2024 at 03:22:52AM -0400, Sweet Tea Dorminy wrote:
-> > Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-> > ---
-> >  fs/bcachefs/fs.c | 18 ++++++++++++------
-> >  1 file changed, 12 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
-> > index f830578a9cd1..d2793bae842d 100644
-> > --- a/fs/bcachefs/fs.c
-> > +++ b/fs/bcachefs/fs.c
-> > @@ -913,15 +913,17 @@ static int bch2_fill_extent(struct bch_fs *c,
-> >  			flags |= FIEMAP_EXTENT_SHARED;
-> >  
-> >  		bkey_for_each_ptr_decode(k.k, ptrs, p, entry) {
-> > -			int flags2 = 0;
-> > +			int flags2 = FIEMAP_EXTENT_HAS_PHYS_LEN;
-> > +			u64 phys_len = k.k->size << 9;
-> >  			u64 offset = p.ptr.offset;
-> >  
-> >  			if (p.ptr.unwritten)
-> >  				flags2 |= FIEMAP_EXTENT_UNWRITTEN;
-> >  
-> > -			if (p.crc.compression_type)
-> > +			if (p.crc.compression_type) {
-> >  				flags2 |= FIEMAP_EXTENT_ENCODED;
-> > -			else
-> > +				phys_len = p.crc.compressed_size << 9;
-> > +			} else
-> >  				offset += p.crc.offset;
-> >  
-> >  			if ((offset & (block_sectors(c) - 1)) ||
-> > @@ -931,7 +933,7 @@ static int bch2_fill_extent(struct bch_fs *c,
-> >  			ret = fiemap_fill_next_extent(info,
-> >  						bkey_start_offset(k.k) << 9,
-> >  						offset << 9,
-> > -						k.k->size << 9, 0,
-> > +						k.k->size << 9, phys_len,
-> >  						flags|flags2);
-> >  			if (ret)
-> >  				return ret;
-> > @@ -941,14 +943,18 @@ static int bch2_fill_extent(struct bch_fs *c,
-> >  	} else if (bkey_extent_is_inline_data(k.k)) {
-> >  		return fiemap_fill_next_extent(info,
-> >  					       bkey_start_offset(k.k) << 9,
-> > -					       0, k.k->size << 9, 0,
-> > +					       0, k.k->size << 9,
-> > +					       bkey_inline_data_bytes(k.k),
-> 
-> Question for Kent perhaps, but what's the functional difference between
-> bkey_inline_data_bytes() and k->size in this particular case?
+On Wed, Apr 3, 2024 at 9:32=E2=80=AFAM Thomas Gleixner <tglx@linutronix.de>=
+ wrote:
+> Subject: selftests/timers/posix_timers: Make signal distribution test les=
+s fragile
+> From: Thomas Gleixner <tglx@linutronix.de>
+>
+> The signal distribution test has a tendency to hang for a long time as th=
+e
+> signal delivery is not really evenly distributed. In fact it might never =
+be
+> distributed across all threads ever in the way it is written.
+>
+> Address this by:
+>
+>    1) Adding a timeout which aborts the test
+>
+>    2) Letting the test threads exit once they got a signal instead of
+>       running continuously. That ensures that the other threads will
+>       have a chance to expire the timer and get the signal.
+>
+>    3) Adding a detection whether all signals arrvied at the main thread,
+>       which allows to run the test on older kernels and emit 'SKIP'.
+>
+> While at it get rid of the pointless atomic operation on a the thread loc=
+al
+> variable in the signal handler.
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-Not much - k->size will correspond to the size of the original write -
-that is, the writeback write from the pagecache. inline_data_bytes is
-the amount of data that wasn't zeroes.
+Thanks for this, Thomas!
 
-So inline_data_bytes is probably the right thing to use here.
+Just FYI: testing with 6.1, the test no longer hangs, but I don't see
+the SKIP behavior. It just fails:
+not ok 6 check signal distribution
+# Totals: pass:5 fail:1 xfail:0 xpass:0 skip:0 error:0
+
+I've not had time yet to dig into what's going on, but let me know if
+you need any further details.
+
+thanks
+-john
 
