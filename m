@@ -1,102 +1,122 @@
-Return-Path: <linux-kernel+bounces-130760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C5DB897CCF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:02:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F4D2897CD1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:05:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4463D28C852
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:02:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CA8F2B279C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:05:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 729A2611E;
-	Thu,  4 Apr 2024 00:01:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A1BD1370;
+	Thu,  4 Apr 2024 00:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LpglnLPO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="hl/hkNBY";
+	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="e8VPkXDX"
+Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B24191C36;
-	Thu,  4 Apr 2024 00:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8B6641;
+	Thu,  4 Apr 2024 00:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.121.71.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712188911; cv=none; b=kPoUP19cgXOnmXNiMcnr3pSS2SIiZ8a7Ba5xPkDjlDyePOwAWIShHsH7gBzjqBc5/+nC8kSLqV8WhhOFPY+TkzPpc36tc6v5fjC+lynFGSxe1JsNQKuwYaFGvy07qv2IGv5g/lP+Ga1xvVjcmGFe7/xfTP5IVYiiUSrS9m8KD7w=
+	t=1712189112; cv=none; b=CKKGHLLBrUs4eAXlcFpMIT59CF7vbKLM61KPleqDqvxaSSipICa+bcZ1MHbE0tC2d6s30z8hMRCjrYmqryZtu4qnNs4x14kHm51p9wn4OJHGuGxBuxlAm2Jbh4S2y3zTd9ZhSVBaGpiwu11hY1Aqv8qSh0g97bB30My+JX3e3BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712188911; c=relaxed/simple;
-	bh=z6RlBSR5aj4M2kYLHYH9aUI4l4AwRODvROqiMQqGqRM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tSq1Y8ZshOpXm2iQXp36g8bC2ScHlOXbQH9/Fsb8HV6IYpcVG7azi+ENR4VScP2U86GaOpkkJ79n8wqHzKiSIl8P4E1mqwi+gPzZ9Ub0onbg6yBPkrIBKqPSEhGhyvNttZGvMmPfC1SlqCnNj2rcVtpM6sVkywdOQwf6UcgdqSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LpglnLPO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7DA3C433C7;
-	Thu,  4 Apr 2024 00:01:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712188911;
-	bh=z6RlBSR5aj4M2kYLHYH9aUI4l4AwRODvROqiMQqGqRM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=LpglnLPOmZodZPTZTjRY5E4ssCtYVloOxdPpXR2jLdwQtAR0wfeEutktistu+xoLK
-	 RjyTzEsmn+w/J2Ky3I+HoQvNDqohhExcGeLlhJRFCnRRVPX6AlrE6THYSs3XPzuwYg
-	 GUC1l2g+fqU7af205uyWZhe/tpWfZhYj1alkg27Uw3e26ogd6nXx7/BzQMHDFDaG8u
-	 qA5t8OyxR8Tr1Yjx3E5nMix3TqNuKSoGTo34yYZTklZjY8v+sabJrGwWE3beufbas/
-	 OAQ+HOkG8yUl4/1qySycvyvHEEiW2iMKnWKQawyy2MAxVMUaZuES+jZPqufbRA/LZg
-	 tHl32Nv6bK6ZA==
-Date: Wed, 3 Apr 2024 17:01:49 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: David Ahern <dsahern@kernel.org>
-Cc: Leon Romanovsky <leon@kernel.org>, Edward Cree <ecree.xilinx@gmail.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jason Gunthorpe
- <jgg@nvidia.com>, Christoph Hellwig <hch@infradead.org>, Saeed Mahameed
- <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Jiri Pirko
- <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>, Itay Avraham
- <itayavr@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, Aron Silverton
- <aron.silverton@oracle.com>, linux-kernel@vger.kernel.org,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Andy Gospodarek
- <andrew.gospodarek@broadcom.com>
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240403170149.7d2b8f2b@kernel.org>
-In-Reply-To: <d75ee9d5-36a9-4056-a0f3-0c05b2e744aa@kernel.org>
-References: <2024032248-ardently-ribcage-a495@gregkh>
-	<510c1b6b-1738-4baa-bdba-54d478633598@kernel.org>
-	<Zf2n02q0GevGdS-Z@C02YVCJELVCG>
-	<20240322135826.1c4655e2@kernel.org>
-	<e5c61607-4d66-4cd8-bf45-0aac2b3af126@kernel.org>
-	<20240322154027.5555780a@kernel.org>
-	<1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
-	<0ea32dd4-f408-5870-77eb-f18899f1ad44@gmail.com>
-	<20240402184832.GO11187@unreal>
-	<cefa2b9a-4227-969e-d31e-c19a552b9c1c@gmail.com>
-	<20240403190012.GV11187@unreal>
-	<d75ee9d5-36a9-4056-a0f3-0c05b2e744aa@kernel.org>
+	s=arc-20240116; t=1712189112; c=relaxed/simple;
+	bh=SQ0ipV/aFZevRZbQoVb97kEo9SFHmc1vSwZrkDCETOw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=glc15nyY5lee8BO5lrEFShZ94V+JajZ1TAi/azF9W1lvScCJGEDQTXa/EDskjDzHkfyrRbXUBTJZ1X7a5p+S8INo3HpuUC7WQlPMjo4UCXc4PAcyo48rm8UEjMch+RWPp8SGqeKH/i3MuFe91AtsvT2dMam9Pufs7LWoLcQ1JgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=hl/hkNBY; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=e8VPkXDX; arc=none smtp.client-ip=91.121.71.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
+Received: by nautica.notk.org (Postfix, from userid 108)
+	id B788BC01E; Thu,  4 Apr 2024 01:59:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1712188785; bh=iFZ/mkav7pOcjR/ZmvLNwSUTF1RkqX8g6p3bjVc91fA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hl/hkNBYe2+Y9drCuGa4x8Befec3nqnpOcW5Ae+gkUe1Yfnl362IjDCMsRAhkGpbq
+	 VZv3j4MiJdUaGleA5pR23ErpEzmks+jcF6F6CroEbw8lIdzmc9Zu9Qzjl9ukvkDZIf
+	 dquNfFcHFQ5FObZqA2F5rWBBgeSPAZIV8ShU1vIyQu65wFM7lgmuMLalN4zT/SGT4x
+	 mIyFiro7l0svHJgrR/8QgAixaLB32JoQoA9Pe/08/y3mhUBE0TW2C8XEnHxqFpdvsp
+	 P/42XzzKvNoHgp5R6sch9K19rgf2X13juNPhNfc9QS1erzH/F+5lALeD6q8wQMRXDg
+	 2wd1QkcR9Nx2Q==
+X-Spam-Level: 
+Received: from gaia.codewreck.org (localhost [127.0.0.1])
+	by nautica.notk.org (Postfix) with ESMTPS id 6AEC0C009;
+	Thu,  4 Apr 2024 01:59:42 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+	t=1712188784; bh=iFZ/mkav7pOcjR/ZmvLNwSUTF1RkqX8g6p3bjVc91fA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=e8VPkXDXPCxhgEmzyYcmujNt/d+OvznYyEjMko0x5TdEPt4hJpAmRaSnu/9WyM/lB
+	 RGAqKXFH2O46bYHVmC4raMoyqz91r96hKH4VEvJopynCodcr3vfA9XITGfi3NvidYI
+	 q6HS7703QJNE1kiJsMYj70qJT23ZMgPlgfZJ0HalJ0UnI04/bjWuDA4iroN4z4+rj6
+	 i7/zjiTlQp2fDiCxHShwK1XoGCHvSldb0dPhe8ZQgPifMppKWNBU0xb468WiomiV06
+	 mlWJII9+Ci0goASz/OuzV5CHsfsvspU8xAjHkD89Vsx97v7oLvdLF+uyW1U9rFR+Xh
+	 eL+8VCpKudrbQ==
+Received: from localhost (gaia.codewreck.org [local])
+	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id 874626b3;
+	Wed, 3 Apr 2024 23:59:36 +0000 (UTC)
+Date: Thu, 4 Apr 2024 08:59:21 +0900
+From: Dominique Martinet <asmadeus@codewreck.org>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Arnd Bergmann <arnd@arndb.de>, Randy Dunlap <rdunlap@infradead.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: duplicate patches in the vfs-brauner tree
+Message-ID: <Zg3tWULD56chInTG@codewreck.org>
+References: <20240404101038.11486a24@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240404101038.11486a24@canb.auug.org.au>
 
-On Wed, 3 Apr 2024 13:31:46 -0600 David Ahern wrote:
-> > ... Patches aren't languishing for want of reviewer resources; it's just that it
-> >  takes *submitter* time and effort to bring them up to the quality level
-> >  that's required, and occasionally the vendor has to (shock! horror!)
-> >  tell the world what one of their magic knobs actually *does*. ...
-> > 
-> > ^^^^ Content
-> > This paragraph alone shows that you completely didn't understand the
-> > discussion here.
+Thanks Stephen!
+
+[off topic, I just spent 10 minutes looking for the list of urls of the
+repos merged into linux-next to check that 'vfs-brauner' tree commit as
+it doesn't appear to be in next yet, and couldn't find it as there's no
+"Merge branch x of ...brauner" commit in next at the moment.
+I'm sure it's there somewhere and I didn't look at the right place, but
+perhaps a link to such a list could be added to either of the following
+(which all describe linux-next to some level):
+- https://www.kernel.org/doc/man-pages/linux-next.html
+- Documentation/process/howto.rst
+- Documentation/process/2.Process.rst
+/off topic]
+
+
+Christian,
+
+Stephen Rothwell wrote on Thu, Apr 04, 2024 at 10:10:38AM +1100:
+> [...]
+> 528aa74c091d ("9p: Clean up a kdoc warning.")
 > 
-> +1
+> These are commit
+> [...] 
+>   7013482ff594 ("9p/trans_fd: remove Excess kernel-doc comment")
+> 
+> from the v9fs tree.
 
-"didn't understand the discussion" is an ironic thing for you to +1,
-David. After all my emails about HNS3 RDMA you somehow concluded today
-that I want to make rules for the entire kernel:
-https://lore.kernel.org/all/6faa47b0-27c3-47f9-94be-1ec671d9543c@kernel.org/
+Thanks for picking that commit up (assuming you did recently); I've had
+it in my tree for a while and should have submitted it for 6.9-rc1 but
+the other 9p tree brought a few bugs in at the same time to I had held
+it off for safety, but it doesn't really make sense and I should have
+sent it a while ago.
 
-And I second what Ed said. I have asked multiple vendors preaching
-impossibilism in this thread to start posting those knobs. I offered
-to do a quick off-list review of the list of knobs they have to give 
-a quick yay / nay, so they don't waste time implementing things that
-would get nacked. None of the vendors bothered taking me up on that
-offer.
+I only have a handful of patches so I can send them today/tomorrow if
+you drop your's, or I can drop this one here and send the rest
+shortly later to avoid further confusion.
+
+Cheers,
+-- 
+Dominique Martinet | Asmadeus
 
