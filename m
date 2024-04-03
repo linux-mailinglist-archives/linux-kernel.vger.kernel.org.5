@@ -1,156 +1,131 @@
-Return-Path: <linux-kernel+bounces-129895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 250218971C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:57:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 06E22897018
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:19:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5AB4282055
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:57:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7358287EE1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:19:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2876148856;
-	Wed,  3 Apr 2024 13:57:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4D50146A7E;
+	Wed,  3 Apr 2024 13:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b="WL9AME1F"
-Received: from mail-m49253.qiye.163.com (mail-m49253.qiye.163.com [45.254.49.253])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="OzTfZbDA"
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65E2B147C78;
-	Wed,  3 Apr 2024 13:57:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.253
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E007B147C9C
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:19:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152638; cv=none; b=oRjSUejf9g9PDn12CwC7SMHLz92s6yAps/cQ2HNmyVqFuw774DyOeZXsbyiFCNgGOXcJlQaGSyrbwlO7SIIBVYh4mwUewhUPrDtIINfQHQeJTytpYLzQSYAlYKw4PDqPgtzXS6JOl+hzdwgX9rLm0dToricFUyVvOvtf2N8TtsU=
+	t=1712150352; cv=none; b=TJe//5IXXzl2wtaDDX6yNy1vl97UXgOVJhaW7F/rovXR0DltGcXgnOqM4fnfbPTfsnFYbkoMEFOH0AQDsjZwIdbYDAXiD9jjhw0z3RPHFLAe6uHiPbUXp1X/MhKKG8juQ+6kYjxaOg+vy92MGD39Kf0Q7DU2XwgtEiunHw+VJ3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152638; c=relaxed/simple;
-	bh=Yi2rfy/c/FEfpMRtlXRZ23HDICk1lcPrg8Fy+0GTG60=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=VW9GNYaaB4R3EPQO8S0zPtg1XFfec1mN3MTSOYjnCs0uM0et6XrO6AK7qf/mEwmOMKFh4WH3ZtjxTyj9Ys1/li0PYSvN41lYZwhQFVFHlYBOQhV6EedZkXYjFQ3118XS6c2ShPdlDJMtmHMA3yHcUtmOEUrm85SLgh51c81GQZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com; spf=pass smtp.mailfrom=rock-chips.com; dkim=pass (1024-bit key) header.d=rock-chips.com header.i=@rock-chips.com header.b=WL9AME1F; arc=none smtp.client-ip=45.254.49.253
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=rock-chips.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rock-chips.com
-DKIM-Signature: a=rsa-sha256;
-	b=WL9AME1FbN3qwG5Wk/f79Xhi/AskTVfgq4tjVjSPsooez9x8BryWqJeBNcj8nT7Cip+10fOlPiHqsHn8OL6mSsNN5q36mI+y2RXFwcfUM3ELmMp1gzB+DCuJ32O/rK9vlsmI9opkB5wX7NvQcY5vCQd4rypsKVxDSSE7JkQ2MLE=;
-	c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-	bh=hVhk+TI4SRZhbF4gUP3nkD3PWMY3UDprkFnGH1+J064=;
-	h=date:mime-version:subject:message-id:from;
-Received: from localhost.localdomain (unknown [58.22.7.114])
-	by smtp.qiye.163.com (Hmail) with ESMTPA id C6D807C03A7;
-	Wed,  3 Apr 2024 21:18:44 +0800 (CST)
-From: Sugar Zhang <sugar.zhang@rock-chips.com>
-To: heiko@sntech.de,
-	vkoul@kernel.org
-Cc: linux-rockchip@lists.infradead.org,
-	Sugar Zhang <sugar.zhang@rock-chips.com>,
-	dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] dmaengine: Add support for audio interleaved transfer
-Date: Wed,  3 Apr 2024 21:18:22 +0800
-Message-Id: <20240403211810.v2.1.I502ea9c86c8403dc5b1f38abf40be8b6ee13c1dc@changeid>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1712150304-60832-1-git-send-email-sugar.zhang@rock-chips.com>
-References: <1712150304-60832-1-git-send-email-sugar.zhang@rock-chips.com>
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-	tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZQ09IT1ZNHx0aTU8YHksfSh5VEwETFh
-	oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk1PSUxOVUpLS1VKQk
-	tLWQY+
-X-HM-Tid: 0a8ea41ca76e09d2kunmc6d807c03a7
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NjY6CDo*DTMTATUZNTFJHhdD
-	LCoKCR1VSlVKTEpJSk5LSElOT09OVTMWGhIXVQgOHBoJVQETGhUcOwkUGBBWGBMSCwhVGBQWRVlX
-	WRILWUFZTkNVSUlVTFVKSk9ZV1kIAVlBSENJTDcG
+	s=arc-20240116; t=1712150352; c=relaxed/simple;
+	bh=cWyJ3cJLCpRglG8Yk4xFCKIFWdrd8x6dZaV75Jxrvbw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ca1u9luLkNqLowev60hsf0QyKYM2bIggJzuqjnXlW/V8j4wBvRtMmuqy81YxkdwxGdEQbHugdUTtgn1bIrrmEBAD9At0cCCy213r2qPrHtUDpZf0tHIe3bE/GH1j7kyEtyfn1dG7mkSeO5ojpUQpsiHzSfAnI2lMlkuAjGOdMJI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=OzTfZbDA; arc=none smtp.client-ip=209.85.160.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-432ff72d745so7666411cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 06:19:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1712150350; x=1712755150; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cWyJ3cJLCpRglG8Yk4xFCKIFWdrd8x6dZaV75Jxrvbw=;
+        b=OzTfZbDAK169DHvtiGLE1p56hWxrPJIvztF4HCEG28uzI7eK2DDmyoFnlpMcVff0Ju
+         c7HfnRJdMT3cqqxjH5ta+XDwFfzxP7nhChJPfdXbCh/IYQgFfXapvkwDzhtcQKIMJDU6
+         /AYta6lJ4gWauzOHkhmOzIjsNFqlePdHHn3xy9JT6hKwAeKaW0n7cYID5zC35uJ+E1J9
+         MjmpsOIduTxUPwoUx60yV5mxx/3qr0JADBO7+Rf5akc1FV1XnIFH8emGKZpFjW7KCbm0
+         cWNz6heaYM6CJ35L/MFmo5LBGu6IXNRGey0GQtZdKGb0oNwjKGxhdSPQYm+tHTmRafwM
+         UqNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712150350; x=1712755150;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cWyJ3cJLCpRglG8Yk4xFCKIFWdrd8x6dZaV75Jxrvbw=;
+        b=C/o5L4hiPedCIAh4gYwKsxvGoa0LKbJrFiTsgrVruVMT5tNoGvPOvkLCWbv8/eIoLY
+         pWTzbUfEObupdUNAIVR6d92wtgKzBRweTKAeFae8zRAAW1c3mKnnF2BXenwSB7QAnSkw
+         nRmpXgJn8qZb75P3QGL/ka4O1GYXnhUjGJLd7HIx+aYUiiZ7lF5mgP4WupgrxT+982QG
+         ftntKoLCQwCjYoxi4jlOcrIiEDESyveFjSUVl4GTIXMf8etI+y6urtF8JlwHvL0vFXGR
+         MfwsURxFG70Ek/eNg5YZsC3/qyuEppnqgIEKNrWfxBVT9OHdfjpFpo8ul+BGMFGvyG1J
+         CW+w==
+X-Forwarded-Encrypted: i=1; AJvYcCX0Zem1aaL0jv0HD97RG5HBwy84oA0VXzO5DILjSXuVT9lqs3dmv+DKiJX1AncxDPLgp0w9jMMvt+d1IZC5mlpyZ8sVfMkSyHByrbi2
+X-Gm-Message-State: AOJu0Yw2emumiG+PAH/nXIRMRc/ZKy+70qnDHyID9/uaqqaJ38pS8WYY
+	8nFM5IJjC5QHrExlhjBoeMW21ZPbGQx0Ml7RD/q0MAX/6EvGt3XEAo3/Bt+E5MrOAv5x1YC/4H7
+	1ZbulhtWW5jTE07p246idrpA95lpllOdTKAj7pQ==
+X-Google-Smtp-Source: AGHT+IEGVCWVaM3OZyGBYvZk7eIME6rUXSm4/CdsRsbb+oN0keiU95giarhKtyBsTd58XnIkGQv2TzNnxS90eOdz7ws=
+X-Received: by 2002:a05:622a:104c:b0:434:338c:31ac with SMTP id
+ f12-20020a05622a104c00b00434338c31acmr3549454qte.14.1712150349909; Wed, 03
+ Apr 2024 06:19:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240222173942.1481394-1-pasha.tatashin@soleen.com>
+ <00555af4-8786-b772-7897-aef1e912b368@google.com> <ZfTDUGSshZUbs13-@8bytes.org>
+In-Reply-To: <ZfTDUGSshZUbs13-@8bytes.org>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Wed, 3 Apr 2024 09:18:33 -0400
+Message-ID: <CA+CK2bC7jd65=eZoN7szWJKSO2TLsxxKFH8D6WjHS3_2U7=McA@mail.gmail.com>
+Subject: Re: [PATCH v5 00/11] IOMMU memory observability
+To: Joerg Roedel <joro@8bytes.org>
+Cc: David Rientjes <rientjes@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	alim.akhtar@samsung.com, alyssa@rosenzweig.io, asahi@lists.linux.dev, 
+	baolu.lu@linux.intel.com, bhelgaas@google.com, cgroups@vger.kernel.org, 
+	corbet@lwn.net, david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org, 
+	heiko@sntech.de, iommu@lists.linux.dev, jernej.skrabec@gmail.com, 
+	jonathanh@nvidia.com, krzysztof.kozlowski@linaro.org, 
+	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-rockchip@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
+	linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
+	lizefan.x@bytedance.com, marcan@marcan.st, mhiramat@kernel.org, 
+	m.szyprowski@samsung.com, paulmck@kernel.org, rdunlap@infradead.org, 
+	robin.murphy@arm.com, samuel@sholland.org, suravee.suthikulpanit@amd.com, 
+	sven@svenpeter.dev, thierry.reding@gmail.com, tj@kernel.org, 
+	tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, will@kernel.org, 
+	yu-cheng.yu@intel.com, bagasdotme@gmail.com, mkoutny@suse.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This patch add support for interleaved transfer which used
-for interleaved audio or 2d video data transfer.
+On Fri, Mar 15, 2024 at 5:53=E2=80=AFPM Joerg Roedel <joro@8bytes.org> wrot=
+e:
+>
+> Hi David,
+>
+> On Fri, Mar 15, 2024 at 02:33:53PM -0700, David Rientjes wrote:
+> > Joerg, is this series anticipated to be queued up in the core branch of
+> > git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git so it gets into
+> > linux-next?
+> >
+> > This observability seems particularly useful so that we can monitor and
+> > alert on any unexpected increases (unbounded memory growth from this
+> > subsystem has in the past caused us issues before the memory is otherwi=
+se
+> > not observable by host software).
+> >
+> > Or are we still waiting on code reviews from some folks that we should
+> > ping?
+>
+> A few more reviews would certainly help, but I will also do a review on
+> my own. If things are looking good I can merge it into the iommu tree
+> when 6.9-rc3 is released (which is the usual time I start merging new
+> stuff).
 
-for audio situation, we add 'nump' for number of period frames.
+Hi Joerg,
 
-e.g. combine 2 stream into a union one by 2D dma.
+Would it make sense to stage this series in an unstable branch to get
+more test coverage from the 0-day robots?
 
-DAI0: 16CH
-+-------------------------------------------------------------+
-| Frame-1 | Frame-2 | Frame-3 | Frame-4 | ...... Frame-'numf' |
-+-------------------------------------------------------------+
-
-DAI1: 16CH
-+-------------------------------------------------------------+
-| Frame-1 | Frame-2 | Frame-3 | Frame-4 | ...... Frame-'numf' |
-+-------------------------------------------------------------+
-
-DAI0 + DAI1: 32CH
-
-+-------------------------------------------------------------+
-| DAI0-F1 | DAI1-F1 | DAI0-F2 | DAI1-F2 | ......              |
-+-------------------------------------------------------------+
-|      Frame-1      |      Frame-2      | ...... Frame-'numf' |
-
-For audio situation, we have buffer_size and period_size,
-the 'numf' is the buffer_size. so, we need another one for
-period_size, e.g. 'nump'.
-
-| Frame-1 | ~ | Frame-'nump' | ~ | Frame-'nump+1' | ~ |  Frame-'numf' |
-|
-
-As the above shown:
-
-each DAI0 transfer 1 Frame, should skip a gap size (DAI1-F1)
-each DAI1 transfer 1 Frame, should skip a gap size (DAI0-F1)
-
-So, the interleaved template describe as follows:
-
-DAI0:
-
-struct dma_interleaved_template *xt;
-
-xt->sgl[0].size = DAI0-F1;
-xt->sgl[0].icg =  DAI1-F1;
-xt->nump = nump; //the period_size in frames
-xt->numf = numf; //the buffer_size in frames
-
-DAI1:
-
-struct dma_interleaved_template *xt;
-
-xt->sgl[0].size = DAI1-F1;
-xt->sgl[0].icg =  DAI0-F1;
-xt->nump = nump; //the period_size in frames
-xt->numf = numf; //the buffer_size in frames
-
-Signed-off-by: Sugar Zhang <sugar.zhang@rock-chips.com>
----
-
-Changes in v2:
-- Add the pl330 interleaved transfer
-
- include/linux/dmaengine.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-index 752dbde..5263cde 100644
---- a/include/linux/dmaengine.h
-+++ b/include/linux/dmaengine.h
-@@ -144,6 +144,7 @@ struct data_chunk {
-  *		Otherwise, destination is filled contiguously (icg ignored).
-  *		Ignored if dst_inc is false.
-  * @numf: Number of frames in this template.
-+ * @nump: Number of period frames in this template.
-  * @frame_size: Number of chunks in a frame i.e, size of sgl[].
-  * @sgl: Array of {chunk,icg} pairs that make up a frame.
-  */
-@@ -156,6 +157,7 @@ struct dma_interleaved_template {
- 	bool src_sgl;
- 	bool dst_sgl;
- 	size_t numf;
-+	size_t nump;
- 	size_t frame_size;
- 	struct data_chunk sgl[];
- };
--- 
-2.7.4
-
+Thank you,
+Pasha
 
