@@ -1,256 +1,146 @@
-Return-Path: <linux-kernel+bounces-129074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129075-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 316E089645E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:09:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E32E1896462
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:09:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D9D071F224BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:09:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 206701C216D8
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A7F4DA08;
-	Wed,  3 Apr 2024 06:09:24 +0000 (UTC)
-Received: from CHN02-SH0-obe.outbound.protection.partner.outlook.cn (mail-sh0chn02on2109.outbound.protection.partner.outlook.cn [139.219.146.109])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4AF9535DB;
+	Wed,  3 Apr 2024 06:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="jdFvEb5N"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B791645
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 06:09:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.146.109
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712124563; cv=fail; b=qUQ0pvt95+np6A5UT/4Dm3NQI9PDHacQ3WGrsWC3JIYKPGSgq6Z/LnavNGIVKlFtROaFyoGX+cgNlKiAcv+ESL5WBwTbf64HbV2NzrzGki0izs76Pbn/b6dKQYAA710Y070fBVhGxaQ6H2EuUE6RCPq8hVbgHodAbsWiGbFBVuA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712124563; c=relaxed/simple;
-	bh=peSw4RjIJR/OHIoV4LSSnK2/05IdBwudV/Atgl8nLAg=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Gi96DcEIT6JCMUrfpR34PKhpD6d+c4ZIFhqm2zT6y3SJ/6H5obP4rBfFuotLnt0Twhba5EMKWYZ5wWHEMSrkjK/mj50JnqdBxIIgkIHdBQkRNYNpXazyBF/o4Du6B6m3ewzFsVjfMXAMClv/+5TGbvICAnvh6XXcUF1YmDrj+as=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.146.109
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Eoc2uClCSZJ4Hw+N+K6GCPT9zEVL/mloNrdweBHWPkKfYVO0/Dguataci86EKP4M/iLoqffO72gN9nEvNG6mYsBxKK8yQ9Yj97V9U2X5d+0gygqDOKjn1eSFH6uzersHxdZlgZt8ofGVxsQUCQSRoTUGQ3LyEAEzzoUn3HTvhjYBR54l6x18DVsSVZauqdXxABRlVZHVOtLDq40bi9mOsgSOqqdU18xhSfKnb9qdzKpE4URKL+7SPFxi4Urxs62DcRq/n6lYMmSylae7+MAd63wYceyGCHNFMdgPPbtTZFuEC3H0aKh77BLYJPusuYKAptyarirSKT3Caw9Lak+OSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DHqs2aDPKB8CxhQEXEssSlHh85Yd4/L9qAM0p3KBIY0=;
- b=IPI/Lfy7k2g09whtQRSSDcxD/ZZmp1KLEPSBO+qKDliPNt8IB0LF9R1JFAr7tsktqhVCo2rglxXTPRJCo0JqOQEkn4DXQRicM+SCOmMJUM7uJ0kghdLA1U1fXhmeGkJpSL9Tg0PfTLp9hL11EIkhgxSgEZZcyj9/QaGV9TO4Xrbz/VITqnvLF+0x6C9YM9LqybFuHJl2Ul2SNwIyqZGS5zVf4uBhy9Gd505TlrbQvh6qizkzQ9Vbs8Oow/81ZaDcUFQihFQ0V9srGCo8LSu51QoMI97uouEUYVcobRKSjLNPyqoY20DRzd//7fnVmgIlgvho5ZeJMWjKiMVMM9MUNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=starfivetech.com; dmarc=pass action=none
- header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=starfivetech.com;
-Received: from ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:7::14) by ZQ2PR01MB1291.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:7::5) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
- 2024 06:09:10 +0000
-Received: from ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn
- ([fe80::5de:15b9:3114:4f45]) by ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn
- ([fe80::5de:15b9:3114:4f45%5]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
- 06:09:10 +0000
-From: Hal Feng <hal.feng@starfivetech.com>
-To: Conor Dooley <conor.dooley@microchip.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>
-Cc: Hal Feng <hal.feng@starfivetech.com>,
-	Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-	linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v1] riscv: defconfig: Enable StarFive JH7110 drivers
-Date: Wed,  3 Apr 2024 14:09:02 +0800
-Message-ID: <20240403060902.42834-1-hal.feng@starfivetech.com>
-X-Mailer: git-send-email 2.43.2
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: ZQ0PR01CA0009.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:5::23) To ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn
- (2406:e500:c550:7::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E6B52F97;
+	Wed,  3 Apr 2024 06:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712124568; cv=none; b=n5N9O4mim/S1pjQUPOxYJ7I+tX1c6jVXU5VD8LcrWk3DKJofwx8vuP/ohlEdnvCpnUVx+frFxZeac6adrcw9qRAFc79R16sUO6npa1A+bnu8GDrKRGDl6KCfAYYKOeCK6jPcvYp+V28izDTnpl4qOTAYk9iKNcnqjGLjmImLtPg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712124568; c=relaxed/simple;
+	bh=izMLc91bowDxW9Tjsy0vZYr3WyGkeX7InHMj70ZkfW4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=swBzfpJV8QxKd0tRF+sw4AbOqRkWyzhxE+2bU5fpxx+cOh+l9Gg4Q/ogWGmV3d2VX7LiyPRxUk/GsAOa/XR5toWGuLpYb25i9L/dKRP11yQ9UJP7yfKkfQ8fvTTy/+t06S6iV/4DWp62wyzs7itv03NjUM+Eohf+UvZUQGzZBc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=jdFvEb5N; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4332V7Y1032487;
+	Wed, 3 Apr 2024 06:09:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=tw2EuVW7kGe2p0WIoxVHTmkZOIUejipnGI/ECyFl0rM=; b=jd
+	FvEb5NExUHt1bPCKJan4UAJ3FAvrVuLrC6lpT/HKCu5p1ZCdYg0hoUwyndmDxVSl
+	007hT+MIpsWQFdXbgTIwtNuSJHKN+mWKa6V+lu7pNFYJtXrvEPAcIf7Ey6mbG5fW
+	36sBQhbTk9r0YFHhXW3vOjqTTlkahTZ6gdwOJzElRWCuIbvN/pQL6v10kFFGX0+J
+	XAq23QQMl8vvhziZRmlWBwSSevsjlfhlyeS+B1mXAbs1TbI4Wj3ghYpwouJmfJ/t
+	+n6/RU7B2TOXV6LuL5Pdd8TWMnC8EORbyBTiw9tS+ZPpevep+qMnHpIUTcA+PNE7
+	e4muSDti6n+UqMxN1Gyg==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x8gn5jd92-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 03 Apr 2024 06:09:22 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 43369Ld0004442
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 3 Apr 2024 06:09:21 GMT
+Received: from [10.218.22.190] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Tue, 2 Apr 2024
+ 23:09:17 -0700
+Message-ID: <71ab7b0e-52bf-404b-9e0a-de73dbd36ad4@quicinc.com>
+Date: Wed, 3 Apr 2024 11:39:13 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: ZQ2PR01MB1307:EE_|ZQ2PR01MB1291:EE_
-X-MS-Office365-Filtering-Correlation-Id: aa9aa0de-a165-46ef-a427-08dc53a493f4
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	jheu5TVkTqphsHjBcPTk4evnJxmY1d5Dl+1DTRKj2LBVkLsZTZqhV8JCk2RoE+VHhbRNhP/mbWcq2qwVFQWDVSfdLQzUiDP0iun+Gp/+muV47p7PGLI+NP/W4NEIit/Aq72+cQCV5KJ7CHq4PSf6JxBbEDJGlM1p6ONAXNXLuw6LaI8SSm/QvdJkwEKg1CesP6tU8astvLvMCspk8T80VeyR6Y44YS/BiNk8ZNNz9iDQNvlV3MyCupzrXLeWo1OCpQVsyzlFsMnXtVAK0sC7k/8MYbbSI+KehHeaJMTE3Xut6HYsgKnjaPAzMfPIT/VUS1npbjFiBm9V/6CvDSv9XeS5CQZc/n7IzsE7ztmbyMe3W1ELQCMwoNBUvGISvDyXEpjl9X5bN+2R03JQbNm1anowtP2/Mnxy377pRV6uFiYvKiTbnXdLRTkKmF7M6V5pQm0lmTfAhEU6d8hUp6xO3qgoc2rM70qjf785iLJ1H2NccJj7DEmPkLqI1pUBMOKFHoelUjwiqA+imqz6h1AY2a4MrgdkXqU/4M2Vl9Wa24FTJ2phSHQ9T4Sr5u5Z350QWrvPxaBhPJ01EaNSiH8sMbbiiklZClTrUolVEFFLxCsrsP6V3le0zmFJy0+Mq9kl
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(52116005)(41320700004)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Dg1ZgUYS+Aeo7i5XN5CUjZAJl+dNPaExlFaQR9P94CBkClH0Bl1E8DFgf0v7?=
- =?us-ascii?Q?BDixNwBXvPIOSYxkKBm6Dy2yDwbEbKfDZUnGrQgyqGGl19pW3GiVNzs9vkxt?=
- =?us-ascii?Q?3ji1j1tuaFKfP09RobwfqYli/z7bFZN78gokyvM8PWtectO1gNtTJ6OLbDMA?=
- =?us-ascii?Q?9DMqHNWNWGrJ4/31nxXji2+T+np95Azz5llrHP5Z92LwxWcBIvEBlBJaQVuk?=
- =?us-ascii?Q?6oErcQy0XmuykCXRMHz9UcHCGxeJrPZ1cCZpxGnatKsTW6cpaMiOs8+lE9Ks?=
- =?us-ascii?Q?vp0Pvm0LFm97jlW09cYw6qu7T1LuaOuk6dAvAeH+it0Be/vd9vICSXhi9Vh8?=
- =?us-ascii?Q?K6fKqmv2ODXLVoeDd3sZGVG61ESmDUgqGBfXhSgWvvS7WdCDlWpLdIU+D3UN?=
- =?us-ascii?Q?fIUYmF9mqJuoPmtc4ERKogYJH7Z9+8/3YH5xPwZkXNEuh1hHhiBVA0dDnQjm?=
- =?us-ascii?Q?wju2xPiXfg3+lJZduGlOW6jMEvuiDzs2duKhauFrVvCXdSikK+2a5W6FiJqy?=
- =?us-ascii?Q?VzatTKQarrFtRxp9PeZ/xaLL9JDO0mI92cjfHxq+I2RiUpmfVYp4UVSQp2Rp?=
- =?us-ascii?Q?uCroph+Eb1iMANPXYfd9t3daVzwbWsQ9gy+bSt1SSgz3Z1/rCf6u6V/uoncZ?=
- =?us-ascii?Q?CCLJOceyURrm0Tod4usRjYtlPyoF7GbpzsOaNJo9eQfv5IWDQupoEiJirl+M?=
- =?us-ascii?Q?0Oy5SmdXXVCEt9tQlhQou3SJCfrPMtT+u8z1TuGQbZCZhMxk02Em+un7nFeq?=
- =?us-ascii?Q?+y8+afQ6KPfSR5pn1KxQ8m92sdj4Gu1NnQGQZfbg3+UZ9Pxobb2EKcwg3UGN?=
- =?us-ascii?Q?JTYNW/YIq256HqFAGEKgQH2mjLvBHnG30aG34hUiXbJktT7+mllX+ikXUAN7?=
- =?us-ascii?Q?xCKdS+hmne9AhUy5u9piNB0ZXhM/GQv+0kb7sLootmpKM1OBIBx/Ky5QuNK2?=
- =?us-ascii?Q?oonhMB1thgbffpmhLrrX1RoxnbJYw4HyZ/Bjn3L1iqk0Y+SenXiH4WNty5Kh?=
- =?us-ascii?Q?KUEdn6q2JTDQONYlatlHfvkX2qVi9Hc7afsszE1BS2ZQ55OfMY2k7QiJ6VYe?=
- =?us-ascii?Q?3ftg9gVLrJXukh+tJeQ6de/pd/VXK7F07xZFQXbdkvc4n5q4YKg20E2eh7Au?=
- =?us-ascii?Q?ICtkwMX7oRy0EDt1yGgPDDnvu10OCFUKexoQ1hWqVbGLBHjUqykvcN12J/9x?=
- =?us-ascii?Q?4a4VmfPXluTJwKR5H3MiG37IKerJ6cobPUfOdZdWEL60JDNqsN32h2mXZ4F2?=
- =?us-ascii?Q?bl2zQ6dvvL5+bscIs2oa2emf/mMRYWtgiRQq7tUwrhob9y8GSkCBNpJwcbhF?=
- =?us-ascii?Q?6Fko3zuHbMXVcSwEYIUfqPwFobO9mudmp5586l54lU+zlnd154IdNItDrVjO?=
- =?us-ascii?Q?y6trf4jbmdc9bJZbFDTSWAVGAwTLwmQn9Q/Vs7UhgLwOaDBm9tbSnVtI81T2?=
- =?us-ascii?Q?rOcp7oQIClRgvI4BBZsWUD2Wy+/DfJkoc7pI2AQNMdGCSBsXRvtD4zEioEc3?=
- =?us-ascii?Q?14zNXLPhJTIpI1vip6/v54Zxsp9dJgJP86epjHukmmFa2DyGq2iDgkfnjLR/?=
- =?us-ascii?Q?/ufhegGlDg+YfPHIToUwvFY4CILLj15r8Ju4r1/AGRVyYvjCLwnLxnAWBH+M?=
- =?us-ascii?Q?Uw=3D=3D?=
-X-OriginatorOrg: starfivetech.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa9aa0de-a165-46ef-a427-08dc53a493f4
-X-MS-Exchange-CrossTenant-AuthSource: ZQ2PR01MB1307.CHNPR01.prod.partner.outlook.cn
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 06:09:10.2889
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: iiR+CVjYeCS6VOll0zWtUUrhay5PUjlYpHdE2hm/7W2bkELqNETb0gL57S/Brxd+qDnZsHVHTtCH8B2RRUQyMLKsCsvWLvInuW+AfZx5Sgs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: ZQ2PR01MB1291
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] i2c: i2c-qcom-geni: Parse Error correctly in i2c GSI
+ mode
+Content-Language: en-US
+To: Andi Shyti <andi.shyti@kernel.org>, Vinod Koul <vkoul@kernel.org>
+CC: <konrad.dybcio@linaro.org>, <andersson@kernel.org>, <wsa@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-i2c@vger.kernel.org>,
+        <quic_vdadhani@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+References: <20240313052639.1747078-1-quic_msavaliy@quicinc.com>
+ <171161140136.2698925.4294566764047886777.b4-ty@kernel.org>
+ <ZgbwJAb7Ffktf554@matsya>
+ <a76mmz5xrfipqpmq2ltsyobwc54dyw2d55gb4vta5d746dwb3i@5mm2ew5uudi3>
+From: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+In-Reply-To: <a76mmz5xrfipqpmq2ltsyobwc54dyw2d55gb4vta5d746dwb3i@5mm2ew5uudi3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: y_Kc-J9ABGCLSP7LgPMkYDYgrFKQnBrJ
+X-Proofpoint-ORIG-GUID: y_Kc-J9ABGCLSP7LgPMkYDYgrFKQnBrJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-03_05,2024-04-01_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ lowpriorityscore=0 malwarescore=0 adultscore=0 mlxlogscore=999
+ impostorscore=0 mlxscore=0 bulkscore=0 phishscore=0 priorityscore=1501
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403210001 definitions=main-2404030039
 
-Add support for StarFive JH7110 SoC and VisionFive 2 board.
-- Clock & reset
-- Cache
-- Temperature sensor
-- PMIC (AXP15060)
-- Restart GPIO
-- RNG
-- I2C
-- SPI
-- Quad SPI
-- USB & USB 2.0 PHY & PCIe 2.0/USB 3.0 PHY
-- Audio (I2S / TDM / PWM-DAC)
-- Camera Subsystem & MIPI-CSI2 RX & D-PHY RX
+Thanks Vinod and Andi !
 
-Signed-off-by: Hal Feng <hal.feng@starfivetech.com>
----
+It had time and also there was a comment to get sign off from DMA 
+maintainers, we have had review and discussion on DMA part too.
 
-Hi,
+Hi Vinod, Since this is already merged, do you have preference to revert 
+OR making a new change if any BUG OR design issue ? I can also fix the 
+changes you suggest and raise a new patch in case of any real bug OR 
+design expectations.
 
-As more drivers of StarFive JH7110 VisionFive 2 board are upstream,
-add support for them in riscv defconfig.
 
-Best regards,
-Hal
-
----
- arch/riscv/configs/defconfig | 32 ++++++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-index fc0ec2ee13bc..a4eb66b30d95 100644
---- a/arch/riscv/configs/defconfig
-+++ b/arch/riscv/configs/defconfig
-@@ -111,6 +111,7 @@ CONFIG_PCIE_XILINX=y
- CONFIG_PCIE_FU740=y
- CONFIG_DEVTMPFS=y
- CONFIG_DEVTMPFS_MOUNT=y
-+CONFIG_SIFIVE_CCACHE=y
- CONFIG_MTD=y
- CONFIG_MTD_BLOCK=y
- CONFIG_MTD_CFI=y
-@@ -154,24 +155,36 @@ CONFIG_SERIAL_EARLYCON_RISCV_SBI=y
- CONFIG_VIRTIO_CONSOLE=y
- CONFIG_HW_RANDOM=y
- CONFIG_HW_RANDOM_VIRTIO=y
-+CONFIG_HW_RANDOM_JH7110=m
-+CONFIG_I2C=y
- CONFIG_I2C_CHARDEV=m
-+CONFIG_I2C_DESIGNWARE_PLATFORM=y
- CONFIG_I2C_MV64XXX=m
- CONFIG_I2C_RIIC=y
- CONFIG_SPI=y
-+CONFIG_SPI_CADENCE_QUADSPI=m
-+CONFIG_SPI_PL022=m
- CONFIG_SPI_RSPI=m
- CONFIG_SPI_SIFIVE=y
- CONFIG_SPI_SUN6I=y
- # CONFIG_PTP_1588_CLOCK is not set
- CONFIG_GPIO_SIFIVE=y
-+CONFIG_POWER_RESET_GPIO_RESTART=y
-+CONFIG_SENSORS_SFCTEMP=y
- CONFIG_CPU_THERMAL=y
- CONFIG_DEVFREQ_THERMAL=y
- CONFIG_RZG2L_THERMAL=y
- CONFIG_WATCHDOG=y
- CONFIG_SUNXI_WATCHDOG=y
- CONFIG_RENESAS_RZG2LWDT=y
-+CONFIG_MFD_AXP20X_I2C=y
- CONFIG_REGULATOR=y
- CONFIG_REGULATOR_FIXED_VOLTAGE=y
-+CONFIG_REGULATOR_AXP20X=y
- CONFIG_REGULATOR_GPIO=y
-+CONFIG_MEDIA_SUPPORT=m
-+CONFIG_V4L_PLATFORM_DRIVERS=y
-+CONFIG_VIDEO_CADENCE_CSI2RX=m
- CONFIG_DRM=m
- CONFIG_DRM_RADEON=m
- CONFIG_DRM_NOUVEAU=m
-@@ -183,6 +196,10 @@ CONFIG_SOUND=y
- CONFIG_SND=y
- CONFIG_SND_SOC=y
- CONFIG_SND_SOC_RZ=m
-+CONFIG_SND_DESIGNWARE_I2S=m
-+CONFIG_SND_SOC_STARFIVE=m
-+CONFIG_SND_SOC_JH7110_PWMDAC=m
-+CONFIG_SND_SOC_JH7110_TDM=m
- CONFIG_SND_SOC_WM8978=m
- CONFIG_SND_SIMPLE_CARD=m
- CONFIG_USB=y
-@@ -196,6 +213,11 @@ CONFIG_USB_OHCI_HCD_PLATFORM=y
- CONFIG_USB_RENESAS_USBHS=m
- CONFIG_USB_STORAGE=y
- CONFIG_USB_UAS=y
-+CONFIG_USB_CDNS_SUPPORT=m
-+CONFIG_USB_CDNS3=m
-+CONFIG_USB_CDNS3_GADGET=y
-+CONFIG_USB_CDNS3_HOST=y
-+CONFIG_USB_CDNS3_STARFIVE=m
- CONFIG_USB_MUSB_HDRC=m
- CONFIG_USB_MUSB_SUNXI=m
- CONFIG_NOP_USB_XCEIV=m
-@@ -233,6 +255,13 @@ CONFIG_VIRTIO_BALLOON=y
- CONFIG_VIRTIO_INPUT=y
- CONFIG_VIRTIO_MMIO=y
- CONFIG_RENESAS_OSTM=y
-+CONFIG_STAGING=y
-+CONFIG_STAGING_MEDIA=y
-+CONFIG_VIDEO_STARFIVE_CAMSS=m
-+CONFIG_CLK_STARFIVE_JH7110_AON=y
-+CONFIG_CLK_STARFIVE_JH7110_STG=y
-+CONFIG_CLK_STARFIVE_JH7110_ISP=y
-+CONFIG_CLK_STARFIVE_JH7110_VOUT=y
- CONFIG_SUN8I_DE2_CCU=m
- CONFIG_SUN50I_IOMMU=y
- CONFIG_RPMSG_CHAR=y
-@@ -244,6 +273,9 @@ CONFIG_RZG2L_ADC=m
- CONFIG_RESET_RZG2L_USBPHY_CTRL=y
- CONFIG_PHY_SUN4I_USB=m
- CONFIG_PHY_RCAR_GEN3_USB2=y
-+CONFIG_PHY_STARFIVE_JH7110_DPHY_RX=m
-+CONFIG_PHY_STARFIVE_JH7110_PCIE=m
-+CONFIG_PHY_STARFIVE_JH7110_USB=m
- CONFIG_LIBNVDIMM=y
- CONFIG_NVMEM_SUNXI_SID=y
- CONFIG_EXT4_FS=y
-
-base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
--- 
-2.43.2
-
+On 4/2/2024 10:14 PM, Andi Shyti wrote:
+> Hi Vinod,
+> 
+> On Fri, Mar 29, 2024 at 10:15:24PM +0530, Vinod Koul wrote:
+>> On 28-03-24, 08:36, Andi Shyti wrote:
+>>> Hi
+>>>
+>>> On Wed, 13 Mar 2024 10:56:39 +0530, Mukesh Kumar Savaliya wrote:
+>>>> I2C driver currently reports "DMA txn failed" error even though it's
+>>>> NACK OR BUS_PROTO OR ARB_LOST. Detect NACK error when no device ACKs
+>>>> on the bus instead of generic transfer failure which doesn't give any
+>>>> specific clue.
+>>>>
+>>>> Make Changes inside i2c driver callback handler function
+>>>> i2c_gpi_cb_result() to parse these errors and make sure GSI driver
+>>>> stores the error status during error interrupt.
+>>>>
+>>>> [...]
+>>>
+>>> Applied to i2c/i2c-host-next on
+>>>
+>>> git://git.kernel.org/pub/scm/linux/kernel/git/local tree
+>>
+>> You applied changes to dmaengine driver without my ack! I dont agree to
+>> the approach here, we could do better
+> 
+> this must be an error from b4 ty. The changes have been added to
+> 
+> pub/scm/linux/kernel/git/andi.shyti/linux.git
+> 
+> branch i2c/i2c-host, As it has been agreed from very long.
+> 
+> Anyway, the changes are in -next. What do we do now? Do I revert
+> it? Mukesh, can you please agree with Vinod?
+> 
+> Andi
 
