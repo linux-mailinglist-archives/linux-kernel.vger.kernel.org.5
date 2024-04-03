@@ -1,139 +1,114 @@
-Return-Path: <linux-kernel+bounces-128993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3C038962D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:11:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 578758962D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:11:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7EDBD1F238A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:11:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 866FB1C22C03
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:11:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85163D98D;
-	Wed,  3 Apr 2024 03:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6841B224C6;
+	Wed,  3 Apr 2024 03:11:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ofLRt8vF"
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="gn+CaIq7"
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DA71C684
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 03:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419721BC59
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 03:11:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712113864; cv=none; b=TQuOsVXEPHMu9EanZdr9JQveVpkbEE/wQGPavyNcCW4AyPq/Jqive0rn70cJSWC/QE1GPhawzjK/dyIsrY3JMqG0FYNcdCcSz1b132CQZHCzPX727y3pBtxFmPNgfDR2L8QiNxA6oC5hkY3GOB0F9pIokJiRlApJDYPzd/e/vVQ=
+	t=1712113910; cv=none; b=tpbMH0m+P699Qth9jMIK2RkUYolEsyG2+38wd+1kgHq2ZYDFsuEaztAa5NeIAH55Ivnlj9RSgCQedmVBbWdTUHLnpldrG6/t3URoL0drxPAMTWQSXLXODxqZ/2uyH3QTjYW5LsF+DCHS1toZtayi/+lINxYnhQXMFBxFC3l7res=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712113864; c=relaxed/simple;
-	bh=OuT4Ms0hyGHoF8Nrz/OiAPjZGEMCazNleVYauL/3yDY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Y7UOSafTkT/MZdyNW3PI5nQX6o0bqzctEomijb6og/QJX16Qwaf1SgGKa/gWK1ccRqkODThnOKLHPCn3v9TOYuR7z3kaUJtUFK3cmcCAC0AMr18BtmKeF3bLLUMEx3ub6q140RjHEkbGmEeGXc/lNYMwAbTIb2DsaksGGkyGrk4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ofLRt8vF; arc=none smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d476d7972aso83967201fa.1
-        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 20:11:02 -0700 (PDT)
+	s=arc-20240116; t=1712113910; c=relaxed/simple;
+	bh=JrM1uuFnTIVBKbjDsmBuCX7sxswHD1aKYDxO96MS6V0=;
+	h=Date:Message-ID:From:To:Cc:Subject; b=V92BLM1VNMlKz5UvQG92GWgLvI3WdyINQ2Noge7UMT0FCPtv3tkS1SXBloX2sEswuHHG+oSp3R825vRaV6sVgnXDp9AP72kQfAE++eImhXgEX+pNhYNrf0+Id6tuNBIECkVSrrnOPaeDy+E+2HFHDF5C9kLy5lxOuQ+iR8OKTnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=gn+CaIq7; arc=none smtp.client-ip=209.85.160.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-432ff72d745so4455291cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 20:11:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712113860; x=1712718660; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Wt3FSX8GBzUAFfEXsSOq4FgRCMLSgIuXafkffb5+jtk=;
-        b=ofLRt8vFpJqVDqaPKzSIUvrWGf0YGFxd6WrCcYmBh/+0ryuhUtrX6DTWqJW/ANtaLV
-         36iK49CoHthZd7m3YHsiGGnytQgg7LuNeVCypGCbZj6EvPO8o3jmBSN2CT/aW0xKUxHM
-         +mB8ils00Y5/esC0g2TI9a90TQi6j5wGhv8WudP/aXHUhlw2kRciMR33/f5xHYTef+O7
-         d3yympNL6YeSsdZM4CR2m3KQBJgElXjwHdrcTrW/Lv/jrNt+r/rE/tEE5HKggH8U8VRp
-         kqG3x7xUF6VLP1EMTXEB1T9j/gwYXK/NNDSp+2CcaACw5oCRA6veo2aabhJzPewmxoY6
-         nfVw==
+        d=paul-moore.com; s=google; t=1712113907; x=1712718707; darn=vger.kernel.org;
+        h=subject:cc:to:from:message-id:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=10kPDwtnOEt8AZOr3ERW9xy/nQdgWpYkiYiozTsU2nU=;
+        b=gn+CaIq7e0C/FTM3wnme0xjlmWmFpeRSGdYQE9wd5msEJ1e67odLHVokusixkHkG1Z
+         SowUMEQfzMJbQD8prpk9GtuzLbE0qKdLX0ptS/emTFqZQJTxwIG8Fr4FabJbocUJmYyL
+         Y3ODP7gr2atYEmXCgIicf1tSxSh/IEqI/FCXfFKkueK1bRgj0qynD0SNGa2wNXjfP+y2
+         Vtd8ABtS6ujLw8E6cTpnIXFY9vOjw/Z7AMJk8GEKpRecTvJX831XfE9BIMGDxgbjirWD
+         r6L+diK6v4E4cazySK3Hy45i2JuIHMfJLBxSls9RjhPD9KHwOpumWQf8TdYGg2BxTRfZ
+         cc9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712113860; x=1712718660;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1712113907; x=1712718707;
+        h=subject:cc:to:from:message-id:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Wt3FSX8GBzUAFfEXsSOq4FgRCMLSgIuXafkffb5+jtk=;
-        b=F0ED8nkKxA0Q/fKz1rxDsD9ElMxg2SGcz1LJ2gcyO1wYGO4W9emzst8zFvHzfl9LFO
-         ah2qO2mMTUrh+lb41gw7Ei9GPq+JnfMi2DPEQoirvD8Q3AS95kVBi4Bhwsd+Ed75bIp8
-         wQD8zT3mRrsQB6YomGZh6fCmjwOQ6HU8ujmPpmmJxA663Ze+tsaSGsDuX62HBXwdoUS4
-         tznvZDKePi1Q64uO72KUMbLXenolqUyqvw1Zg4FlJ/Z9gyrHNiwMS46u5NvmWT4YxUy9
-         72CSqhd5uGsm17c8ifd98D5T448NM7cCCxoUAqgEl7eTFYkwnRsIPJbg7ED+tHHUgTfH
-         tVUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVsrIF+S+25OHoBY3DnEMXfbz0wU/rbJBY8edGn37YjQ+DcnW0wN5RedYAeAu6F44LxqA0Z5CIXzqnp9NfYyJwoFBxecsLcutAATxZS
-X-Gm-Message-State: AOJu0YxELUb0kQmZxKMgB953n0Mmlux9Nfen4ihx4VN4qXqvvfAR5Gi4
-	DOmjrejbfbuo2aVyXM1NWydKevBFr5XmuoyBX4d6VQ64IL1R1yMLI9Qv7YYVPUg=
-X-Google-Smtp-Source: AGHT+IGRrhrBaYek4okkBS1ZQ287krmrf/K/uKSBMtjwg2p3QX38phzQHFOMG7BBJEC+YmYgvlaXwA==
-X-Received: by 2002:a2e:82d7:0:b0:2d4:35d6:1984 with SMTP id n23-20020a2e82d7000000b002d435d61984mr9587317ljh.6.1712113860661;
-        Tue, 02 Apr 2024 20:11:00 -0700 (PDT)
-Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id k11-20020a2ea26b000000b002d808b86073sm1056970ljm.78.2024.04.02.20.10.59
+        bh=10kPDwtnOEt8AZOr3ERW9xy/nQdgWpYkiYiozTsU2nU=;
+        b=V8gYIaV6cRLwqJINVZ/FflgHhdGXdP2jVTb4sSEugZs5TDudrOLeyQ7vK13Cefpsj2
+         nhvhh2pR+ZWMP5nzvJPx0cvVJGIZacv9RWOjCMD2/h+MireL7ElcNViL4itoZqamPyQd
+         3zSHS7RCos2p3wtkrvPRIyQ1bCWeJqwzFEoCRJwk9V1DZN9lgIqI8xoc/a1i7n+Qdcai
+         QVdlWclbhFAJAo+SJaEqCE6xrhgFts+XQa0N/cyH5ecoNKfLqKvnthL0l1qsvqUU1xLz
+         yebz5YBhDzY5ts1KWvxN1WYccvsY6LBiFfHaM2WfOHImOokfxyrdHwR9S/CEgmtblSlW
+         RSbA==
+X-Forwarded-Encrypted: i=1; AJvYcCXYwMqUB609oRd3Qa48MX2KoGjMmNn4CAPe173szG/1TGyesPNaCuE75Dd5Z/URUdo7XbjAOtiWcB1MdgxzQ77FgUS6RURa+IdMqpxy
+X-Gm-Message-State: AOJu0YybWz+FSS/FG+mAPhCPH7lqRBcvYPIoic98Zdw3uotENn4HUkPa
+	oFJ4MMMmOG6pb4NdUXOxlrOI0q0UlxgcguamzzHqhAiL5fFaTN3pBliB3KhVcw==
+X-Google-Smtp-Source: AGHT+IE78oAKuIVYbax+koIpgJJOpn/ZYMkQ/QoOzelQ16IOpVq6C4shR8C6h7JU+WX+5bbERMuWHg==
+X-Received: by 2002:a05:622a:1711:b0:432:f37e:d274 with SMTP id h17-20020a05622a171100b00432f37ed274mr2421865qtk.8.1712113907185;
+        Tue, 02 Apr 2024 20:11:47 -0700 (PDT)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id bb12-20020a05622a1b0c00b00432ff561b2esm1776656qtb.79.2024.04.02.20.11.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Apr 2024 20:11:00 -0700 (PDT)
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Wed, 03 Apr 2024 06:10:58 +0300
-Subject: [PATCH v2 2/2] soc: qcom: pmic_glink: notify clients about the
- current state
+        Tue, 02 Apr 2024 20:11:46 -0700 (PDT)
+Date: Tue, 02 Apr 2024 23:11:46 -0400
+Message-ID: <cf11f516883d7fbf75a34f7981174e73@paul-moore.com>
+From: Paul Moore <paul@paul-moore.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: selinux@vger.kernel.org, linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] selinux/selinux-pr-20240402
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240403-pmic-glink-fix-clients-v2-2-aed4e02baacc@linaro.org>
-References: <20240403-pmic-glink-fix-clients-v2-0-aed4e02baacc@linaro.org>
-In-Reply-To: <20240403-pmic-glink-fix-clients-v2-0-aed4e02baacc@linaro.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Neil Armstrong <neil.armstrong@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
- Andrew Halaney <ahalaney@redhat.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1135;
- i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=OuT4Ms0hyGHoF8Nrz/OiAPjZGEMCazNleVYauL/3yDY=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmDMjCXwTVm+bM0YQpPVWy5ETBA6Gi5jc9LfqWv
- 5Nt1GI7/Z+JATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZgzIwgAKCRCLPIo+Aiko
- 1UyRB/9ejFH+A6ef/HfzL5au8cQ18WNJmIeffRbd0reatZmZj3ESY/KS443GfOi2FZbI/suogka
- hKEq9z/8bKGBYqjoQfHg4xOxJ/XtOq1iehzc3nZo6UZxLL024+MnuuXJO+opAGWE5ygpyThObEx
- v4p+fjExM/9J9Lf0Zx6GkSpAN0Y0d67vBFITKYbtcRLBVetRMIZs7/Oijcg+Q92VFGrpiN5ygEC
- 15bXWXtkt5l241yZk3YEPm7CP0oNZuSo7KKDaail5NdjgnAocJjNUkluaBYLxM9E217oL/qzSbc
- IRnk5Y1QEOYWNRH+93XG6D4nKDhA8z3qDXuzpefTliW3PGaZ
-X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
- fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-In case the client is registered after the pmic-glink recived a response
-from the Protection Domain mapper, it is going to miss the notification
-about the state. Notify clients about the current state upon
-registration.
+Hi Linus,
 
-Fixes: 58ef4ece1e41 ("soc: qcom: pmic_glink: Introduce base PMIC GLINK driver")
-Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/soc/qcom/pmic_glink.c | 5 +++++
- 1 file changed, 5 insertions(+)
+A single patch for SELinux to fix a problem where we could potentially
+dereference an error pointer if we failed to successfully mount
+selinuxfs.  Please merge for the next v6.9-rcX tag.
 
-diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glink.c
-index 2b2cdf479654..e85a12ec2aab 100644
---- a/drivers/soc/qcom/pmic_glink.c
-+++ b/drivers/soc/qcom/pmic_glink.c
-@@ -83,9 +83,14 @@ struct pmic_glink_client *devm_pmic_glink_register_client(struct device *dev,
- 	client->pdr_notify = pdr;
- 	client->priv = priv;
- 
-+	mutex_lock(&pg->state_lock);
- 	mutex_lock(&pg->client_lock);
-+
- 	list_add(&client->node, &pg->clients);
-+	client->pdr_notify(client->priv, pg->client_state);
-+
- 	mutex_unlock(&pg->client_lock);
-+	mutex_unlock(&pg->state_lock);
- 
- 	devres_add(dev, client);
- 
+Thanks,
+-Paul
 
--- 
-2.39.2
+--
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/selinux.git
+    tags/selinux-pr-20240402
+
+for you to fetch changes up to 37801a36b4d68892ce807264f784d818f8d0d39b:
+
+  selinux: avoid dereference of garbage after mount failure
+    (2024-04-01 23:32:35 -0400)
+
+----------------------------------------------------------------
+selinux/stable-6.9 PR 20240402
+
+----------------------------------------------------------------
+Christian Göttsche (1):
+      selinux: avoid dereference of garbage after mount failure
+
+ security/selinux/selinuxfs.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+--
+paul-moore.com
 
