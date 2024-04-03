@@ -1,81 +1,83 @@
-Return-Path: <linux-kernel+bounces-130434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32AF2897815
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:22:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCDB789781E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:22:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E26732822CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:22:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A78B1F232C6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:22:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67A1153580;
-	Wed,  3 Apr 2024 18:22:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0713C154446;
+	Wed,  3 Apr 2024 18:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="kH8CMOU9"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="WS1lcdtt"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DEC1534F2
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:22:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC9D415351B
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:22:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712168527; cv=none; b=dnmSaP+cl1xg28lD/Moy1WHuNr95MAbZelnE7TDiF2OI2iAnORtW18BFg63RACB+mvs69zEwUn3k2zFqgr7KWTnz/QkYS6LlrYhDghUvS3Vq1vyHQi5manOE1CYkrwacIT0pH06uUU/8VlJOy2HVi3IcbvMCNgxnADHIaBwCCvc=
+	t=1712168530; cv=none; b=XxAF8A2hAU00X7ZPKzDXkE1IG4+sUlKrXNE5c2HNvoRV8i+yHTr/xveWj62iJwZmHvTs+/T1+lkWLeejSPaFWwuRbblrFRVqNt59cepgzkqXis1642AT6ir30Jau8Bsg9dEDkAa04ltVfYQivykoZtOGqGldW9/qQnziNMX0gX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712168527; c=relaxed/simple;
-	bh=6+2nrIGa61dq0/VeelCYA2bW5+YZa0WC5m2ANvBtBis=;
+	s=arc-20240116; t=1712168530; c=relaxed/simple;
+	bh=mPQ6aDx/DzkRZiI7UzFAti6c8odqszdQXKvBp/uj47A=;
 	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=nBB+EuzefO9MfjCLE57g/OlNhl+gWFYfAD5nOq7OJ/suNv4gP9CWgrEqeHMNd1naJjS7T1XJ3u+9A5u8Je9p3MOqOZfkJjo4aBFEItMRj2Ycs+r7eosuFUYfBKRP93eH19Y6hzxu8a8IrD9oFBEhlhaR47Ds+Pgv/mDw5tFnPMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=kH8CMOU9; arc=none smtp.client-ip=209.85.210.176
+	 Content-Type; b=iKMKKQLp3s/vxlOn2hNK8wwHY9+hgHUSRv7Gvxerdc68K4kd22/0tjZKiuswAQYiS1QMKrn2CtXirFo4WLNSKWb+JfOx032oXfO+R3UCzoE+zd5s3Qyz8S+0ijFRM13jgqYARnTrOLq1Ph7dxrZ/Spe0nbEl3/wx+HD1Eom7sjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=WS1lcdtt; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6eafbcc5392so88788b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:22:04 -0700 (PDT)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e29328289eso949635ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:22:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1712168524; x=1712773324; darn=vger.kernel.org;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1712168526; x=1712773326; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:to:from:cc
          :in-reply-to:subject:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=P+Kf1VtrPbxx/AIfqj2WJbrl2k9+u/D2i3gfwNLRUnA=;
-        b=kH8CMOU96ebcbVpq2GeI07d1Wtg+wghMC6HXmp/DhhqNalxStujc+HueIngwe2s+hB
-         cXldia5binjQzZxnqYN8Bf9527lL1DO5w9xgfJaMY0B6YRY3Gvq8348Y1YMxmL+2k/L0
-         teHuivnw5vZflVpByEpu5EpnkIl1BHedDL3qwxpDCGJ4JMC5ckfM52PWReXVUWHG0OTc
-         lI6P40zoHiK7+SHa5gIXS0E8fGz8kVX3OZs6j7FU/Bb9es2F5mqUjWD7bTPLCag10Bml
-         etrnJgsULAsgJxQn15YzB3AVlvF37B1N1IoYHn2yjU7FfdhW1wkqrxDXjkSH1ZiRinkX
-         rgAA==
+        bh=b+6ScChiC8zS3o9tbiOgcc1DiBxz6xvmMgS5MbEqCVk=;
+        b=WS1lcdttwByvBL81FDxCR9c9ohzcIBrEwgU8WykpdmMwgb72x4x1Vq5CwVOtTW6qEL
+         /U4s/ibFdFNF+gwkTlu+OXDesuZwLTPsVYF+24swBnSk5MMBbTtWAZ+q+cf3tdExrjbZ
+         Xh/oaV/2YgirVkzL/ngg1aBit6RKOFJ4KoOSZX4puydzTZtUKZ9CTiB/6PF+tgqsmgiF
+         pMvSysELXIGSPttBEbRvph76C3mGHB8D57OZ43vUyPiy21tE/Ae+30tvmSNjFtN4cJbY
+         siv6Cnf+vLkrBVeQOECUd0FJLZUqla/oU10n1LpCE1z814xlNsddY0i/c6Cdn909/jAi
+         fBZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712168524; x=1712773324;
+        d=1e100.net; s=20230601; t=1712168526; x=1712773326;
         h=content-transfer-encoding:mime-version:message-id:to:from:cc
          :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=P+Kf1VtrPbxx/AIfqj2WJbrl2k9+u/D2i3gfwNLRUnA=;
-        b=wERQTTJ6IzSghxUFg01gMiF/DkAqSs175N8R5IQvSiGKSj0cSDie2GwaQCJGJXxLTh
-         zmONx0jqpQtpbjOcC23r70R11gvYpIk6u7mlgBbrYVa8ChAopgPhZFRteKUdgGcZIebT
-         mT0+AXyO7Awvm0eDLrJNbXfPV6oAA4uqRyQs9zCVbluwOxwwSiDk+palWq+ldnlaMNeR
-         Ka83JnT4jiqlMym21ICYsgOUeKWNTfwPyQgigMmWMTCm0wm/VvOLCISotTfB4Fm0UPT8
-         MU7JMuCfy2G4RGEZzDviEDrupJgOP0DCk1U/LgR6f3pweCwirYKPXe3G4hRes/AFkH/i
-         idCA==
-X-Forwarded-Encrypted: i=1; AJvYcCVdX6oj0kPnOdcWudx8d430R+fuCXuGIUZ6t09KRvqwei9nYSirBpQLma9y2wFKmmhPAmLFCuKzC6EjuOqTSl0OIGqQpiqsjxF+5M7V
-X-Gm-Message-State: AOJu0YwfxCCRQFXPtOb27M3BpZrIKhoEcxl+r7ZxZDw9HbUcjiwCoRHT
-	I7kL2GjjVLdDeMwDE9kes69AlKqir9HLbwzFIcc8QCeTSe6Hv7hRAhb1bCKw6XU=
-X-Google-Smtp-Source: AGHT+IGty08VcqdEljCIJkfJOB8iEizvRWz0FfAsjUhmWizntDOrlClCKtIX4KMfuzGZun6DYHreSw==
-X-Received: by 2002:a05:6a20:7d88:b0:1a3:af38:31de with SMTP id v8-20020a056a207d8800b001a3af3831demr579540pzj.4.1712168524117;
-        Wed, 03 Apr 2024 11:22:04 -0700 (PDT)
+        bh=b+6ScChiC8zS3o9tbiOgcc1DiBxz6xvmMgS5MbEqCVk=;
+        b=YPhtcFo2EEMJt5D0ffBYln/MLJB7liWzAKKQnsVsGK79hYvn3jXyElRgAJmZukaCsA
+         aNhXdxBckuR9Q53V819KYaAlLBj1Ixgn/wMftSjkLCnnlGBM9uN/RMGzCaF1TdpNWkxo
+         m2WS9sYOluHTk3azt0AhKSzmvQTbchQEjGnW7Yds6gVlnpi4CdAJHZMFbHrpeZsxConp
+         dHfsltIaMKBckdt5nc7QCJ2kfBvaDkTrlynnygIa42wV5oeXZROs1LRyZ+fBSt964dZT
+         pY7e21cfUCoka3U/yZfwFM0w7CPZQZqA2znLWgSjmlrCkFiOh/tLo6nwdgZKs832ouNS
+         21vQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUJoO22kMwrjarf5ZYU0K9ByZxAI29JiT0XAQSrYF9lOueR60bAh+pc8kz+5zNTNu7UQy5eaBHxj/rbwuW6VyUpdZj6/S/BgKdchYTG
+X-Gm-Message-State: AOJu0YxytQMXciZPg46Sk8tILWF3DLXhHpM6LMMd47x/V6+M+Mb1hyar
+	om2iGTlfuJptx4jf7oaFF9LA3ZJJ47ttoUoGY3deLSFP5g9wOf8TIadDxNclFNo=
+X-Google-Smtp-Source: AGHT+IFlUXGV4chig6oJvZqV4vGOgLfE+s5gAYd5D5SfvJ7gnZEYS1RqOGC2YxcHgRm7Hvepr5Q2zg==
+X-Received: by 2002:a17:902:c14b:b0:1e0:a7c5:b5a5 with SMTP id 11-20020a170902c14b00b001e0a7c5b5a5mr67760plj.37.1712168525743;
+        Wed, 03 Apr 2024 11:22:05 -0700 (PDT)
 Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id y2-20020a170902864200b001e2602fd756sm4966719plt.95.2024.04.03.11.22.03
+        by smtp.gmail.com with ESMTPSA id c2-20020a170902d48200b001dd652ef8d6sm13572476plg.152.2024.04.03.11.22.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 11:22:03 -0700 (PDT)
-Date: Wed, 03 Apr 2024 11:22:03 -0700 (PDT)
-X-Google-Original-Date: Wed, 03 Apr 2024 11:21:32 PDT (-0700)
-Subject:     Re: [PATCH v1 1/2] RISC-V: drop SOC_SIFIVE for ARCH_SIFIVE
-In-Reply-To: <20240305-praying-clad-c4fbcaa7ed0a@spud>
+        Wed, 03 Apr 2024 11:22:04 -0700 (PDT)
+Date: Wed, 03 Apr 2024 11:22:04 -0700 (PDT)
+X-Google-Original-Date: Wed, 03 Apr 2024 11:21:38 PDT (-0700)
+Subject:     Re: [PATCH v1 2/2] RISC-V: drop SOC_VIRT for ARCH_VIRT
+In-Reply-To: <20240305-stress-earflap-d7ddb8655a4d@spud>
 CC: linux-riscv@lists.infradead.org, Conor Dooley <conor@kernel.org>,
   Conor Dooley <conor.dooley@microchip.com>, Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-  linux-kernel@vger.kernel.org
+  linux-kernel@vger.kernel.org, brendan.higgins@linux.dev, davidgow@google.com, rmoar@google.com,
+  Jason@zx2c4.com, shuah@kernel.org, linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+  wireguard@lists.zx2c4.com, netdev@vger.kernel.org
 From: Palmer Dabbelt <palmer@dabbelt.com>
 To: Conor Dooley <conor@kernel.org>
-Message-ID: <mhng-44dd5bcd-50fe-4f09-bf3e-d2ba2e6cfc74@palmer-ri-x1c9>
+Message-ID: <mhng-170f61cd-c3b7-413b-8279-9d50d55dbebe@palmer-ri-x1c9>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,52 +87,121 @@ Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On Tue, 05 Mar 2024 10:37:05 PST (-0800), Conor Dooley wrote:
+On Tue, 05 Mar 2024 10:37:06 PST (-0800), Conor Dooley wrote:
 > From: Conor Dooley <conor.dooley@microchip.com>
 >
-> All the users in the kernel are gone and generated .config files from
-> previous LTS kernels will contain ARCH_SIFIVE. Drop SOC_SIFIVE and
-> update the defconfig.
+> The ARCH_ and SOC_ versions of this symbol have persisted for quite a
+> while now in parallel. Generated .config files from previous LTS kernels
+> should have both. Finally remove SOC_VIRT and update all config files
+> using it.
 >
 > Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 > ---
+> I had a 1.5 year old ack from Jason that I dropped due to the passage of
+> time.
+>
 > CC: Paul Walmsley <paul.walmsley@sifive.com>
 > CC: Palmer Dabbelt <palmer@dabbelt.com>
 > CC: Albert Ou <aou@eecs.berkeley.edu>
+> CC: Brendan Higgins <brendan.higgins@linux.dev>
+> CC: David Gow <davidgow@google.com>
+> CC: Rae Moar <rmoar@google.com>
+> CC: "Jason A. Donenfeld" <Jason@zx2c4.com>
+> CC: Shuah Khan <shuah@kernel.org>
 > CC: linux-riscv@lists.infradead.org
 > CC: linux-kernel@vger.kernel.org
+> CC: linux-kselftest@vger.kernel.org
+> CC: kunit-dev@googlegroups.com
+> CC: wireguard@lists.zx2c4.com
+> CC: netdev@vger.kernel.org
 > ---
->  arch/riscv/Kconfig.socs      | 3 ---
->  arch/riscv/configs/defconfig | 2 +-
->  2 files changed, 1 insertion(+), 4 deletions(-)
+>  arch/riscv/Kconfig.socs                                    | 3 ---
+>  arch/riscv/configs/defconfig                               | 2 +-
+>  arch/riscv/configs/nommu_virt_defconfig                    | 2 +-
+>  tools/testing/kunit/qemu_configs/riscv.py                  | 2 +-
+>  tools/testing/selftests/wireguard/qemu/arch/riscv32.config | 2 +-
+>  tools/testing/selftests/wireguard/qemu/arch/riscv64.config | 2 +-
+>  6 files changed, 5 insertions(+), 8 deletions(-)
 >
 > diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> index e08e91c49abe..e85ffb63c48d 100644
+> index e85ffb63c48d..dcbfb659839c 100644
 > --- a/arch/riscv/Kconfig.socs
 > +++ b/arch/riscv/Kconfig.socs
-> @@ -14,9 +14,6 @@ config ARCH_RENESAS
->  	  This enables support for the RISC-V based Renesas SoCs.
+> @@ -52,9 +52,6 @@ config ARCH_THEAD
+>  	  This enables support for the RISC-V based T-HEAD SoCs.
 >
->  config ARCH_SIFIVE
-> -	def_bool SOC_SIFIVE
+>  config ARCH_VIRT
+> -	def_bool SOC_VIRT
 > -
-> -config SOC_SIFIVE
->  	bool "SiFive SoCs"
->  	select ERRATA_SIFIVE if !XIP_KERNEL
->  	help
+> -config SOC_VIRT
+>  	bool "QEMU Virt Machine"
+>  	select CLINT_TIMER if RISCV_M_MODE
+>  	select POWER_RESET
 > diff --git a/arch/riscv/configs/defconfig b/arch/riscv/configs/defconfig
-> index 89a009a580fe..ab3bab313d56 100644
+> index ab3bab313d56..8d46a9137b1e 100644
 > --- a/arch/riscv/configs/defconfig
 > +++ b/arch/riscv/configs/defconfig
-> @@ -27,7 +27,7 @@ CONFIG_EXPERT=y
->  CONFIG_PROFILING=y
->  CONFIG_SOC_MICROCHIP_POLARFIRE=y
->  CONFIG_ARCH_RENESAS=y
-> -CONFIG_SOC_SIFIVE=y
-> +CONFIG_ARCH_SIFIVE=y
->  CONFIG_ARCH_SOPHGO=y
+> @@ -32,7 +32,7 @@ CONFIG_ARCH_SOPHGO=y
 >  CONFIG_SOC_STARFIVE=y
 >  CONFIG_ARCH_SUNXI=y
+>  CONFIG_ARCH_THEAD=y
+> -CONFIG_SOC_VIRT=y
+> +CONFIG_ARCH_VIRT=y
+>  CONFIG_SMP=y
+>  CONFIG_HOTPLUG_CPU=y
+>  CONFIG_PM=y
+> diff --git a/arch/riscv/configs/nommu_virt_defconfig b/arch/riscv/configs/nommu_virt_defconfig
+> index b794e2f8144e..de8143d1f738 100644
+> --- a/arch/riscv/configs/nommu_virt_defconfig
+> +++ b/arch/riscv/configs/nommu_virt_defconfig
+> @@ -24,7 +24,7 @@ CONFIG_EXPERT=y
+>  CONFIG_SLUB=y
+>  CONFIG_SLUB_TINY=y
+>  # CONFIG_MMU is not set
+> -CONFIG_SOC_VIRT=y
+> +CONFIG_ARCH_VIRT=y
+>  CONFIG_NONPORTABLE=y
+>  CONFIG_SMP=y
+>  CONFIG_CMDLINE="root=/dev/vda rw earlycon=uart8250,mmio,0x10000000,115200n8 console=ttyS0"
+> diff --git a/tools/testing/kunit/qemu_configs/riscv.py b/tools/testing/kunit/qemu_configs/riscv.py
+> index 12a1d525978a..c87758030ff7 100644
+> --- a/tools/testing/kunit/qemu_configs/riscv.py
+> +++ b/tools/testing/kunit/qemu_configs/riscv.py
+> @@ -13,7 +13,7 @@ if not os.path.isfile(OPENSBI_PATH):
+>
+>  QEMU_ARCH = QemuArchParams(linux_arch='riscv',
+>  			   kconfig='''
+> -CONFIG_SOC_VIRT=y
+> +CONFIG_ARCH_VIRT=y
+>  CONFIG_SERIAL_8250=y
+>  CONFIG_SERIAL_8250_CONSOLE=y
+>  CONFIG_SERIAL_OF_PLATFORM=y
+> diff --git a/tools/testing/selftests/wireguard/qemu/arch/riscv32.config b/tools/testing/selftests/wireguard/qemu/arch/riscv32.config
+> index 2fc36efb166d..2500eaa9b469 100644
+> --- a/tools/testing/selftests/wireguard/qemu/arch/riscv32.config
+> +++ b/tools/testing/selftests/wireguard/qemu/arch/riscv32.config
+> @@ -2,7 +2,7 @@ CONFIG_NONPORTABLE=y
+>  CONFIG_ARCH_RV32I=y
+>  CONFIG_MMU=y
+>  CONFIG_FPU=y
+> -CONFIG_SOC_VIRT=y
+> +CONFIG_ARCH_VIRT=y
+>  CONFIG_SERIAL_8250=y
+>  CONFIG_SERIAL_8250_CONSOLE=y
+>  CONFIG_SERIAL_OF_PLATFORM=y
+> diff --git a/tools/testing/selftests/wireguard/qemu/arch/riscv64.config b/tools/testing/selftests/wireguard/qemu/arch/riscv64.config
+> index dc266f3b1915..29a67ac67766 100644
+> --- a/tools/testing/selftests/wireguard/qemu/arch/riscv64.config
+> +++ b/tools/testing/selftests/wireguard/qemu/arch/riscv64.config
+> @@ -1,7 +1,7 @@
+>  CONFIG_ARCH_RV64I=y
+>  CONFIG_MMU=y
+>  CONFIG_FPU=y
+> -CONFIG_SOC_VIRT=y
+> +CONFIG_ARCH_VIRT=y
+>  CONFIG_SERIAL_8250=y
+>  CONFIG_SERIAL_8250_CONSOLE=y
+>  CONFIG_SERIAL_OF_PLATFORM=y
 
 Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
 
