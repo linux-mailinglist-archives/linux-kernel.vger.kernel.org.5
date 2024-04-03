@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-130319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 803D58976F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:37:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63D3D8976BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:32:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEF94B3018D
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:32:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E84601F27983
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC4D15E205;
-	Wed,  3 Apr 2024 17:18:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A9E15E818;
+	Wed,  3 Apr 2024 17:18:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YoDuaa/j"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VHpks6eK"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9240415DBAE;
-	Wed,  3 Apr 2024 17:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A8315E5D0;
+	Wed,  3 Apr 2024 17:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712164724; cv=none; b=J1NjF7JlVxDXAiqd2kQ75NVuQRCPi1jhkl41Bi6PI7nxk8ubFhJGaoGZnXGf+kzfw8tqzpWxG4AJMnoCii/zs7gIRDi9gi5YGFVlo4EkSTVpDQy8HJbl9vOV6PRRZywAbcbBErbRRfWwnohlwJZ1/mWxRyLrQE9XA85IyO213mA=
+	t=1712164725; cv=none; b=ZaNx43+V1AO5pQ7Ggajx7lEPdHD3fMeeR6yYBr24CQSVTJz2wPsbJQkGQaLNfal/fVXwTiU/iZl14Caefb2fDIptGTFTMjvNIzwyGRooszub31qlMn0ZmvLg7dL6JgjPnUtyQRlreVAuQV/RcsKzzIyZwG+Oqu2WbS5JWi2zp1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712164724; c=relaxed/simple;
-	bh=sCi2Zjwkluq7tYcwVCzU97e+fqfE0XuBcMdfkvm6RvY=;
+	s=arc-20240116; t=1712164725; c=relaxed/simple;
+	bh=ozj931v2CdUQnm+THPCb6wv5Qp89NCuTy+u1LNA37Rs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qpAk0dLPdqyZDbeuXpmyt09BUR+Qa3THiaxtaN9Yo5D+su02EWHatC3lnSlOsmaJvPL7SLymyNYpurakujcSoddaH/4TrbMuLWaW1EMH1HiI15i0PgHme4Zddj6YtWN0e2iWICxSR0ilivfj9JLtfJ2vlkyTgOEpsjhqMqnO+DI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YoDuaa/j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B88DCC433F1;
-	Wed,  3 Apr 2024 17:18:43 +0000 (UTC)
+	 MIME-Version; b=H01gLA5Rbpy/qI/BRuZPD92NaMxf1fW3xi3l2EpUzMqcjRF98D7mvGmTVbmuHF0+iiv7zexRlxLhWqpM7zF78RyYrK79uQCeEMuuvH/fJKW5qS/PI0bK0icsOXrDT9Fm4nt04otgZsUzb860dyg3vS0LU0dpTspwuzu5/rFgoeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VHpks6eK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8EBEC433F1;
+	Wed,  3 Apr 2024 17:18:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712164724;
-	bh=sCi2Zjwkluq7tYcwVCzU97e+fqfE0XuBcMdfkvm6RvY=;
+	s=k20201202; t=1712164725;
+	bh=ozj931v2CdUQnm+THPCb6wv5Qp89NCuTy+u1LNA37Rs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YoDuaa/jW/462E1Mz4vNqzvtplX7CD1NZSUzawiiwzqzpg93V/fqtylrSmZwBAzCp
-	 YyGXSkPXq/o3rd4gLl034XpvcydkUbGPYR8kDtXL+RoUkx0OtwnzB4PgUtKHB2cx11
-	 XwrK8noc39LlNSYB0IceAVE9XR0PgTem6GaxXDw8DLLTH8n77gBMI9dEyDwAUXG50e
-	 K2SNSeEFN03ttVWS4MwmEjB4eoe1wSi59HsiZGQA3qaAjKS66A+QiNkp999ms7DMQ+
-	 Mwr9zVQvusE9fJqISqZ+mSW8wsptWVU7fzAGTdbgtpaM5npEuMutvqKLpbnzaWtzeb
-	 kiUz0HqqCuO7g==
+	b=VHpks6eKsQ4abP45EzRRrlXJcfxvU9rjLdhIAVpbgsAncm3sqc03umfv4+PX3/iTO
+	 iCZg4UbDu+0eecE6YNxtX+K1hMNbujS3dCRjpzt4BD2Th14AIZ2LGfXEl1NiEyOAE8
+	 a818ZEwF5YpMn3VRuGgNvu3wBtQ99m6puiw9rYlWE3lraxYSlvlx3E8vSuFf9Cutpb
+	 YruktMuIqEdcPtkQq7haI9H3YXOGQDSRoZk5lu1DbXLP2gGM3PI05QDAl/OKN1oRyZ
+	 TSjAl4ypeKbD35z7eP8UQjbWOVwYnBxwDfnxubAy+1n1jR+NCWUYzlZVv+0FiqO4L9
+	 YfTSOAhunhNCg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Jens Axboe <axboe@kernel.dk>,
-	syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com,
+Cc: Max Kellermann <max.kellermann@ionos.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	io-uring@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 15/20] io_uring: clear opcode specific data for an early failure
-Date: Wed,  3 Apr 2024 13:17:56 -0400
-Message-ID: <20240403171815.342668-15-sashal@kernel.org>
+	linux-kbuild@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 16/20] modpost: fix null pointer dereference
+Date: Wed,  3 Apr 2024 13:17:57 -0400
+Message-ID: <20240403171815.342668-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240403171815.342668-1-sashal@kernel.org>
 References: <20240403171815.342668-1-sashal@kernel.org>
@@ -64,103 +64,44 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.24
 Content-Transfer-Encoding: 8bit
 
-From: Jens Axboe <axboe@kernel.dk>
+From: Max Kellermann <max.kellermann@ionos.com>
 
-[ Upstream commit e21e1c45e1fe2e31732f40256b49c04e76a17cee ]
+[ Upstream commit 23dfd914d2bfc4c9938b0084dffd7105de231d98 ]
 
-If failure happens before the opcode prep handler is called, ensure that
-we clear the opcode specific area of the request, which holds data
-specific to that request type. This prevents errors where opcode
-handlers either don't get to clear per-request private data since prep
-isn't even called.
+If the find_fromsym() call fails and returns NULL, the warn() call
+will dereference this NULL pointer and cause the program to crash.
 
-Reported-and-tested-by: syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+This happened when I tried to build with "test_user_copy" module.
+With this fix, it prints lots of warnings like this:
+
+ WARNING: modpost: lib/test_user_copy: section mismatch in reference: (unknown)+0x4 (section: .text.fixup) -> (unknown) (section: .init.text)
+
+masahiroy@kernel.org:
+ The issue is reproduced with ARCH=arm allnoconfig + CONFIG_MODULES=y +
+ CONFIG_RUNTIME_TESTING_MENU=y + CONFIG_TEST_USER_COPY=m
+
+Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- io_uring/io_uring.c | 25 ++++++++++++++++---------
- 1 file changed, 16 insertions(+), 9 deletions(-)
+ scripts/mod/modpost.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-index ea772a02c1405..c1e411017d8af 100644
---- a/io_uring/io_uring.c
-+++ b/io_uring/io_uring.c
-@@ -2147,6 +2147,13 @@ static void io_init_req_drain(struct io_kiocb *req)
- 	}
- }
+diff --git a/scripts/mod/modpost.c b/scripts/mod/modpost.c
+index 5191fdbd3fa23..076f3c9e43fa5 100644
+--- a/scripts/mod/modpost.c
++++ b/scripts/mod/modpost.c
+@@ -1153,7 +1153,9 @@ static void default_mismatch_handler(const char *modname, struct elf_info *elf,
+ 	sec_mismatch_count++;
  
-+static __cold int io_init_fail_req(struct io_kiocb *req, int err)
-+{
-+	/* ensure per-opcode data is cleared if we fail before prep */
-+	memset(&req->cmd.data, 0, sizeof(req->cmd.data));
-+	return err;
-+}
-+
- static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
- 		       const struct io_uring_sqe *sqe)
- 	__must_hold(&ctx->uring_lock)
-@@ -2167,29 +2174,29 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
+ 	warn("%s: section mismatch in reference: %s+0x%x (section: %s) -> %s (section: %s)\n",
+-	     modname, fromsym, (unsigned int)(faddr - from->st_value), fromsec, tosym, tosec);
++	     modname, fromsym,
++	     (unsigned int)(faddr - (from ? from->st_value : 0)),
++	     fromsec, tosym, tosec);
  
- 	if (unlikely(opcode >= IORING_OP_LAST)) {
- 		req->opcode = 0;
--		return -EINVAL;
-+		return io_init_fail_req(req, -EINVAL);
- 	}
- 	def = &io_issue_defs[opcode];
- 	if (unlikely(sqe_flags & ~SQE_COMMON_FLAGS)) {
- 		/* enforce forwards compatibility on users */
- 		if (sqe_flags & ~SQE_VALID_FLAGS)
--			return -EINVAL;
-+			return io_init_fail_req(req, -EINVAL);
- 		if (sqe_flags & IOSQE_BUFFER_SELECT) {
- 			if (!def->buffer_select)
--				return -EOPNOTSUPP;
-+				return io_init_fail_req(req, -EOPNOTSUPP);
- 			req->buf_index = READ_ONCE(sqe->buf_group);
- 		}
- 		if (sqe_flags & IOSQE_CQE_SKIP_SUCCESS)
- 			ctx->drain_disabled = true;
- 		if (sqe_flags & IOSQE_IO_DRAIN) {
- 			if (ctx->drain_disabled)
--				return -EOPNOTSUPP;
-+				return io_init_fail_req(req, -EOPNOTSUPP);
- 			io_init_req_drain(req);
- 		}
- 	}
- 	if (unlikely(ctx->restricted || ctx->drain_active || ctx->drain_next)) {
- 		if (ctx->restricted && !io_check_restriction(ctx, req, sqe_flags))
--			return -EACCES;
-+			return io_init_fail_req(req, -EACCES);
- 		/* knock it to the slow queue path, will be drained there */
- 		if (ctx->drain_active)
- 			req->flags |= REQ_F_FORCE_ASYNC;
-@@ -2202,9 +2209,9 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
- 	}
- 
- 	if (!def->ioprio && sqe->ioprio)
--		return -EINVAL;
-+		return io_init_fail_req(req, -EINVAL);
- 	if (!def->iopoll && (ctx->flags & IORING_SETUP_IOPOLL))
--		return -EINVAL;
-+		return io_init_fail_req(req, -EINVAL);
- 
- 	if (def->needs_file) {
- 		struct io_submit_state *state = &ctx->submit_state;
-@@ -2228,12 +2235,12 @@ static int io_init_req(struct io_ring_ctx *ctx, struct io_kiocb *req,
- 
- 		req->creds = xa_load(&ctx->personalities, personality);
- 		if (!req->creds)
--			return -EINVAL;
-+			return io_init_fail_req(req, -EINVAL);
- 		get_cred(req->creds);
- 		ret = security_uring_override_creds(req->creds);
- 		if (ret) {
- 			put_cred(req->creds);
--			return ret;
-+			return io_init_fail_req(req, ret);
- 		}
- 		req->flags |= REQ_F_CREDS;
- 	}
+ 	if (mismatch->mismatch == EXTABLE_TO_NON_TEXT) {
+ 		if (match(tosec, mismatch->bad_tosec))
 -- 
 2.43.0
 
