@@ -1,169 +1,115 @@
-Return-Path: <linux-kernel+bounces-130178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130171-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A3468974FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:16:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 798A78974E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:10:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 46169B27944
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:15:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F6951F217FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C6D14EC64;
-	Wed,  3 Apr 2024 16:15:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B6414F131;
+	Wed,  3 Apr 2024 16:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="RgOFNIcC"
-Received: from smtp-bc0d.mail.infomaniak.ch (smtp-bc0d.mail.infomaniak.ch [45.157.188.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jcKjSobB"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 452F014D44E
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:15:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B588C14E2DC;
+	Wed,  3 Apr 2024 16:09:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712160947; cv=none; b=ieZOg0anPa0Qj9W2mRPEdCGdyLA17tRp8al/Y9Iumf+MpsoE5Zb4VE9Zr64JedymSfkssx51jVDMNfyxzqSLPfS0a6CoIfByaLVUlj9iWiKL4+8PzssVt6N0hV7ZUSRuSixYKlPLRB+JKKVpwVUEmEFWcvBEtDVr7ou9Q7LWRFk=
+	t=1712160590; cv=none; b=tMzNNRwvuL4xKu3ObIZreVIYllJX0VEwnt/9/8A9m83Y6EXAavLbiAO26dJm+dct40OW8b0IrFb4AK5wimx0arKEaeuS2QMi5484j3+J2fe0i2Kw8/+449DDCg2tvvusRqoDxEbwKaO0/n/RWy6vyas726DFXQ1J9mNIuI4cS+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712160947; c=relaxed/simple;
-	bh=uatYMX2i3KE1ekQW6bUNQmpadzSHqfrZK0YEKMW1MqQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pNtTJoBt621zd0E77F3BHHIdX2Gz/JZ3hZqtTuUB96CR7aiFLSyzCPdkrlX98MMZaDhXIKBjBksDqeGH8MQ5CFl+7h9UKoBLBg6BiGA2bLXjMyd9JAV4zn+M3WyyVx/khy6GYlBC3fPbHCMzpLQdDiGASNwgU7TEGtUe2PqzNys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=RgOFNIcC; arc=none smtp.client-ip=45.157.188.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4V8qSn2c4fz9WQ;
-	Wed,  3 Apr 2024 18:09:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1712160569;
-	bh=uatYMX2i3KE1ekQW6bUNQmpadzSHqfrZK0YEKMW1MqQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RgOFNIcCwT0MAtAY9jmDT0imf4WzdbQMHPXwzBjayYtuLO+mCny9g1of/NQw+m/B+
-	 BeZTZ24wyfzfLBkjhXGZqo/2VZQ4++DeKv/VOeAAAeDvfB3GzxzKPozrMqBZ57dWW9
-	 vyJtv8AsACKqNrc8YDjKyeHm/adTcxIbcj60x8a0=
-Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4V8qSm2X6jz4mD;
-	Wed,  3 Apr 2024 18:09:28 +0200 (CEST)
-Date: Wed, 3 Apr 2024 18:09:27 +0200
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Ayush Tiwari <ayushtiw0110@gmail.com>
-Cc: Greg KH <gregkh@linuxfoundation.org>, alison.schofield@intel.com, 
-	paul@paul-moore.com, fabio.maria.de.francesco@linux.intel.com, 
-	linux-kernel@vger.kernel.org, outreachy@lists.linux.dev, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH v2] landlock: Use kmem for landlock_object
-Message-ID: <20240403.Yiep0aem7wu5@digikod.net>
-References: <ZggZi/EFICvb4xTU@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
- <2024033030-tutu-dynamite-47c9@gregkh>
- <ZgmETqQr7+W9XtWN@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
- <2024033111-squeezing-linoleum-52a7@gregkh>
- <ZgmmnLIal3gz55Q+@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+	s=arc-20240116; t=1712160590; c=relaxed/simple;
+	bh=8hzZGuG3Djlgf0qMwrfrn4bWy2pLWmCCjfypaPd6iaU=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=tJaGtwjEjTezCb56WYqyDf0bl03EZxpj8BiJulTlSG/m95BaVKr7XaVQwgkSAHlT7aHjzTF8byu4fD6Lh10WsoKifcpnI1QoMsY5+pBvmZXSO+SCbj7Syb09/5iJK5uSjlrA9cgtNy0UxZxDgh73e+aHoeiV/tx/09miV/2PXc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jcKjSobB; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93D70C433B1;
+	Wed,  3 Apr 2024 16:09:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712160590;
+	bh=8hzZGuG3Djlgf0qMwrfrn4bWy2pLWmCCjfypaPd6iaU=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=jcKjSobBys2AwDWtHUg+nZNz255hX8YJ8clocbZnVtIj0h52DY808t+gVnLSzkMLC
+	 X2jjQFAvUGmd4lb2M/HiK8OYAD4oRg6oM2wRSk/RtDyPOErdicM/kRH7ZmaFffstdd
+	 A5uhuABW7lcrvZbj6juYMAQtimJyqGFQZcIGMI0EOpEDTaFtJn8kgeNnGah9Hgz94S
+	 IOzUjSSG8Dy1PPZNqM66yJrWCw2X5fzAFrh0GVmZ1l/EQYOliuMJ261ne92VmHIt0M
+	 aZaraEfx5h6OpkWv3gkSRGiGucYprWgAnxL9Gst4Y9JBTDvukYB1H1HajHS8VYD79T
+	 fVNVTde8ha+Ew==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZgmmnLIal3gz55Q+@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
-X-Infomaniak-Routing: alpha
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 03 Apr 2024 19:09:38 +0300
+Message-Id: <D0AM9RGC7D65.2V9TFGBOSF3LN@kernel.org>
+Subject: Re: [PATCH 33/34] drivers: remove incorrect of_match_ptr/ACPI_PTR
+ annotations
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Arnd Bergmann" <arnd@kernel.org>, <linux-kernel@vger.kernel.org>,
+ "Corey Minyard" <minyard@acm.org>, "Peter Huewe" <peterhuewe@gmx.de>,
+ "Vinod Koul" <vkoul@kernel.org>, "Moritz Fischer" <mdf@kernel.org>, "Wu
+ Hao" <hao.wu@intel.com>, "Xu Yilun" <yilun.xu@intel.com>, "Jiri Kosina"
+ <jikos@kernel.org>, "Benjamin Tissoires" <benjamin.tissoires@redhat.com>,
+ "Michael Hennerich" <michael.hennerich@analog.com>, "Peter Rosin"
+ <peda@axentia.se>, "Dmitry Torokhov" <dmitry.torokhov@gmail.com>, "Iyappan
+ Subramanian" <iyappan@os.amperecomputing.com>, "Keyur Chudgar"
+ <keyur@os.amperecomputing.com>, "David S. Miller" <davem@davemloft.net>,
+ "Eric Dumazet" <edumazet@google.com>, "Jakub Kicinski" <kuba@kernel.org>,
+ "Paolo Abeni" <pabeni@redhat.com>, "Yisen Zhuang"
+ <yisen.zhuang@huawei.com>, "Salil Mehta" <salil.mehta@huawei.com>, "Tony
+ Lindgren" <tony@atomide.com>, "Liam Girdwood" <lgirdwood@gmail.com>, "Mark
+ Brown" <broonie@kernel.org>, "Alexandre Belloni"
+ <alexandre.belloni@bootlin.com>, "Xiang Chen" <chenxiang66@hisilicon.com>,
+ "James E.J. Bottomley" <jejb@linux.ibm.com>, "Martin K. Petersen"
+ <martin.petersen@oracle.com>, "Greg Kroah-Hartman"
+ <gregkh@linuxfoundation.org>, "Russell King" <linux@armlinux.org.uk>, "Jiri
+ Slaby" <jirislaby@kernel.org>, "Jacky Huang" <ychuang3@nuvoton.com>,
+ "Shan-Chun Hung" <schung@nuvoton.com>
+Cc: "Arnd Bergmann" <arnd@arndb.de>, "Jason Gunthorpe" <jgg@ziepe.ca>, "Tom
+ Rix" <trix@redhat.com>, =?utf-8?q?Uwe_Kleine-K=C3=B6nig?=
+ <u.kleine-koenig@pengutronix.de>, "Randy Dunlap" <rdunlap@infradead.org>,
+ "Rob Herring" <robh@kernel.org>, "Linus Walleij"
+ <linus.walleij@linaro.org>, <openipmi-developer@lists.sourceforge.net>,
+ <linux-integrity@vger.kernel.org>, <dmaengine@vger.kernel.org>,
+ <linux-fpga@vger.kernel.org>, <linux-input@vger.kernel.org>,
+ <linux-i2c@vger.kernel.org>, <netdev@vger.kernel.org>,
+ <linux-omap@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
+ <linux-scsi@vger.kernel.org>, <linux-staging@lists.linux.dev>,
+ <linux-serial@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+X-Mailer: aerc 0.17.0
+References: <20240403080702.3509288-1-arnd@kernel.org>
+ <20240403080702.3509288-34-arnd@kernel.org>
+In-Reply-To: <20240403080702.3509288-34-arnd@kernel.org>
 
-On Sun, Mar 31, 2024 at 11:38:28PM +0530, Ayush Tiwari wrote:
-> On Sun, Mar 31, 2024 at 06:54:39PM +0200, Greg KH wrote:
-> > On Sun, Mar 31, 2024 at 09:12:06PM +0530, Ayush Tiwari wrote:
-> > > Hello Greg. Thanks for the feedback.
-> > > On Sat, Mar 30, 2024 at 05:12:18PM +0100, Greg KH wrote:
-> > > > On Sat, Mar 30, 2024 at 07:24:19PM +0530, Ayush Tiwari wrote:
-> > > > > Use kmem_cache replace kzalloc() calls with kmem_cache_zalloc() for
-> > > > > struct landlock_object and update the related dependencies to improve
-> > > > > memory allocation and deallocation performance.
-> > > > 
-> > > > So it's faster?  Great, what are the measurements?
-> > > > 
-> > > Thank you for the feedback. Regarding the performance improvements, I
-> > > realized I should have provided concrete measurements to support the
-> > > claim. The intention behind switching to kmem_cache_zalloc() was to
-> > > optimize memory management efficiency based on general principles.
-> > > Could you suggest some way to get some measurements if possible?
-> > 
-> > If you can not measure the difference, why make the change at all?
-> 
-> Kindly refer to this issue: https://github.com/landlock-lsm/linux/issues/19
-> I have been assigned this issue hence I am focussing on making the
-> changes that have been listed.
+On Wed Apr 3, 2024 at 11:06 AM EEST, Arnd Bergmann wrote:
+> diff --git a/drivers/char/tpm/tpm_ftpm_tee.c b/drivers/char/tpm/tpm_ftpm_=
+tee.c
+> index 2ea4882251cf..0c453f3f928d 100644
+> --- a/drivers/char/tpm/tpm_ftpm_tee.c
+> +++ b/drivers/char/tpm/tpm_ftpm_tee.c
+> @@ -362,7 +362,7 @@ MODULE_DEVICE_TABLE(of, of_ftpm_tee_ids);
+>  static struct platform_driver ftpm_tee_plat_driver =3D {
+>  	.driver =3D {
+>  		.name =3D "ftpm-tee",
+> -		.of_match_table =3D of_match_ptr(of_ftpm_tee_ids),
+> +		.of_match_table =3D of_ftpm_tee_ids,
+>  	},
+>  	.shutdown =3D ftpm_plat_tee_shutdown,
+>  	.probe =3D ftpm_plat_tee_probe,
 
-As Greg asked, it would be good know the performance impact of such
-change.  This could be measured by creating a lot of related allocations
-and accessing them in non-sequential order (e.g. adding new rules,
-accessing a related inode while being sandboxed).  I guess there will be
-a lot of noise (because of other subsystems) but it's worth a try.  You
-should look at similar commits and their related threads to see what
-others did.
+For this portion:
 
-> > 
-> > Again, you need to prove the need for this change, so far I fail to see
-> > a reason why.
-> > 
-> > > > > +static struct kmem_cache *landlock_object_cache;
-> > > > > +
-> > > > > +void __init landlock_object_cache_init(void)
-> > > > > +{
-> > > > > +	landlock_object_cache = kmem_cache_create(
-> > > > > +		"landlock_object_cache", sizeof(struct landlock_object), 0,
-> > > > > +		SLAB_PANIC, NULL);
-> > > > 
-> > > > You really want SLAB_PANIC?  Why?
-> > > >
-> > > The SLAB_PANIC flag used in kmem_cache_create indicates that if the
-> > > kernel is unable to create the cache, it should panic. The use of
-> > > SLAB_PANIC in the creation of the landlock_object_cache is due to the
-> > > critical nature of this cache for the Landlock LSM's operation. I
-> > > found it to be a good choice to be used. Should I use some other
-> > > altrnative?
-> > 
-> > Is panicing really a good idea?  Why can't you properly recover from
-> > allocation failures?
-> 
-> I am relying on SLAB_PANIC because of the reason I mentioned earlier,
-> and also because it was used in lsm_file_cache that I was asked to look
-> into as reference. I could try to recover from allocation failures but
-> currently my focus is on working on the changes that are listed. I will
-> definitely try to look into it once I am done with all changes.
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-Not being able to create this kmem cache would mean that Landlock would
-not be able to properly run, so we could print a warning and exit the
-Landlock init function.  However, most calls to kmem_cache_create() are
-init calls, and most of them (especially in security/*) set SLAB_PANIC.
-I'm wondering why Landlock should do differently, if others should be
-fixed, and if the extra complexity of handling several
-kmem_cache_create() potential failure is worth it for init handlers?
+[can be included to possible new revisions if it stays same]
 
-> 
-> > > > > +
-> > > > >  struct landlock_object *
-> > > > >  landlock_create_object(const struct landlock_object_underops *const underops,
-> > > > >  		       void *const underobj)
-> > > > > @@ -25,7 +34,8 @@ landlock_create_object(const struct landlock_object_underops *const underops,
-> > > > >  
-> > > > >  	if (WARN_ON_ONCE(!underops || !underobj))
-> > > > >  		return ERR_PTR(-ENOENT);
-> > > > > -	new_object = kzalloc(sizeof(*new_object), GFP_KERNEL_ACCOUNT);
-> > > > > +	new_object =
-> > > > > +		kmem_cache_zalloc(landlock_object_cache, GFP_KERNEL_ACCOUNT);
-> > > > 
-> > > > Odd indentation, why?
-> > > > 
-> > > This indentation is due to formatting introduced by running
-> > > clang-format.
-> > 
-> > Why not keep it all on one line?
-> > 
-> I kept it all in one line in v1, but Paul and Mickael asked me to use
-> clang-format, hence it is this way.
-
-Yes, it may looks weird but we format everything with clang-format to
-not waste time discussing about style.
-
-> > thanks,
-> > 
-> > greg k-h
-> 
+BR, Jarkko
 
