@@ -1,159 +1,277 @@
-Return-Path: <linux-kernel+bounces-130627-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130624-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC743897AB4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:30:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2825897AAA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:29:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81FB0281508
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:30:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 579CE28A457
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:29:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7228015696B;
-	Wed,  3 Apr 2024 21:29:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="fapoMB1R"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2676A156872;
-	Wed,  3 Apr 2024 21:29:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B681156865;
+	Wed,  3 Apr 2024 21:29:07 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BE00156671;
+	Wed,  3 Apr 2024 21:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712179783; cv=none; b=L1CkY+M7fCmUa3MYSIHkWOZQQv15cm8RGW1gHIKZrkKUv5+S3Uo+ZfETbw7ip4gvvefbDigrMEKTFrLr16tAIBvqhv/PxoaVz28aeCRHSm8a2bVFQP5mKvi2ReJCBixoXwc4iTlHciKIxgG2sP48+HawtpX1OzzkGTq3Bp6RJ2w=
+	t=1712179746; cv=none; b=TnSVkqhDWejnOhM9hLZAJNZebKV4MlZ6kqkk7gg3k687EKO9rN8ak7XwAPTvBgiTK5VYHTSi9WcSXwZoJmsV96ziwpgnff5z3lQ/8WQASOXHbYCHCRjaNLNSFKizYosxNO6hj003BHGH+aoeZPTrSnhvJ7NkR0b/ljAEqW9XbZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712179783; c=relaxed/simple;
-	bh=I+7q6bOtq6mZ2VvjlcmInFjB6ZWon6PhV2gZ7iRKwhw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=goMA0BQNBRZ8ZPWGpVRqVLTbjJOjDhmqESr1ogHlEDNZjd85Yro9Y0BhvghadPgY8kknDR3eY86NLaUNSlW5bAcRrZ0el/a9kiugkTHobgrnLR88VJi6P4nJczIuwnYFutNO2/IGGXlip4u6pQqoc27KyrVLdfdZKhDJ47MuqYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=fapoMB1R; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 433L1kqx019834;
-	Wed, 3 Apr 2024 21:29:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=8YfwFoz0sGdQELg09UoYnuG30bJT4f0o798002yH/Kw=; b=fa
-	poMB1Rd5bX92n0ACWmUTLDa6papSTvg9pN9kWXnb3T9QJhZy/g7MIRx5/I6/ho1W
-	2serEXvhHhzCc8UtU9iMGS3wA5kasiEEbqS4gg0MZnvhmc1z8Z+KIb+q1ulnKjnF
-	WoxS46jm7Xh2IuqD7pajDOcKnFfD3TFR56QEq3URpAedJ+SbFXwFkp+SbTIE/KAP
-	nNiYRwzfEAGdQObriGBuMAzMT7GJorXvpL4o83yQmGDAxH3xJK0JDUGRO8d9jP2P
-	MFRfpjBJs9aU/XXz1XwwR1BQu7YCpdJwCMYkblGWrvLlQuH3sIYkTZdOpoTqkzFo
-	P77gsHSL4vUYtD9aSgEg==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x9en001g1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 03 Apr 2024 21:29:19 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 433LSsBo005071
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 3 Apr 2024 21:28:54 GMT
-Received: from [10.110.9.99] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Wed, 3 Apr 2024
- 14:28:53 -0700
-Message-ID: <01ce1142-04ac-5978-9d5a-88f94b920055@quicinc.com>
-Date: Wed, 3 Apr 2024 14:28:52 -0700
+	s=arc-20240116; t=1712179746; c=relaxed/simple;
+	bh=w8WRtGLQk0N8W2IHPk9EV4yoJ/5lY4aQbsRyJibJhrs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MrEsjxR0NoVzLpTYXpNMWRvI58jPiYCvNmxziHbUjlOeCBYMABWtXpVLSdi+mNMuAMmh5r4dhMO2aHICttGjqi81ITyCLQKUrR7jOAlXQRo64RZlsfOzK5F/uyy9BAV2fBtU9nmKDo6Kj0BTfF1vceKqKJ+pqI8UHz5ms78/5bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D91C01007;
+	Wed,  3 Apr 2024 14:29:33 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D8AF33F7B4;
+	Wed,  3 Apr 2024 14:28:59 -0700 (PDT)
+Date: Wed, 3 Apr 2024 23:28:54 +0200
+From: Beata Michalska <beata.michalska@arm.com>
+To: Sumit Gupta <sumitg@nvidia.com>
+Cc: linux-arm-kernel@lists.infradead.org, ionela.voinescu@arm.com,
+	sudeep.holla@arm.com, will@kernel.org, catalin.marinas@arm.com,
+	vincent.guittot@linaro.org, yang@os.amperecomputing.com,
+	lihuisong@huawei.com, vanshikonda@os.amperecomputing.com,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	linux-tegra <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH v3 2/3] arm64: Provide an AMU-based version of
+ arch_freq_get_on_cpu
+Message-ID: <Zg3KFuHF-rZGdl5Y@arm.com>
+References: <20240312083431.3239989-1-beata.michalska@arm.com>
+ <20240312083431.3239989-3-beata.michalska@arm.com>
+ <370c98a5-30f7-917e-8fe8-10d2c48e4222@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v3] phy/qcom-qmp-combo: propagate correct return value at
- phy_power_on()
-Content-Language: en-US
-To: Stephen Boyd <swboyd@chromium.org>,
-        Kuogee Hsieh
-	<quic_khsieh@quicinc.com>, <abel.vesa@linaro.org>,
-        <agross@kernel.org>, <airlied@gmail.com>, <andersson@kernel.org>,
-        <daniel@ffwll.ch>, <dianders@chromium.org>,
-        <dmitry.baryshkov@linaro.org>, <dri-devel@lists.freedesktop.org>,
-        <robdclark@gmail.com>, <sean@poorly.run>, <vkoul@kernel.org>
-CC: <quic_jesszhan@quicinc.com>, <quic_sbillaka@quicinc.com>,
-        <marijn.suijten@somainline.org>, <freedreno@lists.freedesktop.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1711741835-10044-1-git-send-email-quic_khsieh@quicinc.com>
- <CAE-0n50Z2pDGH+ncjQq-huDsn9jdN=1SfaaU+qw229nZpUVCDw@mail.gmail.com>
- <2f509949-7e7e-cbf6-c1d0-f25971c2d890@quicinc.com>
- <CAE-0n50qT2mHOGiU89NAmHdADQAAgs3aMP1RFOTTV8oCUbZKgw@mail.gmail.com>
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <CAE-0n50qT2mHOGiU89NAmHdADQAAgs3aMP1RFOTTV8oCUbZKgw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: hYB4IBbHmXEffncdCxv4QEuapA4X3qr3
-X-Proofpoint-ORIG-GUID: hYB4IBbHmXEffncdCxv4QEuapA4X3qr3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-03_22,2024-04-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
- suspectscore=0 mlxlogscore=999 bulkscore=0 adultscore=0 phishscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404030147
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <370c98a5-30f7-917e-8fe8-10d2c48e4222@nvidia.com>
 
-
-
-On 4/3/2024 1:04 PM, Stephen Boyd wrote:
-> Quoting Abhinav Kumar (2024-04-03 12:58:50)
->>
->>
->> On 4/3/2024 12:51 PM, Stephen Boyd wrote:
->>> Quoting Kuogee Hsieh (2024-03-29 12:50:35)
->>>> Currently qmp_combo_dp_power_on() always return 0 in regardless of
->>>> return value of cfg->configure_dp_phy(). This patch propagate
->>>> return value of cfg->configure_dp_phy() all the way back to caller.
->>>
->>> Is this found via code inspection or because the phy is failing to power
->>> on sometimes? I ask because I'm looking at a DP bug on Trogdor with
->>> chromeos' v6.6 based kernel and wondering if this is related.
->>>
->>
->> No, we actually hit an issue. This issue was originally reported as a
->> link training issue while bringing up DP on x1e80100.
->>
->> While debugging that we noticed that we should not have even proceeded
->> to link training because the PLL was not getting locked and it was
->> failing silently since there are no other error prints (and hence the
->> second part of the patch to improve the error logs), and we do not
->> return any error code from this driver, we could not catch the PLL
->> unlocked issue.
+On Wed, Mar 20, 2024 at 10:13:18PM +0530, Sumit Gupta wrote:
 > 
-> Did link training succeed in that case and the screen was black? Also,
-> did you figure out why the PLL failed to lock? I sometimes see reports
-> now with an "Unexpected interrupt:" message from the DP driver and the
-> interrupt is the PLL unlocked one (DP_INTR_PLL_UNLOCKED).
 > 
-
-No the link training had failed.
-
-Yes, root-cause was that the PLL registers were misconfigured in the 
-x1e80100 DP PHY for HBR2. Once we programmed the correct values it 
-worked. This was specific to x1e80100.
-
-Yes, Doug mentioned this to me on IRC that this issue is still there. 
-Surprising because I thought we had pushed 
-https://patchwork.freedesktop.org/patch/551847/ long ago and it was 
-fixed. It certainly did that time when I had tested this.
-
->>
->>> Also, is the call to phy_power_on() going to be checked in
->>> the DP driver?
->>>
->>>    $ git grep -n phy_power_on -- drivers/gpu/drm/msm/dp/
->>>    drivers/gpu/drm/msm/dp/dp_ctrl.c:1453:  phy_power_on(phy);
->>
->> Yes, this is a good point. We should also post the patch to add the
->> error checking in DP driver to fail if phy_power_on fails.
+> On 12/03/24 14:04, Beata Michalska wrote:
+> > External email: Use caution opening links or attachments
+> > 
+> > 
+> > With the Frequency Invariance Engine (FIE) being already wired up with
+> > sched tick and making use of relevant (core counter and constant
+> > counter) AMU counters, getting the current frequency for a given CPU
+> > on supported platforms can be achieved by utilizing the frequency scale
+> > factor which reflects an average CPU frequency for the last tick period
+> > length.
+> > 
+> > The solution is partially based on APERF/MPERF implementation of
+> > arch_freq_get_on_cpu.
+> > 
+> > Suggested-by: Ionela Voinescu <ionela.voinescu@arm.com>
+> > Signed-off-by: Beata Michalska <beata.michalska@arm.com>
+> > ---
+> >   arch/arm64/kernel/topology.c | 103 +++++++++++++++++++++++++++++++----
+> >   1 file changed, 92 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+> > index 1a2c72f3e7f8..42cb19c31719 100644
+> > --- a/arch/arm64/kernel/topology.c
+> > +++ b/arch/arm64/kernel/topology.c
+> > @@ -17,6 +17,8 @@
+> >   #include <linux/cpufreq.h>
+> >   #include <linux/init.h>
+> >   #include <linux/percpu.h>
+> > +#include <linux/sched/isolation.h>
+> > +#include <linux/seqlock_types.h>
+> > 
+> >   #include <asm/cpu.h>
+> >   #include <asm/cputype.h>
+> > @@ -88,18 +90,31 @@ int __init parse_acpi_topology(void)
+> >    * initialized.
+> >    */
+> >   static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale) =  1UL << (2 * SCHED_CAPACITY_SHIFT);
+> > -static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
+> > -static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
+> >   static cpumask_var_t amu_fie_cpus;
+> > 
+> > +struct amu_cntr_sample {
+> > +       u64             arch_const_cycles_prev;
+> > +       u64             arch_core_cycles_prev;
+> > +       unsigned long   last_update;
+> > +       seqcount_t      seq;
+> > +};
+> > +
+> > +static DEFINE_PER_CPU_SHARED_ALIGNED(struct amu_cntr_sample, cpu_amu_samples) = {
+> > +       .seq = SEQCNT_ZERO(cpu_amu_samples.seq)
+> > +};
+> > +
+> >   void update_freq_counters_refs(void)
+> >   {
+> > -       this_cpu_write(arch_core_cycles_prev, read_corecnt());
+> > -       this_cpu_write(arch_const_cycles_prev, read_constcnt());
+> > +       struct amu_cntr_sample *amu_sample = this_cpu_ptr(&cpu_amu_samples);
+> > +
+> > +       amu_sample->arch_core_cycles_prev = read_corecnt();
+> > +       amu_sample->arch_const_cycles_prev = read_constcnt();
+> >   }
+> > 
+> >   static inline bool freq_counters_valid(int cpu)
+> >   {
+> > +       struct amu_cntr_sample *amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
+> > +
+> >          if ((cpu >= nr_cpu_ids) || !cpumask_test_cpu(cpu, cpu_present_mask))
+> >                  return false;
+> > 
+> > @@ -108,8 +123,8 @@ static inline bool freq_counters_valid(int cpu)
+> >                  return false;
+> >          }
+> > 
+> > -       if (unlikely(!per_cpu(arch_const_cycles_prev, cpu) ||
+> > -                    !per_cpu(arch_core_cycles_prev, cpu))) {
+> > +       if (unlikely(!amu_sample->arch_const_cycles_prev ||
+> > +                    !amu_sample->arch_core_cycles_prev)) {
+> >                  pr_debug("CPU%d: cycle counters are not enabled.\n", cpu);
+> >                  return false;
+> >          }
+> > @@ -152,20 +167,27 @@ void freq_inv_set_max_ratio(int cpu, u64 max_rate)
+> > 
+> >   static void amu_scale_freq_tick(void)
+> >   {
+> > +       struct amu_cntr_sample *amu_sample = this_cpu_ptr(&cpu_amu_samples);
+> >          u64 prev_core_cnt, prev_const_cnt;
+> >          u64 core_cnt, const_cnt, scale;
+> > 
+> > -       prev_const_cnt = this_cpu_read(arch_const_cycles_prev);
+> > -       prev_core_cnt = this_cpu_read(arch_core_cycles_prev);
+> > +       prev_const_cnt = amu_sample->arch_const_cycles_prev;
+> > +       prev_core_cnt = amu_sample->arch_core_cycles_prev;
+> > +
+> > +       write_seqcount_begin(&amu_sample->seq);
+> > 
+> >          update_freq_counters_refs();
+> > 
+> > -       const_cnt = this_cpu_read(arch_const_cycles_prev);
+> > -       core_cnt = this_cpu_read(arch_core_cycles_prev);
+> > +       const_cnt = amu_sample->arch_const_cycles_prev;
+> > +       core_cnt = amu_sample->arch_core_cycles_prev;
+> > 
+> > +       /*
+> > +        * This should not happen unless the AMUs have been reset and the
+> > +        * counter values have not been resroted - unlikely
+> > +        */
+> >          if (unlikely(core_cnt <= prev_core_cnt ||
+> >                       const_cnt <= prev_const_cnt))
+> > -               return;
+> > +               goto leave;
+> > 
+> >          /*
+> >           *          /\core    arch_max_freq_scale
+> > @@ -182,6 +204,10 @@ static void amu_scale_freq_tick(void)
+> > 
+> >          scale = min_t(unsigned long, scale, SCHED_CAPACITY_SCALE);
+> >          this_cpu_write(arch_freq_scale, (unsigned long)scale);
+> > +
+> > +       amu_sample->last_update = jiffies;
+> > +leave:
+> > +       write_seqcount_end(&amu_sample->seq);
+> >   }
+> > 
+> >   static struct scale_freq_data amu_sfd = {
+> > @@ -189,6 +215,61 @@ static struct scale_freq_data amu_sfd = {
+> >          .set_freq_scale = amu_scale_freq_tick,
+> >   };
+> > 
+> > +#define AMU_SAMPLE_EXP_MS      20
+> > +
+> > +unsigned int arch_freq_get_on_cpu(int cpu)
+> > +{
+> > +       struct amu_cntr_sample *amu_sample;
+> > +       unsigned long last_update;
+> > +       unsigned int seq;
+> > +       unsigned int freq;
+> > +       u64 scale;
+> > +
+> > +       if (!cpumask_test_cpu(cpu, amu_fie_cpus) || !arch_scale_freq_ref(cpu))
+> > +               return 0;
+> > +
+> > +retry:
+> > +       amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
+> > +
+> > +       do {
+> > +               seq = raw_read_seqcount_begin(&amu_sample->seq);
+> > +               last_update = amu_sample->last_update;
+> > +       } while (read_seqcount_retry(&amu_sample->seq, seq));
+> > +
+> > +       /*
+> > +        * For those CPUs that are in full dynticks mode,
+> > +        * and those that have not seen tick for a while
+> > +        * try an alternative source for the counters (and thus freq scale),
+> > +        * if available for given policy
+> > +        */
+> > +       if (time_is_before_jiffies(last_update + msecs_to_jiffies(AMU_SAMPLE_EXP_MS))) {
+> > +               struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
+> > +               int ref_cpu = nr_cpu_ids;
+> > +
+> > +               if (cpumask_intersects(housekeeping_cpumask(HK_TYPE_TICK),
+> > +                                      policy->cpus))
+> > +                       ref_cpu = cpumask_nth_and(cpu, policy->cpus,
+> > +                                                 housekeeping_cpumask(HK_TYPE_TICK));
+> > +
 > 
-> Sounds great, thanks.
+> This is looking for any other HK CPU within same policy for counters.
+> AFAIU, cpumask_nth_and() will return small_cpumask_bits/nr_cpu_ids
+> if the number of bits in both masks is different. Could you check
+> again if the current change is fine or needs something like below.
+> BTW, we have one CPU per policy.
+> 
+>   cpumask_and(&mask, policy->cpus, housekeeping_cpumask(HK_TYPE_TICK));
+>   retry:
+> 	....
+> 	cpumask_andnot(&mask, &mask, cpumask_of(cpu));
+> 	ref_cpu = cpumask_any(&mask);
+>
+At this point this is indeed bogus though for a different reason.
+I've rewritten that part a bit, though still, this will bail out for single-cpu
+policies.
+
+---
+BR
+Beata
+
+
+> Thank you,
+> Sumit Gupta
+> 
+> > +               cpufreq_cpu_put(policy);
+> > +               if (ref_cpu >= nr_cpu_ids || ref_cpu == cpu)
+> > +                       /* No alternative to pull info from */
+> > +                       return 0;
+> > +               cpu = ref_cpu;
+> > +               goto retry;
+> > +       }
+> > +       /*
+> > +        * Reversed computation to the one used to determine
+> > +        * the arch_freq_scale value
+> > +        * (see amu_scale_freq_tick for details)
+> > +        */
+> > +       scale = arch_scale_freq_capacity(cpu);
+> > +       freq = scale * arch_scale_freq_ref(cpu);
+> > +       freq >>= SCHED_CAPACITY_SHIFT;
+> > +
+> > +       return freq;
+> > +}
+> > +
+> >   static void amu_fie_setup(const struct cpumask *cpus)
+> >   {
+> >          int cpu;
+> > --
+> > 2.25.1
+> > 
 
