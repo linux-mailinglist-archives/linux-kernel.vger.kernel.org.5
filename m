@@ -1,300 +1,177 @@
-Return-Path: <linux-kernel+bounces-129432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50132896ABD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:34:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BAB0896AC4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:34:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 715961C22FAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:34:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 876271F2A795
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:34:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB11513666A;
-	Wed,  3 Apr 2024 09:31:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F426136E3F;
+	Wed,  3 Apr 2024 09:31:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PCjOu78d"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fBnc7xId"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788B6134759;
-	Wed,  3 Apr 2024 09:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA9A9137762
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 09:31:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712136663; cv=none; b=Ee7MS4a3z33xRjGuyL1xZfasgBLeY2o8aYLb0h+klFbcS2JxEDhF9kqSYOiv+KrubHO7FDWCsD8Wt+MWFxcExLpfjj37f5LAY/LgstNdIuufCJ4F+kfwTBG2zFArC2keMj6sNzc4xM1QdWTc3gK0YHOKAx4BdMGZOGegWFMW4OM=
+	t=1712136714; cv=none; b=pOa+PMnqwyfakVqJKnPM809TRARCEKCuaOiV+V2uMWxvNd0mb2U4DEzGOfy6oG4VvJnf7jYWYI3vzwPy2zsibK2BkD0CKLE3/I02C8vIxWPXWw3Ek5r4lewSnI2rSNm5WyL0qtHV0n2rGrPAd44OEaEY/QZinvaGa2duCqg93LQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712136663; c=relaxed/simple;
-	bh=hdQyq38njeULYK9VdARbiJym46CETAEk7WigcOJGITQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KnH8sj3AWGU/P1ZkjJ3CS5RoLPyuVHFsemDLhXFpnR149l7sgKV4veWY92dhkQ7gd0ZXsIwH/xJf5MoJVBey3QzyGJ6i4GA34Yu/ihEiuf1MnBYpkMlPtaxjO+69Jqvkyq6uM6DCB+k4Xmq1gWM3efaDiOiBYTskzkf+4mZjrmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PCjOu78d; arc=none smtp.client-ip=192.198.163.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712136662; x=1743672662;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=hdQyq38njeULYK9VdARbiJym46CETAEk7WigcOJGITQ=;
-  b=PCjOu78dpbeK2v4+j7un//zzf72olDNQe4XY6y1MPAOLCXquqvvDkkdH
-   YIQ4TME0+UuSV/r42hAp+z7QXMM+JREXnm6DjsmLtV82Q87Ja/px0ErYH
-   AYYuPboeiTeU8fmUGgTbktl5Ya/lAKdNO6SekDck5qLLIQNURvDujJCLe
-   Sar2FBzvgl4TUi1maHC5kTfxCCWv5e3yEoaCmdnW1vLLdAseIsKjKbY96
-   rJg2BOTIsQb3DjJ5sIBx55WXiKLcGym9M8B26aGUwcPcaASj8F0XnU73o
-   v8m8yBh4zTf/qyn4h1eMFqWQqWT7HwYHKn959euQSlr7J9jE5kU4VrUd1
-   A==;
-X-CSE-ConnectionGUID: OJWbZ5bMT+6dX8xZHd9S8A==
-X-CSE-MsgGUID: f/nedbYdQMa/rZ6PnpO38A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7218636"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="7218636"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 02:31:00 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="915175962"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="915175962"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 02:30:49 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rrwxA-000000014hw-2roE;
-	Wed, 03 Apr 2024 12:30:44 +0300
-Date: Wed, 3 Apr 2024 12:30:44 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, Corey Minyard <minyard@acm.org>,
-	Peter Huewe <peterhuewe@gmx.de>,
-	Jarkko Sakkinen <jarkko@kernel.org>, Vinod Koul <vkoul@kernel.org>,
-	Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>, Jiri Kosina <jikos@kernel.org>,
-	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	Peter Rosin <peda@axentia.se>,
-	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-	Iyappan Subramanian <iyappan@os.amperecomputing.com>,
-	Keyur Chudgar <keyur@os.amperecomputing.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Yisen Zhuang <yisen.zhuang@huawei.com>,
-	Salil Mehta <salil.mehta@huawei.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Xiang Chen <chenxiang66@hisilicon.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Jacky Huang <ychuang3@nuvoton.com>,
-	Shan-Chun Hung <schung@nuvoton.com>, Arnd Bergmann <arnd@arndb.de>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Tom Rix <trix@redhat.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	Randy Dunlap <rdunlap@infradead.org>, Rob Herring <robh@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	openipmi-developer@lists.sourceforge.net,
-	linux-integrity@vger.kernel.org, dmaengine@vger.kernel.org,
-	linux-fpga@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-i2c@vger.kernel.org, netdev@vger.kernel.org,
-	linux-omap@vger.kernel.org, linux-rtc@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
-	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 33/34] drivers: remove incorrect of_match_ptr/ACPI_PTR
- annotations
-Message-ID: <Zg0hxMZGlwfXV2RA@smile.fi.intel.com>
-References: <20240403080702.3509288-1-arnd@kernel.org>
- <20240403080702.3509288-34-arnd@kernel.org>
+	s=arc-20240116; t=1712136714; c=relaxed/simple;
+	bh=ko/qYKJKD5DoQqCWzLJYXeEesdl0eMtrpDc1TNW8JiU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BfrEtuxtg5WVoIIRnUtRjg+UDlxTrMNJMragV4f4AqxDZbBXwSXc7UfixacsMhCP3kBpWZkgE/lt6/OW5UPjWhlOCx5W1V0R2Izu8qChxQ4Dgd4DdAjYVAmQ1zPZXf32Hyo5B7wVyIb1mowDajY00LELgNczBjp/tUSvmOSegeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fBnc7xId; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a472f8c6a55so791371566b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 02:31:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712136711; x=1712741511; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=nkPrFPLlzXsKFMFxEqrE2fZn6GiDoCde4n8aZdUS1Ps=;
+        b=fBnc7xIdYUGxvDF3+6GJ+sGGL1pp8N1Gqk+WoR5E8/MG5gmtauRIz2DOO+QjJfZOOJ
+         G7zFZnk32PTzMPhq2uTM2MrlcuXmrU8bc3po3aThZpLo/taO7ktitCSElzz7Lp7/ugIQ
+         wKtIrqAm6frCkTfVrVMPRZl7qNS7z77xwd2pdr9UjfYkFAbNOa5weJdg/aCij/7UVcHv
+         dXMHSV4ZZot2sGzxNUAffFjrty2eEQuVJ7CR35e5ow6YXEcfVIVF6yQYfuTLaInwG0KP
+         dcu9tIafQKLoImxBwBHbCRaYaEUGr10AtvNPcVcdItlmG8A1bYtyZfFmQsr9DccF3eZP
+         HYHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712136711; x=1712741511;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nkPrFPLlzXsKFMFxEqrE2fZn6GiDoCde4n8aZdUS1Ps=;
+        b=vLRfvKgRng9rleMrKGT6Z7Cb4xpKOeleLTfD2UOK4+WcgXvwEXud8jlH1AtUqZKtic
+         zZaWuZyc+kqBexD9ouOhi9QGBf1jNT8M7e3ynJfngl9LU6V135zaiHEhb6ZRhDR8guOK
+         dehkj01VaptihcWAY90XZ+CcjPKWZY2Z8wZeHzyK7KM4+Ly9CICso46HbrwJ8wCRYT8b
+         qDOHXPRkO2S4vJAkAT21QI67r5yI7gF71FeohSmzE4Xvida/6i4U+Hl98xJaMbQ3H+aQ
+         RvgNi9F1pvLzsvPyze4+iIh1VzJ0IwqYTOJY76ouD1H/HW6XDBfAfLpM/+9XXHH4mfvE
+         3YZg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJCaNFKjNd4ShuRIq8+MBe9n96xWsJP6T9yAYX8kaqhDzQljpw3H5yh87bonN+4VP5CISDT+6FQ7gukUBI/PUkdTFUkMWmiahtU4oP
+X-Gm-Message-State: AOJu0YzYAPjO5Jq9Wa0x0ho6vwRfhNSkcQx9+YkFmowlsHETWSAm4Ner
+	2owVJztarcYsZn01m642Z+F2+RzudpxySuQeK3MoCA8c/rxxhiRWuGnrvCflvhs=
+X-Google-Smtp-Source: AGHT+IE3PWB4vp7hQvlJSx3urmU4rfs0pPx51QnRTdDTN53vA2sWV35QnnRTB7AdghQYP1+Oi6FfxA==
+X-Received: by 2002:a17:906:b06:b0:a4e:7cab:9e76 with SMTP id u6-20020a1709060b0600b00a4e7cab9e76mr4093843ejg.33.1712136711088;
+        Wed, 03 Apr 2024 02:31:51 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id u23-20020a170906125700b00a47522c193asm7546772eja.196.2024.04.03.02.31.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 02:31:50 -0700 (PDT)
+Message-ID: <cb46f9bb-3ce9-4327-8019-4dd4346c715c@linaro.org>
+Date: Wed, 3 Apr 2024 11:31:48 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403080702.3509288-34-arnd@kernel.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 23/34] firmware: qcom_scm: mark qcom_scm_qseecom_allowlist
+ as __maybe_unused
+To: Arnd Bergmann <arnd@kernel.org>, linux-kernel@vger.kernel.org,
+ Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Maximilian Luz <luzmaximilian@gmail.com>,
+ Johan Hovold <johan+linaro@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+ Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>,
+ Guru Das Srinagesh <quic_gurus@quicinc.com>,
+ Robert Marko <robimarko@gmail.com>, linux-arm-msm@vger.kernel.org
+References: <20240403080702.3509288-1-arnd@kernel.org>
+ <20240403080702.3509288-24-arnd@kernel.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240403080702.3509288-24-arnd@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 03, 2024 at 10:06:51AM +0200, Arnd Bergmann wrote:
+On 03/04/2024 10:06, Arnd Bergmann wrote:
 > From: Arnd Bergmann <arnd@arndb.de>
 > 
-> When building with CONFIG_OF and/or CONFIG_ACPI disabled but W=1 extra
-> warnings enabled, a lot of driver cause a warning about an unused
-> ID table:
+> When CONFIG_OF is disabled, there is no reference to this variable:
 > 
-> drivers/char/tpm/tpm_ftpm_tee.c:356:34: error: unused variable 'of_ftpm_tee_ids' [-Werror,-Wunused-const-variable]
-> drivers/dma/img-mdc-dma.c:863:34: error: unused variable 'mdc_dma_of_match' [-Werror,-Wunused-const-variable]
-> drivers/fpga/versal-fpga.c:62:34: error: unused variable 'versal_fpga_of_match' [-Werror,-Wunused-const-variable]
-> drivers/i2c/muxes/i2c-mux-ltc4306.c:200:34: error: unused variable 'ltc4306_of_match' [-Werror,-Wunused-const-variable]
-> drivers/i2c/muxes/i2c-mux-reg.c:242:34: error: unused variable 'i2c_mux_reg_of_match' [-Werror,-Wunused-const-variable]
-> drivers/memory/pl353-smc.c:62:34: error: unused variable 'pl353_smc_supported_children' [-Werror,-Wunused-const-variable]
-> drivers/regulator/pbias-regulator.c:136:34: error: unused variable 'pbias_of_match' [-Werror,-Wunused-const-variable]
-> drivers/regulator/twl-regulator.c:552:34: error: unused variable 'twl_of_match' [-Werror,-Wunused-const-variable]
-> drivers/regulator/twl6030-regulator.c:645:34: error: unused variable 'twl_of_match' [-Werror,-Wunused-const-variable]
-> drivers/scsi/hisi_sas/hisi_sas_v2_hw.c:3635:36: error: unused variable 'sas_v2_acpi_match' [-Werror,-Wunused-const-variable]
-> drivers/staging/pi433/pi433_if.c:1359:34: error: unused variable 'pi433_dt_ids' [-Werror,-Wunused-const-variable]
-> drivers/tty/serial/amba-pl011.c:2945:34: error: unused variable 'sbsa_uart_of_match' [-Werror,-Wunused-const-variable]
+> drivers/firmware/qcom/qcom_scm.c:1655:34: error: unused variable 'qcom_scm_qseecom_allowlist' [-Werror,-Wunused-const-variable]
+> static const struct of_device_id qcom_scm_qseecom_allowlist[] = {
 > 
-> The fix is always to just remove the of_match_ptr() and ACPI_PTR() wrappers
-> that remove the reference, rather than adding another #ifdef just for build
-> testing for a configuration that doesn't matter in practice.
+> Mark it as __maybe_unused to hide this warning.
+> 
+> Fixes: 00b1248606ba ("firmware: qcom_scm: Add support for Qualcomm Secure Execution Environment SCM interface")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
-> I considered splitting up the large patch into per subsystem patches, but since
-> it's really just the same thing everywhere it feels better to do it all at once.
+I already fixed this and have an Ack:
+https://lore.kernel.org/all/20231120185623.338608-1-krzysztof.kozlowski@linaro.org/
 
-Can we split to three groups:
-- Dropping ACPI_PTR()
-- Dropping of_match_ptr() (which I won't review in depth, for example)
-- Dropping both
-?
+Can anyone pick up that one? Why these trivial and obvious fixes take so
+much effort...
 
-..
+Just like Arnd, I keep fixing many little things which takes
+considerable amount of time. This is not a problem. You know what is the
+problem? Chasing maintainers, keeping track of my own patches, resending
+and pinging. All this takes considerable amount of time which is a
+*wasted* time which I could spend on developing new code. Then finding
+out that Arnd spent his time to fix this again!
 
-> --- a/drivers/char/ipmi/ipmb_dev_int.c
-> +++ b/drivers/char/ipmi/ipmb_dev_int.c
-> @@ -364,7 +364,7 @@ MODULE_DEVICE_TABLE(acpi, acpi_ipmb_id);
->  static struct i2c_driver ipmb_driver = {
->  	.driver = {
->  		.name = "ipmb-dev",
-> -		.acpi_match_table = ACPI_PTR(acpi_ipmb_id),
-> +		.acpi_match_table = acpi_ipmb_id,
->  	},
->  	.probe = ipmb_probe,
->  	.remove = ipmb_remove,
+Same simple issue being fixed by two people. Considering effort spent on
+tracking/resending patches (or even writing this stupid rant), simple
+patch which should take 1h of developers time takes 3 or four times more!
 
-acpi.h --> mod_devicetable.h.
-
-..
-
-> --- a/drivers/hid/hid-google-hammer.c
-> +++ b/drivers/hid/hid-google-hammer.c
-> @@ -275,21 +275,19 @@ static const struct acpi_device_id cbas_ec_acpi_ids[] = {
->  };
->  MODULE_DEVICE_TABLE(acpi, cbas_ec_acpi_ids);
->  
-> -#ifdef CONFIG_OF
->  static const struct of_device_id cbas_ec_of_match[] = {
->  	{ .compatible = "google,cros-cbas" },
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(of, cbas_ec_of_match);
-> -#endif
->  
->  static struct platform_driver cbas_ec_driver = {
->  	.probe = cbas_ec_probe,
->  	.remove = cbas_ec_remove,
->  	.driver = {
->  		.name = "cbas_ec",
-> -		.acpi_match_table = ACPI_PTR(cbas_ec_acpi_ids),
-> -		.of_match_table = of_match_ptr(cbas_ec_of_match),
-> +		.acpi_match_table = cbas_ec_acpi_ids,
-> +		.of_match_table = cbas_ec_of_match,
->  		.pm = &cbas_ec_pm_ops,
->  	},
->  };
-
-Ditto, and likely of.h can be also dropped.
-
-..
-
-> --- a/drivers/input/touchscreen/wdt87xx_i2c.c
-> +++ b/drivers/input/touchscreen/wdt87xx_i2c.c
-> @@ -1166,7 +1166,7 @@ static struct i2c_driver wdt87xx_driver = {
->  		.name = WDT87XX_NAME,
->  		.dev_groups = wdt87xx_groups,
->  		.pm = pm_sleep_ptr(&wdt87xx_pm_ops),
-> -		.acpi_match_table = ACPI_PTR(wdt87xx_acpi_id),
-> +		.acpi_match_table = wdt87xx_acpi_id,
->  	},
->  };
->  module_i2c_driver(wdt87xx_driver);
-
-Ditto.
-
-..
-
-> --- a/drivers/net/ethernet/apm/xgene-v2/main.c
-> +++ b/drivers/net/ethernet/apm/xgene-v2/main.c
-> @@ -731,7 +731,7 @@ MODULE_DEVICE_TABLE(acpi, xge_acpi_match);
->  static struct platform_driver xge_driver = {
->  	.driver = {
->  		   .name = "xgene-enet-v2",
-> -		   .acpi_match_table = ACPI_PTR(xge_acpi_match),
-> +		   .acpi_match_table = xge_acpi_match,
->  	},
->  	.probe = xge_probe,
->  	.remove_new = xge_remove,
-
-Ditto. And remove forward declaration of the variable as well.
-
-..
-
-> --- a/drivers/rtc/rtc-fsl-ftm-alarm.c
-> +++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
-> @@ -320,7 +320,7 @@ static struct platform_driver ftm_rtc_driver = {
->  	.driver		= {
->  		.name	= "ftm-alarm",
->  		.of_match_table = ftm_rtc_match,
-> -		.acpi_match_table = ACPI_PTR(ftm_imx_acpi_ids),
-> +		.acpi_match_table = ftm_imx_acpi_ids,
->  	},
->  };
-
-Ditto.
-
-..
-
->  	.driver = {
->  		.name =		"pi433",
->  		.owner =	THIS_MODULE,
-
-Oh-oh.
-
-> -		.of_match_table = of_match_ptr(pi433_dt_ids),
-> +		.of_match_table = pi433_dt_ids,
->  	},
-
-..
-
-> --- a/drivers/tty/serial/amba-pl011.c
-> +++ b/drivers/tty/serial/amba-pl011.c
-> @@ -2948,7 +2948,7 @@ static const struct of_device_id sbsa_uart_of_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, sbsa_uart_of_match);
->  
-> -static const struct acpi_device_id __maybe_unused sbsa_uart_acpi_match[] = {
-> +static const struct acpi_device_id sbsa_uart_acpi_match[] = {
->  	{ "ARMH0011", 0 },
->  	{ "ARMHB000", 0 },
->  	{},
-> @@ -2961,8 +2961,8 @@ static struct platform_driver arm_sbsa_uart_platform_driver = {
->  	.driver	= {
->  		.name	= "sbsa-uart",
->  		.pm	= &pl011_dev_pm_ops,
-> -		.of_match_table = of_match_ptr(sbsa_uart_of_match),
-> -		.acpi_match_table = ACPI_PTR(sbsa_uart_acpi_match),
-> +		.of_match_table = sbsa_uart_of_match,
-> +		.acpi_match_table = sbsa_uart_acpi_match,
->  		.suppress_bind_attrs = IS_BUILTIN(CONFIG_SERIAL_AMBA_PL011),
->  	},
->  };
-
-Ditto.
-
-..
-
-As mentioned above, I haven't and won't look into of_match_ptr() cases, but you
-got the idea.
-
-For the above, if addressed as suggested,
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
--- 
-With Best Regards,
-Andy Shevchenko
-
+Best regards,
+Krzysztof
 
 
