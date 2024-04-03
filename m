@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-130586-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130562-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D22C6897A26
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:42:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0736D8979F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:39:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7389BB2A8DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:42:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D3D52852A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:38:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E58D115957F;
-	Wed,  3 Apr 2024 20:37:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4365D15746C;
+	Wed,  3 Apr 2024 20:37:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="MXQFFmnY"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="DdVml6XR"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E283158A1E;
-	Wed,  3 Apr 2024 20:37:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D81C3156F34;
+	Wed,  3 Apr 2024 20:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712176636; cv=none; b=cpFfgpQDKmxtltPECW/vBxxn3FBY0MsHDyZGrfup5L33Wuf2/mfkIIG4kzI18ujMQXKUz/CRHEdhXvqLqNdIVdmsmyZblzYorWbBKlC6nkM/dWP/cdrGmr+g2ItoN96PosEE0uf3CKL7/zIAnf0HLWMZFWlcIbgT4ogy1CsStSo=
+	t=1712176624; cv=none; b=GpY1tSgHA5mo4q2Js90ES54cJHITyB00RV/0XA6RgbNjKTDrqu8CP0xF6+yFTObTpUnlP/WrVC0Y2ICnS7plxg/h9/vaAG0/RQFkuFn4A7/nqAtczeD+VLLwU/otx4clIyO0PxCZ6HesRDb2xM5MYiCLuwnEDmsKXc1ngwAVKWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712176636; c=relaxed/simple;
-	bh=fzyLAkMdkIrE2Q23ti0Q/YYONcNNwXtFsQNshTq6LZk=;
+	s=arc-20240116; t=1712176624; c=relaxed/simple;
+	bh=dP5nBeZ4OmeLq2nUhtY0MOmQkKqwR5I3iMT/iFabJJA=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Es3GiZ58x5N26/a1aiU5zJHC9XsOOmqfMNTcJiP0T8ru2/5b2lD+nNzdeWZifMZoCApeQx5uwZDl3CczdUrW1CKyn+XDwtulfFSk+g8SfQem3vFkaOeHwapyPDv93Z/oxEZUEkVyHc7o0V/r7D0atq8fEDuykbYbisikQz+vvdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=MXQFFmnY; arc=none smtp.client-ip=198.47.19.142
+	 MIME-Version:Content-Type; b=lCM9eCAntf2/CdMfdulSYMJX/oTRFOPjHyGnWZJ/4Z1c78dkPghuRMcYeAGhhjm90eVTDR9zjXrI+GOMdWTrX6sl9oBoUmhw+NyC2EY0IUSWIM4in+oCxWxAUuBmCIj6XmkefU/WmIgEGP6ox+1avLyrYX9pUxRti6ri4KGjlZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=DdVml6XR; arc=none smtp.client-ip=198.47.23.249
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 433Kai2g038561;
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 433Kaijm076347;
 	Wed, 3 Apr 2024 15:36:44 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
 	s=ti-com-17Q1; t=1712176604;
-	bh=jE+XpwhEwJZiBSyUsuAdan5u7cm38Ho/3/4bJnKGkAc=;
+	bh=3f+fWpc6UrtJFAy9Ej0B4JEpcUnkcygsQ6t500zmMgk=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=MXQFFmnY+6FLfB+5fzw+jt1gKUjpj5NXrRlq3AIb+gc36CbadS1UD+6uSUBIr6fGH
-	 ++DGdbblczRFeqRz0lHgbHb0x/y9yTwJrW3OHEy4q0HRcyQb9wLJsKzTG7loLfOg44
-	 nLIP3oknAbYq1P38PaXHhCg5GTMgMIIl/vvwH8fk=
-Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 433KaiFo052164
+	b=DdVml6XRQKSNjlXOZVHM0N3KI6Phiu2dhxAWkBk5kSePYr1afAcfmUBOtYT54m+0y
+	 TCoG63d+FS+ZTWlvyAz/cBvyrYhwGhQef9TzPqoYE3cIE16PvzCLjEKkoCMXDFLx41
+	 l80TgkRshWW4PleI/ihp6oa4x/M+tesuvv/xlGtA=
+Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 433KaiQV000578
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
 	Wed, 3 Apr 2024 15:36:44 -0500
-Received: from DLEE107.ent.ti.com (157.170.170.37) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE112.ent.ti.com
+ (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 3
- Apr 2024 15:36:43 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ Apr 2024 15:36:44 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 3 Apr 2024 15:36:43 -0500
+ Frontend Transport; Wed, 3 Apr 2024 15:36:44 -0500
 Received: from fllvsmtp8.itg.ti.com ([10.249.42.149])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 433KaYGA080324;
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 433KaYGB080324;
 	Wed, 3 Apr 2024 15:36:43 -0500
 From: Andrew Davis <afd@ti.com>
 To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
@@ -61,9 +61,9 @@ To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
 CC: <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         Andrew
  Davis <afd@ti.com>
-Subject: [PATCH 29/31] hwmon: (tmp464) Remove use of i2c_match_id()
-Date: Wed, 3 Apr 2024 15:36:31 -0500
-Message-ID: <20240403203633.914389-30-afd@ti.com>
+Subject: [PATCH 30/31] hwmon: (w83781d) Remove use of i2c_match_id()
+Date: Wed, 3 Apr 2024 15:36:32 -0500
+Message-ID: <20240403203633.914389-31-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403203633.914389-1-afd@ti.com>
 References: <20240403203633.914389-1-afd@ti.com>
@@ -93,25 +93,31 @@ This helper has a couple other benefits:
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/hwmon/tmp464.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/hwmon/w83781d.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/drivers/hwmon/tmp464.c b/drivers/hwmon/tmp464.c
-index f58ca4c6acb6e..3ee1137533d63 100644
---- a/drivers/hwmon/tmp464.c
-+++ b/drivers/hwmon/tmp464.c
-@@ -666,10 +666,7 @@ static int tmp464_probe(struct i2c_client *client)
+diff --git a/drivers/hwmon/w83781d.c b/drivers/hwmon/w83781d.c
+index cba5ec432e6d1..b7957c84d2352 100644
+--- a/drivers/hwmon/w83781d.c
++++ b/drivers/hwmon/w83781d.c
+@@ -1192,8 +1192,6 @@ static void w83781d_remove_files(struct device *dev)
+ 	sysfs_remove_group(&dev->kobj, &w83781d_group_other);
+ }
  
+-static const struct i2c_device_id w83781d_ids[];
+-
+ static int w83781d_probe(struct i2c_client *client)
+ {
+ 	struct device *dev = &client->dev;
+@@ -1208,7 +1206,7 @@ static int w83781d_probe(struct i2c_client *client)
+ 	mutex_init(&data->lock);
  	mutex_init(&data->update_lock);
  
--	if (dev->of_node)
--		data->channels = (int)(unsigned long)of_device_get_match_data(&client->dev);
--	else
--		data->channels = i2c_match_id(tmp464_id, client)->driver_data;
-+	data->channels = (int)(unsigned long)i2c_get_match_data(client);
+-	data->type = i2c_match_id(w83781d_ids, client)->driver_data;
++	data->type = (uintptr_t)i2c_get_match_data(client);
+ 	data->client = client;
  
- 	data->regmap = devm_regmap_init_i2c(client, &tmp464_regmap_config);
- 	if (IS_ERR(data->regmap))
+ 	/* attach secondary i2c lm75-like clients */
 -- 
 2.39.2
 
