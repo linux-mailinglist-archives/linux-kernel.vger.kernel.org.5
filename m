@@ -1,134 +1,118 @@
-Return-Path: <linux-kernel+bounces-130424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CA948977DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:11:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A58478977E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:12:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DD241F21D4E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:11:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57DF9281E21
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:12:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E0E153511;
-	Wed,  3 Apr 2024 18:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD28615358B;
+	Wed,  3 Apr 2024 18:12:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YFP+PyKi"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b="udlbv5Rt"
+Received: from cloudserver094114.home.pl (cloudserver094114.home.pl [79.96.170.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CBF17C98
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 947611534E4;
+	Wed,  3 Apr 2024 18:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.96.170.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712167907; cv=none; b=sVCj0hGPWDFA+UyhWCbCNhPt6CFUHFocU4HWVEeKVrWMxbXZXafQaROfH3taits06IOMHTUTqBWYPq3dapVL4uoYLZKIlDGvWqvuc86gAUlLj2I+5aDzEny+maztZy5XZ7XwPciYOnchqhXl0FLOxYDbvzid76YrDcGrH2rFZsM=
+	t=1712167933; cv=none; b=FZEZHeFQbUj7k0A6o8nBcHfaKnKMSlBA1gMhZTZhIOULnHgWovjCKhTaVdwdBwFJrlmWI31p6POrbxxYClZR6pe5WH1W8Rv8o4VdFiwTMhMmrdJBbSf+hX+BkispEMTS45MxiuLwkGEj9ls86vgxUg0OlK8eGmioQW41zJthVeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712167907; c=relaxed/simple;
-	bh=aZ5mAysNCnvwmuu/IMWuw+Al5q2n+CRYz1OcIPZ+NAA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jLIuB2FSM9z7+MAaKcR2c5HKreFy2To6sKfaRLmcchcnsqlXH8pcSHJr8jLmKdLKUayyvnqS59rZiFcAItyo0yYRgPL87MfSc3yfnNtgQOnq3LHOQcLX+1zV8Z/ajxnhzHiCXVKqYBD+8PeffEXH9b4AyR7wR6cV5+u1s/HNF08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YFP+PyKi; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e74aa08d15so70503b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:11:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712167905; x=1712772705; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9wNqoKw8FaZxTWz4HMAlSRjVC+URzh8zm927c6ywQr4=;
-        b=YFP+PyKiWVRO/F6yd76pt4qHWWcLVQwd3JykoJHfomvSeW1ZL6+KKTeYlC2s19NQfm
-         wmS9SenQ2uvWBaDq2MMoO8glTNYn1IAYuZueiFq0tSt37c9AS2lEjt9lz/f2tfvtcWJV
-         7eRdehT998v/WdfXBLBK5zb5HJOGK0Weod0gMy8ov51/tNa8yTjNrffBFUsr86aeSbMo
-         G31vfYPDqiO+NJUMufw1VN72JWnpzPfxpBCuj8J1f5ZPqgadu6otiPO/L8f3DQGNakMB
-         euRyYeu/4nwnoaW5LzCGyCaLLoNj3p679ad2KX+xeOAvFA+VdvUjmE8GlXDQ47L4ykTz
-         J/qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712167905; x=1712772705;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9wNqoKw8FaZxTWz4HMAlSRjVC+URzh8zm927c6ywQr4=;
-        b=pXxPSWO2dvjHy4GicvVDHsHb1wX91+JmHUGKyc6XKgBlGi59zjE2RuQsvVgRSFCfpv
-         33nn8IVnuaEv8dxT7oduRzn0Qu/OsoZ4NC7n1pBKEzlkc4U7FdSJEWWzDQ+DuLJN8MkY
-         QZZzCq+BFTgwXFQvvzmC3HmvgSupvOCAxxFtgWPim2DjfYvTzF1Yho3XCsZNDr91XrZT
-         RwdgkUcT84ocnN9H3Cd96wdg9KnQYKEQBtGGMItVvZwM4EnNiW0T1Xr+kdW3mtn678ze
-         L7EQTOvq4EKiFaAwyF1/E1QCWfAWECo2JcH/0REGgoGwoU88gTEpSQ2S5sTALZZtNCFM
-         xbSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUiFLXPf3np2qTTHeAHxB1tkOZb2ocu6o34Ro0qIYikpUQ+lLw9Sb3ekhM8PhOzo/UjhZpU9A/MUbOFuUXs7VFDi1A8XkrdrC6me9fb
-X-Gm-Message-State: AOJu0YxO5fPDGdHt3OyzTo8V5NPjPPXbQmap4+zoRDp6PbLyM7I0twK4
-	mEMozx4F5zs1/bFHLMnl74IK33q199bGfJlFtlOxIsJ1maHiYdRe
-X-Google-Smtp-Source: AGHT+IHH8OsExZMIlURZDq/TmQnHeLrzwE5Tgu4BThsGQRIhPvZFnUOtT+RHiYmgFIJomzgYt3dfXA==
-X-Received: by 2002:a05:6a20:a123:b0:1a7:186:bec3 with SMTP id q35-20020a056a20a12300b001a70186bec3mr521873pzk.57.1712167905539;
-        Wed, 03 Apr 2024 11:11:45 -0700 (PDT)
-Received: from ?IPV6:2001:df0:0:200c:cce2:5e6b:f484:1b3f? ([2001:df0:0:200c:cce2:5e6b:f484:1b3f])
-        by smtp.gmail.com with ESMTPSA id b14-20020a170902650e00b001e2936705b4sm1914313plk.243.2024.04.03.11.11.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 11:11:44 -0700 (PDT)
-Message-ID: <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com>
-Date: Thu, 4 Apr 2024 07:11:41 +1300
+	s=arc-20240116; t=1712167933; c=relaxed/simple;
+	bh=fycaxtzLFd7HApnTntQU05w3Bn4wrwYw7izu3q5Vzd8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pEsg2an9kGgBhDpZ7alr587hTtl/SZ4OZSBxTAPbgnN5AvMwNPkphk4wAYcxNYj0f/4Ytk12I+TfZchQ3Fsd9QYMPW2vqpgCTW34llt6TCIOEsPYhwZhh8Q1VG8xmM4zfOj6w3UPU1vtOATWCgRo7DOM6FtcOlRcMcHEaAAEp5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net; spf=pass smtp.mailfrom=rjwysocki.net; dkim=fail (2048-bit key) header.d=rjwysocki.net header.i=@rjwysocki.net header.b=udlbv5Rt reason="signature verification failed"; arc=none smtp.client-ip=79.96.170.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rjwysocki.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjwysocki.net
+Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
+ by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 6.0.0)
+ id 2ecd91c500791d1f; Wed, 3 Apr 2024 20:12:07 +0200
+Received: from kreacher.localnet (unknown [195.136.19.94])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by cloudserver094114.home.pl (Postfix) with ESMTPSA id 2AE67662F36;
+	Wed,  3 Apr 2024 20:12:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rjwysocki.net;
+	s=dkim; t=1712167927;
+	bh=fycaxtzLFd7HApnTntQU05w3Bn4wrwYw7izu3q5Vzd8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=udlbv5Rt7XeSzRzVO4ud4zDbZ5ktxh1uhvc2U4AVF5jCDCpdqTJxSfb84LGr1eQmU
+	 aIe48HycsV1F2P3rHvWnYEHfxfHMD81LECLF4tuOxUN95JM/dTdXLrTN1R+pwId2Og
+	 tcsPk609HpqvYhZYcTCJtNOBTH7+QupE5/VgeMDOkEpz8iR9Mm4a2VVVfpLXE4N9er
+	 usDXA6jHHDHDY64APGyP4EPopbsg+gttv9d9U+KZ0gX9kyxltJ7hcuhAxyESWFbaDb
+	 QXD+se7uPyhNxljeb91Cg5P/ekR4a4yPVPyBbmPTKEs8GQ+yfrS96RicRujtLZcAyi
+	 WWyTc9FvGTMpA==
+From: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To: Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>
+Subject:
+ [PATCH v1 2/2] thermal: gov_step_wise: Simplify checks related to passive
+ trips
+Date: Wed, 03 Apr 2024 20:12:02 +0200
+Message-ID: <2318465.ElGaqSPkdT@kreacher>
+In-Reply-To: <5766468.DvuYhMxLoT@kreacher>
+References: <5766468.DvuYhMxLoT@kreacher>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
-Content-Language: en-US
-To: Niklas Schnelle <schnelle@linux.ibm.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, Arnd Bergmann <arnd@kernel.org>,
- Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org
-References: <20240403122851.38808-1-schnelle@linux.ibm.com>
-From: Michael Schmitz <schmitzmic@gmail.com>
-In-Reply-To: <20240403122851.38808-1-schnelle@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
+X-CLIENT-IP: 195.136.19.94
+X-CLIENT-HOSTNAME: 195.136.19.94
+X-VADE-SPAMSTATE: clean
+X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvledrudefiedgjeekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvfevufffkfgjfhgggfgtsehtufertddttdejnecuhfhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqnecuggftrfgrthhtvghrnhepvdffueeitdfgvddtudegueejtdffteetgeefkeffvdeftddttdeuhfegfedvjefhnecukfhppeduleehrddufeeirdduledrleegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepudelhedrudefiedrudelrdelgedphhgvlhhopehkrhgvrggthhgvrhdrlhhotggrlhhnvghtpdhmrghilhhfrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqedpnhgspghrtghpthhtohepgedprhgtphhtthhopehlihhnuhigqdhpmhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehluhhkrghsiidrlhhusggrsegrrhhmrdgtohhmpdhrtghpthhtohepuggrnhhivghlrdhlvgiitggrnhhosehlihhnrghrohdrohhrgh
+X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
 
-Niklas,
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-how do you propose we handle legacy drivers that do depend on 
-inb()/outb() functions (_not_ actual ISA I/O) on architectures that map 
-inb()/outb() to MMIO functions?
+Make it more clear from the code flow that the passive polling status
+updates only take place for passive trip points.
 
-(In my case, that's at least ne.c - Geert ought to have a better 
-overview what else does use inb()/outb() on m68k)
+No intentional functional impact.
 
-Cheers,
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+---
+ drivers/thermal/gov_step_wise.c |   14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-     Michael
+Index: linux-pm/drivers/thermal/gov_step_wise.c
+===================================================================
+--- linux-pm.orig/drivers/thermal/gov_step_wise.c
++++ linux-pm/drivers/thermal/gov_step_wise.c
+@@ -92,15 +92,13 @@ static void thermal_zone_trip_update(str
+ 		if (instance->initialized && old_target == instance->target)
+ 			continue;
+ 
+-		if (old_target == THERMAL_NO_TARGET &&
+-		    instance->target != THERMAL_NO_TARGET) {
+-			/* Activate a passive thermal instance */
+-			if (trip->type == THERMAL_TRIP_PASSIVE)
++		if (trip->type == THERMAL_TRIP_PASSIVE) {
++			/* If needed, update the status of passive polling. */
++			if (old_target == THERMAL_NO_TARGET &&
++			    instance->target != THERMAL_NO_TARGET)
+ 				tz->passive++;
+-		} else if (old_target != THERMAL_NO_TARGET &&
+-			   instance->target == THERMAL_NO_TARGET) {
+-			/* Deactivate a passive thermal instance */
+-			if (trip->type == THERMAL_TRIP_PASSIVE)
++			else if (old_target != THERMAL_NO_TARGET &&
++				 instance->target == THERMAL_NO_TARGET)
+ 				tz->passive--;
+ 		}
+ 
 
-On 4/04/24 01:28, Niklas Schnelle wrote:
-> Hi Geert,
->
-> This is a follow up in my ongoing effort of making inb()/outb() and
-> similar I/O port accessors compile-time optional. Previously I sent this
-> as a treewide series titled "treewide: Remove I/O port accessors for
-> HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
-> subset of patches merged I've changed over to per-subsystem series. These
-> series are stand alone and should be merged via the relevant tree such
-> that with all subsystems complete we can follow this up with the final
-> patch that will make the I/O port accessors compile-time optional.
->
-> The current state of the full series with changes to the remaining
-> subsystems and the aforementioned final patch can be found for your
-> convenience on my git.kernel.org tree in the has_ioport_v6 branch[1] with
-> signed tags. As for compile-time vs runtime see Linus' reply to my first
-> attempt[2].
->
-> Thanks,
-> Niklas
->
-> [0] https://lore.kernel.org/all/20230522105049.1467313-1-schnelle@linux.ibm.com/
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=has_ioport_v6
-> [2] https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
->
-> Niklas Schnelle (1):
->    m68k: Let GENERIC_IOMAP depend on HAS_IOPORT
->
->   arch/m68k/Kconfig | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
+
+
 
