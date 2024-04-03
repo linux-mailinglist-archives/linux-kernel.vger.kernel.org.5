@@ -1,164 +1,153 @@
-Return-Path: <linux-kernel+bounces-130478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D60648978B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C197D8978CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:07:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 202CFB2144A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:57:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E4C5FB2B5F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:58:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F3B15445F;
-	Wed,  3 Apr 2024 18:57:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6B56154BF1;
+	Wed,  3 Apr 2024 18:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gXgdaxMO"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VVKsuhdq"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8083F15443A;
-	Wed,  3 Apr 2024 18:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A22C15443A
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 18:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712170658; cv=none; b=b4x5SXq8u6/Iy9nsl9EOvAIqinqnvgqQTTPwJsjVUwBGIAyNpXz9wOlE2mti6Ltzagy/amAdrgDuQTEMXdIaAToCTz/SSw17PCUFAvAurS86iR6LwOTTPRdnP/MICuSO5rTECc3pYBNkVipQMLINvXqTiHqVajsMRsSIsfppeZ8=
+	t=1712170675; cv=none; b=nSeNc0Tg+/n/tLuvtBNM75j8WenYzpwvxnTxQdlL6wes0uet0j0sCfIsIIXn5QMLlyCrJDP12XpprVm3EgWLtN58VZNqIJgja9F3XhnvNQs6zAUszjkjFPjgrdKZ6Ov/R0PhXbWMNVSvLlcSQ3Z6J4DN8oTS10oLiSH7ogts3Ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712170658; c=relaxed/simple;
-	bh=Vhjx7KPQnEG8AJd2dyNwYayiNAX+hSP6AO4U0tDlWfc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Nu7HY4WFO8AnsQAJgk2+ydJgCtWm5UkU1hR2yw50BEw2Akp0oVDYU8mUMJc6AwxjOfcCKBDIRmhTFOkydXgR4xE/PL+VSnYzFatYd3FHRWL1DE/0ziJfz/HKo7dD7SB0HgtkMJKPmLxuD+f9YTjwy/+pMdazfojlBfRmhhScIt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gXgdaxMO; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712170657; x=1743706657;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Vhjx7KPQnEG8AJd2dyNwYayiNAX+hSP6AO4U0tDlWfc=;
-  b=gXgdaxMOkZSVKlZ+TJfga02cT5MJ9B5DLlcTwDXBSallbolS4MV8a7GN
-   QytmjE1q2nT0exjisHgj9WKHcZoSXPoV6NwSFJ5jy2Dl0i2U5Dnriw0EJ
-   9xx/9NVi+tBn5CWmV6TnxZInGHUg8q0kGdusugQmINcM3NgPLB+iTvv66
-   +AtD5bfs0sHNeFIqFvCzvAqrc7yh9ACFAcG3+xbquTmc2MT/CdTCO6xbQ
-   cZUsi1SKPLve8XO083EIJjtlYa1UDpYJV07vuHR6I3/6I+owe1+krFbSq
-   ytuhF8bqbAARqcYyI023ohLcA0msRzr0xgcONOBqKIvTN2gaYJGXZFMXT
-   g==;
-X-CSE-ConnectionGUID: 0XwNGbukTciX67zAbY6dYQ==
-X-CSE-MsgGUID: TNSEIC/MQ7SQfRVZ24wGxw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7592974"
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="7592974"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:57:36 -0700
-X-CSE-ConnectionGUID: fOhFYz28SPGDLFMOp8k+Mg==
-X-CSE-MsgGUID: DOzYTKmdSJ2iRVhjRqGnjw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
-   d="scan'208";a="41691414"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:57:35 -0700
-Received: from [10.212.3.167] (kliang2-mobl1.ccr.corp.intel.com [10.212.3.167])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by linux.intel.com (Postfix) with ESMTPS id 9A5B6206DF9A;
-	Wed,  3 Apr 2024 11:57:33 -0700 (PDT)
-Message-ID: <b9868e97-e353-45e0-83b7-aa28bc35dd67@linux.intel.com>
-Date: Wed, 3 Apr 2024 14:57:32 -0400
+	s=arc-20240116; t=1712170675; c=relaxed/simple;
+	bh=VCwseDRS3dH3F4RP475OT1y3yFT5wh4XfK3fMdZed10=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=QThS6H/mYCoVHQBCZiPOrDbuDPEX3NdF19UdCxXhjUumlt/x+yxrtd4wDc1ROuK73/eBuwcygmICKFcvW3Q2P2bMCKipeYECsp+3Y3jg6HW01k+hSWcHdL2c1F9QwXCqdCeX0ri0+8lOZ/yKAgvEXMPlqX/4oyswA1Z9WSF5MU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VVKsuhdq; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6ea80a33cf6so108354b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 11:57:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712170674; x=1712775474; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=j6D4+Csx/H66fuN0gEWyFJ3602T63PEUSY/egYj1Tek=;
+        b=VVKsuhdqjGoiEOE5BIgAYJXQOrSxUsZS7zIf/pgRzdP01SBTSpyVBasfwIuYIrq9Qf
+         hfzY8UXSN14TSDrTNau2BzmmBppNLebg72gUZKmWDCzRh9lYyi+TmAjdW8H/HlLXXy2Z
+         0+Zz9N27W3UYhHt8VduRLWI+S5jtd/6g5Dkn6fL/ScyjOYbY214d5TyRF38yKa7+kmq1
+         4GdJJDg4NpbHj5V6vKEYwPCjX4arwH+U/uy9l8Bzb3Qsd6NmWd+klh7lPjdWWrIDfLGH
+         gks4UH7J/PJQGotHc0PdYAcG5u7dwUpfHJViyX3cBXtBqoaMpnoFuAHn7+ar/ksNG+cH
+         2x1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712170674; x=1712775474;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j6D4+Csx/H66fuN0gEWyFJ3602T63PEUSY/egYj1Tek=;
+        b=Lx0+D1IT50PCK4zqL+OX4MlbUTMD7TRZLafa9fl0+2Ez8Xp8GATATEovg4ueOMwUwo
+         LIPr/dG4dcjkhE5pHLp6WknbXnCNY/yDpT2pKYn4CilhQls/Etumx+Af7cyavL1Mu6Js
+         87zyGyggCi0gsNXWIiRy754U+hF8EHV3gdFl55ylwXoB48g0B4QTWocyFcE3MhbKTOzH
+         +ySEtkJzONrFTnnM00j9N2Qoj2wAXr7CeJFgbXk3A/i7hWLzt1iOwj9Oa9qIpowiXlWR
+         +ajAqB1g33/N5xoYZj7WoCh9XNCLHNaIgS9ANC3ULr1YuXm5s27helUssXP1PhM6EGQH
+         p7Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCVn8dMXvwPmJ5n4hDizYfmTe8c8mgAs9dhFyDx4ZlH9dFLMvkiUn4MYV5LFHWna+Orq4GpRCzsPM3XfNwCC85WhVtkMNAZpHLd8Ijlr
+X-Gm-Message-State: AOJu0Yy4GlROUk5GImDVrzWPyo3yHTgToApGol5O5HKH4OT8qNmT4cRB
+	kDUFcrHim4hTLURyMZ0/LlDET4jr4/yka+ThOAWCgnG+fzLhxSlKX5L/gRv3HKairqC9w2W9K7c
+	G6w==
+X-Google-Smtp-Source: AGHT+IGSfcmG/cgqkT8mk/sOij3zo2TrmnCSUo9i4s8ZEzOAKnvTQcTZ6PJy7nE55fdROYLozfhDSuzqvJM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2e1b:b0:6ea:8a0d:185f with SMTP id
+ fc27-20020a056a002e1b00b006ea8a0d185fmr18248pfb.2.1712170673887; Wed, 03 Apr
+ 2024 11:57:53 -0700 (PDT)
+Date: Wed, 3 Apr 2024 11:57:52 -0700
+In-Reply-To: <2a369e6e229788f66fb2bbf8bc89552d86ba38b9.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] perf metrics: Remove the "No_group" metric group
-To: Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
- Andi Kleen <ak@linux.intel.com>
-References: <20240403164636.3429091-1-irogers@google.com>
- <dcb0121f-611d-4104-80b9-941d535c5fd2@linux.intel.com>
- <CAP-5=fUgiafmLEKEUJ5r5_tK+jqv30P0TGFCMvR8DkW7J4qYsQ@mail.gmail.com>
-Content-Language: en-US
-From: "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <CAP-5=fUgiafmLEKEUJ5r5_tK+jqv30P0TGFCMvR8DkW7J4qYsQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240309012725.1409949-1-seanjc@google.com> <20240309012725.1409949-2-seanjc@google.com>
+ <2a369e6e229788f66fb2bbf8bc89552d86ba38b9.camel@intel.com>
+Message-ID: <Zg2msDI9q_7GcwHk@google.com>
+Subject: Re: [PATCH v6 1/9] x86/cpu: KVM: Add common defines for architectural
+ memory types (PAT, MTRRs, etc.)
+From: Sean Christopherson <seanjc@google.com>
+To: Kai Huang <kai.huang@intel.com>
+Cc: "luto@kernel.org" <luto@kernel.org>, "x86@kernel.org" <x86@kernel.org>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, "peterz@infradead.org" <peterz@infradead.org>, 
+	"bp@alien8.de" <bp@alien8.de>, "mingo@redhat.com" <mingo@redhat.com>, 
+	"tglx@linutronix.de" <tglx@linutronix.de>, "pbonzini@redhat.com" <pbonzini@redhat.com>, Xin3 Li <xin3.li@intel.com>, 
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, Shan Kang <shan.kang@intel.com>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 
-
-
-On 2024-04-03 2:31 p.m., Ian Rogers wrote:
-> On Wed, Apr 3, 2024 at 10:59 AM Liang, Kan <kan.liang@linux.intel.com> wrote:
->>
->>
->>
->> On 2024-04-03 12:46 p.m., Ian Rogers wrote:
->>> Rather than place metrics without a metric group in "No_group" place
->>> them in a a metric group that is their name. Still allow such metrics
->>> to be selected if "No_group" is passed, this change just impacts perf
->>> list.
->>
->> So it looks like the "No_group" is not completely removed.
->> They are just not seen in the perf list, but users can still use it via
->> perf stat -M No_group, right?
->>
->> If so, why we want to remove it from perf list? Where can the end user
->> know which metrics are included in the No_group?
->>
->> If the No_group is useless, why not completely remove it?
+On Wed, Mar 27, 2024, Kai Huang wrote:
+> On Fri, 2024-03-08 at 17:27 -0800, Sean Christopherson wrote:
+> > Add defines for the architectural memory types that can be shoved into
+> > various MSRs and registers, e.g. MTRRs, PAT, VMX capabilities MSRs, EPTPs,
+> > etc.  While most MSRs/registers support only a subset of all memory types,
+> > the values themselves are architectural and identical across all users.
+> > 
+> > Leave the goofy MTRR_TYPE_* definitions as-is since they are in a uapi
+> > header, but add compile-time assertions to connect the dots (and sanity
+> > check that the msr-index.h values didn't get fat-fingered).
+> > 
+> > Keep the VMX_EPTP_MT_* defines so that it's slightly more obvious that the
+> > EPTP holds a single memory type in 3 of its 64 bits; those bits just
+> > happen to be 2:0, i.e. don't need to be shifted.
+> > 
+> > Opportunistically use X86_MEMTYPE_WB instead of an open coded '6' in
+> > setup_vmcs_config().
+> > 
+> > No functional change intended.
+> > 
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > 
 > 
-> Agreed. For command line argument deprecation we usually keep the
-> option but hide it from help with PARSE_OPT_HIDDEN, so I was trying to
-> follow that pattern albeit that a metric group isn't a command line
-> option it's an option to an option.
->
-
-Perf list has a deprecated option to show the deprecated events.
-The "No_group" should be a deprecated metrics group.
-
-If so, to follow the same pattern, I think perf list should still
-display the "No_group" with the --deprecated option at least.
-
-Thanks,
-Kan
-
-> Thanks,
-> Ian
+> [...]
 > 
->> Thanks,
->> Kan
->>
->>>
->>> Signed-off-by: Ian Rogers <irogers@google.com>
->>> ---
->>>  tools/perf/util/metricgroup.c | 4 ++--
->>>  1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
->>> index 79ef6095ab28..6ec083af14a1 100644
->>> --- a/tools/perf/util/metricgroup.c
->>> +++ b/tools/perf/util/metricgroup.c
->>> @@ -455,7 +455,7 @@ static int metricgroup__add_to_mep_groups(const struct pmu_metric *pm,
->>>       const char *g;
->>>       char *omg, *mg;
->>>
->>> -     mg = strdup(pm->metric_group ?: "No_group");
->>> +     mg = strdup(pm->metric_group ?: pm->metric_name);
->>>       if (!mg)
->>>               return -ENOMEM;
->>>       omg = mg;
->>> @@ -466,7 +466,7 @@ static int metricgroup__add_to_mep_groups(const struct pmu_metric *pm,
->>>               if (strlen(g))
->>>                       me = mep_lookup(groups, g, pm->metric_name);
->>>               else
->>> -                     me = mep_lookup(groups, "No_group", pm->metric_name);
->>> +                     me = mep_lookup(groups, pm->metric_name, pm->metric_name);
->>>
->>>               if (me) {
->>>                       me->metric_desc = pm->desc;
+> >  
+> >  #include "mtrr.h"
+> >  
+> > +static_assert(X86_MEMTYPE_UC == MTRR_TYPE_UNCACHABLE);
+> > +static_assert(X86_MEMTYPE_WC == MTRR_TYPE_WRCOMB);
+> > +static_assert(X86_MEMTYPE_WT == MTRR_TYPE_WRTHROUGH);
+> > +static_assert(X86_MEMTYPE_WP == MTRR_TYPE_WRPROT);
+> > +static_assert(X86_MEMTYPE_WB == MTRR_TYPE_WRBACK);
+> > +
+> > 
+> 
+> Hi Sean,
+> 
+> IIUC, the purpose of this patch is for the kernel to use X86_MEMTYPE_xx, which
+> are architectural values, where applicable?
+
+Maybe?  Probably?
+
+> Yeah we need to keep MTRR_TYPE_xx in the uapi header, but in the kernel, should
+> we change all places that use MTRR_TYPE_xx to X86_MEMTYPE_xx?  The
+> static_assert()s above have guaranteed the two are the same, so there's nothing
+> wrong for the kernel to use X86_MEMTYPE_xx instead.
+> 
+> Both PAT_xx and VMX_BASIC_MEM_TYPE_xx to X86_MEMTYPE_xx, it seems a little bit
+> odd if we don't switch for MTRR_TYPE_xx.
+> 
+> However by simple search MEM_TYPE_xx are intensively used in many files, so...
+
+Yeah, I definitely don't want to do it in this series due to the amount of churn
+that would be required.
+
+  $ git grep MTRR_TYPE_ | wc -l
+  100
+
+I'm not even entirely convinced that it would be a net positive.  Much of the KVM
+usage that's being cleaned up is flat out wrong, e.g. using "MTRR" enums in places
+that having nothing to do with MTRRs.  But the majority of the remaining usage is
+in MTRR code, i.e. isn't wrong, and is arguably better off using the MTRR specific
+#defines.
 
