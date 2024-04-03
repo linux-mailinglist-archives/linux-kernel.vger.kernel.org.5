@@ -1,131 +1,140 @@
-Return-Path: <linux-kernel+bounces-130681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130682-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B1DC897B99
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B52FC897B9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:24:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C9E71C272AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:24:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6EA91C27515
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:24:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ED9B156985;
-	Wed,  3 Apr 2024 22:24:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26373156C40;
+	Wed,  3 Apr 2024 22:24:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iEzK0h73";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="F+/te/Q4"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vjP/yYrv"
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17797156966;
-	Wed,  3 Apr 2024 22:24:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A944A156979
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 22:24:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712183064; cv=none; b=eRaScGEeOZb4e/ECK8H3xRAzE7jEMpGL4RDeddqINBnXiTrMs8HgV0j5Vz/h8SIuTn2W60g/cmTcQXvU0J+Awm4HCa88FZJrl1U7VcBCxeP4uOy11MJqUJM3lFWuh4zeFGK2Rm/x72OsaKt43ORrZRdXqr0vDgDGyUiBmvZKfJY=
+	t=1712183073; cv=none; b=kU16TGd3lSFUv0ku7ubCx+xXWWmXlr13Ypeu8KuykpgBYlT2fjfIcaX00uP7/5NZ1zZK9OnudFlB/xwXW/QQndLhh7kuwkEkrDc90lKTblAmMGrmVPOz9YjA4ZtKCOdUdDnbLZ/cNehTpi63mgY6mmX9O3jaUzpxgpo9lIQgUwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712183064; c=relaxed/simple;
-	bh=TEp7+Qiyo82s+1tiadbpVHFDh224LahtR7+iS2DB1/4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=aZ/JzQYfLJmnFfVD+ktTZoHsnQLsIjYXEcK3KUpcw2gvrODLgaclLP5K+lTeUuLRh0qmUj0W5mIWiIpduPFFYdQkVBszjyjKcQD+QCBvb5CKq0ugs/RORvlsPIntpsoghmzVNYVvjtue+xGyhCgLCF/ep60uNMmuKmrESaxi2RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iEzK0h73; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=F+/te/Q4; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712183060;
+	s=arc-20240116; t=1712183073; c=relaxed/simple;
+	bh=LNCSPovg0Yr0f5AT+54kFFxIj5VkH82mvFV2YH+a9nE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gfaAOXO+gQJQm/okErLLYhotHW/sVC4V9lkzeu6fJh6hXQIyGQ1ZN93qlFsjwUTdjUcTLk4MvKncVXCCus17wgTZdlcQAs7/2WUUVy2yMTn8ymTyd0BFtI5rSVZjO+pniix97Qljs5ogHjsceHGjtDiALkINPrK6++CaMUDTVQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vjP/yYrv; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 3 Apr 2024 18:24:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712183069;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=c3YFPvNQqpuZ+J4wj70XcY9sGKlu8GfBq1D4XGyQln4=;
-	b=iEzK0h73bJZnELeHznNtxplvE+IZX5vy9DG5U104MYJjcdtkjpByoyiqR1I2myvBSrgG3g
-	TOT3WPqydtip+Ib+cTgo373q5zZiBH1nOFcm9P6PQRd6R/CdriImzB9FBPBdTX0KgPQUf8
-	RCfA9v67fZPqU20NVULL7ioeoKqV7f9MK0zrwJKpTD0NIcPezUmsDxanW/NWWiuW0WZJNU
-	Hq7LxfA3LcdX2t0D4EWDyOQVtbidlsyvpVrNk8K23w+/VCeHH9yjC+YMkiqY2ckL4B94UW
-	EI+eKyzrNcF49QyvojPUcAMkDwu8bY+6ZhDd8LFZ1+PXAjMjiqhJ+0+Ka0PuqQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712183060;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=c3YFPvNQqpuZ+J4wj70XcY9sGKlu8GfBq1D4XGyQln4=;
-	b=F+/te/Q4J9hwYmJ2XOE5oHMCodz5CX1FL7lExc7xTFaQmhwzYWPIjNGTS2B9ivLXz2lvd9
-	/K68co45wZidz1BA==
-To: John Stultz <jstultz@google.com>
-Cc: Oleg Nesterov <oleg@redhat.com>, Marco Elver <elver@google.com>, Peter
- Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, "Eric W.
- Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
- kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>, Carlos Llamas
- <cmllamas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
- current thread
-In-Reply-To: <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
-References: <87sf02bgez.ffs@tglx> <87r0fmbe65.ffs@tglx>
- <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
- <87o7aqb6uw.ffs@tglx>
- <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
-Date: Thu, 04 Apr 2024 00:24:19 +0200
-Message-ID: <87frw2axv0.ffs@tglx>
+	bh=m2bIqvAswIgDrceINf7iI+jp9YVPIpyS4ScRls8ALPo=;
+	b=vjP/yYrvtF19e9GfRt/XiqymxaisEEbkdtyuuCJTe5x3Tzrxf7uToW6LSjpKH1aM+fIeK0
+	P9E8Bz3M+ETRXVDhyGNKvROLYhHwrlU+63KTdjYO4b8Kviblvao04uSo5uDEb+Xz95wKRS
+	QhWTv+BTLyRzNRskMf78GaGa3slcvU8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	akpm@linux-foundation.org, willy@infradead.org, bfoster@redhat.com, dsterba@suse.com, 
+	mjguzik@gmail.com, dhowells@redhat.com, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] Improve visibility of writeback
+Message-ID: <zsuqucmnc2yp52e3nijfe42rsel2jw73fom3bl5exkk5324ctq@getfgchn6ppr>
+References: <n2znv2ioy62rrrzz4nl2x7x5uighuxf2fgozhpfdkj6ialdiqe@a3mnfez7mitl>
+ <ZgXJH9XQNqda7fpz@slm.duckdns.org>
+ <wgec7wbhdn7ilvwddcalkbgxzjutp6h7dgfrijzffb64pwpksz@e6tqcybzfu2f>
+ <ZgXPZ1uJSUCF79Ef@slm.duckdns.org>
+ <qv3vv6355aw5fkzw5yvuwlnyceypcsfl5kkcrvlipxwfl3nuyg@7cqwaqpxn64t>
+ <ZgXXKaZlmOWC-3mn@slm.duckdns.org>
+ <20240403162716.icjbicvtbleiymjy@quack3>
+ <Zg2jdcochRXNdDZX@slm.duckdns.org>
+ <qemects2mglzjdig7y5uufhoqdhoccwlrwrtfhe4jy6gbadj6n@dnnbzymtxpyj>
+ <Zg2sQTIDom21q4i9@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg2sQTIDom21q4i9@slm.duckdns.org>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Apr 03 2024 at 12:35, John Stultz wrote:
-> On Wed, Apr 3, 2024 at 12:10=E2=80=AFPM Thomas Gleixner <tglx@linutronix.=
-de> wrote:
->>
->> On Wed, Apr 03 2024 at 11:16, John Stultz wrote:
->> > On Wed, Apr 3, 2024 at 9:32=E2=80=AFAM Thomas Gleixner <tglx@linutroni=
-xde> wrote:
->> > Thanks for this, Thomas!
->> >
->> > Just FYI: testing with 6.1, the test no longer hangs, but I don't see
->> > the SKIP behavior. It just fails:
->> > not ok 6 check signal distribution
->> > # Totals: pass:5 fail:1 xfail:0 xpass:0 skip:0 error:0
->> >
->> > I've not had time yet to dig into what's going on, but let me know if
->> > you need any further details.
->>
->> That's weird. I ran it on my laptop with 6.1.y ...
->>
->> What kind of machine is that?
->
-> I was running it in a VM.
->
-> Interestingly with 64cpus it sometimes will do the skip behavior, but
-> with 4 cpus it seems to always fail.
+On Wed, Apr 03, 2024 at 09:21:37AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Wed, Apr 03, 2024 at 03:06:56PM -0400, Kent Overstreet wrote:
+> ...
+> > That's how it should be if you just make a point of making your internal
+> > state easy to view and introspect, but when I'm debugging issues that
+> > run into the wider block layer, or memory reclaim, we often hit a wall.
+> 
+> Try drgn:
+> 
+>   https://drgn.readthedocs.io/en/latest/
+> 
+> I've been adding drgn scripts under tools/ directory for introspection.
+> They're easy to write, deploy and ask users to run.
 
-Duh, yes. The problem is that any thread might grab the signal as it is
-process wide.
+Which is still inferior to simply writing to_text() functions for all
+your objects and exposing them under sysfs/debugfs.
 
-What was I thinking? Not much obviously.
+Plus, it's a whole new language/system for boths devs and users to
+learn.
 
-The distribution mechanism is only targeting the wakeup at signal
-queuing time and therefore avoids the wakeup of idle tasks. But it does
-not guarantee that the signal is evenly distributed to the threads on
-actual signal delivery.
+And having to_text() functions makes your log and error messages way
+better.
 
-Even with the change to stop the worker threads when they got a signal
-it's not guaranteed that the last worker will actually get one within
-the timeout simply because the main thread can win the race to collect
-the signal every time. I just managed to make the patched test fail in
-one out of 100 runs.
+"But what about code size/overhead?" - bullshit, we're talking about a
+couple percent of .text for the code itself; we blow more memory on
+permament dentries/inodes due to the way our virtual filesystems work
+but that's more of a problem for tracefs.
 
-IOW, we cannot test this reliably at all with the current approach.
+> > Writeback throttling was buggy for _months_, no visibility or
+> > introspection or concerns for debugging, and that's a small chunk of
+> > code. io_uring - had to disable it. I _still_ have people bringing
+> > issues to me that are clearly memory reclaim related but I don't have
+> > the tools.
+> > 
+> > It's not like any of this code exports much in the way of useful
+> > tracepoints either, but tracepoints often just aren't what you want;
+> > what you want just to be able to see internal state (_without_ having to
+> > use a debugger, because that's completely impractical outside highly
+> > controlled environments) - and tracing is also never the first thing you
+> > want to reach for when you have a user asking you "hey, this thing went
+> > wonky, what's it doing?" - tracing automatically turns it into a multi
+> > step process of decide what you want to look at, run the workload more
+> > to collect data, iterate.
+> > 
+> > Think more about "what would make code easier to debug" and less about
+> > "how do I shove this round peg through the square tracing/BPF slot".
+> > There's _way_ more we could be doing that would just make our lives
+> > easier.
+> 
+> Maybe it'd help classifying visibility into the the following categories:
+> 
+> 1. Current state introspection.
+> 2. Dynamic behavior tracing.
+> 3. Accumluative behavior profiling.
+> 
+> drgn is great for #1. Tracing and BPF stuff is great for #2 especially when
+> things get complicated. #3 is the trickest. Static stuff is useful in a lot
+> of cases but BPF can also be useful in other cases.
+> 
+> I agree that it's all about using the right tool for the problem.
 
-I'll think about it tomorrow again with brain awake.
-
-Thanks,
-
-        tglx
-
+Yeah, and you guys are all about the nerdiest and most overengineered
+tools and ignoring the basics. Get the simple stuff right, /then/ if
+there's stuff you still can't do, that's when you start looking at the
+more complicated stuff.
 
