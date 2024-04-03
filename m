@@ -1,95 +1,138 @@
-Return-Path: <linux-kernel+bounces-128971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128972-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C3B489626E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:19:47 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DED2D89626F
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:20:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3DB77B260C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:19:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62C57B2668A
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CEF01946B;
-	Wed,  3 Apr 2024 02:18:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ldzThvtW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E4F1BDCF;
+	Wed,  3 Apr 2024 02:18:58 +0000 (UTC)
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E19B259C;
-	Wed,  3 Apr 2024 02:18:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A96259C
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 02:18:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712110725; cv=none; b=QhmFOPoTaoEMs+ArM4DC+P1HsemRkxSh4TuH6JPOiGvzIOJ9jZ3ELPGfXUleEO2zumaPfJnxPTJk9KdtOPldyw6+4L4FdldKorqpgr4McsWJewevaK0pcnTFYyN7vn+SynvxKiGMRrYAN2VPZGoQhG5Rqk7e4hWBNP0qPl7dYzQ=
+	t=1712110738; cv=none; b=sKtsZ46eiJNxnVM0T6lRvfX9ZXmGyfDTo8NiqVzkYoeqrazUAEt61mC4+dEw+/Np++DuDz75Sj2tgiDgLdI1tWYs5E38CdMPYgB14Cg1UkjibEo6/ZpsVfxjG7qRTLKsDpPojdSZT1wHohkshzTDf1+lLlv2xDH/aCP2gRGYqzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712110725; c=relaxed/simple;
-	bh=R9fYilqkrq8iygPPfkADp53ieAs4A1QmT22VdM+Kzx0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NdI8dlEBE0c3Drazw3K7CQqyw9X+BEK7fS175bgNll5L/lv5baDOuYi6ASltyf8dE6IQkyiGnavtJ8PgH7NR9sH/ZQFLIjNifOhM05MwBSXbrUiu2q5GeUDmgzBk9NYUVa44795TEZp50pL8cS+cOXP3zs8zHdLJrC0I0inONuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ldzThvtW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46777C433F1;
-	Wed,  3 Apr 2024 02:18:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712110724;
-	bh=R9fYilqkrq8iygPPfkADp53ieAs4A1QmT22VdM+Kzx0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ldzThvtWNA0erTrSs7uhEuDgTYSgBfZOqKybUyWm1XIYfMZAfKiWR42lAFxRNy/Bv
-	 BvQn/gzakiVqrug9ujsyKqUbp6QZxK1ovb6Nq7+ZLf+Bj0rxRln51+iRYcNV6iY8fz
-	 o7mZHaszxC5zhBo+mYDxHB40nE5Qz6bGV+4n/aR3E9AMTmrc5WLqAknrShG8wyJ+t0
-	 nAW//8QRJECBqoAVa1dpfVuq7GKCPckzMgTVSxK5xbM6Kk+q+9ZH6kZ0GmOBN7xAPN
-	 zDOHPyA+IRksao/mg0dD/CuKqo7LmuEHSu40ukRA+FBmNVfh4xp1E1SNgoMd98l5Cq
-	 mTlHPTSY51drA==
-Date: Tue, 2 Apr 2024 19:18:42 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Rahul Rameshbabu <rrameshbabu@nvidia.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, ahmed.zaki@intel.com,
- aleksander.lobakin@intel.com, alexandre.torgue@foss.st.com, andrew@lunn.ch,
- cjubran@nvidia.com, corbet@lwn.net, davem@davemloft.net,
- dtatulea@nvidia.com, edumazet@google.com, gal@nvidia.com,
- hkallweit1@gmail.com, jacob.e.keller@intel.com, jiri@resnulli.us,
- joabreu@synopsys.com, justinstitt@google.com, kory.maincent@bootlin.com,
- leon@kernel.org, liuhangbin@gmail.com, maxime.chevallier@bootlin.com,
- pabeni@redhat.com, paul.greenwalt@intel.com, przemyslaw.kitszel@intel.com,
- rdunlap@infradead.org, richardcochran@gmail.com, saeed@kernel.org,
- tariqt@nvidia.com, vadim.fedorenko@linux.dev, vladimir.oltean@nxp.com,
- wojciech.drewek@intel.com
-Subject: Re: [PATCH net-next v1 1/6] ethtool: add interface to read Tx
- hardware timestamping statistics
-Message-ID: <20240402191842.66decfd3@kernel.org>
-In-Reply-To: <20240402205223.137565-2-rrameshbabu@nvidia.com>
-References: <20240402205223.137565-1-rrameshbabu@nvidia.com>
-	<20240402205223.137565-2-rrameshbabu@nvidia.com>
+	s=arc-20240116; t=1712110738; c=relaxed/simple;
+	bh=ZtJ8MsCekNct6K4g9NJkRMimMGXvkYx0wXfrkVCFWB4=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=AdQKzDq9gMYbfdOtTmVivSxmsnt+sN+NgrhBq5D+9F5zw7ToAvQYaRyAcHzEUvjz6NjFKxyKEEFWpKSYBJE65ZvYtPkRdTax1AeE4IiH/atOEjAIfClIHRCl5FoxOPm02sGq2E1I7WMHHg4SfRf3w9BzK5Y3Lg8rzjB5Nxhdv/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V8SzC0fgTz29lVs;
+	Wed,  3 Apr 2024 10:16:07 +0800 (CST)
+Received: from kwepemd500014.china.huawei.com (unknown [7.221.188.63])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7D72A18001A;
+	Wed,  3 Apr 2024 10:18:52 +0800 (CST)
+Received: from [10.67.146.137] (10.67.146.137) by
+ kwepemd500014.china.huawei.com (7.221.188.63) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Wed, 3 Apr 2024 10:18:51 +0800
+Subject: Re: [PATCH] irqchip/gic-v3-its: Don't need VSYNC if VMAPP with {V,
+ Alloc}=={0, x}
+To: Marc Zyngier <maz@kernel.org>
+CC: <tglx@linutronix.de>, <linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <guoyang2@huawei.com>,
+	<wangwudi@hisilicon.com>
+References: <20240402114147.3788881-1-tangnianyao@huawei.com>
+ <86jzlgt014.wl-maz@kernel.org>
+ <8532b19b-361e-2234-92db-83f4d56bae19@huawei.com>
+ <86il0zubh1.wl-maz@kernel.org>
+From: Tangnianyao <tangnianyao@huawei.com>
+Message-ID: <cc7a6d40-7fdc-196e-56bc-fe8a15ea29bb@huawei.com>
+Date: Wed, 3 Apr 2024 10:18:51 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <86il0zubh1.wl-maz@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemd500014.china.huawei.com (7.221.188.63)
 
-On Tue,  2 Apr 2024 13:52:01 -0700 Rahul Rameshbabu wrote:
-> +/**
-> + * struct ethtool_ts_stats - HW timestamping statistics
-> + * @tx_stats: struct group for TX HW timestamping
-> + *	@pkts: Number of packets successfully timestamped by the hardware.
-> + *	@lost: Number of hardware timestamping requests where the timestamping
-> + *		information from the hardware never arrived for submission with
-> + *		the skb.
-> + *	@err: Number of arbitrary timestamp generation error events that the
-> + *		hardware encountered, exclusive of @lost statistics. Cases such
-> + *		as resource exhaustion, unavailability, firmware errors, and
-> + *		detected illogical timestamp values not submitted with the skb
-> + *		are inclusive to this counter.
-> + */
-> +struct ethtool_ts_stats {
-> +	struct_group(tx_stats,
 
-Doesn't seem like the group should be documented:
 
-include/linux/ethtool.h:503: warning: Excess struct member 'tx_stats' description in 'ethtool_ts_stats'
--- 
-pw-bot: cr
+On 4/2/2024 21:43, Marc Zyngier wrote:
+> On Tue, 02 Apr 2024 14:32:40 +0100,
+> Tangnianyao <tangnianyao@huawei.com> wrote:
+>>
+>>
+>> On 4/2/2024 20:35, Marc Zyngier wrote:
+>>> On Tue, 02 Apr 2024 12:41:47 +0100,
+>>> t00849498 <tangnianyao@huawei.com> wrote:
+>>>> From GIC spec, a VMAPP with {V, Alloc}=={0, x} is self-synchronizing,
+>>> It'd be nice to quote the part of the spec (5.3.19).
+>> yes, that's quote from GIC spec.
+>>>> This means the ITS command queue does not show the command as
+>>>> consumed until all of its effects are completed. A VSYNC with unmapped
+>>>> vpeid is not needed.
+>>>>
+>>>> Signed-off-by: t00849498 <tangnianyao@huawei.com>
+>>> Previous contributions with the same email address had the name
+>>> "Nianyao Tang" associated with it. Was it wrong in the past? Or is the
+>>> above wrong?
+>> Sorry, the above name is wrong, should be "Nianyao Tang".
+>>>> ---
+>>>>  drivers/irqchip/irq-gic-v3-its.c | 4 ++++
+>>>>  1 file changed, 4 insertions(+)
+>>>>
+>>>> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
+>>>> index fca888b36680..a0ca5dcbb245 100644
+>>>> --- a/drivers/irqchip/irq-gic-v3-its.c
+>>>> +++ b/drivers/irqchip/irq-gic-v3-its.c
+>>>> @@ -789,6 +789,7 @@ static struct its_vpe *its_build_vmapp_cmd(struct its_node *its,
+>>>>  	unsigned long vpt_addr, vconf_addr;
+>>>>  	u64 target;
+>>>>  	bool alloc;
+>>>> +	bool unmap_v4_1 = !desc->its_vmapp_cmd.valid && is_v4_1(its);
+>>>>
+>>>>  	its_encode_cmd(cmd, GITS_CMD_VMAPP);
+>>>>  	its_encode_vpeid(cmd, desc->its_vmapp_cmd.vpe->vpe_id);
+>>>> @@ -832,6 +833,9 @@ static struct its_vpe *its_build_vmapp_cmd(struct its_node *its,
+>>>>  out:
+>>>>  	its_fixup_cmd(cmd);
+>>>>  
+>>>> +	if (unmap_v4_1)
+>>>> +		return NULL;
+>>>> +
+>>>>  	return valid_vpe(its, desc->its_vmapp_cmd.vpe);
+>>>>  }
+>>>>  
+>>> This is a bit ugly. We already have a whole block dedicated to
+>>> handling VMAPP with V=0 and GICv4.1, and it'd be more readable to keep
+>>> all that code together. Something like the untested patch below.
+>> Thank you for quick fix, it would be great to remove this VSYNC. ITS handling VSYNC unmap
+>> vpeid may waste some time, trigger exception and needed to be
+>> handled.
+> Do you actually see an exception being delivered from this?
+>
+> In any case, feel free to respin the patch after having tested this
+> diff, with the commit message fixed and a Fixes: tag attached to it.
+
+In our developing implemenation, ITS would report RAS when doing vsync
+and reaching an invalid vpe table entry. It is reasonable to report RAS, right?
+
+It just reports, and kernel can still run normally regardless of this RAS message.
+
+> Thanks,
+>
+> 	M.
+>
+
 
