@@ -1,180 +1,217 @@
-Return-Path: <linux-kernel+bounces-129318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3214D896886
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:27:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8B08896884
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:26:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC3B7288E13
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:27:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 628FE1F2278C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:26:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2722482C7E;
-	Wed,  3 Apr 2024 08:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="NBfq62dN";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="D+DBodeQ"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA8C7442A;
+	Wed,  3 Apr 2024 08:18:51 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ADDF6E61A;
-	Wed,  3 Apr 2024 08:18:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.154.123
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712132331; cv=fail; b=oinCNZ8l3jKds0wKhInPQy4YZiCW4kks3GzL8+GAJzFkAGaDR2YGvkBM5P1MsPoHOQ7KZ55/y8Vqe/RZaQ2wXMgSitX/uvhdgb8Bxa75kFhyAVy+2XAUE/7hvInxsBDyx2fWDjT8qX2fRVDuR8ubiGnlj7f8rkbm30S+VHEQRy0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712132331; c=relaxed/simple;
-	bh=0Trynd9mJs74I/ywF7sAAIEEMEiIHgFmYgiA6qpRF/Q=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=jRKITzJpOuG4WMcfWhMfy9Utyf/6h9qN6p0oWK6BNUDS5dVRgpLZZVdWSz1LfTpM96GJnPflbNGEXgUjdvJXUubx1WiFIPIp5/k7bV1rjwEr+o0/4tDhtYZyViw171veu8lIffPujOXJVLe+sj+h5NTxbjA5qVKX/OeocTM9b+g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=NBfq62dN; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=D+DBodeQ; arc=fail smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712132329; x=1743668329;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=0Trynd9mJs74I/ywF7sAAIEEMEiIHgFmYgiA6qpRF/Q=;
-  b=NBfq62dN07aKwV8imXam9PFf/7CWub8+pZ6h6XVKfqZIpc5qF0f+YwvZ
-   Zbd4WPhlNImy/mNocSXaxMYKYzrhc1JYfqfDth8hPBg9XcRagez/rgWo1
-   4XCZwW9loxU1NJBr2w+XCGtYhQI+griuGcTc+ml+JrgylrCTHkEBnKDQ4
-   p9qkN/iIt9xKPhMNywTArGvxnpJnr9PzICJN3ACjdk7I6EfJv6f3+jiNs
-   +8Fp8OChdLomBsAy8JQv0Xw213bt1S1kwGCqVUS3ChNXzWV20OtSfWJBD
-   v/uJGLdWElG4iv2Hmml3fSuKzmhuW9HdnyfHMLBnMBkyFCo3WbHtLb7Eh
-   A==;
-X-CSE-ConnectionGUID: SIp9bB4jSKKC2HOhRTloxg==
-X-CSE-MsgGUID: oai5IO5KSMyrlQwFYd8xjw==
-X-IronPort-AV: E=Sophos;i="6.07,176,1708412400"; 
-   d="scan'208";a="19795189"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 Apr 2024 01:18:42 -0700
-Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Apr 2024 01:18:14 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 3 Apr 2024 01:18:14 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KGPN6/j4yGMeAj8osxGc/Y06zJEmyIyAJ6CkIegE+Yb2oCVXGAO1fdM4VWWkj7OVzKHm6Xg/YbuPO9AsquYd7i1BTlo9Q+7Udg8RTqPjY9YpGNVD9kaM2zA1g7BN8Wt9k8f4fFXMlCwvdf+LzIMa6o27dCAFXvDF2K3w87SrLKspMcfK9k+2VhUkiFqPM30j8Br1XiZbCK3t8jAlwDjsb6LSkNVSURrNB5n/SqRDowBr3i+TV7b7EnTXuOLDnPEpuI2x0RQjTzNTYekiSvdGrnO08D3L+Qhp2JBtUdPghDcNNYkX/PnDkA85mkY3UbeBHVxtPDec8U8TyCqT3N1a9g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=0Trynd9mJs74I/ywF7sAAIEEMEiIHgFmYgiA6qpRF/Q=;
- b=QRN6ggsXNV+jJIqw91B+/JccuCYzwH3Txa9wJoEVgkhpEBJ83Y6mW3uYFsN5WgCx65xfBj9MBPLVir6tj2lbpTbvRUIrYXzlECBAV5ZTh+t70/5VTMMLzWHZSr6uN1NwvJkiRqQ7YrzXCsfSdOFuW4XYmWKePkpFp6EiStaOy6NW8foLJMhR17iOV6ZL9F9R43u9zwL5cRivzq3chSXaBUrcE6Jvvc7dWAIrJdAD9wbJtzGJijPNwYJht2oJIlwYtkRCwyu41TytarwHkp0IuBQY9YC6LGnT0b+Qf5IwwuWsbuhvzVRdiTvSTD0w/P2APGAak/oy6uxkhV+APL1cBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0Trynd9mJs74I/ywF7sAAIEEMEiIHgFmYgiA6qpRF/Q=;
- b=D+DBodeQrVcUSXTfyPGgznPNxy+qL/xeKcDAY7C3Wf2bpFzMQA+m5D1Xhmq0/IID+GsXLLYBX2OqDI9Ks41kjDvri1iJDA9hMamAmNArHWBIm6QJXu0tWnpuJ0m8QqIBi4kMPuIJWx2I26w3ZpRvrRXBLfL8IEMDJyXYcgzWCzRAoLoRXr/ETHbpSyORWSZh7FO3kl4eKfzr5UTD45+MLcxmuzXvvQIENCfc6adjTtUFfAehat6Ut5bmQvBpkCx5uUfKk0hrvF+1MoubEZsH1gJHGyVsSJstcFb5+3OtzipsjD3jkH72EASKnYxa5Khn4zyt+X4KAEM6tYN3qLoFxg==
-Received: from SA3PR11MB8047.namprd11.prod.outlook.com (2603:10b6:806:2fc::22)
- by SJ2PR11MB8565.namprd11.prod.outlook.com (2603:10b6:a03:56b::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.25; Wed, 3 Apr
- 2024 08:18:12 +0000
-Received: from SA3PR11MB8047.namprd11.prod.outlook.com
- ([fe80::9409:3a27:4eb7:404d]) by SA3PR11MB8047.namprd11.prod.outlook.com
- ([fe80::9409:3a27:4eb7:404d%7]) with mapi id 15.20.7409.031; Wed, 3 Apr 2024
- 08:18:12 +0000
-From: <Arun.Ramadoss@microchip.com>
-To: <andrew@lunn.ch>, <olteanv@gmail.com>, <davem@davemloft.net>,
-	<Woojung.Huh@microchip.com>, <pabeni@redhat.com>, <o.rempel@pengutronix.de>,
-	<edumazet@google.com>, <f.fainelli@gmail.com>, <kuba@kernel.org>
-CC: <kernel@pengutronix.de>, <san@skov.dk>, <linux-kernel@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <UNGLinuxDriver@microchip.com>
-Subject: Re: [PATCH net-next v1 8/8] net: dsa: microchip:
- ksz8_r_dyn_mac_table(): use entries variable to signal 0 entries
-Thread-Topic: [PATCH net-next v1 8/8] net: dsa: microchip:
- ksz8_r_dyn_mac_table(): use entries variable to signal 0 entries
-Thread-Index: AQHahP+ioFLJkj0MaEGmEDGDIxBUPrFWNVAA
-Date: Wed, 3 Apr 2024 08:18:12 +0000
-Message-ID: <5b0ae3ab4522f889798498ba8272abfa78b717dd.camel@microchip.com>
-References: <20240402131339.1525330-1-o.rempel@pengutronix.de>
-	 <20240402131339.1525330-9-o.rempel@pengutronix.de>
-In-Reply-To: <20240402131339.1525330-9-o.rempel@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Evolution 3.36.5-0ubuntu1 
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SA3PR11MB8047:EE_|SJ2PR11MB8565:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /+m4Xiey+8JfcxqnmgQCnJeLBpsw9frb1bNBkIcmC0oxvnbKEjtyMQkHp1cF6nQS30Lsk9OEDBJppJCljHokLvCS53PmpBN1lVhopmQHA8kqV13fpokKz0wxXYfXQQiWGk1heKoudQjgXL8XSr4Rzb7XTMasDJedgo41mv7NOu3Fi1pA9+bOGuvQKv2kng5gY9DJkxXRPRAUMTkC1au5EySFjuSVpjLwaFSfdbCI5kr1NFrXiwJ3uYCgpN1Ml0MWMfq2c7nqRuztoE7GNqri5AANFjtbKVRgXvQE5dLnOPTFRKOuxUl1Ac77kHPlZJKgP2SM5dLrBwQEgrjFsBgYzewzTDYg8Jv4LUrQgiN51bpPc7lC7o2BrsIBeez1GopaqCbLYs/T7ZCGUcZJsSbF4/SMjrNHyJXgeV+5/ASF/S3l5zw7dYrS4hZkHc4weFv4EwJ1bjuJn9rr2aUVL0qDNlM9GASQaKhFQ0YpGwDayobkX+matr5fpv0Hzw1/lOQQkDmtc/MAq/KwFhQHSOd2QilCOJ3pD2elpcPRywwLbtJra1wWLEE611/6R4bGl6tJb2RkDZ4fbSnW9YNxkXqa9mS9rnbN1DI+SS8rP5Ib8wKYcFAPb52qrp0ayToifKZNAzZqysQJhidkbFFxhLIfggAhG6FQfkrFQ1mdUuy5F2E=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA3PR11MB8047.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(7416005)(1800799015);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eGNGK1JkOWd0eVdxWkt3YWJXOHFMelorb28wUEhkWmdHZ2U2YnhheWJZbUQz?=
- =?utf-8?B?TFIvUkJHQkh4cDdOeW9Pdk50R3RDamMxVVFTZkYxRklRS0ZoTGV5aEcrdytZ?=
- =?utf-8?B?Yk5iNFpkNmFhbUQ0VmhIbTJia1BjYzZuOTdjTnhRRDg2NEFSbVRaUUxLbHd4?=
- =?utf-8?B?b2hERDM4dWRWRGZHdVBIUWdPVE5ibk13RWFnaHoyOWlBMnVkMm9RcHJ6UWxF?=
- =?utf-8?B?eVVOY1hNcDlUUzEwZ00vTm1zNEdWOTdEKzFUM3A0UUlqUkxQcHoxYjFmVlBE?=
- =?utf-8?B?b2l3ckJRdHlsd3RKVmZtSHlwNVhGcmhzRHYyZTV6cGxDL2IyMk11d0NUK1JI?=
- =?utf-8?B?Ym5CS2QreXNBVTc2bDVrRGp5S0hyUFRHVHEwdFNJS0tRcm5MbXR4U3pWaWUy?=
- =?utf-8?B?bnpyNHNYcXJLWG1zaWRLY0kybU5taTlxRU55VGx0cUFrWlA3Snk3djJuMk1D?=
- =?utf-8?B?VDc3M1dGbis5OWhyWEZobXlOR2t2UHFTampnK0V3K28xa25qQ3dTWkFRRkNs?=
- =?utf-8?B?bTZmSndNRmU1aXY3NFFBNDQ0cDJDNHVzalB1UVNhZXk1Sms2TlkzR2RaSzU1?=
- =?utf-8?B?SzkrVDR1RGx5MWNjQUpWZTAwYWxYVGJlQjN3eHZ2dTQ5aWhSTWdDYmtpbWdK?=
- =?utf-8?B?alB5Z0pyM213UnpJT0tvdmorTFFLVHdVWmF4cmJ2TERReVpqTmxBUWlPcGhY?=
- =?utf-8?B?NmlVejd0di9RNUd1L3pKblgrMGtpaGJvQlZFeDA2VmRkdW9xMDUvUkl4cU1L?=
- =?utf-8?B?d1BTbEIvbUdUSTZxQ3dOSVJCaFZHMTZ1a0JXbnpuZWpaRzJTZmUzMXlidEcx?=
- =?utf-8?B?Mkt2VFVSNDh2RnZQcVRLKzQ2TWFxditZcFg2emFCRGp0TkRzd1g1TCtMcVVT?=
- =?utf-8?B?dUlzWjkwdERxZTVETHJldjlic1JQYmw1UmM2S0VscFFZRldEbVhyb29EQzRz?=
- =?utf-8?B?MTFiZjIvZmhIUWJLcGxhY1RmTzFqVm9XQlJVMkdBYWFLMjg2NkJVNWNpZ252?=
- =?utf-8?B?bitaaTg1M2MxcnJ2elIrQlFNYlU3aWY1YkI1Y3ZpMkgrdVhqVG43SmpwT0Ja?=
- =?utf-8?B?d1B5NEFRL0JORVZkVWNFQWQrNDZsdWxBTTVwUUlKSUFNeTJ5R3NpSis5VjVI?=
- =?utf-8?B?aDRlV3VDd2I5c0dncDRPMGk2T1NQKzJVbXpNNGVLdU9yTTdLZmRRR2ZPR0sr?=
- =?utf-8?B?bDlzQ3FSSDRGZm5BVU1hSkR4YldkSDQyUml4RnNiK2V0anJYRU9CdzlodFpG?=
- =?utf-8?B?ODRORWNhK2Zrd0loSjFDbDhqYm12aSt3cHgydzdiWm5mUkNyTlN1a2tYS2ti?=
- =?utf-8?B?cVdnNmlJcTRaU3JyVFBOejdjTTlBaVptZWo0bjJ2TEVyQ0ZkeVBiTzBVa3Yz?=
- =?utf-8?B?MlZnUTJ4QXVnb0gwdDlLL0FicmxOa1g4TmlidlVaSFozNHQyOGxTdUNpRU5v?=
- =?utf-8?B?Q3M1d1pwR2pEME1nbW1PekM5NGdwR2FiVjZpSEMzZ01CM1NOK1NuNjBqRUdq?=
- =?utf-8?B?a3MwRlQ2b3lNWGl5Q2xTSVBPUnhtNWM3a1pEZHVmSHhMc3pkY0F4TEc4TjI1?=
- =?utf-8?B?QmtOL3pJU1RCR3dFSEdWaVJmaGQ0dFc1Wjdob1dpQ3dhNnJHclZRTE01UlhU?=
- =?utf-8?B?Nk9iUGxhVG94UldFbmo0bU9jMVVqdjZmWGZnL3M1N2czK2ZaMUZxUTFBMmNh?=
- =?utf-8?B?bmVkNUNDQzc1UEVMRUhTQkhSOE1ZaERiZWIrT2pzN3BBOWEwU0w3Wk5QK2N6?=
- =?utf-8?B?Q0dadDlueCtxZlNhQU1FYXpXRFlFMURScW5kYkFKWnhWMTlFa1QxRG8yZ3N5?=
- =?utf-8?B?YnJtUDJPazFETSsyaUdHZ09FSXhLNXB2eW5hR2VYT09GWnJmV0F4VCtzR2ZJ?=
- =?utf-8?B?MXkzS0hIYWE0bnJCc2piZzJKNFU3bnRzYzFocG1TNGh0Q29xOFkzUjV4bUhy?=
- =?utf-8?B?bW1Oam1QTkEwUVFNeGZlUWs0dzF5Z3ZXbU9GT245bVZnd2lvUjBPZklHdzFW?=
- =?utf-8?B?cFNxcG0xQ243OFZvYlVMYXJhVGZqNCs1a3RpbW8xSlRtNEhFVmZCSmlaZU8r?=
- =?utf-8?B?OFBpR2lRaFpKOExUWG5aSjdwcFVOYWtEbE1tVGlMV2tyYXlNOEIxdG9tVGJy?=
- =?utf-8?B?UXVzbUZNU3RkZmZVenBqWGNKTllReUtDS1hTTGU5ZmRudXlURGNuYWphU0NX?=
- =?utf-8?Q?3T6bmFKiljbBdc5Gour9Evk=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7FB4D59B39E0154D884B6641B56EC04B@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159EA6BB2F
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:18:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712132330; cv=none; b=EleJLLEAg1Sx7rF0W9KRsT9x7iVp9OrxQF86pS/KRqfBNS67JVSVh7srLiK1sfjoYVOP4VgGSir+KpfHVoLbk2TrSSB31WVHPmc0hPn1aC2QHxqYB35pHneP2ANrtt0AOTt2an+RPPHFifouGhm059juCtQDxPQv7EFgHyl3/HY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712132330; c=relaxed/simple;
+	bh=LHMKNwipL5y/ze/oXu72nsM/oT8i12x7vNUYNMYtPUc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=OCkm+sifgcyxyNt/070H/V++tZZsLoGHkccT0mpMjyNexSjrSjHhR2GhmiTkOFPBrH2nT1HpsJtYH27c0eYdLJAgDpZsZ18Fc/l66K5lbHeGZUxNDuqFF/R4x98WpiyKhSU9FSE0t7kfE6ergSjur6ATnABINX3Zdazr9LiqoXk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rrvpP-0006HX-8w; Wed, 03 Apr 2024 10:18:39 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rrvpO-00A8kA-BN; Wed, 03 Apr 2024 10:18:38 +0200
+Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
+	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rrvpO-008gNm-0w;
+	Wed, 03 Apr 2024 10:18:38 +0200
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Date: Wed, 03 Apr 2024 10:18:27 +0200
+Subject: [PATCH v2] ARM: dts: imx27-phytec: Add USB support
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SA3PR11MB8047.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d3c0799d-d6c1-4031-2121-08dc53b69abd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Apr 2024 08:18:12.4918
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 0iR8VTaD18Eyr1DsW4L8mEYvexQ2FwhywIXR2x9iGQlM2fWxDTcT7jzXv295AH/wdy4tAjc+gA89LI4BZJnsPVIKWpIUR8+TvqM7DtUkWaI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB8565
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240328-pca100-v2-1-d7ff1679f75b@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIANIQDWYC/2WNywqDMBBFf0Vm3ZRJfKVd9T+KixhHHZAoiYpF8
+ u9N3XZ5DpdzTwjkmQI8sxM87Rx4dgnULQM7GjeQ4C4xKFQF5kqLxRqJKEyFaGyR64JqSOPWBBK
+ tN86Oae62aUpy8dTzcdXfTeKRwzr7z3W2y5/96+5SSFHqrq9qq+yjxNdCbthWPzs+7h1BE2P8A
+ uz6M6i2AAAA
+To: Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>
+Cc: devicetree@vger.kernel.org, imx@lists.linux.dev, 
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ Michael Grzeschik <m.grzeschik@pengutronix.de>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3522;
+ i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
+ bh=LHMKNwipL5y/ze/oXu72nsM/oT8i12x7vNUYNMYtPUc=;
+ b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBmDRDZzMhmunN9ug9rzy06HHj5WPF6gun35cFy1
+ KLMS6DkzUSJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZg0Q2QAKCRC/aVhE+XH0
+ q92LD/0WTMs+v39Y4IJL6d/wevTebFY46OnfupWCUeJz0nIlp0toCyPkERXJAGh2apomolp4SCV
+ +RShO18zsICBs/1hqpMFo71aW7d4syZrR6nZLX5GgGxzlGZS/c5kOzbxqtVGeuZg0wCCEY47l0f
+ Ps30Bu7IzssQ/Tov6cp/VPgDrL8MVzLnrXwZqfsefjsp/474p1UeP6tDgA+VR0v/8hCGWCmV11c
+ Xu4wL6WCVjqBfc/mvYupRQq1ujfH8LESAPjMNVWS3hL4jaLBTjUYJbEE/1vXMs5nn4F5qbZ1FEa
+ Ie+s2nNy14CjMgU5/U6Sqd3kScj7aGaIJ/qiyEWePZVKTgWTNhr7stuucQi8ctd55ukErRkGzhE
+ 4ZeHMo6K7ee8eIQwkoEGrkwnVUYrXFHwZkmD9qlDdy/Mg24OmSKm+g5WRsJdMLzSNBUqAROCa5q
+ dzQdg5JYrSprMQbmlLLJV+eRJKuke9TaFNGYbUNzVvd8LvoyqBypWvHRQyNtZ8fXZfA1rN6bA/g
+ LireZNOJcrSiesQnM+C/teQIcXMs5DmVjuhy8Cz+WV9GQvz/2c8iAwcMiEmlhr/naXne5v/JaEg
+ Uw/MG8WBa7Te0LWmpXHtU37RuAx9JhrzBhCB8hnwo/QxK3DGAtCysBF7Z1ilBUBinpFbrRwF3+h
+ ALhat8wtk+lkUYw==
+X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
+ fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDI0LTA0LTAyIGF0IDE1OjEzICswMjAwLCBPbGVrc2lqIFJlbXBlbCB3cm90ZToN
-Cj4gRVhURVJOQUwgRU1BSUw6IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRz
-IHVubGVzcyB5b3UNCj4ga25vdyB0aGUgY29udGVudCBpcyBzYWZlDQo+IA0KPiBXZSBhbHJlYWR5
-IGhhdmUgYSB2YXJpYWJsZSB0byBwcm92aWRlIG51bWJlciBvZiBlbnRyaWVzLiBTbyB1c2UgaXQs
-DQo+IGluc3RlYWQgb2YgdXNpbmcgZXJyb3IgbnVtYmVyLg0KPiANCj4gU2lnbmVkLW9mZi1ieTog
-T2xla3NpaiBSZW1wZWwgPG8ucmVtcGVsQHBlbmd1dHJvbml4LmRlPg0KDQpBY2tlZC1ieTogQXJ1
-biBSYW1hZG9zcyA8YXJ1bi5yYW1hZG9zc0BtaWNyb2NoaXAuY29tPg0KDQoNCg==
+This patch adds the pinmux and nodes for usbotg and usbh2.
+
+In v6 revision of the pca100 the usb phys were changed to usb3320 which
+are connected by their reset pins. We add the phy configuration to the
+description.
+
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+---
+Changes in v2:
+- changed prefix to "ARM: dts: imx27-phytec:"
+- Link to v1: https://lore.kernel.org/r/20240328-pca100-v1-1-58df67c2c950@pengutronix.de
+---
+ .../dts/nxp/imx/imx27-phytec-phycard-s-som.dtsi    | 78 ++++++++++++++++++++++
+ 1 file changed, 78 insertions(+)
+
+diff --git a/arch/arm/boot/dts/nxp/imx/imx27-phytec-phycard-s-som.dtsi b/arch/arm/boot/dts/nxp/imx/imx27-phytec-phycard-s-som.dtsi
+index abc9233c5a1b1..31b3fc972abbf 100644
+--- a/arch/arm/boot/dts/nxp/imx/imx27-phytec-phycard-s-som.dtsi
++++ b/arch/arm/boot/dts/nxp/imx/imx27-phytec-phycard-s-som.dtsi
+@@ -15,6 +15,22 @@ memory@a0000000 {
+ 		device_type = "memory";
+ 		reg = <0xa0000000 0x08000000>; /* 128MB */
+ 	};
++
++	usbotgphy: usbotgphy {
++		compatible = "usb-nop-xceiv";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_usbotgphy>;
++		reset-gpios = <&gpio2 25 GPIO_ACTIVE_LOW>;
++		#phy-cells = <0>;
++	};
++
++	usbh2phy: usbh2phy {
++		compatible = "usb-nop-xceiv";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_usbh2phy>;
++		reset-gpios = <&gpio2 22 GPIO_ACTIVE_LOW>;
++		#phy-cells = <0>;
++	};
+ };
+ 
+ &cspi1 {
+@@ -84,6 +100,52 @@ MX27_PAD_NFRE_B__NFRE_B 0x0
+ 				MX27_PAD_NFWE_B__NFWE_B 0x0
+ 			>;
+ 		};
++
++		pinctrl_usbotgphy: usbotgphygrp {
++			fsl,pins = <
++				MX27_PAD_USBH1_RCV__GPIO2_25		0x1 /* reset gpio */
++			>;
++		};
++
++		pinctrl_usbotg: usbotggrp {
++			fsl,pins = <
++				MX27_PAD_USBOTG_CLK__USBOTG_CLK		0x0
++				MX27_PAD_USBOTG_DIR__USBOTG_DIR		0x0
++				MX27_PAD_USBOTG_NXT__USBOTG_NXT		0x0
++				MX27_PAD_USBOTG_STP__USBOTG_STP		0x0
++				MX27_PAD_USBOTG_DATA0__USBOTG_DATA0	0x0
++				MX27_PAD_USBOTG_DATA1__USBOTG_DATA1	0x0
++				MX27_PAD_USBOTG_DATA2__USBOTG_DATA2	0x0
++				MX27_PAD_USBOTG_DATA3__USBOTG_DATA3	0x0
++				MX27_PAD_USBOTG_DATA4__USBOTG_DATA4	0x0
++				MX27_PAD_USBOTG_DATA5__USBOTG_DATA5	0x0
++				MX27_PAD_USBOTG_DATA6__USBOTG_DATA6	0x0
++				MX27_PAD_USBOTG_DATA7__USBOTG_DATA7	0x0
++			>;
++		};
++
++		pinctrl_usbh2phy: usbh2phygrp {
++			fsl,pins = <
++				MX27_PAD_USBH1_SUSP__GPIO2_22		0x0 /* reset gpio */
++			>;
++		};
++
++		pinctrl_usbh2: usbh2grp {
++			fsl,pins = <
++				MX27_PAD_USBH2_CLK__USBH2_CLK		0x0
++				MX27_PAD_USBH2_DIR__USBH2_DIR		0x0
++				MX27_PAD_USBH2_NXT__USBH2_NXT		0x0
++				MX27_PAD_USBH2_STP__USBH2_STP		0x0
++				MX27_PAD_CSPI2_SCLK__USBH2_DATA0	0x0
++				MX27_PAD_CSPI2_MOSI__USBH2_DATA1	0x0
++				MX27_PAD_CSPI2_MISO__USBH2_DATA2	0x0
++				MX27_PAD_CSPI2_SS1__USBH2_DATA3		0x0
++				MX27_PAD_CSPI2_SS2__USBH2_DATA4		0x0
++				MX27_PAD_CSPI1_SS2__USBH2_DATA5		0x0
++				MX27_PAD_CSPI2_SS0__USBH2_DATA6		0x0
++				MX27_PAD_USBH2_DATA7__USBH2_DATA7	0x0
++			>;
++		};
+ 	};
+ };
+ 
+@@ -95,3 +157,19 @@ &nfc {
+ 	nand-on-flash-bbt;
+ 	status = "okay";
+ };
++
++&usbotg {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbotg>;
++	phy_type = "ulpi";
++	phys = <&usbotgphy>;
++	status = "okay";
++};
++
++&usbh2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&pinctrl_usbh2>;
++	phy_type = "ulpi";
++	phys = <&usbh2phy>;
++	status = "okay";
++};
+
+---
+base-commit: 5bab5dc780c9ed0c69fc2f828015532acf4a7848
+change-id: 20240328-pca100-a600ac4384e7
+
+Best regards,
+-- 
+Michael Grzeschik <m.grzeschik@pengutronix.de>
+
 
