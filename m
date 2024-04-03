@@ -1,183 +1,148 @@
-Return-Path: <linux-kernel+bounces-129894-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54A618971BE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:56:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E91C8971CC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:58:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 779B41C21DD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:56:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1623A1F233A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 704D0148FE1;
-	Wed,  3 Apr 2024 13:55:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40807148FE4;
+	Wed,  3 Apr 2024 13:58:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="wkw66bYO"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gSFdrCeD"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF685148831
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:55:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23BAB14830F
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152556; cv=none; b=Z8khwI2BPtJkRBNorLMAbukfmvGnXs0r40SWAOBPsgn3Wd3pTgcMIBUS/gsd+u2w8qbdxFIxi6Psai6wRlRopPuT34aOrrsL9sSSuL63yR6rMme0kO9ZnJL/azy5NuEZVBNnm4Csl+H2LQ1v4lqrm4ZLk7PlvFJwMpjYlff7nQ8=
+	t=1712152725; cv=none; b=RHRbIptK4J7x4MqEyO3rMxAUJEHQsMYZpoZDqLvu7A5GE4nx+ekVxekHyKeMuKqOma078UH0bbJQkfDACbvpxv+rpC/rLFGlC0jQFX4NwmenrdfHJwqlEOY/umRX7ZZvL+W50m0eKNA1426uy6oOK8VlLnWRH81kJspSh8hgACM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152556; c=relaxed/simple;
-	bh=7yWRlWMYx4niS5QUoLw79toH4Ih7mDATgLXdfTdbOec=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qnzSMOBlhC70h1GwiUOtFkO8gjsJ8sqkRFlKE1L6TqUtQ4w8eqoA1pn6rwf20cZDTtgVr6m/a4VwveEa8j359NUI3/75rXGSFdhocRypeOFCGyGjELDwkNB8QIEVYBNWO+LEISADX0nelO4lxRfq19bqy+7r1KrvQheOod468W4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=wkw66bYO; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e0e1d162bso341001a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 06:55:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712152553; x=1712757353; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=IeDVjxJ3sAqTv13/aXHF66O8awP4FQ/ZTnlb/hTWU6s=;
-        b=wkw66bYOTRUwo5rMRud8EcAqv2ZiM7emIF2Jbk7Gy6GiaJjy3PS3XkrBmkyCjZ+hWi
-         nQL1LobjioK2Wqq8JImtCcv0E+kB2ARXglV6Lu/EvyKi1KngsV9oTcOSCRv7qVTPXCWR
-         KUngSEud1kupF9D1RoNqMnGXIRWmBsTpCxadZ/NcmUEqr63Ym+ZnelT4FnMA3/6XdtHa
-         NbYwr25ynm4zp1TirO+cdWxOYRSWEPOpp3pOZCbO1ueF2dRx7kG3kbbmLL/DhqlKcD46
-         PI+G6mJJ34x+gbwSt4d11oRN4AEamkoOLQm/8wLmz4VOpoI5/AOt+dQQTr4JJdg8fOYO
-         vVPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712152553; x=1712757353;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IeDVjxJ3sAqTv13/aXHF66O8awP4FQ/ZTnlb/hTWU6s=;
-        b=ts60CtaWxTSD0Hiy76CR6368Tqn4NToM4dgHb3A4+qDP/sSrFuhsOUq/2xei91r98a
-         be5ncqcV3pQGAX0ve8aUbU0GQm+1awcG8LsKV+ivq8IISkQ1oZY/25oH4Ebw3eILBbIG
-         gAAGBd5Smwe9CxUTMg4HUIytTicjnPy2wEsQckTfpOJ3TzEWdpC29/8fNSZjj1/xjiYG
-         HDs5essJzmSaIHpxMk9e8zyojyj5SZN2sm3RRs3/12UKR57MUHJOXOKS38ax9Lx28svX
-         KiNe1mYjUnFUypyQBadlD5Ym5mPGN2B0fD0OjATArkRPh5bteJ6Jmx/9KwN7zg66zWxu
-         sR6w==
-X-Forwarded-Encrypted: i=1; AJvYcCW6C7nM7QwddX1eZ/hLGbbXUKGor4P7x9dQiA1Mc1DFhFGrZEC6c5O2oDD9y4aIY34KIE/s102xHPwlOxgO2GUg6W7i34xSmBEOYnRu
-X-Gm-Message-State: AOJu0YwZEwqAgTQOhrxDME2QpVW+lBjziUP23TXFRE6AbdO6LFoa73nA
-	5/gy/7fQX23yS0bI2KTXIi5arU32DPrSoCGlC5auNfvhaLrzQ6Cu2vyajfHZLBc=
-X-Google-Smtp-Source: AGHT+IH9+C9juSmV/GBuPYaqohGOY4cGhVgCt2H6EcxLrUYmesOKvHEB93iuGOIysgmB4m7ArBHZ6w==
-X-Received: by 2002:a50:d596:0:b0:566:47ee:b8b4 with SMTP id v22-20020a50d596000000b0056647eeb8b4mr1682778edi.17.1712152553328;
-        Wed, 03 Apr 2024 06:55:53 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id s2-20020aa7cb02000000b0056c0d96e099sm7963516edt.89.2024.04.03.06.55.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 06:55:52 -0700 (PDT)
-Message-ID: <ec9c76dc-81c3-448c-86c3-8b4cb07c89c5@linaro.org>
-Date: Wed, 3 Apr 2024 15:55:51 +0200
+	s=arc-20240116; t=1712152725; c=relaxed/simple;
+	bh=SJSDM1jLJy1+bnkJOfwF5OrMRSMvyL4/cFh8OpRtlao=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RvRXVgE3rVU6H6f53kSo84qOgMILqv+4zMQyxbsywgBaZCsoX3zGbJf8ZkPeZswtSREZGbeSSuzvxpFZhM5RDwNBDs84LYf+I9V3pqZGerRc7FMERyngtFuzOCvmp25s4r/VR6/F0P9qyaVS9VeodMXbwFhBLTxU6o51A5tTW1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gSFdrCeD; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712152722;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SJSDM1jLJy1+bnkJOfwF5OrMRSMvyL4/cFh8OpRtlao=;
+	b=gSFdrCeDPZkb+DS0M20A6QSsp6gR+nA9j5i4RtPDEhVieBHlmybdv3ORmELLTPebgQkPsA
+	QU2Ixan901/eklDwxv1wDuwbwWwbDiZLKvLvri6IHStnLP2q2L2xzxS+wrM28FwgCsHUMA
+	ErkPAPkNpSCN27uuuaZMOlLhSjsUnyo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-16-814WLSUpN9-gkiUa8lOX-g-1; Wed, 03 Apr 2024 09:58:40 -0400
+X-MC-Unique: 814WLSUpN9-gkiUa8lOX-g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 77AF8879844;
+	Wed,  3 Apr 2024 13:58:39 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.49])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 07B5B40C6CB5;
+	Wed,  3 Apr 2024 13:58:35 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Wed,  3 Apr 2024 15:57:15 +0200 (CEST)
+Date: Wed, 3 Apr 2024 15:56:51 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org
+Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
+ probe
+Message-ID: <20240403135650.GA31764@redhat.com>
+References: <20240402093302.2416467-1-jolsa@kernel.org>
+ <20240402093302.2416467-2-jolsa@kernel.org>
+ <20240403100708.233575a8ac2a5bac2192d180@kernel.org>
+ <Zg0lvUIB4WdRUGw_@krava>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] wifi: ath10k: sdio: simplify module initialization
-To: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Jeff Johnson <jjohnson@kernel.org>,
- Brian Norris <briannorris@chromium.org>,
- Ajay Singh <ajay.kathat@microchip.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, linux-wireless@vger.kernel.org,
- ath10k@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240329171019.63836-1-krzysztof.kozlowski@linaro.org>
- <f78fa061-3b34-47d2-a40c-bbec744f0f97@quicinc.com>
- <87jzle5zda.fsf@kernel.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <87jzle5zda.fsf@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg0lvUIB4WdRUGw_@krava>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On 03/04/2024 15:50, Kalle Valo wrote:
-> Jeff Johnson <quic_jjohnson@quicinc.com> writes:
-> 
->> On 3/29/2024 10:10 AM, Krzysztof Kozlowski wrote:
->>> This driver's initialization functions do not perform any custom code,
->>> except printing messages.  Printing messages on modules
->>> loading/unloading is discouraged because it pollutes the dmesg
->>> regardless whether user actually has this device.  Core kernel code
->>> already gives tools to investigate whether module was loaded or not.
->>>
->>> Drop the printing messages which allows to replace open-coded
->>> module_sdio_driver().
->>>
->>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>
->> Acked-by: Jeff Johnson <quic_jjohnson@quicinc.com>
->>
->>>
->>> ---
->>>
->>> FYI:
->>> I have ongoing patchset touching few lines above this patch chunk
->>> (sdio_driver) which might go via different tree. If that patchset is
->>> applied via different tree, it might result in a trivial conflict, but
->>> there is no dependency. They can go via separate trees (except that
->>> trivial conflict).
->>
->> I'll let Kalle respond if he'll take this through the ath tree vs letting you
->> take it through your tree
-> 
-> I prefer to avoid conflicts as much as possible. In this patchset I'm
-> not anticipating any conflicts with wireless trees, so if we can avoid
-> any conflicts, please take this patchset via the other tree:
-> 
-> Acked-by: Kalle Valo <kvalo@kernel.org>
-> 
-> I'll drop this patchset from my queue. But if I should take these to
-> wireless trees instead just let me know.
+I leave this to you and Masami, but...
 
-OK, let me squeeze both through sdio, with corrected subjects.
+On 04/03, Jiri Olsa wrote:
+>
+> On Wed, Apr 03, 2024 at 10:07:08AM +0900, Masami Hiramatsu wrote:
+> >
+> > This is interesting approach. But I doubt we need to add additional
+> > syscall just for this purpose. Can't we use another syscall or ioctl?
+>
+> so the plan is to optimize entry uprobe in a similar way and given
+> the syscall is not a scarce resource I wanted to add another syscall
+> for that one as well
+>
+> tbh I'm not sure sure which syscall or ioctl to reuse for this, it's
+> possible to do that, the trampoline will just have to save one or
+> more additional registers, but adding new syscall seems cleaner to me
 
-Best regards,
-Krzysztof
+Agreed.
+
+> > Also, we should run syzkaller on this syscall. And if uretprobe is
+>
+> right, I'll check on syzkaller
+
+I don't understand this concern...
+
+> > set in the user function, what happen if the user function directly
+> > calls this syscall? (maybe it consumes shadow stack?)
+>
+> the process should receive SIGILL if there's no pending uretprobe for
+> the current task,
+
+Yes,
+
+> or it will trigger uretprobe if there's one pending
+
+.. and corrupt the caller. So what?
+
+> but we could limit the syscall to be executed just from the trampoline,
+> that should prevent all the user space use cases, I'll do that in next
+> version and add more tests for that
+
+Yes, we can... well, ignoring the race with mremap() from another thread.
+
+But why should we care?
+
+Userspace should not call sys_uretprobe(). Likewise, it should not call
+sys_restart_syscall(). Likewise, it should not jump to xol_area.
+
+Of course, userspace (especially syzkaller) _can_ do this. So what?
+
+I think the only thing we need to ensure is that the "malicious" task
+which calls sys_uretprobe() can only harm itself, nothing more.
+
+No?
+
+Oleg.
 
 
