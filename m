@@ -1,111 +1,127 @@
-Return-Path: <linux-kernel+bounces-129645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129646-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54D28896DBB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:10:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67738896DBE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:11:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85B3C1C25CA2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:10:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2381628B291
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:11:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79C9F1411F8;
-	Wed,  3 Apr 2024 11:10:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p8OpL00w"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B74057317F;
-	Wed,  3 Apr 2024 11:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FC4E1411FD;
+	Wed,  3 Apr 2024 11:11:10 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF0C135A5F;
+	Wed,  3 Apr 2024 11:11:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712142646; cv=none; b=Ilnii5JTbp4IZEAwYdEKXL40jP6+pXFyY5JeUEJvlv0jaQR++3r+J7qfRtlIwM9GzJDj/xu3+jUeDVXyHxUskaslcsZbUvVC6IxBYHSMDHS0n974k+A+e5IZtB8dcgHXBHEwfFxprLDkYP8+nZ1Q6Z5gS5CQS4YCsPJMKkMHytU=
+	t=1712142669; cv=none; b=jjpxzGTGllgvs5ohmNJV7uvZ/u47ABW1LlN4DoHUBH3ASZz1NJaZ6mLJx/y8E3B0N1wd8R5eX9HF1NKRsAmXzzHvjQGHbFsRssEv8AtwCdjgefzgwFJecU+3nxsWS9/d2bNLQux8nt+dVNBnXbIUFR6XCfdUDWG9ibB+pxiRn6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712142646; c=relaxed/simple;
-	bh=yemH83Y1IBRrxs46KNsj+mhkx+dw4Xz7CPBdGbd26JA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fv8kHGhfZH1yG5LILSiyZ5D3Q+EBd9mt6IH1Pi7aORjc8B6Qb+nsSChQEaRoVIcV4jEIlgddoQagp6jc2+ssZPONrwcEdQknL5S4bYRO6LvkDufp+sHOLBJ3Zf+hfi4cdIfSYMD/V0Bj6fcrHIbfgicrZW+C9jK8Si/9QGPiOAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p8OpL00w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EF05CC433F1;
-	Wed,  3 Apr 2024 11:10:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712142646;
-	bh=yemH83Y1IBRrxs46KNsj+mhkx+dw4Xz7CPBdGbd26JA=;
-	h=From:To:Cc:Subject:Date:From;
-	b=p8OpL00wcZVyQKOBcHjcsrO2JtE29/xzGT0Gm/uzql1T88/EYGguTdJTo4G+RluYH
-	 4PJ3QF4DDjlmPalPT9IFnXWYuk8bEmWM0AXG3wzvWJGLeabh7IlGUxYFHdG+H/HVIn
-	 ng39qgroZoJ62mm7YlyhKTfC4NGLh0qy2OAJ1dhZI4muA4LhpG11rWrjdL+njYfDMo
-	 1M4oWR2oLmk+v4PW5MvlFCOQCbNFnBbuvQqYuaQUnZioz5HzbvQtiBd/ElkRQZdNyO
-	 Y1Mes2KzffMbvkeR/I2dKYRHgCDeCkEmadaNLkA7zk1eWRNf5Z5tmaNVK9Q/XpuMp4
-	 l1HG00ANDz4jg==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Sudeep Holla <sudeep.holla@arm.com>,
-	Cristian Marussi <cristian.marussi@arm.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Nikunj Kela <quic_nkela@quicinc.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] firmware: arm_scmi: Avoid non-constant printk format strings
-Date: Wed,  3 Apr 2024 13:10:24 +0200
-Message-Id: <20240403111040.3924658-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712142669; c=relaxed/simple;
+	bh=4opd2k4sbfLMWscrK+GbvLjqo3mlUG1uBclog3IJ87M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FzoJt6xVj6Mn5jrzCzsKImNvVUmyzwuBVdEFBYdFKI3fCOJBgituvMMZL5QynwZ9OBGAQe7X3+0kWntJjhhgYeGzBNyfT3+JEgrYO2QTBvFq1RKdUhZgh+vYgfwXwOwVxd+0sZKIj31TFqK0zSbFRf8K8MlYFaht/n+rF5+18hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95C4A1595;
+	Wed,  3 Apr 2024 04:11:38 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.16.212])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 874A53F64C;
+	Wed,  3 Apr 2024 04:11:05 -0700 (PDT)
+Date: Wed, 3 Apr 2024 12:10:57 +0100
+From: Mark Rutland <mark.rutland@arm.com>
+To: Dawei Li <dawei.li@shingroup.cn>
+Cc: will@kernel.org, xueshuai@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+	yangyicong@hisilicon.com, jonathan.cameron@huawei.com,
+	andersson@kernel.org, konrad.dybcio@linaro.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH 0/9] perf: Avoid explicit cpumask var allocation from
+ stack
+Message-ID: <Zg05QZKkI9nsN0pO@FVFF77S0Q05N>
+References: <20240402105610.1695644-1-dawei.li@shingroup.cn>
+ <ZgvoMunpbaE-x3jV@FVFF77S0Q05N>
+ <190FE91C35AB9AE8+ZgwKuORh3VzTkfeJ@centos8>
+ <ZgwZL679Tc1S3AxH@FVFF77S0Q05N>
+ <6D6795E4D37BB843+Zg0yU8SCf+sMNYqp@centos8>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6D6795E4D37BB843+Zg0yU8SCf+sMNYqp@centos8>
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Wed, Apr 03, 2024 at 06:41:23PM +0800, Dawei Li wrote:
+> On Tue, Apr 02, 2024 at 03:41:51PM +0100, Mark Rutland wrote:
+> > Looking at this case, the only reason we need the mask is because it made the
+> > logic a little easier to write. All we really want is to choose some CPU in the
+> > intersection of two masks ignoring a specific CPU, and there was no helper
+> > function to do that.
+> > 
+> > We can add a new helper to do that for us, which would avoid redundant work to
+> > manipulate the entire mask, and it would make the existing code simpler.  I had
+> > a series a few years back to add cpumask_any_and_but():
+> > 
+> >   https://lore.kernel.org/lkml/1486381132-5610-1-git-send-email-mark.rutland@arm.com/
+> 
+> Sounds a perfect idea!
+> 
+> Actually I am re-implementing new series on top of your seven-years-late-yet-still-helpful
+> patch, with minor update on it:
+> 
+> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+> index 1c29947db848..121f3ac757ff 100644
+> --- a/include/linux/cpumask.h
+> +++ b/include/linux/cpumask.h
+> @@ -388,6 +388,29 @@ unsigned int cpumask_any_but(const struct cpumask *mask, unsigned int cpu)
+>         return i;
+>  }
+> 
+> +/**
+> + * cpumask_any_and_but - pick a "random" cpu from *mask1 & *mask2, but not this one.
+> + * @mask1: the first input cpumask
+> + * @mask2: the second input cpumask
+> + * @cpu: the cpu to ignore
+> + *
+> + * Returns >= nr_cpu_ids if no cpus set.
+> + */
+> +static inline
+> +unsigned int cpumask_any_and_but(const struct cpumask *mask1,
+> +                                const struct cpumask *mask2,
+> +                                unsigned int cpu)
+> +{
+> +       unsigned int i;
+> +
+> +       cpumask_check(cpu);
+> +       i = cpumask_first_and(mask1, mask2);
+> +       if (i != cpu)
+> +               return i;
+> +
+> +       return cpumask_next_and(cpu, mask1, mask2);
+> +}
+> +
+>  /**
+>   * cpumask_nth - get the Nth cpu in a cpumask
+>   * @srcp: the cpumask pointer
+> 
+> Change from your original version:
+> 1 Moved to cpumask.h, just like other helpers.
+> 2 Return value converted to unsigned int.
+> 3 Remove EXPORT_SYMBOL, for obvious reason.
 
-A recent rework changed the constant format strings to a local variable,
-which causes warnings from clang when -Wformat-security is enabled:
+That's exactly how I rebased it locally, so that looks good to me!
 
-drivers/firmware/arm_scmi/driver.c: In function 'scmi_probe':
-drivers/firmware/arm_scmi/driver.c:2936:25: error: format not a string literal and no format arguments [-Werror=format-security]
- 2936 |                         dev_err(dev, err_str);
-      |                         ^~~~~~~
-drivers/firmware/arm_scmi/driver.c:2993:9: error: format not a string literal and no format arguments [-Werror=format-security]
- 2993 |         return dev_err_probe(dev, ret, err_str);
+> I will respin V2 as a whole as soon as possible.
 
-Print these using an explicit "%s" string instead.
+Great!
 
-Fixes: 3a7d93d1f71b ("firmware: arm_scmi: Use dev_err_probe to bail out")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/firmware/arm_scmi/driver.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index d0091459a276..36e3eb50a8d4 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -2933,7 +2933,7 @@ static int scmi_probe(struct platform_device *pdev)
- 	if (ret) {
- 		err_str = "unable to communicate with SCMI\n";
- 		if (coex) {
--			dev_err(dev, err_str);
-+			dev_err(dev, "%s", err_str);
- 			return 0;
- 		}
- 		goto notification_exit;
-@@ -2990,7 +2990,7 @@ static int scmi_probe(struct platform_device *pdev)
- clear_ida:
- 	ida_free(&scmi_id, info->id);
- 
--	return dev_err_probe(dev, ret, err_str);
-+	return dev_err_probe(dev, ret, "%s", err_str);
- }
- 
- static void scmi_remove(struct platform_device *pdev)
--- 
-2.39.2
-
+Thanks,
+Mark.
 
