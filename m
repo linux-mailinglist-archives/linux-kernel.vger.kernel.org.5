@@ -1,138 +1,90 @@
-Return-Path: <linux-kernel+bounces-129671-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129672-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFCF6896E4C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:36:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37C92896E4E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:36:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36CD11C25311
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:36:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E763028B097
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:36:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40604142E87;
-	Wed,  3 Apr 2024 11:36:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96CC6143899;
+	Wed,  3 Apr 2024 11:36:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JH3JfN6o";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="K5frRWXH"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O760GfrL"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D455142E82;
-	Wed,  3 Apr 2024 11:36:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D559B142E82;
+	Wed,  3 Apr 2024 11:36:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712144164; cv=none; b=oDB9Fj8mImHnwNAdNZQ0fiuIqzIH3SOJn5accc3AFyVTh+761tv4um+GPHt45dRIwhu3+B70SCjMNLMiJia9dEqP+YT7AFNMd84RSQrzoDNv3LCMN2MSbhD+TxY8G04MlfYOLW2RDtscJkLHYQI6MrnNnylAp6Atw9Cu1wWom2c=
+	t=1712144181; cv=none; b=GA7cV1AepbiHAxJcNbbNqBAdCyhbbTBvLizLDJa0RMNj55ZqLyK6MqSFQm9oLyQR0XY1o2i9Z7hIrCEY+NHrv6hw2AnRG/UDz5Us1/aJOzLJsrJO7ZlqnnSL7hINyy0IgvDwiyEDFGG9pfT/8jwWooPIzWjqB3mZK+ODdKpYj3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712144164; c=relaxed/simple;
-	bh=t18WbamfCv19fhu0p/T4b+utaHreGFY0yfyl+Y4YJhY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=H2DcFWrYK+DwFgPF1lp06br/Its9rOnFsfFZ2SL65t8IfPPTvULN+gO3fxZxjejCgp2g4tAuOJmugzJvN01TAL3rl1gCEa1M6tbT6eTfN+nCh99mGEQFMbnMKDuY9XTDmlPkUhbJwWPqt+lIWdxOJcwdoZwLtT2SiZ7PPbYFaQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JH3JfN6o; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=K5frRWXH; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: John Ogness <john.ogness@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712144159;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AwOgCCV+cQRD/xaqFLHbohMfDMRq7iMVCXN+izSf/FE=;
-	b=JH3JfN6otUW/3RhGkD/vbOB9GI5MO9vk1GD+EssaV5ajEO0GTD8s8rA142kdX6SvBw3lgJ
-	iX+rKGiW9DzSliLGVQ7lM1TtawMvTrVgiJjaYrK/6aGTocYgXVy4rcvIiq0bVAkPcpH9WU
-	U2HS/Mni+6URhCqkvm03o1B2d/qQBhpEKYNbnrodk8jr9fRLSxTmVPywai/vDcSVsj8j87
-	iC7dNY0ELzYizUGYHIrdzP+1dv8BMr7VzlQLBmZp3vk97ZbEqIC5EwYSjd00Ehg9rBZ5Y3
-	Qt/5/IRHHMaus2myWEIieTCbMb2mYah+I8DIr51HpxgeJH3G3cjpawQTKi7Ynw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712144159;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=AwOgCCV+cQRD/xaqFLHbohMfDMRq7iMVCXN+izSf/FE=;
-	b=K5frRWXHLVFBs3ZMv26aoVB8lQ2Qp2HLp/+1xlk6R/kFn+KKF3fn7fbxCnVu5vNtmDWa6+
-	0Gbt7TkH5cgUMxDQ==
-To: Petr Mladek <pmladek@suse.com>
-Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, Steven Rostedt
- <rostedt@goodmis.org>, Thomas Gleixner <tglx@linutronix.de>,
- linux-kernel@vger.kernel.org, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, Russell
- King <linux@armlinux.org.uk>, Tony Lindgren <tony@atomide.com>, Ilpo
- =?utf-8?Q?J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Andy Shevchenko
- <andriy.shevchenko@linux.intel.com>, Uwe =?utf-8?Q?Kleine-K=C3=B6nig?=
- <u.kleine-koenig@pengutronix.de>, =?utf-8?Q?Th=C3=A9o?= Lebrun
- <theo.lebrun@bootlin.com>,
- Linus Walleij <linus.walleij@linaro.org>, Lino Sanfilippo
- <l.sanfilippo@kunbus.com>, Fabio Estevam <festevam@denx.de>, Arnd Bergmann
- <arnd@arndb.de>, linux-serial@vger.kernel.org, Sebastian Andrzej Siewior
- <bigeasy@linutronix.de>
-Subject: Re: [PATCH printk v4 09/27] printk: nbcon: Implement processing in
- port->lock wrapper
-In-Reply-To: <20240402221129.2613843-10-john.ogness@linutronix.de>
-References: <20240402221129.2613843-1-john.ogness@linutronix.de>
- <20240402221129.2613843-10-john.ogness@linutronix.de>
-Date: Wed, 03 Apr 2024 13:41:56 +0206
-Message-ID: <87cyr6y8yr.fsf@jogness.linutronix.de>
+	s=arc-20240116; t=1712144181; c=relaxed/simple;
+	bh=4tqxqDkSL01CbMJoeEiZbI5mx3er2mrAV85iI3zf/dA=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=J27h3L0cf3QJQwMo2oIFQtBCT9xsI+Z+AnTCb+HHqJXzJPJNGdF7X8QsRCXnR+4kQaBKluLmp6n13tUpoQ395ExsUNTDrazs+1VZaw0yItSYt1UTim07V1hNGUK9W8z+NGSEjVzfdkgXFObEyGG+Rk/NRZp+DpZhHZyHmID53Eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O760GfrL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19E5CC433F1;
+	Wed,  3 Apr 2024 11:36:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712144181;
+	bh=4tqxqDkSL01CbMJoeEiZbI5mx3er2mrAV85iI3zf/dA=;
+	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+	b=O760GfrLnT36YjFMwcl1+DBI9NoZYd0FWsRjpyVUnbbCQZRJYa58RVpdzLqU9kAjO
+	 V5FjjW99OZaas6RvYLDGLWqrL7jBGGxPfkq4tYWHX4VQMtXf0i8G3hyU96qWAe8W/C
+	 kURV+iIhUAgYFPhI+snvJHIEJ51lFw52qNQYlRjA9oiUqTY3oHIAt32/EvLhq0k+hT
+	 ME/jqzBlY3OKykp6G751Iu21zd1dD7ghNYJEJsch/gfG31o03sam8Orrjq5iZ/pH3A
+	 kcPZFIaR1mwEa5T1+W4t5GYBmKAliFMQjahehAfbKbKWeFuqljSFsrgZnjMZS4oCfE
+	 wKxPQaaASyERg==
+Date: Wed, 3 Apr 2024 13:36:19 +0200 (CEST)
+From: Jiri Kosina <jikos@kernel.org>
+To: Ivan Gorinov <linux-kernel@altimeter.info>
+cc: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] Input: WinWing Orion2 throttle support
+In-Reply-To: <20240216215447.426ca3e7@lxl-9drxzh3.na.joby.aero>
+Message-ID: <nycvar.YFH.7.76.2404031336070.20263@cbobk.fhfr.pm>
+References: <20240216215447.426ca3e7@lxl-9drxzh3.na.joby.aero>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 
-On 2024-04-03, John Ogness <john.ogness@linutronix.de> wrote:
-> diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-> index d6a58a9e072a..2652b4d5c944 100644
-> --- a/drivers/tty/serial/serial_core.c
-> +++ b/drivers/tty/serial/serial_core.c
-> @@ -3146,7 +3146,7 @@ static int serial_core_add_one_port(struct uart_driver *drv, struct uart_port *u
->  	uport->state = state;
->  
->  	state->pm_state = UART_PM_STATE_UNDEFINED;
-> -	uport->cons = drv->cons;
-> +	uart_port_set_cons(uport, drv->cons);
->  	uport->minor = drv->tty_driver->minor_start + uport->line;
->  	uport->name = kasprintf(GFP_KERNEL, "%s%d", drv->dev_name,
->  				drv->tty_driver->name_base + uport->line);
+On Fri, 16 Feb 2024, Ivan Gorinov wrote:
 
-Sebastian Siewior pointed out that the port lock is initialized shortly
-after this code. Since uart_port_set_cons() uses the port lock, the
-spinlock initialization must come first. The changes for serial_core.c
-should be:
+> WinWing Orion2 throttle works with Linux out of box,
+> but the kernel sees only 16 of 47 buttons on the throttle base.
+> 
+> This module enables all buttons, and also adds LED controls.
+> 
+> Button numbers 0 .. 63 on Orion2 are reserved for throttle grip;
+> the throttle base buttons have numbers 64 .. 110.
+> 
+> Linux kernel HID subsystem only supports up to 80 buttons.
+> 
+> Remap throttle base buttons to numbers 32 .. 78,
+> reserving only numbers 0 .. 31 for buttons on the grip handle.
+> 
+> Changes since v2:
+>    - Fixed automatic line wraps added by mail client
+> 
+> Changes since v1:
+>    - Fixed formatting of descriptor byte array;
+>    - Using product codes of Winwing grips in config.
+> 
+> Signed-off-by: Ivan Gorinov <ivan.gorinov@jobyaviation.com>
 
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index d6a58a9e072a..0c13ea6a3afa 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -3145,8 +3145,15 @@ static int serial_core_add_one_port(struct uart_driver *drv, struct uart_port *u
- 	state->uart_port = uport;
- 	uport->state = state;
- 
-+	/*
-+	 * If this port is in use as a console then the spinlock is already
-+	 * initialised.
-+	 */
-+	if (!uart_console_registered(uport))
-+		uart_port_spin_lock_init(uport);
-+
- 	state->pm_state = UART_PM_STATE_UNDEFINED;
--	uport->cons = drv->cons;
-+	uart_port_set_cons(uport, drv->cons);
- 	uport->minor = drv->tty_driver->minor_start + uport->line;
- 	uport->name = kasprintf(GFP_KERNEL, "%s%d", drv->dev_name,
- 				drv->tty_driver->name_base + uport->line);
-@@ -3155,13 +3162,6 @@ static int serial_core_add_one_port(struct uart_driver *drv, struct uart_port *u
- 		goto out;
- 	}
- 
--	/*
--	 * If this port is in use as a console then the spinlock is already
--	 * initialised.
--	 */
--	if (!uart_console_registered(uport))
--		uart_port_spin_lock_init(uport);
--
- 	if (uport->cons && uport->dev)
- 		of_console_check(uport->dev->of_node, uport->cons->name, uport->line);
- 
+Applied, thanks.
+
+-- 
+Jiri Kosina
+SUSE Labs
+
 
