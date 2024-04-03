@@ -1,204 +1,268 @@
-Return-Path: <linux-kernel+bounces-129722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 685AA896EFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:39:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 122F5896F09
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:41:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B36E1C25B70
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:39:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35CA81C25CD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:41:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95113142E82;
-	Wed,  3 Apr 2024 12:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D84D13AD1A;
+	Wed,  3 Apr 2024 12:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="B2u3Aj7J"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TkFrhMgP";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Ag9EqcHN"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6CD91C683;
-	Wed,  3 Apr 2024 12:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5AC6B66E;
+	Wed,  3 Apr 2024 12:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712147975; cv=none; b=CauaBvQN/sGjmfB26ys+nFkja71njZmAQLaJZm5Us3eSuWw845RUWo+wkrzHAQz/GhK3f2kQ1K/pK7baEknK5AmgAYYiVSP5HAB9Dml7vBefjUzHCSeG7hyLWRAOaDFfP3RynIVJYr+QroWIyhdYdDJVTdRCrJ0O2XMBpWtttDk=
+	t=1712148081; cv=none; b=Ec5s+9nftwGnebnMUKAt9vJPE1DXZld6eHfMDm2q2M5zOdnZWUeBTeGFuy91mt52Z3kx8iP0IL/+TDB/yWYAB6Jej8R1pRKhKTO+rldoTZ57qcKwIbcNCimbpfqHO/hSylUdDpQXbydTH1VBfMzkZgG9ASMF3tBHF1s0BZADKKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712147975; c=relaxed/simple;
-	bh=56cFVVN36vdvA9j0k6U4c9Yyi7PsljXwFIP8sKfDAn4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RZPIWcFRd3dp1PjmeYMy3nTYvYtoUPLeXR0v4edGJYoDOVsiIJR+sZn6DWS8wFI3lhU3XHQHUINBR0DpTcBzfywvkX3A23qRZqfrO4qzyLJlJYJ4M2OBHs95Tw6qdn5Lc4ZNAptDkNbW26GTqbP5eVgxQJlJJlJ6U6ocoIRlZ3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=B2u3Aj7J; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712147972;
-	bh=56cFVVN36vdvA9j0k6U4c9Yyi7PsljXwFIP8sKfDAn4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B2u3Aj7JWJ8T2VlEkSysWrQyL+7YwxPLSHmUGGV4BCQp8UFuxEVhBu/+jKSjZtaER
-	 vCqPQtjmwNfKZQbcMUePtxgVz+Kj6lPlMzM07fINBNnFf+6jGU+LlFRayM31Mee6jO
-	 XuvzckZb1w9G7nOLmdyKUFnydK0J1mornC2SEZ+eBKyBG9MGasDoorQ1E6ijzyLNs6
-	 ynJ4qR7K9G5Ho7qktbwUev0m2NHYsNYnU5F7PhHp6POrq4/5xNyXLkKGSkgt0Mib4z
-	 YVajJb6UlXXb08K4lXDsHnTQ0hmKMZpZoRKAcrJ4tXGDyyYDrL77NcPxfclDI4Ercj
-	 shje3a066P9Qw==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sebastianfricke)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C26C6378200D;
-	Wed,  3 Apr 2024 12:39:31 +0000 (UTC)
-Date: Wed, 3 Apr 2024 14:39:30 +0200
-From: Sebastian Fricke <sebastian.fricke@collabora.com>
-To: Yunfei Dong <yunfei.dong@mediatek.com>
-Cc: =?utf-8?B?TsOtY29sYXMgRiAuIFIgLiBBIC4=?= Prado <nfraprado@collabora.com>,
-	Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-	Nathan Hebert <nhebert@chromium.org>,
-	Hsin-Yi Wang <hsinyi@chromium.org>,
-	Fritz Koenig <frkoenig@chromium.org>,
-	Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>,
-	linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH] media: mediatek: vcodec: fix the error sizeimage for
- 10bit bitstream
-Message-ID: <20240403123930.wkzgxb6lymzb7hng@basti-XPS-13-9310>
-References: <20240403093018.13168-1-yunfei.dong@mediatek.com>
+	s=arc-20240116; t=1712148081; c=relaxed/simple;
+	bh=8mKGsxi0RIo7UC0KAoB9yp5qpM4nBYh1Fe5vakSTcJs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AuFs5Y+26xf0KkyOVq5q7767V5zh+oycQv1gttYVF1nK4JXoQT/YKNWJQYbKYe9Sjd9kgc8djNHkm98FwXR3+VtQxVl7ucF9mcKzOXzio0QYhrh/k9juRYc69601yj6+5iXu7pCWTyzbwZ6aC+77a84qa4QsPqpwTUVydECRfGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TkFrhMgP; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Ag9EqcHN; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712148077;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j8VcjIqJYxqL7stv0uL/vZUNq6uNvM3BP6g5mSRVMO0=;
+	b=TkFrhMgPzV1MWq/iw8liKFrNWj6RpfRhswmjmiUnOFwoXWeEmcaVjTRmaj3oIxO0/QGhaq
+	T2tTvC14dLQEIrNQMVAaFpm/xq4cR/rfC1a40PMABKETn7QNuun+2Ny+Z7MoD4fFOGqMx3
+	3/5rk5duDBfDgiKjq74bCw4ZcY3LIbiigRcLrTLtipjsWs362vjDhsNeFXm256wM8dj/RV
+	fqfCBY9zluR1oBQsH2SB9PY6L631z8T8lKFbKUup3PpC90PmfGf4yO06pnue+BQlEuBQH2
+	wZ2r/S/7jdA2wSmYl4JietlTRCEgSy4C4/AkEj++PAKG+ypBDzz01p8XsH9CkA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712148077;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j8VcjIqJYxqL7stv0uL/vZUNq6uNvM3BP6g5mSRVMO0=;
+	b=Ag9EqcHNXII8mxlpd+yiaY1+USazt/F0l7SzBD+SJ2H/XU4wqPvsmhqjbQF3OrwIiFmAbO
+	2vKJVbvJs8MvRWDA==
+To: John Stultz <jstultz@google.com>
+Cc: Marco Elver <elver@google.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@kernel.org>, Oleg Nesterov <oleg@redhat.com>, "Eric W.
+ Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Dmitry Vyukov <dvyukov@google.com>,
+ kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>, Carlos Llamas
+ <cmllamas@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
+ current thread
+In-Reply-To: <CANDhNCqbJHTNcnBj=twHQqtLjXiGNeGJ8tsbPrhGFq4Qz53c5w@mail.gmail.com>
+References: <20230316123028.2890338-1-elver@google.com>
+ <CANDhNCqBGnAr_MSBhQxWo+-8YnPPggxoVL32zVrDB+NcoKXVPQ@mail.gmail.com>
+ <87frw3dd7d.ffs@tglx>
+ <CANDhNCqbJHTNcnBj=twHQqtLjXiGNeGJ8tsbPrhGFq4Qz53c5w@mail.gmail.com>
+Date: Wed, 03 Apr 2024 14:41:17 +0200
+Message-ID: <874jcid3f6.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240403093018.13168-1-yunfei.dong@mediatek.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hey Yunfei,
-
-On 03.04.2024 17:30, Yunfei Dong wrote:
->The sizeimage of each plane are calculated the same way for 8bit and
-
-s/The sizeimage of each plane are/The sizeimage for each plane is/
-
->10bit bitstream. Need to enlarge the sizeimage with simeimage*5/4 for
->10bit bitstream when try and set fmt.
-
-s/bitstream/bistreams/
-s/Need to enlarge the sizeimage with simeimage*5/4 for 10bit bitstream when try and set fmt./
-   Scale up the sizeimage by 25% for 10-bit bitstreams in try_fmt./
-
+On Tue, Apr 02 2024 at 10:23, John Stultz wrote:
+> On Tue, Apr 2, 2024 at 7:57=E2=80=AFAM Thomas Gleixner <tglx@linutronix.d=
+e> wrote:
+>> This test in particular exercises new functionality/behaviour, which
+>> really has no business to be backported into stable just to make the
+>> relevant test usable on older kernels.
 >
->Fixes: 9d86be9bda6c ("media: mediatek: vcodec: Add driver to support 10bit")
->Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
->---
-> .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  | 47 ++++++++++++++-----
-> 1 file changed, 34 insertions(+), 13 deletions(-)
+> That's fair. I didn't have all the context around what motivated the
+> change and the follow-on test, which is why I'm asking here.
+
+It's a performance enhancement to avoid waking up idle threads for
+signal delivery instead of just delivering it to the current running
+thread which made the CPU timer fire. So it does not qualify for fix.
+
+>> Why would testing with latest tests against an older kernel be valid per
+>> se?
 >
->diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
->index 9107707de6c4..45209894f1fe 100644
->--- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
->+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
->@@ -259,6 +259,7 @@ static int vidioc_try_fmt(struct mtk_vcodec_dec_ctx *ctx, struct v4l2_format *f,
-> 		pix_fmt_mp->num_planes = 1;
-> 		pix_fmt_mp->plane_fmt[0].bytesperline = 0;
-> 	} else if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
->+		unsigned int dram_y, dram_c, dram_y_10bit, dram_c_10bit;
-> 		int tmp_w, tmp_h;
+> So yeah, it definitely can get fuzzy trying to split hairs between
+> when a change in behavior is a "new feature" or a "fix".
 >
-> 		/*
->@@ -280,22 +281,42 @@ static int vidioc_try_fmt(struct mtk_vcodec_dec_ctx *ctx, struct v4l2_format *f,
-> 		    (pix_fmt_mp->height + 64) <= frmsize->max_height)
-> 			pix_fmt_mp->height += 64;
+> Greg could probably articulate it better, but my understanding is the
+> main point for running newer tests on older kernels is that newer
+> tests will have more coverage of what is expected of the kernel. For
+> features that older kernels don't support, ideally the tests will
+> check for that functionality like userland applications would, and
+> skip that portion of the test if it's unsupported. This way, we're
+> able to find issues (important enough to warrant tests having been
+> created) that have not yet been patched in the -stable trees.
 >
->-		mtk_v4l2_vdec_dbg(0, ctx,
->-				  "before resize wxh=%dx%d, after resize wxh=%dx%d, sizeimage=%d",
->-				  tmp_w, tmp_h, pix_fmt_mp->width, pix_fmt_mp->height,
->-				  pix_fmt_mp->width * pix_fmt_mp->height);
->+		dram_y = pix_fmt_mp->width * pix_fmt_mp->height;
->+		dram_c = dram_y / 2;
->+
->+		dram_y_10bit = dram_y * 5 / 4;
->+		dram_c_10bit = dram_y_10bit / 2;
+> In this case, there is a behavioral change combined with a compliance
+> test, which makes it look a bit more like a fix, rather than a feature
+> (additionally the lack of a way for userland to probe for this new
+> "feature" makes it seem fix-like).  But the intended result of this is
+> just spurring this discussion to see if it makes sense to backport or
+> not.  Disabling/ignoring the test (maybe after Thomas' fix to avoid it
+> from hanging :) is a fine solution too, but not one I'd want folks to
+> do until they've synced with maintainers and had full context.
 
-I'd skip the two 10 bit variables (dram_y_10bit & dram_c_10bit) and
-instead do it like this:
+I was staring at this test because it hangs even on upstream on a
+regular base, at least in a VM. The timeout change I posted prevents the
+hang, but still the posixtimer test will not have 0 fails.
 
-```
-   dram_stride = pix_fmt_mp->width;
-   if (ctx->is_10bit_bitstream)
-     dram_stride = dram_stride * 5 / 4;
+The test if fragile as hell as there is absolutely no guarantee that the
+signal target distribution is as expected. The expectation is based on a
+statistical assumption which does not really hold.
 
-   dram_y = dram_stride * pix_fmt_mp->height;
-   dram_c = dram_y / 2;
+So I came up with a modified variant of that, which can deduce pretty
+reliably that the test runs on an older kernel.
 
-   if (pix_fmt_mp->num_planes == 1) {
-     pix_fmt_mp->plane_fmt[0].bytesperline = dram_stride;
-     pix_fmt_mp->plane_fmt[0].sizeimage = dram_y + dram_c;
-   } else {
-     pix_fmt_mp->plane_fmt[0].bytesperline = dram_stride;
-     pix_fmt_mp->plane_fmt[1].bytesperline = dram_stride;
-     pix_fmt_mp->plane_fmt[0].sizeimage = dram_y;
-     pix_fmt_mp->plane_fmt[1].sizeimage = dram_c;
-     ...
-   }
-```
+Thanks,
 
-Also, why do you call all the variables dram?
+        tglx
+---
+Subject: selftests/timers/posix_timers: Make signal distribution test less =
+fragile
+From: Thomas Gleixner <tglx@linutronix.de>
+Date: Mon, 15 May 2023 00:40:10 +0200
 
-Please this isn't tested, but shows the general direction to repeat a
-lot less code.
+The signal distribution test has a tendency to hang for a long time as the
+signal delivery is not really evenly distributed. In fact it might never be
+distributed across all threads ever in the way it is written.
 
-Greetings,
-Sebastian
+Address this by:
 
->
-> 		pix_fmt_mp->num_planes = fmt->num_planes;
->-		pix_fmt_mp->plane_fmt[0].sizeimage =
->-				pix_fmt_mp->width * pix_fmt_mp->height;
->-		pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width;
->-
->-		if (pix_fmt_mp->num_planes == 2) {
->-			pix_fmt_mp->plane_fmt[1].sizeimage =
->-				(pix_fmt_mp->width * pix_fmt_mp->height) / 2;
->-			pix_fmt_mp->plane_fmt[1].bytesperline =
->-				pix_fmt_mp->width;
->+		if (pix_fmt_mp->num_planes == 1) {
->+			if (ctx->is_10bit_bitstream) {
->+				pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width * 5 / 4;
->+				pix_fmt_mp->plane_fmt[0].sizeimage = dram_y_10bit + dram_c_10bit;
->+			} else {
->+				pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width;
->+				pix_fmt_mp->plane_fmt[0].sizeimage = dram_y + dram_c;
->+			}
->+		} else {
->+			if (ctx->is_10bit_bitstream) {
->+				pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width * 5 / 4;
->+				pix_fmt_mp->plane_fmt[1].bytesperline = pix_fmt_mp->width * 5 / 4;
->+
->+				pix_fmt_mp->plane_fmt[0].sizeimage = dram_y_10bit;
->+				pix_fmt_mp->plane_fmt[1].sizeimage = dram_c_10bit;
->+			} else {
->+				pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width;
->+				pix_fmt_mp->plane_fmt[1].bytesperline = pix_fmt_mp->width;
->+
->+				pix_fmt_mp->plane_fmt[0].sizeimage = dram_y;
->+				pix_fmt_mp->plane_fmt[1].sizeimage = dram_c;
->+			}
-> 		}
->+
->+		mtk_v4l2_vdec_dbg(0, ctx,
->+				  "before resize:%dx%d, after resize:%dx%d, sizeimage=0x%x_0x%x",
->+				  tmp_w, tmp_h, pix_fmt_mp->width, pix_fmt_mp->height,
->+				  pix_fmt_mp->plane_fmt[0].sizeimage,
->+				  pix_fmt_mp->plane_fmt[1].sizeimage);
-> 	}
->
-> 	pix_fmt_mp->flags = 0;
->-- 
->2.25.1
->
+   1) Adding a timeout which aborts the test
+
+   2) Letting the test threads do a usleep() once they got a signal instead
+      of running continuously. That ensures that the other threads will exp=
+ire
+      the timer and get the signal
+
+   3) Adding a detection whether all signals arrvied at the main thread,
+      which allows to run the test on older kernels.
+
+While at it get rid of the pointless atomic operation on a the thread local
+variable in the signal handler.
+
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+ tools/testing/selftests/timers/posix_timers.c |   48 +++++++++++++++++----=
+-----
+ 1 file changed, 32 insertions(+), 16 deletions(-)
+
+--- a/tools/testing/selftests/timers/posix_timers.c
++++ b/tools/testing/selftests/timers/posix_timers.c
+@@ -184,18 +184,22 @@ static int check_timer_create(int which)
+ 	return 0;
+ }
+=20
+-int remain;
+-__thread int got_signal;
++static int remain;
++static __thread int got_signal;
+=20
+ static void *distribution_thread(void *arg)
+ {
+-	while (__atomic_load_n(&remain, __ATOMIC_RELAXED));
+-	return NULL;
++	while (__atomic_load_n(&remain, __ATOMIC_RELAXED) && !done) {
++		if (got_signal)
++			usleep(10);
++	}
++
++	return (void *)got_signal;
+ }
+=20
+ static void distribution_handler(int nr)
+ {
+-	if (!__atomic_exchange_n(&got_signal, 1, __ATOMIC_RELAXED))
++	if (++got_signal =3D=3D 1)
+ 		__atomic_fetch_sub(&remain, 1, __ATOMIC_RELAXED);
+ }
+=20
+@@ -205,8 +209,6 @@ static void distribution_handler(int nr)
+  */
+ static int check_timer_distribution(void)
+ {
+-	int err, i;
+-	timer_t id;
+ 	const int nthreads =3D 10;
+ 	pthread_t threads[nthreads];
+ 	struct itimerspec val =3D {
+@@ -215,7 +217,11 @@ static int check_timer_distribution(void
+ 		.it_interval.tv_sec =3D 0,
+ 		.it_interval.tv_nsec =3D 1000 * 1000,
+ 	};
++	int err, i, nsigs;
++	time_t start, now;
++	timer_t id;
+=20
++	done =3D 0;
+ 	remain =3D nthreads + 1;  /* worker threads + this thread */
+ 	signal(SIGALRM, distribution_handler);
+ 	err =3D timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
+@@ -231,7 +237,7 @@ static int check_timer_distribution(void
+=20
+ 	for (i =3D 0; i < nthreads; i++) {
+ 		err =3D pthread_create(&threads[i], NULL, distribution_thread,
+-				     NULL);
++				     thread_sigs + i);
+ 		if (err) {
+ 			ksft_print_msg("Can't create thread: %s (%d)\n",
+ 				       strerror(errno), errno);
+@@ -240,23 +246,33 @@ static int check_timer_distribution(void
+ 	}
+=20
+ 	/* Wait for all threads to receive the signal. */
+-	while (__atomic_load_n(&remain, __ATOMIC_RELAXED));
++	now =3D start =3D time(NULL);
++	while (__atomic_load_n(&remain, __ATOMIC_RELAXED)) {
++		now =3D time(NULL);
++		if (now - start > 5)
++			break;
++	}
++	done =3D 1;
+=20
+-	for (i =3D 0; i < nthreads; i++) {
++	if (timer_delete(id)) {
++		ksft_perror("Can't delete timer\n");
++		return -1;
++	}
++
++	for (i =3D 0, nsigs =3D 0; i < nthreads; i++) {
+ 		err =3D pthread_join(threads[i], NULL);
+ 		if (err) {
+ 			ksft_print_msg("Can't join thread: %s (%d)\n",
+ 				       strerror(errno), errno);
+ 			return -1;
+ 		}
++		nsigs +=3D thread_sigs[i];
+ 	}
+=20
+-	if (timer_delete(id)) {
+-		ksft_perror("Can't delete timer");
+-		return -1;
+-	}
+-
+-	ksft_test_result_pass("check_timer_distribution\n");
++	if (!nsigs)
++		ksft_test_result_skip("No signal distribution. Assuming old kernel\n");
++	else
++		ksft_test_result(now - start < 5, "check_timer_distribution\n");
+ 	return 0;
+ }
+=20
+
+
 
