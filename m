@@ -1,52 +1,52 @@
-Return-Path: <linux-kernel+bounces-129559-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129560-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46822896C8B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:33:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFC02896C8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:33:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAA0C1F2CA78
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:33:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D0AF1C2776E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:33:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B917C146A99;
-	Wed,  3 Apr 2024 10:31:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16DEB1474D2;
+	Wed,  3 Apr 2024 10:31:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Ww0vKXnZ"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="EqKeAqTP"
 Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE52145B3F;
-	Wed,  3 Apr 2024 10:31:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC60146588;
+	Wed,  3 Apr 2024 10:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712140286; cv=none; b=Yc0bC9IGCNX4cJUPNtZPTv/8JoKC2ws/DoF7ysO5uCjcKwqM+2QTxyHniOsGSR9ljXZ/DFnUwTqlZb75mm1yLBU/GSCP7PPxShIHskQig2MFSVMyzJRdhRQocM800a/tApbz3gHeEOFv2OS1keN/NuL4jL4WLGNjy5a6SKhG3oM=
+	t=1712140287; cv=none; b=RlOX5B1w7at3JpuR0NNV2VsFxjFJGEnvlLwULNck0FIxG090GC+A8pffXZCZXB3O3JDv73vQI6AFQHhawbHPrYvU0yWyojlIPQRJ+3nQD28AjUDjdC8L7/AKrTrmjTxrDcWNRXbZbjnmBWeFqEVPEsVlIV87yaOYXFhVwcpcIuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712140286; c=relaxed/simple;
-	bh=Hk5lU1iRK1GgpT71qfZlp1fjEZfdR8ivceCWc2U1aU4=;
+	s=arc-20240116; t=1712140287; c=relaxed/simple;
+	bh=PYIRmUFghpI8A50oiu40PS5xDa+QI8EerqhE598Bz9A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iXL5xqpwtvLZNsHQ3ryNw/KqJ7qrFw8zLUwT7urAx2h9BtRTfbdvbObAE93VdSSvx7DS7LO68uQpBa1qYp0iPMcIIX3aVv/a/YYF+7m9eMKqwMdc+J3dwxGprbn3n/db48dPPPCuCtM2oWt8i8TAj6Igemf9bT6CjqfWd34TPJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Ww0vKXnZ; arc=none smtp.client-ip=46.235.227.194
+	 MIME-Version:Content-Type; b=Cln0zliJyD16AIEHoByA9l+FrHvzOUBhvTKCdv5CoWgmKoDXeuJvAnAXvYVVsq21MaGp+2DsraRlM2b01mfGaaJL2egWXY2sJG35wVN3P9NSjDS1PJ043T5yjdHNixb9SQPYLuu4C/F5t2iRkJS3eq02Pmd1wEyOd6IKY3V4Eg4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=EqKeAqTP; arc=none smtp.client-ip=46.235.227.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712140282;
-	bh=Hk5lU1iRK1GgpT71qfZlp1fjEZfdR8ivceCWc2U1aU4=;
+	s=mail; t=1712140284;
+	bh=PYIRmUFghpI8A50oiu40PS5xDa+QI8EerqhE598Bz9A=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Ww0vKXnZ4Fdy+6hX82DmeP34CR6MxyDteRTbdGGufT1Lr4UjrfUR4psPPuGgHI7oV
-	 lbxhgjYtIHz49u4d/2wwgcXNWOKg74aYgPfi9zNagh5HbzjRSvB9m4GtR+Dt5RltIS
-	 89U3mC1IQfTdLNxAZWN+g//VTfyAranewDfroAF13DH3Bgu2oZ5wV9MUCChh3fEBno
-	 pb0yuoLn97UrzJCfQP2DL3Z4vRfdDGYgEzVw6HwGZLzl1cxvcJgBu/Byq9txeEkeQH
-	 Bwa6Of5XmoKgeBaZmgJLnC6p/x+uG01poMnAN5QO42PRJFlqR0Ut2ov22RdMs4pjQs
-	 5EnS8PcO+Guzw==
+	b=EqKeAqTPlb3pmbIe6dSIwV4CVEgMpzMxoOltEpWseRBh8y5x0vQCHFN0zZhqmBrq+
+	 eSrGqLka7CpdA+Pwng7gKj+Ef7Iiy/DJfolP83Vt5+FxweMO4FeSy6x7ImqMp+KMyZ
+	 OzzNip2Ujt5vMjeBIfYvNShisxHjGJ7fZQiIiBHYC5TuZ4KVZmf4iwhZzJS+N0+hUJ
+	 4LwXesTio/2PpGob7izm9ptQkpK5f8ibFvdMcsmUr5Jg5xJUiFhhmB2JOc1VOsJMqR
+	 GqckyLXmFTkxxWXBzs+ZpsNohaBe3VJp7CmJ92pXi+ixaT4hFYX/0NV7OwEnfmsE0M
+	 pYfJdzN9WWsxQ==
 Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8B9F137820F8;
-	Wed,  3 Apr 2024 10:31:21 +0000 (UTC)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id EE9B737820F3;
+	Wed,  3 Apr 2024 10:31:22 +0000 (UTC)
 From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 To: Matthias Brugger <matthias.bgg@gmail.com>,
 	=?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= <nfraprado@collabora.com>,
@@ -64,16 +64,20 @@ Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org,
+	Chen-Yu Tsai <wenst@chromium.org>,
+	Hsin-Yi Wang <hsinyi@chromium.org>,
+	Heiko Stuebner <heiko.stuebner@cherry.de>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
 	Sean Wang <sean.wang@mediatek.com>,
-	Felix Fietkau <nbd@nbd.name>,
-	"David S . Miller" <davem@davemloft.net>,
 	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
-Subject: Re: [PATCH V2 0/4] arm64: dts: mediatek: mt7622: fix some validation errors
-Date: Wed,  3 Apr 2024 12:30:58 +0200
-Message-ID: <171213179799.60933.1750718061760478051.b4-ty@collabora.com>
+Subject: Re: [PATCH V3 0/4] dts: mediatek: add Cudy WR3000 V1 wireless router
+Date: Wed,  3 Apr 2024 12:30:59 +0200
+Message-ID: <171213179798.60933.728917515471078236.b4-ty@collabora.com>
 X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240317221050.18595-1-zajec5@gmail.com>
-References: <20240317221050.18595-1-zajec5@gmail.com>
+In-Reply-To: <20240317223206.22033-1-zajec5@gmail.com>
+References: <20240317223206.22033-1-zajec5@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,31 +87,31 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-On Sun, 17 Mar 2024 23:10:46 +0100, Rafał Miłecki wrote:
+On Sun, 17 Mar 2024 23:32:02 +0100, Rafał Miłecki wrote:
 > From: Rafał Miłecki <rafal@milecki.pl>
 > 
-> One more step in cleaning up DTS for "make dtbs_check".
+> Cudy WR3000 V1 is a MediaTek Filogic 820 based 802.11ax wireless router.
 > 
-> V2: Add "Fixes" tags
+> https://www.cudy.com/productinfo/1637722.html
 > 
 > Rafał Miłecki (4):
->   arm64: dts: mediatek: mt7622: fix clock controllers
->   arm64: dts: mediatek: mt7622: fix IR nodename
->   arm64: dts: mediatek: mt7622: fix ethernet controller "compatible"
->   arm64: dts: mediatek: mt7622: drop "reset-names" from thermal block
+>   dt-bindings: vendor-prefixes: add Cudy
+>   dt-bindings: arm64: dts: mediatek: Add Cudy WR3000 V1 router
+>   arm64: dts: mediatek: mt7981: add pinctrl
+>   arm64: dts: mediatek: Add Cudy WR3000 V1
 > 
 > [...]
 
-Applied to v6.9-fixes/dts64, thanks!
+Applied to v6.9-next/dts64, thanks!
 
-[1/4] arm64: dts: mediatek: mt7622: fix clock controllers
-      commit: 3ba5a61594347ab46e7c2cff6cd63ea0f1282efb
-[2/4] arm64: dts: mediatek: mt7622: fix IR nodename
-      commit: 800dc93c3941e372c94278bf4059e6e82f60bd66
-[3/4] arm64: dts: mediatek: mt7622: fix ethernet controller "compatible"
-      commit: 208add29ce5b7291f6c466e4dfd9cbf61c72888e
-[4/4] arm64: dts: mediatek: mt7622: drop "reset-names" from thermal block
-      commit: ecb5b0034f5bcc35003b4b965cf50c6e98316e79
+[1/4] dt-bindings: vendor-prefixes: add Cudy
+      (no commit info)
+[2/4] dt-bindings: arm64: dts: mediatek: Add Cudy WR3000 V1 router
+      (no commit info)
+[3/4] arm64: dts: mediatek: mt7981: add pinctrl
+      (no commit info)
+[4/4] arm64: dts: mediatek: Add Cudy WR3000 V1
+      (no commit info)
 
 Cheers,
 Angelo
