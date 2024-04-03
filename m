@@ -1,70 +1,70 @@
-Return-Path: <linux-kernel+bounces-128848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25FC789607C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:06:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5281D896083
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:10:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6011E1C23341
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:06:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63218287D36
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 00:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2979310FD;
-	Wed,  3 Apr 2024 00:06:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5562B1109;
+	Wed,  3 Apr 2024 00:10:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="QzfXb/zc";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="usJob1th"
-Received: from fout1-smtp.messagingengine.com (fout1-smtp.messagingengine.com [103.168.172.144])
+	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="lRVZqSD+";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="clzF2kFJ"
+Received: from fhigh4-smtp.messagingengine.com (fhigh4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E57C1360;
-	Wed,  3 Apr 2024 00:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D653635;
+	Wed,  3 Apr 2024 00:10:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712102787; cv=none; b=DYQpH2JWjJ4EYEqoCCgQIxeAhheAIZJT7UGRVyWFjS5IgcFLjjZx1HzgGa09QT4XeOc2AhsaXyNoPrrZ5h5E+5tAD4G6JCaTRyvTx9LPyt7LFm46KhCyh7ZrDsKDfiqkooBER1KN8rJeyIHriioeVhkXoeOTwJCjjqWKglt3UQk=
+	t=1712103007; cv=none; b=hfC6oDGUU9t+VKSNHiuqxws4KnfdJwFp0gZh3kHOnM/7/wId0lvQImcEYyw5tnm3V2+VWzxShu827BgsoRoo65RUmDHjA8eM4pJy2o+M9gC/09uNVLlk8Yc6/Bo3jYztrQjpy6iQKLu6JxOIAmY6AbaVY3ccJsVkDEntB76NkJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712102787; c=relaxed/simple;
-	bh=XcfrTHhJLvglQbqn87aogUGV5RFe2AjR6lsNjkf5dgE=;
+	s=arc-20240116; t=1712103007; c=relaxed/simple;
+	bh=NWTYbgj84aSXH8c2vB0NZyKdb9P/11YTqUctL5sXQxo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=loNg+dMK1avAeVDYaGnEBSm5lXoKmR4RtwBi0cIHWpd1GrRDWNsrLmfQXnFdwz1tMOV5AVCz1UkAS9HIEgeTEfQxonKJO/8s5WdCJ9/95Fpf1YUtURbzep1MwhxiivuDgdin6lOIr+TN9M+yRZzsKa4rU/OmDqG3aShuijR0RHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=QzfXb/zc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=usJob1th; arc=none smtp.client-ip=103.168.172.144
+	 MIME-Version:Content-Type; b=AMg8/pBO6Qo1gGmZMu7VT6/WaErUHu8qcA9E1V+2Gg81vH5iR/Scx7zDooi8ycnVYICOQs8i/mJGgL5bG93t+oA7ZMUMBKPYsQTxJTIWmBQiSChnExlwuOmmWfUmJqjz5ZR3i3rXyeaKvLr4It2wQgV9IZu8glFlIk3Xg3b4KOQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=lRVZqSD+; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=clzF2kFJ; arc=none smtp.client-ip=103.168.172.155
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.nyi.internal (Postfix) with ESMTP id DD50813800C2;
-	Tue,  2 Apr 2024 20:06:23 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 02 Apr 2024 20:06:23 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 977EF11400EF;
+	Tue,  2 Apr 2024 20:10:04 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 02 Apr 2024 20:10:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
 	:cc:content-transfer-encoding:content-type:content-type:date
 	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1712102783;
-	 x=1712189183; bh=hWNF6G5rsIjaO+N+prGyi6w41Topwik2A6vIksJO8Yc=; b=
-	QzfXb/zc2FfrfJjTbO9sOBr9WZSwsBIqKt2F20QXxzxKR9fRVZNjgwumAktWjdg+
-	YZnzVq2rg9U3llCzWORnhvpQZZOzfZwKgjqyt/oIEePyNFGp4KAtMgNnmwojwzTe
-	9FBGFi6jMrbekaIYlutD1RqTNe/ny3qfH6b6XLwHV9TlRE81xz6feRGdrKEfGC2W
-	qYjQ8ESPc7hkm95Wt41IO1VCF/TYMLBKciZONvVtWpE01/GMsd2KwlH4IaFtKte9
-	FkcBluwOhTBgiPBjsHKDO0iezOVzs+c2JGpYEKotkCWzq5R28rrPabcKBtdZ7Ew9
-	WR6qSseRmEh9Sp+N8lfAcw==
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1712103004;
+	 x=1712189404; bh=XfyaUGyBhBfXhWq9WDJJ4hLODydb5vyZB4n7KWoqrDM=; b=
+	lRVZqSD+f8li0k2KUaMMh6pk1gmn7OG7Bxs2VkJSmdRbkmecGiDMvrj9Q9c1fbQ+
+	sjmnx3e0bScpzN3Rllv7FfhXBd+tHjxKvCI6Gnv8TlCiIMCnrKy7Pj9TLdMsbF3Z
+	AgpGj5DkmkFaXRwlqTflCvL9lxa9LLXAGeq5o4UuXP3/i7zeXgYm8H7kYoTSqaiL
+	YQmBw7OsYlJYm7MzfE7BNq9gDYUZMZ4aaMdm8brds1naTKLnH7oGdwdpPkbpnxxT
+	PAH3q0+pA5pqXb2Pqd+TduzF+dvnb/HNOtRymp6YKZW6CtigDXa2LQ9vulTKKCy/
+	ToBisyldul2xuEsDtnb39w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712102783; x=
-	1712189183; bh=hWNF6G5rsIjaO+N+prGyi6w41Topwik2A6vIksJO8Yc=; b=u
-	sJob1thWBv9QyrRvwXAtDevVJFy1qF/uGhBoxmsB77qaLg7u8tdRMXkygUulimen
-	oLfZXEeaXyh7sF3cANy6nIqB/POjVT8mydfqY6WzkzMVxkevPi56lIt3h75PGQGt
-	OkFDXDRz86gZ0rWyZTUkCe+HJIyBKMSIa9cj5qp25OkpxwgIM6LaoYn9RdLUoYFf
-	zJ7TeYFTpeZ9xpH51ui6709jLmSeKz8H6Ag36IuT4Pv3pUUHpSdIjgw9/7A7El0T
-	pwrOAnP7/y3GnMQCNmhpM6UlJ0AevFM/xpfa5AuGE29F2xVH/BZ9YdlUe5KLbn2t
-	inGKmw0UdpXDwW7YziGBA==
-X-ME-Sender: <xms:f50MZs0UbzdX4VkEDigd-XnCAx_xQRvZbMMHCS--QN_eP7LJpG5fnw>
-    <xme:f50MZnEl7qFgNm_FCm7U4LykA7Dl1jVsYnqLfydw1c1w4b8QRQidxCn7C5JDbgkd-
-    qMEYoosn8_hTSZJo4k>
-X-ME-Received: <xmr:f50MZk7PlWF0sxTzKKvh7Sl-KlTobXbLxAoOgJEEu6sH8War3_U_vPyFiFPzCvvL6mcqcw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeffedgfedtucetufdoteggodetrfdotf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712103004; x=
+	1712189404; bh=XfyaUGyBhBfXhWq9WDJJ4hLODydb5vyZB4n7KWoqrDM=; b=c
+	lzF2kFJOG/s8Z+GBfpJ5uMndgW3kXcXQSePHexZJEjkm/Nuk3rW3JIYNprkBKLDD
+	s+kaDpMCYvCs16dP5vSN9qNOl+dkuaUWCcbTOTCkM7rDq0OmPSNSbL8UrF2AOLmR
+	QQmaO0+DHRq1nAKA6YbHih4Zjo8nZQp6ohGknCzHjdEz1EZGGPgUi/BeKioRWhaS
+	k7SnOlaiv75I4GK7EdBiL7N+uYmSdnyRSrPOM2ZfMsrLIiej/Bl8OCOdzzjwY7Ln
+	9w4S7SL6z9eW/tc0g1YRlVylYPyA49nVeRyaGI6RS+MU5cmSY+htIE6tHnGoJtO6
+	UoT5J0bWSbRlNF0anJfIg==
+X-ME-Sender: <xms:XJ4MZnD1UcU3n4po3hFfCnmafCE50JQBLXZbtknyNAoVt2XjseUh6Q>
+    <xme:XJ4MZtg8nlH4Rdwf5HuSn5uI7L_zzXxzyllimYxyFaG4gHgssGbs4bYqv8ROKZDex
+    BwPldfHqyhqx-KbZsA>
+X-ME-Received: <xmr:XJ4MZilQikmEJvLHBhz-95Lj3zTD9JFZjf_r78DOJXnmpsWOqPKnbQ-ns1IBuKo8Hz9OOg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeffedgfeduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvvefufffkjghfggfgtgesthhqredttddtjeenucfhrhhomhepnfhukhgv
@@ -72,27 +72,28 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeffedgfedtucetufdoteggod
     ephfeugfegvdeitdefgeevvdelgedutdejueefkeffieevueduhedtueektdffjeeunecu
     vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplhhukhgvse
     hljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:f50MZl3E1CklCvRVW99ZMMQJfgducM51oX46eM0ZOVrcowzuaokBpw>
-    <xmx:f50MZvHtAuB8k9d0aekBBCvswnA0gSCQpr43E94N3McRovE04IBpvQ>
-    <xmx:f50MZu9xGNz_dxLQ0zhvNUhWi0qCu11N0MUjhDQn0Qn8iwpOf9YQlw>
-    <xmx:f50MZknOtmkHf8bCy3OpaV9guC4VnoeYMtY0lLJ14EwdLojnwfziPQ>
-    <xmx:f50MZgOXNCfIxHYBisPUUI5Ri2VGqIFjz0zHssI9zfhJwQqOBoTIEnhp>
+X-ME-Proxy: <xmx:XJ4MZpxjmEyTaKUqwJY9F9-eSXKKtPvaiB4WQTYgOVVEnE79i2O13w>
+    <xmx:XJ4MZsRVdN4Dlqo0B292kj9WiYVz3k85q2cx88y2ImL-NB4fBQ5FDA>
+    <xmx:XJ4MZsY4Lca4zxbjoMIhfqQt8UDkBtzT_CMurHdjgHE9s4BjzEYHkg>
+    <xmx:XJ4MZtShaH-JuFj9AtD9t6aQ7gUJMD1rpfi-yCSCvBzR5JeLnKaDKQ>
+    <xmx:XJ4MZhJC0V2SUijlcDcN35pvqqeH911XF5H3gWraYXjv6wySsOtHK1tq>
 Feedback-ID: i5ec1447f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 2 Apr 2024 20:06:21 -0400 (EDT)
+ 2 Apr 2024 20:10:02 -0400 (EDT)
 From: Luke Jones <luke@ljones.dev>
 To: Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
 Cc: Hans de Goede <hdegoede@redhat.com>, corentin.chary@gmail.com,
  platform-driver-x86@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 Subject:
- Re: [PATCH v2 4/9] platform/x86: asus-wmi: support toggling POST sound
-Date: Wed, 03 Apr 2024 13:06:17 +1300
-Message-ID: <21854739.fSG56mABFh@fedora>
-In-Reply-To: <0c8635b9-db16-9125-63bc-7761800e3e96@linux.intel.com>
+ Re: [PATCH v2 5/9] platform/x86: asus-wmi: store a min default for ppt
+ options
+Date: Wed, 03 Apr 2024 13:09:59 +1300
+Message-ID: <4555327.yiUUSuA9gR@fedora>
+In-Reply-To: <89b0c0ea-30ce-28c6-19d2-ebd113b17935@linux.intel.com>
 References:
  <20240402022607.34625-1-luke@ljones.dev>
- <20240402022607.34625-5-luke@ljones.dev>
- <0c8635b9-db16-9125-63bc-7761800e3e96@linux.intel.com>
+ <20240402022607.34625-6-luke@ljones.dev>
+ <89b0c0ea-30ce-28c6-19d2-ebd113b17935@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -102,50 +103,87 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="utf-8"
 
-On Tuesday, 2 April 2024 11:47:08=E2=80=AFPM NZDT Ilpo J=C3=A4rvinen wrote:
+On Tuesday, 2 April 2024 11:49:50=E2=80=AFPM NZDT Ilpo J=C3=A4rvinen wrote:
 > On Tue, 2 Apr 2024, Luke D. Jones wrote:
-> > Add support for toggling the BIOS POST sound on some ASUS laptops.
+> > Laptops with any of the ppt or nv tunables default to the minimum setti=
+ng
+> > on boot so we can safely assume a stored value is correct.
+> >=20
+> > This patch adds storing of those values in the local struct, and enables
+> > reading of those values back. To prevent creating a series of byte holes
+> > in the struct the "<name>_available" bool is removed and
+> > `asus_sysfs_is_visible()` uses the `ASUS_WMI_DEVID_<name>` directly.
 > >=20
 > > Signed-off-by: Luke D. Jones <luke@ljones.dev>
 > > ---
 > >=20
-> >  .../ABI/testing/sysfs-platform-asus-wmi       |  9 ++++
-> >  drivers/platform/x86/asus-wmi.c               | 51 +++++++++++++++++++
-> >  include/linux/platform_data/x86/asus-wmi.h    |  3 ++
-> >  3 files changed, 63 insertions(+)
+> >  drivers/platform/x86/asus-wmi.c | 127 +++++++++++++++++++++++++-------
+> >  1 file changed, 99 insertions(+), 28 deletions(-)
 > >=20
-> > diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> > b/Documentation/ABI/testing/sysfs-platform-asus-wmi index
-> > ef1ac1a20a71..41b92e53e88a 100644
-> > --- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> > +++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> > @@ -194,3 +194,12 @@ Contact:	"Luke Jones" <luke@ljones.dev>
+> > diff --git a/drivers/platform/x86/asus-wmi.c
+> > b/drivers/platform/x86/asus-wmi.c index b795f9c1941f..c80afa385532 1006=
+44
+> > --- a/drivers/platform/x86/asus-wmi.c
+> > +++ b/drivers/platform/x86/asus-wmi.c
+> > @@ -262,13 +262,13 @@ struct asus_wmi {
 > >=20
-> >  Description:
-> >  		Set the target temperature limit of the Nvidia dGPU:
-> >  			* min=3D75, max=3D87
+> >  	u32 gpu_mux_dev;
+> >  =09
+> >  	/* Tunables provided by ASUS for gaming laptops */
 > >=20
+> > -	bool ppt_pl2_sppt_available;
+> > -	bool ppt_pl1_spl_available;
+> > -	bool ppt_apu_sppt_available;
+> > -	bool ppt_plat_sppt_available;
+> > -	bool ppt_fppt_available;
+> > -	bool nv_dyn_boost_available;
+> > -	bool nv_temp_tgt_available;
+> > +	u32 ppt_pl2_sppt;
+> > +	u32 ppt_pl1_spl;
+> > +	u32 ppt_apu_sppt;
+> > +	u32 ppt_platform_sppt;
+> > +	u32 ppt_fppt;
+> > +	u32 nv_dynamic_boost;
+> > +	u32 nv_temp_target;
+> >=20
+> >  	u32 kbd_rgb_dev;
+> >  	bool kbd_rgb_state_available;
+> >=20
+> > @@ -1020,11 +1020,21 @@ static ssize_t ppt_pl2_sppt_store(struct device
+> > *dev,>=20
+> >  		return -EIO;
+> >  =09
+> >  	}
+> >=20
+> > +	asus->ppt_pl2_sppt =3D value;
+> >=20
+> >  	sysfs_notify(&asus->platform_device->dev.kobj, NULL,=20
+"ppt_pl2_sppt");
+> >  =09
+> >  	return count;
+> > =20
+> >  }
+> >=20
+> > -static DEVICE_ATTR_WO(ppt_pl2_sppt);
 > > +
-> > +What:		/sys/devices/platform/<platform>/boot_sound
-> > +Date:		Apr 2024
-> > +KernelVersion:	6.10
-> > +Contact:	"Luke Jones" <luke@ljones.dev>
-> > +Description:
-> > +		Set if the BIOS POST sound is played on boot.
-> > +			* 0 - False,
-> > +			* 1 - True
-> > \ No newline at end of file
+> > +static ssize_t ppt_pl2_sppt_show(struct device *dev,
+> > +				       struct device_attribute=20
+*attr,
+> > +				       char *buf)
+> > +{
+> > +	struct asus_wmi *asus =3D dev_get_drvdata(dev);
+> > +
+> > +	return sysfs_emit(buf, "%d\n", asus->ppt_pl2_sppt);
 >=20
-> Add the last newline please.
+> Use %u for u32 values. This applies to all sysfs_emits in this patch.
 
-Editor removed :(
+Thought checkpatch or the compiler would catch that. Done.
 
->=20
-> After fixing that, please add:
->=20
-> Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+I've added your reviewed tag due to the simplicity of the change requested.=
+ I=20
+hope this was okay.
 
-Done and done.
+
 
 
 
