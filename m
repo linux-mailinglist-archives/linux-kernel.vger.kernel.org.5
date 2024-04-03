@@ -1,165 +1,398 @@
-Return-Path: <linux-kernel+bounces-128907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E8CA8961BD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:03:28 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ACA88961BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 03:07:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29CE8289762
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:03:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C7691C22619
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 01:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE2FEFC0C;
-	Wed,  3 Apr 2024 01:03:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EE8D101C4;
+	Wed,  3 Apr 2024 01:07:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b="TZre1Pda"
-Received: from mail-4317.proton.ch (mail-4317.proton.ch [185.70.43.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BHMeJe/C"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C624DDC3;
-	Wed,  3 Apr 2024 01:03:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB1428E7;
+	Wed,  3 Apr 2024 01:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712106199; cv=none; b=mecIfPlYEo8ypBh/dzf7qT5A4f32uLc3H4z+24k9mdss+2ctZQYd+CrxAiQs6XhUz+iOdUxWuxcNVin6fvauDs4/h8XM1Xd6Sgy2TCJ5F78nKb1bvKkFhBSSMOOoLDcnhtUoMXIF9hUib3OBOsDaX9VYf5an2A8mlwTdrIU8CW4=
+	t=1712106435; cv=none; b=RgCGZFewwwJiemfQwBwIi72EwQhdgIpVm0AEhwutKM49d2qzTL/3ZjuLf4D+hPj45sow6t3wXNqTMhH9RXlutER8yiVatDal5GS8gBx1TwTXJoORffPJMEb+q96LW9/07v+cJPFH+eV8q8rtJ0Yx+83JUyLgxuXx5Pskd0/eyHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712106199; c=relaxed/simple;
-	bh=AOZHdUFBAbZLCmK2+LKYvUtaym4XNZbYFlXQzqVeLzo=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BK5TTL+p18Ir7vgrOzONX6Uj47K0fHkrw/3y9Zxz7xuTZXNuSRLf5mzveQCwYd0exMnv01t83RAbajYI4X37Owm8NmR61ctfsHgPKP9NC4k/R1hK/xpNViO09DQtMWbBnMfIk/wTxyW3xqZffGGcH2ldbwktfyNxmH4ksaRe7sM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com; spf=pass smtp.mailfrom=thefossguy.com; dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b=TZre1Pda; arc=none smtp.client-ip=185.70.43.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thefossguy.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thefossguy.com;
-	s=protonmail; t=1712106195; x=1712365395;
-	bh=nHxcYCHNMSfzwkXGRERFhLW2wEH2xIMrQxurqp9tbRI=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=TZre1PdaZbND18eFBwwhyDtGirzYl/imTukmyF5tJw/SWpeZF0Zydt4e3s1+WF5jv
-	 FqVbQdH/ZEU+skT79DAlhwwftq4iSIlaWZJtRopHGcnCVWul9SFAaqOhj18UPFVWi/
-	 0vTW5Dh70G9iG4GtntujilYBF41ArOy22rYr1aLtvCF/eZILe/r/7zHXsv2N7VHWAo
-	 N8jnBhlpmwt14ds5H/ZC+3CnaWaajNEnnSLPJ2FGsOfPgzmmjVt8O/cJxzd3XPfuBt
-	 CGYis613tXuVjpgBAQ/PZUadsWrQPgBpQ7U8+m0zS7Foyu5vXGBkdZLRyrGSIPWWYb
-	 +xa/PhPqMHJdQ==
-Date: Wed, 03 Apr 2024 01:03:07 +0000
-To: Saravana Kannan <saravanak@google.com>
-From: Pratham Patel <prathampatel@thefossguy.com>
-Cc: Dragan Simic <dsimic@manjaro.org>, sebastian.reichel@collabora.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, regressions@lists.linux.dev, stable@vger.kernel.org
-Subject: Re: Fixing the devicetree of Rock 5 Model B (and possibly others)
-Message-ID: <D0A2ZL6S8UG6.2BQKIBQWYB36D@thefossguy.com>
-In-Reply-To: <CAGETcx_ToHsp_c+Yt0qqST4Zd-GC7dPn_j=PpB1n1xpZtOnMfg@mail.gmail.com>
-References: <tQ0L3-34g4t-mzfQIP6KDe5OYelGnEo6Udzq6Kb_nEcljppSQUXOktpE__nL-CdLOu9gW-4tIIbjtSbqrdCrjEkdhZLPiiHTqRcCB6WORuM=@thefossguy.com> <ac4246bf3786230eb9ca85b329e7d0df@manjaro.org> <CAGETcx89V5CJrAq6XwuGiusQnkR804pTgYAtS94v7Q+v=Cv+qA@mail.gmail.com> <D0A122WK7CB9.33B2TP6UCMJBJ@thefossguy.com> <CAGETcx_ToHsp_c+Yt0qqST4Zd-GC7dPn_j=PpB1n1xpZtOnMfg@mail.gmail.com>
-Feedback-ID: 104309535:user:proton
+	s=arc-20240116; t=1712106435; c=relaxed/simple;
+	bh=EGqoTAgxVaFCAmcmZZVVakgmZFGI0OXp1KgZa2d22g0=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=UyWcPwd7h68lp6NeeFRUKAgqefYX2uen+EzpIap0qV8qvl225OUy89ICSAMXvPmTnw5nSEeyRnd5QPl5zGQt7wpXqnH97AddUtUEcbk87RBCRL5z4OboH+/D8xta90YF6UrKYrbmTYusaw2jMfCxCN5kmcti4wTxq63LM1MxfNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BHMeJe/C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 296BBC433C7;
+	Wed,  3 Apr 2024 01:07:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712106434;
+	bh=EGqoTAgxVaFCAmcmZZVVakgmZFGI0OXp1KgZa2d22g0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=BHMeJe/CtQBVTGvazdbr1T2yKAg/zs4zGsljzM4z8V2OCqHWhkr5FsStW7sTSfftn
+	 Zs/pAslMfa9/VgBFanE1GkVDLNK5fEyflxZEUl3TTb1kf/VMsd/v6lVT31ZG227iM8
+	 hDt8oCdkNvEKfcJ8mEfLuKB7U0UHxQGWNMTehPf/Uiw9R7RtY85dynswUmPnEJp/Wp
+	 R/5ddOXkNiZXwOiA87fjM8vYU78NYsT4t1FsHR3XQvwq62GxR7UpZGDLSc/GTh+rbZ
+	 yPuj5JZeOZQ9FymGHXNqKvJRW2bmJdkOHQNl6nDPszcstdqkq0MauS57FgeQmwqLz6
+	 +3OMhGtRvePCw==
+Date: Wed, 3 Apr 2024 10:07:08 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <jolsa@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>, Oleg Nesterov <oleg@redhat.com>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+ <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ bpf@vger.kernel.org, Song Liu <songliubraving@fb.com>, Yonghong Song
+ <yhs@fb.com>, John Fastabend <john.fastabend@gmail.com>, Peter Zijlstra
+ <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
+ "Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org
+Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
+ probe
+Message-Id: <20240403100708.233575a8ac2a5bac2192d180@kernel.org>
+In-Reply-To: <20240402093302.2416467-2-jolsa@kernel.org>
+References: <20240402093302.2416467-1-jolsa@kernel.org>
+	<20240402093302.2416467-2-jolsa@kernel.org>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed Apr 3, 2024 at 6:16 AM IST, Saravana Kannan wrote:
-> On Tue, Apr 2, 2024 at 4:32=E2=80=AFPM Pratham Patel
-> <prathampatel@thefossguy.com> wrote:
-> >
-> > On Tue Apr 2, 2024 at 4:54 AM IST, Saravana Kannan wrote:
-> > > On Sat, Mar 23, 2024 at 10:10=E2=80=AFAM Dragan Simic <dsimic@manjaro=
-org> wrote:
-> > > >
-> > > > Hello Pratham,
-> > > >
-> > > > On 2024-03-23 18:02, Pratham Patel wrote:
-> > > > > I looked at the patch and tried several things, neither resulted =
-in
-> > > > > anything that would point me to the core issue. Then I tried this=
-:
-> > > >
-> > > > Could you, please, clarify a bit what's the actual issue you're
-> > > > experiencing on your Rock 5B?
-> > >
-> > > Pratham, can you reply to this please? I don't really understand what
-> > > your issue is for me to be able to help.
-> >
-> > Hi,
-> >
-> > I apologize for not replying. Somehow, I did not notice the reply from
-> > Dragan. :(
-> >
-> > Since this patch was applied, an issue in the Rock 5B's DT has been
-> > unearthed which now results in the kernel being unable to boot properly=
-.
-> >
-> > Following is the relevant call trace from the UART capture:
-> >
-> > [   21.595068] Call trace:
-> > [   21.595288]  smp_call_function_many_cond+0x174/0x5f8
-> > [   21.595728]  on_each_cpu_cond_mask+0x2c/0x40
-> > [   21.596109]  cpuidle_register_driver+0x294/0x318
-> > [   21.596524]  cpuidle_register+0x24/0x100
-> > [   21.596875]  psci_cpuidle_probe+0x2e4/0x490
-> > [   21.597247]  platform_probe+0x70/0xd0
-> > [   21.597575]  really_probe+0x18c/0x3d8
-> > [   21.597905]  __driver_probe_device+0x84/0x180
-> > [   21.598294]  driver_probe_device+0x44/0x120
-> > [   21.598669]  __device_attach_driver+0xc4/0x168
-> > [   21.599063]  bus_for_each_drv+0x8c/0xf0
-> > [   21.599408]  __device_attach+0xa4/0x1c0
-> > [   21.599748]  device_initial_probe+0x1c/0x30
-> > [   21.600118]  bus_probe_device+0xb4/0xc0
-> > [   21.600462]  device_add+0x68c/0x888
-> > [   21.600775]  platform_device_add+0x19c/0x270
-> > [   21.601154]  platform_device_register_full+0xdc/0x178
-> > [   21.601602]  psci_idle_init+0xa0/0xc8
-> > [   21.601934]  do_one_initcall+0x60/0x290
-> > [   21.602275]  kernel_init_freeable+0x20c/0x3e0
-> > [   21.602664]  kernel_init+0x2c/0x1f8
-> > [   21.602979]  ret_from_fork+0x10/0x20
->
-> This doesn't make a lot of sense. "remote-endpoint" shouldn't be
-> related to anything to do with psci cpuidle. I'm guessing something
-> else is failing much earlier in boot that's indirectly causing this
-> somehow? Can you please take a look at what's failing earlier and let
-> us know? Or see what driver probe is failing up to this point but used
-> to work in the good case.
+Hi Jiri,
 
-I'm pretty new to this, "just starting". I'm not sure how to do that,
-since the kernel doesn't really "move forward". I will verify if
-a8037ceb8964 fixes it or not and get back by the end of this week.
+On Tue,  2 Apr 2024 11:33:00 +0200
+Jiri Olsa <jolsa@kernel.org> wrote:
 
-> Also, where is the dts file that corresponds to this board in upstream? I=
-s it
-> arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+> Adding uretprobe syscall instead of trap to speed up return probe.
 
-Yes.
+This is interesting approach. But I doubt we need to add additional
+syscall just for this purpose. Can't we use another syscall or ioctl?
 
-> >
-> > > Also, can you give the output of <debugfs>/devices_deferred for the
-> > > good vs bad case?
-> >
-> > I can't provide you with requested output from the bad case, since the
-> > kernel never moves past this to an initramfs rescue shell, but followin=
-g
-> > is the output from v6.8.1 (**with aforementioned patch reverted**).
-> >
-> > # cat /sys/kernel/debug/devices_deferred
-> > fc400000.usb    platform: wait for supplier /phy@fed90000/usb3-port
-> > 1-0022  typec_fusb302: cannot register tcpm port
-> > fc000000.usb    platform: wait for supplier /phy@fed80000/usb3-port
-> >
-> > It seems that v6.8.2 works _without needing to revert the patch_. I wil=
-l
-> > have to look into this sometime this week but it seems like
-> > a8037ceb8964 (arm64: dts: rockchip: drop rockchip,trcm-sync-tx-only fro=
-m rk3588 i2s)
-> > seems to be the one that fixed the root issue. I will have to test it
-> > sometime later this week.
->
-> Ok, once you find the patch that fixes things, let me know too.
+Also, we should run syzkaller on this syscall. And if uretprobe is
+set in the user function, what happen if the user function directly
+calls this syscall? (maybe it consumes shadow stack?)
 
-Will do!
+Thank you,
 
- -- Pratham Patel
+> 
+> At the moment the uretprobe setup/path is:
+> 
+>   - install entry uprobe
+> 
+>   - when the uprobe is hit, it overwrites probed function's return address
+>     on stack with address of the trampoline that contains breakpoint
+>     instruction
+> 
+>   - the breakpoint trap code handles the uretprobe consumers execution and
+>     jumps back to original return address
+> 
+> This patch replaces the above trampoline's breakpoint instruction with new
+> ureprobe syscall call. This syscall does exactly the same job as the trap
+> with some more extra work:
+> 
+>   - syscall trampoline must save original value for rax/r11/rcx registers
+>     on stack - rax is set to syscall number and r11/rcx are changed and
+>     used by syscall instruction
+> 
+>   - the syscall code reads the original values of those registers and
+>     restore those values in task's pt_regs area
+> 
+> Even with the extra registers handling code the having uretprobes handled
+> by syscalls shows speed improvement.
+> 
+>   On Intel (11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz)
+> 
+>   current:
+> 
+>     base           :   15.888 ± 0.033M/s
+>     uprobe-nop     :    3.016 ± 0.000M/s
+>     uprobe-push    :    2.832 ± 0.005M/s
+>     uprobe-ret     :    1.104 ± 0.000M/s
+>     uretprobe-nop  :    1.487 ± 0.000M/s
+>     uretprobe-push :    1.456 ± 0.000M/s
+>     uretprobe-ret  :    0.816 ± 0.001M/s
+> 
+>   with the fix:
+> 
+>     base           :   15.116 ± 0.045M/s
+>     uprobe-nop     :    3.001 ± 0.045M/s
+>     uprobe-push    :    2.831 ± 0.004M/s
+>     uprobe-ret     :    1.102 ± 0.001M/s
+>     uretprobe-nop  :    1.969 ± 0.001M/s  < 32% speedup
+>     uretprobe-push :    1.905 ± 0.004M/s  < 30% speedup
+>     uretprobe-ret  :    0.933 ± 0.002M/s  < 14% speedup
+> 
+>   On Amd (AMD Ryzen 7 5700U)
+> 
+>   current:
+> 
+>     base           :    5.105 ± 0.003M/s
+>     uprobe-nop     :    1.552 ± 0.002M/s
+>     uprobe-push    :    1.408 ± 0.003M/s
+>     uprobe-ret     :    0.827 ± 0.001M/s
+>     uretprobe-nop  :    0.779 ± 0.001M/s
+>     uretprobe-push :    0.750 ± 0.001M/s
+>     uretprobe-ret  :    0.539 ± 0.001M/s
+> 
+>   with the fix:
+> 
+>     base           :    5.119 ± 0.002M/s
+>     uprobe-nop     :    1.523 ± 0.003M/s
+>     uprobe-push    :    1.384 ± 0.003M/s
+>     uprobe-ret     :    0.826 ± 0.002M/s
+>     uretprobe-nop  :    0.866 ± 0.002M/s  < 11% speedup
+>     uretprobe-push :    0.826 ± 0.002M/s  < 10% speedup
+>     uretprobe-ret  :    0.581 ± 0.001M/s  <  7% speedup
+> 
+> Reviewed-by: Oleg Nesterov <oleg@redhat.com>
+> Suggested-by: Andrii Nakryiko <andrii@kernel.org>
+> Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+>  arch/x86/entry/syscalls/syscall_64.tbl |  1 +
+>  arch/x86/kernel/uprobes.c              | 83 ++++++++++++++++++++++++++
+>  include/linux/syscalls.h               |  2 +
+>  include/linux/uprobes.h                |  2 +
+>  include/uapi/asm-generic/unistd.h      |  5 +-
+>  kernel/events/uprobes.c                | 18 ++++--
+>  kernel/sys_ni.c                        |  2 +
+>  7 files changed, 108 insertions(+), 5 deletions(-)
+> 
+> diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+> index 7e8d46f4147f..af0a33ab06ee 100644
+> --- a/arch/x86/entry/syscalls/syscall_64.tbl
+> +++ b/arch/x86/entry/syscalls/syscall_64.tbl
+> @@ -383,6 +383,7 @@
+>  459	common	lsm_get_self_attr	sys_lsm_get_self_attr
+>  460	common	lsm_set_self_attr	sys_lsm_set_self_attr
+>  461	common	lsm_list_modules	sys_lsm_list_modules
+> +462	64	uretprobe		sys_uretprobe
+>  
+>  #
+>  # Due to a historical design error, certain syscalls are numbered differently
+> diff --git a/arch/x86/kernel/uprobes.c b/arch/x86/kernel/uprobes.c
+> index 6c07f6daaa22..6fc5d16f6c17 100644
+> --- a/arch/x86/kernel/uprobes.c
+> +++ b/arch/x86/kernel/uprobes.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/ptrace.h>
+>  #include <linux/uprobes.h>
+>  #include <linux/uaccess.h>
+> +#include <linux/syscalls.h>
+>  
+>  #include <linux/kdebug.h>
+>  #include <asm/processor.h>
+> @@ -308,6 +309,88 @@ static int uprobe_init_insn(struct arch_uprobe *auprobe, struct insn *insn, bool
+>  }
+>  
+>  #ifdef CONFIG_X86_64
+> +
+> +asm (
+> +	".pushsection .rodata\n"
+> +	".global uretprobe_syscall_entry\n"
+> +	"uretprobe_syscall_entry:\n"
+> +	"pushq %rax\n"
+> +	"pushq %rcx\n"
+> +	"pushq %r11\n"
+> +	"movq $" __stringify(__NR_uretprobe) ", %rax\n"
+> +	"syscall\n"
+> +	"popq %r11\n"
+> +	"popq %rcx\n"
+> +
+> +	/* The uretprobe syscall replaces stored %rax value with final
+> +	 * return address, so we don't restore %rax in here and just
+> +	 * call ret.
+> +	 */
+> +	"retq\n"
+> +	".global uretprobe_syscall_end\n"
+> +	"uretprobe_syscall_end:\n"
+> +	".popsection\n"
+> +);
+> +
+> +extern u8 uretprobe_syscall_entry[];
+> +extern u8 uretprobe_syscall_end[];
+> +
+> +void *arch_uprobe_trampoline(unsigned long *psize)
+> +{
+> +	*psize = uretprobe_syscall_end - uretprobe_syscall_entry;
+> +	return uretprobe_syscall_entry;
+> +}
+> +
+> +SYSCALL_DEFINE0(uretprobe)
+> +{
+> +	struct pt_regs *regs = task_pt_regs(current);
+> +	unsigned long err, ip, sp, r11_cx_ax[3];
+> +
+> +	err = copy_from_user(r11_cx_ax, (void __user *)regs->sp, sizeof(r11_cx_ax));
+> +	WARN_ON_ONCE(err);
+> +
+> +	/* expose the "right" values of r11/cx/ax/sp to uprobe_consumer/s */
+> +	regs->r11 = r11_cx_ax[0];
+> +	regs->cx  = r11_cx_ax[1];
+> +	regs->ax  = r11_cx_ax[2];
+> +	regs->sp += sizeof(r11_cx_ax);
+> +	regs->orig_ax = -1;
+> +
+> +	ip = regs->ip;
+> +	sp = regs->sp;
+> +
+> +	uprobe_handle_trampoline(regs);
+> +
+> +	/*
+> +	 * uprobe_consumer has changed sp, we can do nothing,
+> +	 * just return via iret
+> +	 */
+> +	if (regs->sp != sp)
+> +		return regs->ax;
+> +	regs->sp -= sizeof(r11_cx_ax);
+> +
+> +	/* for the case uprobe_consumer has changed r11/cx */
+> +	r11_cx_ax[0] = regs->r11;
+> +	r11_cx_ax[1] = regs->cx;
+> +
+> +	/*
+> +	 * ax register is passed through as return value, so we can use
+> +	 * its space on stack for ip value and jump to it through the
+> +	 * trampoline's ret instruction
+> +	 */
+> +	r11_cx_ax[2] = regs->ip;
+> +	regs->ip = ip;
+> +
+> +	err = copy_to_user((void __user *)regs->sp, r11_cx_ax, sizeof(r11_cx_ax));
+> +	WARN_ON_ONCE(err);
+> +
+> +	/* ensure sysret, see do_syscall_64() */
+> +	regs->r11 = regs->flags;
+> +	regs->cx  = regs->ip;
+> +
+> +	return regs->ax;
+> +}
+> +
+>  /*
+>   * If arch_uprobe->insn doesn't use rip-relative addressing, return
+>   * immediately.  Otherwise, rewrite the instruction so that it accesses
+> diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+> index 77eb9b0e7685..db150794f89d 100644
+> --- a/include/linux/syscalls.h
+> +++ b/include/linux/syscalls.h
+> @@ -972,6 +972,8 @@ asmlinkage long sys_lsm_list_modules(u64 *ids, size_t *size, u32 flags);
+>  /* x86 */
+>  asmlinkage long sys_ioperm(unsigned long from, unsigned long num, int on);
+>  
+> +asmlinkage long sys_uretprobe(void);
+> +
+>  /* pciconfig: alpha, arm, arm64, ia64, sparc */
+>  asmlinkage long sys_pciconfig_read(unsigned long bus, unsigned long dfn,
+>  				unsigned long off, unsigned long len,
+> diff --git a/include/linux/uprobes.h b/include/linux/uprobes.h
+> index f46e0ca0169c..a490146ad89d 100644
+> --- a/include/linux/uprobes.h
+> +++ b/include/linux/uprobes.h
+> @@ -138,6 +138,8 @@ extern bool arch_uretprobe_is_alive(struct return_instance *ret, enum rp_check c
+>  extern bool arch_uprobe_ignore(struct arch_uprobe *aup, struct pt_regs *regs);
+>  extern void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
+>  					 void *src, unsigned long len);
+> +extern void uprobe_handle_trampoline(struct pt_regs *regs);
+> +extern void *arch_uprobe_trampoline(unsigned long *psize);
+>  #else /* !CONFIG_UPROBES */
+>  struct uprobes_state {
+>  };
+> diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+> index 75f00965ab15..8a747cd1d735 100644
+> --- a/include/uapi/asm-generic/unistd.h
+> +++ b/include/uapi/asm-generic/unistd.h
+> @@ -842,8 +842,11 @@ __SYSCALL(__NR_lsm_set_self_attr, sys_lsm_set_self_attr)
+>  #define __NR_lsm_list_modules 461
+>  __SYSCALL(__NR_lsm_list_modules, sys_lsm_list_modules)
+>  
+> +#define __NR_uretprobe 462
+> +__SYSCALL(__NR_uretprobe, sys_uretprobe)
+> +
+>  #undef __NR_syscalls
+> -#define __NR_syscalls 462
+> +#define __NR_syscalls 463
+>  
+>  /*
+>   * 32 bit systems traditionally used different
+> diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+> index 929e98c62965..90395b16bde0 100644
+> --- a/kernel/events/uprobes.c
+> +++ b/kernel/events/uprobes.c
+> @@ -1474,11 +1474,20 @@ static int xol_add_vma(struct mm_struct *mm, struct xol_area *area)
+>  	return ret;
+>  }
+>  
+> +void * __weak arch_uprobe_trampoline(unsigned long *psize)
+> +{
+> +	static uprobe_opcode_t insn = UPROBE_SWBP_INSN;
+> +
+> +	*psize = UPROBE_SWBP_INSN_SIZE;
+> +	return &insn;
+> +}
+> +
+>  static struct xol_area *__create_xol_area(unsigned long vaddr)
+>  {
+>  	struct mm_struct *mm = current->mm;
+> -	uprobe_opcode_t insn = UPROBE_SWBP_INSN;
+> +	unsigned long insns_size;
+>  	struct xol_area *area;
+> +	void *insns;
+>  
+>  	area = kmalloc(sizeof(*area), GFP_KERNEL);
+>  	if (unlikely(!area))
+> @@ -1502,7 +1511,8 @@ static struct xol_area *__create_xol_area(unsigned long vaddr)
+>  	/* Reserve the 1st slot for get_trampoline_vaddr() */
+>  	set_bit(0, area->bitmap);
+>  	atomic_set(&area->slot_count, 1);
+> -	arch_uprobe_copy_ixol(area->pages[0], 0, &insn, UPROBE_SWBP_INSN_SIZE);
+> +	insns = arch_uprobe_trampoline(&insns_size);
+> +	arch_uprobe_copy_ixol(area->pages[0], 0, insns, insns_size);
+>  
+>  	if (!xol_add_vma(mm, area))
+>  		return area;
+> @@ -2123,7 +2133,7 @@ static struct return_instance *find_next_ret_chain(struct return_instance *ri)
+>  	return ri;
+>  }
+>  
+> -static void handle_trampoline(struct pt_regs *regs)
+> +void uprobe_handle_trampoline(struct pt_regs *regs)
+>  {
+>  	struct uprobe_task *utask;
+>  	struct return_instance *ri, *next;
+> @@ -2188,7 +2198,7 @@ static void handle_swbp(struct pt_regs *regs)
+>  
+>  	bp_vaddr = uprobe_get_swbp_addr(regs);
+>  	if (bp_vaddr == get_trampoline_vaddr())
+> -		return handle_trampoline(regs);
+> +		return uprobe_handle_trampoline(regs);
+>  
+>  	uprobe = find_active_uprobe(bp_vaddr, &is_swbp);
+>  	if (!uprobe) {
+> diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
+> index faad00cce269..be6195e0d078 100644
+> --- a/kernel/sys_ni.c
+> +++ b/kernel/sys_ni.c
+> @@ -391,3 +391,5 @@ COND_SYSCALL(setuid16);
+>  
+>  /* restartable sequence */
+>  COND_SYSCALL(rseq);
+> +
+> +COND_SYSCALL(uretprobe);
+> -- 
+> 2.44.0
+> 
 
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
