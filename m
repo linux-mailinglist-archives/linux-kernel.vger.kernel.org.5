@@ -1,127 +1,123 @@
-Return-Path: <linux-kernel+bounces-130109-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130110-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21444897429
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:39:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B644897430
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:40:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CFE94286B5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:39:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C9271C2469C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:40:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 332FE14A603;
-	Wed,  3 Apr 2024 15:38:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03F4114A4CA;
+	Wed,  3 Apr 2024 15:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LVC0aPuD"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j51gbiUb"
+Received: from mail-vs1-f45.google.com (mail-vs1-f45.google.com [209.85.217.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 763941DFE4;
-	Wed,  3 Apr 2024 15:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0BD4148FE8;
+	Wed,  3 Apr 2024 15:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712158730; cv=none; b=uko7MrqCVDwnCKXgY3Y7Vd7AzbrRkBkd0IsK1qJFUPcJsGmeIbKy2ZWr/VVQlkwx5+atPCrWLMCharjHOxWG2Z3optN4QHuD/JgWKPcDBvUK2lHwStVsK0sWDYYKwsY6x/+tCdzv+71lYIbOILQBN7V3m7MxEp33hJe498rLeFM=
+	t=1712158837; cv=none; b=ar1lCuvfR9IbpgvN36uvEUzAfQSTFYE48pXS7+cLz9LkeFgTdwZGi+ZRvxRzYAOSLqWaZMduf1VH45ENZRzcnOMKEYyH5MINazXbc7b0vzCdfn2yOR4MCtWRsCb9nS4v7k0nnOJLBefoJ+ZVmOxeVeIQOacSvVfdJNy+ZVkXtbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712158730; c=relaxed/simple;
-	bh=mdDoDHzYyJDMK8GKn5MPsJuHSLiCQme+XqAogU50jZE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PP2juw8bYMvK/nmwsmfk/xOoYUy+ASzzmmk62pb/u8uqqtjfhP+uL2wZlv3kTlaqv8s1cIkB9dDvaAQfhhOfr2NsS3FJcysOi6vvJzb7YZYw+xig7ZGpLhjjOi32srhcuAuC94DvdAYCTa8l3z7ap9aOurYDQ+RmfZYjMTZwTh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LVC0aPuD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D7B0C433C7;
-	Wed,  3 Apr 2024 15:38:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712158729;
-	bh=mdDoDHzYyJDMK8GKn5MPsJuHSLiCQme+XqAogU50jZE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LVC0aPuDSqNyB8Z4metqsDTdREXc4WgmTOG699M8UOrcJWOoE0/+6IxhUtXzRF/lt
-	 QsqXN5xX76QdeBvHwU1S/rG41l44mI+uv4u5dfK8PmHEV78C2img8Cl/D9L5IlAFBi
-	 nTsPc/zx8Fn8lBKwzpPxbJPrivzxF9qle7t4znB1ei7ojMRNfdot3Dx0LWDkOadlen
-	 ff83cmtGc5WpD2FncE13eOZPsMcaZFE79F3mMsi/PoO9Dp9qRRLJO/9BwEoLGiwSay
-	 Y9CREo314bSVUZ9DFmpEWwACDEEZh8C9h+rWhHnWa/aSGVEDY40WV5C8jIvATkETzf
-	 K9j4eXjaAg3mg==
-Date: Wed, 3 Apr 2024 16:38:37 +0100
-From: Will Deacon <will@kernel.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	David Hildenbrand <david@redhat.com>,
-	David Stevens <stevensd@chromium.org>,
-	Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Anup Patel <anup@brainfault.org>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	Xiaoyao Li <xiaoyao.li@intel.com>, Xu Yilun <yilun.xu@intel.com>,
-	Chao Peng <chao.p.peng@linux.intel.com>,
-	Fuad Tabba <tabba@google.com>, Jim Mattson <jmattson@google.com>,
-	Jarkko Sakkinen <jarkko@kernel.org>,
-	Maxim Levitsky <mlevitsk@redhat.com>,
-	Anish Moorthy <amoorthy@google.com>,
-	David Matlack <dmatlack@google.com>,
-	Yu Zhang <yu.c.zhang@linux.intel.com>,
-	Isaku Yamahata <isaku.yamahata@intel.com>, Edgecombe@google.com,
-	Rick P <rick.p.edgecombe@intel.com>,
-	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Vishal Annapurve <vannapurve@google.com>,
-	Ackerley Tng <ackerleytng@google.com>,
-	Maciej Szmigiero <mail@maciej.szmigiero.name>,
-	Quentin Perret <qperret@google.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Wei Wang <wei.w.wang@intel.com>,
-	Liam Merwick <liam.merwick@oracle.com>,
-	Isaku Yamahata <isaku.yamahata@gmail.com>,
-	Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
-	Hou Wenlong <houwenlong.hwl@antgroup.com>,
-	Xiong Zhang <xiong.y.zhang@linux.intel.com>,
-	Jinrong Liang <ljr.kernel@gmail.com>,
-	Like Xu <like.xu.linux@gmail.com>,
-	Mingwei Zhang <mizhang@google.com>,
-	Dapeng Mi <dapeng1.mi@intel.com>
-Subject: Re: [ANNOUNCE] KVM Microconference at LPC 2024
-Message-ID: <20240403153837.GA17489@willie-the-truck>
-References: <20240402190652.310373-1-seanjc@google.com>
+	s=arc-20240116; t=1712158837; c=relaxed/simple;
+	bh=iwmjTT/6rEUQaG5l9ogq24KennjjjlW/3aoTHTjys/E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TJakUkJ+vSKxvAhAW1vY0gmociF4buCdUSIKyn/J8aDFWOp0SPH08rKNgrHYhY/m6CsF293BFVyWWPJMTTBqHbqgOF3Y5Q2w6ajV3tNkwbf2kE4LWbL72vOfJwLZLe9ztG24J+i+OKgdBFEJpeSsWqwVHXgdlyzmUc5mkkyss1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j51gbiUb; arc=none smtp.client-ip=209.85.217.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f45.google.com with SMTP id ada2fe7eead31-476cec93716so1960937137.2;
+        Wed, 03 Apr 2024 08:40:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712158835; x=1712763635; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fyFZ+qeRNtDYji6u+zsHWjmzts/cBXhgw6vv+4+a4/I=;
+        b=j51gbiUbOdIsDiCnCS05iT6+MwQm0WUbCo7TEoVGn2CviSWnIqboWyjyoHH4zHKg+V
+         OhbRt7qDmimepmAIKjoNLx2mI7WorF7H+ig2sMFNEZPZtiS2Ocanr5gnmcVX2lRn6AS+
+         3VqhMi/v6beuAJazyS1meP+QdyzMN1vVWQ75zhsDyRjCO8n1wjdcgsolIjXtmzV+rRhf
+         MScZjxNDxbf9x8z38Dn1VQJbxC9u2Exu2RmHww143h0x/OV58jqMK+G3AGbBfJrbVOSt
+         HPKf6FeghND3SDCisKU/SgIqWrHuCI8JSHDnEhXWMvTCd6YXPSFFXpfzRgABoQuDYcFy
+         ADew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712158835; x=1712763635;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fyFZ+qeRNtDYji6u+zsHWjmzts/cBXhgw6vv+4+a4/I=;
+        b=gFezZ8omN4BNHzGevXQ+eQw4kd9lW8mtTkP6YhxswpJNFTodJXiSoNULJxFVKYckrd
+         B+ZpVT5K2HC2f8iYgl4CkL+YRpA4P12XEzzjpX/X2XLZl9a7JoF+mosnr1iLKFwMGh1s
+         vBom4tcV/f3eOFHzBPirllcGfk0lRpSn3vQg0NHHkAaB+NipIZgDziEzWEBbnrcyjfUW
+         49vvoICBS0/RpnvNCiwnrYp0Cp4zNmAfBnTpJD1uUtrHTF9nfKlmKhQ8KPj0QLVlFRqZ
+         lrksHv7fGM/kaijohTkJYAMGzzkE+QJW3KOb5/QFOcPenxLrc9xoQrc4TSMmXXpLwlPh
+         OQEg==
+X-Forwarded-Encrypted: i=1; AJvYcCX4LgWsLrXck1fCy81iDsuUBg0MIXIdc2YFGDo2pasL8VqdzxUYah7PMmelDisOzJnTyJnYmuVbuQN9YEc00v2WlIZQERBeERqOXBbhIvnViKKGcdNEQtPqQBaGJ02Ft4YxLwO7GXeo
+X-Gm-Message-State: AOJu0YynCP+XMroFsQkM1phdIDRiqQJcIK66VSgSkFx9+AkPHXvl6iVL
+	MfT1tr1aNn27uXKEKtIuHL4H8LswGbTUsqsi10pVcFDALHrHBmi1qJPqDQ6gzzKIh4FPPBAGXjs
+	kc0TkgaSe7BLKDG3no0pKOJ6on/w=
+X-Google-Smtp-Source: AGHT+IFFn7bvTeZOH9kjBg5JoFvzOQY0G6JUyk5XmsTPCIgTSDqlT4WG3B5RcLFYTdJxFWbOJpzWbXvBOh6LejVNhuA=
+X-Received: by 2002:a05:6102:5124:b0:479:b553:ce16 with SMTP id
+ bm36-20020a056102512400b00479b553ce16mr1935617vsb.20.1712158834832; Wed, 03
+ Apr 2024 08:40:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240402190652.310373-1-seanjc@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20240403143852.13175-1-apais@linux.microsoft.com> <2024040314-unbuckled-botanist-1afc@gregkh>
+In-Reply-To: <2024040314-unbuckled-botanist-1afc@gregkh>
+From: Allen <allen.lkml@gmail.com>
+Date: Wed, 3 Apr 2024 08:40:23 -0700
+Message-ID: <CAOMdWS+Z1ZS2VPBXiYbtOyYBuCCx1i8M1aVMYHGhMRTv259xaA@mail.gmail.com>
+Subject: Re: [PATCH v2] USB: Convert from tasklet to BH workqueue
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: Allen Pais <apais@linux.microsoft.com>, linux-kernel@vger.kernel.org, tj@kernel.org, 
+	keescook@chromium.org, duncan.sands@free.fr, stern@rowland.harvard.edu, 
+	mathias.nyman@intel.com, oneukum@suse.com, linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Sean,
+On Wed, Apr 3, 2024 at 8:02=E2=80=AFAM Greg KH <gregkh@linuxfoundation.org>=
+ wrote:
+>
+> On Wed, Apr 03, 2024 at 02:38:52PM +0000, Allen Pais wrote:
+> > The only generic interface to execute asynchronously in the BH context =
+is
+> > tasklet; however, it's marked deprecated and has some design flaws. To
+> > replace tasklets, BH workqueue support was recently added. A BH workque=
+ue
+> > behaves similarly to regular workqueues except that the queued work ite=
+ms
+> > are executed in the BH context.
+> >
+> > This patch converts drivers/usb/* from tasklet to BH workqueue.
+> >
+> > Based on the work done by Tejun Heo <tj@kernel.org>
+> > Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6=
+10
+> >
+> > Changes in v2:
+> >  - Update code comments and commit message.
+> >       Suggested by Greg K h
+> >  - Retain local variable name(hcd.c).
+> >       Suggested by Alan Stern
+> >
+> > Link to v1:https://lore.kernel.org/all/20240327160314.9982-1
+> > -apais@linux.microsoft.com/T/#m2ec7868fbf102f1551ebe4c92d200848b94af3b1
+>
+> Why the line-wrap?
+>
+> And v2 info should all go below the --- line, right?
+>
+> v3 perhaps?
 
-On Tue, Apr 02, 2024 at 12:06:52PM -0700, Sean Christopherson wrote:
-> We are planning on submitting a CFP to host a second annual KVM Microconference
-> at Linux Plumbers Conference 2024 (https://lpc.events/event/18).  To help make
-> our submission as strong as possible, please respond if you will likely attend,
-> and/or have a potential topic that you would like to include in the proposal.
-> The tentative submission is below.
-> 
-> Note!  This is extremely time sensitive, as the deadline for submitting is
-> April 4th (yeah, we completely missed the initial announcement).
-> 
-> Sorry for the super short notice. :-(
+ I missed that bit. I will send out a v3.
 
-There'll definitely be a few of us attending from the pKVM side and we're
-interesting in the usual stuff: Android, arm64, CoCo, guest_memfd, virtio,
-etc.
-
-The big topic for us right now is figuring out what our user ABI should
-look like for upstream.
-
-Will
+Thank you.
 
