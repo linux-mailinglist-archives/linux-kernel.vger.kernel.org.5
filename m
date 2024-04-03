@@ -1,145 +1,142 @@
-Return-Path: <linux-kernel+bounces-130696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C974B897BBC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:43:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B718F897BBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:43:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F5CC1F26A86
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:43:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A05C1F26178
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 22:43:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42F88156881;
-	Wed,  3 Apr 2024 22:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6991155A56;
+	Wed,  3 Apr 2024 22:43:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1yFVmDks"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SQsTKsvP"
+Received: from mail-oo1-f45.google.com (mail-oo1-f45.google.com [209.85.161.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 019E1153BEF
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 22:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9649015623A;
+	Wed,  3 Apr 2024 22:43:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712184171; cv=none; b=mzbub5fXX+Yi0XpQxzXvGvVxHtmrScWI3ktFlyZCAJUqaGCT4K5WqdzaxA441UO5fRzBKr2QSgPfvj4ySuHLZWParN9C18MIwbaYRSFZYKtamgjqNqdfN8mKiZl2cLvyQ1hjw6V3cIc3ELPebrtr8ocz/nzQ2COQy01hhyQe/YM=
+	t=1712184202; cv=none; b=g9hueLZlPGNGtk+5kHY1ue22BJTCd5J5wJ+R629/5x2+dRSgA+wRyEl9rUaZZQRzPz22mvDbO4Ie8RVbmn8KChBdYCtHQn/rvT6vapJ9MwStNDHwJPk5OVk+5IPGHhrw2kPMYWFPtKJsfkQYcNOpJJf3tgb8U+noyiOJrgpUEzk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712184171; c=relaxed/simple;
-	bh=rz+PvBK3Tkf1uBvQQhw3KfI5Oam7TgqAW+rcHV7DZBA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=JezbFN4XTvG0ZHheCUi8kUJ5TNHOiwdr4jK0NBnFCWpW9w8TQ7JqH+yEV2V5Wz3eV/SguYaPbhKqiWN9Ox/UtPx3Cm4EbkNl64FHCOOxoQ+Gtyt7T5PJW6fKEcwhdmIYQHzfC84vm1w6o2KuijYjFTTg0uNaqdRaiPwTLIU5x50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1yFVmDks; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60cc00203faso7005627b3.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 15:42:49 -0700 (PDT)
+	s=arc-20240116; t=1712184202; c=relaxed/simple;
+	bh=i83YdIPPx0R/zg6nAIJzCB1vAwrQ7TEYddQ6IihpENM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gwPVSPD82mtGAPIqynv+pQgOVVGSX+PXo9rl7G50KJF9lH/mDEhQn1QuVpt+fB7XKF6YfDBZQhHGc1HPKXL0sht8HUXOJ2ri89aZISJYH7McohUJwR4WtabECMhy+Qk1agxorsT1oXNrBoe6s3G/hoaEWv+PRFl8mhXWPK3iUDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SQsTKsvP; arc=none smtp.client-ip=209.85.161.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f45.google.com with SMTP id 006d021491bc7-5a47cecb98bso260872eaf.0;
+        Wed, 03 Apr 2024 15:43:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712184169; x=1712788969; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UlLZ7hA4oy1JpChmEiN14ttbq81N4arBdlGQRutmBxA=;
-        b=1yFVmDkswO93LtyCO4XfV+WN1Koj4ead1qgHwLI8TLYzXRULHUVFQzve7e2de2q9VQ
-         FsP/XnmHnLBayCLs3DbHevSLatcvq8Jw6PYtk5GOmihFXNSPuTeYSkbeTsPVE0GrELrF
-         UOwVhG5Gz/T8+nlW/RQuokl1DWMKufawUGDH7We9YmA4fBmJ8bwbTUo8Ox38PkLbEICs
-         mO2OZ2ZyyONx01tppOktqX08UN/MZcHkWpMK26Yx2g9Q/UYI7qiCw4vAafBC2+GgAb6U
-         nYnG0GvYf1q6ZZfVYBdf2YWMV71q73KaRJPDEnNenwpn3GhV4JFLVzYOJLBb1ACBH2PV
-         5D+w==
+        d=gmail.com; s=20230601; t=1712184199; x=1712788999; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1/DXUBEvuqpvW9vgHBUj1lOdo7CYu69Q0rcw2cg02+k=;
+        b=SQsTKsvPrPSCIV412FfI6N/0E5ZYD1zVKbgeK4QzjugxGtgo2BVF4Q7TMvwWgOn89T
+         EeQvO9c+gGajPIBoE+lH6HvrkyExBobZUDrxKWidKzf17IMJQsPgtmrM7FLcJL+qX5rZ
+         TSD6QAgbCsbKknQ6TWRN/PkDWjE1N4L4o9d0nWHMTeOOPYgfPwRTe0A5u3P1UzIplL1X
+         eXC96B+sczZx4mex/AyXlJi7cQpYzCbZVsljy8CaVdmMRZuU3+SXQvKtBDJTFiStDEYs
+         o8idLgXDEEoDATml8znT5egX7kocA1ZOgpEUNB+9KmLfTEZ8rVWNZlOeupPqsP7cTo0D
+         4NNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712184169; x=1712788969;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UlLZ7hA4oy1JpChmEiN14ttbq81N4arBdlGQRutmBxA=;
-        b=RsVvLPoraXSq6KbIHa1eaxV0KLRb4U39dYffvUvMX3AArJU1XG9wO4Ip10vX2th3bF
-         dW7+9ePRHztHE8jkHFULm4QoOU3ipk+zqmAvCbF1A+KDJ94SFA3xAl8qLedYGl7e4o3u
-         ZpYNbwpdunaLPTtyR0y+NndudQ4q3ZOiZpx7YbMoq0AyBP79AjaF/FxY+Qytc4eG/oiP
-         uaEpDgP5cuxT68yqB7hC8z4Q+3g9QRSdwyCN3ODFHG5YPrdS5VctEwoqT/kThxlFxHjm
-         X/u403NbrtMQcwg6WTpVVJA3JP1qh3c3F68QSjOgAKkoOuYSGrm3/uHppjMVLvxCV5E6
-         2pMg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+z4qw1Kb+RnbGmYb0Aq0V5DoMWhq9L1bXrKCz4XhI3PrQLD4OFWGavtL922+ARa9mfnxpxyCeNmisqm6P7YDQ8aTFdhvu/wHf1mSj
-X-Gm-Message-State: AOJu0YyJal0vQxtSmLNajfXnRnwHDqa+v0YJQrTAbJx1NezBZqocReDA
-	x1ifMtBAaU+R7TqGX9HRcuasI5kyDDREBx2gH5hsZo1WBByTEZqWzjPz15HAiakcWZaB0e8QZwE
-	idw==
-X-Google-Smtp-Source: AGHT+IGEhST2p92PFmovBbCMnCdeSkkVmZWkaaVSFg5gshHzyJej3edC2UH7m/8KBivZvDzkOdXH2hRT9zc=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a81:a195:0:b0:614:fa:c912 with SMTP id
- y143-20020a81a195000000b0061400fac912mr201614ywg.1.1712184168995; Wed, 03 Apr
- 2024 15:42:48 -0700 (PDT)
-Date: Wed, 3 Apr 2024 15:42:47 -0700
-In-Reply-To: <20240403220023.GL2444378@ls.amr.corp.intel.com>
+        d=1e100.net; s=20230601; t=1712184199; x=1712788999;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1/DXUBEvuqpvW9vgHBUj1lOdo7CYu69Q0rcw2cg02+k=;
+        b=Hiit4BaHnmzma/NM3gIttVfrR3YYo+fmzOxY0i59Q8FqsNGyq0L42kzIrnQt8qxW2e
+         wE/6NXDa5hqVAthwd9yTEzEOF81qPiaYbxL5iN6y/e2ucvwltl8GIxFVHksGHyAQB74z
+         1DleatuVlWL3/rZK+SIC2hnzUkMrjQKvf2i5c2dAyO841usxyZX/umCqWpQxYeF3uuC7
+         J/tYP9gkDeE170siDOK0O4Kzjwj+3jusvPTX2xbCUCYm75yb6dESlPLkr7iE3yr33AL4
+         eVkZ4pGaN1+cRAYE9F6bFpR293hULKWHJqdDYP8SgNNqn+pAWkZiGvCm143aRkrRyn56
+         xmTg==
+X-Forwarded-Encrypted: i=1; AJvYcCV2Efxa36iuyY6F6AgUzzueeOxFPbKW+olJrMPW67ZA7YuZS/LyarnfSMw4L5trkM6M0Mzd3zAQir8u8mp7p/kw4PLu+zEN5Qj2dvNqUSgBUR++A+hasP8tWb5UjiAMmba2pnkIfBVt4NmiVmDZKuRrEPi34rviw+qvRVkx52gJsty2
+X-Gm-Message-State: AOJu0YyRGQFaw2dIyXAOnnGPk1VBX+kgzPuSdrDD4LkpLEWUNXfYeN8g
+	7ikOCvTKS1ITQfQpK6Ly6FfArNt2AoFAsIiXr+g3+hAfXiv1fCyn
+X-Google-Smtp-Source: AGHT+IGGiaWtu7HMckdPJc+ewu+TUaApVj6Bfhx2mSVpxVK2P7yAETpnx6+RfPfIS1VkdOFk5JiQTw==
+X-Received: by 2002:a05:6359:4c1a:b0:183:90a2:f4ce with SMTP id kj26-20020a0563594c1a00b0018390a2f4cemr679434rwc.0.1712184199519;
+        Wed, 03 Apr 2024 15:43:19 -0700 (PDT)
+Received: from barry-desktop.hub ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
+        by smtp.gmail.com with ESMTPSA id 13-20020a630b0d000000b005e840ad9aaesm12184383pgl.30.2024.04.03.15.43.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 15:43:18 -0700 (PDT)
+From: Barry Song <21cnbao@gmail.com>
+To: akpm@linux-foundation.org,
+	linux-doc@vger.kernel.org,
+	workflows@vger.kernel.org
+Cc: apw@canonical.com,
+	broonie@kernel.org,
+	chenhuacai@loongson.cn,
+	chris@zankel.net,
+	corbet@lwn.net,
+	dwaipayanray1@gmail.com,
+	herbert@gondor.apana.org.au,
+	joe@perches.com,
+	linux-kernel@vger.kernel.org,
+	linux@roeck-us.net,
+	lukas.bulwahn@gmail.com,
+	mac.xxn@outlook.com,
+	sfr@canb.auug.org.au,
+	v-songbaohua@oppo.com
+Subject: [PATCH v6 0/2] codingstyle: avoid unused parameters for a function-like macro
+Date: Thu,  4 Apr 2024 11:42:52 +1300
+Message-Id: <20240403224254.10313-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <cover.1709288671.git.isaku.yamahata@intel.com>
- <ZekQFdPlU7RDVt-B@google.com> <20240307020954.GG368614@ls.amr.corp.intel.com>
- <20240319163309.GG1645738@ls.amr.corp.intel.com> <Zg2gPaXWjYxr8woR@google.com>
- <20240403220023.GL2444378@ls.amr.corp.intel.com>
-Message-ID: <Zg3bZ3MQaBvC5LML@google.com>
-Subject: Re: [RFC PATCH 0/8] KVM: Prepopulate guest memory API
-From: Sean Christopherson <seanjc@google.com>
-To: Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: David Matlack <dmatlack@google.com>, kvm@vger.kernel.org, isaku.yamahata@gmail.com, 
-	linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>, 
-	Michael Roth <michael.roth@amd.com>, Federico Parola <federico.parola@polito.it>, 
-	isaku.yamahata@linux.intel.com
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 03, 2024, Isaku Yamahata wrote:
-> On Wed, Apr 03, 2024 at 11:30:21AM -0700,
-> Sean Christopherson <seanjc@google.com> wrote:
-> 
-> > On Tue, Mar 19, 2024, Isaku Yamahata wrote:
-> > > On Wed, Mar 06, 2024 at 06:09:54PM -0800,
-> > > Isaku Yamahata <isaku.yamahata@linux.intel.com> wrote:
-> > > 
-> > > > On Wed, Mar 06, 2024 at 04:53:41PM -0800,
-> > > > David Matlack <dmatlack@google.com> wrote:
-> > > > 
-> > > > > On 2024-03-01 09:28 AM, isaku.yamahata@intel.com wrote:
-> > > > > > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > > > > > 
-> > > > > > Implementation:
-> > > > > > - x86 KVM MMU
-> > > > > >   In x86 KVM MMU, I chose to use kvm_mmu_do_page_fault().  It's not confined to
-> > > > > >   KVM TDP MMU.  We can restrict it to KVM TDP MMU and introduce an optimized
-> > > > > >   version.
-> > > > > 
-> > > > > Restricting to TDP MMU seems like a good idea. But I'm not quite sure
-> > > > > how to reliably do that from a vCPU context. Checking for TDP being
-> > > > > enabled is easy, but what if the vCPU is in guest-mode?
-> > > > 
-> > > > As you pointed out in other mail, legacy KVM MMU support or guest-mode will be
-> > > > troublesome.
-> > 
-> > Why is shadow paging troublesome?  I don't see any obvious issues with effectively
-> > prefetching into a shadow MMU with read fault semantics.  It might be pointless
-> > and wasteful, as the guest PTEs need to be in place, but that's userspace's problem.
-> 
-> The populating address for shadow paging is GVA, not GPA.  I'm not sure if
-> that's what the user space wants.  If it's user-space problem, I'm fine.
+From: Barry Song <v-songbaohua@oppo.com>
 
-/facepalm
+-v6:
+ * collect ack of Joe, thanks!
+ * refine docs according to Jonathan, thanks!
+ * add checkpatch doc according to Joe, thanks!
 
-> > Pre-populating is the primary use case, but that could happen if L2 is active,
-> > e.g. after live migration.
-> > 
-> > I'm not necessarily opposed to initially adding support only for the TDP MMU, but
-> > if the delta to also support the shadow MMU is relatively small, my preference
-> > would be to add the support right away.  E.g. to give us confidence that the uAPI
-> > can work for multiple MMUs, and so that we don't have to write documentation for
-> > x86 to explain exactly when it's legal to use the ioctl().
-> 
-> If we call kvm_mmu.page_fault() without caring of what address will be
-> populated, I don't see the big difference.  
+-v5:
+ * Simplify the code for Patch 2 according to Joe's suggestions.
+ * add s-o-b of Barry according to Jeff Johnson
+ v5 link:
+ https://lore.kernel.org/all/20240401012120.6052-1-21cnbao@gmail.com/
 
-Ignore me, I completely spaced that shadow MMUs don't operate on an L1 GPA.  I
-100% agree that restricting this to TDP, at least for the initial merge, is the
-way to go.  A uAPI where the type of address varies based on the vCPU mode and
-MMU type would be super ugly, and probably hard to use.
+-v4:
+ * fix Xining's email address, s/ma.xxn@outlook.com/mac.xxn@outlook.com/g
+ * fix some false positives of checkpatch.pl
+ * downgrade from ERROR to WARN in checkpatch.pl
 
-At that point, I don't have a strong preference as to whether or not direct
-legacy/shadow MMUs are supported.  That said, I think it can (probably should?)
-be done in a way where it more or less Just Works, e.g. by having a function hook
-in "struct kvm_mmu".
+ Thanks for Joe's comments!
+
+ v4 link: https://lore.kernel.org/all/20240328022136.5789-1-21cnbao@gmail.com/
+
+-v3:
+ https://lore.kernel.org/all/20240322084937.66018-1-21cnbao@gmail.com/
+
+A function-like macro could result in build warnings such as
+"unused variable." This patchset updates the guidance to
+recommend always using a static inline function instead
+and also provides checkpatch support for this new rule.
+
+Barry Song (1):
+  Documentation: coding-style: ask function-like macros to evaluate
+    parameters
+
+Xining Xu (1):
+  scripts: checkpatch: check unused parameters for function-like macro
+
+ Documentation/dev-tools/checkpatch.rst | 14 ++++++++++++++
+ Documentation/process/coding-style.rst | 23 +++++++++++++++++++++++
+ scripts/checkpatch.pl                  |  6 ++++++
+ 3 files changed, 43 insertions(+)
+
+-- 
+2.34.1
+
 
