@@ -1,105 +1,81 @@
-Return-Path: <linux-kernel+bounces-129905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 155B38971E3
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:03:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 332BE8971E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:03:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A940E1F2982A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:03:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC87628E0D7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5719214A4C8;
-	Wed,  3 Apr 2024 14:01:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7350A1494B5;
+	Wed,  3 Apr 2024 14:02:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b="Xn8IhRa6"
-Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WDQIQFCO"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438CE149E11
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:01:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5B8148FE2
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 14:02:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712152903; cv=none; b=nSMzsi/8yLoU2/zMKVI9cxu97aaKrAGHSOfmUaQbW4cWuFPKKrWRRWABzLE7TIIJT/47O1uMxSXECitVilL2jOodCWh1M/BhkpzTZD163GJdXBaCdYOmQU5qk1XYMcCP5Ebow8n1CI+yxZIJyd6p3Xqbz47n/TxXMpd9LPIF308=
+	t=1712152930; cv=none; b=CZON1c9SZ6+QMdIJMFZqrPTGUo7CGiYxfCjDTFmU7M11tL9LYpDDVrG9UmY9fIeI8BPQYS8OqCAG13dBVRk0AT+88TT1/TcyDXDhoKS1k/PV+pieJrmT2gDqfKyKxrJY0f9Zq0/yx9lvvH79IsEp1RiEc8zBIZGRA4+4rJBYev0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712152903; c=relaxed/simple;
-	bh=+HycdZGuj5OU1W/c5yOM/8/+whc2oRxO0Toug1yf4G8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=iu1aOI7qLte775pB+Z61UjgZkWXNjEpz+vEJdF7F+L/tzbo3apR8lhGVJnSDvFVbiTV9axSfu4tRkMR1VJQ6kiCkGO8KrpE/gJCluc/yR1xulXhxolQv57gdEDszE+KygRXb8kRjYb0kPF9tEchkyGyhVcE0xwUUuys+Z3XEmd0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org; spf=pass smtp.mailfrom=bitbyteword.org; dkim=pass (2048-bit key) header.d=bitbyteword.org header.i=@bitbyteword.org header.b=Xn8IhRa6; arc=none smtp.client-ip=209.85.219.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bitbyteword.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bitbyteword.org
-Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-690c43c5b5aso36652786d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:01:41 -0700 (PDT)
+	s=arc-20240116; t=1712152930; c=relaxed/simple;
+	bh=Y5Dn9Fd4EB4EWBfI88YVSh04hMDr/aGsoMsXck1I/hA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IPHzyGG4ZlylHIe9CCA+/un2QAQs5zKzS1dIqGQJBRAQ1BJYCptZPNnZM1FyFNU3jEeioBvNvnHAMFkE1h7b1wCS2JUH3z8WWU4BoNUBgkqNutUN11ZV89YTxFbifzq3rKAqgQaDcUoZK9s3GfZU0rR4Yp7lubfLpnNVU5E5ScI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WDQIQFCO; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso4950326a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 07:02:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bitbyteword.org; s=google; t=1712152900; x=1712757700; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QaWEC4wEGQ+YlZ6ti6+WrczlEY+i0roOx8Ci2YqikeE=;
-        b=Xn8IhRa6Q1hH8JPkpsL76ia39K74etBsnq86QvXDJzGkDlu4UQISCgwi31tudYRt83
-         jPhWkuvW0WWDPNO5GqkZlkamSdX5m/51kSnDSQgYHV4I90SE59QgGnExdChoF6Hyxsy/
-         DEBPORJpE0l965/MP4/PLQef9cZTT3H12g9caRcNBv7jcQ5dxHGDpDKbBGyAdCqr7UmK
-         ii2GkcFQTeoXQ0TKmt2dtFu9E3LqK/cgIBT1TdNEm8K+8WXd1kr3P+HKnrm3VftvFPtB
-         iodG5/lerUuBzTCWeouSem4Ps7N6uKHKXjVY9g1NsXICLR9FA3KpMZ6aSUbRhyMslQY4
-         5ZNA==
+        d=gmail.com; s=20230601; t=1712152928; x=1712757728; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=X+OWKGCRxxuHkjgq8bKkM7MPiUiZxEk5XhM7XokHDRk=;
+        b=WDQIQFCOe+aovShjgkumNfvRIMNibeWHsEh6PnhoJYW+2SiIlFluNBeBbnGGnRCcvf
+         MjjiFjQMPbF4iBSoK3cEVvzQrzoBf4eYZzlk6Ut+aU5mNogxS1ApIOIT/QZEL4nLA7J2
+         VwO/fqXUOx99a0/AlQCLAl1Oz1IDc1NZ2T70fDjmL6stolek63UZ4329EVMSO2IuUro4
+         aEe9KGGEedtvUkGp6MR/9ELxmSGq1RYFKMdd1taP4jqY0vpsMX/kGYTMiV9yGuok8Nti
+         0ZRhTLCxpS897sFY2Mpp7xlk+8L16Png3Ms0WUkQE6ue+MUs3lssF3MNwAZL34tTccmP
+         qnQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712152900; x=1712757700;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QaWEC4wEGQ+YlZ6ti6+WrczlEY+i0roOx8Ci2YqikeE=;
-        b=eCNGH5WDBQIti0Yk0uo6M14JcmwZzghDDbQ1CzA/frogkkJQdRK4Sd6rFF/6tTix3S
-         OwoKme/rSP+NudwZhuR1r6TWG6+/LQMpu5KSHZj+1B78MXjkGQjgLdNBFd2LVY5e86mV
-         sZbJw3pF9WopUFzyxbhGDYimqYX/TzPXWQtZqs1CcrPFtd992xOySlOseAouLzCf1Oui
-         GiYXZ49iLwp5Xl9GBtM5P4ylkJmwCzYmlhLP2cPqd2FG+/czJkY+iM970Ok1d0zSc1cv
-         riOrhtkSH6t6k5yjObvWFrM+I9SMnykqIs6R5QiNaVGIrJqbJfaFCgJTATn/+5gbU6Fv
-         suhA==
-X-Forwarded-Encrypted: i=1; AJvYcCWMatoqIMnNdBxgfkHKsLlUGQpcShvodKrOnWILxChDrAMvPEeBt58P4a/rjnh69ueBm8cyyWcWjgHDrsmk8O7vFepUGwHM29646JHy
-X-Gm-Message-State: AOJu0Yz+h1znc3CumoDg8x1vtI+0Med956B/B+OYyMgjThHtKLwj9cuN
-	TF0xDyNkE+vO86w8bSTY4+QFlHqV+eL6kBxcVGu22N/B75AvkKpH09gUg7aOXDc=
-X-Google-Smtp-Source: AGHT+IGXzY5eGF4cfLmjKD8WCxnHKVScVbM/F99svOb+MTbMgCl4GsOWSudI3dDOqx11Q2sEA8gtCA==
-X-Received: by 2002:a05:6214:1384:b0:699:1ad9:259 with SMTP id pp4-20020a056214138400b006991ad90259mr2834018qvb.31.1712152900149;
-        Wed, 03 Apr 2024 07:01:40 -0700 (PDT)
-Received: from vinbuntup3.lan (c-73-143-21-186.hsd1.vt.comcast.net. [73.143.21.186])
-        by smtp.gmail.com with ESMTPSA id gf12-20020a056214250c00b00698d06df322sm5945706qvb.122.2024.04.03.07.01.38
+        d=1e100.net; s=20230601; t=1712152928; x=1712757728;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X+OWKGCRxxuHkjgq8bKkM7MPiUiZxEk5XhM7XokHDRk=;
+        b=BOZD/5H2TNkATLj8AO/e7jQX2kuBuS3cz2VWgQlZfCb1U60FtCmGsvmc9Y05nG+Fef
+         mgn5KW8AlFMUSuciGNCfCE/rT7O3Ed+Uix7EGNe37H64vgw3SDYarHTzDn3GZ5iZFEpa
+         uWPSREIlq0qRvLGgIZ+DIyiMfoyAQl2P/0SFj+YRzAukBQAmYkW+A0hBbTOekvoW1v+a
+         44lbfpq8ge4r8zjCF5hd/mTsX3SUZsCkTq4OdyjGTWsAoBD6TmuI09dJDHsNaBEG2gzs
+         4uek6YEePLcZkW7jzc5Iiuz+VVLYBeO83cGjIp+j8Fl1sKAeIuf+D3p97RND2bZ+odOA
+         Qr/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXprjn/nEnfRFMoJzzAlhVAMZoZj947ovz7ShHGJ8C11G7nKjDw0KDrZTsfiM1Tdy9eiV/hbmvrylcbf4k0zyYz++K/mXfeONjyJ0Wi
+X-Gm-Message-State: AOJu0YxU7QO6Uk6ke4AFonmCQ6hAGTEhZNh/Oc83N4YBSGDSruLSMcbo
+	qaTxfR9I/5UBdLjr1K2eSSF8AZjtOppXTe2Mqh95YHjxh6HWEK3G
+X-Google-Smtp-Source: AGHT+IGYKadsQ+KkVMxA7y6AiiAReUeV+Bib8nq5elmQzHuPu7Qphz9GfV9eiUAo+J/9nU0Zg+ZdeA==
+X-Received: by 2002:a17:90b:11d2:b0:2a2:7a00:f101 with SMTP id gv18-20020a17090b11d200b002a27a00f101mr2301093pjb.47.1712152928305;
+        Wed, 03 Apr 2024 07:02:08 -0700 (PDT)
+Received: from nova-ws.. ([103.167.140.11])
+        by smtp.gmail.com with ESMTPSA id o2-20020a17090a168200b002a0383de8cfsm12625669pja.38.2024.04.03.07.02.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 07:01:39 -0700 (PDT)
-From: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>
-To: Ben Segall <bsegall@google.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
+        Wed, 03 Apr 2024 07:02:07 -0700 (PDT)
+From: Xiao Liang <shaw.leon@gmail.com>
+To: x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>
-Cc: "Vineeth Pillai (Google)" <vineeth@bitbyteword.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Suleiman Souhlal <suleiman@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	himadrics@inria.fr,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	x86@kernel.org
-Subject: [RFC PATCH v2 5/5] selftests/bpf: sample implementation of a bpf pvsched driver.
-Date: Wed,  3 Apr 2024 10:01:16 -0400
-Message-Id: <20240403140116.3002809-6-vineeth@bitbyteword.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240403140116.3002809-1-vineeth@bitbyteword.org>
-References: <20240403140116.3002809-1-vineeth@bitbyteword.org>
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] x86/fpu: Allow nested in-kernel use of FPU
+Date: Wed,  3 Apr 2024 22:01:32 +0800
+Message-ID: <20240403140138.393825-1-shaw.leon@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -108,60 +84,121 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A dummy skeleton of a bpf pvsched driver. This is just for demonstration
-purpose and would need more work to be included as a test for this
-feature.
+When a softirq preempts a task which has kernel FPU in-use, it's not
+allowed to use FPU in current implementation. This has performance
+drawbacks, e.g. on SIMD crypto algs.
 
-Not-Signed-off-by: Vineeth Pillai (Google) <vineeth@bitbyteword.org>
+To enable nested in-kernel use of FPU, the preempting softirq or hardirq
+saves kernel FPU state to a per-cpu variable when entering
+(kernel_fpu_begin_mask) nested FPU section and restores it on exit
+(kernel_fpu_end).
+
+Signed-off-by: Xiao Liang <shaw.leon@gmail.com>
 ---
- .../testing/selftests/bpf/progs/bpf_pvsched.c | 37 +++++++++++++++++++
- 1 file changed, 37 insertions(+)
- create mode 100644 tools/testing/selftests/bpf/progs/bpf_pvsched.c
 
-diff --git a/tools/testing/selftests/bpf/progs/bpf_pvsched.c b/tools/testing/selftests/bpf/progs/bpf_pvsched.c
-new file mode 100644
-index 000000000000..a653baa3034b
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/bpf_pvsched.c
-@@ -0,0 +1,37 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2019 Facebook */
+We observed a performance drop when testing IPSec AES crypto with aesni driver.
+When FPU is not available in softirq, crypto_simd puts the cipher to async mode
+in cryptd, causing throughput drop from ~600Mbps to ~200Mbps on our testbox.
+And it couldn't recover from this state until the queue gets drained. This
+patch is intended to improve the performance in such cases.
+
+Referenced implementation for arm64, see
+
+    aefbab8e77eb ("arm64: fpsimd: Preserve/restore kernel mode NEON at context switch")
+
+The main difference is that FPU is allowed in hardirq on x86, and FPU context
+is saved in per-cpu variables so not to bother with task_struct.
+
+ arch/x86/kernel/fpu/core.c | 49 ++++++++++++++++++++++++++++----------
+ 1 file changed, 36 insertions(+), 13 deletions(-)
+
+diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
+index 520deb411a70..7f21e70fcceb 100644
+--- a/arch/x86/kernel/fpu/core.c
++++ b/arch/x86/kernel/fpu/core.c
+@@ -43,9 +43,15 @@ struct fpu_state_config fpu_user_cfg __ro_after_init;
+  */
+ struct fpstate init_fpstate __ro_after_init;
+ 
+-/* Track in-kernel FPU usage */
++/*
++ * Task can be preempted by softirq or hardirq even when kernel FPU is in use.
++ * The flag in_kernel_fpu tracks such nestable kernel FPU usage.
++ */
+ static DEFINE_PER_CPU(bool, in_kernel_fpu);
+ 
++/* Save/restore fpstate when beginning/ending a nested kernel FPU section. */
++static DEFINE_PER_CPU(struct fpu, kernel_fpu);
 +
-+#include "vmlinux.h"
-+#include "bpf_tracing_net.h"
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
+ /*
+  * Track which context is using the FPU on the CPU:
+  */
+@@ -60,10 +66,6 @@ bool irq_fpu_usable(void)
+ 	if (WARN_ON_ONCE(in_nmi()))
+ 		return false;
+ 
+-	/* In kernel FPU usage already active? */
+-	if (this_cpu_read(in_kernel_fpu))
+-		return false;
+-
+ 	/*
+ 	 * When not in NMI or hard interrupt context, FPU can be used in:
+ 	 *
+@@ -423,14 +425,28 @@ void kernel_fpu_begin_mask(unsigned int kfpu_mask)
+ 	preempt_disable();
+ 
+ 	WARN_ON_FPU(!irq_fpu_usable());
+-	WARN_ON_FPU(this_cpu_read(in_kernel_fpu));
+ 
+-	this_cpu_write(in_kernel_fpu, true);
++	if (this_cpu_read(in_kernel_fpu)) {
++		struct fpu *fpu = this_cpu_ptr(&kernel_fpu);
 +
-+char _license[] SEC("license") = "GPL";
++		/* Cannot be preempted when kernel FPU is in use. */
++		WARN_ON_ONCE(in_task());
 +
-+SEC("struct_ops/pvsched_vcpu_reg")
-+int BPF_PROG(pvsched_vcpu_reg, struct pid *pid)
-+{
-+	bpf_printk("pvsched_vcpu_reg: pid: %p", pid);
-+	return 0;
-+}
-+
-+SEC("struct_ops/pvsched_vcpu_unreg")
-+void BPF_PROG(pvsched_vcpu_unreg, struct pid *pid)
-+{
-+	bpf_printk("pvsched_vcpu_unreg: pid: %p", pid);
-+}
-+
-+SEC("struct_ops/pvsched_vcpu_notify_event")
-+void BPF_PROG(pvsched_vcpu_notify_event, void *addr, struct pid *pid, __u32 event)
-+{
-+	bpf_printk("pvsched_vcpu_notify: pid: %p, event:%u", pid, event);
-+}
-+
-+SEC(".struct_ops")
-+struct pvsched_vcpu_ops pvsched_ops = {
-+	.pvsched_vcpu_register		= (void *)pvsched_vcpu_reg,
-+	.pvsched_vcpu_unregister	= (void *)pvsched_vcpu_unreg,
-+	.pvsched_vcpu_notify_event	= (void *)pvsched_vcpu_notify_event,
-+	.events				= 0x6,
-+	.name				= "bpf_pvsched_ops",
-+};
++		if (unlikely(!fpu->fpstate))
++			fpstate_reset(fpu);
+ 
+-	if (!(current->flags & (PF_KTHREAD | PF_USER_WORKER)) &&
+-	    !test_thread_flag(TIF_NEED_FPU_LOAD)) {
+-		set_thread_flag(TIF_NEED_FPU_LOAD);
+-		save_fpregs_to_fpstate(&current->thread.fpu);
++		/* Save kernel FPU state begin nested FPU section. */
++		save_fpregs_to_fpstate(fpu);
++	} else {
++		fpregs_lock();
++		if (!(current->flags & (PF_KTHREAD | PF_USER_WORKER)) &&
++		    !test_thread_flag(TIF_NEED_FPU_LOAD)) {
++			set_thread_flag(TIF_NEED_FPU_LOAD);
++			save_fpregs_to_fpstate(&current->thread.fpu);
++		}
++		if (in_task())
++			this_cpu_write(in_kernel_fpu, true);
++		fpregs_unlock();
+ 	}
+ 	__cpu_invalidate_fpregs_state();
+ 
+@@ -445,9 +461,16 @@ EXPORT_SYMBOL_GPL(kernel_fpu_begin_mask);
+ 
+ void kernel_fpu_end(void)
+ {
+-	WARN_ON_FPU(!this_cpu_read(in_kernel_fpu));
++	/*
++	 * When returning from nested kernel FPU section, restore previously
++	 * saved fpstate.
++	 */
++	if (!in_task() && this_cpu_read(in_kernel_fpu))
++		restore_fpregs_from_fpstate(this_cpu_ptr(&kernel_fpu)->fpstate,
++					    XFEATURE_MASK_FPSTATE);
++	else
++		this_cpu_write(in_kernel_fpu, false);
+ 
+-	this_cpu_write(in_kernel_fpu, false);
+ 	preempt_enable();
+ }
+ EXPORT_SYMBOL_GPL(kernel_fpu_end);
 -- 
-2.40.1
+2.44.0
 
 
