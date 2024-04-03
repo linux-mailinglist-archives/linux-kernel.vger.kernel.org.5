@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-130444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130445-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A0748978C1
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:03:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E53F897831
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 20:26:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79AECB2F988
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:26:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFCE71C217E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:26:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E82C153818;
-	Wed,  3 Apr 2024 18:26:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24BD9153BFE;
+	Wed,  3 Apr 2024 18:26:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ARUmcN4s"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hTkYfxzS"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61ECD1534F2;
-	Wed,  3 Apr 2024 18:26:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177531534F2;
+	Wed,  3 Apr 2024 18:26:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712168773; cv=none; b=DTApOn8Hb4rOy9Rgc53dZHhtBDSrg9JySX7DcgVCRJ+XAFPGO6dDEm/Cx1nWr+uFr/yv4n20fWD+z38Lu/VtCGaRv+UpuLQp5aoEia+yDKpm/cUwQYHA86F1Fb8pARjk+0U7kyAAS/N7wYkQn1dCOpTwVwYu5zMk/GjYYz5Hy9Y=
+	t=1712168781; cv=none; b=j8yvTezLRhonC4+9kRAQh9KTg8UMVsoF5gypL22BWYnN06zKGLEzOoqn5w179gZLbaZe5IuiRMrRw1DIBclhLBd6yK6OG8ivw0075UsTO5yRGJkghXhXXZsbKUO0Z39eGT1tUV0+j4zQW6DQZWEicc2pmYAbq/uo1lEf4Hryobo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712168773; c=relaxed/simple;
-	bh=j+GDCCfyjwSvNi5L8u2NngjgwDzCFOTm7r8SKvYlO/M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KmDsCU1cXNsaD2L9OIVn4wGbwZgoM1VlgqNAgdXMhBkYYBbOvu4B5bvPzpeflwE9p//oHqiPSIgH7y7i4QxAxceptdBnZTTY8qt5MVTdQNHZtPdk9xD2jKOBIFqoQ4Wyz6bXj5lulD7OBkvxCDUC2f1hsJcmgUCk29CeEz9/3GA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ARUmcN4s; arc=none smtp.client-ip=209.85.210.182
+	s=arc-20240116; t=1712168781; c=relaxed/simple;
+	bh=Of2GYAaUswv6LvHoA0UkUvxuxYZ5tgWnA6txjalqaVQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=iEupv8KtqOomDOuY91BcOFIr/VbZVgmCMw9fBcqM1Cf9Gpv88jfqC6XvyfD7v++J638/xEiWLbOCnAbfi8hwKuaCqsFvbAGUnMkX2Nh2qLvMTBaA21q5uUdB+8h+SnrgMboS7z7gSpmqs3OnhewAHbTOMXn/MsSRAgIf0ElEoSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hTkYfxzS; arc=none smtp.client-ip=209.85.210.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6eaf7c97738so74615b3a.2;
-        Wed, 03 Apr 2024 11:26:12 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ea8ee55812so115405b3a.0;
+        Wed, 03 Apr 2024 11:26:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712168772; x=1712773572; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+KM0sALA3G00DhEkgIr0nJ9/xgi6K5DMXyrZsidqXcY=;
-        b=ARUmcN4sjSXBs/SDZpYv8dF7r7JIxIaKll1A1PbPkDxYbetiZHOav0oRD546xi5b1H
-         bMu8QRCYc+yXu1/mSRWJj+9h4IMs+Yce1BmMZlCU3BgA9/TV2FtQQHHqKBFLQZg8Rd+Z
-         r09t+ag9g/pFAQHI5vF4e+J3Zfz2wPwJ6Mj9+93JEB9nll1AiCeAByyp9roZmTB1CtS6
-         1OHPjYjLcZbo2wYzUXufaMSFZ8evZmwhf+aNRHGD+YP/tgdOQVFYQkK2maF2S8PcfV0k
-         kSo8uijvLn53gXOQPv9ARvfktKg91LLZHn4tb+2N5sUpUKfDW2l5lKEEYiDjoXyOrDWg
-         wkBA==
+        d=gmail.com; s=20230601; t=1712168779; x=1712773579; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KbtoEoj4oChBiO+Y87ED1v4ExuftqHcGwPMYfmQNkfA=;
+        b=hTkYfxzSBkzMxBSDsk2ykPM/vOwPUOKkblnOjqQcFsuuJ1jvrWKV6qn/L9PADoQQe5
+         zFh+hDaB93AMoIi/u/8eA+z71fef63BvlMCRnhG9LKJEdEf7SeDiUe56knH/Q97A8EMp
+         4gdoSSdqIOaH4M8bDAZVrkQQn0aOYAMjyCGa3VPCr6G48O/a0hcu5d/ZmspoJeaJtSPk
+         zv8Klh0R3zxsy64+P/mxdOiqX4VIn0SimqTzZp8ljgc2pUpDqXtS7yqh95haAlar7Law
+         FfdBbmA05hKkrAvPLZM/TVpvaHg/RBnSiTK5PK4HMMqgoCR2nMzEBHGxnhPijXo+f3E0
+         Ne0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712168772; x=1712773572;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+KM0sALA3G00DhEkgIr0nJ9/xgi6K5DMXyrZsidqXcY=;
-        b=CAjorjgr+vpVHF+AeBRSIC5ybYwdLSitFqJV2AIHEWog20x5LgD+R6+8P2ZkGKFtGK
-         C0i/4yy/4a3Cm87c8YUzXnTUmEHKSaW7zirf2fuac/fthLstVLJF2TIOK6JkYp1Mqm+q
-         RM7ZNQIuBif8yTRaKuyfe+bO5U6l6KhaeJG1tKqZ8aTBQ9Ll4A1aR83cA2kwviu6n8mr
-         g0KuF1NHIl5RACpXikZI3McZTTKTDqD4bEP5qubl/uILYRl9P7b8JEaBDDv+EBL6iCgh
-         wAbmhz/2stsempb7gypnNKjk3WZlqbri7UfYo4tz6ERaksgR5uplVsZGY2QmgIyUUv0o
-         ZAVw==
-X-Forwarded-Encrypted: i=1; AJvYcCWF7oTSfI5tWr6lLclYdEJu5Sxr6koTAOseTnZQnzbo14p4vdOPZmwJH8II3LNEyKrVE19FyNSwB5/233Qseu2dXN3yMwkBMFifGkZW26RFhC5NmjrJOEA7E3F2K89DGdgE5zUcWL3eXmHKgVZ12j8urcR/5OgYPyb1kUvbIPpj6/aeUGAaH9Slog==
-X-Gm-Message-State: AOJu0YyRAeYlX7UpaBupwTB2EKzU95K8pMaOV/G4yHBl4xPyi+sbgytd
-	BHDL/jJyMcFVUHwsoKp9bwVBVlHGIBiSmZe9XwzQFvW14m5te9Zz
-X-Google-Smtp-Source: AGHT+IHyw8jSWtpDO8BrX3kYROr9rl6m4q+INmfSxI61JhQchpPQy8VC9DOn8KqfulZFH4T3VzoTnw==
-X-Received: by 2002:a05:6a20:a125:b0:1a7:2e6f:e5d3 with SMTP id q37-20020a056a20a12500b001a72e6fe5d3mr590280pzk.3.1712168771615;
-        Wed, 03 Apr 2024 11:26:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712168779; x=1712773579;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KbtoEoj4oChBiO+Y87ED1v4ExuftqHcGwPMYfmQNkfA=;
+        b=YyCRetmz9GRms93Mfo/15zOXn1w/KlfSONgwgKZyRhRcx7B7vuoXuXYIOmESTl2KT/
+         X+L6Jy0zz9h3Z97S6VbGAH8FdkVjGSAUK93NQAyD8XhKG9giqlfG3pnQ2Yjoo8G3QVJv
+         fWaonDx5zBTfWXMG65aS7tZf/bJdDlVM3tzicjZuZ6oFKa1Q014IJb2z9HWf9sXEF3fo
+         1+HE3iZrABNcDwNbMiM/LzJDqBvMcVeOMXZpI1DMIpC3Xws+/eRpf5cAdobxN+urzw2p
+         bnK+p6OISQINb5aLNOFglfrm/23EBfwka3g8599iLvHO60BalPxfU2SasiRFPVKB1E1m
+         pv0g==
+X-Forwarded-Encrypted: i=1; AJvYcCWteOvDQztVyzmRk54tVABNWzJNC1ccUKRxFXXvqZyI3yrTCE1qzYAFgkrvOkvZtKWNYH8Lm+eCqnqus0mKloyQ94AdNtDIbwexO7KAN2s+BwTL5FUnvky6Y3tx9+zgmYcSE96VWTCjFfMx8wJIoXOiwNjpLEwOL7tQ/GWjU/6xHUqpVEMIVf7eHQ==
+X-Gm-Message-State: AOJu0Yx7kPpNOyynBqGHWwkQ+tAzmup33uUtzTS8WfBYis2E+9JAWf9K
+	DI46jN4E6WPMf2JMGoEbZVV6n81ZQft7jKCXf7jv6X3VQ7rHNqdG
+X-Google-Smtp-Source: AGHT+IHQ9uuUuPoQFrr8foz2IR4qr+5ODebDBIJMqbDQ/OLXs1tkY8YgMX5XpBIC998RHg3OwMlolg==
+X-Received: by 2002:a05:6a00:b81:b0:6ea:92de:3603 with SMTP id g1-20020a056a000b8100b006ea92de3603mr406437pfj.16.1712168779381;
+        Wed, 03 Apr 2024 11:26:19 -0700 (PDT)
 Received: from localhost.localdomain ([113.30.217.222])
-        by smtp.gmail.com with ESMTPSA id kq10-20020a056a004b0a00b006eae3aac040sm10609776pfb.31.2024.04.03.11.26.08
+        by smtp.gmail.com with ESMTPSA id kq10-20020a056a004b0a00b006eae3aac040sm10609776pfb.31.2024.04.03.11.26.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 11:26:11 -0700 (PDT)
+        Wed, 03 Apr 2024 11:26:18 -0700 (PDT)
 From: Anand Moon <linux.amoon@gmail.com>
 To: Chanwoo Choi <cw00.choi@samsung.com>,
 	MyungJoo Ham <myungjoo.ham@samsung.com>,
@@ -75,10 +77,12 @@ Cc: Anand Moon <linux.amoon@gmail.com>,
 	linux-samsung-soc@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 1/2] PM / devfreq: exynos: Use Use devm_clk_get_enabled() helpers
-Date: Wed,  3 Apr 2024 23:45:04 +0530
-Message-ID: <20240403181517.5993-1-linux.amoon@gmail.com>
+Subject: [PATCH v2 2/2] PM / devfreq: exynos: Switch from CONFIG_PM_SLEEP guards to pm_sleep_ptr()
+Date: Wed,  3 Apr 2024 23:45:05 +0530
+Message-ID: <20240403181517.5993-2-linux.amoon@gmail.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240403181517.5993-1-linux.amoon@gmail.com>
+References: <20240403181517.5993-1-linux.amoon@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -87,88 +91,60 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The devm_clk_get_enabled() helpers:
-    - call devm_clk_get()
-    - call clk_prepare_enable() and register what is needed in order to
-     call clk_disable_unprepare() when needed, as a managed resource.
-
-This simplifies the code and avoids the calls to clk_disable_unprepare().
-
-While at it, use dev_err_probe consistently, and use its return value
-to return the error code.
+Use the new PM macros for the suspend and resume functions to be
+automatically dropped by the compiler when CONFIG_PM_SLEEP are disabled,
+without having to use #ifdef guards. If CONFIG_PM_SLEEP unused,
+they will simply be discarded by the compiler.
 
 Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 ---
-v2: no changes
+added __maybe_unused to suspend/resume functions
+
+[0] https://lore.kernel.org/all/20240226183308.4730-1-linux.amoon@gmail.com/
 ---
- drivers/devfreq/exynos-bus.c | 21 ++++-----------------
- 1 file changed, 4 insertions(+), 17 deletions(-)
+ drivers/devfreq/exynos-bus.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/devfreq/exynos-bus.c b/drivers/devfreq/exynos-bus.c
-index 245898f1a88e..153340b6685f 100644
+index 153340b6685f..09822f8fa209 100644
 --- a/drivers/devfreq/exynos-bus.c
 +++ b/drivers/devfreq/exynos-bus.c
-@@ -160,7 +160,6 @@ static void exynos_bus_exit(struct device *dev)
- 	platform_device_unregister(bus->icc_pdev);
- 
- 	dev_pm_opp_of_remove_table(dev);
--	clk_disable_unprepare(bus->clk);
- 	dev_pm_opp_put_regulators(bus->opp_token);
+@@ -454,8 +454,7 @@ static void exynos_bus_shutdown(struct platform_device *pdev)
+ 	devfreq_suspend_device(bus->devfreq);
  }
  
-@@ -171,7 +170,6 @@ static void exynos_bus_passive_exit(struct device *dev)
- 	platform_device_unregister(bus->icc_pdev);
- 
- 	dev_pm_opp_of_remove_table(dev);
--	clk_disable_unprepare(bus->clk);
- }
- 
- static int exynos_bus_parent_parse_of(struct device_node *np,
-@@ -247,23 +245,15 @@ static int exynos_bus_parse_of(struct device_node *np,
+-#ifdef CONFIG_PM_SLEEP
+-static int exynos_bus_resume(struct device *dev)
++static int __maybe_unused exynos_bus_resume(struct device *dev)
+ {
+ 	struct exynos_bus *bus = dev_get_drvdata(dev);
  	int ret;
- 
- 	/* Get the clock to provide each bus with source clock */
--	bus->clk = devm_clk_get(dev, "bus");
--	if (IS_ERR(bus->clk)) {
--		dev_err(dev, "failed to get bus clock\n");
--		return PTR_ERR(bus->clk);
--	}
--
--	ret = clk_prepare_enable(bus->clk);
--	if (ret < 0) {
--		dev_err(dev, "failed to get enable clock\n");
--		return ret;
--	}
-+	bus->clk = devm_clk_get_enabled(dev, "bus");
-+	if (IS_ERR(bus->clk))
-+		return dev_err_probe(dev, PTR_ERR(bus->clk), "failed to get bus clock\n");
- 
- 	/* Get the freq and voltage from OPP table to scale the bus freq */
- 	ret = dev_pm_opp_of_add_table(dev);
- 	if (ret < 0) {
- 		dev_err(dev, "failed to get OPP table\n");
--		goto err_clk;
-+		return ret;
- 	}
- 
- 	rate = clk_get_rate(bus->clk);
-@@ -281,8 +271,6 @@ static int exynos_bus_parse_of(struct device_node *np,
- 
- err_opp:
- 	dev_pm_opp_of_remove_table(dev);
--err_clk:
--	clk_disable_unprepare(bus->clk);
- 
- 	return ret;
+@@ -469,7 +468,7 @@ static int exynos_bus_resume(struct device *dev)
+ 	return 0;
  }
-@@ -453,7 +441,6 @@ static int exynos_bus_probe(struct platform_device *pdev)
  
- err:
- 	dev_pm_opp_of_remove_table(dev);
--	clk_disable_unprepare(bus->clk);
- err_reg:
- 	dev_pm_opp_put_regulators(bus->opp_token);
+-static int exynos_bus_suspend(struct device *dev)
++static int __maybe_unused exynos_bus_suspend(struct device *dev)
+ {
+ 	struct exynos_bus *bus = dev_get_drvdata(dev);
+ 	int ret;
+@@ -482,7 +481,6 @@ static int exynos_bus_suspend(struct device *dev)
  
+ 	return 0;
+ }
+-#endif
+ 
+ static const struct dev_pm_ops exynos_bus_pm = {
+ 	SET_SYSTEM_SLEEP_PM_OPS(exynos_bus_suspend, exynos_bus_resume)
+@@ -499,7 +497,7 @@ static struct platform_driver exynos_bus_platdrv = {
+ 	.shutdown	= exynos_bus_shutdown,
+ 	.driver = {
+ 		.name	= "exynos-bus",
+-		.pm	= &exynos_bus_pm,
++		.pm	= pm_sleep_ptr(&exynos_bus_pm),
+ 		.of_match_table = exynos_bus_of_match,
+ 	},
+ };
 -- 
 2.44.0
 
