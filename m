@@ -1,47 +1,45 @@
-Return-Path: <linux-kernel+bounces-130504-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F68B897906
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:32:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6953A89790E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:35:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E33091F25701
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:32:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B928B266EF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEDED1553B8;
-	Wed,  3 Apr 2024 19:31:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qEp3oq3a"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18D4E15539A;
+	Wed,  3 Apr 2024 19:34:32 +0000 (UTC)
+Received: from sxb1plsmtpa01-01.prod.sxb1.secureserver.net (sxb1plsmtpa01-01.prod.sxb1.secureserver.net [188.121.53.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C71F136E1B;
-	Wed,  3 Apr 2024 19:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9561115530E
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 19:34:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.121.53.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712172709; cv=none; b=WbaAtFvEBWguZsb/1N0u2pq0gF3eAAqnaKD6XacvSiJ8z37IeIVxMW9YOByoHG20/fyty6qLsj3o3kOlxJ4gwQfvcvwZNGbDGX/6FHu+s32bFxF3LUXhqsxfk4otElyL1Bha14infF/UJX75bj8VKegurU5DAF1b94wEeiDabmY=
+	t=1712172871; cv=none; b=cCUF8kiTaclFJ0oj8D5Yxznsl5PnZB8WMCet06zECs1+lvb87jfDK0nMr0KMOt9pKq6tBh+pV5Y680j+XdwM5c1uOx++5Je8f/R4d2Z+I6a7CsqsUnFVaZ2SaKXzpdYE510RuekOkubSMN879WK53jb4kmCamuJtlPy+zoHmRYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712172709; c=relaxed/simple;
-	bh=49hnf8eNd26JAJN5gZr216K6nvdSTCxEep8HR+2CMrU=;
+	s=arc-20240116; t=1712172871; c=relaxed/simple;
+	bh=Gra+M5CB4uOQynVC1KnQiQy8k+PPo+HZFGgQ020BswM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Nx5rhtbvae+UaAepfqFIPySucdEVNjx/b/cFrqzIb5BLuRNQbIz/k5zJ2FN1/RLyQv5EDL4Iha968OtlXokgCGO2PrNMEvPJ5eBtsz+4/YXSUi/8Gh3RmxHqrT18RFmti7YUdWkBVNZ9DjAk0ttgEnP69La+idLfw5Iq0VWuSgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qEp3oq3a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CADC2C433F1;
-	Wed,  3 Apr 2024 19:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712172708;
-	bh=49hnf8eNd26JAJN5gZr216K6nvdSTCxEep8HR+2CMrU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qEp3oq3a7S2UpwjWu3xh9U7cO7WKeyoQUuqJ5j4JMMeDS4R4+OpuA/wJKcPER6x5c
-	 SGIe75/PLLWU/9q1K2gvx382Lm4GbsIZdZzJPbo/UX/FhuchNDNRwvahtyuVNXJyZX
-	 73d9O+6HuZ9tM63O1P0EW26mPfKQD/9rdN0sCRguPqMA/PEHDYvRndNDXTSXpwp9CX
-	 cAt02IfR4bssUEdtVbO23p/RL01G2aH4HhLpY7kRT/Z49AQfqCM05ZF/Bf2aZDVrLl
-	 JvSmk5cvO1kZRPUBGr5Oo31zvhnW8ViQNzyfiEc4OWizhwhjZrMQCvpE7rLiILhcSg
-	 FQwnJ2vqo5M4g==
-Message-ID: <d75ee9d5-36a9-4056-a0f3-0c05b2e744aa@kernel.org>
-Date: Wed, 3 Apr 2024 13:31:46 -0600
+	 In-Reply-To:Content-Type; b=bw048jJORJFTgVUnsPGxdyi86Sz83CuStoVzdQiX9eK/swYGma9Un5YOCNQyyjEp9JInwDuO2DwrzJ+7Lr94KPtU5C3daE8k8qqKSbxayLJLDxdEYhmJSQW9mpAT5WCAH3aMF+GrI9kB3meaBVwi0nWiB616M7QH2SmogjXtGlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk; spf=pass smtp.mailfrom=squashfs.org.uk; arc=none smtp.client-ip=188.121.53.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squashfs.org.uk
+Received: from [192.168.178.90] ([82.69.79.175])
+	by :SMTPAUTH: with ESMTPA
+	id s6L2rzWS7NGvls6L4rKxRo; Wed, 03 Apr 2024 12:32:03 -0700
+X-CMAE-Analysis: v=2.4 cv=b5F54cGx c=1 sm=1 tr=0 ts=660daeb4
+ a=84ok6UeoqCVsigPHarzEiQ==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
+ a=IkcTkHD0fZMA:10 a=VwQbUJbxAAAA:8 a=FXvPX3liAAAA:8 a=NEAV23lmAAAA:8
+ a=xNf9USuDAAAA:8 a=1XWaLZrsAAAA:8 a=U6Lr9aP-yIEcLLY-FxMA:9 a=QEXdDO2ut3YA:10
+ a=1F1461vogZIA:10 a=wSuxAcp8fc4A:10 a=5kKzt1m56AEA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=UObqyxdv-6Yh2QiB9mM_:22 a=SEwjQc04WA-l_NiBhQ7s:22
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk
+Message-ID: <594a6365-5cc6-4778-aec5-c5ad2a4b2930@squashfs.org.uk>
+Date: Wed, 3 Apr 2024 20:31:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,76 +47,78 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Content-Language: en-US
-To: Leon Romanovsky <leon@kernel.org>, Edward Cree <ecree.xilinx@gmail.com>
-Cc: Jakub Kicinski <kuba@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jason Gunthorpe <jgg@nvidia.com>, Christoph Hellwig <hch@infradead.org>,
- Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
- Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
- Itay Avraham <itayavr@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
- Aron Silverton <aron.silverton@oracle.com>, linux-kernel@vger.kernel.org,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- Andy Gospodarek <andrew.gospodarek@broadcom.com>
-References: <2024032248-ardently-ribcage-a495@gregkh>
- <510c1b6b-1738-4baa-bdba-54d478633598@kernel.org>
- <Zf2n02q0GevGdS-Z@C02YVCJELVCG> <20240322135826.1c4655e2@kernel.org>
- <e5c61607-4d66-4cd8-bf45-0aac2b3af126@kernel.org>
- <20240322154027.5555780a@kernel.org>
- <1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
- <0ea32dd4-f408-5870-77eb-f18899f1ad44@gmail.com>
- <20240402184832.GO11187@unreal>
- <cefa2b9a-4227-969e-d31e-c19a552b9c1c@gmail.com>
- <20240403190012.GV11187@unreal>
-From: David Ahern <dsahern@kernel.org>
-In-Reply-To: <20240403190012.GV11187@unreal>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] Squashfs: replace deprecated strncpy with strscpy
+To: Justin Stitt <justinstitt@google.com>
+Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20240328-strncpy-fs-squashfs-namei-c-v1-1-5c7bcbbeb675@google.com>
+Content-Language: en-GB
+From: Phillip Lougher <phillip@squashfs.org.uk>
+In-Reply-To: <20240328-strncpy-fs-squashfs-namei-c-v1-1-5c7bcbbeb675@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfJJxit0+HRHsEUq/5aS2mkZDiwx38H+++8a4oMEZ6Huc+oyQckaWaErbke77kwdsmlfnzXmOch6vzOYPQY8XJnCBmTxmRnUEZ3JbR0QwEuqOvW6GQ0HT
+ D/wiQojzLZxkhr84Q7jz4fksvWkUfDlNMVux9D1dg6IDRli+Yu0O8RT9YPKz7g/H5pU4QbAPkRgvqIAF8YPGybv7PMsVj4sGHUQ7W6chU6wQ7cg1kqD4ceWU
+ NhO9gHJVo1/ZojmK0/y0Ninxvc/cb8EuGFH1v/DwaTqoP4I2BB5bZ3/pD3KJ86a8
 
-On 4/3/24 1:00 PM, Leon Romanovsky wrote:
-> On Wed, Apr 03, 2024 at 01:26:50PM +0100, Edward Cree wrote:
->> On 02/04/2024 19:48, Leon Romanovsky wrote:
->>> On Tue, Apr 02, 2024 at 05:32:44PM +0100, Edward Cree wrote:
->>>>  you're getting maintainer pushback.
->>>
->>> May I suggest you to take a short break, collect names of people who
->>> participated in this discussion and check in git history/MAINTAINERS
->>> file their contribution to the linux kernel?
->> Whether you like it or not, Kuba is a kernel maintainer.
->> And thus, semantically, a Nack from him is "maintainer pushback".
->> That remains true regardless of who else in the discussion is also
->>  a kernel maintainer.
->>
->> If you had an actual point, feel free to explain to me, without the
->>  veiled language, what was so 'inappropriate' about my posting.
+On 28/03/2024 21:52, Justin Stitt wrote:
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 > 
-> Language, tone, and content of your email were inappropriate:
+> The previous code took special care of NUL-terminating the destination
+> buffer via a manual assignment. As such, there is no bug in the current
+> implementation. However, in an effort to rid the kernel of strscpy()
+> [2], Let's instead use strscpy() which guarantees this behavior [3]. To
+> ensure we can copy the same number of bytes as before, add 1 to the
+> length argument provided to strscpy().
 > 
-> https://lore.kernel.org/all/0ea32dd4-f408-5870-77eb-f18899f1ad44@gmail.com/
-> ...certain vendors whining...
-> 
-> ^^^^ Language
-> 
-> ... possibly they thought devlink params would just get rubber-
->  stamped — and now they're finding that the kernel's quality standards
->  still apply. ...
-> 
-> ^^^^ Tone
-> EVERYONE who participated in this discussion knows about kernel's
-> quality standards.
-> 
-> ... Patches aren't languishing for want of reviewer resources; it's just that it
->  takes *submitter* time and effort to bring them up to the quality level
->  that's required, and occasionally the vendor has to (shock! horror!)
->  tell the world what one of their magic knobs actually *does*. ...
-> 
-> ^^^^ Content
-> This paragraph alone shows that you completely didn't understand the
-> discussion here.
-> 
-> Thanks
 
-+1
+Squashfs copies the passed string into a temporary buffer to ensure it
+is NUL-terminated.  This however is completely unnecessary as the
+string is already NUL-terminated.
+
+A better way to remove the strncpy() is to remove the unnecessary string
+copy, which I have done in this patch here:
+
+https://lore.kernel.org/lkml/20240403183352.391308-1-phillip@squashfs.org.uk/T/#u
+
+Phillip
+
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90 [2]
+> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html  [3]
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Note: build-tested only.
+> 
+> Found with: $ rg "strncpy\("
+> ---
+>   fs/squashfs/namei.c | 3 +--
+>   1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/fs/squashfs/namei.c b/fs/squashfs/namei.c
+> index 11e4539b9eae..6c4704ba8f42 100644
+> --- a/fs/squashfs/namei.c
+> +++ b/fs/squashfs/namei.c
+> @@ -80,8 +80,7 @@ static int get_dir_index_using_name(struct super_block *sb,
+>   	}
+>   
+>   	str = &index->name[SQUASHFS_NAME_LEN + 1];
+> -	strncpy(str, name, len);
+> -	str[len] = '\0';
+> +	strscpy(str, name, len + 1);
+>   
+>   	for (i = 0; i < i_count; i++) {
+>   		err = squashfs_read_metadata(sb, index, &index_start,
+> 
+> ---
+> base-commit: 928a87efa42302a23bb9554be081a28058495f22
+> change-id: 20240328-strncpy-fs-squashfs-namei-c-9d01b8975e53
+> 
+> Best regards,
+> --
+> Justin Stitt <justinstitt@google.com>
+> 
 
 
