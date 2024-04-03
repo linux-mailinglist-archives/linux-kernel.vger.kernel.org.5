@@ -1,112 +1,112 @@
-Return-Path: <linux-kernel+bounces-130637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 901C9897AD4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:35:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAEFF897ADC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:37:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45A5C1F21280
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:35:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 803EBB25F87
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:37:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E140715667F;
-	Wed,  3 Apr 2024 21:34:55 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589EA2BB02
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:34:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DF815689D;
+	Wed,  3 Apr 2024 21:36:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="C6WiZzrQ"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7C4156671
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712180095; cv=none; b=Ha4ARlE/SoyR+QlvbmOrVaWltTMuo1KV8j/Jtn9IV+ifBBkDoLg/ekVXPbRNBCnZYmysTI7AYfOMsM+qLThMFCLz+5DioyloPnME1s6BktmVDj97evXLp3+PyibZSZOphpbwOdrc8kdP/JI/FPE/eqOnT4IZXpPaPCthIY5M49M=
+	t=1712180206; cv=none; b=BNxc/cyjufa/1qaqxt/euH4SlPv6vKwNljfhkDp2N87AfcNngU6BeymoNxc43Q54OJTsMOZwkZE/2yTTbFhT4Ur+XPJ2pvdBbmXXFxROXcipWBrbNXldqK2eeuvVtbp9eeRSpGm0JwXBZRDaBpIgrAwk6W8QlMX78LTqaU/9aU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712180095; c=relaxed/simple;
-	bh=O/x3pR/Uq2m/RFQAAEF82MfnkT1toOKqKKJEqBr1+aM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YPRqKmXUYloYnBQaeF7FMpwKjvmvdZOYfnPxz0SERgPWI7H1m7Eb4s8tclqRowhu4zj0vzS5CvSZO/0IGcWAkm4Im9KII90BZVDnEu3fmvBN8RDv+6oemZSEGuUIYcfZnWrbUc74lYyufJeUqP+7t4pSBFs9lCLVagaGkqoUyWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 93FC21007;
-	Wed,  3 Apr 2024 14:35:23 -0700 (PDT)
-Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CD68B3F7B4;
-	Wed,  3 Apr 2024 14:34:49 -0700 (PDT)
-Date: Wed, 3 Apr 2024 23:34:49 +0200
-From: Beata Michalska <beata.michalska@arm.com>
-To: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
-Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	ionela.voinescu@arm.com, sudeep.holla@arm.com, will@kernel.org,
-	catalin.marinas@arm.com, vincent.guittot@linaro.org,
-	sumitg@nvidia.com, yang@os.amperecomputing.com,
-	lihuisong@huawei.com
-Subject: Re: [PATCH v3 0/3] Add support for AArch64 AMUv1-based
- arch_freq_get_on_cpu
-Message-ID: <Zg3LeYvOefchf1N3@arm.com>
-References: <20240312083431.3239989-1-beata.michalska@arm.com>
- <5bdlm4kzni6x2bdy7kmmomf7cmyohjhr4nr7v2mb2pchuhkulj@moakmpptnbg5>
+	s=arc-20240116; t=1712180206; c=relaxed/simple;
+	bh=NdBqKp0juwWtRnrAtCIbTx8J+qGB2w1A5P7tVAcCA/E=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Dp4EUJSZZP+VlGIclbXkp+N0uPxYztSqJUYuqAL4Y2MeVY+OlQ+y05aa3e//0l+RJAt+BRbBfAKm/0KL2RKhHS7fYmXMkUc0UMwIWfwl7WM/NKu+hqrw8DALvhTJ3DlVlRQbqgKs2QAbn6nfO5XDA82CLx7vJMwpLedN/knhcRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=C6WiZzrQ; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6eaf9565e6bso199751b3a.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 14:36:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712180204; x=1712785004; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gXb/hya9MuzyVUKh4KO8Jgkudhwo0tzYCFb8lkCPFT8=;
+        b=C6WiZzrQZjQ6VK6yvW5QziXTcszW83nEtpB6wyTc10Y7Sr9HjaQiSogPBC1YdQ1Fu+
+         HKIv18chG8/woMzNvEmRWRJHR6ukIJ02y2gdP3lGXPYIZyUF8kQfY4BaZ3qoj50wNZ/l
+         xsi2zm1iZ/HCNksvn39iZXLpdAFcmbbkcMuhg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712180204; x=1712785004;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gXb/hya9MuzyVUKh4KO8Jgkudhwo0tzYCFb8lkCPFT8=;
+        b=b8kiEqn3DA3k6BnwhfKUYdRhqfEQknYmdKlImfdH5PPdaTE7agtW057EOCJ0TB2fCN
+         G5nCOaBISbCEKEZWx2MwTadvfMgY5zsCrCvst2WwxWP/08l0EuLWvwMXPbl4/S9TbKQb
+         Gbu8cAf3YKkCE52fluTU1KgkKWahdrPkvWWOgIPYOKpKfkpagSqs3bRn8rrTXmbpG626
+         WyTgmwk0JT2TtsCYLZxdJFnpX56UuoudNgjnEDR1cGONbD62J2i4Ni3Ks9QmA4Kk/kJa
+         EK6jpGR19YiYRBz0kO6SgFBibrEP6FwR6+r2BoTqdjDSm2oDV76sVc7sfl5MLQhypPKx
+         RmjQ==
+X-Gm-Message-State: AOJu0YzJSaHh4+jDs1Eh+dD4ia2igI1ckQn+hJVr04mA45Op1yQdyadi
+	8sRdV1pSv7z6fRztbyLNcAfXiWJlPFsHNU5AWO7zUtYfPutdm/+3tXZOEpBkXg==
+X-Google-Smtp-Source: AGHT+IFQ8/7XnV2Lir+npGRY/WkOn5joFd7y+Pw7U5KvNmhECatsiBYh2vrisoxpgesvx1BiuveZZw==
+X-Received: by 2002:a05:6a20:9151:b0:1a3:adc3:ce29 with SMTP id x17-20020a056a20915100b001a3adc3ce29mr1090942pzc.15.1712180204577;
+        Wed, 03 Apr 2024 14:36:44 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id j5-20020aa783c5000000b006eac81fa1fbsm12273046pfn.66.2024.04.03.14.36.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 14:36:44 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: linux-kernel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Arnd Bergmann <arnd@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Marco Elver <elver@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Justin Stitt <justinstitt@google.com>,
+	kasan-dev@googlegroups.com,
+	linux-hardening@vger.kernel.org
+Subject: Re: (subset) [PATCH 02/34] ubsan: fix unused variable warning in test module
+Date: Wed,  3 Apr 2024 14:36:37 -0700
+Message-Id: <171218019557.1345248.1235044277725212529.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240403080702.3509288-3-arnd@kernel.org>
+References: <20240403080702.3509288-1-arnd@kernel.org> <20240403080702.3509288-3-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5bdlm4kzni6x2bdy7kmmomf7cmyohjhr4nr7v2mb2pchuhkulj@moakmpptnbg5>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 25, 2024 at 09:10:26AM -0700, Vanshidhar Konda wrote:
-> On Tue, Mar 12, 2024 at 08:34:28AM +0000, Beata Michalska wrote:
-> > Introducing arm64 specific version of arch_freq_get_on_cpu, cashing on
-> > existing implementation for FIE and AMUv1 support: the frequency scale
-> > factor, updated on each sched tick, serves as a base for retrieving
-> > the frequency for a given CPU, representing an average frequency
-> > reported between the ticks - thus its accuracy is limited.
-> > 
-> > The changes have been rather lightly (due to some limitations) tested on
-> > an FVP model.
-> > 
+On Wed, 03 Apr 2024 10:06:20 +0200, Arnd Bergmann wrote:
+> This is one of the drivers with an unused variable that is marked 'const'.
+> Adding a __used annotation here avoids the warning and lets us enable
+> the option by default:
 > 
-> I tested these changes on an Ampere system. The results from reading
-> scaling_cur_freq look reasonable in the majority of cases I tested. I
-> only saw some unexpected behavior with cores that were configured for
-> no_hz full.
+> lib/test_ubsan.c:137:28: error: unused variable 'skip_ubsan_array' [-Werror,-Wunused-const-variable]
 > 
-> I observed the unexplained behavior when I tested as follows:
-> 1. Run stress on all cores
->    stress-ng --cpu 186 --timeout 10m --metrics-brief
-> 2. Observe scaling_cur_freq and cpuinfo_cur_freq for all cores
->    scaling_cur_freq values were within a few % of cpuinfo_cur_freq
-> 3. Kill stress test
-> 4. Observe scaling_cur_freq and cpuinfo_cur_freq for all cores
->    scaling_cur_freq values were within a few % of cpuinfo_cur_freq for
->    most cores except the ones configured with no_hz full.
 > 
-> no_hz full = 122-127
-> core   scaling_cur_freq  cpuinfo_cur_freq
-> [122]: 2997070           1000000
-> [123]: 2997070           1000000
-> [124]: 3000038           1000000
-> [125]: 2997070           1000000
-> [126]: 2997070           1000000
-> [127]: 2997070           1000000
-> 
-> These values were reflected for multiple seconds. I suspect the cores
-> entered WFI and there was no update to the scale while those cores were
-> idle.
->
-Right, so the problem is with updating the counters upon entering idle, which at
-this point is being done for all CPUs, and it should exclude the full dynticks
-ones - otherwise it leads to such bad readings. So for nohz_full cores cpufreq
-driver will have to take care of getting the current frequency.
+> [...]
 
-Will be sending a fix for that.
+Applied to for-next/hardening, thanks!
 
-Thank you very much for testing - appreciate that!
+[02/34] ubsan: fix unused variable warning in test module
+        https://git.kernel.org/kees/c/bbda3ba626b9
 
----
-BR
-Beata
-> Thanks,
-> Vanshi
+Take care,
+
+-- 
+Kees Cook
+
 
