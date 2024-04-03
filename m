@@ -1,97 +1,114 @@
-Return-Path: <linux-kernel+bounces-129528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1441B896C28
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:23:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A95F8896C32
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:25:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 461671C26AA0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:23:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F9C11F27496
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CABFF136E01;
-	Wed,  3 Apr 2024 10:23:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26BB13776F;
+	Wed,  3 Apr 2024 10:24:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VSxUD/Dh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kVrtIds9"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A66F259C;
-	Wed,  3 Apr 2024 10:23:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70143259C;
+	Wed,  3 Apr 2024 10:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712139795; cv=none; b=OgGqTgdJMyXIaSjLbJLSCoi+1BkCGBkAvBe4sshJnxQoWR1cpz/R2ebN9SlnjhI+OJixWgV1xHIQqGMIomiaGhQ/gWCS7mX7ZRWwoob+FVUuo32AVwcQoqA3Ud3BcXTKUucaFEuv2jOc3rB+A6JT/BU0H1uYNigV6632tN3KuXw=
+	t=1712139892; cv=none; b=EzYaMPDfsvpYY8kykEzqmD1DE1lBYUlMhGT2YHHmlmiNZJBFcuV9863cy+WM3BuUmAnjDZGP9AHC7tWLfhSGH8IabUyWl4W14whKnCNB0uS+EmB1dp8GFCBucbFXZtriW/vWhISUpqkst7TZWvKqHRMl7kb/Il9ma2ZY0Ldh2TQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712139795; c=relaxed/simple;
-	bh=Viy3GgCDJ7qyHcGUPSF+AlvmzsQeSr8sZWdoICy0T70=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=OztoJornKvx776rugI4LjTqT2ZxZjl9Yb8kJylYtDoJo4mKl+xdv39HQubdcoBnCRLKEka5K8OdBpSIaql1dOZJSbu8qus6cScdsb5v69FV8JWBhDz+PJTsv5M/XVQrqGKIWsox8mpqxOE3MpfbeDD6s/EgnxKEIJTpfvFR8bIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VSxUD/Dh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9F101C433F1;
-	Wed,  3 Apr 2024 10:23:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712139794;
-	bh=Viy3GgCDJ7qyHcGUPSF+AlvmzsQeSr8sZWdoICy0T70=;
-	h=From:To:Cc:Subject:Date:From;
-	b=VSxUD/Dh6qLEqngMy6HZH96KdR19I0YFv/Y/ptrkzTDcPC3HdUSr769+VoL8FRVtN
-	 EfdqEYOgmNNb87JEF8Gxe6EOOITteMo/ioPRnpm4uFTtgKty0u314KGRYOsfQsXQ6I
-	 0TdXg5RK/Y4OfUzKwwAzndCIPWUM55T6yL9UIAHUxQNEybIkFhkSe1/9s2tnmfbxSa
-	 3QFJnpuT22VoZHBsScnoW3XwcTfsBN1wVz2/JOTWV9nGzRv0yYUv6tHyYjTDyffaMw
-	 G9Uohp0BLQ6c+OYYEvb1lr54pwRxaH5IMos9x03imWeDew/Z4UbZZa2123WXfCpc73
-	 urbn36WsGuYsg==
-From: Michael Walle <mwalle@kernel.org>
-To: Nishanth Menon <nm@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Michael Walle <mwalle@kernel.org>
-Subject: [PATCH v2] arm64: dts: ti: k3-j722s-evm: Enable eMMC support
-Date: Wed,  3 Apr 2024 12:23:02 +0200
-Message-Id: <20240403102302.3934932-1-mwalle@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712139892; c=relaxed/simple;
+	bh=ESt8CZC/Qd2eEHRQmlwIpFHD3SOwTUjqLs41t4VZMsQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R9UMFrNGITbGpLWJzjAgOSu99x7Hfcv7U2G2JFFx0FCVedFmkQszpNtNBJA+T9xrs6h8rXIGum1oOpoTqAhrKS/1gGohfuZR5c1oKmeb55mOA77Z5jMKjzz0e1Epg6Kfi/wlU5NmAdpmkrT3RhHDbEo4sJboCySSdJ6+WxqpjNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kVrtIds9; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712139890; x=1743675890;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ESt8CZC/Qd2eEHRQmlwIpFHD3SOwTUjqLs41t4VZMsQ=;
+  b=kVrtIds9BKpFmlLpTWnKbdKsN7/055CsbdT9NLMUy82QflRZB4xPcU6i
+   g35itYOp9g+f8ealeMdUvBKSRi5/KkFZqwcM1w1Lcby4mukp8pOqPfaN9
+   Hq+Slpf7uo50WshknxDSLH+PfpFYWrVxMt7DavY8FSwLoovriqLuMMrtO
+   3ySHlBH5Et/quztDBoTwmXzOh8OeL6Erl/yAkb1xqdP4DtiYJA6BCXNbZ
+   PfcrryBgWkWcX3whNNTAYOyHjTZrRPc52Q81ceWrAhTVW4H65fvy7VHIN
+   EhRZNETk1Qy1JxWmqphxuJ1ZoObt+GUIYKQ4Lhs0bag3rzSrt+TiSkp2M
+   A==;
+X-CSE-ConnectionGUID: yqti+/tdQS+o3Dbb8qrvWA==
+X-CSE-MsgGUID: wzI0/46kTniFkeBQgW6c9w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7282964"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="7282964"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 03:24:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="937084818"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="937084818"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga001.fm.intel.com with SMTP; 03 Apr 2024 03:24:46 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 03 Apr 2024 13:24:45 +0300
+Date: Wed, 3 Apr 2024 13:24:45 +0300
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+Cc: Ran Wang <ran.wang_1@nxp.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-usb@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] usb: typec: nvidia: drop driver owner assignment
+Message-ID: <Zg0ubZ9P9sCVLOrX@kuha.fi.intel.com>
+References: <20240331091737.19836-1-krzk@kernel.org>
+ <20240331091737.19836-2-krzk@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240331091737.19836-2-krzk@kernel.org>
 
-The J722S EVM has an on-board eMMC. Enable the SDHC interface for it.
-There is no pinmuxing required because the interface has dedicated pins.
+On Sun, Mar 31, 2024 at 11:17:36AM +0200, Krzysztof Kozlowski wrote:
+> Core in typec_altmode_register_driver() already sets the .owner, so
+> driver does not need to.
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Signed-off-by: Michael Walle <mwalle@kernel.org>
----
-v2:
- - move status="okay" last
----
- arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 7 +++++++
- 1 file changed, 7 insertions(+)
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-index cee3a8661d5e..6b148da2bcdc 100644
---- a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-@@ -369,6 +369,13 @@ partition@3fc0000 {
- 
- };
- 
-+&sdhci0 {
-+	ti,driver-strength-ohm = <50>;
-+	disable-wp;
-+	bootph-all;
-+	status = "okay";
-+};
-+
- &sdhci1 {
- 	/* SD/MMC */
- 	vmmc-supply = <&vdd_mmc1>;
+> ---
+> 
+> Changes in v2:
+> 1. None
+> ---
+>  drivers/usb/typec/altmodes/nvidia.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/altmodes/nvidia.c b/drivers/usb/typec/altmodes/nvidia.c
+> index c36769736405..fe70b36f078f 100644
+> --- a/drivers/usb/typec/altmodes/nvidia.c
+> +++ b/drivers/usb/typec/altmodes/nvidia.c
+> @@ -35,7 +35,6 @@ static struct typec_altmode_driver nvidia_altmode_driver = {
+>  	.remove = nvidia_altmode_remove,
+>  	.driver = {
+>  		.name = "typec_nvidia",
+> -		.owner = THIS_MODULE,
+>  	},
+>  };
+>  module_typec_altmode_driver(nvidia_altmode_driver);
+> -- 
+> 2.34.1
+
 -- 
-2.39.2
-
+heikki
 
