@@ -1,162 +1,192 @@
-Return-Path: <linux-kernel+bounces-129870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6221B897174
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:46:19 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A498897179
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:46:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01CA41F20FA0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:46:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E669B20985
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1E021487F6;
-	Wed,  3 Apr 2024 13:46:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 862DF14830F;
+	Wed,  3 Apr 2024 13:46:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lpxgkZ0v"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VAnq1OxB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF1A1148308
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 295B11487F3
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 13:46:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712151968; cv=none; b=CxRvsidxDahS5dLriNm6iJUnUJBoyScCNLQqw/qlh29zs0gpUDeULIICBQZj+i3jo8OUKydpQaVgkv1RRO2lIzEAt+DFYbBHLLNzChYoe4gpHF8tgTeqOc0T2QyD5m7gUDt39oXOcgqkvMdCy5T07l2qReIiHJXjluYhSzPo4ic=
+	t=1712151991; cv=none; b=sRg4m1S6oAQt+j1nktICpFw3VGbqmYFrd3UXhbXyS/H31lZOJEvs3GVXw/tBzZSX+fLoeeYQlYUi8ojwUanLLClqCZoqfTYN/LKipjjlTPlrRqmPQnPZZ1UmeLElNJumsi3+j+2E4EWn8VF/MrcSVNuQSYWmVpkFR3vfzHsNtAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712151968; c=relaxed/simple;
-	bh=oNVe7SUbSSVH8Hwzoz+0n5x3tQwhvVYI/rKOgk9P1Ko=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tIyHz1h7tuwYH4qxdXQD8I8n/ZRne4nfP9X+fSrCcz+WCcf97NOpLVUthfxRYe7sUAFQZ2Bh8DQiTGk3UaX76Bef+uDz98RGV+iAdNgz5I9ezrwwHYIWARhlFOGhRi+69YzUF4zCTSDrzI0mn60ezSlPcDb/BE1SlE02VuPSFhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lpxgkZ0v; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e267238375so7357655ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 06:46:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712151966; x=1712756766; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=902P16CJPnj1xKchC1BfN1x8nt3eQDIalgicu+1Lvwk=;
-        b=lpxgkZ0vASiLQ+/wepIN45dVAGmf9Zm+N8OKg48F7O3ybnu/PMWZSCTidHAS/p10km
-         1OVI1Mmgo8kf03lcg4l3kHsjPyj3vsyqMEfwTDvJr4b4FJKBsordR+ZiTdc/z+R05hlk
-         qjqk+DIFutN2gM1Tg3ByzlZ1TwUg2m4Ky0UOXzray5y5lPZ+C41NScuZZ0Exe3vXcZ8A
-         FeJ7/xSwnTqokTHmXUE67+SMYdCvoQubW8HWAI2XLD023p/5CsZJ2NIGB52+P7q2DTil
-         CXVtLh0MNotVxHBZRawG26x5w8Qki7WtZM9536mRQbbPXrJKbCdx4AqnrirQMIujtGHB
-         YZ6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712151966; x=1712756766;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=902P16CJPnj1xKchC1BfN1x8nt3eQDIalgicu+1Lvwk=;
-        b=PwKS/SXGDBU492QSxZXP6WDMSk09KOXmFQd9kOcMo0FS4h2yL6+3tHHslBahdUFSC+
-         fTLDUlX2uRibwRUkL+FcOvOxwlAdgXETGeUPpEviwnI9HIYyAxDXX0hlcwrAQcnxenmL
-         25KsrnFQSB1u3LNkd564BdieVf2gE15d2pNUvhPQc7hOaSDeht6EC+RC2Z1AbV15oF9E
-         Ix2N8EHFIuHuYPIH2zFqDffsJrPhzSatj01mzH1IopOhtCEybGFNkVSHA35WAcQZ7uN4
-         uPZU3hz5SGixDzFdPFA0IPR+1+Q8+tnF5QrpUWHV0rxyU8r5QbnX5Pl4pVvoVl7cc1d8
-         DB6Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVr/dCOprbhXxnxoHLkHDph8XgL2rcBav9LOEHOn2aY6cxSyu2/O7kOX3jyMwHPE7wxuNMd1gKWx3jqJgFJC20DZl6Q/xcno2+HTFL6
-X-Gm-Message-State: AOJu0YzAP4taZzgs9I0yx1PvqxtNvdErfpERBmhGCR1Ymc3IZqcqDGoG
-	OJnfgYhUqbBvLhgB4fz3QltkBxKKq6rQ55bJC4UQeQf+fjIMLkbx+XiArRjeew==
-X-Google-Smtp-Source: AGHT+IHatIDalzVcNZetMx8G4eOcZq4CA3SOosvubbiLoS5X3FwlL5WkyiDNnVYB6kUtPKfF3k+0Ug==
-X-Received: by 2002:a17:903:2282:b0:1e2:45f3:2d57 with SMTP id b2-20020a170903228200b001e245f32d57mr3249524plh.6.1712151965699;
-        Wed, 03 Apr 2024 06:46:05 -0700 (PDT)
-Received: from thinkpad ([103.28.246.48])
-        by smtp.gmail.com with ESMTPSA id d5-20020a170902654500b001e290812d49sm1720356pln.226.2024.04.03.06.46.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 06:46:05 -0700 (PDT)
-Date: Wed, 3 Apr 2024 19:16:00 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Niklas Cassel <cassel@kernel.org>
-Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Jingoo Han <jingoohan1@gmail.com>, linux-pci@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-	mhi@lists.linux.dev, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v2 03/10] PCI: endpoint: Rename core_init() callback in
- 'struct pci_epc_event_ops' to init()
-Message-ID: <20240403134600.GL25309@thinkpad>
-References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
- <20240401-pci-epf-rework-v2-3-970dbe90b99d@linaro.org>
- <ZgvjWtC0f1CY6DJs@ryzen>
+	s=arc-20240116; t=1712151991; c=relaxed/simple;
+	bh=tkJNBlE+azjHfuN+qTWSVtGlKcW+lyA6yAnCrxz0si4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lqa7XKQtvFVHPo23uf7NBoLz4Cg66Du51kKA9X2P7S3NsUAf4KYnJhfLkO+vnlOI0ITjMYDr1NkQrQfifuttddXQLL8Tv1eX9pPLfA7RYFy24aGuuKpi3bvtnJVYAL8XothXCNTUltwVDwuCe7jJ9gFSoEJeFFyLT6w8DI+LPFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VAnq1OxB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712151989;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5njsq27kAwiBFtlgchtw0wHtXa6EUfl9Vkl4lFScYQg=;
+	b=VAnq1OxBVKkVqr7q1ExUM8IznYVr7rM0zNW8IIh9tLfovkVfhREdeKCZ5p6erQ9ekJOk3s
+	gfjY1MerK/yqsJ9MJ27k1JRlJ3TudD0N3mSAIsDeE9E1aU+pMCvwlHHK6eRN5mU2RGJvHy
+	RReafY7D6d8x3vl1bFqMOhExZNecChA=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-695-Rexn_fZcPXSqKFYZooRhfQ-1; Wed,
+ 03 Apr 2024 09:46:25 -0400
+X-MC-Unique: Rexn_fZcPXSqKFYZooRhfQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1DA363816B42;
+	Wed,  3 Apr 2024 13:46:25 +0000 (UTC)
+Received: from [10.22.33.218] (unknown [10.22.33.218])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 6613240C6CC0;
+	Wed,  3 Apr 2024 13:46:24 +0000 (UTC)
+Message-ID: <712a47ae-9383-4f6d-9f02-e29a84e69574@redhat.com>
+Date: Wed, 3 Apr 2024 09:46:23 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZgvjWtC0f1CY6DJs@ryzen>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cpuset: fix race between rebuild scheduler domains and
+ hotplug work
+Content-Language: en-US
+To: Chen Ridong <chenridong@huawei.com>, lizefan.x@bytedance.com,
+ tj@kernel.org, hannes@cmpxchg.org, daniel.m.jordan@oracle.com
+Cc: peterz@infradead.org, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, wangweiyang2@huawei.com, lujialin4@huawei.com,
+ xiujianfeng@huawei.com, caixinchen1@huawei.com
+References: <20240403085245.335072-1-chenridong@huawei.com>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240403085245.335072-1-chenridong@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On Tue, Apr 02, 2024 at 12:52:10PM +0200, Niklas Cassel wrote:
-> On Mon, Apr 01, 2024 at 09:20:29PM +0530, Manivannan Sadhasivam wrote:
-> > core_init() callback is used to notify the EPC initialization event to the
-> > EPF drivers. The 'core' prefix was used indicate that the controller IP
-> > core has completed initialization. But it serves no purpose as the EPF
-> > driver will only care about the EPC initialization as a whole and there is
-> > no real benefit to distinguish the IP core part.
-> > 
-> > So let's rename the core_init() callback in 'struct pci_epc_event_ops' to
-> > just init() to make it more clear.
-> > 
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/endpoint/functions/pci-epf-mhi.c  |  4 ++--
-> >  drivers/pci/endpoint/functions/pci-epf-test.c |  4 ++--
-> >  drivers/pci/endpoint/pci-epc-core.c           | 16 ++++++++--------
-> >  include/linux/pci-epf.h                       |  4 ++--
-> >  4 files changed, 14 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/drivers/pci/endpoint/functions/pci-epf-mhi.c b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > index 280863c0eeb9..b3c26ffd29a5 100644
-> > --- a/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > +++ b/drivers/pci/endpoint/functions/pci-epf-mhi.c
-> > @@ -716,7 +716,7 @@ static void pci_epf_mhi_dma_deinit(struct pci_epf_mhi *epf_mhi)
-> >  	epf_mhi->dma_chan_rx = NULL;
-> >  }
-> >  
-> > -static int pci_epf_mhi_core_init(struct pci_epf *epf)
-> > +static int pci_epf_mhi_epc_init(struct pci_epf *epf)
-> >  {
-> >  	struct pci_epf_mhi *epf_mhi = epf_get_drvdata(epf);
-> >  	const struct pci_epf_mhi_ep_info *info = epf_mhi->info;
-> > @@ -897,7 +897,7 @@ static void pci_epf_mhi_unbind(struct pci_epf *epf)
-> >  }
-> >  
-> >  static const struct pci_epc_event_ops pci_epf_mhi_epc_event_ops = {
-> > -	.core_init = pci_epf_mhi_core_init,
-> > +	.init = pci_epf_mhi_epc_init,
-> >  };
-> >  
-> >  static const struct pci_epc_bus_event_ops pci_epf_mhi_bus_event_ops = {
-> > diff --git a/drivers/pci/endpoint/functions/pci-epf-test.c b/drivers/pci/endpoint/functions/pci-epf-test.c
-> > index 973db0b1bde2..abcb6ca61c4e 100644
-> > --- a/drivers/pci/endpoint/functions/pci-epf-test.c
-> > +++ b/drivers/pci/endpoint/functions/pci-epf-test.c
-> > @@ -731,7 +731,7 @@ static int pci_epf_test_set_bar(struct pci_epf *epf)
-> >  	return 0;
-> >  }
-> >  
-> > -static int pci_epf_test_core_init(struct pci_epf *epf)
-> > +static int pci_epf_test_epc_init(struct pci_epf *epf)
-> 
-> On V1 you agreed that it is better to remove 'epc' from the naming.
-> (For both pci-epf-test and pci-epf-mhi).
-> You seem to have forgotten to address this for V2.
-> 
+On 4/3/24 04:52, Chen Ridong wrote:
+> When offlining cpus, it holds cpu_hotplug_lock and call
+> cpuset_hotplug_workfn asynchronously, which holds and releases
+> cpuset_mutex repeatly to update cpusets, and it will release
+> cpu_hotplug_lock before cpuset_hotplug_workfn finish. It means that some
+> interfaces like cpuset_write_resmask holding two locks may rebuild
+> scheduler domains when some cpusets are not refreshed, which may lead to
+> generate domains with offlining cpus and will panic.
+>
+> As commit 406100f3da08 ("cpuset: fix race between hotplug work and later
+>   CPU offline")  mentioned. This problem happen in cgroup v2:
+>
+> This problem can also happen in cgroup v1 pressure test, which onlines
+> and offlines cpus, and sets cpuset.cpus to rebuild domains with
+> sched_load_balance off.
+>
+> smpboot: CPU 1 is now offline
+> BUG: unable to handle page fault for address: 0000342bad598668
+> PGD 0 P4D 0
+> Oops: 0000 [#1] PREEMPT SMP NOPTI
+> CPU: 54 PID: 9966 Comm: sh Kdump: loaded Tainted: G S         OE      6.8.0-rc7+ #5
+> Hardware name: Powerleader PR2715P3/T1DM-E2, BIOS OEM57.22 11/23/2021
+> RIP: 0010:sd_init+0x204/0x390
+> Code: 00 02 00 00 a8 80 0f 84 ad 00 00 00 41 c7 44 24 2c 6e 00 00 00 85 d2 74 2f 48 63 54 24 18 49 8b 45 20 48 8b 14 d5 60 0b 79 ab <48> 8b 04 02 49 89 84 24 10 01 00 00 f0 ff 00 49 8b 84 24 10 01 00
+> RSP: 0018:ffff9f90669afc18 EFLAGS: 00010206
+> RAX: 0000342c00e62668 RBX: 0000000000000000 RCX: 00000000ffffffa0
+> RDX: ffffffffac736000 RSI: 0000000000000060 RDI: ffff8b24b8143930
+> RBP: ffff8b24b8143920 R08: 0000000000000060 R09: ffff8b2635783670
+> R10: 0000000000000001 R11: 0000000000000001 R12: ffff8b24b8143800
+> R13: ffff8ae687511600 R14: ffffffffabc6b9b0 R15: ffff8b25c0040ea0
+> FS:  00007fd93c734740(0000) GS:ffff8b24bca00000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000342bad598668 CR3: 00000001e0934005 CR4: 00000000007706f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> PKRU: 55555554
+> Call Trace:
+>   <TASK>
+>   ? __die+0x24/0x70
+>   ? page_fault_oops+0x82/0x150
+>   ? local_clock_noinstr+0xf/0xb0
+>   ? exc_page_fault+0x69/0x1b0
+>   ? asm_exc_page_fault+0x26/0x30
+>   ? sd_init+0x204/0x390
+>   ? sd_init+0x11c/0x390
+>   build_sched_domains+0x171/0x640
+>   partition_sched_domains_locked+0x2a1/0x3c0
+>   rebuild_sched_domains_locked+0x14f/0x200
+>   update_cpumask+0x27c/0x5f0
+>   cpuset_write_resmask+0x423/0x530
+>   kernfs_fop_write_iter+0x160/0x220
+>   vfs_write+0x355/0x480
+>   ksys_write+0x69/0xf0
+>   do_syscall_64+0x66/0x180
+>   entry_SYSCALL_64_after_hwframe+0x6e/0x76
+> RIP: 0033:0x7fd93c4fc907
+> Code: 0f 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
+> RSP: 002b:00007fff153c7f08 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+> RAX: ffffffffffffffda RBX: 0000000000000002 RCX: 00007fd93c4fc907
+> RDX: 0000000000000002 RSI: 000055d055679900 RDI: 0000000000000001
+> RBP: 000055d055679900 R08: 00007fd93c5b01e0 R09: 00007fd93c5b0260
+> R10: 00007fd93c5b0160 R11: 0000000000000246 R12: 0000000000000002
+> R13: 00007fd93c5f25a0 R14: 0000000000000002 R15: 00007fd93c5f27a0
+>
+> It must guarantee that cpus in domains passing to
+> partition_and_rebuild_sched_domains must be active. So the domains should
+> be checked after generate_sched_domains.
+>
+> Fixes: 0ccea8feb980 ("cpuset: Make generate_sched_domains() work with partition")
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
 
-Oh yeah, sorry about that. I tried to address comments for both series and
-apparently this one got missed.
+We are in the process of taking out cpuset_hotplug_workfn() and make the 
+hotplug operation synchronous again. See
 
-- Mani
+https://lore.kernel.org/lkml/20240401145858.2656598-1-longman@redhat.com/
 
--- 
-மணிவண்ணன் சதாசிவம்
+That should eliminate this particular problem that you have.
+
+Cheers,
+Longman
+
+> ---
+>   kernel/cgroup/cpuset.c | 7 +++++++
+>   1 file changed, 7 insertions(+)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 927bef3a598a..0e0d469c2591 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1210,6 +1210,7 @@ static void rebuild_sched_domains_locked(void)
+>   	cpumask_var_t *doms;
+>   	struct cpuset *cs;
+>   	int ndoms;
+> +	int i;
+>   
+>   	lockdep_assert_cpus_held();
+>   	lockdep_assert_held(&cpuset_mutex);
+> @@ -1251,6 +1252,12 @@ static void rebuild_sched_domains_locked(void)
+>   	/* Generate domain masks and attrs */
+>   	ndoms = generate_sched_domains(&doms, &attr);
+>   
+> +	/* guarantee no CPU offlining in doms */
+> +	for (i = 0; i < ndoms; ++i) {
+> +		if (!cpumask_subset(doms[i], cpu_active_mask))
+> +			return;
+> +	}
+> +
+>   	/* Have scheduler rebuild the domains */
+>   	partition_and_rebuild_sched_domains(ndoms, doms, attr);
+>   }
+
 
