@@ -1,95 +1,107 @@
-Return-Path: <linux-kernel+bounces-130516-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130514-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F06FD89792F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:49:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3267C897928
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:43:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D7CAB27EC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:48:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 636D01C267BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:43:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DEE51553A5;
-	Wed,  3 Apr 2024 19:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E28A15539B;
+	Wed,  3 Apr 2024 19:42:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mleia.com header.i=@mleia.com header.b="joOpIze7";
-	dkim=pass (2048-bit key) header.d=mleia.com header.i=@mleia.com header.b="joOpIze7"
-Received: from mail.mleia.com (mleia.com [178.79.152.223])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OZJT+mgl"
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBD571552FA;
-	Wed,  3 Apr 2024 19:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.79.152.223
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256B52F24;
+	Wed,  3 Apr 2024 19:42:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712173711; cv=none; b=oqUVSGNlk6sn80DP4DlITnG/qv34yMxVdycBO7Nw8I7op9P5eLRyrldUd61nVL2V/16RvBIVHUgL22FLiX50O+abFUYfgpyy1Unv9x8WZspfhB6M4WMV4cOctM/1GOqgjSov/F1SVVwwxnm6TCLDU133QdPcT8PvvlqFyyXYBKI=
+	t=1712173378; cv=none; b=JSxb9bfzDSFz+e1TWcYuNoHFXzttCw9KtmlWt5XHr87uN+Cb0DLeVC1g7gFu6smk4rYrQSkG08LANBuG2KP7VsrDdfIoRysxvN4VihFtHXJl6ywotz5A8STz1d/QU6rlgl2Qm5ZBRLby1XXf5iv3heWKSItaNpMwWyvehpIkM54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712173711; c=relaxed/simple;
-	bh=YgTe41TFlt+02N95B2a0BKSnw+zW/yykrDi7+gadw4Y=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lV1IcV1n4p4iNHfxtWAk5hAcaXf2njz+DhY1iszP3jarS0kZMof85aeMcRJjZoHegSgw1ed2QT/yp1U9VFjVRAQBzqtmBuN8pryy+HmR+7if/SReTc8GFco7pgTIU5mKNxEn2mOBVtQjpKRWMN76xxLoz3xs7+vwx8mC9DsxbXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mleia.com; spf=none smtp.mailfrom=mleia.com; dkim=pass (2048-bit key) header.d=mleia.com header.i=@mleia.com header.b=joOpIze7; dkim=pass (2048-bit key) header.d=mleia.com header.i=@mleia.com header.b=joOpIze7; arc=none smtp.client-ip=178.79.152.223
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mleia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mleia.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mleia.com; s=mail;
-	t=1712173367; bh=YgTe41TFlt+02N95B2a0BKSnw+zW/yykrDi7+gadw4Y=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=joOpIze7hYPykHqFQpqhIwnodHNIiFwDFrkxh+z2rHAslc7iyqp6+/MNJV6/+jWwX
-	 /yVIzkVhlPU2jeVF70X29QOi6AdeNacrZQrMHSi2EL8F4JbouH2vqQMfrLTaiDA+Rx
-	 5YIaFzKysRKAtHsiPenSBdZ9IQeKFERuRK0m+dZMtp80nfYWBLW3527lJhSmKuXKmi
-	 +S5kWuiZUWWirxWABEE2DeaXyNaAlm0aL21Npjijn+clZPp1SMK4l53//aqUIqJyBj
-	 pHSvh5aIMC2amXQqKFTdKw0gndL2H7Ly83mTmkzt3CTALfVe/dK0aJ0T5UdrygC3Z8
-	 h4wfEH1r0hDQA==
-Received: from mail.mleia.com (localhost [127.0.0.1])
-	by mail.mleia.com (Postfix) with ESMTP id 269AC464922;
-	Wed,  3 Apr 2024 19:42:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mleia.com; s=mail;
-	t=1712173367; bh=YgTe41TFlt+02N95B2a0BKSnw+zW/yykrDi7+gadw4Y=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=joOpIze7hYPykHqFQpqhIwnodHNIiFwDFrkxh+z2rHAslc7iyqp6+/MNJV6/+jWwX
-	 /yVIzkVhlPU2jeVF70X29QOi6AdeNacrZQrMHSi2EL8F4JbouH2vqQMfrLTaiDA+Rx
-	 5YIaFzKysRKAtHsiPenSBdZ9IQeKFERuRK0m+dZMtp80nfYWBLW3527lJhSmKuXKmi
-	 +S5kWuiZUWWirxWABEE2DeaXyNaAlm0aL21Npjijn+clZPp1SMK4l53//aqUIqJyBj
-	 pHSvh5aIMC2amXQqKFTdKw0gndL2H7Ly83mTmkzt3CTALfVe/dK0aJ0T5UdrygC3Z8
-	 h4wfEH1r0hDQA==
-Message-ID: <42ff72e4-e791-4b27-bf17-4f8a950264af@mleia.com>
-Date: Wed, 3 Apr 2024 22:42:45 +0300
+	s=arc-20240116; t=1712173378; c=relaxed/simple;
+	bh=3WUH9SubfwYcKxvgcz+D1M4r1DIyiUItWr+37jMl3Vw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=exzdnVnn1PlQh3YExmyxlRg8WKqMUmmovjhSR8YAnULyv7QyjH52XZTUivkGmWYB0Pzg75iRgnaZw2TeOmfBNK7wzLwwxMwueB0jrSxZzcbONxeuLqanVYQoDmuEOc3lfYzYzAwuVUEpoqkbFbIoCDXJ2BMoQbF8w/+rDtGmhB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OZJT+mgl; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2a28b11db68so110749a91.2;
+        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712173376; x=1712778176; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MUae7FX57GCbhwQ8NWUH2pJwsLTvGchJ6LyegeiE4d0=;
+        b=OZJT+mglv8j4K+Q6smrVixru9z92cltp74WDeoxWjcbgJ3dqUZv1rA3XSO4xBe0vlA
+         JDwRcHniqTXgh6JcTvUfTqhrm0v+5tYURVq++tp+za6Wn+Bb1puKuUiTVNUn3vgCfInb
+         ftFBhiQJYiujhiYJ+TeEEBplguAw4hUxZnzxZw/qJY5Qg9peeViri3CT/mN87Ma8N0Ie
+         ac6FLeVEu+fmpxRu05RxMkKI7H0VLsCkVqmw5V27adNMOmR74NM4oeXwcpIjG00/XwRQ
+         61EhcHsxveDHlv1bqZKeDPL5y6NaOSDWbnEOvroMp3AOrnTOMmK1N+aJGj7AfnKIJxYR
+         51AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712173376; x=1712778176;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MUae7FX57GCbhwQ8NWUH2pJwsLTvGchJ6LyegeiE4d0=;
+        b=WjkX1YyyEotKyhkd1hyxqPczeiuopidwA0YQInwgSawyAf/L6adJ4WJJ8CywmFX0xN
+         wqzYm+YMT+EOY3tdOfsqijCmX/MuFHSes2mg1SlDxy8j/XpgStvHbcgOYW5BfP8wOhGC
+         3KKTpygFDSWxVcUJvfKorczaoM1Xol2nTeWtI+VPWAJA+VIXYeeuyo1YmR7ysivIYI+s
+         s3xrx/jAvjP2qu7W7n++8wtYbmtKYnRtgcuHn6iPLzX58tRuqLHAJH6RRJs8vMlIn8Ct
+         xp79eBEqRQzVIg/XvNVudW3tkpRVG7OURzRu1/hu5XMFcpYs1XqKV42oHTxBEtSPlLff
+         ICig==
+X-Forwarded-Encrypted: i=1; AJvYcCULJHWELfRobEGZYa8xhlRuslmKt/FmGucqlwFvSVtJ/3unKWs8DA6CN+s850/7WZFqWVTHSs9RHfcEpGh94Vqki0MVLLYk9+wGZGM//H+zNBpT5MpbQqBhuphWbrKsZzbu2Jv/OHLE3g==
+X-Gm-Message-State: AOJu0Yxv5SqHKVeofOLzEbJYuNHyz5WzRnSwkAx/qtZ33LMSzCCMOgm2
+	Cy4jkfCYpCudGaqbXJ0k70ZXmoazp1bOg54Vw0aS5v6WSXRXFsVj
+X-Google-Smtp-Source: AGHT+IEVXZX4Q2IoMb+hEcs5wG+rtM60qFsELk5WmIi68s8cL1mTcSnvyfYFxW/wOCpaOy2eQGQZBg==
+X-Received: by 2002:a17:90a:43c5:b0:29b:2268:3349 with SMTP id r63-20020a17090a43c500b0029b22683349mr508502pjg.18.1712173376438;
+        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:25ab])
+        by smtp.gmail.com with ESMTPSA id nh12-20020a17090b364c00b0029c61521eb5sm64786pjb.43.2024.04.03.12.42.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 12:42:56 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Wed, 3 Apr 2024 09:42:54 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Tianchen Ding <dtcccc@linux.alibaba.com>
+Cc: linux-kernel@vger.kernel.org, Zefan Li <lizefan.x@bytedance.com>,
+	Johannes Weiner <hannes@cmpxchg.org>, Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH] selftests: cgroup: skip test_cgcore_lesser_ns_open when
+ cgroup2 mounted without nsdelegate
+Message-ID: <Zg2xPtwFvT-lsSJX@slm.duckdns.org>
+References: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] clk: nxp: Remove an unused field in struct lpc18xx_pll
-Content-Language: en-US
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <6cfb0e5251c3a59a156e70bcf6a0cc74aa764faa.1711985490.git.christophe.jaillet@wanadoo.fr>
-From: Vladimir Zapolskiy <vz@mleia.com>
-In-Reply-To: <6cfb0e5251c3a59a156e70bcf6a0cc74aa764faa.1711985490.git.christophe.jaillet@wanadoo.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CRM114-Version: 20100106-BlameMichelson ( TRE 0.8.0 (BSD) ) MR-49551924 
-X-CRM114-CacheID: sfid-20240403_194247_182173_86A86778 
-X-CRM114-Status: UNSURE (   5.38  )
-X-CRM114-Notice: Please train this message. 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240327024437.3196-1-dtcccc@linux.alibaba.com>
 
-On 4/1/24 18:31, Christophe JAILLET wrote:
-> In "struct lpc18xx_pll", the 'lock' field is unused.
-> Remove it.
+On Wed, Mar 27, 2024 at 10:44:37AM +0800, Tianchen Ding wrote:
+> The test case test_cgcore_lesser_ns_open only tasks effect when cgroup2
+> is mounted with "nsdelegate" mount option. If it misses this option, or
+> is remounted without "nsdelegate", the test case will fail. For example,
+> running bpf/test_cgroup_storage first, and then run cgroup/test_core will
+> fail on test_cgcore_lesser_ns_open. Skip it if "nsdelegate" is not
+> detected in cgroup2 mount options.
 > 
-> Found with cppcheck, unusedStructMember.
-> 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Fixes: bf35a7879f1d ("selftests: cgroup: Test open-time cgroup namespace usage for migration checks")
+> Signed-off-by: Tianchen Ding <dtcccc@linux.alibaba.com>
 
-Thank you for the change!
+Applied to cgroup/for-6.10.
 
-Acked-by: Vladimir Zapolskiy <vz@mleia.com>
+Thanks.
 
---
-Best wishes,
-Vladimir
+-- 
+tejun
 
