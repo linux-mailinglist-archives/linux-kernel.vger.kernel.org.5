@@ -1,181 +1,160 @@
-Return-Path: <linux-kernel+bounces-129660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA7B1896E2F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD15E896E2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 13:26:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4465B2E114
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:24:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 179E1B2C7E4
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:26:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2531420A5;
-	Wed,  3 Apr 2024 11:24:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7783014386B;
+	Wed,  3 Apr 2024 11:26:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LDFYbi50"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="V6ezk5Mn";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oHe68Sjy"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C06181420B8
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 11:24:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93782135A5F;
+	Wed,  3 Apr 2024 11:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712143451; cv=none; b=eOentOWi5QH8x/FIYY9oW24jIzu+yqDigD5ppN9sUqyHfIm4kpqbZS4EL7605fB7EuIyDmVtmrvHUVic8rpJPBZqmxWZE0WmXEXTQNCLCVtfzlDnSh4ENE9sFzUS0n0gmJrmsGK0FqJfT2cqJhZgBDnlX2/SpmM3dgIB9TuCmQM=
+	t=1712143568; cv=none; b=W80qhDDO76VDR+N60i53ATVqyo2W4UeBto4H90QochrkoCSAcDgVZ7ZioRkntTUvHE2cRQmMmp6vUxYPK+VD5RPxOTPEyldzTROq3gMtPAFVjppqKjWXG4yDJ+I/xh7i2nHXdK3iK0uuY1REMGSKV/oaZVh2YE+AYIMIdAH8fEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712143451; c=relaxed/simple;
-	bh=2wxJPp8aOolhWhZ/DV7ENKOsy9YRJfHxk5CeE947MXY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Osi5Stxaspje8d7AVOvOJytRrzcCTcPQDt8ECo13JhL7wPHdd5FyoZMwhvm/rlD0cNw8ZPll6pCIMOLvm04vhtBUhuTRmfKTs+4MVYY5Aje/sJKDFKxebpdHTXRF+wb0ZnCWohbdGbmjLQOJ+djtioyDBjv0RFKrs98lJwqrpdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LDFYbi50; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a46ba938de0so830238266b.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 04:24:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712143448; x=1712748248; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=IO6yw321pzkaoaCqh1hl5FnjaHB5/tUUufUSj5CW6t8=;
-        b=LDFYbi50vteZ2tjsvUOXOFI4S3XouRWq8Af0KMOzvndeTzNgMxWp639V4a8BT4GSu2
-         HVsDy23OIzBSez5h7WBZCyPWajqjZSCNStZUnUOgh1Mvhho3PFhGi5CMhHuqUlJRbxLL
-         OX/b0NYeNqcP5KI2xelyfdupWYUvDqHJX6P7Pai3XG6htc4eIFKutJB2VpchS2qzwloW
-         T9wEYSE9AINjmk6ScSxOZpGVPwJKFdy/JecV6UdJNwlOFWU8yxfxpL6sf0YCZb71iR85
-         lpaieuey8nW1k102U+yjC6QYu01bI0HD2yiDSaasSX3cVlWcpx2wRlshock65O+SOO9+
-         bxvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712143448; x=1712748248;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IO6yw321pzkaoaCqh1hl5FnjaHB5/tUUufUSj5CW6t8=;
-        b=foriXDirUw2hEEainDhTgRwuzHgY0AvV4CIalN3b93ugoIx/hv7wLMsHPitZfSKT6z
-         esAoMGiQyzilSj4ZAzCyVKjVTAI6yqQjjaVwN8ZHrmLwoHAZnTwJAGRq3hgDc4mWV2/4
-         qIkXV0bhW8Ci7gY7SHVX/Uvy0sERVf8X+TziZXiguEj9E+lcES2QP5eMOUBPcnh4qtzh
-         ZKSQVl8l5lCe961za7iYZh8gq+lq9NZ76lNR1D/TY8+DzHHLbhuc9SwO+M32m8tTqABh
-         dJAfeFhyjGkP7TMMdccrOPMEMMba0pLsw/DWRCzGoBJmFw8tIKoE2nheSWzxkNLx69KO
-         /9JA==
-X-Forwarded-Encrypted: i=1; AJvYcCWp4Ud6RdEq7BsK8UvaFvnvL5AUVA8r/XrGipRgjCICeSvU6cHBvUhD7U6rV1sdIRna/ftSCJOf9TUJqm+DG/UOtQoPpzBGlgOsS/KZ
-X-Gm-Message-State: AOJu0Yyis2bbTDEluAe1HISyDZ2KuHMAwmdFN0fO8LjP22AJrZblQs8R
-	eJtxH/pD9uSYRXtDTodiMxezXLlNR/TbMk+e1oFyY/W4HLMaUUqui/dh01XHHzM=
-X-Google-Smtp-Source: AGHT+IEqGdSJ246ZO00yUEFudXBJfQRgE/TyDPzINqn3RUr4Av0cbnFJpv2+C74POr8ucLFrJCfxmw==
-X-Received: by 2002:a17:907:7da1:b0:a4e:6957:de25 with SMTP id oz33-20020a1709077da100b00a4e6957de25mr7013926ejc.57.1712143448058;
-        Wed, 03 Apr 2024 04:24:08 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id wn7-20020a170907068700b00a4e533085aesm4912682ejb.129.2024.04.03.04.24.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 04:24:07 -0700 (PDT)
-Message-ID: <86150c89-11d5-4d52-987e-974b1a03018f@linaro.org>
-Date: Wed, 3 Apr 2024 13:24:05 +0200
+	s=arc-20240116; t=1712143568; c=relaxed/simple;
+	bh=B1D7E4BM5v4MwQPNkDEDRTd/yHE8sU0PvvLfbGkYHFA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QCPWCRvblYLrkO55KEVq2Ojgpdw/yLJWwtpZy8ki2WMBwZWY/qAuwb4yAccJdTgPaM4ahMp+ZOIz9E5vVeVGpB1Mucefa2Doibeea/sYE+XsRZeYkcAr2ZhGL+e68ixIklLATEevoS+FuRSxWT/We2Q/56QFm5jRSJMz3yyugUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=V6ezk5Mn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oHe68Sjy; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id CBCBE35299;
+	Wed,  3 Apr 2024 11:26:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712143563; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=54XuIdUwF3kNBca8B3d+4aw8AC5z3K/ax7Sw1nc33og=;
+	b=V6ezk5MnIOqz3bzeAZk3jMav5NApJuUwfgsrdqb/bT5QyNgBI4m8t7INejzbjsNHs3YsLQ
+	8Qh8+VrfFymHsI+c1Aj+fI2zL5ma1coKb03PCGQeABW2vQjs623sx+Zgj+joEAiHbGdMMO
+	CRZiMBcYYNwKLhjdBZPhSlksKWWTe7A=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712143563;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=54XuIdUwF3kNBca8B3d+4aw8AC5z3K/ax7Sw1nc33og=;
+	b=oHe68SjyGtvEBCK+yhyWBnBmmLpoNa+Xyp4nigoxHletQHBaiGGyitBS8+Jv8W8+DuhYpP
+	xPMLUCz5BgUl6uCg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C04C81331E;
+	Wed,  3 Apr 2024 11:26:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id lIruLss8DWYiIgAAn2gu4w
+	(envelope-from <jack@suse.cz>); Wed, 03 Apr 2024 11:26:03 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 81366A0814; Wed,  3 Apr 2024 13:25:55 +0200 (CEST)
+Date: Wed, 3 Apr 2024 13:25:55 +0200
+From: Jan Kara <jack@suse.cz>
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Brian Foster <bfoster@redhat.com>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	=?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v3 10/13] ocfs2: fiemap: return correct extent physical
+ length
+Message-ID: <20240403112555.nj2l5jw2xjrsud3y@quack3>
+References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+ <0b492e10a9034c8fb08ca654c06471575e8bb96d.1712126039.git.sweettea-kernel@dorminy.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/6] Add Synopsys DesignWare HDMI RX Controller
-To: Shreeya Patel <shreeya.patel@collabora.com>
-Cc: mchehab@kernel.org, hverkuil@xs4all.nl, hverkuil-cisco@xs4all.nl,
- heiko@sntech.de, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
- p.zabel@pengutronix.de, shawn.wen@rock-chips.com, kernel@collabora.com,
- linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-arm@lists.infradead.org
-References: <20240327225057.672304-1-shreeya.patel@collabora.com>
- <35e566-660d2080-1-7eb9eb00@16488675>
- <a2f88176-b4e1-4202-843c-a00c5a2b1622@linaro.org>
- <35f774-660d3b80-3-513fcf80@97941910>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <35f774-660d3b80-3-513fcf80@97941910>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0b492e10a9034c8fb08ca654c06471575e8bb96d.1712126039.git.sweettea-kernel@dorminy.me>
+X-Spam-Score: -3.71
+X-Spamd-Result: default: False [-3.71 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.999];
+	 RCPT_COUNT_TWELVE(0.00)[20];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-2.91)[99.60%]
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-On 03/04/2024 13:20, Shreeya Patel wrote:
-> On Wednesday, April 03, 2024 15:51 IST, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+On Wed 03-04-24 03:22:51, Sweet Tea Dorminy wrote:
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+>  fs/ocfs2/extent_map.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
->> On 03/04/2024 11:24, Shreeya Patel wrote:
->>> On Thursday, March 28, 2024 04:20 IST, Shreeya Patel <shreeya.patel@collabora.com> wrote:
->>>
->>>> This series implements support for the Synopsys DesignWare
->>>> HDMI RX Controller, being compliant with standard HDMI 1.4b
->>>> and HDMI 2.0.
->>>>
->>>
->>> Hi Mauro and Hans,
->>>
->>> I haven't received any reviews so far. Hence, this is just a gentle reminder to review this patch series.
->>
->> Why did you put clk changes here? These go via different subsystem. That
->> might be one of obstacles for your patchset.
->>
-> 
-> I added clock changes in this patch series because HDMIRX driver depends on it.
-> I thought it is wrong to send the driver patches which don't even compile?
+> diff --git a/fs/ocfs2/extent_map.c b/fs/ocfs2/extent_map.c
+> index eabdf97cd685..229ea45df37b 100644
+> --- a/fs/ocfs2/extent_map.c
+> +++ b/fs/ocfs2/extent_map.c
+> @@ -705,7 +705,9 @@ static int ocfs2_fiemap_inline(struct inode *inode, struct buffer_head *di_bh,
+>  	unsigned int id_count;
+>  	struct ocfs2_dinode *di;
+>  	u64 phys;
+> -	u32 flags = FIEMAP_EXTENT_DATA_INLINE|FIEMAP_EXTENT_LAST;
+> +	u32 flags = (FIEMAP_EXTENT_DATA_INLINE|
+> +		     FIEMAP_EXTENT_HAS_PHYS_LEN|
+> +		     FIEMAP_EXTENT_LAST);
+>  	struct ocfs2_inode_info *oi = OCFS2_I(inode);
+>  
+>  	di = (struct ocfs2_dinode *)di_bh->b_data;
+> @@ -782,7 +784,7 @@ int ocfs2_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+>  			continue;
+>  		}
+>  
+> -		fe_flags = 0;
+> +		fe_flags = FIEMAP_EXTENT_HAS_PHYS_LEN;
+>  		if (rec.e_flags & OCFS2_EXT_UNWRITTEN)
+>  			fe_flags |= FIEMAP_EXTENT_UNWRITTEN;
+>  		if (rec.e_flags & OCFS2_EXT_REFCOUNTED)
 
-Hm, why HDMIRX driver depends on clock? How? This sounds really wrong.
-Please get it reviewed internally first.
+Again, we should be passing non-zero phys_len if we set
+FIEMAP_EXTENT_HAS_PHYS_LEN flag AFAIU.
 
-> 
-> Since you are a more experienced developer, can you help me understand what would
-> be the right way to send patches in such scenarios?
-
-I am not the substitute for your Collabora engineers and peers. You do
-not get free work from the community. First, do the work and review
-internally, to solve all trivial things, like how to submit patches
-upstream or how to make your driver buildable, and then ask community
-for the review.
-
-Best regards,
-Krzysztof
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
