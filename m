@@ -1,139 +1,198 @@
-Return-Path: <linux-kernel+bounces-129468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D45C896B39
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A1581896B47
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 12:01:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1E49E1F290FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:58:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 17C4F1F29812
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07E141353EF;
-	Wed,  3 Apr 2024 09:58:31 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5682134CDC
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 09:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712138310; cv=none; b=fAay72RPMWanfSLHdSnllmDR0bdYPDWk9IZXEfFbwvwPALMB2hNiagVmS1MPzn1jIhWKDgWX9pwMehfSPteLrSzzeO1weoBpTkac2nLqpRRMwuPlQfPyp2salDIqQ8visZ7/106IThiBotI7KF0jL6CK07TchgkxLcHY5SJUPrY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712138310; c=relaxed/simple;
-	bh=v6kPPu8AbJZK6mxxZQbhLMHpWRSSYapD027qb+raLG0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eCBdM505qeCgq8OAXG1nNZ3wZVANbBbXtzZVtrAkjRXYrcTDmNebcrotXIbULUTQfPRPSLGPvlpDHfoyCkyYPwHhsyS0W/JhVMzYo26M77ZpAWByE9YHLBX0q3SsV6lxV/vvbfeY3ccGwaWM5VCUUx/SCIYuh9ycgiqP9eQ5CIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 02B8A1007;
-	Wed,  3 Apr 2024 02:58:59 -0700 (PDT)
-Received: from [10.57.73.155] (unknown [10.57.73.155])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F05E63F64C;
-	Wed,  3 Apr 2024 02:58:26 -0700 (PDT)
-Message-ID: <6d90b034-b91a-4e33-b728-b86261c050b0@arm.com>
-Date: Wed, 3 Apr 2024 10:58:31 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E9C135A5D;
+	Wed,  3 Apr 2024 10:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Vs3rG+aK"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2059.outbound.protection.outlook.com [40.107.237.59])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C147135405;
+	Wed,  3 Apr 2024 10:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712138483; cv=fail; b=Ztd61le9FG4hbeLUbqlgBm7CUF7gPw7ntan/dvc2nHHN8KjZcAFzUvO7sSOTPrKHd6n31xKx+7IaM+Pfame1yfcxG1exbeDRng8mUfHw5avmRKjm11vSwOWk53CxIiCFjsDnGIIsZAreT4dG+ULtVEGFS0M0l8fXLf5RbvZy17Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712138483; c=relaxed/simple;
+	bh=qRcEjrdWwqkGGVZloK+maEf/zhvVuXqoZvTMBjVHlUE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lre5lDk4yrvLE/9eGj+9x6SbSB5W/j1qrsi5PSBMEldiq0xiunrm5ZdsaQKJhkDbqZ3YdskQzcE2Rx/yZ1fxv2JEoU/ZZroGcFVUUrG1WG5uxiQ0kc1KuvRpbnoqcE4hZuVZ2USaqaeVry5CvIbWm5IRS87K1bskmhapklW42H8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Vs3rG+aK; arc=fail smtp.client-ip=40.107.237.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DVNQ9s6g/DX/cXLxhC3EdZURk2Drlr1DwEavso2y+q+EXqagpJQ/vlKKcEA4rzFTDm8J/DsNolALtUYAng/HDwfZi1WjFdYCvviXIIwRIdbJ/7bHw/HalHzKv6Az58+z0JPkgjDf9xJOpEwsjJfsDegFxU92nyHNz7aJYIbSThClavQse3LxNhch/5MoLh4Hl1LKHO/8txuttwxJUXHFjfNyNLYx1hHDKBXbbeMIJP+i2ywTMfHPDAQcOLXQqdo/3uE26yc0MdkYiUMSCgOI1pf6ypKbBjWt58H0WIR1+MS0bmhmeHaJGrtJWRauQ1duYnfGJrmZbvzr9Qe1v70hrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=egAVd7N1brwmQ6m13nvCT5Ot41J04KNSDuLqKvaNUdo=;
+ b=gS/XaehyCU7ofzuWh0C3wkzwnXWVZETXzrq0Al0fq/8BiHMJKzOMSJrTh7L8eujWhplV6x83FkhWFqOMmZ5VuWWaHrvHteg59941UMCwbFtR5PEzGpLzy4IZTbQrmHh3SGAQN/VtRQOftteRC3k1xihEzBCiFPLdJGqIQFws5a0ZuXW7Es2zpzCnnj4JYjx3ug2er1mlv5jW5GMXzO+ty9OxmZ5ehM63R6f9uMOHMbAW/7TWwGqyr/2i9dKJPZM6vKBmsr+7yXnQJ89Rvcf3rZY3Th/pi0luRLacnuN2qs4c7tgCtIumdKP9Ud6RxgunpcHvC0VnEfo34p9Y25Bt8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=gondor.apana.org.au
+ smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
+ header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=egAVd7N1brwmQ6m13nvCT5Ot41J04KNSDuLqKvaNUdo=;
+ b=Vs3rG+aKahTN0rwic2zPRuHkFoeo4bKL+NHJq6hipahdBY2y3DBvuN+sQq2mX7pm/PzhG/93e2S4FgSIxTIqA4hRWKQaVn4mbQbkxI/RfsT9zaJVxy5RgiwjJak/WvHPoKfGuHwMG2zLSTnd0klofbl/dPi8AD6GkRBr4AFkSYN28H+ErjOrXWkl3kMDL2nD7KWj6NreiMxPoNwjxJtNJvYWgbw1iJOnA8AtI1BGWI6GtxxC6/ntE6ANlEIT3C+G5yLMVGQw+I08fQz+P60Ic6PArPPLoXfOE8fKjyfhwoneOr5kowaf70pxCJ4/DTS/zq2V0+5MY7W4hH2K6Kp4qg==
+Received: from BL6PEPF00013DFC.NAMP222.PROD.OUTLOOK.COM
+ (2603:10b6:22e:400:0:1001:0:21) by DS0PR12MB9324.namprd12.prod.outlook.com
+ (2603:10b6:8:1b6::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
+ 2024 10:01:17 +0000
+Received: from BL6PEPF0001AB73.namprd02.prod.outlook.com
+ (2a01:111:f403:f903::) by BL6PEPF00013DFC.outlook.office365.com
+ (2603:1036:903:4::4) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46 via Frontend
+ Transport; Wed, 3 Apr 2024 10:01:17 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ BL6PEPF0001AB73.mail.protection.outlook.com (10.167.242.166) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Wed, 3 Apr 2024 10:01:17 +0000
+Received: from drhqmail202.nvidia.com (10.126.190.181) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Wed, 3 Apr 2024
+ 03:00:59 -0700
+Received: from drhqmail201.nvidia.com (10.126.190.180) by
+ drhqmail202.nvidia.com (10.126.190.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.12; Wed, 3 Apr 2024 03:00:58 -0700
+Received: from BUILDSERVER-IO-L4T.nvidia.com (10.127.8.14) by mail.nvidia.com
+ (10.126.190.180) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
+ Transport; Wed, 3 Apr 2024 03:00:53 -0700
+From: Akhil R <akhilrajeev@nvidia.com>
+To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh@kernel.org>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
+	<catalin.marinas@arm.com>, <will@kernel.org>, <mperttunen@nvidia.com>,
+	<airlied@gmail.com>, <daniel@ffwll.ch>, <linux-crypto@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<dri-devel@lists.freedesktop.org>
+CC: Akhil R <akhilrajeev@nvidia.com>
+Subject: [PATCH v7 0/5] Add Tegra Security Engine driver
+Date: Wed, 3 Apr 2024 15:30:34 +0530
+Message-ID: <20240403100039.33146-1-akhilrajeev@nvidia.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: remove redundant 'extern'
-Content-Language: en-GB
-To: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240327112439.200455-1-steven.price@arm.com>
- <ZgvXljt6vdlVc1sF@FVFF77S0Q05N>
-From: Steven Price <steven.price@arm.com>
-In-Reply-To: <ZgvXljt6vdlVc1sF@FVFF77S0Q05N>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-NVConfidentiality: public
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB73:EE_|DS0PR12MB9324:EE_
+X-MS-Office365-Filtering-Correlation-Id: 83cfa25b-9f7f-4f7f-b32c-08dc53c5011f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	yvfagaMqM9mF8xvya+XBkmROp9r7ZRUw5gaHiOFyerrfTu6avQtwA7h+v7ZPTvBDgMk7XBE95gM8sI1wWbQo9hfM+18hQF2TQSX/LcEklP7n+XJITKgTYvbaUO4/t1LziLbxg2+6Nbpt52CYCLTTt4/TQ2SP47YC5rZFoPoKYKBk5uFAM/RO0W+woA3/wWQZxEY+xIdQxKvfUTTWB6pr0vM5BUrpSlXTnb9G9yMGvdRX2XvlEBYFrD4xNpNTmWkSLK3Zc8rcIKBoXp4KSUXbZjQyj+OqVyXcIJm9zn4cwM67UfUWk0vsIWpAIifR4PpJPcxKlHCRLiRxk8c+m10hwdyWsQE/aznL1tMY9VTsK8v/7t10TxWx7W0eEYwCp1cUFweITP0MRAzGe8kVHwVwCWlUAXw/wE+md/3dYl6ixi89wmsBj14iVohiRZXWgK7ciK8gN8r6/iVxl6rl/c4iZEMtMVNcSVzLwjjum2B7/EUHdx6b0nzjjOENHu+V7NiK8WmX9x5XPVjYFKsb8YzAEfm7V6xj7/X25cCqvBp/aU8MAH1oc3FcRfYA9cN87gPDXxq6nboMFeQhgEloynJ4VY12qI8ADxG7yLOa5ZVnnnP8M/LtovM6FVHGYFlVCfzJhtcbBq+6tbC5hTYRp0Gba24pemeslMsoCXZQVIdlIcTfhfoPrAlXaqT0hRHpSgRDJQjUrJY0Xf0XvV9wr+mSPAk10+JBwMR+0/HfyOExPuc23KGjD6rqGhQBcx38uO7T9bFWjXzPlAE8AKLcAVUHwg==
+X-Forefront-Antispam-Report:
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(36860700004)(7416005)(376005)(82310400014)(1800799015)(921011);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 10:01:17.0254
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 83cfa25b-9f7f-4f7f-b32c-08dc53c5011f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BL6PEPF0001AB73.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB9324
 
-On 02/04/2024 11:01, Mark Rutland wrote:
-> On Wed, Mar 27, 2024 at 11:24:39AM +0000, Steven Price wrote:
->> It isn't necessary to mark function definitions extern and goes against
->> the kernel coding style. Remove the redundant extern keyword.
->>
->> Signed-off-by: Steven Price <steven.price@arm.com>
-> 
-> We (unfortunately) have extern misused in a number of places:
-> 
-> | [mark@lakrids:~/src/linux]% git grep 'extern.*(' -- arch/arm64/include | cut -d: -f 1 | uniq -c
-> |      11 arch/arm64/include/asm/cacheflush.h
-> |       1 arch/arm64/include/asm/checksum.h
-> |       1 arch/arm64/include/asm/cpu_ops.h
-> |       4 arch/arm64/include/asm/cpufeature.h
-> |       2 arch/arm64/include/asm/efi.h
-> |       2 arch/arm64/include/asm/elf.h
-> |       1 arch/arm64/include/asm/exec.h
-> |       1 arch/arm64/include/asm/fixmap.h
-> |      48 arch/arm64/include/asm/fpsimd.h
-> |       3 arch/arm64/include/asm/ftrace.h
-> |      10 arch/arm64/include/asm/hugetlb.h
-> |      11 arch/arm64/include/asm/hw_breakpoint.h
-> |       6 arch/arm64/include/asm/io.h
-> |       4 arch/arm64/include/asm/kexec.h
-> |       1 arch/arm64/include/asm/kgdb.h
-> |      16 arch/arm64/include/asm/kvm_asm.h
-> |       3 arch/arm64/include/asm/kvm_host.h
-> |      11 arch/arm64/include/asm/kvm_hyp.h
-> |       2 arch/arm64/include/asm/kvm_pkvm.h
-> |       2 arch/arm64/include/asm/memory.h
-> |       8 arch/arm64/include/asm/mmu.h
-> |       2 arch/arm64/include/asm/page.h
-> |       1 arch/arm64/include/asm/percpu.h
-> |       2 arch/arm64/include/asm/perf_event.h
-> |       2 arch/arm64/include/asm/pgalloc.h
-> |      18 arch/arm64/include/asm/pgtable.h
-> |       3 arch/arm64/include/asm/pointer_auth.h
-> |       3 arch/arm64/include/asm/proc-fns.h
-> |       2 arch/arm64/include/asm/processor.h
-> |       3 arch/arm64/include/asm/ptrace.h
-> |      12 arch/arm64/include/asm/smp.h
-> |       1 arch/arm64/include/asm/stacktrace.h
-> |      14 arch/arm64/include/asm/string.h
-> |       2 arch/arm64/include/asm/suspend.h
-> |       1 arch/arm64/include/asm/system_misc.h
-> |       6 arch/arm64/include/asm/uaccess.h
-> 
-> ... so it'd probably be best to make the commit title more specific to this
-> instance, and maybe go clean those up in bulk as a series to avoid a steady
-> stream of copycat patches.
+Add support for Tegra Security Engine which can accelerates various
+crypto algorithms. The Engine has two separate instances within for
+AES and HASH algorithms respectively.
 
-Ah, I hadn't gone looking that closely - I'll do a series updating the
-arch/arm64/include ones (thanks for the list ;) ), and I'll include an
-updated version of this patch, with a clearly commit title, in the series.
+The driver registers two crypto engines - one for AES and another for
+HASH algorithms and these operate independently and both uses the host1x
+bus. Additionally, it provides  hardware-assisted key protection for up to
+15 symmetric keys which it can use for the cipher operations.
 
-Thanks,
+v6->v7:
+* Move fallback_tfm and fallback_req to end of struct
+* Set reqsize and statesize based on fallback_tfm
+* Remove ofb(aes)
+v5->v6:
+* Move copy/pase of intermediate results in export()/import() to
+  'update()' callback for CMAC as well.
+* Check for rctx size when using fallback alg.
+* Updated blocksizes to align with generic implementation
+* Combined GCM and CCM init into aead_cra_init
+* Updates to handle invalid cases better
+* Reduce log levels for invalid cases to dev_dbg
+v4->v5:
+* Move copy/paste of intermediate results in export()/import() to
+  'update()' callback
+v3->v4:
+* Remove unused header in bindings doc.
+* Update commit message in host1x change.
+* Fix test bot warning.
+v2->v3:
+* Update compatible in driver and device trees.
+* Remove extra new lines and symbols in binding doc.
+v1->v2:
+* Update probe errors with 'dev_err_probe'.
+* Clean up function prototypes and redundant prints.
+* Remove readl/writel wrappers.
+* Fix test bot warnings.
 
-Steve
 
-> Mark.
-> 
->> ---
->>  arch/arm64/include/asm/fixmap.h | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/arch/arm64/include/asm/fixmap.h b/arch/arm64/include/asm/fixmap.h
->> index 87e307804b99..75b22b89db1a 100644
->> --- a/arch/arm64/include/asm/fixmap.h
->> +++ b/arch/arm64/include/asm/fixmap.h
->> @@ -107,7 +107,7 @@ void __init early_fixmap_init(void);
->>  #define __late_set_fixmap __set_fixmap
->>  #define __late_clear_fixmap(idx) __set_fixmap((idx), 0, FIXMAP_PAGE_CLEAR)
->>  
->> -extern void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot);
->> +void __set_fixmap(enum fixed_addresses idx, phys_addr_t phys, pgprot_t prot);
->>  
->>  #include <asm-generic/fixmap.h>
->>  
->> -- 
->> 2.34.1
->>
->>
+Akhil R (5):
+  dt-bindings: crypto: Add Tegra Security Engine
+  gpu: host1x: Add Tegra SE to SID table
+  crypto: tegra: Add Tegra Security Engine driver
+  arm64: defconfig: Enable Tegra Security Engine
+  arm64: tegra: Add Tegra Security Engine DT nodes
+
+ .../crypto/nvidia,tegra234-se-aes.yaml        |   52 +
+ .../crypto/nvidia,tegra234-se-hash.yaml       |   52 +
+ MAINTAINERS                                   |    5 +
+ arch/arm64/boot/dts/nvidia/tegra234.dtsi      |   16 +
+ arch/arm64/configs/defconfig                  |    1 +
+ drivers/crypto/Kconfig                        |    8 +
+ drivers/crypto/Makefile                       |    1 +
+ drivers/crypto/tegra/Makefile                 |    9 +
+ drivers/crypto/tegra/tegra-se-aes.c           | 1933 +++++++++++++++++
+ drivers/crypto/tegra/tegra-se-hash.c          | 1060 +++++++++
+ drivers/crypto/tegra/tegra-se-key.c           |  156 ++
+ drivers/crypto/tegra/tegra-se-main.c          |  439 ++++
+ drivers/crypto/tegra/tegra-se.h               |  560 +++++
+ drivers/gpu/host1x/dev.c                      |   24 +
+ 14 files changed, 4316 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/crypto/nvidia,tegra234-se-aes.yaml
+ create mode 100644 Documentation/devicetree/bindings/crypto/nvidia,tegra234-se-hash.yaml
+ create mode 100644 drivers/crypto/tegra/Makefile
+ create mode 100644 drivers/crypto/tegra/tegra-se-aes.c
+ create mode 100644 drivers/crypto/tegra/tegra-se-hash.c
+ create mode 100644 drivers/crypto/tegra/tegra-se-key.c
+ create mode 100644 drivers/crypto/tegra/tegra-se-main.c
+ create mode 100644 drivers/crypto/tegra/tegra-se.h
+
+-- 
+2.43.2
 
 
