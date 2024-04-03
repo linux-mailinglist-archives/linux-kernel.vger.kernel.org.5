@@ -1,295 +1,152 @@
-Return-Path: <linux-kernel+bounces-130201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D09B5897551
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:35:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7107F897556
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:36:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8622828C627
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:35:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F0E11C219EA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:36:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A3EB14AD15;
-	Wed,  3 Apr 2024 16:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8957914A0A2;
+	Wed,  3 Apr 2024 16:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b="OiUSB7tm"
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5E817C98;
-	Wed,  3 Apr 2024 16:35:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.243.120.170
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="HG1/nkdB"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E7E617C98
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:36:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712162108; cv=none; b=dHr0oIz1nrmarOMT+t9aCth4XAlDrFhaxT2uCpE8WpCoVZP0F7maZSQSmdZeKJ2mdvafvcirAEls1bg0iHO3Wzn3DvyK3S2trOs0g1k6bBM7aJdbiNe5WeT8gdVGSk7N9Xv7LlKr35P0KkLRAnozkqGJhUD6UT0qmvd+HCoUnCs=
+	t=1712162182; cv=none; b=EtPBh5PI8DDkRCm+hH9wo1JtHilsvdaipxv9GRBHVUnUSH3vz3ITtIF5sgupcxprW8jum/ceIBGBlWZxHf0/QH7/w36gqZhikkbfS/FhcUML9sRdtntLH75MSUf9pvLBZMf17Ze9AzsphmbCl/T88VLlTJwhUsBrdm3mQ8SPq8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712162108; c=relaxed/simple;
-	bh=zD4Yiw7OCi5fgq+RCSzBtrA4K1iq312b2H72yW8lIT4=;
-	h=Date:From:To:Cc:Message-Id:In-Reply-To:References:Mime-Version:
-	 Content-Type:Subject; b=tQwxAVWXv1PLrDC6wB+obMHQA1QjZ8i7YvW21ztFoc+PUTUOS8oSzVOerjIi3AOOi3aya+3hpUgGT0rd3EmRJ4dMv1Wcp7mDczAYo1gdvNxLKSTD7cFYweMC4+s5QutP+1vg50dytazXLBVJONIR7r+WzRqVLPRic/CxkHjknIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com; spf=pass smtp.mailfrom=hugovil.com; dkim=pass (1024-bit key) header.d=hugovil.com header.i=@hugovil.com header.b=OiUSB7tm; arc=none smtp.client-ip=162.243.120.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hugovil.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hugovil.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-	; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-	:Date:subject:date:message-id:reply-to;
-	bh=Be+U0t7VcjuBlMtDw/ENxuCcQmZcFzNETa3Sysptv4M=; b=OiUSB7tmeIR8B2uvc6IKt9wse4
-	T+kulL5ySz0S0BP3YJzh74XtCh6sABHlnWlFn0Q+BMy+r4EuV5y2DtUjaSpUAO15xh4gabHZQ9hjW
-	K9i6Ti1p0F9P0bwLzL3+iRQcObSYrxHPFkn7UzhImg2KSTNyiLie+FZWjH6cqlGix+x4=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:45874 helo=pettiford)
-	by mail.hugovil.com with esmtpa (Exim 4.92)
-	(envelope-from <hugo@hugovil.com>)
-	id 1rs3Zn-0006aZ-0r; Wed, 03 Apr 2024 12:35:03 -0400
-Date: Wed, 3 Apr 2024 12:35:01 -0400
-From: Hugo Villeneuve <hugo@hugovil.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, Hugo Villeneuve
- <hvilleneuve@dimonoff.com>
-Message-Id: <20240403123501.8ef5c99f65a40ca2c10f635a@hugovil.com>
-In-Reply-To: <CAHp75VdZ5yYVx7Df7G4X4Y7ZvJ3LAdq=A0fVNzNfMcdywJC-dQ@mail.gmail.com>
-References: <20240402174353.256627-1-hugo@hugovil.com>
-	<20240402174353.256627-4-hugo@hugovil.com>
-	<CAHp75VdZ5yYVx7Df7G4X4Y7ZvJ3LAdq=A0fVNzNfMcdywJC-dQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712162182; c=relaxed/simple;
+	bh=eIMVrEm+QK91oqIVYF1q0QCM5zRl2Mem/2dY1fM91uE=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=aCjtK2mnSk80kFkGVfID8zSox8M3CPUVCB8UHclztmJFFOPLbLsFl+wnsvZL88wP6q4D4xVfJ0oNcoOfWa1/2UFR3g1/juxPSbacxXBQ4YaYtBQJ36/OmAEw61bZxpt8iSCtGupqB1Tq7WssPHU4OMlNr4GIqFS1bH7oJMBateo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=HG1/nkdB; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from apais-vm1.0synte4vioeebbvidf5q0vz2ua.xx.internal.cloudapp.net (unknown [52.183.86.224])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 376E020E8CB7;
+	Wed,  3 Apr 2024 09:36:21 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 376E020E8CB7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1712162181;
+	bh=60vJn9WJC4I5TOsEnff/yYbpcF37VSFPGuuQFKy/8JQ=;
+	h=From:To:Cc:Subject:Date:From;
+	b=HG1/nkdBpbKUV6ZI8sA/tDUaL+C7lgzhMfuUtKjssfVW1/Aj1F0qKQgO/kR0bAdFR
+	 H+HKQvIJpsKmURLYJxsS8m8y73AVyM0y9jVaL5X01jw6TVLDr7ytsZMCweyPXJNUEA
+	 9t7JjYrG0zVUSFbGUU64HsmIAYJ+fbH5csSB8Prg=
+From: Allen Pais <apais@linux.microsoft.com>
+To: linux-kernel@vger.kernel.org
+Cc: tj@kernel.org,
+	keescook@chromium.org,
+	mporter@kernel.crashing.org,
+	alex.bou9@gmail.com
+Subject: [PATCH] rapidio/tsi721: Convert from tasklet to BH workqueue
+Date: Wed,  3 Apr 2024 16:36:17 +0000
+Message-Id: <20240403163617.20710-1-apais@linux.microsoft.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
-X-Spam-Level: 
-X-Spam-Report: 
-	* -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-	* -0.8 NICE_REPLY_A Looks like a legit reply (A)
-Subject: Re: [PATCH v3 3/5] serial: sc16is7xx: split into core and I2C/SPI
- parts (core)
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 
-On Tue, 2 Apr 2024 22:40:07 +0300
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+The only generic interface to execute asynchronously in the BH context is
+tasklet; however, it's marked deprecated and has some design flaws. To
+replace tasklets, BH workqueue support was recently added. A BH workqueue
+behaves similarly to regular workqueues except that the queued work items
+are executed in the BH context.
 
-Hi Andy,
+This patch converts drivers/rapidio/* from tasklet to BH workqueue.
 
-> On Tue, Apr 2, 2024 at 8:45 PM Hugo Villeneuve <hugo@hugovil.com> wrote:
-> >
-> > From: Hugo Villeneuve <hvilleneuve@dimonoff.com>
-> >
-> > Split the common code from sc16is7xx driver and move the I2C and SPI bus
-> > parts into interface-specific source files.
-> >
-> > sc16is7xx becomes the core functions which can support multiple bus
-> > interfaces like I2C and SPI.
-> >
-> > No functional change intended.
-> 
-> ...
-> 
-> > -config SERIAL_SC16IS7XX_CORE
-> > -       tristate
-> > -
-> >  config SERIAL_SC16IS7XX
-> >         tristate "SC16IS7xx serial support"
-> >         select SERIAL_CORE
-> > -       depends on (SPI_MASTER && !I2C) || I2C
-> > +       depends on SPI_MASTER || I2C
-> 
-> Is it?
+Based on the work done by Tejun Heo <tj@kernel.org>
+Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git for-6.10
 
-See discussion below, but I would remove the SPI/I2C depends. And I
-would rename SERIAL_SC16IS7XX to SERIAL_SC16IS7XX_CORE.
+Signed-off-by: Allen Pais <allen.lkml@gmail.com>
+---
+ drivers/rapidio/devices/tsi721.h     |  2 +-
+ drivers/rapidio/devices/tsi721_dma.c | 15 +++++++--------
+ 2 files changed, 8 insertions(+), 9 deletions(-)
 
-> 
-> >         help
-> >           Core driver for NXP SC16IS7xx serial ports.
-> >           Supported ICs are:
-> > @@ -1042,22 +1039,18 @@ config SERIAL_SC16IS7XX
-> >           drivers below.
-> >
-> >  config SERIAL_SC16IS7XX_I2C
-> > -       bool "SC16IS7xx for I2C interface"
-> > +       tristate "SC16IS7xx for I2C interface"
-> >         depends on SERIAL_SC16IS7XX
-> >         depends on I2C
-> > -       select SERIAL_SC16IS7XX_CORE if SERIAL_SC16IS7XX
-> > -       select REGMAP_I2C if I2C
-> > -       default y
-> > +       select REGMAP_I2C
-> >         help
-> > -         Enable SC16IS7xx driver on I2C bus,
-> > -         enabled by default to support oldconfig.
-> > +         Enable SC16IS7xx driver on I2C bus.
-> >
-> >  config SERIAL_SC16IS7XX_SPI
-> > -       bool "SC16IS7xx for spi interface"
-> > +       tristate "SC16IS7xx for SPI interface"
-> >         depends on SERIAL_SC16IS7XX
-> >         depends on SPI_MASTER
-> > -       select SERIAL_SC16IS7XX_CORE if SERIAL_SC16IS7XX
-> > -       select REGMAP_SPI if SPI_MASTER
-> > +       select REGMAP_SPI
-> >         help
-> >           Enable SC16IS7xx driver on SPI bus.
-> 
-> Hmm... What I was thinking about is more like dropping
->  the SERIAL_SC16IS7XX and having I2C/SPI to select the core.
-> 
-> See many examples under drivers/iio on how it's done.
-
-Ok, I found this example:
-bf96f6e80cef ("iio: accel: kxsd9: Split out SPI transport")
-
-In it, the SPI part doesn't select the core, but depends on it, similar
-to what I have done. I find this approach more interesting for
-embedded systems as you can enable/disable I2C or SPI part if you
-need only one interface.
-
-> 
-> ...
-> 
-> > +EXPORT_SYMBOL_GPL(sc16is74x_devtype);
-> 
-> Is it namespaced? Please make sure we are not polluting the global
-> namespace with these.
-
-Ok, will add namespace support to all exports.
-
-
-> 
-> ...
-> 
-> > +#ifndef _SC16IS7XX_H_
-> > +#define _SC16IS7XX_H_
-> > +
-> > +#include <linux/device.h>
-> 
-> Not used (by this file).
-
-I was assuming that this file was for "struct device"?
-
-
-> 
-> > +#include <linux/mod_devicetable.h>
-> 
-> > +#include <linux/regmap.h>
-> 
-> > +#include <linux/serial_core.h>
-> 
-> Not used.
-
-Ok, will drop for V4.
-
-
-> 
-> > +#include <linux/types.h>
-> 
-> > +extern const struct of_device_id __maybe_unused sc16is7xx_dt_ids[];
-> 
-> No __maybe_unused. Just have it always be added.
-
-Ok.
-
-
-> 
-> > +const char *sc16is7xx_regmap_name(u8 port_id);
-> > +
-> > +unsigned int sc16is7xx_regmap_port_mask(unsigned int port_id);
-> > +
-> > +int sc16is7xx_probe(struct device *dev, const struct sc16is7xx_devtype *devtype,
-> > +                   struct regmap *regmaps[], int irq);
-> 
-> > +void sc16is7xx_remove(struct device *dev);
-> 
-> Will require forward declaration
-> 
-> #include ...
-> 
-> struct device;
-
-Isn't it provided by <linux/device.h> ?
-
-
-> 
-> > +#endif /* _SC16IS7XX_H_ */
-> 
-> ...
-> 
-> > +#include <linux/i2c.h>
-> > +#include <linux/mod_devicetable.h>
-> > +#include <linux/module.h>
-> > +#include <linux/regmap.h>
-> 
-> Follow the IWYU principle (include what you use).
-
-Ok, I tried to follow it, I do think those 4 includes are required in
-this file, no?
-
-and maybe I can add <linux/string.h> for memcpy().
-
-
-> 
-> ...
-> 
-> > +               return dev_err_probe(&i2c->dev, -ENODEV, "Failed to match device\n");
-> 
-> + dev_printk.h
-
-Ok.
-
-
-> 
-> ...
-> 
-> > +static int __init sc16is7xx_i2c_init(void)
-> > +{
-> > +       return i2c_add_driver(&sc16is7xx_i2c_driver);
-> > +}
-> > +module_init(sc16is7xx_i2c_init);
-> > +
-> > +static void __exit sc16is7xx_i2c_exit(void)
-> > +{
-> > +       i2c_del_driver(&sc16is7xx_i2c_driver);
-> > +}
-> > +module_exit(sc16is7xx_i2c_exit);
-> 
-> This is now module_i2c_driver().
-
-Ok. Great, simplifies things.
-
-
-> 
-> ...
-> 
-> > +MODULE_LICENSE("GPL");
-> > +MODULE_DESCRIPTION("SC16IS7xx I2C interface driver");
-> 
-> + MODULE_IMPORT_NS()
-
-Ok.
-
-
-> 
-> ...
-> 
-> > +++ b/drivers/tty/serial/sc16is7xx_spi.c
-> 
-> Similar/same comments as per i2c counterpart.
-
-Ok.
-
-
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-
-
+diff --git a/drivers/rapidio/devices/tsi721.h b/drivers/rapidio/devices/tsi721.h
+index 4f996ce62725..8fd8127d11d1 100644
+--- a/drivers/rapidio/devices/tsi721.h
++++ b/drivers/rapidio/devices/tsi721.h
+@@ -704,7 +704,7 @@ struct tsi721_bdma_chan {
+ 	struct tsi721_tx_desc	*active_tx;
+ 	struct list_head	queue;
+ 	struct list_head	free_list;
+-	struct tasklet_struct	tasklet;
++	struct work_struct	work;
+ 	bool			active;
+ };
+ 
+diff --git a/drivers/rapidio/devices/tsi721_dma.c b/drivers/rapidio/devices/tsi721_dma.c
+index f77f75172bdc..f71cbbacca12 100644
+--- a/drivers/rapidio/devices/tsi721_dma.c
++++ b/drivers/rapidio/devices/tsi721_dma.c
+@@ -278,7 +278,7 @@ void tsi721_bdma_handler(struct tsi721_bdma_chan *bdma_chan)
+ 	/* Disable BDMA channel interrupts */
+ 	iowrite32(0, bdma_chan->regs + TSI721_DMAC_INTE);
+ 	if (bdma_chan->active)
+-		tasklet_hi_schedule(&bdma_chan->tasklet);
++		queue_work(system_bh_highpri_wq, &bdma_chan->work);
+ }
+ 
+ #ifdef CONFIG_PCI_MSI
+@@ -296,7 +296,7 @@ static irqreturn_t tsi721_bdma_msix(int irq, void *ptr)
+ 	struct tsi721_bdma_chan *bdma_chan = ptr;
+ 
+ 	if (bdma_chan->active)
+-		tasklet_hi_schedule(&bdma_chan->tasklet);
++		queue_work(system_bh_highpri_wq, &bdma_chan->work);
+ 	return IRQ_HANDLED;
+ }
+ #endif /* CONFIG_PCI_MSI */
+@@ -568,9 +568,9 @@ static void tsi721_advance_work(struct tsi721_bdma_chan *bdma_chan,
+ 		  bdma_chan->id);
+ }
+ 
+-static void tsi721_dma_tasklet(unsigned long data)
++static void tsi721_dma_work(struct work_struct *t)
+ {
+-	struct tsi721_bdma_chan *bdma_chan = (struct tsi721_bdma_chan *)data;
++	struct tsi721_bdma_chan *bdma_chan = from_work(bdma_chan, t, work);
+ 	u32 dmac_int, dmac_sts;
+ 
+ 	dmac_int = ioread32(bdma_chan->regs + TSI721_DMAC_INT);
+@@ -790,7 +790,7 @@ static void tsi721_free_chan_resources(struct dma_chan *dchan)
+ 	tsi721_bdma_interrupt_enable(bdma_chan, 0);
+ 	bdma_chan->active = false;
+ 	tsi721_sync_dma_irq(bdma_chan);
+-	tasklet_kill(&bdma_chan->tasklet);
++	cancel_work_sync(&bdma_chan->work);
+ 	INIT_LIST_HEAD(&bdma_chan->free_list);
+ 	kfree(bdma_chan->tx_desc);
+ 	tsi721_bdma_ch_free(bdma_chan);
+@@ -990,8 +990,7 @@ int tsi721_register_dma(struct tsi721_device *priv)
+ 		INIT_LIST_HEAD(&bdma_chan->queue);
+ 		INIT_LIST_HEAD(&bdma_chan->free_list);
+ 
+-		tasklet_init(&bdma_chan->tasklet, tsi721_dma_tasklet,
+-			     (unsigned long)bdma_chan);
++		INIT_WORK(&bdma_chan->work, tsi721_dma_work);
+ 		list_add_tail(&bdma_chan->dchan.device_node,
+ 			      &mport->dma.channels);
+ 		nr_channels++;
+@@ -1033,7 +1032,7 @@ void tsi721_unregister_dma(struct tsi721_device *priv)
+ 			tsi721_bdma_interrupt_enable(bdma_chan, 0);
+ 			bdma_chan->active = false;
+ 			tsi721_sync_dma_irq(bdma_chan);
+-			tasklet_kill(&bdma_chan->tasklet);
++			cancel_work_sync(&bdma_chan->work);
+ 			INIT_LIST_HEAD(&bdma_chan->free_list);
+ 			kfree(bdma_chan->tx_desc);
+ 			tsi721_bdma_ch_free(bdma_chan);
 -- 
-Hugo Villeneuve
+2.17.1
+
 
