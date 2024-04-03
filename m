@@ -1,183 +1,136 @@
-Return-Path: <linux-kernel+bounces-129185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 822A08966AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:38:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A8EC08966B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:38:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D1D228A2D4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:38:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63C5F28253B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:38:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C97C56CDD3;
-	Wed,  3 Apr 2024 07:35:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 357D56E60F;
+	Wed,  3 Apr 2024 07:36:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="YDOWMJ4Z"
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jX9Xyvip"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A026CDB9
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 07:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715F95D732;
+	Wed,  3 Apr 2024 07:36:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712129735; cv=none; b=rpyKNqbBf1iXSFsm9YPm6vUJxiOwNMtgrWUmzt3xvtShM6Jb9MPiCW2n5sH1T6AuRyKBWwvqHlWAXVysvpgXcNNKm8UkyvfQTnUCiAvpSxV/ybqLd4I4WGOTug3MIESkKlY0bIBfD3eIb5xTop7dRZRK2vSoE61mQP7BEviXYQg=
+	t=1712129764; cv=none; b=Js8MEj4uRBHvhJ65DI37HhbiKBWr6S+qtVOj8XtjvhU59BTNbjTfTCGAPpS9bG1IX9n1KqR+2aXpMRwdmg2QHUnfU6aNE7SvCYHdup03gieuUvcj5RRhqUPXlxFe9og8kZgZNSFWk45yDfdVBaZ7GKdZHD1L4Gulh2eOnEclZSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712129735; c=relaxed/simple;
-	bh=x4a72RZmGjZKZGDt91umGicCKihZ9hBwXB13LJV9dto=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=bJVfsPEDb1oLs/EFfALDyG6c04Y+gvLomNRirmLRS6Qhc5rMpKk9TYtjb5nlmh2/S69MFxvjTu/m/TejQ1dU73vDfL2Q8Of80yzOh+l5XkDTDiHHfXmJ31TIGn6OHTqv34X0u/F2DB5z9gKIuVCl+744w3RemVBG/A4xKst6Drw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=YDOWMJ4Z; arc=none smtp.client-ip=209.85.128.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-41624c40b44so1005785e9.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 00:35:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712129731; x=1712734531; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Zk6yUkP6W1rULwKkjyUHjYr2nx3DKKi0BVPn7REXL4U=;
-        b=YDOWMJ4Z6RoW2CMue0O84bOIE+0CFMRCRNe6MJWeFNfMAYUxfihVtulPjWgrFZCQN+
-         3C92qEemeOo61JMEvDrWDarJuJnF25gJ7M4MvJwgu+6uPeg0aKgo6J/j+pQsJpJ/3fgn
-         kjHw9aya0sLiTR1ykP5RHmnQ7xCWudedUAuWTbuxXt7OBwQfJnRjvt2YI8s5GlNuMDEM
-         rCVa12HDt4wNuNzZKWeh4pDCKJzv40paXu+soCc7xABvCXjBVINVuts+Lm/RnBvom6H8
-         j/pFBH+laqAHzv+C3FLKgE1wf5iKXk74PZwj9hjjK5zNCKXYvOzYqh0Nd28CgcWltCZ0
-         Ahew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712129731; x=1712734531;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:references:cc:to:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Zk6yUkP6W1rULwKkjyUHjYr2nx3DKKi0BVPn7REXL4U=;
-        b=M/dyKtDjfJ/hzuYuov7FO3VdCTAz9uHUau1IztKinvHRIVWQK5DJxz+L3IuaXuvmNL
-         5z6YxsHAoykyxbWAmli6pcHT4aWuMmTMO2cFKaM7jvqtwAoU2gR5PP6NrcrnLpLH7+KW
-         6qbxni4U0P5NAIq/zCgIJDsrbY0ysbdEXsdSp7ONHqXeasiSd+ThDCiTv/K4WAVlk3O7
-         inO6osWazDgIod06+MLVETjgJS6zrNt3bcEAU/AjWl+ws5wUZnEBhOWwo4TN5tJ69Mbj
-         Za8pvKdbPVgrAGTBWNmuebr2CRLfSqY6iZXHdj3v/Kvg/OoUKYQEo0mvmq2NNWkt3rnh
-         4xOw==
-X-Forwarded-Encrypted: i=1; AJvYcCWcAE06bGl70/mM9wFdbw5jXzrEY0BO/JYLNDxzJHkUYLYHS/OIJLMoKGuO31aqH4yox63mN2viFQIfEsd9UQ6DIvv96s70iq4KYnbU
-X-Gm-Message-State: AOJu0YyFegzbcp0iiTFcXDx+m/sh+cjStItdYQBhMJgo+qcnbHMhfooj
-	syZ3ym82ecES8f2Y0kYEKhVRgYku4ijYMW2GYn3SaG96pjJ7bTA0fmyWNBw+kGk=
-X-Google-Smtp-Source: AGHT+IHXvAP8cSVNeOWnJluu8rIyEeTJzOcu+0z22O8FJUnGbtq1azSw+RrgCvrNebeugbuXKrMsXA==
-X-Received: by 2002:a05:600c:3b26:b0:414:9455:85e with SMTP id m38-20020a05600c3b2600b004149455085emr3363419wms.25.1712129731067;
-        Wed, 03 Apr 2024 00:35:31 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:d6d:8d9b:bb47:c974? ([2a01:e0a:982:cbb0:d6d:8d9b:bb47:c974])
-        by smtp.gmail.com with ESMTPSA id k4-20020a05600c1c8400b00414807ef8dfsm20792252wms.5.2024.04.03.00.35.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 00:35:30 -0700 (PDT)
-Message-ID: <43819edb-d65d-4639-80e9-1f3a505c016d@linaro.org>
-Date: Wed, 3 Apr 2024 09:35:29 +0200
+	s=arc-20240116; t=1712129764; c=relaxed/simple;
+	bh=comgvq/b/dwZzcz2JKiAiH5R+wKfYaBn19+EszVed4M=;
+	h=Content-Type:Date:Message-Id:Cc:From:To:Subject:References:
+	 In-Reply-To; b=IxHahNl7IFlWYIET0RlPjLut6rnmBqEJRre63n+emaVnujwSlBekjgM1KhXzz+3rfs8CuMGHZLeCw9XGilcrOknebLmQRrhTRN3QXaJtOSpHpjzM3o5sbP4eRlK2eX0fEtuTduYZaD/hJPL/a67KMZ0lGOPxoF82hDHN1NdO628=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jX9Xyvip; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 717BFC433C7;
+	Wed,  3 Apr 2024 07:36:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712129763;
+	bh=comgvq/b/dwZzcz2JKiAiH5R+wKfYaBn19+EszVed4M=;
+	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
+	b=jX9XyvipU7W5InrF55jvVKTf5hV4lNqR9/nPyJZQXUCD1AzJ7vSzG3njmgo0VgRTS
+	 SWV1y9yPgz8kyAaAmCteRrfG7kihV2of+Qbumh9mcfhOnciIstv9yT7ozWpy0shln/
+	 Lvxej33RnmwoE39JuESlK1ccFpL38Fpma6kUhJCoTZ38IYBrW6Y0AWx8swRG7cj1Dq
+	 de8SK+MGCX6/RM8aKHhentdf+4qqQKyrVVOC1YjAT+mhjJlZGSi4Z7AxIa6dBWJB9z
+	 M+7uP27PyHXmVEb5HPV3O+bzkZJreQwOcR4tGMk6+G5YHMvefZnyl4ehojdcLJMJlK
+	 8rnWXXIguJGkQ==
+Content-Type: multipart/signed;
+ boundary=85268debbb0a249bf83d175894db0da66e51c3e05656b17bb875057ea9e9;
+ micalg=pgp-sha384; protocol="application/pgp-signature"
+Date: Wed, 03 Apr 2024 09:35:47 +0200
+Message-Id: <D0ABCBUEV6ZD.1TDS2WSEH48DY@kernel.org>
+Cc: "Nishanth Menon" <nm@ti.com>, "Vignesh Raghavendra" <vigneshr@ti.com>,
+ "Tero Kristo" <kristo@kernel.org>, "Rob Herring" <robh@kernel.org>,
+ "Krzysztof Kozlowski" <krzk+dt@kernel.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Francesco Dolcini" <francesco@dolcini.it>
+Subject: Re: [PATCH] arm64: dts: ti: k3-j722s: Disable ethernet ports by
+ default
+X-Mailer: aerc 0.16.0
+References: <20240402151802.3803708-1-mwalle@kernel.org>
+ <20240402165824.GA32125@francesco-nb>
+In-Reply-To: <20240402165824.GA32125@francesco-nb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH v8 3/7] spmi: pmic-arb: Fix some compile warnings about
- members not being described
-To: Abel Vesa <abel.vesa@linaro.org>, Stephen Boyd <sboyd@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Johan Hovold <johan@kernel.org>, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
- linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org
-References: <20240402-spmi-multi-master-support-v8-0-ce6f2d14a058@linaro.org>
- <20240402-spmi-multi-master-support-v8-3-ce6f2d14a058@linaro.org>
-Content-Language: en-US, fr
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro
-In-Reply-To: <20240402-spmi-multi-master-support-v8-3-ce6f2d14a058@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 02/04/2024 14:07, Abel Vesa wrote:
-> Fix the following compile warnings:
-> 
->   warning: Function parameter or struct member 'core' not described in 'spmi_pmic_arb'
->   warning: Function parameter or struct member 'core_size' not described in 'spmi_pmic_arb'
->   warning: Function parameter or struct member 'mapping_table_valid' not described in 'spmi_pmic_arb'
->   warning: Function parameter or struct member 'pmic_arb' not described in 'pmic_arb_read_data'
->   warning: Function parameter or struct member 'pmic_arb' not described in 'pmic_arb_write_data'
-> 
-> Signed-off-by: Abel Vesa <abel.vesa@linaro.org>
-> ---
->   drivers/spmi/spmi-pmic-arb.c | 5 +++++
->   1 file changed, 5 insertions(+)
-> 
-> diff --git a/drivers/spmi/spmi-pmic-arb.c b/drivers/spmi/spmi-pmic-arb.c
-> index 9ed1180fe31f..704fd4506971 100644
-> --- a/drivers/spmi/spmi-pmic-arb.c
-> +++ b/drivers/spmi/spmi-pmic-arb.c
-> @@ -132,6 +132,8 @@ struct apid_data {
->    * @wr_base:		on v1 "core", on v2 "chnls"    register base off DT.
->    * @intr:		address of the SPMI interrupt control registers.
->    * @cnfg:		address of the PMIC Arbiter configuration registers.
-> + * @core:		core register base for v2 and above only (see above)
-> + * @core_size:		core register base size
->    * @lock:		lock to synchronize accesses.
->    * @channel:		execution environment channel to use for accesses.
->    * @irq:		PMIC ARB interrupt.
-> @@ -144,6 +146,7 @@ struct apid_data {
->    * @apid_count:		on v5 and v7: number of APIDs associated with the
->    *			particular SPMI bus instance
->    * @mapping_table:	in-memory copy of PPID -> APID mapping table.
-> + * @mapping_table_valid:bitmap containing valid-only periphs
->    * @domain:		irq domain object for PMIC IRQ domain
->    * @spmic:		SPMI controller object
->    * @ver_ops:		version dependent operations.
-> @@ -232,6 +235,7 @@ static inline void pmic_arb_set_rd_cmd(struct spmi_pmic_arb *pmic_arb,
->   
->   /**
->    * pmic_arb_read_data: reads pmic-arb's register and copy 1..4 bytes to buf
-> + * @pmic_arb:	the SPMI PMIC arbiter
->    * @bc:		byte count -1. range: 0..3
->    * @reg:	register's address
->    * @buf:	output parameter, length must be bc + 1
-> @@ -246,6 +250,7 @@ pmic_arb_read_data(struct spmi_pmic_arb *pmic_arb, u8 *buf, u32 reg, u8 bc)
->   
->   /**
->    * pmic_arb_write_data: write 1..4 bytes from buf to pmic-arb's register
-> + * @pmic_arb:	the SPMI PMIC arbiter
->    * @bc:		byte-count -1. range: 0..3.
->    * @reg:	register's address.
->    * @buf:	buffer to write. length must be bc + 1.
-> 
+--85268debbb0a249bf83d175894db0da66e51c3e05656b17bb875057ea9e9
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
+Hi Francesco,
+
+On Tue Apr 2, 2024 at 6:58 PM CEST, Francesco Dolcini wrote:
+> On Tue, Apr 02, 2024 at 05:18:02PM +0200, Michael Walle wrote:
+> > Device tree best practice is to disable any external interface in the
+> > dtsi and just enable them if needed in the device tree. Thus, disable
+> > both ethernet ports by default and just enable the one used by the EVM
+> > in its device tree.
+> >=20
+> > There is no functional change.
+> >=20
+> > Signed-off-by: Michael Walle <mwalle@kernel.org>
+> > ---
+> > This should also be true for all the other SoCs. But I don't wanted to
+> > touch all the (older) device trees. j722s is pretty new, so there we
+> > should get it right.
+> > ---
+> >  arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 5 +----
+> >  arch/arm64/boot/dts/ti/k3-j722s.dtsi    | 8 ++++++++
+> >  2 files changed, 9 insertions(+), 4 deletions(-)
+> >=20
+> > diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts b/arch/arm64/boot/=
+dts/ti/k3-j722s-evm.dts
+> > index d045dc7dde0c..afe7f68e6a4b 100644
+> > --- a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+> > +++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
+> > @@ -224,14 +224,11 @@ cpsw3g_phy0: ethernet-phy@0 {
+> >  };
+> > =20
+> >  &cpsw_port1 {
+> > +	status =3D "okay";
+>
+> status should be the last property, according to the dts coding guideline=
+s.
+
+Thanks for pointing that out. There is
+devicetree/bindings/dts-coding-style.rst, which is in fact new to
+me. Up until now, I was under the impression that how this is
+handled is up to the maintainer of the SoC. I know that for the NXP
+Layerscape for example, the maintainer will have an eye esp. for
+that. But here it seems kinda random/all over the place. That being
+said, I tried to be consistent with the other cpsw* nodes.
+
+Anyway, I'll change it to come last.
+
+> >  	phy-mode =3D "rgmii-rxid";
+> >  	phy-handle =3D <&cpsw3g_phy0>;
+> >  };
+
+-michael
+
+--85268debbb0a249bf83d175894db0da66e51c3e05656b17bb875057ea9e9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZg0G1BIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQEic87j4CH/i0pAF8Dtz9BfG4VFPzoKkZsJB4/ncZfyEy67rC
+g7XVK/JrcCwHEW/hAXnmXOs/cMk+J2XPAYDKbawvIqW1fdpvFoh5EKNQNSOtuAP9
+YpTk1kAKNDkR8TGLeLubNsleDRzW8MdoHj4=
+=PWPU
+-----END PGP SIGNATURE-----
+
+--85268debbb0a249bf83d175894db0da66e51c3e05656b17bb875057ea9e9--
 
