@@ -1,131 +1,105 @@
-Return-Path: <linux-kernel+bounces-129047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2DF668963CC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:07:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id F346D8963CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:07:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7E3D2859B7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:07:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE96B286556
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:07:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B7CA46430;
-	Wed,  3 Apr 2024 05:07:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ED144AEE3;
+	Wed,  3 Apr 2024 05:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XTB41jC5"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eRX/w4u/"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4836645
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 05:07:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 726EF645;
+	Wed,  3 Apr 2024 05:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712120843; cv=none; b=PLbXTC4EgNlhBHZbpZ5zxYK4ZXPmcy1+/Q1TVrxVYpijPTjY9abx7zW4HefHIk5iZ8DIS6pbIqT+7IUoDj8U5rH7L2G090sdRNN8zLWuypLZD6nhgf5kqm6k7mgZHmFcIh9qJXy0HXAn7qxsFpiHc+eoXxmrfmWvxyEHBk4wO7s=
+	t=1712120848; cv=none; b=odNUf5n3gBMrgWB0t38dSBtRUezQ6pkHciHavquxEnvUlCzIT4ScIEHolfGnKdNEXsYVu6fLvY4201TSFI3rlFmvDstNJPRVISRshzs5s4L/DmG9g917VZ9D+3bW+zzruTFS+uHeRVa6UEQENiTgF2rcaGmhYTvwBYYMb6mexE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712120843; c=relaxed/simple;
-	bh=uvWao2mn/QCa6M71siHuy06flWafHCr48kklj/WsPkU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=GpRdT55UriEMs6bSvegndNH17epLs5oc9nU/x57u5CPjrug6yt4XMk3HvDgLN6H1aq74VqKD4Jy1TU/S+2wTtGh//56ilN/OAhLvzZaE+BEzMwUsDI88QSGiutKUVTctbMG/XivH0K8fEPlWWwoPOAT6QhK6sRLoW2q44qPaaaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XTB41jC5; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712120840;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=aHJbY1AL7kS10XXrZeU4sZOSE7Yjz01/4yh0mXYiu2w=;
-	b=XTB41jC5527YtGs3vIC6tOs75ZRjurYrb8JetQa0rGV8e73EkxbA4xeTdjzygBcA9hzTGv
-	9OFH22W86FEJ0e+2hvKZh7ALjUbrsjJsDfNpQfxgcj1d0SSI1QkBw/GzzzYl4GZRYzWaJM
-	ATgOVVMTGddyy5euhTi4gQHTXThba2s=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-321-3DDwmYdjMTuRimH_8CvZVg-1; Wed,
- 03 Apr 2024 01:07:17 -0400
-X-MC-Unique: 3DDwmYdjMTuRimH_8CvZVg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E23B41C2CBEE;
-	Wed,  3 Apr 2024 05:07:16 +0000 (UTC)
-Received: from cantor.redhat.com (unknown [10.2.17.41])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 5596CC01600;
-	Wed,  3 Apr 2024 05:07:16 +0000 (UTC)
-From: Jerry Snitselaar <jsnitsel@redhat.com>
-To: Fenghua Yu <fenghua.yu@intel.com>,
-	Dave Jiang <dave.jiang@intel.com>
-Cc: Vinod Koul <vkoul@kernel.org>,
-	dmaengine@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] dmaengine: idxd: Check for driver name match before sva user feature
-Date: Tue,  2 Apr 2024 22:07:10 -0700
-Message-ID: <20240403050710.2874197-1-jsnitsel@redhat.com>
+	s=arc-20240116; t=1712120848; c=relaxed/simple;
+	bh=jV09/5ieSCqmtJktUOtVuVXwJq6vg6jtDsX9u/+Xd4E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M9Jv1KRjHJJdG/zkPrUzeDen4B4eFVQrlTiP8vJxf6AGWk6/Pom9jf8840b6W32PuktMTAZEXdgDeKc3ObX7djfRDJS5f+BDc0moTtOGsIJOm0V6MvD4rC6BsMbFKwSlLy6MarTtQdR7URXgOPO75vJv3Wcvl3HhNe2S//DiOms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=eRX/w4u/; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=vtrqKPy1AN4YZzM/yPk/wfPp6zfZTqwK5u/dFIselaA=; b=eRX/w4u/OIEjzDAjwD1T63GSrI
+	BHME+/OjL6XtHw1c9CvU8VUXnmx6mOaapFoiq55NGUP3nWloiGxEEVl19QgTnIrMK0nen+SJ0IgWx
+	geXtd0sc/aX2vdSF/htloZnI2RhxUdMaeSPK3NUqmaJUDTo5fao8eicA/mi/4YoVG+18eWWIviF21
+	KGAXmAx3e7nFHtXW+CsAdSS5cL/7QmsUE9lR9cSt66+CZxNhiuR/X/ioTfEe2ViyOSDAcwvyfTpf0
+	SVtxxSN378OTt8lRo93pbNBaG/m/TwZQ3loJpIONQB4NN7EYYkoR14aSmWRq28Zwuwj7t51Telw1K
+	UkgVvXAw==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rrsqM-0000000E28a-3Gop;
+	Wed, 03 Apr 2024 05:07:26 +0000
+Date: Tue, 2 Apr 2024 22:07:26 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Chandan Babu R <chandan.babu@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-xfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] xfs: cleanup deprecated uses of strncpy
+Message-ID: <ZgzkDv0mBVmzxoRJ@infradead.org>
+References: <20240401-strncpy-fs-xfs-xfs_ioctl-c-v1-1-02b9feb1989b@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240401-strncpy-fs-xfs-xfs_ioctl-c-v1-1-02b9feb1989b@google.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Currenty if the user driver is probed on a workqueue configured for
-another driver with SVA not enabled on the system, it will print
-out a number of probe failing messages like the following:
+On Mon, Apr 01, 2024 at 11:01:38PM +0000, Justin Stitt wrote:
+> +++ b/fs/xfs/xfs_ioctl.c
+> @@ -1755,10 +1755,8 @@ xfs_ioc_getlabel(
+>  	/* Paranoia */
+>  	BUILD_BUG_ON(sizeof(sbp->sb_fname) > FSLABEL_MAX);
+>  
+> -	/* 1 larger than sb_fname, so this ensures a trailing NUL char */
+> -	memset(label, 0, sizeof(label));
+>  	spin_lock(&mp->m_sb_lock);
+> -	strncpy(label, sbp->sb_fname, XFSLABEL_MAX);
+> +	strscpy_pad(label, sbp->sb_fname);
 
-    [   264.831140] user: probe of wq13.0 failed with error -95
+The change looks fine, but the 1 larger information is useful and
+should be kept.  Maybe move it up to where the label variable s
+defined?
 
-On some systems, such as GNR, the number of messages can
-reach over 100.
+>  	spin_unlock(&mp->m_sb_lock);
+>  
+>  	if (copy_to_user(user_label, label, sizeof(label)))
+> diff --git a/fs/xfs/xfs_xattr.c b/fs/xfs/xfs_xattr.c
+> index 364104e1b38a..b9256988830f 100644
+> --- a/fs/xfs/xfs_xattr.c
+> +++ b/fs/xfs/xfs_xattr.c
+> @@ -220,11 +220,7 @@ __xfs_xattr_put_listent(
+>  		return;
+>  	}
+>  	offset = context->buffer + context->count;
+> -	memcpy(offset, prefix, prefix_len);
+> -	offset += prefix_len;
+> -	strncpy(offset, (char *)name, namelen);			/* real name */
+> -	offset += namelen;
+> -	*offset = '\0';
+> +	scnprintf(offset, prefix_len + namelen + 1, "%s%s", prefix, name);
 
-Move the SVA feature check to be after the driver name match
-check.
+If we're using scnprintf we should probably also check that it doesn't
+get truncated while we're at it.
 
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: dmaengine@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Jerry Snitselaar <jsnitsel@redhat.com>
----
- drivers/dma/idxd/cdev.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/dma/idxd/cdev.c b/drivers/dma/idxd/cdev.c
-index 8078ab9acfbc..a4b771781afc 100644
---- a/drivers/dma/idxd/cdev.c
-+++ b/drivers/dma/idxd/cdev.c
-@@ -517,6 +517,14 @@ static int idxd_user_drv_probe(struct idxd_dev *idxd_dev)
- 	if (idxd->state != IDXD_DEV_ENABLED)
- 		return -ENXIO;
- 
-+	mutex_lock(&wq->wq_lock);
-+
-+	if (!idxd_wq_driver_name_match(wq, dev)) {
-+		idxd->cmd_status = IDXD_SCMD_WQ_NO_DRV_NAME;
-+		rc = -ENODEV;
-+		goto wq_err;
-+	}
-+
- 	/*
- 	 * User type WQ is enabled only when SVA is enabled for two reasons:
- 	 *   - If no IOMMU or IOMMU Passthrough without SVA, userspace
-@@ -532,14 +540,7 @@ static int idxd_user_drv_probe(struct idxd_dev *idxd_dev)
- 		dev_dbg(&idxd->pdev->dev,
- 			"User type WQ cannot be enabled without SVA.\n");
- 
--		return -EOPNOTSUPP;
--	}
--
--	mutex_lock(&wq->wq_lock);
--
--	if (!idxd_wq_driver_name_match(wq, dev)) {
--		idxd->cmd_status = IDXD_SCMD_WQ_NO_DRV_NAME;
--		rc = -ENODEV;
-+		rc = -EOPNOTSUPP;
- 		goto wq_err;
- 	}
- 
--- 
-2.44.0
-
+Also please split the label and ioctl and the xatte changes as they
+aren't related at all.
 
