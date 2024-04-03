@@ -1,131 +1,134 @@
-Return-Path: <linux-kernel+bounces-129990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB97A8972F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:46:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5FDE8972F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:45:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8376FB26AD7
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:45:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55F0C1F283B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 14:45:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8DA914901F;
-	Wed,  3 Apr 2024 14:44:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F397B148FEA;
+	Wed,  3 Apr 2024 14:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KL/hqdY7"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Dggfug2I"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C4213A40B;
-	Wed,  3 Apr 2024 14:44:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8E85433A8;
+	Wed,  3 Apr 2024 14:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712155491; cv=none; b=pyl4H+oKIkETLVhvfPHQXTHDvlTyeaK7hDJqNbeSuy6PbgtHx7ePwWhbN90zaOoKuHKKn58bXTtPviTDDDhyboPzKOIUiCDyDoQlUkXhX4u2flb7d3TvBs54nJz1w0p//whaCBSIvhdBwdSYvsn45mspvx6B9NLHxBiqIuFOyNY=
+	t=1712155534; cv=none; b=B6AQ/6EpmNIoDyyIw0z0c3EkLUxaCM8eqnflcuR1d7hIQ4c1yaJaTfB5w1Yl4BTWTZrrxSXjULHDCe7n1x6ZgAQIlV1idVnAP5uztfBFVhOAt8+YH11U4b8Gxjv2EESpYxetxioje2G4JMhTuW+t5Zz6LZF2KyXVcyNG20dyb2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712155491; c=relaxed/simple;
-	bh=/bUWFCezkgyy5S4CuqWiKnU6VWsOo2TS23X0CcIeO3A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=snzGs1MsU2T+2K3LeLjEUM5reRHwVsbK+h2Fj8OWU1bcmw/gqjys+OkVjkXeRed5oePx5fXrPUOBCgJ0Mq7FoIxAHllgylXXOxstAcP6AnFXvGfGdbgE1q6A/XNrW39UcLH97sV613FC4e8BoJ2fjcMWfn1GShck1XVP5MmEUzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KL/hqdY7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5CD74C43390;
-	Wed,  3 Apr 2024 14:44:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712155490;
-	bh=/bUWFCezkgyy5S4CuqWiKnU6VWsOo2TS23X0CcIeO3A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KL/hqdY7g7A3rt3L64YGc6y7NTX5V8jEgRH7IAkb8JOPoYIVE5QOrXyy0d/eqhXw9
-	 vY4wymhn3lErTVlrTnXatW6LuhTFrVc37KKda09EL13L58Ihpz0i36/j1CDth4MoRn
-	 rQNJJvgojQa3hyCq/7MTOiyksIwuFCX/KjEhX0aXwK4rswWATSChfDtanxwrBYF3gC
-	 Zp/K7R7J/Dc/83hOszq7jPMoIhVgdNoqzvBdYaDbknJP7SGf1VJEkxR3hjLQmZ35hZ
-	 AlRbfVhB7SyO/JkEnmBQbn7Wl+WzxvFtKRBNG1aRrQy2S6TndM+I0M3swW1nbA595R
-	 U/Oh06gBLL9ZQ==
-Date: Wed, 3 Apr 2024 09:44:48 -0500
-From: Rob Herring <robh@kernel.org>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Kory Maincent <kory.maincent@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Russ Weight <russ.weight@linux.dev>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Mark Brown <broonie@kernel.org>,
-	Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, devicetree@vger.kernel.org,
-	Dent Project <dentproject@linuxfoundation.org>
-Subject: Re: [PATCH net-next v6 11/17] dt-bindings: net: pse-pd: Add another
- way of describing several PSE PIs
-Message-ID: <20240403144448.GB3508225-robh@kernel.org>
-References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
- <20240326-feature_poe-v6-11-c1011b6ea1cb@bootlin.com>
- <20240402132637.GA3744978-robh@kernel.org>
- <ZgworgDAXXOpf3QV@pengutronix.de>
+	s=arc-20240116; t=1712155534; c=relaxed/simple;
+	bh=j4lapdM/IHpzoQhUS5ceN/z7x1vBh5mHgZ9hkb7uiJo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Hg2Oe8yPZElRz1MNU1q+y5jVaRoiLeA4beW1s8q1Q0aopPZQoaUSWBa8NA6Ov3/cGWerwjwX0xWdFCeZO9+vRktqCJaaOq9BGOQzOhGCWN3fQ2cx3Oq78WVa2ASez4MCZHpBWE1sYSvDBNftvDjXk6PEeii168YrIu53X9g1nK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Dggfug2I; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56e0acaf69aso917951a12.1;
+        Wed, 03 Apr 2024 07:45:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712155531; x=1712760331; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s3Pkic51g7rrTopzQNi+VbYIAqH2ghyU0XlcWsnfQ8s=;
+        b=Dggfug2IF4SKtplkij0+WztWAyBnqf1OR+GNYx2KhpFA6IQZlJw9X+g6tD9lcj47N1
+         jkmQ1jV2hruRU1WGhk1zJGjRs4wCmPaQf4ISreloxaaoJ4FabdBYUxlO/hliaIzLidNN
+         NVhYDw/93vPIDjrgWTseuCdh0H7Zgg0so/yY5PixbhQoS39QD36nGVGgKudDWpOk6I2Y
+         pqzL6P4cRZFbgPi4+KpomMGz3OHr7EMOXtuctmXywLV18//ncvMvUHw1xsGxgZugd5Gy
+         /iUi1OEEvnjFKrZGC5/bj4hItJEX75otOJIBm7xorAd3GvHOpLo1M1X7yA73Dq8EHfdg
+         bn8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712155531; x=1712760331;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s3Pkic51g7rrTopzQNi+VbYIAqH2ghyU0XlcWsnfQ8s=;
+        b=QZMkY3IMUCZb5T90rcSmz/PeyCNNxyp85jcpkFnt7fUu7RL+xkZH5jeDUHE7IYUa8n
+         Z8IcgDKUz1OCtXjrjDUXCWH07woTL0rIrlgu25QTR8U0XXrG1v3bF0b3lfngNRiFjFCh
+         sXQDUF36xatN1P70fNh1IzLIMRYXWMqcYb0++Y8EpZOfmTMK9wUUgVHeluQzIqKT8j/Y
+         u0F5UR5aJVknbEziX18M+ufQXa+nxBohDMwrq/USBqWpBanh2Zjzn0FsxSZzXgKreqQw
+         bOoDAnhCEq0t3lErR6cbIxsp3MjPOOGrsJHWYlpR0zsE5Hn6+Kl7txHC00iN7S0vmRWD
+         SrSA==
+X-Forwarded-Encrypted: i=1; AJvYcCXKGsG9iiRQpGWlXVXYA+33Xr9MdvLlPkFLDfrWgyx/TZVwm6MReYsdaSU3m0koYr5ewFf9AzFlLn1u4Yva3EULp4jusjgymR1fjO186EQ1JgzOHci+CpRvoDCq95LcObIHTclNEZsQIHeGY8JkA5LBcvqu1VN39C5MiOy8Jx7I
+X-Gm-Message-State: AOJu0Yyp9WUCGNHPNgdVhv0AGYs/d+hpEKvOGOP2lKHerP/+ckkVylLX
+	lb/8mNdjE4oOG6SIoPqPerqrxE4xXLL2sQbbbh2rDotS4mKX/Ro9
+X-Google-Smtp-Source: AGHT+IGUKnmalWHmdHqzQg31S41xmoGwv8cZpjceJSBvGia7muB7V+oQVkfF70cW8QCJGV1MPIMf1A==
+X-Received: by 2002:a17:906:da8e:b0:a4e:379b:753f with SMTP id xh14-20020a170906da8e00b00a4e379b753fmr11844116ejb.23.1712155530775;
+        Wed, 03 Apr 2024 07:45:30 -0700 (PDT)
+Received: from A13PC04R.einet.ad.eivd.ch ([193.134.219.72])
+        by smtp.googlemail.com with ESMTPSA id s26-20020a1709066c9a00b00a46e92e583bsm7921536ejr.149.2024.04.03.07.45.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 07:45:30 -0700 (PDT)
+From: Rick Wertenbroek <rick.wertenbroek@gmail.com>
+To: rick.wertenbroek@heig-vd.ch
+Cc: dlemoal@kernel.org,
+	Rick Wertenbroek <rick.wertenbroek@gmail.com>,
+	stable@vger.kernel.org,
+	Shawn Lin <shawn.lin@rock-chips.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Heiko Stuebner <heiko@sntech.de>,
+	linux-pci@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] PCI: rockchip-ep: Remove wrong mask on subsys_vendor_id
+Date: Wed,  3 Apr 2024 16:45:08 +0200
+Message-Id: <20240403144508.489835-1-rick.wertenbroek@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgworgDAXXOpf3QV@pengutronix.de>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Apr 02, 2024 at 05:47:58PM +0200, Oleksij Rempel wrote:
-> On Tue, Apr 02, 2024 at 08:26:37AM -0500, Rob Herring wrote:
-> > > +          pairsets:
-> > > +            $ref: /schemas/types.yaml#/definitions/phandle-array
-> > > +            description:
-> > > +              List of phandles, each pointing to the power supply for the
-> > > +              corresponding pairset named in 'pairset-names'. This property
-> > > +              aligns with IEEE 802.3-2022, Section 33.2.3 and 145.2.4.
-> > > +              PSE Pinout Alternatives (as per IEEE 802.3-2022 Table 145\u20133)
-> > > +              |-----------|---------------|---------------|---------------|---------------|
-> > > +              | Conductor | Alternative A | Alternative A | Alternative B | Alternative B |
-> > > +              |           |    (MDI-X)    |     (MDI)     |      (X)      |      (S)      |
-> > > +              |-----------|---------------|---------------|---------------|---------------|
-> > > +              | 1         | Negative VPSE | Positive VPSE | \u2014             | \u2014             |
-> > > +              | 2         | Negative VPSE | Positive VPSE | \u2014             | \u2014             |
-> > > +              | 3         | Positive VPSE | Negative VPSE | \u2014             | \u2014             |
-> > > +              | 4         | \u2014             | \u2014             | Negative VPSE | Positive VPSE |
-> > > +              | 5         | \u2014             | \u2014             | Negative VPSE | Positive VPSE |
-> > > +              | 6         | Positive VPSE | Negative VPSE | \u2014             | \u2014             |
-> > > +              | 7         | \u2014             | \u2014             | Positive VPSE | Negative VPSE |
-> > > +              | 8         | \u2014             | \u2014             | Positive VPSE | Negative VPSE |
-> > > +            minItems: 1
-> > > +            maxItems: 2
-> > 
-> > "pairsets" does not follow the normal design pattern of foos, foo-names, 
-> > and #foo-cells. You could add #foo-cells I suppose, but what would cells 
-> > convey? I don't think it's a good fit for what you need.
-> > 
-> > The other oddity is the number of entries and the names are fixed. That 
-> > is usually defined per consumer. 
-> > 
-> > As each entry is just a power rail, why can't the regulator binding be 
-> > used here?
-> 
-> I'm not against describing it consequent with regulator till the wire
-> end, but right now I have no idea how it should be described by using
-> regulator bindings. There are maximum 2 rails going in to PSE PI on one
-> side and 4 rails with at least 5 combinations supported by standard on
-> other side. Instead of inventing anything new, I suggested to describe
-> supported output combinations by using IEEE 802.3 standard.
+Remove wrong mask on subsys_vendor_id. Both the Vendor ID and Subsystem
+Vendor ID are u16 variables and are written to a u32 register of the
+controller. The Subsystem Vendor ID was always 0 because the u16 value
+was masked incorrectly with GENMASK(31,16) resulting in all lower 16
+bits being set to 0 prior to the shift.
 
-There's 4 combinations above, what's the 5th combination? SPE?
+Remove both masks as they are unnecessary and set the register correctly
+i.e., the lower 16-bits are the Vendor ID and the upper 16-bits are the
+Subsystem Vendor ID.
 
-Seems to me you just describe the 2 rails going to the connector and 
-then describe all the variations the connector supports. The PSE 
-(h/w) has little to do with which variations are supported, right? 
-For example, MDI-X vs. MDI support is determined by the PHY, right? Or 
-it has to be supported by both the PHY and PSE?
+This is documented in the RK3399 TRM section 17.6.7.1.17
 
-Rob
+Fixes: cf590b078391 ("PCI: rockchip: Add EP driver for Rockchip PCIe controller")
+Signed-off-by: Rick Wertenbroek <rick.wertenbroek@gmail.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/pci/controller/pcie-rockchip-ep.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/pci/controller/pcie-rockchip-ep.c b/drivers/pci/controller/pcie-rockchip-ep.c
+index c9046e97a1d2..37d4bcb8bd5b 100644
+--- a/drivers/pci/controller/pcie-rockchip-ep.c
++++ b/drivers/pci/controller/pcie-rockchip-ep.c
+@@ -98,10 +98,9 @@ static int rockchip_pcie_ep_write_header(struct pci_epc *epc, u8 fn, u8 vfn,
+ 
+ 	/* All functions share the same vendor ID with function 0 */
+ 	if (fn == 0) {
+-		u32 vid_regs = (hdr->vendorid & GENMASK(15, 0)) |
+-			       (hdr->subsys_vendor_id & GENMASK(31, 16)) << 16;
+-
+-		rockchip_pcie_write(rockchip, vid_regs,
++		rockchip_pcie_write(rockchip,
++				    hdr->vendorid |
++				    hdr->subsys_vendor_id << 16,
+ 				    PCIE_CORE_CONFIG_VENDOR);
+ 	}
+ 
+-- 
+2.25.1
+
 
