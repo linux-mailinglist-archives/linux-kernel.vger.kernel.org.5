@@ -1,61 +1,76 @@
-Return-Path: <linux-kernel+bounces-130230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130224-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FA3C8975BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:57:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3FCA8975AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:56:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55AAC1F28D7A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:57:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 89F4B28B9AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 16:56:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85B41152171;
-	Wed,  3 Apr 2024 16:57:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723D3152197;
+	Wed,  3 Apr 2024 16:55:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W+rl5fcW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cvCVs7iV"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70E63E487;
-	Wed,  3 Apr 2024 16:57:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A68C41514EC
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 16:55:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712163443; cv=none; b=A0+kBFuX95nt9AOWmsaGcASRpQh3e9uwgtuxYJFgPay49N/jFzxMDFDQXzNf5FzhFOe43DnUPemiri4z8VpBF+ji26eBxh9ZspfBB1+p6vgjUyDB9X/jKpZOri7zY9LbrK/zQpz9iMTRFySttAXDU3lmgHktW10FnjRbQSzR2Wc=
+	t=1712163349; cv=none; b=jWp80LcKG46PRKwyZ8s0DnPpxXbFMVPkr9Jenoj/GhzerYSm5ZJIlx5Wln/UuWBvMywL7zLjbUGnx59WEuvNErgP9UCMdxEjzIn3aFW8x4kJzVN5A1MxicF+ULc7kuhQMm07CNVqTM58TkItt7Q0MHL0b8oZijo7ec/L8IV2Y7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712163443; c=relaxed/simple;
-	bh=Lyo2Jkd+NP2jcyMjfmSSDQpvC/i5lfwUw1klvOt8u4M=;
+	s=arc-20240116; t=1712163349; c=relaxed/simple;
+	bh=ER2G/SPYbdhMyH/exF2rzBC3+1Ubd8xN/6vEMjXf8Pk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a/GJvqAhDi0hUj8L7rX+y36aBnVWe0UlrwVEAiO30C+7hbGqZRNFAVD4HM0Oa/d74B1vivSQBRKxHEvUggk4vbRHaVt2ixMBhm8A+FKMs7Yx/vblsiLbghD8VOBoere/grTx+4Pug9htbzB6fuJezd3E1Qe4PxCtYqSIrxwxydk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W+rl5fcW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20326C433C7;
-	Wed,  3 Apr 2024 16:57:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712163443;
-	bh=Lyo2Jkd+NP2jcyMjfmSSDQpvC/i5lfwUw1klvOt8u4M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=W+rl5fcWtGDnzgkuQ9dJB/MwuM578FH1ChxNzfvkUSA1zsCW76Y+Jb4K9xEuvgOV9
-	 tjL5skqR7xA4W7dv6pD6ffSM0hGgqXNvpUa8crYjhlaVvlVOm6GZImf5s+rCDgvLdL
-	 d8n4yFN+d9HK5MX0H5vxMv30iOwMHPwedVEyhg7j9qrLoH4jHgIXBqjhCXPXmppdMF
-	 Z3dJ9WiTjuNXu4DHm6rMM79HQcX33+Ni+dUKHOwTBKt3heDHMBYh2j2WN8lWTxBfzw
-	 ITXeEK9Ygz/3cFHNLCE7mVVIaBGfeJc1qe84Gn7G++0NFjlAUIhvQRbJOOkF+nkLk/
-	 +ZXGCFDUSq93g==
-Date: Wed, 3 Apr 2024 11:57:21 -0500
-From: Rob Herring <robh@kernel.org>
-To: Hiago De Franco <hiagofranco@gmail.com>
-Cc: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Hiago De Franco <hiago.franco@toradex.com>, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/4] dt-bindings: arm: fsl: remove reduntant
- toradex,colibri-imx8x
-Message-ID: <20240403165721.GA3980362-robh@kernel.org>
-References: <20240402193512.240417-1-hiagofranco@gmail.com>
- <20240402193512.240417-3-hiagofranco@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IZF8Pe1ghTM432cXUZ+EoKng+0ToprEBIkpbhKOOjR8ITeG8erltrpsGl+gmL8gzZNCSJ9yjKfbrebbYpvGOCQfsAY6zQlQ0Jt+M8eVOLjvtWQ4P52t/xv0PuWxpiQDVCcP02Htu0jSCLWP/y9gh5CBt4n9y45ofpcI0+I7QJXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cvCVs7iV; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712163345;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qcFGTIgsVpRcFHL+8n4bltIbe5BCiFbcUwE7alUYftc=;
+	b=cvCVs7iV7A+JfWN53Q97HNARkewbq+uFP9e7q05+d/BRkZVgmP3NiTcKsogyHuQIAparZN
+	OmdrhjsbTyziMBDa0TVtNCmXCvHtJ1MfN37/MrjtLjLWZSKzmTE7n7392jQr/E5IgwO+oj
+	Wtwl+lJKq5jEGBGem6rfDHc6e72AmFA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-434-BbaFp3e6P9SwSkyIW3LFsQ-1; Wed, 03 Apr 2024 12:55:41 -0400
+X-MC-Unique: BbaFp3e6P9SwSkyIW3LFsQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 479DF88D4E8;
+	Wed,  3 Apr 2024 16:55:40 +0000 (UTC)
+Received: from bfoster (unknown [10.22.16.57])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 300632024517;
+	Wed,  3 Apr 2024 16:55:39 +0000 (UTC)
+Date: Wed, 3 Apr 2024 12:57:37 -0400
+From: Brian Foster <bfoster@redhat.com>
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+	Chao Yu <chao@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	=?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [PATCH v3 01/13] fs: fiemap: add physical_length field to extents
+Message-ID: <Zg2Kgdn42odZVUtE@bfoster>
+References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+ <1ba5bfccccbf4ff792f178268badde056797d0c4.1712126039.git.sweettea-kernel@dorminy.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,39 +79,106 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240402193512.240417-3-hiagofranco@gmail.com>
+In-Reply-To: <1ba5bfccccbf4ff792f178268badde056797d0c4.1712126039.git.sweettea-kernel@dorminy.me>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-On Tue, Apr 02, 2024 at 04:35:10PM -0300, Hiago De Franco wrote:
-> From: Hiago De Franco <hiago.franco@toradex.com>
+On Wed, Apr 03, 2024 at 03:22:42AM -0400, Sweet Tea Dorminy wrote:
+> Some filesystems support compressed extents which have a larger logical
+> size than physical, and for those filesystems, it can be useful for
+> userspace to know how much space those extents actually use. For
+> instance, the compsize [1] tool for btrfs currently uses btrfs-internal,
+> root-only ioctl to find the actual disk space used by a file; it would
+> be better and more useful for this information to require fewer
+> privileges and to be usable on more filesystems. Therefore, use one of
+> the padding u64s in the fiemap extent structure to return the actual
+> physical length; and, for now, return this as equal to the logical
+> length.
 > 
-> 'toradex,colibri-imx8x' is already present as a constant value for
-> 'i.MX8QP Board with Toradex Colibri iMX8X Modules', so there is no need
-> to keep it twice as a enum value for 'i.MX8QXP based Boards'.
-
-If the module can operate on its own, then it would be valid to have 
-just "toradex,colibri-imx8x". If not, then:
-
-Acked-by: Rob Herring <robh@kernel.org>
-
+> [1] https://github.com/kilobyte/compsize
 > 
-> Signed-off-by: Hiago De Franco <hiago.franco@toradex.com>
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 > ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 1 -
->  1 file changed, 1 deletion(-)
+>  Documentation/filesystems/fiemap.rst | 28 +++++++++++++++++-------
+>  fs/ioctl.c                           |  3 ++-
+>  include/uapi/linux/fiemap.h          | 32 ++++++++++++++++++++++------
+>  3 files changed, 47 insertions(+), 16 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-> index 0027201e19f8..6fdfa10af43c 100644
-> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
-> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-> @@ -1218,7 +1218,6 @@ properties:
->            - enum:
->                - einfochips,imx8qxp-ai_ml  # i.MX8QXP AI_ML Board
->                - fsl,imx8qxp-mek           # i.MX8QXP MEK Board
-> -              - toradex,colibri-imx8x     # Colibri iMX8X Modules
->            - const: fsl,imx8qxp
+..
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 661b46125669..8afd32e1a27a 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -138,7 +138,8 @@ int fiemap_fill_next_extent(struct fiemap_extent_info *fieinfo, u64 logical,
+>  	memset(&extent, 0, sizeof(extent));
+>  	extent.fe_logical = logical;
+>  	extent.fe_physical = phys;
+> -	extent.fe_length = len;
+> +	extent.fe_logical_length = len;
+> +	extent.fe_physical_length = len;
+
+Nit: Why start this field out as len if the next patch adds the param
+and defaults to zero? Not that it matters that much due to the next
+patch (which seems logical), but wouldn't it make more sense to set this
+to 0 from the start?
+
+Brian
+
+>  	extent.fe_flags = flags;
 >  
->        - description: i.MX8DXL based Boards
+>  	dest += fieinfo->fi_extents_mapped;
+> diff --git a/include/uapi/linux/fiemap.h b/include/uapi/linux/fiemap.h
+> index 24ca0c00cae3..3079159b8e94 100644
+> --- a/include/uapi/linux/fiemap.h
+> +++ b/include/uapi/linux/fiemap.h
+> @@ -14,14 +14,30 @@
+>  
+>  #include <linux/types.h>
+>  
+> +/*
+> + * For backward compatibility, where the member of the struct was called
+> + * fe_length instead of fe_logical_length.
+> + */
+> +#define fe_length fe_logical_length
+> +
+>  struct fiemap_extent {
+> -	__u64 fe_logical;  /* logical offset in bytes for the start of
+> -			    * the extent from the beginning of the file */
+> -	__u64 fe_physical; /* physical offset in bytes for the start
+> -			    * of the extent from the beginning of the disk */
+> -	__u64 fe_length;   /* length in bytes for this extent */
+> -	__u64 fe_reserved64[2];
+> -	__u32 fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
+> +	/*
+> +	 * logical offset in bytes for the start of
+> +	 * the extent from the beginning of the file
+> +	 */
+> +	__u64 fe_logical;
+> +	/*
+> +	 * physical offset in bytes for the start
+> +	 * of the extent from the beginning of the disk
+> +	 */
+> +	__u64 fe_physical;
+> +	/* logical length in bytes for this extent */
+> +	__u64 fe_logical_length;
+> +	/* physical length in bytes for this extent */
+> +	__u64 fe_physical_length;
+> +	__u64 fe_reserved64[1];
+> +	/* FIEMAP_EXTENT_* flags for this extent */
+> +	__u32 fe_flags;
+>  	__u32 fe_reserved[3];
+>  };
+>  
+> @@ -66,5 +82,7 @@ struct fiemap {
+>  						    * merged for efficiency. */
+>  #define FIEMAP_EXTENT_SHARED		0x00002000 /* Space shared with other
+>  						    * files. */
+> +#define FIEMAP_EXTENT_HAS_PHYS_LEN	0x00004000 /* Physical length is valid
+> +						    * and set by FS. */
+>  
+>  #endif /* _UAPI_LINUX_FIEMAP_H */
 > -- 
-> 2.39.2
+> 2.43.0
 > 
+> 
+
 
