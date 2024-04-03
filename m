@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-130129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A81389749E
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:56:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83185897472
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:50:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23D32B2D154
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:50:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 101181F2423C
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:50:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFC5E14BFB6;
-	Wed,  3 Apr 2024 15:49:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21DF414C5B1;
+	Wed,  3 Apr 2024 15:49:33 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 592DD14AD19;
-	Wed,  3 Apr 2024 15:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE62A14BFBA;
+	Wed,  3 Apr 2024 15:49:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712159370; cv=none; b=Pl7FH/usXxTO7YwfsxxwrKBiKR0hKyO/Qwt4bwEEadKBJ6i+qBS/5p/DyebDgfaux2AagmaUsyzqMy30nrQlZOHoLnuXWXBnY7kFLcR4gGXjZdykIe8/iH0Q0aSLtC2XYciXIkvs5aJNK9reimPzfCpDm00Cy7LbhlblM6g2zKk=
+	t=1712159372; cv=none; b=PAFrVjGxXODjkLfbrUOsk3WQoOZZDoEVklRU2gmKhKUAJXnO2uk9dKOqtWCAWe7bi0yT8rY8Hd1me3ZoKl/ZOPPxH9tV/M9+o6/LxGPPPu/eo/cZNIT+YqTigzi75mznVQwxJ/7qsCogdonMBWzFb+Psd2t5zUCCaQkT35npNUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712159370; c=relaxed/simple;
-	bh=w4tmkP98AiEoSSbRmXKPM8b84i8vRUgubnaUqN+P9Mk=;
+	s=arc-20240116; t=1712159372; c=relaxed/simple;
+	bh=dnhosNZpwd8KOLzRS0QKczQ/cn7DGcdf0wVrJ8VkX1s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ky3DUSL81Ojz61+B35+pCjvr1FM4tTZcpPJ1ScSotTR5xwSO1RbHtYOEm+zwy7WJ0s3lcb5L4DhSrU8ck8uimHRQEPEPtVqCfbBhdDOtVGDfdJqaAwJAEgwffg+8ckf1VlSPyhIKg2rZ91jbWKGmfXzZ/tr81NvIWDw4/mknvzw=
+	 MIME-Version; b=ThCP2TrRS1OxwGBMWSj+9hP27WoktbBoycVl6QaG9/WVV9KdVJlwhuQzho4+CXHTDlUyqfzLbU8PbuAybrGGUh5GQG7rIeUxDlo6trMG9CC4lGQ2Q0SopI2RBaxi8NGMq125WwBoTljcRdFk4Bq8/r0d/s7Wj9qrZz0xiYzMEa8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A85571595;
-	Wed,  3 Apr 2024 08:49:58 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5B7BF1007;
+	Wed,  3 Apr 2024 08:50:01 -0700 (PDT)
 Received: from e129166.arm.com (unknown [10.57.72.191])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1BC2B3F7B4;
-	Wed,  3 Apr 2024 08:49:24 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D58773F7B4;
+	Wed,  3 Apr 2024 08:49:27 -0700 (PDT)
 From: Lukasz Luba <lukasz.luba@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-pm@vger.kernel.org,
@@ -48,9 +48,9 @@ Cc: lukasz.luba@arm.com,
 	alim.akhtar@samsung.com,
 	m.szyprowski@samsung.com,
 	mhiramat@kernel.org
-Subject: [PATCH v5 1/4] OPP: OF: Export dev_opp_pm_calc_power() for usage from EM
-Date: Wed,  3 Apr 2024 16:49:04 +0100
-Message-Id: <20240403154907.1420245-2-lukasz.luba@arm.com>
+Subject: [PATCH v5 2/4] PM: EM: Refactor em_adjust_new_capacity()
+Date: Wed,  3 Apr 2024 16:49:05 +0100
+Message-Id: <20240403154907.1420245-3-lukasz.luba@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240403154907.1420245-1-lukasz.luba@arm.com>
 References: <20240403154907.1420245-1-lukasz.luba@arm.com>
@@ -62,100 +62,108 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-There are device drivers which can modify voltage values for OPPs. It
-could be due to the chip binning and those drivers have specific chip
-knowledge about it. This adjustment can happen after Energy Model is
-registered, thus EM can have stale data about power.
+Extract em_table_dup() and em_recalc_and_update() from
+em_adjust_new_capacity(). Both functions will be later reused by the
+'update EM due to chip binning' functionality.
 
-Export dev_opp_pm_calc_power() which can be used by Energy Model to
-calculate new power with the new voltage for OPPs.
-
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
 Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
 ---
- drivers/opp/of.c       | 17 ++++++++++++-----
- include/linux/pm_opp.h |  8 ++++++++
- 2 files changed, 20 insertions(+), 5 deletions(-)
+ kernel/power/energy_model.c | 58 +++++++++++++++++++++++++------------
+ 1 file changed, 39 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-index f9f0b22bccbb4..282eb5966fd03 100644
---- a/drivers/opp/of.c
-+++ b/drivers/opp/of.c
-@@ -1494,20 +1494,26 @@ _get_dt_power(struct device *dev, unsigned long *uW, unsigned long *kHz)
- 	return 0;
+diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
+index 9e1c9aa399ea9..6960dd7393b2d 100644
+--- a/kernel/power/energy_model.c
++++ b/kernel/power/energy_model.c
+@@ -674,23 +674,15 @@ void em_dev_unregister_perf_domain(struct device *dev)
  }
+ EXPORT_SYMBOL_GPL(em_dev_unregister_perf_domain);
  
 -/*
-- * Callback function provided to the Energy Model framework upon registration.
-+/**
-+ * dev_pm_opp_calc_power() - Calculate power value for device with EM
-+ * @dev		: Device for which an Energy Model has to be registered
-+ * @uW		: New power value that is calculated
-+ * @kHz		: Frequency for which the new power is calculated
-+ *
-  * This computes the power estimated by @dev at @kHz if it is the frequency
-  * of an existing OPP, or at the frequency of the first OPP above @kHz otherwise
-  * (see dev_pm_opp_find_freq_ceil()). This function updates @kHz to the ceiled
-  * frequency and @uW to the associated power. The power is estimated as
-  * P = C * V^2 * f with C being the device's capacitance and V and f
-  * respectively the voltage and frequency of the OPP.
-+ * It is also used as a callback function provided to the Energy Model
-+ * framework upon registration.
-  *
-  * Returns -EINVAL if the power calculation failed because of missing
-  * parameters, 0 otherwise.
-  */
--static int __maybe_unused _get_power(struct device *dev, unsigned long *uW,
--				     unsigned long *kHz)
-+int dev_pm_opp_calc_power(struct device *dev, unsigned long *uW,
-+			  unsigned long *kHz)
+- * Adjustment of CPU performance values after boot, when all CPUs capacites
+- * are correctly calculated.
+- */
+-static void em_adjust_new_capacity(struct device *dev,
+-				   struct em_perf_domain *pd,
+-				   u64 max_cap)
++static struct em_perf_table __rcu *em_table_dup(struct em_perf_domain *pd)
  {
- 	struct dev_pm_opp *opp;
- 	struct device_node *np;
-@@ -1544,6 +1550,7 @@ static int __maybe_unused _get_power(struct device *dev, unsigned long *uW,
+ 	struct em_perf_table __rcu *em_table;
+ 	struct em_perf_state *ps, *new_ps;
+-	int ret, ps_size;
++	int ps_size;
  
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(dev_pm_opp_calc_power);
+ 	em_table = em_table_alloc(pd);
+-	if (!em_table) {
+-		dev_warn(dev, "EM: allocation failed\n");
+-		return;
+-	}
++	if (!em_table)
++		return NULL;
  
- static bool _of_has_opp_microwatt_property(struct device *dev)
- {
-@@ -1619,7 +1626,7 @@ int dev_pm_opp_of_register_em(struct device *dev, struct cpumask *cpus)
- 		goto failed;
- 	}
+ 	new_ps = em_table->state;
  
--	EM_SET_ACTIVE_POWER_CB(em_cb, _get_power);
-+	EM_SET_ACTIVE_POWER_CB(em_cb, dev_pm_opp_calc_power);
+@@ -702,24 +694,52 @@ static void em_adjust_new_capacity(struct device *dev,
  
- register_em:
- 	ret = em_dev_register_perf_domain(dev, nr_opp, &em_cb, cpus, true);
-diff --git a/include/linux/pm_opp.h b/include/linux/pm_opp.h
-index 065a47382302c..dd7c8441af424 100644
---- a/include/linux/pm_opp.h
-+++ b/include/linux/pm_opp.h
-@@ -476,6 +476,8 @@ struct device_node *dev_pm_opp_get_of_node(struct dev_pm_opp *opp);
- int of_get_required_opp_performance_state(struct device_node *np, int index);
- int dev_pm_opp_of_find_icc_paths(struct device *dev, struct opp_table *opp_table);
- int dev_pm_opp_of_register_em(struct device *dev, struct cpumask *cpus);
-+int dev_pm_opp_calc_power(struct device *dev, unsigned long *uW,
-+			  unsigned long *kHz);
- static inline void dev_pm_opp_of_unregister_em(struct device *dev)
- {
- 	em_dev_unregister_perf_domain(dev);
-@@ -539,6 +541,12 @@ static inline void dev_pm_opp_of_unregister_em(struct device *dev)
- {
- }
+ 	rcu_read_unlock();
  
-+static inline int dev_pm_opp_calc_power(struct device *dev, unsigned long *uW,
-+					unsigned long *kHz)
-+{
-+	return -EOPNOTSUPP;
+-	em_init_performance(dev, pd, new_ps, pd->nr_perf_states);
+-	ret = em_compute_costs(dev, new_ps, NULL, pd->nr_perf_states,
++	return em_table;
 +}
 +
- static inline int of_get_required_opp_performance_state(struct device_node *np, int index)
- {
- 	return -EOPNOTSUPP;
++static int em_recalc_and_update(struct device *dev, struct em_perf_domain *pd,
++				struct em_perf_table __rcu *em_table)
++{
++	int ret;
++
++	ret = em_compute_costs(dev, em_table->state, NULL, pd->nr_perf_states,
+ 			       pd->flags);
+-	if (ret) {
+-		dev_warn(dev, "EM: compute costs failed\n");
+-		return;
+-	}
++	if (ret)
++		goto free_em_table;
+ 
+ 	ret = em_dev_update_perf_domain(dev, em_table);
+ 	if (ret)
+-		dev_warn(dev, "EM: update failed %d\n", ret);
++		goto free_em_table;
+ 
+ 	/*
+ 	 * This is one-time-update, so give up the ownership in this updater.
+ 	 * The EM framework has incremented the usage counter and from now
+ 	 * will keep the reference (then free the memory when needed).
+ 	 */
++free_em_table:
+ 	em_table_free(em_table);
++	return ret;
++}
++
++/*
++ * Adjustment of CPU performance values after boot, when all CPUs capacites
++ * are correctly calculated.
++ */
++static void em_adjust_new_capacity(struct device *dev,
++				   struct em_perf_domain *pd,
++				   u64 max_cap)
++{
++	struct em_perf_table __rcu *em_table;
++
++	em_table = em_table_dup(pd);
++	if (!em_table) {
++		dev_warn(dev, "EM: allocation failed\n");
++		return;
++	}
++
++	em_init_performance(dev, pd, em_table->state, pd->nr_perf_states);
++
++	em_recalc_and_update(dev, pd, em_table);
+ }
+ 
+ static void em_check_capacity_update(void)
 -- 
 2.25.1
 
