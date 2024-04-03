@@ -1,181 +1,141 @@
-Return-Path: <linux-kernel+bounces-130148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE0C88974AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:57:57 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95EBC8974AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:58:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 579EF1F23C00
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:57:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4AB5F294FD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 15:58:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 032A214A4FD;
-	Wed,  3 Apr 2024 15:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF33814A610;
+	Wed,  3 Apr 2024 15:58:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="EddwekMh"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IhB8jye1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACCF714A60B
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9439D14A0A0
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 15:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712159869; cv=none; b=HQ/N2CoyXyFITy0LKSfK6xm/+CM139zKGPWk/3oJr2DAyRvtQbrRcGeiCYm6vcO892KO2tzbn/3c3+Q0HzgW7L57KuyTN6rolUiLXY3CqG0j5h6IJYHHwtA+V8VuUt9I3qs0NvTohziF1lFGWwxPpz2a3S0Ut8Ni2KcNq3nl89U=
+	t=1712159919; cv=none; b=dLnUnkDrKpg9hKYwR4HNBeVTR22bo1KoIX4p8GMhE9aMLoQRKWoSTS+dcmFdF4piJcbIVG35E42kRM8TX9ip7QuGy9JWW3TVHjFq0omEUHxTn0mgUimbLDl0razv/yp+w05KcQy3yLzZJHs7z51Zs6sHdjaeVRyGRUlQk2xCd4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712159869; c=relaxed/simple;
-	bh=dbBUSzgDjt5q/Qw6Ntc0Km4NWLoKgjePpI1VLpqH2lY=;
-	h=From:To:References:In-Reply-To:Subject:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Xtg73BH3rwLX/aaDD2Qx8LW6ywW5wNHZbPXwVni1ZJTdny1JC7vys2sUMpiqo5rSDfAwBaV1ju5iRnt+rcTDqqC+hV7I+l0U/mjJShDNjD9Uc/n20erBPlhYI6Hk5vDBOOp0sG0H3omlM2hYMKNP/PIAy4Ti7ynNWF/qAZqVjmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=EddwekMh; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5d81b08d6f2so38280a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 08:57:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1712159867; x=1712764667; darn=vger.kernel.org;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:to:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zdweFtJcPnF4iKraZ/QiNKzHUXSD+PPerrMSFfCr9Ok=;
-        b=EddwekMhwobfMlB8WDmTnaiNnbFoB8PN6ckvbicajbNSn52MbezZ+1S1k6eAr1Jgp/
-         kCRN4BitdCbWqNVC1Y4u+bMmEeH/tLBZOrr2J3a5KDZBZ0VszXX/vY+RJOtw4xjvX+Ik
-         5C7MM6ekGDj+I74yifzYMqnXxLuZgn4G9e9DvE3KR5uNwAQHmLptjJIgRMeMaE1YEgQB
-         +NHJVFY1MxbwGVfAVx2U/zde+ceJxPy/d+umM5xuhdMSUjmVomoje6TRPfUoBSt13FTt
-         vyXEQRQzxsDqob8K6laTgIbZQ3feFI5jPKbJVMPuMksvoFpRsk4RMc4ji7BrJahl0OWV
-         xS9w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712159867; x=1712764667;
-        h=content-language:thread-index:content-transfer-encoding
-         :mime-version:message-id:date:subject:in-reply-to:references:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zdweFtJcPnF4iKraZ/QiNKzHUXSD+PPerrMSFfCr9Ok=;
-        b=R+Tc3yuznH9DGEoTRtpi/QR1V4CsmjzInOSgprk9Vs64rLzlmegHKETmXmmre75Nmy
-         fxPamNY0kwiCaYb9rd/URzS9Fn+1u/yVWBdk/qnQrIJLvGxsAqsCyVjpnyBQS+2+t4xW
-         /CHtH/UThLOWIzpFFxWtC9hbvk+RVdzFQ3wY9Wz0FRGvgME2t0L6+D09ofalpVgqhQkQ
-         oH7bcbj5fYQZ5E5T0x/waYMOeu+a+pIC6sKaLlY2P+xKQ6ieyLWprWe5Yz4m/QpM8y6Q
-         TQSKMNcmHaPM3fQi/aGrgUyMGLQNurisf21wM/I6n8la3mm8j5N7nU7EkvZJpiStcUmW
-         rJRg==
-X-Gm-Message-State: AOJu0YxacW+QHPQIdMjp9qxeboPrUFYiqGBOFH6qRtrXGBvskzOEcfRX
-	nmefeJQ2HBiIfIVgf3MGO2Dxsidf+r2lj9hkNPdkrepnbpHB4VHM/2ta4siRaMBUTftX/b9NvZw
-	X
-X-Google-Smtp-Source: AGHT+IGEc5SiTKlBMDw+hag7ah4JiRNUxWrcEjIvg5ALhnlJaggwk6Jks2Mq0GlmxJFoHaYgczxTKw==
-X-Received: by 2002:a17:90a:a782:b0:2a2:b5db:79cf with SMTP id f2-20020a17090aa78200b002a2b5db79cfmr943565pjq.21.1712159866705;
-        Wed, 03 Apr 2024 08:57:46 -0700 (PDT)
-Received: from PF361X9BRQR ([2601:602:a080:1560:2d8a:1669:70cd:2501])
-        by smtp.gmail.com with ESMTPSA id pb7-20020a17090b3c0700b002a287d6457bsm2061362pjb.41.2024.04.03.08.57.46
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 03 Apr 2024 08:57:46 -0700 (PDT)
-From: <jonathan.oleson@bytedance.com>
-To: <linux-kernel@vger.kernel.org>
-References: <20240403080452.1007601-1-atishp@rivosinc.com> <20240403080452.1007601-5-atishp@rivosinc.com>
-In-Reply-To: <20240403080452.1007601-5-atishp@rivosinc.com>
-Subject: unsubscribe
-Date: Wed, 3 Apr 2024 08:57:45 -0700
-Message-ID: <00a601da85df$ab1ac330$01504990$@bytedance.com>
+	s=arc-20240116; t=1712159919; c=relaxed/simple;
+	bh=2cwH7UsHlxByuk1WSe/Ili+5VtkQHeGu+ak5iXIPXAo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Jolq9dwKWBiqJRsSf3xQzqa8A1Cnuxa1DVYZ7b2k0Bu21Q/4vcJOC8mxyx9pW2wxayMKc6E9xB4i6OiH+IG9J3/cXf/pvMJxs1CbuWsNH8pab5Cly1Vr23fsLPN827hCOfx8BC1Yh12k4rZr/2e/zQIHkXPEPunamV+tm/+rtQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IhB8jye1; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712159917; x=1743695917;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=2cwH7UsHlxByuk1WSe/Ili+5VtkQHeGu+ak5iXIPXAo=;
+  b=IhB8jye1qAXyd6BSyEDCJ+G/LyGIvMFLJVRmBHudFYFnNPLV2LgpLWW9
+   Uq5IP6J0HziVRXSltHyDIl1V7JqDfqpLCxBFbAXyHrkArzm2iMa7IQujK
+   R/BhUcu0bpyDmHRFOBe8SnxKV5VS2kQ4cca5bJcndEexifKT0WpjgoUK9
+   1O2+lV76WF5a2i30BKY4N0hnBLzepVmi0fDey/GOj12yvneyY5ZnuP0X2
+   6bFE6FZWVKcIdkf5c7WxImVUhaafnUgPnujDtt9Pfidn+hVaUgi8tzf6r
+   onyOKiX66+8V9V6Pb2/LR54On/fZD+4zOXken/ydS/bcsdRr2qHdGfqEF
+   w==;
+X-CSE-ConnectionGUID: vQoMKey/RGOSX5lhXDzfSQ==
+X-CSE-MsgGUID: R4iFHtomSDqq4nvk+C1/Ew==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18013578"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="18013578"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 08:58:32 -0700
+X-CSE-ConnectionGUID: 0Dm0HmUbTAmOGZROR0ETpg==
+X-CSE-MsgGUID: 0OZUHOIgTm6tqPrhjab8ig==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="18575083"
+Received: from venkysha-mobl.amr.corp.intel.com (HELO [10.209.86.55]) ([10.209.86.55])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 08:58:31 -0700
+Message-ID: <7db8d0a8-c668-44be-a348-58120a97fc2b@intel.com>
+Date: Wed, 3 Apr 2024 08:58:31 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] x86/mm/pae: Align up pteval_t, pmdval_t and pudval_t
+ to avoid split locks
+To: Javier Pello <devel@otheo.eu>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
+ "H. Peter Anvin" <hpa@zytor.com>
+References: <20240401185451.6897208962d3fc47a12ffb5a@otheo.eu>
+ <20240401185712.a80deeb2fddeded0ad42cc04@otheo.eu>
+ <8ee463af-fdbf-4514-bb6e-bf2fd61fbc06@intel.com>
+ <20240402192314.a9b4e05637444314f47557e4@otheo.eu>
+ <d7e89d23-b692-4e70-baae-5df5b3984620@intel.com>
+ <20240403175407.f81ebc5cc3300ffa0c39f597@otheo.eu>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240403175407.f81ebc5cc3300ffa0c39f597@otheo.eu>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AdqF36p1cS3yrfaBR9e0iMPYJxi6MA==
-Content-Language: en-us
 
-unsubscribe
+On 4/3/24 08:54, Javier Pello wrote:
+> - The third way would be to disable split lock detection on x86-32.
+> This can be as simple as setting the default to "none" in
+> sld_state_setup(). Not the most elegant of solutions, but beats
+> having unresponsive tasks.
+> 
+> Would going for the first one be worth the trouble?
 
-Jonathan Oleson
-
-Talent Acquisition | Seattle
-linkedin.com/in/jonathanoleson/
-jonathan.oleson@bytedance.com
-
-
-
------Original Message-----
-From: Atish Patra <atishp@rivosinc.com> 
-Sent: Wednesday, April 3, 2024 1:05 AM
-To: linux-kernel@vger.kernel.org
-Cc: Atish Patra <atishp@rivosinc.com>; Ajay Kaher <akaher@vmware.com>;
-Alexandre Ghiti <alexghiti@rivosinc.com>; Alexey Makhalov
-<amakhalov@vmware.com>; Andrew Jones <ajones@ventanamicro.com>; Anup Patel
-<anup@brainfault.org>; Conor Dooley <conor.dooley@microchip.com>; Juergen
-Gross <jgross@suse.com>; kvm-riscv@lists.infradead.org; kvm@vger.kernel.org;
-linux-kselftest@vger.kernel.org; linux-riscv@lists.infradead.org; Mark
-Rutland <mark.rutland@arm.com>; Palmer Dabbelt <palmer@dabbelt.com>; Paolo
-Bonzini <pbonzini@redhat.com>; Paul Walmsley <paul.walmsley@sifive.com>;
-Shuah Khan <shuah@kernel.org>; virtualization@lists.linux.dev; VMware
-PV-Drivers Reviewers <pv-drivers@vmware.com>; Will Deacon <will@kernel.org>;
-x86@kernel.org
-Subject: [External] [PATCH v5 04/22] drivers/perf: riscv: Use BIT macro for
-shifting operations
-
-It is a good practice to use BIT() instead of (1UL << x).
-Replace the current usages with BIT().
-
-Signed-off-by: Atish Patra <atishp@rivosinc.com>
----
- arch/riscv/include/asm/sbi.h | 20 ++++++++++----------
-drivers/perf/riscv_pmu_sbi.c |  2 +-
- 2 files changed, 11 insertions(+), 11 deletions(-)
-
-diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-index ef8311dafb91..4afa2cd01bae 100644
---- a/arch/riscv/include/asm/sbi.h
-+++ b/arch/riscv/include/asm/sbi.h
-@@ -233,20 +233,20 @@ enum sbi_pmu_ctr_type {  #define
-SBI_PMU_EVENT_IDX_INVALID 0xFFFFFFFF
- 
- /* Flags defined for config matching function */
--#define SBI_PMU_CFG_FLAG_SKIP_MATCH	(1 << 0)
--#define SBI_PMU_CFG_FLAG_CLEAR_VALUE	(1 << 1)
--#define SBI_PMU_CFG_FLAG_AUTO_START	(1 << 2)
--#define SBI_PMU_CFG_FLAG_SET_VUINH	(1 << 3)
--#define SBI_PMU_CFG_FLAG_SET_VSINH	(1 << 4)
--#define SBI_PMU_CFG_FLAG_SET_UINH	(1 << 5)
--#define SBI_PMU_CFG_FLAG_SET_SINH	(1 << 6)
--#define SBI_PMU_CFG_FLAG_SET_MINH	(1 << 7)
-+#define SBI_PMU_CFG_FLAG_SKIP_MATCH	BIT(0)
-+#define SBI_PMU_CFG_FLAG_CLEAR_VALUE	BIT(1)
-+#define SBI_PMU_CFG_FLAG_AUTO_START	BIT(2)
-+#define SBI_PMU_CFG_FLAG_SET_VUINH	BIT(3)
-+#define SBI_PMU_CFG_FLAG_SET_VSINH	BIT(4)
-+#define SBI_PMU_CFG_FLAG_SET_UINH	BIT(5)
-+#define SBI_PMU_CFG_FLAG_SET_SINH	BIT(6)
-+#define SBI_PMU_CFG_FLAG_SET_MINH	BIT(7)
- 
- /* Flags defined for counter start function */ -#define
-SBI_PMU_START_FLAG_SET_INIT_VALUE (1 << 0)
-+#define SBI_PMU_START_FLAG_SET_INIT_VALUE BIT(0)
- 
- /* Flags defined for counter stop function */ -#define
-SBI_PMU_STOP_FLAG_RESET (1 << 0)
-+#define SBI_PMU_STOP_FLAG_RESET BIT(0)
- 
- enum sbi_ext_dbcn_fid {
- 	SBI_EXT_DBCN_CONSOLE_WRITE = 0,
-diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-index babf1b9a4dbe..a83ae82301e3 100644
---- a/drivers/perf/riscv_pmu_sbi.c
-+++ b/drivers/perf/riscv_pmu_sbi.c
-@@ -386,7 +386,7 @@ static int pmu_sbi_ctr_get_idx(struct perf_event *event)
- 			cmask = 1;
- 		} else if (event->attr.config == PERF_COUNT_HW_INSTRUCTIONS)
-{
- 			cflags |= SBI_PMU_CFG_FLAG_SKIP_MATCH;
--			cmask = 1UL << (CSR_INSTRET - CSR_CYCLE);
-+			cmask = BIT(CSR_INSTRET - CSR_CYCLE);
- 		}
- 	}
- 
---
-2.34.1
-
-
-
+No, it's not worth it.  Let's just disable split lock detection on
+32-bit and move on with life.
 
