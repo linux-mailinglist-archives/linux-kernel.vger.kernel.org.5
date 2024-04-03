@@ -1,152 +1,143 @@
-Return-Path: <linux-kernel+bounces-130474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50F2E8978D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:08:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D013A8978C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:04:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93AC4B2F108
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:51:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9032EB2D601
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 18:51:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3102A15445F;
-	Wed,  3 Apr 2024 18:50:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D02E154458;
+	Wed,  3 Apr 2024 18:51:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WPEgSBQJ"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kg/Pc4Yq"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C714C146D62;
-	Wed,  3 Apr 2024 18:50:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C3F839E1;
+	Wed,  3 Apr 2024 18:51:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712170251; cv=none; b=bMZrlcVHnLNFUnatHAHPnzIALaT27H7LRY/4XFKPDYaVaUsnGHM0I9+Jux6fXkmoyRZ7hmH2b5VINat1tlh+vSXCQCr6kntoS16LugEsDA2gpmC9TL5mUE2EnRiQ+k2SHQ20AfO0b1Xm41YJ+/3GeoNHnRlyBQoi9m7xk51VMBM=
+	t=1712170266; cv=none; b=jlrD9jd3pSGw7rzFa5EGnnRL1uQYXv5p5Q8Cs3F+3ZwcNIRh4g7HtGY5mZ+l/F2dv1OO85DkJzF/PLH2mWfmEoIBI+rnywTWTP5cMLjkD+iqqAQeKFSHwrFKOl4HuB+RCCjodfdesnxKPWxK61bRKEGxOuL4JJ2mV1JrdlM1JVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712170251; c=relaxed/simple;
-	bh=qafNT2/0QJfqG8NsAUxvf/4aoz+ZQ2sjYAFG0qQ4kJg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k5B4aWXqWm9CMCCZCMZLXFEYx21gaOiTlkdu3XyJc6B+V6/AvBgoDMRfreFMM/1zFs2oltCwREKZRnpbKmqjiT6ofgTNkEibqddGUUt7jVab7ZMhUh8IMgYdV+2uLIJXVooy6AKThH5v98zA3UACVsCiB1qQegwsxFYrGt8vFSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WPEgSBQJ; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4148c6132b4so7937215e9.1;
-        Wed, 03 Apr 2024 11:50:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712170248; x=1712775048; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OxSYstRLcf6NjaNLix3NVlN+e1nyvxy/tW96r1wlIgc=;
-        b=WPEgSBQJ5wtLUjOybunFFfwsczl9sjhe1roV+ajMlLAxLxUbCCwhPaUceSgIwMxF0G
-         Oc3qtC2uqJOh8fHJdoI/kgqMspN1aCS555KpppEdQLpaJ0kV34WUoPElPHdDqiocAp1A
-         MM6dxfy/232X48KWC9k975ectWnC/OIllDGk9CFMvr2HQQ0OaOAZj2JyDWFCgTgRYOQV
-         vJQDOEunVPbeNVHwI23FitC4CoOtj5+BLh6Sr04RRAhikBCo+XmF7jiDBUxkp8hCf4HO
-         vtTQfNd8ccmS2Gs3lzkd07AzEnWz8awtNyBD5R3SsF1++d+UcG6y9UEVqQThQpZkAVmu
-         DnqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712170248; x=1712775048;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OxSYstRLcf6NjaNLix3NVlN+e1nyvxy/tW96r1wlIgc=;
-        b=lBViPiPMuDsKzkIuNUpmziEwhK0jMyHqTjg7FGOm3uqcD1AyJ24CREV7sLfJ1xY5mE
-         rsJ2Us9B6DL8vVP69jKykWQd+OHWUYaWNAePM1Kyr48O1OPOGD/Xoi8GY4O9PzF2Bhd4
-         VRRr7hBEvLGMfLqno/zUKNgBn+ehmhNV2hp7+gyjce+h1r1MQPuw5Vrj64UyhdH0PeDD
-         06b648w9PTiInHNbm2O9+5tfqcXBKovq3cQAwWWRLpL1RRqBA0XOfH/BSDpCAP9SaUhY
-         RUXK7dOFXyCsDnZ6MuXt8KxLBLUxsFM6ywPWfrEk6fix4Yzp/2mnwwUcZZfjzc2Hpqk3
-         pYhA==
-X-Forwarded-Encrypted: i=1; AJvYcCVN0z60jiwquGpM1wmFzoFA93Lp2MkUfgnEBi3jdiu4aV+fMNvpcbzrMKhXwNNtbq74deFC3cPjrDr6Xh11trygMkMM/uAeqHTMgIOhHg3bLcJ0bHVL12skTQ6AFqq2bsd0aVuqfVyJMTomFu/Lpbjo/aP/DaM+zvuvnbKu8IjNn9rq
-X-Gm-Message-State: AOJu0Yxr3cjRJKhMPG67bI8Hy3TUeq0tnvGOxQxKU5cB4NjL6Spz2slr
-	2h4fekBxQMCmiVr8LmvAanwRG2qj5b2xeSrVgvzRd+OGuhxNFMNFPgW/RlrWmocRknL/FQfq/at
-	4S6tko31CEqOsY2c53s5eM+POYPs=
-X-Google-Smtp-Source: AGHT+IFHD+3PR+fgRwZMJjTgYhMmPSdB2eD57GJTKu9dMg2ovytKxAkRB3EOzbVq0oLmPVabnf7ws4D80/Hi2rZ5M34=
-X-Received: by 2002:a5d:6845:0:b0:341:c9bc:6340 with SMTP id
- o5-20020a5d6845000000b00341c9bc6340mr462892wrw.12.1712170248019; Wed, 03 Apr
- 2024 11:50:48 -0700 (PDT)
+	s=arc-20240116; t=1712170266; c=relaxed/simple;
+	bh=lSO5a/LR2abT5IbXVMvLNuvxnTKyJrqDXsHF2+SQ84c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DOPnOApc+tSSq5vwFpn383JYsfLlnUtqaiAoUsf2KMDzfddZ+daaXUgrxa2m9O8hfv3LD28GzOx6kp8A3GpIYyVnWIgT6mb58ZO92AW+/wiegCN4TBlwlB8Hf1Dp1atMHLBOkAwJcbtUrMMzWvVkveHqM05w/ELuGpd6yBfbxec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Kg/Pc4Yq; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712170265; x=1743706265;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lSO5a/LR2abT5IbXVMvLNuvxnTKyJrqDXsHF2+SQ84c=;
+  b=Kg/Pc4YqmTqkPvPpBJ9HmgPGeTjOSRvshMnFRLBo7+L1AohuBpo5673f
+   PXoC+dA4I2+8+1tOYg74oAMEW2SPuDBZg91dttMLH785wTAAy8/qkxmOx
+   ln11dX8QWoLtKbGhuUr+XvO9WELc9kS7q2XjAOMtLAbZCIo7TU2Ytbb4B
+   bD9h1iUoWV5GEUm72wmozgxetYsdOHul5laGv49e6HX4zGChNkKWnQk+3
+   dJ+26TvENI2U/KWSLFiYv4eAqWFkKohWVT6boH946eOlONPV1BjPSBlMH
+   D0eS5CAqK83Qv4sqDl7frg1vtDtCtL39+okzBc35a57FfOskk6x/a47ox
+   g==;
+X-CSE-ConnectionGUID: UZAiFbdXTfqZqQtOtLm9Ug==
+X-CSE-MsgGUID: ncrA96eMREOKF+CJZod54w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7538817"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="7538817"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:51:04 -0700
+X-CSE-ConnectionGUID: anH6KJ8vRluvEQv7Pt4gmA==
+X-CSE-MsgGUID: 1UMUQKVqQGGMzXn/qWPyXg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="23290440"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 11:51:04 -0700
+Date: Wed, 3 Apr 2024 11:51:03 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 102/130] KVM: TDX: handle EXCEPTION_NMI and
+ EXTERNAL_INTERRUPT
+Message-ID: <20240403185103.GK2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <3ac413f1d4adbac7db88a2cade97ded3b076c540.1708933498.git.isaku.yamahata@intel.com>
+ <ZgpuqJW365ZfuJao@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
- <20240322-hid-bpf-sleepable-v5-1-179c7b59eaaa@kernel.org> <CAADnVQJdm7+7tbJC8yhPqDUijE0DTD9UG4LOQmNRCWchQ3uGsg@mail.gmail.com>
- <CAO-hwJKVVjhg6_0tAM75HGJL0WcERotyJc+7oBVvDiTGJAqTfw@mail.gmail.com>
-In-Reply-To: <CAO-hwJKVVjhg6_0tAM75HGJL0WcERotyJc+7oBVvDiTGJAqTfw@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 3 Apr 2024 11:50:36 -0700
-Message-ID: <CAADnVQ+5NqjqyeFS3XgDU0OCFgt1Y9bmTbHOPv6ekw1sJasyaA@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/6] bpf/helpers: introduce sleepable bpf_timers
-To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZgpuqJW365ZfuJao@chao-email>
 
-On Wed, Mar 27, 2024 at 10:02=E2=80=AFAM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
-> > >                 goto out;
-> > >         }
-> > > +       spin_lock(&t->sleepable_lock);
-> > >         drop_prog_refcnt(t);
-> > > +       spin_unlock(&t->sleepable_lock);
+On Mon, Apr 01, 2024 at 04:22:00PM +0800,
+Chao Gao <chao.gao@intel.com> wrote:
+
+> On Mon, Feb 26, 2024 at 12:26:44AM -0800, isaku.yamahata@intel.com wrote:
+> >From: Isaku Yamahata <isaku.yamahata@intel.com>
 > >
-> > this also looks odd.
->
-> I basically need to protect "t->prog =3D NULL;" from happening while
-> bpf_timer_work_cb is setting up the bpf program to be run.
+> >Because guest TD state is protected, exceptions in guest TDs can't be
+> >intercepted.  TDX VMM doesn't need to handle exceptions.
+> >tdx_handle_exit_irqoff() handles NMI and machine check.  Ignore NMI and
+> 
+> tdx_handle_exit_irqoff() doesn't handle NMIs.
 
-Ok. I think I understand the race you're trying to fix.
-The bpf_timer_cancel_and_free() is doing
-cancel_work()
-and proceeds with
-kfree_rcu(t, rcu);
+Will it to tdx_handle_exception().
 
-That's the only race and these extra locks don't help.
 
-The t->prog =3D NULL is nothing to worry about.
-The bpf_timer_work_cb() might still see callback_fn =3D=3D NULL
-"when it's being setup" and it's ok.
-These locks don't help that.
+> >machine check and continue guest TD execution.
+> >
+> >For external interrupt, increment stats same to the VMX case.
+> >
+> >Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> >Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+> >---
+> > arch/x86/kvm/vmx/tdx.c | 23 +++++++++++++++++++++++
+> > 1 file changed, 23 insertions(+)
+> >
+> >diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> >index 0db80fa020d2..bdd74682b474 100644
+> >--- a/arch/x86/kvm/vmx/tdx.c
+> >+++ b/arch/x86/kvm/vmx/tdx.c
+> >@@ -918,6 +918,25 @@ void tdx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
+> > 		vmx_handle_exception_irqoff(vcpu, tdexit_intr_info(vcpu));
+> > }
+> > 
+> >+static int tdx_handle_exception(struct kvm_vcpu *vcpu)
+> >+{
+> >+	u32 intr_info = tdexit_intr_info(vcpu);
+> >+
+> >+	if (is_nmi(intr_info) || is_machine_check(intr_info))
+> >+		return 1;
+> 
+> Add a comment in code as well.
 
-I suggest to drop sleepable_lock everywhere.
-READ_ONCE of callback_fn in bpf_timer_work_cb() is enough.
-Add rcu_read_lock_trace() before calling bpf prog.
+Sure.
 
-The race to fix is above 'cancel_work + kfree_rcu'
-since kfree_rcu might free 'struct bpf_hrtimer *t'
-while the work is pending and work_queue internal
-logic might UAF struct work_struct work.
-By the time it may luckily enter bpf_timer_work_cb() it's too late.
-The argument 'struct work_struct *work' might already be freed.
 
-To fix this problem, how about the following:
-don't call kfree_rcu and instead queue the work to free it.
-After cancel_work(&t->work); the work_struct can be reused.
-So set it up to call "freeing callback" and do
-schedule_work(&t->work);
+> >+
+> >+	kvm_pr_unimpl("unexpected exception 0x%x(exit_reason 0x%llx qual 0x%lx)\n",
+> >+		intr_info,
+> >+		to_tdx(vcpu)->exit_reason.full, tdexit_exit_qual(vcpu));
+> >+	return -EFAULT;
+> 
+> -EFAULT looks incorrect.
 
-There is a big assumption here that new work won't be
-executed before cancelled work completes.
-Need to check with wq experts.
-
-Another approach is to do something smart with
-cancel_work() return code.
-If it returns true set a flag inside bpf_hrtimer and
-make bpf_timer_work_cb() free(t) after bpf prog finishes.
-
-> Also, side note: if anyone feels like it would go faster to fix those
-> races by themself instead of teaching me how to properly do it, this
-> is definitely fine from me :)
-
-Most of the time goes into analyzing and thinking :)
-Whoever codes it doesn't speed things much.
-Pls do another respin if you still have cycles to work on it.
+As this is unexpected exception, we should exit to to the user-space with
+KVM_EXIT_EXCEPTION. Then QEMU will abort with message.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
