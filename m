@@ -1,130 +1,105 @@
-Return-Path: <linux-kernel+bounces-130652-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130653-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D095C897AFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:45:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 323C8897AFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 23:46:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00ACF1C21A8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:45:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0E4E28389D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 21:46:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4816156969;
-	Wed,  3 Apr 2024 21:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28250156879;
+	Wed,  3 Apr 2024 21:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="SeMLSi4c"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="QAPAsgiX"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30475156960
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:44:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11AF118AF9
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 21:46:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712180694; cv=none; b=qRCT/01Sqjj5AXL/ulerTsY3v8nHXEHA2JyfkVohiJfgHYhz7jruzXf9X9q7ykXJo7Fgm8QdYbFVy4F9LdRA+C8ic9U0kguAQto9WMhW/4qQPHI80Eq7fS1NxAUbdDWMEkZpf/37cZWUgJu8pAILuk96EDygE517oIjCgC3vz7g=
+	t=1712180763; cv=none; b=qF9bBikrjASUJYcOcG12CitNFeatqTSfxdwELZI9XyyH339dzIRwc2txw5Cf0tvjosbf9LAKmD1smcaLMR4i4pm5U+E5eToOSqQ5apMYOVga+t4stuWWmWB4j13UcVZvq/cZFrIi9khftCi/7cMKonXgKbDqDrNhnW6UXk41ahE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712180694; c=relaxed/simple;
-	bh=CDKPrN1TxldCtbd7s9KjHV0KIdtctnJ3llKI7zwSwVA=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=nQr4p72Y/D78K+GA2eg53Cy0kKcr73+td/tX9CWatgEcXUj63dDnQH7u9Am+y6EVi3teKk9ZxRrCUAS79XLJ8XWfy9K+jwICV/N35l01gDxr27ht/nIdA79P8ObEtcNUA5by28U3Va2sj31mavChcyY3rVddJOmfL41x97hVTak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=SeMLSi4c; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F1B0C433F1;
-	Wed,  3 Apr 2024 21:44:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1712180693;
-	bh=CDKPrN1TxldCtbd7s9KjHV0KIdtctnJ3llKI7zwSwVA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=SeMLSi4cdcTkjlXHDLRQ4ZdgokBSDp4hY6UCBlLXNt/E1ltZAxKMF/8BqAdNEsI5r
-	 EnqX3FlGkf45q/FQCnlriIjCnVkoQ5x5q3F7Bk/AP+mxYh/S/lJQ7br02WB6CsdYTj
-	 7YezKPrh22gnLI1TtVgV275YQN2CZSEgG5mPl07k=
-Date: Wed, 3 Apr 2024 14:44:52 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: syzbot <syzbot+58fc2a881f3b3df5e336@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- syzkaller-bugs@googlegroups.com, David Hildenbrand <david@redhat.com>
-Subject: Re: [syzbot] [mm?] KCSAN: data-race in __delete_from_swap_cache /
- folio_mapping (3)
-Message-Id: <20240403144452.1c68c2be42383de895795cfd@linux-foundation.org>
-In-Reply-To: <00000000000092ec58061522b2c7@google.com>
-References: <00000000000092ec58061522b2c7@google.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712180763; c=relaxed/simple;
+	bh=k5u6LmE/KxCA46smReOIOiyt166x2BcM8K8CPNETK+8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fPHVHdnUxQfd0tY1cLevGiNwHGTJVYEBKgJvaxcngBPoWiypnRW9R0TKV65vwyFP4FTkXGyfXHkdaCqQNAbtTiUrcRNsbyOa9bBVHNotHzIrkq9R66A7AvhpTYCo0Iea24MiaxWz760bp/1JqomBkzxR4SOBCrmUQZlczWYPcvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=QAPAsgiX; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1e244c7cbf8so2757315ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 14:46:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1712180761; x=1712785561; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p9Rfo0GuMUhNW4rnyw2FKeITsblkzXdY57eMgq2brH0=;
+        b=QAPAsgiX0KETh+O1kEmxkOY5DlsMqwkPeGtzG0Vc7d46d42QpioPWdSp8hZDrz6ghp
+         LW0ErAJ6/eKAKMgyJ3JAwVNaaJ+UmpmCnaW7iVE81Wj1oYYKKqER26VYt6678JyFqZcv
+         ii0mjJ1Ppw77bhD2nJli8kkhOIeTeaz+8HOkk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712180761; x=1712785561;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=p9Rfo0GuMUhNW4rnyw2FKeITsblkzXdY57eMgq2brH0=;
+        b=BQs4Zk/tOZHLTeA+J6K8ze8Odr0vggBLDnFuatzvqrfHsv75qC+6JJVtVapRN20r65
+         aq3pO6geeU0S58+AEBffjsdioWoqFLrVxi1WAlQztugKDe51gm7eGQ4kj0quyjlmNQFC
+         ZU6nEIQ/hj34shwNMN9iRBVoaFVFOeQQ4WVBz+l2SMHKuj6CiUB/2M5f/AnwJ2on8Emm
+         MzJo1A9YCyHolVW4XChUcKiKajiDJiNaeLrW3lr75v/xeNeLpx5FZJeupw5PVN7KPRPM
+         FCuvjqUbsd6+h5E3ZmwQvbQNWX/b338E2YMDNOBzJvwUg5uDYPl8NOsEFWKOCBGt4tal
+         UsVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXc1ejMNasdkeik85laz/2sYr/OaGY8aBpzmdHZ94AfN8Yju2juyX/clE8HzMZmVPDWg5L95pCoKMhzutocNqNgw+dzWs5xbLHrpYvq
+X-Gm-Message-State: AOJu0YwcIwXw/O7gvaw1gOKFrneSAfIKJ+YnqN6r584wZnh/K0bNRwQp
+	oaJriBPN4fhpMrtaIgZlmhDho8UOEreeme02n8kECo1eIosedUxZwQBkxeOPNY7JdQL5j11EOcE
+	=
+X-Google-Smtp-Source: AGHT+IGBMjFH67wQAQE46z0VwQgaz6/YQJDPFvSADzCC/5+gkq45buN2d3WBVkg4g1zFkD/ZN7bS2w==
+X-Received: by 2002:a17:902:e885:b0:1e0:c824:2510 with SMTP id w5-20020a170902e88500b001e0c8242510mr663550plg.14.1712180761442;
+        Wed, 03 Apr 2024 14:46:01 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id d9-20020a170902b70900b001db37fd26bcsm13828562pls.116.2024.04.03.14.46.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 14:46:00 -0700 (PDT)
+From: Kees Cook <keescook@chromium.org>
+To: Jeremy Linton <jeremy.linton@arm.com>,
+	Kees Cook <keescook@chromium.org>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org,
+	Elena Reshetova <elena.reshetova@intel.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] randomize_kstack: Improve entropy diffusion
+Date: Wed,  3 Apr 2024 14:45:45 -0700
+Message-Id: <171218074192.1346108.13742168050970266873.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240309202445.work.165-kees@kernel.org>
+References: <20240309202445.work.165-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 02 Apr 2024 13:10:29 -0700 syzbot <syzbot+58fc2a881f3b3df5e336@syzkaller.appspotmail.com> wrote:
+On Sat, 09 Mar 2024 12:24:48 -0800, Kees Cook wrote:
+> The kstack_offset variable was really only ever using the low bits for
+> kernel stack offset entropy. Add a ror32() to increase bit diffusion.
+> 
+> 
 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    39cd87c4eb2b Linux 6.9-rc2
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=129de21d180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=d024e89f7bb376ce
-> dashboard link: https://syzkaller.appspot.com/bug?extid=58fc2a881f3b3df5e336
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/b9b2dcffd7d5/disk-39cd87c4.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/5f4981fa60e6/vmlinux-39cd87c4.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/691f671f70ad/bzImage-39cd87c4.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+58fc2a881f3b3df5e336@syzkaller.appspotmail.com
-> 
-> ==================================================================
-> BUG: KCSAN: data-race in __delete_from_swap_cache / folio_mapping
-> 
-> write to 0xffffea0004798fa8 of 8 bytes by task 29 on cpu 0:
->  __delete_from_swap_cache+0x1f2/0x290 mm/swap_state.c:161
+Applied to for-next/hardening:
 
-	folio->swap.val = 0;
+[1/1] randomize_kstack: Improve entropy diffusion
+      https://git.kernel.org/kees/c/9c573cd31343
 
->  delete_from_swap_cache+0x72/0xe0 mm/swap_state.c:241
->  folio_free_swap+0x19f/0x1c0 mm/swapfile.c:1600
->  free_swap_cache mm/swap_state.c:290 [inline]
->  free_pages_and_swap_cache+0x1d9/0x400 mm/swap_state.c:322
->  __tlb_batch_free_encoded_pages mm/mmu_gather.c:136 [inline]
->  tlb_batch_pages_flush mm/mmu_gather.c:149 [inline]
->  tlb_flush_mmu_free mm/mmu_gather.c:366 [inline]
->  tlb_flush_mmu+0x2cf/0x440 mm/mmu_gather.c:373
->  tlb_finish_mmu+0x8c/0x100 mm/mmu_gather.c:465
->  __oom_reap_task_mm+0x231/0x2e0 mm/oom_kill.c:553
->  oom_reap_task_mm mm/oom_kill.c:589 [inline]
->  oom_reap_task mm/oom_kill.c:613 [inline]
->  oom_reaper+0x264/0x850 mm/oom_kill.c:654
->  kthread+0x1d1/0x210 kernel/kthread.c:388
->  ret_from_fork+0x4b/0x60 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-> 
-> read to 0xffffea0004798fa8 of 8 bytes by task 14567 on cpu 1:
->  folio_mapping+0xd2/0x110 mm/util.c:797
-
-		return swap_address_space(folio->swap);
-
->  folio_evictable mm/internal.h:256 [inline]
->  move_folios_to_lru+0x137/0x690 mm/vmscan.c:1808
->  shrink_inactive_list mm/vmscan.c:1929 [inline]
->  shrink_list mm/vmscan.c:2163 [inline]
->  shrink_lruvec+0xbd8/0x1640 mm/vmscan.c:5687
->  shrink_node_memcgs mm/vmscan.c:5873 [inline]
->  shrink_node+0xa78/0x15a0 mm/vmscan.c:5908
->  shrink_zones mm/vmscan.c:6152 [inline]
->  do_try_to_free_pages+0x3cc/0xca0 mm/vmscan.c:6214
->
-> ...
->
-
-These both point at David's 3d2c90876887 ("mm/swap: inline
-folio_set_swap_entry() and folio_swap_entry()") which is probably
-innocent, but I have to blame someone ;)
+-- 
+Kees Cook
 
 
