@@ -1,323 +1,174 @@
-Return-Path: <linux-kernel+bounces-130248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAEC68975E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:04:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EA408975EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 19:06:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0762F1C26DAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:04:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C87101F22E51
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 17:06:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AA986E60F;
-	Wed,  3 Apr 2024 17:04:34 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A90152519;
+	Wed,  3 Apr 2024 17:06:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="aph64/0W"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2AE61B7F4;
-	Wed,  3 Apr 2024 17:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8BA6E60F
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 17:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712163873; cv=none; b=aTiwTaFaFY37TBnRQoUOG70BL4jA3ZsZzNZoGeUk7Gxr6irrECvvg4oQ7KqfV3Gxx/49QB/PiqnxtIzH+D97HgeyacJB1p/aos5VZ74huWd57EYXYdeh/Eh0HC1c/cqdBHRy/3LbosBwwjlZAGmlZhrj+WcoEUyIra+6fo7k+IY=
+	t=1712163960; cv=none; b=H6SUGxgmXKomsvi/yImB7aiOuAN328JW5EK5vFN5cAT+REjUW5H0YSBcptBkPDGhlyTe/a4YlJD4L8zVjPBM8BX4pd4LxFW3IBzObi9sFrDQJ/xHzvBNW8wUAgyS513qBoMqV5cIqYIDVmeRM8RVllre7oK0VVU23cKpVvVu+wI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712163873; c=relaxed/simple;
-	bh=azqNcTPpDk+LqX+JMJlzsNb8PpUCl7Tuk+sbvKdjO2Q=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eOaaWjMKacLz7VfTVqpGOqzAHoNtJNnQyA7bsbLnDrx5SJZJBTyLUok7mQTJGnv7pPJyiLOxUl0TX8rJ7edmBdklqGjW/Lt8Ew6QOasT7nBwuwcVvWCZn/EZk3DMYsgN+GSHnDibk+QBpLE4BxZPtfH5l+u/ptGWYpH9dY75ptQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V8rfg1yVsz6D8Yh;
-	Thu,  4 Apr 2024 01:03:07 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1B8041400D7;
-	Thu,  4 Apr 2024 01:04:27 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Wed, 3 Apr
- 2024 18:04:26 +0100
-Date: Wed, 3 Apr 2024 18:04:25 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-CC: "Huang, Ying" <ying.huang@intel.com>, Gregory Price
-	<gourry.memverge@gmail.com>, <aneesh.kumar@linux.ibm.com>, <mhocko@suse.com>,
-	<tj@kernel.org>, <john@jagalactic.com>, Eishan Mirakhur
-	<emirakhur@micron.com>, Vinicius Tavares Petrucci <vtavarespetr@micron.com>,
-	Ravis OpenSrc <Ravis.OpenSrc@micron.com>, Alistair Popple
-	<apopple@nvidia.com>, Srinivasulu Thanneeru <sthanneeru@micron.com>, SeongJae
- Park <sj@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, "Dave Jiang" <dave.jiang@intel.com>, Andrew
- Morton <akpm@linux-foundation.org>, <nvdimm@lists.linux.dev>,
-	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, "Ho-Ren (Jack) Chuang" <horenc@vt.edu>, "Ho-Ren (Jack)
- Chuang" <horenchuang@gmail.com>, <qemu-devel@nongnu.org>, Hao Xiang
-	<hao.xiang@bytedance.com>
-Subject: Re: [PATCH v10 2/2] memory tier: create CPUless memory tiers after
- obtaining HMAT info
-Message-ID: <20240403180425.00003be0@Huawei.com>
-In-Reply-To: <20240402001739.2521623-3-horenchuang@bytedance.com>
-References: <20240402001739.2521623-1-horenchuang@bytedance.com>
-	<20240402001739.2521623-3-horenchuang@bytedance.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712163960; c=relaxed/simple;
+	bh=Jd4BHvRPKqhFeMu5ITAzv/jcjy5QPHwQQaC48cYJc6I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lP3YRgSUkzQw0AimYE4+kfKQlh835sb940o64xI1jQA9GEHKw6Ty/2ZAtnZe+1+BbHgXX97nJvCk0W3jSgMOhVjrIZmUbK42+YUosfDmqW2D3EJSTUZT/BFImHdIxcHWhMJvFTZ5XdaAoMa3QaqFJ8j8weXbCDCuVS9X7kCmMho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=aph64/0W; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 2CA2640E019B;
+	Wed,  3 Apr 2024 17:05:55 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id biapfoup9x9x; Wed,  3 Apr 2024 17:05:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1712163949; bh=nlDEmjDrb0uwgRIcCGqAC2jcGn2X53+a7hDmicU3V9M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=aph64/0WckPYA9dnAiDvGu4Ppewp4aHpRUx7BpG06f9IKeXGf9UrYAtDw2EF549dg
+	 7ywIBR9m8qVelAZZwT+PNkmsR5eW1GQxgjvbnJKJdboegZ+Hc8PtFXKrb5mFjQjnlp
+	 /ABfhIcpSLbMtjCj0qUHSAqU9pChCoLZzvxiQ9Um4pNb1uJNJ7ucOt4kQRjU/3snto
+	 CTmiv4Zkm/vN8zPaT8mDi4tpsyXx2z0H8KglF1T6NTPUzHGPj0v0M5eKyA3XQY65Bd
+	 sJqUC56n5ju0bDa97QfjfVspgilcHOXpcoGaqY/18oQHoZJvZRYzxEe/CxOgXm0ua9
+	 L6ZHy6SnrhIMM5XdZIgRV0T/UO8kPqmVPH90DvYUjLZYQbV2bTfjxydfl/wGN2X9UH
+	 l30TFsjfGki/0m8bF0FV9bqL00q5gVV80IQUXPYUEuRwipIM5R5Th5sPOjst/QEOl/
+	 MVEUSTI+kh2bXD6JybN5Tst8VDPxbPabnSDJhEqtQo0p3R9tsNxj4dLHeO+FNrxFuu
+	 zvbHcao4zz6K5lGu3ZD0vJWLD19d3h7WEC5UbpKGLVc8KpX6AHtIR0JWDSE8kQN/Qt
+	 Cj2pvbqd3CjUh4tSByuTYUNTl9HsKMMPyJJXt9uGDtupCdtNKKlMZ/pz9mb8QM4rWz
+	 h6pWA+QIKkkwgahByGhGp8A4=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7011240E00F4;
+	Wed,  3 Apr 2024 17:05:43 +0000 (UTC)
+Date: Wed, 3 Apr 2024 19:05:34 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org,
+	Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] x86/retpoline: Fix a missing return thunk warning (was:
+ Re: [linus:master] [x86/bugs] 4535e1a417:
+ WARNING:at_arch/x86/kernel/alternative.c:#apply_returns)
+Message-ID: <20240403170534.GHZg2MXmwFRv-x8usY@fat_crate.local>
+References: <202404020901.da75a60f-oliver.sang@intel.com>
+ <20240403122350.GEZg1KVvsyc-Z3bwro@fat_crate.local>
+ <CAHk-=wj+Q_LXV0Y5+kBvv-5sTxT3Y7E=8wJ2sX4vzWksd3LWzA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj+Q_LXV0Y5+kBvv-5sTxT3Y7E=8wJ2sX4vzWksd3LWzA@mail.gmail.com>
 
-A few minor comments inline.
+On Wed, Apr 03, 2024 at 09:45:25AM -0700, Linus Torvalds wrote:
+> On Wed, 3 Apr 2024 at 05:24, Borislav Petkov <bp@alien8.de> wrote:
+> >
+> > Subject: [PATCH] x86/retpoline: Fix a missing return thunk warning
+> 
+> Thanks, applied directly,
 
-> diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
-> index a44c03c2ba3a..16769552a338 100644
-> --- a/include/linux/memory-tiers.h
-> +++ b/include/linux/memory-tiers.h
-> @@ -140,12 +140,13 @@ static inline int mt_perf_to_adistance(struct access_coordinate *perf, int *adis
->  	return -EIO;
->  }
->  
-> -struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct list_head *memory_types)
-> +static inline struct memory_dev_type *mt_find_alloc_memory_type(int adist,
-> +					struct list_head *memory_types)
->  {
->  	return NULL;
->  }
->  
-> -void mt_put_memory_types(struct list_head *memory_types)
-> +static inline void mt_put_memory_types(struct list_head *memory_types)
->  {
-Why in this patch and not previous one?
->  
->  }
-> diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-> index 974af10cfdd8..44fa10980d37 100644
-> --- a/mm/memory-tiers.c
-> +++ b/mm/memory-tiers.c
-> @@ -36,6 +36,11 @@ struct node_memory_type_map {
->  
->  static DEFINE_MUTEX(memory_tier_lock);
->  static LIST_HEAD(memory_tiers);
-> +/*
-> + * The list is used to store all memory types that are not created
-> + * by a device driver.
-> + */
-> +static LIST_HEAD(default_memory_types);
->  static struct node_memory_type_map node_memory_types[MAX_NUMNODES];
->  struct memory_dev_type *default_dram_type;
->  
-> @@ -108,6 +113,8 @@ static struct demotion_nodes *node_demotion __read_mostly;
->  
->  static BLOCKING_NOTIFIER_HEAD(mt_adistance_algorithms);
->  
-> +/* The lock is used to protect `default_dram_perf*` info and nid. */
-> +static DEFINE_MUTEX(default_dram_perf_lock);
->  static bool default_dram_perf_error;
->  static struct access_coordinate default_dram_perf;
->  static int default_dram_perf_ref_nid = NUMA_NO_NODE;
-> @@ -505,7 +512,8 @@ static inline void __init_node_memory_type(int node, struct memory_dev_type *mem
->  static struct memory_tier *set_node_memory_tier(int node)
->  {
->  	struct memory_tier *memtier;
-> -	struct memory_dev_type *memtype;
-> +	struct memory_dev_type *mtype = default_dram_type;
+Can you pls replace it with the below one?
 
-Does the rename add anything major to the patch?
-If not I'd leave it alone to reduce the churn and give
-a more readable patch.  If it is worth doing perhaps
-a precursor patch?
+There's more breakage:
 
-> +	int adist = MEMTIER_ADISTANCE_DRAM;
->  	pg_data_t *pgdat = NODE_DATA(node);
->  
->  
-> @@ -514,11 +522,20 @@ static struct memory_tier *set_node_memory_tier(int node)
->  	if (!node_state(node, N_MEMORY))
->  		return ERR_PTR(-EINVAL);
->  
-> -	__init_node_memory_type(node, default_dram_type);
-> +	mt_calc_adistance(node, &adist);
-> +	if (node_memory_types[node].memtype == NULL) {
-> +		mtype = mt_find_alloc_memory_type(adist, &default_memory_types);
-> +		if (IS_ERR(mtype)) {
-> +			mtype = default_dram_type;
-> +			pr_info("Failed to allocate a memory type. Fall back.\n");
-> +		}
-> +	}
-> +
-> +	__init_node_memory_type(node, mtype);
->  
-> -	memtype = node_memory_types[node].memtype;
-> -	node_set(node, memtype->nodes);
-> -	memtier = find_create_memory_tier(memtype);
-> +	mtype = node_memory_types[node].memtype;
-> +	node_set(node, mtype->nodes);
-> +	memtier = find_create_memory_tier(mtype);
->  	if (!IS_ERR(memtier))
->  		rcu_assign_pointer(pgdat->memtier, memtier);
->  	return memtier;
-> @@ -655,6 +672,33 @@ void mt_put_memory_types(struct list_head *memory_types)
->  }
->  EXPORT_SYMBOL_GPL(mt_put_memory_types);
->  
-> +/*
-> + * This is invoked via `late_initcall()` to initialize memory tiers for
-> + * CPU-less memory nodes after driver initialization, which is
-> + * expected to provide `adistance` algorithms.
-> + */
-> +static int __init memory_tier_late_init(void)
-> +{
-> +	int nid;
-> +
-> +	mutex_lock(&memory_tier_lock);
-> +	for_each_node_state(nid, N_MEMORY)
-> +		if (node_memory_types[nid].memtype == NULL)
-> +			/*
-> +			 * Some device drivers may have initialized memory tiers
-> +			 * between `memory_tier_init()` and `memory_tier_late_init()`,
-> +			 * potentially bringing online memory nodes and
-> +			 * configuring memory tiers. Exclude them here.
-> +			 */
+https://bugzilla.kernel.org/show_bug.cgi?id=218679
 
-Does the comment refer to this path, or to ones where memtype is set?
+and I think it needs an __EXPORT_THUNK too.
 
-> +			set_node_memory_tier(nid);
+Yeah, I know. Damn ifdeffery. :-\
 
-Given the large comment I would add {} to help with readability.
-You could flip the logic to reduce indent
-	for_each_node_state(nid, N_MEMORY) {
-		if (node_memory_types[nid].memtype)
-			continue;
-		/*
-		 * Some device drivers may have initialized memory tiers
-		 * between `memory_tier_init()` and `memory_tier_late_init()`,
-		 * potentially bringing online memory nodes and
-		 * configuring memory tiers. Exclude them here.
-		 */
-		set_node_memory_tier(nid);
+I've changed it:
+
+https://bugzilla.kernel.org/attachment.cgi?id=306084&action=diff
+
+and this should be the correct fix(tm). Famous last words.
+
+Thx.
+
+---
+From ca5b34498f997cba9c24d450f7ccab4b37377560 Mon Sep 17 00:00:00 2001
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
+Date: Tue, 2 Apr 2024 16:05:49 +0200
+Subject: [PATCH] x86/retpoline: Do the necessary fixup to the Zen3/4 srso
+ return thunk for !SRSO
+
+The srso_alias_untrain_ret() dummy thunk in the !CONFIG_MITIGATION_SRSO
+case is there only for the altenative in CALL_UNTRAIN_RET to have
+a symbol to resolve.
+
+However, testing with kernels which don't have CONFIG_MITIGATION_SRSO
+enabled, leads to the warning in patch_return() to fire:
+
+  missing return thunk: srso_alias_untrain_ret+0x0/0x10-0x0: eb 0e 66 66 2e
+  WARNING: CPU: 0 PID: 0 at arch/x86/kernel/alternative.c:826 apply_returns (arch/x86/kernel/alternative.c:826
+
+Put in a plain "ret" there so that gcc doesn't put a return thunk in
+in its place which special and gets checked.
+
+In addition:
+
+  ERROR: modpost: "srso_alias_untrain_ret" [arch/x86/kvm/kvm-amd.ko] undefined!
+  make[2]: *** [scripts/Makefile.modpost:145: Module.symvers] Chyba 1
+  make[1]: *** [/usr/src/linux-6.8.3/Makefile:1873: modpost] Chyba 2
+  make: *** [Makefile:240: __sub-make] Chyba 2
+
+since !SRSO builds would use the dummy return thunk as reported by
+petr.pisar@atlas.cz, https://bugzilla.kernel.org/show_bug.cgi?id=218679.
+
+Reported-by: kernel test robot <oliver.sang@intel.com>
+Closes: https://lore.kernel.org/oe-lkp/202404020901.da75a60f-oliver.sang@intel.com
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Link: https://lore.kernel.org/all/202404020901.da75a60f-oliver.sang@intel.com/
+---
+ arch/x86/lib/retpoline.S | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 02cde194a99e..0795b3464058 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -228,8 +228,11 @@ SYM_CODE_END(srso_return_thunk)
+ #else /* !CONFIG_MITIGATION_SRSO */
+ /* Dummy for the alternative in CALL_UNTRAIN_RET. */
+ SYM_CODE_START(srso_alias_untrain_ret)
+-	RET
++	ANNOTATE_UNRET_SAFE
++	ret
++	int3
+ SYM_FUNC_END(srso_alias_untrain_ret)
++__EXPORT_THUNK(srso_alias_untrain_ret)
+ #define JMP_SRSO_UNTRAIN_RET "ud2"
+ #endif /* CONFIG_MITIGATION_SRSO */
+ 
+-- 
+2.43.0
 
 
-> +
-> +	establish_demotion_targets();
-> +	mutex_unlock(&memory_tier_lock);
-> +
-> +	return 0;
-> +}
-> +late_initcall(memory_tier_late_init);
-> +
->  static void dump_hmem_attrs(struct access_coordinate *coord, const char *prefix)
->  {
->  	pr_info(
-> @@ -668,7 +712,7 @@ int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
->  {
->  	int rc = 0;
->  
-> -	mutex_lock(&memory_tier_lock);
-> +	mutex_lock(&default_dram_perf_lock);
+-- 
+Regards/Gruss,
+    Boris.
 
-As below, this is a classic case where guard() will help readability.
-
->  	if (default_dram_perf_error) {
->  		rc = -EIO;
->  		goto out;
-> @@ -716,23 +760,30 @@ int mt_set_default_dram_perf(int nid, struct access_coordinate *perf,
->  	}
->  
->  out:
-> -	mutex_unlock(&memory_tier_lock);
-> +	mutex_unlock(&default_dram_perf_lock);
->  	return rc;
->  }
->  
->  int mt_perf_to_adistance(struct access_coordinate *perf, int *adist)
->  {
-> -	if (default_dram_perf_error)
-> -		return -EIO;
-> +	int rc = 0;
-
-Looks like rc is set in all paths that reach where it isused.
-
->  
-> -	if (default_dram_perf_ref_nid == NUMA_NO_NODE)
-> -		return -ENOENT;
-> +	mutex_lock(&default_dram_perf_lock);
-
-This would benefit quite a lot from
-guard(mutex)(&default_dram_perf_lock);
-and direct returns throughout.
-
-
-> +	if (default_dram_perf_error) {
-> +		rc = -EIO;
-> +		goto out;
-> +	}
->  
->  	if (perf->read_latency + perf->write_latency == 0 ||
-> -	    perf->read_bandwidth + perf->write_bandwidth == 0)
-> -		return -EINVAL;
-> +	    perf->read_bandwidth + perf->write_bandwidth == 0) {
-> +		rc = -EINVAL;
-> +		goto out;
-> +	}
->  
-> -	mutex_lock(&memory_tier_lock);
-> +	if (default_dram_perf_ref_nid == NUMA_NO_NODE) {
-> +		rc = -ENOENT;
-> +		goto out;
-> +	}
->  	/*
->  	 * The abstract distance of a memory node is in direct proportion to
->  	 * its memory latency (read + write) and inversely proportional to its
-> @@ -745,9 +796,10 @@ int mt_perf_to_adistance(struct access_coordinate *perf, int *adist)
->  		(default_dram_perf.read_latency + default_dram_perf.write_latency) *
->  		(default_dram_perf.read_bandwidth + default_dram_perf.write_bandwidth) /
->  		(perf->read_bandwidth + perf->write_bandwidth);
-> -	mutex_unlock(&memory_tier_lock);
->  
-> -	return 0;
-> +out:
-> +	mutex_unlock(&default_dram_perf_lock);
-> +	return rc;
->  }
->  EXPORT_SYMBOL_GPL(mt_perf_to_adistance);
->  
-> @@ -858,7 +910,8 @@ static int __init memory_tier_init(void)
->  	 * For now we can have 4 faster memory tiers with smaller adistance
->  	 * than default DRAM tier.
->  	 */
-> -	default_dram_type = alloc_memory_type(MEMTIER_ADISTANCE_DRAM);
-> +	default_dram_type = mt_find_alloc_memory_type(MEMTIER_ADISTANCE_DRAM,
-> +									&default_memory_types);
-
-Unusual indenting.  Align with just after (
-
->  	if (IS_ERR(default_dram_type))
->  		panic("%s() failed to allocate default DRAM tier\n", __func__);
->  
-> @@ -868,6 +921,14 @@ static int __init memory_tier_init(void)
->  	 * types assigned.
->  	 */
->  	for_each_node_state(node, N_MEMORY) {
-> +		if (!node_state(node, N_CPU))
-> +			/*
-> +			 * Defer memory tier initialization on CPUless numa nodes.
-> +			 * These will be initialized after firmware and devices are
-
-I think this wraps at just over 80 chars.  Seems silly to wrap so tightly and not
-quite fit under 80. (this is about 83 chars.
-
-> +			 * initialized.
-> +			 */
-> +			continue;
-> +
->  		memtier = set_node_memory_tier(node);
->  		if (IS_ERR(memtier))
->  			/*
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
