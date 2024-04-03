@@ -1,296 +1,181 @@
-Return-Path: <linux-kernel+bounces-129043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79B708963B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 06:53:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7961289643B
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 07:47:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B4AB1C23036
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:53:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E4C4B21E3D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 05:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D791D46430;
-	Wed,  3 Apr 2024 04:53:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B9A4D9FA;
+	Wed,  3 Apr 2024 05:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Zj2ngS5R"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="NcesQ6EC"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2107.outbound.protection.outlook.com [40.107.102.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 157F245977;
-	Wed,  3 Apr 2024 04:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712119987; cv=none; b=hM8IyED/v/z6GfXuYBFU8boBJ+Syw4f1vm1bmUAvciEQKX+AKu4qEXG9pZ64b0mM9bUfeWBzwY26Lu2EmBa+1g6QEYHbCnXIXMtyJz0iJUYPRRbyoUlfIpLvIjZlYjHS5xs3UWULDoO6J4CEJuQGU9gGIlQb8/mTydqEACILSnc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712119987; c=relaxed/simple;
-	bh=osExHUORjnSoQrqmwXTVAUyT8Z84AYG2aSoz6kn1HiE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ePhePd/jAVaNo8O0rcniTqtk9XCeis/paEmU68G12RE+HqTSPeKNI4Jgf6Olm3WmQ/2Z5gCJlQl7gV2urNWtnJAqoilx5lhcD4iLcNklMgp4p3/seGOrOYWd+vUNDhrxdOlZimupwgxZRgAlj2wF8nWhlJqgYS3kROVeWatYcWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Zj2ngS5R; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712119985; x=1743655985;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=osExHUORjnSoQrqmwXTVAUyT8Z84AYG2aSoz6kn1HiE=;
-  b=Zj2ngS5RtDGvNoDkgAcgGsNfW5eRBsunc8diR3l0CBwegQS1SDIBav9r
-   cnAkn+xPWtZMoKKYux9lSyoHmbpJJRhC01+psMGJdFROlBPrR4YrojV9c
-   TxyMMLKWEcb1JXMeJ38CNyz4Cf1nFtomWpIs+CiszGtsu4DSeJRyqlX5h
-   mJVyBHw34JyOcFWa885vP1vEZPLdRaDWgrxJMBm8wwvHq6bc5MUMSxQFc
-   WYCwqZkvEjYgan58iDKoeTzRh5WKpUrakiksCGg7YHs/KaQgZ5ZNrOnaM
-   WsYD1tQfCRfeDnbplsqjzozl7tF4spc3DiM2f/JJozozMuWIrJSTY+yoL
-   Q==;
-X-CSE-ConnectionGUID: N7EWQuj+Rlqx+ff9wUZ1bw==
-X-CSE-MsgGUID: SzD3ew4JTDG0RLoU5bUdTw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="24786573"
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="24786573"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Apr 2024 21:53:04 -0700
-X-CSE-ConnectionGUID: w8+p6xDJSZ+/jZpKOKjigA==
-X-CSE-MsgGUID: qxH+92kaQuexhbdchuEY7w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,176,1708416000"; 
-   d="scan'208";a="18352733"
-Received: from wentongw-optiplex-8070.sh.intel.com ([10.239.154.12])
-  by fmviesa006.fm.intel.com with ESMTP; 02 Apr 2024 21:53:02 -0700
-From: Wentong Wu <wentong.wu@intel.com>
-To: sakari.ailus@linux.intel.com,
-	tomas.winkler@intel.com,
-	gregkh@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org,
-	hao.yao@intel.com,
-	stable@vger.kernel.org,
-	Dominik Brodowski <linux@dominikbrodowski.net>,
-	Wentong Wu <wentong.wu@intel.com>
-Subject: [PATCH v2 2/2] mei: vsc: Unregister interrupt handler for system suspend
-Date: Wed,  3 Apr 2024 13:13:41 +0800
-Message-Id: <20240403051341.3534650-2-wentong.wu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240403051341.3534650-1-wentong.wu@intel.com>
-References: <20240403051341.3534650-1-wentong.wu@intel.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF54645;
+	Wed,  3 Apr 2024 05:46:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.107
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712123219; cv=fail; b=htRFVF9+SfU2Db/gVUL5IL1xE++9pj0TKVa6lz2Ew5ghlu54B8Q6NPL0W7Gk4RioZoSWa1veg+ugxcd9oqJqvNNp36kgVdv78YwHihmvkOCcMWpzjweuHSt5zxZD0DRIVVAsHOuF+rG/XyE5TDdNOkybz6XdsLFMoPvOuV3tSaI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712123219; c=relaxed/simple;
+	bh=OJudV+n1tKL2PiLEQo2+gi91BGv4SCkTWJstbzJUUVY=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 Content-Type:MIME-Version; b=FLkmjJlifacFk3jisZCu7UH8gQgaZVCwmxNkZUHerkNHSA6qWOsZOOBScqmrd2Q4UBp6RBViK+Cn9rz18tzjMLZ5hAagQqGUq3vocXE6u6tmDhV7mchrj4nFRusivI+iqNIM6jCsbY4ifO6oYNvdkKERvghPQrGxb4o3z5KFjII=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=NcesQ6EC; arc=fail smtp.client-ip=40.107.102.107
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KPScQHjuPfjPWoIxVRaV0q6ghXJLDXFI4zlHfgd41ZAvNS8u9FX/imcoUPLcnQ83W+szSU/Lg6QcXE5JjdmVxFcsFVZfxuCkcybyIOLQiIrBxcf9sLWsBhslWHwu8AU8ey8n0Y0Nb5HbtZKnbrsYkeM4kfAjwSriLEuTE3s2A/4YCgDYyH2BhQVJu2TGXBYEBRymLCkfn2fVP8TiiDJ1d6dSJn8C2WVtGCjTpLYmmpDgwyxiEcNVFfVYTGSip3KRhRXr6UgD7zBv4mi2TsqU2PXuBRrIv0pWTST8EB7eqGXgP22gyYv1AhUgWm4mijCadRHBOUFtjxc63+4LoanQFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZDLk5HZw+fSKx+VIXuFdhZN6iMwF9y+6ha0jWrUWf5o=;
+ b=Y+1eFRaw5ngh4+CNwqTP5awAD0FsVzu73FLWPBzsOLfJRShFaJTxLmK7iIbFL5uLYPyVR2pUSt++oDaoffPOo7jdeTR1KiemzrlVoAs1yQUfUvrXsTvWB6Oy96sm3ODcbpOWK3L9XPXNZye+pQ/MOHdkFjo8LJ9ckKHuwcJh+Wgrpfyjw0Eybdqf/OaBl9SuZgRt3F/2njidm7IIK8NtbQCFEv6DGd7CUG8pfNKA1oJLNzFJ98v+FaErnGagJDaqtFE2u0l7V94d0JfssSsUNeGY5Ur5jKgajSkSFPCCrezHQpzU3mofyNNhP9Y/qji1nbYEgLk12p+qdo6n1JdHCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZDLk5HZw+fSKx+VIXuFdhZN6iMwF9y+6ha0jWrUWf5o=;
+ b=NcesQ6ECrZiH20fyjxfrmIpitA+zPAlgjO57tFFDQr4GG4EW5IXqfQCInwpRR+hWjSLT6AZ1w97URVKWT3tW9iSSyzlaTKO4CgcegVpHlR+lCjoh1P7P7lRKVFL24lAS69jnRKNVKrJD7QDxLIn8t7XLkwy5JV9UPLr/MQzWRee0KoSm0reW4++HoqASY+G3rLrSooeB14hyN60zuUKpLs5CHxzZBbjzi5tJ8rLa0Fw88Daq9S/5WyaLJmb1Olg5++uAZB0wN9EjzQLS2QvnaHk9w5TUZjKQqK/hejfjc8XWoLrYCmGoeGOR8RM3sILWni+vAQcvUWrgkVlw0F8FeA==
+Received: from BYAPR12MB2743.namprd12.prod.outlook.com (2603:10b6:a03:61::28)
+ by DM6PR12MB4044.namprd12.prod.outlook.com (2603:10b6:5:21d::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Wed, 3 Apr
+ 2024 05:46:54 +0000
+Received: from BYAPR12MB2743.namprd12.prod.outlook.com
+ ([fe80::459b:b6fe:a74c:5fbf]) by BYAPR12MB2743.namprd12.prod.outlook.com
+ ([fe80::459b:b6fe:a74c:5fbf%6]) with mapi id 15.20.7409.042; Wed, 3 Apr 2024
+ 05:46:54 +0000
+References: <20240402205223.137565-1-rrameshbabu@nvidia.com>
+ <20240402205223.137565-2-rrameshbabu@nvidia.com>
+ <20240402191842.66decfd3@kernel.org>
+User-agent: mu4e 1.10.8; emacs 28.2
+From: Rahul Rameshbabu <rrameshbabu@nvidia.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, ahmed.zaki@intel.com,
+ aleksander.lobakin@intel.com, alexandre.torgue@foss.st.com,
+ andrew@lunn.ch, cjubran@nvidia.com, corbet@lwn.net, davem@davemloft.net,
+ dtatulea@nvidia.com, edumazet@google.com, gal@nvidia.com,
+ hkallweit1@gmail.com, jacob.e.keller@intel.com, jiri@resnulli.us,
+ joabreu@synopsys.com, justinstitt@google.com, kory.maincent@bootlin.com,
+ leon@kernel.org, liuhangbin@gmail.com, maxime.chevallier@bootlin.com,
+ pabeni@redhat.com, paul.greenwalt@intel.com, przemyslaw.kitszel@intel.com,
+ rdunlap@infradead.org, richardcochran@gmail.com, saeed@kernel.org,
+ tariqt@nvidia.com, vadim.fedorenko@linux.dev, vladimir.oltean@nxp.com,
+ wojciech.drewek@intel.com
+Subject: Re: [PATCH net-next v1 1/6] ethtool: add interface to read Tx
+ hardware timestamping statistics
+Date: Tue, 02 Apr 2024 22:14:38 -0700
+In-reply-to: <20240402191842.66decfd3@kernel.org>
+Message-ID: <87r0fn2e2b.fsf@nvidia.com>
+Content-Type: text/plain
+X-ClientProxiedBy: BY3PR05CA0018.namprd05.prod.outlook.com
+ (2603:10b6:a03:254::23) To BYAPR12MB2743.namprd12.prod.outlook.com
+ (2603:10b6:a03:61::28)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2743:EE_|DM6PR12MB4044:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	pkpZMeGS9rxC1AkjYwpnuYgc9r6LxhN3+HZqdyGZHiu5HIDOkMDw/jaXkv1/cl01twrYJ+7+o4c5fTlV5GiP8f5khyQXpqM4WTK+tMc5kv82naI2pkZ3uLoNLaiWrv1HcK6ZcaDza2aYyEwwuwWuR17iLLNY4POyvfe/ME9v2h/sfczqm0UnY23JRDvAJp8MgLf9VoA9dYGsouOeeqFv6CSipkDB/jOz/+SnPgvWxGBSgAAQQf584UG9mDV8ol6J7v4/Y6JRq9O5upIOf8KfpxidLO52IlDoD1v/y4ATcREi8UBPxCGGgzrw3rvvBy9/TiNqLre0FNveKzjkw6iPVU5ZwCwh4JRSxAmdUnqpje9s45SXH3iPO98A9GKj/SeZJZnoRguFH9XDo5+gjQf3e4cejF+N/RdRwe8V2dzl2Oxn/DOdxAXuE+9O3WuHJsVoPA0muCQ7O75NWoqhyneGwxs8RuR6ZLBWD7FWoQwmxfTD53bAS6sKAOmXsqnkHD6pr9EjyOpnySNp01N3a3yd9xCHaKCEzArXLsixBcFqEQAPnqc7VtV+61OBkjEchHhAdXOzQkbhlZPCOU32fZ7cMfuQKZCuteVKlXkUQQ3lmzhFWQIeyn/pMxk4vxEoCDQ8tgFjy6o6zpbCC9aA8/R1mRYWxSl0mZoiJZxs07C4BRg=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR12MB2743.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(376005)(1800799015);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?JJ7xOmvuUZQ2fv6IPHu7mllDxAPhOUEbVo5nxUud3LjspBKeozBwaFsVpg9E?=
+ =?us-ascii?Q?ZC1aj5kZf39XiwH4gbJFcJ+LOWZpHdTkvIG4uhQoIbXUzlFmIRZfOzljcSeH?=
+ =?us-ascii?Q?wmVy9J5DtFnjl4aFe6DZHPpMi4ihm6k+6Fcd4zsVErhYyLREzkHnqmFYTr1P?=
+ =?us-ascii?Q?+NS4onu+JR2PpJ1pQnn+Gl3Vw5MBB1lj/c2O+mkHXOoT1Z0JZxgX5A3WSW0A?=
+ =?us-ascii?Q?twNXSwJsqXAi3QgLWsT46QjENJfDMN6vly59eSLlHLEDnhrlScgaCp1aKzi9?=
+ =?us-ascii?Q?b2TqTQ+Rx1zbTPG09HbEY+bItMrS9o1eOrjVPq+9qLEwD1MwA7MzDhLtLtVK?=
+ =?us-ascii?Q?06msDmpsCxNJ4Pu/vRSEOQI1/cJcStHZap+/3TlWyMhmCtGrhp+w1BOUrxMa?=
+ =?us-ascii?Q?ztOOhukEzEmlUEBM0Ua6ahLsXp8Lgoe2dFnbq08/Aj/O6FRh86cEvVVvti7d?=
+ =?us-ascii?Q?LEftBW4Pj7cQj0PJ+czm2X/xKVykDkQViElWKTm8ex3oY7qFTFkjPzjdHW38?=
+ =?us-ascii?Q?TpXMvDFaN4xMi//ZkvEyb51wAInFqhKh542ZnD7gb75rL5R7Vrq/ZZWhOv7u?=
+ =?us-ascii?Q?l1NQLYyoIu0VmRpoJPeayZv/IhoK8J3WJ66PmMXBa3S4zHn6NyogoaioHADg?=
+ =?us-ascii?Q?cFbAwfh7zCbsL3Vu45Pwoh8EawD8Scg+BbKuL6xT9zYNNDNSVnXommuSqw4k?=
+ =?us-ascii?Q?hj4q/h5WAoV/P8dYx+ZV9dVxel8BxRxSbJYrbkQTR5tk9YdrmOXdvnVptAK1?=
+ =?us-ascii?Q?0oMy07baNXNfCipZYsq/igO+NdeTu2DYxxtyXW43wibQFzEO0rrVOsjOlJUq?=
+ =?us-ascii?Q?pEDKaKEofPJIZmnMekgk5x7buiFYjwoKDLAn/CnldoUTZWwDTqFkybhdsjtT?=
+ =?us-ascii?Q?67lQZt0eHRhyvqKkxPLWrBBPrjav5ET7VeeYYgcroIedURhcWRJB150fER0g?=
+ =?us-ascii?Q?0XhUOR8bKO316r8rZAKMjsEYM9ZcU8ookg4RywArjgbuYZSSqnxShnhslqIF?=
+ =?us-ascii?Q?39smW4/eLOMa70LAMOdPL2M14PQqBtWPF8mmOoB6kJ0KQBhGA3ovdQRLjXQl?=
+ =?us-ascii?Q?Kb+eNdYJWIMnYwJa+Yp2uKoPrLGttRBXWEiEEV3IR40VZM5H5zbwGWKX2btY?=
+ =?us-ascii?Q?5L9+FVeEtcSwBdPdhhnm9RuUCIKy1mOMkTdwiJgOVXqZS2wl4woeuvwnALmq?=
+ =?us-ascii?Q?2x1whM+sxBwE6YRe3kupaR3qqu8c/IL7pt33TzAqruhwiRVhazx8jgyMva72?=
+ =?us-ascii?Q?PTD7v1RWs2oUaF1q8c0gVZU2qCnEIUNMhFwS/lWMa6PEMlUK8R3O8joxjeHv?=
+ =?us-ascii?Q?5VVFpbhMVJNesUARrBdypzsRacGQvY9pMxCfKbOUCMfbwjlpobZknPy28gnv?=
+ =?us-ascii?Q?cYUH5F1Rz8eo506uIMeURwP1dUspHuEEGEF6T0fo959PCF4mJpKDgLU29ML4?=
+ =?us-ascii?Q?C3KPX7V80Roxe7QjI2Ms0IdsTA2WRdxnEhPwOwHY90uoBnLzy438AMbW/sQx?=
+ =?us-ascii?Q?ZAbiG/UWqaS/6nEmqwe8hEDM/JAUWz8mdS5nNKuWmb2mhl4JQWcV1PZe9jM/?=
+ =?us-ascii?Q?H5nJ4S3kXCt7bmGNo3N2u+pd5xC9L4X6ZV4iw5U1fZFXcs1tT1v7UXwtWcwr?=
+ =?us-ascii?Q?Ig=3D=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bbbb3d8b-ed68-46ac-bc42-08dc53a17766
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR12MB2743.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Apr 2024 05:46:53.9310
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: CXsOx7T8CAoETY5ek3bsB2y2m0cFKsrqXO2MKzhj7mfBXok47xwXF5KU9ofddh+5JWjuGbWh8iPfmCZrDCDlJw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4044
 
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
+On Tue, 02 Apr, 2024 19:18:42 -0700 Jakub Kicinski <kuba@kernel.org> wrote:
+> On Tue,  2 Apr 2024 13:52:01 -0700 Rahul Rameshbabu wrote:
+>> +/**
+>> + * struct ethtool_ts_stats - HW timestamping statistics
+>> + * @tx_stats: struct group for TX HW timestamping
+>> + *	@pkts: Number of packets successfully timestamped by the hardware.
+>> + *	@lost: Number of hardware timestamping requests where the timestamping
+>> + *		information from the hardware never arrived for submission with
+>> + *		the skb.
+>> + *	@err: Number of arbitrary timestamp generation error events that the
+>> + *		hardware encountered, exclusive of @lost statistics. Cases such
+>> + *		as resource exhaustion, unavailability, firmware errors, and
+>> + *		detected illogical timestamp values not submitted with the skb
+>> + *		are inclusive to this counter.
+>> + */
+>> +struct ethtool_ts_stats {
+>> +	struct_group(tx_stats,
+>
+> Doesn't seem like the group should be documented:
+>
+> include/linux/ethtool.h:503: warning: Excess struct member 'tx_stats' description in 'ethtool_ts_stats'
 
-Unregister the MEI VSC interrupt handler before system suspend and
-re-register it at system resume time. This mirrors implementation of other
-MEI devices.
+Was looking into why our internal verification did not catch this. We
+run W=1 with clang, but looks like the warning does not get triggered
+unless explicitly run with scripts/kernel-doc.
 
-This patch fixes the bug that causes continuous stream of MEI VSC errors
-after system resume.
+  https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html#how-to-format-kernel-doc-comments
 
-Fixes: 386a766c4169 ("mei: Add MEI hardware support for IVSC device")
-Cc: stable@vger.kernel.org # for 6.8
-Reported-by: Dominik Brodowski <linux@dominikbrodowski.net>
-Signed-off-by: Wentong Wu <wentong.wu@intel.com>
-Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
----
- drivers/misc/mei/platform-vsc.c | 17 ++++++-
- drivers/misc/mei/vsc-tp.c       | 84 +++++++++++++++++++++++----------
- drivers/misc/mei/vsc-tp.h       |  3 ++
- 3 files changed, 78 insertions(+), 26 deletions(-)
+I have debugged using strace that the way the kernel doc checking works
+when W=1 is set is that the matching source file that is being compiled
+is passed to scripts/kernel-doc, so include files are missed from the
+doc check. I think this is worth adding to the kernel documentation.
 
-diff --git a/drivers/misc/mei/platform-vsc.c b/drivers/misc/mei/platform-vsc.c
-index 6c9f00bcb94b..b543e6b9f3cf 100644
---- a/drivers/misc/mei/platform-vsc.c
-+++ b/drivers/misc/mei/platform-vsc.c
-@@ -400,25 +400,40 @@ static void mei_vsc_remove(struct platform_device *pdev)
- static int mei_vsc_suspend(struct device *dev)
- {
- 	struct mei_device *mei_dev = dev_get_drvdata(dev);
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
- 
- 	mei_stop(mei_dev);
- 
-+	mei_disable_interrupts(mei_dev);
-+
-+	vsc_tp_free_irq(hw->tp);
-+
- 	return 0;
- }
- 
- static int mei_vsc_resume(struct device *dev)
- {
- 	struct mei_device *mei_dev = dev_get_drvdata(dev);
-+	struct mei_vsc_hw *hw = mei_dev_to_vsc_hw(mei_dev);
- 	int ret;
- 
--	ret = mei_restart(mei_dev);
-+	ret = vsc_tp_request_irq(hw->tp);
- 	if (ret)
- 		return ret;
- 
-+	ret = mei_restart(mei_dev);
-+	if (ret)
-+		goto err_free;
-+
- 	/* start timer if stopped in suspend */
- 	schedule_delayed_work(&mei_dev->timer_work, HZ);
- 
- 	return 0;
-+
-+err_free:
-+	vsc_tp_free_irq(hw->tp);
-+
-+	return ret;
- }
- 
- static DEFINE_SIMPLE_DEV_PM_OPS(mei_vsc_pm_ops, mei_vsc_suspend, mei_vsc_resume);
-diff --git a/drivers/misc/mei/vsc-tp.c b/drivers/misc/mei/vsc-tp.c
-index 968a92a7425d..e6a98dba8a73 100644
---- a/drivers/misc/mei/vsc-tp.c
-+++ b/drivers/misc/mei/vsc-tp.c
-@@ -94,6 +94,27 @@ static const struct acpi_gpio_mapping vsc_tp_acpi_gpios[] = {
- 	{}
- };
- 
-+static irqreturn_t vsc_tp_isr(int irq, void *data)
-+{
-+	struct vsc_tp *tp = data;
-+
-+	atomic_inc(&tp->assert_cnt);
-+
-+	wake_up(&tp->xfer_wait);
-+
-+	return IRQ_WAKE_THREAD;
-+}
-+
-+static irqreturn_t vsc_tp_thread_isr(int irq, void *data)
-+{
-+	struct vsc_tp *tp = data;
-+
-+	if (tp->event_notify)
-+		tp->event_notify(tp->event_notify_context);
-+
-+	return IRQ_HANDLED;
-+}
-+
- /* wakeup firmware and wait for response */
- static int vsc_tp_wakeup_request(struct vsc_tp *tp)
- {
-@@ -383,6 +404,37 @@ int vsc_tp_register_event_cb(struct vsc_tp *tp, vsc_tp_event_cb_t event_cb,
- }
- EXPORT_SYMBOL_NS_GPL(vsc_tp_register_event_cb, VSC_TP);
- 
-+/**
-+ * vsc_tp_request_irq - request irq for vsc_tp device
-+ * @tp: vsc_tp device handle
-+ */
-+int vsc_tp_request_irq(struct vsc_tp *tp)
-+{
-+	struct spi_device *spi = tp->spi;
-+	struct device *dev = &spi->dev;
-+	int ret;
-+
-+	irq_set_status_flags(spi->irq, IRQ_DISABLE_UNLAZY);
-+	ret = request_threaded_irq(spi->irq, vsc_tp_isr, vsc_tp_thread_isr,
-+				   IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+				   dev_name(dev), tp);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_NS_GPL(vsc_tp_request_irq, VSC_TP);
-+
-+/**
-+ * vsc_tp_free_irq - free irq for vsc_tp device
-+ * @tp: vsc_tp device handle
-+ */
-+void vsc_tp_free_irq(struct vsc_tp *tp)
-+{
-+	free_irq(tp->spi->irq, tp);
-+}
-+EXPORT_SYMBOL_NS_GPL(vsc_tp_free_irq, VSC_TP);
-+
- /**
-  * vsc_tp_intr_synchronize - synchronize vsc_tp interrupt
-  * @tp: vsc_tp device handle
-@@ -413,27 +465,6 @@ void vsc_tp_intr_disable(struct vsc_tp *tp)
- }
- EXPORT_SYMBOL_NS_GPL(vsc_tp_intr_disable, VSC_TP);
- 
--static irqreturn_t vsc_tp_isr(int irq, void *data)
--{
--	struct vsc_tp *tp = data;
--
--	atomic_inc(&tp->assert_cnt);
--
--	wake_up(&tp->xfer_wait);
--
--	return IRQ_WAKE_THREAD;
--}
--
--static irqreturn_t vsc_tp_thread_isr(int irq, void *data)
--{
--	struct vsc_tp *tp = data;
--
--	if (tp->event_notify)
--		tp->event_notify(tp->event_notify_context);
--
--	return IRQ_HANDLED;
--}
--
- static int vsc_tp_match_any(struct acpi_device *adev, void *data)
- {
- 	struct acpi_device **__adev = data;
-@@ -490,10 +521,9 @@ static int vsc_tp_probe(struct spi_device *spi)
- 	tp->spi = spi;
- 
- 	irq_set_status_flags(spi->irq, IRQ_DISABLE_UNLAZY);
--	ret = devm_request_threaded_irq(dev, spi->irq, vsc_tp_isr,
--					vsc_tp_thread_isr,
--					IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
--					dev_name(dev), tp);
-+	ret = request_threaded_irq(spi->irq, vsc_tp_isr, vsc_tp_thread_isr,
-+				   IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
-+				   dev_name(dev), tp);
- 	if (ret)
- 		return ret;
- 
-@@ -522,6 +552,8 @@ static int vsc_tp_probe(struct spi_device *spi)
- err_destroy_lock:
- 	mutex_destroy(&tp->mutex);
- 
-+	free_irq(spi->irq, tp);
-+
- 	return ret;
- }
- 
-@@ -532,6 +564,8 @@ static void vsc_tp_remove(struct spi_device *spi)
- 	platform_device_unregister(tp->pdev);
- 
- 	mutex_destroy(&tp->mutex);
-+
-+	free_irq(spi->irq, tp);
- }
- 
- static const struct acpi_device_id vsc_tp_acpi_ids[] = {
-diff --git a/drivers/misc/mei/vsc-tp.h b/drivers/misc/mei/vsc-tp.h
-index f9513ddc3e40..14ca195cbddc 100644
---- a/drivers/misc/mei/vsc-tp.h
-+++ b/drivers/misc/mei/vsc-tp.h
-@@ -37,6 +37,9 @@ int vsc_tp_xfer(struct vsc_tp *tp, u8 cmd, const void *obuf, size_t olen,
- int vsc_tp_register_event_cb(struct vsc_tp *tp, vsc_tp_event_cb_t event_cb,
- 			     void *context);
- 
-+int vsc_tp_request_irq(struct vsc_tp *tp);
-+void vsc_tp_free_irq(struct vsc_tp *tp);
-+
- void vsc_tp_intr_enable(struct vsc_tp *tp);
- void vsc_tp_intr_disable(struct vsc_tp *tp);
- void vsc_tp_intr_synchronize(struct vsc_tp *tp);
--- 
-2.34.1
+Anyway, I will send out a v2 with this fixed but wait for potentially
+more feedback on v1.
 
+--
+Thanks,
+
+Rahul Rameshbabu
 
