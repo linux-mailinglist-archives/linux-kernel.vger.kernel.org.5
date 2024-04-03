@@ -1,138 +1,174 @@
-Return-Path: <linux-kernel+bounces-128972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-128973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DED2D89626F
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:20:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80CCB896275
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 04:21:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62C57B2668A
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:20:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 893981C23A20
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 02:21:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1E4F1BDCF;
-	Wed,  3 Apr 2024 02:18:58 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 259C218659;
+	Wed,  3 Apr 2024 02:21:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="NE1z1d65"
+Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A96259C
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 02:18:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8120817997
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 02:21:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712110738; cv=none; b=sKtsZ46eiJNxnVM0T6lRvfX9ZXmGyfDTo8NiqVzkYoeqrazUAEt61mC4+dEw+/Np++DuDz75Sj2tgiDgLdI1tWYs5E38CdMPYgB14Cg1UkjibEo6/ZpsVfxjG7qRTLKsDpPojdSZT1wHohkshzTDf1+lLlv2xDH/aCP2gRGYqzc=
+	t=1712110876; cv=none; b=S4/urmUGKMKWlV8SgPua2EaL7GwwTRs970M2XmRGsR2vV0xgKu9uxAZCphhhKYWpM8y6fa8bEbfCjkwhGZDNvjDhWGdow1bjCWtzDxwU71YUPMnAHuHXSDEa59yVWKLxYQ0KwR3/DIMnjHb/h+s07HS9UZh2qAnXhb/nZKdzL08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712110738; c=relaxed/simple;
-	bh=ZtJ8MsCekNct6K4g9NJkRMimMGXvkYx0wXfrkVCFWB4=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=AdQKzDq9gMYbfdOtTmVivSxmsnt+sN+NgrhBq5D+9F5zw7ToAvQYaRyAcHzEUvjz6NjFKxyKEEFWpKSYBJE65ZvYtPkRdTax1AeE4IiH/atOEjAIfClIHRCl5FoxOPm02sGq2E1I7WMHHg4SfRf3w9BzK5Y3Lg8rzjB5Nxhdv/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4V8SzC0fgTz29lVs;
-	Wed,  3 Apr 2024 10:16:07 +0800 (CST)
-Received: from kwepemd500014.china.huawei.com (unknown [7.221.188.63])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7D72A18001A;
-	Wed,  3 Apr 2024 10:18:52 +0800 (CST)
-Received: from [10.67.146.137] (10.67.146.137) by
- kwepemd500014.china.huawei.com (7.221.188.63) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Wed, 3 Apr 2024 10:18:51 +0800
-Subject: Re: [PATCH] irqchip/gic-v3-its: Don't need VSYNC if VMAPP with {V,
- Alloc}=={0, x}
-To: Marc Zyngier <maz@kernel.org>
-CC: <tglx@linutronix.de>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <guoyang2@huawei.com>,
-	<wangwudi@hisilicon.com>
-References: <20240402114147.3788881-1-tangnianyao@huawei.com>
- <86jzlgt014.wl-maz@kernel.org>
- <8532b19b-361e-2234-92db-83f4d56bae19@huawei.com>
- <86il0zubh1.wl-maz@kernel.org>
-From: Tangnianyao <tangnianyao@huawei.com>
-Message-ID: <cc7a6d40-7fdc-196e-56bc-fe8a15ea29bb@huawei.com>
-Date: Wed, 3 Apr 2024 10:18:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.1
+	s=arc-20240116; t=1712110876; c=relaxed/simple;
+	bh=L1V2y2GXYltLjaiMkhGOV5y2Z7ue7LSWprWVpxmLNUk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=o71M13vJn5NvqQkWOfTWVE39oMNPkenL6h46bhNctM3ASku6ecp3k/DbSNFNN2045eKzTCkQICK7jRj4beXENHMKLXy4WAvwszrN9yWj3KiPWq2H6DIRMNaQpXUrhfwgKdd6wTNCMRloXdUqN1Jx0aBOqSYrPOSrNUb4Qz6k9lU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=NE1z1d65; arc=none smtp.client-ip=209.85.128.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6152088aa81so15414247b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 02 Apr 2024 19:21:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1712110873; x=1712715673; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=g330QbZKpmXoovT0mI5FxZrknOF9KuBu/XS6jFcDi0E=;
+        b=NE1z1d65GZjWLzAWpw9GLR57HhKUbNQaIqE9BmN9PpDH41sXw4iLKTjwQ3+6U2TH0X
+         twhVVFEa8GeXhSykc6Ht8Qeq9KKbADBHIvgmnwlKTTONLloCu54C25MFlNQPM4SRm4k8
+         6zfhREgTelHcZi2j0yEbOxsRAZcBYfeKAhYvXYIaexh+kHepIxp9Nzr32N07BgfvVD0F
+         0gMUV7l9606UUw0Rmyq/xb1/tpNaiA0A8SfwlIpPPIZaYiKoyvq6oeh7Rim3cByBEZEv
+         Y3r0mqo+mou2DACaO83ZKg/ATPsbzVHFxkY/uNKoKFXcdqoAo3sJYvk7h0XsAtXIItvW
+         GkXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712110873; x=1712715673;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=g330QbZKpmXoovT0mI5FxZrknOF9KuBu/XS6jFcDi0E=;
+        b=Vd9/bfrubB7BZTknqKSVkvg1er/c5ZqPttR5K9E+/t3GhQ+jZeNjIO2cCvBkYabu4+
+         42cIWcOPh4CzQdCEBxAd09j7xvhsfbdO+sarjvW/kb2VzpkcxA8aqRjPlYFjYFpxrJiC
+         BK5PdRSjNYKALIsheFrLiCDGLp72KcjT8lHuueYgftmrgnPiQchNybOzkbL8KSIu3rMv
+         6Ik1qQU5v7fDOZJyFYpxXnHD/Z+Z1eCVh5c6dwk0K7yx6NylaqvUAioNM3sdwacD3EJn
+         VjkzNBdEy6KCMqBrlsRx4eQFT3wVwyfTBnw58eMRDD5qm3s/XiOD99/HIPRO0gWB77F2
+         s5Lw==
+X-Forwarded-Encrypted: i=1; AJvYcCV+pToLE+RAfhKBzEbAmy0MlmCmqv5U1eEIKDeK1rawj09sqIXyXFTD4aqBUD47DSdThaWAHCMSgZV3NL4JK+h0t4kNINjCnqsZxUzG
+X-Gm-Message-State: AOJu0Yyt4A8mHdKnClLTMf76xzSQDdVwrGX2D5IhOfpE8UfGif0KQyM5
+	hFRS2xbKkkG5SWOCiMuHnIaNAa7hDkAcRb9nB7Sc3t6WN3gPCsbYRWRC//RQrTPeE00pZajL+17
+	4SVXUkSFBqlQDkhViB7TWwEQpRant081EuRMFfwDZw0WtfVo=
+X-Google-Smtp-Source: AGHT+IFMAaM/T+rULGSdsw6XpiNNlLErpHDat07KwGjIkb/LEfK/zW/nRiktUc706dGm/V+2QhXWLe/mDCZv5OD0GAQ=
+X-Received: by 2002:a81:6d09:0:b0:615:2603:7efd with SMTP id
+ i9-20020a816d09000000b0061526037efdmr3631139ywc.8.1712110873474; Tue, 02 Apr
+ 2024 19:21:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <86il0zubh1.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd500014.china.huawei.com (7.221.188.63)
+References: <20240402141145.2685631-1-roberto.sassu@huaweicloud.com>
+ <CAHk-=wgepVMJCYj9s7J50_Tpb5BWq9buBoF0J5HAa1xjet6B8A@mail.gmail.com>
+ <CAHk-=wjjx3oZ55Uyaw9N_kboHdiScLkXAu05CmPF_p_UhQ-tbw@mail.gmail.com>
+ <20240402210035.GI538574@ZenIV> <CAHC9VhSWiQQ3shgczkNr+xYX6G5PX+LgeP3bsMepnM_cp4Gd4g@mail.gmail.com>
+ <20240402224230.GJ538574@ZenIV>
+In-Reply-To: <20240402224230.GJ538574@ZenIV>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 2 Apr 2024 22:21:02 -0400
+Message-ID: <CAHC9VhQH6Mxm06NrYacrMC5pUogv6f8jXeqZFYr4r4izot1pHA@mail.gmail.com>
+Subject: Re: [GIT PULL] security changes for v6.9-rc3
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
+	Roberto Sassu <roberto.sassu@huaweicloud.com>, linux-integrity@vger.kernel.org, 
+	linux-security-module@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-cifs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 4/2/2024 21:43, Marc Zyngier wrote:
-> On Tue, 02 Apr 2024 14:32:40 +0100,
-> Tangnianyao <tangnianyao@huawei.com> wrote:
->>
->>
->> On 4/2/2024 20:35, Marc Zyngier wrote:
->>> On Tue, 02 Apr 2024 12:41:47 +0100,
->>> t00849498 <tangnianyao@huawei.com> wrote:
->>>> From GIC spec, a VMAPP with {V, Alloc}=={0, x} is self-synchronizing,
->>> It'd be nice to quote the part of the spec (5.3.19).
->> yes, that's quote from GIC spec.
->>>> This means the ITS command queue does not show the command as
->>>> consumed until all of its effects are completed. A VSYNC with unmapped
->>>> vpeid is not needed.
->>>>
->>>> Signed-off-by: t00849498 <tangnianyao@huawei.com>
->>> Previous contributions with the same email address had the name
->>> "Nianyao Tang" associated with it. Was it wrong in the past? Or is the
->>> above wrong?
->> Sorry, the above name is wrong, should be "Nianyao Tang".
->>>> ---
->>>>  drivers/irqchip/irq-gic-v3-its.c | 4 ++++
->>>>  1 file changed, 4 insertions(+)
->>>>
->>>> diff --git a/drivers/irqchip/irq-gic-v3-its.c b/drivers/irqchip/irq-gic-v3-its.c
->>>> index fca888b36680..a0ca5dcbb245 100644
->>>> --- a/drivers/irqchip/irq-gic-v3-its.c
->>>> +++ b/drivers/irqchip/irq-gic-v3-its.c
->>>> @@ -789,6 +789,7 @@ static struct its_vpe *its_build_vmapp_cmd(struct its_node *its,
->>>>  	unsigned long vpt_addr, vconf_addr;
->>>>  	u64 target;
->>>>  	bool alloc;
->>>> +	bool unmap_v4_1 = !desc->its_vmapp_cmd.valid && is_v4_1(its);
->>>>
->>>>  	its_encode_cmd(cmd, GITS_CMD_VMAPP);
->>>>  	its_encode_vpeid(cmd, desc->its_vmapp_cmd.vpe->vpe_id);
->>>> @@ -832,6 +833,9 @@ static struct its_vpe *its_build_vmapp_cmd(struct its_node *its,
->>>>  out:
->>>>  	its_fixup_cmd(cmd);
->>>>  
->>>> +	if (unmap_v4_1)
->>>> +		return NULL;
->>>> +
->>>>  	return valid_vpe(its, desc->its_vmapp_cmd.vpe);
->>>>  }
->>>>  
->>> This is a bit ugly. We already have a whole block dedicated to
->>> handling VMAPP with V=0 and GICv4.1, and it'd be more readable to keep
->>> all that code together. Something like the untested patch below.
->> Thank you for quick fix, it would be great to remove this VSYNC. ITS handling VSYNC unmap
->> vpeid may waste some time, trigger exception and needed to be
->> handled.
-> Do you actually see an exception being delivered from this?
+On Tue, Apr 2, 2024 at 6:42=E2=80=AFPM Al Viro <viro@zeniv.linux.org.uk> wr=
+ote:
+> On Tue, Apr 02, 2024 at 05:36:30PM -0400, Paul Moore wrote:
 >
-> In any case, feel free to respin the patch after having tested this
-> diff, with the commit message fixed and a Fixes: tag attached to it.
-
-In our developing implemenation, ITS would report RAS when doing vsync
-and reaching an invalid vpe table entry. It is reasonable to report RAS, right?
-
-It just reports, and kernel can still run normally regardless of this RAS message.
-
-> Thanks,
+> > >         1) location of that hook is wrong.  It's really "how do we ca=
+tch
+> > > file creation that does not come through open() - yes, you can use
+> > > mknod(2) for that".  It should've been after the call of vfs_create()=
+,
+> > > not the entire switch.  LSM folks have a disturbing fondness of inser=
+ting
+> > > hooks in various places, but IMO this one has no business being where
+> > > they'd placed it.
+> >
+> > I know it's everyone's favorite hobby to bash the LSM and LSM devs,
+> > but it's important to note that we don't add hooks without working
+> > with the associated subsystem devs to get approval.  In the cases
+> > where we don't get an explicit ACK, there is an on-list approval, or
+> > several ignored on-list attempts over weeks/months/years.  We want to
+> > be good neighbors.
+> >
+> > Roberto's original patch which converted from the IMA/EVM hook to the
+> > LSM hook was ACK'd by the VFS folks.
+> >
+> > Regardless, Roberto if it isn't obvious by now, just move the hook
+> > back to where it was prior to v6.9-rc1.
 >
-> 	M.
+> The root cause is in the too vague documentation - it's very easy to
+> misread as "->mknod() must call d_instantiate()", so the authors of
+> that patchset and reviewers of the same had missed the subtlety
+> involved.  No arguments about that.
 >
+> Unkind comments about the LSM folks' tendency to shove hooks in
+> places where they make no sense had been brought by many things,
+> the most recent instance being this:
+>         However, I thought, since we were promoting it as an LSM hook,
+>         we should be as generic possible, and support more usages than
+>         what was needed for IMA.
+> (https://lore.kernel.org/all/3441a4a1140944f5b418b70f557bca72@huawei.com/=
+)
+>
+> I'm not blaming Roberto - that really seems to be the general attitude
+> around LSM;  I've seen a _lot_ of "it doesn't matter if it makes any sens=
+e,
+> somebody might figure out some use for the data we have at that point in
+> control flow, eventually if not now" kind of responses over the years.
+> IME asking what this or that hook is for and what it expects from the obj=
+ects
+> passed to it gets treated as invalid question.
 
+It's rather common for subsystems to push back on the number LSM
+hooks, which ends up resulting in patterns where LSM hooks are placed
+in as wide a scope as possible both to satisfy the requirements of the
+individual subsystems as well as the LSM's requirements on coverage.
+Clearly documenting hooks, their inputs, return values, constraints,
+etc. is important and we need to have those discussions as part of the
+hook.  This is a big part of why we CC the subsystems when adding new
+hooks and why I make sure we get an ACK or some other approval for a
+subsystem maintainer before we merge a new hook.  Is the system
+perfect, no, clearly not, but I don't believe it is for a lack of
+trying or any ill intent on the part of the LSM devs.  We recently
+restored the LSM hook comment blocks in security/security.c (long
+story), I would gladly welcome any comments/edits/suggestions you, or
+anyone else may have, about the docs there - I will be the first to
+admit those docs have rotted quite a bit (once again, long story).  If
+you have corrections, notes, or constraints that should be added
+please let me know and/or send patches.  Similarly, if you're aware of
+any hooks which are ill advised and/or poorly placed, let us know so
+we can work together to fix things.
+
+I'm serious Al.  These aren't just words in an email.  I realize you
+don't have a lot of free cycles, but if you do have feedback on any of
+those things above, I'm listening.
+
+I *really* want to see better collaboration between various subsystems
+and the LSMs; that's part of why I get annoyed with LSM bashing,
+leaving the LSM devs out of security/LSM related threads, etc. it only
+helps keep the divide up between the groups which is bad for all of
+us.
+
+--=20
+paul-moore.com
 
