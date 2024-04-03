@@ -1,62 +1,59 @@
-Return-Path: <linux-kernel+bounces-129277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 872EA896826
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:15:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3459F896829
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 10:16:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 260BC1F2127B
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:15:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E296E28A6DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 08:16:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2994139CEF;
-	Wed,  3 Apr 2024 08:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C9F8286B;
+	Wed,  3 Apr 2024 08:07:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cvSPhldb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iIwfgNho"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDCE3139569
-	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 08:07:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D314F81207;
+	Wed,  3 Apr 2024 08:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712131663; cv=none; b=KPa0x/lrmY/IdWhwpr9IvHaVUwKhLr/PtNR03AKTCqaIh1R8CsKv1+jG0SVio4jz2Gtzb6y8h7TI/lGYElLKX1BUYNyqnOS9QtWgsvvpm6Cxm10DWo11beUzSOKGBFTbY0M2ypugvy7kwFYlesfP8RdnEQz1Z8iq5LqLqLoQvVQ=
+	t=1712131675; cv=none; b=ZglCYLtslRlE+2Zg203LJuq7kPaXF7cxxmUdtb3nbsxZWLk8PrwkalJNqlxYktQUKID3fKmKahDZdSLFHMajysd6QyEfFFE07ZDKC1+iLIdwMajJQ3x0VyfIpSvEtRJmfyO23oDMS40CA0T2+WCPn8br6qE5K4xsMrsO0C4/3TA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712131663; c=relaxed/simple;
-	bh=DfgrdIQHoOxH+2TugFyR/+ff9D+Pn9X95ms+e4KOlOo=;
+	s=arc-20240116; t=1712131675; c=relaxed/simple;
+	bh=i2kwREvJagmflXYpUvDxkKnpylOun/MjosG4Ff0VeyU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nV9D0liGRjQKRJApddDNRY9ccYROk5iShXMmUcFqQddbvBMBbtCY/uCu5BSD66zsrJjKIGfLFKJl2/W0OUDo4+yPyhvnixRQ16lD2AFS+VBTlwQXM1Q+BR4laQ3IbSwLr5utiA3Zdu97hCYMX2illWpnLlDvBzlgO4rAOj+dOLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cvSPhldb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 951BCC43394;
-	Wed,  3 Apr 2024 08:07:40 +0000 (UTC)
+	 MIME-Version; b=dsKjkbm8W2L8ag+vIIFvIMZAOpjJxruTd6LLy0ZWn8tjXFTQ0JHv1oQp51XLNWWobrzQPKA5V9sjeKOTyJvWr/PaPwT29GMCvU5j4nKf69gWIEO4kPJpYWE0PbR0g4MzL/XEGbrmJvYSEzZKrLhC9PhgijrBukFizJ0QC539H7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iIwfgNho; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C107C43330;
+	Wed,  3 Apr 2024 08:07:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712131663;
-	bh=DfgrdIQHoOxH+2TugFyR/+ff9D+Pn9X95ms+e4KOlOo=;
+	s=k20201202; t=1712131673;
+	bh=i2kwREvJagmflXYpUvDxkKnpylOun/MjosG4Ff0VeyU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cvSPhldbzQ28ytw8g7KXAHbWMo76SFb4yERsC/I1lFWdR1BNpTRt8Tq6F39wtGTGF
-	 sGx5JswGoJMQmUaFaiUv3ObDX1+KLIKtUDSD3YQ72PQEuNXEDWpAXRnAPek4RE3gFk
-	 c1GbLt9ef7ZK8kkt7hLYPklbVqmnZbyc27QgskspyHof17Z/W9JpBs464et44/aaKI
-	 jDA6i2Zg6aIEW7xL0vdTPbiBFIlMHlYCnzjKoEaS1MmycqX7BDD8ZAC9/Ntfn9vXMR
-	 8xAVyO7U9KINKcEGrzL/jMwW5DrMaV/MoW8gTP3iP1MNACqRSR51F83VTRy3Qk6Hwn
-	 rcI3LyP40at0Q==
+	b=iIwfgNhoK4uO99gGZSx/4AtuVr5J0+ILk77OBxquuSiIuRfxua0kwS5ZHLif5eNFK
+	 Xiwlt9yeTpBRhXGlXbXwwHy3FGxNmF/kbPC6bpAQPsWi5aLQEkG8jAiciY3TSvcEds
+	 2x7mp557Sf6hrfOqNsybrYTk55PdyuFDHv74h9gxE7BH5qNt83P2kSCn6r+/pfGQwu
+	 Qz/sLLA3y28X6bUTadkVRMd7GFVGelJrLkmJWcf3N8rAqOfz0Vb+cTIotRUwSh69Rk
+	 G+bpOo4zdRzXll2Q7I3jBh8x0oqTjEqUM9/PS9zuRJn01ez5Rg0yvl6X2szE/sSueT
+	 jJPzh+CAjCubw==
 From: Arnd Bergmann <arnd@kernel.org>
 To: linux-kernel@vger.kernel.org,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Alexander Graf <agraf@suse.de>,
-	Stuart Yoder <stuart.yoder@freescale.com>,
-	Scott Wood <scottwood@freescale.com>
+	Kees Cook <keescook@chromium.org>,
+	Andrew Morton <akpm@linux-foundation.org>
 Cc: Arnd Bergmann <arnd@arndb.de>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Rob Herring <robh@kernel.org>,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 01/34] powerpc/fsl-soc: hide unused const variable
-Date: Wed,  3 Apr 2024 10:06:19 +0200
-Message-Id: <20240403080702.3509288-2-arnd@kernel.org>
+	Marco Elver <elver@google.com>,
+	Andrey Konovalov <andreyknvl@gmail.com>,
+	Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+	Justin Stitt <justinstitt@google.com>,
+	kasan-dev@googlegroups.com,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH 02/34] ubsan: fix unused variable warning in test module
+Date: Wed,  3 Apr 2024 10:06:20 +0200
+Message-Id: <20240403080702.3509288-3-arnd@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240403080702.3509288-1-arnd@kernel.org>
 References: <20240403080702.3509288-1-arnd@kernel.org>
@@ -70,38 +67,31 @@ Content-Transfer-Encoding: 8bit
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-vmpic_msi_feature is only used conditionally, which triggers a rare
--Werror=unused-const-variable= warning with gcc:
+This is one of the drivers with an unused variable that is marked 'const'.
+Adding a __used annotation here avoids the warning and lets us enable
+the option by default:
 
-arch/powerpc/sysdev/fsl_msi.c:567:37: error: 'vmpic_msi_feature' defined but not used [-Werror=unused-const-variable=]
-  567 | static const struct fsl_msi_feature vmpic_msi_feature =
+lib/test_ubsan.c:137:28: error: unused variable 'skip_ubsan_array' [-Werror,-Wunused-const-variable]
 
-Hide this one in the same #ifdef as the reference so we can turn on
-the warning by default.
-
-Fixes: 305bcf26128e ("powerpc/fsl-soc: use CONFIG_EPAPR_PARAVIRT for hcalls")
+Fixes: 4a26f49b7b3d ("ubsan: expand tests and reporting")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/powerpc/sysdev/fsl_msi.c | 2 ++
- 1 file changed, 2 insertions(+)
+ lib/test_ubsan.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/sysdev/fsl_msi.c b/arch/powerpc/sysdev/fsl_msi.c
-index 8e6c84df4ca1..e205135ae1fe 100644
---- a/arch/powerpc/sysdev/fsl_msi.c
-+++ b/arch/powerpc/sysdev/fsl_msi.c
-@@ -564,10 +564,12 @@ static const struct fsl_msi_feature ipic_msi_feature = {
- 	.msiir_offset = 0x38,
+diff --git a/lib/test_ubsan.c b/lib/test_ubsan.c
+index 276c12140ee2..c288df9372ed 100644
+--- a/lib/test_ubsan.c
++++ b/lib/test_ubsan.c
+@@ -134,7 +134,7 @@ static const test_ubsan_fp test_ubsan_array[] = {
  };
  
-+#ifdef CONFIG_EPAPR_PARAVIRT
- static const struct fsl_msi_feature vmpic_msi_feature = {
- 	.fsl_pic_ip = FSL_PIC_IP_VMPIC,
- 	.msiir_offset = 0,
+ /* Excluded because they Oops the module. */
+-static const test_ubsan_fp skip_ubsan_array[] = {
++static __used const test_ubsan_fp skip_ubsan_array[] = {
+ 	test_ubsan_divrem_overflow,
  };
-+#endif
  
- static const struct of_device_id fsl_of_msi_ids[] = {
- 	{
 -- 
 2.39.2
 
