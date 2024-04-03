@@ -1,323 +1,205 @@
-Return-Path: <linux-kernel+bounces-129450-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129451-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A57B896AFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:47:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B82E896B00
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:48:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D9621C21320
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:47:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 887111F23A7D
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4F61350CF;
-	Wed,  3 Apr 2024 09:47:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA004135A5F;
+	Wed,  3 Apr 2024 09:47:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Bav0/G3k";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xyor9/Ks"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="1q8H9D3R"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E25933D1;
-	Wed,  3 Apr 2024 09:47:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3EC554725
+	for <linux-kernel@vger.kernel.org>; Wed,  3 Apr 2024 09:47:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712137643; cv=none; b=tfvGVZ3VfZENT2gN/z240OZGcLENnY4F2uDswVE8jV7ZpFHrWqjBrDgIQLytOOtHs7w6UW4jGtifsc5/hu44zTVjFk4IHN+kvYoEtbZoYXYnUz3JdVPRgf1AfrescI6Ve9p+5QivSi+mJ6HG+jVfMjccgvExIU/mOmahxkTrajs=
+	t=1712137648; cv=none; b=hJVR6tGpKZH5wczKUG2CJmJQtRrHF51E5D+T8cpDfL3mBAeB8I4PM1R3jaiLOTpxJHudh/43qHPQiMT31zz9MFPOWvR1o6Q/qc3V95XW2s0m3GP8W87Ewijb9PaXKHKm2dZRM++PL48UtYOodxG6ady5l3hm0OnFbbx66NlENPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712137643; c=relaxed/simple;
-	bh=pDqoiqsRHJ7JGcDUca4xI9mlEuCsLk0xb1Z8A3YQEYw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Zo7jsFAC8RceeCkJiRdNbQO61YGAYDEzMWd4GzXXtQR+n/uPG3BTneSn1/O2Qq/nBt50BH7lRZsTYr5tZ+eIWGfS6F/5XdnCIrzSI9P8/ArQjr1Zb3QFkBTamBzb3gdh17pDH/CmoYZbeh1jwcIUvBI3IgnZVwB66L3rU9Py2Z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Bav0/G3k; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xyor9/Ks; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3A586351BA;
-	Wed,  3 Apr 2024 09:47:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712137638; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R8w61GgJbz5+JOMeAhM5vpil1Yf4r4g/cL3/i9cbljQ=;
-	b=Bav0/G3keqXN7b5n3QeppnQnjp3vzWvcMvkSWku/QurqirJEIUsA5hvHd4oZPCMuA4NIf0
-	6W/B0qxeT3KDx/OOzTJBJ3dGOX6i7OATNhaknr5KE5RLFe9rOGcW0zh4/sPScunMLhadSp
-	lAX2jb19lUzZ8Wg23rI0yYwbOOMTfSI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712137638;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R8w61GgJbz5+JOMeAhM5vpil1Yf4r4g/cL3/i9cbljQ=;
-	b=xyor9/KsesQgomjzx8Wm2sqgXX+debjCtSPV6cnHG2C9BZxKn3LQuv04y2OPckUxQGeb5S
-	Rn/Z56nCCqZ2HmBA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=none
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 2E3741331E;
-	Wed,  3 Apr 2024 09:47:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id Ab9BC6YlDWbwfgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 03 Apr 2024 09:47:18 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E889CA0814; Wed,  3 Apr 2024 11:47:17 +0200 (CEST)
-Date: Wed, 3 Apr 2024 11:47:17 +0200
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: brauner@kernel.org, gregkh@linuxfoundation.org, jack@suse.cz,
-	konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com, tj@kernel.org,
-	viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [nilfs?] KASAN: slab-out-of-bounds Read in wb_writeback
-Message-ID: <20240403094717.zex45tc2kpkfelny@quack3>
-References: <000000000000fd0f2a061506cc93@google.com>
- <00000000000003b8c406151e0fd1@google.com>
+	s=arc-20240116; t=1712137648; c=relaxed/simple;
+	bh=GRfag88koxETtlzSVNB41LuzJOoQ5upi+5Ad5sKRA7g=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ZQ9nv0+LCQ4Spvx3mXzrLMsX/mylQ5spGRMWO6dKSLzbDIFjwfb42OqET6Ke5bpQ8qFTin+RXH1b9xYNJpa5znk1cpIgJHxJtnqty+xIP9Bpe8url9nRxE/GTLEMedEqrnZ5ZOlqQUNCzqt3PjEgS8fZt4BmLR1aWE1hc72XUBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=1q8H9D3R; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-513e25afabaso6836249e87.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 02:47:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1712137644; x=1712742444; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=38SEkdXIN7qI57DkSuG7SyOZVG7UjoZz3fx+kBnmeVk=;
+        b=1q8H9D3RzPDHhPPW4oaXaZvc7oz9L7SA26PXsYzg9aJb7w0nJs77TmQf4sne7GpRyp
+         8f+2IRi+bET4fzqdjNgBWX0GF1cY/6++n4eXh1B+TUSb8r3SPA8Qy+7gCGRQmZVdXCqv
+         Gt/DNTfEPvAsm6LrazzTyVsYRu9vjYBJ+qOjCmby6PCkvP8p2TMILUxCQRBSF3Y6T7+y
+         DX4pHS3CEzoR2K+i6bATZ8xtk/z9I7RIZ3PApLsQX8+f3ouPxW9KVR0QvLNcWJ0hP+Ki
+         UikiKhmT1iwwy64yKoByLHAcGOTjYBPJqOq1B4bB1f3ca1VKViCSSEY2ROa4HoI5ehfD
+         HoHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712137644; x=1712742444;
+        h=content-transfer-encoding:mime-version:message-id:date:user-agent
+         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=38SEkdXIN7qI57DkSuG7SyOZVG7UjoZz3fx+kBnmeVk=;
+        b=NwaSwqJW6bV3BpoJvKbyhpPAW00dqAOwTXdVjp4LDhzo59vVurkB2V1NxSIKOM5tRr
+         KCwCbpXhbfpe9fSgjLmSmuySEl8Ow83C8cjDBi8rQD2KLrh7s+q2mxs7WTsWXQbrvRvk
+         OJjeF4AwiqV5LKDztnde61I4Vst6xg2506hFD/tNwzbjoLebrYBcHvj5/ud2hnxuEbOE
+         JVO97XJe4V3ziYwujatcwhcfe3RMhsgjgotKSviXsHedguMzaK8b9TVTKjEnwZ1nwmGU
+         QJPJDoBQE4jD01lh32xB0fon4v0Gvm6cUTnUMUbARKdjgh9blf+Jg4/lY1GXKFY35ir7
+         5LcA==
+X-Forwarded-Encrypted: i=1; AJvYcCXcgSgEnOLGwAQqYjTh/mMDh8dwGbn9oOW6cFU522fjpqwGuh0g9U0zzOwVb85gpQvdnEnBZVrRe+5ItB/CcVPMjpC9jb8GWliJwhFT
+X-Gm-Message-State: AOJu0YxRCKpHnR3PQAXg1Qm/RUdpaw26OfCXHCN7J7IoOEf3dsve7JSq
+	feIIINO8QzzbZGpDaniKgllUOtXZNPoZSgZdG1Uafkt/ZDIeyCjzdKrr9QYlU7E=
+X-Google-Smtp-Source: AGHT+IF/utXEsQEWDyjGiPzaJJWG210MR6/6WD7WsBEga3lRMhAkUP0TtaJbNUiFtWdGFRhMNlrSRg==
+X-Received: by 2002:a05:6512:480b:b0:516:26ca:c1fe with SMTP id eo11-20020a056512480b00b0051626cac1femr7053161lfb.8.1712137643891;
+        Wed, 03 Apr 2024 02:47:23 -0700 (PDT)
+Received: from localhost ([147.161.155.112])
+        by smtp.gmail.com with ESMTPSA id en19-20020a056000421300b0034365152f2asm4259837wrb.97.2024.04.03.02.47.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 02:47:23 -0700 (PDT)
+From: Andreas Hindborg <nmi@metaspace.dk>
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Jens Axboe <axboe@kernel.dk>,  Christoph Hellwig <hch@lst.de>,  Keith
+ Busch <kbusch@kernel.org>,  Damien Le Moal <Damien.LeMoal@wdc.com>,  Bart
+ Van Assche <bvanassche@acm.org>,  Hannes Reinecke <hare@suse.de>,
+  "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,  Andreas
+ Hindborg <a.hindborg@samsung.com>,  Niklas Cassel <Niklas.Cassel@wdc.com>,
+  Greg KH <gregkh@linuxfoundation.org>,  Matthew Wilcox
+ <willy@infradead.org>,  Miguel Ojeda <ojeda@kernel.org>,  Alex Gaynor
+ <alex.gaynor@gmail.com>,  Wedson Almeida Filho <wedsonaf@gmail.com>,
+  Boqun Feng <boqun.feng@gmail.com>,  Gary Guo <gary@garyguo.net>,
+  =?utf-8?Q?Bj=C3=B6rn?=
+ Roy Baron <bjorn3_gh@protonmail.com>,  Alice Ryhl <aliceryhl@google.com>,
+  Chaitanya Kulkarni <chaitanyak@nvidia.com>,  Luis Chamberlain
+ <mcgrof@kernel.org>,  Yexuan Yang <1182282462@bupt.edu.cn>,  Sergio
+ =?utf-8?Q?Gonz=C3=A1lez?= Collado <sergio.collado@gmail.com>,  Joel
+ Granados
+ <j.granados@samsung.com>,  "Pankaj Raghav (Samsung)"
+ <kernel@pankajraghav.com>,  Daniel Gomez <da.gomez@samsung.com>,  open
+ list <linux-kernel@vger.kernel.org>,  "rust-for-linux@vger.kernel.org"
+ <rust-for-linux@vger.kernel.org>,  "lsf-pc@lists.linux-foundation.org"
+ <lsf-pc@lists.linux-foundation.org>,  "gost.dev@samsung.com"
+ <gost.dev@samsung.com>
+Subject: Re: [RFC PATCH 4/5] rust: block: add rnull, Rust null_blk
+ implementation
+In-Reply-To: <1e8a2a1f-abbf-44ba-8344-705a9cbb1627@proton.me> (Benno Lossin's
+	message of "Tue, 02 Apr 2024 22:35:32 +0000")
+References: <20240313110515.70088-1-nmi@metaspace.dk>
+	<20240313110515.70088-5-nmi@metaspace.dk>
+	<QqpNcEOxhslSB7-34znxmQK_prPJfe2GT0ejWLesj-Dlse1ueCacbzsJOM0LK3YmgQsUWAR58ZFPPh1MUCliionIXrvLNsOqTS_Ee3bXEuQ=@proton.me>
+	<87msqc3p0e.fsf@metaspace.dk>
+	<1e8a2a1f-abbf-44ba-8344-705a9cbb1627@proton.me>
+User-Agent: mu4e 1.12.2; emacs 29.3
+Date: Wed, 03 Apr 2024 11:47:18 +0200
+Message-ID: <87edbmsrq1.fsf@metaspace.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000003b8c406151e0fd1@google.com>
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-0.31 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[kernel.org,linuxfoundation.org,suse.cz,gmail.com,vger.kernel.org,googlegroups.com,zeniv.linux.org.uk];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,storage.googleapis.com:url,syzkaller.appspot.com:url,appspotmail.com:email];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:98:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	R_DKIM_NA(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Level: 
-X-Spam-Score: -0.31
-X-Spamd-Bar: /
-X-Rspamd-Queue-Id: 3A586351BA
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue 02-04-24 07:38:25, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    c0b832517f62 Add linux-next specific files for 20240402
-> git tree:       linux-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=14af7dd9180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=7b219b86935220db6dd8
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1729f003180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17fa4341180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/0d36ec76edc7/disk-c0b83251.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/6f9bb4e37dd0/vmlinux-c0b83251.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/2349287b14b7/bzImage-c0b83251.xz
-> mounted in repro: https://storage.googleapis.com/syzbot-assets/9760c52a227c/mount_0.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+7b219b86935220db6dd8@syzkaller.appspotmail.com
-> 
-> ==================================================================
-> BUG: KASAN: slab-out-of-bounds in __lock_acquire+0x78/0x1fd0 kernel/locking/lockdep.c:5005
-> Read of size 8 at addr ffff888020485fa8 by task kworker/u8:2/35
+Benno Lossin <benno.lossin@proton.me> writes:
 
-Looks like the writeback cleanups are causing some use-after-free issues.
-The code KASAN is complaining about is:
+[...]
 
-		/*
-		 * Nothing written. Wait for some inode to
-		 * become available for writeback. Otherwise
-		 * we'll just busyloop.
-		 */
-		trace_writeback_wait(wb, work);
-		inode = wb_inode(wb->b_more_io.prev);
->>>>>		spin_lock(&inode->i_lock); <<<<<<
-		spin_unlock(&wb->list_lock);
-		/* This function drops i_lock... */
-		inode_sleep_on_writeback(inode);
+>
+>
+> So I did some digging and there are multiple things at play. I am going
+> to explain the second error first, since that one might be a problem
+> with `pin_init`:
+> - the `params` extension of the `module!` macro creates constants with
+>    snake case names.
+> - your `QueueData` struct has the same name as a field.
+> - `pin_init!` generates `let $field_name =3D ...` statements for each
+>    field you initialize
+>
+> Now when you define a constant in Rust, you are able to pattern-match
+> with that constant, eg:
+>
+>      const FOO: u8 =3D 0;
+>=20=20=20=20=20=20
+>      fn main() {
+>          match 10 {
+>              FOO =3D> println!("foo"),
+>              _ =3D> {}
+>          }
+>      }
+>
+> So when you do `let FOO =3D x;`, then it interprets `FOO` as the constant.
+> This is still true if the constant has a snake case name.
+> Since the expression in the `pin_init!` macro has type
+> `DropGuard<$field_type>`, we get the error "expected
+> `DropGuard<IRQMode>`, found `__rnull_mod_irq_mode`".
 
-in wb_writeback(). Now looking at the changes indeed the commit
-167d6693deb ("fs/writeback: bail out if there is no more inodes for IO and
-queued once") is buggy because it will result in trying to fetch 'inode'
-from empty b_more_io list and thus we'll corrupt memory. I think instead of
-modifying the condition:
+Thanks for the analysis!
 
-		if (list_empty(&wb->b_more_io)) {
+So in this expanded code:
 
-we should do:
+1   {
+2       unsafe { ::core::ptr::write(&raw mut ((*slot).irq_mode), irq_mode) =
+};
+3   }
+4   let irq_mode =3D unsafe {
+5       $crate::init::__internal::DropGuard::new(&raw mut ((*slot).irq_mode=
+))
+6   };
 
--		if (progress) {
-+		if (progress || !queued) {
-                        spin_unlock(&wb->list_lock);
-                        continue;
-                }
+the `irq_mode` on line 2 will refer to the correct thing, but the one on
+line 6 will be a pattern match against a constant? That is really
+surprising to me. Can we make the let binding in line 6 be `let
+irq_mode_pin_init` or something similar?
 
-Kemeng?
+>
+> Now to the first error, this is a problem with the parameter handling of
+> `module`. By the same argument above, your let binding in line 104:
+>
+>      let irq_mode =3D (*irq_mode.read()).try_into()?;
+>
+> Tries to pattern-match the `irq_mode` constant with the right
+> expression. Since you use the `try_into` function, it tries to search
+> for a `TryInto` implementation for the type of `irq_mode` which is
+> generated by the `module!` macro. The type is named
+> __rnull_mod_irq_mode.
+>
+>
+> Now what to do about this. For the second error (the one related to
+> `pin_init`), I could create a patch that fixes it by adding the suffix
+> `_guard` to those let bindings, preventing the issue. Not sure if we
+> need that though, since it will not get rid of the first issue.
 
-								Honza
+I think that is a good idea =F0=9F=91=8D
 
-> CPU: 0 PID: 35 Comm: kworker/u8:2 Not tainted 6.9.0-rc2-next-20240402-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-> Workqueue: writeback wb_workfn (flush-7:1)
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
->  print_address_description mm/kasan/report.c:377 [inline]
->  print_report+0x169/0x550 mm/kasan/report.c:488
->  kasan_report+0x143/0x180 mm/kasan/report.c:601
->  __lock_acquire+0x78/0x1fd0 kernel/locking/lockdep.c:5005
->  lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
->  __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
->  _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
->  spin_lock include/linux/spinlock.h:351 [inline]
->  wb_writeback+0x66f/0xd30 fs/fs-writeback.c:2160
->  wb_check_old_data_flush fs/fs-writeback.c:2233 [inline]
->  wb_do_writeback fs/fs-writeback.c:2286 [inline]
->  wb_workfn+0xba1/0x1090 fs/fs-writeback.c:2314
->  process_one_work kernel/workqueue.c:3218 [inline]
->  process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3299
->  worker_thread+0x86d/0xd70 kernel/workqueue.c:3380
->  kthread+0x2f0/0x390 kernel/kthread.c:388
->  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
-> 
-> Allocated by task 5052:
->  kasan_save_stack mm/kasan/common.c:47 [inline]
->  kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
->  poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
->  __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
->  kasan_kmalloc include/linux/kasan.h:211 [inline]
->  __do_kmalloc_node mm/slub.c:4048 [inline]
->  __kmalloc_noprof+0x200/0x410 mm/slub.c:4061
->  kmalloc_noprof include/linux/slab.h:664 [inline]
->  tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
->  tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
->  tomoyo_path_perm+0x2b7/0x740 security/tomoyo/file.c:822
->  security_inode_getattr+0xd8/0x130 security/security.c:2269
->  vfs_getattr+0x45/0x430 fs/stat.c:173
->  vfs_fstat fs/stat.c:198 [inline]
->  vfs_fstatat+0xd6/0x190 fs/stat.c:300
->  __do_sys_newfstatat fs/stat.c:468 [inline]
->  __se_sys_newfstatat fs/stat.c:462 [inline]
->  __x64_sys_newfstatat+0x125/0x1b0 fs/stat.c:462
->  do_syscall_64+0xfb/0x240
->  entry_SYSCALL_64_after_hwframe+0x72/0x7a
-> 
-> Freed by task 5052:
->  kasan_save_stack mm/kasan/common.c:47 [inline]
->  kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
->  kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:579
->  poison_slab_object+0xe0/0x150 mm/kasan/common.c:240
->  __kasan_slab_free+0x37/0x60 mm/kasan/common.c:256
->  kasan_slab_free include/linux/kasan.h:184 [inline]
->  slab_free_hook mm/slub.c:2180 [inline]
->  slab_free mm/slub.c:4363 [inline]
->  kfree+0x149/0x350 mm/slub.c:4484
->  tomoyo_realpath_from_path+0x5a9/0x5e0 security/tomoyo/realpath.c:286
->  tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
->  tomoyo_path_perm+0x2b7/0x740 security/tomoyo/file.c:822
->  security_inode_getattr+0xd8/0x130 security/security.c:2269
->  vfs_getattr+0x45/0x430 fs/stat.c:173
->  vfs_fstat fs/stat.c:198 [inline]
->  vfs_fstatat+0xd6/0x190 fs/stat.c:300
->  __do_sys_newfstatat fs/stat.c:468 [inline]
->  __se_sys_newfstatat fs/stat.c:462 [inline]
->  __x64_sys_newfstatat+0x125/0x1b0 fs/stat.c:462
->  do_syscall_64+0xfb/0x240
->  entry_SYSCALL_64_after_hwframe+0x72/0x7a
-> 
-> The buggy address belongs to the object at ffff888020484000
->  which belongs to the cache kmalloc-4k of size 4096
-> The buggy address is located 4008 bytes to the right of
->  allocated 4096-byte region [ffff888020484000, ffff888020485000)
-> 
-> The buggy address belongs to the physical page:
-> page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x20480
-> head: order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-> flags: 0xfff80000000040(head|node=0|zone=1|lastcpupid=0xfff)
-> page_type: 0xffffefff(slab)
-> raw: 00fff80000000040 ffff888015042140 dead000000000100 dead000000000122
-> raw: 0000000000000000 0000000000040004 00000001ffffefff 0000000000000000
-> head: 00fff80000000040 ffff888015042140 dead000000000100 dead000000000122
-> head: 0000000000000000 0000000000040004 00000001ffffefff 0000000000000000
-> head: 00fff80000000003 ffffea0000812001 ffffea0000812048 00000000ffffffff
-> head: 0000000800000000 0000000000000000 00000000ffffffff 0000000000000000
-> page dumped because: kasan: bad access detected
-> page_owner tracks the page as allocated
-> page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 1, tgid -957297381 (swapper/0), ts 1, free_ts 0
->  set_page_owner include/linux/page_owner.h:32 [inline]
->  post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1490
->  prep_new_page mm/page_alloc.c:1498 [inline]
->  get_page_from_freelist+0x2e7e/0x2f40 mm/page_alloc.c:3454
->  __alloc_pages_noprof+0x256/0x6c0 mm/page_alloc.c:4712
->  __alloc_pages_node_noprof include/linux/gfp.h:244 [inline]
->  alloc_pages_node_noprof include/linux/gfp.h:271 [inline]
->  alloc_slab_page+0x5f/0x120 mm/slub.c:2249
->  allocate_slab+0x5a/0x2e0 mm/slub.c:2412
->  new_slab mm/slub.c:2465 [inline]
->  ___slab_alloc+0xea8/0x1430 mm/slub.c:3599
->  __slab_alloc+0x58/0xa0 mm/slub.c:3684
->  __slab_alloc_node mm/slub.c:3737 [inline]
->  slab_alloc_node mm/slub.c:3915 [inline]
->  kmalloc_node_trace_noprof+0x20c/0x300 mm/slub.c:4087
->  kmalloc_node_noprof include/linux/slab.h:677 [inline]
->  bdi_alloc+0x4f/0x140 mm/backing-dev.c:894
->  __alloc_disk_node+0xb8/0x590 block/genhd.c:1347
->  __blk_mq_alloc_disk+0x17d/0x260 block/blk-mq.c:4166
->  loop_add+0x448/0xba0 drivers/block/loop.c:2032
->  loop_init+0x17a/0x230 drivers/block/loop.c:2275
->  do_one_initcall+0x248/0x880 init/main.c:1258
->  do_initcall_level+0x157/0x210 init/main.c:1320
->  do_initcalls+0x3f/0x80 init/main.c:1336
-> page_owner free stack trace missing
-> 
-> Memory state around the buggy address:
->  ffff888020485e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->  ffff888020485f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> >ffff888020485f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
->                                   ^
->  ffff888020486000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->  ffff888020486080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-> ==================================================================
-> 
-> 
-> ---
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>
+> For the first issue, I think there is no other way than to use a
+> different name for either the field or the constant. Since constants are
+> usually named using screaming snake case, I think it should be renamed.
+> I believe your reason for using a snake case name is that these names
+> are used directly as the names for the parameters when loading the
+> module and there the convention is to use snake case, right?
+> In that case I think we could expect people to write the screaming snake
+> case name in rust and have it automatically be lower-cased by the
+> `module!` macro when it creates the names that the parameters are shown
+> with.
+
+I was thinking about putting the parameters in a separate name space,
+but making them screaming snake case is also a good idea. So it would
+be `module_parameters::IRQ_MODE` to access the parameter with the name
+`irq_mode` exposed towards the user. Developers can always opt in to bringi=
+ng
+the symbols into scope with a `use`.
+
+Best regards,
+Andreas
 
