@@ -1,167 +1,300 @@
-Return-Path: <linux-kernel+bounces-129431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-129432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 069B0896AB2
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:33:39 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50132896ABD
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 11:34:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2663A1C25CAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:33:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 715961C22FAA
+	for <lists+linux-kernel@lfdr.de>; Wed,  3 Apr 2024 09:34:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EFC13248C;
-	Wed,  3 Apr 2024 09:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB11513666A;
+	Wed,  3 Apr 2024 09:31:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="eiJRGOy+"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PCjOu78d"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865431350EB;
-	Wed,  3 Apr 2024 09:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788B6134759;
+	Wed,  3 Apr 2024 09:31:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712136629; cv=none; b=rZIB3lVln9hMxdW1pX9IsGKEFxJLiuonQguo/SFN06qPEMYQWR6iz+MaLrRuQPntuWOyDMNsNNfR0BZmWbUrmAHxFQ5p4YNcbyY/a78KvHuzCG6T/he1n+lGjBOwoQ1OBDuqanLhqrSelC+s2CuFrgbPJNXW+PUoEsqhsXmULm0=
+	t=1712136663; cv=none; b=Ee7MS4a3z33xRjGuyL1xZfasgBLeY2o8aYLb0h+klFbcS2JxEDhF9kqSYOiv+KrubHO7FDWCsD8Wt+MWFxcExLpfjj37f5LAY/LgstNdIuufCJ4F+kfwTBG2zFArC2keMj6sNzc4xM1QdWTc3gK0YHOKAx4BdMGZOGegWFMW4OM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712136629; c=relaxed/simple;
-	bh=9v9/qRXgY1gDCX8J53AjFEj95UmJNbA67i2azxtGSYg=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FPd6zw3GH1YF/Ky7OaLh39cUNH7Zh/sP5KF6cdsVyMNMenmkG/gxAPhaWMOsut4WSfQg/8McFABtoZeJt7yEjo/6mpW8/wmIzmWzizRUDQ0oLv3qXCb+KS2xZnHUh/JxNwDmGX/tE+lWKIijFkqjbZ9ZszgM3HEQ3CGLCUcIjA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=eiJRGOy+; arc=none smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: caaf9332f19c11eeb8927bc1f75efef4-20240403
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=Wn/76pYQR540CZbFJPHpX8ZPYvd3JaV3IggNNQ6u4qw=;
-	b=eiJRGOy+/8Mz8jPvvzIxhYx2dZpUfwldR3fDlu+oumJoPi2yFxcmEr2i2/xC8IZBakAETPUzz6hQgW9GXlDPvOjZbxLbz90ggRFgrWIw9XSGh0iDpI3YLYwI5I+ko7MuhkhVgWVEuEbIDZccWGi+K7qcXIDDrODg/ncKijOcm0U=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:6d969045-7c73-4bf9-81d8-00744efc7bde,IP:0,U
-	RL:0,TC:0,Content:43,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:43
-X-CID-META: VersionHash:6f543d0,CLOUDID:50c94482-4f93-4875-95e7-8c66ea833d57,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:4,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: caaf9332f19c11eeb8927bc1f75efef4-20240403
-Received: from mtkmbs09n1.mediatek.inc [(172.21.101.35)] by mailgw01.mediatek.com
-	(envelope-from <yunfei.dong@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1435720581; Wed, 03 Apr 2024 17:30:21 +0800
-Received: from mtkmbs11n1.mediatek.inc (172.21.101.185) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Wed, 3 Apr 2024 17:30:20 +0800
-Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
- mtkmbs11n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Wed, 3 Apr 2024 17:30:19 +0800
-From: Yunfei Dong <yunfei.dong@mediatek.com>
-To: =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?=
-	<nfraprado@collabora.com>, Sebastian Fricke <sebastian.fricke@collabora.com>,
-	Nicolas Dufresne <nicolas.dufresne@collabora.com>, Hans Verkuil
-	<hverkuil-cisco@xs4all.nl>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>, Benjamin Gaignard
-	<benjamin.gaignard@collabora.com>, Nathan Hebert <nhebert@chromium.org>
-CC: Hsin-Yi Wang <hsinyi@chromium.org>, Fritz Koenig <frkoenig@chromium.org>,
-	Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>, Yunfei
- Dong <yunfei.dong@mediatek.com>, <linux-media@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>
-Subject: [PATCH] media: mediatek: vcodec: fix the error sizeimage for 10bit bitstream
-Date: Wed, 3 Apr 2024 17:30:18 +0800
-Message-ID: <20240403093018.13168-1-yunfei.dong@mediatek.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712136663; c=relaxed/simple;
+	bh=hdQyq38njeULYK9VdARbiJym46CETAEk7WigcOJGITQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KnH8sj3AWGU/P1ZkjJ3CS5RoLPyuVHFsemDLhXFpnR149l7sgKV4veWY92dhkQ7gd0ZXsIwH/xJf5MoJVBey3QzyGJ6i4GA34Yu/ihEiuf1MnBYpkMlPtaxjO+69Jqvkyq6uM6DCB+k4Xmq1gWM3efaDiOiBYTskzkf+4mZjrmE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PCjOu78d; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712136662; x=1743672662;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=hdQyq38njeULYK9VdARbiJym46CETAEk7WigcOJGITQ=;
+  b=PCjOu78dpbeK2v4+j7un//zzf72olDNQe4XY6y1MPAOLCXquqvvDkkdH
+   YIQ4TME0+UuSV/r42hAp+z7QXMM+JREXnm6DjsmLtV82Q87Ja/px0ErYH
+   AYYuPboeiTeU8fmUGgTbktl5Ya/lAKdNO6SekDck5qLLIQNURvDujJCLe
+   Sar2FBzvgl4TUi1maHC5kTfxCCWv5e3yEoaCmdnW1vLLdAseIsKjKbY96
+   rJg2BOTIsQb3DjJ5sIBx55WXiKLcGym9M8B26aGUwcPcaASj8F0XnU73o
+   v8m8yBh4zTf/qyn4h1eMFqWQqWT7HwYHKn959euQSlr7J9jE5kU4VrUd1
+   A==;
+X-CSE-ConnectionGUID: OJWbZ5bMT+6dX8xZHd9S8A==
+X-CSE-MsgGUID: f/nedbYdQMa/rZ6PnpO38A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="7218636"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="7218636"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 02:31:00 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11032"; a="915175962"
+X-IronPort-AV: E=Sophos;i="6.07,177,1708416000"; 
+   d="scan'208";a="915175962"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 02:30:49 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rrwxA-000000014hw-2roE;
+	Wed, 03 Apr 2024 12:30:44 +0300
+Date: Wed, 3 Apr 2024 12:30:44 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: linux-kernel@vger.kernel.org, Corey Minyard <minyard@acm.org>,
+	Peter Huewe <peterhuewe@gmx.de>,
+	Jarkko Sakkinen <jarkko@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>, Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	Peter Rosin <peda@axentia.se>,
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+	Iyappan Subramanian <iyappan@os.amperecomputing.com>,
+	Keyur Chudgar <keyur@os.amperecomputing.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Yisen Zhuang <yisen.zhuang@huawei.com>,
+	Salil Mehta <salil.mehta@huawei.com>,
+	Tony Lindgren <tony@atomide.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Xiang Chen <chenxiang66@hisilicon.com>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Russell King <linux@armlinux.org.uk>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Jacky Huang <ychuang3@nuvoton.com>,
+	Shan-Chun Hung <schung@nuvoton.com>, Arnd Bergmann <arnd@arndb.de>,
+	Jason Gunthorpe <jgg@ziepe.ca>, Tom Rix <trix@redhat.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Randy Dunlap <rdunlap@infradead.org>, Rob Herring <robh@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	openipmi-developer@lists.sourceforge.net,
+	linux-integrity@vger.kernel.org, dmaengine@vger.kernel.org,
+	linux-fpga@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-i2c@vger.kernel.org, netdev@vger.kernel.org,
+	linux-omap@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-staging@lists.linux.dev,
+	linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 33/34] drivers: remove incorrect of_match_ptr/ACPI_PTR
+ annotations
+Message-ID: <Zg0hxMZGlwfXV2RA@smile.fi.intel.com>
+References: <20240403080702.3509288-1-arnd@kernel.org>
+ <20240403080702.3509288-34-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-MTK: N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403080702.3509288-34-arnd@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The sizeimage of each plane are calculated the same way for 8bit and
-10bit bitstream. Need to enlarge the sizeimage with simeimage*5/4 for
-10bit bitstream when try and set fmt.
+On Wed, Apr 03, 2024 at 10:06:51AM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When building with CONFIG_OF and/or CONFIG_ACPI disabled but W=1 extra
+> warnings enabled, a lot of driver cause a warning about an unused
+> ID table:
+> 
+> drivers/char/tpm/tpm_ftpm_tee.c:356:34: error: unused variable 'of_ftpm_tee_ids' [-Werror,-Wunused-const-variable]
+> drivers/dma/img-mdc-dma.c:863:34: error: unused variable 'mdc_dma_of_match' [-Werror,-Wunused-const-variable]
+> drivers/fpga/versal-fpga.c:62:34: error: unused variable 'versal_fpga_of_match' [-Werror,-Wunused-const-variable]
+> drivers/i2c/muxes/i2c-mux-ltc4306.c:200:34: error: unused variable 'ltc4306_of_match' [-Werror,-Wunused-const-variable]
+> drivers/i2c/muxes/i2c-mux-reg.c:242:34: error: unused variable 'i2c_mux_reg_of_match' [-Werror,-Wunused-const-variable]
+> drivers/memory/pl353-smc.c:62:34: error: unused variable 'pl353_smc_supported_children' [-Werror,-Wunused-const-variable]
+> drivers/regulator/pbias-regulator.c:136:34: error: unused variable 'pbias_of_match' [-Werror,-Wunused-const-variable]
+> drivers/regulator/twl-regulator.c:552:34: error: unused variable 'twl_of_match' [-Werror,-Wunused-const-variable]
+> drivers/regulator/twl6030-regulator.c:645:34: error: unused variable 'twl_of_match' [-Werror,-Wunused-const-variable]
+> drivers/scsi/hisi_sas/hisi_sas_v2_hw.c:3635:36: error: unused variable 'sas_v2_acpi_match' [-Werror,-Wunused-const-variable]
+> drivers/staging/pi433/pi433_if.c:1359:34: error: unused variable 'pi433_dt_ids' [-Werror,-Wunused-const-variable]
+> drivers/tty/serial/amba-pl011.c:2945:34: error: unused variable 'sbsa_uart_of_match' [-Werror,-Wunused-const-variable]
+> 
+> The fix is always to just remove the of_match_ptr() and ACPI_PTR() wrappers
+> that remove the reference, rather than adding another #ifdef just for build
+> testing for a configuration that doesn't matter in practice.
 
-Fixes: 9d86be9bda6c ("media: mediatek: vcodec: Add driver to support 10bit")
-Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
----
- .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  | 47 ++++++++++++++-----
- 1 file changed, 34 insertions(+), 13 deletions(-)
+> I considered splitting up the large patch into per subsystem patches, but since
+> it's really just the same thing everywhere it feels better to do it all at once.
 
-diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-index 9107707de6c4..45209894f1fe 100644
---- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-+++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
-@@ -259,6 +259,7 @@ static int vidioc_try_fmt(struct mtk_vcodec_dec_ctx *ctx, struct v4l2_format *f,
- 		pix_fmt_mp->num_planes = 1;
- 		pix_fmt_mp->plane_fmt[0].bytesperline = 0;
- 	} else if (f->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
-+		unsigned int dram_y, dram_c, dram_y_10bit, dram_c_10bit;
- 		int tmp_w, tmp_h;
- 
- 		/*
-@@ -280,22 +281,42 @@ static int vidioc_try_fmt(struct mtk_vcodec_dec_ctx *ctx, struct v4l2_format *f,
- 		    (pix_fmt_mp->height + 64) <= frmsize->max_height)
- 			pix_fmt_mp->height += 64;
- 
--		mtk_v4l2_vdec_dbg(0, ctx,
--				  "before resize wxh=%dx%d, after resize wxh=%dx%d, sizeimage=%d",
--				  tmp_w, tmp_h, pix_fmt_mp->width, pix_fmt_mp->height,
--				  pix_fmt_mp->width * pix_fmt_mp->height);
-+		dram_y = pix_fmt_mp->width * pix_fmt_mp->height;
-+		dram_c = dram_y / 2;
-+
-+		dram_y_10bit = dram_y * 5 / 4;
-+		dram_c_10bit = dram_y_10bit / 2;
- 
- 		pix_fmt_mp->num_planes = fmt->num_planes;
--		pix_fmt_mp->plane_fmt[0].sizeimage =
--				pix_fmt_mp->width * pix_fmt_mp->height;
--		pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width;
--
--		if (pix_fmt_mp->num_planes == 2) {
--			pix_fmt_mp->plane_fmt[1].sizeimage =
--				(pix_fmt_mp->width * pix_fmt_mp->height) / 2;
--			pix_fmt_mp->plane_fmt[1].bytesperline =
--				pix_fmt_mp->width;
-+		if (pix_fmt_mp->num_planes == 1) {
-+			if (ctx->is_10bit_bitstream) {
-+				pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width * 5 / 4;
-+				pix_fmt_mp->plane_fmt[0].sizeimage = dram_y_10bit + dram_c_10bit;
-+			} else {
-+				pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width;
-+				pix_fmt_mp->plane_fmt[0].sizeimage = dram_y + dram_c;
-+			}
-+		} else {
-+			if (ctx->is_10bit_bitstream) {
-+				pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width * 5 / 4;
-+				pix_fmt_mp->plane_fmt[1].bytesperline = pix_fmt_mp->width * 5 / 4;
-+
-+				pix_fmt_mp->plane_fmt[0].sizeimage = dram_y_10bit;
-+				pix_fmt_mp->plane_fmt[1].sizeimage = dram_c_10bit;
-+			} else {
-+				pix_fmt_mp->plane_fmt[0].bytesperline = pix_fmt_mp->width;
-+				pix_fmt_mp->plane_fmt[1].bytesperline = pix_fmt_mp->width;
-+
-+				pix_fmt_mp->plane_fmt[0].sizeimage = dram_y;
-+				pix_fmt_mp->plane_fmt[1].sizeimage = dram_c;
-+			}
- 		}
-+
-+		mtk_v4l2_vdec_dbg(0, ctx,
-+				  "before resize:%dx%d, after resize:%dx%d, sizeimage=0x%x_0x%x",
-+				  tmp_w, tmp_h, pix_fmt_mp->width, pix_fmt_mp->height,
-+				  pix_fmt_mp->plane_fmt[0].sizeimage,
-+				  pix_fmt_mp->plane_fmt[1].sizeimage);
- 	}
- 
- 	pix_fmt_mp->flags = 0;
+Can we split to three groups:
+- Dropping ACPI_PTR()
+- Dropping of_match_ptr() (which I won't review in depth, for example)
+- Dropping both
+?
+
+..
+
+> --- a/drivers/char/ipmi/ipmb_dev_int.c
+> +++ b/drivers/char/ipmi/ipmb_dev_int.c
+> @@ -364,7 +364,7 @@ MODULE_DEVICE_TABLE(acpi, acpi_ipmb_id);
+>  static struct i2c_driver ipmb_driver = {
+>  	.driver = {
+>  		.name = "ipmb-dev",
+> -		.acpi_match_table = ACPI_PTR(acpi_ipmb_id),
+> +		.acpi_match_table = acpi_ipmb_id,
+>  	},
+>  	.probe = ipmb_probe,
+>  	.remove = ipmb_remove,
+
+acpi.h --> mod_devicetable.h.
+
+..
+
+> --- a/drivers/hid/hid-google-hammer.c
+> +++ b/drivers/hid/hid-google-hammer.c
+> @@ -275,21 +275,19 @@ static const struct acpi_device_id cbas_ec_acpi_ids[] = {
+>  };
+>  MODULE_DEVICE_TABLE(acpi, cbas_ec_acpi_ids);
+>  
+> -#ifdef CONFIG_OF
+>  static const struct of_device_id cbas_ec_of_match[] = {
+>  	{ .compatible = "google,cros-cbas" },
+>  	{ },
+>  };
+>  MODULE_DEVICE_TABLE(of, cbas_ec_of_match);
+> -#endif
+>  
+>  static struct platform_driver cbas_ec_driver = {
+>  	.probe = cbas_ec_probe,
+>  	.remove = cbas_ec_remove,
+>  	.driver = {
+>  		.name = "cbas_ec",
+> -		.acpi_match_table = ACPI_PTR(cbas_ec_acpi_ids),
+> -		.of_match_table = of_match_ptr(cbas_ec_of_match),
+> +		.acpi_match_table = cbas_ec_acpi_ids,
+> +		.of_match_table = cbas_ec_of_match,
+>  		.pm = &cbas_ec_pm_ops,
+>  	},
+>  };
+
+Ditto, and likely of.h can be also dropped.
+
+..
+
+> --- a/drivers/input/touchscreen/wdt87xx_i2c.c
+> +++ b/drivers/input/touchscreen/wdt87xx_i2c.c
+> @@ -1166,7 +1166,7 @@ static struct i2c_driver wdt87xx_driver = {
+>  		.name = WDT87XX_NAME,
+>  		.dev_groups = wdt87xx_groups,
+>  		.pm = pm_sleep_ptr(&wdt87xx_pm_ops),
+> -		.acpi_match_table = ACPI_PTR(wdt87xx_acpi_id),
+> +		.acpi_match_table = wdt87xx_acpi_id,
+>  	},
+>  };
+>  module_i2c_driver(wdt87xx_driver);
+
+Ditto.
+
+..
+
+> --- a/drivers/net/ethernet/apm/xgene-v2/main.c
+> +++ b/drivers/net/ethernet/apm/xgene-v2/main.c
+> @@ -731,7 +731,7 @@ MODULE_DEVICE_TABLE(acpi, xge_acpi_match);
+>  static struct platform_driver xge_driver = {
+>  	.driver = {
+>  		   .name = "xgene-enet-v2",
+> -		   .acpi_match_table = ACPI_PTR(xge_acpi_match),
+> +		   .acpi_match_table = xge_acpi_match,
+>  	},
+>  	.probe = xge_probe,
+>  	.remove_new = xge_remove,
+
+Ditto. And remove forward declaration of the variable as well.
+
+..
+
+> --- a/drivers/rtc/rtc-fsl-ftm-alarm.c
+> +++ b/drivers/rtc/rtc-fsl-ftm-alarm.c
+> @@ -320,7 +320,7 @@ static struct platform_driver ftm_rtc_driver = {
+>  	.driver		= {
+>  		.name	= "ftm-alarm",
+>  		.of_match_table = ftm_rtc_match,
+> -		.acpi_match_table = ACPI_PTR(ftm_imx_acpi_ids),
+> +		.acpi_match_table = ftm_imx_acpi_ids,
+>  	},
+>  };
+
+Ditto.
+
+..
+
+>  	.driver = {
+>  		.name =		"pi433",
+>  		.owner =	THIS_MODULE,
+
+Oh-oh.
+
+> -		.of_match_table = of_match_ptr(pi433_dt_ids),
+> +		.of_match_table = pi433_dt_ids,
+>  	},
+
+..
+
+> --- a/drivers/tty/serial/amba-pl011.c
+> +++ b/drivers/tty/serial/amba-pl011.c
+> @@ -2948,7 +2948,7 @@ static const struct of_device_id sbsa_uart_of_match[] = {
+>  };
+>  MODULE_DEVICE_TABLE(of, sbsa_uart_of_match);
+>  
+> -static const struct acpi_device_id __maybe_unused sbsa_uart_acpi_match[] = {
+> +static const struct acpi_device_id sbsa_uart_acpi_match[] = {
+>  	{ "ARMH0011", 0 },
+>  	{ "ARMHB000", 0 },
+>  	{},
+> @@ -2961,8 +2961,8 @@ static struct platform_driver arm_sbsa_uart_platform_driver = {
+>  	.driver	= {
+>  		.name	= "sbsa-uart",
+>  		.pm	= &pl011_dev_pm_ops,
+> -		.of_match_table = of_match_ptr(sbsa_uart_of_match),
+> -		.acpi_match_table = ACPI_PTR(sbsa_uart_acpi_match),
+> +		.of_match_table = sbsa_uart_of_match,
+> +		.acpi_match_table = sbsa_uart_acpi_match,
+>  		.suppress_bind_attrs = IS_BUILTIN(CONFIG_SERIAL_AMBA_PL011),
+>  	},
+>  };
+
+Ditto.
+
+..
+
+As mentioned above, I haven't and won't look into of_match_ptr() cases, but you
+got the idea.
+
+For the above, if addressed as suggested,
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+
 -- 
-2.25.1
+With Best Regards,
+Andy Shevchenko
+
 
 
