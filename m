@@ -1,220 +1,136 @@
-Return-Path: <linux-kernel+bounces-131930-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131931-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2549898DA5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:01:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C32E5898DA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:01:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D1FF1F23745
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:01:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AA84B25961
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F109ECA62;
-	Thu,  4 Apr 2024 18:00:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62146130ADF;
+	Thu,  4 Apr 2024 18:01:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="PJu7yEYN"
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="0akluLFR"
+Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C6012EBD0
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 18:00:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DAE412EBD0
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 18:00:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712253654; cv=none; b=t4EKu+rAGS/8sqbqGx1n8wC7INioUrzgfKzPDIxxpteDaXngWK9cMxbB5/UCCYiTjj6UI2bOtGXw/4KihOdaMxD6Z3J3yq2y1mQR53S0pekpT25UjHdTASD6TlqeFPzF3u/5Co7aTxBSEp30fFAmOKexw3Fv6LmcvZunE3fQQ5U=
+	t=1712253659; cv=none; b=IQpJXew+3xvDI7OXYZd/RLorhnbIemBu7ZvHpxxyJDL6IKZtZWJS2NUKvuQeCyeAxnhSc/t4jrWRTMKXJTyVXPRIt3zj5CY3irTfKp89TwgXGhJyhCdrZBE2i2rhKJPthIsiOp2zt80lj4+rocn47S0x9PpOGXfTwF3Vrph7Tfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712253654; c=relaxed/simple;
-	bh=8i9lD1082HlTW7L8l7PDfunKHQG6xnh5Rkq/dOV1DGA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=QV6Dt2xHkLWkZOrDV7ptzUF1yWmZ2tkNQRRZHfMEi8DlMV44zfC1tyH2oNStb2WHTFqb0sFFujE0Qvnu1Bs60YgzrDaO+vjWiKu8vI8zH4EZo9E3NCZxLV/y8wOp8tQnjI7470Fwa9Fli16j+YgU178LIYA+bdG6DswBKkStGc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=PJu7yEYN; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-43182c2457bso6658491cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 11:00:52 -0700 (PDT)
+	s=arc-20240116; t=1712253659; c=relaxed/simple;
+	bh=DvqrM66m1fpor+G8I8exyC7QkvyQw53E6bWYdgNkJlk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=SqWDh+cYvR3arUcVCEIYlsiImqRuiLOIfo3QMueGYfnJClcmXH3+ctSD4eaMc0FQ1Qnt3bBimpWzToCEKN356nFTnb8pmBsWOdT/k9uQ1ZviubVrsinMgIGfW+LUZ9uBv5/u5n6SHk5sAviI1wdT3NzO1+gGXeK11vZ1gefptww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=0akluLFR; arc=none smtp.client-ip=209.85.219.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-690caa6438aso5985096d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 11:00:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712253651; x=1712858451; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eW6Ut/fw1eGESzWpDoiTGmn7OMtXM3kSDS/x7RatDPw=;
-        b=PJu7yEYNk3KqTw1bbGYxbGY5CEBTJduVGVNS4jL3XcnatYMQFo1WhaOxJjlJBc/w47
-         WPJo5AiEnlWhsA8CCzScA8+boPJKCKDPNnORFvDHphusoPTctUriQyS+xxqnb4Ad+Bzj
-         Q2Hea+ycRFaXjMy2CgrwhBWiImq/Kl961709A=
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1712253657; x=1712858457; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vkxFEmPPLSP0VfvXbMRLD3bWGs6AEqwLVGDVK0uQkn0=;
+        b=0akluLFRVvk8wLWVyjAFMbDCNXq0LwSFvYsN15PcwZfpkvJeM4cv7ij0aodzqVyksc
+         acoWM0d4MVdNLDVU+21AGqkxbxp9FC9BSXlOo/BDwIBZdkBdMAQMTQTdwDTOv35oTn3d
+         +LKUIwECN2EdVe3aX0S+wweYAZAeR5qUYMjgr1AWvFnECSq1O6yBK4PxprvId0wO91ZB
+         jDfJAP9BKL5FcOWZSAZh78fT8uiLG1Yhaisua9UsJQJa04rAROEwVBRgNHg+I/qf8hB2
+         wPpJi8iXOBJCFQnPw7D0xYnOyfzoFmiDIWZ1J+F4MMp5GkMQUawnGstHJ3+8GS4yCK8D
+         zO7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712253651; x=1712858451;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eW6Ut/fw1eGESzWpDoiTGmn7OMtXM3kSDS/x7RatDPw=;
-        b=dnWcxXmAR3EyVo+N8/3m4ULy4CkvdfeyIj4dXUFNjfskWwFzhHdXR8+sTQuEnmGSFG
-         JIzhqMWDKDJHrF1XNBPS8QdvWNNihLJltaKv9zBK96y0Hkh2DQd64aRqmPoOJ8NARX1x
-         rWKRkCcWWH6h9r9fkYCSuwSqm6Y4WmL09WVZi1rP2aw4lfpNzoRSOEz5SL2ZYc2cMTp1
-         GTRV3kLr6gEs566IoJPebMC046rMJrmkHU6qkWl17KlqeYYhlaceCKDKjiUN/0TOHdyb
-         mfkPKCJhPEL7cXrc5Fqufvelr6XhOSh/XnxN934M53j+hopul0NPEioI3qwWN8I1O7Ba
-         H+Wg==
-X-Forwarded-Encrypted: i=1; AJvYcCX6kxaUjrgafFPRsEJwLn5jPWxb9I6iSa3az2zaJ5f4L/sjCVq/6aa+S5RGGvKt/akZ65cHD+bhWfxtnFjtHmKcPOJH8v3/er0UI80A
-X-Gm-Message-State: AOJu0YySz/ZScQ1hGm3LmWSd0cbmv7NCzT3Fjio9G3JHpxlwg6d1IEYy
-	4w8QRzEqjKe2TEbVpjUlC9I1hLL9m4AFy83c83Zw0z1z2udpsYIARrC6vOv4gw==
-X-Google-Smtp-Source: AGHT+IFfGtC4jZ50T09wLazeGDqgzXOVUXT6T5H8//nsyVwVVzCVYZ23/iHcHbbRp3uOEqkarB+J0g==
-X-Received: by 2002:ac8:5cc6:0:b0:432:d303:9ec with SMTP id s6-20020ac85cc6000000b00432d30309ecmr3529186qta.52.1712253651024;
-        Thu, 04 Apr 2024 11:00:51 -0700 (PDT)
-Received: from denia.c.googlers.com (188.173.86.34.bc.googleusercontent.com. [34.86.173.188])
-        by smtp.gmail.com with ESMTPSA id ea3-20020a05622a5b0300b004315aa3d5d7sm7900282qtb.0.2024.04.04.11.00.50
+        d=1e100.net; s=20230601; t=1712253657; x=1712858457;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vkxFEmPPLSP0VfvXbMRLD3bWGs6AEqwLVGDVK0uQkn0=;
+        b=ISSfEk810Z26A5yncpF8gQ68Lrdcms91QGs9gnWl6s+ZlgJ1QO9dOvtz6qitMu5TgA
+         fe+ERjFqrMal/R4E9gEdW2Uif5Nd+VXReq6EDRBaFZaB6wYjw9JG2wTkaQUMGAQr64jo
+         tVnSuFdFLJeVR5UN1De+qufU+nKnFK/sP+0FCVal9GV8tOamIxhQdXdwJivC/E3x5DFO
+         /jLFNyNBwQBJpxIU/DMSacIwxX8HnvaqE2PHehX2ww3flnOvvwrwYt62ZwNTt+wuLE6Q
+         +8h+j4zl4DaaSzDAPe5kMDhltDmTcXXz1l2RSbiuPXhLz1YuMlg1pbxb8FfgVSpJGNXD
+         gEtA==
+X-Forwarded-Encrypted: i=1; AJvYcCXERCT29gC1A3cs29Se0wN6nZAYBsTadPI4689nsjqfgnbT71ipWy7nkAAuxlZIe4znbNbSIrELyENeNI1mqSsjNpe/eAgLzuYgGFy8
+X-Gm-Message-State: AOJu0Yxa6adJzOgLgFkB6lXsqYIIBqjM5NP3owLLJQEaWlnplcTBz1Er
+	IFn0sI35Bh5eA4XqA34IBauCSHApQln8HeN3M1CLBjfMotw5OglCn56RnYJ3kvg=
+X-Google-Smtp-Source: AGHT+IH5WeZ2YgQGDHZQ6kTSNkiS96RsVtVNAM1zKjHTx5GxORjHkJqWQS2v09JhoN1YdgLCXq40tw==
+X-Received: by 2002:a05:6214:1c87:b0:699:2c7d:407b with SMTP id ib7-20020a0562141c8700b006992c7d407bmr3325785qvb.23.1712253656947;
+        Thu, 04 Apr 2024 11:00:56 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:17:6448:fa75:a4ff:fe45:b56])
+        by smtp.gmail.com with ESMTPSA id gw4-20020a0562140f0400b00698fd28cad3sm5421334qvb.80.2024.04.04.11.00.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 11:00:50 -0700 (PDT)
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Thu, 04 Apr 2024 18:00:49 +0000
-Subject: [PATCH v6] media: uvcvideo: Add quirk for Logitech Rally Bar
+        Thu, 04 Apr 2024 11:00:56 -0700 (PDT)
+Message-ID: <c8de69fc6cb6029e96f3e6b6c1eeb1de9304ccff.camel@ndufresne.ca>
+Subject: Re: [PATCH] media: verisilicon: Fix auxiliary buffers allocation
+ size
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, 
+	ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de, mchehab@kernel.org, 
+	heiko@sntech.de
+Cc: linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	kernel@collabora.com
+Date: Thu, 04 Apr 2024 14:00:55 -0400
+In-Reply-To: <20240328093439.18712-2-benjamin.gaignard@collabora.com>
+References: <20240328093439.18712-1-benjamin.gaignard@collabora.com>
+	 <20240328093439.18712-2-benjamin.gaignard@collabora.com>
+Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240404-rallybar-v6-1-6d67bb6b69af@chromium.org>
-X-B4-Tracking: v=1; b=H4sIANDqDmYC/3XNQW7CMBCF4asgr2vkmYydpCvugboY2xNiCUjlQ
- FSEcvcapIq0Spdv5O/3XY2Sk4zqfXNXWaY0puFchnvbqNDz+SA6xbIVGqwAEXXm4/HmOWtog5j
- gKFpxqjz/zNKlr2dq/1F2n8bLkG/P8gSP60pkAg26QY9MsQLjul3o83BK19N2yAf16Ez4n8Vib
- UNtdMitBVqx1Y8lA2Zpq2INe2jrIMSMK5aWtllYKpZrssYRCIFfsfZl6de/ttjax2g6Hyx09R8
- 7z/M3A+CGEJMBAAA=
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Alan Stern <stern@rowland.harvard.edu>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-media@vger.kernel.org, stable@vger.kernel.org, 
- Oliver Neukum <oneukum@suse.com>, Devinder Khroad <dkhroad@logitech.com>, 
- Sergey Senozhatsky <senozhatsky@chromium.org>, 
- Ricardo Ribalda <ribalda@chromium.org>
-X-Mailer: b4 0.12.4
 
-Logitech Rally Bar devices, despite behaving as UVC cameras, have a
-different power management system that the other cameras from Logitech.
+Hi,
 
-USB_QUIRK_RESET_RESUME is applied to all the UVC cameras from Logitech
-at the usb core. Unfortunately, USB_QUIRK_RESET_RESUME causes undesired
-USB disconnects in the Rally Bar that make them completely unusable.
+Le jeudi 28 mars 2024 =C3=A0 10:34 +0100, Benjamin Gaignard a =C3=A9crit=C2=
+=A0:
+> Use v4l2_av1_tile_info->tile_cols to know the number of colons
+> in the frame. This made auxiliary buffers meory size computation
+> more accurate.
 
-There is an open discussion about if we should fix this in the core or
-add a quirk in the UVC driver. In order to enable this hardware, let's
-land this patch first, and we can revert it later if there is a
-different conclusion.
+Seems like this is potentially going to impact some conformance tests. Anyt=
+hing
+to report from fluster results ?
 
-Fixes: e387ef5c47dd ("usb: Add USB_QUIRK_RESET_RESUME for all Logitech UVC webcams")
-Cc:  <stable@vger.kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Oliver Neukum <oneukum@suse.com>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Reviewed-by: Devinder Khroad <dkhroad@logitech.com>
-Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
-Tested with a Rallybar Mini with an Acer Chromebook Spin 513
----
-Changes in v6: Thanks Laurent
-- Fix subject line.
-- Move quirk before device init message.
-- Link to v5: https://lore.kernel.org/r/20240402-rallybar-v5-1-7bdd0fbc51f7@chromium.org
+Nicolas
 
-Changes in v5:
-- Update commit message to describe that this is a temp solution.
-- Link to v4: https://lore.kernel.org/r/20240108-rallybar-v4-1-a7450641e41b@chromium.org
-
-Changes in v4:
-- Include Logi Rally Bar Huddle (Thanks Kyle!)
-- Link to v3: https://lore.kernel.org/r/20240102-rallybar-v3-1-0ab197ce4aa2@chromium.org
-
-Changes in v3:
-- Move quirk to uvc driver
-- Link to v2: https://lore.kernel.org/r/20231222-rallybar-v2-1-5849d62a9514@chromium.org
-
-Changes in v2:
-- Add Fixes tag
-- Add UVC maintainer as Cc
-- Link to v1: https://lore.kernel.org/r/20231222-rallybar-v1-1-82b2a4d3106f@chromium.org
----
- drivers/media/usb/uvc/uvc_driver.c | 31 +++++++++++++++++++++++++++++++
- drivers/media/usb/uvc/uvcvideo.h   |  1 +
- 2 files changed, 32 insertions(+)
-
-diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-index 08fcd2ffa727b..1b4fb9f46bc83 100644
---- a/drivers/media/usb/uvc/uvc_driver.c
-+++ b/drivers/media/usb/uvc/uvc_driver.c
-@@ -14,6 +14,7 @@
- #include <linux/module.h>
- #include <linux/slab.h>
- #include <linux/usb.h>
-+#include <linux/usb/quirks.h>
- #include <linux/usb/uvc.h>
- #include <linux/videodev2.h>
- #include <linux/vmalloc.h>
-@@ -2232,6 +2233,9 @@ static int uvc_probe(struct usb_interface *intf,
- 		goto error;
- 	}
- 
-+	if (dev->quirks & UVC_QUIRK_FORCE_RESUME)
-+		udev->quirks &= ~USB_QUIRK_RESET_RESUME;
-+
- 	uvc_dbg(dev, PROBE, "UVC device initialized\n");
- 	usb_enable_autosuspend(udev);
- 	return 0;
-@@ -2574,6 +2578,33 @@ static const struct usb_device_id uvc_ids[] = {
- 	  .bInterfaceSubClass	= 1,
- 	  .bInterfaceProtocol	= 0,
- 	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
-+	/* Logitech Rally Bar Huddle */
-+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-+				| USB_DEVICE_ID_MATCH_INT_INFO,
-+	  .idVendor		= 0x046d,
-+	  .idProduct		= 0x087c,
-+	  .bInterfaceClass	= USB_CLASS_VIDEO,
-+	  .bInterfaceSubClass	= 1,
-+	  .bInterfaceProtocol	= 0,
-+	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_FORCE_RESUME) },
-+	/* Logitech Rally Bar */
-+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-+				| USB_DEVICE_ID_MATCH_INT_INFO,
-+	  .idVendor		= 0x046d,
-+	  .idProduct		= 0x089b,
-+	  .bInterfaceClass	= USB_CLASS_VIDEO,
-+	  .bInterfaceSubClass	= 1,
-+	  .bInterfaceProtocol	= 0,
-+	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_FORCE_RESUME) },
-+	/* Logitech Rally Bar Mini */
-+	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-+				| USB_DEVICE_ID_MATCH_INT_INFO,
-+	  .idVendor		= 0x046d,
-+	  .idProduct		= 0x08d3,
-+	  .bInterfaceClass	= USB_CLASS_VIDEO,
-+	  .bInterfaceSubClass	= 1,
-+	  .bInterfaceProtocol	= 0,
-+	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_FORCE_RESUME) },
- 	/* Chicony CNF7129 (Asus EEE 100HE) */
- 	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
- 				| USB_DEVICE_ID_MATCH_INT_INFO,
-diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-index 6fb0a78b1b009..fa59a21d2a289 100644
---- a/drivers/media/usb/uvc/uvcvideo.h
-+++ b/drivers/media/usb/uvc/uvcvideo.h
-@@ -73,6 +73,7 @@
- #define UVC_QUIRK_FORCE_Y8		0x00000800
- #define UVC_QUIRK_FORCE_BPP		0x00001000
- #define UVC_QUIRK_WAKE_AUTOSUSPEND	0x00002000
-+#define UVC_QUIRK_FORCE_RESUME		0x00004000
- 
- /* Format flags */
- #define UVC_FMT_FLAG_COMPRESSED		0x00000001
-
----
-base-commit: c0f65a7c112b3cfa691cead54bcf24d6cc2182b5
-change-id: 20231222-rallybar-19ce0c64d5e6
-
-Best regards,
--- 
-Ricardo Ribalda <ribalda@chromium.org>
+>=20
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Fixes: 727a400686a2 ("media: verisilicon: Add Rockchip AV1 decoder")
+> ---
+>  .../media/platform/verisilicon/rockchip_vpu981_hw_av1_dec.c    | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/media/platform/verisilicon/rockchip_vpu981_hw_av1_de=
+c.c b/drivers/media/platform/verisilicon/rockchip_vpu981_hw_av1_dec.c
+> index cc4483857489..65e8f2d07400 100644
+> --- a/drivers/media/platform/verisilicon/rockchip_vpu981_hw_av1_dec.c
+> +++ b/drivers/media/platform/verisilicon/rockchip_vpu981_hw_av1_dec.c
+> @@ -257,7 +257,8 @@ static int rockchip_vpu981_av1_dec_tiles_reallocate(s=
+truct hantro_ctx *ctx)
+>  	struct hantro_dev *vpu =3D ctx->dev;
+>  	struct hantro_av1_dec_hw_ctx *av1_dec =3D &ctx->av1_dec;
+>  	struct hantro_av1_dec_ctrls *ctrls =3D &av1_dec->ctrls;
+> -	unsigned int num_tile_cols =3D 1 << ctrls->tile_group_entry->tile_col;
+> +	const struct v4l2_av1_tile_info *tile_info =3D &ctrls->frame->tile_info=
+;
+> +	unsigned int num_tile_cols =3D tile_info->tile_cols;
+>  	unsigned int height =3D ALIGN(ctrls->frame->frame_height_minus_1 + 1, 6=
+4);
+>  	unsigned int height_in_sb =3D height / 64;
+>  	unsigned int stripe_num =3D ((height + 8) + 63) / 64;
 
 
