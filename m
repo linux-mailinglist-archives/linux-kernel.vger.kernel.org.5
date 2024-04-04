@@ -1,141 +1,118 @@
-Return-Path: <linux-kernel+bounces-131608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C13DF8989FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:24:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23F2A8989FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:24:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDD0A1C29233
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:24:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9DD00B256D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:24:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380A112CD8F;
-	Thu,  4 Apr 2024 14:22:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a+aU6a7o"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895D912BEAB;
+	Thu,  4 Apr 2024 14:22:10 +0000 (UTC)
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0443312BF02
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:22:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72B5A1272C0;
+	Thu,  4 Apr 2024 14:22:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712240532; cv=none; b=ojMxlCsrGOa/3vkrR3gOlQThbwqEe1LH0jVoWOjhiDiXExby9+K5VXfKZzKBlpfaqbpJlOXISKdWOGo2CAdUZkoRxMcBPsYC8z3wwEId87iMNkin7+vDtPKH2kRcJ4TeLwzdExavGlD+Jgrrddi1t9gcP/y2PqYPOBU1RFBWEkE=
+	t=1712240530; cv=none; b=uaMd7ObcyVFpSb0EvoOpjFuvNqeeepZM6wEQ5YiBdNneo+tBkGpSYkYugyftWoqo0/MuBY0p+9WVNPjEdCElwHKRSsKyCkDmmoLUehSDuLdmPoCxtcxshjYUvTEzubsmVVsBJJ+91fV3H1v2xhcuaLiLN13PTdg4JrRj3tlRpis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712240532; c=relaxed/simple;
-	bh=2cWTzX0zgJ2dUrcHjDb5nbu03D7jEnE/87jcgSZkCfQ=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=NNvtrDvQAGy7cmjb6WCZPurdcYhj0OCbZVNMW94rSSiTOHItutWc7yAjT5QqayoOhdSwUFwz2ZkF7Kz7sA4L0Y0FcIeyxjvti4He5kS0O4dxnGElcw2uGW79gRtlwjXb7inJnDFMvMHHbWlfppxv2T1vqDbIif2kKHIQvGDrquE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a+aU6a7o; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712240528;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pcnLrydmfQX8SlteWcvzLWBpNoquMDGK5EArArRbwgg=;
-	b=a+aU6a7oJ/m1wLHmrwPf8ituvrgyXTQo9xECRkUzZBNLnua1ykBCjOWcj1zv//9qNa0vHc
-	NtVBJFQvI+8kIcsHpjjQ4q00uTBrmC55OqF23/qO9stdWBJ3+g6aTR6GDYDo1m/LNIAOgS
-	8NDQQK1XfgjZl7y/uBZAQ7cfvc7e9nc=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-147-8YizbzUrNSeGjimZw0c17Q-1; Thu, 04 Apr 2024 10:22:07 -0400
-X-MC-Unique: 8YizbzUrNSeGjimZw0c17Q-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-78a75243bfbso320245385a.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:22:07 -0700 (PDT)
+	s=arc-20240116; t=1712240530; c=relaxed/simple;
+	bh=l4Ofb1VLHToYWmBhudFDJCjLPC4aC/WwScVhizSxGL4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qxyqFg8bzxIU02yUwvn1quxhGKvq0v5Il04lwcp/dSAaEZAGir0yG8DJR0pnmBXbaeuUKfNMZO6j/VMvxE70pykgk5Q97Ry+k3T25qi+PWRr8PmxNl8dAmXAd4aL0ikr8M4uotRzTS+B3SBsyGqH1SLnVodaRdrRRkRnis7JbAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a51969e780eso40960766b.3;
+        Thu, 04 Apr 2024 07:22:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712240527; x=1712845327;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pcnLrydmfQX8SlteWcvzLWBpNoquMDGK5EArArRbwgg=;
-        b=PJnlc0kn22pPH8EvTw5SPSHlO36rcx1lFAg6o8fx+yK9Cv2SyDKY21kLJPPqczHDf6
-         pJjqPEs4d24HubWNcQj0LV+j/2QkJtk4EdUmunSeQGbva/MEDpYTfgAswDYlJfepHL97
-         8f7liFKoxzv4uwJQsMIr5Hedq2SAWEL41L+m0bYyrKYGS2P0wlJyGgDn3Pkun+3kfh4f
-         /zUsE0UtTSi17WOM+aN45qwxJg3umyR/mpxgLg1/NNyDCnQq1h9DMXxk0XLLZzdkxjTG
-         RRBZITGB0wPnmKGsRQrT3683N2c5SJHhImzPRP9gSLRW3toUQ7iLpqxYIwp2NleXC2rj
-         UGag==
-X-Forwarded-Encrypted: i=1; AJvYcCV1QTxjBHp2pNSSOp1yUBuOC7qC5BqP7VygWox4brnl4+CJ+OwG54zErcIJbckkK/tVBX5cH1sAvxPxTCNa9YvpVyKyhGFm6sPNU5uF
-X-Gm-Message-State: AOJu0YwpLaUe2QydHVafPKQDE/i7uTaOBGZoJRpGkX5YYPU4VrgkesF+
-	YW8NZuvteUmE+e8xkd1HQ/ocV4AtWkIaAmwJ60y9+U/kLeKB651IZH3t/7Q5BNwdahFjXFLM+++
-	G/pqURrgVGs31wfdALiud/8T9yiiUgYeld/8j16FUxk0HJpmTPe32hB5CzFHhzg==
-X-Received: by 2002:a05:620a:6124:b0:78d:3b55:21c8 with SMTP id oq36-20020a05620a612400b0078d3b5521c8mr3691965qkn.24.1712240526723;
+        d=1e100.net; s=20230601; t=1712240526; x=1712845326;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zVyUlV+3sDAiGX1EZuWoigVBp+zRmpt7JVsfIU0B7GI=;
+        b=hEDjlO91lwpvRCkVyXfpgCy69TgbqvK+LOET/zaDzGGgnhaVak0nAyAc5iuzOrBG55
+         yWrfSi796RqOG5ttYIKJaOS2H9VWAxsV+PpPB1rMm9pGtNAA6o9PKa1tG8Dhtw5OKgHb
+         iVmh19Yp4rNFDgzM7LwYcVb/GfIoJiGlCezhZHUjZGEH0D2HDH60e8iAN8Quh5kbhchw
+         8tgumx/OF4pmCHkr6LnA0mK+LDm4+mccZKkC9YLvrb0r9VcP0OJMuIWh2xLzjkpzKym+
+         b+bsJf5PUj43auYrbQlLNRHZ02J/YIHp+yDKEBkDXnotN1Dto0sGlXJ6GKWBHIi1QbDx
+         f/cA==
+X-Forwarded-Encrypted: i=1; AJvYcCXnykzQ7mnbIcDAsvgQ+rFEmHFkDr1rFmbI+RQGeG73u10wmQZ+JF27jMsVGefhHc5sqILDOZ5L3dsVAvhLB20mDc2MtccEgXzm5OTGp1VtMdmUpCA0zgXEeBWfv50OHlx5bxlNK9Ei6BxAZ+q18tzUNHP5nF42ctG+
+X-Gm-Message-State: AOJu0YwETexZj4ZSfRHTX8DsB5t68fWNWNbx+VlycNUgAHaJxkwegrkK
+	Hdz5vzwHf+g5L5J05kBcSgpo5eFHrlWkAFy0kGCWp/oEwObJG8H4
+X-Google-Smtp-Source: AGHT+IFEAzsGI4DJHhKL+bYgqHldQtzLWBNbrwkKIk9EHS3URioNQOJVyi4uwzCL2HY+yQHKnE8VLg==
+X-Received: by 2002:a17:906:a208:b0:a50:9190:b751 with SMTP id r8-20020a170906a20800b00a509190b751mr1908287ejy.10.1712240526426;
         Thu, 04 Apr 2024 07:22:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGlFYbfjgK7cm374RDiyUOkiv0HiQERfK/s5Fwc7/Q1SOG4DwUzk04ElPPDlMsmsbNlE9qXtQ==
-X-Received: by 2002:a05:620a:6124:b0:78d:3b55:21c8 with SMTP id oq36-20020a05620a612400b0078d3b5521c8mr3691933qkn.24.1712240526433;
-        Thu, 04 Apr 2024 07:22:06 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id p11-20020a05620a056b00b0078a210372fasm5931267qkp.86.2024.04.04.07.22.03
+Received: from gmail.com (fwdproxy-lla-120.fbsv.net. [2a03:2880:30ff:78::face:b00c])
+        by smtp.gmail.com with ESMTPSA id jw19-20020a170906e95300b00a4e26dfc7fdsm8738908ejb.29.2024.04.04.07.22.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 07:22:05 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Vitalii Bursov <vitaly@bursov.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
- Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot
- de Oliveira <bristot@redhat.com>, linux-kernel@vger.kernel.org, Vitalii
- Bursov <vitaly@bursov.com>
-Subject: Re: [PATCH v3 2/3] sched/debug: dump domains' level
-In-Reply-To: <d9af90271748e6035c5f8bfc03b7bacdde357766.1712147341.git.vitaly@bursov.com>
-References: <cover.1712147341.git.vitaly@bursov.com>
- <d9af90271748e6035c5f8bfc03b7bacdde357766.1712147341.git.vitaly@bursov.com>
-Date: Thu, 04 Apr 2024 16:21:57 +0200
-Message-ID: <xhsmh34s1b43e.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+        Thu, 04 Apr 2024 07:22:06 -0700 (PDT)
+Date: Thu, 4 Apr 2024 07:22:03 -0700
+From: Breno Leitao <leitao@debian.org>
+To: Kalle Valo <kvalo@kernel.org>
+Cc: aleksander.lobakin@intel.com, kuba@kernel.org, davem@davemloft.net,
+	pabeni@redhat.com, edumazet@google.com, elder@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, nbd@nbd.name,
+	sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
+	lorenzo@kernel.org, taras.chornyi@plvision.eu,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	quic_jjohnson@quicinc.com, leon@kernel.org,
+	dennis.dalessandro@cornelisnetworks.com,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: Re: [PATCH net-next v3 0/5] allocate dummy device dynamically
+Message-ID: <Zg63iwvtTMlZSGcd@gmail.com>
+References: <20240404114854.2498663-1-leitao@debian.org>
+ <87plv549ts.fsf@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87plv549ts.fsf@kernel.org>
 
-On 03/04/24 16:28, Vitalii Bursov wrote:
-> Knowing domain's level exactly can be useful when setting
-> relax_domain_level or cpuset.sched_relax_domain_level
->
-> Usage:
-> cat /debug/sched/domains/cpu0/domain1/level
-> to dump cpu0 domain1's level.
->
-> Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
-> ---
->  kernel/sched/debug.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index 8d5d98a5834d..c1eb9a1afd13 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -425,6 +425,7 @@ static void register_sd(struct sched_domain *sd, struct dentry *parent)
->
->       debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
->       debugfs_create_file("groups_flags", 0444, parent, &sd->groups->flags, &sd_flags_fops);
-> +	debugfs_create_u32("level", 0444, parent, (u32 *)&sd->level);
+Hello Kalle,
 
-How about reusing the SDM macro? ->flags and ->groups_flags get special
-treatment for pretty printing, but the others don't need that.
----
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index c1eb9a1afd13e..f97902208b34d 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -419,13 +419,13 @@ static void register_sd(struct sched_domain *sd, struct dentry *parent)
- 	SDM(u32,   0644, busy_factor);
- 	SDM(u32,   0644, imbalance_pct);
- 	SDM(u32,   0644, cache_nice_tries);
-+	SDM(u32,   0444, level);
- 	SDM(str,   0444, name);
- 
- #undef SDM
- 
- 	debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
- 	debugfs_create_file("groups_flags", 0444, parent, &sd->groups->flags, &sd_flags_fops);
--	debugfs_create_u32("level", 0444, parent, (u32 *)&sd->level);
- }
- 
- void update_sched_domain_debugfs(void)
+On Thu, Apr 04, 2024 at 02:59:59PM +0300, Kalle Valo wrote:
+> Breno Leitao <leitao@debian.org> writes:
+> 
+> > struct net_device shouldn't be embedded into any structure, instead,
+> > the owner should use the private space to embed their state into
+> > net_device.
+> >
+> > But, in some cases the net_device is embedded inside the private
+> > structure, which blocks the usage of zero-length arrays inside
+> > net_device.
+> >
+> > Create a helper to allocate a dummy device at dynamically runtime, and
+> > move the Ethernet devices to use it, instead of embedding the dummy
+> > device inside the private structure.
+> >
+> > This fixes all the network cases except for wireless drivers.
+> >
+> > PS: Due to lack of hardware, unfortunately all these patches are
+> > compiled tested only.
+> 
+> BTW if it helps, and if you have an ath10k or ath11k patch already, I
+> can run a quick test on real hardware.
 
+That would be very much appreciated! Thanks!
+
+I don't have them ready yet, but, I will work on them soon and I will
+send it to you probably tomorrow.
+
+Should I send them as RFC, or as a regular patch, and we iterate over?
+What would you prefer?
+
+Thanks!
 
