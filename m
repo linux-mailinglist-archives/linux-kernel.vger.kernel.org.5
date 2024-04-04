@@ -1,115 +1,185 @@
-Return-Path: <linux-kernel+bounces-131307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E17BC8985FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:23:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 094DC8985FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:23:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A0C61C236D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:23:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 293561C23869
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:23:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D81B839F8;
-	Thu,  4 Apr 2024 11:23:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="RMvN4s6u"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 038E28286B
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEACA82C7D;
+	Thu,  4 Apr 2024 11:23:48 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09488823B0
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:23:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712229828; cv=none; b=e66sPbip4MLTQC3g9skvyC63ItSkb8ec7vM9IC8aOmobnOZ2VZHqE2sFonRqeMq4sgStububp8sYCKQxegU/W31ZJZoRZTU9tB6zs3AEBsNZEkxfapwRVypYPABWfw129SRUnp4aBcIcKRCt81tmSjxLSw2G+QChtsTUqCrN5is=
+	t=1712229828; cv=none; b=qwOcGSv7JL22hx+cgDEULO0eTn9N03AjujsAzX7j0eKObiIK9xuuw9YMrY4L+WllInH/QY+cEOgZ+r824OVsuFrCEqr9QW7SlZT+S9yp9AFrQ3ikRiLBWMTTTDLZUcLjuDwvYjL+e7QwcuQJ5NIov505fgIP1oejNrgLZL+niuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712229828; c=relaxed/simple;
-	bh=KedSSz3/IrCa1VpTRibBfxMxza6Zzrin2mfQ1u9MHtA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XP84qdHx3XZN+i6Katb+GpgjDyl1fsXaQajW6v0hBrINzOsLui9Z9d3IyII3Xwa6BN74IlbTeXagZyGkG09Jh/oIDdqTn0mDsEva3szSz4NTns0UfEyln+nS4OZsfNLaBXGhIP41+LlRZ29t0EdzdOYSxZbEY/v2OdPP5d3GBp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=RMvN4s6u; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a46a7208eedso125488566b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 04:23:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712229825; x=1712834625; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=pkYU619QNOAcumaNgRtOFKm08inQ9YEczozqDufhPwE=;
-        b=RMvN4s6u/eGVLoA6ghv5c+8SE26TvwTwC89IipK9evb6MvNRO3UGbXpQ0ncxE3jAkK
-         1yLAYUm+LmLyznpCo8mh1R4vG7dkIyAN/zZ9tFpTSQiX4HObYNEx/Gu2KvsK4HLBLb2a
-         O+45dDbRDGGqz5f9/7Ntn2Z1Oo86Eo12WR+lNdmYU8kNdLvvHFb4XGTnCsJvMLTfrraK
-         8/75r7Gku+IJor6Nh6ViQXBhVEB9yz2PUquMBcbdw/ewsSj+vBdIurlWEHTOFla7Q8pq
-         tgl6JHzPJm3EWZYICLa3l8RBu1aIZ5a6oq7gF6D/lQo9l8lp1L1ACWSaEjLTx59hqTT2
-         rPXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712229825; x=1712834625;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pkYU619QNOAcumaNgRtOFKm08inQ9YEczozqDufhPwE=;
-        b=hxAX8W8+vmihueuHFoh68EeiFuzfCld3VzEMBz2w62V2iLmhZ/OQsqUMGZowNgt3N0
-         jDmLpAIT1rvHFBxDUCZMG1SdF9T1QY5X+fI3RAF/eGNHWOpItJSA6P7H9+1cirVgHpJE
-         hPEktcIP0n9bipwKKE0YqVPpdv48R8Fv7/c0UY7CFupOUf/XgUydGTtR3l7XBCrKOtLd
-         A2GqO5tsieHvD5Msj6CABMmvXj95LH8yFxk6PzXCLHQ8FnBi3FW3hD+FR2VnPrkZvfmu
-         LbvizCyLj3cby4mTOKLBYVqOfoFnzqLhOtc4+4g1XG+4bKFw+MxwXbqtWZ0thNSWvsLG
-         eOeA==
-X-Forwarded-Encrypted: i=1; AJvYcCWvRLewLLtbefLiW4nLeOWSWrAPrBELKPtzFhB7ypHxwMaOyRB55KRvr9JIkXM/IGE1ySe9EhKpdsw/bULmxujKUV1FptZRnuY00RGQ
-X-Gm-Message-State: AOJu0YzWdNkC3r+Abda5flO/6S9y58EoWWS2AXcSddIEgJ0W0h1vOVCR
-	88XwaWCWQIMKuwNE7oJvktlXZppN2nmpOkBdRIumO86ftTORlp5EZf4P7Q2NhQQ=
-X-Google-Smtp-Source: AGHT+IFK8jr37Yvi1onGXTMfiS4hACEokH0HQITqdKdAKcYVNNcSynsV9ZUFQOqjrDeb97MoSUaPgQ==
-X-Received: by 2002:a17:906:30d9:b0:a47:52ff:194d with SMTP id b25-20020a17090630d900b00a4752ff194dmr1338735ejb.35.1712229825255;
-        Thu, 04 Apr 2024 04:23:45 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id os26-20020a170906af7a00b00a465b72a1f3sm8943302ejb.85.2024.04.04.04.23.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 04:23:44 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	sparclinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] sparc: Use swap() to fix Coccinelle warning
-Date: Thu,  4 Apr 2024 13:23:14 +0200
-Message-ID: <20240404112313.11898-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+	bh=iZmpMS4EXe3ep587Gg/K97opAqkrmiU7wbFBPE9FUsw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=FLXtXdVWr+n5//30IV+6tiEFAvXe622VGTF/KZ3hmu0BZqSgHiWqTohO6dtYwTd/57ab49R3VzWo0i/fEpIsoYCiUdi1NSSSXi4/Ne+EPZ69aYJu9soc+zJadZNvnpySVY31X/53Y96aHGpBPVrWlAa4VuN3b/yEN6TVNOtI9Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28802FEC;
+	Thu,  4 Apr 2024 04:24:16 -0700 (PDT)
+Received: from [10.1.32.162] (XHFQ2J9959.cambridge.arm.com [10.1.32.162])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8FF333F7B4;
+	Thu,  4 Apr 2024 04:23:44 -0700 (PDT)
+Message-ID: <476ef488-5f3c-420d-97ea-bb281f2891f2@arm.com>
+Date: Thu, 4 Apr 2024 12:23:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [mm?] WARNING: bad unlock balance in
+ madvise_cold_or_pageout_pte_range
+Content-Language: en-GB
+To: syzbot <syzbot+c641706ad4e9688cccdf@syzkaller.appspotmail.com>,
+ akpm@linux-foundation.org, david@redhat.com, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+References: <000000000000b92a9d0615433065@google.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <000000000000b92a9d0615433065@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Fixes the following Coccinelle/coccicheck warning reported by
-swap.cocci:
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm mm-unstable
 
-	WARNING opportunity for swap()
+mm-unstable now has the fix; let's check it actually fixes the problem.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- arch/sparc/include/asm/floppy_64.h | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/sparc/include/asm/floppy_64.h b/arch/sparc/include/asm/floppy_64.h
-index 6efeb24b0a92..83decacd0a2d 100644
---- a/arch/sparc/include/asm/floppy_64.h
-+++ b/arch/sparc/include/asm/floppy_64.h
-@@ -704,9 +704,7 @@ static unsigned long __init sun_floppy_init(void)
- 			ns87303_modify(config, ASC, ASC_DRV2_SEL, 0);
- 			ns87303_modify(config, FCR, 0, FCR_LDE);
- 
--			config = sun_floppy_types[0];
--			sun_floppy_types[0] = sun_floppy_types[1];
--			sun_floppy_types[1] = config;
-+			swap(sun_floppy_types[0], sun_floppy_types[1]);
- 
- 			if (sun_pci_broken_drive != -1) {
- 				sun_pci_broken_drive = 1 - sun_pci_broken_drive;
--- 
-2.44.0
+On 04/04/2024 11:56, syzbot wrote:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    727900b675b7 Add linux-next specific files for 20240403
+> git tree:       linux-next
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=11f66223180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=c641706ad4e9688cccdf
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a62423180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13764a3d180000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/f8fb4daa7a83/disk-727900b6.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/d2a6994aee53/vmlinux-727900b6.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/6759e5411c39/bzImage-727900b6.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+c641706ad4e9688cccdf@syzkaller.appspotmail.com
+> 
+> =====================================
+> WARNING: bad unlock balance detected!
+> 6.9.0-rc2-next-20240403-syzkaller #0 Not tainted
+> -------------------------------------
+> syz-executor799/5099 is trying to release lock (ptlock_ptr(ptdesc)) at:
+> [<ffffffff81f01f3f>] spin_unlock include/linux/spinlock.h:391 [inline]
+> [<ffffffff81f01f3f>] madvise_cold_or_pageout_pte_range+0x170f/0x3990 mm/madvise.c:480
+> but there are no more locks to release!
+> 
+> other info that might help us debug this:
+> 1 lock held by syz-executor799/5099:
+>  #0: ffff888015073a98 (&mm->mmap_lock){++++}-{3:3}
+> , at: mmap_read_lock include/linux/mmap_lock.h:144 [inline]
+> , at: do_madvise+0x481/0x44a0 mm/madvise.c:1429
+> 
+> stack backtrace:
+> CPU: 1 PID: 5099 Comm: syz-executor799 Not tainted 6.9.0-rc2-next-20240403-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+> Call Trace:
+>  <TASK>
+>  __dump_stack lib/dump_stack.c:88 [inline]
+>  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+>  print_unlock_imbalance_bug+0x256/0x2c0 kernel/locking/lockdep.c:5194
+>  __lock_release kernel/locking/lockdep.c:5431 [inline]
+>  lock_release+0x599/0x9f0 kernel/locking/lockdep.c:5774
+>  __raw_spin_unlock include/linux/spinlock_api_smp.h:141 [inline]
+>  _raw_spin_unlock+0x16/0x50 kernel/locking/spinlock.c:186
+>  spin_unlock include/linux/spinlock.h:391 [inline]
+>  madvise_cold_or_pageout_pte_range+0x170f/0x3990 mm/madvise.c:480
+>  walk_pmd_range mm/pagewalk.c:143 [inline]
+>  walk_pud_range mm/pagewalk.c:221 [inline]
+>  walk_p4d_range mm/pagewalk.c:256 [inline]
+>  walk_pgd_range+0xba1/0x1810 mm/pagewalk.c:293
+>  __walk_page_range+0x132/0x720 mm/pagewalk.c:395
+>  walk_page_range+0x58f/0x7c0 mm/pagewalk.c:521
+>  madvise_cold_page_range mm/madvise.c:562 [inline]
+>  madvise_cold mm/madvise.c:584 [inline]
+>  madvise_vma_behavior mm/madvise.c:1028 [inline]
+>  madvise_walk_vmas mm/madvise.c:1256 [inline]
+>  do_madvise+0x1e7b/0x44a0 mm/madvise.c:1442
+>  __do_sys_madvise mm/madvise.c:1457 [inline]
+>  __se_sys_madvise mm/madvise.c:1455 [inline]
+>  __x64_sys_madvise+0xa6/0xc0 mm/madvise.c:1455
+>  do_syscall_64+0xfb/0x240
+>  entry_SYSCALL_64_after_hwframe+0x72/0x7a
+> RIP: 0033:0x7f3928ac2419
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f3928a5c218 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
+> RAX: ffffffffffffffda RBX: 00007f3928b4c318 RCX: 00007f3928ac2419
+> RDX: 0000000000000014 RSI: 00000000dfc3efff RDI: 00000000203c1000
+> RBP: 00007f3928b4c310 R08: 00007ffd7796b097 R09: 0000000000000000
+> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f3928b19064
+> R13: 000000080000000e R14: 000000200000007f R15: 00000000dfc3efff
+>  </TASK>
+> ------------[ cut here ]------------
+> pvqspinlock: lock 0xffff88802ec45b40 has corrupted value 0x0!
+> WARNING: CPU: 1 PID: 5099 at kernel/locking/qspinlock_paravirt.h:510 __pv_queued_spin_unlock_slowpath+0x241/0x2f0 kernel/locking/qspinlock_paravirt.h:508
+> Modules linked in:
+> 
+> CPU: 1 PID: 5099 Comm: syz-executor799 Not tainted 6.9.0-rc2-next-20240403-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+> RIP: 0010:__pv_queued_spin_unlock_slowpath+0x241/0x2f0 kernel/locking/qspinlock_paravirt.h:508
+> Code: 85 0a 6e f6 4c 89 f0 48 c1 e8 03 0f b6 04 18 84 c0 0f 85 9f 00 00 00 41 8b 16 48 c7 c7 c0 26 cb 8b 4c 89 f6 e8 40 b3 cb f5 90 <0f> 0b 90 90 eb 8d 44 89 f1 80 e1 07 38 c1 0f 8c 26 ff ff ff 4c 89
+> RSP: 0018:ffffc9000364f238 EFLAGS: 00010246
+> 
+> RAX: 9a7270b7f8439200 RBX: dffffc0000000000 RCX: ffff888023139e00
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: dffffc0000000000 R08: ffffffff81580152 R09: 1ffffffff1f526cd
+> R10: dffffc0000000000 R11: fffffbfff1f526ce R12: 1ffff11005d88b6a
+> R13: ffff88802ec45b50 R14: ffff88802ec45b40 R15: ffff88802ec45b40
+> FS:  00007f3928a5c6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000561c1eec8018 CR3: 00000000213dc000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  __raw_callee_save___pv_queued_spin_unlock_slowpath+0x15/0x30
+>  .slowpath+0x9/0x16
+>  pv_queued_spin_unlock arch/x86/include/asm/paravirt.h:589 [inline]
+>  queued_spin_unlock arch/x86/include/asm/qspinlock.h:57 [inline]
+>  do_raw_spin_unlock+0x13c/0x8b0 kernel/locking/spinlock_debug.c:142
+>  __raw_spin_unlock include/linux/spinlock_api_smp.h:142 [inline]
+>  _raw_spin_unlock+0x1e/0x50 kernel/locking/spinlock.c:186
+>  spin_unlock include/linux/spinlock.h:391 [inline]
+>  madvise_cold_or_pageout_pte_range+0x170f/0x3990 mm/madvise.c:480
+>  walk_pmd_range mm/pagewalk.c:143 [inline]
+>  walk_pud_range mm/pagewalk.c:221 [inline]
+>  walk_p4d_range mm/pagewalk.c:256 [inline]
+>  walk_pgd_range+0xba1/0x1810 mm/pagewalk.c:293
+>  __walk_page_range+0x132/0x720 mm/pagewalk.c:395
+>  walk_page_range+0x58f/0x7c0 mm/pagewalk.c:521
+>  madvise_cold_page_range mm/madvise.c:562 [inline]
+>  madvise_cold mm/madvise.c:584 [inline]
+>  madvise_vma_behavior mm/madvise.c:1028 [inline]
+>  madvise_walk_vmas mm/madvise.c:1256 [inline]
+>  do_madvise+0x1e7b/0x44a0 mm/madvise.c:1442
+> 
+> 
+> ---
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
 
 
