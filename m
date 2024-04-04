@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-131699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3692898ADA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:17:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8CE9898ADB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:17:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67F351F2C106
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DA89281EFE
 	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5E413280F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49406132807;
 	Thu,  4 Apr 2024 15:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="3O/4XKR6"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2054.outbound.protection.outlook.com [40.107.243.54])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="si5MsP0I"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2064.outbound.protection.outlook.com [40.107.223.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1439954905;
-	Thu,  4 Apr 2024 15:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19AA412D201;
+	Thu,  4 Apr 2024 15:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.64
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712243675; cv=fail; b=pM5qjUILqa4p+GC2S5SZ3XD8Fy5j8uCLEvIx/4cACmIjWVfqDeSe/yK4lgEUOadvVajMsDh12EwoDC8XRVfOH7QhgcS32EgMUMiW6oMTP7jr99159y36+Zp48vACTtdQBzUGrDe2cnu2yv7dKJAVCyF0zr2N1o7rLGkbP1bG8CU=
+	t=1712243674; cv=fail; b=Ffm4HARUoSDZ+gbZvbI2vXR17mNY4RbkpqrwwT/F7ROJCUyz0n4uQRFGWkuqjUNqkUJWQdAUontw4EYEI/HQTGbna3sOPN3vkDHOtFrr+1z1cpHebXfRMaJ7OMnKOlrklDfEWbfjvidrGf+Fprzc0+rdi9d8I6WJI0hrJ3DmXJk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712243675; c=relaxed/simple;
-	bh=1s1qR5lee3AZGAmY4DApwVzPv7Mwacf7ttyEu7wsbQI=;
+	s=arc-20240116; t=1712243674; c=relaxed/simple;
+	bh=EWkuiLxWnzqx+F3Nsyigrz/mhV6d8h3yPRx5MWlM7oE=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mFLEXTRhmnP++ymSSRvgI9j0gvZgiD3COEVMYm8lE28kSWmtkLCHNR3tUOZGqrZ6TqxdFN12zXnTFok8Ui+0aC34WDrzETRVxGkbhTV68AxZajhSsv4AH0X84WM4D6fDL0RZWdIsPHIGUYSvgZurRWt8f9LC5+9g5BqbAFLx+hQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=3O/4XKR6; arc=fail smtp.client-ip=40.107.243.54
+	 MIME-Version:Content-Type; b=X3VzeLILVQKB2Uud73U/nAnIFZR6LhySLH4GtPucbzm/NAa2CwF6Qt0sDX9mLwzVCQ+dkNtt4dNwtPM5bpoh332nS1IIxBzvBZeEk9y+I8F6MI23+JJ4L7q+egSlzab83cn1vS+XetB9AdCqZIrFaxzwDI7GqFK/8kJe5myVoRM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=si5MsP0I; arc=fail smtp.client-ip=40.107.223.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j6nlQ9QI/XnfcJoyDRBOpuQmOVHwTfKCnJcKliu5hERauqPOMQFpfbvHH0FWZ63ODMhbDvd8Do+UrEhIb+AoWBGu335l6LmcjURbL0MgjXTu304MhvKBEw6a0yFf5AnDHktftg0dk4HD8C9SdFs9H6y86nKFE0HhO9PmA2i+Ib4fFcNYJW4yd7yL7l6x/X6Zpov/AEKkZAcWmqjg8kWw7EPVJyyhUkHJ1zSw/Y9tN/Ik6uJLipwEd4lTlq8RzmwGyXKJI0VwoBlaMzNG51xxuMormWXmIwN9vkYzaihfTZ8voXGFmLq6nvTP3lJ/Z/ZMEH2cAA2TGSDCseblr391iw==
+ b=MdQe8obnkXqf8ODVd5yDFMJZA5xThROSrOmGGWxnJYCKHSWPQCGD2Ocd4jq5f+ECmftNf/4B2QV72RyE89jygGkh/weuLL3Rw9MbIi7E6/7wu4XG3oI33f17PXgJ/qfe6IvUzvCbkr7Gg7XemVu/qqR5MtAFFNrRbZRxPXhvyNgGqQ1Jlx0Isg27jn82+CUEnbXeYJ5BafTs+PwhFNuE5dPEAxTRVg9nfIes4EaxkvuJOwlbsMFuWNEQhrF+3c7ZwcIjO1b8nIS5vjkkaUinssLzKRKBZqiEA892Azr0W0m+8g6kx+UY/TrN+oP6F42+lDXVw+TeJWOGTC9WTD0gVQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Wxe/NhfsbD2mL8GS5ALgW28w1/nrp5YBVuFG2w6+WLc=;
- b=Wu+suGWEEC5UosNYUmYuJbVLzgu2WQaDiWBM30MZWjwOciV4tMoZITPIQfgGjP6sbw0+VckV2zRC+c74wkP+WHeni9d8UPGUAhJxsD7h4+oQUR4a46ZI6NOggFE8VpPC2V6ZSYoxegA6fl38CGEEBXANIEpBb3BZCOZzVNgWCqp6t9RA8DZNj0gP3QK5e255uvv4I6Ctm4XgkNrK30AmtMkjBGoPZtAHeqEPOzuFVyJ5X8EuZ3lls5NfiQoSMOVaa0/oaYwRxRDg1oHdoXBFnDHlLuIAb3CfsUdGX62qYhFz2Q0TFjGm3Qh21lY+2mH3Ct89zl9LQHY57Nyx+gqLAQ==
+ bh=Ash9xkgCW0yMASADP6XU3W6rdbwMTO2LLisUz/Fo/M4=;
+ b=YkYXhhQax5BSgY/lcPgAf42+5PsKjRLnJUkr+D3c0pSLZn+ZFCwUavBpLR8sB/J+rWNwQN8b9QRoL5lX7tpAx0EgtOO3dFMXX2WakQl4xoo3i3pFyHXagABGRsL+NZRR32XOLYnnCaKBUlAZN1y9BokqBTo33ZJqHLBnX38OumKXDQtJ/xA9AO2KUfVInPXoeq/1dTkN+j9wsJnm9Pb2d8AF3tPPd5JlwlprB5goXqD6pydxGE4bevdFAuEknzDWemalQsgM0S0VzjwgMaWZ2eTel4xjkGVa7fxBZTw6ZG+FpIgqGwdPg+1mb4lxg4PBbMz/5kt3NChvbUwgsmnW4Q==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Wxe/NhfsbD2mL8GS5ALgW28w1/nrp5YBVuFG2w6+WLc=;
- b=3O/4XKR6/ugm3jYkaq4hiZZOqXJr3BjJAqBMA+YLUuRyrcZNOL0JM/5mEuKfrH7KH15sxB5qQZPgZtldKVmJGdDmcGothCcNj7ZwRsWHtjxtB56dx/pi2QzHimkiaz3Rn+ts6LelFl240SBVLWfPrAcsPi/HvGk974A6VjtxzLM=
-Received: from DM6PR05CA0050.namprd05.prod.outlook.com (2603:10b6:5:335::19)
- by DM4PR12MB7693.namprd12.prod.outlook.com (2603:10b6:8:103::8) with
+ bh=Ash9xkgCW0yMASADP6XU3W6rdbwMTO2LLisUz/Fo/M4=;
+ b=si5MsP0IH6DtBrjWN2P4iXQECNUVpVR8C7jmpfJ2X62WbxsFQmviIQgX0x5fFRAkgTmbQX2Kd98coLY1Ii0LBjRo2ht90OS6Vsq2AA2AG3PqbSPhcmEgzv6L7wSYFdlmI1DssOuINmMfHK34yGGm26+jmHvsVvaDQ8bOakOzoBY=
+Received: from CH0PR13CA0010.namprd13.prod.outlook.com (2603:10b6:610:b1::15)
+ by CY5PR12MB6177.namprd12.prod.outlook.com (2603:10b6:930:26::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 4 Apr
  2024 15:14:29 +0000
-Received: from DS3PEPF000099DA.namprd04.prod.outlook.com
- (2603:10b6:5:335:cafe::1c) by DM6PR05CA0050.outlook.office365.com
- (2603:10b6:5:335::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.10 via Frontend
+Received: from DS3PEPF000099D6.namprd04.prod.outlook.com
+ (2603:10b6:610:b1:cafe::a) by CH0PR13CA0010.outlook.office365.com
+ (2603:10b6:610:b1::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.11 via Frontend
  Transport; Thu, 4 Apr 2024 15:14:29 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
@@ -62,9 +62,9 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099DA.mail.protection.outlook.com (10.167.17.11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Thu, 4 Apr 2024 15:14:28 +0000
+ DS3PEPF000099D6.mail.protection.outlook.com (10.167.17.7) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Thu, 4 Apr 2024 15:14:29 +0000
 Received: from quartz-7b1chost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 4 Apr
@@ -74,9 +74,9 @@ To: <linux-edac@vger.kernel.org>
 CC: <linux-kernel@vger.kernel.org>, <tony.luck@intel.com>, <x86@kernel.org>,
 	<Avadhut.Naik@amd.com>, <John.Allen@amd.com>, Yazen Ghannam
 	<yazen.ghannam@amd.com>
-Subject: [PATCH v2 15/16] x86/mce/apei: Handle variable register array size
-Date: Thu, 4 Apr 2024 10:13:58 -0500
-Message-ID: <20240404151359.47970-16-yazen.ghannam@amd.com>
+Subject: [PATCH v2 16/16] EDAC/mce_amd: Add support for FRU Text in MCA
+Date: Thu, 4 Apr 2024 10:13:59 -0500
+Message-ID: <20240404151359.47970-17-yazen.ghannam@amd.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240404151359.47970-1-yazen.ghannam@amd.com>
 References: <20240404151359.47970-1-yazen.ghannam@amd.com>
@@ -92,53 +92,43 @@ X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099DA:EE_|DM4PR12MB7693:EE_
-X-MS-Office365-Filtering-Correlation-Id: a7b8f784-ef11-41b9-4fe4-08dc54b9ec5c
+X-MS-TrafficTypeDiagnostic: DS3PEPF000099D6:EE_|CY5PR12MB6177:EE_
+X-MS-Office365-Filtering-Correlation-Id: ceaa0e43-0c58-47c5-a8b5-08dc54b9ec7a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	zszzOYLdwCT3jkz980JQi45a+CKwPf8TQh7Dix/WtRCytAd3R9zJNywKduJIKO6T78kK+BOz56nxOUX/lHd6nnVOx6yOULdZNisSC4NZCAyJvPnh0FFB9NH1ubnckDg8Z6lEzuN4S01wJ5jpukEy5YdMBGn5UrBlWgPJM15/LuBEtfkT2pwj7THkIOZJe4PWUqs0qOfcIS25HNwne2ASx/RO8itTH6QkrTpB1ljC8aPZHnALZHrm+dryBLUzNMU1VMmUKZDOJPomIrNDXgIXtKUDrjfDJGb5Dil2nzuJUIwp4Mtc4sAI0iAxG6H60C7mkk8crQ/RywghXbuw3ynqJQ7ciMARSdo3mXfmAz7ToRo3YEXLX6sny5rwlEKjdcK9nKt1nfmVF6tys4QMlorOYYAtQLlygESAAoL7PbdXt5G1qXBfsmMRRveqkzh/R3ZImtCXPvcSU0qF2wsjXQcW2KAd26a+mqCOS9T3+4cmSZl9BrEJKk4b2PDS2Pro3P1Y/DF1d3pP7OSfghjXMdxnv7LO/V35GRtzUYQmkta3aVdCVAE6VHy6J54rL8opy/oVLXvqtFYqKoYKNllCI+lweAW4YYLsceKu4sL5BTFHbnUkMy5G/C737vNPermGtWNQMLfal/XGHvZed6VNRuEGa8lb7zc9GIoR29FsUJHk3xkB51wwZv3yxB/4BFYC6MoAAh3ZyP4NM7HC23lg7EcJOg==
+	uOQmzPgFdrKky2fQlW7VbcoRBEIO+Cvb2IX1PHO4v6BeaSi6Ej7K5dBOEBmQ24OCwJFZBzVTwWVEzJKYodx1EkiojT/fD9akv/aWQA2pD65inB47gxyVfM1FC+vDJShmgZ2jTEdC+8VXJ7v1SB7cav0MGEn13bdG09EQgc8aCWXN41/NmyW7gCfeNj+qsvk4dZiDfEXZFihRIUCUZyeh/g01/LPtukg8rBbZZYmY/UZALatxVD/n2nklkTOO9DZFpAw0K4AMtYIjecCEhBY3P3hKL1h37FQoUhEZV6Oqt3xDu3r5Uda08QM/bYFMytlfuGz2es0/1K85Q+Nahpcx1iYLshFvZZXeA4yPcOL+L56T+ry2Kq4RYTZ8JrATKfbjotrp+4Th1833UOxiH6JJ5B8jDtwV4ZHhlDtU7mblqQuSVvSZDBlJKXWf2KWIFNXgg3eo7oBYc//k4wZNrQnrsBI9vHrom0KV8uvry0b2l3hLwyqUO/OJEJk68+GiELQ2FPSaPUZjU/SCLe3F1/RPLMLYLfP5zk+wv6XsuIJeclZPLW9KdLQ/3OQ954Cx8wUbxVWryUWnn3Eing+2a6+pr/Re/41T1Nk/QldJqR1L5Qs3DaarJ2V8ZAIyf+NfQo8de0138Line6M93xk+3GhEtTAMwmieBbCb82hQ0uk+vrsIm5Mx+IFj818aM2LZB1rUlzEkmp0eRrw0irzkUpMzaA==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(82310400014)(36860700004)(376005);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 15:14:28.8892
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 15:14:29.0724
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7b8f784-ef11-41b9-4fe4-08dc54b9ec5c
+X-MS-Exchange-CrossTenant-Network-Message-Id: ceaa0e43-0c58-47c5-a8b5-08dc54b9ec7a
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099DA.namprd04.prod.outlook.com
+	DS3PEPF000099D6.namprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7693
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6177
 
-ACPI Boot Error Record Table (BERT) is being used by the kernel to
-report errors that occurred in a previous boot. On some modern AMD
-systems, these very errors within the BERT are reported through the
-x86 Common Platform Error Record (CPER) format which consists of one
-or more Processor Context Information Structures. These context
-structures provide a starting address and represent an x86 MSR range
-in which the data constitutes a contiguous set of MSRs starting from,
-and including the starting address.
+A new "FRU Text in MCA" feature is defined where the Field Replaceable
+Unit (FRU) Text for a device is represented by a string in the new
+MCA_SYND1 and MCA_SYND2 registers. This feature is supported per MCA
+bank, and it is advertised by the McaFruTextInMca bit (MCA_CONFIG[9]).
 
-It's common, for AMD systems that implement this behavior, that the
-MSR range represents the MCAX register space used for the Scalable MCA
-feature. The apei_smca_report_x86_error() function decodes and passes
-this information through the MCE notifier chain. However, this function
-assumes a fixed register size based on the original HW/FW implementation.
+The FRU Text is populated dynamically for each individual error state
+(MCA_STATUS, MCA_ADDR, et al.). This handles the case where an MCA bank
+covers multiple devices, for example, a Unified Memory Controller (UMC)
+bank that manages two DIMMs.
 
-This assumption breaks with the addition of two new MCAX registers viz.
-MCA_SYND1 and MCA_SYND2. These registers are added at the end of the
-MCAX register space, so they won't be included when decoding the CPER
-data.
+Print the FRU Text string, if available, when decoding an MCA error.
 
-Rework apei_smca_report_x86_error() to support a variable register array
-size. This covers any case where the MSR context information starts at
-the MCAX address for MCA_STATUS and ends at any other register within
-the MCAX register space.
-
-Add code comments indicating the MCAX register at each offset.
+Also, add field for MCA_CONFIG MSR in struct mce_hw_err as vendor specific
+error information and save the value of the MSR. The very value can then be
+exported through tracepoint for userspace tools like rasdaemon to print FRU
+Text, if available.
 
 Co-developed-by: Avadhut Naik <Avadhut.Naik@amd.com>
 Signed-off-by: Avadhut Naik <Avadhut.Naik@amd.com>
@@ -147,117 +137,117 @@ Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
 
 Notes:
     Link:
-    https://lkml.kernel.org/r/20231118193248.1296798-20-yazen.ghannam@amd.com
+    https://lkml.kernel.org/r/20231118193248.1296798-21-yazen.ghannam@amd.com
     
     v1->v2:
     * No change.
 
- arch/x86/kernel/cpu/mce/apei.c | 73 +++++++++++++++++++++++++++-------
- 1 file changed, 59 insertions(+), 14 deletions(-)
+ arch/x86/include/asm/mce.h     |  2 ++
+ arch/x86/kernel/cpu/mce/apei.c |  2 ++
+ arch/x86/kernel/cpu/mce/core.c |  3 +++
+ drivers/edac/mce_amd.c         | 21 ++++++++++++++-------
+ 4 files changed, 21 insertions(+), 7 deletions(-)
 
+diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
+index a701290f80a1..2a8997d7ba4d 100644
+--- a/arch/x86/include/asm/mce.h
++++ b/arch/x86/include/asm/mce.h
+@@ -59,6 +59,7 @@
+  *  - TCC bit is present in MCx_STATUS.
+  */
+ #define MCI_CONFIG_MCAX		0x1
++#define MCI_CONFIG_FRUTEXT	BIT_ULL(9)
+ 
+ /*
+  * Note that the full MCACOD field of IA32_MCi_STATUS MSR is
+@@ -195,6 +196,7 @@ struct mce_hw_err {
+ 		struct {
+ 			u64 synd1;
+ 			u64 synd2;
++			u64 config;
+ 		} amd;
+ 	} vi;
+ };
 diff --git a/arch/x86/kernel/cpu/mce/apei.c b/arch/x86/kernel/cpu/mce/apei.c
-index 89a8ebac53ea..43622241c379 100644
+index 43622241c379..a9c28614530b 100644
 --- a/arch/x86/kernel/cpu/mce/apei.c
 +++ b/arch/x86/kernel/cpu/mce/apei.c
-@@ -69,9 +69,9 @@ EXPORT_SYMBOL_GPL(apei_mce_report_mem_error);
- int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
- {
- 	const u64 *i_mce = ((const u64 *) (ctx_info + 1));
-+	unsigned int cpu, num_registers;
- 	struct mce_hw_err err;
- 	struct mce *m = &err.m;
--	unsigned int cpu;
+@@ -154,6 +154,8 @@ int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
+ 		fallthrough;
+ 	/* MCA_CONFIG */
+ 	case 4:
++		err.vi.amd.config = *(i_mce + 3);
++		fallthrough;
+ 	/* MCA_MISC0 */
+ 	case 3:
+ 		m->misc = *(i_mce + 2);
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index aa27729f7899..a4d09dda5fae 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -207,6 +207,8 @@ static void __print_mce(struct mce_hw_err *err)
+ 			pr_cont("SYND2 %llx ", err->vi.amd.synd2);
+ 		if (m->ipid)
+ 			pr_cont("IPID %llx ", m->ipid);
++		if (err->vi.amd.config)
++			pr_cont("CONFIG %llx ", err->vi.amd.config);
+ 	}
  
- 	memset(&err, 0, sizeof(struct mce_hw_err));
+ 	pr_cont("\n");
+@@ -679,6 +681,7 @@ static noinstr void mce_read_aux(struct mce_hw_err *err, int i)
  
-@@ -91,16 +91,12 @@ int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
- 		return -EINVAL;
+ 	if (mce_flags.smca) {
+ 		m->ipid = mce_rdmsrl(MSR_AMD64_SMCA_MCx_IPID(i));
++		err->vi.amd.config = mce_rdmsrl(MSR_AMD64_SMCA_MCx_CONFIG(i));
  
- 	/*
--	 * The register array size must be large enough to include all the
--	 * SMCA registers which need to be extracted.
--	 *
- 	 * The number of registers in the register array is determined by
- 	 * Register Array Size/8 as defined in UEFI spec v2.8, sec N.2.4.2.2.
--	 * The register layout is fixed and currently the raw data in the
--	 * register array includes 6 SMCA registers which the kernel can
--	 * extract.
-+	 * Ensure that the array size includes at least 1 register.
- 	 */
--	if (ctx_info->reg_arr_size < 48)
-+	num_registers = ctx_info->reg_arr_size >> 3;
-+	if (!num_registers)
- 		return -EINVAL;
+ 		if (m->status & MCI_STATUS_SYNDV) {
+ 			m->synd = mce_rdmsrl(MSR_AMD64_SMCA_MCx_SYND(i));
+diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
+index 32bf4cc564a3..f68b3d1b558e 100644
+--- a/drivers/edac/mce_amd.c
++++ b/drivers/edac/mce_amd.c
+@@ -795,6 +795,7 @@ amd_decode_mce(struct notifier_block *nb, unsigned long val, void *data)
+ 	struct mce_hw_err *err = (struct mce_hw_err *)data;
+ 	struct mce *m = &err->m;
+ 	unsigned int fam = x86_family(m->cpuid);
++	u64 mca_config = err->vi.amd.config;
+ 	int ecc;
  
- 	for_each_possible_cpu(cpu) {
-@@ -115,12 +111,61 @@ int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
- 	mce_setup_for_cpu(cpu, m);
+ 	if (m->kflags & MCE_HANDLED_CEC)
+@@ -814,11 +815,7 @@ amd_decode_mce(struct notifier_block *nb, unsigned long val, void *data)
+ 		((m->status & MCI_STATUS_PCC)	? "PCC"	  : "-"));
  
- 	m->bank = (ctx_info->msr_addr >> 4) & 0xFF;
--	m->status = *i_mce;
--	m->addr = *(i_mce + 1);
--	m->misc = *(i_mce + 2);
--	/* Skipping MCA_CONFIG */
--	m->ipid = *(i_mce + 4);
--	m->synd = *(i_mce + 5);
+ 	if (boot_cpu_has(X86_FEATURE_SMCA)) {
+-		u32 low, high;
+-		u32 addr = MSR_AMD64_SMCA_MCx_CONFIG(m->bank);
+-
+-		if (!rdmsr_safe(addr, &low, &high) &&
+-		    (low & MCI_CONFIG_MCAX))
++		if (mca_config & MCI_CONFIG_MCAX)
+ 			pr_cont("|%s", ((m->status & MCI_STATUS_TCC) ? "TCC" : "-"));
+ 
+ 		pr_cont("|%s", ((m->status & MCI_STATUS_SYNDV) ? "SyndV" : "-"));
+@@ -853,8 +850,18 @@ amd_decode_mce(struct notifier_block *nb, unsigned long val, void *data)
+ 
+ 		if (m->status & MCI_STATUS_SYNDV) {
+ 			pr_cont(", Syndrome: 0x%016llx\n", m->synd);
+-			pr_emerg(HW_ERR "Syndrome1: 0x%016llx, Syndrome2: 0x%016llx",
+-				 err->vi.amd.synd1, err->vi.amd.synd2);
++			if (mca_config & MCI_CONFIG_FRUTEXT) {
++				char frutext[17];
 +
-+	/*
-+	 * The SMCA register layout is fixed and includes 16 registers.
-+	 * The end of the array may be variable, but the beginning is known.
-+	 * Switch on the number of registers. Cap the number of registers to
-+	 * expected max (15).
-+	 */
-+	if (num_registers > 15)
-+		num_registers = 15;
++				memset(frutext, 0, sizeof(frutext));
++				memcpy(&frutext[0], &err->vi.amd.synd1, 8);
++				memcpy(&frutext[8], &err->vi.amd.synd2, 8);
 +
-+	switch (num_registers) {
-+	/* MCA_SYND2 */
-+	case 15:
-+		err.vi.amd.synd2 = *(i_mce + 14);
-+		fallthrough;
-+	/* MCA_SYND1 */
-+	case 14:
-+		err.vi.amd.synd1 = *(i_mce + 13);
-+		fallthrough;
-+	/* MCA_MISC4 */
-+	case 13:
-+	/* MCA_MISC3 */
-+	case 12:
-+	/* MCA_MISC2 */
-+	case 11:
-+	/* MCA_MISC1 */
-+	case 10:
-+	/* MCA_DEADDR */
-+	case 9:
-+	/* MCA_DESTAT */
-+	case 8:
-+	/* reserved */
-+	case 7:
-+	/* MCA_SYND */
-+	case 6:
-+		m->synd = *(i_mce + 5);
-+		fallthrough;
-+	/* MCA_IPID */
-+	case 5:
-+		m->ipid = *(i_mce + 4);
-+		fallthrough;
-+	/* MCA_CONFIG */
-+	case 4:
-+	/* MCA_MISC0 */
-+	case 3:
-+		m->misc = *(i_mce + 2);
-+		fallthrough;
-+	/* MCA_ADDR */
-+	case 2:
-+		m->addr = *(i_mce + 1);
-+		fallthrough;
-+	/* MCA_STATUS */
-+	case 1:
-+		m->status = *i_mce;
-+	}
++				pr_emerg(HW_ERR "FRU Text: %s", frutext);
++			} else {
++				pr_emerg(HW_ERR "Syndrome1: 0x%016llx, Syndrome2: 0x%016llx",
++					 err->vi.amd.synd1, err->vi.amd.synd2);
++			}
+ 		}
  
- 	mce_log(&err);
- 
+ 		pr_cont("\n");
 -- 
 2.34.1
 
