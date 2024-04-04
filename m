@@ -1,218 +1,193 @@
-Return-Path: <linux-kernel+bounces-132083-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B31C898F78
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:13:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3C98898F79
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:13:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1F1AB2AB8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:13:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 237241C2150C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:13:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10AC1350CF;
-	Thu,  4 Apr 2024 20:13:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C54E1350C8;
+	Thu,  4 Apr 2024 20:13:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="Yc61DdAw"
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q4LoZCyc"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A11134733
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 20:13:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17069134733
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 20:13:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712261598; cv=none; b=OX6Hz1EL2SCsO3bzcH/xOWSphHTaiUfArBHH5sKGvjAVGe7EXoC16cZfk9QTc7xYCAdOHOh6yWMsLmwua0Bx0w7UDQUEav1OZEJJXr3v7eMMwGO93yiBHhscyrzonaFgnY197ZaO2JJtWhPdO55+U0dUzW3FcevnXnlXA/2lHyE=
+	t=1712261608; cv=none; b=AqRl0WYeUVITToQj+0EKJmzF+Z5Wzb/JePuN6OWS4uQvlFzes/qJ/bVjElto5SghrMCNONeQv2QUMKdY0R6WSoiojSfQcatNJpYOSgwzgmu7DVDQu6DZwuCYlpsTyjUGC35r4rOfAu6DGjyzpgNGKv48buYrCWpddaRyM7PLjig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712261598; c=relaxed/simple;
-	bh=MtMfGB7FH6RoXXq2+aUs70YoAHP7p/Zh23dvXEoiUio=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=GVIJDr18cl9gZES9Hdhi9AtE96gVCI8vcklsXW2C8Gx1MgfS5JirYMaf8BxJCyPU5/dbUv6hkBjguwZ8wULFICDcT0lREJH4WeE5ZzOMyhNxMqhY/fcshheRPawdbrwiwVkHx/wKz/+z2JozpDP/p9iE/jnBw/zoTU30bkbBRtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=Yc61DdAw; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e2b1cd446fso7869895ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 13:13:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1712261596; x=1712866396; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=mUAL9RLsULnbJgPVDzb+qmxwNae1uJap47Wq1rbrKPw=;
-        b=Yc61DdAw6xND5P9a11CKzXapa6q5hL3Kht7Db1Zbisl1/YKtg8rBBXEEH5oEyeVdwt
-         XnN7z9VamyCExsiJULLlMo/MPU95QFAcc0vBP9oMSkQz9lm1WpvP2zbA6RacOk8ehcA+
-         6gtXFFmHprojy5p3lPUkt7ku2qIaHGIwLjhrHOHqsRQmB8vsNPp3/QQTUmwafyO6wRgo
-         CoMTZXUjCQVlHjCEMj8fPtguRRPUGqv0+tJS3+yIVIPHMeb5b2QoLAavEaymVvkSeTaY
-         uQ7yPCOEKXMerglAzds8AqQQ0/otG3kkZMENMvHygieKN0Xlkh0+GRfWhGxbmMdkM124
-         M79w==
+	s=arc-20240116; t=1712261608; c=relaxed/simple;
+	bh=Id80f4uOx9qzHVwPTR0FFJDqkOlcUV40IqteBibscvg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZsLDWQ8UEwbdN6GOn3yxicy69flqJpIxStho1dXVnlIsYy1v8arVpC3hRZJtf9Sfm9L03cTyLYwTGZYJrS9srlUjjVUsunryfnFSM/quza3Hme7wdw196RZbsPj3NwdesUCbb3iNOMGMywOhNMsD+povHdmpBLWTF5c1lNb18bI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q4LoZCyc; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712261606;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=AJ3/vr7xLOVNzYAk+Yc0+zfPAy8gihCrfrD2eSX4L38=;
+	b=Q4LoZCyc1ByA0ohL/NcCWfWCjpzEosaS3MPFMCrR0zYDLVvrF81hoRUFBv7SYlRwgca/kF
+	uQ4wTog/vnBBprI4P15ROnJXuQ87+RoByvqoA/v7SrQI2v4xsIjILtLv75wRwsKw0+HnJ3
+	H7mxW5gr8NB5fP9zthE+22TTc9NsPHM=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-107-8_QeZ_DkMGqWddNPHJIlrQ-1; Thu, 04 Apr 2024 16:13:24 -0400
+X-MC-Unique: 8_QeZ_DkMGqWddNPHJIlrQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-343e0861152so15339f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 13:13:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712261596; x=1712866396;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1712261603; x=1712866403;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mUAL9RLsULnbJgPVDzb+qmxwNae1uJap47Wq1rbrKPw=;
-        b=Ow9v4Jh1mHOYbqtf6t994XHuYqwxvwaXLDMEoBQLpQTpGAgD0kC/di2180Nj8CaChj
-         pRM/bspIwwjqgFGWnSHOcsy62xEH4t0VrxqUoCPlXSdflBJKjnmjGqw0LPMfsPUN+oek
-         XPBzwvF4waDlTeiUw5VVtKxc8CKckpO77hzO3UozotvxlTcjPmM+aMOOgPOu38owVgSP
-         QUy5tJS/4JlFkxceaF9JHOdbAZ9eihP4PlIw4VGJN6D7PMH6zJEJyk9KKLiHWsRwHqsO
-         jb4xAhGk97QgK2aeiXEHQjzy+w+S/6t/7arsnC6lwcVipmJ+DXyRBGUBbvFGjyubpDz0
-         NskA==
-X-Forwarded-Encrypted: i=1; AJvYcCXfvS9KP5poscUjo/c8/8ZPBWHCvXj4Qu27Gf7jvHWyaiBjVcbAMzHpn7tO9nZlFu2spy5IYligNhpXeAco+KTC02ka/Nlpv4l5MVyE
-X-Gm-Message-State: AOJu0Yz8y0QlhwG8J8XrZVjjksI7/jOFUTRjau2YbsbXPWiDPcXMJLlz
-	cE2AjUbjHMtXWq2waJzQoutxFNL+0e4s6o+qqUxNFP1gQzdJWwgKavMQPTguD4E=
-X-Google-Smtp-Source: AGHT+IGgwVSfPRNKtx9Jf4OL/W8qOt/gsfmr5K1tuYOatYpNyhpDKyZ2oO0seu2QZI/uO8RorGBWHQ==
-X-Received: by 2002:a17:902:c155:b0:1e2:5e77:4cd with SMTP id 21-20020a170902c15500b001e25e7704cdmr3199719plj.7.1712261595505;
-        Thu, 04 Apr 2024 13:13:15 -0700 (PDT)
-Received: from localhost ([50.145.13.30])
-        by smtp.gmail.com with ESMTPSA id b3-20020a170903228300b001e2c2d694cdsm20633plh.31.2024.04.04.13.13.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 13:13:15 -0700 (PDT)
-Date: Thu, 04 Apr 2024 13:13:15 -0700 (PDT)
-X-Google-Original-Date: Thu, 04 Apr 2024 13:13:13 PDT (-0700)
-Subject:     Re: [External] [PATCH] riscv: process: Fix kernel gp leakage
-In-Reply-To: <7312eb06-c9dd-4a0e-98bc-ea4e8ace7b10@ghiti.fr>
-CC: sorear@fastmail.com, cuiyunhui@bytedance.com, linux-riscv@lists.infradead.org,
-  Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu, linux-kernel@vger.kernel.org
-From: Palmer Dabbelt <palmer@dabbelt.com>
-To: alex@ghiti.fr
-Message-ID: <mhng-c2329625-3c61-4c53-86c6-5989b03505f5@palmer-ri-x1c9a>
+        bh=AJ3/vr7xLOVNzYAk+Yc0+zfPAy8gihCrfrD2eSX4L38=;
+        b=plZVBoN+Of2V/4Qmaszf/XZfaOZpwZ0PnJyplojcxcJMaBarcw2vDlA4P/ldcVkhAU
+         VINyRYkAZHjA/JopJ7lJ5PEVCxxiJZru0x2ZqehIc6dsUMvhnQroZUAOHloOT8N31FI8
+         CDx5LDJluBviUvj82JiHcOu7ixXX7oRoni5mXBu6/s3f6eK13ipylXDozaWbyQMiudV7
+         1y126MkbybLQ6ANbitu7IPJZScuhDhnXuujfQTX4rGEtLjYdFLQweeQhZWzi6YJbt/Jd
+         j8qLUP/HxNs1icrP+dbye/jb81w2DID/AOs99dCoDxagj39FWEdPWWENBrJtJe1zEqkw
+         Y4Yg==
+X-Gm-Message-State: AOJu0YzhRt2iIuM52JWA+UlsLFebBhTSnRusA8AY0uncDBqYqnnR4yhN
+	cSkWrG3749aqz7VGdwdl20HBnkJNGMLutJR/Qy6CeoB9b7ISHglNwUuAY8Us7ASLKhRlkLeBSpg
+	sUT+bc//WgL8ozxOhD/iKsRC85QtMJi7rPMeOLpU38VIFmQYD9DZhYsfCWwb9aQ==
+X-Received: by 2002:adf:a44c:0:b0:343:2e0d:ec4a with SMTP id e12-20020adfa44c000000b003432e0dec4amr433043wra.10.1712261603287;
+        Thu, 04 Apr 2024 13:13:23 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEQ7F+AcpdSTILOHkiXf6HXQjke4Nt06UxDtUvq5HEHQDA220pqiyLX8yXMTs7wuZotDWq0oA==
+X-Received: by 2002:adf:a44c:0:b0:343:2e0d:ec4a with SMTP id e12-20020adfa44c000000b003432e0dec4amr433028wra.10.1712261602844;
+        Thu, 04 Apr 2024 13:13:22 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c743:de00:7030:120f:d1c9:4c3c? (p200300cbc743de007030120fd1c94c3c.dip0.t-ipconnect.de. [2003:cb:c743:de00:7030:120f:d1c9:4c3c])
+        by smtp.gmail.com with ESMTPSA id r4-20020a5d6944000000b00343b09729easm193492wrw.69.2024.04.04.13.13.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 13:13:22 -0700 (PDT)
+Message-ID: <e74cfee3-565f-4c69-bb7b-bdd40d01d212@redhat.com>
+Date: Thu, 4 Apr 2024 22:13:21 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] mm/hugetlb: pass correct order_per_bit to
+ cma_declare_contiguous_nid
+To: Frank van der Linden <fvdl@google.com>, linux-mm@kvack.org,
+ muchun.song@linux.dev, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, Roman Gushchin <roman.gushchin@linux.dev>
+References: <20240404162515.527802-1-fvdl@google.com>
+ <20240404162515.527802-2-fvdl@google.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240404162515.527802-2-fvdl@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 02 Apr 2024 02:21:15 PDT (-0700), alex@ghiti.fr wrote:
-> Hi Stefan,
->
-> On 27/03/2024 17:53, Stefan O'Rear wrote:
->> On Wed, Mar 27, 2024, at 4:43 AM, yunhui cui wrote:
->>> Hi Stefan,
->>>
->>> On Wed, Mar 27, 2024 at 2:14 PM Stefan O'Rear <sorear@fastmail.com> wrote:
->>>> childregs represents the registers which are active for the new thread
->>>> in user context. For a kernel thread, childregs->gp is never used since
->>>> the kernel gp is not touched by switch_to. For a user mode helper, the
->>>> gp value can be observed in user space after execve or possibly by other
->>>> means.
->>>>
->>>> Fixes: 7db91e57a0ac ("RISC-V: Task implementation")
->>>> Signed-off-by: Stefan O'Rear <sorear@fastmail.com>
->>>> ---
->>>>   arch/riscv/kernel/process.c | 3 ---
->>>>   1 file changed, 3 deletions(-)
->>>>
->>>> diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
->>>> index 92922dbd5b5c..51042f48da17 100644
->>>> --- a/arch/riscv/kernel/process.c
->>>> +++ b/arch/riscv/kernel/process.c
->>>> @@ -27,8 +27,6 @@
->>>>   #include <asm/vector.h>
->>>>   #include <asm/cpufeature.h>
->>>>
->>>> -register unsigned long gp_in_global __asm__("gp");
->>>> -
->>>>   #if defined(CONFIG_STACKPROTECTOR) && !defined(CONFIG_STACKPROTECTOR_PER_TASK)
->>>>   #include <linux/stackprotector.h>
->>>>   unsigned long __stack_chk_guard __read_mostly;
->>>> @@ -207,7 +205,6 @@ int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
->>>>          if (unlikely(args->fn)) {
->>>>                  /* Kernel thread */
->>>>                  memset(childregs, 0, sizeof(struct pt_regs));
->>>> -               childregs->gp = gp_in_global;
->>>>                  /* Supervisor/Machine, irqs on: */
->>>>                  childregs->status = SR_PP | SR_PIE;
->>>>
->>>> --
->>>> 2.40.1
->>>>
->>>>
->>> Can you help express in more detail what the problem was before fixing it?
->> It's a KASLR bypass, since gp_in_global is the address of the kernel symbol
->> __global_pointer$.
->>
->> The /* Kernel thread */ comment is somewhat inaccurate in that it is also used
->> for user_mode_helper threads, which exec a user process, e.g. /sbin/init or
->> when /proc/sys/kernel/core_pattern is a pipe. Such threads do not have
->> PF_KTHREAD set and are valid targets for ptrace etc. even before they exec.
->>
->> childregs is the *user* context during syscall execution and it is observable
->> from userspace in at least five ways:
->>
->> 1. kernel_execve does not currently clear integer registers, so the starting
->>     register state for PID 1 and other user processes started by the kernel has
->>     sp = user stack, gp = kernel __global_pointer$, all other integer registers
->>     zeroed by the memset in the patch comment.
->
->
-> So as I  did not this know this path really well, I played a bit and I
-> can confirm that usermode processes reach userspace with the gp = kernel:
->
-> Thread 1 hit Breakpoint 12, 0x00007fff82487fc4 in ?? ()
-> 1: x/i $pc
-> => 0x7fff82487fc4:    mv    a0,sp
-> 3: /x $gp = 0xffffffff817fee50
->
->
->>
->>     This is a bug in its own right, but I'm unwilling to bet that it is the only
->>     way to exploit the issue addressed by this patch.
->>
->> 2. ptrace(PTRACE_GETREGSET): you can PTRACE_ATTACH to a user_mode_helper thread
->>     before it execs, but ptrace requires SIGSTOP to be delivered which can only
->>     happen at user/kernel boundaries.
->>
->> 3. /proc/*/task/*/syscall: this is perfectly happy to read pt_regs for
->>     user_mode_helpers before the exec completes, but gp is not one of the
->>     registers it returns.
->>
->> 4. PERF_SAMPLE_REGS_USER: LOCKDOWN_PERF normally prevents access to kernel
->>     addresses via PERF_SAMPLE_REGS_INTR, but due to this bug kernel addresses
->>     are also exposed via PERF_SAMPLE_REGS_USER which is permitted under
->>     LOCKDOWN_PERF. I have not attempted to write exploit code.
->>
->> 5. Much of the tracing infrastructure allows access to user registers. I have
->>     not attempted to determine which forms of tracing allow access to user
->>     registers without already allowing access to kernel registers.
->>
->> Does this help? How much of this should be in the commit message?
->
->
-> I'd put them all, but up to you, at least the first usecase that I was
-> able to reproduce should be added to the commit log.
+On 04.04.24 18:25, Frank van der Linden wrote:
+> The hugetlb_cma code passes 0 in the order_per_bit argument to
+> cma_declare_contiguous_nid (the alignment, computed using the
+> page order, is correctly passed in).
+> 
+> This causes a bit in the cma allocation bitmap to always represent
+> a 4k page, making the bitmaps potentially very large, and slower.
+> 
+> So, correctly pass in the order instead.
+> 
+> Signed-off-by: Frank van der Linden <fvdl@google.com>
+> Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepages using cma")
 
-I just pasted it all in the commit, it seems generally useful for people 
-running into the commit.  With the Link tags maybe it's less important 
-these days, but I always just err on the side of putting more stuff in 
-the commit messages.
+It might be subopimal, but do we call it a "BUG" that needs "fixing". I 
+know, controversial :)
 
-> You can add:
->
-> Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
->
-> And this should go to -fixes.
+> ---
+>   mm/hugetlb.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 23ef240ba48a..6dc62d8b2a3a 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -7873,9 +7873,9 @@ void __init hugetlb_cma_reserve(int order)
+>   		 * huge page demotion.
+>   		 */
+>   		res = cma_declare_contiguous_nid(0, size, 0,
+> -						PAGE_SIZE << HUGETLB_PAGE_ORDER,
+> -						 0, false, name,
+> -						 &hugetlb_cma[nid], nid);
+> +					PAGE_SIZE << HUGETLB_PAGE_ORDER,
+> +					HUGETLB_PAGE_ORDER, false, name,
+> +					&hugetlb_cma[nid], nid);
+>   		if (res) {
+>   			pr_warn("hugetlb_cma: reservation failed: err %d, node %d",
+>   				res, nid);
 
-It's queued up for the tester.
+.. I'm afraid this is not completely correct.
 
-> Thanks,
->
-> Alex
->
->
->>
->> -s
->>
->>> Thanks,
->>> Yunhui
->>>
->>> _______________________________________________
->>> linux-riscv mailing list
->>> linux-riscv@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-riscv
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
+For example, on arm64, HUGETLB_PAGE_ORDER is essentially PMD_ORDER.
+
+.. but we do support smaller hugetlb sizes than that (cont-pte hugetlb 
+size is 64 KiB, not 2 MiB -- PMD -- on a 4k kernel)
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
