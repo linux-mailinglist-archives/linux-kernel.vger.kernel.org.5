@@ -1,134 +1,117 @@
-Return-Path: <linux-kernel+bounces-131432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A25408987DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:34:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D44C89877D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:28:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4298C1F22599
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:34:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12D521F21476
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:28:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E53AB82C7E;
-	Thu,  4 Apr 2024 12:27:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABCC128395;
+	Thu,  4 Apr 2024 12:26:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WZIzIfnH"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oLVfSW2L"
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B6E413A41A
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:27:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745B9127B72
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712233674; cv=none; b=K9MjQMer3PdPk1sa+T/oHbbZF3hZlr0kDYYrlD/EL8b3Pn1zQ0ezxhNPMz4x6LhWwlDGpHH3/uTyRZTG74brvRpk8vFPW0ccp+l9QTQI7ZqlZTnKEYaXYvAPfPQ2fvzojYZ9YVBniMAayY/pKy84ZYKS8t4HzQwPy0abG3RrbYw=
+	t=1712233581; cv=none; b=M/adh91fQ4bBh6P5SO0lrGAmYWPQFVrXEGezxPx+man/jwA38BIp1/H9epe8BTKmAxPLNeYrMl0v5M0b2PqS9J1FbWeLN8Xi405uG1prxF8zXJQqSNtbbgthlQBWC3lp3oP9BVIVRZG5Auy4hqnAyyfpaQOG4Q1uvl2EcxEAY5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712233674; c=relaxed/simple;
-	bh=1usg8EVo8lpQx89y6EqbzjPZs8xvMoC2TNFiu1OGw0Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RpowaDPPHxefv1guLAwC3750vO0N9AkNkV5uKUI1wvtg7vOflMQyhqvjOREQdcuqiBl5y4gcHWpRdXCXoO+Wt7d17LUTZwCVZHrEWDBhCr7aGJCbCDSVCytAzMnq/jMlKN1pNNz7TsX/051jO5Y6ZbOhfBgVRux7hP261RMrDts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WZIzIfnH; arc=none smtp.client-ip=209.85.128.48
+	s=arc-20240116; t=1712233581; c=relaxed/simple;
+	bh=nKbvlDRuwmkwDrYvvcFdwq4SEQBGtNcWvtLI6tBE8Fc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Jkh9m0fV0ZhEKA418S2c/JcDOBDVGFd6d/LKtWSSjy2ig9Mka4WyNlT6UKwmjxXxFUJ7jDZAQGXUaf0lVh201M6Gs0B8JiB2nGddiWjuh1pXyShYGIrYUaaREJ01BoqZFkvWtiza+QpCQU4z5nFBtFT2RTklMTaUOSnlukt/wvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oLVfSW2L; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4162c210c33so961535e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:27:51 -0700 (PDT)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a2784b2783so661516a91.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:26:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712233669; x=1712838469; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=v2/Kxl6LpRi19aNU0GnPRsNjsIub/vSGQr1JFgUlFR8=;
-        b=WZIzIfnH6HJ7sajXhnlneF1gm+bprHF1U58Ah9UEwE+H9i6X2vMO4oV6ihl31ghRwl
-         MNRQYj8fjJZletlEGf74dOmfA+EuisSxrs2Tw7Z/52TAy0DCubRAWXXIpYo7hGREiO2f
-         auejeMaB2Seshjovc5VYLUa55cRKk8YN/w4lHTlDzM++NOFLJXVBM6RzNRUDoOOXUoH0
-         HA/wWgMobQp26f9xQq76gMQexyXcpc+6gjUIFUQCotuW4xA8isLyDkAaxVtvQNddGv23
-         HXHsiTteEBllJNCkSNO2/vaTYr2OtkN409KlidGqsuVThurbaxN82/9q99XmQpBUdBzd
-         cT4Q==
+        d=linaro.org; s=google; t=1712233580; x=1712838380; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=y75OMFbL7vQmdGj4RKt16g/wSJzKHLW5zDKxEznWL8k=;
+        b=oLVfSW2Lhue7hY60MbWn1Qjj1s8imN0PAlIxikGVIE6XoOvyeoMsUE3eIYz9Lfky/u
+         WsLVrkJAVTlKUNi+k8SomN9/7p1hdBvZXuXADH4ZX8X6PJdW1iWUpYL94IXzaGmzOUuA
+         nQ37YDhQGrZ1SdV7k+Jb8lQWvM4kovzlRdeNDCprFZ/qdrnfYXu1LNu3JZ9htqkvvz4r
+         9Z4GtmCmBtNU79/P9g7Hozl4C3ZgaP24Z2f0WijPge4d9CASN1aaDQgwASmL6PSRJ/qG
+         mG7Yy0nZy3nWhqi0MCWpQo+ydMjWQQs6pqKuqnPPPc2ZkqascJ0Bpvwgyac6iLfnff0C
+         PCTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712233669; x=1712838469;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=v2/Kxl6LpRi19aNU0GnPRsNjsIub/vSGQr1JFgUlFR8=;
-        b=YJTzQuMoOI1HYS8aFtd+kKp8fD5lvadKflx33XlFpSnftShEM0+i97oWm+9OKZmYrK
-         Mpg3Otq2S3JY+sC8B2+IvC6E/5Q1m0vaCQyOLPCXa2cZYdJZXVcIX7FPlsoMJy+mNBg4
-         fkszMhK15GMi852gBE2mbUdtMrGl99asqZL+Nm4Cb6oX2zb+8KESI9Acxyc7ULC0yW+2
-         AxXvNkpQyGdY1R9l3C9+odpHI6D8zubWKaycIJNaUVm52yvmVfWDTHyVICIihV4a5QIL
-         MZ/4epKCKSruq62QKINweKHGw1dq8fXImJoa4tAEqB42J/WN1XP13G7XaHW4C/JcXBA9
-         rg/g==
-X-Forwarded-Encrypted: i=1; AJvYcCVjwLIzkvmYThxz0ZGcXhrcGqNJeMMpA3z9tRXBCYiq/8NJeLsai1EZjlIAucwJEkUvZidB/w9k0WZx5pV+AnI0oGOw5MTlsr1Q9WJM
-X-Gm-Message-State: AOJu0Ywjcz4nm1cqSm2jmYDLbgVq6HQGkQLKbTOXDp/pBl40LeFFu1qV
-	OKFUguGxC15YJTpx27ADJ60S17b8XRYOJHSjVUjHU9tp+MdTrpx2pgoYiY84OfQ=
-X-Google-Smtp-Source: AGHT+IE4lWG03NrsYGIMb38leE/EL6KNHhTvu/DlJtCiu5w5jF8R4KkplAWIhngCJVQJeXTuDbWSsA==
-X-Received: by 2002:a5d:58e6:0:b0:343:419d:ba87 with SMTP id f6-20020a5d58e6000000b00343419dba87mr1780461wrd.13.1712233669746;
-        Thu, 04 Apr 2024 05:27:49 -0700 (PDT)
-Received: from gpeter-l.roam.corp.google.com ([148.252.128.204])
-        by smtp.gmail.com with ESMTPSA id bu14-20020a056000078e00b003434b41c83fsm12106303wrb.81.2024.04.04.05.27.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 05:27:49 -0700 (PDT)
-From: Peter Griffin <peter.griffin@linaro.org>
-To: mturquette@baylibre.com,
-	sboyd@kernel.org,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	vkoul@kernel.org,
-	kishon@kernel.org,
-	alim.akhtar@samsung.com,
-	avri.altman@wdc.com,
-	bvanassche@acm.org,
-	s.nawrocki@samsung.com,
-	cw00.choi@samsung.com,
-	jejb@linux.ibm.com,
-	martin.petersen@oracle.com,
-	chanho61.park@samsung.com,
-	ebiggers@kernel.org
-Cc: linux-scsi@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	devicetree@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	tudor.ambarus@linaro.org,
-	andre.draszik@linaro.org,
-	saravanak@google.com,
-	willmcvicker@google.com,
-	Peter Griffin <peter.griffin@linaro.org>
-Subject: [PATCH 17/17] MAINTAINERS: Add phy-gs101-ufs file to Tensor GS101.
-Date: Thu,  4 Apr 2024 13:25:59 +0100
-Message-ID: <20240404122559.898930-18-peter.griffin@linaro.org>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-In-Reply-To: <20240404122559.898930-1-peter.griffin@linaro.org>
-References: <20240404122559.898930-1-peter.griffin@linaro.org>
+        d=1e100.net; s=20230601; t=1712233580; x=1712838380;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=y75OMFbL7vQmdGj4RKt16g/wSJzKHLW5zDKxEznWL8k=;
+        b=i9ktPNY8cgoQfLB2Sml3CJG/moOAZ8RdiYAcvje8UUDXSMn3dlgmKDAv25vy2Bx0gU
+         VSl36e2wPAoX/6dYBB67IXVbFwLxvycdl61owtHFefhRDFvq9cR5pkysjW+/jxhcRDGj
+         hyUjQ2l+4FvrXa2HA0JzSIN5AQEOWnYh0mWVfmf6Aoa72czat+iwhkjY8PVSMTnPQ7vr
+         YrNX6SKDM3DhUBOP+FXeYkhtzhHZBaNrPvGTNavbqJW/3QOUxbfp9nRsV7SsLmTtC2NJ
+         CC2Fc5sfjqnRmDEkTSi8ZACtrXFThIVkuJ7YP251OmuXtFACmizhe2Vz23VR0AwsQtO+
+         XtLA==
+X-Forwarded-Encrypted: i=1; AJvYcCVa38bjZnyxZ98pJ49p7TbJ1T4CiHIpWDgTLR5Hb4dWtXoDv+o1SHw/AdDCb18Z4cn37cD8m1A/Frhar0AjbJBWtpVoo+XGZpgM5clp
+X-Gm-Message-State: AOJu0YyEKD0Cc9lXegJMFju0DNpDfbv5dq6DLtNBMrbJ4idRqBz2BALy
+	yvJocaghsB1D0PmGYzCU6njczwPbr9OI3Wivr5/N34ZrdBg+QKr2JvuQ368FVGBfYqgvrougq9J
+	QkqMyjEgaH5JUbSpxLg47qxpbS+ahEAYjCpb7OgehBUFHT2Nn
+X-Google-Smtp-Source: AGHT+IFjKdz3u/UVhyauvDpLc8hy4deCSYOJTjbvbQN7L+M2Y5bH505OVlIMuAZ8pblZGkxydM458USFDYheAtvG0Lg=
+X-Received: by 2002:a17:90a:f283:b0:2a2:b32c:dc5b with SMTP id
+ fs3-20020a17090af28300b002a2b32cdc5bmr2306195pjb.10.1712233579714; Thu, 04
+ Apr 2024 05:26:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1712147341.git.vitaly@bursov.com> <d9af90271748e6035c5f8bfc03b7bacdde357766.1712147341.git.vitaly@bursov.com>
+In-Reply-To: <d9af90271748e6035c5f8bfc03b7bacdde357766.1712147341.git.vitaly@bursov.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Thu, 4 Apr 2024 14:26:08 +0200
+Message-ID: <CAKfTPtDLGOvaBtdzxyetOWRFbZSq5mN5LY39AcvXkKMe90wp1Q@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] sched/debug: dump domains' level
+To: Vitalii Bursov <vitaly@bursov.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Add the newly created ufs phy for GS101 to MAINTAINERS.
+On Wed, 3 Apr 2024 at 15:28, Vitalii Bursov <vitaly@bursov.com> wrote:
+>
+> Knowing domain's level exactly can be useful when setting
+> relax_domain_level or cpuset.sched_relax_domain_level
+>
+> Usage:
+> cat /debug/sched/domains/cpu0/domain1/level
+> to dump cpu0 domain1's level.
+>
+> Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
 
-Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
----
- MAINTAINERS | 1 +
- 1 file changed, 1 insertion(+)
+Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 491d48f7c2fa..48ac9bd64f22 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9256,6 +9256,7 @@ S:	Maintained
- F:	Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
- F:	arch/arm64/boot/dts/exynos/google/
- F:	drivers/clk/samsung/clk-gs101.c
-+F:	drivers/phy/samsung/phy-gs101-ufs.c
- F:	include/dt-bindings/clock/google,gs101.h
- K:	[gG]oogle.?[tT]ensor
- 
--- 
-2.44.0.478.gd926399ef9-goog
-
+> ---
+>  kernel/sched/debug.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+> index 8d5d98a5834d..c1eb9a1afd13 100644
+> --- a/kernel/sched/debug.c
+> +++ b/kernel/sched/debug.c
+> @@ -425,6 +425,7 @@ static void register_sd(struct sched_domain *sd, struct dentry *parent)
+>
+>         debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
+>         debugfs_create_file("groups_flags", 0444, parent, &sd->groups->flags, &sd_flags_fops);
+> +       debugfs_create_u32("level", 0444, parent, (u32 *)&sd->level);
+>  }
+>
+>  void update_sched_domain_debugfs(void)
+> --
+> 2.20.1
+>
 
