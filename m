@@ -1,175 +1,121 @@
-Return-Path: <linux-kernel+bounces-131658-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A271A898A7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:55:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A135898A82
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:57:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16176B26E95
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:55:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A42F0B262AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:57:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31DC61D543;
-	Thu,  4 Apr 2024 14:55:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0CDC1D539;
+	Thu,  4 Apr 2024 14:57:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aen+RE8a"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="EZWFKZz9"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3F91BDE6;
-	Thu,  4 Apr 2024 14:55:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D02D1C290
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712242530; cv=none; b=lKIuEBVAU2gBGydAiySPoAhvnd7N3rVPO8j1w/LifFULJNFZuWxT31TfrbqeDywOjeDYTcfyVWv2h6fdo0UoIAsmbBkWjlh3cfvb3nHvJEkoFvtBmpxBdjVGXG9xs+6LQzW7qZnaxcdzY6i8np+CUb+9e0TIbApp2Vsve6O0OxY=
+	t=1712242623; cv=none; b=hcCy3ZnD61DDwLMU9L/iF8vzBDo1T7zXEbiJ+hhZgEUS9QA7TivhaaOzkmuGhE5zPMS6WPUz2odn7Sz4xqd9C2AFWlG8bE1XOMeq/Fj4AyWHVY3O5R5RboNKg1WwOOcqQfWLqjehtvmZfs//y/qBABtkX0nTxUDPB/Hd9K5rSJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712242530; c=relaxed/simple;
-	bh=G9lUvFywXgRdKLfamnkBnonk8oOiR9MI0r12zS6dtX0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=M7QFfmio2YvYcrlL15LTlLDyF+1BrfFDLYZPNWnhUmZft8KcbUZViPyvPTISFgE1Qkg91KZjx7Mad69ZhXIL7ypl4CgNEzOCeF9TPch1D+7vY4mdn1bJsEkU2Grr7Pv4rrIebuXQSjkG45SI6ywagFxxIJyF/H7mRHdeOWd47Ok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aen+RE8a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67D9FC433F1;
-	Thu,  4 Apr 2024 14:55:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712242529;
-	bh=G9lUvFywXgRdKLfamnkBnonk8oOiR9MI0r12zS6dtX0=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=aen+RE8ak25vlpX9Pe4w1s2I0IEuN0Xe8dsQ4xMCxRg401Ddm7Z4hTU7uhk3fCUgW
-	 GO+03+G0RSM+nLr2h8MsZmTZ+t+Y+YtN5Oi35yxECq2gH1KN+OeWgdWfs2BIGtmf07
-	 ozPdiS8nUL1wFS7zlORa+rjPcklbJXgUy6Y0Nvdq7gILpx6w1PCgVGDid/HHCyyQSZ
-	 egq4Ie94OJd3yeK5HZMzHWjCUNOtESyziFGcUDR12e/eav83l6kxPAo3YEAeC/nq/t
-	 2mXF9RP0DOWmABFVLYJWd7tjKUhoJwdz2l7KDmUWMIYSV8FBFzmoolBXAxqTe/LYpm
-	 Rk+PK0mphpHSg==
+	s=arc-20240116; t=1712242623; c=relaxed/simple;
+	bh=IaFoOl62tcCF59UV0efY1h+CjVTA1CJAzdIeBir6ok4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sUuE0QE3cxPIGWWenm3BJggh7P8oGvA8Ro6WZd+sV2CYGwpQq1J005Ojqi91iSKPS0nCrTdVAZYtXSIvlndi/S3JtTXnIaU7NKnO+1KL9nvMnvwp/2nUXMV2dMXOIjpY3UCVc+scJEJLmgKSmy9l9A0Lp17Mx1uGK9KWFaFfFCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=EZWFKZz9; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-516d0c004b1so588701e87.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:57:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712242619; x=1712847419; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JubjZrC2lioP3RyL0Ciyw/lhrZMZfq1yICuaTDklK7g=;
+        b=EZWFKZz9RaX+148XZhWYsTgLQGwdwBNK2VrEsmAVYD0ariqC6TUDJt/5DVda2RuLQV
+         TTLscQ5C6nbhsjhYJNyyxYQg37yETs8EERx40byG+/y94TqxKEJfEKcjhMyMaT7hC1uU
+         vs+wO91bVAGGkf7PgCUrdsg8ShpLTY4ij/+pX2sKIi3KsJCbmS6rmMPOiS3s8rmWboRT
+         9mVrcvq8+O+k9nDWPgHOdDEHDvam9u8xxBTqtWirvSQMEnQ9rphkvggpG9alFDcjysy5
+         4f8OQY02+oCziX2X+NtJ4599YAlj2rzjSSOoZFI39Oh4um+rWwpHPMQ91H7c8z3pH/qF
+         tCqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712242619; x=1712847419;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JubjZrC2lioP3RyL0Ciyw/lhrZMZfq1yICuaTDklK7g=;
+        b=qOrXAg6/MJ0uiB5H4zwKks4kVgReb/D/v+82NbC0ltADnCx+nq7ovA94eTN0zgq5yz
+         J1q47kVaMC8Ja6oo3OGsd7lRaFYAttS0z/E72B17X7gKF12f7k7uW6v4zKbwQz5IpDdj
+         3RXL4Sp+mHvL/TrWX13opvWADL4NYOsphyl91PZtBQGfwTQ5FIg2ubYk0cMikNhs0I2D
+         TPkwcm/plb+tA0OrLD5ZT/YoBpecIY8u3z2hx+5ZOtJW3PtKQKZQ0mLf5k56fY1leYcL
+         9rfAyUYOgDUPNnRWCPC4A1qoDLLg5xYznhYwK7JXxcs6vEy4u1gj2BFXTM/hgEG4vyWb
+         HXMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXLjwfpSL9hMa2nzGpJb3finBHwgeljoFyIhBCBbIPETGk3WpQ3G++AaW9oXa1ZQpTk20wdHsPfOnXYLHt0vIA2o/3F0JLKh+V/frCv
+X-Gm-Message-State: AOJu0YyLV705tOigNKr0KE1/qdEa1i78DGYzdkk9FBlcFsk5xvOiOFV3
+	aSUGv8d6A/24jhkpBeF6FGBcQxXr7XwgB0Wp52MkKBvesuEVSRLLtXN+yKN9J8PazNvDuTRZX1J
+	e2QhQtCm8oBH7MhoWblNjMJgq2qWM3eN4xJaauQ==
+X-Google-Smtp-Source: AGHT+IHH4OT8Ur7GKEjdrBzx/LNXQv1C7wzvGwVZ3h903XGh0LKvc2+hvzRaH2rKu19cXIt3tkuK71uJt+nF7XhwY1A=
+X-Received: by 2002:a05:6512:358a:b0:513:db34:7caf with SMTP id
+ m10-20020a056512358a00b00513db347cafmr2178763lfr.17.1712242619402; Thu, 04
+ Apr 2024 07:56:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+References: <20240404093328.21604-1-brgl@bgdev.pl>
+In-Reply-To: <20240404093328.21604-1-brgl@bgdev.pl>
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+Date: Thu, 4 Apr 2024 16:56:48 +0200
+Message-ID: <CAMRc=MexL-XKiaCdPCs1uw5YoSMdwHSg6gV9fonsVCdb6R63UQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/2] gpio: cdev: label sanitization fixes
+To: Kent Gibson <warthog618@gmail.com>, Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Alexey Dobriyan <adobriyan@gmail.com>, stable@vger.kernel.org, 
+	Stefan Wahren <wahrenst@gmx.net>, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 04 Apr 2024 17:55:22 +0300
-Message-Id: <D0BFBFRVGG47.FXCTWETKP7H4@kernel.org>
-Cc: "Andrew Cooper" <andrew.cooper3@citrix.com>, "Ard Biesheuvel"
- <ardb@kernel.org>, "Ross Philipson" <ross.philipson@oracle.com>, "Linux
- Kernel Mailing List" <linux-kernel@vger.kernel.org>, "the arch/x86
- maintainers" <x86@kernel.org>, <linux-integrity@vger.kernel.org>,
- <linux-doc@vger.kernel.org>, "Linux Crypto Mailing List"
- <linux-crypto@vger.kernel.org>, <kexec@lists.infradead.org>,
- <linux-efi@vger.kernel.org>, <dpsmith@apertussolutions.com>, "Thomas
- Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>, "Borislav
- Petkov" <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, "Dave Hansen"
- <dave.hansen@linux.intel.com>, "Matthew Garrett" <mjg59@srcf.ucam.org>,
- <James.Bottomley@hansenpartnership.com>, <peterhuewe@gmx.de>, "Jason
- Gunthorpe" <jgg@ziepe.ca>, "luto@amacapital.net" <luto@amacapital.net>,
- "Arvind Sankar" <nivedita@alum.mit.edu>, "Herbert Xu"
- <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
- <kanth.ghatraju@oracle.com>, <trenchboot-devel@googlegroups.com>
-Subject: Re: [PATCH v8 06/15] x86: Add early SHA support for Secure Launch
- early measurements
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Eric Biggers" <ebiggers@kernel.org>, "Andy Lutomirski"
- <luto@kernel.org>
-X-Mailer: aerc 0.17.0
-References: <CAMj1kXEmMBY_jc0uM5UgZbuZ3-C7NPKzg5AScaunyu9XzLgzZA@mail.gmail.com> <98ad92bb-ef17-4c15-88ba-252db2a2e738@citrix.com> <CAMj1kXFTu+bV2kQhAyu15hrYai20NcBLb4Zu8XG2Y-XjL0f+rw@mail.gmail.com> <1a8e69a7-89eb-4d36-94d6-0da662d8b72f@citrix.com> <CAMj1kXEvmGy9RJo4s8tECsFj2dufZ8jBPoJOEtkcGUoj+x2qsw@mail.gmail.com> <431a0b3a-47e5-4e61-a7fc-31cdf56f4e4c@citrix.com> <20240223175449.GA1112@sol.localdomain> <e641e2f1-16cf-4717-8a1f-8afac2644efe@citrix.com> <20240223183004.GE1112@sol.localdomain> <10db421c-77da-4a1c-a25e-2374a7a2ef79@app.fastmail.com> <20240403235635.GA24248@quark.localdomain>
-In-Reply-To: <20240403235635.GA24248@quark.localdomain>
 
-On Thu Apr 4, 2024 at 2:56 AM EEST, Eric Biggers wrote:
-> On Wed, Apr 03, 2024 at 09:32:02AM -0700, Andy Lutomirski wrote:
-> > On Fri, Feb 23, 2024, at 10:30 AM, Eric Biggers wrote:
-> > > On Fri, Feb 23, 2024 at 06:20:27PM +0000, Andrew Cooper wrote:
-> > >> On 23/02/2024 5:54 pm, Eric Biggers wrote:
-> > >> > On Fri, Feb 23, 2024 at 04:42:11PM +0000, Andrew Cooper wrote:
-> > >> >> Yes, and I agree.=C2=A0 We're not looking to try and force this i=
-n with
-> > >> >> underhand tactics.
-> > >> >>
-> > >> >> But a blind "nack to any SHA-1" is similarly damaging in the oppo=
-site
-> > >> >> direction.
-> > >> >>
-> > >> > Well, reviewers have said they'd prefer that SHA-1 not be included=
- and given
-> > >> > some thoughtful reasons for that.  But also they've given suggesti=
-ons on how to
-> > >> > make the SHA-1 support more palatable, such as splitting it into a=
- separate
-> > >> > patch and giving it a proper justification.
-> > >> >
-> > >> > All suggestions have been ignored.
-> > >>=20
-> > >> The public record demonstrates otherwise.
-> > >>=20
-> > >> But are you saying that you'd be happy if the commit message read
-> > >> something more like:
-> > >>=20
-> > >> ---8<---
-> > >> For better or worse, Secure Launch needs SHA-1 and SHA-256.
-> > >>=20
-> > >> The choice of hashes used lie with the platform firmware, not with
-> > >> software, and is often outside of the users control.
-> > >>=20
-> > >> Even if we'd prefer to use SHA-256-only, if firmware elected to star=
-t us
-> > >> with the SHA-1 and SHA-256 backs active, we still need SHA-1 to pars=
-e
-> > >> the TPM event log thus far, and deliberately cap the SHA-1 PCRs in o=
-rder
-> > >> to safely use SHA-256 for everything else.
-> > >> ---
-> > >
-> > > Please take some time to read through the comments that reviewers hav=
-e left on
-> > > previous versions of the patchset.
-> >=20
-> > So I went and read through the old comments, and I'm lost.  In brief su=
-mmary:
-> >=20
-> > If the hardware+firmware only supports SHA-1, then some reviewers would=
- prefer
-> > Linux not to support DRTM.  I personally think this is a bit silly, but=
- it's
-> > not entirely unreasonable.  Maybe it should be a config option?
-> >=20
-> > If the hardware+firmware does support SHA-256, then it sounds (to me, r=
-eading
-> > this -- I haven't dug into the right spec pages) that, for optimal secu=
-rity,
-> > something still needs to effectively turn SHA-1 *off* at runtime by cap=
-ping
-> > the event log properly.  And that requires computing a SHA-1 hash.  And=
-, to be
-> > clear, (a) this is only on systems that already support SHA-256 and tha=
-t we
-> > should support and (b) *not* doing so leaves us potentially more vulner=
-able to
-> > SHA-1 attacks than doing so.  And no SHA-256-supporting tooling will ac=
-tually
-> > be compromised by a SHA-1 compromise if we cap the event log.
-> >=20
-> > So is there a way forward?  Just saying "read through the comments" see=
-ms like
-> > a dead end.
-> >=20
+On Thu, Apr 4, 2024 at 11:33=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 >
-> It seems there may be a justification for some form of SHA-1 support in t=
-his
-> feature.  As I've said, the problem is that it's not explained in the pat=
-chset
-> itself.  Rather, it just talks about "SHA" and pretends like SHA-1 and SH=
-A-2 are
-> basically the same.  In fact, SHA-1 differs drastically from SHA-2 in ter=
-ms of
-> security.  SHA-1 support should be added in a separate patch, with a clea=
-rly
-> explained rationale *in the patch itself* for the SHA-1 support *specific=
-ally*.
+> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+>
+> This series fixes a couple of bugs in the sanitization of labels
+> being passed to irq.
+>
+> Patch 1 fixes the case where userspace provides empty labels.
+>
+> Patch 2 fixes a missed path in the sanitization changes that can result
+> in memory corruption.
+>
+> v1 -> v2:
+> - switched the order of the patches in order to avoid introducing buggy
+>   code in one just to fix it in the second
+>
+> Bartosz Golaszewski (1):
+>   gpio: cdev: check for NULL labels when sanitizing them for irqs
+>
+> Kent Gibson (1):
+>   gpio: cdev: fix missed label sanitizing in debounce_setup()
+>
+>  drivers/gpio/gpiolib-cdev.c | 46 +++++++++++++++++++++++++------------
+>  1 file changed, 31 insertions(+), 15 deletions(-)
+>
+> --
+> 2.40.1
+>
 
-Yeah, this is important so that we don't end up deleting that support
-by accident. Just adding to denote that this more than just a "process
-issue".
+I'll go ahead and apply it as the culprit already got upstream and
+into stable branches, so let's fix it ASAP. Tomorrow once autobuilders
+confirm it's fine, I'll send it to Linus.
 
-> - Eric
-
-BR, Jarkko
+Bart
 
