@@ -1,214 +1,148 @@
-Return-Path: <linux-kernel+bounces-132100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFC60898F96
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:32:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E209898FA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:34:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7539F28CDC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:32:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AFA51C22B6E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:34:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A677712CD8F;
-	Thu,  4 Apr 2024 20:32:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8B461386AB;
+	Thu,  4 Apr 2024 20:34:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Or2rcp0I"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dnT5fYUA"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39849210E4
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 20:32:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8A56FE26;
+	Thu,  4 Apr 2024 20:34:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712262762; cv=none; b=hk47rN4s8zJEQaeG0awXzjIDZ/9BV3+Zf53OAGIsoSeeV9C0jKPVPtS8bEH2FLCDm349Fh9r002LgmnpkfL/wVwOmOzJrFV2s+6iQGeWumpxR8rTQU4jl9wWtIyLejPT2tHJRZ7TB8gPohwYq9VHdcwvvSBqY2FblDyl1DdA51M=
+	t=1712262850; cv=none; b=IN2Xs1d+1szxnnF7YlTebExkcv2EpVhizNyb1ThV/ZF5d6k1jfc6jHMSN0Zgpzmj+9Wm6WOVnoNhP2jqjBVnWEaQQQOeV/y6oXrp89I57v8EVTikZau0EGB9pFFq3QR0yU9cVfwpHuRvjmomLjfLoS3aAepXCmXP4RaiikiAWJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712262762; c=relaxed/simple;
-	bh=awfPHIXQopxdXq7haC0jymKLsZG6Aa0tbih+6GZa/0w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sTDm8FvRBJ11VzMcv7dQ3+dtxdpgBrTIllOeQ9svoBTOmMAqvRbzmINhI3fz82y6bpWd1UzXGkP4JMp4LWgyyleW/XOhv8wUWQ1aQRzt1aMlVVJ4MiL4RdVniZXzKvlDfdUnMSkd7K7Lw4Ns7udULZ1zzR1j6thyWv+N7m4t0vQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Or2rcp0I; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712262759;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vr/SUGhSbvPpqa+Xo0hTVf6gdcXmyeXEviRfCaUkX+4=;
-	b=Or2rcp0IbCXEQwVQRkv/TpP8fuq8DFvn67WJ7QTdVHWIITX2ciE4I+UrMuhOlpWwPeN0d2
-	0O0Tdejza3A+GuTS9+kAuKb7jPNnRJcmVNQtktAbKvLX0vTtDkyxWNGW43Le+tqOOthxXF
-	GRia/ZrNnYgdu4bbOGxn5fo6kk6UqkI=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-422-y659CN7nPPWbT62gcyt2IQ-1; Thu, 04 Apr 2024 16:32:37 -0400
-X-MC-Unique: y659CN7nPPWbT62gcyt2IQ-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-69120b349c9so2585426d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 13:32:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712262757; x=1712867557;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vr/SUGhSbvPpqa+Xo0hTVf6gdcXmyeXEviRfCaUkX+4=;
-        b=QiUUW+b1W7AeoUjlHzL7H6NvpmV6KF0Ok3sJQRH/ZoRHTA1aq+bRL7lp14mkYNBKVN
-         7BTGF09p7XWYcy3bXcJ767A/UDe7e9/4JN4P01yAVyrBcDr6eqXaBzudY3rOnNt4xZgk
-         aPMwY01UMelP7lpy4ijsdzPZQ8ouNaqeyCLg+ml0rfWFFCVimCytaseVM0X+5IJ7ranp
-         tBoepA0jjmWYJwh/ziCmgIuJHspHAUUFes3Y3F5OY3MtXYCSscsAWer2foyaF1ZdDFk7
-         QDINyGKd2rR3zKgVtQI4ZfHs7t+abPp3eoisyV81mAIY5c1IWbE8V66b4Gu/aFOSUByJ
-         cfnw==
-X-Forwarded-Encrypted: i=1; AJvYcCULjDqYmizrDXK/DKo5Z493k63Yw9ijFvDU7nP03VB+ZO5jeV2v0tvRqdGPvYWt6YdSa43CnZZP7PFha7dUnBS3gA5V4+tVCTjBxs7j
-X-Gm-Message-State: AOJu0YxXyJkX1k63KDNImSqwPHDiIttGuiJMD33aKQrMrRLufBkjIALj
-	TBKcA6no+brDM54b5i2r+W9LfQbpbj/T2uCyJ6ZTX8W93gxua7/H1j7AFNiMywyWlrP/i/bEkEv
-	KxqN0Zt7zwmMS5IcTIZmH0HceBt+78oa/ahTVgB6WEaVjczI+K5I/T48wJoLgFQ==
-X-Received: by 2002:a05:6214:1c86:b0:699:2f11:384f with SMTP id ib6-20020a0562141c8600b006992f11384fmr3519017qvb.2.1712262756773;
-        Thu, 04 Apr 2024 13:32:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF/XWgQgMXrsC/9dKI75yPJSvQp60HieuCzEjNcjcNcBiPkBasPO28C4IidP6yoo2sMeHIWlg==
-X-Received: by 2002:a05:6214:1c86:b0:699:2f11:384f with SMTP id ib6-20020a0562141c8600b006992f11384fmr3518978qvb.2.1712262756166;
-        Thu, 04 Apr 2024 13:32:36 -0700 (PDT)
-Received: from x1n ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id s13-20020ad4438d000000b0069908364644sm41556qvr.82.2024.04.04.13.32.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 13:32:35 -0700 (PDT)
-Date: Thu, 4 Apr 2024 16:32:33 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Lokesh Gidra <lokeshgidra@google.com>, akpm@linux-foundation.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, surenb@google.com,
-	kernel-team@android.com, aarcange@redhat.com, david@redhat.com,
-	zhengqi.arch@bytedance.com, kaleshsingh@google.com,
-	ngeoffray@google.com
-Subject: Re: [PATCH] userfaultfd: change src_folio after ensuring it's
- unpinned in UFFDIO_MOVE
-Message-ID: <Zg8OYYV7DDo7S2Yf@x1n>
-References: <20240404171726.2302435-1-lokeshgidra@google.com>
- <Zg7hrt5HudXLBUn_@casper.infradead.org>
+	s=arc-20240116; t=1712262850; c=relaxed/simple;
+	bh=EfISDVvrAaKxrRUH0h9JaJqMOAiLpYXNI9NkfNWfA/w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EAr70+v52qSt044Ke8TDCJ9Wv8PK4VtykdkMwPyhh6CqxBuW03OgHEulWFG3PFdCxNmDR28yR1Md+0s14MKfkpUHeC8fPYZ0h9bR9SOVpQVgnff4SL89Zd+MHSY+T2tzNoT2gQ5yQE7NefOI4huDq/uJ55b8FrythSQVR91fCvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dnT5fYUA; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712262848; x=1743798848;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=EfISDVvrAaKxrRUH0h9JaJqMOAiLpYXNI9NkfNWfA/w=;
+  b=dnT5fYUAYaBluIx0UkZSA1gnQwBr1CYlqNR3nnf2TffD6AEtubtnuNm+
+   Jkqcue2750WGGl15Tns3Z2LWMHYAckXpzSEtZYrGGFB7RpYZw+HHSxa/H
+   1itnR+DG1HvUJ8PqhqN3Fx8oJBHv8b4ei0mfr4yJarpKcGl+3fD3oKfVr
+   OEIyu/EabHkwlItVqolPxDC2e8trfbGDKkAqtzwmNuNHB3KDgKvgsLl3S
+   EiqS2jPJiw2jWv77O76EEgNU0Pm3VvleyGoppNci9rKghNUrA10HjWfQ0
+   9jlMZSPUoCqz6jISuUAmi+RvJE/FmherbPYdfLWKEH91qMH7FQ8NnXMz5
+   Q==;
+X-CSE-ConnectionGUID: iXqkrLizRFap9X21oj/pFA==
+X-CSE-MsgGUID: nwsMoVznRuy5A60RNVqOqA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="18310019"
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="18310019"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 13:34:05 -0700
+X-CSE-ConnectionGUID: gZGUdyeJRJqS3ui3x4jFJg==
+X-CSE-MsgGUID: DFsuHmQ0RrCVC3o8umdx/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="19509026"
+Received: from vzaharie-mobl.amr.corp.intel.com (HELO [10.209.26.243]) ([10.209.26.243])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 13:34:04 -0700
+Message-ID: <f5461df0-6609-42db-850c-de6a32728fe2@intel.com>
+Date: Thu, 4 Apr 2024 13:34:04 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zg7hrt5HudXLBUn_@casper.infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 6/6] crypto: x86/aes-xts - wire up VAES + AVX10/512
+ implementation
+To: Eric Biggers <ebiggers@kernel.org>, linux-crypto@vger.kernel.org,
+ x86@kernel.org
+Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+ Andy Lutomirski <luto@kernel.org>, "Chang S . Bae" <chang.seok.bae@intel.com>
+References: <20240329080355.2871-1-ebiggers@kernel.org>
+ <20240329080355.2871-7-ebiggers@kernel.org>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240329080355.2871-7-ebiggers@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 04, 2024 at 06:21:50PM +0100, Matthew Wilcox wrote:
-> On Thu, Apr 04, 2024 at 10:17:26AM -0700, Lokesh Gidra wrote:
-> > -		folio_move_anon_rmap(src_folio, dst_vma);
-> > -		WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, dst_addr));
-> > -
-> >  		src_pmdval = pmdp_huge_clear_flush(src_vma, src_addr, src_pmd);
-> >  		/* Folio got pinned from under us. Put it back and fail the move. */
-> >  		if (folio_maybe_dma_pinned(src_folio)) {
-> > @@ -2270,6 +2267,9 @@ int move_pages_huge_pmd(struct mm_struct *mm, pmd_t *dst_pmd, pmd_t *src_pmd, pm
-> >  			goto unlock_ptls;
-> >  		}
-> >  
-> > +		folio_move_anon_rmap(src_folio, dst_vma);
-> > +		WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, dst_addr));
-> > +
-> 
-> This use of WRITE_ONCE scares me.  We hold the folio locked.  Why do
-> we need to use WRITE_ONCE?  Who's looking at folio->index without
-> holding the folio lock?
+On 3/29/24 01:03, Eric Biggers wrote:
+> +static const struct x86_cpu_id zmm_exclusion_list[] = {
+> +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_SKYLAKE_X },
+> +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_ICELAKE_X },
+> +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_ICELAKE_D },
+> +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_ICELAKE },
+> +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_ICELAKE_L },
+> +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_ICELAKE_NNPI },
+> +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_TIGERLAKE_L },
+> +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_TIGERLAKE },
+> +	/* Allow Rocket Lake and later, and Sapphire Rapids and later. */
+> +	/* Also allow AMD CPUs (starting with Zen 4, the first with AVX-512). */
+> +	{},
+> +};
 
-Seems true, but maybe suitable for a separate patch to clean it even so?
-We also have the other pte level which has the same WRITE_ONCE(), so if we
-want to drop we may want to drop both.
+A hard-coded model/family exclusion list is not great.
 
-I just got to start reading some the new move codes (Lokesh, apologies on
-not be able to provide feedbacks previously..), but then I found one thing
-unclear, on special handling of private file mappings only in userfault
-context, and I didn't know why:
+It'll break when running in guests on newer CPUs that fake any of these
+models.  Some folks will also surely disagree with the kernel policy
+implemented here.
 
-lock_vma():
-        if (vma) {
-                /*
-                 * lock_vma_under_rcu() only checks anon_vma for private
-                 * anonymous mappings. But we need to ensure it is assigned in
-                 * private file-backed vmas as well.
-                 */
-                if (!(vma->vm_flags & VM_SHARED) && unlikely(!vma->anon_vma))
-                        vma_end_read(vma);
-                else
-                        return vma;
-        }
-
-AFAIU even for generic users of lock_vma_under_rcu(), anon_vma must be
-stable to be used.  Here it's weird to become an userfault specific
-operation to me.
-
-I was surprised how it worked for private file maps on faults, then I had a
-check and it seems we postponed such check until vmf_anon_prepare(), which
-is the CoW path already, so we do as I expected, but seems unnecessary to
-that point?
-
-Would something like below make it much cleaner for us?  As I just don't
-yet see why userfault is special here.
-
-Thanks,
-
-===8<===
-diff --git a/mm/memory.c b/mm/memory.c
-index 984b138f85b4..d5cf1d31c671 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3213,10 +3213,8 @@ vm_fault_t vmf_anon_prepare(struct vm_fault *vmf)
- 
- 	if (likely(vma->anon_vma))
- 		return 0;
--	if (vmf->flags & FAULT_FLAG_VMA_LOCK) {
--		vma_end_read(vma);
--		return VM_FAULT_RETRY;
--	}
-+	/* We shouldn't try a per-vma fault at all if anon_vma isn't solid */
-+	WARN_ON_ONCE(vmf->flags & FAULT_FLAG_VMA_LOCK);
- 	if (__anon_vma_prepare(vma))
- 		return VM_FAULT_OOM;
- 	return 0;
-@@ -5817,9 +5815,9 @@ struct vm_area_struct *lock_vma_under_rcu(struct mm_struct *mm,
- 	 * find_mergeable_anon_vma uses adjacent vmas which are not locked.
- 	 * This check must happen after vma_start_read(); otherwise, a
- 	 * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the VMA
--	 * from its anon_vma.
-+	 * from its anon_vma.  This applies to both anon or private file maps.
- 	 */
--	if (unlikely(vma_is_anonymous(vma) && !vma->anon_vma))
-+	if (unlikely(!(vma->vm_flags & VM_SHARED) && !vma->anon_vma))
- 		goto inval_end_read;
- 
- 	/* Check since vm_start/vm_end might change before we lock the VMA */
-diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-index f6267afe65d1..61f21da77dcd 100644
---- a/mm/userfaultfd.c
-+++ b/mm/userfaultfd.c
-@@ -72,17 +72,8 @@ static struct vm_area_struct *lock_vma(struct mm_struct *mm,
- 	struct vm_area_struct *vma;
- 
- 	vma = lock_vma_under_rcu(mm, address);
--	if (vma) {
--		/*
--		 * lock_vma_under_rcu() only checks anon_vma for private
--		 * anonymous mappings. But we need to ensure it is assigned in
--		 * private file-backed vmas as well.
--		 */
--		if (!(vma->vm_flags & VM_SHARED) && unlikely(!vma->anon_vma))
--			vma_end_read(vma);
--		else
--			return vma;
--	}
-+	if (vma)
-+		return vma;
- 
- 	mmap_read_lock(mm);
- 	vma = find_vma_and_prepare_anon(mm, address);
--- 
-2.44.0
-
-
--- 
-Peter Xu
-
+Is there no way to implement this other than a hard-coded kernel policy?
 
