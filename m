@@ -1,191 +1,119 @@
-Return-Path: <linux-kernel+bounces-132079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04DC3898F69
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:08:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29FC9898F70
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:11:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF8E928BDCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:08:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B8981C21D66
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:11:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADCB81350D8;
-	Thu,  4 Apr 2024 20:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BD98134CC2;
+	Thu,  4 Apr 2024 20:11:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D3YO5sfS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UpPo/ywa"
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com [209.85.222.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F307138489
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 20:07:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 673881C6A0;
+	Thu,  4 Apr 2024 20:11:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712261276; cv=none; b=XAXcj7RiQfZs2xL9Qgx0pRKp3Q8tg5kjCDg79DOXN3l8kOsG26h9i7zZGrVFUGPRc/YlpYWzB221FYuapByeTE8FzDMRitKPP94LVJOXQZybuFFfIQ3ATdpVq2pML/J6Ltm8ILwHVZHE7y6YHz1aTwboLnKilEUylyphaaLBT+s=
+	t=1712261480; cv=none; b=aZ2yoWLcwP4WpIlPBnEp3hCG8NAC1xoQuLvFwAEGB/ohSxIR4Ubawmu1tIpBZ6SyLOmukxJcuwGfb+c0QFg7qlWmvd9WNdq4midN3tDa/EQDsoDiKLQ6P73EQbqoktQ9mS6XvM2qReWWdHTRA3dUPRodm4NJxK9689teRM25DF0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712261276; c=relaxed/simple;
-	bh=F7nFkAVtXzPGjLTO3whVH6ckeO/jZuAKYHBc+06D804=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dc/3SS3s6REhgmr1Bn3K8BoJU9NsHeWM2W/UuuH+5ab0y+1CpIDhi1IPmlYUnZi1ChqTKM0qDswWaJ8XPk2FSNeVLlIV7G+MffkbZma3SCqt+FrJvTAQlPWSYmuFohd6r6r97sQCGyRbZ0vdhgP5S8ETDFsNCzn8HYx19KrZuRk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D3YO5sfS; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712261274;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dBwnpmoXZkQWB3sRlzQjNLqJlL/NUB2ApA0wBpLvaEw=;
-	b=D3YO5sfS7Q6D3gVn6DeQnhw8vNwDFaQLm+4uco7qqUsdzCUXosRSdfkPbQYrv4gjmZkglF
-	wdoE24fQGm+RZ5MuV/Szl3nFgGgM055tv3hcyop0AcRvDfi27obyjimfrXXN1m5pg7pSKK
-	Ow/Ber7Jr5e/Dq+ksPh3lCG4E4KM1Do=
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com
- [209.85.166.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-574-fCSyn2ZIP1GbM5FvqC9_xg-1; Thu, 04 Apr 2024 16:07:52 -0400
-X-MC-Unique: fCSyn2ZIP1GbM5FvqC9_xg-1
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-369e1b1411fso15265835ab.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 13:07:52 -0700 (PDT)
+	s=arc-20240116; t=1712261480; c=relaxed/simple;
+	bh=M8iIHi2wG31CMAypyB9Hf3PCit7uyA2n3iFds5lnbAw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fPkFV5BsxIhXRA4vBgCIj2kGKI3zKc2Qfk6YzeIWtm95YF/Z5kIrLY22SdGERmtSnzfweN+POecdN+zUaEYb0HjENd5HfYLfCsmllqDIE5rE+WPSE5ItEZLVsNMYc/V6K5QgGnHEW5LoJlvSPG8YNqWoEx2AEg9IUa2B0pEd1r8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UpPo/ywa; arc=none smtp.client-ip=209.85.222.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f49.google.com with SMTP id a1e0cc1a2514c-7e3a6fe180bso644454241.2;
+        Thu, 04 Apr 2024 13:11:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712261478; x=1712866278; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RjPJff2sg2YzMJe7DKQkjhJDQMLyOxul5rZyxHlPbrE=;
+        b=UpPo/ywa8RYUorUlEHsIzYg1c8YxxpKIk3BW4o9/QHhEWWVR/EX/OBiCIssT84rME4
+         Na1eLCWAR96o6hWcOY2dw4Lx3Bn0QrHJI/nK/yCXj8bCEM1BxBVkBZd3uCcUpHDBXSAa
+         MXyhggDZlgHyJCPGKpEtuROanTc5ku14ClZr3FmZFfR1Le5LF4Qa9oUo/APjpuGF61M8
+         j13oKHojUsWVLV++Pv2bbJM4zKV/mM15+dtby/KsOETIsKQcVAW6GPDaq1gV1wf4OPEf
+         z2lIbHhqA5Xc+w1EZegtNS+d8dG+9rABNUCuhWAbKcOz67VFf0CN3OLMyrZnTn2vEPEI
+         Pe0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712261272; x=1712866072;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dBwnpmoXZkQWB3sRlzQjNLqJlL/NUB2ApA0wBpLvaEw=;
-        b=G4wpU+xNU1KBxyVjDFK7EBOwcP3jbg1aVHY/c2m1xwEITWZpmrhqs8bQePATSl5lx0
-         ssL0j03Uf+FDRXAkrEA2WpXfpUrIfEtbvwjtDxfFnzE5Ze/dXV+0OKTu3UatdoXRKF8t
-         EAt3/oTicmC+qeJDdqmqOWb8+ptXnS9tIALRuv42F7F08xOV25fR2HU7TevOldyP2hzY
-         uX4k0INamY5f75Dkn0NPHFvibPQhdMdMRAALZVkzmOL/7NzYxNXGxsr9/cTrgm+NL+UA
-         Ejkmap108P/ZQDHJSXOvgwOpyq8fDdDl3NVtUZM5JB494ZvQEUO6LbiUiY9ZfQVVYo9q
-         tGIw==
-X-Forwarded-Encrypted: i=1; AJvYcCVLsXHtNjzN6Ph1v7nf5uEHQAvW++BuzBwJjZYPeufhRyxUzrRUvE+Yr8fM2awQw/ItpDOKQs9gT4G84hBHzugvumfe7fWMwF0P107c
-X-Gm-Message-State: AOJu0Yw5f9WKn16483GJoZy5p0vKGI1yzgLDyaaIKVd2UywaP7BK18Cd
-	2isAtnRZjNg4iodvb8arxLeNUnKFyE0blbHaEhqhbkBtkS2qForO5rOuCQACovRmXJGnCdRiWVM
-	BkTcOjiDHU3V7oeYf9UZRtg7n8VI0Pt1uJtjlt6xAgLMJU4Pymz1z/Qu3hDbMlw==
-X-Received: by 2002:a05:6e02:1fee:b0:368:a446:bdc8 with SMTP id dt14-20020a056e021fee00b00368a446bdc8mr460981ilb.22.1712261271919;
-        Thu, 04 Apr 2024 13:07:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFaqoDO/+tFcCqum8TqiKc+I/+p4CsQH6hcDf+tNsGOSm5B9KajL+oD63U+eSt4FNzehJDYhQ==
-X-Received: by 2002:a05:6e02:1fee:b0:368:a446:bdc8 with SMTP id dt14-20020a056e021fee00b00368a446bdc8mr460961ilb.22.1712261271612;
-        Thu, 04 Apr 2024 13:07:51 -0700 (PDT)
-Received: from redhat.com ([38.15.36.11])
-        by smtp.gmail.com with ESMTPSA id p5-20020a92da45000000b003686160b165sm5848ilq.75.2024.04.04.13.07.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 13:07:51 -0700 (PDT)
-Date: Thu, 4 Apr 2024 14:07:50 -0600
-From: Alex Williamson <alex.williamson@redhat.com>
-To: Longfang Liu <liulongfang@huawei.com>
-Cc: <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
- <jonathan.cameron@huawei.com>, <kvm@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>
-Subject: Re: [PATCH v4 4/4] Documentation: add debugfs description for hisi
- migration
-Message-ID: <20240404140750.78549701.alex.williamson@redhat.com>
-In-Reply-To: <20240402032432.41004-5-liulongfang@huawei.com>
-References: <20240402032432.41004-1-liulongfang@huawei.com>
-	<20240402032432.41004-5-liulongfang@huawei.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+        d=1e100.net; s=20230601; t=1712261478; x=1712866278;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RjPJff2sg2YzMJe7DKQkjhJDQMLyOxul5rZyxHlPbrE=;
+        b=UM/7rKdddnV8UFElpfApxAXcUwRAyRF2YJDZSeSGMYkUAvx4uKUSyXU6TFKSOmabPC
+         9XOHB3JY+UjiZMQ+zhfzFZzlzNcDj0E9Rx003Jg6bP2myVl17JYWDCZpxJRGM4dlP+Al
+         ZOWmXkoZFzOLqLyvu10gAVmLcIESyTO38rcmqEUXoUy5GMmZD+bSDvIqhP3nrb9skPJq
+         OGbLQ2n4RlpGSFoxLndH+6jSeXsY35Bn5KFLlo71OoFQ4fZAfRpPkmR2o55FYtwC08ks
+         sADegmlnZa9UWxRy7sYsQEcCkC2KgD7VJ1ddrxynWzBoA7LSqndnJEtxyyoegmK8jrhX
+         1ASA==
+X-Forwarded-Encrypted: i=1; AJvYcCVfS6edXRI5je0cN+S6rPLyVnxZS77PMAL9I2JlQlttaRxbJux4KHfEQMNeyl4TIELQ+EWkX23jbo0gkOXcYtBtRAH6xMfbZD95WGjbOotUEQ8Zt7UDiivbC1hy5uvzo7eDobra
+X-Gm-Message-State: AOJu0Yzm6yULJsr1dRjJhCqUl875YuAlCZrZUWnEPFywiV4gTsO7m/gU
+	7cH+c/b5FFkid1hzVMAxbRVaIycAMdshZ8LJ2IMRdH8DfsQjfTTH
+X-Google-Smtp-Source: AGHT+IERUiPcO7YKkrekeSdBQhRTR0raqdh0bkL/Rd5vl2K9OCFPKO5bBhKykLnsoGvvKIbbYvcNuw==
+X-Received: by 2002:a05:6122:4591:b0:4da:9d3e:a7df with SMTP id de17-20020a056122459100b004da9d3ea7dfmr928443vkb.5.1712261476812;
+        Thu, 04 Apr 2024 13:11:16 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id fe4-20020a0562140b8400b00698facb19d5sm25978qvb.106.2024.04.04.13.11.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 13:11:15 -0700 (PDT)
+Message-ID: <2e5e148b-1d5b-405f-bfdf-b55cf6ee5489@gmail.com>
+Date: Thu, 4 Apr 2024 13:11:08 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.6 00/11] 6.6.25-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+References: <20240403175126.839589571@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240403175126.839589571@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Tue, 2 Apr 2024 11:24:32 +0800
-Longfang Liu <liulongfang@huawei.com> wrote:
-
-> Add a debugfs document description file to help users understand
-> how to use the hisilicon accelerator live migration driver's
-> debugfs.
+On 4/3/24 10:55, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.25 release.
+> There are 11 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Update the file paths that need to be maintained in MAINTAINERS
+> Responses should be made by Fri, 05 Apr 2024 17:51:13 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
-> ---
->  .../ABI/testing/debugfs-hisi-migration        | 34 +++++++++++++++++++
->  MAINTAINERS                                   |  1 +
->  2 files changed, 35 insertions(+)
->  create mode 100644 Documentation/ABI/testing/debugfs-hisi-migration
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.25-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
 > 
-> diff --git a/Documentation/ABI/testing/debugfs-hisi-migration b/Documentation/ABI/testing/debugfs-hisi-migration
-> new file mode 100644
-> index 000000000000..3d7339276e6f
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/debugfs-hisi-migration
-> @@ -0,0 +1,34 @@
-> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/data
-> +Date:		Apr 2024
-> +KernelVersion:  6.9
+> thanks,
+> 
+> greg k-h
 
-At best 6.10 with a merge window in May.
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-> +Contact:	Longfang Liu <liulongfang@huawei.com>
-> +Description:	Read the live migration data of the vfio device.
-> +		These data include device status data, queue configuration
-> +		data and some task configuration data.
-> +		The output format of the data is defined by the live
-> +		migration driver.
-
-"Dumps the device debug migration buffer, state must first be saved
-using the 'save' attribute."
-
-> +
-> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/attr
-> +Date:		Apr 2024
-> +KernelVersion:  6.9
-> +Contact:	Longfang Liu <liulongfang@huawei.com>
-> +Description:	Read the live migration attributes of the vfio device.
-> +		it include device status attributes and data length attributes
-> +		The output format of the attributes is defined by the live
-> +		migration driver.
-
-AFAICT from the previous patch, this attribute is useless.
-
-> +
-> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/cmd_state
-> +Date:		Apr 2024
-> +KernelVersion:  6.9
-> +Contact:	Longfang Liu <liulongfang@huawei.com>
-> +Description:	Used to obtain the device command sending and receiving
-> +		channel status. If successful, returns the command value.
-> +		If failed, return error log.
-> +
-
-Seems like it statically returns "OK" plus the actual value.
-
-
-> +What:		/sys/kernel/debug/vfio/<device>/migration/hisi_acc/save
-> +Date:		Apr 2024
-> +KernelVersion:  6.9
-> +Contact:	Longfang Liu <liulongfang@huawei.com>
-> +Description:	Trigger the Hisilicon accelerator device to perform
-> +		the state saving operation of live migration through the read
-> +		operation, and output the operation log results.
-
-These interfaces are confusing, attr and data only work if there has
-either been a previous save OR the user migration process closed saving
-or resuming fds in the interim, and the user doesn't know which one
-they get.  Note that debug_migf isn't even discarded between
-open/close, only cmd and save require the device to be opened by a
-user, data and attr might continue to return data from some previous
-user save, resume, or debugfs save.
-
-
-
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 7625911ec2f1..8c2d13b13273 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -23072,6 +23072,7 @@ M:	Longfang Liu <liulongfang@huawei.com>
->  M:	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
->  L:	kvm@vger.kernel.org
->  S:	Maintained
-> +F:	Documentation/ABI/testing/debugfs-hisi-migration
->  F:	drivers/vfio/pci/hisilicon/
->  
->  VFIO MEDIATED DEVICE DRIVERS
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
 
