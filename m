@@ -1,137 +1,137 @@
-Return-Path: <linux-kernel+bounces-131928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1DE1898D9C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:59:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 306A9898DA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:00:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 608771F21E71
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:59:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5390B1C2854E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AB5A12FF9E;
-	Thu,  4 Apr 2024 17:57:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23F4A130A7F;
+	Thu,  4 Apr 2024 17:59:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bN7JpYg6"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="PMDetWDO"
+Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com [209.85.210.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3B0136E00;
-	Thu,  4 Apr 2024 17:57:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC0DB12D770
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712253447; cv=none; b=gJPEXX728eHrmMT9I+AFuNI/pcERTmIZKtvby4DWrNC9a2sIsr8XFPZhTaZZPGhWwg4q+ZMPsrcoB3R+7II3oxaMydUxEMpKGY7VfRcgDQvY6UulMrH/SD/dSicPUIyxYaX7YyFL4OEfwBpsSXhZBvlhjBrW1gVzRuys4DvYDiU=
+	t=1712253576; cv=none; b=s7vrnQzrGGJhVzDAhp9XuKzmMjxI3gRYdmZPMgTYTfG9MVCWt6iTBt/iNUUjTRNY/OIGqKrGDQ+Fkhzg5yNvO481oqJsjSgzQZ9Zq8g5L3hPNNzqvAziJrTdqB2dAta65h035LEbIy9hd/L68K60AYMlxvacNzY+ckZDLFpJoqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712253447; c=relaxed/simple;
-	bh=YhU3sEXSw0D2kdXjvQ7QXDBcZkocQIOBobWOsVQFuAY=;
-	h=From:Date:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=qsux/G/UCZGBXkbYe2SeLjwegI7hULP0+nUspmP26sNU2q9vKIvR6cIqUfrU0IOVcCsoJ/jh94DDMKZNCdKTyDzJ5oXDLl/h0cHCB9+ENf3QEssjo/L1qja6Y4tHl8j/ME1pFBh4GdXK2lz7+F9sIp1jqsnSUIws8Kv90uT0yrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bN7JpYg6; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6ecbe6dc8c6so1130809b3a.1;
-        Thu, 04 Apr 2024 10:57:25 -0700 (PDT)
+	s=arc-20240116; t=1712253576; c=relaxed/simple;
+	bh=9BK5X696fOVNw8qgEtaf8iePyUePYxaCiHXlX+XZAxk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=CvFSVbMZnw0ZWx2yrMyQSUEmGIVDCstsZnefk2uO060sfkvAra4Nn2aVYSdH+hf6Y7m3Q8D1B1zIu4ccQ3kVpWqKra4ElREmdhH6CROP10GFArTO3PkfE91CCsnTpkBgGg7WWmTri77BQ6hm8fXKFSvB7Cw8HRioGxwKpzvr39g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=PMDetWDO; arc=none smtp.client-ip=209.85.210.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-6e89bdd4e3fso689041a34.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:59:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712253445; x=1712858245; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:date:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OVHlK0SMG0qBoQQG+gZsRC+Q+8tU5y/gfXSNtSzLvIs=;
-        b=bN7JpYg6YSdCznRcRUDJg/4ojbKsU2zWVwPcMW8f/6zaelCwsRLKsvl6TUec8k2Ucv
-         Ont8wfHcUYR8BmpGrS875ymWcXLqaZt6oQ90jKv46NwbY1Kg2hWz5WqQPo5Fjp6oz7BP
-         Olzitb+W0gpmtjyov8xxaDuUVDH5b0a+W40pULYU8Iv+Sc75Oxg//NT6n5vQ1OHyK9Vm
-         uT7/3/dxYm5xZGDmQQjN1t5oNIMIkr8Oqzznh0z2qUPyu1ItNJbCEAFWEndtGJAjL3Dm
-         NVwCZzwMZkYDtgNAmy7e1WgUPafW98hp/5Tk2lInZLLlhB27ySJrdjn1DFcVn0inpIYV
-         kn2w==
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1712253574; x=1712858374; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=gtbOwmF31Kwl4TtfLzGBtUJJifAFG8EYmATKNI7DLsY=;
+        b=PMDetWDOFjs77zGSEeyicz8GaEGpddVrBYof/JjciU7N8v2+t5odeAsgVAPftCBFVM
+         wufdkgPlj7DOClRuGyo8di5bzPSavEXIjlPJZo0XWnK/RrIGB76z4bXUSjQUpgP9ePDk
+         ouV6yvULW52yviZe3u6rS+E+R9Rck27tJZftml5aHWhU/LJRDs4OB+4G4+cfUgx5mZj4
+         hBy96EtiJ9fczHiML5KHqoB7ATeNHdG7VcBEXE6TSuyZQx7QeSyF8HFsY1yVUXkPnDxg
+         52ESrlxtgUFPNzhChkBU/HlAWEYWAS4vZjCvQ6Gylqwi+zksTU2hLlNMLplyw2QJJ6tb
+         GEoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712253445; x=1712858245;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :message-id:subject:cc:to:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OVHlK0SMG0qBoQQG+gZsRC+Q+8tU5y/gfXSNtSzLvIs=;
-        b=cJ0puXxsRBlnv76WjK1jcqqqgJVWtS2SXIxKKC8QmPPs76LaaN44k17ywcF/0p9jhI
-         UIL0NJ2j+3ZYa1fvu9EFbWnLLM+faE2QWqHBInL6gEiTz4Kil7dIX5aKodhs/2mXYYZ7
-         9U05U8SKBx6VZlTmF9wxTD4EALfqMJjQdL82a3EeB+kCXiZ/yIQ5yX5Pwnhsd0hxYtFw
-         fYWag2GIa4DsKM9QklVINa984tZj3PB9bCRyQ9gqNQqG3kC/4u1QZU0UyVQLN5HBKOBq
-         0uaUOaqOraMWfQsfJ+6FzPs5yza+51ArwNnFnap1cZHOexvtsmAOCwDhQ2iUxXMDcp+7
-         44Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCVrZjHbso3lItrdxKAu8HJclsei45spwP6ZqHDiQVI+IME7HrwKImshXqH9g2cv6m5wSOg0ZLHH09rNTj5oQI+Mn+qDdcsaz49I0637
-X-Gm-Message-State: AOJu0YyWchelch/4q7YziLkpLzhOm2BA1wsCsvNVp8o21IBejuAf3qTr
-	adMzvMRZ5d3zkHppJIh5NWcYm5SvW5V7nr0nGFaHlWSI812CRZ8XWEKCxOQJkdE=
-X-Google-Smtp-Source: AGHT+IFKDRLk2i3xeGnF/jxy9Jn4pmGaJmcF66H+hQFmmIl3WVwHo0yK60Pt5nXC11k3VcRteYTUoA==
-X-Received: by 2002:a05:6a00:3d0e:b0:6ea:f026:4003 with SMTP id lo14-20020a056a003d0e00b006eaf0264003mr3811250pfb.3.1712253444957;
-        Thu, 04 Apr 2024 10:57:24 -0700 (PDT)
-Received: from joaog-nb.corp.toradex.com ([201.82.41.210])
-        by smtp.gmail.com with ESMTPSA id lb25-20020a056a004f1900b006ea918dab9csm14043537pfb.157.2024.04.04.10.57.21
+        d=1e100.net; s=20230601; t=1712253574; x=1712858374;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gtbOwmF31Kwl4TtfLzGBtUJJifAFG8EYmATKNI7DLsY=;
+        b=Wk01qqtK0dokqOb4+W3JZukP956ENDsRDX023bB3xowtCgfO2DoIh2tfhK+vJNrX/W
+         8+Xo6+oEIbHGa/+RKwk6vayFp1ExNAIpHGCZoPzX8ySJU/yRlGU325w5HRX0A1t+kOJ/
+         fJ0gxonpHcGmP+2VFJsv64sXvl1VtKgguOiB5kdbTvubazpqxYF1y2EYVrqcjf1ECCLE
+         7I9WGQ4dDq63vBaHO3Iup7bogHQLxqzT9nWv/4epQayEoBBCqtopMLxmMYpdGwyznh6/
+         fXIUx/5dScEOffeqs0bMNKEFUQAeTMafosFu/DjKW6V0hRoa4jkU9gSX4KVNxPQSs5AA
+         UgJg==
+X-Forwarded-Encrypted: i=1; AJvYcCUAcx0Pdw2h86ZjAun348IP4oCC4jPBV+PrplsMdM8QgL3cFZkHugwNOoG2XC8ATvNuonWXI6kwdwQ92SN/oU1AmGGQeFt0iZFVb+AF
+X-Gm-Message-State: AOJu0Yy1984//1dUMQiQ485Qkx5nimEBIPStNeafOy2QQZ4CJXtyqPXc
+	jyPmhB0oOCmK1hwje/v33kIgdzDQxia1NGRitxkmCLCtKATO75Vdk9adlzg/m1E=
+X-Google-Smtp-Source: AGHT+IFYhq0L3gKO1QVmkYzFz1+veAdcyYTGN019NpAj6tZTzQ4zvNjtwKR8OUKV4sfG/YOgLvTArg==
+X-Received: by 2002:a9d:7cc1:0:b0:6e8:9461:1eb5 with SMTP id r1-20020a9d7cc1000000b006e894611eb5mr3240908otn.38.1712253574062;
+        Thu, 04 Apr 2024 10:59:34 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:17:6448:fa75:a4ff:fe45:b56])
+        by smtp.gmail.com with ESMTPSA id xx10-20020a05620a5d8a00b0078a3a648bc3sm6066080qkn.2.2024.04.04.10.59.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 10:57:24 -0700 (PDT)
-From: "=?utf-8?Q?Jo=C3=A3o_Paulo_Silva_Gon=C3=A7alves?=" <jpaulo.silvagoncalves@gmail.com>
-X-Google-Original-From: =?utf-8?Q?Jo=C3=A3o_Paulo_Silva_Gon=C3=A7alves?= <jpgoncalves@joaog-nb.corp.toradex.com>
-Date: Thu, 4 Apr 2024 14:57:18 -0300
-To: linux-remoteproc@vger.kernel.org, imx@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc: Marek Vasut <marex@denx.de>, Peng Fan <peng.fan@nxp.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Mathieu Poirier <mathieu.poirier@linaro.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Ulf Hansson <ulf.hansson@linaro.org>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	"Joao Paulo S. Goncalves" <joao.goncalves@toradex.com>
-Subject: iMX8MP Cortex-M7 Relation to Audio Power Domain
-Message-ID: <20240404175718.pzcvffpef72dfuoe@joaog-nb.corp.toradex.com>
+        Thu, 04 Apr 2024 10:59:33 -0700 (PDT)
+Message-ID: <e4d01c27aa976c44e0b7122e39111be062a4deb4.camel@ndufresne.ca>
+Subject: Re: [PATCH] media: verisilicon: AV1: Be more fexible on postproc
+ capabilities
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, 
+	ezequiel@vanguardiasur.com.ar, p.zabel@pengutronix.de, mchehab@kernel.org, 
+	heiko@sntech.de
+Cc: linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	kernel@collabora.com
+Date: Thu, 04 Apr 2024 13:59:33 -0400
+In-Reply-To: <20240328093439.18712-1-benjamin.gaignard@collabora.com>
+References: <20240328093439.18712-1-benjamin.gaignard@collabora.com>
+Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 
-Hello all,
+Hi,
 
-I was investigating why the kernel freezes on the iMX8MP when attempting to boot
-the Cortex-M7 processor using the Linux remoteproc interface. However, with
-v6.5, it started to work, and I was able to pinpoint to commit
-b86c3afabb4f ('arm64: dts: imx8mp: Add SAI, SDMA, AudioMIX') [1] through bisection.
-The patch appeared unrelated to remoteproc, and after some time, I realized there
-is a connection between the functioning of remoteproc and the audio power domain.
-For instance, adding the audio power domain to the node in the device
-tree (below) made it work. The same behavior occurs in the downstream kernel.
-There is a workaround for the problem by setting clkim8mp.mcore_booted=1 in the 
-kernel arguments, but this is not seen as a final solution (it seems to 
-disable all clock gating).
+Le jeudi 28 mars 2024 =C3=A0 10:34 +0100, Benjamin Gaignard a =C3=A9crit=C2=
+=A0:
+> RK3588 post-processor block is able to convert 10 bits streams
+> into 8 bits pixels format.
 
-imx8mp-cm7 {
-	compatible = "fsl,imx8mp-cm7";
-	clocks = <&clk IMX8MP_CLK_M7_CORE>;
-	clock-names = "core", "audio";
-	mbox-names = "tx", "rx", "rxdb";
-	mboxes = <&mu 0 1
-			&mu 1 1
-			&mu 3 1>;
-	memory-region = <&vdevbuffer>, <&vdev0vring0>, <&vdev0vring1>, <&rsc_table>, <&m7_reserved>;
-	rsc-da = <0x55000000>;
-	syscon = <&src>;
-	fsl,startup-delay-ms = <500>;
-	power-domains = <&pgc_audio>;
-};
+Does it come with any HDR to SDR capabilities ? cause stripping off 2 bits =
+means
+that tone mapping will cause a lot of banding as it won't have the expected
+precision. I'm simply trying to make up the big portrait so we don't just o=
+ffer
+yet another foot gun. But perhaps its fine to offer this, its just that we =
+don't
+have a mechanism to report which pixel format in the selection will cause d=
+ata
+lost.
 
+Nicolas
 
-Do any of you know anything about the relationship between the audio domain and
-the Cortex-M7 on iMX8MP? The TRM is not very clear on this, and the only thing
-I could find is that there are some mailboxes for Cortex-M7/Audio processor
-communication managed by the audio power domain.
+>=20
+> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Fixes: 003afda97c65 ("media: verisilicon: Enable AV1 decoder on rk3588")
+> ---
+>  drivers/media/platform/verisilicon/rockchip_vpu_hw.c | 1 -
+>  1 file changed, 1 deletion(-)
+>=20
+> diff --git a/drivers/media/platform/verisilicon/rockchip_vpu_hw.c b/drive=
+rs/media/platform/verisilicon/rockchip_vpu_hw.c
+> index f97527670783..964122e7c355 100644
+> --- a/drivers/media/platform/verisilicon/rockchip_vpu_hw.c
+> +++ b/drivers/media/platform/verisilicon/rockchip_vpu_hw.c
+> @@ -82,7 +82,6 @@ static const struct hantro_fmt rockchip_vpu981_postproc=
+_fmts[] =3D {
+>  	{
+>  		.fourcc =3D V4L2_PIX_FMT_NV12,
+>  		.codec_mode =3D HANTRO_MODE_NONE,
+> -		.match_depth =3D true,
+>  		.postprocessed =3D true,
+>  		.frmsize =3D {
+>  			.min_width =3D ROCKCHIP_VPU981_MIN_SIZE,
 
-Thanks for the help!
-
-[1] https://github.com/torvalds/linux/commit/b86c3afabb4f4ea146c206508527eb2a15485bcc
-
-
-Regards,
-João Paulo S. Goncalves
 
