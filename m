@@ -1,151 +1,127 @@
-Return-Path: <linux-kernel+bounces-131716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131722-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A33C0898B04
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:24:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1B23898B12
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:26:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FA0F284117
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:24:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D21A28E06B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:26:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE397580B;
-	Thu,  4 Apr 2024 15:23:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC81512A16A;
+	Thu,  4 Apr 2024 15:25:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="bTFCO1zG"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LpXanQ8O"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77A11D547
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 15:23:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50481C2BD
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 15:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712244236; cv=none; b=j8yzZge4WyCK2AjaWJ3QxvOnKNe5D7gugSbi+kF5Aj9HLbs24QOlLDSft/A40Qh+HgwP0ouT1IkO6BhyDTT15J37U+VBy2Q7ASdX0MTw17Nz3n/3l0MKsaOvH8ARZqyko6Bt/HpD2u2x52ERrmjfvLa3+avaG26s+tE5Y/S1MvY=
+	t=1712244355; cv=none; b=gH/83KCs14ynAAMIE3udCAH2dvQDwsdYAnJ1pvxZg+AqbNM6oUxeF/v0dbK3EqdnsmEOqP70YRq0V7akI9aR3qO6uDsabapHesn3EfqziQi1Lr5zH3tnKJwg8M8xAo3SLv1cQSHuMLSzy0jW7jYDjrRRKEruNpJPHrb7xCHE0G0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712244236; c=relaxed/simple;
-	bh=zfakYO7CS29y5adFO9lRm1TfVsKhvUUh8TJ3RmzDees=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=S7y9SPs/YWexamHRVczvKllfX6OYrdOZ3c6BOAxri02/2QfWLqRS6pcko0WnZ8K97GUXpyNtm/S44jRQH5eOLRj8Jr10FUbHaZaYFMRud329rGVXqbuzCQXzDqXGbBfaXABMSJn1AVt7iwMvvR8ZDNzSwlmPBvuLg2SfyrvpVlo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=bTFCO1zG; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712244233;
-	bh=zfakYO7CS29y5adFO9lRm1TfVsKhvUUh8TJ3RmzDees=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-	b=bTFCO1zGGbjB8onR6iZ4lBCNh9FODnJT9hBCwn4S/byXbNgUKQM9toMO9XrndQ0sn
-	 qN1C3bs0FtXvkvghDMLs4VoksoBiBAdoEi8z8S/ZHKoP0zHcK01EtlLnzRB6B46GxZ
-	 y9YZW4dA7xN6p2plCxTlDcQiNDOwEA/g5h8QgxHimdtOHgbwwcOoH6XYmoHVp7VOiq
-	 zz+qjkcJTgYrcWfk1bUp05IVfCu+m0j3MQ/vFojMOFoDUFfVjDNuAKLDIcYaJOZni4
-	 H8YIyU88BGwX6iL83kGnIL6tcagzZMEJUuUcMppg8pxiGQIvXIK+ddTGr8/sJfarmJ
-	 ySE3ee9VaUySQ==
-Received: from [100.109.49.129] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	s=arc-20240116; t=1712244355; c=relaxed/simple;
+	bh=EyANxchTUq4vCZ8B0GlMj1ALpGGfgcRd78F9nkanEmk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rsTp5SEC1798q55Hc3WoO181vc57j6rZuXmZUbMGkx8XVEhCKlZgL8drY+YFoMuiFochBftmnhrYD8JHrCr/4Dig6/DpBieA8RE8WNwPEut5fEym7E4HyinSt25oaIxymclwUiAq7Uri5A3IlOCzSHk7WZpQ8qz2CKEkCeu9IIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LpXanQ8O; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712244351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EyANxchTUq4vCZ8B0GlMj1ALpGGfgcRd78F9nkanEmk=;
+	b=LpXanQ8O1I2dnfBRiblgyj80UxaqRHvRjga/pEjQOR9KHgdMbw9Sol/tBHI1GIoB1OaVkb
+	QokJrxDRHhzB6ITlX2UQVxPLnv4lUGByNbMX/CLfi5pD4QjGc8QSabMTYvyFCDovxocJV1
+	OgLgp7GmI1d2sMvaiXPC3Ywk/59CnBg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-694-tUm63H4bOu2bbGcK_ijisg-1; Thu, 04 Apr 2024 11:25:46 -0400
+X-MC-Unique: tUm63H4bOu2bbGcK_ijisg-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: dmitry.osipenko)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B892D37813A4;
-	Thu,  4 Apr 2024 15:23:51 +0000 (UTC)
-Message-ID: <1f23ab7a-334c-4d7d-b917-8e8029e6c690@collabora.com>
-Date: Thu, 4 Apr 2024 18:23:49 +0300
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CE27680C76B;
+	Thu,  4 Apr 2024 15:25:45 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.21])
+	by smtp.corp.redhat.com (Postfix) with SMTP id BAF1D40735E2;
+	Thu,  4 Apr 2024 15:25:42 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Thu,  4 Apr 2024 17:24:20 +0200 (CEST)
+Date: Thu, 4 Apr 2024 17:23:57 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Dmitry Vyukov <dvyukov@google.com>, John Stultz <jstultz@google.com>,
+	Marco Elver <elver@google.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	"Eric W. Biederman" <ebiederm@xmission.com>,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>,
+	Carlos Llamas <cmllamas@google.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
+ current thread
+Message-ID: <20240404152356.GE7153@redhat.com>
+References: <20230316123028.2890338-1-elver@google.com>
+ <CANDhNCqBGnAr_MSBhQxWo+-8YnPPggxoVL32zVrDB+NcoKXVPQ@mail.gmail.com>
+ <87frw3dd7d.ffs@tglx>
+ <CANDhNCqbJHTNcnBj=twHQqtLjXiGNeGJ8tsbPrhGFq4Qz53c5w@mail.gmail.com>
+ <874jcid3f6.ffs@tglx>
+ <20240403150343.GC31764@redhat.com>
+ <87sf02bgez.ffs@tglx>
+ <CACT4Y+a-kdkAjmACJuDzrhmUPmv9uMpYOg6LLVviMQn=+9JRgA@mail.gmail.com>
+ <20240404134357.GA7153@redhat.com>
+ <87v84x9nad.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 17/30] drm/panfrost: Fix the error path in
- panfrost_mmu_map_fault_addr()
-From: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-To: Steven Price <steven.price@arm.com>,
- Boris Brezillon <boris.brezillon@collabora.com>
-Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, virtualization@lists.linux-foundation.org,
- David Airlie <airlied@gmail.com>, Gerd Hoffmann <kraxel@redhat.com>,
- Gurchetan Singh <gurchetansingh@chromium.org>, Chia-I Wu
- <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Qiang Yu <yuq825@gmail.com>, Emma Anholt <emma@anholt.net>,
- Melissa Wen <mwen@igalia.com>
-References: <20240105184624.508603-1-dmitry.osipenko@collabora.com>
- <20240105184624.508603-18-dmitry.osipenko@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240105184624.508603-18-dmitry.osipenko@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v84x9nad.ffs@tglx>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-On 1/5/24 21:46, Dmitry Osipenko wrote:
-> From: Boris Brezillon <boris.brezillon@collabora.com>
-> 
-> If some the pages or sgt allocation failed, we shouldn't release the
-> pages ref we got earlier, otherwise we will end up with unbalanced
-> get/put_pages() calls. We should instead leave everything in place
-> and let the BO release function deal with extra cleanup when the object
-> is destroyed, or let the fault handler try again next time it's called.
-> 
-> Fixes: 187d2929206e ("drm/panfrost: Add support for GPU heap allocations")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Boris Brezillon <boris.brezillon@collabora.com>
-> Co-developed-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
-> ---
->  drivers/gpu/drm/panfrost/panfrost_mmu.c | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_mmu.c b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> index bd5a0073009d..4a0b4bf03f1a 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_mmu.c
-> @@ -502,11 +502,18 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->  	mapping_set_unevictable(mapping);
->  
->  	for (i = page_offset; i < page_offset + NUM_FAULT_PAGES; i++) {
-> +		/* Can happen if the last fault only partially filled this
-> +		 * section of the pages array before failing. In that case
-> +		 * we skip already filled pages.
-> +		 */
-> +		if (pages[i])
-> +			continue;
-> +
->  		pages[i] = shmem_read_mapping_page(mapping, i);
->  		if (IS_ERR(pages[i])) {
->  			ret = PTR_ERR(pages[i]);
->  			pages[i] = NULL;
-> -			goto err_pages;
-> +			goto err_unlock;
->  		}
->  	}
->  
-> @@ -514,7 +521,7 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->  	ret = sg_alloc_table_from_pages(sgt, pages + page_offset,
->  					NUM_FAULT_PAGES, 0, SZ_2M, GFP_KERNEL);
->  	if (ret)
-> -		goto err_pages;
-> +		goto err_unlock;
->  
->  	ret = dma_map_sgtable(pfdev->dev, sgt, DMA_BIDIRECTIONAL, 0);
->  	if (ret)
-> @@ -537,8 +544,6 @@ static int panfrost_mmu_map_fault_addr(struct panfrost_device *pfdev, int as,
->  
->  err_map:
->  	sg_free_table(sgt);
-> -err_pages:
-> -	drm_gem_shmem_put_pages_locked(&bo->base);
->  err_unlock:
->  	dma_resv_unlock(obj->resv);
->  err_bo:
+On 04/04, Thomas Gleixner wrote:
+>
+> On Thu, Apr 04 2024 at 15:43, Oleg Nesterov wrote:
+>
+> > And this will happen with
+> > or without the commit bcb7ee79029dca ("posix-timers: Prefer delivery of
+> > signals to the current thread"). Any thread can dequeue a shared signal,
+> > say, on return from interrupt.
+> >
+> > Just without that commit this "eventually" means A_LOT_OF_TIME
+> > statistically.
+>
+> bcb7ee79029dca only directs the wakeup to current, but the signal is
+> still queued in the process wide shared pending list. So the thread
+> which sees sigpending() first will grab and deliver it to itself.
 
-Applied to misc-fixes
+This is what I tried to say above.
 
-Forgot that this patch doesn't depend on others in this series, sorry
-for not doing it earlier
+> What we can actually test is the avoidance of waking up the main thread
+> by doing the following in the main thread:
 
--- 
-Best regards,
-Dmitry
+Hmm... I think it can be even simpler,
+
+> I'm testing a modification which implements something like the above and
+> the success condition is that the main thread does not return early from
+> nanosleep() and has no signal accounted. It survived 2000 iterations by
+> now.
+
+Yes, but please see a trivial test-case I sent you few minutes ago.
+
+Oleg.
 
 
