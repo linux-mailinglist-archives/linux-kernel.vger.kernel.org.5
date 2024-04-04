@@ -1,77 +1,80 @@
-Return-Path: <linux-kernel+bounces-132004-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132005-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17338898E7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:02:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBCF1898E84
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:02:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 380031C27741
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:02:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9267228C275
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71CA01332A5;
-	Thu,  4 Apr 2024 19:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02CD1332A9;
+	Thu,  4 Apr 2024 19:02:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="2HRB8vm4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gsR1JGGJ"
 Received: from mail-ed1-f74.google.com (mail-ed1-f74.google.com [209.85.208.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95DFE1D6A5
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:02:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38A2F132816
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:02:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712257344; cv=none; b=tTUg6JRxk8HGxiO5si624HjKOrburhn3gdR2j+AQwwll9NEwUC3tdHK/bwN+ApeS1d9Ujwr6yPCm4VutWagPEp+/pa0opddqlLOm0ww10LyHkCca9Iou2TuRcmUswp1XEpYkA3A1FDE8z6x28EAWBXW9F87IYNW1hpW4xC2axIo=
+	t=1712257346; cv=none; b=BOlAkNaG6ns5b7ToeeKcBo6V+F77bZPYbLKIzhrpQI/2Qa2rSG7upL/kKS1jPFUSN4yLAZoMCYNxFswam2d77V5mikeOoc3YvlF+e3UN0syAJwhjrhGaLe7XoeoglFUxgf8Xy9b9tliZbk/eyXlk4GS6INqQAbgxDwJduPwRgSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712257344; c=relaxed/simple;
-	bh=rKaK1Zc9SOGEDlcWnUTiSrWXe1T2ioiZmgOH6AaQzJQ=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=g02HWXH6XGTFSeKClrUAUrVBr3XjPIL5q4N9As5feXUK1zSmCFeBNc1r1Yi56SIX9w56BRVyDix4oW5yUU060Q8m+CPuMXUP6zLLGrGY5tZhigDpGCF55LvpiCsoWkGsuF8uBTWYY4JhLmluxLhGc5+wf4Kk2KiDMoyrFYKyY2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=2HRB8vm4; arc=none smtp.client-ip=209.85.208.74
+	s=arc-20240116; t=1712257346; c=relaxed/simple;
+	bh=EGDvzNbi6v6m/qOu4TJ4hzcKRgzIVliyqmolX3KdkkM=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ipnN2Zfk6Mhg/SKqzkYMqmNhihYR8qEwJHtowxgFX720wRXcTeYq4KsRSXzDc3H6tdU3ihGzNzj5gDSe+wLwQPYgEfFNiqktJdrJo39qvWG3yns2GPQM9C7/vItMiG4ge1aGoUhGcXSDVLwZRpktVOBvV61fOVjP7byQxV8enSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--elver.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gsR1JGGJ; arc=none smtp.client-ip=209.85.208.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--elver.bounces.google.com
-Received: by mail-ed1-f74.google.com with SMTP id 4fb4d7f45d1cf-56e090236acso806271a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 12:02:21 -0700 (PDT)
+Received: by mail-ed1-f74.google.com with SMTP id 4fb4d7f45d1cf-56e1397b6d0so753424a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 12:02:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712257340; x=1712862140; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=fjeFoOMiQMg1H5xaHZjQQm5ismA9U/Cf/wjYUQ8Jbl4=;
-        b=2HRB8vm4ZztxJ0XTvt/m4i+Fxz0eFrEWaBEljTKZp1o0Sct1oBHm+OKNYeMl3muteo
-         W1NSZJ7q+U3QNmbt1QLhluQIvcYxiT2BEUyKseaiw/Ejc8GxDnyqaZe3kuxGJ2Y4CJMD
-         /bNG7UOHPQGAlvbN8fvA1N046DpBxWn6CyQxJg079tHo+hZ9+Dbw5AQeUmm4Ij3JCfJ0
-         F88lMl4NRiZpIqBnVy0KXo6nJzU1sgXCgtqgkNi/IKzipI095bxyp4nM2xn0aW74636/
-         bGrRrouImIM2H3dMSpmwc1jGkqr9K7afoNc/j6LZ+OaPGhmLI/yYJaeF+DB+ApAwBnc5
-         mjOA==
+        d=google.com; s=20230601; t=1712257342; x=1712862142; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHnDLO6+rKOAAIvx3fPfHLrwEnmmxTcJd/9Dz5qn/jI=;
+        b=gsR1JGGJaAxMVzJQgDiFOAu8vIqgRS3sOg74wWOUnaLVQCdDe+bKU1ZWM1hKH+jIHv
+         zJZeQ7/pIJuKPY52jP+ERhmPYBfSxk8KvCZlx1E4SH01z2KKuYPmPLjo8VXJZiHxePmR
+         LQI6/8pvm4KVkXirWER4075G/v7vW2/40W8ohc8EpEdRi6S2ncLdD1Gsmz+NkdQQ3OUl
+         k7xNVwhcMJJ0ToU411zhSIjp8rmhS9aFaP/hOq1PZPhTCjKVNq1Q9rXLKD/WGFbEmAI/
+         W/Iqjkvq1SwNH4YfpxCK6Fw7EGk4DreyYQ9FrzCYJLexc4aVSrV1L88IAOCUC2ZzTZdh
+         YwVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712257340; x=1712862140;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=fjeFoOMiQMg1H5xaHZjQQm5ismA9U/Cf/wjYUQ8Jbl4=;
-        b=OKpHUwSNLhIk8gBQH1SYkeVywFx7HMB0cQMbuNSyandtFz6CKnaYBuF5M3vUhF/HXI
-         MFWoWQLvXjbyr5So7ihhg04Kb88YIu1uADPKptTnT2wx7CdZjvD3TwbLfTkuazbxUvb+
-         L6ivpKAXKa+JvXrCQwJOLUf12JZv1K953zu43/jlPi+8gl4szT+cx/Dy8bXfLZ7dfyKy
-         4soNJ1tGdbOae7W2WvS8euYMzIbD7MHTPpHlVQ8bfXWt6IwbgG16L39AOLTdeCHFl33L
-         /thYwRzTbj5sGsbi3swMP1A/HVc9UjU/Aqtc6Nn5C9jCr2oxk57V+Sdt5U6cmWfaPDDb
-         c6sg==
-X-Forwarded-Encrypted: i=1; AJvYcCWxAbPsLzO3BKDRaLJnZuumHsHYw94VNuhUnZ+/dhEAJ1TSmeD/OUYScZDIC+jwjdLHKtNFBRquD+Po3KtgGBWvD998cwzhgangqMPY
-X-Gm-Message-State: AOJu0Yx+/XiIKKAmdp7GPugbh7/8/tkNUdKqxd0dG+fumMpAYwr4yALE
-	GXbUJu1f2HQCwx7JJVO1gTLyKPHKrXrfhW56DnGjkGYzf0f38Zalf22cJ25eKQqZ3nbS3bsqBw=
+        d=1e100.net; s=20230601; t=1712257343; x=1712862143;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHnDLO6+rKOAAIvx3fPfHLrwEnmmxTcJd/9Dz5qn/jI=;
+        b=TGCXuLgyUJ+kbg3cH/gH7KRp7TFy2HN3YtTLKT52exKh49Q0pkXM81HoXBzT5HC3aS
+         cEAdIAYMwhnOcckNbCIHSqKsT2N7LrIlZka3etKOTyjgbBNAv+vdflDoXU1ImEZFg+GH
+         wIWbutA5hfQsUJsAJh8mAeEu0382MZNxXJCRM0MeN7opPcLB5FA6wuzgreDLd53zftK4
+         aeTnGPFRG2WKg5Xwufmc9jAzVJ/AQsvV6ncSToxvuKGNBe8u5hzJFjlb0Ewpvbsa/8Rd
+         yBqXNHU/NuzgPrmUA1nU1AoMbQDg+1WlemjXaZjExSuBr8LGiF21yt4I7XAH8gJN1p7N
+         S21w==
+X-Forwarded-Encrypted: i=1; AJvYcCWmJxhPj8X1vxg/XScm7ALbK0t1LDhDNDKoH7OT6BGosZVFVJuLJaKPCxKHh2UC7U9SaKM/54ejrlvasfGRn365+3oULukmOwm/wMXD
+X-Gm-Message-State: AOJu0YwkQrTrXJqY6OjXF4VlA9FUcFDQ450eglO+RTRXWo/+ZNOnoXsk
+	GOUeihbgD7wX8LmsMqjltem72nbf1zTejv93zMCJzZ+/7cHhqoP6tkYEHFxYBe1Mpjs8eWg2xQ=
 	=
-X-Google-Smtp-Source: AGHT+IHhNXlRuqsdejfQye9ej9C5xDI1Y5f94yZMQvaRMkJ+dAHRN9ha9FTmTybWvMEvEzHNBF4qDeym8A==
+X-Google-Smtp-Source: AGHT+IE6NATmIrlgLd/YLW+KCHbbEuuYziGoudiOlzDgriOmlzHsBib7orQt8403zzVPjaJLUcW/YFmRJw==
 X-Received: from elver.muc.corp.google.com ([2a00:79e0:9c:201:2ac:e52b:98d7:eb1e])
- (user=elver job=sendgmr) by 2002:a05:6402:2482:b0:56e:1348:c9b8 with SMTP id
- q2-20020a056402248200b0056e1348c9b8mr1688eda.0.1712257339434; Thu, 04 Apr
- 2024 12:02:19 -0700 (PDT)
-Date: Thu,  4 Apr 2024 21:01:40 +0200
+ (user=elver job=sendgmr) by 2002:a05:6402:5024:b0:56b:9d72:55ed with SMTP id
+ p36-20020a056402502400b0056b9d7255edmr1366eda.6.1712257342799; Thu, 04 Apr
+ 2024 12:02:22 -0700 (PDT)
+Date: Thu,  4 Apr 2024 21:01:41 +0200
+In-Reply-To: <20240404190146.1898103-1-elver@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240404190146.1898103-1-elver@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240404190146.1898103-1-elver@google.com>
-Subject: [PATCH bpf-next 1/2] bpf: Introduce bpf_probe_write_user_registered()
+Message-ID: <20240404190146.1898103-2-elver@google.com>
+Subject: [PATCH bpf-next 2/2] selftests/bpf: Add test for bpf_probe_write_user_registered()
 From: Marco Elver <elver@google.com>
 To: elver@google.com, Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>
@@ -85,603 +88,577 @@ Cc: Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com
 	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-With all the known caveats, tracing BPF programs may directly write to
-user-space memory with the bpf_probe_write_user() helper. Memory safety
-is an obvious problem when using this helper, since it is too easy to
-overwrite memory across all running processes that user space did not
-expect to be touched (neither the verifier nor the kernel knows what may
-be touched). While it is possible to come up with mechanisms to safely
-communicate to the BPF program which memory region may be written to,
-there are no built-in guarantees of safety. For this reason, the helper
-produces a warning in the kernel log, and in newer kernels it is
-possible to disallow use of the helper since 51e1bb9eeaf7 ("bpf: Add
-lockdown check for probe_write_user helper").
+Introduce a BPF test program and user space code to test
+bpf_probe_write_user_registered().
 
-Nevertheless, direct user-space memory writes from BPF programs can be
-useful to efficiently manipulate and communicate with cooperating user
-space processes.
-
-For example, one of our use cases are for events that happen relatively
-frequently in the kernel (e.g. specific scheduler events), but a set of
-user space threads want to check for such events in very hot code paths
-to make more optimal decisions (the cost of such a check can be no more
-than a load and compare). The types of events and heuristics used may
-change based on system environment and application, and a BPF program
-provides the best trade-offs in terms of performance and deployment.
-
-To achieve better safety, introduce tagged user writable regions, that
-must explicitly be registered before tracing BPF programs may use them:
-
- 1. The prctl() option PR_BPF_REGISTER_WRITABLE allows any user space
-    process (that is allowed to use prctl()) to register tagged writable
-    memory regions for the current thread.
-
- 2. Conversely, the prctl() option PR_BPF_UNREGISTER_WRITABLE allows a
-    user space process to unregister a writable memory region that was
-    previously registered from the current thread. This must be done
-    before freeing memory if the thread that registered a region is
-    still running.
-
- 3. Tracing BPF programs may write to any registered region in the
-    current thread with bpf_probe_write_user_registered(). If the memory
-    region has been tagged with a non-zero value, the BPF program must
-    provide a matching tag.
-
-Admin capabilities are still required to attach BPF programs that use
-the new bpf_probe_write_user_registered() helper.
-
-With this interface, user space threads are guaranteed that no writes
-happen to regions that they did not explicitly register. Tagging can be
-used to associate additional semantics with the memory region.
-
-A note on tag allocation: Since such programs can only be installed by
-the local system administrator, tag allocation may be done by the system
-administrator. For example, by providing headers with tag definitions,
-or a central service to distribute tags to the BPF program loader and to
-user applications.
+The test program also demonstrates 2 ways a BPF program may obtain the
+addresses it can write to: either by tracing prctl() or simply accessing
+current->bpf_user_writable directly.
 
 Signed-off-by: Marco Elver <elver@google.com>
 ---
- Documentation/bpf/bpf_design_QA.rst |   3 +-
- fs/exec.c                           |   2 +
- include/linux/sched.h               |   5 +
- include/linux/trace_events.h        |  19 +++
- include/uapi/linux/bpf.h            |  16 ++
- include/uapi/linux/capability.h     |   3 +-
- include/uapi/linux/prctl.h          |   5 +
- kernel/fork.c                       |   6 +
- kernel/sys.c                        |   7 +
- kernel/trace/bpf_trace.c            | 220 +++++++++++++++++++++++++++-
- tools/include/uapi/linux/bpf.h      |  16 ++
- tools/include/uapi/linux/prctl.h    |   5 +
- 12 files changed, 303 insertions(+), 4 deletions(-)
+ .../prog_tests/probe_write_user_registered.c  | 325 ++++++++++++++++++
+ .../progs/test_probe_write_user_registered.c  | 219 ++++++++++++
+ 2 files changed, 544 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/probe_write_user_registered.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_probe_write_user_registered.c
 
-diff --git a/Documentation/bpf/bpf_design_QA.rst b/Documentation/bpf/bpf_design_QA.rst
-index eb19c945f4d5..5f081d254a44 100644
---- a/Documentation/bpf/bpf_design_QA.rst
-+++ b/Documentation/bpf/bpf_design_QA.rst
-@@ -254,7 +254,8 @@ A: Sort-of.
- Tracing BPF programs can overwrite the user memory
- of the current task with bpf_probe_write_user(). Every time such
- program is loaded the kernel will print warning message, so
--this helper is only useful for experiments and prototypes.
-+this helper is only useful for experiments and prototypes. A safer,
-+but more limited, alternative is bpf_probe_write_user_registered().
- Tracing BPF programs are root only.
- 
- Q: New functionality via kernel modules?
-diff --git a/fs/exec.c b/fs/exec.c
-index cf1df7f16e55..38bf71cbdf5e 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -65,6 +65,7 @@
- #include <linux/syscall_user_dispatch.h>
- #include <linux/coredump.h>
- #include <linux/time_namespace.h>
-+#include <linux/trace_events.h>
- #include <linux/user_events.h>
- #include <linux/rseq.h>
- 
-@@ -1881,6 +1882,7 @@ static int bprm_execve(struct linux_binprm *bprm)
- 	user_events_execve(current);
- 	acct_update_integrals(current);
- 	task_numa_free(current, false);
-+	bpf_user_writable_free(current);
- 	return retval;
- 
- out:
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 3c2abbc587b4..81ab3b5df430 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -53,6 +53,7 @@ struct bio_list;
- struct blk_plug;
- struct bpf_local_storage;
- struct bpf_run_ctx;
-+struct bpf_user_writable;
- struct capture_control;
- struct cfs_rq;
- struct fs_struct;
-@@ -1501,6 +1502,10 @@ struct task_struct {
- 	struct bpf_local_storage __rcu	*bpf_storage;
- 	/* Used for BPF run context */
- 	struct bpf_run_ctx		*bpf_ctx;
-+#ifdef CONFIG_BPF_EVENTS
-+	/* Used for bpf_probe_write_user_registered() */
-+	struct bpf_user_writable	*bpf_user_writable;
-+#endif
- #endif
- 
- #ifdef CONFIG_GCC_PLUGIN_STACKLEAK
-diff --git a/include/linux/trace_events.h b/include/linux/trace_events.h
-index 6f9bdfb09d1d..658c1bfc9048 100644
---- a/include/linux/trace_events.h
-+++ b/include/linux/trace_events.h
-@@ -775,6 +775,10 @@ int bpf_get_perf_event_info(const struct perf_event *event, u32 *prog_id,
- 			    unsigned long *missed);
- int bpf_kprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
- int bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog);
-+int bpf_user_writable_register(void __user *start, size_t size, u32 tag);
-+int bpf_user_writable_unregister(void __user *start, size_t size);
-+int bpf_user_writable_copy(struct task_struct *t, u64 clone_flags);
-+void bpf_user_writable_free(struct task_struct *t);
- #else
- static inline unsigned int trace_call_bpf(struct trace_event_call *call, void *ctx)
- {
-@@ -826,6 +830,21 @@ bpf_uprobe_multi_link_attach(const union bpf_attr *attr, struct bpf_prog *prog)
- {
- 	return -EOPNOTSUPP;
- }
-+static inline int bpf_user_writable_register(void __user *start, size_t size, u32 tag)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int bpf_user_writable_unregister(void __user *start, size_t size)
-+{
-+	return -EOPNOTSUPP;
-+}
-+static inline int bpf_user_writable_copy(struct task_struct *t, u64 clone_flags)
-+{
-+	return 0;
-+}
-+static inline void bpf_user_writable_free(struct task_struct *t)
-+{
-+}
- #endif
- 
- enum {
-diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-index 3c42b9f1bada..f5b86792b99d 100644
---- a/include/uapi/linux/bpf.h
-+++ b/include/uapi/linux/bpf.h
-@@ -5782,6 +5782,21 @@ union bpf_attr {
-  *		0 on success.
-  *
-  *		**-ENOENT** if the bpf_local_storage cannot be found.
-+ *
-+ * long bpf_probe_write_user_registered(void *dst, const void *src, u32 len, u32 tag)
-+ *	Description
-+ *		Attempt in a safe way to write *len* bytes from the buffer *src*
-+ *		to *dst* in memory. Writes are permitted for threads that have
-+ *		registered the target memory region as writable via the prctl()
-+ *		PR_BPF_REGISTER_WRITABLE. If the region was registered with a
-+ *		non-zero tag, a matching *tag* must be provided.
-+ *
-+ *		This helper should not be used to implement any kind of
-+ *		security mechanism because of TOC-TOU attacks, but rather to
-+ *		debug, divert, and manipulate execution of cooperative
-+ *		processes.
-+ *	Return
-+ *		0 on success, or a negative error in case of failure.
-  */
- #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
- 	FN(unspec, 0, ##ctx)				\
-@@ -5996,6 +6011,7 @@ union bpf_attr {
- 	FN(user_ringbuf_drain, 209, ##ctx)		\
- 	FN(cgrp_storage_get, 210, ##ctx)		\
- 	FN(cgrp_storage_delete, 211, ##ctx)		\
-+	FN(probe_write_user_registered, 212, ##ctx)	\
- 	/* */
- 
- /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
-diff --git a/include/uapi/linux/capability.h b/include/uapi/linux/capability.h
-index 5bb906098697..144db9d2bea9 100644
---- a/include/uapi/linux/capability.h
-+++ b/include/uapi/linux/capability.h
-@@ -401,7 +401,8 @@ struct vfs_ns_cap_data {
-  * - bpf_probe_read to read arbitrary kernel memory is allowed
-  * - bpf_trace_printk to print kernel memory is allowed
-  *
-- * CAP_SYS_ADMIN is required to use bpf_probe_write_user.
-+ * CAP_SYS_ADMIN is required to use bpf_probe_write_user and
-+ * bpf_probe_write_user_registered.
-  *
-  * CAP_SYS_ADMIN is required to iterate system wide loaded
-  * programs, maps, links, BTFs and convert their IDs to file descriptors.
-diff --git a/include/uapi/linux/prctl.h b/include/uapi/linux/prctl.h
-index 370ed14b1ae0..4a9372e675ae 100644
---- a/include/uapi/linux/prctl.h
-+++ b/include/uapi/linux/prctl.h
-@@ -306,4 +306,9 @@ struct prctl_mm_map {
- # define PR_RISCV_V_VSTATE_CTRL_NEXT_MASK	0xc
- # define PR_RISCV_V_VSTATE_CTRL_MASK		0x1f
- 
-+/* Register tagged writable memory region for the current task. */
-+#define PR_BPF_REGISTER_WRITABLE		71
-+/* Unregister tagged writable memory region for the current task. */
-+#define PR_BPF_UNREGISTER_WRITABLE		72
+diff --git a/tools/testing/selftests/bpf/prog_tests/probe_write_user_registered.c b/tools/testing/selftests/bpf/prog_tests/probe_write_user_registered.c
+new file mode 100644
+index 000000000000..78ac0756d365
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/probe_write_user_registered.c
+@@ -0,0 +1,325 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2023, Google LLC. */
 +
- #endif /* _LINUX_PRCTL_H */
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 39a5046c2f0b..3ea87b1e5806 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -98,6 +98,7 @@
- #include <linux/io_uring.h>
- #include <linux/bpf.h>
- #include <linux/stackprotector.h>
-+#include <linux/trace_events.h>
- #include <linux/user_events.h>
- #include <linux/iommu.h>
- #include <linux/rseq.h>
-@@ -606,6 +607,7 @@ void free_task(struct task_struct *tsk)
- 	if (tsk->flags & PF_KTHREAD)
- 		free_kthread_struct(tsk);
- 	bpf_task_storage_free(tsk);
-+	bpf_user_writable_free(tsk);
- 	free_task_struct(tsk);
- }
- EXPORT_SYMBOL(free_task);
-@@ -2353,6 +2355,9 @@ __latent_entropy struct task_struct *copy_process(
- #ifdef CONFIG_BPF_SYSCALL
- 	RCU_INIT_POINTER(p->bpf_storage, NULL);
- 	p->bpf_ctx = NULL;
-+	retval = bpf_user_writable_copy(p, clone_flags);
-+	if (retval)
-+		goto bad_fork_cleanup_policy;
- #endif
- 
- 	/* Perform scheduler related setup. Assign this task to a CPU. */
-@@ -2664,6 +2669,7 @@ __latent_entropy struct task_struct *copy_process(
- bad_fork_cleanup_perf:
- 	perf_event_free_task(p);
- bad_fork_cleanup_policy:
-+	bpf_user_writable_free(p);
- 	lockdep_free_task(p);
- #ifdef CONFIG_NUMA
- 	mpol_put(p->mempolicy);
-diff --git a/kernel/sys.c b/kernel/sys.c
-index 8bb106a56b3a..c317e462600b 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -42,6 +42,7 @@
- #include <linux/mount.h>
- #include <linux/gfp.h>
- #include <linux/syscore_ops.h>
-+#include <linux/trace_events.h>
- #include <linux/version.h>
- #include <linux/ctype.h>
- #include <linux/syscall_user_dispatch.h>
-@@ -2760,6 +2761,12 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
- 	case PR_RISCV_V_GET_CONTROL:
- 		error = RISCV_V_GET_CONTROL();
- 		break;
-+	case PR_BPF_REGISTER_WRITABLE:
-+		error = bpf_user_writable_register((void __user *)arg2, arg3, arg4);
-+		break;
-+	case PR_BPF_UNREGISTER_WRITABLE:
-+		error = bpf_user_writable_unregister((void __user *)arg2, arg3);
-+		break;
- 	default:
- 		error = -EINVAL;
- 		break;
-diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
-index 0a5c4efc73c3..643454c398a2 100644
---- a/kernel/trace/bpf_trace.c
-+++ b/kernel/trace/bpf_trace.c
-@@ -82,6 +82,181 @@ static struct bpf_raw_event_map *bpf_get_raw_tracepoint_module(const char *name)
- }
- #endif /* CONFIG_MODULES */
- 
-+/* Memory region writable with bpf_probe_write_user_registered(). */
-+struct bpf_user_writable_entry {
-+	void __user *start;
-+	size_t size;
-+	u32 tag;
++#include <malloc.h>
++#include <pthread.h>
++#include <stddef.h>
++#include <stdint.h>
++#include <sys/prctl.h>
++#include <time.h>
++
++#include <test_progs.h>
++#include "test_probe_write_user_registered.skel.h"
++
++#define TEST_TAG 0xf23c39ab
++
++/* Encoding of the test access-type in the tv_nsec parameter. */
++enum test_access {
++	TEST_SUB_REGION,
++	TEST_EQ_REGION,
++	TEST_ONE_BY_ONE,
++	TEST_ANY_TAG,
 +};
 +
-+struct bpf_user_writable {
-+	u32 capacity;
-+	u32 size;
-+	struct bpf_user_writable_entry entries[];
++/* This will be written to by the BPF program. */
++struct test_data {
++	volatile uint64_t padding_start;
++	volatile uint64_t nanosleep_arg;
++	volatile uint64_t padding_end;
 +};
 +
-+static inline int bpf_user_writable_entry_cmp(const void *_key, const void *_ent)
++static struct test_data test_data;
++
++static void prctl_register_writable(const volatile void *start, size_t size, uint32_t tag)
 +{
-+	const struct bpf_user_writable_entry *key = (const struct bpf_user_writable_entry *)_key;
-+	const struct bpf_user_writable_entry *ent = (const struct bpf_user_writable_entry *)_ent;
-+	void __user *key_end = key->start + key->size - 1;
-+	void __user *ent_end = ent->start + ent->size - 1;
++	ASSERT_OK(prctl(PR_BPF_REGISTER_WRITABLE, start, size, tag, 0), __func__);
++}
 +
-+	if (ent->start <= key->start && key_end <= ent_end)
-+		return 0; /* key memory range contained in entry */
++static void prctl_unregister_writable(const volatile void *start, size_t size)
++{
++	ASSERT_OK(prctl(PR_BPF_UNREGISTER_WRITABLE, start, size, 0, 0), __func__);
++}
 +
-+	return key->start < ent->start ? -1 : 1;
++/* Returns the actual tv_nsec value derived from base and test_access. */
++static uint64_t do_nanosleep(uint64_t base, enum test_access test_access)
++{
++	const uint64_t tv_nsec = base << 8 | test_access;
++	struct timespec ts = {};
++
++	ts.tv_sec = 0;
++	ts.tv_nsec = tv_nsec;
++	syscall(__NR_nanosleep, &ts, NULL);
++
++	return tv_nsec;
 +}
 +
 +/*
-+ * Returns true if the memory region from @ptr with size @size is a subset of
-+ * any registered region of the current task.
++ * Test that the basic usage works: register, write from BPF program,
++ * unregister, after which no more writes can happen.
 + */
-+static const struct bpf_user_writable_entry *bpf_user_writable_find(void __user *ptr, size_t size)
++static void test_register_and_unregister(struct test_probe_write_user_registered *skel)
 +{
-+	const struct bpf_user_writable_entry key = {.start = ptr, .size = size};
-+	const struct bpf_user_writable *uw = current->bpf_user_writable;
++	uint64_t nsec = 1234;
++	uint64_t expect;
 +
-+	if (!uw)
-+		return NULL;
++	prctl_register_writable(&test_data, sizeof(test_data), TEST_TAG);
 +
-+	/*
-+	 * We want bpf_probe_write_user_registered() to be as fast as the
-+	 * non-registered version (for small uw->size): regular bsearch() does
-+	 * too many calls, esp. because bpf_user_writable_entry_cmp() needs to
-+	 * be outlined. Use the inline version instead, which also gives the
-+	 * compiler a chance to inline bpf_user_writable_entry_cmp().
-+	 */
-+	return __inline_bsearch(&key, uw->entries, uw->size, sizeof(key), bpf_user_writable_entry_cmp);
-+}
-+
-+int bpf_user_writable_register(void __user *start, size_t size, u32 tag)
-+{
-+	const struct bpf_user_writable_entry *exist;
-+	struct bpf_user_writable_entry *ent;
-+	struct bpf_user_writable *uw;
-+
-+	/*
-+	 * Sanity check the user didn't try to register inaccessible memory.
-+	 */
-+	if (!start || !size || !access_ok(start, size))
-+		return -EFAULT;
-+
-+	/*
-+	 * Trying to add a range with the same address as already added is most
-+	 * likely a bug - ensure the range was unregistered before re-adding.
-+	 *
-+	 * This also ensures that we always retain the property that no two
-+	 * entries have the same start and we can sort them based on the start
-+	 * address alone.
-+	 */
-+	exist = bpf_user_writable_find(start, 1);
-+	if (exist && exist->start == start)
-+		return -EEXIST;
-+
-+	if (current->bpf_user_writable) {
-+		uw = current->bpf_user_writable;
-+	} else { /* initial alloc */
-+		uw = kmalloc(struct_size(uw, entries, 1), GFP_KERNEL);
-+		if (!uw)
-+			return -ENOMEM;
-+		uw->capacity = 1;
-+		uw->size = 0;
-+		current->bpf_user_writable = uw;
++	/* Check that we see the writes. */
++	for (int i = 0; i < 3; ++i) {
++		test_data.nanosleep_arg = 0;
++		expect = do_nanosleep(++nsec, TEST_SUB_REGION);
++		ASSERT_EQ(test_data.nanosleep_arg, expect, __func__);
++		ASSERT_EQ(skel->data->found_user_registered, 1, __func__);
 +	}
 +
-+	if (uw->size == uw->capacity) { /* grow exponentially */
-+		const u32 ncap = uw->capacity * 2;
-+		struct bpf_user_writable *new_uw;
-+
-+		/* Upper bound of 2^31 entries - should be more than enough. */
-+		if (uw->capacity > S32_MAX)
-+			return -ENOMEM;
-+
-+		new_uw = krealloc(uw, struct_size(uw, entries, ncap), GFP_KERNEL);
-+		if (!new_uw)
-+			return -ENOMEM;
-+
-+		current->bpf_user_writable = uw = new_uw;
-+		uw->capacity = ncap;
++	/* Registered the whole region, so this should also work... */
++	for (int i = 0; i < 3; ++i) {
++		test_data.nanosleep_arg = 0;
++		expect = do_nanosleep(++nsec, TEST_EQ_REGION);
++		ASSERT_EQ(test_data.nanosleep_arg, expect, __func__);
++		ASSERT_EQ(skel->data->found_user_registered, 1, __func__);
 +	}
 +
-+	/* Insert new entry and sort. */
-+	ent = &uw->entries[uw->size++];
-+	ent->start = start;
-+	ent->size = size;
-+	ent->tag = tag;
++	prctl_unregister_writable(&test_data, sizeof(test_data));
 +
-+	sort(uw->entries, uw->size, sizeof(*ent), bpf_user_writable_entry_cmp, NULL);
-+
-+	return 0;
++	/* No more writes after unregistration. */
++	test_data.nanosleep_arg = 0;
++	do_nanosleep(++nsec, TEST_SUB_REGION);
++	ASSERT_EQ(test_data.nanosleep_arg, 0, __func__);
++	ASSERT_EQ(skel->data->found_user_registered, 0, __func__);
 +}
 +
-+int bpf_user_writable_unregister(void __user *start, size_t size)
++/*
++ * Test that accesses with mismatching tags fail.
++ */
++static void test_bad_tag(struct test_probe_write_user_registered *skel)
 +{
-+	const struct bpf_user_writable_entry *ent = bpf_user_writable_find(start, size);
-+	struct bpf_user_writable *uw = current->bpf_user_writable;
-+	size_t del_idx;
++	uint64_t expect;
 +
-+	if (!ent)
-+		return -ENOENT;
-+
-+	/* To unregister, require the precise range as used on registration. */
-+	if (ent->start != start || ent->size != size)
-+		return -ENOENT;
-+
-+	/*
-+	 * Shift all entries after the to-be-deleted one left by one. The array
-+	 * remains sorted.
-+	 */
-+	del_idx = ent - uw->entries;
-+	for (size_t i = del_idx + 1; i < uw->size; ++i)
-+		uw->entries[i - 1] = uw->entries[i];
-+	uw->size--;
-+
-+	return 0;
++	prctl_register_writable(&test_data, sizeof(test_data), TEST_TAG);
++	test_data.nanosleep_arg = 0;
++	expect = do_nanosleep(1234, TEST_SUB_REGION);
++	ASSERT_EQ(test_data.nanosleep_arg, expect, __func__);
++	ASSERT_EQ(skel->data->found_user_registered, 1, __func__);
++	do_nanosleep(9999, TEST_ANY_TAG); /* fails */
++	ASSERT_EQ(test_data.nanosleep_arg, expect, __func__);
++	ASSERT_EQ(skel->data->found_user_registered, 1, __func__);
++	prctl_unregister_writable(&test_data, sizeof(test_data));
 +}
 +
-+int bpf_user_writable_copy(struct task_struct *t, u64 clone_flags)
++/*
++ * Test that the "any" (zero) tag works.
++ */
++static void test_any_tag(struct test_probe_write_user_registered *skel)
 +{
-+	const struct bpf_user_writable *src;
-+	struct bpf_user_writable *dst;
++	uint64_t nsec = 1234;
++	uint64_t expect;
 +
-+	if (WARN_ON_ONCE(t == current))
-+		return 0;
++	prctl_register_writable(&test_data, sizeof(test_data), 0);
 +
-+	t->bpf_user_writable = NULL;
-+
-+	src = current->bpf_user_writable;
-+	if (!src || (clone_flags & CLONE_VM)) {
-+		/*
-+		 * Shared VM: this thread gets its own user writable regions.
-+		 */
-+		return 0;
++	for (int i = 0; i < 3; ++i) {
++		test_data.nanosleep_arg = 0;
++		expect = do_nanosleep(++nsec, TEST_ANY_TAG);
++		ASSERT_EQ(test_data.nanosleep_arg, expect, __func__);
++		ASSERT_EQ(skel->data->found_user_registered, 0, __func__);
 +	}
 +
-+	/*
-+	 * A fork()'ed task (with separate VM) should behave as closely to the
-+	 * original task as possible, and we will copy the writable regions.
-+	 */
-+	dst = kmalloc(struct_size(dst, entries, src->capacity), GFP_KERNEL);
-+	if (!dst)
-+		return -ENOMEM;
-+	memcpy(dst, src, struct_size(dst, entries, src->size));
-+	t->bpf_user_writable = dst;
++	prctl_unregister_writable(&test_data, sizeof(test_data));
 +
-+	return 0;
++	test_data.nanosleep_arg = 0;
++	do_nanosleep(++nsec, TEST_ANY_TAG);
++	ASSERT_EQ(test_data.nanosleep_arg, 0, __func__);
++	ASSERT_EQ(skel->data->found_user_registered, 0, __func__);
 +}
 +
-+void bpf_user_writable_free(struct task_struct *t)
++/*
++ * Test that invalid prctl() fail.
++ */
++static void test_invalid_prctl(struct test_probe_write_user_registered *skel)
 +{
-+	if (!t->bpf_user_writable)
++	ASSERT_ERR(prctl(PR_BPF_REGISTER_WRITABLE, NULL, 1, 0, 0), __func__);
++	ASSERT_ERR(prctl(PR_BPF_REGISTER_WRITABLE, &test_data, 0, 0, 0), __func__);
++	prctl_register_writable(&test_data, sizeof(test_data), TEST_TAG);
++	ASSERT_ERR(prctl(PR_BPF_REGISTER_WRITABLE, &test_data, sizeof(test_data), 0, 0), __func__);
++	ASSERT_ERR(prctl(PR_BPF_REGISTER_WRITABLE, &test_data, 2, 0, 0), __func__);
++	prctl_register_writable((void *)&test_data + 1, 1, TEST_TAG);
++	prctl_register_writable((void *)&test_data - 1, 1, TEST_TAG);
++
++	ASSERT_ERR(prctl(PR_BPF_UNREGISTER_WRITABLE, &test_data, 1, 0, 0), __func__);
++	prctl_unregister_writable((void *)&test_data - 1, 1);
++	prctl_unregister_writable(&test_data, sizeof(test_data));
++	prctl_unregister_writable((void *)&test_data + 1, 1);
++	ASSERT_ERR(prctl(PR_BPF_UNREGISTER_WRITABLE, 0x123456, 1, 0, 0), __func__);
++	ASSERT_ERR(prctl(PR_BPF_UNREGISTER_WRITABLE, &test_data, sizeof(test_data), 0, 0), __func__);
++}
++
++/*
++ * Test that we can register multiple regions and they all work.
++ */
++static void test_multiple_region(struct test_probe_write_user_registered *skel)
++{
++	uint64_t expect;
++
++	prctl_register_writable(&test_data.nanosleep_arg, sizeof(uint64_t), TEST_TAG);
++	prctl_register_writable(&test_data.padding_end, sizeof(uint64_t), TEST_TAG);
++	/* First one last, so the test program knows where to start. */
++	prctl_register_writable(&test_data.padding_start, sizeof(uint64_t), TEST_TAG);
++
++	memset(&test_data, 0, sizeof(test_data));
++	do_nanosleep(0xf00d, TEST_EQ_REGION); /* fails */
++	ASSERT_EQ(test_data.nanosleep_arg, 0, __func__);
++	ASSERT_EQ(skel->data->found_user_registered, 1, __func__); /* found first */
++
++	expect = do_nanosleep(0xf33d, TEST_ONE_BY_ONE);
++	ASSERT_EQ(test_data.padding_start, expect, __func__);
++	ASSERT_EQ(test_data.nanosleep_arg, expect, __func__);
++	ASSERT_EQ(test_data.padding_end, expect, __func__);
++	ASSERT_EQ(skel->data->found_user_registered, 1, __func__);
++
++	prctl_unregister_writable(&test_data.padding_start, sizeof(uint64_t));
++	prctl_unregister_writable(&test_data.nanosleep_arg, sizeof(uint64_t));
++	prctl_unregister_writable(&test_data.padding_end, sizeof(uint64_t));
++}
++
++static void *test_thread_func(void *arg)
++{
++	struct test_probe_write_user_registered *skel = arg;
++
++	/* If this fails, the thread didn't inherit the region. */
++	ASSERT_ERR(prctl(PR_BPF_UNREGISTER_WRITABLE, &test_data, sizeof(test_data), 0, 0), __func__);
++	/* So that the BPF user_writable task storage is filled. */
++	prctl_register_writable(&test_data, 1, TEST_TAG);
++	prctl_unregister_writable(&test_data, 1);
++
++	/* Test that there really is no way it'll write. */
++	test_data.nanosleep_arg = 0;
++	do_nanosleep(9999, TEST_SUB_REGION); /* fails */
++	ASSERT_EQ(test_data.nanosleep_arg, 0, __func__);
++	ASSERT_EQ(skel->data->found_user_registered, 0, __func__);
++
++	return NULL;
++}
++
++/*
++ * Test that threads (CLONE_VM) do not inherit writable regions.
++ */
++static void test_thread(struct test_probe_write_user_registered *skel)
++{
++	uint64_t expect;
++	pthread_t tid;
++
++	prctl_register_writable(&test_data, sizeof(test_data), TEST_TAG);
++
++	test_data.nanosleep_arg = 0;
++	expect = do_nanosleep(1234, TEST_SUB_REGION);
++	ASSERT_EQ(test_data.nanosleep_arg, expect, __func__);
++	ASSERT_EQ(skel->data->found_user_registered, 1, __func__);
++
++	ASSERT_OK(pthread_create(&tid, NULL, test_thread_func, skel), "pthread_create");
++	ASSERT_OK(pthread_join(tid, NULL), "pthread_join");
++
++	ASSERT_EQ(test_data.nanosleep_arg, 0, __func__);
++	prctl_unregister_writable(&test_data, sizeof(test_data));
++}
++
++/*
++ * Test that fork() does inherit writable regions.
++ */
++static void test_fork(struct test_probe_write_user_registered *skel)
++{
++	uint64_t expect;
++	int pid, status;
++
++	prctl_register_writable(&test_data, sizeof(test_data), TEST_TAG);
++
++	test_data.nanosleep_arg = 0;
++	expect = do_nanosleep(1234, TEST_SUB_REGION);
++	ASSERT_EQ(test_data.nanosleep_arg, expect, __func__);
++	ASSERT_EQ(skel->data->found_user_registered, 1, __func__);
++
++	pid = fork();
++	if (!pid) {
++		test_data.nanosleep_arg = 0; /* write prefault */
++		expect = do_nanosleep(3333, TEST_SUB_REGION);
++		ASSERT_EQ(skel->data->found_user_registered, 1, __func__);
++		exit(!ASSERT_EQ(test_data.nanosleep_arg, expect, __func__));
++	}
++
++	status = -1;
++	waitpid(pid, &status, 0);
++	ASSERT_EQ(status, 0, __func__);
++
++	ASSERT_EQ(test_data.nanosleep_arg, expect, __func__);
++	prctl_unregister_writable(&test_data, sizeof(test_data));
++}
++
++/*
++ * Test that the kernel can allocate lots of regions and find them.
++ */
++static void test_stress_regions(struct test_probe_write_user_registered *skel)
++{
++	const int STRESS_SIZE = 200;
++	struct test_data *large = malloc(STRESS_SIZE * sizeof(*large));
++	uint64_t expect;
++
++	ASSERT_NEQ(large, NULL, __func__);
++
++	memset(large, 0, STRESS_SIZE * sizeof(*large));
++
++	for (int i = 0; i < STRESS_SIZE; ++i) {
++		prctl_register_writable(&large[i], sizeof(*large), TEST_TAG);
++		ASSERT_ERR(prctl(PR_BPF_REGISTER_WRITABLE, &large[i], sizeof(*large), 0, 0), __func__);
++		expect = do_nanosleep(777, TEST_SUB_REGION);
++		ASSERT_EQ(large[i].nanosleep_arg, expect, __func__);
++		ASSERT_EQ(skel->data->found_user_registered, 1, __func__);
++	}
++
++	for (int i = 0; i < STRESS_SIZE; ++i) {
++		prctl_unregister_writable(&large[i], sizeof(*large));
++		ASSERT_ERR(prctl(PR_BPF_UNREGISTER_WRITABLE, &large[i], sizeof(*large), 0, 0), __func__);
++		large[i].nanosleep_arg = 0;
++		do_nanosleep(1992, TEST_SUB_REGION); /* no more writes */
++		ASSERT_EQ(large[i].nanosleep_arg, 0, __func__);
++		ASSERT_EQ(skel->data->found_user_registered, i < STRESS_SIZE - 1 ? 1 : 0, __func__);
++	}
++
++	for (int i = 0; i < STRESS_SIZE; ++i)
++		ASSERT_ERR(prctl(PR_BPF_UNREGISTER_WRITABLE, &large[i], sizeof(*large), 0, 0), __func__);
++
++	free(large);
++}
++
++/*
++ * Test setup.
++ */
++void test_probe_write_user_registered(void)
++{
++	struct test_probe_write_user_registered *skel;
++
++	skel = test_probe_write_user_registered__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "open and load"))
 +		return;
 +
-+	kfree(t->bpf_user_writable);
-+	t->bpf_user_writable = NULL;
++	if (!ASSERT_OK(test_probe_write_user_registered__attach(skel), "attach"))
++		goto cleanup;
++
++	if (test__start_subtest("register_and_unregister"))
++		test_register_and_unregister(skel);
++	if (test__start_subtest("bad_tag"))
++		test_bad_tag(skel);
++	if (test__start_subtest("any_tag"))
++		test_any_tag(skel);
++	if (test__start_subtest("invalid_prctl"))
++		test_invalid_prctl(skel);
++	if (test__start_subtest("multiple_region"))
++		test_multiple_region(skel);
++	if (test__start_subtest("thread"))
++		test_thread(skel);
++	if (test__start_subtest("fork"))
++		test_fork(skel);
++	if (test__start_subtest("stress_regions"))
++		test_stress_regions(skel);
++
++cleanup:
++	test_probe_write_user_registered__destroy(skel);
 +}
+diff --git a/tools/testing/selftests/bpf/progs/test_probe_write_user_registered.c b/tools/testing/selftests/bpf/progs/test_probe_write_user_registered.c
+new file mode 100644
+index 000000000000..9174ff2e36f9
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_probe_write_user_registered.c
+@@ -0,0 +1,219 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2023, Google LLC. */
++#include "vmlinux.h"
++#include <asm/unistd.h>
++#include <bpf/bpf_core_read.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
 +
- u64 bpf_get_stackid(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
- u64 bpf_get_stack(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
- 
-@@ -324,8 +499,8 @@ static const struct bpf_func_proto bpf_probe_read_compat_str_proto = {
- };
- #endif /* CONFIG_ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE */
- 
--BPF_CALL_3(bpf_probe_write_user, void __user *, unsafe_ptr, const void *, src,
--	   u32, size)
-+static __always_inline int
-+bpf_probe_write_user_common(void __user *unsafe_ptr, const void *src, u32 size)
- {
- 	/*
- 	 * Ensure we're in user context which is safe for the helper to
-@@ -349,6 +524,12 @@ BPF_CALL_3(bpf_probe_write_user, void __user *, unsafe_ptr, const void *, src,
- 	return copy_to_user_nofault(unsafe_ptr, src, size);
- }
- 
-+BPF_CALL_3(bpf_probe_write_user, void __user *, unsafe_ptr, const void *, src,
-+	   u32, size)
-+{
-+	return bpf_probe_write_user_common(unsafe_ptr, src, size);
-+}
++/*
++ * We just need the CLONE_VM definition. Without __ASSEMBLY__ sched.h would
++ * redefine clone_args, which is already defined by vmlinux.h
++ */
++#define __ASSEMBLY__
++#include <linux/sched.h>
++#undef __ASSEMBLY__
 +
- static const struct bpf_func_proto bpf_probe_write_user_proto = {
- 	.func		= bpf_probe_write_user,
- 	.gpl_only	= true,
-@@ -369,6 +550,39 @@ static const struct bpf_func_proto *bpf_get_probe_write_proto(void)
- 	return &bpf_probe_write_user_proto;
- }
- 
-+BPF_CALL_4(bpf_probe_write_user_registered, void __user *, unsafe_ptr, const void *, src,
-+	   u32, size, u32, tag)
-+{
-+	const struct bpf_user_writable_entry *ent = bpf_user_writable_find(unsafe_ptr, size);
++#define TEST_TAG 0xf23c39ab
 +
-+	if (!ent)
-+		return -EPERM;
++/* Encoding of the test access-type in the tv_nsec parameter. */
++enum test_access {
++	TEST_SUB_REGION,
++	TEST_EQ_REGION,
++	TEST_ONE_BY_ONE,
++	TEST_ANY_TAG,
++};
++#define TEST_ACCESS(nsec) ((enum test_access)((nsec) & 0xff))
 +
-+	/* A region with tag 0 matches any tag. */
-+	if (ent->tag && ent->tag != tag)
-+		return -EPERM;
-+
-+	return bpf_probe_write_user_common(unsafe_ptr, src, size);
-+}
-+
-+static const struct bpf_func_proto bpf_probe_write_user_registered_proto = {
-+	.func		= bpf_probe_write_user_registered,
-+	.gpl_only	= true,
-+	.ret_type	= RET_INTEGER,
-+	.arg1_type	= ARG_ANYTHING,
-+	.arg2_type	= ARG_PTR_TO_MEM | MEM_RDONLY,
-+	.arg3_type	= ARG_CONST_SIZE,
-+	.arg4_type      = ARG_ANYTHING,
++struct test_data {
++	__u64 padding_start;
++	__u64 nanosleep_arg;
++	__u64 padding_end;
 +};
 +
-+static const struct bpf_func_proto *bpf_get_probe_write_registered_proto(void)
-+{
-+	if (!capable(CAP_SYS_ADMIN))
-+		return NULL;
++struct user_writable {
++	void *start;
++	size_t size;
++};
 +
-+	return &bpf_probe_write_user_registered_proto;
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, struct user_writable);
++} user_writable SEC(".maps");
++
++int found_user_registered = -1;
++
++/*
++ * This is used to test that the contents of per-task bpf_user_writable is sane.
++ *
++ * It also demonstrates another way (vs. prctl()) how the BPF program can obtain
++ * addresses associated with a tag. Beware, however, that this is O(#registered)
++ * and a production BPF program should cache its result in task local storage.
++ */
++static int find_user_registered(__u32 tag, void *start)
++{
++	const struct bpf_user_writable *uw = bpf_get_current_task_btf()->bpf_user_writable;
++	int count = 0;
++
++	if (!uw)
++		return count;
++
++      /*
++       * Ensure termination of the loop to make the verifier happy. Use
++       * bpf_loop() if you expect a very large number of registered regions.
++       */
++	for (__u32 idx = 0; idx < uw->size && idx < 1024; ++idx) {
++		if (uw->entries[idx].tag == tag && uw->entries[idx].start == start)
++			count++;
++	}
++
++	return count;
 +}
 +
- #define MAX_TRACE_PRINTK_VARARGS	3
- #define BPF_TRACE_PRINTK_SIZE		1024
- 
-@@ -1552,6 +1766,8 @@ bpf_tracing_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
- 	case BPF_FUNC_probe_write_user:
- 		return security_locked_down(LOCKDOWN_BPF_WRITE_USER) < 0 ?
- 		       NULL : bpf_get_probe_write_proto();
-+	case BPF_FUNC_probe_write_user_registered:
-+		return bpf_get_probe_write_registered_proto();
- 	case BPF_FUNC_probe_read_user:
- 		return &bpf_probe_read_user_proto;
- 	case BPF_FUNC_probe_read_kernel:
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 3c42b9f1bada..f5b86792b99d 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -5782,6 +5782,21 @@ union bpf_attr {
-  *		0 on success.
-  *
-  *		**-ENOENT** if the bpf_local_storage cannot be found.
-+ *
-+ * long bpf_probe_write_user_registered(void *dst, const void *src, u32 len, u32 tag)
-+ *	Description
-+ *		Attempt in a safe way to write *len* bytes from the buffer *src*
-+ *		to *dst* in memory. Writes are permitted for threads that have
-+ *		registered the target memory region as writable via the prctl()
-+ *		PR_BPF_REGISTER_WRITABLE. If the region was registered with a
-+ *		non-zero tag, a matching *tag* must be provided.
-+ *
-+ *		This helper should not be used to implement any kind of
-+ *		security mechanism because of TOC-TOU attacks, but rather to
-+ *		debug, divert, and manipulate execution of cooperative
-+ *		processes.
-+ *	Return
-+ *		0 on success, or a negative error in case of failure.
-  */
- #define ___BPF_FUNC_MAPPER(FN, ctx...)			\
- 	FN(unspec, 0, ##ctx)				\
-@@ -5996,6 +6011,7 @@ union bpf_attr {
- 	FN(user_ringbuf_drain, 209, ##ctx)		\
- 	FN(cgrp_storage_get, 210, ##ctx)		\
- 	FN(cgrp_storage_delete, 211, ##ctx)		\
-+	FN(probe_write_user_registered, 212, ##ctx)	\
- 	/* */
- 
- /* backwards-compatibility macros for users of __BPF_FUNC_MAPPER that don't
-diff --git a/tools/include/uapi/linux/prctl.h b/tools/include/uapi/linux/prctl.h
-index 370ed14b1ae0..4a9372e675ae 100644
---- a/tools/include/uapi/linux/prctl.h
-+++ b/tools/include/uapi/linux/prctl.h
-@@ -306,4 +306,9 @@ struct prctl_mm_map {
- # define PR_RISCV_V_VSTATE_CTRL_NEXT_MASK	0xc
- # define PR_RISCV_V_VSTATE_CTRL_MASK		0x1f
- 
-+/* Register tagged writable memory region for the current task. */
-+#define PR_BPF_REGISTER_WRITABLE		71
-+/* Unregister tagged writable memory region for the current task. */
-+#define PR_BPF_UNREGISTER_WRITABLE		72
++static void sys_nanosleep(struct pt_regs *regs)
++{
++	struct __kernel_timespec *ts;
++	struct user_writable *w;
++	__u32 dummy = -99;
++	__u64 tv_nsec;
++	int err;
 +
- #endif /* _LINUX_PRCTL_H */
++	_Static_assert(sizeof(ts->tv_nsec) == sizeof(tv_nsec), "ABI");
++
++	found_user_registered = -1;
++
++	w = bpf_task_storage_get(&user_writable, bpf_get_current_task_btf(), 0, 0);
++	if (!w)
++		return;
++
++	ts = (void *)PT_REGS_PARM1_CORE_SYSCALL(regs);
++	if (bpf_probe_read_user(&tv_nsec, sizeof(ts->tv_nsec), &ts->tv_nsec))
++		return;
++
++	found_user_registered = find_user_registered(TEST_TAG, w->start);
++
++	bpf_printk("doing test accesses");
++
++	/*
++	 * Test failing accesses before, so that if they actually succeed, we
++	 * won't do the real write and the test will detect a missed write.
++	 */
++	if (!bpf_probe_write_user_registered(w->start + w->size - 1, &dummy, sizeof(dummy), TEST_TAG))
++		return;
++	if (!bpf_probe_write_user_registered(w->start - 1, &dummy, sizeof(dummy), TEST_TAG))
++		return;
++	if (!bpf_probe_write_user_registered(w->start + 100, &dummy, sizeof(dummy), TEST_TAG))
++		return;
++	if (TEST_ACCESS(tv_nsec) != TEST_ANY_TAG) {
++		if (!bpf_probe_write_user_registered(w->start, &dummy, sizeof(dummy), 123))
++			return;
++		if (!bpf_probe_write_user_registered(w->start, &dummy, sizeof(dummy), 0))
++			return;
++	}
++
++	switch (TEST_ACCESS(tv_nsec)) {
++	case TEST_SUB_REGION:
++		bpf_printk("sub region write");
++		err = bpf_probe_write_user_registered(w->start + sizeof(__u64), &tv_nsec, sizeof(tv_nsec), TEST_TAG);
++		break;
++	case TEST_EQ_REGION: {
++		struct test_data out = {};
++
++		bpf_printk("whole region write");
++		out.nanosleep_arg = tv_nsec;
++		err = bpf_probe_write_user_registered(w->start, &out, sizeof(out), TEST_TAG);
++		break;
++	}
++	case TEST_ONE_BY_ONE:
++		bpf_printk("write one by one");
++		for (int i = 0; i < 3; ++i) {
++			err = bpf_probe_write_user_registered(w->start + i * sizeof(__u64), &tv_nsec,
++							      sizeof(tv_nsec), TEST_TAG);
++			if (err)
++				break;
++		}
++		break;
++	case TEST_ANY_TAG:
++		bpf_printk("any tag write");
++		err = bpf_probe_write_user_registered(w->start + sizeof(__u64), &tv_nsec, sizeof(tv_nsec), 93845);
++		break;
++	default:
++		bpf_printk("unknown access method");
++		return;
++	}
++
++	if (err)
++		bpf_printk("write failed: %d", err);
++	else
++		bpf_printk("write success");
++}
++
++static void sys_prctl(struct pt_regs *regs)
++{
++	struct user_writable *w;
++	__u32 tag;
++
++	if (PT_REGS_PARM1_CORE_SYSCALL(regs) != /*PR_BPF_REGISTER_WRITABLE*/71)
++		return;
++
++	tag = (__u32)PT_REGS_PARM4_CORE_SYSCALL(regs);
++	if (tag && tag != TEST_TAG)
++		return;
++
++	w = bpf_task_storage_get(&user_writable, bpf_get_current_task_btf(), 0,
++				 BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!w)
++		return;
++
++	bpf_printk("registered user writable region with tag %x", tag);
++	w->start = (void *)PT_REGS_PARM2_CORE_SYSCALL(regs);
++	w->size = PT_REGS_PARM3_CORE_SYSCALL(regs);
++}
++
++SEC("tp_btf/sys_enter")
++int BPF_PROG(sys_enter, struct pt_regs *regs, long id)
++{
++	switch (id) {
++	case __NR_prctl:
++		sys_prctl(regs);
++		break;
++	case __NR_nanosleep:
++		sys_nanosleep(regs);
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
++
++/*
++ * The user writable region is copied on fork(). Also copy the per-task map we
++ * use in this test.
++ */
++SEC("tp_btf/task_newtask")
++int BPF_PROG(task_newtask, struct task_struct *t, unsigned long clone_flags)
++{
++	const struct user_writable *src;
++	struct user_writable *dst;
++
++	if (clone_flags & CLONE_VM)
++		return 0;
++
++	src = bpf_task_storage_get(&user_writable, bpf_get_current_task_btf(), 0, 0);
++	if (!src)
++		return 0;
++
++	dst = bpf_task_storage_get(&user_writable, t, 0, BPF_LOCAL_STORAGE_GET_F_CREATE);
++	if (!dst) {
++		bpf_printk("failed to copy user_writable on fork()");
++		return 0;
++	}
++	*dst = *src;
++	bpf_printk("fork copied user writable region");
++
++	return 0;
++}
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.44.0.478.gd926399ef9-goog
 
