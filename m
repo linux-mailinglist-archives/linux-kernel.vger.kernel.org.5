@@ -1,141 +1,174 @@
-Return-Path: <linux-kernel+bounces-131347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5605389868E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:57:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62FEE898698
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:58:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA5C61F246E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:57:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B7DF9B2604C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:58:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74DE984FBF;
-	Thu,  4 Apr 2024 11:57:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B29E38527D;
+	Thu,  4 Apr 2024 11:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DxFiXLzR"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="S0ZH2vNC";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SRiZMHrZ"
+Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5E7884FAA;
-	Thu,  4 Apr 2024 11:57:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26DF184D35
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712231840; cv=none; b=jWaN/gcrpVXtp7+WNl/+vtdLLzIucmRUciUUH1mb+SCyEDEFisutOSC8UYPilA/CaQJfHobgrH1h15PvFiu2NzjhLHLXuRRHKnsuj1uLSfANod+toArpzaUFT1MJlqvspuqV4bmpUtnjCrU6LqZJ6qxaoOC1PdbGYVvj5O+/sbo=
+	t=1712231876; cv=none; b=YVUZH3nGxNrjc/aVfNoHyfWPpOBTOegCXaS82XSLO+KreRH3IUMtuXRJa8IRlt8pcyWphZ6rVzslq9W2HnPfbMfnBzbn/dqyeVJ6mbJPUCSerJ2fbI6OkZR+ZKxbPmxLo41eZsfYhUbMcBFCXiyc7rv7wBNJYPfHDxWtgRHYuwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712231840; c=relaxed/simple;
-	bh=Dl0DCFFeaG32auCuag3L3uwTOmeWVL3ayWOMwWYAh8g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jBDrvIQe2A14wZTdtrzF+MpIk2MVnj5wBUpHsFAqMKPrv78xj0SzGI2zfz9JQ231y5PFiApVtl97OKOBJG9VxdqwvG2RzQNtI2hYpM1l12pZ+Av0J/hSBVE0uLFM7tSe7Nmyh5ZuFDZQpp2p6LKEDM0xto6zhP1LouQvX7vsWtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DxFiXLzR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDC7EC43394;
-	Thu,  4 Apr 2024 11:57:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712231840;
-	bh=Dl0DCFFeaG32auCuag3L3uwTOmeWVL3ayWOMwWYAh8g=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=DxFiXLzRpeXrD5jM6XlZnyh/7G/4TMqh8nzd6j0aWfeiqUMSOVHDcGMjfZtzEY9H8
-	 gZmL+yfbuZAjZK/p4djk6G7SQdsogQjWVctEZxj0Ga3fP1avhxysVjYOMJ7O/w51TO
-	 duDMI0BuK0ObfXLRc1zwWEm2b+tigCRyrBiTCdWNo2l+RZr1OtlS54cwrmM4LpYoO4
-	 e8TUhzGCDn+4uEkHGDzOkA5oO2gsGu7BxUhBr5Y/TQcVN9lEN+ru4m7sKtSGOK5D9C
-	 ezPeMNLHCb0Y5cm219SgI0nlyo+DNaKHSJRMhjWf5fXiNIyfHjLhp3+zdEHZn6z/wm
-	 wu3tLft3tETKw==
-Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5a4e0859b65so268083eaf.0;
-        Thu, 04 Apr 2024 04:57:19 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWWp1kRPb0kgvD84UIrkDcC0jpi+SG+RbWiQ3F3YPErpsj5aLHmOOqSJClMooX6nEeIEWI24GuHBK1Uy8dqdZ9SGcs7FrXikENfX0Ez98v52eQpyj6u0n1szU/rK9vCMPykzPUMUUU=
-X-Gm-Message-State: AOJu0Yz6kgoc5Cv2fXFyl4iB43QQdpEh8qbZhp+jzkFxXXAzVO/iPT9Z
-	MAqwMYOkibFAa73wkm6mz92kndk9/oDaDmPj4asvv+J3etZhJAdX1fVlbjmfbXkrp9ldyL7r3Bc
-	tYyw4vU4XzwA4mk1ps8sKzcoCyCY=
-X-Google-Smtp-Source: AGHT+IGmHNaoCJ05Wj/10dFYzW7o/nO7HyRVuPaGHmT3FbayK4Gc1hRS13Ap+tRnqEIM30ZGkBW+zHYw+HDPdi6e1TA=
-X-Received: by 2002:a4a:dbc7:0:b0:5a4:5630:93d6 with SMTP id
- t7-20020a4adbc7000000b005a4563093d6mr2273294oou.1.1712231839209; Thu, 04 Apr
- 2024 04:57:19 -0700 (PDT)
+	s=arc-20240116; t=1712231876; c=relaxed/simple;
+	bh=xpPSToXnScFnQLa4LDpK7c2Q/G7khDfZVgUOFA8eCzo=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=ZYh2/sxbRD5TbQAKB0KXMaabwRRGV7pDTo9lYWGjtic7Got1W8tbo440SmwhPpbSNE0uAbaN14D4+6U433q6E5guMXSkL0qr945g7RjG4OxSAqGzZABXDqSsIOcAC8xnKulnVB3trTf/bVcW58G6fu0PVjpD2aden/LxE4Ypi+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=S0ZH2vNC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SRiZMHrZ; arc=none smtp.client-ip=64.147.123.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 9C0141C00119;
+	Thu,  4 Apr 2024 07:57:53 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Thu, 04 Apr 2024 07:57:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1712231873; x=1712318273; bh=D/MSOh/i9T
+	oqciNjLOcNeFhiNaDy1EPMCBIzveAwq2k=; b=S0ZH2vNCr1xg4e/Y/5OQHYNMFC
+	59Yt9ulNm6yPvo2q84EPK4o5+SrO9xCsFm4AuhGI7kWbpHGMSJqPRIzu0Y7FlSVe
+	L1BJJ7mKWSlS+jzwSFPJs4z4yJsvSFvBACnRj/SOfxbFJ9XbkWfgyxFyoGukMZ3w
+	7dpY+D8xndOa9MagHCYlPkesZz5muSijrLpYGp1/gVT1RYXhVkr22t1Hv9miL8i7
+	E7gP/gY7clC42ec+X+ibe9japFkaprhucMWm1BX7CeI0jG+/deVKlcFY7Pl9huLF
+	/lZ0xGvawcQYSB9ydwfh/qNb+5jO98oG5Smay0JBzEzsrJ7RhLPsQiMrxGsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712231873; x=1712318273; bh=D/MSOh/i9ToqciNjLOcNeFhiNaDy
+	1EPMCBIzveAwq2k=; b=SRiZMHrZbF0auOWjL6wYfR+Rp4XOArVoMkQEG3WYlP4i
+	YAXbOb+uVKoVXMyWEuH3erB0uQL1a229lXCRDb/wuBjIsxmUXNAt1wSA8N9bkutF
+	9wjZhah0U8B37qdUNyuL1QFnLGbn1UQKLQa5RF+wbyhJ/ghS5sPWJwiFmAQ9oJCh
+	/Y4zHzoJ1cHxXZSRMwh6GgW1JWjNDA5gdK78JeVmHLbCdEw+wHvlqCEToPeh6qT6
+	7Fzpm/3RanLyWx+q+NMw5+CbqCHDdLwBlSQNWRiNexeXNGWJku9WQ7ADBjl0MJGP
+	ZfKvUv5H+oh6pgxK+m5YjpGb6LXeu21ivT62U4oRzA==
+X-ME-Sender: <xms:wJUOZkIve_XcrIkLQtfTmHNxuv2FetMW4iOQ6W0MlJ91DvVFjHsKcw>
+    <xme:wJUOZkKHtkYgEyCEr859BMASYBMfmR357AOfQ1FDBIUPtZPX88740Z35MNqQvwNe-
+    hg2nWgXrpSD6p5iEhU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefkedggeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:wJUOZks7df2n0FH9tzQmCigrD5gxXJrMRSs426F_1G_V0Pgvkya7Xw>
+    <xmx:wJUOZhYNNzYZdoMXt4hm4bXdnLj6sMXrhz1-accxVc7SB2BnkFw8Rg>
+    <xmx:wJUOZrYavuuNJOBBPfiKdeLZAzf5076YKG9GWzJCEqY-c1JV8514KA>
+    <xmx:wJUOZtB_nyBXZw9GKzcc2yBswtCYCnkq5ZdCpZXhk5CbDLiB5XXzRw>
+    <xmx:wZUOZpOM5XqEO6YhYdQKrjt1BAkE-SvRmjp8UtzgjeFrjQGTWe4_0ea2>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id D7512B6008D; Thu,  4 Apr 2024 07:57:52 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <5766468.DvuYhMxLoT@kreacher> <2318465.ElGaqSPkdT@kreacher> <6f950b18-4ff7-4570-957d-49b46167c12e@arm.com>
-In-Reply-To: <6f950b18-4ff7-4570-957d-49b46167c12e@arm.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 4 Apr 2024 13:57:07 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0hD=Nfk3=5gQuEKu8oq9PV6C_+7N0ZJYKkQ9OH505RpZg@mail.gmail.com>
-Message-ID: <CAJZ5v0hD=Nfk3=5gQuEKu8oq9PV6C_+7N0ZJYKkQ9OH505RpZg@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] thermal: gov_step_wise: Simplify checks related to
- passive trips
-To: Lukasz Luba <lukasz.luba@arm.com>
-Cc: "Rafael J. Wysocki" <rjw@rjwysocki.net>, LKML <linux-kernel@vger.kernel.org>, 
-	Daniel Lezcano <daniel.lezcano@linaro.org>, Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <f9b3c536-887a-4a33-bd03-70e60c5aa517@app.fastmail.com>
+In-Reply-To: <32936b57-f451-460b-a2df-e74293e44f5c@paulmck-laptop>
+References: <31c82dcc-e203-48a9-aadd-f2fcd57d94c1@paulmck-laptop>
+ <20240401213950.3910531-3-paulmck@kernel.org>
+ <836df0c7-51a7-4786-8a65-a70efe9b6eec@app.fastmail.com>
+ <32936b57-f451-460b-a2df-e74293e44f5c@paulmck-laptop>
+Date: Thu, 04 Apr 2024 13:57:32 +0200
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
+ "Vineet Gupta" <vgupta@kernel.org>,
+ "Andi Shyti" <andi.shyti@linux.intel.com>,
+ "Andrzej Hajda" <andrzej.hajda@intel.com>,
+ "Palmer Dabbelt" <palmer@rivosinc.com>, linux-snps-arc@lists.infradead.org
+Subject: Re: [PATCH RFC cmpxchg 3/8] ARC: Emulate one-byte and two-byte cmpxchg
+Content-Type: text/plain
 
-On Thu, Apr 4, 2024 at 1:26=E2=80=AFPM Lukasz Luba <lukasz.luba@arm.com> wr=
-ote:
+On Tue, Apr 2, 2024, at 19:06, Paul E. McKenney wrote:
+> On Tue, Apr 02, 2024 at 10:14:08AM +0200, Arnd Bergmann wrote:
+>> On Mon, Apr 1, 2024, at 23:39, Paul E. McKenney wrote:
+>> > Use the new cmpxchg_emu_u8() and cmpxchg_emu_u16() to emulate one-byte
+>> > and two-byte cmpxchg() on arc.
+>> >
+>> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>> 
+>> I'm missing the context here, is it now mandatory to have 16-bit
+>> cmpxchg() everywhere? I think we've historically tried hard to
+>> keep this out of common code since it's expensive on architectures
+>> that don't have native 16-bit load/store instructions (alpha, armv3)
+>> and or sub-word atomics (armv5, riscv, mips).
 >
->
->
-> On 4/3/24 19:12, Rafael J. Wysocki wrote:
-> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> >
-> > Make it more clear from the code flow that the passive polling status
-> > updates only take place for passive trip points.
-> >
-> > No intentional functional impact.
-> >
-> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> > ---
-> >   drivers/thermal/gov_step_wise.c |   14 ++++++--------
-> >   1 file changed, 6 insertions(+), 8 deletions(-)
-> >
-> > Index: linux-pm/drivers/thermal/gov_step_wise.c
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > --- linux-pm.orig/drivers/thermal/gov_step_wise.c
-> > +++ linux-pm/drivers/thermal/gov_step_wise.c
-> > @@ -92,15 +92,13 @@ static void thermal_zone_trip_update(str
-> >               if (instance->initialized && old_target =3D=3D instance->=
-target)
-> >                       continue;
-> >
-> > -             if (old_target =3D=3D THERMAL_NO_TARGET &&
-> > -                 instance->target !=3D THERMAL_NO_TARGET) {
-> > -                     /* Activate a passive thermal instance */
-> > -                     if (trip->type =3D=3D THERMAL_TRIP_PASSIVE)
-> > +             if (trip->type =3D=3D THERMAL_TRIP_PASSIVE) {
-> > +                     /* If needed, update the status of passive pollin=
-g. */
-> > +                     if (old_target =3D=3D THERMAL_NO_TARGET &&
-> > +                         instance->target !=3D THERMAL_NO_TARGET)
-> >                               tz->passive++;
-> > -             } else if (old_target !=3D THERMAL_NO_TARGET &&
-> > -                        instance->target =3D=3D THERMAL_NO_TARGET) {
-> > -                     /* Deactivate a passive thermal instance */
-> > -                     if (trip->type =3D=3D THERMAL_TRIP_PASSIVE)
-> > +                     else if (old_target !=3D THERMAL_NO_TARGET &&
-> > +                              instance->target =3D=3D THERMAL_NO_TARGE=
-T)
-> >                               tz->passive--;
-> >               }
-> >
-> >
-> >
-> >
->
-> The patch looks good, although I got some warning while applying with
-> my b4 tool:
-> BADSIG: DKIM/rjwysocki.net
+> I need 8-bit, and just added 16-bit because it was easy to do so.
+> I would be OK dropping the 16-bit portions of this series, assuming
+> that no-one needs it.  And assuming that it is easier to drop it than
+> to explain why it is not available.  ;-)
 
-It's likely because it was sent from an address in the rjwysocki.net
-domain, but it is perfectly fine to send "somebody else's" patches if
-a replacement From: header is given.
+It certainly makes sense to handle both the same, whichever
+way we do this.
 
-Looks like a b4 issue to me.
-
-> Anyway, it looks like false warning IMO.
+>> Does the code that uses this rely on working concurrently with
+>> non-atomic stores to part of the 32-bit word? If we want to
+>> allow that, we need to merge my alpha ev4/45/5 removal series
+>> first.
 >
-> Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+> For 8-but cmpxchg(), yes.  There are potentially concurrent
+> smp_load_acquire() and smp_store_release() operations to this same byte.
+>
+> Or is your question specific to the 16-bit primitives?  (Full disclosure:
+> I have no objection to removing Alpha ev4/45/5, having several times
+> suggested removing Alpha entirely.  And having the scars to prove it.)
 
-Thank you!
+For the native sub-word access, alpha ev5 cannot do either of
+them, while armv3 could do byte access but not 16-bit words.
+
+It sounds like the old alphas are already broken then, which
+is a good reason to finally drop support. It would appear that
+the arm riscpc is not affected by this though.
+
+>> For the cmpxchg() interface, I would prefer to handle the
+>> 8-bit and 16-bit versions the same way as cmpxchg64() and
+>> provide separate cmpxchg8()/cmpxchg16()/cmpxchg32() functions
+>> by architectures that operate on fixed-size integer values
+>> but not compounds or pointers, and a generic cmpxchg() wrapper
+>> in common code that can handle the abtraction for pointers,
+>> long and (if absolutely necessary) compounds by multiplexing
+>> between cmpxchg32() and cmpxchg64() where needed.
+>
+> So as to support _acquire(), _relaxed(), and _release()?
+>
+> If so, I don't have any use cases for other than full ordering.
+
+My main goal here would be to simplify the definition of
+the very commonly used cmpxchg() macro so it doesn't have
+to deal with so many corner cases, and make it work the
+same way across all architectures. Without the type
+agnostic wrapper, there would also be the benefit of
+additional type checking that we get by replacing the
+macros with inline functions.
+
+We'd still need all the combinations of cmpxchg() and xchg()
+with the four sizes and ordering variants, but at least the
+latter should easily collapse on most architectures. At the
+moment, most architectures only provide the full-ordering
+version.
+
+      Arnd
 
