@@ -1,99 +1,122 @@
-Return-Path: <linux-kernel+bounces-130763-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97F0F897CD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40093897CF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:19:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CC4BB24E31
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:06:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD851B295CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:19:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590321C36;
-	Thu,  4 Apr 2024 00:06:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4864D1CABB;
+	Thu,  4 Apr 2024 00:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KeHuldDG"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="moeryeMB"
+Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3FC5803;
-	Thu,  4 Apr 2024 00:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 401151CAB5
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 00:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712189194; cv=none; b=b1HwhNso2By1Bcp3aVr7zxclkU8QU33V1DvAq7KqNmraWpJpJWuzgQiZKA5vTvAQSHaKyhkhY4Y06QQfOqI45FXaMcxA07IsZGYgVN4JtmQkii1oNCseNXm/YEldDsVROTJgJt90i7hNbhyfzJ0a6irJzZjLh2kT5VgrZCVDCUc=
+	t=1712189871; cv=none; b=tOZTeY17ZNZX5i95t8M0+BdNA8TAhGKp+IeYpFxcenEOmTVS4NXA8o0vfJoxuDW2p57xx71wkcKFXRU7yYCTRJs4TKQXhA3BuwQlqT9CvL8TGyxXgWMjJor9QjNE5qfMzVRwN7NUsfiou4DbEh98W39xPOkfTLTb+9NLTVxAPDY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712189194; c=relaxed/simple;
-	bh=F6iLoWS96SaQOlKJNBhFx7hfIo5Z/k0Vsx1FPq4aK6U=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=FlL+TJVGdmU027bJVf+TQFhWAb5QoMtuKWEdQHy3afCairL/kcuikkSqQvSNQ3h8zmTT93hLIg45jjyZam2X+zHSECxhFxQSYcwttYvRSt9vkTXjwS08LIuAzoDf5UZxHiEX5N+FwV/RWbwpfYMJC4WiF00u1lkZNdB7DQ6rryY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KeHuldDG; arc=none smtp.client-ip=209.85.208.48
+	s=arc-20240116; t=1712189871; c=relaxed/simple;
+	bh=B7R3hnTJRgCRWl5nF3InAG07B70C9XWTY07YjD3CY9Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=s/0jqccmCOi447MA9XupYqeiymDERYA6TM98zQDI9jQo1CD6A2x6aMm2M++VI+AZpIkrLBBhS4vYJ19zPRKktK8OAQFeS3XwLF1MR+1NLIky+HDMcO6RUg/pI6TQuW5luEu0MaPwmZoiWtPeCZtwrqCJfSJj0fWpkt/+NS5xuqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=moeryeMB; arc=none smtp.client-ip=209.85.216.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56e0f359240so503999a12.0;
-        Wed, 03 Apr 2024 17:06:32 -0700 (PDT)
+Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2a226f8e44aso272060a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 17:17:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712189191; x=1712793991; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=F6iLoWS96SaQOlKJNBhFx7hfIo5Z/k0Vsx1FPq4aK6U=;
-        b=KeHuldDGyw+rrgpdS3ExdvElMP7OrX14O/73KNn8KCqYIK878eHtCnLu46AxBLM/+Y
-         Zb3R9yByfB/fO/Iq7AMDH+9YxlT3oknalwuCXBDVGeyTLeEnMdBHef1MTWer3gpduuXL
-         8mxagZPLRbqcipZA1TkeVZqGOrblmqWY5t+pWJGcrpFPzJNyif+aFGqleyYfhm0rZSA4
-         iqnse/nzVqBqFaBk377iloNIDmNs3qQJrGGqZCt3GPeOvmb37RTwT8Eh0z3pWsBPXqt4
-         XdkMUJfrvDWeS3sRtcYEyvc0HJtIOlMJdrH5tSYx0ADU6Kg4qOsGP9cuSbC8Rkv4rBpK
-         tlRQ==
+        d=gmail.com; s=20230601; t=1712189869; x=1712794669; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NEhL3R0CV+V3IuuciSTia1iTNDXKvNOyBjkJ1bb1xuA=;
+        b=moeryeMBg1rF1de14LZ/J6WEZLTGhm4Opitd/OsogBSskMhZ4ezInwXDi8cIdkQgwY
+         bjxh3Dq1gJtSM06a4Qiy5wuBq70tOTQzUSAfRISBICJ9ZYRExvFCqHcBD7HKsnKXnWqN
+         zP0i07ErOw+Mq4HK73p0lHDQh5IHz6q2eS/KPuuwLRHltZb3LpmTasf/vN5PvVFvBDdd
+         oK5uwnNU0aBDhW36BNulQc0wr05G+Jd8cooXpebonquvphyndPHtpkWjZjiLyGDGk8bo
+         1w5Tb6fpcM75svULCi4zxAJ74NZV4UwukrX4zeUY34wJBTtrDkbw52rRbivNb8Pv2jrX
+         Hn2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712189191; x=1712793991;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=F6iLoWS96SaQOlKJNBhFx7hfIo5Z/k0Vsx1FPq4aK6U=;
-        b=Dn8kdmkq6/JlqXeXjOfRwX3GQrHPNK0q2pbt68K91dAuQnY536sXwE3I/PO3ArmhY1
-         nIcJKn2TmmFDTQfuEMNF27D2UgCkwytiQ53t2UwySBOvK9aTi5Gw35o6NPQJ5eDPnifR
-         uM9z/NN5XsY2FCNvh4ny9G6zW21U35Yp6syFrgU9acbb8fjbi/pm1skk/ZdLK3Q/RVE1
-         zfqh3joHZMSE7nrEe3xlTccVlrvP82OQy0bUrICudu09zoEvq0wugNdt8Orb1NSrbB+V
-         1OcFkFLofdJvT8YvgchhGC10fzbfgFgJsp34j+IlksewmiAY7pKzPMWdnAlTHwX9E7ys
-         zYvw==
-X-Forwarded-Encrypted: i=1; AJvYcCU7a+Cwm9oTtp3FHWwz1RCwP82qq3jOgvYYlPRMEX+HEoqCU7goA1McZ0WpUvejrWxlJoeuZU2AwqaKaUDe7cndK7c44f0sRjbUTBwe
-X-Gm-Message-State: AOJu0Yzhu0P+oSf1B/lmfA4qGBCd6qYuRiwtagq9ABiZjTrZurN6P1Ah
-	y7rc4W1DWsFensqDjlHze2jeptzc0k8yY4LCAUIh73Zpqle4/WJp0Pk+/PXh6Nej8/zeMyLKSVx
-	HsGLBYxiNrBWyHO3k8uLYIsS/9hRNa8zU/jY=
-X-Google-Smtp-Source: AGHT+IEC695Y8Gg+5GeLattzp27PbPPfvn6sqJXHFlyFE84nAnSO2kRCFby/sWqd8vui8Dt7CYPFwCxyjYFjQlrmNE8=
-X-Received: by 2002:a50:9550:0:b0:56e:6aa:c7c4 with SMTP id
- v16-20020a509550000000b0056e06aac7c4mr431334eda.42.1712189190960; Wed, 03 Apr
- 2024 17:06:30 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712189869; x=1712794669;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NEhL3R0CV+V3IuuciSTia1iTNDXKvNOyBjkJ1bb1xuA=;
+        b=CfW+zmzzOBBDh3P6gm7P8PLZBl+8cN7ipyLF4MITc/BmfpJJM2nG8szZ9soaySwOyV
+         eV41f3b12oVK6R2m0CSjCWFR/A8UqMM+naG+0KKhPSmMUZ+IEX/ZOkXrFJZVePpG2Vrb
+         IjJ8AiTlXNxKbn6dozNpn+blonEAWNPc3ppGflRxYntfS+jNXJVdbZCRE+2sRWshlwcp
+         +aNoT6/NMMRVMhfskR9x9kQZPGuMLThPme1vmN4W6lGpmhDqT2ReHRSNsnxkhtrF9H7/
+         VugmrnY+Td4vBY01kZ68StiBusN0tVMN4eZ9Zkv3Egu5EtsVFLdIUo9L0F8/+30nY02P
+         y9dA==
+X-Forwarded-Encrypted: i=1; AJvYcCWXe/r78lDh38y4OEJO5B52WGyx9V9bEUVWmVGnJfvZnj780LXACtajnYUyGRwCaE3/GTyYfWu5GNiuG7bDSeJ2O/8ovuWEW4fLQ1Jq
+X-Gm-Message-State: AOJu0Yy17BWJcuV09JPCsdUPylYFdbb+2Y8MTFJLHgGnezqp3yV3KIFG
+	popzhKAN/Tg9/vyWWB4mnRI97F+a6e4IXFhk60+mNzgO6gLROBu705226CwkYFjjvw==
+X-Google-Smtp-Source: AGHT+IFvRGBLmr18Nxk1BlgrtjmU4Hpm+bSbf901S7+dDxgwigEa/yJT6NNfNLt7go4I4DJzMOm6Rw==
+X-Received: by 2002:a17:90a:c587:b0:2a2:775:9830 with SMTP id l7-20020a17090ac58700b002a207759830mr1144439pjt.11.1712189869444;
+        Wed, 03 Apr 2024 17:17:49 -0700 (PDT)
+Received: from jc-ubuntu-dev-korn-1 (c-98-210-1-68.hsd1.ca.comcast.net. [98.210.1.68])
+        by smtp.gmail.com with ESMTPSA id q94-20020a17090a17e700b0029facfb3f25sm338726pja.45.2024.04.03.17.17.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 17:17:49 -0700 (PDT)
+From: Jackson Chui <jacksonchui.qwerty@gmail.com>
+To: Johan Hovold <johan@kernel.org>,
+	Alex Elder <elder@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	greybus-dev@lists.linaro.org,
+	linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Cc: Jackson Chui <jacksonchui.qwerty@gmail.com>
+Subject: [PATCH] staging: greybus: Clear up precedence for gcam logging macros
+Date: Wed,  3 Apr 2024 17:16:28 -0700
+Message-Id: <20240404001627.94858-1-jacksonchui.qwerty@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Jon Maser <jonmaser8@gmail.com>
-Date: Wed, 3 Apr 2024 17:06:19 -0700
-Message-ID: <CAF=mWJMirRoAz1chFEEbg3qCgCxqbM0wt88wMwfDfOuXJTmr+g@mail.gmail.com>
-Subject: hi everyone. here are some c tips for the kernel.
-To: linux-c-programming@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-instead of running around doing stuff like adding pointer to pointer
-functions to structs in the scheduler and pointing them at an
-algorithm or adding global pointers and posting patches (but after i
-read the source i will independently until i release code), i decided
-to write some things id like in the kernel
+Reported by checkpatch:
 
-but here are some tips c tips picked up
+CHECK: Macro argument 'gcam' may be better as '(gcam)' to avoid
+precedence issues
 
-pointer functions to and to in data structures ie Struct **fs(bffs
-handle) and messaging
-data structures with lists as return types for functions for mp and messaging
-data structures as return types and arguments of pointer functions
-the linux global macro function (suggestion)
-global structs, global pointers, global pointers to pointers (ie. you
-can just access a kernel struct in a module without a macro or much of
-one)
-the linux c/python tutorial made in c
-more gnu/programming languages
+Disambiguates '&' (address-of) operator and '->' operator precedence,
+accounting for how '(gcam)->bundle->dev' is a 'struct device' and not a
+'struct device*', which is required by the dev_{dbg,info,err} driver
+model diagnostic macros. Issue found by checkpatch.
 
-and it would be nice if someone wrote a fancy, universal debugger for
-the kernel, something like, you can check loops and directly in
-functions if compiled with a certain flag
+Signed-off-by: Jackson Chui <jacksonchui.qwerty@gmail.com>
+---
+ drivers/staging/greybus/camera.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
+index a8173aa3a995..d82a2d2abdca 100644
+--- a/drivers/staging/greybus/camera.c
++++ b/drivers/staging/greybus/camera.c
+@@ -180,9 +180,9 @@ static const struct gb_camera_fmt_info *gb_camera_get_format_info(u16 gb_fmt)
+ 
+ #define GB_CAMERA_MAX_SETTINGS_SIZE	8192
+ 
+-#define gcam_dbg(gcam, format...)	dev_dbg(&gcam->bundle->dev, format)
+-#define gcam_info(gcam, format...)	dev_info(&gcam->bundle->dev, format)
+-#define gcam_err(gcam, format...)	dev_err(&gcam->bundle->dev, format)
++#define gcam_dbg(gcam, format...)	dev_dbg(&((gcam)->bundle->dev), format)
++#define gcam_info(gcam, format...)	dev_info(&((gcam)->bundle->dev), format)
++#define gcam_err(gcam, format...)	dev_err(&((gcam)->bundle->dev), format)
+ 
+ static int gb_camera_operation_sync_flags(struct gb_connection *connection,
+ 					  int type, unsigned int flags,
+-- 
+2.34.1
+
 
