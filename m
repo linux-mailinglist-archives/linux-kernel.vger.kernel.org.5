@@ -1,116 +1,179 @@
-Return-Path: <linux-kernel+bounces-131843-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131821-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3320898C6B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:43:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3912898C2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:33:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6855E1F23A5C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:43:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58718284448
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:33:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01B911CAB7;
-	Thu,  4 Apr 2024 16:43:08 +0000 (UTC)
-Received: from shelob.surriel.com (shelob.surriel.com [96.67.55.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38BD1B948;
+	Thu,  4 Apr 2024 16:33:22 +0000 (UTC)
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C20451BDCD;
-	Thu,  4 Apr 2024 16:43:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=96.67.55.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A554718039
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712248987; cv=none; b=WAYQmbBJ6QaQpwy1W2r5Ye+7ceC72mlOQ9R5woIbqmQA7M/6K7mBOs+96Cir2nlGZP/cTLwF2CRiDbg0ZBFUNtncXOiqvMRWHEz8150Xq4AXPgTAYxCbAAThM1cNCWRFgBnnKPRYQ8MTLRFQ/0Pl77L5Sy39184M5n3+Fae94f0=
+	t=1712248402; cv=none; b=eL4vo84NenF+X1opTKETaQK1jBYld+bezlt8g+IjNt948tTdAQ6OQ/CB+4ifG2BNUdE+N1F+Gt0eoP9LNakI37Ss1vgHziFPyeHDmVJtVf//HnLaCBmOWA4KWQriRGNwa0MKHhzVJgvIMqDxPuEfusiHsOn9f3bMCx1HApfxYHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712248987; c=relaxed/simple;
-	bh=0/AY5cwJn+NnaRDfFReLrDnqEtoagxXGfDMh+lQhRsc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=EDELAQQ7JSraQ3BlG7lmHLkk84pJJyQktkyugUVGQPrfVw/R3w2rFsFvL2feoa9Mygtm4qLuRJfq227+EjpH4JySF0RJcmLi3CWD9BE/cQ9lbrqfcmZOhGXBGkazI1fQMTFM3MGqlKfH4bD1bibbdwqH8AN/fzo9TGrNSB4Jgfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com; spf=pass smtp.mailfrom=shelob.surriel.com; arc=none smtp.client-ip=96.67.55.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surriel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shelob.surriel.com
-Received: from [2601:18c:9101:a8b6:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
-	by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.97.1)
-	(envelope-from <riel@shelob.surriel.com>)
-	id 1rsQ1N-000000002sp-3xIF;
-	Thu, 04 Apr 2024 12:33:01 -0400
-Date: Thu, 4 Apr 2024 12:32:53 -0400
-From: Rik van Riel <riel@surriel.com>
-To: linux-kernel@vger.kernel.org
-Cc: kernel-team@meta.com, Tejun Heo <tj@kernel.org>, Jens Axboe
- <axboe@kernel.dk>, Josef Bacik <josef@toxicpanda.com>,
- cgroups@vger.kernel.org, linux-block@vger.kernel.org
-Subject: [PATCH] blk-iocost: avoid out of bounds shift
-Message-ID: <20240404123253.0f58010f@imladris.surriel.com>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+	s=arc-20240116; t=1712248402; c=relaxed/simple;
+	bh=vGeDMYxhIQMCz/6Ex+E0kSB/hxh7WfNOnL3GWD9KoLc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=u2ig0wpdSNXAHxPbU1Hb0uxGcQz2Od2+rf7GpPtIaU9MyP27DDSe6OAYet1QnHqJRGwiEZMm7IB1CO+11LMNl3JtuV692Bj9v/2VGd7oj+IzCG3p4ID8F64u0DMgGZFJGC0/JoC/iB5te07kozJAHSm2ccFbaZdESu4e8xl+nV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.166.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7c8b777ff8bso45612939f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 09:33:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712248400; x=1712853200;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/0q2ZaGBSP2grqbQnWREndiCOj94gUHk70M1Euz3N7I=;
+        b=B609UfcQMTW8CwVrokMKkt5qagGdBnfYneZjXRum2GnHpza6WnESsWaE1XwC/KRlW7
+         ljPwZEzunSt30qRjmr5JYyjvVFcz8n83gmrRANAVheJZXgrWafiIxul/C2vA2crd5g88
+         hqmtQofSxn55D8v2P8N/i706fiANR0TeTiwrKtDue4hY3FsfIGjpAUSiWeJ89SRA6xqa
+         2dyfMFLELGE4iwOgLZ3dhBWkelhSqkg3rJcYVefFtJ52U/rRBTrxHnQCF1mpqgxpsZgN
+         zm95iE4XeiJqKdnIZNayXhZVHePCGetRE4Ami5+4wk5zhQhZQuz59noAHJTFyOvRPQVD
+         2aqA==
+X-Forwarded-Encrypted: i=1; AJvYcCU+TPdDAShaSOxz6ZnKmUaJ3pQn6MoLIQc+h01L1ARx2xSc3LA11Gm4uX7Rr+CuUYUqN5rLmD264lkDL5fS5mtl6q+r0+gPTy5niRqk
+X-Gm-Message-State: AOJu0YwAzali8s2Yhn/Gh4CbISDUt3g80LCh3nlTq9PPry/REuOi7LK6
+	zTJ5hBFMG6OG8HzuSVDlc5i67BFCjJItr0SIhktAg2ibtFHjg05v
+X-Google-Smtp-Source: AGHT+IHnvc9JR4IOuY+kL+dDqEVHCvwNIsTvWTKOgm/ZvgUffUYXodMAbSL1DcVtPWkQO1Te4oj7dg==
+X-Received: by 2002:a05:6602:80f:b0:7d3:919b:691a with SMTP id z15-20020a056602080f00b007d3919b691amr340970iow.2.1712248399658;
+        Thu, 04 Apr 2024 09:33:19 -0700 (PDT)
+Received: from maniforge (c-76-136-75-40.hsd1.il.comcast.net. [76.136.75.40])
+        by smtp.gmail.com with ESMTPSA id q9-20020a6bf209000000b007d4b04c6d63sm29950ioh.12.2024.04.04.09.33.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 09:33:19 -0700 (PDT)
+Date: Thu, 4 Apr 2024 11:33:16 -0500
+From: David Vernet <void@manifault.com>
+To: Yonghong Song <yonghong.song@linux.dev>
+Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+	martin.lau@linux.dev, song@kernel.org, yonghong.song@linux.dev,
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com,
+	haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Verify calling core kfuncs
+ from BPF_PROG_TYPE_SYCALL
+Message-ID: <20240404163316.GA385240@maniforge>
+References: <20240404010308.334604-1-void@manifault.com>
+ <20240404010308.334604-2-void@manifault.com>
+ <36bb0747-bff4-4fad-93ca-dae406f14099@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Sender: riel@surriel.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Tv6BS8qXzcVxLJbx"
+Content-Disposition: inline
+In-Reply-To: <36bb0747-bff4-4fad-93ca-dae406f14099@linux.dev>
+User-Agent: Mutt/2.2.13 (2024-03-09)
 
-UBSAN catches undefined behavior in blk-iocost, where sometimes
-iocg->delay is shifted right by a number that is too large,
-resulting in undefined behavior on some architectures.
 
-[  186.556576] ------------[ cut here ]------------
-UBSAN: shift-out-of-bounds in block/blk-iocost.c:1366:23
-shift exponent 64 is too large for 64-bit type 'u64' (aka 'unsigned long long')
-CPU: 16 PID: 0 Comm: swapper/16 Tainted: G S          E    N 6.9.0-0_fbk700_debug_rc2_kbuilder_0_gc85af715cac0 #1
-Hardware name: Quanta Twin Lakes MP/Twin Lakes Passive MP, BIOS F09_3A23 12/08/2020
-Call Trace:
- <IRQ>
- dump_stack_lvl+0x8f/0xe0
- __ubsan_handle_shift_out_of_bounds+0x22c/0x280
- iocg_kick_delay+0x30b/0x310
- ioc_timer_fn+0x2fb/0x1f80
- __run_timer_base+0x1b6/0x250
-..
+--Tv6BS8qXzcVxLJbx
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Avoid that undefined behavior by simply taking the
-"delay = 0" branch if the shift is too large.
+On Thu, Apr 04, 2024 at 09:04:19AM -0700, Yonghong Song wrote:
+>
+> On 4/3/24 6:03 PM, David Vernet wrote:
+> > Now that we can call some kfuncs from BPF_PROG_TYPE_SYSCALL progs, let's
+> > add some selftests that verify as much. As a bonus, let's also verify
+> > that we can't call the progs from raw tracepoints.
+> >
+> > Signed-off-by: David Vernet <void@manifault.com>
+>
+> Ack with some comments below.
+>
+> Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
-I am not sure what the symptoms of an undefined value
-delay will be, but I suspect it could be more than a
-little annoying to debug.
+Thanks for the review. It looks like accidentally replied directly to
+me, so I'll re-add the missing cc's.
 
-Signed-off-by: Rik van Riel <riel@surriel.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Josef Bacik <josef@toxicpanda.com>
-Cc: Jens Axboe <axboe@kernel.dk>
----
- block/blk-iocost.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+>
+> > ---
+> >   .../selftests/bpf/prog_tests/cgrp_kfunc.c     |  1 +
+> >   .../selftests/bpf/prog_tests/task_kfunc.c     |  1 +
+> >   .../selftests/bpf/progs/cgrp_kfunc_common.h   | 21 +++++++++++++++++++
+> >   .../selftests/bpf/progs/cgrp_kfunc_failure.c  |  4 ++++
+> >   .../selftests/bpf/progs/cgrp_kfunc_success.c  |  4 ++++
+> >   .../selftests/bpf/progs/cpumask_common.h      | 19 +++++++++++++++++
+> >   .../selftests/bpf/progs/cpumask_failure.c     |  4 ++++
+> >   .../selftests/bpf/progs/cpumask_success.c     |  3 +++
+> >   .../selftests/bpf/progs/task_kfunc_common.h   | 18 ++++++++++++++++
+> >   .../selftests/bpf/progs/task_kfunc_failure.c  |  4 ++++
+> >   .../selftests/bpf/progs/task_kfunc_success.c  |  4 ++++
+> >   11 files changed, 83 insertions(+)
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+> > index adda85f97058..73f0ec4f4eb7 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+> > @@ -102,6 +102,7 @@ void test_cgrp_kfunc(void)
+> >             run_success_test(success_tests[i]);
+> >     }
+> > +   RUN_TESTS(cgrp_kfunc_success);
+> >     RUN_TESTS(cgrp_kfunc_failure);
+> >   cleanup:
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> > index d4579f735398..3db4c8601b70 100644
+> > --- a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> > +++ b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> > @@ -94,5 +94,6 @@ void test_task_kfunc(void)
+> >             run_success_test(success_tests[i]);
+> >     }
+> > +   RUN_TESTS(task_kfunc_success);
+> >     RUN_TESTS(task_kfunc_failure);
+> >   }
+>
+> The above RUN_TESTS(cgrp_kfunc_success) and RUN_TESTS(task_kfunc_success)
+> will do duplicate work for *existing* bpf programs in their respective
+> files. I think we still prefer to have cgrp_kfunc_success tests
+> in cgrp_kfunc.c to make it easy to cross check. But in order to
+> remove duplicate work, one option is to make other non-RUN_TESTS
+> programs in those files not auto-loaded and their corresponding
+> prog_tests/*.c file need to explicitly enable loading the problem.
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 9a85bfbbc45a..baa20c85799d 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -1347,7 +1347,7 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
- {
- 	struct ioc *ioc = iocg->ioc;
- 	struct blkcg_gq *blkg = iocg_to_blkg(iocg);
--	u64 tdelta, delay, new_delay;
-+	u64 tdelta, delay, new_delay, shift;
- 	s64 vover, vover_pct;
- 	u32 hwa;
- 
-@@ -1362,8 +1362,9 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
- 
- 	/* calculate the current delay in effect - 1/2 every second */
- 	tdelta = now->now - iocg->delay_at;
--	if (iocg->delay)
--		delay = iocg->delay >> div64_u64(tdelta, USEC_PER_SEC);
-+	shift = div64_u64(tdelta, USEC_PER_SEC);
-+	if (iocg->delay && shift < BITS_PER_LONG)
-+		delay = iocg->delay >> shift;
- 	else
- 		delay = 0;
- 
--- 
-2.42.0
+Good point, and yes I agree with that approach of not auto-loading
+non-RUN_TESTS programs. Considering that we have a  __success BTF tag to
+say, "this prog should successfully load", it seems odd that we'd also
+automatically load and validate progs that _didn't_ specify that tag as
+well. At that point, I'm not sure what value the tag is bringing. Also,
+that was the expected behavior before RUN_TESTS() was introduced, so it
+hopefully shouldn't cause much if any churn.
 
+> Maybe the current patch is okay even with duplicated work as it
+> should not take much time to verify those tiny problems.
+
+IMO it should be fine for now as the overhead for validating and loading
+these progs is low, but it'd definitely be good to address this problem
+in a follow-up. I don't think it should take too much effort -- AFAICT
+we'd just have to mark a test spec as invalid if it didn't have any BTF
+test tags. Ideally I'd like to separate that from this patch set, but I
+can do it here if folks want.
+
+Thanks,
+David
+
+--Tv6BS8qXzcVxLJbx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRBxU1So5MTLwphjdFZ5LhpZcTzZAUCZg7WTAAKCRBZ5LhpZcTz
+ZN4gAP90V5S5vd7CuqZm6mofUeuq5mm/kMhfW9bBet5JoQBDugD/fsW+fYqnaO17
+5idK41x/IUMxA1OcM/UDvRH72sKRtwU=
+=iNe9
+-----END PGP SIGNATURE-----
+
+--Tv6BS8qXzcVxLJbx--
 
