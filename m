@@ -1,277 +1,387 @@
-Return-Path: <linux-kernel+bounces-131150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131153-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9B4B8983C0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:10:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EB358983CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:11:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9FD70287C9E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:10:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8D3F1C23433
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:11:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8040E7353F;
-	Thu,  4 Apr 2024 09:10:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C4074BFE;
+	Thu,  4 Apr 2024 09:11:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DFF8E+X+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yYCaMPyO";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qlulG60G"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 914111E86F
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 09:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9DF1E86F;
+	Thu,  4 Apr 2024 09:11:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712221830; cv=none; b=g8QF0kieRBq9zcTarJ+Ri7X0ufNzsTFdYU9NNmYyzl3towA+MPPgYPx7gK9pbpW9oEWfA66M2QGsGdxJ0RDqIyV6PuVAN9AsapMert+IoSTrjF/CNsHj9WEOTT5As4X+/GJh+d2SY8cpMl8D8OFI9zBpecHlpXTrPNGusLnih5w=
+	t=1712221880; cv=none; b=THLHOp4+T1wZOTofPiVOriv94bLbepPwD84Cc7tDtVp6UQREqH+1FZafI3gDuOKkNPJiqDX5PL43td4v8GxlR31I2cA4zhCMfPr1hj3XZqLrcHYTMQ5YR7yPsZdl7AX1PBMaNFIOuORFD/DwwidOSOGne/ZHwchw5RM0370DH+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712221830; c=relaxed/simple;
-	bh=f05m8PEbeJDSLndrUkpBjqyWXCZfLOBBZIVWIpskd2Q=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lSF+cA1MBnyTfDPvRWO9t8aSR9nEmL9F+oEWTcM6/JVgkpAjtTIi5b6qMAURCspBBK1gX6pbKyUvNK028H2Bd+KFfdz9CsWy5SsmFfa79fYse5zvJkLX7Myl6ju1UOX/jmzEgB63THP3JgS9kFmBnhmcBsHXNd8iN0zv1X4uqp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DFF8E+X+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04E99C433C7;
-	Thu,  4 Apr 2024 09:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712221830;
-	bh=f05m8PEbeJDSLndrUkpBjqyWXCZfLOBBZIVWIpskd2Q=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=DFF8E+X+fbEA0uawBttPRl9GZTK01Oz8ZRhr3iUd5qgtKeUCnbxs38JDNVuIqNHYU
-	 0fTbtsFU6zprjYXnmMHYk5ASapRy0EimI7HKqscw3PrPWhdm0NIwfdVHoB7XQ4E1Xu
-	 mXaDU8UCcy+GdK978XwsKlnJHsfb2rohfuOE5AkpRJKFwwZsR62K3g9JdNu2A81HSi
-	 TO0nDi6etmpf+lDtx4rWKumUp0nMkCIpIUAi1+M+p92yBNAujD8s7+vZHZTi5Q6Nzv
-	 aXbioWQCCOB/KJWeLONFd4GW9anc2oleGa+vgiNZNH17dWpsTl2Q0pqo3R/KoK1CkA
-	 NNFnAnx5SlA5w==
-Received: from [185.201.63.251] (helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rsJ74-001Pk1-SZ;
-	Thu, 04 Apr 2024 10:10:27 +0100
-Date: Thu, 04 Apr 2024 10:10:23 +0100
-Message-ID: <87il0xsdc0.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Gavin Shan <gshan@redhat.com>
-Cc: linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	catalin.marinas@arm.com,
-	will@kernel.org,
-	akpm@linux-foundation.org,
-	oliver.upton@linux.dev,
-	mark.rutland@arm.com,
-	ryan.roberts@arm.com,
-	apopple@nvidia.com,
-	rananta@google.com,
-	yangyicong@hisilicon.com,
-	v-songbaohua@oppo.com,
-	yezhenyu2@huawei.com,
-	yihyu@redhat.com,
-	shan.gavin@gmail.com
-Subject: Re: [PATCH v2] arm64: tlb: Fix TLBI RANGE operand
-In-Reply-To: <20240404053624.1485237-1-gshan@redhat.com>
-References: <20240404053624.1485237-1-gshan@redhat.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1712221880; c=relaxed/simple;
+	bh=rp4Sif1zZ6vH5WmQft9eZ+WjU0jvt6p6GDS0S4wx6gM=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=C4jmEWEXLvL4WFnhJMaOad1WFTpDM1XEpXwxtz9asDWFMU5jHANcYm8crBH0YEOJlT+e8TyMiGDCed9JDcV0Obk+LJEWn86AXcLdwewDKX/5XVpPu8Z9kZVWkNUYHk62B+b7Ihg2eHnlvmplkAmT1e5LQa8+D1yNLDJM5FpspjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yYCaMPyO; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qlulG60G; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 04 Apr 2024 09:11:14 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712221875;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UTjOneyw9ICdNfMU/OuehX0z+uIkl5iql4xkhAQ2nZI=;
+	b=yYCaMPyOmxr6nnl3ucGMMogNAskmSQpME5XRoYQ2N52MieKogt6GNyNAuEXN5hUBvSmLWY
+	X7FR52kIUuS6rk4LSWyhtmOKF8lF5oPpDg7YTQx4aqcgffWQ90Vj8DaPZxbyIRveh9Uz4A
+	3l+OBVxh2OJXZbMnWxuSPuycHeFc1tzLzoqPS8tOwt8PkOoXQbLrrZWXvWBB5vBQ0Efzky
+	DvZM3gaiR1cNyhzeW3CeOt3vK/ZnPTlMv/5Pf3o54wZdVHKvOw3xFWiooo0Cx9v8zK5ypc
+	BT+WDSPtbMIohgus6jrQWRByVI+NNw8q6CW7PoPwT9jOyPohXaJVdT2yOnc/tQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712221875;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UTjOneyw9ICdNfMU/OuehX0z+uIkl5iql4xkhAQ2nZI=;
+	b=qlulG60GcGVyFnUaVIgqLNzae2ZwLQz2bPR51IWBsRytplEJ94QyCNIT431DYcOnVZCCPh
+	C4u7CP3bFtFbmYCw==
+From: "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/urgent] x86/CPU/AMD: Track SNP host status with cc_platform_*()
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>,
+ Tom Lendacky <thomas.lendacky@amd.com>, Srikanth Aithal <sraithal@amd.com>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240327154317.29909-6-bp@alien8.de>
+References: <20240327154317.29909-6-bp@alien8.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.201.63.251
-X-SA-Exim-Rcpt-To: gshan@redhat.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, catalin.marinas@arm.com, will@kernel.org, akpm@linux-foundation.org, oliver.upton@linux.dev, mark.rutland@arm.com, ryan.roberts@arm.com, apopple@nvidia.com, rananta@google.com, yangyicong@hisilicon.com, v-songbaohua@oppo.com, yezhenyu2@huawei.com, yihyu@redhat.com, shan.gavin@gmail.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Message-ID: <171222187434.10875.5343618940901502172.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Thu, 04 Apr 2024 06:36:24 +0100,
-Gavin Shan <gshan@redhat.com> wrote:
-> 
-> KVM/arm64 relies on TLBI RANGE feature to flush TLBs when the dirty
-> bitmap is collected by VMM and the corresponding PTEs need to be
-> write-protected during live migration. Unfortunately, the operand
-> passed to the TLBI RANGE instruction isn't correctly sorted out by
-> commit d1d3aa98b1d4 ("arm64: tlb: Use the TLBI RANGE feature in arm64").
+The following commit has been merged into the x86/urgent branch of tip:
 
-This isn't the offending commit. See below.
+Commit-ID:     0ecaefb303de69929dc0036d5021d01cec7ea052
+Gitweb:        https://git.kernel.org/tip/0ecaefb303de69929dc0036d5021d01cec7ea052
+Author:        Borislav Petkov (AMD) <bp@alien8.de>
+AuthorDate:    Wed, 27 Mar 2024 16:43:17 +01:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Thu, 04 Apr 2024 10:40:30 +02:00
 
-> It leads to crash on the destination VM after live migration because
-> TLBs aren't flushed completely and some of the dirty pages are missed.
-> 
-> For example, I have a VM where 8GB memory is assigned, starting from
-> 0x40000000 (1GB). Note that the host has 4KB as the base page size.
-> All TLBs for VM can be covered by one TLBI RANGE operation. However,
-> the operand 0xffff708000040000 is set for scale -9, and  -1 is returned
+x86/CPU/AMD: Track SNP host status with cc_platform_*()
 
-It's not scale, as it is limited to 2 bits. It's a random value that
-actively corrupts adjacent fields because it is wrongly sign-extended.
-ASID and TG are now utter bollocks, and the CPU is within its rights
-to totally ignore the TLBI (TG indicates 64kB translation granule...).
+The host SNP worthiness can determined later, after alternatives have
+been patched, in snp_rmptable_init() depending on cmdline options like
+iommu=pt which is incompatible with SNP, for example.
 
-We really should fix __TLBI_VADDR_RANGE() to use proper bit fields
-instead of a bunch of shifts that lead to this mess.
+Which means that one cannot use X86_FEATURE_SEV_SNP and will need to
+have a special flag for that control.
 
-> from __TLBI_RANGE_NUM() for scale 3/2/1/0 and rejected by the loop in
-> __flush_tlb_range_op(). __TLBI_RANGE_NUM() isn't expected to work
-> like this because all the pages should be covered by scale 3/2/1/0,
-> plus an additional page if needed.
-> 
-> Fix the macro __TLBI_RANGE_NUM() so that the correct NUM and TLBI RANGE
-> operand are provided for each scale level. With the changes, [-1 31]
-> instead of [-1 30] can be returned from the macro, meaning the TLBs for
-> 0x200000 pages (8GB memory) can be flushed in one shoot at scale 3. The
-> macro TLBI_RANGE_MASK is dropped since no one uses it any more.
-> 
-> Fixes: d1d3aa98b1d4 ("arm64: tlb: Use the TLBI RANGE feature in arm64")
-> Cc: stable@kernel.org # v5.10+
+Use that newly added CC_ATTR_HOST_SEV_SNP in the appropriate places.
 
-I don't think this is right. The problem only occurs since
-117940aa6e5f8 ("KVM: arm64: Define kvm_tlb_flush_vmid_range()"), which
-is the only case where we try to use NUM=31 (the rest of the kernel is
-using (MAX_TLBI_RANGE_PAGES - 1), which results in NUM=30 at most).
+Move kdump_sev_callback() to its rightful place, while at it.
 
-Also, before e2768b798a19 ("arm64/mm: Modify range-based tlbi to
-decrement scale"), we used a different algorithm to perform the
-invalidation (increasing scale instead of decreasing), so this
-probably doesn't hit the same way.
+Fixes: 216d106c7ff7 ("x86/sev: Add SEV-SNP host initialization support")
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
+Tested-by: Srikanth Aithal <sraithal@amd.com>
+Link: https://lore.kernel.org/r/20240327154317.29909-6-bp@alien8.de
+---
+ arch/x86/include/asm/sev.h         |  4 +--
+ arch/x86/kernel/cpu/amd.c          | 38 +++++++++++++++++------------
+ arch/x86/kernel/cpu/mtrr/generic.c |  2 +-
+ arch/x86/kernel/sev.c              | 10 +--------
+ arch/x86/kvm/svm/sev.c             |  2 +-
+ arch/x86/virt/svm/sev.c            | 26 +++++++++++++-------
+ drivers/crypto/ccp/sev-dev.c       |  2 +-
+ drivers/iommu/amd/init.c           |  4 ++-
+ 8 files changed, 49 insertions(+), 39 deletions(-)
 
-In any case, this is a KVM-only problem that will never show before
-v6.6. So 5.10 really isn't a place where we need to backport anything.
-
-> Reported-by: Yihuang Yu <yihyu@redhat.com>
-> Suggested-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
-> v2: Improve __TLBI_RANGE_NUM() as Marc suggested
-> ---
->  arch/arm64/include/asm/tlbflush.h | 13 +++++++++----
->  1 file changed, 9 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-> index 3b0e8248e1a4..cd9b71c30366 100644
-> --- a/arch/arm64/include/asm/tlbflush.h
-> +++ b/arch/arm64/include/asm/tlbflush.h
-> @@ -161,12 +161,17 @@ static inline unsigned long get_trans_granule(void)
->  #define MAX_TLBI_RANGE_PAGES		__TLBI_RANGE_PAGES(31, 3)
->  
->  /*
-> - * Generate 'num' values from -1 to 30 with -1 rejected by the
-> + * Generate 'num' values from -1 to 31 with -1 rejected by the
->   * __flush_tlb_range() loop below.
->   */
-> -#define TLBI_RANGE_MASK			GENMASK_ULL(4, 0)
-> -#define __TLBI_RANGE_NUM(pages, scale)	\
-> -	((((pages) >> (5 * (scale) + 1)) & TLBI_RANGE_MASK) - 1)
-> +#define __TLBI_RANGE_NUM(pages, scale)					\
-> +	({								\
-> +		int __pages = min((pages),				\
-> +				  __TLBI_RANGE_PAGES(31, (scale)));	\
-> +		int __numplus1 = __pages >> (5 * (scale) + 1);		\
-> +									\
-> +		(__numplus1 - 1);					\
-> +	})
-
-This was only intended as a way to convey the general idea. __numplus1
-can obviously be removed and the right-shifting expression promoted as
-the return value.
-
-Next, the comments in this file need adjustments to reflect the
-supported invalidation range, as my original patch did (plus some
-more).
-
-Finally, and since we can now handle the full range of invalidation,
-it would make sense to fix __flush_tlb_range_nosync() to allow
-MAX_TLBI_RANGE_PAGES ranges (potentially in a separate patch).
-
-In the end, my sandbox contains the following, which should probably
-be split in 3 patches:
-
-diff --git a/arch/arm64/include/asm/tlbflush.h b/arch/arm64/include/asm/tlbflush.h
-index 3b0e8248e1a4..bcbe697ed191 100644
---- a/arch/arm64/include/asm/tlbflush.h
-+++ b/arch/arm64/include/asm/tlbflush.h
-@@ -142,16 +142,22 @@ static inline unsigned long get_trans_granule(void)
-  * EL1, Inner Shareable".
-  *
-  */
-+#define TLBIR_ASID_MASK		GENMASK_ULL(63, 48)
-+#define TLBIR_TG_MASK		GENMASK_ULL(47, 46)
-+#define TLBIR_SCALE_MASK	GENMASK_ULL(45, 44)
-+#define TLBIR_NUM_MASK		GENMASK_ULL(43, 39)
-+#define TLBIR_TTL_MASK		GENMASK_ULL(38, 37)
-+#define TLBIR_BADDR_MASK	GENMASK_ULL(36,  0)
+diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+index 07e125f..7f57382 100644
+--- a/arch/x86/include/asm/sev.h
++++ b/arch/x86/include/asm/sev.h
+@@ -228,7 +228,6 @@ int snp_issue_guest_request(u64 exit_code, struct snp_req_data *input, struct sn
+ void snp_accept_memory(phys_addr_t start, phys_addr_t end);
+ u64 snp_get_unsupported_features(u64 status);
+ u64 sev_get_status(void);
+-void kdump_sev_callback(void);
+ void sev_show_status(void);
+ #else
+ static inline void sev_es_ist_enter(struct pt_regs *regs) { }
+@@ -258,7 +257,6 @@ static inline int snp_issue_guest_request(u64 exit_code, struct snp_req_data *in
+ static inline void snp_accept_memory(phys_addr_t start, phys_addr_t end) { }
+ static inline u64 snp_get_unsupported_features(u64 status) { return 0; }
+ static inline u64 sev_get_status(void) { return 0; }
+-static inline void kdump_sev_callback(void) { }
+ static inline void sev_show_status(void) { }
+ #endif
+ 
+@@ -270,6 +268,7 @@ int psmash(u64 pfn);
+ int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, u32 asid, bool immutable);
+ int rmp_make_shared(u64 pfn, enum pg_level level);
+ void snp_leak_pages(u64 pfn, unsigned int npages);
++void kdump_sev_callback(void);
+ #else
+ static inline bool snp_probe_rmptable_info(void) { return false; }
+ static inline int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level) { return -ENODEV; }
+@@ -282,6 +281,7 @@ static inline int rmp_make_private(u64 pfn, u64 gpa, enum pg_level level, u32 as
+ }
+ static inline int rmp_make_shared(u64 pfn, enum pg_level level) { return -ENODEV; }
+ static inline void snp_leak_pages(u64 pfn, unsigned int npages) {}
++static inline void kdump_sev_callback(void) { }
+ #endif
+ 
+ #endif
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index 6d8677e..9bf17c9 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -345,6 +345,28 @@ static void srat_detect_node(struct cpuinfo_x86 *c)
+ #endif
+ }
+ 
++static void bsp_determine_snp(struct cpuinfo_x86 *c)
++{
++#ifdef CONFIG_ARCH_HAS_CC_PLATFORM
++	cc_vendor = CC_VENDOR_AMD;
 +
- #define __TLBI_VADDR_RANGE(baddr, asid, scale, num, ttl)			\
- 	({									\
--		unsigned long __ta = (baddr);					\
-+		unsigned long __ta = FIELD_PREP(TLBIR_BADDR_MASK, (baddr)); 	\
- 		unsigned long __ttl = (ttl >= 1 && ttl <= 3) ? ttl : 0;		\
--		__ta &= GENMASK_ULL(36, 0);					\
--		__ta |= __ttl << 37;						\
--		__ta |= (unsigned long)(num) << 39;				\
--		__ta |= (unsigned long)(scale) << 44;				\
--		__ta |= get_trans_granule() << 46;				\
--		__ta |= (unsigned long)(asid) << 48;				\
-+		__ta |= FIELD_PREP(TLBIR_TTL_MASK, __ttl);			\
-+		__ta |= FIELD_PREP(TLBIR_NUM_MASK, (unsigned long)(num));	\
-+		__ta |= FIELD_PREP(TLBIR_SCALE_MASK, (unsigned long)(scale));	\
-+		__ta |= FIELD_PREP(TLBIR_TG_MASK, get_trans_granule());		\
-+		__ta |= FIELD_PREP(TLBIR_ASID_MASK, (unsigned long)(asid));	\
- 		__ta;								\
- 	})
++	if (cpu_has(c, X86_FEATURE_SEV_SNP)) {
++		/*
++		 * RMP table entry format is not architectural and is defined by the
++		 * per-processor PPR. Restrict SNP support on the known CPU models
++		 * for which the RMP table entry format is currently defined for.
++		 */
++		if (!cpu_has(c, X86_FEATURE_HYPERVISOR) &&
++		    c->x86 >= 0x19 && snp_probe_rmptable_info()) {
++			cc_platform_set(CC_ATTR_HOST_SEV_SNP);
++		} else {
++			setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
++			cc_platform_clear(CC_ATTR_HOST_SEV_SNP);
++		}
++	}
++#endif
++}
++
+ static void bsp_init_amd(struct cpuinfo_x86 *c)
+ {
+ 	if (cpu_has(c, X86_FEATURE_CONSTANT_TSC)) {
+@@ -452,21 +474,7 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
+ 		break;
+ 	}
  
-@@ -161,12 +167,17 @@ static inline unsigned long get_trans_granule(void)
- #define MAX_TLBI_RANGE_PAGES		__TLBI_RANGE_PAGES(31, 3)
+-	if (cpu_has(c, X86_FEATURE_SEV_SNP)) {
+-		/*
+-		 * RMP table entry format is not architectural and it can vary by processor
+-		 * and is defined by the per-processor PPR. Restrict SNP support on the
+-		 * known CPU model and family for which the RMP table entry format is
+-		 * currently defined for.
+-		 */
+-		if (!boot_cpu_has(X86_FEATURE_ZEN3) &&
+-		    !boot_cpu_has(X86_FEATURE_ZEN4) &&
+-		    !boot_cpu_has(X86_FEATURE_ZEN5))
+-			setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
+-		else if (!snp_probe_rmptable_info())
+-			setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
+-	}
+-
++	bsp_determine_snp(c);
+ 	return;
  
- /*
-- * Generate 'num' values from -1 to 30 with -1 rejected by the
-- * __flush_tlb_range() loop below.
-+ * Generate 'num' values from -1 to 31 with -1 rejected by the
-+ * __flush_tlb_range() loop below. Its return value is only
-+ * significant for a maximum of MAX_TLBI_RANGE_PAGES pages. If 'pages'
-+ * is more than that, you must iterate over the overall range.
-  */
--#define TLBI_RANGE_MASK			GENMASK_ULL(4, 0)
--#define __TLBI_RANGE_NUM(pages, scale)	\
--	((((pages) >> (5 * (scale) + 1)) & TLBI_RANGE_MASK) - 1)
-+#define __TLBI_RANGE_NUM(pages, scale)					\
-+	({								\
-+		int __pages = min((pages),				\
-+				  __TLBI_RANGE_PAGES(31, (scale)));	\
-+		(__pages >> (5 * (scale) + 1)) - 1;			\
-+	})
+ warn:
+diff --git a/arch/x86/kernel/cpu/mtrr/generic.c b/arch/x86/kernel/cpu/mtrr/generic.c
+index 422a4dd..7b29ebd 100644
+--- a/arch/x86/kernel/cpu/mtrr/generic.c
++++ b/arch/x86/kernel/cpu/mtrr/generic.c
+@@ -108,7 +108,7 @@ static inline void k8_check_syscfg_dram_mod_en(void)
+ 	      (boot_cpu_data.x86 >= 0x0f)))
+ 		return;
  
- /*
-  *	TLB Invalidation
-@@ -379,10 +390,6 @@ static inline void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch)
-  * 3. If there is 1 page remaining, flush it through non-range operations. Range
-  *    operations can only span an even number of pages. We save this for last to
-  *    ensure 64KB start alignment is maintained for the LPA2 case.
-- *
-- * Note that certain ranges can be represented by either num = 31 and
-- * scale or num = 0 and scale + 1. The loop below favours the latter
-- * since num is limited to 30 by the __TLBI_RANGE_NUM() macro.
-  */
- #define __flush_tlb_range_op(op, start, pages, stride,			\
- 				asid, tlb_level, tlbi_user, lpa2)	\
-@@ -437,11 +444,11 @@ static inline void __flush_tlb_range_nosync(struct vm_area_struct *vma,
- 	 * When not uses TLB range ops, we can handle up to
- 	 * (MAX_DVM_OPS - 1) pages;
- 	 * When uses TLB range ops, we can handle up to
--	 * (MAX_TLBI_RANGE_PAGES - 1) pages.
-+	 * MAX_TLBI_RANGE_PAGES pages.
+-	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++	if (cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		return;
+ 
+ 	rdmsr(MSR_AMD64_SYSCFG, lo, hi);
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 7e1e63c..38ad066 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -2284,16 +2284,6 @@ static int __init snp_init_platform_device(void)
+ }
+ device_initcall(snp_init_platform_device);
+ 
+-void kdump_sev_callback(void)
+-{
+-	/*
+-	 * Do wbinvd() on remote CPUs when SNP is enabled in order to
+-	 * safely do SNP_SHUTDOWN on the local CPU.
+-	 */
+-	if (cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+-		wbinvd();
+-}
+-
+ void sev_show_status(void)
+ {
+ 	int i;
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index ae0ac12..3d310b4 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -3174,7 +3174,7 @@ struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu)
+ 	unsigned long pfn;
+ 	struct page *p;
+ 
+-	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++	if (!cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
+ 
+ 	/*
+diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+index cffe115..ab0e844 100644
+--- a/arch/x86/virt/svm/sev.c
++++ b/arch/x86/virt/svm/sev.c
+@@ -77,7 +77,7 @@ static int __mfd_enable(unsigned int cpu)
+ {
+ 	u64 val;
+ 
+-	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++	if (!cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		return 0;
+ 
+ 	rdmsrl(MSR_AMD64_SYSCFG, val);
+@@ -98,7 +98,7 @@ static int __snp_enable(unsigned int cpu)
+ {
+ 	u64 val;
+ 
+-	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++	if (!cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		return 0;
+ 
+ 	rdmsrl(MSR_AMD64_SYSCFG, val);
+@@ -174,11 +174,11 @@ static int __init snp_rmptable_init(void)
+ 	u64 rmptable_size;
+ 	u64 val;
+ 
+-	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++	if (!cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		return 0;
+ 
+ 	if (!amd_iommu_snp_en)
+-		return 0;
++		goto nosnp;
+ 
+ 	if (!probed_rmp_size)
+ 		goto nosnp;
+@@ -225,7 +225,7 @@ skip_enable:
+ 	return 0;
+ 
+ nosnp:
+-	setup_clear_cpu_cap(X86_FEATURE_SEV_SNP);
++	cc_platform_clear(CC_ATTR_HOST_SEV_SNP);
+ 	return -ENOSYS;
+ }
+ 
+@@ -246,7 +246,7 @@ static struct rmpentry *__snp_lookup_rmpentry(u64 pfn, int *level)
+ {
+ 	struct rmpentry *large_entry, *entry;
+ 
+-	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++	if (!cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		return ERR_PTR(-ENODEV);
+ 
+ 	entry = get_rmpentry(pfn);
+@@ -363,7 +363,7 @@ int psmash(u64 pfn)
+ 	unsigned long paddr = pfn << PAGE_SHIFT;
+ 	int ret;
+ 
+-	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++	if (!cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		return -ENODEV;
+ 
+ 	if (!pfn_valid(pfn))
+@@ -472,7 +472,7 @@ static int rmpupdate(u64 pfn, struct rmp_state *state)
+ 	unsigned long paddr = pfn << PAGE_SHIFT;
+ 	int ret, level;
+ 
+-	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++	if (!cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		return -ENODEV;
+ 
+ 	level = RMP_TO_PG_LEVEL(state->pagesize);
+@@ -558,3 +558,13 @@ void snp_leak_pages(u64 pfn, unsigned int npages)
+ 	spin_unlock(&snp_leaked_pages_list_lock);
+ }
+ EXPORT_SYMBOL_GPL(snp_leak_pages);
++
++void kdump_sev_callback(void)
++{
++	/*
++	 * Do wbinvd() on remote CPUs when SNP is enabled in order to
++	 * safely do SNP_SHUTDOWN on the local CPU.
++	 */
++	if (cc_platform_has(CC_ATTR_HOST_SEV_SNP))
++		wbinvd();
++}
+diff --git a/drivers/crypto/ccp/sev-dev.c b/drivers/crypto/ccp/sev-dev.c
+index f44efbb..2102377 100644
+--- a/drivers/crypto/ccp/sev-dev.c
++++ b/drivers/crypto/ccp/sev-dev.c
+@@ -1090,7 +1090,7 @@ static int __sev_snp_init_locked(int *error)
+ 	void *arg = &data;
+ 	int cmd, rc = 0;
+ 
+-	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++	if (!cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		return -ENODEV;
+ 
+ 	sev = psp->sev_data;
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index e7a4492..33228c1 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -3228,7 +3228,7 @@ out:
+ static void iommu_snp_enable(void)
+ {
+ #ifdef CONFIG_KVM_AMD_SEV
+-	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
++	if (!cc_platform_has(CC_ATTR_HOST_SEV_SNP))
+ 		return;
+ 	/*
+ 	 * The SNP support requires that IOMMU must be enabled, and is
+@@ -3236,12 +3236,14 @@ static void iommu_snp_enable(void)
  	 */
- 	if ((!system_supports_tlb_range() &&
- 	     (end - start) >= (MAX_DVM_OPS * stride)) ||
--	    pages >= MAX_TLBI_RANGE_PAGES) {
-+	    pages > MAX_TLBI_RANGE_PAGES) {
- 		flush_tlb_mm(vma->vm_mm);
+ 	if (no_iommu || iommu_default_passthrough()) {
+ 		pr_err("SNP: IOMMU disabled or configured in passthrough mode, SNP cannot be supported.\n");
++		cc_platform_clear(CC_ATTR_HOST_SEV_SNP);
  		return;
  	}
-
-Thanks,
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+ 
+ 	amd_iommu_snp_en = check_feature(FEATURE_SNP);
+ 	if (!amd_iommu_snp_en) {
+ 		pr_err("SNP: IOMMU SNP feature not enabled, SNP cannot be supported.\n");
++		cc_platform_clear(CC_ATTR_HOST_SEV_SNP);
+ 		return;
+ 	}
+ 
 
