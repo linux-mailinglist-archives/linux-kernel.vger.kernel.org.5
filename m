@@ -1,142 +1,144 @@
-Return-Path: <linux-kernel+bounces-132053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B66FE898F23
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:41:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 121BD898F26
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:42:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4AC61C2475E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:41:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 952D4B2B41D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D56413443F;
-	Thu,  4 Apr 2024 19:41:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55250134725;
+	Thu,  4 Apr 2024 19:41:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l2ZlUKV8"
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dgUfQpuO"
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C043134439
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:41:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D95E12FF9D
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712259672; cv=none; b=ejQ7RJpw7e9zy3hB78mxXh7bUmMXvDmv0A40KtRFOnKm2aFg9BQA1+siLjkAJzvlLjgwiwpuBWZ50Wt055YBcbeVWcIjwefVm/lWxr1EKpeXfqyl4xmvbot7KhrTB5ONGjRs1up587+cHpcSMYA1dddXTZ1YsdYyBsGuupEAmFo=
+	t=1712259706; cv=none; b=PRfGKTmpIHwnbTshjDKJ+6EBn6Mu0lIwcrLY6DWWZBl/5QWD7uV7fKZjM+1whxNnd0Vwo8vrgiMNZ7Gh2+BBiOr9RKZt96CqVSO0zNhNIK7NBcWl+sJQy27DMmDsrDMRIRf+RqkF+sqYv98heerCWsjtEsGss6rfNhHlNrGyfn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712259672; c=relaxed/simple;
-	bh=iz0bGXcbHiJkhtXDUOyY3n+qbZ2wRRxMNVVkahGIvWM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K0Euaysk2rQOZdOMXEV+YLQpNnUSWZXWgz7IOVebU0iFo1uNlPjai3dwDVv3J0VzScQQXg67syjwLcJaIS5tevqVg2Or7QmzRv82lsvlf3BHt+Dd4c1F8/4LHOYY9W3kbvOf2PFjswT25mZeU8QvadRhyMuzU9j1MC9r6SdZfWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=l2ZlUKV8; arc=none smtp.client-ip=209.85.217.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-4765e6cf37aso534052137.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 12:41:10 -0700 (PDT)
+	s=arc-20240116; t=1712259706; c=relaxed/simple;
+	bh=aVZcAkeixF4g7qxwWjpSl0cSU4/81MEvk4V1zf7bPjc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=j8QgSMoRKBsChGbZJB6zDP9OfKYaie6OzxAULYm8tS9scQWEXONaXHCjaaXOWLDJ6ZQoC9WZ7jJ0qNz2b1OfsYp25xN4l7cBxwB4BRml8c/LP4ycKpPZHbnn6BJcPKTkhvugHVZZYzQJdG6pDwV+3yIKWqziRkjGDGbiTVU2rpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dgUfQpuO; arc=none smtp.client-ip=209.85.208.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2d6eedf3e99so23875251fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 12:41:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712259669; x=1712864469; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W7cHtC6/e0FV6wX3F6QbmB8ToyxlBVuDkaRhNf0o1y4=;
-        b=l2ZlUKV8bz+Y9PlQFqAIh21mPwp4ygSAFRsegx3c/e6Gf3Y+x1FTuNV+rEiaGvzAXj
-         QXF61z7s3J5CFogmym4a84s/KMCQT+FcqYg4+AHFt4dAQjSgzbeclq4xjZzyavBmBS90
-         USd0uQAGS9yfBAV/1JLbxn55YLJqwh8vRasujUXVBlfw+IZIRCW39fN3UUYbHtcqCMZW
-         KXzqZHVvV/M7ltdw+EkQkb0SPswvGUh7HO+VA4zMWxwJijx1W769eW5lksvslhPUp5eQ
-         GudFxhJcNGJWPdaA/8UCj+ZrE+MqV4hT6ERqcF2obTGsuF6958grWN6SbLTVqUGNivSp
-         dCOQ==
+        d=linaro.org; s=google; t=1712259702; x=1712864502; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hk29yQ8J33vjFT2n+Z8izmlALMtAMOY/5K09yHLiz2A=;
+        b=dgUfQpuO2Lq9sV92pw61jzVuuIPlM7e7y8MVVel8u+SC99oDVItkYZHp3TJT0wgfwR
+         z2u+Luc6nUbEIw06dKzbL1nkjVq/mKk13aW/eA+qM0kJyVoyxgwBj1JPL0ettd/+8mhE
+         VGBcw0KnPisn2qLXRxvMJkyeEhsAR1M4uMSef3L9V+YkxQ9O94wCMOrMrlz7dFJuF9yg
+         dfeDVcWA73X/3fy5o0LD1Qjn1CeSnC796/13ZkgGcBBtQATMD/I9Dw9OxyC7j/yaJtqQ
+         /AyuraN5J2dfy+DnTwZnZsh8t08Ue+badnMTfzW2dqi20lmqvo9AlJYmGvI6o8D76l1L
+         wgsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712259669; x=1712864469;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=W7cHtC6/e0FV6wX3F6QbmB8ToyxlBVuDkaRhNf0o1y4=;
-        b=VFIiycqwf7NKm7SYG6iCVrpF4SucGcax1v6rjd7UrTkcuPceYehVPsdWt2DT2qVMNe
-         9FvA9NMnXBDyIL92AU9YTs/Z/8NmT+vwwzIko2rp7xXtCe9afxaZwCYZ4BC3geMJHvkW
-         45K2jEuPGOs3cOX6AX7PoTa8uYvufXzwlKBct8DzcCTGBxrqJ6VTrjL3fezERl4quhBe
-         +bdLRt3QCBjlXhlaK27FriOtkFIlwV8xr0636SZIwInL4zCPdUbKSF5Zk/UHVnb6hi2m
-         szv/5+DsZxwFcQiCgS2mOtnLy3bWq58D+fd2LDBih88TrG9v7Ye5mJl75u8EJpSIjX5o
-         PWlA==
-X-Forwarded-Encrypted: i=1; AJvYcCXVa9JJt3dJmvG/jFqoP1Eg1dyd49gSr8Hj+3XfZNf2zC75k2vj236VF51aXPvP3quvdRPzIhQWqKa/AHaZry9GTJDQF9+O8+9hOsMF
-X-Gm-Message-State: AOJu0YxAUMFAVzIiYQK493QgKZDw75zMa5i/n6eCRVp9AiZ4y0rGK2UZ
-	2gjiX07CbJPOEo1E8uoE6228aEik7ILAhRfCOqHfAxBCzH2vHWm5Cn2aW/ScnbbmeVtIC7O/Thj
-	aFopWBYo/iRg11yL1eAe0RpbOQaiD0bXjX6Ur
-X-Google-Smtp-Source: AGHT+IHyHdgMOOC6Bh6I1UAtHxMqwBPQYPsx/NLvbA5MD/rct+UnDIeCbWQ76PaEjMfTzerscAEzQb/JI8uXmiQdPCo=
-X-Received: by 2002:a67:f7ca:0:b0:475:fe59:f33 with SMTP id
- a10-20020a67f7ca000000b00475fe590f33mr3290471vsp.29.1712259669327; Thu, 04
- Apr 2024 12:41:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712259702; x=1712864502;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hk29yQ8J33vjFT2n+Z8izmlALMtAMOY/5K09yHLiz2A=;
+        b=UdN3/5pnizaNIK8E8CnXgn9UjoceqloefY1jj1CNd1qixGZld6kOGzmj3zPENv4nCi
+         Wihd9gCyJIPEzSIK5b4IQL2/NXSgx09stXFO8z3wj56H0EN71jPUcfy5gp26Edp3ZrNN
+         UpwH3Hr+51uxyv65Nd/g6/R/ovyckUEO0BKoxWy5pOIzK1N8qCjKLirSg8qPyiVXfClq
+         kwKu7ZiWO+ZigQdH6FRqhSbHhScWhB6MZtEdu03aqBYgeCmAxBTAuNJ8ariuh+1N5d++
+         Er53LazMj3VfGxAX4X/vks6UE9HLl1fWP1wVWtxjvrWB9oAXxz3N6BEgr63cYdtJEoIp
+         qe6A==
+X-Forwarded-Encrypted: i=1; AJvYcCXrMXAIBIxcElriYWkVE7IU+1+PoSnCzX1L7lnkgll6rVGzDf1Zo3i85D1r3V9NxaNGqBN3O2rv1WvxfnTtLMxRrO5nEp+M96Mt2JMQ
+X-Gm-Message-State: AOJu0Yx7E+CQLrHsQZuRrEuvQ0UMUl20lDseuO4hqtO48AReOGCOl9Ra
+	0eNc6zue66UB+b4KBUKe0HZIrhfeUP6aNUpRrkRO9Cgkncdmx3haS3PNphIWE3A=
+X-Google-Smtp-Source: AGHT+IGjdt8eK/21R8SNEkAuKUSS9YVD3OAhgQRK4DIdtp+I52YPNa8vy4Q5T+/BRUqKTzQAx5ppVA==
+X-Received: by 2002:a05:651c:210d:b0:2d8:635d:56b9 with SMTP id a13-20020a05651c210d00b002d8635d56b9mr181907ljq.4.1712259702667;
+        Thu, 04 Apr 2024 12:41:42 -0700 (PDT)
+Received: from [172.30.205.19] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
+        by smtp.gmail.com with ESMTPSA id u14-20020a2e844e000000b002d46be28dcfsm2239298ljh.127.2024.04.04.12.41.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 12:41:41 -0700 (PDT)
+Message-ID: <8f6236db-0692-44c9-b136-8e0dff714c55@linaro.org>
+Date: Thu, 4 Apr 2024 21:41:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404162515.527802-1-fvdl@google.com> <20240404162515.527802-2-fvdl@google.com>
- <Zg7358ygxHBHUCy9@P9FQF9L96D.corp.robot.car>
-In-Reply-To: <Zg7358ygxHBHUCy9@P9FQF9L96D.corp.robot.car>
-From: Frank van der Linden <fvdl@google.com>
-Date: Thu, 4 Apr 2024 12:40:58 -0700
-Message-ID: <CAPTztWYH5ANR2cYidf+frC2HBJiz6UUh5wC5khHJg8R-gYbcFw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm/hugetlb: pass correct order_per_bit to cma_declare_contiguous_nid
-To: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: linux-mm@kvack.org, muchun.song@linux.dev, akpm@linux-foundation.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 7/7] arm64: dts: qcom: Add SM8550 Xperia 1 V
+Content-Language: en-US
+To: neil.armstrong@linaro.org, James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Ricardo Rivera-Matos <rriveram@opensource.cirrus.com>,
+ Bjorn Andersson <andersson@kernel.org>, Abel Vesa <abel.vesa@linaro.org>,
+ Sai Prakash Ranjan <quic_saipraka@quicinc.com>,
+ Kees Cook <keescook@chromium.org>, Tony Luck <tony.luck@intel.com>,
+ "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+ alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-hardening@vger.kernel.org
+References: <20240210-topic-1v-v1-0-fda0db38e29b@linaro.org>
+ <20240210-topic-1v-v1-7-fda0db38e29b@linaro.org>
+ <05e6f92c-388c-4bc6-a4cd-e9d981166d1c@linaro.org>
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+In-Reply-To: <05e6f92c-388c-4bc6-a4cd-e9d981166d1c@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 4, 2024 at 11:56=E2=80=AFAM Roman Gushchin <roman.gushchin@linu=
-x.dev> wrote:
->
-> On Thu, Apr 04, 2024 at 04:25:15PM +0000, Frank van der Linden wrote:
-> > The hugetlb_cma code passes 0 in the order_per_bit argument to
-> > cma_declare_contiguous_nid (the alignment, computed using the
-> > page order, is correctly passed in).
-> >
-> > This causes a bit in the cma allocation bitmap to always represent
-> > a 4k page, making the bitmaps potentially very large, and slower.
-> >
-> > So, correctly pass in the order instead.
-> >
-> > Signed-off-by: Frank van der Linden <fvdl@google.com>
-> > Cc: Roman Gushchin <roman.gushchin@linux.dev>
-> > Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepag=
-es using cma")
->
-> Hi Frank,
->
-> there is a comment just above your changes which explains why order_per_b=
-it is 0.
-> Is this not true anymore? If so, please, fix the comment too. Please, cla=
-rify.
->
-> Thanks!
 
-Hi Roman,
 
-I'm assuming you're referring to this comment:
+On 2/12/24 18:26, Neil Armstrong wrote:
+> On 12/02/2024 14:10, Konrad Dybcio wrote:
+>> Add support for Sony Xperia 1 V, a.k.a PDX234. This device is a part
+>> of the SoMC SM8550 Yodo platform.
+>>
 
-/*
- * Note that 'order per bit' is based on smallest size that
- * may be returned to CMA allocator in the case of
- * huge page demotion.
- */
+[...]
 
-That comment was added in a01f43901cfb9 ("hugetlb: be sure to free
-demoted CMA pages to CMA").
+>> +/* TODO: Only one SID of PMR735D seems accessible? */
+> 
+> 
+> What's reported by the cpuinfo pmic array  ?
 
-It talks about HUGETLB_PAGE_ORDER being the minimum order being given
-back to the CMA allocator (after hugetlb demotion), therefore
-order_per_bit must be HUGETLB_PAGE_ORDER. See the commit message for
-that commit:
+PMK8550 2.1
+PM8550 2.0
+PM8550VS 2.0
+PM8550VS 2.0
+PM8550VS 2.0
+PM8550VE 2.0
+PM8550VS 2.0
+PM8550B 2.0
+PMR735D 2.0
+PM8010 1.1
+PM8010 1.1
 
-"Therefore, at region setup time we use HUGETLB_PAGE_ORDER as the
-smallest possible huge page size that can be given back to CMA."
+Not sure if there's only one or the other one is secure?
 
-But the commit, while correctly changing the alignment, left the
-order_per_bit argument at 0,  even though it clearly intended to set
-it at HUGETLB_PAGE_ORDER. The confusion may have been that
-cma_declare_contiguous_nid has 9 arguments, several of which can be
-left at 0 meaning 'use default', so it's easy to misread.
+> 
+> <snip>
+> 
+> With the pcie thing fixed:
+> Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-In other words, the comment was correct, but the code was not. After
-this patch, comment and code match.
+It's gonna be fine with the recent aux clock additions. If you
+have no further comments, I'll happily ask for this to be merged ;)
+
+Konrad
 
