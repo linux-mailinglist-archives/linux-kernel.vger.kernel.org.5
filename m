@@ -1,120 +1,182 @@
-Return-Path: <linux-kernel+bounces-131872-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8592898CF9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:07:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9D0D898D03
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:09:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A5881C22798
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:07:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52F381F229E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:09:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDAD012CDB2;
-	Thu,  4 Apr 2024 17:07:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D93E12EBC5;
+	Thu,  4 Apr 2024 17:09:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="F2H76ow5"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE09A12B82;
-	Thu,  4 Apr 2024 17:07:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jC5EaRQM"
+Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BF512AAE7
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:08:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712250451; cv=none; b=V1+t/HslF9Sciq0tZhHKq/TQ0ML2OnmcRIOQuC3W7tqgPbLRiodLHWP5W+BdqKU5A52R9Sfpozt37PEQnXQHvtJFwEWU3zxgQCn98W0ZSkqaSbylQ+PggJ16sN1f/wgTi9ewmu6SDQP9kQyiz2A0/fNgs1jih0ykjO5p0aSF6Xg=
+	t=1712250539; cv=none; b=aprB0+vada2zHPGUoIai4+TNTXbxJHjxebVEFKIeppKMDyeH2drHvXZiaN+7V33YEqV1Q8P9522MJlHSLlvyL46z8icShqZj52kmG5Cn3zBR+fwT9jeUfCQ952X88m9j4strGLfKE9P69eZpxJPD1tkgeuI3VwsCEUlB/5+Jnuo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712250451; c=relaxed/simple;
-	bh=80vC5r0T6UXs+U9Ol1rgtY347RqFa7tSqjNTx7djY0I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jYYANVJQZOqxgDcVcc7hgNcIVifpK81bpTB7rIUTReZ+9aPRSxQU3ZK+C841EDDHpZ6B7DB7otbV5ghT3Gus/o1DKtARBQK4VewgcsgqSOTUEAIoSjVuZSS8KkO7G2RHJ6/jXpZ1EhKDagSRSF2ciZfxXwD688Cl5kQbdMsBh+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=F2H76ow5; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.66.208.34] (unknown [108.143.43.187])
-	by linux.microsoft.com (Postfix) with ESMTPSA id DB70B20E94A4;
-	Thu,  4 Apr 2024 10:07:27 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DB70B20E94A4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1712250449;
-	bh=72abs/jZSWLvmWAMUPLH/C4UA5U70IV/0GN6RCUuyvc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=F2H76ow5rcwnwLy2p9aJA7bpF0N9MZ1LBBjScin0cGtJ+3U+IvW4qtjHa9lPOsWhE
-	 WWGfoIGOOpTwTy8O6fJRl5HurbvSEUthk6qWqo6jbxldtkuuROfpwp7iTZjGIS/LPf
-	 /a6pgm6LVRPaKXZlfodKCCVWIx09r4ycXgPx/bto=
-Message-ID: <aecd56a4-0a88-4162-95ef-47561631f16e@linux.microsoft.com>
-Date: Thu, 4 Apr 2024 19:07:26 +0200
+	s=arc-20240116; t=1712250539; c=relaxed/simple;
+	bh=qIeHxQSzEKN+T+ZMX5PFicsmdKmy6EfcZQYdz44LOBA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YHv0JIEMhOmecHQWz+Vfjm4iHLZ1i/vN4mCT6AWDQ5ZGITkz8pCMfgWOCmRvp1HoDSPFqjh0CKbvM0birW6sgmMQUIzG7LhXmCc7mL0gyu7Tc0YOtSNilbYNnmrJjdGKKtor+xtXAsjikYoFZm+95AegTnfbaZWwCThILTzEEzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jC5EaRQM; arc=none smtp.client-ip=209.85.219.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso1467225276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712250536; x=1712855336; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KuDs1drwJi9Z+z9OuWkhK3ckPKS9r4/p1uVUkFqevFk=;
+        b=jC5EaRQMXoWxXcT/PNqSjrcsftwnvseB5AtKBg2vqgAyyLVQgp20SRegZq7YLIrdO/
+         HTQWScQM/DW37R2IYh+dwMOL2ayL0pQIQzYyP1lXQTLRA97VQiYJ9PHXRyMfJ/Z9ZvVJ
+         oFpUWCWEB1bSpDEyqEQ7RCqnI1td28ZhCzX2yYyMeaCp+6hQUqHZ6EtZjij0pKovvOgy
+         stCx6Jb+d1gT/UvnialtOoZLUIi5qkRs+J/dXYzAxsZr67uO7BH+bPTh4Ub09lLJuNIn
+         17mjFsnILx+0qC4dxBW5VMWwIa7xznM4mAxRt/Jwv9KrNYGo+0DSWcP592JJrWie/m+S
+         e2vQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712250536; x=1712855336;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KuDs1drwJi9Z+z9OuWkhK3ckPKS9r4/p1uVUkFqevFk=;
+        b=e4/6SRYxN2YnvQt65UsbZ6vRLYfOry9HSGYoErvjZ3YAUuUQCl+1bVZSnDuCSu6iXA
+         Q6enaZb/xkeINJHfjeeh2L3cGTWoUadx7ptMKEKSJkqaRWjO/5If1AX2fL2UMP9SS6SJ
+         nYBfL9CEOySxVHTuaZQxXk4iCgzQuWiIqkaF+WBMOoDDK0h6p7tlpDFSWCk2shFYqOp3
+         YEj9giQEEdOD6bTb/AoJEOBMIuObIeSXCRjVtcGgtLVPLxoCdPqBWU8w3xY7dtfu0a5Q
+         giYqXdHiL0BbPKif0B29G7tKiFN9+tz4zY8ISHc8O0BUWUAwNzajbcgW4opsIXqvaQXu
+         L2Vg==
+X-Forwarded-Encrypted: i=1; AJvYcCXQ9+8zKYqFp2NkGcKbFcP5B+S30rKuWsJaFvhID06MHZQ6rG0HDoJegg19hdRJ6YlEvH4IWPwQDpzQcD9NZMRw79UNqDdAJdoKrgcA
+X-Gm-Message-State: AOJu0YyHUm/ilcpYl7QwljN2dA5joO+/gGDNXO+LagTEvtPad2dt4Hyl
+	gvM8IqeTiKcoA9piLxMPO3QnVAVkZoxUGkEilTIQ2Yngr39kIRe6VZ5vLlThDhlTDRJJ3LdYRaW
+	WhyCsonJeoUE4zslZJj73gp5j48o0bJMHT0Oy
+X-Google-Smtp-Source: AGHT+IFt2ASldzAexjX0sPM2NMrH0Lqtd66mUXGVX9ZgF2XSVZKC+BEFwLxb4crFlAjVgX0qYdICDkkyaJeo+de/1Hw=
+X-Received: by 2002:a25:ac19:0:b0:dcb:b072:82d5 with SMTP id
+ w25-20020a25ac19000000b00dcbb07282d5mr3065164ybi.64.1712250536330; Thu, 04
+ Apr 2024 10:08:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] x86/CPU/AMD: Track SNP host status with
- cc_platform_*()
-To: Borislav Petkov <bp@alien8.de>
-Cc: X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
- KVM <kvm@vger.kernel.org>, Ashish Kalra <ashish.kalra@amd.com>,
- Joerg Roedel <joro@8bytes.org>, Michael Roth <michael.roth@amd.com>,
- Tom Lendacky <thomas.lendacky@amd.com>
-References: <20240327154317.29909-1-bp@alien8.de>
- <20240327154317.29909-6-bp@alien8.de>
- <f6bb6f62-c114-4a82-bbaf-9994da8999cd@linux.microsoft.com>
- <20240328134109.GAZgVzdfQob43XAIr9@fat_crate.local>
- <ac4f34a0-036a-48b9-ab56-8257700842fc@linux.microsoft.com>
- <20240328153914.GBZgWPIvLT6EXAPJci@fat_crate.local>
-Content-Language: en-CA
-From: Jeremi Piotrowski <jpiotrowski@linux.microsoft.com>
-In-Reply-To: <20240328153914.GBZgWPIvLT6EXAPJci@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240404165404.3805498-1-surenb@google.com> <Zg7dmp5VJkm1nLRM@casper.infradead.org>
+In-Reply-To: <Zg7dmp5VJkm1nLRM@casper.infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 4 Apr 2024 10:08:45 -0700
+Message-ID: <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
+ the call site
+To: Matthew Wilcox <willy@infradead.org>
+Cc: akpm@linux-foundation.org, joro@8bytes.org, will@kernel.org, 
+	trond.myklebust@hammerspace.com, anna@kernel.org, arnd@arndb.de, 
+	herbert@gondor.apana.org.au, davem@davemloft.net, jikos@kernel.org, 
+	benjamin.tissoires@redhat.com, tytso@mit.edu, jack@suse.com, 
+	dennis@kernel.org, tj@kernel.org, cl@linux.com, jakub@cloudflare.com, 
+	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com, 
+	vbabka@suse.cz, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-ext4@vger.kernel.org, linux-mm@kvack.org, 
+	netdev@vger.kernel.org, linux-security-module@vger.kernel.org, 
+	kent.overstreet@linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 28/03/2024 16:39, Borislav Petkov wrote:
-> On Thu, Mar 28, 2024 at 03:24:29PM +0100, Jeremi Piotrowski wrote:
->> It's not but if you set it before the check it will be set for all AMD
->> systems, even if they are neither CC hosts nor CC guests.
-> 
-> That a problem?
-> 
+On Thu, Apr 4, 2024 at 10:04=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Thu, Apr 04, 2024 at 09:54:04AM -0700, Suren Baghdasaryan wrote:
+> > +++ b/include/linux/dma-fence-chain.h
+> > @@ -86,10 +86,7 @@ dma_fence_chain_contained(struct dma_fence *fence)
+> >   *
+> >   * Returns a new struct dma_fence_chain object or NULL on failure.
+> >   */
+> > -static inline struct dma_fence_chain *dma_fence_chain_alloc(void)
+> > -{
+> > -     return kmalloc(sizeof(struct dma_fence_chain), GFP_KERNEL);
+> > -};
+> > +#define dma_fence_chain_alloc()      kmalloc(sizeof(struct dma_fence_c=
+hain), GFP_KERNEL)
+>
+> You've removed some typesafety here.  Before, if I wrote:
+>
+>         struct page *page =3D dma_fence_chain_alloc();
+>
+> the compiler would warn me that I've done something stupid.  Now it
+> can't tell.  Suggest perhaps:
+>
+> #define dma_fence_chain_alloc()                                          =
+ \
+>         (struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chain),=
+ \
+>                                                 GFP_KERNEL)
+>
+> but maybe there's a better way of doing that.  There are a few other
+> occurrences of the same problem in this monster patch.
 
-No problem now but I did find it odd that cc_vendor will now always be set for AMD but
-not for Intel. For Intel the various checks would automatically return true. Something
-to look out for in the future when adding CC_ATTR's - no one can assume that the checks
-will only run when actively dealing with confidential computing.
+Got your point.
 
-> It is under a CONFIG_ARCH_HAS_CC_PLATFORM...
->>> To leave open the possibility of an SNP hypervisor running nested.
-> 
-> But !CC_ATTR_GUEST_SEV_SNP doesn't mean that. It means it is not
-> a SEV-SNP guest.
-> 
->> I thought you wanted to filter out SEV-SNP guests, which also have
->> X86_FEATURE_SEV_SNP CPUID bit set.
-> 
-> I want to run snp_probe_rmptable_info() only on baremetal where it makes
-> sense.
->>> My understanding is that these are the cases:
->>
->> CPUID(SEV_SNP) | MSR(SEV_SNP)     | what am I
->> ---------------------------------------------
->> set            | set              | SNP-guest
->> set            | unset            | SNP-host
->> unset          | ??               | not SNP
-> 
-> So as you can see, we can't use X86_FEATURE_SEV_SNP for anything due to
-> the late disable need. So we should be moving away from it.
-> 
+>
+> > +++ b/include/linux/hid_bpf.h
+> > @@ -149,10 +149,7 @@ static inline int hid_bpf_connect_device(struct hi=
+d_device *hdev) { return 0; }
+> >  static inline void hid_bpf_disconnect_device(struct hid_device *hdev) =
+{}
+> >  static inline void hid_bpf_destroy_device(struct hid_device *hid) {}
+> >  static inline void hid_bpf_device_init(struct hid_device *hid) {}
+> > -static inline u8 *call_hid_bpf_rdesc_fixup(struct hid_device *hdev, u8=
+ *rdesc, unsigned int *size)
+> > -{
+> > -     return kmemdup(rdesc, *size, GFP_KERNEL);
+> > -}
+> > +#define call_hid_bpf_rdesc_fixup(_hdev, _rdesc, _size) kmemdup(_rdesc,=
+ *(_size), GFP_KERNEL)
+>
+> here
+>
+> > -static inline handle_t *jbd2_alloc_handle(gfp_t gfp_flags)
+> > -{
+> > -     return kmem_cache_zalloc(jbd2_handle_cache, gfp_flags);
+> > -}
+> > +#define jbd2_alloc_handle(_gfp_flags)        kmem_cache_zalloc(jbd2_ha=
+ndle_cache, _gfp_flags)
+>
+> here
+>
+> > +++ b/include/linux/skmsg.h
+> > @@ -410,11 +410,8 @@ void sk_psock_stop_verdict(struct sock *sk, struct=
+ sk_psock *psock);
+> >  int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
+> >                        struct sk_msg *msg);
+> >
+> > -static inline struct sk_psock_link *sk_psock_init_link(void)
+> > -{
+> > -     return kzalloc(sizeof(struct sk_psock_link),
+> > -                    GFP_ATOMIC | __GFP_NOWARN);
+> > -}
+> > +#define sk_psock_init_link() \
+> > +             kzalloc(sizeof(struct sk_psock_link), GFP_ATOMIC | __GFP_=
+NOWARN)
+>
+> here
+>
+> ... I kind of gave up at this point.  You'll want to audit for yourself
+> anyway ;-)
 
-I see your point about the disable needing to happen late - but then how about we remove
-the setup_clear_cpu_cap(X86_FEATURE_SEV_SNP) too? No code depends on it any more and it would
-help my cause as well.
-
-> So we need a test for "am I a nested SNP hypervisor?"
-> 
-> So, can your thing clear X86_FEATURE_HYPERVISOR and thus "emulate"
-> baremetal?
-> 
-
-Can't do that... it is a VM and hypervisor detection and various paravirt interfaces depend on
-X86_FEATURE_HYPERVISOR.
-
-
+Yes, I'll go over it and will make the required changes. Thanks for
+looking into it!
+Suren.
 
