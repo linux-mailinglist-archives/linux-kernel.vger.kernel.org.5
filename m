@@ -1,187 +1,173 @@
-Return-Path: <linux-kernel+bounces-130774-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130772-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A7C897CF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 246CE897CEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:19:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8A5771F2A120
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:19:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DE271F29E17
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 281151C6B7;
-	Thu,  4 Apr 2024 00:17:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1EC1BC46;
+	Thu,  4 Apr 2024 00:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="vhfJmPvq";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="axl4b+IU"
-Received: from wfhigh8-smtp.messagingengine.com (wfhigh8-smtp.messagingengine.com [64.147.123.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ptn02ojM"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B02D31C6A4;
-	Thu,  4 Apr 2024 00:17:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89BC918AED
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 00:17:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712189865; cv=none; b=OkVbzq6Nd44v2IIUDgIEdwv50X+030lLzxgYbMXehcTwSwL0jTIR7OB9uJVsUXrBg0Ce4Bu9ki2gdnSybgwOJrZ27kz5mBQxXwwEWkCkAFjQSqCdtb3Db1zmIeFB2hNvHDpcNoMPsJmyrjHvJCDITHcjwv9WjFCamxCX4WVskgw=
+	t=1712189859; cv=none; b=f8hV/TGEugpBZ2rXpgR5Wl2rHsH+HGQ84uPChGX/9Ox+EkWe9OnzGZMlWl1T/beWC/WIw+O6qWHTgST99RJExzAZLW9zCWfO99Y5cDztv6+ngQ7rboZqtMyhbd6tYaauVV6GE7DEH4YIAgkm+z0d2Bv2VME7vrU5G6R62is7Kws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712189865; c=relaxed/simple;
-	bh=VKZYrJDBI4Tg+jJYZ5tYzIFr1wEKASSqze+TdUIUhYw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rKoQtGIL8RE4zqrMGPfy8Qh1AJ4D2J7SFtJF2wFUhfyU/BqqWhmq0eU/Db7yQMxyRD38RGzCcww6vJGfQRYPTByey5MD3s0XfPIDM/iLCLpLzVVoe2dGMfPcI/3dakneFKwy2BgPimabrvg/YdDbP+kW2gVfZUo5Bm+qyRA8NLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=vhfJmPvq; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=axl4b+IU; arc=none smtp.client-ip=64.147.123.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfhigh.west.internal (Postfix) with ESMTP id 9BD9E18000DD;
-	Wed,  3 Apr 2024 20:17:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 03 Apr 2024 20:17:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1712189862;
-	 x=1712276262; bh=SWwR8iaMb1pyiVmb4GJOb8En73DRDg4SXGzGWsHKjIM=; b=
-	vhfJmPvqCkuxfiRTB7SAkmwQZsqAmMy+0MBdSWJIsi2PSAErVqv9QKaXHbGEmA2j
-	fAVAfGfehC1vZY2WBm99ll/l4b6ctE1BUHljSOdhxWM0bd3FOUCLfUOA8Jp3ev96
-	7C4oJMV3APOB5dE2gogV4/x0awN/7Azds3laYV95aTF5K/ULy4h4EjxuoypmD1E0
-	cndgtbzgnpvVe1jTcnBcJEXI3SEUqtFli1AVBl/gqyQHLWBz7uu0/62NX1tDanQu
-	7WM9IFqvlPqtEttmgZ9/BDveZuyWXxT/Zvyjdf7xmTbW4qKs82Qlji0u234i18Om
-	hommiemUKWmVp8aFpIzThA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712189862; x=
-	1712276262; bh=SWwR8iaMb1pyiVmb4GJOb8En73DRDg4SXGzGWsHKjIM=; b=a
-	xl4b+IUtOsntKPlOEqzUBQZkulhzXdZrQTLU8RYX9Z1vIql/L4FWEC1nHBtmPfOD
-	OjGfwh9KMfM+j0tDfCAyI5iji0fO31BRQNHvZzA7r1kbCwLDW1dbcuFgrdxwsNNK
-	Zv2zS/+e+7GOjl51DvjVaDW+4U+jUWrsRuCRnOgki5jNPrl0VV/3MVt8nL6X7cLG
-	20cDbPIwv5JoPg5yG/egqknAKsnD4tGdmrT/DPynChp6se+KJU3OT3oe1BXMuqbJ
-	6kyrmMjOYKf5Q8qW0PTAypwnh28EspThfLOeoiWbyMBIv0TZLjFUXD5CfJJEjbPE
-	xrhIkzkFEvMmsHzqRkJzQ==
-X-ME-Sender: <xms:pfENZrVlpi05RBI-FklAIX4BysVUy8nJBTU6buFln1eJKoZFcyRfIQ>
-    <xme:pfENZjkIDPAQ3245KpzNdnePB26Hmiw6Ky7k4H3xS31HN1V8lNHueiyYWilQ3E51i
-    EFsci7MVSyO6xIJW40>
-X-ME-Received: <xmr:pfENZnYOb_74TOdBsClWZyMeAV5mDunffN4qNevY0VC1IY2prmUOMq9lMYCq>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefjedgfeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfgggtgfesth
-    ekredtredtjeenucfhrhhomhepfdfnuhhkvgcuffdrucflohhnvghsfdcuoehluhhkvges
-    lhhjohhnvghsrdguvghvqeenucggtffrrghtthgvrhhnpeduudetudehiedvvdevveelhf
-    egkeefffdvfeetuefgveefgffgffeiffeitdelieenucevlhhushhtvghrufhiiigvpeeg
-    necurfgrrhgrmhepmhgrihhlfhhrohhmpehluhhkvgeslhhjohhnvghsrdguvghv
-X-ME-Proxy: <xmx:pfENZmWY8gnn5Iwd-pBo1kXAXZ0zAHoUpmKRlUy0otms8OkG1idSDQ>
-    <xmx:pfENZllllYAieemXmbiuLJ_sU7Yue7V809jyOk9Mj7IbDNfmUWEvAw>
-    <xmx:pfENZje5nBX_UEPt4C4R_7IFCh-bV8SSjgdXN4cqaq5OzA1rYa18NQ>
-    <xmx:pfENZvHXc-XaI49aPe70eBv8f-ZX_iCRbQpFzkDUVNWaFuYfK-PTQw>
-    <xmx:pvENZjaifIX-FT5p4rs368vYXXofWO4oft3WugS5r3NfqFl00D1qRBob>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 3 Apr 2024 20:17:39 -0400 (EDT)
-From: "Luke D. Jones" <luke@ljones.dev>
-To: hdegoede@redhat.com
-Cc: corentin.chary@gmail.com,
-	ilpo.jarvinen@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Luke D. Jones" <luke@ljones.dev>
-Subject: [PATCH v4 9/9] platform/x86: asus-wmi: cleanup main struct to avoid some holes
-Date: Thu,  4 Apr 2024 13:16:52 +1300
-Message-ID: <20240404001652.86207-10-luke@ljones.dev>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240404001652.86207-1-luke@ljones.dev>
-References: <20240404001652.86207-1-luke@ljones.dev>
+	s=arc-20240116; t=1712189859; c=relaxed/simple;
+	bh=jhNHOysICI779o73Egt7UZHvLrPML8bG71A3jGDYzbM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nIqvH+vvhEGMn98CHwr2NMh2/i0CEFdZQDJzwKkh7EXy6WlDfVpjvs15YMuzv9JLBHGPGsr4UDJqO7cOTybquG27HiRcXYcNZ63Gkj6PxxRBzNWVZiln9pUuAeR5ZvJy/gVBXe68A7fqiVeu0NoTc+2wABeDQ2cvmi/zw+jniDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ptn02ojM; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a466fc8fcccso52170666b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 17:17:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712189856; x=1712794656; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ssLe+xRcfYlMx9xR0eZTwk414Gz+dUio7AdeAbJ5si0=;
+        b=Ptn02ojMpXPgsSpuFeVFbpXW5GYFwMsv5Z2hW/e8oMbZGnnov/tXNMGYCN6aBO9ne1
+         0fBL+zr+wfdxd5jUKrTUVBJW9C5lmj+KVxhqyegHnUwwAj/bzqaF82bog7HPS9hugl/M
+         pM/dZ76CTXMI/S5TJk5Ysg2ab8u38bdbfKwZJ6MTHzDEXmpD3XR0pqCfgqsw0kTTntRX
+         jApgZgYnsOBVyYMhqikkeOSx3aYCRplb56RZ42ssrcNpS15+dQfnnUni78/+jKltnZSI
+         M0m/50K0S/E8kWMzPiPpHfqDS/NFo1z2Wb3jGuhjayADa8X34X0mkWI2ChEhaGNetGaG
+         9Nuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712189856; x=1712794656;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ssLe+xRcfYlMx9xR0eZTwk414Gz+dUio7AdeAbJ5si0=;
+        b=bc7tgLEiH8hahpnDgTA0IAfVOoCTNEV7XHbK6si7WE80Sn5il9X3GV1NF70Bs2zLWI
+         GtWEuJc13FYpTkE0U4JURNvWoHdhdv7P0U9nbiAC1m6xzsf8DTpdZw2AoJekarNADPLU
+         IiZIA7tVzSupmSWDnak9LQkVlULQbZ4MHUGqCDlXoK580leOzqJcnv19+awxoSsy9es6
+         BGJiFjNJueECI4Z6tMQ18oUK1iu/t8naJ+FwAtRA37Wqi5ZTspNPs4HM3Pj9Ze6GWg7q
+         e1PmE4HD5icsF4OWvjoSV5b68bVo0zvoKnb4W9+wirdujJpnkUWaZLuJc5Wxt4ptzXeu
+         qquw==
+X-Forwarded-Encrypted: i=1; AJvYcCW8E7T0IuXLo0FBXUt6+vrEip8vEO4jA4GqcZUHfZiFz7CnanR510q7N/TOlbtwRxSXxRjp0WlfnhJjvJVsx1O6BRMhlssRix1fFZTl
+X-Gm-Message-State: AOJu0YzkCr8PvsKCvHuFtvqQqYxkG/U7Vn1rxmaEtX01yiFJdc/fJWPR
+	unecR3hfbnQOy0j/ia/Bbow3pyDST9a/j+lX4JXEnOBOQE9OUP+UyM64Q/4sR1xyi00GeBzuzSt
+	bEfPHUWsHdZdpATrKFzxZ51V88RCyy8g3Wrs4
+X-Google-Smtp-Source: AGHT+IHn3kmEEVtY/Z4M+IGnFBXQCBBGjilKeGG8Z9DojfTAjitMp5NLvPl7buki9auqxl4foHhN3uLjmOlKu2CDHyU=
+X-Received: by 2002:a17:906:1b02:b0:a4e:6957:de24 with SMTP id
+ o2-20020a1709061b0200b00a4e6957de24mr447385ejg.37.1712189855541; Wed, 03 Apr
+ 2024 17:17:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240402190652.310373-1-seanjc@google.com>
+In-Reply-To: <20240402190652.310373-1-seanjc@google.com>
+From: Vishal Annapurve <vannapurve@google.com>
+Date: Wed, 3 Apr 2024 17:17:19 -0700
+Message-ID: <CAGtprH9WB7=B3NrL9xDHvcONPBkQG=S1uCMDi91=oZ=5uNkcTA@mail.gmail.com>
+Subject: Re: [ANNOUNCE] KVM Microconference at LPC 2024
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	David Hildenbrand <david@redhat.com>, David Stevens <stevensd@chromium.org>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>, 
+	Bibo Mao <maobibo@loongson.cn>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Anup Patel <anup@brainfault.org>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, 
+	Claudio Imbrenda <imbrenda@linux.ibm.com>, Xiaoyao Li <xiaoyao.li@intel.com>, 
+	Xu Yilun <yilun.xu@intel.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
+	Fuad Tabba <tabba@google.com>, Jim Mattson <jmattson@google.com>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, Maxim Levitsky <mlevitsk@redhat.com>, 
+	Anish Moorthy <amoorthy@google.com>, David Matlack <dmatlack@google.com>, 
+	Yu Zhang <yu.c.zhang@linux.intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
+	Edgecombe@google.com, Rick P <rick.p.edgecombe@intel.com>, 
+	=?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, 
+	Vlastimil Babka <vbabka@suse.cz>, Ackerley Tng <ackerleytng@google.com>, 
+	Maciej Szmigiero <mail@maciej.szmigiero.name>, Quentin Perret <qperret@google.com>, 
+	Michael Roth <michael.roth@amd.com>, Wei Wang <wei.w.wang@intel.com>, 
+	Liam Merwick <liam.merwick@oracle.com>, Isaku Yamahata <isaku.yamahata@gmail.com>, 
+	Kirill Shutemov <kirill.shutemov@linux.intel.com>, 
+	Lai Jiangshan <jiangshan.ljs@antgroup.com>, Hou Wenlong <houwenlong.hwl@antgroup.com>, 
+	Xiong Zhang <xiong.y.zhang@linux.intel.com>, Jinrong Liang <ljr.kernel@gmail.com>, 
+	Like Xu <like.xu.linux@gmail.com>, Mingwei Zhang <mizhang@google.com>, 
+	Dapeng Mi <dapeng1.mi@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Reorganises some attr-available calls to remove a few unrequired
-booleans in the main driver struct which combined with some
-reorganisation prevents a series of large holes seen with pahole.
+On Tue, Apr 2, 2024 at 12:08=E2=80=AFPM Sean Christopherson <seanjc@google.=
+com> wrote:
+>
+> We are planning on submitting a CFP to host a second annual KVM Microconf=
+erence
+> at Linux Plumbers Conference 2024 (https://lpc.events/event/18).  To help=
+ make
+> our submission as strong as possible, please respond if you will likely a=
+ttend,
+> and/or have a potential topic that you would like to include in the propo=
+sal.
+> The tentative submission is below.
+>
+> Note!  This is extremely time sensitive, as the deadline for submitting i=
+s
+> April 4th (yeah, we completely missed the initial announcement).
+>
+> Sorry for the super short notice. :-(
+>
+> P.S. The Cc list is very ad hoc, please forward at will.
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> KVM Microconference
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> KVM (Kernel-based Virtual Machine) enables the use of hardware features t=
+o
+> improve the efficiency, performance, and security of virtual machines (VM=
+s)
+> created and managed by userspace.  KVM was originally developed to accele=
+rate
+> VMs running a traditional kernel and operating system, in a world where t=
+he
+> host kernel and userspace are part of the VM's trusted computing base (TC=
+B).
+>
+> KVM has long since expanded to cover a wide (and growing) array of use ca=
+ses,
+> e.g. sandboxing untrusted workloads, deprivileging third party code, redu=
+cing
+> the TCB of security sensitive workloads, etc.  The expectations placed on=
+ KVM
+> have also matured accordingly, e.g. functionality that once was "good eno=
+ugh"
+> no longer meets the needs and demands of KVM users.
+>
+> The KVM Microconference will focus on how to evolve KVM and adjacent subs=
+ystems
+> in order to satisfy new and upcoming requirements.  Of particular interes=
+t is
+> extending and enhancing guest_memfd, a guest-first memory API that was he=
+avily
+> discussed at the 2023 KVM Microconference, and merged in v6.8.
+>
+> Potential Topics:
+>    - Removing guest memory from the host kernel's direct map[1]
+>    - Mapping guest_memfd into host userspace[2]
+>    - Hugepage support for guest_memfd[3]
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-Signed-off-by: Luke D. Jones <luke@ljones.dev>
----
- drivers/platform/x86/asus-wmi.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+I and Ackerley would like to discuss 1G page support with guest_memfd
+and its implications on host MM and IOMMU implementation.
 
-diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
-index d06d9e0c498c..2d2b4eca7fd8 100644
---- a/drivers/platform/x86/asus-wmi.c
-+++ b/drivers/platform/x86/asus-wmi.c
-@@ -254,6 +254,9 @@ struct asus_wmi {
- 	u32 tablet_switch_dev_id;
- 	bool tablet_switch_inverted;
- 
-+	/* The ROG Ally device requires the MCU USB device be disconnected before suspend */
-+	bool ally_mcu_usb_switch;
-+
- 	enum fan_type fan_type;
- 	enum fan_type gpu_fan_type;
- 	enum fan_type mid_fan_type;
-@@ -266,9 +269,7 @@ struct asus_wmi {
- 	u8 fan_boost_mode_mask;
- 	u8 fan_boost_mode;
- 
--	bool charge_mode_available;
- 	bool egpu_enable_available;
--	bool egpu_connect_available;
- 	bool dgpu_disable_available;
- 	u32 gpu_mux_dev;
- 
-@@ -309,9 +310,6 @@ struct asus_wmi {
- 
- 	bool fnlock_locked;
- 
--	/* The ROG Ally device requires the MCU USB device be disconnected before suspend */
--	bool ally_mcu_usb_switch;
--
- 	struct asus_wmi_debug debug;
- 
- 	struct asus_wmi_driver *driver;
-@@ -4391,11 +4389,11 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
- 	else if (attr == &dev_attr_als_enable.attr)
- 		devid = ASUS_WMI_DEVID_ALS_ENABLE;
- 	else if (attr == &dev_attr_charge_mode.attr)
--		ok = asus->charge_mode_available;
-+		devid = ASUS_WMI_DEVID_CHARGE_MODE;
- 	else if (attr == &dev_attr_egpu_enable.attr)
- 		ok = asus->egpu_enable_available;
- 	else if (attr == &dev_attr_egpu_connected.attr)
--		ok = asus->egpu_connect_available;
-+		devid = ASUS_WMI_DEVID_EGPU_CONNECTED;
- 	else if (attr == &dev_attr_dgpu_disable.attr)
- 		ok = asus->dgpu_disable_available;
- 	else if (attr == &dev_attr_gpu_mux_mode.attr)
-@@ -4423,7 +4421,7 @@ static umode_t asus_sysfs_is_visible(struct kobject *kobj,
- 	else if (attr == &dev_attr_boot_sound.attr)
- 		devid = ASUS_WMI_DEVID_BOOT_SOUND;
- 	else if (attr == &dev_attr_panel_od.attr)
--		ok = asus->panel_overdrive_available;
-+		devid = ASUS_WMI_DEVID_PANEL_OD;
- 	else if (attr == &dev_attr_mini_led_mode.attr)
- 		ok = asus->mini_led_dev_id != 0;
- 	else if (attr == &dev_attr_available_mini_led_mode.attr)
-@@ -4674,12 +4672,9 @@ static int asus_wmi_add(struct platform_device *pdev)
- 	asus->nv_dynamic_boost = 5;
- 	asus->nv_temp_target = 75;
- 
--	asus->charge_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_CHARGE_MODE);
- 	asus->egpu_enable_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_EGPU);
--	asus->egpu_connect_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_EGPU_CONNECTED);
- 	asus->dgpu_disable_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_DGPU);
- 	asus->kbd_rgb_state_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_STATE);
--	asus->panel_overdrive_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_PANEL_OD);
- 	asus->ally_mcu_usb_switch = acpi_has_method(NULL, ASUS_USB0_PWR_EC0_CSEE)
- 						&& dmi_match(DMI_BOARD_NAME, "RC71L");
- 
--- 
-2.44.0
-
+Regards,
+Vishal
 
