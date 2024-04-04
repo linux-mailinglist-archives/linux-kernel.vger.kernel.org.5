@@ -1,96 +1,142 @@
-Return-Path: <linux-kernel+bounces-132052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEABF898F22
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:40:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B66FE898F23
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:41:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2FAA1F2B02A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:40:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4AC61C2475E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:41:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FA46134CF8;
-	Thu,  4 Apr 2024 19:40:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D56413443F;
+	Thu,  4 Apr 2024 19:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P/nMSGiT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="l2ZlUKV8"
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0699134402
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:40:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C043134439
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:41:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712259629; cv=none; b=XnqVCq/cdV2XQeq+4+GD0m69+fH7Qc+IC0Abnf5jDe5Kj3jjApfqObciXyBsmoaUsPPC6zVZebz3rOk7cdAl2KjILus3FQGrxOMKxXSCLbOuhcyx7jdBzSON5MpjOhmw606w7tc/7Nr7YUfbq58zPKl319P/PUK3/HStYWJoqVc=
+	t=1712259672; cv=none; b=ejQ7RJpw7e9zy3hB78mxXh7bUmMXvDmv0A40KtRFOnKm2aFg9BQA1+siLjkAJzvlLjgwiwpuBWZ50Wt055YBcbeVWcIjwefVm/lWxr1EKpeXfqyl4xmvbot7KhrTB5ONGjRs1up587+cHpcSMYA1dddXTZ1YsdYyBsGuupEAmFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712259629; c=relaxed/simple;
-	bh=v3DmZ6IXGPe5rmr1R70F45K790DmFZH1xRFy3xse5qQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=LTt0tedB48krSQQQn3K+fLqsPq7PMrEvSljAl2Vr0bDaM1Mrq5Ft/b8StPBuCSE0Qn6UAclimffo2b54jWO57Nddke/ghfaWlYoQ/Aojikp8jvVpoR3GXG5ME0Juuet+Fn6IbG+p/G1c6/u4gE8iTf4FfAf5efQKRQT3KcfspEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P/nMSGiT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 410A8C433A6;
-	Thu,  4 Apr 2024 19:40:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712259629;
-	bh=v3DmZ6IXGPe5rmr1R70F45K790DmFZH1xRFy3xse5qQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=P/nMSGiT2HZuY4F1eJVEGD4tL/q3+PDK4EubRDWddlO5sk06QgyGOiMuDn/QK6mNZ
-	 ar1kD8ZdsWSQPKWgYuoRJxBv9FY6RKMOIhh5B4XCisaUpHnvyn/gpjmcmEtX3pMllN
-	 MlZUN/l+tdV7v0BE7Ru6EY8xLS7CZOt1HtgV347mtBXrHDYqBj8hQtPOJKirlfnx0E
-	 75HIGbWo04ElX3Ni0XHs2SO7crjCajopSwv9spXYFq7Flxvw0c/yDgFx07aM7/6GyM
-	 ORgy5PExAz9/begalm0nZxRMMahZoXOARzuNMIR/4yfvhX9K5fT2Kbcq1/1qFOS4l7
-	 Rd0SdaoU/azMA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 2A674D84BB1;
-	Thu,  4 Apr 2024 19:40:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712259672; c=relaxed/simple;
+	bh=iz0bGXcbHiJkhtXDUOyY3n+qbZ2wRRxMNVVkahGIvWM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=K0Euaysk2rQOZdOMXEV+YLQpNnUSWZXWgz7IOVebU0iFo1uNlPjai3dwDVv3J0VzScQQXg67syjwLcJaIS5tevqVg2Or7QmzRv82lsvlf3BHt+Dd4c1F8/4LHOYY9W3kbvOf2PFjswT25mZeU8QvadRhyMuzU9j1MC9r6SdZfWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=l2ZlUKV8; arc=none smtp.client-ip=209.85.217.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-4765e6cf37aso534052137.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 12:41:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712259669; x=1712864469; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W7cHtC6/e0FV6wX3F6QbmB8ToyxlBVuDkaRhNf0o1y4=;
+        b=l2ZlUKV8bz+Y9PlQFqAIh21mPwp4ygSAFRsegx3c/e6Gf3Y+x1FTuNV+rEiaGvzAXj
+         QXF61z7s3J5CFogmym4a84s/KMCQT+FcqYg4+AHFt4dAQjSgzbeclq4xjZzyavBmBS90
+         USd0uQAGS9yfBAV/1JLbxn55YLJqwh8vRasujUXVBlfw+IZIRCW39fN3UUYbHtcqCMZW
+         KXzqZHVvV/M7ltdw+EkQkb0SPswvGUh7HO+VA4zMWxwJijx1W769eW5lksvslhPUp5eQ
+         GudFxhJcNGJWPdaA/8UCj+ZrE+MqV4hT6ERqcF2obTGsuF6958grWN6SbLTVqUGNivSp
+         dCOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712259669; x=1712864469;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=W7cHtC6/e0FV6wX3F6QbmB8ToyxlBVuDkaRhNf0o1y4=;
+        b=VFIiycqwf7NKm7SYG6iCVrpF4SucGcax1v6rjd7UrTkcuPceYehVPsdWt2DT2qVMNe
+         9FvA9NMnXBDyIL92AU9YTs/Z/8NmT+vwwzIko2rp7xXtCe9afxaZwCYZ4BC3geMJHvkW
+         45K2jEuPGOs3cOX6AX7PoTa8uYvufXzwlKBct8DzcCTGBxrqJ6VTrjL3fezERl4quhBe
+         +bdLRt3QCBjlXhlaK27FriOtkFIlwV8xr0636SZIwInL4zCPdUbKSF5Zk/UHVnb6hi2m
+         szv/5+DsZxwFcQiCgS2mOtnLy3bWq58D+fd2LDBih88TrG9v7Ye5mJl75u8EJpSIjX5o
+         PWlA==
+X-Forwarded-Encrypted: i=1; AJvYcCXVa9JJt3dJmvG/jFqoP1Eg1dyd49gSr8Hj+3XfZNf2zC75k2vj236VF51aXPvP3quvdRPzIhQWqKa/AHaZry9GTJDQF9+O8+9hOsMF
+X-Gm-Message-State: AOJu0YxAUMFAVzIiYQK493QgKZDw75zMa5i/n6eCRVp9AiZ4y0rGK2UZ
+	2gjiX07CbJPOEo1E8uoE6228aEik7ILAhRfCOqHfAxBCzH2vHWm5Cn2aW/ScnbbmeVtIC7O/Thj
+	aFopWBYo/iRg11yL1eAe0RpbOQaiD0bXjX6Ur
+X-Google-Smtp-Source: AGHT+IHyHdgMOOC6Bh6I1UAtHxMqwBPQYPsx/NLvbA5MD/rct+UnDIeCbWQ76PaEjMfTzerscAEzQb/JI8uXmiQdPCo=
+X-Received: by 2002:a67:f7ca:0:b0:475:fe59:f33 with SMTP id
+ a10-20020a67f7ca000000b00475fe590f33mr3290471vsp.29.1712259669327; Thu, 04
+ Apr 2024 12:41:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] riscv: Fix vector state restore in rt_sigreturn()
-From: patchwork-bot+linux-riscv@kernel.org
-Message-Id: 
- <171225962916.17194.17766920994807052898.git-patchwork-notify@kernel.org>
-Date: Thu, 04 Apr 2024 19:40:29 +0000
-References: <20240403072638.567446-1-bjorn@kernel.org>
-In-Reply-To: <20240403072638.567446-1-bjorn@kernel.org>
-To: =?utf-8?b?QmrDtnJuIFTDtnBlbCA8Ympvcm5Aa2VybmVsLm9yZz4=?=@codeaurora.org
-Cc: linux-riscv@lists.infradead.org, paul.walmsley@sifive.com,
- palmer@dabbelt.com, aou@eecs.berkeley.edu, andy.chiu@sifive.com,
- bjorn@rivosinc.com, conor.dooley@microchip.com, heiko@sntech.de,
- vincent.chen@sifive.com, ben.dooks@codethink.co.uk, greentime.hu@sifive.com,
- ancientmodern4@gmail.com, jerry.shih@sifive.com, nick.knight@sifive.com,
- linux-kernel@vger.kernel.org, vineetg@rivosinc.com, charlie@rivosinc.com,
- vgupta@kernel.org
+References: <20240404162515.527802-1-fvdl@google.com> <20240404162515.527802-2-fvdl@google.com>
+ <Zg7358ygxHBHUCy9@P9FQF9L96D.corp.robot.car>
+In-Reply-To: <Zg7358ygxHBHUCy9@P9FQF9L96D.corp.robot.car>
+From: Frank van der Linden <fvdl@google.com>
+Date: Thu, 4 Apr 2024 12:40:58 -0700
+Message-ID: <CAPTztWYH5ANR2cYidf+frC2HBJiz6UUh5wC5khHJg8R-gYbcFw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/hugetlb: pass correct order_per_bit to cma_declare_contiguous_nid
+To: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: linux-mm@kvack.org, muchun.song@linux.dev, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello:
+On Thu, Apr 4, 2024 at 11:56=E2=80=AFAM Roman Gushchin <roman.gushchin@linu=
+x.dev> wrote:
+>
+> On Thu, Apr 04, 2024 at 04:25:15PM +0000, Frank van der Linden wrote:
+> > The hugetlb_cma code passes 0 in the order_per_bit argument to
+> > cma_declare_contiguous_nid (the alignment, computed using the
+> > page order, is correctly passed in).
+> >
+> > This causes a bit in the cma allocation bitmap to always represent
+> > a 4k page, making the bitmaps potentially very large, and slower.
+> >
+> > So, correctly pass in the order instead.
+> >
+> > Signed-off-by: Frank van der Linden <fvdl@google.com>
+> > Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> > Fixes: cf11e85fc08c ("mm: hugetlb: optionally allocate gigantic hugepag=
+es using cma")
+>
+> Hi Frank,
+>
+> there is a comment just above your changes which explains why order_per_b=
+it is 0.
+> Is this not true anymore? If so, please, fix the comment too. Please, cla=
+rify.
+>
+> Thanks!
 
-This patch was applied to riscv/linux.git (fixes)
-by Palmer Dabbelt <palmer@rivosinc.com>:
+Hi Roman,
 
-On Wed,  3 Apr 2024 09:26:38 +0200 you wrote:
-> From: Björn Töpel <bjorn@rivosinc.com>
-> 
-> The RISC-V Vector specification states in "Appendix D: Calling
-> Convention for Vector State" [1] that "Executing a system call causes
-> all caller-saved vector registers (v0-v31, vl, vtype) and vstart to
-> become unspecified.". In the RISC-V kernel this is called "discarding
-> the vstate".
-> 
-> [...]
+I'm assuming you're referring to this comment:
 
-Here is the summary with links:
-  - riscv: Fix vector state restore in rt_sigreturn()
-    https://git.kernel.org/riscv/c/c27fa53b858b
+/*
+ * Note that 'order per bit' is based on smallest size that
+ * may be returned to CMA allocator in the case of
+ * huge page demotion.
+ */
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+That comment was added in a01f43901cfb9 ("hugetlb: be sure to free
+demoted CMA pages to CMA").
 
+It talks about HUGETLB_PAGE_ORDER being the minimum order being given
+back to the CMA allocator (after hugetlb demotion), therefore
+order_per_bit must be HUGETLB_PAGE_ORDER. See the commit message for
+that commit:
 
+"Therefore, at region setup time we use HUGETLB_PAGE_ORDER as the
+smallest possible huge page size that can be given back to CMA."
+
+But the commit, while correctly changing the alignment, left the
+order_per_bit argument at 0,  even though it clearly intended to set
+it at HUGETLB_PAGE_ORDER. The confusion may have been that
+cma_declare_contiguous_nid has 9 arguments, several of which can be
+left at 0 meaning 'use default', so it's easy to misread.
+
+In other words, the comment was correct, but the code was not. After
+this patch, comment and code match.
 
