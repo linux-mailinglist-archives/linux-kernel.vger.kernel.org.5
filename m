@@ -1,287 +1,179 @@
-Return-Path: <linux-kernel+bounces-131956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FC7A898DE9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:28:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 663A6898DED
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:29:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 177B91F21C62
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:28:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8970D1C22AB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:29:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695DF130A6C;
-	Thu,  4 Apr 2024 18:27:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08BD4130ADD;
+	Thu,  4 Apr 2024 18:29:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="HU8ewiGI"
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2122.outbound.protection.outlook.com [40.107.100.122])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="2wirKzlL"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9803212CD9C
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 18:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.122
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712255278; cv=fail; b=CyM4XtIrhlKm8ODKGiNlBMz1dZIobk0Lhv8+NOnFUjRDBb+O7EmxhbyrtPVQoOjIboh8gRfuHDk9n1tebli8NBpBa61AZe6jVSrGilis7s/f7+ZYZYBui56BgHJJbZ7xqovz6bcNZ0brLB/BQe5+v+FEBuhjE7NulAX2+PCv8is=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712255278; c=relaxed/simple;
-	bh=u2P8f+oFDsd+6v1YmdfSFhU7MfUvvdgtWZUKGp2v55g=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=fi0O+KYNA3Mq9cPdGjM39gmXq5aQea1YdiQVIyIxaBRQHkkkNcTuDP5xn/vY6P0EYTZoASCDZlks8I9Zwt+G8YBhTNspi6VzTSRdGJrGZBdtAaBTpSipTTRKC+hx2YcE+4kL4/012zGbux56ZlfH5bn0rDloiR0fgAbaQHS/eTw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=HU8ewiGI; arc=fail smtp.client-ip=40.107.100.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Wen71DAfotUrAqv+VmC1sVDfZ9TrgQM4TUI3PJZixzp31IBnZHKUQhsZmBBS6O2iJKExTv95l5LZMZieLK0Tp7zXpFSA74aCdhUnbjbD46qfpnFUQNaAMMMzLxJrpWmbciT+A2UyoWxJAmzm6clO/LpHWHRlYhvURQFpS4AMP1/XpGcDGjocyTaYwRtixhZSsI+SdQM2QzWwxHCrbz223WH5BueG1TT624gX40WYlMScs1qE0/Jarf+d2abfcjok41373QGMQMNb4q0R7ZoA5YO3SQceOdqRD7Eg+QDBXjd/ycdWs/J5VWZ1i1wUUuAw8jPJ6MIqAfd0QMlpm/3x+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5IblKtkvj/arGfeMUgGJe8MU+MrENnTAPN/WALzNli8=;
- b=X6kqlto2gON3vXbOuDCpPy0dOgjg5cw+aykfQDCWymb86MT/tY2zNG6r53hGMhSMhod1vGvMNYU2y1EFb3LFpZhF6rS9f+LBp+ycYuUNK4oMOpmdSgJ2J5dinFsmDDt6KnFp6lJ7QNWkEufN4R2D0hPWGtDLwVh7E3sS2ndE0hUZdcNJHs9wQol+xOCWlq05jt3Sz/d06ze7AsqJcXLlsyA6aCh9Azo52AInMcw/CB/TRu/f9yh4RiubARZDTV8QU9ZLLkqbnLdiJCelAm+jikkG9cGnJoCfuTyTCyyCV/7KLh248/DcCrk6s/xsf+L7WvWs4cMPBXMaSTncrHypzg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5IblKtkvj/arGfeMUgGJe8MU+MrENnTAPN/WALzNli8=;
- b=HU8ewiGIQElnzptcup5mxU+XPjfnr/j9hAUnCaKwbXsulmZsD0ktB+fDqhe1qGiO6BBLMLcUeyWg5QWmgZXDGZcaSfcbv9aZ6HT0fXhLpc7DYW6nALF67L/mIDSA8K3U8mBNT4WwJlN7jwXRijlDL6Pjy2kidNbvP0vje/G/hug=
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com (2603:10b6:805:75::23)
- by SN7PR12MB6887.namprd12.prod.outlook.com (2603:10b6:806:261::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 4 Apr
- 2024 18:27:50 +0000
-Received: from SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::3cc5:f552:44ae:1f26]) by SN6PR12MB2767.namprd12.prod.outlook.com
- ([fe80::3cc5:f552:44ae:1f26%7]) with mapi id 15.20.7409.042; Thu, 4 Apr 2024
- 18:27:50 +0000
-Message-ID: <bdeda1f9-b7d2-4bc3-ad20-342478be464b@amd.com>
-Date: Thu, 4 Apr 2024 13:27:47 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv9 00/17] x86/tdx: Add kexec support
-Content-Language: en-US
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>,
- Adrian Hunter <adrian.hunter@intel.com>,
- Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>,
- Elena Reshetova <elena.reshetova@intel.com>,
- Jun Nakajima <jun.nakajima@intel.com>,
- Rick Edgecombe <rick.p.edgecombe@intel.com>,
- Tom Lendacky <thomas.lendacky@amd.com>,
- Sean Christopherson <seanjc@google.com>, "Huang, Kai" <kai.huang@intel.com>,
- Baoquan He <bhe@redhat.com>, kexec@lists.infradead.org,
- linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
-From: "Kalra, Ashish" <ashish.kalra@amd.com>
-In-Reply-To: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7PR04CA0089.namprd04.prod.outlook.com
- (2603:10b6:806:121::34) To SN6PR12MB2767.namprd12.prod.outlook.com
- (2603:10b6:805:75::23)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E13212CD9C;
+	Thu,  4 Apr 2024 18:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712255349; cv=none; b=R9srwrApNSKihKJo47pv7gwC9ouzWH14bBRgEq/hrm+c5elV36LnmyWVD/MabbQTPl7hiWRALxzk2ij7Sv1QKnFg65ExuZXJKqpjnLagybb285UB/OXcEl1nzkXD+cwY1TLOoQgtP0XdnPuHva87SMHm9Ipf5u9nsbNgVbJYWLg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712255349; c=relaxed/simple;
+	bh=NmU8KFMfNoUMM9NLhO7uk8bPhscbUNMmBYEZDzGYqCA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=VzCKI0N5X1ogPw4eK5WadrDRIxaDHLZflCtPfC1vEia2lHvmvkxBelTyWIOuu4071KWBiFm1i+zbGVWfmxI7JPYain9D0AeUTyS6FqZ4l/VRTZb/aBYWvi3Y099qeBq30DjQ3YEhZ93+MzQhFBBa3t6sr9ZpzpX69IL7Laj3Kwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=2wirKzlL; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712255345;
+	bh=NmU8KFMfNoUMM9NLhO7uk8bPhscbUNMmBYEZDzGYqCA=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=2wirKzlL2FX0E2q3XU0W+0S+XRZK0fL7JC5B3/y0ikWxuSRC2BWz3bBMYaiNJB+qX
+	 ppaoLO1WHmCDbQHNzduxpH44j2ZZqXVfdDDZa37l4BjeQuedjR7rwtr2rE3VBcVBTn
+	 tONu6WKfKo5GxGQcssYfnwL8Eyvr/XnmitdSgOOKuTg8QocxhkNWtcYCmRiQecWfz4
+	 Pkl+l+PyVN1U0rPTeToNOFyRVCFr4z+NI6DWzW8Zb6lvU/FakrDh9IKpr+HeL+N5HY
+	 wR5T5lcdTQ6oGmq0pqRGLHiXFl0Tr2RKBLsOUPXofgL7NIFFr2pWBhFt1mj+GcpAJn
+	 gAi9278YX4vHw==
+Received: from nicolas-tpx395.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: nicolas)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 387EA37813DF;
+	Thu,  4 Apr 2024 18:29:03 +0000 (UTC)
+Message-ID: <1ca5278d8c15b45ebd6f28b9043a98f28b5ae128.camel@collabora.com>
+Subject: Re: [PATCH] media: mediatek: vcodec: fix the error sizeimage for
+ 10bit bitstream
+From: Nicolas Dufresne <nicolas.dufresne@collabora.com>
+To: Yunfei Dong <yunfei.dong@mediatek.com>, =?ISO-8859-1?Q?N=EDcolas?= "F .
+ R . A . Prado" <nfraprado@collabora.com>, Sebastian Fricke
+ <sebastian.fricke@collabora.com>, Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Benjamin Gaignard <benjamin.gaignard@collabora.com>, Nathan Hebert
+ <nhebert@chromium.org>
+Cc: Hsin-Yi Wang <hsinyi@chromium.org>, Fritz Koenig
+ <frkoenig@chromium.org>,  Daniel Vetter <daniel@ffwll.ch>, Steve Cho
+ <stevecho@chromium.org>, linux-media@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
+ Project_Global_Chrome_Upstream_Group@mediatek.com
+Date: Thu, 04 Apr 2024 14:28:59 -0400
+In-Reply-To: <20240403093018.13168-1-yunfei.dong@mediatek.com>
+References: <20240403093018.13168-1-yunfei.dong@mediatek.com>
+Autocrypt: addr=nicolas.dufresne@collabora.com; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SN6PR12MB2767:EE_|SN7PR12MB6887:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	au8YtzuSBmn5RiBXr6d5qpPT8AtT+K9Xsr/OL/k73i6rFMyBfPBK4vOIK1uQGc6syqxioBYhimnFjtnM/5bQZPJ2liR7Wf/Wx6JYgsg353UOL12rmHEFEI+IziEQJowuPsYFFAf+q79avNRr7UkwAsdKhxukOUY3NkJs5KocdzWy5wGthQc+v9JIPn51yZEn3VC83EDUVhN5Z92dZkovjFiPf2kDXO7rNSaIsH+C3itLtqa/NufP+dGQygUZhpxdPL6KtMYtsCSIoax4J4mMKuiZy/DrbzttSF5mLLRz/lJBvnCyefl8GPiPNTl6vzDBDM2mZkWEO/a4tujgtdbUFTY8lliqvUItLJrNydBW1xiWretiDwatSurQ/C8IWhTOHj3pYpNJITHJl8NjZwHfzh78mZhJ3zx1hs7PpyvZmRoN2pXpLc0i8J5+8YIlRjZ6HeIwZJ1QdDXj0AxbBRgsu8nh/cvFw7K0QnZURHFa6B/jS1lJeVyN0U155HDgKb7LKCqJbQCAeoPb9YPW7rvwarU15okOCetdS2IAs4E/snpqsPM3tPgzN9xGXCddvHPvR2MzSU4hFfiTX/7IwzgT2QLeB7eieByJuYDIu37oQEk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR12MB2767.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Wldnc0tEdzBRb2ZNSW5ra0hzYzBmUTdJY0xZUTdSSjE5di8rS3VWOXJMVlJ5?=
- =?utf-8?B?ODJocmk5cXdlSG4xTVdEZ242SVJ6VVFNRng0bktjZlZmTFJBUFZGcjNza2NC?=
- =?utf-8?B?UlF1TWllYUQ1eExiT3RSeTFoUEtiY2NiVHZGY1JqVk9NNGs3aEwvbFhmUTFs?=
- =?utf-8?B?SmJBd1FDWDRUbDJDaVNOSFdKNE9OZVNJWnJYaWF2b212blFWcnk4VUlseEM1?=
- =?utf-8?B?c3Qxc0hVTFpUeEthZloyblQ1RXUyZ05HMWU5aW55emxDVkhXcWhWWmUxOWxv?=
- =?utf-8?B?WXYxVFZ1VFJsZGZyZS8rZ3FvYXpDK2kwVlgrWkpoeGVqUU4yc2xsajhySGox?=
- =?utf-8?B?Mm96cjhlaEJvY1ZFSklqR2lOWGxNWTU1b25UUzN1TFZZenYvUUpxeGg4cmda?=
- =?utf-8?B?TnVCemNJU1lYaFFsamdoZ1NTOGUyZ243T2xLNWtSdVowVXZOWHNDU1ZPTHZQ?=
- =?utf-8?B?b1Z1SklZaHF0aWJPOWo3dXdJN3hEeHpwTG1MQnZaU2JVYjVDR29LUkFqVHd6?=
- =?utf-8?B?dnROYko1ZndOaHlTbzQxWEE0VG1VQnVDQnNZNU5VZGl0ZnQyRjRFbysxaGFJ?=
- =?utf-8?B?V2N0Q05Qa0R6SEF0T0JVM29CRG56RHVzcGJMeFc2R1l0U2MwK2JONGxITkZ4?=
- =?utf-8?B?Tm5mQlZQaFF6di83TXZMWnRsNXUzQ1NSUDRCTkVTWnRoaFhCN0xDd0xERWpW?=
- =?utf-8?B?OU1GUW80ckxvOW8reDFxdUNrUHZTbzhMaDZzTzZQMW9ZejZrWjVWam9oZWpD?=
- =?utf-8?B?dzFJeGFpZjIwWW81ZWJDRzVUeWxXeGpoK2xSMC91ek9mTm1YNWxSSkhrVHU5?=
- =?utf-8?B?dkxReVdEY0ErOXdTNUd2VTUzcHlwWkNOYWQ4a0FUT2Y5NXlMVEpIRjFJTlJ6?=
- =?utf-8?B?ajk0NGRIWkE3eVFYZzZVME5MVXRtMm5kdklQSUtibjdrb1kvNzkwUFZUTUdB?=
- =?utf-8?B?U050T1VFdnNMajNZZHNzYWtLT2MzOFVGd2dCYjJDVWRWNGd4SldoajJNYzVv?=
- =?utf-8?B?RDUxTXorOVlSdmJEOURxQ29ZQ08wWmpPV01VbEVabHIyN0hjc2ZHRG8rTmlO?=
- =?utf-8?B?YkxRSG96L0d4UHBOM1NucWhjY1FGNSs4ZHljdHNpb1ptcElld204Szk2anlP?=
- =?utf-8?B?eXNGMFhEWUNoQ29Ja3hCeDkyZ2s0V2p1d0VjWEZqekxtWWNTWE9URnA1THQv?=
- =?utf-8?B?bVE4M1FBSi9iNjRBbFdJT3dPdXREWlhiZDRtcXhNTm9WR2J5MEs5QkNtemE4?=
- =?utf-8?B?blZFRFpLcUU0cXVHamtqYTN6dldjMGY0RldTdEF5YTRnK1J6eGpHWDhkR2FJ?=
- =?utf-8?B?TEUzT2J0bk9rMGR3YVFWQkFWMWFzeEpRWUczOFNqNnJuT1VidTZ3WUluaWwv?=
- =?utf-8?B?MGdxL2xOL2RhVGlBVWpydVFBUW1FbUp5dVJyQ1d5Z0dLZkxlYll2SnE3SENw?=
- =?utf-8?B?djZWWTYxWUhjaE5uME1rYUs1VHlDWnFFZ3BKb0wrQW1aREhGUlBtUFFzUHdp?=
- =?utf-8?B?VVFCalE5aDVJaGpGZHp5OW1TalE5R3pMSXhsQWxLbGhCc292RFVpYXRyUVR2?=
- =?utf-8?B?dTJQQlFweXJ0L203QXovS2hpZkoyYjBGVCs0T2NLYWJGdkREdDJ6VHpZVmNT?=
- =?utf-8?B?Wk9ScGpYbi9uaHFtcHAzcjBlajdqa0N2S0NZNDdvemE5WXFuZVg4V0JZakFR?=
- =?utf-8?B?VENRVENyQmRVdHNkdkFleGtTS005UWI0elV0NVMydzNFanlWV2JQVFFPbDZ6?=
- =?utf-8?B?M3I5REpiV3RZUjY2dFcxUlh0NXV6dWZnRCt2Wk5YSXRDT0dvd2thRld3RHpm?=
- =?utf-8?B?UTRtL1RqV1p0Q1FXc1dwMlI3WFVTalRnNGhzSGpBaUZMeWFhV1htV2U5RkZU?=
- =?utf-8?B?TENTaFByMFRETzhnejFFNkZ2QUNBWnI2L21PN2RPTjdrWXhnVzRVNiszUSs1?=
- =?utf-8?B?NDZ0bUtYWEJNWUtGSjVhRW4vM3VMVmRGZzFEN3ZkYVRNN01nRHhwRVdqVzBQ?=
- =?utf-8?B?VmxVYzcrb1dLamhobndJaC9WTlhVNlQxQzhuVzFEV1phdE9vdkdpaENFNXFL?=
- =?utf-8?B?dUtzd09rMEhGLzdDeCtRcHZ4eXpXQ1RVWDhTMjRDUWpQMXFUNmc0K2ZwTUxJ?=
- =?utf-8?Q?t28MUpPkg5VtFhUBL/YxD7drN?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d1ec640-0bbf-4cf8-6f5b-08dc54d4ef69
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR12MB2767.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 18:27:50.7992
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ifx+Gy3Orh4OGYri39iU9D0ZlagN8rIrBkjKFPsKnjkpmeoJR3bIuFI7ACCus2UKoSVcul46TIpLSWyZA8t5og==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB6887
 
-Hi Kirill,
+Hi,
 
-On 3/25/2024 5:38 AM, Kirill A. Shutemov wrote:
-> The patchset adds bits and pieces to get kexec (and crashkernel) work on
-> TDX guest.
->
-> The last patch implements CPU offlining according to the approved ACPI
-> spec change poposal[1]. It unlocks kexec with all CPUs visible in the target
-> kernel. It requires BIOS-side enabling. If it missing we fallback to booting
-> 2nd kernel with single CPU.
->
-> Please review. I would be glad for any feedback.
->
-> [1] https://lore.kernel.org/all/13356251.uLZWGnKmhe@kreacher
->
-> v9:
->    - Rebased;
->    - Keep page tables that maps E820_TYPE_ACPI (Ashish);
->    - Ack/Reviewed/Tested-bys from Sathya, Kai, Tao;
->    - Minor printk() message adjustments;
-> v8:
->    - Rework serialization of around conversion memory back to private;
->    - Print ACPI_MADT_TYPE_MULTIPROC_WAKEUP in acpi_table_print_madt_entry();
->    - Drop debugfs interface to dump info on shared memory;
->    - Adjust comments and commit messages;
->    - Reviewed-bys by Baoquan, Dave and Thomas;
-> v7:
->    - Call enc_kexec_stop_conversion() and enc_kexec_unshare_mem() after shutting
->      down IO-APIC, lapic and hpet. It meets AMD requirements.
->    - Minor style changes;
->    - Add Acked/Reviewed-bys;
-> v6:
->    - Rebased to v6.8-rc1;
->    - Provide default noop callbacks from .enc_kexec_stop_conversion and
->      .enc_kexec_unshare_mem;
->    - Split off patch that introduces .enc_kexec_* callbacks;
->    - asm_acpi_mp_play_dead(): program CR3 directly from RSI, no MOV to RAX
->      required;
->    - Restructure how smp_ops.stop_this_cpu() hooked up in crash_nmi_callback();
->    - kvmclock patch got merged via KVM tree;
-> v5:
->    - Rename smp_ops.crash_play_dead to smp_ops.stop_this_cpu and use it in
->      stop_this_cpu();
->    - Split off enc_kexec_stop_conversion() from enc_kexec_unshare_mem();
->    - Introduce kernel_ident_mapping_free();
->    - Add explicit include for alternatives and stringify.
->    - Add barrier() after setting conversion_allowed to false;
->    - Mark cpu_hotplug_offline_disabled __ro_after_init;
->    - Print error if failed to hand over CPU to BIOS;
->    - Update comments and commit messages;
-> v4:
->    - Fix build for !KEXEC_CORE;
->    - Cleaner ATLERNATIVE use;
->    - Update commit messages and comments;
->    - Add Reviewed-bys;
-> v3:
->    - Rework acpi_mp_crash_stop_other_cpus() to avoid invoking hotplug state
->      machine;
->    - Free page tables if reset vector setup failed;
->    - Change asm_acpi_mp_play_dead() to pass reset vector and PGD as arguments;
->    - Mark acpi_mp_* variables as static and __ro_after_init;
->    - Use u32 for apicid;
->    - Disable CPU offlining if reset vector setup failed;
->    - Rename madt.S -> madt_playdead.S;
->    - Mark tdx_kexec_unshare_mem() as static;
->    - Rebase onto up-to-date tip/master;
->    - Whitespace fixes;
->    - Reorder patches;
->    - Add Reviewed-bys;
->    - Update comments and commit messages;
-> v2:
->    - Rework how unsharing hook ups into kexec codepath;
->    - Rework kvmclock_disable() fix based on Sean's;
->    - s/cpu_hotplug_not_supported()/cpu_hotplug_disable_offlining()/;
->    - use play_dead_common() to implement acpi_mp_play_dead();
->    - cond_resched() in tdx_shared_memory_show();
->    - s/target kernel/second kernel/;
->    - Update commit messages and comments;
->
-> Kirill A. Shutemov (17):
->    x86/acpi: Extract ACPI MADT wakeup code into a separate file
->    x86/apic: Mark acpi_mp_wake_* variables as __ro_after_init
->    cpu/hotplug: Add support for declaring CPU offlining not supported
->    cpu/hotplug, x86/acpi: Disable CPU offlining for ACPI MADT wakeup
->    x86/kexec: Keep CR4.MCE set during kexec for TDX guest
->    x86/mm: Make x86_platform.guest.enc_status_change_*() return errno
->    x86/mm: Return correct level from lookup_address() if pte is none
->    x86/tdx: Account shared memory
->    x86/mm: Adding callbacks to prepare encrypted memory for kexec
->    x86/tdx: Convert shared memory back to private on kexec
->    x86/mm: Make e820_end_ram_pfn() cover E820_TYPE_ACPI ranges
->    x86/acpi: Rename fields in acpi_madt_multiproc_wakeup structure
->    x86/acpi: Do not attempt to bring up secondary CPUs in kexec case
->    x86/smp: Add smp_ops.stop_this_cpu() callback
->    x86/mm: Introduce kernel_ident_mapping_free()
->    x86/acpi: Add support for CPU offlining for ACPI MADT wakeup method
->    ACPI: tables: Print MULTIPROC_WAKEUP when MADT is parsed
->
->   arch/x86/Kconfig                     |   7 +
->   arch/x86/coco/core.c                 |   1 -
->   arch/x86/coco/tdx/tdx.c              |  99 ++++++++-
->   arch/x86/hyperv/ivm.c                |   9 +-
->   arch/x86/include/asm/acpi.h          |   7 +
->   arch/x86/include/asm/init.h          |   3 +
->   arch/x86/include/asm/pgtable.h       |   5 +
->   arch/x86/include/asm/pgtable_types.h |   1 +
->   arch/x86/include/asm/set_memory.h    |   3 +
->   arch/x86/include/asm/smp.h           |   1 +
->   arch/x86/include/asm/x86_init.h      |   6 +-
->   arch/x86/kernel/acpi/Makefile        |  11 +-
->   arch/x86/kernel/acpi/boot.c          |  86 +-------
->   arch/x86/kernel/acpi/madt_playdead.S |  28 +++
->   arch/x86/kernel/acpi/madt_wakeup.c   | 292 +++++++++++++++++++++++++++
->   arch/x86/kernel/crash.c              |   6 +
->   arch/x86/kernel/e820.c               |   9 +-
->   arch/x86/kernel/process.c            |   7 +
->   arch/x86/kernel/reboot.c             |  18 ++
->   arch/x86/kernel/relocate_kernel_64.S |   5 +
->   arch/x86/kernel/x86_init.c           |   8 +-
->   arch/x86/mm/ident_map.c              |  73 +++++++
->   arch/x86/mm/mem_encrypt_amd.c        |   8 +-
->   arch/x86/mm/pat/set_memory.c         |  59 ++++--
->   drivers/acpi/tables.c                |  14 ++
->   include/acpi/actbl2.h                |  19 +-
->   include/linux/cc_platform.h          |  10 -
->   include/linux/cpu.h                  |   2 +
->   kernel/cpu.c                         |  12 +-
->   29 files changed, 663 insertions(+), 146 deletions(-)
->   create mode 100644 arch/x86/kernel/acpi/madt_playdead.S
->   create mode 100644 arch/x86/kernel/acpi/madt_wakeup.c
+Le mercredi 03 avril 2024 =C3=A0 17:30 +0800, Yunfei Dong a =C3=A9crit=C2=
+=A0:
+> The sizeimage of each plane are calculated the same way for 8bit and
+> 10bit bitstream. Need to enlarge the sizeimage with simeimage*5/4 for
+> 10bit bitstream when try and set fmt.
 
-The cover letter mention the inclusion of the following patch - Keep 
-page tables that maps E820_TYPE_ACPI (Ashish)
+Can we stop adding more layers of custom code and port to v4l2-common helpe=
+rs
+please.
 
-But i don't this patch included in your patch-set.
+regards,
+Nicolas
 
-Thanks, Ashish
+>=20
+> Fixes: 9d86be9bda6c ("media: mediatek: vcodec: Add driver to support 10bi=
+t")
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> ---
+>  .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  | 47 ++++++++++++++-----
+>  1 file changed, 34 insertions(+), 13 deletions(-)
+>=20
+> diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_de=
+c.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+> index 9107707de6c4..45209894f1fe 100644
+> --- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+> +++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+> @@ -259,6 +259,7 @@ static int vidioc_try_fmt(struct mtk_vcodec_dec_ctx *=
+ctx, struct v4l2_format *f,
+>  		pix_fmt_mp->num_planes =3D 1;
+>  		pix_fmt_mp->plane_fmt[0].bytesperline =3D 0;
+>  	} else if (f->type =3D=3D V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+> +		unsigned int dram_y, dram_c, dram_y_10bit, dram_c_10bit;
+>  		int tmp_w, tmp_h;
+> =20
+>  		/*
+> @@ -280,22 +281,42 @@ static int vidioc_try_fmt(struct mtk_vcodec_dec_ctx=
+ *ctx, struct v4l2_format *f,
+>  		    (pix_fmt_mp->height + 64) <=3D frmsize->max_height)
+>  			pix_fmt_mp->height +=3D 64;
+> =20
+> -		mtk_v4l2_vdec_dbg(0, ctx,
+> -				  "before resize wxh=3D%dx%d, after resize wxh=3D%dx%d, sizeimage=3D=
+%d",
+> -				  tmp_w, tmp_h, pix_fmt_mp->width, pix_fmt_mp->height,
+> -				  pix_fmt_mp->width * pix_fmt_mp->height);
+> +		dram_y =3D pix_fmt_mp->width * pix_fmt_mp->height;
+> +		dram_c =3D dram_y / 2;
+> +
+> +		dram_y_10bit =3D dram_y * 5 / 4;
+> +		dram_c_10bit =3D dram_y_10bit / 2;
+> =20
+>  		pix_fmt_mp->num_planes =3D fmt->num_planes;
+> -		pix_fmt_mp->plane_fmt[0].sizeimage =3D
+> -				pix_fmt_mp->width * pix_fmt_mp->height;
+> -		pix_fmt_mp->plane_fmt[0].bytesperline =3D pix_fmt_mp->width;
+> -
+> -		if (pix_fmt_mp->num_planes =3D=3D 2) {
+> -			pix_fmt_mp->plane_fmt[1].sizeimage =3D
+> -				(pix_fmt_mp->width * pix_fmt_mp->height) / 2;
+> -			pix_fmt_mp->plane_fmt[1].bytesperline =3D
+> -				pix_fmt_mp->width;
+> +		if (pix_fmt_mp->num_planes =3D=3D 1) {
+> +			if (ctx->is_10bit_bitstream) {
+> +				pix_fmt_mp->plane_fmt[0].bytesperline =3D pix_fmt_mp->width * 5 / 4;
+> +				pix_fmt_mp->plane_fmt[0].sizeimage =3D dram_y_10bit + dram_c_10bit;
+> +			} else {
+> +				pix_fmt_mp->plane_fmt[0].bytesperline =3D pix_fmt_mp->width;
+> +				pix_fmt_mp->plane_fmt[0].sizeimage =3D dram_y + dram_c;
+> +			}
+> +		} else {
+> +			if (ctx->is_10bit_bitstream) {
+> +				pix_fmt_mp->plane_fmt[0].bytesperline =3D pix_fmt_mp->width * 5 / 4;
+> +				pix_fmt_mp->plane_fmt[1].bytesperline =3D pix_fmt_mp->width * 5 / 4;
+> +
+> +				pix_fmt_mp->plane_fmt[0].sizeimage =3D dram_y_10bit;
+> +				pix_fmt_mp->plane_fmt[1].sizeimage =3D dram_c_10bit;
+> +			} else {
+> +				pix_fmt_mp->plane_fmt[0].bytesperline =3D pix_fmt_mp->width;
+> +				pix_fmt_mp->plane_fmt[1].bytesperline =3D pix_fmt_mp->width;
+> +
+> +				pix_fmt_mp->plane_fmt[0].sizeimage =3D dram_y;
+> +				pix_fmt_mp->plane_fmt[1].sizeimage =3D dram_c;
+> +			}
+>  		}
+> +
+> +		mtk_v4l2_vdec_dbg(0, ctx,
+> +				  "before resize:%dx%d, after resize:%dx%d, sizeimage=3D0x%x_0x%x",
+> +				  tmp_w, tmp_h, pix_fmt_mp->width, pix_fmt_mp->height,
+> +				  pix_fmt_mp->plane_fmt[0].sizeimage,
+> +				  pix_fmt_mp->plane_fmt[1].sizeimage);
+>  	}
+> =20
+>  	pix_fmt_mp->flags =3D 0;
 
 
