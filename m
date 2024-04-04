@@ -1,133 +1,211 @@
-Return-Path: <linux-kernel+bounces-130805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6605897D4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:08:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7CCC897D4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:08:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50F851F25B3A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:08:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 635C2282A24
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:08:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBDF17492;
-	Thu,  4 Apr 2024 01:07:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="p0SeqJJv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ACD9125B9;
+	Thu,  4 Apr 2024 01:08:05 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E160C2F37;
-	Thu,  4 Apr 2024 01:07:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F148101DB
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 01:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712192874; cv=none; b=bUXfd/sO9rD04p1njrJlyfa7DfiutWnQHEyGy+3C/j/TtTaT3mgupUTfOdgT288qi+AW/wCZh8Hnsu++BhtGCRgtuF/jrC1Ec7N0VjT8uaS3c5suLnAQaHvyuyVqxPb0d5+qxtcM5Dr3Tk62+LuHTAiGauoSCY5WtMYAhw1msGA=
+	t=1712192884; cv=none; b=hBw9+0mx+77YGCbnDYXybFQaczPeDqMaxor8Wy39ETJcUXuX8+Fz+Oj4zsD4+YMXTrdgIawrDefIOPg4POIqczsEsc9ajzzoAY1pljCWQ/dqC7fX/J82hVFiMqPS2krhlcES2QZ2fiUtkTcnaK12NY/y4K75hY05HJT+A1V/RAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712192874; c=relaxed/simple;
-	bh=FtaGvZn9DU8zSy564EUnjvqdBkYKe+7qJxI5a/lH6GE=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=bqQjwKIhvrKRHh4QdMi7xh9feLKGD1IrhVUoi8Ar8nvx6TmmQh9sMGC7dRgj5rCGIBxZPf2M/cHBaW07HaTEvSRt13wGWvVnXg0LyeYG5M9DWMoAgr9P4ZhV75bJNymYvRWZC42EytN+2d8t/H9+JDAM5Bd2PWUxMdllTtY4/74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=p0SeqJJv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07B1FC433F1;
-	Thu,  4 Apr 2024 01:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1712192873;
-	bh=FtaGvZn9DU8zSy564EUnjvqdBkYKe+7qJxI5a/lH6GE=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=p0SeqJJv5v7ULZGvarHpc1u8KHj7ZFli8N09Omm2YvQzu7bRwLxryoH9UnRltzubl
-	 XvFEtCl7YTXsjpcqwRKp9kqT59CkvQTC6Lu1rNqo+O8VI5K6Y6GJn5gh2y3U+XLqb0
-	 8UtnPjuYEc0CVtYAz+h//EWBxcQUS9vqQzHHoy0c=
-Date: Wed, 3 Apr 2024 18:07:52 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: syzbot <syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com>
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org,
- muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in __mod_memcg_lruvec_state
-Message-Id: <20240403180752.f95e1b77e033b5e03164c160@linux-foundation.org>
-In-Reply-To: <0000000000007545d00615188a03@google.com>
-References: <0000000000007545d00615188a03@google.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712192884; c=relaxed/simple;
+	bh=tHqj0imtP77X0GOjslRjoU+2HZ7dAYRxwcPCqKd1rf8=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=KGLLaV8tfXGqPN3xr6X2sIVwejtcbi9ySjw+lhL4IEMhiUGmAr6HvuVLVFJAdV08VXm22B0LNsjxMINqFiqARctsstrtuMd8EtEwFkinj3W49BDB4Ekbt02Dnf+d8CYo46CVAzkQZicyhrs9IUYVvo+v8weGBkQIlWGaqVEFfOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cc74ea8606so52236139f.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 18:08:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712192882; x=1712797682;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Y2bErP/lP2La0gLtoJoIwk6KRU7s1LtGPBEMCkV/05Y=;
+        b=Alqw59F6Q/M+5tJtbopQmasUw77LYzJrpClMc5X5J1Ia54624k9g4gIoZfw1A6npYZ
+         03BrLNOM4VlKSN1Q/QHfz2h+iakETGqs7AfFKB60cP7M4arCnZxsLuaUn40ycQor3wQr
+         QawFWj90u75ZSWjSAvSti0shgqMuCknIEY48+4uPrsWL5dH/hbiQD4BsUdXX8TXgczQg
+         saAMDxN/BdZrc5MxyJNoSHsXdsPOKUzqp4eW4H2dAg88f74zX3KFugyBy8xBSUhpQ+XJ
+         y51/Hpxn2Bss+uCZgO7qo60RQ7Z6g1KFvbbEW3/OyMqY42mp2NhwwaAGYjBPqsDVyyqD
+         cmrw==
+X-Forwarded-Encrypted: i=1; AJvYcCUQyJMP9bh7AqNNIIoUHAB6gz8vaByve+xoevIeSCpvKMNKFfQDnbbLJel5UM4uvGu8SeVVdxLRmMVeGyXp5p/U5oeVFmydCecotwWf
+X-Gm-Message-State: AOJu0Yy0RIA8Wlm2G/Dlyd9HxTLyLO4V6phqv1EjfhKf4SuYDZ7h6aSv
+	dYVpO+GFCmZHaiXwe2QjUqWw899dSxw48yixnGYP3wgx+/kPWzWTwxLjFyxppK5BU2ojTUaUQ/3
+	Ota9dRG+ucIBVpgzwBDN7IbY/0X+psk/yE2BvWzB32lbR08mHMd3TPZg=
+X-Google-Smtp-Source: AGHT+IEB9c/4MTmwA/MkyZOIVo07Psc1I9x7T/CZ8GxIwruKXlg685n/W7Dw7rC/na6w2Jk6UAwJJL3Ok6F1uOdn9t+L12Wo2yTi
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+X-Received: by 2002:a05:6638:148b:b0:47f:1cf3:e571 with SMTP id
+ j11-20020a056638148b00b0047f1cf3e571mr31145jak.3.1712192882235; Wed, 03 Apr
+ 2024 18:08:02 -0700 (PDT)
+Date: Wed, 03 Apr 2024 18:08:02 -0700
+In-Reply-To: <20240404004257.3933-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008885bc06153af8ef@google.com>
+Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
+From: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 02 Apr 2024 01:03:26 -0700 syzbot <syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com> wrote:
+Hello,
 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    317c7bc0ef03 Merge tag 'mmc-v6.9-rc1' of git://git.kernel...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=15fd40c5180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f64ec427e98bccd7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9319a4268a640e26b72b
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-317c7bc0.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/efab473d72c0/vmlinux-317c7bc0.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/5ba3f56d362d/bzImage-317c7bc0.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com
-> 
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 30105 at mm/memcontrol.c:865 __mod_memcg_lruvec_state+0x3fa/0x550 mm/memcontrol.c:865
-> Modules linked in:
-> CPU: 0 PID: 30105 Comm: syz-executor.2 Not tainted 6.9.0-rc1-syzkaller-00178-g317c7bc0ef03 #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> RIP: 0010:__mod_memcg_lruvec_state+0x3fa/0x550 mm/memcontrol.c:865
-> Code: 45 85 e4 75 1d 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 cc cc cc cc b8 00 04 00 00 e9 80 fd ff ff 89 c6 e9 a0 fd ff ff 90 <0f> 0b 90 e9 a7 fc ff ff 48 c7 c7 18 43 e1 8f e8 32 51 f8 ff e9 5e
-> RSP: 0018:ffffc900034beef8 EFLAGS: 00010202
-> RAX: 0000000000000292 RBX: 0000000000000001 RCX: 1ffffffff1fc2863
-> RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff888024b92bc8
-> RBP: ffff888024b92000 R08: 0000000000000005 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-> R13: ffff88801c326000 R14: 0000000000000001 R15: ffff888024b92000
-> FS:  00007f0811bf96c0(0000) GS:ffff88806b000000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000000cfff1dd CR3: 000000003e4e2000 CR4: 0000000000350ef0
-> DR0: 0000000000000031 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  __update_lru_size include/linux/mm_inline.h:47 [inline]
->  lru_gen_update_size include/linux/mm_inline.h:199 [inline]
->  lru_gen_add_folio+0x62d/0xe80 include/linux/mm_inline.h:262
->  lruvec_add_folio include/linux/mm_inline.h:323 [inline]
->  lru_add_fn+0x3fc/0xd80 mm/swap.c:215
->  folio_batch_move_lru+0x243/0x400 mm/swap.c:233
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+possible deadlock in kernfs_fop_llseek
 
-Well it beats me.  I assume we failed to update for a new case.  I'll
-toss this into -next to perhaps shed a bit of light.
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-syzkaller-08951-gfe46a7dd189e-dirty #0 Not tainted
+------------------------------------------------------
+syz-executor.0/5486 is trying to acquire lock:
+ffff88807ec0b888 (&of->mutex){+.+.}-{3:3}, at: kernfs_fop_llseek+0x7e/0x2a0 fs/kernfs/file.c:867
 
---- a/mm/memcontrol.c~__mod_memcg_lruvec_state-enhance-diagnostics
-+++ a/mm/memcontrol.c
-@@ -860,10 +860,12 @@ void __mod_memcg_lruvec_state(struct lru
- 		case NR_ANON_THPS:
- 		case NR_SHMEM_PMDMAPPED:
- 		case NR_FILE_PMDMAPPED:
--			WARN_ON_ONCE(!in_task());
-+			if (WARN_ON_ONCE(!in_task()))
-+				pr_warn("stat item index: %d\n", idx);
- 			break;
- 		default:
--			VM_WARN_ON_IRQS_ENABLED();
-+			if (VM_WARN_ON_IRQS_ENABLED())
-+				pr_warn("stat item index: %d\n", idx);
- 		}
- 	}
- 
-_
+but task is already holding lock:
+ffff888050982238 (&ovl_i_lock_key[depth]){+.+.}-{3:3}, at: ovl_inode_lock fs/overlayfs/overlayfs.h:649 [inline]
+ffff888050982238 (&ovl_i_lock_key[depth]){+.+.}-{3:3}, at: ovl_llseek+0x28a/0x4a0 fs/overlayfs/file.c:215
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #2 (&ovl_i_lock_key[depth]){+.+.}-{3:3}:
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       ovl_inode_lock_interruptible fs/overlayfs/overlayfs.h:654 [inline]
+       ovl_nlink_start+0xdc/0x390 fs/overlayfs/util.c:1162
+       ovl_do_remove+0x1fa/0xd90 fs/overlayfs/dir.c:893
+       vfs_rmdir+0x367/0x4c0 fs/namei.c:4209
+       do_rmdir+0x3b5/0x580 fs/namei.c:4268
+       __do_sys_rmdir fs/namei.c:4287 [inline]
+       __se_sys_rmdir fs/namei.c:4285 [inline]
+       __x64_sys_rmdir+0x49/0x60 fs/namei.c:4285
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+-> #1 (&ovl_i_mutex_dir_key[depth]){++++}-{3:3}:
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1526
+       inode_lock_shared include/linux/fs.h:803 [inline]
+       lookup_slow+0x45/0x70 fs/namei.c:1708
+       walk_component+0x2e1/0x410 fs/namei.c:2004
+       lookup_last fs/namei.c:2461 [inline]
+       path_lookupat+0x16f/0x450 fs/namei.c:2485
+       filename_lookup+0x256/0x610 fs/namei.c:2514
+       kern_path+0x35/0x50 fs/namei.c:2622
+       lookup_bdev+0xc5/0x290 block/bdev.c:1072
+       resume_store+0x1a0/0x710 kernel/power/hibernate.c:1235
+       kernfs_fop_write_iter+0x3a4/0x500 fs/kernfs/file.c:334
+       call_write_iter include/linux/fs.h:2108 [inline]
+       new_sync_write fs/read_write.c:497 [inline]
+       vfs_write+0xa84/0xcb0 fs/read_write.c:590
+       ksys_write+0x1a0/0x2c0 fs/read_write.c:643
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+-> #0 (&of->mutex){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+       __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+       lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+       kernfs_fop_llseek+0x7e/0x2a0 fs/kernfs/file.c:867
+       ovl_llseek+0x335/0x4a0 fs/overlayfs/file.c:219
+       vfs_llseek fs/read_write.c:289 [inline]
+       ksys_lseek fs/read_write.c:302 [inline]
+       __do_sys_lseek fs/read_write.c:313 [inline]
+       __se_sys_lseek fs/read_write.c:311 [inline]
+       __x64_sys_lseek+0x153/0x1e0 fs/read_write.c:311
+       do_syscall_64+0xfb/0x240
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+other info that might help us debug this:
+
+Chain exists of:
+  &of->mutex --> &ovl_i_mutex_dir_key[depth] --> &ovl_i_lock_key[depth]
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ovl_i_lock_key[depth]);
+                               lock(&ovl_i_mutex_dir_key[depth]);
+                               lock(&ovl_i_lock_key[depth]);
+  lock(&of->mutex);
+
+ *** DEADLOCK ***
+
+3 locks held by syz-executor.0/5486:
+ #0: ffff8880707c8ac8 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x259/0x320 fs/file.c:1191
+ #1: ffff888050981e80 (&ovl_i_mutex_key[depth]){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:793 [inline]
+ #1: ffff888050981e80 (&ovl_i_mutex_key[depth]){+.+.}-{3:3}, at: ovl_llseek+0x277/0x4a0 fs/overlayfs/file.c:207
+ #2: ffff888050982238 (&ovl_i_lock_key[depth]){+.+.}-{3:3}, at: ovl_inode_lock fs/overlayfs/overlayfs.h:649 [inline]
+ #2: ffff888050982238 (&ovl_i_lock_key[depth]){+.+.}-{3:3}, at: ovl_llseek+0x28a/0x4a0 fs/overlayfs/file.c:215
+
+stack backtrace:
+CPU: 0 PID: 5486 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain+0x18cb/0x58e0 kernel/locking/lockdep.c:3869
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+ __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+ __mutex_lock+0x136/0xd70 kernel/locking/mutex.c:752
+ kernfs_fop_llseek+0x7e/0x2a0 fs/kernfs/file.c:867
+ ovl_llseek+0x335/0x4a0 fs/overlayfs/file.c:219
+ vfs_llseek fs/read_write.c:289 [inline]
+ ksys_lseek fs/read_write.c:302 [inline]
+ __do_sys_lseek fs/read_write.c:313 [inline]
+ __se_sys_lseek fs/read_write.c:311 [inline]
+ __x64_sys_lseek+0x153/0x1e0 fs/read_write.c:311
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7fe1f567dde9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe1f64370c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000008
+RAX: ffffffffffffffda RBX: 00007fe1f57abf80 RCX: 00007fe1f567dde9
+RDX: 0000000000000003 RSI: 0000000000000000 RDI: 0000000000000005
+RBP: 00007fe1f56ca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007fe1f57abf80 R15: 00007ffe353f4cc8
+ </TASK>
+
+
+Tested on:
+
+commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=104e8475180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
+dashboard link: https://syzkaller.appspot.com/bug?extid=9a5b0ced8b1bfb238b56
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1799f6ad180000
 
 
