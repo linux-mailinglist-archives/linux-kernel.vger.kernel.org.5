@@ -1,188 +1,123 @@
-Return-Path: <linux-kernel+bounces-131881-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131882-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCAC4898D1B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:17:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B10EA898D21
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:17:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D6FD1F258CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:17:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC3EC1C25B5C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD9212D1ED;
-	Thu,  4 Apr 2024 17:17:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA8E12F59F;
+	Thu,  4 Apr 2024 17:17:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="B8SNxWDv"
-Received: from merlin.infradead.org (merlin.infradead.org [178.238.156.107])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YhIAgd5N"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F57912B82;
-	Thu,  4 Apr 2024 17:17:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.238.156.107
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDDFD12D1ED
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:17:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712251046; cv=none; b=IXVonOJRiFqmT6AS9OvP9Ud68uI5xjXej9HsjChFHcIrRJcLZt1ctgVqGRpaIB5TtDFod+nmIp32pP6oFnkDE5NyV6whNQlG+yXKk6JOVEogz+q1LI6QZ1ellhU5YeNfd0D4SxQyoDmNxU6S9Xd0dLR/rCAGwdqiMrmKxHTlDZE=
+	t=1712251058; cv=none; b=AAN4jgMUkGllg4SbyV5Vb1l8nrrYODfaNohAY4l3qT3C+ebamrTqfV2lfZasCd5faQrtBGFfYNXi+1DpADMaGE/obXFe0iH26M/THCNSV7XlWyjBa8IFajk1mWgCLU9iNO/PQUwKTCtp5ibGpPCee1IrnDNRBqaYmr4Z6WMf8xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712251046; c=relaxed/simple;
-	bh=gcvJrvXgQyaZQSS7uTs9ltp/mFfw8fzNyR20mYGy9vU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=slXKfXrPrYROWDnV1DsZpeVZ5P8RdKVeU15VI2BiJpgBq2KurRlZ1DyqJ+ddrDf3k0vypFuzedwzVuTY8Ui9CuLwIZZ9TQIZUjX9hStZayh3qgQ4E2vb5P6eIEv++3pHpfWZKgaAgLBWHZtrMx8pZYJddwFq1oqi6Ebgy9jO+wE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=B8SNxWDv; arc=none smtp.client-ip=178.238.156.107
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=ScSQs4d+rDTfELeZWche4AJihoLV+Vg3lVZPViVwPu4=; b=B8SNxWDvnBeKDZ9MhqKkMekJ7O
-	Zc3M1yZYlr44Cqhhwa2v9i/PAK7oIsq+fGYN296QLJqd2qALwL8FdFv6gYGtLnp39E/gob0XHZMRQ
-	TxofCwl3Hw/3P2KZrP48ADqL2SGsxDCe8/H4FlxyKUbjJ6EipFf0pn7dADO10gJ06qVMcApsU9hL0
-	nTXcMJZF237e/QFuUyp+urbWjhBQx8IKFa0FJSyA4Cr0Sk4ffGdhtYfORHAquxHIIGdB4RV2KczJP
-	rL+qLiPA8Urp6RmT1vrItfiLI5JD87Wg6Gl62fqaST4XHWdDDFtFtUB19H38CIrXCpiqEekxGXktc
-	3pNy3GtQ==;
-Received: from kyle by merlin.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsQiF-00000007Pea-09Ef;
-	Thu, 04 Apr 2024 17:17:19 +0000
-Date: Thu, 4 Apr 2024 13:17:19 -0400
-From: Kyle McMartin <kyle@infradead.org>
-To: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: Kyle McMartin <kyle@infradead.org>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	linux-pm@vger.kernel.org, kernel-team@fb.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] therm_throt: test bits as we build
- therm_intr_core_clear_mask
-Message-ID: <Zg7gn2ATm_NMiw_2@merlin.infradead.org>
-References: <Zg3GhhTZotBNvlRR@merlin.infradead.org>
- <8b4cb4ad67032fad69f29df8e6b83054c7fa15db.camel@linux.intel.com>
+	s=arc-20240116; t=1712251058; c=relaxed/simple;
+	bh=P0jxfOjJm5k13eNfwzSHtiYITpQkPdrZsOjPaq8EqwE=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=hvpp0BwUnfs7+y8vOG5wwv6Mnz0JTqcTzLwec6g8Py8I5vf9qmJFxoCLYovAKrKBbbngIO9+B9YrN4tmB1tvGR51Yy3UkJHqJudXqHjdgIs2HxS0agH8hkMjUNdycqRqDVwKDnCecAc8qjvkDF/4evn1iDTgH1Tkij+SVVsd8ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YhIAgd5N; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61517841a2eso21188067b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712251056; x=1712855856; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=2HQDqzTFjNbgMV4giF4EAYbuZ4iKPL9b9RZ9WT7F6E4=;
+        b=YhIAgd5NOfj6TcRmnxtCGyV9r2JmO9XTOibvCy1b2Z1J0aEA5iHMPPZ33Q+S/Fo85u
+         +RWsHZwpRRJJEbMfsecbMhP0LU+3GJoP4F20VLgoqVrdLL5fharO2gMinhZdgt0zetGn
+         2HzbZn+f4g8ohs0eYzxDE8seqV5JrYgptKEHEOp5B4Q+m81jljsYajSfUbmqMBTlH9ML
+         XeJXsKAK9c/tAZ8DZDztTuHRGC3yC1cVzd8c64NrL58tEpa+WusUZSWDmbwSWzFkw2mS
+         vXNgWJYr5cNybo5jW3xVU8solhLuouM3tKFkT8eTzkLnuxYa/YlfKfp5cM45I3/25S5i
+         LibA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712251056; x=1712855856;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2HQDqzTFjNbgMV4giF4EAYbuZ4iKPL9b9RZ9WT7F6E4=;
+        b=edJ1HuPYHsveSaryFeNkW5WRyBcqwoaCg4cMdo4Z45PuyYiWcJEZrXQ086o7LrANmp
+         MPP4VoYrhBMOyPaHpa9tjxkCQahIcw5I7vfZ/s1jZgTQMoJ3u/oWjpfFeBiUYAqCOlji
+         M20FVsosiGKe3KG5tGdxb0VI2G7GS5Cw9f4tdqrnZeleEcsDNyRxYDHXHccbMb/rmQCu
+         xVDijRj9V/6XTczl7Jh+Jn3GNPFg0bLWJhI4YrBSlfk51u1zFD4DEtMCBP0K8RitZfOz
+         zBotAB9gu8Wwc8SfwV+3vnDuN1i4BLqxmG1rSZ0CyyVr6tRJY4IHAAiN+8EUdOWIlawh
+         2yKg==
+X-Forwarded-Encrypted: i=1; AJvYcCUw8n5kPRFMubA3iVTtTbQEBkwisYX0zDjqWLeWt38b1TLifc4ewv81LpGPrTR11YntdAZmP0p4SWFbde65wNriQPetCpOVO4gOeAca
+X-Gm-Message-State: AOJu0YwpOK6mxZQG5riyYZjh0f/AwoPwkIwPSdRxuDKoiwAr+SE3epIP
+	vIFJRJ1xgiB8DvhPPADWJKLHpVxLU+T6S3BI5DnQY3qjNzC2miNAs9pj9p5F9S3UfLpsQAe8xzd
+	quC/6UZwIR3Mx7sWKU+5ryw==
+X-Google-Smtp-Source: AGHT+IEj+hRLWesrgPpJFC7CIVqj9Dom65rQyl8Tl8TbY/1KOeBAJ8t7Hc5dczRRpk4ua4tLB0Z7mXt0bzzzGkbIxw==
+X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:b773:c760:3ce4:2d5c])
+ (user=lokeshgidra job=sendgmr) by 2002:a0d:cac7:0:b0:615:e53:1c1 with SMTP id
+ m190-20020a0dcac7000000b006150e5301c1mr42846ywd.7.1712251055864; Thu, 04 Apr
+ 2024 10:17:35 -0700 (PDT)
+Date: Thu,  4 Apr 2024 10:17:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8b4cb4ad67032fad69f29df8e6b83054c7fa15db.camel@linux.intel.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240404171726.2302435-1-lokeshgidra@google.com>
+Subject: [PATCH] userfaultfd: change src_folio after ensuring it's unpinned in UFFDIO_MOVE
+From: Lokesh Gidra <lokeshgidra@google.com>
+To: akpm@linux-foundation.org
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, surenb@google.com, 
+	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
+	david@redhat.com, zhengqi.arch@bytedance.com, kaleshsingh@google.com, 
+	ngeoffray@google.com, Lokesh Gidra <lokeshgidra@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, Apr 03, 2024 at 06:15:47PM -0700, srinivas pandruvada wrote:
-> > On Broadwell and Broadwell-DE, the HWP flag is not set, but writing
-> > these bits does not trap.
-> > 
-> > On our Skylake-DE, Skylake, and Cooper Lake platforms, the HWP flag
-> > is
-> > set in CPUID, and writing 1 to these bits traps attempting to write
-> > 0xAAA8 to MSR 0x19C (THERM_STATUS). Writing 0xAA8 from userspace
-> > works
-> > as expected to un-stick PROCHOT_LOG.
-> 
-> I think this issue happens only on Skylake, Cascade Lake, Cooper Lake
-> and not on any other systems.
-> 
-> Please verify:
-> GP# happens only when bit13 (Current Limit Log) or bit15 (Cross Domain
-> Limit Log) is 1.
-> 
+Commit d7a08838ab74 ("mm: userfaultfd: fix unexpected change to src_folio
+when UFFDIO_MOVE fails") moved the src_folio->{mapping, index} changing
+to after clearing the page-table and ensuring that it's not pinned. This
+avoids failure of swapout+migration and possibly memory corruption.
 
-Yeah, if either of the bits are set, we'll trap and fail the WRMSRL.
+However, the commit missed fixing it in the huge-page case.
 
-> Basically writing 0x2000 or 0x8000  or A000 will cause this issue.
-> Are you using the latest BIOS with microcode?
-> Please confirm your microcode version, I can check internally.
-> 
+Fixes: adef440691ba ("userfaultfd: UFFDIO_MOVE uABI")
+Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+---
+ mm/huge_memory.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-On SkylakeDE, 6-85-4 we've got 0x2006e08 and 0x2006e05 as the most commonly
-deployed microcodes. On Skylake, 6-85-4 we've got 0x2006e05 and 0x2000065.
-Finally, on Cooper Lake, 6-85-11, we have 0x700001f and are in the process
-of rolling out 0x7002503.
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 9859aa4f7553..89f58c7603b2 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2259,9 +2259,6 @@ int move_pages_huge_pmd(struct mm_struct *mm, pmd_t *dst_pmd, pmd_t *src_pmd, pm
+ 			goto unlock_ptls;
+ 		}
+ 
+-		folio_move_anon_rmap(src_folio, dst_vma);
+-		WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, dst_addr));
+-
+ 		src_pmdval = pmdp_huge_clear_flush(src_vma, src_addr, src_pmd);
+ 		/* Folio got pinned from under us. Put it back and fail the move. */
+ 		if (folio_maybe_dma_pinned(src_folio)) {
+@@ -2270,6 +2267,9 @@ int move_pages_huge_pmd(struct mm_struct *mm, pmd_t *dst_pmd, pmd_t *src_pmd, pm
+ 			goto unlock_ptls;
+ 		}
+ 
++		folio_move_anon_rmap(src_folio, dst_vma);
++		WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, dst_addr));
++
+ 		_dst_pmd = mk_huge_pmd(&src_folio->page, dst_vma->vm_page_prot);
+ 		/* Follow mremap() behavior and treat the entry dirty after the move */
+ 		_dst_pmd = pmd_mkwrite(pmd_mkdirty(_dst_pmd), dst_vma);
+-- 
+2.44.0.478.gd926399ef9-goog
 
-Rolling out new firmware is a pretty slow process... Since we're not
-clearing those bits anywhere in the kernel we're deploying, I just
-stubbed out setting BIT(13) and BIT(15) on those platforms for now while
-we discuss a more durable fix.
-
-Thanks for following up! --kyle
-
-> Thanks,
-> Srinivas
-> 
-> 
-> > 
-> > On our Sapphire Rapids platforms, the HWP flag is set, and writing 1
-> > to
-> > these bits is successful.
-> > 
-> >  drivers/thermal/intel/therm_throt.c | 29 ++++++++++++++++++++++-----
-> > --
-> >  1 file changed, 22 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/thermal/intel/therm_throt.c
-> > b/drivers/thermal/intel/therm_throt.c
-> > index e69868e868eb..3058d8fcfcef 100644
-> > --- a/drivers/thermal/intel/therm_throt.c
-> > +++ b/drivers/thermal/intel/therm_throt.c
-> > @@ -196,8 +196,14 @@ static const struct attribute_group
-> > thermal_attr_group = {
-> >  static u64 therm_intr_core_clear_mask;
-> >  static u64 therm_intr_pkg_clear_mask;
-> >  
-> > +/* Probe each addition to the mask to ensure that our wrmsrl
-> > + * won't fail to clear bits.
-> > + */
-> >  static void thermal_intr_init_core_clear_mask(void)
-> >  {
-> > +       u64 bits = 0;
-> > +       u64 mask = 0;
-> > +
-> >         if (therm_intr_core_clear_mask)
-> >                 return;
-> >  
-> > @@ -211,25 +217,34 @@ static void
-> > thermal_intr_init_core_clear_mask(void)
-> >          * Bit 1, 3, 5: CPUID.01H:EDX[22] = 1. This driver will not
-> >          * enable interrupts, when 0 as it checks for
-> > X86_FEATURE_ACPI.
-> >          */
-> > -       therm_intr_core_clear_mask = (BIT(1) | BIT(3) | BIT(5));
-> > +       mask = (BIT(1) | BIT(3) | BIT(5));
-> >  
-> >         /*
-> >          * Bit 7 and 9: Thermal Threshold #1 and #2 log
-> >          * If CPUID.01H:ECX[8] = 1
-> >          */
-> > -       if (boot_cpu_has(X86_FEATURE_TM2))
-> > -               therm_intr_core_clear_mask |= (BIT(7) | BIT(9));
-> > +       bits = BIT(7) | BIT(9);
-> > +       if (boot_cpu_has(X86_FEATURE_TM2) &&
-> > +           wrmsrl_safe(MSR_IA32_THERM_STATUS, mask | bits) >= 0)
-> > +               mask |= bits;
-> > +
-> >  
-> >         /* Bit 11: Power Limitation log (R/WC0) If CPUID.06H:EAX[4] =
-> > 1 */
-> > -       if (boot_cpu_has(X86_FEATURE_PLN))
-> > -               therm_intr_core_clear_mask |= BIT(11);
-> > +       bits = BIT(11);
-> > +       if (boot_cpu_has(X86_FEATURE_PLN) &&
-> > +           wrmsrl_safe(MSR_IA32_THERM_STATUS, mask | bits) >= 0)
-> > +               mask |= bits;
-> >  
-> >         /*
-> >          * Bit 13: Current Limit log (R/WC0) If CPUID.06H:EAX[7] = 1
-> >          * Bit 15: Cross Domain Limit log (R/WC0) If CPUID.06H:EAX[7]
-> > = 1
-> >          */
-> > -       if (boot_cpu_has(X86_FEATURE_HWP))
-> > -               therm_intr_core_clear_mask |= (BIT(13) | BIT(15));
-> > +       bits = BIT(13) | BIT(15);
-> > +       if (boot_cpu_has(X86_FEATURE_HWP) &&
-> > +           wrmsrl_safe(MSR_IA32_THERM_STATUS, mask | bits) >= 0)
-> > +               mask |= bits;
-> > +
-> > +       therm_intr_core_clear_mask = mask;
-> >  }
-> >  
-> >  static void thermal_intr_init_pkg_clear_mask(void)
-> 
 
