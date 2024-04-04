@@ -1,144 +1,95 @@
-Return-Path: <linux-kernel+bounces-131837-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131838-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47947898C6C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:43:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43AAC898C5E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:40:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11CB5B2BFE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:40:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB97528B1F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8601712D201;
-	Thu,  4 Apr 2024 16:38:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8962127B5C;
+	Thu,  4 Apr 2024 16:40:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="C+hc2xS8"
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WKLxKWaX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96C112CDA8
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:38:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8FDE1862F;
+	Thu,  4 Apr 2024 16:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712248697; cv=none; b=NDJ/xDLWlqj6sqjI9XvOJq2BmVHtY1UvayT8QJCI44pLplCMmXEhLc9u9rpxk6mLcAhN712mxZPDILSjd3Alh/WaITbh2DjtGw7ORhdSHyS3hWbK1V6pCASao/nZlhDTpI/T1nahrYcQnEI/i4UC5hTJ43N/ppssewVdRABYg9E=
+	t=1712248831; cv=none; b=romiO2weP2/j95tXaNA69XYswfJi50pogK6crRKceovu1lAzE4k8zHV4lJJgTtY0e9J8uuZfQQzXm/0vWJCjSVBmgNuuJJ7G3ZQeEcPKbTSZzuogXSmIo2r7zGEC4AxMt1qfd3WbhzZ3NKkeQGLJ4I8gtRQjIla6TXG9El/qVP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712248697; c=relaxed/simple;
-	bh=YBwK7BNdkJWP3oyNHpQfdPDIsnxbAs2+1nrrXIvCyGk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GL3Ssq8BPWemYJPkqa/mxOvr41gbLcG7VDD4tWyy2mtWV4gcwaq07tRkzfGcpIHVmy7zxc+cWiRGET+Jcn03BT9ORpdNOXWy4Tohsjo2Gh94cjfmkhoRu6QKw+pkO2cmegkK8dHYhF8dnwIBVIKYKfhPiOd7DuJUXSDfwMZf43w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=C+hc2xS8; arc=none smtp.client-ip=209.85.166.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so22710639f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 09:38:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1712248695; x=1712853495; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=O1lHp+OkDVz4M/u4JQhfwxqw91sDKLwvBIfOpOSX1Dg=;
-        b=C+hc2xS84zsaa95zf32WXlb9yNW/h3zvmnxmtWPaJT3nQcirZ0qsX81LVrCbdeElkp
-         57y0yq+G8ERUzzEhrTAPgWErlS1jN6tjByyIWfZb2oIsJLExlOMsr6qAf/4/FH0WE738
-         vGSo7+blJG3AWabJSM0Y6TAnCV2jtyRgNBPpQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712248695; x=1712853495;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=O1lHp+OkDVz4M/u4JQhfwxqw91sDKLwvBIfOpOSX1Dg=;
-        b=AlYLH7vsd16ACuNWbCbLlRojxeohP2dNl/LgPswXQlM9KUEqITKra8Y/tY3jyLNBps
-         QFHNku7qPSxZtbfOu+iWCZD2SyIoHUxJ4rEVW2JP2TMnojsg6JGr6mhzH/EMwXZRn+pd
-         t8fl/3O+H896GaI/0W5Q/NmV86o94Xl1PffG5Ucxpmucy0Nb5yOzAAU9iqTdks4Sxnd/
-         BAC2WTv3ZHlhanm2VZXcwjEG/2iF3FK6Sa0xQnH28tktReDaPbQhOOJMNhdWM1Ji5Uwv
-         UrDAsoE2o+wjldxT86+DizFjGfvPrK8/QPdcCt1Ck73UaClAGiJ+rJ7JRkw4YBo+hIi6
-         8ZEg==
-X-Forwarded-Encrypted: i=1; AJvYcCU/atxXjuCI8Uq450Y5FapDh9/DATMQVjOmT7eLM/YNSimomA3Z/roenlrbC8esAkRSEkVXAz6yPsRzbdLM5ia11Ip6aK/N12VkO1fz
-X-Gm-Message-State: AOJu0YwiIBI2pH5twTdOu+wBtKPQBMNVBLffR9/FZEjyi/n9axFcxQr/
-	nUbTfiF7jQ8+ztaKc11auZDDfB95BcBcoCbP/ZXYvwwAzJjSlDG6UNSfQj1GEsI=
-X-Google-Smtp-Source: AGHT+IEA8Ot5VjOmH74kiKn6+rvyxZEZ0N/0e2VKSGgMgVavV4DwpFIgcNyVzFCXgCqx/llLPTQifw==
-X-Received: by 2002:a5e:8b45:0:b0:7d0:c0e7:b577 with SMTP id z5-20020a5e8b45000000b007d0c0e7b577mr3031325iom.2.1712248695143;
-        Thu, 04 Apr 2024 09:38:15 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id r22-20020a056638131600b0047ed8c3e578sm4146726jad.134.2024.04.04.09.38.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 09:38:14 -0700 (PDT)
-Message-ID: <d84a8714-89e0-4ac0-b42c-02e8c4920e32@linuxfoundation.org>
-Date: Thu, 4 Apr 2024 10:38:14 -0600
+	s=arc-20240116; t=1712248831; c=relaxed/simple;
+	bh=NDcTO6ryp12wsBd5oIpZdw/H8fCBPwWYXGzE2tqxxKY=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=oMuReSzieOzlB0et3VqGeSPJjV7uFjrjX8eWeNa693pf4azAdtn6E4460uisfO1OCGQjbzp7KLrEQZZsJQS6hRTjhd0F34QSkaeNPqVUrP/VNi6Gmw+l/18b4tvw6KAgb2nenMbxTbAK0c0tFK9g9Cg/FBIfLKz7Z9ztvLtVnVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WKLxKWaX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A58D9C43394;
+	Thu,  4 Apr 2024 16:40:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712248830;
+	bh=NDcTO6ryp12wsBd5oIpZdw/H8fCBPwWYXGzE2tqxxKY=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=WKLxKWaXvC/da1X4T1YzNj/Sf8tuEo4IosuZssveerUwuwdlgIfynCX0A+8gX/koC
+	 ChnaFk9SYl667aFTjq0JtoLQV02haVv6wLXKpKlso+p8sVRT068j/24GU/qojbZQPw
+	 pFyuBeuB+fh23sZjYyxAtrTYLWt0gHMMn33v0T4A4bQ9HpzT74oFRbjPmdQANviBLq
+	 n4Dx0xc08IXabJXvUiEPn439wfPpWHRpyi8n/ZsRJETdKtfHwYweIw4GCNed6I81LQ
+	 qiORyGPHUK7nK/aQaSa+s3Bp3NjA+NlJ42uXCPvIgrNaRA1z70m0o9ddPb/0dsaUCP
+	 U/k1E8hVVE6oQ==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 94697D9A155;
+	Thu,  4 Apr 2024 16:40:30 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Bug Report] selftests: Clang: kselftests build errors in
- KernelCI
-To: Nick Desaulniers <ndesaulniers@google.com>,
- Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc: Gustavo Padovan <gus@collabora.com>, llvm@lists.linux.dev,
- kernelci@lists.linux.dev, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, kernel@collabora.com,
- Mark Brown <broonie@kernel.org>, Justin Stitt <justinstitt@google.com>,
- Nathan Chancellor <nathan@kernel.org>, Kees Cook <keescook@chromium.org>,
- Bill Wendling <morbo@google.com>, Shuah Khan <skhan@linuxfoundation.org>
-References: <0c6d4f0d-2064-4444-986b-1d1ed782135f@collabora.com>
- <CAKwvOd=ueTmUThCOkBGUjhMGr6mKDtbTt-d7tHKe7A2nrchWMw@mail.gmail.com>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <CAKwvOd=ueTmUThCOkBGUjhMGr6mKDtbTt-d7tHKe7A2nrchWMw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v4] net: usb: ax88179_178a: avoid the interface always
+ configured as random address
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171224883060.6883.2513876662318355261.git-patchwork-notify@kernel.org>
+Date: Thu, 04 Apr 2024 16:40:30 +0000
+References: <20240403132158.344838-1-jtornosm@redhat.com>
+In-Reply-To: <20240403132158.344838-1-jtornosm@redhat.com>
+To: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+Cc: kuba@kernel.org, dave.stevenson@raspberrypi.com, davem@davemloft.net,
+ edumazet@google.com, horms@kernel.org, linux-kernel@vger.kernel.org,
+ linux-usb@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com,
+ stable@vger.kernel.org
 
-On 4/4/24 10:34, Nick Desaulniers wrote:
-> Thanks for the report.  We've been tracking getting this working for a
-> while: https://github.com/ClangBuiltLinux/linux/issues/1698.  Other
-> fires have continued to take priority.
-> 
-> On Thu, Apr 4, 2024 at 9:30 AM Muhammad Usama Anjum
-> <usama.anjum@collabora.com> wrote:
->>
->> Hi,
->>
->> We have caught bugs in kselftest suites on linux-next and on stable-RCs etc
->> when using clang. There are two types of bugs (logs with clang-17 are
->> attached.):
->> As usually people use GCC, there are GCC-specific flags added to the
->> Makefiles that clang doesn't recognize. For example:
->> * clang: error: argument unused during compilation: '-pie'
->> [-Werror,-Wunused-command-line-argument]
->> * clang: error: unknown argument '-static-libasan'; did you mean
->> '-static-libsan'?
->> * clang: error: cannot specify -o when generating multiple output files
->>
->> Clang has best static analysis tools. It is reporting static errors. For
->> example:
->> * test_execve.c:121:13: warning: variable 'have_outer_privilege' is used
->> uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
->> * test_execve.c:121:9: note: remove the 'if' if its condition is always true
->> * test_memcontrol.c:727:6: warning: variable 'fd' is used uninitialized
->> whenever 'if' condition is true [-Wsometimes-uninitialized]
->>
->> We have found these issues through our new KernelCI system when enabling
->> kselftest and clang there. The new system dashboard is a WIP, so It is not
->> the web dashboard you are used-to with in KernelCI. We can show you ways of
->> pulling the data if you are interest into.
->>
->> Unless the above is some sort of false-positive or misconfiguration, it
->> would be great to support clang for kselftests. What we can do from our
->> side is that clang kselftests builds should be enabled on KernelCI to find
->> and fix the errors. What is your stance about this?
-> 
-> As with anything kernel related; help send patches for obvious fixes.
-> Or provide steps to reproduce in
-> https://github.com/ClangBuiltLinux/linux/issues/1698.
-> 
+Hello:
 
-+1 on this. Please send patches to fixes as you find them. We have
-been taking fixes found by clang and -Wformat-security, -Werror
-checks.
+This patch was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
 
-thanks,
--- Shuah
+On Wed,  3 Apr 2024 15:21:58 +0200 you wrote:
+> After the commit d2689b6a86b9 ("net: usb: ax88179_178a: avoid two
+> consecutive device resets"), reset is not executed from bind operation and
+> mac address is not read from the device registers or the devicetree at that
+> moment. Since the check to configure if the assigned mac address is random
+> or not for the interface, happens after the bind operation from
+> usbnet_probe, the interface keeps configured as random address, although the
+> address is correctly read and set during open operation (the only reset
+> now).
+> 
+> [...]
+
+Here is the summary with links:
+  - [net,v4] net: usb: ax88179_178a: avoid the interface always configured as random address
+    https://git.kernel.org/netdev/net/c/2e91bb99b9d4
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
