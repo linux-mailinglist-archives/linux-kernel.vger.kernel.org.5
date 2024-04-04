@@ -1,254 +1,207 @@
-Return-Path: <linux-kernel+bounces-131698-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8CE9898ADB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:17:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BBB2898B26
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:32:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DA89281EFE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:17:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6CD91B2F124
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49406132807;
-	Thu,  4 Apr 2024 15:14:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE0412A17F;
+	Thu,  4 Apr 2024 15:15:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="si5MsP0I"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2064.outbound.protection.outlook.com [40.107.223.64])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="CrV1UXTj"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19AA412D201;
-	Thu,  4 Apr 2024 15:14:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.64
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712243674; cv=fail; b=Ffm4HARUoSDZ+gbZvbI2vXR17mNY4RbkpqrwwT/F7ROJCUyz0n4uQRFGWkuqjUNqkUJWQdAUontw4EYEI/HQTGbna3sOPN3vkDHOtFrr+1z1cpHebXfRMaJ7OMnKOlrklDfEWbfjvidrGf+Fprzc0+rdi9d8I6WJI0hrJ3DmXJk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712243674; c=relaxed/simple;
-	bh=EWkuiLxWnzqx+F3Nsyigrz/mhV6d8h3yPRx5MWlM7oE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=X3VzeLILVQKB2Uud73U/nAnIFZR6LhySLH4GtPucbzm/NAa2CwF6Qt0sDX9mLwzVCQ+dkNtt4dNwtPM5bpoh332nS1IIxBzvBZeEk9y+I8F6MI23+JJ4L7q+egSlzab83cn1vS+XetB9AdCqZIrFaxzwDI7GqFK/8kJe5myVoRM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=si5MsP0I; arc=fail smtp.client-ip=40.107.223.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MdQe8obnkXqf8ODVd5yDFMJZA5xThROSrOmGGWxnJYCKHSWPQCGD2Ocd4jq5f+ECmftNf/4B2QV72RyE89jygGkh/weuLL3Rw9MbIi7E6/7wu4XG3oI33f17PXgJ/qfe6IvUzvCbkr7Gg7XemVu/qqR5MtAFFNrRbZRxPXhvyNgGqQ1Jlx0Isg27jn82+CUEnbXeYJ5BafTs+PwhFNuE5dPEAxTRVg9nfIes4EaxkvuJOwlbsMFuWNEQhrF+3c7ZwcIjO1b8nIS5vjkkaUinssLzKRKBZqiEA892Azr0W0m+8g6kx+UY/TrN+oP6F42+lDXVw+TeJWOGTC9WTD0gVQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Ash9xkgCW0yMASADP6XU3W6rdbwMTO2LLisUz/Fo/M4=;
- b=YkYXhhQax5BSgY/lcPgAf42+5PsKjRLnJUkr+D3c0pSLZn+ZFCwUavBpLR8sB/J+rWNwQN8b9QRoL5lX7tpAx0EgtOO3dFMXX2WakQl4xoo3i3pFyHXagABGRsL+NZRR32XOLYnnCaKBUlAZN1y9BokqBTo33ZJqHLBnX38OumKXDQtJ/xA9AO2KUfVInPXoeq/1dTkN+j9wsJnm9Pb2d8AF3tPPd5JlwlprB5goXqD6pydxGE4bevdFAuEknzDWemalQsgM0S0VzjwgMaWZ2eTel4xjkGVa7fxBZTw6ZG+FpIgqGwdPg+1mb4lxg4PBbMz/5kt3NChvbUwgsmnW4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ash9xkgCW0yMASADP6XU3W6rdbwMTO2LLisUz/Fo/M4=;
- b=si5MsP0IH6DtBrjWN2P4iXQECNUVpVR8C7jmpfJ2X62WbxsFQmviIQgX0x5fFRAkgTmbQX2Kd98coLY1Ii0LBjRo2ht90OS6Vsq2AA2AG3PqbSPhcmEgzv6L7wSYFdlmI1DssOuINmMfHK34yGGm26+jmHvsVvaDQ8bOakOzoBY=
-Received: from CH0PR13CA0010.namprd13.prod.outlook.com (2603:10b6:610:b1::15)
- by CY5PR12MB6177.namprd12.prod.outlook.com (2603:10b6:930:26::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 4 Apr
- 2024 15:14:29 +0000
-Received: from DS3PEPF000099D6.namprd04.prod.outlook.com
- (2603:10b6:610:b1:cafe::a) by CH0PR13CA0010.outlook.office365.com
- (2603:10b6:610:b1::15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.11 via Frontend
- Transport; Thu, 4 Apr 2024 15:14:29 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS3PEPF000099D6.mail.protection.outlook.com (10.167.17.7) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Thu, 4 Apr 2024 15:14:29 +0000
-Received: from quartz-7b1chost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 4 Apr
- 2024 10:14:15 -0500
-From: Yazen Ghannam <yazen.ghannam@amd.com>
-To: <linux-edac@vger.kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <tony.luck@intel.com>, <x86@kernel.org>,
-	<Avadhut.Naik@amd.com>, <John.Allen@amd.com>, Yazen Ghannam
-	<yazen.ghannam@amd.com>
-Subject: [PATCH v2 16/16] EDAC/mce_amd: Add support for FRU Text in MCA
-Date: Thu, 4 Apr 2024 10:13:59 -0500
-Message-ID: <20240404151359.47970-17-yazen.ghannam@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240404151359.47970-1-yazen.ghannam@amd.com>
-References: <20240404151359.47970-1-yazen.ghannam@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4766B1D537;
+	Thu,  4 Apr 2024 15:15:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712243734; cv=none; b=WDOKEuZkAhliHy1n33wMMKUv/PzhRhlFrEqlZaEw2UBtraWyDzbKeljvupnwTPiWVx/PAI1FpXLxMA9tFDjsmmmf5itj8q484Vk+Xz3ZKqtkHRPRPHgO9zyvnFMF5JghKRkq2n6qXruv70fReonS7Y8ikb1L4bytIc/zsjDwlbo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712243734; c=relaxed/simple;
+	bh=phx8it4Rc5OV6ul+lZvVZLQ6ZP8J9uT1AFJPwVkAUw8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=lPefhgfcKSAm0VgGBLIx/Bnmkr5yNZsqADxwFxlp28TTyIfdYdIsV6AeChaU5079R750jpOhLIx7MwPIBfHFJsQZ2DcFKEsQM698JeM4Vw0GM/dw9TbnNrwWz1KnpoGene4muSu/HTl0GuyuC2y6FkQ99wHV3dtvi9vKnigpKfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=CrV1UXTj; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 434EIio0017997;
+	Thu, 4 Apr 2024 15:15:26 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=yZBOTaaWjEwpYDYXL847pAYDYbLtO4xPzUdVp+Kfm4k=;
+ b=CrV1UXTj+Z10hFJR5x6yAhWl2yPi7jnT2Uy9Qwbgd4oCyCDtKpYMFONW94B8taadZmis
+ ZYl97H2cKjyzwHzHUs7RU/xkaVOpv3evxl3cswbzOk8oF+IIKsRaNSeU8wuOqffJm7Sm
+ hgtT4PUjcyCJ/wuGUzYjS/O0XcwPhBW11X5Ui2dH0wqgvbQEzBVOFyCzlq0OInAjm8mh
+ aAt7+Tfo5Rj/67phDBXR8e5Z/GiY/V8ASlJ591fi1MjbgJrVmj8nOmsfrofNEmX6AW1g
+ 6DD9tTBzn1GRytl8KzQ3YlFmQlVR+fnYZtweqDX5cs8OYKtLlxboBGjPNkO/7mJ1AbrR iA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9wuk85a5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 15:15:26 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 434FCZTU011588;
+	Thu, 4 Apr 2024 15:15:25 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9wuk85a1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 15:15:25 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 434DcRuM007696;
+	Thu, 4 Apr 2024 15:15:25 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x9epwmuat-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 15:15:24 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 434FFJ5x50528614
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 4 Apr 2024 15:15:21 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 78A9C2004D;
+	Thu,  4 Apr 2024 15:15:19 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 149A120043;
+	Thu,  4 Apr 2024 15:15:18 +0000 (GMT)
+Received: from [9.171.68.41] (unknown [9.171.68.41])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  4 Apr 2024 15:15:17 +0000 (GMT)
+Message-ID: <7291dd1b2d16fd9bbd90988ac5bcc3a46d17e3f4.camel@linux.ibm.com>
+Subject: Re: [RFC PATCH net-next v5 04/11] net/smc: implement some
+ unsupported operations of loopback-ism
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Wen Gu <guwen@linux.alibaba.com>, Gerd Bayer <gbayer@linux.ibm.com>,
+        wintera@linux.ibm.com, twinkler@linux.ibm.com, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        wenjia@linux.ibm.com, jaka@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
+        tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
+        linux-s390@vger.kernel.org, netdev@vger.kernel.org
+Date: Thu, 04 Apr 2024 17:15:17 +0200
+In-Reply-To: <7a0fc481-658e-4c99-add7-ccbd5f9dce1e@linux.alibaba.com>
+References: <20240324135522.108564-1-guwen@linux.alibaba.com>
+	 <20240324135522.108564-5-guwen@linux.alibaba.com>
+	 <3122eece5b484abcf8d23f85d6c18c36f0b939ff.camel@linux.ibm.com>
+	 <1db6ccab-b49f-45d2-a93c-05b0f79371a3@linux.alibaba.com>
+	 <3b3ff37643e9030ec1246e67720683a2cf5660e5.camel@linux.ibm.com>
+	 <7a0fc481-658e-4c99-add7-ccbd5f9dce1e@linux.alibaba.com>
+Autocrypt: addr=schnelle@linux.ibm.com; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS3PEPF000099D6:EE_|CY5PR12MB6177:EE_
-X-MS-Office365-Filtering-Correlation-Id: ceaa0e43-0c58-47c5-a8b5-08dc54b9ec7a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	uOQmzPgFdrKky2fQlW7VbcoRBEIO+Cvb2IX1PHO4v6BeaSi6Ej7K5dBOEBmQ24OCwJFZBzVTwWVEzJKYodx1EkiojT/fD9akv/aWQA2pD65inB47gxyVfM1FC+vDJShmgZ2jTEdC+8VXJ7v1SB7cav0MGEn13bdG09EQgc8aCWXN41/NmyW7gCfeNj+qsvk4dZiDfEXZFihRIUCUZyeh/g01/LPtukg8rBbZZYmY/UZALatxVD/n2nklkTOO9DZFpAw0K4AMtYIjecCEhBY3P3hKL1h37FQoUhEZV6Oqt3xDu3r5Uda08QM/bYFMytlfuGz2es0/1K85Q+Nahpcx1iYLshFvZZXeA4yPcOL+L56T+ry2Kq4RYTZ8JrATKfbjotrp+4Th1833UOxiH6JJ5B8jDtwV4ZHhlDtU7mblqQuSVvSZDBlJKXWf2KWIFNXgg3eo7oBYc//k4wZNrQnrsBI9vHrom0KV8uvry0b2l3hLwyqUO/OJEJk68+GiELQ2FPSaPUZjU/SCLe3F1/RPLMLYLfP5zk+wv6XsuIJeclZPLW9KdLQ/3OQ954Cx8wUbxVWryUWnn3Eing+2a6+pr/Re/41T1Nk/QldJqR1L5Qs3DaarJ2V8ZAIyf+NfQo8de0138Line6M93xk+3GhEtTAMwmieBbCb82hQ0uk+vrsIm5Mx+IFj818aM2LZB1rUlzEkmp0eRrw0irzkUpMzaA==
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 15:14:29.0724
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: ceaa0e43-0c58-47c5-a8b5-08dc54b9ec7a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS3PEPF000099D6.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6177
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: t-ny1DfZ8OHmWGhmmy2yitYCVoMXUCWd
+X-Proofpoint-GUID: wa4GxS-CAInGvwY7UP1oU9Ly64X8TC5F
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-04_11,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ impostorscore=0 bulkscore=0 clxscore=1015 suspectscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 adultscore=0 mlxscore=0
+ spamscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404040105
 
-A new "FRU Text in MCA" feature is defined where the Field Replaceable
-Unit (FRU) Text for a device is represented by a string in the new
-MCA_SYND1 and MCA_SYND2 registers. This feature is supported per MCA
-bank, and it is advertised by the McaFruTextInMca bit (MCA_CONFIG[9]).
+On Thu, 2024-04-04 at 21:12 +0800, Wen Gu wrote:
+>=20
+> On 2024/4/4 19:42, Niklas Schnelle wrote:
+> > On Thu, 2024-04-04 at 17:32 +0800, Wen Gu wrote:
+> > >=20
+> > > On 2024/4/4 00:25, Gerd Bayer wrote:
+> > > > On Sun, 2024-03-24 at 21:55 +0800, Wen Gu wrote:
+> > > > > This implements some operations that loopback-ism does not suppor=
+t
+> > > > > currently:
+> > > > >    - vlan operations, since there is no strong use-case for it.
+> > > > >    - signal_event operations, since there is no event to be proce=
+ssed
+> > > > > by the loopback-ism device.
+> > > >=20
+> > > > Hi Wen,
+> > > >=20
+> > > > I wonder if the these operations that are not supported by loopback=
+-ism
+> > > > should rather be marked "optional" in the struct smcd_ops, and the
+> > > > calling code should call these only when they are implemented.
+> > > >=20
+> > > > Of course this would mean more changes to net/smc/smc_core.c - but
+> > > > loopback-ism could omit these "boiler-plate" functions.
+> > > >=20
+> > >=20
+> > > Hi Gerd.
+> > >=20
+> > > Thank you for the thoughts! I agree that checks like 'if(smcd->ops->x=
+xx)'
+> > > can avoid the device driver from implementing unsupported operations.=
+ But I
+> > > am afraid that which operations need to be defined as 'optional' may =
+differ
+> > > from different device perspectives (e.g. for loopback-ism they are vl=
+an-related
+> > > opts and signal_event). So I perfer to simply let the smc protocol as=
+sume
+> > > that all operations have been implemented, and let drivers to decide =
+which
+> > > ones are unsupported in implementation. What do you think?
+> > >=20
+> > > Thanks!
+> > >=20
+> >=20
+> > I agree with Gerd, in my opinion it is better to document ops as
+> > optional and then allow their function pointers to be NULL and check
+> > for that. Acting like they are supported and then they turn out to be
+> > nops to me seems to contradict the principle of least surprises. I also
+> > think we can find a subset of mandatory ops without which SMC-D is
+> > impossible and then everything else should be optional.
+>=20
+> I see. If we all agree to classify smcd_ops into mandatory and optional o=
+nes,
+> I'll add a patch to mark the optional ops and check if they are implement=
+ed.
 
-The FRU Text is populated dynamically for each individual error state
-(MCA_STATUS, MCA_ADDR, et al.). This handles the case where an MCA bank
-covers multiple devices, for example, a Unified Memory Controller (UMC)
-bank that manages two DIMMs.
+Keep in mind I don't speak for the SMC maintainers but that does sound
+reasonable to me.
 
-Print the FRU Text string, if available, when decoding an MCA error.
+>=20
+> >=20
+> > As a first guess I think the following options may be mandatory:
+> >=20
+> > * query_remote_gid()
+> > * register_dmb()/unregister_dmb()
+> > * move_data()
+> >    For this one could argue that either move_data() or
+> >    attach_dmb()/detach_dmb() is required though personally I would
+> >    prefer to always have move_data() as a fallback and simple API
+> > * supports_v2()
+> > * get_local_gid()
+> > * get_chid()
+> > * get_dev()
+> I agree with this classification. Just one point, maybe we can take
+> supports_v2() as an optional ops, like support_dmb_nocopy()? e.g. if
+> it is not implemented, we treat it as an ISMv1.
+>=20
+> Thanks!
 
-Also, add field for MCA_CONFIG MSR in struct mce_hw_err as vendor specific
-error information and save the value of the MSR. The very value can then be
-exported through tracepoint for userspace tools like rasdaemon to print FRU
-Text, if available.
-
-Co-developed-by: Avadhut Naik <Avadhut.Naik@amd.com>
-Signed-off-by: Avadhut Naik <Avadhut.Naik@amd.com>
-Signed-off-by: Yazen Ghannam <yazen.ghannam@amd.com>
----
-
-Notes:
-    Link:
-    https://lkml.kernel.org/r/20231118193248.1296798-21-yazen.ghannam@amd.com
-    
-    v1->v2:
-    * No change.
-
- arch/x86/include/asm/mce.h     |  2 ++
- arch/x86/kernel/cpu/mce/apei.c |  2 ++
- arch/x86/kernel/cpu/mce/core.c |  3 +++
- drivers/edac/mce_amd.c         | 21 ++++++++++++++-------
- 4 files changed, 21 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index a701290f80a1..2a8997d7ba4d 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -59,6 +59,7 @@
-  *  - TCC bit is present in MCx_STATUS.
-  */
- #define MCI_CONFIG_MCAX		0x1
-+#define MCI_CONFIG_FRUTEXT	BIT_ULL(9)
- 
- /*
-  * Note that the full MCACOD field of IA32_MCi_STATUS MSR is
-@@ -195,6 +196,7 @@ struct mce_hw_err {
- 		struct {
- 			u64 synd1;
- 			u64 synd2;
-+			u64 config;
- 		} amd;
- 	} vi;
- };
-diff --git a/arch/x86/kernel/cpu/mce/apei.c b/arch/x86/kernel/cpu/mce/apei.c
-index 43622241c379..a9c28614530b 100644
---- a/arch/x86/kernel/cpu/mce/apei.c
-+++ b/arch/x86/kernel/cpu/mce/apei.c
-@@ -154,6 +154,8 @@ int apei_smca_report_x86_error(struct cper_ia_proc_ctx *ctx_info, u64 lapic_id)
- 		fallthrough;
- 	/* MCA_CONFIG */
- 	case 4:
-+		err.vi.amd.config = *(i_mce + 3);
-+		fallthrough;
- 	/* MCA_MISC0 */
- 	case 3:
- 		m->misc = *(i_mce + 2);
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index aa27729f7899..a4d09dda5fae 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -207,6 +207,8 @@ static void __print_mce(struct mce_hw_err *err)
- 			pr_cont("SYND2 %llx ", err->vi.amd.synd2);
- 		if (m->ipid)
- 			pr_cont("IPID %llx ", m->ipid);
-+		if (err->vi.amd.config)
-+			pr_cont("CONFIG %llx ", err->vi.amd.config);
- 	}
- 
- 	pr_cont("\n");
-@@ -679,6 +681,7 @@ static noinstr void mce_read_aux(struct mce_hw_err *err, int i)
- 
- 	if (mce_flags.smca) {
- 		m->ipid = mce_rdmsrl(MSR_AMD64_SMCA_MCx_IPID(i));
-+		err->vi.amd.config = mce_rdmsrl(MSR_AMD64_SMCA_MCx_CONFIG(i));
- 
- 		if (m->status & MCI_STATUS_SYNDV) {
- 			m->synd = mce_rdmsrl(MSR_AMD64_SMCA_MCx_SYND(i));
-diff --git a/drivers/edac/mce_amd.c b/drivers/edac/mce_amd.c
-index 32bf4cc564a3..f68b3d1b558e 100644
---- a/drivers/edac/mce_amd.c
-+++ b/drivers/edac/mce_amd.c
-@@ -795,6 +795,7 @@ amd_decode_mce(struct notifier_block *nb, unsigned long val, void *data)
- 	struct mce_hw_err *err = (struct mce_hw_err *)data;
- 	struct mce *m = &err->m;
- 	unsigned int fam = x86_family(m->cpuid);
-+	u64 mca_config = err->vi.amd.config;
- 	int ecc;
- 
- 	if (m->kflags & MCE_HANDLED_CEC)
-@@ -814,11 +815,7 @@ amd_decode_mce(struct notifier_block *nb, unsigned long val, void *data)
- 		((m->status & MCI_STATUS_PCC)	? "PCC"	  : "-"));
- 
- 	if (boot_cpu_has(X86_FEATURE_SMCA)) {
--		u32 low, high;
--		u32 addr = MSR_AMD64_SMCA_MCx_CONFIG(m->bank);
--
--		if (!rdmsr_safe(addr, &low, &high) &&
--		    (low & MCI_CONFIG_MCAX))
-+		if (mca_config & MCI_CONFIG_MCAX)
- 			pr_cont("|%s", ((m->status & MCI_STATUS_TCC) ? "TCC" : "-"));
- 
- 		pr_cont("|%s", ((m->status & MCI_STATUS_SYNDV) ? "SyndV" : "-"));
-@@ -853,8 +850,18 @@ amd_decode_mce(struct notifier_block *nb, unsigned long val, void *data)
- 
- 		if (m->status & MCI_STATUS_SYNDV) {
- 			pr_cont(", Syndrome: 0x%016llx\n", m->synd);
--			pr_emerg(HW_ERR "Syndrome1: 0x%016llx, Syndrome2: 0x%016llx",
--				 err->vi.amd.synd1, err->vi.amd.synd2);
-+			if (mca_config & MCI_CONFIG_FRUTEXT) {
-+				char frutext[17];
-+
-+				memset(frutext, 0, sizeof(frutext));
-+				memcpy(&frutext[0], &err->vi.amd.synd1, 8);
-+				memcpy(&frutext[8], &err->vi.amd.synd2, 8);
-+
-+				pr_emerg(HW_ERR "FRU Text: %s", frutext);
-+			} else {
-+				pr_emerg(HW_ERR "Syndrome1: 0x%016llx, Syndrome2: 0x%016llx",
-+					 err->vi.amd.synd1, err->vi.amd.synd2);
-+			}
- 		}
- 
- 		pr_cont("\n");
--- 
-2.34.1
-
+Interpreting a NULL supports_v2() as not supporting v2 sounds
+reasonable to me.
 
