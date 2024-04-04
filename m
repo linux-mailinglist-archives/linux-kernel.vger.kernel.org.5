@@ -1,97 +1,117 @@
-Return-Path: <linux-kernel+bounces-131236-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131237-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCC298984F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:26:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D0D98984F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:27:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 250C52896A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:26:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E78E4B231FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 190E07640D;
-	Thu,  4 Apr 2024 10:26:35 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50AA7763E6;
+	Thu,  4 Apr 2024 10:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="IwhsQb2P"
+Received: from out30-101.freemail.mail.aliyun.com (out30-101.freemail.mail.aliyun.com [115.124.30.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFCAE76028;
-	Thu,  4 Apr 2024 10:26:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463E55D734;
+	Thu,  4 Apr 2024 10:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712226394; cv=none; b=d2Cq/pl0DQyqQwNihl+ljtl9+B/dTtq6AnSop/KGZzKDgaYMdLK1pXlIkQC/TL9TqCcenAnZhh226l05qJXG8dKFzB2P7MngK8+twdXC5S79qVDk2YpbnjZ5VdarxBKAJrRRFG2TRZFKGJkH7oGccqp7ewuu7A1zRQhqz2NoshU=
+	t=1712226450; cv=none; b=LZ3E+AoEIXnzo+hwkmDRaCGGHsUp8asU5XRJ+01EYuU00VhsAZ4ArkiNtddeBemyPUCjTedpD/QeT1K86/PNe4WPqqPQdAQn5KhG43EVHSdcHD5IIF9WSX5X0J1S6r7dunlLJrSqNg1gbSSDWvMo9uchQpZcmUQDQi/XZIzSc2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712226394; c=relaxed/simple;
-	bh=mp9N14PVOm0pDhIFYCwd2DzvxM12B5Bpbgg+kpgmT1w=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YrSYJEqjFhSuYw85zu6FzaaJ0IFT2IhUm2/fLWeSYlyoh4gID/mxp5biNhwz68XBkG1In5rOVBe5mz/aI/NCJMoYn15dO1N/5+KSGP8AUAFFgk1lIYpakOtJnFsrU1zeXz6+4NyD/T7yAdx4BuZs2ndN6YvWiQnG5jIu9wWxFf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9Hmz2h71z6HJqS;
-	Thu,  4 Apr 2024 18:25:07 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3E78C140C72;
-	Thu,  4 Apr 2024 18:26:29 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
- 2024 11:26:28 +0100
-Date: Thu, 4 Apr 2024 11:26:28 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 09/26] cxl/region: Add Dynamic Capacity CXL region
- support
-Message-ID: <20240404112628.0000633d@Huawei.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-9-b7b00d623625@intel.com>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-	<20240324-dcd-type2-upstream-v1-9-b7b00d623625@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712226450; c=relaxed/simple;
+	bh=ryU2IkP4OWePjNg0hnaelrT7lyEeM4tcB4zAcpA0qN0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Blj9kdqZ6d4zXQ0oly0NGj63Cz2obmHv6Eut6AYPqlH+b24Zltz0sj6WD4J/xcyJrKu6fcy6TvyoymCRjTVcCwbT7WQarry+A/DWyUC0aiKSQA153Hw3DWYi1i5eEIYNeUV7759xiO2zHIyoz6h1ApN3+lzLWM008hJcUE5eCt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=IwhsQb2P; arc=none smtp.client-ip=115.124.30.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712226438; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=OYa6vtv11IJHbKUa9Rgq5qOFn0SiPGCaPskyGuje160=;
+	b=IwhsQb2P6J7W3xVYdsI6cKmiu6xg2Owc5HzWRHmJOpPD+agc0i3ZXhfquSSaHBH8PiF9XE+uci/C+bktSjs55p9vN21AhSRdsmn5PKY3K6hAL7x96sC6q1nKpaGOD85JEHKTPTphdpy0ZapYfcmIneHv7yHkKUbvMV4dpLvww7s=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0W3uBuFf_1712226435;
+Received: from 30.39.185.155(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W3uBuFf_1712226435)
+          by smtp.aliyun-inc.com;
+          Thu, 04 Apr 2024 18:27:17 +0800
+Message-ID: <ba524e7f-beeb-49fa-a7c7-eeeedceb1c3c@linux.alibaba.com>
+Date: Thu, 4 Apr 2024 18:27:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500004.china.huawei.com (7.191.163.9) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v5 00/11] net/smc: SMC intra-OS shortcut with
+ loopback-ism
+To: Gerd Bayer <gbayer@linux.ibm.com>, wenjia@linux.ibm.com,
+ jaka@linux.ibm.com
+Cc: wintera@linux.ibm.com, twinkler@linux.ibm.com, hca@linux.ibm.com,
+ gor@linux.ibm.com, agordeev@linux.ibm.com, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ borntraeger@linux.ibm.com, svens@linux.ibm.com, alibuda@linux.alibaba.com,
+ tonylu@linux.alibaba.com, linux-kernel@vger.kernel.org,
+ linux-s390@vger.kernel.org, netdev@vger.kernel.org
+References: <20240324135522.108564-1-guwen@linux.alibaba.com>
+ <ae3ea4bc-4a9c-416e-a593-2885fea96ae5@linux.alibaba.com>
+ <27deaa5dbb30c467fcdaa0667ef39da86bcee03f.camel@linux.ibm.com>
+From: Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <27deaa5dbb30c467fcdaa0667ef39da86bcee03f.camel@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Sun, 24 Mar 2024 16:18:12 -0700
-ira.weiny@intel.com wrote:
 
-> From: Navneet Singh <navneet.singh@intel.com>
-> 
-> CXL devices optionally support dynamic capacity.  CXL Regions must be
-> configured correctly to access this capacity.  Similar to ram and pmem
-> partitions, DC Regions, as they are called in CXL 3.1, represent
-> different partitions of the DPA space.
-> 
-> Introduce the concept of a sparse DAX region.  Add the create_dc_region
-> sysfs entry to create sparse DC DAX regions.  Special case DC capable
-> regions to create a 0 sized seed DAX device to maintain backwards
-> compatibility with older software which needs a default DAX device to
-> hold the region reference.
-> 
-> Flag sparse DAX regions to indicate 0 capacity available until such time
-> as DC capacity is added.
-> 
-> Interleaving is deferred in this series.  Add an early check.
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-With the -EBUSY others addressed LGTM.  Fan's duplication comment
-might be something to tidy up later.
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+On 2024/4/3 19:10, Gerd Bayer wrote:
+> On Wed, 2024-04-03 at 14:35 +0800, Wen Gu wrote:
+>>
+>>
+>> On 2024/3/24 21:55, Wen Gu wrote:
+>>> This patch set acts as the second part of the new version of [1]
+>>> (The first
+>>> part can be referred from [2]), the updated things of this version
+>>> are listed
+>>> at the end.
+>>
+>>> Change log:
+>>>
+>>> RFC v5->RFC v4:
+>>> - Patch #2: minor changes in description of config SMC_LO and
+>>> comments.
+>>> - Patch #10: minor changes in comments and
+>>> if(smc_ism_support_dmb_nocopy())
+>>>     check in smcd_cdc_msg_send().
+>>> - Patch #3: change smc_lo_generate_id() to smc_lo_generate_ids()
+>>> and SMC_LO_CHID
+>>>     to SMC_LO_RESERVED_CHID.
+>>> - Patch #5: memcpy while holding the ldev->dmb_ht_lock.
+>>> - Some expression changes in commit logs.
+>>>
+>>
+>> Hi, Jan. Do you have any comments on this version and should I post a
+>> new patch series without 'RFC'? Thank you.
+> 
+> Hi Wen,
+> 
+> Jan has been out sick for a little while now, and Wenjia is expected
+> back from a longer vacation tomorrow. So if you could hold off until
+> begin of next week, Wenjia might have some more feedback.
+> 
+> In the meantime, I'm looking at your patchset...
+> 
+> Thank you, Gerd
+> 
+
+Hi Gerd,
+
+Thank you for the information and comments! I guess I will post a new
+version at the beginning of next week.
+
+Thanks!
 
