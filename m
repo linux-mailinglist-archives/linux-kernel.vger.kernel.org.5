@@ -1,127 +1,109 @@
-Return-Path: <linux-kernel+bounces-131060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1C44898297
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:57:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 827908982A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:58:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C510B21A1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:57:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2EDA1C21AC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:58:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EC225D724;
-	Thu,  4 Apr 2024 07:57:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7946CDCA;
+	Thu,  4 Apr 2024 07:58:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bhWzuSBS";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eCRL3ZaU"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="BTPeoF04"
+Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8828545970;
-	Thu,  4 Apr 2024 07:57:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF37D5EE76;
+	Thu,  4 Apr 2024 07:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712217456; cv=none; b=F888lGQnlv5aFkBNYLTKagRIb0rWvXg4S78eUeJnlPyhWM/ZGFt6QtgeJaodWN/gabPbhRAd1qvVQwxM6ggp6gfdo3OR4uoYJC0x+PiX4QQDQkqoC5yW84wWnHrsspl+lZa1j7QrSnwF8fjYpTtxO8mVk4P8Q1Km3Kse03uumwE=
+	t=1712217485; cv=none; b=EK/RNrizCWs41WI4wEMFo0J8g1dmeyV4V1mUJtHNNu/ta+W+1/TGLHPNBjWUYjR6Ngn3yN23WXIy0dEjzWWrbfgrdgq3bOs5MQ/P6KdzX7AHXYSf5Q7L+MSOf41UDaKCQMUuy6TiKewRTStM4dPbgP7OfFdIzYrvbYcuXFjw9a0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712217456; c=relaxed/simple;
-	bh=q9aRhNcDzR7Xs1bDRW2HZNJRvDUfLmRMZ34+tSjSNOY=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=kiVc/dhJD328rRYrX4pa4PjgiCpPqPBeqG5IfjNgxT8fLv47ko4UbUdR+/8Bikg5yLciMwbM6RhO5bggtc+FGDVUdr8vqjq8RaT0DwOo7aUp0pJaA41fdeR2w6sZBD6IESOaLyM/pZBAG/qurxj32PEnuYO1Qc5Eds7lC3ZQU6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bhWzuSBS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eCRL3ZaU; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 04 Apr 2024 07:57:31 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712217452;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NNCCZOUGYI/dfTpeabf6PprqLVc9VgSgHRqsATYCMrc=;
-	b=bhWzuSBSqX9DIZkA90vmzto/WkuQlbK74ar9r7F57p20lOtDKtxW8B1FuwwBvXl98NW/kY
-	2ou/PPlo2StLiv/yTeG5wCRGLv0vsWJ+Lx8p+u2P+GBj7G5/KdPCz2UC+BtOMNXLce9DSI
-	s8K5RJIp09tt4RQSV1XGGf1TrteNKwToQ5csyHZAPGaJrDcOL1xyhQsm8EBXCwQGCKH5Cx
-	9bRkbYW43q/ybA5NPXwQnHrYTqdzpMJ9n1ky8JLxk5suFPhsCkLvRLpdTTjLmf1fsajFud
-	B76CFjDVlQo3obiDAAWxikYfdRl8PZtBgaG/37sZVMvV9+OAV10Cx4KMkTK9IQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712217452;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NNCCZOUGYI/dfTpeabf6PprqLVc9VgSgHRqsATYCMrc=;
-	b=eCRL3ZaU+HlcHXXyJU/2yXqXfFQe/QSm64GWIQOaNpAhzS666UCQDKAMVgqcTSOHoKR9Nu
-	hCOtf3HnrF6FNjAQ==
-From: "tip-bot2 for Li RongQing" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject:
- [tip: x86/fpu] x86/fpu: Update fpu_swap_kvm_fpu() uses in comments as well
-Cc: Li RongQing <lirongqing@baidu.com>, Ingo Molnar <mingo@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240403091803.818-1-lirongqing@baidu.com>
-References: <20240403091803.818-1-lirongqing@baidu.com>
+	s=arc-20240116; t=1712217485; c=relaxed/simple;
+	bh=jtzhrMLdZ8BM8eIGM+1HCvFVB4kJmRbapmmThq4pMyk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eRoAsRyiv8Sv9c6uN/T/JWa8V8vDPecPICp4HZvCVWIrfKXwX2afX/uk51ASA3QNDNViSlWlwAfJcALQp30311o4ZwiPmVTYWPiMLKQcytgRIxogfdtYZMe++xCRS43zWLPnoXde8gjgRkAFQy66oKqoTrLx0ctOnuix9OHfPMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=BTPeoF04; arc=none smtp.client-ip=37.205.15.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id 8F4C41BF132;
+	Thu,  4 Apr 2024 09:58:00 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1712217480; bh=ZeTrjHj8R8/GGeNF/M+NaL7fhHhYqCIgj0CVkk8KzLg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=BTPeoF04gCPLsFsx12CG+rAV9sdx737J25fCkK4oVXJMrnTAYLFOVoe9YGkgvUJ5a
+	 ZaecnVh3gxT7Jv+5bhR21nxMu9PW665iI1as0B7z7AdpzqIpn3BGIWCXT/WXYzn14m
+	 wk1rHGeajIUNtm4tSVYi6rkuskfibzSZ/uLWF9bxqkfYS/vAvpxwQ5Lvxxj/0K/IR0
+	 JHqfOlGD2ANKdmjHhku5afPml/bH3lFSXtr9rP9cMZMHtAsQwz3+3mEI0y8byw+aBK
+	 23epvw7DbQe6b/SvEei8yLjTFA+OmFQukCEfKwZxIJtxNSwYN6bgQ4ZnrLd2mFF+3F
+	 Yg5dhg7dHhJdw==
+From: Petr Tesarik <petr@tesarici.cz>
+To: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	netdev@vger.kernel.org (open list)
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
+	linux-kernel@vger.kernel.org (open list),
+	"Linux regression tracking (Thorsten Leemhuis)" <regressions@leemhuis.info>,
+	Petr Tesarik <petr@tesarici.cz>
+Subject: [PATCH net] u64_stats: fix u64_stats_init() for lockdep when used repeatedly in one file
+Date: Thu,  4 Apr 2024 09:57:40 +0200
+Message-ID: <20240404075740.30682-1-petr@tesarici.cz>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171221745138.10875.968824238407538547.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-The following commit has been merged into the x86/fpu branch of tip:
+Fix bogus lockdep warnings if multiple u64_stats_sync variables are
+initialized in the same file.
 
-Commit-ID:     af813acf8c06db58c6e21d89d9e45e8cd1512965
-Gitweb:        https://git.kernel.org/tip/af813acf8c06db58c6e21d89d9e45e8cd1512965
-Author:        Li RongQing <lirongqing@baidu.com>
-AuthorDate:    Wed, 03 Apr 2024 17:18:03 +08:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 04 Apr 2024 09:49:42 +02:00
+With CONFIG_LOCKDEP, seqcount_init() is a macro which declares:
 
-x86/fpu: Update fpu_swap_kvm_fpu() uses in comments as well
+	static struct lock_class_key __key;
 
-The following commit:
+Since u64_stats_init() is a function (albeit an inline one), all calls
+within the same file end up using the same instance, effectively treating
+them all as a single lock-class.
 
-  d69c1382e1b7 ("x86/kvm: Convert FPU handling to a single swap buffer")
-
-reworked KVM FPU handling, but forgot to update the comments
-in xstate_op_valid(): fpu_swap_kvm_fpu() doesn't exist anymore,
-fpu_swap_kvm_fpstate() is used instead.
-
-Update the comments accordingly.
-
-[ mingo: Improved the changelog. ]
-
-Signed-off-by: Li RongQing <lirongqing@baidu.com>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240403091803.818-1-lirongqing@baidu.com
+Fixes: 9464ca650008 ("net: make u64_stats_init() a function")
+Closes: https://lore.kernel.org/netdev/ea1567d9-ce66-45e6-8168-ac40a47d1821@roeck-us.net/
+Signed-off-by: Petr Tesarik <petr@tesarici.cz>
 ---
- arch/x86/kernel/fpu/xstate.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/u64_stats_sync.h | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index 117e74c..d978251 100644
---- a/arch/x86/kernel/fpu/xstate.c
-+++ b/arch/x86/kernel/fpu/xstate.c
-@@ -1433,8 +1433,8 @@ static bool xstate_op_valid(struct fpstate *fpstate, u64 mask, bool rstor)
- 		return rstor;
+diff --git a/include/linux/u64_stats_sync.h b/include/linux/u64_stats_sync.h
+index ffe48e69b3f3..457879938fc1 100644
+--- a/include/linux/u64_stats_sync.h
++++ b/include/linux/u64_stats_sync.h
+@@ -135,10 +135,11 @@ static inline void u64_stats_inc(u64_stats_t *p)
+ 	p->v++;
+ }
  
- 	/*
--	 * XSAVE(S): clone(), fpu_swap_kvm_fpu()
--	 * XRSTORS(S): fpu_swap_kvm_fpu()
-+	 * XSAVE(S): clone(), fpu_swap_kvm_fpstate()
-+	 * XRSTORS(S): fpu_swap_kvm_fpstate()
- 	 */
+-static inline void u64_stats_init(struct u64_stats_sync *syncp)
+-{
+-	seqcount_init(&syncp->seq);
+-}
++#define u64_stats_init(syncp)				\
++	do {						\
++		struct u64_stats_sync *__s = (syncp);	\
++		seqcount_init(&__s->seq);		\
++	} while (0)
  
- 	/*
+ static inline void __u64_stats_update_begin(struct u64_stats_sync *syncp)
+ {
+-- 
+2.44.0
+
 
