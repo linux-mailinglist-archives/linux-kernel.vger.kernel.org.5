@@ -1,101 +1,113 @@
-Return-Path: <linux-kernel+bounces-131449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D4ED898800
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:39:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 638A589880C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:40:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB94C28B605
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:39:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F89128EF14
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E466B129E7C;
-	Thu,  4 Apr 2024 12:37:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A68312AAE7;
+	Thu,  4 Apr 2024 12:38:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CNvk5Qg4"
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ekfs0HVz"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C18AA126F14
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:37:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47106128361;
+	Thu,  4 Apr 2024 12:38:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712234275; cv=none; b=ktS4pG+g2Qnsmy5bEy5aVrQmNcvo2ERJ6dAhrU505rWgsda+ytM7kHbFvfYLBoUGNMW1YKpYpu5fgI9nLy95e6tATCrK3PDvNirI47M0UmHZdARc3n1e7d8CrxHK3TkDiVMISyot2UMO1JGxthv5jwDkzvC7VgY/qfSfZX7mOac=
+	t=1712234329; cv=none; b=GBHbMRJPKEfUQFCVZXfMQYFcH928JhbTxkx4MCBsxnz8rQzeH25XkJnBWisL6T98ZILU/ovT0cJtYieVwMazB0JPr6vwQ4yrxNlkNuRy+pwlm34bx+IOk75LCmaNbwcPcZO806Zm1ebbtpEYrI/CthueiDogzBMWRNAITrB557I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712234275; c=relaxed/simple;
-	bh=1UOOj7HVrQt0h9PL4XvYt/N7rCt5/4KjtyqyN7vPb0g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bUpY850Gh4NQZ/PzzZFI9BT7l9uV4FnhInZnSxKnQSv/aIxs0ntgJw0fxrxlB4GjhD5smpUGtetUR6d8HzCTOFZ9sGlJj6dJGoKiRC8q4IjgGUBaToqse/0b9uMl8mqZGJSZkWcdrQEQkv6GF77wwXbcYict//WhZhCHXnHeAz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CNvk5Qg4; arc=none smtp.client-ip=209.85.217.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-479cbfc62e9so194497137.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:37:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712234272; x=1712839072; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1UOOj7HVrQt0h9PL4XvYt/N7rCt5/4KjtyqyN7vPb0g=;
-        b=CNvk5Qg4jn4MASHaVNXKBCfCKe5E/9ZkYIdfc6c90M075koIeArWeT4g/7n6e+Uh1r
-         xbJk99XY8ZBJ3mciA8lwcExeOVc6q88b1Ez6d2VLxn53XARBN0ZPLqScMctrA7XRbQPS
-         BvF6UEG7lNCko6rugP+M5K85/LM75YxVz7G6kEP8G/8aZtJM76sD08Lc07RZadvx230R
-         E8pRPs4tKosnBZGQhZaDqS6fTbRIH5l5a8EUqui9ef22hUp8Et6ob1HBUmL41zTPGf7C
-         HOKh2N5qR6fPNbFVX09weqQh/liwqKiV06Pa1srQZLZ6AZQ52TObwUEog9Vsb8CoaB+a
-         EDxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712234272; x=1712839072;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1UOOj7HVrQt0h9PL4XvYt/N7rCt5/4KjtyqyN7vPb0g=;
-        b=gF7xy3PO8WajLMG/xSX8lg4VnfmsxfbEi29dv05Xde0KTAwU1AVNLFLUiwuVqe5C7T
-         YXrZRUQ/5KSL9WdPWTyo9rtf1E0hHbZgb3uHlkyxMpbLMDGuZ39Vww55Ufn0xxhXF+Y2
-         nUgct/psuaIAnbrgsijWsXQ8VUfjnUn2rkcz/thH8wcLwqAlyXDhj1MX2qNvg+YKQcnO
-         5NBBGXC2KTNV9hS0BEFEKn+A9Ums9GPu+U5Vl1dpjXGmBcEaG4vc1vGQJEaE3EmF8dPy
-         E76+Srlzbcd6A90/kXOGsKvktNEmCXAXpulUotTt7e0Kvj/KAgb0MvTUgAN8gM+Qk0L8
-         uCzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVwQAiOMDee2/psNZ9Zxau0/tER89lBg0z9qDYuhu3rO//Dj3pgqPwX8mgodFLlNSmGia7fBTW2oNRIBDSLaFHCGulzn4rwXNasYL1J
-X-Gm-Message-State: AOJu0YywtAL3ZztwapVkf8f6obJgQJK3eY6zhuvbCao5/VxEkCIvJLpN
-	6n5R633jHe3MwkrKFx9muSQ90GXgvzT/H/5t7B5Qwi5w+6ws3PAqwfL5v7qStg//NM4rjdzYsHx
-	opfS6/AtQ9Gghp9ZRog9WGwTybfXQ28yomnhf
-X-Google-Smtp-Source: AGHT+IEwd7Gf6hgJAw4LIn1Bho0OU4WXw10FA6rDXMkVbkwBgy1MbcK51lDeLQeZtkXBfDSj49VYXwad3mLdbMUlAsM=
-X-Received: by 2002:a05:6102:1898:b0:478:5850:cc64 with SMTP id
- ji24-20020a056102189800b004785850cc64mr2168641vsb.6.1712234272614; Thu, 04
- Apr 2024 05:37:52 -0700 (PDT)
+	s=arc-20240116; t=1712234329; c=relaxed/simple;
+	bh=BqLh2TXuzSKAxHouEngvuuCxKj/tZMBJbO/Duq4WBP4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WiD0VMApFhpb0KDidX4HSP7k3guS2JMnlLfpB4p+kRKv7e6UypM1cojece9lv7rD/m1HJ/0hFQF0Ss2DUSZPjyGG4QTRUEmOA8RtIpJ3KRisepegXiWGKqe5tYwOauanFDcv7tWhibTd+5OZt8jSRfvqIV5eTWMxUQrngmmQnHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=ekfs0HVz; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712234328; x=1743770328;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BqLh2TXuzSKAxHouEngvuuCxKj/tZMBJbO/Duq4WBP4=;
+  b=ekfs0HVzqctIkFCXU9f2uY/12x78sJdpH/u4zezIrD48i5jD2S9EZjZe
+   W4XArne33s9nWimhmwJjux5fapky7h5e4YQJIc6WWawl1jdnV7IpzpIFq
+   /x8JfGSkMADWuUg+fBdLspaAEC+vmS/NbZX1sZeDlWoAvfcq3v5gGbsSY
+   U/YtXB5CZy30nHz0nlTS8fTmBoxqfe1Pv63ucrjfHYc+ysdCiXPbxBFAT
+   68zTK9SrJogLwn5pl89cCFJbnSuqbFxxUaJobzwe1Q1KwjnVQ5SsVTT9/
+   tFnWgX8AaXhdyXyMqa4aKoFoYrneT1U64Z+23QhLXsiYfg2fZsWbSJIsa
+   g==;
+X-CSE-ConnectionGUID: zxdOAx2MTCC4NEu2Y4szsg==
+X-CSE-MsgGUID: C1GdgCJ7T5aXTz2Hl6Ze4g==
+X-IronPort-AV: E=Sophos;i="6.07,179,1708412400"; 
+   d="scan'208";a="250267567"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Apr 2024 05:38:45 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 4 Apr 2024 05:38:30 -0700
+Received: from ROB-ULT-M76677.microchip.com (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Thu, 4 Apr 2024 05:38:28 -0700
+From: Andrei Simion <andrei.simion@microchip.com>
+To: <robh@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+	<conor+dt@kernel.org>, <nicolas.ferre@microchip.com>,
+	<alexandre.belloni@bootlin.com>, <claudiu.beznea@tuxon.dev>,
+	<mihai.sain@microchip.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Andrei Simion <andrei.simion@microchip.com>
+Subject: [PATCH v2 0/2] Fix the regulator-state-standby definition
+Date: Thu, 4 Apr 2024 15:38:22 +0300
+Message-ID: <20240404123824.19182-1-andrei.simion@microchip.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403194321.88716-1-benno.lossin@proton.me>
-In-Reply-To: <20240403194321.88716-1-benno.lossin@proton.me>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 4 Apr 2024 14:37:41 +0200
-Message-ID: <CAH5fLghG1W0ivtERe_WZrGn1zSAxE7v0W7YDCh21_XO1Pgpqdw@mail.gmail.com>
-Subject: Re: [PATCH] rust: init: change the generated name of guard variables
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, 
-	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-On Wed, Apr 3, 2024 at 9:43=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
-> wrote:
->
-> The initializers created by the `[try_][pin_]init!` macros utilize the
-> guard pattern to drop already initialized fields, when initialization
-> fails mid-way. These guards are generated to have the same name as the
-> field that they handle. To prevent namespacing issues when the field
-> name is the same as e.g. a constant name, add `__` as a prefix and
-> `_guard` as the suffix.
->
-> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
+make dtbs_check DT_SCHEMA_FILES=microchip,mcp16502.yaml
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+at91-sama7g5ek.dtb: mcp16502@5b: regulators:VDD_(CORE|OTHER)|LDO[1-2]:
+regulator-state-standby 'regulator-suspend-voltage' does not match any of
+the regexes 'pinctrl-[0-9]+' from schema
+$id: http://devicetree.org/schemas/regulator/microchip,mcp16502.yaml#
+
+at91-sama7g54_curiosity.dtb: pmic@5b: regulators:VDD_(CORE|OTHER)|LDO[1-2]:
+regulator-state-standby 'regulator-suspend-voltage' does not match any of
+the regexes 'pinctrl-[0-9]+' from schema
+$id: http://devicetree.org/schemas/regulator/microchip,mcp16502.yaml#
+
+This patch series proposes to correct the typo that was entered by mistake
+into devicetree definition regulator-state-standby by replacing
+regulator-suspend-voltage with regulator-suspend-microvolt.
+
+--------------------
+v1 -> v2:
+- drop "boot" from title
+- put in commit message a snippet with the warning to explain the chang
+--------------------
+Andrei Simion (2):
+  ARM: dts: microchip: at91-sama7g5ek: Replace regulator-suspend-voltage
+    with the valid property
+  ARM: dts: microchip: at91-sama7g54_curiosity: Replace
+    regulator-suspend-voltage with the valid property
+
+ arch/arm/boot/dts/microchip/at91-sama7g54_curiosity.dts | 8 ++++----
+ arch/arm/boot/dts/microchip/at91-sama7g5ek.dts          | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+
+-- 
+2.34.1
+
 
