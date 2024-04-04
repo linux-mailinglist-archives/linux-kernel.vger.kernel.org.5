@@ -1,219 +1,171 @@
-Return-Path: <linux-kernel+bounces-131107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 072F389832B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:32:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E170898331
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:32:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72A8B1F23423
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:32:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 251E01C272E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:32:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D98570CC8;
-	Thu,  4 Apr 2024 08:32:08 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B80C6D1B4;
+	Thu,  4 Apr 2024 08:32:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kseJMoFx"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 785B11E86F;
-	Thu,  4 Apr 2024 08:32:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F24C96BB4C;
+	Thu,  4 Apr 2024 08:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712219527; cv=none; b=YULN4lwKul3coda17ncNkDGGOm4phDyG9tXBtMLYfRMXZAnIG0whVwchVcqIBCt4qjEOISdJfP6+LydgzX1vDSvFZ/xS2d6mPA8ONABnMndTtkXHQbY7c43jEcPFTXIfSZVg2NhhZ/O6uOiXa0oZ3vFH+BhvNRmnaRnyfHTZTO8=
+	t=1712219563; cv=none; b=J3zklLzjNSX7UsrcihwoMeHI4tcGmXoFCja7u9rLsMJhH+yLs2thSI3FO7YreKMmJGOckDWwZRzE/Eb3jT6+KIBxdYQD1uk5KHIhD6JjKF+HUKB5y3XwK3mBkFj0tZilNnowBf1dIWYrN7jupaWBP64HuFhIon5ttaVE+Eo0mno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712219527; c=relaxed/simple;
-	bh=JKS3gJuoyWRLgG5BfFc0HNP29RdT5bEYJ3j/de6iRMo=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KYLfftBREc7gKqZWL2OQtkV/4SqL6MGqDFHaBLgkf3I3ixqBdQqNbL3/4T0ZUqffqY/a5UcLI2IG+CvNUthJtXZC/L4+aRq/Fao6vLxSqMpZh+Uzsdqn4PdY4DutOT5J8B7V7t+7TQ4VV0xdp8uwOB4c9Gs1pxYF2wC0tRjbxo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9FDx2Rwqz6GBcd;
-	Thu,  4 Apr 2024 16:30:41 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 47FDA140C9C;
-	Thu,  4 Apr 2024 16:32:00 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
- 2024 09:31:59 +0100
-Date: Thu, 4 Apr 2024 09:32:01 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 06/26] cxl/port: Add Dynamic Capacity mode support to
- endpoint decoders
-Message-ID: <20240404093201.00004f33@Huawei.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-6-b7b00d623625@intel.com>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-	<20240324-dcd-type2-upstream-v1-6-b7b00d623625@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712219563; c=relaxed/simple;
+	bh=p2900hK6xx3eWgvsWFsyDXuQ4qS8UtyhwhAwQaQq94U=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pVhdhUpAlCC66/bMR47yliY0HFLE6Fn3+j1Ipe7sRh1MrQPD2eAMS7rsKt+u7yZ2pz5whqsEpbErmzB2+kOtG/3jttrRDzUrlpwzA1oJiAlifZmJ7zfblN9d2Ha5W6JVK1MpzghkAWylBsCTPQJYvIGY19EsZMz1Aca1a07lnd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=kseJMoFx; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4348WNXu121426;
+	Thu, 4 Apr 2024 03:32:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712219543;
+	bh=hmxMvt8eAd0WKcI2X6dAusa/LHBf3QDz5/1lLNPytnw=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=kseJMoFxlQz0XfNtP3nCjqrzfTYfBFBiKWziG+qbPpqae0hDzI0uHEOBHjj5Ij7B/
+	 cMEtQLlqf+GIzcJw38U3xhwnDxI5wgebg+/Uff73GNsW/p0Hzbzma784mUIdy11Oja
+	 HnY5Yge2Tji/VdTWnsx5+vximFLtUVpQmftcq/oM=
+Received: from DFLE101.ent.ti.com (dfle101.ent.ti.com [10.64.6.22])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4348WNxX037479
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 4 Apr 2024 03:32:23 -0500
+Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 4
+ Apr 2024 03:32:23 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 4 Apr 2024 03:32:23 -0500
+Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4348WLjf002065;
+	Thu, 4 Apr 2024 03:32:22 -0500
+Date: Thu, 4 Apr 2024 14:02:21 +0530
+From: Siddharth Vadapalli <s-vadapalli@ti.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>
+CC: Siddharth Vadapalli <s-vadapalli@ti.com>, <lee@kernel.org>,
+        <robh@kernel.org>, <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
+Subject: Re: [PATCH] dt-bindings: mfd: syscon: Add ti,am62p-cpsw-mac-efuse
+ compatible
+Message-ID: <a895ddc8-5c18-49d7-86c4-b995bb946914@ti.com>
+References: <20240402105708.4114146-1-s-vadapalli@ti.com>
+ <2e9b6a91-43d3-4b23-830d-40e607505d8c@kernel.org>
+ <30065bdc-ccef-4610-b1c1-7661f801b8e9@ti.com>
+ <4b1380a8-0136-4395-ba42-9bcff2e1bdb0@kernel.org>
+ <aabea385-16e0-4116-a12b-3ce1e06574e3@ti.com>
+ <eb7a0d5c-c197-44b9-baea-e9b54792b447@kernel.org>
+ <af61424e-7006-49f5-b614-3caa3674685a@ti.com>
+ <083e50de-1c99-4a58-8b55-4dec26d97c1b@kernel.org>
+ <9bca7d94-142e-4717-aea7-437805717a00@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <9bca7d94-142e-4717-aea7-437805717a00@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Sun, 24 Mar 2024 16:18:09 -0700
-ira.weiny@intel.com wrote:
-
-> From: Navneet Singh <navneet.singh@intel.com>
+On Wed, Apr 03, 2024 at 12:18:10PM +0530, Siddharth Vadapalli wrote:
+> On Wed, Apr 03, 2024 at 08:40:19AM +0200, Krzysztof Kozlowski wrote:
+> > On 03/04/2024 08:32, Siddharth Vadapalli wrote:
+> > > On Wed, Apr 03, 2024 at 08:27:06AM +0200, Krzysztof Kozlowski wrote:
+> > >> On 03/04/2024 07:35, Siddharth Vadapalli wrote:
+> > >>> On Tue, Apr 02, 2024 at 08:06:27PM +0200, Krzysztof Kozlowski wrote:
+> > >>>> On 02/04/2024 14:30, Siddharth Vadapalli wrote:
+> > >>>>> On Tue, Apr 02, 2024 at 02:08:32PM +0200, Krzysztof Kozlowski wrote:
+> > >>>>>> On 02/04/2024 12:57, Siddharth Vadapalli wrote:
+> > >>>>>>> The CTRLMMR_MAC_IDx registers within the CTRL_MMR space of TI's AM62p SoC
+> > >>>>>>> contain the MAC Address programmed in the eFuse. Add compatible for
+> > >>>>>>> allowing the CPSW driver to obtain a regmap for the CTRLMMR_MAC_IDx
+> > >>>>>>> registers within the System Controller device-tree node. The default MAC
+> > >>>>>>> Address for the interface corresponding to the first MAC port will be set
+> > >>>>>>> to the value programmed in the eFuse.
+> > >>>>>>>
+> > >>>>>>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> > >>>>>>> ---
+> > >>>>>>>
+> > >>>>>>> This patch is based on linux-next tagged next-20240402.
+> > >>>>>>
+> > >>>>>> Where is the DTS using it?
+> > >>>>>
+> > >>>>> The current implementation in the device-tree for older TI K3 SoCs is as
+> > >>>>> follows:
+> > >>>>>
+> > >>>>> 	cpsw_port1: port@1 {
+> > >>>>> 		reg = <1>;
+> > >>>>> 		ti,mac-only;
+> > >>>>> 		label = "port1";
+> > >>>>> 		phys = <&phy_gmii_sel 1>;
+> > >>>>> 		mac-address = [00 00 00 00 00 00];
+> > >>>>> 		ti,syscon-efuse = <&wkup_conf 0x200>;
+> > >>>>> 	};
+> > >>>>>
+> > >>>>> The "ti,syscon-efuse" property passes the reference to the System
+> > >>>>> Controller node as well as the offset to the CTRLMMR_MAC_IDx registers
+> > >>>>> within the CTRL_MMR space.
+> > >>>>
+> > >>>> Please reference upstream DTS or lore link to patch under review.
+> > >>>
+> > >>> An example of the existing implementation in the device-tree for AM64x
+> > >>> is:
+> > >>> https://github.com/torvalds/linux/blob/d4e8c8ad5d14ad51ed8813442d81c43019fd669d/arch/arm64/boot/dts/ti/k3-am64-main.dtsi#L697
+> > >>> It uses:
+> > >>> 	ti,syscon-efuse = <&main_conf 0x200>;
+> > >>>
+> > >>> and "main_conf" node is defined at:
+> > >>> https://github.com/torvalds/linux/blob/d4e8c8ad5d14ad51ed8813442d81c43019fd669d/arch/arm64/boot/dts/ti/k3-am64-main.dtsi#L40
+> > >>
+> > >> It is quite different than your bindings, so your bindings are incorrect.
+> > > 
+> > > Sorry I didn't understand what you mean. The references I have provided
+> > > are for existing DTS where "main_conf"/"wkup_conf" (System Controller
+> > > nodes) have the compatible "syscon", unlike in AM62p at:
+> > > https://github.com/torvalds/linux/blob/20f8173afaac90dd9dca11be4aa602a47776077f/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi#L8
+> > > which has the "simple-bus" compatible for the "wkup_conf" node.
+> > > 
+> > > Also, shouldn't the device-tree bindings patches be posted first and get
+> > > merged before I post the device-tree patches that utilize the
+> > > compatible/properties that have been added in the bindings? That is the
+> > > reason why I had shared the "DIFF" for the DTS changes that I will be
+> > > posting once this patch for the new compatible is accepted.
+> > > 
+> > 
+> > That's not the process. I will be NAKing bindings which do not have any
+> > users, because I do not trust you test them.
+> > 
+> > The process is almost always:
+> > 1. Send bindings,
+> > 2. Send driver changes (if applicable) in the same patchset.
+> > 3. Send DTS, usually in separate patches and provide lore link to the
+> > bindings in the changelog or cover letter.
 > 
-> Endpoint decoders which are used to map Dynamic Capacity must be
-> configured to point to the correct Dynamic Capacity (DC) Region.  The
-> decoder mode currently represents the partition the decoder points to
-> such as ram or pmem.
-> 
-> Expand the mode to include DC regions [partitions].
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> 
-> ---
-> Changes for v1:
-> [iweiny: eliminate added gotos]
-> [iweiny: Mark DC support for 6.10 kernel]
-> ---
->  Documentation/ABI/testing/sysfs-bus-cxl | 21 +++++++++++----------
->  drivers/cxl/core/hdm.c                  | 19 +++++++++++++++++++
->  drivers/cxl/core/port.c                 | 16 ++++++++++++++++
->  3 files changed, 46 insertions(+), 10 deletions(-)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
-> index fff2581b8033..8b3efaf6563c 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-cxl
-> +++ b/Documentation/ABI/testing/sysfs-bus-cxl
-> @@ -316,23 +316,24 @@ Description:
->  
->  
->  What:		/sys/bus/cxl/devices/decoderX.Y/mode
-> -Date:		May, 2022
-> -KernelVersion:	v6.0
-> +Date:		May, 2022, June 2024
-> +KernelVersion:	v6.0, v6.10 (dcY)
->  Contact:	linux-cxl@vger.kernel.org
->  Description:
->  		(RW) When a CXL decoder is of devtype "cxl_decoder_endpoint" it
->  		translates from a host physical address range, to a device local
->  		address range. Device-local address ranges are further split
-> -		into a 'ram' (volatile memory) range and 'pmem' (persistent
-> -		memory) range. The 'mode' attribute emits one of 'ram', 'pmem',
-> -		'mixed', or 'none'. The 'mixed' indication is for error cases
-> -		when a decoder straddles the volatile/persistent partition
-> -		boundary, and 'none' indicates the decoder is not actively
-> -		decoding, or no DPA allocation policy has been set.
-> +		into a 'ram' (volatile memory) range, 'pmem' (persistent
-> +		memory) range, or Dynamic Capacity (DC) range. The 'mode'
-> +		attribute emits one of 'ram', 'pmem', 'dcY', 'mixed', or
-> +		'none'. The 'mixed' indication is for error cases when a
-> +		decoder straddles the volatile/persistent partition boundary,
+> Thank you for clarifying. I will post the DTS patches corresponding to
+> this patch and reference this patch in the DTS patch series.
 
-I love corners.  What happen if no persistent and decoder straddles
-volatile / dc0?  Would only happen if the bios was having fun I think...
+I have posted the DTS patch at:
+https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240404081845.622707-1-s-vadapalli@ti.com/
+indicating the dependency on this bindings patch.
 
-> +		and 'none' indicates the decoder is not actively decoding, or
-> +		no DPA allocation policy has been set.
->  
->  		'mode' can be written, when the decoder is in the 'disabled'
-> -		state, with either 'ram' or 'pmem' to set the boundaries for the
-> -		next allocation.
-> +		state, with 'ram', 'pmem', or 'dcY' to set the boundaries for
-> +		the next allocation.
->  
->  
->  What:		/sys/bus/cxl/devices/decoderX.Y/dpa_resource
-> diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
-> index 66b8419fd0c3..e22b6f4f7145 100644
-> --- a/drivers/cxl/core/hdm.c
-> +++ b/drivers/cxl/core/hdm.c
-> @@ -255,6 +255,14 @@ static void devm_cxl_dpa_release(struct cxl_endpoint_decoder *cxled)
->  	__cxl_dpa_release(cxled);
->  }
->  
-> +static int dc_mode_to_region_index(enum cxl_decoder_mode mode)
-> +{
-> +	if (mode < CXL_DECODER_DC0 || CXL_DECODER_DC7 < mode)
-> +		return -EINVAL;
-> +
-> +	return mode - CXL_DECODER_DC0;
-> +}
-> +
->  static int __cxl_dpa_reserve(struct cxl_endpoint_decoder *cxled,
->  			     resource_size_t base, resource_size_t len,
->  			     resource_size_t skipped)
-> @@ -411,6 +419,7 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
->  	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
->  	struct cxl_dev_state *cxlds = cxlmd->cxlds;
->  	struct device *dev = &cxled->cxld.dev;
-> +	int rc;
->  
->  	guard(rwsem_write)(&cxl_dpa_rwsem);
->  	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE)
-> @@ -433,6 +442,16 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
->  			return -ENXIO;
->  		}
->  		break;
-> +	case CXL_DECODER_DC0 ... CXL_DECODER_DC7:
-> +		rc = dc_mode_to_region_index(mode);
-> +		if (rc < 0)
-> +			return rc;
-
-Can't fail, so you could not bother checking..  Seems very unlikely
-that function will gain other error cases in the future.
-
-> +
-> +		if (resource_size(&cxlds->dc_res[rc]) == 0) {
-> +			dev_dbg(dev, "no available dynamic capacity\n");
-> +			return -ENXIO;
-> +		}
-> +		break;
->  	default:
->  		dev_dbg(dev, "unsupported mode: %d\n", mode);
->  		return -EINVAL;
-> diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
-> index e59d9d37aa65..80c0651794eb 100644
-> --- a/drivers/cxl/core/port.c
-> +++ b/drivers/cxl/core/port.c
-> @@ -208,6 +208,22 @@ static ssize_t mode_store(struct device *dev, struct device_attribute *attr,
->  		mode = CXL_DECODER_PMEM;
->  	else if (sysfs_streq(buf, "ram"))
->  		mode = CXL_DECODER_RAM;
-> +	else if (sysfs_streq(buf, "dc0"))
-> +		mode = CXL_DECODER_DC0;
-> +	else if (sysfs_streq(buf, "dc1"))
-> +		mode = CXL_DECODER_DC1;
-> +	else if (sysfs_streq(buf, "dc2"))
-> +		mode = CXL_DECODER_DC2;
-> +	else if (sysfs_streq(buf, "dc3"))
-> +		mode = CXL_DECODER_DC3;
-> +	else if (sysfs_streq(buf, "dc4"))
-> +		mode = CXL_DECODER_DC4;
-> +	else if (sysfs_streq(buf, "dc5"))
-> +		mode = CXL_DECODER_DC5;
-> +	else if (sysfs_streq(buf, "dc6"))
-> +		mode = CXL_DECODER_DC6;
-> +	else if (sysfs_streq(buf, "dc7"))
-> +		mode = CXL_DECODER_DC7;
-
-Fully agree with the comment that a string + enum table and search
-is probably appropriate here.
-
->  	else
->  		return -EINVAL;
->  
-> 
-
+Regards,
+Siddharth.
 
