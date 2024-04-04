@@ -1,122 +1,107 @@
-Return-Path: <linux-kernel+bounces-131913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB5DF898D84
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:52:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 35586898D88
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:56:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 195C41C2619A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:52:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 663391C21252
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:56:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9877C12EBDC;
-	Thu,  4 Apr 2024 17:52:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D5012F5AA;
+	Thu,  4 Apr 2024 17:56:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ajIKeu4s"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mIV3m8++"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6906110962
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:52:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F5F127B7D;
+	Thu,  4 Apr 2024 17:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712253129; cv=none; b=upIh4TMT2TqEnQkdrPk4Ca6eWEEb1ImIKXEQ5F/2rmZH97zriN1/H2MhOWy45KemZMYf1J5z8fsr7+5t2eWV5j7MHXJm/GUCAuzZHV/oFR9cDJrNnfgG81zSd6njo4UVgSguuMvEWRWIM9yZOTRYA71cWgQGWAKd6KWflA5eRW0=
+	t=1712253365; cv=none; b=aG/rKaXl9sOUYizUcEQsRgeAQ+TP8bkP5LnELHMVt/enu4H6EoOpoUhOv7DOXlMnWH2AvPPabhq4xL1NWnxEiXwAMayJ8cgVRonlI5rqSB/WWTVBw1uFvzFFbs94js4KhQUqkY2ZJ3Z+UvQZA5W5/RHf0rHQq2C/vrdPSy+I+v0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712253129; c=relaxed/simple;
-	bh=MdM0y2PRyWI7KHw2LzBtU/nJ21hpHcvfN4gely6M3Gw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VFAUUX1jCDhFrQH0HhDfGVgv26Cd0nVeceNkwE8pD0ISQNxa+AHrgTeeCCUs/f500DY2+/1zh7CsW32NQ4V86WXLHrhRxzBjfOoatkEVztkf/yO07XX7I2bsK6lbrEdRdw+iVOA85WDSbIQCk+8fsvDVbnHftjNdr8mlJND/8ZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ajIKeu4s; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712253127;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DCgQ4XKq9cQw6U/Q/+8bvsFn1ExQW/rlMWVpTGGhyWc=;
-	b=ajIKeu4sQ0cF8cgTCZoF9mFU0msD3eKxcx/hu6WcULF6o0YNle7LPjVgEexwbCWVsUWbTB
-	nW/2zmMNQduCGKb9joBqTpKjznp9zuNMolOV8ftwr0LJmBKY/Bbg88NvHRq2E9DRT8F1Fi
-	D7hYDyIx9Y4fRXrWfCIhHVKDysYIeOA=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-352-1cnSf5dCO8m7jK-R8JyHbA-1; Thu, 04 Apr 2024 13:52:06 -0400
-X-MC-Unique: 1cnSf5dCO8m7jK-R8JyHbA-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a4dfdbdaf06so73489566b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:52:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712253124; x=1712857924;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DCgQ4XKq9cQw6U/Q/+8bvsFn1ExQW/rlMWVpTGGhyWc=;
-        b=b7qmVOeY0NJ3dAGQhVtZ45fl0X+tFo9BNGxMAVMj/KfI7LfCWfs1u3Lxx0KVE+jW2h
-         H+KABkZcHWbdzMmRL3UOf993Y7gPBENipa6afY0pxVF1DiGmCgKje9pd4Z8+nED/174g
-         fRiNrhgvDev1ubhY6WMPYdiYLKG9sppANoFrBYMs70INZKXCAFgOzU5QU7lzkExxRNjV
-         vTYoweKFwR8oCIN8x2cXp2i9NWoyIWgwUpK7NG0pRQr6ljRurzP0j+1F0VK99y92bB+c
-         orsUgFVOZLFz6HeeZFXgi3vhy78MgT/Qg/sPSm7xUkfTQSrYubUm8i/e42YlLAw1BbZz
-         A+xA==
-X-Forwarded-Encrypted: i=1; AJvYcCXY+du5c5yt9I4Vg5S5Wf+QDbkFkzDOucUpuwFROwFjJdj9ppBYGC/I0h3jZ1z/cOr5lqsTTBA5mbxbucFbut9nPHb/eV8WIUULSCMC
-X-Gm-Message-State: AOJu0YysHlg4HfsAqT1Kq5WKPsa7T3YocsFAnYB35/nEj8IdgAjTvcnQ
-	RuIDJcQmt5K//y/a/7kmO6Ne3NcxzcmzrC1668VylO0tjXpAuJEAESCu2BH5R1xstloppFb6tcx
-	cwwmvcNRMnxh7dbwMxgzwd4k7/jL9RgYZBz+0QsOx2pY1xMHlDimkhUQSmWJooRwu+Qk79UTy
-X-Received: by 2002:a17:906:ca53:b0:a46:f69b:49b1 with SMTP id jx19-20020a170906ca5300b00a46f69b49b1mr2168038ejb.46.1712253124502;
-        Thu, 04 Apr 2024 10:52:04 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IECTCZS8Nnj41N9h41glDkW2rAddfgIewt7568b2jxlvfUWxQkRUr0YSWIeeGYuEacqzP+zEQ==
-X-Received: by 2002:a17:906:ca53:b0:a46:f69b:49b1 with SMTP id jx19-20020a170906ca5300b00a46f69b49b1mr2168026ejb.46.1712253124181;
-        Thu, 04 Apr 2024 10:52:04 -0700 (PDT)
-Received: from [192.168.0.182] (host-87-2-128-150.retail.telecomitalia.it. [87.2.128.150])
-        by smtp.gmail.com with ESMTPSA id q17-20020a170906145100b00a4519304f8bsm9424868ejc.14.2024.04.04.10.52.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 10:52:03 -0700 (PDT)
-Message-ID: <36bee1ae-e9f9-4ca6-917a-6f65203a7e96@redhat.com>
-Date: Thu, 4 Apr 2024 19:52:01 +0200
+	s=arc-20240116; t=1712253365; c=relaxed/simple;
+	bh=jrrBn8WsgmiRVg7JSf1dTg4FPbZgIaRf3d5/pes6beA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=vDQ3zKP8Wsr3poImOoGXwZdWRzY5ySoBdOzbSsYn4xTPwVSub8a2w6E6H3n5eg4xuroWQ1NLnkcxAUr47n50Vh2/l5DN2TKcFiqE0NSUKgwzL6EHwaoVH+AdreWxSmwc+L+4LawHlF0PO4RYkCgT2siVEqOkXzUjPW1qQjY7H7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mIV3m8++; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712253364; x=1743789364;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=jrrBn8WsgmiRVg7JSf1dTg4FPbZgIaRf3d5/pes6beA=;
+  b=mIV3m8++kspIwqLS4r2sviAru4/bMN2L+QRnQN31oOJSXSiqHaPVgUKX
+   JsSrV3QT+iyoyBnIOHScJoZhe+pGFb6abel0lWisCe0pm+L9B5wEyVkQD
+   eDKSggX0spksl5xP72wruxar0tGnKX66cR0t7ZwLTknti6Rj0y7XMyhCD
+   m2vLRetVkMj/PgWJ6GLOVIKMYVyIIx52Gw+zSqzPfOek6kSB3l1EDT2x5
+   b0A6AgfjKf3z4pTsN09OXtl2n4xjClBqdjzepjVyUNEcvuURfkjjuCXIo
+   J0nDtEI9TxD5BQNBiAyQmqhp/KuvndcxpAm8Ts5wZQnjz1xzUDpKqwBJP
+   A==;
+X-CSE-ConnectionGUID: BsLDQvQAQ6aqcwS+9GqBlQ==
+X-CSE-MsgGUID: wTI/hcFGTWex90dKNbv8ZQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="30025601"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="30025601"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 10:56:03 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="937086937"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="937086937"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Apr 2024 10:56:00 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 4EB0B812; Thu,  4 Apr 2024 20:55:59 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Andrew Lunn <andrew@lunn.ch>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH net-next v1 1/1] net: mdio-gpio: Use device_is_compatible()
+Date: Thu,  4 Apr 2024 20:55:57 +0300
+Message-ID: <20240404175557.2470008-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/15] sched/core: Clear prev->dl_server in CFS pick
- fast path
-Content-Language: en-US, pt-BR, it-IT
-To: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
- linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
-Cc: Suleiman Souhlal <suleiman@google.com>,
- Youssef Esmat <youssefesmat@google.com>, David Vernet <void@manifault.com>,
- Thomas Gleixner <tglx@linutronix.de>, "Paul E . McKenney"
- <paulmck@kernel.org>, joseph.salisbury@canonical.com,
- Luca Abeni <luca.abeni@santannapisa.it>,
- Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
- Vineeth Pillai <vineeth@bitbyteword.org>,
- Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>
-References: <20240313012451.1693807-1-joel@joelfernandes.org>
- <20240313012451.1693807-3-joel@joelfernandes.org>
-From: Daniel Bristot de Oliveira <bristot@redhat.com>
-In-Reply-To: <20240313012451.1693807-3-joel@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 3/13/24 02:24, Joel Fernandes (Google) wrote:
-> From: Youssef Esmat <youssefesmat@google.com>
-> 
-> In case the previous pick was a DL server pick, ->dl_server might be
-> set. Clear it in the fast path as well.
-> 
-> Signed-off-by: Youssef Esmat <youssefesmat@google.com>
+Replace open coded variant of device_is_compatible().
 
-Makes sense, I added the code to the v6.... embedded in the patch it fixes.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/net/mdio/mdio-gpio.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Thanks!
--- Daniel
+diff --git a/drivers/net/mdio/mdio-gpio.c b/drivers/net/mdio/mdio-gpio.c
+index 778db310a28d..82088741debd 100644
+--- a/drivers/net/mdio/mdio-gpio.c
++++ b/drivers/net/mdio/mdio-gpio.c
+@@ -132,8 +132,7 @@ static struct mii_bus *mdio_gpio_bus_init(struct device *dev,
+ 		new_bus->phy_ignore_ta_mask = pdata->phy_ignore_ta_mask;
+ 	}
+ 
+-	if (dev->of_node &&
+-	    of_device_is_compatible(dev->of_node, "microchip,mdio-smi0")) {
++	if (device_is_compatible(dev, "microchip,mdio-smi0")) {
+ 		bitbang->ctrl.op_c22_read = 0;
+ 		bitbang->ctrl.op_c22_write = 0;
+ 		bitbang->ctrl.override_op_c22 = 1;
+-- 
+2.43.0.rc1.1.gbec44491f096
 
 
