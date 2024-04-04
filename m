@@ -1,223 +1,167 @@
-Return-Path: <linux-kernel+bounces-130796-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56DE2897D32
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:58:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F14E5897D3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:01:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E80928839E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:58:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69D9FB22620
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46C07610D;
-	Thu,  4 Apr 2024 00:58:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546A08C06;
+	Thu,  4 Apr 2024 01:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s+Tfg6vb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xt5Dbdpn"
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 603F4320E;
-	Thu,  4 Apr 2024 00:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46D123CE;
+	Thu,  4 Apr 2024 01:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712192316; cv=none; b=qBfUyt/+fOqOqFHRJtwcAb7Ppx4VxUltb/qQku2cVEvm78lzem7DSZMaBRKW0RILYZZ3U00dCXjJ0rlW27Frxj9TWwkeKYdaQepIfx0RqKeigDghY9Kkbxv+6/soUoBocxSF+0N1chB77cIz6OMof4mu0Gp8/xKZC9Nohci6MDo=
+	t=1712192482; cv=none; b=jDVuDnglQkvluN2ShVF/olh4YI5RVtuY1l46MYY63suJMzR8R4u9wOjro3cO5/bF+q7Vo4dNbrXxv+1S6xGpqZ53RhuAI0LPvrr4V7g+v881SER83i8g2e8Xfw/B99iJUFwMkNoIknm3/d4SIcYuJfT8WW5V5iWVXBtLUvA65jk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712192316; c=relaxed/simple;
-	bh=0v3/tkPIhOlbZq3qqBqdt1rjzWlv5jgNo+JgIQke65k=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=QZ1zWUuIWq5Fg53PpUppGoYTNa2ZHCLYlTrieffYgeDeyZhwoB/UWDwMYNKjQ4bCoPGUTQ4UNep01ee0i9GdgpXVTN/nMj1sIvQwlLG4hedR1IJL8tUG5GWVSpNlV27oTfz53mcwnmF+EbqTeLEZMpjw+Pu92EbyTZkZoAiTncM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s+Tfg6vb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A828C433F1;
-	Thu,  4 Apr 2024 00:58:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712192316;
-	bh=0v3/tkPIhOlbZq3qqBqdt1rjzWlv5jgNo+JgIQke65k=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=s+Tfg6vbqA1WP/dOid2LffkkWAfpx04DhnUs69FU9BoR9F7h6Jfh3rnu7SgJj59RT
-	 ysiBS0xAAh+g2oFS+cb86NGnXequD5RBUONA3VUbLR0DKR9RJQIetqX67YmqIoXc0P
-	 Y9Hm7tsDST6PWs5xq8yz1l/TPKGM97Wx9DRhIv5Aqrj6WsQ9jbmZO6qaFfKCyVJ/+L
-	 iZSCRmuJBwtDtkrTUpWM0BXKW1rm5j4xG97rFnJ+FPOfPQaBat+0aHUJPlgvM/4zrZ
-	 F4bFf09p1ji8Oupaz1wovIzT16l+bf11UEc+oIc8vp3IAVV9spa65cjgNlnhdz2j4r
-	 8kfEAUqsEj3uw==
-Date: Thu, 4 Apr 2024 09:58:29 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: Jiri Olsa <olsajiri@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Oleg Nesterov <oleg@redhat.com>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
-	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
-	linux-kernel@web.codeaurora.org
-Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
- probe
-Message-Id: <20240404095829.ec5db177f29cd29e849169fa@kernel.org>
-In-Reply-To: <CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
-References: <20240402093302.2416467-1-jolsa@kernel.org>
-	<20240402093302.2416467-2-jolsa@kernel.org>
-	<20240403100708.233575a8ac2a5bac2192d180@kernel.org>
-	<Zg0lvUIB4WdRUGw_@krava>
-	<20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
-	<CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712192482; c=relaxed/simple;
+	bh=VcITItGHjtKY9dfEMl4G05gYTHqgBMk3fUlh/7jjiJc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lMJC7dYTlJX1NWVGmvVzpvPyVBb+0Mq+SUmpaT6L/h8gwR8Ac/hykqLDJ3Dse61PqKc4ktisdjksuTtli8kC6l7hRp9v6A2mYoMcKWI3Hfw1ImgTZQ9aOP+mgkbLwyEiUXcnNTbxODDYRFCFTyq6c9dEmBF9Tztzgt8KQAf2hHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xt5Dbdpn; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33ddd1624beso207012f8f.1;
+        Wed, 03 Apr 2024 18:01:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712192479; x=1712797279; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HLU2APTaqoheKuuzuNc2tSXn6E7XDkIQ0oPwW38nA4I=;
+        b=Xt5DbdpnBGpOIWyRpSnbHEtDXN0wnQd1F7Qou3PIzQSoe/wf57mdql9R4FJxiiEG8V
+         ffsNkTEMPFwGCSxykrCWYEGIs6Wfe7a7zsY3RdSe0zSxjT6u8TdQIiSh/4oCPfCOhTDO
+         j0WwvGfhZ1EWzyzN1R9AoXt0sEFgSfJE83YffBaiIWuMPh5Y+B6Z11Bo9jsQ81av5LyF
+         QtLzYxRkuZJEG3qndqKCs/GqMLfpN0JKA0yG6T/AenSuPMGyfr8JO+3XZU04C4mK4U9Z
+         ObN5UKhUnGc0fe7Xay/5W1qRSr+wvhmXqtMQqej4Y485rY/kkB8cH6bYU++b+CQC3SWd
+         QX+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712192479; x=1712797279;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HLU2APTaqoheKuuzuNc2tSXn6E7XDkIQ0oPwW38nA4I=;
+        b=bzfBPktrhhOsbsS+4XdoHH2WMXxsxZcSSS2CucFW0NKFL4z5ciDQVUCnv4iIPr4Z4w
+         wbpjHip8I7GYxGfakJoVFBF2Tl4olddnDnrfatE/1zObmB/EPGVPmr5basbxFtqNt2kv
+         OJuZSJb1boqWJU2GX10sbAcMQnDA58dnK7y7G4CKVp5vRQGOyVRcxRt2ehXd/IwTW7VC
+         1Fy7LwsselMEiSyGRMQAwmMiEWKxIRZUJoft8BLpUqzEtxhFADfpHqMem8sbHVwxtWG2
+         g6UrbU2tW3JaNdsZ0rP7XJr89faXo3LAAsHXDD+DKVWzOoGZETkzcXN4M/GsdwwGIzNe
+         Q9CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU3ovBuL1GzsPXy1KvQfVa2F2DnNXRdTyA1ELG2hSRDyB696Lkln7EICeEEZnfVT4bM/sawSnf8UdJefkKzsmsOmj/c1WRJzUBU1NOPCAx+nlx2Qk5/JwRijQVi5MK7jfIG6q4S32G415oHOSUsrjYLLLojLvAa187oi5J9alTmUGql
+X-Gm-Message-State: AOJu0YwpKjn+lYaIO+pa8wrRYQWwsjyXrCr5rWtbykkQnExEPA87Uqun
+	ukuWJPTt9S5gD1Txn4qWXXgPNIzAxXDUy/xIlXN72qIYASyXnALnvlzklyVbZzW+nNmCVKTCk3F
+	VLB8rJ89gbH5//dE6v29bLmAr3gQ=
+X-Google-Smtp-Source: AGHT+IGgve8RYBKKY6vg33L/syRyrb3Z5pP3xZmPioDKEq/WUwRK0ivhdEAPpSvjxORCV87KADxzfEeudnxPjlunbPA=
+X-Received: by 2002:a05:6000:4f1:b0:343:6c07:c816 with SMTP id
+ cr17-20020a05600004f100b003436c07c816mr1064770wrb.16.1712192478995; Wed, 03
+ Apr 2024 18:01:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
+ <20240322-hid-bpf-sleepable-v5-1-179c7b59eaaa@kernel.org> <CAADnVQJdm7+7tbJC8yhPqDUijE0DTD9UG4LOQmNRCWchQ3uGsg@mail.gmail.com>
+ <CAO-hwJKVVjhg6_0tAM75HGJL0WcERotyJc+7oBVvDiTGJAqTfw@mail.gmail.com> <CAADnVQ+5NqjqyeFS3XgDU0OCFgt1Y9bmTbHOPv6ekw1sJasyaA@mail.gmail.com>
+In-Reply-To: <CAADnVQ+5NqjqyeFS3XgDU0OCFgt1Y9bmTbHOPv6ekw1sJasyaA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Wed, 3 Apr 2024 18:01:07 -0700
+Message-ID: <CAADnVQJm7bi=iFtWj1XCmEdyDwb64KjxeP5RFo57paG3-zZo_g@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/6] bpf/helpers: introduce sleepable bpf_timers
+To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 3 Apr 2024 09:58:12 -0700
-Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
-
-> On Wed, Apr 3, 2024 at 7:09 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> >
-> > On Wed, 3 Apr 2024 11:47:41 +0200
-> > Jiri Olsa <olsajiri@gmail.com> wrote:
-> >
-> > > On Wed, Apr 03, 2024 at 10:07:08AM +0900, Masami Hiramatsu wrote:
-> > > > Hi Jiri,
-> > > >
-> > > > On Tue,  2 Apr 2024 11:33:00 +0200
-> > > > Jiri Olsa <jolsa@kernel.org> wrote:
-> > > >
-> > > > > Adding uretprobe syscall instead of trap to speed up return probe.
-> > > >
-> > > > This is interesting approach. But I doubt we need to add additional
-> > > > syscall just for this purpose. Can't we use another syscall or ioctl?
+On Wed, Apr 3, 2024 at 11:50=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Wed, Mar 27, 2024 at 10:02=E2=80=AFAM Benjamin Tissoires
+> <benjamin.tissoires@redhat.com> wrote:
+> > > >                 goto out;
+> > > >         }
+> > > > +       spin_lock(&t->sleepable_lock);
+> > > >         drop_prog_refcnt(t);
+> > > > +       spin_unlock(&t->sleepable_lock);
 > > >
-> > > so the plan is to optimize entry uprobe in a similar way and given
-> > > the syscall is not a scarce resource I wanted to add another syscall
-> > > for that one as well
-> > >
-> > > tbh I'm not sure sure which syscall or ioctl to reuse for this, it's
-> > > possible to do that, the trampoline will just have to save one or
-> > > more additional registers, but adding new syscall seems cleaner to me
+> > > this also looks odd.
 > >
-> > Hmm, I think a similar syscall is ptrace? prctl may also be a candidate.
-> 
-> I think both ptrace and prctl are for completely different use cases
-> and it would be an abuse of existing API to reuse them for uretprobe
-> tracing. Also, keep in mind, that any extra argument that has to be
-> passed into this syscall means that we need to complicate and slow
-> generated assembly code that is injected into user process (to
-> save/restore registers) and also kernel-side (again, to deal with all
-> the extra registers that would be stored/restored on stack).
-> 
-> Given syscalls are not some kind of scarce resources, what's the
-> downside to have a dedicated and simple syscall?
+> > I basically need to protect "t->prog =3D NULL;" from happening while
+> > bpf_timer_work_cb is setting up the bpf program to be run.
+>
+> Ok. I think I understand the race you're trying to fix.
+> The bpf_timer_cancel_and_free() is doing
+> cancel_work()
+> and proceeds with
+> kfree_rcu(t, rcu);
+>
+> That's the only race and these extra locks don't help.
+>
+> The t->prog =3D NULL is nothing to worry about.
+> The bpf_timer_work_cb() might still see callback_fn =3D=3D NULL
+> "when it's being setup" and it's ok.
+> These locks don't help that.
+>
+> I suggest to drop sleepable_lock everywhere.
+> READ_ONCE of callback_fn in bpf_timer_work_cb() is enough.
+> Add rcu_read_lock_trace() before calling bpf prog.
+>
+> The race to fix is above 'cancel_work + kfree_rcu'
+> since kfree_rcu might free 'struct bpf_hrtimer *t'
+> while the work is pending and work_queue internal
+> logic might UAF struct work_struct work.
+> By the time it may luckily enter bpf_timer_work_cb() it's too late.
+> The argument 'struct work_struct *work' might already be freed.
+>
+> To fix this problem, how about the following:
+> don't call kfree_rcu and instead queue the work to free it.
+> After cancel_work(&t->work); the work_struct can be reused.
+> So set it up to call "freeing callback" and do
+> schedule_work(&t->work);
+>
+> There is a big assumption here that new work won't be
+> executed before cancelled work completes.
+> Need to check with wq experts.
+>
+> Another approach is to do something smart with
+> cancel_work() return code.
+> If it returns true set a flag inside bpf_hrtimer and
+> make bpf_timer_work_cb() free(t) after bpf prog finishes.
 
-Syscalls are explicitly exposed to user space, thus, even if it is used
-ONLY for a very specific situation, it is an official kernel interface,
-and need to care about the compatibility. (If it causes SIGILL unless
-a specific use case, I don't know there is a "compatibility".)
-And the number of syscalls are limited resource.
+Looking through wq code... I think I have to correct myself.
+cancel_work and immediate free is probably fine from wq pov.
+It has this comment:
+        worker->current_func(work);
+        /*
+         * While we must be careful to not use "work" after this, the trace
+         * point will only record its address.
+         */
+        trace_workqueue_execute_end(work, worker->current_func);
 
-I'm actually not sure how much we need to care of it, but adding a new
-syscall is worth to be discussed carefully because all of them are
-user-space compatibility.
+the bpf_timer_work_cb() might still be running bpf prog.
+So it shouldn't touch 'struct bpf_hrtimer *t' after bpf prog returns,
+since kfree_rcu(t, rcu); could have freed it by then.
+There is also this code in net/rxrpc/rxperf.c
+        cancel_work(&call->work);
+        kfree(call);
 
-> > > > Also, we should run syzkaller on this syscall. And if uretprobe is
-> > >
-> > > right, I'll check on syzkaller
-> > >
-> > > > set in the user function, what happen if the user function directly
-> > > > calls this syscall? (maybe it consumes shadow stack?)
-> > >
-> > > the process should receive SIGILL if there's no pending uretprobe for
-> > > the current task, or it will trigger uretprobe if there's one pending
-> >
-> > No, that is too aggressive and not safe. Since the syscall is exposed to
-> > user program, it should return appropriate error code instead of SIGILL.
-> >
-> 
-> This is the way it is today with uretprobes even through interrupt.
-
-I doubt that the interrupt (exception) and syscall should be handled
-differently. Especially, this exception is injected by uprobes but
-syscall will be caused by itself. But syscall can be called from user
-program (of couse this works as sys_kill(self, SIGILL)).
-
-> E.g., it could happen that user process is using fibers and is
-> replacing stack pointer without kernel realizing this, which will
-> trigger some defensive checks in uretprobe handling code and kernel
-> will send SIGILL because it can't support such cases. This is
-> happening today already, and it works fine in practice (except for
-> applications that manually change stack pointer, too bad, you can't
-> trace them with uretprobes, unfortunately).
-
-OK, we at least need to document it.
-
-> 
-> So I think it's absolutely adequate to have this behavior if the user
-> process is *intentionally* abusing this API.
-
-Of course user expected that it is abusing. So at least we need to
-add a document that this syscall number is reserved to uprobes and
-user program must not use it.
-
-> 
-> > >
-> > > but we could limit the syscall to be executed just from the trampoline,
-> > > that should prevent all the user space use cases, I'll do that in next
-> > > version and add more tests for that
-> >
-> > Why not limit? :) The uprobe_handle_trampoline() expects it is called
-> > only from the trampoline, so it is natural to check the caller address.
-> > (and uprobe should know where is the trampoline)
-> >
-> > Since the syscall is always exposed to the user program, it should
-> > - Do nothing and return an error unless it is properly called.
-> > - check the prerequisites for operation strictly.
-> > I concern that new system calls introduce vulnerabilities.
-> >
-> 
-> As Oleg and Jiri mentioned, this syscall can't harm kernel or other
-> processes, only the process that is abusing the API. So any extra
-> checks that would slow down this approach is an unnecessary overhead
-> and complication that will never be useful in practice.
-
-I think at least it should check the caller address to ensure the
-address is in the trampoline.
-But anyway, uprobes itself can break the target process, so no one
-might care if this system call breaks the process now.
-
-> 
-> Also note that sys_uretprobe is a kind of internal and unstable API
-> and it is explicitly called out that its contract can change at any
-> time and user space shouldn't rely on it. It's purely for the kernel's
-> own usage.
-
-Is that OK to use a syscall as "internal" and "unstable" API?
-
-> 
-> So let's please keep it fast and simple.
-> 
-> 
-> > Thank you,
-> >
-> >
-> > >
-> > > thanks,
-> > > jirka
-> > >
-> > >
-> > > >
-> 
-> [...]
-
-
-([OT] If we can add syscall so casually, I would like to add sys_traceevent
-for recording user space events :-) .)
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+So it looks like it's fine to drop sleepable_lock,
+add rcu_read_lock_trace() and things should be ok.
 
