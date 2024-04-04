@@ -1,178 +1,193 @@
-Return-Path: <linux-kernel+bounces-130959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A28B2898121
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:59:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3561898130
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:07:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E0131F21D4D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:59:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F93A287BE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6C6495FD;
-	Thu,  4 Apr 2024 05:59:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A50C045945;
+	Thu,  4 Apr 2024 06:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b="DK16AvjF"
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NL5ld8zL"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28C048788
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 05:59:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB7834642A
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 06:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712210371; cv=none; b=btFl4ZP+uNAxFcp9DatcPjykY9myqMmu/0VHtEf6XdfZwCLyhO+4F1Lm4t7rMcsS/WwylrkeJ8w09MtfoBOuMeMc3rtUWOVaFhOTqd3YO59NQwQWcGbreLz5epTnE0zdPllWnbRC3KaYYcs5vMrKgP/Y6dudmUiY1ry1eb2jMvQ=
+	t=1712210856; cv=none; b=FoE9uOK5Vv+U6r6MFFosUlklgRDwkrOK/4QPBtwGv0TFaM6CqJY8z2Xk/1dC9lQrSbeV1qMi6hR/8mbd6hJRrb4lFcA7WWK0kfB1gOvMvoSM0KXPorJqPw/YimimPWCRt+FyFiMmfIw6B6+ISuxpC/czDsENwFIxmVEYBKQC2k4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712210371; c=relaxed/simple;
-	bh=NQ+BfK4nleuI2Do9g/iZmGss/EFlpHre9fcaunDLuek=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Q2ozUxYD3lI26BW/2C1wRqzK8sn4bL47C3Hh0H51wSWNG2pgF2encQuf89dOLLMjqNe2EoNZj1z2GsIvlFIw7flciM64zOawnT3jTu+AkEsaAoVVhFiPCocpufJzgFlfqtmXiWw5l4nsDcNMP4XS/feKShXLyWS+zZFPi0dIoGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; dkim=pass (2048-bit key) header.d=windriver.com header.i=@windriver.com header.b=DK16AvjF; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4344vEJ5006418;
-	Thu, 4 Apr 2024 05:58:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-	 h=from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding:content-type; s=
-	PPS06212021; bh=/rH/4dIIFl0tP0DZ8KBYwKtVJ20Qari0JGnwd0w4aJA=; b=
-	DK16AvjFscZbHJfWB3SOOHjr7Yax33Mv64mMZqqHthRLfqi02cOn086ofAxfuDAv
-	BHRa9/64buMKJWrGm1zJoZHegHBh7Mq7cuSORoXIwpHBfBKJgpGyrsrVrKsl3JKb
-	u6DQOric5Bi+s73hvdxWAr/eVix587befoksPj11jEukxowZ54Oqde+aOfeZDWTu
-	dmVdHSKZclKirlZxPa2s9gag/m+3BxTpmmMWFPEExYtMjFjDwepl1u07wX74x7lF
-	ZV23UNuae87o013Qfgjap/9jqcytoj7dsVImzdcmXNxVa6uowkPDijafP/lr8cRs
-	tlur3KKB9SIAo6CruK5ybQ==
-Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3x9epk89h3-13
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Thu, 04 Apr 2024 05:58:55 +0000 (GMT)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.37; Wed, 3 Apr 2024 22:58:46 -0700
-Received: from pek-lpd-ccm5.wrs.com (147.11.1.11) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.37 via Frontend Transport; Wed, 3 Apr 2024 22:58:43 -0700
-From: <xiongwei.song@windriver.com>
-To: <vbabka@suse.cz>, <rientjes@google.com>, <cl@linux.com>,
-        <penberg@kernel.org>, <iamjoonsoo.kim@lge.com>,
-        <akpm@linux-foundation.org>, <roman.gushchin@linux.dev>,
-        <42.hyeyoo@gmail.com>
-CC: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <chengming.zhou@linux.dev>
-Subject: [PATCH v2 3/3] mm/slub: simplify get_partial_node()
-Date: Thu, 4 Apr 2024 13:58:26 +0800
-Message-ID: <20240404055826.1469415-4-xiongwei.song@windriver.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20240404055826.1469415-1-xiongwei.song@windriver.com>
-References: <20240404055826.1469415-1-xiongwei.song@windriver.com>
+	s=arc-20240116; t=1712210856; c=relaxed/simple;
+	bh=gfCnLzL12inyto+TdH+4+k3GgVvpCiH7kAxG32upfzQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BeN7D9I7YaO5cr3ewOGBWGKv2OB/5ytbzWSZdZh4fFlAvmUoAPycuw/sMTRMVAKxZHd7osUica/dT6xaazy3oGnFblucBbHujNusJbKkovyp1MclvsvGBWX+0k8DNnWbX/ygk7TX3g76WL9zGEJK3+cBT6J38UdDPR9WQujHMP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NL5ld8zL; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a4a393b699fso93426366b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 23:07:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712210853; x=1712815653; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=xMtZcKYGgjiZL9uAifFaCLqOJkhjnHenZoPTiVcaqdY=;
+        b=NL5ld8zLkrdDJEpaGVMUoXOZn+a+6Vb2whKaok4wJg+aTFLkaNi4PIUm6hnZ6USO7j
+         dpVf19JF9qkBtnPLMAUHHw/rZKR00KKlhfigkQFCHYiO8zwWyAYSxY3btFGXRhNWwD7d
+         qv+DCr7VE3HvfbWi6NlLBd6TGoJbK93kMNGVHvwnWdX/lGox83ncY02zM8EiqNVoF8+7
+         s4JKIOhMM34YdhlTfGV3ygpZVYYI5t9Pt4VE3KR+bcwoXXZuwz4ZISwBXOg1zrVjIqp7
+         vAOMGwCTDQGxSxOwwzMCuVfJe0iVVHuDdpvNzyjujvo/ey+OMTuHXoBSDuntSl5XD2np
+         Mayg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712210853; x=1712815653;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xMtZcKYGgjiZL9uAifFaCLqOJkhjnHenZoPTiVcaqdY=;
+        b=XCOsdnHy4mrxmgpSMxlXUEyWVPR/17T4joBC2EG86G/wmosCKLVGVRJa4+TCIJDFoP
+         wruEqUipnWkiq0Wyj9do3BcfgyoXjmM8JQtiO04z64ZfOfcdx83EBHohYYeQAVFffyRW
+         QR1Yz3muc/tQCqsKWmxsYXAnf4JLPyfsvD+xVEZaVViRlZ/Mwl0T1fXcucy3WGDCYHLJ
+         Qxpu1kgo75rvC75yeUqe1s2BKYmb4wmyQ/Mr1+6PcJPxkpSxAz9iFPL+0tNYd449+uxP
+         w2onR5yamIotPceWHvSCq3tUTpIoTC6AA0QPM2L2Gd2kfdIJOH/xsxCdw02DWgrw2KDX
+         TWXw==
+X-Forwarded-Encrypted: i=1; AJvYcCUVvskeAiaKYdJfujb5e8vVfdQpDNFpVuBUQdJ0in/k+M/Og32t9QzI2F/RQocVf6Pxb+Y1MKFynYom41ClhxJb8VcDgMSFxYeOcyMx
+X-Gm-Message-State: AOJu0YzAyp7RBqtKa75U7/nfWa7CYFxa2CbY1IDEQfRpHj9wVO3zNOB0
+	TEPxGvrooJLSWi7Lkt8SR3hlLijmMSiwTtHh1/oLX0GUzf6Li3qAsHJBB5G+Fn0=
+X-Google-Smtp-Source: AGHT+IGFHCJtoawYrBDiWZZNwxa2eQXZi+iM69s8H12jzVA3GvmJLPQ4N58uQ3FvqaJdTGe3oHxhyw==
+X-Received: by 2002:a17:906:518:b0:a51:89f0:10ee with SMTP id j24-20020a170906051800b00a5189f010eemr544124eja.37.1712210852993;
+        Wed, 03 Apr 2024 23:07:32 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id v18-20020a170906339200b00a4df78425dbsm8545445eja.36.2024.04.03.23.07.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 23:07:32 -0700 (PDT)
+Message-ID: <e96ae1c6-a1cf-4f42-82ef-057e7ec5edc5@linaro.org>
+Date: Thu, 4 Apr 2024 08:07:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: iScp0TsPV-TMjLRsoPJ93q7ds1TOZWuW
-X-Proofpoint-ORIG-GUID: iScp0TsPV-TMjLRsoPJ93q7ds1TOZWuW
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-04_02,2024-04-03_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 adultscore=0
- priorityscore=1501 impostorscore=0 lowpriorityscore=0 phishscore=0
- mlxscore=0 clxscore=1015 spamscore=0 suspectscore=0 malwarescore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404040036
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7 04/37] dt-bindings: interrupt-controller: Add header
+ for Renesas SH3/4 INTC.
+To: Yoshinori Sato <ysato@users.sourceforge.jp>, linux-sh@vger.kernel.org
+Cc: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Thomas Gleixner <tglx@linutronix.de>, Bjorn Helgaas <bhelgaas@google.com>,
+ Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>,
+ Heiko Stuebner <heiko.stuebner@cherry.de>, Shawn Guo <shawnguo@kernel.org>,
+ Sebastian Reichel <sre@kernel.org>, Chris Morgan <macromorgan@hotmail.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
+ David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+ Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>,
+ Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck
+ <linux@roeck-us.net>, Kefeng Wang <wangkefeng.wang@huawei.com>,
+ Stephen Rothwell <sfr@canb.auug.org.au>,
+ Javier Martinez Canillas <javierm@redhat.com>, Guo Ren <guoren@kernel.org>,
+ Azeem Shaikh <azeemshaikh38@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
+ Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>,
+ Herve Codina <herve.codina@bootlin.com>,
+ Manikanta Guntupalli <manikanta.guntupalli@amd.com>,
+ Anup Patel <apatel@ventanamicro.com>, Biju Das <biju.das.jz@bp.renesas.com>,
+ =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+ Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>,
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+ linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
+ linux-fbdev@vger.kernel.org
+References: <cover.1712205900.git.ysato@users.sourceforge.jp>
+ <d50827196f7e1201bb9a62656fb04223a8989f1d.1712205900.git.ysato@users.sourceforge.jp>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <d50827196f7e1201bb9a62656fb04223a8989f1d.1712205900.git.ysato@users.sourceforge.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Xiongwei Song <xiongwei.song@windriver.com>
+On 04/04/2024 06:59, Yoshinori Sato wrote:
+> Renesas SH7751 Interrupt controller priority register define.
+> 
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 
-The break conditions for filling cpu partial can be more readable and
-simple.
+Nothing improved, still NAK.
 
-If slub_get_cpu_partial() returns 0, we can confirm that we don't need
-to fill cpu partial, then we should break from the loop. On the other
-hand, we also should break from the loop if we have added enough cpu
-partial slabs.
+This is a friendly reminder during the review process.
 
-Meanwhile, the logic above gets rid of the #ifdef and also fixes a weird
-corner case that if we set cpu_partial_slabs to 0 from sysfs, we still
-allocate at least one here.
+It seems my or other reviewer's previous comments were not fully
+addressed. Maybe the feedback got lost between the quotes, maybe you
+just forgot to apply it. Please go back to the previous discussion and
+either implement all requested changes or keep discussing them.
 
-Signed-off-by: Xiongwei Song <xiongwei.song@windriver.com>
----
+Thank you.
 
-The measurement below is to compare the performance effects when checking
-if we need to break from the filling cpu partial loop with the following
-either-or condition:
-
-Condition 1:
-When the count of added cpu slabs is greater than cpu_partial_slabs/2:
-(partial_slabs > slub_get_cpu_partial(s) / 2)
-
-Condition 2:
-When the count of added cpu slabs is greater than or equal to
-cpu_partial_slabs/2:
-(partial_slabs >= slub_get_cpu_partial(s) / 2)
-
-The change of breaking condition can effect how many cpu partial slabs
-would be put on the cpu partial list.
-
-Run the test with a "Intel(R) Core(TM) i7-10700 CPU @ 2.90GHz" cpu with
-16 cores. The OS is Ubuntu 22.04.
-
-hackbench-process-pipes
-                  6.9-rc2(with ">")      6.9.0-rc2(with ">=")
-Amean     1       0.0373 (   0.00%)      0.0356 *   4.60%*
-Amean     4       0.0984 (   0.00%)      0.1014 *  -3.05%*
-Amean     7       0.1803 (   0.00%)      0.1851 *  -2.69%*
-Amean     12      0.2947 (   0.00%)      0.3141 *  -6.59%*
-Amean     21      0.4577 (   0.00%)      0.4927 *  -7.65%*
-Amean     30      0.6326 (   0.00%)      0.6649 *  -5.10%*
-Amean     48      0.9396 (   0.00%)      0.9884 *  -5.20%*
-Amean     64      1.2321 (   0.00%)      1.3004 *  -5.54%*
-
-hackbench-process-sockets
-                  6.9-rc2(with ">")      6.9.0-rc2(with ">=")
-Amean     1       0.0609 (   0.00%)      0.0623 *  -2.35%*
-Amean     4       0.2107 (   0.00%)      0.2140 *  -1.56%*
-Amean     7       0.3754 (   0.00%)      0.3966 *  -5.63%*
-Amean     12      0.6456 (   0.00%)      0.6734 *  -4.32%*
-Amean     21      1.1440 (   0.00%)      1.1769 *  -2.87%*
-Amean     30      1.6629 (   0.00%)      1.7031 *  -2.42%*
-Amean     48      2.7321 (   0.00%)      2.7897 *  -2.11%*
-Amean     64      3.7397 (   0.00%)      3.7640 *  -0.65%*
-
-It seems there is a bit performance penalty when using ">=" to break up
-the loop. Hence, we should still use ">" here.
----
- mm/slub.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-diff --git a/mm/slub.c b/mm/slub.c
-index 590cc953895d..6beff3b1e22c 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -2619,13 +2619,10 @@ static struct slab *get_partial_node(struct kmem_cache *s,
- 			stat(s, CPU_PARTIAL_NODE);
- 			partial_slabs++;
- 		}
--#ifdef CONFIG_SLUB_CPU_PARTIAL
--		if (partial_slabs > s->cpu_partial_slabs / 2)
--			break;
--#else
--		break;
--#endif
- 
-+		if ((slub_get_cpu_partial(s) == 0) ||
-+		    (partial_slabs > slub_get_cpu_partial(s) / 2))
-+			break;
- 	}
- 	spin_unlock_irqrestore(&n->list_lock, flags);
- 	return partial;
--- 
-2.34.1
+Best regards,
+Krzysztof
 
 
