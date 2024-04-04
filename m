@@ -1,166 +1,213 @@
-Return-Path: <linux-kernel+bounces-130982-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34C54898188
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:34:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C45D989818A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:35:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54FC91C223DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:34:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78A72287D3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:35:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBE13838C;
-	Thu,  4 Apr 2024 06:34:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C4163838C;
+	Thu,  4 Apr 2024 06:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="H2NP+i3z"
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="YmHMrmdb"
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 033311CFB9;
-	Thu,  4 Apr 2024 06:34:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01EAC22313
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 06:35:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712212467; cv=none; b=Xd90+nWBbrRRWycT/FapeeW/oOqX7A2BB2L1dge8wfH5hVY1HIlIGAVSeq7Pu1ZUuGSYyJ7gmvzKptG4Kf5AI6n3Pu7jYwK+XG7vQ6hLf9L9GcnVvFU2qGuBcf7UK4BySjVyrNeTc/zZqt8yvI6IHKJ2qFefWJd9Rdx1APv6pOU=
+	t=1712212534; cv=none; b=MG93ozAtqn0qBOlfuNeBeQiHcrqxTRimE492PkkXyRux+OH6HxtIG02KYR3m+5SJrEfCQOutXshZ9m9DSoYIZizVSNdZtzbygQbA/T+KlcNesIgellgGYLE2qkDuOUaMIMOj0m7y4YfScpExl07uJVpBFf4EYBOb2P9EjtG8Q9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712212467; c=relaxed/simple;
-	bh=FHp7gwfHIb6KDlNgXICkQODBQ/9hhhpvocf9u5mF+BU=;
+	s=arc-20240116; t=1712212534; c=relaxed/simple;
+	bh=H9b5JJlTquQKI2VM9qJwXhoYJq+49fLigdSgodwpAeI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=vC4nvBCLyoCxsI1JnMHw8beakARiCeZwZkjXCXeFzEq92PIwXf0n1tv0jkd54FplWRfkM2vZvIR3t14JGyTB61TwhWndhIiT0GnNYtF3ulXB3AzhSkNcTvJAXLg04QXTUBivkGNabxlC5TLHbJl+MempW9HBafCSGLZnZ0GTsm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=H2NP+i3z; arc=none smtp.client-ip=209.85.161.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a4a14c52fcso387224eaf.1;
-        Wed, 03 Apr 2024 23:34:25 -0700 (PDT)
+	 To:Cc:Content-Type; b=PaZh4ZVfO3gZF+zLdVpSUgWYNq1LM4+UdHwkIC4micycYVhNc4ks+zBvJ4Ueq3sPxWik+aJeFCS1zjrKv5CxeshMWd4fdd1Wj3VrJ534iTYQ5U7Phg+ktv1AZw8ol6t32hzlMoBDnF+3Tanl3FFowgXdYG8vHTzXpuFh+G45LMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=YmHMrmdb; arc=none smtp.client-ip=209.85.222.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-78a16114b69so50749285a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 23:35:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712212465; x=1712817265; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=tQhelsDTj1UznWewSHonFFvxGfv5FQP2z0tCUi3eH7Q=;
-        b=H2NP+i3z0l2wEIbkD+ZAXeSyNAAMr6Jb3K+g1kVKBUL3WzRrhkYVNieONpz3+hqS+3
-         G/QZso9uYVywRewRWeZr4mA+HVxziC2ww2HFBSXePsly+sJs+a/DISOqQ7j+zb4PDW9p
-         McrxPG4Y5X3CWCP5PHhAIPPN3NmeTlaRt+V6Z60qwDqX6kNK9RIAoTSTFs1baYW7i8Zs
-         oMCLJW8044vouFu86dzUB3RLiIGJjMGr1sR6m4VXl2uNBlrXEwCHXRjWVom8MAMtvZie
-         AgpLwihcqmkUQx3//KrvCbHcQO6xJooipB7j1o1Gz+YylnM79XakchCn3T6se5/1DScv
-         H0Wg==
+        d=chromium.org; s=google; t=1712212531; x=1712817331; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aUS+OYnFgkVlJtdzc5TCv6ib1nQIE7c9RlYNdnpE+8c=;
+        b=YmHMrmdb/HpI98l08cx9jfydLZhZEXfHmWtGpHfoy0ULLv+GlAhMvqWPtHbh4kuEnT
+         0iO2yp52VMshW5XSbkUAgPmaRWXC3q2bRE/EqUQZWf9x9QUPOThmrdeVPPIolxJmdoY1
+         GLcdfztDO5jleCo0NPZSeaH82I34vbsUO4y+8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712212465; x=1712817265;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tQhelsDTj1UznWewSHonFFvxGfv5FQP2z0tCUi3eH7Q=;
-        b=HFw9cxp0MQYVPl9U//Qg7ZixxgQ7HUOi19fSPjmPTf0HpDrWwq6Btzh0B5213GJs1v
-         hg6z3M1uv07cE6QqrSR25W/rJGyrpYGuGNkfzeY6P5nj6d+FWkHX8++oiCw0K7EZ9x1V
-         5f8zlpObtY/+1GC8iAjbIRos0/xuN/Ixxkuusx/CHVCYqxylsOYZcv4BEB3BjBYkz7Uy
-         bK2wRF/xr9s1+wtC0xIjEVtoN4nsSLy1118e9JRpDDw6cH1ynmPql41UHLHmtJSh1F/e
-         cyckDAkN/zrbhd3P7+feui8O6RTjJJONXjtj6mctjbUnHZUc1LWiBj68jPMhnRT1KoG9
-         Rk0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWa8s6NOyby0oe3KhyfDlIYrHnzWBFxOlVXZPirafokPHr3FQ9j+Echx++WdqmDzNBwxplm9+KgQN2fvkD5YqcJo/q4h01EVg4UQkWTw7KUdIUHCImhOKGaJGnwDJT025qPtzc1DZQgLINZ5JcE2OM/otzEYu4Ma2G3KIAm+Aae3QkXow==
-X-Gm-Message-State: AOJu0YxLxNcTRUz0L37O4ZGNKyRY9Q9LjuZgQqlfnGdP/dPbMMpkgEOs
-	/iFHoGLQ4EDSUOBAXqq4algW1tZ/dUuUmrRHUVotZAfMpIYF1GhSL67ksX8qHDj6wxhJdMg+dWD
-	pkOV8tj/ShMJVUMKXJ3fLTZeEMBZoVUI8
-X-Google-Smtp-Source: AGHT+IEsuEN+i0n5eZx7glAwKTp1CRGVOa+m4T3Vrw7L0OzIBSke73D8YUDUXutRJgKSqj+TavU7BaByldSY86uphMc=
-X-Received: by 2002:a05:6820:260c:b0:5a5:2553:5036 with SMTP id
- cy12-20020a056820260c00b005a525535036mr1454823oob.9.1712212465090; Wed, 03
- Apr 2024 23:34:25 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712212531; x=1712817331;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aUS+OYnFgkVlJtdzc5TCv6ib1nQIE7c9RlYNdnpE+8c=;
+        b=XtM32ioUIypL6FmioxxtzFzP8hjZNRBc6CEBbNiC4bcxPK+hZyC6cZBZwC8SQ29+E9
+         ROiQCtQ+CDe24e94b1JX24Sr9emo3u3IGE+RtRn9GHMqERMqb+d3+Uu9qsrmgj/xkgRU
+         y59nGnoId43kw5qz416pA9ts3VynSCu7v/pnKZN9OFSImU0lBSyaOmu/UJE2dMrzghs6
+         KIlQUrQOWudE0j8bzJ6lExusyp2Bsd6fHue7xlqGYoE1FE293ug+t+ICcHcw99qz+1rO
+         XZ7o+aaJL001ltS1rsTsgtf/I4MrgPPuechqiFRM+8H3wIWFPLmPUkfZuz1KBed+QXDT
+         0w7g==
+X-Forwarded-Encrypted: i=1; AJvYcCVV3ST9oL6fdq9M8BD2vkjoA2Gp5yKDkfzQ0xvWhyEVLu8icmHO+w8Nd1T92D3nCJtJOgc5xxJObKX3pvz2JNP5OyL0iZPcoYhE96Mq
+X-Gm-Message-State: AOJu0YyfZjL+tbZ3DqLHTABgJFgHjck6KVo/1g8DlsJhZ2VPUhH1H2mM
+	xqa2yPyBpDIDpsnxQ1jWda7N8cfL1T4dZVMMckKU8IzR5bJxz+Rv22wRmrd5FCGlS46bf9hbHCs
+	wOZQj
+X-Google-Smtp-Source: AGHT+IGPFUnMomeJvQfd6RLCSopr9n3NiopkQjUODd1WcYGutN5i8h9oWoLSCeQLJxS0DSs3Z3lXNQ==
+X-Received: by 2002:a05:620a:404a:b0:78d:3c25:4f53 with SMTP id i10-20020a05620a404a00b0078d3c254f53mr4247471qko.6.1712212531575;
+        Wed, 03 Apr 2024 23:35:31 -0700 (PDT)
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com. [209.85.219.44])
+        by smtp.gmail.com with ESMTPSA id g19-20020a37e213000000b0078d3d55dcbbsm518367qki.42.2024.04.03.23.35.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 03 Apr 2024 23:35:30 -0700 (PDT)
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6991e317e05so15843606d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 23:35:30 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVAkwSbqJg4aukMxaKF6yrldTrbs4oJZjcskbndbrixae+husFr9I1pMJhkrKNdpbG1LXGYGKx3oASXeQeJeBvrHP4FBWtErxmUt5+m
+X-Received: by 2002:a05:6214:1ccf:b0:691:67f9:16e7 with SMTP id
+ g15-20020a0562141ccf00b0069167f916e7mr2530909qvd.24.1712212529833; Wed, 03
+ Apr 2024 23:35:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231204144429.45197-1-linux.amoon@gmail.com> <21673bfd-bb87-4c7d-a53f-337c263f3a00@linaro.org>
- <CANAwSgSo37B0zg-xjrmqndSZ5SbyB3m27_wRsqqN9WTONooeiw@mail.gmail.com>
- <604e653d-c1e2-45c7-b121-8a6b4be5c6bb@linaro.org> <CANAwSgRB=XWo2-40rDru=Zy277-kgGNjozJ8Lxnxgv_4ABB-kg@mail.gmail.com>
- <1a78d453-62a2-410a-a40f-1ff0c2b62e86@linaro.org> <CANAwSgTy4N7Q8e0OQLsFRkRDWksTSbkOetKQGygaqsQ8++U1_g@mail.gmail.com>
- <2e688f4e-11d7-4f8e-b8ec-58f4a97304a8@linaro.org> <CANAwSgQstkS-SDaV2hj0fimt7vgfEgOT_x4efshZ6sZQ0gWSEA@mail.gmail.com>
- <8f28ea77-b3d0-445e-8d8e-80f980775f89@linaro.org> <CANAwSgRLORHb6qiHWRBR0tMbYB=O=gwatuGhk72SwZyhYMopCw@mail.gmail.com>
- <d2962ffb-badd-44a6-bdcc-53e15d4a4379@linaro.org> <CANAwSgSpuh-+HFYg2UTgX27SHFyCBddV46MgKakiSCOtFX4+aw@mail.gmail.com>
- <436ed6a4-2ed9-47bc-bcc9-18a52b1a791b@linaro.org> <CANAwSgS8ip+FvuvgusjNwnVL5Z68PRmEdwfQxhst_ZoVZFoFNw@mail.gmail.com>
- <CANAwSgSftb3KkXvzNyGGixVtK8SWcOYjxO9WWpLt-B3mf_B6tg@mail.gmail.com>
- <194aa24c-2763-47e2-8ccc-1637d299c1ba@linaro.org> <CANAwSgR4zwoHUZRFmbjV9Z5kX9P_bU=HjkUokZm3eNStPXwwOw@mail.gmail.com>
-In-Reply-To: <CANAwSgR4zwoHUZRFmbjV9Z5kX9P_bU=HjkUokZm3eNStPXwwOw@mail.gmail.com>
-From: Anand Moon <linux.amoon@gmail.com>
-Date: Thu, 4 Apr 2024 12:04:09 +0530
-Message-ID: <CANAwSgTTpJ5wiwGFHmkUTX9zyzCYaRh=2bGPBo6H8KFznmksxw@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] dt-bindings: usb: Add the binding example for the
- Genesys Logic GL3523 hub
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Rob Herring <robh@kernel.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Icenowy Zheng <uwu@icenowy.me>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	linux-amlogic@lists.infradead.org, Conor Dooley <conor.dooley@microchip.com>, 
-	linux-usb@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240325142611.15550-1-oleksandr@natalenko.name>
+ <6046664.lOV4Wx5bFT@natalenko.name> <20240404011120.GH23803@pendragon.ideasonboard.com>
+In-Reply-To: <20240404011120.GH23803@pendragon.ideasonboard.com>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Thu, 4 Apr 2024 08:35:14 +0200
+X-Gmail-Original-Message-ID: <CANiDSCu5-coAyJZeiL5q3cPOdJ9Xaf1oE3VP90Sj_EycGr_QRQ@mail.gmail.com>
+Message-ID: <CANiDSCu5-coAyJZeiL5q3cPOdJ9Xaf1oE3VP90Sj_EycGr_QRQ@mail.gmail.com>
+Subject: Re: [PATCH] media/uvcvideo: add quirk for invalid dev_sof in Logitech C920
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Oleksandr Natalenko <oleksandr@natalenko.name>, linux-kernel@vger.kernel.org, 
+	linux-media@vger.kernel.org, Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	"hn.chen" <hn.chen@sunplusit.com>, Hans Verkuil <hverkuil@xs4all.nl>, 
+	Sergey Senozhatsky <senozhatsky@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Krzysztof,
+Hi Laurent
 
-On Thu, 4 Apr 2024 at 12:02, Anand Moon <linux.amoon@gmail.com> wrote:
+On Thu, 4 Apr 2024 at 03:11, Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
 >
-> Hi,
+> Hi Oleksandr,
 >
-> On Thu, 4 Apr 2024 at 11:42, Krzysztof Kozlowski
-> <krzysztof.kozlowski@linaro.org> wrote:
-> >
-> > On 04/04/2024 06:27, Anand Moon wrote:
-> > > Hi Krzysztof,
+> On Mon, Apr 01, 2024 at 06:45:16PM +0200, Oleksandr Natalenko wrote:
+> > On pond=C4=9Bl=C3=AD 25. b=C5=99ezna 2024 15:26:11, CEST Oleksandr Nata=
+lenko wrote:
+> > > Similarly to Logitech C922, C920 seems to also suffer from a firmware
+> > > bug that breaks hardware timestamping.
 > > >
-> > > On Tue, 12 Dec 2023 at 18:47, Anand Moon <linux.amoon@gmail.com> wrote:
-> > >>
-> > >> Hi Krzysztof,
-> > >>
-> > >> On Tue, 12 Dec 2023 at 18:39, Krzysztof Kozlowski
-> > >> <krzysztof.kozlowski@linaro.org> wrote:
-> > >>>
-> > >>> On 12/12/2023 13:51, Anand Moon wrote:
-> > >>>> Hi Krzysztof,
-> > >>>>
-> > >>>> On Tue, 12 Dec 2023 at 17:22, Krzysztof Kozlowski
-> > >>>> <krzysztof.kozlowski@linaro.org> wrote:
-> > >>>>>
-> > >>>>> On 12/12/2023 12:37, Anand Moon wrote:
-> > >>>>>>
-> > >>>>>> Here is the list of warnings I observed with this patch
-> > >>>>>>
-> > >>>>>>   DTC_CHK Documentation/devicetree/bindings/usb/nvidia,tegra186-xusb.example.dtb
-> > >>>>>> /home/amoon/mainline/linux-amlogic-6.y-devel/Documentation/devicetree/bindings/usb/usb-device.example.dtb:
-> > >>>>>> hub@1: 'vdd-supply' is a required property
-> > >>>>>
-> > >>>>> You always require the property, but it is not valid for some devices.
-> > >>>>> Just require it only where it is applicable (in if:then: clause).
-> > >>>>>
-> > >>>> I had already done this check many times before.
-> > >>>
-> > >>> I don't ask you to check. I ask you to change the code.
-> > >>>
-> > >> I have tried this and it's not working for me.
-> > >>
-> > >>>> my v6 original patch was doing the same and it passed all the tests
-> > >>>> but since I updated the required field it not parsing correctly.
-> > >>>
-> > >>> Your original v6 patch was different. I don't understand what you are
-> > >>> trying to achieve. Or rather: how is it different, that my simple advice
-> > >>> above does not work for you  (as in the past you reply with some really
-> > >>> unrelated sentence).
-> > >>>
-> > >> Ok, It's my poor English grammar, thanks for your review comments.
-> > >>
-> > >>> Best regards,
-> > >>> Krzysztof
-> > >>>
+> > > Add a quirk for this camera model too.
 > > >
-> > > Any reason this device tree binding got removed,I cannot find this file
-> > > Can not find the commit which removed this file.
+> > > Before applying the quirk:
+> > >
+> > > ```
+> > > 100 (4) [-] none 100 200717 B 212.919114 213.079004 33.727 fps ts mon=
+o/SoE
+> > > 101 (5) [-] none 101 200889 B 213.003703 213.114996 11.822 fps ts mon=
+o/SoE
+> > > 102 (6) [-] none 102 200926 B 213.035571 213.146999 31.379 fps ts mon=
+o/SoE
+> > > 103 (7) [-] none 103 200839 B 213.067424 213.179003 31.394 fps ts mon=
+o/SoE
+> > > 104 (0) [-] none 104 200692 B 213.293180 213.214991 4.430 fps ts mono=
+/SoE
+> > > 105 (1) [-] none 105 200937 B 213.322374 213.247001 34.254 fps ts mon=
+o/SoE
+> > > 106 (2) [-] none 106 201013 B 213.352228 213.279005 33.496 fps ts mon=
+o/SoE
+> > > =E2=80=A6
+> > > ```
+> > >
+> > > After applying the quirk:
+> > >
+> > > ```
+> > > 154 (2) [-] none 154 192417 B 42.199823 42.207788 27.779 fps ts mono/=
+SoE
+> > > 155 (3) [-] none 155 192040 B 42.231834 42.239791 31.239 fps ts mono/=
+SoE
+> > > 156 (4) [-] none 156 192213 B 42.263823 42.271822 31.261 fps ts mono/=
+SoE
+> > > 157 (5) [-] none 157 191981 B 42.299824 42.303827 27.777 fps ts mono/=
+SoE
+> > > 158 (6) [-] none 158 191953 B 42.331835 42.339811 31.239 fps ts mono/=
+SoE
+> > > 159 (7) [-] none 159 191904 B 42.363824 42.371813 31.261 fps ts mono/=
+SoE
+> > > 160 (0) [-] none 160 192210 B 42.399834 42.407801 27.770 fps ts mono/=
+SoE
+> > > ```
+> > >
+> > > Link: https://lore.kernel.org/lkml/5764213.DvuYhMxLoT@natalenko.name/
+> > > Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
+> > > Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+> > > ---
+> > >  drivers/media/usb/uvc/uvc_driver.c | 3 ++-
+> > >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/u=
+vc/uvc_driver.c
+> > > index 723e6d5680c2e..444d7089885ea 100644
+> > > --- a/drivers/media/usb/uvc/uvc_driver.c
+> > > +++ b/drivers/media/usb/uvc/uvc_driver.c
+> > > @@ -2573,7 +2573,8 @@ static const struct usb_device_id uvc_ids[] =3D=
+ {
+> > >       .bInterfaceClass      =3D USB_CLASS_VIDEO,
+> > >       .bInterfaceSubClass   =3D 1,
+> > >       .bInterfaceProtocol   =3D 0,
+> > > -     .driver_info          =3D UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRL=
+S_ON_INIT) },
+> > > +     .driver_info          =3D UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRL=
+S_ON_INIT
+> > > +                                          | UVC_QUIRK_INVALID_DEVICE=
+_SOF) },
+> > >     /* Logitech HD Pro Webcam C922 */
+> > >     { .match_flags          =3D USB_DEVICE_ID_MATCH_DEVICE
+> > >                             | USB_DEVICE_ID_MATCH_INT_INFO,
+> > >
 > >
-> > Use git log.
-> >
+> > Gentle ping on this one.
+>
+> Ricardo, could you include this in the next version of your hw timestamp
+> series ?
 
-I got confused with the file name and my local changes.
+There are no outstanding comments on the series
+https://patchwork.linuxtv.org/project/linux-media/list/?series=3D12485
 
-> > Best regards,
-> > Krzysztof
+Do you need me to send a v11 with this patch? or you can take that
+directly from your tree?
+
+Thanks!
+
+>
+> > Also, should I have added:
 > >
-Thanks
--Anand
+> > Fixes: 5d0fd3c806b9 ("[media] uvcvideo: Disable hardware timestamps by =
+default")
+> >
+> > ?
+>
+> I don't think that's needed, no.
+>
+> > (it's not that this change re-enables HW timestamping, but
+> > 5d0fd3c806b9 explicitly mentions C920 as affected)
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
+
+
+
+--=20
+Ricardo Ribalda
 
