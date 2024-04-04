@@ -1,127 +1,92 @@
-Return-Path: <linux-kernel+bounces-131576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC5818989A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:14:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55FA18989B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:15:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 816AB2846F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:14:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DE39FB25050
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:15:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E3DC129A99;
-	Thu,  4 Apr 2024 14:14:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43EF2129E6B;
+	Thu,  4 Apr 2024 14:15:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HyAUxtnE"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="da6dwdfX"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E089D1C14
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:14:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8617C1CD03;
+	Thu,  4 Apr 2024 14:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712240065; cv=none; b=QLqcxLI43qEMeeSRJwg44RyXjx0lAMNK9pWi62yUehNDy9x6yZVgiBVr4g2xWDMSiaL+4OCydOMFVaoyPDN4B1WMe8wKf8jTZ2eqG5t5ATXI78xsAJGjU0xK9uT3VlWQGkudwZlFqnmhE8hTQPS9Y5A6/B5cBDjz5tQW1dvkga8=
+	t=1712240133; cv=none; b=no/Oap6Qs5gf2GEQOnO7Yig9iruyls3jy/ZsczyQKPVy9lF/1WTm3gepPQrSRzupaOp74XvCZSb0m6rfuPPJPi2e8F8Y3982Ny2M4tDTHrx5emKSotPsAx8TMqGgvj/kVY34/x7OsqC00a930ZwXnR84FoxPcUtHD3G7bAKIiNw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712240065; c=relaxed/simple;
-	bh=M5cKSgIktruIPlmfo2M4VwRJUWCSGqh1YHcsOA1luPM=;
-	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=uz9UOSgK1VU5cKa+jEfl0RPZt/jJEBiQnzJmmGkiGb9SAm1HwIWY4wCkpfi//qSNElRPmvLFouEz60iMs83pc23dJPHOVKO+3Ag5AaxWTkiCsCkcqilYez0+dE/bvYewtUYpvfbPQcYMk3sk5WS7MSSLsTzpvjGP7hOItOyNLy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HyAUxtnE; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712240062;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ptd7fVXwM8iorXoyMAIOxNI8I0XxkLrDM0twBrkDu44=;
-	b=HyAUxtnELeU2sWnr+56SHshEUUbm9oWd1d4R8DfOo9G+9B91Fvw+eTIkt0/tUGwu5fCLt7
-	LxtIgnV3npsm6jL1Hd389wQHuPHg6h+RaSaawCAIoo4TkD/DLbt2YN8F/ADfXSsJD3E178
-	lxmMjQsfbizFh+1Y4TMRyZ1+Bfmm/WM=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-212-v92L5T_TOj-6fMhIC_fWzA-1; Thu, 04 Apr 2024 10:14:21 -0400
-X-MC-Unique: v92L5T_TOj-6fMhIC_fWzA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-34370ba4105so590857f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:14:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712240060; x=1712844860;
-        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ptd7fVXwM8iorXoyMAIOxNI8I0XxkLrDM0twBrkDu44=;
-        b=VevXWRi5r6rY2LJWtOyW2fNBO+8kbnDPrlqD/eQIgSSFl1fnDE5izA5YdUo+dOKqEL
-         l+neKNVyLPjtWV1FZkCzbz600UBMexA2/uT/C9FFxiL1scPOmtO9AK1aWtpj9DompmPT
-         Wh90MjctOlclNjN2eth+CVwf4k4QzrgoYA/cJlnO81+UuRFZtYRe64iLk12wpvMOkRxn
-         m9/T65Mr+YKEFU3NDP+wvKk2Jqvwadq3mk6K+qsG0HKLAQZah4Io6lpPZ+4N/ujPyg8C
-         OplSsEpiSJoj0ak5+9ARXuO44+sZk026pjTci1+GN1pwT3QNOgDtzRUiuE+GKJ5PdyQc
-         xNuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVReYdzgcFwP1RQANJkDM3+YFW9PrCbO40TN4koIOh+J/Rfzzp2hVZzcfb+qKFhIM9ZhqIZDhbh7sx6mP5wvFB81lyAbHoKOiWVNAQ8
-X-Gm-Message-State: AOJu0Yy2fQ6OdLlFJt+tm7NrCgTPuGQl8Ii54yhWytmlgx9egS6I7W1h
-	MQupOe2d+PARKzhLjZySQEFfQP8FdhWQ4CSFznnVLpSDd/jJmeIlO6tB7hxiR0W6q+DfWANE2JQ
-	viNIhR79OAUAz9MbcUW+HgJxaIfy9Ckcv/i+Mf/Br26HmN8uHHQqTLmtQ4pxKdw==
-X-Received: by 2002:a5d:5451:0:b0:343:8026:1180 with SMTP id w17-20020a5d5451000000b0034380261180mr2349310wrv.4.1712240059806;
-        Thu, 04 Apr 2024 07:14:19 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFwpBDR7805QXJg7IA/g4KxO9VQlvmx8d0MZnCbT+O7PvsHwMpri+5HFHTI30p2vEtFSZ8rQA==
-X-Received: by 2002:a5d:5451:0:b0:343:8026:1180 with SMTP id w17-20020a5d5451000000b0034380261180mr2349293wrv.4.1712240059473;
-        Thu, 04 Apr 2024 07:14:19 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id bn24-20020a056000061800b0034353b9c26bsm10255716wrb.9.2024.04.04.07.14.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 07:14:18 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Vitalii Bursov <vitaly@bursov.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
- Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot
- de Oliveira <bristot@redhat.com>, linux-kernel@vger.kernel.org, Vitalii
- Bursov <vitaly@bursov.com>
-Subject: Re: [PATCH v3 1/3] sched/fair: allow disabling
- sched_balance_newidle with sched_relax_domain_level
-In-Reply-To: <e97fd467bbe1d7168bbd73b7c9d182f46bf47a90.1712147341.git.vitaly@bursov.com>
-References: <cover.1712147341.git.vitaly@bursov.com>
- <e97fd467bbe1d7168bbd73b7c9d182f46bf47a90.1712147341.git.vitaly@bursov.com>
-Date: Thu, 04 Apr 2024 16:14:18 +0200
-Message-ID: <xhsmh5xwxb4g5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1712240133; c=relaxed/simple;
+	bh=5mRLZJpdw6WkB0SSyJ4/aJtAg0Lr9QOhnDLZhWIwlXw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=UCC/dsVbfMuYNng94agqeLSu7eDHl39J3wwT6tjwcK9vXllmeL4VV5FpY1AY37Wbj7CYg8nMn5DW3d9aszs7m8axQ8fb+kerI0S74gZQwIfiqb88R3FL/C2f1wpI0kizUYpVc8dKwJsu+cZMLxHzGTqAUkzbSOucYcyDhNhJ1UA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=da6dwdfX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBC8FC433C7;
+	Thu,  4 Apr 2024 14:15:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712240133;
+	bh=5mRLZJpdw6WkB0SSyJ4/aJtAg0Lr9QOhnDLZhWIwlXw=;
+	h=From:Subject:Date:To:Cc:From;
+	b=da6dwdfXp3t2QYrMLxkFcWIl33faaUCyNJbw3kCwhWnRoswr+xjeEMWJ+1SdBThLQ
+	 6yoD9iBh6AI6zMFk0ECjZwjIVB6XB2bUaDYr4jEHGwRfZA5nkVfwr/tVPqGPj32Nmp
+	 SE1WF9nRvd+Mk7BZ35WB7ufFakN+T1Fjt+wC9ke3PxebP5mMsPe8pKKebOuHKN7ajy
+	 raLjGlqsCweFmM5lHFeamClTwCmJHXq0I4XLHomObMbwsk2nzpHHLY/Ho59erKMSRs
+	 Oxv5fGAm4jYgvZ+b200OZFN/ylpqE3nCxX3vtU+9xvOnQCA+05GfZHxdNh17dii7Ym
+	 PA8LhGrLdYpjw==
+From: Rob Herring <robh@kernel.org>
+Subject: [PATCH 0/3] of: Use __free() based cleanups
+Date: Thu, 04 Apr 2024 09:15:09 -0500
+Message-Id: <20240404-dt-cleanup-free-v1-0-c60e6cba8da9@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAO21DmYC/x2MQQqAIBAAvxJ7bsHSJPpKdLBcayEstCIQ/57En
+ OYwkyBSYIowVAkCPRz58EWauoJlM34lZFscWtEqUUB74bKT8feJLhChtp2Ualaz1D2U6gzk+P2
+ P45TzBx0o0jxhAAAA
+To: Saravana Kannan <saravanak@google.com>
+Cc: Jonathan Cameron <jic23@kernel.org>, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org
+X-Mailer: b4 0.13-dev
 
-On 03/04/24 16:28, Vitalii Bursov wrote:
-> Change relax_domain_level checks so that it would be possible
-> to include or exclude all domains from newidle balancing.
->
-> This matches the behavior described in the documentation:
->   -1   no request. use system default or follow request of others.
->    0   no search.
->    1   search siblings (hyperthreads in a core).
->
-> "2" enables levels 0 and 1, level_max excludes the last (level_max)
-> level, and level_max+1 includes all levels.
->
-> Fixes: 9ae7ab20b483 ("sched/topology: Don't set SD_BALANCE_WAKE on cpuset domain relax")
+This small series converts the DT code to use __free() based cleanups 
+for kfree() and of_node_put(). Using __free() simplifies function exit 
+handling. Initial support for struct device_node was added in commit 
+9448e55d032d ("of: Add cleanup.h based auto release via 
+__free(device_node) markings").
 
-Not that it matters too much, but wasn't the behaviour the same back then?
-i.e.
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+Rob Herring (3):
+      of: Add a helper to free property struct
+      of: Use scope based kfree() cleanups
+      of: Use scope based of_node_put() cleanups
 
-        if (request < sd->level)
-                sd->flags &= ~(SD_BALANCE_WAKE|SD_BALANCE_NEWIDLE);
+ drivers/of/address.c    | 60 ++++++++++++++++---------------------------------
+ drivers/of/base.c       | 34 +++++++---------------------
+ drivers/of/dynamic.c    | 37 +++++++++++++-----------------
+ drivers/of/of_private.h |  1 +
+ drivers/of/overlay.c    | 11 +++------
+ drivers/of/property.c   | 22 ++++++------------
+ drivers/of/resolver.c   | 35 +++++++++++------------------
+ drivers/of/unittest.c   | 12 +++-------
+ 8 files changed, 70 insertions(+), 142 deletions(-)
+---
+base-commit: 4cece764965020c22cff7665b18a012006359095
+change-id: 20240404-dt-cleanup-free-6d5334b4b368
 
-So if relax_domain_level=0 we wouldn't clear the flags on e.g. SMT
-(level=0)
-
-AFAICT the docs & the code have always been misaligned:
-
-  4d5f35533fb9 ("sched, cpuset: customize sched domains, docs") [2008]
-  1d3504fcf560 ("sched, cpuset: customize sched domains, core") [2008]
-
-History nitpicking aside, I think this makes sense, but existing users are
-going to get a surprise...
+Best regards,
+-- 
+Rob Herring <robh@kernel.org>
 
 
