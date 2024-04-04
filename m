@@ -1,144 +1,216 @@
-Return-Path: <linux-kernel+bounces-130949-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8F388980FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:29:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D623898103
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:30:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA0E81C21154
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:29:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A8281F225DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:30:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29FF94C3DE;
-	Thu,  4 Apr 2024 05:17:01 +0000 (UTC)
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2FF745038;
+	Thu,  4 Apr 2024 05:30:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bSqC/7Wo"
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F22F22611;
-	Thu,  4 Apr 2024 05:16:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 427E520330
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 05:30:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712207820; cv=none; b=UsOpo+udnzGZ+W2/nSvAGs2y95TCCJGkLsAZ6za7ASBBDP5pWMr2rmfUMvq2rEgPsFz3IBfjlQjGawAZjobZwZDyqWdgpZ2EXm1hCbaUGMr++XhG41/Guy7vlySh9zdyVS+60t18bbVoqGVfegc0BzK0KT5Y7II0dcZcc4CAbpc=
+	t=1712208623; cv=none; b=hgoxS028kOi5IoRSpxpmQKGZnT8FLwFcIaVa+pzAwfaAfm2xxrMyilFiGxRsDBNNmUjlu6kOD/VujqM+HGEalq7nvMV+pljvOV2tGI1CpqF7gKI2LQsICs9VvckAk3EuHwuKMAZT1V+AbBU9L5tfzezvn9xhubVQ4VNIqysikeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712207820; c=relaxed/simple;
-	bh=kLxk2xDPYEJwdhPF2hVs4UUw2PfOebmBM+7yLPdjSHU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OnnbrORqVlMZRytpYozDHbAkBoWRynH83EcVjyJ7Q7wrd1EuEgkFSrZwf+V6O1zmMqSHz7MfxOQADawY6+H5uYU8D/DjQjecjbo+Ay+HlKaQNpHsH2jFYFRiv8Baz4dq/Xc1veaLF6WkwlZVePlbPY7lNTfB9FBeY3sZ0sEBK3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4155baa696eso4064845e9.2;
-        Wed, 03 Apr 2024 22:16:58 -0700 (PDT)
+	s=arc-20240116; t=1712208623; c=relaxed/simple;
+	bh=hrT6CSkkEiHpCL2254tYrBO7lscNQ5B7mlo/PBHS4j0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XdWyuv6kr4W55naWZY7AfMFpZNCL9l5uSqv1j9KTwc9XSCFcZW8t5QKGEY48LPFz3nbtXrV142Ax2v3TkhjbhntFd95iSfte86kW0BQUBouk8oKeOChyy0Y7G+MFsagXBLqw/S7mlyjCC4GJg2UVsD9LKja2vvDEVOpoKwNpmyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bSqC/7Wo; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dd10ebcd702so716165276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 22:30:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712208619; x=1712813419; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dyCeaWOBhvl6G+/jJPj4WdMHHOTtXZ5RKep0At0rnzE=;
+        b=bSqC/7WoEKjeLBagHHQRVLrCAnZqnGOYuY3dE1kpze4f+wTIVMtf96YNg6Fkw9kjVt
+         lvw32mLtESFM+qvHkD9TO7Mup9cr3vyq38TlZ7brIrQdrmkz2e3cquAXSZHXHAJvpjxp
+         0E+8SG6mfhwYWUiRvzB26GguW8GRMVEy6ycgCI9DP6nCvO2T35UF/7Uele5Pn7aMhDJ8
+         f3Bud8+uC5IjpV1uns2GOt3U8SiuQ/8917g065Bb+xsQIlRJAsXkEuCAKmVmTZbwT55f
+         r94s4Eu5+AqmTaJmHZFEVuHYqlZODvif85p4U8mlIDBSDxVfgIqYlhdc6MLmcgC08h5M
+         evAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712207817; x=1712812617;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Mz9NJQ7ch3dRlIFAyABK1Q37Ak3ZNmvEQQgrRjTgS4o=;
-        b=qPBjkfyGCV13tBzIA7dEElElyfuCwI2eKxmo1Kjis8L3wnTCMIsAtGO+b9O4PUjesO
-         LklNttO1+Bo46SHfARvtShifPz7KT2lJQh6zUBdyNUqbhYl0m+9FqMtF8bT+/LcVMTWR
-         T2nzgvs+7n0aSPFA8IP98cCDzURWXQOZjHXZeaEc//lvEvf+c7YkNBzIeofH0nNSMpaX
-         g/Dg0pVNCziOVYhDIHrbMg7gelCSM2mdm/IZn4+7+fTJ7fxCV09hY+NtRX06lrUykWdh
-         WYqpcd1QnoHWH4vv9QXIOEXjjYZY0D7w5b8G3y0qI1oZ3rHXPsiOMuVguDmpxs+oQq6u
-         Kmkg==
-X-Forwarded-Encrypted: i=1; AJvYcCUC0eJkCBuCaL79in8d8e947z+AM7ZDkcXL/0+Oz2Nvp5ompee459iA2AecECRgn/greloxLdgnnEsQ9BcILWFs8V5ngfsjYVsvM03Ca0lMXpzCO3gHbAJPKgu8N1qgiYH02eKYALH7PMLW
-X-Gm-Message-State: AOJu0YzzPPcYUlzzY85ctOfn9ZpJ+cBm5KGHQqtKLe+qLJnNzODaAF6p
-	Jdx7Db8QlWLFePj8HzwEET+fAbGfxDyMBdBpO432/Hhz+RGuotOc+8aC9VhkhAw=
-X-Google-Smtp-Source: AGHT+IGIrDF+SOgq1Y3QACjuW0oY+TysMQzpxli1DyMlvM5hnXmK1wyBfJ1aA+zBUzf5kEdO1+z1NQ==
-X-Received: by 2002:a05:600c:21ce:b0:414:860:bdc5 with SMTP id x14-20020a05600c21ce00b004140860bdc5mr1084800wmj.17.1712207817303;
-        Wed, 03 Apr 2024 22:16:57 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
-        by smtp.gmail.com with ESMTPSA id d9-20020adfa349000000b00343ab9c3d39sm1829214wrb.5.2024.04.03.22.16.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 22:16:56 -0700 (PDT)
-Message-ID: <573aac92-9c9b-427b-a76f-3c0b7c3b6ce6@kernel.org>
-Date: Thu, 4 Apr 2024 07:16:55 +0200
+        d=1e100.net; s=20230601; t=1712208619; x=1712813419;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dyCeaWOBhvl6G+/jJPj4WdMHHOTtXZ5RKep0At0rnzE=;
+        b=pY6zapi1P2yVy+Zc0/X1DJhd7zUJfLWWHxkRZhizDXuNz1Q/UMDmgV8Bi1Xs5kv9Dt
+         JPfFmbfDEBt8w2AW+fb3J7eF5BuhmO+KDYCLvpbjLG8WG4QixvfwOvkCtWsdMLnXXkmk
+         PCRU7Hkkp0354FWq/7dKsxd+NtXmjY2Ng0KqI8fDQBDADwAo8ODBvO3wLAkwsCtAj3t+
+         ybnfnKbr1SatGt7ZJHVo2Rac7WsfRjQjV3dLXn6fYeBsnyJWW6EQ32qiXnZSchek229L
+         QljNU3VdffMSZXCol5Ryu9zQz/RKabiOs2BHRGRY9Bq7pbnUfLgYVX4an5hbLfo8jVnK
+         rVmw==
+X-Forwarded-Encrypted: i=1; AJvYcCX1ZhbuGZeSr+lqn4jPbMInNw5t+M1QveZwzqLdbgnd5VKhjgJzClqnktqQwMdwIhim0xtUluZ+dPy2r9WGr/qRH2JIxuOd+Hm1zxRY
+X-Gm-Message-State: AOJu0YxNOx0aQni/U/Ny720jWF8ZRwxTwzTu0OYbMDgGtA+HAlAjyxk5
+	3Fgn8YqBC11FYjzGFwaSis/T2UdC5xTq4CJcyhOBTSclzq1IcoitTxM9RShzK+q4TXHZqKe5Ohn
+	9nfOwi0XEdTf/BUWxszAGcWsosfwJzdH29ccImg==
+X-Google-Smtp-Source: AGHT+IGKRxJEtdCBGlcL3OcZ4OT75D2VZtdOqbw13TdwBYkQp+Ruc2ZWNb86Z/W+QS4HrKFAfGGKYy4zaXWCiIsdQH4=
+X-Received: by 2002:a25:5f45:0:b0:ddd:696a:8656 with SMTP id
+ h5-20020a255f45000000b00ddd696a8656mr1475611ybm.41.1712208619210; Wed, 03 Apr
+ 2024 22:30:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/3] serial: Do not count XON/XOFF in the statistics
-To: Andy Shevchenko <andy.shevchenko@gmail.com>,
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
- Orson Zhai <orsonzhai@gmail.com>, Baolin Wang
- <baolin.wang@linux.alibaba.com>, Chunyan Zhang <zhang.lyra@gmail.com>
-References: <20240403144722.860258-1-andriy.shevchenko@linux.intel.com>
- <Zg3VHs-LVxHFdi8V@surfacebook.localdomain>
-Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- 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
-In-Reply-To: <Zg3VHs-LVxHFdi8V@surfacebook.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240321092529.13362-1-quic_jkona@quicinc.com>
+ <20240321092529.13362-7-quic_jkona@quicinc.com> <CAA8EJppHGS+W-aiXvJ2cE=jCbua8Y0Q+zv_QTs+C9V5+Y1vuZg@mail.gmail.com>
+ <008d574f-9c9e-48c6-b64e-89fb469cbde4@quicinc.com> <b3464321-0c52-4c41-9198-e9e7b16aa419@quicinc.com>
+ <CAA8EJpqDwCVAjDphnC-HdfseMJ-xd8VVxb5+9UcGEcKLcn-heg@mail.gmail.com> <fba2474e-31a6-4fef-acf9-7069933584c8@quicinc.com>
+In-Reply-To: <fba2474e-31a6-4fef-acf9-7069933584c8@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Thu, 4 Apr 2024 08:30:07 +0300
+Message-ID: <CAA8EJprfaALkQe-wUrBow6B1A66ro0AoVpfnQJLXgqFmL8isNQ@mail.gmail.com>
+Subject: Re: [PATCH V2 RESEND 6/6] arm64: dts: qcom: sm8650: Add video and
+ camera clock controllers
+To: Jagadeesh Kona <quic_jkona@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>, 
+	Satya Priya Kakitapalli <quic_skakitap@quicinc.com>, Ajit Pandey <quic_ajipan@quicinc.com>, 
+	Imran Shaik <quic_imrashai@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On 04. 04. 24, 0:15, Andy Shevchenko wrote:
-> Wed, Apr 03, 2024 at 05:46:14PM +0300, Andy Shevchenko kirjoitti:
->> Some drivers count XON/XOFF in the Tx statistics, some do not.
->> I actually a bit uncertain, but I _think_ the correct way is not
->> to count them, hence this series.
-> 
-> Okay, it seems there are much more drivers doing that. Perhaps we need
-> to add that to the rest in this case (i.o.w. invert the series from removal
-> to addition)?
+On Thu, 4 Apr 2024 at 08:13, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+>
+>
+>
+> On 4/3/2024 9:24 PM, Dmitry Baryshkov wrote:
+> > On Wed, 3 Apr 2024 at 10:16, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+> >>
+> >>
+> >>
+> >> On 3/25/2024 11:38 AM, Jagadeesh Kona wrote:
+> >>>
+> >>>
+> >>> On 3/21/2024 6:43 PM, Dmitry Baryshkov wrote:
+> >>>> On Thu, 21 Mar 2024 at 11:27, Jagadeesh Kona <quic_jkona@quicinc.com>
+> >>>> wrote:
+> >>>>>
+> >>>>> Add device nodes for video and camera clock controllers on Qualcomm
+> >>>>> SM8650 platform.
+> >>>>>
+> >>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+> >>>>> ---
+> >>>>>    arch/arm64/boot/dts/qcom/sm8650.dtsi | 28 ++++++++++++++++++++++++++++
+> >>>>>    1 file changed, 28 insertions(+)
+> >>>>>
+> >>>>> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> >>>>> b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> >>>>> index 32c0a7b9aded..d862aa6be824 100644
+> >>>>> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> >>>>> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> >>>>> @@ -4,6 +4,8 @@
+> >>>>>     */
+> >>>>>
+> >>>>>    #include <dt-bindings/clock/qcom,rpmh.h>
+> >>>>> +#include <dt-bindings/clock/qcom,sm8450-videocc.h>
+> >>>>> +#include <dt-bindings/clock/qcom,sm8650-camcc.h>
+> >>>>>    #include <dt-bindings/clock/qcom,sm8650-dispcc.h>
+> >>>>>    #include <dt-bindings/clock/qcom,sm8650-gcc.h>
+> >>>>>    #include <dt-bindings/clock/qcom,sm8650-gpucc.h>
+> >>>>> @@ -3110,6 +3112,32 @@ opp-202000000 {
+> >>>>>                           };
+> >>>>>                   };
+> >>>>>
+> >>>>> +               videocc: clock-controller@aaf0000 {
+> >>>>> +                       compatible = "qcom,sm8650-videocc";
+> >>>>> +                       reg = <0 0x0aaf0000 0 0x10000>;
+> >>>>> +                       clocks = <&bi_tcxo_div2>,
+> >>>>> +                                <&gcc GCC_VIDEO_AHB_CLK>;
+> >>>>> +                       power-domains = <&rpmhpd RPMHPD_MMCX>;
+> >>>>> +                       required-opps = <&rpmhpd_opp_low_svs>;
+> >>>>
+> >>>> The required-opps should no longer be necessary.
+> >>>>
+> >>>
+> >>> Sure, will check and remove this if not required.
+> >>
+> >>
+> >> I checked further on this and without required-opps, if there is no vote
+> >> on the power-domain & its peer from any other consumers, when runtime
+> >> get is called on device, it enables the power domain just at the minimum
+> >> non-zero level. But in some cases, the minimum non-zero level of
+> >> power-domain could be just retention and is not sufficient for clock
+> >> controller to operate, hence required-opps property is needed to specify
+> >> the minimum level required on power-domain for this clock controller.
+> >
+> > In which cases? If it ends up with the retention vote, it is a bug
+> > which must be fixed.
+> >
+>
+> The minimum non-zero level(configured from bootloaders) of MMCX is
+> retention on few chipsets but it can vary across the chipsets. Hence to
+> be on safer side from our end, it is good to have required-opps in DT to
+> specify the minimum level required for this clock controller.
 
-Interesting, perhaps cut & paste?
+We are discussing sm8650, not some abstract chipset. Does it list
+retention or low_svs as a minimal level for MMCX?
 
-XON and XOFF are overhead IMO. So should not be counted. When they are, 
-they mangle statistics as in transmitted (real) bytes per second.
+>
+> Thanks,
+> Jagadeesh
+>
+> >>
+> >> Thanks,
+> >> Jagadeesh
+> >>
+> >>>
+> >>>>> +                       #clock-cells = <1>;
+> >>>>> +                       #reset-cells = <1>;
+> >>>>> +                       #power-domain-cells = <1>;
+> >>>>> +               };
+> >>>>> +
+> >>>>> +               camcc: clock-controller@ade0000 {
+> >>>>> +                       compatible = "qcom,sm8650-camcc";
+> >>>>> +                       reg = <0 0x0ade0000 0 0x20000>;
+> >>>>> +                       clocks = <&gcc GCC_CAMERA_AHB_CLK>,
+> >>>>> +                                <&bi_tcxo_div2>,
+> >>>>> +                                <&bi_tcxo_ao_div2>,
+> >>>>> +                                <&sleep_clk>;
+> >>>>> +                       power-domains = <&rpmhpd RPMHPD_MMCX>;
+> >>>>> +                       required-opps = <&rpmhpd_opp_low_svs>;
+> >>>>> +                       #clock-cells = <1>;
+> >>>>> +                       #reset-cells = <1>;
+> >>>>> +                       #power-domain-cells = <1>;
+> >>>>> +               };
+> >>>>> +
+> >>>>>                   mdss: display-subsystem@ae00000 {
+> >>>>>                           compatible = "qcom,sm8650-mdss";
+> >>>>>                           reg = <0 0x0ae00000 0 0x1000>;
+> >>>>> --
+> >>>>> 2.43.0
+> >>>>>
+> >>>>>
+> >>>>
+> >>>>
+> >
+> >
+> >
 
-How are they handled on the RX side?
 
-thanks,
+
 -- 
-js
-suse labs
-
+With best wishes
+Dmitry
 
