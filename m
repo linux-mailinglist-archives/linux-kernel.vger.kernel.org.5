@@ -1,252 +1,251 @@
-Return-Path: <linux-kernel+bounces-132208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD423899166
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:34:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28A73899168
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:35:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 832DB28AFF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:34:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B3771C231D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C2A16F09C;
-	Thu,  4 Apr 2024 22:34:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 031B06F514;
+	Thu,  4 Apr 2024 22:35:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=proton.me header.i=@proton.me header.b="KwgD1BTs"
-Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PDXNqQ1S"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DAAD286A6;
-	Thu,  4 Apr 2024 22:34:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860E96A01E;
+	Thu,  4 Apr 2024 22:35:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712270043; cv=none; b=ME9ogmWDakd9d78GGJ6ojhALBSVgbixoBpw9t6XMOAPybI8WoVNv71XlT4XG30Fx4gq7a869jJttLlHYZCxkQP4134u4mNaRA1ktxNRtBJ4o4utaM9QLTO16Qehn8jOL5gWQeDIuU+b3L6vM1bOs7hSP4eMiGvyVTrjk64q042o=
+	t=1712270147; cv=none; b=KK2PhWyi95ErrfVO09B0EKamVFlyjTuiZnY495RaI+wyfqUMn3N2ckoVEx1iIU7g+d3ePKzJ/5lIZzcjXs/+DZkllD77YVyQzgW0QykABVwjuChQyG4Hi6elB/c9ORiFAg3EPhFMdjRYV4dnj/QoIafrlBBBfzGRf28igi8Tkv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712270043; c=relaxed/simple;
-	bh=2CeE+2aVUqJcRU7QmoWqM5Y+xjY/bn15DEc+RQneXmM=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CBK23mRpuF0WnvsCyH3vjFdN4F6SQPgN5YnGZGjYTbVZXVuzxm9pYvL/rW8xmJFRnukDgZYVO9zjCCG+aYD5egqgS965PRnEjqa45vjxah+JzzW6bNp92ibhJzzX34e6BGGtYrtH3aJPWVR+mMrsWrC4od1STl2kH3zKoMevu38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=KwgD1BTs; arc=none smtp.client-ip=185.70.40.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=i72cbelw3nfq7acf5fidjehlti.protonmail; t=1712270032; x=1712529232;
-	bh=ZVL2Z0cS5q+LN/fYP+ykEsgKaNFbc8NkPR7q7d8Y7Bo=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=KwgD1BTs62V/7Rke9wK4bxM66yt20AtPTwOGpJq0vS+Fh7Xo1SYkE58+jw7TBknSa
-	 M4rt9UsmzBMP7ZKbLymXNE2/S/8DJ9/yADXe7xQlwyOnBkwJw/Hw7JT5Qzzpl9a8Ms
-	 +WnwMUUBfiurWz5wW032w6aA+E8VTyWo+qL3rRCIXtqup0Isx7OBV06ngQZ8YvTaYC
-	 rnNaciU1wzvdJiQuIRb3gnQZt1EwGU3Civ5HOcJIGWO6zEbQh/tlDF5+1egGblZaEw
-	 g6tPHb6txJ1nBScmvpB+g6gso0CqJQafBzvu+4TnqZ/es6DSX3ySX+w/gdquTX/WWC
-	 WT7fe/TPrmJ8w==
-Date: Thu, 04 Apr 2024 22:33:42 +0000
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v4 4/4] rust: add abstraction for `struct page`
-Message-ID: <a48b2347-b58b-432e-bdb8-d5449016ab57@proton.me>
-In-Reply-To: <20240404-alice-mm-v4-4-49a84242cf02@google.com>
-References: <20240404-alice-mm-v4-0-49a84242cf02@google.com> <20240404-alice-mm-v4-4-49a84242cf02@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712270147; c=relaxed/simple;
+	bh=ccLFujs4PtuZ7Yv9sb1yvfzq72uiKClGnMerPWoLGHY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DOD316zdUKMlPMdAt0cND+zWmZMOQjKtb3NhJvbqXs8CumgSqqJR9IwB7mnEadHj7Hw2qwSPnI6xXLMH/nT8cVVtA7dId80kG4c4FcsH1jnS7r3XVMUxEsL/hU4/M1fIZJMiWNtHmUe2SGna8Gfe+ITLuIB0yQYnSCkfW49usU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PDXNqQ1S; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d3907ff128so1302517a12.3;
+        Thu, 04 Apr 2024 15:35:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712270145; x=1712874945; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3QfrsL32H/XuBg1IEnWa21H1f1JloPGE0S+M20H3dGg=;
+        b=PDXNqQ1SWtJLTLtLsznzJrVX1FFZAfKpY25eHVtyj8lcWgYXSWljLQKVI8mGsSu/f6
+         E6znBlKKKe20k7SvRjNFkXYh1LN8y0AmpAUyKaTxkfLQkuauxSXRbRQcHWdR39Zbmdcb
+         IH8rtkjyPKqiTkkSptN3hxg1xT6gNtD4rPsDF9AQzJE1pJYjxztUjmU+dQkqEQiT2uGU
+         0K1nB3GWM+1QTwYa4NaqJLN9NjPIK2QfLolnuglV77+R3hHoeeKmlJX7yNzXKVUiuh8p
+         otND8CqjxGd5w2al67sZbcO8vHlOtx2qeHnydrxqTmPTE10Nl53e296kAoyg6rXIMOoV
+         ovGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712270145; x=1712874945;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=3QfrsL32H/XuBg1IEnWa21H1f1JloPGE0S+M20H3dGg=;
+        b=RKR24lAZ5Px1Gt02iiame6zDJsF959p5nhz5HsMCiHvnOFmtwsuCnVh24SHktS+0xG
+         dM2jFOa5DeMDRvU/8spGiLo8hu7YI79okfd/c2AmiuCFmqYCrGZ1w+MCogqCgxvPcymu
+         xFtaqmkD5N+A+1rC0thr/xO97eXQsfoALDijKnpB+RWHM3QRQwleHx9/AGekPI0oOu6q
+         FjBjEN1lk59sLvJIrasBM+DoQ75O9NBxOqaDfAF3HeRIlyccvfZY90ozjEk9xKr9C/3T
+         G8J774+W4u+ksEvUT+LYPwYgBurBLiM0yzBQFEbwXhl3j2IJC1nilqQTzNKC+PIKxNxq
+         Kv3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUaOXEqU2tPVRFgX/QPmf4SLvGzT7iW6Kttyjg4k+F4dYbdfmAZT1w+gqmpU8+/i0EcQSLHMym/MLqqj/+kDvjgp9LsI5pt8aKMLIHa+GMpooZRtsEpfJn8QKRTSTTZ83Q+
+X-Gm-Message-State: AOJu0Yy9TSIbSrCrwxve4Uf/zTX6/J/Dbc6E1rq8UBvHzkuL/+VCjCU+
+	NOoUXp9YMXvssO3e9LTHkdI/ivndK1VGp6/mjY3NGZceziu6NJ/D7FVQLpwKJxx4AMQ9pcIVJHh
+	3ni0kaI/APGm9rl5l0c50QuPTLQaYh3tr
+X-Google-Smtp-Source: AGHT+IFDz7sIojwWiODLHqBbMy/7fZFlticgaZBRGuiUUsACTuMf5avJks8JyJgHcCJH2K1JXk+gB2oG3XwMvvGiWwU=
+X-Received: by 2002:a17:90a:9a81:b0:2a2:21a7:48bf with SMTP id
+ e1-20020a17090a9a8100b002a221a748bfmr1130335pjp.14.1712270144739; Thu, 04 Apr
+ 2024 15:35:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <20240404010308.334604-1-void@manifault.com> <20240404010308.334604-2-void@manifault.com>
+ <36bb0747-bff4-4fad-93ca-dae406f14099@linux.dev> <20240404163316.GA385240@maniforge>
+ <CAEf4Bza3rGMh=S7yb_Crf8v_SBTrp+NiKn0_frZnWpEi30DkPg@mail.gmail.com> <20240404223044.GA521321@maniforge>
+In-Reply-To: <20240404223044.GA521321@maniforge>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 4 Apr 2024 15:35:32 -0700
+Message-ID: <CAEf4BzbnG8QufsLmsvwHFG2JKjUCNtbKtU8c5Cb56rWR+s8UBg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 2/2] selftests/bpf: Verify calling core kfuncs
+ from BPF_PROG_TYPE_SYCALL
+To: David Vernet <void@manifault.com>
+Cc: Yonghong Song <yonghong.song@linux.dev>, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, 
+	haoluo@google.com, jolsa@kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On 04.04.24 14:31, Alice Ryhl wrote:
-> Adds a new struct called `Page` that wraps a pointer to `struct page`.
-> This struct is assumed to hold ownership over the page, so that Rust
-> code can allocate and manage pages directly.
->=20
-> The page type has various methods for reading and writing into the page.
-> These methods will temporarily map the page to allow the operation. All
-> of these methods use a helper that takes an offset and length, performs
-> bounds checks, and returns a pointer to the given offset in the page.
->=20
-> This patch only adds support for pages of order zero, as that is all
-> Rust Binder needs. However, it is written to make it easy to add support
-> for higher-order pages in the future. To do that, you would add a const
-> generic parameter to `Page` that specifies the order. Most of the
-> methods do not need to be adjusted, as the logic for dealing with
-> mapping multiple pages at once can be isolated to just the
-> `with_pointer_into_page` method. Finally, the struct can be renamed to
-> `Pages<ORDER>`, and the type alias `Page =3D Pages<0>` can be introduced.
+On Thu, Apr 4, 2024 at 3:30=E2=80=AFPM David Vernet <void@manifault.com> wr=
+ote:
+>
+> On Thu, Apr 04, 2024 at 03:16:56PM -0700, Andrii Nakryiko wrote:
+> > On Thu, Apr 4, 2024 at 9:33=E2=80=AFAM David Vernet <void@manifault.com=
+> wrote:
+> > >
+> > > On Thu, Apr 04, 2024 at 09:04:19AM -0700, Yonghong Song wrote:
+> > > >
+> > > > On 4/3/24 6:03 PM, David Vernet wrote:
+> > > > > Now that we can call some kfuncs from BPF_PROG_TYPE_SYSCALL progs=
+, let's
+> > > > > add some selftests that verify as much. As a bonus, let's also ve=
+rify
+> > > > > that we can't call the progs from raw tracepoints.
+> > > > >
+> > > > > Signed-off-by: David Vernet <void@manifault.com>
+> > > >
+> > > > Ack with some comments below.
+> > > >
+> > > > Acked-by: Yonghong Song <yonghong.song@linux.dev>
+> > >
+> > > Thanks for the review. It looks like accidentally replied directly to
+> > > me, so I'll re-add the missing cc's.
+> > >
+> >
+> > And dropped bpf@vger :) adding back
+>
+> *facepalm*, thanks!
+>
+> >
+> > > >
+> > > > > ---
+> > > > >   .../selftests/bpf/prog_tests/cgrp_kfunc.c     |  1 +
+> > > > >   .../selftests/bpf/prog_tests/task_kfunc.c     |  1 +
+> > > > >   .../selftests/bpf/progs/cgrp_kfunc_common.h   | 21 ++++++++++++=
++++++++
+> > > > >   .../selftests/bpf/progs/cgrp_kfunc_failure.c  |  4 ++++
+> > > > >   .../selftests/bpf/progs/cgrp_kfunc_success.c  |  4 ++++
+> > > > >   .../selftests/bpf/progs/cpumask_common.h      | 19 ++++++++++++=
++++++
+> > > > >   .../selftests/bpf/progs/cpumask_failure.c     |  4 ++++
+> > > > >   .../selftests/bpf/progs/cpumask_success.c     |  3 +++
+> > > > >   .../selftests/bpf/progs/task_kfunc_common.h   | 18 ++++++++++++=
+++++
+> > > > >   .../selftests/bpf/progs/task_kfunc_failure.c  |  4 ++++
+> > > > >   .../selftests/bpf/progs/task_kfunc_success.c  |  4 ++++
+> > > > >   11 files changed, 83 insertions(+)
+> > > > >
+> > > > > diff --git a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c =
+b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+> > > > > index adda85f97058..73f0ec4f4eb7 100644
+> > > > > --- a/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+> > > > > +++ b/tools/testing/selftests/bpf/prog_tests/cgrp_kfunc.c
+> > > > > @@ -102,6 +102,7 @@ void test_cgrp_kfunc(void)
+> > > > >             run_success_test(success_tests[i]);
+> > > > >     }
+> > > > > +   RUN_TESTS(cgrp_kfunc_success);
+> > > > >     RUN_TESTS(cgrp_kfunc_failure);
+> > > > >   cleanup:
+> > > > > diff --git a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c =
+b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> > > > > index d4579f735398..3db4c8601b70 100644
+> > > > > --- a/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> > > > > +++ b/tools/testing/selftests/bpf/prog_tests/task_kfunc.c
+> > > > > @@ -94,5 +94,6 @@ void test_task_kfunc(void)
+> > > > >             run_success_test(success_tests[i]);
+> > > > >     }
+> > > > > +   RUN_TESTS(task_kfunc_success);
+> > > > >     RUN_TESTS(task_kfunc_failure);
+> > > > >   }
+> > > >
+> > > > The above RUN_TESTS(cgrp_kfunc_success) and RUN_TESTS(task_kfunc_su=
+ccess)
+> > > > will do duplicate work for *existing* bpf programs in their respect=
+ive
+> > > > files. I think we still prefer to have cgrp_kfunc_success tests
+> > > > in cgrp_kfunc.c to make it easy to cross check. But in order to
+> > > > remove duplicate work, one option is to make other non-RUN_TESTS
+> > > > programs in those files not auto-loaded and their corresponding
+> > > > prog_tests/*.c file need to explicitly enable loading the problem.
+> > >
+> > > Good point, and yes I agree with that approach of not auto-loading
+> > > non-RUN_TESTS programs. Considering that we have a  __success BTF tag=
+ to
+> > > say, "this prog should successfully load", it seems odd that we'd als=
+o
+> > > automatically load and validate progs that _didn't_ specify that tag =
+as
+> > > well. At that point, I'm not sure what value the tag is bringing. Als=
+o,
+> >
+> > Just more explicitness (if desired). Normally __success would be
+> > augmented by __msg() or __retval(). I'd feel uncomfortable just
+>
+> But __success really has no actual purpose, right? Isn't it identical to
+> if it's just left off? You don't need __success to specify __msg() or
+> __retval() right?
 
-This part seems outdated, I think we probably make `ORDER` default to 0.
+right, it's just a more explicit documentation-like annotation, if you will
 
->=20
-> Rust Binder needs to manage pages directly as that is how transactions
-> are delivered: Each process has an mmap'd region for incoming
-> transactions. When an incoming transaction arrives, the Binder driver
-> will choose a region in the mmap, allocate and map the relevant pages
-> manually, and copy the incoming transaction directly into the page. This
-> architecture allows the driver to copy transactions directly from the
-> address space of one process to another, without an intermediate copy
-> to a kernel buffer.
+>
+> > silently skipping programs that are not marked with __success, as it
+> > would be too easy to accidentally forget to add it and not know that
+> > the BPF program is not tested.
+> >
+> > I'd say that RUN_TESTS-based programs should be kept separate from any
+> > other BPF programs that have a custom user-space testing part, though.
+>
+> IF we do go this way, maybe just a __skip or something tag would be
+> sufficient?
 
-[...]
+if we go this way we wouldn't need __skip, but if we do not go, then
+sure, why not. But in general, __skip makes sense either way, I guess,
+I have no problem with it.
 
-> diff --git a/rust/kernel/page.rs b/rust/kernel/page.rs
-> new file mode 100644
-> index 000000000000..5aba0261242d
-> --- /dev/null
-> +++ b/rust/kernel/page.rs
-> @@ -0,0 +1,259 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +//! Kernel page allocation and management.
-> +
-> +use crate::{bindings, error::code::*, error::Result, uaccess::UserSliceR=
-eader};
-> +use core::{
-> +    alloc::AllocError,
-> +    ptr::{self, NonNull},
-> +};
-> +
-> +/// A bitwise shift for the page size.
-> +#[allow(clippy::unnecessary_cast)]
+>
+> > About the patch itself. I don't really see much point in adding
+> > *_KFUNC_LOAD_TEST macros. They are used once or twice in total, while
+> > obscuring *what* is actually being tested. Unless you expect to add 5+
+> > more copies of them, I'd just inline them explicitly.
+>
+> It's not really important what's in the actual prog though -- the point
+> is that we're verifying we can invoke some kfuncs in a certain prog
+> type. But yes, it does obscure what's there, and I'm fine with
+> copy-pasting them if that's your preference. The reason I went with a
+> macro was to make it easy for us to quickly test new prog types as we
+> add support for them, or to add other negative testcases for unsafe prog
+> types. Right now we're just testing tracing progs.
 
-Why can't you remove the cast?
+I'm always for less macro usage, if possible :)
 
-> +pub const PAGE_SHIFT: usize =3D bindings::PAGE_SHIFT as usize;
-> +
-> +/// The number of bytes in a page.
-> +#[allow(clippy::unnecessary_cast)]
-> +pub const PAGE_SIZE: usize =3D bindings::PAGE_SIZE as usize;
-> +
-> +/// A bitmask that gives the page containing a given address.
-> +pub const PAGE_MASK: usize =3D !(PAGE_SIZE-1);
+For the use case you are describing I'd just add static subprog that
+exercises all the kfuncs of interest, and then call this subprog from
+all the (explicitly defined) main entry program of desired program
+types
 
-This line doesn't seem to be correctly formatted.
-
-> +
-> +/// Flags for the "get free page" function that underlies all memory all=
-ocations.
-> +pub mod flags {
-> +    /// gfp flags.
-> +    #[allow(non_camel_case_types)]
-> +    pub type gfp_t =3D bindings::gfp_t;
-> +
-> +    /// `GFP_KERNEL` is typical for kernel-internal allocations. The cal=
-ler requires `ZONE_NORMAL`
-> +    /// or a lower zone for direct access but can direct reclaim.
-> +    pub const GFP_KERNEL: gfp_t =3D bindings::GFP_KERNEL;
-> +    /// `GFP_ZERO` returns a zeroed page on success.
-> +    pub const __GFP_ZERO: gfp_t =3D bindings::__GFP_ZERO;
-> +    /// `GFP_HIGHMEM` indicates that the allocated memory may be located=
- in high memory.
-> +    pub const __GFP_HIGHMEM: gfp_t =3D bindings::__GFP_HIGHMEM;
-> +}
-> +
-> +/// A pointer to a page that owns the page allocation.
-> +///
-> +/// # Invariants
-> +///
-> +/// The pointer is valid, and has ownership over the page.
-> +pub struct Page {
-> +    page: NonNull<bindings::page>,
-> +}
-> +
-> +// SAFETY: Pages have no logic that relies on them staying on a given th=
-read, so
-> +// moving them across threads is safe.
-> +unsafe impl Send for Page {}
-> +
-> +// SAFETY: Pages have no logic that relies on them not being accessed
-> +// concurrently, so accessing them concurrently is safe.
-> +unsafe impl Sync for Page {}
-> +
-> +impl Page {
-> +    /// Allocates a new page.
-> +    pub fn alloc_page(gfp_flags: flags::gfp_t) -> Result<Self, AllocErro=
-r> {
-> +        // SAFETY: Depending on the value of `gfp_flags`, this call may =
-sleep.
-> +        // Other than that, it is always safe to call this method.
-> +        let page =3D unsafe { bindings::alloc_pages(gfp_flags, 0) };
-> +        let page =3D NonNull::new(page).ok_or(AllocError)?;
-> +        // INVARIANT: We just successfully allocated a page, so we now h=
-ave
-> +        // ownership of the newly allocated page. We transfer that owner=
-ship to
-> +        // the new `Page` object.
-> +        Ok(Self { page })
-> +    }
-> +
-> +    /// Returns a raw pointer to the page.
-> +    pub fn as_ptr(&self) -> *mut bindings::page {
-> +        self.page.as_ptr()
-> +    }
-> +
-> +    /// Runs a piece of code with this page mapped to an address.
-> +    ///
-> +    /// The page is unmapped when this call returns.
-> +    ///
-> +    /// # Using the raw pointer
-> +    ///
-> +    /// It is up to the caller to use the provided raw pointer correctly=
- The
-> +    /// pointer is valid for `PAGE_SIZE` bytes and for the duration in w=
-hich the
-> +    /// closure is called. The pointer might only be mapped on the curre=
-nt
-> +    /// thread, and when that is the case, dereferencing it on other thr=
-eads is
-> +    /// UB. Other than that, the usual rules for dereferencing a raw poi=
-nter
-> +    /// apply: don't cause data races, the memory may be uninitialized, =
-and so
-> +    /// on.
-> +    ///
-> +    /// If multiple threads map the same page at the same time, then the=
-y may
-> +    /// reference with different addresses. However, even if the address=
-es are
-> +    /// different, the underlying memory is still the same for these pur=
-poses
-> +    /// (e.g., it's still a data race if they both write to the same und=
-erlying
-> +    /// byte at the same time).
-
-This is nice.
-
---=20
-Cheers,
-Benno
-
-> +    fn with_page_mapped<T>(&self, f: impl FnOnce(*mut u8) -> T) -> T {
-> +        // SAFETY: `page` is valid due to the type invariants on `Page`.
-> +        let mapped_addr =3D unsafe { bindings::kmap_local_page(self.as_p=
-tr()) };
-> +
-> +        let res =3D f(mapped_addr.cast());
-> +
-> +        // This unmaps the page mapped above.
-> +        //
-> +        // SAFETY: Since this API takes the user code as a closure, it c=
-an only
-> +        // be used in a manner where the pages are unmapped in reverse o=
-rder.
-> +        // This is as required by `kunmap_local`.
-> +        //
-> +        // In other words, if this call to `kunmap_local` happens when a
-> +        // different page should be unmapped first, then there must nece=
-ssarily
-> +        // be a call to `kmap_local_page` other than the call just above=
- in
-> +        // `with_page_mapped` that made that possible. In this case, it =
-is the
-> +        // unsafe block that wraps that other call that is incorrect.
-> +        unsafe { bindings::kunmap_local(mapped_addr) };
-> +
-> +        res
-> +    }
-
+>
+> >
+> > > that was the expected behavior before RUN_TESTS() was introduced, so =
+it
+> > > hopefully shouldn't cause much if any churn.
+> > >
+> > > > Maybe the current patch is okay even with duplicated work as it
+> > > > should not take much time to verify those tiny problems.
+> > >
+> > > IMO it should be fine for now as the overhead for validating and load=
+ing
+> > > these progs is low, but it'd definitely be good to address this probl=
+em
+> > > in a follow-up. I don't think it should take too much effort -- AFAIC=
+T
+> > > we'd just have to mark a test spec as invalid if it didn't have any B=
+TF
+> > > test tags. Ideally I'd like to separate that from this patch set, but=
+ I
+> > > can do it here if folks want.
+> > >
+> > > Thanks,
+> > > David
 
