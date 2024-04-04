@@ -1,59 +1,80 @@
-Return-Path: <linux-kernel+bounces-130808-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130809-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29480897D53
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:11:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D33D897D56
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:16:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B8D2F1F25EB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:11:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E258EB2ABF3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F669BE71;
-	Thu,  4 Apr 2024 01:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C06BE5E;
+	Thu,  4 Apr 2024 01:15:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="uENpXcX8"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="h+v2n6Ry"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 035CC28F5;
-	Thu,  4 Apr 2024 01:11:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EC1F3C30;
+	Thu,  4 Apr 2024 01:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712193094; cv=none; b=d1DSykoa/fgK268yaUFlyxZlbW5qR8pf2p98rMpTUwslw8rDHlaLvu9tjTV4o7ma/vyUqRnUyoGQsFjkfkjI6vqCgBR1/US0COPO1hVQi1f/pyhpbKm1ew9jmDvFHO1dA5b//wK47sGE1AU+UMJYbBFMCHmcOoc5i1ojzrmmfeQ=
+	t=1712193348; cv=none; b=mSR+7SHSxU2rt9suStrQQy0XZ/M/cJa0v59wICqjJ5zmjlBqu+JACnyzzNFKXclZV8FKt2OaREJlYzNxHW1YFbi24D4EfJmmsd2MbjOteIoCI/mrU6dUgOBiLm50B2QnnUdmlyuz0PooogopoPLwME5yyQsoBMcTcRFwY+YhTcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712193094; c=relaxed/simple;
-	bh=J7A8PN5wuZBV1TfL2Rk8R9fDGmF9fMdEqF4s6QCA04A=;
+	s=arc-20240116; t=1712193348; c=relaxed/simple;
+	bh=iV+fYLEUuD3qMKnGQDEMm+oR9vl6EeMmdnznRKNEQ+I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s7r/R64WIoEScQxtFEgNdJ/awn8CCDHil4DktnNMLVeKL8lA8E+g44r/EwoR7KJmztPE6/ejVikjmfRgb64Y9wJBLMwHmhw8DfUj8jTrsy/PHZ5dySUbASbblhmVav65NmdhLF46L3JTBtBBqDewiwDkWPL4aFAvDMJPGMX/8r8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=uENpXcX8; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 76EF5497;
-	Thu,  4 Apr 2024 03:10:53 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1712193053;
-	bh=J7A8PN5wuZBV1TfL2Rk8R9fDGmF9fMdEqF4s6QCA04A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uENpXcX8VK2/0Uzr7fzR2mGdN6GLgXQUAEStarPMihUYWr4Mh5u3aWx1SrAkzAkJW
-	 MYkTkIGdBh8UtzD1NWHinftKMnvNg4Lz39JzJPkc5akpUQ9WgD2ojSbIZwmaYGPA+Y
-	 bgTGBZZsJTVzQR92fLQU+tdHrDj+IJzmMXJVXxV4=
-Date: Thu, 4 Apr 2024 04:11:20 +0300
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Oleksandr Natalenko <oleksandr@natalenko.name>
-Cc: linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-	Ricardo Ribalda <ribalda@chromium.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	"hn.chen" <hn.chen@sunplusit.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH] media/uvcvideo: add quirk for invalid dev_sof in
- Logitech C920
-Message-ID: <20240404011120.GH23803@pendragon.ideasonboard.com>
-References: <20240325142611.15550-1-oleksandr@natalenko.name>
- <6046664.lOV4Wx5bFT@natalenko.name>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NvtCHKq3qv6Z9E+6IkzvmdjXPEegNJ+aJNCjaQxW70+46Fka077641dClh3MOcLfSp8Yay58pJFExo86RKsq5OEJPjofhpdXbqg/WAo1YgpAy2iXj6dSVzK4yKypTaaJ+69cb6XD6bAGfVyucgHYVocsgJoSxguZNOjH9KLc38M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=h+v2n6Ry; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712193347; x=1743729347;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=iV+fYLEUuD3qMKnGQDEMm+oR9vl6EeMmdnznRKNEQ+I=;
+  b=h+v2n6Rydh4/WzD9edHnspAYv5u1//8gvmn+PdDCqbUkhNNo4GL0IVAR
+   lHu2XeEPjnSl61kaGBZRMtyMWZSifl3SSWs2IoLwJzBSSuFrTB0Hz1Wbh
+   Axb9NQg5WyiZlYgAO5MCPHrE0lnijg8xaTLx6PlBSkBGUWn5xUfGFbVZA
+   Ihh1aIlntK2rjh6NXNT2RarERcArSRDG1kaVoWvdnpXgLI6uvg740C07o
+   r9H45jfKmppfCL/TrjEK99TM0q/eFI846dxCKkF8uVIJb+RhSx8hrU+7H
+   7Gn75KhNtuc7U1unMGPZwMj186cXtxmYFIWg2mQspUZW0N1eFVlwhol9T
+   w==;
+X-CSE-ConnectionGUID: iSV7s0yfSUKRfAWZ394bUg==
+X-CSE-MsgGUID: JXA9hbjLSjS/74tqn8ao2w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7628285"
+X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
+   d="scan'208";a="7628285"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 18:15:47 -0700
+X-CSE-ConnectionGUID: YwN6getFSA+MsprrZH5IDw==
+X-CSE-MsgGUID: UyC81w+aRRCQF2ecc+pMdA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
+   d="scan'208";a="23317387"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by ORVIESA003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 18:15:46 -0700
+Date: Wed, 3 Apr 2024 18:15:45 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Chao Gao <chao.gao@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	Xiaoyao Li <xiaoyao.li@intel.com>,
+	Sean Christopherson <sean.j.christopherson@intel.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 104/130] KVM: TDX: Add a place holder for handler of
+ TDX hypercalls (TDG.VP.VMCALL)
+Message-ID: <20240404011545.GO2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <1c66bfde36f08eacbe2f5c50f88adf80e3d87ea7.1708933498.git.isaku.yamahata@intel.com>
+ <ZgqFhx7JjhzKXjqb@chao-email>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,84 +83,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6046664.lOV4Wx5bFT@natalenko.name>
+In-Reply-To: <ZgqFhx7JjhzKXjqb@chao-email>
 
-Hi Oleksandr,
+On Mon, Apr 01, 2024 at 05:59:35PM +0800,
+Chao Gao <chao.gao@intel.com> wrote:
 
-On Mon, Apr 01, 2024 at 06:45:16PM +0200, Oleksandr Natalenko wrote:
-> On pondělí 25. března 2024 15:26:11, CEST Oleksandr Natalenko wrote:
-> > Similarly to Logitech C922, C920 seems to also suffer from a firmware
-> > bug that breaks hardware timestamping.
+> > static inline bool is_td_vcpu_created(struct vcpu_tdx *tdx)
+> > {
+> > 	return tdx->td_vcpu_created;
+> >@@ -897,6 +932,11 @@ fastpath_t tdx_vcpu_run(struct kvm_vcpu *vcpu)
 > > 
-> > Add a quirk for this camera model too.
+> > 	tdx_complete_interrupts(vcpu);
 > > 
-> > Before applying the quirk:
-> > 
-> > ```
-> > 100 (4) [-] none 100 200717 B 212.919114 213.079004 33.727 fps ts mono/SoE
-> > 101 (5) [-] none 101 200889 B 213.003703 213.114996 11.822 fps ts mono/SoE
-> > 102 (6) [-] none 102 200926 B 213.035571 213.146999 31.379 fps ts mono/SoE
-> > 103 (7) [-] none 103 200839 B 213.067424 213.179003 31.394 fps ts mono/SoE
-> > 104 (0) [-] none 104 200692 B 213.293180 213.214991 4.430 fps ts mono/SoE
-> > 105 (1) [-] none 105 200937 B 213.322374 213.247001 34.254 fps ts mono/SoE
-> > 106 (2) [-] none 106 201013 B 213.352228 213.279005 33.496 fps ts mono/SoE
-> > …
-> > ```
-> > 
-> > After applying the quirk:
-> > 
-> > ```
-> > 154 (2) [-] none 154 192417 B 42.199823 42.207788 27.779 fps ts mono/SoE
-> > 155 (3) [-] none 155 192040 B 42.231834 42.239791 31.239 fps ts mono/SoE
-> > 156 (4) [-] none 156 192213 B 42.263823 42.271822 31.261 fps ts mono/SoE
-> > 157 (5) [-] none 157 191981 B 42.299824 42.303827 27.777 fps ts mono/SoE
-> > 158 (6) [-] none 158 191953 B 42.331835 42.339811 31.239 fps ts mono/SoE
-> > 159 (7) [-] none 159 191904 B 42.363824 42.371813 31.261 fps ts mono/SoE
-> > 160 (0) [-] none 160 192210 B 42.399834 42.407801 27.770 fps ts mono/SoE
-> > ```
-> > 
-> > Link: https://lore.kernel.org/lkml/5764213.DvuYhMxLoT@natalenko.name/
-> > Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-> > Signed-off-by: Oleksandr Natalenko <oleksandr@natalenko.name>
-> > ---
-> >  drivers/media/usb/uvc/uvc_driver.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> > index 723e6d5680c2e..444d7089885ea 100644
-> > --- a/drivers/media/usb/uvc/uvc_driver.c
-> > +++ b/drivers/media/usb/uvc/uvc_driver.c
-> > @@ -2573,7 +2573,8 @@ static const struct usb_device_id uvc_ids[] = {
-> >  	  .bInterfaceClass	= USB_CLASS_VIDEO,
-> >  	  .bInterfaceSubClass	= 1,
-> >  	  .bInterfaceProtocol	= 0,
-> > -	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT) },
-> > +	  .driver_info		= UVC_INFO_QUIRK(UVC_QUIRK_RESTORE_CTRLS_ON_INIT
-> > +					       | UVC_QUIRK_INVALID_DEVICE_SOF) },
-> >  	/* Logitech HD Pro Webcam C922 */
-> >  	{ .match_flags		= USB_DEVICE_ID_MATCH_DEVICE
-> >  				| USB_DEVICE_ID_MATCH_INT_INFO,
-> > 
+> >+	if (tdx->exit_reason.basic == EXIT_REASON_TDCALL)
+> >+		tdx->tdvmcall.rcx = vcpu->arch.regs[VCPU_REGS_RCX];
 > 
-> Gentle ping on this one.
-
-Ricardo, could you include this in the next version of your hw timestamp
-series ?
-
-> Also, should I have added:
+> kvm_rcx_read()?
 > 
-> Fixes: 5d0fd3c806b9 ("[media] uvcvideo: Disable hardware timestamps by default")
+> 		
+> >+	else
+> >+		tdx->tdvmcall.rcx = 0;
 > 
-> ?
+> RCX on TDVMCALL exit is supposed to be consumed by TDX module. I don't get why
+> caching it is necessary. Can tdx->tdvmcall be simply dropped?
 
-I don't think that's needed, no.
+Now it's not used. Will drop tdvmcall.
 
-> (it's not that this change re-enables HW timestamping, but
-> 5d0fd3c806b9 explicitly mentions C920 as affected)
-
+It was originally used to remember a original register mask of TDVMCALL, and
+tdx_complete_vp_vmcall() used it as a valid value to copy back the output
+values.  The current tdx_complete_vp_vmcall() uses kvm_rcx_read() because even
+if the user space changes rcx, it doesn't harm to KVM.  KVM does what the user
+space tells.
 -- 
-Regards,
-
-Laurent Pinchart
+Isaku Yamahata <isaku.yamahata@intel.com>
 
