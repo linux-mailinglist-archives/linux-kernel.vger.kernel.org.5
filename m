@@ -1,125 +1,198 @@
-Return-Path: <linux-kernel+bounces-132055-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D52F1898F2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:43:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 208E8898F3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:53:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E9401F238DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:43:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA7192829CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:53:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0AF3134426;
-	Thu,  4 Apr 2024 19:43:24 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA9B13473D;
+	Thu,  4 Apr 2024 19:53:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nj/C3MAl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PP4L2GS8";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ji3QTxuq";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Kwfam1vJ"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F44212D76B;
-	Thu,  4 Apr 2024 19:43:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92CA74C14;
+	Thu,  4 Apr 2024 19:53:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712259804; cv=none; b=g1ER/mNZniydwsUsNlos6zNNz1zaNApQGBCaRXDZAYkam2XrDkSBqFr5FzOSNRfO5I9ov+rHcNWHuejpG4uh15CEXj+Y4syVWxGhhgl9GhLczzI6Lz2kUxAOzeVFz6ezvqtK8hZfNKrKRpisFW0JfoM0xLVpwcgTD0Wo/5jZYGs=
+	t=1712260404; cv=none; b=aBHU6zlCNq2ehSLaZw5Yccuf0w9f1gBGOlrVnAs4qj3FWGA6v90ujSiWMCefzAeeZu90728huDo3oWB3mMpUZqP0UOj/NsNd4fcsgg84h8Q1Um87DVLSq+R0OQo1KHBmeriBT/hJaH3Ltcuoxm7+IIaptxvqClQX0g5O7XA+oXA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712259804; c=relaxed/simple;
-	bh=zUDgi6iudoTJasQRtCJQcwLNiKQJmhurWg2xbJqb//k=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PUs52ogJC4Ndgop8m0VZPMqjJaMhGBJ1WywD+FBqBG2NkANNCYl9JPt7JA9ea4+5ibuyIEbcbuN1v9+4EbZtNySvY3Vr+Ya2OYCZ+3gVKTqEKZzK7u91jGeQg5BzCkjcSGe0g5SW0HeNK4ehf/Du/UG9Ok9Qj0Ld7jHhOxsk+64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875aaf.versanet.de ([83.135.90.175] helo=phil.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rsSzU-0005We-Pz; Thu, 04 Apr 2024 21:43:16 +0200
-From: Heiko Stuebner <heiko@sntech.de>
-To: Michael Turquette <mturquette@baylibre.com>,
- Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>
-Cc: linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
- devicetree@vger.kernel.org, David Jander <david@protonic.nl>,
- Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH] clk: rockchip: clk-rk3568.c: Add missing USB480M_PHY mux
-Date: Thu, 04 Apr 2024 21:43:15 +0200
-Message-ID: <3612648.44csPzL39Z@phil>
-In-Reply-To:
- <20240404-clk-rockchip-rk3568-add-usb480m-phy-mux-v1-1-e8542afd58b9@pengutronix.de>
-References:
- <20240404-clk-rockchip-rk3568-add-usb480m-phy-mux-v1-1-e8542afd58b9@pengutronix.de>
+	s=arc-20240116; t=1712260404; c=relaxed/simple;
+	bh=WIaxxb/wJKgOnX2AIsmocmXM/m0z3iob9NXxQddI4Pg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CZoAVwnHGAJE41mhjTP+4ISLlCHMpOBjGznWfiM4yemOoVTWkcmrGcMiVukkaDsLhYGNp/KzS5zuF6eohMwHKokfqrmGfF3Xg2kTwKQAbJP5j4J0rG5JflByDwEhNYAb1w+nDNCFVXayiAQcyGsBCI5gU98JnfIBRKI/RywOIzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nj/C3MAl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PP4L2GS8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ji3QTxuq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Kwfam1vJ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DFF871F441;
+	Thu,  4 Apr 2024 19:53:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712260401;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0kGyYdvz1lGwPR6FgbkygCOdLQOLaJs4yjJ3ECXl6LI=;
+	b=nj/C3MAlqmkQc/GHgjaqRmYlbJS+5xTV1FMACJvdtg8riSwbl++lq296aqqMGgyVrvVJC+
+	g70q7Vn4mDLP5A5HEt0Ei/di0p/ZpZI4M7Ph4s/OBODN9ToGvX17KRfxIaUd+FDzzG/Lec
+	vmNUvz2jeguhSMPPHk6DOKhGyrgtkg4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712260401;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0kGyYdvz1lGwPR6FgbkygCOdLQOLaJs4yjJ3ECXl6LI=;
+	b=PP4L2GS8ki1HoCI3//JngIKC4kPQe4Y2WWYWVHX2hQ1snir6WrP+yDv2IDE0jK5yQT9oFr
+	AjKHp1X2QpNTkVDw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ji3QTxuq;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Kwfam1vJ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712260400;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0kGyYdvz1lGwPR6FgbkygCOdLQOLaJs4yjJ3ECXl6LI=;
+	b=ji3QTxuqAvPTAwRGLGMxv6NvIlKIvxIauFBNnrqBXlle6B5cnXc163/s7WIjZH/fdlG+uL
+	r/+6ACCwIy+WHlSgHvSJDQe23uCaCHtAitBgBANDtAn7deEPJ9h2jE87HqtwC3r+Fb2emb
+	5m4G4RYKxYU7dwIq5h5TSLGEzqwxjCo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712260400;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0kGyYdvz1lGwPR6FgbkygCOdLQOLaJs4yjJ3ECXl6LI=;
+	b=Kwfam1vJR4+biIZroMqZaewwhFLWPbJLzQxsjs4IEXmgvyj6PnMIiIMfEOivT6zj8icM7p
+	xM7jzxhWCQ61E2Dg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C4F6613298;
+	Thu,  4 Apr 2024 19:53:20 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id wxDyLzAFD2ZSbAAAn2gu4w
+	(envelope-from <dsterba@suse.cz>); Thu, 04 Apr 2024 19:53:20 +0000
+Date: Thu, 4 Apr 2024 21:45:58 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Johannes Thumshirn <jth@kernel.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Hans Holmberg <Hans.Holmberg@wdc.com>,
+	Naohiro Aota <Naohiro.Aota@wdc.com>, hch@lst.de,
+	Damien LeMoal <dlemoal@kernel.org>, Boris Burkov <boris@bur.io>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: Re: [PATCH RFC PATCH 3/3] btrfs: zoned: kick cleaner kthread if low
+ on space
+Message-ID: <20240404194558.GK14596@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20240328-hans-v1-0-4cd558959407@kernel.org>
+ <20240328-hans-v1-3-4cd558959407@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240328-hans-v1-3-4cd558959407@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -1.38
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: DFF871F441
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.38 / 50.00];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	BAYES_HAM(-0.17)[69.78%];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
 
-Hi Sascha,
+On Thu, Mar 28, 2024 at 02:56:33PM +0100, Johannes Thumshirn wrote:
+> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> 
+> Kick the cleaner kthread on chunk allocation if we're slowly running out
+> of usable space on a zoned filesystem.
 
-Am Donnerstag, 4. April 2024, 09:27:01 CEST schrieb Sascha Hauer:
-> From: David Jander <david@protonic.nl>
-> 
-> The USB480M clock can source from a MUX that selects the clock to come
-> from either of the USB-phy internal 480MHz PLLs. These clocks are
-> provided by the USB phy driver.
-> 
-> Signed-off-by: David Jander <david@protonic.nl>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+For zoned mode it makes more sense, as Boris noted it could be done for
+non-zoned too but maybe based on additional criteria as reusing the
+space is easier.
+
+Also cleaner does several things so it may start doing subvolume
+cleaning or defragmentation at the worst time.
+
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->  drivers/clk/rockchip/clk-rk3568.c      | 4 ++++
->  include/dt-bindings/clock/rk3568-cru.h | 1 +
->  2 files changed, 5 insertions(+)
+>  fs/btrfs/zoned.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/drivers/clk/rockchip/clk-rk3568.c b/drivers/clk/rockchip/clk-rk3568.c
-> index 8cb21d10beca2..2d44bcaef046b 100644
-> --- a/drivers/clk/rockchip/clk-rk3568.c
-> +++ b/drivers/clk/rockchip/clk-rk3568.c
-> @@ -215,6 +215,7 @@ static const struct rockchip_cpuclk_reg_data rk3568_cpuclk_data = {
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index fb8707f4cab5..25c1a17873db 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -1040,6 +1040,7 @@ int btrfs_reset_sb_log_zones(struct block_device *bdev, int mirror)
+>  u64 btrfs_find_allocatable_zones(struct btrfs_device *device, u64 hole_start,
+>  				 u64 hole_end, u64 num_bytes)
+>  {
+> +	struct btrfs_fs_info *fs_info = device->fs_info;
+>  	struct btrfs_zoned_device_info *zinfo = device->zone_info;
+>  	const u8 shift = zinfo->zone_size_shift;
+>  	u64 nzones = num_bytes >> shift;
+> @@ -1051,6 +1052,11 @@ u64 btrfs_find_allocatable_zones(struct btrfs_device *device, u64 hole_start,
+>  	ASSERT(IS_ALIGNED(hole_start, zinfo->zone_size));
+>  	ASSERT(IS_ALIGNED(num_bytes, zinfo->zone_size));
 >  
->  PNAME(mux_pll_p)			= { "xin24m" };
->  PNAME(mux_usb480m_p)			= { "xin24m", "usb480m_phy", "clk_rtc_32k" };
-> +PNAME(mux_usb480m_phy_p)		= { "clk_usbphy0_480m", "clk_usbphy1_480m"};
->  PNAME(mux_armclk_p)			= { "apll", "gpll" };
->  PNAME(clk_i2s0_8ch_tx_p)		= { "clk_i2s0_8ch_tx_src", "clk_i2s0_8ch_tx_frac", "i2s0_mclkin", "xin_osc0_half" };
->  PNAME(clk_i2s0_8ch_rx_p)		= { "clk_i2s0_8ch_rx_src", "clk_i2s0_8ch_rx_frac", "i2s0_mclkin", "xin_osc0_half" };
-> @@ -485,6 +486,9 @@ static struct rockchip_clk_branch rk3568_clk_branches[] __initdata = {
->  	MUX(USB480M, "usb480m", mux_usb480m_p, CLK_SET_RATE_PARENT,
->  			RK3568_MODE_CON0, 14, 2, MFLAGS),
->  
-> +	MUX(USB480M_PHY, "usb480m_phy", mux_usb480m_phy_p, CLK_SET_RATE_PARENT,
-> +			RK3568_MISC_CON2, 15, 1, MFLAGS),
+> +	if (!test_bit(BTRFS_FS_CLEANER_RUNNING, &fs_info->flags) &&
+> +	    btrfs_zoned_should_reclaim(fs_info)) {
+> +		wake_up_process(fs_info->cleaner_kthread);
+
+You can drop the BTRFS_FS_CLEANER_RUNNING condition, this is not a
+performance sensitive where the wake up of an already running process
+would hurt.
+
+> +	}
 > +
->  	/* PD_CORE */
->  	COMPOSITE(0, "sclk_core_src", apll_gpll_npll_p, CLK_IGNORE_UNUSED,
->  			RK3568_CLKSEL_CON(2), 8, 2, MFLAGS, 0, 4, DFLAGS | CLK_DIVIDER_READ_ONLY,
-> diff --git a/include/dt-bindings/clock/rk3568-cru.h b/include/dt-bindings/clock/rk3568-cru.h
-> index d29890865150d..5263085c5b238 100644
-> --- a/include/dt-bindings/clock/rk3568-cru.h
-> +++ b/include/dt-bindings/clock/rk3568-cru.h
-> @@ -78,6 +78,7 @@
->  #define CPLL_333M		9
->  #define ARMCLK			10
->  #define USB480M			11
-> +#define USB480M_PHY		12
->  #define ACLK_CORE_NIU2BUS	18
->  #define CLK_CORE_PVTM		19
->  #define CLK_CORE_PVTM_CORE	20
+>  	while (pos < hole_end) {
+>  		begin = pos >> shift;
+>  		end = begin + nzones;
 > 
-
-Please separate the code change and clock-id addition into separate
-patches. That way dt-maintainers will more easily see that there are
-changes to the dt-binding inside.
-
-Other than that, the change looks fine :-)
-
-
-Thanks
-Heiko
-
-
-
+> -- 
+> 2.35.3
+> 
 
