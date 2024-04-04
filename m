@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-131926-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131927-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3F58898D99
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:58:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39543898D9A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:59:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F47F28266C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:58:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AF401C283F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:59:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC7E13441F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C3B01350FD;
 	Thu,  4 Apr 2024 17:57:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GFL5JYvJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CGSYEztl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CD631339B1;
-	Thu,  4 Apr 2024 17:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07CC134426;
+	Thu,  4 Apr 2024 17:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712253443; cv=none; b=S4aV/Hl31oeCo0DsM+LGk38d7N58Li3nVa9WWhbqPJsSW/vNiHdn1SDlIUfOrUL1mnzM+mfNpWajYOTR43ctq46WlvebmTiRLz0KVAZYR12+Hj5g0tq+BoXYRmVYICf2krz2HpEwc/HJimq3z610MfbFePv6+LOo++7GqPXwA7s=
+	t=1712253443; cv=none; b=jTFdKCAw2oNcAFidg8JafWX+42HeEjBVk5R9Sc/p79Jn6+ZVHIQqe9Jtopa2Gn0NYwzksal5ja3l+YJb8q3IOHLM6Ua/gdqIiR/4ADB0tSGqnnvMkslGE/dgLBz4kxkR2+YEmO/kZOrRQ+bNvQhcR+YU8BoosL1Smrg345yOQFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712253443; c=relaxed/simple;
-	bh=zOkpmF2bfwe8D5R+ONfcu1WFleIDXUSyCE14ZC5NB/4=;
+	bh=niT6BQxb6KQYb+xioB6nmxiNDINwRSyOvMNKOzr69J0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rcj06WOfqEwcv64qh3HWQ8+01AZhGdD4Z5v5yM37e0L/nZPPxBafXaD06GvmgPxUt7mTzNPF3oBgCDtxIOwaQ5FwYfbzYqaH1LSmrhZ/K5UjSKhYZRBQbtc1JBuR79NevCdZJopWqGnwKkoyoG4AJHI4ToG1P4ilwTO/ulf1zcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GFL5JYvJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CD8BC43330;
+	 MIME-Version; b=B1DlNZ7TKTsoofDHADQQqI5iXQSTeNZkYWE1pNpv3rRM3/L5UsE29SGxQPEviU0DW35kToXlPqjOLslphM63qurBjEdmVkIkOqAGbW7YWrdZqg2IdwGN84zYkwLNXYx6WjasPk9u7/xGPEIqdba1BeWUjIhU0qKfJFCx1OVnQFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CGSYEztl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE04AC4167E;
 	Thu,  4 Apr 2024 17:57:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712253442;
-	bh=zOkpmF2bfwe8D5R+ONfcu1WFleIDXUSyCE14ZC5NB/4=;
+	s=k20201202; t=1712253443;
+	bh=niT6BQxb6KQYb+xioB6nmxiNDINwRSyOvMNKOzr69J0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GFL5JYvJQKECvIkWeaD9FDcy67MEtBVJdlLjvsd93jDYlHXxE7GyoneUqbQviyS3Y
-	 OxSDbzIL0r5rrxUgfbvZHGikfw63P9vFcbByrvWZ5rgqThJgR0LX/nrJbFRpDBzCcU
-	 p1sIvkrwEfiYxEWFi71ZPz0N+ET67nVz5UvuGOeI6STjtQjm5jWJZ8s57En60n7FgX
-	 x8KPyuW+x93vohjQui3fSPSqKoRRvhVgR/PGFjqibr8Les4k0hxP3WPIGPvJGUy6uB
-	 SA/DixozWwQxLIy3AzT0+W7yb8AujY8GlFEYEQDs+XL6qw9zKpcz1OmbJ5Tt6RSixp
-	 ZdyOhr0NV2dOQ==
+	b=CGSYEztlyQ2d65DXA/9VDqohrGM22hsX9Jl7GvQKfzYroW5NOWOm8xcbfc75gyZOg
+	 zs1J6GGB8bgZFbLi8kPFU05yqF3pKdzWw6wbkX1ms/zOREFLMaGD6i/wIOucNH2+Za
+	 jvUzAqbjZVuX3cgrAuoZoiy3cz4x/9hWDR/5NhgBkfdnDBIbJ6gw50132AJFq32HdB
+	 NydZ3T8DLM42PxfD4RzT2riPmDFvELSiWYpXpWalQaBRzDQkEX8C106rgxbMkyrUOT
+	 Z/SA1v+jmFDjZ7HnIyvzCv2sEdIgs0HgwLZUYzH7ryxyZHaE1+5Bn6HAM50l4j/FOf
+	 t6lpcYs3TkxLw==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>,
@@ -50,9 +50,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Ingo Molnar <mingo@kernel.org>,
 	LKML <linux-kernel@vger.kernel.org>,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH 8/9] perf annotate: Move nr_events struct to annotated_source
-Date: Thu,  4 Apr 2024 10:57:15 -0700
-Message-ID: <20240404175716.1225482-9-namhyung@kernel.org>
+Subject: [PATCH 9/9] perf annotate: Move start field struct to annotated_source
+Date: Thu,  4 Apr 2024 10:57:16 -0700
+Message-ID: <20240404175716.1225482-10-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 In-Reply-To: <20240404175716.1225482-1-namhyung@kernel.org>
 References: <20240404175716.1225482-1-namhyung@kernel.org>
@@ -69,78 +69,67 @@ samples.  No need to consume memory for every symbol (annotation).
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate.c | 6 +++---
- tools/perf/util/annotate.h | 5 +++--
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ tools/perf/util/annotate.c | 10 +++++-----
+ tools/perf/util/annotate.h |  2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index 1fd51856d78f..5f79ae0bccfd 100644
+index 5f79ae0bccfd..4db49611c386 100644
 --- a/tools/perf/util/annotate.c
 +++ b/tools/perf/util/annotate.c
-@@ -1584,7 +1584,7 @@ static double annotation_line__max_percent(struct annotation_line *al,
- 	double percent_max = 0.0;
- 	int i;
+@@ -909,9 +909,9 @@ int symbol__annotate(struct map_symbol *ms, struct evsel *evsel,
+ 	args.arch = arch;
+ 	args.ms = *ms;
+ 	if (annotate_opts.full_addr)
+-		notes->start = map__objdump_2mem(ms->map, ms->sym->start);
++		notes->src->start = map__objdump_2mem(ms->map, ms->sym->start);
+ 	else
+-		notes->start = map__rip_2objdump(ms->map, ms->sym->start);
++		notes->src->start = map__rip_2objdump(ms->map, ms->sym->start);
  
--	for (i = 0; i < notes->nr_events; i++) {
-+	for (i = 0; i < notes->src->nr_events; i++) {
- 		double percent;
+ 	return symbol__disassemble(sym, &args);
+ }
+@@ -1456,9 +1456,9 @@ void annotation__toggle_full_addr(struct annotation *notes, struct map_symbol *m
+ 	annotate_opts.full_addr = !annotate_opts.full_addr;
  
- 		percent = annotation_data__percent(&al->data[i],
-@@ -1674,7 +1674,7 @@ static void __annotation_line__write(struct annotation_line *al, struct annotati
- 	if (al->offset != -1 && percent_max != 0.0) {
- 		int i;
- 
--		for (i = 0; i < notes->nr_events; i++) {
-+		for (i = 0; i < notes->src->nr_events; i++) {
- 			double percent;
- 
- 			percent = annotation_data__percent(&al->data[i], percent_type);
-@@ -1846,7 +1846,7 @@ int symbol__annotate2(struct map_symbol *ms, struct evsel *evsel,
- 		return err;
- 
- 	annotation__init_column_widths(notes, sym);
--	notes->nr_events = nr_pcnt;
-+	notes->src->nr_events = nr_pcnt;
+ 	if (annotate_opts.full_addr)
+-		notes->start = map__objdump_2mem(ms->map, ms->sym->start);
++		notes->src->start = map__objdump_2mem(ms->map, ms->sym->start);
+ 	else
+-		notes->start = map__rip_2objdump(ms->map, ms->sym->start);
++		notes->src->start = map__rip_2objdump(ms->map, ms->sym->start);
  
  	annotation__update_column_widths(notes);
- 	sym->annotate2 = 1;
+ }
+@@ -1766,7 +1766,7 @@ static void __annotation_line__write(struct annotation_line *al, struct annotati
+ 		int color = -1;
+ 
+ 		if (!annotate_opts.use_offset)
+-			addr += notes->start;
++			addr += notes->src->start;
+ 
+ 		if (!annotate_opts.use_offset) {
+ 			printed = scnprintf(bf, sizeof(bf), "%" PRIx64 ": ", addr);
 diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
-index 382705311d28..d22b9e9a2fad 100644
+index d22b9e9a2fad..d5c821c22f79 100644
 --- a/tools/perf/util/annotate.h
 +++ b/tools/perf/util/annotate.h
-@@ -247,6 +247,7 @@ struct cyc_hist {
-  * 		  to see each group separately, that is why symbol__annotate2()
-  * 		  sets src->nr_histograms to evsel->nr_members.
-  * @samples: Hash map of sym_hist_entry.  Keyed by event index and offset in symbol.
-+ * @nr_events: Number of events in the current output.
-  * @nr_entries: Number of annotated_line in the source list.
-  * @nr_asm_entries: Number of annotated_line with actual asm instruction in the
-  * 		    source list.
-@@ -265,6 +266,7 @@ struct annotated_source {
- 	struct sym_hist		*histograms;
- 	struct hashmap	   	*samples;
- 	int    			nr_histograms;
-+	int    			nr_events;
+@@ -270,6 +270,7 @@ struct annotated_source {
  	int			nr_entries;
  	int			nr_asm_entries;
  	int			max_jump_sources;
-@@ -311,7 +313,6 @@ struct annotated_branch {
++	u64			start;
+ 	struct {
+ 		u8		addr;
+ 		u8		jumps;
+@@ -312,7 +313,6 @@ struct annotated_branch {
+ };
  
  struct LOCKABLE annotation {
- 	u64			start;
--	int			nr_events;
+-	u64			start;
  	struct annotated_source *src;
  	struct annotated_branch *branch;
  };
-@@ -335,7 +336,7 @@ static inline int annotation__cycles_width(struct annotation *notes)
- 
- static inline int annotation__pcnt_width(struct annotation *notes)
- {
--	return (symbol_conf.show_total_period ? 12 : 7) * notes->nr_events;
-+	return (symbol_conf.show_total_period ? 12 : 7) * notes->src->nr_events;
- }
- 
- static inline bool annotation_line__filter(struct annotation_line *al)
 -- 
 2.44.0.478.gd926399ef9-goog
 
