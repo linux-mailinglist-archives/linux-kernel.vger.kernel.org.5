@@ -1,346 +1,192 @@
-Return-Path: <linux-kernel+bounces-131117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 002BF898346
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:38:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19EFE89834A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:39:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A899028C78F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:38:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99CCE1F2984D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4334E71B20;
-	Thu,  4 Apr 2024 08:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBDCE71B3A;
+	Thu,  4 Apr 2024 08:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="cOULh+T8"
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="NFt5iasf"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC13C7172C;
-	Thu,  4 Apr 2024 08:38:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FF5B2134A;
+	Thu,  4 Apr 2024 08:39:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712219922; cv=none; b=X++blMbWpoGI6L7VbX3wMK+gX9rPDnF+Cc3jBEao1maIrjtq+woFee/GD+N3Gb3HgWVMXX/bZg9WcNt6oeBIjJkSTR3BynhCW2P4AO0S9f5E39OM7squGWBmnp7QmoysWQFGlu81vqIrNohG5N7uzMqd1mncw+TjxBSGmOuEpE0=
+	t=1712219944; cv=none; b=FtX0IwMJjD6XOtH8+FOmV+b1hDNJcU4Mh6e0IP0e5aTEnahAU90zzcK66qml0yYMI1McIC+J1pIdWIHvAvhxEs0rMXM9vy6TGkPeR1eKYcOnFqy0x9/m08c6dWjCzWXnCdvTvGpg/WXRc9SItxJICje9LkcW6Kf8Vj+BQfRB1uM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712219922; c=relaxed/simple;
-	bh=NXDp9fT+0znhv12w33a7uWZcEGlFFH4+BEMYf6tRYBQ=;
+	s=arc-20240116; t=1712219944; c=relaxed/simple;
+	bh=NsO+UaJBprZElwpaChh8YhCzSfoqK0pR4nEa/PQxt9g=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gr+KqnDWikugZdkrg1C8xCTEynikuPIvgZLWmAfWy50ixwZgR9KaecK/VyWl48oLamEXAoHq3/baaaxNw8JVnlzBHcYPr4YzZY1c4XLEBYToA62srSqwyfSqDsAw5VIdk2nHYctXypPRq/Hm9yYpdAxV6KZWgyKW8csUmjdwg/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=cOULh+T8; arc=none smtp.client-ip=217.70.178.240
+	 MIME-Version:Content-Type; b=MUa8gVVfzCJRJ786S+y3TYX+JIOvXdpNqa6dCzRQzRRIO/8NlrBj7ly1UfsWBxKfqwtTFzuPcNO9N3FD0FOe0Zyt8ggypUX/9KLIN5UQLXLtxY5J0sxiSVTyYYlIHWXJSoJmUnPdDoSW2NHVjtN9TtniBla/zTlEsw5T2eMvYJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=NFt5iasf; arc=none smtp.client-ip=217.70.183.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: from relay8-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::228])
-	by mslow1.mail.gandi.net (Postfix) with ESMTP id CFB54C089B;
-	Thu,  4 Apr 2024 08:38:37 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 432ED1BF20E;
-	Thu,  4 Apr 2024 08:38:28 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 5F4E0E0005;
+	Thu,  4 Apr 2024 08:38:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712219910;
+	t=1712219939;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PgvOBYUv+YR+r+p5EFl1tLWF9neUclhq/ma3+kacwA4=;
-	b=cOULh+T8sdtlXD7SmlUA0IOvIPd34zcwacPNaE0zSa5VGX4OnJOEhkwrLa9QOK7x7OVbbv
-	eHe7yddb0K7kAcwEDUfSA/bS2zjHbxT/NbjaMEbfrptATARz8XdpV3yRyjwJ9kj6WbM00v
-	1v+C3V2x6Vop+WixAMMXz87zUSFd1wYUJx7bhZ9kXKM7BGZIo1jdUdAUTOhEv8Unr4o8SF
-	mAZpWcb78nEWuV2bEtW/m0zprJ+3RHw5aA4gqjQodRMATI9v8TbAoEm+O9sXj5yJFY0e9L
-	sBQaG/t1J2tcoLS6Bqi7Q3bYlkNtL3uq6EkYDQtz+WUD+IIoisd9Opo1Z1qobQ==
-Date: Thu, 4 Apr 2024 10:38:25 +0200
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com, Andrew Lunn
- <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, Paolo Abeni
- <pabeni@redhat.com>, Russell King <linux@armlinux.org.uk>,
- linux-arm-kernel@lists.infradead.org, Christophe Leroy
- <christophe.leroy@csgroup.eu>, Herve Codina <herve.codina@bootlin.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Heiner Kallweit
- <hkallweit1@gmail.com>, Vladimir Oltean <vladimir.oltean@nxp.com>,
- =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>, Jesse Brandeburg
- <jesse.brandeburg@intel.com>, Jonathan Corbet <corbet@lwn.net>, Marek
- =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>, Piergiorgio Beruto
- <piergiorgio.beruto@gmail.com>, Oleksij Rempel <o.rempel@pengutronix.de>,
- =?UTF-8?B?Tmljb2zDsg==?= Veronese <nicveronese@gmail.com>, Simon Horman
- <horms@kernel.org>, mwojtas@chromium.org
-Subject: Re: [PATCH net-next v10 07/13] net: ethtool: Introduce a command to
- list PHYs on an interface
-Message-ID: <20240404103825.6a596bec@device-28.home>
-In-Reply-To: <20240308211842.6d64b5bc@kernel.org>
-References: <20240304151011.1610175-1-maxime.chevallier@bootlin.com>
-	<20240304151011.1610175-8-maxime.chevallier@bootlin.com>
-	<20240308211842.6d64b5bc@kernel.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	bh=NAmpL8vsX5KgArp9IvAY0m85YPH50TlrPGvCXKaUhig=;
+	b=NFt5iasfPklTMwMaNn0kBGOxNPcCFEWRQ1NfQj9aKtWhmcw0kKqYyP0SL2FqsZlK8qOsZ9
+	92A1yTA06WS5jARRoktHosOBhKzUjpfsGR/hxO9CiC/fnk8JWe4HURmil/reMTIllGXkxT
+	dOxBZDXiG6kzngRLJtY5Isrepe+Aeb8dWxh9+t/aqy6HugDGT4Dc1mnIZyXxjMZvOk9KTl
+	/38ey+Ds/3f0tXAgeFSJz5VDH4A0iiWGIVuEIAEj5gEdioNAiGHLJBZkSgVK73SvpCVFD3
+	XwqLQeB93ACFC6DH7vOT5DN7uW/JrzWJVz3EETRafgUb+nSBkk5aTitUVzNh0g==
+Date: Thu, 4 Apr 2024 10:38:54 +0200
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
+ <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Heiner
+ Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v6 11/17] dt-bindings: net: pse-pd: Add another
+ way of describing several PSE PIs
+Message-ID: <20240404103854.29ef418c@kmaincent-XPS-13-7390>
+In-Reply-To: <20240403143142.GA3508225-robh@kernel.org>
+References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
+	<20240326-feature_poe-v6-11-c1011b6ea1cb@bootlin.com>
+	<20240402132637.GA3744978-robh@kernel.org>
+	<20240403111548.30e780b5@kmaincent-XPS-13-7390>
+	<20240403143142.GA3508225-robh@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-Hello Jakub,
+On Wed, 3 Apr 2024 09:31:42 -0500
+Rob Herring <robh@kernel.org> wrote:
 
-Sorry for the late reply...
+> On Wed, Apr 03, 2024 at 11:15:48AM +0200, Kory Maincent wrote:
+> > On Tue, 2 Apr 2024 08:26:37 -0500
+> > Rob Herring <robh@kernel.org> wrote:
+> >  =20
+> > > > +          pairset-names:
+> > > > +            $ref: /schemas/types.yaml#/definitions/string-array
+> > > > +            description:
+> > > > +              Names of the pairsets as per IEEE 802.3-2022, Section
+> > > > 145.2.4.
+> > > > +              Valid values are "alternative-a" and "alternative-b".
+> > > > Each name   =20
+> > >=20
+> > > Don't state constraints in prose which are defined as schema=20
+> > > constraints. =20
+> >=20
+> > Ok, I will remove the line.
+> >  =20
+> > > > +          pairsets:
+> > > > +            $ref: /schemas/types.yaml#/definitions/phandle-array
+> > > > +            description:
+> > > > +              List of phandles, each pointing to the power supply =
+for
+> > > > the
+> > > > +              corresponding pairset named in 'pairset-names'. This
+> > > > property
+> > > > +              aligns with IEEE 802.3-2022, Section 33.2.3 and 145.=
+2.4.
+> > > > +              PSE Pinout Alternatives (as per IEEE 802.3-2022 Table
+> > > > 145\u20133)
+> > > > +
+> > > > |-----------|---------------|---------------|---------------|------=
+---------|
+> > > > +              | Conductor | Alternative A | Alternative A |
+> > > > Alternative B | Alternative B |
+> > > > +              |           |    (MDI-X)    |     (MDI)     |      (=
+X)
+> > > > |      (S)      |
+> > > > +
+> > > > |-----------|---------------|---------------|---------------|------=
+---------|
+> > > > +              | 1         | Negative VPSE | Positive VPSE | \u2014
+> > > >     | \u2014             |
+> > > > +              | 2         | Negative VPSE | Positive VPSE | \u2014
+> > > >     | \u2014             |
+> > > > +              | 3         | Positive VPSE | Negative VPSE | \u2014
+> > > >     | \u2014             |
+> > > > +              | 4         | \u2014             | \u2014           =
+  |
+> > > > Negative VPSE | Positive VPSE |
+> > > > +              | 5         | \u2014             | \u2014           =
+  |
+> > > > Negative VPSE | Positive VPSE |
+> > > > +              | 6         | Positive VPSE | Negative VPSE | \u2014
+> > > >     | \u2014             |
+> > > > +              | 7         | \u2014             | \u2014           =
+  |
+> > > > Positive VPSE | Negative VPSE |
+> > > > +              | 8         | \u2014             | \u2014           =
+  |
+> > > > Positive VPSE | Negative VPSE |
+> > > > +            minItems: 1
+> > > > +            maxItems: 2   =20
+> > >=20
+> > > "pairsets" does not follow the normal design pattern of foos, foo-nam=
+es,=20
+> > > and #foo-cells. You could add #foo-cells I suppose, but what would ce=
+lls=20
+> > > convey? I don't think it's a good fit for what you need.
+> > >=20
+> > > The other oddity is the number of entries and the names are fixed. Th=
+at=20
+> > > is usually defined per consumer.  =20
+> >=20
+> > Theoretically if the RJ45 port binding was supported it would make more
+> > sense, but in reality it's not feasible as the PSE controller need this
+> > information in its init process.
+> > The PSE controller reset all its port to apply a configuration so we ca=
+n't
+> > do it when the consumer (RJ45) probe. It would reset the other ports if=
+ one
+> > consumer is probed later in the process. =20
+>=20
+> There is no reason other than convenience that all information some=20
+> driver needs has to be in one node or one hierarchy of nodes. You can=20
+> fetch anything from anywhere in the DT. It does feel like some of this=20
+> belongs in a connector node. We often haven't described connectors in DT=
+=20
+> and stick connector properties in the controller node associated with=20
+> the connector. Then as things get more complicated, it becomes a mess.=20
 
-On Fri, 8 Mar 2024 21:18:42 -0800
-Jakub Kicinski <kuba@kernel.org> wrote:
+Right, we could indeed put all the informations of the pse_pi node in the f=
+uture
+RJ45 port abstraction node. Then, this series will be put aside until we ma=
+nage
+to have the port abstraction get merged.
+I am not glad about this as it will stuck my work until then, but indeed
+removing this pse_pi wrapper node which is between the pse_controller node =
+and
+the connector node seems cleaner.
 
-> On Mon,  4 Mar 2024 16:10:03 +0100 Maxime Chevallier wrote:
-> > +PHY_GET
-> > +=======
-> > +
-> > +Retrieve information about a given Ethernet PHY sitting on the link. As there
-> > +can be more than one PHY, the DUMP operation can be used to list the PHYs
-> > +present on a given interface, by passing an interface index or name in
-> > +the dump request  
-> 
-> Could be worth re-stating the default behavior of the DO request?
-> That the DO will return the dev->phydev by default and if PHY_INDEX
-> is specified in the header, the particular PHY with that index?
-> 
-> > +	if (phydev->drv && nla_put_string(skb, ETHTOOL_A_PHY_DRVNAME, phydev->drv->name))  
-> 
-> could you break the lines at 80 where it doesn't hurt readability?
-> This way:
-> 
-> 	if (phydev->drv && 
-> 	    nla_put_string(skb, ETHTOOL_A_PHY_DRVNAME, phydev->drv->name))
-
-Ack, will do
-
-> 
-> > +		return -EMSGSIZE;
-> > +
-> > +	if (ptype == PHY_UPSTREAM_PHY) {
-> > +		struct phy_device *upstream = pdn->upstream.phydev;
-> > +		const char *sfp_upstream_name;
-> > +
-> > +		/* Parent index */
-> > +		if (nla_put_u32(skb, ETHTOOL_A_PHY_UPSTREAM_INDEX, upstream->phyindex))
-> > +			return -EMSGSIZE;
-> > +
-> > +		if (pdn->parent_sfp_bus) {
-> > +			sfp_upstream_name = sfp_get_name(pdn->parent_sfp_bus);
-> > +			if (sfp_upstream_name && nla_put_string(skb,
-> > +								ETHTOOL_A_PHY_UPSTREAM_SFP_NAME,
-> > +								sfp_upstream_name))  
-> 
-> ditto
-
-Indeed :)
-
-> 
-> > +				return -EMSGSIZE;
-> > +		}
-> > +	}  
-> 
-> > +int ethnl_phy_doit(struct sk_buff *skb, struct genl_info *info)
-> > +{
-> > +	struct phy_req_info req_info = {};
-> > +	struct nlattr **tb = info->attrs;
-> > +	struct sk_buff *rskb;
-> > +	void *reply_payload;
-> > +	int reply_len;
-> > +	int ret;
-> > +
-> > +	ret = ethnl_parse_header_dev_get(&req_info.base,
-> > +					 tb[ETHTOOL_A_PHY_HEADER],
-> > +					 genl_info_net(info), info->extack,
-> > +					 true);
-> > +	if (ret < 0)
-> > +		return ret;
-> > +
-> > +	rtnl_lock();
-> > +
-> > +	ret = ethnl_phy_parse_request(&req_info.base, tb);
-> > +	if (ret < 0)
-> > +		goto err_unlock_rtnl;
-> > +
-> > +	/* No PHY, return early */
-> > +	if (!req_info.pdn.phy)
-> > +		goto err_unlock_rtnl;
-> > +
-> > +	ret = ethnl_phy_reply_size(&req_info.base, info->extack);
-> > +	if (ret < 0)
-> > +		goto err_unlock_rtnl;
-> > +	reply_len = ret + ethnl_reply_header_size();
-> > +
-> > +	rskb = ethnl_reply_init(reply_len, req_info.base.dev,
-> > +				ETHTOOL_MSG_PHY_GET_REPLY,
-> > +				ETHTOOL_A_PHY_HEADER,
-> > +				info, &reply_payload);
-> > +	if (!rskb) {
-> > +		ret = -ENOMEM;
-> > +		goto err_unlock_rtnl;
-> > +	}
-> > +
-> > +	ret = ethnl_phy_fill_reply(&req_info.base, rskb);
-> > +	if (ret)
-> > +		goto err_free_msg;
-> > +
-> > +	rtnl_unlock();
-> > +	ethnl_parse_header_dev_put(&req_info.base);
-> > +	genlmsg_end(rskb, reply_payload);
-> > +
-> > +	return genlmsg_reply(rskb, info);
-> > +
-> > +err_free_msg:
-> > +	nlmsg_free(rskb);
-> > +err_unlock_rtnl:
-> > +	rtnl_unlock();
-> > +	ethnl_parse_header_dev_put(&req_info.base);
-> > +	return ret;
-> > +}
-> > +
-> > +struct ethnl_phy_dump_ctx {
-> > +	struct phy_req_info	*phy_req_info;
-> > +	unsigned long ifindex;
-> > +	unsigned long phy_index;
-> > +};
-> > +
-> > +int ethnl_phy_start(struct netlink_callback *cb)
-> > +{
-> > +	const struct genl_dumpit_info *info = genl_dumpit_info(cb);  
-> 
-> You can save some chars by using genl_info_dump() here
-> 
-> > +	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
-> > +	struct nlattr **tb = info->info.attrs;  
-> 
-> then you can ditch this
-> 
-> > +	int ret;
-> > +
-> > +	BUILD_BUG_ON(sizeof(*ctx) > sizeof(cb->ctx));
-> > +
-> > +	ctx->phy_req_info = kzalloc(sizeof(*ctx->phy_req_info), GFP_KERNEL);
-> > +	if (!ctx->phy_req_info)
-> > +		return -ENOMEM;
-> > +
-> > +	ret = ethnl_parse_header_dev_get(&ctx->phy_req_info->base,
-> > +					 tb[ETHTOOL_A_PHY_HEADER],  
-> 
-> and:
-> 
-> 					 info->attrs[ETHTOOL_A_PHY_HEADER],
-
-Nice improvement, thanks !
-
-> 
-> > +					 sock_net(cb->skb->sk), cb->extack,
-> > +					 false);  
-> 
-> leaking ctx->phy_req_info on error?
-
-Ah true, I relied on .done() but if ret is an error, it won't be
-called... thanks !
-
-> 
-> > +	ctx->ifindex = 0;
-> > +	ctx->phy_index = 0;
-> > +	return ret;
-> > +}  
-> 
-> > +static int ethnl_phy_dump_one_dev(struct sk_buff *skb, struct net_device *dev,
-> > +				  struct netlink_callback *cb)
-> > +{
-> > +	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
-> > +	struct phy_req_info *pri = ctx->phy_req_info;
-> > +	struct phy_device_node *pdn;
-> > +	int ret = 0;
-> > +	void *ehdr;
-> > +
-> > +	pri->base.dev = dev;
-> > +
-> > +	xa_for_each_start(&dev->link_topo->phys, ctx->phy_index, pdn, ctx->phy_index) {
-> > +		ehdr = ethnl_dump_put(skb, cb,
-> > +				      ETHTOOL_MSG_PHY_GET_REPLY);  
-> 
-> this one OTOH fits on a line :)
-> 
-> > +		if (!ehdr) {
-> > +			ret = -EMSGSIZE;
-> > +			break;
-> > +		}
-> > +
-> > +		ret = ethnl_fill_reply_header(skb, dev,
-> > +					      ETHTOOL_A_PHY_HEADER);  
-> 
-> ditto
-
-Ack for both :)
-
-> 
-> > +		if (ret < 0) {
-> > +			genlmsg_cancel(skb, ehdr);
-> > +			break;
-> > +		}
-> > +
-> > +		memcpy(&pri->pdn, pdn, sizeof(*pdn));
-> > +		ret = ethnl_phy_fill_reply(&pri->base, skb);  
-> 
-> On a DO fill() shouldn't fail, because we size the skb, but if we pack
-> many entries into the skb on a DUMP it can. So:
-> 
-> 		if (ret < 0) {
-> 			genlmsg_cancel(skb, ehdr);
-> 			break;
-> 		}
-> 
-> no?
-
-True, I'll add that
-
-> 
-> > +		genlmsg_end(skb, ehdr);
-> > +	}
-> > +
-> > +	return ret;
-> > +}
-> > +
-> > +int ethnl_phy_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
-> > +{
-> > +	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
-> > +	struct net *net = sock_net(skb->sk);
-> > +	struct net_device *dev;
-> > +	int ret = 0;
-> > +
-> > +	rtnl_lock();
-> > +
-> > +	if (ctx->phy_req_info->base.dev) {
-> > +		ret = ethnl_phy_dump_one_dev(skb, ctx->phy_req_info->base.dev, cb);
-> > +	} else {
-> > +		for_each_netdev_dump(net, dev, ctx->ifindex) {
-> > +			ret = ethnl_phy_dump_one_dev(skb, dev, cb);
-> > +			if (ret)
-> > +				break;
-> > +
-> > +			ctx->phy_index = 0;
-> > +		}
-> > +	}
-> > +	rtnl_unlock();
-> > +
-> > +	if (ret == -EMSGSIZE && skb->len)
-> > +		return skb->len;  
-> 
-> you can remove this if thanks to (very recent) commit b5a899154aa9
-
-Ah nice ! thanks :)
-
-> 
-> > +	return ret;
-> > +}  
-> 
-> Very sorry for the late review, BTW :(
-
-No worries. I'll send a new version very shortly, taking all you
-comments into account, thanks for taking a look at this !
-
-Maxime
-
+Regards,
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
