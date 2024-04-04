@@ -1,163 +1,94 @@
-Return-Path: <linux-kernel+bounces-131679-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 845A5898ABB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7ABD898ABF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:11:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B543E1C25B3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:10:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 112F91C25B4D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:11:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B5812AADF;
-	Thu,  4 Apr 2024 15:10:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3EDF12AAD7;
+	Thu,  4 Apr 2024 15:10:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="yyw/gEou";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8WI+dxa9"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="ILKd5cbz"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470EC1D551;
-	Thu,  4 Apr 2024 15:10:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 577191D543;
+	Thu,  4 Apr 2024 15:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712243421; cv=none; b=bBsKWlEUwmIK53UP3iRVdcqgs0mN+DhJbKvXLgK620Be8EBFGiAE1Gi65buQYEGCir9IABiWslagwhEWZjjoSv7KBQ0+gVILsm2uZj0uP1r40TU4nqVxluUxbCBLbU2YOwjj25CIzLFX6NQXWRs98yh6hiOR0z1yYduxbCfvZMk=
+	t=1712243453; cv=none; b=sVcDNNO72+ILzMtuVDhkORiA82V7izjvmNPBvs5RAaVuRSQmAztmmXniR/FEoA4xdRh+XnJxscW10+6oFvqQ/pP8jLPHIlOWjGSsPaOceQxMZhmsOWFm1DIRwsRyf/jevpDC+UVkoJujzm0WVDMU7CTFdI51BnVATRpzo5YyCo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712243421; c=relaxed/simple;
-	bh=h1CjU1JG+GY3d4PN/CqDUdYCCccyfwlv8y9jCvqQC4U=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=iWrn91AkYKZecNZNIFZ76QZQmuOOOlefqWDOkHYwRMZ9S6iWsaZE73oQSmXkLakGUC0KcYymnIq7QW5dYfCI8f37K/LRBtMAse9S3rdGr4KRzsi5nc8hKBCBf/nHMHKwhKZmN9Jrtd+D7ig5w5QPyC5Ca8QJmUIyKUmh1Ocy/yY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=yyw/gEou; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8WI+dxa9; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712243418;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z5plkxd242OMtGKpte6blfseLcSdvpYvQ4c9jL8q5L8=;
-	b=yyw/gEouiS/IirwoaGCvhqLow9UcQMFHq2e2pVbOE1DGGUy1t1tm/etM2iXo2XmnZb1Dml
-	pJubPntaxb88vo1I8T9Whvgsv+mmfQ1NvDhqf2W7wJIpmCFWfiLegNHyU2IXJREivBdGdA
-	nXSLCzBxYxR/ikOOS5Q8DQS5/cf1ux4RnhR2/Is0DDa+JJOTqmpBl6UG6JQqXVJOnrHpce
-	CVH8QhCE9ANEJflWjzyEM/uZNMFmf/r77j9auRcS9jHbrTohpaYhxg5RzLM28euKgRYdm8
-	2GjfgSsR1ilUa74dy/ug+pvus4mvBJ8fIWiK38/hj3muIILFdAIKPdb5CA+t4w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712243418;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z5plkxd242OMtGKpte6blfseLcSdvpYvQ4c9jL8q5L8=;
-	b=8WI+dxa9jLUQ9K5BxoE/j18iAq0nizDN1BJ1lU0wqbv13V88erwi+Q8LGUQdIdkQmOJxYB
-	jXZJKD5+9zDDPdDw==
-To: Oleg Nesterov <oleg@redhat.com>, Dmitry Vyukov <dvyukov@google.com>
-Cc: John Stultz <jstultz@google.com>, Marco Elver <elver@google.com>, Peter
- Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, "Eric W.
- Biederman" <ebiederm@xmission.com>, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, kasan-dev@googlegroups.com, Edward Liaw
- <edliaw@google.com>, Carlos Llamas <cmllamas@google.com>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
- current thread
-In-Reply-To: <20240404134357.GA7153@redhat.com>
-References: <20230316123028.2890338-1-elver@google.com>
- <CANDhNCqBGnAr_MSBhQxWo+-8YnPPggxoVL32zVrDB+NcoKXVPQ@mail.gmail.com>
- <87frw3dd7d.ffs@tglx>
- <CANDhNCqbJHTNcnBj=twHQqtLjXiGNeGJ8tsbPrhGFq4Qz53c5w@mail.gmail.com>
- <874jcid3f6.ffs@tglx> <20240403150343.GC31764@redhat.com>
- <87sf02bgez.ffs@tglx>
- <CACT4Y+a-kdkAjmACJuDzrhmUPmv9uMpYOg6LLVviMQn=+9JRgA@mail.gmail.com>
- <20240404134357.GA7153@redhat.com>
-Date: Thu, 04 Apr 2024 17:10:18 +0200
-Message-ID: <87v84x9nad.ffs@tglx>
+	s=arc-20240116; t=1712243453; c=relaxed/simple;
+	bh=DUPMyZ/xTsclqJcgpP/qVJGgpzSu7G7XOnc2Q+6j4DM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rbHa6k+Z8frATv8qRx7I0lHPM20m/EBvh6K4rQzTTaMtN/6UVMG8V11OSJmXLlQgadi58c5lcCAb071hHCeUhCUlCDGcu9ZSaHCchc1ieHp7YJIlE4vQFXaZInub2jf1sf7OL2pLZNq0/yItNB6j5XVxZOy5EagEGq7JTn5ZqiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=ILKd5cbz; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=s98YOMLip/viIAxMH0MZuJz4Cxd3gdWcic10eltssBY=; b=ILKd5cbzcuFB5csUzEM688wtcZ
+	gM85mlwHCTKiS1EtgUIeftyAozV/j2FYv6T0fDkWvjjMNrtiGCg6Yy0YEPZw9LnCX/LRaLAynjzDU
+	ogZEG/XF4yVRPzx9pTZ0o5AhfYNSpNTAofzdWEyopqvGCOKD1cpfm2eDcYK6fwwBv2F8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rsOjh-00CC5o-Ue; Thu, 04 Apr 2024 17:10:41 +0200
+Date: Thu, 4 Apr 2024 17:10:41 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+	David Jander <david@protonic.nl>
+Subject: Re: [PATCH 2/2] arm64: dts: rockchip: add Protonic MECSBC device-tree
+Message-ID: <9d325b4e-031c-4f6c-9788-fa5a68470efa@lunn.ch>
+References: <20240404-protonic-mecsbc-v1-0-ad5b42ade6c6@pengutronix.de>
+ <20240404-protonic-mecsbc-v1-2-ad5b42ade6c6@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404-protonic-mecsbc-v1-2-ad5b42ade6c6@pengutronix.de>
 
-On Thu, Apr 04 2024 at 15:43, Oleg Nesterov wrote:
-> On 04/04, Dmitry Vyukov wrote:
->> they all should get a signal eventually.
->
-> Well, yes and no.
->
-> No, in a sense that the motivation was not to ensure that all threads
-> get a signal, the motivation was to ensure that cpu_timer_fire() paths
-> will use the current task as the default target for signal_wake_up/etc.
-> This is just optimization.
->
-> But yes, all should get a signal eventually. And this will happen with
-> or without the commit bcb7ee79029dca ("posix-timers: Prefer delivery of
-> signals to the current thread"). Any thread can dequeue a shared signal,
-> say, on return from interrupt.
->
-> Just without that commit this "eventually" means A_LOT_OF_TIME
-> statistically.
+> +&gmac1 {
+> +	assigned-clocks = <&cru SCLK_GMAC1_RX_TX>, <&cru SCLK_GMAC1>;
+> +	assigned-clock-parents = <&cru SCLK_GMAC1_RGMII_SPEED>, <&cru CLK_MAC1_2TOP>;
+> +	phy-handle = <&rgmii_phy1>;
+> +	phy-mode = "rgmii";
+> +	clock_in_out = "output";
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&gmac1m1_miim
+> +		     &gmac1m1_tx_bus2
+> +		     &gmac1m1_rx_bus2
+> +		     &gmac1m1_rgmii_clk
+> +		     &gmac1m1_clkinout
+> +		     &gmac1m1_rgmii_bus>;
+> +	status = "okay";
+> +	tx_delay = <0x30>;
+> +	rx_delay = <0x10>;
+> +};
 
-bcb7ee79029dca only directs the wakeup to current, but the signal is
-still queued in the process wide shared pending list. So the thread
-which sees sigpending() first will grab and deliver it to itself.
+There was a discussion about phy-mode = "rgmii"; and these
+tx/rx_delays last month. Please could you go read that discussion and
+them make use of rgmii-id, and change the delays.
 
-> But yes, I agree, if thread exits once it get a signal, then A_LOT_OF_TIME
-> will be significantly decreased. But again, this is just statistical issue,
-> I do not see how can we test the commit bcb7ee79029dca reliably.
+Also, where did you copy this from? If possible, it would be good to
+fix the example everybody copies into new DT blobs.
 
-We can't.
-
-What we can actually test is the avoidance of waking up the main thread
-by doing the following in the main thread:
-
-     start_threads();
-     barrier_wait();
-     nanosleep(2 seconds);
-     done = 1;
-     stop_threads();
-
-and in the first thread which is started:
-
-first_thread()
-     barrier_wait();
-     start_timer();
-     loop()
-     
-On a pre 6.3 kernel nanosleep() will return early because the main
-thread is woken up and will eventually win the race to deliver the
-signal.
-
-On a 6.3 and later kernel nanosleep() will not return early because the
-main thread is not woken up as the wake up is directed at current,
-i.e. a worker thread, which is running anyway and will consume the
-signal.
-
-> OTOH. If the threads do not exit after they get signal, then _in theory_
-> nothing can guarantee that this test-case will ever complete even with
-> that commit. It is possible that one of the threads will "never" have a
-> chance to run cpu_timer_fire().
-
-Even with the exit I managed to make one out of 100 runs run into the
-timeout because the main thread always won the race.
-
-> In short, I leave this to you and Thomas. I have no idea how to write a
-> "good" test for that commit.
->
-> Well... perhaps the main thread should just sleep in pause(), and
-> distribution_handler() should check that gettid() != getpid() ?
-> Something like this maybe... We need to ensure that the main thread
-> enters pause before timer_settime().
-
-I'm testing a modification which implements something like the above and
-the success condition is that the main thread does not return early from
-nanosleep() and has no signal accounted. It survived 2000 iterations by
-now.
-
-Let me polish it up.
-
-Thanks,
-
-        tglx
-
+	Andrew
 
