@@ -1,92 +1,88 @@
-Return-Path: <linux-kernel+bounces-131802-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CC9C898BEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:15:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BB70898BE4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:14:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58AEEB29266
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:15:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4F9E1F24F3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:14:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A225E12BEBC;
-	Thu,  4 Apr 2024 16:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D405A12AAF7;
+	Thu,  4 Apr 2024 16:14:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="X0iUeh8p";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="n9Ky/D2N"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="uoYLWTLs"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 786AA1BC46
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8595224DE;
+	Thu,  4 Apr 2024 16:14:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712247274; cv=none; b=oYzTujkyNBlBcwQNEq2YlzInvOMMFDvinPfVW/DS01pyOI0jc0CjzudbVw3LdS/2n/OonPrIsYbb237AFm1n4ClX31jKiTc9/gfF9rlD/53Fq3MJ8DW8dHpegiDtGJzDnYeYFzxIXCswNHziS7NDER0CYwVWEqI09NZKFZOKiCE=
+	t=1712247252; cv=none; b=WhpO/L3eG8BmLKIf2/fkl2DG6Cg4fJPnRTu/1IVE+rjzW0qsU7GSyQ6YdFlObkMcicXjcFRh7yplGV9cW0i1LDeOAZLhySwkY+z3XVW/nMmS7FDDfmB93uH58FIx7FTkhGk8QdpJd13a8LQsbFezJbmAJzDXUyNizOvzpuc0QP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712247274; c=relaxed/simple;
-	bh=zQIu0W+9tdYoBo5T+slKZD8LMHqeZZgVgPHuv1ZgG/0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FA7Kbdd2yUOrN+3V+t5Y6erml5s+s1ggg1HDoyTHtwDc25B7AKS81lUdCc5SKW5OYdZV8knig3ll6plaTslDqtOejwarxxbsdyS1UdwviOma+cMd3EPeaCV++qM3CtMbrok1X8pRQj7DC6mAZ9KXxObFeJOeqL10TRerDTJzMJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=X0iUeh8p; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=n9Ky/D2N; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712247270;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OGS/44FU5GIZLtaLg0w/7PHFNSThm+pNn7jES6aXJuY=;
-	b=X0iUeh8pWpCS8duV5Y428mGvbebbynLG7B3UpxtjFBZTSPubH13lV4alGWThaypltwE6FC
-	jujEHtP7JKFgnh7qL8xvm3oo0jhTD/1WbuHAR+fprlo/ShpHjWaKXIukXY+dS//bkq4ydK
-	62T7oY84f61D+KWyAdoWcR/gL2nbAWDXON5SEVID5TRwgYgEt2WHKABGrsrh1etaYDVCTR
-	eDoUOWp6vKdcn1N7WKPuY451UoUFVWD5S1Zlb8rM6pLodiLIOT3LkH1yvrxH7aIKS5eZqW
-	f1BYT8UA/UKlnnSdfCFNNeKN3vPfmTsp0KenXCXzWyZ170O+J/DyN0KIpeplyg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712247270;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OGS/44FU5GIZLtaLg0w/7PHFNSThm+pNn7jES6aXJuY=;
-	b=n9Ky/D2Ntwy8PG7Vns5taE92H5P268YAEDjBMMcaf9d+MuAbMwqmd3i7oJwXlyo34U9c3b
-	SI0NkQKVyJdXIYAQ==
-To: Laura Nao <laura.nao@collabora.com>
-Cc: kernel@collabora.com, laura.nao@collabora.com,
- linux-kernel@vger.kernel.org, regressions@leemhuis.info,
- regressions@lists.linux.dev, x86@kernel.org
-Subject: Re: [REGRESSION] mainline boot regression on AMD Stoney Ridge
- Chromebooks
-In-Reply-To: <20240404152317.464796-1-laura.nao@collabora.com>
-References: <874jchb7na.ffs@tglx>
- <20240404152317.464796-1-laura.nao@collabora.com>
-Date: Thu, 04 Apr 2024 18:14:30 +0200
-Message-ID: <87sf019kbd.ffs@tglx>
+	s=arc-20240116; t=1712247252; c=relaxed/simple;
+	bh=UUiZipEEAobiO7PS4UAv/nMDLlJTMGONEQDPS3ap/14=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rbtQ0fdKH40vj/eF+PPuV9ZmnVVLyXvGjwUA7EYW6UZVgmpY6/lTLDdPShzT4KAh+KSAML+DoRUkgwqGnkHftZauviVRQ1c6nqksZRDV/CNH8/Y6icLhxw5eKYUpuwKZU0LsFl3/MxUojD1+Cvj1PKZa8CGczR94ontYO5fBhpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=uoYLWTLs; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712247248;
+	bh=UUiZipEEAobiO7PS4UAv/nMDLlJTMGONEQDPS3ap/14=;
+	h=From:To:Cc:Subject:Date:From;
+	b=uoYLWTLshZC5vsrh5QM1FNAKKvY2Oy4coxEmM3VUMh5wSaI3dAf4duzwnKfZvde3s
+	 QLxOkaplfRvUpS2q5WELklv+KOAY8P/hHosBP6auRavnnSQC+O6FsFtwqyi8FRfHE/
+	 v8EL+go/6vPo+A8tMrksy5iKRGWBdbyf+Dvdx9hXm766CfqCaX9J/qErdLu7dhvvAd
+	 2V8LX+i1WsvgYhXcLcqchQfLwRs8LFzNNUmhoskaIPWnCl+vFOxXbAZtt9jCml7oCq
+	 GiupKWuxr43RjQpok1ppX8/Oma0MWjDI7jwaBN4G8K8w+MVXVfC1kt+owi0u5nRREG
+	 13X6Qf8bGJAwQ==
+Received: from localhost.localdomain (broslavsky.collaboradmins.com [68.183.210.73])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id C941337813A4;
+	Thu,  4 Apr 2024 16:14:04 +0000 (UTC)
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+To: Eric Biederman <ebiederm@xmission.com>,
+	Kees Cook <keescook@chromium.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Muhammad Usama Anjum <usama.anjum@collabora.com>,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: kernel@collabora.com
+Subject: [PATCH 0/2] selftests: add ksft_exit_fail_perror()
+Date: Thu,  4 Apr 2024 21:14:31 +0500
+Message-Id: <20240404161433.114497-1-usama.anjum@collabora.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-Laura!
+In this series, ksft_exit_fail_perror() is being added which is helper
+function on top of ksft_exit_fail_msg(). It prints errno and its string
+form always. After writing and porting several kselftests, I've found
+out that most of times ksft_exit_fail_msg() isn't useful if errno value
+isn't printed. The ksft_exit_fail_perror() provides a convenient way to
+always print errno when its used.
 
-On Thu, Apr 04 2024 at 17:23, Laura Nao wrote:
-> On 4/4/24 15:05, Thomas Gleixner wrote:
->> Can you please provide a boot dmesg from a 6.8 kernel and the output of
->> 'cpuid' ?
->
-> Sure, here's the output from an Acer Chromebook Spin 311 R721T device:
-> - kernel log: https://pastebin.com/raw/NNbeJupE
-> - cpuid output: https://pastebin.com/raw/ThmGqnqG
+Muhammad Usama Anjum (2):
+  selftests: add ksft_exit_fail_perror()
+  selftests: exec: Use new ksft_exit_fail_perror() helper
 
-Thanks for the quick response.
+ tools/testing/selftests/exec/recursion-depth.c | 10 +++++-----
+ tools/testing/selftests/kselftest.h            | 14 ++++++++++++++
+ 2 files changed, 19 insertions(+), 5 deletions(-)
 
-Can you please provide 'cpuid -r' output too as 'cpuid' does a few
-tweaks to the raw data and it's hard to match it back to the code.
+-- 
+2.39.2
 
-Thanks,
-
-        tglx
 
