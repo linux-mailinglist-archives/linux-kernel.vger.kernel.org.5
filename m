@@ -1,69 +1,65 @@
-Return-Path: <linux-kernel+bounces-131379-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131392-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75FED8986F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:15:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9ABB898708
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:18:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F120B27750
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:15:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31F5828DCC4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1298D12A152;
-	Thu,  4 Apr 2024 12:13:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55C5D86AE7;
+	Thu,  4 Apr 2024 12:14:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MFut3FnH"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RB1yPqR2"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710B286656
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF74386634
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712232816; cv=none; b=iU57Ym0TXYf+KA7xEhThkOU30wIw1XH1JwEIWjNk8ti77BZTQhABoif+SdgLFdl9GL4CCGe4FPSfDUX3B6KCnL/AHwKyEKXQqRl6dS+w+jIZ2zCaZzy9KNLLOdbk+veGCd2yn+RfxaXPro+87OMtMThrfA9SrRavo1d15kBZb+4=
+	t=1712232879; cv=none; b=fY6c2QQDLU02lMBdSTon2/WFAke3g70MoHkW+hPYCW5lB7wtsqPJez00rKvIqsI9Vt5Q2EAs6odv9JkvnEftwSD/yl3tfOBUtQTbN348YUJ7qCc0w9ALdwtLJawF1CB+AJpKbUe/ym3kUmsM8pwBjW+u5lxejJAARmHx20xkb+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712232816; c=relaxed/simple;
-	bh=4rYSe/0b2YWlMT+jL7AFg0DaRcpMVxRynPPBo/RQ1Yk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=buV4/eNSbmoP/XnKQ+B3KOS+b5ejKiAtnbtRmkDabfRclQe1Io8iiE48NgmxPu80qrmfAOhvkGNZ2GL2YfTJhmMp8Nd2h/1Z8+XwDJRyG09AHr0W5kFElGnyAX72RMqmRZFBkglIA/VZzOQSjipqiCIYuGdv1GQGa0tctdABmOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MFut3FnH; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1712232879; c=relaxed/simple;
+	bh=79fyvg6eezjxxkD4dqHkcqexLGmoZdlcwbY6OSWAM9I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=KOhbzq+ha1GnckdMiQQX5iiAHLgZdmhktb3u99z5oIGRyGFYiPkxF7WKoPMwFwOR9m4d7gP6G0ZrFbUFiykUrUPiZtmgKBMed+B21aU/iYXIv9cx0AjMr55ePl8sl1enJIGHDm4SWQVRPaGGFrqA9qOiUYQ8Sq9AbSkR3nK3u8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RB1yPqR2; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712232813;
+	s=mimecast20190719; t=1712232876;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dZnn0GoKtYMCAOrEB74QbMNI9YYQjLw/KqwC1+gIE5s=;
-	b=MFut3FnH7Lo6j9y4OA/LT2RbYe92NF+XSW+pFnUyKLx1uMRmbKaiIVVvmHV+FuNLAKecG+
-	BX/m92N4BRQZTEnYwe/LoY7Lu8I0kdj2kO8YrGHk5zboVDEkqhaPLo6iJdfK31d2PnHWgP
-	51qRbd1TmrYfcJtruLvL59qrEat5h4w=
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=siEojvJz+9pd959IDg+Ca7yTVzm2HP7m64YDzvkN/LQ=;
+	b=RB1yPqR2FYono+1drOq5tn7/n9ROodTi8KI5Tj/jBaqWJxniwCEduuXymvKY1LdIopA3Qp
+	+Evs6ztNzkq3KtjbaU9+ceLSJLe8HnDQ9hxXOwuo8qCABrZkluFgp/mcev5S0igln6WVRn
+	so3cGKKJEZguWzj1YIZMRbfTsEfy298=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-223-SEV7f9GIP5KXtdH39FfcaQ-1; Thu, 04 Apr 2024 08:13:31 -0400
-X-MC-Unique: SEV7f9GIP5KXtdH39FfcaQ-1
-Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+ us-mta-531-ZKxRtCP5OhKF1Bz1bPlmAA-1; Thu, 04 Apr 2024 08:14:35 -0400
+X-MC-Unique: ZKxRtCP5OhKF1Bz1bPlmAA-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9461780A1A8;
-	Thu,  4 Apr 2024 12:13:31 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3059A805A60;
+	Thu,  4 Apr 2024 12:14:35 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 72083492BC6;
-	Thu,  4 Apr 2024 12:13:31 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 0E0BC492BD7;
+	Thu,  4 Apr 2024 12:14:35 +0000 (UTC)
 From: Paolo Bonzini <pbonzini@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	kvm@vger.kernel.org
 Cc: michael.roth@amd.com,
-	isaku.yamahata@intel.com
-Subject: [PATCH v5 17/17] selftests: kvm: add test for transferring FPU state into VMSA
-Date: Thu,  4 Apr 2024 08:13:27 -0400
-Message-ID: <20240404121327.3107131-18-pbonzini@redhat.com>
-In-Reply-To: <20240404121327.3107131-1-pbonzini@redhat.com>
-References: <20240404121327.3107131-1-pbonzini@redhat.com>
+	seanjc@google.com
+Subject: [PATCH] KVM: SEV: use u64_to_user_ptr throughout
+Date: Thu,  4 Apr 2024 08:14:34 -0400
+Message-ID: <20240404121434.3107212-1-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -72,134 +68,214 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- .../selftests/kvm/x86_64/sev_smoke_test.c     | 89 +++++++++++++++++++
- 1 file changed, 89 insertions(+)
+ arch/x86/kvm/svm/sev.c | 44 +++++++++++++++++++++---------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c b/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
-index 234c80dd344d..7c70c0da4fb7 100644
---- a/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
-@@ -4,6 +4,7 @@
- #include <stdlib.h>
- #include <string.h>
- #include <sys/ioctl.h>
-+#include <math.h>
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index 022d92fb4b85..1642d7d49bde 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -377,7 +377,7 @@ static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	if (!sev_guest(kvm))
+ 		return -ENOTTY;
  
- #include "test_util.h"
- #include "kvm_util.h"
-@@ -13,6 +14,8 @@
- #include "sev.h"
+-	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
++	if (copy_from_user(&params, u64_to_user_ptr(argp->data), sizeof(params)))
+ 		return -EFAULT;
  
+ 	memset(&start, 0, sizeof(start));
+@@ -421,7 +421,7 @@ static int sev_launch_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
  
-+#define XFEATURE_MASK_X87_AVX (XFEATURE_MASK_FP | XFEATURE_MASK_SSE | XFEATURE_MASK_YMM)
-+
- static void guest_sev_es_code(void)
+ 	/* return handle to userspace */
+ 	params.handle = start.handle;
+-	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params, sizeof(params))) {
++	if (copy_to_user(u64_to_user_ptr(argp->data), &params, sizeof(params))) {
+ 		sev_unbind_asid(kvm, start.handle);
+ 		ret = -EFAULT;
+ 		goto e_free_session;
+@@ -560,7 +560,7 @@ static int sev_launch_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	if (!sev_guest(kvm))
+ 		return -ENOTTY;
+ 
+-	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
++	if (copy_from_user(&params, u64_to_user_ptr(argp->data), sizeof(params)))
+ 		return -EFAULT;
+ 
+ 	vaddr = params.uaddr;
+@@ -780,7 +780,7 @@ static int sev_launch_update_vmsa(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 
+ static int sev_launch_measure(struct kvm *kvm, struct kvm_sev_cmd *argp)
  {
- 	/* TODO: Check CPUID after GHCB-based hypercall support is added. */
-@@ -35,6 +38,86 @@ static void guest_sev_code(void)
- 	GUEST_DONE();
- }
+-	void __user *measure = (void __user *)(uintptr_t)argp->data;
++	void __user *measure = u64_to_user_ptr(argp->data);
+ 	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+ 	struct sev_data_launch_measure data;
+ 	struct kvm_sev_launch_measure params;
+@@ -800,7 +800,7 @@ static int sev_launch_measure(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	if (!params.len)
+ 		goto cmd;
  
-+/* Stash state passed via VMSA before any compiled code runs.  */
-+extern void guest_code_xsave(void);
-+asm("guest_code_xsave:\n"
-+    "mov $-1, %eax\n"
-+    "mov $-1, %edx\n"
-+    "xsave (%rdi)\n"
-+    "jmp guest_sev_es_code");
-+
-+static void compare_xsave(u8 *from_host, u8 *from_guest)
-+{
-+	int i;
-+	bool bad = false;
-+	for (i = 0; i < 4095; i++) {
-+		if (from_host[i] != from_guest[i]) {
-+			printf("mismatch at %02hhx | %02hhx %02hhx\n", i, from_host[i], from_guest[i]);
-+			bad = true;
-+		}
-+	}
-+
-+	if (bad)
-+		abort();
-+}
-+
-+static void test_sync_vmsa(uint32_t policy)
-+{
-+	struct kvm_vcpu *vcpu;
-+	struct kvm_vm *vm;
-+	vm_vaddr_t gva;
-+	void *hva;
-+
-+	double x87val = M_PI;
-+	struct kvm_xsave __attribute__((aligned(64))) xsave = { 0 };
-+	struct kvm_sregs sregs;
-+	struct kvm_xcrs xcrs = {
-+		.nr_xcrs = 1,
-+		.xcrs[0].xcr = 0,
-+		.xcrs[0].value = XFEATURE_MASK_X87_AVX,
-+	};
-+
-+	vm = vm_sev_create_with_one_vcpu(KVM_X86_SEV_ES_VM, guest_code_xsave, &vcpu);
-+	gva = vm_vaddr_alloc_shared(vm, PAGE_SIZE, KVM_UTIL_MIN_VADDR,
-+				    MEM_REGION_TEST_DATA);
-+	hva = addr_gva2hva(vm, gva);
-+
-+	vcpu_args_set(vcpu, 1, gva);
-+
-+	vcpu_sregs_get(vcpu, &sregs);
-+	sregs.cr4 |= X86_CR4_OSFXSR | X86_CR4_OSXSAVE;
-+	vcpu_sregs_set(vcpu, &sregs);
-+
-+	vcpu_xcrs_set(vcpu, &xcrs);
-+	asm("fninit\n"
-+	    "vpcmpeqb %%ymm4, %%ymm4, %%ymm4\n"
-+	    "fldl %3\n"
-+	    "xsave (%2)\n"
-+	    "fstp %%st\n"
-+	    : "=m"(xsave)
-+	    : "A"(XFEATURE_MASK_X87_AVX), "r"(&xsave), "m" (x87val)
-+	    : "ymm4", "st", "st(1)", "st(2)", "st(3)", "st(4)", "st(5)", "st(6)", "st(7)");
-+	vcpu_xsave_set(vcpu, &xsave);
-+
-+	vm_sev_launch(vm, SEV_POLICY_ES | policy, NULL);
-+
-+	/* This page is shared, so make it decrypted.  */
-+	memset(hva, 0, 4096);
-+
-+	vcpu_run(vcpu);
-+
-+	TEST_ASSERT(vcpu->run->exit_reason == KVM_EXIT_SYSTEM_EVENT,
-+		    "Wanted SYSTEM_EVENT, got %s",
-+		    exit_reason_str(vcpu->run->exit_reason));
-+	TEST_ASSERT_EQ(vcpu->run->system_event.type, KVM_SYSTEM_EVENT_SEV_TERM);
-+	TEST_ASSERT_EQ(vcpu->run->system_event.ndata, 1);
-+	TEST_ASSERT_EQ(vcpu->run->system_event.data[0], GHCB_MSR_TERM_REQ);
-+
-+	compare_xsave((u8 *)&xsave, (u8 *)hva);
-+
-+	kvm_vm_free(vm);
-+}
-+
- static void test_sev(void *guest_code, uint64_t policy)
+-	p = (void __user *)(uintptr_t)params.uaddr;
++	p = u64_to_user_ptr(params.uaddr);
+ 	if (p) {
+ 		if (params.len > SEV_FW_BLOB_MAX_SIZE)
+ 			return -EINVAL;
+@@ -873,7 +873,7 @@ static int sev_guest_status(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	params.state = data.state;
+ 	params.handle = data.handle;
+ 
+-	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params, sizeof(params)))
++	if (copy_to_user(u64_to_user_ptr(argp->data), &params, sizeof(params)))
+ 		ret = -EFAULT;
+ 
+ 	return ret;
+@@ -1038,7 +1038,7 @@ static int sev_dbg_crypt(struct kvm *kvm, struct kvm_sev_cmd *argp, bool dec)
+ 	if (!sev_guest(kvm))
+ 		return -ENOTTY;
+ 
+-	if (copy_from_user(&debug, (void __user *)(uintptr_t)argp->data, sizeof(debug)))
++	if (copy_from_user(&debug, u64_to_user_ptr(argp->data), sizeof(debug)))
+ 		return -EFAULT;
+ 
+ 	if (!debug.len || debug.src_uaddr + debug.len < debug.src_uaddr)
+@@ -1122,7 +1122,7 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	if (!sev_guest(kvm))
+ 		return -ENOTTY;
+ 
+-	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
++	if (copy_from_user(&params, u64_to_user_ptr(argp->data), sizeof(params)))
+ 		return -EFAULT;
+ 
+ 	pages = sev_pin_memory(kvm, params.guest_uaddr, params.guest_len, &n, 1);
+@@ -1186,7 +1186,7 @@ static int sev_launch_secret(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 
+ static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
  {
- 	struct kvm_vcpu *vcpu;
-@@ -87,6 +170,12 @@ int main(int argc, char *argv[])
- 	if (kvm_cpu_has(X86_FEATURE_SEV_ES)) {
- 		test_sev(guest_sev_es_code, SEV_POLICY_ES | SEV_POLICY_NO_DBG);
- 		test_sev(guest_sev_es_code, SEV_POLICY_ES);
-+
-+		if (kvm_has_cap(KVM_CAP_XCRS) &&
-+		    (xgetbv(0) & XFEATURE_MASK_X87_AVX) == XFEATURE_MASK_X87_AVX) {
-+			test_sync_vmsa(0);
-+			test_sync_vmsa(SEV_POLICY_NO_DBG);
-+		}
+-	void __user *report = (void __user *)(uintptr_t)argp->data;
++	void __user *report = u64_to_user_ptr(argp->data);
+ 	struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+ 	struct sev_data_attestation_report data;
+ 	struct kvm_sev_attestation_report params;
+@@ -1197,7 +1197,7 @@ static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	if (!sev_guest(kvm))
+ 		return -ENOTTY;
+ 
+-	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data, sizeof(params)))
++	if (copy_from_user(&params, u64_to_user_ptr(argp->data), sizeof(params)))
+ 		return -EFAULT;
+ 
+ 	memset(&data, 0, sizeof(data));
+@@ -1206,7 +1206,7 @@ static int sev_get_attestation_report(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	if (!params.len)
+ 		goto cmd;
+ 
+-	p = (void __user *)(uintptr_t)params.uaddr;
++	p = u64_to_user_ptr(params.uaddr);
+ 	if (p) {
+ 		if (params.len > SEV_FW_BLOB_MAX_SIZE)
+ 			return -EINVAL;
+@@ -1259,7 +1259,7 @@ __sev_send_start_query_session_length(struct kvm *kvm, struct kvm_sev_cmd *argp,
+ 	ret = sev_issue_cmd(kvm, SEV_CMD_SEND_START, &data, &argp->error);
+ 
+ 	params->session_len = data.session_len;
+-	if (copy_to_user((void __user *)(uintptr_t)argp->data, params,
++	if (copy_to_user(u64_to_user_ptr(argp->data), params,
+ 				sizeof(struct kvm_sev_send_start)))
+ 		ret = -EFAULT;
+ 
+@@ -1278,7 +1278,7 @@ static int sev_send_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	if (!sev_guest(kvm))
+ 		return -ENOTTY;
+ 
+-	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
++	if (copy_from_user(&params, u64_to_user_ptr(argp->data),
+ 				sizeof(struct kvm_sev_send_start)))
+ 		return -EFAULT;
+ 
+@@ -1333,7 +1333,7 @@ static int sev_send_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 
+ 	ret = sev_issue_cmd(kvm, SEV_CMD_SEND_START, &data, &argp->error);
+ 
+-	if (!ret && copy_to_user((void __user *)(uintptr_t)params.session_uaddr,
++	if (!ret && copy_to_user(u64_to_user_ptr(params.session_uaddr),
+ 			session_data, params.session_len)) {
+ 		ret = -EFAULT;
+ 		goto e_free_amd_cert;
+@@ -1341,7 +1341,7 @@ static int sev_send_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 
+ 	params.policy = data.policy;
+ 	params.session_len = data.session_len;
+-	if (copy_to_user((void __user *)(uintptr_t)argp->data, &params,
++	if (copy_to_user(u64_to_user_ptr(argp->data), &params,
+ 				sizeof(struct kvm_sev_send_start)))
+ 		ret = -EFAULT;
+ 
+@@ -1372,7 +1372,7 @@ __sev_send_update_data_query_lengths(struct kvm *kvm, struct kvm_sev_cmd *argp,
+ 	params->hdr_len = data.hdr_len;
+ 	params->trans_len = data.trans_len;
+ 
+-	if (copy_to_user((void __user *)(uintptr_t)argp->data, params,
++	if (copy_to_user(u64_to_user_ptr(argp->data), params,
+ 			 sizeof(struct kvm_sev_send_update_data)))
+ 		ret = -EFAULT;
+ 
+@@ -1392,7 +1392,7 @@ static int sev_send_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	if (!sev_guest(kvm))
+ 		return -ENOTTY;
+ 
+-	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
++	if (copy_from_user(&params, u64_to_user_ptr(argp->data),
+ 			sizeof(struct kvm_sev_send_update_data)))
+ 		return -EFAULT;
+ 
+@@ -1443,14 +1443,14 @@ static int sev_send_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 		goto e_free_trans_data;
+ 
+ 	/* copy transport buffer to user space */
+-	if (copy_to_user((void __user *)(uintptr_t)params.trans_uaddr,
++	if (copy_to_user(u64_to_user_ptr(params.trans_uaddr),
+ 			 trans_data, params.trans_len)) {
+ 		ret = -EFAULT;
+ 		goto e_free_trans_data;
  	}
  
- 	return 0;
+ 	/* Copy packet header to userspace. */
+-	if (copy_to_user((void __user *)(uintptr_t)params.hdr_uaddr, hdr,
++	if (copy_to_user(u64_to_user_ptr(params.hdr_uaddr), hdr,
+ 			 params.hdr_len))
+ 		ret = -EFAULT;
+ 
+@@ -1502,7 +1502,7 @@ static int sev_receive_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 		return -ENOTTY;
+ 
+ 	/* Get parameter from the userspace */
+-	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
++	if (copy_from_user(&params, u64_to_user_ptr(argp->data),
+ 			sizeof(struct kvm_sev_receive_start)))
+ 		return -EFAULT;
+ 
+@@ -1544,7 +1544,7 @@ static int sev_receive_start(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	}
+ 
+ 	params.handle = start.handle;
+-	if (copy_to_user((void __user *)(uintptr_t)argp->data,
++	if (copy_to_user(u64_to_user_ptr(argp->data),
+ 			 &params, sizeof(struct kvm_sev_receive_start))) {
+ 		ret = -EFAULT;
+ 		sev_unbind_asid(kvm, start.handle);
+@@ -1575,7 +1575,7 @@ static int sev_receive_update_data(struct kvm *kvm, struct kvm_sev_cmd *argp)
+ 	if (!sev_guest(kvm))
+ 		return -EINVAL;
+ 
+-	if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,
++	if (copy_from_user(&params, u64_to_user_ptr(argp->data),
+ 			sizeof(struct kvm_sev_receive_update_data)))
+ 		return -EFAULT;
+ 
 -- 
 2.43.0
 
