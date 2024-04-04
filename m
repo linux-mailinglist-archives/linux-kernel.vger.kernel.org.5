@@ -1,87 +1,49 @@
-Return-Path: <linux-kernel+bounces-131533-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131534-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E29E3898927
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:48:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E17B89892C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:50:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D8AA281C17
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:48:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6838E1C22566
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:50:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 099241292F2;
-	Thu,  4 Apr 2024 13:48:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8000412880E;
+	Thu,  4 Apr 2024 13:50:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G0v7R962"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pBa4gmCH"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690351292E6
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 13:48:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3D5D76023;
+	Thu,  4 Apr 2024 13:50:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712238499; cv=none; b=gqrEfat9mqrBs19j6Ft41S/U0TFUgh3HkMA/j8fI3yOdoJrfPBgXxlYYC0TqUX1BHdbwFSanrjGeFxs7X4NuS4J5KiGSCC3gN2cgcJc9mV2pFNPdZQ5e1fzFuUaRSwMkh3f6fdTrjv3aPBx6gb2fhYZXS6Bk1jChAuK7Ae2QXkE=
+	t=1712238627; cv=none; b=oIzvq9JfiE5G2lF1BkGHSgF7mbB2HJVjHIO47GnmLM5n0Bj72QCn4BDlA8aTQeUOL/2jp8YPQX5jNVSC2mVTHw0DKEWk1z6qbrO6nyu4KQ6Gor6/SBhi8qmLbrW4cKHEftrxQG771BHgpQPu2tFec6wov4k7O70PogbWOOf6trU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712238499; c=relaxed/simple;
-	bh=y6/IshHk0uv9fDFkEevt+RsUXDV7iaRgIf3llsfiB/A=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=l5F7+wNuEomCTA1eS4qqmJzoj4nJOVxzYB3rd+1C8IYlVPgN+QEmNa2fSPP113JA1w6crCxbUqlpw4O4uat7kN9q8vbqqShReoJ87JqB3zkshqVUtdhUW95klhZloTr4LIww6YVfvrOd06LgeEIdVR37Oy1soM+n6Ltvi3SxapM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G0v7R962; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712238496;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hl4pfGBrbON0r6A5JWj3i+j4YMcyleP+1dPbuGF0SPU=;
-	b=G0v7R9622EoO9+kppii1b+YdAuHpmmlZsnciL5uWZE3302bgn59NuT/UoAvbtCmMryeZur
-	dhYrPN/Ngty0/q4cSRjxNdhmdTg86yWTjlCUyP/Oi7XFc6trq99nN2LJlhEJAI8b98oZYw
-	ZQDPAzfM/uPHCeOcFmIEZ75hiJIWFQ0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-260-zJ0kA69APuKU_kbfP0Pa-g-1; Thu,
- 04 Apr 2024 09:48:09 -0400
-X-MC-Unique: zJ0kA69APuKU_kbfP0Pa-g-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BEFD228043E4;
-	Thu,  4 Apr 2024 13:48:07 +0000 (UTC)
-Received: from llong.com (unknown [10.22.9.12])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8F3F13C54;
-	Thu,  4 Apr 2024 13:48:06 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Tejun Heo <tj@kernel.org>,
-	Zefan Li <lizefan.x@bytedance.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-pm@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Frederic Weisbecker <frederic@kernel.org>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Alex Shi <alexs@kernel.org>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 2/2] cgroup/cpuset: Add test_cpuset_v1_hp.sh
-Date: Thu,  4 Apr 2024 09:47:49 -0400
-Message-Id: <20240404134749.2857852-3-longman@redhat.com>
-In-Reply-To: <20240404134749.2857852-1-longman@redhat.com>
-References: <20240404134749.2857852-1-longman@redhat.com>
+	s=arc-20240116; t=1712238627; c=relaxed/simple;
+	bh=/e/3RELV3V5iO9Ru8peq8yOQty9/FY4WyCtQxbYjXRU=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=sklwnodVUNEDHJStgkYB2CfxOWWz4OPkxa1nrETwABgq8IjMayUt1s4Ca/JcbhwwPXrqS1JKKLlUPFYSp7JEX7glUWjPlWpu2maoUx9dHe1n+089la/mLBH+tRdv8PJfilMZDpFSY4frgBx8HPccjwwZktdLsi5kDeq+ASaptsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pBa4gmCH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4D5DFC43390;
+	Thu,  4 Apr 2024 13:50:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712238627;
+	bh=/e/3RELV3V5iO9Ru8peq8yOQty9/FY4WyCtQxbYjXRU=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=pBa4gmCHOsXrCH9G4RFkX9/3TAAYu8nMsfNewPXJWKR+5k2Jl26o0OH1ukghUSbBL
+	 By/NVCfEfLKMHbZN/xisPjHMBSt4/bP+F5sQb9jRUojy2RhQ/V99GXRhBU2n/ijKwK
+	 9VlyjVCSAdQO1xOVXzOjo4qIDEliz22c7FcqONVH+Ar6RwL6VRh1wDHHY2rVZBqYeY
+	 fIIw6S1sK8dlaIoEZLBgfoxw/vbAoOM+be6PRKEZt2KQ2ddBRdfDlnt+q+viXIUvTH
+	 BidPs0WqeYuZRtr3D9cN/hMphBrJLYWQIyV6iDpki4JRmpKSj26OCDdH6PgBZwx9Pa
+	 GfJCdTnVwauyw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3DB2FD84BA4;
+	Thu,  4 Apr 2024 13:50:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,86 +51,45 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Subject: Re: [PATCH] net: ethernet: mtk_eth_soc: Reuse value using READ_ONCE
+ instead of re-rereading it
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171223862724.955.4736478868030987627.git-patchwork-notify@kernel.org>
+Date: Thu, 04 Apr 2024 13:50:27 +0000
+References: <tencent_C699E9540505523424F11A9BD3D21B86840A@qq.com>
+In-Reply-To: <tencent_C699E9540505523424F11A9BD3D21B86840A@qq.com>
+To: linke li <lilinke99@qq.com>
+Cc: xujianhao01@gmail.com, nbd@nbd.name, sean.wang@mediatek.com,
+ Mark-MC.Lee@mediatek.com, lorenzo@kernel.org, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
 
-Add a simple test to verify that an empty v1 cpuset will force its tasks
-to be moved to an ancestor node. It is based on the test case documented
-in commit 76bb5ab8f6e3 ("cpuset: break kernfs active protection in
-cpuset_write_resmask()").
+Hello:
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- tools/testing/selftests/cgroup/Makefile       |  2 +-
- .../selftests/cgroup/test_cpuset_v1_hp.sh     | 46 +++++++++++++++++++
- 2 files changed, 47 insertions(+), 1 deletion(-)
- create mode 100755 tools/testing/selftests/cgroup/test_cpuset_v1_hp.sh
+This patch was applied to netdev/net-next.git (main)
+by Paolo Abeni <pabeni@redhat.com>:
 
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-index 00b441928909..16461dc0ffdf 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -4,7 +4,7 @@ CFLAGS += -Wall -pthread
- all: ${HELPER_PROGS}
- 
- TEST_FILES     := with_stress.sh
--TEST_PROGS     := test_stress.sh test_cpuset_prs.sh
-+TEST_PROGS     := test_stress.sh test_cpuset_prs.sh test_cpuset_v1_hp.sh
- TEST_GEN_FILES := wait_inotify
- TEST_GEN_PROGS = test_memcontrol
- TEST_GEN_PROGS += test_kmem
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_v1_hp.sh b/tools/testing/selftests/cgroup/test_cpuset_v1_hp.sh
-new file mode 100755
-index 000000000000..3f45512fb512
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_cpuset_v1_hp.sh
-@@ -0,0 +1,46 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Test the special cpuset v1 hotplug case where a cpuset become empty of
-+# CPUs will force migration of tasks out to an ancestor.
-+#
-+
-+skip_test() {
-+	echo "$1"
-+	echo "Test SKIPPED"
-+	exit 4 # ksft_skip
-+}
-+
-+[[ $(id -u) -eq 0 ]] || skip_test "Test must be run as root!"
-+
-+# Find cpuset v1 mount point
-+CPUSET=$(mount -t cgroup | grep cpuset | head -1 | awk -e '{print $3}')
-+[[ -n "$CPUSET" ]] || skip_test "cpuset v1 mount point not found!"
-+
-+#
-+# Create a test cpuset, put a CPU and a task there and offline that CPU
-+#
-+TDIR=test$$
-+[[ -d $CPUSET/$TDIR ]] || mkdir $CPUSET/$TDIR
-+echo 1 > $CPUSET/$TDIR/cpuset.cpus
-+echo 0 > $CPUSET/$TDIR/cpuset.mems
-+sleep 10&
-+TASK=$!
-+echo $TASK > $CPUSET/$TDIR/tasks
-+NEWCS=$(cat /proc/$TASK/cpuset)
-+[[ $NEWCS != "/$TDIR" ]] && {
-+	echo "Unexpected cpuset $NEWCS, test FAILED!"
-+	exit 1
-+}
-+
-+echo 0 > /sys/devices/system/cpu/cpu1/online
-+sleep 0.5
-+echo 1 > /sys/devices/system/cpu/cpu1/online
-+NEWCS=$(cat /proc/$TASK/cpuset)
-+rmdir $CPUSET/$TDIR
-+[[ $NEWCS != "/" ]] && {
-+	echo "cpuset $NEWCS, test FAILED!"
-+	exit 1
-+}
-+echo "Test PASSED"
-+exit 0
+On Wed,  3 Apr 2024 10:54:00 +0800 you wrote:
+> In mtk_flow_entry_update_l2, the hwe->ib1 is read using READ_ONCE at the
+> beginning of the function, checked, and then re-read from hwe->ib1,
+> may void all guarantees of the checks. Reuse the value that was read by
+> READ_ONCE to ensure the consistency of the ib1 throughout the function.
+> 
+> Signed-off-by: linke li <lilinke99@qq.com>
+> 
+> [...]
+
+Here is the summary with links:
+  - net: ethernet: mtk_eth_soc: Reuse value using READ_ONCE instead of re-rereading it
+    https://git.kernel.org/netdev/net-next/c/04172043bd21
+
+You are awesome, thank you!
 -- 
-2.39.3
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
