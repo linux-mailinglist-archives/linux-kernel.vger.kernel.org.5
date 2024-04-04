@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-131340-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131341-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CA96898678
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:51:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29FD689867B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:51:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B9481C21226
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:51:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D9A2528935D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28B6128816;
-	Thu,  4 Apr 2024 11:50:00 +0000 (UTC)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67A201292EE;
+	Thu,  4 Apr 2024 11:50:02 +0000 (UTC)
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E2A127B72;
-	Thu,  4 Apr 2024 11:49:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B89D12839F;
+	Thu,  4 Apr 2024 11:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712231400; cv=none; b=aoBhNA9PoYOxnPecrfWN9/k6TPWgA1xJEFV3y+Y3J3SfXrIX/M2eFwk6QJnN9qXPjTYMPmutnXepwCkyk4P9s8G98h+PLFVXi7up/2zbb9zkTpaMpDBlbpGE2rA7b1Iru3d3OSlr2rHXQ7bXGJN5MLzbloEvBZVShyWBpMDu/g4=
+	t=1712231401; cv=none; b=bSf7dWJanz5Zu9USlXwq1PBopA4IRaBg8fe+L37PH3+b7c+OqQzZj6OXpglntXYXNYtvZoQOCcRizzL+J0V2mvffG4zP6uXagFs0jnALU3Xdgb2Axq1nEKMs7CY/d//M8K8YyE0PTolWumyR4/OCDDsgq1OMuSxeHAvuQHnv+kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712231400; c=relaxed/simple;
-	bh=thNNGA+Buyv1A48P5cMpc4XXfCvRQSFmpwoRUX9PFQs=;
+	s=arc-20240116; t=1712231401; c=relaxed/simple;
+	bh=QtQ6sHpbu3QCkabgr6hTrp4OmZME1Hi0HLc2rVVa08A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IVTpi/k2eCN+f6iEbStCQOKN5McW9coZoBy6WDfiZh3L/V48TY1wtv8EFJt9ztr4gGAWrL+/8p3i5shhW8UvGOv+UNYTSxxFMHQD7qjG5hnnGPRpwrDOtxAS4vKCJtog2l4/z9N1ZCSyCYt5z8NY7vnPL4EW+h+63Pz0zuQA8rI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.48
+	 MIME-Version; b=mY23VSwh8p6vTIqfeYdvZF+53sYtEVlX57j8JSsCfE1mmDHi8H8hr0vPFtjlsL+Bv1jJNKx0uY6ZEBUMERP8cqiGnc8XiYjyo7gcvLNdQdsrMuvvlQNO9Ebnm6E+LxraMFbzNw18iEBzAdi/Gp9ungE2L3kzlLJIAo40Oi5uIRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a4715991c32so135007566b.1;
-        Thu, 04 Apr 2024 04:49:57 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so3550689a12.1;
+        Thu, 04 Apr 2024 04:49:59 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712231396; x=1712836196;
+        d=1e100.net; s=20230601; t=1712231398; x=1712836198;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=bGHHnAjzHXOHKZAHNwNt7Xm//rgfn0lSUB+nM5VysgU=;
-        b=YcxmQ4reZp7jXwxXR1PkRPCErNlfxUlWIoxseoAr2aTBpDtQ8yNdqu3lRE6qSNUyZ3
-         s2gcZpg06vVIO7hpgtMNAvGb4RYTYNuRafodvzRXaCOWVGVuOg+2XSXyp0QTfCG9Q/Xe
-         TwEUcImsJ63AWp5Gv1+jN3KOfXH2C/AS2FwKef3R6kbkMSl1eGC8yo2WbdmlBxW9L65y
-         wF681lOkA6ddQf/f7Fcsv6Xx3dLSI75VtF1qK8znjWqHYvtlVVliGDgi7TPZvtcEztf+
-         wYm6ldUn3zTDxEpG5f6cUcrQNAmNkLVhGfnm9205Iq1DfegGoeGFbfAMg736rSUIH1xA
-         BM9A==
-X-Forwarded-Encrypted: i=1; AJvYcCXm8r+URvSOLe9J78oeIT/YERlI8mBOLTI008KnwMQR1KebsfhMPoBAocc2LUdqCNG3tb5Pb4c8UdUYBAIaS3+EzwYhJWdV3q5Us3q1haPJEtnXkuwTxfGcnRpY46m4vHSRfw42Lfe0xStSrXVtc3ZRcEY6Lv0Ax0Vt
-X-Gm-Message-State: AOJu0Yw8jUigYHiGyKjiua2zg1cjU12Q0fxiN/EiRDtR0aZCQARiiPz4
-	shHTxC87cpT606DXt+aOVRchSFlIABuhRvYbVtNWQl06B7w028KB
-X-Google-Smtp-Source: AGHT+IE3t+BLSiVw4qYEsUV6AW+ru3gx9jWHG3rLtC0+vGDymiwEFCGXCLHQkfj2msACqNOeoyP0iw==
-X-Received: by 2002:a17:906:268b:b0:a4e:6414:5afd with SMTP id t11-20020a170906268b00b00a4e64145afdmr1390682ejc.52.1712231396634;
-        Thu, 04 Apr 2024 04:49:56 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
-        by smtp.gmail.com with ESMTPSA id wy11-20020a170906fe0b00b00a4e4a3e69acsm6635185ejb.71.2024.04.04.04.49.56
+        bh=Ui1DJxKv+GCSubTCimqVqNTb9BwhV0yVlSdcCwIQq1A=;
+        b=seITlKkk4g9nvLJe99HoKLF5GSFigzdegoLtjQSk3uCS6fsRngi1cpl6Cpq0Pe9ber
+         in6KCNMkDz888h7MYWHTi/W5eDzs87ds0pfAdYcvkZLJLPeHiwRDKuQxgD8pNifh/XJW
+         FMwatScU8fRxt0YMIoteAvrV/0BoP18UexLHQK48BUHdyV6iTNyeOAU/VByIkUd2hAQW
+         K0I/WgPgHLOHYBMBzjKRwFGOJhJNFUh/OFYAY5pH8Cmc639W56HCqsMLXHRY+tUw1WX/
+         CR21F4pyRSi2WyJaFtENyhB5oIKDpPTAhm2NQknDhacOUzyik2Sb7YsFua7D4VwE49f8
+         AD0w==
+X-Forwarded-Encrypted: i=1; AJvYcCXSn8V0fmjxn/l7Jr1By7YcVSdSCWFgcOms943SX5H3vPONZn6Uk6n+91uTbazHrVSozYF16a78ULjc6tCVkotsSmiT/0668ky9zKzIQo6yg8JO1SCdGYVd0RvmXux/MxgnJZglILGUYbY6EjWcMVPHtsDHK8Q+tZLR
+X-Gm-Message-State: AOJu0YxhWsolOl9+vOp5l22O4eOhuojdHJIcJsOsbuU+dOTuaeBefgMs
+	1l73XBHSLCQcAWlFAqqrsb0GMPxJ2dQLrEIC5HQXUxUz+6/8Ipd3
+X-Google-Smtp-Source: AGHT+IGR/2cl7VV3Nm0oPydh1R3stQjygMPvAFpJJaxHSUjjTaaXgqGOaWjKnswlTpZmIr4PxMZ4eA==
+X-Received: by 2002:a17:906:d9c5:b0:a51:964f:c3e4 with SMTP id qk5-20020a170906d9c500b00a51964fc3e4mr178315ejb.5.1712231398570;
+        Thu, 04 Apr 2024 04:49:58 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-116.fbsv.net. [2a03:2880:30ff:74::face:b00c])
+        by smtp.gmail.com with ESMTPSA id wk8-20020a170907054800b00a4e2d7dd2d8sm8166265ejb.182.2024.04.04.04.49.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 04:49:56 -0700 (PDT)
+        Thu, 04 Apr 2024 04:49:58 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: aleksander.lobakin@intel.com,
 	kuba@kernel.org,
@@ -65,13 +65,7 @@ To: aleksander.lobakin@intel.com,
 	sean.wang@mediatek.com,
 	Mark-MC.Lee@mediatek.com,
 	lorenzo@kernel.org,
-	taras.chornyi@plvision.eu,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>
+	taras.chornyi@plvision.eu
 Cc: quic_jjohnson@quicinc.com,
 	kvalo@kernel.org,
 	leon@kernel.org,
@@ -79,9 +73,9 @@ Cc: quic_jjohnson@quicinc.com,
 	linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org,
 	bpf@vger.kernel.org
-Subject: [PATCH net-next v3 3/5] net: mediatek: mtk_eth_sock: allocate dummy net_device dynamically
-Date: Thu,  4 Apr 2024 04:48:43 -0700
-Message-ID: <20240404114854.2498663-4-leitao@debian.org>
+Subject: [PATCH net-next v3 4/5] net: ipa: allocate dummy net_device dynamically
+Date: Thu,  4 Apr 2024 04:48:44 -0700
+Message-ID: <20240404114854.2498663-5-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240404114854.2498663-1-leitao@debian.org>
 References: <20240404114854.2498663-1-leitao@debian.org>
@@ -105,72 +99,73 @@ helper to allocate and initialize dummy devices.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 17 +++++++++++++----
- drivers/net/ethernet/mediatek/mtk_eth_soc.h |  2 +-
- 2 files changed, 14 insertions(+), 5 deletions(-)
+ drivers/net/ipa/gsi.c | 12 ++++++++----
+ drivers/net/ipa/gsi.h |  2 +-
+ 2 files changed, 9 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index caa13b9cedff..d7a96dc11c07 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -1710,7 +1710,7 @@ static struct page_pool *mtk_create_page_pool(struct mtk_eth *eth,
- 	if (IS_ERR(pp))
- 		return pp;
+diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+index 9a0b1fe4a93a..d70be15e95a6 100644
+--- a/drivers/net/ipa/gsi.c
++++ b/drivers/net/ipa/gsi.c
+@@ -1730,10 +1730,10 @@ static int gsi_channel_setup_one(struct gsi *gsi, u32 channel_id)
+ 	gsi_channel_program(channel, true);
  
--	err = __xdp_rxq_info_reg(xdp_q, &eth->dummy_dev, id,
-+	err = __xdp_rxq_info_reg(xdp_q, eth->dummy_dev, id,
- 				 eth->rx_napi.napi_id, PAGE_SIZE);
- 	if (err < 0)
- 		goto err_free_pp;
-@@ -4188,6 +4188,8 @@ static int mtk_free_dev(struct mtk_eth *eth)
- 		metadata_dst_free(eth->dsa_meta[i]);
- 	}
+ 	if (channel->toward_ipa)
+-		netif_napi_add_tx(&gsi->dummy_dev, &channel->napi,
++		netif_napi_add_tx(gsi->dummy_dev, &channel->napi,
+ 				  gsi_channel_poll);
+ 	else
+-		netif_napi_add(&gsi->dummy_dev, &channel->napi,
++		netif_napi_add(gsi->dummy_dev, &channel->napi,
+ 			       gsi_channel_poll);
  
-+	free_netdev(eth->dummy_dev);
-+
  	return 0;
+@@ -2369,12 +2369,14 @@ int gsi_init(struct gsi *gsi, struct platform_device *pdev,
+ 	/* GSI uses NAPI on all channels.  Create a dummy network device
+ 	 * for the channel NAPI contexts to be associated with.
+ 	 */
+-	init_dummy_netdev(&gsi->dummy_dev);
++	gsi->dummy_dev = alloc_netdev_dummy(0);
++	if (!gsi->dummy_dev)
++		return -ENOMEM;
+ 	init_completion(&gsi->completion);
+ 
+ 	ret = gsi_reg_init(gsi, pdev);
+ 	if (ret)
+-		return ret;
++		goto err_reg_exit;
+ 
+ 	ret = gsi_irq_init(gsi, pdev);	/* No matching exit required */
+ 	if (ret)
+@@ -2389,6 +2391,7 @@ int gsi_init(struct gsi *gsi, struct platform_device *pdev,
+ 	return 0;
+ 
+ err_reg_exit:
++	free_netdev(gsi->dummy_dev);
+ 	gsi_reg_exit(gsi);
+ 
+ 	return ret;
+@@ -2399,6 +2402,7 @@ void gsi_exit(struct gsi *gsi)
+ {
+ 	mutex_destroy(&gsi->mutex);
+ 	gsi_channel_exit(gsi);
++	free_netdev(gsi->dummy_dev);
+ 	gsi_reg_exit(gsi);
  }
  
-@@ -4983,9 +4985,14 @@ static int mtk_probe(struct platform_device *pdev)
- 	/* we run 2 devices on the same DMA ring so we need a dummy device
- 	 * for NAPI to work
- 	 */
--	init_dummy_netdev(&eth->dummy_dev);
--	netif_napi_add(&eth->dummy_dev, &eth->tx_napi, mtk_napi_tx);
--	netif_napi_add(&eth->dummy_dev, &eth->rx_napi, mtk_napi_rx);
-+	eth->dummy_dev = alloc_netdev_dummy(0);
-+	if (!eth->dummy_dev) {
-+		err = -ENOMEM;
-+		dev_err(eth->dev, "failed to allocated dummy device\n");
-+		goto err_unreg_netdev;
-+	}
-+	netif_napi_add(eth->dummy_dev, &eth->tx_napi, mtk_napi_tx);
-+	netif_napi_add(eth->dummy_dev, &eth->rx_napi, mtk_napi_rx);
+diff --git a/drivers/net/ipa/gsi.h b/drivers/net/ipa/gsi.h
+index 42063b227c18..6b7ec2a39676 100644
+--- a/drivers/net/ipa/gsi.h
++++ b/drivers/net/ipa/gsi.h
+@@ -155,7 +155,7 @@ struct gsi {
+ 	struct mutex mutex;		/* protects commands, programming */
+ 	struct gsi_channel channel[GSI_CHANNEL_COUNT_MAX];
+ 	struct gsi_evt_ring evt_ring[GSI_EVT_RING_COUNT_MAX];
+-	struct net_device dummy_dev;	/* needed for NAPI */
++	struct net_device *dummy_dev;	/* needed for NAPI */
+ };
  
- 	platform_set_drvdata(pdev, eth);
- 	schedule_delayed_work(&eth->reset.monitor_work,
-@@ -4993,6 +5000,8 @@ static int mtk_probe(struct platform_device *pdev)
- 
- 	return 0;
- 
-+err_unreg_netdev:
-+	mtk_unreg_dev(eth);
- err_deinit_ppe:
- 	mtk_ppe_deinit(eth);
- 	mtk_mdio_cleanup(eth);
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 9ae3b8a71d0e..723fc637027c 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -1242,7 +1242,7 @@ struct mtk_eth {
- 	spinlock_t			page_lock;
- 	spinlock_t			tx_irq_lock;
- 	spinlock_t			rx_irq_lock;
--	struct net_device		dummy_dev;
-+	struct net_device		*dummy_dev;
- 	struct net_device		*netdev[MTK_MAX_DEVS];
- 	struct mtk_mac			*mac[MTK_MAX_DEVS];
- 	int				irq[3];
+ /**
 -- 
 2.43.0
 
