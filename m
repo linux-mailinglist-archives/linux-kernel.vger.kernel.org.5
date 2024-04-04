@@ -1,180 +1,121 @@
-Return-Path: <linux-kernel+bounces-132075-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C1D8898F5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:07:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8EB5898F65
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:08:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B9061C226D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:07:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 734EB287410
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A961350C7;
-	Thu,  4 Apr 2024 20:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E0A913667D;
+	Thu,  4 Apr 2024 20:07:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OkBoT7cB"
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="v/N8hd30"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 462866A008
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 20:07:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED588135A4B
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 20:07:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712261222; cv=none; b=JnkG32W4S6gkRQPYrjo1NCDiTlNFRFZqb31tRw++BH/ZvCL/ZdjD64sdvzKRTYOefhyMfZgfk6xTV5T/mPqVawJ1l7xYbByggue3LitIwYMjikc9fVq7dnKJ+Vga3W32B8vs/HM2uYx0j3N85b6aDugZK41fqFSYCByjofdog6o=
+	t=1712261264; cv=none; b=MX1k+coBhYwvGrK2KptSJpqQXWPwmSTVGG/frFPiadEfTt9yZTuvlMQLuMmZZO6xSIdJsy1Rpoo3UyhhM8lDnylibns+dh7Z6jqpEEoLzoeykCjZ+/WgARppKme0ebLZfp9qi8f+zs2MiyWvZFj+kU6TwOSM+t2hCkHVOnUJxEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712261222; c=relaxed/simple;
-	bh=DuFa4hmd+yyQJc4kdYQczPH/6uJpnYrciswo6eFuxBs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KJj6H+FFVHcK1+g92TwjAAhKSSCWOvpmp5VHzYFm0aOX3YjzP5tnt+v4bq/BomUjh0isrYKpXwZMbj+xD0t2MCjyloKo0tZsLYwr8BdY4f0UdVGyA8ItdS6X1tArU7jPH3oxWhgR2Bze4ZGzFNZKqaXzKxdhOtcQNeh7JbGMtCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OkBoT7cB; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ff36e8fa-14f4-42a6-8210-cec24a7779a0@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712261218;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=n1SLGajoYfkd/BVU/Z4IP2IUlKcHDqf4f4XKLUjAyXc=;
-	b=OkBoT7cBI9fR/9QKUis94AcIOB+rQcO8qjNPV0qOlGiPE5LTyG+5KtIv8xohW7d0i6xBKt
-	kwcOrQMKMzqDBJYkhbkF/4eud9cKIrLoQhoOeLGM+QwTREYPdvRzBYZ41PrIvo+FsdQJz0
-	7B3SnsMQ3UNpaUeJPZccXW1/xWvKcZQ=
-Date: Thu, 4 Apr 2024 13:06:50 -0700
+	s=arc-20240116; t=1712261264; c=relaxed/simple;
+	bh=GsI2IqBH7fIn1lQq7F4Uqzg6XlJeIu1rVzb2YHseZkk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ggXY3lilyxO7qzsEZlyhATOZ2wryM+4oOch6WJDe/9Fe6rYXfr8YxLyT3YvOx7kOEDWQa+FEn1nx6oY5s+AIrBNGUnXTNfs9UFDk+rqGv8UkgafO8j5qm1hem2C1F1PB97zUZiO1/hWfk/poH1adgdMNQpNqW/8b1wU3qK5+vqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=v/N8hd30; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-343bccc0b2cso835861f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 13:07:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712261261; x=1712866061; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DJQZX14pNqacP6yH0MMA3xSLOt1OyaaMR7UOhFYBuH0=;
+        b=v/N8hd30l3bcSWR8MV9hhQEky3SiQhXg4mYY32qLmeZs7jFj9xtA5UT2ny+Kr6cdbs
+         qG+23KBWae4IACc7nwcYZYUwBs+WDCEF6jFwhimYU7O7XOL74KkGBYlfQs0ilFg3pscn
+         rD2bcY09NXZFAzhIkJf3RsU5M5VKz4nXjb1it+b7IVoZDLpy1s32bzGAke9M/ELXSMfx
+         oSczmTivkzrhFAYbZ9ZY/Wo78dUxz9XRfU8r8um5IpHof8g5EPT0xpm0eF802qAlNwsy
+         q+9zX1MEOgRYhKZlKIxLL8FiDkxaWCg+lR0YnbFJqHoHkUqBFke/jr7h1qJq+OrAY1Cl
+         dq8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712261261; x=1712866061;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DJQZX14pNqacP6yH0MMA3xSLOt1OyaaMR7UOhFYBuH0=;
+        b=uDWZKIdJeTr0FcU1UoQNPD0x0x2LSy16Bk65Ad0GYhdIjTqyZxFKgk79ShlEZavCXU
+         B+PctdDg5kq7OlTuEYArNdlk630MjvTYV9ze7bqLmHRQG5XDvTbJbdnVNcfzzqBclbJX
+         r2r3E6Lqzg5ve0UEpRrot4CVQkfCscK+h15Z37xrwAnDmAw9G2FKCDL5Z+y87Fzp5YQN
+         8uV/eeqCwtA5NOTvjMjI9CYsh0caOEmjMs+TGOwmnqV/xRsAeRxao46HwH1miVEgrKT2
+         gJuwVUvi8n1jVmf0WD2JdKwNqD2shRFmdaLdQHvXxW80xqPOHv1NN83D9M1HivyZamY8
+         MX9A==
+X-Forwarded-Encrypted: i=1; AJvYcCXdCHXBoUojnIarZbEx0rRXrMDcGhad8e+26UEME74IzepIeSNoMG9/ejrsnVGaZZo73E/lz4MaN9cIez1OiQ76Tnru0/jvqRNUJT/j
+X-Gm-Message-State: AOJu0YxxO6s7XPSqwhKcf04E+frYZTsxkfFqfvCWfBCvSo/ONO4/ER5g
+	+VlB7gxsxzkOy41l79ZFp2GLYfNGtFYhvkqBbB5/iEwgwCpQe9GvYBnClSYUWIkr7sB55tDYPx5
+	F3RSdAotoWnucuwA+ma+ATw+3Rh2tvCglGNfW
+X-Google-Smtp-Source: AGHT+IG+NwR0yeRIg5TBfS13eCeoTZD+OX41KhT6eVRLyMQyIDTsA4/UkFRdut2sjqIWAEzK/d6wK5JyA8vCEa0zo9k=
+X-Received: by 2002:adf:f44c:0:b0:343:70bc:4578 with SMTP id
+ f12-20020adff44c000000b0034370bc4578mr387872wrp.70.1712261260979; Thu, 04 Apr
+ 2024 13:07:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3] selftests/bpf: Move test_dev_cgroup to
- prog_tests
-Content-Language: en-GB
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, John Fastabend <john.fastabend@gmail.com>,
- KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
- Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
- Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>
-Cc: kernel@collabora.com, linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20240401123455.1377896-1-usama.anjum@collabora.com>
- <92e1cce6-5f26-4a49-86b6-81e1e80d1aaa@linux.dev>
- <cfecd6ea-8fa3-477f-bd32-4087aefee2af@collabora.com>
- <0ff5c7d0-d5c5-4b61-ba89-8e7f9f775935@linux.dev>
- <0973bc93-7a8d-451c-9944-d91a77d68755@collabora.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <0973bc93-7a8d-451c-9944-d91a77d68755@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240404171726.2302435-1-lokeshgidra@google.com> <Zg7hrt5HudXLBUn_@casper.infradead.org>
+In-Reply-To: <Zg7hrt5HudXLBUn_@casper.infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 4 Apr 2024 13:07:25 -0700
+Message-ID: <CAJuCfpHvb5Jt6J1P9aHVdRWYUHmBL1edfp7QHn=jF88gJRD7RA@mail.gmail.com>
+Subject: Re: [PATCH] userfaultfd: change src_folio after ensuring it's
+ unpinned in UFFDIO_MOVE
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Lokesh Gidra <lokeshgidra@google.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, kernel-team@android.com, aarcange@redhat.com, 
+	peterx@redhat.com, david@redhat.com, zhengqi.arch@bytedance.com, 
+	kaleshsingh@google.com, ngeoffray@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 4/3/24 5:03 AM, Muhammad Usama Anjum wrote:
-> On 4/3/24 7:36 AM, Yonghong Song wrote:
->> On 4/2/24 8:16 AM, Muhammad Usama Anjum wrote:
->>> Yonghong Song,
->>>
->>> Thank you so much for replying. I was missing how to run pipeline manually.
->>> Thanks a ton.
->>>
->>> On 4/1/24 11:53 PM, Yonghong Song wrote:
->>>> On 4/1/24 5:34 AM, Muhammad Usama Anjum wrote:
->>>>> Move test_dev_cgroup.c to prog_tests/dev_cgroup.c to be able to run it
->>>>> with test_progs. Replace dev_cgroup.bpf.o with skel header file,
->>>>> dev_cgroup.skel.h and load program from it accourdingly.
->>>>>
->>>>>      ./test_progs -t dev_cgroup
->>>>>      mknod: /tmp/test_dev_cgroup_null: Operation not permitted
->>>>>      64+0 records in
->>>>>      64+0 records out
->>>>>      32768 bytes (33 kB, 32 KiB) copied, 0.000856684 s, 38.2 MB/s
->>>>>      dd: failed to open '/dev/full': Operation not permitted
->>>>>      dd: failed to open '/dev/random': Operation not permitted
->>>>>      #72     test_dev_cgroup:OK
->>>>>      Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->>>>> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
->>>>> ---
->>>>> Changes since v2:
->>>>> - Replace test_dev_cgroup with serial_test_dev_cgroup as there is
->>>>>      probability that the test is racing against another cgroup test
->>>>> - Minor changes to the commit message above
->>>>>
->>>>> I've tested the patch with vmtest.sh on bpf-next/for-next and linux
->>>>> next. It is passing on both. Not sure why it was failed on BPFCI.
->>>>> Test run with vmtest.h:
->>>>> sudo LDLIBS=-static PKG_CONFIG='pkg-config --static' ./vmtest.sh
->>>>> ./test_progs -t dev_cgroup
->>>>> ./test_progs -t dev_cgroup
->>>>> mknod: /tmp/test_dev_cgroup_null: Operation not permitted
->>>>> 64+0 records in
->>>>> 64+0 records out
->>>>> 32768 bytes (33 kB, 32 KiB) copied, 0.000403432 s, 81.2 MB/s
->>>>> dd: failed to open '/dev/full': Operation not permitted
->>>>> dd: failed to open '/dev/random': Operation not permitted
->>>>>     #69      dev_cgroup:OK
->>>>> Summary: 1/0 PASSED, 0 SKIPPED, 0 FAILED
->>>> The CI failure:
->>>>
->>>>
->>>> Error: #72 dev_cgroup
->>>> serial_test_dev_cgroup:PASS:skel_open_and_load 0 nsec
->>>> serial_test_dev_cgroup:PASS:cgroup_setup_and_join 0 nsec
->>>> serial_test_dev_cgroup:PASS:bpf_attach 0 nsec
->>>> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
->>>> serial_test_dev_cgroup:PASS:bpf_query 0 nsec
->>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>> serial_test_dev_cgroup:PASS:mknod 0 nsec
->>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>> serial_test_dev_cgroup:FAIL:mknod unexpected mknod: actual 256 !=
->>>> expected 0
->>>> serial_test_dev_cgroup:PASS:rm 0 nsec
->>>> serial_test_dev_cgroup:PASS:dd 0 nsec
->>>> serial_test_dev_cgroup:PASS:dd 0 nsec
->>>> serial_test_dev_cgroup:PASS:dd 0 nsec
->>>>
->>>> (cgroup_helpers.c:353: errno: Device or resource busy) umount cgroup2
->>>>
->>>> The error code 256 means mknod execution has some issues. Maybe you need to
->>>> find specific errno to find out what is going on. I think you can do ci
->>>> on-demanding test to debug.
->>> errno is 2 --> No such file or directory
->>>
->>> Locally I'm unable to reproduce it until I don't remove
->>> rm -f /tmp/test_dev_cgroup_zero such that the /tmp/test_dev_cgroup_zero
->>> node is present before test execution. The error code is 256 with errno 2.
->>> I'm debugging by placing system("ls /tmp 1>&2"); to find out which files
->>> are already present in /tmp. But ls's output doesn't appear on the CI logs.
->> errno 2 means ENOENT.
->>  From mknod man page (https://linux.die.net/man/2/mknod), it means
->>    A directory component in/pathname/  does not exist or is a dangling
->> symbolic link.
->>
->> It means /tmp does not exist or a dangling symbolic link.
->> It is indeed very strange. To make the test robust, maybe creating a temp
->> directory with mkdtemp and use it as the path? The temp directory
->> creation should be done before bpf prog attach.
-> I've tried following but still no luck:
-> * /tmp is already present. Then I thought maybe the desired file is already
-> present. I've verified that there isn't file of same name is present inside
-> /tmp.
-> * I thought maybe mknod isn't present in the system. But mknod --help succeeds.
-> * I switched from /tmp to current directory to create the mknod. But the
-> result is same error.
-> * I've tried to use the same kernel config as the BPF CI is using. I'm not
-> able to reproduce it.
+On Thu, Apr 4, 2024 at 10:21=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
+> wrote:
 >
-> Not sure which edge case or what's going on. The problem is appearing
-> because of some limitation in the rootfs.
+> On Thu, Apr 04, 2024 at 10:17:26AM -0700, Lokesh Gidra wrote:
+> > -             folio_move_anon_rmap(src_folio, dst_vma);
+> > -             WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, d=
+st_addr));
+> > -
+> >               src_pmdval =3D pmdp_huge_clear_flush(src_vma, src_addr, s=
+rc_pmd);
+> >               /* Folio got pinned from under us. Put it back and fail t=
+he move. */
+> >               if (folio_maybe_dma_pinned(src_folio)) {
+> > @@ -2270,6 +2267,9 @@ int move_pages_huge_pmd(struct mm_struct *mm, pmd=
+_t *dst_pmd, pmd_t *src_pmd, pm
+> >                       goto unlock_ptls;
+> >               }
+> >
+> > +             folio_move_anon_rmap(src_folio, dst_vma);
+> > +             WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, d=
+st_addr));
+> > +
+>
+> This use of WRITE_ONCE scares me.  We hold the folio locked.  Why do
+> we need to use WRITE_ONCE?  Who's looking at folio->index without
+> holding the folio lock?
 
-Maybe you could collect /tmp mount options to see whether anything is
-suspicious? In my vm, I have
-   tmpfs on /tmp type tmpfs (rw,nosuid,nodev,size=3501540k,nr_inodes=1048576)
-and the test works fine.
+Indeed that seems to be unnecessary here. Both here and in
+move_present_pte() we are holding folio lock while moving the page. I
+must have just blindly copied that from Andrea's original patch [1].
 
+https://gitlab.com/aarcange/aa/-/commit/2aec7aea56b10438a3881a20a411aa4b1fc=
+19e92
 
