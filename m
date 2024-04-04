@@ -1,186 +1,200 @@
-Return-Path: <linux-kernel+bounces-131112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03EA1898336
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:35:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F382898343
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:38:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 55400B25F08
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:35:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A06F728C827
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:38:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9960E7172D;
-	Thu,  4 Apr 2024 08:35:11 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B91A571738;
+	Thu,  4 Apr 2024 08:38:20 +0000 (UTC)
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584D871735
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D6F70CDB
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712219711; cv=none; b=fq5zmx5uhEthw3rBCJTc9uwKqbYs2bRiylY8SErb6Ucj5LXL19bTjjUbD+f73xGtMszLQV1u+UMCqprIUhkQbGudtZ6DECVWMRy5BMRFI36UtkEpaC7losY+nKCIzVGvzB3mdiaFF19XljMktZvYgP7/tmn0aptsJFeJwSpfwiU=
+	t=1712219900; cv=none; b=V7Jc9BWPB+Szi9lUTNzzguKdSaxeSSqpRLhXJA6YRFFJFfgo+TJogrSWLbojsA4QOBkw32CghDR3TDDro5fORGubqxCEKxDZDV2Wvtz/WSMc2h+7WozYlQTcmy091W4Y2p9ccGqdD5XpBH4KIM/ebksh9gsMhfHACd52shwSnVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712219711; c=relaxed/simple;
-	bh=R3WK7lsgcv6hzJeNFgwT/ZIP/4S5DB86hBp3h/+cNz0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Dup65vSlJIqz0IKSAyzJsXblTyH6BUYUBwDCp2NdT57WBOXlImI7JpiboMBAXUTgDu8oKbBVjM6epCaxS67nrp//r1e369rhAOByXMX166oQMJf+gVS+ZrgfHocagm0b+IgfgoaUslvwtsFUfnZ5CFlRLdUa+anwk/AHiMwJXZA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rsIYo-0004iC-23; Thu, 04 Apr 2024 10:35:02 +0200
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rsIYn-00AKmC-KV; Thu, 04 Apr 2024 10:35:01 +0200
-Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
-	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rsIYn-00FhvA-1s;
-	Thu, 04 Apr 2024 10:35:01 +0200
-From: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Date: Thu, 04 Apr 2024 10:35:01 +0200
-Subject: [PATCH] usb: gadget: function: uvc: set req_size once when the vb2
- queue is calculated
+	s=arc-20240116; t=1712219900; c=relaxed/simple;
+	bh=qkPoIifBuSH5VuY0M6o1wfPpbRTpbHQCbQZ8R/5rDMM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=EaFWCu6z7AJObFYDn+zDtAmK1o5ghimtWDsvoeCBHzF7ie4t+mhCBDtvmzbwuSECu6QBJBL4WfRjOKNjMvqWN0Li6SNxu23ApRSuZVMhnQeG8Eb79igywPdBef6wg5R8sv15SFmPXwWEO3FUOux0Ku95BypgrWOUjVjFtUIdIqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-115-4iQVSF9yPq2nYhL05-BeCw-1; Thu, 04 Apr 2024 04:38:15 -0400
+X-MC-Unique: 4iQVSF9yPq2nYhL05-BeCw-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-343b9425ed1so118482f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 01:38:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712219894; x=1712824694;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RUWAt6tTr1BoO0DACrinTOy1v3V69UJ6vNkPfIqNt3c=;
+        b=A982pHv0Q2Q03v5PywfKJBnWB+T/LJje3/baKccGmtOtoZehNDJ7E6dXfXlGlTufk2
+         rSZ2f4WUt7DZRBGMG6kljgRVTXCxaYRN3v00RlT1CsPdO1nUGwwyV31wNl9QMlMuR1Vq
+         f6G+yllLd3h8ydgE6SyG1Z3M3V3HIBDc4qKEUXa3lDLZtO7nyZzqDU8kmNzst2a+Fq/L
+         SlKsPcYolxR70eL7KfGBWF5Q5FmbEC2wbG9XHwBdAs3PLCDzzCw7nb7uxguoPaXLwRIC
+         wCowVhFiVS6mW8PRwkrQr99Oj3aJZT82Vnk3i5Uu34C6imeChwou9ZFmeRGEzijjE/WJ
+         Efsg==
+X-Forwarded-Encrypted: i=1; AJvYcCXre5/0pGelqPWcTBepp73bVrsOlf61yRTBwNrs8ortoRa+BkRByhSV4O9ENYAloRFOZJFksV+XbZONkAb4AX0vYAaB/DiOs0jmI1eP
+X-Gm-Message-State: AOJu0YwD9n1pWWAVf2wzKpM/pHN0ayYS/3XHa2cMNi8xP84l9mCodjzt
+	EoOx+HRaLtLHNVIKO8mwryqkI0sSFJ3Qm3/wVNxx4asuf1p/V5BI7cr592ZrH8YIZlF5GgcB/4y
+	7GRxiyH8ECr5BkPGd21u9hl4U495l15R0cOMkuG/beVmMHzj6RkGV17ULzGONJQ==
+X-Received: by 2002:a05:600c:1d98:b0:416:2abe:b709 with SMTP id p24-20020a05600c1d9800b004162abeb709mr801877wms.0.1712219894552;
+        Thu, 04 Apr 2024 01:38:14 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEzyWr3P15XNPlIJ6iMRbAdROByyF217WrcowuLk97p8X/JElmL3JtVQh8mCb3OHNYQhyBtVw==
+X-Received: by 2002:a05:600c:1d98:b0:416:2abe:b709 with SMTP id p24-20020a05600c1d9800b004162abeb709mr801859wms.0.1712219894178;
+        Thu, 04 Apr 2024 01:38:14 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-247-213.dyn.eolo.it. [146.241.247.213])
+        by smtp.gmail.com with ESMTPSA id ck17-20020a5d5e91000000b003438e98e727sm4416451wrb.84.2024.04.04.01.38.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 01:38:13 -0700 (PDT)
+Message-ID: <168c9226d2cac6a5a53ce33ef1f76b99a02bedcb.camel@redhat.com>
+Subject: Re: [PATCH v4] net: hsr: Provide RedBox support (HSR-SAN)
+From: Paolo Abeni <pabeni@redhat.com>
+To: Lukasz Majewski <lukma@denx.de>, netdev@vger.kernel.org
+Cc: Andrew Lunn <andrew@lunn.ch>, Eric Dumazet <edumazet@google.com>, 
+ Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
+ <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,  Oleksij Rempel
+ <o.rempel@pengutronix.de>, Tristram.Ha@microchip.com, Sebastian Andrzej
+ Siewior <bigeasy@linutronix.de>, Ravi Gunasekaran <r-gunasekaran@ti.com>,
+ Simon Horman <horms@kernel.org>, Nikita Zhandarovich
+ <n.zhandarovich@fintech.ru>, Murali Karicheri <m-karicheri2@ti.com>, Jiri
+ Pirko <jiri@resnulli.us>, Dan Carpenter <dan.carpenter@linaro.org>,  Ziyang
+ Xuan <william.xuanziyang@huawei.com>, Shigeru Yoshida
+ <syoshida@redhat.com>,  linux-kernel@vger.kernel.org
+Date: Thu, 04 Apr 2024 10:38:11 +0200
+In-Reply-To: <20240402085850.229058-1-lukma@denx.de>
+References: <20240402085850.229058-1-lukma@denx.de>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240404-uvc_request_calc_once-v1-1-fea7fd8f0496@pengutronix.de>
-X-B4-Tracking: v=1; b=H4sIADRmDmYC/x2NUQrCQAwFr1Ly7UKtdUWvIrKkaWoDy1YTtwild
- zfI+5oHw2xgrMIGt2YD5VVMluJwPDRAM5YnBxmdoWu7vvWFulJSfle2TyLMlJZCHPByGqdrH+O
- ZI7g7oHEYFAvNbpeas58v5Um+/9j9se8/4OuZ43wAAAA=
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Daniel Scally <dan.scally@ideasonboard.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Michael Grzeschik <m.grzeschik@pengutronix.de>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3280;
- i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
- bh=R3WK7lsgcv6hzJeNFgwT/ZIP/4S5DB86hBp3h/+cNz0=;
- b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBmDmY1g1F2hyDuU1n1BbR67d4Va4pa9j3iM6z5H
- BJd/VAuV3OJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZg5mNQAKCRC/aVhE+XH0
- q8gSD/99ZVnm/QDxrxfyZxr8Md0yVisuKOOH7aDnIZiLRuuWn1oQ9wHkx1UZeDXkoHgMW9tNfLH
- gTjI/E7aD7ejiUgrsfOyJ9Rf6xAoclXvnYUQm4uQbsSj/gHTPg2Pei/clbBvjhDu7MReU3sX6LO
- lzlS+YwEmjkzna0bkV1pFyrbmE0mA3+PGoJXNuVOg+n8X7fk+NpefJ4qw6gSrhWFNS8PECeiHVz
- APwZ0UHu0ZgsujpELAqg5SUDGM+i34jjoiWWCZVIvoFb0cpkYISauDJY9BAd3grQtL6yUxrXAWr
- xI1htGWQIPXmWumYpnsAC8goWEdZo38I4llYFu4BBwUL8yo0FyK7QnDgGDJfvy1IB6kKTeW7cs7
- wQnLTLUq4viQXQj2dxS7uLpljipXHR36c9Ehqu0vBdlcp8ZPiXMwbraO1FyR083nbDitGWchDsX
- A1TBzRQz8tQk+2ApVK1+gcvyzM7IxFUZPIPZNOEQ72ZSw1dXhoU7ZbluDLgUGu9mRMQDKerjllb
- q1YGt4OA2JN2pQDkqZOCgqySt6+2Pa0rtkVgtnxPqezFRtTaXjQe8mPSmba5frkmNSf62bDhKki
- Sjugang6fKGUZpAO47oPXa3YliQmAw2eORhSy4onVl1AGYd70wdI/huZPeeKFq93Vbyt9WUNxKk
- w2nJ8GmPAfc+O6w==
-X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
- fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-The uvc gadget driver is calculating the req_size on every
-video_enable/alloc_request and is based on the fixed configfs parameters
-maxpacket, maxburst and mult.
+On Tue, 2024-04-02 at 10:58 +0200, Lukasz Majewski wrote:
+> Introduce RedBox support (HSR-SAN to be more precise) for HSR networks.
+> Following traffic reduction optimizations have been implemented:
+> - Do not send HSR supervisory frames to Port C (interlink)
+> - Do not forward to HSR ring frames addressed to Port C
+> - Do not forward to Port C frames from HSR ring
+> - Do not send duplicate HSR frame to HSR ring when destination is Port C
+>=20
+> The corresponding patch to modify iptable2 sources has already been sent:
+> https://lore.kernel.org/netdev/20240308145729.490863-1-lukma@denx.de/T/
+>=20
+> Testing procedure:
+> ------------------
+> The EVB-KSZ9477 has been used for testing on net-next branch
+> (SHA1: 5fc68320c1fb3c7d456ddcae0b4757326a043e6f).
+>=20
+> Ports 4/5 were used for SW managed HSR (hsr1) as first hsr0 for ports 1/2
+> (with HW offloading for ksz9477) was created. Port 3 has been used as
+> interlink port (single USB-ETH dongle).
+>=20
+> Configuration - RedBox (EVB-KSZ9477):
+> if link set lan1 down;ip link set lan2 down
+> ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 ver=
+sion 1
+> ip link add name hsr1 type hsr slave1 lan4 slave2 lan5 interlink lan3 sup=
+ervision 45 version 1
+> ip link set lan4 up;ip link set lan5 up
+> ip link set lan3 up
+> ip addr add 192.168.0.11/24 dev hsr1
+> ip link set hsr1 up
+>=20
+> Configuration - DAN-H (EVB-KSZ9477):
+>=20
+> ip link set lan1 down;ip link set lan2 down
+> ip link add name hsr0 type hsr slave1 lan1 slave2 lan2 supervision 45 ver=
+sion 1
+> ip link add name hsr1 type hsr slave1 lan4 slave2 lan5 supervision 45 ver=
+sion 1
+> ip link set lan4 up;ip link set lan5 up
+> ip addr add 192.168.0.12/24 dev hsr1
+> ip link set hsr1 up
+>=20
+> This approach uses only SW based HSR devices (hsr1).
+>=20
+> --------------          -----------------       ------------
+> DAN-H  Port5 | <------> | Port5         |       |
+>        Port4 | <------> | Port4   Port3 | <---> | PC
+>              |          | (RedBox)      |       | (USB-ETH)
+> EVB-KSZ9477  |          | EVB-KSZ9477   |       |
+> --------------          -----------------       ------------
+>=20
+> Signed-off-by: Lukasz Majewski <lukma@denx.de>
 
-As those parameters can not be changed once the gadget is started and
-the same calculation is done already early on the
-vb2_streamon/queue_setup path its save to remove one extra calculation
-and reuse the calculation from uvc_queue_setup for the allocation step.
+This is 'net-next' patch, you must insert the target tree in the subj
+prefix.
 
-Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
----
- drivers/usb/gadget/function/uvc_queue.c |  2 ++
- drivers/usb/gadget/function/uvc_video.c | 15 ++-------------
- 2 files changed, 4 insertions(+), 13 deletions(-)
+Does not apply cleanly to 'net-next', please rebase.
 
-diff --git a/drivers/usb/gadget/function/uvc_queue.c b/drivers/usb/gadget/function/uvc_queue.c
-index 0aa3d7e1f3cc3..ce51643fc4639 100644
---- a/drivers/usb/gadget/function/uvc_queue.c
-+++ b/drivers/usb/gadget/function/uvc_queue.c
-@@ -63,6 +63,8 @@ static int uvc_queue_setup(struct vb2_queue *vq,
- 	 */
- 	nreq = DIV_ROUND_UP(DIV_ROUND_UP(sizes[0], 2), req_size);
- 	nreq = clamp(nreq, 4U, 64U);
-+
-+	video->req_size = req_size;
- 	video->uvc_num_requests = nreq;
- 
- 	return 0;
-diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
-index d41f5f31dadd5..95bb64e16f3da 100644
---- a/drivers/usb/gadget/function/uvc_video.c
-+++ b/drivers/usb/gadget/function/uvc_video.c
-@@ -496,7 +496,6 @@ uvc_video_free_requests(struct uvc_video *video)
- 	INIT_LIST_HEAD(&video->ureqs);
- 	INIT_LIST_HEAD(&video->req_free);
- 	INIT_LIST_HEAD(&video->req_ready);
--	video->req_size = 0;
- 	return 0;
- }
- 
-@@ -504,16 +503,9 @@ static int
- uvc_video_alloc_requests(struct uvc_video *video)
- {
- 	struct uvc_request *ureq;
--	unsigned int req_size;
- 	unsigned int i;
- 	int ret = -ENOMEM;
- 
--	BUG_ON(video->req_size);
--
--	req_size = video->ep->maxpacket
--		 * max_t(unsigned int, video->ep->maxburst, 1)
--		 * (video->ep->mult);
--
- 	for (i = 0; i < video->uvc_num_requests; i++) {
- 		ureq = kzalloc(sizeof(struct uvc_request), GFP_KERNEL);
- 		if (ureq == NULL)
-@@ -523,7 +515,7 @@ uvc_video_alloc_requests(struct uvc_video *video)
- 
- 		list_add_tail(&ureq->list, &video->ureqs);
- 
--		ureq->req_buffer = kmalloc(req_size, GFP_KERNEL);
-+		ureq->req_buffer = kmalloc(video->req_size, GFP_KERNEL);
- 		if (ureq->req_buffer == NULL)
- 			goto error;
- 
-@@ -541,12 +533,10 @@ uvc_video_alloc_requests(struct uvc_video *video)
- 		list_add_tail(&ureq->req->list, &video->req_free);
- 		/* req_size/PAGE_SIZE + 1 for overruns and + 1 for header */
- 		sg_alloc_table(&ureq->sgt,
--			       DIV_ROUND_UP(req_size - UVCG_REQUEST_HEADER_LEN,
-+			       DIV_ROUND_UP(video->req_size - UVCG_REQUEST_HEADER_LEN,
- 					    PAGE_SIZE) + 2, GFP_KERNEL);
- 	}
- 
--	video->req_size = req_size;
--
- 	return 0;
- 
- error:
-@@ -699,7 +689,6 @@ uvcg_video_disable(struct uvc_video *video)
- 	INIT_LIST_HEAD(&video->ureqs);
- 	INIT_LIST_HEAD(&video->req_free);
- 	INIT_LIST_HEAD(&video->req_ready);
--	video->req_size = 0;
- 	spin_unlock_irqrestore(&video->req_lock, flags);
- 
- 	/*
+Introducing a new functionality, this deserve some paired self-tests.=20
+Does this have specific H/W requirement or can it run e.g. on top of
+veths? If the latter applies, please bundle some basic test with the
+next revision (separate patch, same series).
 
----
-base-commit: 5bab5dc780c9ed0c69fc2f828015532acf4a7848
-change-id: 20240404-uvc_request_calc_once-a73df94665e6
+> @@ -561,6 +582,37 @@ void hsr_prune_nodes(struct timer_list *t)
+>  		  jiffies + msecs_to_jiffies(PRUNE_PERIOD));
+>  }
+> =20
+> +void hsr_prune_proxy_nodes(struct timer_list *t)
+> +{
+> +	struct hsr_priv *hsr =3D from_timer(hsr, t, prune_proxy_timer);
+> +	unsigned long timestamp;
+> +	struct hsr_node *node;
+> +	struct hsr_node *tmp;
+> +
+> +	spin_lock_bh(&hsr->list_lock);
+> +	list_for_each_entry_safe(node, tmp, &hsr->proxy_node_db, mac_list) {
+> +		timestamp =3D node->time_in[HSR_PT_INTERLINK];
+> +
+> +		/* Prune old entries */
+> +		if (time_is_before_jiffies(timestamp +
+> +				msecs_to_jiffies(HSR_PROXY_NODE_FORGET_TIME))) {
+> +			hsr_nl_nodedown(hsr, node->macaddress_A);
+> +			if (!node->removed) {
+> +				list_del_rcu(&node->mac_list);
+> +				node->removed =3D true;
+> +				/* Note that we need to free this entry later: */
+> +				kfree_rcu(node, rcu_head);
+> +			}
+> +		}
+> +	}
+> +
+> +	spin_unlock_bh(&hsr->list_lock);
+> +
+> +	/* Restart timer */
+> +	mod_timer(&hsr->prune_proxy_timer,
+> +		  jiffies + msecs_to_jiffies(PRUNE_PROXY_PERIOD));
 
-Best regards,
--- 
-Michael Grzeschik <m.grzeschik@pengutronix.de>
+AFAICS this timer not explicitly cancelled at hsr port tear-down time.
+
+What prevent it from expiring after a port has been deleted and causing
+UaF?
+
+Cheers,
+
+Paolo
 
 
