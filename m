@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-131412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9E5A89877C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:28:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B9A1A898784
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:29:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE025B25B98
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:28:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5ACDAB240D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E21B128378;
-	Thu,  4 Apr 2024 12:26:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 496D8129E8A;
+	Thu,  4 Apr 2024 12:26:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Rj3iFcEm"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gMVIZZWi"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02D0C84FDB
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCFFE129A99
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712233580; cv=none; b=hSjoX08BJh3IZ5NfQqAFYFCaY2x8ASd1FbZTtH+ICp3B2K25gPe8xy6jUXVpfQPKGb62S6UZgV0kxnIOGDo4JMbQQhUvk6iddyE2bWbntPTql5gohkZbiPkz0Yvp4X2wdJxDeub+6nq6RNiozdhC7a9PGpTbG165ayIwPrhjV5g=
+	t=1712233587; cv=none; b=KZBvtyw7fUuakuwWylLKiIGG7+/wsgtSMDTxslDk+7sTreerlwy/N0rVV9eCE4ey91prddBY9LBt1YiY3VSEWBwY9no/ZdAofAjcVjGciQ5XZr6El6SDcXtMJDGYMj9FAP7bsKgDpLkr952e2giOgdSRlG7wFfgAmIdgNXAutgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712233580; c=relaxed/simple;
-	bh=2q8gij64Ov8TqGR2w8c78XW7P+5rgnWSMwbThRQDZHU=;
+	s=arc-20240116; t=1712233587; c=relaxed/simple;
+	bh=hmBS3wUHO0mONt4FlN4wFgGGwPzu6YR45Hg+n9iZFDA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z20mSqHIkrCcA230aj0M/h/O29PEUedEBzsU9CZQRWyzg9F/3JgZef4q6oU5uKOAmxrF4Qwg7XzueyuM9mkmVuBW8IPqKulFCurPKoy7NxYe848eGX9QteIA3WXy4vkHC1rtR/Mgb4yPYdaiFCOMo9lX8Gad7O8cmsv1EWsDePk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Rj3iFcEm; arc=none smtp.client-ip=209.85.208.170
+	 MIME-Version; b=FiDOrlYRDAd5a0QgwFFSPLXDm3HiAGe5rclHyFY0ByHVh3uBl2d3MFvsSockwD46K4zXilg4DGV0F1+U2ZWqK4lhBl2XrHACbq23STQxfhfrpZp8gIiqi9nWwepY/VdUNPVh7lsfUi1JvC6iKjTPloSql0oOh7+booF/5xrZobs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gMVIZZWi; arc=none smtp.client-ip=209.85.221.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d68651e253so11649351fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:26:18 -0700 (PDT)
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-34388753650so409681f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:26:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712233577; x=1712838377; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1712233584; x=1712838384; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=d249q8OLaMbSIVMmFzjKWfEr9wukeZUtFSKBwYI0cD4=;
-        b=Rj3iFcEmapu965Ht/c98I+poCEk8ez0iCGNzQrDKCKJLJMfshDIC6WO3JyPaGhogLi
-         ctzgdcGa18SRItRnha0dktzITk5C36WDwaysfQnk+pRORCMASbwesUQmAUFEQ5IRzC3g
-         exkCOGqUlNPl3U3Zll68SNOpdU2l+KpLN5V4xBseMvXnzH/gevD291sYUm19ijObX7Ff
-         pf9Qq1ghXkgZl5Rn/6rM7O6gLqWytcD0B+0XoFw3/1fhFDwrkA1ORSBcWmPyrlnPAoCd
-         CyOoOtizxxL3s7mB8eriTmYh1xNVluaUts2CPJxVx+pyBdsjPvCT9kaEeWo8pj1CZNTC
-         z5NQ==
+        bh=cXMXdhzuoLCLynIjoXzQvanMKsFRKu7E/3G3H+50quM=;
+        b=gMVIZZWi1z2FkhN00xQ+9vw0OIo8cysxMi1K7veW43FyRARjY0LAKrwqdvWOL0ACmQ
+         h87Vk9Z67FyZAJ7ooIL1l95eXG7TZxG29nqqc3NHBOte/N/rn2VKTT58WkEsLPq4UjoP
+         tbKqE2eNEF8UGuTfN+R7d80PcLP0d2tP8CTApvdkXUEbKGyLFuG8LyiMp7I7C6ZAfsOZ
+         fmZ+pwXoB/TW14/ree+87TxWxgAY4U6jCEOTYu7e7aqmE2nc92+brfKiEwCHbgyJLQhf
+         LdqplzbB2SiIi6COgJNg4zBIesqMqEV32VxyjW10sBS801e6atOE9FHCgcxmP7fxRUHP
+         purQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712233577; x=1712838377;
+        d=1e100.net; s=20230601; t=1712233584; x=1712838384;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=d249q8OLaMbSIVMmFzjKWfEr9wukeZUtFSKBwYI0cD4=;
-        b=tsscVbiuDLgo53IdfmUVADJNwDj5iXhdEbS53At/ux8jV9tNMz4OPEVNdSoQfZO4zw
-         K6pv5ZgMVNwuyyWdZ1Maf9INdkKwAqEAEYwumGRDGBRsxy8S31U0/BZkBL1Rg5vfABf0
-         lOhmQmc7PSNbP2C1XqdC2F/VsuJxXDHw6qDHuYHBYT4zoM/EP2bk7QZXLqm9cI361teD
-         llewUSxO/ArZ9jiQrHe7eyY7h3xi96Q8h/YdX5cRjaunpRPLOVw0PDFIf79GKpqiYcMS
-         zeWVbSRiXj2zbQSm+V55f9I3ZxIVaoUFdt65daYhdDCLZvBBcQAaxSWv8x7CG3o468/f
-         L3dQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVU9pjDrZm/J+2y9Xe9mQuEIkchSg5zHPtY5G/7QBTjRjstT48Qz015k8fCZSCszdRw5yw7wEIpY1O1hooSRudra9na7V0uTD9W9TfN
-X-Gm-Message-State: AOJu0YyDd68SeLy592F1tdxY7Sh/yUikbKqyYaz6nBu+npekU4P1xgUc
-	/CEp/CsV4U1uXDnkMG21tFRvxE+0d6bm/EkflNSijBDbLTGuH5Df9YiX7qErk1Y=
-X-Google-Smtp-Source: AGHT+IHKUb9uxI3dVCBnRZqZdhwAN2Y0OAl2yQXHesVhm5X+TGFWVXPaqh+/KMFU4TwWx7ODQVorYA==
-X-Received: by 2002:a05:6512:3a91:b0:515:8564:28c8 with SMTP id q17-20020a0565123a9100b00515856428c8mr1952674lfu.67.1712233577227;
-        Thu, 04 Apr 2024 05:26:17 -0700 (PDT)
+        bh=cXMXdhzuoLCLynIjoXzQvanMKsFRKu7E/3G3H+50quM=;
+        b=C5yCv0+DMS5N0K+ornBN6tYlZgAlUk/qh9ViHuHmdFkNneBDaL0pSRuxRlCQwEewM8
+         FIFtGhIWkURc/g0OYKqRp7dQKgqMOpHENXCRVUHbDZZFdZPibQbYG2Na/h/376Mn2EPj
+         7plBOmudojONOtmVCWBYvCMouG9ok5554C+TPDFo9oQdOXSQH3L8c9BoQ4sp5EcYoc77
+         1WIVZSup4fyfrz+fM0G6ZxZfkB1uFk59MLpAEwkL/mWfLFtg+NpINVUJDMhrCXeDxSr/
+         3Gh98CFe5uxdbAhUhgmBaH2/zB7sg7o1ItWoiEpvUO9SyOsLXIDZGFXooYaucqyGIc8M
+         8amA==
+X-Forwarded-Encrypted: i=1; AJvYcCW2gF11OsWvDGvU7AgYdsOAKwd7C1IDjmpYu0kQxQc3uav9Oom5IYpX20bGnMBW2iHKBQbODVJS/0yn19uGix2EEUfH1cHWV0M/SbJ+
+X-Gm-Message-State: AOJu0YxdUl2xyN1zpQw0CLFQsheWQyP5nM/dFIbQ8T5aDsr+nX6CDm0t
+	J8/1aokcU2C3Cn+1FhBJwlMKmqwt1jTHbJWNKNb8wEb7CbQ4PTDMSSdiwxp14pg=
+X-Google-Smtp-Source: AGHT+IEApEjUKboR0OBWLDTAS6Jxlk1eQTEdQEi/Xza6SHa5181j+IZCoUEpXbG45sbONQ13Dr267A==
+X-Received: by 2002:a5d:60ce:0:b0:343:9189:e685 with SMTP id x14-20020a5d60ce000000b003439189e685mr1644596wrt.48.1712233584399;
+        Thu, 04 Apr 2024 05:26:24 -0700 (PDT)
 Received: from gpeter-l.roam.corp.google.com ([148.252.128.204])
-        by smtp.gmail.com with ESMTPSA id bu14-20020a056000078e00b003434b41c83fsm12106303wrb.81.2024.04.04.05.26.10
+        by smtp.gmail.com with ESMTPSA id bu14-20020a056000078e00b003434b41c83fsm12106303wrb.81.2024.04.04.05.26.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 05:26:14 -0700 (PDT)
+        Thu, 04 Apr 2024 05:26:23 -0700 (PDT)
 From: Peter Griffin <peter.griffin@linaro.org>
 To: mturquette@baylibre.com,
 	sboyd@kernel.org,
@@ -95,9 +95,9 @@ Cc: linux-scsi@vger.kernel.org,
 	saravanak@google.com,
 	willmcvicker@google.com,
 	Peter Griffin <peter.griffin@linaro.org>
-Subject: [PATCH 01/17] dt-bindings: clock: google,gs101-clock:  add HSI2 clock management unit
-Date: Thu,  4 Apr 2024 13:25:43 +0100
-Message-ID: <20240404122559.898930-2-peter.griffin@linaro.org>
+Subject: [PATCH 02/17] dt-bindings: soc: google: exynos-sysreg: add dedicated hsi2 sysreg compatible
+Date: Thu,  4 Apr 2024 13:25:44 +0100
+Message-ID: <20240404122559.898930-3-peter.griffin@linaro.org>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 In-Reply-To: <20240404122559.898930-1-peter.griffin@linaro.org>
 References: <20240404122559.898930-1-peter.griffin@linaro.org>
@@ -109,69 +109,33 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add dt schema documentation and clock IDs for the High Speed Interface
-2 (HSI2) clock management unit. This CMU feeds high speed interfaces
-such as PCIe and UFS.
+Update dt schema to include the gs101 hsi2 sysreg compatible.
 
 Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
 ---
- .../bindings/clock/google,gs101-clock.yaml    | 30 +++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml  | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
-index 1d2bcea41c85..a202fd5d1ead 100644
---- a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
-@@ -32,14 +32,15 @@ properties:
-       - google,gs101-cmu-misc
-       - google,gs101-cmu-peric0
-       - google,gs101-cmu-peric1
-+      - google,gs101-cmu-hsi2
- 
-   clocks:
-     minItems: 1
--    maxItems: 3
-+    maxItems: 5
- 
-   clock-names:
-     minItems: 1
--    maxItems: 3
-+    maxItems: 5
- 
-   "#clock-cells":
-     const: 1
-@@ -112,6 +113,31 @@ allOf:
-             - const: bus
-             - const: ip
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - google,gs101-cmu-hsi2
-+
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: External reference clock (24.576 MHz)
-+            - description: High Speed Interface bus clock (from CMU_TOP)
-+            - description: High Speed Interface pcie clock (from CMU_TOP)
-+            - description: High Speed Interface ufs clock (from CMU_TOP)
-+            - description: High Speed Interface mmc clock (from CMU_TOP)
-+
-+        clock-names:
-+          items:
-+            - const: oscclk
-+            - const: bus
-+            - const: pcie
-+            - const: ufs_embd
-+            - const: mmc_card
-+
- additionalProperties: false
- 
- examples:
+diff --git a/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml b/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
+index c0c6ce8fc786..3ca220582897 100644
+--- a/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
++++ b/Documentation/devicetree/bindings/soc/samsung/samsung,exynos-sysreg.yaml
+@@ -15,6 +15,7 @@ properties:
+       - items:
+           - enum:
+               - google,gs101-apm-sysreg
++              - google,gs101-hsi2-sysreg
+               - google,gs101-peric0-sysreg
+               - google,gs101-peric1-sysreg
+               - samsung,exynos3-sysreg
+@@ -72,6 +73,7 @@ allOf:
+         compatible:
+           contains:
+             enum:
++              - google,gs101-hsi2-sysreg
+               - google,gs101-peric0-sysreg
+               - google,gs101-peric1-sysreg
+               - samsung,exynos850-cmgp-sysreg
 -- 
 2.44.0.478.gd926399ef9-goog
 
