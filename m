@@ -1,178 +1,148 @@
-Return-Path: <linux-kernel+bounces-131634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C573898A48
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:40:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CD04898A4B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:41:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 27B52286825
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:40:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 23BA31F2211A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:41:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C1B91BF33;
-	Thu,  4 Apr 2024 14:40:30 +0000 (UTC)
-Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B71533EE;
-	Thu,  4 Apr 2024 14:40:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.57
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB9EC1BDC4;
+	Thu,  4 Apr 2024 14:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="vuS/JLAD";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="75MSEi25";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="vuS/JLAD";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="75MSEi25"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E99018654
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712241630; cv=none; b=X+MTb1xNsnUqUW+cqVvkCOP9KQbpXixJwMwfrvYa7myRYwd+5ittY6B3LP1tDXHf7x1JBSzSjIDjUowt08TwnyBpE9yABemeYLWIyKJpS0DjjjrCWz7utJoa6ozeiN4KM5Y3rxyQfU4ywBXWPWuGNYrkNiTnJj8nDRILkhUbfEs=
+	t=1712241701; cv=none; b=NgSUbH9bp4yQiijdNOk4+h2hUUDn2cLiOcmgnd+weLwnRMZh4WD4EgxSQRgtlS83kH8ODIndx1qkmczfHT8DTEORGpfSvwev+zO6GWrWUODRpoRIBOgQIih0BFQPZK3+unnvD9QRVk9BSKLlo6oGTmAOUvJkC4IpnmsJe36Kje0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712241630; c=relaxed/simple;
-	bh=PUrWgpbt+2rgwdegBuKqnkjkMWVSHA/E9MzrvMjttRM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sMel8EPmW32wCIP0bmF8ulym0PqKzhHHj5j8jX4pp7x1gNs54iBEqOHKsRbvpkBsDzzIi/LDYd2WC1fxl2pVJVcSfffoe2apjA1ORH64PlywuIn64IL85H1f2ls4fadWjLjyCUo/mX9EhPehAwE3o9dAqbAReH8YKJD8pq6VpDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.57
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
-Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
-	by vmicros1.altlinux.org (Postfix) with ESMTP id 90D7872C8CC;
-	Thu,  4 Apr 2024 17:40:24 +0300 (MSK)
-Received: from altlinux.org (sole.flsd.net [185.75.180.6])
-	by imap.altlinux.org (Postfix) with ESMTPSA id 8360B36D0160;
-	Thu,  4 Apr 2024 17:40:24 +0300 (MSK)
-Date: Thu, 4 Apr 2024 17:40:24 +0300
-From: Vitaly Chikunov <vt@altlinux.org>
-To: Stefan Berger <stefanb@linux.ibm.com>
-Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-	herbert@gondor.apana.org.au, davem@davemloft.net,
-	linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br,
-	lukas@wunner.de, bbhushan2@marvell.com, jarkko@kernel.org
-Subject: Re: [PATCH v8 05/13] crypto: ecc - Add nbits field to ecc_curve
- structure
-Message-ID: <20240404144024.congukfjqdfep6n4@altlinux.org>
-References: <20240404141856.2399142-1-stefanb@linux.ibm.com>
- <20240404141856.2399142-6-stefanb@linux.ibm.com>
+	s=arc-20240116; t=1712241701; c=relaxed/simple;
+	bh=+/jnidH3pJiKU6Rgmwg/jUU6rOho6mvv0PbLacIL6ys=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aIeP1yf+oOrbyqgAlv89v1Ms3McKM8cmtphyUIfz+R0tQiyPT7KV8EAvXkVUJ1NAjS/mBlD7ZlQVIciIkUnYRAZ36s6zCxPqSjvWXAWmjWokueuwcRvf3M790Rj6XrgjE2F3lmRobTG8dUEIxW/HKKhQgE5HOP290Nxi6KKIeVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=vuS/JLAD; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=75MSEi25; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=vuS/JLAD; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=75MSEi25; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 50AFF5F804;
+	Thu,  4 Apr 2024 14:41:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712241697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=jx+Z6u7CMBxXJn4u8BfxCYjEhAj4yGi0JtxFz9G1eOs=;
+	b=vuS/JLAD/Nx9ZCXZizupAiRGETXWU6gNFkIZlQ+ckepX8OeN7FzysxM80h7tS1kXGjA9W7
+	uPrK8kiyiMtvtgWP874f5nM5i1ffeKVRv4t4Auk207lkvAl4mQ+ocVETRq2YjmA4l+6jzT
+	T0dxl3jW9Kjbjcf0nXPR/U9rtJ0AT5s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712241697;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=jx+Z6u7CMBxXJn4u8BfxCYjEhAj4yGi0JtxFz9G1eOs=;
+	b=75MSEi25yJ7fQczoNtdvibhiDCX/QX9IQ+YJm5obMUoaBeLHJFjUiZ3H/R5NLgrcR0tq61
+	hurafUUijdS6xHCw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="vuS/JLAD";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=75MSEi25
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712241697; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=jx+Z6u7CMBxXJn4u8BfxCYjEhAj4yGi0JtxFz9G1eOs=;
+	b=vuS/JLAD/Nx9ZCXZizupAiRGETXWU6gNFkIZlQ+ckepX8OeN7FzysxM80h7tS1kXGjA9W7
+	uPrK8kiyiMtvtgWP874f5nM5i1ffeKVRv4t4Auk207lkvAl4mQ+ocVETRq2YjmA4l+6jzT
+	T0dxl3jW9Kjbjcf0nXPR/U9rtJ0AT5s=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712241697;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=jx+Z6u7CMBxXJn4u8BfxCYjEhAj4yGi0JtxFz9G1eOs=;
+	b=75MSEi25yJ7fQczoNtdvibhiDCX/QX9IQ+YJm5obMUoaBeLHJFjUiZ3H/R5NLgrcR0tq61
+	hurafUUijdS6xHCw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 317A613298;
+	Thu,  4 Apr 2024 14:41:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id e0+QCiG8DmZmDQAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Thu, 04 Apr 2024 14:41:37 +0000
+From: Daniel Wagner <dwagner@suse.de>
+To: James Smart <james.smart@broadcom.com>
+Cc: Keith Busch <kbusch@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Hannes Reinecke <hare@suse.de>,
+	linux-nvme@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v2 0/2] nvme(t)-fc: couple of fixes/cleanups
+Date: Thu,  4 Apr 2024 16:41:29 +0200
+Message-ID: <20240404144131.17988-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <20240404141856.2399142-6-stefanb@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -3.02
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 50AFF5F804
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.02 / 50.00];
+	BAYES_HAM(-2.01)[95.14%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:dkim];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_EQ_ENVFROM(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+]
 
-On Thu, Apr 04, 2024 at 10:18:48AM -0400, Stefan Berger wrote:
-> Add the number of bits a curve has to the ecc_curve definition to be able
-> to derive the number of bytes a curve requires for its coordinates from it.
-> It also allows one to identify a curve by its particular size. Set the
-> number of bits on all curve definitions.
-> 
-> Tested-by: Lukas Wunner <lukas@wunner.de>
-> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+Both patches are just a rebased to the current nvme-6.9 head.
 
-Reviewed-by: Vitaly Chikunov <vt@altlinux.org>
+Daniel Wagner (2):
+  nvmet-fc: move RCU read lock to nvmet_fc_assoc_exists
+  nvme-fc: rename free_ctrl callback to match name pattern
 
-> ---
->  crypto/ecc_curve_defs.h    | 4 ++++
->  crypto/ecrdsa_defs.h       | 5 +++++
->  include/crypto/ecc_curve.h | 2 ++
->  3 files changed, 11 insertions(+)
-> 
-> diff --git a/crypto/ecc_curve_defs.h b/crypto/ecc_curve_defs.h
-> index 9719934c9428..ab1ef3d94be5 100644
-> --- a/crypto/ecc_curve_defs.h
-> +++ b/crypto/ecc_curve_defs.h
-> @@ -17,6 +17,7 @@ static u64 nist_p192_b[] = { 0xFEB8DEECC146B9B1ull, 0x0FA7E9AB72243049ull,
->  				0x64210519E59C80E7ull };
->  static struct ecc_curve nist_p192 = {
->  	.name = "nist_192",
-> +	.nbits = 192,
->  	.g = {
->  		.x = nist_p192_g_x,
->  		.y = nist_p192_g_y,
-> @@ -43,6 +44,7 @@ static u64 nist_p256_b[] = { 0x3BCE3C3E27D2604Bull, 0x651D06B0CC53B0F6ull,
->  				0xB3EBBD55769886BCull, 0x5AC635D8AA3A93E7ull };
->  static struct ecc_curve nist_p256 = {
->  	.name = "nist_256",
-> +	.nbits = 256,
->  	.g = {
->  		.x = nist_p256_g_x,
->  		.y = nist_p256_g_y,
-> @@ -75,6 +77,7 @@ static u64 nist_p384_b[] = { 0x2a85c8edd3ec2aefull, 0xc656398d8a2ed19dull,
->  				0x988e056be3f82d19ull, 0xb3312fa7e23ee7e4ull };
->  static struct ecc_curve nist_p384 = {
->  	.name = "nist_384",
-> +	.nbits = 384,
->  	.g = {
->  		.x = nist_p384_g_x,
->  		.y = nist_p384_g_y,
-> @@ -95,6 +98,7 @@ static u64 curve25519_a[] = { 0x000000000001DB41, 0x0000000000000000,
->  				0x0000000000000000, 0x0000000000000000 };
->  static const struct ecc_curve ecc_25519 = {
->  	.name = "curve25519",
-> +	.nbits = 255,
->  	.g = {
->  		.x = curve25519_g_x,
->  		.ndigits = 4,
-> diff --git a/crypto/ecrdsa_defs.h b/crypto/ecrdsa_defs.h
-> index 0056335b9d03..1c2c2449e331 100644
-> --- a/crypto/ecrdsa_defs.h
-> +++ b/crypto/ecrdsa_defs.h
-> @@ -47,6 +47,7 @@ static u64 cp256a_b[] = {
->  
->  static struct ecc_curve gost_cp256a = {
->  	.name = "cp256a",
-> +	.nbits = 256,
->  	.g = {
->  		.x = cp256a_g_x,
->  		.y = cp256a_g_y,
-> @@ -80,6 +81,7 @@ static u64 cp256b_b[] = {
->  
->  static struct ecc_curve gost_cp256b = {
->  	.name = "cp256b",
-> +	.nbits = 256,
->  	.g = {
->  		.x = cp256b_g_x,
->  		.y = cp256b_g_y,
-> @@ -117,6 +119,7 @@ static u64 cp256c_b[] = {
->  
->  static struct ecc_curve gost_cp256c = {
->  	.name = "cp256c",
-> +	.nbits = 256,
->  	.g = {
->  		.x = cp256c_g_x,
->  		.y = cp256c_g_y,
-> @@ -166,6 +169,7 @@ static u64 tc512a_b[] = {
->  
->  static struct ecc_curve gost_tc512a = {
->  	.name = "tc512a",
-> +	.nbits = 512,
->  	.g = {
->  		.x = tc512a_g_x,
->  		.y = tc512a_g_y,
-> @@ -211,6 +215,7 @@ static u64 tc512b_b[] = {
->  
->  static struct ecc_curve gost_tc512b = {
->  	.name = "tc512b",
-> +	.nbits = 512,
->  	.g = {
->  		.x = tc512b_g_x,
->  		.y = tc512b_g_y,
-> diff --git a/include/crypto/ecc_curve.h b/include/crypto/ecc_curve.h
-> index 70964781eb68..7d90c5e82266 100644
-> --- a/include/crypto/ecc_curve.h
-> +++ b/include/crypto/ecc_curve.h
-> @@ -23,6 +23,7 @@ struct ecc_point {
->   * struct ecc_curve - definition of elliptic curve
->   *
->   * @name:	Short name of the curve.
-> + * @nbits:	The number of bits of a curve.
->   * @g:		Generator point of the curve.
->   * @p:		Prime number, if Barrett's reduction is used for this curve
->   *		pre-calculated value 'mu' is appended to the @p after ndigits.
-> @@ -34,6 +35,7 @@ struct ecc_point {
->   */
->  struct ecc_curve {
->  	char *name;
-> +	u32 nbits;
->  	struct ecc_point g;
->  	u64 *p;
->  	u64 *n;
-> -- 
-> 2.43.0
-> 
+ drivers/nvme/host/fc.c   |  4 ++--
+ drivers/nvme/target/fc.c | 17 ++++++++++-------
+ 2 files changed, 12 insertions(+), 9 deletions(-)
+
+-- 
+2.44.0
+
 
