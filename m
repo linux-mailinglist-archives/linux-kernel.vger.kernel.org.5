@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-131217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C39D78984B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:08:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEB698984BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:08:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 656301F2826A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:08:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF0741C221CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:08:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1453A76413;
-	Thu,  4 Apr 2024 10:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C2F07FBC6;
+	Thu,  4 Apr 2024 10:08:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NEhjYnRO"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XWeMi90m"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D951757FD
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 10:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD08076028
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 10:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712225293; cv=none; b=sx2O9N1A5QEDAcN/P8pQkm6Mg9jbzXgX3CUccotzb5sr9uvf3Hz2I0vTMYiqJmyNKz4QLsIGEThyv5GaqcOoCS7WgJzGMF/zXh/uqTZtfRlYZMHo/O0fYaRJL+nCv7mVKDwHVmHlubb1EnQb2WgvkepsAt1wzfs0rctHf8SFmxM=
+	t=1712225295; cv=none; b=LOYHXrMTMN+24msHNQRXvRasd5xcLSmKpSmuVrgfopxMnfTJSzOC7OUTDksBBxOgLZmGfYANS8kvfOpzShXQI7VuCewiwvGkR3LIMYBMheNikkkiF1Owoye1l8d8j1Di6CqbBqOi7AWMCjwwkbdaIXOnMSAUqZwYiofVpaGlD5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712225293; c=relaxed/simple;
-	bh=KIPxE7WAFkz5qGRN5hVp/Vx45cUpVvzgjI6wREzKChI=;
+	s=arc-20240116; t=1712225295; c=relaxed/simple;
+	bh=rZ4pFCxBcKO4r0UopE2b8togAYR+akgCS3Rw6K0bDz4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=twOuS9BJtyvpDV6s7Snt/vmF9cBuNMooVn88S0qYEYTcLJieQg/PKCNZnp6694NrX/H1BiCvtNrYyGdHV4aXFi/9ZkCYytkAcGvWSgkTf+vxWmCGLSG8DmugShCNXWBqnnsPRgL1z6pzwuiCV5LEhBAlVN59RTlEpu+VFuQ2ahc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NEhjYnRO; arc=none smtp.client-ip=209.85.218.48
+	 In-Reply-To:To:Cc; b=g4zdGrAk8hk5VzgtnaFJa98HjixiGlSsvfPJtFB1jAl5WkAvvfJ6mtVarqaO0djdVDqlCsGBdoekF98esIZP/bBeiHXkr0UM1WkWllkp9olL1yF+d3/iOXTgk7Ix335Xi2r9nbzTpAAa0WfJoUFRInelwX8JLhWkbVr4x8aoSJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XWeMi90m; arc=none smtp.client-ip=209.85.167.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a4e79d7d21dso52456266b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 03:08:11 -0700 (PDT)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-516bf5a145aso945833e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 03:08:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712225290; x=1712830090; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1712225291; x=1712830091; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DOrh7Irjq4f+bzjvRmtdFPtj9HsVRJ5Kf8V2j16C7zQ=;
-        b=NEhjYnROciz/IepXDfxlz/A23LWh14iXuHfhrwib3ovC8SglvN3HkQx+cFa3596rYD
-         rITiJf46wWCfmBEtj3rMWEHEUVAmfR50/JAtc5DQn2L9cKy3yPsF/WRVXLjVGuNpjCQp
-         IPW/7RQUP+KptOMfUTSLOCLmSAwZXliNRXkiRKJCR44crfhQGZITCJ+zRdI1uFU/l4mf
-         gbNHvMBPU94b8Hb9nqtRNBNHJ6GeSv3uZjaGfKo8+lwneJJigwaSwivigNi021IXmRfs
-         kjdzBF3TKZzUzMJYreujJfKwHArQC54XW1hPcAoRzEUTGQPVECs2A+oSJskGCz83/cVT
-         kzIw==
+        bh=BdIQoQEcKOWWU/GbrzKgWkHTMEPIUceBmA7aLedovAc=;
+        b=XWeMi90m+ed65nbxWADoaW9lJdCkiajuqNdBBjCVI6pWMnluEkSbegu6qiMFyXxLRf
+         O+QdmeK1PvkEbQVitNu3C2YbiA3BnL+NSxfOUAAaqnZH1nm1BbvMlBqMd1gJEwnLBxUO
+         quVaYQYd49A4Epn68iqjwgl8WK309siMvqcEkBIZMp8QyOGBla3QOGc1fs0H1FDI6RWl
+         0vUpNqr22WKDjStSwjP8jZhnHJgQjCPZ402O8ursQH2g4dr8hVZTbVWM2NyQ6HOviE7i
+         JmXMF1ihBBJsZiX6NTFa/tDfPBAwCY8MaMQJqNvp5AhSAC6154afzEHc8aLaRdIq201e
+         Zj2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712225290; x=1712830090;
+        d=1e100.net; s=20230601; t=1712225291; x=1712830091;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DOrh7Irjq4f+bzjvRmtdFPtj9HsVRJ5Kf8V2j16C7zQ=;
-        b=O5xxapu6pLqr2/1aYtMelrMfnBeJAxX/guhQTHRuIXk9QYqn382WJqYv66/BCRR3Dc
-         qeMlGW5BGbe2sMepmOqHKuoJBimDg5MCggIR0l7HxRzu29O6VTKVi3A+LipdcyQ6qpMB
-         XXGL7WblPwalV6tgwcmyyIrZ980Jatwhv9J7+WcpjuqB9b3MmfrtUm3ZGuZRN6tRMoWN
-         AzQwnfw3eXn4c+LIi38nTnIL3rDI6Hs2QsvI9Ah87NazXEYuwWZEbHjEQ6tLYFT7DEOI
-         jdoNl9LmW7M6mMHBlTOR2AVT6bQ345SlGfyQ2iEgKxmcxsoSBGGOZhFE22B7FjV/MkqT
-         cFRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWSZpEgsX+c+jYn7hj4erL6jKLW46o/QggHtMH9hUDe9riM5cLlEm92BCU2PO+FY3mV39gpLQGCOxqE9Pld8ir58Fel60KyTMiQSieJ
-X-Gm-Message-State: AOJu0YxokIQVfwYujPmjeVlHzuVkK0Gr6CBbp08z8bmxNzSrmK+UmiK3
-	xEPPPnVQfPutvnkIKIKnds7D1O5UTzPydwe+T0laulIlEmIB/5KzjCeog5gT3ZY=
-X-Google-Smtp-Source: AGHT+IFFx0jNeXxS8p/PVfSfopzv8XenHyOICPv85lhOjQmeM3QgrFtbE28snmGj70mzNCw3CZotQw==
-X-Received: by 2002:a50:d596:0:b0:56e:a2f:34ef with SMTP id v22-20020a50d596000000b0056e0a2f34efmr1734540edi.11.1712225289818;
-        Thu, 04 Apr 2024 03:08:09 -0700 (PDT)
+        bh=BdIQoQEcKOWWU/GbrzKgWkHTMEPIUceBmA7aLedovAc=;
+        b=WaxHXpRu1FxB73k1j5+UHyMT+QElQ86PtcJAWMhAoasrHU2wikZTDZP9DGyYgjWaPn
+         PS+wsCyucS6jFkjBc60eHFtnWW0R7x+xkKaxeOlDMXU0KOLbP49TKduv9Nwy6297DxNO
+         +HIHxRNNFuWCIZPZOtnQVuqSdNwGUeMdZpPuFwfITxsFQ7ZKG5+3pwZfudm/orMd0Wv3
+         4TMo1TVDOJlq8usZ4ftPiUsTtsoG6TXuljTGsmz+LCWQnHsBk2P9uXUMRoz9aspOXFE7
+         b7RC+pW5DnRV3PTGyVm6xJTbCXyVnSdX3O2EXT1+nsMR7QWHe76EWujfrTi3IOtNxXk3
+         4zIg==
+X-Forwarded-Encrypted: i=1; AJvYcCWuVQ6suKeDFGQ7UN4fsQGsI4WpgDxSpAqVu07cOj0Mmmp9OPl+OEXxiLJq5Jfu70VvHUIenfFr1ETE77KDuXM8vPT4u8j64dAR1lWW
+X-Gm-Message-State: AOJu0YzbNDnDtAv6QwMtLuE8g+/rA2u/ltyaYAi3nfXIcL54CC5M1LDw
+	g3FvNHAYWM6kCusI2Y0hiS0rwAa+4aSBKgEd44TPdFWuQSZ4h/Z43ROZGwx7gI0=
+X-Google-Smtp-Source: AGHT+IGVlQ33RJEgohTvVD0EMCqh4p4Buhi5vVkciZI4lYNhGCrK13DBduxsmLyc55fg2pHBdTILcg==
+X-Received: by 2002:a19:644f:0:b0:516:bfd7:de92 with SMTP id b15-20020a19644f000000b00516bfd7de92mr1308662lfj.43.1712225290902;
+        Thu, 04 Apr 2024 03:08:10 -0700 (PDT)
 Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id ig10-20020a056402458a00b0056c0a668316sm1984219edb.3.2024.04.04.03.08.08
+        by smtp.gmail.com with ESMTPSA id ig10-20020a056402458a00b0056c0a668316sm1984219edb.3.2024.04.04.03.08.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 03:08:09 -0700 (PDT)
+        Thu, 04 Apr 2024 03:08:10 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 04 Apr 2024 13:08:00 +0300
-Subject: [PATCH 2/6] drm/panel: novatek-nt36682e: don't unregister DSI
- device
+Date: Thu, 04 Apr 2024 13:08:01 +0300
+Subject: [PATCH 3/6] drm/panel: novatek-nt36672e: stop setting register
+ load before disable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,7 +78,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240404-drop-panel-unregister-v1-2-9f56953c5fb9@linaro.org>
+Message-Id: <20240404-drop-panel-unregister-v1-3-9f56953c5fb9@linaro.org>
 References: <20240404-drop-panel-unregister-v1-0-9f56953c5fb9@linaro.org>
 In-Reply-To: <20240404-drop-panel-unregister-v1-0-9f56953c5fb9@linaro.org>
 To: Neil Armstrong <neil.armstrong@linaro.org>, 
@@ -93,42 +93,66 @@ To: Neil Armstrong <neil.armstrong@linaro.org>,
 Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
  Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=947;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1555;
  i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=KIPxE7WAFkz5qGRN5hVp/Vx45cUpVvzgjI6wREzKChI=;
- b=owGbwMvMwMXYbdNlx6SpcZXxtFoSQxpfDSv7hI3TUjp563fNvq67k9crjWPPPcY5oismPevXW
- RaeJfuvk9GYhYGRi0FWTJHFp6Blasym5LAPO6bWwwxiZQKZwsDFKQATyWNk/x9rm9pqXJBosO34
- jqepk9az65ZM2LRfYa1kTVNiU8W7L1HNBzW/LgzWmLGnjj9pT2qX7c5gy28JfsKTpuzbt2iX6fE
- ziszrD9ybVLOTK6HEPl/JIndJSFbX/0Jpy0U/7zD9yVG0Ojv7VWNr6GZZHXOV1BeZs/8IOTbU3C
- +2EJrkLJ0q5Cha23P75ZErlv0+mlZZ9gL2v7fNnfy72UEmx7D23auIedxlIcz/d19X01FsmP03g
- 51JwLvQzf9LSWfLnMb9rjOSFlhL7TqUzNVTPkVHXuDXV8v+5JfK7YlJUWGtrZ2Z7TEy1cJHxRRs
- kler227qOfFAuEN3of7uTXOP8xYqtVX937MrZYLLhAIA
+ bh=rZ4pFCxBcKO4r0UopE2b8togAYR+akgCS3Rw6K0bDz4=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmDnwFAm7x8NXoFqiIBscoezOHH9QYMPEReQDM6
+ baVaKAbFWeJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZg58BQAKCRCLPIo+Aiko
+ 1ZRhB/0Umx3VwSsiurPyTfgDRGxeKFo9jV4d99djRhqqhRRDIYlh8kwO4kA/En/A9IdV0bOtlR9
+ /tdlRL1lMwq5S/Z/XcOzVee8BHb9ffUqX1dOuUuTltDlMQWoOaDrLarzWzFAT31SxJPISPS2/Ba
+ t7yEsKdIiV9/+9QaSvG35b8LNMeiCtyFsBkaNJrbiKOOTsCDquPJgIy9tVHDlHRtqbJ+8CBaexn
+ QgKfxEqZCuj1lh7PHG2SoHaV1GeK0QD7pl6DA6kosRxf9TFkCE/IgmeNJdL3msAFWJcfb2mAwKv
+ O7iqZ6oMAWOYwSEiq6XRjNpjv5vzQFFlPs194hg5J4rHFlyG
 X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
  fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-The DSI device for the panel was registered by the DSI host, so it is an
-error to unregister it from the panel driver. Drop the call to
-mipi_dsi_device_unregister().
+It is pointless to set register load before disabling the register. This
+vote is going to be dropped as soon as the register is disabled. Drop
+these register_set_load calls.
 
-Fixes: ea4f9975625a ("drm/panel: Add support for Novatek NT36672E panel driver")
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
- drivers/gpu/drm/panel/panel-novatek-nt36672e.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/gpu/drm/panel/panel-novatek-nt36672e.c | 17 -----------------
+ 1 file changed, 17 deletions(-)
 
 diff --git a/drivers/gpu/drm/panel/panel-novatek-nt36672e.c b/drivers/gpu/drm/panel/panel-novatek-nt36672e.c
-index cb7406d74466..c39fe0fc5d69 100644
+index c39fe0fc5d69..9a870b9b6765 100644
 --- a/drivers/gpu/drm/panel/panel-novatek-nt36672e.c
 +++ b/drivers/gpu/drm/panel/panel-novatek-nt36672e.c
-@@ -614,8 +614,6 @@ static void nt36672e_panel_remove(struct mipi_dsi_device *dsi)
- 	struct nt36672e_panel *ctx = mipi_dsi_get_drvdata(dsi);
+@@ -25,12 +25,6 @@ static const unsigned long regulator_enable_loads[] = {
+ 	100000,
+ };
  
- 	mipi_dsi_detach(ctx->dsi);
--	mipi_dsi_device_unregister(ctx->dsi);
+-static const unsigned long regulator_disable_loads[] = {
+-	80,
+-	100,
+-	100,
+-};
 -
- 	drm_panel_remove(&ctx->panel);
- }
+ struct panel_desc {
+ 	const struct drm_display_mode *display_mode;
+ 	u32 width_mm;
+@@ -385,20 +379,9 @@ static int nt36672e_power_off(struct nt36672e_panel *ctx)
+ {
+ 	struct mipi_dsi_device *dsi = ctx->dsi;
+ 	int ret = 0;
+-	int i;
  
+ 	gpiod_set_value(ctx->reset_gpio, 0);
+ 
+-	for (i = 0; i < ARRAY_SIZE(ctx->supplies); i++) {
+-		ret = regulator_set_load(ctx->supplies[i].consumer,
+-				regulator_disable_loads[i]);
+-		if (ret) {
+-			dev_err(&dsi->dev, "regulator set load failed for supply %s: %d\n",
+-				ctx->supplies[i].supply, ret);
+-			return ret;
+-		}
+-	}
+-
+ 	ret = regulator_bulk_disable(ARRAY_SIZE(ctx->supplies), ctx->supplies);
+ 	if (ret)
+ 		dev_err(&dsi->dev, "regulator bulk disable failed: %d\n", ret);
 
 -- 
 2.39.2
