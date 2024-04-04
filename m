@@ -1,169 +1,199 @@
-Return-Path: <linux-kernel+bounces-131850-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92F20898C8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:49:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 02B56898C97
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:50:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C58F1F2403C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:49:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 261C31C269BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C8212D742;
-	Thu,  4 Apr 2024 16:48:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD0C6D1B5;
+	Thu,  4 Apr 2024 16:50:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mZVvZ5Qt"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="accTUUmn"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38CFE1C6A5;
-	Thu,  4 Apr 2024 16:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6A814A8B;
+	Thu,  4 Apr 2024 16:50:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712249327; cv=none; b=fTfPXjgtTs8ZqZFLuF/qb61Dnf3nGehB6sFWZa0CtK9znNpO3TPOYCgaATl0e/A6yhL8UDfD7xJ5emXynPnEQlc/6av1x5my8qB4p2G23HsZ5ancVftxTgUkXht+xO781iIGagv25BoagP77uAykj5OyyoJIL3Zi8o/FYOFgYwQ=
+	t=1712249423; cv=none; b=bqZ0dhjM0hPEPczmpp307C0gFgYPRbtPe8CNcxQi2bsdWNPTyjTd4Z9lf4RHAxmAiFREEXsG3muQWVEGox7G5z7UJ4nzcNPPJGxEjGVqSDWjmfVxyd7wFFtj/U7S6yEva0O5SntmtJeL2OaGC/s+ge4a6FK5TiNnwhwd7f38pic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712249327; c=relaxed/simple;
-	bh=FItxQKIKnB6xDpTy4OuJ7+aJw2KPqlzMNdwMCbAlF6c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pfb4GXbGLAP+qyUJNa2wieeOPLptd8Z4YYw3zuZgD7n29dHChK1SW3jjPGbo8yGq6W/aJKHm0EITRFQIPE9UmmeYGU8JZZxmFdVCFdlkviCaQ7cNpkxNcLVmO0af8wPyYfCtwQYBtbvQEu7sNwsYXWa8PyhH86W1wRxM4iu+zCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=mZVvZ5Qt; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=IAcMzbwzMSdGjUZJwsigBkmbiIdxzP3w50+Ad4sa5UQ=; b=mZVvZ5QtSrlprrhnUVhWEWIU7E
-	sphdhQo7g/IJfa+/FvwlZsRFYmJ5wkNkd4AWif4Utjy+vMZEnwOad5hHf+SRbN7FGKw+i0FGqJBM4
-	yF2PaxBkNGMpqYBfoujAS+qFScyAlz3vNlovdCRtdSYfHINucazB4MwtfIsMPo5qEa0NQKwlFZIUA
-	VfRN+/hUWdkFBdAGtszp5axo9ZNsq2cyjqNAFaNh3mFRGcmLETrtGXGf3qXwEZGqMoZx63OmbHyON
-	JugVn8XGevOpUa3bOez65lUMoibZGmnJJ93pBOBTs99hw8DRim6xKVB8Vqfk/oU+BU912iDFwt/nX
-	hMyfZDfA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsQGP-00000008SrU-2u2m;
-	Thu, 04 Apr 2024 16:48:33 +0000
-Date: Thu, 4 Apr 2024 17:48:33 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: John Garry <john.g.garry@oracle.com>
-Cc: axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
-	jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
-	jack@suse.cz, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
-	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
-	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
-	io-uring@vger.kernel.org, nilay@linux.ibm.com,
-	ritesh.list@gmail.com
-Subject: Re: [PATCH v6 00/10] block atomic writes
-Message-ID: <Zg7Z4aJtn3SxY5w1@casper.infradead.org>
-References: <20240326133813.3224593-1-john.g.garry@oracle.com>
- <ZgOXb_oZjsUU12YL@casper.infradead.org>
- <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
+	s=arc-20240116; t=1712249423; c=relaxed/simple;
+	bh=duuvXRyazU2+2lIzUlGDb5oo8et3T5/0CRetwEqiMgA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=iWMA8EKNc27r8cKnQkUHwXZJgWk4FInzWb6ClJoLhoPlAIZrvRWbUdWZEE9YPlHSxopRk4PNkxMvgz1bBcPIAQhdyjVFCbo9H1JCeZNdTioJJQPnNF7jAn8gBno98GfHjIiEHixh/Bbldx5Y/Et/TcdTDGLaAroJx0JSx3dYmEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=accTUUmn; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 434FuB8Z020276;
+	Thu, 4 Apr 2024 16:49:59 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=bdVj70TgvvAB/XwbPfr6Rf7uON1edbSCq/OzQHOOv9s=;
+ b=accTUUmntu4DgR7NUZDo4p+mCy7P0fKn7263a5qWZ8SBAIv+klBDYwQcrK6YwrnBYA9b
+ NtRZPxDfteZjSuGXx3+KKpZlMUhtcW+LAz7XHD8sDMdXVMgPhseT6qY4RdOQwJ2ummun
+ LU1JCWhUDk964VwwyuG21s/uioRtZE+qYUmYhHiZ9/BhbSTF58Jqrbf3Sp7DWYvA3l96
+ djkHlxBbsXQh08yM9bn3rm0IPyE79M8/A8PSq+AH9ILnQvgoaDrM9+KNLQDnMGaQhXht
+ nj+YzrHFuSBv+hx+4P1IYMHIuQsKYoROWTWQ1CYLtAr6Pahah2tCLqAlffid4NVOO87Q vA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9xuw86vv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 16:49:59 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 434GnwOS023179;
+	Thu, 4 Apr 2024 16:49:58 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9xuw86vs-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 16:49:58 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 434GVMYq003608;
+	Thu, 4 Apr 2024 16:49:57 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x9epydaqm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 16:49:57 +0000
+Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
+	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 434Gnskc11469416
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 4 Apr 2024 16:49:57 GMT
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 97D3E58056;
+	Thu,  4 Apr 2024 16:49:54 +0000 (GMT)
+Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0394A5805A;
+	Thu,  4 Apr 2024 16:49:54 +0000 (GMT)
+Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.110.28])
+	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  4 Apr 2024 16:49:53 +0000 (GMT)
+Message-ID: <27d36ec8e0539c5d6bc760de7305299a2142f9f1.camel@linux.ibm.com>
+Subject: Re: [PATCH v5][next] integrity: Avoid
+ -Wflex-array-member-not-at-end warnings
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Roberto Sassu
+ <roberto.sassu@huawei.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        Eric Snowberg <eric.snowberg@oracle.com>,
+        Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>
+Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Date: Thu, 04 Apr 2024 12:49:53 -0400
+In-Reply-To: <Zg7AoOh7CL5ZD/fe@neat>
+References: <Zg7AoOh7CL5ZD/fe@neat>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-23.el8_9) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 7G1mvBz-_JYfcWI_EuIHlwQhBX0aA1n1
+X-Proofpoint-ORIG-GUID: rGa29e18cm8TrLTRwfsfd7u0yycR1-yR
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-04_13,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ impostorscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
+ clxscore=1015 bulkscore=0 mlxscore=0 adultscore=0 priorityscore=1501
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404040117
 
-On Wed, Mar 27, 2024 at 01:37:41PM +0000, John Garry wrote:
-> On 27/03/2024 03:50, Matthew Wilcox wrote:
-> > On Tue, Mar 26, 2024 at 01:38:03PM +0000, John Garry wrote:
-> > > The goal here is to provide an interface that allows applications use
-> > > application-specific block sizes larger than logical block size
-> > > reported by the storage device or larger than filesystem block size as
-> > > reported by stat().
-> > > 
-> > > With this new interface, application blocks will never be torn or
-> > > fractured when written. For a power fail, for each individual application
-> > > block, all or none of the data to be written. A racing atomic write and
-> > > read will mean that the read sees all the old data or all the new data,
-> > > but never a mix of old and new.
-> > > 
-> > > Three new fields are added to struct statx - atomic_write_unit_min,
-> > > atomic_write_unit_max, and atomic_write_segments_max. For each atomic
-> > > individual write, the total length of a write must be a between
-> > > atomic_write_unit_min and atomic_write_unit_max, inclusive, and a
-> > > power-of-2. The write must also be at a natural offset in the file
-> > > wrt the write length. For pwritev2, iovcnt is limited by
-> > > atomic_write_segments_max.
-> > > 
-> > > There has been some discussion on supporting buffered IO and whether the
-> > > API is suitable, like:
-> > > https://lore.kernel.org/linux-nvme/ZeembVG-ygFal6Eb@casper.infradead.org/
-> > > 
-> > > Specifically the concern is that supporting a range of sizes of atomic IO
-> > > in the pagecache is complex to support. For this, my idea is that FSes can
-> > > fix atomic_write_unit_min and atomic_write_unit_max at the same size, the
-> > > extent alignment size, which should be easier to support. We may need to
-> > > implement O_ATOMIC to avoid mixing atomic and non-atomic IOs for this. I
-> > > have no proposed solution for atomic write buffered IO for bdev file
-> > > operations, but I know of no requirement for this.
-> > 
-> > The thing is that there's no requirement for an interface as complex as
-> > the one you're proposing here.  I've talked to a few database people
-> > and all they want is to increase the untorn write boundary from "one
-> > disc block" to one database block, typically 8kB or 16kB.
-> > 
-> > So they would be quite happy with a much simpler interface where they
-> > set the inode block size at inode creation time,
+Hi Gustavo,
+
+On Thu, 2024-04-04 at 09:00 -0600, Gustavo A. R. Silva wrote:
+> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
+> ready to enable it globally.
 > 
-> We want to support untorn writes for bdev file operations - how can we set
-> the inode block size there? Currently it is based on logical block size.
-
-ioctl(BLKBSZSET), I guess?  That currently limits to PAGE_SIZE, but I
-think we can remove that limitation with the bs>PS patches.
-
-> > and then all writes to
-> > that inode were guaranteed to be untorn.  This would also be simpler to
-> > implement for buffered writes.
+> There is currently an object (`hdr)` in `struct ima_max_digest_data`
+> that contains a flexible structure (`struct ima_digest_data`):
 > 
-> We did consider that. Won't that lead to the possibility of breaking
-> existing applications which want to do regular unaligned writes to these
-> files? We do know that mysql/innodb does have some "compressed" mode of
-> operation, which involves regular writes to the same file which wants untorn
-> writes.
-
-If you're talking about "regular unaligned buffered writes", then that
-won't break.  If you cross a folio boundary, the result may be torn,
-but if you're crossing a block boundary you expect that.
-
-> Furthermore, untorn writes in HW are expensive - for SCSI anyway. Do we
-> always want these for such a file?
-
-Do untorn writes actually exist in SCSI?  I was under the impression
-nobody had actually implemented them in SCSI hardware.
-
-> We saw untorn writes as not being a property of the file or even the inode
-> itself, but rather an attribute of the specific IO being issued from the
-> userspace application.
-
-The problem is that keeping track of that is expensive for buffered
-writes.  It's a model that only works for direct IO.  Arguably we
-could make it work for O_SYNC buffered IO, but that'll require some
-surgery.
-
-> > Who's asking for this more complex interface?
+>  struct ima_max_digest_data {
+>         struct ima_digest_data hdr;
+>         u8 digest[HASH_MAX_DIGESTSIZE];
+>  } __packed;
 > 
-> It's not a case of someone specifically asking for this interface. This is
-> just a proposal to satisfy userspace requirement to do untorn writes in a
-> generic way.
+> So, in order to avoid ending up with a flexible-array member in the
+> middle of a struct, we use the `__struct_group()` helper to separate
+> the flexible array from the rest of the members in the flexible
+> structure:
 > 
-> From a user point-of-view, untorn writes for a regular file can be enabled
-> for up to a specific size* with FS_IOC_SETFLAGS API. Then they need to
-> follow alignment and size rules for issuing untorn writes, but they would
-> always need to do this. In addition, the user may still issue regular
-> (tearable) writes to the file.
+> struct ima_digest_data {
+>         __struct_group(ima_digest_data_hdr, hdr, __packed,
 > 
-> * I think that we could change this to only allow writes for that specific
-> size, which was my proposal for buffered IO.
+>         ... the rest of the members
 > 
-> Thanks,
-> John
+>         );
+>         u8 digest[];
+> } __packed;
 > 
+> And similarly for `struct evm_ima_xattr_data`.
+> 
+> With the change described above, we can now declare an object of the
+> type of the tagged `struct ima_digest_data_hdr`, without embedding the
+> flexible array in the middle of another struct:
+> 
+>  struct ima_max_digest_data {
+>         struct ima_digest_data_hdr hdr;
+>         u8 digest[HASH_MAX_DIGESTSIZE];
+>  } __packed;
+> 
+> And similarly for `struct evm_digest` and `struct evm_xattr`.
+> 
+> We also use `container_of()` whenever we need to retrieve a pointer to
+> the flexible structure.
+> 
+> So, with these changes, fix the following warnings:
+> 
+> security/integrity/evm/evm.h:64:32: warning: structure containing a flexible
+> array member is not at the end of another structure [-Wflex-array-member-not-
+> at-end]
+> security/integrity/evm/../integrity.h:40:35: warning: structure containing a
+> flexible array member is not at the end of another structure [-Wflex-array-
+> member-not-at-end]
+> security/integrity/evm/../integrity.h:68:32: warning: structure containing a
+> flexible array member is not at the end of another structure [-Wflex-array-
+> member-not-at-end]
+> security/integrity/ima/../integrity.h:40:35: warning: structure containing a
+> flexible array member is not at the end of another structure [-Wflex-array-
+> member-not-at-end]
+> security/integrity/ima/../integrity.h:68:32: warning: structure containing a
+> flexible array member is not at the end of another structure [-Wflex-array-
+> member-not-at-end]
+> security/integrity/integrity.h:40:35: warning: structure containing a flexible
+> array member is not at the end of another structure [-Wflex-array-member-not-
+> at-end]
+> security/integrity/integrity.h:68:32: warning: structure containing a flexible
+> array member is not at the end of another structure [-Wflex-array-member-not-
+> at-end]
+> security/integrity/platform_certs/../integrity.h:40:35: warning: structure
+> containing a flexible array member is not at the end of another structure [-
+> Wflex-array-member-not-at-end]
+> security/integrity/platform_certs/../integrity.h:68:32: warning: structure
+> containing a flexible array member is not at the end of another structure [-
+> Wflex-array-member-not-at-end]
+> 
+> Link: https://github.com/KSPP/linux/issues/202
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+
+Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+
+Thanks, Gustavo.  I already applied and tested v4, but was trying to actually
+see the errors with before pushing it out.
+
+Mimi 
+
+
 
