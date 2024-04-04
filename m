@@ -1,59 +1,59 @@
-Return-Path: <linux-kernel+bounces-132264-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132265-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D54F6899234
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:37:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAF66899235
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:38:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 749CC1F2333C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:37:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83B88289FBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:38:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BED8413C68C;
-	Thu,  4 Apr 2024 23:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A2CE13C697;
+	Thu,  4 Apr 2024 23:37:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NXAZv0Y0"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CAz4JB/2"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F5A13C3CD
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 23:37:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CEE13C66F
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 23:37:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712273870; cv=none; b=J+//XzSw45NEbwlK0AdFyHfllVfmORpHCDERNrho2UXTbfbcLOUWl9Z66qljBwrNYukr97XcSxoIMvTrp9JPeHDSKA4lLmlrwMkvGJSLhPir7hNz9LzVrwCt86b1I37xTLzRx4B6EwxPGmI2vHz0WHPUVB0A1p5VMF+CkeRQSs4=
+	t=1712273870; cv=none; b=MVVts4Es4H/MdIYmgwq7A2yeIma5p5KaftQJhNkVl6AJ6CkQyRXZl4f0ZwPccjsJiF+8Ar8PbcJJQ+YmaXtW3BK57h6yTUXyUVkS2mIKSr+65piL29XVgAMWBoDbETjqkfFoRv4qxG0RQFbvNQl/PXYFoXhYOzqSIPqbg7XqhKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712273870; c=relaxed/simple;
-	bh=WcJWrWJTEgUMIOPaDLKTAVkcya3IzINrlG4fX0PdNjk=;
+	bh=LpKJp577/TjDusKjKLzpsZI2h6/FFOW3ygGeMD9cx6E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cFdE7GbrGIXjPQNA/bC6yW1jlcbk+qjGdGfyDltoXT1aSGXWWACoDrT+cajtJLhXrZk9dxCKTDC4tYl/zKr2OdsvFgqrFxIH5+wMg37wF1LrwehcQf1Jkof3Ev6S1TRLAPPX83rt2dceKaz8Szy2OVe1Hhh5pJ4rsw3EwMJrFpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NXAZv0Y0; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=h+YIrshggG0RfXvoWy6OjPHdH+jwuqakB7y3LiJiKxC7ZV6nKpm6xlDrFNh7+OHscw7kW7C9BfMBt0VKpBLDER97r1DtOxNVjaIyNubs4COgu30Pq2erGnp7N4lu2hkmZfxnYcSBz147nJQMtw46BQqjQKT/OsoCm5lnObl+bAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CAz4JB/2; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712273867;
+	s=mimecast20190719; t=1712273868;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8ypcfm8f/5CHd95kPjs/R9gdMDLtVxLsgq1JjJ/htFQ=;
-	b=NXAZv0Y04lqcVoSTxWBkv1RrpPXzgG7kr0EuYx8s6QuK6j0gxXRuuoAX29WaVqkAf7Qy/i
-	UbFZJ2/hsYz7n9bwTf7Y1NbJiShSi8sYZ+j7aKS1thP8hsideY19p7+E/54lfC9Bqljzxo
-	GCYJddzzGHzkwvYEvHp06XX1qMwWyCA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-199-6pLPrQW0MIqKHr5AwYWBFw-1; Thu, 04 Apr 2024 19:37:41 -0400
-X-MC-Unique: 6pLPrQW0MIqKHr5AwYWBFw-1
+	bh=UH0SdUkY0Y7wcvIlBfPcVRXDNk9BBU7t+uEZjzSWyug=;
+	b=CAz4JB/2h9/OwDG3y4uqcvVsWHlgZuRkz7qlFCYqobchm4R65eANxbP/1vZA2K1436NB2V
+	//OVk421+ozTGUdW6ryn99YPCeNbUqPHD8IwFtRi/D3rB6I8rjnchXs7cs3bjBbwhgxPkm
+	B6X+8MHJ+IDd4sz4p9GOrPIM7Ix/RB0=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-638-EqSQlcGjNlGdio4Ofq0TTQ-1; Thu,
+ 04 Apr 2024 19:37:42 -0400
+X-MC-Unique: EqSQlcGjNlGdio4Ofq0TTQ-1
 Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 7E8858007A3;
-	Thu,  4 Apr 2024 23:37:41 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 610D33C0219B;
+	Thu,  4 Apr 2024 23:37:42 +0000 (UTC)
 Received: from chopper.lyude.net (unknown [10.22.8.53])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 9873F8173;
-	Thu,  4 Apr 2024 23:37:40 +0000 (UTC)
+	by smtp.corp.redhat.com (Postfix) with ESMTP id BB34D10E4B;
+	Thu,  4 Apr 2024 23:37:41 +0000 (UTC)
 From: Lyude Paul <lyude@redhat.com>
 To: nouveau@lists.freedesktop.org,
 	dri-devel@lists.freedesktop.org
@@ -62,9 +62,9 @@ Cc: Karol Herbst <kherbst@redhat.com>,
 	David Airlie <airlied@gmail.com>,
 	Daniel Vetter <daniel@ffwll.ch>,
 	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/2] drm/nouveau/kms/nv50-: Disable AUX bus for disconnected DP ports
-Date: Thu,  4 Apr 2024 19:35:53 -0400
-Message-ID: <20240404233736.7946-2-lyude@redhat.com>
+Subject: [PATCH 2/2] drm/nouveau/dp: Don't probe eDP ports twice harder
+Date: Thu,  4 Apr 2024 19:35:54 -0400
+Message-ID: <20240404233736.7946-3-lyude@redhat.com>
 In-Reply-To: <20240404233736.7946-1-lyude@redhat.com>
 References: <20240404233736.7946-1-lyude@redhat.com>
 Precedence: bulk
@@ -76,63 +76,48 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-GSP has its own state for keeping track of whether or not a given display
-connector is plugged in or not, and enforces this state on the driver. In
-particular, AUX transactions on a DisplayPort connector which GSP says is
-disconnected can never succeed - and can in some cases even cause
-unexpected timeouts, which can trickle up to cause other problems. A good
-example of this is runtime power management: where we can actually get
-stuck trying to resume the GPU if a userspace application like fwupd tries
-accessing a drm_aux_dev for a disconnected port. This was an issue I hit a
-few times with my Slimbook Executive 16 - where trying to offload something
-to the discrete GPU would wake it up, and then potentially cause it to
-timeout as fwupd tried to immediately access the dp_aux_dev nodes for
-nouveau.
+I didn't pay close enough attention the last time I tried to fix this
+problem - while we currently do correctly take care to make sure we don't
+probe a connected eDP port more then once, we don't do the same thing for
+eDP ports we found to be disconnected.
 
-Likewise: we don't really have any cases I know of where we'd want to
-ignore this state and try an aux transaction anyway - and failing pointless
-aux transactions immediately can even speed things up. So - let's start
-enabling/disabling the aux bus in nouveau_dp_detect() to fix this. We
-enable the aux bus during connector probing, and leave it enabled if we
-discover something is actually on the connector. Otherwise, we just shut it
-off.
-
-This should fix some people's runtime PM issues (like myself), and also get
-rid of quite of a lot of GSP error spam in dmesg.
+So, fix this and make sure we only ever probe eDP ports once and then leave
+them at that connector state forever (since without HPD, it's not going to
+change on its own anyway). This should get rid of the last few GSP errors
+getting spit out during runtime suspend and resume on some machines, as we
+tried to reprobe eDP ports in response to ACPI hotplug probe events.
 
 Signed-off-by: Lyude Paul <lyude@redhat.com>
 ---
- drivers/gpu/drm/nouveau/nouveau_dp.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/gpu/drm/nouveau/nouveau_dp.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
-index fb06ee17d9e54..8b1be7dd64ebe 100644
+index 8b1be7dd64ebe..8b27d372e86da 100644
 --- a/drivers/gpu/drm/nouveau/nouveau_dp.c
 +++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
-@@ -232,6 +232,9 @@ nouveau_dp_detect(struct nouveau_connector *nv_connector,
- 	    dpcd[DP_DPCD_REV] != 0)
- 		return NOUVEAU_DP_SST;
+@@ -225,12 +225,16 @@ nouveau_dp_detect(struct nouveau_connector *nv_connector,
+ 	u8 *dpcd = nv_encoder->dp.dpcd;
+ 	int ret = NOUVEAU_DP_NONE, hpd;
  
-+	// Ensure that the aux bus is enabled for probing
-+	drm_dp_dpcd_set_powered(&nv_connector->aux, true);
-+
- 	mutex_lock(&nv_encoder->dp.hpd_irq_lock);
- 	if (mstm) {
- 		/* If we're not ready to handle MST state changes yet, just
-@@ -293,6 +296,13 @@ nouveau_dp_detect(struct nouveau_connector *nv_connector,
- 	if (mstm && !mstm->suspended && ret != NOUVEAU_DP_MST)
- 		nv50_mstm_remove(mstm);
+-	/* If we've already read the DPCD on an eDP device, we don't need to
+-	 * reread it as it won't change
++	/* eDP ports don't support hotplugging - so there's no point in probing eDP ports unless we
++	 * haven't probed them once before.
+ 	 */
+-	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP &&
+-	    dpcd[DP_DPCD_REV] != 0)
+-		return NOUVEAU_DP_SST;
++	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
++		if (connector->status == connector_status_connected) {
++			return NOUVEAU_DP_SST;
++		} else if (connector->status == connector_status_disconnected) {
++			return NOUVEAU_DP_NONE;
++		}
++	}
  
-+	/* GSP doesn't like when we try to do aux transactions on a port it considers disconnected,
-+	 * and since we don't really have a usecase for that anyway - just disable the aux bus here
-+	 * if we've decided the connector is disconnected
-+	 */
-+	if (ret == NOUVEAU_DP_NONE)
-+		drm_dp_dpcd_set_powered(&nv_connector->aux, false);
-+
- 	mutex_unlock(&nv_encoder->dp.hpd_irq_lock);
- 	return ret;
- }
+ 	// Ensure that the aux bus is enabled for probing
+ 	drm_dp_dpcd_set_powered(&nv_connector->aux, true);
 -- 
 2.44.0
 
