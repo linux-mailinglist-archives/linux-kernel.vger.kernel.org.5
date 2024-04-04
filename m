@@ -1,130 +1,117 @@
-Return-Path: <linux-kernel+bounces-132175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 450508990A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:55:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5CB4D8990A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:58:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E82EE1F237D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:55:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0F58F1F23249
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:58:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E9E813C3CE;
-	Thu,  4 Apr 2024 21:55:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405F813C3D1;
+	Thu,  4 Apr 2024 21:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sVeD7uVu"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="csZBnmct"
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198F7131BDB
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 21:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1949B82C63
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 21:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712267724; cv=none; b=fSUJECWUUubck6gQc/6hwvrJBM3f5e0R2vtyLDKNbkak+s/PL9yGXBQr5SFIN4QldC7CMuFkdvlgYvphDh6sWFM1Wse479s1Ku5BCMpPLJGEyUakO855ZFR1tycp2okMiy/xCW9bI3Mf90JB0hB/yaNhpH2HcDktbUWayWaXlMg=
+	t=1712267908; cv=none; b=pe8OCZ93i+P+InB18ju63MwEaAJx7l0pcP4YKnvR3g/eTIy4dzidj3ZAPm6ikM/qFqfpwSlE12C8Zx2lrGSVB3YbDwI0uaAegii0ilqadvb0jqSxbrFcz88gnd04CsIRQUxVgtPi6x44+hXvbKr6AZZl3qahybqXgaZKZ6bPMdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712267724; c=relaxed/simple;
-	bh=IieES/8bKEnHvAQMRqX27a8bScdjVFPXGYhKImvWWFc=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=S+Ciu2Mq32yqe0n3RxxSt3Ys+/ztNifbO1R2Jx+jKJMTtwsSDNtDs/NDQ7Dgs8zEdCU1kUtmCIl+ovnHk5hYml0hRZpuG++VLflDQS3cHh4Wqq4vpK9nqvSRYYrdoWxwD8S/Qmql2TFJOJEWsrNYGNBwQGbk2fKlc53k9JCoRoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sVeD7uVu; arc=none smtp.client-ip=209.85.128.202
+	s=arc-20240116; t=1712267908; c=relaxed/simple;
+	bh=WBWlamtwS0qil/q1Kd5kZ2gzDyToW3Fk8jnydEwHJJw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rRxzg+amBa3B2IiFKP3tI3u68F8K8QY8cO5qa+1rc7NCedkVjvnoCK5mEXwuO2jGs3hxmeyqoBxcEAEWRz5lKTumeM7v9xfYNjoetOZ/qdr9xH3CabNC+ScuTxfJz130sKFkBFtGvLJAhbjFfwgPS8ECNc38gj7ezU78n/dnwGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=csZBnmct; arc=none smtp.client-ip=209.85.222.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-61504a34400so24742657b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 14:55:22 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-7e3ffa8eccfso597592241.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 14:58:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712267722; x=1712872522; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mxIVyv7cNyTq2vNYoeJOtNz8nXPv634GBs939JAmlHY=;
-        b=sVeD7uVuJbyoexOu57Tvec7+Bz+LNkUFJg/5gFSrkeqToA4ljJGRbruwoKtVj6abIS
-         PdQ6mXQVOY70NHIOSHqG0KMnI0LSm9/9XyUlZUjZ9jk2MC+OdTNPC4oOI989d3YZWr1g
-         o6Z/Zx2OnMA/hiKDez6tiwjFr6O1907HGXXVmHa2RFHCXVf4PbEOahsIkVb3noPE8uxC
-         YRcwiQ/ZsDUZjeE/JodFsxemppGggCDp/70qpUqHC+RwueuAMVAHZG/W1UPUbSzBYf/Y
-         8THXTVyzS5VAVhyZo+sG/lzCcmROHP56OXNfU3fqQ4lTlgmfzQvH5VmGxIFeXt3q5yvB
-         00Nw==
+        d=google.com; s=20230601; t=1712267906; x=1712872706; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MXA1Pawcw6q7MhE7VT/TIjcbej+/bkiKTDfv32P6Hrg=;
+        b=csZBnmctfE2WxFuQMJb9Cmo3zeKEICav5r14l6XHXQIal4ze+re01Ue65whF/sKF7I
+         NSl6Y0xu2jzxKttW4mEql/1KoIIm6z+uRzeMuijT4FShqtCLVhos1tZwpc92A+HiJOB8
+         SkcgLlgBMbn+6ceuBc0MhRd90sjYjEdzSto/9XgXgsTu726rtcWjUY8qTF/nfhhDv5mR
+         atQQEEzcumNUJLuXYbkJ6Lk/nc4DAgq7yC5z7v0jiigSEzFn2NJuE5qeUVtRoHpsaP2W
+         I99RFRUBFFisd4KAWat7pzFwot3oBYQ30hEGIpPe/EjGx9xk6MKPkqiLDcbob+rOaV6k
+         cPXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712267722; x=1712872522;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mxIVyv7cNyTq2vNYoeJOtNz8nXPv634GBs939JAmlHY=;
-        b=OOuxFdfPtbOR/PSCWIXpFbUnTKs7zyPIdK3xQhRZiELPZYqE3HUOr/3mpmjIJ9thHr
-         XS+1G9cX3dsW9GppxIqk68c9DjusshRQTTNQfQtQjUtzQKlDioIDHb8tDG+3tAbLsgPh
-         COLrDeD0Usk7EByKdbK8azMEBln0FgLp0deM7ebau/gw+vvy5SsJ6/3UC/xjkQGW65v4
-         7s8JwRGuKbjdpaydygc6bYmi8DCjI1ASyKFm6vk4H9IZXUphcK6m6HtsZa7uaYK3df8S
-         KZGWCEzsJ4KPk0gFIi65gD3PAMdal9oQ8scJJij7q53xwGnKz169r5g47T4l0IIOY7d8
-         bsqg==
-X-Forwarded-Encrypted: i=1; AJvYcCUSsCSodho5E9h1HVmrAF96nVr1WzEYQMSBWVluoPeDrOfkMIzPaCgBaSMqGecIH1CKDC0BAPChiM2NS/kEbPjiYiK1RC8nq/2TaXFX
-X-Gm-Message-State: AOJu0YxUM8DT/UnFKf+qBtx2qUjAbGqPTuIFRbx5ExdYnQyyzL+b0qqJ
-	hOmdQvmShNvqcogkbuaFQL70VI8YUsEiE0WaallDaWkEMnxe+3r8rWoLcmy0fGlbdOrW/rWpWhA
-	Ekw==
-X-Google-Smtp-Source: AGHT+IF9Zl8pcwn3qOKy6dWDe6D4qOtPFtvzTeU/xZJRH+srpGCJd87O6gHNWcMqlXRBzdQ0o1Y5uo2NHKw=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:690c:c94:b0:615:ca8:6058 with SMTP id
- cm20-20020a05690c0c9400b006150ca86058mr187971ywb.5.1712267722107; Thu, 04 Apr
- 2024 14:55:22 -0700 (PDT)
-Date: Thu, 4 Apr 2024 14:55:20 -0700
-In-Reply-To: <8ae52273-7b79-46b7-9cd5-2a0c401311c3@intel.com>
+        d=1e100.net; s=20230601; t=1712267906; x=1712872706;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MXA1Pawcw6q7MhE7VT/TIjcbej+/bkiKTDfv32P6Hrg=;
+        b=eSNapnal9aKr9I8O3QxVK6HGAgKFJL5IX26UqE1G/2Bl7Da79/aIA4qUhU2BrwnvQi
+         wx3I7CA0S2LCXrecc6QcCUJukB6OtvuWVlMFX0v+4mEaESBSoi69vKP3Jdjm1vcexwZz
+         OWr2TWmz5nHJphE8n1K6KW7rtruL4wubKQ2VjaUbMm9WSYPJj8aUuch/TfwDvbor/ZAd
+         UnlIqFiPr3SRbZCD0zqc9BjfPSCEDZsAFjcDgfGUIzs63aaL9J3Pomzs9nu1rdVBGC8i
+         0aiKP3gzQ/fP460Oy2ac+ES/8uh1xurWn5MvrU9N/hZIlxFtPa/mG+fjOIwiqAJMlZum
+         EfpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWfTYMQvjOJryGXvszNwNHbeqwyLpdkX9pNAQ57t7gjSBMugVicTpRoozKgyzqy19h1B1JtCUvTW1O2Lfqcj1+A9pj+ApxYKnCx42Vb
+X-Gm-Message-State: AOJu0YxRkcUeWubs894I77NYiv/W61dzUKDNMQGOyAeprY87YKm7lu4T
+	nH9jBaK6chx21k+LJuMbmJRvniOcihbM6E6Nec9hunxX4MTqh/ptkkSKgfR1cju6EXRFXaassyg
+	XMzLzC5ronrovG9AnQ4gwm6DZnheUTk+yYcn+6HgkdKR9pdtfOZEw
+X-Google-Smtp-Source: AGHT+IHcGcVynOrCwd5GKEjNJxBR+DIwyhJJZMcY9Ci43m9rDIAmEzoFo7afNlAdZFC8NZt3fpMFw0EFs9yKchDPiG4=
+X-Received: by 2002:a67:ad04:0:b0:478:763c:1869 with SMTP id
+ t4-20020a67ad04000000b00478763c1869mr749494vsl.7.1712267905791; Thu, 04 Apr
+ 2024 14:58:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240401185451.6897208962d3fc47a12ffb5a@otheo.eu>
- <20240401185712.a80deeb2fddeded0ad42cc04@otheo.eu> <8ee463af-fdbf-4514-bb6e-bf2fd61fbc06@intel.com>
- <20240402192314.a9b4e05637444314f47557e4@otheo.eu> <d7e89d23-b692-4e70-baae-5df5b3984620@intel.com>
- <20240403175407.f81ebc5cc3300ffa0c39f597@otheo.eu> <7db8d0a8-c668-44be-a348-58120a97fc2b@intel.com>
- <Zg7GpY0_U_7yhe6P@google.com> <8ae52273-7b79-46b7-9cd5-2a0c401311c3@intel.com>
-Message-ID: <Zg8hyG__NJZrB-ju@google.com>
-Subject: Re: [PATCH 1/1] x86/mm/pae: Align up pteval_t, pmdval_t and pudval_t
- to avoid split locks
-From: Sean Christopherson <seanjc@google.com>
-To: Dave Hansen <dave.hansen@intel.com>
-Cc: Javier Pello <devel@otheo.eu>, linux-kernel@vger.kernel.org, x86@kernel.org, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+References: <20240404162515.527802-1-fvdl@google.com> <20240404162515.527802-2-fvdl@google.com>
+ <20240404131734.5fdd7380202cafcdc44a4d2a@linux-foundation.org>
+In-Reply-To: <20240404131734.5fdd7380202cafcdc44a4d2a@linux-foundation.org>
+From: Frank van der Linden <fvdl@google.com>
+Date: Thu, 4 Apr 2024 14:58:14 -0700
+Message-ID: <CAPTztWZ4GCPX7d1KqnBjtfi-kzcjnWibn6Ohj+=p47vBHep=SQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm/hugetlb: pass correct order_per_bit to cma_declare_contiguous_nid
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, muchun.song@linux.dev, linux-kernel@vger.kernel.org, 
+	Roman Gushchin <roman.gushchin@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 04, 2024, Dave Hansen wrote:
-> On 4/4/24 08:26, Sean Christopherson wrote:
-> > In other words, practically speaking this isn't about supporting a new hardware
-> > feature on 32-bit kernels, it's about preserving performance in real world
-> > scenarios when running 32-bit kernels on new hardware.
-> 
-> Realistically, most of the 32-bit kernels in the world are going to be
-> *OLD* distros, right?  Old CentOS/RHEL/SLES kernels from before the
-> kernel had split lock detection, or split lock fixes.  Those trip over
-> VMM split lock detection now, and presumably will forever.
-> 
-> I suspect new CentOS/RHEL/SLES kernels that have split lock detection
-> all happened after 32-bit support was dropped from those distros.
-> 
-> I think that basically leaves Debian.  Someone would need to:
-> 
->  1. Make a *new* 32-bit Debian distro install (or one of the other
->     less common distros that still do 32-bit)
->  2. Run it on hardware with split lock detection
->  3. On a VMM that enables split lock detection
->  4. Stay close enough to mainline to get split lock fixes (like from
->     this thread)
->  5. Care about performance, despite *ACTIVELY* choosing a 32-bit distro
->     on 64-bit hardware in 2024
+On Thu, Apr 4, 2024 at 1:17=E2=80=AFPM Andrew Morton <akpm@linux-foundation=
+org> wrote:
 >
-> Those steps are certainly possible.  I'm just not sure how much trouble
-> we want to go to in 2024 to support people that choose new 32-bit
-> distros and desire performance.
+> On Thu,  4 Apr 2024 16:25:15 +0000 Frank van der Linden <fvdl@google.com>=
+ wrote:
+>
+> > The hugetlb_cma code passes 0 in the order_per_bit argument to
+> > cma_declare_contiguous_nid (the alignment, computed using the
+> > page order, is correctly passed in).
+> >
+> > This causes a bit in the cma allocation bitmap to always represent
+> > a 4k page, making the bitmaps potentially very large, and slower.
+> >
+> > So, correctly pass in the order instead.
+>
+> Ditto.  Should we backport this?   Can we somewhat quantify "potentially =
+very",
+> and understand under what circumstances this might occur?
 
-I'm worried about a scenario where the throttling is so bad that it's not a perf
-issue, but a functional issue ("performance" was a bad choice of word).
+It would create bitmaps that would be pretty big. E.g. for a 4k page
+size on x86, hugetlb_cma=3D64G would mean a bitmap size of (64G / 4k) /
+8 =3D=3D 2M. With HUGETLB_PAGE_ORDER as order_per_bit, as intended, this
+would be (64G / 2M) / 8 =3D=3D 4k. So, that's quite a difference :)
 
-I do agree that the probability of this being a real problem is super low, but at
-the same time it doesn't seem too onerous to clean up.  And in the unlikely case
-that this does cause a problem, the pain on our end can be quite high.
+Also, this restricted the hugetlb_cma area to ((PAGE_SIZE <<
+MAX_PAGE_ORDER) * 8) * PAGE_SIZE (e.g. 128G on x86) , since
+bitmap_alloc uses normal page allocation, and is thus restricted by
+MAX_PAGE_ORDER. Specifying anything about that would fail the CMA
+initialization.
 
-> It feels to me to be approaching "I want a pony" territory.
-> 
-> Or am I just lacking empathy today? :)
-
-Nah, I'm probably asking for a pony, but AFAICT it's a pretty cheap pony.
+- Frank
 
