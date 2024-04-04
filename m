@@ -1,164 +1,183 @@
-Return-Path: <linux-kernel+bounces-131902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44F24898D6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:44:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 561AB898D71
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:46:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C70E51F21F95
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:44:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC3BD28E8B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3429112DDBF;
-	Thu,  4 Apr 2024 17:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EECD12E1C7;
+	Thu,  4 Apr 2024 17:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bBQ85kwM"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nw1DW6YC"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1E81DFCE
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:44:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C68848A;
+	Thu,  4 Apr 2024 17:46:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712252680; cv=none; b=s7n6ut4HfV7TsaCrCChWwiltkGL2UhYLIWzv7vB13KX85/bjdHlQHe1k891qPnNVEF37NrMOOWTiEx9UBmMhAGpcXBcC6XUrvDHJMKfmBOM9fERKDrb+gnGEmfeoe+Nb2nXkGG66wdKgpjqV21byfBh7ga8731lrgnTJ1VFuS3I=
+	t=1712252770; cv=none; b=jE8p+8T55rdf/L/B1rNzP3ZybILzO9pJKGcggOOev7MwZrGV6laLHk8xQ5V8vJ7gaw0iT5tP9ncGAxgQofxtvm325h+z91B64HYy3smyuhi4/7mclLUZrGsamPcNqgGQC+MbLMFYz18HQGQxJoKUN3JHWqTc5FgrwggR68xHFJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712252680; c=relaxed/simple;
-	bh=E8EvdLcWecli+qPyH79beE6yGJ/2t1vYm5PqxsJ7xIc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uhfMe0+X6U2dqmW6aS0MF8z3NVdbYvbuFGI52DdQ+sQoAwW6/QW6q+q3s+aIvhmwnqsS1UEegAGemn0m4DycHlzo7FWlzbpGuWd65qnlU8Cy/QB01fmT7oYLzj1iPgpXbF8BHzzwp/5AaGwlkrWPmdryfimDydBE9Et22YeD45c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bBQ85kwM; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712252677;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M88VuRkfKMVZscqFvkjFz3QDb0lbfRFNBp4u3AbPwH4=;
-	b=bBQ85kwMRvgDZRtJvIl0uFVbY2dySw33hNJPI42178ZNOrs7qBrmEnjfChddSJqyaIBLY8
-	6zVu4ao7x4rUBtC1Vl3Kt40MfxhaB7SQgrEGjKddEVd+oLaA0vAJsiGy5/kWM0L+APF2Qn
-	TXs1mYL0uQ2RmXVqTRMaEmWjTbRnv38=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-248-_vwPB5A-N0mIMDkdcIynVw-1; Thu, 04 Apr 2024 13:44:34 -0400
-X-MC-Unique: _vwPB5A-N0mIMDkdcIynVw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 17ECC88D12A;
-	Thu,  4 Apr 2024 17:44:34 +0000 (UTC)
-Received: from [10.22.33.193] (unknown [10.22.33.193])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 9AF751121306;
-	Thu,  4 Apr 2024 17:44:33 +0000 (UTC)
-Message-ID: <23fd78bb-76a7-46e8-9523-5d2cab4186f5@redhat.com>
-Date: Thu, 4 Apr 2024 13:44:33 -0400
+	s=arc-20240116; t=1712252770; c=relaxed/simple;
+	bh=7UwdsAlWPrt4EKzrLi44XH3NHYbA1Alrh9WETpxWTf8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IsgySFk7thdyNuSgRo2gK0Fw2YF7VcMcyHxCZkmIFUM/EZNFG8PnTTE7kQR4WL2QNPZQXSD/LCWCNoq95AuwYiTBjvBduxNwlXMAAC5zjlwQ6NOCtIN54kVwtLD7cTEoSnlc9R5ZwYqovfNwuLRyNgvYkcqpJuKswy4bTTxzz0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nw1DW6YC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F9FDC433F1;
+	Thu,  4 Apr 2024 17:46:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712252770;
+	bh=7UwdsAlWPrt4EKzrLi44XH3NHYbA1Alrh9WETpxWTf8=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Nw1DW6YCXIsiuXAuv2jlAmIg2MHfAp5cTbvXzB/v6iG4GbqygutIbMkfA9EjE3KyR
+	 Cd93D8gNXdZEsid+rua/UZgRotbE3B7lXrj6ICAExXCjwQ/JKKMlteBJOxpLjhrtCm
+	 VkBthNAmy5jdvVYlh+SrBI23gJcEYyc5y+1waN3CwXs2/dj+OJMzgGTxkjZv8p2eEg
+	 hx2juoiJ5dRCJVRtnxOHJbsDfcHZqEaaAUWvOLgzpl6rMjHhXfYEDZfUv47z54uJml
+	 Lz6F+WK/XeABtfuxbv8eYCAdVj10Cu9h8nUvfNhAdwchSw+b1agYn5LDT2L2Cjj9Yv
+	 eK8Cc7vIgsF3A==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id CF8E9CE0D0C; Thu,  4 Apr 2024 10:46:09 -0700 (PDT)
+Date: Thu, 4 Apr 2024 10:46:09 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
+Cc: frederic@kernel.org, joel@joelfernandes.org, urezki@gmail.com,
+	josh@joshtriplett.org, boqun.feng@gmail.com, rostedt@goodmis.org,
+	mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+	qiang.zhang1211@gmail.com, rcu@vger.kernel.org,
+	linux-kernel@vger.kernel.org, neeraj.upadhyay@kernel.org
+Subject: Re: [PATCH v2] rcu: Reduce synchronize_rcu() delays when all wait
+ heads are in use
+Message-ID: <8d4e54ab-07b8-4a9b-a75c-afbe52929214@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240403105212.237354-1-Neeraj.Upadhyay@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] Make reader optimistic spinning optional
-Content-Language: en-US
-To: Bongkyu Kim <bongkyu7.kim@samsung.com>, John Stultz <jstultz@google.com>
-Cc: peterz@infradead.org, mingo@redhat.com, will@kernel.org,
- boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org
-References: <CGME20230901010734epcas2p4aadced02d68d3db407fda23de34601d2@epcas2p4.samsung.com>
- <20230901010704.18493-1-bongkyu7.kim@samsung.com>
- <CANDhNCoFRr=qizswLm-dzxJK0fHuCx98Z2B1pUspdwGqBEejYg@mail.gmail.com>
- <20240403012132.GA460@KORCO045595.samsungds.net>
- <CANDhNCpvKj6Swer-8DtQEotdnOiqfAg43oZLw_HZs6ogwqPwzg@mail.gmail.com>
- <20240403014207.GA499@KORCO045595.samsungds.net>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240403014207.GA499@KORCO045595.samsungds.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403105212.237354-1-Neeraj.Upadhyay@amd.com>
 
+On Wed, Apr 03, 2024 at 04:22:12PM +0530, Neeraj Upadhyay wrote:
+> When all wait heads are in use, which can happen when
+> rcu_sr_normal_gp_cleanup_work()'s callback processing
+> is slow, any new synchronize_rcu() user's rcu_synchronize
+> node's processing is deferred to future GP periods. This
+> can result in long list of synchronize_rcu() invocations
+> waiting for full grace period processing, which can delay
+> freeing of memory. Mitigate this problem by using first
+> node in the list as wait tail when all wait heads are in use.
+> While methods to speed up callback processing would be needed
+> to recover from this situation, allowing new nodes to complete
+> their grace period can help prevent delays due to a fixed
+> number of wait head nodes.
+> 
+> Signed-off-by: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
 
-On 4/2/24 21:42, Bongkyu Kim wrote:
-> On Tue, Apr 02, 2024 at 06:27:40PM -0700, John Stultz wrote:
->> On Tue, Apr 2, 2024 at 6:21 PM Bongkyu Kim <bongkyu7.kim@samsung.com> wrote:
->>> On Tue, Apr 02, 2024 at 04:46:06PM -0700, John Stultz wrote:
->>>> On Thu, Aug 31, 2023 at 6:07 PM Bongkyu Kim <bongkyu7.kim@samsung.com> wrote:
->>>>> This is rework of the following discussed patch.
->>>>> https://lore.kernel.org/all/20230613043308.GA1027@KORCO045595.samsungds.net/
->>>>>
->>>>> Changes from the previous patch
->>>>> - Split to revert and modify patches
->>>>> - Change according to Waiman Long's review
->>>>>      More wording to documentation part
->>>>>      Change module_param to early_param
->>>>>      Code change by Waiman Long's suggestion
->>>>>
->>>>> In mobile environment, reader optimistic spinning is still useful
->>>>> because there're not many readers. In my test result at android device,
->>>>> it improves application startup time about 3.8%
->>>>> App startup time is most important factor for android user expriences.
->>>>> So, re-enable reader optimistic spinning by this commit. And,
->>>>> make it optional feature by cmdline.
->>>>>
->>>>> Test result:
->>>>> This is 15 application startup performance in our exynos soc.
->>>>> - Cortex A78*2 + Cortex A55*6
->>>>> - unit: ms (lower is better)
->>>>>
->>>>> Application             base  opt_rspin  Diff  Diff(%)
->>>>> --------------------  ------  ---------  ----  -------
->>>>> * Total(geomean)         343        330   -13    +3.8%
->>>>> --------------------  ------  ---------  ----  -------
->>>>> helloworld               110        108    -2    +1.8%
->>>>> Amazon_Seller            397        388    -9    +2.3%
->>>>> Whatsapp                 311        304    -7    +2.3%
->>>>> Simple_PDF_Reader        500        463   -37    +7.4%
->>>>> FaceApp                  330        317   -13    +3.9%
->>>>> Timestamp_Camera_Free    451        443    -8    +1.8%
->>>>> Kindle                   629        597   -32    +5.1%
->>>>> Coinbase                 243        233   -10    +4.1%
->>>>> Firefox                  425        399   -26    +6.1%
->>>>> Candy_Crush_Soda         552        538   -14    +2.5%
->>>>> Hill_Climb_Racing        245        230   -15    +6.1%
->>>>> Call_Recorder            437        426   -11    +2.5%
->>>>> Color_Fill_3D            190        180   -10    +5.3%
->>>>> eToro                    512        505    -7    +1.4%
->>>>> GroupMe                  281        266   -15    +5.3%
->>>>>
->>>> Hey Bongkyu,
->>>>    I wanted to reach out to see what the current status of this patch
->>>> set? I'm seeing other parties trying to work around the loss of the
->>>> optimistic spinning functionality since commit 617f3ef95177
->>>> ("locking/rwsem: Remove reader optimistic spinning") as well, with
->>>> their own custom variants (providing some substantial gains), and
->>>> would really like to have a common solution.
->>>>
->>> I didn't get an reply, so I've been waiting.
->>> Could you let me know about their patch?
->> I don't have insight/access to any other implementations, but I have
->> nudged folks to test your patch and chime in here.
->>
->> Mostly I just wanted to share that others are also seeing performance
->> trouble from the loss of optimistic spinning, so it would be good to
->> get some sort of shared solution upstream.
->>
->> thanks
->> -john
->>
-When this patch series was originally posted last year, we gave some 
-comments and suggestion on how to improve it as well as request for more 
-information on certain area. We were expecting a v2 with the suggested 
-changes, but we never got one and so it just fell off the cliff.
+Seeing no objections, I have queued this for testing and review alongside
+the other synchronize_rcu() speedup patches, thank you!
 
-Please send a v2 with the requested change and we can continue our 
-discussion.
+							Thanx, Paul
 
-Thanks,
-Longman
-
-
+> ---
+> Changes since v1:
+> * Fix use-after-free issue in rcu_sr_normal_gp_cleanup() (Frederic)
+> * Remove WARN_ON_ONCE(!rcu_sr_is_wait_head()) for wait and done tail
+>   (Frederic)
+> * Rebase on top of commit 1c56d246027f ("rcu/tree: Reduce wake up
+>   for synchronize_rcu() common case") (Joel)
+> ---
+>  kernel/rcu/tree.c | 40 +++++++++++++++++++++++-----------------
+>  1 file changed, 23 insertions(+), 17 deletions(-)
+> 
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index a7c7a2b2b527..fe4a59d7cf61 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -1464,14 +1464,11 @@ static void rcu_poll_gp_seq_end_unlocked(unsigned long *snap)
+>   * for this new grace period. Given that there are a fixed
+>   * number of wait nodes, if all wait nodes are in use
+>   * (which can happen when kworker callback processing
+> - * is delayed) and additional grace period is requested.
+> - * This means, a system is slow in processing callbacks.
+> - *
+> - * TODO: If a slow processing is detected, a first node
+> - * in the llist should be used as a wait-tail for this
+> - * grace period, therefore users which should wait due
+> - * to a slow process are handled by _this_ grace period
+> - * and not next.
+> + * is delayed), first node in the llist is used as wait
+> + * tail for this grace period. This means, the first node
+> + * has to go through additional grace periods before it is
+> + * part of the wait callbacks. This should be ok, as
+> + * the system is slow in processing callbacks anyway.
+>   *
+>   * Below is an illustration of how the done and wait
+>   * tail pointers move from one set of rcu_synchronize nodes
+> @@ -1642,7 +1639,6 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+>  		return;
+>  	}
+>  
+> -	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
+>  	head = done->next;
+>  	done->next = NULL;
+>  
+> @@ -1682,13 +1678,21 @@ static void rcu_sr_normal_gp_cleanup(void)
+>  
+>  	rcu_state.srs_wait_tail = NULL;
+>  	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_wait_tail);
+> -	WARN_ON_ONCE(!rcu_sr_is_wait_head(wait_tail));
+>  
+>  	/*
+>  	 * Process (a) and (d) cases. See an illustration.
+>  	 */
+>  	llist_for_each_safe(rcu, next, wait_tail->next) {
+> -		if (rcu_sr_is_wait_head(rcu))
+> +		/*
+> +		 * The done tail may reference a rcu_synchronize node.
+> +		 * Stop at done tail, as using rcu_sr_normal_complete()
+> +		 * from this path can result in use-after-free. This
+> +		 * may occur if, following the wake-up of the synchronize_rcu()
+> +		 * wait contexts and freeing up of node memory,
+> +		 * rcu_sr_normal_gp_cleanup_work() accesses the done tail and
+> +		 * its subsequent nodes.
+> +		 */
+> +		if (wait_tail->next == rcu_state.srs_done_tail)
+>  			break;
+>  
+>  		rcu_sr_normal_complete(rcu);
+> @@ -1743,15 +1747,17 @@ static bool rcu_sr_normal_gp_init(void)
+>  		return start_new_poll;
+>  
+>  	wait_head = rcu_sr_get_wait_head();
+> -	if (!wait_head) {
+> -		// Kick another GP to retry.
+> +	if (wait_head) {
+> +		/* Inject a wait-dummy-node. */
+> +		llist_add(wait_head, &rcu_state.srs_next);
+> +	} else {
+> +		// Kick another GP for first node.
+>  		start_new_poll = true;
+> -		return start_new_poll;
+> +		if (first == rcu_state.srs_done_tail)
+> +			return start_new_poll;
+> +		wait_head = first;
+>  	}
+>  
+> -	/* Inject a wait-dummy-node. */
+> -	llist_add(wait_head, &rcu_state.srs_next);
+> -
+>  	/*
+>  	 * A waiting list of rcu_synchronize nodes should be empty on
+>  	 * this step, since a GP-kthread, rcu_gp_init() -> gp_cleanup(),
+> -- 
+> 2.34.1
+> 
 
