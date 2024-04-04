@@ -1,87 +1,83 @@
-Return-Path: <linux-kernel+bounces-132275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDE3C899258
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:58:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F2A7899259
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:59:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51AE7B22D22
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:58:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7A3D1F2199D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:59:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB93F13C69E;
-	Thu,  4 Apr 2024 23:58:13 +0000 (UTC)
-Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDBCD13C69D;
+	Thu,  4 Apr 2024 23:59:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="PBv8xy6x"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108E76FE1A;
-	Thu,  4 Apr 2024 23:58:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 424216FE1A
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 23:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712275093; cv=none; b=prXVM/rS2LcTCUDGvgKIyY4sYugnxO+qLSfrQxfLxqi3h/2kon1jqen1ap/lf1Df4e0C/cadOOUaxtfxPnAgm9/pjcxA6599jqwLmgaeX11rcvJK+gEVukM2QPtPPbWe8T1kPhSoZ+K+sYohKXRseudyxWPTVv9iY0ikbI2Az4s=
+	t=1712275143; cv=none; b=DtEYGYJTeEHh50UlgPWhPTqA6W8vOhXSFuUsNj4K62a9T/H+ivb7Y2K1bUqVtEfZM8lqcpM+eBig2W6Kd6C078A2oLYZo7VtcUb+Zsboealup0Wyu6ScWjh1R0f0r5kfnZVDD87ysJ5YI/OlPJnT+EFlpLwRzQQRVJdKkamFk/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712275093; c=relaxed/simple;
-	bh=emgljg/gdR0L5XAJHJlVGspTwoRqOqZdn6zYDY1Qqdk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r0nepaNhKid7S+zBJLg78qvPYzVD+aHmYGKHEg8/c7Z62tZuK2SEsarAkCcXMCNO1u1zFNnQvEcObARkDyZpSRr5tXMVrAvW0MjcPzA0/jIdjgoX8HfsUBBbZFxzNFkhgME70jn88NgmdzXaXjtINpJQeDiB5rPtUBpWEttL3P0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5c66b093b86so2088063a12.0;
-        Thu, 04 Apr 2024 16:58:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712275091; x=1712879891;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w6+F1HIV80JqjgLaa8yr1bI7b3c6SmpIQxZcvL1XyDw=;
-        b=S4SCXYY/0XTppAGhMqEubWvbZLI1OdJwOg+L+wvfNOXRoZCUIoU3Ltem9IVhkOY9p9
-         SLBNn4ftLNc73fWmr6wHWHjFkm0jHO9qSGdFJJRTk878bkLLnFfIwYy+Zn9byEXgA1M6
-         oyN8OZIOoA1xMPE3nqlxaFNPdDnCt4PITj/r8+FNH0aqVaJF1ru7gy1AJ7tq8Xk2pOig
-         fBK26h40zhf2Vl/tXJ5rkNyu7KweQnGaRGYpwa6XYjnBB4HaeE9Nt5x6D3oNRAmrjQZ6
-         oPyLapa3Blk1r6LXd61fHHRf43KZrxI82sLTdgNnk2JBSzBNbxAtdn5BBom5yJJ0hl/c
-         3STg==
-X-Forwarded-Encrypted: i=1; AJvYcCV60odMAviYUjFW9yZCeoMglhfoKaOUH95y5rIcefLC2TtqJ67JuIzkh2z+6XVkmt36spbW8d/NDbKNzSeMfJVMtB3+/mLlRSazREzcyb+ufYBEWokcf2miOKBsTmCiFOMT2jiE2QzFS4Kq
-X-Gm-Message-State: AOJu0Yz9Uqas39byFsEL853sfQcaadLZ698JWx77nINyGmlhbIdnxQXO
-	5j9Rllv1PnblVic1kFuAdJNzla3x0Iz+hr58l/6p8tMHyT+m5oeC
-X-Google-Smtp-Source: AGHT+IEZpe+Q0jBuK5BMv1cb3tEJV5eKu5+0rIjPp6LOHI0U/fLZDpu56sSpjEa9JFyiAUwsRkNYig==
-X-Received: by 2002:a17:90b:8cb:b0:2a2:5f73:a578 with SMTP id ds11-20020a17090b08cb00b002a25f73a578mr61401pjb.13.1712275091208;
-        Thu, 04 Apr 2024 16:58:11 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([20.69.120.36])
-        by smtp.gmail.com with ESMTPSA id d6-20020a17090ae28600b002a0187d84f0sm280379pjz.20.2024.04.04.16.58.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 16:58:10 -0700 (PDT)
-Date: Thu, 4 Apr 2024 23:58:03 +0000
-From: Wei Liu <wei.liu@kernel.org>
-To: Saurabh Sengar <ssengar@linux.microsoft.com>
-Cc: kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-	decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-	hpa@zytor.com, peterz@infradead.org, sboyd@kernel.org,
-	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	ssengar@microsoft.com
-Subject: Re: [PATCH v2 1/4] x86/hyperv/vtl: Correct parse_smp_cfg assignment
-Message-ID: <Zg8-i0a1xadK3sSm@liuwe-devbox-debian-v2>
-References: <1712068830-4513-1-git-send-email-ssengar@linux.microsoft.com>
- <1712068830-4513-2-git-send-email-ssengar@linux.microsoft.com>
+	s=arc-20240116; t=1712275143; c=relaxed/simple;
+	bh=wxz1iF4ORS761UxYvf38/XE0YTpsZcHG13BX3FPg1SE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=i2a7g/odxGo9ic6QjeMh5nhBK2wJc+X0eOw4ipn3Cw2gqk3kU27AARP7O+DNON2CYexgrp/xlECE+2l0Ia1itVBHdIoSZkv7x8rCfniPtkYUgekrAaSLVOz+dH/O/oEYo7Q2mNwTAeg/hysnFj2QKwo7bwmKBf+ya/qzOqZDdds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=PBv8xy6x; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1712275139;
+	bh=wxz1iF4ORS761UxYvf38/XE0YTpsZcHG13BX3FPg1SE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=PBv8xy6x6U+tozk/3ZBB4B/IhowisYGZXGi+khtUJ5c8k2AtxDr3S+spZkCdpliLo
+	 N0lzxnMITtTjMsEcMud8YG1kMegImVUNpVpBoePsKuT6XnfV+sVdf1hXATeivHCC90
+	 soSoR0cQYq3EEcEB4GygMi8pcuQGu1+Ott3VcrNEUQRavstX8wltWC5PzCFVxki7hF
+	 PE8dqgoCsVDEFoL+DzNSkOWHtmERiPbeUm3+nuC3UL7760bITg6GUUlIFxNPoZsxir
+	 dSnHOn4Qf5vaMg3jFx+HLnERfEMfhlqmgCrZYPT/oSnD06Leay3ia3K7LqKwfWTOHX
+	 jEhkzE1mI1PBQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V9dr335M9z4wc9;
+	Fri,  5 Apr 2024 10:58:58 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Rob Herring
+ <robh@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org
+Cc: Anatolij Gustschin <agust@denx.de>, Nicholas Piggin <npiggin@gmail.com>,
+ Christophe Leroy <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V"
+ <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH v1 1/1] powerpc/52xx: Replace of_gpio.h by proper one
+In-Reply-To: <Zg0yTnTswS2je9VG@smile.fi.intel.com>
+References: <20240313135645.2066362-1-andriy.shevchenko@linux.intel.com>
+ <Zg0yTnTswS2je9VG@smile.fi.intel.com>
+Date: Fri, 05 Apr 2024 10:58:55 +1100
+Message-ID: <871q7k8ytc.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1712068830-4513-2-git-send-email-ssengar@linux.microsoft.com>
+Content-Type: text/plain
 
-On Tue, Apr 02, 2024 at 07:40:27AM -0700, Saurabh Sengar wrote:
-> VTL platform uses DeviceTree for fetching SMP configuration, assign
-> the correct parsing function 'x86_dtb_parse_smp_config' for it to
-> parse_smp_cfg.
-> 
-> Fixes: c22e19cd2c8a ("x86/hyperv/vtl: Prepare for separate mpparse callbacks")
-> Signed-off-by: Saurabh Sengar <ssengar@linux.microsoft.com>
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
+> On Wed, Mar 13, 2024 at 03:56:45PM +0200, Andy Shevchenko wrote:
+>> of_gpio.h is deprecated and subject to remove.
+>> The driver doesn't use it directly, replace it
+>> with what is really being used.
+>
+> Any comments on this?
 
-Acked-by: Wei Liu <wei.liu@kernel.org>
+No comment :)
+
+I'll take it for 6.10, or do you want me to sneak it in as a fix for 6.9?
+
+cheers
 
