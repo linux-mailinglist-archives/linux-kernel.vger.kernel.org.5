@@ -1,51 +1,57 @@
-Return-Path: <linux-kernel+bounces-130848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1218897DEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 04:56:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58BC9897DF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:00:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 397CE1F2857B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:56:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8704E28BCBC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:00:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA25208A5;
-	Thu,  4 Apr 2024 02:56:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF761CD2C;
+	Thu,  4 Apr 2024 03:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DOYOq1kt"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=metaparadigm.com header.i=@metaparadigm.com header.b="cB8eaMbk"
+Received: from anarch128.org (anarch128.org [23.253.174.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F74EEEB2;
-	Thu,  4 Apr 2024 02:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 789153FC2
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 03:00:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=23.253.174.110
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712199359; cv=none; b=mSiz+APlstW1ljXZskE8dV+mg/iOxpb6u7p1+aCINou+Wy/MMTqUKqo0Z73Dp+3HUt1ZYevStMNpWVylHKEFhIjXVyJiiXAz6V9wDZVxDFEWd+cFL8kJL/R1V03jjnJ3TNGfCNxhV6AizvhvQUbDqn4FhHNFlbBkF5GuVJcSENc=
+	t=1712199630; cv=none; b=kwINY9ESoNNQYzL+AOegqq5njNv/tsbzHb40mmOYV5BmIL6bOIbOszodSah3QM4cmCy6Uc1G5qs/yoSEinwq6zO9ws/w+OskNZVHlrPq4vdhcCTCBd9aVFTQVYDwBHSq4pElNWk/3j3Jy2zitVAqxpP/rs9iG1uJB5Cf1xAKYU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712199359; c=relaxed/simple;
-	bh=woQPwN94SfTkVo2nkrzwmeNCeR1tcNFP0GrDX8U1n6g=;
+	s=arc-20240116; t=1712199630; c=relaxed/simple;
+	bh=5SI9nR0ptSdatwVFzKCc6PAX1XbR4oqA6lwr8yhV49U=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oOO6hyjDrgYEyeqM6WiNg0nyVqPu4f/vz4XKFWPHMz52UQcdoxzDazSOxB3oMqBMcUMfT9xHtWHAHrFelZi4N6L4fTB5JuVDDJyWtG6G12VxXrEr2PKDTX5Gcy88ddmGjA+XXOnAq17cq/5d5nbGonlnwxcRHSIDi4brBAW34r4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DOYOq1kt; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=b2H16tqCkJ6i90mQLPDpV1ZsYZDW4KEWWz9R9e+0Oig=; b=DOYOq1ktip9OrPqyMbwDoNqDtq
-	VB6HauYA/GGMAstDHOFp3X/FsrrMKv6YfXGD+QUD67yFNWCAcxzrPxwIanfV6S3L97X/TEZcue6x1
-	DEi6bN9guWRaHhck/D7JnDVcfH/ggNwDsVGjKVdBzXBBK0zM3jPjOcv259vAlag3vudS0kmURSzoM
-	aJYzWCso5E+7of2Er2nfWcoIvHsHbXLcHILwObAIYPaSB1QJuojxjuRFiDBF8ddzqHDVt2GWbVL/+
-	xR+0t7YyOlbaQgK6MbdXjKGC7weqzQ++wCpmLrtM1OisyiYiLNHGQ3qfa4nDy1kb8yHh9fC1vn6Yz
-	GUTgK+bw==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsDGA-000000012Up-3OOS;
-	Thu, 04 Apr 2024 02:55:27 +0000
-Message-ID: <5a349108-afd9-4290-acb6-8ec176a80a84@infradead.org>
-Date: Wed, 3 Apr 2024 19:55:22 -0700
+	 In-Reply-To:Content-Type; b=qYQCaDi9eJic+f57bgolcr3ZtQyCdFSXhP99QdbzZcqd2JoXwnu5sPEVwxcgxd2IEeIrDjsZ4qngjhq8pB56g9zOu+iNRjWTUeHXXCAwN3Evm6+aW6jzsgeC8rqZG2j9QELiBhYvORwY1HWcfN6i0SAeP6M2bKgC7+9SYQUNfWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=metaparadigm.com; spf=pass smtp.mailfrom=metaparadigm.com; dkim=fail (2048-bit key) header.d=metaparadigm.com header.i=@metaparadigm.com header.b=cB8eaMbk reason="signature verification failed"; arc=none smtp.client-ip=23.253.174.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=metaparadigm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=metaparadigm.com
+Received: from [192.168.1.5] (default-rdns.vocus.co.nz [202.150.110.104] (may be forged))
+	(authenticated bits=0)
+	by anarch128.org (8.15.2/8.15.2/Debian-22) with ESMTPSA id 4342xfv1401784
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Thu, 4 Apr 2024 02:59:44 GMT
+Authentication-Results: anarch128.org;
+    auth=pass;
+    dkim=pass (2048-bit rsa key sha256) header.d=metaparadigm.com header.i=@metaparadigm.com header.b=cB8eaMbk header.a=rsa-sha256 header.s=100043;
+    x-return-mx=pass header.domain=metaparadigm.com policy.is_org=yes (MX Records found: mail.anarch128.org);
+    x-return-mx=pass smtp.domain=metaparadigm.com policy.is_org=yes (MX Records found: mail.anarch128.org)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=metaparadigm.com;
+	s=100043; t=1712199587;
+	bh=5SI9nR0ptSdatwVFzKCc6PAX1XbR4oqA6lwr8yhV49U=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=cB8eaMbkmETi1KzbZgyhSMtfadZe5bTy01fDmxTXWw0hUzPGRubQKlwyGt85X5MQa
+	 VAffgcoeWGbq9FxYWI/ES20XdbOnOQE8mevw2KLJTJM8vCQbFNwnNAuR74UN6Pcppn
+	 vfJi8XOeC1t6DBd+9jBfz57WuN/uC2rwgQmAdEOZBluL3wpGK5l17LftC2m8HGRijy
+	 w3vwf8EkNlBdLNlq30uJlZIsJgkV19gGsd2Mogpr0qORgfKlYJpmVab4Mp66nt8+vx
+	 RIrwisz+8NCTb0s0zbOKackpYA2G/IGh8JVYYdZyEC1c0P88nGxi4Za828K6G3M9Nf
+	 YTq/WvjFCaFjQ==
+Message-ID: <719745d9-cbb6-4691-a037-2ea7fff8494a@metaparadigm.com>
+Date: Thu, 4 Apr 2024 15:59:36 +1300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,92 +59,53 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 01/37] fix missing vmalloc.h includes
-To: Kent Overstreet <kent.overstreet@linux.dev>,
- David Hildenbrand <david@redhat.com>
-Cc: Nathan Chancellor <nathan@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
- mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
- willy@infradead.org, liam.howlett@oracle.com,
- penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
- peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
- will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
- dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
- axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, dennis@kernel.org,
- jhubbard@nvidia.com, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
- paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
- yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
- andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
- vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
- ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
- rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
- vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
- iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
- elver@google.com, dvyukov@google.com, songmuchun@bytedance.com,
- jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com,
- minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- iommu@lists.linux.dev, linux-arch@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
- cgroups@vger.kernel.org
-References: <20240321163705.3067592-1-surenb@google.com>
- <20240321163705.3067592-2-surenb@google.com>
- <20240403211240.GA307137@dev-arch.thelio-3990X>
- <4qk7f3ra5lrqhtvmipmacgzo5qwnugrfxn5dd3j4wubzwqvmv4@vzdhpalbmob3>
- <9e2d09f8-2234-42f3-8481-87bbd9ad4def@redhat.com>
- <qyyo6mjctqm734utdjen4ozhoo3t4ikswzjfjnemp7olwdgyt4@qifwishdzul4>
+Subject: Re: user-space concurrent pipe buffer scheduler interactions
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Jens Axboe <axboe@kernel.dk>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org
+References: <969ccc0f-d909-4b45-908e-e98279777733@metaparadigm.com>
+ <CAHk-=wj3khqjXnHmShPj+tZvC=SyUitTZ7BkDO-rqu_aCVPrXA@mail.gmail.com>
+ <1a116a43-fd2e-4f03-8a17-75816fc62717@metaparadigm.com>
+ <CAHk-=wiOqTAX7nwQqHJ2Ti3dbxM-HrUJq3FD_Gjua5qW=QAoTg@mail.gmail.com>
 Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <qyyo6mjctqm734utdjen4ozhoo3t4ikswzjfjnemp7olwdgyt4@qifwishdzul4>
-Content-Type: text/plain; charset=UTF-8
+From: Michael Clark <michael@metaparadigm.com>
+Organization: Metaparadigm
+In-Reply-To: <CAHk-=wiOqTAX7nwQqHJ2Ti3dbxM-HrUJq3FD_Gjua5qW=QAoTg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-
-
-On 4/3/24 3:57 PM, Kent Overstreet wrote:
-> On Wed, Apr 03, 2024 at 11:48:12PM +0200, David Hildenbrand wrote:
->> On 03.04.24 23:41, Kent Overstreet wrote:
->>> On Wed, Apr 03, 2024 at 02:12:40PM -0700, Nathan Chancellor wrote:
->>>> On Thu, Mar 21, 2024 at 09:36:23AM -0700, Suren Baghdasaryan wrote:
->>>>> From: Kent Overstreet <kent.overstreet@linux.dev>
->>>>>
->>>>> The next patch drops vmalloc.h from a system header in order to fix
->>>>> a circular dependency; this adds it to all the files that were pulling
->>>>> it in implicitly.
->>>>>
->>>>> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
->>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
->>>>> Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+On 4/4/24 09:57, Linus Torvalds wrote:
+> On Wed, 3 Apr 2024 at 13:52, Michael Clark <michael@metaparadigm.com> wrote:
+>>
+>> On 4/4/24 05:56, Linus Torvalds wrote:
+>>> On Tue, 2 Apr 2024 at 13:54, Michael Clark <michael@metaparadigm.com> wrote:
 >>>>
->>>> I bisected an error that I see when building ARCH=loongarch allmodconfig
->>>> to commit 302519d9e80a ("asm-generic/io.h: kill vmalloc.h dependency")
->>>> in -next, which tells me that this patch likely needs to contain
->>>> something along the following lines, as LoongArch was getting
->>>> include/linux/sizes.h transitively through the vmalloc.h include in
->>>> include/asm-generic/io.h.
+>>>> I am working on a low latency cross-platform concurrent pipe buffer
+>>>> using C11 threads and atomics.
 >>>
->>> gcc doesn't appear to be packaged for loongarch for debian (most other
->>> cross compilers are), so that's going to make it hard for me to test
->>> anything...
+>>> You will never get good performance doing spinlocks in user space
+>>> unless you actually tell the scheduler about the spinlocks, and have
+>>> some way to actually sleep on contention.
+>>>
+>>> Which I don't see you as having.
 >>
->> The latest cross-compilers from Arnd [1] include a 13.2.0 one for
->> loongarch64 that works for me. Just in case you haven't heard of Arnds work
->> before and want to give it a shot.
->>
->> [1] https://mirrors.edge.kernel.org/pub/tools/crosstool/
+>> We can work on this.
 > 
-> Thanks for the pointer - but something seems to be busted with the
-> loongarch build, if I'm not mistaken; one of the included headers
-> references loongarch-def.h, but that's not included.
+> It's been tried.
 > 
+> Nobody ever found a use-case that is sufficiently convincing, but see
+> the write-up at
+> 
+>     https://lwn.net/Articles/944895/
 
-That file is part of gcc plugins. If you disable CONFIG_GCC_PLUGINS,
-it should build without having that issue. Of course, there may be other
-unrelated issues....
+It's certainly interesting!
 
+I wouldn't throw in the towel so soon until folks tried a bit harder. 
+Even if we can't make it faster it would be neat to have an Austin Group 
+meeting to give us user-space devels a waitlist_t so we don't hit that 
+brain damaged deadlocky cond_wait foot-gun and realize its totally 
+broken and that we must use cond_timedwait with some stupid delay until 
+we can recheck the condition again in user-space in our "portable code".
 
--- 
-#Randy
+Michael.
 
