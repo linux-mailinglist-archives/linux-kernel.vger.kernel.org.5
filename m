@@ -1,105 +1,124 @@
-Return-Path: <linux-kernel+bounces-131248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7F39898538
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:40:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C44E89853E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:42:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6A9951F25AF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:40:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C2E01F26795
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9F9480049;
-	Thu,  4 Apr 2024 10:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB107F7E4;
+	Thu,  4 Apr 2024 10:42:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HnL0e4Ke"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QtP9R+E8"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5AE17F7E9;
-	Thu,  4 Apr 2024 10:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE211745C4
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 10:42:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712227247; cv=none; b=qEtXhp/Ci0OQZlsuSkGL3+HgQdq1oKCu1+kDnw3/4Ac514RX4Wk58QaMw6Sw+6r5Z2g/KKGYYe/s8xAMpEMMwhsigrC6PmLDa4xVtkSoRuuaHP0wRFkX1pph36pzOGV+gptnxZiT0BVs/wFwKcuAscE97DkECP4ma/TKYbcZn00=
+	t=1712227330; cv=none; b=Jx3sK1aGUCEWBIKNrXAdxznDa7rRicWRTW3ISYRsiIw3tLEH4YaThxEVZKL0HjiyRq+BuN0z2B1MoGpbiiOO+aKxeAvvJUbBjXhiuRoDpP4ygrYbuRj89ud59AoW3rjj3hilM3nCWjQns36/trn53o3vrgbF1BGAF0eKO3K2ovc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712227247; c=relaxed/simple;
-	bh=MNpe8NXr8iBQ9y95lzJMBHR0mcfS2MVo4cooShPcHIY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VJJucXPs/w8Bl+yQ21aSCmNeGXLQ6p0U0ynxvG7wAZ5eaxK4J6HpVmk8hhEDNkZ9gEuaWd/qQvh1XpsFNqjq1RYtI+Lfd2Nlia3u6Z9I2rsTiNaETTZab14fejpmlBXk/sp8O9J4amwUGOnI8rAIO5itkceNnvHuc2w2lzGmYGA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HnL0e4Ke; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51581c51ee6so206510e87.0;
-        Thu, 04 Apr 2024 03:40:44 -0700 (PDT)
+	s=arc-20240116; t=1712227330; c=relaxed/simple;
+	bh=F+ImSYJLyugWmmAj9uepc0So3V1g9t4KB1p1y7LgtK0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=I0wpbDlyeNgL4OlU+qJ/l/fYEkDKqEjh2ryI3YkhMxnz8VuyeFtFXkaC9WdJnOZg3EeY0sHqZ1/ye0xdFE0MVpCiOXg8zv14Dnwo0srw6+2asYuAwpWVj+MOWdINUWUcrdnqU50NRQHkEDIA5r+D4ILSFhz1nDdRTXvPkpZ+RWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QtP9R+E8; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-51588f70d2dso1044625e87.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 03:42:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712227243; x=1712832043; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XHAApY73KEmZsLFXY/9Oln2REALZjiiaA9G+a918PPU=;
-        b=HnL0e4Ke4RzErDFTjrw1ZiydTqUU+gw6l3xKRK7Edf1OyW1dkkI5hqYYxmoU7a0rN9
-         qwXbcdT02bBDTdS92dxmW7JC8MSePk8o6Z0L2BdRlhOOJBGR6F4Q8/hlEmxLIN1u/+nt
-         8LKO3nKmmojOppG2Zc5GXaBmtQcSVnafDEoMqbYvIjm74qRk7ZjytWX9GaSs+O+g1CUK
-         vlVfVonr2LHfAw7qh3MyqGFmhIxwjFZi4dxJp7bSsfPsnAtuv1ID4yFUW4OSk6/l7l+N
-         4xXMJvH1xA67Owb6wACfvYE+Z6X4YAMTZzSVVxMUz01Xd83VAb7eVFkr9aATvB+nu4qe
-         CdfA==
+        d=linaro.org; s=google; t=1712227327; x=1712832127; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pMlr4ISB96FS0s1ezgMhw1dQVyqmmEV48Kuj+0pAf/8=;
+        b=QtP9R+E8ezCozggvQyDR1mJke6OsMUOyu6vQ3E298gdKVrcvIvxiRKNeucmiQSp7Aq
+         6poRsIp7xyyBboZfHbVNQn+hG17nGhoYHs5ZUhgJKO7YUtl/kIXV2i8aw1NdnzEVvShC
+         1ZwYZHzPVVAXLsI7Q4DM+/d/LW9yoBYu4AeFjVfR4qKEeWUmQA4fqOwojPXSSo93CAw5
+         GYA8SPRTnkRWuC2c14Nt6UrML/4JmLcwS6LV/HVMd0VDZgfnIODGLQBbH1SmsIdTztl3
+         ylMx2/oAOgJ6FSR6FpEeUuMSbHwEdcyiijJqYWPqPJSutR6MQknbQbMSwFn6RXTLicyV
+         N49Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712227243; x=1712832043;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XHAApY73KEmZsLFXY/9Oln2REALZjiiaA9G+a918PPU=;
-        b=mf6zULP6iE2tzd4tVyOCsjHH3fVA2Yl1EH2yNgrqW0Wj6BA5hISxspNdZeuqO4AcD/
-         fRYV5Xi0QQRfa7XTH7BQJSTyI2nXHPQ9hjK1CNNicCZMlyD+dBzpt3DTvgJFDsQ5WqOr
-         MXcAFlp19UT5MFYv9Iyd1zLXBwymUrcs3vcpfiB7W531hVgy7/rZPWbKQFQ9yuTr4AJ4
-         l0hrM0bZEyyvRuLYXH/oAEglMOjpGPuHC9t6gkNBX10jM2JgbbqFKnNrdCDg3iSZQtBL
-         1+aWEgnBa/UHDYYrbZiTw7BS5Ff/ksAPb+JvtsLEctl26Dy9eYaC79vX+uIVmcSFTXXf
-         TnGw==
-X-Forwarded-Encrypted: i=1; AJvYcCUZw5K3fPbDgZnihvtXOEVWgm2LtEwEzjWVUipm1DNiZdQRurVBGwzHj3GaZ0UkwNHTUKx8sRM3Z8+TgHQ9GRWhGkitBgHpl1cbQEU0CmeYQqhMPa0Ir/fB4MWU2GarZl1mCgDj
-X-Gm-Message-State: AOJu0YzsUtfwQ5h8UxP5AmHCnmbP/s3xYMp9lPYaZIpfQjsGLFq4Co44
-	JcL/puQ/4G+BPfja9TgdfFtkBRRjihJe7N5+xtFd19JK7Ev3ixtS
-X-Google-Smtp-Source: AGHT+IHR0p+3ho9pbfRNL01gwquYexqbUX64yQ5zJhZK+78xpZmjzybvdAxDqeblPu+VhwI9tuDGjQ==
-X-Received: by 2002:a05:6512:158d:b0:516:c241:a912 with SMTP id bp13-20020a056512158d00b00516c241a912mr1897481lfb.1.1712227242713;
-        Thu, 04 Apr 2024 03:40:42 -0700 (PDT)
-Received: from hoboy.vegasvil.org (195-70-108-137.stat.cablelink.at. [195.70.108.137])
-        by smtp.gmail.com with ESMTPSA id co20-20020a0560000a1400b0034334af2957sm18375303wrb.37.2024.04.04.03.40.41
+        d=1e100.net; s=20230601; t=1712227327; x=1712832127;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pMlr4ISB96FS0s1ezgMhw1dQVyqmmEV48Kuj+0pAf/8=;
+        b=dKWr7o83UXBu73//AWFmDZkl7Nv3FQcUnXIga1oIZv5A7JYO8CMHuOlzLvV0R7LCEs
+         O/Qrj9odq0Qla6sGT1ewtYYFoLTp4Wdi6rpE//Teegrn/qBIoFKYAZ/Ug0Bu8YscP/XX
+         N2ucCt2OCXOUybGkjY427SG5MpUTtyXlQm19J179J7ClUeZrd8Cc4mRrdeI8H5DRvSg5
+         Q48K4w9m2GnFgnMNnxWQrsD35k1e8od+B7+eboAGOamzWEzIjvRptxb0UKgPyEVzIaKE
+         IB/y6jdl8k7bRm6ZlmrlSSrm3GXnuMcz7eYFwCrqreubi+45X9ZcD/SqXdmfRhClEOYN
+         LRtg==
+X-Forwarded-Encrypted: i=1; AJvYcCWNanaMxNKrlcLOww8qH0jNRHKrLoPp14Ny9oBbKYZaMQQApn8dv+wiO6Hz7/VPFoJs3VkSgo6EaTdIpzY2GeRYus81Z1+Dt5ELavwb
+X-Gm-Message-State: AOJu0YxHlQvC1xSbiOBfTaDY2Sgm0v8sJmYBMCBsO1BiP2S4461Ce40/
+	gn4rD9+9aQvcpOcuEt/Aw+tps44oF9oH5pFGObkg7/o6n48JVKU/BXbKBn5TN9A=
+X-Google-Smtp-Source: AGHT+IHHTnr5FGWLUjbBYPIWS8xHHJjMEZgZYgVBrSYPzGMWLUeJY4muZvKJ4gA3iycESCyrF4JSFA==
+X-Received: by 2002:a05:6512:282:b0:513:dda5:a379 with SMTP id j2-20020a056512028200b00513dda5a379mr1513517lfp.57.1712227326729;
+        Thu, 04 Apr 2024 03:42:06 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:f:6020:fdfa:a65d:5f57:ba15])
+        by smtp.gmail.com with ESMTPSA id k6-20020a05600c1c8600b00416244a53b8sm2309923wms.4.2024.04.04.03.42.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 03:40:42 -0700 (PDT)
-Date: Thu, 4 Apr 2024 03:40:40 -0700
-From: Richard Cochran <richardcochran@gmail.com>
-To: Horatiu Vultur <horatiu.vultur@microchip.com>
-Cc: andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, UNGLinuxDriver@microchip.com
-Subject: Re: [PATCH net-next 0/2] net: phy: micrel: lan8814: Enable
- PTP_PF_PEROUT
-Message-ID: <Zg6DqAWbRH9lx7BM@hoboy.vegasvil.org>
-References: <20240404080115.450929-1-horatiu.vultur@microchip.com>
+        Thu, 04 Apr 2024 03:42:06 -0700 (PDT)
+From: Vincent Guittot <vincent.guittot@linaro.org>
+To: lukasz.luba@arm.com,
+	rafael@kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-pm@vger.kernel.org,
+	dietmar.eggemann@arm.com
+Cc: rui.zhang@intel.com,
+	amit.kucheria@verdurent.com,
+	amit.kachhap@gmail.com,
+	daniel.lezcano@linaro.org,
+	viresh.kumar@linaro.org,
+	len.brown@intel.com,
+	pavel@ucw.cz,
+	mhiramat@kernel.org,
+	qyousef@layalina.io,
+	wvw@google.com,
+	xuewen.yan94@gmail.com,
+	Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH] PM:EM: fix wrong utilization estimation in em_cpu_energy()
+Date: Thu,  4 Apr 2024 12:42:00 +0200
+Message-Id: <20240404104200.1672208-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404080115.450929-1-horatiu.vultur@microchip.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 04, 2024 at 10:01:13AM +0200, Horatiu Vultur wrote:
-> Add support for PTP_PF_PEROUT to lan8814. First patch just enables
-> the LTC at probe time, such that it is not required to enable
-> timestamping to have the LTC enabled. While the second patch actually
-> adds support for PTP_PF_PEROUT.
-> 
-> Horatiu Vultur (2):
->   net: phy: micrel: lan8814: Enable LTC at probe time
->   net: phy: micrel: lan8814: Add support for PTP_PF_PEROUT
-> 
->  drivers/net/phy/micrel.c | 379 ++++++++++++++++++++++++++++++++++++---
->  1 file changed, 355 insertions(+), 24 deletions(-)
+Commit 1b600da51073 ("PM: EM: Optimize em_cpu_energy() and remove division")
+has added back map_util_perf() in em_cpu_energy() computation which has
+been removed with the rework of scheduler/cpufreq interface.
+This is wrong because sugov_effective_cpu_perf() already takes care of
+mapping the utilization to a performance level.
 
-For the series:
+Fixes: 1b600da51073 ("PM: EM: Optimize em_cpu_energy() and remove division")
+Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+---
+ include/linux/energy_model.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-Acked-by: Richard Cochran <richardcochran@gmail.com>
+diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+index 770755df852f..70cd7258cd29 100644
+--- a/include/linux/energy_model.h
++++ b/include/linux/energy_model.h
+@@ -245,7 +245,6 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+ 	 * max utilization to the allowed CPU capacity before calculating
+ 	 * effective performance.
+ 	 */
+-	max_util = map_util_perf(max_util);
+ 	max_util = min(max_util, allowed_cpu_cap);
+ 
+ 	/*
+-- 
+2.34.1
+
 
