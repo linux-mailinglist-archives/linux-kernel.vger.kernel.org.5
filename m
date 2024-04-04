@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-132142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE672899030
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:25:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A81B1899036
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:26:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A91D42830AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:25:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6255B2841BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 800EC13CA92;
-	Thu,  4 Apr 2024 21:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A2813CABC;
+	Thu,  4 Apr 2024 21:23:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jYMCYDvR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TiqaHX2c"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C0A13C9DA;
-	Thu,  4 Apr 2024 21:23:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4AA13CA9A;
+	Thu,  4 Apr 2024 21:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712265811; cv=none; b=Q2l2NK8BQxA6Sh7V3UEcbbonLZQnFKECmT6zP3MtD5t20TKK0dMz+/q+M7aIhLojLgkx6xd1Tk3vqo0rrVmsG1jMVIurfccANFBtw9K2OOpGRtuSfETh0SjLh5xL9/6626DS6zP5FR8Gies7CpWupqNJ5IeDa5TgL4TLt+7LZYM=
+	t=1712265812; cv=none; b=ml7+EqifPsiqlwQRLPCZfQrUslwGrKLoXuu+m8mtRwF67PgT9mRWD+vDFQ1CM/Myv/pdx6kVkP0OB6VOCdPni9ZVSS9XpWwyXz5iKWXHCQMUGGe1etxCTHmlqyxxoaddG9OAjC/1LHHoNTnJ0aHWKANQXExCcHboiRdsp0xjvn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712265811; c=relaxed/simple;
-	bh=jTeEuJ5HuYDfWTI1wvH9YlNGGxykqiWfIpqUOk+gGFc=;
+	s=arc-20240116; t=1712265812; c=relaxed/simple;
+	bh=IUd+9jRFc2lGt2t2a5eMx3YAmpCj1Iu0XDsl36tEaoA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IZKmuQOcLUxUl6xZPFCcvN93zB2i/Ul/12XdWRzctzfsRfJdtLGPAfirD9KvrFbt5yDa8HOgfJ0YTBR/ShUqj32zMHFj0KVmsulSwFHZhS3VUYgfgh/pVZujHy4Gj5mrpyBEONoGcE87rnYLw9jvDIKZnPFnfRsrMvJmpNQPAUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jYMCYDvR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89E85C433A6;
-	Thu,  4 Apr 2024 21:23:30 +0000 (UTC)
+	 MIME-Version:Content-Type; b=KmzzBqz85FkhqIPYvr/VF8rXuLOcJWhRlHD5n8LZpwGxO+5R0QmJ7EGJWQGreqSVgYa5rerOeM2BLxD9+L9gyKz+OOqJXNWwBCpl9DIdViWt6cP4+LvauaJkC1EJJQC67TAiwagl6DtYwwbFjr9DqPfMgWBYiNLGFkZU55M6XV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TiqaHX2c; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A1ECC43141;
+	Thu,  4 Apr 2024 21:23:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712265811;
-	bh=jTeEuJ5HuYDfWTI1wvH9YlNGGxykqiWfIpqUOk+gGFc=;
+	s=k20201202; t=1712265812;
+	bh=IUd+9jRFc2lGt2t2a5eMx3YAmpCj1Iu0XDsl36tEaoA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=jYMCYDvRP8Unvaew/ozJj3ZeXLiXdLCyHQQ64gotFLqnH1XFShWzY9KeTnMn3YnSR
-	 G9a2c7gDEmGFCfCXEm7E5QEGl2ewhCwtp9Pbrz9zQAzNJbpMjfW0uaftwxnOF5+joe
-	 Ntm4kKDT2ujmBHDihAR0b1nOKxcebpUrKsqRNSRd2VBQtXXRiD9iGyc5GNhWRDxk2+
-	 rgR1vEgtkOyBp+Yg0mn4NqAtuQsfLSa9clxD2+9x3JFexALSdkzoJ90fApfX+J7Nvy
-	 rYI4mQGBAjiBnSuOYJrPAiUjHCM0rH7CG41chBZ9T82T2T4OPF5oPFGeti9g1ObqDZ
-	 MTc9zW1a7Muag==
+	b=TiqaHX2c963Iy2dRTEveDjur4EUv5YYHkRzC7MP5ZHhpOrqKEPouFDUiIn/EVTvg2
+	 0dIHK4nAxCQQcyI+g4k5GYWNblPvkUIK0Ny4KSfD5+gLC7UTONQnRZdfCMR2OtSlnL
+	 Pu4BUwawoppzcq3D0M1DVZ+KRwuX8HLDYVgPx1ED0be6z6kr2CR+AawEkFsEdchWCJ
+	 hPI5edFtsZtydxWb/UfEw1TOJNV6+5gI1RjCXcXzvn3NPWNP6NgNnvCq9xe3lih+OP
+	 IcRXbonL/jA2vjLbBK532dGvRun7e4pEiso8Qzny04U0P+ABHaUCm008mansWhLSBk
+	 YffbA3zbaunBA==
 From: Bjorn Andersson <andersson@kernel.org>
-To: Andy Gross <agross@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Maximilian Luz <luzmaximilian@gmail.com>,
+To: Sebastian Raase <linux@sraa.de>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
 	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] firmware: qcom: qcm: fix unused qcom_scm_qseecom_allowlist
-Date: Thu,  4 Apr 2024 16:22:58 -0500
-Message-ID: <171226578692.615813.4444393111756948362.b4-ty@kernel.org>
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: qcom: msm8998-yoshino: fix volume-up key
+Date: Thu,  4 Apr 2024 16:22:59 -0500
+Message-ID: <171226578685.615813.8473928683703352189.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231120185623.338608-1-krzysztof.kozlowski@linaro.org>
-References: <20231120185623.338608-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240315225237.1616550-1-linux@sraa.de>
+References: <20240315225237.1616550-1-linux@sraa.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,17 +67,20 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Mon, 20 Nov 2023 19:56:23 +0100, Krzysztof Kozlowski wrote:
-> For !OF builds, the qcom_scm_qseecom_allowlist is unused:
+On Fri, 15 Mar 2024 23:52:29 +0100, Sebastian Raase wrote:
+> The volume-up key is connected to gpio6 on yoshino.
+> Fix button node ordering while at it.
+> Disable pm8998_resin, since it is now unused.
 > 
->   drivers/firmware/qcom/qcom_scm.c:1652:34: error: ‘qcom_scm_qseecom_allowlist’ defined but not used [-Werror=unused-const-variable=]
+> Tested on maple and lilac.
 > 
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] firmware: qcom: qcm: fix unused qcom_scm_qseecom_allowlist
-      commit: e478c5fb6aa10af7b7edbff69bc8aef6fbb5f0ed
+[1/1] arm64: dts: qcom: msm8998-yoshino: fix volume-up key
+      commit: 83ef6a5afc1d5e2270797a164972a3de3bd2ea52
 
 Best regards,
 -- 
