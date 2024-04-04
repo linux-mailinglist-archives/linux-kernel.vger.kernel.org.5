@@ -1,364 +1,291 @@
-Return-Path: <linux-kernel+bounces-131099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131085-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0811898317
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:21:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 050CE8982E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:15:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BC961F29AC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:21:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF07A2833BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:15:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B9EC5B208;
-	Thu,  4 Apr 2024 08:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A896764A9F;
+	Thu,  4 Apr 2024 08:15:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="wfMQVTtQ"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XuZpFrho"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFA4D60ED0
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB1652C189
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:15:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712218905; cv=none; b=Q+kvoTi9aHEUD5/4xQbB2Y40YH4zZahCjV9W3F+ZhFblrOREksB/ag48el56T3Gqvj4arY6PoWxwArxatrwNnq+oOj2qYKLWKQi5g91hzVxg1UBtkbauq9jbPgDImuPa4CUdUdWmbhL1+uhnAKl/o1X5Z8xyKh00cAv3iXN36kM=
+	t=1712218510; cv=none; b=msPLic9FI8QwZw4aScxBLWsh3aE3TQDfL2VTkPTxWvm9q9PzXxpArJXu7zN/INVX+9kZxDp8pKipNjKzGdxAdEG4VHDxYQ6Tcn+n0piC9EYa/B0uhCMJ4HU2FVRIj7mqopIj6Hb0nGr6WUgfjt+33qzskrQpoHhLzgwycKYyoDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712218905; c=relaxed/simple;
-	bh=j9RezVx6nnypGN229oDS3Eh0bBZFvsKL4o/ko5wjG2U=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 MIME-Version:Content-Type; b=KyZ2RYDRjgZbKEQPZtgvjpV8PYhpdOTCJxJ32XIuM2ZDRpIIFz4up8USqhMEV7SNrRzH1qkL3klzWRJwEgAfzM6cCb9VM7T1O6KZT7oC5HfRoETcyix+e8dg7s6Ks0+LsgEXqgB33qIdbK2kEJwDM1GIGn+xMgfnzgkn2GsuT0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=wfMQVTtQ; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-516c7716c1fso657673e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 01:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712218900; x=1712823700; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=CPwL4Hhi6eMHXODzuzMBAv39xZC80TOzZvNrDXAf1dg=;
-        b=wfMQVTtQC9eyktjGDzvcd+66BuD6RKKIsRwvCwF6RF2IIW29jH+bqMu8GoXGUoCjqa
-         qC8RTnKstaFiF2iHgvp9ooAgYJGct2HnqJKWu4W1UZAexzKTzGLolNPfjEOoW6YBoLhF
-         anaOdY1E7hBPtSOmRy7P67+TRYYskz5x9TCvy4Ufove7kZqrzZkCMljpk5AltouO7Q/U
-         tGYm1Zp38np9EbNj2m31oQCcA1CyX0l1bzhA+LxiVRGlmaY8MK/EvIhkFHirBD1Tj+5R
-         4hMCFIfeINqXu832s7LxC0kN8sZ8Vtn14cEhH/xExPNT1SoXsyFN9PgsMCsMusuJPnFk
-         Ohxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712218900; x=1712823700;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CPwL4Hhi6eMHXODzuzMBAv39xZC80TOzZvNrDXAf1dg=;
-        b=e3TFTNkQpbuhYGWkcw/qcPuyaBE9AZR7YMYcCNsi1F51r3ufmoefxxMZgxWr+BGIGx
-         /eNfTTxQ9mV+4xT1lMcXQQqU3mLBDAGqLcXqwhBoUpufKF8xXkqUe4KYxrEeKzYNTxN1
-         Z9l6iKppL6KHdyhTyta4qDe18dW7pfUXidv9Hai2Z84+gy9jbgRE+W4rF36swKkIgvri
-         Cslg1z9EJyuiOjuGGZPQg0A5WQ/WMcj2nbuCjDV6VlCJ/6AgNuZNdM6VTAEjQBmORZVN
-         DtiYUax/ALORSW+tltZDhCXSETb7Krx8KIPrGdr2SidjW4GkLtWYKZruOXdc/xC0qMoE
-         eJAg==
-X-Forwarded-Encrypted: i=1; AJvYcCV2fJY+Bt9aGPmDOvkcJ1sn1WeJgoDPcpt1p/r2ijjJJJ/v52XENXBSXZ7SsUCYnfL5wi9tbggqki5XRg0py6vN11vieEwRAET7RX/u
-X-Gm-Message-State: AOJu0YzoyArHqKDwThbSRxw66iuDc4nf5T0B2SL5+VCW7h3SV2bezGBz
-	xaTFeq3hN8TKVmf0vUgF6tPdh7EZI/rGrOLKI3gBP7/KGbh6p3RXGtYgroRguNk=
-X-Google-Smtp-Source: AGHT+IFUEwVuNlanR1q98I8Zl8lkNJ31ayYDfyh+WNpgcvSLagazbm4WrPf/D1u5iJDSqbZMTQL5rA==
-X-Received: by 2002:a19:a416:0:b0:516:d0c2:755 with SMTP id q22-20020a19a416000000b00516d0c20755mr81615lfc.63.1712218899806;
-        Thu, 04 Apr 2024 01:21:39 -0700 (PDT)
-Received: from localhost ([2a01:e0a:3c5:5fb1:b7ad:8118:73f1:92e5])
-        by smtp.gmail.com with ESMTPSA id j16-20020a05600c1c1000b004156e3c0149sm1848043wms.0.2024.04.04.01.21.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 01:21:39 -0700 (PDT)
-References: <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-0-99ecdfdc87fc@linaro.org>
- <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-2-99ecdfdc87fc@linaro.org>
-User-agent: mu4e 1.10.8; emacs 29.2
-From: Jerome Brunet <jbrunet@baylibre.com>
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Jerome Brunet
- <jbrunet@baylibre.com>, Kevin Hilman <khilman@baylibre.com>, Michael
- Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Jagan Teki
- <jagan@amarulasolutions.com>, Nicolas Belin <nbelin@baylibre.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v12 2/7] clk: meson: add vclk driver
-Date: Thu, 04 Apr 2024 10:13:19 +0200
-In-reply-to: <20240403-amlogic-v6-4-upstream-dsi-ccf-vim3-v12-2-99ecdfdc87fc@linaro.org>
-Message-ID: <1jmsq9pmgd.fsf@starbuckisacylon.baylibre.com>
+	s=arc-20240116; t=1712218510; c=relaxed/simple;
+	bh=rDx1Vdvila5gE3tw+63m63a1UWB5kSbNMcwAZPHZbok=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
+	 References:In-Reply-To; b=Y7SoF/9z/2f9oswtg3u/5wmD/M9NZNlVW+6jmsZifPo3SBvWO6sjEUOZy7TQXPom0xI6EOGDJPJnl6dJQqPmLo7GH+aK92EzOyqKm0Xjg1ozcutIAhFKV/ioz+mPYBxr1LRfLRv50cqIJNzeRdVmbd0o1LfDBleqDdsQQqjBnCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XuZpFrho; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD8D4C43390;
+	Thu,  4 Apr 2024 08:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712218509;
+	bh=rDx1Vdvila5gE3tw+63m63a1UWB5kSbNMcwAZPHZbok=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XuZpFrhowh1PudMG3H4N/XVYh5rgMlxISGhfuM5/psqb8qyYu24VBlBiiAmkF3g55
+	 TtdVxVh/d0A5n1VbDKxDvRTzU7YXP/qduNjvo9Ll/lBzDzsHASy+ZIV3/sThJgkdvU
+	 rHpuQPgri0lQ2VU2MVZn0sotkgYTbcpPJVDe07ji1CStlay6P8PfcaJ0n+oxydN6J8
+	 BWfnWHqrYztKF3QPxSUCPWbwaWSJWveddcGj0rLI3ADqDtGgRNHsbVSzNOQyDSmht9
+	 8OJ13lxD0FVgJgUwLCfcUf0JXld7tbJ3edAKa4RosG7jQ5dlXnAFXBQq0MVlxucZkz
+	 qhD3wC4N05YXQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 04 Apr 2024 11:15:04 +0300
+Message-Id: <D0B6SY8DJ5RC.KLZ08YRNLOH3@kernel.org>
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Mark Rutland" <mark.rutland@arm.com>, <linux-kernel@vger.kernel.org>
+Cc: <anil.s.keshavamurthy@intel.com>, <aou@eecs.berkeley.edu>,
+ <catalin.marinas@arm.com>, <davem@davemloft.net>,
+ <linux-arm-kernel@lists.infradead.org>, <mhiramat@kernel.org>,
+ <naveen.n.rao@linux.ibm.com>, <palmer@dabbelt.com>,
+ <paul.walmsley@sifive.com>, <will@kernel.org>
+Subject: Re: [PATCH v2 4/4] kprobes: Remove core dependency on modules
+X-Mailer: aerc 0.17.0
+References: <20240403150154.667649-1-mark.rutland@arm.com>
+ <20240403150154.667649-5-mark.rutland@arm.com>
+In-Reply-To: <20240403150154.667649-5-mark.rutland@arm.com>
 
-
-On Wed 03 Apr 2024 at 09:46, Neil Armstrong <neil.armstrong@linaro.org> wrote:
-
-> The VCLK and VCLK_DIV clocks have supplementary bits.
+On Wed Apr 3, 2024 at 6:01 PM EEST, Mark Rutland wrote:
+> From: Jarkko Sakkinen <jarkko@kernel.org>
 >
-> The VCLK gate has a "SOFT RESET" bit to toggle after the whole
-> VCLK sub-tree rate has been set, this is implemented in
-> the gate enable callback.
+> Tracing with kprobes while running a monolithic kernel is currently
+> impossible because KPROBES depends on MODULES. While this dependency is
+> necessary when HAVE_KPROBES_ALLOC=3Dn and the core kprobes code allocates
+> memory using module_alloc(), all the other module-specific code only
+> exist to handle the case when MODULES=3Dy, and can be hidden behind
+> ifdeffery.
 >
-> The VCLK_DIV clocks as enable and reset bits used to disable
-> and reset the divider, associated with CLK_SET_RATE_GATE it ensures
-> the rate is set while the divider is disabled and in reset mode.
+> Add the necessary ifdeffery, and remove the dependency on MODULES=3Dy whe=
+n
+> HAVE_KPROBES_ALLOC=3Dy.
 >
-> The VCLK_DIV enable bit isn't implemented as a gate since it's part
-> of the divider logic and vendor does this exact sequence to ensure
-> the divider is correctly set.
-
-The checkpatch warning is still there. Is it a choice or a mistake ?
-
-Documentation says "GPL v2" exists for historic reason which seems to
-hint "GPL" is preferred, and I suppose this is why checkpatch warns for
-it.
-
+> As of this patch kprobes can be used when MODULES=3Dn on arm64 and
+> riscv. All other architectures still depend on MODULES, either by virtue
+> of the core dependency on MODULES when HAVE_KPROBES_ALLOC=3Dn, or by
+> virtue of an explciit dependency on MODULES in arch code.
 >
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Other architectures can enable support by implementing their own
+> kprobes_alloc_insn_page() and kprobes_free_insn_page() which do not
+> depend on MODULES.
+>
+> Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> Link: https://lore.kernel.org/lkml/20240326134616.7691-1-jarkko@kernel.or=
+g/
+> [Mark: Remove execmem changes, depend on HAVE_KPROBES_ALLOC]
+> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
+> Cc: Albert Ou <aou@eecs.berkeley.edu>
+> Cc: Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Cc: Naveen N. Rao <naveen.n.rao@linux.ibm.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Will Deacon <will@kernel.org>
 > ---
->  drivers/clk/meson/Kconfig  |   4 ++
->  drivers/clk/meson/Makefile |   1 +
->  drivers/clk/meson/vclk.c   | 141 +++++++++++++++++++++++++++++++++++++++++++++
->  drivers/clk/meson/vclk.h   |  51 ++++++++++++++++
->  4 files changed, 197 insertions(+)
+>  arch/Kconfig                |  2 +-
+>  kernel/kprobes.c            | 46 ++++++++++++++++++++++---------------
+>  kernel/trace/trace_kprobe.c | 15 ++++++++++--
+>  3 files changed, 41 insertions(+), 22 deletions(-)
 >
-> diff --git a/drivers/clk/meson/Kconfig b/drivers/clk/meson/Kconfig
-> index 29ffd14d267b..8a9823789fa3 100644
-> --- a/drivers/clk/meson/Kconfig
-> +++ b/drivers/clk/meson/Kconfig
-> @@ -30,6 +30,10 @@ config COMMON_CLK_MESON_VID_PLL_DIV
->  	tristate
->  	select COMMON_CLK_MESON_REGMAP
->  
-> +config COMMON_CLK_MESON_VCLK
-> +	tristate
-> +	select COMMON_CLK_MESON_REGMAP
+> diff --git a/arch/Kconfig b/arch/Kconfig
+> index 85bb59f7b8c07..0df2c88547b3c 100644
+> --- a/arch/Kconfig
+> +++ b/arch/Kconfig
+> @@ -52,7 +52,7 @@ config GENERIC_ENTRY
+> =20
+>  config KPROBES
+>  	bool "Kprobes"
+> -	depends on MODULES
+> +	depends on MODULES || HAVE_KPROBES_ALLOC
+>  	depends on HAVE_KPROBES
+>  	select KALLSYMS
+>  	select TASKS_RCU if PREEMPTION
+> diff --git a/kernel/kprobes.c b/kernel/kprobes.c
+> index fa2ee4e59eca2..ec4493a41b505 100644
+> --- a/kernel/kprobes.c
+> +++ b/kernel/kprobes.c
+> @@ -1594,6 +1594,7 @@ static int check_kprobe_address_safe(struct kprobe =
+*p,
+>  			goto out;
+>  		}
+> =20
+> +#ifdef CONFIG_MODULES
+>  		/*
+>  		 * If the module freed '.init.text', we couldn't insert
+>  		 * kprobes in there.
+> @@ -1604,7 +1605,9 @@ static int check_kprobe_address_safe(struct kprobe =
+*p,
+>  			*probed_mod =3D NULL;
+>  			ret =3D -ENOENT;
+>  		}
+> +#endif /* CONFIG_MODULES */
+>  	}
 > +
->  config COMMON_CLK_MESON_CLKC_UTILS
->  	tristate
->  
-> diff --git a/drivers/clk/meson/Makefile b/drivers/clk/meson/Makefile
-> index 9ee4b954c896..9ba43fe7a07a 100644
-> --- a/drivers/clk/meson/Makefile
-> +++ b/drivers/clk/meson/Makefile
-> @@ -12,6 +12,7 @@ obj-$(CONFIG_COMMON_CLK_MESON_PLL) += clk-pll.o
->  obj-$(CONFIG_COMMON_CLK_MESON_REGMAP) += clk-regmap.o
->  obj-$(CONFIG_COMMON_CLK_MESON_SCLK_DIV) += sclk-div.o
->  obj-$(CONFIG_COMMON_CLK_MESON_VID_PLL_DIV) += vid-pll-div.o
-> +obj-$(CONFIG_COMMON_CLK_MESON_VCLK) += vclk.o
->  
->  # Amlogic Clock controllers
->  
-> diff --git a/drivers/clk/meson/vclk.c b/drivers/clk/meson/vclk.c
-> new file mode 100644
-> index 000000000000..45dc216941ea
-> --- /dev/null
-> +++ b/drivers/clk/meson/vclk.c
-> @@ -0,0 +1,141 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (c) 2024 Neil Armstrong <neil.armstrong@linaro.org>
-> + */
-> +
-> +#include <linux/module.h>
-> +#include "vclk.h"
-> +
-> +/* The VCLK gate has a supplementary reset bit to pulse after ungating */
-> +
-> +static inline struct meson_vclk_gate_data *
-> +clk_get_meson_vclk_gate_data(struct clk_regmap *clk)
+>  out:
+>  	preempt_enable();
+>  	jump_label_unlock();
+> @@ -2484,24 +2487,6 @@ int kprobe_add_area_blacklist(unsigned long start,=
+ unsigned long end)
+>  	return 0;
+>  }
+> =20
+> -/* Remove all symbols in given area from kprobe blacklist */
+> -static void kprobe_remove_area_blacklist(unsigned long start, unsigned l=
+ong end)
+> -{
+> -	struct kprobe_blacklist_entry *ent, *n;
+> -
+> -	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
+> -		if (ent->start_addr < start || ent->start_addr >=3D end)
+> -			continue;
+> -		list_del(&ent->list);
+> -		kfree(ent);
+> -	}
+> -}
+> -
+> -static void kprobe_remove_ksym_blacklist(unsigned long entry)
+> -{
+> -	kprobe_remove_area_blacklist(entry, entry + 1);
+> -}
+> -
+>  int __weak arch_kprobe_get_kallsym(unsigned int *symnum, unsigned long *=
+value,
+>  				   char *type, char *sym)
+>  {
+> @@ -2566,6 +2551,25 @@ static int __init populate_kprobe_blacklist(unsign=
+ed long *start,
+>  	return ret ? : arch_populate_kprobe_blacklist();
+>  }
+> =20
+> +#ifdef CONFIG_MODULES
+> +/* Remove all symbols in given area from kprobe blacklist */
+> +static void kprobe_remove_area_blacklist(unsigned long start, unsigned l=
+ong end)
 > +{
-> +	return (struct meson_vclk_gate_data *)clk->data;
+> +	struct kprobe_blacklist_entry *ent, *n;
+> +
+> +	list_for_each_entry_safe(ent, n, &kprobe_blacklist, list) {
+> +		if (ent->start_addr < start || ent->start_addr >=3D end)
+> +			continue;
+> +		list_del(&ent->list);
+> +		kfree(ent);
+> +	}
 > +}
 > +
-> +static int meson_vclk_gate_enable(struct clk_hw *hw)
+> +static void kprobe_remove_ksym_blacklist(unsigned long entry)
 > +{
-> +	struct clk_regmap *clk = to_clk_regmap(hw);
-> +	struct meson_vclk_gate_data *vclk = clk_get_meson_vclk_gate_data(clk);
-> +
-> +	meson_parm_write(clk->map, &vclk->enable, 1);
-> +
-> +	/* Do a reset pulse */
-> +	meson_parm_write(clk->map, &vclk->reset, 1);
-> +	meson_parm_write(clk->map, &vclk->reset, 0);
-> +
-> +	return 0;
+> +	kprobe_remove_area_blacklist(entry, entry + 1);
 > +}
 > +
-> +static void meson_vclk_gate_disable(struct clk_hw *hw)
-> +{
-> +	struct clk_regmap *clk = to_clk_regmap(hw);
-> +	struct meson_vclk_gate_data *vclk = clk_get_meson_vclk_gate_data(clk);
+>  static void add_module_kprobe_blacklist(struct module *mod)
+>  {
+>  	unsigned long start, end;
+> @@ -2662,6 +2666,9 @@ static int kprobes_module_callback(struct notifier_=
+block *nb,
+>  	mutex_unlock(&kprobe_mutex);
+>  	return NOTIFY_DONE;
+>  }
+> +#else
+> +#define kprobes_module_callback	(NULL)
+> +#endif /* CONFIG_MODULES */
+> =20
+>  static struct notifier_block kprobe_module_nb =3D {
+>  	.notifier_call =3D kprobes_module_callback,
+> @@ -2726,7 +2733,8 @@ static int __init init_kprobes(void)
+>  	err =3D arch_init_kprobes();
+>  	if (!err)
+>  		err =3D register_die_notifier(&kprobe_exceptions_nb);
+> -	if (!err)
 > +
-> +	meson_parm_write(clk->map, &vclk->enable, 0);
-> +}
-> +
-> +static int meson_vclk_gate_is_enabled(struct clk_hw *hw)
-> +{
-> +	struct clk_regmap *clk = to_clk_regmap(hw);
-> +	struct meson_vclk_gate_data *vclk = clk_get_meson_vclk_gate_data(clk);
-> +
-> +	return meson_parm_read(clk->map, &vclk->enable);
-> +}
-> +
-> +const struct clk_ops meson_vclk_gate_ops = {
-> +	.enable = meson_vclk_gate_enable,
-> +	.disable = meson_vclk_gate_disable,
-> +	.is_enabled = meson_vclk_gate_is_enabled,
-> +};
-> +EXPORT_SYMBOL_GPL(meson_vclk_gate_ops);
-> +
-> +/* The VCLK Divider has supplementary reset & enable bits */
-> +
-> +static inline struct meson_vclk_div_data *
-> +clk_get_meson_vclk_div_data(struct clk_regmap *clk)
-> +{
-> +	return (struct meson_vclk_div_data *)clk->data;
-> +}
-> +
-> +static unsigned long meson_vclk_div_recalc_rate(struct clk_hw *hw,
-> +						unsigned long prate)
-> +{
-> +	struct clk_regmap *clk = to_clk_regmap(hw);
-> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
-> +
-> +	return divider_recalc_rate(hw, prate, meson_parm_read(clk->map, &vclk->div),
-> +				   vclk->table, vclk->flags, vclk->div.width);
-> +}
-> +
-> +static int meson_vclk_div_determine_rate(struct clk_hw *hw,
-> +					 struct clk_rate_request *req)
-> +{
-> +	struct clk_regmap *clk = to_clk_regmap(hw);
-> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
-> +
-> +	return divider_determine_rate(hw, req, vclk->table, vclk->div.width,
-> +				      vclk->flags);
-> +}
-> +
-> +static int meson_vclk_div_set_rate(struct clk_hw *hw, unsigned long rate,
-> +				   unsigned long parent_rate)
-> +{
-> +	struct clk_regmap *clk = to_clk_regmap(hw);
-> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
-> +	int ret;
-> +
-> +	ret = divider_get_val(rate, parent_rate, vclk->table, vclk->div.width,
-> +			      vclk->flags);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	meson_parm_write(clk->map, &vclk->div, ret);
-> +
-> +	return 0;
-> +};
-> +
-> +static int meson_vclk_div_enable(struct clk_hw *hw)
-> +{
-> +	struct clk_regmap *clk = to_clk_regmap(hw);
-> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
-> +
-> +	/* Unreset the divider when ungating */
-> +	meson_parm_write(clk->map, &vclk->reset, 0);
-> +	meson_parm_write(clk->map, &vclk->enable, 1);
-> +
-> +	return 0;
-> +}
-> +
-> +static void meson_vclk_div_disable(struct clk_hw *hw)
-> +{
-> +	struct clk_regmap *clk = to_clk_regmap(hw);
-> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
-> +
-> +	/* Reset the divider when gating */
-> +	meson_parm_write(clk->map, &vclk->enable, 0);
-> +	meson_parm_write(clk->map, &vclk->reset, 1);
-> +}
-> +
-> +static int meson_vclk_div_is_enabled(struct clk_hw *hw)
-> +{
-> +	struct clk_regmap *clk = to_clk_regmap(hw);
-> +	struct meson_vclk_div_data *vclk = clk_get_meson_vclk_div_data(clk);
-> +
-> +	return meson_parm_read(clk->map, &vclk->enable);
-> +}
-> +
-> +const struct clk_ops meson_vclk_div_ops = {
-> +	.recalc_rate = meson_vclk_div_recalc_rate,
-> +	.determine_rate = meson_vclk_div_determine_rate,
-> +	.set_rate = meson_vclk_div_set_rate,
-> +	.enable = meson_vclk_div_enable,
-> +	.disable = meson_vclk_div_disable,
-> +	.is_enabled = meson_vclk_div_is_enabled,
-> +};
-> +EXPORT_SYMBOL_GPL(meson_vclk_div_ops);
-> +
-> +MODULE_DESCRIPTION("Amlogic vclk clock driver");
-> +MODULE_AUTHOR("Neil Armstrong <neil.armstrong@linaro.org>");
-> +MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/clk/meson/vclk.h b/drivers/clk/meson/vclk.h
-> new file mode 100644
-> index 000000000000..20b0b181db09
-> --- /dev/null
-> +++ b/drivers/clk/meson/vclk.h
-> @@ -0,0 +1,51 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (c) 2024 Neil Armstrong <neil.armstrong@linaro.org>
-> + */
-> +
-> +#ifndef __VCLK_H
-> +#define __VCLK_H
-> +
-> +#include "clk-regmap.h"
-> +#include "parm.h"
-> +
-> +/**
-> + * struct meson_vclk_gate_data - vclk_gate regmap backed specific data
-> + *
-> + * @enable:	vclk enable field
-> + * @reset:	vclk reset field
-> + * @flags:	hardware-specific flags
-> + *
-> + * Flags:
-> + * Same as clk_gate except CLK_GATE_HIWORD_MASK which is ignored
-> + */
-> +struct meson_vclk_gate_data {
-> +	struct parm enable;
-> +	struct parm reset;
-> +	u8 flags;
-> +};
-> +
-> +extern const struct clk_ops meson_vclk_gate_ops;
-> +
-> +/**
-> + * struct meson_vclk_div_data - vclk_div regmap back specific data
-> + *
-> + * @div:	divider field
-> + * @enable:	vclk divider enable field
-> + * @reset:	vclk divider reset field
-> + * @table:	array of value/divider pairs, last entry should have div = 0
-> + *
-> + * Flags:
-> + * Same as clk_divider except CLK_DIVIDER_HIWORD_MASK which is ignored
-> + */
-> +struct meson_vclk_div_data {
-> +	struct parm div;
-> +	struct parm enable;
-> +	struct parm reset;
-> +	const struct clk_div_table *table;
-> +	u8 flags;
-> +};
-> +
-> +extern const struct clk_ops meson_vclk_div_ops;
-> +
-> +#endif /* __VCLK_H */
+> +	if (!err && IS_ENABLED(CONFIG_MODULES))
+>  		err =3D register_module_notifier(&kprobe_module_nb);
+> =20
+>  	kprobes_initialized =3D (err =3D=3D 0);
+> diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+> index 14099cc17fc9e..c509ba776e679 100644
+> --- a/kernel/trace/trace_kprobe.c
+> +++ b/kernel/trace/trace_kprobe.c
+> @@ -111,6 +111,7 @@ static nokprobe_inline bool trace_kprobe_within_modul=
+e(struct trace_kprobe *tk,
+>  	return strncmp(module_name(mod), name, len) =3D=3D 0 && name[len] =3D=
+=3D ':';
+>  }
+> =20
+> +#ifdef CONFIG_MODULES
+>  static nokprobe_inline bool trace_kprobe_module_exist(struct trace_kprob=
+e *tk)
+>  {
+>  	char *p;
+> @@ -129,6 +130,9 @@ static nokprobe_inline bool trace_kprobe_module_exist=
+(struct trace_kprobe *tk)
+> =20
+>  	return ret;
+>  }
+> +#else
+> +#define trace_kprobe_module_exist(tk) false /* aka a module never exists=
+ */
+> +#endif /* CONFIG_MODULES */
+> =20
+>  static bool trace_kprobe_is_busy(struct dyn_event *ev)
+>  {
+> @@ -670,6 +674,7 @@ static int register_trace_kprobe(struct trace_kprobe =
+*tk)
+>  	return ret;
+>  }
+> =20
+> +#ifdef CONFIG_MODULES
+>  /* Module notifier call back, checking event on the module */
+>  static int trace_kprobe_module_callback(struct notifier_block *nb,
+>  				       unsigned long val, void *data)
+> @@ -699,6 +704,9 @@ static int trace_kprobe_module_callback(struct notifi=
+er_block *nb,
+> =20
+>  	return NOTIFY_DONE;
+>  }
+> +#else
+> +#define trace_kprobe_module_callback (NULL)
+> +#endif /* CONFIG_MODULES */
+> =20
+>  static struct notifier_block trace_kprobe_module_nb =3D {
+>  	.notifier_call =3D trace_kprobe_module_callback,
+> @@ -1933,8 +1941,11 @@ static __init int init_kprobe_trace_early(void)
+>  	if (ret)
+>  		return ret;
+> =20
+> -	if (register_module_notifier(&trace_kprobe_module_nb))
+> -		return -EINVAL;
+> +	if (IS_ENABLED(CONFIG_MODULES)) {
+> +		ret =3D register_module_notifier(&trace_kprobe_module_nb);
+> +		if (ret)
+> +			return -EINVAL;
+> +	}
+> =20
+>  	return 0;
+>  }
 
+2/4, 3/4, 4/4:
 
--- 
-Jerome
+Tested-by: Jarkko Sakkinen <jarkko@kernel.org> # arch/riscv
+
+BR, Jarkko
 
