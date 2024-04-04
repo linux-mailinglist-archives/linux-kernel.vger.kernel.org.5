@@ -1,230 +1,171 @@
-Return-Path: <linux-kernel+bounces-131159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8F238983DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:15:59 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 609798983DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:19:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25E841F221AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:15:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90AFD1C22E13
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 206427442A;
-	Thu,  4 Apr 2024 09:15:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A302274410;
+	Thu,  4 Apr 2024 09:19:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HbFgGQgh"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rhNiLeBW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GdXeHOPa"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA7F5E07E
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 09:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EDBB5E07E;
+	Thu,  4 Apr 2024 09:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712222153; cv=none; b=GQteFUSkft2acTsgiTyFxRRa9xlex0/FDA8gLrwd6n7UnowyYbGgqcHDFDjPpTtiAPqMeImn3Oqa1JfsVWWlw1ObzQhU14V6BfohSv8GLLRNEgKJqWRF07lchESbIgL4lYcGkZgoEetmxZ9JTA99PkSGxuSblnfA2uRTipo6y5c=
+	t=1712222349; cv=none; b=X9A9NTNjbLo6ng/e97pmzRXgJdLqiJ8UEUt8z5susZihAcXaTkxcW5g7SIgeYlyw9D15/Bq+66PUT4sKUQkbayJSx73uqcF+AKPBYP8PXAFkhtS0FEoo/3qSZOWC6QvUJhzjZ2ANj5SNYWCSZ28HqP9cDbF0ud2jPG3haQQDEWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712222153; c=relaxed/simple;
-	bh=iYeuE1M8+1AoJzcT/saQB4j4EUFDY6aBgr+HmHWXSBA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oXi+35xwEn7ZZ0rehe0PQG8ACjv0DXPDyVkxr9RhKPNZKs0z3iIBPx7Ofjxu13aBL7gIVT5Ttd+h5ueo64MUvM9Z7Hdf4F04Kr3eWlDvXLk2IB92RBwV/AvugBvsEkNY8rZ5Mt+8deL07t4eeomoIOnmH3z75LXsSY2fS7eERUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HbFgGQgh; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516d04fc04bso254540e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 02:15:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712222149; x=1712826949; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nUdDZySjrF1wvq9oOqTRZ+b/TlHRXdjH4rV3Y1d7tV8=;
-        b=HbFgGQghrAGSqGZAIpfVPiLOR0PSo7D0wkp0xptD+rK1x93h8ecRV1NH8jpwp1MxbB
-         B3fL2rbR+lCFkOKakJFTSBODevE+s0Pky9FuAE3EpB1jGpzaTAuUC6U0A3ifnkjiZLNO
-         rPJ9QnxaRFjbhdlz0hAUwfxc+RoNiWHJUUU56YDc6uPH8zi46XbLP0lGfJUlzaBRl2Ya
-         vfC2+lvhtVwgmMTXlg3u7fMKGiXwwLqltd0Dgi0/+o9j+Ib7GK033Kds5RZUKUS4Gugz
-         /gfUz4ycHreBbk6Y13AxP/UFZaPe5Xec8YsJjggJzFwbrmDTQO4bLyvgRnUNqDkONSy2
-         4NAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712222149; x=1712826949;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nUdDZySjrF1wvq9oOqTRZ+b/TlHRXdjH4rV3Y1d7tV8=;
-        b=GPedFFBqY3MFhlJI3RfsgZa+Z6EMxpTtwShgaaoSWUCUUL7XSedKX0JEbxsZKpedST
-         4QrLY/IQXrluk7FulnKuV/UE4HxKIfaTPf6HRlblh4M/nWwtKba6EqFbm1SqAMW8yoBZ
-         9IPs3kf3UFDV+hc+1WVKGH8q5fyHsfQlkaU/BNSWGFgvJRmn+FDlHSzO9l6jy4BVoi0O
-         0EzkzwdOh7YwNlOlN+/MNF1BdKRjGjCIg6ZaiKu/6ICfx1bpjDnCBvLk8lLcxeBCf+Q2
-         Ldda9vSg/evXACYRkvJHwag609qTmgqPy0rch3+kWju9+dPyKbUxVMdwkKJoNYWPADSm
-         +huQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWCJ/8cjs8GrXsIyCEw6oRg3piXiHaz6/AytqshpgbnUSSoLsph/fUJHP/3nf220E4AH5NOZ395CEf9/r+Gsw7AQSl+sVa2r+XVZJrH
-X-Gm-Message-State: AOJu0YwdDyVz/BJcQOSsEMfz9ecT+35C4qC5KTNtdrAaO3slj39lXN2g
-	GP4VBoZ+U8FMDk62dulfNS4dvlrS+fh2tDpOAWqNmLaeqZIxJH5CIGW7gvjLVBdLH2Th/EZb4Kz
-	84JamUoP9E9hHUB/aKgTb74XSHec=
-X-Google-Smtp-Source: AGHT+IEElv649+FFP6kt5/YPlcCr8Xo7UyNH6A7fZ4VarBPQSVgWE20nIGmRs7d52Zocup2PPcz3hVe83Tm59A/z/Io=
-X-Received: by 2002:ac2:58f7:0:b0:512:e02f:9fa7 with SMTP id
- v23-20020ac258f7000000b00512e02f9fa7mr1606524lfo.1.1712222148288; Thu, 04 Apr
- 2024 02:15:48 -0700 (PDT)
+	s=arc-20240116; t=1712222349; c=relaxed/simple;
+	bh=QYcy8FlXFMLr0LYgckTAxPjA/WLT+e3mJ8K4S1U3/j4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ISdFPeQOaVgU9Q3A9AjRFpqbYGHXNJCQIqVPsWBQYHzU6U2YOOypEt4fHK4dM3wYZERJjAG0gh9Kw8lMspWDCcK9hmtNWKOVvvRDR34XyQ+oQKby9+i6HK78yQ2669PQWgopq4Gug1Bjca4FhhEkadgU9ajBFQ+yJafiT8xuM4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rhNiLeBW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GdXeHOPa; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 324F55D7AC;
+	Thu,  4 Apr 2024 09:19:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712222345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bWJK0SE/XFBDZ4vQTfHP0Qc1oDLZBXxgZ4+fPFvJof8=;
+	b=rhNiLeBWFxwwhRPZ9RLpw08LzRgszGVajbvbiNzKyBw8Oj5jNuKgIa0LPQ20EJgOIv99Kk
+	QM91F1Ezy2Qqnz5ce+DacsycImRyHZjiEA2kl9MWZSzKLqkNowhN3ooDq0yMHe8tq+MGjX
+	OG71jYJLIeL2q3wojo8bZa11jw9AaHY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712222345;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bWJK0SE/XFBDZ4vQTfHP0Qc1oDLZBXxgZ4+fPFvJof8=;
+	b=GdXeHOPasNjcnARsL2Ip5kUceDl6ZOBIJm00lBgQM19NbBmdWMAA3YHpmv1cYvfu1ug3aK
+	nNlRY85YI4+CJICQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 249F4139E8;
+	Thu,  4 Apr 2024 09:19:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id wg7sCIlwDmZLIQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 04 Apr 2024 09:19:05 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id C6AE2A0816; Thu,  4 Apr 2024 11:19:00 +0200 (CEST)
+Date: Thu, 4 Apr 2024 11:19:00 +0200
+From: Jan Kara <jack@suse.cz>
+To: Kees Cook <keescook@chromium.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fs: Set file_handle::handle_bytes before referencing
+ file_handle::f_handle
+Message-ID: <20240404091900.woh6y2a52o7uo5vx@quack3>
+References: <20240403215358.work.365-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401081734.1433755-1-zhaoyang.huang@unisoc.com>
- <736b982a-57c9-441a-812c-87cdee2e096e@redhat.com> <CAGWkznF6NQrB-vwBZCfCF-1WQJv8iwPPrwND7yDsPJw1EbfxQA@mail.gmail.com>
- <2f8af9d1-8c8e-4e1c-a794-76f6bb287b08@redhat.com> <CAGWkznEcS7rNWMudMBA7e-bjudX-sR4TGofyB5G1E=OmW_0Ckw@mail.gmail.com>
- <134b6c6d-5bcf-4394-85ad-2da2e8dec1d3@redhat.com>
-In-Reply-To: <134b6c6d-5bcf-4394-85ad-2da2e8dec1d3@redhat.com>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Thu, 4 Apr 2024 17:15:37 +0800
-Message-ID: <CAGWkznEOopuVCkzdOj+HqH4ZGx0_8kHn+j8ZOhbhuoGV9pTQWg@mail.gmail.com>
-Subject: Re: [PATCHv2 1/1] mm: fix unproperly folio_put by changing API in read_pages
-To: David Hildenbrand <david@redhat.com>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	NeilBrown <neilb@suse.de>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	steve.kang@unisoc.com, Matthew Wilcox <willy@infradead.org>, 
-	Christoph Hellwig <hch@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403215358.work.365-kees@kernel.org>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.998];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,suse.com:email,chromium.org:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,suse.cz,oracle.com,gmail.com,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-On Wed, Apr 3, 2024 at 7:47=E2=80=AFPM David Hildenbrand <david@redhat.com>=
- wrote:
->
-> On 03.04.24 13:08, Zhaoyang Huang wrote:
-> > On Wed, Apr 3, 2024 at 4:01=E2=80=AFPM David Hildenbrand <david@redhat.=
-com> wrote:
-> >>
-> >> On 03.04.24 07:50, Zhaoyang Huang wrote:
-> >>> On Tue, Apr 2, 2024 at 8:58=E2=80=AFPM David Hildenbrand <david@redha=
-t.com> wrote:
-> >>>>
-> >>>> On 01.04.24 10:17, zhaoyang.huang wrote:
-> >>>>> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> >>>>>
-> >>>>> An VM_BUG_ON in step 9 of [1] could happen as the refcnt is dropped
-> >>>>> unproperly during the procedure of read_pages()->readahead_folio->f=
-olio_put.
-> >>>>> This is introduced by commit 9fd472af84ab ("mm: improve cleanup whe=
-n
-> >>>>> ->readpages doesn't process all pages")'.
-> >>>>>
-> >>>>> key steps of[1] in brief:
-> >>>>> 2'. Thread_truncate get folio to its local fbatch by find_get_entry=
- in step 2
-> >>>>> 7'. Last refcnt remained which is not as expect as from alloc_pages
-> >>>>>        but from thread_truncate's local fbatch in step 7
-> >>>>> 8'. Thread_reclaim succeed to isolate the folio by the wrong refcnt=
-(not
-> >>>>>        the value but meaning) in step 8
-> >>>>> 9'. Thread_truncate hit the VM_BUG_ON in step 9
-> >>>>>
-> >>>>> [1]
-> >>>>> Thread_readahead:
-> >>>>> 0. folio =3D filemap_alloc_folio(gfp_mask, 0);
-> >>>>>           (refcount 1: alloc_pages)
-> >>>>> 1. ret =3D filemap_add_folio(mapping, folio, index + i, gfp_mask);
-> >>>>>           (refcount 2: alloc_pages, page_cache)
-> >>
-> >> [not going into all details, just a high-level remark]
-> >>
-> >> page_cache_ra_unbounded() does a filemap_invalidate_lock_shared(), whi=
-ch
-> >> is a down_read_trylock(&mapping->invalidate_lock).
-> >>
-> >> That is, all read_pages() calls in mm/readahead.c happen under
-> >> mapping->invalidate_lock in read mode.
-> >>
-> >> ... and ...
-> >>
-> >>>>>
-> >>>>> Thread_truncate:
-> >>>>> 2. folio =3D find_get_entries(&fbatch_truncate);
-> >>>>>           (refcount 3: alloc_pages, page_cache, fbatch_truncate))
-> >>
-> >> truncation, such as truncate_inode_pages() must be called under
-> >> mapping->invalidate_lock held in write mode. So naive me would have
-> >> thought that readahead and truncate cannot race in that way.
-> >>
-> >> [...]
-> >>
-> > Thanks for the reminder. But I don't find the spot where holding
-> > "mapping->invalidate_lock" by check the callstack of
-> > 'kill_bdev()->truncate_inode_pages()->truncate_inode_pages_range()',
-> > or the lock is holded beyond this?
->
-> Well, truncate_inode_pages() documents:
->
-> "Called under (and serialised by) inode->i_rwsem and
-> mapping->invalidate_lock."
->
-> If that's not the case than that's either (a) a BUG or (b) an
-> undocumented exception to the rule, whereby other mechanisms are in
-> place to prevent any further pagecache magic.
->
-> I mean, kill_bdev() documents " Kill _all_ buffers and pagecache , dirty
-> or not..", so *something* has to be in place to guarantee that there
-> cannot be something concurrently filling the pagecache again, otherwise
-> kill_bdev() could not possibly do something reasonable.
->
-> For example, blkdev_flush_mapping() is called when bd_openers goes to 0,
-> and my best guess is that nobody should be able to make use of that
-> device at that point.
->
-> Similarly, changing the blocksize sounds like something that wouldn't be
-> done at arbitrary points in time ...
->
-> So kill_bdev() already has a "special" smell to it and I suspect (b)
-> applies, where concurrent pagecache action is not really any concern.
->
-> But I'm not an expert and I looked at most of that code right now for
-> the first time ...
-Thanks for your help. I don't know if it is related to an out of date
-documentation issue. Regardless of truncation path, there could be an
-isolation path for entering this race where the refcnt of local folio
-batch replaced the one of alloc_pages and then makes the page out of
-the protection by folio_lock and could race between reclaiming and
-following actions of isolation. It could be any kind of phenomenon
-other than VM_BUG_ON.
->
-> >>
-> >>>>
-> >>>> Something that would help here is an actual reproducer that triggers=
-this
-> >>>> issue.
-> >>>>
-> >>>> To me, it's unclear at this point if we are talking about an actual
-> >>>> issue or a theoretical issue?
-> >>> Thanks for feedback. Above callstack is a theoretical issue so far
-> >>> which is arised from an ongoing analysis of a practical livelock issu=
-e
-> >>> generated by folio_try_get_rcu which is related to abnormal folio
-> >>> refcnt state. So do you think this callstack makes sense?
-> >>
-> >> I'm not an expert on that code, and only spent 5 min looking into the
-> >> code. So my reasoning about invalidate_lock above might be completely =
-wrong.
-> >>
-> >> It would be a very rare race that was not reported so far in practice.
-> >> And it certainly wouldn't be the easiest one to explain, because the
-> >> call chain above is a bit elaborate and does not explain which locks a=
-re
-> >> involved and how they fail to protect us from any such race.
-> >>
-> >> For this case in particular, I think we really need a real reproducer =
-to
-> >> convince people that the actual issue does exist and the fix actually
-> >> resolves the issue.
-> > Sorry, it is theoretically yet according to my understanding.
->
-> Okay, if you find a reproducer, please share it and we can investigate
-> if it's a locking problem or something else. As of now, I'm not
-> convinced that there is an actual issue that needs fixing.
-I am hoping anybody could help to confirm if this is indeed a BUG
-according to the procedures in the commit message.
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+On Wed 03-04-24 14:54:03, Kees Cook wrote:
+> With adding __counted_by(handle_bytes) to struct file_handle, we need
+> to explicitly set it in the one place it wasn't yet happening prior to
+> accessing the flex array "f_handle".
+> 
+> Fixes: 1b43c4629756 ("fs: Annotate struct file_handle with __counted_by() and use struct_size()")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+OK, so this isn't really a functional bug AFAIU but the compiler will
+wrongly complain we are accessing handle->f_handle beyond claimed array
+size (because handle->handle_bytes == 0 at that point). Am I right? If
+that's the case, please add a short comment explaining this (because it
+looks odd we set handle->handle_bytes and then reset it a few lines later).
+With the comment feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Chuck Lever <chuck.lever@oracle.com>
+> Cc: Jeff Layton <jlayton@kernel.org>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-nfs@vger.kernel.org
+> Cc: linux-hardening@vger.kernel.org
+> ---
+>  fs/fhandle.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/fhandle.c b/fs/fhandle.c
+> index 53ed54711cd2..08ec2340dd22 100644
+> --- a/fs/fhandle.c
+> +++ b/fs/fhandle.c
+> @@ -40,6 +40,7 @@ static long do_sys_name_to_handle(const struct path *path,
+>  			 GFP_KERNEL);
+>  	if (!handle)
+>  		return -ENOMEM;
+> +	handle->handle_bytes = f_handle.handle_bytes;
+>  
+>  	/* convert handle size to multiple of sizeof(u32) */
+>  	handle_dwords = f_handle.handle_bytes >> 2;
+> -- 
+> 2.34.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
