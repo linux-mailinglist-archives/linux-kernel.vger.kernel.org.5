@@ -1,126 +1,144 @@
-Return-Path: <linux-kernel+bounces-131836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BA13898C55
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:39:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47947898C6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:43:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A72728D335
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:39:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 11CB5B2BFE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:40:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE8D241C7A;
-	Thu,  4 Apr 2024 16:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8601712D201;
+	Thu,  4 Apr 2024 16:38:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="DYho//ae"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="C+hc2xS8"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB351C6A1
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:38:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E96C112CDA8
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712248685; cv=none; b=naZbx0DvnIiS0S3kiUlWCjd3x0cs4I1wezArKWX3s7wHWo8aHL2y3cPoijgA9Rn38qJ6NffPJhuS3O9J2HeQ74KBSi17LSwtv2kBFEiEPRQVmf9l+qmLNAkUfdq/y+P9aDZwlXV1yxFZh7Ox5TZOrFueZVzUt/n/oi1Ggi9InZI=
+	t=1712248697; cv=none; b=NDJ/xDLWlqj6sqjI9XvOJq2BmVHtY1UvayT8QJCI44pLplCMmXEhLc9u9rpxk6mLcAhN712mxZPDILSjd3Alh/WaITbh2DjtGw7ORhdSHyS3hWbK1V6pCASao/nZlhDTpI/T1nahrYcQnEI/i4UC5hTJ43N/ppssewVdRABYg9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712248685; c=relaxed/simple;
-	bh=ARHRqF2vMFHz0poKI5R/NwxZEEnfxngPCY70Gl8BRQM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=uULUVhGOTzeBRxp9j0DJuIOun09VIz75AML3VXv+b65Vh8z5yH8hM7q6rZDCkPQe7Qm2YAlkUYnsrn9N3W03gpqvFtsce82t5E0UumjjCyfx2sqR9ufrnFcWQyLnUsRTMKM3aX22+N1pf29pvxbdjGmHMICX78yUXhe3TYP7IFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=DYho//ae; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcbfe1a42a4so2122020276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 09:38:03 -0700 (PDT)
+	s=arc-20240116; t=1712248697; c=relaxed/simple;
+	bh=YBwK7BNdkJWP3oyNHpQfdPDIsnxbAs2+1nrrXIvCyGk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GL3Ssq8BPWemYJPkqa/mxOvr41gbLcG7VDD4tWyy2mtWV4gcwaq07tRkzfGcpIHVmy7zxc+cWiRGET+Jcn03BT9ORpdNOXWy4Tohsjo2Gh94cjfmkhoRu6QKw+pkO2cmegkK8dHYhF8dnwIBVIKYKfhPiOd7DuJUXSDfwMZf43w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=C+hc2xS8; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so22710639f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 09:38:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712248682; x=1712853482; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VWZS7flKLl0sICuGu0YXGwS4yht3MSv7qVnyogrx7+E=;
-        b=DYho//aeEs0NvsO0yasBDeGtjLoe2Nx5dA0Yis1T0Tl5FfGZib9dJTAfh4CEt8U5kq
-         +GkJmzGdQTSncbu62sZqtX+xeHfPfJNDS+rlh3ZrOJ/j3M33hPBp0Jyqy2dSfqeQ9trU
-         2X6cUyrBBjED+e0+Ed/z0yur2IjWRXZKK4eUXdDcIuilkMFgJKEv8hfCs+jaWMZTDmAq
-         qqbCgcmMpRUMzHwKRTtdTuwlJfG9+VrS31yhgt5izbkEzG7DqQkdSzhiv+khUo0TQQnK
-         3ev1cXBjd80p3PTxS2wd5kQ0G2HQNeDeFGlwdXwbSNamR2KG6sytmCpypSG6fd9Q1WC0
-         rg9A==
+        d=linuxfoundation.org; s=google; t=1712248695; x=1712853495; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=O1lHp+OkDVz4M/u4JQhfwxqw91sDKLwvBIfOpOSX1Dg=;
+        b=C+hc2xS84zsaa95zf32WXlb9yNW/h3zvmnxmtWPaJT3nQcirZ0qsX81LVrCbdeElkp
+         57y0yq+G8ERUzzEhrTAPgWErlS1jN6tjByyIWfZb2oIsJLExlOMsr6qAf/4/FH0WE738
+         vGSo7+blJG3AWabJSM0Y6TAnCV2jtyRgNBPpQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712248682; x=1712853482;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=VWZS7flKLl0sICuGu0YXGwS4yht3MSv7qVnyogrx7+E=;
-        b=tWusQqpOv//ZSiFP5lOEyHg+OUFAGNlioW5OuXcVX5Nw8E7C+u1D2Fdro4e1wvWhyJ
-         AhFVGWuJY3Q7zfd3pkpJuNGEN/9fI3tOLlMO0OWEwfyJTdmQefGu3PINvuMgDyyOb1c3
-         WOVzwAv9eiP8f5/jIyk4elJnAFDGpFSTAsw/8trGq7XqxJfdIiTm9eCvutqfZmgNjyJe
-         8GxAWUHiPzyYZ7ymKc0w5YcDlgRLr1Kbcu3bXBplmkYVfqoBu1JaCyNIBSsZ/GwGboJh
-         yn6W2GtcEoVrFxIH6tDR5QgUbMPHdxKG7YQ0TcQsa+LJGglUhYOL1QU6JfNkxRmr7lq7
-         r+3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWHXUZV5gydbuLnvY+TMGFUCFUvzl23wHZ6TzvgtYROUeb8TIb1jEy3qbMXxUzDs1vwoniKl3ii4TE8PpbX9xMglwp3axXb1LbK5qpf
-X-Gm-Message-State: AOJu0Yz+TjW0yLyOFh7jf85soJFcQPaMp/emT8OwUMoTSTrg9mL7Kfbe
-	XMYEGtHMBC+XxgCp1pgMUInD8hvFaLAPBJICsiUneYcpwD8Cy75b/CnNNELn6GcvtJ6tCjJYP89
-	UCw==
-X-Google-Smtp-Source: AGHT+IG5CJi0WgWPz9hS4ye66MIeTg71IJ/rjxj7nrkFR7AsZK+ppsIjPTs4qWcpDFmnbajciozpjbHu8xA=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:2d22:0:b0:dcb:bc80:8333 with SMTP id
- t34-20020a252d22000000b00dcbbc808333mr1870ybt.13.1712248682770; Thu, 04 Apr
- 2024 09:38:02 -0700 (PDT)
-Date: Thu, 4 Apr 2024 09:38:01 -0700
-In-Reply-To: <6d24f7b1-a271-43de-ba94-847a3c9e0d8c@linux.intel.com>
+        d=1e100.net; s=20230601; t=1712248695; x=1712853495;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O1lHp+OkDVz4M/u4JQhfwxqw91sDKLwvBIfOpOSX1Dg=;
+        b=AlYLH7vsd16ACuNWbCbLlRojxeohP2dNl/LgPswXQlM9KUEqITKra8Y/tY3jyLNBps
+         QFHNku7qPSxZtbfOu+iWCZD2SyIoHUxJ4rEVW2JP2TMnojsg6JGr6mhzH/EMwXZRn+pd
+         t8fl/3O+H896GaI/0W5Q/NmV86o94Xl1PffG5Ucxpmucy0Nb5yOzAAU9iqTdks4Sxnd/
+         BAC2WTv3ZHlhanm2VZXcwjEG/2iF3FK6Sa0xQnH28tktReDaPbQhOOJMNhdWM1Ji5Uwv
+         UrDAsoE2o+wjldxT86+DizFjGfvPrK8/QPdcCt1Ck73UaClAGiJ+rJ7JRkw4YBo+hIi6
+         8ZEg==
+X-Forwarded-Encrypted: i=1; AJvYcCU/atxXjuCI8Uq450Y5FapDh9/DATMQVjOmT7eLM/YNSimomA3Z/roenlrbC8esAkRSEkVXAz6yPsRzbdLM5ia11Ip6aK/N12VkO1fz
+X-Gm-Message-State: AOJu0YwiIBI2pH5twTdOu+wBtKPQBMNVBLffR9/FZEjyi/n9axFcxQr/
+	nUbTfiF7jQ8+ztaKc11auZDDfB95BcBcoCbP/ZXYvwwAzJjSlDG6UNSfQj1GEsI=
+X-Google-Smtp-Source: AGHT+IEA8Ot5VjOmH74kiKn6+rvyxZEZ0N/0e2VKSGgMgVavV4DwpFIgcNyVzFCXgCqx/llLPTQifw==
+X-Received: by 2002:a5e:8b45:0:b0:7d0:c0e7:b577 with SMTP id z5-20020a5e8b45000000b007d0c0e7b577mr3031325iom.2.1712248695143;
+        Thu, 04 Apr 2024 09:38:15 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id r22-20020a056638131600b0047ed8c3e578sm4146726jad.134.2024.04.04.09.38.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 09:38:14 -0700 (PDT)
+Message-ID: <d84a8714-89e0-4ac0-b42c-02e8c4920e32@linuxfoundation.org>
+Date: Thu, 4 Apr 2024 10:38:14 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240228024147.41573-1-seanjc@google.com> <20240228024147.41573-2-seanjc@google.com>
- <2441bd2a-a0b1-5184-bac8-28c94b151c93@amd.com> <6d24f7b1-a271-43de-ba94-847a3c9e0d8c@linux.intel.com>
-Message-ID: <Zg7XaYwmFbZUljfi@google.com>
-Subject: Re: [PATCH 01/16] KVM: x86/mmu: Exit to userspace with -EFAULT if
- private fault hits emulation
-From: Sean Christopherson <seanjc@google.com>
-To: Binbin Wu <binbin.wu@linux.intel.com>
-Cc: Pankaj Gupta <pankaj.gupta@amd.com>, Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Yan Zhao <yan.y.zhao@intel.com>, 
-	Isaku Yamahata <isaku.yamahata@intel.com>, Michael Roth <michael.roth@amd.com>, 
-	Yu Zhang <yu.c.zhang@linux.intel.com>, Chao Peng <chao.p.peng@linux.intel.com>, 
-	Fuad Tabba <tabba@google.com>, David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Bug Report] selftests: Clang: kselftests build errors in
+ KernelCI
+To: Nick Desaulniers <ndesaulniers@google.com>,
+ Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Gustavo Padovan <gus@collabora.com>, llvm@lists.linux.dev,
+ kernelci@lists.linux.dev, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel@collabora.com,
+ Mark Brown <broonie@kernel.org>, Justin Stitt <justinstitt@google.com>,
+ Nathan Chancellor <nathan@kernel.org>, Kees Cook <keescook@chromium.org>,
+ Bill Wendling <morbo@google.com>, Shuah Khan <skhan@linuxfoundation.org>
+References: <0c6d4f0d-2064-4444-986b-1d1ed782135f@collabora.com>
+ <CAKwvOd=ueTmUThCOkBGUjhMGr6mKDtbTt-d7tHKe7A2nrchWMw@mail.gmail.com>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <CAKwvOd=ueTmUThCOkBGUjhMGr6mKDtbTt-d7tHKe7A2nrchWMw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 12, 2024, Binbin Wu wrote:
->=20
-> On 3/7/2024 8:52 PM, Gupta, Pankaj wrote:
-> > > Exit to userspace with -EFAULT / KVM_EXIT_MEMORY_FAULT if a private f=
-ault
-> > > triggers emulation of any kind, as KVM doesn't currently support
-> > > emulating access to guest private memory.=C2=A0 Practically speaking,=
- private
-> > > faults and emulation are already mutually exclusive, but there are ed=
-ge
-> > > cases upon edge cases where KVM can return RET_PF_EMULATE, and adding=
- one
-> > > last check
-> >=20
-> > edge cases upon edge cases?
-> >=20
-> > Just curious about the details of the edge cases scenarios?
->=20
-> Same question out of curiosity.
+On 4/4/24 10:34, Nick Desaulniers wrote:
+> Thanks for the report.  We've been tracking getting this working for a
+> while: https://github.com/ClangBuiltLinux/linux/issues/1698.  Other
+> fires have continued to take priority.
+> 
+> On Thu, Apr 4, 2024 at 9:30 AM Muhammad Usama Anjum
+> <usama.anjum@collabora.com> wrote:
+>>
+>> Hi,
+>>
+>> We have caught bugs in kselftest suites on linux-next and on stable-RCs etc
+>> when using clang. There are two types of bugs (logs with clang-17 are
+>> attached.):
+>> As usually people use GCC, there are GCC-specific flags added to the
+>> Makefiles that clang doesn't recognize. For example:
+>> * clang: error: argument unused during compilation: '-pie'
+>> [-Werror,-Wunused-command-line-argument]
+>> * clang: error: unknown argument '-static-libasan'; did you mean
+>> '-static-libsan'?
+>> * clang: error: cannot specify -o when generating multiple output files
+>>
+>> Clang has best static analysis tools. It is reporting static errors. For
+>> example:
+>> * test_execve.c:121:13: warning: variable 'have_outer_privilege' is used
+>> uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+>> * test_execve.c:121:9: note: remove the 'if' if its condition is always true
+>> * test_memcontrol.c:727:6: warning: variable 'fd' is used uninitialized
+>> whenever 'if' condition is true [-Wsometimes-uninitialized]
+>>
+>> We have found these issues through our new KernelCI system when enabling
+>> kselftest and clang there. The new system dashboard is a WIP, so It is not
+>> the web dashboard you are used-to with in KernelCI. We can show you ways of
+>> pulling the data if you are interest into.
+>>
+>> Unless the above is some sort of false-positive or misconfiguration, it
+>> would be great to support clang for kselftests. What we can do from our
+>> side is that clang kselftests builds should be enabled on KernelCI to find
+>> and fix the errors. What is your stance about this?
+> 
+> As with anything kernel related; help send patches for obvious fixes.
+> Or provide steps to reproduce in
+> https://github.com/ClangBuiltLinux/linux/issues/1698.
+> 
 
-Accesses that hit the APIC-access page and gfns that are write-tracked, are=
- the
-two most likely candidates.  Even plain old emulated MMIO falls into this b=
-ucket,
-e.g. if KVM botched things and generated a RSVD fault on a private mapping.=
-  I'll
-reword that line to
++1 on this. Please send patches to fixes as you find them. We have
+been taking fixes found by clang and -Wformat-security, -Werror
+checks.
 
-  faults and emulation are already mutually exclusive, but there are many
-  flows that can result in KVM returning RET_PF_EMULATE, and adding one las=
-t
-  check to harden against weird, unexpected combinations and/or KVM bugs is
-  inexpensive.
+thanks,
+-- Shuah
 
-to make it sound less dramatic/hand-wavy.
 
