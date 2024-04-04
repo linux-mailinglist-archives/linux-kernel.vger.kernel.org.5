@@ -1,124 +1,106 @@
-Return-Path: <linux-kernel+bounces-131327-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131329-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B875898653
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:46:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DFF5898658
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:47:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B1CE1C2161F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:46:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18A3F287EB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:47:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F83884D0B;
-	Thu,  4 Apr 2024 11:46:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9E184D35;
+	Thu,  4 Apr 2024 11:47:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="imXQUNzc"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jp37XKjr"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 173F27F7C8
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:46:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 846C482897
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712231182; cv=none; b=HYaCmvYIivqF3E3Rf0/zyUUUh1+bv5T3bSbG096XsWh8Mu9qjQEsv1Ydd4hVJ0Yf9dvok7mhMmhdHWujYOik+FAVWmtQvj67YCfDMR7iBJF6BgGQbMN4ydjhlKeePQI+CETV8lmkFj2HUmau93CIIHBsUpiq2CyZrzCzI1zhgz0=
+	t=1712231223; cv=none; b=Obg/uH/Z/vcbxOSDJMRaaBjnN0AF5vZadlWkks27giKnRcVQP0AplW1Xgn7JyUr2Hh5wGmwknefovwQDNraOyLnUNYXaCkdCA+VlEo6sTevp4ZkMmDA3up/mchiCxC+UZ+HMNRDths4PIg4a9sIzZlaCukO2jTYmm4Gy+5GMsBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712231182; c=relaxed/simple;
-	bh=VnjSFH3iLfjXOB26l2DmGIorjHrUwNNABt8C5zuouVo=;
+	s=arc-20240116; t=1712231223; c=relaxed/simple;
+	bh=/cfTb2VAwub8pYQSCzhjTlLFbA/bhq6Di6P54hY2C8Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nFJZwd+zaoGzd4vmkT6gkT+nBBmkOpG3mZlYzVodMREGaPL50QDtnogQtzERh9nsl4g9ONpIAgMuPCIyTNRy2q1P5+yNva12vD8mDUXuU8KoyKxAMUUx3ej6zZE2fM4LIOiPLNK2FgF2b6x//SR5htLNfjXOH1+tSVTWpACwS3Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=imXQUNzc; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712231180;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=os6s6yWf+KEySppA6UtqmMO50Okp6hSrMyagRzZf4EU=;
-	b=imXQUNzcWUb0Nhh1PAPCYqStTV1hHsnngk0JKEJ0Pz+cy71DOaOyiOiOR2mSqIQ73wiRcJ
-	4rkAa0dnGJMQMMrymv7pMgSLJCmOkExefRIMN8fyWqSKO/09h0njQAOlTnrrqYFYCk1P+U
-	9naBG14CuClBiiXJL0jjKvIZTd/XhwY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-499-CF5OnI8TMomglNjle7QUYw-1; Thu, 04 Apr 2024 07:46:18 -0400
-X-MC-Unique: CF5OnI8TMomglNjle7QUYw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4154b265b93so4461585e9.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 04:46:18 -0700 (PDT)
+	 To:Cc:Content-Type; b=ZDP5FuRAMsyeDa9bR8IfdLm7zrB3OwuTBu4kNfqqf3pDGu50BHBQLYAq065ZPiSpF6SpPfp1eXtT9BNqHtie12rIn+w4KmI4D5O3S34qfOXVCgFzlHfEht/Sev3JRzvckCducNN9/k65g4NoMsaV4H76t8PdDGbuGA6yqLWAs2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jp37XKjr; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6150670d372so9318967b3.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 04:47:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712231220; x=1712836020; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/cfTb2VAwub8pYQSCzhjTlLFbA/bhq6Di6P54hY2C8Q=;
+        b=jp37XKjrENlOH/kqi52bW69kmslU66UXAJit+oZZ4BUQXWW52NRhLAaWVT0Bx9Av6t
+         ANsTmRLh481lUoibpCNoCPp5MmtISgUrAr22B2WldcElTf9Nlp3S0AWD5Rz1VwtsaKFs
+         ecSBRTjHguwd3HG/FNBJxRAL9peWH4w+aio+mCv1hW6D6sBJV33Sjn0TgoP4nw0XC5xo
+         Ey8e8sCJXtIrfQeWXXxZyefMXIMgLQi+5IOK7WqCcNN0V5Kf9C6xJYP+D/QSAqeM0/gH
+         7SRsbXkSqkMAM6d+sNF5ZsQl4xocPAlMKEBBpWlKJLbFywYsQAncqcDV0HaFD0FQ078q
+         J4Sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712231177; x=1712835977;
+        d=1e100.net; s=20230601; t=1712231220; x=1712836020;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=os6s6yWf+KEySppA6UtqmMO50Okp6hSrMyagRzZf4EU=;
-        b=JUqfiHSBedIPj6QcAsJ+ZS16JOLfI1DkrWO4I87+pLG7TGFwG6/J8N4snthgLw6VYq
-         UKxGgQwnTxw24WM1UKFEiZSJsHUK6M6fIFRT7UhoU1QBcpoZca8P/EYFxZf5dPmu74gt
-         VQuPsE512r1fiVybz8dVK6mOvpoYlrSfPukfT216RxKtbCpoRkgGkxjY7KMADEccMg9D
-         +hhyVFNeLdOEXrasASxxrZ20oL4XhL1ciJxy2kfgGaq1FetI+ksnbXl2rgMS2puRwk+C
-         3fAn6z+Ocsqo+N6+QavUrLuQ9/V9rAna7/N6llWgOnGIgraHESasD9+F3AWLwW6VjwlO
-         8Tog==
-X-Gm-Message-State: AOJu0YzRmHPtUv43kfp56SeMx+bL3FBybqJWCevgkeVxq52V8txGaczb
-	IjEeOh33YqNWeVbBr0O+HzxBF9b2sSEWbns4QODMu9jWl/SOOEaiQdBhgSsTGjo2ZMvgk3JelkE
-	LgA/FvtCH9lTs/h6auOfcJiOJtJQVV9IKU9z1axiGrp2K195GkGhsF7cPudSgTzavZ35eHSFeG9
-	VniTNMLvXaCen0rk5zYQYG3wWdT71cijwEOoeE
-X-Received: by 2002:a05:600c:3b18:b0:416:23d8:e88d with SMTP id m24-20020a05600c3b1800b0041623d8e88dmr1516449wms.26.1712231177625;
-        Thu, 04 Apr 2024 04:46:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHFSGC2Xe5+h41NT6Q/UZflxkyEyGkJ8Z1k8bGJSLWOaE2vJxyPqfMC3aZQbF61P/IiWV6l7IdDRNFCc18PrB0=
-X-Received: by 2002:a05:600c:3b18:b0:416:23d8:e88d with SMTP id
- m24-20020a05600c3b1800b0041623d8e88dmr1516437wms.26.1712231177219; Thu, 04
- Apr 2024 04:46:17 -0700 (PDT)
+        bh=/cfTb2VAwub8pYQSCzhjTlLFbA/bhq6Di6P54hY2C8Q=;
+        b=Tmtb6zxScR6h4smYyXyDVeIxFD39hqW0l4c21mzeriuSoDWYgP8rc0L4G3pZVcYdJh
+         MCMzBmu+BuwdMHQRABR3qmCgPtZVGItkPY20hX7bjVAimKSeYGQfkGxAnSm5+UsQgG22
+         06bL/Gw6SKoPz4dSnhcDmC6im4K6ZLQZk3ly+zGw883k2dneuDUNPt7oKZH518YpPb7T
+         KvDN/FDeZpvb5ETqx58SnYOksD6j2GKrofknRNLsWBT7Qs01hOibQGuaNn8V/OHuZyAg
+         Afeu448Frd2QXpzjcJ8M2wOR4rIDGhgoOZFTeaTCljUuEGxkqTJE4CHoF9GLjYcKU0Bb
+         RUig==
+X-Forwarded-Encrypted: i=1; AJvYcCXwmve7RXW1kwBilYuS6cbceHb5mEjPJBCjM0hJV/N64aedwKi5n7u0I2Ej8EYHO/Lu2Uc04rIbYksP+QX0SYuQl6wPD/69Z7nEMbpz
+X-Gm-Message-State: AOJu0YyyBB2PrdSIZ3HWHE6untenk35Uj7+31bkR/KLxHMWO6sfoHSwA
+	usCSmBnAX+9VENFvDSl4YUPDcYfInxWRUhB6wzdwYgeexAbExjflr2K9goxISxtgTO/Y2joxQyi
+	hPukGQ/i13uAsIfFwZZG6wziwMtdXOwQhHCou4A==
+X-Google-Smtp-Source: AGHT+IFFVdVOk+E7MDuKQ2cnteoYCIQKxsAsT5THCCEHiF9/XfDRwbjfBVeXdHYdUt6nUzx6qtMXhLYbOK1EtTJvdqE=
+X-Received: by 2002:a81:a18b:0:b0:615:17f3:55e9 with SMTP id
+ y133-20020a81a18b000000b0061517f355e9mr2067506ywg.15.1712231220589; Thu, 04
+ Apr 2024 04:47:00 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318233352.2728327-1-pbonzini@redhat.com> <20240318233352.2728327-6-pbonzini@redhat.com>
- <20240325235918.GR2357401@ls.amr.corp.intel.com>
-In-Reply-To: <20240325235918.GR2357401@ls.amr.corp.intel.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Thu, 4 Apr 2024 13:46:05 +0200
-Message-ID: <CABgObfZzkNiP3q8p=KpvvFnh8m6qcHX4=tATaJc7cvVv2QWpJQ@mail.gmail.com>
-Subject: Re: [PATCH v4 05/15] KVM: SEV: publish supported VMSA features
-To: Isaku Yamahata <isaku.yamahata@intel.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com, 
-	seanjc@google.com, isaku.yamahata@linux.intel.com, rick.p.edgecombe@intel.com, 
-	xiaoyao.li@intel.com, kai.huang@intel.com
+References: <a6b653642298d35b1e3656e9bfc6d1b322fbbe68.1712004518.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <a6b653642298d35b1e3656e9bfc6d1b322fbbe68.1712004518.git.christophe.jaillet@wanadoo.fr>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 4 Apr 2024 13:46:49 +0200
+Message-ID: <CACRpkdZeXwGoMVCtCC_6oSSACkcu-v5yt7yDi-vSSPrL43A05Q@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: pinctrl-single: Remove some unused fields in
+ struct pcs_function
+To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc: Tony Lindgren <tony@atomide.com>, Haojian Zhuang <haojian.zhuang@linaro.org>, 
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, 
+	linux-gpio@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 26, 2024 at 1:04=E2=80=AFAM Isaku Yamahata <isaku.yamahata@inte=
-l.com> wrote:
->
-> On Mon, Mar 18, 2024 at 07:33:42PM -0400,
-> Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> > Compute the set of features to be stored in the VMSA when KVM is
-> > initialized; move it from there into kvm_sev_info when SEV is initializ=
-ed,
-> > and then into the initial VMSA.
-> >
-> > The new variable can then be used to return the set of supported featur=
-es
-> > to userspace, via the KVM_GET_DEVICE_ATTR ioctl.
->
-> Hi. The current TDX KVM introduces KVM_TDX_CAPABILITIES and struct
-> kvm_tdx_capabilities for feature enumeration.  I'm wondering if TDX shoul=
-d also
-> use/switch to KVM_GET_DEVICE_ATTR with its own group.  What do you think?
-> Something like
->
-> #define KVM_DEVICE_ATTR_GROUP_SEV       1
-> #define KVM_X86_SEV_VMSA_FEATURES       1
-> #define KVM_X86_SEV_xxx                 ...
->
-> #define KVM_DEVICE_ATTR_GROUP_TDX       2
-> #define KVM_X86_TDX_xxx                 ...
+On Mon, Apr 1, 2024 at 10:49=E2=80=AFPM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
 
-Yes, that's a very good idea. I've added the group argument in v5.
+> In "struct pcs_function", the 'pgnames' and 'npgnames' fields are unused.
+> This is a left-over from commit 571aec4df5b7 ("pinctrl: single: Use gener=
+ic
+> pinmux helpers for managing functions");
+>
+> Remove them.
+>
+> Found with cppcheck, unusedStructMember.
+>
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-Paolo
+Patch applied.
 
+Yours,
+Linus Walleij
 
