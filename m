@@ -1,126 +1,142 @@
-Return-Path: <linux-kernel+bounces-131069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131066-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A62588982B0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F3BC8982A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:59:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08270B22FB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:01:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22018B28157
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD745D8EB;
-	Thu,  4 Apr 2024 08:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B64355E07E;
+	Thu,  4 Apr 2024 07:58:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="Dn3azvWb"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ywRjfuXD"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DF0F5DF23
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796595CDE4;
+	Thu,  4 Apr 2024 07:58:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712217675; cv=none; b=RGGZNaqhX1G1kys7nsTIltlV02JLjgEoKuKGRhnGJT/CkA/rmSDrTb46h3dliedUrsckEZ3QYPtL0XodNCLmE67IdmgZExzdwUAt8JDqtFuy+PjTeHCVYtGHDCK4DI2W3UnDR0HFDQfbnS0523eiNeGve12ZrsP+cwk6O5FlrD8=
+	t=1712217506; cv=none; b=KWIyhy7QprBHfnOz5/wrFGX0tSlOqVCqunSsZ6oForJkXChL1ONYAMyJP3nny0a8XcMqScfQ6/dqMNvI73OD9fmONxv8RE7/dgyaoFO+UGm3sWYbsnbl8kziENPPYaX+gzd3L3XlMjzuRnvR95bAWmHajSwaMRo/4cm4greRkj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712217675; c=relaxed/simple;
-	bh=QJ/GvWjb7OikBvvYJpHNtU5PYtM/0hhzpUz62Zhr5IU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Yv/eWBOaofA9a/RQxHRXIBanSwKeeXeTeBIJhNpNeGr9XsG2avHXa9xU2EL0l0LMHbdi7+AYpjRnpuWLq4H+qQTPBvUpqYs8FLA6jgSYWD9dMLPoOg0lpLl73PMal+GVlNExNuyhTLufJS9q+2sgoS1YXkf2vA+F9YTwr5QaW9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=Dn3azvWb; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56bf6591865so939837a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 01:01:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712217672; x=1712822472; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Xv8R3IrhUaaiihMPdgbzD/Fg2YiT2HLoLPB2jJluhQk=;
-        b=Dn3azvWbj0P8Ck27vJgjnmhTFSKldKYdM4gZEB4thWRHTHO6NeRZJ8QpjFiSwKN20P
-         Ek336C706THQwwpiJ6snnG36hcP1CRDS+QSX/ZRBYyAbYQHcON93ljL3cKO4Zu07O1jw
-         yExQaHADM/ZRniVZCg+g4qnIWeGSSeIXktF1mnYyM7HwsyhFBAok8CxkGdkibShxWzCa
-         KNiXs82OQillF6Vs8xtGxvyJvAj/KRdr3zaXoPWDiFkj1wVfqlbH+3DTDhNVNFJNtm1p
-         G/ykNLfkhBuQ5IQfTpuOLaCa0rLSVLQzPcoSF3mHtf8tfXMOxAFB8IMZnDb2riUBnmqS
-         fJjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712217672; x=1712822472;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Xv8R3IrhUaaiihMPdgbzD/Fg2YiT2HLoLPB2jJluhQk=;
-        b=kAD91A03JYZ1uueW+K4ZhFRA+hLlLxTVS073T2Z0LkZCmFTE/ZI8PfWu6gz9UZCXf/
-         wT7ln5DQ0ID1rwJs2R3HEFokP7ziYVGGoV261DgJa+gQqyAlon+dlcuat8hrEOuoVGQt
-         GxcUcgxQuZJ2zuGKIlB/W1qunu5RTWuToqCbEnOQXb9gCjpctXguhY2yM2QXB/ILtme4
-         5vB/A4mFrR4dttD24aO0T22oU7KKVBPZATm7PujB7MyCkRe4IXU9kfM3q1blVwEwz1Oa
-         daxKLCvlToPW+wH1kOFrHw6L77XX7IunhwhVLiAW8RnXf/QomDkx7r8uSBRMSAyXrGST
-         pZKw==
-X-Forwarded-Encrypted: i=1; AJvYcCUFdfjP4Mea3jfVoX5H7Mv+5Iv3dpnaUbXe6J6iRZ9c2fuFHrYtoAdjbMZDuUSSWuEtO8Eyaa7guVePhF4Qk+N/BZYmxZRBT9oERBTS
-X-Gm-Message-State: AOJu0YxS4Zgld+J5QP9/FoIGxyx69JKZqg8+29OlDHENBeZyQ3zweI2/
-	vInWYZuv0ptX1M/zbyEaJbmnpFYt4pr6uobR3E46WwccUbn2LdYSAhA4dcgc6Ko=
-X-Google-Smtp-Source: AGHT+IEQQDX7G43C5KmJflK3VEIWNWAS7ktsRAeYWb2ozLpk/ugg7MgwS4QMOHuKzIeKgxoa7JkVIg==
-X-Received: by 2002:a50:c315:0:b0:56b:9ef8:f656 with SMTP id a21-20020a50c315000000b0056b9ef8f656mr1125320edb.7.1712217671985;
-        Thu, 04 Apr 2024 01:01:11 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id k3-20020a056402340300b0056e06d5a301sm1681791edc.20.2024.04.04.01.01.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 01:01:11 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: jirislaby@kernel.org
-Cc: chris@zankel.net,
-	gregkh@linuxfoundation.org,
-	jcmvbkbc@gmail.com,
-	linux-kernel@vger.kernel.org,
-	thorsten.blum@toblux.com
-Subject: [PATCH v3] tty: xtensa/iss: Use min() to fix Coccinelle warning
-Date: Thu,  4 Apr 2024 09:58:13 +0200
-Message-ID: <20240404075811.6936-3-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <528c6824-287e-4be2-82f3-7fcdd254eb15@kernel.org>
-References: <528c6824-287e-4be2-82f3-7fcdd254eb15@kernel.org>
+	s=arc-20240116; t=1712217506; c=relaxed/simple;
+	bh=ex8Jbm7t4k8Fpjz2pzUFpRuPZgP2C2fuI1ETdKnGMcE=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ces7ftp5liMECRD/nFA9uAjw81joOtLVwijWooEBRws5aKKC+9Ylr2OPdM3qkUh7zhdibkZWKzvqh74bANABLiiDXSYM3wk0CiZUdGUlTsqzb4GhMjONjegWzIgdIefGE9Gp8EbxPbkhRiB6pcwq/cA8DZ+RKe7veH+Qs/bA9os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=ywRjfuXD; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712217503; x=1743753503;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ex8Jbm7t4k8Fpjz2pzUFpRuPZgP2C2fuI1ETdKnGMcE=;
+  b=ywRjfuXDoSVG2YHRnqeUC2Cuhy2bfuxJlj6EsiF8adCKEdWml/BoiNEy
+   3sH1IMLPtKR/nP/XMipUrd8HpfPgVljqpSo01p4Xk1IF9mkJRqQCGtDv4
+   dPm8qX+L/04EBghkUQk21H2F8MZ8h+qCWeROp9fIYvI8PpYNiiP97u1B1
+   Bp9QrmofJsIUwT9dune8pDgMcgdZmYS7z5PLNyC2qOtR8xb1o7XMlQL8f
+   BhndKu0V+jOq8D15JyJck8uebay5Ag5yW1M+Gr6dSDZdgOxbN5o27XR4p
+   STZE2uKDBhYaAx/9uRx4tq+YyeqgjHsPXm8Yaw43+6v5pfiOQydYhaBnV
+   w==;
+X-CSE-ConnectionGUID: xzFzvc8LTJeba3q7BJRCVg==
+X-CSE-MsgGUID: exhvIqGvSK6Mb92ZHSxnIg==
+X-IronPort-AV: E=Sophos;i="6.07,178,1708412400"; 
+   d="scan'208";a="21363534"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Apr 2024 00:58:22 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 4 Apr 2024 00:58:16 -0700
+Received: from DEN-DL-M70577 (10.10.85.11) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Thu, 4 Apr 2024 00:58:14 -0700
+Date: Thu, 4 Apr 2024 07:58:13 +0000
+From: Daniel Machon <daniel.machon@microchip.com>
+To: Horatiu Vultur <horatiu.vultur@microchip.com>
+CC: Lars Povlsen <lars.povlsen@microchip.com>, Steen Hegelund
+	<Steen.Hegelund@microchip.com>, <UNGLinuxDriver@microchip.com>, "David S.
+ Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
+ Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	<linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net-next 2/3] net: sparx5: add support for tc flower
+ mirred action.
+Message-ID: <20240404075813.nploesovm4katckb@DEN-DL-M70577>
+References: <20240403-mirror-redirect-actions-v1-0-c8e7c8132c89@microchip.com>
+ <20240403-mirror-redirect-actions-v1-2-c8e7c8132c89@microchip.com>
+ <20240404064627.6m25m2mi7zbpqbyo@DEN-DL-M31836.microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240404064627.6m25m2mi7zbpqbyo@DEN-DL-M31836.microchip.com>
 
-Inline strlen() and use min() to fix the following Coccinelle/coccicheck
-warning reported by minmax.cocci:
+> The 04/03/2024 20:41, Daniel Machon wrote:
+> 
+> Hi Daniel,
+> 
+> ...
+> 
+> > +static int sparx5_tc_action_mirred(struct vcap_admin *admin,
+> > +				   struct vcap_rule *vrule,
+> > +				   struct flow_cls_offload *fco,
+> > +				   struct flow_action_entry *act)
+> > +{
+> > +	struct vcap_u72_action ports = {0};
+> 
+> Maybe this is just a preferences, but usually we use memset instead of {0};
 
-	WARNING opportunity for min()
+Yes, I think this falls under preference. I'd like to keep this one as
+is.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
-Changes in v2:
-- Use min() instead of umin() as suggested by Jiri Slaby
+> 
+> > +	int err;
+> > +
+> > +	if (admin->vtype != VCAP_TYPE_IS0 && admin->vtype != VCAP_TYPE_IS2) {
+> > +		NL_SET_ERR_MSG_MOD(fco->common.extack,
+> > +				   "Mirror action not supported in this VCAP");
+> > +		return -EOPNOTSUPP;
+> > +	}
+> > +
+> > +	err = vcap_rule_add_action_u32(vrule, VCAP_AF_MASK_MODE,
+> > +				       SPX5_PMM_OR_DSTMASK);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	sparx5_tc_flower_set_port_mask(&ports, act->dev);
+> > +
+> > +	err = vcap_rule_add_action_u72(vrule, VCAP_AF_PORT_MASK, &ports);
+> > +	if (err)
+> > +		return err;
+> 
+> You can just return directly the return value from vcap_rule_add_action_u72
+> Something like:
+> 
+> return vcap_rule_add_action_u72(...)
+>
 
-Changes in v3:
-- Inline strlen() as suggested by Jiri Slaby
----
- arch/xtensa/platforms/iss/console.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Yes, seems like a reasonable change :-) I need to respin anyway, since
+NIPA is complaining about something I didn't catch in my local run. Will
+incorporate changes in v2 - thanks.
 
-diff --git a/arch/xtensa/platforms/iss/console.c b/arch/xtensa/platforms/iss/console.c
-index 8896e691c051..abec44b687df 100644
---- a/arch/xtensa/platforms/iss/console.c
-+++ b/arch/xtensa/platforms/iss/console.c
-@@ -166,10 +166,8 @@ late_initcall(rs_init);
- 
- static void iss_console_write(struct console *co, const char *s, unsigned count)
- {
--	if (s && *s != 0) {
--		int len = strlen(s);
--		simc_write(1, s, count < len ? count : len);
--	}
-+	if (s && *s != 0)
-+		simc_write(1, s, min(count, strlen(s)));
- }
- 
- static struct tty_driver* iss_console_device(struct console *c, int *index)
--- 
-2.44.0
-
+> > +
+> > +	return 0;
+> > +}
+> > -- 
+> > 2.34.1
+> > 
+> 
+> -- 
+> /Horatiu
 
