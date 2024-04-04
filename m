@@ -1,93 +1,144 @@
-Return-Path: <linux-kernel+bounces-130847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA2B8897DE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 04:51:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1218897DEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 04:56:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBF561C2199F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:51:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 397CE1F2857B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:56:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CC42135A;
-	Thu,  4 Apr 2024 02:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA25208A5;
+	Thu,  4 Apr 2024 02:56:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="babYapBx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DOYOq1kt"
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A92EB1CABD;
-	Thu,  4 Apr 2024 02:50:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F74EEEB2;
+	Thu,  4 Apr 2024 02:55:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712199043; cv=none; b=pdoFUBb1pnrgxBgALe+ge9Kiwk64xpXXAhBaCv+4VKjk12gwDLoVM7HPC3mX3qYy4uztPieBsxhIXoOLCGij/ekLjdoj2cqjqVnGJ5sZsuRngrPfugUQVWCHG1dyFLpsPyNOGB0EPPuH8szManPCNPbAX+sdlMnasFk+Q49/uI0=
+	t=1712199359; cv=none; b=mSiz+APlstW1ljXZskE8dV+mg/iOxpb6u7p1+aCINou+Wy/MMTqUKqo0Z73Dp+3HUt1ZYevStMNpWVylHKEFhIjXVyJiiXAz6V9wDZVxDFEWd+cFL8kJL/R1V03jjnJ3TNGfCNxhV6AizvhvQUbDqn4FhHNFlbBkF5GuVJcSENc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712199043; c=relaxed/simple;
-	bh=Z0NqPyA1Ag7ywDCAREb3aLXtL9z+FPZPJKBvHQO0qu4=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=dwPWzU7ZssKI7S63B28N167hpvm0xQmdKKZ+9oN1xzUqwyygnmEMEM+jm2UPXYaZdaEX5d5aMXdOi+qh/elKdVSBVZss0KfFuOpAWdHfUuLqK0YgFNNPKXuo2/zBXsdS43IDNp5zGoOUh6Bbo3mvJcLTvSxIMwkuDdfsjXn2qBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=babYapBx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 4A4CFC43399;
-	Thu,  4 Apr 2024 02:50:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712199043;
-	bh=Z0NqPyA1Ag7ywDCAREb3aLXtL9z+FPZPJKBvHQO0qu4=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=babYapBxC3JxNFI8z01+x6T2wNnl/TdGYD+Sjp7dxvjVzz5WJTPhZScrrb35OMtaf
-	 Bc49gAlrOdrms5bjXdHn6puun1kncoLIWUHIyzouZ1mm8arI780jlur1uoZAz3uuQG
-	 dD6IUiTYJrldynPR/IaH1xD+YC9vku7XqoOTmPjJVnSGxXbvS6aHqBDhkbeScg9SNL
-	 v1nx9FS10qWDq/wFwOMzyyl+ynkUUM8QI25cUCFTmIHAxk3dmsutJTI8sWaEKTUEoy
-	 iaV6BFEtf5lFaTA0M+FhCeyhRtGbEqz0CP3MXqjMCJwG6ZbskzEYt6ezPMPOQELKQz
-	 I4vPi06ntdHzQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 34EA8D84BB4;
-	Thu,  4 Apr 2024 02:50:43 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712199359; c=relaxed/simple;
+	bh=woQPwN94SfTkVo2nkrzwmeNCeR1tcNFP0GrDX8U1n6g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oOO6hyjDrgYEyeqM6WiNg0nyVqPu4f/vz4XKFWPHMz52UQcdoxzDazSOxB3oMqBMcUMfT9xHtWHAHrFelZi4N6L4fTB5JuVDDJyWtG6G12VxXrEr2PKDTX5Gcy88ddmGjA+XXOnAq17cq/5d5nbGonlnwxcRHSIDi4brBAW34r4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DOYOq1kt; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+	bh=b2H16tqCkJ6i90mQLPDpV1ZsYZDW4KEWWz9R9e+0Oig=; b=DOYOq1ktip9OrPqyMbwDoNqDtq
+	VB6HauYA/GGMAstDHOFp3X/FsrrMKv6YfXGD+QUD67yFNWCAcxzrPxwIanfV6S3L97X/TEZcue6x1
+	DEi6bN9guWRaHhck/D7JnDVcfH/ggNwDsVGjKVdBzXBBK0zM3jPjOcv259vAlag3vudS0kmURSzoM
+	aJYzWCso5E+7of2Er2nfWcoIvHsHbXLcHILwObAIYPaSB1QJuojxjuRFiDBF8ddzqHDVt2GWbVL/+
+	xR+0t7YyOlbaQgK6MbdXjKGC7weqzQ++wCpmLrtM1OisyiYiLNHGQ3qfa4nDy1kb8yHh9fC1vn6Yz
+	GUTgK+bw==;
+Received: from [50.53.2.121] (helo=[192.168.254.15])
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rsDGA-000000012Up-3OOS;
+	Thu, 04 Apr 2024 02:55:27 +0000
+Message-ID: <5a349108-afd9-4290-acb6-8ec176a80a84@infradead.org>
+Date: Wed, 3 Apr 2024 19:55:22 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: fman: Remove some unused fields in some
- structure
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171219904321.5496.4241068677460405258.git-patchwork-notify@kernel.org>
-Date: Thu, 04 Apr 2024 02:50:43 +0000
-References: <425222d4f6c584e8316ccb7b2ef415a85c96e455.1712084103.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <425222d4f6c584e8316ccb7b2ef415a85c96e455.1712084103.git.christophe.jaillet@wanadoo.fr>
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: madalin.bucur@nxp.com, sean.anderson@seco.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
- netdev@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 01/37] fix missing vmalloc.h includes
+To: Kent Overstreet <kent.overstreet@linux.dev>,
+ David Hildenbrand <david@redhat.com>
+Cc: Nathan Chancellor <nathan@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org,
+ mhocko@suse.com, vbabka@suse.cz, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, dennis@kernel.org,
+ jhubbard@nvidia.com, tj@kernel.org, muchun.song@linux.dev, rppt@kernel.org,
+ paulmck@kernel.org, pasha.tatashin@soleen.com, yosryahmed@google.com,
+ yuzhao@google.com, dhowells@redhat.com, hughd@google.com,
+ andreyknvl@gmail.com, keescook@chromium.org, ndesaulniers@google.com,
+ vvvvvv@google.com, gregkh@linuxfoundation.org, ebiggers@google.com,
+ ytcoode@gmail.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, bsegall@google.com, bristot@redhat.com,
+ vschneid@redhat.com, cl@linux.com, penberg@kernel.org,
+ iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, glider@google.com,
+ elver@google.com, dvyukov@google.com, songmuchun@bytedance.com,
+ jbaron@akamai.com, aliceryhl@google.com, rientjes@google.com,
+ minchan@google.com, kaleshsingh@google.com, kernel-team@android.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ iommu@lists.linux.dev, linux-arch@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-modules@vger.kernel.org, kasan-dev@googlegroups.com,
+ cgroups@vger.kernel.org
+References: <20240321163705.3067592-1-surenb@google.com>
+ <20240321163705.3067592-2-surenb@google.com>
+ <20240403211240.GA307137@dev-arch.thelio-3990X>
+ <4qk7f3ra5lrqhtvmipmacgzo5qwnugrfxn5dd3j4wubzwqvmv4@vzdhpalbmob3>
+ <9e2d09f8-2234-42f3-8481-87bbd9ad4def@redhat.com>
+ <qyyo6mjctqm734utdjen4ozhoo3t4ikswzjfjnemp7olwdgyt4@qifwishdzul4>
+Content-Language: en-US
+From: Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <qyyo6mjctqm734utdjen4ozhoo3t4ikswzjfjnemp7olwdgyt4@qifwishdzul4>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello:
 
-This patch was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
 
-On Tue,  2 Apr 2024 20:55:50 +0200 you wrote:
-> In "struct muram_info", the 'size' field is unused.
-> In "struct memac_cfg", the 'fixed_link' field is unused.
+On 4/3/24 3:57 PM, Kent Overstreet wrote:
+> On Wed, Apr 03, 2024 at 11:48:12PM +0200, David Hildenbrand wrote:
+>> On 03.04.24 23:41, Kent Overstreet wrote:
+>>> On Wed, Apr 03, 2024 at 02:12:40PM -0700, Nathan Chancellor wrote:
+>>>> On Thu, Mar 21, 2024 at 09:36:23AM -0700, Suren Baghdasaryan wrote:
+>>>>> From: Kent Overstreet <kent.overstreet@linux.dev>
+>>>>>
+>>>>> The next patch drops vmalloc.h from a system header in order to fix
+>>>>> a circular dependency; this adds it to all the files that were pulling
+>>>>> it in implicitly.
+>>>>>
+>>>>> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+>>>>> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+>>>>> Reviewed-by: Pasha Tatashin <pasha.tatashin@soleen.com>
+>>>>
+>>>> I bisected an error that I see when building ARCH=loongarch allmodconfig
+>>>> to commit 302519d9e80a ("asm-generic/io.h: kill vmalloc.h dependency")
+>>>> in -next, which tells me that this patch likely needs to contain
+>>>> something along the following lines, as LoongArch was getting
+>>>> include/linux/sizes.h transitively through the vmalloc.h include in
+>>>> include/asm-generic/io.h.
+>>>
+>>> gcc doesn't appear to be packaged for loongarch for debian (most other
+>>> cross compilers are), so that's going to make it hard for me to test
+>>> anything...
+>>
+>> The latest cross-compilers from Arnd [1] include a 13.2.0 one for
+>> loongarch64 that works for me. Just in case you haven't heard of Arnds work
+>> before and want to give it a shot.
+>>
+>> [1] https://mirrors.edge.kernel.org/pub/tools/crosstool/
 > 
-> Remove them.
+> Thanks for the pointer - but something seems to be busted with the
+> loongarch build, if I'm not mistaken; one of the included headers
+> references loongarch-def.h, but that's not included.
 > 
-> Found with cppcheck, unusedStructMember.
-> 
-> [...]
 
-Here is the summary with links:
-  - [net-next] net: fman: Remove some unused fields in some structure
-    https://git.kernel.org/netdev/net-next/c/04af1d643701
+That file is part of gcc plugins. If you disable CONFIG_GCC_PLUGINS,
+it should build without having that issue. Of course, there may be other
+unrelated issues....
 
-You are awesome, thank you!
+
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+#Randy
 
