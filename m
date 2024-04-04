@@ -1,198 +1,218 @@
-Return-Path: <linux-kernel+bounces-131192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E330089843E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:36:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBA6E898442
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:37:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 683831F293C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:36:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76FDB28D053
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:37:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C7882871;
-	Thu,  4 Apr 2024 09:33:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6080E74E0A;
+	Thu,  4 Apr 2024 09:34:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="gYZuhYkC"
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jXIe8veD"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9958287C
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 09:33:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2D4A5C61D;
+	Thu,  4 Apr 2024 09:34:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712223221; cv=none; b=Ol1kTktX7ifw2ebEywJNdT5FYv1xM3H1u+4yDFpPMekcp9puml4xSDvotpXYTorGpxHzFO6wE9t1w83xKamlFnj2ZXiCxsiiEjv5hfVOSJtSRG8DBFmjvtemIOahBMBQ8Eo47bcYVMiG0hnFCgJq8lNNO1Y5GIiMyNbH8uJ+rVY=
+	t=1712223298; cv=none; b=O8I4urhnEP7qujBt8yBeTC8BWZwDWPVSGvYU//cRZh+rBMKajoVlBEjSnkTcLmYyhXW2x/FLJfeb4cnxlvUTofOS5bI2ZR+/3xkrOZAsGP+oPvhumOfeRCM2DNy6gOzg/104jwP4h9duLN657SoxWHyvgSJI7MH7l0kg6Pewh7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712223221; c=relaxed/simple;
-	bh=QikKFsZX5Z+SQME56UGEE4G7WVpkXWaJpct3ts0Ipc8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=q88ByZMR+z/dT2GNUhOn3Gvw6ruGhoMnJbuVsrpLUy+mu95Qic2E4cv1CCc9/ztLL9YaVRcwlutr1TT5qffPvB+30Au/jiRRSN4RKioUI8nZIN4Tx/mB9KRH0ZE6km5aBQ8b4dHYIKjExSjPJW5/2vAtqlaIrkTSDtEFa6hXwxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=gYZuhYkC; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-343cfa6faf0so8391f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 02:33:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712223217; x=1712828017; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qbnVrvd22lq0FsuqRTbRtCkxT8J8OwHTwKvqCj8JxUU=;
-        b=gYZuhYkCmSQM23wfzmyDfHLLvPED4Wl4mOgWYUOe1wVSBG8B/BgZ+NmNjPplVkp28F
-         PP7oTAv+NWWzoAJeQt8/SmhqlvRgBB5MB25APnFqIRLpX3cL5jj+AbhEWIB3pK4ACXXu
-         NOWqg0SyEIBvy0j7uDNxmOCvbV46xBclFU2MxB9wKAcxKk8p2v7AJz0AJB6EYXjKl+11
-         P46WvFau/yoB/ht+tVsB5ELkS5Y32fK9ANb9afde22CT3qdmYTjduXsjudZAw/DSlAP2
-         R+OzRPorUxtLMYPgTZx1FHitg0vDQSnIGP1CglJPQiRwhuMNzukQvjjHJtGZWfqZUPz0
-         c65w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712223217; x=1712828017;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qbnVrvd22lq0FsuqRTbRtCkxT8J8OwHTwKvqCj8JxUU=;
-        b=M/8SQ+CsDkEa9G4k7nWwHAsrCSkwN3LzUhV7iVOf20/B4A6YvTfIJNiTgp/aD2S/aI
-         vuvP5NVIYlcvmMEFCe1BjVDvl5d5om6y9paz3iud7xpsXc44GFSUA7MG16o/DeAORncA
-         e3nxyzZu+z3byHu2YPQfyAggyNiwCfD8ea4yLYnQnVsGr/46+XrA5ZMf7cHt7PB5Sifu
-         DM+ibiHTkag9GXp/kP9wzEpIC0JeKPjPfpIOxJ1Z5IF4xamD14ydCC9+W3Q5ilYxd2hc
-         Jwc29fNyy4sOA4ti2MESBFDnZCpB3/7YUIiHf5Vlr6OmgC01skihEvUsEg745GS/064e
-         8BTw==
-X-Forwarded-Encrypted: i=1; AJvYcCXse4fskZNzZ5njc4HSOsFoFL5uTCxExZoHZPAjHOWGhwQ6IxN6l155x0LFhNYh7z+9duIzl0S3MERjCqBoltO5j9LYxbx4fMSA7EVj
-X-Gm-Message-State: AOJu0Yy81a3e5+LPyfOD19H8Z9NJqPevAJfhLZJ/cBtF0MgGEjSlK4BQ
-	rvJxteVfGYpikwHW/YPHUzAVNe+84sFoMTR77z8uYwgQrqY7nXcotruEDurXQt4=
-X-Google-Smtp-Source: AGHT+IH4Xuhodhs7j0LM3R9BjUEjQahSlYUFbtB6dhoYLc15+hktejYI24fxveoEX5zCL0O3Jf423g==
-X-Received: by 2002:a5d:568a:0:b0:33e:cf4d:c583 with SMTP id f10-20020a5d568a000000b0033ecf4dc583mr1724153wrv.16.1712223217370;
-        Thu, 04 Apr 2024 02:33:37 -0700 (PDT)
-Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:220a:565e:2927:8cf0])
-        by smtp.gmail.com with ESMTPSA id dj13-20020a0560000b0d00b0033e9fca1e49sm19436385wrb.60.2024.04.04.02.33.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 02:33:36 -0700 (PDT)
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-To: Kent Gibson <warthog618@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Alexey Dobriyan <adobriyan@gmail.com>,
-	stable@vger.kernel.org,
-	Stefan Wahren <wahrenst@gmx.net>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH v2 2/2] gpio: cdev: fix missed label sanitizing in debounce_setup()
-Date: Thu,  4 Apr 2024 11:33:28 +0200
-Message-Id: <20240404093328.21604-3-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240404093328.21604-1-brgl@bgdev.pl>
-References: <20240404093328.21604-1-brgl@bgdev.pl>
+	s=arc-20240116; t=1712223298; c=relaxed/simple;
+	bh=+HqkqJU/rEQJga0hxV19uxQvWTIzQFumVdbgXcVwBnM=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=ArZ7sqRft8hxWYxN4Psia0SwlaBXl9kTDIL2RwWzW6tLvpk6DU5d1YzY7/pldos1cr4AUMm+1U8wjrCU3KBllKKZ39u63kdGEkYHuXYKXJimkLpFQoZ4VE0m/tl3HroYnMNvx/5CWok/9E+ieJ10Ax8GWkNiJau9ySRi63BsIyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jXIe8veD; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712223298; x=1743759298;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=+HqkqJU/rEQJga0hxV19uxQvWTIzQFumVdbgXcVwBnM=;
+  b=jXIe8veDxiptW1ew5nsOLmP82BKAF0Tfs+bA3vRV9P9li9bLLjHGCWhL
+   m9jWs4st7OhvIW5N5FGcQ1/g56GNLxaEQN3dMNGIZbfowThbWpxEKukO0
+   AZTrkbYN/dkKvMfh9JS9JbTe+r/YJ0qcqOba0+uSc3+HWHu4114QbsVuO
+   klcam3Q5DoozAM8VbO7QI2CjwQpmjRdfEEf9XGO81hxFxuQ5vtm5wnh/f
+   9+p25ZldcfhV6yxaq+51Ite0I9d53kPxqNFf/P0Awuxdo+Xtp/S0kIAes
+   pUHPK2jejJIOcrZge3dyAQ1NcNKN5L9muF/08uAJPHvTQW95fqExhiBZj
+   g==;
+X-CSE-ConnectionGUID: LgD7Tq2/T7CWjEZF0oB+SA==
+X-CSE-MsgGUID: iaA9rPFSSlSrniCJ/IXwMA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18941421"
+X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
+   d="scan'208";a="18941421"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 02:33:42 -0700
+X-CSE-ConnectionGUID: gVs5fu7qR0qS/6hQoZBorg==
+X-CSE-MsgGUID: 0psKKxpnST+cLR7S9Yb87A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="49680440"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.26])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 02:33:39 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 4 Apr 2024 12:33:33 +0300 (EEST)
+To: "Luke D. Jones" <luke@ljones.dev>, Hans de Goede <hdegoede@redhat.com>
+cc: corentin.chary@gmail.com, platform-driver-x86@vger.kernel.org, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4 1/9] platform/x86: asus-wmi: add support for 2024 ROG
+ Mini-LED
+In-Reply-To: <20240404001652.86207-2-luke@ljones.dev>
+Message-ID: <590fea48-ac39-4db4-47c5-366a6814c9b3@linux.intel.com>
+References: <20240404001652.86207-1-luke@ljones.dev> <20240404001652.86207-2-luke@ljones.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323328-2027781065-1712223213=:2725"
 
-From: Kent Gibson <warthog618@gmail.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-When adding sanitization of the label, the path through
-edge_detector_setup() that leads to debounce_setup() was overlooked.
-A request taking this path does not allocate a new label and the
-request label is freed twice when the request is released, resulting
-in memory corruption.
+--8323328-2027781065-1712223213=:2725
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Add label sanitization to debounce_setup().
+On Thu, 4 Apr 2024, Luke D. Jones wrote:
 
-Cc: stable@vger.kernel.org
-Fixes: b34490879baa ("gpio: cdev: sanitize the label before requesting the interrupt")
-Signed-off-by: Kent Gibson <warthog618@gmail.com>
-[Bartosz: rebased on top of the fix for empty GPIO labels]
-Co-developed-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/gpio/gpiolib-cdev.c | 47 +++++++++++++++++++++----------------
- 1 file changed, 27 insertions(+), 20 deletions(-)
+> Support the 2024 mini-led backlight and adjust the related functions
+> to select the relevant dev-id. Also add `available_mini_led_mode` to the
+> platform sysfs since the available mini-led levels can be different.
+>=20
+> Reviewed-by: Ilpo J=C3=A4rvinen <ilpo.jarvinen@linux.intel.com>
+> signed-off-by: Luke D. Jones <luke@ljones.dev>
+> ---
+>  .../ABI/testing/sysfs-platform-asus-wmi       |  8 ++
+>  drivers/platform/x86/asus-wmi.c               | 96 +++++++++++++++++--
+>  include/linux/platform_data/x86/asus-wmi.h    |  1 +
+>  3 files changed, 95 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b/Document=
+ation/ABI/testing/sysfs-platform-asus-wmi
+> index 8a7e25bde085..ef1ac1a20a71 100644
+> --- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> +++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
+> @@ -126,6 +126,14 @@ Description:
+>  =09=09Change the mini-LED mode:
+>  =09=09=09* 0 - Single-zone,
+>  =09=09=09* 1 - Multi-zone
+> +=09=09=09* 2 - Multi-zone strong (available on newer generation mini-led=
+)
+> +
+> +What:=09=09/sys/devices/platform/<platform>/available_mini_led_mode
+> +Date:=09=09Apr 2024
+> +KernelVersion:=096.10
+> +Contact:=09"Luke Jones" <luke@ljones.dev>
+> +Description:
+> +=09=09List the available mini-led modes.
+> =20
+>  What:=09=09/sys/devices/platform/<platform>/ppt_pl1_spl
+>  Date:=09=09Jun 2023
+> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-=
+wmi.c
+> index 3f07bbf809ef..aa2a3b402e33 100644
+> --- a/drivers/platform/x86/asus-wmi.c
+> +++ b/drivers/platform/x86/asus-wmi.c
+> @@ -126,6 +126,17 @@ module_param(fnlock_default, bool, 0444);
+>  #define ASUS_SCREENPAD_BRIGHT_MAX 255
+>  #define ASUS_SCREENPAD_BRIGHT_DEFAULT 60
+> =20
+> +#define ASUS_MINI_LED_MODE_MASK=09=090x03
+> +/* Standard modes for devices with only on/off */
+> +#define ASUS_MINI_LED_OFF=09=090x00
+> +#define ASUS_MINI_LED_ON=09=090x01
+> +/* New mode on some devices, define here to clarify remapping later */
+> +#define ASUS_MINI_LED_STRONG_MODE=090x02
+> +/* New modes for devices with 3 mini-led mode types */
+> +#define ASUS_MINI_LED_2024_WEAK=09=090x00
+> +#define ASUS_MINI_LED_2024_STRONG=090x01
+> +#define ASUS_MINI_LED_2024_OFF=09=090x02
+> +
+>  /* Controls the power state of the USB0 hub on ROG Ally which input is o=
+n */
+>  #define ASUS_USB0_PWR_EC0_CSEE "\\_SB.PCI0.SBRG.EC0.CSEE"
+>  /* 300ms so far seems to produce a reliable result on AC and battery */
+> @@ -288,7 +299,7 @@ struct asus_wmi {
+>  =09bool battery_rsoc_available;
+> =20
+>  =09bool panel_overdrive_available;
+> -=09bool mini_led_mode_available;
+> +=09u32 mini_led_dev_id;
+> =20
+>  =09struct hotplug_slot hotplug_slot;
+>  =09struct mutex hotplug_lock;
+> @@ -2108,13 +2119,33 @@ static ssize_t mini_led_mode_show(struct device *=
+dev,
+>  =09=09=09=09   struct device_attribute *attr, char *buf)
+>  {
+>  =09struct asus_wmi *asus =3D dev_get_drvdata(dev);
+> -=09int result;
+> +=09u32 value;
+> +=09int err;
+> =20
+> -=09result =3D asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_MINI_LED=
+_MODE);
+> -=09if (result < 0)
+> -=09=09return result;
+> +=09err =3D asus_wmi_get_devstate(asus, asus->mini_led_dev_id, &value);
+> +=09if (err < 0)
+> +=09=09return err;
+> +=09value =3D value & ASUS_MINI_LED_MODE_MASK;
+> =20
+> -=09return sysfs_emit(buf, "%d\n", result);
+> +=09/*
+> +=09 * Remap the mode values to match previous generation mini-led. The l=
+ast gen
+> +=09 * WMI 0 =3D=3D off, while on this version WMI 2 =3D=3Doff (flipped).
+> +=09 */
+> +=09if (asus->mini_led_dev_id =3D=3D ASUS_WMI_DEVID_MINI_LED_MODE2) {
+> +=09=09switch (value) {
+> +=09=09case ASUS_MINI_LED_2024_WEAK:
+> +=09=09=09value =3D ASUS_MINI_LED_ON;
+> +=09=09=09break;
+> +=09=09case ASUS_MINI_LED_2024_STRONG:
+> +=09=09=09value =3D ASUS_MINI_LED_STRONG_MODE;
+> +=09=09=09break;
+> +=09=09case ASUS_MINI_LED_2024_OFF:
+> +=09=09=09value =3D ASUS_MINI_LED_OFF;
+> +=09=09=09break;
+> +=09=09}
+> +=09}
+> +
+> +=09return sysfs_emit(buf, "%d\n", value);
+>  }
+> =20
+>  static ssize_t mini_led_mode_store(struct device *dev,
+> @@ -2130,11 +2161,32 @@ static ssize_t mini_led_mode_store(struct device =
+*dev,
+>  =09if (result)
+>  =09=09return result;
+> =20
+> -=09if (mode > 1)
+> +=09if (asus->mini_led_dev_id =3D=3D ASUS_WMI_DEVID_MINI_LED_MODE &&
+> +=09=09mode > ASUS_MINI_LED_ON)
+> +=09=09return -EINVAL;
+> +=09if (asus->mini_led_dev_id =3D=3D ASUS_WMI_DEVID_MINI_LED_MODE2 &&
+> +=09=09mode > ASUS_MINI_LED_STRONG_MODE)
 
-diff --git a/drivers/gpio/gpiolib-cdev.c b/drivers/gpio/gpiolib-cdev.c
-index 1426cc1c4a28..6fe978535047 100644
---- a/drivers/gpio/gpiolib-cdev.c
-+++ b/drivers/gpio/gpiolib-cdev.c
-@@ -728,6 +728,25 @@ static u32 line_event_id(int level)
- 		       GPIO_V2_LINE_EVENT_FALLING_EDGE;
- }
- 
-+static inline char *make_irq_label(const char *orig)
-+{
-+	char *new;
-+
-+	if (!orig)
-+		return NULL;
-+
-+	new = kstrdup_and_replace(orig, '/', ':', GFP_KERNEL);
-+	if (!new)
-+		return ERR_PTR(-ENOMEM);
-+
-+	return new;
-+}
-+
-+static inline void free_irq_label(const char *label)
-+{
-+	kfree(label);
-+}
-+
- #ifdef CONFIG_HTE
- 
- static enum hte_return process_hw_ts_thread(void *p)
-@@ -1015,6 +1034,7 @@ static int debounce_setup(struct line *line, unsigned int debounce_period_us)
- {
- 	unsigned long irqflags;
- 	int ret, level, irq;
-+	char *label;
- 
- 	/* try hardware */
- 	ret = gpiod_set_debounce(line->desc, debounce_period_us);
-@@ -1037,11 +1057,17 @@ static int debounce_setup(struct line *line, unsigned int debounce_period_us)
- 			if (irq < 0)
- 				return -ENXIO;
- 
-+			label = make_irq_label(line->req->label);
-+			if (IS_ERR(label))
-+				return -ENOMEM;
-+
- 			irqflags = IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING;
- 			ret = request_irq(irq, debounce_irq_handler, irqflags,
- 					  line->req->label, line);
--			if (ret)
-+			if (ret) {
-+				free_irq_label(label);
- 				return ret;
-+			}
- 			line->irq = irq;
- 		} else {
- 			ret = hte_edge_setup(line, GPIO_V2_LINE_FLAG_EDGE_BOTH);
-@@ -1083,25 +1109,6 @@ static u32 gpio_v2_line_config_debounce_period(struct gpio_v2_line_config *lc,
- 	return 0;
- }
- 
--static inline char *make_irq_label(const char *orig)
--{
--	char *new;
--
--	if (!orig)
--		return NULL;
--
--	new = kstrdup_and_replace(orig, '/', ':', GFP_KERNEL);
--	if (!new)
--		return ERR_PTR(-ENOMEM);
--
--	return new;
--}
--
--static inline void free_irq_label(const char *label)
--{
--	kfree(label);
--}
--
- static void edge_detector_stop(struct line *line)
- {
- 	if (line->irq) {
--- 
-2.40.1
+The if condition continations should not be indented to the same level as=
+=20
+its statement block because it confuses the reader. Hans might be able to=
+=20
+fix this while applying though so I'm not sure if it's necessary to send a=
+=20
+new version just because of this.
 
+--=20
+ i.
+--8323328-2027781065-1712223213=:2725--
 
