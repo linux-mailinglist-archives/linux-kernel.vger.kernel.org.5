@@ -1,152 +1,148 @@
-Return-Path: <linux-kernel+bounces-131077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69BA88982C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:05:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 682DB8982B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:02:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0F8D28C36B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:05:09 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4363B27A52
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:02:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 793CD6BB50;
-	Thu,  4 Apr 2024 08:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 436E567A15;
+	Thu,  4 Apr 2024 08:02:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Jr50Dm37"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jLWZgRbe"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1EE5D734;
-	Thu,  4 Apr 2024 08:04:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FB8F45970
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:01:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712217887; cv=none; b=Lpgxv7msAo84AddjggaXRGouSeNhFt0Ve0VFqz1G3iy3STo4WDR0WEsHJYDyg/Z1vXcsZTSCFYKIO2e9NGrRyq8tEGxp8Nc73jy4T08UnNMmuffrCm0AQw4Zvs/kMVCkbb9SCkML3vrxln4W85mtYpgUXtDFaPmftC34F20F/C0=
+	t=1712217720; cv=none; b=VyEw1hdONBihlKJCqHi2k2aCx65+UXykBVLpejb8eMUawQNBIWKo3d0Hnznc4eHO3uLh90qwhFNWHD1m0jC8tY4P7VQNVSy6bSOvQgsEZAsxtVFtze4AFuqKk4RjMiYsI1gjnVcIV4XEbE/8mDeAje7EJxCTJC+byYobz3LDvAs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712217887; c=relaxed/simple;
-	bh=gdTOoPuOriYmEIVSVbX3YDpxiCB3rTIMktnWhNxu07g=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=My/57qbz4YriCzx0gD72ZHy3BAx/4UMjEocTWSyj12zmnl/U+m2vE5V7RnGl8wrtQqU+gpqbAbjWYdvBls+GS+nJ79sBwV6T37ju+PVKVs9lOzwLXonPmKgrseR9tG3wOGx59vV/QK9ka3E6LML18gEOIyZ2VNisw92hALtuavw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Jr50Dm37; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712217886; x=1743753886;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gdTOoPuOriYmEIVSVbX3YDpxiCB3rTIMktnWhNxu07g=;
-  b=Jr50Dm37h72c+KpUTSqoVrfeHHNRRsvpnbi+OutOm+oiV82OjH/DJ7P4
-   lgaTvXWJ2g2A7kHiigMIrp7q9aZEme23Z4sNwt710FRje1tatQeOPkbzl
-   CrWAUP2tbezsTEy4iALZGY4o6wF//4zHbzpAO7CsOuwvfAgBdhHnS78rg
-   uh2mXiHIXFfAA9i1rfubrHXX2ISVHGFLeJ8eW01NJ//8OVD0SQ+Bf5y2X
-   9Ws0G8sXgX8VE1hQ6r/DqKX1Z5/wFsfhcIeSx5qSqnvAcesmii7JB+czV
-   9pT0WYfDfGjh5vV/iuME2blTxvmMgZ9384Cu9l6+M0Z6QEeu7tFlU/L7A
-   g==;
-X-CSE-ConnectionGUID: dlpw0rggR4WYgOJDui2PAg==
-X-CSE-MsgGUID: zIrWsFM/SRGghGD8UNThoQ==
-X-IronPort-AV: E=Sophos;i="6.07,178,1708412400"; 
-   d="scan'208";a="186710221"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Apr 2024 01:04:43 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Apr 2024 01:04:34 -0700
-Received: from DEN-DL-M31836.microsemi.net (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Thu, 4 Apr 2024 01:04:32 -0700
-From: Horatiu Vultur <horatiu.vultur@microchip.com>
-To: <andrew@lunn.ch>, <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <richardcochran@gmail.com>
-CC: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<UNGLinuxDriver@microchip.com>, Horatiu Vultur <horatiu.vultur@microchip.com>
-Subject: [PATCH net-next 1/2] net: phy: micrel: lan8814: Enable LTC at probe time
-Date: Thu, 4 Apr 2024 10:01:14 +0200
-Message-ID: <20240404080115.450929-2-horatiu.vultur@microchip.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240404080115.450929-1-horatiu.vultur@microchip.com>
-References: <20240404080115.450929-1-horatiu.vultur@microchip.com>
+	s=arc-20240116; t=1712217720; c=relaxed/simple;
+	bh=nn75BfzRjv6UXMTe1POmsOm6uuisJffR5hjMsK9B4pM=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=qevLWWGyCs3t1zxtFuZrupROFicH5+JX5To80HnVQAIcGaWminPh/TXkGDLy0vPMB0v6PdRPjRoHtLDxuRIL0nXRlcsvyRG6prmQKBc+JmE3/HsaloSCaQC+ALlzCPPOws9ivOQk+kR3okmTa+R+nGs0IArXjxjAf0rQSB0GAF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jLWZgRbe; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712217717;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IE/xA/cazcP+HXhdhjRdwQDAS2gMvpTgfIxHPPrU41I=;
+	b=jLWZgRbe3Jrf4s1Xqc8AVGcHr1mAvgilCkf3XtnBhA94CrGf9ub+9LPunzUYMICm1FpgO4
+	H7FoYrTNhnq4nidWZN9jWcr+7mnS7OPmpi0tGV6SGhqiR9gq6GUz/V9lznwMIYG37V43sl
+	WZuGnX6ivwe+yvOtKULb5MUWAfy28vE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-169-c0jY6rVYNYiCi_bmX-evYA-1; Thu,
+ 04 Apr 2024 04:01:52 -0400
+X-MC-Unique: c0jY6rVYNYiCi_bmX-evYA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1BF723C02748;
+	Thu,  4 Apr 2024 08:01:51 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.146])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id DD1EAC1576F;
+	Thu,  4 Apr 2024 08:01:47 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <3655511.1712217111@warthog.procyon.org.uk>
+References: <3655511.1712217111@warthog.procyon.org.uk> <20240328163424.2781320-22-dhowells@redhat.com> <20240328163424.2781320-1-dhowells@redhat.com>
+To: Christian Brauner <christian@brauner.io>
+Cc: dhowells@redhat.com, Jeff Layton <jlayton@kernel.org>,
+    Gao Xiang <hsiangkao@linux.alibaba.com>,
+    Dominique Martinet <asmadeus@codewreck.org>,
+    Matthew Wilcox <willy@infradead.org>,
+    Steve French <smfrench@gmail.com>,
+    Marc Dionne <marc.dionne@auristor.com>,
+    Paulo Alcantara <pc@manguebit.com>,
+    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+    Eric Van Hensbergen <ericvh@kernel.org>,
+    Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev,
+    linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
+    linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
+    ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
+    linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
+    linux-mm@kvack.org, netdev@vger.kernel.org,
+    linux-kernel@vger.kernel.org, Latchesar Ionkov <lucho@ionkov.net>,
+    Christian Schoenebeck <linux_oss@crudebyte.com>
+Subject: Re: [PATCH 21/26] netfs, 9p: Implement helpers for new write code
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3666290.1712217703.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 04 Apr 2024 09:01:43 +0100
+Message-ID: <3666291.1712217703@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-The LTC for lan8814 was enabled only if timestamping was enabled,
-otherwise it would be stopped. Meaning that LTC will not increase by
-itself. This might break other features that don't required timestamping
-like generating 1PPS. Therefore enable the LTC at probe time.
+David Howells <dhowells@redhat.com> wrote:
 
-Signed-off-by: Horatiu Vultur <horatiu.vultur@microchip.com>
+> > +	size_t len =3D subreq->len - subreq->transferred;
+> =
+
+> This actually needs to be 'int len' because of the varargs packet format=
+ter.
+
+I think the attached change is what's required.
+
+David
 ---
- drivers/net/phy/micrel.c | 26 ++++----------------------
- 1 file changed, 4 insertions(+), 22 deletions(-)
+diff --git a/net/9p/client.c b/net/9p/client.c
+index 844aca4fe4d8..04af2a7bf54b 100644
+--- a/net/9p/client.c
++++ b/net/9p/client.c
+@@ -1670,10 +1670,10 @@ p9_client_write_subreq(struct netfs_io_subrequest =
+*subreq)
+ 	struct p9_client *clnt =3D fid->clnt;
+ 	struct p9_req_t *req;
+ 	unsigned long long start =3D subreq->start + subreq->transferred;
+-	size_t len =3D subreq->len - subreq->transferred;
+-	int written, err;
++	int written, len =3D subreq->len - subreq->transferred;
++	int err;
+ =
 
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 242f433d9184d..51ca1b2b5d99a 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -305,12 +305,7 @@ struct lan8814_shared_priv {
- 	struct ptp_clock *ptp_clock;
- 	struct ptp_clock_info ptp_clock_info;
- 
--	/* Reference counter to how many ports in the package are enabling the
--	 * timestamping
--	 */
--	u8 ref;
--
--	/* Lock for ptp_clock and ref */
-+	/* Lock for ptp_clock */
- 	struct mutex shared_lock;
- };
- 
-@@ -2426,8 +2421,6 @@ static int lan8814_hwtstamp(struct mii_timestamper *mii_ts,
- {
- 	struct kszphy_ptp_priv *ptp_priv =
- 			  container_of(mii_ts, struct kszphy_ptp_priv, mii_ts);
--	struct phy_device *phydev = ptp_priv->phydev;
--	struct lan8814_shared_priv *shared = phydev->shared->priv;
- 	struct lan8814_ptp_rx_ts *rx_ts, *tmp;
- 	int txcfg = 0, rxcfg = 0;
- 	int pkt_ts_enable;
-@@ -2492,20 +2485,6 @@ static int lan8814_hwtstamp(struct mii_timestamper *mii_ts,
- 	else
- 		lan8814_config_ts_intr(ptp_priv->phydev, false);
- 
--	mutex_lock(&shared->shared_lock);
--	if (config->rx_filter != HWTSTAMP_FILTER_NONE)
--		shared->ref++;
--	else
--		shared->ref--;
--
--	if (shared->ref)
--		lanphy_write_page_reg(ptp_priv->phydev, 4, PTP_CMD_CTL,
--				      PTP_CMD_CTL_PTP_ENABLE_);
--	else
--		lanphy_write_page_reg(ptp_priv->phydev, 4, PTP_CMD_CTL,
--				      PTP_CMD_CTL_PTP_DISABLE_);
--	mutex_unlock(&shared->shared_lock);
--
- 	/* In case of multiple starts and stops, these needs to be cleared */
- 	list_for_each_entry_safe(rx_ts, tmp, &ptp_priv->rx_ts_list, list) {
- 		list_del(&rx_ts->list);
-@@ -3236,6 +3215,9 @@ static int lan8814_ptp_probe_once(struct phy_device *phydev)
- 	lanphy_write_page_reg(phydev, 4, PTP_OPERATING_MODE,
- 			      PTP_OPERATING_MODE_STANDALONE_);
- 
-+	/* Enable ptp to run LTC clock for ptp and gpio 1PPS operation */
-+	lanphy_write_page_reg(phydev, 4, PTP_CMD_CTL, PTP_CMD_CTL_PTP_ENABLE_);
-+
- 	return 0;
- }
- 
--- 
-2.34.1
+-	p9_debug(P9_DEBUG_9P, ">>> TWRITE fid %d offset %llu len %zd\n",
++	p9_debug(P9_DEBUG_9P, ">>> TWRITE fid %d offset %llu len %d\n",
+ 		 fid->fid, start, len);
+ =
+
+ 	/* Don't bother zerocopy for small IO (< 1024) */
+@@ -1699,11 +1699,11 @@ p9_client_write_subreq(struct netfs_io_subrequest =
+*subreq)
+ 	}
+ =
+
+ 	if (written > len) {
+-		pr_err("bogus RWRITE count (%d > %lu)\n", written, len);
++		pr_err("bogus RWRITE count (%d > %u)\n", written, len);
+ 		written =3D len;
+ 	}
+ =
+
+-	p9_debug(P9_DEBUG_9P, "<<< RWRITE count %zd\n", len);
++	p9_debug(P9_DEBUG_9P, "<<< RWRITE count %d\n", len);
+ =
+
+ 	p9_req_put(clnt, req);
+ 	netfs_write_subrequest_terminated(subreq, written, false);
 
 
