@@ -1,113 +1,122 @@
-Return-Path: <linux-kernel+bounces-131781-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131783-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29BF2898BB7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:02:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E1494898BBC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:03:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1DA51F2208C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:02:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 93DBC1F222AD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:03:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A014312AAE0;
-	Thu,  4 Apr 2024 16:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A45A712AAE7;
+	Thu,  4 Apr 2024 16:03:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NgFs24i1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VZFddwlR"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBF1612A16E;
-	Thu,  4 Apr 2024 16:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A428E17BA8;
+	Thu,  4 Apr 2024 16:03:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712246563; cv=none; b=k5rmHsnVYXbyjg1WTudxWVucRfy22zxnmkFGXDVhy0R++QgQIWov7tQb9gacW70U/MFzFWr+2N79+reXcEPjPnOkv+5QHR+5i3/N2P3cwtsDlt0ITIIzVJE5jQPqcagyHNGguP+xI3gX/NA/9AEbP3kV7XMfz2SM4JpsC2NQpoA=
+	t=1712246608; cv=none; b=fYS1hA607QS6bTYSuZn1q+/pDd4MB/R0sgarKwWi1whz5Vf+/OOBpFxPIK9EMCWro+jU8+07OLWZwXZavfeh8RDZNCZSjhnoJTqMx+NvbTBKenkh4BK0q2wYnxe3S2t2NKmlzmNB8tYwu+IVZovzSfWaMXMeJIInLidaN4bpc1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712246563; c=relaxed/simple;
-	bh=S4vqLtLutHujkNQz1zATc4vO4U4vMe9CCrbAwlFtjfc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GBxocxOKiU1t9v5pnkCGs+vVYWpZn/7+2b+soF0L+jaw+GMDMFk9RTlxSFBn+pGWbMc0QmVCes62F1aNEoB+PcAMv520JPwJlNU5KPvi2/uRx++39MvqH2d3OBme9X37aElRYovBa0i4uWARP6pzrH66GHsJQc9jFx0igHu3kbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NgFs24i1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32065C433F1;
-	Thu,  4 Apr 2024 16:02:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712246561;
-	bh=S4vqLtLutHujkNQz1zATc4vO4U4vMe9CCrbAwlFtjfc=;
-	h=From:To:Cc:Subject:Date:From;
-	b=NgFs24i1FPcjYF68S5NJ9C21Ke4TUmFGvAX1/+vC0iO+QYM2cVVBwdW4/gC9ga5iz
-	 1EbkSBzsz4FJ4HIl4B8dFru62IQQ3rvRVS8aQo/SLwv6JVC7xaKo4JthyK1frNi5/r
-	 KoaUO2F9tnFat+D80UoCAg/6V3s246/rM2qv5igXMCHl+uY+/xmMGlzTNMkkhg/bxw
-	 doNgsU5apn6jndjpCWURmP0DkVT1Xhhej75+baqkyQIRZfybxkKzb4Vjl4NI16w3IY
-	 N7r/pyXWblz3wwCyx3PruJVus+rxyQTtD6aG8W5EPMSkANhaotH8R7HFaCL1v/IjjE
-	 eG7H1tVDs8z6g==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Karol Herbst <kherbst@redhat.com>,
-	Lyude Paul <lyude@redhat.com>,
-	Danilo Krummrich <dakr@redhat.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Ben Skeggs <bskeggs@redhat.com>,
-	dri-devel@lists.freedesktop.org,
-	nouveau@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH] [v2] nouveau: fix function cast warning
-Date: Thu,  4 Apr 2024 18:02:25 +0200
-Message-Id: <20240404160234.2923554-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712246608; c=relaxed/simple;
+	bh=3laSCnY9+DHBNm5Yb0RHMgrrQMU1Q8kYq9NMeNSgcUY=;
+	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=a2eR1njn4b2xQL5PvxNLGqfr4pgfCgGIQcRvq8XYEcCukZvgEKQHSNwtkXzT0HdGo1NyO+cere4e4/xtGSKHH0Idh4/hU7UFCbP/3s70+/v+nuvqjyjI5FSCBLGf5rwHiFbNpgiJgWmqk1K60uEL6GShthbXSr/VkXpZVYSnuzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VZFddwlR; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e2b137d666so6246915ad.2;
+        Thu, 04 Apr 2024 09:03:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712246606; x=1712851406; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=cy0MHR54JGNOFy9o8DAySgEG/x1fzuUUOcz6G/+T/+s=;
+        b=VZFddwlRdAgzetcEnHreInivpE+VTNV068HzOcDUjm72PAAA2tgtjsTXLQH1QZkQj6
+         7HAps1aqM69WBn9fYNyyBQWE4z55750gMhI5/XoIv1KS0dYLF2L4kjElYV+0euejks4g
+         YOLeLVSOTzDAPk+FlE3etbV7A/3UAP23VcWoiXVyudS/2K8/E4fLWOS7LF5Vloy+ks1a
+         3GMVOklyivNp4nt9PymcZtsnfHcZGtViOx5zrQCzboW/MaIOWF7Zd6jvPu6Dj7MoFgzb
+         kUhDr+O2POSZOi8PIfMj1Cer8+l5my5NpVF1bzjQM9dNgVHLFMTzfJ9e2/1pH5PI+4tn
+         PDPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712246606; x=1712851406;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cy0MHR54JGNOFy9o8DAySgEG/x1fzuUUOcz6G/+T/+s=;
+        b=semuGKcjLj7FV2L6X8c6CJhPWWay2jOv+xD4KhrwmKO2+b4ZsevKuAtfDjKXXRhLJe
+         YqtzBDvQ0SVdB3ywXAP3abLBlAQ8GUdu2vPzZXPCBUGEejGx1q1Pu2l87qdrphy2Xl+D
+         TXyqNqfnSiU8x1jsewQdSxvJy2U+Pb3N8jLNiSKtyAA8Clhtbpj4MtDBdWa9XMduSy/p
+         jSDmQox320G3Yd6u5JnpferwFBesKKf0TK55b7olWpCvyb04lbZIxgj/IIU80q/Ie6VN
+         1zfigzSmAkL9/a3CZ9wOmHbaYs9xgZPRAH+GyHqdJ4xa2r8n36OLzbSL7ogyo3jfafkC
+         lRpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVHokn3snaM2iqzLU4CoWp1+fbt9wXyvjE7kdi2opXBh3y6QM/sO9+mNreBXm2oHs6+KTxRFsEwMv7ftpB99AO0zGtkOskEM/r2N7slidUY4B58qR8UTCxaQvinGfBoQ7ZL//pYaGPDSg==
+X-Gm-Message-State: AOJu0YwiPSXe3mfxkmScp8WZWSDP0HxJhbYE6kA3gDWuoAtkrpqdpUfn
+	eCw4mkTBetU4a6nd82LqkiLEXmkntm5qlGfwmhNuKkgS32JJRPUK
+X-Google-Smtp-Source: AGHT+IGIZ1s4JW6qQAd8bIgbDQXjzd/SPVE488bXUbgRRSo7V604i20O0zxUSAUa2hDe9jiAtGUAsA==
+X-Received: by 2002:a17:902:c947:b0:1e0:a784:f965 with SMTP id i7-20020a170902c94700b001e0a784f965mr2658122pla.65.1712246605769;
+        Thu, 04 Apr 2024 09:03:25 -0700 (PDT)
+Received: from dw-tp ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id a21-20020a170902ee9500b001dd95b5dd0fsm15614103pld.69.2024.04.04.09.03.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 09:03:14 -0700 (PDT)
+Date: Thu, 04 Apr 2024 21:32:55 +0530
+Message-Id: <87frw1azf4.fsf@gmail.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Mikhail Ukhin <mish.uxin2012@yandex.ru>, Theodore Ts'o <tytso@mit.edu>
+Cc: Mikhail Ukhin <mish.uxin2012@yandex.ru>, Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, Michail Ivanov <iwanov-23@bk.ru>, Pavel Koshutin <koshutin.pavel@yandex.ru>, Artem Sadovnikov <ancowi69@gmail.com>
+Subject: Re: [PATCH] ext4: fix semaphore unlocking order
+In-Reply-To: <87h6goqx9u.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Arnd Bergmann <arnd@arndb.de>
+Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
 
-Calling a function through an incompatible pointer type causes breaks
-kcfi, so clang warns about the assignment:
+> Mikhail Ukhin <mish.uxin2012@yandex.ru> writes:
+>
+>> Fuzzing reports a possible deadlock in jbd2_log_wait_commit.
 
-drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c:73:10: error: cast from 'void (*)(const void *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
-   73 |         .fini = (void(*)(void *))kfree,
+I think I agree with what Jan hinted to me in the call, that
+how can an unlock order mismatch be a deadlock.
 
-Avoid this with a trivial wrapper.
+But yes, a wrong unlock order can increase the locking times of
+thread-2 waiting on lock B; for e.g. if a premption happens between
+unlock of lock A & B by thread-1.
 
-Fixes: c39f472e9f14 ("drm/nouveau: remove symlinks, move core/ to nvkm/ (no code changes)")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-v2: avoid 'return kfree()' expression returning a void
----
- drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+So it is always good to fix the unlock order too.
 
-diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c
-index 4bf486b57101..cb05f7f48a98 100644
---- a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c
-+++ b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c
-@@ -66,11 +66,16 @@ of_init(struct nvkm_bios *bios, const char *name)
- 	return ERR_PTR(-EINVAL);
- }
- 
-+static void of_fini(void *p)
-+{
-+	kfree(p);
-+}
-+
- const struct nvbios_source
- nvbios_of = {
- 	.name = "OpenFirmware",
- 	.init = of_init,
--	.fini = (void(*)(void *))kfree,
-+	.fini = of_fini,
- 	.read = of_read,
- 	.size = of_size,
- 	.rw = false,
--- 
-2.39.2
+>>
+>> The problem occurs in ext4_ind_migrate due to an incorrect order of
+>> unlocking of the journal and write semaphores - the order of unlocking
+>> must be the reverse of the order of locking.
+>>
+>
+> Maybe we should update the subject msg to:
+>       "ext4: "fix i_data_sem unlock order in ext4_ind_migrate()"
+>
+> and also should add:
+>     CC: stable@vger.kernel.org
 
+In that case, I am not really sure, if this requires a cc'd stable.
+So, I will leave this upto Ted.
+
+>
+>
+> I think this should have been fixed in patch [1], but looks like it
+> forgot to fix the unlock order.
+>
+> [1]: https://lore.kernel.org/all/1364801462-13120-1-git-send-email-dmonakhov@openvz.org/
+>
+>
+>> Found by Linux Verification Center (linuxtesting.org) with syzkaller.
+
+It will be good to know what was the test which identified this though?
+
+-ritesh
 
