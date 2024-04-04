@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-131377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C3EF8986E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6DE48986FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:16:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D5CE21F278F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:14:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 741351F287C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:16:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 722AF127B69;
-	Thu,  4 Apr 2024 12:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D563112D742;
+	Thu,  4 Apr 2024 12:13:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RW8ocvU5"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hT67nV31"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9A68528F
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:13:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8C186246
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:13:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712232815; cv=none; b=NCKXBK1KHEdKRbswaT6v2DJ8/ao7HmNxCWL7txzjL74aebuHDt7q6M8PhSXlCjLWnJbAnuefrHUVSAAbLa4Uhr4Ja1KOp2/OFvO4j2RFamvbqQrjbKpkaCQ7PnO4MOOSwlU/3XU6ibjv8UiVXWbs1ikjxwdp+RJkY4y77+K3xJE=
+	t=1712232818; cv=none; b=MujKvZQ+eUkfkmuqceJY7ktcFfe4tGiYlObWCEm4rhb9Eb4VCSIoJQ/Y5nS8x9+SO/EXIB3Dr1h5zdxBVacqKUazLtBPHKRm7miEenXz6HJ2VbPLb5faJL59DRSo14z4VmNC4K1kCmA411KNTHl1Xqhej1+63H9DKYa0y+fKK+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712232815; c=relaxed/simple;
-	bh=Oq0pmnhKqjL0PP9rp3fn5DQ2ICohIPxTiVNrDVZWnc4=;
+	s=arc-20240116; t=1712232818; c=relaxed/simple;
+	bh=25FddFyxEEhrFUML6yT+6DIO7mi5Cb5zPlQlZBkxRoU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WMVfyyhJ/f1UIjrLMT28jLOIQuHOSixyXI/VvVNY+uuj5/z+l3QaZspi79fFoRA5eDoPq0KNVd96cPCqpuNNBJ4PwJxbbLkvQCV7l5dRB5g3iQC/nsNMAH0HHn+hjK1V633v6eHjGbZRT9uFs7b3AUeZEAdx+yAgOyb7i0wGHy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RW8ocvU5; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=Gfu3C7s5/Xi7FcV6t3H6bVf+rsEhAwntf4kibdUUfgmFyUg5nVZWWu6/iojPKGPou6cp9ZUHLcGVYlfLJi8O84qgvufVpLiAJ9bk64eHD40+KP9omhx9gD/FjPm86pPqBtiWVSqJjWeDY84+FUJUF1buSfLsmyA+kCLhzqq2tWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hT67nV31; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712232812;
+	s=mimecast20190719; t=1712232814;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=xjdjYgvbojNeNWXf7qeq0JUWl1hYimGE6Mt2Wjy5ES4=;
-	b=RW8ocvU5JxCe4vooJFFGbR+ZIGjjqKll7TNogZ7CPwT3cpDjun9apmMGkdEo/q4w4lrpUW
-	qbmLznkyzUfBF/eUgMLS3ikHpD1XV31TfZh/H2wi2WgGneNyw9YFxy5ZJ5y3rwvYgr9FRu
-	wRaMUxRPnw/DWKHcOpj2P/Mv0B6jwiA=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-161-ScvGxuACOjmzz_i4PzBUlg-1; Thu,
- 04 Apr 2024 08:13:29 -0400
-X-MC-Unique: ScvGxuACOjmzz_i4PzBUlg-1
+	bh=Cgne/8GVLuVuVI9ZiWSMjRiVGToo9YPaCbg/cTZ/3FY=;
+	b=hT67nV31k7EsMAGsobbj8Je16LOTD3hr+PNsAfKjrBb2B4aTfOCPvBF0HXBk4nO8aNO9ry
+	K4/rcL6zQay1Keg5ZcSifGFGxFxWtcq8lzcikch/IN4Kg0/PIbe1kGQY1O/AWU3DP9UUS6
+	BvpLtGhFIP7SUkiJ9UerwYGVJFMBrxE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-413-XcwvrXk-NGS_zz7fycwTtw-1; Thu, 04 Apr 2024 08:13:29 -0400
+X-MC-Unique: XcwvrXk-NGS_zz7fycwTtw-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9DDEC1C05AB1;
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CD4B8185A78F;
 	Thu,  4 Apr 2024 12:13:28 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 75B5E202451F;
+	by smtp.corp.redhat.com (Postfix) with ESMTP id A76572024517;
 	Thu,  4 Apr 2024 12:13:28 +0000 (UTC)
 From: Paolo Bonzini <pbonzini@redhat.com>
 To: linux-kernel@vger.kernel.org,
@@ -60,9 +60,9 @@ To: linux-kernel@vger.kernel.org,
 Cc: michael.roth@amd.com,
 	isaku.yamahata@intel.com,
 	Sean Christopherson <seanjc@google.com>
-Subject: [PATCH v5 01/17] KVM: SVM: Invert handling of SEV and SEV_ES feature flags
-Date: Thu,  4 Apr 2024 08:13:11 -0400
-Message-ID: <20240404121327.3107131-2-pbonzini@redhat.com>
+Subject: [PATCH v5 02/17] KVM: SVM: Compile sev.c if and only if CONFIG_KVM_AMD_SEV=y
+Date: Thu,  4 Apr 2024 08:13:12 -0400
+Message-ID: <20240404121327.3107131-3-pbonzini@redhat.com>
 In-Reply-To: <20240404121327.3107131-1-pbonzini@redhat.com>
 References: <20240404121327.3107131-1-pbonzini@redhat.com>
 Precedence: bulk
@@ -75,54 +75,203 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-From: Sean Christopherson <seanjc@google.com>
+Stop compiling sev.c when CONFIG_KVM_AMD_SEV=n, as the number of #ifdefs
+in sev.c is getting ridiculous, and having #ifdefs inside of SEV helpers
+is quite confusing.
 
-Leave SEV and SEV_ES '0' in kvm_cpu_caps by default, and instead set them
-in sev_set_cpu_caps() if SEV and SEV-ES support are fully enabled.  Aside
-from the fact that sev_set_cpu_caps() is wildly misleading when it *clears*
-capabilities, this will allow compiling out sev.c without falsely
-advertising SEV/SEV-ES support in KVM_GET_SUPPORTED_CPUID.
+To minimize #ifdefs in code flows, #ifdef away only the kvm_x86_ops hooks
+and the #VMGEXIT handler. Stubs are also restricted to functions that
+check sev_enabled and to the destruction functions sev_free_cpu() and
+sev_vm_destroy(), where the style of their callers is to leave checks
+to the callers.  Most call sites instead rely on dead code elimination
+to take care of functions that are guarded with sev_guest() or
+sev_es_guest().
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
-Reviewed-by: Michael Roth <michael.roth@amd.com>
+Co-developed-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/kvm/cpuid.c   | 2 +-
- arch/x86/kvm/svm/sev.c | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/kvm/Makefile  |  7 ++++---
+ arch/x86/kvm/svm/sev.c | 24 ++--------------------
+ arch/x86/kvm/svm/svm.c |  5 ++++-
+ arch/x86/kvm/svm/svm.h | 45 ++++++++++++++++++++++++++----------------
+ 4 files changed, 38 insertions(+), 43 deletions(-)
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index bfc0bfcb2bc6..51bd2197feed 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -771,7 +771,7 @@ void kvm_set_cpu_caps(void)
- 	kvm_cpu_cap_mask(CPUID_8000_000A_EDX, 0);
+diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
+index a88bb14266b6..a358bf5e3a65 100644
+--- a/arch/x86/kvm/Makefile
++++ b/arch/x86/kvm/Makefile
+@@ -26,9 +26,10 @@ kvm-intel-y		+= vmx/vmx.o vmx/vmenter.o vmx/pmu_intel.o vmx/vmcs12.o \
+ kvm-intel-$(CONFIG_X86_SGX_KVM)	+= vmx/sgx.o
+ kvm-intel-$(CONFIG_KVM_HYPERV)	+= vmx/hyperv.o vmx/hyperv_evmcs.o
  
- 	kvm_cpu_cap_mask(CPUID_8000_001F_EAX,
--		0 /* SME */ | F(SEV) | 0 /* VM_PAGE_FLUSH */ | F(SEV_ES) |
-+		0 /* SME */ | 0 /* SEV */ | 0 /* VM_PAGE_FLUSH */ | 0 /* SEV_ES */ |
- 		F(SME_COHERENT));
+-kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o \
+-			   svm/sev.o
+-kvm-amd-$(CONFIG_KVM_HYPERV) += svm/hyperv.o
++kvm-amd-y		+= svm/svm.o svm/vmenter.o svm/pmu.o svm/nested.o svm/avic.o
++
++kvm-amd-$(CONFIG_KVM_AMD_SEV)	+= svm/sev.o
++kvm-amd-$(CONFIG_KVM_HYPERV)	+= svm/hyperv.o
  
- 	kvm_cpu_cap_mask(CPUID_8000_0021_EAX,
+ ifdef CONFIG_HYPERV
+ kvm-y			+= kvm_onhyperv.o
 diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index e5a4d9b0e79f..382c745b8ba9 100644
+index 382c745b8ba9..5d41f27a8af5 100644
 --- a/arch/x86/kvm/svm/sev.c
 +++ b/arch/x86/kvm/svm/sev.c
-@@ -2186,10 +2186,10 @@ void sev_vm_destroy(struct kvm *kvm)
+@@ -32,22 +32,9 @@
+ #include "cpuid.h"
+ #include "trace.h"
  
- void __init sev_set_cpu_caps(void)
- {
--	if (!sev_enabled)
--		kvm_cpu_cap_clear(X86_FEATURE_SEV);
--	if (!sev_es_enabled)
--		kvm_cpu_cap_clear(X86_FEATURE_SEV_ES);
-+	if (sev_enabled)
-+		kvm_cpu_cap_set(X86_FEATURE_SEV);
-+	if (sev_es_enabled)
-+		kvm_cpu_cap_set(X86_FEATURE_SEV_ES);
- }
+-#ifndef CONFIG_KVM_AMD_SEV
+-/*
+- * When this config is not defined, SEV feature is not supported and APIs in
+- * this file are not used but this file still gets compiled into the KVM AMD
+- * module.
+- *
+- * We will not have MISC_CG_RES_SEV and MISC_CG_RES_SEV_ES entries in the enum
+- * misc_res_type {} defined in linux/misc_cgroup.h.
+- *
+- * Below macros allow compilation to succeed.
+- */
+-#define MISC_CG_RES_SEV MISC_CG_RES_TYPES
+-#define MISC_CG_RES_SEV_ES MISC_CG_RES_TYPES
+-#endif
++#define GHCB_VERSION_MAX	1ULL
++#define GHCB_VERSION_MIN	1ULL
+ 
+-#ifdef CONFIG_KVM_AMD_SEV
+ /* enable/disable SEV support */
+ static bool sev_enabled = true;
+ module_param_named(sev, sev_enabled, bool, 0444);
+@@ -59,11 +46,6 @@ module_param_named(sev_es, sev_es_enabled, bool, 0444);
+ /* enable/disable SEV-ES DebugSwap support */
+ static bool sev_es_debug_swap_enabled = false;
+ module_param_named(debug_swap, sev_es_debug_swap_enabled, bool, 0444);
+-#else
+-#define sev_enabled false
+-#define sev_es_enabled false
+-#define sev_es_debug_swap_enabled false
+-#endif /* CONFIG_KVM_AMD_SEV */
+ 
+ static u8 sev_enc_bit;
+ static DECLARE_RWSEM(sev_deactivate_lock);
+@@ -2194,7 +2176,6 @@ void __init sev_set_cpu_caps(void)
  
  void __init sev_hardware_setup(void)
+ {
+-#ifdef CONFIG_KVM_AMD_SEV
+ 	unsigned int eax, ebx, ecx, edx, sev_asid_count, sev_es_asid_count;
+ 	bool sev_es_supported = false;
+ 	bool sev_supported = false;
+@@ -2294,7 +2275,6 @@ void __init sev_hardware_setup(void)
+ 	if (!sev_es_enabled || !cpu_feature_enabled(X86_FEATURE_DEBUG_SWAP) ||
+ 	    !cpu_feature_enabled(X86_FEATURE_NO_NESTED_DATA_BP))
+ 		sev_es_debug_swap_enabled = false;
+-#endif
+ }
+ 
+ void sev_hardware_unsetup(void)
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index d1a9f9951635..e7f47a1f3eb1 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -3303,7 +3303,9 @@ static int (*const svm_exit_handlers[])(struct kvm_vcpu *vcpu) = {
+ 	[SVM_EXIT_RSM]                          = rsm_interception,
+ 	[SVM_EXIT_AVIC_INCOMPLETE_IPI]		= avic_incomplete_ipi_interception,
+ 	[SVM_EXIT_AVIC_UNACCELERATED_ACCESS]	= avic_unaccelerated_access_interception,
++#ifdef CONFIG_KVM_AMD_SEV
+ 	[SVM_EXIT_VMGEXIT]			= sev_handle_vmgexit,
++#endif
+ };
+ 
+ static void dump_vmcb(struct kvm_vcpu *vcpu)
+@@ -5023,6 +5025,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+ 	.enable_smi_window = svm_enable_smi_window,
+ #endif
+ 
++#ifdef CONFIG_KVM_AMD_SEV
+ 	.mem_enc_ioctl = sev_mem_enc_ioctl,
+ 	.mem_enc_register_region = sev_mem_enc_register_region,
+ 	.mem_enc_unregister_region = sev_mem_enc_unregister_region,
+@@ -5030,7 +5033,7 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+ 
+ 	.vm_copy_enc_context_from = sev_vm_copy_enc_context_from,
+ 	.vm_move_enc_context_from = sev_vm_move_enc_context_from,
+-
++#endif
+ 	.check_emulate_instruction = svm_check_emulate_instruction,
+ 
+ 	.apic_init_signal_blocked = svm_apic_init_signal_blocked,
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 7f1fbd874c45..ec8ca7d92cf1 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -664,13 +664,16 @@ void avic_refresh_virtual_apic_mode(struct kvm_vcpu *vcpu);
+ 
+ /* sev.c */
+ 
+-#define GHCB_VERSION_MAX	1ULL
+-#define GHCB_VERSION_MIN	1ULL
++void pre_sev_run(struct vcpu_svm *svm, int cpu);
++void sev_init_vmcb(struct vcpu_svm *svm);
++void sev_vcpu_after_set_cpuid(struct vcpu_svm *svm);
++int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in);
++void sev_es_vcpu_reset(struct vcpu_svm *svm);
++void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
++void sev_es_prepare_switch_to_guest(struct sev_es_save_area *hostsa);
++void sev_es_unmap_ghcb(struct vcpu_svm *svm);
+ 
+-
+-extern unsigned int max_sev_asid;
+-
+-void sev_vm_destroy(struct kvm *kvm);
++#ifdef CONFIG_KVM_AMD_SEV
+ int sev_mem_enc_ioctl(struct kvm *kvm, void __user *argp);
+ int sev_mem_enc_register_region(struct kvm *kvm,
+ 				struct kvm_enc_region *range);
+@@ -679,22 +682,30 @@ int sev_mem_enc_unregister_region(struct kvm *kvm,
+ int sev_vm_copy_enc_context_from(struct kvm *kvm, unsigned int source_fd);
+ int sev_vm_move_enc_context_from(struct kvm *kvm, unsigned int source_fd);
+ void sev_guest_memory_reclaimed(struct kvm *kvm);
++int sev_handle_vmgexit(struct kvm_vcpu *vcpu);
+ 
+-void pre_sev_run(struct vcpu_svm *svm, int cpu);
++/* These symbols are used in common code and are stubbed below.  */
++struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu);
++void sev_free_vcpu(struct kvm_vcpu *vcpu);
++void sev_vm_destroy(struct kvm *kvm);
+ void __init sev_set_cpu_caps(void);
+ void __init sev_hardware_setup(void);
+ void sev_hardware_unsetup(void);
+ int sev_cpu_init(struct svm_cpu_data *sd);
+-void sev_init_vmcb(struct vcpu_svm *svm);
+-void sev_vcpu_after_set_cpuid(struct vcpu_svm *svm);
+-void sev_free_vcpu(struct kvm_vcpu *vcpu);
+-int sev_handle_vmgexit(struct kvm_vcpu *vcpu);
+-int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in);
+-void sev_es_vcpu_reset(struct vcpu_svm *svm);
+-void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
+-void sev_es_prepare_switch_to_guest(struct sev_es_save_area *hostsa);
+-void sev_es_unmap_ghcb(struct vcpu_svm *svm);
+-struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu);
++extern unsigned int max_sev_asid;
++#else
++static inline struct page *snp_safe_alloc_page(struct kvm_vcpu *vcpu) {
++	return alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
++}
++
++static inline void sev_free_vcpu(struct kvm_vcpu *vcpu) {}
++static inline void sev_vm_destroy(struct kvm *kvm) {}
++static inline void __init sev_set_cpu_caps(void) {}
++static inline void __init sev_hardware_setup(void) {}
++static inline void sev_hardware_unsetup(void) {}
++static inline int sev_cpu_init(struct svm_cpu_data *sd) { return 0; }
++#define max_sev_asid 0
++#endif
+ 
+ /* vmenter.S */
+ 
 -- 
 2.43.0
 
