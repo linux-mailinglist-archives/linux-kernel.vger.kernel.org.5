@@ -1,161 +1,117 @@
-Return-Path: <linux-kernel+bounces-132056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DE74898F2B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:43:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 038B4898F1A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:36:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C63C1F235D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:43:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 318701C21C95
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC3E1350FD;
-	Thu,  4 Apr 2024 19:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 600F013441C;
+	Thu,  4 Apr 2024 19:36:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QHYAQErq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ampcvn6r";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QHYAQErq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ampcvn6r"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O9jmwMG3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA20134743;
-	Thu,  4 Apr 2024 19:43:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EFF11311A3;
+	Thu,  4 Apr 2024 19:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712259807; cv=none; b=PN0sg3Rs1QzyMaaO4e6ULmE3Dcwy5HTwpCoPZ+W2Vxn+TenC4nLvGmIJi2lYqRsZH22dox1KrCiAy5b+/kljVTg/qAEjVWxn/D+P1iMlpOYeL5Jh9R2cqerhjtIK4aNJ23mHi2Un5pPDHq6nZCpRZy5NNZ/use3DQwzkN/dHJ5E=
+	t=1712259382; cv=none; b=gXKeYK/kf2e1gKB/dga+5uqw8xFMLjZBSgjCBIq0NqJFi7k3xVdVt4RJcwPwSMGncBSLowhCnpxtiHxHAhy62P/3i9a7NsNbeaNttNgIwC46PybCJ0bfoWxXszBZHD0DGarAZDNYMmpSeQtR9fdTa00JXhl8nJOhOuQNUsiXODY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712259807; c=relaxed/simple;
-	bh=ssFyVGe6la71DQpqy8kwW+lUpLEMRvFgNVGNpKsWvPE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z+8NmfdiXoutxKa3+rvpVZox+1VTsB3gl2izcYV1225AhMlhN4eRsHlrvP2cdrA3U2+QLegT+0dZQ/muy/jzY0uOuJAM0IjtHxBTTCFsAW8Qsq4XioWCmjBUjOiXYQUBV9x0K1JzSal98J4C2/V8RnWMNt7KoBT6ejT2Pi2X9GA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QHYAQErq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ampcvn6r; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QHYAQErq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ampcvn6r; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8063B1F444;
-	Thu,  4 Apr 2024 19:43:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712259802;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gIJTzIQcbHebBkVn3DulvZH4vVRHwONfG5Hh7aP6lMU=;
-	b=QHYAQErqSuSs0NOzd6WUQt/L3K8BPbjXUwGrtgV5aj02jddC3+MdaAlllIodH4PR4MLlz2
-	6eEgQtqZofBccIawjK+EEtzdG1T/1ls+dglmaS1UJrS+qSQUOtneYzWRC4a0c7ABYGwzOO
-	4O1Tuf2todQyr02ZURef/6q9qWlCOQ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712259802;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gIJTzIQcbHebBkVn3DulvZH4vVRHwONfG5Hh7aP6lMU=;
-	b=Ampcvn6rx+dhtUCHrq7ys/KECzq8yl4np4RgM1DZD7CinKw1X24tJwUge7MUx+908BGYCy
-	CNoPd6VF3McUmhAg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712259802;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gIJTzIQcbHebBkVn3DulvZH4vVRHwONfG5Hh7aP6lMU=;
-	b=QHYAQErqSuSs0NOzd6WUQt/L3K8BPbjXUwGrtgV5aj02jddC3+MdaAlllIodH4PR4MLlz2
-	6eEgQtqZofBccIawjK+EEtzdG1T/1ls+dglmaS1UJrS+qSQUOtneYzWRC4a0c7ABYGwzOO
-	4O1Tuf2todQyr02ZURef/6q9qWlCOQ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712259802;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gIJTzIQcbHebBkVn3DulvZH4vVRHwONfG5Hh7aP6lMU=;
-	b=Ampcvn6rx+dhtUCHrq7ys/KECzq8yl4np4RgM1DZD7CinKw1X24tJwUge7MUx+908BGYCy
-	CNoPd6VF3McUmhAg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A8CE139E8;
-	Thu,  4 Apr 2024 19:43:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id I3TdGdoCD2ZtaQAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 04 Apr 2024 19:43:22 +0000
-Date: Thu, 4 Apr 2024 21:35:56 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Johannes Thumshirn <jth@kernel.org>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Hans Holmberg <Hans.Holmberg@wdc.com>,
-	Naohiro Aota <Naohiro.Aota@wdc.com>, hch@lst.de,
-	Damien LeMoal <dlemoal@kernel.org>, Boris Burkov <boris@bur.io>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH RFC PATCH 1/3] btrfs: zoned: traverse device list in
- should reclaim under rcu_read_lock
-Message-ID: <20240404193556.GJ14596@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240328-hans-v1-0-4cd558959407@kernel.org>
- <20240328-hans-v1-1-4cd558959407@kernel.org>
+	s=arc-20240116; t=1712259382; c=relaxed/simple;
+	bh=MstYzcyGUXpMjvIesH3P0JOixnzqDZN4TkdenMuVwr8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=npfMc4yNcIEVHgGLBfErX7zFW/9F/mti0faT0uEMsXh67x6CNZWllfauM8QjTCTIbko5jfwqgrTxv1ECsU5nQenlvtBFav208ZmDePnZ2c3ADZvgEbe4xGog+SW5XQux2RtYYLHVrVSPs2BVHKeDfFnxLQHACxmx4mH9zSmHoPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O9jmwMG3; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712259381; x=1743795381;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=MstYzcyGUXpMjvIesH3P0JOixnzqDZN4TkdenMuVwr8=;
+  b=O9jmwMG3x3wvR9/19nT7WDnCBNxsjDkl9B3/v7iMwuotxIR1JYHCjJF7
+   4Ra5L23/2BWGjysWr3oM26dxsLCJu34Jj7JifhK5sHUbX2sVvvQ+GLrwB
+   jxR4ERUl4059ukfBEzddifnbJCnyG6xTpxnEMNqFRpl/bTak0NqBZYj3I
+   SpNuwes42w03DxJV6mVdm7n7kh/LQrG32bg2dXfpBxZbsTgnsFlGNTzUh
+   WkXn7gCKhx+sp1NQdKdSu6xH+n5fCBczhZYgDZkn5wCdxIMCciZedgPnm
+   1I3WIkt+wzGpuRWdFCexwAcvYxIMqZAAEcdsIYYJoYOcvJlT9qrfddhBh
+   w==;
+X-CSE-ConnectionGUID: ZSZQZbwXT1qxi8d5I0z0vA==
+X-CSE-MsgGUID: SNUBVUB8R2quZIqFbeTZBw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7698469"
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="7698469"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 12:36:21 -0700
+X-CSE-ConnectionGUID: URAVo7AtRwKr1WSsfNnZ6w==
+X-CSE-MsgGUID: TaCQw88bQd+WcjBkxXteMg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="18916555"
+Received: from ypottimu-mobl.amr.corp.intel.com (HELO [10.209.51.123]) ([10.209.51.123])
+  by fmviesa006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 12:36:20 -0700
+Message-ID: <5f040ba2-627b-4b5d-959a-59f97b6ad0af@linux.intel.com>
+Date: Thu, 4 Apr 2024 12:36:19 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240328-hans-v1-1-4cd558959407@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: -1.02
-X-Spam-Level: 
-X-Spamd-Result: default: False [-1.02 / 50.00];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.997];
-	MIME_GOOD(-0.10)[text/plain];
-	BAYES_HAM(-0.02)[53.79%];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] platform/x86: lg-laptop: fix %s null argument warning
+To: Gergo Koteles <soyer@irl.hu>, Matan Ziv-Av <matan@svgalib.org>,
+ Hans de Goede <hdegoede@redhat.com>,
+ =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <33d40e976f08f82b9227d0ecae38c787fcc0c0b2.1712154684.git.soyer@irl.hu>
+Content-Language: en-US
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <33d40e976f08f82b9227d0ecae38c787fcc0c0b2.1712154684.git.soyer@irl.hu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Subject: btrfs: zoned: traverse device list in should reclaim under rcu_read_lock
 
-Please use the function name in the subject instead of the description,
-so like
+On 4/3/24 7:34 AM, Gergo Koteles wrote:
+> W=1 warns about null argument to kprintf:
+> warning: ‘%s’ directive argument is null [-Wformat-overflow=]
+> pr_info("product: %s  year: %d\n", product, year);
+>
+> Use "unknown" instead of NULL.
+>
+> Signed-off-by: Gergo Koteles <soyer@irl.hu>
+> ---
 
-btrfs: zoned: traverse device list under RCU lock in btrfs_zoned_should_reclaim()
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-On Thu, Mar 28, 2024 at 02:56:31PM +0100, Johannes Thumshirn wrote:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> 
-> As btrfs_zoned_should_reclaim() traverses the device list with the
-> device_list_mutex held. But we're never changing the device list. All we
-> do is gathering the used and total bytes.
-> 
-> So change the list traversal from the holding the device_list_mutex to
-> rcu_read_lock(). This also opens up the possibilities to call
-> btrfs_zoned_should_reclaim() with the chunk_mutex held.
+>  drivers/platform/x86/lg-laptop.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/platform/x86/lg-laptop.c b/drivers/platform/x86/lg-laptop.c
+> index ad3c39e9e9f5..e714ee6298dd 100644
+> --- a/drivers/platform/x86/lg-laptop.c
+> +++ b/drivers/platform/x86/lg-laptop.c
+> @@ -736,7 +736,7 @@ static int acpi_add(struct acpi_device *device)
+>  		default:
+>  			year = 2019;
+>  		}
+> -	pr_info("product: %s  year: %d\n", product, year);
+> +	pr_info("product: %s  year: %d\n", product ?: "unknown", year);
+>  
+>  	if (year >= 2019)
+>  		battery_limit_use_wmbb = 1;
+>
+> base-commit: 39cd87c4eb2b893354f3b850f916353f2658ae6f
 
-You can add this patch independently, the device_list_mutex does not
-seem to be needed for strong consistency of the values you read.
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
-There are several other places where devices are under RCU only, like
-btrfs_commit_device_sizes (though this is also in the transaction
-context), various ioctls and btrfs_calc_avail_data_space().
 
