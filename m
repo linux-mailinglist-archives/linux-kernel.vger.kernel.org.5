@@ -1,97 +1,138 @@
-Return-Path: <linux-kernel+bounces-131547-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131548-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02774898973
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:01:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 199B6898979
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:04:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B167928446B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:01:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC0601F299DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:04:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF181292E5;
-	Thu,  4 Apr 2024 14:01:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A2B1292FB;
+	Thu,  4 Apr 2024 14:03:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H6FG659e"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mDxvgZgY"
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A741272BB;
-	Thu,  4 Apr 2024 14:01:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 480C112883A
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:03:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712239310; cv=none; b=TKgFa3ygp3lSQyQW3IT5h2JCc0/GkXFj9qyBsezpiQ9MFf6ozQ/D/nXo7ANRWc6C1YQ0tmNnJ9AzJNjmtiZcPYxQLa95Eahs005ZxhpaTEUv6GpfjW6XZVwZdUCOKxdpogAJxYH6t2SN6qn2w+0zJjK9FHd4Cmct7qCTSeAjz4w=
+	t=1712239432; cv=none; b=Vji1p0YJsqaMNbUZP4ugyDBjftufFFdrVjtb1V4EASa5e+wD0MvhqJb+O4SHQpDixRSIB/hqk1u9ifXRr9FnXQ3u2ZKsW01oSsKlUhtoiWe4+lggtWfUB+3d9AoX5eh72+dlg3iw1tkFhHrYIJAk6A1lwf9PLcG98WCPlrzMzRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712239310; c=relaxed/simple;
-	bh=EDLFFNlDIwfirM9Ysf0HpN0b6M3HqKIXDP1hJ7mbtIA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qm7m3jnNsfaYicIMYMwywvpDIAMXhVqFOHX4rvBdlO5n6Th4cNtRQO/r+G9HhUDpUXn9MJhf6GBLh4wEUFMSPxTYqDeFvWiPsJzR8gztURj+EnSdF05ZAJPBzRcSlBg/tQ/znoNyJqyNUcZcCAH5C3fzIiQDe3gK+wxCFsS/MNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H6FG659e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46C4EC43390;
-	Thu,  4 Apr 2024 14:01:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712239309;
-	bh=EDLFFNlDIwfirM9Ysf0HpN0b6M3HqKIXDP1hJ7mbtIA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=H6FG659eiwMvgb9rE74Q2t2+mb0R87kC+Wkt4eYFKoJF6QFseyX2nBlvxuyKNiL8L
-	 WwlK22ez++JGaNqgKFsLCgPK95RaPxQdrjaBXWhcG9OL3BsOuJvMh8/kvKj/AfHAhl
-	 X9qq8/66PtJ0uWKqrJfbBeCe07prAGa47FNrYsELtmzhVa1Y8b8sBwWCfWuEtwTQOy
-	 xDqk98Xn7jFaztO8C/MvUcMHU/g4SaKo2JtZ0vx3GyGgbqBBDK66M1OmpbYh8/QTFs
-	 YJVFpHZxr61wqnYR2hk21arnzKOmqHvGgWq+dS4yMXWKjahjwbvSpjHKtyntIYciYX
-	 XSGUuvkGrwsLA==
-Date: Thu, 4 Apr 2024 15:01:43 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, allen.lkml@gmail.com
-Subject: Re: [PATCH 6.6 00/11] 6.6.25-rc1 review
-Message-ID: <f6122d69-ffe8-42cd-8881-8b6ff0d672da@sirena.org.uk>
-References: <20240403175126.839589571@linuxfoundation.org>
+	s=arc-20240116; t=1712239432; c=relaxed/simple;
+	bh=vMu0LL9ltMkRityf3ku4FuM/lwy4EpU8+q5p5WfKSBI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UzS+zXRbG+jRM5yaevcO9VctBflhijAslYYnCqzvcR8JffcA+FfEO13OaiYhNQ8GZ4dz6V6kqmklMOUvw4ukm64cQmm3wuUwvP/sLKoRZskkh5bjVGsFRc2OCvtq04l/uiAlzE5ZkZGCVOKw0xFH7DKyAj0InGudXJm/NHikul4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mDxvgZgY; arc=none smtp.client-ip=209.85.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-69185f093f5so5721226d6.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:03:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712239430; x=1712844230; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bDF2zaMYbn25r5wA1TfRjMdRiEFg3+k+XSId485H2dY=;
+        b=mDxvgZgYCIElilxjr+QUpfhCI8gQmuewuIvsRJxMsWQhXHpUrzblEdwbFg2AmEvL/c
+         5JmaCkoc1Q0vkm/AzJ+57/YzEvOYj8qvi+FH4Exox0mo6kyzfuSymX+IeCsprtF375SH
+         DU+Ji+YVnR7vKwXgNL43ZhzagdYLFHNQ/QA7GmMnBAMwzozEgv+5j7X0tQWc6lH8ysLY
+         5dd+8QjxzFeVFHllzcD+1XpETdCRWGof9mwa2srYAITYxHunXCEQgvgXc9TL071nbBiI
+         JxPYPP9yjYWHKPyitj1qxbddu6PiNs4OOJ4zSutPG7D44xnFEXLmT1dZQscw35rfk54b
+         O4wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712239430; x=1712844230;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bDF2zaMYbn25r5wA1TfRjMdRiEFg3+k+XSId485H2dY=;
+        b=HjQhDlgEvDkv6qhaxJZCxiT1Z3I7LzCthitMiTskoUqq1dknTR0XKrp2AiaFv2Wa+q
+         2zauZbbXMM3/HVyYj8JGbc68RX4ljkdIF8eWrMr8bz/HjQ/ZxF95UakIQeAdlzQZNjH6
+         zSH2+5uVk7S3fAr5sndInhoz9duvPIdc2+dFHGgEckvNfoamwGvUdg+kJZXTHifAS/kb
+         TSqJ3MGuTvTsWvem35Uz0qqf6mWEa94ykGjQvyLKUMli4++SZh4p5ZHV/cL5q2b97jbE
+         na0UBcEptd2lPf/Te1r4jbSZ4bXzz2DvA7t5DRP6UYzZlrAnk6DHUFh1DlTBSDeJs4cO
+         vctA==
+X-Forwarded-Encrypted: i=1; AJvYcCXUFNMYTfOIknZeYtIgiKaOQXHrdITYwFC15T7vcVYsfUeyOxKgyTCiXl3Ih+ZMNL49VwNrOjHWrR+qALA/eaEg5x+dw0tAcSPuWd+P
+X-Gm-Message-State: AOJu0Yy89uUxLbJ97LeF+eon3feJ8VoxDH6Jo2MZfP69SxX5MBDpdnx/
+	VJXnlYfY85TlZDS+Oop7NiDpJZ56JLpfMbU/MIsA/2Sqza5d1h9JRvqNOQHhoNVtVn1sNMuIqe7
+	1/a2B+gYeZc2Acz/+0eVitNcp3BwkGrMeOE0k
+X-Google-Smtp-Source: AGHT+IH9nVJTFBf6KYHVkWq5I3dTrlUqSuMe+JgthNlKh222XhK+A4MXytM7wglRKaRV8iIDAr29miZUuh1n5Ol7cbU=
+X-Received: by 2002:a05:6214:d07:b0:698:6e84:95e5 with SMTP id
+ 7-20020a0562140d0700b006986e8495e5mr2270945qvh.16.1712239425130; Thu, 04 Apr
+ 2024 07:03:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sBD/GiIq04YLFs8U"
-Content-Disposition: inline
-In-Reply-To: <20240403175126.839589571@linuxfoundation.org>
-X-Cookie: Buckle up!
+References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com>
+ <20240402-linked-list-v1-3-b1c59ba7ae3b@google.com> <2500d66a-e54e-46d8-97cb-37fd9fc00c45@proton.me>
+In-Reply-To: <2500d66a-e54e-46d8-97cb-37fd9fc00c45@proton.me>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Thu, 4 Apr 2024 16:03:33 +0200
+Message-ID: <CAH5fLghJtSvW-zNnDNFVgtb-px2d4W-xUk2++QdvyMYFMBGM-Q@mail.gmail.com>
+Subject: Re: [PATCH 3/9] rust: list: add struct with prev/next pointers
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, 
+	Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, 
+	Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, 
+	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Apr 3, 2024 at 5:57=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
+> wrote:
+>
+> On 02.04.24 14:17, Alice Ryhl wrote:
+> > +/// Implemented by types where a [`ListArc<Self>`] can be inserted int=
+o a `List`.
+> > +///
+> > +/// # Safety
+> > +///
+> > +/// Implementers must ensure that they provide the guarantees document=
+ed on the three methods
+> > +/// below.
+> > +///
+> > +/// [`ListArc<Self>`]: ListArc
+> > +pub unsafe trait ListItem<const ID: u64 =3D 0>: ListArcSafe<ID> {
+> > +    /// Views the [`ListLinks`] for this value.
+> > +    ///
+> > +    /// # Guarantees
+> > +    ///
+> > +    /// * If there is a currently active call to `prepare_to_insert`, =
+then this returns the same
+> > +    ///   pointer as the one returned by the currently active call to =
+`prepare_to_insert`.
+>
+> I was a bit confused by the term "active call to `prepare_to_insert`",
+> since I thought that the function would need to be executed at this
+> moment. I inferred from below that you mean by this that there has been
+> a `prepare_to_insert` call, but not yet a corresponding `post_remove`
+> call.
+> I did not yet find a better way to phrase this.
+>
+> I like putting the guarantees on the functions very much.
 
---sBD/GiIq04YLFs8U
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+How about this?
 
-On Wed, Apr 03, 2024 at 07:55:49PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.25 release.
-> There are 11 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+If there is a previous call to `prepare_to_insert` and there is no
+call to `post_remove` since the most recent such call, then this
+returns the same pointer as the one returned by the most recent call
+to `prepare_to_insert`.
 
-Tested-by: Mark Brown <broonie@kernel.org>
+Otherwise, the returned pointer points at a read-only [`ListLinks`]
+with two null pointers.
 
---sBD/GiIq04YLFs8U
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYOssYACgkQJNaLcl1U
-h9DJ1wgAgG/dtvIuol28XtdE7UShOmDjvKHM+UZUhDyVdv9zwl61nWf0yNR9vSzH
-+eMCpLvTnQpwzi4prjvQqKphxP7Nyre3A1h6Rt5NAxEtHAaeoHMfV09ewANZJYOF
-Vx5z9p3lcpVTd8lvM6ebcaDvQiwIecIjvkA4rdrf/0AnUW1oOdNzx2SB3Um6g7sK
-d7vDUhqfsUL7Vb+CrB/y0iY3EzzZrcIlCvrxkQw0PJWdW2F4wuKLxoy2JdfSySOU
-V/0uA1BRj8bgtTbI0KahxwtRbbDRU8mM5fRC/zG4PMP1AIPYVuL3j0/MWnGvv+sd
-o5UkkJii0Un9atowWsCp/E0/qrZibA==
-=u3Ko
------END PGP SIGNATURE-----
-
---sBD/GiIq04YLFs8U--
+Alice
 
