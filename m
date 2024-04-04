@@ -1,226 +1,307 @@
-Return-Path: <linux-kernel+bounces-130950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B1878980FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:30:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E91B897F54
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:13:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B10D1C2147F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:30:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5536A289953
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:13:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F6343ACE;
-	Thu,  4 Apr 2024 05:24:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633BE405F7;
+	Thu,  4 Apr 2024 05:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="B1S9hF64"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="P0kM9eAy"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B95582233A
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 05:24:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712208255; cv=fail; b=YphT5itmWpTZ2c8elr9Tnaki286I2PSHBwWZjoI1lfmuFh/E77kj/d1PRE6D3PhaTWALVDjlwzZEtNxYS1b6PEgowlgfjSdAHQu4QFypHCyL27rWluLlR/VfqgsYWS1i5nYd22Cy5JZvXHH+T1KM7fp9K88PuuQdOoDi2G2OYXk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712208255; c=relaxed/simple;
-	bh=EePZQPVFAn7aL5N1wkRnMrRLPjtkF/KL8LOyv/k7Omo=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ZfpN0q7XIODFrbkzUWaCr9W9oSK65xsjCUn72J96YuzncusXkRRwJJ7Qjh6uWsV7WpjHdtq29zJkVT1mi8hXb7517e/LLqEjXkSnMJP8y+DPHjjqkcylBsoiZWI6IcHwXOmbyXxo8Awj5+3hYBs3AAgpYed3sNuA+OD8xo4R+E8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=B1S9hF64; arc=fail smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712208253; x=1743744253;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=EePZQPVFAn7aL5N1wkRnMrRLPjtkF/KL8LOyv/k7Omo=;
-  b=B1S9hF64vRUhFQmlqGbrUCSS/uR/ZUHgHeV8zx9uiZQVcuxA6fLe5QlG
-   EuFacg8sH+sxZgbypuNsXTdXrFNKf2atRXVM0fB2L5qFv2YRmZjwTcMg4
-   GUikYq08gvYqGiU1QnZDvk1X0LauMZA+voXN1xnH4ZZVapg2KQgp9SgD7
-   tm1F+kxxg9ttzw3XH8ckzNxYXbj378H5X6sndrl1w9N2qd7484Y/Ys1W+
-   6VOFxPkhUshAqNt/i5WIW/r3EpOj65rCy7rEuN3sXNkgDxNVEn7uonlDP
-   yIgJCngfHFYx8Wj1NdYLCYpfhuAC6jfx7dA+V21cRckb38YZXUu454kcS
-   A==;
-X-CSE-ConnectionGUID: Lm6ULsW4SOu3ulM74gn8Wg==
-X-CSE-MsgGUID: 7Dwk3JzXSdCqTuO6FWEmpA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7373425"
-X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
-   d="scan'208";a="7373425"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 22:24:12 -0700
-X-CSE-ConnectionGUID: uoJBUIg8Tyuv9S/wlxvAew==
-X-CSE-MsgGUID: 4XJnfcrVSl6KwMC/N8pQnQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
-   d="scan'208";a="23320641"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 03 Apr 2024 22:24:12 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Apr 2024 22:24:12 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Apr 2024 22:24:12 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Wed, 3 Apr 2024 22:24:11 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551871BC3E;
+	Thu,  4 Apr 2024 05:12:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712207574; cv=none; b=aO5SPkRhQw4O/Zm6xrI7UcKBF+U88OXFEjmcL7prnr97JzLU53A1g4Lqz7cBEWxkbGVbI2Du1TmgDvIv0lcppCSn5mVRNKm+KfisHzubrCgPcfgNup706KRnz5PtV/dc6a6cClxBCacLBa2phWFQijFs0euCojRlH8ZMKOh/r7U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712207574; c=relaxed/simple;
+	bh=62iw2197csIbHE0fzZqsZkT/FiLgE4tnEN9y9gg6QqM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Pmzd5YLtVW2urqakGAUUp99HeW3FFXOaXWbYWxUM+nq3gvoCshvL7blD+Z0XlyiBe6FJp+WK5vCvOYmMVZLXHpMHU+9nS2sWbk4xD//wsaWeRN3Rob3ciWhM8+UYHI95Vo6QXqgwBKWBj/QdULX01XJrnr0KIhSVpMsIH4Dqz5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=P0kM9eAy; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4343kEIY009300;
+	Thu, 4 Apr 2024 05:12:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=ImMkOu1
+	cd92c7aPDpR6hjaIqH7O7UIXEgipAc8YY7hQ=; b=P0kM9eAym9b9WXDKMpbuUK4
+	Ierupq4tgTr/0WBmEqMfbIOtBhGWi0Q+DdoyBeWJvWesmXRb9EFopXm58oDg7CG+
+	QDqA2yYHocSXnm4q2I5hekJUmI2SVQmb50UcanqMyk9LIwBO4UVklUHcky3Ifihq
+	HnOpVQtG9LEuu2U6Aq+W/XJRUKQPqS/V82xoSqICgVV2/X3gdGe7x62T22d5Y+M1
+	RO5w3PMV1b0ta7rP8mgf1PQdj2sOpOC9+xeM02s07NsnhvERLlmenBD7npHwKBPo
+	xTYTBY6/5pVQ9/AIZcvykIRTjLxIDkopFNCpPpPGT1h49oVa1ERyshWYgbGX7LQ=
+	=
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x9ep3rkyg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 05:12:44 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4345ChjK028121
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 4 Apr 2024 05:12:43 GMT
+Received: from hu-kriskura-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Wed, 3 Apr 2024 22:24:11 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nDpwt0IrtcNsSPlOvIIECFn7giEUVGm5I5WrwHl1VKAoVhxYF2kBsyHkN5Ohwzu/5r+0QR/f9KXncDBnudFwTAtX/2nsg4tUPnFzaZ3uJdncSAWf1b3fLpR9+k629HTcHRYPG3rfs13WGqNXv6CWXwRv9FkzWngTQ7Z8QZ268vXBz4+Weku4l+EfrGb/RDxs1tPdU7HXuYdecRfacOwgWvN0fGfzUqRsTeQ/c/0KKGvum75J8vfvGT0o6vuxJbd19/i4MWKxyoqI/5yDTp6WfXPEJu9ki8/qyanHH1mrhpMFcvRRJKpEddBYHjBxxtHRBhKlZNCXCXH3E3sSQRbN6A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=p6LgF91DsOJU6vChy3LbtPo0o2K3BAKqXItyl5BqlXg=;
- b=SiVGttrbSDcwezeOCRuw/gU2IwDKBv9vn0A/YULbM7kDn1Wcnru2oNa4brYlD8LYJ87HedJQER3k5RgWRPJ/IgkBQcx+EmCWdCX77Q0jzZjteY8pBkhRAsnozKcb3lmGDeB2frP0N575BCXgU1WmD0POJbjqmwHX8CsUEt0nd9Ilu+txv349CiIiHney3JKA4TyEUwwN+08Ms/sjQFtZPvQSULcjPlbbcrurVWGTtP/Q69vihEB6LqaZX8kpi5h5AXCgUyOXHVxN0Zc082ENnvLIYig4vrJ/tq0nyZLCQ4+mwSWamwChip4ndK8+8kab6jSzB+JFQSxHRsIZtWktQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
- by DM4PR11MB7303.namprd11.prod.outlook.com (2603:10b6:8:108::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26; Thu, 4 Apr
- 2024 05:24:09 +0000
-Received: from MN0PR11MB6304.namprd11.prod.outlook.com
- ([fe80::4d4c:6d3e:4780:f643]) by MN0PR11MB6304.namprd11.prod.outlook.com
- ([fe80::4d4c:6d3e:4780:f643%5]) with mapi id 15.20.7452.019; Thu, 4 Apr 2024
- 05:24:08 +0000
-Date: Thu, 4 Apr 2024 13:08:56 +0800
-From: Feng Tang <feng.tang@intel.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <x86@kernel.org>, Zhengxu Chen
-	<zhxchen17@meta.com>, Danielle Costantino <dcostantino@meta.com>, "Thomas
- Gleixner" <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "Borislav
- Petkov" <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter
- Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>, Waiman Long
-	<longman@redhat.com>, John Stultz <jstultz@google.com>, Boqun Feng
-	<boqun.feng@gmail.com>, Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-Subject: Re: [PATCH RFC v2 tsc] Check for sockets instead of CPUs to make
- code match comment
-Message-ID: <Zg416EXHJa9CdI9L@feng-clx.sh.intel.com>
-References: <62a0a0cd-3103-4e8f-b4c8-a91f12121e92@paulmck-laptop>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <62a0a0cd-3103-4e8f-b4c8-a91f12121e92@paulmck-laptop>
-X-ClientProxiedBy: SG2PR06CA0216.apcprd06.prod.outlook.com
- (2603:1096:4:68::24) To MN0PR11MB6304.namprd11.prod.outlook.com
- (2603:10b6:208:3c0::7)
+ 15.2.1544.4; Wed, 3 Apr 2024 22:12:38 -0700
+From: Krishna Kurapati <quic_kriskura@quicinc.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Wesley Cheng
+	<quic_wcheng@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Greg
+ Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi
+	<balbi@kernel.org>, Johan Hovold <johan@kernel.org>
+CC: <devicetree@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_ppratap@quicinc.com>, <quic_jackp@quicinc.com>,
+        Krishna Kurapati
+	<quic_kriskura@quicinc.com>
+Subject: [PATCH v19 0/9] Add multiport support for DWC3 controllers
+Date: Thu, 4 Apr 2024 10:42:20 +0530
+Message-ID: <20240404051229.3082902-1-quic_kriskura@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN0PR11MB6304:EE_|DM4PR11MB7303:EE_
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PtPE5Ueu8X8zdlFU9RBIZuipvQxUJssEgArQptu9abKQ9HVTVmorOEIEGe+fAa9jXx18e2TpIxfgQMahn3ktFkOdPIEHnvDztmKysUcRZol8hZlsGwjaxeEUOsvU69o5zEfPdsokdj0ycp8kIJ3htaOFrsjRSLMfiGQ0n0pluNAUBDbzrFUCybZXXjfh7LPMj7prUvJqlRrlJnwdz6MMPXm5X2JPD6WMYGIqTM8E/3SO5I+Nx7Nwfv1+o8flRhKTlAes2+ddSfDspVUyk0X1YDycP4MabCMJxYRfXBwwU2/pTOeJW5mx8ok1LP2TLseehIrWTXlBXHAb36TpBu+lAvJ8hWf198GjcWGgZYhiEuKobJZhVEIQcD1wFcnj4H0rrNspVPgh4O424YVLv86Mi6tx/yxwfrjgwlC4hE5yOul8+fXahf8N33Mt75IiMNVkZRqjW2dsoToQN9e7O6jEoTpXokBlWBfHoBeMUWxUrAJmgponkzuwocpTLbGsoOWR470O7IKgUt/S7S5GbzzOlkYQrlCTJecBIW63yhoCH6RtLb1h7xkkPghKlYGDV5Z86nN/NRZMgT2yzgKNm2k94TZcsS//xaRbLAq3vdWIyxs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6304.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(1800799015)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?lJ8tEOqlgfrDzPZbftJnz498Rzd76Okud+h+/v7ZspESa7YLAFyUrOKR09kS?=
- =?us-ascii?Q?7jFm6b9VNY8xgTYvRV8M93GY/3pchNywj+oeCtcd4w5nVhyPrPfzMuUdlCG8?=
- =?us-ascii?Q?vu9GD6+vNK7wOsu16uF42EsMIBahqgtChMUgdi9BA8R8ERU1WGQocbzIFSri?=
- =?us-ascii?Q?3Q57nIpRa5DBpxygvx4vf4xqZ09nh1yck8vZuVC8FtzA7VbSlUzzvXm2sFu9?=
- =?us-ascii?Q?ZGXv1U48Eo/ZBNenmq3HKrry70zyWXbzHPlFd02SAIkcyzxLgzhHHU79s0/A?=
- =?us-ascii?Q?nJBnssgCdkGVTcdmNG+cVLTtGwD6eFwDw9qkYUR48vVxpVQpBO9CEjebkA3M?=
- =?us-ascii?Q?lkHaNyMxaL7gyXmXfpFzlsdDCAJ6ycQCPIJzfbgXb2+TBLClw3IEpeNa4FB5?=
- =?us-ascii?Q?9S/t17Tt2Hd7H2yJs3v7crlAQh0x520cjyEEfUyTGcjMuMZd7ZbPoDlhh+yi?=
- =?us-ascii?Q?ac+dp+oHMmxWfXd5a7KZc25e94cNaCYKnOsAIGMbKg1LBuCADG1WSwcosqFd?=
- =?us-ascii?Q?Zt/dfCQ78TSQgCh73d3xz2DmOXTt2up+5bNcMdj5bQIFvXXI/BMVYIpjgVSX?=
- =?us-ascii?Q?lzQy1L2lWZRBKXDuS3EWekmJkmEcZGP+hCV6yVKO2qgL4/8zpN+/DGt5MHV2?=
- =?us-ascii?Q?BfiNL68ieqoSEwN4cSOmjFe2QU+G7p3VY/TLO1hPZ+L5iFtTY6SlHHlVxo5S?=
- =?us-ascii?Q?V3xTeFHoWSAL5XxAzk1JSMlg/SAarfAly8hTzqwuqGuCr3MiH7u8vnwJ9Tge?=
- =?us-ascii?Q?N6f2byX4HP7QKRmPid79Q1TU45mr75xweuaRYPekiDME1wcVwmdlCqml+x9M?=
- =?us-ascii?Q?oYpdmJhYldB/kXMqyyePn3hvRSXakp0M2ljUZAT1IK7kSG4TfSUYJpeU/i6e?=
- =?us-ascii?Q?gDWMF6/YPwCBNp/YWK6dKmdzam3+xlwuiW4VoGCzJXe9G2deueQkRKhMPJDN?=
- =?us-ascii?Q?puU1zu9drEWw5JEww0G4oAlOm+jmYf5+4/K+amiFOV3iPW2vaPah3ALwzoL7?=
- =?us-ascii?Q?Qkq4HuNe3O/n9BOP2u2rnV8VgPciHOnmOhGFSdLNRGKNA5MLpqz7Z3cDdKII?=
- =?us-ascii?Q?MXX/6I/O5tGcvQJw56WmZoAEWCnBVMh816Tyox6LGGPR2AF8KWrSUnZCdtVO?=
- =?us-ascii?Q?9sZs2OoUpw3lPmSlWT4JLXLafOuRVFv+2trGiux1UzgMlAKtv+CoyYe1ulx/?=
- =?us-ascii?Q?M/eAR37JlcTBw+HI7ESE5VU3rbdMm74HfZhCl3HharS6AkInzNBEYsERw7W1?=
- =?us-ascii?Q?+Uf1gJAEIzbSv7nLt7OMOoDEra3+2KnAuAkO1h1UXxf4v4B2/tx81NCcNwZJ?=
- =?us-ascii?Q?YcoPq6th1fGBKuPzRtV7O6w5y7V93nxBgydGlR/rbo5irenk224t+3uq/IfC?=
- =?us-ascii?Q?lNdNZdhRfWa6BjMKU7pu6ioQwZ7XfeFBRla79zpOKu5sSS0+5PknhaRGm3ld?=
- =?us-ascii?Q?EpGrEIvkcp/wizhpRmjRpWovIMql9VGJyYBpJhGvKeWPEuIpL9ap2jJVqLuz?=
- =?us-ascii?Q?2NYZ7C5AVaLkdxD/CLWaqAPT8iKuF/3E88OagBCCA8Mpd9BnY8I1cQcsh4yZ?=
- =?us-ascii?Q?EMKEONT5OsC80dH/s0kKvVrz83QOt7IxNXAezFp8?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a58eacd-a46a-40c6-6b38-08dc54677429
-X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6304.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 05:24:08.8951
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YAR6fMpT6V3s6yI0aQH+KeRsJFXEYlIykrVmRs6EIyKrUDCoHiuB5lKPEIYpdG7OgzDeIOFuMyYGwLadDLDldA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR11MB7303
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: NJHthWjJQqbBZXtrejwq9QahjYbRk53L
+X-Proofpoint-ORIG-GUID: NJHthWjJQqbBZXtrejwq9QahjYbRk53L
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-04_01,2024-04-03_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ spamscore=0 bulkscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
+ mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1015 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404040033
 
-On Wed, Apr 03, 2024 at 12:10:41PM -0700, Paul E. McKenney wrote:
-> The unsynchronized_tsc() eventually checks num_possible_cpus(), and
-> if the system is non-Intel and the number of possible CPUs is greater
-> than one, assumes that TSCs are unsynchronized.  This despite the
-> comment saying "assume multi socket systems are not synchronized",
-> that is, socket rather than CPU.  This behavior was preserved by
-> commit 8fbbc4b45ce3 ("x86: merge tsc_init and clocksource code") and
-> by the previous relevant commit 7e69f2b1ead2 ("clocksource: Remove the
-> update callback").
-> 
-> The clocksource drivers were added by commit 5d0cf410e94b ("Time: i386
-> Clocksource Drivers") back in 2006, and the comment still said "socket"
-> rather than "CPU".
-> 
-> Therefore, bravely (and perhaps foolishly) make the code match the
-> comment.
-> 
-> Note that it is possible to bypass both code and comment by booting
-> with tsc=reliable, but this also disables the clocksource watchdog,
-> which is undesirable when trust in the TSC is strictly limited.
-> 
-> Changes since v1:
-> 
-> o	Forward-port to v6.9-rc1.
-> 
-> Reported-by: Zhengxu Chen <zhxchen17@meta.com>
-> Reported-by: Danielle Costantino <dcostantino@meta.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Cc: "H. Peter Anvin" <hpa@zytor.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Feng Tang <feng.tang@intel.com>
-> Cc: Waiman Long <longman@redhat.com>
-> Cc: John Stultz <jstultz@google.com>
-> Cc: Neeraj Upadhyay <Neeraj.Upadhyay@amd.com>
-> Cc: <x86@kernel.org>
-> 
-> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-> index 5a69a49acc963..e938b990bea19 100644
-> --- a/arch/x86/kernel/tsc.c
-> +++ b/arch/x86/kernel/tsc.c
-> @@ -1289,7 +1289,7 @@ int unsynchronized_tsc(void)
->  	 */
->  	if (boot_cpu_data.x86_vendor != X86_VENDOR_INTEL) {
->  		/* assume multi socket systems are not synchronized: */
-> -		if (num_possible_cpus() > 1)
-> +		if (nr_online_nodes > 1)
+Currently the DWC3 driver supports only single port controller which
+requires at most two PHYs ie HS and SS PHYs. There are SoCs that has
+DWC3 controller with multiple ports that can operate in host mode.
+Some of the port supports both SS+HS and other port supports only HS
+mode.
 
-Regarding package/socket number, Thomas' topology refactoring patchset
-(merged in 6.9-rc1) makes topology_max_packages() more accurate than
-nr_online_nodes(), more details in https://lore.kernel.org/lkml/20240327025105.2861341-1-feng.tang@intel.com/
+This change primarily refactors the Phy logic in core driver to allow
+multiport support with Generic Phy's.
 
-Thanks,
-Feng
+Changes have been tested on  QCOM SoC SA8295P which has 4 ports (2
+are HS+SS capable and 2 are HS only capable).
+
+Changes in v19:
+Replaced IS_ERR(ptr) with a NULL check.
+Modified name of function reading the port num in core file.
+
+Changes in v18:
+Updated variable names in patch-7 for setup_port_irq and
+find_num_ports calls.
+
+Changes in v17:
+Modified DT handling patch by checking if dp_hs_phy_1 is present
+or not and then going for DT parsing.
+
+Changes in v16:
+Removing ACPI has simplified the interrupt reading in wrapper. Also
+the logic to find number of ports is based on dp_hs_phy interrupt check
+in DT. Enabling and disabling interrupts is now done per port. Added
+info on power event irq in commit message.
+
+Changes in v15:
+Added minItems property in qcom,dwc3 bindings as suggested by Rob.
+Retained all RB's/ACK's got in v14.
+
+Changes in v14:
+Moved wrapper binding update to 5th patch in the series as it deals
+with only wakeup and not enumeration. The first part of the series
+deals with enumeration and the next part deals with wakeup.
+Updated commit text for wrapper driver patches.
+Added error checks in get_port_index and setup_irq call which were
+missing in v13.
+Added SOB and CDB tags appropriately for the patches.
+Rebased code on top of latest usb next.
+DT changes have been removed and will be sent as a separate series.
+
+Changes in v13:
+This series is a subset of patches in v11 as the first 3 patches in v11
+have been mereged into usb-next.
+Moved dr_mode property from platform specific files to common sc8280xp DT.
+Fixed function call wrapping, added comments and replaced #defines with
+enum in dwc3-qcom for identifying IRQ index appropriately.
+Fixed nitpicks pointed out in v11 for suspend-resume handling.
+Added reported-by tag for phy refactoring patch as a compile error was
+found by kernel test bot [1].
+Removed reviewed-by tag of maintainer for phy refactoring patch as a minor
+change of increasing phy-names array size by 2-bytes was done to fix
+compilation issue mentioned in [1].
+
+Changes in v12:
+Pushed as a subset of acked but no-yet-merged patches of v11 with intent
+of making rebase of other patches easy. Active reviewers from community
+suggested that it would be better to push the whole series in one go as it
+would give good clarity and context for all the patches in the series.
+So pushed v13 for the same addressing comments received in v11.
+
+Changes in v11:
+Implemented port_count calculation by reading interrupt-names from DT.
+Refactored IRQ handling in dwc3-qcom.
+Moving of macros to xhci-ext-caps.h made as a separate patch.
+Names of interrupts to be displayed on /proc/interrupts set to the ones
+present in DT.
+
+Changes in v10:
+Refactored phy init/exit/power-on/off functions in dwc3 core
+Refactored dwc3-qcom irq registration and handling
+Implemented wakeup for multiport irq's
+Moved few macros from xhci.h to xhci-ext-caps.h
+Fixed nits pointed out in v9
+Fixed Co-developed by and SOB tags in patches 5 and 11
+
+Changes in v9:
+Added IRQ support for DP/DM/SS MP Irq's of SC8280
+Refactored code to read port count by accessing xhci registers
+
+Changes in v8:
+Reorganised code in patch-5
+Fixed nitpicks in code according to comments received on v7
+Fixed indentation in DT patches
+Added drive strength for pinctrl nodes in SA8295 DT
+
+Changes in v7:
+Added power event irq's for Multiport controller.
+Udpated commit text for patch-9 (adding DT changes for enabling first
+port of multiport controller on sa8540-ride).
+Fixed check-patch warnings for driver code.
+Fixed DT binding errors for changes in snps,dwc3.yaml
+Reabsed code on top of usb-next
+
+Changes in v6:
+Updated comments in code after.
+Updated variables names appropriately as per review comments.
+Updated commit text in patch-2 and added additional info as per review
+comments.
+The patch header in v5 doesn't have "PATHCH v5" notation present. Corrected
+it in this version.
+
+Changes in v5:
+Added DT support for first port of Teritiary USB controller on SA8540-Ride
+Added support for reading port info from XHCI Extended Params registers.
+
+Changes in RFC v4:
+Added DT support for SA8295p.
+
+Changes in RFC v3:
+Incase any PHY init fails, then clear/exit the PHYs that
+are already initialized.
+
+Changes in RFC v2:
+Changed dwc3_count_phys to return the number of PHY Phandles in the node.
+This will be used now in dwc3_extract_num_phys to increment num_usb2_phy 
+and num_usb3_phy.
+Added new parameter "ss_idx" in dwc3_core_get_phy_ny_node and changed its
+structure such that the first half is for HS-PHY and second half is for
+SS-PHY.
+In dwc3_core_get_phy, for multiport controller, only if SS-PHY phandle is
+present, pass proper SS_IDX else pass -1.
+
+Tested enumeration interrupt registration on Tertiary controller of
+SA8295 ADP:
+
+/ # lsusb
+Bus 001 Device 001: ID 1d6b:0002
+Bus 002 Device 001: ID 1d6b:0003
+Bus 001 Device 002: ID 046d:c06a
+/ #
+/ # dmesg  | grep ports
+[    0.066250] Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+[    0.154668] dwc3 a400000.usb: K: hs-ports: 4 ss-ports: 2
+[    0.223137] xhci-hcd xhci-hcd.0.auto: Host supports USB 3.1 Enhanced SuperSpeed
+[    0.227795] hub 1-0:1.0: 4 ports detected
+[    0.233724] hub 2-0:1.0: 2 ports detected
+
+Tested interrupt registration for all 4 ports of SA8295 ADP:
+
+/ # cat /proc/interrupts  |grep phy
+162: 0 0 0 0 0 0 0 0       PDC 127 Edge      dp_hs_phy_1
+163: 0 0 0 0 0 0 0 0       PDC 129 Edge      dp_hs_phy_2
+164: 0 0 0 0 0 0 0 0       PDC 131 Edge      dp_hs_phy_3
+165: 0 0 0 0 0 0 0 0       PDC 133 Edge      dp_hs_phy_4
+166: 0 0 0 0 0 0 0 0       PDC 126 Edge      dm_hs_phy_1
+167: 0 0 0 0 0 0 0 0       PDC  16 Level     ss_phy_1
+168: 0 0 0 0 0 0 0 0       PDC 128 Edge      dm_hs_phy_2
+169: 0 0 0 0 0 0 0 0       PDC  17 Level     ss_phy_2
+170: 0 0 0 0 0 0 0 0       PDC 130 Edge      dm_hs_phy_3
+171: 0 0 0 0 0 0 0 0       PDC 132 Edge      dm_hs_phy_4
+173: 0 0 0 0 0 0 0 0       PDC  14 Edge      dp_hs_phy_irq
+174: 0 0 0 0 0 0 0 0       PDC  15 Edge      dm_hs_phy_irq
+175: 0 0 0 0 0 0 0 0       PDC 138 Level     ss_phy_irq
+
+Tested working of ADB on SM8550 MTP.
+
+Links to previous versions:
+Link to v18: https://lore.kernel.org/all/20240326113253.3010447-1-quic_kriskura@quicinc.com/
+Link to v17: https://lore.kernel.org/all/20240326102809.2940123-1-quic_kriskura@quicinc.com/
+Link to v16: https://lore.kernel.org/all/20240307062052.2319851-1-quic_kriskura@quicinc.com/
+Link to v15: https://lore.kernel.org/all/20240216005756.762712-1-quic_kriskura@quicinc.com/
+Link to v14: https://lore.kernel.org/all/20240206051825.1038685-1-quic_kriskura@quicinc.com/
+Link to v13: https://lore.kernel.org/all/20231007154806.605-1-quic_kriskura@quicinc.com/
+Link to v12: https://lore.kernel.org/all/20231004165922.25642-1-quic_kriskura@quicinc.com/
+Link to v11: https://lore.kernel.org/all/20230828133033.11988-1-quic_kriskura@quicinc.com/
+Link to v10: https://lore.kernel.org/all/20230727223307.8096-1-quic_kriskura@quicinc.com/
+Link to v9: https://lore.kernel.org/all/20230621043628.21485-1-quic_kriskura@quicinc.com/
+Link to v8: https://lore.kernel.org/all/20230514054917.21318-1-quic_kriskura@quicinc.com/
+Link to v7: https://lore.kernel.org/all/20230501143445.3851-1-quic_kriskura@quicinc.com/
+Link to v6: https://lore.kernel.org/all/20230405125759.4201-1-quic_kriskura@quicinc.com/
+Link to v5: https://lore.kernel.org/all/20230310163420.7582-1-quic_kriskura@quicinc.com/
+Link to RFC v4: https://lore.kernel.org/all/20230115114146.12628-1-quic_kriskura@quicinc.com/
+Link to RFC v3: https://lore.kernel.org/all/1654709787-23686-1-git-send-email-quic_harshq@quicinc.com/#r
+Link to RFC v2: https://lore.kernel.org/all/1653560029-6937-1-git-send-email-quic_harshq@quicinc.com/#r
+
+Krishna Kurapati (9):
+  dt-bindings: usb: Add bindings for multiport properties on DWC3
+    controller
+  usb: dwc3: core: Access XHCI address space temporarily to read port
+    info
+  usb: dwc3: core: Skip setting event buffers for host only controllers
+  usb: dwc3: core: Refactor PHY logic to support Multiport Controller
+  dt-bindings: usb: qcom,dwc3: Add bindings for SC8280 Multiport
+  usb: dwc3: qcom: Add helper function to request wakeup interrupts
+  usb: dwc3: qcom: Refactor IRQ handling in glue driver
+  usb: dwc3: qcom: Enable wakeup for applicable ports of multiport
+  usb: dwc3: qcom: Add multiport suspend/resume support for wrapper
+
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |  34 ++
+ .../devicetree/bindings/usb/snps,dwc3.yaml    |  13 +-
+ drivers/usb/dwc3/core.c                       | 325 +++++++++++++-----
+ drivers/usb/dwc3/core.h                       |  19 +-
+ drivers/usb/dwc3/drd.c                        |  15 +-
+ drivers/usb/dwc3/dwc3-qcom.c                  | 251 +++++++++-----
+ 6 files changed, 482 insertions(+), 175 deletions(-)
+
+-- 
+2.34.1
+
 
