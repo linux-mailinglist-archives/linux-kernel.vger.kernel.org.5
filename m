@@ -1,109 +1,138 @@
-Return-Path: <linux-kernel+bounces-131048-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B2DE89825F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:45:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C277A898269
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:46:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6AFE01C21EB3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:45:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A199D1C25BC9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:46:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B1FA5C8F4;
-	Thu,  4 Apr 2024 07:45:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26CCD5D731;
+	Thu,  4 Apr 2024 07:45:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="TKKNGcyN"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ahmcg0O/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE40A63C7;
-	Thu,  4 Apr 2024 07:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B935B1F6;
+	Thu,  4 Apr 2024 07:45:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712216731; cv=none; b=JdIBA4oo8NEYtsL8JmYVfGH+P/qrNU7aRBisEGGURzepQOIE9/zM2XAuyESWYpNDAWiKRPt4bSKBKP8IY4dufzYoKvhevDMUm9gWkxP7cjs14Tme3Hfhsa0TM7EA0BBEsviDP1rWPWzjRHhxlLi4OEhcoBbC/xvOp42WE1TPq9M=
+	t=1712216753; cv=none; b=ouZu7hph2kN0yLB9wOU1LNCqG8inih8id23lXkx2L1NQkxhRp0ZpQVY+WVZo5cdiR83FOYn8kOv6OsybtlcSdgnIDx4D8f8rRGIzACmN1SXlXTgNegKMHK/l+vZpwEqG+zuNtvGnJFRiUnHuGXSx8QyzZzk3ZdU+nG6tJMo9czA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712216731; c=relaxed/simple;
-	bh=oZro36DPjo91nHmLLoFWN5FvMZOrQjLObCI4Gt9wbr8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o+hh1D94Mixz10LR2cvjnkhqKWmAglJcAEf6Yd38DaDRu6SlLcj+0GDvaoIT8KAiBIvbFWD8ecjs/MqIYvcDdxfrWj0iyPLdSHzBIAw+jCRjoMlfWTxvflxs6dbpb2b3NgKwkR1lsej5KKVNVG79DTHrYMD4I1eYQ4IBXDVMtGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=TKKNGcyN; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id E93141FA6E;
-	Thu,  4 Apr 2024 09:45:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1712216719;
-	bh=ryvia0nLhKRVPovUMdbprzNdINyicI2Sofph4j5VnBw=; h=From:To:Subject;
-	b=TKKNGcyN4+4pkGR46A9CckWl6rgrQniGTh1sxESxhrGRuQEyFxlHJaMYz+eCh8WPK
-	 Dw8Z85s+8uzomgK0jDWqMIY9i79fdHOJGiHgm6OL2LXGllg0db0d27DQKswz9oBPRk
-	 L2w/U8xUSVQk99Q5kuS9EVvm1CymD11vijQLeritsb+vLHzDHN+xEozlq3zvT3fvyN
-	 pwPtNk/tHXZJsxfAIr5R9jeZ+a9fl4u8T3OxHjYhQ9b714Gh499nHq2Mdk0zbs2l2F
-	 wLacfIKRrniWEb+qdqsf3B755taCAYodPhYXjIY0rGWBF1eWPKqsYZEZuPdZrJftF/
-	 jqGyPFKpvOk7A==
-Date: Thu, 4 Apr 2024 09:45:15 +0200
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Michael Walle <mwalle@kernel.org>
-Cc: Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-j722s-evm: Enable eMMC support
-Message-ID: <20240404074515.GA5639@francesco-nb>
-References: <20240403102302.3934932-1-mwalle@kernel.org>
+	s=arc-20240116; t=1712216753; c=relaxed/simple;
+	bh=vcETtOrVy9bTRvDJ6u7ogSjCKNt7NXEhds5NARQGbPY=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=cAZ4eJJecI/TZQEysaTarMoXp+vAzdB+usGAnFAGiSCfHpORW84txP0OZH4IK/38mhR41MtKD7vI0thnZApjXoY1E/53vjB6blU1TtplkKStEQm5mmO+PWaQi/SfKijUt3aVnGMV1DfUcUxqcpPM1WvHWpxFvfHWP3W3hmUmY5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ahmcg0O/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5535EC433F1;
+	Thu,  4 Apr 2024 07:45:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712216752;
+	bh=vcETtOrVy9bTRvDJ6u7ogSjCKNt7NXEhds5NARQGbPY=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=ahmcg0O/wVgUSHDmaLqFtCVQppeFQLHTQcwLUR3ZoemzEiydJLq5n65V+ZZF4U3Z/
+	 iZTZ2dGWs5n/xGsr2C9Ro8bxdpCo0mryC+/NJ293dDVVrTasGOJjky78rF1l0Vh5Cj
+	 ewN+vdhM+Vk7MvaEXrP9a5f9hvvIhXjlvvkp5fjW6hQf8tlH5S2zNXD299vhN6PNvh
+	 Y5zEUTiauyseC4AumRqKYaxCMkjyr8HU9RPqz7Q7M32OkZevScqGC8ldR1pXRVNnPN
+	 lCtMqbIda7OLCc5vYYCtjdUg0R4nqeFderQtkQlFlCIFJl63TPR9JxYni0ko+ATY12
+	 3JVV8cyIjyi9Q==
+Date: Thu, 04 Apr 2024 02:45:51 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403102302.3934932-1-mwalle@kernel.org>
+From: Rob Herring <robh@kernel.org>
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
+ linux-ide@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
+ Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org, 
+ Sam Ravnborg <sam@ravnborg.org>, Stephen Boyd <sboyd@kernel.org>, 
+ linux-sh@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+ Thomas Gleixner <tglx@linutronix.de>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+ devicetree@vger.kernel.org, Helge Deller <deller@gmx.de>, 
+ dri-devel@lists.freedesktop.org, Jonathan Corbet <corbet@lwn.net>, 
+ Biju Das <biju.das.jz@bp.renesas.com>, Guenter Roeck <linux@roeck-us.net>, 
+ Daniel Lezcano <daniel.lezcano@linaro.org>, 
+ Damien Le Moal <dlemoal@kernel.org>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+ Anup Patel <apatel@ventanamicro.com>, Maxime Ripard <mripard@kernel.org>, 
+ Chris Morgan <macromorgan@hotmail.com>, Jiri Slaby <jirislaby@kernel.org>, 
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+ Thomas Zimmermann <tzimmermann@suse.de>, 
+ Javier Martinez Canillas <javierm@redhat.com>, 
+ David Rientjes <rientjes@google.com>, 
+ Azeem Shaikh <azeemshaikh38@gmail.com>, Conor Dooley <conor+dt@kernel.org>, 
+ Arnd Bergmann <arnd@arndb.de>, Rich Felker <dalias@libc.org>, 
+ linux-fbdev@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>, 
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+ Daniel Vetter <daniel@ffwll.ch>, linux-serial@vger.kernel.org, 
+ linux-pci@vger.kernel.org, Niklas Cassel <cassel@kernel.org>, 
+ Sebastian Reichel <sre@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, 
+ Manikanta Guntupalli <manikanta.guntupalli@amd.com>, 
+ Guo Ren <guoren@kernel.org>, Jacky Huang <ychuang3@nuvoton.com>, 
+ linux-clk@vger.kernel.org, David Airlie <airlied@gmail.com>, 
+ Magnus Damm <magnus.damm@gmail.com>, 
+ Geert Uytterhoeven <geert+renesas@glider.be>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Herve Codina <herve.codina@bootlin.com>, Vlastimil Babka <vbabka@suse.cz>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+ Shawn Guo <shawnguo@kernel.org>, Heiko Stuebner <heiko.stuebner@cherry.de>, 
+ Baoquan He <bhe@redhat.com>, Kefeng Wang <wangkefeng.wang@huawei.com>, 
+ Lorenzo Pieralisi <lpieralisi@kernel.org>
+In-Reply-To: <8d8dec2d75890f3a14632c9606c332fb11d89a95.1712207606.git.ysato@users.sourceforge.jp>
+References: <cover.1712207606.git.ysato@users.sourceforge.jp>
+ <8d8dec2d75890f3a14632c9606c332fb11d89a95.1712207606.git.ysato@users.sourceforge.jp>
+Message-Id: <171221675032.1570606.17195739558800384053.robh@kernel.org>
+Subject: Re: [RESEND v7 19/37] dt-bindings: interrupt-controller:
+ renesas,sh7751-irl-ext: Add json-schema
 
-Hello Michael,
 
-On Wed, Apr 03, 2024 at 12:23:02PM +0200, Michael Walle wrote:
-> The J722S EVM has an on-board eMMC. Enable the SDHC interface for it.
-> There is no pinmuxing required because the interface has dedicated pins.
+On Thu, 04 Apr 2024 14:14:30 +0900, Yoshinori Sato wrote:
+> Renesas SH7751 external interrupt encoder json-schema.
 > 
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 > ---
-> v2:
->  - move status="okay" last
-> ---
->  arch/arm64/boot/dts/ti/k3-j722s-evm.dts | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  .../renesas,sh7751-irl-ext.yaml               | 57 +++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/renesas,sh7751-irl-ext.yaml
 > 
-> diff --git a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-> index cee3a8661d5e..6b148da2bcdc 100644
-> --- a/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-> +++ b/arch/arm64/boot/dts/ti/k3-j722s-evm.dts
-> @@ -369,6 +369,13 @@ partition@3fc0000 {
->  
->  };
->  
-> +&sdhci0 {
-> +	ti,driver-strength-ohm = <50>;
 
-According to the latest DTS coding style guidelines this needs to be
-just before status.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-https://docs.kernel.org/devicetree/bindings/dts-coding-style.html#order-of-properties-in-device-node
+yamllint warnings/errors:
 
-Yes, we would need a checker, I know and I agree. At least now we moved
-out of the tribal knowledge way of working with every maintainer having
-slightly different expectation on this topic ... one step at a time :-)
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/interrupt-controller/renesas,sh7751-irl-ext.example.dtb: interrupt-controller@a4000000: #interrupt-cells:0:0: 2 was expected
+	from schema $id: http://devicetree.org/schemas/interrupt-controller/renesas,sh7751-irl-ext.yaml#
 
-> +	disable-wp;
-> +	bootph-all;
-> +	status = "okay";
-> +};
+doc reference errors (make refcheckdocs):
 
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/8d8dec2d75890f3a14632c9606c332fb11d89a95.1712207606.git.ysato@users.sourceforge.jp
 
-Francesco
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
 
