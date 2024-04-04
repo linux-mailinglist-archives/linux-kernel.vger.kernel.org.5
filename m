@@ -1,139 +1,112 @@
-Return-Path: <linux-kernel+bounces-131879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131883-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A266A898D0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:13:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CD03898D22
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:20:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 582341F229E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:13:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 312121C25E61
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C51712D75C;
-	Thu,  4 Apr 2024 17:13:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Lga1EpiR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C082E12DD9D;
+	Thu,  4 Apr 2024 17:19:55 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A61B12BF22;
-	Thu,  4 Apr 2024 17:13:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975B414A8B;
+	Thu,  4 Apr 2024 17:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712250791; cv=none; b=QUt96AznVtZPAEt3Q0LDgjKsv1NnJhV/uC8uVN9D2ypHMmvrrY3GJdCpcrTbK3PeYbU8diSXczIpnB8TUxG3L+oneMhr+/HGHnaWFBIXvtnWtsdbgwzQkZX83RTDpz3zJFtyM5QHc31gAEb7Bx7dMYJ3UZOBPEwrxwXD5ghiETs=
+	t=1712251195; cv=none; b=Sf0LYT21qNtwR1VTBUmD+e5RF+FcyUTmdAZysFCZBZon1GkHH0knmqCmjdoPek9p2gVljEs7qOQ9EWdOfm069IwG3EQC8Ic7cnbWcDWMy1Azf/tro3uyrrOWu20FZVcIrkK3N9QW9Q0tx4U5FdMOVQ+AulMiet4l0rf2lRfNl8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712250791; c=relaxed/simple;
-	bh=Dlr+aCFuoxfoWJLhEEPEJmaI0L43dBfu9cHqUL4lZ9c=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZyfxQdxXV3dhvRt2mkhmpXOHoq8QzvMG1fNlVva3og4U5D6l9YeoSOreDIvyescQnujQoNX3IO3mN3YP99rNCYaGvvuAto0fLS5oJEdmISkiqPfU1rY0v2lybcTdQcIx0cycb+dc+2ni+1RR65kazIRoLe2UHJY2ZHbiNW6k+jE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Lga1EpiR; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712250790; x=1743786790;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Dlr+aCFuoxfoWJLhEEPEJmaI0L43dBfu9cHqUL4lZ9c=;
-  b=Lga1EpiRtfAqsXLK08fO1lDl30cK1LcqSk1S15uEYITkaXTsNrai+SnW
-   +jaZyJo+qnr0xLIfDqXAjpuJzEg4W2CHtgo8AHtjWE0nzhLv8hhFIAK6G
-   fQxoJzNpVXgr2NGmwMtkfLmJC6J6KSw7QJt1tqKgfJ0G/S0iIliWhlQkX
-   rD3CXyf8MMiCgL76M9nz/oqiZW0YhzWeNVYKm3nR9m9+dQb0VV8aPaep0
-   sqThTR7WOuumdbYhuRETKhqWt00sbMygQyp5cDQMGKHejTNur7bHACDCm
-   D8b6yxIkr9vJTfJcE41BmDUFo6aReHfXNrdtxY9oArn5WL2iyIcwlVz1W
-   Q==;
-X-CSE-ConnectionGUID: b1mJn7puTIqmbALvG2tZhA==
-X-CSE-MsgGUID: fNu2cwoKSImoMkSkF5XE8A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="25058748"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="25058748"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 10:13:09 -0700
-X-CSE-ConnectionGUID: YvT/tSvUSe2R+yQRAF8VxA==
-X-CSE-MsgGUID: eiA5oN3tS7aoaA6Umgebjw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="18773748"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 10:13:08 -0700
-Date: Thu, 4 Apr 2024 10:17:35 -0700
-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To: Robert Hoo <robert.hoo.linux@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Thomas Gleixner
- <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
- kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>, Joerg Roedel
- <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov
- <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, Paul Luse
- <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>, Jens
- Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>, "Tian, Kevin"
- <kevin.tian@intel.com>, maz@kernel.org, seanjc@google.com, Robin Murphy
- <robin.murphy@arm.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 05/15] x86/irq: Reserve a per CPU IDT vector for posted
- MSIs
-Message-ID: <20240404101735.402feec8@jacob-builder>
-In-Reply-To: <9734e080-96e4-4119-8ae6-28abb7877a3c@gmail.com>
-References: <20240126234237.547278-1-jacob.jun.pan@linux.intel.com>
-	<20240126234237.547278-6-jacob.jun.pan@linux.intel.com>
-	<9734e080-96e4-4119-8ae6-28abb7877a3c@gmail.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712251195; c=relaxed/simple;
+	bh=yD9gdc9DZs6Cc5MiJ5TdowOyM3xU2yJ4MReDIH+Q1VY=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KHMoYFp34GXeR7YSBDfeR5s19I1p6AJWPcxafjxqtnTb/xTQaJR0wBrfO+7A7TWmYGs0/jwJK3Y4MXoo+nLBSBs1jygDgJyu8cKsgKeSICmwZe1xtKmSfXgRJ7Ck989RRa0282FeBmT5xMElVd9T8c+nocdDa9BrtVc+NPOkvcU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9Sxv3MCmz6J9bQ;
+	Fri,  5 Apr 2024 01:18:27 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 91888140A86;
+	Fri,  5 Apr 2024 01:19:50 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
+ 2024 18:19:50 +0100
+Date: Thu, 4 Apr 2024 18:19:49 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 20/26] dax: Document dax dev range tuple
+Message-ID: <20240404181949.0000505b@Huawei.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-20-b7b00d623625@intel.com>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	<20240324-dcd-type2-upstream-v1-20-b7b00d623625@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hi Robert,
+On Sun, 24 Mar 2024 16:18:23 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-On Thu, 4 Apr 2024 21:38:34 +0800, Robert Hoo <robert.hoo.linux@gmail.com>
-wrote:
-
-> On 1/27/2024 7:42 AM, Jacob Pan wrote:
-> > When posted MSI is enabled, all device MSIs are multiplexed into a
-> > single notification vector. MSI handlers will be de-multiplexed at
-> > run-time by system software without IDT delivery.
-> > 
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >   arch/x86/include/asm/irq_vectors.h | 9 ++++++++-
-> >   1 file changed, 8 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/include/asm/irq_vectors.h
-> > b/arch/x86/include/asm/irq_vectors.h index 3a19904c2db6..08329bef5b1d
-> > 100644 --- a/arch/x86/include/asm/irq_vectors.h
-> > +++ b/arch/x86/include/asm/irq_vectors.h
-> > @@ -99,9 +99,16 @@
-> >   
-> >   #define LOCAL_TIMER_VECTOR		0xec
-> >   
-> > +/*
-> > + * Posted interrupt notification vector for all device MSIs delivered
-> > to
-> > + * the host kernel.
-> > + */
-> > +#define POSTED_MSI_NOTIFICATION_VECTOR	0xeb
-> >   #define NR_VECTORS			 256
-> >   
-> > -#ifdef CONFIG_X86_LOCAL_APIC
-> > +#ifdef X86_POSTED_MSI  
+> The device DAX structure is being enhanced to track additional DCD
+> information.
 > 
-> X86_POSTED_MSI --> CONFIG_X86_POSTED_MSI?
-Indeed, thanks for catching that!
+> The current range tuple was not fully documented.  Document it prior to
+> adding information for DC.
+> 
+> Suggested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-> > +#define FIRST_SYSTEM_VECTOR
-> > POSTED_MSI_NOTIFICATION_VECTOR +#elif defined(CONFIG_X86_LOCAL_APIC)
-> >   #define FIRST_SYSTEM_VECTOR		LOCAL_TIMER_VECTOR
-> >   #else
-> >   #define FIRST_SYSTEM_VECTOR		NR_VECTORS  
+There is a style convention for nested structs.
+Maybe needs tweaking for a pointer like this though... 
+
+Perhaps poke it with kernel-doc script an see what comes out.
+
+https://docs.kernel.org/doc-guide/kernel-doc.html#nested-structs-unions
+> 
+> ---
+> Changes for v1
+> [iweiny: new patch]
+> ---
+>  drivers/dax/dax-private.h | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dax/dax-private.h b/drivers/dax/dax-private.h
+> index c6319c6567fb..ac1ccf158650 100644
+> --- a/drivers/dax/dax-private.h
+> +++ b/drivers/dax/dax-private.h
+> @@ -70,7 +70,10 @@ struct dax_mapping {
+>   * @dev - device core
+>   * @pgmap - pgmap for memmap setup / lifetime (driver owned)
+>   * @nr_range: size of @ranges
+> - * @ranges: resource-span + pgoff tuples for the instance
+> + * @ranges: range tuples of memory used
+> + * @pgoff: page offset
+> + * @range: resource-span
+> + * @mapping: device to assist in interrogating the range layout
+>   */
+>  struct dev_dax {
+>  	struct dax_region *region;
 > 
 
-
-Thanks,
-
-Jacob
 
