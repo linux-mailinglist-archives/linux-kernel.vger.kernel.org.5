@@ -1,146 +1,154 @@
-Return-Path: <linux-kernel+bounces-132044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F019898F10
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:32:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C039D898F17
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:35:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8040C1C221BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:32:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F232D1C21D58
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:35:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4D5130ACD;
-	Thu,  4 Apr 2024 19:32:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6603A134439;
+	Thu,  4 Apr 2024 19:35:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nCeoZWVo"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IMENfMrr"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C155A12FF9D
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:32:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D011311A3;
+	Thu,  4 Apr 2024 19:35:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712259144; cv=none; b=aeM0eJix8dzFPPEt38vVboF2orJo2xdXS4jFfw4SV4h5IifRANmIennGtaP5llEOjAmFc6lO0R87+RXEiPgVHO4uFthBTS05unSXV/8lYRWrQrshpCTfWFr5wzrAK930b4ezrzYT3rKrV7OStLhBiSUpb0r89YihnAd3AWKPJpQ=
+	t=1712259328; cv=none; b=SnTUNttBZnHiHIpYi451s4Jnm0qdTHAChrg7egKGTZ7cR6auG03phPcMfwHnGDZFzRPOZdGUAzedTuHbcvxBtI0hQQGYnkDO0ulwUiSYqhlW2QZmC+Lg9MG71/l4RbRKYbkTXZd0AMAkAdd0e9NgdA/U6cc6Ygn36pUntdTeIt0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712259144; c=relaxed/simple;
-	bh=gsVcKtDkUNveOcQR3OkOOH5GwGE5htKXDxs/MtGdyjM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WBxqCDybBtMedQtsgkK37AVx16wejKqCY1DpASOx4/7I97sacsvgdgGW2piyI2ruZtqx3UwTbT+BjSQvbISFRcvjpjeCC0i6SkDOaS3+OnwabHPzgOqeYD7CZTHBE/Jp1GDzkpF8pnqAY9AeRQkyFrReZNyYBdWL1e+5odKklOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nCeoZWVo; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcbcea9c261so1603025276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 12:32:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712259142; x=1712863942; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1QF7YfDkyhTCu/FPW6+EBtGcxT+kvR7RnrsjI6gQgsU=;
-        b=nCeoZWVoWA8RLbHUFsuDYA20rSn/xMYE8jHn4EIsPIM5BsqqtZGQZMBH9UBGrtu9OH
-         pt8xyF9P2CU8h7jGTnwDK3wIg1lb8R2467a0cfXqZExj6jW4jwp9Ydx7ap95bhj2IhDQ
-         VDYSks6ClLyiCj0jMMdke5L2A9TikiO081SbQ7qEgYMNiwestDyvFQ8loD8ymoVBtWS8
-         ReXyGW9LvtMcVy5JDbgjlyxkMrfbYUoNPqHV0RJ7/lzw05FliBAsdCS8QRqw8IHDhNUT
-         p5UQ9PR0bkVqZHvHaUo7hUaXo3YGl0hpDRAMMdZAHJcYJqKdhBpcivavTwgrfmo2ow0Q
-         1m+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712259142; x=1712863942;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1QF7YfDkyhTCu/FPW6+EBtGcxT+kvR7RnrsjI6gQgsU=;
-        b=dXXNad8JTwrejtxRHTqILpW64Ewgv5C9fXZKrer7iYRVjiKBxTQbZ6Su8tgiFdEKTE
-         3qM3KTIMbsmOfYnxPHluIWVy/Xgi+t9GgT6fwSzby+OrikdwU5tM0rSBx2vjkHpu8Joq
-         P3pNNOKZkcNx47tBtXTjwcopnhFuVuoUaLNS3utlWeexgl4Pv5mw4ey1PQEj6jOPQpAg
-         mmsLSaysnztfyozAtnabHonN+VRp/vBywnmCQVL9x3T5ZfTXhXHa6kdpq6RVpfNzhpiG
-         HD5x8fK6s6+/nxuAB2eh44RAiBEUvNSa5cdBEosfQv30qvF7gIqXVEeT4eJT39ywjYuB
-         yLUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW4hDEEZkZRgWadpwG0r1w4wo8zeAgF0E7ObUYJQh0gcYldtqBBgOpQwba2Rmhib5iOLTJUBlW8oCfkHqsx6io5numhLXwwXRUYEEX4
-X-Gm-Message-State: AOJu0YxPAUgTRqxd/yh41UQi0nnd0Kyl88qKNLx3rfrASci4Xe2+HOsE
-	ZIYdJZQu561P8V8v6ySqtZY6WSWZsMOpB2VZcmkQA7tImB8sdKpOZMAR/d5dF6zofTLbGd2RTnW
-	UjUdh7k6p5NEmwzoWeDWFFQaNJ6UXawOj
-X-Google-Smtp-Source: AGHT+IHu0tf3wBJpfd3UyhX93ctSlHSzZkIbY7hMSDwDS6Q0n1uGqbYHK48drdtAqk3f12AmqnbitdryFo4MfkssZfc=
-X-Received: by 2002:a25:8b81:0:b0:dcc:7131:ad4a with SMTP id
- j1-20020a258b81000000b00dcc7131ad4amr2943771ybl.62.1712259141645; Thu, 04 Apr
- 2024 12:32:21 -0700 (PDT)
+	s=arc-20240116; t=1712259328; c=relaxed/simple;
+	bh=guTUrkGCJ4oBaMte9luwU3S1Hg/eVxHqcTnNcLV1rVw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=h0AsCqDsfln/flm9e5rxN3m8/YWyepCE3AFvmFIeJvppfT+g0AzshIo1I6EV3EZKg0pnX8ufUUOjvHuFCArMJ6Quwhbn+CKjSn0UkVclCaA//PBihzSJOMyBUIYIMlzNfgNkmSRDMQNnDRQzZwpCMBsU+DMA/yDWsBkMqD4o+b0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IMENfMrr; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712259327; x=1743795327;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=guTUrkGCJ4oBaMte9luwU3S1Hg/eVxHqcTnNcLV1rVw=;
+  b=IMENfMrrkHoTHemOntWUqAvGIjJ3Yw7Ff1W+3+FC0gwkEqvn2IKrMMrR
+   hhpVGnkEg+gc+4tuYlG61KtOrVB9Se1Vu36nOsp7VmjmjkROsr4Gu+ua7
+   2n3mYBYyIYUU1hErfZEkf37b8ybQDcD6Jzi1RQHjrmdTSK/iKdCtYDqk7
+   noRzfKl19vWfd0EtnEoirItp4RHgUQfaV8BZ9ByPZBXjAGaULcrKFNIiv
+   iuf2O9Xl6scrucAj18hIASXbf2IXatNUYsp2JWphywDZmgouc2u/bIcfE
+   BZiOqXTlCjvTHpxRJek6kcN3W5nm7weC0KoUUwIZZvT/sj1LajXkfPHPr
+   w==;
+X-CSE-ConnectionGUID: LLVtTc1IRQqMaNtQipqwqA==
+X-CSE-MsgGUID: 4S7fPRMYQs2fa89KAwJdJQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="18711914"
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="18711914"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 12:35:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="937087031"
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="937087031"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Apr 2024 12:35:23 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id D9A9F3E5; Thu,  4 Apr 2024 22:35:22 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/1] pinctrl: Use DEFINE_SHOW_STORE_ATTRIBUTE() helper for debugfs
+Date: Thu,  4 Apr 2024 22:35:21 +0300
+Message-ID: <20240404193521.3581399-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240401202651.31440-1-vishal.moola@gmail.com>
- <20240401202651.31440-2-vishal.moola@gmail.com> <Zg6cualUqcsZYZxf@localhost.localdomain>
-In-Reply-To: <Zg6cualUqcsZYZxf@localhost.localdomain>
-From: Vishal Moola <vishal.moola@gmail.com>
-Date: Thu, 4 Apr 2024 12:32:11 -0700
-Message-ID: <CAOzc2pxfUSnT6fEXAJZowYeMz=hCgWsfJRB++dis1AL_rNScGQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] hugetlb: Convert hugetlb_fault() to use struct vm_fault
-To: Oscar Salvador <osalvador@suse.de>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	akpm@linux-foundation.org, muchun.song@linux.dev, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 4, 2024 at 5:26=E2=80=AFAM Oscar Salvador <osalvador@suse.de> w=
-rote:
->
-> On Mon, Apr 01, 2024 at 01:26:49PM -0700, Vishal Moola (Oracle) wrote:
-> > Now that hugetlb_fault() has a vm_fault available for fault tracking, u=
-se
-> > it throughout. This cleans up the code by removing 2 variables, and
-> > prepares hugetlb_fault() to take in a struct vm_fault argument.
-> >
-> > Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
->
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
->
-> A question below:
->
-> >  mm/hugetlb.c | 84 +++++++++++++++++++++++++---------------------------
-> >  1 file changed, 41 insertions(+), 43 deletions(-)
-> >
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 8267e221ca5d..360b82374a89 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> ...
-> >       /*
-> > -      * entry could be a migration/hwpoison entry at this point, so th=
-is
-> > -      * check prevents the kernel from going below assuming that we ha=
-ve
-> > -      * an active hugepage in pagecache. This goto expects the 2nd pag=
-e
-> > -      * fault, and is_hugetlb_entry_(migration|hwpoisoned) check will
-> > -      * properly handle it.
-> > +      * vmf.orig_pte could be a migration/hwpoison vmf.orig_pte at thi=
-s
->
-> "vmf.orig_pte could be a migration/hwpoison entry at ..."
->
-> > -     entry =3D pte_mkyoung(entry);
-> > -     if (huge_ptep_set_access_flags(vma, haddr, ptep, entry,
-> > +     vmf.orig_pte =3D pte_mkyoung(vmf.orig_pte);
-> > +     if (huge_ptep_set_access_flags(vma, vmf.address, vmf.pte, vmf.ori=
-g_pte,
-> >                                               flags & FAULT_FLAG_WRITE)=
-)
->
-> Would it make sense to teach huge_ptep_set_access_flags/set_huge_pte_at()=
- to use
-> vm_fault struct as well? All info we are passing is stored there.
-> Maybe it is not worth the trouble though, just asking.
+Use DEFINE_SHOW_STORE_ATTRIBUTE() helper for read-write file to reduce some
+duplicated code.
 
-Yeah, it makes sense. There are actually many function calls in the
-hugetlb_fault() and
-__handle_mm_fault() pathways that could make use of vm_fault to clean
-up the stack.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pinctrl/pinmux.c | 26 +++++++++-----------------
+ 1 file changed, 9 insertions(+), 17 deletions(-)
 
-It's not particularly complicated either, aside from reorganizing some
-variables for every
-implementation of each function. I'm not really sure if it's worth
-dedicated effort
-and churn though (at least I'm not focused on that for now).
+diff --git a/drivers/pinctrl/pinmux.c b/drivers/pinctrl/pinmux.c
+index d924207d629b..addba55334d9 100644
+--- a/drivers/pinctrl/pinmux.c
++++ b/drivers/pinctrl/pinmux.c
+@@ -578,6 +578,7 @@ static int pinmux_functions_show(struct seq_file *s, void *what)
+ 
+ 	return 0;
+ }
++DEFINE_SHOW_ATTRIBUTE(pinmux_functions);
+ 
+ static int pinmux_pins_show(struct seq_file *s, void *what)
+ {
+@@ -650,6 +651,7 @@ static int pinmux_pins_show(struct seq_file *s, void *what)
+ 
+ 	return 0;
+ }
++DEFINE_SHOW_ATTRIBUTE(pinmux_pins);
+ 
+ void pinmux_show_map(struct seq_file *s, const struct pinctrl_map *map)
+ {
+@@ -672,10 +674,12 @@ void pinmux_show_setting(struct seq_file *s,
+ 		   setting->data.mux.func);
+ }
+ 
+-DEFINE_SHOW_ATTRIBUTE(pinmux_functions);
+-DEFINE_SHOW_ATTRIBUTE(pinmux_pins);
++static int pinmux_select_show(struct seq_file *s, void *unused)
++{
++	return -EPERM;
++}
+ 
+-static ssize_t pinmux_select(struct file *file, const char __user *user_buf,
++static ssize_t pinmux_select_write(struct file *file, const char __user *user_buf,
+ 				   size_t len, loff_t *ppos)
+ {
+ 	struct seq_file *sfile = file->private_data;
+@@ -749,19 +753,7 @@ static ssize_t pinmux_select(struct file *file, const char __user *user_buf,
+ 
+ 	return ret;
+ }
+-
+-static int pinmux_select_open(struct inode *inode, struct file *file)
+-{
+-	return single_open(file, NULL, inode->i_private);
+-}
+-
+-static const struct file_operations pinmux_select_ops = {
+-	.owner = THIS_MODULE,
+-	.open = pinmux_select_open,
+-	.write = pinmux_select,
+-	.llseek = no_llseek,
+-	.release = single_release,
+-};
++DEFINE_SHOW_STORE_ATTRIBUTE(pinmux_select);
+ 
+ void pinmux_init_device_debugfs(struct dentry *devroot,
+ 			 struct pinctrl_dev *pctldev)
+@@ -771,7 +763,7 @@ void pinmux_init_device_debugfs(struct dentry *devroot,
+ 	debugfs_create_file("pinmux-pins", 0444,
+ 			    devroot, pctldev, &pinmux_pins_fops);
+ 	debugfs_create_file("pinmux-select", 0200,
+-			    devroot, pctldev, &pinmux_select_ops);
++			    devroot, pctldev, &pinmux_select_fops);
+ }
+ 
+ #endif /* CONFIG_DEBUG_FS */
+-- 
+2.43.0.rc1.1.gbec44491f096
+
 
