@@ -1,80 +1,59 @@
-Return-Path: <linux-kernel+bounces-131835-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131829-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 972D7898C53
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:39:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5939898C46
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:37:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C86071C2083E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:39:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2EBBAB2A7E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:37:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A42B11311B1;
-	Thu,  4 Apr 2024 16:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 300871F947;
+	Thu,  4 Apr 2024 16:37:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hOLd7dXM"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HBL6v53J"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 671D3130E25
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:37:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7037C1862F;
+	Thu,  4 Apr 2024 16:37:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712248656; cv=none; b=MxFbqfBnEkVsPzfCuFwkxauFYhqgGw4WJ5nXKS7d/lYFRlzHGMYIYcDxyVhqPVpDsjmgyPhVUyzBFXasddgnzf8DQtaI80mH7KLb2xdX5l4v3Q1z8qUS8x8HCcTzMwokPr9GHYpZmLmJZYYhp9cEVM7DmZpGwSovMyGNDoG+zsE=
+	t=1712248631; cv=none; b=t1RVzoG0KmYYWb2mJZD+GSIpf93Yi18eLwtYTSiBNBrIyg2NYd1XAqv1HvWyTmLuh6KlXtfJfPsCFtRUP0cYmxrHdomkr+KE0/DSfLGxn/o3nnYuePfNofWwoL8bSbP9poUQ3KLUkqWmb4uIcPO42gLeU9+1H4/4HfVJosBzANI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712248656; c=relaxed/simple;
-	bh=MRKvUOhgbx1JCPqRkZYfqZCtresFIov/9ISiCIQgDR4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mrsPUev0b5vBHuscjtfy/RXMbS5VHO+IjWN0IfI04onTWiRK5wfAPdotUFjQL9jzL74qFj6rUr0uTRHwyvIplilQ89rAJbYSm+n5z3FRM4O3akdyqPHYbzmpmSHI2IWhFUWyXrJs1krlqXOfJC7lkdlHf2hPdIPa78IvZl1KVrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hOLd7dXM; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712248654;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Q3q+pZ5P34ghakudMZLyDnJaIa/cVUQD0kuqVhWGHj8=;
-	b=hOLd7dXMAJrsahgszPN4y+MZdG3OJiuTEYEfv0dy5vijSCZkTdkS2Ech7sTmuBp62tLOte
-	xwCUGKVbiXjEhlRDph9VDaEaH5Ic3BdPyknjQXUrVPbyqPdrrqa/u8wobC9BL2p0JuIdpU
-	GtJaT7Faly/Q1JY8n0FImaHndWkfJeM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-383-iKIcEnTlP7OdF8dgEB13LQ-1; Thu, 04 Apr 2024 12:37:30 -0400
-X-MC-Unique: iKIcEnTlP7OdF8dgEB13LQ-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9AC5E88D016;
-	Thu,  4 Apr 2024 16:37:29 +0000 (UTC)
-Received: from t14s.fritz.box (unknown [10.39.192.101])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 0804E3C24;
-	Thu,  4 Apr 2024 16:37:25 +0000 (UTC)
-From: David Hildenbrand <david@redhat.com>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	linux-s390@vger.kernel.org,
-	kvm@vger.kernel.org,
-	David Hildenbrand <david@redhat.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Thomas Huth <thuth@redhat.com>
-Subject: [PATCH v1 5/5] s390/hugetlb: convert PG_arch_1 code to work on folio->flags
-Date: Thu,  4 Apr 2024 18:36:42 +0200
-Message-ID: <20240404163642.1125529-6-david@redhat.com>
-In-Reply-To: <20240404163642.1125529-1-david@redhat.com>
-References: <20240404163642.1125529-1-david@redhat.com>
+	s=arc-20240116; t=1712248631; c=relaxed/simple;
+	bh=S3DGuEYy5rg3RARDW98L/c2gSalXBmDUZgtrgI3deSo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iyzdYgGwEOpe5cvFW/HPYKMZ1d1AIZAEw+axIp9HoEEk1PjP2e5Wby980Ccc16cdgcoxTMSAah3LeozeKZdvzewYdelAmnl8OP4pZyxjVjiq5ew14aeObS6kOY7mAIcX97cx8+8nlmuJd/RxHYBUAuJDQPFzw2YZ5sy8VNazlkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HBL6v53J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3502C433F1;
+	Thu,  4 Apr 2024 16:37:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712248630;
+	bh=S3DGuEYy5rg3RARDW98L/c2gSalXBmDUZgtrgI3deSo=;
+	h=From:To:Cc:Subject:Date:From;
+	b=HBL6v53J/YooQATusMc6w3NQV5riqeQkRaExLnqVTohg8ZW0Xfzf5YgruEA13tNrv
+	 wUO2iYUAjsfOdUVfwhT+8nLz7lY/3pYpmWO/cW1Bcnydfdo75seyOmDkeFp5ldpM9I
+	 OnKXYyrqoxjrZ92expqAHuLP5glkeLSA9zwVY9UoUggSOyuVHxEHcIj+MUxknBNpOi
+	 URxIAmCy9WrnUtlgsLCTc1gZMctLX8mOgmE49Z7j4q0eShWxCYJYMy2+Kp71/IpnJY
+	 FOK534QpFKMFTp4664E0xjlNPs5oNgYUwprwwosoQRMRDGxJkZXde5Q5iCWPSYK3ux
+	 LeCL077qNZG5g==
+From: Arnd Bergmann <arnd@kernel.org>
+To: netdev@vger.kernel.org
+Cc: Arnd Bergmann <arnd@arndb.de>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Charlie Jenkins <charlie@rivosinc.com>,
+	Noah Goldstein <goldstein.w.n@gmail.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] lib: checksum: hide unused expected_csum_ipv6_magic[]
+Date: Thu,  4 Apr 2024 18:36:45 +0200
+Message-Id: <20240404163702.241706-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,73 +61,58 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-Let's make it clearer that we are always working on folio flags and
-never page flags of tail pages.
+From: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: David Hildenbrand <david@redhat.com>
+When CONFIG_NET is disabled, an extra warning shows up for this
+unused variable:
+
+lib/checksum_kunit.c:218:18: error: 'expected_csum_ipv6_magic' defined but not used [-Werror=unused-const-variable=]
+
+Replace the #ifdef with an IS_ENABLED() check that makes the compiler's
+dead-code-elimination take care of the link failure.
+
+Fixes: f24a70106dc1 ("lib: checksum: Fix build with CONFIG_NET=n")
+Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+Acked-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/s390/mm/gmap.c        | 4 ++--
- arch/s390/mm/hugetlbpage.c | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+resending v2 to netdev
 
-diff --git a/arch/s390/mm/gmap.c b/arch/s390/mm/gmap.c
-index 9233b0acac89..ca31f2143bc0 100644
---- a/arch/s390/mm/gmap.c
-+++ b/arch/s390/mm/gmap.c
-@@ -2731,7 +2731,7 @@ static int __s390_enable_skey_hugetlb(pte_t *pte, unsigned long addr,
+ lib/checksum_kunit.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/lib/checksum_kunit.c b/lib/checksum_kunit.c
+index bf70850035c7..404dba36bae3 100644
+--- a/lib/checksum_kunit.c
++++ b/lib/checksum_kunit.c
+@@ -594,13 +594,15 @@ static void test_ip_fast_csum(struct kunit *test)
+ 
+ static void test_csum_ipv6_magic(struct kunit *test)
  {
- 	pmd_t *pmd = (pmd_t *)pte;
- 	unsigned long start, end;
--	struct page *page = pmd_page(*pmd);
-+	struct folio *folio = pmd_folio(*pmd);
+-#if defined(CONFIG_NET)
+ 	const struct in6_addr *saddr;
+ 	const struct in6_addr *daddr;
+ 	unsigned int len;
+ 	unsigned char proto;
+ 	__wsum csum;
  
- 	/*
- 	 * The write check makes sure we do not set a key on shared
-@@ -2746,7 +2746,7 @@ static int __s390_enable_skey_hugetlb(pte_t *pte, unsigned long addr,
- 	start = pmd_val(*pmd) & HPAGE_MASK;
- 	end = start + HPAGE_SIZE - 1;
- 	__storage_key_init_range(start, end);
--	set_bit(PG_arch_1, &page->flags);
-+	set_bit(PG_arch_1, &folio->flags);
- 	cond_resched();
- 	return 0;
- }
-diff --git a/arch/s390/mm/hugetlbpage.c b/arch/s390/mm/hugetlbpage.c
-index e1e63dc1b23d..21ed6ac5f1c5 100644
---- a/arch/s390/mm/hugetlbpage.c
-+++ b/arch/s390/mm/hugetlbpage.c
-@@ -121,7 +121,7 @@ static inline pte_t __rste_to_pte(unsigned long rste)
- 
- static void clear_huge_pte_skeys(struct mm_struct *mm, unsigned long rste)
- {
--	struct page *page;
-+	struct folio *folio;
- 	unsigned long size, paddr;
- 
- 	if (!mm_uses_skeys(mm) ||
-@@ -129,16 +129,16 @@ static void clear_huge_pte_skeys(struct mm_struct *mm, unsigned long rste)
- 		return;
- 
- 	if ((rste & _REGION_ENTRY_TYPE_MASK) == _REGION_ENTRY_TYPE_R3) {
--		page = pud_page(__pud(rste));
-+		folio = page_folio(pud_page(__pud(rste)));
- 		size = PUD_SIZE;
- 		paddr = rste & PUD_MASK;
- 	} else {
--		page = pmd_page(__pmd(rste));
-+		folio = pmd_folio(__pmd(rste));
- 		size = PMD_SIZE;
- 		paddr = rste & PMD_MASK;
++	if (!IS_ENABLED(CONFIG_NET))
++		return;
++
+ 	const int daddr_offset = sizeof(struct in6_addr);
+ 	const int len_offset = sizeof(struct in6_addr) + sizeof(struct in6_addr);
+ 	const int proto_offset = sizeof(struct in6_addr) + sizeof(struct in6_addr) +
+@@ -618,7 +620,6 @@ static void test_csum_ipv6_magic(struct kunit *test)
+ 		CHECK_EQ(to_sum16(expected_csum_ipv6_magic[i]),
+ 			 csum_ipv6_magic(saddr, daddr, len, proto, csum));
  	}
- 
--	if (!test_and_set_bit(PG_arch_1, &page->flags))
-+	if (!test_and_set_bit(PG_arch_1, &folio->flags))
- 		__storage_key_init_range(paddr, paddr + size - 1);
+-#endif /* !CONFIG_NET */
  }
  
+ static struct kunit_case __refdata checksum_test_cases[] = {
 -- 
-2.44.0
+2.39.2
 
 
