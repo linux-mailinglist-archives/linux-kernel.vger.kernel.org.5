@@ -1,216 +1,198 @@
-Return-Path: <linux-kernel+bounces-130951-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D623898103
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:30:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A042898107
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:36:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A8281F225DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:30:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD82E1F244E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:36:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2FF745038;
-	Thu,  4 Apr 2024 05:30:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9636245978;
+	Thu,  4 Apr 2024 05:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bSqC/7Wo"
-Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PCUEluys"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 427E520330
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 05:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5AE01B810
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 05:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712208623; cv=none; b=hgoxS028kOi5IoRSpxpmQKGZnT8FLwFcIaVa+pzAwfaAfm2xxrMyilFiGxRsDBNNmUjlu6kOD/VujqM+HGEalq7nvMV+pljvOV2tGI1CpqF7gKI2LQsICs9VvckAk3EuHwuKMAZT1V+AbBU9L5tfzezvn9xhubVQ4VNIqysikeM=
+	t=1712208948; cv=none; b=rgZQuesVTAVqPL7F3QwpyQXCk+H+wArA3cFXsYP4PsYWFjQEsxDd3YrEkHERSsvSpXPXH+kSoYBUuztcpkVHzsohx0DgRWZ17W4R+Hr399f59iLutSF5+01f8FfLOzIN1HFAd5Dysb1f6VdIIXxwcWpbuochMdkuOxXvLaNK6kU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712208623; c=relaxed/simple;
-	bh=hrT6CSkkEiHpCL2254tYrBO7lscNQ5B7mlo/PBHS4j0=;
+	s=arc-20240116; t=1712208948; c=relaxed/simple;
+	bh=Ym38qLEOUNfy/4hL6ENnTMzg8xPqYlCnX/Fr3RLE/U8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XdWyuv6kr4W55naWZY7AfMFpZNCL9l5uSqv1j9KTwc9XSCFcZW8t5QKGEY48LPFz3nbtXrV142Ax2v3TkhjbhntFd95iSfte86kW0BQUBouk8oKeOChyy0Y7G+MFsagXBLqw/S7mlyjCC4GJg2UVsD9LKja2vvDEVOpoKwNpmyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bSqC/7Wo; arc=none smtp.client-ip=209.85.219.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dd10ebcd702so716165276.2
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 22:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712208619; x=1712813419; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dyCeaWOBhvl6G+/jJPj4WdMHHOTtXZ5RKep0At0rnzE=;
-        b=bSqC/7WoEKjeLBagHHQRVLrCAnZqnGOYuY3dE1kpze4f+wTIVMtf96YNg6Fkw9kjVt
-         lvw32mLtESFM+qvHkD9TO7Mup9cr3vyq38TlZ7brIrQdrmkz2e3cquAXSZHXHAJvpjxp
-         0E+8SG6mfhwYWUiRvzB26GguW8GRMVEy6ycgCI9DP6nCvO2T35UF/7Uele5Pn7aMhDJ8
-         f3Bud8+uC5IjpV1uns2GOt3U8SiuQ/8917g065Bb+xsQIlRJAsXkEuCAKmVmTZbwT55f
-         r94s4Eu5+AqmTaJmHZFEVuHYqlZODvif85p4U8mlIDBSDxVfgIqYlhdc6MLmcgC08h5M
-         evAQ==
+	 To:Cc:Content-Type; b=BwEetIPl+IHOfX8IVPisfJ/Nh5YKReGrdCI54+wpKyPkmX3A4eSw7p4EyZ5XyPDh4BdsN/3qladi4EpetoVKC6ZFL8NaPkDFZP+gNpuhByCPOrYOBRCr2+4v/Yc6rZ9FO/pm51vCOup/vFK40Z22OZvcAgqD/aMtXkyBWFtgpKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PCUEluys; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712208945;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gaCNfh5JQ71P8XHmMhbBbFyQnfQUNQ6Qvksh5dYu/Jg=;
+	b=PCUEluys+PKa7j0+pXlF6DoGW6oPFqo3PAOuikK8RdV1cNCE2gKbhPUsRANUaJGJfPKExS
+	DtRJ2aa9gBwSLEXGtf37fsQMipCqi3FSjzXS9jXaCEu6s6ZudDRE+DOoidlbyrufrPK6vr
+	RHURDSH/VnHJ8SOKABgr8JmvIKGFPrs=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-163-m5BdewYtMHmBz89sfdCo_g-1; Thu, 04 Apr 2024 01:35:44 -0400
+X-MC-Unique: m5BdewYtMHmBz89sfdCo_g-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a450265c7b6so27421266b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 22:35:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712208619; x=1712813419;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dyCeaWOBhvl6G+/jJPj4WdMHHOTtXZ5RKep0At0rnzE=;
-        b=pY6zapi1P2yVy+Zc0/X1DJhd7zUJfLWWHxkRZhizDXuNz1Q/UMDmgV8Bi1Xs5kv9Dt
-         JPfFmbfDEBt8w2AW+fb3J7eF5BuhmO+KDYCLvpbjLG8WG4QixvfwOvkCtWsdMLnXXkmk
-         PCRU7Hkkp0354FWq/7dKsxd+NtXmjY2Ng0KqI8fDQBDADwAo8ODBvO3wLAkwsCtAj3t+
-         ybnfnKbr1SatGt7ZJHVo2Rac7WsfRjQjV3dLXn6fYeBsnyJWW6EQ32qiXnZSchek229L
-         QljNU3VdffMSZXCol5Ryu9zQz/RKabiOs2BHRGRY9Bq7pbnUfLgYVX4an5hbLfo8jVnK
-         rVmw==
-X-Forwarded-Encrypted: i=1; AJvYcCX1ZhbuGZeSr+lqn4jPbMInNw5t+M1QveZwzqLdbgnd5VKhjgJzClqnktqQwMdwIhim0xtUluZ+dPy2r9WGr/qRH2JIxuOd+Hm1zxRY
-X-Gm-Message-State: AOJu0YxNOx0aQni/U/Ny720jWF8ZRwxTwzTu0OYbMDgGtA+HAlAjyxk5
-	3Fgn8YqBC11FYjzGFwaSis/T2UdC5xTq4CJcyhOBTSclzq1IcoitTxM9RShzK+q4TXHZqKe5Ohn
-	9nfOwi0XEdTf/BUWxszAGcWsosfwJzdH29ccImg==
-X-Google-Smtp-Source: AGHT+IGKRxJEtdCBGlcL3OcZ4OT75D2VZtdOqbw13TdwBYkQp+Ruc2ZWNb86Z/W+QS4HrKFAfGGKYy4zaXWCiIsdQH4=
-X-Received: by 2002:a25:5f45:0:b0:ddd:696a:8656 with SMTP id
- h5-20020a255f45000000b00ddd696a8656mr1475611ybm.41.1712208619210; Wed, 03 Apr
- 2024 22:30:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712208943; x=1712813743;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gaCNfh5JQ71P8XHmMhbBbFyQnfQUNQ6Qvksh5dYu/Jg=;
+        b=MqQjAPJB7baOSNOdGmefxKNJk1Hfg4SMBxJ6ONttdGS/LwST30iBBhhf5bJwtsI1fq
+         xWJ7/EaiZmfl3el1gV6xkngarC+4H4LPud7gvLjcW1ltxzTlpXGtoPAaM8ptx6XpP7u4
+         P5Elg4cUdVxdz4LmjOBbvXUeIKi4nzftJ9S+cM0zftaSGY2EJ9G6roW9AeFEEpqYiyut
+         yCrLa1GkF9j3WJVFzg2vCu+n0iJvkt0DKvDsVHah+6JaC+Sy1v/Qwlmv+cBL2004wqnr
+         alc3cPQusmcl86gHlGSicg7o9UszgLa3XvvN5DS/+w5ifaJwNWX6OoPh2mXEK0J8hoiS
+         RrXg==
+X-Forwarded-Encrypted: i=1; AJvYcCV7Iuly9PTuTKU0v989evbUSbMDFQg9TZJwH49BDysUaN0lCZX31ZKUDAqEdKi8VsXjcfWqZNrwn6tYTprEcu977w1AW0D/yvN42RfB
+X-Gm-Message-State: AOJu0YwMazmLupuKlR99Ec47y/OTrjSvK3Q8z/GTNIeCyDAU4tqq5Csz
+	SPtYVt/v5ucyxtt871ojS6/qO/o9qDlB0BDktUz2/VA4yy2dYvwjUikYr7HKhtDmoagHpEScdvX
+	S1CbskClKif7MB6t6hc7KIl6+oNLnfK0ehaAYdVftApNcIWhi5annWtF4cafy8nBS1iKueeZ4iz
+	AAkfvciGUQHk24VccnvASABYoa34qtMQlRMS3r
+X-Received: by 2002:a17:906:3e50:b0:a4e:9591:c2dd with SMTP id t16-20020a1709063e5000b00a4e9591c2ddmr725278eji.39.1712208942843;
+        Wed, 03 Apr 2024 22:35:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH6977Prz4EA27qaIn9ShWtc7ls7nUld0dGYjMeBaoZgL/dkR13B3ZOUXg8GK3+bvqSwQUifVVp85zJvDVRczk=
+X-Received: by 2002:a17:906:3e50:b0:a4e:9591:c2dd with SMTP id
+ t16-20020a1709063e5000b00a4e9591c2ddmr725266eji.39.1712208942439; Wed, 03 Apr
+ 2024 22:35:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321092529.13362-1-quic_jkona@quicinc.com>
- <20240321092529.13362-7-quic_jkona@quicinc.com> <CAA8EJppHGS+W-aiXvJ2cE=jCbua8Y0Q+zv_QTs+C9V5+Y1vuZg@mail.gmail.com>
- <008d574f-9c9e-48c6-b64e-89fb469cbde4@quicinc.com> <b3464321-0c52-4c41-9198-e9e7b16aa419@quicinc.com>
- <CAA8EJpqDwCVAjDphnC-HdfseMJ-xd8VVxb5+9UcGEcKLcn-heg@mail.gmail.com> <fba2474e-31a6-4fef-acf9-7069933584c8@quicinc.com>
-In-Reply-To: <fba2474e-31a6-4fef-acf9-7069933584c8@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 4 Apr 2024 08:30:07 +0300
-Message-ID: <CAA8EJprfaALkQe-wUrBow6B1A66ro0AoVpfnQJLXgqFmL8isNQ@mail.gmail.com>
-Subject: Re: [PATCH V2 RESEND 6/6] arm64: dts: qcom: sm8650: Add video and
- camera clock controllers
-To: Jagadeesh Kona <quic_jkona@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, linux-arm-msm@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>, 
-	Satya Priya Kakitapalli <quic_skakitap@quicinc.com>, Ajit Pandey <quic_ajipan@quicinc.com>, 
-	Imran Shaik <quic_imrashai@quicinc.com>
+References: <20240329093832.140690-1-lulu@redhat.com> <20240329054845-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240329054845-mutt-send-email-mst@kernel.org>
+From: Cindy Lu <lulu@redhat.com>
+Date: Thu, 4 Apr 2024 13:35:02 +0800
+Message-ID: <CACLfguW5GxYLtgL-8itH6b9re25bGsorKBWwDW9z5kBucSPLVg@mail.gmail.com>
+Subject: Re: [PATCH v2] Documentation: Add reconnect process for VDUSE
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: jasowang@redhat.com, virtualization@lists.linux-foundation.org, 
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 4 Apr 2024 at 08:13, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+On Fri, Mar 29, 2024 at 5:52=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
+ wrote:
 >
->
->
-> On 4/3/2024 9:24 PM, Dmitry Baryshkov wrote:
-> > On Wed, 3 Apr 2024 at 10:16, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
-> >>
-> >>
-> >>
-> >> On 3/25/2024 11:38 AM, Jagadeesh Kona wrote:
-> >>>
-> >>>
-> >>> On 3/21/2024 6:43 PM, Dmitry Baryshkov wrote:
-> >>>> On Thu, 21 Mar 2024 at 11:27, Jagadeesh Kona <quic_jkona@quicinc.com>
-> >>>> wrote:
-> >>>>>
-> >>>>> Add device nodes for video and camera clock controllers on Qualcomm
-> >>>>> SM8650 platform.
-> >>>>>
-> >>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
-> >>>>> ---
-> >>>>>    arch/arm64/boot/dts/qcom/sm8650.dtsi | 28 ++++++++++++++++++++++++++++
-> >>>>>    1 file changed, 28 insertions(+)
-> >>>>>
-> >>>>> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> >>>>> b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> >>>>> index 32c0a7b9aded..d862aa6be824 100644
-> >>>>> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> >>>>> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> >>>>> @@ -4,6 +4,8 @@
-> >>>>>     */
-> >>>>>
-> >>>>>    #include <dt-bindings/clock/qcom,rpmh.h>
-> >>>>> +#include <dt-bindings/clock/qcom,sm8450-videocc.h>
-> >>>>> +#include <dt-bindings/clock/qcom,sm8650-camcc.h>
-> >>>>>    #include <dt-bindings/clock/qcom,sm8650-dispcc.h>
-> >>>>>    #include <dt-bindings/clock/qcom,sm8650-gcc.h>
-> >>>>>    #include <dt-bindings/clock/qcom,sm8650-gpucc.h>
-> >>>>> @@ -3110,6 +3112,32 @@ opp-202000000 {
-> >>>>>                           };
-> >>>>>                   };
-> >>>>>
-> >>>>> +               videocc: clock-controller@aaf0000 {
-> >>>>> +                       compatible = "qcom,sm8650-videocc";
-> >>>>> +                       reg = <0 0x0aaf0000 0 0x10000>;
-> >>>>> +                       clocks = <&bi_tcxo_div2>,
-> >>>>> +                                <&gcc GCC_VIDEO_AHB_CLK>;
-> >>>>> +                       power-domains = <&rpmhpd RPMHPD_MMCX>;
-> >>>>> +                       required-opps = <&rpmhpd_opp_low_svs>;
-> >>>>
-> >>>> The required-opps should no longer be necessary.
-> >>>>
-> >>>
-> >>> Sure, will check and remove this if not required.
-> >>
-> >>
-> >> I checked further on this and without required-opps, if there is no vote
-> >> on the power-domain & its peer from any other consumers, when runtime
-> >> get is called on device, it enables the power domain just at the minimum
-> >> non-zero level. But in some cases, the minimum non-zero level of
-> >> power-domain could be just retention and is not sufficient for clock
-> >> controller to operate, hence required-opps property is needed to specify
-> >> the minimum level required on power-domain for this clock controller.
+> On Fri, Mar 29, 2024 at 05:38:25PM +0800, Cindy Lu wrote:
+> > Add a document explaining the reconnect process, including what the
+> > Userspace App needs to do and how it works with the kernel.
 > >
-> > In which cases? If it ends up with the retention vote, it is a bug
-> > which must be fixed.
+> > Signed-off-by: Cindy Lu <lulu@redhat.com>
+> > ---
+> >  Documentation/userspace-api/vduse.rst | 41 +++++++++++++++++++++++++++
+> >  1 file changed, 41 insertions(+)
 > >
+> > diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/user=
+space-api/vduse.rst
+> > index bdb880e01132..f903aed714d1 100644
+> > --- a/Documentation/userspace-api/vduse.rst
+> > +++ b/Documentation/userspace-api/vduse.rst
+> > @@ -231,3 +231,44 @@ able to start the dataplane processing as follows:
+> >     after the used ring is filled.
+> >
+> >  For more details on the uAPI, please see include/uapi/linux/vduse.h.
+> > +
+> > +HOW VDUSE devices reconnectoin works
 >
-> The minimum non-zero level(configured from bootloaders) of MMCX is
-> retention on few chipsets but it can vary across the chipsets. Hence to
-> be on safer side from our end, it is good to have required-opps in DT to
-> specify the minimum level required for this clock controller.
+> typo
+>
+Really sorry for this, I will send a new version
 
-We are discussing sm8650, not some abstract chipset. Does it list
-retention or low_svs as a minimal level for MMCX?
+Thanks
+Cindy
+> > +------------------------------------
+> > +1. What is reconnection?
+> > +
+> > +   When the userspace application loads, it should establish a connect=
+ion
+> > +   to the vduse kernel device. Sometimes,the userspace application exi=
+sts,
+> > +   and we want to support its restart and connect to the kernel device=
+ again
+> > +
+> > +2. How can I support reconnection in a userspace application?
+> > +
+> > +2.1 During initialization, the userspace application should first veri=
+fy the
+> > +    existence of the device "/dev/vduse/vduse_name".
+> > +    If it doesn't exist, it means this is the first-time for connectio=
+n. goto step 2.2
+> > +    If it exists, it means this is a reconnection, and we should goto =
+step 2.3
+> > +
+> > +2.2 Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
+> > +    /dev/vduse/control.
+> > +    When ioctl(VDUSE_CREATE_DEV) is called, kernel allocates memory fo=
+r
+> > +    the reconnect information. The total memory size is PAGE_SIZE*vq_m=
+umber.
+> > +
+> > +2.3 Check if the information is suitable for reconnect
+> > +    If this is reconnection :
+> > +    Before attempting to reconnect, The userspace application needs to=
+ use the
+> > +    ioctl(VDUSE_DEV_GET_CONFIG, VDUSE_DEV_GET_STATUS, VDUSE_DEV_GET_FE=
+ATURES...)
+> > +    to get the information from kernel.
+> > +    Please review the information and confirm if it is suitable to rec=
+onnect.
+> > +
+> > +2.4 Userspace application needs to mmap the memory to userspace
+> > +    The userspace application requires mapping one page for every vq. =
+These pages
+> > +    should be used to save vq-related information during system runnin=
+g. Additionally,
+> > +    the application must define its own structure to store information=
+ for reconnection.
+> > +
+> > +2.5 Completed the initialization and running the application.
+> > +    While the application is running, it is important to store relevan=
+t information
+> > +    about reconnections in mapped pages. When calling the ioctl VDUSE_=
+VQ_GET_INFO to
+> > +    get vq information, it's necessary to check whether it's a reconne=
+ction. If it is
+> > +    a reconnection, the vq-related information must be get from the ma=
+pped pages.
+> > +
+>
+>
+> I don't get it. So this is just a way for the application to allocate
+> memory? Why do we need this new way to do it?
+> Why not just mmap a file anywhere at all?
+>
+We used to use tmpfs to save this reconnect information,
+but this will make the API not self contained, so we changed to using
+the kernel memory
+Thanks
+cindy
+
+
 
 >
-> Thanks,
-> Jagadeesh
+> > +2.6 When the Userspace application exits, it is necessary to unmap all=
+ the
+> > +    pages for reconnection
+> > --
+> > 2.43.0
 >
-> >>
-> >> Thanks,
-> >> Jagadeesh
-> >>
-> >>>
-> >>>>> +                       #clock-cells = <1>;
-> >>>>> +                       #reset-cells = <1>;
-> >>>>> +                       #power-domain-cells = <1>;
-> >>>>> +               };
-> >>>>> +
-> >>>>> +               camcc: clock-controller@ade0000 {
-> >>>>> +                       compatible = "qcom,sm8650-camcc";
-> >>>>> +                       reg = <0 0x0ade0000 0 0x20000>;
-> >>>>> +                       clocks = <&gcc GCC_CAMERA_AHB_CLK>,
-> >>>>> +                                <&bi_tcxo_div2>,
-> >>>>> +                                <&bi_tcxo_ao_div2>,
-> >>>>> +                                <&sleep_clk>;
-> >>>>> +                       power-domains = <&rpmhpd RPMHPD_MMCX>;
-> >>>>> +                       required-opps = <&rpmhpd_opp_low_svs>;
-> >>>>> +                       #clock-cells = <1>;
-> >>>>> +                       #reset-cells = <1>;
-> >>>>> +                       #power-domain-cells = <1>;
-> >>>>> +               };
-> >>>>> +
-> >>>>>                   mdss: display-subsystem@ae00000 {
-> >>>>>                           compatible = "qcom,sm8650-mdss";
-> >>>>>                           reg = <0 0x0ae00000 0 0x1000>;
-> >>>>> --
-> >>>>> 2.43.0
-> >>>>>
-> >>>>>
-> >>>>
-> >>>>
-> >
-> >
-> >
 
-
-
--- 
-With best wishes
-Dmitry
 
