@@ -1,155 +1,121 @@
-Return-Path: <linux-kernel+bounces-131535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58C0889892E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:50:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7374898934
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:51:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36B751C233CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:50:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0CD121C208D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67EB012838F;
-	Thu,  4 Apr 2024 13:50:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 507AE1292D5;
+	Thu,  4 Apr 2024 13:51:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hReaJz3I"
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="IaK6ZFAS"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927871272A3
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 13:50:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5FC12838F
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 13:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712238643; cv=none; b=pyJWMaN7Cik05bJO4wlan7D/0FuwI4rPcpUUn1NQx/hILTkCeyXEhtoR9cYFnidW76dVm7cjfnHltkcIywLrFK73tCyoItqUIGafBkIX1yc/mNOVKec5oHQ1LgAGBphWYTtP/F6BhQRdtl+82Osl+tbXWO0BWBniBY5OppDBFwA=
+	t=1712238699; cv=none; b=ly/oZf22gIexH0k2Z1OXRVzLSA/IW8iPgS/pVHAzw0jhInOQJS5M6cjryupe6PDLHqjXXWq0auOMBdy0DKZZHxr6yp6cHBrOaVMUVu316Wv7uCWw9K1LWV1gWpYdH7sH/3jW2YPYgvHUl7lUE8b9KUWuYMgS2D5pJZrsZiU1C38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712238643; c=relaxed/simple;
-	bh=KqqxVua2XB6zHyhn1+2zfjQiIcHbYKMmmBwmJbWoQJA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bwH6RRm1qwHMzOk+8AgR15+u6nRHyzSCqjv4kwcoS38VVpJddJvjEYhgf9X+EAmZexzAEti9Mi2LH+gV65KmXhKZoaW5MyEXEargU2y4TCXz4O7HUPO8fh1USMB9PZVq+L560vzPm0WGJ/oTvcS/2cf1pCSSoCF9QUiwYlrvaCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hReaJz3I; arc=none smtp.client-ip=209.85.218.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a4715991c32so157519966b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 06:50:40 -0700 (PDT)
+	s=arc-20240116; t=1712238699; c=relaxed/simple;
+	bh=1F5VA5YE599dOlO3zQ9ZskLhNBoOk9J98W5SFXY1QOs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=OWsBDtY85Y7F0w7/Q3O9Xu5Vu+b4kh9460rTAZXvTfqN5wyUT0rMwj+Ib1LBXw/LytJnfUN0wuf//NjFREtliBtEpqQk/vti+FQN2TOWikWYgmq9LmoNi7ERHFAniOguiygCAvP9OiMWXN0+qgU4MBRghyh992S6AlOGF2XJn7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=IaK6ZFAS; arc=none smtp.client-ip=209.85.160.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-432b5b3dad7so4801561cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 06:51:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712238639; x=1712843439; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wy9Rh6LBmA7tcbk/0dqTmgXZkDQEIYOcBM/x+sYrqp0=;
-        b=hReaJz3I8QvCJn3xWOfbQdvn1TtHB3F+IDIydmwPamBK1vkf1EPjbmblHoo0xpK8Rg
-         iPuTXmt2TCWz4L65lEycZogSl1dy4X2cZAG9TS5KhI0CzdeDOQh1nrO1i99SlsslPHfy
-         uAgrF1f8Ko1gz2G1WMQ8rLeOtABPkq5o+vgSezODxvTzEEd6XcJlWiJ58kVrg7GtKYfE
-         NbPyMU0o4ViI+bEeHDW/wHIO3j2Bov+DpTfTMwWmw5zK8Hd6eZeG1jAVhs6S+VIySY/Z
-         B1QpdGqESCCTwps8KpyN/x0zHwnwxSvVS5vrduy5JexgeA22t40z8bh3WyeSo8TxURMW
-         d7FA==
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1712238697; x=1712843497; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GEhrf+Xnwdm4P0BoHyd6IIElLQSsz5Bym9Fr83GNG8o=;
+        b=IaK6ZFASM9ZbNHLWy0px/hWReUW0WZm1twCBxdS176TODDQ1u5YzOsniRkQpFB+UZ+
+         TnCeAtf2+LVOUUhCwRXPg/iTd97A33Ijpc3fyJq7ThoswZFV5bds7Gv6fA9glPgYkfL1
+         PmH+jN3wPgQ2lnxXc7s5S1mf0WUiQmR5pPVEswt2ABYyEkIT8jIij5swa7pN9bWYpw6z
+         j1miCYsbdThniJc9xstU796pwQlScPJ3w35xsHU+xT2i5D9umW+iSG0t/T+tsNnHKf3W
+         34V4UaRO9ZbT9HrxPbNFhGNTxsZ7uMiTZyZbYPvvKdSoXRmCXEbPOHxo5cklub6HAIOZ
+         nxCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712238639; x=1712843439;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wy9Rh6LBmA7tcbk/0dqTmgXZkDQEIYOcBM/x+sYrqp0=;
-        b=LQUDPOhOnyRPmJR5qAfW/otl0DjhwRUGOhWBlr+eXG8B38LGtdTXr8wsRoZwVdS0jR
-         kE65JFsIhhWFXVVGusYxR8Spt5zXiR2YvaN0hlrGz4E7BcyEKCLmhTc06dBdfJcrPt6O
-         I8snBaejA3hUhs/5X6jZKRD5JQaeW+JZDTV5IGnyGvRnsFMAFfutczpLt32xmREBkeqa
-         XoXwLdOQl5MdbVB5i37LTJNCs6IM0MXfxxEP1WU+8edkQnRZ89WpAl0nO/PvN30GUUQ3
-         QjpxnsX/5YeI0Boeek7QgFvNcsYPE3JqL5Un1kAcAkWSyrvBAXZCyh2Dqloqmf+5dWFo
-         1eSw==
-X-Forwarded-Encrypted: i=1; AJvYcCWsPmGkdZAIy47Uydm3q+F19xSFQtCqeqLuRUBB2iDkKMlbpE1EJ3M/EQJrY0xW6YgBnAzR+roMg24tnmDaQpnPWfU0uCNXDOATduac
-X-Gm-Message-State: AOJu0YxIkb+rpciobKRuWmut4JENmeJtsUUwDZX4qhz8no+yzubz0zBg
-	upQB49aoMhBtq43r2EIDZ89ik1gm3zapkNzlVg9vqk6fpQyzSR6A9kRqdX7eAzg=
-X-Google-Smtp-Source: AGHT+IGsHa4m7uyjApuo7ZJLZVK7UD2R+d+rEsCVXA61+qKlw1C7SsfSvVvEbDIxGzuJgqvyPruHlw==
-X-Received: by 2002:a17:906:6d4f:b0:a51:8540:c671 with SMTP id a15-20020a1709066d4f00b00a518540c671mr1689560ejt.50.1712238638736;
-        Thu, 04 Apr 2024 06:50:38 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id w20-20020a170906d21400b00a4750705a07sm9083482ejz.190.2024.04.04.06.50.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 06:50:38 -0700 (PDT)
-Message-ID: <55584a36-f5cc-4a76-95dc-9aae4f95b864@linaro.org>
-Date: Thu, 4 Apr 2024 15:50:36 +0200
+        d=1e100.net; s=20230601; t=1712238697; x=1712843497;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=GEhrf+Xnwdm4P0BoHyd6IIElLQSsz5Bym9Fr83GNG8o=;
+        b=it/2z9FsPaBvKf6MU470do/fPOWBftyOUW41g98qlXE8zLloeQs3QSTQvynfKGcXjK
+         VijNUXIUZbNiEV38j/zrc9GlzZbBV0zthNvdW+Kt0QKPb01II36srwXX4PWGtBbffhBb
+         b5BG41utMhMJZnhpCdGWxFAt6rMzbgEuUAkA2neK521TMz8r8d2rWL7AL+UFxnLjcDUO
+         th/MgyqW1b+LLxWhtQecCRK1WbigxqOqV/vGXCDfDWuam2dxIl/iwQ5TfdJPXcyWcFul
+         ZyNm+cQyeH3VMMHBoUkoAE9kzc40B9kh+ZWOVUqlaKljBTPSclb7GwZYXq75k70iF2eD
+         CjNw==
+X-Forwarded-Encrypted: i=1; AJvYcCXXKIB4ik971ry+H0lMOAZri7yiFlLdl90SrMX9WOtactlN/yxHXeb/0+O5y1zhXqM8ShPPsdKp8o1tTn4Nd07ZSPB/qvy5fWc7dEsB
+X-Gm-Message-State: AOJu0YxOSW8Gtv0fZuGHp3zqv6sSsGEdtKouURvUGtiB9YPdiwVISEx5
+	5wyDcF9fJz77BUg7Bu5yawEB7EZTIArzCCFYEvKlHbR0gQBK1GhJ3bkl1J149dTR4a/ms3iJPrn
+	0W5RZYFqkkcKNgS2bL6bpjTJf4z+Zb9RW2QVyMA==
+X-Google-Smtp-Source: AGHT+IG34VfsrO/bFBQm1+tAdMAMjkEMbTIL7Igt83TuV9+7PUf7aasZynC6bg9Q2hezj4QPdzlhPGGLCOEcmSFudGM=
+X-Received: by 2002:a05:622a:20d:b0:431:8135:6fa9 with SMTP id
+ b13-20020a05622a020d00b0043181356fa9mr2490307qtx.61.1712238696692; Thu, 04
+ Apr 2024 06:51:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] arm64: dts: ti: k3-am62p: use eFuse MAC Address for
- CPSW3G Port 1
-To: Siddharth Vadapalli <s-vadapalli@ti.com>, nm@ti.com, vigneshr@ti.com,
- kristo@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, srk@ti.com
-References: <20240404124614.891416-1-s-vadapalli@ti.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240404124614.891416-1-s-vadapalli@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240222173942.1481394-1-pasha.tatashin@soleen.com> <20240404005803.GA102637@hyd1403.caveonetworks.com>
+In-Reply-To: <20240404005803.GA102637@hyd1403.caveonetworks.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Thu, 4 Apr 2024 09:50:59 -0400
+Message-ID: <CA+CK2bAiM_eC6k2EVL93uuOwB+hhV1WkDDK0YROo9-wAh=ju-w@mail.gmail.com>
+Subject: Re: [PATCH v5 00/11] IOMMU memory observability
+To: Linu Cherian <lcherian@marvell.com>
+Cc: akpm@linux-foundation.org, alim.akhtar@samsung.com, alyssa@rosenzweig.io, 
+	asahi@lists.linux.dev, baolu.lu@linux.intel.com, bhelgaas@google.com, 
+	cgroups@vger.kernel.org, corbet@lwn.net, david@redhat.com, 
+	dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
+	iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
+	joro@8bytes.org, krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+	linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+	linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+	mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
+	rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
+	suravee.suthikulpanit@amd.com, sven@svenpeter.dev, thierry.reding@gmail.com, 
+	tj@kernel.org, tomas.mudrunka@gmail.com, vdumpa@nvidia.com, wens@csie.org, 
+	will@kernel.org, yu-cheng.yu@intel.com, rientjes@google.com, 
+	bagasdotme@gmail.com, mkoutny@suse.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 04/04/2024 14:46, Siddharth Vadapalli wrote:
-> Add the "ethernet-mac-syscon" node within "wkup_conf" node corresponding to
-> the CTRLMMR_MAC_IDx registers within the CTRL_MMR space. Assign the
-> compatible "ti,am62p-cpsw-mac-efuse" to enable "syscon_regmap" operations
-> on these registers. The MAC Address programmed in the eFuse is accessible
-> through the CTRLMMR_MAC_IDx registers. The "ti,syscon-efuse" device-tree
-> property points to the CTRLMMR_MAC_IDx registers, allowing the CPSW driver
-> to fetch the MAC Address and assign it to the network interface associated
-> with CPSW3G MAC Port 1.
-> 
-> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> ---
-> 
+> > Description
+> > ----------------------------------------------------------------------
+> > IOMMU subsystem may contain state that is in gigabytes. Majority of that
+> > state is iommu page tables. Yet, there is currently, no way to observe
+> > how much memory is actually used by the iommu subsystem.
+> >
+> > This patch series solves this problem by adding both observability to
+> > all pages that are allocated by IOMMU, and also accountability, so
+> > admins can limit the amount if via cgroups.
+> >
+> > The system-wide observability is using /proc/meminfo:
+> > SecPageTables:    438176 kB
+> >
+> > Contains IOMMU and KVM memory.
+>
+> Can you please clarify what does KVM memory refers to here ?
+> Does it mean the VFIO map / virtio-iommu invoked ones for a guest VM?
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+This means that nested page tables that are managed by KVM, and device
+page tables that are managed by IOMMU are all accounted in
+SecPageTables (secondary page tables). The decision to account them
+both in one field of meminfo was made at LPC'23.
 
-Best regards,
-Krzysztof
-
+Pasha
 
