@@ -1,162 +1,177 @@
-Return-Path: <linux-kernel+bounces-131330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131340-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8742489865D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:48:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA96898678
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:51:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B759A1C211A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:48:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B9481C21226
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:51:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1E6883A09;
-	Thu,  4 Apr 2024 11:48:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="EMxuqA/C"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B28B6128816;
+	Thu,  4 Apr 2024 11:50:00 +0000 (UTC)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89F0982876;
-	Thu,  4 Apr 2024 11:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54E2A127B72;
+	Thu,  4 Apr 2024 11:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712231298; cv=none; b=u+wOFECmwBcpR468dEmMVoOhBPGDGZPLgSvU1nCCXO8280k78OhyDcibUY8n0e5b6YLbgGc6D19btO3mWkxnF/tCFhM3Kn5jphjzdDLSxDWx8fjY2iRUEOLq72CaeoJbRPnmnCrGjdrpcsqfqAxUvqmiomcSbiVQOViaRFo16is=
+	t=1712231400; cv=none; b=aoBhNA9PoYOxnPecrfWN9/k6TPWgA1xJEFV3y+Y3J3SfXrIX/M2eFwk6QJnN9qXPjTYMPmutnXepwCkyk4P9s8G98h+PLFVXi7up/2zbb9zkTpaMpDBlbpGE2rA7b1Iru3d3OSlr2rHXQ7bXGJN5MLzbloEvBZVShyWBpMDu/g4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712231298; c=relaxed/simple;
-	bh=X+2uugPuVrXC1l1UkYxfOwgJq2ar4xrcrs39UDAIhSQ=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=AtlOYboXCeT7c+fogq9RCA7SBYnMypDvZiLO+8Ro47oHikhEdTGNBcQitA+gQZIOnrCWwq3ftwwQ3wO2x7fqsaKvtQjlNHPmGPKlAYpVpfxJJyn9QDvQsNyqGEI3JLbdNTjmSE1IL38FQsvvThZ1rzFHOy2X0rEYNiV5rd6PVNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=EMxuqA/C; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712231293;
-	bh=X+2uugPuVrXC1l1UkYxfOwgJq2ar4xrcrs39UDAIhSQ=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=EMxuqA/CkRRKiGL1H3kwhSO7t636rfKNJSFagYNeGkQi30BSxSuudOK9sLwgDMZp0
-	 Fia08ny7dQml2JGL7l9z9aS/DIGbLZjzTEWFiv1phdhXd+AAx2TloQ+TuDEpGRbzvy
-	 mlxddAgHGqHi+Xy3YxPIYgPlE6Ujn25yvx9W5yzdYFRAaJ6f6frVKii5ugs+padpNk
-	 Jb2PKX1LccI2BIKtoOalTPb03IfZBJQVMXTbZ3XrgjDXv5STV72e7/0AvVZ3jlU7pK
-	 qhsbWWC3Ddy/368QXMnwwDOK634Le/UlmFEeOU2omFPnEWB8+6xteo81rmnmAkKq0P
-	 z6D62BJUak7RQ==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 82AAC378200D;
-	Thu,  4 Apr 2024 11:48:11 +0000 (UTC)
-Message-ID: <18b3976e-49a5-43d2-8d1b-bb87f2a312eb@collabora.com>
-Date: Thu, 4 Apr 2024 16:48:43 +0500
+	s=arc-20240116; t=1712231400; c=relaxed/simple;
+	bh=thNNGA+Buyv1A48P5cMpc4XXfCvRQSFmpwoRUX9PFQs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=IVTpi/k2eCN+f6iEbStCQOKN5McW9coZoBy6WDfiZh3L/V48TY1wtv8EFJt9ztr4gGAWrL+/8p3i5shhW8UvGOv+UNYTSxxFMHQD7qjG5hnnGPRpwrDOtxAS4vKCJtog2l4/z9N1ZCSyCYt5z8NY7vnPL4EW+h+63Pz0zuQA8rI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a4715991c32so135007566b.1;
+        Thu, 04 Apr 2024 04:49:57 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712231396; x=1712836196;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bGHHnAjzHXOHKZAHNwNt7Xm//rgfn0lSUB+nM5VysgU=;
+        b=YcxmQ4reZp7jXwxXR1PkRPCErNlfxUlWIoxseoAr2aTBpDtQ8yNdqu3lRE6qSNUyZ3
+         s2gcZpg06vVIO7hpgtMNAvGb4RYTYNuRafodvzRXaCOWVGVuOg+2XSXyp0QTfCG9Q/Xe
+         TwEUcImsJ63AWp5Gv1+jN3KOfXH2C/AS2FwKef3R6kbkMSl1eGC8yo2WbdmlBxW9L65y
+         wF681lOkA6ddQf/f7Fcsv6Xx3dLSI75VtF1qK8znjWqHYvtlVVliGDgi7TPZvtcEztf+
+         wYm6ldUn3zTDxEpG5f6cUcrQNAmNkLVhGfnm9205Iq1DfegGoeGFbfAMg736rSUIH1xA
+         BM9A==
+X-Forwarded-Encrypted: i=1; AJvYcCXm8r+URvSOLe9J78oeIT/YERlI8mBOLTI008KnwMQR1KebsfhMPoBAocc2LUdqCNG3tb5Pb4c8UdUYBAIaS3+EzwYhJWdV3q5Us3q1haPJEtnXkuwTxfGcnRpY46m4vHSRfw42Lfe0xStSrXVtc3ZRcEY6Lv0Ax0Vt
+X-Gm-Message-State: AOJu0Yw8jUigYHiGyKjiua2zg1cjU12Q0fxiN/EiRDtR0aZCQARiiPz4
+	shHTxC87cpT606DXt+aOVRchSFlIABuhRvYbVtNWQl06B7w028KB
+X-Google-Smtp-Source: AGHT+IE3t+BLSiVw4qYEsUV6AW+ru3gx9jWHG3rLtC0+vGDymiwEFCGXCLHQkfj2msACqNOeoyP0iw==
+X-Received: by 2002:a17:906:268b:b0:a4e:6414:5afd with SMTP id t11-20020a170906268b00b00a4e64145afdmr1390682ejc.52.1712231396634;
+        Thu, 04 Apr 2024 04:49:56 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-007.fbsv.net. [2a03:2880:30ff:7::face:b00c])
+        by smtp.gmail.com with ESMTPSA id wy11-20020a170906fe0b00b00a4e4a3e69acsm6635185ejb.71.2024.04.04.04.49.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 04:49:56 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: aleksander.lobakin@intel.com,
+	kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com,
+	elder@kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org,
+	nbd@nbd.name,
+	sean.wang@mediatek.com,
+	Mark-MC.Lee@mediatek.com,
+	lorenzo@kernel.org,
+	taras.chornyi@plvision.eu,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	John Fastabend <john.fastabend@gmail.com>
+Cc: quic_jjohnson@quicinc.com,
+	kvalo@kernel.org,
+	leon@kernel.org,
+	dennis.dalessandro@cornelisnetworks.com,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	bpf@vger.kernel.org
+Subject: [PATCH net-next v3 3/5] net: mediatek: mtk_eth_sock: allocate dummy net_device dynamically
+Date: Thu,  4 Apr 2024 04:48:43 -0700
+Message-ID: <20240404114854.2498663-4-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240404114854.2498663-1-leitao@debian.org>
+References: <20240404114854.2498663-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Nicolin Chen <nicolinc@nvidia.com>, kernel@collabora.com,
- iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org, Kevin Tian <kevin.tian@intel.com>,
- Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH] selftests: iommu: add config needed for iommufd_fail_nth
-To: Jason Gunthorpe <jgg@ziepe.ca>, Joao Martins <joao.m.martins@oracle.com>
-References: <20240325090048.1423908-1-usama.anjum@collabora.com>
- <31fcc276-acd6-4277-bd6c-4a871c7fb28a@collabora.com>
- <20240326150340.GE8419@ziepe.ca>
- <56cc8b9e-c1cf-4520-ba45-b1237e8b7b64@collabora.com>
- <20240327114958.GG8419@ziepe.ca>
- <51f493a9-08e7-44d8-ae4a-58b2994ea276@oracle.com>
- <f78b685d-a147-4b59-beb2-cde9d34ce22a@collabora.com>
- <e9cb60bf-5035-4fed-9b36-ca2edf048fe8@oracle.com>
- <20240327182050.GA1363414@ziepe.ca>
- <ccab9229-c0de-4c38-bb5c-7f32cbd7fa2b@collabora.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <ccab9229-c0de-4c38-bb5c-7f32cbd7fa2b@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 3/28/24 1:13 AM, Muhammad Usama Anjum wrote:
-> On 3/27/24 11:20 PM, Jason Gunthorpe wrote:
->> On Wed, Mar 27, 2024 at 06:09:37PM +0000, Joao Martins wrote:
->>> On 27/03/2024 17:49, Muhammad Usama Anjum wrote:
->>>> On 3/27/24 7:59 PM, Joao Martins wrote:
->>>>> On 27/03/2024 11:49, Jason Gunthorpe wrote:
->>>>>> On Wed, Mar 27, 2024 at 03:14:25PM +0500, Muhammad Usama Anjum wrote:
->>>>>>> On 3/26/24 8:03 PM, Jason Gunthorpe wrote:
->>>>>>>> On Tue, Mar 26, 2024 at 06:09:34PM +0500, Muhammad Usama Anjum wrote:
->>>>>>>>> Even after applying this config patch and following snippet (which doesn't
->>>>>>>>> terminate the program if mmap doesn't allocate exactly as the hint), I'm
->>>>>>>>> finding failed tests.
->>>>>>>>>
->>>>>>>>> @@ -1746,7 +1748,7 @@ FIXTURE_SETUP(iommufd_dirty_tracking)
->>>>>>>>>         assert((uintptr_t)self->buffer % HUGEPAGE_SIZE == 0);
->>>>>>>>>         vrc = mmap(self->buffer, variant->buffer_size, PROT_READ | PROT_WRITE,
->>>>>>>>>                    mmap_flags, -1, 0);
->>>>>>>>> -       assert(vrc == self->buffer);
->>>>>>>>> +       assert(vrc == self->buffer);// ???
->>>>>>>>>
->>>>>>>>> On x86:
->>>>>>>>> # Totals: pass:176 fail:4 xfail:0 xpass:0 skip:0 error:0
->>>>>>>>> On ARM64:
->>>>>>>>> # Totals: pass:166 fail:14 xfail:0 xpass:0 skip:0 error:0
->>>>>>>>>
->>>>>>>>> The log files are attached.
->>>>>>>>
->>>>>>>> You probably don't have enough transparent huge pages available to the process
->>>>>>>>
->>>>>>>>       echo 1024 > /proc/sys/vm/nr_hugepages
->>>>>>> After making huge pages available, the iommufd test always passed on x86.
->>>>>>> But there are still failures on arm64. I'm looking into the failures.
->>>>>>
->>>>>> Oh that is really strange. Joao? Nicolin?
->>>>>>
->>>>> Definitely strange, I'll have a look.
->>>>>
->>>>> So it set the expected number of dirty bits as that assert doesn't fail, but it
->>>>> is failing when we check that even bits are set but not odd ones. Like it's
->>>>> hasn't set those bits.
->>>>>
->>>>> For mock tests there should be no difference between x86 and ARM assuming the
->>>>> typical 4K page-size. Maybe this is 64k base pages in ARM? That's the only thing
->>>>> that I can think of that affected mock domain.
->>>> The config is attached. The defaults are being used i.e., 4k page.
->>>
->>> Looks like CONFIG_IOMMUFD_DRIVER is not defined :(
->>>
->>> Thus no bits are being set.
->>
->> Oh! 
->>
->> --- a/drivers/iommu/iommufd/Kconfig
->> +++ b/drivers/iommu/iommufd/Kconfig
->> @@ -37,6 +37,7 @@ config IOMMUFD_TEST
->>         depends on DEBUG_KERNEL
->>         depends on FAULT_INJECTION
->>         depends on RUNTIME_TESTING_MENU
->> +       select IOMMUFD_DRIVER
->>         default n
->>         help
->>           This is dangerous, do not enable unless running
->>
-> Tested this patch on my system and it fixes all issues for ARM64. Please
-> add tag for this Kconfig patch:
-> Tested by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> 
-> Also please accept the patch in this current series.
-Please let me know if you need me to send the config patch. Please accept
-the config patch as well.
+Embedding net_device into structures prohibits the usage of flexible
+arrays in the net_device structure. For more details, see the discussion
+at [1].
 
->>
->> ???
->>
->> Jason
-> 
+Un-embed the net_device from the private struct by converting it
+into a pointer. Then use the leverage the new alloc_netdev_dummy()
+helper to allocate and initialize dummy devices.
 
+[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+
+Signed-off-by: Breno Leitao <leitao@debian.org>
+---
+ drivers/net/ethernet/mediatek/mtk_eth_soc.c | 17 +++++++++++++----
+ drivers/net/ethernet/mediatek/mtk_eth_soc.h |  2 +-
+ 2 files changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+index caa13b9cedff..d7a96dc11c07 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
+@@ -1710,7 +1710,7 @@ static struct page_pool *mtk_create_page_pool(struct mtk_eth *eth,
+ 	if (IS_ERR(pp))
+ 		return pp;
+ 
+-	err = __xdp_rxq_info_reg(xdp_q, &eth->dummy_dev, id,
++	err = __xdp_rxq_info_reg(xdp_q, eth->dummy_dev, id,
+ 				 eth->rx_napi.napi_id, PAGE_SIZE);
+ 	if (err < 0)
+ 		goto err_free_pp;
+@@ -4188,6 +4188,8 @@ static int mtk_free_dev(struct mtk_eth *eth)
+ 		metadata_dst_free(eth->dsa_meta[i]);
+ 	}
+ 
++	free_netdev(eth->dummy_dev);
++
+ 	return 0;
+ }
+ 
+@@ -4983,9 +4985,14 @@ static int mtk_probe(struct platform_device *pdev)
+ 	/* we run 2 devices on the same DMA ring so we need a dummy device
+ 	 * for NAPI to work
+ 	 */
+-	init_dummy_netdev(&eth->dummy_dev);
+-	netif_napi_add(&eth->dummy_dev, &eth->tx_napi, mtk_napi_tx);
+-	netif_napi_add(&eth->dummy_dev, &eth->rx_napi, mtk_napi_rx);
++	eth->dummy_dev = alloc_netdev_dummy(0);
++	if (!eth->dummy_dev) {
++		err = -ENOMEM;
++		dev_err(eth->dev, "failed to allocated dummy device\n");
++		goto err_unreg_netdev;
++	}
++	netif_napi_add(eth->dummy_dev, &eth->tx_napi, mtk_napi_tx);
++	netif_napi_add(eth->dummy_dev, &eth->rx_napi, mtk_napi_rx);
+ 
+ 	platform_set_drvdata(pdev, eth);
+ 	schedule_delayed_work(&eth->reset.monitor_work,
+@@ -4993,6 +5000,8 @@ static int mtk_probe(struct platform_device *pdev)
+ 
+ 	return 0;
+ 
++err_unreg_netdev:
++	mtk_unreg_dev(eth);
+ err_deinit_ppe:
+ 	mtk_ppe_deinit(eth);
+ 	mtk_mdio_cleanup(eth);
+diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+index 9ae3b8a71d0e..723fc637027c 100644
+--- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
++++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
+@@ -1242,7 +1242,7 @@ struct mtk_eth {
+ 	spinlock_t			page_lock;
+ 	spinlock_t			tx_irq_lock;
+ 	spinlock_t			rx_irq_lock;
+-	struct net_device		dummy_dev;
++	struct net_device		*dummy_dev;
+ 	struct net_device		*netdev[MTK_MAX_DEVS];
+ 	struct mtk_mac			*mac[MTK_MAX_DEVS];
+ 	int				irq[3];
 -- 
-BR,
-Muhammad Usama Anjum
+2.43.0
+
 
