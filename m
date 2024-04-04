@@ -1,142 +1,96 @@
-Return-Path: <linux-kernel+bounces-131900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61D4F898D6A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:43:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A73F898D6C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:44:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B7301C2786F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:43:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A1B7D283E63
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:44:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2FA512DD9E;
-	Thu,  4 Apr 2024 17:43:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD73812DDBD;
+	Thu,  4 Apr 2024 17:44:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N2M3VFtJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rMCx4h3l"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D9812B95;
-	Thu,  4 Apr 2024 17:43:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20EB2127B7D
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:44:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712252595; cv=none; b=RkKXmZoWBesY2eK3vf3fka73jYIUjA8MqaCHFbBIafK4dtvw+8SjW25WZHAR/O4x3fwsqUOvMORG+S2o02pSwX9fepjw5R7WCMtzeGvQ1dlozBxGa2Pnn1p8Yisxqu4jxV07RXAYeN1lHMcia1Y80/3hFr5ePMsh6Sp1VeI6grU=
+	t=1712252644; cv=none; b=lMfzsQZQeSQB17SWnQOHlaTAITKqVV2l2ZfVE8ITvqg9d8x35Qn4kq9H1b4vmIYeu3j9ctQ2eVXYyzz8+M1L9G0gVN49yqfZmDWUGBikiX6evYQn+9RhSM3NGwUoLcPDGiqq23yYkit67LOlv1xWZIe5uAmtnQmvuAMfnMHvsY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712252595; c=relaxed/simple;
-	bh=XVqjP0+idGhkMlRNHlBMQ51jpiOeoZ7Hg495Orxy1ig=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u4Azi1aqdp0W3bkA/43p2KcDTq2fXAwZ3wnqDw4NmfWlK+QLknIJEjGV9RviDfVfM8EW9gqa9cZeB9lwJUHd9wuYlyQrVw4NW+GUdjGr0QGd76ggwOqooopwKhfQumGZslmhUVDpCq9OZ8pxFo3qYOO4NUoL/57F9K9NcR7XCHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N2M3VFtJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 955F4C433F1;
-	Thu,  4 Apr 2024 17:43:14 +0000 (UTC)
+	s=arc-20240116; t=1712252644; c=relaxed/simple;
+	bh=jsxm3c5fH+voURQZevBABOuKLHgU1Ha8HPGSkYB31EU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=apcGlGwK7js5bF7bsMu4hc4xXgNWCOJ4fiae5OgnHtq/QQy6h1nDZpLPXUmgTBbVoeQjD7tnCbmKmTu/uoJ4PO+OnSXqblpFWz+zm9PIwDWFw5GHDYz9OIP9IPzIzCJkwRkskbfRKVdAcAWl6Q4W/MSQey5ktKKP3al7bELyFyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rMCx4h3l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A797AC433C7;
+	Thu,  4 Apr 2024 17:43:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712252594;
-	bh=XVqjP0+idGhkMlRNHlBMQ51jpiOeoZ7Hg495Orxy1ig=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=N2M3VFtJ/uVjhjss0pSDO+miIyL0kv0tnP3bK3Ejy1PENtrqVQjt8kVeN5qwmX91C
-	 VhNHoLDEfNTRbwj6p7ve1uJRZtpS5zxsGY2fag1ngIK11ruWoa97v38jNWGQoCsoPG
-	 oIGdDyUDkHvZx/xc/x0TacdbNwZu2RTUulQtWGj5suyyja5/N/vjoiIWrKilycqRtn
-	 lkLD9sZpVeKCoQw9eLyggh3gnMTqgersYDnXavDtJm2HzmcDCZt/7yhkr0iwPf3LOj
-	 8nZgCmRYzScG29KZlWBGi187i7dR18vt6U1ctORI9y4tw7QOpCE9ZeKk0NDjJ0NHAx
-	 4iUvQFZt8wHJA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 337B5CE0D0C; Thu,  4 Apr 2024 10:43:14 -0700 (PDT)
-Date: Thu, 4 Apr 2024 10:43:14 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Zhenhua Huang <quic_zhenhuah@quicinc.com>
-Subject: Re: [PATCH fs/proc/bootconfig] remove redundant comments from
- /proc/bootconfig
-Message-ID: <26d56fa5-2c95-46da-8268-35642f857d6d@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <f036c5b0-20cc-40c1-85f9-69fa9edd0c95@paulmck-laptop>
- <20240404085522.63bf8cce6f961c07c8ce3f17@kernel.org>
+	s=k20201202; t=1712252643;
+	bh=jsxm3c5fH+voURQZevBABOuKLHgU1Ha8HPGSkYB31EU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=rMCx4h3lxz5XgkmJLn531xCpjVM9v5q5c4lVZJV4altkmdSuUkgbDNxHx89mx42va
+	 k+1djetWBsJceboMHMdC1PWFe90DkZYKRfyeB5ZxvW2H8ZN1fj4wxBwBSrw68cojKf
+	 3Ce2JGXNnxo91vOLNgZlM3x2ODEW/jI7NPb1yjpoGNNt1JxDqBEAU3G2m+N4k53/dq
+	 HrM1Axx2cULKl+rreUev4fKo3wsiQhG7iX4v5hnQQG/fgNjL7lp80H+iVlYA1DOGJW
+	 VotaUj/Hu8X13uVwHLab82pLfR2fPdCQ2EWl29U18cSXNo5llqzjSc3jKQlAogAEYF
+	 M/Sgx49hqkV6A==
+Message-ID: <578bf1c5-4102-4048-b5f3-6961963a119f@kernel.org>
+Date: Thu, 4 Apr 2024 19:43:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404085522.63bf8cce6f961c07c8ce3f17@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 7/7] sched/fair: Fair server interface
+Content-Language: en-US, pt-BR, it-IT
+To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org, Luca Abeni <luca.abeni@santannapisa.it>,
+ Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Vineeth Pillai <vineeth@bitbyteword.org>,
+ Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>,
+ Suleiman Souhlal <suleiman@google.com>, youssefesmat@google.com,
+ Joel Fernandes <joel@joelfernandes.org>
+References: <cover.1699095159.git.bristot@kernel.org>
+ <26adad2378c8b15533e4f6216c2863341e587f57.1699095159.git.bristot@kernel.org>
+ <8cbf4bcd-431b-466f-b62d-ee03932e97f5@joelfernandes.org>
+ <091ca2ea-202d-4685-92ea-529186a94f0a@kernel.org>
+ <a4af4bac-92bd-44e9-93d2-dc22dc9a81ad@joelfernandes.org>
+ <07b1844a-a9d4-47fb-aea0-c0722b2a8001@kernel.org>
+ <b3e053bf-c9f5-492d-baff-8f251fb00279@joelfernandes.org>
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
+In-Reply-To: <b3e053bf-c9f5-492d-baff-8f251fb00279@joelfernandes.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 04, 2024 at 08:55:22AM +0900, Masami Hiramatsu wrote:
-> On Wed, 3 Apr 2024 12:16:28 -0700
-> "Paul E. McKenney" <paulmck@kernel.org> wrote:
+On 2/15/24 18:41, Joel Fernandes wrote:
+>> Thanks for taking a look. My colleague Suleiman hit the issue too. He's able to
+>> not set 45ms/50ms for instance.
+> I isolated the problem. It is not an interface problem.
 > 
-> > commit 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to
-> > /proc/bootconfig") adds bootloader argument comments into /proc/bootconfig.
-> > 
-> > /proc/bootconfig shows boot_command_line[] multiple times following
-> > every xbc key value pair, that's duplicated and not necessary.
-> > Remove redundant ones.
-> > 
-> > Output before and after the fix is like:
-> > key1 = value1
-> > *bootloader argument comments*
-> > key2 = value2
-> > *bootloader argument comments*
-> > key3 = value3
-> > *bootloader argument comments*
-> > ...
-> > 
-> > key1 = value1
-> > key2 = value2
-> > key3 = value3
-> > *bootloader argument comments*
-> > ...
-> > 
-> > Fixes: 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to /proc/bootconfig")
-> > Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > Cc: <linux-trace-kernel@vger.kernel.org>
-> > Cc: <linux-fsdevel@vger.kernel.org>
-> 
-> OOps, good catch! Let me pick it.
-> 
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> Long story short, the servers are initialized at the defrootdomain, but
+> the dl_bw info is not being carried over to the new domain because the
+> servers are not a task.
 
-Thank you, and I have applied your ack and pulled this into its own
-bootconfig.2024.04.04a.
+Fixed on v6. When an rq is attached to a new rd, at rq_attach_root(), the bw of
+from fair server is being added to the new rd.
 
-My guess is that you will push this via your own tree, and so I will
-drop my copy as soon as yours hits -next.
+Without this, the RD has no bandwidth registered (no-dl task) and so the
+admission control becomes broken.
 
-							Thanx, Paul
-
-> Thank you!
-> 
-> > 
-> > diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
-> > index 902b326e1e560..e5635a6b127b0 100644
-> > --- a/fs/proc/bootconfig.c
-> > +++ b/fs/proc/bootconfig.c
-> > @@ -62,12 +62,12 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
-> >  				break;
-> >  			dst += ret;
-> >  		}
-> > -		if (ret >= 0 && boot_command_line[0]) {
-> > -			ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
-> > -				       boot_command_line);
-> > -			if (ret > 0)
-> > -				dst += ret;
-> > -		}
-> > +	}
-> > +	if (ret >= 0 && boot_command_line[0]) {
-> > +		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
-> > +			       boot_command_line);
-> > +		if (ret > 0)
-> > +			dst += ret;
-> >  	}
-> >  out:
-> >  	kfree(key);
-> 
-> 
-> -- 
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+-- Daniel
 
