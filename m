@@ -1,67 +1,67 @@
-Return-Path: <linux-kernel+bounces-131389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7867898702
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:17:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75FED8986F3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:15:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 11F671C26270
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:17:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F120B27750
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:15:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59AA612DDBC;
-	Thu,  4 Apr 2024 12:13:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1298D12A152;
+	Thu,  4 Apr 2024 12:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b6vKx7KM"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MFut3FnH"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55397128818
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710B286656
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:13:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712232820; cv=none; b=c1Wo6c3NOYOVeF0FFwG4xgM/rjSLKdYwaU1Brw8CGYD5oXQt2FyNDTX8l7O/QQ61wCDGHSQ/Hzh/anQQ3CXnjFU5ByolMzs+V0VT8DMUuGeig1zg1vHgTBjaWYWZ9jAzTqeZBu/W+CeGZ1binLj6rgdqfVZ6esPZJe3HdLlJTNs=
+	t=1712232816; cv=none; b=iU57Ym0TXYf+KA7xEhThkOU30wIw1XH1JwEIWjNk8ti77BZTQhABoif+SdgLFdl9GL4CCGe4FPSfDUX3B6KCnL/AHwKyEKXQqRl6dS+w+jIZ2zCaZzy9KNLLOdbk+veGCd2yn+RfxaXPro+87OMtMThrfA9SrRavo1d15kBZb+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712232820; c=relaxed/simple;
-	bh=DpTVlNXrctec4b3CsWrFlQYf/h/hDyzV3LAmJBcqDjU=;
+	s=arc-20240116; t=1712232816; c=relaxed/simple;
+	bh=4rYSe/0b2YWlMT+jL7AFg0DaRcpMVxRynPPBo/RQ1Yk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lHICvv6xqoLNiKePpXfCk1GnfzmeUJSKKquJoV09rkHrNOaFgrSWc8jjw3gnrwnsVVuzzojheRzS8+qREyhCc6p4vHn5CdAd6gSkTW9Pv+0FJ6zblnRjQ6tO+fe9gBYi2aZAlCX8L9mOjRYouG/M6MuR3d6sTEItEQiwy0xBMok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b6vKx7KM; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=buV4/eNSbmoP/XnKQ+B3KOS+b5ejKiAtnbtRmkDabfRclQe1Io8iiE48NgmxPu80qrmfAOhvkGNZ2GL2YfTJhmMp8Nd2h/1Z8+XwDJRyG09AHr0W5kFElGnyAX72RMqmRZFBkglIA/VZzOQSjipqiCIYuGdv1GQGa0tctdABmOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MFut3FnH; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712232816;
+	s=mimecast20190719; t=1712232813;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=gtkIQ4MjvqbejQVBH3/CsAsyaYz00eM1hO1APdOnE38=;
-	b=b6vKx7KMPFHeGzOmdqTS1ZN4FR8Q/wUYNuaSyQp11l6CXpXDsc1UqP6ASth/IhuZ+drCSN
-	qBHoc2Jd9rsKkaprb3hQ9cqX/LL8QgvLlrmdQZwnQ1t2HOkrhVtnbWYYv1Ec6/tiktbQcJ
-	v532jx2rXn8xH70UfGqhdq9fTcZ/rDY=
+	bh=dZnn0GoKtYMCAOrEB74QbMNI9YYQjLw/KqwC1+gIE5s=;
+	b=MFut3FnH7Lo6j9y4OA/LT2RbYe92NF+XSW+pFnUyKLx1uMRmbKaiIVVvmHV+FuNLAKecG+
+	BX/m92N4BRQZTEnYwe/LoY7Lu8I0kdj2kO8YrGHk5zboVDEkqhaPLo6iJdfK31d2PnHWgP
+	51qRbd1TmrYfcJtruLvL59qrEat5h4w=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-203-PvQcHVhhNLOGLgCYdt5aAA-1; Thu, 04 Apr 2024 08:13:31 -0400
-X-MC-Unique: PvQcHVhhNLOGLgCYdt5aAA-1
+ us-mta-223-SEV7f9GIP5KXtdH39FfcaQ-1; Thu, 04 Apr 2024 08:13:31 -0400
+X-MC-Unique: SEV7f9GIP5KXtdH39FfcaQ-1
 Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6A1349423C8;
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9461780A1A8;
 	Thu,  4 Apr 2024 12:13:31 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 485C7492BC6;
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 72083492BC6;
 	Thu,  4 Apr 2024 12:13:31 +0000 (UTC)
 From: Paolo Bonzini <pbonzini@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	kvm@vger.kernel.org
 Cc: michael.roth@amd.com,
 	isaku.yamahata@intel.com
-Subject: [PATCH v5 16/17] selftests: kvm: split "launch" phase of SEV VM creation
-Date: Thu,  4 Apr 2024 08:13:26 -0400
-Message-ID: <20240404121327.3107131-17-pbonzini@redhat.com>
+Subject: [PATCH v5 17/17] selftests: kvm: add test for transferring FPU state into VMSA
+Date: Thu,  4 Apr 2024 08:13:27 -0400
+Message-ID: <20240404121327.3107131-18-pbonzini@redhat.com>
 In-Reply-To: <20240404121327.3107131-1-pbonzini@redhat.com>
 References: <20240404121327.3107131-1-pbonzini@redhat.com>
 Precedence: bulk
@@ -74,94 +74,133 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-Allow the caller to set the initial state of the VM.  Doing this
-before sev_vm_launch() matters for SEV-ES, since that is the
-place where the VMSA is updated and after which the guest state
-becomes sealed.
-
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- tools/testing/selftests/kvm/include/x86_64/sev.h |  3 ++-
- tools/testing/selftests/kvm/lib/x86_64/sev.c     | 16 ++++++++++------
- .../selftests/kvm/x86_64/sev_smoke_test.c        |  7 ++++++-
- 3 files changed, 18 insertions(+), 8 deletions(-)
+ .../selftests/kvm/x86_64/sev_smoke_test.c     | 89 +++++++++++++++++++
+ 1 file changed, 89 insertions(+)
 
-diff --git a/tools/testing/selftests/kvm/include/x86_64/sev.h b/tools/testing/selftests/kvm/include/x86_64/sev.h
-index 0719f083351a..82c11c81a956 100644
---- a/tools/testing/selftests/kvm/include/x86_64/sev.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/sev.h
-@@ -31,8 +31,9 @@ void sev_vm_launch(struct kvm_vm *vm, uint32_t policy);
- void sev_vm_launch_measure(struct kvm_vm *vm, uint8_t *measurement);
- void sev_vm_launch_finish(struct kvm_vm *vm);
- 
--struct kvm_vm *vm_sev_create_with_one_vcpu(uint32_t policy, void *guest_code,
-+struct kvm_vm *vm_sev_create_with_one_vcpu(uint32_t type, void *guest_code,
- 					   struct kvm_vcpu **cpu);
-+void vm_sev_launch(struct kvm_vm *vm, uint32_t policy, uint8_t *measurement);
- 
- kvm_static_assert(SEV_RET_SUCCESS == 0);
- 
-diff --git a/tools/testing/selftests/kvm/lib/x86_64/sev.c b/tools/testing/selftests/kvm/lib/x86_64/sev.c
-index 597994fa4f41..d482029b6004 100644
---- a/tools/testing/selftests/kvm/lib/x86_64/sev.c
-+++ b/tools/testing/selftests/kvm/lib/x86_64/sev.c
-@@ -113,26 +113,30 @@ void sev_vm_launch_finish(struct kvm_vm *vm)
- 	TEST_ASSERT_EQ(status.state, SEV_GUEST_STATE_RUNNING);
- }
- 
--struct kvm_vm *vm_sev_create_with_one_vcpu(uint32_t policy, void *guest_code,
-+struct kvm_vm *vm_sev_create_with_one_vcpu(uint32_t type, void *guest_code,
- 					   struct kvm_vcpu **cpu)
- {
- 	struct vm_shape shape = {
- 		.mode = VM_MODE_DEFAULT,
--		.type = policy & SEV_POLICY_ES ? KVM_X86_SEV_ES_VM : KVM_X86_SEV_VM,
-+		.type = type,
- 	};
- 	struct kvm_vm *vm;
- 	struct kvm_vcpu *cpus[1];
--	uint8_t measurement[512];
- 
- 	vm = __vm_create_with_vcpus(shape, 1, 0, guest_code, cpus);
- 	*cpu = cpus[0];
- 
-+	return vm;
-+}
-+
-+void vm_sev_launch(struct kvm_vm *vm, uint32_t policy, uint8_t *measurement)
-+{
- 	sev_vm_launch(vm, policy);
- 
--	/* TODO: Validate the measurement is as expected. */
-+	if (!measurement)
-+		measurement = alloca(256);
-+
- 	sev_vm_launch_measure(vm, measurement);
- 
- 	sev_vm_launch_finish(vm);
--
--	return vm;
- }
 diff --git a/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c b/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
-index 026779f3ed06..234c80dd344d 100644
+index 234c80dd344d..7c70c0da4fb7 100644
 --- a/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
 +++ b/tools/testing/selftests/kvm/x86_64/sev_smoke_test.c
-@@ -41,7 +41,12 @@ static void test_sev(void *guest_code, uint64_t policy)
- 	struct kvm_vm *vm;
- 	struct ucall uc;
+@@ -4,6 +4,7 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <sys/ioctl.h>
++#include <math.h>
  
--	vm = vm_sev_create_with_one_vcpu(policy, guest_code, &vcpu);
-+	uint32_t type = policy & SEV_POLICY_ES ? KVM_X86_SEV_ES_VM : KVM_X86_SEV_VM;
-+
-+	vm = vm_sev_create_with_one_vcpu(type, guest_code, &vcpu);
-+
-+	/* TODO: Validate the measurement is as expected. */
-+	vm_sev_launch(vm, policy, NULL);
+ #include "test_util.h"
+ #include "kvm_util.h"
+@@ -13,6 +14,8 @@
+ #include "sev.h"
  
- 	for (;;) {
- 		vcpu_run(vcpu);
+ 
++#define XFEATURE_MASK_X87_AVX (XFEATURE_MASK_FP | XFEATURE_MASK_SSE | XFEATURE_MASK_YMM)
++
+ static void guest_sev_es_code(void)
+ {
+ 	/* TODO: Check CPUID after GHCB-based hypercall support is added. */
+@@ -35,6 +38,86 @@ static void guest_sev_code(void)
+ 	GUEST_DONE();
+ }
+ 
++/* Stash state passed via VMSA before any compiled code runs.  */
++extern void guest_code_xsave(void);
++asm("guest_code_xsave:\n"
++    "mov $-1, %eax\n"
++    "mov $-1, %edx\n"
++    "xsave (%rdi)\n"
++    "jmp guest_sev_es_code");
++
++static void compare_xsave(u8 *from_host, u8 *from_guest)
++{
++	int i;
++	bool bad = false;
++	for (i = 0; i < 4095; i++) {
++		if (from_host[i] != from_guest[i]) {
++			printf("mismatch at %02hhx | %02hhx %02hhx\n", i, from_host[i], from_guest[i]);
++			bad = true;
++		}
++	}
++
++	if (bad)
++		abort();
++}
++
++static void test_sync_vmsa(uint32_t policy)
++{
++	struct kvm_vcpu *vcpu;
++	struct kvm_vm *vm;
++	vm_vaddr_t gva;
++	void *hva;
++
++	double x87val = M_PI;
++	struct kvm_xsave __attribute__((aligned(64))) xsave = { 0 };
++	struct kvm_sregs sregs;
++	struct kvm_xcrs xcrs = {
++		.nr_xcrs = 1,
++		.xcrs[0].xcr = 0,
++		.xcrs[0].value = XFEATURE_MASK_X87_AVX,
++	};
++
++	vm = vm_sev_create_with_one_vcpu(KVM_X86_SEV_ES_VM, guest_code_xsave, &vcpu);
++	gva = vm_vaddr_alloc_shared(vm, PAGE_SIZE, KVM_UTIL_MIN_VADDR,
++				    MEM_REGION_TEST_DATA);
++	hva = addr_gva2hva(vm, gva);
++
++	vcpu_args_set(vcpu, 1, gva);
++
++	vcpu_sregs_get(vcpu, &sregs);
++	sregs.cr4 |= X86_CR4_OSFXSR | X86_CR4_OSXSAVE;
++	vcpu_sregs_set(vcpu, &sregs);
++
++	vcpu_xcrs_set(vcpu, &xcrs);
++	asm("fninit\n"
++	    "vpcmpeqb %%ymm4, %%ymm4, %%ymm4\n"
++	    "fldl %3\n"
++	    "xsave (%2)\n"
++	    "fstp %%st\n"
++	    : "=m"(xsave)
++	    : "A"(XFEATURE_MASK_X87_AVX), "r"(&xsave), "m" (x87val)
++	    : "ymm4", "st", "st(1)", "st(2)", "st(3)", "st(4)", "st(5)", "st(6)", "st(7)");
++	vcpu_xsave_set(vcpu, &xsave);
++
++	vm_sev_launch(vm, SEV_POLICY_ES | policy, NULL);
++
++	/* This page is shared, so make it decrypted.  */
++	memset(hva, 0, 4096);
++
++	vcpu_run(vcpu);
++
++	TEST_ASSERT(vcpu->run->exit_reason == KVM_EXIT_SYSTEM_EVENT,
++		    "Wanted SYSTEM_EVENT, got %s",
++		    exit_reason_str(vcpu->run->exit_reason));
++	TEST_ASSERT_EQ(vcpu->run->system_event.type, KVM_SYSTEM_EVENT_SEV_TERM);
++	TEST_ASSERT_EQ(vcpu->run->system_event.ndata, 1);
++	TEST_ASSERT_EQ(vcpu->run->system_event.data[0], GHCB_MSR_TERM_REQ);
++
++	compare_xsave((u8 *)&xsave, (u8 *)hva);
++
++	kvm_vm_free(vm);
++}
++
+ static void test_sev(void *guest_code, uint64_t policy)
+ {
+ 	struct kvm_vcpu *vcpu;
+@@ -87,6 +170,12 @@ int main(int argc, char *argv[])
+ 	if (kvm_cpu_has(X86_FEATURE_SEV_ES)) {
+ 		test_sev(guest_sev_es_code, SEV_POLICY_ES | SEV_POLICY_NO_DBG);
+ 		test_sev(guest_sev_es_code, SEV_POLICY_ES);
++
++		if (kvm_has_cap(KVM_CAP_XCRS) &&
++		    (xgetbv(0) & XFEATURE_MASK_X87_AVX) == XFEATURE_MASK_X87_AVX) {
++			test_sync_vmsa(0);
++			test_sync_vmsa(SEV_POLICY_NO_DBG);
++		}
+ 	}
+ 
+ 	return 0;
 -- 
 2.43.0
-
 
 
