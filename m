@@ -1,182 +1,109 @@
-Return-Path: <linux-kernel+bounces-131873-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9D0D898D03
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:09:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 113CA898D0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:12:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 52F381F229E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:09:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BD9CB22074
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D93E12EBC5;
-	Thu,  4 Apr 2024 17:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61C5112DD9B;
+	Thu,  4 Apr 2024 17:11:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jC5EaRQM"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uzEfgWlg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77BF512AAE7
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A2312AAE7
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:11:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712250539; cv=none; b=aprB0+vada2zHPGUoIai4+TNTXbxJHjxebVEFKIeppKMDyeH2drHvXZiaN+7V33YEqV1Q8P9522MJlHSLlvyL46z8icShqZj52kmG5Cn3zBR+fwT9jeUfCQ952X88m9j4strGLfKE9P69eZpxJPD1tkgeuI3VwsCEUlB/5+Jnuo=
+	t=1712250708; cv=none; b=tcJ6le90FjmZt39l26OBBQuNt4CFoaXIsR9b+TRNbrtNIhlSGY1IDFvQ6go3Xj5L62V76eU63z/u1wsWbalK1odkYbX6aIdmIObdNDKadg7Tkhj0pU0lV5rVhGPDrEB3XANT54Xo2TgdGH7zFhN93+4Q4lY+68kEkd/VNR2RLA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712250539; c=relaxed/simple;
-	bh=qIeHxQSzEKN+T+ZMX5PFicsmdKmy6EfcZQYdz44LOBA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YHv0JIEMhOmecHQWz+Vfjm4iHLZ1i/vN4mCT6AWDQ5ZGITkz8pCMfgWOCmRvp1HoDSPFqjh0CKbvM0birW6sgmMQUIzG7LhXmCc7mL0gyu7Tc0YOtSNilbYNnmrJjdGKKtor+xtXAsjikYoFZm+95AegTnfbaZWwCThILTzEEzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jC5EaRQM; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso1467225276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:08:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712250536; x=1712855336; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KuDs1drwJi9Z+z9OuWkhK3ckPKS9r4/p1uVUkFqevFk=;
-        b=jC5EaRQMXoWxXcT/PNqSjrcsftwnvseB5AtKBg2vqgAyyLVQgp20SRegZq7YLIrdO/
-         HTQWScQM/DW37R2IYh+dwMOL2ayL0pQIQzYyP1lXQTLRA97VQiYJ9PHXRyMfJ/Z9ZvVJ
-         oFpUWCWEB1bSpDEyqEQ7RCqnI1td28ZhCzX2yYyMeaCp+6hQUqHZ6EtZjij0pKovvOgy
-         stCx6Jb+d1gT/UvnialtOoZLUIi5qkRs+J/dXYzAxsZr67uO7BH+bPTh4Ub09lLJuNIn
-         17mjFsnILx+0qC4dxBW5VMWwIa7xznM4mAxRt/Jwv9KrNYGo+0DSWcP592JJrWie/m+S
-         e2vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712250536; x=1712855336;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KuDs1drwJi9Z+z9OuWkhK3ckPKS9r4/p1uVUkFqevFk=;
-        b=e4/6SRYxN2YnvQt65UsbZ6vRLYfOry9HSGYoErvjZ3YAUuUQCl+1bVZSnDuCSu6iXA
-         Q6enaZb/xkeINJHfjeeh2L3cGTWoUadx7ptMKEKSJkqaRWjO/5If1AX2fL2UMP9SS6SJ
-         nYBfL9CEOySxVHTuaZQxXk4iCgzQuWiIqkaF+WBMOoDDK0h6p7tlpDFSWCk2shFYqOp3
-         YEj9giQEEdOD6bTb/AoJEOBMIuObIeSXCRjVtcGgtLVPLxoCdPqBWU8w3xY7dtfu0a5Q
-         giYqXdHiL0BbPKif0B29G7tKiFN9+tz4zY8ISHc8O0BUWUAwNzajbcgW4opsIXqvaQXu
-         L2Vg==
-X-Forwarded-Encrypted: i=1; AJvYcCXQ9+8zKYqFp2NkGcKbFcP5B+S30rKuWsJaFvhID06MHZQ6rG0HDoJegg19hdRJ6YlEvH4IWPwQDpzQcD9NZMRw79UNqDdAJdoKrgcA
-X-Gm-Message-State: AOJu0YyHUm/ilcpYl7QwljN2dA5joO+/gGDNXO+LagTEvtPad2dt4Hyl
-	gvM8IqeTiKcoA9piLxMPO3QnVAVkZoxUGkEilTIQ2Yngr39kIRe6VZ5vLlThDhlTDRJJ3LdYRaW
-	WhyCsonJeoUE4zslZJj73gp5j48o0bJMHT0Oy
-X-Google-Smtp-Source: AGHT+IFt2ASldzAexjX0sPM2NMrH0Lqtd66mUXGVX9ZgF2XSVZKC+BEFwLxb4crFlAjVgX0qYdICDkkyaJeo+de/1Hw=
-X-Received: by 2002:a25:ac19:0:b0:dcb:b072:82d5 with SMTP id
- w25-20020a25ac19000000b00dcbb07282d5mr3065164ybi.64.1712250536330; Thu, 04
- Apr 2024 10:08:56 -0700 (PDT)
+	s=arc-20240116; t=1712250708; c=relaxed/simple;
+	bh=ZrgcSHpGCQoN5N8qPeV22f/8t4IZfslpGaFuTJpFcPs=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=a2jWzV1fijAqGkV4MO5lqcgusbscchiAVEzi94qr5v7l9rrY9d5h05GWRkh1xAyMX76yJF+VFunq/wAHaEQOb6Fwvp2iFG9DkNfW19BrwbJT1njzCeQTvBD5/FWnJUhHyCJocyeMCrS9Amj78yHh1mA4rDJ8GyoV8xPsgRcE1W8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uzEfgWlg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F892C43390;
+	Thu,  4 Apr 2024 17:11:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712250708;
+	bh=ZrgcSHpGCQoN5N8qPeV22f/8t4IZfslpGaFuTJpFcPs=;
+	h=From:Subject:Date:To:Cc:From;
+	b=uzEfgWlgw47Pq+WsM1VOxwvSuyt0pJTWNoqjrd4BhETKLVlcSN+huDAOmmty31nfE
+	 v+p21gVdWW7STTzbLJm863X0GzdbTeNcOOD5Va3B5FV17Qtwdcn2DZQbm4ioVp1pzr
+	 jzZfgV1e7j17UmrDtsUdk/GhGw906OPegsPFDHlIR7CpcZxcU4V0HkI/EE49+ANzyk
+	 EFbbEJzOwU+saG2TIYMJcJ/p7ZCWD2ArYw+HFBBDCEvuJhphiplk934/FQMAASHLqk
+	 WhFYMOCsVxZ6lavqHue8Jfwv7A5CJKeoDA87yf1L1RjDGX2rKV0gJwqdxTIPp1Invi
+	 fqBh+WE+JuaqQ==
+Received: by jupiter.universe (Postfix, from userid 1000)
+	id F1B8A4800CD; Thu,  4 Apr 2024 19:11:45 +0200 (CEST)
+From: Sebastian Reichel <sre@kernel.org>
+Subject: [PATCH 0/3] RK3588 PCIe bifurcation fixes
+Date: Thu, 04 Apr 2024 19:11:25 +0200
+Message-Id: <20240404-rk3588-pcie-bifurcation-fixes-v1-0-9907136eeafd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404165404.3805498-1-surenb@google.com> <Zg7dmp5VJkm1nLRM@casper.infradead.org>
-In-Reply-To: <Zg7dmp5VJkm1nLRM@casper.infradead.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 4 Apr 2024 10:08:45 -0700
-Message-ID: <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
- the call site
-To: Matthew Wilcox <willy@infradead.org>
-Cc: akpm@linux-foundation.org, joro@8bytes.org, will@kernel.org, 
-	trond.myklebust@hammerspace.com, anna@kernel.org, arnd@arndb.de, 
-	herbert@gondor.apana.org.au, davem@davemloft.net, jikos@kernel.org, 
-	benjamin.tissoires@redhat.com, tytso@mit.edu, jack@suse.com, 
-	dennis@kernel.org, tj@kernel.org, cl@linux.com, jakub@cloudflare.com, 
-	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com, 
-	vbabka@suse.cz, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-ext4@vger.kernel.org, linux-mm@kvack.org, 
-	netdev@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kent.overstreet@linux.dev
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAD3fDmYC/x2MSwqDQBAFryK9tsHPmKhXERfj+EwaQaXHBEG8u
+ 428VfGoOilCBZHa5CTFX6Ksi0GeJhS+fvmAZTSmIitcZmOdy6queQsCHmT6afC7OTzJgcjunaN
+ 5DY0b4ckam+I5LNH113UDK9I+oG8AAAA=
+To: Vinod Koul <vkoul@kernel.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Heiko Stuebner <heiko@sntech.de>
+Cc: Shawn Lin <shawn.lin@rock-chips.com>, Michal Tomek <mtdev79b@gmail.com>, 
+ linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, 
+ Sebastian Reichel <sebastian.reichel@collabora.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=929; i=sre@kernel.org;
+ h=from:subject:message-id; bh=ZrgcSHpGCQoN5N8qPeV22f/8t4IZfslpGaFuTJpFcPs=;
+ b=owJ4nAFtApL9kA0DAAoB2O7X88g7+poByyZiAGYO30sVW9U7eD3x3exYnO0IKAUJ4oUHm/4pp
+ 6N85UZ8gM4H44kCMwQAAQoAHRYhBO9mDQdGP4tyanlUE9ju1/PIO/qaBQJmDt9LAAoJENju1/PI
+ O/qabL8QAIylHe4eCyMwjHtR4I6P2Ktf16wYoPbP/bWu1iODtubvwdPhGy4g1BZVpXRMiYAOnLC
+ ZdGk2Z9OEw5FDYCCAZ60Ab6y4Veib9dufSE/CSgIlGWdB0BVdAG7tvLtayt+o8yIsxzaZi0yues
+ 7CuIpoCTkYApBzpH8Fn+AlBZdFXsqMo37OImSXYeoKOXwOckOKh3WifsWaUOH0EBvexx5vZcG3j
+ fLMWKEn5nrKt6EqW031cxhpXFyleWDoT3L9gGBMkZj203KGoEVo7tobP68sYLKc9v2kAum57BS7
+ 0jRpdt+trxn9VguzfbBhhgyh3GWG2kVFIkaTiY21tuZ4XdGC67COjmt4rZlVqfqdUk+ZVCLEKey
+ jWTqvdObTtEzOwOTrPDSXr1tFCK8FjoKGN9evawN5cfUG+CsZ9MKEmTUN/V+2Mar0tL2UUkyGLS
+ lSMR6LdZUcSfaxo63l2q/sUV49t+fSRqGzzaOTX97piSXY+hgdvMpJUM5AiOYbIlkVgqLjmBiLu
+ dGdfTY67N6qksrrqfsjDpbKxE3uZpVn7GiKVt3W9Bl8QSSvC10aGPKxhu4oefi4vKbIQ9QYpLWB
+ RcEAO5YmZlXxA/B9pdL/4bQxrwxpq6wTpjz/kBGlR1ekWCww1bwdNZzEo6vJIJShDXomPvvzgKS
+ PH/kHjld61ob5QZWV4iw4IA==
+X-Developer-Key: i=sre@kernel.org; a=openpgp;
+ fpr=EF660D07463F8B726A795413D8EED7F3C83BFA9A
 
-On Thu, Apr 4, 2024 at 10:04=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Thu, Apr 04, 2024 at 09:54:04AM -0700, Suren Baghdasaryan wrote:
-> > +++ b/include/linux/dma-fence-chain.h
-> > @@ -86,10 +86,7 @@ dma_fence_chain_contained(struct dma_fence *fence)
-> >   *
-> >   * Returns a new struct dma_fence_chain object or NULL on failure.
-> >   */
-> > -static inline struct dma_fence_chain *dma_fence_chain_alloc(void)
-> > -{
-> > -     return kmalloc(sizeof(struct dma_fence_chain), GFP_KERNEL);
-> > -};
-> > +#define dma_fence_chain_alloc()      kmalloc(sizeof(struct dma_fence_c=
-hain), GFP_KERNEL)
->
-> You've removed some typesafety here.  Before, if I wrote:
->
->         struct page *page =3D dma_fence_chain_alloc();
->
-> the compiler would warn me that I've done something stupid.  Now it
-> can't tell.  Suggest perhaps:
->
-> #define dma_fence_chain_alloc()                                          =
- \
->         (struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chain),=
- \
->                                                 GFP_KERNEL)
->
-> but maybe there's a better way of doing that.  There are a few other
-> occurrences of the same problem in this monster patch.
+So far the RK3588 boards supported upstream do not make use of
+bifurcation, so it went unnoticed that this feature is broken.
+Michal Tomek tried getting a CM3588 running and noticed some
+problems. These patches fix the bifurcation problems on CM3588
+and also work fine on Rock 5B and EVB1.
 
-Got your point.
+---
+Michal Tomek (1):
+      phy: rockchip-snps-pcie3: fix bifurcation on rk3588
 
->
-> > +++ b/include/linux/hid_bpf.h
-> > @@ -149,10 +149,7 @@ static inline int hid_bpf_connect_device(struct hi=
-d_device *hdev) { return 0; }
-> >  static inline void hid_bpf_disconnect_device(struct hid_device *hdev) =
-{}
-> >  static inline void hid_bpf_destroy_device(struct hid_device *hid) {}
-> >  static inline void hid_bpf_device_init(struct hid_device *hid) {}
-> > -static inline u8 *call_hid_bpf_rdesc_fixup(struct hid_device *hdev, u8=
- *rdesc, unsigned int *size)
-> > -{
-> > -     return kmemdup(rdesc, *size, GFP_KERNEL);
-> > -}
-> > +#define call_hid_bpf_rdesc_fixup(_hdev, _rdesc, _size) kmemdup(_rdesc,=
- *(_size), GFP_KERNEL)
->
-> here
->
-> > -static inline handle_t *jbd2_alloc_handle(gfp_t gfp_flags)
-> > -{
-> > -     return kmem_cache_zalloc(jbd2_handle_cache, gfp_flags);
-> > -}
-> > +#define jbd2_alloc_handle(_gfp_flags)        kmem_cache_zalloc(jbd2_ha=
-ndle_cache, _gfp_flags)
->
-> here
->
-> > +++ b/include/linux/skmsg.h
-> > @@ -410,11 +410,8 @@ void sk_psock_stop_verdict(struct sock *sk, struct=
- sk_psock *psock);
-> >  int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
-> >                        struct sk_msg *msg);
-> >
-> > -static inline struct sk_psock_link *sk_psock_init_link(void)
-> > -{
-> > -     return kzalloc(sizeof(struct sk_psock_link),
-> > -                    GFP_ATOMIC | __GFP_NOWARN);
-> > -}
-> > +#define sk_psock_init_link() \
-> > +             kzalloc(sizeof(struct sk_psock_link), GFP_ATOMIC | __GFP_=
-NOWARN)
->
-> here
->
-> ... I kind of gave up at this point.  You'll want to audit for yourself
-> anyway ;-)
+Sebastian Reichel (2):
+      phy: rockchip-snps-pcie3: fix clearing PHP_GRF_PCIESEL_CON bits
+      phy: rockchip: naneng-combphy: Fix mux on rk3588
 
-Yes, I'll go over it and will make the required changes. Thanks for
-looking into it!
-Suren.
+ drivers/phy/rockchip/phy-rockchip-naneng-combphy.c | 36 ++++++++++++++++++++--
+ drivers/phy/rockchip/phy-rockchip-snps-pcie3.c     | 31 ++++++++-----------
+ 2 files changed, 46 insertions(+), 21 deletions(-)
+---
+base-commit: 4cece764965020c22cff7665b18a012006359095
+change-id: 20240404-rk3588-pcie-bifurcation-fixes-471e96b94dea
+
+Best regards,
+-- 
+Sebastian Reichel <sre@kernel.org>
+
 
