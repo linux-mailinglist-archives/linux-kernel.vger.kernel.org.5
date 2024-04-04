@@ -1,249 +1,216 @@
-Return-Path: <linux-kernel+bounces-131545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07FEA89896E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:01:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94E6E898970
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:01:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F588284541
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:01:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 499302845AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:01:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E2791292EB;
-	Thu,  4 Apr 2024 14:01:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6F81292D8;
+	Thu,  4 Apr 2024 14:01:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JAIO5Z0l"
-Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QLRSbCL8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FvIUNKYu";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QLRSbCL8";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FvIUNKYu"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A9CF1272BB
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E830127B7E
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712239268; cv=none; b=XFgJPs0+DcSsrodYvXSAztoaQ1t5doJdXLoV25spoGa8GDyxecqxaoxorqnF6Veb1P0sshurpSkWG+GQBFhqv0Syf4TG1qlWWdKkI5A7U8HaT0nqggfDvJhaBMCnwZTkFOKYRz1OVF3nYaziZP00B0XvRxT4L6IOByjOllZ45hg=
+	t=1712239282; cv=none; b=ELk9t2mlyQUqBCFgHtDRdO0aOHzfaaDUYH2xaW0hGx0a0Et6tb/acUjHcixlCJRQBMRcp/sYER4w+pxVw+o0EGCaagf7qNBkptMxTohmCDHRBdyHku2NBWCtiHC9tiyVKPhassRWRob2jZUE6VjbHiHL9zqJeNE3upaoeKk1xm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712239268; c=relaxed/simple;
-	bh=udVQSjhfnqy52V1XS3ehV4LRge6VDAk7Xg6f3XGDtsA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tEnLt6x0f0DOIaWdfmy6LFeMQ34W3lqV/xy28D/XNJpiwiUWDD4RtRTOkWmM6nXHP0zUNPO9zytrILK/3KioDsxYiZK3gV8sRqrVrlhIKZnSmeQva59AmaTGruaWKbFTTBsJ4z1mWPrhfD3RwFfRakSqdhtgJ3UYTk3Emo+1NCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JAIO5Z0l; arc=none smtp.client-ip=209.85.217.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-479cd0d5df9so225536137.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:01:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712239265; x=1712844065; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+tyEmoQXrb2vn5ihqj4opABMTJZwudykixVbhG5rjFw=;
-        b=JAIO5Z0lN+FMY8KriBO1L5F4biqddFWpFsvsRLnRKkgpW/+uFMH6Y7gJLFhnAi2YJr
-         JxDLmzUj54hoFMfz8A05+joT1aduHrpVoa5vFirhvYv7xTpTwel7JlzPhk1Et9+g28kT
-         q533raz+09LY6/vQWYvtr0BnpxaRw987BRxN3U5rkgM4L/OfOWQVKul2pGB32Xe0cQ+U
-         C/0NDB1/xOLOQ1i73JPobVhI5lOXlpMRD/qYcq43kLPgcA77iaTJya8z5SbEu6Dw2FZn
-         ZeZH7GaI65SxPqHsB/4fUprqpbp+frjmHE4dAT2g6ESN5TOA0zmX68bDraUduC5wU4Cd
-         hH2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712239265; x=1712844065;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+tyEmoQXrb2vn5ihqj4opABMTJZwudykixVbhG5rjFw=;
-        b=KcM2a0irMRIJo7SzLuEf+0I0CwcDIDwT5LYP9rXkPVB+SYKSS3wLdg7ajORcjWdBGE
-         hy94GYi6zep9KNNt34x9gVxS7mcSR0boOlcEajUK0n/TfYzYYTVLM7jSYso2ht/GEkfC
-         aKMHoUptWNojqdFTWidEV4pEbeBd5k9VOcKsy4l493HzbXyVkStrlVo40oqGDI9Hv8vl
-         kou6fojUlzjVuVUr4XmQQX5OZtlzaWpJS0v4Z7CQ82Zvmhoz3luCjiJdDjSilAAQRulZ
-         SPvTzKdRrp7etZRg3sgkWha9pg9Zp7Q/Qq8TYRismXMSg1bEIeLKXTIXmxn0kMW49GGN
-         7Ojg==
-X-Forwarded-Encrypted: i=1; AJvYcCV6sz3q3bNxC6eypjzmi0sY8TeZ1EhkAvrWYro4gBPdNvFPymttPvtnOHJVH47b4qdsuNGgIwX+DbFym4tXzFa6+boXOINPWI+xxWN2
-X-Gm-Message-State: AOJu0YwTI7Ivx3SwS3B0XLjmsiam8uStnrDRyBoxpy+7WN+tgsyvmfvQ
-	AfaqW0IdBanNh94TB7RoiDzNvh2kV+b6EXNhzm/nBwi3XRYrAmP0p+3TTRLiAWEJ4AeeOGk5VID
-	h7B9WMWJ5I+LKzndOBiI2Fw+7ciWs0YD0zWp5
-X-Google-Smtp-Source: AGHT+IHuf1JaoB9Kt4ln2E4Z2CuYaFwp+MyoMrdetoJGO8NiLwRIu6qbZt3P3mTkRUo42hJ0+bU9hJU64Uy7WfWyC7g=
-X-Received: by 2002:a05:6102:2455:b0:476:e72e:271d with SMTP id
- g21-20020a056102245500b00476e72e271dmr2127513vss.13.1712239264885; Thu, 04
- Apr 2024 07:01:04 -0700 (PDT)
+	s=arc-20240116; t=1712239282; c=relaxed/simple;
+	bh=JqQ0BM+21dLrLSnRoC3/sd7AgLHEu8bVHfju2KxU3LU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MRD7Ktzw9TJAli5SrxUXE3VUNMwTmzMRMuWId+cMVCQAi99eoFhgeWMikBITT1sRwCvu/FYqE6hlC8djCkwTUCUwmmWasx2SipbR39CJTNWJEHKWLICyMRMbD0NwNF2SAU9z8gZaEN1wSjItv0AS9LEyms/GZoy8f6qcowVIEaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QLRSbCL8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FvIUNKYu; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QLRSbCL8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FvIUNKYu; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B00CE5F787;
+	Thu,  4 Apr 2024 14:01:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712239278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=CJEO95T5eOAEaEClQ5YGYGSrxqK8HX7WCJ8QTLjd03g=;
+	b=QLRSbCL8nMogPk3Fs4XrLUkeJexg4Dr8UEDnFG7dow1kuSQgI1qPAjnbZSXMuw2wzktbC/
+	bDw7xJfAniCk5YSd5DiWvAn3dPtlibe7+h7H0ALAQMEGcUtDmPN4MPQjaA0a3p7pfNersH
+	+45jFveJIs8p+3OXiuuDrxiQ207iDoo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712239278;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=CJEO95T5eOAEaEClQ5YGYGSrxqK8HX7WCJ8QTLjd03g=;
+	b=FvIUNKYusS0KxWFeO94ePJQnUmhCeQTigCEmJ3ioDT/k+u8ygenr2eMe9eBeWcvznN2m2X
+	fiz933Df2pGoDhDQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712239278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=CJEO95T5eOAEaEClQ5YGYGSrxqK8HX7WCJ8QTLjd03g=;
+	b=QLRSbCL8nMogPk3Fs4XrLUkeJexg4Dr8UEDnFG7dow1kuSQgI1qPAjnbZSXMuw2wzktbC/
+	bDw7xJfAniCk5YSd5DiWvAn3dPtlibe7+h7H0ALAQMEGcUtDmPN4MPQjaA0a3p7pfNersH
+	+45jFveJIs8p+3OXiuuDrxiQ207iDoo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712239278;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=CJEO95T5eOAEaEClQ5YGYGSrxqK8HX7WCJ8QTLjd03g=;
+	b=FvIUNKYusS0KxWFeO94ePJQnUmhCeQTigCEmJ3ioDT/k+u8ygenr2eMe9eBeWcvznN2m2X
+	fiz933Df2pGoDhDQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A283813298;
+	Thu,  4 Apr 2024 14:01:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id sqdiJ66yDmaifgAAn2gu4w
+	(envelope-from <vbabka@suse.cz>); Thu, 04 Apr 2024 14:01:18 +0000
+Message-ID: <0cbd9644-5900-4f02-adf8-d3f1182d399b@suse.cz>
+Date: Thu, 4 Apr 2024 16:01:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com>
- <20240402-linked-list-v1-1-b1c59ba7ae3b@google.com> <2f25f21e-fad8-48bb-aa2b-d61bf8909a41@proton.me>
-In-Reply-To: <2f25f21e-fad8-48bb-aa2b-d61bf8909a41@proton.me>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 4 Apr 2024 16:00:53 +0200
-Message-ID: <CAH5fLgjqyfExjckh7KnSLnT+Ok+yjcoJ+DpDkj0gUZRmoz=M8Q@mail.gmail.com>
-Subject: Re: [PATCH 1/9] rust: list: add ListArc
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, 
-	Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, 
-	Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, 
-	Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, 
-	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: page_alloc: use the correct THP order for THP PCP
+Content-Language: en-US
+To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org
+Cc: mgorman@techsingularity.net, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <a25c9e14cd03907d5978b60546a69e6aa3fc2a7d.1712151833.git.baolin.wang@linux.alibaba.com>
+ <76457ec5-d789-449b-b8ca-dcb6ceb12445@suse.cz>
+ <30bef3d6-3381-491e-a00a-bd1fb7e8d8f8@linux.alibaba.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <30bef3d6-3381-491e-a00a-bd1fb7e8d8f8@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -4.29
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.29 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[alibaba.com:email]
 
-On Wed, Apr 3, 2024 at 5:51=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
-> wrote:
->
-> On 02.04.24 14:16, Alice Ryhl wrote:
-> > +impl<T: ListArcSafe<ID>, const ID: u64> ListArc<T, ID> {
-> > +    /// Constructs a new reference counted instance of `T`.
-> > +    pub fn try_new(contents: T) -> Result<Self, AllocError> {
-> > +        Ok(Self::from_unique(UniqueArc::try_new(contents)?))
-> > +    }
-> > +
-> > +    /// Use the given initializer to in-place initialize a `T`.
-> > +    ///
-> > +    /// If `T: !Unpin` it will not be able to move afterwards.
-> > +    pub fn pin_init<E>(init: impl PinInit<T, E>) -> error::Result<Self=
->
-> > +    where
-> > +        Error: From<E>,
-> > +    {
-> > +        Ok(Self::from_pin_unique(UniqueArc::pin_init(init)?))
-> > +    }
->
-> pin-init has a general trait for this: InPlaceInit. I don't know if the
-> other functions that it provides would help you.
+On 4/4/24 2:19 PM, Baolin Wang wrote:
+> 
+> 
+> On 2024/4/4 18:03, Vlastimil Babka wrote:
+>> On 4/3/24 3:47 PM, Baolin Wang wrote:
+>>> Commit 44042b449872 ("mm/page_alloc: allow high-order pages to be stored
+>>> on the per-cpu lists") extends the PCP allocator to store THP pages, and
+>>> it determines whether to cache THP pags in PCP by comparing with pageblock_order.
+>>> But the pageblock_order is not always equal to THP order, it might also
+>>> be MAX_PAGE_ORDER, which could prevent PCP from caching THP pages.
+>>>
+>>> Therefore, using HPAGE_PMD_ORDER instead to determine the need for caching
+>>> THP for PCP can fix this issue
+>>>
+>>> Fixes: 44042b449872 ("mm/page_alloc: allow high-order pages to be stored on the per-cpu lists")
+>>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+>> 
+>> IIUC this happens with CONFIG_HUGETLB_PAGE disabled because HUGETLBFS is
+>> disabled? But THPs are still enabled? I think there might be more of THP
+> 
+> Right, and seems the Powerpc arch will set pageblock_order via 
+> set_pageblock_order() when the huge page sizes are variable (not sure if 
+> this is always equal to THP order).
+> 
+> Moreover, it still does not make sense to use pageblock_order to 
+> indicate a THP page, especially when we already have HPAGE_PMD_ORDER to 
+> represent THP.
+> 
+>> working suboptimally in that case with pageblock_order being larger
+>> (MAX_PAGE_ORDER).
+>> 
+>> In other words, should be rather make pageblock_order itself defined as
+>> 
+>>   min_t(unsigned int, HPAGE_PMD_ORDER, MAX_PAGE_ORDER)
+>> 
+>> in case with !CONFIG_HUGETLB_PAGE but THP enabled.
+> 
+> Yes, this makes sense to me (I wonder why this wasn't done before?). I 
+> can create a seperate patch to do this, what do you think? Thanks.
 
-I will use that.
-
-> > +}
-> > +
-> > +impl<T, const ID: u64> ListArc<T, ID>
-> > +where
-> > +    T: ListArcSafe<ID> + ?Sized,
-> > +{
-> > +    /// Convert a [`UniqueArc`] into a [`ListArc`].
-> > +    pub fn from_unique(mut unique: UniqueArc<T>) -> Self {
-> > +        // SAFETY: We have a `UniqueArc`, so there is no `ListArc`.
-> > +        unsafe { T::on_create_list_arc_from_unique(&mut unique) };
-> > +        let arc =3D Arc::from(unique);
-> > +        // SAFETY: We just called `on_create_list_arc_from_unique` on =
-an arc without a `ListArc`,
-> > +        // so we can create a `ListArc`.
-> > +        unsafe { Self::transmute_from_arc(arc) }
-> > +    }
-> > +
-> > +    /// Convert a pinned [`UniqueArc`] into a [`ListArc`].
-> > +    pub fn from_pin_unique(unique: Pin<UniqueArc<T>>) -> Self {
-> > +        // SAFETY: We continue to treat this pointer as pinned after t=
-his call, since `ListArc`
-> > +        // implicitly pins its value.
->
-> This is not sufficient, since you also rely on `Self::from_unique` to
-> handle the parameter as if it were pinned, which it does not. Since it
-> calls `T::on_create_list_arc_from_unique` which just gets a `&mut self`
-> as a parameter and it could move stuff out.
-
-I'll swap these so that from_unique calls from_pin_unique instead.
-I'll also change on_create_list_arc_from_unique to take a Pin<&mut
-Self>.
-
-> > +        Self::from_unique(unsafe { Pin::into_inner_unchecked(unique) }=
-)
-> > +    }
-> > +
-> > +    /// Like [`from_unique`], but creates two `ListArcs`.
-> > +    ///
-> > +    /// The two ids must be different.
-> > +    ///
-> > +    /// [`from_unique`]: ListArc::from_unique
-> > +    pub fn pair_from_unique<const ID2: u64>(mut unique: UniqueArc<T>) =
--> (Self, ListArc<T, ID2>)
-> > +    where
-> > +        T: ListArcSafe<ID2>,
-> > +    {
-> > +        assert_ne!(ID, ID2);
->
-> Can this be a `build_assert!`?
-
-Most likely.
-
-> > +
-> > +        // SAFETY: We have a `UniqueArc`, so we can call this method.
->
-> I liked the comment from above better:
->
->      // SAFETY: We have a `UniqueArc`, so there is no `ListArc`.
->
-> Maybe use the variation "so there are no `ListArc`s for any ID.".
-
-Will do.
-
-> > +        unsafe { <T as ListArcSafe<ID>>::on_create_list_arc_from_uniqu=
-e(&mut unique) };
-> > +        // SAFETY: We have a `UniqueArc`, so we can call this method. =
-The two ids are not equal.
-> > +        unsafe { <T as ListArcSafe<ID2>>::on_create_list_arc_from_uniq=
-ue(&mut unique) };
-> > +
-> > +        let arc1 =3D Arc::from(unique);
-> > +        let arc2 =3D Arc::clone(&arc1);
-> > +
-> > +        // SAFETY: We just called `on_create_list_arc_from_unique` on =
-an arc without a `ListArc`,
-> > +        // so we can create a `ListArc`.
->
-> I would mention the two different IDs again.
-
-Sure.
-
-> > +        unsafe {
-> > +            (
-> > +                Self::transmute_from_arc(arc1),
-> > +                ListArc::transmute_from_arc(arc2),
-> > +            )
-> > +        }
-> > +    }
-> > +
-> > +    /// Like [`pair_from_unique`], but uses a pinned arc.
-> > +    ///
-> > +    /// The two ids must be different.
-> > +    ///
-> > +    /// [`pair_from_unique`]: ListArc::pair_from_unique
-> > +    pub fn pair_from_pin_unique<const ID2: u64>(
-> > +        unique: Pin<UniqueArc<T>>,
-> > +    ) -> (Self, ListArc<T, ID2>)
-> > +    where
-> > +        T: ListArcSafe<ID2>,
-> > +    {
-> > +        // SAFETY: We continue to treat this pointer as pinned after t=
-his call, since `ListArc`
-> > +        // implicitly pins its value.
-> > +        Self::pair_from_unique(unsafe { Pin::into_inner_unchecked(uniq=
-ue) })
-> > +    }
-> > +
-> > +    /// Transmutes an [`Arc`] into a `ListArc` without updating the tr=
-acking inside `T`.
-> > +    ///
-> > +    /// # Safety
-> > +    ///
-> > +    /// * The value must not already have a `ListArc` reference.
-> > +    /// * The tracking inside `T` must think that there is a `ListArc`=
- reference.
-> > +    #[inline]
-> > +    unsafe fn transmute_from_arc(me: Arc<T>) -> Self {
-> > +        // INVARIANT: By the safety requirements, the invariants on `L=
-istArc` are satisfied.
-> > +        // SAFETY: ListArc is repr(transparent).
-> > +        unsafe { core::mem::transmute(me) }
->
-> Why do you need a transmute here? Can't you just construct the struct?
->
->      Self { arc: me }
-
-Yeah, I guess that works.
-
-Alice
+It probably wasn't anticipated that hugetlbfs would be disabled and THP
+enabled. If you can create such patch, great!
 
