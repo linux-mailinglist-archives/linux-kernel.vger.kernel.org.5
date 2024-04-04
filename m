@@ -1,75 +1,67 @@
-Return-Path: <linux-kernel+bounces-131666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ACDF898A94
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:02:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A316898A8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:00:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 679301C283FE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:02:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 90FC0B27814
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:00:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B2F65C8FE;
-	Thu,  4 Apr 2024 15:00:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O849EgRl"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88581D551;
+	Thu,  4 Apr 2024 15:00:18 +0000 (UTC)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D41E21C2A1;
-	Thu,  4 Apr 2024 15:00:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED7B1CF8B;
+	Thu,  4 Apr 2024 15:00:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712242843; cv=none; b=fV7gdlVtvkKOI31MSL7DM4m21aqMiL3ufXE0QO0Nd35wrEc3es3c3UXvLkWQEF6JRLrvv4RAhPFgDrlnDH6NFzabFv+1l2ONsN5MTZtLkfcUacl/wI96y2yX7e9HaLJwjTrD0xeuCq5LASWqoJ6euJA9naN4M+ZI5Jm8jeJWy7M=
+	t=1712242818; cv=none; b=CRNfybPIRhvpTZA0hJFBp12i1YiG6kJd7xG5RsVWqlhoO+XSeY0uf9ifc9vGnEgaOTRn2cNMfwpIwi6vzVe1a4ZilY14GntSAblGBKJdCbkLhLkc3EnAZr9Bl5m0EY16baucx+qk7lHLDjUg09ba5/GMIyukH4sGjUVJgrLtQJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712242843; c=relaxed/simple;
-	bh=k0VeJYbpn/TShgzYqdD2a34SZlW9LgfGRcTUiFmDZpg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cMQ9fP8BibXJM8BbKrKLXn4ZossHTYtyIxage2zWNovppJJpOptE2udlXFLmW0TipZb3uUNRxhbNY369njcOLCAjRISb+Ix7G3uIBp2w22bT5ExJoQwfquifMj8eTqAvOBmksgKTszyQc1QvjK58QNxTjzbhDxW8VrmHRTVRZIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O849EgRl; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712242842; x=1743778842;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=k0VeJYbpn/TShgzYqdD2a34SZlW9LgfGRcTUiFmDZpg=;
-  b=O849EgRlT3B2Zfy6hyTh+yMgUlPyzGLPyEHFn8+ZEELo2+N7Axwp760U
-   DGdhKOvNf2EGCOzUuy6FsJHPHbzRLHCLHSGJYq+AeW0y5xDXda1Gu55z8
-   PXvdiF7+aVcUqREMdZ8vSCwoKowcTk2FNqKcc7ET06B2mBfgvxGjzM0t/
-   9p030X40HU/zsIge/z9BDk1IbooLO/HwOgSw8wkNpf30heMan2gxU0nIO
-   14/XFOUkKdTtqueVHR8uj6ihRyAD+ukpx0OFgoHQMgyUMMT+QrwPTGqZz
-   vHS1pWGCcLmW3F0DiSZY0/Lu6LLSVG2DFAHu7jimAga+TUnDaRtQPKL2D
-   A==;
-X-CSE-ConnectionGUID: Xw7L3KaYT6qE5fb+DpLugQ==
-X-CSE-MsgGUID: Ho72HPApTxm6FQ8oLsYZPQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7766868"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="7766868"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 08:00:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="937086705"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="937086705"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Apr 2024 08:00:38 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 28DED812; Thu,  4 Apr 2024 18:00:37 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org
-Cc: Jiri Slaby <jirislaby@kernel.org>,
-	Yicong Yang <yangyicong@hisilicon.com>,
-	Tony Lindgren <tony@atomide.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: [PATCH v1 1/1] serial: core: Clearing the circular buffer before NULLifying it
-Date: Thu,  4 Apr 2024 17:59:26 +0300
-Message-ID: <20240404150034.41648-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1712242818; c=relaxed/simple;
+	bh=eMuaYgx01EBMtw3uBUV9HF4Gnz06WvJHbf59WwPGPO8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fvt5lviw6L7D2HMmnoVZ6GqwDI65oQLtDwSZlcN+UqDSGYC0DMyZBRu7sg8+Ai2Ro0lgkE8+s5xEh4RoVNBCXWeZPD2lQWL9z0UzRlxiXg0v56I5dhnRSsu1ShprsnqTKeC0luT1PpWfUYJ+dXhX1CCeyxTR27whRKu5tbKhpoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-516d04fc04bso953675e87.2;
+        Thu, 04 Apr 2024 08:00:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712242815; x=1712847615;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b5ToI3bzdZhzvl18q+80iRB/qtFJZwodL1fIQlb9Cc0=;
+        b=hve+gMiY0/wvZgonux7F8XM8IMZFI/EydnVPsdV7z9gXNrdT3GD/6oxFkxj2/sW006
+         VSBWBkCtHnuxdHCVExhQjElWmN/7GyNtBxxW9gQqPJVcDfN60BnsM1fgubtNn4lZ/t99
+         kErb9i3zWS6SUpcZQgiF1zSWDBvPcZSidq4bpXLgaYCOK8BrdsDf5Gk6gOhv/WgjspaC
+         1o766RaB199zPCIdTb7jt90vlhPaunUjokbFtX73BDZC8JcswVBvb9GQ93uCRBOab1G+
+         yyHxWVTvOE6knmKMKaqswr0b5Rs7xO/80Ix1OaX30dH56iiReNVJ3ya9BJm4ui0YajpI
+         lgoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUqwxuIyh9NnxZDsWY4MfJDDru0PPE6cMhbzkT5SRkSAAUy0UyOOL2hp68MCx1b9sro9EBGitd/SRZDHKAquX2TUObE+zNV
+X-Gm-Message-State: AOJu0YwOnFDHOPwsz6NIKRiay+ASBJNhVQa1zWQ+HQx0DzXHWH2XLOh4
+	R/Txs7g5bMfHNGbLtwBKxI7PNqM7ENqEb517lO6l2AWH172xIssj
+X-Google-Smtp-Source: AGHT+IEAeiQoYh1EXhCv9LPSM8dKxIblZUfzpr0UJ3k4fzxeqtdoxZg6Uu+jFimyiCCRe0s87UWktw==
+X-Received: by 2002:ac2:4563:0:b0:513:7e83:b3f2 with SMTP id k3-20020ac24563000000b005137e83b3f2mr2262791lfm.45.1712242814063;
+        Thu, 04 Apr 2024 08:00:14 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-117.fbsv.net. [2a03:2880:30ff:75::face:b00c])
+        by smtp.gmail.com with ESMTPSA id kg26-20020a17090776fa00b00a449026672esm9154370ejc.81.2024.04.04.08.00.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 08:00:13 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: kuba@kernel.org,
+	davem@davemloft.net,
+	pabeni@redhat.com,
+	edumazet@google.com
+Cc: linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH net-next 0/3] net: dqs: optimize if stall threshold is not set
+Date: Thu,  4 Apr 2024 07:59:29 -0700
+Message-ID: <20240404145939.3601097-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -78,58 +70,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The circular buffer is NULLified in uart_tty_port_shutdown()
-under the spin lock. However, the PM or other timer based callbacks
-may still trigger after this event without knowning that buffer pointer
-is not valid. Since the serial code is a bit inconsistent in checking
-the buffer state (some rely on the head-tail positions, some on the
-buffer pointer), it's better to have both aligned, i.e. buffer pointer
-to be NULL and head-tail possitions to be the same, meaning it's empty.
-This will prevent asynchronous calls to dereference NULL pointer as
-reported recently in 8250 case:
+Here are three patches aimed at enhancing the Dynamic Queue Limit (DQL)
+subsystem within the networking stack.
 
-  BUG: kernel NULL pointer dereference, address: 00000cf5
-  Workqueue: pm pm_runtime_work
-  EIP: serial8250_tx_chars (drivers/tty/serial/8250/8250_port.c:1809)
-  ...
-  ? serial8250_tx_chars (drivers/tty/serial/8250/8250_port.c:1809)
-  __start_tx (drivers/tty/serial/8250/8250_port.c:1551)
-  serial8250_start_tx (drivers/tty/serial/8250/8250_port.c:1654)
-  serial_port_runtime_suspend (include/linux/serial_core.h:667 drivers/tty/serial/serial_port.c:63)
-  __rpm_callback (drivers/base/power/runtime.c:393)
-  ? serial_port_remove (drivers/tty/serial/serial_port.c:50)
-  rpm_suspend (drivers/base/power/runtime.c:447)
+The first two commits involve code refactoring, while the final patch
+introduces the actual change.
 
-The proposed change will prevent ->start_tx() to be called during
-suspend on shut down port.
+Typically, when DQL is enabled, stall information is always populated
+through dql_queue_stall(). However, this information is only necessary
+if a stall threshold is set, which is stored in struct dql->stall_thrs.
 
-Fixes: 43066e32227e ("serial: port: Don't suspend if the port is still busy")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202404031607.2e92eebe-lkp@intel.com
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
+Although dql_queue_stall() is relatively inexpensive, it is not entirely
+free due to memory barriers and similar overheads.
 
-I have got into the very similar issue while working on max3100 driver.
-I haven't checked the 8250 case, but for mine the culprit is the same
-and this patch fixes it. Hence I assume it will fix the 8250 case as
-well.
+To optimize performance, refrain from calling dql_queue_stall() when no
+stall threshold is set, thus avoiding the processing of unnecessary
+information.
 
- drivers/tty/serial/serial_core.c | 1 +
- 1 file changed, 1 insertion(+)
+Breno Leitao (3):
+  net: dql: Avoid calling BUG() when WARN() is enough
+  net: dql: Separate queue function responsibilities
+  net: dql: Optimize stall information population
 
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
-index a005fc06a077..ba3a674a8bbf 100644
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -1788,6 +1788,7 @@ static void uart_tty_port_shutdown(struct tty_port *port)
- 	 * Free the transmit buffer.
- 	 */
- 	uart_port_lock_irq(uport);
-+	uart_circ_clear(&state->xmit);
- 	buf = state->xmit.buf;
- 	state->xmit.buf = NULL;
- 	uart_port_unlock_irq(uport);
+ include/linux/dynamic_queue_limits.h | 45 +++++++++++++++++-----------
+ 1 file changed, 27 insertions(+), 18 deletions(-)
+
 -- 
-2.43.0.rc1.1.gbec44491f096
+2.43.0
 
 
