@@ -1,57 +1,57 @@
-Return-Path: <linux-kernel+bounces-131662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131663-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4547E898A8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:00:48 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA1BF898A8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:01:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBAD81F28E78
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:00:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2457B1C28419
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:01:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A90C8129E92;
-	Thu,  4 Apr 2024 15:00:21 +0000 (UTC)
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F2CF12AAEC;
+	Thu,  4 Apr 2024 15:00:25 +0000 (UTC)
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E6B684FC8;
-	Thu,  4 Apr 2024 15:00:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12AE312AAD9;
+	Thu,  4 Apr 2024 15:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712242821; cv=none; b=KOtc4m0F8zT++UxjFkJ9IJlrz4ACDiWCZ98CGpMyN6ntfUqEuzi2rfafICO+xgwqOdD6oYhTsty90znt7ibKH87vW3CsHB9EYGPJxsjE/xGiBSy38YgyR9YEkrirKMpnESJbc2RmhlgvkLalWWmKOIdWoc1oF+42wqkt6cOwdNY=
+	t=1712242824; cv=none; b=FZjXuTef7qgolFGA7i7S7R3M/yxkIVVLdlF1M3qr9rCsTF2Y6s7PRhqx3ZYuf5fNk6JgFpKnJYUVDiWepDvbpxD6rN0wS/z/aCyaqn8clPnFX54D/tUXYbCqUzZXkZ68sIr9aJXIjtrYM+GDSu7Gh9xQLefiXBNZmtlrTS4OTqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712242821; c=relaxed/simple;
-	bh=Ymi8vcGeV5U25n5hHY6p/NSyc58XMyU2LXdmqZKED6g=;
+	s=arc-20240116; t=1712242824; c=relaxed/simple;
+	bh=QPTI0Nkyu1TM5zoNdUKd64u7ifIX9UASRm9jdOshan0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RLawcU2A8v6b1Hv4vaW32Q4sbwBihdxWxmfCR2CBi3jF4TAVeTA1hwe6b9VRfmqU81Al1KMeVEiWIfWE/nJ1cR0YKwnV1TurPwSjglMTz+duMmZSxzZM3wiMKRKwQ/tGHVfzIqjfa15Xbn2II8Udga5ekZY4RP3FR0SA+3zCMHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.46
+	 MIME-Version; b=M3tBTKWWcgmencDmj3NtxQJjMPSUMCk7m5LQ8smJabSdMDiiDUxqR00P9l3yxhr0820dgzdSWkf3nxpAcAovFbAAVzw0SwEtBwyyQyiNpe05WvnTG+iVdTsFk6wnf9W+gazPbaWpWwN9zbO3EhEVLwnQPrxXNE079gDq+/3qoIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56dc9955091so1217977a12.1;
-        Thu, 04 Apr 2024 08:00:19 -0700 (PDT)
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a4644bde1d4so157826066b.3;
+        Thu, 04 Apr 2024 08:00:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712242818; x=1712847618;
+        d=1e100.net; s=20230601; t=1712242821; x=1712847621;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G8m6X0YutT7uWn1TO1PGQ+ufRs6DUh470J81GT16/S0=;
-        b=wtDzYLEQYJH/LQEbm0HXSvz8SBAecrk6qp13NZoWLfLBLJxNHOZNA5uFVg7ug7WDMm
-         ZKiZWjzuNN8Sz4gg11qD/H8tzR5z8+WzP/BsOHgyY3pRvP6x6DU/xLJrong8/7fYD2Cf
-         lu6ky1CqbM5CjkEMPaWaKPUA0OB/t78t9siQtIU7qF8y8PaPmK28OdfkSocbAbR0lUpN
-         1GbM34FS/ZWm5bfTqIgDI+QFuoZkhg8BIljsY1Je0VTwb9+c1LWLpIcZpg7xrcR+EhC/
-         ddDlvBXS/3XYUHNF/t+T54ZChVGUpZqbwYf7JdZQZ1ne9Tg+/KHvhgr+rLa3oNQ1Gi6k
-         IQLg==
-X-Forwarded-Encrypted: i=1; AJvYcCUT4l2FY+6oQTKjxfcqublV+8f4CDKqDEWy9skxMxkXxQSu5hGOY+AIG+nUjzk5js3l79yaqGI6XAycfUaqVDFJ9QqdvYPK
-X-Gm-Message-State: AOJu0YzSDOAK7jLz1SzvodKThnJ9n+KJTEAuAJfC9soqLJ8P6aTT/InU
-	bIzjdOsS5APwVmdJ37nKSoLDpBHaay9ch6TYaDE4OkJavuoeVPiQ
-X-Google-Smtp-Source: AGHT+IHgDrnndNGS/O8sTH9X+a/XG8RQw4LgcBa9WQKWpxnotxgmsHK9x5rs98HA40BLOsNiHRoIqg==
-X-Received: by 2002:a50:d6da:0:b0:56c:4e2:5a4e with SMTP id l26-20020a50d6da000000b0056c04e25a4emr2050522edj.1.1712242817595;
-        Thu, 04 Apr 2024 08:00:17 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-001.fbsv.net. [2a03:2880:30ff:1::face:b00c])
-        by smtp.gmail.com with ESMTPSA id p12-20020a50c94c000000b005689bfe2688sm9311362edh.39.2024.04.04.08.00.17
+        bh=lEv54p1vC2qDsADoejwxZbGsBSC01L0fD1We714EtHU=;
+        b=guMeSEBdN0MpQtzWfNcRHHABwfxiYsuV1TkR/xRBzVfzF5j5QzgjtdVS3Q6bGvKHP2
+         HobNsFTYxW/ib6eNBiiOsSdP87HbOpFZuRk/buLvbYdlSVNpOaKkT/V5MchEEX7KB594
+         FVGPqchHEKiGWT1dirFOEWuG+Nc0/8o0qXGG7+D9XcWoF00HEWpQqxlAfqZdC+qcUn0h
+         ul66cuswlrgRb5wojBT4aLTiJ9cuaBkAbwoc7kEn8J/X+CkYlvQgs6mDNWnGTN7SkqxK
+         Y6FcUHuadLuWaNCNdeYU/sheP9G618beoDe/kyd98UzKLiYbvduoBHi/KIGdEr1EqzBQ
+         3lkA==
+X-Forwarded-Encrypted: i=1; AJvYcCWa99kotzwU6s+Et61DQrfOJMoQ70ZfhiLM7cTUofEbgAJugRjK8YWOJvkdPv5VM0xeJO1FpPE57i8LrF2Yfq2gLZKZR4Ii
+X-Gm-Message-State: AOJu0YyCt7iQ08S+c4nGpo87x5nWtwAu6HTAis+Fhc9kvCYBHmzNpM2d
+	hQt3G8DH4tBla6+ixInt1bMc4d5w/eXBxki8EsvDzEwxdUoWft+Q
+X-Google-Smtp-Source: AGHT+IGSm1ig6tfkkFYUdM4RDmL18XO0ChJzMqtLdAYzUkO2iv4ZY48462pkyJtczW9Dmnz1a3r3fw==
+X-Received: by 2002:a17:906:4f13:b0:a4a:3557:6be8 with SMTP id t19-20020a1709064f1300b00a4a35576be8mr1840073eju.53.1712242821210;
+        Thu, 04 Apr 2024 08:00:21 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
+        by smtp.gmail.com with ESMTPSA id ky14-20020a170907778e00b00a47459e7371sm9137157ejc.79.2024.04.04.08.00.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 08:00:17 -0700 (PDT)
+        Thu, 04 Apr 2024 08:00:20 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
@@ -59,9 +59,9 @@ To: kuba@kernel.org,
 	edumazet@google.com
 Cc: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH net-next 1/3] net: dql: Avoid calling BUG() when WARN() is enough
-Date: Thu,  4 Apr 2024 07:59:30 -0700
-Message-ID: <20240404145939.3601097-2-leitao@debian.org>
+Subject: [PATCH net-next 2/3] net: dql: Separate queue function responsibilities
+Date: Thu,  4 Apr 2024 07:59:31 -0700
+Message-ID: <20240404145939.3601097-3-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240404145939.3601097-1-leitao@debian.org>
 References: <20240404145939.3601097-1-leitao@debian.org>
@@ -73,33 +73,86 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-If the dql_queued() function receives an invalid argument, WARN about it
-and continue, instead of crashing the kernel.
+The dql_queued() function currently handles both queuing object counts
+and populating bitmaps for reporting stalls.
 
-This was raised by checkpatch, when I am refactoring this code (see
-following patch/commit)
+This commit splits the bitmap population into a separate function,
+allowing for conditional invocation in scenarios where the feature is
+disabled.
 
-	WARNING: Do not crash the kernel unless it is absolutely unavoidable--use WARN_ON_ONCE() plus recovery code (if feasible) instead of BUG() or variants
+This refactor maintains functionality while improving code
+organization.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- include/linux/dynamic_queue_limits.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/linux/dynamic_queue_limits.h | 44 ++++++++++++++++------------
+ 1 file changed, 25 insertions(+), 19 deletions(-)
 
 diff --git a/include/linux/dynamic_queue_limits.h b/include/linux/dynamic_queue_limits.h
-index 5693a4be0d9a..ff9c65841ae8 100644
+index ff9c65841ae8..9980df0b7247 100644
 --- a/include/linux/dynamic_queue_limits.h
 +++ b/include/linux/dynamic_queue_limits.h
-@@ -91,7 +91,8 @@ static inline void dql_queued(struct dql *dql, unsigned int count)
+@@ -83,28 +83,11 @@ struct dql {
+ #define DQL_MAX_OBJECT (UINT_MAX / 16)
+ #define DQL_MAX_LIMIT ((UINT_MAX / 2) - DQL_MAX_OBJECT)
+ 
+-/*
+- * Record number of objects queued. Assumes that caller has already checked
+- * availability in the queue with dql_avail.
+- */
+-static inline void dql_queued(struct dql *dql, unsigned int count)
++/* Populate the bitmap to be processed later in dql_check_stall() */
++static inline void dql_queue_stall(struct dql *dql)
  {
  	unsigned long map, now, now_hi, i;
  
--	BUG_ON(count > DQL_MAX_OBJECT);
+-	if (WARN_ON_ONCE(count > DQL_MAX_OBJECT))
+-		return;
+-
+-	dql->last_obj_cnt = count;
+-
+-	/* We want to force a write first, so that cpu do not attempt
+-	 * to get cache line containing last_obj_cnt, num_queued, adj_limit
+-	 * in Shared state, but directly does a Request For Ownership
+-	 * It is only a hint, we use barrier() only.
+-	 */
+-	barrier();
+-
+-	dql->num_queued += count;
+-
+ 	now = jiffies;
+ 	now_hi = now / BITS_PER_LONG;
+ 
+@@ -134,6 +117,29 @@ static inline void dql_queued(struct dql *dql, unsigned int count)
+ 		WRITE_ONCE(DQL_HIST_ENT(dql, now_hi), map | BIT_MASK(now));
+ }
+ 
++/*
++ * Record number of objects queued. Assumes that caller has already checked
++ * availability in the queue with dql_avail.
++ */
++static inline void dql_queued(struct dql *dql, unsigned int count)
++{
 +	if (WARN_ON_ONCE(count > DQL_MAX_OBJECT))
 +		return;
- 
- 	dql->last_obj_cnt = count;
- 
++
++	dql->last_obj_cnt = count;
++
++	/* We want to force a write first, so that cpu do not attempt
++	 * to get cache line containing last_obj_cnt, num_queued, adj_limit
++	 * in Shared state, but directly does a Request For Ownership
++	 * It is only a hint, we use barrier() only.
++	 */
++	barrier();
++
++	dql->num_queued += count;
++
++	dql_queue_stall(dql);
++}
++
+ /* Returns how many objects can be queued, < 0 indicates over limit. */
+ static inline int dql_avail(const struct dql *dql)
+ {
 -- 
 2.43.0
 
