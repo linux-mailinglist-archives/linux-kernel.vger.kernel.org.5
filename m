@@ -1,85 +1,84 @@
-Return-Path: <linux-kernel+bounces-131037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD8AB898245
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:32:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 568C1898249
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:35:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6479C1F2353D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:32:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD66BB219EB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:35:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F82259B67;
-	Thu,  4 Apr 2024 07:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546831CD3C;
+	Thu,  4 Apr 2024 07:35:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NI2aZhhX"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nnrs/DkW"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381F359B75
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:32:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E984645970
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:34:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712215934; cv=none; b=i1GBLe6Hpi4hLKe5fCdfvspPer12y0J2ZluwL7He+5DkJgCkvsfpmoBDDU+rPzPQfXiWtADk8e+aCpvGcYL8JjJNCgiNsF6+vDzgs+3RO0PNg3HnhsyDe7niV6m9XFo9xO8ltBFdV3pALpfSB3EUqndMR9r+OTTwTo/pyCwB1/w=
+	t=1712216100; cv=none; b=Z/uxNUgGYJCKAVPWbtZ8ZhBTpVcMzY6PURV0SDpQxuuQh7m3ivciOW+WQIDpFOCeOLIpLqK/WEro7xCMxImNlBAhFNkMdlrHlMAEVvVpX+swokVdAyANoQz+9Vs9B3jL32Mgt5fUcheYbj17J+tnxEeHeGWho1xDLoD1X2VGChY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712215934; c=relaxed/simple;
-	bh=Ls3PpIQ2YyG8xs+4rpQ3hM8m7hScp+Qun/2/ykjbdKw=;
+	s=arc-20240116; t=1712216100; c=relaxed/simple;
+	bh=W7e7+MAaGHn/4hurkaunIgg5XW7NXfDrp6QPkdem9OM=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=AzEzFxFtR7vDiopj+lRxQLb86hekz2zeR6f6qp2OMxWvBGUxWwhxsGx+C2Fbfa5SJyEdu2PaqwL8Tv21oos374i4MPsTDzmlSlsIt6BsWzrtuL1kxLK+Fqo9y+D2zJzadeO60uFg3X6DI3NBDeLm+9JKMutgLCBhTv6TyIZuZK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NI2aZhhX; arc=none smtp.client-ip=209.85.208.42
+	 Content-Disposition; b=cjnQXQGxL50Wck1r/UFCyXYQlG/72xjnEpq6ygiu/P2gvUJY/4lovXtnvaKRoZM9IMLilZMd6pjX3EvUojO5o3+R8ZH9eZ/mXOzXqaDOP27FdvYU8c+52cD6ehuyDWpTSn/DUC8XWwzp4sbIoLUlroKRz4ptzsc44/CB645BWiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nnrs/DkW; arc=none smtp.client-ip=209.85.208.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-56e22574eb3so42520a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 00:32:13 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso619386a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 00:34:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712215931; x=1712820731; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1712216097; x=1712820897; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=//sAcOVGiFM67Mc+7u0Jl/+UyvrH+ecyO1z9cymLgoc=;
-        b=NI2aZhhXCQ6QWkJfbx1MpJwSI0s0ENFJ4MmReW/55Nyo4LTX5UfIoPPFXSyvhXGtoZ
-         vqu05wb51knuofbAk/7YoU8EFjH8BDWNOEFR1Zosl/twhmwQM29I1M1+y/Jrwt02JnZF
-         OMoJJ6La5xVZdX56nO6UyO+J5ZQA1DpFSzVWpjnhSe7BOfZtr4s/KPJ6nD4TUiMWo+xk
-         JyOt86SFO48KTzXeZNDwoPp2uF4uXwbY14XNO7YiJ9LUmJJCbFjouyeZpEcuYyMvsS5t
-         XPZojwzwRKCOPoWJgWhwFAKdyIRQ14xpHVDLeAmOhU2HRq/xnNDo3rUkEXbV3dprPqNg
-         /OpA==
+        bh=3vvDcJ9owmc8iAbT8weYpAHg2loA4AsSc9MH9lVIiwo=;
+        b=nnrs/DkWGLkcUnFrcBSp1PkLO3s6A5k3KmQ0grKi17XCQqzSTHLrtItsEuZDisMWGo
+         EctrGpmi9HkjVKqpcsiiXMLRxAuND4V9nkEelwXZAAJiheftkBQIi3X2f2uSGu1zapPI
+         R7VtumxnjFF7eToybgMKC5zhE44rK2IRmASyAEMpae0Ed5qF3ADvpaqdEXuRbQvbndKP
+         XpGZ7BYH+51FRMUsPddsu5rIgW728eKI3CjFdXf8JzzRMlEsHwlyVdK5Vq3xta7GWMJk
+         s8oeFST5Cf4VrIE76KtxLHLybEctlHqY2foWSMeH1dq5PyzawZIW75iD+Rn/Gjy5KbLm
+         +gkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712215931; x=1712820731;
+        d=1e100.net; s=20230601; t=1712216097; x=1712820897;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=//sAcOVGiFM67Mc+7u0Jl/+UyvrH+ecyO1z9cymLgoc=;
-        b=Tu9UBWXi4NmIEOUmfKWOkBLlA2j3AEFiuSoY2OEMueIp7PpC5pu/rO3uo82araQdVC
-         IMxrlJ1YwhhbPU0QI95BGzP5siVfqiZg2BzyXhf4VuYH+6TJAhdUKvQSyUhtt20VFB8f
-         aPIkp02EXgL1m1XdoxJzIbv34ZFbLHZOxIRfnksBmZ/5RObu/8elgdndd/dC521Seeoq
-         4hlrkbztWoN/slfGqUE8qff/TLPHm+IKEl+K2gf2/qT9qxvKQS+oycYBh3OQ9bBuxFFv
-         KMCKVNoI07Hw8lFjOuf5N9OWk22WnQU2juj/A4D5z9jDRMlfPJScI/RQQHEggj8Kk+4w
-         1n/A==
-X-Forwarded-Encrypted: i=1; AJvYcCUcxvFahLDKtJ/EcsmzlshKZ69BMV/4VHW+uY43tbV/UTm8vJEciVpTVe7aGjZKoFHnf0N+qGLeCPFaZJz8vKGYFoM6B+Ke5QSVkI5k
-X-Gm-Message-State: AOJu0Yxr38ByX0piTnNzcbzFRopAK4GvBpna4HF6Uzci/HUtAzag5FOX
-	1JfBKvIHIEWF2u+OtEOtLkHVCc8VbdmmLYMxWIIXXE6QpcJ9DA4X5//3reJp/CI=
-X-Google-Smtp-Source: AGHT+IHGoMQHATjr9mp/W1xlbFnASpGskQs04R+ZSL+kTmOQTHyHF5yua8U3fbJLoFFE5vCnaPng5A==
-X-Received: by 2002:a50:8add:0:b0:56d:ee61:6874 with SMTP id k29-20020a508add000000b0056dee616874mr1078667edk.20.1712215931473;
-        Thu, 04 Apr 2024 00:32:11 -0700 (PDT)
+        bh=3vvDcJ9owmc8iAbT8weYpAHg2loA4AsSc9MH9lVIiwo=;
+        b=HfE0aZ0MSQql5IlVDmTSdLqc8AlsbWnSNFOw7H7Mx4viBQPYoDqbeBuHXrWffKPn9V
+         8IkvhHv+bFv/2/35Nw+2PgRearbIVvGyQhXeqqNrLhHoCEdD52x5A9sIXPifxQuj3okV
+         45isza5ZPYoN+xKU5ILeC0B9d6RgbTPdQ6/6TSRVhePs88nvbmJLTFWRQ31aJU044o3g
+         MuWwwhpyq4z/vdXIOemUaX/1ngKjLG8Kxtz8wRwySmfceMRkzSyZvT1s1X/v8/uV0tBN
+         b9reiGnMVGMyWyXP1RsdUmmL77r7Ppr1J9uw1wVvesHMoPEemx3IPvVDk9sP02hcWvjI
+         b+9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXSLlSHaagUtZD+q66rSa9wmV5Aozmse7k8xoLIwsugXLg9ukwQtt4boFgj6xnjwCAN6Hr4iqDMKrcENW24TbofsS8cmkDyorq3+Wf3
+X-Gm-Message-State: AOJu0YwMNz2epXoQQJAlfunwIBPeeXeqPtKopV50A4Aon259XyyOtuJa
+	74X+Jml6KVkbLK4tEwFXlzuQVqXgGvWIN7x3muyTWJGCs9KnIQq3o6wBw760Zog=
+X-Google-Smtp-Source: AGHT+IFCHnDsjzPWO/g8+fskkF9IjfvKWtyHSkQJxk4CyAoa2tmcdrKpdgXe07Ln6IRwLPEh3cO7iQ==
+X-Received: by 2002:a50:9301:0:b0:56e:22a1:a9a2 with SMTP id m1-20020a509301000000b0056e22a1a9a2mr18956eda.33.1712216097224;
+        Thu, 04 Apr 2024 00:34:57 -0700 (PDT)
 Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id s2-20020aa7cb02000000b0056c0d96e099sm8845373edt.89.2024.04.04.00.32.10
+        by smtp.gmail.com with ESMTPSA id g28-20020a056402321c00b0056c1c2b851esm8934205eda.0.2024.04.04.00.34.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 00:32:11 -0700 (PDT)
-Date: Thu, 4 Apr 2024 10:32:07 +0300
+        Thu, 04 Apr 2024 00:34:56 -0700 (PDT)
+Date: Thu, 4 Apr 2024 10:34:53 +0300
 From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Rohit Visavalia <rohit.visavalia@amd.com>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Michal Simek <michal.simek@amd.com>,
-	Vishal Sagar <vishal.sagar@amd.com>,
-	Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>,
+	Peter Ujfalusi <peter.ujfalusi@linux.intel.com>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+	Daniel Baluta <daniel.baluta@nxp.com>,
+	Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+	Takashi Iwai <tiwai@suse.com>, sound-open-firmware@alsa-project.org,
+	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
 	kernel-janitors@vger.kernel.org
-Subject: [PATCH] drm: xlnx: db: fix a memory leak in probe
-Message-ID: <86def134-9537-4939-912e-3a424e3a75b6@moroto.mountain>
+Subject: [PATCH] ASoC: SOF: Clean up sof_ipc_flood_dfs_write()
+Message-ID: <a35dded2-392b-4ccb-9dbb-d782ac9b6547@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,27 +89,72 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Mailer: git-send-email haha only kidding
 
-Free "dp" before returning.
+This function doesn't support partial writes so using
+simple_write_to_buffer() doesn't really make sense.  It's better to
+just use copy_from_user().
 
-Fixes: be318d01a903 ("drm: xlnx: dp: Reset DisplayPort IP")
 Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- drivers/gpu/drm/xlnx/zynqmp_dp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sof/sof-client-ipc-flood-test.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-index 5a40aa1d4283..8a15d18a65a6 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-@@ -1716,7 +1716,7 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub)
+diff --git a/sound/soc/sof/sof-client-ipc-flood-test.c b/sound/soc/sof/sof-client-ipc-flood-test.c
+index c0d6723aed59..1b2e9e25a836 100644
+--- a/sound/soc/sof/sof-client-ipc-flood-test.c
++++ b/sound/soc/sof/sof-client-ipc-flood-test.c
+@@ -160,15 +160,20 @@ static ssize_t sof_ipc_flood_dfs_write(struct file *file, const char __user *buf
+ 	unsigned long ipc_count = 0;
+ 	struct dentry *dentry;
+ 	int err;
+-	size_t size;
+ 	char *string;
+ 	int ret;
  
- 	ret = zynqmp_dp_reset(dp, true);
- 	if (ret < 0)
--		return ret;
-+		goto err_free;
++	if (*ppos != 0)
++		return -EINVAL;
++
+ 	string = kzalloc(count + 1, GFP_KERNEL);
+ 	if (!string)
+ 		return -ENOMEM;
  
- 	ret = zynqmp_dp_reset(dp, false);
- 	if (ret < 0)
+-	size = simple_write_to_buffer(string, count, ppos, buffer, count);
++	if (copy_from_user(string, buffer, count)) {
++		ret = -EFAULT;
++		goto out;
++	}
+ 
+ 	/*
+ 	 * write op is only supported for ipc_flood_count or
+@@ -198,7 +203,7 @@ static ssize_t sof_ipc_flood_dfs_write(struct file *file, const char __user *buf
+ 	/* limit max duration/ipc count for flood test */
+ 	if (flood_duration_test) {
+ 		if (!ipc_duration_ms) {
+-			ret = size;
++			ret = count;
+ 			goto out;
+ 		}
+ 
+@@ -207,7 +212,7 @@ static ssize_t sof_ipc_flood_dfs_write(struct file *file, const char __user *buf
+ 			ipc_duration_ms = MAX_IPC_FLOOD_DURATION_MS;
+ 	} else {
+ 		if (!ipc_count) {
+-			ret = size;
++			ret = count;
+ 			goto out;
+ 		}
+ 
+@@ -231,9 +236,9 @@ static ssize_t sof_ipc_flood_dfs_write(struct file *file, const char __user *buf
+ 	if (err < 0)
+ 		dev_err_ratelimited(dev, "debugfs write failed to idle %d\n", err);
+ 
+-	/* return size if test is successful */
++	/* return count if test is successful */
+ 	if (ret >= 0)
+-		ret = size;
++		ret = count;
+ out:
+ 	kfree(string);
+ 	return ret;
 -- 
 2.43.0
 
