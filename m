@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-131580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B97288989B5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:16:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFB1A8989B8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:16:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C33E61C29AA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:16:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 747E01F2D62C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:16:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E86F1292F2;
-	Thu,  4 Apr 2024 14:15:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8127129E66;
+	Thu,  4 Apr 2024 14:15:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jM9sLNZD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eC98v50z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 740E21292EB;
-	Thu,  4 Apr 2024 14:15:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5C6129A9A;
+	Thu,  4 Apr 2024 14:15:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712240138; cv=none; b=D3eiWxnJD+OdnzGa5mmLkyza3T0dSKsVAcdGD3FYWbgnZvY8oLh7KeH9pjXjp6ERpBKbW3rk3QYtir3p90EYCgl0IKRB4jajbodx+fooapSONlMAY/tDmnrSFM9PeDvcD667j24eALl2Penwb4jgUPauOBTWjQ9q0X7AQ0/UO+8=
+	t=1712240141; cv=none; b=DXR09WqZCqKgPi9LXmhUVEELEKO07Kw24Dd5O4Sv86eIkArbyKIJeQ8+zKrRB9fFebDfqNg9uLzBb/VUA4RuK06T7SnwWt+ZMlOtphJa9oDlx3Oy0PePMpr+OqV9LMgTNQBS6jzCZ4isOilS4eBWgTiwnz4fbObOG25An26CNWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712240138; c=relaxed/simple;
-	bh=3WdnQmshomibzByZClEkGia7PnK6CWBXCQshlze4d+I=;
+	s=arc-20240116; t=1712240141; c=relaxed/simple;
+	bh=+tPhXsIiXNNLRaL9PO2nWdDpnfyN5wkWP/ceOwTMptM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=lMrrNHmBACtU7pIv84o1Mys6SIg52FfYKbcpFufBQMR6lg7KdtszWSZ9P5dA8B4gVE8oyizSlk6pbMq5iYZZOXUhFLgN1mvXmK5SejDu+LnzkDNF9t5aoS34r1Md9dquI134IOzrsWL5UKnkaj1BLHyY9qyBjJenU1TrRNbnJ7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jM9sLNZD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3C55C43390;
-	Thu,  4 Apr 2024 14:15:37 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=OORWihrQyQsoanZvQ2xAUZ0GHGKTU3RxUenmo/7BAI6DrjPVEjD6TK5bXD+lqEZmLeNnnNaAf2x4XSZRph3CAuMaJMMnpOsb+o7YhxivcFT7ADo668QK82v6QRv27uQ24lkMJjuGi0b2vofSObuO9TePTVVfCz2rev9X5MjhYvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eC98v50z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40579C433C7;
+	Thu,  4 Apr 2024 14:15:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712240138;
-	bh=3WdnQmshomibzByZClEkGia7PnK6CWBXCQshlze4d+I=;
+	s=k20201202; t=1712240140;
+	bh=+tPhXsIiXNNLRaL9PO2nWdDpnfyN5wkWP/ceOwTMptM=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=jM9sLNZDJCyGA8EVCGqMJDWNJurpEUFOlM0x6Am4RGRjjBGFRiRaB9NsO5fFyJ+MX
-	 WfUqw+KJneyFVcctw4j3ZS7orXCXOUg5Pu1sdOa8FDJhTvXiU5yDbrCR2eWtNBAKFN
-	 bLgJ1T8jicXImpA6g1Lt8o4fGfDK72CDUb4vMAL/nSi/tmG2SloBvicaq0UXivXFy4
-	 DnyG4Ovj24vn6mgTgb09yM5YwVZrtu3V2eLmld+vPuphTDL9zkSojaf+whzZIb0TUv
-	 tj/mGPGrRMyq2hsY6A98qJHwa9nkCfQViQnXKfehcxbtBHXLfp3x25lTN7u9JglQ5u
-	 qyTiz1YN9aU8g==
+	b=eC98v50zw8xKuQevrDgaMGLl7AICPcIgw1AGIP+N5S641/EZEN6DvSGgeg4IyQhOj
+	 wKXmV/GOGdWnHKGiK/kQlSfh+RflJWZBmfff1gGPBH067goHEhm8u37Bn8h9ev0SBj
+	 dakANYhkjCZ58h8X07U+DeuQn++dAAP/O8q9M4xA9ozXpUMAeNsSeInpVUESVFRmXV
+	 W5lhWYFlylXjh9kM+nNt6QuW7kdMO+aePArtvk4ddSqeO/v916BDzDGIW+vjQ++7nE
+	 E4Ur+BCZFPf83BKCQJKOeLJKJ004A3k3WplGXHp145FLNg/jTFjLJCQAYoZB59EgyJ
+	 s5B01R+uLk/FA==
 From: Rob Herring <robh@kernel.org>
-Date: Thu, 04 Apr 2024 09:15:11 -0500
-Subject: [PATCH 2/3] of: Use scope based kfree() cleanups
+Date: Thu, 04 Apr 2024 09:15:12 -0500
+Subject: [PATCH 3/3] of: Use scope based of_node_put() cleanups
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +51,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240404-dt-cleanup-free-v1-2-c60e6cba8da9@kernel.org>
+Message-Id: <20240404-dt-cleanup-free-v1-3-c60e6cba8da9@kernel.org>
 References: <20240404-dt-cleanup-free-v1-0-c60e6cba8da9@kernel.org>
 In-Reply-To: <20240404-dt-cleanup-free-v1-0-c60e6cba8da9@kernel.org>
 To: Saravana Kannan <saravanak@google.com>
@@ -59,214 +59,287 @@ Cc: Jonathan Cameron <jic23@kernel.org>, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
 X-Mailer: b4 0.13-dev
 
-Use the relatively new scope based kfree() cleanup to simplify error
-handling. Doing so reduces the chances of memory leaks and simplifies
-error paths by avoiding the need for goto statements.
+Use the relatively new scope based of_node_put() cleanup to simplify
+function exit handling. Doing so reduces the chances of forgetting an
+of_node_put() and simplifies error paths by avoiding the need for goto
+statements.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/of/base.c     | 34 ++++++++--------------------------
- drivers/of/dynamic.c  | 11 ++++-------
- drivers/of/resolver.c | 35 +++++++++++++----------------------
- 3 files changed, 25 insertions(+), 55 deletions(-)
+ drivers/of/address.c  | 60 ++++++++++++++++-----------------------------------
+ drivers/of/property.c | 22 ++++++-------------
+ 2 files changed, 26 insertions(+), 56 deletions(-)
 
-diff --git a/drivers/of/base.c b/drivers/of/base.c
-index 8856c67c466a..20603d3c9931 100644
---- a/drivers/of/base.c
-+++ b/drivers/of/base.c
-@@ -16,6 +16,7 @@
- 
- #define pr_fmt(fmt)	"OF: " fmt
- 
-+#include <linux/cleanup.h>
- #include <linux/console.h>
- #include <linux/ctype.h>
- #include <linux/cpu.h>
-@@ -1393,8 +1394,10 @@ int of_parse_phandle_with_args_map(const struct device_node *np,
- 				   const char *stem_name,
- 				   int index, struct of_phandle_args *out_args)
+diff --git a/drivers/of/address.c b/drivers/of/address.c
+index ae46a3605904..f7b2d535a6d1 100644
+--- a/drivers/of/address.c
++++ b/drivers/of/address.c
+@@ -491,7 +491,6 @@ static u64 __of_translate_address(struct device_node *dev,
+ 				  const __be32 *in_addr, const char *rprop,
+ 				  struct device_node **host)
  {
--	char *cells_name, *map_name = NULL, *mask_name = NULL;
--	char *pass_name = NULL;
-+	char *cells_name __free(kfree) = kasprintf(GFP_KERNEL, "#%s-cells", stem_name);
-+	char *map_name __free(kfree) = kasprintf(GFP_KERNEL, "%s-map", stem_name);
-+	char *mask_name __free(kfree) = kasprintf(GFP_KERNEL, "%s-map-mask", stem_name);
-+	char *pass_name __free(kfree) = kasprintf(GFP_KERNEL, "%s-map-pass-thru", stem_name);
- 	struct device_node *cur, *new = NULL;
- 	const __be32 *map, *mask, *pass;
- 	static const __be32 dummy_mask[] = { [0 ... MAX_PHANDLE_ARGS] = cpu_to_be32(~0) };
-@@ -1407,27 +1410,13 @@ int of_parse_phandle_with_args_map(const struct device_node *np,
- 	if (index < 0)
- 		return -EINVAL;
+-	struct device_node *parent = NULL;
+ 	struct of_bus *bus, *pbus;
+ 	__be32 addr[OF_MAX_ADDR_CELLS];
+ 	int na, ns, pna, pns;
+@@ -504,7 +503,7 @@ static u64 __of_translate_address(struct device_node *dev,
  
--	cells_name = kasprintf(GFP_KERNEL, "#%s-cells", stem_name);
--	if (!cells_name)
-+	if (!cells_name || !map_name || !mask_name || !pass_name)
- 		return -ENOMEM;
+ 	*host = NULL;
+ 	/* Get parent & match bus type */
+-	parent = get_parent(dev);
++	struct device_node *parent __free(device_node) = get_parent(dev);
+ 	if (parent == NULL)
+ 		goto bail;
+ 	bus = of_match_bus(parent);
+@@ -573,7 +572,6 @@ static u64 __of_translate_address(struct device_node *dev,
+ 		of_dump_addr("one level translation:", addr, na);
+ 	}
+  bail:
+-	of_node_put(parent);
+ 	of_node_put(dev);
  
--	ret = -ENOMEM;
--	map_name = kasprintf(GFP_KERNEL, "%s-map", stem_name);
--	if (!map_name)
--		goto free;
--
--	mask_name = kasprintf(GFP_KERNEL, "%s-map-mask", stem_name);
--	if (!mask_name)
--		goto free;
--
--	pass_name = kasprintf(GFP_KERNEL, "%s-map-pass-thru", stem_name);
--	if (!pass_name)
--		goto free;
--
- 	ret = __of_parse_phandle_with_args(np, list_name, cells_name, -1, index,
- 					   out_args);
- 	if (ret)
--		goto free;
-+		return ret;
- 
- 	/* Get the #<list>-cells property */
- 	cur = out_args->np;
-@@ -1444,8 +1433,7 @@ int of_parse_phandle_with_args_map(const struct device_node *np,
- 		/* Get the <list>-map property */
- 		map = of_get_property(cur, map_name, &map_len);
- 		if (!map) {
--			ret = 0;
--			goto free;
-+			return 0;
- 		}
- 		map_len /= sizeof(u32);
- 
-@@ -1521,12 +1509,6 @@ int of_parse_phandle_with_args_map(const struct device_node *np,
- put:
- 	of_node_put(cur);
- 	of_node_put(new);
--free:
--	kfree(mask_name);
--	kfree(map_name);
--	kfree(cells_name);
--	kfree(pass_name);
--
- 	return ret;
- }
- EXPORT_SYMBOL(of_parse_phandle_with_args_map);
-diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
-index af7c57a7a25d..43f4e2c93bd2 100644
---- a/drivers/of/dynamic.c
-+++ b/drivers/of/dynamic.c
-@@ -9,6 +9,7 @@
- 
- #define pr_fmt(fmt)	"OF: " fmt
- 
-+#include <linux/cleanup.h>
- #include <linux/of.h>
- #include <linux/spinlock.h>
- #include <linux/slab.h>
-@@ -1019,10 +1020,9 @@ int of_changeset_add_prop_u32_array(struct of_changeset *ocs,
- 				    const u32 *array, size_t sz)
+ 	return result;
+@@ -654,19 +652,16 @@ EXPORT_SYMBOL(of_translate_dma_address);
+ const __be32 *of_translate_dma_region(struct device_node *dev, const __be32 *prop,
+ 				      phys_addr_t *start, size_t *length)
  {
- 	struct property prop;
--	__be32 *val;
--	int i, ret;
-+	__be32 *val __free(kfree) = kcalloc(sz, sizeof(__be32), GFP_KERNEL);
-+	int i;
+-	struct device_node *parent;
++	struct device_node *parent __free(device_node) = __of_get_dma_parent(dev);
+ 	u64 address, size;
+ 	int na, ns;
  
--	val = kcalloc(sz, sizeof(__be32), GFP_KERNEL);
- 	if (!val)
- 		return -ENOMEM;
+-	parent = __of_get_dma_parent(dev);
+ 	if (!parent)
+ 		return NULL;
  
-@@ -1032,9 +1032,6 @@ int of_changeset_add_prop_u32_array(struct of_changeset *ocs,
- 	prop.length = sizeof(u32) * sz;
- 	prop.value = (void *)val;
+ 	na = of_bus_n_addr_cells(parent);
+ 	ns = of_bus_n_size_cells(parent);
  
--	ret = of_changeset_add_prop_helper(ocs, np, &prop);
--	kfree(val);
+-	of_node_put(parent);
 -
--	return ret;
-+	return of_changeset_add_prop_helper(ocs, np, &prop);
- }
- EXPORT_SYMBOL_GPL(of_changeset_add_prop_u32_array);
-diff --git a/drivers/of/resolver.c b/drivers/of/resolver.c
-index b278ab4338ce..2780928764a4 100644
---- a/drivers/of/resolver.c
-+++ b/drivers/of/resolver.c
-@@ -8,6 +8,7 @@
- 
- #define pr_fmt(fmt)	"OF: resolver: " fmt
- 
-+#include <linux/cleanup.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/of.h>
-@@ -74,11 +75,11 @@ static int update_usages_of_a_phandle_reference(struct device_node *overlay,
+ 	address = of_translate_dma_address(dev, prop);
+ 	if (address == OF_BAD_ADDR)
+ 		return NULL;
+@@ -688,21 +683,19 @@ const __be32 *__of_get_address(struct device_node *dev, int index, int bar_no,
  {
- 	struct device_node *refnode;
- 	struct property *prop;
--	char *value, *cur, *end, *node_path, *prop_name, *s;
-+	char *value __free(kfree) = kmemdup(prop_fixup->value, prop_fixup->length, GFP_KERNEL);
-+	char *cur, *end, *node_path, *prop_name, *s;
- 	int offset, len;
- 	int err = 0;
+ 	const __be32 *prop;
+ 	unsigned int psize;
+-	struct device_node *parent;
++	struct device_node *parent __free(device_node) = of_get_parent(dev);
+ 	struct of_bus *bus;
+ 	int onesize, i, na, ns;
  
--	value = kmemdup(prop_fixup->value, prop_fixup->length, GFP_KERNEL);
- 	if (!value)
- 		return -ENOMEM;
+-	/* Get parent & match bus type */
+-	parent = of_get_parent(dev);
+ 	if (parent == NULL)
+ 		return NULL;
++
++	/* match the parent's bus type */
+ 	bus = of_match_bus(parent);
+-	if (strcmp(bus->name, "pci") && (bar_no >= 0)) {
+-		of_node_put(parent);
++	if (strcmp(bus->name, "pci") && (bar_no >= 0))
+ 		return NULL;
+-	}
++
+ 	bus->count_cells(dev, &na, &ns);
+-	of_node_put(parent);
+ 	if (!OF_CHECK_ADDR_COUNT(na))
+ 		return NULL;
  
-@@ -89,23 +90,19 @@ static int update_usages_of_a_phandle_reference(struct device_node *overlay,
+@@ -888,14 +881,13 @@ static u64 of_translate_ioport(struct device_node *dev, const __be32 *in_addr,
+  */
+ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
+ {
+-	struct device_node *node = of_node_get(np);
++	struct device_node *node __free(device_node) = of_node_get(np);
+ 	const __be32 *ranges = NULL;
+ 	bool found_dma_ranges = false;
+ 	struct of_range_parser parser;
+ 	struct of_range range;
+ 	struct bus_dma_region *r;
+ 	int len, num_ranges = 0;
+-	int ret = 0;
  
- 		node_path = cur;
- 		s = strchr(cur, ':');
--		if (!s) {
--			err = -EINVAL;
--			goto err_fail;
+ 	while (node) {
+ 		ranges = of_get_property(node, "dma-ranges", &len);
+@@ -905,10 +897,9 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
+ 			break;
+ 
+ 		/* Once we find 'dma-ranges', then a missing one is an error */
+-		if (found_dma_ranges && !ranges) {
+-			ret = -ENODEV;
+-			goto out;
 -		}
-+		if (!s)
-+			return -EINVAL;
- 		*s++ = '\0';
++		if (found_dma_ranges && !ranges)
++			return -ENODEV;
++
+ 		found_dma_ranges = true;
  
- 		prop_name = s;
- 		s = strchr(s, ':');
--		if (!s) {
--			err = -EINVAL;
--			goto err_fail;
--		}
-+		if (!s)
-+			return -EINVAL;
- 		*s++ = '\0';
+ 		node = of_get_next_dma_parent(node);
+@@ -916,10 +907,8 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
  
- 		err = kstrtoint(s, 10, &offset);
- 		if (err)
--			goto err_fail;
-+			return err;
- 
- 		refnode = __of_find_node_by_full_path(of_node_get(overlay), node_path);
- 		if (!refnode)
-@@ -117,22 +114,16 @@ static int update_usages_of_a_phandle_reference(struct device_node *overlay,
- 		}
- 		of_node_put(refnode);
- 
--		if (!prop) {
--			err = -ENOENT;
--			goto err_fail;
--		}
-+		if (!prop)
-+			return -ENOENT;
- 
--		if (offset < 0 || offset + sizeof(__be32) > prop->length) {
--			err = -EINVAL;
--			goto err_fail;
--		}
-+		if (offset < 0 || offset + sizeof(__be32) > prop->length)
-+			return -EINVAL;
- 
- 		*(__be32 *)(prop->value + offset) = cpu_to_be32(phandle);
+ 	if (!node || !ranges) {
+ 		pr_debug("no dma-ranges found for node(%pOF)\n", np);
+-		ret = -ENODEV;
+-		goto out;
++		return -ENODEV;
+ 	}
+-
+ 	of_dma_range_parser_init(&parser, node);
+ 	for_each_of_range(&parser, &range) {
+ 		if (range.cpu_addr == OF_BAD_ADDR) {
+@@ -930,16 +919,12 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
+ 		num_ranges++;
  	}
  
--err_fail:
--	kfree(value);
--	return err;
+-	if (!num_ranges) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
++	if (!num_ranges)
++		return -EINVAL;
+ 
+ 	r = kcalloc(num_ranges + 1, sizeof(*r), GFP_KERNEL);
+-	if (!r) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!r)
++		return -ENOMEM;
+ 
+ 	/*
+ 	 * Record all info in the generic DMA ranges array for struct device,
+@@ -957,9 +942,7 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
+ 		r->size = range.size;
+ 		r++;
+ 	}
+-out:
+-	of_node_put(node);
+-	return ret;
 +	return 0;
  }
+ #endif /* CONFIG_HAS_DMA */
  
- /* compare nodes taking into account that 'name' strips out the @ part */
+@@ -1016,11 +999,9 @@ phys_addr_t __init of_dma_get_max_cpu_address(struct device_node *np)
+  */
+ bool of_dma_is_coherent(struct device_node *np)
+ {
+-	struct device_node *node;
++	struct device_node *node __free(device_node) = of_node_get(np);
+ 	bool is_coherent = dma_default_coherent;
+ 
+-	node = of_node_get(np);
+-
+ 	while (node) {
+ 		if (of_property_read_bool(node, "dma-coherent")) {
+ 			is_coherent = true;
+@@ -1032,7 +1013,6 @@ bool of_dma_is_coherent(struct device_node *np)
+ 		}
+ 		node = of_get_next_dma_parent(node);
+ 	}
+-	of_node_put(node);
+ 	return is_coherent;
+ }
+ EXPORT_SYMBOL_GPL(of_dma_is_coherent);
+@@ -1049,19 +1029,17 @@ EXPORT_SYMBOL_GPL(of_dma_is_coherent);
+  */
+ static bool of_mmio_is_nonposted(struct device_node *np)
+ {
+-	struct device_node *parent;
+ 	bool nonposted;
+ 
+ 	if (!IS_ENABLED(CONFIG_ARCH_APPLE))
+ 		return false;
+ 
+-	parent = of_get_parent(np);
++	struct device_node *parent __free(device_node) = of_get_parent(np);
+ 	if (!parent)
+ 		return false;
+ 
+ 	nonposted = of_property_read_bool(parent, "nonposted-mmio");
+ 
+-	of_node_put(parent);
+ 	return nonposted;
+ }
+ 
+diff --git a/drivers/of/property.c b/drivers/of/property.c
+index a6358ee99b74..b73daf81c99d 100644
+--- a/drivers/of/property.c
++++ b/drivers/of/property.c
+@@ -40,15 +40,12 @@
+  */
+ bool of_graph_is_present(const struct device_node *node)
+ {
+-	struct device_node *ports, *port;
++	struct device_node *ports __free(device_node) = of_get_child_by_name(node, "ports");
+ 
+-	ports = of_get_child_by_name(node, "ports");
+ 	if (ports)
+ 		node = ports;
+ 
+-	port = of_get_child_by_name(node, "port");
+-	of_node_put(ports);
+-	of_node_put(port);
++	struct device_node *port __free(device_node) = of_get_child_by_name(node, "port");
+ 
+ 	return !!port;
+ }
+@@ -610,9 +607,9 @@ EXPORT_SYMBOL(of_graph_parse_endpoint);
+  */
+ struct device_node *of_graph_get_port_by_id(struct device_node *parent, u32 id)
+ {
+-	struct device_node *node, *port;
++	struct device_node *port;
++	struct device_node *node __free(device_node) = of_get_child_by_name(parent, "ports");
+ 
+-	node = of_get_child_by_name(parent, "ports");
+ 	if (node)
+ 		parent = node;
+ 
+@@ -626,8 +623,6 @@ struct device_node *of_graph_get_port_by_id(struct device_node *parent, u32 id)
+ 			break;
+ 	}
+ 
+-	of_node_put(node);
+-
+ 	return port;
+ }
+ EXPORT_SYMBOL(of_graph_get_port_by_id);
+@@ -655,14 +650,13 @@ struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
+ 	 * parent port node.
+ 	 */
+ 	if (!prev) {
+-		struct device_node *node;
++		struct device_node *node __free(device_node) =
++			of_get_child_by_name(parent, "ports");
+ 
+-		node = of_get_child_by_name(parent, "ports");
+ 		if (node)
+ 			parent = node;
+ 
+ 		port = of_get_child_by_name(parent, "port");
+-		of_node_put(node);
+ 
+ 		if (!port) {
+ 			pr_debug("graph: no port node found in %pOF\n", parent);
+@@ -1052,15 +1046,13 @@ static int of_fwnode_graph_parse_endpoint(const struct fwnode_handle *fwnode,
+ 					  struct fwnode_endpoint *endpoint)
+ {
+ 	const struct device_node *node = to_of_node(fwnode);
+-	struct device_node *port_node = of_get_parent(node);
++	struct device_node *port_node __free(device_node) = of_get_parent(node);
+ 
+ 	endpoint->local_fwnode = fwnode;
+ 
+ 	of_property_read_u32(port_node, "reg", &endpoint->port);
+ 	of_property_read_u32(node, "reg", &endpoint->id);
+ 
+-	of_node_put(port_node);
+-
+ 	return 0;
+ }
+ 
 
 -- 
 2.43.0
