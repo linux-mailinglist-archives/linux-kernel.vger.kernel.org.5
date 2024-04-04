@@ -1,327 +1,351 @@
-Return-Path: <linux-kernel+bounces-131508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131509-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 261D28988D2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:31:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A25D28988DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:35:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F45C1C21DD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:31:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5926928C6CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0177127B53;
-	Thu,  4 Apr 2024 13:31:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB48128362;
+	Thu,  4 Apr 2024 13:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="boDPLuk7"
-Received: from OS0P286CU011.outbound.protection.outlook.com (mail-japanwestazon11021010.outbound.protection.outlook.com [52.101.228.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SNX4k0ej"
+Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94031126F11;
-	Thu,  4 Apr 2024 13:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.228.10
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712237501; cv=fail; b=c/6VygBmr7GE0/vsuEvJNnGKAgJVrRdh2r2O1mEOl5S1f5qJQhVMd6oMlkkD4t1T3yHGIFV+EtgcBw7BhTUaGgkzQ8qfOBUoNC+Tfh5QlHR3H/wDgOdCGM3ZF7Jn/b+WdIL2eX4mWV230Qc4bMtHlwf8OirG1zcNIw1HAA+JCs0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712237501; c=relaxed/simple;
-	bh=nmD2Pj8npRiwDi0QuD1lebINtGgd0eENQh6O20cFsgo=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=klk4D7oC2hDuYLsf06g5D6s56R3WgH+NHNyAZIV8cpzja4cZn3qgOKipGbAX/AGO+YEH8bzJo5YQQM11nxsz/iVGrWLgUMFPV9xu/66w95u4TlzF5XhC8tBkpAIbs2+ZLyTGPljM/w2tEJ1Jb+GiTyXiEwau2VGyB0oGclA7mS8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=boDPLuk7; arc=fail smtp.client-ip=52.101.228.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j0WaBNqIAHdh/DKwN6NxRAQ11zml/ZLfp/bqnq89G9JV2ZMb9KX5+Mw+/eimovTxV7wC1yKmQUzdtxldfVkSWh9Sl6xeF8+pl+JiuwacMlp3C80iJVLrJhW3+QNUsP9lz02YpVl4dxqBR7mFBNvTpk5E6wXstWHemisKG8HVSMLvrF+H9NoIOUeDDK4MRv2Ji9mutcUdB8vBZo2zWVj4R7Ce9zF4c4vdfmbLiQDi/SgA6nvyc5v3rexhMds4ZcT+qPfjuJCfjGrX4XswpMBTGiIv9ZpwCy7i+qTqp06OffdGpPnIKujMs+eW0CO1sGMkLUYZ8WZjQONwQdJmgkiaog==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nmD2Pj8npRiwDi0QuD1lebINtGgd0eENQh6O20cFsgo=;
- b=WtiAXEtyr9zCA74AnvBy6brZhDRzKETKmCj+VKhursejbqeuQFQnmcaHCop6VFw5Shf2/wk+8rk8vSLbG7cF+VN+/gTwmxBGNj9KzAuZ8MsUUeAdvhfrpnQf0a+38Z3q3VYdCWHDa3xToWoaoaHr1Vzq6qrrhFE/W+czyWx2uw3lNrO/rZf4xrCdgE/Dj+03wkRqb/nEPehefC1WW6VMveH6qcFXDUWeojGlrbxcQhTjSMgZ/WmnNkVv+H+X+g0dfrDn4E1KiNzjtEokj2qWRMyk09vaR+9QleYXM/2z00lb2l18nqmWbdJYrG6SbAI3W9FS9YIfd4l8DtPco8UUrQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
- header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nmD2Pj8npRiwDi0QuD1lebINtGgd0eENQh6O20cFsgo=;
- b=boDPLuk7+sN900N+CLblBvylZLqgnr+asWBK7IicTQbjWsNdwHu09Nno7Ipj2hLYlSKb0A2TjXo2FY8YTPZBm/5W6SIo+u45IlHUwZX62TQ/oPk9NOzHY6E81y3gP8ftQc7LqALBB7gvY1AylHchn5cJh7vT7H7n/MnxdQjioM4=
-Received: from OSAPR01MB1587.jpnprd01.prod.outlook.com (2603:1096:603:2e::16)
- by OS3PR01MB8555.jpnprd01.prod.outlook.com (2603:1096:604:19f::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 4 Apr
- 2024 13:31:34 +0000
-Received: from OSAPR01MB1587.jpnprd01.prod.outlook.com
- ([fe80::fda5:45f9:f1b2:cbce]) by OSAPR01MB1587.jpnprd01.prod.outlook.com
- ([fe80::fda5:45f9:f1b2:cbce%3]) with mapi id 15.20.7409.042; Thu, 4 Apr 2024
- 13:31:33 +0000
-From: Biju Das <biju.das.jz@bp.renesas.com>
-To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-CC: Geert Uytterhoeven <geert+renesas@glider.be>, Thomas Gleixner
-	<tglx@linutronix.de>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>, Paul Walmsley
-	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
-	<aou@eecs.berkeley.edu>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-renesas-soc@vger.kernel.org"
-	<linux-renesas-soc@vger.kernel.org>, "linux-riscv@lists.infradead.org"
-	<linux-riscv@lists.infradead.org>, Prabhakar Mahadev Lad
-	<prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: RE: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/Five SoC
-Thread-Topic: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/Five
- SoC
-Thread-Index: AQHahgawx6i4BBuUjUOQbcTE7AeY27FXt1rAgABkFgCAAAB3IA==
-Date: Thu, 4 Apr 2024 13:31:33 +0000
-Message-ID:
- <OSAPR01MB15878C2C2EE7905D33182CFF863C2@OSAPR01MB1587.jpnprd01.prod.outlook.com>
-References: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240403203503.634465-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <OSAPR01MB1587ED05696A111612424CF6863C2@OSAPR01MB1587.jpnprd01.prod.outlook.com>
- <CA+V-a8s94e9PLuLipQo+rGZ8g7UHxZJJAZZgvL3PQ4b8PKR2Xw@mail.gmail.com>
-In-Reply-To:
- <CA+V-a8s94e9PLuLipQo+rGZ8g7UHxZJJAZZgvL3PQ4b8PKR2Xw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: OSAPR01MB1587:EE_|OS3PR01MB8555:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- NRjaMJ5FLSFjKnMk2B3QcNfvHwwtfesj6pTtCfD09WZUAZ1EWK1EvXs1kx+h6aj4zFOCyFNVrfzqrJ4Fy0DvHtgW82WUq11oLbp5VPiwvZPvzfr6Rybtr5pcEEclhZd3BtVg6P1CIwQWUnkFNveYGID+2p/AimfG3okEFyy04Dio2jRQ6Gc1iThreDKOoL4aZK7TeDKQtNqXabF4hu0TnhQzuAWIPGqANRjiNsofOEEc6XADzyrLnpw1Aog1ZK7TKbuqpa1M0qzTDbBNo7dIlff9SazJrBWIObYlDfWwJ/Er6brsVvd5cn+Wpt6M2xD9ZaXLsTKc3W0RZeAcxwEyP6f+TRhqTcIB3bBft77rRL3uQsZRMmoYzhio2FXm0h3suArK7vhjhZQdBCp3nODyuuQlYOT8tctfa7YtwsHvPany4FRoCkcbw6+GnDgmZ09hwvu/Q/ZDKK1kM3/vbYuVFdLMcF+HPGfRU3RXwVlFICjkaFSFZ1xPT94a7Ar1Ll2Z6KrBNIA8SQOvuB3BWHQWGBquxWpjPtuXKy8B/0gVhT7HvY0nyi4ogJQI8bvlSIeegqyFk7k+iWtpPXmIuYIkMXUX07lYvGcJeADgqXTWGftThOVYawUz4f2cpkJRL9ZnMIIm3mW3MO7hjNBdadYsKLi1vLlkYlbF/0X2jZdLunk=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB1587.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?dE1aZDI0NEtIbUZvdU13TnpRWkxhbDF6aWtSQ3M3NEl2RFFaTm1PWkpQUHpp?=
- =?utf-8?B?bUhseE11cDR2d09KdDRvMkQ4OFV2bUNuczFRWmFwV0hlcC83cDdzRGladnNs?=
- =?utf-8?B?b29jbXgvbDZONHZqZmJjQ09kbDQ4VXE3OWVYN1RQeDVXUFJPenFzR2xjOHhR?=
- =?utf-8?B?QzhmUm5aQlJwbHlkN05SWEJLY0NnRWtDeHpQeVdkb3RvRTJjZDJQVUtTZnFm?=
- =?utf-8?B?Tm40RjFSK3l0QmYyVmkzbnB6dlBBNk9MUEJDRzNpWGFpeFFsYy9IR0ZqN0No?=
- =?utf-8?B?MFMrazRiSXFqbnpNR2wxeEVydVhpUDRQR3dja2hhWHljK2pIWjNOQnVraXNX?=
- =?utf-8?B?QzhvMnJoc0Exak0zRlZlUHc0YWJTbGdLWkw0NU9JVTlQS1MzazJKUkFmZFRB?=
- =?utf-8?B?dU95Z25FeGplblZsaUNCWlVQeHZ5ZXNDdWhQVVJZSU1Ha2I0eTRjcFBkb1l6?=
- =?utf-8?B?ajBKU011QWkwSXc2TVp1QnZZYmZUSVpzeFJMSldMenk4U2NJMW9xVFNKdnZ2?=
- =?utf-8?B?a2pqUlpsZURoR3VYb0FqcDFPL25zOHA5bGM3V3RrTE14eTRmZXVCUjJQUlB5?=
- =?utf-8?B?YUx5aDBtNXlkSXl0VFRaL1JoUS9RT1dQdmx6QnZhWFF6b3h0U1p5bVZKRUZM?=
- =?utf-8?B?eWRlV2xNMHQ2UTgrV1BtQjYwSmx5Y2RYbk1PWGQ4dm1laytHMzZUK05yUDUz?=
- =?utf-8?B?ampHamV5MFZiL21zWXVpaktVek40WmxlaW1mV1o2d2NGZ1ZDNzdLK3pTWS9X?=
- =?utf-8?B?RFhCWWhVZnJnUk9MNEVoS1VjcG1lVk91eXovRitvNDUxOWRpT3h2OUFsZkRt?=
- =?utf-8?B?RlFmMFFyYnVwMFpnRjVid1RKbWt6R0k4NVFMcGZiZHdvTjYyTTdIdnpvdkZh?=
- =?utf-8?B?eDMxTGQ4SlpnWU0rMjNoQXUxVERCdDJLR2RoNTgzbWdPYnFDbHJIMEJIMFhq?=
- =?utf-8?B?TmNEQlFRVXE1OXZjVUZCOXYxU1E1NXp5T3M5SjVXb1pWenUzeGpFNlhnMDJU?=
- =?utf-8?B?V3A0UUZRcjBYVXhyMFhKQWpYRWdnNEI5UlVTRElxV2Nid1ZsOTVpcHE1dlFP?=
- =?utf-8?B?WG1ST3VwL2FoamdBK2kxdHZ2NktxTjZhcXlDWGxDSnQrR01zTlI0alpCMWpp?=
- =?utf-8?B?NzVlZGxydllWOCtId29QZjBzeVkzRlc0c3p1R0FlU3hlM3ZON2NDTHVMZDFN?=
- =?utf-8?B?L0lGbzJPMTZZVi9oRlV4NEdldStvdVZ0WWlTTzNVR3dGRXdPcGd0UjhaYnk0?=
- =?utf-8?B?cXV0T0lBMDNSRlA4VHZ2cWI4LzR1ZXQxeVZnazBvcEFOOC96UGF6N3BZZXl5?=
- =?utf-8?B?blhXUTQyNXhGQ1BtTDhzRTl6MDQ5cjFJWVgvdHBHSTllQVRuY0FYR0orTUlY?=
- =?utf-8?B?UDc3U3lDbnV0bitlb3k3dGtjditFVHdUT1lNSFUrcTJndEVndEloem9GWHNy?=
- =?utf-8?B?VS81c05uUkEyTnZwS0w1MGg5RTJzQk1mMGk0aTBhcWw4ZmtqMC9BSVVEQ1VD?=
- =?utf-8?B?TmFuQ2x5MXJRWTF1akZqTGdSZUQzdlBUYnVrd2hRVnQ2MzAybjJkaEJxNmhw?=
- =?utf-8?B?SUp4WEljamRDQ0g2TDFLbk5peW82T2JWWGllYVZFQURDNU1kWHZaYjVRWkNo?=
- =?utf-8?B?N21EQ3ErdENVclhFQXFMZzI5dzRmN1lRZXl6TC8rVXdvaXVoMnI1bUhjYjRa?=
- =?utf-8?B?bS9TQ2ZTTE5NMEpNZWtMS3FVaWRRaUYrcmg0cDJEcmd1bTVVWExuRzdYdzJV?=
- =?utf-8?B?aDI1MUphZkZOK1FlL0ZPcFhzaXp2VHVXdGQ1ckZVOG5DWGRlQVBKMGtzQU5r?=
- =?utf-8?B?b3dMZGhoYWc1djRHYTFiZmdhN2FBRDloa2VySi9CQktZdExtZU9SaUkrejZ3?=
- =?utf-8?B?SWFocU5ZMnpiaXNUY2hMU1c1NndMZzFIeVRsd0VYZ1F5eHFDZGtJTjBDbWt0?=
- =?utf-8?B?V2Z5ZVREQmczTWVpNXVETksxdExhcnVPaGFQeHR2TmZXTHhXL2NJL3JTVm5T?=
- =?utf-8?B?L3JQN09Tbnd1WERCNnpxdTREYU15S1NSL0FRNk1nZW50bDhIazYwRzBRcW9B?=
- =?utf-8?B?WUpRTnlXVGxhMVlxdUxOdWQ4NGJxd2puMVVqSENxZ0hXWkNLOHlFWWc5T0l4?=
- =?utf-8?B?TW5uZGxDN0czWHlBWjFXU2FoaHhBOG5BNXJJL2dKMUIvZGhKV3ViT3NhUjc3?=
- =?utf-8?B?N1E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324AC8613E;
+	Thu,  4 Apr 2024 13:35:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712237709; cv=none; b=kU7jXMGzFPps9gsmlBOI7Gb+hnmsz+qWDhuhHKgt616ZhC1iUhcqNRUlwn7hA/NwdLDlR7Uklrv3z4vFN2j9MAZb9NbzjT28Cxw+rMuIWs7VJFzFR4hSWo3MHOMrGNDvuaJETpZDFNd6AdCE2YL2VXUc0ap4aNz47oObLU6NRt0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712237709; c=relaxed/simple;
+	bh=YfyzMeF6cXpeiNvp249LcMAU4DwRm9i3zFbC0zXRdLg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=S7ZV4VNk2E2K8thZJVspvaJJtzAI0J5ieencWOHNsRs216/ZO/9PHbjSG0obPsb6cdHNPL2fHR2C7dqc5jESpYo/fr1YnxknQfuFPIUC9NGo2TNRGhHiPb0JfDOhx80P/kiECLmQtOP5nZbPHnt8VB9DQxPDdtTgjvmV/eg0Vd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SNX4k0ej; arc=none smtp.client-ip=209.85.217.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-479cc1791bfso210096137.3;
+        Thu, 04 Apr 2024 06:35:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712237706; x=1712842506; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UFKCNlBFBmvvJg8tbNOd+dvwn4RRHL754vXI+45uAlI=;
+        b=SNX4k0ej7Q9XVrTqGuH/RWG9Vm/VdG78YHjOC3gdgb31LVoeBkOHoL78ocEjZw8KFK
+         JnfVmIFVtAVOaGpEwPNO/OZm7NGOB9fg+IrZB0GGIuzwX2/80JCdoVWpWU9fS6H/w3J7
+         0/C09NlEGP+Pc/U91w4HPExXhJKO5eLQI1YI62GE7oLNLe5OW1OhLA1LJxDEvKWcY88D
+         7NYF9ffMywtQsP3QrDi2+c+acu4ggr/zU00mNRnTCs1TOpuIjyzqHLeeeeYp2SIWERip
+         7y3/JvXv+PmLhRv9ALYwp0/EoKshzBuD/diNNNYusp1YRqzlApV2ClELfAZYId5AOrkF
+         N/CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712237706; x=1712842506;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UFKCNlBFBmvvJg8tbNOd+dvwn4RRHL754vXI+45uAlI=;
+        b=WjC4n+CGZzExitcpAvoWRLDuNdZZAYbE5nx6VgaA3/OQqXNXnIIYnntEVM8O4wVDpd
+         O+USC195z/+k6oOIbPTg7AgFfJWixIg76BzLujn3siSyZw3fCKCqCxWAAamEhZQb1SYY
+         ZgpV7bMG3KXzJv70c1fR9/1SvORtwdFqgNMUzKDO9Fktpzftlfp1eeT5LQOVL5vs5mNy
+         TEMAsfEuTskOAwW+SrwscJHjoqHVxgkZ+7UEyOLNZ49/Gd+lBOA+rjThLPYclFG2hJxz
+         Zw0pvy5MODXKuOXtGaW9KKAT4IvCZd74B+//wOSWitnWshxhpPHXr0KwEPkU33l+aICq
+         yH0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWjoVHtYIo7Do8GUbyWKZgLIn9Xxcn22pwkbndTdTX27pFMBomKDhGhvlil2G6RIzwf7hidvIalmJWO/P5XRJoRY7w/3Eoeiu0VsHM+GfrMtOkBTJwm6b9JnNQZ4n/btYFpdjnJ0WjDnu78ca29g4EPZ6iPigLwV2ndCdRrbbXc50sLfRgZe6XF52c9
+X-Gm-Message-State: AOJu0YyBOU0gCbX6kGq2ptnfByC0Y588D/oIs5nSQsUmQGNtYPq4WWBz
+	tEEgvuDqr34fKPzK9S4UWOFsNkhfjXmmoV/mllfvkvSRqvxY/MighMEKjvyH/uqDVWf7usct954
+	6mUHg8ub1TQTvYmF9rpIgNKbwlaU=
+X-Google-Smtp-Source: AGHT+IHxijyUV1tt95o6QXEOZgm8gs7pq3/V0IbiiDujjNbDN0XvONN6co6X4+U+1QRcVai+xwZuZ0zTvqSDZSgS3fY=
+X-Received: by 2002:a1f:fc06:0:b0:4d8:797b:94d5 with SMTP id
+ a6-20020a1ffc06000000b004d8797b94d5mr1817963vki.3.1712237706051; Thu, 04 Apr
+ 2024 06:35:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB1587.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3476a6f5-03da-4a16-27a3-08dc54ab8b6f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Apr 2024 13:31:33.5011
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: shGYSACl3pLZKKRqgGIiE/pXwdkbywHuygwDBAVZ5/l59gMV6FfaKoylG/+qdDMejELysKTsq/0BnhQavPg23H0yspO2/9MMGxGG6/lVecc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB8555
+References: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240403203503.634465-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <OSAPR01MB1587ED05696A111612424CF6863C2@OSAPR01MB1587.jpnprd01.prod.outlook.com>
+ <CA+V-a8s94e9PLuLipQo+rGZ8g7UHxZJJAZZgvL3PQ4b8PKR2Xw@mail.gmail.com> <OSAPR01MB15878C2C2EE7905D33182CFF863C2@OSAPR01MB1587.jpnprd01.prod.outlook.com>
+In-Reply-To: <OSAPR01MB15878C2C2EE7905D33182CFF863C2@OSAPR01MB1587.jpnprd01.prod.outlook.com>
+From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date: Thu, 4 Apr 2024 14:34:39 +0100
+Message-ID: <CA+V-a8vjB-A+BRSpxk-dsu6XMvpG1y2f8g+LYcWV+gh2cx+6+g@mail.gmail.com>
+Subject: Re: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/Five SoC
+To: Biju Das <biju.das.jz@bp.renesas.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Thomas Gleixner <tglx@linutronix.de>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
+	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, 
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
+	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SGkgTGFkLCBQcmFiaGFrYXIsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJv
-bTogTGFkLCBQcmFiaGFrYXIgPHByYWJoYWthci5jc2VuZ2dAZ21haWwuY29tPg0KPiBTZW50OiBU
-aHVyc2RheSwgQXByaWwgNCwgMjAyNCAyOjI3IFBNDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjIg
-Mi81XSBpcnFjaGlwL3JlbmVzYXMtcnpnMmw6IEFkZCBzdXBwb3J0IGZvciBSWi9GaXZlIFNvQw0K
-PiANCj4gSGkgQmlqdSwNCj4gDQo+IFRoYW5rIHlvdSBmb3IgdGhlIHJldmlldy4NCj4gDQo+IE9u
-IFRodSwgQXByIDQsIDIwMjQgYXQgODo0NOKAr0FNIEJpanUgRGFzIDxiaWp1LmRhcy5qekBicC5y
-ZW5lc2FzLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBIaSBQcmFiaGFrYXIsDQo+ID4NCj4gPiBUaGFu
-a3MgZm9yIHRoZSBwYXRjaC4NCj4gPg0KPiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0N
-Cj4gPiA+IEZyb206IFByYWJoYWthciA8cHJhYmhha2FyLmNzZW5nZ0BnbWFpbC5jb20+DQo+ID4g
-PiBTZW50OiBXZWRuZXNkYXksIEFwcmlsIDMsIDIwMjQgOTozNSBQTQ0KPiA+ID4gU3ViamVjdDog
-W1BBVENIIHYyIDIvNV0gaXJxY2hpcC9yZW5lc2FzLXJ6ZzJsOiBBZGQgc3VwcG9ydCBmb3INCj4g
-PiA+IFJaL0ZpdmUgU29DDQo+ID4gPg0KPiA+ID4gRnJvbTogTGFkIFByYWJoYWthciA8cHJhYmhh
-a2FyLm1haGFkZXYtbGFkLnJqQGJwLnJlbmVzYXMuY29tPg0KPiA+ID4NCj4gPiA+IFRoZSBJWDQ1
-IGJsb2NrIGhhcyBhZGRpdGlvbmFsIG1hc2sgcmVnaXN0ZXJzIChOTVNLL0lNU0svVE1TSykgYXMN
-Cj4gPiA+IGNvbXBhcmVkIHRvIHRoZSBSWi9HMkwgKGZhbWlseSkgU29DLg0KPiA+ID4NCj4gPiA+
-IEludHJvZHVjZSBtYXNraW5nL3VubWFza2luZyBzdXBwb3J0IGZvciBJUlEgYW5kIFRJTlQgaW50
-ZXJydXB0cyBpbg0KPiA+ID4gSVJRQyBjb250cm9sbGVyIGRyaXZlci4gVHdvIG5ldyByZWdpc3Rl
-cnMsIElNU0sgYW5kIFRNU0ssIGFyZQ0KPiA+ID4gZGVmaW5lZCB0byBoYW5kbGUgbWFza2luZyBv
-biBSWi9GaXZlIFNvQy4gVGhlIGltcGxlbWVudGF0aW9uDQo+ID4gPiB1dGlsaXplcyBhIG5ldyBk
-YXRhIHN0cnVjdHVyZSwgYHN0cnVjdCByemcybF9pcnFjX2RhdGFgLCB0byBkZXRlcm1pbmUgbWFz
-ayBzdXBwb3J0IGZvciBhDQo+IHNwZWNpZmljIGNvbnRyb2xsZXIgaW5zdGFuY2UuDQo+ID4gPg0K
-PiA+ID4gU2lnbmVkLW9mZi1ieTogTGFkIFByYWJoYWthcg0KPiA+ID4gPHByYWJoYWthci5tYWhh
-ZGV2LWxhZC5yakBicC5yZW5lc2FzLmNvbT4NCj4gPiA+IC0tLQ0KPiA+ID4gdjEtPnYyDQo+ID4g
-PiAtIEFkZGVkIElSUUNISVBfTUFUQ0goKSBmb3IgUlovRml2ZQ0KPiA+ID4gLSBSZXRhaW5pbmcg
-YSBjb3B5IG9mIE9GIGRhdGEgaW4gcHJpdg0KPiA+ID4gLSBSZWJhc2VkIHRoZSBjaGFuZ2VzDQo+
-ID4gPiAtLS0NCj4gPiA+ICBkcml2ZXJzL2lycWNoaXAvaXJxLXJlbmVzYXMtcnpnMmwuYyB8IDEz
-Nw0KPiA+ID4gKysrKysrKysrKysrKysrKysrKysrKysrKysrLQ0KPiA+ID4gIDEgZmlsZSBjaGFu
-Z2VkLCAxMzIgaW5zZXJ0aW9ucygrKSwgNSBkZWxldGlvbnMoLSkNCj4gPiA+DQo+ID4gPiBkaWZm
-IC0tZ2l0IGEvZHJpdmVycy9pcnFjaGlwL2lycS1yZW5lc2FzLXJ6ZzJsLmMNCj4gPiA+IGIvZHJp
-dmVycy9pcnFjaGlwL2lycS1yZW5lc2FzLXJ6ZzJsLmMNCj4gPiA+IGluZGV4IGY2NDg0YmYxNWUw
-Yi4uNmZhOGQ2NTYwNWRjIDEwMDY0NA0KPiA+ID4gLS0tIGEvZHJpdmVycy9pcnFjaGlwL2lycS1y
-ZW5lc2FzLXJ6ZzJsLmMNCj4gPiA+ICsrKyBiL2RyaXZlcnMvaXJxY2hpcC9pcnEtcmVuZXNhcy1y
-emcybC5jDQo+ID4gPiBAQCAtMzcsNiArMzcsOCBAQA0KPiA+ID4gICNkZWZpbmUgVFNTRUxfU0hJ
-RlQobikgICAgICAgICAgICAgICAgICAgICAgICg4ICogKG4pKQ0KPiA+ID4gICNkZWZpbmUgVFNT
-RUxfTUFTSyAgICAgICAgICAgICAgICAgICBHRU5NQVNLKDcsIDApDQo+ID4gPiAgI2RlZmluZSBJ
-UlFfTUFTSyAgICAgICAgICAgICAgICAgICAgIDB4Mw0KPiA+ID4gKyNkZWZpbmUgSU1TSyAgICAg
-ICAgICAgICAgICAgICAgICAgICAweDEwMDEwDQo+ID4gPiArI2RlZmluZSBUTVNLICAgICAgICAg
-ICAgICAgICAgICAgICAgIDB4MTAwMjANCj4gPiA+DQo+ID4gPiAgI2RlZmluZSBUU1NSX09GRlNF
-VChuKSAgICAgICAgICAgICAgICAgICAgICAgKChuKSAlIDQpDQo+ID4gPiAgI2RlZmluZSBUU1NS
-X0lOREVYKG4pICAgICAgICAgICAgICAgICAgICAgICAgKChuKSAvIDQpDQo+ID4gPiBAQCAtNjYs
-MTUgKzY4LDI1IEBAIHN0cnVjdCByemcybF9pcnFjX3JlZ19jYWNoZSB7DQo+ID4gPiAgICAgICB1
-MzIgICAgIHRpdHNyWzJdOw0KPiA+ID4gIH07DQo+ID4gPg0KPiA+ID4gKy8qKg0KPiA+ID4gKyAq
-IHN0cnVjdCByemcybF9pcnFjX29mX2RhdGEgLSBPRiBkYXRhIHN0cnVjdHVyZQ0KPiA+ID4gKyAq
-IEBtYXNrX3N1cHBvcnRlZDogSW5kaWNhdGVzIGlmIG1hc2sgcmVnaXN0ZXJzIGFyZSBhdmFpbGFi
-bGUgICovDQo+ID4gPiArc3RydWN0IHJ6ZzJsX2lycWNfb2ZfZGF0YSB7DQo+ID4gPiArICAgICBi
-b29sICAgIG1hc2tfc3VwcG9ydGVkOw0KPiA+ID4gK307DQo+ID4gPiArDQo+ID4gPiAgLyoqDQo+
-ID4gPiAgICogc3RydWN0IHJ6ZzJsX2lycWNfcHJpdiAtIElSUSBjb250cm9sbGVyIHByaXZhdGUg
-ZGF0YSBzdHJ1Y3R1cmUNCj4gPiA+ICAgKiBAYmFzZTogICAgQ29udHJvbGxlcidzIGJhc2UgYWRk
-cmVzcw0KPiA+ID4gKyAqIEBkYXRhOiAgICBPRiBkYXRhIHBvaW50ZXINCj4gPiA+ICAgKiBAZndz
-cGVjOiAgSVJRIGZpcm13YXJlIHNwZWNpZmljIGRhdGENCj4gPiA+ICAgKiBAbG9jazogICAgTG9j
-ayB0byBzZXJpYWxpemUgYWNjZXNzIHRvIGhhcmR3YXJlIHJlZ2lzdGVycw0KPiA+ID4gICAqIEBj
-YWNoZTogICBSZWdpc3RlcnMgY2FjaGUgZm9yIHN1c3BlbmQvcmVzdW1lDQo+ID4gPiAgICovDQo+
-ID4gPiAgc3RhdGljIHN0cnVjdCByemcybF9pcnFjX3ByaXYgew0KPiA+ID4gICAgICAgdm9pZCBf
-X2lvbWVtICAgICAgICAgICAgICAgICAgICAqYmFzZTsNCj4gPiA+ICsgICAgIGNvbnN0IHN0cnVj
-dCByemcybF9pcnFjX29mX2RhdGEgKmRhdGE7DQo+ID4gPiAgICAgICBzdHJ1Y3QgaXJxX2Z3c3Bl
-YyAgICAgICAgICAgICAgIGZ3c3BlY1tJUlFDX05VTV9JUlFdOw0KPiA+ID4gICAgICAgcmF3X3Nw
-aW5sb2NrX3QgICAgICAgICAgICAgICAgICBsb2NrOw0KPiA+ID4gICAgICAgc3RydWN0IHJ6ZzJs
-X2lycWNfcmVnX2NhY2hlICAgICBjYWNoZTsNCj4gPiA+IEBAIC0xMzgsMTggKzE1MCwxMDIgQEAg
-c3RhdGljIHZvaWQgcnpnMmxfaXJxY19lb2koc3RydWN0IGlycV9kYXRhICpkKQ0KPiA+ID4gICAg
-ICAgaXJxX2NoaXBfZW9pX3BhcmVudChkKTsNCj4gPiA+ICB9DQo+ID4gPg0KPiA+ID4gK3N0YXRp
-YyB2b2lkIHJ6ZzJsX2lycWNfbWFza19pcnFfaW50ZXJydXB0KHN0cnVjdCByemcybF9pcnFjX3By
-aXYgKnByaXYsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-dW5zaWduZWQgaW50IGh3aXJxKSB7DQo+ID4gPiArICAgICB1MzIgaW1zayA9IHJlYWRsX3JlbGF4
-ZWQocHJpdi0+YmFzZSArIElNU0spOw0KPiA+ID4gKyAgICAgdTMyIGJpdCA9IEJJVChod2lycSAt
-IElSUUNfSVJRX1NUQVJUKTsNCj4gPiA+ICsNCj4gPiA+ICsgICAgIHdyaXRlbF9yZWxheGVkKGlt
-c2sgfCBiaXQsIHByaXYtPmJhc2UgKyBJTVNLKTsgfQ0KPiA+ID4gKw0KPiA+ID4gK3N0YXRpYyB2
-b2lkIHJ6ZzJsX2lycWNfdW5tYXNrX2lycV9pbnRlcnJ1cHQoc3RydWN0IHJ6ZzJsX2lycWNfcHJp
-diAqcHJpdiwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHVuc2lnbmVkIGludCBod2lycSkgew0KPiA+ID4gKyAgICAgdTMyIGltc2sgPSByZWFkbF9yZWxh
-eGVkKHByaXYtPmJhc2UgKyBJTVNLKTsNCj4gPiA+ICsgICAgIHUzMiBiaXQgPSBCSVQoaHdpcnEg
-LSBJUlFDX0lSUV9TVEFSVCk7DQo+ID4gPiArDQo+ID4gPiArICAgICB3cml0ZWxfcmVsYXhlZChp
-bXNrICYgfmJpdCwgcHJpdi0+YmFzZSArIElNU0spOyB9DQo+ID4gPiArDQo+ID4gPiArc3RhdGlj
-IHZvaWQgcnpnMmxfaXJxY19tYXNrX3RpbnRfaW50ZXJydXB0KHN0cnVjdCByemcybF9pcnFjX3By
-aXYgKnByaXYsDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IHVuc2lnbmVkIGludCBod2lycSkgew0KPiA+ID4gKyAgICAgdTMyIHRtc2sgPSByZWFkbF9yZWxh
-eGVkKHByaXYtPmJhc2UgKyBUTVNLKTsNCj4gPiA+ICsgICAgIHUzMiBiaXQgPSBCSVQoaHdpcnEg
-LSBJUlFDX1RJTlRfU1RBUlQpOw0KPiA+ID4gKw0KPiA+ID4gKyAgICAgd3JpdGVsX3JlbGF4ZWQo
-dG1zayB8IGJpdCwgcHJpdi0+YmFzZSArIFRNU0spOyB9DQo+ID4gPiArDQo+ID4gPiArc3RhdGlj
-IHZvaWQgcnpnMmxfaXJxY191bm1hc2tfdGludF9pbnRlcnJ1cHQoc3RydWN0IHJ6ZzJsX2lycWNf
-cHJpdiAqcHJpdiwNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICB1bnNpZ25lZCBpbnQgaHdpcnEpIHsNCj4gPiA+ICsgICAgIHUzMiB0bXNrID0gcmVhZGxf
-cmVsYXhlZChwcml2LT5iYXNlICsgVE1TSyk7DQo+ID4gPiArICAgICB1MzIgYml0ID0gQklUKGh3
-aXJxIC0gSVJRQ19USU5UX1NUQVJUKTsNCj4gPiA+ICsNCj4gPiA+ICsgICAgIHdyaXRlbF9yZWxh
-eGVkKHRtc2sgJiB+Yml0LCBwcml2LT5iYXNlICsgVE1TSyk7IH0NCj4gPiA+ICsNCj4gPiA+ICsv
-KiBNdXN0IGJlIGNhbGxlZCB3aGlsZSBwcml2LT5sb2NrIGlzIGhlbGQgKi8gc3RhdGljIHZvaWQN
-Cj4gPiA+ICtyemcybF9pcnFjX21hc2tfb25jZShzdHJ1Y3QgcnpnMmxfaXJxY19wcml2ICpwcml2
-LCB1bnNpZ25lZCBpbnQNCj4gPiA+ICtod2lycSkgew0KPiA+ID4gKyAgICAgaWYgKCFwcml2LT5k
-YXRhLT5tYXNrX3N1cHBvcnRlZCkNCj4gPiA+ICsgICAgICAgICAgICAgcmV0dXJuOw0KPiA+ID4g
-Kw0KPiA+ID4gKyAgICAgaWYgKGh3aXJxID49IElSUUNfSVJRX1NUQVJUICYmIGh3aXJxIDw9IElS
-UUNfSVJRX0NPVU5UKQ0KPiA+ID4gKyAgICAgICAgICAgICByemcybF9pcnFjX21hc2tfaXJxX2lu
-dGVycnVwdChwcml2LCBod2lycSk7DQo+ID4gPiArICAgICBlbHNlIGlmIChod2lycSA+PSBJUlFD
-X1RJTlRfU1RBUlQgJiYgaHdpcnEgPCBJUlFDX05VTV9JUlEpDQo+ID4gPiArICAgICAgICAgICAg
-IHJ6ZzJsX2lycWNfbWFza190aW50X2ludGVycnVwdChwcml2LCBod2lycSk7IH0NCj4gPiA+ICsN
-Cj4gPiA+ICtzdGF0aWMgdm9pZCByemcybF9pcnFjX21hc2soc3RydWN0IGlycV9kYXRhICpkKSB7
-DQo+ID4gPiArICAgICBzdHJ1Y3QgcnpnMmxfaXJxY19wcml2ICpwcml2ID0gaXJxX2RhdGFfdG9f
-cHJpdihkKTsNCj4gPiA+ICsNCj4gPiA+ICsgICAgIHJhd19zcGluX2xvY2soJnByaXYtPmxvY2sp
-Ow0KPiA+ID4gKyAgICAgcnpnMmxfaXJxY19tYXNrX29uY2UocHJpdiwgaXJxZF90b19od2lycShk
-KSk7DQo+ID4gPiArICAgICByYXdfc3Bpbl91bmxvY2soJnByaXYtPmxvY2spOw0KPiA+ID4gKyAg
-ICAgaXJxX2NoaXBfbWFza19wYXJlbnQoZCk7DQo+ID4gPiArfQ0KPiA+ID4gKw0KPiA+ID4gKy8q
-IE11c3QgYmUgY2FsbGVkIHdoaWxlIHByaXYtPmxvY2sgaXMgaGVsZCAqLyBzdGF0aWMgdm9pZA0K
-PiA+ID4gK3J6ZzJsX2lycWNfdW5tYXNrX29uY2Uoc3RydWN0IHJ6ZzJsX2lycWNfcHJpdiAqcHJp
-diwgdW5zaWduZWQgaW50DQo+ID4gPiAraHdpcnEpIHsNCj4gPiA+ICsgICAgIGlmICghcHJpdi0+
-ZGF0YS0+bWFza19zdXBwb3J0ZWQpDQo+ID4gPiArICAgICAgICAgICAgIHJldHVybjsNCj4gPiA+
-ICsNCj4gPiA+ICsgICAgIGlmIChod2lycSA+PSBJUlFDX0lSUV9TVEFSVCAmJiBod2lycSA8PSBJ
-UlFDX0lSUV9DT1VOVCkNCj4gPiA+ICsgICAgICAgICAgICAgcnpnMmxfaXJxY191bm1hc2tfaXJx
-X2ludGVycnVwdChwcml2LCBod2lycSk7DQo+ID4gPiArICAgICBlbHNlIGlmIChod2lycSA+PSBJ
-UlFDX1RJTlRfU1RBUlQgJiYgaHdpcnEgPCBJUlFDX05VTV9JUlEpDQo+ID4gPiArICAgICAgICAg
-ICAgIHJ6ZzJsX2lycWNfdW5tYXNrX3RpbnRfaW50ZXJydXB0KHByaXYsIGh3aXJxKTsgfQ0KPiA+
-ID4gKw0KPiA+ID4gK3N0YXRpYyB2b2lkIHJ6ZzJsX2lycWNfdW5tYXNrKHN0cnVjdCBpcnFfZGF0
-YSAqZCkgew0KPiA+ID4gKyAgICAgc3RydWN0IHJ6ZzJsX2lycWNfcHJpdiAqcHJpdiA9IGlycV9k
-YXRhX3RvX3ByaXYoZCk7DQo+ID4gPiArDQo+ID4gPiArICAgICByYXdfc3Bpbl9sb2NrKCZwcml2
-LT5sb2NrKTsNCj4gPiA+ICsgICAgIHJ6ZzJsX2lycWNfdW5tYXNrX29uY2UocHJpdiwgaXJxZF90
-b19od2lycShkKSk7DQo+ID4gPiArICAgICByYXdfc3Bpbl91bmxvY2soJnByaXYtPmxvY2spOw0K
-PiA+ID4gKyAgICAgaXJxX2NoaXBfdW5tYXNrX3BhcmVudChkKTsNCj4gPiA+ICt9DQo+ID4gPiAr
-DQo+ID4gPiAgc3RhdGljIHZvaWQgcnpnMmxfdGludF9pcnFfZW5kaXNhYmxlKHN0cnVjdCBpcnFf
-ZGF0YSAqZCwgYm9vbA0KPiA+ID4gZW5hYmxlKSAgew0KPiA+ID4gKyAgICAgc3RydWN0IHJ6ZzJs
-X2lycWNfcHJpdiAqcHJpdiA9IGlycV9kYXRhX3RvX3ByaXYoZCk7DQo+ID4gPiAgICAgICB1bnNp
-Z25lZCBpbnQgaHdfaXJxID0gaXJxZF90b19od2lycShkKTsNCj4gPiA+DQo+ID4gPiAgICAgICBp
-ZiAoaHdfaXJxID49IElSUUNfVElOVF9TVEFSVCAmJiBod19pcnEgPCBJUlFDX05VTV9JUlEpIHsN
-Cj4gPiA+IC0gICAgICAgICAgICAgc3RydWN0IHJ6ZzJsX2lycWNfcHJpdiAqcHJpdiA9IGlycV9k
-YXRhX3RvX3ByaXYoZCk7DQo+ID4gPiAgICAgICAgICAgICAgIHUzMiBvZmZzZXQgPSBod19pcnEg
-LSBJUlFDX1RJTlRfU1RBUlQ7DQo+ID4gPiAgICAgICAgICAgICAgIHUzMiB0c3NyX29mZnNldCA9
-IFRTU1JfT0ZGU0VUKG9mZnNldCk7DQo+ID4gPiAgICAgICAgICAgICAgIHU4IHRzc3JfaW5kZXgg
-PSBUU1NSX0lOREVYKG9mZnNldCk7DQo+ID4gPiAgICAgICAgICAgICAgIHUzMiByZWc7DQo+ID4g
-Pg0KPiA+ID4gICAgICAgICAgICAgICByYXdfc3Bpbl9sb2NrKCZwcml2LT5sb2NrKTsNCj4gPiA+
-ICsgICAgICAgICAgICAgaWYgKGVuYWJsZSkNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICBy
-emcybF9pcnFjX3VubWFza19vbmNlKHByaXYsIGh3X2lycSk7DQo+ID4gPiArICAgICAgICAgICAg
-IGVsc2UNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICByemcybF9pcnFjX21hc2tfb25jZShw
-cml2LCBod19pcnEpOw0KPiA+ID4gICAgICAgICAgICAgICByZWcgPSByZWFkbF9yZWxheGVkKHBy
-aXYtPmJhc2UgKyBUU1NSKHRzc3JfaW5kZXgpKTsNCj4gPiA+ICAgICAgICAgICAgICAgaWYgKGVu
-YWJsZSkNCj4gPiA+ICAgICAgICAgICAgICAgICAgICAgICByZWcgfD0gVElFTiA8PCBUU1NFTF9T
-SElGVCh0c3NyX29mZnNldCk7IEBADQo+ID4gPiAtMTU3LDYgKzI1MywxMyBAQCBzdGF0aWMgdm9p
-ZCByemcybF90aW50X2lycV9lbmRpc2FibGUoc3RydWN0IGlycV9kYXRhICpkLCBib29sIGVuYWJs
-ZSkNCj4gPiA+ICAgICAgICAgICAgICAgICAgICAgICByZWcgJj0gfihUSUVOIDw8IFRTU0VMX1NI
-SUZUKHRzc3Jfb2Zmc2V0KSk7DQo+ID4gPiAgICAgICAgICAgICAgIHdyaXRlbF9yZWxheGVkKHJl
-ZywgcHJpdi0+YmFzZSArIFRTU1IodHNzcl9pbmRleCkpOw0KPiA+ID4gICAgICAgICAgICAgICBy
-YXdfc3Bpbl91bmxvY2soJnByaXYtPmxvY2spOw0KPiA+ID4gKyAgICAgfSBlbHNlIHsNCj4gPiA+
-ICsgICAgICAgICAgICAgcmF3X3NwaW5fbG9jaygmcHJpdi0+bG9jayk7DQo+ID4gPiArICAgICAg
-ICAgICAgIGlmIChlbmFibGUpDQo+ID4gPiArICAgICAgICAgICAgICAgICAgICAgcnpnMmxfaXJx
-Y191bm1hc2tfb25jZShwcml2LCBod19pcnEpOw0KPiA+ID4gKyAgICAgICAgICAgICBlbHNlDQo+
-ID4gPiArICAgICAgICAgICAgICAgICAgICAgcnpnMmxfaXJxY19tYXNrX29uY2UocHJpdiwgaHdf
-aXJxKTsNCj4gPiA+ICsgICAgICAgICAgICAgcmF3X3NwaW5fdW5sb2NrKCZwcml2LT5sb2NrKTsN
-Cj4gPiA+ICAgICAgIH0NCj4gPiA+ICB9DQo+ID4gPg0KPiA+ID4gQEAgLTMyNCw4ICs0MjcsOCBA
-QCBzdGF0aWMgc3RydWN0IHN5c2NvcmVfb3BzIHJ6ZzJsX2lycWNfc3lzY29yZV9vcHMNCj4gPiA+
-ID0geyAgc3RhdGljIGNvbnN0IHN0cnVjdCBpcnFfY2hpcCBpcnFjX2NoaXAgPSB7DQo+ID4gPiAg
-ICAgICAubmFtZSAgICAgICAgICAgICAgICAgICA9ICJyemcybC1pcnFjIiwNCj4gPiA+ICAgICAg
-IC5pcnFfZW9pICAgICAgICAgICAgICAgID0gcnpnMmxfaXJxY19lb2ksDQo+ID4gPiAtICAgICAu
-aXJxX21hc2sgICAgICAgICAgICAgICA9IGlycV9jaGlwX21hc2tfcGFyZW50LA0KPiA+ID4gLSAg
-ICAgLmlycV91bm1hc2sgICAgICAgICAgICAgPSBpcnFfY2hpcF91bm1hc2tfcGFyZW50LA0KPiA+
-ID4gKyAgICAgLmlycV9tYXNrICAgICAgICAgICAgICAgPSByemcybF9pcnFjX21hc2ssDQo+ID4g
-PiArICAgICAuaXJxX3VubWFzayAgICAgICAgICAgICA9IHJ6ZzJsX2lycWNfdW5tYXNrLA0KPiA+
-DQo+ID4gSSBmZWVsIHRoaXMgd2lsbCBiZSBjbGVhbiwgaWYgd2UgaGF2ZQ0KPiA+DQo+ID4gc3Rh
-dGljIGNvbnN0IHN0cnVjdCBpcnFfY2hpcCByemcybF9pcnFjX2NoaXAgPSB7DQo+ID4gICAgICAg
-ICAubmFtZSAgICAgICAgICAgICAgICAgICA9ICJyemcybC1pcnFjIiwNCj4gPiAgICAgICAgIC4u
-Lg0KPiA+ICAgICAgICAgLmlycV9tYXNrICAgICAgICAgICAgICAgPSBpcnFfY2hpcF9tYXNrX3Bh
-cmVudCwNCj4gPiAgICAgICAgIC5pcnFfdW5tYXNrICAgICAgICAgICAgID0gaXJxX2NoaXBfdW5t
-YXNrX3BhcmVudCwNCj4gPiAgICAgICAgIC4uLi4NCj4gPiB9Ow0KPiA+DQo+ID4gc3RhdGljIGNv
-bnN0IHN0cnVjdCBpcnFfY2hpcCByemZpdmVfaXJxY19jaGlwID0gew0KPiA+ICAgICAgICAgLm5h
-bWUgICAgICAgICAgICAgICAgICAgPSAicnpmaXZlLWlycWMiLA0KPiA+ICAgICAgICAgLi4uDQo+
-ID4gICAgICAgICAuaXJxX21hc2sgICAgICAgICAgICAgICA9IHJ6Zml2ZV9pcnFjX21hc2ssDQo+
-ID4gICAgICAgICAuaXJxX3VubWFzayAgICAgICAgICAgICA9IHJ6Zml2ZV9pcnFjX3VubWFzaywN
-Cj4gPiAgICAgICAgIC4uLi4NCj4gPiB9Ow0KPiA+DQo+ID4gQW5kIHBhc3NpbmcgdGhpcyBpbiBy
-emcybF9pcnFjX2luaXQoKSBhbmQgcnpmaXZlX2lycWNfaW5pdCgpLCBzZWUNCj4gPiBiZWxvdw0K
-PiA+DQo+ID4gcmV0dXJuIHJ6ZzJsX2lycWNfaW5pdF9oZWxwZXIobm9kZSwgcGFyZW50LCAmIHJ6
-ZzJsX2lycWNfY2hpcCk7IHJldHVybg0KPiA+IHJ6ZzJsX2lycWNfaW5pdF9oZWxwZXIobm9kZSwg
-cGFyZW50LCAmIHJ6Zml2ZV9pcnFjX2NoaXApOw0KPiA+DQo+IElmIHdlIGRvIHRoZSBhYm92ZSB3
-ZSBhcmUgc3R1Y2sgd2l0aCAic3RydWN0IGlycV9jaGlwIiBhcyBkYXRhLCBmb3IgZnVydGhlciB1
-cGNvbWluZyBTb0NzIChmb3INCj4gZXhhbXBsZSBSWi9WMkgpIHdoaWNoIGhhdmUgbW9yZSBmZWF0
-dXJlcyB3ZSBuZWVkIHRvIHBhc3MgY3VzdG9tIGRhdGEgdG8gaGFuZGxlIHRoZXNlIGZlYXR1cmVz
-Lg0KDQpUaGF0IHRpbWUgZGV2aWNlIGRhdGEgY2FuIGJlIGV4dGVuZGVkIGxpa2UgYmVsb3cNCg0K
-c3RydWN0IHJ6X2cybF9pcnFfY2hpcCB7DQoJc3RydWN0IGlycV9jaGlwOw0KCXZvaWQgKmRhdGE7
-IC8qIGN1c3RvbSBkYXRhICovDQp9DQoNCkNoZWVycywNCkJpanUNCg==
+On Thu, Apr 4, 2024 at 2:31=E2=80=AFPM Biju Das <biju.das.jz@bp.renesas.com=
+> wrote:
+>
+> Hi Lad, Prabhakar,
+>
+> > -----Original Message-----
+> > From: Lad, Prabhakar <prabhakar.csengg@gmail.com>
+> > Sent: Thursday, April 4, 2024 2:27 PM
+> > Subject: Re: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/F=
+ive SoC
+> >
+> > Hi Biju,
+> >
+> > Thank you for the review.
+> >
+> > On Thu, Apr 4, 2024 at 8:44=E2=80=AFAM Biju Das <biju.das.jz@bp.renesas=
+com> wrote:
+> > >
+> > > Hi Prabhakar,
+> > >
+> > > Thanks for the patch.
+> > >
+> > > > -----Original Message-----
+> > > > From: Prabhakar <prabhakar.csengg@gmail.com>
+> > > > Sent: Wednesday, April 3, 2024 9:35 PM
+> > > > Subject: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for
+> > > > RZ/Five SoC
+> > > >
+> > > > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > >
+> > > > The IX45 block has additional mask registers (NMSK/IMSK/TMSK) as
+> > > > compared to the RZ/G2L (family) SoC.
+> > > >
+> > > > Introduce masking/unmasking support for IRQ and TINT interrupts in
+> > > > IRQC controller driver. Two new registers, IMSK and TMSK, are
+> > > > defined to handle masking on RZ/Five SoC. The implementation
+> > > > utilizes a new data structure, `struct rzg2l_irqc_data`, to determi=
+ne mask support for a
+> > specific controller instance.
+> > > >
+> > > > Signed-off-by: Lad Prabhakar
+> > > > <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > > ---
+> > > > v1->v2
+> > > > - Added IRQCHIP_MATCH() for RZ/Five
+> > > > - Retaining a copy of OF data in priv
+> > > > - Rebased the changes
+> > > > ---
+> > > >  drivers/irqchip/irq-renesas-rzg2l.c | 137
+> > > > +++++++++++++++++++++++++++-
+> > > >  1 file changed, 132 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/drivers/irqchip/irq-renesas-rzg2l.c
+> > > > b/drivers/irqchip/irq-renesas-rzg2l.c
+> > > > index f6484bf15e0b..6fa8d65605dc 100644
+> > > > --- a/drivers/irqchip/irq-renesas-rzg2l.c
+> > > > +++ b/drivers/irqchip/irq-renesas-rzg2l.c
+> > > > @@ -37,6 +37,8 @@
+> > > >  #define TSSEL_SHIFT(n)                       (8 * (n))
+> > > >  #define TSSEL_MASK                   GENMASK(7, 0)
+> > > >  #define IRQ_MASK                     0x3
+> > > > +#define IMSK                         0x10010
+> > > > +#define TMSK                         0x10020
+> > > >
+> > > >  #define TSSR_OFFSET(n)                       ((n) % 4)
+> > > >  #define TSSR_INDEX(n)                        ((n) / 4)
+> > > > @@ -66,15 +68,25 @@ struct rzg2l_irqc_reg_cache {
+> > > >       u32     titsr[2];
+> > > >  };
+> > > >
+> > > > +/**
+> > > > + * struct rzg2l_irqc_of_data - OF data structure
+> > > > + * @mask_supported: Indicates if mask registers are available  */
+> > > > +struct rzg2l_irqc_of_data {
+> > > > +     bool    mask_supported;
+> > > > +};
+> > > > +
+> > > >  /**
+> > > >   * struct rzg2l_irqc_priv - IRQ controller private data structure
+> > > >   * @base:    Controller's base address
+> > > > + * @data:    OF data pointer
+> > > >   * @fwspec:  IRQ firmware specific data
+> > > >   * @lock:    Lock to serialize access to hardware registers
+> > > >   * @cache:   Registers cache for suspend/resume
+> > > >   */
+> > > >  static struct rzg2l_irqc_priv {
+> > > >       void __iomem                    *base;
+> > > > +     const struct rzg2l_irqc_of_data *data;
+> > > >       struct irq_fwspec               fwspec[IRQC_NUM_IRQ];
+> > > >       raw_spinlock_t                  lock;
+> > > >       struct rzg2l_irqc_reg_cache     cache;
+> > > > @@ -138,18 +150,102 @@ static void rzg2l_irqc_eoi(struct irq_data *=
+d)
+> > > >       irq_chip_eoi_parent(d);
+> > > >  }
+> > > >
+> > > > +static void rzg2l_irqc_mask_irq_interrupt(struct rzg2l_irqc_priv *=
+priv,
+> > > > +                                       unsigned int hwirq) {
+> > > > +     u32 imsk =3D readl_relaxed(priv->base + IMSK);
+> > > > +     u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
+> > > > +
+> > > > +     writel_relaxed(imsk | bit, priv->base + IMSK); }
+> > > > +
+> > > > +static void rzg2l_irqc_unmask_irq_interrupt(struct rzg2l_irqc_priv=
+ *priv,
+> > > > +                                         unsigned int hwirq) {
+> > > > +     u32 imsk =3D readl_relaxed(priv->base + IMSK);
+> > > > +     u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
+> > > > +
+> > > > +     writel_relaxed(imsk & ~bit, priv->base + IMSK); }
+> > > > +
+> > > > +static void rzg2l_irqc_mask_tint_interrupt(struct rzg2l_irqc_priv =
+*priv,
+> > > > +                                        unsigned int hwirq) {
+> > > > +     u32 tmsk =3D readl_relaxed(priv->base + TMSK);
+> > > > +     u32 bit =3D BIT(hwirq - IRQC_TINT_START);
+> > > > +
+> > > > +     writel_relaxed(tmsk | bit, priv->base + TMSK); }
+> > > > +
+> > > > +static void rzg2l_irqc_unmask_tint_interrupt(struct rzg2l_irqc_pri=
+v *priv,
+> > > > +                                          unsigned int hwirq) {
+> > > > +     u32 tmsk =3D readl_relaxed(priv->base + TMSK);
+> > > > +     u32 bit =3D BIT(hwirq - IRQC_TINT_START);
+> > > > +
+> > > > +     writel_relaxed(tmsk & ~bit, priv->base + TMSK); }
+> > > > +
+> > > > +/* Must be called while priv->lock is held */ static void
+> > > > +rzg2l_irqc_mask_once(struct rzg2l_irqc_priv *priv, unsigned int
+> > > > +hwirq) {
+> > > > +     if (!priv->data->mask_supported)
+> > > > +             return;
+> > > > +
+> > > > +     if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUNT)
+> > > > +             rzg2l_irqc_mask_irq_interrupt(priv, hwirq);
+> > > > +     else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_IRQ)
+> > > > +             rzg2l_irqc_mask_tint_interrupt(priv, hwirq); }
+> > > > +
+> > > > +static void rzg2l_irqc_mask(struct irq_data *d) {
+> > > > +     struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+> > > > +
+> > > > +     raw_spin_lock(&priv->lock);
+> > > > +     rzg2l_irqc_mask_once(priv, irqd_to_hwirq(d));
+> > > > +     raw_spin_unlock(&priv->lock);
+> > > > +     irq_chip_mask_parent(d);
+> > > > +}
+> > > > +
+> > > > +/* Must be called while priv->lock is held */ static void
+> > > > +rzg2l_irqc_unmask_once(struct rzg2l_irqc_priv *priv, unsigned int
+> > > > +hwirq) {
+> > > > +     if (!priv->data->mask_supported)
+> > > > +             return;
+> > > > +
+> > > > +     if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUNT)
+> > > > +             rzg2l_irqc_unmask_irq_interrupt(priv, hwirq);
+> > > > +     else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_IRQ)
+> > > > +             rzg2l_irqc_unmask_tint_interrupt(priv, hwirq); }
+> > > > +
+> > > > +static void rzg2l_irqc_unmask(struct irq_data *d) {
+> > > > +     struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+> > > > +
+> > > > +     raw_spin_lock(&priv->lock);
+> > > > +     rzg2l_irqc_unmask_once(priv, irqd_to_hwirq(d));
+> > > > +     raw_spin_unlock(&priv->lock);
+> > > > +     irq_chip_unmask_parent(d);
+> > > > +}
+> > > > +
+> > > >  static void rzg2l_tint_irq_endisable(struct irq_data *d, bool
+> > > > enable)  {
+> > > > +     struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+> > > >       unsigned int hw_irq =3D irqd_to_hwirq(d);
+> > > >
+> > > >       if (hw_irq >=3D IRQC_TINT_START && hw_irq < IRQC_NUM_IRQ) {
+> > > > -             struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+> > > >               u32 offset =3D hw_irq - IRQC_TINT_START;
+> > > >               u32 tssr_offset =3D TSSR_OFFSET(offset);
+> > > >               u8 tssr_index =3D TSSR_INDEX(offset);
+> > > >               u32 reg;
+> > > >
+> > > >               raw_spin_lock(&priv->lock);
+> > > > +             if (enable)
+> > > > +                     rzg2l_irqc_unmask_once(priv, hw_irq);
+> > > > +             else
+> > > > +                     rzg2l_irqc_mask_once(priv, hw_irq);
+> > > >               reg =3D readl_relaxed(priv->base + TSSR(tssr_index));
+> > > >               if (enable)
+> > > >                       reg |=3D TIEN << TSSEL_SHIFT(tssr_offset); @@
+> > > > -157,6 +253,13 @@ static void rzg2l_tint_irq_endisable(struct irq_d=
+ata *d, bool enable)
+> > > >                       reg &=3D ~(TIEN << TSSEL_SHIFT(tssr_offset));
+> > > >               writel_relaxed(reg, priv->base + TSSR(tssr_index));
+> > > >               raw_spin_unlock(&priv->lock);
+> > > > +     } else {
+> > > > +             raw_spin_lock(&priv->lock);
+> > > > +             if (enable)
+> > > > +                     rzg2l_irqc_unmask_once(priv, hw_irq);
+> > > > +             else
+> > > > +                     rzg2l_irqc_mask_once(priv, hw_irq);
+> > > > +             raw_spin_unlock(&priv->lock);
+> > > >       }
+> > > >  }
+> > > >
+> > > > @@ -324,8 +427,8 @@ static struct syscore_ops rzg2l_irqc_syscore_op=
+s
+> > > > =3D {  static const struct irq_chip irqc_chip =3D {
+> > > >       .name                   =3D "rzg2l-irqc",
+> > > >       .irq_eoi                =3D rzg2l_irqc_eoi,
+> > > > -     .irq_mask               =3D irq_chip_mask_parent,
+> > > > -     .irq_unmask             =3D irq_chip_unmask_parent,
+> > > > +     .irq_mask               =3D rzg2l_irqc_mask,
+> > > > +     .irq_unmask             =3D rzg2l_irqc_unmask,
+> > >
+> > > I feel this will be clean, if we have
+> > >
+> > > static const struct irq_chip rzg2l_irqc_chip =3D {
+> > >         .name                   =3D "rzg2l-irqc",
+> > >         ...
+> > >         .irq_mask               =3D irq_chip_mask_parent,
+> > >         .irq_unmask             =3D irq_chip_unmask_parent,
+> > >         ....
+> > > };
+> > >
+> > > static const struct irq_chip rzfive_irqc_chip =3D {
+> > >         .name                   =3D "rzfive-irqc",
+> > >         ...
+> > >         .irq_mask               =3D rzfive_irqc_mask,
+> > >         .irq_unmask             =3D rzfive_irqc_unmask,
+> > >         ....
+> > > };
+> > >
+> > > And passing this in rzg2l_irqc_init() and rzfive_irqc_init(), see
+> > > below
+> > >
+> > > return rzg2l_irqc_init_helper(node, parent, & rzg2l_irqc_chip); retur=
+n
+> > > rzg2l_irqc_init_helper(node, parent, & rzfive_irqc_chip);
+> > >
+> > If we do the above we are stuck with "struct irq_chip" as data, for fur=
+ther upcoming SoCs (for
+> > example RZ/V2H) which have more features we need to pass custom data to=
+ handle these features.
+>
+> That time device data can be extended like below
+>
+> struct rz_g2l_irq_chip {
+>         struct irq_chip;
+>         void *data; /* custom data */
+> }
+>
+Ok, but i'll wait for Geert to come back on this as Geert suggested to
+me to do it this way.
+
+Cheers,
+Prabhakar
 
