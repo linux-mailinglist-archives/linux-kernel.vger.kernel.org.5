@@ -1,263 +1,191 @@
-Return-Path: <linux-kernel+bounces-131575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB26F8989A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:13:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96B888989AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:14:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E35E21C29F0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:13:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B88528497E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:14:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AB401292FC;
-	Thu,  4 Apr 2024 14:13:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B24012A173;
+	Thu,  4 Apr 2024 14:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="mUA21glA"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="okxy2CJ6"
+Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9082C129A75
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 088211292FB
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712239982; cv=none; b=bnVwjRxCdEHh949SjmcU3kBApRkPlhMjmCgMtKwptWdUzmXJzXyPTFpHosKkvOkzPrH0bxcDuaZXdF9RZPHlbFpFLZh4PAXM91W2SEIehvQXtSFK1tXZraWBBMJrNXpK5Il9J21lFBoJy6FjvRSbXpWOnjGn8d4iwckR/loV9qM=
+	t=1712240067; cv=none; b=V/BXQZ3kuczYrmJduQvQAN1GdqZcW+6XcOQCHnjDh667o9rASQoBk+VTgVO7Q8tevTcskDVg52UlsHgjwmCNa24ElUStD0U2A2L+HzhCvID+Rnros2nAL2gIWe5HVUJ37gyvPA3+dKx4RF4wtG+y/lDxOkyLu3Qh1eaQzSohSe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712239982; c=relaxed/simple;
-	bh=24DVCB0AtO6sSu8g6iu7VSYImGTEkT8jVFxncvRBhFk=;
+	s=arc-20240116; t=1712240067; c=relaxed/simple;
+	bh=wPNv0rAK4gkp3iAr/PUWZQQ3gdHika88yZSnlZ8mFvM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UwRab4VTyGPHnXXNL3uZDuJijKEdwbusj3dtSaSsYosKjEZa4ZKborG+Baz2h+/6FRCCx8daXEIEBdU0L1Gyd+azhpPMa9WRi+vAGBFmgx9xMCBnwIhv0OxB766mimgP87Z8iISz8ZqiZyJc8gG15G1tJpz2c8Snwp1mdaUdJsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com; spf=pass smtp.mailfrom=raspberrypi.com; dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b=mUA21glA; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dcc7cdb3a98so1070653276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:12:59 -0700 (PDT)
+	 To:Cc:Content-Type; b=dUxg2M8Sfllu1T1o5xum249ijTH0LEf2dswK+zZ21GFhpd9dxYZUdRurUKfB7SYAfGs8uaOZrXYPImcrjXHtS29g7nRBAo72pSyH2UK/4P+FxSSQ5bkyE3zeOUAJYvJUMhGSZ9AcYIIV1bt2do8d64c813ZQxgSoHUuaq/vRXj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=okxy2CJ6; arc=none smtp.client-ip=209.85.128.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6157c30fbc9so10648087b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google; t=1712239978; x=1712844778; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712240065; x=1712844865; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ptApJg0lZA58LEoF0DTe5yUBAeVKWs9Xi1CFZCKcXxk=;
-        b=mUA21glAzn3GYXuuB27gAwTa61C8yJVtmMH0SkjKgjmOefSpecUzJXvLpjtOxAK7/a
-         lgg27jOxkUSqqOf6rqk6Z4X95V5saD8PE3oTlZB7qURtAqbZjBit8V9SnXLbDn0E/w5O
-         azwFkwg/4ec8fgoV/jXskWsaZ5jTHMVbvjHbTKdy3HSnAnzmUQwOYRdp7Gdu0Lt32w8q
-         4zAM5f4A76HuxkINeFcA15Emm83Xh/+jGdWkeEtFeIMj5VZh3ernuXl27V0Q99B1PSsE
-         kHnZ3FfqhkxzJqh2JbHVyoPADdh7QV/lsrqJ1cytAKXsZZfTC58h1PVeTFQQVa3yOMz7
-         U6+A==
+        bh=ThTdXKBRbeKtfvxTpWolYFeuiHKpOFysUOKZwvjPsjg=;
+        b=okxy2CJ6E8ANDm6XcWeBcpjHXxBvRT+JcI391ITweCFOMARdfwi6DhCuJ7Lw1dtxou
+         IMZAoI0j+1fX/qBKrMBNDSH/Kc52iHTN0k+Dj2BWoSW3izh9AiOVyQHhowK1jABkg080
+         iYNZZ3PqSDtjnOhL3TWZIkOEv7vpaEw7OTSCBiHYsJDd/eeJ8h/+/EA2iTa0RXAKitLy
+         e1ddeovga09M+7bieiIAFMteTfNKgMpfkNoF1SjU+S6UTY0odYMN/4RoFSsI/4olRM+0
+         Hr+yQTjZOM8Zc78I/oMWm5FgFI8UrDmv9iPVl0jSarmbn+CQLlyizAdyegUy/370So+i
+         SuoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712239978; x=1712844778;
+        d=1e100.net; s=20230601; t=1712240065; x=1712844865;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ptApJg0lZA58LEoF0DTe5yUBAeVKWs9Xi1CFZCKcXxk=;
-        b=Bdm8VKunWnNCReICynTyXDoPk5sakHOPMZ1yoJ4XwNwoI0sPddygJYMbqIsIz27rXH
-         E2wW6MBNSVBSqIWuDCs+CmM6kkpfzb4HRa1Y/X6p29RmRKEHDD2QtjjpdXnvBuf2hesp
-         A7/TmC5tjfnnDghg5blSzETfK123NtpJY5QUZwGfdtzZCr5i2MhYq8T/E3xqWU3volgR
-         OZeNT05RoDV4s97YqkPBs9elG3v4LLiH5jMQRjUawqW2I4YFJ5HTcPkRiQdYZclViWPJ
-         0ua+ZN1vV4dTwu9BG8yKDLXqpGVPDtfqayrGRJ6JNv28PdJ+qYeei/tsbWeMNPmFYHZQ
-         +lNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXS18VKXG/LQsNh1haHZ6fDCSmDsVp4OcatgMpTqP2jeCamzqymJDbCj8tagI76tbFgXCnRX8kWC4udC8QjYmT2EMFRzmKKcyI835qh
-X-Gm-Message-State: AOJu0Yx1qsHJYVy9wTsyhaC0KGPOyU40cC3ASOJzRWLC5KVQscSgpIZV
-	6HQiJmTGA3jEuNojqhAKAoDSKoUNd/5eZvEe5nhvbh5Cnr8td0Kq1mLF+8N3wnQLlRekrGzOgUy
-	ViDeMZLOweFgBtq+OGv1GzoVZSCSAQsLTxylcZg==
-X-Google-Smtp-Source: AGHT+IFY4/FdCnSuzKJ1eMiQ01HA592h+X+sKaRzMe2lVBT5Rjt65RxAtvBBhTXwCHu7tLtZ/tYJJVE8QkX+SGVDQGs=
-X-Received: by 2002:a25:848e:0:b0:dcf:a52d:6134 with SMTP id
- v14-20020a25848e000000b00dcfa52d6134mr2583779ybk.26.1712239978579; Thu, 04
- Apr 2024 07:12:58 -0700 (PDT)
+        bh=ThTdXKBRbeKtfvxTpWolYFeuiHKpOFysUOKZwvjPsjg=;
+        b=ko1/BQW0o2zHr5ATtEWmtSMlVSYn2iLZJAyNWW+h7EYn8g3qKac0pbtiSZQOrspYIR
+         m7tLIraXuXqxDIPBPT902X10geKLfdu4Pv0ctJaojBr5w7VLCRpPuVJrv7xpO5DHkCE3
+         r0Y1mEDQoGmRgtXP6UXXHDysuA1tt8Y9f4+CciwnVj1h6MFzV6UcljPaHI1Hgqc+awzm
+         vPgMdqpzuLnCz6wkvCFGorr3vFrhvZaMJKmINHZNTsMTZIdT1621mkmGzFLRLUXZ5mSS
+         pIrbjf29hi/JX6zCOMM94SKookoHcNDrYkG22E9jcMOfCxUVCb78yw6kRfmksIoN2Csu
+         TRnA==
+X-Forwarded-Encrypted: i=1; AJvYcCWMVWuHfk/FJlQsUZ+zW5SItCD2ODk1nB4j6E46qGkbC8uaq3C0zxt5cB0+MN5LhmSwXncmyk44JyDTIEim3HOD2zX3rS62KSOkRFir
+X-Gm-Message-State: AOJu0YwmM2VF/MZviPrWIHyzFyFtxef6+n2UGTLPcPNNac93TzbEZP08
+	kbroUs+G2b6tFYFTBVIlhHZU563XuFBWtJyhRuuQVyPx/TjwGWHvPYbKqHmBhkovPVqubJP8cju
+	IhoQQS0U3Rj3XL5CoKK05lRs3AWYp6qYaI7e2
+X-Google-Smtp-Source: AGHT+IGDUpNqNE89JPxkJnDxFJf7/PVFTdmFLJF3gZOL+YcWNT1lfbQ0eNtc40hL79Zon1479pqusNFqd3fCHU1wudQ=
+X-Received: by 2002:a81:a0c9:0:b0:608:ecd0:f894 with SMTP id
+ x192-20020a81a0c9000000b00608ecd0f894mr2430209ywg.1.1712240064820; Thu, 04
+ Apr 2024 07:14:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403150355.189229-1-git@luigi311.com> <20240403150355.189229-24-git@luigi311.com>
- <Zg2DBasC501hMQSS@kekkonen.localdomain> <wjlcde7yoooygj4hhdmiwrdloh6l4p6i2qbmjek5uwsifyzwgu@xjhutvmsdfou>
- <dd0e64c8-5eef-421a-9d9f-8a5865743369@luigi311.com>
-In-Reply-To: <dd0e64c8-5eef-421a-9d9f-8a5865743369@luigi311.com>
-From: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date: Thu, 4 Apr 2024 15:12:42 +0100
-Message-ID: <CAPY8ntAcB3wyLj1wNE5YBx0_UGRiXEv6057XfEBfjk8NOLC9yQ@mail.gmail.com>
-Subject: Re: [PATCH v3 23/25] drivers: media: i2c: imx258: Add support for
- powerdown gpio
-To: Luigi311 <git@luigi311.com>
-Cc: =?UTF-8?Q?Ond=C5=99ej_Jirman?= <megous@megous.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, linux-media@vger.kernel.org, 
-	jacopo.mondi@ideasonboard.com, mchehab@kernel.org, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, shawnguo@kernel.org, 
-	s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com, 
-	devicetree@vger.kernel.org, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	pavel@ucw.cz, phone-devel@vger.kernel.org
+References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com>
+ <20240402-linked-list-v1-2-b1c59ba7ae3b@google.com> <36306930-0390-4342-830d-03c11ec4a3a7@proton.me>
+In-Reply-To: <36306930-0390-4342-830d-03c11ec4a3a7@proton.me>
+From: Alice Ryhl <aliceryhl@google.com>
+Date: Thu, 4 Apr 2024 16:14:14 +0200
+Message-ID: <CAH5fLghHmuHxw1BL1F2-VF5KUXQLOwMqW6PfiAoLBXRE0Gyu=g@mail.gmail.com>
+Subject: Re: [PATCH 2/9] rust: list: add tracking for ListArc
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
+	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, 
+	Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, 
+	Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, 
+	Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, 
+	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Luigi
-
-On Wed, 3 Apr 2024 at 20:34, Luigi311 <git@luigi311.com> wrote:
+On Wed, Apr 3, 2024 at 5:52=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
+> wrote:
 >
-> On 4/3/24 10:57, Ond=C5=99ej Jirman wrote:
-> > Hi Sakari and Luis,
-> >
-> > On Wed, Apr 03, 2024 at 04:25:41PM GMT, Sakari Ailus wrote:
-> >> Hi Luis, Ondrej,
-> >>
-> >> On Wed, Apr 03, 2024 at 09:03:52AM -0600, git@luigi311.com wrote:
-> >>> From: Luis Garcia <git@luigi311.com>
-> >>>
-> >>> On some boards powerdown signal needs to be deasserted for this
-> >>> sensor to be enabled.
-> >>>
-> >>> Signed-off-by: Ondrej Jirman <megi@xff.cz>
-> >>> Signed-off-by: Luis Garcia <git@luigi311.com>
-> >>> ---
-> >>>  drivers/media/i2c/imx258.c | 13 +++++++++++++
-> >>>  1 file changed, 13 insertions(+)
-> >>>
-> >>> diff --git a/drivers/media/i2c/imx258.c b/drivers/media/i2c/imx258.c
-> >>> index 30352c33f63c..163f04f6f954 100644
-> >>> --- a/drivers/media/i2c/imx258.c
-> >>> +++ b/drivers/media/i2c/imx258.c
-> >>> @@ -679,6 +679,8 @@ struct imx258 {
-> >>>     unsigned int lane_mode_idx;
-> >>>     unsigned int csi2_flags;
-> >>>
-> >>> +   struct gpio_desc *powerdown_gpio;
-> >>> +
-> >>>     /*
-> >>>      * Mutex for serialized access:
-> >>>      * Protect sensor module set pad format and start/stop streaming =
-safely.
-> >>> @@ -1213,6 +1215,8 @@ static int imx258_power_on(struct device *dev)
-> >>>     struct imx258 *imx258 =3D to_imx258(sd);
-> >>>     int ret;
-> >>>
-> >>> +   gpiod_set_value_cansleep(imx258->powerdown_gpio, 0);
-> >>
-> >> What does the spec say? Should this really happen before switching on =
-the
-> >> supplies below?
-> >
-> > There's no powerdown input in the IMX258 manual. The manual only mentio=
-ns
-> > that XCLR (reset) should be held low during power on.
-> >
-> > https://megous.com/dl/tmp/15b0992a720ab82d.png
-> >
-> > https://megous.com/dl/tmp/f2cc991046d97641.png
-> >
-> >    This sensor doesn=E2=80=99t have a built-in =E2=80=9CPower ON Reset=
-=E2=80=9D function. The XCLR pin
-> >    is set to =E2=80=9CLOW=E2=80=9D and the power supplies are brought u=
-p. Then the XCLR pin
-> >    should be set to =E2=80=9CHigh=E2=80=9D after INCK supplied.
-> >
-> > So this input is some feature on camera module itself outside of the
-> > IMX258 chip, which I think is used to gate power to the module. Eg. on =
-Pinephone
-> > Pro, there are two modules with shared power rails, so enabling supply =
-to
-> > one module enables it to the other one, too. So this input becomes the =
-only way
-> > to really enable/disable power to the chip when both are used at once a=
-t some
-> > point, because regulator_bulk_enable/disable becomes ineffective at tha=
-t point.
-> >
-> > Luis, maybe you saw some other datasheet that mentions this input? IMO,
-> > it just gates the power rails via some mosfets on the module itself, si=
-nce
-> > there's not power down input to the chip itself.
-> >
-> > kind regards,
-> >       o.
-> >
+> I think the commit one-line description sounds a bit strange, how about
+> "rust: list: add ListArc tracking strategies"?
 >
-> Ondrej, I did not see anything else in the datasheet since I'm pretty sur=
-e
-> I'm looking at the same datasheet as it was supplied to me by Pine64. I'm
-> not sure what datasheet Dave has access to since he got his for a
-> completely different module than what we are testing with though.
-
-I only have a leaked datasheet (isn't the internet wonderful!)  [1]
-XCLR is documented in that, as Ondrej has said.
-
-If this powerdown GPIO is meant to be driving XCLR, then it is in the
-wrong order against the supplies.
-
-This does make me confused over the difference between this powerdown
-GPIO and the reset GPIO that you implement in 24/25.
-
-Following the PinePhone Pro DT [3] and schematics [4]
-reset-gpios =3D <&gpio1 RK_PA0 GPIO_ACTIVE_LOW>;
-powerdown-gpios =3D <&gpio2 RK_PD4 GPIO_ACTIVE_HIGH>;
-
-Schematic page 11 upper right block
-GPIO1_A0/ISP0_SHUTTER_EN/ISP1_SHUTTER_EN/TCPD_VBUS_SINK_EN_d becomes
-Camera_RST_L. Page 18 feeds that through to the RESET on the camera
-connector.
-Page 11 left middle block GPIO2_D4/SDIO0_BKPWR_d becomes DVP_PDN1_H.
-Page 18 feeds that through to the PWDN on the camera connector.
-
-Seeing as we apparently have a lens driver kicking around as well,
-potentially one is reset to the VCM, and one to the sensor? DW9714
-does have an XSD shutdown pin.
-Only the module integrator is going to really know the answer,
-although potentially a little poking with gpioset and i2cdetect may
-tell you more.
-
-  Dave
-
-[1] https://web.archive.org/web/20201027131326/www.hi.app/IMX258-datasheet.=
-pdf
-[2] https://files.pine64.org/doc/PinePhonePro/PinephonePro-Schematic-V1.0-2=
-0211127.pdf
-[3] https://xff.cz/git/linux/tree/arch/arm64/boot/dts/rockchip/rk3399-pinep=
-hone-pro.dts?h=3Dorange-pi-5.18#n868
-[4] https://files.pine64.org/doc/PinePhonePro/PinephonePro-Schematic-V1.0-2=
-0211127.pdf
-
-
-> >>> +
-> >>>     ret =3D regulator_bulk_enable(IMX258_NUM_SUPPLIES,
-> >>>                                 imx258->supplies);
-> >>>     if (ret) {
-> >>> @@ -1224,6 +1228,7 @@ static int imx258_power_on(struct device *dev)
-> >>>     ret =3D clk_prepare_enable(imx258->clk);
-> >>>     if (ret) {
-> >>>             dev_err(dev, "failed to enable clock\n");
-> >>> +           gpiod_set_value_cansleep(imx258->powerdown_gpio, 1);
-> >>>             regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->suppl=
-ies);
-> >>>     }
-> >>>
-> >>> @@ -1238,6 +1243,8 @@ static int imx258_power_off(struct device *dev)
-> >>>     clk_disable_unprepare(imx258->clk);
-> >>>     regulator_bulk_disable(IMX258_NUM_SUPPLIES, imx258->supplies);
-> >>>
-> >>> +   gpiod_set_value_cansleep(imx258->powerdown_gpio, 1);
-> >>> +
-> >>>     return 0;
-> >>>  }
-> >>>
-> >>> @@ -1541,6 +1548,12 @@ static int imx258_probe(struct i2c_client *cli=
-ent)
-> >>>     if (!imx258->variant_cfg)
-> >>>             imx258->variant_cfg =3D &imx258_cfg;
-> >>>
-> >>> +   /* request optional power down pin */
-> >>> +   imx258->powerdown_gpio =3D devm_gpiod_get_optional(&client->dev, =
-"powerdown",
-> >>> +                                               GPIOD_OUT_HIGH);
-> >>> +   if (IS_ERR(imx258->powerdown_gpio))
-> >>> +           return PTR_ERR(imx258->powerdown_gpio);
-> >>> +
-> >>>     /* Initialize subdev */
-> >>>     v4l2_i2c_subdev_init(&imx258->sd, client, &imx258_subdev_ops);
-> >>>
-> >>
-> >> --
-> >> Regards,
-> >>
-> >> Sakari Ailus
+> On 02.04.24 14:16, Alice Ryhl wrote:
+> > @@ -33,19 +34,64 @@ pub trait ListArcSafe<const ID: u64 =3D 0> {
+> >      unsafe fn on_drop_list_arc(&self);
+> >  }
+> >
+> > +/// Declares that this type is able to safely attempt to create `ListA=
+rc`s at any time.
+> > +///
+> > +/// # Safety
+> > +///
+> > +/// Implementers must ensure that `try_new_list_arc` does not return `=
+true` if a `ListArc` already
+> > +/// exists.
+> > +pub unsafe trait TryNewListArc<const ID: u64 =3D 0>: ListArcSafe<ID> {
+> > +    /// Attempts to convert an `Arc<Self>` into an `ListArc<Self>`. Re=
+turns `true` if the
+> > +    /// conversion was successful.
+> > +    fn try_new_list_arc(&self) -> bool;
+> > +}
+> > +
+> >  /// Declares that this type supports [`ListArc`].
+> >  ///
+> > -/// When using this macro, it will only be possible to create a [`List=
+Arc`] from a [`UniqueArc`].
+> > +/// When using this macro, you may choose between the `untracked` stra=
+tegy where it is not tracked
+> > +/// whether a [`ListArc`] exists, and the `tracked_by` strategy where =
+the tracking is deferred to a
+> > +/// field of the struct. The `tracked_by` strategy can be combined wit=
+h a field of type
+> > +/// [`AtomicListArcTracker`] to track whether a [`ListArc`] exists.
+> >  #[macro_export]
+> >  macro_rules! impl_list_arc_safe {
+> >      (impl$({$($generics:tt)*})? ListArcSafe<$num:tt> for $t:ty { untra=
+cked; } $($rest:tt)*) =3D> {
+> > -        impl$(<$($generics)*>)? $crate::list::ListArcSafe<$num> for $t=
+ {
+> > +        impl$(<$($generics)*>)? ListArcSafe<$num> for $t {
 >
+> This change seems unintentional.
+
+Will fix.
+
+> >              unsafe fn on_create_list_arc_from_unique(&mut self) {}
+> >              unsafe fn on_drop_list_arc(&self) {}
+> >          }
+> >          $crate::list::impl_list_arc_safe! { $($rest)* }
+> >      };
+> >
+> > +    (impl$({$($generics:tt)*})? ListArcSafe<$num:tt> for $t:ty {
+> > +        tracked_by $field:ident : $fty:ty;
+> > +    } $($rest:tt)*) =3D> {
+> > +        impl$(<$($generics)*>)? ListArcSafe<$num> for $t {
+>
+> Here you also want to access `ListArcSafe` via
+> `$crate::list::ListArcSafe`.
+
+Will fix.
+
+> > +            unsafe fn on_create_list_arc_from_unique(&mut self) {
+> > +                let me =3D self as *mut Self;
+> > +                let field: *mut $fty =3D unsafe { ::core::ptr::addr_of=
+_mut!((*me).$field) };
+>
+> I think we should also have `SAFETY` comments in macros.
+>
+> Also why can't this be done using safe code?:
+>
+>      let field: &mut $fty =3D &mut self.$field;
+
+Not sure why. Probably a historical accident. Will change it to be safe.
+
+> > +                unsafe { <$fty as $crate::list::ListArcSafe<$num>>::on=
+_create_list_arc_from_unique(
+> > +                        &mut *field
+> > +                ) };
+>
+> Formatting? rustfmt gives me this:
+>
+>                  unsafe {
+>                      <$fty as $crate::list::ListArcSafe<$num>>::on_create=
+_list_arc_from_unique(
+>                          &mut *field
+>                      )
+>                  };
+>
+> (maybe the `;` should be inside the `unsafe` block in this case?)
+
+I can make the change, but rustfmt does not affect macros.
+
+Alice
 
