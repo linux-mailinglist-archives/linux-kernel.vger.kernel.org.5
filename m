@@ -1,127 +1,89 @@
-Return-Path: <linux-kernel+bounces-131187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19B82898427
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:35:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 061F489841E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:35:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACC521F28D36
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:35:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 393CFB287EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:35:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 743F27F498;
-	Thu,  4 Apr 2024 09:31:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC08757FD;
+	Thu,  4 Apr 2024 09:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="xZT/jAwa"
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mWEmeO8F"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324A578286
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 09:31:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7F2774E3A
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 09:31:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712223100; cv=none; b=ugfxTqKIREmxdCB/FPZwz8UU4FwghIqiHbq1rYsr8MqhDWF9ZwOpOadRhbsLPGFRAs6sdg0w9xBwgK/2UfunjFeuRyTos4sc38Q094lZi1UZN8gOwViozClIp+lpgKWbdqfPxWqXOFysjXGCJr/H4kORoq1+XFg9RDGth4usElA=
+	t=1712223092; cv=none; b=PFqRACQ15n1+Mqs0qd3LxFSER4BMUdZ/h59hGIM/+4gubHE7viytHMKJUDmQxxnPzFxcqf9o7nqWehsHrSZMHvmhsgJ4r6onqH6vLtTf83X0+GhXoMTf73ViTaT4YkqnrUMENhX+t2Ip1U+1QIi6x3jp2DTNxEfrXAPLrlxCupk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712223100; c=relaxed/simple;
-	bh=w5umMME5XeGEOz99SzYrMx+dj2pL8cBzPjsa+F50+Ec=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Zf/zOFxtK0y6hkHgVtTXkqczB8/h9bYt/6YqSFUzMyTIwquaGxSWhvflGXNaUVIKrJ29DVTPOxGX6v3dbMhMy8q1nA1Vz901XkFVsr8xMZfguphx7GIMNIV5WFKOsQp9F8dQptmN1xnvwDbJJZH40rf4oCBaL4WKzkP7ZQFB1vU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=xZT/jAwa; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dcbc6a6808fso814243276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 02:31:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712223098; x=1712827898; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HO/dDAUuh8KUawj8ZZNT4wZzfYA+tW547HrSsmqTFKM=;
-        b=xZT/jAwagTO0oqknp82OdBzpTJ7+TkZPySgC4rtgE35qbxJoPP7EDq7ILxS+Y/d68X
-         vUIN21lszyAZFOIZSUD2qjpTMsE/Hd/dOsbKsSJ+ivNKal6z9MPl/S8QdMcz710maDZ1
-         hOTKC6K725k+oJ1OIFSX7R96IopX7f0pdhNMBbYSaxW8OTABKFlainYgiHRLdAqSC/K6
-         S2MCjhTOyV9ZTolU/bNqy+bUddmoa+Z+MasXslV5m0TFXx69WW3v2vZuZ3O52/OrfA+W
-         D6n5xkl7NqzH9q+8VEQqrOte0YyXEcBVNqfKZDULjnKhuhO4wufuBb5aEdkSWzWnUNXY
-         YGBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712223098; x=1712827898;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HO/dDAUuh8KUawj8ZZNT4wZzfYA+tW547HrSsmqTFKM=;
-        b=hFP38Mt3KCAZU2B72bw55h5SL7Q8pINd4FllcYs8fpcv+DhgTP2q6tvtVx3G0wsA8j
-         y/4czvSECUsSU9s+swI6Ds73O258v3vRhlYZNNKCok8ZJ9rPF58FCeCWpXnem4Y1/R4q
-         ww50sfHb7uuwMZwQE4iu6yvOB0zq6lrZCJxI+BxVAii/061x+Tq9Xxg1sMICbEjXsAJs
-         Cw8zHbo/cNXtDXW+TbKHb02hSkAisexmfYjpe3oIe6JzlKQPYxRXVLV1Xr800+Kgh2+h
-         ZI7WZ9stzhW2ixdUuKTIhzceRZHF4XKoffBLknmagwivXFdjjhMEvZIdS12ldVxGktKL
-         mLXQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVfTbh51Ue9oYZ3klen9/D5AIhXxWjdFFQyPkeX1TH5Q8fiq/gG1DecFzvnqHp+qD1vzjW0YwreW00P6rkp8iWRfDpcjZJ6byMEDWU9
-X-Gm-Message-State: AOJu0YzuyuW/7qYY8fi5C08kByh+FhK/sOxrAksc5mYLMrdNNMdVfosw
-	cgT6/bh6EeP3XQAfAgXTh6YDPzYgHG/CuqtV/MgcIIGuVLCYlGSC9MKIZu93ICAVgTmS248dU3S
-	k0v/HPksJD3JglWwD9Bmkm8iJvZBtStWLZNd5Cw==
-X-Google-Smtp-Source: AGHT+IGV7+SoNV7hAltq2kWxN5B9pSc9H3SFwGtYvRztCJ4O4vtio6g4ApJgPo+O8DTpfmZx/Mn1Nj7PGyMl3yKeMW4=
-X-Received: by 2002:a25:8405:0:b0:dc6:c2b2:c039 with SMTP id
- u5-20020a258405000000b00dc6c2b2c039mr1947696ybk.41.1712223098167; Thu, 04 Apr
- 2024 02:31:38 -0700 (PDT)
+	s=arc-20240116; t=1712223092; c=relaxed/simple;
+	bh=1KLRrruEWrTqeDMftaKWZ8sB/Xz5Ud34n+wx3irTKz4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=P0sq7AglXI8kpD+tw7wUSAhpTixs7/f6Juve5r5WaSYX5KsmMa57qmnvPHxinOxEwv5+mv6EvpGvg972jdccswRpthPKUajkGyx9PK52qVj/YYnWhKiRUaF+dSSMDHqLowr8pjWdWjrVvD3iPxEGD0Vt1UNKPJSCd4eByCvtf6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mWEmeO8F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09BD0C433C7;
+	Thu,  4 Apr 2024 09:31:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712223092;
+	bh=1KLRrruEWrTqeDMftaKWZ8sB/Xz5Ud34n+wx3irTKz4=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+	b=mWEmeO8FnKjOEBnPg9UgzP4p81Jtrr5dYl/bTPTA9JPneLXOBcjHVqirgbZyHXIo5
+	 aEbJf+2nW0nTXwxleZNtO7HcIOS8s2b90yH99XgnYDs0zbNHRjGbyZ76v+z+Nv+DTK
+	 QNeadqlhxoJGxHH7Q19/SQxiTghOEVv95lZGnHmHXZr3WIGq4kGgm2dGqfvWAFBiun
+	 Qoz0i3/5RmSNu1vl9Y4d0qKNmNqPwhFFpgjHrXvvIpObzltJIjGjxh4lwGbRMnwRXH
+	 x5eMotYgq/SssxHmwXTWSnJffSYtRnJHtHYFcUwUqJ3nPkIMhVJ8j8VWb/4AHidDg9
+	 4NrRQU0TNGt5Q==
+From: Mike Rapoport <rppt@kernel.org>
+To: akpm@linux-foundation.org, rongtao@cestc.cn, 
+ Wei Yang <richard.weiyang@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
+In-Reply-To: <20240402132701.29744-1-richard.weiyang@gmail.com>
+References: <20240402132701.29744-1-richard.weiyang@gmail.com>
+Subject: Re: [PATCH 0/3] memblock tests: fix build error
+Message-Id: <171222309069.1396621.2828831464457944067.b4-ty@kernel.org>
+Date: Thu, 04 Apr 2024 12:31:30 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402093539.184287-1-bigunclemax@gmail.com>
-In-Reply-To: <20240402093539.184287-1-bigunclemax@gmail.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 4 Apr 2024 11:31:01 +0200
-Message-ID: <CAPDyKFqat_wAa1zCH+VAebs4R3LodvDJ13Af5CU9xvzX6rzKTw@mail.gmail.com>
-Subject: Re: [PATCH v1] mmc: sdhci-of-dwcmshc: th1520: Increase tuning loop
- count to 128
-To: Maksim Kiselev <bigunclemax@gmail.com>
-Cc: Drew Fustini <drew@pdp7.com>, Xi Ruoyao <xry111@xry111.site>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-mmc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13.0
 
-On Tue, 2 Apr 2024 at 11:36, Maksim Kiselev <bigunclemax@gmail.com> wrote:
->
-> Fix SD card tuning error by increasing tuning loop count
-> from 40(MAX_TUNING_LOOP) to 128.
->
-> For some reason the tuning algorithm requires to move through all the taps
-> of delay line even if the THRESHOLD_MODE (bit 2 in AT_CTRL_R) is used
-> instead of the LARGEST_WIN_MODE.
->
-> Tested-by: Drew Fustini <drew@pdp7.com>
-> Tested-by: Xi Ruoyao <xry111@xry111.site>
-> Signed-off-by: Maksim Kiselev <bigunclemax@gmail.com>
+On Tue, 02 Apr 2024 13:26:58 +0000, Wei Yang wrote:
+> Some kernel change break the test build, just fix it.
+> 
+> Wei Yang (3):
+>   memblock tests: fix undefined reference to `early_pfn_to_nid'
+>   memblock tests: fix undefined reference to `panic'
+>   memblock tests: fix undefined reference to `BIT'
+> 
+> [...]
 
-Applied for fixes and by adding a fixes+stable tag, thanks!
+Applied to fixes branch of memblock.git tree, thanks!
 
-Kind regards
-Uffe
+[1/3] memblock tests: fix undefined reference to `early_pfn_to_nid'
+      commit: 7d8ed162e6a92268d4b2b84d364a931216102c8e
+[2/3] memblock tests: fix undefined reference to `panic'
+      commit: e0f5a8e74be88f2476e58b25d3b49a9521bdc4ec
+[3/3] memblock tests: fix undefined reference to `BIT'
+      commit: 592447f6cb3c20d606d6c5d8e6af68e99707b786
 
+tree: https://git.kernel.org/pub/scm/linux/kernel/git/rppt/memblock
+branch: fixes
+
+--
+Sincerely yours,
+Mike.
 
 
-> ---
-> Previous discussion was here:
-> https://lore.kernel.org/lkml/CALHCpMhc1F5Ue7U_gsDXREHUZRVQJNYRCJxYxoNqbN=-39jf7A@mail.gmail.com/
->
->  drivers/mmc/host/sdhci-of-dwcmshc.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> index 8d6cfb648096..1001b6ea1a89 100644
-> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
-> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
-> @@ -706,6 +706,7 @@ static int th1520_execute_tuning(struct sdhci_host *host, u32 opcode)
->
->         /* perform tuning */
->         sdhci_start_tuning(host);
-> +       host->tuning_loop_count = 128;
->         host->tuning_err = __sdhci_execute_tuning(host, opcode);
->         if (host->tuning_err) {
->                 /* disable auto-tuning upon tuning error */
-> --
-> 2.40.1
->
 
