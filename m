@@ -1,122 +1,127 @@
-Return-Path: <linux-kernel+bounces-131059-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131060-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4234F898295
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:57:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1C44898297
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:57:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8C9FB22623
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:57:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3C510B21A1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:57:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D254E5D73A;
-	Thu,  4 Apr 2024 07:57:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EC225D724;
+	Thu,  4 Apr 2024 07:57:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mMKe+mtz"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bhWzuSBS";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="eCRL3ZaU"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DA4345970
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:56:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8828545970;
+	Thu,  4 Apr 2024 07:57:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712217421; cv=none; b=Zt2VKbfDUqm2u5ai7A2pdOLedXgODSn2X0j6iPeUvMdZSWWnKa9nk8QvzuB4HYiPOw23uFkGdeBg/BlpS2ldLbxVHlICtYFG88XSFGoivWvLEfjKMXuW4feEwdQvJiAzKkFQjvNXFuirML4H8xejmmk3JyE4DmTijFYRaug+hXk=
+	t=1712217456; cv=none; b=F888lGQnlv5aFkBNYLTKagRIb0rWvXg4S78eUeJnlPyhWM/ZGFt6QtgeJaodWN/gabPbhRAd1qvVQwxM6ggp6gfdo3OR4uoYJC0x+PiX4QQDQkqoC5yW84wWnHrsspl+lZa1j7QrSnwF8fjYpTtxO8mVk4P8Q1Km3Kse03uumwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712217421; c=relaxed/simple;
-	bh=10QNrCSrA4VuJN4sCZdigL3fgs1LMuQX/LQrpISoH78=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C2yoj/KRW28nAJjTCsJa9Razpwkf9AoGL0W38dOyrzRlQ2fh2TRihmrwmp5qwTFeoGlRitq6P5UO3DMTK/Xy2Ic0yMH5YCRwvntW2UbG5ZUV1ZtaM1FG9xScbBlGNZcmmSPNMdcSKGGoDbMRDepC5HDmnLm28R/Xl5xG7d9P4mY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mMKe+mtz; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4162b5ba333so1284665e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 00:56:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712217418; x=1712822218; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=odFAKmC43zCLxTG764+1o/hwl874kgnzDh7JyeKWm6g=;
-        b=mMKe+mtzpNiodqhwF7625gIwNaYEOLcroacUP+mOEgt6TG+wzQiRL9/Bb5Fra/gSi3
-         Ze8lMpT7QRVFyZOZ+ON8aXh0uO8Tt9Gy/4bhByD6ph86n7tVz6kNDR0h6Kr47zCJMmqW
-         nL8uIno/7OqI+bAidGjQ8Y9EM4+447oa7rN3BdOsx14MajnjbgjZjvze04Cl8CnGbQNs
-         n0o3WOrl7ItT2YWdgMV1PXQuxJAiRc/v5Bl5hxJRy0MbvEJ0sBoK3f5CfOHa5j5TtAjX
-         XHwVRUHpjvuY9vuWn8rjY3WRI3V2rVJaD/WT11Y9GL8UdzHvOZuGBCOrDiU71GdpVNS7
-         GHYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712217418; x=1712822218;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=odFAKmC43zCLxTG764+1o/hwl874kgnzDh7JyeKWm6g=;
-        b=JIO9C/dAgc+pi3rTVomZDsf1ddN0tKAUVvYXFErwbYYj4RVVMMou3d57NEyI8U7ICm
-         R+h5DkgxRX3yW7ELTa2fRRWGyDkLgVAejWebMx4roDzzulNCnVvtQqBwa0UyuH3BjL4d
-         H9Vpzohazrx1OFaAw2FW5wPUxDKWADWjsYFpHRq3H7JB/lIXzxKN9R8PaNWo5nk97qgd
-         KmjvO1Q/71UyIa9RhmyKpBUDGRxXVrh+CkI5GVLz60JGKXWNQEJKibPlHRUE7OBWFQWn
-         f+sSB58dakDLJBkuX3DAcoay7Ye36F1LTC+Icry1p3Vz/7jFWzXZ0f1nINVFylQT3MuT
-         md6g==
-X-Forwarded-Encrypted: i=1; AJvYcCXN3eXTtidHzuYWUtOhR1t38sCkbdpDkJgcTxUlw9NvtuppnpZlaqiIzPALdALWOvHDx2nIlSfBw4T/lNiMzo6wu8VxAPfwwYvYaFFm
-X-Gm-Message-State: AOJu0YzEO+kdDhkDBXJJALDunFzGBUPKDdF6SC2H1Q+d9ZiNtGXMW9XZ
-	S0jIK4VlFx5UsD/Qw1QFsGtu8N3BYKNOc/dH+rpvT1ON3eLVAoIM
-X-Google-Smtp-Source: AGHT+IFYywBlxhmXe9/Rke8hr0lTcgscNSCYmG8tkiO7FGD+Y7A/+7MGul0r2aFb1GIFIsviVpXzWA==
-X-Received: by 2002:a05:600c:22c8:b0:414:e0af:9b9f with SMTP id 8-20020a05600c22c800b00414e0af9b9fmr1388695wmg.30.1712217417484;
-        Thu, 04 Apr 2024 00:56:57 -0700 (PDT)
-Received: from gmail.com (84-236-113-97.pool.digikabel.hu. [84.236.113.97])
-        by smtp.gmail.com with ESMTPSA id u12-20020a05600c19cc00b0041469869d11sm1694549wmq.47.2024.04.04.00.56.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 00:56:56 -0700 (PDT)
-Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
-Date: Thu, 4 Apr 2024 09:56:54 +0200
-From: Ingo Molnar <mingo@kernel.org>
-To: Brian Gerst <brgerst@gmail.com>
-Cc: Dave Hansen <dave.hansen@intel.com>, Javier Pello <devel@otheo.eu>,
-	linux-kernel@vger.kernel.org, x86@kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH 1/1] x86/mm/pae: Align up pteval_t, pmdval_t and pudval_t
- to avoid split locks
-Message-ID: <Zg5dRkSncIeHsP0H@gmail.com>
-References: <20240401185451.6897208962d3fc47a12ffb5a@otheo.eu>
- <20240401185712.a80deeb2fddeded0ad42cc04@otheo.eu>
- <8ee463af-fdbf-4514-bb6e-bf2fd61fbc06@intel.com>
- <20240402192314.a9b4e05637444314f47557e4@otheo.eu>
- <d7e89d23-b692-4e70-baae-5df5b3984620@intel.com>
- <Zg0L/OfuQtVgFSsG@gmail.com>
- <CAMzpN2iK0+okEKnX_EgfmdLSg9Gze_BVO4fEG3TBuzwD-yj8bA@mail.gmail.com>
+	s=arc-20240116; t=1712217456; c=relaxed/simple;
+	bh=q9aRhNcDzR7Xs1bDRW2HZNJRvDUfLmRMZ34+tSjSNOY=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=kiVc/dhJD328rRYrX4pa4PjgiCpPqPBeqG5IfjNgxT8fLv47ko4UbUdR+/8Bikg5yLciMwbM6RhO5bggtc+FGDVUdr8vqjq8RaT0DwOo7aUp0pJaA41fdeR2w6sZBD6IESOaLyM/pZBAG/qurxj32PEnuYO1Qc5Eds7lC3ZQU6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bhWzuSBS; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=eCRL3ZaU; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 04 Apr 2024 07:57:31 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712217452;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NNCCZOUGYI/dfTpeabf6PprqLVc9VgSgHRqsATYCMrc=;
+	b=bhWzuSBSqX9DIZkA90vmzto/WkuQlbK74ar9r7F57p20lOtDKtxW8B1FuwwBvXl98NW/kY
+	2ou/PPlo2StLiv/yTeG5wCRGLv0vsWJ+Lx8p+u2P+GBj7G5/KdPCz2UC+BtOMNXLce9DSI
+	s8K5RJIp09tt4RQSV1XGGf1TrteNKwToQ5csyHZAPGaJrDcOL1xyhQsm8EBXCwQGCKH5Cx
+	9bRkbYW43q/ybA5NPXwQnHrYTqdzpMJ9n1ky8JLxk5suFPhsCkLvRLpdTTjLmf1fsajFud
+	B76CFjDVlQo3obiDAAWxikYfdRl8PZtBgaG/37sZVMvV9+OAV10Cx4KMkTK9IQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712217452;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NNCCZOUGYI/dfTpeabf6PprqLVc9VgSgHRqsATYCMrc=;
+	b=eCRL3ZaU+HlcHXXyJU/2yXqXfFQe/QSm64GWIQOaNpAhzS666UCQDKAMVgqcTSOHoKR9Nu
+	hCOtf3HnrF6FNjAQ==
+From: "tip-bot2 for Li RongQing" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/fpu] x86/fpu: Update fpu_swap_kvm_fpu() uses in comments as well
+Cc: Li RongQing <lirongqing@baidu.com>, Ingo Molnar <mingo@kernel.org>,
+ x86@kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240403091803.818-1-lirongqing@baidu.com>
+References: <20240403091803.818-1-lirongqing@baidu.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMzpN2iK0+okEKnX_EgfmdLSg9Gze_BVO4fEG3TBuzwD-yj8bA@mail.gmail.com>
+Message-ID: <171221745138.10875.968824238407538547.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
+The following commit has been merged into the x86/fpu branch of tip:
 
-* Brian Gerst <brgerst@gmail.com> wrote:
+Commit-ID:     af813acf8c06db58c6e21d89d9e45e8cd1512965
+Gitweb:        https://git.kernel.org/tip/af813acf8c06db58c6e21d89d9e45e8cd1512965
+Author:        Li RongQing <lirongqing@baidu.com>
+AuthorDate:    Wed, 03 Apr 2024 17:18:03 +08:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 04 Apr 2024 09:49:42 +02:00
 
-> > > It's not a technical reason.  It's a practical one: I don't want 
-> > > to spend time reviewing the fixes and dealing with the fallout 
-> > > and regressions that the fixes might cause.
-> >
-> > Yeah, so it's an indirect technical argument: fixes *with 
-> > tradeoffs* like this one have a future maintenance & robustness 
-> > cost. Fixes without tradeoffs are fine of course.
-> 
-> What tradeoffs are there with this patch?  This would not affect the 
-> page tables, since those are already properly aligned.  Forcing 
-> alignment of stack variables is only a problem if it tickles a 
-> compiler bug.
+x86/fpu: Update fpu_swap_kvm_fpu() uses in comments as well
 
-It creates extra constraints on stack layout that wasn't there before, 
-so it can only be an invariant if the compiler can reorder variables, 
-or make the stack layout worse (introducing more holes).
+The following commit:
 
-Thanks,
+  d69c1382e1b7 ("x86/kvm: Convert FPU handling to a single swap buffer")
 
-	Ingo
+reworked KVM FPU handling, but forgot to update the comments
+in xstate_op_valid(): fpu_swap_kvm_fpu() doesn't exist anymore,
+fpu_swap_kvm_fpstate() is used instead.
+
+Update the comments accordingly.
+
+[ mingo: Improved the changelog. ]
+
+Signed-off-by: Li RongQing <lirongqing@baidu.com>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/20240403091803.818-1-lirongqing@baidu.com
+---
+ arch/x86/kernel/fpu/xstate.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
+index 117e74c..d978251 100644
+--- a/arch/x86/kernel/fpu/xstate.c
++++ b/arch/x86/kernel/fpu/xstate.c
+@@ -1433,8 +1433,8 @@ static bool xstate_op_valid(struct fpstate *fpstate, u64 mask, bool rstor)
+ 		return rstor;
+ 
+ 	/*
+-	 * XSAVE(S): clone(), fpu_swap_kvm_fpu()
+-	 * XRSTORS(S): fpu_swap_kvm_fpu()
++	 * XSAVE(S): clone(), fpu_swap_kvm_fpstate()
++	 * XRSTORS(S): fpu_swap_kvm_fpstate()
+ 	 */
+ 
+ 	/*
 
