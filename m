@@ -1,147 +1,219 @@
-Return-Path: <linux-kernel+bounces-131108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4393D89832E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:32:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 072F389832B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:32:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F280D28601B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:32:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72A8B1F23423
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7A8271B3A;
-	Thu,  4 Apr 2024 08:32:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SBsjuUzk"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478CE7173C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D98570CC8;
 	Thu,  4 Apr 2024 08:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 785B11E86F;
+	Thu,  4 Apr 2024 08:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712219531; cv=none; b=uGbvTwEATzpzcdOe6+nei6Od8YboAH8pVr/njd3Wv0d6AnbAxH7E8FIOAu0EULme1CKto4Oyqm30bubgjPfrykIgVlzwxJqFHyY94XnZJ0Y6zBc9KaYXtGTgQmeCNVb9gugVOmfs/8T1XbMpvCed6cyC7sQptF0fdfqXorH/+qY=
+	t=1712219527; cv=none; b=YULN4lwKul3coda17ncNkDGGOm4phDyG9tXBtMLYfRMXZAnIG0whVwchVcqIBCt4qjEOISdJfP6+LydgzX1vDSvFZ/xS2d6mPA8ONABnMndTtkXHQbY7c43jEcPFTXIfSZVg2NhhZ/O6uOiXa0oZ3vFH+BhvNRmnaRnyfHTZTO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712219531; c=relaxed/simple;
-	bh=CohMLq3cFButffA+6piuYF94WaoM5Mh+aDxSwhAKkFU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=T246bctvYyKrcA7l+y+sSA1fl9neZmN41Y0qmjE2CmxACNbO2PqAv1CW43HtJN4ZbSqbVoLRnLtGmkd3UW/CmqilhBuMtFNcYjhhhtCYhLSCGmRumV+vrokatR8VJZx8WiQX/j3/NAscQH1fd/uHd6hW43Sb9haS+W+9QiDfHis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SBsjuUzk; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-343cd236779so42883f8f.3;
-        Thu, 04 Apr 2024 01:32:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712219527; x=1712824327; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ooJENRerkoGv8RC2dqQyR7rICIVbxFIMSkiHPTOG8iI=;
-        b=SBsjuUzkruYTyTjy65947WdCEdB3nr6YwCZmLSxtxCfUZW2B/Wri1Vo5OOV/PQBJV/
-         9sYzzvmBm3JpyqrU+pJzsdVYL0Urx1lTZ2peofrk+fvNGntWasVFEoXRa2sDQYs2Heo6
-         4yTmMfJH8ZmE089LhCycTzFm82HTNAJ+YzMFuUxf9cGEcfhZF60Th7/9/13KDvf3OrJn
-         5UJhVI1smFo0U7h9Js82BaJPT2kyu9MgEv1oVHk09Jjzp6mgXzCVuMVallIs0vYDwwFL
-         EZ6BRNi2gj9W+ps7b3Cr57cK6lLarrFpZljrQyH7z0db2EhuZThVud7jsQFA4NM7PTVU
-         lX0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712219527; x=1712824327;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ooJENRerkoGv8RC2dqQyR7rICIVbxFIMSkiHPTOG8iI=;
-        b=waQXN/j//vkni4AXcvR10DRoTH+VLMRmf9F7JvC9vY4MCkaH5FTqI2++TOYPVajBfH
-         m/YhYhv8mPjcks0a3LH0XOh6f/o4UKgp8ZTSmfhjIw1wHpVkWgyn65ITHUzTArkZClwh
-         uW8EjzH522kPkyHgW6Olaj2NfRaHqF+lV/f6R53kugmIgQob+lK8rQCF2hlXbKD2EBQc
-         fqcX8+6ejhwViAVfSspNExCV5b7LjvxmdXhdMHbNxc7TkYYjNq2rLhVnlwBmuQ+zYbCU
-         91zOXtYqfyR82gcBiayGLpdFr4vs9vFqjiW5R1Na5mscLxjDcBWslBR+GPbEd/d0WX3a
-         6DCg==
-X-Forwarded-Encrypted: i=1; AJvYcCWU/wZah4e1z2lUDIbOI6KRBsxtyl4teZmLLW7i3mRv41JCZIlCiWG8MANwgXJV4r8TZrCvYGZXq8z7lg4Pf61vTQDK/bCi8zCJd4cUEbuVAPz0qyUUdiG6jkgmFYDt96GWxAPeOvzwcKTWPMBcmjkPHJP+bgbA/Z3TVE/MGlc6+e5oAA==
-X-Gm-Message-State: AOJu0Yy8mIRXPbJ5ikS2La3B1Zghl3p4daL0Nm9Rv6SmcxHCg3K09kDD
-	qNAOf6pr3ZpJ/dzHqHJl7X1EsJpULz8bd6mE5Zw3V+PpBdYgTrC9
-X-Google-Smtp-Source: AGHT+IHMYG3JmAlvLO/BWsvlKYgpaEbWbKyheePdqiabhMh4InIyJ6wQlfooDCFT3M3D6bhH2Wi1RA==
-X-Received: by 2002:a5d:568a:0:b0:33e:cf4d:c583 with SMTP id f10-20020a5d568a000000b0033ecf4dc583mr1575171wrv.16.1712219527113;
-        Thu, 04 Apr 2024 01:32:07 -0700 (PDT)
-Received: from localhost.localdomain (host-79-35-252-101.retail.telecomitalia.it. [79.35.252.101])
-        by smtp.googlemail.com with ESMTPSA id dj13-20020a0560000b0d00b0033e9fca1e49sm19279707wrb.60.2024.04.04.01.32.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 01:32:06 -0700 (PDT)
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Md Sadre Alam <quic_mdalam@quicinc.com>,
-	Sricharan Ramabadhran <quic_srichara@quicinc.com>,
-	linux-mtd@lists.infradead.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Christian Marangi <ansuelsmth@gmail.com>,
-	stable@vger.kernel.org
-Subject: [PATCH v4] mtd: rawnand: qcom: Fix broken OP_RESET_DEVICE command in qcom_misc_cmd_type_exec()
-Date: Thu,  4 Apr 2024 10:31:55 +0200
-Message-ID: <20240404083157.940-1-ansuelsmth@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712219527; c=relaxed/simple;
+	bh=JKS3gJuoyWRLgG5BfFc0HNP29RdT5bEYJ3j/de6iRMo=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=KYLfftBREc7gKqZWL2OQtkV/4SqL6MGqDFHaBLgkf3I3ixqBdQqNbL3/4T0ZUqffqY/a5UcLI2IG+CvNUthJtXZC/L4+aRq/Fao6vLxSqMpZh+Uzsdqn4PdY4DutOT5J8B7V7t+7TQ4VV0xdp8uwOB4c9Gs1pxYF2wC0tRjbxo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9FDx2Rwqz6GBcd;
+	Thu,  4 Apr 2024 16:30:41 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 47FDA140C9C;
+	Thu,  4 Apr 2024 16:32:00 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
+ 2024 09:31:59 +0100
+Date: Thu, 4 Apr 2024 09:32:01 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 06/26] cxl/port: Add Dynamic Capacity mode support to
+ endpoint decoders
+Message-ID: <20240404093201.00004f33@Huawei.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-6-b7b00d623625@intel.com>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	<20240324-dcd-type2-upstream-v1-6-b7b00d623625@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100002.china.huawei.com (7.191.160.241) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-While migrating to exec_ops in commit a82990c8a409 ("mtd: rawnand: qcom:
-Add read/read_start ops in exec_op path"), OP_RESET_DEVICE command handling
-got broken unintentionally. Right now for the OP_RESET_DEVICE command,
-qcom_misc_cmd_type_exec() will simply return 0 without handling it. Even,
-if that gets fixed, an unnecessary FLASH_STATUS read descriptor command is
-being added in the middle and that seems to be causing the command to fail
-on IPQ806x devices.
+On Sun, 24 Mar 2024 16:18:09 -0700
+ira.weiny@intel.com wrote:
 
-So let's fix the above two issues to make OP_RESET_DEVICE command working
-again.
+> From: Navneet Singh <navneet.singh@intel.com>
+> 
+> Endpoint decoders which are used to map Dynamic Capacity must be
+> configured to point to the correct Dynamic Capacity (DC) Region.  The
+> decoder mode currently represents the partition the decoder points to
+> such as ram or pmem.
+> 
+> Expand the mode to include DC regions [partitions].
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> ---
+> Changes for v1:
+> [iweiny: eliminate added gotos]
+> [iweiny: Mark DC support for 6.10 kernel]
+> ---
+>  Documentation/ABI/testing/sysfs-bus-cxl | 21 +++++++++++----------
+>  drivers/cxl/core/hdm.c                  | 19 +++++++++++++++++++
+>  drivers/cxl/core/port.c                 | 16 ++++++++++++++++
+>  3 files changed, 46 insertions(+), 10 deletions(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
+> index fff2581b8033..8b3efaf6563c 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-cxl
+> +++ b/Documentation/ABI/testing/sysfs-bus-cxl
+> @@ -316,23 +316,24 @@ Description:
+>  
+>  
+>  What:		/sys/bus/cxl/devices/decoderX.Y/mode
+> -Date:		May, 2022
+> -KernelVersion:	v6.0
+> +Date:		May, 2022, June 2024
+> +KernelVersion:	v6.0, v6.10 (dcY)
+>  Contact:	linux-cxl@vger.kernel.org
+>  Description:
+>  		(RW) When a CXL decoder is of devtype "cxl_decoder_endpoint" it
+>  		translates from a host physical address range, to a device local
+>  		address range. Device-local address ranges are further split
+> -		into a 'ram' (volatile memory) range and 'pmem' (persistent
+> -		memory) range. The 'mode' attribute emits one of 'ram', 'pmem',
+> -		'mixed', or 'none'. The 'mixed' indication is for error cases
+> -		when a decoder straddles the volatile/persistent partition
+> -		boundary, and 'none' indicates the decoder is not actively
+> -		decoding, or no DPA allocation policy has been set.
+> +		into a 'ram' (volatile memory) range, 'pmem' (persistent
+> +		memory) range, or Dynamic Capacity (DC) range. The 'mode'
+> +		attribute emits one of 'ram', 'pmem', 'dcY', 'mixed', or
+> +		'none'. The 'mixed' indication is for error cases when a
+> +		decoder straddles the volatile/persistent partition boundary,
 
-Fixes: a82990c8a409 ("mtd: rawnand: qcom: Add read/read_start ops in exec_op path")
-Cc: stable@vger.kernel.org
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
----
-Changes v4:
-- Rework commit title and description as suggested.
-- Add Reviewed-by tag
-Changes v3:
-- Merge patches
-- Rework commit description
-Changes v2:
-- Split patches
+I love corners.  What happen if no persistent and decoder straddles
+volatile / dc0?  Would only happen if the bios was having fun I think...
 
- drivers/mtd/nand/raw/qcom_nandc.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+> +		and 'none' indicates the decoder is not actively decoding, or
+> +		no DPA allocation policy has been set.
+>  
+>  		'mode' can be written, when the decoder is in the 'disabled'
+> -		state, with either 'ram' or 'pmem' to set the boundaries for the
+> -		next allocation.
+> +		state, with 'ram', 'pmem', or 'dcY' to set the boundaries for
+> +		the next allocation.
+>  
+>  
+>  What:		/sys/bus/cxl/devices/decoderX.Y/dpa_resource
+> diff --git a/drivers/cxl/core/hdm.c b/drivers/cxl/core/hdm.c
+> index 66b8419fd0c3..e22b6f4f7145 100644
+> --- a/drivers/cxl/core/hdm.c
+> +++ b/drivers/cxl/core/hdm.c
+> @@ -255,6 +255,14 @@ static void devm_cxl_dpa_release(struct cxl_endpoint_decoder *cxled)
+>  	__cxl_dpa_release(cxled);
+>  }
+>  
+> +static int dc_mode_to_region_index(enum cxl_decoder_mode mode)
+> +{
+> +	if (mode < CXL_DECODER_DC0 || CXL_DECODER_DC7 < mode)
+> +		return -EINVAL;
+> +
+> +	return mode - CXL_DECODER_DC0;
+> +}
+> +
+>  static int __cxl_dpa_reserve(struct cxl_endpoint_decoder *cxled,
+>  			     resource_size_t base, resource_size_t len,
+>  			     resource_size_t skipped)
+> @@ -411,6 +419,7 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
+>  	struct cxl_memdev *cxlmd = cxled_to_memdev(cxled);
+>  	struct cxl_dev_state *cxlds = cxlmd->cxlds;
+>  	struct device *dev = &cxled->cxld.dev;
+> +	int rc;
+>  
+>  	guard(rwsem_write)(&cxl_dpa_rwsem);
+>  	if (cxled->cxld.flags & CXL_DECODER_F_ENABLE)
+> @@ -433,6 +442,16 @@ int cxl_dpa_set_mode(struct cxl_endpoint_decoder *cxled,
+>  			return -ENXIO;
+>  		}
+>  		break;
+> +	case CXL_DECODER_DC0 ... CXL_DECODER_DC7:
+> +		rc = dc_mode_to_region_index(mode);
+> +		if (rc < 0)
+> +			return rc;
 
-diff --git a/drivers/mtd/nand/raw/qcom_nandc.c b/drivers/mtd/nand/raw/qcom_nandc.c
-index b079605c84d3..b8cff9240b28 100644
---- a/drivers/mtd/nand/raw/qcom_nandc.c
-+++ b/drivers/mtd/nand/raw/qcom_nandc.c
-@@ -2815,7 +2815,7 @@ static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_sub
- 			      host->cfg0_raw & ~(7 << CW_PER_PAGE));
- 		nandc_set_reg(chip, NAND_DEV0_CFG1, host->cfg1_raw);
- 		instrs = 3;
--	} else {
-+	} else if (q_op.cmd_reg != OP_RESET_DEVICE) {
- 		return 0;
- 	}
- 
-@@ -2830,9 +2830,8 @@ static int qcom_misc_cmd_type_exec(struct nand_chip *chip, const struct nand_sub
- 	nandc_set_reg(chip, NAND_EXEC_CMD, 1);
- 
- 	write_reg_dma(nandc, NAND_FLASH_CMD, instrs, NAND_BAM_NEXT_SGL);
--	(q_op.cmd_reg == OP_BLOCK_ERASE) ? write_reg_dma(nandc, NAND_DEV0_CFG0,
--	2, NAND_BAM_NEXT_SGL) : read_reg_dma(nandc,
--	NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
-+	if (q_op.cmd_reg == OP_BLOCK_ERASE)
-+		write_reg_dma(nandc, NAND_DEV0_CFG0, 2, NAND_BAM_NEXT_SGL);
- 
- 	write_reg_dma(nandc, NAND_EXEC_CMD, 1, NAND_BAM_NEXT_SGL);
- 	read_reg_dma(nandc, NAND_FLASH_STATUS, 1, NAND_BAM_NEXT_SGL);
--- 
-2.43.0
+Can't fail, so you could not bother checking..  Seems very unlikely
+that function will gain other error cases in the future.
+
+> +
+> +		if (resource_size(&cxlds->dc_res[rc]) == 0) {
+> +			dev_dbg(dev, "no available dynamic capacity\n");
+> +			return -ENXIO;
+> +		}
+> +		break;
+>  	default:
+>  		dev_dbg(dev, "unsupported mode: %d\n", mode);
+>  		return -EINVAL;
+> diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
+> index e59d9d37aa65..80c0651794eb 100644
+> --- a/drivers/cxl/core/port.c
+> +++ b/drivers/cxl/core/port.c
+> @@ -208,6 +208,22 @@ static ssize_t mode_store(struct device *dev, struct device_attribute *attr,
+>  		mode = CXL_DECODER_PMEM;
+>  	else if (sysfs_streq(buf, "ram"))
+>  		mode = CXL_DECODER_RAM;
+> +	else if (sysfs_streq(buf, "dc0"))
+> +		mode = CXL_DECODER_DC0;
+> +	else if (sysfs_streq(buf, "dc1"))
+> +		mode = CXL_DECODER_DC1;
+> +	else if (sysfs_streq(buf, "dc2"))
+> +		mode = CXL_DECODER_DC2;
+> +	else if (sysfs_streq(buf, "dc3"))
+> +		mode = CXL_DECODER_DC3;
+> +	else if (sysfs_streq(buf, "dc4"))
+> +		mode = CXL_DECODER_DC4;
+> +	else if (sysfs_streq(buf, "dc5"))
+> +		mode = CXL_DECODER_DC5;
+> +	else if (sysfs_streq(buf, "dc6"))
+> +		mode = CXL_DECODER_DC6;
+> +	else if (sysfs_streq(buf, "dc7"))
+> +		mode = CXL_DECODER_DC7;
+
+Fully agree with the comment that a string + enum table and search
+is probably appropriate here.
+
+>  	else
+>  		return -EINVAL;
+>  
+> 
 
 
