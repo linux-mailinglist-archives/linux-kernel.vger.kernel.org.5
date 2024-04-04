@@ -1,134 +1,113 @@
-Return-Path: <linux-kernel+bounces-131791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20A64898BD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:07:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27991898BD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:08:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAA601F23A19
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:07:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D50D5281F47
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:08:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7B112BEBC;
-	Thu,  4 Apr 2024 16:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF03D12AAE0;
+	Thu,  4 Apr 2024 16:07:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="twOljwbZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=manguebit.com header.i=@manguebit.com header.b="KlqV4cg0"
+Received: from mx.manguebit.com (mx.manguebit.com [167.235.159.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3007712AAE1
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:06:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712246816; cv=none; b=idiZ++e+5lz8VEC4ef0Vwdr/7ZL+wnsn9ZmpcHDePT6BW5kFJm/GY0PfnY34r9VPxjlCwYDOozJ2aBwpiFDLZAnwl56Ir8sGVwsdQR2cb43ltj1XgH/StkLa3wfBP2j26TOriB9RJUcEzhHzU68TBCKa8xpDyereEkQA9IDkhhU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712246816; c=relaxed/simple;
-	bh=tm8+FXhH2jeA1ChsBYxkJGWhFcDL7NhzCQe0eMRIEPE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i6PHv++cvd+wmqaOSxMMBFDpINEo4hGttMSMTS6vF2ov1TxCR3h5ZZSXbiPrf4f+Aud8g3rx2XcGgbqEH0a40fC2rvuKiRj/eAB+vwRJa7y8mtvwM5qxy2e7mumfxh4vabZeboyh0/pvDsj/6x1aWA4aB6e8uWbxGzg0FR6Hy0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=twOljwbZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88C05C433F1;
-	Thu,  4 Apr 2024 16:06:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712246815;
-	bh=tm8+FXhH2jeA1ChsBYxkJGWhFcDL7NhzCQe0eMRIEPE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=twOljwbZ0bR+ovWV+rHBST+6WBcax329s1c/aF3FAK55ayzBQ6d5xqL93JkQGTopf
-	 aUYp0f6qVrSsj5lvv5O6W5Zwfq9tI0YXWFwKqjHDKKDvp7QFm0S7v/DG0kS6aEGwjz
-	 GvxtNn2jxpbk2Yqe3qWomREMfBm97xJY+z8U9o2edO6DIO4MXFP0QpUXz5kEGf+0Q7
-	 spzr+RgscH+ssdcgllP3ckKUZV4eDhOs1nJbhLEHDHyQFbSqQv/tALjSC3OxxlTOdM
-	 Nxf6lnC/AWJ/c06DFIIeJ4b3KrdG0z/58VCZRjYrThHWUVzdt5SQMC4nYaBbb+Pihi
-	 Hj266/LhZZymw==
-Date: Thu, 4 Apr 2024 17:06:50 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Christoph =?iso-8859-1?Q?M=FCllner?= <christoph.muellner@vrull.eu>
-Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Albert Ou <aou@eecs.berkeley.edu>,
-	Philipp Tomsich <philipp.tomsich@vrull.eu>,
-	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
-	Daniel Henrique Barboza <dbarboza@ventanamicro.com>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Cooper Qu <cooper.qu@linux.alibaba.com>,
-	Zhiwei Liu <zhiwei_liu@linux.alibaba.com>,
-	Huang Tao <eric.huang@linux.alibaba.com>,
-	Alistair Francis <alistair.francis@wdc.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Qingfang Deng <dqfext@gmail.com>, Alexandre Ghiti <alex@ghiti.fr>
-Subject: Re: [PATCH v2 1/2] riscv: thead: Rename T-Head PBMT to MAEE
-Message-ID: <20240404-pastime-reassign-2d23a6ea6265@spud>
-References: <20240329121414.688391-1-christoph.muellner@vrull.eu>
- <20240329121414.688391-2-christoph.muellner@vrull.eu>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A33F912E1E8;
+	Thu,  4 Apr 2024 16:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=167.235.159.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712246856; cv=pass; b=RpvX8g4Uy/jTAtyMf2DJjXpDgC/jj4uFEWDLnsJcD89FvAy965Pj+FEinjUQLcNrpoh31ghaZ94O2d/6OPFOHZGzMO9MjjntZ+IooPP1deG+bP6sHsUh/4D/HTFqIxF/EOkHYrk4u/Ib/5ro4L2N/TTt0zbJ/+MICtRKfTZmVVQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712246856; c=relaxed/simple;
+	bh=LUFWgRFtjQZ49bnS25rMZ1qtgXnfmx0q15Zi6FSjpy8=;
+	h=Message-ID:From:To:Cc:Subject:In-Reply-To:References:Date:
+	 MIME-Version:Content-Type; b=pnSCn6RM2DzaGK6Rqu/azCdHXHPOlXQgvuvjvLxfGG5CDnJE4WW1n748wyLlIxqn6fYJBBAzU/pndOLPB3xkqtV4e+Uc0Rx1Vp6dHuGlM89Stj7FAp/rGsRi5YIAZ0DfXqkrCbRsRrk0DYzH+KLrzwVuEvihvL4V5U2XCwXqPB8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manguebit.com; spf=pass smtp.mailfrom=manguebit.com; dkim=pass (2048-bit key) header.d=manguebit.com header.i=@manguebit.com header.b=KlqV4cg0; arc=pass smtp.client-ip=167.235.159.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manguebit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manguebit.com
+Message-ID: <14e66691a65e3d05d3d8d50e74dfb366@manguebit.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
+	s=dkim; t=1712246847;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/VfdAcUgMKKdIImznXQCsjzxihOdEcjXVNKwK2JA30Q=;
+	b=KlqV4cg0zu0RMjPJ2+96XschbtCo+vwr0mHQpil0K68WGDUrHUMZ12SFTM9S1BaqjjBIx/
+	EDwshMfEnj5+HudcR88Pd+PoK/32C0K5LZYosj9cm9gcnrosLu0R9G/tfchMknldVhDt6C
+	wuzB1TfYgNcugCcGsMWhys6ABmzuh2SSMKXAP6/0v/ZjS9tcvwofC5gmlaHAYEl1pI46nf
+	oQt/iOC7WOWRjJUqZDhSXkpNQ5jxexKcvgpwPS0WVgUrWI/A0nSPpKEMOjq4YQELdGJSIS
+	yWikbG8PAoFVM7LNXaOMp23uO7cRJomjSxHn2R1dfCpOjwD7pJSkWZGaNWsFyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
+	s=dkim; t=1712246847; h=from:from:sender:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/VfdAcUgMKKdIImznXQCsjzxihOdEcjXVNKwK2JA30Q=;
+	b=qzPWneXaxl526HZlYSdO9k7llZr6l9jznC3EaHDXdORExty5mLPf16WNWkEbAU3d8oczwA
+	GFdn6D/faaCebfoZuASOIBhvfLwOcOfGFx2QoEanuQjqkwjoWPTUVXIw2MXi7ZiTsW8ER4
+	FrGQxnWyzA+GA1xPOe6PRGpbSJNshzYrrinxQnNEJJ9rzWRLcYAKJjyQb87nqZPDWDq+JW
+	lwlJh/PF6Nie3bu90aLsh+lmC90Jp9QU4Kome9fs+MW+TlrZr+92xseh9NpB0VcpkZAoHN
+	Y3VmyIzi6zdbAdPKIVbbuOI/O+z/dMpJmriIn9aTCIsvzL2otGjovY1SByWZZQ==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.mailfrom=pc@manguebit.com
+ARC-Seal: i=1; s=dkim; d=manguebit.com; t=1712246847; a=rsa-sha256;
+	cv=none;
+	b=Mv6xhiXFLzmVYcG110KOH5zMR9BCpHlX2HcZQJrkSUrOb0RFTLgNEdwWkSM6GO9KyvSNN+
+	NXZRug3ua6MyoAAqSiG0+mO4sqqp29ZdTpqnLuqQNxktp/X5wRyUM+dgdxbF7KKebbmM02
+	o1Uor6zQz7E5UrLWo5n8QJmKdxrb2SsqoKkHiUj9COBabZc+f4s+j6XMoEJe3+jWBEv1fF
+	ElmeqtFCNr1tQfdxk1vrecvJbGL0cmI8wzZB2Lvjpb3NY/3tOcpAHPXMpErPSVzpllMgYb
+	bCOLcgs5tc0Iehr+Ppzngf3z1zCZ9hTDEtsn95S4BzSv7+iE9SA4zF2dYFq+Ag==
+From: Paulo Alcantara <pc@manguebit.com>
+To: David Howells <dhowells@redhat.com>, Steve French <sfrench@samba.org>
+Cc: dhowells@redhat.com, Shyam Prasad N <sprasad@microsoft.com>,
+ linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cifs: Fix reacquisition of volume cookie on still-live
+ connection
+In-Reply-To: <3756406.1712244064@warthog.procyon.org.uk>
+References: <3756406.1712244064@warthog.procyon.org.uk>
+Date: Thu, 04 Apr 2024 13:07:24 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="BrV3yln9SR0qE3lm"
-Content-Disposition: inline
-In-Reply-To: <20240329121414.688391-2-christoph.muellner@vrull.eu>
+Content-Type: text/plain
 
+Hi Dave,
 
---BrV3yln9SR0qE3lm
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+David Howells <dhowells@redhat.com> writes:
 
-On Fri, Mar 29, 2024 at 01:14:13PM +0100, Christoph M=FCllner wrote:
-> T-Head's vendor extension to set page attributes has the name
-> MAEE (MMU address attribute extension).
-> Let's rename it, so it is clear what this referes to.
->=20
-> See also:
->   https://github.com/T-head-Semi/thead-extension-spec/blob/master/xtheadm=
-aee.adoc
+> During mount, cifs_mount_get_tcon() gets a tcon resource connection record
+> and then attaches an fscache volume cookie to it.  However, it does this
+> irrespective of whether or not the tcon returned from cifs_get_tcon() is a
+> new record or one that's already in use.  This leads to a warning about a
+> volume cookie collision and a leaked volume cookie because tcon->fscache
+> gets reset.
+>
+> Fix this be adding a mutex and a "we've already tried this" flag and only
+> doing it once for the lifetime of the tcon.
 
-If there's a resend, make this a Link: tag please.
+Can't we just move the cookie acquisition to cifs_get_tcon() before it
+gets added to list @ses->tcon_list.  This way we'll guarantee that the
+cookie is set only once for the new tcon.
 
-> Signed-off-by: Christoph M=FCllner <christoph.muellner@vrull.eu>
-> ---
->  arch/riscv/Kconfig.errata            |  8 ++++----
->  arch/riscv/errata/thead/errata.c     |  8 ++++----
->  arch/riscv/include/asm/errata_list.h | 20 ++++++++++----------
->  3 files changed, 18 insertions(+), 18 deletions(-)
->=20
-> diff --git a/arch/riscv/Kconfig.errata b/arch/riscv/Kconfig.errata
-> index 910ba8837add..2c24bef7e112 100644
-> --- a/arch/riscv/Kconfig.errata
-> +++ b/arch/riscv/Kconfig.errata
-> @@ -82,14 +82,14 @@ config ERRATA_THEAD
-> =20
->  	  Otherwise, please say "N" here to avoid unnecessary overhead.
-> =20
-> -config ERRATA_THEAD_PBMT
-> -	bool "Apply T-Head memory type errata"
-> +config ERRATA_THEAD_MAEE
-> +	bool "Apply T-Head's MMU address attribute (MAEE)"
->  	depends on ERRATA_THEAD && 64BIT && MMU
->  	select RISCV_ALTERNATIVE_EARLY
->  	default y
+Besides, do we want to share a tcon with two different superblocks that
+have 'fsc' and 'nofsc', respectively?  If not, it would be better to fix
+match_tcon() as well to handle such case.
 
-Since this defaults to enabled, changing the name should be fair game.
+> [!] Note: Looking at cifs_mount_get_tcon(), a more general solution may
+> actually be required.  Reacquiring the volume cookie isn't the only thing
+> that function does: it also partially reinitialises the tcon record without
+> any locking - which may cause live filesystem ops already using the tcon
+> through a previous mount to malfunction.
 
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-
-Thanks,
-Conor.
-
---BrV3yln9SR0qE3lm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZg7QGgAKCRB4tDGHoIJi
-0gcZAP9ItztlZzPf4E1lK7affDvrYgtHKd4cijE1tFM7HjQ/qgD9FFW82jeSY3G2
-3r0w1gIiw/SCsdFNti2fabZZZvI9JAY=
-=ibXE
------END PGP SIGNATURE-----
-
---BrV3yln9SR0qE3lm--
+Agreed.
 
