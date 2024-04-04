@@ -1,258 +1,192 @@
-Return-Path: <linux-kernel+bounces-131208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131209-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 307B1898486
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:00:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BECFE898489
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:00:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADBCA1F2A900
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:00:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C57E1F2AC03
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:00:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2C45757F5;
-	Thu,  4 Apr 2024 10:00:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5D2174E10;
+	Thu,  4 Apr 2024 10:00:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Omc8JwnB"
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="XMDwqsXq"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2137.outbound.protection.outlook.com [40.107.93.137])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119B459B7F
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 10:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712224816; cv=none; b=kI6HC638AbLNvGfZci3MbAzRJHhG7virJcI8Wq+TIrRUMrljHKzupIwWMnL7mr4ZiY16NIpWd2S9ucO3gsziU+fRak/6YS5c2auoAWoRPABt0sa0KpYsW0FIerBlWyruHlawLF7Fl23FZChv+x2iK1p75nwBiSXWoIHC8gCfU7Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712224816; c=relaxed/simple;
-	bh=/Zv2Mmkyeknbs1cQs3cIQ1t1IUN6v39fcrntA/XgcZU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gCdwqd44rRvQ5vSys8qPKdeW9S+V/RfgXEmARZ4KND6KDUbKTVBsDfTSR0rr8YvMP8CqVJrMdZ9IhDck+2F8pEq9cHHFhUfzRX2WzOVA5h06dbVPaGkF80yxUBoISZt0X7kB6Yd7YsQO+jPlIdTdLXdwP1T4dqG//FY526e94oc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Omc8JwnB; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a4644bde1d4so110283266b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 03:00:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712224812; x=1712829612; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=PLemqlCVgdSk6fHHLXtaSYo8vRodhoKn4waofG0cC2g=;
-        b=Omc8JwnBeoIKbndedzc/605jVynUCgcQ7rRFOQUOHOEWEu45s133KGuLMKbF5B7rN0
-         c/uv2s2LcG7b/JhiAtjxRBR7UWXgXt1/Sx8G0YdG2aw2+Ge5L4vyug7VXMaGi59nmqhb
-         U3Cx5WTKfyqA4sqSJoqiXkTpOBgG7aAEaPtdCmzi+KhANvQGKwWyp0udbmzpXYeVUxCe
-         fsTWEzimSPS9aEKIAqfwhkKmspgDpDSN2IyEnysurW8EiZc5tT+xuuqxJKGGhahKbN2Z
-         9o6JcUVwtVCv2gzflhYem8+vhTSgCQRTcINNyj7EnUBR1fExj85mXr0X6ZTCydfquWya
-         mYRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712224812; x=1712829612;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PLemqlCVgdSk6fHHLXtaSYo8vRodhoKn4waofG0cC2g=;
-        b=AD8bwCEQWxAjc4sYNceNdaAXh5I8PlHUHYPX8WJS7z/Fu+9Ch/SmAKIsDwvtz5s+rE
-         ntZg3VrKOA6O0HL3Maw0kv/eQpvGsyfRwaGxO2cWMsucBD8Pf1t0Nj1K60mm0drD4nAL
-         slFIdOA4oUi60OYr7aRVWPEzAmb3PY/K0XIBhLhfPP1SvqsdispVokA73A1yD58w5SFz
-         lIPH7FDw8OdWrie9Y+RcC5lrjsfOJvwWIBzUPbIp3MQwziA80YIVZ1AvLoSN4qSCi8Fl
-         Pytu9JA/bL4PN8Sja/5DkIk7FqYZGL2RwoZKmCz+/Tvs+mxqbuNyu6Fs2a9VlFrGh/Z9
-         PB6g==
-X-Forwarded-Encrypted: i=1; AJvYcCUV4GlmooYrDQNfSuuTrB5wvcx/fAHibghYPtIZ5tjmq0SX/1X7Sn6XZADDEAEIEWwV35r0fsMI7hetjJ6qYgCgDKQU0JEUM89zPlGK
-X-Gm-Message-State: AOJu0Yzt1+fHG8sIAFs1Pe6TWJKot8WNVTS7nwsxy4QrzxZGXp/iU+vW
-	3QXwUA47VCv0nHnnzruXELifmBDvDhG9zgZUa6PVMAT5OtA9Cp9nDS2mlLjoWmw=
-X-Google-Smtp-Source: AGHT+IH3aNut1aQM1czCUuksasKGSfNmvmvxaL0dMKQ3yeF/mmfQCxRSAnuXsKxW+T2V2jB9s/kASw==
-X-Received: by 2002:a17:906:a51:b0:a4a:aaa9:8b3b with SMTP id x17-20020a1709060a5100b00a4aaaa98b3bmr1070546ejf.77.1712224812361;
-        Thu, 04 Apr 2024 03:00:12 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id js19-20020a170906ca9300b00a4e8353be19sm3361456ejb.224.2024.04.04.03.00.10
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 03:00:11 -0700 (PDT)
-Message-ID: <903ad855-ab26-4ef3-80bd-249917056188@linaro.org>
-Date: Thu, 4 Apr 2024 12:00:09 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16CC35D8EB;
+	Thu,  4 Apr 2024 10:00:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.137
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712224839; cv=fail; b=NPG+C8jtZCJZvKKQc4vhGheRIbM9UBQfBS7s2YkgDTYqY/yHDO70zinZdqacvrvaFAVH6GGQ3bEPnVZ9tUqVpx88k44WcmdMLstPoIb7o14ikhLD1rPJkIlgUABT/XXzrXCjUHaBtGDnb5iAbSfGUuoFv0gNgRlVz1WjiydaDrs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712224839; c=relaxed/simple;
+	bh=PMjzaJo5NZdBYchU0fhFSPGwEoTY6vNH7A3WNv1EIA0=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Kj6W0idBfL72SsPuN43bkW+gJb1BR7x26CaMFle9bQPjXJBZTquC41mPT/jAJ53rAhIUThTUmKZWw0ysGzy/HV86E3HGs2zaUjuY2gWydtakj12zEcb0d0Gb3yDCf06jYz090FN2M686Cef5WJAapIQBtplnRxb0onZPD5q7zco=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=XMDwqsXq; arc=fail smtp.client-ip=40.107.93.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IlwMLnRayQFYgORjpaBhA7xsfN9dRlBVZPBrfntnUIbUm7GRmnw3qmGZgjYqoW9Ap1KyoC3El1pT6jUAyJw0Tw9bIrBi/XpK6K+jJjCwIPwuwFXlrHprg7KBNVbE7zXBqfQzWmiri42rdLDuUCQknPzRb1qq9nALgOuLP+HStzGQ8VuUNAcfAqW5FrO543BroEzvx1Uz4mBV4AK7XecG0g4fhNP2zhXnnoB1iYeow/8BO9yNYdb2O7NmVcPVNNpG/uvn7JGRK/+h02/9KWAJO/TH/xs9q6bJny1BUesVyU2ZczyS8TvOuGaMHkoo3bT3/XJNvHBcZYwi39VPV4WBXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eAkTGgbLe7vBVCfg213APFu3uOcJe/fijStPXsDKlUc=;
+ b=bkJGoaasBh3cbVB0gfFL3qdn2r0GJjKVud1Nh40B3BcNXsaUrcl3lB/Zb5DlNZmgonN6FqCiUPknxUifJWe6/QBjkcy9AWV2CWYxDC1gNnXg+uz2fBK5rdH+gohNej/S3OOY0OGIq0utwYqV/EDXZh8IvS9vwDgGuJuMHNJhh7nXPCh0ukfA/7jEAOQSq6YijIZqhcHg5FFwSrS7OCc5H8M61UNmt84Vd933V613tL0e3SQ8ZDn+QvhPsLxh4nUJ/jerA28ndn+N7l63lvqUPT/4FjQZA794p8JWi2QuZBmdGgoGW8oLx3y/KeqIu7JtS5ldqhgGo2qSq6y8p3hgBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eAkTGgbLe7vBVCfg213APFu3uOcJe/fijStPXsDKlUc=;
+ b=XMDwqsXq6MnmkzOF/6sH1r3vJNxJh5CJ4XKODzggMEXJCoQsCV/EllENCvuJINJ7W4Klg34ezzBcT5nFtMMIO/wbGR5pz2UULVLm0aElAkWGpTvkz8Co6gbihu2nPs5o4MHKCqcTA/fwwqj+SdoeUeNZ7pkQkP5KOixeYL6pSWnazSVON6S01wmIXSqgy7zWowR0QtTAdJJ4wYVklzhvKu63Xh30GYl3s/o7S0MTOOGSjXJY8cGXx0FmK4E2cYeeDADMcF0iV87Znp9XHe2wByJpXywqxR3WLriE7MuSgIk3qIazPV2B+HxnKoQQNpzcfXk+xHN1QDxaemEbd5XGYw==
+Received: from CO6PR12MB5444.namprd12.prod.outlook.com (2603:10b6:5:35e::8) by
+ IA1PR12MB6067.namprd12.prod.outlook.com (2603:10b6:208:3ed::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 4 Apr
+ 2024 10:00:32 +0000
+Received: from CO6PR12MB5444.namprd12.prod.outlook.com
+ ([fe80::5159:5fc3:7933:24c0]) by CO6PR12MB5444.namprd12.prod.outlook.com
+ ([fe80::5159:5fc3:7933:24c0%7]) with mapi id 15.20.7409.042; Thu, 4 Apr 2024
+ 10:00:31 +0000
+Message-ID: <e922dad7-051c-4fcf-8b3f-773645bbcf63@nvidia.com>
+Date: Thu, 4 Apr 2024 11:00:25 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.8 00/11] 6.8.4-rc1 review
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, f.fainelli@gmail.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20240403175125.754099419@linuxfoundation.org>
+From: Jon Hunter <jonathanh@nvidia.com>
+Content-Language: en-US
+In-Reply-To: <20240403175125.754099419@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0387.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:18f::14) To CO6PR12MB5444.namprd12.prod.outlook.com
+ (2603:10b6:5:35e::8)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-am62p: use eFuse MAC Address for
- CPSW3G Port 1
-To: Siddharth Vadapalli <s-vadapalli@ti.com>, afd@ti.com
-Cc: nm@ti.com, vigneshr@ti.com, kristo@kernel.org, robh@kernel.org,
- krzk+dt@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- srk@ti.com
-References: <20240404081845.622707-1-s-vadapalli@ti.com>
- <18eb0e55-38ad-44f9-90b7-1917d8c0d5bb@linaro.org>
- <75b53dda-23aa-4915-944a-4d9a619bd165@ti.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <75b53dda-23aa-4915-944a-4d9a619bd165@ti.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO6PR12MB5444:EE_|IA1PR12MB6067:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	JGNCX4y/yC0wJKw2if2yx24pTiMqx5FeFiX+ZG7YJxpZK/kgcnf6kGSGFiNw07+QILwmYq0XERTQ59NgWAvyOvKm2LUiSnn3x0P2nMR8xl3S7/huPpbYrCGEsdX7LxjAWSNvb36OLad7fi2djqBJ6wz98vW+laUtPE3YwJ5rBM9qjzhs30AmWNjqqSHfuocQt7v8tyqCoTws/4rIN12VBDkQRlsRxnjGtHYE2FN3juY3gwpGhmv3ax8Slot/2FvVDLi0JxqV9z2UpOuhwtvhjf3N1iIuSpBLv2J+ESgcAl/RALIGiUxlGxRT01CMpsg1+o5HOtObxgbBA3W/CcWWRRhz/OKf75SsVeYc2A0p5T6jrtr1cujqy94EhbZJ1XWSJfc4x5G7YsZ/ht9GcsE7GKKHMLKNn5bEYfo8gl3ANx+zqfJMeTOcFBBxDgCHUnroMgzLhj4n0ADkGQl9nSWwWYP4VBOfiz0zlw1fZZuNM1XTt/OKWMGckVbYtqHgSBpO9/Js6acTVlfsNqGLuNMosQPw6Ef54qCBTtBVtdWgUNlaO7tJWbKwL1vfh0KVqXxc9PJvvvlJY+pITT3DB9TPd0UPg208zETBUlBiQfeBJQgJzmyn9y34/7oWHuc7PqQYqD22LFJcWk9owNTSpJYHYtr+a1M6UoYjR0MktFcW+JE=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO6PR12MB5444.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?M3B5Qkc5YVNWVXpzdUxzdDlRSEkrb2Z6NDU4V0QxWVdkekQ3RUVQcUdzMzV6?=
+ =?utf-8?B?VForOWJZazR5N04zYU5laFI2SHJTK3dwcnA1Y2lnampFTmQ0KzZyQ3dscWIv?=
+ =?utf-8?B?MWRRV1JyRHlwRzV4ZU1FdzdrV3NSK21tZmNjSGVFWjQycUxGRnJnRi9PcTBK?=
+ =?utf-8?B?dGV6ZzRwdEkzUHg3NzdldmJpVHZhb1NhTVhCM1JaaitoN1FNT0xwZDFoeVZ5?=
+ =?utf-8?B?aVZpaHVZNk9jOGRXcjhSWlRtR2RqSmZaZzRXdW94QlhBN3ZMSDJ1Z3oxOVlw?=
+ =?utf-8?B?Z3FucmVlTWdBbE84SXg4WFh1aHlySkJSM04za3J1UTFOSVRwcE1xTDNKYWpQ?=
+ =?utf-8?B?UHVHdHExV3ZkTWh5dmc4RWxidU45YVFka3N6NG15MmF2ZUlwbm1SL3FoRE40?=
+ =?utf-8?B?OEVYb3NjQU1JQlI0elkvcEx2VXN0VmhhT2NVTzNhTk1xWU5QT3lOSzR4aFlE?=
+ =?utf-8?B?L2JHVEE5dk5kUFM2eitRSURZMEhwbUtBOEw4bjBHNzBSOFNyOTRDR0dReUVI?=
+ =?utf-8?B?ak1sanBxc1h6U1d2WW5mblRPK1VTbXdZeVBzaER6azlRVGJDVG9YL0VYMVdT?=
+ =?utf-8?B?b3VGY0JyMmo4QURKQ1BjNDNIUll2SjJxa0p0cmNTd1doWVZxaFdNRlFjcFRk?=
+ =?utf-8?B?cVNlZC9mM2sxckJLL1hyVVZPM0E5QVpzWTVhUDJHZFh6WGdNcjZyTkxLSm5t?=
+ =?utf-8?B?SjBqZkpGamhObGVKNXRUMWEyMjA0d2svNlYwUGcwQVRtbVRxSDd2aXF2Ym9L?=
+ =?utf-8?B?VC9abkl2ZEJvQUhOQkNqWldaN3hpUVVzajI1OE5UM1NxRzhFZ1d6SzBQcjJ6?=
+ =?utf-8?B?NlZkdk5kTXlqWHdwQW5hQ0FyMThPVEZ4MmNwNWR3MXF2UXUzY0R5TUlOZmtY?=
+ =?utf-8?B?SDQwazNQSUZKb0poWlVMMnUzSFA3cG44clZoeVcxQWk4UWlaK21qMmhNd1Fl?=
+ =?utf-8?B?elYrN0hxYm9hU2h2QlJuSVQ5YmxQbG0vSFZCWUhlanNEMjNMN3IvL0NuZVNH?=
+ =?utf-8?B?a3dURGZuWEdQTWpXcjBWdTkxTVVzOW1kZWcwc3Q3NkdUYVpGZEJOaTZpQVpZ?=
+ =?utf-8?B?dUhGblVJSzJIU3lFeHRjMnp2MVdrK1VrWDhBdlduV01qRVBYTjkvNk9BeTlQ?=
+ =?utf-8?B?WWhsUVhUbUQ2SXp2ajE0Q2ZZWDhadnVMaThjQ3dWSmMwNnFYZFl5UG9RbHJ1?=
+ =?utf-8?B?THh6TzRMTXZ0RzZxVU0rUmNSMm1HMmZQT0M0dW9wNDU5Nmh3T2NJMTg3WVBC?=
+ =?utf-8?B?WldKQ1o5VmpvUVlXdVQ0Q1FiQ2dsK29sa0JGNWFOZVdwdVNIU0ZRVGt5OGhI?=
+ =?utf-8?B?OTgvQlRxTmhoL0pzcXVJd1R6aHNoOElmeWRmZmVyMU83cGxXRW5rMTVVWmRi?=
+ =?utf-8?B?K3lPNFNuMXMrMnJpVVJlWEJYSDZTNmFyU0I2ZDNpN1VmUWNlWGJ1SWtaU0ZB?=
+ =?utf-8?B?TVdoUkVnWUd4TzFGNmlSanFUK2RDZlJGWXdDbjNhZHNDTzI3TnNQOEJGNUEy?=
+ =?utf-8?B?T3Z1VUZ5MHlRbzBZbmlwTXJRNjV6cFI3YTh5VzBYZ2xkUmRpQkNLNUFXVWxC?=
+ =?utf-8?B?czFXVzhMa1Z6S2p4OGZYcnhQUnVWSkVyVENhVFF4ZXlqcEczSElnYmdORVd4?=
+ =?utf-8?B?bk9haXhNZTFPV0JGQk84S3lEb3ZXQjBvZld2MC9ETU1yaHlTbWdLSGp3Q0VZ?=
+ =?utf-8?B?NTNGM053WkE5ck5RN3NBbEhkZ3lOV2E2MzFKbUliWW5leURLTXNaV1ZRNGJn?=
+ =?utf-8?B?bTQ5ZGl4K25kekQ2b3BmSW5xYVJQeVplSW5XbytmbXhDZ25sVG5ESG1DSnlw?=
+ =?utf-8?B?dStwSEJES1JjMVk1OUE0RVpwWnI1dFZ0cW9UaGRiZ1E1Tmhsbkx2bzArRFVR?=
+ =?utf-8?B?UXZhYndVZmd6S3RCY2FEbExOakVOaTJObXpySGIyNC9FRTdhQk5LNTJQQW9t?=
+ =?utf-8?B?cUxxdW1mdG1uMUZLT2M1RksvaTRnZ2VNOEFmMFVwWGJEbW9uZ0V3c0c1aFBs?=
+ =?utf-8?B?V2cwd1FBZUdOWURCTGhMaVoweUNoc0x2d2QvWm5xdVZwTm1RanRlY3lOdy9z?=
+ =?utf-8?B?RXJMY3hhN2gvQmg4ckFkYjdHalhZY0Rsdko4UjJBM2oyMldPQTAwMkJWZEpV?=
+ =?utf-8?B?ZFFWSWxpR1dxa0M3SkJnelBLNnFEQVNPUjdvcjcvcUJZeE16OCs4UERZcXFC?=
+ =?utf-8?B?VXc9PQ==?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 171f513d-4fb1-48a5-83f3-08dc548e1066
+X-MS-Exchange-CrossTenant-AuthSource: CO6PR12MB5444.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 10:00:31.8178
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m8gN2Ib4rqHw/3/EzUHwNT4R0JqO5Qc3FtiNx2OLWQm7WHP8J2FtDY4I8wMjXSAAW3CBg7Ut1E154suDHlbwxQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB6067
 
-On 04/04/2024 11:12, Siddharth Vadapalli wrote:
-> On Thu, Apr 04, 2024 at 10:43:04AM +0200, Krzysztof Kozlowski wrote:
->> On 04/04/2024 10:18, Siddharth Vadapalli wrote:
->>> Add the "cpsw-mac-efuse" node within "wkup_conf" node corresponding to the
->>> CTRLMMR_MAC_IDx registers within the CTRL_MMR space. Assign the compatible
->>> "ti,am62p-cpsw-mac-efuse" to enable "syscon_regmap" operations on these
->>> registers. The MAC Address programmed in the eFuse is accessible through
->>> the CTRLMMR_MAC_IDx registers. The "ti,syscon-efuse" device-tree property
->>> points to the CTRLMMR_MAC_IDx registers, allowing the CPSW driver to fetch
->>> the MAC Address and assign it to the network interface associated with
->>> CPSW3G MAC Port 1.
->>>
->>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
->>> ---
->>>
->>> This patch is based on linux-next tagged next-20240404.
->>> Patch depends on:
->>> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240402105708.4114146-1-s-vadapalli@ti.com/
->>> for the newly added "ti,am62p-cpsw-mac-efuse" compatible.
->>>
->>> v1:
->>> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240402094200.4036076-1-s-vadapalli@ti.com/
->>> Changes since v1:
->>> - Since "wkup_conf" is modelled as a "simple-bus" rather than being
->>
->> And maybe the hardware representation is not correct? What bus is it?
-> 
-> I will let Andrew comment on it. Andrew had posted a patch at:
-> https://lore.kernel.org/r/20240124184722.150615-10-afd@ti.com/
-> to convert an equivalent "main_conf" node for AM62 SoC to "simple-bus"
-> from the existing "syscon".
-> 
->>
->>>   modelled as a System Controller node with the "syscon" compatible,
->>>   directly passing the reference to the "wkup_conf" node using the
->>>   "ti,syscon-efuse" device-tree property will not work.
->>>   Therefore, I posted the patch at:
->>>   https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240402105708.4114146-1-s-vadapalli@ti.com/
->>>   in order to add a new compatible to be used for modelling the
->>>   CTRLMMR_MAC_IDx registers as System Controller nodes, thereby
->>>   allowing the existing "ti,syscon-efuse" property to be used.
->>>   Now, "ti,syscon-efuse" points to the "cpsw_mac_efuse" node within
->>>   "wkup_conf" node, with "cpsw_mac_efuse" being a "syscon" node.
->>>
->>> Logs verifying that the CPSW driver assigns the MAC Address from the
->>> eFuse based on the CTRLMMR_MAC_IDx registers at 0x43000200 and 0x43000204
->>> to the interface eth0 corresponding to CPSW3G MAC Port 1:
->>> https://gist.github.com/Siddharth-Vadapalli-at-TI/9982c6f13bf9b8cfaf97e8517e7dea13
->>>
->>> Regards,
->>> Siddharth.
->>>
->>>  arch/arm64/boot/dts/ti/k3-am62p-main.dtsi   | 1 +
->>>  arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 5 +++++
->>>  2 files changed, 6 insertions(+)
->>>
->>> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
->>> index 7337a9e13535..848ca454a411 100644
->>> --- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
->>> +++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
->>> @@ -696,6 +696,7 @@ cpsw_port1: port@1 {
->>>  				label = "port1";
->>>  				phys = <&phy_gmii_sel 1>;
->>>  				mac-address = [00 00 00 00 00 00];
->>> +				ti,syscon-efuse = <&cpsw_mac_efuse 0x0>;
->>
->> Why this is not nvmem cell, like or efuses?
-> 
-> Since it belongs to the MMIO register set. You had recommended *not*
-> using nvmem for such MMIO registers at:
-> https://lore.kernel.org/r/48902771-5d3b-448a-8a74-ac18fb4f1a86@linaro.org/
-> "nvmem is for non-volatile memory, like OCOTP and eFUSE. This is not for
-> accessing regular MMIO registers of system-controller..."
-> 
-> Despite the "ti,syscon-efuse" property containing the term "efuse" in its
-> name, it is reading the CTRLMMR_MAC_IDx MMIO registers. So I assumed that
-> the existing approach which has been used on all K3 SoCs apart from this
-> one, will be suitable for this SoC as well.
 
-OK, I totally forgot we discussed this.
-
+On 03/04/2024 18:55, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.8.4 release.
+> There are 11 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
->>
->>>  			};
->>>  
->>>  			cpsw_port2: port@2 {
->>> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
->>> index a84756c336d0..df9d40f64e3b 100644
->>> --- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
->>> +++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
->>> @@ -18,6 +18,11 @@ chipid: chipid@14 {
->>>  			reg = <0x14 0x4>;
->>>  			bootph-all;
->>>  		};
->>> +
->>> +		cpsw_mac_efuse: cpsw-mac-efuse@200 {
->>
->> Node names should be generic. See also an explanation and list of
->> examples (not exhaustive) in DT specification:
->> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+> Responses should be made by Fri, 05 Apr 2024 17:51:13 +0000.
+> Anything received after that time might be too late.
 > 
-> I was following the convention that other mfd-syscon compatible nodes
-> seemed to be using:
-> https://github.com/torvalds/linux/blob/41bccc98fb7931d63d03f326a746ac4d429c1dd3/arch/arm64/boot/dts/ti/k3-am65-main.dtsi#L502
-> The node is:
-> dss_oldi_io_ctrl: dss-oldi-io-ctrl@41e0
-> corresponding to the compatible:
-> "ti,am654-dss-oldi-io-ctrl"
-> which was added by commit:
-> https://github.com/torvalds/linux/commit/cb523495ee2a5938fbdd30b8a35094d386c55c12
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.4-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-So if that one was wrong, then what? I don't know really what type of
-device is it, but just because one contributor called it that way, does
-not mean you should keep going. Maybe investigate why that contributor
-did not decide to follow Devicetree spec recommendation?
 
-Best regards,
-Krzysztof
+No new regressions for Tegra ...
 
+Test results for stable-v6.8:
+     10 builds:	10 pass, 0 fail
+     26 boots:	26 pass, 0 fail
+     116 tests:	115 pass, 1 fail
+
+Linux version:	6.8.4-rc1-gc4c57420c666
+Boards tested:	tegra124-jetson-tk1, tegra186-p2771-0000,
+                 tegra194-p2972-0000, tegra194-p3509-0000+p3668-0000,
+                 tegra20-ventana, tegra210-p2371-2180,
+                 tegra210-p3450-0000, tegra30-cardhu-a04
+
+Test failures:	tegra194-p2972-0000: boot.py
+
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+
+
+I have asked Thierry about the fix for the kernel warning we have been 
+observing on v6.8 that is causing the above test to fail. We are going 
+to get this into -next for a bit more testing. Once this lands in the 
+mainline, I will let you know.
+
+Jon
+
+-- 
+nvpublic
 
