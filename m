@@ -1,125 +1,136 @@
-Return-Path: <linux-kernel+bounces-131032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43E65898233
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:28:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0BA2898232
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:28:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2BB428AFD8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:28:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8039E1F245E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:28:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 738305B1F7;
-	Thu,  4 Apr 2024 07:28:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9485CDE4;
+	Thu,  4 Apr 2024 07:28:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pHjo73f9"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="asXyt6EQ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A4E05A4C6
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:28:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C25159158;
+	Thu,  4 Apr 2024 07:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712215687; cv=none; b=LpPFvEajbGKvOJO2LQYWRySORqTtioTtB1AO+cuT0r5lggott45JaLy5smoTKoEfoKZxoEQku0ptSPHrzePpulwe/pjSWwB1bd1yrwr182IWyM+zcjS7alRETM2CllR353lqmLDVZ2W/IKkeZ252//q+LCzjE3P8B32ik4oOLPc=
+	t=1712215680; cv=none; b=dOmerWTy8qFM3YwbvDWhPsY3vWgjrtfq2Cp1D2I0+WFI3URUuVRNQy+39HAaEnV9AKp4odu0T8ePO8wmjXhfG9K19hW29+nsJarsVahDCXQDAVcB9bUJ2EPya4XGpSN2ESMpPLKFSRIpadUdxdbzriJehF8fG9BEdexqGinVglI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712215687; c=relaxed/simple;
-	bh=FuUPoYM2NVZrcOWscPGRH2OSb7fWaK6hQA7r7DyQ8GE=;
+	s=arc-20240116; t=1712215680; c=relaxed/simple;
+	bh=RKQ+b/6tx0j5fcRbGd1+ZSjUZNL7pamhVmxxau7bjRk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s9kykR7gBMZma0GR840ZkxoXNR8y02cs/O9ATEAUjtnw1Ver1b0S6S/sDEINaJCOmbYt0LY0UJLXpIHX0Otxe7nYewqmUkvXAElIHcIftk72NGGuyVMNqLv1+UVpa5fCuSFXJS9zJ3lAEGa7v+PK9jSLLozJl5cgwqUAsTF3KyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pHjo73f9; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=xO8ZMSdLxr9d0/gfay8+f+uA0aV7DZv0E1joQJT40kE=; b=pHjo73f9/aV3mNHtciDeJ/Pvto
-	JKDg+CfB+nP9s4tQmmxHCH6ssgR4s36k9ABL47hjB2eXnrgveCnuuTz2I/ZEYuIh0Bm00ZVKyvbHh
-	S+f68IYngM10iQ0Vx6TizlCErihR+4NRTH5Gufc7ZyZkEDTr6Xwml11BSV/x7rPtsB1keXUJPebwj
-	drCKqp288eg9jJwLP5oN+ADCRr74PnIPJ5iejmiXD7Llvw8XfL6mKxU+VhqTcMFDyfYVzAikei+7k
-	trIvOQ6o68pmXN/ZkiuDfkquEtyE0fHm80TwUCDkChEyBgoD3lP05UZod9+d2yPoMxqda6I4sBmKU
-	g68kMjXA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsHVi-00000004nd9-0PRO;
-	Thu, 04 Apr 2024 07:27:46 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id B9E59300427; Thu,  4 Apr 2024 09:27:45 +0200 (CEST)
-Date: Thu, 4 Apr 2024 09:27:45 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Pierre Gondois <pierre.gondois@arm.com>
-Cc: linux-kernel@vger.kernel.org, Aaron Lu <aaron.lu@intel.com>,
-	Rui Zhang <rui.zhang@intel.com>,
-	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Waiman Long <longman@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH 6/7] sched/fair: Remove on_null_domain() and redundant
- checks
-Message-ID: <20240404072745.GA35684@noisy.programming.kicks-ass.net>
-References: <20240403150543.2793354-1-pierre.gondois@arm.com>
- <20240403150543.2793354-7-pierre.gondois@arm.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=B1AVk9S0tX8WOlXod62BmJKJnvtuJl6JBew18lV+7RNEDjsO7QT9kxyzLYlPvuLVY9E1gNxV1Nv673me+jAS9F66EDVe000T8iZCL83yK/YNINnvlAJsfYL02wuc239IodvJMro0Tar8UIc2FMGP8X5EwNqp5KkHKXiH0OxPT5o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=asXyt6EQ; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712215679; x=1743751679;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=RKQ+b/6tx0j5fcRbGd1+ZSjUZNL7pamhVmxxau7bjRk=;
+  b=asXyt6EQqJKrNjoNw/DnP1R0Ggm+kIyoggjSe8OzmqOdqgi9jQoTed5B
+   yTAT5+wY/5p2Wq7s5hRWJKgUbTIRXjoG1Dxrutv1KlpwBG1eiDD6qPodq
+   R01UwcMllCIhaxASc8TdAEPHbJn9rf4IGN4rOuqCARlf9AMcullCnZ8NM
+   5W/5FiNbhd2rspK+qt92aLX2w2Sh8kF89NeSqc+64gHHORrMo7MJyRd7L
+   Bg5Y3s9eP6rCcV9wCSa5ukcb4Ph2Jlbg0i1U3Xq41boTviHqc41hBEf02
+   glCc1i+a+MXCfbBjyWyUOfb+jYd3YAQXk+LgzxQZvD1GFiX3dnnw2u+/c
+   Q==;
+X-CSE-ConnectionGUID: 9xeE+pR2QtScVCODI1CcMQ==
+X-CSE-MsgGUID: O5cOmguMQAOV/syGdiTSiw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18639036"
+X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
+   d="scan'208";a="18639036"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 00:27:58 -0700
+X-CSE-ConnectionGUID: oppg5AWXS++CeE9U/jyXuw==
+X-CSE-MsgGUID: Ivckoag3Qg6Aicdl0XJzcw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
+   d="scan'208";a="18802468"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 00:27:50 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with ESMTP id A685611F855;
+	Thu,  4 Apr 2024 10:27:47 +0300 (EEST)
+Date: Thu, 4 Apr 2024 07:27:47 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Bjorn Helgaas <helgaas@kernel.org>
+Cc: Yong Zhi <yong.zhi@intel.com>, Bingbu Cao <bingbu.cao@intel.com>,
+	Dan Scally <djrscally@gmail.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Tianshu Qiu <tian.shu.qiu@intel.com>, linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+	Hyungwoo Yang <hyungwoo.yang@intel.com>,
+	Rajmohan Mani <rajmohan.mani@intel.com>,
+	Vijaykumar Ramya <ramya.vijaykumar@intel.com>,
+	Samu Onkalo <samu.onkalo@intel.com>,
+	Jouni =?iso-8859-1?Q?H=F6gander?= <jouni.hogander@intel.com>,
+	Jouni Ukkonen <jouni.ukkonen@intel.com>,
+	Antti Laakso <antti.laakso@intel.com>
+Subject: Re: [PATCH] media: ipu-cio2: Remove unnecessary runtime PM power
+ state setting
+Message-ID: <Zg5Wc6DMPYBqlCFr@kekkonen.localdomain>
+References: <20240325220325.1452712-1-helgaas@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240403150543.2793354-7-pierre.gondois@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240325220325.1452712-1-helgaas@kernel.org>
 
-On Wed, Apr 03, 2024 at 05:05:38PM +0200, Pierre Gondois wrote:
-> CPUs with a NULL sched domain are removed from the HKR_TYPE_SCHED
-> isolation mask. The two following checks are equialent:
-> - !housekeeping_runtime_test_cpu(cpu, HKR_TYPE_SCHED)
-> - on_null_domain(rq)
+Hi Bjorn,
+
+On Mon, Mar 25, 2024 at 05:03:25PM -0500, Bjorn Helgaas wrote:
+> From: Bjorn Helgaas <bhelgaas@google.com>
 > 
-> Remove on_null_domain() and the redundant checks.
+> ipu-cio2 uses generic power management, and pci_pm_runtime_suspend() and
+> pci_pm_runtime_resume() already take care of setting the PCI device power
+> state, so the driver doesn't need to do it explicitly.
 > 
-> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+> Remove explicit setting to D3hot or D0 during runtime suspend and resume.
+> 
+> Remove #defines that are no longer used.
+> 
+> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+> Cc: Hyungwoo Yang <hyungwoo.yang@intel.com>
+> Cc: Rajmohan Mani <rajmohan.mani@intel.com>
+> Cc: Vijaykumar Ramya <ramya.vijaykumar@intel.com>
+> Cc: Samu Onkalo <samu.onkalo@intel.com>
+> Cc: Jouni Högander <jouni.hogander@intel.com>
+> Cc: Jouni Ukkonen <jouni.ukkonen@intel.com>
+> Cc: Antti Laakso <antti.laakso@intel.com>
 > ---
->  kernel/sched/fair.c | 18 ++++++------------
->  1 file changed, 6 insertions(+), 12 deletions(-)
+> This code was initially added by c2a6a07afe4a ("media: intel-ipu3: cio2:
+> add new MIPI-CSI2 driver").
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 3e0f2a0f153f..9657c8f2176b 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -11830,11 +11830,6 @@ static void sched_balance_domains(struct rq *rq, enum cpu_idle_type idle)
->  
->  }
->  
-> -static inline int on_null_domain(struct rq *rq)
-> -{
-> -	return unlikely(!rcu_dereference_sched(rq->sd));
-> -}
-> -
->  #ifdef CONFIG_NO_HZ_COMMON
->  /*
->   * NOHZ idle load balancing (ILB) details:
-> @@ -12040,7 +12035,7 @@ void nohz_balance_exit_idle(struct rq *rq)
->  	SCHED_WARN_ON(rq != this_rq());
->  
->  	/* If we're a completely isolated CPU, we don't play: */
-> -	if (on_null_domain(rq))
-> +	if (!housekeeping_runtime_test_cpu(cpu_of(rq), HKR_TYPE_SCHED))
->  		return;
->  
->  	if (likely(!rq->nohz_tick_stopped))
+> Even at that time, the explicit power state setting should not have been
+> necessary, so maybe there's a reason for it.  I have no way to test this,
+> so if it *is* needed, please:
+> 
+>   - Add a comment about the reason and
+> 
+>   - Convert it to use pci_set_power_state() so the PCI core knows about the
+>     change and all the required state transition delays are observed.
 
-This seems broken, the whole null domain can happen with cpusets, but
-this housekeeping nonsense is predicated on CPU_ISOLATION and none of
-that is mandatory for CPUSETS.
+Thanks for the patch.
+
+The device seems to work fine with the patch applied so I presume it wasn't
+necessary to begin with.
+
+-- 
+Regards,
+
+Sakari Ailus
 
