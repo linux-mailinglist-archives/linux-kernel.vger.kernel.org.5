@@ -1,86 +1,88 @@
-Return-Path: <linux-kernel+bounces-130790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13A72897D23
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:42:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98BDF897D24
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:43:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8AC0B23A8B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:42:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3547C1F29AD1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1B24C97;
-	Thu,  4 Apr 2024 00:42:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ShYd/I9m"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5549046BA;
+	Thu,  4 Apr 2024 00:43:17 +0000 (UTC)
+Received: from mail115-100.sinamail.sina.com.cn (mail115-100.sinamail.sina.com.cn [218.30.115.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 214334400;
-	Thu,  4 Apr 2024 00:42:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D580B37E
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 00:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712191329; cv=none; b=TtlvZwmMZKH4TAX++rDfwj78EWNRQjdItWSH7NHtSlA+g/+ulf1f81SCDrMMSckGVmKYqf/tOcGDmkTEYc2S+X1XwvTC7Sia84IgQ3mjrsAOW2Laf6D9p4PCoO5q2V62lCGmP+cCd0kmLqZCb6/42C8AVWSUSB/8G0vJ4D9Q00I=
+	t=1712191396; cv=none; b=GaA32e3nin21c1Ri4rQvdkMfB2UL77nRMUvWoCllkLG0G+4+sCk6PD9PEq+nKq5zVIfMsvbxuL/0/izJlj17cH2fZDJIXoZc9WxW0LzF/n22q7Qsu6HFhElpA0JMq6hluXSO1sTdhOBX9hRvt6Z6cJvm5gDJy2YFfzMbw1EX7Es=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712191329; c=relaxed/simple;
-	bh=D3jepi0zJ72xuRUzY0zYzN1f9UFpgiWhtB98tF6EXB0=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FR1e7p0nQoCNWP26ZVwlVkPA3lUDW+UB5P1GtUM67hEC7mcMUkipdNNSwj87iih6tQegNwfuho0Azsx6N8r0Tf4thERjarEu1LiYu7Sl5inRvqW1TXoHtkG6pyNJH+DmcbYq9M/wniLdG9xIU2uyOJP2p+Otr9P/S/+I3aqLHZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ShYd/I9m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48FB6C433C7;
-	Thu,  4 Apr 2024 00:42:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712191328;
-	bh=D3jepi0zJ72xuRUzY0zYzN1f9UFpgiWhtB98tF6EXB0=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=ShYd/I9m2URUu0tlaxxk4WyWjJKgKXJ/4m8hRncP4yC/s7wnUoILOAP2kTBi6lX2n
-	 5Qc5K4rpsr1BoFU4tsXpQ5NlpMTArIp96x3btM+/HkPEFqlsviC8em784f+IVwe1nM
-	 MWCGmieyLFP361y+YypfCUa9Tklp1iS0V+HSoQCw0JKvkUnQOt3Q16MXoyJnLXcKgR
-	 GexugvlF7GUD2gArHBV4d/gSwQy9VMK4kiYjQdfj7cFRne2l7BDgxBIKqOzNpMRGn+
-	 s1piLHXEK7Vdnp9xXavg5Twc7iXubNBn46Aj1Pig0hXdogegPXXhL8fLSwM2kUssHO
-	 x6+vIMKTlM8UQ==
-Date: Wed, 3 Apr 2024 17:42:07 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: "David S. Miller" <davem@davemloft.net>, Andrew Lunn <andrew@lunn.ch>,
- Eric Dumazet <edumazet@google.com>, Florian Fainelli
- <f.fainelli@gmail.com>, Paolo Abeni <pabeni@redhat.com>, Vladimir Oltean
- <olteanv@gmail.com>, Woojung Huh <woojung.huh@microchip.com>, Arun Ramadoss
- <arun.ramadoss@microchip.com>, kernel@pengutronix.de,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- UNGLinuxDriver@microchip.com, David Ahern <dsahern@kernel.org>, Simon
- Horman <horms@kernel.org>, Willem de Bruijn <willemb@google.com>,
- =?UTF-8?B?U8O4cmVu?= Andersen <san@skov.dk>
-Subject: Re: [PATCH net-next v2 5/9] net: dsa: microchip: add support for
- different DCB app configurations
-Message-ID: <20240403174207.34205b6a@kernel.org>
-In-Reply-To: <20240403092905.2107522-6-o.rempel@pengutronix.de>
-References: <20240403092905.2107522-1-o.rempel@pengutronix.de>
-	<20240403092905.2107522-6-o.rempel@pengutronix.de>
+	s=arc-20240116; t=1712191396; c=relaxed/simple;
+	bh=Jn7jihx5ZAEU7E/WxYZQsSS/l5HWKas8Jpl8onMuOeQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=ixwIeHCzYIlM9YiB6020mHKXlWQWv2h8TrN1oUVqr38aPjykn6tc3x946eYGrAVv58lPE4y0DnLvEqwTO5nell7PbfaiKjWEwkF1xDDjyVVVtwpFSJIYYgNA3AjeIeFpCGdior/s5/H+JWhKtoWXFm063Jry6WdkB8LSplI9FTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.88.48.253])
+	by sina.com (172.16.235.24) with ESMTP
+	id 660DF79A00002F0E; Thu, 4 Apr 2024 08:43:08 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 89645545089384
+X-SMAIL-UIID: 0BB6AD394806450287569264996BFAA2-20240404-084308-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
+Date: Thu,  4 Apr 2024 08:42:57 +0800
+Message-Id: <20240404004257.3933-1-hdanton@sina.com>
+In-Reply-To: <00000000000098f75506153551a1@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Wed,  3 Apr 2024 11:29:01 +0200 Oleksij Rempel wrote:
-> Add DCB support to configure app trust sources and default port priority.
+On Wed, 03 Apr 2024 11:23:26 -0700
+> syzbot found the following issue on:
 > 
-> Following commands can be used for testing:
-> dcb apptrust set dev lan1 order pcp dscp
-> dcb app replace dev lan1 default-prio 3
-> 
-> Since it is not possible to configure DSCP-Prio mapping per port, this
-> patch provide only ability to read switch global dscp-prio mapping and
-> way to enable/disable app trust for DSCP.
+> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+> git tree:       upstream
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c38139180000
 
-transient compiler nit:
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  fe46a7dd189e
 
-drivers/net/dsa/microchip/ksz_dcb.c:86:17: warning: unused variable 'ksz8_port2_supported_apptrust' [-Wunused-const-variable]
-   86 | static const u8 ksz8_port2_supported_apptrust[] = {
-      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--- x/fs/overlayfs/file.c
++++ y/fs/overlayfs/file.c
+@@ -204,6 +204,7 @@ static loff_t ovl_llseek(struct file *fi
+ 	if (ret)
+ 		return ret;
+ 
++	inode_lock(inode);
+ 	/*
+ 	 * Overlay file f_pos is the master copy that is preserved
+ 	 * through copy up and modified on read/write, but only real
+@@ -220,6 +221,7 @@ static loff_t ovl_llseek(struct file *fi
+ 
+ 	file->f_pos = real.file->f_pos;
+ 	ovl_inode_unlock(inode);
++	inode_unlock(inode);
+ 
+ 	fdput(real);
+ 
+--
 
