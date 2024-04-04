@@ -1,241 +1,244 @@
-Return-Path: <linux-kernel+bounces-131590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26ED78989CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:19:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C145D8989FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:23:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A53691F2EC49
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:19:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72F81292069
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B49DA823D0;
-	Thu,  4 Apr 2024 14:19:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620CD12A145;
+	Thu,  4 Apr 2024 14:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jD3gmdwb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vEKXyExf";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jD3gmdwb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vEKXyExf"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dda+Fr73";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k/xhTIim";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dda+Fr73";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k/xhTIim"
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09559128812;
-	Thu,  4 Apr 2024 14:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8816E129E7B
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:20:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712240354; cv=none; b=iDFMAB4cSqyrr56K9L5r9w+rIkT0MFiEB+aPWzzheCojpPXrW8tLH4Y4B1U2y5oumegGsp2TcFtCJg+Kbnbt6NH+7XRBjJlzDAbEOBkMUh5JKfXfxMkilJlmGFe/LpDtneOYWvnMAazMqsEW99Ng/1hwQKVmiNzU/LNi41Qlp3I=
+	t=1712240428; cv=none; b=WStjexx4SMEfPLNN/2eo9BkUpbvLGGfJRYbZ/DbrLTzsNRjSZs7hYpF6LsMTcz+v58q+1je3z+tEGLiTUZ0HMfnELymoRRd9H/5V05KJnaStP+cpsX1OtTVgin+j6evLHMXREmAWMEpcYxPBFMpcTUWROHiAT6oDaykr1v6qUsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712240354; c=relaxed/simple;
-	bh=XJjDieTO1w0pl8GzPETpUUaCgNf0AYfLaFI+Dk9srHI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sv7LYczBiTgLs4P1PTQjqfLd9NUmXwUhDYECyF2bIyveU0sN6b27gE4zi4OdkjIvdu9bhMk8IwuZmGN6ZRIjyg8hqXVL4EyKvODYxvPirYdTl/VPZidxRuiyHWNXXsmxthsn56Q/0vIGc7JmtfgNlIFX6S7tWUUG6kaSfPMtpvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jD3gmdwb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vEKXyExf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jD3gmdwb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vEKXyExf; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1712240428; c=relaxed/simple;
+	bh=38ifp+9U/tmcMtRDRwJirKgMZ3pkp0T33E7PMYrwkPw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CBlCXutMzX5QOrAMGwC9eNyohNgySezI5LBoZ34ej6Wr5eAnbdwn7YHSEcZKzfNB1K7TIKJ4L8pdMz4sf8PLh56b6KN7n7ItS+fc0UZjE7XgLT2i4uaQqaEQayhWHDbk91uLjIx0i1B4Jqt66MMzGioCwNmvKzsSda3BMGmNK/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dda+Fr73; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k/xhTIim; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dda+Fr73; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k/xhTIim; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3CE9D5F7B5;
-	Thu,  4 Apr 2024 14:19:11 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A2F235F7BE;
+	Thu,  4 Apr 2024 14:20:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712240351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1712240424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/03H7hOh0GUJswqYaiMm+uzdwS+6pYD4p/9O8jdbNko=;
-	b=jD3gmdwbELggl6VJ3Z4wYnTUJ3G+Ff2eQhKteJoX23MDfui/8MotZAtZ1fDKkIL+Xc10tv
-	+T7Yv5/SglzV7hRUq3plTOdFIMecyHGcC3b1fprhch21IZbm/sb9D23anFKorPoEVAZbWy
-	SOZxxELUpPopWkQKzP/b+lM+XgHV6ds=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=bmlPJFJH+2pgSlIxGAzUjJA+7LBxZ4wX4p8uWafMaAU=;
+	b=dda+Fr73TfgnmUVxHbwmW4mu1Gxtc377KIJXRzrIRiQuKsDiHZgGAFyM1f6alg0+z+JVYh
+	12eF4YhQxSpvtHsRU6WXwtVv2+WTXunGjpNIEXQKVsQFa7AmWAyctZ29wJjjqpEMxJy2qX
+	rH9AJoxxL1dOao4MBkGDV4MblYYcrbU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712240351;
+	s=susede2_ed25519; t=1712240424;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/03H7hOh0GUJswqYaiMm+uzdwS+6pYD4p/9O8jdbNko=;
-	b=vEKXyExf1n7SDazEjF5HjLvFcu+7UMzf/LnCLO+pCnauN8mYuGRunTrS9t7w1SR0rFel2G
-	D100ouR1vjwjShAQ==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=bmlPJFJH+2pgSlIxGAzUjJA+7LBxZ4wX4p8uWafMaAU=;
+	b=k/xhTIimxY+YML86hHqK4jIMUgsrNGY2pSHuGRCuFhcbbaCbmaI/EXdDLf9FVfVbcnEFQ9
+	BYWoMY/AulfMmoBw==
 Authentication-Results: smtp-out2.suse.de;
-	none
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=dda+Fr73;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="k/xhTIim"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712240351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1712240424; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/03H7hOh0GUJswqYaiMm+uzdwS+6pYD4p/9O8jdbNko=;
-	b=jD3gmdwbELggl6VJ3Z4wYnTUJ3G+Ff2eQhKteJoX23MDfui/8MotZAtZ1fDKkIL+Xc10tv
-	+T7Yv5/SglzV7hRUq3plTOdFIMecyHGcC3b1fprhch21IZbm/sb9D23anFKorPoEVAZbWy
-	SOZxxELUpPopWkQKzP/b+lM+XgHV6ds=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=bmlPJFJH+2pgSlIxGAzUjJA+7LBxZ4wX4p8uWafMaAU=;
+	b=dda+Fr73TfgnmUVxHbwmW4mu1Gxtc377KIJXRzrIRiQuKsDiHZgGAFyM1f6alg0+z+JVYh
+	12eF4YhQxSpvtHsRU6WXwtVv2+WTXunGjpNIEXQKVsQFa7AmWAyctZ29wJjjqpEMxJy2qX
+	rH9AJoxxL1dOao4MBkGDV4MblYYcrbU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712240351;
+	s=susede2_ed25519; t=1712240424;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/03H7hOh0GUJswqYaiMm+uzdwS+6pYD4p/9O8jdbNko=;
-	b=vEKXyExf1n7SDazEjF5HjLvFcu+7UMzf/LnCLO+pCnauN8mYuGRunTrS9t7w1SR0rFel2G
-	D100ouR1vjwjShAQ==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=bmlPJFJH+2pgSlIxGAzUjJA+7LBxZ4wX4p8uWafMaAU=;
+	b=k/xhTIimxY+YML86hHqK4jIMUgsrNGY2pSHuGRCuFhcbbaCbmaI/EXdDLf9FVfVbcnEFQ9
+	BYWoMY/AulfMmoBw==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 336E513298;
-	Thu,  4 Apr 2024 14:19:11 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9213B13298;
+	Thu,  4 Apr 2024 14:20:24 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id k2CKDN+2DmYLBgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 04 Apr 2024 14:19:11 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id DC60EA0816; Thu,  4 Apr 2024 16:19:02 +0200 (CEST)
-Date: Thu, 4 Apr 2024 16:19:02 +0200
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jack@suse.cz, ojaswin@linux.ibm.com,
-	ritesh.list@gmail.com
-Subject: Re: [PATCH 4/5] ext4: use correct criteria name instead stale
- integer number in comment
-Message-ID: <20240404141902.t5ut465q7vxusoa6@quack3>
-References: <20240326213823.528302-1-shikemeng@huaweicloud.com>
- <20240326213823.528302-5-shikemeng@huaweicloud.com>
+	id j+pHIyi3DmaDBgAAn2gu4w
+	(envelope-from <vbabka@suse.cz>); Thu, 04 Apr 2024 14:20:24 +0000
+Message-ID: <dc25b95b-8515-4108-94e3-d83e6948b861@suse.cz>
+Date: Thu, 4 Apr 2024 16:20:24 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326213823.528302-5-shikemeng@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/slub, kunit: Use inverted data to corrupt kmem cache
+Content-Language: en-US
+To: Guenter Roeck <linux@roeck-us.net>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Oliver Glitta <glittao@gmail.com>,
+ Daniel Latypov <dlatypov@google.com>, Marco Elver <elver@google.com>
+References: <20240402133839.283793-1-linux@roeck-us.net>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <20240402133839.283793-1-linux@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -4.50
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: A2F235F7BE
 X-Spam-Level: 
-X-Spamd-Result: default: False [-2.30 / 50.00];
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.50 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	TAGGED_RCPT(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
+	XM_UA_NO_VERSION(0.01)[];
+	MX_GOOD(-0.01)[];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,vger.kernel.org,suse.cz,linux.ibm.com,gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.com:email]
-X-Spam-Score: -2.30
-X-Spam-Flag: NO
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,google.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
 
-On Wed 27-03-24 05:38:22, Kemeng Shi wrote:
-> Use correct criteria name instead stale integer number in comment
+On 4/2/24 3:38 PM, Guenter Roeck wrote:
+> Two failure patterns are seen randomly when running slub_kunit tests with
+> CONFIG_SLAB_FREELIST_RANDOM and CONFIG_SLAB_FREELIST_HARDENED enabled.
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Pattern 1:
+>      # test_clobber_zone: pass:1 fail:0 skip:0 total:1
+>      ok 1 test_clobber_zone
+>      # test_next_pointer: EXPECTATION FAILED at lib/slub_kunit.c:72
+>      Expected 3 == slab_errors, but
+>          slab_errors == 0 (0x0)
+>      # test_next_pointer: EXPECTATION FAILED at lib/slub_kunit.c:84
+>      Expected 2 == slab_errors, but
+>          slab_errors == 0 (0x0)
+>      # test_next_pointer: pass:0 fail:1 skip:0 total:1
+>      not ok 2 test_next_pointer
+> 
+> In this case, test_next_pointer() overwrites p[s->offset], but the data
+> at p[s->offset] is already 0x12.
+> 
+> Pattern 2:
+>      ok 1 test_clobber_zone
+>      # test_next_pointer: EXPECTATION FAILED at lib/slub_kunit.c:72
+>      Expected 3 == slab_errors, but
+>          slab_errors == 2 (0x2)
+>      # test_next_pointer: pass:0 fail:1 skip:0 total:1
+>      not ok 2 test_next_pointer
+> 
+> In this case, p[s->offset] has a value other than 0x12, but one of the
+> expected failures is nevertheless missing.
+> 
+> Invert data instead of writing a fixed value to corrupt the cache data
+> structures to fix the problem.
+> 
+> Fixes: 1f9f78b1b376 ("mm/slub, kunit: add a KUnit test for SLUB debugging functionality")
+> Cc: Oliver Glitta <glittao@gmail.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> CC: Daniel Latypov <dlatypov@google.com>
+> Cc: Marco Elver <elver@google.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-Looks good. But since the symbolic names already have CR prefix, we
-probably don't have to write e.g.:
-
-/* Large fragment size list lookup succeeded at least once for cr =
- * CR_POWER2_ALIGNED */
-
-But we can write directly:
-
-/* Large fragment size list lookup succeeded at least once for
- * CR_POWER2_ALIGNED */
-
-								Honza
+Added to slab/for-next, thanks.
 
 > ---
->  fs/ext4/ext4.h    | 15 ++++++++++++---
->  fs/ext4/mballoc.c | 14 ++++++++------
->  fs/ext4/mballoc.h |  4 ++--
->  3 files changed, 22 insertions(+), 11 deletions(-)
+>  lib/slub_kunit.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 023571f8dd1b..9b90013c59a3 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -213,11 +213,20 @@ enum criteria {
->  #define EXT4_MB_USE_RESERVED		0x2000
->  /* Do strict check for free blocks while retrying block allocation */
->  #define EXT4_MB_STRICT_CHECK		0x4000
-> -/* Large fragment size list lookup succeeded at least once for cr = 0 */
-> +/*
-> + * Large fragment size list lookup succeeded at least once for cr =
-> + * CR_POWER2_ALIGNED
-> + */
->  #define EXT4_MB_CR_POWER2_ALIGNED_OPTIMIZED		0x8000
-> -/* Avg fragment size rb tree lookup succeeded at least once for cr = 1 */
-> +/*
-> + * Avg fragment size rb tree lookup succeeded at least once for cr =
-> + * CR_GOAL_LEN_FAST
-> + */
->  #define EXT4_MB_CR_GOAL_LEN_FAST_OPTIMIZED		0x00010000
-> -/* Avg fragment size rb tree lookup succeeded at least once for cr = 1.5 */
-> +/*
-> + * Avg fragment size rb tree lookup succeeded at least once for cr =
-> + * CR_BEST_AVAIL_LEN
-> + */
->  #define EXT4_MB_CR_BEST_AVAIL_LEN_OPTIMIZED		0x00020000
+> diff --git a/lib/slub_kunit.c b/lib/slub_kunit.c
+> index d4a3730b08fa..4ce960438806 100644
+> --- a/lib/slub_kunit.c
+> +++ b/lib/slub_kunit.c
+> @@ -55,7 +55,7 @@ static void test_next_pointer(struct kunit *test)
 >  
->  struct ext4_allocation_request {
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 62d468379722..0f8a34513bf6 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -1131,8 +1131,9 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
->  		ext4_mb_choose_next_group_best_avail(ac, new_cr, group);
->  	} else {
->  		/*
-> -		 * TODO: For CR=2, we can arrange groups in an rb tree sorted by
-> -		 * bb_free. But until that happens, we should never come here.
-> +		 * TODO: For CR=CR_GOAL_LEN_SLOW, we can arrange groups in an
-> +		 * rb tree sorted by bb_free. But until that happens, we should
-> +		 * never come here.
->  		 */
->  		WARN_ON(1);
->  	}
-> @@ -3444,10 +3445,11 @@ static int ext4_mb_init_backend(struct super_block *sb)
->  	}
->  	if (sbi->s_mb_prefetch > ext4_get_groups_count(sb))
->  		sbi->s_mb_prefetch = ext4_get_groups_count(sb);
-> -	/* now many real IOs to prefetch within a single allocation at cr=0
-> -	 * given cr=0 is an CPU-related optimization we shouldn't try to
-> -	 * load too many groups, at some point we should start to use what
-> -	 * we've got in memory.
-> +	/*
-> +	 * now many real IOs to prefetch within a single allocation at
-> +	 * cr=CR_POWER2_ALIGNED. Given cr=CR_POWER2_ALIGNED is an CPU-related
-> +	 * optimization we shouldn't try to load too many groups, at some point
-> +	 * we should start to use what we've got in memory.
->  	 * with an average random access time 5ms, it'd take a second to get
->  	 * 200 groups (* N with flex_bg), so let's make this limit 4
->  	 */
-> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-> index 56938532b4ce..042437d8860f 100644
-> --- a/fs/ext4/mballoc.h
-> +++ b/fs/ext4/mballoc.h
-> @@ -187,8 +187,8 @@ struct ext4_allocation_context {
->  	struct ext4_free_extent ac_f_ex;
+>  	ptr_addr = (unsigned long *)(p + s->offset);
+>  	tmp = *ptr_addr;
+> -	p[s->offset] = 0x12;
+> +	p[s->offset] = ~p[s->offset];
 >  
 >  	/*
-> -	 * goal len can change in CR1.5, so save the original len. This is
-> -	 * used while adjusting the PA window and for accounting.
-> +	 * goal len can change in CR_BEST_AVAIL_LEN, so save the original len.
-> +	 * This is used while adjusting the PA window and for accounting.
->  	 */
->  	ext4_grpblk_t	ac_orig_goal_len;
->  
-> -- 
-> 2.30.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  	 * Expecting three errors.
+
 
