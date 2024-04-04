@@ -1,66 +1,72 @@
-Return-Path: <linux-kernel+bounces-132161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0699899067
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:30:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54FE5899068
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:31:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D38121C22E91
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:30:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 845C11C22EC3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:30:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB36D13C3E0;
-	Thu,  4 Apr 2024 21:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4122813C3F9;
+	Thu,  4 Apr 2024 21:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="G4dbCyM1"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wz6eEZaJ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3951384AE
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 21:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A9A13BACE;
+	Thu,  4 Apr 2024 21:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712266231; cv=none; b=a3P68t+dZm3a9MmzkjWV/ic7J8kzkc8z109t4ok3IKkB0fabVlhbBtKM7zXspCC3sLnyujB43XfPLJzV17p7Peg/vYSk9peQVaGsa9kY1p90duTKHXfdDUr287qX8MH5rCzDx4F4zWgTM0SFMrg5Wfe8Kt3XZ7tBMBZ3wLlrCbg=
+	t=1712266232; cv=none; b=D4Cj3bvUfmF29SvcIx7TU3e+0bV7pubBeaZ+Hac5HX9f5wm5mJQU0yoeTQoGbq2qysq9UbmmUQeZErXr/WFXU4gmLcSvTpdyaKaBPGKO0p5KC+jYiX/6wHm36DAR5FNyrfGcSrQO1IvPjPrCz8x/PaVF2QTUpBPjUlEOvAnrvws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712266231; c=relaxed/simple;
-	bh=zT/Mj0jfL3gV3UCoOzvYzKXGBz77bWjZZQwDKLOl1gE=;
+	s=arc-20240116; t=1712266232; c=relaxed/simple;
+	bh=zrMhg+chIdUlUIfaxG9iqXyU9uU2QCYMuBzDWEPDRpk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ejHxXCiLp0vOww7C5huHYUeGmx8n4rp3/IxUF/kKYyJQiB4gMshulWwa/ISbLzAnsIxRB4FJppQhSB6wqaFq7czMzd+/NJ53QDg0+48JNDIud09dLPXfu32dcHo/aRj+gY2dUhAbSVCohwwEBiHqzFjBPIVgxHnhVxPfDMZDuis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=G4dbCyM1; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712266227;
-	bh=zT/Mj0jfL3gV3UCoOzvYzKXGBz77bWjZZQwDKLOl1gE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=G4dbCyM1c/WjOOcfhwTfBS0howOBvDiqsntJqx0hyRv42XKsHEbrXBlye+ZVOWmhL
-	 UDP5wM9afy2G47I/NsLa5Zq5C02Qqb4MYgkYxhZI6jbddTV0Jtn5rO/tRYc/VeUYtd
-	 h2XUU8NIAXPSt5QeDeqRjrdfBRJYFJtAT0uQ7fDTl3bZ2sYdJ8/4HnXP/izeUhKRuq
-	 Y/XyhDEtv5KNjw1TpqkeANxv6JvC1tTTTlmeU9TzLMuTvgCT0HbErSI99h92zHuMb5
-	 T8p/xwewNAt2I9AxPgJz4fU9L62g54uIUm8jsFicl7UoAVJV0X96W3x2qx87Ldo6yA
-	 WxJFL5MIKe+3A==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: alarumbe)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 16747378000E;
-	Thu,  4 Apr 2024 21:30:27 +0000 (UTC)
-Date: Thu, 4 Apr 2024 22:30:26 +0100
-From: =?utf-8?Q?Adri=C3=A1n?= Larumbe <adrian.larumbe@collabora.com>
-To: =?utf-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>
-Cc: Boris Brezillon <boris.brezillon@collabora.com>, 
-	Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, kernel@collabora.com, Christopher Healy <healych@amazon.com>, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/panfrost: Show overall GPU usage stats through sysfs
- knob
-Message-ID: <6aoklcyuvvxgqecjzatn2xopevbsrejhkvzmcqosbu2wkngtui@36gynkk5fay6>
-References: <20240404140014.1022816-1-adrian.larumbe@collabora.com>
- <364bd804-2be6-4a0a-a3d2-e6fa136a73ab@igalia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=VgA6O6DhNDKjvrKIapozlqHlYKvmlWtKVJ/tpazx1592VIHUhZFLB7UvoJ77fLVYL/yWr5lifmIKo3D10OChIiobM2KNAiOEg1n105a37yI71I3XY3IEDP3jJdOQrjLNZhBpf5V9B3Qn4FNTdX6IVWlN3E3SK+qGI/FJ7sMGKP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wz6eEZaJ; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712266230; x=1743802230;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zrMhg+chIdUlUIfaxG9iqXyU9uU2QCYMuBzDWEPDRpk=;
+  b=Wz6eEZaJKG1iESY2J4MahimBV1fpsHNhGDKnmZTmX0y+JIG55fwU3gz0
+   WQ4P18cLq9Q1Ur/03WvvtXxu5z0Svk+95Rthko629j4QsCNMMEhTPtgmW
+   QBmc66Eb+07nfNzw56PIuTaqaorBQHmTgDAUXzVg+/wyT25NbdAlRAZ9k
+   IJ7qwtteoBJTJtTHJ7f4V4RkSmF80+bCIXchjTfZpY4RBzc+Eljrqe68d
+   yaJCxQ4A+URIjfoSJ0CZxWQHtw7tX7HLRRuqx8IkLeaR0HxSPvianuruz
+   ZX9Nh8f6INW8aXewwHtnvw854mvs7gOgUU3JfCXzlDNlXeqldEo5kbtAS
+   w==;
+X-CSE-ConnectionGUID: KyD55J4ySN21jjYDqXtXVw==
+X-CSE-MsgGUID: Hdo8aW/sRcWPRYMSbZieqg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7681787"
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="7681787"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 14:30:30 -0700
+X-CSE-ConnectionGUID: bU8zSvV6RtyJxtBaW4nT4g==
+X-CSE-MsgGUID: FwNC0MB3QCyxA9M+sYFwjg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="18894465"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 14:30:28 -0700
+Date: Thu, 4 Apr 2024 14:30:28 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com,
+	isaku.yamahata@intel.com, isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v5 04/17] KVM: introduce new vendor op for
+ KVM_GET_DEVICE_ATTR
+Message-ID: <20240404213028.GQ2444378@ls.amr.corp.intel.com>
+References: <20240404121327.3107131-1-pbonzini@redhat.com>
+ <20240404121327.3107131-5-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,197 +75,119 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <364bd804-2be6-4a0a-a3d2-e6fa136a73ab@igalia.com>
+In-Reply-To: <20240404121327.3107131-5-pbonzini@redhat.com>
 
-On 04.04.2024 11:31, Maíra Canal wrote:
-> On 4/4/24 11:00, Adrián Larumbe wrote:
-> > This changeset is heavily inspired by commit 509433d8146c ("drm/v3d: Expose
-> > the total GPU usage stats on sysfs"). The point is making broader GPU
-> > occupancy numbers available through the sysfs interface, so that for every
-> > job slot, its number of processed jobs and total processing time are
-> > displayed.
+On Thu, Apr 04, 2024 at 08:13:14AM -0400,
+Paolo Bonzini <pbonzini@redhat.com> wrote:
+
+> Allow vendor modules to provide their own attributes on /dev/kvm.
+> To avoid proliferation of vendor ops, implement KVM_HAS_DEVICE_ATTR
+> and KVM_GET_DEVICE_ATTR in terms of the same function.  You're not
+> supposed to use KVM_GET_DEVICE_ATTR to do complicated computations,
+> especially on /dev/kvm.
 > 
-> Shouldn't we make this sysfs interface a generic DRM interface?
-> Something that would be standard for all drivers and that we could
-> integrate into gputop in the future.
-
-I think the best way to generalise this sysfs knob would be to create a DRM
-class attribute somewhere in drivers/gpu/drm/drm_sysfs.c and then adding a new
-function to 'struct drm_driver' that would return a structure with the relevant
-information (execution units and their names, number of processed jobs, etc).
-
-What that information would exactly be is up to debate, I guess, since different
-drivers might be interested in showing different bits of information.
-
-Laying that down is important because the sysfs file would become part of the
-device class API.
-
-I might come up with a new RFC patch series that does precisely that, at least
-for v3d and Panfrost, and maybe other people could pitch in with the sort of
-things they'd like to see for other drivers?
-
-Cheers,
-Adrian
-
-> Best Regards,
-> - Maíra
+> Reviewed-by: Michael Roth <michael.roth@amd.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  arch/x86/include/asm/kvm-x86-ops.h |  1 +
+>  arch/x86/include/asm/kvm_host.h    |  1 +
+>  arch/x86/kvm/x86.c                 | 38 +++++++++++++++++++-----------
+>  3 files changed, 26 insertions(+), 14 deletions(-)
 > 
-> > 
-> > Cc: Boris Brezillon <boris.brezillon@collabora.com>
-> > Cc: Christopher Healy <healych@amazon.com>
-> > Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
-> > ---
-> >   drivers/gpu/drm/panfrost/panfrost_device.h |  5 +++
-> >   drivers/gpu/drm/panfrost/panfrost_drv.c    | 49 ++++++++++++++++++++--
-> >   drivers/gpu/drm/panfrost/panfrost_job.c    | 17 +++++++-
-> >   drivers/gpu/drm/panfrost/panfrost_job.h    |  3 ++
-> >   4 files changed, 68 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_device.h b/drivers/gpu/drm/panfrost/panfrost_device.h
-> > index cffcb0ac7c11..1d343351c634 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_device.h
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_device.h
-> > @@ -169,6 +169,11 @@ struct panfrost_engine_usage {
-> >   	unsigned long long cycles[NUM_JOB_SLOTS];
-> >   };
-> > +struct panfrost_slot_usage {
-> > +	u64 enabled_ns;
-> > +	u64 jobs_sent;
-> > +};
-> > +
-> >   struct panfrost_file_priv {
-> >   	struct panfrost_device *pfdev;
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> > index ef9f6c0716d5..6afcde66270f 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> > @@ -8,6 +8,7 @@
-> >   #include <linux/pagemap.h>
-> >   #include <linux/platform_device.h>
-> >   #include <linux/pm_runtime.h>
-> > +#include <linux/sched/clock.h>
-> >   #include <drm/panfrost_drm.h>
-> >   #include <drm/drm_drv.h>
-> >   #include <drm/drm_ioctl.h>
-> > @@ -524,6 +525,10 @@ static const struct drm_ioctl_desc panfrost_drm_driver_ioctls[] = {
-> >   	PANFROST_IOCTL(MADVISE,		madvise,	DRM_RENDER_ALLOW),
-> >   };
-> > +static const char * const engine_names[] = {
-> > +	"fragment", "vertex-tiler", "compute-only"
-> > +};
-> > +
-> >   static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
-> >   				     struct panfrost_file_priv *panfrost_priv,
-> >   				     struct drm_printer *p)
-> > @@ -543,10 +548,6 @@ static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
-> >   	 *   job spent on the GPU.
-> >   	 */
-> > -	static const char * const engine_names[] = {
-> > -		"fragment", "vertex-tiler", "compute-only"
-> > -	};
-> > -
-> >   	BUILD_BUG_ON(ARRAY_SIZE(engine_names) != NUM_JOB_SLOTS);
-> >   	for (i = 0; i < NUM_JOB_SLOTS - 1; i++) {
-> > @@ -716,8 +717,48 @@ static ssize_t profiling_store(struct device *dev,
-> >   static DEVICE_ATTR_RW(profiling);
-> > +static ssize_t
-> > +gpu_stats_show(struct device *dev, struct device_attribute *attr, char *buf)
-> > +{
-> > +	struct panfrost_device *pfdev = dev_get_drvdata(dev);
-> > +	struct panfrost_slot_usage stats;
-> > +	u64 timestamp = local_clock();
-> > +	ssize_t len = 0;
-> > +	unsigned int i;
-> > +
-> > +	BUILD_BUG_ON(ARRAY_SIZE(engine_names) != NUM_JOB_SLOTS);
-> > +
-> > +	len += sysfs_emit(buf, "queue        timestamp        jobs        runtime\n");
-> > +	len += sysfs_emit_at(buf, len, "-------------------------------------------------\n");
-> > +
-> > +	for (i = 0; i < NUM_JOB_SLOTS - 1; i++) {
-> > +
-> > +		stats = get_slot_stats(pfdev, i);
-> > +
-> > +		/*
-> > +		 * Each line will display the slot name, timestamp, the number
-> > +		 * of jobs handled by that engine and runtime, as shown below:
-> > +		 *
-> > +		 * queue        timestamp        jobs        runtime
-> > +		 * -------------------------------------------------
-> > +		 * fragment     12252943467507   638         1184747640
-> > +		 * vertex-tiler 12252943467507   636         121663838
-> > +		 *
-> > +		 */
-> > +		len += sysfs_emit_at(buf, len, "%-13s%-17llu%-12llu%llu\n",
-> > +				     engine_names[i],
-> > +				     timestamp,
-> > +				     stats.jobs_sent,
-> > +				     stats.enabled_ns);
-> > +	}
-> > +
-> > +	return len;
-> > +}
-> > +static DEVICE_ATTR_RO(gpu_stats);
-> > +
-> >   static struct attribute *panfrost_attrs[] = {
-> >   	&dev_attr_profiling.attr,
-> > +	&dev_attr_gpu_stats.attr,
-> >   	NULL,
-> >   };
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_job.c b/drivers/gpu/drm/panfrost/panfrost_job.c
-> > index a61ef0af9a4e..4c779e6f4cb0 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_job.c
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_job.c
-> > @@ -31,6 +31,8 @@ struct panfrost_queue_state {
-> >   	struct drm_gpu_scheduler sched;
-> >   	u64 fence_context;
-> >   	u64 emit_seqno;
-> > +
-> > +	struct panfrost_slot_usage stats;
-> >   };
-> >   struct panfrost_job_slot {
-> > @@ -160,15 +162,20 @@ panfrost_dequeue_job(struct panfrost_device *pfdev, int slot)
-> >   	WARN_ON(!job);
-> >   	if (job->is_profiled) {
-> > +		u64 job_time = ktime_to_ns(ktime_sub(ktime_get(), job->start_time));
-> > +
-> >   		if (job->engine_usage) {
-> > -			job->engine_usage->elapsed_ns[slot] +=
-> > -				ktime_to_ns(ktime_sub(ktime_get(), job->start_time));
-> > +			job->engine_usage->elapsed_ns[slot] += job_time;
-> >   			job->engine_usage->cycles[slot] +=
-> >   				panfrost_cycle_counter_read(pfdev) - job->start_cycles;
-> >   		}
-> > +
-> >   		panfrost_cycle_counter_put(job->pfdev);
-> > +		pfdev->js->queue[slot].stats.enabled_ns += job_time;
-> >   	}
-> > +	pfdev->js->queue[slot].stats.jobs_sent++;
-> > +
-> >   	pfdev->jobs[slot][0] = pfdev->jobs[slot][1];
-> >   	pfdev->jobs[slot][1] = NULL;
-> > @@ -987,3 +994,9 @@ int panfrost_job_is_idle(struct panfrost_device *pfdev)
-> >   	return true;
-> >   }
-> > +
-> > +struct panfrost_slot_usage
-> > +get_slot_stats(struct panfrost_device *pfdev, unsigned int slot)
-> > +{
-> > +	return pfdev->js->queue[slot].stats;
-> > +}
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_job.h b/drivers/gpu/drm/panfrost/panfrost_job.h
-> > index ec581b97852b..e9e2c9db0526 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_job.h
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_job.h
-> > @@ -50,4 +50,7 @@ void panfrost_job_enable_interrupts(struct panfrost_device *pfdev);
-> >   void panfrost_job_suspend_irq(struct panfrost_device *pfdev);
-> >   int panfrost_job_is_idle(struct panfrost_device *pfdev);
-> > +struct panfrost_slot_usage
-> > +get_slot_stats(struct panfrost_device *pfdev, unsigned int slot);
-> > +
-> >   #endif
-> > 
-> > base-commit: 45c734fdd43db14444025910b4c59dd2b8be714a
-> > prerequisite-patch-id: 06ac397dd381984bfbff2a7661320c4f05470635
+> diff --git a/arch/x86/include/asm/kvm-x86-ops.h b/arch/x86/include/asm/kvm-x86-ops.h
+> index 110d7f29ca9a..5187fcf4b610 100644
+> --- a/arch/x86/include/asm/kvm-x86-ops.h
+> +++ b/arch/x86/include/asm/kvm-x86-ops.h
+> @@ -121,6 +121,7 @@ KVM_X86_OP(enter_smm)
+>  KVM_X86_OP(leave_smm)
+>  KVM_X86_OP(enable_smi_window)
+>  #endif
+> +KVM_X86_OP_OPTIONAL(dev_get_attr)
+>  KVM_X86_OP_OPTIONAL(mem_enc_ioctl)
+>  KVM_X86_OP_OPTIONAL(mem_enc_register_region)
+>  KVM_X86_OP_OPTIONAL(mem_enc_unregister_region)
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 16e07a2eee19..04c430eb25cf 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1778,6 +1778,7 @@ struct kvm_x86_ops {
+>  	void (*enable_smi_window)(struct kvm_vcpu *vcpu);
+>  #endif
+>  
+> +	int (*dev_get_attr)(u32 group, u64 attr, u64 *val);
+>  	int (*mem_enc_ioctl)(struct kvm *kvm, void __user *argp);
+>  	int (*mem_enc_register_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+>  	int (*mem_enc_unregister_region)(struct kvm *kvm, struct kvm_enc_region *argp);
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 3d2029402513..3934e7682734 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -4842,34 +4842,44 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+>  	return r;
+>  }
+>  
+> -static int kvm_x86_dev_get_attr(struct kvm_device_attr *attr)
+> +static int __kvm_x86_dev_get_attr(struct kvm_device_attr *attr, u64 *val)
+>  {
+> -	u64 __user *uaddr = u64_to_user_ptr(attr->addr);
+> -
+> -	if (attr->group)
+> +	if (attr->group) {
+> +		if (kvm_x86_ops.dev_get_attr)
+> +			return static_call(kvm_x86_dev_get_attr)(attr->group, attr->attr, val);
+>  		return -ENXIO;
+> +	}
+>  
+>  	switch (attr->attr) {
+>  	case KVM_X86_XCOMP_GUEST_SUPP:
+> -		if (put_user(kvm_caps.supported_xcr0, uaddr))
+> -			return -EFAULT;
+> +		*val = kvm_caps.supported_xcr0;
+>  		return 0;
+>  	default:
+>  		return -ENXIO;
+>  	}
+>  }
+>  
+> +static int kvm_x86_dev_get_attr(struct kvm_device_attr *attr)
+> +{
+> +	u64 __user *uaddr = u64_to_user_ptr(attr->addr);
+> +	int r;
+> +	u64 val;
+> +
+> +	r = __kvm_x86_dev_get_attr(attr, &val);
+> +	if (r < 0)
+> +		return r;
+> +
+> +	if (put_user(val, uaddr))
+> +		return -EFAULT;
+> +
+> +	return 0;
+> +}
+> +
+>  static int kvm_x86_dev_has_attr(struct kvm_device_attr *attr)
+>  {
+> -	if (attr->group)
+> -		return -ENXIO;
+> +	u64 val;
+>  
+> -	switch (attr->attr) {
+> -	case KVM_X86_XCOMP_GUEST_SUPP:
+> -		return 0;
+> -	default:
+> -		return -ENXIO;
+> -	}
+> +	return __kvm_x86_dev_get_attr(attr, &val);
+>  }
+>  
+>  long kvm_arch_dev_ioctl(struct file *filp,
+> -- 
+> 2.43.0
+> 
+> 
+> 
+
+Reviewed-by: Isaku Yamahata <isaku.yamahata@intel.com>
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
