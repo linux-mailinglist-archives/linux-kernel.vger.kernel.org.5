@@ -1,55 +1,56 @@
-Return-Path: <linux-kernel+bounces-131618-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131619-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61231898A28
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:31:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F01898A29
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:31:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16A821F2DEED
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:31:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BF3D28B744
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 717231370;
-	Thu,  4 Apr 2024 14:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BA5A1BF37;
+	Thu,  4 Apr 2024 14:31:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mqpwGViM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iYA0EB1H"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B185B33EE;
-	Thu,  4 Apr 2024 14:31:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF7DB1B964;
+	Thu,  4 Apr 2024 14:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712241081; cv=none; b=emtvEz54RQhvtv9hUTPOwQWNvScT1YBqutApfslbnCJRUExBmZKHDuJVY/BfspEncIv9Y8ZQb7iU8rbw1/EADcLWYPsRWNH9BjVGzMrda0WtH4nv4xBDliAmg2B4ZMte66Vo29n62dIMgtBIfXweWnSMt5hltm83srP4qF5BpRM=
+	t=1712241083; cv=none; b=GPmPS6AH+1YpCA8wgnMdXPmXFK1WmFC8bdSyjyCTh11jXvyeLpzBYGD+a++WQ6okvhBI7ncBUzV/26RpxVCqzb1ElfY877eD3VQqsYJ5RZPuzGiKOASEWK0BZqCE78FRxBMFJHMBBehDXqjmKsokKtwD7ab7T3EhKKkaoGo3R7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712241081; c=relaxed/simple;
-	bh=Ew0qVCoEk5oCC/bKiRSVHHT4fMxz1dQQ346/Rx+dZu8=;
+	s=arc-20240116; t=1712241083; c=relaxed/simple;
+	bh=vhO27Ty+RIin9lraup6Rk3YVD0AeGpm38zAeCXXfmFs=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=d2QYiUbj7mk2TnI3uPKvF/6EJoSHpGeRIw3MfKsUTnt3tWKRVN1eLyNXowqb+FmFvu+Lsa4xuqOX8X253PiLRN2jKy/U0RpiR1pCczP5ZzDHRhoNgrp6C3bOrkg2phJNVWqEjZ07I4nZq6L6cVmVG5o6eiRoOn1GoYukIz4QpUg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mqpwGViM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9A7CC433C7;
-	Thu,  4 Apr 2024 14:31:19 +0000 (UTC)
+	 MIME-Version:Content-Type; b=KwjyXiJl4XepoW+MsA6cdqrXCaXeAFBug/o804ImuPYlAico6yg21baXKF1s8Z4sxvlGLhFhZoiDZFlI1hDATXTgP598WorbjOtibD+CpitmUiOkl9ej3o1SwevLszyP3vO8GvIBpDCYHxm6rowyy/tvxreNVFUwYXY8bVgYc3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iYA0EB1H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1BD7C43390;
+	Thu,  4 Apr 2024 14:31:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712241081;
-	bh=Ew0qVCoEk5oCC/bKiRSVHHT4fMxz1dQQ346/Rx+dZu8=;
+	s=k20201202; t=1712241083;
+	bh=vhO27Ty+RIin9lraup6Rk3YVD0AeGpm38zAeCXXfmFs=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=mqpwGViMLyGi6NnLUetpokYMKOu39b1lYBEQObNKOD5OG2rHXQ3nRVecBx5XRMM63
-	 4VxGZ+oSojVlexgfkeBtRrGKH1JsumV5ubOxLHIUz0OxyHJkjJMgrg5MIqa9RYvG6S
-	 evotnDPRRs764b8VbZEQpVp22qnTn3sAZRE2PcJjLrNFkFGWjFa5WF78QwPAMA+A2f
-	 y33S1HxWIviRncmZN1HsHv9ZvojOR38LbfU/DRCLRfdfy6RpH28Y2HfnkVuBqE+QBp
-	 WiO1w3Ab44YlX2U48Nrq7XmSgGt0C3ZIFueozUyu3APb/4/O2/cipxQHTEYhMxWupf
-	 rnSxk7Sv3NWzQ==
+	b=iYA0EB1HEHAHXvo+A6Ny8g4xZ8unx/pE/qT1+v5LgJdIUqZG5yAcG+WwrNmyxfUYW
+	 jfiLSCw3mxm+yr0Gs9OcyVAwTxFbYS+p250aDX2FFPdREPrqXbtuGnRdbUhT/AYa4u
+	 WSCIDQ0Aw5Nj29Qs3+AjHRAxYYd68YoS4aOGZnnmvdxEMSVb1qfHU2CDn/ZXTYC9xY
+	 Agh0AvFv7FEU7cR4kEo+RvhdTsESiypU8eb9SClDXO+AwAOETOPkZNcl5FxNG49fSE
+	 WOQ1Rosi1OCEW4H2jTYRyPwZtSq7oOI2OOSzFHWRnL6IPpHrYyLakzKdnST1r+phtC
+	 mrEFwKkT83ktw==
 From: Mark Brown <broonie@kernel.org>
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, 
- Takashi Iwai <tiwai@suse.com>, Francesco Dolcini <francesco@dolcini.it>
-Cc: Francesco Dolcini <francesco.dolcini@toradex.com>, 
+To: Luca Ceresoli <luca.ceresoli@bootlin.com>, 
+ Arnd Bergmann <arnd@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, 
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
  linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240404111953.99287-1-francesco@dolcini.it>
-References: <20240404111953.99287-1-francesco@dolcini.it>
-Subject: Re: [PATCH v1] ASoC: nau8822: Remove unused member from struct
-Message-Id: <171224107961.46716.14189956703769244988.b4-ty@kernel.org>
-Date: Thu, 04 Apr 2024 15:31:19 +0100
+In-Reply-To: <20240404095755.650364-1-arnd@kernel.org>
+References: <20240404095755.650364-1-arnd@kernel.org>
+Subject: Re: [PATCH] ASoC: codecs: rk3308: fix building without CONFIG_OF
+Message-Id: <171224108145.46716.9770725515757829141.b4-ty@kernel.org>
+Date: Thu, 04 Apr 2024 15:31:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,10 +61,17 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.14-dev
 
-On Thu, 04 Apr 2024 13:19:53 +0200, Francesco Dolcini wrote:
-> Remove unused mclk_idx struct member.
+On Thu, 04 Apr 2024 11:57:34 +0200, Arnd Bergmann wrote:
+> The newly added codec has an extraneous of_match_ptr() annotation for
+> the ID table:
 > 
+> sound/soc/codecs/rk3308_codec.c:956:34: error: 'rk3308_codec_of_match' defined but not used [-Werror=unused-const-variable=]
+>   956 | static const struct of_device_id rk3308_codec_of_match[] = {
 > 
+> Remove it to avoid introducing a warning when -Wunused-const-variable
+> gets enabled by default:
+> 
+> [...]
 
 Applied to
 
@@ -71,8 +79,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: nau8822: Remove unused member from struct
-      commit: 9f1aeef4cbcb0e8c616e29cdce3232f9f102c2c1
+[1/1] ASoC: codecs: rk3308: fix building without CONFIG_OF
+      commit: 2ba2d17170f9e415fc31d7978214f0f26e8afc64
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
