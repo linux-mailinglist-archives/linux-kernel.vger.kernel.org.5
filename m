@@ -1,146 +1,262 @@
-Return-Path: <linux-kernel+bounces-132106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CAC9898FBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:37:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12F6A898FC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:40:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6BC828658E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:37:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 326B71C21ADD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:40:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDF2613AA3B;
-	Thu,  4 Apr 2024 20:37:31 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF3913A247;
+	Thu,  4 Apr 2024 20:40:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="f2cNO35/"
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D208112837F
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 20:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D801E868;
+	Thu,  4 Apr 2024 20:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712263051; cv=none; b=UqH0h2LGdjDE8J9GZogUP/pcBkcm4Bc0XEjFd2DOk5B8bs/xRQ/N5vkv+PsLCzXoZqsVK37KFTfkXUsd1mzDMW9uP3aaQxxLLQP2GRfqhqPaQg8yOLCdxIf109WhN58ZdWRSYe+4y+65bpSU4J9f66BrdH3QpeFljZj68Z+tWuw=
+	t=1712263235; cv=none; b=NQ8C+zx3pjrFcb2EAmzD2CckFuITNqSLUswnZws29CZwpfe1iV83yPFIzanBFI2/A7Uzrl4o4AIkRUq5rls7p0bqF1Ya7WNcQJSGGJ7yxo45BIkij7UAjs3DhCheiXk7d05EhxgXBCm8SMOl/3XxBj3U08V4dnZatzCxD3kjWms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712263051; c=relaxed/simple;
-	bh=A6HoS4GzLxsx7dqdRJSNn1EbWW7af9nHv+tk7XM/mQ8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Yya+JI4qJHGbCN6lAU50hp8Dn67afO+RNIbfp0BgBLBHuWoecWZ3h+8dmX1vYt/JkzJ8OZEyXDZTt6LeyodmISnvUasjcyHBrPquU4a2+bU+kjixvDBXPBH0Muw/jQlWf3Gt6XjpBEkhZnMzZkRVIlff0f9iRqYybPNU+iHPlt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-368185c12d7so12560885ab.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 13:37:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712263049; x=1712867849;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hZzdwtDeS7G4wOc9so8v1UyHpIk8pMZqZRG7ETlZnlY=;
-        b=nqnT9bsgI91zhQQZ5juN7WBSfTthLdC3M+1kl2WE910DlhSs1UKk/2qWUiXUg/n4FJ
-         jVjtmU1C7C4D0sL8ppfY1xY6r24ESllHToPwKrQo8xg+BQoljI0Nv/8fODFmIz7TQ6N4
-         ukHlmucHBVh2V5TZjKJDttqauYCs0xyx2E7ZwxtSURT8nFp9NVhikWwC9I8Y29T1OuT8
-         8Xme98q9GOKeBkkUzr4GrcZH3bslQB8L1QAkhFn3TyNS8Lo5kliNJZ3K8CB5D0OoYLIJ
-         tjWE3CKNPlzVu0E1lNA6aBM9goRlpx5E1xjGVdY+/g7OUZ/KjcpI32GGkcZlgidyw8RC
-         IWZg==
-X-Forwarded-Encrypted: i=1; AJvYcCWFChXwYHiF0L+wO1odvhfTISOViYkCoVZGeRoopnw2HfyyYY0kmf/Rp0W2HNU2k21jWuwLtZee212nerp0WZe0pIAOiHHs12zzSj/S
-X-Gm-Message-State: AOJu0Yyy/eaiUCxFHe1k+ilwE8Eh4Anhxhk6xRyNtxqMAJ0rV08skA3w
-	PaI68RfP9jyNSxW7YF4TEDZ/mec7M0bNw9+I1qBa7rhdgRV9IfxCaQJNTDjWmfom8k1zJQXcJjq
-	HRQ6++g+LfshWPYIzGTJnkq3hOuPkc3xfK1AW1CrkoPturtEU5Du8958=
-X-Google-Smtp-Source: AGHT+IHH0wpbFePpiE6nTTuUuVkf34Ui7sRdZXJxbGX8wsukrvd1m3qn/Cs15Ur/7yo7smMr53WGlvlbRkjCZysIoBKE1MXFjoqv
+	s=arc-20240116; t=1712263235; c=relaxed/simple;
+	bh=yd3e8gE922eYsYs1vuWFayYKG3OJqH7isnN00dFQavQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=TMuHLbdf3gx9L3WpAn7w1d3j9zLJr6l/NZyKaMUQH165v7xjl/KuBRZ6A5l1fqhVD32nbh/eJPnV6mWxswvXT8AwA0RaEJZDPx+RJHpWnioGSmXkfbCKIiAcVLOi4DmU6BoswfOo5fFo56hTWs0JBOcDrlpwjeG5ivIj5/cUzm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=f2cNO35/; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1712263229; x=1712522429;
+	bh=/r2dqqHabl6s0yl9bFd2ZPmBVmtjU4+UW6w3beXmG14=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=f2cNO35/R2nxiVhhEcnbzWuJBmvLAaPKSihWgXgw9Dx4EeXN1Tkn2Tq4Z9usRC5wr
+	 ewf4R20al1GzRJoZwnVK7wzD5w+uHnpLlJdmFe+OgmvEgCYdST1V/DeScMqB9F1N8m
+	 8NhAu8VHcp7rEpYi7wlYDFNbQfSk/ZwzO8D4q3aCJTO1HywnZPt4icfwQ/4EROBX/f
+	 fMyHzaealHFwMNPb8Oi7iN5sCHkgVor5N2rTJ6wit6GAPgzr2lsFn17Qhe4YjVtqYy
+	 SZgPBqdlP/0dB7c9IdjVdcwCq1szysQ9mnrf7LFews4x33uDN2WTND0k4WqxJFZd5H
+	 yg/CclUuyGBxw==
+Date: Thu, 04 Apr 2024 20:40:20 +0000
+To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v4 1/4] rust: uaccess: add userspace pointers
+Message-ID: <d0558622-c287-4efd-8ed9-0b2cf15d7c1a@proton.me>
+In-Reply-To: <20240404-alice-mm-v4-1-49a84242cf02@google.com>
+References: <20240404-alice-mm-v4-0-49a84242cf02@google.com> <20240404-alice-mm-v4-1-49a84242cf02@google.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:17cd:b0:368:9839:d21a with SMTP id
- z13-20020a056e0217cd00b003689839d21amr24501ilu.5.1712263049093; Thu, 04 Apr
- 2024 13:37:29 -0700 (PDT)
-Date: Thu, 04 Apr 2024 13:37:29 -0700
-In-Reply-To: <00000000000040a883061544c59f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cdb28b06154b4e94@google.com>
-Subject: Re: [syzbot] [netfilter?] KMSAN: uninit-value in nf_flow_offload_ip_hook
-From: syzbot <syzbot+b6f07e1c07ef40199081@syzkaller.appspotmail.com>
-To: coreteam@netfilter.org, davem@davemloft.net, edumazet@google.com, 
-	kadlec@netfilter.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
-	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, pabeni@redhat.com, 
-	pablo@netfilter.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-syzbot has found a reproducer for the following issue on:
+On 04.04.24 14:31, Alice Ryhl wrote:
+> diff --git a/rust/kernel/uaccess.rs b/rust/kernel/uaccess.rs
+> new file mode 100644
+> index 000000000000..3f8ad4dc13c4
+> --- /dev/null
+> +++ b/rust/kernel/uaccess.rs
+> @@ -0,0 +1,311 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +//! Slices to user space memory regions.
+> +//!
+> +//! C header: [`include/linux/uaccess.h`](srctree/include/linux/uaccess.=
+h)
+> +
+> +use crate::{bindings, error::code::*, error::Result};
+> +use alloc::vec::Vec;
+> +use core::ffi::{c_ulong, c_void};
+> +use core::mem::MaybeUninit;
+> +
+> +/// A pointer to an area in userspace memory, which can be either read-o=
+nly or
+> +/// read-write.
+> +///
+> +/// All methods on this struct are safe: attempting to read or write on =
+bad
+> +/// addresses (either out of the bound of the slice or unmapped addresse=
+s) will
+> +/// return `EFAULT`. Concurrent access, *including data races to/from us=
+erspace
+> +/// memory*, is permitted, because fundamentally another userspace
+> +/// thread/process could always be modifying memory at the same time (in=
+ the
+> +/// same way that userspace Rust's [`std::io`] permits data races with t=
+he
+> +/// contents of files on disk). In the presence of a race, the exact byt=
+e values
+> +/// read/written are unspecified but the operation is well-defined. Kern=
+elspace
+> +/// code should validate its copy of data after completing a read, and n=
+ot
+> +/// expect that multiple reads of the same address will return the same =
+value.
+> +///
+> +/// These APIs are designed to make it difficult to accidentally write T=
+OCTOU
+> +/// (time-of-check to time-of-use) bugs. Every time a memory location is=
+ read,
+> +/// the reader's position is advanced by the read length and the next re=
+ad will
+> +/// start from there. This helps prevent accidentally reading the same l=
+ocation
+> +/// twice and causing a TOCTOU bug.
+> +///
+> +/// Creating a [`UserSliceReader`] and/or [`UserSliceWriter`] consumes t=
+he
+> +/// `UserSlice`, helping ensure that there aren't multiple readers or wr=
+iters to
+> +/// the same location.
+> +///
+> +/// If double-fetching a memory location is necessary for some reason, t=
+hen that
+> +/// is done by creating multiple readers to the same memory location, e.=
+g. using
+> +/// [`clone_reader`].
 
-HEAD commit:    c85af715cac0 Merge tag 'vboxsf-v6.9-1' of git://git.kernel..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1123c615180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5112b3f484393436
-dashboard link: https://syzkaller.appspot.com/bug?extid=b6f07e1c07ef40199081
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16960955180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11cfc58d180000
+I think we should have consistent 100 column formatting. And not
+something less.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6741d41720b3/disk-c85af715.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1783406dda64/vmlinux-c85af715.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/53eeb4798ae1/bzImage-c85af715.xz
+> +///
+> +/// # Examples
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b6f07e1c07ef40199081@syzkaller.appspotmail.com
+[...]
 
-=====================================================
-BUG: KMSAN: uninit-value in nf_flow_skb_encap_protocol net/netfilter/nf_flow_table_ip.c:290 [inline]
-BUG: KMSAN: uninit-value in nf_flow_offload_lookup net/netfilter/nf_flow_table_ip.c:352 [inline]
-BUG: KMSAN: uninit-value in nf_flow_offload_ip_hook+0x79a/0x3e40 net/netfilter/nf_flow_table_ip.c:424
- nf_flow_skb_encap_protocol net/netfilter/nf_flow_table_ip.c:290 [inline]
- nf_flow_offload_lookup net/netfilter/nf_flow_table_ip.c:352 [inline]
- nf_flow_offload_ip_hook+0x79a/0x3e40 net/netfilter/nf_flow_table_ip.c:424
- nf_hook_entry_hookfn include/linux/netfilter.h:154 [inline]
- nf_hook_slow+0xf2/0x3f0 net/netfilter/core.c:626
- nf_hook_ingress include/linux/netfilter_netdev.h:34 [inline]
- nf_ingress net/core/dev.c:5318 [inline]
- __netif_receive_skb_core+0x430b/0x6190 net/core/dev.c:5406
- __netif_receive_skb_one_core net/core/dev.c:5536 [inline]
- __netif_receive_skb+0xca/0xa00 net/core/dev.c:5652
- netif_receive_skb_internal net/core/dev.c:5738 [inline]
- netif_receive_skb+0x58/0x660 net/core/dev.c:5798
- tun_rx_batched+0x3ee/0x980 drivers/net/tun.c:1549
- tun_get_user+0x5566/0x69e0 drivers/net/tun.c:2002
- tun_chr_write_iter+0x3af/0x5d0 drivers/net/tun.c:2048
- call_write_iter include/linux/fs.h:2108 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xb63/0x1520 fs/read_write.c:590
- ksys_write+0x20f/0x4c0 fs/read_write.c:643
- __do_sys_write fs/read_write.c:655 [inline]
- __se_sys_write fs/read_write.c:652 [inline]
- __x64_sys_write+0x93/0xe0 fs/read_write.c:652
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
+> +    /// Reads raw data from the user slice into a kernel buffer.
+> +    ///
+> +    /// Fails with `EFAULT` if the read happens on a bad address.
+> +    pub fn read_raw(&mut self, out: &mut [MaybeUninit<u8>]) -> Result {
+> +        let len =3D out.len();
+> +        let out_ptr =3D out.as_mut_ptr().cast::<c_void>();
+> +        if len > self.length {
+> +            return Err(EFAULT);
+> +        }
+> +        let Ok(len_ulong) =3D c_ulong::try_from(len) else {
+> +            return Err(EFAULT);
+> +        };
+> +        // SAFETY: The caller promises that `out` is valid for writing `=
+len` bytes.
 
-Uninit was created at:
- __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
- alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
- alloc_pages+0x1bf/0x1e0 mm/mempolicy.c:2335
- skb_page_frag_refill+0x2bf/0x7c0 net/core/sock.c:2921
- tun_build_skb drivers/net/tun.c:1679 [inline]
- tun_get_user+0x1258/0x69e0 drivers/net/tun.c:1819
- tun_chr_write_iter+0x3af/0x5d0 drivers/net/tun.c:2048
- call_write_iter include/linux/fs.h:2108 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xb63/0x1520 fs/read_write.c:590
- ksys_write+0x20f/0x4c0 fs/read_write.c:643
- __do_sys_write fs/read_write.c:655 [inline]
- __se_sys_write fs/read_write.c:652 [inline]
- __x64_sys_write+0x93/0xe0 fs/read_write.c:652
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
+This comment needs updating.
 
-CPU: 0 PID: 5020 Comm: syz-executor108 Not tainted 6.9.0-rc2-syzkaller-00080-gc85af715cac0 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-=====================================================
+> +        let res =3D unsafe { bindings::copy_from_user(out_ptr, self.ptr,=
+ len_ulong) };
+> +        if res !=3D 0 {
+> +            return Err(EFAULT);
+> +        }
+> +        // Userspace pointers are not directly dereferencable by the ker=
+nel, so
+> +        // we cannot use `add`, which has C-style rules for defined beha=
+vior.
+> +        self.ptr =3D self.ptr.wrapping_byte_add(len);
+> +        self.length -=3D len;
+> +        Ok(())
+> +    }
+> +
+> +    /// Reads raw data from the user slice into a kernel buffer.
+> +    ///
+> +    /// Fails with `EFAULT` if the read happens on a bad address.
+> +    pub fn read_slice(&mut self, out: &mut [u8]) -> Result {
+> +        // SAFETY: The types are compatible and `read_raw` doesn't write
+> +        // uninitialized bytes to `out`.
 
+Can you add this as a guarantee to `read_raw`?
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+> +        let out =3D unsafe { &mut *(out as *mut [u8] as *mut [MaybeUnini=
+t<u8>]) };
+> +        self.read_raw(out)
+> +    }
+> +
+> +    /// Reads the entirety of the user slice, appending it to the end of=
+ the
+> +    /// provided buffer.
+> +    ///
+> +    /// Fails with `EFAULT` if the read happens on a bad address.
+> +    pub fn read_all(mut self, buf: &mut Vec<u8>) -> Result {
+> +        let len =3D self.length;
+> +        buf.try_reserve(len)?;
+> +
+> +        // The call to `try_reserve` was successful, so the spare capaci=
+ty is at
+> +        // least `len` bytes long.
+> +        self.read_raw(&mut buf.spare_capacity_mut()[..len])?;
+> +
+> +        // SAFETY: Since the call to `read_raw` was successful, so the n=
+ext
+> +        // `len` bytes of the vector have been initialized.
+> +        unsafe { buf.set_len(buf.len() + len) };
+> +        Ok(())
+> +    }
+> +}
+> +
+> +/// A writer for [`UserSlice`].
+> +///
+> +/// Used to incrementally write into the user slice.
+> +pub struct UserSliceWriter {
+> +    ptr: *mut c_void,
+> +    length: usize,
+> +}
+> +
+> +impl UserSliceWriter {
+> +    /// Returns the amount of space remaining in this buffer.
+> +    ///
+> +    /// Note that even writing less than this number of bytes may fail.
+> +    pub fn len(&self) -> usize {
+> +        self.length
+> +    }
+> +
+> +    /// Returns `true` if no more data can be written to this buffer.
+> +    pub fn is_empty(&self) -> bool {
+> +        self.length =3D=3D 0
+> +    }
+> +
+> +    /// Writes raw data to this user pointer from a kernel buffer.
+> +    ///
+> +    /// Fails with `EFAULT` if the write happens on a bad address.
+> +    pub fn write_slice(&mut self, data: &[u8]) -> Result {
+> +        let len =3D data.len();
+> +        let data_ptr =3D data.as_ptr().cast::<c_void>();
+> +        if len > self.length {
+> +            return Err(EFAULT);
+> +        }
+> +        let Ok(len_ulong) =3D c_ulong::try_from(len) else {
+> +            return Err(EFAULT);
+> +        };
+> +        let res =3D unsafe { bindings::copy_to_user(self.ptr, data_ptr, =
+len_ulong) };
+
+Missing SAFETY comment.
+
+--=20
+Cheers,
+Benno
+
+> +        if res !=3D 0 {
+> +            return Err(EFAULT);
+> +        }
+> +        // Userspace pointers are not directly dereferencable by the ker=
+nel, so
+> +        // we cannot use `add`, which has C-style rules for defined beha=
+vior.
+> +        self.ptr =3D self.ptr.wrapping_byte_add(len);
+> +        self.length -=3D len;
+> +        Ok(())
+> +    }
+> +}
+>=20
+> --
+> 2.44.0.478.gd926399ef9-goog
+>=20
+
 
