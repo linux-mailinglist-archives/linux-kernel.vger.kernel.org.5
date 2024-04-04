@@ -1,225 +1,162 @@
-Return-Path: <linux-kernel+bounces-131789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AD43898BCB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:06:28 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0A6F898BD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:11:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7B9E1F2228D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:06:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D02C8B2AC70
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244E912AAF7;
-	Thu,  4 Apr 2024 16:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+9LmoP/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C7F312AAF9;
+	Thu,  4 Apr 2024 16:06:56 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397AA1BC46;
-	Thu,  4 Apr 2024 16:06:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7702312AACB;
+	Thu,  4 Apr 2024 16:06:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712246769; cv=none; b=t9AIG/wWdU2k49tF/s4A2vE5iXGTgK8mJ9RNJprZ9ogeIQN6v2JI/AAr19nav6o8AQ8I3hp3BlNv85cVKOS3FiHWqcplhW34MaTf0xs8DNAJX1szjDtSno0Wnit6YQnEYA7wtSad/cC4FsbGGI6GZXN1qirp5J0lOlJrPRueoqY=
+	t=1712246816; cv=none; b=oDH0gtD4ADmwmvAuegDbeJp9kf5lps15sYtrD7RM9FIetxjKrryc2Bah7imGQpMy97dweIv6lRc97rTePPFOm2xLEsD2r+kooPHCje5/cVQQDWbiHQnYnnQiY3EN7mFFVJ1l8tNxt6WggsIFMjCexr9QyfV6smUksog+pqHC1N4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712246769; c=relaxed/simple;
-	bh=+5n1opxFvTrkkm7rzpBmiqYFvlJrF7IWFtBu70bBigs=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=p6fT5hf2KqnF2T/RpHCCuL875l2tRM6PEc1eDJH9wOWbL2o86g32ZunSQu/LFx62qFhVxINayH4ENrpEJtMQEB58mx5QIGOJeas6HFmfZP5NEbO8WrE2M17rVQSn0C1vbUF6cGIWxgAMb46TNqwlrM/bi3BgRTAUFP12Qyti3Xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+9LmoP/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79270C43390;
-	Thu,  4 Apr 2024 16:06:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712246768;
-	bh=+5n1opxFvTrkkm7rzpBmiqYFvlJrF7IWFtBu70bBigs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=g+9LmoP/qNM5Fayaerz57GtxMTmBUXsjnSbxebbCkQxULEi3MCu4hJBJzVmLZzcVh
-	 7jQ+YkTF0SnkK3uxx0dZGfgkxjvD7VvUIHQlTi3B/79sofEimfUjezt5UQZeOBDcEv
-	 a3QRqDuXvPUbMBA9RcjPB4i4jHeB0A49dVYhg10xQzGOsr512khahosuoZi1iUgXF2
-	 Ks0sl41DeIUiGVxyRGEW56kdBnFRb0AvRTsViKdufvUhNiMyfrV+L/vXWfTmPCDW2j
-	 yipFk6iA39YdQpVPb8z83KsbJdxVev2nrESqvgGMIA8SsxCGFVtPtPfJIlOefQw+XB
-	 MUE8BKBXFw8nQ==
-Date: Fri, 5 Apr 2024 01:06:03 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Masami Hiramatsu
- <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
- linux-api@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, Song Liu
- <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
- <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- x86@kernel.org
-Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
- probe
-Message-Id: <20240405010603.58bd96cdf56d456103844e65@kernel.org>
-In-Reply-To: <Zg6V8y2-OP_9at2l@krava>
-References: <20240402093302.2416467-1-jolsa@kernel.org>
-	<20240402093302.2416467-2-jolsa@kernel.org>
-	<20240403100708.233575a8ac2a5bac2192d180@kernel.org>
-	<Zg0lvUIB4WdRUGw_@krava>
-	<20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
-	<CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
-	<20240404095829.ec5db177f29cd29e849169fa@kernel.org>
-	<CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
-	<Zg6V8y2-OP_9at2l@krava>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712246816; c=relaxed/simple;
+	bh=bFdC5cp6PSfWrEoupk04gWdS9M4Y0/x6VuDfdYcJZ/k=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ayhZBwlWxzxRaevrsZLf/325jCHqTxrZCA1xlheAtpu0dXfpm2v+JTlWFvJbnkCSDeHTAbEjD8EvKcwdWXnO6MaCZgehT77RdCiJFoLO5RMpRJh1css7Bx1Sa/t+TiRSOWyhVCqJSuHEZ9OlMhX9ieBkoiYwNO2c/RMIoy1hQ/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9RFt4wTXz67kr9;
+	Fri,  5 Apr 2024 00:02:10 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 15076141546;
+	Fri,  5 Apr 2024 00:06:50 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
+ 2024 17:06:49 +0100
+Date: Thu, 4 Apr 2024 17:06:48 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik
+	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH 15/26] range: Add range_overlaps()
+Message-ID: <20240404170648.00002dbe@Huawei.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-15-b7b00d623625@intel.com>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	<20240324-dcd-type2-upstream-v1-15-b7b00d623625@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Thu, 4 Apr 2024 13:58:43 +0200
-Jiri Olsa <olsajiri@gmail.com> wrote:
+On Sun, 24 Mar 2024 16:18:18 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-> On Wed, Apr 03, 2024 at 07:00:07PM -0700, Andrii Nakryiko wrote:
+> Code to support CXL Dynamic Capacity devices will have extent ranges
+> which need to be compared for intersection not a subset as is being
+> checked in range_contains().
 > 
-> SNIP
+> range_overlaps() is defined in btrfs with a different meaning from what
+> is required in the standard range code.  Dan Williams pointed this out
+> in [1].  Adjust the btrfs call according to his suggestion there.
 > 
-> > Check rt_sigreturn syscall (manpage at [0], for example).
-> > 
-> >        sigreturn() exists only to allow the implementation of signal
-> >        handlers.  It should never be called directly.  (Indeed, a simple
-> >        sigreturn() wrapper in the GNU C library simply returns -1, with
-> >        errno set to ENOSYS.)  Details of the arguments (if any) passed
-> >        to sigreturn() vary depending on the architecture.  (On some
-> >        architectures, such as x86-64, sigreturn() takes no arguments,
-> >        since all of the information that it requires is available in the
-> >        stack frame that was previously created by the kernel on the
-> >        user-space stack.)
-> > 
-> > This is a very similar use case. Also, check its source code in
-> > arch/x86/kernel/signal_64.c. It sends SIGSEGV to the calling process
-> > on any sign of something not being right. It's exactly the same with
-> > sys_uretprobe.
-> > 
-> >   [0] https://man7.org/linux/man-pages/man2/sigreturn.2.html
-> > 
-> > > And the number of syscalls are limited resource.
-> > 
-> > We have almost 500 of them, it didn't seems like adding 1-2 for good
-> > reasons would be a problem. Can you please point to where the limits
-> > on syscalls as a resource are described? I'm curious to learn.
-> > 
-> > >
-> > > I'm actually not sure how much we need to care of it, but adding a new
-> > > syscall is worth to be discussed carefully because all of them are
-> > > user-space compatibility.
-> > 
-> > Absolutely, it's a good discussion to have.
-> > 
-> > >
-> > > > > > > Also, we should run syzkaller on this syscall. And if uretprobe is
-> > > > > >
-> > > > > > right, I'll check on syzkaller
-> > > > > >
-> > > > > > > set in the user function, what happen if the user function directly
-> > > > > > > calls this syscall? (maybe it consumes shadow stack?)
-> > > > > >
-> > > > > > the process should receive SIGILL if there's no pending uretprobe for
-> > > > > > the current task, or it will trigger uretprobe if there's one pending
-> > > > >
-> > > > > No, that is too aggressive and not safe. Since the syscall is exposed to
-> > > > > user program, it should return appropriate error code instead of SIGILL.
-> > > > >
-> > > >
-> > > > This is the way it is today with uretprobes even through interrupt.
-> > >
-> > > I doubt that the interrupt (exception) and syscall should be handled
-> > > differently. Especially, this exception is injected by uprobes but
-> > > syscall will be caused by itself. But syscall can be called from user
-> > > program (of couse this works as sys_kill(self, SIGILL)).
-> > 
-> > Yep, I'd keep the behavior the same between uretprobes implemented
-> > through int3 and sys_uretprobe.
+> Then add a generic range_overlaps().
 > 
-> +1 
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Chris Mason <clm@fb.com>
+> Cc: Josef Bacik <josef@toxicpanda.com>
+> Cc: David Sterba <dsterba@suse.com>
+> Cc: linux-btrfs@vger.kernel.org
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+FWIW given it's well review already.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > 
-> > 
-> > >
-> > > > E.g., it could happen that user process is using fibers and is
-> > > > replacing stack pointer without kernel realizing this, which will
-> > > > trigger some defensive checks in uretprobe handling code and kernel
-> > > > will send SIGILL because it can't support such cases. This is
-> > > > happening today already, and it works fine in practice (except for
-> > > > applications that manually change stack pointer, too bad, you can't
-> > > > trace them with uretprobes, unfortunately).
-> > >
-> > > OK, we at least need to document it.
-> > 
-> > +1, yep
-> > 
-> > >
-> > > >
-> > > > So I think it's absolutely adequate to have this behavior if the user
-> > > > process is *intentionally* abusing this API.
-> > >
-> > > Of course user expected that it is abusing. So at least we need to
-> > > add a document that this syscall number is reserved to uprobes and
-> > > user program must not use it.
-> > >
-> > 
-> > Totally agree about documenting this.
+> [1] https://lore.kernel.org/all/65949f79ef908_8dc68294f2@dwillia2-xfh.jf.intel.com.notmuch/
+> ---
+>  fs/btrfs/ordered-data.c | 10 +++++-----
+>  include/linux/range.h   |  7 +++++++
+>  2 files changed, 12 insertions(+), 5 deletions(-)
 > 
-> ok there's map page on sigreturn.. do you think we should add man page
-> for uretprobe or you can think of some other place to document it?
-
-I think it is better to have a man-page. Anyway, to discuss and explain
-this syscall, the man-page is a good format to describe it.
-
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index 59850dc17b22..032d30a49edc 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -111,8 +111,8 @@ static struct rb_node *__tree_search(struct rb_root *root, u64 file_offset,
+>  	return NULL;
+>  }
+>  
+> -static int range_overlaps(struct btrfs_ordered_extent *entry, u64 file_offset,
+> -			  u64 len)
+> +static int btrfs_range_overlaps(struct btrfs_ordered_extent *entry, u64 file_offset,
+> +				u64 len)
+>  {
+>  	if (file_offset + len <= entry->file_offset ||
+>  	    entry->file_offset + entry->num_bytes <= file_offset)
+> @@ -914,7 +914,7 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_range(
+>  
+>  	while (1) {
+>  		entry = rb_entry(node, struct btrfs_ordered_extent, rb_node);
+> -		if (range_overlaps(entry, file_offset, len))
+> +		if (btrfs_range_overlaps(entry, file_offset, len))
+>  			break;
+>  
+>  		if (entry->file_offset >= file_offset + len) {
+> @@ -1043,12 +1043,12 @@ struct btrfs_ordered_extent *btrfs_lookup_first_ordered_range(
+>  	}
+>  	if (prev) {
+>  		entry = rb_entry(prev, struct btrfs_ordered_extent, rb_node);
+> -		if (range_overlaps(entry, file_offset, len))
+> +		if (btrfs_range_overlaps(entry, file_offset, len))
+>  			goto out;
+>  	}
+>  	if (next) {
+>  		entry = rb_entry(next, struct btrfs_ordered_extent, rb_node);
+> -		if (range_overlaps(entry, file_offset, len))
+> +		if (btrfs_range_overlaps(entry, file_offset, len))
+>  			goto out;
+>  	}
+>  	/* No ordered extent in the range */
+> diff --git a/include/linux/range.h b/include/linux/range.h
+> index 6ad0b73cb7ad..9a46f3212965 100644
+> --- a/include/linux/range.h
+> +++ b/include/linux/range.h
+> @@ -13,11 +13,18 @@ static inline u64 range_len(const struct range *range)
+>  	return range->end - range->start + 1;
+>  }
+>  
+> +/* True if r1 completely contains r2 */
+>  static inline bool range_contains(struct range *r1, struct range *r2)
+>  {
+>  	return r1->start <= r2->start && r1->end >= r2->end;
+>  }
+>  
+> +/* True if any part of r1 overlaps r2 */
+> +static inline bool range_overlaps(struct range *r1, struct range *r2)
+> +{
+> +	return r1->start <= r2->end && r1->end >= r2->start;
+> +}
+> +
+>  int add_range(struct range *range, int az, int nr_range,
+>  		u64 start, u64 end);
+>  
 > 
-> > 
-> > > >
-> > > > > >
-> > > > > > but we could limit the syscall to be executed just from the trampoline,
-> > > > > > that should prevent all the user space use cases, I'll do that in next
-> > > > > > version and add more tests for that
-> > > > >
-> > > > > Why not limit? :) The uprobe_handle_trampoline() expects it is called
-> > > > > only from the trampoline, so it is natural to check the caller address.
-> > > > > (and uprobe should know where is the trampoline)
-> > > > >
-> > > > > Since the syscall is always exposed to the user program, it should
-> > > > > - Do nothing and return an error unless it is properly called.
-> > > > > - check the prerequisites for operation strictly.
-> > > > > I concern that new system calls introduce vulnerabilities.
-> > > > >
-> > > >
-> > > > As Oleg and Jiri mentioned, this syscall can't harm kernel or other
-> > > > processes, only the process that is abusing the API. So any extra
-> > > > checks that would slow down this approach is an unnecessary overhead
-> > > > and complication that will never be useful in practice.
-> > >
-> > > I think at least it should check the caller address to ensure the
-> > > address is in the trampoline.
-> > > But anyway, uprobes itself can break the target process, so no one
-> > > might care if this system call breaks the process now.
-> > 
-> > If we already have an expected range of addresses, then I think it's
-> > fine to do a quick unlikely() check. I'd be more concerned if we need
-> > to do another lookup or search to just validate this. I'm sure Jiri
-> > will figure it out.
-> 
-> Oleg mentioned the trampoline address check could race with another
-> thread's mremap call, however trap is using that check as well, it
-> still seems like good idea to do it also in the uretprobe syscall
 
-Yeah, and also, can we add a stack pointer check if the trampoline is
-shared with other probe points?
-
-Thank you,
-
-> 
-> jirka
-
-
--- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
