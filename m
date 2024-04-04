@@ -1,151 +1,151 @@
-Return-Path: <linux-kernel+bounces-131737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A2BC898B43
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:36:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EE82F898B49
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:37:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 987011F22281
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:36:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F67A1F2274D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:37:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA38712A16C;
-	Thu,  4 Apr 2024 15:36:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8236812AACB;
+	Thu,  4 Apr 2024 15:36:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Pm6lCRsq"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="cxctvy5y"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30CD976033;
-	Thu,  4 Apr 2024 15:36:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C842874C09;
+	Thu,  4 Apr 2024 15:36:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712244986; cv=none; b=PelvLETv9bN9Y1ADYs0g+cmpa/UaHASfpJU3I6qDmrFbJYgdyhLT3DaE546hAhW1o06mxEGsKoV5eTXIlGh6JLkatNE7ab5biHfkV3bP3WUNbuy9MgXflHRXk3xKumIIN9OC8iIrTSQoleQ+KIf5vxl/J6y0pV6TZySzVZe2wro=
+	t=1712245012; cv=none; b=IKRYp8AhApjlJszIxYx4N5GvK7kidfusDoq+pFcXTc0dNy8VuODXHAcy2XHDKE0VPTEqW5UkOm+98XJncZ4JAs1BXCH/k9BxlfS0GRkFWe+LOdABw0gmN4xp8uIDMPHTdiCZJkXY9PLeX5pX+XEGqAxbq7ljbsdMKfJ2wvHxiiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712244986; c=relaxed/simple;
-	bh=mqU4Ab8nucfJiHZpDwZ2rqsNF9/3h9DMm+EcXQt2KTQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DON6FAFaaE/lJ70amwXV4JNEbbQecyWDqrBF8n+y9FJO8NYV09lr/G2GSwzDkXKHTwgkMaB0/KJ047/3ieKBak96l0kx4hFd0oKIYm9o+S2NoxonhKaLI6vgXA9yIVn/peA814600ueT6dHpWeKdpy6IGPUXY0D8ZlS0P+8QqJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Pm6lCRsq; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712244984; x=1743780984;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mqU4Ab8nucfJiHZpDwZ2rqsNF9/3h9DMm+EcXQt2KTQ=;
-  b=Pm6lCRsq0cA/ZHIslzqdWPptVkZmfjlbOH413wYwqmNDM091z0d1l1np
-   Sa8LVdsbSAZGqiEcREuWGXUIO5FnuwKCTewGRxPwLPF2YetDrBrD9Ev+l
-   uVXjRJ1uEvFvPwI0t0gQcWUxkx4PpyZjbOgcUvOEfo2lQszWTW2mqHvK5
-   P56Mr1RomnuKbuViDTQRyX2U+QxbjX0XRYwxtoTDEdgxxHd+SBNPtxQ1E
-   ompRtOQ4VBjk0ZiJpVQNTTGOvY7dW3kpZldqcSCMPQBvzKEdPYwUzhzBE
-   Cq+s50zYFH4sgiL8OM5dSlZkwWxBDitwh4clDlVpk7u+2BLfb3nm2UsKX
-   g==;
-X-CSE-ConnectionGUID: RLCFqjZPTHa30l0i7eInUg==
-X-CSE-MsgGUID: 2B8SIto2SuC4H4EJiD8/Ag==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="25042567"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="25042567"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 08:36:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="915221673"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="915221673"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 08:36:17 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rsP8Q-00000001V4g-3ARn;
-	Thu, 04 Apr 2024 18:36:14 +0300
-Date: Thu, 4 Apr 2024 18:36:14 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Kent Gibson <warthog618@gmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Alexey Dobriyan <adobriyan@gmail.com>, stable@vger.kernel.org,
-	Stefan Wahren <wahrenst@gmx.net>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: Re: [PATCH v2 2/2] gpio: cdev: fix missed label sanitizing in
- debounce_setup()
-Message-ID: <Zg7I7nYkZLcIgETq@smile.fi.intel.com>
-References: <20240404093328.21604-1-brgl@bgdev.pl>
- <20240404093328.21604-3-brgl@bgdev.pl>
+	s=arc-20240116; t=1712245012; c=relaxed/simple;
+	bh=aIii4mYpgJN8egl1KP1aHIF6OrbI1W29+waTSUEwjmQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Zjovq75DFBn8cn+/oOcy6YdpiiQx/vZlf7wAdztHXRxw7XoT579bUtGGcvAJSh8Mv6UHrYx4uSU4CsfHP2rOVPGPMvBwFjhlKFsfN8rkm8YoYbr6pG+R5G2fWAMkMYuEQvAkezRqJYIwHWZR0OWfnyqqiAIeYJEM4KzhW4q91oM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=cxctvy5y; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=0Kq6TWEF/jUg1kRW+ewE6G5S/dYP+nVgkjeaw6WseDs=;
+	t=1712245010; x=1712677010; b=cxctvy5yfFz5pII0KGlfB5tSCsUukDAlTdFHo4Yiy+oXyzc
+	LxGZZ8Uyj1Gyc7w4s/KLIjsjW7oCoJgBI7sF+iUj33+QO8thddmSubLN46rrVbXp0JhcRk/Pk7/+t
+	lKI9o4CYvTQ7p2wUHaA1iit7Kt1fM1t8oPUZzfmU+EAmgFdMYCmVS4r4mqDfk32bQxHIue4oaB/Yo
+	SwaRqqBuQfMRU+CTsYnTGcXQ+GVftnWPxmxZcjoU45S1xSdjT9LEpz40HI//afS1gxdyApzUWRirO
+	4UnBZEwTQob1wpXMZ4N7d++H6H0fp2YERn34tPW8Kngph2LZJCFgPP9Yp38n6niA==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rsP8t-0003wc-77; Thu, 04 Apr 2024 17:36:43 +0200
+Message-ID: <dfd87673-c581-4b4b-b37a-1cf5c817240d@leemhuis.info>
+Date: Thu, 4 Apr 2024 17:36:42 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404093328.21604-3-brgl@bgdev.pl>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Do we need a "DoNotBackPort" tag? (was: Re: Hibernate stuck after
+ recent kernel/workqueue.c changes in Stable 6.6.23)
+To: Greg KH <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>
+Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
+ Sasha Levin <sashal@kernel.org>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <ce4c2f67-c298-48a0-87a3-f933d646c73b@leemhuis.info>
+ <ZgylCe48FuOKNWtM@slm.duckdns.org>
+ <b6cdb17f-206c-4dff-bb45-a60317e0a55e@leemhuis.info>
+ <2024040328-surfacing-breezy-34c6@gregkh> <Zg10Keik4KORjXMh@slm.duckdns.org>
+ <2024040319-doorbell-ecosystem-7d31@gregkh>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+Content-Language: en-US, de-DE
+In-Reply-To: <2024040319-doorbell-ecosystem-7d31@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1712245010;da0ec2cc;
+X-HE-SMSGID: 1rsP8t-0003wc-77
 
-On Thu, Apr 04, 2024 at 11:33:28AM +0200, Bartosz Golaszewski wrote:
-> From: Kent Gibson <warthog618@gmail.com>
-> 
-> When adding sanitization of the label, the path through
-> edge_detector_setup() that leads to debounce_setup() was overlooked.
-> A request taking this path does not allocate a new label and the
-> request label is freed twice when the request is released, resulting
-> in memory corruption.
-> 
-> Add label sanitization to debounce_setup().
+On 03.04.24 18:10, Greg KH wrote:
+> On Wed, Apr 03, 2024 at 05:22:17AM -1000, Tejun Heo wrote:
+>> On Wed, Apr 03, 2024 at 07:11:04AM +0200, Greg KH wrote:
+>>>> Side note: I have no idea why the stable team backported those patches
+>>>> and no option on whether that was wise, just trying to help finding the best
+>>>> solution forward from the current state of things.
+>>>
+>>> The Fixes: tag triggered it, that's why they were backported.
 
-..
+Yeah, this is what I assumed.
 
-> +static inline char *make_irq_label(const char *orig)
-> +{
-> +	char *new;
-> +
-> +	if (!orig)
-> +		return NULL;
-> +
-> +	new = kstrdup_and_replace(orig, '/', ':', GFP_KERNEL);
-> +	if (!new)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	return new;
-> +}
-> +
-> +static inline void free_irq_label(const char *label)
-> +{
-> +	kfree(label);
-> +}
+>>>>> which would
+>>>>> be far too invasive for -stable, thus no Cc: stable.
+>>>>>
+>>>>> I didn't know a Fixes
+>>>>> tag automatically triggers backport to -stable. I will keep that in mind for
+>>>>> future.
+>>>>
+>>>> /me fears that more and more developers due to situations like this will
+>>>> avoid Fixes: tags and wonders what consequences that might have for the
+>>>> kernel as a whole
+>>>
+>>> The problem is that we have subsystems that only use Fixes: and not cc:
+>>> stable which is why we need to pick these up as well.  Fixes: is great,
+>>> but if everyone were to do this "properly" then we wouldn't need to pick
+>>> these other ones up, but instead, it's about 1/3 of our volume :(
 
-First of all this could have been done in the previous patch already, but okay.
+I'm also well aware of that and do not want to complain about it, as I
+think I grasped why the stable team works like that -- and even think
+given the circumstances it is round about the right approach. I also
+understand that mistakes will always happen.
 
-..
+Nevertheless this thread and the Bluetooth thing we had earlier this
+week[1] makes me fear that this approach could lead to developer
+avoiding Fixes: tags. And funny thing, that's something that is already
+happening, as I noticed by chance today: "'"A "Fixes" tag has been
+deliberately omitted to avoid potential test failures and subsequent
+regression issues that could arise from backporting."'"[2].
 
-> +			label = make_irq_label(line->req->label);
-> +			if (IS_ERR(label))
-> +				return -ENOMEM;
-> +
->  			irqflags = IRQF_TRIGGER_FALLING | IRQF_TRIGGER_RISING;
->  			ret = request_irq(irq, debounce_irq_handler, irqflags,
->  					  line->req->label, line);
+I wonder if that in the long term might be bad. But well, maybe it won't
+matter much. Still made me wonder if we should have a different solution
+for this kind of problem. Something like this?
 
-But the main point how does this change fix anything?
+  Cc: <stable@vger.kernel.org> # DoNotBackport
 
-Shouldn't be
+Or something like this?
 
--					  line->req->label, line);
-+					  label, line);
+  Cc: <stable@vger.kernel.org> # DoNotBackport - or only after 16 weeks
+in mainline [but I don't care]
 
-?
+Whatever, mainly thinking aloud and do no need a reply to this. :-D
 
-> +			if (ret) {
-> +				free_irq_label(label);
->  				return ret;
-> +			}
+[1]
+https://lore.kernel.org/all/84da1f26-0457-451c-b4fd-128cb9bd860d@leemhuis.info/
 
--- 
-With Best Regards,
-Andy Shevchenko
+[2] saw that today here:
+https://lore.kernel.org/all/cover.1712226175.git.antony.antony@secunet.com/
 
+>>> I'll gladly revert the above series if they shouldn't have been
+>>> backported to stable, but from reading them, it seemed like they were
+>>> fixing an issue that was serious and should have been added to stable,
+>>> which is why they were.
+>> Oh, yeah, they're fixing an issue. It's just that the issue is relatively
+>> confined peformance degradation and the fix is really invasive, so not a
+>> great -stable candidate. At the very least, they'd need a log longer cooking
+>> time in mainline before being considered for -stable backport.
+> Ok, I'll go revert them all now.  I did some test builds here with them
+> reverted and they seem sane.  I'll push out some -rcs with just the
+> reverts to at least fix the regressions found in the 6.8.y tree now.
 
+Great, thx for taking care of this!
+
+Ciao, Thorsten
 
