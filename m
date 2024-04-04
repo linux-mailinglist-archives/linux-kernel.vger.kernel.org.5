@@ -1,76 +1,148 @@
-Return-Path: <linux-kernel+bounces-131952-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131967-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 117A6898DDD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28C17898E0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:36:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4306A1C233EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:25:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5ABFE1C28862
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC31130A56;
-	Thu,  4 Apr 2024 18:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40258132C2B;
+	Thu,  4 Apr 2024 18:35:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="eu/GxhyK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="iZc2nGn/"
+Received: from smtp-8fab.mail.infomaniak.ch (smtp-8fab.mail.infomaniak.ch [83.166.143.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AF9D1304A9;
-	Thu,  4 Apr 2024 18:25:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CBE6131BDB
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 18:35:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.166.143.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712255119; cv=none; b=LMd+wq69nqIEsAYkIKtWNS9pE3FQBAHYbht2aj/IyxqqnW48fDLB7csR6oG3enUViutKN5pPNEYSoFgmEBwEc+tVJ8rNzgV0kj5GniGukrMgj3qdNdYERUibKJ1cA+Q3Ud0blOqhWjE6BrPIkqcGXpccgiJOP/7U5tpAeREHeMY=
+	t=1712255745; cv=none; b=fUWh71GSx54c/dUNgudWhEzYYYoA9ySf73v9ui/sYWHBkbJR463RT3SctomJz6EW9W0Kfr+aXjwTA7kSVyJ28Am6f3hydi0GjIbkjVKfl6ZMqZQoPzRPPqX++UYJrCtNLkq8bm1+eeji9m7QqvpNZRDLyk8efYRQJTmjvR+TyFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712255119; c=relaxed/simple;
-	bh=e/bLGRSHGTFwElW+K1iLJxL/megYxkWcxCZjL1nF0Rc=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=LQYq+6HCSYkMSgBzn4OZ7kfCLvBu5ovsBiMArLl0Bb3LTN7LGgSelMDKiWA41M3inOYl6j1LJSQ5mi8XOp5D9oxe7+01H9PqKtCSp0/tzy5bs55bVtV7fJJrkNE38IUoRegJkBBgr256CxZQQMgBv0FeFfUNiC0EKRuHPakD+5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=eu/GxhyK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDF83C433F1;
-	Thu,  4 Apr 2024 18:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1712255119;
-	bh=e/bLGRSHGTFwElW+K1iLJxL/megYxkWcxCZjL1nF0Rc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eu/GxhyK6rSliu26tWMN2lD7qjjN9caVpmyl8Rs2B07arfXPlSkDzMEfbPjLbBICF
-	 2rKA7vefw5tUUdiItpyyecMVzgEPJKSTKzh8axyExo6DWo4k0Z8SGsgjk28DJHjM5V
-	 IlJgQ1XSXx2LsOuZg7VP1nYVgKkc1uZ20xaLWWvw=
-Date: Thu, 4 Apr 2024 11:25:18 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Huacai Chen <chenhuacai@loongson.cn>
-Cc: Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
- linux-mm@kvack.org, Xuefeng Li <lixuefeng@loongson.cn>, Guo Ren
- <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang
- <jiaxun.yang@flygoat.com>, linux-kernel@vger.kernel.org,
- loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH 1/3] mm: Move lowmem_page_address() a little later
-Message-Id: <20240404112518.51204544a4e73c2639ce53b1@linux-foundation.org>
-In-Reply-To: <20240404133642.971583-2-chenhuacai@loongson.cn>
-References: <20240404133642.971583-1-chenhuacai@loongson.cn>
-	<20240404133642.971583-2-chenhuacai@loongson.cn>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712255745; c=relaxed/simple;
+	bh=hS68QXp66ScUhpRGV4EtkMDc4jnXGdF9EVAx/s/x/dk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V5A1ZvWXC3/U0Qc8ujobBf677wv2jGB6TaVb3da1Prnb+5yVYAwRGZBJSrRYs5UljFIxmTgWYr/CjhEWu6hLL9Wz6nuqynVRupx4cE/xqCnZtlfBDLlalR44PaaAYiz2gSF0eO3Rl6AUJCjlLKDxm25CR2Ok6CFl9RdFiFsDiLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=iZc2nGn/; arc=none smtp.client-ip=83.166.143.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
+Received: from smtp-3-0000.mail.infomaniak.ch (smtp-3-0000.mail.infomaniak.ch [10.4.36.107])
+	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4V9VSG0trlz3PR;
+	Thu,  4 Apr 2024 20:26:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
+	s=20191114; t=1712255181;
+	bh=hS68QXp66ScUhpRGV4EtkMDc4jnXGdF9EVAx/s/x/dk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iZc2nGn/NHkQuuqgdrOe8ybA44XbAplsyVwtH72nDZBbD6YYFi5igOIIk3f+oXxTf
+	 re6Tz8+Jff2kgO94CSJgbu+kav6LO5w274kOHac1TSiWZf5lfW1IfrUCHXH9dM0wXb
+	 FisZqNefk21HRC0k97wQ2sGIPjl7wJjqQ3wlWEb0=
+Received: from unknown by smtp-3-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4V9VSB5NfFzlxv;
+	Thu,  4 Apr 2024 20:26:18 +0200 (CEST)
+Date: Thu, 4 Apr 2024 20:26:18 +0200
+From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	David Hildenbrand <david@redhat.com>, David Stevens <stevensd@chromium.org>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>, 
+	Oliver Upton <oliver.upton@linux.dev>, James Morse <james.morse@arm.com>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>, 
+	Huacai Chen <chenhuacai@kernel.org>, Tianrui Zhao <zhaotianrui@loongson.cn>, 
+	Bibo Mao <maobibo@loongson.cn>, Michael Ellerman <mpe@ellerman.id.au>, 
+	Nicholas Piggin <npiggin@gmail.com>, Anup Patel <anup@brainfault.org>, 
+	Christian Borntraeger <borntraeger@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>, 
+	Claudio Imbrenda <imbrenda@linux.ibm.com>, Xiaoyao Li <xiaoyao.li@intel.com>, Xu Yilun <yilun.xu@intel.com>, 
+	Chao Peng <chao.p.peng@linux.intel.com>, Fuad Tabba <tabba@google.com>, Jim Mattson <jmattson@google.com>, 
+	Jarkko Sakkinen <jarkko@kernel.org>, Maxim Levitsky <mlevitsk@redhat.com>, 
+	Anish Moorthy <amoorthy@google.com>, David Matlack <dmatlack@google.com>, 
+	Yu Zhang <yu.c.zhang@linux.intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, Edgecombe@google.com, 
+	Rick P <rick.p.edgecombe@intel.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	Vishal Annapurve <vannapurve@google.com>, Ackerley Tng <ackerleytng@google.com>, 
+	Maciej Szmigiero <mail@maciej.szmigiero.name>, Quentin Perret <qperret@google.com>, 
+	Michael Roth <michael.roth@amd.com>, Wei Wang <wei.w.wang@intel.com>, 
+	Liam Merwick <liam.merwick@oracle.com>, Isaku Yamahata <isaku.yamahata@gmail.com>, 
+	Kirill Shutemov <kirill.shutemov@linux.intel.com>, Lai Jiangshan <jiangshan.ljs@antgroup.com>, 
+	Hou Wenlong <houwenlong.hwl@antgroup.com>, Xiong Zhang <xiong.y.zhang@linux.intel.com>, 
+	Jinrong Liang <ljr.kernel@gmail.com>, Like Xu <like.xu.linux@gmail.com>, 
+	Mingwei Zhang <mizhang@google.com>, Dapeng Mi <dapeng1.mi@intel.com>, 
+	James Morris <jamorris@linux.microsoft.com>, "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>, 
+	Thara Gopinath <tgopinath@microsoft.com>
+Subject: Re: [ANNOUNCE] KVM Microconference at LPC 2024
+Message-ID: <20240404.Chie9boy2eef@digikod.net>
+References: <20240402190652.310373-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240402190652.310373-1-seanjc@google.com>
+X-Infomaniak-Routing: alpha
 
-On Thu,  4 Apr 2024 21:36:34 +0800 Huacai Chen <chenhuacai@loongson.cn> wrote:
-
-> LoongArch will override page_to_virt() which use page_address() in the
-> KFENCE case (by defining WANT_PAGE_VIRTUAL/HASHED_PAGE_VIRTUAL). So move
-> lowmem_page_address() a little later to avoid such build errors:
+On Tue, Apr 02, 2024 at 12:06:52PM -0700, Sean Christopherson wrote:
+> We are planning on submitting a CFP to host a second annual KVM Microconference
+> at Linux Plumbers Conference 2024 (https://lpc.events/event/18).  To help make
+> our submission as strong as possible, please respond if you will likely attend,
+> and/or have a potential topic that you would like to include in the proposal.
+> The tentative submission is below.
 > 
-> error: implicit declaration of function 'page_address'.
+> Note!  This is extremely time sensitive, as the deadline for submitting is
+> April 4th (yeah, we completely missed the initial announcement).
 > 
+> Sorry for the super short notice. :-(
+> 
+> P.S. The Cc list is very ad hoc, please forward at will.
+> 
+> ===================
+> KVM Microconference
+> ===================
+> 
+> KVM (Kernel-based Virtual Machine) enables the use of hardware features to
+> improve the efficiency, performance, and security of virtual machines (VMs)
+> created and managed by userspace.  KVM was originally developed to accelerate
+> VMs running a traditional kernel and operating system, in a world where the
+> host kernel and userspace are part of the VM's trusted computing base (TCB).
+> 
+> KVM has long since expanded to cover a wide (and growing) array of use cases,
+> e.g. sandboxing untrusted workloads, deprivileging third party code, reducing
+> the TCB of security sensitive workloads, etc.  The expectations placed on KVM
+> have also matured accordingly, e.g. functionality that once was "good enough"
+> no longer meets the needs and demands of KVM users.
+> 
+> The KVM Microconference will focus on how to evolve KVM and adjacent subsystems
+> in order to satisfy new and upcoming requirements.  Of particular interest is
+> extending and enhancing guest_memfd, a guest-first memory API that was heavily
+> discussed at the 2023 KVM Microconference, and merged in v6.8.
+> 
+> Potential Topics:
+>    - Removing guest memory from the host kernel's direct map[1]
+>    - Mapping guest_memfd into host userspace[2]
+>    - Hugepage support for guest_memfd[3]
+>    - Eliminating "struct page" for guest_memfd
+>    - Passthrough/mediated PMU virtualization[4]
+>    - Pagetable-based Virtual Machine (PVM)[5]
+>    - Optimizing/hardening KVM usage of GUP[6][7]
+>    - Defining KVM requirements for hardware vendors
+>    - Utilizing "fault" injection to increase test coverage of edge cases
 
-Acked-by: Andrew Morton <akpm@linux-foundation.org>
+We are still working on Heki to improve CR-pinning, memory protection,
+related interfaces and tests.  We'll send a new patch series shortly on
+CR-pinning (only), and follow-ups later.  By September, we'll like to
+share some updates and this microconference would be a good opportunity,
+with the right format this time. ;)
 
-Please ensure that it spends adequate time in linux-next for the
-compilation testing.
+> 
+> [1] https://lore.kernel.org/all/cc1bb8e9bc3e1ab637700a4d3defeec95b55060a.camel@amazon.com
+> [2] https://lore.kernel.org/all/20240222161047.402609-1-tabba@google.com
+> [3] https://lore.kernel.org/all/CABgObfa=DH7FySBviF63OS9sVog_wt-AqYgtUAGKqnY5Bizivw@mail.gmail.com
+> [4] https://lore.kernel.org/all/20240126085444.324918-1-xiong.y.zhang@linux.intel.com
+> [5] https://lore.kernel.org/all/20240226143630.33643-1-jiangshanlai@gmail.com
+> [6] https://lore.kernel.org/all/CABgObfZCay5-zaZd9mCYGMeS106L055CxsdOWWvRTUk2TPYycg@mail.gmail.com
+> [7] https://lore.kernel.org/all/20240320005024.3216282-1-seanjc@google.com
+> 
 
