@@ -1,231 +1,215 @@
-Return-Path: <linux-kernel+bounces-132117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132118-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53039898FD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:55:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 08A7C898FDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:02:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7614A1C22273
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:55:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29DEC1C23022
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2257C13AA4D;
-	Thu,  4 Apr 2024 20:55:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560BE13B2B9;
+	Thu,  4 Apr 2024 21:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="r1EPaD/B"
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aUlDpJZt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B65131BDB
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 20:55:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A4D213A25E;
+	Thu,  4 Apr 2024 21:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712264144; cv=none; b=r1bbZ7Ohj8j/Dv71Q8hHiMPUc3kTnr97Ggh8SBM8BYgroH7R5u+Rvs59KWXH9WesCviTagg8pY9NP9Zxx5+A8sa+r/olkgjUMR5/qu6NkWKa4BJsB8SQ1Qc16f58uOs+Ro/JIhJxoXWzjq02RJIJMAsxEYquwqYhzH64NkMl8SA=
+	t=1712264565; cv=none; b=JoRUlVNGa8gAwLWjbiahHswRjwQw9foHd/RcnRiUSsgdphENHPpo8hYFoG/7xDl2fG19i66HwIVi2kNmj/VEuc099c9IRT4ZwVt5jBK3rhSvYY0u5Erc76eRJvAFK/Pyw64eiwFFb5PR1KwHoyeGdTITH0L5S7jYHqfsdVHduQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712264144; c=relaxed/simple;
-	bh=OE4yu3ZUnNdgSiP234pBsxHy1AYqpkYuDYd/9Y/7ivY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p5tOpCL4h0azuQ4HkpsyDEV3WaV+OWEbfmwXCuA0RL07l3A3uwRP3dVkdWx/iAINdASBAXDeIo2rGJdhowMHqvs3+tXDThY8IWmPMwjgG3zy2r+R68TxT+7CZJ//tOY7x+ByjgXVAxuPba88ivTyNgBbpnb3KTaVej+jctPuA/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=r1EPaD/B; arc=none smtp.client-ip=209.85.210.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6e0f43074edso920356a34.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 13:55:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712264141; x=1712868941; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5iC1pIqUXTSnTgmvGouWQ95I32tg1xlV1RokQzbsyAY=;
-        b=r1EPaD/BuX+9iemCQWqrP91j6O5AlvwhCJYhfSXiV8NFTsh+Y3/ky3Ms/7aV+74QBJ
-         OIB4I2Vjl2R3KOscvXJde4HqwMQ79BkXG5J+wqiwYck3VbXxusLr1ysflwm/8AS2ZA5N
-         QrJ5mzdQExZZYCLSkwWAs9IugLYEo+Zg7wluvQBPpoHcOl9d4Fg1Qi+mDSo0GMntzE67
-         IqauQRG4t3YZ+Fl4XKk2TFaALH2npVu/zV2mRcUBj12uXbmB7CeUQQS3uv7v8KfHAF0K
-         ipER7KEjtR0/63Tz30wBPegqoex7JbfzD0ecY2Oat5qt973zQTQp3y0IlP72Ve8EXiG/
-         oqXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712264141; x=1712868941;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5iC1pIqUXTSnTgmvGouWQ95I32tg1xlV1RokQzbsyAY=;
-        b=JbmQ/W82DXL+cXqA0GMr2K8IVb8I5xTE3U14TMWQDLaO5UZ2t8uJXJdUL4Srcxs7g/
-         r4ZZtTXcuKc8D1KGPEBJSX8UIgW1vncvcLM/rJO1fjfYWu3xXMmJMhd5HPh+x+kdMC9M
-         aE3LLtxC9vMwgLMxE1LLrQPpvXPx0tz7pQ2UMzcPO20yf+E4evKlEZGoG1HNprngHh6y
-         Cqol73LridDZ7x+EBMxA9fTSb3Qb10NoBT60OWitZw4DExuvh+gII9haaUp8iLdmX8wH
-         4BgzKg5VWLeouTs+JNLNk3acWFqjrhGdGI+qGSBtaLX3NpVxTyNXEWHppPQyZmJ7mCJX
-         fDeA==
-X-Forwarded-Encrypted: i=1; AJvYcCWyRbgjxcn53QUIuvz4WUKsRfUE6rG3WETlSh+zIJ2J4nwcIDu1ZkRD4zK8E/+CK8nVWH5/KQAEVzDHz3T9XfpplTt3UQgTaqRpNa2G
-X-Gm-Message-State: AOJu0YxzEQ3/r5SCIl52/6sLgNejLj4/Uw6+4V7Y4sHITwdahvlxPTcJ
-	PfP5Apl8szg0v3lU2cOPJW96raW5Rf6EPs2eWQhzU7XqC868tgc2YMDVT6yCWDApXcMgkQ5sX+w
-	RWJQ58ROlsrFJ93colG0X17CjQHJAE+fKNCh2xBeX+R20dKtzQmvf
-X-Google-Smtp-Source: AGHT+IFijaaIO1cUULiBvsqMMPBKsSOmh3PkrPxo3Hj+Z8lo29i0nEnJkkdTCXecC4aWAvTTz0SokQGmPbK/tFGMp7E=
-X-Received: by 2002:a25:e015:0:b0:dcf:c389:854c with SMTP id
- x21-20020a25e015000000b00dcfc389854cmr4048035ybg.16.1712264120095; Thu, 04
- Apr 2024 13:55:20 -0700 (PDT)
+	s=arc-20240116; t=1712264565; c=relaxed/simple;
+	bh=IocwTc2n6PDZ1lao94gOXZf6NlYKBoVi1KDrUF6GK10=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=pq52gJSbtuu0KkmyqATawDwdVznLPPWHs09VTZJWm07Cl/F+k5nmTHEfQHj4pYkU48TH+qZvhO5GngkH6jCNBMAffe+yx+broxdNCgtPnL8qXmwhpvaxJ3VAyfmr2KkzJokcKUk7XMUwgwapuSjv7yDxJZ8p+/UlmlieEy/sR5s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aUlDpJZt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA9FEC433F1;
+	Thu,  4 Apr 2024 21:02:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712264565;
+	bh=IocwTc2n6PDZ1lao94gOXZf6NlYKBoVi1KDrUF6GK10=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=aUlDpJZt6t7hbDWuIWp0XWFa/7IyE/lFPpaxl/ZpRd4eyS4j4vLl3FNzU1gUudDVJ
+	 nGnzQ+QW7LqeiTTnAmPVy/AnYgEzYwSUnEr3USabup9LpctynykMgS7bS1DX3udt1P
+	 w/ZVHZ47dljo7qnVWrjr3bbE0PmGylpDheC+ni56yBjGk32yhUw3u/8hAIx7enrg1w
+	 CCHCATMYx+zyUhiEo1YGM//c1Zn9TP4Mv6pf/gE03mF4i5B4qLTSc3BuYuIiYdGHVp
+	 2BH7fnIEj4QlqNCkmE0KPujDvLIu1vGhFPjpBll/gXCgPQV/LZhNVWJAcL8CnT+WfM
+	 KuJX+Jx9eiyeQ==
+Received: by alrua-x1.borgediget.toke.dk (Postfix, from userid 1000)
+	id 8B1C011A2696; Thu,  4 Apr 2024 23:02:42 +0200 (CEST)
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@kernel.org>
+To: Jesper Dangaard Brouer <hawk@kernel.org>, Edward Adam Davis
+ <eadavis@qq.com>, syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
+ haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+ kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+ song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Subject: Re: [PATCH] bpf: fix null ptr deref in dev_map_enqueue
+In-Reply-To: <f45ad3e1-4433-422e-be28-17deaba4ade1@kernel.org>
+References: <00000000000069ee1a06149ff00c@google.com>
+ <tencent_EF4FAF8DF125F00D8D9237DDCC5DE9990307@qq.com>
+ <f45ad3e1-4433-422e-be28-17deaba4ade1@kernel.org>
+X-Clacks-Overhead: GNU Terry Pratchett
+Date: Thu, 04 Apr 2024 23:02:42 +0200
+Message-ID: <87plv4kfil.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404171726.2302435-1-lokeshgidra@google.com>
- <Zg7hrt5HudXLBUn_@casper.infradead.org> <Zg8OYYV7DDo7S2Yf@x1n>
-In-Reply-To: <Zg8OYYV7DDo7S2Yf@x1n>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 4 Apr 2024 13:55:07 -0700
-Message-ID: <CAJuCfpGHe2=noJomL0XonT4dVGvZmVujRMEbgpYgVg_d5wo-+g@mail.gmail.com>
-Subject: Re: [PATCH] userfaultfd: change src_folio after ensuring it's
- unpinned in UFFDIO_MOVE
-To: Peter Xu <peterx@redhat.com>
-Cc: Matthew Wilcox <willy@infradead.org>, Lokesh Gidra <lokeshgidra@google.com>, 
-	akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	kernel-team@android.com, aarcange@redhat.com, david@redhat.com, 
-	zhengqi.arch@bytedance.com, kaleshsingh@google.com, ngeoffray@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Thu, Apr 4, 2024 at 1:32=E2=80=AFPM Peter Xu <peterx@redhat.com> wrote:
->
-> On Thu, Apr 04, 2024 at 06:21:50PM +0100, Matthew Wilcox wrote:
-> > On Thu, Apr 04, 2024 at 10:17:26AM -0700, Lokesh Gidra wrote:
-> > > -           folio_move_anon_rmap(src_folio, dst_vma);
-> > > -           WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, d=
-st_addr));
-> > > -
-> > >             src_pmdval =3D pmdp_huge_clear_flush(src_vma, src_addr, s=
-rc_pmd);
-> > >             /* Folio got pinned from under us. Put it back and fail t=
-he move. */
-> > >             if (folio_maybe_dma_pinned(src_folio)) {
-> > > @@ -2270,6 +2267,9 @@ int move_pages_huge_pmd(struct mm_struct *mm, p=
-md_t *dst_pmd, pmd_t *src_pmd, pm
-> > >                     goto unlock_ptls;
-> > >             }
-> > >
-> > > +           folio_move_anon_rmap(src_folio, dst_vma);
-> > > +           WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, d=
-st_addr));
-> > > +
-> >
-> > This use of WRITE_ONCE scares me.  We hold the folio locked.  Why do
-> > we need to use WRITE_ONCE?  Who's looking at folio->index without
-> > holding the folio lock?
->
-> Seems true, but maybe suitable for a separate patch to clean it even so?
-> We also have the other pte level which has the same WRITE_ONCE(), so if w=
-e
-> want to drop we may want to drop both.
+Jesper Dangaard Brouer <hawk@kernel.org> writes:
 
-Yes, I'll do that separately and will remove WRITE_ONCE() in both places.
+> On 31/03/2024 11.08, Edward Adam Davis wrote:
+>> [Syzbot reported]
+>> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN PTI
+>> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+>> CPU: 0 PID: 5179 Comm: syz-executor120 Not tainted 6.8.0-syzkaller-05271-gf99c5f563c17 #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+>> RIP: 0010:dev_map_enqueue+0x31/0x3e0 kernel/bpf/devmap.c:539
+>> Code: 41 56 41 55 41 54 53 48 83 ec 18 49 89 d4 49 89 f5 48 89 fd 49 be 00 00 00 00 00 fc ff df e8 e6 45 d8 ff 48 89 e8 48 c1 e8 03 <42> 80 3c 30 00 74 08 48 89 ef e8 d0 8b 3b 00 4c 8b 7d 00 48 83 c5
+>> RSP: 0018:ffffc90003b0f688 EFLAGS: 00010246
+>> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888025258000
+>> RDX: 0000000000000000 RSI: ffff888024035070 RDI: 0000000000000000
+>> RBP: 0000000000000000 R08: 0000000000000005 R09: ffffffff894ff55e
+>> R10: 0000000000000004 R11: ffff888025258000 R12: ffff8880157d8000
+>> R13: ffff888024035070 R14: dffffc0000000000 R15: ffff8880b943c088
+>> FS:  00007fd0098e46c0(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 00000000200009c0 CR3: 0000000025314000 CR4: 00000000003506f0
+>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>> Call Trace:
+>>   <TASK>
+>>   __xdp_do_redirect_frame net/core/filter.c:4384 [inline]
+>>   xdp_do_redirect_frame+0x20d/0x4d0 net/core/filter.c:4438
+>>   xdp_test_run_batch net/bpf/test_run.c:336 [inline]
+>>   bpf_test_run_xdp_live+0xe8a/0x1e90 net/bpf/test_run.c:384
+>>   bpf_prog_test_run_xdp+0x813/0x11b0 net/bpf/test_run.c:1267
+>>   bpf_prog_test_run+0x33a/0x3b0 kernel/bpf/syscall.c:4240
+>>   __sys_bpf+0x48d/0x810 kernel/bpf/syscall.c:5649
+>>   __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
+>>   __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
+>>   __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
+>>   do_syscall_64+0xfb/0x240
+>>   entry_SYSCALL_64_after_hwframe+0x6d/0x75
+>> RIP: 0033:0x7fd00992a0d9
+>> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+>> RSP: 002b:00007fd0098e4238 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+>> RAX: ffffffffffffffda RBX: 00007fd0099b43e8 RCX: 00007fd00992a0d9
+>> RDX: 0000000000000050 RSI: 0000000020000240 RDI: 000000000000000a
+>> RBP: 00007fd0099b43e0 R08: 00007fd0098e46c0 R09: 00007fd0098e46c0
+>> R10: 00007fd0098e46c0 R11: 0000000000000246 R12: 00007fd009981060
+>> R13: 0000000000000016 R14: 00007fffcb70c160 R15: 00007fffcb70c248
+>>   </TASK>
+>> [Fix]
+>> On the execution path of bpf_prog_test_run(), due to ri->map being NULL,
+>> ri->tgtvalue was not set correctly.
+>> 
+>> Reported-and-tested-by: syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
+>> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+>> ---
+>>   kernel/bpf/devmap.c | 6 +++++-
+>>   1 file changed, 5 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+>> index 4e2cdbb5629f..ef20de14154a 100644
+>> --- a/kernel/bpf/devmap.c
+>> +++ b/kernel/bpf/devmap.c
+>> @@ -86,6 +86,7 @@ struct bpf_dtab {
+>>   static DEFINE_PER_CPU(struct list_head, dev_flush_list);
+>>   static DEFINE_SPINLOCK(dev_map_lock);
+>>   static LIST_HEAD(dev_map_list);
+>> +static bool is_valid_dst(struct bpf_dtab_netdev *obj, struct xdp_frame *xdpf);
+>>   
+>>   static struct hlist_head *dev_map_create_hash(unsigned int entries,
+>>   					      int numa_node)
+>> @@ -536,7 +537,10 @@ int dev_xdp_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
+>>   int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_frame *xdpf,
+>>   		    struct net_device *dev_rx)
+>>   {
+>> -	struct net_device *dev = dst->dev;
+>> +	struct net_device *dev;
+>> +	if (!is_valid_dst(dst, xdpf))
+>
+> This is overkill, because __xdp_enqueue() already contains most of the
+> checks in is_valid_dst().
+>
+> Why not:
+>
+>   if (!dst)
+> 	return -EINVAL;
+>
+>
+>> +		return -EINVAL;
+>> +	dev = dst->dev;
+>>   
+>>   	return __xdp_enqueue(dev, xdpf, dev_rx, dst->xdp_prog);
+>>   }
+>
+>
+> Is this fix pampering over another issue?
+>
+> To repeat myself:
+> I think something is wrong in xdp_test_run_batch().
 
->
-> I just got to start reading some the new move codes (Lokesh, apologies on
-> not be able to provide feedbacks previously..), but then I found one thin=
-g
-> unclear, on special handling of private file mappings only in userfault
-> context, and I didn't know why:
->
-> lock_vma():
->         if (vma) {
->                 /*
->                  * lock_vma_under_rcu() only checks anon_vma for private
->                  * anonymous mappings. But we need to ensure it is assign=
-ed in
->                  * private file-backed vmas as well.
->                  */
->                 if (!(vma->vm_flags & VM_SHARED) && unlikely(!vma->anon_v=
-ma))
->                         vma_end_read(vma);
->                 else
->                         return vma;
->         }
->
-> AFAIU even for generic users of lock_vma_under_rcu(), anon_vma must be
-> stable to be used.  Here it's weird to become an userfault specific
-> operation to me.
->
-> I was surprised how it worked for private file maps on faults, then I had=
- a
-> check and it seems we postponed such check until vmf_anon_prepare(), whic=
-h
-> is the CoW path already, so we do as I expected, but seems unnecessary to
-> that point?
->
-> Would something like below make it much cleaner for us?  As I just don't
-> yet see why userfault is special here.
->
-> Thanks,
->
-> =3D=3D=3D8<=3D=3D=3D
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 984b138f85b4..d5cf1d31c671 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -3213,10 +3213,8 @@ vm_fault_t vmf_anon_prepare(struct vm_fault *vmf)
->
->         if (likely(vma->anon_vma))
->                 return 0;
-> -       if (vmf->flags & FAULT_FLAG_VMA_LOCK) {
-> -               vma_end_read(vma);
-> -               return VM_FAULT_RETRY;
-> -       }
-> +       /* We shouldn't try a per-vma fault at all if anon_vma isn't soli=
-d */
-> +       WARN_ON_ONCE(vmf->flags & FAULT_FLAG_VMA_LOCK);
->         if (__anon_vma_prepare(vma))
->                 return VM_FAULT_OOM;
->         return 0;
-> @@ -5817,9 +5815,9 @@ struct vm_area_struct *lock_vma_under_rcu(struct mm=
-_struct *mm,
->          * find_mergeable_anon_vma uses adjacent vmas which are not locke=
-d.
->          * This check must happen after vma_start_read(); otherwise, a
->          * concurrent mremap() with MREMAP_DONTUNMAP could dissociate the=
- VMA
-> -        * from its anon_vma.
-> +        * from its anon_vma.  This applies to both anon or private file =
-maps.
->          */
-> -       if (unlikely(vma_is_anonymous(vma) && !vma->anon_vma))
-> +       if (unlikely(!(vma->vm_flags & VM_SHARED) && !vma->anon_vma))
->                 goto inval_end_read;
->
->         /* Check since vm_start/vm_end might change before we lock the VM=
-A */
-> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> index f6267afe65d1..61f21da77dcd 100644
-> --- a/mm/userfaultfd.c
-> +++ b/mm/userfaultfd.c
-> @@ -72,17 +72,8 @@ static struct vm_area_struct *lock_vma(struct mm_struc=
-t *mm,
->         struct vm_area_struct *vma;
->
->         vma =3D lock_vma_under_rcu(mm, address);
-> -       if (vma) {
-> -               /*
-> -                * lock_vma_under_rcu() only checks anon_vma for private
-> -                * anonymous mappings. But we need to ensure it is assign=
-ed in
-> -                * private file-backed vmas as well.
-> -                */
-> -               if (!(vma->vm_flags & VM_SHARED) && unlikely(!vma->anon_v=
-ma))
-> -                       vma_end_read(vma);
-> -               else
-> -                       return vma;
-> -       }
-> +       if (vma)
-> +               return vma;
->
->         mmap_read_lock(mm);
->         vma =3D find_vma_and_prepare_anon(mm, address);
-> --
-> 2.44.0
->
->
-> --
-> Peter Xu
->
+I did spot a bug in the test_run code related to XDP_TX, but I don't
+really see how that particular issue could trigger this bug, since
+AFAICT the reproducer doesn't return XDP_TX. It looks like the program
+is setting the BROADCAST flag, but I don't see how that can lead to
+dev_map_enqueue() being run.
+
+> The `ri->tgt_value` is being set in __bpf_xdp_redirect_map(), but I
+> cannot see __bpf_xdp_redirect_map() being used in xdp_test_run_batch().
+
+__bpf_xdp_redirect_map() is always being called from inside the BPF
+programs (through the bpf_redirect_map()). I don't really think we have
+a way of ensuring that we always follow such a call with an XDP_REDIRECT
+return, so we're kinda relying on the XDP program to do the right thing,
+or we could risk stale data being left in bpf_redirect_info, no? I am
+not sure if that is what's going on here, though.
+
+> Is this a case of XDP program returning XDP_REDIRECT without having
+> called the BPF helper for redirect?
+
+From trying to run the reproducer, I don't *think* that is the case, but
+cf the above I don't think that is the case in this instance.
+
+Anyway, let's see if I can get syzbot to test the fix to
+xdp_test_run_batch():
+
+#syz test
+
+diff --git a/net/bpf/test_run.c b/net/bpf/test_run.c
+index dfd919374017..a3f24486829e 100644
+--- a/net/bpf/test_run.c
++++ b/net/bpf/test_run.c
+@@ -281,9 +281,9 @@ static int xdp_recv_frames(struct xdp_frame **frames, int nframes,
+ static int xdp_test_run_batch(struct xdp_test_data *xdp, struct bpf_prog *prog,
+                              u32 repeat)
+ {
+-       struct bpf_redirect_info *ri = this_cpu_ptr(&bpf_redirect_info);
+        int err = 0, act, ret, i, nframes = 0, batch_sz;
+        struct xdp_frame **frames = xdp->frames;
++       struct bpf_redirect_info *ri;
+        struct xdp_page_head *head;
+        struct xdp_frame *frm;
+        bool redirect = false;
+@@ -294,6 +294,7 @@ static int xdp_test_run_batch(struct xdp_test_data *xdp, struct bpf_prog *prog,
+ 
+        local_bh_disable();
+        xdp_set_return_frame_no_direct();
++       ri = this_cpu_ptr(&bpf_redirect_info);
+ 
+        for (i = 0; i < batch_sz; i++) {
+                page = page_pool_dev_alloc_pages(xdp->pp);
 
