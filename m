@@ -1,119 +1,159 @@
-Return-Path: <linux-kernel+bounces-131934-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44AE7898DB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:07:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A27898DC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:09:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCDA928C24E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:07:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1EBE1F2C88C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42525130AC4;
-	Thu,  4 Apr 2024 18:06:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78FFE13246F;
+	Thu,  4 Apr 2024 18:08:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CAUlmAAA"
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="F9+nIWdV"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1192E1C6A7;
-	Thu,  4 Apr 2024 18:06:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5C0130486;
+	Thu,  4 Apr 2024 18:08:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712254018; cv=none; b=i6bLlBYjCawO37XvqIA6molv2GF7IB9vYX386iEMQwTSs1z7yv/JhF/j+6+6lwaIRpbn343IgFgjaCxmKRHjmHN123QGp86k+U5fBrJrLHKPZ61MGOK3ZFwhTFVkEllLMsoDqZnVsEFxvEumYFOafOVvk/eHZvYe/6u6l/SM4bA=
+	t=1712254131; cv=none; b=i79QY1gNMfE1rsk8i6s/deUCg6DspfUKwxexJfXG1pWtBa0nIB6r1I0oSyLgZvlin7e03u14MM1R0I7cm/IXNxvdrReDmM/tdStBFak7Vnmke9oWcJtArGU73q22lW/77wqQHnLoTbgB30nVUID20lVdM2AHqJ1qiMU4h3fibW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712254018; c=relaxed/simple;
-	bh=zusms/ybvY0EBsrA7FDocXGlfT3sH3wDhrIWLT6+ny4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=BOytSfa1gCIt8v/LN5OlGqsv9qjTbbkazkh3EB31WiIgh16gMpL/BMxwCILGt/QCRtYY9O5IDrnw7ceZMp4lSlo6Y7bdSoUIRtFYgp3vyPXncAPwwJjHMfzdcYyMVk9nzzAfNuz5u3ngSzvOKGUNiA8rvy1+SJQq+RWVVbC6ejE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CAUlmAAA; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4162bac95d4so5215375e9.2;
-        Thu, 04 Apr 2024 11:06:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712254015; x=1712858815; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wy7kg47oLg/+gMxBxUBvkrC3zJR95ziHDFd4yzE48Pk=;
-        b=CAUlmAAAxV+OFTV//11EZwwmumer5t80MSRsvz2wt4D/nqR/xcDHIr5YmYSSEKJJeU
-         RkfbFnQ6MsfT7ulNlK1RXmi2IXZUBQQRdlSj9xx7HBbyu0d7hHJ5FhkXymkw1/TjZEFr
-         5duzALoqQq+/Z7HVR6Yq2UWvTVU54uQ8vyn9eRvH5aVtFze5XISUgGcUELAozno2LPHc
-         CIU+NM04zglsqF0VJGFY0ry68/A9mwX5AAnhHu0uQm8DEsexVOeTP2qyNmW2Mc/SWuzY
-         6UP4o/iSyY8Y2P4/Zp6uM1YCO1UjdctTcibSIOURTx001ZVh8GKPoHfkpajI36Nh0CNM
-         ad2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712254015; x=1712858815;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Wy7kg47oLg/+gMxBxUBvkrC3zJR95ziHDFd4yzE48Pk=;
-        b=oY9WQjHSp0mDcIxESxmQ5gTDFXOD27nhGN0/haUd0CwrQGlLyNbhGkEAabpaI0tdl6
-         0p+kih30EGnsMNr/dCTYOUABYzGNQf8uTqF2dCKHKmHNXJ8nvHx47xcsq5uKQXsgqNwE
-         IZAhxhP1tSS1H/ayZqG2B87LwnseDS0oywn21pQ/oYQiAuHbP7J2y4uVGX97b161Huqx
-         Qii9PxNRQwGvzlV8l700c6dN2m7mYyhce5wcEwEzVxvfg9Jx0czB5boJJpBR/qS3doGr
-         T3IaBqVBeI+qWFcxb2p9yLBAErdQEvzs7lsTSCX5WQ/tLOKtFMSuyqHxNuDmRvSNybHJ
-         QFCw==
-X-Forwarded-Encrypted: i=1; AJvYcCX1sbo4MN5JzUafvnjEdBbDTnrxvErbeZb3cOBcoz35M44bwimGYRvQzg9AAfuVkIkhsQ/bJRY+OqRyRHdnsE1RVxaH3ivhnmEGprmItCDNKadiH1sWoSnZ82qrVjUFFozz1P0B
-X-Gm-Message-State: AOJu0YzHUEZXz8MYbCMerEovyOQXvaWwiyPShSRZtKXcQ98wZjrrQAYC
-	9/cfv/k14CLsxXWVt7DrthY++7fL52Kl+zO28gviKMaza7vPuz/A
-X-Google-Smtp-Source: AGHT+IFuj2PFJNPDI0+yYN3g/kkN7zAmtKbcZzLJJ9MVWLdK0xcF6De3NCFwWSgcSN+nApFENyekRw==
-X-Received: by 2002:a05:600c:5755:b0:414:c42:e114 with SMTP id jw21-20020a05600c575500b004140c42e114mr2269751wmb.39.1712254015080;
-        Thu, 04 Apr 2024 11:06:55 -0700 (PDT)
-Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
-        by smtp.gmail.com with ESMTPSA id h7-20020a05600c350700b004154399fbd9sm3540550wmq.45.2024.04.04.11.06.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 11:06:54 -0700 (PDT)
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-To: Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>
-Cc: David Ahern <dsahern@kernel.org>, Leon Romanovsky <leon@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Christoph Hellwig <hch@infradead.org>, Saeed Mahameed <saeed@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Jiri Pirko <jiri@nvidia.com>,
- Leonid Bloch <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>,
- Saeed Mahameed <saeedm@nvidia.com>,
- Aron Silverton <aron.silverton@oracle.com>, linux-kernel@vger.kernel.org,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- Andy Gospodarek <andrew.gospodarek@broadcom.com>
-References: <20240322154027.5555780a@kernel.org>
- <1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
- <0ea32dd4-f408-5870-77eb-f18899f1ad44@gmail.com>
- <20240402184832.GO11187@unreal>
- <cefa2b9a-4227-969e-d31e-c19a552b9c1c@gmail.com>
- <20240403190012.GV11187@unreal>
- <d75ee9d5-36a9-4056-a0f3-0c05b2e744aa@kernel.org>
- <20240403170149.7d2b8f2b@kernel.org> <20240404122338.GI1723999@nvidia.com>
- <20240404074850.19ecd52e@kernel.org> <20240404174728.GL1723999@nvidia.com>
-From: Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <d0b11055-1804-515b-7916-cb83a6274955@gmail.com>
-Date: Thu, 4 Apr 2024 19:06:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1712254131; c=relaxed/simple;
+	bh=whxOD+12dLAYPGaIgNLWaUtgIqUiZ0Gq8qWeXfT4t7k=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hMpuYCEOOETZRS2URpIUCsVwld5XpoRDI9Dy7wstV/PjrDlnCSB4+AriQ7d9hgUkonewStW0m+HBf1dbskEidq6eTsQQovZIfe0uqHdailgjmgqzN1kAXp+wGIF3k9Fo70WA37+A2z/ZWMhgwTBzF8JJ/ikobINz2304i5JXzGY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=F9+nIWdV; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 434GsWuM030547;
+	Thu, 4 Apr 2024 11:08:15 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=pfpt0220; bh=2fQHR/QP
+	ziiwV0xMwMaSaBgJWBoHDC5/OXUOImeI4Xg=; b=F9+nIWdVDJPdaOn7TE6R5yTl
+	RV9Mq4RFyU5MzcUHYdD9DJP7F2uOEIyTOnXHaruSUKZ1XE27Qqc1EuMRsel7faNF
+	O5cxbFrvPuh9ZSOZid5Grl7vPZeLr4ix24QlCJraqif50QvULZTlmvroreRD88VR
+	pZAjpC5aeRNN9uZXNb8sj4OvX4e7fJeomvMUGXr9doT7mio/NLWEY1VU6oBJFv+s
+	ui8YFJcUv39I35I/TPPis+unemyA/V5hsdd1vk1mr2/qe54xxz275A0e/RGl0vEU
+	2AgqeC1H0RfwG8fWkwB1pQw57w3+0zyV+roy8BUWeA6YRLysF9vbVgIwwYbpIw==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3x9em6kk6w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 11:08:14 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Thu, 4 Apr 2024 11:07:58 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1544.4 via Frontend
+ Transport; Thu, 4 Apr 2024 11:07:58 -0700
+Received: from POWEREDGE.marvell.com (POWEREDGE.marvell.com [10.28.8.3])
+	by maili.marvell.com (Postfix) with ESMTP id 2A8103F7070;
+	Thu,  4 Apr 2024 11:07:52 -0700 (PDT)
+From: Tanmay Jagdale <tanmay@marvell.com>
+To: <john.g.garry@oracle.com>, <will@kernel.org>, <james.clark@arm.com>,
+        <mike.leach@linaro.org>, <leo.yan@linux.dev>, <suzuki.poulose@arm.com>,
+        <peterz@infradead.org>, <mingo@redhat.com>,
+        <alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+        <irogers@google.com>, <adrian.hunter@intel.com>
+CC: <linux-arm-kernel@lists.infradead.org>, <coresight@lists.linaro.org>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <sgoutham@marvell.com>, <gcherian@marvell.com>, <lcherian@marvell.com>,
+        Tanmay Jagdale <tanmay@marvell.com>
+Subject: [PATCH V2 0/2] Fix Coresight instruction synthesis logic 
+Date: Thu, 4 Apr 2024 23:37:29 +0530
+Message-ID: <20240404180731.7006-1-tanmay@marvell.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240404174728.GL1723999@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: TGZ0rNbCBB2i8lZeFidxwG7Xgksor3Ml
+X-Proofpoint-GUID: TGZ0rNbCBB2i8lZeFidxwG7Xgksor3Ml
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-04_14,2024-04-04_01,2023-05-22_02
 
-#include <disclaimer.h>
+When we use perf to catpure Coresight trace and generate instruction
+trace using 'perf script', we get the following output:
 
-On 04/04/2024 18:47, Jason Gunthorpe wrote:
-> The configurables exist as they are
-> and need to be supported, in one way or another, by the kernel.
+# perf record -e cs_etm/@tmc_etr0/ -C 9 taskset -c 9 sleep 1
+# perf script --itrace=i1ns --ns -Fcomm,tid,pid,time,cpu,event,ip,sym,addr,symoff,flags,callindent
+..
+ perf  9024/9024  [009]  2690.650470551:      instructions:   call                                 0 ffffb305591aed54 coresight_timeout+0x28
+ perf  9024/9024  [009]  2690.650470551:      instructions:   call                                 0 ffffb305591aed58 coresight_timeout+0x2c
+ perf  9024/9024  [009]  2690.650470551:      instructions:   call                                 0 ffffb305591aed5c coresight_timeout+0x30
+ perf  9024/9024  [009]  2690.650470551:      instructions:   call                                 0 ffffb305591aed60 coresight_timeout+0x34
+ perf  9024/9024  [009]  2690.650470551:      instructions:   jmp                                  0 ffffb305591aed7c coresight_timeout+0x50
+ perf  9024/9024  [009]  2690.650470551:      instructions:   jmp                                  0 ffffb305591aed80 coresight_timeout+0x54
+ perf  9024/9024  [009]  2690.650470551:      instructions:   jmp                                  0 ffffb305591aed84 coresight_timeout+0x58
+ perf  9024/9024  [009]  2690.650470552:      instructions:   jcc                                  0 ffffb305591aede4 coresight_timeout+0xb8
+ perf  9024/9024  [009]  2690.650470552:      instructions:   jcc                                  0 ffffb305591aede8 coresight_timeout+0xbc
+ perf  9024/9024  [009]  2690.650470552:      instructions:   jcc                                  0 ffffb305591aedec coresight_timeout+0xc0
+ perf  9024/9024  [009]  2690.650470552:      instructions:   jcc                                  0 ffffb305591aedf0 coresight_timeout+0xc4
+ perf  9024/9024  [009]  2690.650470557:      instructions:   call                                 0 ffffb305591bccec ete_sysreg_read+0x0
+ perf  9024/9024  [009]  2690.650470557:      instructions:   call                                 0 ffffb305591bccf0 ete_sysreg_read+0x4
+ perf  9024/9024  [009]  2690.650470557:      instructions:   call                                 0 ffffb305591bccf4 ete_sysreg_read+0x8
+ perf  9024/9024  [009]  2690.650470557:      instructions:   call                                 0 ffffb305591bccf8 ete_sysreg_read+0xc
+ perf  9024/9024  [009]  2690.650470557:      instructions:   call                                 0 ffffb305591bccfc ete_sysreg_read+0x10
+ perf  9024/9024  [009]  2690.650470557:      instructions:   call                                 0 ffffb305591bcd00 ete_sysreg_read+0x14
 
-Why?  What does the kernel get out of it?
+This output has the following issues:
+1. Non-branch instructions have mnemonics of branch instructions (Column 6)
+2. Branch target address is missing (Column 7)
 
-Maybe *you* need them to be supported, but maybe you should have
- thought of that earlier in the design process.  ("A failure on
- your part to foresee the eminently foreseeable does not
- constitute an emergency on mine.")
-If we let folks bypass our standards with a _fait accompli_, we
- don't really have standards in the first place.
+This patch fixes these issues by changing the logic of instruction syntehsis
+for the Coresight trace queues.
+
+Output after applying the patch:
+ ...
+ perf  6111/6111  [008]   457.332794461:      instructions:                                        0 ffffb305591aed54 coresight_timeout+0x28
+ perf  6111/6111  [008]   457.332794461:      instructions:                                        0 ffffb305591aed58 coresight_timeout+0x2c
+ perf  6111/6111  [008]   457.332794461:      instructions:                                        0 ffffb305591aed5c coresight_timeout+0x30
+ perf  6111/6111  [008]   457.332794461:      instructions:   jmp                   ffffb305591aed7c ffffb305591aed60 coresight_timeout+0x34
+ perf  6111/6111  [008]   457.332794461:      instructions:                                        0 ffffb305591aed7c coresight_timeout+0x50
+ perf  6111/6111  [008]   457.332794461:      instructions:                                        0 ffffb305591aed80 coresight_timeout+0x54
+ perf  6111/6111  [008]   457.332794461:      instructions:   jcc                   ffffb305591aede4 ffffb305591aed84 coresight_timeout+0x58
+ perf  6111/6111  [008]   457.332794462:      instructions:                                        0 ffffb305591aede4 coresight_timeout+0xb8
+ perf  6111/6111  [008]   457.332794462:      instructions:                                        0 ffffb305591aede8 coresight_timeout+0xbc
+ perf  6111/6111  [008]   457.332794462:      instructions:                                        0 ffffb305591aedec coresight_timeout+0xc0
+ perf  6111/6111  [008]   457.332794462:      instructions:   call                  ffffb305591bccec ffffb305591aedf0 coresight_timeout+0xc4
+ perf  6111/6111  [008]   457.332794462:      instructions:                                        0 ffffb305591bccec ete_sysreg_read+0x0
+ perf  6111/6111  [008]   457.332794462:      instructions:                                        0 ffffb305591bccf0 ete_sysreg_read+0x4
+ perf  6111/6111  [008]   457.332794462:      instructions:                                        0 ffffb305591bccf4 ete_sysreg_read+0x8
+ perf  6111/6111  [008]   457.332794462:      instructions:                                        0 ffffb305591bccf8 ete_sysreg_read+0xc
+ perf  6111/6111  [008]   457.332794462:      instructions:                                        0 ffffb305591bccfc ete_sysreg_read+0x10
+ perf  6111/6111  [008]   457.332794462:      instructions:                                        0 ffffb305591bcd00 ete_sysreg_read+0x14
+
+Changes in V2
+  - Updated commit message of Patch 1
+  - As discussed in the previous version [1], there were differences in instruction
+    trace output before and after the patch. The timestamps for the instructions
+    were not in sync. Added a patch 2 which fixes this issue.
+
+Changes in V1
+  - https://lkml.org/lkml/2023/6/23/912
+
+[1] https://lkml.org/lkml/2023/6/28/506
+
+Tanmay Jagdale (2):
+  perf: cs-etm: Fixes in instruction sample synthesis
+  perf: cs-etm: Store previous timestamp in packet queue
+
+ tools/perf/util/cs-etm.c | 49 +++++++++++++++++++++++++++++++---------
+ tools/perf/util/cs-etm.h |  1 +
+ 2 files changed, 39 insertions(+), 11 deletions(-)
+
+-- 
+2.34.1
+
 
