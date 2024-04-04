@@ -1,73 +1,86 @@
-Return-Path: <linux-kernel+bounces-130795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E59E3897D30
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:57:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13A72897D23
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:42:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55D0928809A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:57:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8AC0B23A8B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C05F4C9F;
-	Thu,  4 Apr 2024 00:57:37 +0000 (UTC)
-Received: from sxb1plsmtpa01-11.prod.sxb1.secureserver.net (sxb1plsmtpa01-11.prod.sxb1.secureserver.net [188.121.53.121])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE1B24C97;
+	Thu,  4 Apr 2024 00:42:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ShYd/I9m"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B834C4C65
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 00:57:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.121.53.121
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 214334400;
+	Thu,  4 Apr 2024 00:42:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712192256; cv=none; b=nUOT5Ke//T3o0uWlZwkySmSCvro/uzSQm7dqupukjVBOQvAqshIwTKC9XndRv8xcEYw+o3SAFkMsTx6iH2d6ZP4do7RrVBSD3Umu9EDUY7HH63wqh7cgh6pH3i1CV0onEBZhmcO12IOs9fVM0OsBKHGaA2DYOnWEhHGfGDFHuKY=
+	t=1712191329; cv=none; b=TtlvZwmMZKH4TAX++rDfwj78EWNRQjdItWSH7NHtSlA+g/+ulf1f81SCDrMMSckGVmKYqf/tOcGDmkTEYc2S+X1XwvTC7Sia84IgQ3mjrsAOW2Laf6D9p4PCoO5q2V62lCGmP+cCd0kmLqZCb6/42C8AVWSUSB/8G0vJ4D9Q00I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712192256; c=relaxed/simple;
-	bh=wkVVPzfd0UQTkvZ8xc/BmRhj+WUj2Lu/IgPhkOElz1o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QByoSWB58ogMhZJMDCckYbutdpl7+4ezOYjrk/MvzLz6DTLwhh+eYdSdYzkMDdcNuNmuXfzwnIl6iOh5eRncGGAeFrzKqG6SlPqLft+IzEyUHAwes87K/SjI8jGMWohPFgRBvcZcz6fEG+9KyBOTTEg0PTYunDqgSTUvCB3EmOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk; spf=pass smtp.mailfrom=squashfs.org.uk; arc=none smtp.client-ip=188.121.53.121
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squashfs.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squashfs.org.uk
-Received: from [192.168.178.90] ([82.69.79.175])
-	by :SMTPAUTH: with ESMTPA
-	id sB7er3FFsvAPUsB7frsYBM; Wed, 03 Apr 2024 17:38:32 -0700
-X-CMAE-Analysis: v=2.4 cv=R+XIGsRX c=1 sm=1 tr=0 ts=660df688
- a=84ok6UeoqCVsigPHarzEiQ==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
- a=IkcTkHD0fZMA:10 a=FXvPX3liAAAA:8 a=W08pmZW3enM1sLpWauQA:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10 a=UObqyxdv-6Yh2QiB9mM_:22
-X-SECURESERVER-ACCT: phillip@squashfs.org.uk
-Message-ID: <356bd1ed-9877-461d-9593-bbf1b23b3d8c@squashfs.org.uk>
-Date: Thu, 4 Apr 2024 01:38:30 +0100
+	s=arc-20240116; t=1712191329; c=relaxed/simple;
+	bh=D3jepi0zJ72xuRUzY0zYzN1f9UFpgiWhtB98tF6EXB0=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FR1e7p0nQoCNWP26ZVwlVkPA3lUDW+UB5P1GtUM67hEC7mcMUkipdNNSwj87iih6tQegNwfuho0Azsx6N8r0Tf4thERjarEu1LiYu7Sl5inRvqW1TXoHtkG6pyNJH+DmcbYq9M/wniLdG9xIU2uyOJP2p+Otr9P/S/+I3aqLHZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ShYd/I9m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48FB6C433C7;
+	Thu,  4 Apr 2024 00:42:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712191328;
+	bh=D3jepi0zJ72xuRUzY0zYzN1f9UFpgiWhtB98tF6EXB0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ShYd/I9m2URUu0tlaxxk4WyWjJKgKXJ/4m8hRncP4yC/s7wnUoILOAP2kTBi6lX2n
+	 5Qc5K4rpsr1BoFU4tsXpQ5NlpMTArIp96x3btM+/HkPEFqlsviC8em784f+IVwe1nM
+	 MWCGmieyLFP361y+YypfCUa9Tklp1iS0V+HSoQCw0JKvkUnQOt3Q16MXoyJnLXcKgR
+	 GexugvlF7GUD2gArHBV4d/gSwQy9VMK4kiYjQdfj7cFRne2l7BDgxBIKqOzNpMRGn+
+	 s1piLHXEK7Vdnp9xXavg5Twc7iXubNBn46Aj1Pig0hXdogegPXXhL8fLSwM2kUssHO
+	 x6+vIMKTlM8UQ==
+Date: Wed, 3 Apr 2024 17:42:07 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Oleksij Rempel <o.rempel@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>, Andrew Lunn <andrew@lunn.ch>,
+ Eric Dumazet <edumazet@google.com>, Florian Fainelli
+ <f.fainelli@gmail.com>, Paolo Abeni <pabeni@redhat.com>, Vladimir Oltean
+ <olteanv@gmail.com>, Woojung Huh <woojung.huh@microchip.com>, Arun Ramadoss
+ <arun.ramadoss@microchip.com>, kernel@pengutronix.de,
+ linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+ UNGLinuxDriver@microchip.com, David Ahern <dsahern@kernel.org>, Simon
+ Horman <horms@kernel.org>, Willem de Bruijn <willemb@google.com>,
+ =?UTF-8?B?U8O4cmVu?= Andersen <san@skov.dk>
+Subject: Re: [PATCH net-next v2 5/9] net: dsa: microchip: add support for
+ different DCB app configurations
+Message-ID: <20240403174207.34205b6a@kernel.org>
+In-Reply-To: <20240403092905.2107522-6-o.rempel@pengutronix.de>
+References: <20240403092905.2107522-1-o.rempel@pengutronix.de>
+	<20240403092905.2107522-6-o.rempel@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Squashfs: replace deprecated strncpy with strscpy
-To: Justin Stitt <justinstitt@google.com>
-Cc: linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-References: <20240328-strncpy-fs-squashfs-namei-c-v1-1-5c7bcbbeb675@google.com>
- <594a6365-5cc6-4778-aec5-c5ad2a4b2930@squashfs.org.uk>
- <CAFhGd8pCE11Xm219Pc8uyJnsDkSqaTM6gpY8Tpa2fWmHg4OnCA@mail.gmail.com>
-Content-Language: en-GB
-From: Phillip Lougher <phillip@squashfs.org.uk>
-In-Reply-To: <CAFhGd8pCE11Xm219Pc8uyJnsDkSqaTM6gpY8Tpa2fWmHg4OnCA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfBq20SukAjsHUGUSD81ZufCFLj2kOVSbjtsHJxDyR/RYet6SRJVmHlsADOcDUkZyYBBOFeMIBvOVZLXPTw3bitAkOGgGp0utu0wfwHWSvsgYAQt41tz9
- /gBKeMmU2ckl8QthIAXK4vuu+psXeUDL+R2kANNGLtgpszVHStA8bIKFxZcjOlgv7peYlopIw2CUMrOCHOZ5t8fkGohWUhYUIef3W6G5kgEJBaCvrehEtVzl
- Rpv0g2bmmvbqrpH8cnYkHl2y3QXBw/i4t0ANDDMvMAXWsw0UtE7tAxoo5kS0YO88
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 04/04/2024 01:30, Justin Stitt wrote:
-> On Wed, Apr 3, 2024 at 12:32 PM Phillip Lougher <phillip@squashfs.org.uk> wrote:
->> A better way to remove the strncpy() is to remove the unnecessary string
->> copy, which I have done in this patch here:
+On Wed,  3 Apr 2024 11:29:01 +0200 Oleksij Rempel wrote:
+> Add DCB support to configure app trust sources and default port priority.
 > 
-> Great! Cleaning up this code while removing strncpy() is a two for one.
+> Following commands can be used for testing:
+> dcb apptrust set dev lan1 order pcp dscp
+> dcb app replace dev lan1 default-prio 3
+> 
+> Since it is not possible to configure DSCP-Prio mapping per port, this
+> patch provide only ability to read switch global dscp-prio mapping and
+> way to enable/disable app trust for DSCP.
 
-Yes - thanks for your reply.
+transient compiler nit:
 
-Phillip
+drivers/net/dsa/microchip/ksz_dcb.c:86:17: warning: unused variable 'ksz8_port2_supported_apptrust' [-Wunused-const-variable]
+   86 | static const u8 ksz8_port2_supported_apptrust[] = {
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
