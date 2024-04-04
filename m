@@ -1,105 +1,73 @@
-Return-Path: <linux-kernel+bounces-132011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1AA8898EA3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:05:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 618A8898E73
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:00:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92F701C23B64
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:05:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6D7B28C651
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:00:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3C2133424;
-	Thu,  4 Apr 2024 19:05:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4884C13246F;
+	Thu,  4 Apr 2024 19:00:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZXB4aDUL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8Jvbkbv2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KIJqwcbZ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+jQgU1Bi"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O6oBCk36"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D24132C15;
-	Thu,  4 Apr 2024 19:05:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37891131E41
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:00:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712257540; cv=none; b=eMwiywb6i7mG+rBb6lcIzefLBNnmg0swvA8Dm/sewONjXow577/2NjofB2d3HOb30WazELIN4aLdMgucZzDUjHUHBSwqH1rO3GOyiXt0hQjU4UFwGb6vXvszMQcrNKnSXqAhN9Pq43C/T0hI7XPs+3rCQNR8+TD3evVSE280IH8=
+	t=1712257210; cv=none; b=E/ZorVbNKQju/cy/h7c1H4igpzbMuQtzDlNuIdRwFV9rPpTtwBpJYC0WXLGdoYDaNV8/FQE+I5wEChsMRuJCK7g1iL2KUd1U2iIcHJcBMi3EZI+z4MxCAiMLipiQd9OcvKLiIcDGRXfZ2NMova8Ijcxbh8Y/JvRk831w/hOSWwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712257540; c=relaxed/simple;
-	bh=AF5GLsGnUq7DBEzjfswvqPbyx8RwK9rl8FXLvx9bNfE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lxmehJlbfB/iDxafoq6wQxsIib/QO4bmTiBC8/el87Ah/KTu11IbLof80B8JtwoMzSBd7gSdojmtCoUbH2apBAJEae2ecrgHNU12+/vxk8EKrBwrHVWuEk/+bsqfU7VSQGteoW0iQYY/SGY0/s2DkIAdt1kwsi6LLollplzCH7I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZXB4aDUL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8Jvbkbv2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KIJqwcbZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+jQgU1Bi; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2F4EC1F444;
-	Thu,  4 Apr 2024 19:05:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712257536;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7vPEYvevqdIYmLIkzMR0eI0uKxDxhqYbaekAWsmOKMU=;
-	b=ZXB4aDULaRL3SCktX0W+djqpyk9ArokEsbo/83ksaNOyhoHHbZWzUyHFfhF+11ttmY1tZZ
-	63d8N/ofljSl+bIi1xIagIi9/M1bqdmojyL4HuspvNKNba6/7cmpSEupoze2PO+zRIBNSv
-	SiHFB/BSDc2kaCQvR7WwQoIuP+vthZ8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712257536;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7vPEYvevqdIYmLIkzMR0eI0uKxDxhqYbaekAWsmOKMU=;
-	b=8Jvbkbv2jMkBBUEdgBe1yOLq0EUAzlmVx4zLdjFFQFF2oAggbkAw64zu2NM4PP+RI0jrPM
-	nUwcfk+CwC+4DTBw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712257535;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7vPEYvevqdIYmLIkzMR0eI0uKxDxhqYbaekAWsmOKMU=;
-	b=KIJqwcbZmt31ALXtZIDHjeFAF7LbwztT9aEZaeSk1CAvjMC5ToIcj3oqAXTXv1gj0NYInT
-	I/WCoM4VaThBK4rqB0A0mUlvHdP5swVmroGh/cFsIhnltBBNf8aav8i8+znLf4L8kMJdY9
-	oMi3ObmSCFuPGNShIdg09ooiCaXtw4c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712257535;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7vPEYvevqdIYmLIkzMR0eI0uKxDxhqYbaekAWsmOKMU=;
-	b=+jQgU1BiybE+kJWS1YdOF/zbtozb1YljnSRFZaA0xBSM7wZPumUoEQ5NCZky5JCClFOKIF
-	SJkoNDmpz6uWBWBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 0BEB8139E8;
-	Thu,  4 Apr 2024 19:05:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id IBBqAv/5DmaUXgAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 04 Apr 2024 19:05:35 +0000
-Date: Thu, 4 Apr 2024 20:58:12 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Sasha Levin <sashal@kernel.org>
-Cc: David Sterba <dsterba@suse.cz>, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	clm@fb.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.8 59/68] btrfs: preallocate temporary extent
- buffer for inode logging when needed
-Message-ID: <20240404185812.GI14596@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240329122652.3082296-1-sashal@kernel.org>
- <20240329122652.3082296-59-sashal@kernel.org>
- <20240402133518.GD14596@suse.cz>
- <Zgyj800yVkeKmbmq@sashalap>
+	s=arc-20240116; t=1712257210; c=relaxed/simple;
+	bh=nbFOZtSS2b2wW9MV880qLgighuz6pCR04uAatLsOP20=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=B5bWnLzOKbE18wSBgpRORfRlrD1ZuELXzhihtaL8EzpnXl0Qi3I9j+u6C4d2pYGQMXqfj4cFgSOog73yCDMLni5Pf5C/qDq56bybrLERqj7GNlN9IUhsOeY6atewr312KDCAlZn8mDqfc1YMJK7DAebNVwXGV1RA9v7HB0poiA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O6oBCk36; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712257208; x=1743793208;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=nbFOZtSS2b2wW9MV880qLgighuz6pCR04uAatLsOP20=;
+  b=O6oBCk36dgk5b7dKYI6anaNP+l/9bHlwNhht2PmMauCX9qw+nyHXtgZq
+   14W2HAG3BrD9+V1dIT0rOACbmbwo4s2Xn7ZIT8/KH/KNaUdVNVxNXXFgq
+   dOmqUGU4gCABpMKHZ54ZirWP6lTqN5g/zQW2mQ3ga3U6mInOUwwCDi6mM
+   KYpc5ViR6D81oFLltZJ/23l9mdrq6sT/Xr77Zm9x+XOiladNNpcygRcLW
+   RpuXvjLEFSrWjI3INYcxkhcQ9jdxxoK7leolVgD3qE6z+UFNOTIFUL4MZ
+   CA1Ttd0EqZp/+1ogPQQOMc97UiK8YJINO13838EwUG420/oZ/W99wQVY3
+   A==;
+X-CSE-ConnectionGUID: W+A72nmvStSFwNErcAgB2A==
+X-CSE-MsgGUID: 3FreT7KYTIq+eS8dr8FoqQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="18300902"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="18300902"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 12:00:07 -0700
+X-CSE-ConnectionGUID: e+Gd2EGdQ+a8ZM27DWAM4Q==
+X-CSE-MsgGUID: ho7c7qqtTeyWMURhxe+0Eg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="18857102"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa009.jf.intel.com with ESMTP; 04 Apr 2024 12:00:06 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rsSJf-0001OK-11;
+	Thu, 04 Apr 2024 19:00:03 +0000
+Date: Fri, 5 Apr 2024 02:59:44 +0800
+From: kernel test robot <lkp@intel.com>
+To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: drivers/usb/gadget/udc/fsl_udc_core.c:878:13: warning: variable
+ 'udc' is uninitialized when used here
+Message-ID: <202404050227.TTvcCPBu-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -108,139 +76,110 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zgyj800yVkeKmbmq@sashalap>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,toxicpanda.com:email,suse.com:email,suse.cz:replyto,test.sh:url]
-X-Spam-Score: -4.00
-X-Spam-Flag: NO
 
-On Tue, Apr 02, 2024 at 08:33:55PM -0400, Sasha Levin wrote:
-> On Tue, Apr 02, 2024 at 03:35:18PM +0200, David Sterba wrote:
-> >On Fri, Mar 29, 2024 at 08:25:55AM -0400, Sasha Levin wrote:
-> >> From: Filipe Manana <fdmanana@suse.com>
-> >>
-> >> [ Upstream commit e383e158ed1b6abc2d2d3e6736d77a46393f80fa ]
-> >>
-> >> When logging an inode and we require to copy items from subvolume leaves
-> >> to the log tree, we clone each subvolume leaf and than use that clone to
-> >> copy items to the log tree. This is required to avoid possible deadlocks
-> >> as stated in commit 796787c978ef ("btrfs: do not modify log tree while
-> >> holding a leaf from fs tree locked").
-> >>
-> >> The cloning requires allocating an extent buffer (struct extent_buffer)
-> >> and then allocating pages (folios) to attach to the extent buffer. This
-> >> may be slow in case we are under memory pressure, and since we are doing
-> >> the cloning while holding a read lock on a subvolume leaf, it means we
-> >> can be blocking other operations on that leaf for significant periods of
-> >> time, which can increase latency on operations like creating other files,
-> >> renaming files, etc. Similarly because we're under a log transaction, we
-> >> may also cause extra delay on other tasks doing an fsync, because syncing
-> >> the log requires waiting for tasks that joined a log transaction to exit
-> >> the transaction.
-> >>
-> >> So to improve this, for any inode logging operation that needs to copy
-> >> items from a subvolume leaf ("full sync" or "copy everything" bit set
-> >> in the inode), preallocate a dummy extent buffer before locking any
-> >> extent buffer from the subvolume tree, and even before joining a log
-> >> transaction, add it to the log context and then use it when we need to
-> >> copy items from a subvolume leaf to the log tree. This avoids making
-> >> other operations get extra latency when waiting to lock a subvolume
-> >> leaf that is used during inode logging and we are under heavy memory
-> >> pressure.
-> >>
-> >> The following test script with bonnie++ was used to test this:
-> >>
-> >>   $ cat test.sh
-> >>   #!/bin/bash
-> >>
-> >>   DEV=/dev/sdh
-> >>   MNT=/mnt/sdh
-> >>   MOUNT_OPTIONS="-o ssd"
-> >>
-> >>   MEMTOTAL_BYTES=`free -b | grep Mem: | awk '{ print $2 }'`
-> >>   NR_DIRECTORIES=20
-> >>   NR_FILES=20480
-> >>   DATASET_SIZE=$((MEMTOTAL_BYTES * 2 / 1048576))
-> >>   DIRECTORY_SIZE=$((MEMTOTAL_BYTES * 2 / NR_FILES))
-> >>   NR_FILES=$((NR_FILES / 1024))
-> >>
-> >>   echo "performance" | \
-> >>       tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-> >>
-> >>   umount $DEV &> /dev/null
-> >>   mkfs.btrfs -f $MKFS_OPTIONS $DEV
-> >>   mount $MOUNT_OPTIONS $DEV $MNT
-> >>
-> >>   bonnie++ -u root -d $MNT \
-> >>       -n $NR_FILES:$DIRECTORY_SIZE:$DIRECTORY_SIZE:$NR_DIRECTORIES \
-> >>       -r 0 -s $DATASET_SIZE -b
-> >>
-> >>   umount $MNT
-> >>
-> >> The results of this test on a 8G VM running a non-debug kernel (Debian's
-> >> default kernel config), were the following.
-> >>
-> >> Before this change:
-> >>
-> >>   Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
-> >>                       -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
-> >>   Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-> >>   debian0       7501M  376k  99  1.4g  96  117m  14 1510k  99  2.5g  95 +++++ +++
-> >>   Latency             35068us   24976us    2944ms   30725us   71770us   26152us
-> >>   Version 2.00a       ------Sequential Create------ --------Random Create--------
-> >>   debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
-> >>   files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-> >>   20:384100:384100/20 20480  32 20480  58 20480  48 20480  39 20480  56 20480  61
-> >>   Latency               411ms   11914us     119ms     617ms   10296us     110ms
-> >>
-> >> After this change:
-> >>
-> >>   Version 2.00a       ------Sequential Output------ --Sequential Input- --Random-
-> >>                       -Per Chr- --Block-- -Rewrite- -Per Chr- --Block-- --Seeks--
-> >>   Name:Size etc        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-> >>   debian0       7501M  375k  99  1.4g  97  117m  14 1546k  99  2.3g  98 +++++ +++
-> >>   Latency             35975us  20945us    2144ms   10297us    2217us    6004us
-> >>   Version 2.00a       ------Sequential Create------ --------Random Create--------
-> >>   debian0             -Create-- --Read--- -Delete-- -Create-- --Read--- -Delete--
-> >>   files:max:min        /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP  /sec %CP
-> >>   20:384100:384100/20 20480  35 20480  58 20480  48 20480  40 20480  57 20480  59
-> >>   Latency               320ms   11237us   77779us     518ms    6470us   86389us
-> >>
-> >> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> >> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> >> Reviewed-by: David Sterba <dsterba@suse.com>
-> >> Signed-off-by: David Sterba <dsterba@suse.com>
-> >> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> >
-> >This is a performance improvement, how does this qualify for stable? I
-> >read only about notable perfromance fixes but this is not one.
-> 
-> No objection to dropping it. Description of the commit states that it
-> fixes blocking for "significant amount of time".
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c85af715cac0a951eea97393378e84bb49384734
+commit: 6025f20f16c25d262680f6e1040d4bcdc0ecd0f3 usb: gadget: fsl-udc: Replace custom log wrappers by dev_{err,warn,dbg,vdbg}
+date:   4 weeks ago
+config: powerpc-randconfig-002-20240405 (https://download.01.org/0day-ci/archive/20240405/202404050227.TTvcCPBu-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240405/202404050227.TTvcCPBu-lkp@intel.com/reproduce)
 
-I see, that would make sense as keyword for stable backport, though it
-applies under heavy memory pressure so not a regular workload where I'd
-consider it for stable right away. A system under load will block on
-many allocations, from that perspective the patch may not make any
-difference.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404050227.TTvcCPBu-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/usb/gadget/udc/fsl_udc_core.c:878:13: warning: variable 'udc' is uninitialized when used here [-Wuninitialized]
+                   dev_vdbg(&udc->gadget.dev, "%s, bad params\n", __func__);
+                             ^~~
+   include/linux/dev_printk.h:257:18: note: expanded from macro 'dev_vdbg'
+   #define dev_vdbg        dev_dbg
+                           ^
+   include/linux/dev_printk.h:155:18: note: expanded from macro 'dev_dbg'
+           dynamic_dev_dbg(dev, dev_fmt(fmt), ##__VA_ARGS__)
+                           ^~~
+   include/linux/dynamic_debug.h:274:7: note: expanded from macro 'dynamic_dev_dbg'
+                              dev, fmt, ##__VA_ARGS__)
+                              ^~~
+   include/linux/dynamic_debug.h:250:59: note: expanded from macro '_dynamic_func_call'
+           _dynamic_func_call_cls(_DPRINTK_CLASS_DFLT, fmt, func, ##__VA_ARGS__)
+                                                                    ^~~~~~~~~~~
+   include/linux/dynamic_debug.h:248:65: note: expanded from macro '_dynamic_func_call_cls'
+           __dynamic_func_call_cls(__UNIQUE_ID(ddebug), cls, fmt, func, ##__VA_ARGS__)
+                                                                          ^~~~~~~~~~~
+   include/linux/dynamic_debug.h:224:15: note: expanded from macro '__dynamic_func_call_cls'
+                   func(&id, ##__VA_ARGS__);                       \
+                               ^~~~~~~~~~~
+   drivers/usb/gadget/udc/fsl_udc_core.c:871:21: note: initialize the variable 'udc' to silence this warning
+           struct fsl_udc *udc;
+                              ^
+                               = NULL
+   1 warning generated.
+
+
+vim +/udc +878 drivers/usb/gadget/udc/fsl_udc_core.c
+
+   864	
+   865	/* queues (submits) an I/O request to an endpoint */
+   866	static int
+   867	fsl_ep_queue(struct usb_ep *_ep, struct usb_request *_req, gfp_t gfp_flags)
+   868	{
+   869		struct fsl_ep *ep = container_of(_ep, struct fsl_ep, ep);
+   870		struct fsl_req *req = container_of(_req, struct fsl_req, req);
+   871		struct fsl_udc *udc;
+   872		unsigned long flags;
+   873		int ret;
+   874	
+   875		/* catch various bogus parameters */
+   876		if (!_req || !req->req.complete || !req->req.buf
+   877				|| !list_empty(&req->queue)) {
+ > 878			dev_vdbg(&udc->gadget.dev, "%s, bad params\n", __func__);
+   879			return -EINVAL;
+   880		}
+   881		if (unlikely(!_ep || !ep->ep.desc)) {
+   882			dev_vdbg(&udc->gadget.dev, "%s, bad ep\n", __func__);
+   883			return -EINVAL;
+   884		}
+   885		if (usb_endpoint_xfer_isoc(ep->ep.desc)) {
+   886			if (req->req.length > ep->ep.maxpacket)
+   887				return -EMSGSIZE;
+   888		}
+   889	
+   890		udc = ep->udc;
+   891		if (!udc->driver || udc->gadget.speed == USB_SPEED_UNKNOWN)
+   892			return -ESHUTDOWN;
+   893	
+   894		req->ep = ep;
+   895	
+   896		ret = usb_gadget_map_request(&ep->udc->gadget, &req->req, ep_is_in(ep));
+   897		if (ret)
+   898			return ret;
+   899	
+   900		req->req.status = -EINPROGRESS;
+   901		req->req.actual = 0;
+   902		req->dtd_count = 0;
+   903	
+   904		/* build dtds and push them to device queue */
+   905		if (!fsl_req_to_dtd(req, gfp_flags)) {
+   906			spin_lock_irqsave(&udc->lock, flags);
+   907			fsl_queue_td(ep, req);
+   908		} else {
+   909			return -ENOMEM;
+   910		}
+   911	
+   912		/* irq handler advances the queue */
+   913		if (req != NULL)
+   914			list_add_tail(&req->queue, &ep->queue);
+   915		spin_unlock_irqrestore(&udc->lock, flags);
+   916	
+   917		return 0;
+   918	}
+   919	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
