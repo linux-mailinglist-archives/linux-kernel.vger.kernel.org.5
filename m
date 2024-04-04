@@ -1,239 +1,188 @@
-Return-Path: <linux-kernel+bounces-131842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B044898C73
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:45:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43DDD898C72
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:44:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA3F5B27081
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:42:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CDFE7B22BA2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:41:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96E511F945;
-	Thu,  4 Apr 2024 16:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36944129A7E;
+	Thu,  4 Apr 2024 16:41:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GGe4sBv5"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aQ/+1JrV"
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DDD41C6A0;
-	Thu,  4 Apr 2024 16:42:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712248928; cv=fail; b=D4mVxYmccfaRwHP+RD22KLbgI/blYpEWJfOObKpxXTKRvJumdFExENVh6DSQNS8u9WwPPRvP8w2TXvCVPzMz0Pnrtm5eZvHvvzYDta9T/owDZc4pE2hR6ZGDY3VWTJOrGPTbwH/MEIGaG5fNY+uiTEE5dXI6gLKSzd6wVAEnM2g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712248928; c=relaxed/simple;
-	bh=Lzh4zQDlEjxwQ2vnuYxHWuR6JSgNHX4QDWBOIPzWplQ=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=GTJ1EnfIBzuP0cUhrfMT/ekqS0KMjAeAjvqI3ih4zVp7KRZ8Vip14Z6UwmmwIY1mfxqkbjUypqSQGNq1ZEWyUa5T8vnweJTRuE85A5p3kiqRzhb/DdtUWDaptFxZqnJUJpcslAFb4AZP7RBajzLNc5zbEgkI7wsjqmY9RwLy+VU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GGe4sBv5; arc=fail smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712248926; x=1743784926;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Lzh4zQDlEjxwQ2vnuYxHWuR6JSgNHX4QDWBOIPzWplQ=;
-  b=GGe4sBv51p4QIwW6CGCRIsdoeR0B//2qtg74TC9lm4bVHHldTyl2h4Rg
-   8JputF5RPjoJPUWn/iQXnoEPBMlE+oZwoERcPadKXF5+sy64P27ugtMXM
-   9l//na9QL66OUQvtw9RjfmpkZMwmQxEkJZsC8/o9GiEOTJdfqNF5gaGTL
-   k1QIIpWS5c7GJcwY3Hql2vsJLUZnbFy/8wxhPXTmitbQfQrVt6JIfw8lf
-   7nvZUWZo2fPlhI2DZl7rsS2CbLXZo1BOpJWsKCwDcLqFcg2QCQ5YiMOt7
-   A7XgN9V3yX2OvYdsUo2SK+GB8GABa8tkJDpL0Bp1zee0qRqKe6N7CG13v
-   w==;
-X-CSE-ConnectionGUID: kGLjI5TjQ5uUseDHYnQDTw==
-X-CSE-MsgGUID: lpox6b4OQdGo9ixNGF4vhg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="18982317"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="18982317"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 09:42:05 -0700
-X-CSE-ConnectionGUID: 8AP/3EqRSaCov9B4uE0pyA==
-X-CSE-MsgGUID: l+e56g0US22nOSwKJ2ezhg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="18860511"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Apr 2024 09:42:05 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Apr 2024 09:42:05 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Apr 2024 09:42:04 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 4 Apr 2024 09:42:04 -0700
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 4 Apr 2024 09:42:04 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sv3mJyfXR6geFW0H688AUBZnn/syg6yaiH1JO6iETdtTiVzeb21sRqLtPOdvZsCExD5Mv3hQHfUhXnW5dnW9ABp2LD87ybII24qIUC3flNpWTK2l54lNve6xYFLY63tpUXsxUHUMxSH6nsGEkzhO7OIWvqKBEDp+PkruUCLQrssxuWoTgFNlzMrYIBJjMQoQMnG8NZa2vJ5BGQvKmZ+ETE6e0fYcC6XlUJlha2zX62fUNlGi2Tzd5gFJE1IzIEAMy6Efi41C6TX7RINiSJy8WEHyTu5P30NvMVjo3S/W/aCGZhIGUIz28p8J+HjtU2MyF6OJPFih7N6+zZSZKj5nvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=xhWbHEQAA3NEOjUohZDSL84aWGhsE0wGykB9BwKRYgY=;
- b=WUrHDjZWlKyNzX07yjieflW7DndcDW/A7rjjmFKBMoq9+9RaUVuZhqSfIfAILNENmdjPGfrQYTeKhVWtfFZ1rUxApwifc6cyqRnwKWvNe/zJWdDB8TSwhr3DKKsX3U6pDnCI5E8rZLYh1YnLoCu5Kd+QvUEJLD/67s36fqvqJ/l/1rHdoIp7ZrG5lv2mLsfv2sskfnP7Lz3grmOjbCGY2GKte6P8NDYRiR39/l+NZ5QgpxnZM6onSgEJTtHwPu1Pvi/lxJ0sY9qhta06OtZSUpSiiQhJ2TTlp+wyAJBLEMBINmW0ast8Wu8KKyvvACyEr0o3yBaDJ6pNf1jB7P+cdg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com (2603:10b6:8:1b9::20)
- by IA1PR11MB7811.namprd11.prod.outlook.com (2603:10b6:208:3f9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.24; Thu, 4 Apr
- 2024 16:41:56 +0000
-Received: from DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::654c:d66a:ec8e:45e9]) by DS0PR11MB8718.namprd11.prod.outlook.com
- ([fe80::654c:d66a:ec8e:45e9%6]) with mapi id 15.20.7452.019; Thu, 4 Apr 2024
- 16:41:56 +0000
-Message-ID: <1b1dfe1f-57ed-416d-a9c0-408aafa69583@intel.com>
-Date: Thu, 4 Apr 2024 18:40:33 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v3 1/5] net: create a dummy net_device allocator
-To: Breno Leitao <leitao@debian.org>
-CC: <kuba@kernel.org>, <davem@davemloft.net>, <pabeni@redhat.com>,
-	<edumazet@google.com>, <elder@kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
-	<nbd@nbd.name>, <sean.wang@mediatek.com>, <Mark-MC.Lee@mediatek.com>,
-	<lorenzo@kernel.org>, <taras.chornyi@plvision.eu>,
-	<quic_jjohnson@quicinc.com>, <kvalo@kernel.org>, <leon@kernel.org>,
-	<dennis.dalessandro@cornelisnetworks.com>, <linux-kernel@vger.kernel.org>,
-	<netdev@vger.kernel.org>, <bpf@vger.kernel.org>, Jiri Pirko
-	<jiri@resnulli.us>, Simon Horman <horms@kernel.org>, Daniel Borkmann
-	<daniel@iogearbox.net>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <20240404114854.2498663-1-leitao@debian.org>
- <20240404114854.2498663-2-leitao@debian.org>
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-Content-Language: en-US
-In-Reply-To: <20240404114854.2498663-2-leitao@debian.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MI0P293CA0007.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:44::10) To DS0PR11MB8718.namprd11.prod.outlook.com
- (2603:10b6:8:1b9::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B02FB1F922;
+	Thu,  4 Apr 2024 16:41:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712248863; cv=none; b=aIvp7vUwwywGVg4hdyU3tF3a8gjeSf4a5bXM2AUEYVvN0djZwmz3T4PF52R5jf8yx+XWkCSj2zriDyPViEXkWo0ENSm64C3YqNi4LeXg+oFt2VqJTetEk0bfrtT4+XOmiJ8xvO7rSHJC46c/W/r6FfDNeAY4pFSKO8Rawem8O9w=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712248863; c=relaxed/simple;
+	bh=x/s6vyO2Ku1FEpgpwyNPo6be9Ds/5FEj3IOqROrewf0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=LiMyexmqrqEt/UvNPhyceqpxeP4XU5ow3YUFYHl9khtAjf+PQgQ2KQ4DC+qWiH5LISoOtckx9YH0LQs6W5qcvhBeZ27OHAWlP8JLooNFjNZBAR28XkzwqrWGcmX+m2P9dqryFaQkUy2P3isWoEKATbymvKArSG1+TZXRWDd9zUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aQ/+1JrV; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-41550858cabso8380035e9.2;
+        Thu, 04 Apr 2024 09:41:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712248860; x=1712853660; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lbLmsAzzJdGPLAvAsCum54KXU9vJ5+iCYp76EK5DMIc=;
+        b=aQ/+1JrVRIUJqsPG4P6DjD4SkvkSowefXsG5zplfk5m2hfJ9iUnD/lXLpfvsKoM9l1
+         iHHWjg2AWJJ7fdzdOdjPxttD/FXwMj54Or0a/a7hAkl9dmafaV2VaqJzmc0To7U5nPcV
+         IHP3djtbJiYtxFSrA2ko4hTZc2UpolQaEG/vl/pcSBAKdWnBlPhtfVblfERog9saqjfE
+         jQ1Wd89MVvq5fUzK2Gh/oH3gHHvdYQYUbdz8KpM0ZR45BXuzs7Ov/saY8pJlVwJabpkr
+         pfpsz93EyHrZp6nKpYvh9Z15SGmkTXnDZTp87QAP6kEhS9Ved9Nl28SeTNLE+x05oSgT
+         D53w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712248860; x=1712853660;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lbLmsAzzJdGPLAvAsCum54KXU9vJ5+iCYp76EK5DMIc=;
+        b=JoG9AmIxsSx0IvWfiO5CUkKPrcJvR+nhywUPpGqkqOWa2d6ZR3scaMjuwHINJQle5b
+         JJLf1ra41L/TO/xEuQm9F8SvW1ybRtzEwH33vVnBn2zLeUCm11ak+0lB0iYJFiSeQbKU
+         vM77YOYytVtyPeY9Gmd/W5lk1oDysQQkG0wNqqfrCJePyODWUlqkAdpuu01a1ElTV7Fd
+         NiaRUUAQavUlwydkJyzF9HUB3DdeojjflscPrbXQLOFbg0YnSXzXvJ5obW0N9/uAWo4j
+         qUD03OqXNOKAqB+Y0gxkZOBZ4ZiOAMiixhs9xRTx7ttRivtRsvBVOmPl2mEPCI3sOYCO
+         wZew==
+X-Forwarded-Encrypted: i=1; AJvYcCWIrwH15QYkzpM+qrSZW5hKToLYeVciFACXFY5aNqKldqVe2Xajktxhv+9qGnGWtGv9Mq9kM5hE6FTkk+bUnJnlX+YWsv6uVbJ6T1+8mRQuiJUdfvOQA4lZuaDw/cdHh/SFq8lxNfisFoFybj8czx4azMDWXZWO0arSj256EyQJ0G83
+X-Gm-Message-State: AOJu0YxB8qkp21110KMFu5GnKFA0bwmcQ5IWgA8jb21MXWleZXncf5MT
+	QhC7Kwagq83yXsraBvFA3GfaL6ssA5OZg8xyzbMQkYyvYMgZeTR6xEe40JdxhzaNGnnIZ7rVJhS
+	cpA/ESttfl2HJVAAwjFdbC+jpwsk=
+X-Google-Smtp-Source: AGHT+IENju6fEsOOukUPwNqBM2TZ0toG5669WTAz1FK3UDS5gktOsM7A6IIBw/7mHgbIRKed3y6wUaA4IkqZ95L64zw=
+X-Received: by 2002:a5d:58c8:0:b0:341:abd4:a6e8 with SMTP id
+ o8-20020a5d58c8000000b00341abd4a6e8mr2184968wrf.60.1712248859779; Thu, 04 Apr
+ 2024 09:40:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB8718:EE_|IA1PR11MB7811:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Aq3cuYmRf6iL5RTnZTk/GAX2cNd3OoQmChs5n+xOVE75DBUsbVHpm5HmQEW4BsrjruB+dYEDlTpOu1h/UCsXlQnE2xjSF6COSiXJQRbDkNsfIgOwbXEclMRCYGXRqx8/Q6s8W4qH3/SDamt4MvG8DlvPqvuqQpIgHtSC75LgIpUpsbbX6W6Z2uwNZmz6N2iRCXZZWZ2U8Wfabk2IDlWO0um0PUEUK6hqeL+TyOSZH5gkaLNpdalnqLckxoCzfYRx915YoWVuD/KMlkElwUHN10kdEqpNWsM5tYGb1EXbl172A2VtW36WnAiwFe9U3WG269XYq0ArAGUUVps1VcG2Rzh8QdMWx41fOtsBO7CUWLc7Q/BZZfEOQXu4463kh+X/GLyst9jGPii4IQj8ySR1rT/DUxDiKPjp+zuu2Jfq2dkM/RIDAxxtZbdZs0vGvtmfXZL/9iYigNObji1P3xLx724p/h+9HoZPJeXqjZ0cFWU+TU7r/055pXU1rsIcmxQdg05xvR6pQnYi9x8z/z1R9d7j72LWzYysihK5nBcex5viwcm5hR+czz6BaCrksJuk1aaxr0ceBNPHnPNpdhFA7q8xrF7mT9D/hc0kBJdtjlk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB8718.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?MW5UQkNqQ0M4SHlUSXlUUjAySWsxbFIxSFE3clB3dmxzemJqY0wyWjlFL1lp?=
- =?utf-8?B?KzZwNzRjRjJJcTBTa2d1N3RUMGlNMmZ2cTRzaW4vb0ZoMWVLQ3lHcW54UlVu?=
- =?utf-8?B?aHRWclFJV3d0NG9HNGx0V01JNC9RcFJUb0c2eWlQMlk0TE8wUk4xZFoxRkUz?=
- =?utf-8?B?S0FLOFlqN3VMWVcxOERwNEM5NUgwRGhkMmFYYlJyR05zY3NvQ1BKTmNZaTAw?=
- =?utf-8?B?d2c3R3orQm1mMnhBTnIwbEtrQXhON3d1SVdxNTFBaDBaRm1IdFdsKy9mZ2xj?=
- =?utf-8?B?RDZOQU51bWR1TnNob2pCdGJKYk1CMXFkeUEyYm1YbXNxN0FNZ3B1R05CWTZU?=
- =?utf-8?B?STFPb2pQNVY2UW5KYUlOTUordGRMS01NemRPUGJKL2hmNE8rT3FTclp5dWdo?=
- =?utf-8?B?VlJKaHpUR2xhV3lDMHYyN1BEUC9GbHBDdE1ONnlBcHY1SFRwYjVhZ3F3TzJT?=
- =?utf-8?B?Sk8rQWJzK0ZxUlF1bUYwc2p1ZW5nT0o5LzhaTmlyQ2hDUVVNQW5QaHBIc1dW?=
- =?utf-8?B?S29TYVRvdkViUDRqa2lqL2FoZy80dmw1WW9YNVR4dHNhbXhja2NQNGQwYlQ5?=
- =?utf-8?B?VFVUaWQwN21WUDBRcURhTm5YQ3pEbys3OHJpYkNvVUIyem91eFFhM1MwcW51?=
- =?utf-8?B?emxKZjU4aG5wazZDSU9xOUZySWt4ajVaSlVLdEM0ajJ5UFNiazQ4VUxnaGhW?=
- =?utf-8?B?V3BZZWd1ZHU3ekZ0bjVDUEpLdktOWG0vdEY0Zjk4TWZtWTNHenFDVW5jeG1R?=
- =?utf-8?B?cFZUdnFtUm5NYjQ5dFF2dCtuNG53a3VNMVd6ZXlxNmlFTFZFVDB3dExIZDE0?=
- =?utf-8?B?bTBqbS9LVWw3VGI2TktXcVZvNCtLMldVenMxNlhFWWR5OFQxWldFR3hFYXN3?=
- =?utf-8?B?aU9KenJ4WHE5NXNrWFRGTkZZZnY5TXV4am5KZEdDWkg4cC9yTURWTTJRaWln?=
- =?utf-8?B?NGZWb1k1cHRCOEFkbEFLNUlVclZCVHliVmloaVI4RlJJSlhPcDc4b2Z3bkZG?=
- =?utf-8?B?cmpFbHByWWNYN3ZsL05kQ3FRQkJSRWk2NHZ5VXJmOXdNU1owSGdGS1d5Q3JI?=
- =?utf-8?B?ZTdJNTJyMGVmUFcrR05SeWxmWXJrcVBDMGRNemJhMjJ6MXlqU2NlQzQ0SFdx?=
- =?utf-8?B?OVhTbEFxbmFNQ1hEZHNTaFM3QmFJRitSY1drak01UGVJdGR3OXJUYUdPcFBH?=
- =?utf-8?B?ckZ1SWdsUStTS21yQ2tRazN1cUZmVlIzZ2x2eFNheVE4Rll1eGhDdmdNMTkx?=
- =?utf-8?B?NFNzRmVacE5qazNudFF0V1d3NEhySkQxMGFGZERlNkJ3VThyMFJCb0c1NWhl?=
- =?utf-8?B?SnlYUkp1eVRJSmE4TWcvdWxHcUxnTmtMYURURml1SWxHWVBvbmZERjBITUpZ?=
- =?utf-8?B?YWlFK2NuL3YrT3k5NVYrQldZL0ZUTzVES2hBTlVPY0JMNUJxY3hsQk1IaDgx?=
- =?utf-8?B?bUFBQmswNlg0VnpCOEhmNFo2OXRhSTV0a29hWFRYaEY2NE9qQmFyTnYrQ1NM?=
- =?utf-8?B?NXpmVTdTdmRxREQrbCtpeEpHZ08yS3JwenR4MkZQWkRmTXdIL09SbnNMSXVr?=
- =?utf-8?B?UzlFZGcxVXNTdjJnTSs2SURmZFV2MFNCd3p6aUE4SURqamZCZkdWQXhoeFN4?=
- =?utf-8?B?SVBvWlJIckY1a1lDMnkyaEVxZkdOb3ArN2hmRGk5TXorRDFqTTkxSEZTdnpq?=
- =?utf-8?B?NWE0MmViZDRiM1pCa0pWUUVsZEdUekZDRnlqZDgzUlAybUpRWDRlcERBcmM3?=
- =?utf-8?B?RUR4R0cwWTlMK0xodGN4NEl1K2k1TkloZlFIVCtndklPUzVOZjBEU3owME9F?=
- =?utf-8?B?Qml6YW56SkJHK1dmN3JMSDdLRUpYakZBU1QvaFBNNU9LS1pJVCtOZ1MrTXdT?=
- =?utf-8?B?MURGSmpQc2ExRnVmZ01qWHN1ZkhLdk5jU3M3U01DdE9TUDEvK3gyZWc2ZHZJ?=
- =?utf-8?B?b2VLQ0pscFdjeUg3bEY2VFhEUWZtb2txeENpSmg2dDJjYi8yanRmeDFXVlB2?=
- =?utf-8?B?QVRQb1l4SXJrVmZ6ZFpkU21EMjlWSGdEQm10b1hKSGkxb05ZcStLZ2N3bHZs?=
- =?utf-8?B?UnRDdDdQOHZQK2kwLzduSDQ4MzhqNUQxdlZTSUZkNHd5b1Rjak4vMGt5b2M4?=
- =?utf-8?B?blZUVkEvSWJVWmxjZmhjc25RSVFNT3RrSjFHdzR0clRaVS9QRG0xTU52ckR6?=
- =?utf-8?Q?u2wKxr+PBVAvmpqYhPvPVIQ=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d88724a2-0f55-4c72-6150-08dc54c623f9
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB8718.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 16:41:56.5652
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P08Tif2r0+LjXr9CWrij060feAnyB1FAOvgSHBg+Eagqr3fcOMyqfol4OhvD5hL0euVrLphhfTjT3Ha7askxOC+QpWhtUhbyudLfgdpAQl0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7811
-X-OriginatorOrg: intel.com
+References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
+ <20240322-hid-bpf-sleepable-v5-1-179c7b59eaaa@kernel.org> <CAADnVQJdm7+7tbJC8yhPqDUijE0DTD9UG4LOQmNRCWchQ3uGsg@mail.gmail.com>
+ <CAO-hwJKVVjhg6_0tAM75HGJL0WcERotyJc+7oBVvDiTGJAqTfw@mail.gmail.com>
+ <CAADnVQ+5NqjqyeFS3XgDU0OCFgt1Y9bmTbHOPv6ekw1sJasyaA@mail.gmail.com>
+ <CAADnVQJm7bi=iFtWj1XCmEdyDwb64KjxeP5RFo57paG3-zZo_g@mail.gmail.com>
+ <CAADnVQKSwdpfx8EoqURvzFymYNr1evkB3+4dRt_coPOZhW2LTw@mail.gmail.com> <CAO-hwJLDuGHDNLRAJit7+5Dh7MRmwmWNt0+rreMyjf7P6UpAYg@mail.gmail.com>
+In-Reply-To: <CAO-hwJLDuGHDNLRAJit7+5Dh7MRmwmWNt0+rreMyjf7P6UpAYg@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 4 Apr 2024 09:40:48 -0700
+Message-ID: <CAADnVQ+gikPakTuYpD4-oxS6yS5-Dd_HanfqyNnGW-nk7=eXNg@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/6] bpf/helpers: introduce sleepable bpf_timers
+To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Breno Leitao <leitao@debian.org>
-Date: Thu, 4 Apr 2024 04:48:41 -0700
+On Thu, Apr 4, 2024 at 8:27=E2=80=AFAM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+>
+>
+> >
+> > So we need something like:
+> >
+> > struct bpf_hrtimer {
+> >   union {
+> >     struct hrtimer timer;
+> > +   struct work_struct work;
+> >   };
+> >   struct bpf_map *map;
+> >   struct bpf_prog *prog;
+> >   void __rcu *callback_fn;
+> >   void *value;
+> >   union {
+>
+> Are you sure we need an union here? If we get to call kfree_rcu() we
+> need to have both struct rcu_head and sync_work, not one or the other.
 
-> It is impossible to use init_dummy_netdev together with alloc_netdev()
-> as the 'setup' argument.
-> 
-> This is because alloc_netdev() initializes some fields in the net_device
-> structure, and later init_dummy_netdev() memzero them all. This causes
-> some problems as reported here:
-> 
-> 	https://lore.kernel.org/all/20240322082336.49f110cc@kernel.org/
-> 
-> Split the init_dummy_netdev() function in two. Create a new function called
-> init_dummy_netdev_core() that does not memzero the net_device structure.
-> Then have init_dummy_netdev() memzero-ing and calling
-> init_dummy_netdev_core(), keeping the old behaviour.
-> 
-> init_dummy_netdev_core() is the new function that could be called as an
-> argument for alloc_netdev().
-> 
-> Also, create a helper to allocate and initialize dummy net devices,
-> leveraging init_dummy_netdev_core() as the setup argument. This function
-> basically simplify the allocation of dummy devices, by allocating and
-> initializing it. Freeing the device continue to be done through
-> free_netdev()
+why? with an extra flag it's one or the other.
+In bpf_timer_cancel_and_free()
+if (flag & SLEEPABLE) {
+    schedule_work() to cancel_work_sync + kfree_rcu
+} else {
+   hrtimer_cancel
+   kfree_rcu
+}
 
-[...]
+> >     struct rcu_head rcu;
+> > +   struct work_struct sync_work;
+> >   };
+> > + u64 flags; // bpf_timer_init() will require BPF_F_TIMER_SLEEPABLE
+>
+> If I understand, you want BPF_F_TIMER_SLEEPABLE in bpf_timer_init()
+> (like in my v2 or v3 IIRC). But that means that once a timer is
+> initialized it needs to be of one or the other type (especially true
+> with the first union in this struct).
 
-> @@ -11063,6 +11070,17 @@ void free_netdev(struct net_device *dev)
->  }
->  EXPORT_SYMBOL(free_netdev);
->  
-> +/**
-> + * alloc_netdev_dummy - Allocate and initialize a dummy net device.
-> + * @sizeof_priv: size of private data to allocate space for
-> + */
-> +struct net_device *alloc_netdev_dummy(int sizeof_priv)
+yes. That's an idea.
+The code to support wq vs timer seems to be diverging more
+than what we expected initially.
+It seems cleaner to set it as init time and enforce in
+other helpers.
 
-Repeating my question from the previous thread: I see that in your
-series you always pass 0 as @sizeof_priv, does it make sense to have
-this argument or we can just pass 0 here to alloc_netdev() unconditionally?
-Drivers that have &net_device embedded can't have any private data there
-anyway.
+Also with two work_struct-s we're pushing the sizeof(bpf_hrtimer)
+too far.
+It's already at 112 bytes and some people use bpf_timer per flow.
+So potentially millions of such timers.
+Adding extra sizeof(struct work_struct)=3D32 * 2 that won't be
+used is too much.
+Note that sizeof(struct hrtimer)=3D64, so unions make everything
+fit nicely.
 
-> +{
-> +	return alloc_netdev(sizeof_priv, "dummy#", NET_NAME_UNKNOWN,
-> +			    init_dummy_netdev_core);
-> +}
-> +EXPORT_SYMBOL_GPL(alloc_netdev_dummy);
-> +
->  /**
->   *	synchronize_net -  Synchronize with packet receive processing
->   *
+> So should we reject during run time bpf_timer_set_callback() for
+> sleepable timers and only allow bpf_timer_set_sleepable_cb() for
+> those? (and the invert in the other case).
 
-Thanks,
-Olek
+yes.
+
+> This version of the patch allows for one timer to be used as softIRQ
+> or WQ, depending on the timer_set_callback that is used. But it might
+> be simpler for the kfree_rcu race to define the bpf_timer to be of one
+> kind, so we are sure to call the correct kfree method.
+
+I think one or another simplifies the code and makes it easier
+to think through combinations.
+
+I'm still contemplating adding new "struct bpf_wq" and new kfuncs
+to completely separate wq vs timer.
+The code reuse seems to be relatively small.
+We can potentially factor out internals of bpf_timer_* into smaller
+helpers and use them from bpf_timer_* and from new bpf_wq_* kfuncs.
+
+One more thing.
+bpf_timer_cancel() api turned out to be troublesome.
+Not only it cancels the timer, but drops callback too.
+It was a surprising behavior for people familiar with
+kernel timer api-s.
+We should not repeat this mistake with wq.
+
+We can try to fix bpf_timer_cancel() too.
+If we drop drop_prog_refcnt() from it it shouldn't affect
+existing bpf_timer users who are forced to do:
+bpf_timer_cancel()
+bpf_timer_set_callback()
+bpf_timer_start()
+all the time.
+If/when bpf_timer_cancel() stops dropping the callback
+such bpf prog won't be affected. So low chance of breaking any prog.
+wdyt?
 
