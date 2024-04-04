@@ -1,106 +1,191 @@
-Return-Path: <linux-kernel+bounces-131911-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131912-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 423F0898D7E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:49:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BDD0898D82
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:50:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 736E21C27B93
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:49:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 037FB1F29331
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:50:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0186112FB10;
-	Thu,  4 Apr 2024 17:49:10 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A916112EBDC;
+	Thu,  4 Apr 2024 17:50:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QfWmcbZ4"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FFBC12CDAE;
-	Thu,  4 Apr 2024 17:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51099127B7D
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712252949; cv=none; b=iZPk+ea/8e0ITs44WubCCqFmu/WT544+ullBuEjabgJ7xmIkpBkOTiFDYvmFNIu73UT0ZaC1Sd75VbcCsofJPRtgm1d2YL+shbK3k8XRePRTIGMljoPA53zHU61YvpxKHisdFKQ8KvQNJAsw/Y42vSqKfxX4cP3d/4W04BxNcYg=
+	t=1712253046; cv=none; b=FakfCvVxQMq39xYD5EEs/hMZTyEMJrHxcSM+Q4KjGX7+a/6z97h0lOwgIJLA8IfjVqWWEt5e648QY3b3SiMsWXQ4+vnRK1BSDalhHF7fxnHFv/l8TX/a56qGL6c3bCo2eeFl3LrRR5hlW8lsCb4U7AQAEzcu9XEwPFFLeA4zOs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712252949; c=relaxed/simple;
-	bh=H8se5+kd6ksm1gohnXEwyKYq8XehoQCbyLFZucTxlPM=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RW16NgBWy8Q2w7ZeOj8EngPtVrErQj0FRIhytkKgOe7B8SPKjzPBoui4AdKUEyw+OHnH0KNdrVUFBc1rOJO3U7wLNxEu/V1HvpcCulgM5abmavHLb2bRNncBWMeL4OJ2kgzM8zeEgxUPpaGcS5zdrmlzUrS7xvGF0I0e/33lt2k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9TWq47Sfz6K6wd;
-	Fri,  5 Apr 2024 01:44:23 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0E9A21400D4;
-	Fri,  5 Apr 2024 01:49:03 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
- 2024 18:49:02 +0100
-Date: Thu, 4 Apr 2024 18:49:01 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Chris Mason <clm@fb.com>, Josef Bacik
-	<josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 00/26] DCD: Add support for Dynamic Capacity Devices
- (DCD)
-Message-ID: <20240404184901.00002104@Huawei.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712253046; c=relaxed/simple;
+	bh=W21fuAF2rkys7Im4PKJVRHCVBK7AE+eMcJlc2OAzKmY=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
+	 In-Reply-To:Content-Type; b=qMSdDQkCW4pGg2ajsz6ufN99TAr+mP1IXk/ZvJ+CLQ9ncwMgpEpt1wNo6NHkucJshfFrYenPqAJ1HtqgO/z/yJohnLSNdslpsV8cd6ZJ4X5GwWMm7UXb2/hDEIjPZuG2hbW7RZw6SuyE3BfMmvtUiVtq3E4+ec3+Wuclo4HzcNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QfWmcbZ4; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712253044;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UgKEb1rXTdvNH8JDPDJiSaFb25n7WatPE3FFaKX5XuI=;
+	b=QfWmcbZ4YGbwov5Rcu5oT+3Fia+Fu6bn2EW+VUGMsiLVhYbZ4ISrqdYqIClgKqytTcimGP
+	sz+C7YZxM9qNoRGa8ZHa+FKHl3YkuDv6Ce/3hj1tYFV7zWGs7104ndpCz4KQ32GPw+nEiG
+	z3Vjsd1kanUqTrRUPsAXYdt8txFpaBc=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-36-VPivc9aeOTSgzG-XVZC_dg-1; Thu, 04 Apr 2024 13:50:43 -0400
+X-MC-Unique: VPivc9aeOTSgzG-XVZC_dg-1
+Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-698fbfa5815so10694646d6.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:50:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712253042; x=1712857842;
+        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
+         :content-language:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UgKEb1rXTdvNH8JDPDJiSaFb25n7WatPE3FFaKX5XuI=;
+        b=oxQ5DAtlPQgV9CNYxhznkdhtmIE2/fF/bhSCYDZUYfTCpKON51Qz1gXeyd+9dj9bIk
+         ATLZblVGYflJXcU9XMum9gc6WKCiu6FJehbKjzmZoHpzeVZj2Ck+dtZvDJwQ2b/s8Xcv
+         9N8TuX8YyT3u/vS8NUHC/y0nMIaIo0tK6uIMyq2Uw6Isf4X7iclAXPSTkUECaR6Zzm4t
+         IJXYFTCJg0Blkz733fI60neFHK+dFSokT7iRkwpQb4hpKp2Z9o2HN1JhFJqGNQWEsPFN
+         kogaMC+xwPh+DfyI+J6PlcaRMBGHA4kJ04RGPuCizenZo/oegQmZD6dTWpoAUGVqTjJQ
+         aWcA==
+X-Forwarded-Encrypted: i=1; AJvYcCVt+vRz+i5Xcl8iUE7www3aRyYmdpxBUmzulTXxz57cOGTtjJ5fy0d0U063OhVvCTFKDmEtYPoTdUltLLhpNusihOa7aX9vqYr/Hh6g
+X-Gm-Message-State: AOJu0YxOvVkHINwqpCSsCTt6I4NStnVz2I2QM4bj2TkNP68u4EUx0w7c
+	wY8NdGMXs/uG84sBRhoZtm0QDnbXb4yVRvOatjCGyRm4ND4QaahbEr6aCqE4+92234jKsDInnZq
+	CyQEQFuXBug+X6LB4Fq//K/tLD0AhxaaMiISkxd4/o2RDHleE31wuIvJH6Eih+Q==
+X-Received: by 2002:a05:6214:c45:b0:699:1b4e:86dd with SMTP id r5-20020a0562140c4500b006991b4e86ddmr355026qvj.46.1712253042652;
+        Thu, 04 Apr 2024 10:50:42 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEfqDyU+xRrhXUQaCFKdFFr5YaWy2EKNCdq89OVDW6wNlJQnyZidYDoNQfj+eQka0PnWuNdSw==
+X-Received: by 2002:a05:6214:c45:b0:699:1b4e:86dd with SMTP id r5-20020a0562140c4500b006991b4e86ddmr355009qvj.46.1712253042319;
+        Thu, 04 Apr 2024 10:50:42 -0700 (PDT)
+Received: from [192.168.1.34] (pool-68-160-135-240.bstnma.fios.verizon.net. [68.160.135.240])
+        by smtp.gmail.com with ESMTPSA id a1-20020a0562140c2100b00696804c73c5sm7657214qvd.115.2024.04.04.10.50.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 10:50:41 -0700 (PDT)
+Message-ID: <4506bb59-5524-8b0e-f97c-a0252d4784ad@redhat.com>
+Date: Thu, 4 Apr 2024 13:50:40 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Content-Language: en-US
+To: Petr Mladek <pmladek@suse.com>, zhangwarden@gmail.com
+Cc: jpoimboe@kernel.org, mbenes@suse.cz, jikos@kernel.org,
+ live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240402030954.97262-1-zhangwarden@gmail.com>
+ <ZgwNn5+/Ryh05OOm@redhat.com> <Zg7EpZol5jB_gHH9@alley>
+From: Joe Lawrence <joe.lawrence@redhat.com>
+Subject: Re: [PATCH] livepatch: Add KLP_IDLE state
+In-Reply-To: <Zg7EpZol5jB_gHH9@alley>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100005.china.huawei.com (7.191.160.25) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
 
-
+On 4/4/24 11:17, Petr Mladek wrote:
+> On Tue 2024-04-02 09:52:31, Joe Lawrence wrote:
+>> On Tue, Apr 02, 2024 at 11:09:54AM +0800, zhangwarden@gmail.com wrote:
+>>> From: Wardenjohn <zhangwarden@gmail.com>
+>>>
+>>> In livepatch, using KLP_UNDEFINED is seems to be confused.
+>>> When kernel is ready, livepatch is ready too, which state is
+>>> idle but not undefined. What's more, if one livepatch process
+>>> is finished, the klp state should be idle rather than undefined.
+>>>
+>>> Therefore, using KLP_IDLE to replace KLP_UNDEFINED is much better
+>>> in reading and understanding.
+>>> ---
+>>>  include/linux/livepatch.h     |  1 +
+>>>  kernel/livepatch/patch.c      |  2 +-
+>>>  kernel/livepatch/transition.c | 24 ++++++++++++------------
+>>>  3 files changed, 14 insertions(+), 13 deletions(-)
+>>>
+>>> diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
+>>> index 9b9b38e89563..c1c53cd5b227 100644
+>>> --- a/include/linux/livepatch.h
+>>> +++ b/include/linux/livepatch.h
+>>> @@ -19,6 +19,7 @@
+>>>  
+>>>  /* task patch states */
+>>>  #define KLP_UNDEFINED	-1
+>>> +#define KLP_IDLE       -1
+>>
+>> Hi Wardenjohn,
+>>
+>> Quick question, does this patch intend to:
+>>
+>> - Completely replace KLP_UNDEFINED with KLP_IDLE
+>> - Introduce KLP_IDLE as an added, fourth potential state
+>> - Introduce KLP_IDLE as synonym of sorts for KLP_UNDEFINED under certain
+>>   conditions
+>>
+>> I ask because this patch leaves KLP_UNDEFINED defined and used in other
+>> parts of the tree (ie, init/init_task.c), yet KLP_IDLE is added and
+>> continues to use the same -1 enumeration.
 > 
-> Fan Ni's latest v5 of Qemu DCD was used for testing.[2]
-Hi Ira, Navneet.
+> Having two names for the same state adds more harm than good.
 > 
-> Remaining work:
+> Honestly, neither "task->patch_state == KLP_UNDEFINED" nor "KLP_IDLE"
+> make much sense.
 > 
-> 	1) Integrate the QoS work from Dave Jiang
-> 	2) Interleave support
+> The problem is in the variable name. It is not a state of a patch.
+> It is the state of the transition. The right solution would be
+> something like:
+> 
+>   klp_target_state -> klp_transition_target_state
+>   task->patch_state -> task->klp_transition_state
+>   KLP_UNKNOWN -> KLP_IDLE
+> 
 
+Yes, this is exactly how I think of these when reading the code.  The
+model starts to make a lot more sense once you look at it thru this lens :)
 
-More flag.  This one I think is potentially important and don't
-see any handling in here.
+> But it would also require renaming:
+> 
+>   /proc/<pid>/patch_state -> klp_transition_state
+> 
+> which might break userspace tools => likely not acceptable.
+> 
+> 
+> My opinion:
+> 
+> It would be nice to clean this up but it does not look worth the
+> effort.
+> 
 
-Whilst an FM could in theory be careful to avoid sending a
-sparse set of extents, if the device is managing the memory range
-(which is possible all it supports) and the FM issues an Initiate Dynamic
-Capacity Add with Free (again may be all device supports) then we
-can't stop the device issuing a bunch of sparse extents.
+Agreed.  Instead of changing code and the sysfs interface, we could
+still add comments like:
 
-Now it won't be broken as such without this, but every time we
-accept the first extent that will implicitly reject the rest.
-That will look very ugly to an FM which has to poke potentially many
-times to successfully allocate memory to a host.
+  /* task patch transition target states */
+  #define KLP_UNDEFINED   -1      /* idle, no transition in progress */
+  #define KLP_UNPATCHED    0      /* transitioning to unpatched state */
+  #define KLP_PATCHED      1      /* transitioning to patched state */
 
-I also don't think it will be that hard to support, but maybe I'm
-missing something? 
+  /* klp transition target state */
+  static int klp_target_state = KLP_UNDEFINED;
 
-My first thought is it's just a loop in cxl_handle_dcd_add_extent()
-over a list of extents passed in then slightly more complex response
-generation.
+  struct task_struct = {
+      .patch_state    = KLP_UNDEFINED,   /* klp transition state */
 
-I don't want this to block getting initial DCD support in but it
-will be a bit ugly if we quickly support the more flag and then end
-up with just one kernel that an FM has to be careful with...
+Maybe just one comment is enough?  Alternatively, we could elaborate in
+Documentation/livepatch/livepatch.rst if it's really confusing.
 
-Jonathan
+Wardenjohn, since you're probably reading this code with fresh(er) eyes,
+would any of the above be helpful?
+
+-- 
+Joe
+
 
