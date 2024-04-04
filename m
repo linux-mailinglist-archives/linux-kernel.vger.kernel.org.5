@@ -1,161 +1,125 @@
-Return-Path: <linux-kernel+bounces-131045-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131046-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4369898255
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:43:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7558689825B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:44:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4341C1F251BE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:43:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E0806B23587
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:44:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E470C5B208;
-	Thu,  4 Apr 2024 07:43:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5505B208;
+	Thu,  4 Apr 2024 07:44:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="THBIY3j8"
-Received: from esa13.fujitsucc.c3s2.iphmx.com (esa13.fujitsucc.c3s2.iphmx.com [68.232.156.96])
+	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="aVmJioy2"
+Received: from JPN01-OS0-obe.outbound.protection.outlook.com (mail-os0jpn01on2126.outbound.protection.outlook.com [40.107.113.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CADD1CFBD
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:43:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.156.96
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 040BA1F95E;
+	Thu,  4 Apr 2024 07:44:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.113.126
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712216610; cv=fail; b=A+UBFgKfgknVFiLiXqL6D2jnp8K7WG2EyCBYWzQJS+9RikqMnK7sLa7G7PTHf0iMA2DfhOrIKV86QPlPwZbxoai5tBfw3G+HIQmBKujS1NeQxNKeFQBgS1VzTrO4/WIZaCOlcgucAw0uGxOBJpOSnYu1AeajT3vp+el7j6j1ue4=
+	t=1712216688; cv=fail; b=mSGEyM9uzk0us8R5YvTpR2t0ni/MQvxV/utf8GqFQcEuabr267+H4WtCvjZM6JU7dCDszUrtfbvSlt026GfrGT7D0YsCG7MSd5Niyenej0W1Ebi85KmGsKcFh2tXhxPsuJDSr7V5dIqlxy2trYgKy/s4EF9fDDighMXXP6dkLVU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712216610; c=relaxed/simple;
-	bh=ZOyvxpGNfCjWWGZ3B/WqqL/jYUiGmIfbj3QBqXq3MGw=;
+	s=arc-20240116; t=1712216688; c=relaxed/simple;
+	bh=NQRwhbD6tmXJ2t7804/tPmdqRA2dhHzAhx/9af90Ocg=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=tG63dTKG24n71knBZYRsK7mH7zHeHmuyOwc/T7lSnXMKGDm0X45QZJhglMl4tpxlVf/Q2p+fT5fTvNfyNm3pBJ4z9v2Ie3CjSK7vfis4QHsl51FqUs+n0axgS1y1Kt1fRIt0s4+8Df7QzF+ChWh2aOm46dD3krU8mZqPKiySR4Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=THBIY3j8; arc=fail smtp.client-ip=68.232.156.96
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
-  t=1712216608; x=1743752608;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=ZOyvxpGNfCjWWGZ3B/WqqL/jYUiGmIfbj3QBqXq3MGw=;
-  b=THBIY3j8MJ6QldGxRkZq7NlcOILQtTkgsiPeX38SBL500bjuOL7zkNyA
-   BjvkVno14y8gQMf+HWEFsC5mRiTy1v4jJeNeyWK2/d6FELFeDBXHhhNL9
-   QZh9jM4GvhqOzIkqUXpnuEgDjPOuoS3t9E5EIvNjt/t7GsNTzcrXmY32d
-   aVP4g1IN8NLnfqTOyosliK5qFgxV3PSyeDO3ur0lUFM4WwvBgyWdfluem
-   w1fYT+0TJR7csiayNWRPgK4pqG/aw85rHiyzLAMQFpxOcStumxnHDT+eK
-   j9KJxMeQpeIhSymoqyVYIs+hYFl9nfApDykpM55luBNFjvvCm5429zP3g
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="115495151"
-X-IronPort-AV: E=Sophos;i="6.07,178,1708354800"; 
-   d="scan'208";a="115495151"
-Received: from mail-tycjpn01lp2168.outbound.protection.outlook.com (HELO JPN01-TYC-obe.outbound.protection.outlook.com) ([104.47.23.168])
-  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 16:43:07 +0900
+	 Content-Type:MIME-Version; b=NfW6sQqKNoyFvRlpYplxQyy6jbCt+neMFdWMCfcpJ2TDpibe/DLkk3wcr9TBsTiE0+Dc1CEYBllUdVnLlrc3r7yTC9OiNshITKmGNbOZGzFGQido0lgKpHxoYz89NEDBpBI9Wn5k7ibjJZX6ZqhcbjT4kN24ykks07LVQR7I8AI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=aVmJioy2; arc=fail smtp.client-ip=40.107.113.126
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZgnLSb+hiwpGoqgZ6OCmCPoP9r8mzwD3Dl9LJ6PWW+ZOx5xFi+f8Vu9Khgkbv3l/WmJCtnh/zTOpU2Ldar4DSiCDHA0QqauoQ8HSgPPXsQT75NdovRmhoOVByBrNuTP89BIMTmdak0X255h9DK4C1MY1lcxVaQPNzp+QYmTk4on1v/i2opw5hxl6WWi8k+i4ISagtXKpfdSQILlNovkY+j7tOJwQ0gYG7Lx+GMSzU6KQ2lb1JTmpN7QBKdBnMYZs7cmMX42NqFUOqCzndk/ga8miu7Zv9ndGZGwxhKFmZUYYjlR3CSuOGoFf+Ygai59KLivlWyJ9qwTilNer+uL7yg==
+ b=EAB6vytw0qZkbq3YkxKjZ6X3v1/m0Q08+ncgMbplek77mvX5+7gcr3O4txt+3nVu80BN4eukeTdXO4uKiHIHMaruccLR/yVt1SpjiLCsS14EZiOpbttrDmA57ZuRpRByoZGFKPTMg+DEIs9trQtBPNJMjEg74wgy4beJ1pO1r+lcYWjdkZvC/waPTOPQrbYy5wsX5bgadWmmXlw4sT++iZZ4igs8poqO0xcYOD6OSYqa4IijFf0opvhG+9l7sJnxjy11gChmV4iG9kwT5xlrjneumNC+467z8nYxhum8LjGvt3lH0hJqHkOZzOZ//DfD1JzjoTiovG0bH1jnh5jj8Q==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=h+IKUTHt2JPEquEVNkqdhtGOOu84jLv2wguyNYsm6gM=;
- b=E1jR0Hi6mXnIYxNuAQPukzCrR/x+o2fmVliFn8JF4n/j0IuPVf7/kSpjPG7xGQC8yDqPBYjGjDZOnL0Z02EhmBHtwNHKm7WlkjYlRIDCN/fVUeZRCPM+b01c1UxRCtUE005yETf3VfAdrv3Y9AP43TrLbcQra8NANOGaagbyfKpqPAgvQPtm0WjEYAY5F+eqbGgmxllhJtZBYfdhnEi83qXfgmuH6ddPhrcmdOqIf84pMUZIXg6T9r6+GMoa75tbeVFkzvVksqMi9NcCOykEdqXKnqCzLdLgS/2NFG3/4Un97pS+tShMkrK762hLhOlMk8axoDraDc5wlh5ekE+W5w==
+ bh=G4oMsZe76ly0hfyLkx+41BZgF9pkUGK1aeoX0G/2JJ4=;
+ b=IGEY0UjyvsZZh8hry1OHBJNj/VlfCVCfxpHWxAiHZ6fmh4huPaVE4DFQnefIRZvj9lLMNnscG9rRqOUaNPbL7HVp3BT8QdkOBDVn/8Q7Wz/jRIDrfgqQFlIs0QY2HwN8wnI8xE7uaZNZEIMJxNjpDi1tOWz3DrVbDWwtk3U3eGgsisjWdG8W1lRizvbfyVQ68owhNaAL6RdEa1sQwdx71FglB1A7A2qvu4bOvk+eAsu4mERTEqajWoKqHzImXKu72Wy0ae040tMDy6vJp92rPFK5pl68TVdVeC++6UNrspQ7XNpvyt6G/IGhKOrGQFIprW3tVuK5utbA/CNKEVqcqw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
- dkim=pass header.d=fujitsu.com; arc=none
-Received: from TYAPR01MB6330.jpnprd01.prod.outlook.com (2603:1096:402:3e::12)
- by TYWPR01MB8461.jpnprd01.prod.outlook.com (2603:1096:400:176::5) with
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=G4oMsZe76ly0hfyLkx+41BZgF9pkUGK1aeoX0G/2JJ4=;
+ b=aVmJioy2O28fnueWnmRv7iJZXPIB206HlrUQ23QclieWVzdYvxoHrzqxwdu8hp0Wy/LHmuLvgw+r0aHr3AjJQjj0/1ZuPjr9fmqSRoimfslNAFx+n+C/fVimNFkmx5YjhBDTa8Vr+Ed0Ftk6dM02yxDzyWI4g/ieeLaSXi87zac=
+Received: from OSAPR01MB1587.jpnprd01.prod.outlook.com (2603:1096:603:2e::16)
+ by OSRPR01MB11660.jpnprd01.prod.outlook.com (2603:1096:604:22f::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 4 Apr
- 2024 07:43:03 +0000
-Received: from TYAPR01MB6330.jpnprd01.prod.outlook.com
- ([fe80::2f40:de1f:f497:a19]) by TYAPR01MB6330.jpnprd01.prod.outlook.com
- ([fe80::2f40:de1f:f497:a19%7]) with mapi id 15.20.7409.042; Thu, 4 Apr 2024
- 07:43:03 +0000
-From: "Shaopeng Tan (Fujitsu)" <tan.shaopeng@fujitsu.com>
-To: 'James Morse' <james.morse@arm.com>, "x86@kernel.org" <x86@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC: Fenghua Yu <fenghua.yu@intel.com>, Reinette Chatre
-	<reinette.chatre@intel.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo
- Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, H Peter Anvin
-	<hpa@zytor.com>, Babu Moger <Babu.Moger@amd.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, D Scott Phillips OS
-	<scott@os.amperecomputing.com>, "carl@os.amperecomputing.com"
-	<carl@os.amperecomputing.com>, "lcherian@marvell.com" <lcherian@marvell.com>,
-	"bobo.shaobowang@huawei.com" <bobo.shaobowang@huawei.com>,
-	"baolin.wang@linux.alibaba.com" <baolin.wang@linux.alibaba.com>, Jamie Iles
-	<quic_jiles@quicinc.com>, Xin Hao <xhao@linux.alibaba.com>,
-	"peternewman@google.com" <peternewman@google.com>, "dfustini@baylibre.com"
-	<dfustini@baylibre.com>, "amitsinght@marvell.com" <amitsinght@marvell.com>,
-	David Hildenbrand <david@redhat.com>, Rex Nie <rex.nie@jaguarmicro.com>, Dave
- Martin <dave.martin@arm.com>
-Subject: RE: [PATCH v1 30/31] x86/resctrl: Move the filesystem bits to headers
- visible to fs/resctrl
-Thread-Topic: [PATCH v1 30/31] x86/resctrl: Move the filesystem bits to
- headers visible to fs/resctrl
-Thread-Index: AQHae7BBA9MyHBJXmkyIPr5KyPpZOLFXzfdQ
-Date: Thu, 4 Apr 2024 07:43:03 +0000
+ 2024 07:44:41 +0000
+Received: from OSAPR01MB1587.jpnprd01.prod.outlook.com
+ ([fe80::fda5:45f9:f1b2:cbce]) by OSAPR01MB1587.jpnprd01.prod.outlook.com
+ ([fe80::fda5:45f9:f1b2:cbce%3]) with mapi id 15.20.7409.042; Thu, 4 Apr 2024
+ 07:44:38 +0000
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Prabhakar <prabhakar.csengg@gmail.com>, Geert Uytterhoeven
+	<geert+renesas@glider.be>, Thomas Gleixner <tglx@linutronix.de>, Rob Herring
+	<robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, Paul
+ Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>
+CC: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: RE: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/Five SoC
+Thread-Topic: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/Five
+ SoC
+Thread-Index: AQHahgawx6i4BBuUjUOQbcTE7AeY27FXt1rA
+Date: Thu, 4 Apr 2024 07:44:38 +0000
 Message-ID:
- <TYAPR01MB63304D1AC781C7E293CFEF958B3C2@TYAPR01MB6330.jpnprd01.prod.outlook.com>
-References: <20240321165106.31602-1-james.morse@arm.com>
- <20240321165106.31602-31-james.morse@arm.com>
-In-Reply-To: <20240321165106.31602-31-james.morse@arm.com>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
+ <OSAPR01MB1587ED05696A111612424CF6863C2@OSAPR01MB1587.jpnprd01.prod.outlook.com>
+References: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240403203503.634465-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240403203503.634465-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
 X-MS-Has-Attach:
 X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_ActionId=529e0996-9878-4ce4-bda3-bc64bf6179a8;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_ContentBits=0;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_Enabled=true;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_Method=Privileged;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_Name=FUJITSU-PUBLIC?;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_SetDate=2024-04-04T07:42:34Z;MSIP_Label_1e92ef73-0ad1-40c5-ad55-46de3396802f_SiteId=a19f121d-81e1-4858-a9d8-736e267fd4c7;
-x-shieldmailcheckerpolicyversion: FJ-ISEC-20181130-VDI-enc
-x-shieldmailcheckermailid: fb450766c6da44ecab9e9de638e648b9
-x-securitypolicycheck: OK by SHieldMailChecker v2.6.2
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYAPR01MB6330:EE_|TYWPR01MB8461:EE_
+x-ms-traffictypediagnostic: OSAPR01MB1587:EE_|OSRPR01MB11660:EE_
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
 x-microsoft-antispam-message-info:
- kWrYmTcsW6CPc4T5LX0mJ5T/8Pm7mavgCPS2zI5fX6BWT+6qz6yeTabzr/pz94hd3OwM/8F87E8dCgzEV5hMr792J+GvpVDZc+4CZZlndPAY0qXqO8Gm1x65p4B4RrsDGhJUwOMohTV+yzM0IKfWgZhNrzH2oHmzNx8NCwI15iLHwBHqN+rMJeSfxc97iRfWEuKNEcr28fBPye7JfSf7ttgonqp1Ne88JeTIqdHy2sbmqYLLndffC73cYdKymQo5PghBLvUTZ2920htRtxp6EoOS244r2LfbzH7OrV9JZCSAxFVZvYVy4tpNUDjAR8NgrurXsagAAwDXIse8yZZWMqYjYS8OzINWpn/b8F4N2FoMFg5yiucS4SauTmH1Mtq6W17uqmNGHY5fT1g8yakn9fWnwfFB5C5qXh+3OlSgrB186px/6n971mz63rqwVJGQEU4p8h49MRzftdVxRempEIgvjUUdQfj8MxZG9MPl8FNGvRFI+XqXBlbd7qCSlbaXfBOkHVT8wtfIDXVFjbGeaH41ZGXFXIZYfmUOCM2Tkxbo30m6uJz0FQce6FvPGpsuU/IN0Y8mX81krhvEN/vfOC2DC9qFin2BH3ACLw5c7shbEWogTmVxnYicqEXA9el9GGoVEHpsVsLfa5bm7vMasR6wr9vf3Txs2fhfJ9PUuQnFUwM2urn7/Cx1m37fLlAyqnA8FJvWWV8ok3lOuTv7gg==
+ XcWb0bHY0r/ACLzlrP6ycEBRSBfmT5zbxrdFXNvAY+eF1wbBMQGlIBLCkRTh8hsPHeMzKG42+fIrV5fGb2ncLk4T8Cb5+HTXLuyNwnco39rqqT1ld1noWRdK2Bvi68+J6lneYliJkm5CTZokAYpyh6cCO7uaTL+vk6wwqKa3Da32MrADAA9WqQ47yUWspxOzVO6PISlhQR7aivyTopIsCNxijY+kpJaAtrj5C627wwXvsCU2iqdFv3Lj88Y7fmcjZLKVkWE2c14e+mbtu7DLRzJxjeqCTrLpMBjWFk4raY38kfSVJGqLGFS9dB+FFAFrQed8AOQBY9gxNLS61DWbW4Ib+6QCJpYS3CNwdE6X39omBSO4f5ayCB4qO1DQ4PYXW2bFXe9uCR39Db10FAXTKOmq5aYotphJxqWEmlmKy9rxC6TJNOlbaaedpHKSNEkJlo3kvjkMmNE1CKeMeedqYqTCOYoUNDcE0gRvrdL/duM/7nSiSuVAvRdjEHdsF70t8jYa42ScxTVABEBEovCCMLiazAdduwP3BBtYMWFEOP4rjNCRPOiOapI7tYPp2kE9I7mw/UYUbl+VAV0P+pIxZjiTnnJu8kZrk4qs31xfnnKVHgEczHkID2ffQCrde8bL0z4QccJqsTqtv9U6d7m/Nw407bNdmTk4J2sGI01VqvYQL/dn5WOmgQF3Ci7UbKFg5bOi104Ru6HVtPXNMbRT/Q==
 x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:ja;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYAPR01MB6330.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(366007)(1800799015)(1580799018);DIR:OUT;SFP:1102;
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OSAPR01MB1587.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015)(921011);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
 x-ms-exchange-antispam-messagedata-0:
- =?iso-2022-jp?B?aitVaDcvZ1ZHYnlkWStFMWtLS1dvNm5FUDJpbUQxRmkwNEpBVU9DbHZB?=
- =?iso-2022-jp?B?T1crQXhIRkx2Wk8xcHIzMGdGNTBqWXdmVWd3dUQzUmlhUHBNWURwVkIz?=
- =?iso-2022-jp?B?SnhuVVpOdStBU0dmNmNRYW9xSk41TzJldEltVUpmRDc2UkpTcXdndFMz?=
- =?iso-2022-jp?B?NUUvODFnNHJiWGVGekwydmdFSjYzZm5UUGpOV3JmTWhRQTBGV0tvU1ow?=
- =?iso-2022-jp?B?Wm5rRzBBclFKcGxoaXpidE4yNzlYL1dqeGI3Qmo0b0RTMXpWNDlCL1pT?=
- =?iso-2022-jp?B?YWlVdFpNZG1kUFkyUk5xOGlGdkRRelRzZEdpOFl4RUxGTEs2RDQ4a1ZE?=
- =?iso-2022-jp?B?SGxCL0IwcE0yYUt1MFcrY2NQSU9ZVllPelEyeTE5Y3J3VjFLSXVITXZL?=
- =?iso-2022-jp?B?ZUJIM016dms1eGRSS2FVVDlJcjBlZVkzY1dlSnFFays5L0NMckhFQUFx?=
- =?iso-2022-jp?B?ZEsrY3ozZTUvMjFUK1BEa2kxblFyNmI4bStlZ1V2NWVSajhJNlRWc3Fi?=
- =?iso-2022-jp?B?RmtKM0dFdmR4TWV0dmM5dno0WTNMenk5WFRNSmNJRjRIZENYdkQxaWRC?=
- =?iso-2022-jp?B?R1VaOExabjdHK3lHOTg5MTdpNWVMT3F6N1ZKTG5yRDVEanpiSHZaazdu?=
- =?iso-2022-jp?B?UjVjT0ZIVGtrRzZvcTUxRTFHRlp5RW54cWl3b0V4b1NManJZcGhVdmJ3?=
- =?iso-2022-jp?B?Sk9lMGtValZ1dU00QjVrRDd2eERueVRjOVdqVjF4NzE0ZDVoZnBpV2xv?=
- =?iso-2022-jp?B?OXZpUDdrb3Fsa0NhRXllSzJqTG10VlVnWjhwVGpxUnMvenIxLzRTZmRo?=
- =?iso-2022-jp?B?SWxLMHlBTk44OEFlZDZzZHZqSVhsQlVsN1NBdWRQdUp2NmRENVdhRzkv?=
- =?iso-2022-jp?B?RS8wMkUzekRWOTQ1clFsbVFZZGZ3TWw2RHd0THVQTTN3KzgvWmg4QlhX?=
- =?iso-2022-jp?B?L0hCZkh2M0g1cENyRng5aG5aSlBWMkVBa2d1Zi90UmJvWGNneUFGU096?=
- =?iso-2022-jp?B?anYyRC9TWHkxWjkvK1pwTVNURGV2NUdyL2FpRGxhazl5dk1XWE50bmo1?=
- =?iso-2022-jp?B?WGlHWG9uV2s3RU82c3E1UjRpcFJqb2J2NElnQXZHTEJ1RTgxajJBeFU5?=
- =?iso-2022-jp?B?c1FQREU1OHdkMmVjSkZsWVgzRkpzdzZSa3lYdEFVSDcxeHZYZEdSZXRx?=
- =?iso-2022-jp?B?U2NKOFg3NUt3Nm9QcXBUb1RsOXJkRE4rNkFSbUFmWnFmdDQzTWpvTjVH?=
- =?iso-2022-jp?B?RGZGV1hCVTdCeHFHdlpHRi9zZG1WaFZkbW1oUy9nNC84ZFFVUVZaeWJ5?=
- =?iso-2022-jp?B?NHdIWkd4czhNc0d1TjVGN1Zqcmd5QjdUcXpRZkJlcDV3RU9XZ0VBRkZ4?=
- =?iso-2022-jp?B?TEZWSXg0cWI2d1FJaC9PVXZIUW5pU2ZwR3FJSTZRdkpwSVh3aVJsOEJ3?=
- =?iso-2022-jp?B?azJ6cEJ6TGFjQUl5dmFOZVVtb2JMMnRnWm1WWEpvcnUveWdJUGpsaHU4?=
- =?iso-2022-jp?B?YlBveGMxMlF6dUcwdi9BQmEveGZSZGpTd1dTK3N3ejVrR2dHVys3SmhY?=
- =?iso-2022-jp?B?bGRrazM4OEc4dWxBNHo4ZGQ2OEhrVEx6Nndwd0VNcDdrVzJTVnlJY3NS?=
- =?iso-2022-jp?B?SHM4NXBXU3pwa2lHWjI5NVUwcTVDU2NPdUc2d2RaUXU2WnZCeDB0eUdI?=
- =?iso-2022-jp?B?Q010Vyt4Zkxxbm9ZR2pXdnovbUg2RUd0d2hpcnIvQ0tpb0RKUS9hbDZH?=
- =?iso-2022-jp?B?NG1vaExwWEIxblJ4T0JnSW5CRUhFNm5pZUlWeHV3Y3R5RlRFVldLRUEz?=
- =?iso-2022-jp?B?dVJDNFhrb1pwTzdsU0xYVit2ZGIzZ2NZTFZFcXBlZVlMUDBPY2R0czhS?=
- =?iso-2022-jp?B?cjRGY2FHbUgyT1BuLzlFUVgxTkhVOU1hMExYVkRVY0xoeGtvNzRRSTcv?=
- =?iso-2022-jp?B?SVQ3SnVrcnJvTWlGMXBPaGpOWGFsNmVpM0FlU1VlRzBYZ293OEI1Z1JL?=
- =?iso-2022-jp?B?Ym5RTzdieTdkZDRyU1B1d3lXMVN6aFBseWRYNkRyT1BreTFJRHdjOER5?=
- =?iso-2022-jp?B?cTZsbHpWSkdFbk5DUkRIRTk5Y09GREJkNi9SOFVwRVloRjhDNHAzdVpW?=
- =?iso-2022-jp?B?OEczaW1sSTlpTnRMaC9oekFIUHIzTXZqNVpWOHBJaExndDh1QW5uR0cr?=
- =?iso-2022-jp?B?ZElKVWk4V0czUVZHVUhSbGd5MmRCMjZEYnZZRTFBZ1pvV2dRL2YzQ2dD?=
- =?iso-2022-jp?B?SWZGQVFXVmgrcGFxVFRvNUJQNnBtTWMxWWd5WXVkOGNLWXlpcERMVnlX?=
- =?iso-2022-jp?B?UjNQRTZKV2Z4OHJybDNuT3FDdnpyYklnT0E9PQ==?=
-Content-Type: text/plain; charset="iso-2022-jp"
+ =?us-ascii?Q?llL1AwiHrnz9zNataza6NxQtwNSJSNqmn0umSnkrcIHJdtKwKHghCTQuHrbP?=
+ =?us-ascii?Q?0zxGNRwmnxdL0CJ3UFE5XxofOtnu19Qr16MAIj54rtEyn1d1rWCXTVYPNTNA?=
+ =?us-ascii?Q?AQuzdRM3dSCg/4CZL1wEtG//XPoUym5q2RIjAoHLR5dzKEdEMVdXeuK2joDd?=
+ =?us-ascii?Q?zB50BInGqwHBtjNpmq3qoyqGQrKr5ARfCmOV/MiCj2pt0WsDtYnagz0m/xfp?=
+ =?us-ascii?Q?C19b5Rt2p1+n7p2myhG+g6rNdbg4w5NK4ubFccwa4AZ+VqgbWaLvlk+JpE6y?=
+ =?us-ascii?Q?+6u87DAV56OvJZ80P4dcWDKwK/nrEPCagBhSJZVOXB5l7naDP3J4rW1xpJUO?=
+ =?us-ascii?Q?9g7vNxXNp7rz2VmzecxGPRS9vE5RrYfSzKMKv2luOn5IYjIaC57Xvl6epAWL?=
+ =?us-ascii?Q?yg70SRWByUGt0a52/8/P0ylPLNIFfAFRCcSV406/JUm8MgGB0v7jkw2w3Mjc?=
+ =?us-ascii?Q?oQWl3v2nDwHtBkg8DZUSorgghSLD9p+qCLzZgafvhGgds9OhoP74s/1fjGq1?=
+ =?us-ascii?Q?Nl6wYdy5gIpRq2Jwdek3+hoeHIXDoB1CTrSn12TwhPOMqlqydoxxzyNGk5yA?=
+ =?us-ascii?Q?V7dqpmqXLVmmaTxNSa9YPKRQUK+RUpRugv4AqO3SehY4DLKKJr+bGRDi/lBr?=
+ =?us-ascii?Q?msYZAqxw30hcFWtkIf27l1oYlcVXI+oCrBmK0/duBHpSMInGusoS/uE8WY0U?=
+ =?us-ascii?Q?oaZ7QJpm2kPrBnljMwG+tu8MBNGik1gk9YBFL/1y5J1oYYDuZMRUbAOXf+VM?=
+ =?us-ascii?Q?PE7vIRrLgAxgWhFDjPB4ybuCRaQRYI35kPI1qMzuQL19gLQP0m5RKcuF8oiJ?=
+ =?us-ascii?Q?1gGi0ymr4s2gCpbx9YLk1t4fLPRTAiNtDG4/tXPWWjjTmnhEqBQ80ERJ7S9R?=
+ =?us-ascii?Q?OAjHN/iTf+IRmmmtQ/89b1AH2Z465tUdxSNPGfMONBh+fjwAaE2BBGSYSHfv?=
+ =?us-ascii?Q?Onv7csVwaiAK1k1jNvZAcP7BSWdGXxHfglNPum+UCxSfO9N8QurN07LMfdXf?=
+ =?us-ascii?Q?05MjWgsGmEBS5r3GFycWBMLqwmaCLGZto0fEcwXugEIbvW12LN7oqpIyvvtk?=
+ =?us-ascii?Q?dnuH3w+geTKwRPZh+FR9laCys361d9Bu16Kdb1A15jZhEU8bkUY1tse/+8a0?=
+ =?us-ascii?Q?eNUi1wt2PfzHJH7muSo8Ca7qbBd2gyxQTVpf2EFC6RMsT85UuoB1CXp+gZLi?=
+ =?us-ascii?Q?fk6UVi1rgXwcYfUOBjSAx3ZHx3IpLE3i8FCm3J/Y1BX+MF5w+ozQfTXO9m8z?=
+ =?us-ascii?Q?K961D8vNjGsFuu8r0vPHl9mP4TWoho9eEjxxociy27fGYS/1vHYUCcmaLjfz?=
+ =?us-ascii?Q?iMJ5GhQF7Nu45qoQGE5P+3QNx+gJ23T3n+Ct9kBJOfD8DX8aHdzcl2bTldzt?=
+ =?us-ascii?Q?kzq9yNleuarJrCbN4mGIhL4YlTZ/YVliPrzPEGCOZZhkdsHjlwGa49dUNkCG?=
+ =?us-ascii?Q?wXhHJWwbCWkR4LzeUznfvkLbhhftV6V+vdDdOyLOd/nfwhBT8l0qB3TnCGrb?=
+ =?us-ascii?Q?jDEG6TJnFOe7i4x7rIXUDzkGSzZMpojsScJG2EscwHPZ/nz8NkIu86FnfmwD?=
+ =?us-ascii?Q?Rec9Uq70OWFGEl8tbxT19VfNHioddIKWJ0uk3FQFLJ8EzDT+wVSMlzuMxXqz?=
+ =?us-ascii?Q?HQ=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -163,213 +127,310 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	HQSGaafZgVQvJFKOSHaA02wrPo5gdTAlLuIQjWHsG/LSWy6zf6dIpUqVkrqEGL4gj60Cxxr+o8LhkKuidvE/hTdwDjvpXGwQHi/S/RCurhe3O+W6/WmTn8AdJC9fFrKPi7+glBW7sV33DjzJzHvSTwhHr+Ll71m2U6ow7esYI9x8Ery7ICDDAMV2tzmr1atYkOzxhGwZnFb3BrGw2AWOeJnYs5B2azR9xrjztbShkBD2gbO9TC31oRsIUBeInmupxSmOoFQ6gGYQ7ScRpARRVQ6382sgICtifqsRtEsUoHnGic1fo/KpqPtIA0AwGXLv3P0XjmdCdHqBKQ3tc7LbqhLmkNJ1JzNz1Hwbelwbq2htU1WGG34vv8kQkJmcFAhPj3rKv9pBeCVE18/GzGlaUxdPaMFirXF8BKPgff+E081YsLIeUHDIGSE1QDRK0I2t/abTp7ON/uVLlTrNUYl8LhcFyyAzv6OqWbQdhwffdu92bY5+o0of8tNl36Ne47qlz0SADjcC31g5LEzEQpFB5fsRvxibdQnzop/AGvXLD44dK4LgrNckWSnOZiz628N6NPVee/z34nQtU8GSfj44oCCdXETOd4fSqe7Ol7a4IF3Y6WY//3A476oEhyxIVxn6
-X-OriginatorOrg: fujitsu.com
+X-OriginatorOrg: bp.renesas.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYAPR01MB6330.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2cb9eba7-7345-4a7b-5045-08dc547adc25
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Apr 2024 07:43:03.5406
+X-MS-Exchange-CrossTenant-AuthSource: OSAPR01MB1587.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 96fc12de-37e3-4f70-26da-08dc547b14e2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Apr 2024 07:44:38.7400
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BKNt5vfSIZTaRTNUQZnlxcTYoZKqp+AJbfOduUUQvoTGwV03/7hvY6aLv1v9Q2dDWGRX5K8tm2V8TEotqRDhTjMYpmnmETgNVgdtgCUW8eM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB8461
+X-MS-Exchange-CrossTenant-userprincipalname: qkpjAtrDlj2JpdMKoa1CjyZw4CRUjZHWHft1156iGNL7tiJnh8W7vLZHSUljdGAkDs9zVqIazwovG4SVMZCX6bxHvwv+KHPy3AxLJG7if3A=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSRPR01MB11660
 
-Hello James
+Hi Prabhakar,
 
-> Once the filesystem parts of resctrl move to fs/resctrl, it cannot rely o=
-n
-> definitions in x86's internal.h.
+Thanks for the patch.
+
+> -----Original Message-----
+> From: Prabhakar <prabhakar.csengg@gmail.com>
+> Sent: Wednesday, April 3, 2024 9:35 PM
+> Subject: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/Five So=
+C
 >=20
-> Move definitions in internal.h that need to be shared between the filesys=
-tem
-> and architecture code to header files that fs/resctrl can include.
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 >=20
-> Doing this separately means the filesystem code only moves between files =
-of
-> the same name, instead of having these changes mixed in too.
+> The IX45 block has additional mask registers (NMSK/IMSK/TMSK) as compared=
+ to the RZ/G2L (family)
+> SoC.
 >=20
-> Signed-off-by: James Morse <james.morse@arm.com>
+> Introduce masking/unmasking support for IRQ and TINT interrupts in IRQC c=
+ontroller driver. Two new
+> registers, IMSK and TMSK, are defined to handle masking on RZ/Five SoC. T=
+he implementation utilizes
+> a new data structure, `struct rzg2l_irqc_data`, to determine mask support=
+ for a specific controller
+> instance.
+>=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 > ---
->  arch/x86/include/asm/resctrl.h         |  3 +++
->  arch/x86/kernel/cpu/resctrl/core.c     |  5 ++++
->  arch/x86/kernel/cpu/resctrl/internal.h | 36 --------------------------
->  include/linux/resctrl.h                |  3 +++
->  include/linux/resctrl_types.h          | 30
-> +++++++++++++++++++++
->  5 files changed, 41 insertions(+), 36 deletions(-)
+> v1->v2
+> - Added IRQCHIP_MATCH() for RZ/Five
+> - Retaining a copy of OF data in priv
+> - Rebased the changes
+> ---
+>  drivers/irqchip/irq-renesas-rzg2l.c | 137 +++++++++++++++++++++++++++-
+>  1 file changed, 132 insertions(+), 5 deletions(-)
 >=20
-> diff --git a/arch/x86/include/asm/resctrl.h b/arch/x86/include/asm/resctr=
-l.h
-> index 491342f56811..746431c66fc4 100644
-> --- a/arch/x86/include/asm/resctrl.h
-> +++ b/arch/x86/include/asm/resctrl.h
-> @@ -218,6 +218,9 @@ int resctrl_arch_measure_l2_residency(void *_plr);  i=
-nt
-> resctrl_arch_measure_l3_residency(void *_plr);  void
-> resctrl_cpu_detect(struct cpuinfo_x86 *c);
+> diff --git a/drivers/irqchip/irq-renesas-rzg2l.c b/drivers/irqchip/irq-re=
+nesas-rzg2l.c
+> index f6484bf15e0b..6fa8d65605dc 100644
+> --- a/drivers/irqchip/irq-renesas-rzg2l.c
+> +++ b/drivers/irqchip/irq-renesas-rzg2l.c
+> @@ -37,6 +37,8 @@
+>  #define TSSEL_SHIFT(n)			(8 * (n))
+>  #define TSSEL_MASK			GENMASK(7, 0)
+>  #define IRQ_MASK			0x3
+> +#define IMSK				0x10010
+> +#define TMSK				0x10020
 >=20
-> +bool resctrl_arch_get_cdp_enabled(enum resctrl_res_level l); int
-> +resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable);
-> +
->  #else
->=20
->  static inline void resctrl_arch_sched_in(struct task_struct *tsk) {} dif=
-f --git
-> a/arch/x86/kernel/cpu/resctrl/core.c b/arch/x86/kernel/cpu/resctrl/core.c
-> index f94ad04023c3..c0fb2e22e110 100644
-> --- a/arch/x86/kernel/cpu/resctrl/core.c
-> +++ b/arch/x86/kernel/cpu/resctrl/core.c
-> @@ -306,6 +306,11 @@ static void rdt_get_cdp_l2_config(void)
->  	rdt_get_cdp_config(RDT_RESOURCE_L2);
->  }
->=20
-> +bool resctrl_arch_get_cdp_enabled(enum resctrl_res_level l) {
-> +	return rdt_resources_all[l].cdp_enabled; }
-> +
->  static void
->  mba_wrmsr_amd(struct rdt_domain *d, struct msr_param *m, struct
-> rdt_resource *r)  { diff --git a/arch/x86/kernel/cpu/resctrl/internal.h
-> b/arch/x86/kernel/cpu/resctrl/internal.h
-> index 56218193a8ba..0f7e3f10941b 100644
-> --- a/arch/x86/kernel/cpu/resctrl/internal.h
-> +++ b/arch/x86/kernel/cpu/resctrl/internal.h
-> @@ -15,12 +15,6 @@
->=20
->  #define L2_QOS_CDP_ENABLE		0x01ULL
->=20
-> -#define CQM_LIMBOCHECK_INTERVAL	1000
-> -
-> -#define MBM_CNTR_WIDTH_BASE		24
-> -#define MBM_OVERFLOW_INTERVAL		1000
-> -#define MAX_MBA_BW			100u
-> -#define MBA_IS_LINEAR			0x4
->  #define MBM_CNTR_WIDTH_OFFSET_AMD	20
->=20
->  #define RMID_VAL_ERROR			BIT_ULL(63)
-> @@ -210,29 +204,6 @@ struct rdtgroup {
->  	struct pseudo_lock_region	*plr;
+>  #define TSSR_OFFSET(n)			((n) % 4)
+>  #define TSSR_INDEX(n)			((n) / 4)
+> @@ -66,15 +68,25 @@ struct rzg2l_irqc_reg_cache {
+>  	u32	titsr[2];
 >  };
 >=20
-> -/* rdtgroup.flags */
-> -#define	RDT_DELETED		1
-> -
-> -/* rftype.flags */
-> -#define RFTYPE_FLAGS_CPUS_LIST	1
-> -
-> -/*
-> - * Define the file type flags for base and info directories.
-> - */
-> -#define RFTYPE_INFO			BIT(0)
-> -#define RFTYPE_BASE			BIT(1)
-> -#define RFTYPE_CTRL			BIT(4)
-> -#define RFTYPE_MON			BIT(5)
-> -#define RFTYPE_TOP			BIT(6)
-> -#define RFTYPE_RES_CACHE		BIT(8)
-> -#define RFTYPE_RES_MB			BIT(9)
-> -#define RFTYPE_DEBUG			BIT(10)
-> -#define RFTYPE_CTRL_INFO		(RFTYPE_INFO | RFTYPE_CTRL)
-> -#define RFTYPE_MON_INFO			(RFTYPE_INFO |
-> RFTYPE_MON)
-> -#define RFTYPE_TOP_INFO			(RFTYPE_INFO |
-> RFTYPE_TOP)
-> -#define RFTYPE_CTRL_BASE		(RFTYPE_BASE | RFTYPE_CTRL)
-> -#define RFTYPE_MON_BASE			(RFTYPE_BASE |
-> RFTYPE_MON)
-> -
->  /* List of all resource groups */
->  extern struct list_head rdt_all_groups;
->=20
-> @@ -370,13 +341,6 @@ static inline struct rdt_resource *resctrl_inc(struc=
-t
-> rdt_resource *res)
->  	return &hw_res->r_resctrl;
+> +/**
+> + * struct rzg2l_irqc_of_data - OF data structure
+> + * @mask_supported: Indicates if mask registers are available  */
+> +struct rzg2l_irqc_of_data {
+> +	bool	mask_supported;
+> +};
+> +
+>  /**
+>   * struct rzg2l_irqc_priv - IRQ controller private data structure
+>   * @base:	Controller's base address
+> + * @data:	OF data pointer
+>   * @fwspec:	IRQ firmware specific data
+>   * @lock:	Lock to serialize access to hardware registers
+>   * @cache:	Registers cache for suspend/resume
+>   */
+>  static struct rzg2l_irqc_priv {
+>  	void __iomem			*base;
+> +	const struct rzg2l_irqc_of_data	*data;
+>  	struct irq_fwspec		fwspec[IRQC_NUM_IRQ];
+>  	raw_spinlock_t			lock;
+>  	struct rzg2l_irqc_reg_cache	cache;
+> @@ -138,18 +150,102 @@ static void rzg2l_irqc_eoi(struct irq_data *d)
+>  	irq_chip_eoi_parent(d);
 >  }
 >=20
-> -static inline bool resctrl_arch_get_cdp_enabled(enum resctrl_res_level l=
-) -{
-> -	return rdt_resources_all[l].cdp_enabled;
-> -}
-> -
-> -int resctrl_arch_set_cdp_enabled(enum resctrl_res_level l, bool enable);
-> -
->  /*
->   * To return the common struct rdt_resource, which is contained in struc=
-t
->   * rdt_hw_resource, walk the resctrl member of struct rdt_hw_resource.
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h index
-> f786ffceeda3..00cc0457af50 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-> @@ -41,6 +41,9 @@ int proc_resctrl_show(struct seq_file *m,
->   */
->  #define RESCTRL_MAX_CBM			32
+> +static void rzg2l_irqc_mask_irq_interrupt(struct rzg2l_irqc_priv *priv,
+> +					  unsigned int hwirq)
+> +{
+> +	u32 imsk =3D readl_relaxed(priv->base + IMSK);
+> +	u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
+> +
+> +	writel_relaxed(imsk | bit, priv->base + IMSK); }
+> +
+> +static void rzg2l_irqc_unmask_irq_interrupt(struct rzg2l_irqc_priv *priv=
+,
+> +					    unsigned int hwirq)
+> +{
+> +	u32 imsk =3D readl_relaxed(priv->base + IMSK);
+> +	u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
+> +
+> +	writel_relaxed(imsk & ~bit, priv->base + IMSK); }
+> +
+> +static void rzg2l_irqc_mask_tint_interrupt(struct rzg2l_irqc_priv *priv,
+> +					   unsigned int hwirq)
+> +{
+> +	u32 tmsk =3D readl_relaxed(priv->base + TMSK);
+> +	u32 bit =3D BIT(hwirq - IRQC_TINT_START);
+> +
+> +	writel_relaxed(tmsk | bit, priv->base + TMSK); }
+> +
+> +static void rzg2l_irqc_unmask_tint_interrupt(struct rzg2l_irqc_priv *pri=
+v,
+> +					     unsigned int hwirq)
+> +{
+> +	u32 tmsk =3D readl_relaxed(priv->base + TMSK);
+> +	u32 bit =3D BIT(hwirq - IRQC_TINT_START);
+> +
+> +	writel_relaxed(tmsk & ~bit, priv->base + TMSK); }
+> +
+> +/* Must be called while priv->lock is held */ static void
+> +rzg2l_irqc_mask_once(struct rzg2l_irqc_priv *priv, unsigned int hwirq)
+> +{
+> +	if (!priv->data->mask_supported)
+> +		return;
+> +
+> +	if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUNT)
+> +		rzg2l_irqc_mask_irq_interrupt(priv, hwirq);
+> +	else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_IRQ)
+> +		rzg2l_irqc_mask_tint_interrupt(priv, hwirq); }
+> +
+> +static void rzg2l_irqc_mask(struct irq_data *d) {
+> +	struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+> +
+> +	raw_spin_lock(&priv->lock);
+> +	rzg2l_irqc_mask_once(priv, irqd_to_hwirq(d));
+> +	raw_spin_unlock(&priv->lock);
+> +	irq_chip_mask_parent(d);
+> +}
+> +
+> +/* Must be called while priv->lock is held */ static void
+> +rzg2l_irqc_unmask_once(struct rzg2l_irqc_priv *priv, unsigned int
+> +hwirq) {
+> +	if (!priv->data->mask_supported)
+> +		return;
+> +
+> +	if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUNT)
+> +		rzg2l_irqc_unmask_irq_interrupt(priv, hwirq);
+> +	else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_IRQ)
+> +		rzg2l_irqc_unmask_tint_interrupt(priv, hwirq); }
+> +
+> +static void rzg2l_irqc_unmask(struct irq_data *d) {
+> +	struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+> +
+> +	raw_spin_lock(&priv->lock);
+> +	rzg2l_irqc_unmask_once(priv, irqd_to_hwirq(d));
+> +	raw_spin_unlock(&priv->lock);
+> +	irq_chip_unmask_parent(d);
+> +}
+> +
+>  static void rzg2l_tint_irq_endisable(struct irq_data *d, bool enable)  {
+> +	struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+>  	unsigned int hw_irq =3D irqd_to_hwirq(d);
 >=20
-> +extern unsigned int resctrl_rmid_realloc_limit; extern unsigned int
-> +resctrl_rmid_realloc_threshold;
-> +
-
-These two variables has been defined.
- 44 extern unsigned int resctrl_rmid_realloc_limit;
- 45 extern unsigned int resctrl_rmid_realloc_threshold;
-400 extern unsigned int resctrl_rmid_realloc_threshold;
-401 extern unsigned int resctrl_rmid_realloc_limit;
-
-Best regards,
-Shaopeng TAN
-
->  /**
->   * struct pseudo_lock_region - pseudo-lock region information
->   * @s:			Resctrl schema for the resource to which this
-> diff --git a/include/linux/resctrl_types.h b/include/linux/resctrl_types.=
-h
-> index 4788bd95dac6..fe0b10b589c0 100644
-> --- a/include/linux/resctrl_types.h
-> +++ b/include/linux/resctrl_types.h
-> @@ -7,6 +7,36 @@
->  #ifndef __LINUX_RESCTRL_TYPES_H
->  #define __LINUX_RESCTRL_TYPES_H
+>  	if (hw_irq >=3D IRQC_TINT_START && hw_irq < IRQC_NUM_IRQ) {
+> -		struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
+>  		u32 offset =3D hw_irq - IRQC_TINT_START;
+>  		u32 tssr_offset =3D TSSR_OFFSET(offset);
+>  		u8 tssr_index =3D TSSR_INDEX(offset);
+>  		u32 reg;
 >=20
-> +#define CQM_LIMBOCHECK_INTERVAL	1000
-> +
-> +#define MBM_CNTR_WIDTH_BASE		24
-> +#define MBM_OVERFLOW_INTERVAL		1000
-> +#define MAX_MBA_BW			100u
-> +#define MBA_IS_LINEAR			0x4
-> +
-> +/* rdtgroup.flags */
-> +#define	RDT_DELETED		1
-> +
-> +/* rftype.flags */
-> +#define RFTYPE_FLAGS_CPUS_LIST	1
-> +
-> +/*
-> + * Define the file type flags for base and info directories.
-> + */
-> +#define RFTYPE_INFO			BIT(0)
-> +#define RFTYPE_BASE			BIT(1)
-> +#define RFTYPE_CTRL			BIT(4)
-> +#define RFTYPE_MON			BIT(5)
-> +#define RFTYPE_TOP			BIT(6)
-> +#define RFTYPE_RES_CACHE		BIT(8)
-> +#define RFTYPE_RES_MB			BIT(9)
-> +#define RFTYPE_DEBUG			BIT(10)
-> +#define RFTYPE_CTRL_INFO		(RFTYPE_INFO | RFTYPE_CTRL)
-> +#define RFTYPE_MON_INFO			(RFTYPE_INFO |
-> RFTYPE_MON)
-> +#define RFTYPE_TOP_INFO			(RFTYPE_INFO |
-> RFTYPE_TOP)
-> +#define RFTYPE_CTRL_BASE		(RFTYPE_BASE | RFTYPE_CTRL)
-> +#define RFTYPE_MON_BASE			(RFTYPE_BASE |
-> RFTYPE_MON)
-> +
->  /* Reads to Local DRAM Memory */
->  #define READS_TO_LOCAL_MEM		BIT(0)
+>  		raw_spin_lock(&priv->lock);
+> +		if (enable)
+> +			rzg2l_irqc_unmask_once(priv, hw_irq);
+> +		else
+> +			rzg2l_irqc_mask_once(priv, hw_irq);
+>  		reg =3D readl_relaxed(priv->base + TSSR(tssr_index));
+>  		if (enable)
+>  			reg |=3D TIEN << TSSEL_SHIFT(tssr_offset); @@ -157,6 +253,13 @@ stati=
+c void
+> rzg2l_tint_irq_endisable(struct irq_data *d, bool enable)
+>  			reg &=3D ~(TIEN << TSSEL_SHIFT(tssr_offset));
+>  		writel_relaxed(reg, priv->base + TSSR(tssr_index));
+>  		raw_spin_unlock(&priv->lock);
+> +	} else {
+> +		raw_spin_lock(&priv->lock);
+> +		if (enable)
+> +			rzg2l_irqc_unmask_once(priv, hw_irq);
+> +		else
+> +			rzg2l_irqc_mask_once(priv, hw_irq);
+> +		raw_spin_unlock(&priv->lock);
+>  	}
+>  }
 >=20
+> @@ -324,8 +427,8 @@ static struct syscore_ops rzg2l_irqc_syscore_ops =3D =
+{  static const struct
+> irq_chip irqc_chip =3D {
+>  	.name			=3D "rzg2l-irqc",
+>  	.irq_eoi		=3D rzg2l_irqc_eoi,
+> -	.irq_mask		=3D irq_chip_mask_parent,
+> -	.irq_unmask		=3D irq_chip_unmask_parent,
+> +	.irq_mask		=3D rzg2l_irqc_mask,
+> +	.irq_unmask		=3D rzg2l_irqc_unmask,
+
+I feel this will be clean, if we have=20
+
+static const struct irq_chip rzg2l_irqc_chip =3D {
+	.name			=3D "rzg2l-irqc",
+	...
+	.irq_mask		=3D irq_chip_mask_parent,
+	.irq_unmask		=3D irq_chip_unmask_parent,
+	....
+};
+
+static const struct irq_chip rzfive_irqc_chip =3D {
+	.name			=3D "rzfive-irqc",
+	...
+	.irq_mask		=3D rzfive_irqc_mask,
+	.irq_unmask		=3D rzfive_irqc_unmask,
+	....
+};
+
+And passing this in rzg2l_irqc_init() and rzfive_irqc_init(), see below
+
+return rzg2l_irqc_init_helper(node, parent, & rzg2l_irqc_chip);
+return rzg2l_irqc_init_helper(node, parent, & rzfive_irqc_chip);
+
+
+>  	.irq_disable		=3D rzg2l_irqc_irq_disable,
+>  	.irq_enable		=3D rzg2l_irqc_irq_enable,
+>  	.irq_get_irqchip_state	=3D irq_chip_get_parent_state,
+> @@ -401,7 +504,16 @@ static int rzg2l_irqc_parse_interrupts(struct rzg2l_=
+irqc_priv *priv,
+>  	return 0;
+>  }
+>=20
+> -static int rzg2l_irqc_init(struct device_node *node, struct device_node =
+*parent)
+> +static const struct rzg2l_irqc_of_data rzg2l_irqc_mask_supported_data =
+=3D {
+> +	.mask_supported =3D true,
+> +};
+> +
+> +static const struct rzg2l_irqc_of_data rzg2l_irqc_default_data =3D {
+> +	.mask_supported =3D false,
+> +};
+> +
+> +static int rzg2l_irqc_init(struct device_node *node, struct device_node =
+*parent,
+> +			   const struct rzg2l_irqc_of_data *of_data)
+
+Maybe rename this as rzg2l_irqc_init_helper()
+>  {
+>  	struct irq_domain *irq_domain, *parent_domain;
+>  	struct platform_device *pdev;
+> @@ -422,6 +534,8 @@ static int rzg2l_irqc_init(struct device_node *node, =
+struct device_node
+> *parent)
+>  	if (!rzg2l_irqc_data)
+>  		return -ENOMEM;
+>=20
+> +	rzg2l_irqc_data->data =3D of_data;
+> +
+>  	rzg2l_irqc_data->base =3D devm_of_iomap(&pdev->dev, pdev->dev.of_node, =
+0, NULL);
+>  	if (IS_ERR(rzg2l_irqc_data->base))
+>  		return PTR_ERR(rzg2l_irqc_data->base); @@ -472,8 +586,21 @@ static int
+> rzg2l_irqc_init(struct device_node *node, struct device_node *parent)
+>  	return ret;
+>  }
+>=20
+> +static int __init rzg2l_irqc_default_init(struct device_node *node,
+> +					  struct device_node *parent)
+> +{
+> +	return rzg2l_irqc_init(node, parent, &rzg2l_irqc_default_data); }
+> +
+> +static int __init rzg2l_irqc_mask_supported_init(struct device_node *nod=
+e,
+> +						 struct device_node *parent)
+> +{
+> +	return rzg2l_irqc_init(node, parent, &rzg2l_irqc_mask_supported_data);
+> +}
+> +
+>  IRQCHIP_PLATFORM_DRIVER_BEGIN(rzg2l_irqc)
+> -IRQCHIP_MATCH("renesas,rzg2l-irqc", rzg2l_irqc_init)
+Retain this name
+
+> +IRQCHIP_MATCH("renesas,rzg2l-irqc", rzg2l_irqc_default_init)
+> +IRQCHIP_MATCH("renesas,r9a07g043f-irqc",
+> +rzg2l_irqc_mask_supported_init)
+Maybe rename this as rzfive_irqc_init ??
+
+Cheers,
+Biju
+
+>  IRQCHIP_PLATFORM_DRIVER_END(rzg2l_irqc)
+>  MODULE_AUTHOR("Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>")=
+;
+>  MODULE_DESCRIPTION("Renesas RZ/G2L IRQC Driver");
 > --
-> 2.39.2
+> 2.34.1
+>=20
 
 
