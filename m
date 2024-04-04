@@ -1,151 +1,187 @@
-Return-Path: <linux-kernel+bounces-131965-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBFCD898E07
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:35:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D1F69898DDC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:24:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8030C1F2AF75
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:35:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F08EB1C2283A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:23:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699441339B1;
-	Thu,  4 Apr 2024 18:35:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1813130A69;
+	Thu,  4 Apr 2024 18:23:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kR0/QCx9"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CaItbT5t"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0BF131BDA;
-	Thu,  4 Apr 2024 18:35:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 334B52D7A8
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 18:23:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712255703; cv=none; b=YwSz8L/6twm0rdcWkibmCyv4nJR9Wf7EQSSeBypMfSPtxZGYu35j4mbPGal6dMg39V3r0ILCLl1dOWCt+cclZYTg3SCOyqv5DxLr7ttDOxiTIctBQTW11BnExSwzCtwHdggiDEUdohuTfpNZl1Ht+W1RKp96QV3M0Vjqsqz37rY=
+	t=1712255030; cv=none; b=Qg7RR/zB3gxLkBf3zlvvkc9W8u0rsTasb1wonoJliWjLCOvLZ2030W/HM5uKRFYxWluYBrOuibwJQTm8X/+NkJsBWqyi1Xhj2VVWjVkKYO69E4eFyZ6csQegADod6EEK084iqIfjHvaRWD1GpqGyvaR7rbpuALeDoJLP74rGRNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712255703; c=relaxed/simple;
-	bh=gGIP0VcmWVeb4FjGcfVs8G6gKQwv5j8GvxXyZ+Ab4dY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eZWEomQuVMRWyIZv8rdYpwToHWkLMsWXPWgep4OgpfAdWo1dE9clHNefADQ6ORj34lzGNKrDURcZXuPNKvpDWviWu1gHDkxLBP1N/N57ILJyTDg88QS3rWeW2XPrfHHLjPVQlJX5y54hv1sTV/KauOVmooiDNZEYJzaTTzOn+U0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kR0/QCx9; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712255702; x=1743791702;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gGIP0VcmWVeb4FjGcfVs8G6gKQwv5j8GvxXyZ+Ab4dY=;
-  b=kR0/QCx9PhXt6n+Hx00fdn1zaOMTBLZP9qP0PO1t3nWyzacQUFm5Wsh+
-   zsPPPXjgaSTIw6bvT5a+peQ/hGjI6XVmHPf2KeDf1qImiVrPUwRsbW7+z
-   hhq1QwXBFND0vIksoiBgN8RF4TCjP5IGOrTu/vnOJ6tO0SDMaSrLYaHr6
-   l1G0hHzYiu+XuDwGs/JcY1Miqj83K+233YzR6loVkoTdUyxDQm5iohfme
-   AmxuQSWYEEu+BmFxTXiOmeMhZNwZVCc4zjgvQptVCBRAj0fWm0slZoxZ7
-   AE/Z8QHVnK7wUYVR3RQqiiyN4pjFmJddeOjNBIwrkmBCQivgy7LAsxoph
-   w==;
-X-CSE-ConnectionGUID: l53S2XOaSC+HuQ5Mhx4gfg==
-X-CSE-MsgGUID: 9FLdbH+7STq1i0YMTQMxYw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7751320"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="7751320"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 11:34:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="937086996"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="937086996"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Apr 2024 11:34:55 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id C0711CB3; Thu,  4 Apr 2024 21:34:54 +0300 (EEST)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Zhang Rui <rui.zhang@intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	linux-kernel@vger.kernel.org,
-	linux-acpi@vger.kernel.org
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <lenb@kernel.org>
-Subject: [PATCH v2 4/4] ACPI: x86: Move LPSS to x86 folder
-Date: Thu,  4 Apr 2024 21:23:42 +0300
-Message-ID: <20240404183448.3310449-5-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20240404183448.3310449-1-andriy.shevchenko@linux.intel.com>
-References: <20240404183448.3310449-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1712255030; c=relaxed/simple;
+	bh=FDRLSaZ4Bfk06GmAs1QpfTtlBBrx0Z0fIAFfyLXCR0s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=We96yHd6aPNh0SRPzSo0KvYWy6IivVHo8wTppHdG8FRHCZWLYXr5ScKb8jszBpNH07XbTx0PcAQMApRG5s8TZiLE9edSPcG0tsdFJH/24rHdtoq3Aur5/szqMBD/NxXk/j07qJwzlAtRw93I4uvmdO5BXm4zn92B1em1l5OcdW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CaItbT5t; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712255028;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=osZUMx3CD6uxERiHrcdXifX+vl+p+oisHDar5m0G6LY=;
+	b=CaItbT5tIlhyGeCRfMkRRoimhWJor9QEIRXT4sB09ynyRSN6YknN7uDydry21OxK8fBLEc
+	4VUeo9aEjeXt+JEiafM8bPJt1L4TRLtDO6DNSJIzC4h0N91QV9sew0aoaWAPqOMc7/kH9o
+	nFde8EHu9NTlMCy+EPLdw8f191SOkqg=
+Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
+ [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-55-vuGlLF-ENnKO2FVaHPNiiQ-1; Thu, 04 Apr 2024 14:23:46 -0400
+X-MC-Unique: vuGlLF-ENnKO2FVaHPNiiQ-1
+Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2d85b4ca694so7523611fa.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 11:23:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712255025; x=1712859825;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=osZUMx3CD6uxERiHrcdXifX+vl+p+oisHDar5m0G6LY=;
+        b=HLfUAX9NINsCSgVHc7y2XqMS6v6zk4CYJEcQU0OYQYW1xWk6WI8kgRIZKI3Cne/RKf
+         H1F0eZJZF6ICDW6bNY8ELFhKeCphEnr4iUE1ok4P+DlwZQTwIlNOIz1z/vPUTiV7CtSJ
+         gC5zHmI0mrpPIEypyZIDcfEIx1i9+TjGIz44NNeEMup5UIBS6NMM+OKOa/5UYasxcqIs
+         Lk633ux1laSD0SFBORYG6Wo+Ztm417ilg301IjcmND9eXs4EjlXwaDC4c+IFxiF6nbi1
+         QbiWHL0GbTrH3ZIEZI8k7gzj17IoMVMFc6iPmmn084IXpKoFnqUrSG8IRWnjK7E5L7pc
+         fmbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWcF6Z83rZD3dWXoleGegtpUY12n7QVdOoYXiHc//N/vAfpLxgEbo5+OQfNjYGyIvEbpzLAWxkGYNDwTT21O412d9Al6vSNJ//opsmZ
+X-Gm-Message-State: AOJu0Yw1AFhmCdcX2WJcHaT+OUXKBqEvlLjUbfmre0Ue4kE05zkAHfQj
+	t06KZahQf3vg9g1XyCNp/xxlN16mwqyTIzun47P3tAleKiSAdsnkh4xh6IIUxkCPZ2RXkELvzTP
+	LCgTSgRe10KG9VnwJVW3nuS306+qxVnWV7eWcftjviFxBPqaRq9ucElzGVG+avg==
+X-Received: by 2002:a2e:8804:0:b0:2d4:7532:92f2 with SMTP id x4-20020a2e8804000000b002d4753292f2mr2367394ljh.45.1712255025151;
+        Thu, 04 Apr 2024 11:23:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHwhIM94bRxD1bosPHrwuTlesX51tzJFoEVOBlhbyLHcRKjIAQIzW9090jx3OW83tRlaiNs5Q==
+X-Received: by 2002:a2e:8804:0:b0:2d4:7532:92f2 with SMTP id x4-20020a2e8804000000b002d4753292f2mr2367379ljh.45.1712255024690;
+        Thu, 04 Apr 2024 11:23:44 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c743:de00:7030:120f:d1c9:4c3c? (p200300cbc743de007030120fd1c94c3c.dip0.t-ipconnect.de. [2003:cb:c743:de00:7030:120f:d1c9:4c3c])
+        by smtp.gmail.com with ESMTPSA id 5-20020a05600c024500b004161b59e230sm14271wmj.41.2024.04.04.11.23.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 11:23:44 -0700 (PDT)
+Message-ID: <b3ea925f-bd47-4f54-bede-3f0d7471e3d7@redhat.com>
+Date: Thu, 4 Apr 2024 20:23:43 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/4] KVM: x86/mmu: Rework marking folios
+ dirty/accessed
+To: Sean Christopherson <seanjc@google.com>
+Cc: David Matlack <dmatlack@google.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ David Stevens <stevensd@chromium.org>, Matthew Wilcox <willy@infradead.org>
+References: <20240320005024.3216282-1-seanjc@google.com>
+ <4d04b010-98f3-4eae-b320-a7dd6104b0bf@redhat.com>
+ <CALzav=eLH+V_5Y6ZWsRkmnbEb6fxPa55B7xyWxP3o6qsrs_nHA@mail.gmail.com>
+ <a2fff462-dfe6-4979-a7b2-131c6e0b5017@redhat.com>
+ <ZgygGmaEuddZGKyX@google.com>
+ <ca1f320b-dc06-48e0-b4f5-ce860a72f0e2@redhat.com>
+ <Zg3V-M3iospVUEDU@google.com>
+ <42dbf562-5eab-4f82-ad77-5ee5b8c79285@redhat.com>
+ <Zg7j2D6WFqcPaXFB@google.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <Zg7j2D6WFqcPaXFB@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-LPSS is built solely for x86, move it to the respective folder.
+On 04.04.24 19:31, Sean Christopherson wrote:
+> On Thu, Apr 04, 2024, David Hildenbrand wrote:
+>> On 04.04.24 00:19, Sean Christopherson wrote:
+>>> Hmm, we essentially already have an mmu_notifier today, since secondary MMUs need
+>>> to be invalidated before consuming dirty status.  Isn't the end result essentially
+>>> a sane FOLL_TOUCH?
+>>
+>> Likely. As stated in my first mail, FOLL_TOUCH is a bit of a mess right now.
+>>
+>> Having something that makes sure the writable PTE/PMD is dirty (or
+>> alternatively sets it dirty), paired with MMU notifiers notifying on any
+>> mkclean would be one option that would leave handling how to handle dirtying
+>> of folios completely to the core. It would behave just like a CPU writing to
+>> the page table, which would set the pte dirty.
+>>
+>> Of course, if frequent clearing of the dirty PTE/PMD bit would be a problem
+>> (like we discussed for the accessed bit), that would not be an option. But
+>> from what I recall, only clearing the PTE/PMD dirty bit is rather rare.
+> 
+> And AFAICT, all cases already invalidate secondary MMUs anyways, so if anything
+> it would probably be a net positive, e.g. the notification could more precisely
+> say that SPTEs need to be read-only, not blasted away completely.
+> 
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/acpi/Makefile                    | 1 -
- drivers/acpi/internal.h                  | 3 ++-
- drivers/acpi/x86/Makefile                | 1 +
- drivers/acpi/{acpi_lpss.c => x86/lpss.c} | 2 +-
- 4 files changed, 4 insertions(+), 3 deletions(-)
- rename drivers/acpi/{acpi_lpss.c => x86/lpss.c} (99%)
+As discussed, I think at least madvise_free_pte_range() wouldn't do 
+that. Notifiers would only get called later when actually zapping the 
+folio. So at least for some time, you would have the PTE not dirty, but 
+the SPTE writable or even dirty. So you'd have to set the page dirty 
+when zapping the SPTE ... and IMHO that is what we should maybe try to 
+avoid :)
 
-diff --git a/drivers/acpi/Makefile b/drivers/acpi/Makefile
-index 6f4187a34f41..39ea5cfa8326 100644
---- a/drivers/acpi/Makefile
-+++ b/drivers/acpi/Makefile
-@@ -45,7 +45,6 @@ acpi-y				+= ec.o
- acpi-$(CONFIG_ACPI_DOCK)	+= dock.o
- acpi-$(CONFIG_PCI)		+= pci_root.o pci_link.o pci_irq.o
- obj-$(CONFIG_ACPI_MCFG)		+= pci_mcfg.o
--acpi-$(CONFIG_PCI)		+= acpi_lpss.o
- acpi-y				+= acpi_apd.o
- acpi-y				+= acpi_platform.o
- acpi-y				+= acpi_pnp.o
-diff --git a/drivers/acpi/internal.h b/drivers/acpi/internal.h
-index ca72a0dc5715..60c483836756 100644
---- a/drivers/acpi/internal.h
-+++ b/drivers/acpi/internal.h
-@@ -69,7 +69,8 @@ void acpi_debugfs_init(void);
- #else
- static inline void acpi_debugfs_init(void) { return; }
- #endif
--#ifdef CONFIG_PCI
-+
-+#if defined(CONFIG_X86) && defined(CONFIG_PCI)
- void acpi_lpss_init(void);
- #else
- static inline void acpi_lpss_init(void) {}
-diff --git a/drivers/acpi/x86/Makefile b/drivers/acpi/x86/Makefile
-index 1f3c5fa84f9e..63c99509ed9d 100644
---- a/drivers/acpi/x86/Makefile
-+++ b/drivers/acpi/x86/Makefile
-@@ -1,6 +1,7 @@
- obj-$(CONFIG_ACPI)	+= acpi-x86.o
- acpi-x86-y		+= apple.o
- acpi-x86-y		+= cmos_rtc.o
-+acpi-x86-$(CONFIG_PCI)	+= lpss.o
- acpi-x86-y		+= s2idle.o
- acpi-x86-y		+= utils.o
- 
-diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/x86/lpss.c
-similarity index 99%
-rename from drivers/acpi/acpi_lpss.c
-rename to drivers/acpi/x86/lpss.c
-index a3d2d94be5c0..148e29c2c526 100644
---- a/drivers/acpi/acpi_lpss.c
-+++ b/drivers/acpi/x86/lpss.c
-@@ -25,7 +25,7 @@
- #include <linux/suspend.h>
- #include <linux/delay.h>
- 
--#include "internal.h"
-+#include "../internal.h"
- 
- #ifdef CONFIG_X86_INTEL_LPSS
- 
 -- 
-2.43.0.rc1.1.gbec44491f096
+Cheers,
+
+David / dhildenb
 
 
