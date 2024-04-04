@@ -1,210 +1,242 @@
-Return-Path: <linux-kernel+bounces-131745-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131749-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0351898B61
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:44:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 568FD898B67
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:45:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 477961F29DA6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:44:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B8DD6B22797
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:45:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE92512BEA7;
-	Thu,  4 Apr 2024 15:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC8E812B159;
+	Thu,  4 Apr 2024 15:45:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MtK9UE+G"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="YvCd9a4x";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="3anlJ1K2";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OXCfHVUq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="a/3xHjsv"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F2712AAF3
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 15:44:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41448129E66
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 15:45:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712245466; cv=none; b=a0LTWowLO+Oqr57O9aRMdAKjWSXTkmG14FqJPSzVptb39SB3B2PmrMPo31U79vkzJiBJ9q2ALM8sqjIZJpTHEy7Gns2HXEEacRjnWndRkBKzrUszLzBniNXiI4PIKrxo4kD3CcahB+TQvfdL6e/Cd1DRVwUeiAq3Tle+cH6pjQE=
+	t=1712245511; cv=none; b=ctfO+0FTfsp2MTmfIoGTaPDLJ23twK6tB0gi8puS801lSb7F6l60U97IkmSduklLI78+gSd0yNA9AurzyfmusPkVFS3yIe0ZbMDefZQ4zCBeUmzbKTx7II14A9437ItRKlVWwLgEhOj0AvK1CFdfeqUkafyL3YptmfuAxazREiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712245466; c=relaxed/simple;
-	bh=vUEXAE1ExZO22iPT/l5kPykxw4x6Cg0n7E0NIdHXubk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=u0D65s40RJp3cqyI2jUPnPs4kj6iRecjH/qEmrDtUv9a1ocihoTbDG3NsSZDMwkBCOhy6RKlzIdM5lCeQ4XptJ14CrK4nAtPeBNjw0W1eB0BFMNV+V77oxWIn4BZHcSug50BURaD8QiF9/5aNFNNyndn5XESZnl1w+0CZKsI3ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MtK9UE+G; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712245464;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=vSFCbNcwIq07vP682jf5aQYwrzaaEsHEuv2Mm/EFPIc=;
-	b=MtK9UE+GgYtWxMWaOGmqZ7Q6oE1wcSFIeXyPLbusnlosW+RdvN/DqLKEgKywg3tIQn+/Lo
-	VQMxy6ISen/2+dJxOzzEtxcEEcrKLAQQQZv2W6sO1Ics1EellMFhCw2zvIyImUOqlSqfZ6
-	djO6r2tbttc5Uo3ocn5NGFfYGb8+CmM=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-369-TzsA5RFtMbu9UdjAXBLz1A-1; Thu, 04 Apr 2024 11:44:21 -0400
-X-MC-Unique: TzsA5RFtMbu9UdjAXBLz1A-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3437032fe82so1171917f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 08:44:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712245460; x=1712850260;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vSFCbNcwIq07vP682jf5aQYwrzaaEsHEuv2Mm/EFPIc=;
-        b=B3zKMuUzZNPwH/WmqXfKGKRUWPuJ3wJx0Y9gRMPDwNp0ZpeBcWzmqbYL/8ufSisOY1
-         IVytXpEkqoBGvDmg+OZOIusD7StHS7OqLP49sFgtvU5DqM+tWeyapzcJI2vlUc619a1D
-         NcNFEGuFAEOCOp5KZ8SI29TkEcpgrrx27Q0kE7sn+izpRwMOj1agaT77S64z8zC4rYix
-         sVuVw0gc4cO163Rrp6YsP3AXTkRgR20TSd7TdzAUzIeCQ/SOZvqUPStOc/qPL31OAlNw
-         5msZDj8XMHtVse2SRCE7oKICJ/gNxN3IttitJWmpLsLJkWGPT0NLNgqnRBgb+ktaPzYK
-         Sccw==
-X-Forwarded-Encrypted: i=1; AJvYcCXseuOAiMum8TU8dObPXP1C1yfWOVKSmRJQUMpOhAvRyrXycnWzcZ/Eton1CXOISCBpw65qFtDE1Ktx3bMARQEdn8UFyJXkToE6JoJ/
-X-Gm-Message-State: AOJu0YyOu/TGkrR7hNBvkAiVrayQiddXWjRyn+oi2tYy1cdHuhtHII2z
-	lIAvgpE18el5L9ZjCOR602CoFiFaDrLT/fvhbeVWEQtQizJe7NWMc+9fGHnBe4ulI95OIIKD0O6
-	RXPSUIWlnLhPcBrp1NfPOAwhbeDhtf449k1LZI12Eps7nAf+k3lLFg5O7Ey49yw==
-X-Received: by 2002:adf:e702:0:b0:343:8022:dd08 with SMTP id c2-20020adfe702000000b003438022dd08mr3103487wrm.0.1712245460464;
-        Thu, 04 Apr 2024 08:44:20 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFN2CJF3oIK4dnV/TEXgxl3MIzYjlSGFX1sv9jk5lJQFvPHeGcLCBfb34ox+kHl6yHVh+2enw==
-X-Received: by 2002:adf:e702:0:b0:343:8022:dd08 with SMTP id c2-20020adfe702000000b003438022dd08mr3103464wrm.0.1712245460113;
-        Thu, 04 Apr 2024 08:44:20 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c743:de00:7030:120f:d1c9:4c3c? (p200300cbc743de007030120fd1c94c3c.dip0.t-ipconnect.de. [2003:cb:c743:de00:7030:120f:d1c9:4c3c])
-        by smtp.gmail.com with ESMTPSA id bs26-20020a056000071a00b003439b45ca08sm4625123wrb.17.2024.04.04.08.44.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 08:44:19 -0700 (PDT)
-Message-ID: <42dbf562-5eab-4f82-ad77-5ee5b8c79285@redhat.com>
-Date: Thu, 4 Apr 2024 17:44:18 +0200
+	s=arc-20240116; t=1712245511; c=relaxed/simple;
+	bh=konrS3PhfztvIx3bEw+f451qghlpR6Cm4TFvysrJ9Sw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Vm9Ib+3xdEAAwVysrwKvcO/aebYlb3xOUIxvyirpeZrWjJ+4DSYooda+R7GhUWMAqfHiIHVROSeXJMffoQQBrD9Bm/6PtaUBzsYi28vhOmRU6SKmJ7xIpVvgFwN9N1P36jXjJggVmUkb/I+XHUpa4ZyztBXGzQTzWeLuQT8e3Do=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=YvCd9a4x; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=3anlJ1K2; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=OXCfHVUq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=a/3xHjsv; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id AD0CB5F8A6;
+	Thu,  4 Apr 2024 15:45:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712245507; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=uVo10kz89o1MerHSNdsoxdo91ntoYyDbukfjJjRlFvM=;
+	b=YvCd9a4xXD4Vfov9r8Hq/a09gIv7ND3DZeVqCvuGHiOsvn45N6lVey2c1fq8fG1I2J1kWR
+	9Yc8gBtLYhL0l9nkwrv7O/RytBxXmTWjZZZYIDWcCWX/KyHs07xeavNsbETSFUxYWsdscN
+	8LmPpqOVVs7sGWYHYJAGdp09Qp18opw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712245507;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=uVo10kz89o1MerHSNdsoxdo91ntoYyDbukfjJjRlFvM=;
+	b=3anlJ1K2pPehBf/PVAnF4VSmLBGHNd/155UW7lTBliD0LudBmZG0mNgcO+UlL7dQCHlmVU
+	Roiwfy1k+VOWqrBw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712245506; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=uVo10kz89o1MerHSNdsoxdo91ntoYyDbukfjJjRlFvM=;
+	b=OXCfHVUqZHTTeGijXRik7Trbt3v7bD/tE9ZIEhZOfGTvs3w1qLOIOkQ2+7F74OoRd8+rzQ
+	EWucDOogsycPxpoJ4RSbKKiBzVysvxCpRexJshj+ruYvEz4s/YQm87WUinAye+3dTBl2zU
+	14HnvaMhlQv7faFlm9mpX6Qcy34Emv4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712245506;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=uVo10kz89o1MerHSNdsoxdo91ntoYyDbukfjJjRlFvM=;
+	b=a/3xHjsvgxYfRiqVMA2E3yjdTVbS9K5mrJsudmsDZG8g2yX8aL+2ODz90oA7xeC+r7tfyY
+	6shryOt7sl9nuMDg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9B31A139E8;
+	Thu,  4 Apr 2024 15:45:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id E9mSJALLDmYAIgAAn2gu4w
+	(envelope-from <dwagner@suse.de>); Thu, 04 Apr 2024 15:45:06 +0000
+From: Daniel Wagner <dwagner@suse.de>
+To: James Smart <james.smart@broadcom.com>
+Cc: Keith Busch <kbusch@kernel.org>,
+	Christoph Hellwig <hch@lst.de>,
+	Sagi Grimberg <sagi@grimberg.me>,
+	Hannes Reinecke <hare@suse.de>,
+	linux-nvme@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Daniel Wagner <dwagner@suse.de>
+Subject: [PATCH v4 0/5] nvme-fabrics: short-circuit connect retries
+Date: Thu,  4 Apr 2024 17:44:55 +0200
+Message-ID: <20240404154500.2101-1-dwagner@suse.de>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/4] KVM: x86/mmu: Rework marking folios
- dirty/accessed
-To: Sean Christopherson <seanjc@google.com>
-Cc: David Matlack <dmatlack@google.com>, Paolo Bonzini <pbonzini@redhat.com>,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- David Stevens <stevensd@chromium.org>, Matthew Wilcox <willy@infradead.org>
-References: <20240320005024.3216282-1-seanjc@google.com>
- <4d04b010-98f3-4eae-b320-a7dd6104b0bf@redhat.com>
- <CALzav=eLH+V_5Y6ZWsRkmnbEb6fxPa55B7xyWxP3o6qsrs_nHA@mail.gmail.com>
- <a2fff462-dfe6-4979-a7b2-131c6e0b5017@redhat.com>
- <ZgygGmaEuddZGKyX@google.com>
- <ca1f320b-dc06-48e0-b4f5-ce860a72f0e2@redhat.com>
- <Zg3V-M3iospVUEDU@google.com>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <Zg3V-M3iospVUEDU@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -2.80
+X-Spam-Flag: NO
 
-On 04.04.24 00:19, Sean Christopherson wrote:
-> On Wed, Apr 03, 2024, David Hildenbrand wrote:
->> On 03.04.24 02:17, Sean Christopherson wrote:
->>> On Tue, Apr 02, 2024, David Hildenbrand wrote:
->>> Aha!  But try_to_unmap_one() also checks that refcount==mapcount+1, i.e. will
->>> also keep the folio if it has been GUP'd.  And __remove_mapping() explicitly states
->>> that it needs to play nice with a GUP'd page being marked dirty before the
->>> reference is dropped.
->>
->>>
->>> 	 * Must be careful with the order of the tests. When someone has
->>> 	 * a ref to the folio, it may be possible that they dirty it then
->>> 	 * drop the reference. So if the dirty flag is tested before the
->>> 	 * refcount here, then the following race may occur:
->>>
->>> So while it's totally possible for KVM to get a W=1,D=0 PTE, if I'm reading the
->>> code correctly it's safe/legal so long as KVM either (a) marks the folio dirty
->>> while holding a reference or (b) marks the folio dirty before returning from its
->>> mmu_notifier_invalidate_range_start() hook, *AND* obviously if KVM drops its
->>> mappings in response to mmu_notifier_invalidate_range_start().
->>>
->>
->> Yes, I agree that it should work in the context of vmscan. But (b) is
->> certainly a bit harder to swallow than "ordinary" (a) :)
-> 
-> Heh, all the more reason to switch KVM x86 from (b) => (a).
+An rebase of Hannes two series which fix the TCP and RDMA transport to handle
+the DNR bit on connect attempts.
 
-:)
+For testing I extended the nvme/045 test case. I'll update the test case later
+when the current batch of blktest changes are done. Also this change depends on
+the extension of the debugfs interface of nvmet, which is also not yet merged.
 
-> 
->> As raised, if having a writable SPTE would imply having a writable+dirty
->> PTE, then KVM MMU code wouldn't have to worry about syncing any dirty bits
->> ever back to core-mm, so patch #2 would not be required. ... well, it would
->> be replaces by an MMU notifier that notifies about clearing the PTE dirty
->> bit :)
-> 
-> Hmm, we essentially already have an mmu_notifier today, since secondary MMUs need
-> to be invalidated before consuming dirty status.  Isn't the end result essentially
-> a sane FOLL_TOUCH?
+	echo "Renew host key on the controller and force reconnect"
 
-Likely. As stated in my first mail, FOLL_TOUCH is a bit of a mess right now.
+	new_hostkey="$(nvme gen-dhchap-key -n ${def_subsysnqn} 2> /dev/null)"
 
-Having something that makes sure the writable PTE/PMD is dirty (or 
-alternatively sets it dirty), paired with MMU notifiers notifying on any 
-mkclean would be one option that would leave handling how to handle 
-dirtying of folios completely to the core. It would behave just like a 
-CPU writing to the page table, which would set the pte dirty.
+	_set_nvmet_hostkey "${def_hostnqn}" "${new_hostkey}"
 
-Of course, if frequent clearing of the dirty PTE/PMD bit would be a 
-problem (like we discussed for the accessed bit), that would not be an 
-option. But from what I recall, only clearing the PTE/PMD dirty bit is 
-rather rare.
+	# Force a reconnect
+	nvmedev=$(_find_nvme_dev "${def_subsysnqn}")
+	cntlid="$(nvme id-ctrl "/dev/${nvmedev}" | grep cntlid | awk '{print $3}')"
+	echo "fatal" > /sys/kernel/debug/nvmet/"${def_subsysnqn}/ctrl$((${cntlid}))"/state
+	nvmf_wait_for_ctrl_delete "${nvmedev}"
 
-I think this GUP / GUP-user setting of folio dirty bits is a bit of a 
-mess, but it seems to be working so far, so ... who am I to judge :)
+
+baseline:
+
+run 1 loop (nvmet_blkdev_type file)
+nvme/045 (Test re-authentication)                            [passed]
+    runtime  2.690s  ...  2.777s
+run 1 tcp (nvmet_blkdev_type file)
+nvme/045 (Test re-authentication)                            [failed]
+    runtime  2.777s  ...  8.030s
+    --- tests/nvme/045.out      2024-04-04 16:14:22.547250311 +0200
+    +++ /home/wagi/work/blktests/results/nodev/nvme/045.out.bad 2024-04-04 17:29:03.427799336 +0200
+    @@ -9,5 +9,6 @@
+     Change hash to hmac(sha512)
+     Re-authenticate with changed hash
+     Renew host key on the controller and force reconnect
+    -disconnected 0 controller(s)
+    +controller "nvme2" not deleted within 5 seconds
+    +disconnected 1 controller(s)
+     Test complete
+run 1 rdma (nvmet_blkdev_type file)
+nvme/045 (Test re-authentication)                            [failed]
+    runtime  8.030s  ...  9.632s
+    --- tests/nvme/045.out      2024-04-04 16:14:22.547250311 +0200
+    +++ /home/wagi/work/blktests/results/nodev/nvme/045.out.bad 2024-04-04 17:29:15.017745115 +0200
+    @@ -9,5 +9,6 @@
+     Change hash to hmac(sha512)
+     Re-authenticate with changed hash
+     Renew host key on the controller and force reconnect
+    -disconnected 0 controller(s)
+    +controller "nvme2" not deleted within 5 seconds
+    +disconnected 1 controller(s)
+     Test complete
+run 1 fc (nvmet_blkdev_type file)
+nvme/045 (Test re-authentication)                            [passed]
+    runtime  9.632s  ...  3.588s
+
+
+patched:
+
+run 1 loop (nvmet_blkdev_type file)
+nvme/045 (Test re-authentication)                            [passed]
+    runtime  6.816s  ...  2.492s
+run 1 tcp (nvmet_blkdev_type file)
+nvme/045 (Test re-authentication)                            [passed]
+    runtime  2.492s  ...  3.663s
+run 1 rdma (nvmet_blkdev_type file)
+nvme/045 (Test re-authentication)                            [passed]
+    runtime  3.663s  ...  3.795s
+run 1 fc (nvmet_blkdev_type file)
+nvme/045 (Test re-authentication)                            [passed]
+    runtime  3.795s  ...  2.690s
+
+
+
+changes:
+v4:
+  - rebased
+  - added 'nvme: fixes for authentication errors' series
+    https://lore.kernel.org/linux-nvme/20240301112823.132570-1-hare@kernel.org/
+
+v3:
+  - added my SOB tag
+  - fixed indention
+  - https://lore.kernel.org/linux-nvme/20240305080005.3638-1-dwagner@suse.de/
+
+v2:
+  - refresh/rebase on current head
+  - extended blktests (nvme/045) to cover this case
+    (see separate post)
+  - https://lore.kernel.org/linux-nvme/20240304161006.19328-1-dwagner@suse.de/
+  
+v1:
+  - initial version
+  - https://lore.kernel.org/linux-nvme/20210623143250.82445-1-hare@suse.de/
+
+
+*** BLURB HERE ***
+
+Hannes Reinecke (5):
+  nvme: authentication error are always non-retryable
+  nvmet: lock config semaphore when accessing DH-HMAC-CHAP key
+  nvmet: return DHCHAP status codes from nvmet_setup_auth()
+  nvme-tcp: short-circuit reconnect retries
+  nvme-rdma: short-circuit reconnect retries
+
+ drivers/nvme/host/core.c               |  6 +++---
+ drivers/nvme/host/fabrics.c            | 29 +++++++++++++++-----------
+ drivers/nvme/host/nvme.h               | 19 ++++++++++++++++-
+ drivers/nvme/host/rdma.c               | 22 ++++++++++++-------
+ drivers/nvme/host/tcp.c                | 23 +++++++++++++-------
+ drivers/nvme/target/auth.c             | 20 ++++++++----------
+ drivers/nvme/target/configfs.c         | 22 ++++++++++++++-----
+ drivers/nvme/target/fabrics-cmd-auth.c | 11 +++++-----
+ 8 files changed, 100 insertions(+), 52 deletions(-)
 
 -- 
-Cheers,
-
-David / dhildenb
+2.44.0
 
 
