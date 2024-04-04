@@ -1,199 +1,155 @@
-Return-Path: <linux-kernel+bounces-131020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C70BF89820A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 14497898201
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:15:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E565A1C25C2F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:16:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FBF11C20E5A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:15:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDDE6BFA3;
-	Thu,  4 Apr 2024 07:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gDO2BgYn"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9741659B7F;
+	Thu,  4 Apr 2024 07:15:20 +0000 (UTC)
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C1C679E1
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:15:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6786C5CDE6
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712214924; cv=none; b=j2w5dL5Wh9mlmaOJvGszNR/X6cgJ0rKhecsPyd9qX/bscMX4PZjmXSUtLQWi3XHH/K5hHhV6mjmUccHJyPwmiXiZqoLkAj5K1ngmh/OHpLnxdg11cLZYhdHXwFFa32wOEZRscO3ybd17hA1aS9sHAN6SpNWm43ezIWEjTAGXl/M=
+	t=1712214920; cv=none; b=ZIH3OsxUxwYwy/KIxIhT5HPrCoC3RrNDxcuaj1WGHkslRO0vqFnLnz6uUoWUecHzTAjQjydcZYs2bSaVZLtoQsmjv0GLjhYdWdmxRjthjlIlQxsyZ8VkfhREi9FqWsAXD2VreA5g5VQ2rOMMB+MFgBpCccCOriM2GMQG115VRG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712214924; c=relaxed/simple;
-	bh=gkYBTBav5Zq+juoA2YijekuzHYoS9mPvuxnyh5mqC/Y=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=eDcvgdtc08SIzENJPR42lIh8Dh0VG5V643bRDVIYGERiHq7iBAqBu2a0vb4zy+hyIt23KuXBQZNpCq96e9G4jIvkGYoKZiBF7jPlIlpshHOwK/IgyZbTaCqgoApgrQXxBNU4P3NZUJTzuxOZoe6ke+/8yp5x72gGPw/ZdaBqyc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gDO2BgYn; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712214921;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gkYBTBav5Zq+juoA2YijekuzHYoS9mPvuxnyh5mqC/Y=;
-	b=gDO2BgYnR1oAOt7jlPcjZtQ6oydY2xdm9n/FeEFTVbceeEUgNsmMbfIpen6FBUIA4A1vQg
-	8xdCuCb00FbJih1fKavpS5Sm63vqNFF1Jm03Dp/crBwtbnf6fF3v7BZ7DO8XKN0CYOIY6b
-	OX/6ilrH4mWPmrgHwXqhKiN9rPad4ck=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-558-bjeOYOgHPcS2b1UNIzzxHQ-1; Thu, 04 Apr 2024 03:15:19 -0400
-X-MC-Unique: bjeOYOgHPcS2b1UNIzzxHQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4155db7b540so1538935e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 00:15:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712214918; x=1712819718;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gkYBTBav5Zq+juoA2YijekuzHYoS9mPvuxnyh5mqC/Y=;
-        b=c4/xVtynRfR/cmNiGTKWunUHUHrlm729t8fI7wNEzND3IeMWBkdT7cNN+ctTMZNq60
-         wfP0BFzB9nJT/0jz4MM2ac4qnAo1kgni0JkkdU+Brr+MJADY3FJSX/FRd5JX4EP5Eq7w
-         WAvhZtsv802oNgWKUE3jAya2rhtk6X4b21gyS/j+MKHfKHTMK1yBBELplWeuCR/UvDDk
-         f9ufphQ7PMSLBvtDpcW/PAtLo9Wdgroo4aZ5GAGOuxKEC8zu/EKHls5ccvbAqiEeMcqF
-         HmTzgDXAYrWH9byTO08O5gIyKraYkNe1X5vOIO8ZL4Bzfa84F3TfJC1qXBWc7oYVXYur
-         CfRA==
-X-Forwarded-Encrypted: i=1; AJvYcCVlloKcbNeqL/QJOvzfmzYLVY1BcVVqQxWFciSOp3CZvLmK2lJbty/92BW/yCWGe1pKX/uRM73RlIAq6wuYmdeovw796aJoy1nXLGeO
-X-Gm-Message-State: AOJu0YygHOBwZJKDQg3B0saJGQcgX5dysDR62ibWbkW/VNh7OqF9Cet6
-	rpNKdI9RK10WMXqLlG0tsM//tVv0kjt0CGfo/kuVIajoouz8yq/IKZtIxNuvkvNjMnHOel2EXOh
-	2Yw6Qy7XplvZO7au5omGP3DqlIjvAvPlGManyd2YGdkQKhkcB1vGQ7hRanUTW0Q==
-X-Received: by 2002:a05:6000:1e84:b0:33e:c97c:a24 with SMTP id dd4-20020a0560001e8400b0033ec97c0a24mr1115589wrb.5.1712214918163;
-        Thu, 04 Apr 2024 00:15:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFWY9/cd1aqzBczEu4p4tIf7VmRWnNYN2GN8td9lcbGNfJha/rCCq4b4IGsGjcqLhKb+SmZaQ==
-X-Received: by 2002:a05:6000:1e84:b0:33e:c97c:a24 with SMTP id dd4-20020a0560001e8400b0033ec97c0a24mr1115578wrb.5.1712214917730;
-        Thu, 04 Apr 2024 00:15:17 -0700 (PDT)
-Received: from pstanner-thinkpadt14sgen1.remote.csb (nat-pool-muc-t.redhat.com. [149.14.88.26])
-        by smtp.gmail.com with ESMTPSA id c3-20020adfef43000000b003439d2a5f99sm3169981wrp.55.2024.04.04.00.15.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 00:15:17 -0700 (PDT)
-Message-ID: <cd60599bee1b857ba069e25a8adb41ee2bc25699.camel@redhat.com>
-Subject: Re: [PATCH v5 02/10] PCI: Deprecate iomap-table functions
-From: Philipp Stanner <pstanner@redhat.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>, oe-kbuild@lists.linux.dev, 
- Hans de Goede <hdegoede@redhat.com>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Bjorn Helgaas <helgaas@kernel.org>, Sam
- Ravnborg <sam@ravnborg.org>, dakr@redhat.com
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, 
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
-	linux-pci@vger.kernel.org
-Date: Thu, 04 Apr 2024 09:15:16 +0200
-In-Reply-To: <c59ff5c5-7551-41ca-a5cc-9c214051a20d@moroto.mountain>
-References: <c59ff5c5-7551-41ca-a5cc-9c214051a20d@moroto.mountain>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1712214920; c=relaxed/simple;
+	bh=6/4Cq2aA39sFtMVgi/VCqef4yRZF2TMXceBE6MEOND4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=meR8bWKIvepfk51faBh80B8rxrYJQhM4BzlDsDlt+dZUvBZ7eBDlsLwqMvlhjgYuPIDeXxZFk3n55ErIci3pimSQIozRTw6KCO5b+RGVCKluPFS5L05pOqgJZgbsQeShV1l09Kfbd86rUTW6MW/cdxe8b2s18/AMTqZjT4+tST4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id ABFF25D686;
+	Thu,  4 Apr 2024 07:15:16 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
+	none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 9282C139E8;
+	Thu,  4 Apr 2024 07:15:16 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id K68YI4RTDmZ8dQAAn2gu4w
+	(envelope-from <vbabka@suse.cz>); Thu, 04 Apr 2024 07:15:16 +0000
+Message-ID: <7c852583-3b87-4acb-ae1d-2065daf16984@suse.cz>
+Date: Thu, 4 Apr 2024 09:15:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 0/4] page_owner: Fix refcount imbalance and print fixup
+Content-Language: en-US
+To: Oscar Salvador <osalvador@suse.de>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
+ Andrey Konovalov <andreyknvl@gmail.com>,
+ Alexander Potapenko <glider@google.com>,
+ Alexandre Ghiti <alexghiti@rivosinc.com>
+References: <20240404070702.2744-1-osalvador@suse.de>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <20240404070702.2744-1-osalvador@suse.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	REPLY(-4.00)[]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Score: -4.00
+X-Spam-Level: 
+X-Rspamd-Queue-Id: ABFF25D686
 
-SGVsbG8sCgpPbiBUaHUsIDIwMjQtMDQtMDQgYXQgMDk6MjkgKzAzMDAsIERhbiBDYXJwZW50ZXIg
-d3JvdGU6Cj4gSGkgUGhpbGlwcCwKPiAKPiBrZXJuZWwgdGVzdCByb2JvdCBub3RpY2VkIHRoZSBm
-b2xsb3dpbmcgYnVpbGQgd2FybmluZ3M6Cj4gCj4gaHR0cHM6Ly9naXQtc2NtLmNvbS9kb2NzL2dp
-dC1mb3JtYXQtcGF0Y2gjX2Jhc2VfdHJlZV9pbmZvcm1hdGlvbl0KPiAKPiB1cmw6wqDCoMKgCj4g
-aHR0cHM6Ly9naXRodWIuY29tL2ludGVsLWxhYi1sa3AvbGludXgvY29tbWl0cy9QaGlsaXBwLVN0
-YW5uZXIvUENJLUFkZC1uZXctc2V0LW9mLWRldnJlcy1mdW5jdGlvbnMvMjAyNDA0MDMtMTYwOTMy
-Cj4gYmFzZTrCoMKgCj4gaHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5l
-bC9naXQvcGNpL3BjaS5naXTCoG5leHQKPiBwYXRjaCBsaW5rOsKgwqDCoAo+IGh0dHBzOi8vbG9y
-ZS5rZXJuZWwub3JnL3IvMjAyNDA0MDMwODA3MTIuMTM5ODYtNS1wc3Rhbm5lciU0MHJlZGhhdC5j
-b20KPiBwYXRjaCBzdWJqZWN0OiBbUEFUQ0ggdjUgMDIvMTBdIFBDSTogRGVwcmVjYXRlIGlvbWFw
-LXRhYmxlIGZ1bmN0aW9ucwo+IGNvbmZpZzogaTM4Ni1yYW5kY29uZmlnLTE0MS0yMDI0MDQwNAo+
-IChodHRwczovL2Rvd25sb2FkLjAxLm9yZy8wZGF5LWNpL2FyY2hpdmUvMjAyNDA0MDQvMjAyNDA0
-MDQwOTIwLlFJeGhOZQo+IE11LWxrcEBpbnRlbC5jb20vY29uZmlnKQo+IGNvbXBpbGVyOiBnY2Mt
-NyAoVWJ1bnR1IDcuNS4wLTZ1YnVudHUyKSA3LjUuMAo+IAo+IElmIHlvdSBmaXggdGhlIGlzc3Vl
-IGluIGEgc2VwYXJhdGUgcGF0Y2gvY29tbWl0IChpLmUuIG5vdCBqdXN0IGEgbmV3Cj4gdmVyc2lv
-biBvZgo+IHRoZSBzYW1lIHBhdGNoL2NvbW1pdCksIGtpbmRseSBhZGQgZm9sbG93aW5nIHRhZ3MK
-PiA+IFJlcG9ydGVkLWJ5OiBrZXJuZWwgdGVzdCByb2JvdCA8bGtwQGludGVsLmNvbT4KPiA+IFJl
-cG9ydGVkLWJ5OiBEYW4gQ2FycGVudGVyIDxkYW4uY2FycGVudGVyQGxpbmFyby5vcmc+Cj4gPiBD
-bG9zZXM6Cj4gPiBodHRwczovL2xvcmUua2VybmVsLm9yZy9yLzIwMjQwNDA0MDkyMC5RSXhoTmVN
-dS1sa3BAaW50ZWwuY29tLwo+IAo+IHNtYXRjaCB3YXJuaW5nczoKPiBkcml2ZXJzL3BjaS9kZXZy
-ZXMuYzo4OTcgcGNpbV9pb21hcF9yZWdpb25zX3JlcXVlc3RfYWxsKCkgZXJyb3I6IHdlCj4gcHJl
-dmlvdXNseSBhc3N1bWVkICdsZWdhY3lfaW9tYXBfdGFibGUnIGNvdWxkIGJlIG51bGwgKHNlZSBs
-aW5lIDg5NCkKPiAKPiB2aW0gKy9sZWdhY3lfaW9tYXBfdGFibGUgKzg5NyBkcml2ZXJzL3BjaS9k
-ZXZyZXMuYwo+IAo+IGFjYzIzNjRmZTY2MTA2IFBoaWxpcHAgU3Rhbm5lciAyMDI0LTAxLTMxwqAg
-ODY1wqAgaW50Cj4gcGNpbV9pb21hcF9yZWdpb25zX3JlcXVlc3RfYWxsKHN0cnVjdCBwY2lfZGV2
-ICpwZGV2LCBpbnQgbWFzaywKPiBhY2MyMzY0ZmU2NjEwNiBQaGlsaXBwIFN0YW5uZXIgMjAyNC0w
-MS0zMcKgCj4gODY2wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbnN0IGNoYXIgKm5hbWUpCj4gYWNjMjM2NGZl
-NjYxMDYgUGhpbGlwcCBTdGFubmVyIDIwMjQtMDEtMzHCoCA4NjfCoCB7Cj4gMzRlOTBiOTY2NTA0
-ZjMgUGhpbGlwcCBTdGFubmVyIDIwMjQtMDQtMDPCoCA4NjjCoMKgwqDCoMKgwqDCoMKgwqDCoHNo
-b3J0IGJhcjsKPiAzNGU5MGI5NjY1MDRmMyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0wNC0wM8KgIDg2
-OcKgwqDCoMKgwqDCoMKgwqDCoMKgaW50IHJldDsKPiAzNGU5MGI5NjY1MDRmMyBQaGlsaXBwIFN0
-YW5uZXIgMjAyNC0wNC0wM8KgIDg3MMKgwqDCoMKgwqDCoMKgwqDCoMKgdm9pZCBfX2lvbWVtCj4g
-KipsZWdhY3lfaW9tYXBfdGFibGU7Cj4gYWNjMjM2NGZlNjYxMDYgUGhpbGlwcCBTdGFubmVyIDIw
-MjQtMDEtMzHCoCA4NzHCoCAKPiAzNGU5MGI5NjY1MDRmMyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0w
-NC0wM8KgIDg3MsKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0ID0KPiBwY2ltX3JlcXVlc3RfYWxsX3Jl
-Z2lvbnMocGRldiwgbmFtZSk7Cj4gMzRlOTBiOTY2NTA0ZjMgUGhpbGlwcCBTdGFubmVyIDIwMjQt
-MDQtMDPCoCA4NzPCoMKgwqDCoMKgwqDCoMKgwqDCoGlmIChyZXQgIT0gMCkKPiAzNGU5MGI5NjY1
-MDRmMyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0wNC0wM8KgCj4gODc0wqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgcmV0dXJuIHJldDsKPiBhY2MyMzY0ZmU2NjEwNiBQaGlsaXBwIFN0
-YW5uZXIgMjAyNC0wMS0zMcKgIDg3NcKgIAo+IDM0ZTkwYjk2NjUwNGYzIFBoaWxpcHAgU3Rhbm5l
-ciAyMDI0LTA0LTAzwqAgODc2wqDCoMKgwqDCoMKgwqDCoMKgwqBmb3IgKGJhciA9IDA7Cj4gYmFy
-IDwgUENJX1NURF9OVU1fQkFSUzsgYmFyKyspIHsKPiAzNGU5MGI5NjY1MDRmMyBQaGlsaXBwIFN0
-YW5uZXIgMjAyNC0wNC0wM8KgIDg3N8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oGlmCj4gKCFtYXNrX2NvbnRhaW5zX2JhcihtYXNrLCBiYXIpKQo+IDM0ZTkwYjk2NjUwNGYzIFBo
-aWxpcHAgU3Rhbm5lciAyMDI0LTA0LTAzwqAKPiA4NzjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY29udGludWU7Cj4gMzRlOTBiOTY2NTA0ZjMgUGhp
-bGlwcCBTdGFubmVyIDIwMjQtMDQtMDPCoCA4NznCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqBpZgo+ICghcGNpbV9pb21hcChwZGV2LCBiYXIsIDApKQo+IDM0ZTkwYjk2NjUwNGYz
-IFBoaWxpcHAgU3Rhbm5lciAyMDI0LTA0LTAzwqAKPiA4ODDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZ290byBlcnI7Cj4gMzRlOTBiOTY2NTA0ZjMg
-UGhpbGlwcCBTdGFubmVyIDIwMjQtMDQtMDPCoCA4ODHCoMKgwqDCoMKgwqDCoMKgwqDCoH0KPiAz
-NGU5MGI5NjY1MDRmMyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0wNC0wM8KgIDg4MsKgIAo+IDM0ZTkw
-Yjk2NjUwNGYzIFBoaWxpcHAgU3Rhbm5lciAyMDI0LTA0LTAzwqAgODgzwqDCoMKgwqDCoMKgwqDC
-oMKgwqByZXR1cm4gMDsKPiAzNGU5MGI5NjY1MDRmMyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0wNC0w
-M8KgIDg4NMKgIAo+IDM0ZTkwYjk2NjUwNGYzIFBoaWxpcHAgU3Rhbm5lciAyMDI0LTA0LTAzwqAg
-ODg1wqAgZXJyOgo+IDM0ZTkwYjk2NjUwNGYzIFBoaWxpcHAgU3Rhbm5lciAyMDI0LTA0LTAzwqAg
-ODg2wqDCoMKgwqDCoMKgwqDCoMKgwqAvKgo+IDM0ZTkwYjk2NjUwNGYzIFBoaWxpcHAgU3Rhbm5l
-ciAyMDI0LTA0LTAzwqAgODg3wqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBIZXJlIGl0Cj4gZ2V0cyB0
-cmlja3k6IHBjaW1faW9tYXAoKSBhYm92ZSBoYXMgbW9zdCBsaWtlbHkKPiAzNGU5MGI5NjY1MDRm
-MyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0wNC0wM8KgIDg4OMKgwqDCoMKgwqDCoMKgwqDCoMKgICog
-ZmFpbGVkCj4gYmVjYXVzZSBpdCBnb3QgYW4gT09NIHdoZW4gdHJ5aW5nIHRvIGNyZWF0ZSB0aGUK
-PiAzNGU5MGI5NjY1MDRmMyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0wNC0wM8KgIDg4OcKgwqDCoMKg
-wqDCoMKgwqDCoMKgICogbGVnYWN5LQo+IHRhYmxlLgo+IDM0ZTkwYjk2NjUwNGYzIFBoaWxpcHAg
-U3Rhbm5lciAyMDI0LTA0LTAzwqAgODkwwqDCoMKgwqDCoMKgwqDCoMKgwqAgKiBXZSBjaGVjawo+
-IGhlcmUgaWYgdGhhdCBoYXMgaGFwcGVuZWQuIElmIG5vdCwgcGNpbV9pb21hcCgpCj4gMzRlOTBi
-OTY2NTA0ZjMgUGhpbGlwcCBTdGFubmVyIDIwMjQtMDQtMDPCoCA4OTHCoMKgwqDCoMKgwqDCoMKg
-wqDCoCAqIG11c3QgaGF2ZQo+IGZhaWxlZCBiZWNhdXNlIG9mIEVJTlZBTC4KPiAzNGU5MGI5NjY1
-MDRmMyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0wNC0wM8KgIDg5MsKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICovCj4gMzRlOTBiOTY2NTA0ZjMgUGhpbGlwcCBTdGFubmVyIDIwMjQtMDQtMDPCoAo+IDg5M8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgbGVnYWN5X2lvbWFwX3RhYmxlID0gKHZvaWQgX19pb21lbQo+ICoq
-KXBjaW1faW9tYXBfdGFibGUocGRldik7Cj4gMzRlOTBiOTY2NTA0ZjMgUGhpbGlwcCBTdGFubmVy
-IDIwMjQtMDQtMDMgQDg5NMKgwqDCoMKgwqDCoMKgwqDCoMKgcmV0ID0KPiBsZWdhY3lfaW9tYXBf
-dGFibGUgPyAtRUlOVkFMIDogLUVOT01FTTsKPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoAo+IF5eXl5eXl5eXl5eXl5eXl5e
-Xgo+IENoZWNrIGZvciBOVUxMCj4gCj4gMzRlOTBiOTY2NTA0ZjMgUGhpbGlwcCBTdGFubmVyIDIw
-MjQtMDQtMDPCoCA4OTXCoCAKPiAzNGU5MGI5NjY1MDRmMyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0w
-NC0wM8KgIDg5NsKgwqDCoMKgwqDCoMKgwqDCoMKgd2hpbGUgKC0tYmFyCj4gPj0gMCkKPiAzNGU5
-MGI5NjY1MDRmMyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0wNC0wMwo+IEA4OTfCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwY2ltX2lvdW5tYXAocGRldiwgbGVnYWN5X2lvbWFwX3Rh
-YmxlW2Jhcl0pOwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoAo+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIF5eXl5eXl5eXl5eXl5eXl5eXgo+IFVuY2hlY2tlZCBkZXJlZmVyZW5jZQoKSSB0
-aGluayB0aGlzIGlzIGZpbmUgYmVjYXVzZSBgYmFyYCBjYW4gb25seSBiZSBsYXJnZXIgMCBpZiBh
-dCBsZWFzdCBvbmUKbWFwcGluZyBoYXMgYmVlbiBjcmVhdGVkLCB0aHVzLCB3aGVuIGl0IHdhcyBw
-b3NzaWJsZSB0byBjcmVhdGUKbGVnYWN5X2lvbWFwX3RhYmxlLCB3aGljaCBpcyB0aGVuIHZhbGlk
-LgpTbyB0aGUgc2Vjb25kIGZvci1sb29wIG9ubHkgZXhlY3V0ZXMgd2hlbiBpdCdzIG5vdCBOVUxM
-LgoKSSBndWVzcyB3ZSBjb3VsZCBzaWxlbmNlIHRoZSB3YXJuaW5nIGJ5IGRvaW5nCgpyZXQgPSBi
-YXIgPiAwID8gLUVJTlZBTCA6IC1FTk9NRU07CgpXb3VsZCBldmVuIHNhdmUgb25lIGxpbmUgb2Yg
-Y29kZQoKClAuCgoKPiAKPiAzNGU5MGI5NjY1MDRmMyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0wNC0w
-M8KgIDg5OMKgIAo+IDM0ZTkwYjk2NjUwNGYzIFBoaWxpcHAgU3Rhbm5lciAyMDI0LTA0LTAzwqAK
-PiA4OTnCoMKgwqDCoMKgwqDCoMKgwqDCoHBjaW1fcmVsZWFzZV9hbGxfcmVnaW9ucyhwZGV2KTsK
-PiAzNGU5MGI5NjY1MDRmMyBQaGlsaXBwIFN0YW5uZXIgMjAyNC0wNC0wM8KgIDkwMMKgIAo+IDM0
-ZTkwYjk2NjUwNGYzIFBoaWxpcHAgU3Rhbm5lciAyMDI0LTA0LTAzwqAgOTAxwqDCoMKgwqDCoMKg
-wqDCoMKgwqByZXR1cm4gcmV0Owo+IGFjYzIzNjRmZTY2MTA2IFBoaWxpcHAgU3Rhbm5lciAyMDI0
-LTAxLTMxwqAgOTAywqAgfQo+IAoK
+On 4/4/24 9:06 AM, Oscar Salvador wrote:
+> This series consists of a refactoring/correctness of updating the metadata
+> of tail pages, a couple of fixups for the refcounting part and a fixup for
+> the stack_start() function.
+> 
+> From this series on, instead of counting the stacks, we count the outstanding
+> nr_base_pages each stack has, which gives us a much better memory overview.
+> The other fixup is for the migration part.
+> 
+> A more detailed explanation can be found in the changelog of the respective
+> patches.
+
+It's best to be explicit that this fixes issues in 6.9-rc1 and thus should
+be in mm-hotfixes(-unstable). Also you can use e.g. [PATCH mm-hotfixes]
+prefix to that effect next time.
+
+> v3 -> v4:
+>  - Fix some typos remarked by Vlastimil
+>  - Add Reviewed-by tag from Vlastimil and Tested-by tag from Alexandre Ghiti
+>    (closed a syzbot report for RISC)
+> 
+> Oscar Salvador (4):
+>   mm,page_owner: Update metadata for tail pages
+>   mm,page_owner: Fix refcount imbalance
+>   mm,page_owner: Fix accounting of pages when migrating
+>   mm,page_owner: Fix printing of stack records
+> 
+>  Documentation/mm/page_owner.rst |  73 +++++++------
+>  mm/page_owner.c                 | 188 ++++++++++++++++++--------------
+>  2 files changed, 147 insertions(+), 114 deletions(-)
+> 
 
 
