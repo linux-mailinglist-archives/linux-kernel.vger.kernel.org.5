@@ -1,198 +1,159 @@
-Return-Path: <linux-kernel+bounces-132190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132194-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02003899127
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:18:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 257B389912E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:19:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACFE9289BDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:18:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B1861F24B26
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:19:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE6A13C3EA;
-	Thu,  4 Apr 2024 22:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C09C13C815;
+	Thu,  4 Apr 2024 22:19:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="iNpgHmou"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I5XVqqrB"
+Received: from mail-pg1-f175.google.com (mail-pg1-f175.google.com [209.85.215.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B9213C3F2
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 22:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E2B13C3EB;
+	Thu,  4 Apr 2024 22:19:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712269081; cv=none; b=WZR3ONMF+hWV2vElcjJx2Zo+ily/wE5/yPD6WPRLZpkTSBU7xIlo0E9ihwNY8DJ/RW0BzwhoAmZKlj4EhbyBu9Nj0BoB94nrFkdqVjuPeC81ptKcFCb7D20jRSDb1R+GXlu5asvgZMJzaviOF01hrdc+EAB/7H7ajJtU/N/Xkpg=
+	t=1712269151; cv=none; b=A7MiFRGpaljlR3/FlZHu78jsiui901bBnsuuBDhdhJmp+OhI2wWyT/9awaAUjWFY1TsgmYuI6mkOJdiprcljzrgNYrPCoVVrLULFt0i0jiNVfuxkNIuXRhBW+rx/W4QTgxj4FaPURnd6sSl5b3novSk2HMytxhLjD9IaAZdDNP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712269081; c=relaxed/simple;
-	bh=RZPrq+xVDjiyzuvgmiC5bztMCL91wQIMW6JQhQhfvYY=;
+	s=arc-20240116; t=1712269151; c=relaxed/simple;
+	bh=OBHcickDyG4iGacLH5Fn47xNvsmIx4Xp0B2DdAN7B1s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YcEP+wzhB4yXYyEqPlV1ANgUiiDh38SHo85u7QcMqypdtokubuzrGo3JIsSOpzPICzu7cvf35etIMjSjICbp7l9u5ssg2yaaHYgUIKdKFayrh4q3xtxx0NxWAVYb/UM5DU8NMw4trI96EaasFzvYsJmWsW8eT2AJOqfncUe96Dk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=iNpgHmou; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4162b7f197cso6907475e9.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 15:17:58 -0700 (PDT)
+	 To:Cc:Content-Type; b=Hx/wR5Li3sPm4hYJZAd3vhQ8KntYRuwk2j6lSyFB+Y9+yjWOCS+fbJ/UsrGKVU0i6/eYGa0VvsZ88FPv9+08jgk9Rt4Y8LIZbhSDzAvIKc/MK2iVpZ8D+aFM36WL/De7gJvYB8eivwFyCkl3/vBp6QColSyw2drCLxLfxb0vHtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I5XVqqrB; arc=none smtp.client-ip=209.85.215.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f175.google.com with SMTP id 41be03b00d2f7-5ce2aada130so1149872a12.1;
+        Thu, 04 Apr 2024 15:19:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712269077; x=1712873877; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712269149; x=1712873949; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eIW+Z3FuH4Tlrbj9QrjroPzWQnEb4hQ4AxEw1tDZfk4=;
-        b=iNpgHmouikM3eS2bzDsViRnQPf4IYT0AntRq/pLUycBts1tEtNDBhLAHPWLbGGQuwD
-         QJtB2nqOmcrDZKQqkypAxU9t8BXasLVzM76U6doxh0UD6M0mrI/XgijigKuOcMI2NCIb
-         whmis5i9jCy0XZKIvDNYWGW+znPQeHBEMsfX8rggozuXIuCHf0B+o1YIbhjdkYuLbC6k
-         nmWR9tyq0QFPwh7UUDhI4p73EwefaEhKQVvrdC/li4M77bvJ/3+wYenQP3FJrzs+WVyB
-         h/Tam1ckIRELByLvoQC8mEYZ6O8sMXwbWpK4qyuHRrWaDSukD/B1KlHnI6ojMiGvDvbK
-         uIeA==
+        bh=WFi95zOVQYA4xEHKHqIiFXKZ5uGVSt/aCQ/r+P7rpsY=;
+        b=I5XVqqrBw/EcINfCazvCNosZZYgzyYBcfi3zJ1Z37Oy8gKO+SNpmS5Y7edzwnrrvZm
+         hbPs7cly5N+Ogfh/I3wwJS1qY0haDxLJKbzwFxHE0GQl9v71rVqO5XWg15lMWJFVEzzU
+         uWNFh3b2IHQqeQ/xkE35NZVgc9QucJ8Hk76tOcsXRd30WTirJ6JZqQVTajGLDmbKp9OB
+         W0c2z767pJN/0er0NGDDNF/R37We3jpYh5mAedeoiFehlzI/9/WQYOZE0/Xjwm80M4rs
+         l3iJNqc6kJoEZCbwn0kxogDc2A92gdIx1pIJW5Z2xJhNDVME3INrUQonFlilHkXMofZl
+         IoXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712269077; x=1712873877;
+        d=1e100.net; s=20230601; t=1712269149; x=1712873949;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eIW+Z3FuH4Tlrbj9QrjroPzWQnEb4hQ4AxEw1tDZfk4=;
-        b=u3sxWvR11rPZd0HANO9hGwT/KTWwuaTLUqiaSTaEDfS7XfOdOlUxx7ex0cU/R9qcqx
-         8Opp9fBRzvgO7WKJVVU85ylxZx3CnC31FXokXw0eO87Qe5pktMVZoJBv5R9eL530eMZ2
-         wsVsJ8waIoNEPfBpyXEgaz32oj/aD+1FZJlS2M63UceHTILJ2dkmWinWafowmQGeaOEE
-         j5/lEH9a8UgHjgktqvQpHSCEmt/omRwjHbYz5iW57iA3QQxtxKd2Lrljr6IFfHM88gPQ
-         QwYtNZ7JUuLG3X/tCnUQJQNub0mf5geaMg2I7i1sCGY9Edxo0soipOtQRIizbwmov6tG
-         DeTA==
-X-Forwarded-Encrypted: i=1; AJvYcCVhH7+n4mUWaIxoHRs/djF4eZTpLcoYSrbi0selEtiEpLb/HImfPQ5Bz/vT6Q3gFqFng7D34gua63mcp8saDWYDTUJebuxvYI6V3IF1
-X-Gm-Message-State: AOJu0YwmACwXbgCzvwMIXNnyyKGLqvyBqdqRA3WvOoPqbxpMB2T5VtMk
-	3ChNyn/N2l2SN2jeuvYZDQNou2TZaRLwDdvrhsHj9Ko/CexQ0y1puzPA9AnNWu06D0uvjoL/lCy
-	nIwWdpAvhpxVGLFrVKSJh8QppbyMjEczoKbFX
-X-Google-Smtp-Source: AGHT+IEoGycg7Q6yz1U10yVcrqSmmGhsvl59dTKCzdbY+AGkKJwTyJBRF58S2bqCqewHCyhhbzL+kREAY0nZt0Z/KC8=
-X-Received: by 2002:a5d:56cd:0:b0:343:a117:7d2 with SMTP id
- m13-20020a5d56cd000000b00343a11707d2mr434133wrw.71.1712269077043; Thu, 04 Apr
- 2024 15:17:57 -0700 (PDT)
+        bh=WFi95zOVQYA4xEHKHqIiFXKZ5uGVSt/aCQ/r+P7rpsY=;
+        b=M2kq+SUg/gpkRJiKnPHTasCQX2p7C4I6PKMFcdhpAJ7BqAB19OpjP4e/2MHowjIJwy
+         2gJ+npt2QeKUtkNO5Nalcl/zsdXA60MifIAnMxdRmNzxkBl3CgYzyjdn75uzOpIpEp5k
+         F5Ep0T27yejMZ2N/ZQGUdVdzm1wR8+hQQtPvYnjJX/f2G7MjewR3KZccqtv/TR4bbXfH
+         eSV9DQSGsn5b52q3Rqwfsh1sW1o0RKbuYD7jWMoUJwjY0HLz/V3vDA3HdsHtS5vRRS+l
+         VTw+bArC+EDiFKYZcExTINH/PRwjPJjGfYgsm769auZPX5GuG+bjvFRjxlXhQXJ4Qvsm
+         O1Zw==
+X-Forwarded-Encrypted: i=1; AJvYcCVCVPISI7b0u/vdf/HHWGNlk6mEVhbt/0i9tS3P3fWnXSg4MVa2r98VJHlYZLIOmguWG+tBYkC4m/9QpV6r5CLQH8Y/trhZNt92VqB3
+X-Gm-Message-State: AOJu0YwIHeHP0uWlNsfKWkGLA/6TuE1mQE3Co3WOg0Hlf3aOQq9UWEew
+	9mtET53AQ9vExpXP3612gwRMAkDo6yuflXkLcTcZ376VM5UEJjq+NlMN6d0Nk/1L59pmBGs11sr
+	Rwik9sT0FZdz9Gp0PWjaR0XQSMUg=
+X-Google-Smtp-Source: AGHT+IH6G5tOrI2ksQ9kGiIvzM22pWSwDHtXY27hq7L0Etr+ekfWcBU+YiIxZ61QO9rb8eSAR3mcKNUBvEuACLWnaRc=
+X-Received: by 2002:a05:6a20:d494:b0:1a7:3e78:cc7e with SMTP id
+ im20-20020a056a20d49400b001a73e78cc7emr863190pzb.14.1712269149243; Thu, 04
+ Apr 2024 15:19:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404165404.3805498-1-surenb@google.com> <Zg7dmp5VJkm1nLRM@casper.infradead.org>
- <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
-In-Reply-To: <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 4 Apr 2024 15:17:43 -0700
-Message-ID: <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
- the call site
-To: Matthew Wilcox <willy@infradead.org>
-Cc: akpm@linux-foundation.org, joro@8bytes.org, will@kernel.org, 
-	trond.myklebust@hammerspace.com, anna@kernel.org, arnd@arndb.de, 
-	herbert@gondor.apana.org.au, davem@davemloft.net, jikos@kernel.org, 
-	benjamin.tissoires@redhat.com, tytso@mit.edu, jack@suse.com, 
-	dennis@kernel.org, tj@kernel.org, cl@linux.com, jakub@cloudflare.com, 
-	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com, 
-	vbabka@suse.cz, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-ext4@vger.kernel.org, linux-mm@kvack.org, 
-	netdev@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kent.overstreet@linux.dev
+References: <20240404010308.334604-1-void@manifault.com>
+In-Reply-To: <20240404010308.334604-1-void@manifault.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Thu, 4 Apr 2024 15:18:57 -0700
+Message-ID: <CAEf4BzaXDQVCYD3YrzLJTKu7idHZ0KGzSedWPwEX3v44Fq1vQA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Allow invoking kfuncs from
+ BPF_PROG_TYPE_SYSCALL progs
+To: David Vernet <void@manifault.com>
+Cc: bpf@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net, 
+	andrii@kernel.org, martin.lau@linux.dev, song@kernel.org, 
+	yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org, 
+	sdf@google.com, haoluo@google.com, jolsa@kernel.org, 
+	linux-kernel@vger.kernel.org, kernel-team@meta.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 4, 2024 at 10:08=E2=80=AFAM Suren Baghdasaryan <surenb@google.c=
-om> wrote:
+On Wed, Apr 3, 2024 at 6:03=E2=80=AFPM David Vernet <void@manifault.com> wr=
+ote:
 >
-> On Thu, Apr 4, 2024 at 10:04=E2=80=AFAM Matthew Wilcox <willy@infradead.o=
-rg> wrote:
-> >
-> > On Thu, Apr 04, 2024 at 09:54:04AM -0700, Suren Baghdasaryan wrote:
-> > > +++ b/include/linux/dma-fence-chain.h
-> > > @@ -86,10 +86,7 @@ dma_fence_chain_contained(struct dma_fence *fence)
-> > >   *
-> > >   * Returns a new struct dma_fence_chain object or NULL on failure.
-> > >   */
-> > > -static inline struct dma_fence_chain *dma_fence_chain_alloc(void)
-> > > -{
-> > > -     return kmalloc(sizeof(struct dma_fence_chain), GFP_KERNEL);
-> > > -};
-> > > +#define dma_fence_chain_alloc()      kmalloc(sizeof(struct dma_fence=
-_chain), GFP_KERNEL)
-> >
-> > You've removed some typesafety here.  Before, if I wrote:
-> >
-> >         struct page *page =3D dma_fence_chain_alloc();
-> >
-> > the compiler would warn me that I've done something stupid.  Now it
-> > can't tell.  Suggest perhaps:
-> >
-> > #define dma_fence_chain_alloc()                                        =
-   \
-> >         (struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chain=
-), \
-> >                                                 GFP_KERNEL)
-> >
-> > but maybe there's a better way of doing that.  There are a few other
-> > occurrences of the same problem in this monster patch.
+> Currently, a set of core BPF kfuncs (e.g. bpf_task_*, bpf_cgroup_*,
+> bpf_cpumask_*, etc) cannot be invoked from BPF_PROG_TYPE_SYSCALL
+> programs. The whitelist approach taken for enabling kfuncs makes sense:
+> it not safe to call these kfuncs from every program type. For example,
+> it may not be safe to call bpf_task_acquire() in an fentry to
+> free_task().
 >
-> Got your point.
-
-Ironically, checkpatch generates warnings for these type casts:
-
-WARNING: unnecessary cast may hide bugs, see
-http://c-faq.com/malloc/mallocnocast.html
-#425: FILE: include/linux/dma-fence-chain.h:90:
-+ ((struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chain),
-GFP_KERNEL))
-
-I guess I can safely ignore them in this case (since we cast to the
-expected type)?
-
+> BPF_PROG_TYPE_SYSCALL, on the other hand, is a perfectly safe program
+> type from which to invoke these kfuncs, as it's a very controlled
+> environment, and we should never be able to run into any of the typical
+> problems such as recursive invoations, acquiring references on freeing
+> kptrs, etc. Being able to invoke these kfuncs would be useful, as
+> BPF_PROG_TYPE_SYSCALL can be invoked with BPF_PROG_RUN, and would
+> therefore enable user space programs to synchronously call into BPF to
+> manipulate these kptrs.
 >
-> >
-> > > +++ b/include/linux/hid_bpf.h
-> > > @@ -149,10 +149,7 @@ static inline int hid_bpf_connect_device(struct =
-hid_device *hdev) { return 0; }
-> > >  static inline void hid_bpf_disconnect_device(struct hid_device *hdev=
-) {}
-> > >  static inline void hid_bpf_destroy_device(struct hid_device *hid) {}
-> > >  static inline void hid_bpf_device_init(struct hid_device *hid) {}
-> > > -static inline u8 *call_hid_bpf_rdesc_fixup(struct hid_device *hdev, =
-u8 *rdesc, unsigned int *size)
-> > > -{
-> > > -     return kmemdup(rdesc, *size, GFP_KERNEL);
-> > > -}
-> > > +#define call_hid_bpf_rdesc_fixup(_hdev, _rdesc, _size) kmemdup(_rdes=
-c, *(_size), GFP_KERNEL)
-> >
-> > here
-> >
-> > > -static inline handle_t *jbd2_alloc_handle(gfp_t gfp_flags)
-> > > -{
-> > > -     return kmem_cache_zalloc(jbd2_handle_cache, gfp_flags);
-> > > -}
-> > > +#define jbd2_alloc_handle(_gfp_flags)        kmem_cache_zalloc(jbd2_=
-handle_cache, _gfp_flags)
-> >
-> > here
-> >
-> > > +++ b/include/linux/skmsg.h
-> > > @@ -410,11 +410,8 @@ void sk_psock_stop_verdict(struct sock *sk, stru=
-ct sk_psock *psock);
-> > >  int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
-> > >                        struct sk_msg *msg);
-> > >
-> > > -static inline struct sk_psock_link *sk_psock_init_link(void)
-> > > -{
-> > > -     return kzalloc(sizeof(struct sk_psock_link),
-> > > -                    GFP_ATOMIC | __GFP_NOWARN);
-> > > -}
-> > > +#define sk_psock_init_link() \
-> > > +             kzalloc(sizeof(struct sk_psock_link), GFP_ATOMIC | __GF=
-P_NOWARN)
-> >
-> > here
-> >
-> > ... I kind of gave up at this point.  You'll want to audit for yourself
-> > anyway ;-)
+> This patch therefore enables invoking the aforementioned core kfuncs
+> from BPF_PROG_TYPE_SYSCALL progs.
 >
-> Yes, I'll go over it and will make the required changes. Thanks for
-> looking into it!
-> Suren.
+> Signed-off-by: David Vernet <void@manifault.com>
+> ---
+>  kernel/bpf/cpumask.c | 1 +
+>  kernel/bpf/helpers.c | 1 +
+>  2 files changed, 2 insertions(+)
+>
+
+Makes sense, but see my comments on patch #2.
+
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+
+> diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+> index dad0fb1c8e87..33c473d676a5 100644
+> --- a/kernel/bpf/cpumask.c
+> +++ b/kernel/bpf/cpumask.c
+> @@ -474,6 +474,7 @@ static int __init cpumask_kfunc_init(void)
+>         ret =3D bpf_mem_alloc_init(&bpf_cpumask_ma, sizeof(struct bpf_cpu=
+mask), false);
+>         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &=
+cpumask_kfunc_set);
+>         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS=
+, &cpumask_kfunc_set);
+> +       ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &=
+cpumask_kfunc_set);
+>         return  ret ?: register_btf_id_dtor_kfuncs(cpumask_dtors,
+>                                                    ARRAY_SIZE(cpumask_dto=
+rs),
+>                                                    THIS_MODULE);
+> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+> index d9e7aca8ae9e..8cde717137bd 100644
+> --- a/kernel/bpf/helpers.c
+> +++ b/kernel/bpf/helpers.c
+> @@ -2653,6 +2653,7 @@ static int __init kfunc_init(void)
+>         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS,=
+ &generic_kfunc_set);
+>         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &gene=
+ric_kfunc_set);
+>         ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS=
+, &generic_kfunc_set);
+> +       ret =3D ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &=
+generic_kfunc_set);
+>         ret =3D ret ?: register_btf_id_dtor_kfuncs(generic_dtors,
+>                                                   ARRAY_SIZE(generic_dtor=
+s),
+>                                                   THIS_MODULE);
+> --
+> 2.44.0
+>
 
