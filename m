@@ -1,172 +1,190 @@
-Return-Path: <linux-kernel+bounces-132041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F1C898F0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:30:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE488898F0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:31:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D300291A50
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:30:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B9D41C281E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:31:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC1B134411;
-	Thu,  4 Apr 2024 19:30:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SVTctHKB"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849BF13440C;
+	Thu,  4 Apr 2024 19:31:02 +0000 (UTC)
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7378913440C
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:30:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E86133439
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:30:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712259044; cv=none; b=kfgy6AuRA1YlSTBiHYJm8Yxy4biYsqkeLi0qossp+ThzTxQADKLC42N6y0oYpaPZkTDaLD3HWuyiSYnafOio0pXLVvK+XnQQu5HHb61KjK1QCT5fIeaexhcoQEawvb35DML3+a9SbDCn7NngqoRVyTXtd4Kyz7clWDhue+nbHng=
+	t=1712259062; cv=none; b=IfnZfoTadiDmaBpvVtt8QdYBouZQcQwbCWSp3SXnAr53kM5K+EXf/uBFbkBrap509ypkZNdsDWCKSXVHd9VDmEBaE+ZYNxhaTsmZuMN+TwbN9ZYVpqc0z82p5aVHdh7iO1mWyKNWSffxwq+OnIUvT1rB6Mnrx5BBLUSE4idWh5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712259044; c=relaxed/simple;
-	bh=SrhCNdxzuBp3aZhSeTOGPH4YcHlLvWylC9ihFXpRUIE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tY32kRXyQ7YN8LDyWblcSGcVtOUsl3cSyQcjo0PtIUos4uTKTA5oYn4bBdSSOV9UW11va/gtH9Lg3ysHorLdFv4mYFOZSd+iwMBc5huyQuI/HmIMafv5h6A+PYa63OMtS9JaDmonWPB3ZqlWW0XooymazYtAp6vok7xtQZhszhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SVTctHKB; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712259041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=3fjf6rtzI7r/gGfnWwsdDNFZRhN01nHhVtY9EOEP8yI=;
-	b=SVTctHKBAVwniIcny2W6mh77G3VEZKYYLZz6jFD1tesj21qHcZK2j1dfGJBxe5pO/XMrsz
-	WZScEe+gYl9GdK+qeTJBkV9bK7p1CDskJvdsdsT+I9mdKN508CcpPrF20eoLSEetGKDj6Y
-	OC2reYBFhr6HZp+jH0iBd0pJT2zxllk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-373-0PLgC1HZPqa-h-RXJrlSFA-1; Thu, 04 Apr 2024 15:30:39 -0400
-X-MC-Unique: 0PLgC1HZPqa-h-RXJrlSFA-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-343da0a889dso130813f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 12:30:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712259038; x=1712863838;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3fjf6rtzI7r/gGfnWwsdDNFZRhN01nHhVtY9EOEP8yI=;
-        b=blOHxEbrwxJIIzOhEBKedCvmVfMCA7lYhhqKaki+gBdJllTtcFe81neSkeGFjAQKtQ
-         mhAOdrgKUfZUSKGLEkMl1BoASBGWE8i3sVmMb7eJDaf+tyP1JYewr+UtTIN8zbt5f2+f
-         esiDERwigS+IVSXV+IeCNqVVtakKto64yPjkMwT8ZUPB57wHxPyG555p2oH/+tKYQHe0
-         mlT9UJo2J5HBxt7Kyl8MPP0b64eRKlgXM2QQ8SJ8exDC8rtyJO2JQyEzPexwAvQ3aDUW
-         0oJUCLQ62Q2FJga1FbSNGsrT0JCR4xHnnu7IsJ7P69Ms8iBYqnk+nIXcf4VZy/OWswh6
-         pVZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVDModMnDB6D5z1p5PGe0vJOX+sg3GLKwleAY3WM+N/2HXCtaBDx1E8epxJodbEZokUigWyzcxtOsPA1s4ybkqJwATMEfMhpsHWDS9V
-X-Gm-Message-State: AOJu0YxWpbf/O1xb8qm7pK4iHOl41dboToPY/V99Gp7AzzksFMNXgzrD
-	6tcFUlcaej0EAk2JEGCioHx/ByBAbgTqcNyesevHTzR9A4uysqyRyuDruqG0f6xWAo8Or0l8e9v
-	0JcLTrOHvEm1isS6dlVLWJKI5U7b4aAWD9burvHF4+X51ib2uNS2zqveHjOeQFw==
-X-Received: by 2002:a05:6000:108f:b0:341:d7b5:27 with SMTP id y15-20020a056000108f00b00341d7b50027mr373783wrw.6.1712259038215;
-        Thu, 04 Apr 2024 12:30:38 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF2SXGjRIUybnwvU1PNlkX+u+HsT+aDK/G+vko0Q4xz25zq3Q6onHmvaVX1AKkLXb57LXEWLw==
-X-Received: by 2002:a05:6000:108f:b0:341:d7b5:27 with SMTP id y15-20020a056000108f00b00341d7b50027mr373769wrw.6.1712259037812;
-        Thu, 04 Apr 2024 12:30:37 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c743:de00:7030:120f:d1c9:4c3c? (p200300cbc743de007030120fd1c94c3c.dip0.t-ipconnect.de. [2003:cb:c743:de00:7030:120f:d1c9:4c3c])
-        by smtp.gmail.com with ESMTPSA id dr20-20020a5d5f94000000b0033ea499c645sm137664wrb.4.2024.04.04.12.30.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 12:30:37 -0700 (PDT)
-Message-ID: <e8810a1c-2fbd-4c48-a462-43014dadc608@redhat.com>
-Date: Thu, 4 Apr 2024 21:30:36 +0200
+	s=arc-20240116; t=1712259062; c=relaxed/simple;
+	bh=EI/MhM4AP6v35KTirZ+vRYrRSU6+Omoaw2fj9e9D3CE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=JLmCehtKNMaAU9j5BrsokbSbDzMflpxXfLF51mcFWSnB6hkhI0KJtarY106lrnAaDIbMrvArjWpfH5ve6BEaPf/9oamWBHS/nb+cZsmLGckyfUWGuzMOZjZKGyRx+V8wC8HcRQiqvzxEMYDuFNWH+VlMsGKvDkvXoCtP7YABKKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
+Received: from i53875aaf.versanet.de ([83.135.90.175] helo=phil.localnet)
+	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <heiko@sntech.de>)
+	id 1rsSnV-0005R7-NJ; Thu, 04 Apr 2024 21:30:53 +0200
+From: Heiko Stuebner <heiko@sntech.de>
+To: Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>,
+ Sebastian Reichel <sre@kernel.org>
+Cc: Shawn Lin <shawn.lin@rock-chips.com>, Michal Tomek <mtdev79b@gmail.com>,
+ linux-phy@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ Sebastian Reichel <sebastian.reichel@collabora.com>
+Subject: Re: [PATCH 3/3] phy: rockchip: naneng-combphy: Fix mux on rk3588
+Date: Thu, 04 Apr 2024 21:30:52 +0200
+Message-ID: <2643155.ElGaqSPkdT@phil>
+In-Reply-To:
+ <20240404-rk3588-pcie-bifurcation-fixes-v1-3-9907136eeafd@kernel.org>
+References:
+ <20240404-rk3588-pcie-bifurcation-fixes-v1-0-9907136eeafd@kernel.org>
+ <20240404-rk3588-pcie-bifurcation-fixes-v1-3-9907136eeafd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] mm: get_mm_counter() get the total memory usage of the
- process
-To: Chen Taotao <chentt10@chinatelecom.cn>, akpm@linux-foundation.org
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20240322151139.7417-1-chentt10@chinatelecom.cn>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240322151139.7417-1-chentt10@chinatelecom.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On 22.03.24 16:11, Chen Taotao wrote:
-> Currently, the get_mm_counter() function returns only the value of
-> the process memory counter percpu_counter ->count record, ignoring
-> the memory usage count maintained by each CPU in the
-> percpu_counter->counters array, which leads to an error in obtaining
-> the memory usage count of a process, especially when there are many
-> CPU cores. counts, especially when there are many CPU cores.
+Am Donnerstag, 4. April 2024, 19:11:28 CEST schrieb Sebastian Reichel:
+> From: Sebastian Reichel <sebastian.reichel@collabora.com>
 > 
-> It is now possible to have get_mm_counter() get the memory count of a
-> process by adding the memory counts maintained by each cpu, thus getting
-> an accurate memory count of the process.
+> The pcie1l0_sel and pcie1l1_sel bits in PCIESEL_CON configure the
+> mux for PCIe1L0 and PCIe1L1 to either the PIPE Combo PHYs or the
+> PCIe3 PHY. Thus this configuration interfers with the data-lanes
+> configuration done by the PCIe3 PHY.
 > 
-> This patch is an unofficial version that simply fixes the above problem,
-> as I'm not sure if it makes sense to do so.
+> RK3588 has three Combo PHYs. The first one has a dedicated PCIe
+> controller and is not affected by this. For the other two Combo
+> PHYs, there is one mux for each of them.
+> 
+> pcie1l0_sel selects if PCIe 1L0 is muxed to Combo PHY 1 when
+> bit is set to 0 or to the PCIe3 PHY when bit is set to 1.
+> 
+> pcie1l1_sel selects if PCIe 1L1 is muxed to Combo PHY 2 when
+> bit is set to 0 or to the PCIe3 PHY when bit is set to 1.
+> 
+> Currently the code always muxes 1L0 and 1L1 to the Combi PHYs
+> once one of them is being used in PCIe mode. This is obviously
+> wrong when at least one of the ports should be muxed to the
+> PCIe3 PHY.
+> 
+> Fix this by introducing Combo PHY identification and then only
+> setting up the required bit.
+> 
+> Fixes: a03c44277253 ("phy: rockchip: Add naneng combo phy support for RK3588")
+> Reported-by: Michal Tomek <mtdev79b@gmail.com>
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 
-What is the effective change? Do you have any real examples where we can 
-observe a real difference, so it's worth the churn?
+Reviewed-by: Heiko Stuebner <heiko@sntech.de>
 
-On the other hand, doing the sum gets more expensive, do we care? How 
-expensive is it?
+> ---
+>  drivers/phy/rockchip/phy-rockchip-naneng-combphy.c | 36 ++++++++++++++++++++--
+>  1 file changed, 33 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c b/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
+> index 76b9cf417591..bf74e429ff46 100644
+> --- a/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
+> +++ b/drivers/phy/rockchip/phy-rockchip-naneng-combphy.c
+> @@ -125,12 +125,15 @@ struct rockchip_combphy_grfcfg {
+>  };
+>  
+>  struct rockchip_combphy_cfg {
+> +	unsigned int num_phys;
+> +	unsigned int phy_ids[3];
+>  	const struct rockchip_combphy_grfcfg *grfcfg;
+>  	int (*combphy_cfg)(struct rockchip_combphy_priv *priv);
+>  };
+>  
+>  struct rockchip_combphy_priv {
+>  	u8 type;
+> +	int id;
+>  	void __iomem *mmio;
+>  	int num_clks;
+>  	struct clk_bulk_data *clks;
+> @@ -320,7 +323,7 @@ static int rockchip_combphy_probe(struct platform_device *pdev)
+>  	struct rockchip_combphy_priv *priv;
+>  	const struct rockchip_combphy_cfg *phy_cfg;
+>  	struct resource *res;
+> -	int ret;
+> +	int ret, id;
+>  
+>  	phy_cfg = of_device_get_match_data(dev);
+>  	if (!phy_cfg) {
+> @@ -338,6 +341,15 @@ static int rockchip_combphy_probe(struct platform_device *pdev)
+>  		return ret;
+>  	}
+>  
+> +	/* find the phy-id from the io address */
+> +	priv->id = -ENODEV;
+> +	for (id = 0; id < phy_cfg->num_phys; id++) {
+> +		if (res->start == phy_cfg->phy_ids[id]) {
+> +			priv->id = id;
+> +			break;
+> +		}
+> +	}
+> +
+>  	priv->dev = dev;
+>  	priv->type = PHY_NONE;
+>  	priv->cfg = phy_cfg;
+> @@ -562,6 +574,12 @@ static const struct rockchip_combphy_grfcfg rk3568_combphy_grfcfgs = {
+>  };
+>  
+>  static const struct rockchip_combphy_cfg rk3568_combphy_cfgs = {
+> +	.num_phys = 3,
+> +	.phy_ids = {
+> +		0xfe820000,
+> +		0xfe830000,
+> +		0xfe840000,
+> +	},
+>  	.grfcfg		= &rk3568_combphy_grfcfgs,
+>  	.combphy_cfg	= rk3568_combphy_cfg,
+>  };
+> @@ -578,8 +596,14 @@ static int rk3588_combphy_cfg(struct rockchip_combphy_priv *priv)
+>  		rockchip_combphy_param_write(priv->phy_grf, &cfg->con1_for_pcie, true);
+>  		rockchip_combphy_param_write(priv->phy_grf, &cfg->con2_for_pcie, true);
+>  		rockchip_combphy_param_write(priv->phy_grf, &cfg->con3_for_pcie, true);
+> -		rockchip_combphy_param_write(priv->pipe_grf, &cfg->pipe_pcie1l0_sel, true);
+> -		rockchip_combphy_param_write(priv->pipe_grf, &cfg->pipe_pcie1l1_sel, true);
+> +		switch (priv->id) {
+> +		case 1:
+> +			rockchip_combphy_param_write(priv->pipe_grf, &cfg->pipe_pcie1l0_sel, true);
+> +			break;
+> +		case 2:
+> +			rockchip_combphy_param_write(priv->pipe_grf, &cfg->pipe_pcie1l1_sel, true);
+> +			break;
+> +		}
+>  		break;
+>  	case PHY_TYPE_USB3:
+>  		/* Set SSC downward spread spectrum */
+> @@ -736,6 +760,12 @@ static const struct rockchip_combphy_grfcfg rk3588_combphy_grfcfgs = {
+>  };
+>  
+>  static const struct rockchip_combphy_cfg rk3588_combphy_cfgs = {
+> +	.num_phys = 3,
+> +	.phy_ids = {
+> +		0xfee00000,
+> +		0xfee10000,
+> +		0xfee20000,
+> +	},
+>  	.grfcfg		= &rk3588_combphy_grfcfgs,
+>  	.combphy_cfg	= rk3588_combphy_cfg,
+>  };
+> 
+> 
 
-Such a discussion should ideally be part of this change log.
 
-"I'm not sure if it makes sense" -- you tell us, how did you come up 
-with the idea? :)
 
--- 
-Cheers,
-
-David / dhildenb
 
 
