@@ -1,285 +1,175 @@
-Return-Path: <linux-kernel+bounces-132238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132239-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB7C8991E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:10:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 981E38991E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:11:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 286951F22E97
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:10:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB4661C218AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:11:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9141113C3E3;
-	Thu,  4 Apr 2024 23:10:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B455413C3CA;
+	Thu,  4 Apr 2024 23:11:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mWgi46Qc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wXHRPt+a"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2050.outbound.protection.outlook.com [40.107.243.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B389613B798
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 23:10:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35FA0548FE
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 23:11:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.50
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712272232; cv=fail; b=oE/Oj6XrJKCQxYyN/ipF78Y5T0zdWoPLiD6++B18z/uYuYbH3Co6PF7Ni8rOafVt/dc8WrlQKbHRhFD/aOaJr5+xqnCA7yMUnkRTtGjBzfCIY/5fr4cChk6Ec1nrheU8DQh7L1SoFvhnCO5lNTcluv5gkq6RvEXS4sraRyJDR84=
+	t=1712272263; cv=fail; b=gkIs2GY6jtITtw0vmEVLzjeJIAfdvK27tYkWTbYhBGkGAlk1v/tWBUgU0KNjmJZ1K1v7VsrR7QAjBPlcc7oNQY0qtCCIiopDaSV0otlq3DNROCxNUbznMrlVBi9yEaxZST7yX5bcjDGn10fp0/Hr5Z/dVNborwak9pM5hztnXNY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712272232; c=relaxed/simple;
-	bh=PWASOWwOhn3vEuhtyY/mDQEI0OG4jvaWEKjA2+M+bRM=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=BDPom1XEeflIpIEHT/+xVqE5TQNOUi+ws2UMDarQU+GPwVpVLx2ZYdJx23dd6+Fpfh4iO6iJVlv2aRbCRQA8hdUHRXE6O7GefnjU8tmChTJRqZtWDsOmB6faSyeDw8efZTDwmpU5YkV5yCVDOb7yiJXsSINin/2O8N+zc0FXT2k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mWgi46Qc; arc=fail smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712272231; x=1743808231;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=PWASOWwOhn3vEuhtyY/mDQEI0OG4jvaWEKjA2+M+bRM=;
-  b=mWgi46QckJ5isz4UxLUMHT9nnHRBiWFGZd0G2AJi7G87rXXM6PxZUUxu
-   RVlV7KiXipJIAxU5OWTXTqcJ5kud3Od6qhGvIBdJyKXaRYsSWXyL57WuF
-   hoekEsE/BG85BAuARJFr4b/Gy1h4jyqW6Qp4wBuM2653XspAt4rQkjrdG
-   2T8vySMW1dba443wwIwVVaV2A1FoueyJam0uicQAQNbOhHu4uw8roZLQB
-   SwefU74EBz6VdSrrHCncB9ilonm0KhIwkytRNPSXWp/SanILm0L3vbJ6b
-   GM8X1nJ9spEZOmRHdaoHIr+vxOybvWWu+wG9xrAqZ3mYxiMRLP85gNSK+
-   w==;
-X-CSE-ConnectionGUID: gDi/y5swSGmJM75PWFG3OA==
-X-CSE-MsgGUID: RRahiwliRy6rOa+dLvYawg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7748626"
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="7748626"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 16:10:30 -0700
-X-CSE-ConnectionGUID: RpKkFistSA+fEt7TsjDuBA==
-X-CSE-MsgGUID: xbtWNmK0RaKT9mpwrjs1yw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="18893813"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 04 Apr 2024 16:10:29 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Apr 2024 16:10:28 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 4 Apr 2024 16:10:28 -0700
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.169)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 4 Apr 2024 16:10:28 -0700
+	s=arc-20240116; t=1712272263; c=relaxed/simple;
+	bh=rGI6suv1zb3pghnNnhgwDeVGs1uApVMNK7SEi4zhazw=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qM5zfnN6fvmm4wStL2Ixv2eE2Icr5Ze3oMslOHpOLViq1sktqte8YMwQoEMqy3bEG0ykGJn4U2IJYtQKzA6bL5MHOXOBiUGdTNkNzN4Ub7rY8Kmj0g+plEHsWA4y4T4iWPYApoaaQY3b0S5pZM9+RdGVUUrI37GnW449uh4BsS4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=wXHRPt+a; arc=fail smtp.client-ip=40.107.243.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bl7NGqUtzk16buRLEFyeE0BCynkoa8y2Mz7HTxlmlf8JdjUQbeI5Z5J03oRDlSQ10WsLdjd8uUZDB/EHt2SOQwHKYnX68Qny9rf77jPq9zdMTaNDdMbSMOn4EcygN++v55Y66Z2+ZfPMzgTtXEok0Y9TWYz1mq+paW8igM+E4Bv+Mcein20N3BUj/UvJMAZGUa434vOUkjly9+69vd5cZtGxNzOGc+PYwzAoxy1PyeZ5NyTbMWUFAqoL0nZpotGMT/kqtRVt8TNN21kAn7R0iJjc9IACbXZX2WzKR03oIUWn89vgT9fyaGx4E/XuIvl4ZPt3Vqm7tAs3WCYhryognQ==
+ b=k6Afk71wvaCFR/u9BAYhtZ5DnoS+I4gYMiR14qVcU2DeLjObn7SHLxKJ2WZ6vlA+SyPRZAh7F/PGZxjBaA1I6LwkuoaRY5ANVblqNCVw9ncrk0lAGldBPpYuaK2yjV51hcoqFWaObMXf0eYaFU287Mn6HF3n/C55U0gM+nmGwx7dN6/7C5qKrEwwSXZL1OBlJKGq1RBzJ2GnDUSdC9dila2xFFHhZYoBMxHb8JKH21MKaYKmvsdKWf2ch0iMtlNAUG6bqAStmAOkp95kGpsgof1JUrPkQ+JEK+ASsJMJs5VD7hb1/ziAJ5Ee3iG7Mj0OFcHOkANN4A2v4JTN7/HTdQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=P8YJYy+8Pl+GAhna0oYaDJ1QM99d8wI/em+vpifLdKQ=;
- b=mQRv0WRTEniu1S8GwaGkO6hXgRHpoJWn1riXb4AOwMo6LiSiniOGl1diTbBnR3opaz+bFLWsn7D25PsqW4Bw+N6imnmfk8mpUcujfr5gjaFugJiJ7q5sisxCbQfOxTlAwmhb3nQYnFp3Gq05zWNv64felFpjXvyIjUuNFKOqFljzn8IiXiyYqERxSZHYjYARBzE7IDoCYhkJVv14wErs+c5Wl9pfNN23hzM1zzemWlTreOBWoFVhYBuB7WqroTykCC+rPfZx8jqthLMAqdwfY2uPh2oiKQj2g/sp1vOTkOuptE7kWm5ihjfaazaUdQZ9LRjUFA+q8YFe5Y5W/wEhNw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
- by SJ0PR11MB4847.namprd11.prod.outlook.com (2603:10b6:a03:2d9::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.33; Thu, 4 Apr
- 2024 23:10:26 +0000
-Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
- ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7452.019; Thu, 4 Apr 2024
- 23:10:25 +0000
-Message-ID: <50298f2b-45dc-4b22-9383-b82791ee319d@intel.com>
-Date: Thu, 4 Apr 2024 16:10:22 -0700
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/6] x86/resctrl: Add hook for releasing task_struct
- references
-To: Peter Newman <peternewman@google.com>, Fenghua Yu <fenghua.yu@intel.com>,
-	James Morse <james.morse@arm.com>
-CC: Stephane Eranian <eranian@google.com>, Thomas Gleixner
-	<tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
-	<bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-	"H. Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
-	"Juri Lelli" <juri.lelli@redhat.com>, Vincent Guittot
-	<vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel
- Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira <bristot@redhat.com>,
-	"Valentin Schneider" <vschneid@redhat.com>, Uros Bizjak <ubizjak@gmail.com>,
-	"Mike Rapoport" <rppt@kernel.org>, "Kirill A. Shutemov"
-	<kirill.shutemov@linux.intel.com>, Rick Edgecombe
-	<rick.p.edgecombe@intel.com>, Xin Li <xin3.li@intel.com>, Babu Moger
-	<babu.moger@amd.com>, Shaopeng Tan <tan.shaopeng@fujitsu.com>, "Maciej
- Wieczor-Retman" <maciej.wieczor-retman@intel.com>, Jens Axboe
-	<axboe@kernel.dk>, Christian Brauner <brauner@kernel.org>, Oleg Nesterov
-	<oleg@redhat.com>, Andrew Morton <akpm@linux-foundation.org>, Tycho Andersen
-	<tandersen@netflix.com>, Nicholas Piggin <npiggin@gmail.com>, Beau Belgrave
-	<beaub@linux.microsoft.com>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240325172707.73966-1-peternewman@google.com>
- <20240325172707.73966-3-peternewman@google.com>
-Content-Language: en-US
-From: Reinette Chatre <reinette.chatre@intel.com>
-In-Reply-To: <20240325172707.73966-3-peternewman@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: MW4PR04CA0069.namprd04.prod.outlook.com
- (2603:10b6:303:6b::14) To SJ2PR11MB7573.namprd11.prod.outlook.com
- (2603:10b6:a03:4d2::10)
+ bh=SVq+BbTvSa9uQfUgAEa9Xcp3cLWYcOfNUqEKQXfN6Og=;
+ b=H7W8CiDDswrFkHrV0HoO3a2WyWkyQg+H3+HvH1W+zO0k9Q6LuHqyy/H6SiqdPWmI18uDpnTOM1GUpR2IXTvaQfimFjDZtrnCXoc4sw7WOfUdfzIEQiDuqJLS1pwBXH5CrxomaiB8H0dmkLWu1uYlLgiLmgow2SZ9N2Mknhu9r6XdytSgEdZexzK41YHo+XAQW2haOPzRrrC6FmdBPncV10hnxinJEoRX7y6NmrhnpYmt4VUhUekhylQOG9jzyUlJ6jL8CEcJUmq8TKIASyAogjiPtvZLrcIlP3vQld5k3mLSgxuFhJ7Zy6YNjKQAXpMa7jVfqlEeSxgs2Zq4VbnLyg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=linutronix.de smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SVq+BbTvSa9uQfUgAEa9Xcp3cLWYcOfNUqEKQXfN6Og=;
+ b=wXHRPt+a6Kq9aMQnfX1UutdPFbJ9+PDdv+6GJwopcVC6SCkcgip6a66PMhooFBkZ2axUzvhZgBPHKLUOzmf4EBA7aPEziQ9cy6b5aDFwtdfNSoEngEME2G2PsJzk2txgM9AaURXw2LOXo6F3bGpkcs3S/pQjLPetm4SAWn1+bZA=
+Received: from MW4P222CA0030.NAMP222.PROD.OUTLOOK.COM (2603:10b6:303:114::35)
+ by DM4PR12MB6327.namprd12.prod.outlook.com (2603:10b6:8:a2::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.46; Thu, 4 Apr 2024 23:10:58 +0000
+Received: from CO1PEPF000066E9.namprd05.prod.outlook.com
+ (2603:10b6:303:114:cafe::f2) by MW4P222CA0030.outlook.office365.com
+ (2603:10b6:303:114::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46 via Frontend
+ Transport; Thu, 4 Apr 2024 23:10:57 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000066E9.mail.protection.outlook.com (10.167.249.11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7452.22 via Frontend Transport; Thu, 4 Apr 2024 23:10:57 +0000
+Received: from ethanolx7e2ehost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 4 Apr
+ 2024 18:10:56 -0500
+From: Ashish Kalra <Ashish.Kalra@amd.com>
+To: <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
+	<dave.hansen@linux.intel.com>, <x86@kernel.org>
+CC: <rafael@kernel.org>, <peterz@infradead.org>, <adrian.hunter@intel.com>,
+	<sathyanarayanan.kuppuswamy@linux.intel.com>, <jun.nakajima@intel.com>,
+	<rick.p.edgecombe@intel.com>, <thomas.lendacky@amd.com>,
+	<michael.roth@amd.com>, <seanjc@google.com>, <kai.huang@intel.com>,
+	<bhe@redhat.com>, <kirill.shutemov@linux.intel.com>, <bdas@redhat.com>,
+	<vkuznets@redhat.com>, <dionnaglaze@google.com>, <anisinha@redhat.com>,
+	<jroedel@suse.de>, <ardb@kernel.org>, <kexec@lists.infradead.org>,
+	<linux-coco@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/4] x86/snp: Add kexec support
+Date: Thu, 4 Apr 2024 23:10:46 +0000
+Message-ID: <cover.1712270975.git.ashish.kalra@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
+References: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|SJ0PR11MB4847:EE_
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-TrafficTypeDiagnostic: CO1PEPF000066E9:EE_|DM4PR12MB6327:EE_
+X-MS-Office365-Filtering-Correlation-Id: 10252303-d06b-4a28-bcdd-08dc54fc7ca1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: QyoYJnSiUwWz1jbMBLlgP+rbxvGuc/f/Dtj4wu4pE0eQgE2SqHCkO4OfhgnMsjJlLf/1V55PRRNfi5LHulzR1Cw8VcJnHeuPDhh3JEXrh5jr5zxwbp2yp+1YFxMw3wDDl4S0RQP5e/FkodvF9KTFpnhngGtsVuiDYr2LUqJ1s2b5mjLW6Sqvc0hFmnXDzHVrhvk8oUsB8Nn44x3c6IMAY5sBEQHDeOarKrrbMGFxFPW3NW8FntOvk+FNn1F0Ok1bMg5Z5m7vLA7NnKuT9LHThuy5gA45zUV2Amuxgx64tDf4jp/qY4w2Tu2a8K8St77vOPcXGxa7iGCVlDZtn68hR8EWWE8o2zAXKqS550Es4uPKHJT1awY5ticxh4MCuKRD1T6XG2hj8AmGT9xwHdKolvDE2P1wFOFh2DU3Pk9eaiLxv9ZzsZJUTylXG+XZqtGADZnNm5fELnMXalq+FzsVOZs8kkeveX/DfaGwUXOpekM52AqzjR5kcFyQIGBF6LH8/ribCPWHySoI9PV9E0KNmyuqnDMpEP6NwcoSAeutNY2IZneSRYVea3p0tt57J6PDh6ygbU6FOy/QZUyuwqkKrCMMJuUf2NG4S5aUDOlqTwsGYY5vDK6Pj9zZXa+QOfDykSwODvbeHgRE9C8Zgs6xOS2fkCCQF9vub1RYIBGkApw=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NGxFQVFKdXovN1BxZktpblhvWEJxajRnU3R6d1krWit0NlIzYlJhV0xlbml0?=
- =?utf-8?B?Nm9XT2M4ZVBSNHNGRjN6Kzg5SER0WVh1bzRlNStwa09tVW9mUFh4SW9LbGtx?=
- =?utf-8?B?ZGQzM3VVTnpxblRHMXY5dnU4cHRvTXhOT2hzazFhMkdMQUYzWmkrdEJySHNR?=
- =?utf-8?B?cnNFN3NoTWNPeFZRV0tnZ1VYY29wY05FL1Mva0VxL1dGbUNGNjFKUmd2MzlH?=
- =?utf-8?B?d3BRcERobTNESVcwMUJObmhvZFNvbVVWdFZFb3ZMZmYzdUYrZkI2cndtVGRE?=
- =?utf-8?B?T1pSNmJHQ3pwZmhyalY5bXVIaGlWUjNvdmIrNW0rMFdXeWQ0eHhsWE9JUTZs?=
- =?utf-8?B?MnlTUzFXOUFQcEY3NnJxMHhCUjY0Z2JTQUl5OVZnNWIyaHBOcHQ0bFFSczZN?=
- =?utf-8?B?Nk9CV2lQOHVpQndtNUZCd09XVmJWT2w2WU5VMnhxbXZNb2JNb29RbGg4RDVp?=
- =?utf-8?B?UTc1dTMxNTRBWXBmRFdkWkduM2FSTVN5My9mN2IvdjlOSmY2VkpqUXRhRTMx?=
- =?utf-8?B?cFRaamRnQ1JvS0hKeWkxcTk1RmpaK3ErSjlub1Q0YjVRb0RtM1RsWHhPNG1i?=
- =?utf-8?B?anNsWGpWSCtvRFBuckkzN09taUlwakRzSWVaa0hJSHIxWXZVQ3UxcGY0RHFE?=
- =?utf-8?B?NkdHZ0RucnlNOUVPRjBpaDVzOXJTNzAwWnc3RkR4Zk9HMjRabytnK3puM0Vh?=
- =?utf-8?B?czVFR042dURzaUpyenRWTXB3ODVBNVNpdm1hMnRTbzk2SnVwODJKNndPd3Y4?=
- =?utf-8?B?d0pSeXM4UHdCTXVKZ2FEbzk4QmcwQ3QrYUhwNklKMTZSdVNuOVZsRnZYMzVP?=
- =?utf-8?B?WHFSRHB6YURoVVF3QlB4ZU5XclIrN2xXQm5ZRFFjV3VjbWhCYjZkUE1PMUZY?=
- =?utf-8?B?dGY2ZjRIQkJiSzFod2p5TEUzT0hWQTBxU3B6OGxENDdQR0F1QlVMMDZibG5s?=
- =?utf-8?B?TWNReWpEUGxTTmUzSXNnMFZGMWhTMWxIZnFJRWFTTFdVYjV6Rk4wYVdMbGdp?=
- =?utf-8?B?NlMrL2k1U1Nadjc5UVFtejQvS245Y1dHd2FxM3ZuUWFYTzMvQmpRdi95eUQr?=
- =?utf-8?B?bHpXRWJWVVAyTXZIM0VZVU1qdGZWcWRWYXZ5K256U090dWVmZGt4REo1clJH?=
- =?utf-8?B?QnZFZHZYL2U0bEJpNzdoM1FSV1BSdG11VVRxMm9RUHVnTDRGd0FFZGdQRFFD?=
- =?utf-8?B?dkMyWHlJeVNQWEpZMFd1SE0wcmJydXVoLzhWTjYxUXQyUlc0Y0NkTUhhZktB?=
- =?utf-8?B?OHh4MHROdVBWUFJ3Y3YyQnVkbjlRdGhqR05rQWo3ZWIvNHFydUwyNFNyREYx?=
- =?utf-8?B?QVZ5MW9FZnVKWXBzNHdyZHFOVDdFaU5heXVreXJ5YytmQW1qZ1Baem9WSk04?=
- =?utf-8?B?T2ZHQ240cmpTZFlndHpOeWlSc1F0VmJZTEhNOUpOekU3U1pCa2ZZOW5wSVBQ?=
- =?utf-8?B?eUpWT1Z3Skk3MTFKeTJpQlB2VVhEQkRSR0xoRk9tcFp1MWhpdXJvQzc1cHBr?=
- =?utf-8?B?UldhMENNZ05HdUJ0SG1YYzNYSk1wK0lEb2M4Z3BtU2J3NWNoVzRiaWpKUEky?=
- =?utf-8?B?N0tjMGFzaHZGamhNY1NYbWlYVWJaaW9TWllpcStBYlV4SmNaNm5INEIrZHBs?=
- =?utf-8?B?UGZYKy91aFBZQVcxai81ZVM0QTJyMksxekpZSmJOTUU1RmhsbzQ0UnpZSU44?=
- =?utf-8?B?WnhaV2x2N0FYaFE5RHZhc0Nsa1lmWlZRS3EwT0lpd29BYW9reldEaGhSTk5Y?=
- =?utf-8?B?eklnTFRlNnlzWWRXbnhmbXFCek1ZenhpdjJzY1Qyek5EUjVEaDEzVGxMeHdm?=
- =?utf-8?B?VGNrZnFwR093ZFpyQU1GeE80eGJXNGhVTERoR28yd0dVbGFyT1llQTBmR05p?=
- =?utf-8?B?cHZwVUlXd0poYkFWVUhQcUVzeEZuYmdmSHBDazR0d0FhVUpycndXdEY1UC82?=
- =?utf-8?B?VDNVZFRGTzErOXBndVJkYnk1QjVDKzFmSlJCS0RDL1UyL0p1Z1FjQXFlU0dI?=
- =?utf-8?B?T1lid0V2ZE1yK2E5QmZhMkFWREM1UWRjbjRxL1NJcHFnak15NHFIV3BGOHJM?=
- =?utf-8?B?dTFOSzU3ckpKb0VnQWMvdWRXVnhucnRjQXJRM0dtbU1yYmFkZ3lURWtMNHlB?=
- =?utf-8?B?ekdsc0ZJZzh3dXk3aWVpdngxcDdCblJDNGZNbG1zcjNuTmxtclRIYnM4V29T?=
- =?utf-8?B?N0E9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f72d1c3-a76d-4c75-aaac-08dc54fc6955
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 23:10:25.7183
+X-Microsoft-Antispam-Message-Info:
+	4yrmlkBXjs5tFp010L1DHXgEBbDrbt8SflCuQzY3YTgnAtM1r76mBgbtl/DY8XEF/+U7T7C1weYJ8HV2pBIQMK9NoVbBx2Dr8f4DhoH0NaE2LuN8kqyrjhXWabvsBQhjzU3xSRrxW8tP3cam1g5ILhQ+lpKujHYAusTRIUi1Ic4fRG0+qQTjVnMvcEEMZ88dAS3FippuAIEBFvDV8WPZK7WBR6AKaXf5SFOVwck4T5eDKD3J26V4HAklW6g54AFgc2372gvL5vYEjvTj6iKMQJE1ccro9JInOJV8vlR8ekdbsGXmjO/GebiHcCtbC41Sxj9fxt7ezmXg+3/83Gx/5SiI44bj3LRP057MWwuzmCU/aDL0QEptCcHDc3dXQAgzDJsZgaCsRwVYKhGtphigFt1gP/PNNJIxRUBEB5iG2rSQ/tK+jKWfdpisluW9rUQvmVNt0zg9s++7+qNXWJpR2/mpqfD493FboGAbn/XAatqkhS6OJorvsOjv7GCXPUv6FDqTfspH/4KaWeGHFqLjKbkiUwI/O0/lcd9NDbGxoMELazsIw/Y57WXcaNdP83c6L5ERHi7VKum0kYdaDVvdBgY3xZ3JkxKRBC2FvmpDCFksrvj7opQmEVKvhhcVF5yjrWSiTaiRsciNl1smZo5EPPzF1dKASMkRGkeOpFyMqAT1lJD0aM7yIDQAKogM3hqG6GkEBsPKUx9VHjAwgC83sauNlebvDIIAg40BKa4vzvDbNxFbw72aKEk3FyTeU5Qg
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(36860700004)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 23:10:57.7202
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: izs0i6C2zSYuDSpQ1b5j65SpOgAcgsVsUKO833wOIvzpVAFtiCvpjkRev73KKYti6WTxSvLe10QGnM7HSk0lXw1Gq6tDX5ClkYjdUtt0hYQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR11MB4847
-X-OriginatorOrg: intel.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10252303-d06b-4a28-bcdd-08dc54fc7ca1
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000066E9.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6327
 
-Hi Peter,
+From: Ashish Kalra <ashish.kalra@amd.com>
 
-On 3/25/2024 10:27 AM, Peter Newman wrote:
-> In order for the task_struct to hold references to rdtgroups, it must be
-> possible to release these references before a concurrent deletion causes
-> them to be freed.
+The patchset adds bits and pieces to get kexec (and crashkernel) work on
+SNP guest.
 
-This is very hard to parse (for me). I found your description in the
-cover letter to be much easier to understand.
-Considering the core area of code changed with this patch the
-changelog needs to be specific on what is needed and why.
+v3:
+- Rebased;
+- moved Keep page tables that maps E820_TYPE_ACPI patch to Kirill's tdx
+  guest kexec patch series.
+- checking the md attribute instead of checking the efi_setup for
+  detecting if running under kexec kernel.
+- added new sev_es_enabled() function.
+- skip video memory access in decompressor for SEV-ES/SNP systems to 
+  prevent guest termination as boot stage2 #VC handler does not handle
+  MMIO.
 
-I'd also like to recommend that the subject prefix is changed to "exit: ..."
-to highlight to folks that this crosses into a different area of the kernel.
+v2:
+- address zeroing of unaccepted memory table mappings at all page table levels
+  adding phys_pte_init(), phys_pud_init() and phys_p4d_init().
+- include skip efi_arch_mem_reserve() in case of kexec as part of this 
+  patch set.
+- rename last_address_shd_kexec to a more appropriate 
+  kexec_last_address_to_make_private.
+- remove duplicate code shared with TDX and use common interfaces
+  defined for SNP and TDX for kexec/kdump.
+- remove set_pte_enc() dependency on pg_level_to_pfn() and make the 
+  function simpler.
+- rename unshare_pte() to make_pte_private().
+- clarify and make the comment for using kexec_last_address_to_make_private  
+  more understandable.
+- general cleanup. 
 
-It is not obvious to me how changes are routed to this exit code but we
-can start by highlighting this to not appear to want to sneak it in.
+Ashish Kalra (4):
+  efi/x86: skip efi_arch_mem_reserve() in case of kexec.
+  x86/sev: add sev_es_enabled() function.
+  x86/boot/compressed: Skip Video Memory access in Decompressor for
+    SEV-ES/SNP.
+  x86/snp: Convert shared memory back to private on kexec
 
-> 
-> It is not possible for resctrl code to do this with
-> for_each_process_thread() because the task can still switch in after it
-> has been removed from the tasklist, at which point the task_struct could
-> be referring to freed memory.
-> 
-> Signed-off-by: Peter Newman <peternewman@google.com>
-> ---
->  arch/x86/kernel/cpu/resctrl/rdtgroup.c | 10 ++++++++++
->  include/linux/resctrl.h                |  6 ++++++
->  kernel/exit.c                          |  3 +++
->  3 files changed, 19 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> index 5d599d99f94b..9b1969e4235a 100644
-> --- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> +++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
-> @@ -2931,6 +2931,16 @@ static void rdt_move_group_tasks(struct rdtgroup *from, struct rdtgroup *to,
->  	read_unlock(&tasklist_lock);
->  }
->  
-> +/**
-> + * exit_resctrl() - called at thread destruction to release resources
-> + *
-> + * This hook is called just before the task is removed from the global tasklist
-> + * and still reachable via for_each_process_thread().
-> + */
-> +void exit_resctrl(struct task_struct *tsk)
-> +{
-> +}
-> +
->  static void free_all_child_rdtgrp(struct rdtgroup *rdtgrp)
->  {
->  	struct rdtgroup *sentry, *stmp;
-> diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> index 62d607939a73..b2af1fbc7aa1 100644
-> --- a/include/linux/resctrl.h
-> +++ b/include/linux/resctrl.h
-> @@ -325,4 +325,10 @@ static inline void resctrl_sched_in(struct task_struct *tsk)
->  #endif
->  }
->  
-> +#ifdef CONFIG_X86_CPU_RESCTRL
-> +void exit_resctrl(struct task_struct *tsk);
-> +#else
-> +static inline void exit_resctrl(struct task_struct *tsk) {}
-> +#endif
+ arch/x86/boot/compressed/misc.c   |   6 +-
+ arch/x86/boot/compressed/misc.h   |   1 +
+ arch/x86/boot/compressed/sev.c    |   5 +
+ arch/x86/boot/compressed/sev.h    |   2 +
+ arch/x86/include/asm/probe_roms.h |   1 +
+ arch/x86/include/asm/sev.h        |   4 +
+ arch/x86/kernel/probe_roms.c      |  16 +++
+ arch/x86/kernel/sev.c             | 169 ++++++++++++++++++++++++++++++
+ arch/x86/mm/mem_encrypt_amd.c     |   3 +
+ arch/x86/platform/efi/quirks.c    |  23 +++-
+ 10 files changed, 225 insertions(+), 5 deletions(-)
 
-Scattering these ifdefs in the header file is not ideal. I think when there
-are just the two sections as I mentioned in previous patch this will look better.
+-- 
+2.34.1
 
-> +
->  #endif /* _RESCTRL_H */
-> diff --git a/kernel/exit.c b/kernel/exit.c
-> index 41a12630cbbc..ccdc90ff6d71 100644
-> --- a/kernel/exit.c
-> +++ b/kernel/exit.c
-> @@ -70,6 +70,7 @@
->  #include <linux/sysfs.h>
->  #include <linux/user_events.h>
->  #include <linux/uaccess.h>
-> +#include <linux/resctrl.h>
->  
->  #include <uapi/linux/wait.h>
->  
-> @@ -862,6 +863,8 @@ void __noreturn do_exit(long code)
->  	tsk->exit_code = code;
->  	taskstats_exit(tsk, group_dead);
->  
-> +	exit_resctrl(tsk);
-> +
-
-This seems fair but I am not familiar with the customs in this area of the kernel.
-I see both exit_xxx() and xxx_task_exit() being used.
-
-Reinette
 
