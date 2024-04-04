@@ -1,216 +1,97 @@
-Return-Path: <linux-kernel+bounces-131546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94E6E898970
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 02774898973
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:01:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 499302845AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:01:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B167928446B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:01:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6F81292D8;
-	Thu,  4 Apr 2024 14:01:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF181292E5;
+	Thu,  4 Apr 2024 14:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QLRSbCL8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FvIUNKYu";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QLRSbCL8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FvIUNKYu"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H6FG659e"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E830127B7E
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:01:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A741272BB;
+	Thu,  4 Apr 2024 14:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712239282; cv=none; b=ELk9t2mlyQUqBCFgHtDRdO0aOHzfaaDUYH2xaW0hGx0a0Et6tb/acUjHcixlCJRQBMRcp/sYER4w+pxVw+o0EGCaagf7qNBkptMxTohmCDHRBdyHku2NBWCtiHC9tiyVKPhassRWRob2jZUE6VjbHiHL9zqJeNE3upaoeKk1xm4=
+	t=1712239310; cv=none; b=TKgFa3ygp3lSQyQW3IT5h2JCc0/GkXFj9qyBsezpiQ9MFf6ozQ/D/nXo7ANRWc6C1YQ0tmNnJ9AzJNjmtiZcPYxQLa95Eahs005ZxhpaTEUv6GpfjW6XZVwZdUCOKxdpogAJxYH6t2SN6qn2w+0zJjK9FHd4Cmct7qCTSeAjz4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712239282; c=relaxed/simple;
-	bh=JqQ0BM+21dLrLSnRoC3/sd7AgLHEu8bVHfju2KxU3LU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MRD7Ktzw9TJAli5SrxUXE3VUNMwTmzMRMuWId+cMVCQAi99eoFhgeWMikBITT1sRwCvu/FYqE6hlC8djCkwTUCUwmmWasx2SipbR39CJTNWJEHKWLICyMRMbD0NwNF2SAU9z8gZaEN1wSjItv0AS9LEyms/GZoy8f6qcowVIEaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QLRSbCL8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FvIUNKYu; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QLRSbCL8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FvIUNKYu; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B00CE5F787;
-	Thu,  4 Apr 2024 14:01:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712239278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CJEO95T5eOAEaEClQ5YGYGSrxqK8HX7WCJ8QTLjd03g=;
-	b=QLRSbCL8nMogPk3Fs4XrLUkeJexg4Dr8UEDnFG7dow1kuSQgI1qPAjnbZSXMuw2wzktbC/
-	bDw7xJfAniCk5YSd5DiWvAn3dPtlibe7+h7H0ALAQMEGcUtDmPN4MPQjaA0a3p7pfNersH
-	+45jFveJIs8p+3OXiuuDrxiQ207iDoo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712239278;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CJEO95T5eOAEaEClQ5YGYGSrxqK8HX7WCJ8QTLjd03g=;
-	b=FvIUNKYusS0KxWFeO94ePJQnUmhCeQTigCEmJ3ioDT/k+u8ygenr2eMe9eBeWcvznN2m2X
-	fiz933Df2pGoDhDQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712239278; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CJEO95T5eOAEaEClQ5YGYGSrxqK8HX7WCJ8QTLjd03g=;
-	b=QLRSbCL8nMogPk3Fs4XrLUkeJexg4Dr8UEDnFG7dow1kuSQgI1qPAjnbZSXMuw2wzktbC/
-	bDw7xJfAniCk5YSd5DiWvAn3dPtlibe7+h7H0ALAQMEGcUtDmPN4MPQjaA0a3p7pfNersH
-	+45jFveJIs8p+3OXiuuDrxiQ207iDoo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712239278;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=CJEO95T5eOAEaEClQ5YGYGSrxqK8HX7WCJ8QTLjd03g=;
-	b=FvIUNKYusS0KxWFeO94ePJQnUmhCeQTigCEmJ3ioDT/k+u8ygenr2eMe9eBeWcvznN2m2X
-	fiz933Df2pGoDhDQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A283813298;
-	Thu,  4 Apr 2024 14:01:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id sqdiJ66yDmaifgAAn2gu4w
-	(envelope-from <vbabka@suse.cz>); Thu, 04 Apr 2024 14:01:18 +0000
-Message-ID: <0cbd9644-5900-4f02-adf8-d3f1182d399b@suse.cz>
-Date: Thu, 4 Apr 2024 16:01:18 +0200
+	s=arc-20240116; t=1712239310; c=relaxed/simple;
+	bh=EDLFFNlDIwfirM9Ysf0HpN0b6M3HqKIXDP1hJ7mbtIA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qm7m3jnNsfaYicIMYMwywvpDIAMXhVqFOHX4rvBdlO5n6Th4cNtRQO/r+G9HhUDpUXn9MJhf6GBLh4wEUFMSPxTYqDeFvWiPsJzR8gztURj+EnSdF05ZAJPBzRcSlBg/tQ/znoNyJqyNUcZcCAH5C3fzIiQDe3gK+wxCFsS/MNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H6FG659e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46C4EC43390;
+	Thu,  4 Apr 2024 14:01:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712239309;
+	bh=EDLFFNlDIwfirM9Ysf0HpN0b6M3HqKIXDP1hJ7mbtIA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=H6FG659eiwMvgb9rE74Q2t2+mb0R87kC+Wkt4eYFKoJF6QFseyX2nBlvxuyKNiL8L
+	 WwlK22ez++JGaNqgKFsLCgPK95RaPxQdrjaBXWhcG9OL3BsOuJvMh8/kvKj/AfHAhl
+	 X9qq8/66PtJ0uWKqrJfbBeCe07prAGa47FNrYsELtmzhVa1Y8b8sBwWCfWuEtwTQOy
+	 xDqk98Xn7jFaztO8C/MvUcMHU/g4SaKo2JtZ0vx3GyGgbqBBDK66M1OmpbYh8/QTFs
+	 YJVFpHZxr61wqnYR2hk21arnzKOmqHvGgWq+dS4yMXWKjahjwbvSpjHKtyntIYciYX
+	 XSGUuvkGrwsLA==
+Date: Thu, 4 Apr 2024 15:01:43 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+	jonathanh@nvidia.com, f.fainelli@gmail.com,
+	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+	conor@kernel.org, allen.lkml@gmail.com
+Subject: Re: [PATCH 6.6 00/11] 6.6.25-rc1 review
+Message-ID: <f6122d69-ffe8-42cd-8881-8b6ff0d672da@sirena.org.uk>
+References: <20240403175126.839589571@linuxfoundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: page_alloc: use the correct THP order for THP PCP
-Content-Language: en-US
-To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org
-Cc: mgorman@techsingularity.net, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <a25c9e14cd03907d5978b60546a69e6aa3fc2a7d.1712151833.git.baolin.wang@linux.alibaba.com>
- <76457ec5-d789-449b-b8ca-dcb6ceb12445@suse.cz>
- <30bef3d6-3381-491e-a00a-bd1fb7e8d8f8@linux.alibaba.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- EP+ylKVEKb0Q2A==
-In-Reply-To: <30bef3d6-3381-491e-a00a-bd1fb7e8d8f8@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -4.29
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.29 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	XM_UA_NO_VERSION(0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[alibaba.com:email]
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="sBD/GiIq04YLFs8U"
+Content-Disposition: inline
+In-Reply-To: <20240403175126.839589571@linuxfoundation.org>
+X-Cookie: Buckle up!
 
-On 4/4/24 2:19 PM, Baolin Wang wrote:
-> 
-> 
-> On 2024/4/4 18:03, Vlastimil Babka wrote:
->> On 4/3/24 3:47 PM, Baolin Wang wrote:
->>> Commit 44042b449872 ("mm/page_alloc: allow high-order pages to be stored
->>> on the per-cpu lists") extends the PCP allocator to store THP pages, and
->>> it determines whether to cache THP pags in PCP by comparing with pageblock_order.
->>> But the pageblock_order is not always equal to THP order, it might also
->>> be MAX_PAGE_ORDER, which could prevent PCP from caching THP pages.
->>>
->>> Therefore, using HPAGE_PMD_ORDER instead to determine the need for caching
->>> THP for PCP can fix this issue
->>>
->>> Fixes: 44042b449872 ("mm/page_alloc: allow high-order pages to be stored on the per-cpu lists")
->>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
->> 
->> IIUC this happens with CONFIG_HUGETLB_PAGE disabled because HUGETLBFS is
->> disabled? But THPs are still enabled? I think there might be more of THP
-> 
-> Right, and seems the Powerpc arch will set pageblock_order via 
-> set_pageblock_order() when the huge page sizes are variable (not sure if 
-> this is always equal to THP order).
-> 
-> Moreover, it still does not make sense to use pageblock_order to 
-> indicate a THP page, especially when we already have HPAGE_PMD_ORDER to 
-> represent THP.
-> 
->> working suboptimally in that case with pageblock_order being larger
->> (MAX_PAGE_ORDER).
->> 
->> In other words, should be rather make pageblock_order itself defined as
->> 
->>   min_t(unsigned int, HPAGE_PMD_ORDER, MAX_PAGE_ORDER)
->> 
->> in case with !CONFIG_HUGETLB_PAGE but THP enabled.
-> 
-> Yes, this makes sense to me (I wonder why this wasn't done before?). I 
-> can create a seperate patch to do this, what do you think? Thanks.
 
-It probably wasn't anticipated that hugetlbfs would be disabled and THP
-enabled. If you can create such patch, great!
+--sBD/GiIq04YLFs8U
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Apr 03, 2024 at 07:55:49PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.25 release.
+> There are 11 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+Tested-by: Mark Brown <broonie@kernel.org>
+
+--sBD/GiIq04YLFs8U
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYOssYACgkQJNaLcl1U
+h9DJ1wgAgG/dtvIuol28XtdE7UShOmDjvKHM+UZUhDyVdv9zwl61nWf0yNR9vSzH
++eMCpLvTnQpwzi4prjvQqKphxP7Nyre3A1h6Rt5NAxEtHAaeoHMfV09ewANZJYOF
+Vx5z9p3lcpVTd8lvM6ebcaDvQiwIecIjvkA4rdrf/0AnUW1oOdNzx2SB3Um6g7sK
+d7vDUhqfsUL7Vb+CrB/y0iY3EzzZrcIlCvrxkQw0PJWdW2F4wuKLxoy2JdfSySOU
+V/0uA1BRj8bgtTbI0KahxwtRbbDRU8mM5fRC/zG4PMP1AIPYVuL3j0/MWnGvv+sd
+o5UkkJii0Un9atowWsCp/E0/qrZibA==
+=u3Ko
+-----END PGP SIGNATURE-----
+
+--sBD/GiIq04YLFs8U--
 
