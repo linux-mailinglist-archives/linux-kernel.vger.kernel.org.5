@@ -1,109 +1,132 @@
-Return-Path: <linux-kernel+bounces-131101-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131102-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A46689831D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:23:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3E3489831E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:24:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BFB528C8EA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:23:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 719481F242EF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2B706BFA2;
-	Thu,  4 Apr 2024 08:23:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C1136BFCA;
+	Thu,  4 Apr 2024 08:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="QVCViixq"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="Lxpeo/wk"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B812B679F3
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 966F76BFBC;
+	Thu,  4 Apr 2024 08:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712219006; cv=none; b=LLhl0MoMGsJRkWqCMC2IgSL9GQI5QZnh5Yf2NO4HS41VSAY0TdZg8AfzibzX3rD3093Vc9kK51q1pAIsPP9bACJdKp+WAtcvQMhvSmDr7vTQO1HsucL/dc3fOem6DtnZ7/CqYbRz78ONDRmTWrj3bvIsgJEuWbudiq7tTizfwvc=
+	t=1712219059; cv=none; b=Irihw8Hg7tWONnaYT84vSUcDBvKM3UuR3Jy8bxjosDjF0IBOliBxWFuh3jHL3DBNAJZPSvlw/ka56wZnIEbOli3he4siUEKdqHYZH4cAtvPfPA4NjtzlNB7mA8Gpz5UuEfsjJoMOl6Yu/btf2h8mhjKAjMzaUUv+Y4vxse3DCIQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712219006; c=relaxed/simple;
-	bh=tUkPXupaLm7fsLyPKoLu5BZRQ4nvoD4y4GxTbasq5fw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EYqIFqmP8iTvF8cL8bO/i1FusVMVEDxFsn9IHu9LqZt5l/Y76Tj5C0ITsQr8xrCITujligc1jMxBMGZUkTWjAxxc6JjBouMTUhbu40vxUwERdgBLI38C5lK3CN/abFCrVgQrA5C7xFgpA6SwUMf5q3a1aEf+NynumZIfys84+yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=QVCViixq; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dd161eb03afso699915276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 01:23:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712219004; x=1712823804; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tUkPXupaLm7fsLyPKoLu5BZRQ4nvoD4y4GxTbasq5fw=;
-        b=QVCViixqjofNKCz81WTazTp1kChJdJbdSxaCANTWnqo+9yS2nzE1Q445ZsofG4O9+Z
-         QW7QEjaUyK+1qd+te45AhCxTkTv8TG6ObhOso9wJUfpvcsOmEIqi2BPKXj3Rbz69+gBh
-         mlVjt70kPzoRbVSq8pyakOGPtVOz93llz619c95bXcpjxEieZSeKcS/OQvZJ9wpvoamd
-         /DziaJCbqIp/LIwLOhMODPDVG0I+glQI66wDgGkrYHBcP2zz0/I9FKtegsVKTzUE9rdg
-         hzFMXkU88/lt+16BP/xvHYM1FeV48LQlebR69F00MNfmBitYxuRC7YJbuXXQemKrrsbb
-         +5Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712219004; x=1712823804;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tUkPXupaLm7fsLyPKoLu5BZRQ4nvoD4y4GxTbasq5fw=;
-        b=v6VKOikIX3Sm2FtlPZN6L1rn/vfpNVjZ4qcFqBm1DwgUdjuNqTgj7IFp8jJNN2ocnU
-         nhBvUwFbTshMImQ4N1rvctVd3ZERjxZJj4sbKChV1BB4yVMD2JQVbtZc1XWl/j0FwHLO
-         4lDLhg+4xEkUvYXHxqDXIaLbYqbmuQGcjRWsAvqMMmbgUKbKPWQRdF8s3/1xWn7Impr5
-         MUJMdX/GHHqIzOoaTDib+MNogMmiXIq78mhA36t4m0ItuCDztAYrLPdvvMJOC6tgDSl1
-         eIFFaFovy2jaubsC7n1egR0bKHH9JwbH0QlubLfa+K1rBtwXErQCCV4FqdtpN3BV4bNM
-         snxw==
-X-Forwarded-Encrypted: i=1; AJvYcCXTjhjvEEKApB/YecnMiirEAVUmXs1YC8KKt7Xl1sCFKOL2IoTvzn2gJxiKXKi28KDHeRro5rniUReeaL7XfP3O9iljy5DTOevGyI9R
-X-Gm-Message-State: AOJu0YwQt7uHd8XWuYYdYQSrHCjocOGw3YGHaolA4Ei2f9+WUyRyqIgn
-	rr2WiD01R6tuVO4gEErkOyt/KcGjyE7UPUSnKAFkMBjxIdHIeT5Ptjpu2VLjNOfdRP2ViFb9C+d
-	sOPORF8nyqf07BaSv5uzioFhgCvdy/z++Y5jW7A==
-X-Google-Smtp-Source: AGHT+IESU9WLa3h8aZDesnqNiyXJbZj+fNufrMd2QMdK0OU/9kP3JNABg1ywIrSqCK1qb7HDwP4jhkHml0tcg8LZkz4=
-X-Received: by 2002:a05:6902:c09:b0:dcc:375:2257 with SMTP id
- fs9-20020a0569020c0900b00dcc03752257mr2023598ybb.0.1712219003651; Thu, 04 Apr
- 2024 01:23:23 -0700 (PDT)
+	s=arc-20240116; t=1712219059; c=relaxed/simple;
+	bh=Xiky37y0FVCAukEVsbmR8hxRhEPp5/sXaebaNNQ8odM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Sof7vhMRSrpSw/N+C6sefp0rarGFB8h8gQfkxMsdKMbadUUuFG2u7xOAhW63O5pQnAH6VNJN99YfYvZUBs8Cs/FOVBoOqCGk6x+nwxg6rZ+aJZwJC2UskdvbAEdYs0dKM//i+SI4sXOpobRL3fO6VvOHjY5SCobiMm6QV28Lj8c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=Lxpeo/wk; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=Xiky37y0FVCAukEVsbmR8hxRhEPp5/sXaebaNNQ8odM=;
+	t=1712219057; x=1712651057; b=Lxpeo/wk1olN+l+0i/L5HcPRR0u8cnx68fbWHpVUMnm6J3G
+	eHlK2mLRSxB5LRfJQf0nFh4ZVj4RzTnKKUIbnB8I4poPHmJzzBF6rqj9udi6UgwU2SnzUt91a68/f
+	61v7EGFTsE/VP37VFdNRNsqQ4ZDYF/010FEy/IgqWpPn3yV3J8ocOnkHDhs58vOGKBkygMNAou9Pr
+	QXHif/Sh/O1CFk5mvumEVIi64otaOu5Um4j1ryVb6O8deafBIvdOY0QHLIOX6C4BbGnQp/F37/Z2d
+	0DPtzcqkzuYTqAB332GJZVaPVF5mtCg/KqV0ExW+p3FSc4TFo/Bi4grTbDMMGHHA==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rsION-0008TL-Es; Thu, 04 Apr 2024 10:24:15 +0200
+Message-ID: <09d67d1d-2c65-4872-b38e-665eda154339@leemhuis.info>
+Date: Thu, 4 Apr 2024 10:24:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327091336.3434141-1-wenst@chromium.org>
-In-Reply-To: <20240327091336.3434141-1-wenst@chromium.org>
-From: Linus Walleij <linus.walleij@linaro.org>
-Date: Thu, 4 Apr 2024 10:23:11 +0200
-Message-ID: <CACRpkdYi=3ZYVQGAAwJ5iYNX-WY1OPTX_xuP3H-xJj9Q+b+RRw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] pinctrl: mediatek: paris: More pin config cleanups
-To: Chen-Yu Tsai <wenst@chromium.org>
-Cc: Sean Wang <sean.wang@kernel.org>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [REGRESSION] mainline boot regression on AMD Stoney Ridge
+ Chromebooks
+To: tglx@linutronix.de
+Cc: kernel@collabora.com, linux-kernel@vger.kernel.org,
+ regressions@lists.linux.dev, Laura Nao <laura.nao@collabora.com>,
+ the arch/x86 maintainers <x86@kernel.org>
+References: <20240328094433.20737-1-laura.nao@collabora.com>
+ <20240328115015.36646-1-laura.nao@collabora.com>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <20240328115015.36646-1-laura.nao@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1712219057;397b356c;
+X-HE-SMSGID: 1rsION-0008TL-Es
 
-On Wed, Mar 27, 2024 at 10:13=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org> =
-wrote:
+[/me added x86 team]
 
-> Here are a couple more pin config cleanups for the MediaTek paris
-> pinctrl driver library.
->
-> Patch 1 fixes readback of PIN_CONFIG_INPUT_SCHMITT_ENABLE. The function
-> was passing back the disabled state incorrectly.
->
-> Patch 2 reworks support for PIN_CONFIG_{INPUT,OUTPUT}_ENABLE, following
-> discussions on the bcm2835/bcm2711 pinctrl drivers [1]. The driver is
-> made to follow the definitions of each option as described in the DT
-> bindings and pinctrl core.
->
-> Please have a look and merge if possible.
+On 28.03.24 12:50, Laura Nao wrote:
+>>
+>> I ran a manual bisection to track down the root cause for this
+>> regression and landed on the c749ce
+>> commit from this series:
+>> https://lore.kernel.org/all/20240212153625.145745053@linutronix.de/
 
-Patches applied for fixes, it looks like pretty urgent stuff, yet no feedba=
-ck
-from maintainers for a week so I applied it.
+FWIW, that commit is c749ce393b8fe9 ("x86/cpu: Use common topology code
+for AMD") from tglx that was part of the "x86/cpu: Rework topology
+evaluation" series.
 
-Yours,
-Linus Walleij
+>> Do you have any insight on this issue or any suggestion on how to
+>> effectively debug this?
+>>
+>> Thank you!
+
+Hmmm, it looks like this did not make any progress. Thomas, did this
+fall through the cracks due to Easter, or is this this on your todo list?
+
+Or was there some progress and I just missed it?
+
+Laura Nao, I assume the problem is still happening?
+
+FWIW, this was the initial problem description:
+
+>>> KernelCI has identified a mainline boot regression [1] on the following
+>>> AMD Stoney Ridge Chromebooks (grunt family), between v6.8 (e8f897) and
+>>> v6.8-1185-g855684c7d938 (855684):
+>>> - Acer Chromebook Spin 311 R721T (codename kasumi360)
+>>> - HP Chromebook 14 (codename careena)
+>>> - HP Chromebook 11A G6 EE (codename barla)
+>>>
+>>> The kernel doesn't boot at all and nothing is reported on the serial
+>>> console after "Starting kernel ...". The issue is still present on the
+>>> latest mainline revision.
+>>> The defconfig used by KernelCI for the boot tests can be found in [2].
+>>>
+>>> Sending this report in order to track the regression while a fix is
+>>> identified.
+>>>
+>>> Thanks,
+>>>
+>>> Laura
+>>>
+>>> [1] https://linux.kernelci.org/test/case/id/65fca98e3883a392524c4380/
+>>> [2]
+>>> https://storage.kernelci.org/mainline/master/v6.8-11837-g2ac2b1665d3fb/x86_64/x86_64_defconfig%2Bx86-board/gcc-10/config/kernel.config
+
+
+Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+--
+Everything you wanna know about Linux kernel regression tracking:
+https://linux-regtracking.leemhuis.info/about/#tldr
+If I did something stupid, please tell me, as explained on that page.
+
+#regzbot poke
 
