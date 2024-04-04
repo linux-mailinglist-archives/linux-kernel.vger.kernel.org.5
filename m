@@ -1,118 +1,113 @@
-Return-Path: <linux-kernel+bounces-131869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67B40898CF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:05:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D821F898CF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:06:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC5A6B26B70
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:05:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 76DF61F298A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:06:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E419125B9;
-	Thu,  4 Apr 2024 17:05:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E749C12CDAE;
+	Thu,  4 Apr 2024 17:06:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ERmAQndG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="OO3lc94R"
+Received: from mail-io1-f45.google.com (mail-io1-f45.google.com [209.85.166.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 538251C6BC;
-	Thu,  4 Apr 2024 17:05:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3CA14A8B
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:06:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712250314; cv=none; b=GrBSE3sxk8GguurQMl/Bwnf64uL9v9w5fMurR84zTB04AxApaXqRa0Ew3GN7kWrtzZ5TrRCDw49SenDASpqmzHAzhJ2DqkafdULMMqaZ8yEkUyqQFFbxtsFQk2KcaMj0etrJda/bsqFtoeOp+6QQYUrHYfq1+ruACzuY+ucVHe8=
+	t=1712250386; cv=none; b=iJfYIPCeSjSKp8CCHVQ3uZwvyFwXb8Hn+gxJPP9d5HuAGXSizsWQ0x7k8wBE6Gu3DH6xbLywD+A09bS45FeH+pYKFGWWGIIv9ALibL4oMtNMWKFXiD5Sm+9vLF/vkR7t2AYYEC2+aPPgUJHIgduekaMpv+HCa3VBD5DhnLbdoTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712250314; c=relaxed/simple;
-	bh=ciuhxV+lxpulzdqgBI0ASX/tPUFRGPCHizIhzVA75GQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FyMzruATG6zB/uS+DMZxziQQhuOR+2ya7E4m9CxFbORgPhnLlR0wXhBZdW4vqmqTYpR5vebw6MOnHc7t/2/Go5flZs+89CMjRvctmj9zm/1KEjxKTna/t31ot4jekI/SAqQiwQMfYs77RirgpGffrzxc9oV7Hf36wddsatxiEr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ERmAQndG; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712250312; x=1743786312;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=ciuhxV+lxpulzdqgBI0ASX/tPUFRGPCHizIhzVA75GQ=;
-  b=ERmAQndGdDzEZ37USJLxIjNOOJidrSz6xozPYe+HJeV4a54cqtXGts0f
-   PGXGlVIncBJQPcs1hBsZqLa0ZXhs8QyRKNlEivDCd8YBgfaaGcQ7C2vWr
-   Dd4pH8v5FsezWA/5mjIDU5LdHX/TMnxq+xnzZuzCvR7VbRWWIeJEFRC60
-   5N2daMzVX7FFUCof8EeXuQkQNEkKm04pWM4RogTwdckZdT7u/1R8HBjm6
-   PV5vYipZHnp2RYBj/Y5bQK4hU0ggZHHHwb+92Kb3iEHlhAZJrJAzG4Uam
-   4ZYZ+rhtQgosIAR/La+WNOWkAanklD/jl07jdNk7CMQaeEyyCi/p24MBw
-   w==;
-X-CSE-ConnectionGUID: p3iTTt48TzKiYiVCax8MDQ==
-X-CSE-MsgGUID: eXPQlIF5TLuEhKpVDDOfrg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="32949982"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="32949982"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 10:05:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="915223889"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="915223889"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 10:05:08 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rsQWP-00000001WTh-3noL;
-	Thu, 04 Apr 2024 20:05:05 +0300
-Date: Thu, 4 Apr 2024 20:05:05 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, brgl@bgdev.pl,
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-	cristian.marussi@arm.com, sudeep.holla@arm.com,
-	Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH] pinctrl: pinconf-generic: check error value EOPNOTSUPP
-Message-ID: <Zg7dwcFz5eD7Am2u@smile.fi.intel.com>
-References: <20240401141031.3106216-1-peng.fan@oss.nxp.com>
- <CACRpkdZAuNXGyg2wwYcQG4oO9w7jPS6vj4Vt0=kqX5fJ+QpNmw@mail.gmail.com>
+	s=arc-20240116; t=1712250386; c=relaxed/simple;
+	bh=OSPqJ91WFQCaW0PJb6559Z/+qaB8INvw9x8X/jLyFgI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qTQKXq7ZRWIgfIcG6MSIpg2i0zlfKMozMiQp/bmVrTrLvoLPCE24r6Y2+HlaIon1AcKXQLgM6H8/4XaEuXBB4YQoyGnudtyVtncCttquSGgsASEUVpN3yrul+sHaTllWdEICrZfqdC38Otl7KZLIiPS3i6yeeqapx6VVE8gJJ5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=OO3lc94R; arc=none smtp.client-ip=209.85.166.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f45.google.com with SMTP id ca18e2360f4ac-7cc5e664d52so26058439f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:06:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google; t=1712250384; x=1712855184; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=S4+pPZmfnMRvuzCTlrw9RHK+nPpZuPKzM5pjyBfGGjY=;
+        b=OO3lc94R4WR6QoxKazbfb7vIGroC/uHZbbsOqlfRXYpFDB5xw7WMB7hcfHEHxN1yxg
+         3+1+aBjXfBobKZ6R/0FOvmh8Rnqgaasfabvl6o6sJ3B8V25/OOm1esH7sHB3aTPSrLKB
+         xAJD1xCVezt5HNfz+f2P5KAJJ8tKW8K1Ui3ag=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712250384; x=1712855184;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S4+pPZmfnMRvuzCTlrw9RHK+nPpZuPKzM5pjyBfGGjY=;
+        b=sUMQQHlZCqBYQ6jjrDIKwzfblZrPIhlzKjLFQAmGbWUB7tyAkP0cbMXd/xmdmmotva
+         czED4quYutFdx7PiIAXkqI+FCvTVSTKHvI63zCkU7RFn5GLJP4/xoBWvZFSsu+FQ9g2F
+         JYIZ/n6soq5ZGvhUCTn7GZ4KcNzL943PW3XOyTI1ZXXvK/F2/yqp7rlyvLSOdLCL4AU7
+         WyzCqmmJBHq7Ru52Kxsbo3vYMZnKCxAWRDsw9HVGbnzrMLuyybemv/Zj0FulekE/I788
+         zW2KYTtuz2h1E7iKYMPE3I/ZeveiTBJ77UvNwAyYNZIaWfHUqwRCt4iOYjRnz7YyogIf
+         /pvw==
+X-Forwarded-Encrypted: i=1; AJvYcCVmWoWXd5OXTrLA6YzR0Cl5fEFcMMoS+QIyII1IBZhYE6Ewvs9NGniw1ueCemOiDcen3Pufp9iokcj5rjneFUOiCD3BcRDw76uhPpFt
+X-Gm-Message-State: AOJu0YxuhuTwsWp40rp4mniUC8NuBxbfPGKf+QG4s83zsQiGnlNpiXMG
+	9OVYejRwJB+WulKIb2mHOzQsJpQIKlGyDE07hVWFeInAPTTD4e4pzZjpDuyo/Xc=
+X-Google-Smtp-Source: AGHT+IGBSo+ofsQpk2L5vpwRRgN7skJmv9Ao+cuVo9Akhk+UCk1M/bFzDJtgrQxmsRVuuo6GDjI0fw==
+X-Received: by 2002:a6b:fc1a:0:b0:7d3:4f72:afd with SMTP id r26-20020a6bfc1a000000b007d34f720afdmr3224480ioh.0.1712250383695;
+        Thu, 04 Apr 2024 10:06:23 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id g18-20020a05663816d200b00474d6e60dc4sm4679108jat.117.2024.04.04.10.06.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 10:06:23 -0700 (PDT)
+Message-ID: <7b7447d8-cf99-4a0a-9510-f4d2d9791264@linuxfoundation.org>
+Date: Thu, 4 Apr 2024 11:06:22 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdZAuNXGyg2wwYcQG4oO9w7jPS6vj4Vt0=kqX5fJ+QpNmw@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] kselftest: Add missing signature to the comments
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Shuah Khan <shuah@kernel.org>
+Cc: kernel@collabora.com, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Shuah Khan <skhan@linuxfoundation.org>
+References: <20240404155511.57502-1-usama.anjum@collabora.com>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240404155511.57502-1-usama.anjum@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 04, 2024 at 01:44:50PM +0200, Linus Walleij wrote:
-> On Mon, Apr 1, 2024 at 4:02 PM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
+On 4/4/24 09:55, Muhammad Usama Anjum wrote:
+> The comment on top of the file is used by many developers to glance over
+> all the available functions. Add the recently added ksft_perror() to it.
 > 
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > The SCMI error value SCMI_ERR_SUPPORT maps to linux error value
-> > '-EOPNOTSUPP', so when dump configs, need check the error value
-> > EOPNOTSUPP, otherwise there will be log "ERROR READING CONFIG SETTING".
-> >
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> (...)
-> >                         ret = pin_config_get_for_pin(pctldev, pin, &config);
-> >                 /* These are legal errors */
-> > -               if (ret == -EINVAL || ret == -ENOTSUPP)
-> > +               if (ret == -EINVAL || ret == -ENOTSUPP || ret == -EOPNOTSUPP)
+> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> ---
+>   tools/testing/selftests/kselftest.h | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> TBH it's a bit odd to call an in-kernel API such as pin_config_get_for_pin()
-> and get -EOPNOTSUPP back. But it's not like I care a lot, so patch applied.
+> diff --git a/tools/testing/selftests/kselftest.h b/tools/testing/selftests/kselftest.h
+> index 7d650a06ca359..159bf8e314fa3 100644
+> --- a/tools/testing/selftests/kselftest.h
+> +++ b/tools/testing/selftests/kselftest.h
+> @@ -16,6 +16,7 @@
+>    * For each test, report any progress, debugging, etc with:
+>    *
+>    *     ksft_print_msg(fmt, ...);
+> + *     ksft_perror(msg);
+>    *
+>    * and finally report the pass/fail/skip/xfail state of the test with one of:
+>    *
 
-Hmm... I would like actually to get this being consistent. The documentation
-explicitly says that in-kernel APIs uses Linux error code and not POSIX one.
+Thank you. Applied to linux-kselftest next for Linux 6.10-rc1
 
-This check opens a Pandora box.
-
-FWIW, it just like dozen or so drivers that needs to be fixed, I prefer to
-have them being moved to ENOTSUPP, rather this patch.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+thanks,
+-- Shuah
 
