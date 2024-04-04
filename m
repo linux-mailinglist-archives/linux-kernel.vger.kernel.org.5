@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-131558-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DEDB89898C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:08:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8153889898D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:08:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ABD41C27B2A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:08:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E93C1C2152D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:08:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FF51292E5;
-	Thu,  4 Apr 2024 14:07:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F66612AAE2;
+	Thu,  4 Apr 2024 14:07:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bw1RwpTM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tczrpz60"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EADD12A16A
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:07:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7725A8528B
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:07:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712239664; cv=none; b=ZA4SPOjdVtvuhJyqDsFPRgTl4irVjI2ueI1SBjYAAa4rRYKkBhYJVBrDbot+rQbrq0MsdDNPWP6tNmD1xe/JZZhQFfGklhl3C4jbr0Cz4WyDvd/K+X61aMknhVK+hhUkHJUQVOClr3HDNJWibZro3L9mG8OL20Uc1qS3Q6tM4fc=
+	t=1712239665; cv=none; b=G+Re24PeZqlildUgbQD6Ib4ZcEKMfPu54bXjfJbERBl3Dbxfkx9CdrUi0AWYSrwxf4HV8evsebe+IEa4Gp7Gs9wM2uOhRvZgEX43cebmxVBYOfYygbBUcsLusObs0IXO4BrqUOXuo1lYSMY9go57fdcjMs1tScVITkK4iyYfewQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712239664; c=relaxed/simple;
-	bh=eSaXxz2dlBW4YqCtqkhvmG4oKTPY5QaMhQTpqp4qNZQ=;
+	s=arc-20240116; t=1712239665; c=relaxed/simple;
+	bh=iZZhp3gSWGGv8XdtodnIulSZDjyfI1Bmqq+2WYcU3Vk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=W/bnOZJYOwt/bWs0tM1aWB/cY+fLiqC0L1RVAAqS6mFKV2ck8w9qAm5W8LUsYWRLso8ErWA6odeRmp4lxS53GW2mT3LO6LQ5zifZFiTwpTXF0ngBo73cH0Fj/jaYAl7CTu8v/6PftaFxFCmSL4Tezj0+beb+0t+2aEiG2a/C/yg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bw1RwpTM; arc=none smtp.client-ip=198.175.65.14
+	 MIME-Version; b=mimLcNSHW9Z2I9z8vLsCHM8tvSWr32Kv7uaqbuZHjIa8bcBIE/0HEKowg+p/plWvDgIeQFV09WFZZlYZ9z26EquJosWDrLL57ULcQRn3oNC53B5zRxavSmb9YZaujO8jYBY9ahIhAx9kkDaY9x87foEFlW0z4qsyUDsZ7CK3Zyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Tczrpz60; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712239662; x=1743775662;
+  t=1712239663; x=1743775663;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=eSaXxz2dlBW4YqCtqkhvmG4oKTPY5QaMhQTpqp4qNZQ=;
-  b=bw1RwpTM5FXlbLTXreONfTXu6+J6U/6wwZiy59czxNV6pt5IpAuZab1m
-   +QcYuv0M2FDMEOCa5FuVfxmasLchoOi6Adl2IY8x+1iSVLuVShenW5b6+
-   G8S+3o6Cphe0VxTX8u6bX8igmQaVcg7ekFbxL6QjQytj7jJCr4t9OiCdJ
-   kuZK5vu2NC5BoATZC3QDfA8iHVLI8ml+CQqDLDOpL91HPx2eCvY7dvHzv
-   wowZBGuqACh4sR9Cxk4OxIP1E5Y6pn65D/jtxsLXbWCsqKaQDucMBJI0J
-   Bn/TAZISrEBOA6IclwzsGK9YsDZcMEZC7ehOL/EFBtD6QwOtk6bgMS5TC
+  bh=iZZhp3gSWGGv8XdtodnIulSZDjyfI1Bmqq+2WYcU3Vk=;
+  b=Tczrpz60ZMyFZOlvuN4/OomRsuATbDciVlbXH5zYIVqE4KO64mWYhFex
+   hxfw8z90FMiUDE9bwI/AK34J7bnw8buh/Syc4nfme9rMv1QFmsFwPw98D
+   5fGrqDQ5A7UqGyRIVTDJptwxQNFsnol2XY2Rd6wly223UXBwJ5EpJCbbW
+   eHfrddbRmfzdw72Z71jMOx4krwA4qt/vIOAXxn2QaUOGD3o5jlmgvpx+R
+   PAqdN591V/dGRWg2rleVjMk74xOMTohU3t8n35gTTk9Jh1yN5DB3y3KAV
+   gLLUEBySNVoWcFWXAFAQYSNV+SI9qF9mM9vi+RSYBNbu4gw1pBFskAZPk
    Q==;
-X-CSE-ConnectionGUID: xceFz8ViTI6PZsknbqTcYA==
-X-CSE-MsgGUID: sCaOryNiR4a8zGg5kparRQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="11346509"
+X-CSE-ConnectionGUID: 1HTgpeo3T8OnE4tgOU7kFQ==
+X-CSE-MsgGUID: +75jbGvHRt2iDK7Q2MIC7A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="11346516"
 X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="11346509"
+   d="scan'208";a="11346516"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 07:07:42 -0700
-X-CSE-ConnectionGUID: rdwL5s4bQC2jKhO849o13g==
-X-CSE-MsgGUID: bgiFKroDQ7SMQJ4VreYfSQ==
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 07:07:43 -0700
+X-CSE-ConnectionGUID: 7cPqzyjQS5GMIvgUo9gKyw==
+X-CSE-MsgGUID: doFzRv76TSanRVF4neJOsQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="23258871"
+   d="scan'208";a="23258876"
 Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by fmviesa005.fm.intel.com with ESMTP; 04 Apr 2024 07:07:41 -0700
+  by fmviesa005.fm.intel.com with ESMTP; 04 Apr 2024 07:07:42 -0700
 From: kan.liang@linux.intel.com
 To: peterz@infradead.org,
 	mingo@redhat.com,
@@ -68,9 +68,9 @@ To: peterz@infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: ak@linux.intel.com,
 	Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 03/12] perf/x86: Add Lunar Lake and Arrow Lake support
-Date: Thu,  4 Apr 2024 07:06:28 -0700
-Message-Id: <20240404140637.1232635-4-kan.liang@linux.intel.com>
+Subject: [PATCH 04/12] perf/x86/intel: Support new data source for Lunar Lake
+Date: Thu,  4 Apr 2024 07:06:29 -0700
+Message-Id: <20240404140637.1232635-5-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20240404140637.1232635-1-kan.liang@linux.intel.com>
 References: <20240404140637.1232635-1-kan.liang@linux.intel.com>
@@ -84,254 +84,255 @@ Content-Transfer-Encoding: 8bit
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-From PMU's perspective, Lunar Lake and Arrow Lake are similar to the
-previous generation Meteor Lake. Both are hybrid platforms, with e-core
-and p-core.
+A new PEBS data source format is introduced for the p-core of Lunar
+Lake. The data source field is extended to 8 bits with new encodings.
 
-The key differences include:
-- The e-core supports 3 new fixed counters
-- The p-core supports an updated PEBS Data Source format
-- More GP counters (Updated event constraint table)
-- New Architectural performance monitoring V6
-  (New Perfmon MSRs aliasing, umask2, eq).
-- New PEBS format V6 (Counters Snapshotting group)
-- New RDPMC metrics clear mode
+A new layout is introduced into the union intel_x86_pebs_dse.
+Introduce the lnl_latency_data() to parse the new format.
+Enlarge the pebs_data_source[] accordingly to include new encodings.
 
-The legacy features, the 3 new fixed counters and updated event
-constraint table are enabled in this patch.
+Only the mem load and the mem store events can generate the data source.
+Introduce INTEL_HYBRID_LDLAT_CONSTRAINT and
+INTEL_HYBRID_STLAT_CONSTRAINT to mark them.
 
-The new PEBS data source format, the architectural performance
-monitoring V6, the PEBS format V6, and the new RDPMC metrics clear mode
-are supported in the following patches.
+Add two new bits for the new cache-related data src, L2_MHB and MSC.
+The L2_MHB is short for L2 Miss Handling Buffer, which is similar to
+LFB (Line Fill Buffer), but to track the L2 Cache misses.
+The MSC stands for the memory-side cache.
 
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/intel/core.c      | 117 ++++++++++++++++++++++++++++++
- arch/x86/events/intel/ds.c        |  24 ++++++
- arch/x86/events/perf_event.h      |   2 +
- arch/x86/include/asm/perf_event.h |   4 +
- 4 files changed, 147 insertions(+)
+ arch/x86/events/intel/core.c    |  2 +
+ arch/x86/events/intel/ds.c      | 88 ++++++++++++++++++++++++++++++++-
+ arch/x86/events/perf_event.h    | 16 +++++-
+ include/uapi/linux/perf_event.h |  6 ++-
+ 4 files changed, 107 insertions(+), 5 deletions(-)
 
 diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 30374d3d7b0e..285bcfb43697 100644
+index 285bcfb43697..16b4efdad03e 100644
 --- a/arch/x86/events/intel/core.c
 +++ b/arch/x86/events/intel/core.c
-@@ -220,6 +220,17 @@ static struct event_constraint intel_grt_event_constraints[] __read_mostly = {
- 	EVENT_CONSTRAINT_END
- };
+@@ -6967,6 +6967,7 @@ __init int intel_pmu_init(void)
+ 	case INTEL_FAM6_ARROWLAKE:
+ 		intel_pmu_init_hybrid(hybrid_big_small);
  
-+static struct event_constraint intel_skt_event_constraints[] __read_mostly = {
-+	FIXED_EVENT_CONSTRAINT(0x00c0, 0), /* INST_RETIRED.ANY */
-+	FIXED_EVENT_CONSTRAINT(0x003c, 1), /* CPU_CLK_UNHALTED.CORE */
-+	FIXED_EVENT_CONSTRAINT(0x0300, 2), /* pseudo CPU_CLK_UNHALTED.REF */
-+	FIXED_EVENT_CONSTRAINT(0x013c, 2), /* CPU_CLK_UNHALTED.REF_TSC_P */
-+	FIXED_EVENT_CONSTRAINT(0x0073, 4), /* TOPDOWN_BAD_SPECULATION.ALL */
-+	FIXED_EVENT_CONSTRAINT(0x019c, 5), /* TOPDOWN_FE_BOUND.ALL */
-+	FIXED_EVENT_CONSTRAINT(0x02c2, 6), /* TOPDOWN_RETIRING.ALL */
-+	EVENT_CONSTRAINT_END
-+};
-+
- static struct event_constraint intel_skl_event_constraints[] = {
- 	FIXED_EVENT_CONSTRAINT(0x00c0, 0),	/* INST_RETIRED.ANY */
- 	FIXED_EVENT_CONSTRAINT(0x003c, 1),	/* CPU_CLK_UNHALTED.CORE */
-@@ -370,6 +381,55 @@ static struct extra_reg intel_rwc_extra_regs[] __read_mostly = {
- 	EVENT_EXTRA_END
- };
++		x86_pmu.pebs_latency_data = lnl_latency_data;
+ 		x86_pmu.get_event_constraints = mtl_get_event_constraints;
+ 		x86_pmu.hw_config = adl_hw_config;
  
-+static struct event_constraint intel_lnc_event_constraints[] = {
-+	FIXED_EVENT_CONSTRAINT(0x00c0, 0),	/* INST_RETIRED.ANY */
-+	FIXED_EVENT_CONSTRAINT(0x0100, 0),	/* INST_RETIRED.PREC_DIST */
-+	FIXED_EVENT_CONSTRAINT(0x003c, 1),	/* CPU_CLK_UNHALTED.CORE */
-+	FIXED_EVENT_CONSTRAINT(0x0300, 2),	/* CPU_CLK_UNHALTED.REF */
-+	FIXED_EVENT_CONSTRAINT(0x013c, 2),	/* CPU_CLK_UNHALTED.REF_TSC_P */
-+	FIXED_EVENT_CONSTRAINT(0x0400, 3),	/* SLOTS */
-+	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_RETIRING, 0),
-+	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_BAD_SPEC, 1),
-+	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_FE_BOUND, 2),
-+	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_BE_BOUND, 3),
-+	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_HEAVY_OPS, 4),
-+	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_BR_MISPREDICT, 5),
-+	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_FETCH_LAT, 6),
-+	METRIC_EVENT_CONSTRAINT(INTEL_TD_METRIC_MEM_BOUND, 7),
-+
-+	INTEL_UEVENT_CONSTRAINT(0x0148, 0x4),
-+	INTEL_UEVENT_CONSTRAINT(0x0175, 0x4),
-+
-+	INTEL_EVENT_CONSTRAINT(0x2e, 0x3ff),
-+	INTEL_EVENT_CONSTRAINT(0x3c, 0x3ff),
-+	/*
-+	 * Generally event codes < 0x90 are restricted to counters 0-3.
-+	 * The 0x2E and 0x3C are exception, which has no restriction.
-+	 */
-+	INTEL_EVENT_CONSTRAINT_RANGE(0x01, 0x8f, 0xf),
-+
-+	INTEL_UEVENT_CONSTRAINT(0x01a3, 0xf),
-+	INTEL_UEVENT_CONSTRAINT(0x02a3, 0xf),
-+	INTEL_UEVENT_CONSTRAINT(0x08a3, 0x4),
-+	INTEL_UEVENT_CONSTRAINT(0x0ca3, 0x4),
-+	INTEL_UEVENT_CONSTRAINT(0x04a4, 0x1),
-+	INTEL_UEVENT_CONSTRAINT(0x08a4, 0x1),
-+	INTEL_UEVENT_CONSTRAINT(0x10a4, 0x1),
-+	INTEL_UEVENT_CONSTRAINT(0x01b1, 0x8),
-+	INTEL_UEVENT_CONSTRAINT(0x02cd, 0x3),
-+	INTEL_EVENT_CONSTRAINT(0xce, 0x1),
-+
-+	INTEL_EVENT_CONSTRAINT_RANGE(0xd0, 0xdf, 0xf),
-+	/*
-+	 * Generally event codes >= 0x90 are likely to have no restrictions.
-+	 * The exception are defined as above.
-+	 */
-+	INTEL_EVENT_CONSTRAINT_RANGE(0x90, 0xfe, 0x3ff),
-+
-+	EVENT_CONSTRAINT_END
-+};
-+
-+
- EVENT_ATTR_STR(mem-loads,	mem_ld_nhm,	"event=0x0b,umask=0x10,ldlat=3");
- EVENT_ATTR_STR(mem-loads,	mem_ld_snb,	"event=0xcd,umask=0x1,ldlat=3");
- EVENT_ATTR_STR(mem-stores,	mem_st_snb,	"event=0xcd,umask=0x2");
-@@ -5797,6 +5857,23 @@ static struct attribute *adl_hybrid_events_attrs[] = {
- 	NULL,
- };
+@@ -6984,6 +6985,7 @@ __init int intel_pmu_init(void)
+ 		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_ATOM_IDX];
+ 		intel_pmu_init_skt(&pmu->pmu);
  
-+EVENT_ATTR_STR_HYBRID(topdown-retiring,      td_retiring_lnl,  "event=0xc2,umask=0x02;event=0x00,umask=0x80", hybrid_big_small);
-+EVENT_ATTR_STR_HYBRID(topdown-fe-bound,      td_fe_bound_lnl,  "event=0x9c,umask=0x01;event=0x00,umask=0x82", hybrid_big_small);
-+EVENT_ATTR_STR_HYBRID(topdown-be-bound,      td_be_bound_lnl,  "event=0xa4,umask=0x02;event=0x00,umask=0x83", hybrid_big_small);
-+
-+static struct attribute *lnl_hybrid_events_attrs[] = {
-+	EVENT_PTR(slots_adl),
-+	EVENT_PTR(td_retiring_lnl),
-+	EVENT_PTR(td_bad_spec_adl),
-+	EVENT_PTR(td_fe_bound_lnl),
-+	EVENT_PTR(td_be_bound_lnl),
-+	EVENT_PTR(td_heavy_ops_adl),
-+	EVENT_PTR(td_br_mis_adl),
-+	EVENT_PTR(td_fetch_lat_adl),
-+	EVENT_PTR(td_mem_bound_adl),
-+	NULL
-+};
-+
- /* Must be in IDX order */
- EVENT_ATTR_STR_HYBRID(mem-loads,     mem_ld_adl,     "event=0xd0,umask=0x5,ldlat=3;event=0xcd,umask=0x1,ldlat=3", hybrid_big_small);
- EVENT_ATTR_STR_HYBRID(mem-stores,    mem_st_adl,     "event=0xd0,umask=0x6;event=0xcd,umask=0x2",                 hybrid_big_small);
-@@ -6146,6 +6223,21 @@ static __always_inline void intel_pmu_init_grt(struct pmu *pmu)
- 	intel_pmu_ref_cycles_ext();
- }
- 
-+static __always_inline void intel_pmu_init_lnc(struct pmu *pmu)
-+{
-+	intel_pmu_init_glc(pmu);
-+	hybrid(pmu, event_constraints) = intel_lnc_event_constraints;
-+	hybrid(pmu, pebs_constraints) = intel_lnc_pebs_event_constraints;
-+	hybrid(pmu, extra_regs) = intel_rwc_extra_regs;
-+}
-+
-+static __always_inline void intel_pmu_init_skt(struct pmu *pmu)
-+{
-+	intel_pmu_init_grt(pmu);
-+	hybrid(pmu, event_constraints) = intel_skt_event_constraints;
-+	hybrid(pmu, extra_regs) = intel_cmt_extra_regs;
-+}
-+
- __init int intel_pmu_init(void)
- {
- 	struct attribute **extra_skl_attr = &empty_attrs;
-@@ -6871,6 +6963,31 @@ __init int intel_pmu_init(void)
- 		name = "meteorlake_hybrid";
++		intel_pmu_pebs_data_source_lnl();
+ 		pr_cont("Lunarlake Hybrid events, ");
+ 		name = "lunarlake_hybrid";
  		break;
- 
-+	case INTEL_FAM6_LUNARLAKE_M:
-+	case INTEL_FAM6_ARROWLAKE:
-+		intel_pmu_init_hybrid(hybrid_big_small);
-+
-+		x86_pmu.get_event_constraints = mtl_get_event_constraints;
-+		x86_pmu.hw_config = adl_hw_config;
-+
-+		td_attr = lnl_hybrid_events_attrs;
-+		mem_attr = mtl_hybrid_mem_attrs;
-+		tsx_attr = adl_hybrid_tsx_attrs;
-+		extra_attr = boot_cpu_has(X86_FEATURE_RTM) ?
-+			mtl_hybrid_extra_attr_rtm : mtl_hybrid_extra_attr;
-+
-+		/* Initialize big core specific PerfMon capabilities.*/
-+		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_CORE_IDX];
-+		intel_pmu_init_lnc(&pmu->pmu);
-+
-+		/* Initialize Atom core specific PerfMon capabilities.*/
-+		pmu = &x86_pmu.hybrid_pmu[X86_HYBRID_PMU_ATOM_IDX];
-+		intel_pmu_init_skt(&pmu->pmu);
-+
-+		pr_cont("Lunarlake Hybrid events, ");
-+		name = "lunarlake_hybrid";
-+		break;
-+
- 	default:
- 		switch (x86_pmu.version) {
- 		case 1:
 diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index 38e549d2c3bc..8da1ab01d12f 100644
+index 8da1ab01d12f..36425cff1a31 100644
 --- a/arch/x86/events/intel/ds.c
 +++ b/arch/x86/events/intel/ds.c
-@@ -1086,6 +1086,30 @@ struct event_constraint intel_glc_pebs_event_constraints[] = {
- 	EVENT_CONSTRAINT_END
+@@ -63,6 +63,15 @@ union intel_x86_pebs_dse {
+ 		unsigned int mtl_fwd_blk:1;
+ 		unsigned int ld_reserved4:24;
+ 	};
++	struct {
++		unsigned int lnc_dse:8;
++		unsigned int ld_reserved5:2;
++		unsigned int lnc_stlb_miss:1;
++		unsigned int lnc_locked:1;
++		unsigned int lnc_data_blk:1;
++		unsigned int lnc_addr_blk:1;
++		unsigned int ld_reserved6:18;
++	};
  };
  
-+struct event_constraint intel_lnc_pebs_event_constraints[] = {
-+	INTEL_FLAGS_UEVENT_CONSTRAINT(0x100, 0x100000000ULL),	/* INST_RETIRED.PREC_DIST */
-+	INTEL_FLAGS_UEVENT_CONSTRAINT(0x0400, 0x800000000ULL),
-+
-+	INTEL_FLAGS_UEVENT_CONSTRAINT_DATALA_LD(0x11d0, 0xf),	/* MEM_INST_RETIRED.STLB_MISS_LOADS */
-+	INTEL_FLAGS_UEVENT_CONSTRAINT_DATALA_ST(0x12d0, 0xf),	/* MEM_INST_RETIRED.STLB_MISS_STORES */
-+	INTEL_FLAGS_UEVENT_CONSTRAINT_DATALA_LD(0x21d0, 0xf),	/* MEM_INST_RETIRED.LOCK_LOADS */
-+	INTEL_FLAGS_UEVENT_CONSTRAINT_DATALA_LD(0x41d0, 0xf),	/* MEM_INST_RETIRED.SPLIT_LOADS */
-+	INTEL_FLAGS_UEVENT_CONSTRAINT_DATALA_ST(0x42d0, 0xf),	/* MEM_INST_RETIRED.SPLIT_STORES */
-+	INTEL_FLAGS_UEVENT_CONSTRAINT_DATALA_LD(0x81d0, 0xf),	/* MEM_INST_RETIRED.ALL_LOADS */
-+	INTEL_FLAGS_UEVENT_CONSTRAINT_DATALA_ST(0x82d0, 0xf),	/* MEM_INST_RETIRED.ALL_STORES */
-+
-+	INTEL_FLAGS_EVENT_CONSTRAINT_DATALA_LD_RANGE(0xd1, 0xd4, 0xf),
-+
-+	INTEL_FLAGS_EVENT_CONSTRAINT(0xd0, 0xf),
-+
-+	/*
-+	 * Everything else is handled by PMU_FL_PEBS_ALL, because we
-+	 * need the full constraints from the main table.
-+	 */
-+
-+	EVENT_CONSTRAINT_END
+ 
+@@ -77,7 +86,7 @@ union intel_x86_pebs_dse {
+ #define SNOOP_NONE_MISS (P(SNOOP, NONE) | P(SNOOP, MISS))
+ 
+ /* Version for Sandy Bridge and later */
+-static u64 pebs_data_source[] = {
++static u64 pebs_data_source[PERF_PEBS_DATA_SOURCE_MAX] = {
+ 	P(OP, LOAD) | P(LVL, MISS) | LEVEL(L3) | P(SNOOP, NA),/* 0x00:ukn L3 */
+ 	OP_LH | P(LVL, L1)  | LEVEL(L1) | P(SNOOP, NONE),  /* 0x01: L1 local */
+ 	OP_LH | P(LVL, LFB) | LEVEL(LFB) | P(SNOOP, NONE), /* 0x02: LFB hit */
+@@ -173,6 +182,40 @@ void __init intel_pmu_pebs_data_source_cmt(void)
+ 	__intel_pmu_pebs_data_source_cmt(pebs_data_source);
+ }
+ 
++/* Version for Lunar Lake p-core and later */
++static u64 lnc_pebs_data_source[PERF_PEBS_DATA_SOURCE_MAX] = {
++	P(OP, LOAD) | P(LVL, MISS) | LEVEL(L3) | P(SNOOP, NA),	/* 0x00: ukn L3 */
++	OP_LH | P(LVL, L1)  | LEVEL(L1) | P(SNOOP, NONE),	/* 0x01: L1 hit */
++	OP_LH | P(LVL, L1)  | LEVEL(L1) | P(SNOOP, NONE),	/* 0x02: L1 hit */
++	OP_LH | P(LVL, LFB) | LEVEL(LFB) | P(SNOOP, NONE),	/* 0x03: LFB/L1 Miss Handling Buffer hit */
++	0,							/* 0x04: Reserved */
++	OP_LH | P(LVL, L2)  | LEVEL(L2) | P(SNOOP, NONE),	/* 0x05: L2 Hit */
++	OP_LH | LEVEL(L2_MHB) | P(SNOOP, NONE),			/* 0x06: L2 Miss Handling Buffer Hit */
++	0,							/* 0x07: Reserved */
++	OP_LH | P(LVL, L3)  | LEVEL(L3) | P(SNOOP, NONE),	/* 0x08: L3 Hit */
++	0,							/* 0x09: Reserved */
++	0,							/* 0x0a: Reserved */
++	0,							/* 0x0b: Reserved */
++	OP_LH | P(LVL, L3)  | LEVEL(L3) | P(SNOOPX, FWD),	/* 0x0c: L3 Hit Snoop Fwd */
++	OP_LH | P(LVL, L3)  | LEVEL(L3) | P(SNOOP, HITM),	/* 0x0d: L3 Hit Snoop HitM */
++	0,							/* 0x0e: Reserved */
++	P(OP, LOAD) | P(LVL, MISS) | P(LVL, L3)  | LEVEL(L3) | P(SNOOP, HITM),	/* 0x0f: L3 Miss Snoop HitM */
++	OP_LH | LEVEL(MSC) | P(SNOOP, NONE),			/* 0x10: Memory-side Cache Hit */
++	OP_LH | P(LVL, LOC_RAM)  | LEVEL(RAM) | P(SNOOP, NONE), /* 0x11: Local Memory Hit */
 +};
 +
- struct event_constraint *intel_pebs_constraints(struct perf_event *event)
++void __init intel_pmu_pebs_data_source_lnl(void)
++{
++	u64 *data_source;
++
++	data_source = x86_pmu.hybrid_pmu[X86_HYBRID_PMU_CORE_IDX].pebs_data_source;
++	memcpy(data_source, lnc_pebs_data_source, sizeof(lnc_pebs_data_source));
++
++	data_source = x86_pmu.hybrid_pmu[X86_HYBRID_PMU_ATOM_IDX].pebs_data_source;
++	memcpy(data_source, pebs_data_source, sizeof(pebs_data_source));
++	__intel_pmu_pebs_data_source_cmt(data_source);
++}
++
+ static u64 precise_store_data(u64 status)
  {
- 	struct event_constraint *pebs_constraints = hybrid(event->pmu, pebs_constraints);
+ 	union intel_x86_pebs_dse dse;
+@@ -264,7 +307,7 @@ static u64 __adl_latency_data_small(struct perf_event *event, u64 status,
+ 
+ 	WARN_ON_ONCE(hybrid_pmu(event->pmu)->pmu_type == hybrid_big);
+ 
+-	dse &= PERF_PEBS_DATA_SOURCE_MASK;
++	dse &= PERF_PEBS_DATA_SOURCE_GRT_MASK;
+ 	val = hybrid_var(event->pmu, pebs_data_source)[dse];
+ 
+ 	pebs_set_tlb_lock(&val, tlb, lock);
+@@ -300,6 +343,45 @@ u64 mtl_latency_data_small(struct perf_event *event, u64 status)
+ 					dse.mtl_fwd_blk);
+ }
+ 
++u64 lnl_latency_data(struct perf_event *event, u64 status)
++{
++	struct x86_hybrid_pmu *pmu = hybrid_pmu(event->pmu);
++	union intel_x86_pebs_dse dse;
++	union perf_mem_data_src src;
++	u64 val;
++
++	if (pmu->pmu_type == hybrid_small)
++		return mtl_latency_data_small(event, status);
++
++	dse.val = status;
++
++	/* LNC core latency data */
++	val = hybrid_var(event->pmu, pebs_data_source)[status & PERF_PEBS_DATA_SOURCE_MASK];
++	if (!val)
++		val = P(OP, LOAD) | LEVEL(NA) | P(SNOOP, NA);
++
++	if (dse.lnc_stlb_miss)
++		val |= P(TLB, MISS) | P(TLB, L2);
++	else
++		val |= P(TLB, HIT) | P(TLB, L1) | P(TLB, L2);
++
++	if (dse.lnc_locked)
++		val |= P(LOCK, LOCKED);
++
++	if (dse.lnc_data_blk)
++		val |= P(BLK, DATA);
++	if (dse.lnc_addr_blk)
++		val |= P(BLK, ADDR);
++	if (!dse.lnc_data_blk && !dse.lnc_addr_blk)
++		val |= P(BLK, NA);
++
++	src.val = val;
++	if (event->hw.flags & PERF_X86_EVENT_PEBS_ST_HSW)
++		src.mem_op = P(OP, STORE);
++
++	return src.val;
++}
++
+ static u64 load_latency_data(struct perf_event *event, u64 status)
+ {
+ 	union intel_x86_pebs_dse dse;
+@@ -1090,6 +1172,8 @@ struct event_constraint intel_lnc_pebs_event_constraints[] = {
+ 	INTEL_FLAGS_UEVENT_CONSTRAINT(0x100, 0x100000000ULL),	/* INST_RETIRED.PREC_DIST */
+ 	INTEL_FLAGS_UEVENT_CONSTRAINT(0x0400, 0x800000000ULL),
+ 
++	INTEL_HYBRID_LDLAT_CONSTRAINT(0x1cd, 0x3ff),
++	INTEL_HYBRID_STLAT_CONSTRAINT(0x2cd, 0x3),
+ 	INTEL_FLAGS_UEVENT_CONSTRAINT_DATALA_LD(0x11d0, 0xf),	/* MEM_INST_RETIRED.STLB_MISS_LOADS */
+ 	INTEL_FLAGS_UEVENT_CONSTRAINT_DATALA_ST(0x12d0, 0xf),	/* MEM_INST_RETIRED.STLB_MISS_STORES */
+ 	INTEL_FLAGS_UEVENT_CONSTRAINT_DATALA_LD(0x21d0, 0xf),	/* MEM_INST_RETIRED.LOCK_LOADS */
 diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index f86bd1113e6a..ee28da240d03 100644
+index ee28da240d03..3a65bfbb1173 100644
 --- a/arch/x86/events/perf_event.h
 +++ b/arch/x86/events/perf_event.h
-@@ -1559,6 +1559,8 @@ extern struct event_constraint intel_icl_pebs_event_constraints[];
+@@ -476,6 +476,14 @@ struct cpu_hw_events {
+ 	__EVENT_CONSTRAINT(c, n, INTEL_ARCH_EVENT_MASK|X86_ALL_EVENT_FLAGS, \
+ 			  HWEIGHT(n), 0, PERF_X86_EVENT_PEBS_LAT_HYBRID)
  
- extern struct event_constraint intel_glc_pebs_event_constraints[];
- 
-+extern struct event_constraint intel_lnc_pebs_event_constraints[];
++#define INTEL_HYBRID_LDLAT_CONSTRAINT(c, n)	\
++	__EVENT_CONSTRAINT(c, n, INTEL_ARCH_EVENT_MASK|X86_ALL_EVENT_FLAGS, \
++			  HWEIGHT(n), 0, PERF_X86_EVENT_PEBS_LAT_HYBRID|PERF_X86_EVENT_PEBS_LD_HSW)
 +
- struct event_constraint *intel_pebs_constraints(struct perf_event *event);
- 
- void intel_pmu_pebs_add(struct perf_event *event);
-diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
-index 3736b8a46c04..0c8e6d585add 100644
---- a/arch/x86/include/asm/perf_event.h
-+++ b/arch/x86/include/asm/perf_event.h
-@@ -307,6 +307,10 @@ struct x86_pmu_capability {
- #define INTEL_PMC_IDX_FIXED_SLOTS	(INTEL_PMC_IDX_FIXED + 3)
- #define INTEL_PMC_MSK_FIXED_SLOTS	(1ULL << INTEL_PMC_IDX_FIXED_SLOTS)
- 
-+/* TOPDOWN_BAD_SPECULATION.ALL: fixed counter 4 (Atom only) */
-+/* TOPDOWN_FE_BOUND.ALL: fixed counter 5 (Atom only) */
-+/* TOPDOWN_RETIRING.ALL: fixed counter 6 (Atom only) */
++#define INTEL_HYBRID_STLAT_CONSTRAINT(c, n)	\
++	__EVENT_CONSTRAINT(c, n, INTEL_ARCH_EVENT_MASK|X86_ALL_EVENT_FLAGS, \
++			  HWEIGHT(n), 0, PERF_X86_EVENT_PEBS_LAT_HYBRID|PERF_X86_EVENT_PEBS_ST_HSW)
 +
- static inline bool use_fixed_pseudo_encoding(u64 code)
- {
- 	return !(code & 0xff);
+ /* Event constraint, but match on all event flags too. */
+ #define INTEL_FLAGS_EVENT_CONSTRAINT(c, n) \
+ 	EVENT_CONSTRAINT(c, n, ARCH_PERFMON_EVENTSEL_EVENT|X86_ALL_EVENT_FLAGS)
+@@ -655,8 +663,10 @@ enum {
+ 	x86_lbr_exclusive_max,
+ };
+ 
+-#define PERF_PEBS_DATA_SOURCE_MAX	0x10
++#define PERF_PEBS_DATA_SOURCE_MAX	0x100
+ #define PERF_PEBS_DATA_SOURCE_MASK	(PERF_PEBS_DATA_SOURCE_MAX - 1)
++#define PERF_PEBS_DATA_SOURCE_GRT_MAX	0x10
++#define PERF_PEBS_DATA_SOURCE_GRT_MASK	(PERF_PEBS_DATA_SOURCE_GRT_MAX - 1)
+ 
+ enum hybrid_cpu_type {
+ 	HYBRID_INTEL_NONE,
+@@ -1529,6 +1539,8 @@ u64 adl_latency_data_small(struct perf_event *event, u64 status);
+ 
+ u64 mtl_latency_data_small(struct perf_event *event, u64 status);
+ 
++u64 lnl_latency_data(struct perf_event *event, u64 status);
++
+ extern struct event_constraint intel_core2_pebs_event_constraints[];
+ 
+ extern struct event_constraint intel_atom_pebs_event_constraints[];
+@@ -1650,6 +1662,8 @@ void intel_pmu_pebs_data_source_mtl(void);
+ 
+ void intel_pmu_pebs_data_source_cmt(void);
+ 
++void intel_pmu_pebs_data_source_lnl(void);
++
+ int intel_pmu_setup_lbr_filter(struct perf_event *event);
+ 
+ void intel_pt_interrupt(void);
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index 3a64499b0f5d..4842c36fdf80 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -1349,12 +1349,14 @@ union perf_mem_data_src {
+ #define PERF_MEM_LVLNUM_L2	0x02 /* L2 */
+ #define PERF_MEM_LVLNUM_L3	0x03 /* L3 */
+ #define PERF_MEM_LVLNUM_L4	0x04 /* L4 */
+-/* 5-0x7 available */
++#define PERF_MEM_LVLNUM_L2_MHB	0x05 /* L2 Miss Handling Buffer */
++#define PERF_MEM_LVLNUM_MSC	0x06 /* Memory-side Cache */
++/* 0x7 available */
+ #define PERF_MEM_LVLNUM_UNC	0x08 /* Uncached */
+ #define PERF_MEM_LVLNUM_CXL	0x09 /* CXL */
+ #define PERF_MEM_LVLNUM_IO	0x0a /* I/O */
+ #define PERF_MEM_LVLNUM_ANY_CACHE 0x0b /* Any cache */
+-#define PERF_MEM_LVLNUM_LFB	0x0c /* LFB */
++#define PERF_MEM_LVLNUM_LFB	0x0c /* LFB / L1 Miss Handling Buffer */
+ #define PERF_MEM_LVLNUM_RAM	0x0d /* RAM */
+ #define PERF_MEM_LVLNUM_PMEM	0x0e /* PMEM */
+ #define PERF_MEM_LVLNUM_NA	0x0f /* N/A */
 -- 
 2.35.1
 
