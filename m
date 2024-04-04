@@ -1,105 +1,106 @@
-Return-Path: <linux-kernel+bounces-131092-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131093-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB7198982FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:18:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36E15898304
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:18:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 171F51C22539
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:18:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E147228205F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:18:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FFC95FEE3;
-	Thu,  4 Apr 2024 08:18:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6590B6BFA2;
+	Thu,  4 Apr 2024 08:18:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="dStsbZdk"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MQe8ddn8"
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16AF85EE76;
-	Thu,  4 Apr 2024 08:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0F135EE76
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:18:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712218695; cv=none; b=KZcPCRYxkOu82wgpT1EFBcGUfAcWIn+1DUm7FbchpDatU6ojoz554wU1LwE1lkoKIks0/bvJ2sVNSg8afjI9UuTa3YY1S+LkB8QbgFOobohC3LfYmITtg+6A56US31PRyafP1wVX2/CBUeeHKQgO6AAe1GGQu+TlhMQE01+y+vA=
+	t=1712218723; cv=none; b=PNRXmKQk0gcKz56W8nf7RVqDri9B72ASVw4GqgI2kcifry3rxXagY2wlyW8t4B/ZS0bjQv1lOsb5RVBeVWYsQBfJDxDHU5EPAkDNGyVZ08OLh/CPxg6P3pYeJmzFhy22Zs17m/FYRUpCk2C0p9qM9swYTlhWTuIxy2YllB8VGAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712218695; c=relaxed/simple;
-	bh=qNIQsRN63cUz3fWMTVMY3OVNv9ArpXhRU38uV3pGBZ0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=k7o8aouN4lIoiGfWsYJof4fGyBfAgXk48bBZ0YvyS3KrA1zG1DS8KJWtOFOe3zmGSTEaPJ8PtlpVFzs91B0JBN+T2K9OKigYvgIBz1m6VQEi6w9p+Z/pK5bnlobv0H4PD8l2x5tTZkXIzjrtIG0u23XR0mhLQKPtBFNrhdib0Xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=dStsbZdk; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712218692;
-	bh=qNIQsRN63cUz3fWMTVMY3OVNv9ArpXhRU38uV3pGBZ0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=dStsbZdkhPsfyZzFRVUrtm8IM9PzGbB+AuNpRGGes+uBvZ+QtQzq2WBq3QNL8z2zH
-	 gDXj9viF/xWxNYcQDCmbWhQIMGxLf3qqH49Eq2ONQRU8r/ZPLsCa3IyP+2gUuhnVaP
-	 eaaBPWWm2sFzSumPhqCenBWwip1uubRdLyIlcfB3raBaSvqy9178CDNoYMgDE+j+BQ
-	 F1ioO9xsIkbFGspD+V5OQXNQDbRNqcjnhO8WF4dxhetawSczO2yZOWPk+g7h8ZvXE0
-	 cihfTVlHQFlKgKwA9VAI5VLALS/RqnAvvftMNGt/0/V3sjOt1+Bhn7MfFSbydtxGgr
-	 W2qTevEKwiXSA==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 94749378200D;
-	Thu,  4 Apr 2024 08:18:11 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: u.kleine-koenig@pengutronix.de
-Cc: robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	jitao.shi@mediatek.com,
-	thierry.reding@gmail.com,
-	miles.chen@mediatek.com,
-	xinlei.lee@mediatek.com,
-	linux-pwm@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org,
-	wenst@chromium.org,
-	kernel@collabora.com
-Subject: [PATCH] dt-bindings: pwm: mediatek,pwm-disp: Document power-domains property
-Date: Thu,  4 Apr 2024 10:18:08 +0200
-Message-ID: <20240404081808.92199-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712218723; c=relaxed/simple;
+	bh=eyAd8Fm3t44gc7qEKT0d4Zv8xoYimRNogrja13Iomu4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cpFbWsX0vtZzMOTz6ln5Bc6nZCjKz2qigecO8hGR11FivK2C3Q/8FEBtJejFeu5gSfArrbKlOp6rhN5cbDktdopbcz5UDk8XW4tnzLQd71kwMfjZsjwQu+fqOBC4pYSAABXrUrjO5YxHilwNJZtiKD35oGKS+iWJbTrSVrDPs94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MQe8ddn8; arc=none smtp.client-ip=209.85.219.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dd10ebcd702so841658276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 01:18:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712218721; x=1712823521; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eyAd8Fm3t44gc7qEKT0d4Zv8xoYimRNogrja13Iomu4=;
+        b=MQe8ddn8hPCohkddiIdfjpxUkDgJfFcLgz578s90FL1abBGWq05W/lle5UAnhJLadA
+         EfqU4JIiFXsKnpC9HVNB227hiL69Yne4IdbsawEmjvi80kZuAtpopTdIccmEHVcXq+zD
+         Xz56eU0Wd1xhiuampa6zSfTZruO6Q+ePOgzKMeBqKYd90Ya1ygSjImtBE4Xud0KFnvpP
+         7WcL4GgiXD+SPPaH4OGUK9cdbdbMFFO9t1kK2UO2Hmp1gju0ScVA177lRivKSOCTlbl6
+         UTDva2eOtgb84bZJsHelg52wi5cOf7hiYaqx4E7SRGlWv405pZZEhby72I/YMxkfeWFQ
+         tauA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712218721; x=1712823521;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eyAd8Fm3t44gc7qEKT0d4Zv8xoYimRNogrja13Iomu4=;
+        b=l+Mz++DvWMNFOlu13mSVOzjn8AWA8Ze4FXYGfWSWmj16OwFe8OfGRRR/WwOHCAEIoo
+         fPPbUMGGMAL9Sjk1/vBP7MoKaQCaCKekNH3mHWnF0CbPj8hnMrwOR26QKc0TqzKSQZuu
+         sCsvosAniVPJD+EYEVJtqnvmD1+SUx8YN7E9p/tQeELNmFruW4QRVg7kNH5yZUPdmHYG
+         HqILtHp7oGpp8BfPa8hOfbxYgXPEm5gr+/Jqnil3oGsxPCDtSmg8ACqyspBqPQfQxVQx
+         wM1CE6hkyHZmFX/xSFEOQQC4oq86vrhyCcxKLP67yVC29KVKK7RlGiJQNaYerMNWn9jh
+         qkAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV+6YKS3nJeCuh3MDH6plDNqWQrQX/ApsCOqyceIf87boUcPCekfWSuR4no8qh6v3CbvagLs2xfreFKkSAPbYvQ2rsoo/mFzzRJF3Ev
+X-Gm-Message-State: AOJu0Yx4xyGTzcyXgHb8RfdNiqXGePgorEIa57NfJvX3SgMMQoTWDxq+
+	m5cQxM/mzULFBHGCEEruQJ2UVd4QAqrNVVHEh3FfhHf8b6h0nHoNQPyFQhbhstg3RnLxAim53UD
+	NHFzr1y40mWaxgZyD8a1hmRE05WTgqcZJN4n/3w==
+X-Google-Smtp-Source: AGHT+IF10RS0Ghp5cgYZUvg6PBzUDvxfLN9KgcqveP0TSNC3zgxigAL30JAOcgZTHb+RkMpEFaPK7ZHMMNnVTswBtzY=
+X-Received: by 2002:a5b:d06:0:b0:dd0:6f7:bc3b with SMTP id y6-20020a5b0d06000000b00dd006f7bc3bmr1651889ybp.10.1712218721029;
+ Thu, 04 Apr 2024 01:18:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org> <20240326-module-owner-amba-v1-15-4517b091385b@linaro.org>
+In-Reply-To: <20240326-module-owner-amba-v1-15-4517b091385b@linaro.org>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 4 Apr 2024 10:18:30 +0200
+Message-ID: <CACRpkdZa7mszi45M72qKPM=NJtou1A5DjVVUFzChFtZwzwVZyA@mail.gmail.com>
+Subject: Re: [PATCH 15/19] hwrng: nomadik: drop owner assignment
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Russell King <linux@armlinux.org.uk>, Suzuki K Poulose <suzuki.poulose@arm.com>, 
+	Mike Leach <mike.leach@linaro.org>, James Clark <james.clark@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Andi Shyti <andi.shyti@kernel.org>, Olivia Mackall <olivia@selenic.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, Vinod Koul <vkoul@kernel.org>, 
+	Dmitry Torokhov <dmitry.torokhov@gmail.com>, Miquel Raynal <miquel.raynal@bootlin.com>, 
+	Michal Simek <michal.simek@amd.com>, Eric Auger <eric.auger@redhat.com>, 
+	Alex Williamson <alex.williamson@redhat.com>, linux-kernel@vger.kernel.org, 
+	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, dmaengine@vger.kernel.org, 
+	linux-input@vger.kernel.org, kvm@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Allow the power-domains property to the PWM_DISP block as on some SoCs
-this does need at most one power domain.
+On Tue, Mar 26, 2024 at 9:24=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 
-Fixes: b09b179bac0a ("dt-bindings: pwm: Convert pwm-mtk-disp.txt to mediatek,pwm-disp.yaml format")
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml | 3 +++
- 1 file changed, 3 insertions(+)
+> Amba bus core already sets owner, so driver does not need to.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-diff --git a/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml b/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml
-index afcdeed4e88a..bc813fe74fab 100644
---- a/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml
-+++ b/Documentation/devicetree/bindings/pwm/mediatek,pwm-disp.yaml
-@@ -52,6 +52,9 @@ properties:
-       - const: main
-       - const: mm
- 
-+  power-domains:
-+    maxItems: 1
-+
- required:
-   - compatible
-   - reg
--- 
-2.44.0
+Acked-by: Linus Walleij <linus.walleij@linaro.org>
 
+Yours,
+Linus Walleij
 
