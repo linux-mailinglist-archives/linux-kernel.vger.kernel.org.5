@@ -1,329 +1,180 @@
-Return-Path: <linux-kernel+bounces-132246-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132247-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B730E8991F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:16:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 395C48991FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:16:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E09DF286376
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:16:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D03B1C21E70
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:16:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D4C13C3EF;
-	Thu,  4 Apr 2024 23:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B5D13C803;
+	Thu,  4 Apr 2024 23:16:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1NeFl5Sx"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GhQB4Lr2"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 236E413BC38
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 23:15:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E39E13C3E9
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 23:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712272559; cv=none; b=Aqf/lSeDz5GxNfcYGt8HHktt8pDkxOn1yfchywzkRhE+9nIqfmqIJ3jTZfhpDV7s4C2j454egWJfn5X7MCXLTFBFiZp0wxyWpXPQ6Xw472JKSDyC00lr2R8AyW/YtuOlQn0u3qMl12gCj+etXeCyz/Tx1lXyZ0Yi7N1v3B52zD0=
+	t=1712272591; cv=none; b=kidQUGCNPiMW+SByiSdCxynudHbwHlQNhWGXJzSeyCjy9pQegWU8Q8Y+YOWX3wz4bmhdOgQtHUHKnFYb6zGigXEQ8B1N71IvO/GQBtdbkfQoVUPnQFqiBNbmoMTKguibDBB1fcT0xuw5VwopkzDFQeQz8nj82jPBPuNsV/JgRe4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712272559; c=relaxed/simple;
-	bh=q7Rmob6dx38Tia7j2342w5w2ow7VgzMTr/CsK1WSk6Y=;
+	s=arc-20240116; t=1712272591; c=relaxed/simple;
+	bh=APEooEWI1lH4C+bL4GyHHSZ5KchOvO14ONUoet0RRr0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FAcn+qkaGF4uBm4Sc0co72clhXMn1sNNt8vhLJr4lmp7EhEqUEc8+W5hTtdGIPaag0PZVvhU7TotPzJyzrdSQ1Wd9rJ7uaNXP8UYjVAJp9Ac5ekx9IZfSFRt5yjEDT1rF2VydVRSKy+LP0aLvlyu9cvN2PlhrEI6H9kigfsRe4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1NeFl5Sx; arc=none smtp.client-ip=209.85.160.169
+	 To:Cc:Content-Type; b=cRhfsrWfcvdf0Ws96JVvKVoHN3/I2B8uhIH1HC8icJnJpLFDJAZE6NTTvJ6FuoenNMJAKf6xDpxocsLnRIXUUx/BlU4N7Picvo/uSE03JEJ8JAhR5jvfkQQXqK4CUvaR9DmjF2JOSKJ24c6j5wHWVN+8zfkPYiUS/yKigm3Iumw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GhQB4Lr2; arc=none smtp.client-ip=209.85.219.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-430d3fcc511so67901cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 16:15:57 -0700 (PDT)
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dde0b30ebe2so1534424276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 16:16:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712272557; x=1712877357; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712272588; x=1712877388; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sKddqz6smnqmh9exl0udqVZxjHW77Ue+RMv6tUW1JN4=;
-        b=1NeFl5SxPNDinhtQ6Ty8eE0Sn8E2NmdKOaLffWEUVMq4W79yRCg7dKYtXawDEW7Wvc
-         6UoYAqmwItyLvtb1H/LxB2T7irJYxF5bDq/qVzHmZMzgZbFU2eH7+JUbvVfwH68MvQsO
-         cipqhy9LcyHPKvd52aAHxn76IFN1dpX6aSoqhthz2WyyN2At1LUUeLvgbZPW4kMivd5p
-         Ojg7ahmnmRbGFQiZDWE+3HtXVx+Mum+AqcR3NQD57w87q052McPEO23CC5kJ6RuQcfht
-         mB/FrN90GNA8dkMw57Qbbh3UtA3D1rySh532E5n3fg2gJAQI34LP4O2KwRnOEj2m/38O
-         WbQg==
+        bh=px33Bjt2eInHJiP0NeuRgUTO3pjhGqqLrEOvRjM23DI=;
+        b=GhQB4Lr2TOfRJr0yIbGk1UCRhhyf/EKVpCXPZqXmV/XkgG3+Ip4CUhh5q4gr0g9aWQ
+         bi/MtONwHxDMZ2USmEekynhmPdIj7XimYzkMyO6YIhdhd8laosX9Kqavzc0sEGt4s393
+         x3jIewExo36NNhoGC8fa0dDVejtUCmH++FNYSfkbwZ/UmhgU1sdlt3bN2hQJz5ko/8/2
+         ObAiMXaSN6L+F4xGADKQcR60IRWI0WYZxrQoJLkbTK4kPXRxqPMACqxkEQFVlYIVb5E4
+         NZ/mGrhb+ljA8cMBS1XGt9r2KxFFWpC0uxhpGDOwu+7sHOeMPE3IS3bKmZETlEo4VFCK
+         XvLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712272557; x=1712877357;
+        d=1e100.net; s=20230601; t=1712272588; x=1712877388;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sKddqz6smnqmh9exl0udqVZxjHW77Ue+RMv6tUW1JN4=;
-        b=JnoSYtuIekZI/K/Kyn9x8vQbAg4E0IaxxVkDueJW34dVqrYfassCajjG0jvFW5/Y7P
-         gSKoZYjKdvxZhC6tr3NOrkyBXdpHspNaiJiUjZv5v4mWr3n5HpyowFAfUy32/hLPeF4X
-         EJEEBYVr3PKUgRHiHz3PlgOt9aqvUJZ9OSSEAS+b12KVfz9rX8H/ZnOD7ALq16s4Dk03
-         SkB5xMWQJY7kbrRWc+5CKL8tZbb2Ea17GGpBSMgLiqV8hkAHIMb9EfJN8DDHNrXRett5
-         7De0o/CGzkBPTYjWQiuydY3XxeYZCshqjIVj9ekAJXDcubs45H5OW2xGDWsT6pcNBh/H
-         JY2g==
-X-Forwarded-Encrypted: i=1; AJvYcCULvtnRTfHo3RYUwBHLYf7CKTrmxLs+7AwCn/1h5mLneVQDFSwP+c3GWhqNVd+IE84muRJqv0kWFiHhnpWzdgACzZNTPT4ZSuoJcNC0
-X-Gm-Message-State: AOJu0Yyyg30UJSaG4Ryyh0NeKpBtx+FSEiOGId6X27uYuB/gXsRoRaeY
-	lzm6Ft5FtvcOZbfPFvIsWXNLOEJVYLClvKr/OrYvsUxdyv2LCqbpSPv/NNeyiwLZB2hQrIC1piA
-	MqRAfOM15sdk1M2yv4xQPzwTK8L8/3oaDfoXi
-X-Google-Smtp-Source: AGHT+IFNa111IpFNNKGnkOs93VqeaMLso4SJe3rpUiVsiWHi4ul+ZGr3gl8Qzih4k80HP8F/ZJAFbIFEx3TNhryu9Gc=
-X-Received: by 2002:a05:622a:1b19:b0:434:36fe:6d3 with SMTP id
- bb25-20020a05622a1b1900b0043436fe06d3mr354666qtb.0.1712272556757; Thu, 04 Apr
- 2024 16:15:56 -0700 (PDT)
+        bh=px33Bjt2eInHJiP0NeuRgUTO3pjhGqqLrEOvRjM23DI=;
+        b=XPsT3vhozopiJ2AX0Nbe7IsBgnN77gaw6l/Uf9S5i4gTdt2SpPXE8lEtAwvSgT5Hl4
+         ZDbv33Ur+VeRdVZxHCmALQ3ZwdcwMCFwOtN94H9ij3M/IayTnMKEJDxKEZtm7exhT4Cr
+         I678UwH9V4jR5sQiR7NeG5iU+/hXU2+2LlPvBlCpY3kYNjMhStGe1OPoX+lTLchdmgqd
+         xDSjtE01SQq5Sl3GoLvWU7T8CFMRVlriKpv1uwnLc2TyYDrQSItYi4QKU7lvon5qoaxY
+         VS/BusYSHF5436sNHISL5cYMYydnYJ5Ee8lywidK2hUM2ueXQ5a0OfytadegLjGOQZOZ
+         UXwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXcnNAlftWiwukWZRTfF+B9patea2GguGqJHDy/3qub0Yg1+qJ+5ZUVO8ERKS5wG/M3a4jUKWRXa81z8SEVAL619YnkkAscUTwVMV3K
+X-Gm-Message-State: AOJu0YwjY+7GHKKVsTxZ3H9rZD5xPgAD+Wc+Kzaa+/zwbHUuPD9rL5Y2
+	pY2xJtAIr32CozGmDzctYuQcrRQgN8Wfc6QTdFNP70ZRUNABtnx/bRdXPVDMCW1vI1zOsPHRqO5
+	guB8PedHa0O7WLQGdiYEehvr/Kqq30OWU8oHT
+X-Google-Smtp-Source: AGHT+IFqOT0sdB5Mq8Em3ez8wUqwsDenflcnFBaGGydYTj8cPQz4oQR3/fK7VmQ9yLCyTSRCqikRdMTTYcQR8Kj+db8=
+X-Received: by 2002:a25:c7c6:0:b0:dcc:d5aa:af36 with SMTP id
+ w189-20020a25c7c6000000b00dccd5aaaf36mr1095387ybe.44.1712272587959; Thu, 04
+ Apr 2024 16:16:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404-dt-cleanup-free-v1-0-c60e6cba8da9@kernel.org> <20240404-dt-cleanup-free-v1-2-c60e6cba8da9@kernel.org>
-In-Reply-To: <20240404-dt-cleanup-free-v1-2-c60e6cba8da9@kernel.org>
-From: Saravana Kannan <saravanak@google.com>
-Date: Thu, 4 Apr 2024 16:15:20 -0700
-Message-ID: <CAGETcx_H_vvK9y-51JTcz8F7GDThBwC+t=k2i6r4Nst3H6-TUg@mail.gmail.com>
-Subject: Re: [PATCH 2/3] of: Use scope based kfree() cleanups
-To: Rob Herring <robh@kernel.org>
-Cc: Jonathan Cameron <jic23@kernel.org>, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240404165404.3805498-1-surenb@google.com> <Zg7dmp5VJkm1nLRM@casper.infradead.org>
+ <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
+ <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
+ <Zg8qstJNfK07siNn@casper.infradead.org> <jb25mtkveqf63bv74jhynf6ncxmums5s37esveqsv52yurh4z7@5q55ttv34bia>
+ <20240404154150.c25ba3a0b98023c8c1eff3a4@linux-foundation.org> <jpaw4hdd73ngt7mvtcdryqscivx6m2ic76ikfkcopceb47becp@vox5czt5bec3>
+In-Reply-To: <jpaw4hdd73ngt7mvtcdryqscivx6m2ic76ikfkcopceb47becp@vox5czt5bec3>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 4 Apr 2024 16:16:15 -0700
+Message-ID: <CAJuCfpF10COO2nh1nt3CcaZOFe4iSXszsup+a0qAEQ1ngyy5tQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
+ the call site
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, joro@8bytes.org, 
+	will@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org, 
+	arnd@arndb.de, herbert@gondor.apana.org.au, davem@davemloft.net, 
+	jikos@kernel.org, benjamin.tissoires@redhat.com, tytso@mit.edu, jack@suse.com, 
+	dennis@kernel.org, tj@kernel.org, cl@linux.com, jakub@cloudflare.com, 
+	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com, 
+	vbabka@suse.cz, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-ext4@vger.kernel.org, linux-mm@kvack.org, 
+	netdev@vger.kernel.org, linux-security-module@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 4, 2024 at 7:15=E2=80=AFAM Rob Herring <robh@kernel.org> wrote:
+On Thu, Apr 4, 2024 at 4:01=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
 >
-> Use the relatively new scope based kfree() cleanup to simplify error
-> handling. Doing so reduces the chances of memory leaks and simplifies
-> error paths by avoiding the need for goto statements.
+> On Thu, Apr 04, 2024 at 03:41:50PM -0700, Andrew Morton wrote:
+> > On Thu, 4 Apr 2024 18:38:39 -0400 Kent Overstreet <kent.overstreet@linu=
+x.dev> wrote:
+> >
+> > > On Thu, Apr 04, 2024 at 11:33:22PM +0100, Matthew Wilcox wrote:
+> > > > On Thu, Apr 04, 2024 at 03:17:43PM -0700, Suren Baghdasaryan wrote:
+> > > > > Ironically, checkpatch generates warnings for these type casts:
+> > > > >
+> > > > > WARNING: unnecessary cast may hide bugs, see
+> > > > > http://c-faq.com/malloc/mallocnocast.html
+> > > > > #425: FILE: include/linux/dma-fence-chain.h:90:
+> > > > > + ((struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chai=
+n),
+> > > > > GFP_KERNEL))
+> > > > >
+> > > > > I guess I can safely ignore them in this case (since we cast to t=
+he
+> > > > > expected type)?
+> > > >
+> > > > I find ignoring checkpatch to be a solid move 99% of the time.
+> > > >
+> > > > I really don't like the codetags.  This is so much churn, and it co=
+uld
+> > > > all be avoided by just passing in _RET_IP_ or _THIS_IP_ depending o=
+n
+> > > > whether we wanted to profile this function or its caller.  vmalloc
+> > > > has done it this way since 2008 (OK, using __builtin_return_address=
+())
+> > > > and lockdep has used _THIS_IP_ / _RET_IP_ since 2006.
+> > >
+> > > Except you can't. We've been over this; using that approach for traci=
+ng
+> > > is one thing, using it for actual accounting isn't workable.
+> >
+> > I missed that.  There have been many emails.  Please remind us of the
+> > reasoning here.
 >
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/of/base.c     | 34 ++++++++--------------------------
->  drivers/of/dynamic.c  | 11 ++++-------
->  drivers/of/resolver.c | 35 +++++++++++++----------------------
->  3 files changed, 25 insertions(+), 55 deletions(-)
+> I think it's on the other people claiming 'oh this would be so easy if
+> you just do it this other way' to put up some code - or at least more
+> than hot takes.
 >
-> diff --git a/drivers/of/base.c b/drivers/of/base.c
-> index 8856c67c466a..20603d3c9931 100644
-> --- a/drivers/of/base.c
-> +++ b/drivers/of/base.c
-> @@ -16,6 +16,7 @@
+> But, since you asked - one of the main goals of this patchset was to be
+> fast enough to run in production, and if you do it by return address
+> then you've added at minimum a hash table lookup to every allocate and
+> free; if you do that, running it in production is completely out of the
+> question.
 >
->  #define pr_fmt(fmt)    "OF: " fmt
+> Besides that - the issues with annotating and tracking the correct
+> callsite really don't go away, they just shift around a bit. It's true
+> that the return address approach would be easier initially, but that's
+> not all we're concerned with; we're concerned with making sure
+> allocations get accounted to the _correct_ callsite so that we're giving
+> numbers that you can trust, and by making things less explicit you make
+> that harder.
 >
-> +#include <linux/cleanup.h>
->  #include <linux/console.h>
->  #include <linux/ctype.h>
->  #include <linux/cpu.h>
-> @@ -1393,8 +1394,10 @@ int of_parse_phandle_with_args_map(const struct de=
-vice_node *np,
->                                    const char *stem_name,
->                                    int index, struct of_phandle_args *out=
-_args)
->  {
-> -       char *cells_name, *map_name =3D NULL, *mask_name =3D NULL;
-> -       char *pass_name =3D NULL;
-> +       char *cells_name __free(kfree) =3D kasprintf(GFP_KERNEL, "#%s-cel=
-ls", stem_name);
-> +       char *map_name __free(kfree) =3D kasprintf(GFP_KERNEL, "%s-map", =
-stem_name);
-> +       char *mask_name __free(kfree) =3D kasprintf(GFP_KERNEL, "%s-map-m=
-ask", stem_name);
-> +       char *pass_name __free(kfree) =3D kasprintf(GFP_KERNEL, "%s-map-p=
-ass-thru", stem_name);
+> Additionally: the alloc_hooks() macro is for more than this. It's also
+> for more usable fault injection - remember every thread we have where
+> people are begging for every allocation to be __GFP_NOFAIL - "oh, error
+> paths are hard to test, let's just get rid of them" - never mind that
+> actually do have to have error paths - but _per callsite_ selectable
+> fault injection will actually make it practical to test memory error
+> paths.
+>
+> And Kees working on stuff that'll make use of the alloc_hooks() macro
+> for segregating kmem_caches.
 
-With the scoped stuff, do these function calls need to be in the same
-line we are defining these variables? If not, I'd rather that the
-calls remain where they were. It feels like a lote to visually parse
-and take in from a readability perspective.
+Yeah, that pretty much summarizes it. Note that we don't have to make
+the conversions in this patch and accounting will still work but then
+all allocations from different callers will be accounted to the helper
+function and that's less useful than accounting at the call site.
+It's a sizable churn but the conversions are straight-forward and we
+do get accurate, performant and easy to use memory accounting.
 
->         struct device_node *cur, *new =3D NULL;
->         const __be32 *map, *mask, *pass;
->         static const __be32 dummy_mask[] =3D { [0 ... MAX_PHANDLE_ARGS] =
-=3D cpu_to_be32(~0) };
-> @@ -1407,27 +1410,13 @@ int of_parse_phandle_with_args_map(const struct d=
-evice_node *np,
->         if (index < 0)
->                 return -EINVAL;
 >
-> -       cells_name =3D kasprintf(GFP_KERNEL, "#%s-cells", stem_name);
-> -       if (!cells_name)
-> +       if (!cells_name || !map_name || !mask_name || !pass_name)
->                 return -ENOMEM;
->
-> -       ret =3D -ENOMEM;
-> -       map_name =3D kasprintf(GFP_KERNEL, "%s-map", stem_name);
-> -       if (!map_name)
-> -               goto free;
-> -
-> -       mask_name =3D kasprintf(GFP_KERNEL, "%s-map-mask", stem_name);
-> -       if (!mask_name)
-> -               goto free;
-> -
-> -       pass_name =3D kasprintf(GFP_KERNEL, "%s-map-pass-thru", stem_name=
-);
-> -       if (!pass_name)
-> -               goto free;
-> -
->         ret =3D __of_parse_phandle_with_args(np, list_name, cells_name, -=
-1, index,
->                                            out_args);
->         if (ret)
-> -               goto free;
-> +               return ret;
->
->         /* Get the #<list>-cells property */
->         cur =3D out_args->np;
-> @@ -1444,8 +1433,7 @@ int of_parse_phandle_with_args_map(const struct dev=
-ice_node *np,
->                 /* Get the <list>-map property */
->                 map =3D of_get_property(cur, map_name, &map_len);
->                 if (!map) {
-> -                       ret =3D 0;
-> -                       goto free;
-> +                       return 0;
->                 }
->                 map_len /=3D sizeof(u32);
->
-> @@ -1521,12 +1509,6 @@ int of_parse_phandle_with_args_map(const struct de=
-vice_node *np,
->  put:
->         of_node_put(cur);
->         of_node_put(new);
-> -free:
-> -       kfree(mask_name);
-> -       kfree(map_name);
-> -       kfree(cells_name);
-> -       kfree(pass_name);
-> -
->         return ret;
->  }
->  EXPORT_SYMBOL(of_parse_phandle_with_args_map);
-> diff --git a/drivers/of/dynamic.c b/drivers/of/dynamic.c
-> index af7c57a7a25d..43f4e2c93bd2 100644
-> --- a/drivers/of/dynamic.c
-> +++ b/drivers/of/dynamic.c
-> @@ -9,6 +9,7 @@
->
->  #define pr_fmt(fmt)    "OF: " fmt
->
-> +#include <linux/cleanup.h>
->  #include <linux/of.h>
->  #include <linux/spinlock.h>
->  #include <linux/slab.h>
-> @@ -1019,10 +1020,9 @@ int of_changeset_add_prop_u32_array(struct of_chan=
-geset *ocs,
->                                     const u32 *array, size_t sz)
->  {
->         struct property prop;
-> -       __be32 *val;
-> -       int i, ret;
-> +       __be32 *val __free(kfree) =3D kcalloc(sz, sizeof(__be32), GFP_KER=
-NEL);
-> +       int i;
->
-> -       val =3D kcalloc(sz, sizeof(__be32), GFP_KERNEL);
->         if (!val)
->                 return -ENOMEM;
->
-> @@ -1032,9 +1032,6 @@ int of_changeset_add_prop_u32_array(struct of_chang=
-eset *ocs,
->         prop.length =3D sizeof(u32) * sz;
->         prop.value =3D (void *)val;
->
-> -       ret =3D of_changeset_add_prop_helper(ocs, np, &prop);
-> -       kfree(val);
-> -
-> -       return ret;
-> +       return of_changeset_add_prop_helper(ocs, np, &prop);
->  }
->  EXPORT_SYMBOL_GPL(of_changeset_add_prop_u32_array);
-> diff --git a/drivers/of/resolver.c b/drivers/of/resolver.c
-> index b278ab4338ce..2780928764a4 100644
-> --- a/drivers/of/resolver.c
-> +++ b/drivers/of/resolver.c
-> @@ -8,6 +8,7 @@
->
->  #define pr_fmt(fmt)    "OF: resolver: " fmt
->
-> +#include <linux/cleanup.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
-> @@ -74,11 +75,11 @@ static int update_usages_of_a_phandle_reference(struc=
-t device_node *overlay,
->  {
->         struct device_node *refnode;
->         struct property *prop;
-> -       char *value, *cur, *end, *node_path, *prop_name, *s;
-> +       char *value __free(kfree) =3D kmemdup(prop_fixup->value, prop_fix=
-up->length, GFP_KERNEL);
-> +       char *cur, *end, *node_path, *prop_name, *s;
->         int offset, len;
->         int err =3D 0;
->
-> -       value =3D kmemdup(prop_fixup->value, prop_fixup->length, GFP_KERN=
-EL);
->         if (!value)
->                 return -ENOMEM;
->
-> @@ -89,23 +90,19 @@ static int update_usages_of_a_phandle_reference(struc=
-t device_node *overlay,
->
->                 node_path =3D cur;
->                 s =3D strchr(cur, ':');
-> -               if (!s) {
-> -                       err =3D -EINVAL;
-> -                       goto err_fail;
-> -               }
-> +               if (!s)
-> +                       return -EINVAL;
->                 *s++ =3D '\0';
->
->                 prop_name =3D s;
->                 s =3D strchr(s, ':');
-> -               if (!s) {
-> -                       err =3D -EINVAL;
-> -                       goto err_fail;
-> -               }
-> +               if (!s)
-> +                       return -EINVAL;
->                 *s++ =3D '\0';
->
->                 err =3D kstrtoint(s, 10, &offset);
->                 if (err)
-> -                       goto err_fail;
-> +                       return err;
->
->                 refnode =3D __of_find_node_by_full_path(of_node_get(overl=
-ay), node_path);
->                 if (!refnode)
-> @@ -117,22 +114,16 @@ static int update_usages_of_a_phandle_reference(str=
-uct device_node *overlay,
->                 }
->                 of_node_put(refnode);
->
-> -               if (!prop) {
-> -                       err =3D -ENOENT;
-> -                       goto err_fail;
-> -               }
-> +               if (!prop)
-> +                       return -ENOENT;
->
-> -               if (offset < 0 || offset + sizeof(__be32) > prop->length)=
- {
-> -                       err =3D -EINVAL;
-> -                       goto err_fail;
-> -               }
-> +               if (offset < 0 || offset + sizeof(__be32) > prop->length)
-> +                       return -EINVAL;
->
->                 *(__be32 *)(prop->value + offset) =3D cpu_to_be32(phandle=
-);
->         }
->
-> -err_fail:
-> -       kfree(value);
-> -       return err;
-> +       return 0;
->  }
->
->  /* compare nodes taking into account that 'name' strips out the @ part *=
-/
-
-Reviewed-by: Saravana Kannan <saravanak@google.com>
-
--Saravana
+> This is all stuff that I've explained before; let's please dial back on
+> the whining - or I'll just bookmark this for next time...
 
