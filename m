@@ -1,151 +1,124 @@
-Return-Path: <linux-kernel+bounces-131738-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131739-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE82F898B49
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:37:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37F9E898B4A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:37:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F67A1F2274D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:37:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E0FB01F223ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:37:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8236812AACB;
-	Thu,  4 Apr 2024 15:36:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3723129E66;
+	Thu,  4 Apr 2024 15:37:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="cxctvy5y"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="djlZVFPv"
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C842874C09;
-	Thu,  4 Apr 2024 15:36:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B0A712880A
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 15:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712245012; cv=none; b=IKRYp8AhApjlJszIxYx4N5GvK7kidfusDoq+pFcXTc0dNy8VuODXHAcy2XHDKE0VPTEqW5UkOm+98XJncZ4JAs1BXCH/k9BxlfS0GRkFWe+LOdABw0gmN4xp8uIDMPHTdiCZJkXY9PLeX5pX+XEGqAxbq7ljbsdMKfJ2wvHxiiw=
+	t=1712245034; cv=none; b=fnQ64RkkwDTyVnWcLE2stgKmOetTVsEBF0Gusko8fK84/dARt38jhiNJPU63g+b+eLKyDpK+AkBGhYk7UCeLApVaaPfmaEzZ9VY/P7eHNC7esrQfgth2myHItp39W9KYGhXuNPF6zbbQrcrkJqujKUCT4t4fDwuESnJF+GVT+vY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712245012; c=relaxed/simple;
-	bh=aIii4mYpgJN8egl1KP1aHIF6OrbI1W29+waTSUEwjmQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Zjovq75DFBn8cn+/oOcy6YdpiiQx/vZlf7wAdztHXRxw7XoT579bUtGGcvAJSh8Mv6UHrYx4uSU4CsfHP2rOVPGPMvBwFjhlKFsfN8rkm8YoYbr6pG+R5G2fWAMkMYuEQvAkezRqJYIwHWZR0OWfnyqqiAIeYJEM4KzhW4q91oM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=cxctvy5y; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=0Kq6TWEF/jUg1kRW+ewE6G5S/dYP+nVgkjeaw6WseDs=;
-	t=1712245010; x=1712677010; b=cxctvy5yfFz5pII0KGlfB5tSCsUukDAlTdFHo4Yiy+oXyzc
-	LxGZZ8Uyj1Gyc7w4s/KLIjsjW7oCoJgBI7sF+iUj33+QO8thddmSubLN46rrVbXp0JhcRk/Pk7/+t
-	lKI9o4CYvTQ7p2wUHaA1iit7Kt1fM1t8oPUZzfmU+EAmgFdMYCmVS4r4mqDfk32bQxHIue4oaB/Yo
-	SwaRqqBuQfMRU+CTsYnTGcXQ+GVftnWPxmxZcjoU45S1xSdjT9LEpz40HI//afS1gxdyApzUWRirO
-	4UnBZEwTQob1wpXMZ4N7d++H6H0fp2YERn34tPW8Kngph2LZJCFgPP9Yp38n6niA==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rsP8t-0003wc-77; Thu, 04 Apr 2024 17:36:43 +0200
-Message-ID: <dfd87673-c581-4b4b-b37a-1cf5c817240d@leemhuis.info>
-Date: Thu, 4 Apr 2024 17:36:42 +0200
+	s=arc-20240116; t=1712245034; c=relaxed/simple;
+	bh=rh308rWw6gHdzW+9iFeyJleadKTKO70kRa3tTyqNZhg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=M7VAO00NGUmA7aPbJIYJxaicbPcXOkxMhUXbyIFOPpJCiWYeyhoHa2huTKaui4OGyKMXTx5VkVp/zOy6AH/vHGdVSEodrv8rYgmdsTHzw/JwJa5yxnP2ZLteemdo5vKAZyo53tuWAqnUaP74rwRbh86+DtXTJEzFe4YXKXckbHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=djlZVFPv; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-513ccc70a6dso2070761e87.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 08:37:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712245030; x=1712849830; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=trXOoAuOkYr9Ii3Fm42NBKS3Vzr34bcelX8vrPxLcjo=;
+        b=djlZVFPvjVsrx+HgkdHj1YWzjok3J+9KsFLNn1zfa71JVm6ciM/rGcoIq7mWJ26nqk
+         RL34JkF9bavOua77chdvtIxPw+3biGNJUIFsR7zFUznAuSUL0yEki5M25hjFuzjvsQaD
+         /3ocYleBshP+LqaWo4xeiMmQmXubbFUgFhj+s16XmnX/Ktr/kkUo+DTNVKLsHZGzbcfb
+         v+JaKiLGYQ4LI3N+ewOscD81asNqJZc+OPkuNydWHoKHK2QFDDvvz+YIZXcRB9joh7kv
+         AGUoq82V7fHHiZwgXxJVzaLhZo6KZjlEe9Eo3kU6cw9eOJfXQtGNbxYh0+eRpRzQs1b2
+         jHwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712245030; x=1712849830;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=trXOoAuOkYr9Ii3Fm42NBKS3Vzr34bcelX8vrPxLcjo=;
+        b=X2bNAeZQ8RD7n+1tJ8AbtEB9YlVFZdrs6gF6M0q2TiicbxLApcHKYhgFsmDG9zu53N
+         VHkmiuSjSK8GXblbiCS10YAZmSZnHgcUArqtQYLUUEqFnQBycbg7kxG1WUwAX2Z796Rw
+         lzJdeY2Kv7QfixQY+vqR08Z8JY6qShEJnnOu5i9oPL5EzLcz5QrNuJmFukScHKbl9gjM
+         2CJDL2uZrykF5+YbGuneeht+aMtanapLlrpHeMFJsJCZ3dBXPKxhr/aqKg3DMUXwkD4o
+         8jFqAWLOj+CgL/wZMc2h7dP5AkTKWTRVvtXMlnRnyUtYPcmFPEq9kkJQ1xeHR37ITW19
+         Ac/A==
+X-Forwarded-Encrypted: i=1; AJvYcCXHQjRAqOyKSJ6HeocKH7UaRlTM/IThnBwky8dDYiGRuY1hCBZDaJ57XpPtPmjQmrepkExI/kKcZHycjwZYiNXuyozVsYZyUjhSlMgy
+X-Gm-Message-State: AOJu0Yzjg5cs9eo6TxO8dn9Ooit6UU4J2rdrFWllblcOod9VbHYZaQTP
+	U2C107Wq4p92THLWjsCtp9K4H/CpSa6Mv/i1Bn3wda+zVNFG0w4oGinZuCM5QPQZTBt/sKGaLnF
+	SmNmtzFFw+0c9e8ebpwFHDs0y+A==
+X-Google-Smtp-Source: AGHT+IFS3ZqWqRBxf0vPSVpHvFZXtED8grVd+o9iAfWH2hAvI+SxYk5qkATuac73mrVjriQtp3b2n2gBO3/IqUm3lfE=
+X-Received: by 2002:ac2:4950:0:b0:515:d176:dfd1 with SMTP id
+ o16-20020ac24950000000b00515d176dfd1mr2477343lfi.56.1712245030150; Thu, 04
+ Apr 2024 08:37:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Do we need a "DoNotBackPort" tag? (was: Re: Hibernate stuck after
- recent kernel/workqueue.c changes in Stable 6.6.23)
-To: Greg KH <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>
-Cc: Linux regressions mailing list <regressions@lists.linux.dev>,
- Sasha Levin <sashal@kernel.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <ce4c2f67-c298-48a0-87a3-f933d646c73b@leemhuis.info>
- <ZgylCe48FuOKNWtM@slm.duckdns.org>
- <b6cdb17f-206c-4dff-bb45-a60317e0a55e@leemhuis.info>
- <2024040328-surfacing-breezy-34c6@gregkh> <Zg10Keik4KORjXMh@slm.duckdns.org>
- <2024040319-doorbell-ecosystem-7d31@gregkh>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Content-Language: en-US, de-DE
-In-Reply-To: <2024040319-doorbell-ecosystem-7d31@gregkh>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1712245010;da0ec2cc;
-X-HE-SMSGID: 1rsP8t-0003wc-77
+References: <20240401185451.6897208962d3fc47a12ffb5a@otheo.eu>
+ <20240401185712.a80deeb2fddeded0ad42cc04@otheo.eu> <8ee463af-fdbf-4514-bb6e-bf2fd61fbc06@intel.com>
+ <20240402192314.a9b4e05637444314f47557e4@otheo.eu> <d7e89d23-b692-4e70-baae-5df5b3984620@intel.com>
+ <Zg0L/OfuQtVgFSsG@gmail.com> <CAMzpN2iK0+okEKnX_EgfmdLSg9Gze_BVO4fEG3TBuzwD-yj8bA@mail.gmail.com>
+ <Zg5dRkSncIeHsP0H@gmail.com>
+In-Reply-To: <Zg5dRkSncIeHsP0H@gmail.com>
+From: Brian Gerst <brgerst@gmail.com>
+Date: Thu, 4 Apr 2024 11:36:58 -0400
+Message-ID: <CAMzpN2hcZNewSmHn77Y-WAZjR-Pir=31dkgRHOzP+=kEa8_LdQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] x86/mm/pae: Align up pteval_t, pmdval_t and pudval_t
+ to avoid split locks
+To: Ingo Molnar <mingo@kernel.org>
+Cc: Dave Hansen <dave.hansen@intel.com>, Javier Pello <devel@otheo.eu>, linux-kernel@vger.kernel.org, 
+	x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	"H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 03.04.24 18:10, Greg KH wrote:
-> On Wed, Apr 03, 2024 at 05:22:17AM -1000, Tejun Heo wrote:
->> On Wed, Apr 03, 2024 at 07:11:04AM +0200, Greg KH wrote:
->>>> Side note: I have no idea why the stable team backported those patches
->>>> and no option on whether that was wise, just trying to help finding the best
->>>> solution forward from the current state of things.
->>>
->>> The Fixes: tag triggered it, that's why they were backported.
+On Thu, Apr 4, 2024 at 3:56=E2=80=AFAM Ingo Molnar <mingo@kernel.org> wrote=
+:
+>
+>
+> * Brian Gerst <brgerst@gmail.com> wrote:
+>
+> > > > It's not a technical reason.  It's a practical one: I don't want
+> > > > to spend time reviewing the fixes and dealing with the fallout
+> > > > and regressions that the fixes might cause.
+> > >
+> > > Yeah, so it's an indirect technical argument: fixes *with
+> > > tradeoffs* like this one have a future maintenance & robustness
+> > > cost. Fixes without tradeoffs are fine of course.
+> >
+> > What tradeoffs are there with this patch?  This would not affect the
+> > page tables, since those are already properly aligned.  Forcing
+> > alignment of stack variables is only a problem if it tickles a
+> > compiler bug.
+>
+> It creates extra constraints on stack layout that wasn't there before,
+> so it can only be an invariant if the compiler can reorder variables,
+> or make the stack layout worse (introducing more holes).
 
-Yeah, this is what I assumed.
+For the record, stack alignments are not rare.
 
->>>>> which would
->>>>> be far too invasive for -stable, thus no Cc: stable.
->>>>>
->>>>> I didn't know a Fixes
->>>>> tag automatically triggers backport to -stable. I will keep that in mind for
->>>>> future.
->>>>
->>>> /me fears that more and more developers due to situations like this will
->>>> avoid Fixes: tags and wonders what consequences that might have for the
->>>> kernel as a whole
->>>
->>> The problem is that we have subsystems that only use Fixes: and not cc:
->>> stable which is why we need to pick these up as well.  Fixes: is great,
->>> but if everyone were to do this "properly" then we wouldn't need to pick
->>> these other ones up, but instead, it's about 1/3 of our volume :(
+objdump -dr vmlinux | grep "and.*,%.sp$" | wc -l
 
-I'm also well aware of that and do not want to complain about it, as I
-think I grasped why the stable team works like that -- and even think
-given the circumstances it is round about the right approach. I also
-understand that mistakes will always happen.
+64-bit defconfig: 646
+32-bit defconfig: 449
 
-Nevertheless this thread and the Bluetooth thing we had earlier this
-week[1] makes me fear that this approach could lead to developer
-avoiding Fixes: tags. And funny thing, that's something that is already
-happening, as I noticed by chance today: "'"A "Fixes" tag has been
-deliberately omitted to avoid potential test failures and subsequent
-regression issues that could arise from backporting."'"[2].
 
-I wonder if that in the long term might be bad. But well, maybe it won't
-matter much. Still made me wonder if we should have a different solution
-for this kind of problem. Something like this?
-
-  Cc: <stable@vger.kernel.org> # DoNotBackport
-
-Or something like this?
-
-  Cc: <stable@vger.kernel.org> # DoNotBackport - or only after 16 weeks
-in mainline [but I don't care]
-
-Whatever, mainly thinking aloud and do no need a reply to this. :-D
-
-[1]
-https://lore.kernel.org/all/84da1f26-0457-451c-b4fd-128cb9bd860d@leemhuis.info/
-
-[2] saw that today here:
-https://lore.kernel.org/all/cover.1712226175.git.antony.antony@secunet.com/
-
->>> I'll gladly revert the above series if they shouldn't have been
->>> backported to stable, but from reading them, it seemed like they were
->>> fixing an issue that was serious and should have been added to stable,
->>> which is why they were.
->> Oh, yeah, they're fixing an issue. It's just that the issue is relatively
->> confined peformance degradation and the fix is really invasive, so not a
->> great -stable candidate. At the very least, they'd need a log longer cooking
->> time in mainline before being considered for -stable backport.
-> Ok, I'll go revert them all now.  I did some test builds here with them
-> reverted and they seem sane.  I'll push out some -rcs with just the
-> reverts to at least fix the regressions found in the 6.8.y tree now.
-
-Great, thx for taking care of this!
-
-Ciao, Thorsten
+Brian Gerst
 
