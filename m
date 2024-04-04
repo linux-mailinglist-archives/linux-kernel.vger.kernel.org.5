@@ -1,419 +1,278 @@
-Return-Path: <linux-kernel+bounces-130779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1BAA897D00
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:21:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2AFE6897CFE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:21:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 772E228D226
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:21:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D59F128DCD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 094FF184D;
-	Thu,  4 Apr 2024 00:21:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="NApmcLzD"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D4928E8;
+	Thu,  4 Apr 2024 00:21:27 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 777456AB6
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 00:21:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61C93EDF
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 00:21:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712190096; cv=none; b=UiFFJve26TKDZOfu+mACot75uGV24zfR+1NqRQtbis1uIqqiIfbI4snkwWV76qGeFnn+wPBXwOwdkZZRKPL+DK6ywwzVp/mdBpAjaVJhJ9n05jOxH/6sTQn230Qp3YSfftmocu66eEa9Y4s2HJ+j4bDR33Gq0vxEBgCq9oDgEo0=
+	t=1712190087; cv=none; b=cQbuadoQYsNMu6K6veGUlmkJWI/89gcLZvA0bNO663V37M/GB9T1WAhZqVMW3stAjaVeBV45qpqZE/O2aTRS+o1u+JdfWaJSbEolOl6Xgci6ysjPoYwUkxADYEl97ZHYxZfIKHrT1IA3DteaYRtdXKvzV5jNDWiRAc2V1hM1yJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712190096; c=relaxed/simple;
-	bh=dOPbi2CUnvmLWksVT5BRSkZCsZq4DeT3G+zormngmU0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pJ3Un5u9KB87zBRFwtJxP7QGcLG8zcfKLDUh+GUgFt2CONuoMMxg6ONZ6g0gRIA5u7VStgWrPJ0DwKsy4fng/2+J9ZxKOyfYdYtb3dw7psY/l5ZJJa/kpGYCL2zKMeeo5uYX3Kw3gyI27jZ5Ge5uBTQdfOdMMtt7BsaxrwT6rL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=NApmcLzD; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso373742276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 17:21:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1712190092; x=1712794892; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qO60jqsH0RDRW8MepZgYWUNAloZS/uU+ZxX94+OfopY=;
-        b=NApmcLzDOeR/M/hXmEUsnDvbkH/YNneRKPDzIgIZSBdOe7r4DfFbbkA/yvovm/gkTl
-         Fx3cg5hzpqDnAUhe8Zzmxhhhny/quI7JqEgkXHSMkElwr4Z/2bBnGTAbAR8aBE7dtB2Q
-         t+kuBDT4pR3RH8SmzRyAPihe+svVSC8brvCwfJlxJpbx5RjR4KCJvpuRzSkOtB3PENZZ
-         5I+zEQwj28y3jAPK+nnfblvxo3Or81xoVblnOddgB7MHzLIgZGaarV7lrczJsBgiemxN
-         fmL7RMtKazLlBa2ctmpfL991jpw00ZVLlZqJe16RDTimAyj1sIS3u4xvK1cX7WkFCtOu
-         iQ1g==
+	s=arc-20240116; t=1712190087; c=relaxed/simple;
+	bh=g8pSceELfeuaJTfXvjMngFJXrLsZhBFghR58XUCrD78=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=q7bzLHl5QuaVsJxGQnNNjnAb1TUhHtlQbasGedXKlb2u8ewcKwy5C34GSrwk7btTl8a6+w9YYiH3iVOjfceNfkWGpqEjagDESURLlvye7rMxbAnHXAAhCfhXMIcebdYk4l2Eoltp2lFiRwtbP6DJ+0C5zhXjEd9McodASI1uYjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d0330ce3d4so52293839f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 17:21:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712190092; x=1712794892;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qO60jqsH0RDRW8MepZgYWUNAloZS/uU+ZxX94+OfopY=;
-        b=F8xjwWmjXr9N9EMfRyPPEzcniSgaFMemd6ascceMWTVI+ZfKPOp0nunwDXr9EaZ5Rz
-         zTyK+hHF9DNkhr5sy9m0eXRjMqWTbz8JvmiOp8o2+68oFTBvXxSqJL42XSZbogxovM/5
-         NEOzceLPtpEtKT3ZpuTTOJZ01sOu5a6+3cTYeoggz8Bwbe6lhLXiHOlMrTrR2ha8zgoy
-         TrNqAOx7BmpkT4SSOSES+gqMQcNIk3nmPWOhkod4aIKPUjUqcpqloEW1uwY1qsPSjttY
-         Mcv5jh6yBGIZ0jwJH1L+e8BIBafaq5aoA7kB/Xq2ara+inSrvaRa3cTNt47IVqUz8xAR
-         rt5g==
-X-Forwarded-Encrypted: i=1; AJvYcCWwn1mAfyYA24zdip0gqfEA28TPjppI7YlzWyMXaJwJz7Fb57RAe2I+DDf17jJs7SkSVSgmE+onNhNOr4Vgsa26qFD1Smk3JtG/zAjE
-X-Gm-Message-State: AOJu0Yyt2b4u+fHaqlJt/Ogb/FG6LAuMUCX3xPeLEK5/3CBKEKUptOa3
-	7Mi4VEhlD0uPGWkp/IteAvJ4+ugeToJyxZistyi3PnWd3onKpoTznoaDpryUPS2k5i2KxYqPGVP
-	1e8ZQ3GRJ+7dvm4R2Tg2UzPulr+lZ27bc8ZVCgg==
-X-Google-Smtp-Source: AGHT+IHSYTr5M+525vcAEY5Aj2ib0qO6jpryNktw+PRCGQjz5qKA3WKMPc+zBf2F+1T8pwG+v1Tqmm74FhKD/Wr0Snw=
-X-Received: by 2002:a05:6902:1029:b0:dc7:46fd:4998 with SMTP id
- x9-20020a056902102900b00dc746fd4998mr1050153ybt.13.1712190092377; Wed, 03 Apr
- 2024 17:21:32 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712190084; x=1712794884;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gA6M/DSId9tnPaRcMrvJBxlaJ3yzu+XOloql9PtKuC4=;
+        b=vIwOaNbl0wfMa5Um9Jydy/SnMgB6xvzlfvSHY3CR39lekaT08AeO8RVfhrya5Ws9u8
+         yUG2H6Xg3g2W6no8SUckv3caq0k03wRTWtx4bdOgySjUC9YBfj/lmsMy+xo3OZoQ1u7u
+         T9JM8fHjmYJQItZYhoNVVpM/9zhtw/0bT3GLAijbmfMzJFVi9fhthmrDvxAcml4rap0/
+         PBa/whpG4JTSeNT+PJvECifdJ9JFg3MbAXXp4UHH0DGgJ5FmqE/u4cCmU4LzmQXz26Go
+         pbvzFVKRlpqAnt8gGQGR0Ih9mbHGnl/w0dFGviegcRL0WgyrV/UUrZ9kacwRvsk3AeEb
+         Kc6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWbJ2sM526RKN83vX/D+hQnDHQarocwiLxtaJgJq5EpDXote8WtMD4V3dUs9Ubfe7E9wb46AcY3+9rtI26PxDRHHqwrYbOF+FRSOJn/
+X-Gm-Message-State: AOJu0Ywgv6/WBFtaRjOtHbcjz8O7/4h8cNnCbpw+cUAZf275hNeq/geC
+	hqFGLC2iN/0fugfv2q4BENOWUjsSVgbSCh7xlpLzsJWpxaHeE2o8GwDvt8yXkkBJLlZe83j9/Ja
+	vcNu73UbCZmziyT6h4phpbQjzJ5rcPA1FAuLI9hzua26ZXPtt/wIkGiU=
+X-Google-Smtp-Source: AGHT+IHvyBtoAlhah6ihk7qs3RnZpCR2k7dX1BXl1cREUA81DF1zk6INdC/y5Geqfi+dBGnf61yDPxIMYG33HpAP5kwiQDA/8JuM
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402001739.2521623-1-horenchuang@bytedance.com>
- <20240402001739.2521623-3-horenchuang@bytedance.com> <20240403180425.00003be0@Huawei.com>
-In-Reply-To: <20240403180425.00003be0@Huawei.com>
-From: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-Date: Wed, 3 Apr 2024 17:21:21 -0700
-Message-ID: <CAKPbEqoJZe+HWHhCvBTVSHXffGY2ign3Htp4pfbFb4YVJS_Q2A@mail.gmail.com>
-Subject: Re: [PATCH v10 2/2] memory tier: create CPUless memory tiers after
- obtaining HMAT info
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: "Huang, Ying" <ying.huang@intel.com>, Gregory Price <gourry.memverge@gmail.com>, 
-	aneesh.kumar@linux.ibm.com, mhocko@suse.com, tj@kernel.org, 
-	john@jagalactic.com, Eishan Mirakhur <emirakhur@micron.com>, 
-	Vinicius Tavares Petrucci <vtavarespetr@micron.com>, Ravis OpenSrc <Ravis.OpenSrc@micron.com>, 
-	Alistair Popple <apopple@nvidia.com>, Srinivasulu Thanneeru <sthanneeru@micron.com>, 
-	SeongJae Park <sj@kernel.org>, Dan Williams <dan.j.williams@intel.com>, 
-	Vishal Verma <vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, nvdimm@lists.linux.dev, 
-	linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Linux Memory Management List <linux-mm@kvack.org>, "Ho-Ren (Jack) Chuang" <horenc@vt.edu>, 
-	"Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>, qemu-devel@nongnu.org, 
-	Hao Xiang <hao.xiang@bytedance.com>
+X-Received: by 2002:a05:6602:160f:b0:7cc:8626:1bd5 with SMTP id
+ x15-20020a056602160f00b007cc86261bd5mr40047iow.1.1712190084709; Wed, 03 Apr
+ 2024 17:21:24 -0700 (PDT)
+Date: Wed, 03 Apr 2024 17:21:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c98e7d06153a5177@google.com>
+Subject: [syzbot] [mm?] inconsistent lock state in __mmap_lock_do_trace_acquire_returned
+From: syzbot <syzbot+76f802bc1dee8ba28a6e@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Jonathan,
+Hello,
 
-Thank you for your feedback. I will fix them (inlined) in the next V11.
+syzbot found the following issue on:
 
-On Wed, Apr 3, 2024 at 10:04=E2=80=AFAM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
->
-> A few minor comments inline.
->
-> > diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.=
-h
-> > index a44c03c2ba3a..16769552a338 100644
-> > --- a/include/linux/memory-tiers.h
-> > +++ b/include/linux/memory-tiers.h
-> > @@ -140,12 +140,13 @@ static inline int mt_perf_to_adistance(struct acc=
-ess_coordinate *perf, int *adis
-> >       return -EIO;
-> >  }
-> >
-> > -struct memory_dev_type *mt_find_alloc_memory_type(int adist, struct li=
-st_head *memory_types)
-> > +static inline struct memory_dev_type *mt_find_alloc_memory_type(int ad=
-ist,
-> > +                                     struct list_head *memory_types)
-> >  {
-> >       return NULL;
-> >  }
-> >
-> > -void mt_put_memory_types(struct list_head *memory_types)
-> > +static inline void mt_put_memory_types(struct list_head *memory_types)
-> >  {
-> Why in this patch and not previous one?
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=132e732d180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aef2a55903e5791c
+dashboard link: https://syzkaller.appspot.com/bug?extid=76f802bc1dee8ba28a6e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16d61b76180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=166ee109180000
 
-I've also noticed this issue. I will fix it in the next V11.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/089e25869df5/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/423b1787914f/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4c043e30c07d/bzImage-fe46a7dd.xz
 
-> >
-> >  }
-> > diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-> > index 974af10cfdd8..44fa10980d37 100644
-> > --- a/mm/memory-tiers.c
-> > +++ b/mm/memory-tiers.c
-> > @@ -36,6 +36,11 @@ struct node_memory_type_map {
-> >
-> >  static DEFINE_MUTEX(memory_tier_lock);
-> >  static LIST_HEAD(memory_tiers);
-> > +/*
-> > + * The list is used to store all memory types that are not created
-> > + * by a device driver.
-> > + */
-> > +static LIST_HEAD(default_memory_types);
-> >  static struct node_memory_type_map node_memory_types[MAX_NUMNODES];
-> >  struct memory_dev_type *default_dram_type;
-> >
-> > @@ -108,6 +113,8 @@ static struct demotion_nodes *node_demotion __read_=
-mostly;
-> >
-> >  static BLOCKING_NOTIFIER_HEAD(mt_adistance_algorithms);
-> >
-> > +/* The lock is used to protect `default_dram_perf*` info and nid. */
-> > +static DEFINE_MUTEX(default_dram_perf_lock);
-> >  static bool default_dram_perf_error;
-> >  static struct access_coordinate default_dram_perf;
-> >  static int default_dram_perf_ref_nid =3D NUMA_NO_NODE;
-> > @@ -505,7 +512,8 @@ static inline void __init_node_memory_type(int node=
-, struct memory_dev_type *mem
-> >  static struct memory_tier *set_node_memory_tier(int node)
-> >  {
-> >       struct memory_tier *memtier;
-> > -     struct memory_dev_type *memtype;
-> > +     struct memory_dev_type *mtype =3D default_dram_type;
->
-> Does the rename add anything major to the patch?
-> If not I'd leave it alone to reduce the churn and give
-> a more readable patch.  If it is worth doing perhaps
-> a precursor patch?
->
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+76f802bc1dee8ba28a6e@syzkaller.appspotmail.com
 
-Either name works. Keeping it the same name will make the code
-easier to follow. I agree! Thanks.
+================================
+WARNING: inconsistent lock state
+6.8.0-syzkaller-08951-gfe46a7dd189e #0 Not tainted
+--------------------------------
+inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+syz-executor244/5087 [HC0[0]:SC1[1]:HE0:SE0] takes:
+ffff8880b9538780 (lock#9){+.?.}-{2:2}, at: local_lock_acquire include/linux/local_lock_internal.h:29 [inline]
+ffff8880b9538780 (lock#9){+.?.}-{2:2}, at: __mmap_lock_do_trace_acquire_returned+0x7f/0x760 mm/mmap_lock.c:237
+{SOFTIRQ-ON-W} state was registered at:
+  lock_acquire kernel/locking/lockdep.c:5754 [inline]
+  lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+  local_lock_acquire include/linux/local_lock_internal.h:29 [inline]
+  __mmap_lock_do_trace_acquire_returned+0x97/0x760 mm/mmap_lock.c:237
+  __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
+  mmap_read_lock include/linux/mmap_lock.h:147 [inline]
+  process_vm_rw_single_vec mm/process_vm_access.c:105 [inline]
+  process_vm_rw_core.constprop.0+0x7d7/0xa10 mm/process_vm_access.c:216
+  process_vm_rw+0x301/0x360 mm/process_vm_access.c:284
+  __do_sys_process_vm_readv mm/process_vm_access.c:296 [inline]
+  __se_sys_process_vm_readv mm/process_vm_access.c:292 [inline]
+  __x64_sys_process_vm_readv+0xe2/0x1c0 mm/process_vm_access.c:292
+  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+  do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+  entry_SYSCALL_64_after_hwframe+0x6d/0x75
+irq event stamp: 997
+hardirqs last  enabled at (996): [<ffffffff8ad62d96>] __do_softirq+0x1d6/0x8de kernel/softirq.c:538
+hardirqs last disabled at (997): [<ffffffff8ad5ff95>] __raw_spin_lock_irq include/linux/spinlock_api_smp.h:117 [inline]
+hardirqs last disabled at (997): [<ffffffff8ad5ff95>] _raw_spin_lock_irq+0x45/0x50 kernel/locking/spinlock.c:170
+softirqs last  enabled at (896): [<ffffffff819e467f>] spin_unlock_bh include/linux/spinlock.h:396 [inline]
+softirqs last  enabled at (896): [<ffffffff819e467f>] bpf_link_settle kernel/bpf/syscall.c:3181 [inline]
+softirqs last  enabled at (896): [<ffffffff819e467f>] bpf_raw_tp_link_attach+0x35f/0x610 kernel/bpf/syscall.c:3842
+softirqs last disabled at (995): [<ffffffff8151a149>] invoke_softirq kernel/softirq.c:428 [inline]
+softirqs last disabled at (995): [<ffffffff8151a149>] __irq_exit_rcu kernel/softirq.c:633 [inline]
+softirqs last disabled at (995): [<ffffffff8151a149>] irq_exit_rcu+0xb9/0x120 kernel/softirq.c:645
 
-> > +     int adist =3D MEMTIER_ADISTANCE_DRAM;
-> >       pg_data_t *pgdat =3D NODE_DATA(node);
-> >
-> >
-> > @@ -514,11 +522,20 @@ static struct memory_tier *set_node_memory_tier(i=
-nt node)
-> >       if (!node_state(node, N_MEMORY))
-> >               return ERR_PTR(-EINVAL);
-> >
-> > -     __init_node_memory_type(node, default_dram_type);
-> > +     mt_calc_adistance(node, &adist);
-> > +     if (node_memory_types[node].memtype =3D=3D NULL) {
-> > +             mtype =3D mt_find_alloc_memory_type(adist, &default_memor=
-y_types);
-> > +             if (IS_ERR(mtype)) {
-> > +                     mtype =3D default_dram_type;
-> > +                     pr_info("Failed to allocate a memory type. Fall b=
-ack.\n");
-> > +             }
-> > +     }
-> > +
-> > +     __init_node_memory_type(node, mtype);
-> >
-> > -     memtype =3D node_memory_types[node].memtype;
-> > -     node_set(node, memtype->nodes);
-> > -     memtier =3D find_create_memory_tier(memtype);
-> > +     mtype =3D node_memory_types[node].memtype;
-> > +     node_set(node, mtype->nodes);
-> > +     memtier =3D find_create_memory_tier(mtype);
-> >       if (!IS_ERR(memtier))
-> >               rcu_assign_pointer(pgdat->memtier, memtier);
-> >       return memtier;
-> > @@ -655,6 +672,33 @@ void mt_put_memory_types(struct list_head *memory_=
-types)
-> >  }
-> >  EXPORT_SYMBOL_GPL(mt_put_memory_types);
-> >
-> > +/*
-> > + * This is invoked via `late_initcall()` to initialize memory tiers fo=
-r
-> > + * CPU-less memory nodes after driver initialization, which is
-> > + * expected to provide `adistance` algorithms.
-> > + */
-> > +static int __init memory_tier_late_init(void)
-> > +{
-> > +     int nid;
-> > +
-> > +     mutex_lock(&memory_tier_lock);
-> > +     for_each_node_state(nid, N_MEMORY)
-> > +             if (node_memory_types[nid].memtype =3D=3D NULL)
-> > +                     /*
-> > +                      * Some device drivers may have initialized memor=
-y tiers
-> > +                      * between `memory_tier_init()` and `memory_tier_=
-late_init()`,
-> > +                      * potentially bringing online memory nodes and
-> > +                      * configuring memory tiers. Exclude them here.
-> > +                      */
->
-> Does the comment refer to this path, or to ones where memtype is set?
->
+other info that might help us debug this:
+ Possible unsafe locking scenario:
 
-Yes, the comment is for explaining why the if condition is used.
+       CPU0
+       ----
+  lock(lock#9);
+  <Interrupt>
+    lock(lock#9);
 
-> > +                     set_node_memory_tier(nid);
->
-> Given the large comment I would add {} to help with readability.
-> You could flip the logic to reduce indent
->         for_each_node_state(nid, N_MEMORY) {
->                 if (node_memory_types[nid].memtype)
->                         continue;
->                 /*
->                  * Some device drivers may have initialized memory tiers
->                  * between `memory_tier_init()` and `memory_tier_late_ini=
-t()`,
->                  * potentially bringing online memory nodes and
->                  * configuring memory tiers. Exclude them here.
->                  */
->                 set_node_memory_tier(nid);
->
->
+ *** DEADLOCK ***
 
-I will change it accordingly.
+6 locks held by syz-executor244/5087:
+ #0: ffff88802247b1e8 (&tsk->futex_exit_mutex){+.+.}-{3:3}, at: futex_cleanup_begin kernel/futex/core.c:1091 [inline]
+ #0: ffff88802247b1e8 (&tsk->futex_exit_mutex){+.+.}-{3:3}, at: futex_exit_release+0x2a/0x220 kernel/futex/core.c:1143
+ #1: ffffc90000a08cb0 (&(&ipvs->defense_work)->timer){..-.}-{0:0}, at: call_timer_fn+0x11a/0x5b0 kernel/time/timer.c:1789
+ #2: ffffffff8d7b08e0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+ #2: ffffffff8d7b08e0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+ #2: ffffffff8d7b08e0 (rcu_read_lock){....}-{1:2}, at: __queue_work+0xf2/0x1170 kernel/workqueue.c:2324
+ #3: ffff8880b953d5d8 (&pool->lock){-.-.}-{2:2}, at: __queue_work+0x39e/0x1170 kernel/workqueue.c:2360
+ #4: ffffffff8d7b08e0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+ #4: ffffffff8d7b08e0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+ #4: ffffffff8d7b08e0 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
+ #4: ffffffff8d7b08e0 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run3+0xf8/0x440 kernel/trace/bpf_trace.c:2421
+ #5: ffff88807965b120 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_trylock include/linux/mmap_lock.h:165 [inline]
+ #5: ffff88807965b120 (&mm->mmap_lock){++++}-{3:3}, at: stack_map_get_build_id_offset+0x1e8/0x7d0 kernel/bpf/stackmap.c:141
 
-> > +
-> > +     establish_demotion_targets();
-> > +     mutex_unlock(&memory_tier_lock);
-> > +
-> > +     return 0;
-> > +}
-> > +late_initcall(memory_tier_late_init);
-> > +
-> >  static void dump_hmem_attrs(struct access_coordinate *coord, const cha=
-r *prefix)
-> >  {
-> >       pr_info(
-> > @@ -668,7 +712,7 @@ int mt_set_default_dram_perf(int nid, struct access=
-_coordinate *perf,
-> >  {
-> >       int rc =3D 0;
-> >
-> > -     mutex_lock(&memory_tier_lock);
-> > +     mutex_lock(&default_dram_perf_lock);
->
-> As below, this is a classic case where guard() will help readability.
->
-
-I will change it accordingly.
-
-> >       if (default_dram_perf_error) {
-> >               rc =3D -EIO;
-> >               goto out;
-> > @@ -716,23 +760,30 @@ int mt_set_default_dram_perf(int nid, struct acce=
-ss_coordinate *perf,
-> >       }
-> >
-> >  out:
-> > -     mutex_unlock(&memory_tier_lock);
-> > +     mutex_unlock(&default_dram_perf_lock);
-> >       return rc;
-> >  }
-> >
-> >  int mt_perf_to_adistance(struct access_coordinate *perf, int *adist)
-> >  {
-> > -     if (default_dram_perf_error)
-> > -             return -EIO;
-> > +     int rc =3D 0;
->
-> Looks like rc is set in all paths that reach where it issued.
->
-
-Using guard(mutex), I will no longer need `int rc`.
-Replace `rc =3D` with `return XXX`.
-
-> >
-> > -     if (default_dram_perf_ref_nid =3D=3D NUMA_NO_NODE)
-> > -             return -ENOENT;
-> > +     mutex_lock(&default_dram_perf_lock);
->
-> This would benefit quite a lot from
-> guard(mutex)(&default_dram_perf_lock);
-> and direct returns throughout.
->
-
-Got it. I will change it accordingly.
-
->
-> > +     if (default_dram_perf_error) {
-> > +             rc =3D -EIO;
-> > +             goto out;
-> > +     }
-> >
-> >       if (perf->read_latency + perf->write_latency =3D=3D 0 ||
-> > -         perf->read_bandwidth + perf->write_bandwidth =3D=3D 0)
-> > -             return -EINVAL;
-> > +         perf->read_bandwidth + perf->write_bandwidth =3D=3D 0) {
-> > +             rc =3D -EINVAL;
-> > +             goto out;
-> > +     }
-> >
-> > -     mutex_lock(&memory_tier_lock);
-> > +     if (default_dram_perf_ref_nid =3D=3D NUMA_NO_NODE) {
-> > +             rc =3D -ENOENT;
-> > +             goto out;
-> > +     }
-> >       /*
-> >        * The abstract distance of a memory node is in direct proportion=
- to
-> >        * its memory latency (read + write) and inversely proportional t=
-o its
-> > @@ -745,9 +796,10 @@ int mt_perf_to_adistance(struct access_coordinate =
-*perf, int *adist)
-> >               (default_dram_perf.read_latency + default_dram_perf.write=
-_latency) *
-> >               (default_dram_perf.read_bandwidth + default_dram_perf.wri=
-te_bandwidth) /
-> >               (perf->read_bandwidth + perf->write_bandwidth);
-> > -     mutex_unlock(&memory_tier_lock);
-> >
-> > -     return 0;
-> > +out:
-> > +     mutex_unlock(&default_dram_perf_lock);
-> > +     return rc;
-> >  }
-> >  EXPORT_SYMBOL_GPL(mt_perf_to_adistance);
-> >
-> > @@ -858,7 +910,8 @@ static int __init memory_tier_init(void)
-> >        * For now we can have 4 faster memory tiers with smaller adistan=
-ce
-> >        * than default DRAM tier.
-> >        */
-> > -     default_dram_type =3D alloc_memory_type(MEMTIER_ADISTANCE_DRAM);
-> > +     default_dram_type =3D mt_find_alloc_memory_type(MEMTIER_ADISTANCE=
-_DRAM,
-> > +                                                                     &=
-default_memory_types);
->
-> Unusual indenting.  Align with just after (
->
-
-Aligning with "(" will exceed 100 columns. Would that be acceptable?
-
-> >       if (IS_ERR(default_dram_type))
-> >               panic("%s() failed to allocate default DRAM tier\n", __fu=
-nc__);
-> >
-> > @@ -868,6 +921,14 @@ static int __init memory_tier_init(void)
-> >        * types assigned.
-> >        */
-> >       for_each_node_state(node, N_MEMORY) {
-> > +             if (!node_state(node, N_CPU))
-> > +                     /*
-> > +                      * Defer memory tier initialization on CPUless nu=
-ma nodes.
-> > +                      * These will be initialized after firmware and d=
-evices are
->
-> I think this wraps at just over 80 chars.  Seems silly to wrap so tightly=
- and not
-> quite fit under 80. (this is about 83 chars.
->
-
-I can fix this.
-I have a question. From my patch, this is <80 chars. However,
-in an email, this is >80 chars. Does that mean we need to
-count the number of chars in an email, not in a patch? Or if I
-missed something? like vim configuration or?
-
-> > +                      * initialized.
-> > +                      */
-> > +                     continue;
-> > +
-> >               memtier =3D set_node_memory_tier(node);
-> >               if (IS_ERR(memtier))
-> >                       /*
->
+stack backtrace:
+CPU: 1 PID: 5087 Comm: syz-executor244 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ print_usage_bug kernel/locking/lockdep.c:3971 [inline]
+ valid_state kernel/locking/lockdep.c:4013 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:4216 [inline]
+ mark_lock+0x923/0xc60 kernel/locking/lockdep.c:4678
+ mark_usage kernel/locking/lockdep.c:4567 [inline]
+ __lock_acquire+0x13d4/0x3b30 kernel/locking/lockdep.c:5091
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+ local_lock_acquire include/linux/local_lock_internal.h:29 [inline]
+ __mmap_lock_do_trace_acquire_returned+0x97/0x760 mm/mmap_lock.c:237
+ __mmap_lock_trace_acquire_returned include/linux/mmap_lock.h:36 [inline]
+ mmap_read_trylock include/linux/mmap_lock.h:166 [inline]
+ stack_map_get_build_id_offset+0x5df/0x7d0 kernel/bpf/stackmap.c:141
+ __bpf_get_stack+0x6bf/0x700 kernel/bpf/stackmap.c:449
+ ____bpf_get_stack_raw_tp kernel/trace/bpf_trace.c:1985 [inline]
+ bpf_get_stack_raw_tp+0x124/0x160 kernel/trace/bpf_trace.c:1975
+ ___bpf_prog_run+0x3e51/0xae80 kernel/bpf/core.c:1997
+ __bpf_prog_run32+0xc1/0x100 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run3+0x167/0x440 kernel/trace/bpf_trace.c:2421
+ __bpf_trace_workqueue_queue_work+0x101/0x140 include/trace/events/workqueue.h:23
+ __traceiter_workqueue_queue_work+0x6c/0xc0 include/trace/events/workqueue.h:23
+ trace_workqueue_queue_work include/trace/events/workqueue.h:23 [inline]
+ __queue_work+0x627/0x1170 kernel/workqueue.c:2382
+ call_timer_fn+0x1a0/0x5b0 kernel/time/timer.c:1792
+ expire_timers kernel/time/timer.c:1838 [inline]
+ __run_timers+0x567/0xab0 kernel/time/timer.c:2408
+ __run_timer_base kernel/time/timer.c:2419 [inline]
+ __run_timer_base kernel/time/timer.c:2412 [inline]
+ run_timer_base+0x111/0x190 kernel/time/timer.c:2428
+ run_timer_softirq+0x1a/0x40 kernel/time/timer.c:2438
+ __do_softirq+0x218/0x8de kernel/softirq.c:554
+ invoke_softirq kernel/softirq.c:428 [inline]
+ __irq_exit_rcu kernel/softirq.c:633 [inline]
+ irq_exit_rcu+0xb9/0x120 kernel/softirq.c:645
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+ sysvec_apic_timer_interrupt+0x95/0xb0 arch/x86/kernel/apic/apic.c:1043
+ </IRQ>
+ <TASK>
+ asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:702
+RIP: 0010:lock_acquire+0x1f2/0x540 kernel/locking/lockdep.c:5722
+Code: c1 05 ea 37 97 7e 83 f8 01 0f 85 c8 02 00 00 9c 58 f6 c4 02 0f 85 b3 02 00 00 48 85 ed 74 01 fb 48 b8 00 00 00 00 00 fc ff df <48> 01 c3 48 c7 03 00 00 00 00 48 c7 43 08 00 00 00 00 48 8b 84 24
+RSP: 0018:ffffc90003457ba0 EFLAGS: 00000206
+RAX: dffffc0000000000 RBX: 1ffff9200068af76 RCX: ffffffff816a5d5e
+RDX: 0000000000000001 RSI: ffffffff8b0cba40 RDI: ffffffff8b6e88a0
+RBP: 0000000000000200 R08: 0000000000000000 R09: fffffbfff27b4e38
+R10: ffffffff93da71c7 R11: 0000000000000000 R12: 0000000000000001
+R13: 0000000000000000 R14: ffff88802247b1e8 R15: 0000000000000000
+ __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+ __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
+ futex_cleanup_begin kernel/futex/core.c:1091 [inline]
+ futex_exit_release+0x2a/0x220 kernel/futex/core.c:1143
+ exit_mm_release+0x19/0x30 kernel/fork.c:1652
+ exit_mm kernel/exit.c:542 [inline]
+ do_exit+0x865/0x2be0 kernel/exit.c:865
+ do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
+ __do_sys_exit_group kernel/exit.c:1038 [inline]
+ __se_sys_exit_group kernel/exit.c:1036 [inline]
+ __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1036
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f44f7223a79
+Code: 90 49 c7 c0 b8 ff ff ff be e7 00 00 00 ba 3c 00 00 00 eb 12 0f 1f 44 00 00 89 d0 0f 05 48 3d 00 f0 ff ff 77 1c f4 89 f0 0f 05 <48> 3d 00 f0 ff ff 76 e7 f7 d8 64 41 89 00 eb df 0f 1f 80 00 00 00
+RSP: 002b:00007ffd5c6574d8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f44f7223a79
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 00007f44f729e2b0 R08: ffffffffffffffb8 R09: 00000000000f4240
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f44f729e2b0
+R13: 0000000000000000 R14: 00007f44f729ed20 R15: 00007f44f71f4700
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	c1 05 ea 37 97 7e 83 	roll   $0x83,0x7e9737ea(%rip)        # 0x7e9737f1
+   7:	f8                   	clc
+   8:	01 0f                	add    %ecx,(%rdi)
+   a:	85 c8                	test   %ecx,%eax
+   c:	02 00                	add    (%rax),%al
+   e:	00 9c 58 f6 c4 02 0f 	add    %bl,0xf02c4f6(%rax,%rbx,2)
+  15:	85 b3 02 00 00 48    	test   %esi,0x48000002(%rbx)
+  1b:	85 ed                	test   %ebp,%ebp
+  1d:	74 01                	je     0x20
+  1f:	fb                   	sti
+  20:	48 b8 00 00 00 00 00 	movabs $0xdffffc0000000000,%rax
+  27:	fc ff df
+* 2a:	48 01 c3             	add    %rax,%rbx <-- trapping instruction
+  2d:	48 c7 03 00 00 00 00 	movq   $0x0,(%rbx)
+  34:	48 c7 43 08 00 00 00 	movq   $0x0,0x8(%rbx)
+  3b:	00
+  3c:	48                   	rex.W
+  3d:	8b                   	.byte 0x8b
+  3e:	84                   	.byte 0x84
+  3f:	24                   	.byte 0x24
 
 
---=20
-Best regards,
-Ho-Ren (Jack) Chuang
-=E8=8E=8A=E8=B3=80=E4=BB=BB
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
