@@ -1,121 +1,219 @@
-Return-Path: <linux-kernel+bounces-132078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8EB5898F65
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:08:13 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97FDE898F62
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:07:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 734EB287410
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:08:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA8C21C27D73
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:07:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E0A913667D;
-	Thu,  4 Apr 2024 20:07:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D227E1350CF;
+	Thu,  4 Apr 2024 20:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="v/N8hd30"
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G/wn9siB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED588135A4B
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 20:07:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 593681BC46
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 20:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712261264; cv=none; b=MX1k+coBhYwvGrK2KptSJpqQXWPwmSTVGG/frFPiadEfTt9yZTuvlMQLuMmZZO6xSIdJsy1Rpoo3UyhhM8lDnylibns+dh7Z6jqpEEoLzoeykCjZ+/WgARppKme0ebLZfp9qi8f+zs2MiyWvZFj+kU6TwOSM+t2hCkHVOnUJxEk=
+	t=1712261260; cv=none; b=Jlq5qV3yHRqKQLC5BV91rqC9gclPC6I9nug+rBfmf9Z0Sij8kJg0lZhjUhhasuPigED48Q6MzyQ9DbmvnynSElMfGwP0YCdaogH9awAJOs8bjfEAfsmwJSy8rLbM7TpSwvjmy7bRi93MOdhHKY9agTORZTSgRMSUscNJq4CNwpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712261264; c=relaxed/simple;
-	bh=GsI2IqBH7fIn1lQq7F4Uqzg6XlJeIu1rVzb2YHseZkk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ggXY3lilyxO7qzsEZlyhATOZ2wryM+4oOch6WJDe/9Fe6rYXfr8YxLyT3YvOx7kOEDWQa+FEn1nx6oY5s+AIrBNGUnXTNfs9UFDk+rqGv8UkgafO8j5qm1hem2C1F1PB97zUZiO1/hWfk/poH1adgdMNQpNqW/8b1wU3qK5+vqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=v/N8hd30; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-343bccc0b2cso835861f8f.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 13:07:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712261261; x=1712866061; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DJQZX14pNqacP6yH0MMA3xSLOt1OyaaMR7UOhFYBuH0=;
-        b=v/N8hd30l3bcSWR8MV9hhQEky3SiQhXg4mYY32qLmeZs7jFj9xtA5UT2ny+Kr6cdbs
-         qG+23KBWae4IACc7nwcYZYUwBs+WDCEF6jFwhimYU7O7XOL74KkGBYlfQs0ilFg3pscn
-         rD2bcY09NXZFAzhIkJf3RsU5M5VKz4nXjb1it+b7IVoZDLpy1s32bzGAke9M/ELXSMfx
-         oSczmTivkzrhFAYbZ9ZY/Wo78dUxz9XRfU8r8um5IpHof8g5EPT0xpm0eF802qAlNwsy
-         q+9zX1MEOgRYhKZlKIxLL8FiDkxaWCg+lR0YnbFJqHoHkUqBFke/jr7h1qJq+OrAY1Cl
-         dq8w==
+	s=arc-20240116; t=1712261260; c=relaxed/simple;
+	bh=H2PgplW4yHSIdo8CDgwMqqNoCYzCazA7fv20bb7mMQc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=p2RnOv96MGNxj6IjY8rVPk7SY+Cfy9FxoFvARm7VFU1ZjXViIofvfjIXFXaRna916RO4hj9aGrz/JmvxoA39dYnxHwff7RWEDbNLoO9U2fF6++8XPnWuKv3xxaZgiluAtUBe7KDzvpnFTXdC/8NmhwFztwRLczHFym2K3NZ+R2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G/wn9siB; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712261257;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=K7fjGhenDlbWaU5zor+1smq7yzHNYmLfEO1lExvtio8=;
+	b=G/wn9siBSFRlnJHL+IX+2O6Dik8YG0X5ENjojorrPq7c/5IkmPKknP3rGcLEGOtXl/hANi
+	FGqWURT3gSRNgmHdQSPiJXGV2oSMXUsuFhXTB5rhEzE6p+JBNoY0nPN11YCuWBVL5zT2gG
+	mXPef8esAP0BIH1x3B/Okl0cK029oYA=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-640-RlLOEYDHMEK8DTB3AdQQWg-1; Thu, 04 Apr 2024 16:07:35 -0400
+X-MC-Unique: RlLOEYDHMEK8DTB3AdQQWg-1
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc7a6a04d9so171445639f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 13:07:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712261261; x=1712866061;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1712261255; x=1712866055;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DJQZX14pNqacP6yH0MMA3xSLOt1OyaaMR7UOhFYBuH0=;
-        b=uDWZKIdJeTr0FcU1UoQNPD0x0x2LSy16Bk65Ad0GYhdIjTqyZxFKgk79ShlEZavCXU
-         B+PctdDg5kq7OlTuEYArNdlk630MjvTYV9ze7bqLmHRQG5XDvTbJbdnVNcfzzqBclbJX
-         r2r3E6Lqzg5ve0UEpRrot4CVQkfCscK+h15Z37xrwAnDmAw9G2FKCDL5Z+y87Fzp5YQN
-         8uV/eeqCwtA5NOTvjMjI9CYsh0caOEmjMs+TGOwmnqV/xRsAeRxao46HwH1miVEgrKT2
-         gJuwVUvi8n1jVmf0WD2JdKwNqD2shRFmdaLdQHvXxW80xqPOHv1NN83D9M1HivyZamY8
-         MX9A==
-X-Forwarded-Encrypted: i=1; AJvYcCXdCHXBoUojnIarZbEx0rRXrMDcGhad8e+26UEME74IzepIeSNoMG9/ejrsnVGaZZo73E/lz4MaN9cIez1OiQ76Tnru0/jvqRNUJT/j
-X-Gm-Message-State: AOJu0YxxO6s7XPSqwhKcf04E+frYZTsxkfFqfvCWfBCvSo/ONO4/ER5g
-	+VlB7gxsxzkOy41l79ZFp2GLYfNGtFYhvkqBbB5/iEwgwCpQe9GvYBnClSYUWIkr7sB55tDYPx5
-	F3RSdAotoWnucuwA+ma+ATw+3Rh2tvCglGNfW
-X-Google-Smtp-Source: AGHT+IG+NwR0yeRIg5TBfS13eCeoTZD+OX41KhT6eVRLyMQyIDTsA4/UkFRdut2sjqIWAEzK/d6wK5JyA8vCEa0zo9k=
-X-Received: by 2002:adf:f44c:0:b0:343:70bc:4578 with SMTP id
- f12-20020adff44c000000b0034370bc4578mr387872wrp.70.1712261260979; Thu, 04 Apr
- 2024 13:07:40 -0700 (PDT)
+        bh=K7fjGhenDlbWaU5zor+1smq7yzHNYmLfEO1lExvtio8=;
+        b=PV+1hD2eKcC31Nd6tHu8zcR/QzJhTTpdvPTEZrrpP1UA1eMdBKZJKXq6FVzpsMPsKC
+         8gfQn4J2DBLB/BA2N5bHADF9z6JeEBWB+3bBhaO1H0hqINXlf5Ir41fJuRlwH4mxeTan
+         AoYHvAwP+LxtPqQCUbSStY+LfwkXfb7ank6AHDI8GVwEKTFUVvY8VYj1UAQvDLT+IRHz
+         nxUU+IDc2yjzp0FYJAadjL1pR3o9p1tHf53pCx2QxIIhelrrQgIWuayQ5gIxM7e1SJCS
+         NEBIRWXEgZQ7IeBMLTeN2IrDXcV1qBwc7vCIHjNLPP0VkNzU5CfkKfChvsQBkldHbqOh
+         wY6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWGiXU2Ijsk2aph9D5Gprnj9ocdbzEn1A0qTyED4WNvB41/XH7OthyGulHJZjy9TFpEIBt1YzC+dv0fFvLhi+2czLqJbIzuE54kU41E
+X-Gm-Message-State: AOJu0YzUvEVjKJ0iAH8I8Kll1aFxpvzZ7beLsQGtQ2G46T0nKRPCE4M2
+	kaASBsgoeOzGXUZ/GB3hn8xEnZyFDbrfvVmbqEvg8gCLV2N0nx9wmwoqreOqEG/USTMRNiJpyqR
+	GY9bQa5hdEALzDymZ+z5v2FnasiN8y9CFWi50U0Ymp8VdRvHLTbn7Y//1iVkjbA==
+X-Received: by 2002:a6b:6110:0:b0:7d5:7ea9:42d1 with SMTP id v16-20020a6b6110000000b007d57ea942d1mr472643iob.14.1712261254462;
+        Thu, 04 Apr 2024 13:07:34 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFZk+PQap7GRIEBSjt4tIDcZndUptl0BWU5rVStDj4SPN+Wy1PHBKbdkvA0+Pg0j37b6i6YQw==
+X-Received: by 2002:a6b:6110:0:b0:7d5:7ea9:42d1 with SMTP id v16-20020a6b6110000000b007d57ea942d1mr472571iob.14.1712261253357;
+        Thu, 04 Apr 2024 13:07:33 -0700 (PDT)
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id k15-20020a056638140f00b0047ec126cda5sm78846jad.74.2024.04.04.13.07.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 13:07:32 -0700 (PDT)
+Date: Thu, 4 Apr 2024 14:07:31 -0600
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Longfang Liu <liulongfang@huawei.com>
+Cc: <jgg@nvidia.com>, <shameerali.kolothum.thodi@huawei.com>,
+ <jonathan.cameron@huawei.com>, <kvm@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>, =?UTF-8?B?Q8Op?=
+ =?UTF-8?B?ZHJpYw==?= Le Goater <clg@redhat.com>
+Subject: Re: [PATCH v4 2/4] hisi_acc_vfio_pci: Create subfunction for data
+ reading
+Message-ID: <20240404140731.2b75cb80.alex.williamson@redhat.com>
+In-Reply-To: <20240402032432.41004-3-liulongfang@huawei.com>
+References: <20240402032432.41004-1-liulongfang@huawei.com>
+	<20240402032432.41004-3-liulongfang@huawei.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404171726.2302435-1-lokeshgidra@google.com> <Zg7hrt5HudXLBUn_@casper.infradead.org>
-In-Reply-To: <Zg7hrt5HudXLBUn_@casper.infradead.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 4 Apr 2024 13:07:25 -0700
-Message-ID: <CAJuCfpHvb5Jt6J1P9aHVdRWYUHmBL1edfp7QHn=jF88gJRD7RA@mail.gmail.com>
-Subject: Re: [PATCH] userfaultfd: change src_folio after ensuring it's
- unpinned in UFFDIO_MOVE
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Lokesh Gidra <lokeshgidra@google.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, kernel-team@android.com, aarcange@redhat.com, 
-	peterx@redhat.com, david@redhat.com, zhengqi.arch@bytedance.com, 
-	kaleshsingh@google.com, ngeoffray@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 4, 2024 at 10:21=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Thu, Apr 04, 2024 at 10:17:26AM -0700, Lokesh Gidra wrote:
-> > -             folio_move_anon_rmap(src_folio, dst_vma);
-> > -             WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, d=
-st_addr));
-> > -
-> >               src_pmdval =3D pmdp_huge_clear_flush(src_vma, src_addr, s=
-rc_pmd);
-> >               /* Folio got pinned from under us. Put it back and fail t=
-he move. */
-> >               if (folio_maybe_dma_pinned(src_folio)) {
-> > @@ -2270,6 +2267,9 @@ int move_pages_huge_pmd(struct mm_struct *mm, pmd=
-_t *dst_pmd, pmd_t *src_pmd, pm
-> >                       goto unlock_ptls;
-> >               }
-> >
-> > +             folio_move_anon_rmap(src_folio, dst_vma);
-> > +             WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, d=
-st_addr));
-> > +
->
-> This use of WRITE_ONCE scares me.  We hold the folio locked.  Why do
-> we need to use WRITE_ONCE?  Who's looking at folio->index without
-> holding the folio lock?
+On Tue, 2 Apr 2024 11:24:30 +0800
+Longfang Liu <liulongfang@huawei.com> wrote:
 
-Indeed that seems to be unnecessary here. Both here and in
-move_present_pte() we are holding folio lock while moving the page. I
-must have just blindly copied that from Andrea's original patch [1].
+> During the live migration process. It needs to obtain various status
+> data of drivers and devices. In order to facilitate calling it in the
+> debugfs function. For all operations that read data from device registers,
+> the driver creates a subfunction.
+> Also fixed the location of address data.
 
-https://gitlab.com/aarcange/aa/-/commit/2aec7aea56b10438a3881a20a411aa4b1fc=
-19e92
+C=C3=A9dric noted privately and I agree, 1) fixes should be provided in
+separate patches with a Fixes: tag rather than subtly included in a
+minor refactoring, and 2) what does this imply about the existing
+functionality of migration?  This would seem to suggest existing
+migration data is bogus if we're offset by a register reading the DMA
+address.  The commit log for the Fixes patch should describe this.
+
+>=20
+> Signed-off-by: Longfang Liu <liulongfang@huawei.com>
+> ---
+>  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.c    | 56 +++++++++++--------
+>  .../vfio/pci/hisilicon/hisi_acc_vfio_pci.h    |  3 +
+>  2 files changed, 37 insertions(+), 22 deletions(-)
+>=20
+> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c b/drivers/vfi=
+o/pci/hisilicon/hisi_acc_vfio_pci.c
+> index 45351be8e270..bf358ba94b5d 100644
+> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.c
+> @@ -486,6 +486,39 @@ static int vf_qm_load_data(struct hisi_acc_vf_core_d=
+evice *hisi_acc_vdev,
+>  	return 0;
+>  }
+> =20
+> +static int vf_qm_read_data(struct hisi_qm *vf_qm, struct acc_vf_data *vf=
+_data)
+> +{
+> +	struct device *dev =3D &vf_qm->pdev->dev;
+> +	int ret;
+> +
+> +	ret =3D qm_get_regs(vf_qm, vf_data);
+> +	if (ret)
+> +		return -EINVAL;
+> +
+> +	/* Every reg is 32 bit, the dma address is 64 bit. */
+> +	vf_data->eqe_dma =3D vf_data->qm_eqc_dw[QM_XQC_ADDR_HIGH];
+> +	vf_data->eqe_dma <<=3D QM_XQC_ADDR_OFFSET;
+> +	vf_data->eqe_dma |=3D vf_data->qm_eqc_dw[QM_XQC_ADDR_LOW];
+> +	vf_data->aeqe_dma =3D vf_data->qm_aeqc_dw[QM_XQC_ADDR_HIGH];
+> +	vf_data->aeqe_dma <<=3D QM_XQC_ADDR_OFFSET;
+> +	vf_data->aeqe_dma |=3D vf_data->qm_aeqc_dw[QM_XQC_ADDR_LOW];
+> +
+> +	/* Through SQC_BT/CQC_BT to get sqc and cqc address */
+> +	ret =3D qm_get_sqc(vf_qm, &vf_data->sqc_dma);
+> +	if (ret) {
+> +		dev_err(dev, "failed to read SQC addr!\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	ret =3D qm_get_cqc(vf_qm, &vf_data->cqc_dma);
+> +	if (ret) {
+> +		dev_err(dev, "failed to read CQC addr!\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int vf_qm_state_save(struct hisi_acc_vf_core_device *hisi_acc_vde=
+v,
+>  			    struct hisi_acc_vf_migration_file *migf)
+>  {
+> @@ -511,31 +544,10 @@ static int vf_qm_state_save(struct hisi_acc_vf_core=
+_device *hisi_acc_vdev,
+>  		return ret;
+>  	}
+> =20
+> -	ret =3D qm_get_regs(vf_qm, vf_data);
+> +	ret =3D vf_qm_read_data(vf_qm, vf_data);
+>  	if (ret)
+>  		return -EINVAL;
+> =20
+> -	/* Every reg is 32 bit, the dma address is 64 bit. */
+> -	vf_data->eqe_dma =3D vf_data->qm_eqc_dw[1];
+> -	vf_data->eqe_dma <<=3D QM_XQC_ADDR_OFFSET;
+> -	vf_data->eqe_dma |=3D vf_data->qm_eqc_dw[0];
+> -	vf_data->aeqe_dma =3D vf_data->qm_aeqc_dw[1];
+> -	vf_data->aeqe_dma <<=3D QM_XQC_ADDR_OFFSET;
+> -	vf_data->aeqe_dma |=3D vf_data->qm_aeqc_dw[0];
+> -
+> -	/* Through SQC_BT/CQC_BT to get sqc and cqc address */
+> -	ret =3D qm_get_sqc(vf_qm, &vf_data->sqc_dma);
+> -	if (ret) {
+> -		dev_err(dev, "failed to read SQC addr!\n");
+> -		return -EINVAL;
+> -	}
+> -
+> -	ret =3D qm_get_cqc(vf_qm, &vf_data->cqc_dma);
+> -	if (ret) {
+> -		dev_err(dev, "failed to read CQC addr!\n");
+> -		return -EINVAL;
+> -	}
+> -
+>  	migf->total_length =3D sizeof(struct acc_vf_data);
+>  	return 0;
+>  }
+> diff --git a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h b/drivers/vfi=
+o/pci/hisilicon/hisi_acc_vfio_pci.h
+> index 5bab46602fad..7a9dc87627cd 100644
+> --- a/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
+> +++ b/drivers/vfio/pci/hisilicon/hisi_acc_vfio_pci.h
+> @@ -38,6 +38,9 @@
+>  #define QM_REG_ADDR_OFFSET	0x0004
+> =20
+>  #define QM_XQC_ADDR_OFFSET	32U
+> +#define QM_XQC_ADDR_LOW		0x1
+> +#define QM_XQC_ADDR_HIGH	0x2
+> +
+>  #define QM_VF_AEQ_INT_MASK	0x0004
+>  #define QM_VF_EQ_INT_MASK	0x000c
+>  #define QM_IFC_INT_SOURCE_V	0x0020
+
 
