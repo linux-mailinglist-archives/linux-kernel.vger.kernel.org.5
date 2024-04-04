@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-131414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D44C89877D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 361318987B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:32:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12D521F21476
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:28:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF00E1F22A68
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ABCC128395;
-	Thu,  4 Apr 2024 12:26:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A7751332A5;
+	Thu,  4 Apr 2024 12:27:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oLVfSW2L"
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rr7itNQW"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745B9127B72
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668AF1327E7
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712233581; cv=none; b=M/adh91fQ4bBh6P5SO0lrGAmYWPQFVrXEGezxPx+man/jwA38BIp1/H9epe8BTKmAxPLNeYrMl0v5M0b2PqS9J1FbWeLN8Xi405uG1prxF8zXJQqSNtbbgthlQBWC3lp3oP9BVIVRZG5Auy4hqnAyyfpaQOG4Q1uvl2EcxEAY5o=
+	t=1712233632; cv=none; b=f1+E7JffTgjWKw0rikAZegdulzVq8rgL3GbLv8iB/bXlDrn/L6tcieqsvxr2Gwgloe0RtOwBXv3zvO/rSdOujs9zwTMfwExatRIhJ4RiiYvKSAhJLEERcqr4uVTx72FO/3vIUSnYoF7fVjYe4Ocy7JZu/509IbTJwxiF2kVsJoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712233581; c=relaxed/simple;
-	bh=nKbvlDRuwmkwDrYvvcFdwq4SEQBGtNcWvtLI6tBE8Fc=;
+	s=arc-20240116; t=1712233632; c=relaxed/simple;
+	bh=6AaqtxccIWghtb/UtGyHHUuuDFbxr8NOLfecjzX6K1k=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Jkh9m0fV0ZhEKA418S2c/JcDOBDVGFd6d/LKtWSSjy2ig9Mka4WyNlT6UKwmjxXxFUJ7jDZAQGXUaf0lVh201M6Gs0B8JiB2nGddiWjuh1pXyShYGIrYUaaREJ01BoqZFkvWtiza+QpCQU4z5nFBtFT2RTklMTaUOSnlukt/wvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oLVfSW2L; arc=none smtp.client-ip=209.85.216.45
+	 To:Cc:Content-Type; b=Dv885HcQXhEXpJoHokyE5di9r0qqfVQYZuNJIjiSV3kESKDsdjljvVBe+hmLOJtQXMvhySkqNVLw5MV5kp7I5T8Qb+s0p6bTshJpE9lQlNh58PXvnPSu7+0IgLd72zlWNef1q93JORvIQTuA1UCYSEZNoYd5HQZjLxeYnQjw1GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rr7itNQW; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2a2784b2783so661516a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:26:20 -0700 (PDT)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e0f3052145so8291865ad.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:27:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712233580; x=1712838380; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1712233631; x=1712838431; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=y75OMFbL7vQmdGj4RKt16g/wSJzKHLW5zDKxEznWL8k=;
-        b=oLVfSW2Lhue7hY60MbWn1Qjj1s8imN0PAlIxikGVIE6XoOvyeoMsUE3eIYz9Lfky/u
-         WsLVrkJAVTlKUNi+k8SomN9/7p1hdBvZXuXADH4ZX8X6PJdW1iWUpYL94IXzaGmzOUuA
-         nQ37YDhQGrZ1SdV7k+Jb8lQWvM4kovzlRdeNDCprFZ/qdrnfYXu1LNu3JZ9htqkvvz4r
-         9Z4GtmCmBtNU79/P9g7Hozl4C3ZgaP24Z2f0WijPge4d9CASN1aaDQgwASmL6PSRJ/qG
-         mG7Yy0nZy3nWhqi0MCWpQo+ydMjWQQs6pqKuqnPPPc2ZkqascJ0Bpvwgyac6iLfnff0C
-         PCTA==
+        bh=QR0Y+B+yOGaAYXg8JSyYTv57ScUCaP0rjY0sMY2UN5c=;
+        b=rr7itNQW2w6wPK5qYUIvtZue2JapDu1hyWra8Kp3AgYUQqXZEoQQP5IGfB4gN1fT8i
+         GT0r21GmfL3k1cEE5uKetL61ZiOxLl7fFIwaPtqqjCIRi06ux+r56ozk2McBbqOqOukH
+         kdRrCNZT3u1YA4bNllTMXXJ1KvTaRMOuukRIrofSf5Ixq64HWm+IUhxSC8Y3ucwHlzUj
+         NoLqeybNHOXmPeAVGpof1hqo9ZtILix84RfCPTZd1lgTVVvZiCW6ybsDG3MAdtub4gaQ
+         xSK9FKSsVfNSw2Kf4Pth3ZIEm3Z5K7Rgcgduvb5pPguPfZIdS6nZ2DqqAQJ1glv1h6eZ
+         L6pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712233580; x=1712838380;
+        d=1e100.net; s=20230601; t=1712233631; x=1712838431;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=y75OMFbL7vQmdGj4RKt16g/wSJzKHLW5zDKxEznWL8k=;
-        b=i9ktPNY8cgoQfLB2Sml3CJG/moOAZ8RdiYAcvje8UUDXSMn3dlgmKDAv25vy2Bx0gU
-         VSl36e2wPAoX/6dYBB67IXVbFwLxvycdl61owtHFefhRDFvq9cR5pkysjW+/jxhcRDGj
-         hyUjQ2l+4FvrXa2HA0JzSIN5AQEOWnYh0mWVfmf6Aoa72czat+iwhkjY8PVSMTnPQ7vr
-         YrNX6SKDM3DhUBOP+FXeYkhtzhHZBaNrPvGTNavbqJW/3QOUxbfp9nRsV7SsLmTtC2NJ
-         CC2Fc5sfjqnRmDEkTSi8ZACtrXFThIVkuJ7YP251OmuXtFACmizhe2Vz23VR0AwsQtO+
-         XtLA==
-X-Forwarded-Encrypted: i=1; AJvYcCVa38bjZnyxZ98pJ49p7TbJ1T4CiHIpWDgTLR5Hb4dWtXoDv+o1SHw/AdDCb18Z4cn37cD8m1A/Frhar0AjbJBWtpVoo+XGZpgM5clp
-X-Gm-Message-State: AOJu0YyEKD0Cc9lXegJMFju0DNpDfbv5dq6DLtNBMrbJ4idRqBz2BALy
-	yvJocaghsB1D0PmGYzCU6njczwPbr9OI3Wivr5/N34ZrdBg+QKr2JvuQ368FVGBfYqgvrougq9J
-	QkqMyjEgaH5JUbSpxLg47qxpbS+ahEAYjCpb7OgehBUFHT2Nn
-X-Google-Smtp-Source: AGHT+IFjKdz3u/UVhyauvDpLc8hy4deCSYOJTjbvbQN7L+M2Y5bH505OVlIMuAZ8pblZGkxydM458USFDYheAtvG0Lg=
-X-Received: by 2002:a17:90a:f283:b0:2a2:b32c:dc5b with SMTP id
- fs3-20020a17090af28300b002a2b32cdc5bmr2306195pjb.10.1712233579714; Thu, 04
- Apr 2024 05:26:19 -0700 (PDT)
+        bh=QR0Y+B+yOGaAYXg8JSyYTv57ScUCaP0rjY0sMY2UN5c=;
+        b=TzXCCXpMVjypLWKVg4G3gq4TYYO+6BTY9iaJVp9Bx1A9UcX5baAQngyapIsfZlDAaD
+         QKZRR3BhRShImmEsGlOgj3kxTVMft3XI2HRYNqyeQzzl3ldlHcrvNpNKWg84NP6AG1Ny
+         Hgd9G4D46xAMNQTIfghOcWCxgEZnu5z7dzn+fljfxSQhqPncqJxDxDAeCSdWhiy8ow1T
+         wfxprwG/9u4nif/0+wNSZsG6vT3nszrIcgGJPgv3Oy+eahCfh1ErJqqkynqm+fd9T1b0
+         vkGQwtHWsOzNCcm55HlZ5BlnXgjXjpzGt0cgrPSxbHgN8BcrsEdusLRUkuYmp3o+KIlt
+         xK3w==
+X-Forwarded-Encrypted: i=1; AJvYcCXOfBhWyLNEnsMjWnvZRLNk8fxjHW7g/4GVvFOlCAhMYoyGmzE+Ty1s0+BDhVpPuNYS99+8yTNc1D2A9oOUT1+KUEBmWDxJ9LiVOLJl
+X-Gm-Message-State: AOJu0YwOIGArfSU0LG2Z+dDUmvFSyGB0eXxr7ThjbF7vx8793Cg9iKCy
+	CEue2GqJn92ZoAyWMDifMOALhb7fOIaroaNq10iz1EeGcOjlLipEPLpLs0LRO0s7Ja1W50vRcoO
+	4+vGFNNUU5perD9y+Vff3BFPO6YpPS1WnjuaM/w==
+X-Google-Smtp-Source: AGHT+IHmfnSnKXCI7Mxb081VVyHmquQ5fGLtObMlW6Quf3xRZm2lKjkbd3bd04nWmy3CBVOS6JlK2CWqIaWbSxC1Lck=
+X-Received: by 2002:a17:90b:3841:b0:2a2:abc1:cb48 with SMTP id
+ nl1-20020a17090b384100b002a2abc1cb48mr2309448pjb.18.1712233630660; Thu, 04
+ Apr 2024 05:27:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712147341.git.vitaly@bursov.com> <d9af90271748e6035c5f8bfc03b7bacdde357766.1712147341.git.vitaly@bursov.com>
-In-Reply-To: <d9af90271748e6035c5f8bfc03b7bacdde357766.1712147341.git.vitaly@bursov.com>
+References: <cover.1712147341.git.vitaly@bursov.com> <03b7979666088f8d55db301c6649e0c75c727d6e.1712147341.git.vitaly@bursov.com>
+In-Reply-To: <03b7979666088f8d55db301c6649e0c75c727d6e.1712147341.git.vitaly@bursov.com>
 From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Thu, 4 Apr 2024 14:26:08 +0200
-Message-ID: <CAKfTPtDLGOvaBtdzxyetOWRFbZSq5mN5LY39AcvXkKMe90wp1Q@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] sched/debug: dump domains' level
+Date: Thu, 4 Apr 2024 14:26:59 +0200
+Message-ID: <CAKfTPtBCxpa0Pxx7=84dV1Mf_as6+YqcROGgGVr6Qpt-=ybrLg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] docs: cgroup-v1: clarify that domain levels are system-specific
 To: Vitalii Bursov <vitaly@bursov.com>
 Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
 	Juri Lelli <juri.lelli@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
@@ -84,33 +84,42 @@ Content-Type: text/plain; charset="UTF-8"
 
 On Wed, 3 Apr 2024 at 15:28, Vitalii Bursov <vitaly@bursov.com> wrote:
 >
-> Knowing domain's level exactly can be useful when setting
-> relax_domain_level or cpuset.sched_relax_domain_level
->
-> Usage:
-> cat /debug/sched/domains/cpu0/domain1/level
-> to dump cpu0 domain1's level.
+> Add a clarification that domain levels are system-specific
+> and where to check for system details.
 >
 > Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
 
 Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
 
 > ---
->  kernel/sched/debug.c | 1 +
->  1 file changed, 1 insertion(+)
+>  Documentation/admin-guide/cgroup-v1/cpusets.rst | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 >
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index 8d5d98a5834d..c1eb9a1afd13 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -425,6 +425,7 @@ static void register_sd(struct sched_domain *sd, struct dentry *parent)
+> diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
+> index 7d3415eea05d..f401af5e2f09 100644
+> --- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
+> +++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
+> @@ -568,7 +568,7 @@ on the next tick.  For some applications in special situation, waiting
 >
->         debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
->         debugfs_create_file("groups_flags", 0444, parent, &sd->groups->flags, &sd_flags_fops);
-> +       debugfs_create_u32("level", 0444, parent, (u32 *)&sd->level);
->  }
+>  The 'cpuset.sched_relax_domain_level' file allows you to request changing
+>  this searching range as you like.  This file takes int value which
+> -indicates size of searching range in levels ideally as follows,
+> +indicates size of searching range in levels approximately as follows,
+>  otherwise initial value -1 that indicates the cpuset has no request.
 >
->  void update_sched_domain_debugfs(void)
+>  ====== ===========================================================
+> @@ -581,6 +581,11 @@ otherwise initial value -1 that indicates the cpuset has no request.
+>     5   search system wide [on NUMA system]
+>  ====== ===========================================================
+>
+> +Not all levels can be present and values can change depending on the
+> +system architecture and kernel configuration. Check
+> +/sys/kernel/debug/sched/domains/cpu*/domain*/ for system-specific
+> +details.
+> +
+>  The system default is architecture dependent.  The system default
+>  can be changed using the relax_domain_level= boot parameter.
+>
 > --
 > 2.20.1
 >
