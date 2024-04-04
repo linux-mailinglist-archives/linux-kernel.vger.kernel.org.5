@@ -1,56 +1,81 @@
-Return-Path: <linux-kernel+bounces-131551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF354898980
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:06:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27DE8898982
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:06:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 338A7282181
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:06:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF4951F2B35D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B71E1292F3;
-	Thu,  4 Apr 2024 14:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28C41292FB;
+	Thu,  4 Apr 2024 14:06:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="iCa1J4wU"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+	dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b="jqUe6OPt";
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b="kkSHfl6Q"
+Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71581292D5
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:06:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD82F8528B;
+	Thu,  4 Apr 2024 14:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.104.207.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712239571; cv=none; b=YA4okoi1qEtr5h9tUbobse4zSR1w/nB9LkrR+BJjMxwYX/Cfca6nu+SEZy8KQMDnv1OY16v4vmpkeonaApvJsWHT6EpKc1DlWPYZguSTVqgbNykN3crj/siAPhJ5A5orF02XB0ct8xR6S1dguKCXmeKkNqSRP9ZMxoc35asqolE=
+	t=1712239585; cv=none; b=jILX1lrNJZpKLwgbWarnXA7vNtX6r+DIKbopV7hQ7ecHMKxYkQaNF5sAr46AwlW46edNHNtYNScj8y/opildQ2vV40lYR6B21al/lNqeXcnns+fvAytGxwIiZXUCKOgiFbTrtyWknQpE48gEyPmDoXFaJ/JB0qxKqUhyDH2fuTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712239571; c=relaxed/simple;
-	bh=HvvT5dkrkVC/M7IgnWDxF9rb0NCqbFQfhfPLfRudlak=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LbrvvXJ22oe5wbARPFDuKW6QW9AlbpZpAHFnUvBsqwA22WmVbUnNFyO8SjaXRdCl+rYaAxPZcLQkYUwI+dq9fqXHEtJRnJ/PGE1J2mzRRO+BQ7dGf5ENVzpsKqvc20wlJ0uuA9ZlOk5AFcnUfreeyBWuQ59bGVUTD11kvFDBh/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=iCa1J4wU; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1712239567; x=1712498767;
-	bh=FJrqTr4Imcj+L1bEBOlUEE1YfQ+xWTE4Rj2kPwIalRc=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=iCa1J4wUqBL1wPcqDUO22R1BP2sLFRe37WPTT2i81lq1XqXu+OB/hkG8GnCR5Dtj5
-	 5MZT0RC7mfh3gjIdcY7+VWQwof9PJQWmsrXhKYP992n8uut5C8UqHLBDsomAK59KM8
-	 5oaB5lytf+iDf5oLHcSHORqLvR++IkQvAPEq5ZojoS7cikfEnZtoxQBGqxXrTb/bSJ
-	 oGWVFR9fFUxRmHCBaY6FsXZQ9FXemCxN4BXZHs77T8ZUbyIz0g3OUD6weDgVhoYlXZ
-	 tr1XUk/rip1zMQxhx9YeZ9rtt7YX1OXO7wwzQdGgsctdWQANh6TKVc+BcTV9SIDh8H
-	 zLyg5y7/AIH1w==
-Date: Thu, 04 Apr 2024 14:05:57 +0000
-To: Alice Ryhl <aliceryhl@google.com>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
-Subject: Re: [PATCH 3/9] rust: list: add struct with prev/next pointers
-Message-ID: <9c003b63-6358-4e03-9c8a-e0de701e5df8@proton.me>
-In-Reply-To: <CAH5fLghJtSvW-zNnDNFVgtb-px2d4W-xUk2++QdvyMYFMBGM-Q@mail.gmail.com>
-References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com> <20240402-linked-list-v1-3-b1c59ba7ae3b@google.com> <2500d66a-e54e-46d8-97cb-37fd9fc00c45@proton.me> <CAH5fLghJtSvW-zNnDNFVgtb-px2d4W-xUk2++QdvyMYFMBGM-Q@mail.gmail.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712239585; c=relaxed/simple;
+	bh=/zHAbt4y9sFY/xYAzcPpxk40Evw3pavCSB28vHMumug=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UL6ovvP5ESO6OAbvq2teCSCtiDt0+1aad4spzNOS3Y0eNRzziCVa253PrzYc4PVI4tBnYOCUIaw4W0OLqhPn/n9iXC0eGIw9lBxA2f9UB2BNNiaFpxuWF+gbpXzV1v17qrCpBqbbDjGH2jjMZo03ircodtwBsDbCzSAQ86f/4EA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com; spf=pass smtp.mailfrom=ew.tq-group.com; dkim=pass (2048-bit key) header.d=tq-group.com header.i=@tq-group.com header.b=jqUe6OPt; dkim=fail (0-bit key) header.d=ew.tq-group.com header.i=@ew.tq-group.com header.b=kkSHfl6Q reason="key not found in DNS"; arc=none smtp.client-ip=93.104.207.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ew.tq-group.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ew.tq-group.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
+  t=1712239581; x=1743775581;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=p9lyNNezsGzSH+r7ma4jkO5f1F+UgO5L9s51Fq+pDNs=;
+  b=jqUe6OPth7IpABhfKnAPTzfbmuiL2gChVUJkVge/Dc5QId67IWIByafP
+   Zn+CUci5ti7ikYW4F/5AKRHtoJuD7cerldIpKM2OwLryDe2nak2SmpUtz
+   qDttbRtJ8PrO2LYIaZaDPhYjLURscbmlL36Y72JslyksF8z6kf+4a7Y/X
+   3pl/BeP/oRZb1ZUU1L9xo/1mGeA9PUsL/i07OIBSmmOmDM1+V3MSH2T2x
+   uVv8b+8fy7pEQnKEIJxI9R6Y4a4l0p3NFcJk+ZJqt/zHGUERfRHDelH1G
+   3yRxbr6VGU9Hu3jDp/COIsfwKo7KfIdN9VZFyAgAhBfBL67RGc+MACevy
+   w==;
+X-IronPort-AV: E=Sophos;i="6.07,179,1708383600"; 
+   d="scan'208";a="36253737"
+Received: from vmailcow01.tq-net.de ([10.150.86.48])
+  by mx1.tq-group.com with ESMTP; 04 Apr 2024 16:06:12 +0200
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id AD77416AB93;
+	Thu,  4 Apr 2024 16:06:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ew.tq-group.com;
+	s=dkim; t=1712239568;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=p9lyNNezsGzSH+r7ma4jkO5f1F+UgO5L9s51Fq+pDNs=;
+	b=kkSHfl6QKcHUjhD9iRmDManPQlYhkIfDczW3AWWkoAagAQUAtSffCdLQIIqOUaXxIP84aF
+	jZWb3FrtMkgNYFBpDEgb9LVvoJBWRSIP9vUiDASOKn2OWFZOa9Ef4wYQ8RdMpe7nxmIyDs
+	tLDmDes1RkUZTc634DB6/uZI3SVyAmvdRiraZP9FcMPrVM1C9W6cnSBgJRiYM3/bJckFo1
+	nhy3K0bwv93r2Kbyn2pUObkQ+GE0kam5QxYC82FLLabdLuCQlRn2LnbMEofpP2gL/ccMNX
+	61OJcwBPIapQKaChkB9XIXKo0HXYZCWNWMFrs2g1JfbG7f2VgB2TnIcAM7h2zg==
+Date: Thu, 4 Apr 2024 16:06:00 +0200
+From: Gregor Herburger <gregor.herburger@ew.tq-group.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc: Andrew Lunn <andrew@lunn.ch>, Heiner Kallweit <hkallweit1@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Dimitri Fedrau <dima.fedrau@gmail.com>,
+	Stefan Eichenberger <eichest@gmail.com>, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux@ew.tq-group.com,
+	alexander.stein@ew.tq-group.com
+Subject: Re: Re: [PATCH] net: phy: marvell-88q2xxx: add support for Rev B1
+ and B2
+Message-ID: <Zg6zyJ8gMcwTiSOC@herburgerg-w2>
+References: <20240403-mv88q222x-revb1-b2-init-v1-1-48b855464c37@ew.tq-group.com>
+ <Zg1gycEDL4llYrjI@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,56 +83,42 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zg1gycEDL4llYrjI@shell.armlinux.org.uk>
+X-Last-TLS-Session-Version: TLSv1.3
 
-On 04.04.24 16:03, Alice Ryhl wrote:
-> On Wed, Apr 3, 2024 at 5:57=E2=80=AFPM Benno Lossin <benno.lossin@proton.=
-me> wrote:
->>
->> On 02.04.24 14:17, Alice Ryhl wrote:
->>> +/// Implemented by types where a [`ListArc<Self>`] can be inserted int=
-o a `List`.
->>> +///
->>> +/// # Safety
->>> +///
->>> +/// Implementers must ensure that they provide the guarantees document=
-ed on the three methods
->>> +/// below.
->>> +///
->>> +/// [`ListArc<Self>`]: ListArc
->>> +pub unsafe trait ListItem<const ID: u64 =3D 0>: ListArcSafe<ID> {
->>> +    /// Views the [`ListLinks`] for this value.
->>> +    ///
->>> +    /// # Guarantees
->>> +    ///
->>> +    /// * If there is a currently active call to `prepare_to_insert`, =
-then this returns the same
->>> +    ///   pointer as the one returned by the currently active call to =
-`prepare_to_insert`.
->>
->> I was a bit confused by the term "active call to `prepare_to_insert`",
->> since I thought that the function would need to be executed at this
->> moment. I inferred from below that you mean by this that there has been
->> a `prepare_to_insert` call, but not yet a corresponding `post_remove`
->> call.
->> I did not yet find a better way to phrase this.
->>
->> I like putting the guarantees on the functions very much.
->=20
-> How about this?
->=20
-> If there is a previous call to `prepare_to_insert` and there is no
-> call to `post_remove` since the most recent such call, then this
-> returns the same pointer as the one returned by the most recent call
-> to `prepare_to_insert`.
->=20
-> Otherwise, the returned pointer points at a read-only [`ListLinks`]
-> with two null pointers.
-Sounds good.
+Hi Russell,
 
---=20
-Cheers,
-Benno
+On Wed, Apr 03, 2024 at 02:59:37PM +0100, Russell King (Oracle) wrote:
+> I think a helper would be useful to write these sequences, rather than
+> writing the same code several times:
 
+Ok. Will add it to the next version.
 
+> 
+> static int mv88q2xxx_write_mmd_vals(struct phy_device *phydev,
+> 				    const struct mmd_val *vals, size_t len)
+> {
+> 	int ret;
+> 
+> 	for (; len; vals++, len--) {
+> 		ret = phy_write_mmd(phydev, vals->devad, vals->regnum,
+> 				    vals->val);
+> 		if (ret < 0)
+> 			return ret;
+> 	}
+> 
+> 	return 0;
+> }
+> 
+> -- 
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+
+-- 
+TQ-Systems GmbH | Mühlstraße 2, Gut Delling | 82229 Seefeld, Germany
+Amtsgericht München, HRB 105018
+Geschäftsführer: Detlef Schneider, Rüdiger Stahl, Stefan Schneider
+https://www.tq-group.com/
 
