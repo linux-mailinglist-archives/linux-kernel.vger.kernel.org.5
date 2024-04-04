@@ -1,108 +1,145 @@
-Return-Path: <linux-kernel+bounces-132158-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEA4289905F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25634899065
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:30:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5ACFCB29541
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:30:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A19D7B26C03
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:30:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFE2F13C69D;
-	Thu,  4 Apr 2024 21:27:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01A0F13C3C4;
+	Thu,  4 Apr 2024 21:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="kKPC3kzL"
-Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="d1g8oWeT"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 990A113C68B
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 21:27:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8EC813BACF;
+	Thu,  4 Apr 2024 21:29:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712266072; cv=none; b=ScXL6j/ZTKwGElFko4imERODyanrOZ4i7Hpg8Gmg+Ux0CEybD/7m45xDHv7ZDZbLkizJ0uqM0wzw6Q5zAypretf2TfVzWXUU+zDQNfLvsUqhpzp0+vt6/pp5pARcoHjmXt8sB8RM4mqhj8oVqfNiDpDd4LiEE3r8JMNDnPNL5H4=
+	t=1712266165; cv=none; b=B9uwEs7oU4nGLGx+6/JrdS/s+og0nPtC15ZFquFGz7/SIZiv3QB74TXFdguVsz67pCg36SKXzX21EKPHqEEmFJPigp/np0wqxO6om0D5+FfSkqF95w0CvVJkvsXvbPvhNyUB0UXqnWdiP1PmQtt9Ko9JU3Ox1WCqqG8uIt9dQK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712266072; c=relaxed/simple;
-	bh=i+qYSe82dk6E1DEDEYjK9f3oiyy6F6UrVwE4dTrUjFE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HHpTzQNgR4RJcyJEurv6YcVMYtLUvj1FGVNpTNnIpBrLVIGplNY7cc+34nE++jdbM9knT+Qmbs9hPPWsQ7iWnG3O4RKBToM6Ao00PnX6W6vLUq6Elz01gxEkvwcx6uuzzN/Qh4mBYipL/Gw0OncmFQjIQ4tWmWcY4GKp8KZ7TAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=kKPC3kzL; arc=none smtp.client-ip=72.21.196.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1712266071; x=1743802071;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=vXMyRUMmIDSRpvnnN6Ds8+s/LCFeDKLvTc9elA3zE8M=;
-  b=kKPC3kzLgpxKq2pBE5X7cdrcBz+ZK1T4PB8DLn39PtP5fszzTns8um+C
-   IROnM6O/rNoM7XqdixIdfcrPZHkjD/vKLaUL71g0wh3ENWeuNHvi4Rl/t
-   yngVf789E9hBrTu9lm+zSysneWfqhj+3ny40AfGw21KR5Fbxgc7/AtJBe
-   g=;
-X-IronPort-AV: E=Sophos;i="6.07,180,1708387200"; 
-   d="scan'208";a="392718183"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 21:27:49 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [10.0.7.35:38359]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.49.69:2525] with esmtp (Farcaster)
- id 9ce1e057-8baf-481b-b517-faf690d2bbe9; Thu, 4 Apr 2024 21:27:48 +0000 (UTC)
-X-Farcaster-Flow-ID: 9ce1e057-8baf-481b-b517-faf690d2bbe9
-Received: from EX19D002UWA003.ant.amazon.com (10.13.138.235) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 4 Apr 2024 21:27:48 +0000
-Received: from EX19MTAUEA001.ant.amazon.com (10.252.134.203) by
- EX19D002UWA003.ant.amazon.com (10.13.138.235) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 4 Apr 2024 21:27:47 +0000
-Received: from dev-dsk-alisaidi-1d-b9a0e636.us-east-1.amazon.com
- (172.19.181.128) by mail-relay.amazon.com (10.252.134.102) with Microsoft
- SMTP Server id 15.2.1258.28 via Frontend Transport; Thu, 4 Apr 2024 21:27:47
- +0000
-Received: by dev-dsk-alisaidi-1d-b9a0e636.us-east-1.amazon.com (Postfix, from userid 5131138)
-	id 8F20F235D; Thu,  4 Apr 2024 21:27:47 +0000 (UTC)
-From: Ali Saidi <alisaidi@amazon.com>
-To: <kjlx@templeofstupid.com>
-CC: <alisaidi@amazon.com>, <catalin.marinas@arm.com>, <james.morse@arm.com>,
-	<kvmarm@lists.linux.dev>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <maz@kernel.org>, <me@davidreaver.com>,
-	<oliver.upton@linux.dev>, <suzuki.poulose@arm.com>, <will@kernel.org>,
-	<yuzenghui@huawei.com>
-Subject: Re: [PATCH] KVM: arm64: Limit stage2_apply_range() batch size to smallest block
-Date: Thu, 4 Apr 2024 21:27:42 +0000
-Message-ID: <20240404212742.11248-1-alisaidi@amazon.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240404044028.GA1976@templeofstupid.com>
-References: <20240404044028.GA1976@templeofstupid.com>
+	s=arc-20240116; t=1712266165; c=relaxed/simple;
+	bh=Utj8g5kSIY2oZzcEMi6QXW1D/5gc1CLBmlqTBBy6/AM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lUlgkdjk/HlF00OSdbkpWs3XMJxNbiAFUWUv2D8E+Q6zKljZNBcRpaXfv9UXckj2USTSNtmNeA0BMnDivzGXhypZUXFhf2rcxJGcjozU8wv0kAJ6vkEIP5txtc1s2JT67+upBK/d4l2SHUJ45BVacJVuIlNxV/UE3C4PLxXKy6Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=d1g8oWeT; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Zyi7AEcYnfqB6wuIN5C5labJ5TkiPsioxAOKz/6Fbqs=; b=d1g8oWeT9rYHBlZuF9xsTFDFHG
+	4lSJo/KGw64j3qekI4UzOPIXJ1k3xqp49kuQDsjI3KWu1PeNyrvAx32gduojBtJnubIYbpR8ATH9/
+	iHi0XgwD4MRWgBREvdk6kwWIJMIJufuG2rvsYSbhZahYCtFlqfUHZoB/9OG3i+HKLm5pf24AQ/JN2
+	9SFsSEsuALRsGWBL8WIAgLr6AWItvY3OcojGDkbhHZsDqZ1XuYyScYDs1+aUQs9aWl8qV9+jLJ+tV
+	tJCk+/43dla/bl5lv45MJp+W8A/geOJcFQ8gjN3XZ0JwVqHcOjoTgz3o0Y9HJuAjDwX2Jd5ldJTru
+	2h94r9pw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rsUe5-00000008veN-2BP2;
+	Thu, 04 Apr 2024 21:29:17 +0000
+Date: Thu, 4 Apr 2024 22:29:17 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Kees Cook <keescook@chromium.org>
+Cc: Jan Kara <jack@suse.cz>, Chuck Lever <chuck.lever@oracle.com>,
+	"Gustavo A . R . Silva" <gustavoars@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Jeff Layton <jlayton@kernel.org>,
+	Amir Goldstein <amir73il@gmail.com>, linux-fsdevel@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] fs: Set file_handle::handle_bytes before referencing
+ file_handle::f_handle
+Message-ID: <Zg8brYRFHlS1qaJC@casper.infradead.org>
+References: <20240404211212.it.297-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404211212.it.297-kees@kernel.org>
 
-I measured the time it takes to unmap a VM by changing the kvm_page_table_test
-to report it. It's and on Graviton3 it's about 300ms per 1GB of flushing
-with 4KB pages. Unmapping 128GB takes around 39.5s and with a single call to
-__kvm_tlb_flush_vmid() instead of the 32M calls to __kvm_tlb_flush_vmid_ipa()
-reduces this to around 5.9s (~7x). This means each iteration of the
-stage2_apply_range() is reduced to 46ms. So we're certainly calling
-cond_resched() a whole lot more. 
+On Thu, Apr 04, 2024 at 02:12:15PM -0700, Kees Cook wrote:
+> Since __counted_by(handle_bytes) was added to struct file_handle, we need
+> to explicitly set it in the one place it wasn't yet happening prior to
+> accessing the flex array "f_handle". For robustness also check for a
+> negative value for handle_bytes, which is possible for an "int", but
+> nothing appears to set.
 
+Why not change handle_bytes from an int to a u32?
 
-> Just a quick followup that I did test Will's patches and didn't find
-> that it changed the performance of the workload that I'd been testing.
-> IOW, I wasn't able to discern a network performance difference between
-> the baseline and those changes.
+Also, what a grotty function.
 
-That is a bit unexpected that the performance wasn't worse with the patch Will
-sent because it should have disabled the range invalidates since they these 
-invalidates will be getting rid of blocks?  Which Graviton were you testing
-this on? 
+        handle_dwords = f_handle.handle_bytes >> 2;
+..
+        handle_bytes = handle_dwords * sizeof(u32);
 
-Ali
-
+> Fixes: 1b43c4629756 ("fs: Annotate struct file_handle with __counted_by() and use struct_size()")
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Chuck Lever <chuck.lever@oracle.com>
+> Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: Alexander Viro <viro@zeniv.linux.org.uk>
+> Cc: Jeff Layton <jlayton@kernel.org>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-nfs@vger.kernel.org
+> Cc: linux-hardening@vger.kernel.org
+>  v2: more bounds checking, add comments, dropped reviews since logic changed
+>  v1: https://lore.kernel.org/all/20240403215358.work.365-kees@kernel.org/
+> ---
+>  fs/fhandle.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/fhandle.c b/fs/fhandle.c
+> index 8a7f86c2139a..854f866eaad2 100644
+> --- a/fs/fhandle.c
+> +++ b/fs/fhandle.c
+> @@ -40,6 +40,11 @@ static long do_sys_name_to_handle(const struct path *path,
+>  			 GFP_KERNEL);
+>  	if (!handle)
+>  		return -ENOMEM;
+> +	/*
+> +	 * Since handle->f_handle is about to be written, make sure the
+> +	 * associated __counted_by(handle_bytes) variable is correct.
+> +	 */
+> +	handle->handle_bytes = f_handle.handle_bytes;
+>  
+>  	/* convert handle size to multiple of sizeof(u32) */
+>  	handle_dwords = f_handle.handle_bytes >> 2;
+> @@ -51,8 +56,8 @@ static long do_sys_name_to_handle(const struct path *path,
+>  	handle->handle_type = retval;
+>  	/* convert handle size to bytes */
+>  	handle_bytes = handle_dwords * sizeof(u32);
+> -	handle->handle_bytes = handle_bytes;
+> -	if ((handle->handle_bytes > f_handle.handle_bytes) ||
+> +	/* check if handle_bytes would have exceeded the allocation */
+> +	if ((handle_bytes < 0) || (handle_bytes > f_handle.handle_bytes) ||
+>  	    (retval == FILEID_INVALID) || (retval < 0)) {
+>  		/* As per old exportfs_encode_fh documentation
+>  		 * we could return ENOSPC to indicate overflow
+> @@ -68,6 +73,8 @@ static long do_sys_name_to_handle(const struct path *path,
+>  		handle_bytes = 0;
+>  	} else
+>  		retval = 0;
+> +	/* the "valid" number of bytes may fewer than originally allocated */
+> +	handle->handle_bytes = handle_bytes;
+>  	/* copy the mount id */
+>  	if (put_user(real_mount(path->mnt)->mnt_id, mnt_id) ||
+>  	    copy_to_user(ufh, handle,
+> -- 
+> 2.34.1
+> 
+> 
 
