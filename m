@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-132239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 981E38991E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:11:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8362A8991E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:11:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB4661C218AB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:11:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E0671F22E7D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B455413C3CA;
-	Thu,  4 Apr 2024 23:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A507513C3CA;
+	Thu,  4 Apr 2024 23:11:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="wXHRPt+a"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2050.outbound.protection.outlook.com [40.107.243.50])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="KXj4ZEdQ"
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2057.outbound.protection.outlook.com [40.107.237.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35FA0548FE
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 23:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CC813A41A
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 23:11:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.57
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712272263; cv=fail; b=gkIs2GY6jtITtw0vmEVLzjeJIAfdvK27tYkWTbYhBGkGAlk1v/tWBUgU0KNjmJZ1K1v7VsrR7QAjBPlcc7oNQY0qtCCIiopDaSV0otlq3DNROCxNUbznMrlVBi9yEaxZST7yX5bcjDGn10fp0/Hr5Z/dVNborwak9pM5hztnXNY=
+	t=1712272277; cv=fail; b=faTktIMooOTaoV2CUisCv0ZCrhGxSZX2VyAb7o8Cuhb2JjbLx027ysxjbdLxnSUz/AVMu7X1WUh8Tn9tW5kUbDx41LnxXUMBur7fRcdail+o9c8u7fQY3PC7uHKgxmKjD4jENTXFx4Rka1VmNCF77lhNqkI1wZ75j69TAxo1TCQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712272263; c=relaxed/simple;
-	bh=rGI6suv1zb3pghnNnhgwDeVGs1uApVMNK7SEi4zhazw=;
+	s=arc-20240116; t=1712272277; c=relaxed/simple;
+	bh=Gjxon9CWAl1E5KONmZ4XO223NbadHZMJVryA/SxMQQ4=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qM5zfnN6fvmm4wStL2Ixv2eE2Icr5Ze3oMslOHpOLViq1sktqte8YMwQoEMqy3bEG0ykGJn4U2IJYtQKzA6bL5MHOXOBiUGdTNkNzN4Ub7rY8Kmj0g+plEHsWA4y4T4iWPYApoaaQY3b0S5pZM9+RdGVUUrI37GnW449uh4BsS4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=wXHRPt+a; arc=fail smtp.client-ip=40.107.243.50
+	 MIME-Version:Content-Type; b=REjxdL5Ui6WI1kMy4v8xfn5ESjsMU1tXvtwUaCOsHBr7rziIIK9YWHxWGfY9mkXedK0Mn3y3JKCi1zpQvRCq3t3XsgDpofQfGaJVC/C2eEZSoxaPN1C2WwFugvjM5gAxA6Cv3YqzoShQk0FTdY4FqW4e8BTdhdhzZHDHu1jVCxg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=KXj4ZEdQ; arc=fail smtp.client-ip=40.107.237.57
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k6Afk71wvaCFR/u9BAYhtZ5DnoS+I4gYMiR14qVcU2DeLjObn7SHLxKJ2WZ6vlA+SyPRZAh7F/PGZxjBaA1I6LwkuoaRY5ANVblqNCVw9ncrk0lAGldBPpYuaK2yjV51hcoqFWaObMXf0eYaFU287Mn6HF3n/C55U0gM+nmGwx7dN6/7C5qKrEwwSXZL1OBlJKGq1RBzJ2GnDUSdC9dila2xFFHhZYoBMxHb8JKH21MKaYKmvsdKWf2ch0iMtlNAUG6bqAStmAOkp95kGpsgof1JUrPkQ+JEK+ASsJMJs5VD7hb1/ziAJ5Ee3iG7Mj0OFcHOkANN4A2v4JTN7/HTdQ==
+ b=TB4qIXfHrBc2x/FTnH7mVknfdiSoe2viSgKcxtLG2La7hmsJVd4hO/HMIiaOpLNZOHZ/NgGIC8eVh4d8Y1VBa2LKR2ps/8nbo2fu9MwDanhOdGTME1Qvm0fwIdgMOGL24Cssa/9MGajgVDvB3DgtebMNm7LBgkxEjUW0CcRJl2vRjaf4QbGR0TsXnfZ4dLWqmc1S18Xw5V1FVisn0UcwuTNwJ3pMgUBwlXd1yxVOMVxyFeHv3MF2daNG3mwE4u1JlP+BlqyE7C2CBDidSQiePPwNpYUv1ppmzxsnva293FakLqaAgKooYhiB0LJAMjJMui+z9LUtmiNO6eO4e8DIzg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SVq+BbTvSa9uQfUgAEa9Xcp3cLWYcOfNUqEKQXfN6Og=;
- b=H7W8CiDDswrFkHrV0HoO3a2WyWkyQg+H3+HvH1W+zO0k9Q6LuHqyy/H6SiqdPWmI18uDpnTOM1GUpR2IXTvaQfimFjDZtrnCXoc4sw7WOfUdfzIEQiDuqJLS1pwBXH5CrxomaiB8H0dmkLWu1uYlLgiLmgow2SZ9N2Mknhu9r6XdytSgEdZexzK41YHo+XAQW2haOPzRrrC6FmdBPncV10hnxinJEoRX7y6NmrhnpYmt4VUhUekhylQOG9jzyUlJ6jL8CEcJUmq8TKIASyAogjiPtvZLrcIlP3vQld5k3mLSgxuFhJ7Zy6YNjKQAXpMa7jVfqlEeSxgs2Zq4VbnLyg==
+ bh=ynAjWB7gpOag9jprnm17/CfhdBBqZy7DoD35EXOrrdk=;
+ b=dmS3MvYEjAppB0RlMo1yXz2qobnCn7I3B+jB0alg0TA0YoZkWGzDBZjr2c9eGFbaiP8/E21BYiU0xqJaFuUiyeh5tkdte3qJVGL6JeOo2uURTVcT4yRjeeP6f24RkEpXu4uW8n3H+CDOCAws8YCsOoBD8LDfGAJNw3MHaHZliHi5/Rm1rcxRtVaWdk/yiJzfw5Py1v1MprJcFUnJ4nDrKmhM9//njZ2f0HrCD28RqFtZdpzHC/780oUSV1LsL8fREq7ta7QssYfup0ez7c+RMf6XepzQglOccBzAi8UOxeODCDvizAx/WX5MtXxtLRFCidxB8SHSzG+HFI0hzSEaug==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  165.204.84.17) smtp.rcpttodomain=linutronix.de smtp.mailfrom=amd.com;
  dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
  header.from=amd.com; dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SVq+BbTvSa9uQfUgAEa9Xcp3cLWYcOfNUqEKQXfN6Og=;
- b=wXHRPt+a6Kq9aMQnfX1UutdPFbJ9+PDdv+6GJwopcVC6SCkcgip6a66PMhooFBkZ2axUzvhZgBPHKLUOzmf4EBA7aPEziQ9cy6b5aDFwtdfNSoEngEME2G2PsJzk2txgM9AaURXw2LOXo6F3bGpkcs3S/pQjLPetm4SAWn1+bZA=
-Received: from MW4P222CA0030.NAMP222.PROD.OUTLOOK.COM (2603:10b6:303:114::35)
- by DM4PR12MB6327.namprd12.prod.outlook.com (2603:10b6:8:a2::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.46; Thu, 4 Apr 2024 23:10:58 +0000
-Received: from CO1PEPF000066E9.namprd05.prod.outlook.com
- (2603:10b6:303:114:cafe::f2) by MW4P222CA0030.outlook.office365.com
- (2603:10b6:303:114::35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46 via Frontend
- Transport; Thu, 4 Apr 2024 23:10:57 +0000
+ bh=ynAjWB7gpOag9jprnm17/CfhdBBqZy7DoD35EXOrrdk=;
+ b=KXj4ZEdQjzjHWWIw3hS5LqlthcSMo+naOb4QrRjFQxGgHyi+cEclu9kK5Ycqb2yuL5FU0eVBd4AI7DJPOaESS+GsMsJz6GI8YNxvkYYC5dDyKdvaM/OvlptyTbsG6l9o1Xaon85gob+PFd1BDwunys3F5u7V73F10zcqoFokX0U=
+Received: from SJ0PR05CA0063.namprd05.prod.outlook.com (2603:10b6:a03:332::8)
+ by IA1PR12MB8222.namprd12.prod.outlook.com (2603:10b6:208:3f2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 4 Apr
+ 2024 23:11:13 +0000
+Received: from CO1PEPF000066E7.namprd05.prod.outlook.com
+ (2603:10b6:a03:332:cafe::43) by SJ0PR05CA0063.outlook.office365.com
+ (2603:10b6:a03:332::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.27 via Frontend
+ Transport; Thu, 4 Apr 2024 23:11:12 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=amd.com;
@@ -61,13 +62,13 @@ Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
  165.204.84.17 as permitted sender) receiver=protection.outlook.com;
  client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
 Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000066E9.mail.protection.outlook.com (10.167.249.11) with Microsoft
+ CO1PEPF000066E7.mail.protection.outlook.com (10.167.249.9) with Microsoft
  SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7452.22 via Frontend Transport; Thu, 4 Apr 2024 23:10:57 +0000
+ 15.20.7452.22 via Frontend Transport; Thu, 4 Apr 2024 23:11:12 +0000
 Received: from ethanolx7e2ehost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
  (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 4 Apr
- 2024 18:10:56 -0500
+ 2024 18:11:10 -0500
 From: Ashish Kalra <Ashish.Kalra@amd.com>
 To: <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
 	<dave.hansen@linux.intel.com>, <x86@kernel.org>
@@ -79,12 +80,12 @@ CC: <rafael@kernel.org>, <peterz@infradead.org>, <adrian.hunter@intel.com>,
 	<vkuznets@redhat.com>, <dionnaglaze@google.com>, <anisinha@redhat.com>,
 	<jroedel@suse.de>, <ardb@kernel.org>, <kexec@lists.infradead.org>,
 	<linux-coco@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 0/4] x86/snp: Add kexec support
-Date: Thu, 4 Apr 2024 23:10:46 +0000
-Message-ID: <cover.1712270975.git.ashish.kalra@amd.com>
+Subject: [PATCH v3 1/4] efi/x86: skip efi_arch_mem_reserve() in case of kexec.
+Date: Thu, 4 Apr 2024 23:11:02 +0000
+Message-ID: <7ca8179d7671a149f2808d8d081b6e736eea4394.1712270976.git.ashish.kalra@amd.com>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
-References: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
+In-Reply-To: <cover.1712270975.git.ashish.kalra@amd.com>
+References: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com> <cover.1712270975.git.ashish.kalra@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,78 +98,86 @@ X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
  (10.181.40.145)
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000066E9:EE_|DM4PR12MB6327:EE_
-X-MS-Office365-Filtering-Correlation-Id: 10252303-d06b-4a28-bcdd-08dc54fc7ca1
+X-MS-TrafficTypeDiagnostic: CO1PEPF000066E7:EE_|IA1PR12MB8222:EE_
+X-MS-Office365-Filtering-Correlation-Id: 12b75396-7eb0-4a75-c2ac-08dc54fc856b
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	4yrmlkBXjs5tFp010L1DHXgEBbDrbt8SflCuQzY3YTgnAtM1r76mBgbtl/DY8XEF/+U7T7C1weYJ8HV2pBIQMK9NoVbBx2Dr8f4DhoH0NaE2LuN8kqyrjhXWabvsBQhjzU3xSRrxW8tP3cam1g5ILhQ+lpKujHYAusTRIUi1Ic4fRG0+qQTjVnMvcEEMZ88dAS3FippuAIEBFvDV8WPZK7WBR6AKaXf5SFOVwck4T5eDKD3J26V4HAklW6g54AFgc2372gvL5vYEjvTj6iKMQJE1ccro9JInOJV8vlR8ekdbsGXmjO/GebiHcCtbC41Sxj9fxt7ezmXg+3/83Gx/5SiI44bj3LRP057MWwuzmCU/aDL0QEptCcHDc3dXQAgzDJsZgaCsRwVYKhGtphigFt1gP/PNNJIxRUBEB5iG2rSQ/tK+jKWfdpisluW9rUQvmVNt0zg9s++7+qNXWJpR2/mpqfD493FboGAbn/XAatqkhS6OJorvsOjv7GCXPUv6FDqTfspH/4KaWeGHFqLjKbkiUwI/O0/lcd9NDbGxoMELazsIw/Y57WXcaNdP83c6L5ERHi7VKum0kYdaDVvdBgY3xZ3JkxKRBC2FvmpDCFksrvj7opQmEVKvhhcVF5yjrWSiTaiRsciNl1smZo5EPPzF1dKASMkRGkeOpFyMqAT1lJD0aM7yIDQAKogM3hqG6GkEBsPKUx9VHjAwgC83sauNlebvDIIAg40BKa4vzvDbNxFbw72aKEk3FyTeU5Qg
+	7AbpBgcW/J/53Svp3WQMND/H03elYhI/XKSN/zgMsN5+CoiuCNVa4IaKk2irsF4lf7ZAPBRAn7gyNK9UsumUzlqWVIiz1WhTPblGjK4pCY8dzAffb6gjl0RQ6qNlTED6dF/lTKnjRR3CFomBQ2PAOtnxOxsvYIR6ptHWWG9sfuFZYCu0i/wPjbDRs5a0l+g794DK8PVIMmcppNhcw8nemBqReMHLbiCMfeHjqcwzUOxr+X9+rvt+634iQSZOkQWiUGbMBO7UiMd5b3/PFoh6mBgft/I3Hlq2JC66w8evvQQSBCBN31K3VtY6ZQZL4xT071MVDHmTE1XkUW6PPqObDs6FamES06M89yUZFY5gVA2W28o37cJJzMg4yCX/OFv4roU0q9UUINxLTTLl/rTDEQ2jcGX1AutCYVBA+e8Q75bWNuPMQKIPRhxvRUReE2U7tU/DyjXaVS3U1nX6Agol1mGHq+BwAWf77Kh1238L3glymZ6fhsZCI7njGKzSuMzDITl78EGWdB3Mekw9gAGpwqbQlUKLIGXaiRHa8bqA6JDDDDWnfwfheztYdAaP1s/6N6WiIRh4kuQL7oYOY9IAa2WwueCuoN0AkWd/r0LihbaMgTl3SUBWMa8gXv4K1K6MDVJIiiU+sr2p0QyqQb+Wd9PXaueLFtzSxajiWTkpOdmuFkpsK0mHaKxiBZqmcakBoUdD7lfIEFemW5i1WvXAmPqYYjFJ8E7w0hjS+XStrQQvVQcU4smNdcPQ7BBVAhwb
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(7416005)(36860700004)(82310400014)(376005)(1800799015);DIR:OUT;SFP:1101;
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(82310400014)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 23:10:57.7202
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 23:11:12.4503
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 10252303-d06b-4a28-bcdd-08dc54fc7ca1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12b75396-7eb0-4a75-c2ac-08dc54fc856b
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
 X-MS-Exchange-CrossTenant-AuthSource:
-	CO1PEPF000066E9.namprd05.prod.outlook.com
+	CO1PEPF000066E7.namprd05.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6327
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8222
 
 From: Ashish Kalra <ashish.kalra@amd.com>
 
-The patchset adds bits and pieces to get kexec (and crashkernel) work on
-SNP guest.
+For kexec use case, need to use and stick to the EFI memmap passed
+from the first kernel via boot-params/setup data, hence,
+skip efi_arch_mem_reserve() during kexec.
 
-v3:
-- Rebased;
-- moved Keep page tables that maps E820_TYPE_ACPI patch to Kirill's tdx
-  guest kexec patch series.
-- checking the md attribute instead of checking the efi_setup for
-  detecting if running under kexec kernel.
-- added new sev_es_enabled() function.
-- skip video memory access in decompressor for SEV-ES/SNP systems to 
-  prevent guest termination as boot stage2 #VC handler does not handle
-  MMIO.
+Additionally during SNP guest kexec testing discovered that EFI memmap
+is corrupted during chained kexec. kexec_enter_virtual_mode() during
+late init will remap the efi_memmap physical pages allocated in
+efi_arch_mem_reserve() via memblock & then subsequently cause random
+EFI memmap corruption once memblock is freed/teared-down.
 
-v2:
-- address zeroing of unaccepted memory table mappings at all page table levels
-  adding phys_pte_init(), phys_pud_init() and phys_p4d_init().
-- include skip efi_arch_mem_reserve() in case of kexec as part of this 
-  patch set.
-- rename last_address_shd_kexec to a more appropriate 
-  kexec_last_address_to_make_private.
-- remove duplicate code shared with TDX and use common interfaces
-  defined for SNP and TDX for kexec/kdump.
-- remove set_pte_enc() dependency on pg_level_to_pfn() and make the 
-  function simpler.
-- rename unshare_pte() to make_pte_private().
-- clarify and make the comment for using kexec_last_address_to_make_private  
-  more understandable.
-- general cleanup. 
+Suggested-by: Dave Young <dyoung@redhat.com>
+[Dave Young: checking the md attribute instead of checking the efi_setup]
+Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+---
+ arch/x86/platform/efi/quirks.c | 23 ++++++++++++++++++++---
+ 1 file changed, 20 insertions(+), 3 deletions(-)
 
-Ashish Kalra (4):
-  efi/x86: skip efi_arch_mem_reserve() in case of kexec.
-  x86/sev: add sev_es_enabled() function.
-  x86/boot/compressed: Skip Video Memory access in Decompressor for
-    SEV-ES/SNP.
-  x86/snp: Convert shared memory back to private on kexec
-
- arch/x86/boot/compressed/misc.c   |   6 +-
- arch/x86/boot/compressed/misc.h   |   1 +
- arch/x86/boot/compressed/sev.c    |   5 +
- arch/x86/boot/compressed/sev.h    |   2 +
- arch/x86/include/asm/probe_roms.h |   1 +
- arch/x86/include/asm/sev.h        |   4 +
- arch/x86/kernel/probe_roms.c      |  16 +++
- arch/x86/kernel/sev.c             | 169 ++++++++++++++++++++++++++++++
- arch/x86/mm/mem_encrypt_amd.c     |   3 +
- arch/x86/platform/efi/quirks.c    |  23 +++-
- 10 files changed, 225 insertions(+), 5 deletions(-)
-
+diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+index f0cc00032751..2b65b3863912 100644
+--- a/arch/x86/platform/efi/quirks.c
++++ b/arch/x86/platform/efi/quirks.c
+@@ -255,15 +255,32 @@ void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
+ 	struct efi_memory_map_data data = { 0 };
+ 	struct efi_mem_range mr;
+ 	efi_memory_desc_t md;
+-	int num_entries;
++	int num_entries, ret;
+ 	void *new;
+ 
+-	if (efi_mem_desc_lookup(addr, &md) ||
+-	    md.type != EFI_BOOT_SERVICES_DATA) {
++	/*
++	 * For kexec use case, we need to use the EFI memmap passed from the first
++	 * kernel via setup data, so we need to skip this.
++	 * Additionally kexec_enter_virtual_mode() during late init will remap
++	 * the efi_memmap physical pages allocated here via memboot & then
++	 * subsequently cause random EFI memmap corruption once memblock is freed.
++	 */
++
++	ret = efi_mem_desc_lookup(addr, &md);
++	if (ret) {
+ 		pr_err("Failed to lookup EFI memory descriptor for %pa\n", &addr);
+ 		return;
+ 	}
+ 
++	if (md.type != EFI_BOOT_SERVICES_DATA) {
++		pr_err("Skip reserving non EFI Boot Service Data memory for %pa\n", &addr);
++		return;
++	}
++
++	/* Kexec copied the efi memmap from the first kernel, thus skip the case */
++	if (md.attribute & EFI_MEMORY_RUNTIME)
++		return;
++
+ 	if (addr + size > md.phys_addr + (md.num_pages << EFI_PAGE_SHIFT)) {
+ 		pr_err("Region spans EFI memory descriptors, %pa\n", &addr);
+ 		return;
 -- 
 2.34.1
 
