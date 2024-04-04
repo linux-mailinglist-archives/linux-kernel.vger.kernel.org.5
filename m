@@ -1,124 +1,115 @@
-Return-Path: <linux-kernel+bounces-132265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132262-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAF66899235
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:38:04 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C5DB89922A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:36:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83B88289FBA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:38:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E2D61C22A9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:36:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A2CE13C697;
-	Thu,  4 Apr 2024 23:37:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E9B113C679;
+	Thu,  4 Apr 2024 23:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CAz4JB/2"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="a0UVbGX4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CEE13C66F
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 23:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF0A130A7F;
+	Thu,  4 Apr 2024 23:36:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712273870; cv=none; b=MVVts4Es4H/MdIYmgwq7A2yeIma5p5KaftQJhNkVl6AJ6CkQyRXZl4f0ZwPccjsJiF+8Ar8PbcJJQ+YmaXtW3BK57h6yTUXyUVkS2mIKSr+65piL29XVgAMWBoDbETjqkfFoRv4qxG0RQFbvNQl/PXYFoXhYOzqSIPqbg7XqhKE=
+	t=1712273763; cv=none; b=S2VPRr0HiGCbioW+wBIkpoaS0xEnzl1Yr+O9M3LURRMAehZIx7bFscw/pyy8vjSVsDeQsckdHMd6VmA8vHq2JF98b6w9P/3ADqDY/rTG8sQTNpVlfsUjOVAipPBFruvpoNGFeHeNVExhE7DdJNPtCqK+VUcTX+gHmNyDlcYkadg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712273870; c=relaxed/simple;
-	bh=LpKJp577/TjDusKjKLzpsZI2h6/FFOW3ygGeMD9cx6E=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h+YIrshggG0RfXvoWy6OjPHdH+jwuqakB7y3LiJiKxC7ZV6nKpm6xlDrFNh7+OHscw7kW7C9BfMBt0VKpBLDER97r1DtOxNVjaIyNubs4COgu30Pq2erGnp7N4lu2hkmZfxnYcSBz147nJQMtw46BQqjQKT/OsoCm5lnObl+bAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CAz4JB/2; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712273868;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UH0SdUkY0Y7wcvIlBfPcVRXDNk9BBU7t+uEZjzSWyug=;
-	b=CAz4JB/2h9/OwDG3y4uqcvVsWHlgZuRkz7qlFCYqobchm4R65eANxbP/1vZA2K1436NB2V
-	//OVk421+ozTGUdW6ryn99YPCeNbUqPHD8IwFtRi/D3rB6I8rjnchXs7cs3bjBbwhgxPkm
-	B6X+8MHJ+IDd4sz4p9GOrPIM7Ix/RB0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-638-EqSQlcGjNlGdio4Ofq0TTQ-1; Thu,
- 04 Apr 2024 19:37:42 -0400
-X-MC-Unique: EqSQlcGjNlGdio4Ofq0TTQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 610D33C0219B;
-	Thu,  4 Apr 2024 23:37:42 +0000 (UTC)
-Received: from chopper.lyude.net (unknown [10.22.8.53])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id BB34D10E4B;
-	Thu,  4 Apr 2024 23:37:41 +0000 (UTC)
-From: Lyude Paul <lyude@redhat.com>
-To: nouveau@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Cc: Karol Herbst <kherbst@redhat.com>,
-	Danilo Krummrich <dakr@redhat.com>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 2/2] drm/nouveau/dp: Don't probe eDP ports twice harder
-Date: Thu,  4 Apr 2024 19:35:54 -0400
-Message-ID: <20240404233736.7946-3-lyude@redhat.com>
-In-Reply-To: <20240404233736.7946-1-lyude@redhat.com>
-References: <20240404233736.7946-1-lyude@redhat.com>
+	s=arc-20240116; t=1712273763; c=relaxed/simple;
+	bh=c4dlqL7Ifu1XCWKPZneuO2tG29yIvg4/flcQpTb0TNk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JbqReZOQZCNPyjdZ8TCm6vMoeyG3f76Nd8qMfaqzGVXaitrojKnvB0/c6dvAu8HgHXhpf94TO5G5ODuk1SjViCgZI874PJrQY2fRmmpK3KF6fmXEIRs+SJf+1KQl5XKBemG8khTERWvvdgiUG74HWevYVDLflPe7ZLI5GF9BDAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=a0UVbGX4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8912AC433C7;
+	Thu,  4 Apr 2024 23:36:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712273763;
+	bh=c4dlqL7Ifu1XCWKPZneuO2tG29yIvg4/flcQpTb0TNk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=a0UVbGX4dyn+lgNOBxBq4IvZRC5S1u0CKnXM25Oh0X2vVpbFBowe338pOPoUZ5JP5
+	 ldMIgl+qUtcymPGNKRDoRvhbBe4MitIO1as1mGQVFqBS3x69CyLKhhb1PHU7Npxfjm
+	 bGOrJqiIPlao8TDDyLu6b0CvnRMO5Uqakf9YJg1Lfa4DX49anqUd+EUMUMXUujDkdH
+	 YXeVPWLl0MbkZIHoFBtcT1Rq8R42kyUCJ8NWDVxVihNJbKskA0/qK/247vmwogOI91
+	 niF4eFrw2ckNf9fnKBV04HrQ5HjMvolN7dx83EBu8txyRVw+QoGbVVzUOqX8CXClUI
+	 TQni90w4qoXhw==
+Date: Thu, 4 Apr 2024 19:36:00 -0400
+From: Eric Biggers <ebiggers@kernel.org>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: linux-crypto@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	"Chang S . Bae" <chang.seok.bae@intel.com>
+Subject: Re: [PATCH v2 6/6] crypto: x86/aes-xts - wire up VAES + AVX10/512
+ implementation
+Message-ID: <20240404233600.GA746@quark.localdomain>
+References: <20240329080355.2871-1-ebiggers@kernel.org>
+ <20240329080355.2871-7-ebiggers@kernel.org>
+ <f5461df0-6609-42db-850c-de6a32728fe2@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f5461df0-6609-42db-850c-de6a32728fe2@intel.com>
 
-I didn't pay close enough attention the last time I tried to fix this
-problem - while we currently do correctly take care to make sure we don't
-probe a connected eDP port more then once, we don't do the same thing for
-eDP ports we found to be disconnected.
+On Thu, Apr 04, 2024 at 01:34:04PM -0700, Dave Hansen wrote:
+> On 3/29/24 01:03, Eric Biggers wrote:
+> > +static const struct x86_cpu_id zmm_exclusion_list[] = {
+> > +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_SKYLAKE_X },
+> > +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_ICELAKE_X },
+> > +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_ICELAKE_D },
+> > +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_ICELAKE },
+> > +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_ICELAKE_L },
+> > +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_ICELAKE_NNPI },
+> > +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_TIGERLAKE_L },
+> > +	{ .vendor = X86_VENDOR_INTEL, .family = 6, .model = INTEL_FAM6_TIGERLAKE },
+> > +	/* Allow Rocket Lake and later, and Sapphire Rapids and later. */
+> > +	/* Also allow AMD CPUs (starting with Zen 4, the first with AVX-512). */
+> > +	{},
+> > +};
+> 
+> A hard-coded model/family exclusion list is not great.
+> 
+> It'll break when running in guests on newer CPUs that fake any of these
+> models.  Some folks will also surely disagree with the kernel policy
+> implemented here.
+> 
+> Is there no way to implement this other than a hard-coded kernel policy?
 
-So, fix this and make sure we only ever probe eDP ports once and then leave
-them at that connector state forever (since without HPD, it's not going to
-change on its own anyway). This should get rid of the last few GSP errors
-getting spit out during runtime suspend and resume on some machines, as we
-tried to reprobe eDP ports in response to ACPI hotplug probe events.
+Besides the hardcoded CPU exclusion list, the options are:
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
----
- drivers/gpu/drm/nouveau/nouveau_dp.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+1. Never use zmm registers.
 
-diff --git a/drivers/gpu/drm/nouveau/nouveau_dp.c b/drivers/gpu/drm/nouveau/nouveau_dp.c
-index 8b1be7dd64ebe..8b27d372e86da 100644
---- a/drivers/gpu/drm/nouveau/nouveau_dp.c
-+++ b/drivers/gpu/drm/nouveau/nouveau_dp.c
-@@ -225,12 +225,16 @@ nouveau_dp_detect(struct nouveau_connector *nv_connector,
- 	u8 *dpcd = nv_encoder->dp.dpcd;
- 	int ret = NOUVEAU_DP_NONE, hpd;
- 
--	/* If we've already read the DPCD on an eDP device, we don't need to
--	 * reread it as it won't change
-+	/* eDP ports don't support hotplugging - so there's no point in probing eDP ports unless we
-+	 * haven't probed them once before.
- 	 */
--	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP &&
--	    dpcd[DP_DPCD_REV] != 0)
--		return NOUVEAU_DP_SST;
-+	if (connector->connector_type == DRM_MODE_CONNECTOR_eDP) {
-+		if (connector->status == connector_status_connected) {
-+			return NOUVEAU_DP_SST;
-+		} else if (connector->status == connector_status_disconnected) {
-+			return NOUVEAU_DP_NONE;
-+		}
-+	}
- 
- 	// Ensure that the aux bus is enabled for probing
- 	drm_dp_dpcd_set_powered(&nv_connector->aux, true);
--- 
-2.44.0
+2. Ignore the issue and use zmm registers even on these CPU models.  Systemwide
+   performance may suffer due to downclocking.
 
+3. Do a runtime test to detect whether using zmm registers causes downclocking.
+   This seems impractical.
+
+4. Keep the proposed policy as the default behavior, but allow it to be
+   overridden on the kernel command line.  This would be a bit more flexible;
+   however, most people don't change defaults anyway.
+
+When you write "Some folks will also surely disagree with the kernel policy
+implemented here", are there any specific concerns that you anticipate?  Note
+that Intel has acknowledged the zmm downclocking issues on Ice Lake and
+suggested that using ymm registers instead would be reasonable:
+https://lore.kernel.org/linux-crypto/e8ce1146-3952-6977-1d0e-a22758e58914@intel.com/
+
+If there is really a controversy, my vote is that for now we just go with option
+(1), i.e. drop this patch from the series.  We can reconsider the issue when a
+CPU is released with better 512-bit support.
+
+- Eric
 
