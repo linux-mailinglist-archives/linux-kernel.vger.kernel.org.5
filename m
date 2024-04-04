@@ -1,107 +1,113 @@
-Return-Path: <linux-kernel+bounces-131405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D47A3898733
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B6424898739
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:23:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1019B1C2683B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:22:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C571D1C26D12
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:23:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB0E2128363;
-	Thu,  4 Apr 2024 12:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CD9D8613E;
+	Thu,  4 Apr 2024 12:23:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="CEQ+1Vah"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CzHFPLi0"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B0A2127B40
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:20:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C0E83CA2;
+	Thu,  4 Apr 2024 12:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712233235; cv=none; b=L3tt6wxck0bK0T5i1bJt4mYoJTEEOWOjHK1lZfUREdPVk+SpYJWb1FeK9xKCOfdyG8L9RU1IVp0qMyZgJjCxe1XqcGrs9V2pN7byPC+Iza1i7j+sVqezoxDIk6REXquT7EeRdHlYgwZhlwrEbrQNYL8yrxOKqcEXeIuKmx7DiR4=
+	t=1712233405; cv=none; b=hp4OIPkC9gYU8kmcCbE7XQkQJdaF2PY+6p4shHt9Hlr3AdqTNga1nvyfXN1LbY62Os+b+smMd3H+nRdJZFO7Az57wNILhnJbpQUF4cbXMpN08DlSlq8+tl9n/97NlDNLTsHpnbDuCL2aBdfaLYMqGSdzOMy5EFMS0kIqTlBYwUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712233235; c=relaxed/simple;
-	bh=H3f5IYJ1QWgMCxp8QqRnm74odB6YZNBaYMyZ5mE9B8E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=vADGXZAe8hrdA/odoBvNrLBCcEfCQarFzaMiua9/v6eISl+b/bdxd87JGHFyXP5hyzDrRYhBmZ1328RjS/wcLUXUrSFR6Jxz2SkHiu1IBpqIpxaKeUmh2XtfDke36wGkjWnDMXUFDwTu/I7XV33sXzRcbBwtTKgIBe3p/Sw4/BQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=CEQ+1Vah; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516c97ddcc7so815218e87.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:20:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712233231; x=1712838031; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DUbfvRaTdYI6FJXs+PUDsLKnWz2I5THsnSsWjhmBFSg=;
-        b=CEQ+1VahHY1lnHONUcj2WZxOs6Qkp/iF0KkGR/SZ1mL2VsVRudtZAR8laVgyetoym0
-         uD4x4KSK59RSy8umCfC5v4WN4lqKep7557O3xU7+jsDSCMlgCNvAqjIGOsgEGh5o1jgT
-         7Hx1eBySF4pWlM/uClIfHE/7pz2sGTgc5cQoh1y7adb9/tg6e5vh8fgc3fgpLNpPLR3H
-         YAR9V8qqF/33Kcs/P63IWE7bFNjbH+EV9PQw6NnJdLuv1s82+rDJhhJNfPP92enfetXa
-         mSfcaw6Ar4jcFjcBfnt+JEijmLotomS2JCLUDF8KYwkyKhdrGp/jKan2j9lhOUd2La0v
-         vXCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712233231; x=1712838031;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DUbfvRaTdYI6FJXs+PUDsLKnWz2I5THsnSsWjhmBFSg=;
-        b=Wu1Zo7akw1FSlfNVRh8HV31cVvcMIon4uzvSkXIgu5PwiLu6w4OImBj9pstBXBF1m+
-         +IQfbH6tI3Mhr0Nip8l83Enb9ZU4LAKttZIiYEwJJeyUSYLBD6LXh1OKx+BzzXHL+T+6
-         2AmnS67kyW2Wo1YFV1jhh+fsX/yH/VxCLYgYSkXhx/2UXDkYyFQOe6ZPLOZdpDrPUz4i
-         BWqqCzwyEL8lRUStVeXtd+V6JC5Bk8j5S+gLxEdhhvAkl4N5HVjBXUHg8lr5W77KHTfI
-         uyVYaCRfqKzvEVBllP1Kt1KFGaKuhMF1uPDAoomwx+nxZ6PuAkC+9410jJ3vpOGqRKup
-         dP8A==
-X-Gm-Message-State: AOJu0YxAJVEOG8vvptffg6qhXC9vabi7/byCvF6Pql50snq/xHhITsdP
-	XEQEzBE+0vT1RpeYUWA+b5aSeWTU0O1I/C2pP9uFTP92blvXbxhnl1wIST7hPOA/aNbSXrNieD2
-	P3yMrmg5a8ZhscxavznHdyYmbjsckFR+ObVWZXA==
-X-Google-Smtp-Source: AGHT+IFXuY19yD67Vs0YeBOAYv5IS0ycYwSWTF9HWesGz64hK8qtn9PkV2yqkWQlXtSA4rvLO2hBr6dSTjjx6khY+oo=
-X-Received: by 2002:a05:6512:60b:b0:515:d038:5548 with SMTP id
- b11-20020a056512060b00b00515d0385548mr1623137lfe.31.1712233231216; Thu, 04
- Apr 2024 05:20:31 -0700 (PDT)
+	s=arc-20240116; t=1712233405; c=relaxed/simple;
+	bh=7FdMeEVDP45EBezLHqk2LWO1xjiO1Mq6YhsC9H1PFSk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p1J4VrShx1viicgLnfGtWcHh9+Wdry5TZqFTxSTL2smlD9ZoP7Tf+Z6eJLgaCLKg5llIJlrLWxNMsuhDp0depkewLWTCbKjwEK5S5b/HDjCJe9PcVoe047Z1CoD1wDKPdYPrCQmcOXNDPw/LqNyYx0Fz58o0r6j435c/UekEmEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CzHFPLi0; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712233404; x=1743769404;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=7FdMeEVDP45EBezLHqk2LWO1xjiO1Mq6YhsC9H1PFSk=;
+  b=CzHFPLi0h4hr8yeIWx3DOmRLz6gnGiEBoGE+G59+hI1Y0140tF0uOf1v
+   I08djqExUIHT4qx9xt0wQLfHSSRA3lucV7nxE4Dv7Rx6IQ981Dv2SnrGD
+   LOXGcJ04LXafByekH7BjIZheVO7FLSYaT/ocCHRjnimW+gp1q/000Jxyl
+   ZXKOHA4zClAZh0guMcVOhMxPfkt19aau9tWMfY/bMLENyOymKrdDVH6ly
+   3V9rzVCb/TfUhA7Ue6l0ZPCGBaQIB/ygZc4TDAbyt6g7pYKwDlkQPGIdU
+   cclxZq10aLXLCJ4Um5dC76GDA14jJB4S8XofeVBbI1std5tJNJ7OuF5f9
+   w==;
+X-CSE-ConnectionGUID: VEv/MoXrT9mXGORA9UDs8w==
+X-CSE-MsgGUID: 1Mn4UD+PSlW1nDewCPfIlQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18663937"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="18663937"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 05:23:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="915216648"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="915216648"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 05:23:16 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rsM7d-00000001QLJ-2ON6;
+	Thu, 04 Apr 2024 15:23:13 +0300
+Date: Thu, 4 Apr 2024 15:23:13 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Nuno Sa <nuno.sa@analog.com>
+Cc: Petr Mladek <pmladek@suse.com>, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Olivier Moysan <olivier.moysan@foss.st.com>,
+	Jyoti Bhayana <jbhayana@google.com>,
+	Chris Down <chris@chrisdown.name>,
+	John Ogness <john.ogness@linutronix.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH 3/4] iio: backend: make use of dev_errp_probe()
+Message-ID: <Zg6bsS3WMvp-nY3S@smile.fi.intel.com>
+References: <20240404-dev-add_dev_errp_probe-v1-0-d18e3eb7ec3f@analog.com>
+ <20240404-dev-add_dev_errp_probe-v1-3-d18e3eb7ec3f@analog.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403131518.61392-1-warthog618@gmail.com> <20240403131518.61392-2-warthog618@gmail.com>
- <CAMRc=Mf0DPN1-npNPQA=3ivQd-PMhf_ZAa6eSFjmQ26Y8_Gv=g@mail.gmail.com> <20240404105912.GA94230@rigel>
-In-Reply-To: <20240404105912.GA94230@rigel>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 4 Apr 2024 14:20:20 +0200
-Message-ID: <CAMRc=MeOW6mcYFR6GL5c0hyfH_ZvqmLqKFSk50jKa-d+4aa4iQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] gpio: cdev: fix missed label sanitizing in debounce_setup()
-To: Kent Gibson <warthog618@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, 
-	linus.walleij@linaro.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404-dev-add_dev_errp_probe-v1-3-d18e3eb7ec3f@analog.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Thu, Apr 4, 2024 at 12:59=E2=80=AFPM Kent Gibson <warthog618@gmail.com> =
-wrote:
->
-> On Thu, Apr 04, 2024 at 10:20:29AM +0200, Bartosz Golaszewski wrote:
-> >
-> > Now that I look at the actual patch, I don't really like it. We
-> > introduce a bug just to fix it a commit later. Such things have been
-> > frowned upon in the past.
-> >
-> > Let me shuffle the code a bit, I'll try to make it a bit more correct.
-> >
->
-> The debounce_setup() oversight bug is the more severe, so it makes more
-> sense to me to fix it first.  But then I my preferred solution would be
-> to pull the original patch and submit a corrected patch that merges all
-> three, so no bugs, but I assume that isn't an option.
->
+On Thu, Apr 04, 2024 at 01:06:25PM +0200, Nuno Sa wrote:
+> Using dev_errp_probe() to simplify the code.
 
-Nah, let's not needlessly rebase it. Most I can do is merge the two
-but they are really functionally separate so I'd keep it as is in v2.
+..
 
-Bart
+> +	if (IS_ERR(fwnode))
+> +		return dev_errp_probe(dev, PTR_ERR(fwnode),
+> +				      "Cannot get Firmware reference\n");
+
+ERR_CAST() seems quite good candidate to have here.
+
+		return dev_errp_probe(dev, fwnode, "Cannot get Firmware reference\n");
+
+(Assuming dev_errp_probe() magically understands that, note you may have it as
+ a macro and distinguish parameter type with _Generic() or so and behave
+ differently: ERR_PTR() vs. ERR_CAST(), see acpi_dev_hid_uid_match()
+ implementation, but also keep in mind that it doesn't distinguish NULL/0, there
+ is a patch available in the mailing list to fix that, though.)
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
