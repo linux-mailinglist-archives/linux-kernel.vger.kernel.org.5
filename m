@@ -1,86 +1,107 @@
-Return-Path: <linux-kernel+bounces-132032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE078898EF6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:27:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8E3C898F01
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:27:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2AE8E1C237F1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:27:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D8661F20CAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:27:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A64E13440F;
-	Thu,  4 Apr 2024 19:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFE23137775;
+	Thu,  4 Apr 2024 19:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="eo4MnR9z"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86CBF15EA6;
-	Thu,  4 Apr 2024 19:26:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YPMARq/w"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DE8135A4C;
+	Thu,  4 Apr 2024 19:26:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712258808; cv=none; b=cJuSjmo1kDTs4M7OQkErn3U6IODHiU0P2vFPJ8Fdb53BW96uiPiLR4wcSB7tKYOg0ws3sDnrrr5Mvj38lxQeKtEUTE4pqCP2MUG9UH1epoiS/mM6xpYenW+o1jBtumcCdMH9R3fu8QkuaH+MqdMAwHnvxnkq7fg5K2bucI2hb7M=
+	t=1712258813; cv=none; b=EuGEgIBDw87IGNGB+DDxYE5vH9A1MZ/ohzMW+s43jVtAlbOI+folnQ94lNKdrXUqXc/2wb3st/JMcLfXJTNb+giXSHq0XC3s5LWgxDXBfbDJBBomjyg3jO+VTfJJg5xMGQEnPIzz4MqV92AfjfihVAOynOzZ13VvNFLfxwh9bfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712258808; c=relaxed/simple;
-	bh=2lgKxpRtMWH0iH+ihkZown4poVg4tjlTUOWpwf4cYhs=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=LmwNI1H3pbzrjobvvQaMpzXEpIdd1/FY/412mXx6khsyfD4ueE996yZPlEELkBg7U06VzTtrR6qo0TOQZhY5IgUpgeSf7iARO3BSVtrygn4c5XA6eis7ofU/YsuL40XrQH8/tW8bObvpPpTlK9dAiWay5frQw2Ltj+gjsFwinds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=eo4MnR9z; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from DESKTOP-4OLSCEK. (c-76-135-27-212.hsd1.wa.comcast.net [76.135.27.212])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 2B9A820E94A7;
-	Thu,  4 Apr 2024 12:26:47 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2B9A820E94A7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1712258807;
-	bh=2lgKxpRtMWH0iH+ihkZown4poVg4tjlTUOWpwf4cYhs=;
-	h=Date:From:To:Cc:Subject:From;
-	b=eo4MnR9zzdAhZBzh1Wo5USgTxP8M+99fhIzMom79fgPkqfOxqqF/ocFwlO0d6p/pa
-	 IhtAjk5ikMLuE8uOJCGUtzdsq4ffPf+F2jhW0xpqLFN7Ng0fYS/ok0/UbYcAERZlU0
-	 dIYNJAFl3IMPzLteo+HzKmT5kKuhWZ5UaQgZi+3g=
-Date: Thu, 4 Apr 2024 12:26:41 -0700
-From: Beau Belgrave <beaub@linux.microsoft.com>
-To: Namhyung Kim <namhyung@kernel.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>
-Cc: linux-trace-kernel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Copying TLS/user register data per perf-sample?
-Message-ID: <20240404192641.GA2628-beaub@linux.microsoft.com>
+	s=arc-20240116; t=1712258813; c=relaxed/simple;
+	bh=UYUzD7T4Jph7nLu+kUWLGhaquNztQP+/2JKuOZkr4Xs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IQRVrxQ8IymHIC9+qk4q0WNr0CHjy3FtryhfOoApR4WpCNAv2TPT7AItoLVE1ePXTXT7Nf9s0vps1hSmZvaJUqUx+7FFOyZQAdrlh/lchapP87yps7R6lZwecX9e9ngMgGqtoixba+gI67y8TVv4cgUsuSaBdkDU2Z2SvQ8soYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YPMARq/w; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712258812; x=1743794812;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=UYUzD7T4Jph7nLu+kUWLGhaquNztQP+/2JKuOZkr4Xs=;
+  b=YPMARq/wKp/ULCGTSLFFtGfp7iY8R7jrPpVgdStvSTlxLXaa63DGMTl2
+   kkMRZXarG2EqG3QrxGTTKIw6DG7/+HTEyLhJdRnuJfAJklvFAhg0t8MOb
+   7nHWjoIXt7yPgQI8OF3iBUuPxuZxm6poQSSJa67Yn9mjwvvGYyrIUw1fB
+   F95Zslrebb4n4yxm+axLT0PDGFaVGPM2HvO4p5bhvkCtT9pqpA4ZT3Dkl
+   WLbPHgXhYT9/koLpgExsG9cjH05cq5HGrbSD1OEh9hnUb4CHyDDgmtKSV
+   W2vMoTn9pubgBfWjEjSnhSoEkSqUQ27nENuIPZCw3MkEUFH1c4nJkXrEu
+   g==;
+X-CSE-ConnectionGUID: rBhp0tOkRPOx7Q7PdcJUiA==
+X-CSE-MsgGUID: PLc86ybZQcKrpXb4s+OZJw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="18178258"
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="18178258"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 12:26:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="915227545"
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="915227545"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 12:26:48 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rsSjW-00000001YZ7-04j3;
+	Thu, 04 Apr 2024 22:26:46 +0300
+Date: Thu, 4 Apr 2024 22:26:45 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	acpica-devel@lists.linux.dev, Len Brown <lenb@kernel.org>,
+	Robert Moore <robert.moore@intel.com>
+Subject: Re: [PATCH v1 3/7] ACPI: scan: Replace infinite for-loop with finite
+ while-loop
+Message-ID: <Zg7-9QFnaDzb53tt@smile.fi.intel.com>
+References: <20240325123444.3031851-1-andriy.shevchenko@linux.intel.com>
+ <20240325123444.3031851-4-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0g6bn4k2Sv+SRC1fiDoXU+hZ2iUR6GuL5O1Eny=Pxmh0w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0g6bn4k2Sv+SRC1fiDoXU+hZ2iUR6GuL5O1Eny=Pxmh0w@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hello,
+On Thu, Apr 04, 2024 at 09:22:29PM +0200, Rafael J. Wysocki wrote:
+> On Mon, Mar 25, 2024 at 1:34 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 
-I'm looking into the possibility of capturing user data that is pointed
-to by a user register (IE: fs/gs for TLS on x86/64) for each sample via
-perf_events.
+..
 
-I was hoping to find a way to do this similar to PERF_SAMPLE_STACK_USER.
-I think it could even use roughly the same ABI in the perf ring buffer.
-Or it may be possible by some kprobe linked to the perf sample function.
+> I don't quite agree with this one, sorry.
 
-This would allow a profiler to collect TLS (or other values) on x64. In
-the Open Telemetry profiling SIG [1], we are trying to find a fast way
-to grab a tracing association quickly on a per-thread basis. The team
-at Elastic has a bespoke way to do this [2], however, I'd like to see a
-more general way to achieve this. The folks I've been talking with seem
-open to the idea of just having a TLS value for this we could capture
-upon each sample. We could then just state, Open Telemetry SDKs should
-have a TLS value for span correlation. However, we need a way to sample
-the TLS value(s) when a sampling event is generated.
+No problem.
 
-Is this already possible via some other means? It'd be great to be able
-to do this directly at the perf_event sample via the ABI or a probe.
+> The rest of the series has been applied as 6.10 material.
 
-Thanks,
--Beau
+Thank you!
 
-1. https://opentelemetry.io/blog/2024/profiling/
-2. https://www.elastic.co/blog/continuous-profiling-distributed-tracing-correlation
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
