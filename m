@@ -1,407 +1,141 @@
-Return-Path: <linux-kernel+bounces-132169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 635DE89908F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:39:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38587899098
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 869FB1C224F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:39:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D95EC1F23B26
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94F8613C3D4;
-	Thu,  4 Apr 2024 21:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48A0D13C3C4;
+	Thu,  4 Apr 2024 21:48:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e8m52NW4"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b="LMIK8Xyl"
+Received: from buffalo.tulip.relay.mailchannels.net (buffalo.tulip.relay.mailchannels.net [23.83.218.24])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B69713BACF;
-	Thu,  4 Apr 2024 21:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712266784; cv=none; b=KGB+TdRynkDRmoFoTYkUCDkFHjNJksh8onLsp6sIAijqqp5eQ/pK7orKwaJ8814MhMDHRorqWRZbZaAH8VUY3DikVunTFnjw15l+5QhsUYZRfiEobWFvwZYHxzayrQSGuGkV/peVnNFqgP5iNJRL17SGk7q9+IHLJUJPGLVYEyo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712266784; c=relaxed/simple;
-	bh=+RDi3890WN6/xHKRrz0pY9T74zCJtVb0ZaeOjy5zz0o=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 931A813BAF5
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 21:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.24
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712267323; cv=pass; b=tzhPFnnR/hZUOIAptK1n7alerTqC3AdFQSNBIMwUjHRZr17hEZY7GjmcQb1R7ZjFGCNF5yc2YGwWCVY6QEOkFA+PX/txTMmC+N/Y3YW8vFvDIWLWDYDWqr/JeFWw99d8jh1R0QSY5guaG90jhPHiFXc89/Sz0ZRAl4/awRCsEOs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712267323; c=relaxed/simple;
+	bh=M6DIshYVJQR0DO4VUKuLo4E19fWk1vmFQ2Kk6iCE5tk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OonmEuFHfl6GpG15rxW76RowydewH8sDePoWRvmU/NtMBy922sh/qVIkHPEwEa+tet4JlSOu/JeKtckGSxq4GYut7IYTU5WSNqjvFEaR0fT+/IWvbUyegj2o4REmOpufqmG2A18SA2nNTi/xv/Hu+czZGdYzMYpga5y776y/L5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e8m52NW4; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712266782; x=1743802782;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=+RDi3890WN6/xHKRrz0pY9T74zCJtVb0ZaeOjy5zz0o=;
-  b=e8m52NW4rIE3TDrNY2bZ7VaZxq3dYkEIuJDqYVv7fX2oo6H6UkYnxXZ2
-   fVv9c9E/tMmTkhLmUvteHTagvkuAoZcBLtZszfmocgJlJCO8xnkEpx7LL
-   eex1Sk2faTyZqmZ7Nlenjss8vVSydMy+6c0LiVcMFT0njmp9wF/ka3t5z
-   1KY1t6+nYyFi0s8qoEa6IS67yL1YDtYS0+EC2cNSJFUWoVELVXW5kdu2W
-   v23vQqoF3eo0AdwyXG79ZpgA/otsdq4/DsIRLnvX2nHhH9i1Fu8H0gWoJ
-   9Ak/kHofmOVYDIwxeDc5pzhBgfYWfJKlBQrMJMzoUNCKWa9/dbg1FtS24
-   g==;
-X-CSE-ConnectionGUID: xvPzlsurSneH7NDPhrvZSg==
-X-CSE-MsgGUID: V7btD0Y2Tr60GcxiKjUkpA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="30050126"
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="30050126"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 14:39:41 -0700
-X-CSE-ConnectionGUID: Ie3c6ESYQSSJXt9GBKTHzg==
-X-CSE-MsgGUID: 3kv7MuKwS/uKhk6idibTSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="23668909"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 14:39:41 -0700
-Date: Thu, 4 Apr 2024 14:39:41 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, michael.roth@amd.com,
-	isaku.yamahata@intel.com, isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v5 07/17] KVM: x86: add fields to struct kvm_arch for
- CoCo features
-Message-ID: <20240404213941.GS2444378@ls.amr.corp.intel.com>
-References: <20240404121327.3107131-1-pbonzini@redhat.com>
- <20240404121327.3107131-8-pbonzini@redhat.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ewBii+LCYmFuD5HjGA0nxwEDrwtCQWeJj6Wl2ov8nkxUveLSigAgabs8ZIaEj6+ZCL+Kud4lF7BEjtMSMgthmS1zAufkvGLUUqaZo9VNIdeGhAymkB2ZE8w3k9wBzeNTp0WXtNQJC7BkL8JfercEWTDEyfk0SOF1FRSF2QFPagk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=templeofstupid.com; spf=pass smtp.mailfrom=templeofstupid.com; dkim=pass (2048-bit key) header.d=templeofstupid.com header.i=@templeofstupid.com header.b=LMIK8Xyl; arc=pass smtp.client-ip=23.83.218.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=templeofstupid.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=templeofstupid.com
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id DD6808257B
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 21:41:57 +0000 (UTC)
+Received: from pdx1-sub0-mail-a264.dreamhost.com (unknown [127.0.0.6])
+	(Authenticated sender: dreamhost)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 84D8081F4E
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 21:41:57 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1712266917; a=rsa-sha256;
+	cv=none;
+	b=0PXT1g2WDqexfisBw0CjqD6K5N+Ru+vs4In0SCl9VVkQ7LWYgNLInSI7v7JjD6IjG1DIEL
+	9g/fPuo3pn2Y53wYATk06VD8vW8YyKkKTc5qKWYBigPa7+GXr0MveNk50u2IwwfirtrH4i
+	48T1LVqIXpQHva7BGiH5mMo0lfDtMtyY4EosOJIZ1b4LhoNxGmiOMRwoUlOfJjfwWOHsfA
+	jW99WTMnXNUWS4j/8KyCBF6MzJwe0VPERcKaD20nhYU6UyVjh8BmFzs71ANz2XroeEz19Y
+	IyiUBAOqsODL6PpNucZ/ZlDdSAo8MEmpbU6++zjgfvDs6wKR0kMZYY8eed1BHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1712266917;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references:dkim-signature;
+	bh=oiU215bQMRqMD25CrXr9YpvEHYCDhTpFJaAfQebstxE=;
+	b=97ilUBTD0D9600sfwr0sIY5oxBsLVvxZyvvEFnHyyv3AS+jSQgM3O+tx+j2DqohcFZNSnD
+	0D2e5XACe1zl1H+Ikx8pvlH8mlSdlx0Rv0LG2UiR+BiYJt5l8adgSUgSWoupIqXows4YQS
+	BvXO1EH/Aa0Yb7lWpL0wf60sHPgltXaEqltFT4tF4nbDND03yE5frN/tjaVgXgMoBSwUk0
+	Xn2eKF4pMpHOXvV5CiU5K8BkZ5GPp3RECnoC+cBQZBri5sZjFgtCzhwKBAQxNuDcjr0+QN
+	W8orRTMr8JrjKAHUTXKKlk4gZVONGJ1thjN/poMXEiEaVQoPLf4nd2zru76XYg==
+ARC-Authentication-Results: i=1;
+	rspamd-86f86f958-64ssq;
+	auth=pass smtp.auth=dreamhost smtp.mailfrom=kjlx@templeofstupid.com
+X-Sender-Id: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|kjlx@templeofstupid.com
+X-MailChannels-Auth-Id: dreamhost
+X-Absorbed-Attack: 188f4a7f2a25fff5_1712266917779_651901442
+X-MC-Loop-Signature: 1712266917779:4165931739
+X-MC-Ingress-Time: 1712266917778
+Received: from pdx1-sub0-mail-a264.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.125.113.83 (trex/6.9.2);
+	Thu, 04 Apr 2024 21:41:57 +0000
+Received: from kmjvbox.templeofstupid.com (c-73-222-159-162.hsd1.ca.comcast.net [73.222.159.162])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: kjlx@templeofstupid.com)
+	by pdx1-sub0-mail-a264.dreamhost.com (Postfix) with ESMTPSA id 4V9Znx1TF9zVN
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=templeofstupid.com;
+	s=dreamhost; t=1712266917;
+	bh=oiU215bQMRqMD25CrXr9YpvEHYCDhTpFJaAfQebstxE=;
+	h=Date:From:To:Cc:Subject:Content-Type;
+	b=LMIK8Xyl6bHblGCtjWTDQm/b66eFVU/mhAWcAHTczX+sQgZ1d/KhhBYxz6YF+Nkl4
+	 M1dGy/oyIWRXRI7sABKox7pd2poOj0ID/nTA94ZDsFKHdc1NMncUVSndihX3qhEnRz
+	 sBnj9sIc/4MY3YVzcKHf62ucff/Y9coWWktaClQ2viyYp+AkHBdZArpAkWE5enIHK1
+	 pOG4qmGndYS0AmrVyjSrQfqcSPJN0KJoQpKGBzS6m2rskWbGPFKH6EFkH9XKsFoSge
+	 2WfajbRLfnG+l4pvGsQQT84OSRQgExQoNe5DHzQ6qPeQUscrC9wGcpCYUHM+lsrFZ7
+	 X9KWR0A5TFUHQ==
+Received: from johansen (uid 1000)
+	(envelope-from kjlx@templeofstupid.com)
+	id e0103
+	by kmjvbox.templeofstupid.com (DragonFly Mail Agent v0.12);
+	Thu, 04 Apr 2024 14:41:56 -0700
+Date: Thu, 4 Apr 2024 14:41:56 -0700
+From: Krister Johansen <kjlx@templeofstupid.com>
+To: Ali Saidi <alisaidi@amazon.com>
+Cc: catalin.marinas@arm.com, james.morse@arm.com, kvmarm@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	maz@kernel.org, me@davidreaver.com, oliver.upton@linux.dev,
+	suzuki.poulose@arm.com, will@kernel.org, yuzenghui@huawei.com
+Subject: Re: [PATCH] KVM: arm64: Limit stage2_apply_range() batch size to
+ smallest block
+Message-ID: <20240404214156.GF2178@templeofstupid.com>
+References: <20240404044028.GA1976@templeofstupid.com>
+ <20240404212742.11248-1-alisaidi@amazon.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240404121327.3107131-8-pbonzini@redhat.com>
+In-Reply-To: <20240404212742.11248-1-alisaidi@amazon.com>
 
-On Thu, Apr 04, 2024 at 08:13:17AM -0400,
-Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Thu, Apr 04, 2024 at 09:27:42PM +0000, Ali Saidi wrote:
+> > Just a quick followup that I did test Will's patches and didn't find
+> > that it changed the performance of the workload that I'd been testing.
+> > IOW, I wasn't able to discern a network performance difference between
+> > the baseline and those changes.
+> 
+> That is a bit unexpected that the performance wasn't worse with the patch Will
+> sent because it should have disabled the range invalidates since they these 
+> invalidates will be getting rid of blocks?  Which Graviton were you testing
+> this on? 
 
-> Some VM types have characteristics in common; in fact, the only use
-> of VM types right now is kvm_arch_has_private_mem and it assumes that
-> _all_ nonzero VM types have private memory.
-> 
-> We will soon introduce a VM type for SEV and SEV-ES VMs, and at that
-> point we will have two special characteristics of confidential VMs
-> that depend on the VM type: not just if memory is private, but
-> also whether guest state is protected.  For the latter we have
-> kvm->arch.guest_state_protected, which is only set on a fully initialized
-> VM.
-> 
-> For VM types with protected guest state, we can actually fix a problem in
-> the SEV-ES implementation, where ioctls to set registers do not cause an
-> error even if the VM has been initialized and the guest state encrypted.
-> Make sure that when using VM types that will become an error.
-> 
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Message-Id: <20240209183743.22030-7-pbonzini@redhat.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  7 ++-
->  arch/x86/kvm/x86.c              | 93 ++++++++++++++++++++++++++-------
->  2 files changed, 79 insertions(+), 21 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 04c430eb25cf..3d56b5bb10e9 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1279,12 +1279,14 @@ enum kvm_apicv_inhibit {
->  };
->  
->  struct kvm_arch {
-> -	unsigned long vm_type;
->  	unsigned long n_used_mmu_pages;
->  	unsigned long n_requested_mmu_pages;
->  	unsigned long n_max_mmu_pages;
->  	unsigned int indirect_shadow_pages;
->  	u8 mmu_valid_gen;
-> +	u8 vm_type;
-> +	bool has_private_mem;
-> +	bool has_protected_state;
->  	struct hlist_head mmu_page_hash[KVM_NUM_MMU_PAGES];
->  	struct list_head active_mmu_pages;
->  	struct list_head zapped_obsolete_pages;
-> @@ -2153,8 +2155,9 @@ void kvm_mmu_new_pgd(struct kvm_vcpu *vcpu, gpa_t new_pgd);
->  void kvm_configure_mmu(bool enable_tdp, int tdp_forced_root_level,
->  		       int tdp_max_root_level, int tdp_huge_page_level);
->  
-> +
->  #ifdef CONFIG_KVM_PRIVATE_MEM
-> -#define kvm_arch_has_private_mem(kvm) ((kvm)->arch.vm_type != KVM_X86_DEFAULT_VM)
-> +#define kvm_arch_has_private_mem(kvm) ((kvm)->arch.has_private_mem)
->  #else
->  #define kvm_arch_has_private_mem(kvm) false
->  #endif
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 3934e7682734..d4a8d896798f 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -5555,11 +5555,15 @@ static int kvm_vcpu_ioctl_x86_set_vcpu_events(struct kvm_vcpu *vcpu,
->  	return 0;
->  }
->  
-> -static void kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
-> -					     struct kvm_debugregs *dbgregs)
-> +static int kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
-> +					    struct kvm_debugregs *dbgregs)
->  {
->  	unsigned int i;
->  
-> +	if (vcpu->kvm->arch.has_protected_state &&
-> +	    vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->  	memset(dbgregs, 0, sizeof(*dbgregs));
->  
->  	BUILD_BUG_ON(ARRAY_SIZE(vcpu->arch.db) != ARRAY_SIZE(dbgregs->db));
-> @@ -5568,6 +5572,7 @@ static void kvm_vcpu_ioctl_x86_get_debugregs(struct kvm_vcpu *vcpu,
->  
->  	dbgregs->dr6 = vcpu->arch.dr6;
->  	dbgregs->dr7 = vcpu->arch.dr7;
-> +	return 0;
->  }
->  
->  static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
-> @@ -5575,6 +5580,10 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
->  {
->  	unsigned int i;
->  
-> +	if (vcpu->kvm->arch.has_protected_state &&
-> +	    vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->  	if (dbgregs->flags)
->  		return -EINVAL;
->  
-> @@ -5595,8 +5604,8 @@ static int kvm_vcpu_ioctl_x86_set_debugregs(struct kvm_vcpu *vcpu,
->  }
->  
->  
-> -static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
-> -					  u8 *state, unsigned int size)
-> +static int kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
-> +					 u8 *state, unsigned int size)
->  {
->  	/*
->  	 * Only copy state for features that are enabled for the guest.  The
-> @@ -5614,24 +5623,25 @@ static void kvm_vcpu_ioctl_x86_get_xsave2(struct kvm_vcpu *vcpu,
->  			     XFEATURE_MASK_FPSSE;
->  
->  	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
-> -		return;
-> +		return vcpu->kvm->arch.has_protected_state ? -EINVAL : 0;
->  
->  	fpu_copy_guest_fpstate_to_uabi(&vcpu->arch.guest_fpu, state, size,
->  				       supported_xcr0, vcpu->arch.pkru);
-> +	return 0;
->  }
->  
-> -static void kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
-> -					 struct kvm_xsave *guest_xsave)
-> +static int kvm_vcpu_ioctl_x86_get_xsave(struct kvm_vcpu *vcpu,
-> +					struct kvm_xsave *guest_xsave)
->  {
-> -	kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
-> -				      sizeof(guest_xsave->region));
-> +	return kvm_vcpu_ioctl_x86_get_xsave2(vcpu, (void *)guest_xsave->region,
-> +					     sizeof(guest_xsave->region));
->  }
->  
->  static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
->  					struct kvm_xsave *guest_xsave)
->  {
->  	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
-> -		return 0;
-> +		return vcpu->kvm->arch.has_protected_state ? -EINVAL : 0;
->  
->  	return fpu_copy_uabi_to_guest_fpstate(&vcpu->arch.guest_fpu,
->  					      guest_xsave->region,
-> @@ -5639,18 +5649,23 @@ static int kvm_vcpu_ioctl_x86_set_xsave(struct kvm_vcpu *vcpu,
->  					      &vcpu->arch.pkru);
->  }
->  
-> -static void kvm_vcpu_ioctl_x86_get_xcrs(struct kvm_vcpu *vcpu,
-> -					struct kvm_xcrs *guest_xcrs)
-> +static int kvm_vcpu_ioctl_x86_get_xcrs(struct kvm_vcpu *vcpu,
-> +				       struct kvm_xcrs *guest_xcrs)
->  {
-> +	if (vcpu->kvm->arch.has_protected_state &&
-> +	    vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->  	if (!boot_cpu_has(X86_FEATURE_XSAVE)) {
->  		guest_xcrs->nr_xcrs = 0;
-> -		return;
-> +		return 0;
->  	}
->  
->  	guest_xcrs->nr_xcrs = 1;
->  	guest_xcrs->flags = 0;
->  	guest_xcrs->xcrs[0].xcr = XCR_XFEATURE_ENABLED_MASK;
->  	guest_xcrs->xcrs[0].value = vcpu->arch.xcr0;
-> +	return 0;
->  }
->  
->  static int kvm_vcpu_ioctl_x86_set_xcrs(struct kvm_vcpu *vcpu,
-> @@ -5658,6 +5673,10 @@ static int kvm_vcpu_ioctl_x86_set_xcrs(struct kvm_vcpu *vcpu,
->  {
->  	int i, r = 0;
->  
-> +	if (vcpu->kvm->arch.has_protected_state &&
-> +	    vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->  	if (!boot_cpu_has(X86_FEATURE_XSAVE))
->  		return -EINVAL;
->  
-> @@ -6040,7 +6059,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->  	case KVM_GET_DEBUGREGS: {
->  		struct kvm_debugregs dbgregs;
->  
-> -		kvm_vcpu_ioctl_x86_get_debugregs(vcpu, &dbgregs);
-> +		r = kvm_vcpu_ioctl_x86_get_debugregs(vcpu, &dbgregs);
-> +		if (r < 0)
-> +			break;
->  
->  		r = -EFAULT;
->  		if (copy_to_user(argp, &dbgregs,
-> @@ -6070,7 +6091,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->  		if (!u.xsave)
->  			break;
->  
-> -		kvm_vcpu_ioctl_x86_get_xsave(vcpu, u.xsave);
-> +		r = kvm_vcpu_ioctl_x86_get_xsave(vcpu, u.xsave);
-> +		if (r < 0)
-> +			break;
->  
->  		r = -EFAULT;
->  		if (copy_to_user(argp, u.xsave, sizeof(struct kvm_xsave)))
-> @@ -6099,7 +6122,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->  		if (!u.xsave)
->  			break;
->  
-> -		kvm_vcpu_ioctl_x86_get_xsave2(vcpu, u.buffer, size);
-> +		r = kvm_vcpu_ioctl_x86_get_xsave2(vcpu, u.buffer, size);
-> +		if (r < 0)
-> +			break;
->  
->  		r = -EFAULT;
->  		if (copy_to_user(argp, u.xsave, size))
-> @@ -6115,7 +6140,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->  		if (!u.xcrs)
->  			break;
->  
-> -		kvm_vcpu_ioctl_x86_get_xcrs(vcpu, u.xcrs);
-> +		r = kvm_vcpu_ioctl_x86_get_xcrs(vcpu, u.xcrs);
-> +		if (r < 0)
-> +			break;
->  
->  		r = -EFAULT;
->  		if (copy_to_user(argp, u.xcrs,
-> @@ -6259,6 +6286,11 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->  	}
->  #endif
->  	case KVM_GET_SREGS2: {
-> +		r = -EINVAL;
-> +		if (vcpu->kvm->arch.has_protected_state &&
-> +		    vcpu->arch.guest_state_protected)
-> +			goto out;
-> +
->  		u.sregs2 = kzalloc(sizeof(struct kvm_sregs2), GFP_KERNEL);
->  		r = -ENOMEM;
->  		if (!u.sregs2)
-> @@ -6271,6 +6303,11 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->  		break;
->  	}
->  	case KVM_SET_SREGS2: {
-> +		r = -EINVAL;
-> +		if (vcpu->kvm->arch.has_protected_state &&
-> +		    vcpu->arch.guest_state_protected)
-> +			goto out;
-> +
->  		u.sregs2 = memdup_user(argp, sizeof(struct kvm_sregs2));
->  		if (IS_ERR(u.sregs2)) {
->  			r = PTR_ERR(u.sregs2);
-> @@ -11478,6 +11515,10 @@ static void __get_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
->  
->  int kvm_arch_vcpu_ioctl_get_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
->  {
-> +	if (vcpu->kvm->arch.has_protected_state &&
-> +	    vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->  	vcpu_load(vcpu);
->  	__get_regs(vcpu, regs);
->  	vcpu_put(vcpu);
-> @@ -11519,6 +11560,10 @@ static void __set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
->  
->  int kvm_arch_vcpu_ioctl_set_regs(struct kvm_vcpu *vcpu, struct kvm_regs *regs)
->  {
-> +	if (vcpu->kvm->arch.has_protected_state &&
-> +	    vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->  	vcpu_load(vcpu);
->  	__set_regs(vcpu, regs);
->  	vcpu_put(vcpu);
-> @@ -11591,6 +11636,10 @@ static void __get_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2)
->  int kvm_arch_vcpu_ioctl_get_sregs(struct kvm_vcpu *vcpu,
->  				  struct kvm_sregs *sregs)
->  {
-> +	if (vcpu->kvm->arch.has_protected_state &&
-> +	    vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->  	vcpu_load(vcpu);
->  	__get_sregs(vcpu, sregs);
->  	vcpu_put(vcpu);
-> @@ -11858,6 +11907,10 @@ int kvm_arch_vcpu_ioctl_set_sregs(struct kvm_vcpu *vcpu,
->  {
->  	int ret;
->  
-> +	if (vcpu->kvm->arch.has_protected_state &&
-> +	    vcpu->arch.guest_state_protected)
-> +		return -EINVAL;
-> +
->  	vcpu_load(vcpu);
->  	ret = __set_sregs(vcpu, sregs);
->  	vcpu_put(vcpu);
-> @@ -11975,7 +12028,7 @@ int kvm_arch_vcpu_ioctl_get_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
->  	struct fxregs_state *fxsave;
->  
->  	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
-> -		return 0;
-> +		return vcpu->kvm->arch.has_protected_state ? -EINVAL : 0;
->  
->  	vcpu_load(vcpu);
->  
-> @@ -11998,7 +12051,7 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
->  	struct fxregs_state *fxsave;
->  
->  	if (fpstate_is_confidential(&vcpu->arch.guest_fpu))
-> -		return 0;
-> +		return vcpu->kvm->arch.has_protected_state ? -EINVAL : 0;
->  
->  	vcpu_load(vcpu);
->  
-> @@ -12524,6 +12577,8 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->  		return -EINVAL;
->  
->  	kvm->arch.vm_type = type;
-> +	kvm->arch.has_private_mem =
-> +		(type == KVM_X86_SW_PROTECTED_VM);
->  
->  	ret = kvm_page_track_init(kvm);
->  	if (ret)
-> -- 
-> 2.43.0
+Sorry I didn't mention it earlier.  This was on a Graviton 4 with
+FEAT_TLBIRANGE.  Due to the placement of the test machine and the client
+the max single flow rate was 5Gbps, and with both the baseline and
+Will's patches I wasn't able to discern any slowdown there, at least in
+terms of impact to the adjacent networking traffic.  I saw an approx 1%
+slowdown with multiple flows at 10Gbps, but didn't have a baseline for
+that test case so was hesitant to offer it as conclusive.  I should be
+clear that I _wasn't_ measuring the the teardown times in this test
+-- just how the teardown itself impacted the networking performance.
 
-This works well with TDX KVM patch series.
-
-Reviewed-by: Isaku Yamahata <isaku.yamahata@intel.com>
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+-K
 
