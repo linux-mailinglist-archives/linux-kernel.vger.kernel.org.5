@@ -1,118 +1,119 @@
-Return-Path: <linux-kernel+bounces-131469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E06E6898844
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:51:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44949898849
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:52:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B3921C21140
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:51:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D7D121F27441
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:52:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103AE839F8;
-	Thu,  4 Apr 2024 12:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B96982C7E;
+	Thu,  4 Apr 2024 12:52:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Lej1FBTA"
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IjGHUybf"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2FAA374C2
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40D7374C00
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:52:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712235087; cv=none; b=Upq4HzEHBMBqAlamc6vhsRA3vbljDMmr2d6aAUBK62+gBfpiaPmZ2SukKo0pXGH4wxlLr01kZDAGTM91SdiL0asc0fGg4KJYxsGi0X6WcRgShHnhfLJnRWFKEHerlv2sezJTqEKahOjKMeArtTTF2oG9HdphddwwLnHP9OzLLAo=
+	t=1712235121; cv=none; b=fxgoR8KllR8qSqHcBXBjBPOjkVdMZxmLFMNLF17llxTbpnv8QSkx/KEvz7itI1HubWwYssHUVR6MoFZI67AxCbNeT3SJ/dd8MVYnn1cRjJ88n+XyawAdiloOmXvfBhmK1AxI/qTw3uYz4BUoWGKr1VedF1ShFQ+eKW+niryRjbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712235087; c=relaxed/simple;
-	bh=6mmk60SJwL0LXWdZ8yrVVh1oB9nLf+a+MA2UbF/G0Nk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XjYmnWjYCqGR4oHDvVmt85+W5PU2XyD3uWqxwbjqProdQDoyjQOS4dQwJnr15p1KssoCHcmU4drTVTIGjSgY6NUOsiwjH4u6suo/+HPia3mlUUtHq1yjliQOsDIESM6pNEYi1kQLLE2xKLwfsfUakeJKr72HS3MmIx9H1buzGog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Lej1FBTA; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a4930d9c48so165001eaf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:51:24 -0700 (PDT)
+	s=arc-20240116; t=1712235121; c=relaxed/simple;
+	bh=HAQPEmrsZnfhJBLM4La7QuPi+ei+wBR7Bf6pBFSm3J0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nv1KhfY+ydZZp4vFCKkDhrCWR/SOFI7kglfgUw/8GmvVJsSL6/4z3ptqnriHdYDcW7Th0r+rJzSOcMhLTbsQllVlkx1z5aZDasxAZOqYyjCsk8v8/PO6k65gAAkYZ82TXTKWz0GmIEH/VqBHqJaaHzIHxxoiUOPNMVRSDI/Y158=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IjGHUybf; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a5193f56986so42093566b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:51:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712235083; x=1712839883; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Dilzk8OWnGF3Bf9NwUgRR1mfv9NXWl/ZDYX9xlEWStQ=;
-        b=Lej1FBTAjGDMR0Xhqjd9zGKNlOiWuk/KU30pnaIXCU0t5KniV+cirLwyjUSlmK9vm1
-         9qp43evszQ3m3o2nEUHi8UqGH3A5KRrvsIi7rRpOU+n8LsHUbN65lTyMJepng9Usap+j
-         AsTKXoUk+UyX0i7cqttjXQSuQjRiTrfO60ezWYNE5be2KEvZFAv+7Jf05W1nuRHrcVho
-         FzI7/bQkFqzUs1LuTEvZnb5tZO1SNHgS5k6nhAWxltZ+ZYjNKAxY52yjpoWwHmH02z63
-         8XHqrQLiUcomtePJauEftn8+1oC5tSMaldTz/lmy0JHNo77L14Fw2Lk9kSWpjyg1Gu/j
-         /PXQ==
+        d=gmail.com; s=20230601; t=1712235118; x=1712839918; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KnnhlpaHNCUCIrrWDg/RL2L2v9aF/5YKbhFHqy0aII8=;
+        b=IjGHUybfaKqwFmzC73QI1T5boEvozQBst8Bl6PRhSmscGMYgt0A9gXdeG2HOwCi/6p
+         CHRkHLnv9W0apJuS9l2KJvwU4Bb6j37+aJ6hrod0nfZ0cqJYY/Q+95xIZX2aCskYAJFz
+         LkFbdyZcawF5taoA0q3gz7dUhtRkT3mabLMwBYkM/zO5g5p4MkVQhEOWPcP1E878HagC
+         Ex/5WClVSR60UFiJYNHExq4ZMvJNLA/Cbnr9BT9c7uNd92TQxcnvdTvcvFXicKLs+g/B
+         AVv1nKdcpI9v8ywGSnHrvgHSwssRZSg6QD9x3hmX/dXRifxXvPcODICRprLW2eqnFuTq
+         Q/xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712235083; x=1712839883;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Dilzk8OWnGF3Bf9NwUgRR1mfv9NXWl/ZDYX9xlEWStQ=;
-        b=l9AGxjAXWuTY2zF+PmF2WMcwnVLAuDWF97ZRZPyxxRW0c5hUTMo8rxUm1SCM59hZQO
-         DCoJivkfcYQSmWqVVkcpwbNeMZHNlsygrbN4lM1gY3tC0En0RJWQp9fql44lUExpBbHN
-         6wTCycqQJgBzF/oxdkK4+67imwNSOTjj0i/oTITePfK640DoUlywN7VS4e4jPA9aMSZa
-         ab9ek7/G132iFJr/JTTLXdFkvIlIarMwMuhwtRF/mQKTGrjlY3HJa7AZ4idXGqP2kJ8L
-         1OZ5L8laECHt2djBkEmHvjKdN6kbDPJnlnjVXxwdPVfWVwPYmror6Jvtlhlfjip+BnHE
-         IQyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXeEfYqAqnjlrSRx/tmyg6u6ZlFdjSkONf1oADP9ZRDBTXwCJUibhD4/6t/yQvgAabmAy4bgucKMhcg16+VjrlOYPNEFn7z/CmDajKl
-X-Gm-Message-State: AOJu0YwnFlFLr/Iamy9no7HcO+d2ZeBhu178Xpq7h7GPbNLdXeRCGjbl
-	tBkK0yQ52jlOHDKldlRnTHFTwCge5hitaTawwcBLK9FT+sKRipUwv7jOJ3b6RDs=
-X-Google-Smtp-Source: AGHT+IEOyTdjzEM+MCVLEuWyT1lE/tYHGjCVZ1Xw0SF+ZD0utMXPJq0W7lqLBA3lNOcCFZ2B3tN5jw==
-X-Received: by 2002:a05:6358:3414:b0:183:e7b6:60b1 with SMTP id h20-20020a056358341400b00183e7b660b1mr2236039rwd.1.1712235083603;
-        Thu, 04 Apr 2024 05:51:23 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id b26-20020a6567da000000b005dc507e8d13sm11739074pgs.91.2024.04.04.05.51.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 05:51:22 -0700 (PDT)
-Message-ID: <6bb82916-7c79-4af9-9dd1-f668845aa418@kernel.dk>
-Date: Thu, 4 Apr 2024 06:51:21 -0600
+        d=1e100.net; s=20230601; t=1712235118; x=1712839918;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KnnhlpaHNCUCIrrWDg/RL2L2v9aF/5YKbhFHqy0aII8=;
+        b=Tkb3fGWUm9wktcZX+lnop17dSchSQ6mIHJcxyoE3V072CYuJ1Q8iXktMoS85IWArj8
+         fdNLDjtnhR4JC2Q4826uQVucLjjUnjVQeJNgdmlPE0j4YOEydJlFOSv9yvKsIxCiLV/B
+         YVwyiF3faCTQOYz30vM39akZTupOSNIFypJfpjnieYQC99XO44zR4PRkOLJfm/t+Tzyl
+         8RfhJbiNwOoqlQGLTLTwNvoKYGYuuXVbZN4qGjg1xotOybKv6uUZfimmmmhM+h9zOBTk
+         +wMRi5UNfpJ1GFxvdnu4fzy/SIK3LIOxnIHOhFljU9QtZNAKgHA13PGhQDQlByCl/FBw
+         E1Ig==
+X-Forwarded-Encrypted: i=1; AJvYcCUZTmGDyxDicQSpQ4eZ70SfFWfTYoeOkte+MclGOCYwrTGefmuae8X79mq65ub31qgkiTj6KckEbclOv1Mny57BZBwmXPNHgAeTpZHo
+X-Gm-Message-State: AOJu0YytZ21MG8CejGqbwCRS0St1xiwOeoWVpOJ4lfMGsbcK9ZpMggjy
+	HbgA28HxT96LH7+uZib8VBjlxu3fhBwZIVYzUlmPHTmaYFehdaIWxk2gwGigfilPvmZEmxMwQBb
+	eln21nI8vvwKgt/luqcwkFouOK1U10ruxikk=
+X-Google-Smtp-Source: AGHT+IEAbu57T3CEw3mRcXuQKUKAbPMz0MmW5SuVqjvtMKR/CDDjvR12TFadTmieeFLw/af6A9WId94r6dBGaIvl5w8=
+X-Received: by 2002:a17:906:3a81:b0:a46:3ce4:5acb with SMTP id
+ y1-20020a1709063a8100b00a463ce45acbmr1583695ejd.75.1712235118422; Thu, 04 Apr
+ 2024 05:51:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] timerfd: convert to ->read_iter()
-Content-Language: en-US
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: linux-fsdevel@vger.kernel.org, brauner@kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240403140446.1623931-1-axboe@kernel.dk>
- <20240403140446.1623931-2-axboe@kernel.dk> <20240403224037.GM538574@ZenIV>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20240403224037.GM538574@ZenIV>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240401224329.1228468-1-nunes.erico@gmail.com>
+In-Reply-To: <20240401224329.1228468-1-nunes.erico@gmail.com>
+From: Qiang Yu <yuq825@gmail.com>
+Date: Thu, 4 Apr 2024 20:51:46 +0800
+Message-ID: <CAKGbVbuvX3qN-0LU9Sj4dWxCY3CoLnj+wcSKx2=D1-K0Qn8WpA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] drm/lima: two driver cleanups
+To: Erico Nunes <nunes.erico@gmail.com>
+Cc: anarsoul@gmail.com, dri-devel@lists.freedesktop.org, 
+	lima@lists.freedesktop.org, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/3/24 4:40 PM, Al Viro wrote:
-> On Wed, Apr 03, 2024 at 08:02:52AM -0600, Jens Axboe wrote:
-> 
->> -		res = put_user(ticks, (u64 __user *) buf) ? -EFAULT: sizeof(ticks);
->> +		res = copy_to_iter(&ticks, sizeof(ticks), to);
-> 
-> Umm...  That's not an equivalent transformation - different behaviour on
-> short copy; try to call it via read(fd, unmapped_buffer, 8) and see what
-> happens.
-> 
-> copy_to_iter() returns the amount copied; no data copied => return 0, not -EFAULT.
+Serial is Reviewed-by: Qiang Yu <yuq825@gmail.com>
 
-Gah yes, ironically I did a bunch of conversions yesterday and it's all
-fine. Not sure wha thappened here. I'll fix it up.
-
->> +	ufd = get_unused_fd_flags(O_RDWR | (flags & TFD_SHARED_FCNTL_FLAGS));
-> 
-> You do realize that get_unused_fd_flags() ignores O_RDWR (or
-> O_NDELAY), right? Mixing those with O_CLOEXEC makes sense for
-> anon_inode_getfd(), but here you have separate calls of
-> get_unused_fd_flags() and anon_inode_getfile(), so...
-
-I do, but figured it was cleaner that way. But I can change the flag
-passing, ditto for the other ones.
-
--- 
-Jens Axboe
-
+On Tue, Apr 2, 2024 at 6:43=E2=80=AFAM Erico Nunes <nunes.erico@gmail.com> =
+wrote:
+>
+> Patch 1 is a fix for a crash which triggers on removing the module on
+> kernels with CONFIG_DEBUG_SHIRQ enabled, such as the Fedora kernel.
+>
+> Patch 2 is a fix to this warning:
+>   drivers/gpu/drm/lima/lima_drv.c:387:13: error: cast to smaller integer
+>   type 'enum lima_gpu_id' from 'const void *'
+>   [-Werror,-Wvoid-pointer-to-enum-cast]
+> which we have received as a repeated report from the kernel test bot to
+> the lima mailing list.
+> The warning only reproduces with recent clang on aarch64, but the patch
+> does get rid of it and there seem to be no more warnings for W=3D1.
+>
+> Erico Nunes (2):
+>   drm/lima: fix shared irq handling on driver remove
+>   drm/lima: fix void pointer to enum lima_gpu_id cast warning
+>
+>  drivers/gpu/drm/lima/lima_drv.c | 21 ++++++++++++++++++---
+>  drivers/gpu/drm/lima/lima_drv.h |  5 +++++
+>  drivers/gpu/drm/lima/lima_gp.c  |  2 ++
+>  drivers/gpu/drm/lima/lima_mmu.c |  5 +++++
+>  drivers/gpu/drm/lima/lima_pp.c  |  4 ++++
+>  5 files changed, 34 insertions(+), 3 deletions(-)
+>
+> --
+> 2.44.0
+>
 
