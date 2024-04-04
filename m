@@ -1,170 +1,146 @@
-Return-Path: <linux-kernel+bounces-132043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47CAE898F0F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:31:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F019898F10
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:32:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12F29B21BFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:31:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8040C1C221BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:32:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E19F134426;
-	Thu,  4 Apr 2024 19:31:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4D5130ACD;
+	Thu,  4 Apr 2024 19:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IJq9hjHK"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nCeoZWVo"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983C6133419;
-	Thu,  4 Apr 2024 19:31:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C155A12FF9D
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:32:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712259089; cv=none; b=R/kgGwxLEMrNIco8e5KJyua5LQ8rh+E08Jz144PzZvnV4laZ4xXiXCGF5x3Bm0opwlqvwXTiFAad9p+ch/h7UZWx7IcEqjDyyTOAJ5yR+HHqpkCODOTy6WbmAL2TZUzq2N3FsvM042UQaRAxUAXSQAhIHuvxnFYWMTwUYhj904E=
+	t=1712259144; cv=none; b=aeM0eJix8dzFPPEt38vVboF2orJo2xdXS4jFfw4SV4h5IifRANmIennGtaP5llEOjAmFc6lO0R87+RXEiPgVHO4uFthBTS05unSXV/8lYRWrQrshpCTfWFr5wzrAK930b4ezrzYT3rKrV7OStLhBiSUpb0r89YihnAd3AWKPJpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712259089; c=relaxed/simple;
-	bh=iM3i25pNxk7MFpTNFrE9HeruXtREtfbbpD0ry393lEs=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=TkX9mZl/XVFqk+BVWlgqZB371HDUNJ26GnUmk09qxcIyi8ZmjR8edMhdYWpuziz+EzF3BPdN9mAYtRAkB2TdWZH1Pi2LJ2GIkBn7+s35vJ7EZ0j3uQL2CoAxxiwW3EBl7vvZ28wJKxngc/Wvrl+W5wYPx75jYNDR43LLmjzgnV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IJq9hjHK; arc=none smtp.client-ip=209.85.128.47
+	s=arc-20240116; t=1712259144; c=relaxed/simple;
+	bh=gsVcKtDkUNveOcQR3OkOOH5GwGE5htKXDxs/MtGdyjM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WBxqCDybBtMedQtsgkK37AVx16wejKqCY1DpASOx4/7I97sacsvgdgGW2piyI2ruZtqx3UwTbT+BjSQvbISFRcvjpjeCC0i6SkDOaS3+OnwabHPzgOqeYD7CZTHBE/Jp1GDzkpF8pnqAY9AeRQkyFrReZNyYBdWL1e+5odKklOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nCeoZWVo; arc=none smtp.client-ip=209.85.219.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4162dd23df5so322915e9.2;
-        Thu, 04 Apr 2024 12:31:27 -0700 (PDT)
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcbcea9c261so1603025276.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 12:32:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712259086; x=1712863886; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1eO1/J0Yje7Em+OMu/DeZk4R9Llsjy7pakAEzgykzDc=;
-        b=IJq9hjHKKE58m+2UrYWNrZRxg/BlwXPpRw9gT/lKDXYPBFWVopvpw0FjPhzc/G9/TL
-         aw8i4rq0Ir8h3ERzlEpHVBa4gtGj4KQe/ijqL4w/RYCa8NIpwvekdv6MTswHv0+7TGMZ
-         c+IastDRFpaaubrq8Rp61UKPNKcnDwAeloavmhBa8fN3YWoQ9TRANqgkwdIHsYYOIZ07
-         eLwSxRfIC9h1xHRSBksK38x4einVFEnbzIjqlmYRmWjdYNurVb0xcpNJGQMOil+g+peq
-         6C0Tw4HgzrwXfXjaOPbIFXyBcgPEy/dFZS3H+LmEZyMKdvS//AEV8y8rnbn5rdB7DPH8
-         wiDA==
+        d=gmail.com; s=20230601; t=1712259142; x=1712863942; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1QF7YfDkyhTCu/FPW6+EBtGcxT+kvR7RnrsjI6gQgsU=;
+        b=nCeoZWVoWA8RLbHUFsuDYA20rSn/xMYE8jHn4EIsPIM5BsqqtZGQZMBH9UBGrtu9OH
+         pt8xyF9P2CU8h7jGTnwDK3wIg1lb8R2467a0cfXqZExj6jW4jwp9Ydx7ap95bhj2IhDQ
+         VDYSks6ClLyiCj0jMMdke5L2A9TikiO081SbQ7qEgYMNiwestDyvFQ8loD8ymoVBtWS8
+         ReXyGW9LvtMcVy5JDbgjlyxkMrfbYUoNPqHV0RJ7/lzw05FliBAsdCS8QRqw8IHDhNUT
+         p5UQ9PR0bkVqZHvHaUo7hUaXo3YGl0hpDRAMMdZAHJcYJqKdhBpcivavTwgrfmo2ow0Q
+         1m+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712259086; x=1712863886;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1eO1/J0Yje7Em+OMu/DeZk4R9Llsjy7pakAEzgykzDc=;
-        b=vmIW4ZAImkmNAPCRzJGG3OR+nwKUwztWxnaRCRtOHOV5OKYi/DmSwXGGa2Bw4xymI6
-         es3ZLRP70VeMblyscXuTVLHageQm6kBZaY67ijRycrRhFTyt20V75uz1cTfARlj/rJU2
-         KjwJSrun9fdFNGqGi6fkrxxosAVjSzaCtrMqfCWh/HqL/QGwd2o1+BDYPhEIlvztGKtY
-         PBGSCUqIyfmQJkjHOhJelQ/KVTgUkGECg4OMZA+uX1bWWqNfhpgTVnMfsS/XL5vlDkEU
-         YxJdjyIpnoOT8CT+vqURWQnomFXdt14RL1D7WBv4XyzQ/PR6UH205HniD9o2htpg5Pzg
-         fESA==
-X-Forwarded-Encrypted: i=1; AJvYcCVuXSZD7FsxPWqPD/heI3/CXnoQQpa1CBqYnSK/xtOMCURB+mZfMx+Tr5+ewOLfo28Zrm+V7mMvvOU8v41P5j+8mbQgC4AhTTdDKYHMgBFVAjPF0HrEDCC+qeON8W6boCBp3Yyk
-X-Gm-Message-State: AOJu0YxNj8lgidje8vSdAf/BYeGzqYvmscVyXVc6ca2DOBIOLVw6ltyF
-	e5TdI+ct7O/DMN0GUcQ3lLw8WBD+hCBNOPyRl+/z/okx5mnMZM4j
-X-Google-Smtp-Source: AGHT+IG7ZVywsfTWEb2ciSoldrzNl+Vhiacwyn9iloTkli9hJk84kG0jPHbFyc5iaswHimiMzAyNZg==
-X-Received: by 2002:a05:600c:252:b0:414:8c06:5c32 with SMTP id 18-20020a05600c025200b004148c065c32mr3219978wmj.14.1712259085798;
-        Thu, 04 Apr 2024 12:31:25 -0700 (PDT)
-Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
-        by smtp.gmail.com with ESMTPSA id fc9-20020a05600c524900b004162d0676cdsm186098wmb.29.2024.04.04.12.31.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 12:31:25 -0700 (PDT)
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: David Ahern <dsahern@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Christoph Hellwig <hch@infradead.org>, Saeed Mahameed <saeed@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Leon Romanovsky <leonro@nvidia.com>,
- Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
- Itay Avraham <itayavr@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>,
- Aron Silverton <aron.silverton@oracle.com>, linux-kernel@vger.kernel.org,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- Andy Gospodarek <andrew.gospodarek@broadcom.com>
-References: <2024032248-ardently-ribcage-a495@gregkh>
- <510c1b6b-1738-4baa-bdba-54d478633598@kernel.org>
- <Zf2n02q0GevGdS-Z@C02YVCJELVCG> <20240322135826.1c4655e2@kernel.org>
- <e5c61607-4d66-4cd8-bf45-0aac2b3af126@kernel.org>
- <20240322154027.5555780a@kernel.org>
- <1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
- <0ea32dd4-f408-5870-77eb-f18899f1ad44@gmail.com>
- <20240402184055.GP946323@nvidia.com>
- <83025203-fefb-d828-724d-259e5df7c1b2@gmail.com>
- <20240404183305.GM1723999@nvidia.com>
-From: Edward Cree <ecree.xilinx@gmail.com>
-Message-ID: <1bb526d4-31ac-b25d-e494-ef5adbaef7ac@gmail.com>
-Date: Thu, 4 Apr 2024 20:31:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        d=1e100.net; s=20230601; t=1712259142; x=1712863942;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1QF7YfDkyhTCu/FPW6+EBtGcxT+kvR7RnrsjI6gQgsU=;
+        b=dXXNad8JTwrejtxRHTqILpW64Ewgv5C9fXZKrer7iYRVjiKBxTQbZ6Su8tgiFdEKTE
+         3qM3KTIMbsmOfYnxPHluIWVy/Xgi+t9GgT6fwSzby+OrikdwU5tM0rSBx2vjkHpu8Joq
+         P3pNNOKZkcNx47tBtXTjwcopnhFuVuoUaLNS3utlWeexgl4Pv5mw4ey1PQEj6jOPQpAg
+         mmsLSaysnztfyozAtnabHonN+VRp/vBywnmCQVL9x3T5ZfTXhXHa6kdpq6RVpfNzhpiG
+         HD5x8fK6s6+/nxuAB2eh44RAiBEUvNSa5cdBEosfQv30qvF7gIqXVEeT4eJT39ywjYuB
+         yLUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW4hDEEZkZRgWadpwG0r1w4wo8zeAgF0E7ObUYJQh0gcYldtqBBgOpQwba2Rmhib5iOLTJUBlW8oCfkHqsx6io5numhLXwwXRUYEEX4
+X-Gm-Message-State: AOJu0YxPAUgTRqxd/yh41UQi0nnd0Kyl88qKNLx3rfrASci4Xe2+HOsE
+	ZIYdJZQu561P8V8v6ySqtZY6WSWZsMOpB2VZcmkQA7tImB8sdKpOZMAR/d5dF6zofTLbGd2RTnW
+	UjUdh7k6p5NEmwzoWeDWFFQaNJ6UXawOj
+X-Google-Smtp-Source: AGHT+IHu0tf3wBJpfd3UyhX93ctSlHSzZkIbY7hMSDwDS6Q0n1uGqbYHK48drdtAqk3f12AmqnbitdryFo4MfkssZfc=
+X-Received: by 2002:a25:8b81:0:b0:dcc:7131:ad4a with SMTP id
+ j1-20020a258b81000000b00dcc7131ad4amr2943771ybl.62.1712259141645; Thu, 04 Apr
+ 2024 12:32:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240404183305.GM1723999@nvidia.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20240401202651.31440-1-vishal.moola@gmail.com>
+ <20240401202651.31440-2-vishal.moola@gmail.com> <Zg6cualUqcsZYZxf@localhost.localdomain>
+In-Reply-To: <Zg6cualUqcsZYZxf@localhost.localdomain>
+From: Vishal Moola <vishal.moola@gmail.com>
+Date: Thu, 4 Apr 2024 12:32:11 -0700
+Message-ID: <CAOzc2pxfUSnT6fEXAJZowYeMz=hCgWsfJRB++dis1AL_rNScGQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] hugetlb: Convert hugetlb_fault() to use struct vm_fault
+To: Oscar Salvador <osalvador@suse.de>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	akpm@linux-foundation.org, muchun.song@linux.dev, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
- disclaimer.sh
+On Thu, Apr 4, 2024 at 5:26=E2=80=AFAM Oscar Salvador <osalvador@suse.de> w=
+rote:
+>
+> On Mon, Apr 01, 2024 at 01:26:49PM -0700, Vishal Moola (Oracle) wrote:
+> > Now that hugetlb_fault() has a vm_fault available for fault tracking, u=
+se
+> > it throughout. This cleans up the code by removing 2 variables, and
+> > prepares hugetlb_fault() to take in a struct vm_fault argument.
+> >
+> > Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+>
+> Reviewed-by: Oscar Salvador <osalvador@suse.de>
+>
+> A question below:
+>
+> >  mm/hugetlb.c | 84 +++++++++++++++++++++++++---------------------------
+> >  1 file changed, 41 insertions(+), 43 deletions(-)
+> >
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index 8267e221ca5d..360b82374a89 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> ...
+> >       /*
+> > -      * entry could be a migration/hwpoison entry at this point, so th=
+is
+> > -      * check prevents the kernel from going below assuming that we ha=
+ve
+> > -      * an active hugepage in pagecache. This goto expects the 2nd pag=
+e
+> > -      * fault, and is_hugetlb_entry_(migration|hwpoisoned) check will
+> > -      * properly handle it.
+> > +      * vmf.orig_pte could be a migration/hwpoison vmf.orig_pte at thi=
+s
+>
+> "vmf.orig_pte could be a migration/hwpoison entry at ..."
+>
+> > -     entry =3D pte_mkyoung(entry);
+> > -     if (huge_ptep_set_access_flags(vma, haddr, ptep, entry,
+> > +     vmf.orig_pte =3D pte_mkyoung(vmf.orig_pte);
+> > +     if (huge_ptep_set_access_flags(vma, vmf.address, vmf.pte, vmf.ori=
+g_pte,
+> >                                               flags & FAULT_FLAG_WRITE)=
+)
+>
+> Would it make sense to teach huge_ptep_set_access_flags/set_huge_pte_at()=
+ to use
+> vm_fault struct as well? All info we are passing is stored there.
+> Maybe it is not worth the trouble though, just asking.
 
-On 04/04/2024 19:33, Jason Gunthorpe wrote:
-> Uh no, mlx5 already has an excellent in-tree driver, thank you very
-> much.
+Yeah, it makes sense. There are actually many function calls in the
+hugetlb_fault() and
+__handle_mm_fault() pathways that could make use of vm_fault to clean
+up the stack.
 
-I was referring to *mlx5ctl*, which is not currently in-tree, which
- is why this thread trying to add it exists in the first place.
-
-> So, it is really some kind of extremism to say that allowing users to
-> configure the device in their own system in a booted Linux OS instead
-
-Um, nothing upstream does is stopping them installing an OOT mlx5ctl
- driver, *if* that's what they want to do.  Clearly some of them don't
- like that solution, otherwise we wouldn't be here.
-
-> of in the factory looses the "implied engineering benefits of open
-> source".
-
-You're looking at the wrong point on the causal graph.
-Whether you apply the hacks in the factory or at runtime, their hacky
- design is what prevents them from having the benefits of open source
- (because those benefits consist of a development process that weeds
- out hacks and bad design).
-It is just that the latter case, if done through an intree driver,
- would appear to be (and might be marketed as) an open-source developed
- product, which users would naturally expect to have those benefits,
- when in fact it doesn't.
-
->> So because your engineers can't design clean, orthogonal APIs for
->>  toffee, you should be allowed to bypass review?  Sorry, but no.
-> 
-> Overreach. The job of the kernel maintainer is to review the driver
-> software, not the device design.
-
-Really? [1]
-The kernel always has the choice to not support a given device, or a
- given feature of a device; and kernel maintainers are precisely the
- people with both the right and the duty to make that determination.
-
-> If you had read the thread to understand the issue, you'd know this is
-> because the distros have turned on module signing, secure boot and
-> kernel lock down.
-
-Funnily enough, I am aware of that.
-And if your customers didn't want those things, they'd be quite capable
- of forking the distro to undo it.  Several hyperscalers already have
- their own in-house distros anyway.
-They could add their own signing key to the kernel, and sign your ctl
- driver with it.
-They could disable lockdown, or patch the kernel to allow your
- (hopefully signed and IMA-ed) userspace tool to do its PCI-over-sysfs
- crap even when lockdown blocks it for everything else.
-But strangely, there are people out there who trust the upstream process
- to ensure quality/security/etc. more than they trust vendors and their
- "oh don't worry, the device will enforce security scopes on these raw
- commands from userspace" magic firmware blobs.
-
-What you are asking for here is a special exemption to all those
- requirements and security measures because "just trust me bro".
-
--ed
-
-[1]: https://wiki.linuxfoundation.org/networking/toe
+It's not particularly complicated either, aside from reorganizing some
+variables for every
+implementation of each function. I'm not really sure if it's worth
+dedicated effort
+and churn though (at least I'm not focused on that for now).
 
