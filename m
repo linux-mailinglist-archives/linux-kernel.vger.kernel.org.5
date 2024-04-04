@@ -1,142 +1,129 @@
-Return-Path: <linux-kernel+bounces-131066-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F3BC8982A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:59:25 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29E308982AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:59:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22018B28157
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:59:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A4D36B23BF7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B64355E07E;
-	Thu,  4 Apr 2024 07:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C35A045970;
+	Thu,  4 Apr 2024 07:59:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ywRjfuXD"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SDA0Ke+u"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796595CDE4;
-	Thu,  4 Apr 2024 07:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 979505A110
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:59:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712217506; cv=none; b=KWIyhy7QprBHfnOz5/wrFGX0tSlOqVCqunSsZ6oForJkXChL1ONYAMyJP3nny0a8XcMqScfQ6/dqMNvI73OD9fmONxv8RE7/dgyaoFO+UGm3sWYbsnbl8kziENPPYaX+gzd3L3XlMjzuRnvR95bAWmHajSwaMRo/4cm4greRkj8=
+	t=1712217581; cv=none; b=ePaFyOj7Om6MCPDLMIiwzcItmEns70cYrCLfJBKkZcgE5yu/9Vi82TUltqMCMdBf2BNrryvBVEI04ohJ6wTgX8VaDcO/56PZnsHXnE3E6l8oMbcje8ExxSHjRDV65eSWU15GDkxd0iaGeinaJVYkRsbUz3XrrCTG+X4gNBvSmzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712217506; c=relaxed/simple;
-	bh=ex8Jbm7t4k8Fpjz2pzUFpRuPZgP2C2fuI1ETdKnGMcE=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ces7ftp5liMECRD/nFA9uAjw81joOtLVwijWooEBRws5aKKC+9Ylr2OPdM3qkUh7zhdibkZWKzvqh74bANABLiiDXSYM3wk0CiZUdGUlTsqzb4GhMjONjegWzIgdIefGE9Gp8EbxPbkhRiB6pcwq/cA8DZ+RKe7veH+Qs/bA9os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=ywRjfuXD; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712217503; x=1743753503;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=ex8Jbm7t4k8Fpjz2pzUFpRuPZgP2C2fuI1ETdKnGMcE=;
-  b=ywRjfuXDoSVG2YHRnqeUC2Cuhy2bfuxJlj6EsiF8adCKEdWml/BoiNEy
-   3sH1IMLPtKR/nP/XMipUrd8HpfPgVljqpSo01p4Xk1IF9mkJRqQCGtDv4
-   dPm8qX+L/04EBghkUQk21H2F8MZ8h+qCWeROp9fIYvI8PpYNiiP97u1B1
-   Bp9QrmofJsIUwT9dune8pDgMcgdZmYS7z5PLNyC2qOtR8xb1o7XMlQL8f
-   BhndKu0V+jOq8D15JyJck8uebay5Ag5yW1M+Gr6dSDZdgOxbN5o27XR4p
-   STZE2uKDBhYaAx/9uRx4tq+YyeqgjHsPXm8Yaw43+6v5pfiOQydYhaBnV
-   w==;
-X-CSE-ConnectionGUID: xzFzvc8LTJeba3q7BJRCVg==
-X-CSE-MsgGUID: exhvIqGvSK6Mb92ZHSxnIg==
-X-IronPort-AV: E=Sophos;i="6.07,178,1708412400"; 
-   d="scan'208";a="21363534"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Apr 2024 00:58:22 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 4 Apr 2024 00:58:16 -0700
-Received: from DEN-DL-M70577 (10.10.85.11) by chn-vm-ex01.mchp-main.com
- (10.10.85.143) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
- Transport; Thu, 4 Apr 2024 00:58:14 -0700
-Date: Thu, 4 Apr 2024 07:58:13 +0000
-From: Daniel Machon <daniel.machon@microchip.com>
-To: Horatiu Vultur <horatiu.vultur@microchip.com>
-CC: Lars Povlsen <lars.povlsen@microchip.com>, Steen Hegelund
-	<Steen.Hegelund@microchip.com>, <UNGLinuxDriver@microchip.com>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
- Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	<linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH net-next 2/3] net: sparx5: add support for tc flower
- mirred action.
-Message-ID: <20240404075813.nploesovm4katckb@DEN-DL-M70577>
-References: <20240403-mirror-redirect-actions-v1-0-c8e7c8132c89@microchip.com>
- <20240403-mirror-redirect-actions-v1-2-c8e7c8132c89@microchip.com>
- <20240404064627.6m25m2mi7zbpqbyo@DEN-DL-M31836.microchip.com>
+	s=arc-20240116; t=1712217581; c=relaxed/simple;
+	bh=2HnoNe7Q3OK3XTXFhKQt4pnA/1fH8WuwGxxYk6DYH6g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=J88c8SQrzSlsPf/GsRosVsr6T2hVfbmqFG9gjJvzdxpK548PGHjbo+I3hIpAiRaq98iIX3swA2GDiNPvC5olIwBvS0K1+Qxkbp8fgy9ptZX4i8ePvVM4mLjVBv5BBIlGUc47OoTGlMYjfjskxMb5SN3EjgMoZuJAC+WC+wNixak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SDA0Ke+u; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712217578;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Ne5O+kLXAYiWdUCUDf3J7afXMactHb5xvcMlkba4fGY=;
+	b=SDA0Ke+uOlWZJQ3Z7N2xabYiajWKnHNRzMaU/cCyBsgKw6Pe6Qm7wGCnb6GZJTBzs4rygY
+	ljXwXEjJ7rMJu1kftmNLYNTWPCSDeasfx3uXPqRmkunak2mOIUbODiHc+V1fUIuH8OeuXM
+	WUODVJUORZzWayOu7pa4WKzfg66r4qQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-145-PncMlps5OsaZhvpF4hXbMQ-1; Thu, 04 Apr 2024 03:59:32 -0400
+X-MC-Unique: PncMlps5OsaZhvpF4hXbMQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0B46485A58B;
+	Thu,  4 Apr 2024 07:59:32 +0000 (UTC)
+Received: from ksundara-mac.redhat.com (unknown [10.74.17.36])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id E17202024517;
+	Thu,  4 Apr 2024 07:59:24 +0000 (UTC)
+From: Karthik Sundaravel <ksundara@redhat.com>
+To: jesse.brandeburg@intel.com,
+	wojciech.drewek@intel.com,
+	sumang@marvell.com,
+	jacob.e.keller@intel.com,
+	anthony.l.nguyen@intel.com,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	intel-wired-lan@lists.osuosl.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: pmenzel@molgen.mpg.de,
+	jiri@resnulli.us,
+	michal.swiatkowski@linux.intel.com,
+	rjarry@redhat.com,
+	aharivel@redhat.com,
+	vchundur@redhat.com,
+	ksundara@redhat.com,
+	cfontain@redhat.com
+Subject: [PATCH v8] ice: Add get/set hw address for VFs using devlink commands 
+Date: Thu,  4 Apr 2024 13:29:16 +0530
+Message-Id: <20240404075917.4347-1-ksundara@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240404064627.6m25m2mi7zbpqbyo@DEN-DL-M31836.microchip.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-> The 04/03/2024 20:41, Daniel Machon wrote:
-> 
-> Hi Daniel,
-> 
-> ...
-> 
-> > +static int sparx5_tc_action_mirred(struct vcap_admin *admin,
-> > +				   struct vcap_rule *vrule,
-> > +				   struct flow_cls_offload *fco,
-> > +				   struct flow_action_entry *act)
-> > +{
-> > +	struct vcap_u72_action ports = {0};
-> 
-> Maybe this is just a preferences, but usually we use memset instead of {0};
+Dear Maintainers,
+    Thanks for the review and suggestions for my patch.
 
-Yes, I think this falls under preference. I'd like to keep this one as
-is.
+v7 -> v8
+--------
+- Added const keyword for the parameter ``mac`` in ice_set_vf_fn_mac()
 
-> 
-> > +	int err;
-> > +
-> > +	if (admin->vtype != VCAP_TYPE_IS0 && admin->vtype != VCAP_TYPE_IS2) {
-> > +		NL_SET_ERR_MSG_MOD(fco->common.extack,
-> > +				   "Mirror action not supported in this VCAP");
-> > +		return -EOPNOTSUPP;
-> > +	}
-> > +
-> > +	err = vcap_rule_add_action_u32(vrule, VCAP_AF_MASK_MODE,
-> > +				       SPX5_PMM_OR_DSTMASK);
-> > +	if (err)
-> > +		return err;
-> > +
-> > +	sparx5_tc_flower_set_port_mask(&ports, act->dev);
-> > +
-> > +	err = vcap_rule_add_action_u72(vrule, VCAP_AF_PORT_MASK, &ports);
-> > +	if (err)
-> > +		return err;
-> 
-> You can just return directly the return value from vcap_rule_add_action_u72
-> Something like:
-> 
-> return vcap_rule_add_action_u72(...)
->
+v6 -> v7
+--------
+- Addressed Smatch and checkpatch issues
 
-Yes, seems like a reasonable change :-) I need to respin anyway, since
-NIPA is complaining about something I didn't catch in my local run. Will
-incorporate changes in v2 - thanks.
+v5 -> v6
+--------
+- Changed data type of vf_id to u16
+- Used container_of(port, struct ice_vf, devlink_port) to
+  get the vf instead of ice_get_vf_by_id()/ice_put_vf()
 
-> > +
-> > +	return 0;
-> > +}
-> > -- 
-> > 2.34.1
-> > 
-> 
-> -- 
-> /Horatiu
+v4 -> v5
+--------
+- Cloned ice_set_vf_mac() to ice_set_vf_fn_mac() so that the
+  parameter ice_pf is used instead of net_device of vf
+- removed redundant error handling
+
+v3 -> v4
+--------
+- Released the vf device by calling ice_put_vf()
+
+v2 -> v3
+--------
+- Fill the extack message instead of dev_err()
+
+v1 -> v2
+--------
+- called ice_set_vf_mac() directly from the devlink port function
+  handlers.
+
+RFC -> v1
+---------
+- Add the function handlers to set and get the HW address for the
+  VF representor ports.
+
 
