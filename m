@@ -1,118 +1,161 @@
-Return-Path: <linux-kernel+bounces-131904-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131905-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 500B9898D72
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:47:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24E35898D73
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:47:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 812811C278C7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:47:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD348282FEC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:47:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE94D12DDBF;
-	Thu,  4 Apr 2024 17:47:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBFD812F387;
+	Thu,  4 Apr 2024 17:47:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NQQNeJjq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b="uSJyIpbH"
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4B8848A
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73AF912CD9C
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712252822; cv=none; b=YguzrPSLXQoCBdMhh0HQlP3T3ngAiO0SLte/dnqje59rChG8aoNsC8Yzk3kQEJa7H/IW4P+m98gul5cDVaUd9jMs6zWJINBZVM5IlZUcKSSGN6rhLM2BOgMXcvZKbb7+z/ADPiHhSc9vnQLj6IWYAHa+HmGhfIkOmHD6KA5ekaY=
+	t=1712252844; cv=none; b=og/1JvKqR0N8rHrR+Pnb5368Iw/HIv1rMGfPFUQaR0HEt2xUxhPNXlgQPODTPauk1UXeo5CU7MSOwHojeWFquLgH3pMcrk8SGneQYiLjqvDe5VsMBCG7UtSWnezb+cNo0PpRvTMNp2oyVXqBzn5H397yIwYKc/OkAO1Dx233Pm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712252822; c=relaxed/simple;
-	bh=44yDMXUOqhExaqDuHmE5IwqLjmwdDpoTzjc9jXQWXlo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=I926xa0YdOk/LusT6YrWbFeDJF25Yi6Wq1t7C6gOeIPHdny/YuLW7HvtBfaRTw7qp92gMHvSpnbyuH62H3jhEW8jagiLxXSD0S2sPU1DogGPMfsgXC8sxTUfu4NTNxUdtJzo1Qo98YY0rW4jfhN/QRMWL5V/dtbl83JF7V0I0fo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NQQNeJjq; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712252818;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=44yDMXUOqhExaqDuHmE5IwqLjmwdDpoTzjc9jXQWXlo=;
-	b=NQQNeJjq8D6hffvPgkgPMct3LJGLWhGasLxQREcD3h5fvMTHiDWw/D8NBKZxA5xCxwkJij
-	iaVzEef+8tcOwMRF4TWxnRY39laPdgEz+q+V4i6mrIP5n+T2hsiUDxydeZiuhv1rlwX/dt
-	1fRMIqlD36/C9dp8znT47E/BNTQeO3k=
-Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
- [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-339-PiX1xSoCNn6TewfvKZhbUg-1; Thu, 04 Apr 2024 13:46:56 -0400
-X-MC-Unique: PiX1xSoCNn6TewfvKZhbUg-1
-Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-516ae539accso1536723e87.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:46:56 -0700 (PDT)
+	s=arc-20240116; t=1712252844; c=relaxed/simple;
+	bh=Df1N/JsbpoM5tVgnsaIXlExMnPcBwi9zV4v1t15+iVw=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=U7+k+X/nNNBA0mbxSxhl9IgEL+tRuv4jtsKXD+5r9a+vUbt0HlAkz8ydG94Q2/v9cLk8tHvtcGIiBuhNgjsWBKwdrkMWEfjFvVCkNAosIByV0vbWvWl+2yS6FRYoBULuZG1TBhm8tnjHQI6f5yqt9sJExQTvXVg0l1rpZR9wqw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca; spf=none smtp.mailfrom=ndufresne.ca; dkim=pass (2048-bit key) header.d=ndufresne-ca.20230601.gappssmtp.com header.i=@ndufresne-ca.20230601.gappssmtp.com header.b=uSJyIpbH; arc=none smtp.client-ip=209.85.219.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ndufresne.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ndufresne.ca
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-690be110d0dso5506216d6.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:47:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20230601.gappssmtp.com; s=20230601; t=1712252842; x=1712857642; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Bh4syO4yTXa1buMPAEQiJy3KlJ/ZvLVegoAl1qaUj7k=;
+        b=uSJyIpbHmfDB8qxSiCH39B6Jm5YmybrSkNSuPUi4G6vnYRI98Q0sem+P7BYQIyfBfZ
+         M2wDJFZ0Fp0B8DhhCtdx6BN+Gdz3DgwwpHCFMMBlr1YePHnaDLi6MaWvUFFadg8uKUXX
+         /t9l6sOA3aW5eso8k7nv0mnhPKPXSZhFuXD0ERg9l43YgbBmWLdvteZhxn8bK/5aYGnW
+         nAeRRQpkRfQh+BcTzfX9cxh/PKIW9Eg897NVDT/96HAuHR1gpmYL5zyv1A204q+znjry
+         oXakyIM21mLBtIixYHlJGBdHRhB9KkbbjabFcVyyCFu1q3Dc1mgd161OovTII4jyN4AE
+         NDUQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712252815; x=1712857615;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1712252842; x=1712857642;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=44yDMXUOqhExaqDuHmE5IwqLjmwdDpoTzjc9jXQWXlo=;
-        b=sNtT92CHFRhTMTYQLuFh0OQT9Y0EdsEfdqNDRyl7PiLY0WfRvPmhuWzri8vnO0QgQU
-         7Up7r+QctbCeEAlcALHsEHeD4exQUU/Meqvd9n3SYgn2M6++wEHqLnzdBIfNr2h2sweE
-         ZAdmVRqsvDQ5FDjeE2VBQt2jkNbYZUsR4ux89jxCNxO6CCn58TzrpOA86mGFyqiaaGsr
-         03ilg90TBd5ICOukmCC1FTGDxgcqPeONLoXWiuxhaDkMTPpx8MTlrrId4mh4Dl7rR1iL
-         mub1jzhQQtiXDB9g9CZa1M9xJMD6HJVnhQljCxAJyZ/AiL4rvWEg7nX3O6TyI+k66+oP
-         Yz9w==
-X-Forwarded-Encrypted: i=1; AJvYcCXZqYtWLUqS5yuz7/eKyrIoMCmiNQupx2l5LOa26g2a4tx3LRaEjIBRX0MM2XQOZqoecU43bTwnODbytM8LGq/K/sCtJ9pMpDttyI9u
-X-Gm-Message-State: AOJu0Yw49ef+m+Z1tuyRjOcqgXLYDqdnmXYCVWUOEAyC1vW7f4kkaPW6
-	hJ6/3fxuXipoNCjVEBqll4O49tO3S7Wgvon6ZwS9d9HuNnYtZvGiSbOcQxH31G3aMfwqR3j3BFN
-	VIULiNaIggvoG5Jze7f4zWIU+nhwqywTJRBlZc04c3awdGL0NPMdgGoo28l9viw==
-X-Received: by 2002:a19:2d4c:0:b0:512:fe25:550b with SMTP id t12-20020a192d4c000000b00512fe25550bmr3120233lft.47.1712252815427;
-        Thu, 04 Apr 2024 10:46:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGZElqXYqPmcPOGKRK+CMVgolVa91taTpu8/c6w3chMATXQAFaj7SGEJwQi+5pNoMWrdDsyCA==
-X-Received: by 2002:a19:2d4c:0:b0:512:fe25:550b with SMTP id t12-20020a192d4c000000b00512fe25550bmr3120205lft.47.1712252815100;
-        Thu, 04 Apr 2024 10:46:55 -0700 (PDT)
-Received: from [192.168.0.182] (host-87-2-128-150.retail.telecomitalia.it. [87.2.128.150])
-        by smtp.gmail.com with ESMTPSA id jg21-20020a170907971500b00a519e8c27d2sm84758ejc.208.2024.04.04.10.46.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 10:46:54 -0700 (PDT)
-Message-ID: <efb82f02-ec22-4a6d-8b1b-8cedcea0bbfc@redhat.com>
-Date: Thu, 4 Apr 2024 19:46:52 +0200
+        bh=Bh4syO4yTXa1buMPAEQiJy3KlJ/ZvLVegoAl1qaUj7k=;
+        b=t9zhyHuTc8flzGp5ZpNGNVZViuIZRmC212QPgSJAhhmtJ54+8GvaWix+rQPJOM3Vpo
+         0UryfXph0xCLMpQUPIQfzPU59rSM5EFXrhuNqml8X8RZtsjcPn4ilIE/2WA6avaD0vFa
+         X2GSf/XQqlE1d0kIOXuPWbLU6lsj/luEtdDbeblBBUUvXiGCRpa5a6ST/NEyCwQXr4EB
+         hWfbnYxP6p0KKqFeW6BvkIbHEedyyq5HFs7WuNxbXmwR7LaQd2LgT8vkepmR1NTljKP7
+         YegRJ81myhs7XW7WCBP6Wq2orqny7QmEqtVcmBu234qppDWT6zOESaWq9a9ZnJxPCBZg
+         49sA==
+X-Gm-Message-State: AOJu0YwxzWweOgtbDepjAjF8hnyhoVFPMU2LG6zzSVShnsvnt1v6/8/1
+	vhdJh5Au/cEwGqPlAMgwm0lcbPNVZMhm3m/PB/zcrB8y9p5e1/2mqwTkibWriPs=
+X-Google-Smtp-Source: AGHT+IG4zBdkV6V/ZyVOK3aZ5bvPMw6tYO7Y3Ma8A6A6AqVPlienLH1DcvIkKVgvPkWN6NmWDpr8Rg==
+X-Received: by 2002:a05:6214:5084:b0:699:2071:6c64 with SMTP id kk4-20020a056214508400b0069920716c64mr3544763qvb.0.1712252842440;
+        Thu, 04 Apr 2024 10:47:22 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain ([2606:6d00:17:6448:fa75:a4ff:fe45:b56])
+        by smtp.gmail.com with ESMTPSA id 3-20020ad45b83000000b00698f7eb9997sm2586753qvp.54.2024.04.04.10.47.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 10:47:22 -0700 (PDT)
+Message-ID: <85b4deecf8306562fe798af6ee07af27369692d3.camel@ndufresne.ca>
+Subject: Re: [PATCH v2 1/2] media: dt-binding: media: Document
+ =?UTF-8?Q?rk3588=E2=80=99s?= VEPU121
+From: Nicolas Dufresne <nicolas@ndufresne.ca>
+To: Conor Dooley <conor@kernel.org>, Emmanuel Gil Peyrot
+	 <linkmauve@linkmauve.fr>
+Cc: linux-kernel@vger.kernel.org, Ezequiel Garcia
+ <ezequiel@vanguardiasur.com.ar>, Philipp Zabel <p.zabel@pengutronix.de>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>,  Heiko Stuebner <heiko@sntech.de>, Joerg Roedel
+ <joro@8bytes.org>, Will Deacon <will@kernel.org>,  Robin Murphy
+ <robin.murphy@arm.com>, Sebastian Reichel
+ <sebastian.reichel@collabora.com>, Cristian Ciocaltea
+ <cristian.ciocaltea@collabora.com>, Dragan Simic <dsimic@manjaro.org>,
+ Shreeya Patel <shreeya.patel@collabora.com>, Chris Morgan
+ <macromorgan@hotmail.com>, Andy Yan <andy.yan@rock-chips.com>, Nicolas
+ Frattaroli <frattaroli.nicolas@gmail.com>,  linux-media@vger.kernel.org,
+ linux-rockchip@lists.infradead.org,  devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,  iommu@lists.linux.dev
+Date: Thu, 04 Apr 2024 13:47:19 -0400
+In-Reply-To: <20240327-doze-uncheck-475f3feaee57@spud>
+References: <20240327134115.424846-1-linkmauve@linkmauve.fr>
+	 <20240327134115.424846-2-linkmauve@linkmauve.fr>
+	 <20240327-doze-uncheck-475f3feaee57@spud>
+Autocrypt: addr=nicolas@ndufresne.ca; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/15] sched/core: Add clearing of ->dl_server in
- put_prev_task_balance()
-To: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
- linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
-Cc: Suleiman Souhlal <suleiman@google.com>,
- Youssef Esmat <youssefesmat@google.com>, David Vernet <void@manifault.com>,
- Thomas Gleixner <tglx@linutronix.de>, "Paul E . McKenney"
- <paulmck@kernel.org>, joseph.salisbury@canonical.com,
- Luca Abeni <luca.abeni@santannapisa.it>,
- Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
- Vineeth Pillai <vineeth@bitbyteword.org>,
- Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>
-References: <20240313012451.1693807-1-joel@joelfernandes.org>
- <20240313012451.1693807-2-joel@joelfernandes.org>
-Content-Language: en-US, pt-BR, it-IT
-From: Daniel Bristot de Oliveira <bristot@redhat.com>
-In-Reply-To: <20240313012451.1693807-2-joel@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 3/13/24 02:24, Joel Fernandes (Google) wrote:
-> Paths using put_prev_task_balance() need to do a pick shortly after. Make sure
-> they also clear the ->dl_server on prev as a part of that.
-> > Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Le mercredi 27 mars 2024 =C3=A0 17:23 +0000, Conor Dooley a =C3=A9crit=C2=
+=A0:
+> On Wed, Mar 27, 2024 at 02:41:11PM +0100, Emmanuel Gil Peyrot wrote:
+> > This encoder-only device is present four times on this SoC, and should
+> > support everything the rk3568 vepu supports (so JPEG, H.264 and VP8
+> > encoding).
+> >=20
+> > According to the TRM[1], there is also the VEPU580 encoder which
+> > supports H.264 and H.265, and various VDPU* decoders, of which only the
+> > VDPU981 is currently supported.  This patch describes only the VEPU121.
+> >=20
+> > [1] https://github.com/FanX-Tek/rk3588-TRM-and-Datasheet
+> >=20
+> > Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+>=20
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Makes sense. Added to the v6.
+I'd like to prevent this change until we fix the driver. It should not expo=
+se 1
+video device per core, it should instead do schedule around these cores.
 
--- Daniel
+Nicolas
+
+>=20
+> Thanks,
+> Conor.
+>=20
+> > ---
+> >  .../devicetree/bindings/media/rockchip,rk3568-vepu.yaml   | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git a/Documentation/devicetree/bindings/media/rockchip,rk3568-ve=
+pu.yaml b/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
+> > index 9d90d8d0565a..4c6cb21da041 100644
+> > --- a/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
+> > +++ b/Documentation/devicetree/bindings/media/rockchip,rk3568-vepu.yaml
+> > @@ -15,8 +15,12 @@ description:
+> > =20
+> >  properties:
+> >    compatible:
+> > -    enum:
+> > -      - rockchip,rk3568-vepu
+> > +    oneOf:
+> > +      - const: rockchip,rk3568-vepu
+> > +      - items:
+> > +          - enum:
+> > +              - rockchip,rk3588-vepu121
+> > +          - const: rockchip,rk3568-vepu
+> > =20
+> >    reg:
+> >      maxItems: 1
+> > --=20
+> > 2.44.0
+> >=20
 
 
