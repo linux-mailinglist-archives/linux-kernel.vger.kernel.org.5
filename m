@@ -1,134 +1,128 @@
-Return-Path: <linux-kernel+bounces-131975-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131977-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D93B2898E28
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:43:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FF22898E2C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:43:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 776941F2C2CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:43:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 468F81C295CC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DB691327FD;
-	Thu,  4 Apr 2024 18:42:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA5B132C15;
+	Thu,  4 Apr 2024 18:43:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eZKTRAti"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nn3vknvy"
+Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0083F130E29;
-	Thu,  4 Apr 2024 18:42:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81851131723;
+	Thu,  4 Apr 2024 18:43:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712256175; cv=none; b=nT9v8efRvr6/Me5+FdVXOH9GPACEc+Ma9+PBlswc5yA9JxHdwpiLUCPQqopCxB1Ny6MD9R3gArL3vKrluJYrkJXLIKLPndhMpt0zfAa35/E2JtOI+1wZQSKAcbFBgDmNPTyix/CkDcqVQ66ye+jkH+5aVt//5ltI267VQBlC2Zg=
+	t=1712256212; cv=none; b=JmiDmkP9bZMe4bEniZgmdQe9PUdByp26yRrORuxDm/ap2KoA9KrQPxccLERVXfVjsgi8/4cz2zRe49vO45AHMZnyYkBP+Qawsg31zfSOItHwyX+wsEcOYcehRiFkW4E/vU8oWllUJjnOGOOV3aTDfhREDSgjQ/MRmeFsaNJC3gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712256175; c=relaxed/simple;
-	bh=4NQR6s8aErkFZR1aqYo3S/4BmQ1dbHV3gCI/EvoLQMk=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ISwW/nUTvOWeKOy7EMTW8HOBTrvchLDEUdU2pFqs0TI2YIp9PR4GSUTodXhWacgG41mFZj3tRsELbJtIBEooPPY/gkbHQiPdEuWt2KWEz7E6ywfU/7u61BuNEufpmMEk8sD8VUzWpKNwNf2Vx7PEULps3TDwJA3JofpYFCp2Dvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eZKTRAti; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712256174; x=1743792174;
-  h=message-id:date:mime-version:subject:from:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=4NQR6s8aErkFZR1aqYo3S/4BmQ1dbHV3gCI/EvoLQMk=;
-  b=eZKTRAtiKEtqOPkraqky2lUoDnx6i3BSHExJ1+NWrN6ASdRtDhgeGhAB
-   WccDlSsCAMWVjrtTK5RL3UfMepY/6FubsbJXIPgEz7FCuxPFyV7Aq5UQr
-   730eQeon17jGRuQ/OhL68NzGnimXSszqrTuL4rJeW7iAjEQjhnqKHsJzc
-   4Zn1ylyvkYJz1byzo2aPcKUfGPrH4+ZdmaBLXEcEVN+dxAlwfs/RrEUB5
-   kF7qYuFKtYlsWVIaJSZFDAVyk8b/TeFn4fOG4qaMXUpWa62ai7otO9eqJ
-   03IfJqcmakSXZvu6J2Tmm2ILu9t45UgGllQXMLRDlZOWSSkZ/3lp8FCA/
-   w==;
-X-CSE-ConnectionGUID: Bn0+/+XtSmyCG/Y6u3tBtA==
-X-CSE-MsgGUID: iaxRHqvTRGWw4ZOIKkEjRw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="8144129"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="8144129"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 11:42:53 -0700
-X-CSE-ConnectionGUID: L/rnFIAUR4a+alwgAUI4JQ==
-X-CSE-MsgGUID: Y9bcLz4VRtet7EZ2yn0QDg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="18786003"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.251.213.127])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 11:42:49 -0700
-Message-ID: <77d76e3b-549e-4d26-834c-a59b91fbb2a0@intel.com>
-Date: Thu, 4 Apr 2024 21:42:43 +0300
+	s=arc-20240116; t=1712256212; c=relaxed/simple;
+	bh=lNeaNNlhbREvV2krr1ClfJeQ8ozUNbsQyuKB+WQvTCE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iQV37vWAQjuYWbK8/35i0Wjp0A4LxIM97fuTU9Sv/TiKmIndDj1EuxE9vJ03Xiot5bMKcWedcQlnVRpY3Eg8kv7g8QWyPol/0aEtsNIG7uKkfDlVrM8EU6sBc7N1qNtLxBpOb2OrY/efQRK9hufG8Vx5HN+smwcFoNhso5cIAsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nn3vknvy; arc=none smtp.client-ip=209.85.216.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2a26cb416faso1025824a91.2;
+        Thu, 04 Apr 2024 11:43:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712256210; x=1712861010; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lNeaNNlhbREvV2krr1ClfJeQ8ozUNbsQyuKB+WQvTCE=;
+        b=nn3vknvyT7EhZwzHw9s+WY++6btYVY3Ol/FROowx9+Et0d2b8yjin4QrdHl5+bbosU
+         8376HSuipyTnb4SjBkc39nSnBS1h/V2fdywMipFhyvs0F5JcH3LwTeqczZCwz1c/K69M
+         5LQL4qbiFjAjPx6tiRY2qM5RcTz4e81Hx1LaUreS3QOom8wkTwBmNDISTbhDApcHTXn4
+         Qz3c/raLuGg1EpgqINwwVasDOoWm+ox3EIOLpWvODnMGJBiFRnfrYbNJqPff9OPR3cDP
+         9DGAQpjReFFkYrIlhZFN38x3giIOoSEWg4ardcCwKAMsJIXWPWwNMdSYU/qnXCuodWAJ
+         g5Mg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712256210; x=1712861010;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lNeaNNlhbREvV2krr1ClfJeQ8ozUNbsQyuKB+WQvTCE=;
+        b=qk282Nx5zfB5tvSM3tAb0zuEXF00u0dkpbrB8oKdvBuYjyTCL7n9bgT3c4Ra3Zdiq6
+         E3g5bfS1oARNScnxxxfraI85MIc7Igqdxc4MZej2dm74XU4YUlB/aa/5N4d3fa1yvpIq
+         5kQv8cGqRfrRXTN9ngYyp/hF/qQYK1Z7+sExYBO44WyL6nC6u9bi1YzfAFlnadAT2vwz
+         zT7ylzqp2QOiFGxcr43auETvaw3MfY8fbM6CF19guOfil2ftJ0/j7BvO+Bk3tLJRWkF+
+         wtzqdAsvA7iLdRS28RvS1ANYjFa0fa0c4bJGMZa8Vk5q42qYLoLiRdT5rGG+oS/CdnLl
+         ITlA==
+X-Forwarded-Encrypted: i=1; AJvYcCU8XsOHfUyjlbC+Co5OAlaj56MiuS2AkXwEcqWuqwDicJDe4xOGzo/UIvbS6GqB2bep2bbQZVlI5oB2Qi3dKM709R32Uf1zmTa/UkCzI4QtkRPuSMwYo64k5JbmZJ4wVrMGdHB1hkUvNIzk/vSeoZeui+0FWk67OK84g+69SM3nauV+xys=
+X-Gm-Message-State: AOJu0YxQvlq+c0WlL/FgwlnMObO8zZ2afbin2tKRY08Y2sHozeUFpKLy
+	PIQw3paOdSIllN7FKa8U8HIHvxLzJEmSofhsTfkuAi+uBy/ep0+M7mhrhrZ7zfwLr7pMAbx0Hoj
+	3YJWpeqbLnAGmtspSU+nF1CQDWDQ=
+X-Google-Smtp-Source: AGHT+IGL/ZuNDW+YAA14KxvITUONfWERjFMqYTVlIMjA2c3NxTdOFX1JFpnSxqA19fMs4gI4skjktyw1RgBSXBjql7I=
+X-Received: by 2002:a17:90b:78b:b0:2a2:8a0e:1b81 with SMTP id
+ l11-20020a17090b078b00b002a28a0e1b81mr3277609pjz.30.1712256210175; Thu, 04
+ Apr 2024 11:43:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mmc: sdhci-msm: pervent access to suspended controller
-From: Adrian Hunter <adrian.hunter@intel.com>
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: Mantas Pucka <mantas@8devices.com>, Bjorn Andersson
- <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>,
- Georgi Djakov <djakov@kernel.org>, Pramod Gurav <pramod.gurav@linaro.org>,
- Ritesh Harjani <ritesh.list@gmail.com>, linux-mmc@vger.kernel.org,
- linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>,
- Liming Sun <limings@nvidia.com>,
- Victor Shih <victor.shih@genesyslogic.com.tw>
-References: <20240321-sdhci-mmc-suspend-v1-1-fbc555a64400@8devices.com>
- <2e712cf6-7521-4c0b-b6fd-76bacc309496@intel.com>
- <CAPDyKFoBgwWDXhcXsbCfBD_nJ=3w1e5eReqHgDQ1BiPf0zJRxw@mail.gmail.com>
- <5bce008a-8354-4ccd-af1f-b7f2b2caf3bc@intel.com>
-Content-Language: en-US
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <5bce008a-8354-4ccd-af1f-b7f2b2caf3bc@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240404-providing-emporium-e652e359c711@spud> <20240404153258.GA852748@dev-arch.thelio-3990X>
+In-Reply-To: <20240404153258.GA852748@dev-arch.thelio-3990X>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Thu, 4 Apr 2024 20:42:48 +0200
+Message-ID: <CANiq72kSfC2j07mAaV591i4kDwejWRYcFTvASgQmNnHVe5ZwCw@mail.gmail.com>
+Subject: Re: [PATCH v3] rust: make mutually exclusive with CFI_CLANG
+To: Nathan Chancellor <nathan@kernel.org>
+Cc: Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org, 
+	Conor Dooley <conor.dooley@microchip.com>, stable@vger.kernel.org, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>, 
+	Kees Cook <keescook@chromium.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 28/03/24 16:20, Adrian Hunter wrote:
-> On 27/03/24 17:17, Ulf Hansson wrote:
->> On Tue, 26 Mar 2024 at 11:25, Adrian Hunter <adrian.hunter@intel.com> wrote:
->>>
->>> On 21/03/24 16:30, Mantas Pucka wrote:
->>>> Generic sdhci code registers LED device and uses host->runtime_suspended
->>>> flag to protect access to it. The sdhci-msm driver doesn't set this flag,
->>>> which causes a crash when LED is accessed while controller is runtime
->>>> suspended. Fix this by setting the flag correctly.
->>>>
->>>> Cc: stable@vger.kernel.org
->>>> Fixes: 67e6db113c90 ("mmc: sdhci-msm: Add pm_runtime and system PM support")
->>>> Signed-off-by: Mantas Pucka <mantas@8devices.com>
->>>
->>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
->>
->> Looks like this problem may exist for other sdhci drivers too. In
->> particular for those that enables runtime PM, don't set
->> SDHCI_QUIRK_NO_LED and don't use sdhci_runtime|suspend_resume_host().
->>
->> Don't know if there is a better way to address this, if not on a case
->> by case basis. Do you have any thoughts about this?
-> 
-> Yes probably case by case, but I will look at it.
+On Thu, Apr 4, 2024 at 5:33=E2=80=AFPM Nathan Chancellor <nathan@kernel.org=
+> wrote:
+>
+> Acked-by: Nathan Chancellor <nathan@kernel.org>
 
-There seem to be 3 that use runtime pm but not
-sdhci_runtime_suspend_host():
+Thanks!
 
-1. dwcmshc_runtime_suspend() : only turns off the card clock
-via SDHCI_CLOCK_CONTROL register, so registers are presumably
-still accessible
+> It seems like this won't be forgotten about but if there is not already
+> an issue open for this somewhere, it would be good to have one, since we
+> obviously want this for both C and Rust code.
 
-2. gl9763e_runtime_suspend() : ditto
+We track the unstable feature(s) at
+https://github.com/Rust-for-Linux/linux/issues/2 (I just moved this
+one there since it is close to ready, but it was in #355 previously,
+and cleaned things up a bit).
 
-3. sdhci_tegra_runtime_suspend() : disables the functional
-clock via clk_disable_unprepare(), so registers are presumably
-still accessible
+On the Rust side, I think the main one is
+https://github.com/rust-lang/rust/issues/89653.
 
-sdhci_msm_runtime_suspend() is different because it also turns
-off the interface clock.
+It includes KCFI, but it is missing Matthew's PRs for KCFI etc. I
+added a link to get those issues/PRs (or hopefully most of them):
+https://github.com/rust-lang/rust/pulls?q=3Dis%3Apr+cfi+label%3APG-exploit-=
+mitigations+-label%3Arollup
 
-But it looks like there are no similar cases.
+We could create an explicit/concrete issue for removing the `depends
+on !` when Matthew sends the patches, though.
 
+> As a general meta comment not directed at anyone in particualr, I think
+> these 'depends on !' should all have some sort of comment or description
+> as to why they are disabled. I can infer from most of them but it would
+> still be good to be explicit, especially since someone might want to
+> work on fixing the ones that are due to missing support and such.
+
+That is definitely a good idea. An alternative could be linking an
+issue instead (perhaps concrete ones for that, i.e. your other idea
+above) so that we can update the status etc. easily.
+
+Cheers,
+Miguel
 
