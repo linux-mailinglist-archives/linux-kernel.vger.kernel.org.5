@@ -1,141 +1,152 @@
-Return-Path: <linux-kernel+bounces-131826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131830-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 095C2898C3E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:36:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E582898C47
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:37:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3F8D1F22C38
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:36:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 394BE28A5FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA821C6BB;
-	Thu,  4 Apr 2024 16:36:36 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ACA512CDB5;
+	Thu,  4 Apr 2024 16:37:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IArdbN3s"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90BFA1BC30;
-	Thu,  4 Apr 2024 16:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 715FE12BEBC
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:37:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712248596; cv=none; b=oXDVTTVx7YFVYya/zuV8LV1O0XFOI/fiAh4xC+rv95Xl8u2AMdZ/J1C7ETkNik2F05FS0HVWx4jvveQztm0dVXiXYeDlPvBlyXvGLWynLZarqTFZserrbARemkVN40SwZJCGTgZhVu2npNCGLkuQ3/lloOa1M5j9YHXx0ilYep8=
+	t=1712248637; cv=none; b=bFUdipZss6Il+HFBbyDQ77C5Z9F1NW8496bwe1V+t/LEleYg5wSb4RjLmLzSDhk7teChUhmS23QN1T2kEK+2X9GXX6mspcIglSJM+45ennSAc3lKjfE6cBqFXrupSnDAkegJBwoW/t8tjoiy4XCVLwTBHcZMMWrwVKXcs2E68TQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712248596; c=relaxed/simple;
-	bh=sBhr4OoTOXBwd5STx8zu2+HtM4Vou3RBmckRRs1jT3c=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DE3DrYlTEEsb9pZf66F0DRXi0830C8YwFKD0GpwoRM5XYq/k7dV/s5ZVdCXiQ3yZ6BU08Ht0ScjbZYbswKPDL5ReHHFOSndcDQ7FNVqzamHxLviCqjVl3WczYmGdaa323Xz2tbQC9M0sK1Kjaip+DXgm3a2blWTEyxXw0tEc53I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9Rzw05hZz6K5XD;
-	Fri,  5 Apr 2024 00:35:08 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 070CA141546;
-	Fri,  5 Apr 2024 00:36:28 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
- 2024 17:36:27 +0100
-Date: Thu, 4 Apr 2024 17:36:25 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 17/26] dax/region: Create extent resources on DAX region
- driver load
-Message-ID: <20240404173625.00005b32@Huawei.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-17-b7b00d623625@intel.com>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-	<20240324-dcd-type2-upstream-v1-17-b7b00d623625@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712248637; c=relaxed/simple;
+	bh=SXHj9/wEFGN76Sp3lJeZ2bNl1eT6+d7ErWDVUzf0EaY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AlcZ4xQMgG6LA7zzXxTt7VyLM7PRaLV6vqH9zOjdvBjFb0QCtjN11T1CQtsRFTpFfJpHUvCC5T2+57ElIoNtHnTm/tCNHSrLFAHIhHR801Swq6eWepyvIYlIegl8O/1fs4Q25tflGystf2gPaSke/7EBcIUi4NXkpqO3btaQXRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IArdbN3s; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712248633;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2i4EI1wSyDo81mrMl0H/7Wwslnn2XIreCf4ZZweSpD4=;
+	b=IArdbN3sIrWQTd1/4YYuXuZhv3AcmSOYtmJTb2p9OS3JfZe0E88V2vOi/yeQLEI28BCka/
+	jv6/iRaVMOSM7m1exv13FBRQjxGh3YXVGCc0zDZXUvos1cXuUJ7cxIeQ0BpDRLH93nPKpu
+	n2odXzl7SCHIRUOOOWZypAgJb2KFXqY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-679-AtxE8RxIP922gaPsZUJwcA-1; Thu,
+ 04 Apr 2024 12:37:10 -0400
+X-MC-Unique: AtxE8RxIP922gaPsZUJwcA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1FD7B1C0CCAD;
+	Thu,  4 Apr 2024 16:37:08 +0000 (UTC)
+Received: from t14s.fritz.box (unknown [10.39.192.101])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7B2343C21;
+	Thu,  4 Apr 2024 16:37:03 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org,
+	linux-s390@vger.kernel.org,
+	kvm@vger.kernel.org,
+	David Hildenbrand <david@redhat.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	Janosch Frank <frankja@linux.ibm.com>,
+	Claudio Imbrenda <imbrenda@linux.ibm.com>,
+	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+	Thomas Huth <thuth@redhat.com>
+Subject: [PATCH v1 0/5] s390: page_mapcount(), page_has_private() and PG_arch_1
+Date: Thu,  4 Apr 2024 18:36:37 +0200
+Message-ID: <20240404163642.1125529-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On Sun, 24 Mar 2024 16:18:20 -0700
-ira.weiny@intel.com wrote:
+On my journey to remove page_mapcount(), I got hooked up on other folio
+cleanups that Willy most certainly will enjoy.
 
-> From: Navneet Singh <navneet.singh@intel.com>
-> 
-> DAX regions mapping dynamic capacity partitions introduce a requirement
-> for the memory backing the region to come and go as required.  This
-> results in a DAX region with sparse areas of memory backing.  To track
-> the sparseness of the region, DAX extent objects need to track
-> sub-resource information as a new layer between the DAX region resource
-> and DAX device range resources.
-> 
-> Recall that DCD extents may be accepted when a region is first created.
-> Extend this support on region driver load.  Scan existing extents and
-> create DAX extent resources as a first step to DAX extent realization.
-> 
-> The lifetime of a DAX extent is tricky to manage because the extent life
-> may end in one of two ways.  First, the device may request the extent be
-> released.  Second, the region may release the extent when it is
-> destroyed without hardware involvement.  Support extent release without
-> hardware involvement first.  Subsequent patches will provide for
-> hardware to request extent removal.
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-LGTM though I'm far from an expert on DAX..
+This series removes the s390x usage of:
+* page_mapcount() [patches WIP]
+* page_has_private() [have patches to remove it]
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+.. and makes PG_arch_1 only be set on folio->flags (i.e., never on tail
+pages of large folios).
 
-> 
-> ---
-> Changes for v1
-> [iweiny: remove xarrays]
-> [iweiny: remove as much of extra reference stuff as possible]
-> [iweiny: Move extent resource handling to core DAX code]
-> ---
->  drivers/dax/bus.c         | 55 +++++++++++++++++++++++++++++++++++++++++++++++
->  drivers/dax/cxl.c         | 43 ++++++++++++++++++++++++++++++++++--
->  drivers/dax/dax-private.h | 12 +++++++++++
->  3 files changed, 108 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
-> index 903566aff5eb..4d5ed7ab6537 100644
-> --- a/drivers/dax/bus.c
-> +++ b/drivers/dax/bus.c
-> @@ -186,6 +186,61 @@ static bool is_sparse(struct dax_region *dax_region)
->  	return (dax_region->res.flags & IORESOURCE_DAX_SPARSE_CAP) != 0;
->  }
->  
-> +static int dax_region_add_resource(struct dax_region *dax_region,
-> +				   struct dax_extent *dax_ext,
-> +				   resource_size_t start,
-> +				   resource_size_t length)
-> +{
-> +	struct resource *ext_res;
-> +
-> +	dev_dbg(dax_region->dev, "DAX region resource %pr\n", &dax_region->res);
-> +	ext_res = __request_region(&dax_region->res, start, length, "extent", 0);
-> +	if (!ext_res) {
-> +		dev_err(dax_region->dev, "Failed to add region s:%pa l:%pa\n",
-> +			&start, &length);
-> +		return -ENOSPC;
-> +	}
-> +
-> +	dax_ext->region = dax_region;
-> +	dax_ext->res = ext_res;
-> +	dev_dbg(dax_region->dev, "Extent add resource %pr\n", ext_res);
-> +
-> +	return 0;
-> +}
+Further, one "easy" fix upfront.
+
+.. unfortunately there is one other issue I spotted that I am not
+tackling in this series, because I am not 100% sure what we want to
+do: the usage of page_ref_freeze()/folio_ref_freeze() in
+make_folio_secure() is unsafe. :(
+
+In make_folio_secure(), we're holding the folio lock, the mmap lock and
+the PT lock. So we are protected against concurrent fork(), zap, GUP,
+swapin, migration ... The page_ref_freeze()/ folio_ref_freeze() should
+also block concurrent GUP-fast very reliably.
+
+But if the folio is mapped into multiple page tables, we could see
+concurrent zapping of the folio, a pagecache folios could get mapped/
+accessed concurrent, we could see fork() sharing the page in another
+process, GUP ... trying to adjust the folio refcount while we froze it.
+Very bad.
+
+For anonymous folios, it would likely be sufficient to check that
+folio_mapcount() == 1. For pagecache folios, that's insufficient, likely
+we would have to lock the pagecache. To handle folios mapped into
+multiple page tables, we would have to do what
+split_huge_page_to_list_to_order() does (temporary migration entries).
+
+So it's a bit more involved, and I'll have to leave that to s390x folks to
+figure out. There are othe reasonable cleanups I think, but I'll have to
+focus on other stuff.
+
+Compile tested, but not runtime tested, I'll appreiate some testing help
+from people with UV access and experience.
+
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Alexander Gordeev <agordeev@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc: Sven Schnelle <svens@linux.ibm.com>
+Cc: Janosch Frank <frankja@linux.ibm.com>
+Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Cc: Thomas Huth <thuth@redhat.com>
+
+David Hildenbrand (5):
+  s390/uv: don't call wait_on_page_writeback() without a reference
+  s390/uv: convert gmap_make_secure() to work on folios
+  s390/uv: convert PG_arch_1 users to only work on small folios
+  s390/uv: update PG_arch_1 comment
+  s390/hugetlb: convert PG_arch_1 code to work on folio->flags
+
+ arch/s390/include/asm/page.h |   2 +
+ arch/s390/kernel/uv.c        | 112 ++++++++++++++++++++++-------------
+ arch/s390/mm/gmap.c          |   4 +-
+ arch/s390/mm/hugetlbpage.c   |   8 +--
+ 4 files changed, 79 insertions(+), 47 deletions(-)
+
+-- 
+2.44.0
 
 
