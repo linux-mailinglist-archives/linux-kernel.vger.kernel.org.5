@@ -1,32 +1,33 @@
-Return-Path: <linux-kernel+bounces-131511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B2B58988E2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:37:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12DBB8988E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:37:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AF531C221E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:37:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF16D1F22855
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:37:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8AD2128361;
-	Thu,  4 Apr 2024 13:37:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2446512836B;
+	Thu,  4 Apr 2024 13:37:11 +0000 (UTC)
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F9CF85644;
-	Thu,  4 Apr 2024 13:37:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC968127B4E;
+	Thu,  4 Apr 2024 13:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712237822; cv=none; b=UTL7r9OcC71tAli/290MISMZ3vrsSBeIKnXuPh9vey34CEJAbSGau6ZAEsTAIWK0o7WUYIAo0bzhVJUQZvf564sG1o9TWOsJysmDSNPUFs/Vmti19F6+DZf2++c7AXPAMrwgbpijRPNORvLh3xVq6JAkhXyGvsPd8BPs4QQT7Jg=
+	t=1712237830; cv=none; b=c4CZr+PkHkRDaqQT+rPg/zMlisxeuBHn9USZrmlR+ZQ+ZLrMWpJ/k5yod4QQ4PA3T/NrTq4CclwSLII2X+wd4hT3FJO/F3cGqXT7t4SHNVR067Q1tNp4tYgnSdujAdv2oYopYj3DOsI0wBZCt0kTCKUh3oTds3NtmdPNnqs/RR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712237822; c=relaxed/simple;
-	bh=CJkCDyzJweGksUwYeTjtpL2ZrmVMW55AScBhGmCoOMM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FfSx+fEP4oNjFx81OjEMWfRO5o7V6lFcnKcE9TEkA5272KVKkKkn2Q21jrwHCJX+/p6EuHsAHNsENZ4cbHV/TcpiEVc+vZP/uMiV6HUIoNy7qLDo5c2NmfRfrt7EujMrWy+R9wV7rtuRGa8pWp92iYrQ58Q8aIRlNVSa1uKb2LY=
+	s=arc-20240116; t=1712237830; c=relaxed/simple;
+	bh=jxLpmh8VTKLl4QE0vKweacztjDkwg/HfKpebb5mL/xY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bcsXnwKZ3RC0BD769sgm3mngKCnmqEr+AVDG5kbnzx48kOuBindMnhQNrTa+KDXWmq6kf/S+l2aELcE4QebiEVUoU/MXW48x/mdg+EF6jEmyN4g7wBzn5qoFLrSNdAvN6jQEClPw+JAWMvQgS51ms8kSRW0b3YFxiOPAjUFJPr4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6476FC433F1;
-	Thu,  4 Apr 2024 13:36:59 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1A4AC433C7;
+	Thu,  4 Apr 2024 13:37:07 +0000 (UTC)
 From: Huacai Chen <chenhuacai@loongson.cn>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Huacai Chen <chenhuacai@kernel.org>
@@ -39,10 +40,12 @@ Cc: loongarch@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	loongson-kernel@lists.loongnix.cn,
 	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH 0/3] Make {virt, phys, page, pfn} translation work with KFENCE for LoongArch
-Date: Thu,  4 Apr 2024 21:36:33 +0800
-Message-ID: <20240404133642.971583-1-chenhuacai@loongson.cn>
+Subject: [PATCH 1/3] mm: Move lowmem_page_address() a little later
+Date: Thu,  4 Apr 2024 21:36:34 +0800
+Message-ID: <20240404133642.971583-2-chenhuacai@loongson.cn>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240404133642.971583-1-chenhuacai@loongson.cn>
+References: <20240404133642.971583-1-chenhuacai@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,28 +55,46 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On LoongArch kmalloc() range is DMW-mapped rather than TLB-mapped, so
-KFENCE remap __kfence_pool to the TLB-mappd range.
-
-To make all drivers work, {virt, phys, page, pfn} translation functions
-are overriden (part of them already done, others done in this series):
-1, virt_to_pfn()/pfn_to_virt();
-2, virt_to_page()/page_to_virt();
-3, virt_to_phys()/phys_to_virt().
- 
-Since LoongArch overrides page_to_virt() which use page_address() in the
+LoongArch will override page_to_virt() which use page_address() in the
 KFENCE case (by defining WANT_PAGE_VIRTUAL/HASHED_PAGE_VIRTUAL). So move
 lowmem_page_address() a little later to avoid such build errors:
 
-error: implicit declaration of function ‘page_address’.
-
-Huacai Chen(3):
- mm: Move lowmem_page_address() a little later.
- LoongArch: Make {virt, phys, page, pfn} translation work with KFENCE
- LoongArch: Make virt_addr_valid()/__virt_addr_valid() work with KFENCE
+error: implicit declaration of function 'page_address'.
 
 Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
 ---
-2.27.0
+ include/linux/mm.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 0436b919f1c7..7b0ee64225de 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2207,11 +2207,6 @@ static inline int arch_make_folio_accessible(struct folio *folio)
+  */
+ #include <linux/vmstat.h>
+ 
+-static __always_inline void *lowmem_page_address(const struct page *page)
+-{
+-	return page_to_virt(page);
+-}
+-
+ #if defined(CONFIG_HIGHMEM) && !defined(WANT_PAGE_VIRTUAL)
+ #define HASHED_PAGE_VIRTUAL
+ #endif
+@@ -2234,6 +2229,11 @@ void set_page_address(struct page *page, void *virtual);
+ void page_address_init(void);
+ #endif
+ 
++static __always_inline void *lowmem_page_address(const struct page *page)
++{
++	return page_to_virt(page);
++}
++
+ #if !defined(HASHED_PAGE_VIRTUAL) && !defined(WANT_PAGE_VIRTUAL)
+ #define page_address(page) lowmem_page_address(page)
+ #define set_page_address(page, address)  do { } while(0)
+-- 
+2.43.0
 
 
