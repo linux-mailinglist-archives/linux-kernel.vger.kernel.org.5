@@ -1,104 +1,161 @@
-Return-Path: <linux-kernel+bounces-131984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131985-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E518A898E41
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:50:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ED22898E43
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:50:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22C771C22394
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:50:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C85A1C21A68
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07A73131BDB;
-	Thu,  4 Apr 2024 18:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3135131BDE;
+	Thu,  4 Apr 2024 18:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tjuiwI8a"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UYUB3XQz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 092711D6A5
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 18:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22F4A1C6AF
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 18:50:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712256627; cv=none; b=i+Rys30slw74VOSS9NHBGEpviGf59aWAQHCapfSs501tZU04c9+/HBqqPEY20MwpvrHFCqCEaSt+zmskiPGVwp0Ed0yZ7blqc5WEStpXn3sGwVxtbJ/JGEWcBKPYns7VuiFL/0lS2lxIldcM8MXC6A2t5hP80LBvHObRwGM07Cc=
+	t=1712256639; cv=none; b=PZ5mvohFqh+i/OFCmmHFseAJGMUUWadetCdSK0pys/U+o4L7pisEAp34P3jr5xMTcERVtdzPmqYo0LUQQQbWY5AfqoZLbB6LcN6CZ7/l9hBITVd2M6mydpE5Elu6noQkdS/DhQWd0Gd2RFsRURVlc7akb7i5MSoIyfpXpvCsDSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712256627; c=relaxed/simple;
-	bh=5cmsmRL01LTBUVCbLB8WWxi3wj11c03zAP00q6S2RBo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=B6HEqph32u64bEQsvQLdCnrG9exhLhnNk1t4EV/vBfqHuuVHogDI+SH2ABCFSjHBjSE8AFnYYn4DkLeTc09rSt5TxCOCkuuw5jf3ImhRKJkoRdKCPp8cDkrFRELe5aEg1Y6DDct7401akelCdZF6UBj800wMpnP0lV3pOh8b+lI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tjuiwI8a; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d475b6609eso17194531fa.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 11:50:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712256623; x=1712861423; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=svY/ur10Om8A4vKixrJGUkmbDeJnaZ18d0XmchhqHMg=;
-        b=tjuiwI8a2dnkSdut3BBo6fK/I5B8Ga1LE9dm1tO/LdJ7jgtKlXW9ynHXl4vkIlP0Tk
-         FxP2DnwwnHtId37nn91b7a2nmSqWEJ/eWjVxl70Ba+AHyfpeqRogqKOWf3eNOJIkU85e
-         pMZg1cbkKZumtyl8rh2QovZydyi/MZjPKXewJL8uS0Sc5Y13twxOgjIGY0HhNo7KXsns
-         yqe4Y0z8+03GNIRP2P0zyuwwWsSmaYlamuZAmuEQLMbdVBVIdvDlM0M5UJXHghILorOk
-         +iYCy3zY16Qq5iUej6YQZOfFDLXQhQy/8BYBWTmMQ+UEnc911jAfqPAAxnLusUgdzHok
-         6IJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712256623; x=1712861423;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=svY/ur10Om8A4vKixrJGUkmbDeJnaZ18d0XmchhqHMg=;
-        b=epDOctCvmr/KTVNOvBix+t78LMhM8MUi7+C2AqjXxaSjVjlB28Cl1wdVc/FfJw1nUu
-         gT4vU+8yvHZ4y2IS4n4kxHMExuGv29hE2uxu98MuhhbDMcsWAEHRwQGqLxFBh8CMfg74
-         Q+pQ+GMyLMIAiW++oDu/lEgmyJpF5S0ekHHnON+wwWFqkZJgUBhlUD7yTJiXdvsDznGN
-         xsSZlGqhlj3TW+ELnS6448dh9xy0TQ07pnHL/NTPxS6UeMU2iOGd31MmpdBY0N0w+L3M
-         qmsgaTCgnm6JDk5lLiKWT3mloEF4sBKT18BJK3bxZJYqykcXmDJLaSHJ0kL6ntrAnQz2
-         SS0w==
-X-Forwarded-Encrypted: i=1; AJvYcCXvQWljS1frVVd0Hihcd6MboLU8/LDeuavxIudCDGrEHxpH+f+FSJ3gz9YR+rlzGJzzc0qFh1Iyg4MVPFnrEVrjSsFS+s5eknCMwg2w
-X-Gm-Message-State: AOJu0Yx/s7My96XB9dbMTtaRl2JcNTEsIJH2wSS76FFT8AsTtGPY0Y1g
-	ArYYJBwX+C+l8shacj9RfFPbRdXmEZSyibBQaA74P+XaYaLugbXqVBj0zN9A4pI=
-X-Google-Smtp-Source: AGHT+IG34qkZMKnGNuAqnox03mol06Zt0+bAZ8cMyAv5xgBeP5KdYLBMAqt1TO82O+vhyaB1qJlo/Q==
-X-Received: by 2002:a05:6512:469:b0:516:b07a:5b62 with SMTP id x9-20020a056512046900b00516b07a5b62mr216286lfd.54.1712256623061;
-        Thu, 04 Apr 2024 11:50:23 -0700 (PDT)
-Received: from [172.30.205.19] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id r10-20020a19ac4a000000b00516cdfb1b9bsm207192lfc.228.2024.04.04.11.50.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 11:50:22 -0700 (PDT)
-Message-ID: <3fddd0aa-313b-436e-bd2c-d239da6873db@linaro.org>
-Date: Thu, 4 Apr 2024 20:50:18 +0200
+	s=arc-20240116; t=1712256639; c=relaxed/simple;
+	bh=+Ow8KhJTzO8VPoYKwL7qe3PnkQ9EklWJ5SuZs3K2q/I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=p2/3KUCLlwix0VtjLGdgpGK8vehbPC31Xvp1krhbG4xg7REEiLMhcz8yKombga5KVeQ4iIjvH9itvQKjT0Av/kYfaVtfyv0fX7ruidoIx5K66+v4O29DyizlFbWyB0dzeRDznjMpcIXP91dBv3e1T5YBoASZCekPWAOXmY4NGUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UYUB3XQz; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712256636;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=x14DtsNMvIOrspoag3gOecAB/Pjfzl1YzHd1pA6CG68=;
+	b=UYUB3XQziK1hskY71/BvZOWISo8lic0a8vNWhNQmqaJlKfxqccRCrXAg63b7GUf2576alQ
+	fYDRpJgVtHm96hQOXa3vyNJf0gzNFaxqaS2k4vMS0cvxy0HuKrLIwqvDMXZiaB0vrrhdz2
+	jZhXF11MScDoaC1Ysgc5sBxjLgqkEsE=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-617-_faobFCjPIaRe213qj9J7A-1; Thu, 04 Apr 2024 14:50:35 -0400
+X-MC-Unique: _faobFCjPIaRe213qj9J7A-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C30BE8007A3;
+	Thu,  4 Apr 2024 18:50:34 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 951DA1C060A4;
+	Thu,  4 Apr 2024 18:50:34 +0000 (UTC)
+From: Paolo Bonzini <pbonzini@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Cc: seanjc@google.com,
+	michael.roth@amd.com,
+	isaku.yamahata@intel.com,
+	Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH 00/11] KVM: guest_memfd: New hooks and functionality for SEV-SNP and TDX
+Date: Thu,  4 Apr 2024 14:50:22 -0400
+Message-ID: <20240404185034.3184582-1-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] arm64: dts: qcom: qcs6490-rb3gen2: Enable UFS
-To: Bjorn Andersson <quic_bjorande@quicinc.com>,
- Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240327-rb3gen2-ufs-v2-1-3de6b5dd78dd@quicinc.com>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20240327-rb3gen2-ufs-v2-1-3de6b5dd78dd@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+
+[Matthew, you're Cc'd here for patches 1 and 3 which touch
+ the mm/filemap code.  Since in the meanwhile the KVM side has
+ taken a more definitive shape, this time through review/ack is
+ welcome! And there is a proper commit message too. - Paolo]
+
+This is the next version of the gmem common API patches,
+adding target-independent functionality and hooks that are
+needed by SEV-SNP and TDX.
+
+The code in here is mostly taken from two series:
+
+- [PATCH 00/21] TDX/SNP part 1 of n, for 6.9
+  https://lore.kernel.org/kvm/20240227232100.478238-1-pbonzini@redhat.com/
+
+- [PATCH gmem 0/6] gmem fix-ups and interfaces for populating gmem pages
+  https://lore.kernel.org/kvm/20240329212444.395559-1-michael.roth@amd.com/
+
+1-2: This introduces an AS_INACCESSIBLE flag that prevents unexpected
+     accesses to hole-punched gmem pages before invalidation hooks have had
+     a chance to make them safely accessible to the host again.
+
+3-9: This introduces an interface for preparing gmem pages either on first
+     use or by populating them with user data.
+
+     The latter interface, kvm_gmem_populate(), alternates calls
+     to __kvm_gmem_get_pfn() with calls to a user provided callback.
+     This implementation simplifies the handling of races and errors,
+     by confining filemap rollback and locking in kvm_gmem_populate().
+     The function's tasks are otherwise kept to the minimum so that
+     it can be used by both SNP and TDX.
+
+10-11: This introduces other hooks needed by SEV-SNP, and is unchanged
+       from "[PATCH 00/21] TDX/SNP part 1 of n, for 6.9".
+
+The main changes compared to the previous posting are in patch 9;
+both the locking of kvm_gmem_populate() (which now takes the
+filemap's invalidate_lock) and the operation of the function
+(which now looks up the memslot, but OTOH does not do copy_from_user()
+anymore) are pretty new.  I tested the logic slightly by adding a call
+to it for sw-protected VMs.
+
+Shout or post fixups if it breaks something for you.
+
+Current state:
+
+- kvm/queue has the SEV_INIT2 and some easy refactorings from
+  the TDX series.  Both are expected to move to kvm/next soon.
+
+- I have pushed this already at kvm-coco-queue, but I haven't
+  finished the #VE series yet so tomorrow I'll post it and
+  update kvm-coco-queue again.
+
+Paolo
 
 
+Michael Roth (4):
+  mm: Introduce AS_INACCESSIBLE for encrypted/confidential memory
+  KVM: guest_memfd: Use AS_INACCESSIBLE when creating guest_memfd inode
+  KVM: guest_memfd: Add hook for invalidating memory
+  KVM: x86: Add gmem hook for determining max NPT mapping level
 
-On 3/28/24 03:01, Bjorn Andersson wrote:
-> The rb3gen2 has UFS memory, adjust the necessary supply voltage and add
-> the controller and phy nodes to enable this.
-> 
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
+Paolo Bonzini (7):
+  KVM: guest_memfd: pass error up from filemap_grab_folio
+  filemap: add FGP_CREAT_ONLY
+  KVM: guest_memfd: limit overzealous WARN
+  KVM: guest_memfd: Add hook for initializing memory
+  KVM: guest_memfd: extract __kvm_gmem_get_pfn()
+  KVM: guest_memfd: extract __kvm_gmem_punch_hole()
+  KVM: guest_memfd: Add interface for populating gmem pages with user
+    data
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+ arch/x86/include/asm/kvm-x86-ops.h |   3 +
+ arch/x86/include/asm/kvm_host.h    |   4 +
+ arch/x86/kvm/mmu/mmu.c             |   8 +
+ arch/x86/kvm/x86.c                 |  13 ++
+ include/linux/kvm_host.h           |  35 +++++
+ include/linux/pagemap.h            |   3 +
+ mm/filemap.c                       |   4 +
+ mm/truncate.c                      |   3 +-
+ virt/kvm/Kconfig                   |   8 +
+ virt/kvm/guest_memfd.c             | 230 ++++++++++++++++++++++++-----
+ 10 files changed, 277 insertions(+), 34 deletions(-)
 
-Konrad
+-- 
+2.43.0
+
 
