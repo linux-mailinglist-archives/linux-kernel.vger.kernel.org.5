@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-131017-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDB228981FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:15:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81698898200
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:15:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DB801F2735B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:15:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B8E7287A1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:15:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5692F5B1FB;
-	Thu,  4 Apr 2024 07:15:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DAB15C8FF;
+	Thu,  4 Apr 2024 07:15:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VjYeF7qO"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CEtu3kxa"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8535B1EB;
-	Thu,  4 Apr 2024 07:15:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEDC5CDC0;
+	Thu,  4 Apr 2024 07:15:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712214908; cv=none; b=ovNZf7jf8jicgBzM7Fvm4pQR3oPTqDxOQar9wBh/ixHxJVtytMuSMiWHkk5S8oj2jt7x7WAQ67PpTihYMN1bBvepOoRohdxXb6jWNb2+QWMQa+nzjKp0Ja+rnniP5YwaungfeK7UgegYBZaiIS6NZVcUhf7zeN4+OAqSP/iIziI=
+	t=1712214915; cv=none; b=KT2zFCwX+AB1PDh8KLnh44HGgmR9vyRIkPTFu5paKDfDCg/nadIFzECCFuPWMoP+a9ZyNk7Rq5sZywc8NRIxr0GlSDl3yZ3+DIBeYg5j88pSpWq6nmXQmc/rtGkBsPe5HtXeCQPoCe7ZvrhZhJvp82ehiSE/OVpc0/Ui2Y+2xP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712214908; c=relaxed/simple;
-	bh=l2jjsxz/9h2qnDtVCAtjskSge0cYGkUEZQyYbiVVEGw=;
+	s=arc-20240116; t=1712214915; c=relaxed/simple;
+	bh=XQ53YgJ+KiTfINBFq/O6Z48P14zbeZM01KRRTndoD/U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JZOd+KAaRuC1xOKLOLO4VvwbkIk1E5VZsjcb4NQlY1UV+OyP9xm0J9LbVVFV81TKkzOn0405jtZrhJqKwdyQAyp43oxj9pqz6PJfKa6RLvTbVyk9aFo4NOwn0V9LSJEXwvOOlT85oQoMqa74S+GA8SUyaqmdYAE0zFsG6Fn6EjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VjYeF7qO; arc=none smtp.client-ip=209.85.214.174
+	 MIME-Version; b=sXljbkhr5cO77igl1wcVh/Mht8uS++eZF3BixBrQ8bhUSdIkuft+5Bo8or5fXLDUbastnab5NEjdNbX2z7ka67jcpPsSUAeBy9Y4+CrBH+GXGlXi6i1XC+9qiN2PuJxNqCm31yV5GN4gJghkTWni5KhyB/bdcwRfp6MKhavqpSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CEtu3kxa; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1e220e40998so4674415ad.1;
-        Thu, 04 Apr 2024 00:15:07 -0700 (PDT)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1def89f0cfdso13774335ad.0;
+        Thu, 04 Apr 2024 00:15:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712214906; x=1712819706; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712214914; x=1712819714; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rinkV9M1GdwvRaIXYpdNquzoQdVjkSfszcTQAo+0cCg=;
-        b=VjYeF7qOTbMtgUKZBrptmHYLaTvJlK1DEJVgWVEZlIfylGOdJpqdZV2wyqtUbDGe1I
-         uwmFNVGUVqCR6jiYJMetThjGoMPDtN0M92o+FVr1ACryNf6DOaos2D5ro+PXOzGSpHkZ
-         FZk0ItX5RiFJtTL5wb1QUImddrDZEju4XRy0ytBXVtagIcNj7sqSGzwCoU7w9cj+WlMT
-         DB8VmueI7eu4sBRwp+tlhX+zNCwtk2qpbNapjs4f8cHoxZ+DazJxrdIxI91M0aGafWC5
-         ClZVGgqkpM4GXEmmvaGoJG+yTD6yY1hOlrc/tfvARrcYlTYsHXGmhu+F10NzTe5WxHZh
-         Kb5Q==
+        bh=qXppvwNAhzN97k5Naw+YEyw1OS4lAQ4l14Ygn5h0IzM=;
+        b=CEtu3kxaeUGSbXfcb+b/Z0z8AEGg2nbyhEZAv/s+Y0hEIhmAVJosmNFX0CHtVldU4J
+         +8UBbQBAjP+zxIz5DE9OlUMk+JwtiEIOSFDTiatUBF1MjtgoB9hHpBB0qot97YMl2OrZ
+         nMqCr/IwT6CoGnbLyJfMXpRhQodRH+ZRmL/h2m33MXH5BkJZ779fiEukUDUw6Wi8ikPs
+         8uSbrW5ouSh0aN8hRtqoxTeNED9U8dPBRZLGZYFIBdKM1WJnI5g9wKw6L67/3xzR8/Hv
+         as+PTNFPP2c4fe1qHNmhJ19onGG6hV457QpY1NvYtLYmkyUqQv1Vk+JqMdTU25mf+P1E
+         K7xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712214906; x=1712819706;
+        d=1e100.net; s=20230601; t=1712214914; x=1712819714;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rinkV9M1GdwvRaIXYpdNquzoQdVjkSfszcTQAo+0cCg=;
-        b=MwTiyNgDAX45L7Pgw5F8EfSO5QyoO8tzU2+3BNec0gPbUJgXfnz6TVAlD3kkNLP3vT
-         +Ha33m9wn9YRD4zDqks63eSlCkWXh//rBNsFEL2Bcy+cLsraso8qjD39LCSH/3u8iaqO
-         Ysfo7//exRI1gumxpKZM7PbURhQHbOxzhVPqiH6Syw120lmxHqGbvXzxXR45a+jtx1Lo
-         4Ju9yxCivuv2T1QfEHKb63SPkr+R3xh6F+RGjoVEuT8HOa9q1Cl9+FErwhPOseF4yVRH
-         O0M541GO1FRTyTTf8gxgM5nMwU19dDt7GT4vI4HdAwsvEvU+OmIQco7zNvHVoaoBcwIe
-         kw1w==
-X-Forwarded-Encrypted: i=1; AJvYcCVC2W9mfMUojxD58AHWm8Co/kqns1iVGNAHOg6b9YRG5xWDBFKVdcq/GikrKKEAWuz03l3q4spYwVn9EvJQ6CFAKPM/w9aDyscPxAas0wY0dEpALdIQNB0/HkTYF4hYFpXGeGPKTKaUStB8du/l8azw1v2xheYZ10Km7M+JUvqz3VIT8QPmXUQbfZY=
-X-Gm-Message-State: AOJu0Yyy6z4C1hSsbBZ5vHBff4Zw5xUjobO98r2KKbnNrUhRQI64A6c/
-	eLrKF8emaB9h7Uza8mfqpBNQl96KL1Go6q9xr44GhGKNtA30ZwD9
-X-Google-Smtp-Source: AGHT+IE538Vd8oFoNsf4W8iPSGIGPmsJQtB4mfqWsgTvwN90yY9UPLOYOos5v0PPJN/c45lpauVNXw==
-X-Received: by 2002:a17:902:ca8d:b0:1e2:9d65:253f with SMTP id v13-20020a170902ca8d00b001e29d65253fmr1362119pld.29.1712214906423;
-        Thu, 04 Apr 2024 00:15:06 -0700 (PDT)
+        bh=qXppvwNAhzN97k5Naw+YEyw1OS4lAQ4l14Ygn5h0IzM=;
+        b=E/mBYLFvDOEcKihi2BSJsVFDBi1vRJVdDYBdzDfPrh8qBD111rDqZrO9TU+DdRIof6
+         QkMu9vR6txPbSPHAKvbAcvxRqctv0MCFzQS3WP83HedX5BWF/9C2fDJO4RVPNkegrv6g
+         O3rlQ4NE2wJ35t7Doyt5BrjL6/ZC5ZmaXfYr/cVJj0U0VeOMAPMBHNonuTRpmMO7W4Lm
+         b1fbVVKL3DVX3FRL5BclsjCJ7/dsRjwWbnaw2FoR2jO8AUel5SPifyDqZZlewMUJLOFT
+         eokM5ZmZngDFV0dnq8BmT4g1NZRYZnsgkJLOQUEvYTXLhWTqF+2r+58Sq4Iy6s5vlmha
+         LDOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW1h/NVeG+5n8XqEij4/6MPw5+4pZx3VL8IwALrx+Qjq9nSwQbMLLXySLjlF4eShqMJ8MYZTno/FBP5WBsK1zrG9KahrO18fblEnp9lzgGOXv6kNHeyWT0D7MAOOYrtGcaJyL9WyNTufAWriXw1v861UiZFdvKGwSMQRdhdVB7ApQlGDujcL2sGgXA=
+X-Gm-Message-State: AOJu0YzN5qFTE3PIfEkxTx0sfIVyYhxdaGoEUWrTwAaWEs6RSxrtWnSH
+	6W7RDqUMFCWwqy0bb0ruSQsDcYOqswg9SCC1YAgGe1+LRF/dMJIs
+X-Google-Smtp-Source: AGHT+IG026jtHHMrN+DwLrmD2VL2UxEvIawtAyzH9cBcIzRtMNoZHVr0l8h2fdo3y1I/kj5sABCjBA==
+X-Received: by 2002:a17:903:2350:b0:1e2:908f:5d6c with SMTP id c16-20020a170903235000b001e2908f5d6cmr2692549plh.10.1712214913748;
+        Thu, 04 Apr 2024 00:15:13 -0700 (PDT)
 Received: from localhost.localdomain ([113.30.217.222])
-        by smtp.gmail.com with ESMTPSA id h20-20020a170902f2d400b001e26c4823d0sm5220873plc.52.2024.04.04.00.15.03
+        by smtp.gmail.com with ESMTPSA id h20-20020a170902f2d400b001e26c4823d0sm5220873plc.52.2024.04.04.00.15.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 00:15:06 -0700 (PDT)
+        Thu, 04 Apr 2024 00:15:13 -0700 (PDT)
 From: Anand Moon <linux.amoon@gmail.com>
 To: Alan Stern <stern@rowland.harvard.edu>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -78,9 +78,9 @@ Cc: Anand Moon <linux.amoon@gmail.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-samsung-soc@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/6] usb: ohci-exynos: Use devm_clk_get_enabled() helpers
-Date: Thu,  4 Apr 2024 12:43:19 +0530
-Message-ID: <20240404071350.4242-4-linux.amoon@gmail.com>
+Subject: [PATCH v2 4/6] usb: ohci-exynos: Switch from CONFIG_PM guards to pm_ptr()
+Date: Thu,  4 Apr 2024 12:43:20 +0530
+Message-ID: <20240404071350.4242-5-linux.amoon@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240404071350.4242-1-linux.amoon@gmail.com>
 References: <20240404071350.4242-1-linux.amoon@gmail.com>
@@ -92,71 +92,61 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The devm_clk_get_enabled() helpers:
-    - call devm_clk_get()
-    - call clk_prepare_enable() and register what is needed in order to
-      call clk_disable_unprepare() when needed, as a managed resource.
-
-This simplifies the code and avoids the calls to clk_disable_unprepare().
-
-While at it, use dev_err_probe consistently, and use its return value
-to return the error code.
+Use the new PM macros for the suspend and resume functions to be
+automatically dropped by the compiler when CONFIG_PM are disabled,
+without having to use #ifdef guards. If CONFIG_PM unused,
+they will simply be discarded by the compiler.
 
 Signed-off-by: Anand Moon <linux.amoon@gmail.com>
 ---
 v2: new changes in this series.
 ---
- drivers/usb/host/ohci-exynos.c | 19 +++++--------------
- 1 file changed, 5 insertions(+), 14 deletions(-)
+ drivers/usb/host/ohci-exynos.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/usb/host/ohci-exynos.c b/drivers/usb/host/ohci-exynos.c
-index 20e26a474591..85d04ae0ae40 100644
+index 85d04ae0ae40..3e647e0b341d 100644
 --- a/drivers/usb/host/ohci-exynos.c
 +++ b/drivers/usb/host/ohci-exynos.c
-@@ -135,20 +135,15 @@ static int exynos_ohci_probe(struct platform_device *pdev)
+@@ -212,8 +212,7 @@ static void exynos_ohci_shutdown(struct platform_device *pdev)
+ 		hcd->driver->shutdown(hcd);
+ }
  
- 	err = exynos_ohci_get_phy(&pdev->dev, exynos_ohci);
- 	if (err)
--		goto fail_clk;
--
--	exynos_ohci->clk = devm_clk_get(&pdev->dev, "usbhost");
-+		goto fail_io;
+-#ifdef CONFIG_PM
+-static int exynos_ohci_suspend(struct device *dev)
++static int __maybe_unused exynos_ohci_suspend(struct device *dev)
+ {
+ 	struct usb_hcd *hcd = dev_get_drvdata(dev);
+ 	struct exynos_ohci_hcd *exynos_ohci = to_exynos_ohci(hcd);
+@@ -230,7 +229,7 @@ static int exynos_ohci_suspend(struct device *dev)
+ 	return 0;
+ }
  
-+	exynos_ohci->clk = devm_clk_get_enabled(&pdev->dev, "usbhost");
- 	if (IS_ERR(exynos_ohci->clk)) {
--		dev_err(&pdev->dev, "Failed to get usbhost clock\n");
--		err = PTR_ERR(exynos_ohci->clk);
--		goto fail_clk;
-+		usb_put_hcd(hcd);
-+		return dev_err_probe(&pdev->dev, PTR_ERR(exynos_ohci->clk),
-+				"Failed to get usbhost clock\n");
+-static int exynos_ohci_resume(struct device *dev)
++static int __maybe_unused exynos_ohci_resume(struct device *dev)
+ {
+ 	struct usb_hcd *hcd			= dev_get_drvdata(dev);
+ 	struct exynos_ohci_hcd *exynos_ohci	= to_exynos_ohci(hcd);
+@@ -249,10 +248,6 @@ static int exynos_ohci_resume(struct device *dev)
+ 
+ 	return 0;
+ }
+-#else
+-#define exynos_ohci_suspend	NULL
+-#define exynos_ohci_resume	NULL
+-#endif
+ 
+ static const struct ohci_driver_overrides exynos_overrides __initconst = {
+ 	.extra_priv_size =	sizeof(struct exynos_ohci_hcd),
+@@ -277,7 +272,7 @@ static struct platform_driver exynos_ohci_driver = {
+ 	.shutdown	= exynos_ohci_shutdown,
+ 	.driver = {
+ 		.name	= "exynos-ohci",
+-		.pm	= &exynos_ohci_pm_ops,
++		.pm	= pm_ptr(&exynos_ohci_pm_ops),
+ 		.of_match_table	= of_match_ptr(exynos_ohci_match),
  	}
- 
--	err = clk_prepare_enable(exynos_ohci->clk);
--	if (err)
--		goto fail_clk;
--
- 	hcd->regs = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(hcd->regs)) {
- 		err = PTR_ERR(hcd->regs);
-@@ -191,8 +186,6 @@ static int exynos_ohci_probe(struct platform_device *pdev)
- 	exynos_ohci_phy_disable(&pdev->dev);
- 	pdev->dev.of_node = exynos_ohci->of_node;
- fail_io:
--	clk_disable_unprepare(exynos_ohci->clk);
--fail_clk:
- 	usb_put_hcd(hcd);
- 	return err;
- }
-@@ -208,8 +201,6 @@ static void exynos_ohci_remove(struct platform_device *pdev)
- 
- 	exynos_ohci_phy_disable(&pdev->dev);
- 
--	clk_disable_unprepare(exynos_ohci->clk);
--
- 	usb_put_hcd(hcd);
- }
- 
+ };
 -- 
 2.44.0
 
