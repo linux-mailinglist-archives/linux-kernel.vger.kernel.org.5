@@ -1,186 +1,94 @@
-Return-Path: <linux-kernel+bounces-131136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C2B889837B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:51:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CFDC898384
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:53:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52F1F28FAED
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:51:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 268CB1F214E2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910CB73504;
-	Thu,  4 Apr 2024 08:51:47 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C74873186;
+	Thu,  4 Apr 2024 08:53:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="ZQY+fOGL"
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6040A4597A;
-	Thu,  4 Apr 2024 08:51:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC0304597A
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712220707; cv=none; b=GuMCkfUuErE0TA/f8cmGRpVWXKPwlzjuwYJPcI88Sd/s9Dbt6DuL/1tcxhMkrHKfWIQe4eQ6c/L5JA34SM9u2b+EEnkYw4ommEqgKLLOl/i5dJOPq05WY/eSNMIjKtrdUFLWU8jvTV3t0YISqr/udy0Nvydrbj1+4AG5uXI3G68=
+	t=1712220813; cv=none; b=t0meR3bEzSykL/VzOWAw7lErMhVSpnA70cC/wLCmo9ur5HlJgzBS2qTwMNFbm8bK9v89+cE5Ue5Sv62LM0grfRDHHgnn67V2pUAIzj4PFKTl7Rke8wkJvJU6vUPeBHodkQfseFj61Cq96wnVWkDR8qReYmY3prZ4FogkkVJvdUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712220707; c=relaxed/simple;
-	bh=XfmsCBkDJ/6d+QejA2BzcnkkJvQKAbigpPnYoVfbLio=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=X74TW1EMxgEjgzOOBab6D50YYLrE+TsjtvVNoUwFddBRLUvJ6wTm8JETU2XoGPYiP8sMq8EFi1wx2908ZQ4B/9Fg5IvYUfsLvAfRpK95LRQw4XmpkIxwe5Zfatzx2f20eh8S7fwt7VcTiht7xjvHQYGxFhsZUz4XjOHQgXPYCH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9FgY6sP7z67hPh;
-	Thu,  4 Apr 2024 16:50:17 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id A4843140B35;
-	Thu,  4 Apr 2024 16:51:39 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
- 2024 09:51:39 +0100
-Date: Thu, 4 Apr 2024 09:51:38 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 08/26] cxl/mem: Expose device dynamic capacity
- capabilities
-Message-ID: <20240404095138.00004c7d@Huawei.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-8-b7b00d623625@intel.com>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-	<20240324-dcd-type2-upstream-v1-8-b7b00d623625@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712220813; c=relaxed/simple;
+	bh=QnqiA7cqOqWHyrF7A1C3zhzdsaPCJ71GOtHW696ZnKQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=V2WgWyebf8Dsa2d+/0f8TmTn5ldsHNUCNj3c1WkBvzvXnxZA//G9x6zNluzu36bjzaqqtAdWDpNJDJjq+v/NppLc8qQ64EUmg2vO4Enc712SS+UIi/7ll9iqWwGAHzQKdziIfuKFhFSikEL13bezLMo0CRwV57RV/xDntUU1iVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=ZQY+fOGL; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=k36xzs2vbbcnhm7bjcihyouree.protonmail; t=1712220810; x=1712480010;
+	bh=QnqiA7cqOqWHyrF7A1C3zhzdsaPCJ71GOtHW696ZnKQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=ZQY+fOGLftwavMBKHACHzh9s0Y91H5obfbsw6fw5H+crmXOk5pZI8LXOHr+z+l5vv
+	 0d7/NQct7rZ52LKr4dYu+CiubbUS8cR7sXAMBRlRU6bd0qaXS9hJKl7R1Kdjrb7Ayt
+	 8RYKbusYlRPN2oLFCiiMu4dtOji2Asucv44zKhF5f5okGJ1D8OCcVxG+T9uOLt6NqO
+	 U64H3FYS0C/ARjLKzjKcSnPp2QY5FBIHZvKscDBji3qv4Fw2E282Msz+qN2/kkUjFX
+	 yCu9esAhSWxPEPApanpPLDijR7qnOrImdmMG+TNrlBY2sZG+gXwE95xFtzza/NpQpD
+	 Zyn1D44d5C2vg==
+Date: Thu, 04 Apr 2024 08:53:22 +0000
+To: Boqun Feng <boqun.feng@gmail.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, Martin Rodriguez Reboredo <yakoyoku@gmail.com>, rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rust: init: change the generated name of guard variables
+Message-ID: <331cfa9d-9687-4922-a7f8-5579173d66c0@proton.me>
+In-Reply-To: <Zg3aVLUHkRFxqAh3@boqun-archlinux>
+References: <20240403194321.88716-1-benno.lossin@proton.me> <Zg3IHZfYVEOh7nc4@boqun-archlinux> <ef1400ae-ba9e-4656-98db-a882ac720c1e@proton.me> <Zg3aVLUHkRFxqAh3@boqun-archlinux>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 24 Mar 2024 16:18:11 -0700
-ira.weiny@intel.com wrote:
+On 04.04.24 00:38, Boqun Feng wrote:
+> On Wed, Apr 03, 2024 at 10:09:49PM +0000, Benno Lossin wrote:
+>> On 03.04.24 23:20, Boqun Feng wrote:
+>>> On Wed, Apr 03, 2024 at 07:43:37PM +0000, Benno Lossin wrote:
+>>>> The initializers created by the `[try_][pin_]init!` macros utilize the
+>>>> guard pattern to drop already initialized fields, when initialization
+>>>> fails mid-way. These guards are generated to have the same name as the
+>>>> field that they handle. To prevent namespacing issues when the field
+>>>
+>>> Do you have an example of this kind of issues?
+>>
+>> https://lore.kernel.org/rust-for-linux/1e8a2a1f-abbf-44ba-8344-705a9cbb1=
+627@proton.me/
+>>
+>=20
+> Ok, so a new binding cannot shadow the name of a constant, that's a bit
+> surprising, but seems makes sense.
+>=20
+> The solution is not ideal (for example, a constant can have the name
+> "__something_guard"), but nothing better we could I guess.
 
-> From: Navneet Singh <navneet.singh@intel.com>
-> 
-> To properly configure CXL regions on Dynamic Capacity Devices (DCD),
-> user space will need to know the details of the DC Regions available on
-> a device.
-> 
-> Expose driver dynamic capacity capabilities through sysfs
-> attributes.
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Yeah that would also be problematic. I think the problem from the thread
+is best solved by making the constant there upper case, so it would also
+avoid this issue.
+But debugging the error in the macro is a bit annoying, so if someone
+encounters this again, they don't have to deal with that.
 
-Trivial comments inline.
-Whilst I'd like the directory hidden as per the other suggestions,
-I don't mind that much.
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-
-
-> 
-> ---
-> Changes for v1:
-> [iweiny: remove review tags]
-> [iweiny: mark sysfs for 6.10 kernel]
-> ---
->  Documentation/ABI/testing/sysfs-bus-cxl | 17 ++++++++
->  drivers/cxl/core/memdev.c               | 76 +++++++++++++++++++++++++++++++++
->  2 files changed, 93 insertions(+)
-> 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
-> index 8b3efaf6563c..8a4f572c8498 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-cxl
-> +++ b/Documentation/ABI/testing/sysfs-bus-cxl
-> @@ -54,6 +54,23 @@ Description:
->  		identically named field in the Identify Memory Device Output
->  		Payload in the CXL-2.0 specification.
->  
-> +What:		/sys/bus/cxl/devices/memX/dc/region_count
-> +Date:		June, 2024
-> +KernelVersion:	v6.10
-> +Contact:	linux-cxl@vger.kernel.org
-> +Description:
-> +		(RO) Number of Dynamic Capacity (DC) regions supported on the
-> +		device.  May be 0 if the device does not support Dynamic
-> +		Capacity.
-
-That will change if you go ahead and hide the directory as per suggestions.
-
-> +
-> +What:		/sys/bus/cxl/devices/memX/dc/regionY_size
-> +Date:		June, 2024
-> +KernelVersion:	v6.10
-> +Contact:	linux-cxl@vger.kernel.org
-> +Description:
-> +		(RO) Size of the Dynamic Capacity (DC) region Y.  Only
-
-Units always good to have in docs even if somewhat obvious.
-
-> +		available on devices which support DC and only for those
-> +		region indexes supported by the device.
->  
->  What:		/sys/bus/cxl/devices/memX/pmem/qos_class
->  Date:		May, 2023
-> diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
-> index d4e259f3a7e9..a7b880e33a7e 100644
-> --- a/drivers/cxl/core/memdev.c
-> +++ b/drivers/cxl/core/memdev.c
-> @@ -101,6 +101,18 @@ static ssize_t pmem_size_show(struct device *dev, struct device_attribute *attr,
-
-..
-
-> +static struct attribute *cxl_memdev_dc_attributes[] = {
-> +	&dev_attr_region0_size.attr,
-> +	&dev_attr_region1_size.attr,
-> +	&dev_attr_region2_size.attr,
-> +	&dev_attr_region3_size.attr,
-> +	&dev_attr_region4_size.attr,
-> +	&dev_attr_region5_size.attr,
-> +	&dev_attr_region6_size.attr,
-> +	&dev_attr_region7_size.attr,
-> +	&dev_attr_region_count.attr,
-> +	NULL,
-> +};
-> +
-> +static umode_t cxl_dc_visible(struct kobject *kobj, struct attribute *a, int n)
-> +{
-> +	struct device *dev = kobj_to_dev(kobj);
-> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
-> +	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlmd->cxlds);
-> +
-> +	/* Not a memory device */
-> +	if (!mds)
-> +		return 0;
-> +
-> +	if (a == &dev_attr_region_count.attr)
-> +		return a->mode;
-> +
-> +	/* Show only the regions supported */
-> +	if (n < mds->nr_dc_region)
-> +		return a->mode;
-
-This feels a bit fragile if anyone adds new attrs in future and for whatever reason
-does it before these.
-
-Maybe add a comment at top of cxl_memdev_dc_attributes()?  Say they must be first.
-
-> +
-> +	return 0;
-> +}
-> +
-
-> 
+--=20
+Cheers,
+Benno
 
 
