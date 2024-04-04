@@ -1,244 +1,246 @@
-Return-Path: <linux-kernel+bounces-131148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E4328983B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:07:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1DEA8983BB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:08:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28FC81C21829
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:07:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B5151F252E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D67874407;
-	Thu,  4 Apr 2024 09:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 099D474424;
+	Thu,  4 Apr 2024 09:07:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BXvJs2oc"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hi94dDcK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="VkRVOHT4"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD01629D1C;
-	Thu,  4 Apr 2024 09:07:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04DEF73533;
+	Thu,  4 Apr 2024 09:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712221666; cv=none; b=VtQGmL+Zgcdt0EbSf6fM4KU3UDW4MZvtVmEAOADj9hq+5IDfZEO38/oHWVkGJtXz+kOt6HAabdS2kxh1u1mgdF1GIk4R5PX9DIlTT+5SLsKOZuHtSKg8o/xAJuPii/sbJ0a5dJ5CzEc7Hv0/pkosQVObHuBRXncYp4XYtzgT9FA=
+	t=1712221678; cv=none; b=E88T7reG94jVGsl7NK8bD/DTH/wi9zTN561cvgNOvV+WRSMhzL3NUpZcPrzG8AcYt/bg6DNdpPi3v75Lao58ye0eYL56cc6EFUes+78Tpj9F2QkvaDg3BLVNsZZdNWOV8I2Hb4P+YPMtQJoGZPQyajiXegCeWBGyazriUgOqIxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712221666; c=relaxed/simple;
-	bh=8Z1eeKz5NWn8FkA1s2nndfTKnz8oh2Mh0NHsNggFhtw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=jVhYUXR7APRAjmDfLt/KAz52Ve08wQeJ2G6fhyeCLKTG69xkgQxHfsmP+6/Vc5pAfuXrX23Rw+HbeZp+YSBxm2rsvLHHQBnAm7O2Dn7UG2DqO1zRAMg2RfLGPAAygADsZ6QnyD9nLOBulAPx04YZcGPtuKHoT6ilL76+Y3EpuNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BXvJs2oc; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56c197d042fso752583a12.0;
-        Thu, 04 Apr 2024 02:07:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712221663; x=1712826463; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RFK96jCZIN2tAhA3ygmvv/m8c90WRy9LmwJaVtRHJPw=;
-        b=BXvJs2ocXEvXu92tv1kx6xWMtP4YJf5HE5TJHwKZ102vbW3Cly4i3zGvj2oWflmVe1
-         7bJ8q61zMr89RehHeN8BmtQqmiaIwQbaCmO+Bc7bQtNa3gw/+dK56uYwNhg5rdYdfIas
-         c+EgPJ04iGZa+MiHlS2Ienu9igIWwv2WmB4+dHGcCMycutJhrtjG01zx+2XRqcbZtuUy
-         zy7Bvv6awp9M8SgowyI9ZM3g1RoykOKWuX7FXfiEkgJwTrov6YcAuqdTCwPYZqMID+VF
-         MsDSugW5EuxxdhL7d8RfYBb+ggysrfy5PneBzOxrub1AnV5UhYqweUM1poUGc13h7EnT
-         RQlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712221663; x=1712826463;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RFK96jCZIN2tAhA3ygmvv/m8c90WRy9LmwJaVtRHJPw=;
-        b=jm2IEcARniGtOapYQxsY6Gx9lgTKw3Wfz7f9+9b5rE2yruCkgxkIAhMxre590qmi8g
-         ErIdQBZmpvL1luHunLT3ieuElNNpzOoI8zE8lYw6sH1UAxgJ8OH1/Z86hrm/puGargI1
-         TV7QKcEaUnxoUJAOTRabfeGZ+wtoxGHMK1T/3IYjqaM4N+voN3FofPw3sl/tTRjWG1Uf
-         ekwblE1jlreNkez7sgbNmJqm8ndu7Hv8tmG2cRfzzprh1sRzUozv29tpoRtuNf1b6eyc
-         BvndVoH9fSTa0eU/i5vPywaucP8GsRWo64d1/BNTf8uuJMOkhll9BUjvwAVcpGzlMqII
-         EwkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVE63uRj/SOVrqZ753A845bgDy31ATkrCk9QpDCdaldGU6kWA/w5Qc+RQTtTbrh3EfyPppmfiLrB8Zn7X+VYIFglQ9owbW2YtWtCEfx
-X-Gm-Message-State: AOJu0YzReavnOi5sL/k+27qK/gEcdsYAYvbhluc9YB9jGl1BToHt2ap8
-	fH+FjAh7Z9j33K01SHeKweHjrRnxpeUANGOs/evOV2p8YFGbKn7r18dWkKX/p0k=
-X-Google-Smtp-Source: AGHT+IE9pfnYFX+mC8L/Nlk/CqP5YoK09qK6zbYxUaYYcmgjL+cSHEUe6I5dhHixWhZwlwa3OpZpDA==
-X-Received: by 2002:a50:9f67:0:b0:568:b48e:bb2 with SMTP id b94-20020a509f67000000b00568b48e0bb2mr1157869edf.25.1712221662605;
-        Thu, 04 Apr 2024 02:07:42 -0700 (PDT)
-Received: from WBEC325.dom.lan ([185.188.71.122])
-        by smtp.gmail.com with ESMTPSA id i23-20020a05640200d700b0056ddc4415eesm3977305edu.14.2024.04.04.02.07.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 02:07:42 -0700 (PDT)
-From: Pawel Dembicki <paweldembicki@gmail.com>
-To: netdev@vger.kernel.org
-Cc: Pawel Dembicki <paweldembicki@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next] net: phy: marvell: implement cable test for 88E1111
-Date: Thu,  4 Apr 2024 11:07:26 +0200
-Message-Id: <20240404090726.3059610-1-paweldembicki@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1712221678; c=relaxed/simple;
+	bh=0uxoQRaHoHG7chj6MWdAHKa820ZHfiIxdM2f5qnK8GY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tSkz09hGnEmhudZirWyMQU3Kgt7pW+ovUaEhxgZHA4WfORhCtpaoxWSs/e1TlxJm96i9vMDmST4NUIcFibcLd58Y+v3+K/0Cm1ssN5WFYaJ+I4dZHWV8fngD1DxxfXauIJbBcC+4cJp2OxoQTaNj+yHxyAzotbzEURrBYKEqOUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hi94dDcK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=VkRVOHT4; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2947E379D1;
+	Thu,  4 Apr 2024 09:07:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712221674; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/fyMt9mi2QeseeA79i7XQ5O3GA4jt9iGQ8W/i5gg2EM=;
+	b=hi94dDcK+h6tGAZlnkEpRkayNJyik5D1DB64qJBX/33XmvKoNiopZn0tTwPha4ZF+hu+uI
+	rLRcFKKUihWQTBnUa9Uy9OC7PdmEdks6ukgg9Q/PrfYhhr3HZ2sMbx2PURYsSqeZj6oRYc
+	P1F442CqNJKqalruSYD54kf73oHdt54=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712221674;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/fyMt9mi2QeseeA79i7XQ5O3GA4jt9iGQ8W/i5gg2EM=;
+	b=VkRVOHT4tDv91fGgYX/LQ85y2rs2YsRBCXmUriVwKaLwCyl4q1vDBWWJg3Fx+JQwjJ4O3y
+	ZFdhAhwO9xHLzGCg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 196E9139E8;
+	Thu,  4 Apr 2024 09:07:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id gxXxBeptDmZRHQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 04 Apr 2024 09:07:54 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id B688DA0816; Thu,  4 Apr 2024 11:07:53 +0200 (CEST)
+Date: Thu, 4 Apr 2024 11:07:53 +0200
+From: Jan Kara <jack@suse.cz>
+To: Brian Foster <bfoster@redhat.com>
+Cc: Kemeng Shi <shikemeng@huaweicloud.com>, akpm@linux-foundation.org,
+	willy@infradead.org, jack@suse.cz, tj@kernel.org, dsterba@suse.com,
+	mjguzik@gmail.com, dhowells@redhat.com,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] writeback: support retrieving per group debug
+ writeback stats of bdi
+Message-ID: <20240404090753.q3iugmqeeqig64db@quack3>
+References: <20240327155751.3536-1-shikemeng@huaweicloud.com>
+ <20240327155751.3536-4-shikemeng@huaweicloud.com>
+ <Zga937dR5UgtSVaz@bfoster>
+ <e3816f9c-0f29-a0e4-8ad8-a6acf82a06ad@huaweicloud.com>
+ <Zg1wGvTeQxjqjYUG@bfoster>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg1wGvTeQxjqjYUG@bfoster>
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[huaweicloud.com,linux-foundation.org,infradead.org,suse.cz,kernel.org,suse.com,gmail.com,redhat.com,vger.kernel.org,kvack.org];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap2.dmz-prg2.suse.org:rdns,imap2.dmz-prg2.suse.org:helo]
+X-Spam-Score: -2.80
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-The same implementation is also valid for 88E1145. VCT in 88E1111 is
-similar to the 88E609x family. The main difference lies in register
-organization and required workarounds.
+On Wed 03-04-24 11:04:58, Brian Foster wrote:
+> On Wed, Apr 03, 2024 at 04:49:42PM +0800, Kemeng Shi wrote:
+> > on 3/29/2024 9:10 PM, Brian Foster wrote:
+> > > On Wed, Mar 27, 2024 at 11:57:48PM +0800, Kemeng Shi wrote:
+> > >> +		collect_wb_stats(&stats, wb);
+> > >> +
+> > > 
+> > > Also, similar question as before on whether you'd want to check
+> > > WB_registered or something here..
+> > Still prefer to keep full debug info and user could filter out on
+> > demand.
+> 
+> Ok. I was more wondering if that was needed for correctness. If not,
+> then that seems fair enough to me.
+> 
+> > >> +		if (mem_cgroup_wb_domain(wb) == NULL) {
+> > >> +			wb_stats_show(m, wb, &stats);
+> > >> +			continue;
+> > >> +		}
+> > > 
+> > > Can you explain what this logic is about? Is the cgwb_calc_thresh()
+> > > thing not needed in this case? A comment might help for those less
+> > > familiar with the implementation details.
+> > If mem_cgroup_wb_domain(wb) is NULL, then it's bdi->wb, otherwise,
+> > it's wb in cgroup. For bdi->wb, there is no need to do wb_tryget
+> > and cgwb_calc_thresh. Will add some comment in next version.
+> > > 
+> > > BTW, I'm also wondering if something like the following is correct
+> > > and/or roughly equivalent:
+> > > 	
+> > > 	list_for_each_*(wb, ...) {
+> > > 		struct wb_stats stats = ...;
+> > > 
+> > > 		if (!wb_tryget(wb))
+> > > 			continue;
+> > > 
+> > > 		collect_wb_stats(&stats, wb);
+> > > 
+> > > 		/*
+> > > 		 * Extra wb_thresh magic. Drop rcu lock because ... . We
+> > > 		 * can do so here because we have a ref.
+> > > 		 */
+> > > 		if (mem_cgroup_wb_domain(wb)) {
+> > > 			rcu_read_unlock();
+> > > 			stats.wb_thresh = min(stats.wb_thresh, cgwb_calc_thresh(wb));
+> > > 			rcu_read_lock();
+> > > 		}
+> > > 
+> > > 		wb_stats_show(m, wb, &stats)
+> > > 		wb_put(wb);
+> > > 	}
+> > It's correct as wb_tryget to bdi->wb has no harm. I have considered
+> > to do it in this way, I change my mind to do it in new way for
+> > two reason:
+> > 1. Put code handling wb in cgroup more tight which could be easier
+> > to maintain.
+> > 2. Rmove extra wb_tryget/wb_put for wb in bdi.
+> > Would this make sense to you?
+> 
+> Ok, well assuming it is correct the above logic is a bit more simple and
+> readable to me. I think you'd just need to fill in the comment around
+> the wb_thresh thing rather than i.e. having to explain we don't need to
+> ref bdi->wb even though it doesn't seem to matter.
+> 
+> I kind of feel the same on the wb_stats file thing below just because it
+> seems more consistent and available if wb_stats eventually grows more
+> wb-specific data.
+> 
+> That said, this is subjective and not hugely important so I don't insist
+> on either point. Maybe wait a bit and see if Jan or Tejun or somebody
+> has any thoughts..? If nobody else expresses explicit preference then
+> I'm good with it either way.
 
-It utilizes the same fields in registers but requires a simpler
-implementation.
+No strong opinion from me really.
 
-Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
----
- drivers/net/phy/marvell.c | 93 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 93 insertions(+)
+> > >> +static void cgwb_debug_register(struct backing_dev_info *bdi)
+> > >> +{
+> > >> +	debugfs_create_file("wb_stats", 0444, bdi->debug_dir, bdi,
+> > >> +			    &cgwb_debug_stats_fops);
+> > >> +}
+> > >> +
+> > >>  static void bdi_collect_stats(struct backing_dev_info *bdi,
+> > >>  			      struct wb_stats *stats)
+> > >>  {
+> > >> @@ -117,6 +202,8 @@ static void bdi_collect_stats(struct backing_dev_info *bdi,
+> > >>  {
+> > >>  	collect_wb_stats(stats, &bdi->wb);
+> > >>  }
+> > >> +
+> > >> +static inline void cgwb_debug_register(struct backing_dev_info *bdi) { }
+> > > 
+> > > Could we just create the wb_stats file regardless of whether cgwb is
+> > > enabled? Obviously theres only one wb in the !CGWB case and it's
+> > > somewhat duplicative with the bdi stats file, but that seems harmless if
+> > > the same code can be reused..? Maybe there's also a small argument for
+> > > dropping the state info from the bdi stats file and moving it to
+> > > wb_stats.In backing-dev.c, there are a lot "#ifdef CGWB .. #else .. #endif" to
+> > avoid unneed extra cost when CGWB is not enabled.
+> > I think it's better to avoid extra cost from wb_stats when CGWB is not
+> > enabled. For now, we only save cpu cost to create and destroy wb_stats
+> > and save memory cost to record debugfs file, we could save more in
+> > future when wb_stats records more debug info.
 
-diff --git a/drivers/net/phy/marvell.c b/drivers/net/phy/marvell.c
-index 7c00f47e4ded..0003276452f6 100644
---- a/drivers/net/phy/marvell.c
-+++ b/drivers/net/phy/marvell.c
-@@ -281,6 +281,7 @@
- 
- #define MII_VCT_TXPINS			0x1A
- #define MII_VCT_RXPINS			0x1B
-+#define MII_VCT_SR			0x1C
- #define MII_VCT_TXPINS_ENVCT		BIT(15)
- #define MII_VCT_TXRXPINS_VCTTST		GENMASK(14, 13)
- #define MII_VCT_TXRXPINS_VCTTST_SHIFT	13
-@@ -2623,6 +2624,92 @@ static int m88e3082_vct_cable_test_get_status(struct phy_device *phydev,
- 	return 0;
- }
- 
-+static int m88e1111_vct_cable_test_start(struct phy_device *phydev)
-+{
-+	int ret;
-+
-+	ret = marvell_cable_test_start_common(phydev);
-+	if (ret)
-+		return ret;
-+
-+	/* It needs some magic workarounds described in VCT manual for this PHY.
-+	 */
-+	ret = phy_write(phydev, 29, 0x0018);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write(phydev, 30, 0x00c2);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write(phydev, 30, 0x00ca);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write(phydev, 30, 0x00c2);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write_paged(phydev, MII_MARVELL_COPPER_PAGE, MII_VCT_SR,
-+			      MII_VCT_TXPINS_ENVCT);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write(phydev, 29, 0x0018);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = phy_write(phydev, 30, 0x0042);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static u32 m88e1111_vct_distrfln_2_cm(u8 distrfln)
-+{
-+	if (distrfln < 36)
-+		return 0;
-+
-+	/* Original function for meters: y = 0.8018x - 28.751 */
-+	return (8018 * distrfln - 287510) / 100;
-+}
-+
-+static int m88e1111_vct_cable_test_get_status(struct phy_device *phydev,
-+					      bool *finished)
-+{
-+	u8 vcttst_res, distrfln;
-+	int ret, result;
-+
-+	*finished = false;
-+
-+	/* Each pair use one page: A-0, B-1, C-2, D-3 */
-+	for (u8 i = 0; i < 4; i++) {
-+		ret = phy_read_paged(phydev, i, MII_VCT_SR);
-+		if (ret < 0)
-+			return ret;
-+		else if (i == 0 && ret & MII_VCT_TXPINS_ENVCT)
-+			return 0;
-+
-+		distrfln = ret & MII_VCT_TXRXPINS_DISTRFLN;
-+		vcttst_res = (ret & MII_VCT_TXRXPINS_VCTTST) >>
-+			      MII_VCT_TXRXPINS_VCTTST_SHIFT;
-+
-+		result = m88e3082_vct_cable_test_report_trans(vcttst_res,
-+							      distrfln);
-+		ethnl_cable_test_result(phydev, i, result);
-+
-+		if (distrfln < MII_VCT_TXRXPINS_DISTRFLN_MAX) {
-+			u32 cm = m88e1111_vct_distrfln_2_cm(distrfln);
-+
-+			ethnl_cable_test_fault_length(phydev, i, cm);
-+		}
-+	}
-+
-+	*finished = true;
-+	return 0;
-+}
-+
- #ifdef CONFIG_HWMON
- struct marvell_hwmon_ops {
- 	int (*config)(struct phy_device *phydev);
-@@ -3534,6 +3621,7 @@ static struct phy_driver marvell_drivers[] = {
- 		.phy_id_mask = MARVELL_PHY_ID_MASK,
- 		.name = "Marvell 88E1111",
- 		/* PHY_GBIT_FEATURES */
-+		.flags = PHY_POLL_CABLE_TEST,
- 		.probe = marvell_probe,
- 		.config_init = m88e1111gbe_config_init,
- 		.config_aneg = m88e1111_config_aneg,
-@@ -3549,6 +3637,8 @@ static struct phy_driver marvell_drivers[] = {
- 		.get_stats = marvell_get_stats,
- 		.get_tunable = m88e1111_get_tunable,
- 		.set_tunable = m88e1111_set_tunable,
-+		.cable_test_start = m88e1111_vct_cable_test_start,
-+		.cable_test_get_status = m88e1111_vct_cable_test_get_status,
- 	},
- 	{
- 		.phy_id = MARVELL_PHY_ID_88E1111_FINISAR,
-@@ -3642,6 +3732,7 @@ static struct phy_driver marvell_drivers[] = {
- 		.phy_id_mask = MARVELL_PHY_ID_MASK,
- 		.name = "Marvell 88E1145",
- 		/* PHY_GBIT_FEATURES */
-+		.flags = PHY_POLL_CABLE_TEST,
- 		.probe = marvell_probe,
- 		.config_init = m88e1145_config_init,
- 		.config_aneg = m88e1101_config_aneg,
-@@ -3656,6 +3747,8 @@ static struct phy_driver marvell_drivers[] = {
- 		.get_stats = marvell_get_stats,
- 		.get_tunable = m88e1111_get_tunable,
- 		.set_tunable = m88e1111_set_tunable,
-+		.cable_test_start = m88e1111_vct_cable_test_start,
-+		.cable_test_get_status = m88e1111_vct_cable_test_get_status,
- 	},
- 	{
- 		.phy_id = MARVELL_PHY_ID_88E1149R,
+Well, there's the other side that you don't have to think whether the
+kernel has CGWB enabled or not when asking a customer to gather the
+writeback debug info - you can always ask for wb_stats. Also if you move
+the wb->state to wb_stats only it will become inaccessible with CGWB
+disabled. So I agree with Brian that it is better to provide wb_stats also
+with CGWB disabled (and we can just implement wb_stats for !CGWB case with
+the same function as bdi_stats).
+
+That being said all production kernels I have seen do have CGWB enabled so
+I don't care that much about this...
+
+> > Move state info from bdi stats to wb_stats make senses to me. The only
+> > concern would be compatibility problem. I will add a new patch to this
+> > to make this more noticeable and easier to revert.
+
+Yeah, I don't think we care much about debugfs compatibility but I think
+removing state from bdi_stats is not worth the inconsistency between
+wb_stats and bdi_stats in the !CGWB case.
+
+								Honza
 -- 
-2.25.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
