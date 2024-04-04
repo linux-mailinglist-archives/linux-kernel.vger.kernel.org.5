@@ -1,106 +1,126 @@
-Return-Path: <linux-kernel+bounces-131729-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D68E0898B2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:33:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 91DF8898B29
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:33:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C5721F2D2DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:33:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 475B51F2B126
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C476129A75;
-	Thu,  4 Apr 2024 15:33:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD0112A173;
+	Thu,  4 Apr 2024 15:33:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="PxqEuPUS"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PQLRQoQ8"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB65D12AAD6;
-	Thu,  4 Apr 2024 15:33:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA93C1292EE;
+	Thu,  4 Apr 2024 15:33:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712244787; cv=none; b=TzVkducTnZiWFz1lhc3WNiiEszLSe/1DZP5LcvxQfhP3W33BK9oXL8o+oCx7PPryBN5JGem6YlBk3SE6LhU2Hb320lZhFWo07JT39o4w2DByJe6tjlSCgZkuKhuIU5JRsuhM6GgnUExSCCM84rzmj3ajaBvgoyaF8H3UhHcRysg=
+	t=1712244781; cv=none; b=Ap1X0x0yW7X8vUxpvUpPFI5SX/oFwheKh1BRjk/8SOrov4vcKsrfuLWmdN1LGsek8AVy7WybS8Zs+pQB7wQf8u0Uc0WeFGB+lAliMz4WBJ5se+pR6XWYz8LCbyUIVLPbwMzzghIRj1voJ6xFMXhCP/Zf2y7TXs2vOzwm6Mp+QMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712244787; c=relaxed/simple;
-	bh=yrjkmQiC3FMkSbl5HUztMPrVreWKuakw77l4M84qpsg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=FIdlBguX1gqod4hep7kh/cO8BV5Q++jBJbKf4FgIID9QAGXSANUBux8tL/21gk1j9VJW4XvVxZ2sF/0mu/PxRp8ZgHY0hXJD5kK27J9LBgiDJITMWw4+ex1Nc2RpykysCzx6IVgHcos1MjqdbBDSdNj9IywD4qZfLq5tudhUmx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=PxqEuPUS; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 434FWl2h074117;
-	Thu, 4 Apr 2024 10:32:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712244767;
-	bh=TlztorEvC5Xvtyqcs6DGjxvXkt168hykTsxA7fh/Buo=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=PxqEuPUSJQuG9lFLV1WTyrPmsWAAi3w5tx+2wOtsMRFxclD7DYus/GQ6kv9lL7jUo
-	 q45ZkTPQTpGZs1QK5Uenxn3AdIOa4XWYgOyOjX5Wy/vLvvnAF1bHLY3CjDletSHyHv
-	 QR3thw60yptffPoqY2uWK80MyRVofFXi5zfJuSdo=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 434FWlC5036328
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 4 Apr 2024 10:32:47 -0500
-Received: from lewvowa01.ent.ti.com (10.180.75.79) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 4
- Apr 2024 10:32:47 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by lewvowa01.ent.ti.com
- (10.180.75.79) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2507.34; Thu, 4 Apr
- 2024 10:32:47 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 4 Apr 2024 10:32:47 -0500
-Received: from [128.247.81.105] (judy-hp.dhcp.ti.com [128.247.81.105])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 434FWlql112611;
-	Thu, 4 Apr 2024 10:32:47 -0500
-Message-ID: <7586bb3c-1d6a-4560-9188-14bc1762d27b@ti.com>
-Date: Thu, 4 Apr 2024 10:32:47 -0500
+	s=arc-20240116; t=1712244781; c=relaxed/simple;
+	bh=+ihKIoYDSDX/L3rUTACaGuGGhf6TLUZ/+4aywDsnmIM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UEt5xSpdYo0uctKDX1QyToz6xN01HMRwwuwzURpBDcd3VELKQzzpo7gRiAql9aFF8mFNv7JzBZkpms7RATLwSjS36yQ2dRDH8f+6QEi/kTOtAts+YpzNgv2wLYliqdBCuFvEHRJ2qJL0Dv0bR23r6L+ZP43rrDto7pXeJg5Qehw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PQLRQoQ8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96471C433F1;
+	Thu,  4 Apr 2024 15:33:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712244781;
+	bh=+ihKIoYDSDX/L3rUTACaGuGGhf6TLUZ/+4aywDsnmIM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PQLRQoQ8m3JLC2Td7LqTr9Gyx8iw2LqCI4y/rdO3jtZZbS+Jx+i1K/p9KSnZBmeME
+	 +c29ns5saD6bgCr/l+2SX/f4nFyiiSIxm/5E9rcRe8PW0ZE7NZpGIwjxhx5E89VL15
+	 82t9Vd7JFQgbffAMgIwa0aZMPBP883Z6LDkVPEtCDYG8PJHV9dhQXrPGeZxtYv/B+S
+	 TdPsbPup6lVeq9b/AlKD3BSDhXEVHVqOEnkLN8LdjH60jD/0MagUPdIpfuABSjbPKn
+	 Ca++IKiyI5MdVDhXG+zD+xnTEBgDZk67+RLYMxMdw2G32RjOdiVttZUzTgVOGqjsQP
+	 tS4iFvBCBEjKg==
+Date: Thu, 4 Apr 2024 08:32:58 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Conor Dooley <conor@kernel.org>
+Cc: linux-riscv@lists.infradead.org,
+	Conor Dooley <conor.dooley@microchip.com>, stable@vger.kernel.org,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
+	Sami Tolvanen <samitolvanen@google.com>,
+	Kees Cook <keescook@chromium.org>, llvm@lists.linux.dev
+Subject: Re: [PATCH v3] rust: make mutually exclusive with CFI_CLANG
+Message-ID: <20240404153258.GA852748@dev-arch.thelio-3990X>
+References: <20240404-providing-emporium-e652e359c711@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] watchdog: rti_wdt: Set min_hw_heartbeat_ms to accommodate
- 5% safety margin
-To: Francesco Dolcini <francesco@dolcini.it>
-CC: Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck
-	<linux@roeck-us.net>, <linux-watchdog@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20240403212426.582727-1-jm@ti.com>
- <20240404082814.GA8722@francesco-nb>
-Content-Language: en-US
-From: Judith Mendez <jm@ti.com>
-In-Reply-To: <20240404082814.GA8722@francesco-nb>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404-providing-emporium-e652e359c711@spud>
 
-Hi Francesco,
-
-On 4/4/24 3:28 AM, Francesco Dolcini wrote:
-> Hello Judith,
+On Thu, Apr 04, 2024 at 03:17:02PM +0100, Conor Dooley wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
 > 
-> On Wed, Apr 03, 2024 at 04:24:26PM -0500, Judith Mendez wrote:
->> On AM62x, the watchdog is pet before the valid window
->> is open. Fix min_hw_heartbeat and accommodate a 5% safety
+> On RISC-V and arm64, and presumably x86, if CFI_CLANG is enabled,
+> loading a rust module will trigger a kernel panic. Support for
+> sanitisers, including kcfi (CFI_CLANG), is in the works, but for now
+> they're nightly-only options in rustc. Make RUST depend on !CFI_CLANG
+> to prevent configuring a kernel without symmetrical support for kfi.
 > 
-> Fix => Add Fixes tag + Cc:stable ?
+> Fixes: 2f7ab1267dc9 ("Kbuild: add Rust support")
+> cc: stable@vger.kernel.org
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 
-Thanks will add for v2
-~ Judith
+Acked-by: Nathan Chancellor <nathan@kernel.org>
 
+It seems like this won't be forgotten about but if there is not already
+an issue open for this somewhere, it would be good to have one, since we
+obviously want this for both C and Rust code.
+
+As a general meta comment not directed at anyone in particualr, I think
+these 'depends on !' should all have some sort of comment or description
+as to why they are disabled. I can infer from most of them but it would
+still be good to be explicit, especially since someone might want to
+work on fixing the ones that are due to missing support and such.
+
+> ---
+> Sending this one on its own, there's no explicit dep on this for the
+> riscv enabling patch, v3 to continue the numbering from there. Nothing
+> has changed since v2.
 > 
-> Thanks,
-> Francesco
+> CC: Miguel Ojeda <ojeda@kernel.org>
+> CC: Alex Gaynor <alex.gaynor@gmail.com>
+> CC: Wedson Almeida Filho <wedsonaf@gmail.com>
+> CC: linux-kernel@vger.kernel.org (open list)
+> CC: rust-for-linux@vger.kernel.org
+> CC: Sami Tolvanen <samitolvanen@google.com>
+> CC: Kees Cook <keescook@chromium.org>
+> CC: Nathan Chancellor <nathan@kernel.org>
+> CC: llvm@lists.linux.dev
+> ---
+>  init/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-
+> diff --git a/init/Kconfig b/init/Kconfig
+> index aa02aec6aa7d..ad9a2da27dc9 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1899,6 +1899,7 @@ config RUST
+>  	bool "Rust support"
+>  	depends on HAVE_RUST
+>  	depends on RUST_IS_AVAILABLE
+> +	depends on !CFI_CLANG
+>  	depends on !MODVERSIONS
+>  	depends on !GCC_PLUGINS
+>  	depends on !RANDSTRUCT
+> -- 
+> 2.43.0
+> 
+> 
 
