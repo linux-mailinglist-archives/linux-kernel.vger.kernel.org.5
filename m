@@ -1,180 +1,125 @@
-Return-Path: <linux-kernel+bounces-131256-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8E69898559
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3890C898562
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:50:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D70011C269C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:47:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56C351C22DEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:50:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36CCA80623;
-	Thu,  4 Apr 2024 10:47:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 072288062E;
+	Thu,  4 Apr 2024 10:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="KucgOAAX"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="fcKmiabG"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F07A8F7D
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 10:47:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B03F679F3;
+	Thu,  4 Apr 2024 10:50:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712227634; cv=none; b=frQ+5KE3oV2s+gU6o/nt8NezFVEEK1UYed9LyvdOempvsgntvFQwGKJyuU5eBlU4Q7lUkgazzzijYbdZeiD6mW1TbDjhWsF+R6cFvMPiHRO9elA8FtQzQkNkyD+c4fJWNMCMRdhU6MdvnrakiD5c30t1n+VwiILH99waInh98NE=
+	t=1712227822; cv=none; b=cOGmKO74kNNVbOySDA3KnjqJpSlwCTk+9h6dgKAz47tVWSputRVmiGWG5tcRxrgbJNATx22xACuxN+obJ+JQnHmlMTLASGTh5zAfgw59Oiey2QZGM2ELaAXcTg6O6O2uncABVoDSt8noyELN/Bv7RTkCMYUqAycZtuBQcwhTvfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712227634; c=relaxed/simple;
-	bh=V8wv6frzZebJQXeoCr9BTYoZ7AS6+o1u8akU2yyz/1E=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=OvLRs4qR9KKFWLH05Cw58iAU8xFc6youAsjmFWjSiKJ+KcpiKIc9MhaBHxZCsAlQMYdSRRcsMs/fOKpImcYJkl2My5waCiO9+wysDrEETDK6RBizvwniTo0FYyL44mEvILcPCYOi4IahOzVOOsIypR5lNvyLReQSRIO8Jva5NPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=KucgOAAX; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so843046276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 03:47:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712227631; x=1712832431; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=L0Ykm2W1S1p85sujFPKLol+N6IEGAfeW2v8P+jKKQlQ=;
-        b=KucgOAAXGyvDLgVlFP79uaBNM0lHxRPP5SI52xTns2+d4W2BQOqHa8JuQeptXuGAJm
-         90GFrPLkysgTdYAt8MFAGVgacGXtW1ploArIf8cG+nqUyX/3TEwXYAOenldcxdldCNpj
-         0KiH1//m/HioVu4L5Hd91RDkiAMUpK/52Z9l/Kxv+9AiEEW0qsBMxQFdsy+Nbh5bkORJ
-         sTCIT299fHyDOcB/cfoB5HyEN4NMlwc4TllsrfvLAXeU3rk7YfphRXmtOqWVGA/fMKjq
-         j1gL4vEvXRj9vnrdAbKbqzY8mnug+7ydjfSH2IOYvAMzNPDdwUNYtBOThQFZcnBycDaL
-         YdfQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712227631; x=1712832431;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=L0Ykm2W1S1p85sujFPKLol+N6IEGAfeW2v8P+jKKQlQ=;
-        b=voF44dHw5ockUSl7lJ5lpp7nIpCKYXstpu3tDlxMBwjEMcw1wpCZu5yNCGNuC0s9Fw
-         zGvRPr3oRYOVZUfvW6oLP9wLhEFFHPN4/p6j90XO6mLwUbEN1/yScR05SJjW4aL7uQEo
-         Imn+QHsXqsJtYq/Syl8D29vd7IKig2pZANKvTt2kqlRu/5b1Cgb5Lymg++wOtDBvwlKF
-         cEwIjXHfo96McYaQCfMDvzev11nJQd4wcjW9uxzQfQjEaAO3DLzW+PEBy04QaWKtHjsx
-         ElEGqQueOQe6MsAoQCaEENb566VayqUOE+FB7u669sH3TxfSBnCI0N1YXCS1Df4kiaj7
-         VbGg==
-X-Forwarded-Encrypted: i=1; AJvYcCX4uFeS76kKnLQBitM+IBnf42nKDfBwO6BtE5VGuEzO7AxUXiOd+EI0WzofIjfN1HOkpu145AZKAsHgDpEMuawavOW2peIOv2LU/RJu
-X-Gm-Message-State: AOJu0YyL7ctiUgwcaEGNstSdqahfHYMGpRe+5HU/2Ril7cUi4wfX9ptM
-	MQRihpt+UQpWGJZkgq1X+N8Dg9DD/aFjiS4plD9ngeqU7BXrMcjzdkzmYqY4/LyLL6xbJSNdmDL
-	spGpGc+sF1t4Mv2800V+DgPO9aC12U5ygPYGLTg==
-X-Google-Smtp-Source: AGHT+IG8QfWI6GVdC6qLbyKBp8gOwWy/t5BNQ+Yfrm5Mn9ZdgBynu+9KPMQrhUmNrccslE7argS+hG9yXel1mv9D6SM=
-X-Received: by 2002:a25:9111:0:b0:dc7:4f61:5723 with SMTP id
- v17-20020a259111000000b00dc74f615723mr1910942ybl.39.1712227631181; Thu, 04
- Apr 2024 03:47:11 -0700 (PDT)
+	s=arc-20240116; t=1712227822; c=relaxed/simple;
+	bh=6MPyMFi8PEkTF0LORiU6bIKAuxNszgSZ4Mw8zoeGXxY=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=h6PJiZApd9zTFHCHPu48lz68UQp4JJa1y8iWryaBvurwhGOxHpKrsceF7txvmFUpmtV7mTNFlm9kM2D4KjfVkADmxlIAEuKGLnMhbmOvj+vcyHD5uz4o57+EmaVMSjwgka9I32klgoGMLCoYwZNehyJJvXtlyqR8hYY5qBk7zBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=fcKmiabG; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [127.0.1.1] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 614F71A2;
+	Thu,  4 Apr 2024 12:49:41 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1712227781;
+	bh=6MPyMFi8PEkTF0LORiU6bIKAuxNszgSZ4Mw8zoeGXxY=;
+	h=From:Subject:Date:To:Cc:From;
+	b=fcKmiabGxH2EJcWByKh+8eC4qkjWUq4bfy8nrdGCg+kmsvRwSaICMap83o0EtJZl5
+	 jIWRwgKeU4VLjWM+FBlolZ0wpZLZnQtZpj8GinIjnOcaAsSYY6wCOcgfwTY9i50uWh
+	 DKylIZF57Mk/ohOLkRf3IjoXwked9J7b83xvf0F8=
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: [PATCH 0/4] media: subdev: Improve stream enable/disable machinery
+Date: Thu, 04 Apr 2024 13:49:59 +0300
+Message-Id: <20240404-enable-streams-impro-v1-0-1017a35bbe07@ideasonboard.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240329044142.3095193-1-fshao@chromium.org>
-In-Reply-To: <20240329044142.3095193-1-fshao@chromium.org>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 4 Apr 2024 12:46:35 +0200
-Message-ID: <CAPDyKFqr2wPHGScSAdwocjOF8jUTJnti+j5sWMYW5kg5x5OmyQ@mail.gmail.com>
-Subject: Re: [PATCH v2] pmdomain: mediatek: Add MT8188 buck isolation setting
-To: Fei Shao <fshao@chromium.org>
-Cc: Johnson Wang <johnson.wang@mediatek.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, 
-	linux-pm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANiFDmYC/x2MQQqAMAzAviI9W5giOP2KeNhc1YKb0ooI4t8dk
+ lMOyQNKwqTQFw8IXay8pyxVWcC0urQQcsgOtakbk0FKzm+Eegq5qMjxkB2Dt34KtrNNW0FOD6G
+ Z7387jO/7AXzV8AdmAAAA
+To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Hans Verkuil <hverkuil@xs4all.nl>, 
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Sakari Ailus <sakari.ailus@linux.intel.com>, 
+ Umang Jain <umang.jain@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1698;
+ i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
+ bh=6MPyMFi8PEkTF0LORiU6bIKAuxNszgSZ4Mw8zoeGXxY=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBmDoXlAeUFEp1qf2B2zYlaxI85/sUWHFRTQEF4r
+ uteGaZ4PDKJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZg6F5QAKCRD6PaqMvJYe
+ 9QEDEACYP36ic1YRePhp4SSKHzRAM+uycBwaKaAOFt9kWZm+wE9/jCBatW1GifFegelpsvIEyBO
+ W4GGNnRfLKgUGYs3dc3CrVNGblH/n6a0SkVuNP498Gmt0WziXoMs2lo6cVsWydwCY6+5oX+SAym
+ fsF0QgvGmV7+znb3m+Ln2s17dgaucLVjOZnT7GudncVv2QOpeuaPWmXLjjbcNsqiHiriSIFU4Mp
+ S19c0HZNsbUS/6qKNbzp+fE4uqPtGd7mWS2ONzpMwmyXs0F6UJHhngIDByCoBWj1lt0gpTuJ671
+ 2OfhF58JBH526ikTzKljRSABhQcNwX/y4UDA3CcjoOMmW5htCiPaYSSwTHfKUx9IsLCXkz+12V4
+ fx/yAO9zL4eMlSGz10d+iCn32aRO7qHRgBBI35GxLrCLONyhtQ+uPq11icT1NGX5/dtjpuVGlXc
+ F9E5kwjNeMG/onoapTJPbeXDNDDojDij0zikq4YzupRr+I69yxCBsfSumxr5H57SRX3FaIE23nI
+ VXmxWyso+IhR90qK67aF1lT68CjsELgJWmxmkmYhSNRaEC1nQr967j0m7mkQ0YW+L4KD27jCugR
+ S+6w/sUU23bn5vfWs2dl8bC8ty58gR3e/XxTxy64SvmFxMaPlYq01XXnRaOp275JxJq4ATCF9B+
+ DRNNCxKDL7b1BhA==
+X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
+ fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 
-On Fri, 29 Mar 2024 at 05:43, Fei Shao <fshao@chromium.org> wrote:
->
-> From: Johnson Wang <johnson.wang@mediatek.com>
->
-> From: Johnson Wang <johnson.wang@mediatek.com>
->
-> Add buck isolation setting to ADSP_AO, CAM_VCORE and IMG_VCORE power
-> domains in MT8188 for proper buck isolation control in power domain
-> on/off.
->
-> Signed-off-by: Johnson Wang <johnson.wang@mediatek.com>
-> Signed-off-by: Fei Shao <fshao@chromium.org>
-> Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+This series works on the .s_stream, .enable_streams, .disable_streams
+related code:
 
-Applied for next, thanks!
+"media: subdev: Add checks for subdev features" adds check to verify
+that the subdevs implement the proper mix of the above ops.
 
-Kind regards
-Uffe
+"media: subdev: Fix use of sd->enabled_streams in call_s_stream()" fixes
+somewhat questionable use of sd->enabled_streams in call_s_stream().
 
+"media: subdev: Improve v4l2_subdev_enable/disable_streams_fallback"
+drops the restriction of supporting only a single source pads, and
+prepares the way for the following patch.
 
-> ---
->
-> Changes in v2:
-> [1] was reviewed but didn't get accepted at the time.
-> This rebases [1] on next-20240327 with revised commit message.
->
-> [1]: https://lore.kernel.org/all/20230315114505.25144-1-johnson.wang@mediatek.com/
->
->  drivers/pmdomain/mediatek/mt8188-pm-domains.h | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/pmdomain/mediatek/mt8188-pm-domains.h b/drivers/pmdomain/mediatek/mt8188-pm-domains.h
-> index 06834ab6597c..007235be9efe 100644
-> --- a/drivers/pmdomain/mediatek/mt8188-pm-domains.h
-> +++ b/drivers/pmdomain/mediatek/mt8188-pm-domains.h
-> @@ -175,6 +175,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
->                 .ctl_offs = 0x35C,
->                 .pwr_sta_offs = 0x16C,
->                 .pwr_sta2nd_offs = 0x170,
-> +               .ext_buck_iso_offs = 0x3EC,
-> +               .ext_buck_iso_mask = BIT(10),
->                 .bp_cfg = {
->                         BUS_PROT_WR(INFRA,
->                                     MT8188_TOP_AXI_PROT_EN_2_ADSP_AO_STEP1,
-> @@ -187,7 +189,7 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
->                                     MT8188_TOP_AXI_PROT_EN_2_CLR,
->                                     MT8188_TOP_AXI_PROT_EN_2_STA),
->                 },
-> -               .caps = MTK_SCPD_ALWAYS_ON,
-> +               .caps = MTK_SCPD_ALWAYS_ON | MTK_SCPD_EXT_BUCK_ISO,
->         },
->         [MT8188_POWER_DOMAIN_ADSP_INFRA] = {
->                 .name = "adsp_infra",
-> @@ -524,6 +526,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
->                 .ctl_offs = 0x3A4,
->                 .pwr_sta_offs = 0x16C,
->                 .pwr_sta2nd_offs = 0x170,
-> +               .ext_buck_iso_offs = 0x3EC,
-> +               .ext_buck_iso_mask = BIT(12),
->                 .bp_cfg = {
->                         BUS_PROT_WR(INFRA,
->                                     MT8188_TOP_AXI_PROT_EN_MM_IMG_VCORE_STEP1,
-> @@ -541,7 +545,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
->                                     MT8188_TOP_AXI_PROT_EN_MM_2_CLR,
->                                     MT8188_TOP_AXI_PROT_EN_MM_2_STA),
->                 },
-> -               .caps = MTK_SCPD_KEEP_DEFAULT_OFF | MTK_SCPD_DOMAIN_SUPPLY,
-> +               .caps = MTK_SCPD_KEEP_DEFAULT_OFF | MTK_SCPD_DOMAIN_SUPPLY |
-> +                       MTK_SCPD_EXT_BUCK_ISO,
->         },
->         [MT8188_POWER_DOMAIN_IMG_MAIN] = {
->                 .name = "img_main",
-> @@ -591,6 +596,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
->                 .ctl_offs = 0x3A0,
->                 .pwr_sta_offs = 0x16C,
->                 .pwr_sta2nd_offs = 0x170,
-> +               .ext_buck_iso_offs = 0x3EC,
-> +               .ext_buck_iso_mask = BIT(11),
->                 .bp_cfg = {
->                         BUS_PROT_WR(INFRA,
->                                     MT8188_TOP_AXI_PROT_EN_MM_CAM_VCORE_STEP1,
-> @@ -618,7 +625,8 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8188[] = {
->                                     MT8188_TOP_AXI_PROT_EN_MM_2_CLR,
->                                     MT8188_TOP_AXI_PROT_EN_MM_2_STA),
->                 },
-> -               .caps = MTK_SCPD_KEEP_DEFAULT_OFF | MTK_SCPD_DOMAIN_SUPPLY,
-> +               .caps = MTK_SCPD_KEEP_DEFAULT_OFF | MTK_SCPD_DOMAIN_SUPPLY |
-> +                       MTK_SCPD_EXT_BUCK_ISO,
->         },
->         [MT8188_POWER_DOMAIN_CAM_MAIN] = {
->                 .name = "cam_main",
-> --
-> 2.44.0.478.gd926399ef9-goog
->
+"media: subdev: Support enable/disable_streams for non-streams subdevs"
+makes it possible for non-streams subdevs to use .enable_streams and
+disable_streams, deprecating the earlier patch "[PATCH] media:
+v4l2-subdev: Support enable/disable_streams for single-pad subdevs".
+
+I have tested this on RPi5 with multiple streams, but I still need to
+figure out ways to test the other scenarios.
+
+ Tomi
+
+Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+---
+Tomi Valkeinen (4):
+      media: subdev: Add checks for subdev features
+      media: subdev: Fix use of sd->enabled_streams in call_s_stream()
+      media: subdev: Improve v4l2_subdev_enable/disable_streams_fallback
+      media: subdev: Support enable/disable_streams for non-streams subdevs
+
+ drivers/media/v4l2-core/v4l2-subdev.c | 189 +++++++++++++++++++++++-----------
+ include/media/v4l2-subdev.h           |  11 +-
+ 2 files changed, 133 insertions(+), 67 deletions(-)
+---
+base-commit: b82779648dfd3814df4e381f086326ec70fd791f
+change-id: 20240404-enable-streams-impro-db8bcd898471
+
+Best regards,
+-- 
+Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+
 
