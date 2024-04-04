@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-131560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4880189898F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:08:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76CD2898990
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:08:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63F491C2264C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:08:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B52328E497
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:08:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03F4512AAED;
-	Thu,  4 Apr 2024 14:07:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E53412BEAC;
+	Thu,  4 Apr 2024 14:07:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Xi5mLNp5"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QjeqqaFf"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF53B1292FC
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:07:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04D112AAD4
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:07:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712239666; cv=none; b=AbhxCK+mAtyG7zodnUM5jQgi5SNgD2OYAnOWC2pifr9AY4SOvoz2QhY33FLfxRkcQomSwHNPeR2m3Vb+pldynYIHJrvdSe4mw84IA0Boo2tTuGKh3zqm+PY1b8Ttq2OFUYBB63pjxRo7qY+hQCgTOkcyOzkhtbOt6JAp9PUIz8E=
+	t=1712239667; cv=none; b=NlifsdR+i277GElSZt1lJwLTXRulvvMzAjy01/JtZmQ/rn3wj+v9H8PaSYQdsMErIrFbihAlfowBmHxaPy6bxltXbZEaeA2XDQqbPFPmFXVIr3BpQ8bouBlAh8pVO4CYz0vW0yilFYqMzdb9EHsIsNqoVohsKe3mctrP4tGjcfs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712239666; c=relaxed/simple;
-	bh=BVXkXJecaA0EQTyQSqb/PRF3aJ3g+11gW4kk1+RxAWA=;
+	s=arc-20240116; t=1712239667; c=relaxed/simple;
+	bh=7xYgs9GxqncCnlE/87Zl01PnZ/Uh1W71juU1u48zSQ0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hQbzbiM4ewXMczxyYPz7vMg/JVTU1Os3vQ+N7imFMYjLa68u56S9j+bRbhRX+Ly+ychx85himrs8kyQFbFvWpfwmLAve4hkzAK+JwDjncNqJv5esTY6k4Fc6DtQ7dE89a4NUitNYobZ4RUnwcVELfHmjXmCompUC9WXObfQgP+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Xi5mLNp5; arc=none smtp.client-ip=198.175.65.14
+	 MIME-Version; b=EHD1GrAl7+t2C16w0zx0t1yvHAuWKPhn1LMXwp8uCqtYmEmmz58xxUQYvVaJXFtYgdjqA1i0Y55F6vo0Iz2HbrjALZP/V/nJ4+yIb02sBgpZEhkuS8vNSBhCcwPJyGchAfUhoIvECImb4U80IdS6RjkR+Hrbyhug71qlBGQxddA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QjeqqaFf; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
@@ -35,28 +35,28 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   t=1712239665; x=1743775665;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=BVXkXJecaA0EQTyQSqb/PRF3aJ3g+11gW4kk1+RxAWA=;
-  b=Xi5mLNp531tISMSu/8NB5Faxt323NFTR0LqsOVOLt2hSxUgpMXs5i5Qo
-   K0SASqr+2+erx8xhugBoRdSs/LwLvDSdqynTYS5olMy9qwzn28f0JrOeh
-   eRm/r4CyJ14xwWyiUkRhH/9GhwGQdBaUByifrFsC8nfEiTwnuTQc74EbN
-   JJB5bxxNp6Sqx7Q7CGsl83KeJhlojDMbfx7erBOv8cxftEeo3AZUCHF0l
-   5BmAme+G2Vc7fClaV0pGiQ5fVxfF7+fiqrFtYJjkhAiR1dfDr7+mpXeSx
-   GU+2arWgvY+JTNUzyjq98j7+baEXOE0niAwrcYil4KP3C+DzgWz3NF6Td
+  bh=7xYgs9GxqncCnlE/87Zl01PnZ/Uh1W71juU1u48zSQ0=;
+  b=QjeqqaFflMpWaCulAzt94FNCo73OZiq4MTfQDeqMlHLhU4hbRr3OnHI0
+   MlW4hHdDRdOcUc8hy0gM9HGJrUoG5qcIMIyHYK8H3B9cKZzyhGfvrH3m+
+   Zv/CoXoaaaHW01E2O5u0fK5VGckYy5ZVAV2Ut9algscMok6oo0NuJFn6k
+   EssO90gaNoj8NoQiR6NYBaH4Nt7uusgRDrnNyV3c/OknpblmkCdl3kVjM
+   1X88fv0Il6dsuhQRPWTWFTNuLVtXq7cG3ZmzPunRSoMtUDWqSvWB5Yk3T
+   g+pa4VJsRSbrkoyVn+VYKowt0/Hcb2imL2rU/qnZnn6gUWnENGfm8dada
    w==;
-X-CSE-ConnectionGUID: KCk/ZrVpRJOEmMW2C1yiog==
-X-CSE-MsgGUID: mVdnp0qHTPuoy0uVCameyA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="11346525"
+X-CSE-ConnectionGUID: UJOhgi+9SDK8W24L5U19yg==
+X-CSE-MsgGUID: Rixr6CVATHujrt+b3+gpkQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="11346533"
 X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="11346525"
+   d="scan'208";a="11346533"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 07:07:44 -0700
-X-CSE-ConnectionGUID: wODgWHdoR8qpEfOtvS08xQ==
-X-CSE-MsgGUID: g4id8G13TNCPB4g758myWA==
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 07:07:45 -0700
+X-CSE-ConnectionGUID: pHw2c+twRcWx8wLeHCJejQ==
+X-CSE-MsgGUID: a/jmsDjTQA6he1kx/iDjlA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="23258881"
+   d="scan'208";a="23258887"
 Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by fmviesa005.fm.intel.com with ESMTP; 04 Apr 2024 07:07:44 -0700
+  by fmviesa005.fm.intel.com with ESMTP; 04 Apr 2024 07:07:45 -0700
 From: kan.liang@linux.intel.com
 To: peterz@infradead.org,
 	mingo@redhat.com,
@@ -69,9 +69,9 @@ To: peterz@infradead.org,
 Cc: ak@linux.intel.com,
 	Kan Liang <kan.liang@linux.intel.com>,
 	Dapeng Mi <dapeng1.mi@linux.intel.com>
-Subject: [PATCH 05/12] perf/x86: Add config_mask to represent EVENTSEL bitmask
-Date: Thu,  4 Apr 2024 07:06:30 -0700
-Message-Id: <20240404140637.1232635-6-kan.liang@linux.intel.com>
+Subject: [PATCH 06/12] perf/x86/intel: Support PERFEVTSEL extension
+Date: Thu,  4 Apr 2024 07:06:31 -0700
+Message-Id: <20240404140637.1232635-7-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20240404140637.1232635-1-kan.liang@linux.intel.com>
 References: <20240404140637.1232635-1-kan.liang@linux.intel.com>
@@ -85,92 +85,159 @@ Content-Transfer-Encoding: 8bit
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-Different vendors may support different fields in EVENTSEL MSR, such as
-Intel would introduce new fields umask2 and eq bits in EVENTSEL MSR
-since Perfmon version 6. However, a fixed mask X86_RAW_EVENT_MASK is
-used to filter the attr.config.
+Two new fields (the unit mask2, and the equal flag) are added in the
+IA32_PERFEVTSELx MSRs with Arch PerfMon V6. They can be enumerated by
+the CPUID.23H.0.EBX.
 
-Introduce a new config_mask to record the real supported EVENTSEL
-bitmask.
-Only apply it to the existing code now. No functional change.
+Update the config_mask in x86_pmu and x86_hybrid_pmu for the true layout
+of the PERFEVTSEL.
+Expose the new formats into sysfs if they are available. The umask
+extension reuses the same format attr name "umask" as the previous
+umask. Add umask2_show to determine/display the correct format
+for the current machine.
 
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Co-developed-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
 Signed-off-by: Dapeng Mi <dapeng1.mi@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- arch/x86/events/core.c       | 5 ++++-
- arch/x86/events/intel/core.c | 1 +
- arch/x86/events/perf_event.h | 7 +++++++
- 3 files changed, 12 insertions(+), 1 deletion(-)
+ arch/x86/events/intel/core.c      | 72 +++++++++++++++++++++++++++++--
+ arch/x86/include/asm/perf_event.h |  4 ++
+ 2 files changed, 72 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
-index 08c31f48cead..f692e7fba740 100644
---- a/arch/x86/events/core.c
-+++ b/arch/x86/events/core.c
-@@ -624,7 +624,7 @@ int x86_pmu_hw_config(struct perf_event *event)
- 		event->hw.config |= ARCH_PERFMON_EVENTSEL_OS;
- 
- 	if (event->attr.type == event->pmu->type)
--		event->hw.config |= event->attr.config & X86_RAW_EVENT_MASK;
-+		event->hw.config |= x86_pmu_get_event_config(event);
- 
- 	if (event->attr.sample_period && x86_pmu.limit_period) {
- 		s64 left = event->attr.sample_period;
-@@ -2097,6 +2097,9 @@ static int __init init_hw_perf_events(void)
- 	if (!x86_pmu.intel_ctrl)
- 		x86_pmu.intel_ctrl = x86_pmu.cntr_mask64;
- 
-+	if (!x86_pmu.config_mask)
-+		x86_pmu.config_mask = X86_RAW_EVENT_MASK;
-+
- 	perf_events_lapic_init();
- 	register_nmi_handler(NMI_LOCAL, perf_event_nmi_handler, 0, "PMI");
- 
 diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
-index 16b4efdad03e..bbb98b4c2a84 100644
+index bbb98b4c2a84..f586af9bade1 100644
 --- a/arch/x86/events/intel/core.c
 +++ b/arch/x86/events/intel/core.c
-@@ -6151,6 +6151,7 @@ static __always_inline int intel_pmu_init_hybrid(enum hybrid_pmu_type pmus)
- 		pmu->cntr_mask64 = x86_pmu.cntr_mask64;
- 		pmu->fixed_cntr_mask64 = x86_pmu.fixed_cntr_mask64;
- 		pmu->pebs_events_mask = intel_pmu_pebs_mask(pmu->cntr_mask64);
-+		pmu->config_mask = X86_RAW_EVENT_MASK;
- 		pmu->unconstrained = (struct event_constraint)
- 				     __EVENT_CONSTRAINT(0, pmu->cntr_mask64,
- 							0, x86_pmu_num_counters(&pmu->pmu), 0, 0);
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index 3a65bfbb1173..4e448696bf96 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -695,6 +695,7 @@ struct x86_hybrid_pmu {
- 	union perf_capabilities		intel_cap;
- 	u64				intel_ctrl;
- 	u64				pebs_events_mask;
-+	u64				config_mask;
- 	union {
- 			u64		cntr_mask64;
- 			unsigned long	cntr_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
-@@ -790,6 +791,7 @@ struct x86_pmu {
- 	int		(*rdpmc_index)(int index);
- 	u64		(*event_map)(int);
- 	int		max_events;
-+	u64		config_mask;
- 	union {
- 			u64		cntr_mask64;
- 			unsigned long	cntr_mask[BITS_TO_LONGS(X86_PMC_IDX_MAX)];
-@@ -1231,6 +1233,11 @@ static inline int x86_pmu_num_counters_fixed(struct pmu *pmu)
- 	return hweight64(hybrid(pmu, fixed_cntr_mask64));
- }
- 
-+static inline u64 x86_pmu_get_event_config(struct perf_event *event)
+@@ -4632,8 +4632,58 @@ PMU_FORMAT_ATTR(pc,	"config:19"	);
+ PMU_FORMAT_ATTR(any,	"config:21"	); /* v3 + */
+ PMU_FORMAT_ATTR(inv,	"config:23"	);
+ PMU_FORMAT_ATTR(cmask,	"config:24-31"	);
+-PMU_FORMAT_ATTR(in_tx,  "config:32");
+-PMU_FORMAT_ATTR(in_tx_cp, "config:33");
++PMU_FORMAT_ATTR(in_tx,  "config:32"	);
++PMU_FORMAT_ATTR(in_tx_cp, "config:33"	);
++PMU_FORMAT_ATTR(eq,	"config:36"	); /* v6 + */
++
++static ssize_t umask2_show(struct device *dev,
++			   struct device_attribute *attr,
++			   char *page)
 +{
-+	return event->attr.config & hybrid(event->pmu, config_mask);
++	u64 mask = hybrid(dev_get_drvdata(dev), config_mask) & ARCH_PERFMON_EVENTSEL_UMASK2;
++
++	if (x86_pmu.version >= 6 && mask == ARCH_PERFMON_EVENTSEL_UMASK2)
++		return sprintf(page, "config:8-15,40-47\n");
++
++	/* Roll back to the old format if umask2 is not supported. */
++	return sprintf(page, "config:8-15\n");
 +}
 +
- extern struct event_constraint emptyconstraint;
++static struct device_attribute format_attr_umask2  =
++		__ATTR(umask, 0444, umask2_show, NULL);
++
++static struct attribute *format_evtsel_ext_attrs[] = {
++	&format_attr_umask2.attr,
++	&format_attr_eq.attr,
++	NULL
++};
++
++static umode_t
++evtsel_ext_is_visible(struct kobject *kobj, struct attribute *attr, int i)
++{
++	struct device *dev = kobj_to_dev(kobj);
++	u64 mask;
++
++	/*
++	 * The umask and umask2 have different formats but share the
++	 * same attr name. In update mode, the previous value of the
++	 * umask is unconditionally removed before is_visible. If
++	 * umask2 format is not enumerated, it's impossible to roll
++	 * back to the old format.
++	 * Does the check in umask2_show rather than is_visible.
++	 */
++	if (i == 0)
++		return attr->mode;
++
++	if (x86_pmu.version < 6)
++		return 0;
++
++	mask = hybrid(dev_get_drvdata(dev), config_mask);
++	if (i == 1)
++		return (mask & ARCH_PERFMON_EVENTSEL_EQ) ? attr->mode : 0;
++
++	return 0;
++}
  
- extern struct event_constraint unconstrained;
+ static struct attribute *intel_arch_formats_attr[] = {
+ 	&format_attr_event.attr,
+@@ -4786,8 +4836,14 @@ static inline bool intel_pmu_broken_perf_cap(void)
+ 
+ static void update_pmu_cap(struct x86_hybrid_pmu *pmu)
+ {
+-	unsigned int sub_bitmaps = cpuid_eax(ARCH_PERFMON_EXT_LEAF);
+-	unsigned int eax, ebx, ecx, edx;
++	unsigned int sub_bitmaps, eax, ebx, ecx, edx;
++
++	cpuid(ARCH_PERFMON_EXT_LEAF, &sub_bitmaps, &ebx, &ecx, &edx);
++
++	if (ebx & ARCH_PERFMON_EXT_UMASK2)
++		pmu->config_mask |= ARCH_PERFMON_EVENTSEL_UMASK2;
++	if (ebx & ARCH_PERFMON_EXT_EQ)
++		pmu->config_mask |= ARCH_PERFMON_EVENTSEL_EQ;
+ 
+ 	if (sub_bitmaps & ARCH_PERFMON_NUM_COUNTER_LEAF_BIT) {
+ 		cpuid_count(ARCH_PERFMON_EXT_LEAF, ARCH_PERFMON_NUM_COUNTER_LEAF,
+@@ -5817,6 +5873,12 @@ static struct attribute_group group_format_extra_skl = {
+ 	.is_visible = exra_is_visible,
+ };
+ 
++static struct attribute_group group_format_evtsel_ext = {
++	.name       = "format",
++	.attrs      = format_evtsel_ext_attrs,
++	.is_visible = evtsel_ext_is_visible,
++};
++
+ static struct attribute_group group_default = {
+ 	.attrs      = intel_pmu_attrs,
+ 	.is_visible = default_is_visible,
+@@ -5830,6 +5892,7 @@ static const struct attribute_group *attr_update[] = {
+ 	&group_caps_lbr,
+ 	&group_format_extra,
+ 	&group_format_extra_skl,
++	&group_format_evtsel_ext,
+ 	&group_default,
+ 	NULL,
+ };
+@@ -6049,6 +6112,7 @@ static const struct attribute_group *hybrid_attr_update[] = {
+ 	&group_caps_gen,
+ 	&group_caps_lbr,
+ 	&hybrid_group_format_extra,
++	&group_format_evtsel_ext,
+ 	&group_default,
+ 	&hybrid_group_cpus,
+ 	NULL,
+diff --git a/arch/x86/include/asm/perf_event.h b/arch/x86/include/asm/perf_event.h
+index 0c8e6d585add..8b02df9a2eb2 100644
+--- a/arch/x86/include/asm/perf_event.h
++++ b/arch/x86/include/asm/perf_event.h
+@@ -32,6 +32,8 @@
+ #define ARCH_PERFMON_EVENTSEL_INV			(1ULL << 23)
+ #define ARCH_PERFMON_EVENTSEL_CMASK			0xFF000000ULL
+ #define ARCH_PERFMON_EVENTSEL_BR_CNTR			(1ULL << 35)
++#define ARCH_PERFMON_EVENTSEL_EQ			(1ULL << 36)
++#define ARCH_PERFMON_EVENTSEL_UMASK2			(0xFFULL << 40)
+ 
+ #define INTEL_FIXED_BITS_MASK				0xFULL
+ #define INTEL_FIXED_BITS_STRIDE			4
+@@ -185,6 +187,8 @@ union cpuid10_edx {
+  * detection/enumeration details:
+  */
+ #define ARCH_PERFMON_EXT_LEAF			0x00000023
++#define ARCH_PERFMON_EXT_UMASK2			0x1
++#define ARCH_PERFMON_EXT_EQ			0x2
+ #define ARCH_PERFMON_NUM_COUNTER_LEAF_BIT	0x1
+ #define ARCH_PERFMON_NUM_COUNTER_LEAF		0x1
+ 
 -- 
 2.35.1
 
