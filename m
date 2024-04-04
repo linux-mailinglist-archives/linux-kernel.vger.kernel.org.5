@@ -1,131 +1,173 @@
-Return-Path: <linux-kernel+bounces-132252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF47689920E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A9F56899216
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:24:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 912F7B22750
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:22:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 21BFCB211DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:24:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CEBA13C3EF;
-	Thu,  4 Apr 2024 23:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA02313C679;
+	Thu,  4 Apr 2024 23:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b="Q9fzQBfV"
-Received: from codeconstruct.com.au (pi.codeconstruct.com.au [203.29.241.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gmgz4EL6"
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AE5F70CC2;
-	Thu,  4 Apr 2024 23:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.29.241.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40625134418;
+	Thu,  4 Apr 2024 23:23:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712272931; cv=none; b=qhl4YMpzAjcH/Ik1b7nh6mOyrwNBrcGf2E5gvWQm5O2X59tdoOixL+rVtHxIIoWvGYERIABHG+QTcfHjK1DZjYXsfqmtrz304M60do3rJ8R0IrabKtntg4ZPu4ydg+ztnEuEtah63Vsgr054Y1MVqs/hXzI9KTTzKNpfO7VxkfQ=
+	t=1712273039; cv=none; b=JlNQUWhgpv2Oxc89/3ZJqkahZdI7j/igBgJuFSyEWEVt3x7fXyr14FyDr5wZ/yoAeSLveq4T0ga25vLqobJcNqu2gZt9YytHCKOxNFPbeVA7bCoEjPrxOG0Vv4O7ATzqp7fchsbgPKeEXO912TeG5z4uF64sXDRmuyAyDsN04tE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712272931; c=relaxed/simple;
-	bh=ey4GqAHux/uUwj8BtmXxU8XUTPio3nZ5PlidLIzywYg=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DkXp1dl/6Yq2hDRorJoH/h0+uUD+mte9KwG3YP7MQ6Bz5iS8031bu7lvM7BAF6iKLUf5z5JxPMCDLtQeO9qnnRs3beGe+SaArjLeDDMxlhrWt6oqKBw9F+l/Fc68A5eGbXrGB5e9LjIJOkT0R4Fh9gEz47TFWAq20iDqYrG8sjk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au; spf=pass smtp.mailfrom=codeconstruct.com.au; dkim=pass (2048-bit key) header.d=codeconstruct.com.au header.i=@codeconstruct.com.au header.b=Q9fzQBfV; arc=none smtp.client-ip=203.29.241.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codeconstruct.com.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codeconstruct.com.au
-Received: from [192.168.68.112] (ppp118-210-182-70.adl-adc-lon-bras34.tpg.internode.on.net [118.210.182.70])
-	by mail.codeconstruct.com.au (Postfix) with ESMTPSA id 17A952009F;
-	Fri,  5 Apr 2024 07:22:03 +0800 (AWST)
+	s=arc-20240116; t=1712273039; c=relaxed/simple;
+	bh=Do963hSdPrLX5zfMcrNn6SbYrENL0NCjWtgD8cm98Nk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ow5zyCK1HIpaAL3AXasXvCcp4rc9v11YbGbdCTsdh15aSq6/hI5D33vdL5ZYeVjrYtOhkh7lgA1w1oujCxc3DLn586A9ZSTwMOuIlA/ipm9AEI9WFlw6Xsq9FwKLjWFYQyeC3uuvn4dd7D8kx3M38xeh8pveRrtpnfsOyvDCn/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gmgz4EL6; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4162aca8746so8000305e9.1;
+        Thu, 04 Apr 2024 16:23:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=codeconstruct.com.au; s=2022a; t=1712272926;
-	bh=DeXkWmpOi6oUYa3S4c0rBgKp2W+RLiC/o+BtoZVa4y0=;
-	h=Subject:From:To:Date:In-Reply-To:References;
-	b=Q9fzQBfV+G1TSrVUb3PfB6R/0M7livAjsMyuXMMDxwzmzFUV70CAnhtF/QjKDfVTR
-	 7OxiMJbtBUeUSRelXxt/hJY8qQHz1UBq2hm2nv1qe11cbfNYlRqiToGkBvXpX1j0Bo
-	 JBgxIKoqYMkyWVNfHRPoG7DSth+2TYkdmISGREiWsC07KpLPAkFV0EqL/nPZgCXISX
-	 lBEv3OoPYQAPNwnQQMi3cYQL7iucQm2uz8byiGrKlPiyn7lDpWW247halIBInp0lR2
-	 cxzheewfll+rzFBi2ekKZPkqScxPtzNUstslOOfrObc/lquKY68lBSDZMv1LJAA/NV
-	 zNt3hz5K9a41Q==
-Message-ID: <65060691d4649c4a8da46e5ba762a3c905ade690.camel@codeconstruct.com.au>
-Subject: Re: [PATCH 1/4] ARM: dts: aspeed: greatlakes: correct Mellanox
- multi-host property
-From: Andrew Jeffery <andrew@codeconstruct.com.au>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>,  Conor Dooley <conor+dt@kernel.org>,
- Joel Stanley <joel@jms.id.au>, devicetree@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org, 
- linux-kernel@vger.kernel.org
-Date: Fri, 05 Apr 2024 09:51:59 +1030
-In-Reply-To: <c3902c6e-c38e-4604-b79e-2b5406274d8f@linaro.org>
-References: <20231209104412.12916-1-krzysztof.kozlowski@linaro.org>
-	 <171213860535.16780.4635499105199545058.b4-ty@linaro.org>
-	 <8610e0a8aa5c2916fa04292a10e8a843862ff0ee.camel@codeconstruct.com.au>
-	 <c3902c6e-c38e-4604-b79e-2b5406274d8f@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
+        d=gmail.com; s=20230601; t=1712273035; x=1712877835; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lXnwmQPrl07FZAiqD50mf42e3pDAJdibA7+5v+qAN78=;
+        b=gmgz4EL6/ZPvZ5Yhb+G4QxtHAhWjGLbn3SAmMLTUp1Kp8QDZuqhEv39zjg3ekORSGg
+         Q3tnizMdq7UIHHgthc5GH6ADzInaYj80fzspJlX21IQCGLQsOiOzhmkp5nFO+moygwYo
+         JuEt+3wT+JnF9zXHskwN+7/si/sW9/hNlR+rrFO1i2sXHdVZhgMVr9Zd0FSa6GppYrar
+         JQVN+Cl730iMFMY62Fq2IqWzFGXa5sadyfmr4I6LwNZ9W+dyQfP5yHD3mA1bBpjyuDzJ
+         JNW3faNP1gBmhBoKKxzUvJ+NYlZaZqlfeT6eg/d47a2xBA9yw++bhVwDvu7Cy30FQZjn
+         y3hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712273035; x=1712877835;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lXnwmQPrl07FZAiqD50mf42e3pDAJdibA7+5v+qAN78=;
+        b=wn3/YWpkU0FJMOTgbpF+4YqplvJveYzrLTRTLVJMSqDKhyfehGlX6s5A0QNt3GeEXu
+         +2IfMw5Jya2J2glpdlc+m4Q//nA4PceIm+lKxM/VfqarlHMQbJaEsuxYUIVQqKh7fwSr
+         dlJc7QR60KooWd5v9w0dQvZOqIjNv4NFyv77Kto9WvRKjG5hu7IDaJDhk9DHL7AfC+Cj
+         p9AM77WCCx33gZP56++fdc5RTCE9JsBtZJ28Y4AnIBw/Z55qs+b1U6UeIz0WGPNtaYQ8
+         AfetziDIH/P459J7KIEDQF/A/04tJVXIYHStc+PITeq5prHZeU3oqfcxaq62YfhATFnF
+         81Pw==
+X-Forwarded-Encrypted: i=1; AJvYcCXEuWOiNM92JyRmXkVqWYlxQahc1pYaopXnYhZc69ftUEhe8Bl7kUl2dtkuWqmxxTkswGrRtPLi2GzQ1uQtHEHbEjbf417b1Nb0oyMHxcqHjecb9M9qnTRGi5Yj7pdKaV19Xml+akl11Bd+rHbjlbwehtBzLoHJzprAh1wS/VPi602HSGv9P60bL6BmB0C4NtG0JSvir1T/ldm4TUqRtKVs
+X-Gm-Message-State: AOJu0YykxXiHNkkDM5sPalsEnbHGiC5j+fj8M5ci/XyQ+WE+//r9vZ8o
+	9iKbtq2cmM/aQA+U6VNkXh+zWSzShkEjCBzkRWnajNBnrFfsmPgz96MOTHcbLih722sxtRxoNCN
+	XwgGxLPV/ovKmEl1JxDd2EDz2tQc=
+X-Google-Smtp-Source: AGHT+IELDycs8Tmz4kVIWaOz90pVFimzN/8PHU3NEjxswWqigqc6Fh/8ut+n0sVFLjVwXD8RlCLctsIME6xMLay3jPc=
+X-Received: by 2002:a05:600c:3b08:b0:414:12f6:a105 with SMTP id
+ m8-20020a05600c3b0800b0041412f6a105mr2948928wms.5.1712273035487; Thu, 04 Apr
+ 2024 16:23:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <20240404190146.1898103-1-elver@google.com>
+In-Reply-To: <20240404190146.1898103-1-elver@google.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Thu, 4 Apr 2024 16:23:44 -0700
+Message-ID: <CAADnVQKc+Z39k9wbU2MHf-fPFma+9QsyOugmmmGq3ynQCTVfCw@mail.gmail.com>
+Subject: Re: [PATCH bpf-next 1/2] bpf: Introduce bpf_probe_write_user_registered()
+To: Marco Elver <elver@google.com>
+Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Dmitry Vyukov <dvyukov@google.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, bpf <bpf@vger.kernel.org>, 
+	"open list:DOCUMENTATION" <linux-doc@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2024-04-04 at 08:13 +0200, Krzysztof Kozlowski wrote:
-> On 04/04/2024 03:41, Andrew Jeffery wrote:
-> > On Wed, 2024-04-03 at 12:04 +0200, Krzysztof Kozlowski wrote:
-> > > On Sat, 09 Dec 2023 11:44:09 +0100, Krzysztof Kozlowski wrote:
-> > > > "mlx,multi-host" is using incorrect vendor prefix and is not docume=
-nted.
-> > > >=20
-> > > >=20
-> > >=20
-> > > These wait for ~4 months and they were not picked up. Let me know if =
-anyone
-> > > else wants to take these.
-> > >=20
-> > > Applied, thanks!
-> > >=20
-> > > [1/4] ARM: dts: aspeed: greatlakes: correct Mellanox multi-host prope=
-rty
-> > >       https://git.kernel.org/krzk/linux-dt/c/7da85354c4fa35b862294dbb=
-b450baeb405b5a92
-> > > [2/4] ARM: dts: aspeed: minerva-cmc: correct Mellanox multi-host prop=
-erty
-> > >       https://git.kernel.org/krzk/linux-dt/c/e515719c17beb9625a90039f=
-6c45fa36d58bdda2
-> > > [3/4] ARM: dts: aspeed: yosemite4: correct Mellanox multi-host proper=
-ty
-> > >       https://git.kernel.org/krzk/linux-dt/c/af3deaf9bcb4571feb89a405=
-0c7ad75de9aa8e1e
-> > > [4/4] ARM: dts: aspeed: yosemitev2: correct Mellanox multi-host prope=
-rty
-> > >       https://git.kernel.org/krzk/linux-dt/c/cac1c1dda6130771e06ace03=
-0b1b0ed62096a912
-> > >=20
-> > > Best regards,
-> >=20
-> > Ah, my apologies. Joel's on leave and I'm accumulating patches in a
-> > tree for him in the mean time. I've had some things going on
-> > professionally (changed jobs) and personally, and these fell into a bit
-> > of a hole.
-> >=20
-> > I'm okay for these patches to be integrated through your tree, given
-> > you've already applied them. Feel free to add acks if your branch
-> > allows:
-> >=20
-> > Acked-by: Andrew Jeffery <andrew@codeconstruct.com.au>
-> >=20
-> > I'm working to stay on top of things a bit more now than I have in the
-> > recent past, so hopefully I won't miss patches again in the future.
->=20
-> Stephen reported conflict, although trivial, but maybe better if you
-> take them?
->=20
+On Thu, Apr 4, 2024 at 12:02=E2=80=AFPM Marco Elver <elver@google.com> wrot=
+e:
+>
+> With all the known caveats, tracing BPF programs may directly write to
+> user-space memory with the bpf_probe_write_user() helper. Memory safety
+> is an obvious problem when using this helper, since it is too easy to
+> overwrite memory across all running processes that user space did not
+> expect to be touched (neither the verifier nor the kernel knows what may
+> be touched). While it is possible to come up with mechanisms to safely
+> communicate to the BPF program which memory region may be written to,
+> there are no built-in guarantees of safety. For this reason, the helper
+> produces a warning in the kernel log, and in newer kernels it is
+> possible to disallow use of the helper since 51e1bb9eeaf7 ("bpf: Add
+> lockdown check for probe_write_user helper").
 
-Yeah, happy to.
+So is it a fix or a feature?
 
-> I can rebase and resend.
+> Nevertheless, direct user-space memory writes from BPF programs can be
+> useful to efficiently manipulate and communicate with cooperating user
+> space processes.
 
-Thanks.
+But there are many different ways for bpf to communicate with user space:
+perf ringbuf, bpf ringbug, various maps including mmap-ed array and arena.
+The commit log doesn't explain why we need another one.
 
-Andrew
+> For example, one of our use cases are for events that happen relatively
+> frequently in the kernel (e.g. specific scheduler events), but a set of
+> user space threads want to check for such events in very hot code paths
+> to make more optimal decisions (the cost of such a check can be no more
+> than a load and compare). The types of events and heuristics used may
+> change based on system environment and application, and a BPF program
+> provides the best trade-offs in terms of performance and deployment.
+
+and the tasks can use mmaped array shared across all or unique to each
+process.
+And both bpf and user space can read/write them with a single instruction.
+
+>
+> To achieve better safety, introduce tagged user writable regions, that
+> must explicitly be registered before tracing BPF programs may use them:
+>
+>  1. The prctl() option PR_BPF_REGISTER_WRITABLE allows any user space
+>     process (that is allowed to use prctl()) to register tagged writable
+>     memory regions for the current thread.
+>
+>  2. Conversely, the prctl() option PR_BPF_UNREGISTER_WRITABLE allows a
+>     user space process to unregister a writable memory region that was
+>     previously registered from the current thread. This must be done
+>     before freeing memory if the thread that registered a region is
+>     still running.
+>
+>  3. Tracing BPF programs may write to any registered region in the
+>     current thread with bpf_probe_write_user_registered(). If the memory
+>     region has been tagged with a non-zero value, the BPF program must
+>     provide a matching tag.
+>
+> Admin capabilities are still required to attach BPF programs that use
+> the new bpf_probe_write_user_registered() helper.
+
+We stopped adding new helpers ~2 years ago.
+Only new kfuncs are allowed.
+
+>
+> With this interface, user space threads are guaranteed that no writes
+> happen to regions that they did not explicitly register. Tagging can be
+> used to associate additional semantics with the memory region.
+>
+> A note on tag allocation: Since such programs can only be installed by
+> the local system administrator, tag allocation may be done by the system
+> administrator. For example, by providing headers with tag definitions,
+> or a central service to distribute tags to the BPF program loader and to
+> user applications.
+
+Not clear how that's achieved in practice.
+To do prctl(REGSISTER, ... tag)
+the process will just pass this u32 tag.
+There is no way for the admin or other process to enforce certain
+tag usage.
+Since there is no way to enforce extra tag seems like a weak
+protection against something? What in particular?
 
