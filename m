@@ -1,138 +1,203 @@
-Return-Path: <linux-kernel+bounces-131049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C277A898269
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:46:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5E7589826B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:46:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A199D1C25BC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:46:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5071F1F25C7E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:46:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26CCD5D731;
-	Thu,  4 Apr 2024 07:45:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CCE25CDC9;
+	Thu,  4 Apr 2024 07:46:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ahmcg0O/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OxCZa6iR"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37B935B1F6;
-	Thu,  4 Apr 2024 07:45:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4441535AC;
+	Thu,  4 Apr 2024 07:46:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712216753; cv=none; b=ouZu7hph2kN0yLB9wOU1LNCqG8inih8id23lXkx2L1NQkxhRp0ZpQVY+WVZo5cdiR83FOYn8kOv6OsybtlcSdgnIDx4D8f8rRGIzACmN1SXlXTgNegKMHK/l+vZpwEqG+zuNtvGnJFRiUnHuGXSx8QyzZzk3ZdU+nG6tJMo9czA=
+	t=1712216805; cv=none; b=Zbio6KOb5loDcwntyO+ck2m+ldcFI1kgKJmwHn7IlxUGeSYj7lh/mRfMSwOBxI8T15OiICe8Ca5CzXGgk8xgCv+4+390cf/yULa85ntMyPGc3ej/KuudvWVqWkqFnqxaSqML38NF09c8hv2jdyy8JPX8o1XXm2ztXFWoKZn+ydo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712216753; c=relaxed/simple;
-	bh=vcETtOrVy9bTRvDJ6u7ogSjCKNt7NXEhds5NARQGbPY=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=cAZ4eJJecI/TZQEysaTarMoXp+vAzdB+usGAnFAGiSCfHpORW84txP0OZH4IK/38mhR41MtKD7vI0thnZApjXoY1E/53vjB6blU1TtplkKStEQm5mmO+PWaQi/SfKijUt3aVnGMV1DfUcUxqcpPM1WvHWpxFvfHWP3W3hmUmY5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ahmcg0O/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5535EC433F1;
-	Thu,  4 Apr 2024 07:45:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712216752;
-	bh=vcETtOrVy9bTRvDJ6u7ogSjCKNt7NXEhds5NARQGbPY=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=ahmcg0O/wVgUSHDmaLqFtCVQppeFQLHTQcwLUR3ZoemzEiydJLq5n65V+ZZF4U3Z/
-	 iZTZ2dGWs5n/xGsr2C9Ro8bxdpCo0mryC+/NJ293dDVVrTasGOJjky78rF1l0Vh5Cj
-	 ewN+vdhM+Vk7MvaEXrP9a5f9hvvIhXjlvvkp5fjW6hQf8tlH5S2zNXD299vhN6PNvh
-	 Y5zEUTiauyseC4AumRqKYaxCMkjyr8HU9RPqz7Q7M32OkZevScqGC8ldR1pXRVNnPN
-	 lCtMqbIda7OLCc5vYYCtjdUg0R4nqeFderQtkQlFlCIFJl63TPR9JxYni0ko+ATY12
-	 3JVV8cyIjyi9Q==
-Date: Thu, 04 Apr 2024 02:45:51 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1712216805; c=relaxed/simple;
+	bh=8fjyQ4a6KkFNlvYWPQl0dz8P/T4HTCFfrRFJF+4Z1jE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kgJaJ+fZ5g4mZmA505xRh592wlNEIHdLflQo8eX/TLTnVx6WICIYrIq5Oj6yeUmZW6PAYDtz3ryrEl7McK3uReoqJauj+EOj3wHxt0yiRIpFjFYNjg8PP8SjMwLRjPyEyrQCAUmrMAOKc7VPj3AFmDGBjlkoS1CWuoVi0ftsyK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=OxCZa6iR; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712216796;
+	bh=8fjyQ4a6KkFNlvYWPQl0dz8P/T4HTCFfrRFJF+4Z1jE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OxCZa6iRIEhboawFHu2UBNEkC6XN76y1a/xlEbuxzNb55C8vdi/P5bgXAFo06hxzp
+	 bEDaqOwfK1bipWyKSBXephZQvbB4fkiD3rnv39GLuWJ2WhoYk89vl62A7v3N5/mgu1
+	 aIy3hsNcwnyAbG7A4Vybr/v9OjFYYKW8jlH3WGnk4UIF+6S1aPKx3NS6mOKFARPCSf
+	 jTuJXshEixcV1jIYtlSAVzAycwm0Av98XqraSH7Kb6ThvEi71PEl6jhBMphG3BvbiZ
+	 6xFzGuF4SgbmyjRwhue0s53E9QC1Ml/lWj+WmukgF4blflPxpm9nqf/LDA+ew14g60
+	 9hC/06o9EiPjQ==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sebastianfricke)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id E384F378209A;
+	Thu,  4 Apr 2024 07:46:35 +0000 (UTC)
+Date: Thu, 4 Apr 2024 09:46:34 +0200
+From: "sebastian.fricke@collabora.com" <sebastian.fricke@collabora.com>
+To: "jackson.lee" <jackson.lee@chipsnmedia.com>
+Cc: "mchehab@kernel.org" <mchehab@kernel.org>,
+	"nicolas@ndufresne.ca" <nicolas@ndufresne.ca>,
+	"hverkuil@xs4all.nl" <hverkuil@xs4all.nl>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Nas Chung <nas.chung@chipsnmedia.com>,
+	"lafley.kim" <lafley.kim@chipsnmedia.com>,
+	"b-brnich@ti.com" <b-brnich@ti.com>
+Subject: Re: [RESEND PATCH v2 0/4] Add auto suspend/resume,YUV422
+ format,SPS/PPS generation for each IDR
+Message-ID: <20240404074634.fcxv62xi73ie2nhz@basti-XPS-13-9310>
+References: <20240311105623.20406-1-jackson.lee@chipsnmedia.com>
+ <SE1P216MB1303D2A884C6F904553E4432ED362@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
- Michael Turquette <mturquette@baylibre.com>, 
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, 
- linux-ide@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>, 
- Lee Jones <lee@kernel.org>, linux-kernel@vger.kernel.org, 
- Sam Ravnborg <sam@ravnborg.org>, Stephen Boyd <sboyd@kernel.org>, 
- linux-sh@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
- Thomas Gleixner <tglx@linutronix.de>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Linus Walleij <linus.walleij@linaro.org>, 
- =?utf-8?q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
- devicetree@vger.kernel.org, Helge Deller <deller@gmx.de>, 
- dri-devel@lists.freedesktop.org, Jonathan Corbet <corbet@lwn.net>, 
- Biju Das <biju.das.jz@bp.renesas.com>, Guenter Roeck <linux@roeck-us.net>, 
- Daniel Lezcano <daniel.lezcano@linaro.org>, 
- Damien Le Moal <dlemoal@kernel.org>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
- Anup Patel <apatel@ventanamicro.com>, Maxime Ripard <mripard@kernel.org>, 
- Chris Morgan <macromorgan@hotmail.com>, Jiri Slaby <jirislaby@kernel.org>, 
- =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
- Thomas Zimmermann <tzimmermann@suse.de>, 
- Javier Martinez Canillas <javierm@redhat.com>, 
- David Rientjes <rientjes@google.com>, 
- Azeem Shaikh <azeemshaikh38@gmail.com>, Conor Dooley <conor+dt@kernel.org>, 
- Arnd Bergmann <arnd@arndb.de>, Rich Felker <dalias@libc.org>, 
- linux-fbdev@vger.kernel.org, Stephen Rothwell <sfr@canb.auug.org.au>, 
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
- Daniel Vetter <daniel@ffwll.ch>, linux-serial@vger.kernel.org, 
- linux-pci@vger.kernel.org, Niklas Cassel <cassel@kernel.org>, 
- Sebastian Reichel <sre@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, 
- Manikanta Guntupalli <manikanta.guntupalli@amd.com>, 
- Guo Ren <guoren@kernel.org>, Jacky Huang <ychuang3@nuvoton.com>, 
- linux-clk@vger.kernel.org, David Airlie <airlied@gmail.com>, 
- Magnus Damm <magnus.damm@gmail.com>, 
- Geert Uytterhoeven <geert+renesas@glider.be>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Herve Codina <herve.codina@bootlin.com>, Vlastimil Babka <vbabka@suse.cz>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Shawn Guo <shawnguo@kernel.org>, Heiko Stuebner <heiko.stuebner@cherry.de>, 
- Baoquan He <bhe@redhat.com>, Kefeng Wang <wangkefeng.wang@huawei.com>, 
- Lorenzo Pieralisi <lpieralisi@kernel.org>
-In-Reply-To: <8d8dec2d75890f3a14632c9606c332fb11d89a95.1712207606.git.ysato@users.sourceforge.jp>
-References: <cover.1712207606.git.ysato@users.sourceforge.jp>
- <8d8dec2d75890f3a14632c9606c332fb11d89a95.1712207606.git.ysato@users.sourceforge.jp>
-Message-Id: <171221675032.1570606.17195739558800384053.robh@kernel.org>
-Subject: Re: [RESEND v7 19/37] dt-bindings: interrupt-controller:
- renesas,sh7751-irl-ext: Add json-schema
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+In-Reply-To: <SE1P216MB1303D2A884C6F904553E4432ED362@SE1P216MB1303.KORP216.PROD.OUTLOOK.COM>
 
+Hey Jackson,
 
-On Thu, 04 Apr 2024 14:14:30 +0900, Yoshinori Sato wrote:
-> Renesas SH7751 external interrupt encoder json-schema.
-> 
-> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
-> ---
->  .../renesas,sh7751-irl-ext.yaml               | 57 +++++++++++++++++++
->  1 file changed, 57 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/renesas,sh7751-irl-ext.yaml
-> 
+On 25.03.2024 06:19, jackson.lee wrote:
+>Hello Sebastian, Hans and Nicolas
+>
+>Could you please review the below patch series ?
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+Sorry for the delay, me and Nicolas are currently quite busy. So, the
+review of the patchset will be delayed a bit longer, current goal would
+be review this until the 20th of April. I'll try to keep you updated.
 
-yamllint warnings/errors:
+Greetings,
+Sebastian
 
-dtschema/dtc warnings/errors:
-/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/interrupt-controller/renesas,sh7751-irl-ext.example.dtb: interrupt-controller@a4000000: #interrupt-cells:0:0: 2 was expected
-	from schema $id: http://devicetree.org/schemas/interrupt-controller/renesas,sh7751-irl-ext.yaml#
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/8d8dec2d75890f3a14632c9606c332fb11d89a95.1712207606.git.ysato@users.sourceforge.jp
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+>
+>
+>https://patchwork.linuxtv.org/project/linux-media/list/?series=12404
+>
+>
+>thanks
+>Jackson
+>
+>> -----Original Message-----
+>> From: jackson.lee <jackson.lee@chipsnmedia.com>
+>> Sent: Monday, March 11, 2024 7:56 PM
+>> To: mchehab@kernel.org; nicolas@ndufresne.ca;
+>> sebastian.fricke@collabora.com
+>> Cc: linux-media@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> hverkuil@xs4all.nl; Nas Chung <nas.chung@chipsnmedia.com>; lafley.kim
+>> <lafley.kim@chipsnmedia.com>; b-brnich@ti.com; jackson.lee
+>> <jackson.lee@chipsnmedia.com>
+>> Subject: [RESEND PATCH v2 0/4] Add auto suspend/resume,YUV422
+>> format,SPS/PPS generation for each IDR
+>>
+>> From: "Jackson.lee" <jackson.lee@chipsnmedia.com>
+>>
+>> The wave5 codec driver is a stateful encoder/decoder.
+>> The following patches is for supporting yuv422 inpuy format, supporting
+>> runtime suspend/resume feature and extra things.
+>>
+>> v4l2-compliance results:
+>> ========================
+>>
+>> v4l2-compliance 1.24.1, 64 bits, 64-bit time_t
+>>
+>> Buffer ioctls:
+>>             warn: v4l2-test-buffers.cpp(693): VIDIOC_CREATE_BUFS not
+>> supported
+>>             warn: v4l2-test-buffers.cpp(693): VIDIOC_CREATE_BUFS not
+>> supported
+>>     test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+>>     test VIDIOC_EXPBUF: OK
+>>     test Requests: OK (Not Supported)
+>>
+>> Total for wave5-dec device /dev/video0: 45, Succeeded: 45, Failed: 0,
+>> Warnings: 2 Total for wave5-enc device /dev/video1: 45, Succeeded: 45,
+>> Failed: 0, Warnings: 0
+>>
+>> Fluster test results:
+>> =====================
+>>
+>> Running test suite JCT-VC-HEVC_V1 with decoder GStreamer-H.265-V4L2-Gst1.0
+>> Using 1 parallel job(s)
+>> Ran 132/147 tests successfully               in 94.782 secs
+>>
+>> (1 test fails because of not supporting to parse multi frames, 1 test
+>> fails because of a missing frame and slight corruption, 2 tests fail
+>> because of sizes which are incompatible with the IP, 11 tests fail because
+>> of unsupported 10 bit format)
+>>
+>> Running test suite JVT-AVC_V1 with decoder GStreamer-H.264-V4L2-Gst1.0
+>> Using 1 parallel job(s)
+>> Ran 77/135 tests successfully               in 37.364 secs
+>>
+>> (58 fail because the hardware is unable to decode  MBAFF / FMO / Field /
+>> Extended profile streams.)
+>>
+>>
+>> Chnage since v1:
+>> =================
+>>
+>> * For [PATCH v2 0/4] media: chips-media: wave5: Support SPS/PPS generation
+>> for each IDR
+>>  - define a macro for register addresses
+>>
+>> * For [PATCH v2 1/4] media: chips-media: wave5: Support runtime
+>> suspend/resume
+>>  - add auto suspend/resume
+>>
+>> * For [PATCH v2 2/4] media: chips-media: wave5: Use helpers to calculate
+>> bytesperline and sizeimage
+>>  - use helper functions to calculate bytesperline and sizeimage
+>>
+>> * For [PATCH v2 3/4] media: chips-media: wave5: Support YUV422 raw pixel-
+>> formats on the encoder
+>>  - remove unnecessary codes
+>>
+>> Change since v0:
+>> =================
+>> The DEFAULT_SRC_SIZE macro was defined using multiple lines, To make a
+>> simple define, tab and multiple lines has been removed, The macro is
+>> defined using one line.
+>>
+>> Jackson.lee (4):
+>>   media: chips-media: wave5: Support SPS/PPS generation for each IDR
+>>   media: chips-media: wave5: Support runtime suspend/resume
+>>   media: chips-media: wave5: Use helpers to calculate bytesperline and
+>>     sizeimage.
+>>   media: chips-media: wave5: Support YUV422 raw pixel-formats on the
+>>     encoder.
+>>
+>>  .../platform/chips-media/wave5/wave5-helper.c |  24 ++
+>>  .../platform/chips-media/wave5/wave5-helper.h |   4 +
+>>  .../platform/chips-media/wave5/wave5-hw.c     |  23 +-
+>>  .../chips-media/wave5/wave5-vpu-dec.c         | 261 +++++-------------
+>>  .../chips-media/wave5/wave5-vpu-enc.c         | 260 +++++++++--------
+>>  .../platform/chips-media/wave5/wave5-vpu.c    |  43 +++
+>>  .../platform/chips-media/wave5/wave5-vpu.h    |   4 -
+>>  .../platform/chips-media/wave5/wave5-vpuapi.c |  14 +-
+>>  .../platform/chips-media/wave5/wave5-vpuapi.h |   1 +
+>>  .../chips-media/wave5/wave5-vpuconfig.h       |  25 +-
+>>  .../media/platform/chips-media/wave5/wave5.h  |   3 +
+>>  11 files changed, 329 insertions(+), 333 deletions(-)
+>>
+>> --
+>> 2.43.0
+>
 
