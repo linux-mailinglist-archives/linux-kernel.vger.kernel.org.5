@@ -1,151 +1,185 @@
-Return-Path: <linux-kernel+bounces-132232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 029C58991C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:03:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0879E8991C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:05:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62F75B22810
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:02:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CCD11C21B99
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:05:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0F7313BC38;
-	Thu,  4 Apr 2024 23:02:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95CD313C3EF;
+	Thu,  4 Apr 2024 23:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GRnQvFaT"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Bcky6LVO";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0e/jlncX";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CcbL799t";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="TN73Rs8E"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58406286A6;
-	Thu,  4 Apr 2024 23:02:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329F0130A76;
+	Thu,  4 Apr 2024 23:05:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712271770; cv=none; b=BPea717iIah5jlgdMeilO/eoET+DpXK7fhJEjsrFYCGld6WfkgZ3RvGoJGliUoJFbQjupoVvbw0TYsWJHn1exUll0mbR4WXAM+wcpNYrqoWIrcIZQZEv5li6HRIwlpPwWqAjjNbSEHvbk/CwkzFBNo6644Mo76plHTiTWK5k7qs=
+	t=1712271916; cv=none; b=jE2CVIx+tSwjs6MZy9lq6/IPTBQkll+qkGySl4RqQ3bhx7Gvsb5TT8U0qBTCCykSodeX/CU2YgU20RdaYIcPn57/aelKC3+JXjJPZZtAwC1d0uX7LwZ+bhDvQ4r9pMoy8epD2xCc8WDqosP4qpf2dvyISJzJvfAMEDDIyAA6CkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712271770; c=relaxed/simple;
-	bh=GxxcTwd9Kj+TRtgAeuoV9VK7A5mv7deIX4spdFzPU3w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=INb3haMGfPEYn6LYY7jUSqWbtX6a5rOlv7s56PtjbjgDFDZcINTGWtvdSrj6KeVeLWubW9cTcTqzs0z9DLU924CTvoYXn8QMva2vZ7w7weI1udH980LvtakQTTQeeuwZ4nlDTKYi/4Vl0qciA6nxERuKwzOVSr3Fsq1Wdjpp538=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GRnQvFaT; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712271769; x=1743807769;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GxxcTwd9Kj+TRtgAeuoV9VK7A5mv7deIX4spdFzPU3w=;
-  b=GRnQvFaTQfmLrvVzYUgCsDAGQmc05iKPeV5reop7uMurxd+d/qy6ytO9
-   XfLA/3nF5AX8OrznRWuGaukwa+5NFdMuYkq+0PX7l/Gc5lXatpjCrrOpW
-   9q+6Vl+X4E717p5ORjaBKkNsThWWvigsLtqDrKheeviHLjO9qzp8MNWIi
-   DrWC7ULZYZTPPAZrm/Ads8Cqc1yt78Mx33za80k4KzqtxJSPQivtHunSf
-   aoMZBIxt4bFRYbvIyonx2FQdHO/hN7jdynwQO8ceJ/0KI8PMhqbuvTEqQ
-   SGPlYmlbvL9JyobiqyC0j8lEu5z6vy0zcWx/nwqBQTVtfOahEh46nAiFW
-   w==;
-X-CSE-ConnectionGUID: 0Uu3qnx+QIiWhivB63PNKw==
-X-CSE-MsgGUID: rk3OKrVbQwWypy0A8rJv4A==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="8167614"
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="8167614"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 16:02:48 -0700
-X-CSE-ConnectionGUID: U+bSPPzURaKcsT3Bxrb6IA==
-X-CSE-MsgGUID: ANqWJIqFSKuzIf2aG27MmA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="23605646"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 16:02:48 -0700
-Date: Thu, 4 Apr 2024 16:02:47 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 106/130] KVM: TDX: Add KVM Exit for TDX TDG.VP.VMCALL
-Message-ID: <20240404230247.GU2444378@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <b9fbb0844fc6505f8fb1e9a783615b299a5a5bb3.1708933498.git.isaku.yamahata@intel.com>
- <Zg18ul8Q4PGQMWam@google.com>
+	s=arc-20240116; t=1712271916; c=relaxed/simple;
+	bh=b1kCDBDvOShJK96rPcAUIog34L3Yk7Ibpoxk4AGUui8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AvJgldvXUy40WrHZlo84UY2KrY9/tZbigvmDtibDPMcfLY3+BW21MEphhDvfGYw34Ij/bBPrQfnzVQ6a2BXou1T1GOy3tJaOFZonKONMkuH7IWpyJ8YI11twDTAeoi9A/hOAAhKkRDwda+J651fe3XGXZvi7N0qGtZn1PIsDl6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Bcky6LVO; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0e/jlncX; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CcbL799t; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=TN73Rs8E; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0D2011F456;
+	Thu,  4 Apr 2024 23:05:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712271913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
+	b=Bcky6LVOBlzfTS5gWcWJtwJoeaVRF90KYZbI6vpJ8CCT6ir5JPTKTwDJyWdiHbZz/AJWfe
+	7lfOEV+kOTlohOmZP9kox8debfyLNarmyf6IjLrEYaohaJxXViW/5kmKz4X25+3fY5xzP2
+	Gajbvsr4Sp/EM9pRbA3XUSKL0Snpll0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712271913;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
+	b=0e/jlncXZbZB5g91s3iKziBK5JWfQTxctQIKX14WlY1m7nd4/hgKhFOUyeN3yVJ6C5K/dN
+	bSP1nK3RbXXE/iBg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712271912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
+	b=CcbL799tKj3KExxNjYWMJZnMhI7aNJaApzcwMuzj6pe5Lfc3RrWTSYvrgOaU9jYw2hvGMB
+	Ec/U5HZ9zU4KmsF8HTXAT6J3aI+xLBkfsih5ZFg0/8A8DG6w2pk4HvwC/rWPagu3RO3o7y
+	RFSwlYH3rXU32IcPH05Lg7fJ55k78R4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712271912;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
+	b=TN73Rs8EamcWeu9yssAmGKbtBok/WbaXA9BgRNDFMilXw3WQ+E6MN86mAkGQXPQ7Cbr6cl
+	3KFzZaJo/fEknkCg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B0A5B139E8;
+	Thu,  4 Apr 2024 23:05:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id mA7jHicyD2YpIgAAn2gu4w
+	(envelope-from <krisman@suse.de>); Thu, 04 Apr 2024 23:05:11 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Eugen Hristev <eugen.hristev@collabora.com>
+Cc: Eric Biggers <ebiggers@kernel.org>,  tytso@mit.edu,
+  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
+  jaegeuk@kernel.org,  chao@kernel.org,
+  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
+  brauner@kernel.org,  jack@suse.cz,  linux-kernel@vger.kernel.org,
+  viro@zeniv.linux.org.uk,  kernel@collabora.com
+Subject: Re: [f2fs-dev] [PATCH v15 7/9] f2fs: Log error when lookup of
+ encoded dentry fails
+In-Reply-To: <e6d1ad0b-719a-4693-bd34-bea3cf6e4fa2@collabora.com> (Eugen
+	Hristev's message of "Thu, 4 Apr 2024 17:50:29 +0300")
+References: <20240402154842.508032-1-eugen.hristev@collabora.com>
+	<20240402154842.508032-8-eugen.hristev@collabora.com>
+	<20240403042503.GI2576@sol.localdomain>
+	<e6d1ad0b-719a-4693-bd34-bea3cf6e4fa2@collabora.com>
+Date: Thu, 04 Apr 2024 19:05:10 -0400
+Message-ID: <87v84w3f15.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zg18ul8Q4PGQMWam@google.com>
+Content-Type: text/plain
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:email,collabora.com:email]
 
-On Wed, Apr 03, 2024 at 08:58:50AM -0700,
-Sean Christopherson <seanjc@google.com> wrote:
+Eugen Hristev <eugen.hristev@collabora.com> writes:
 
-> On Mon, Feb 26, 2024, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > 
-> > Some of TDG.VP.VMCALL require device model, for example, qemu, to handle
-> > them on behalf of kvm kernel module. TDVMCALL_REPORT_FATAL_ERROR,
-> > TDVMCALL_MAP_GPA, TDVMCALL_SETUP_EVENT_NOTIFY_INTERRUPT, and
-> > TDVMCALL_GET_QUOTE requires user space VMM handling.
-> > 
-> > Introduce new kvm exit, KVM_EXIT_TDX, and functions to setup it. Device
-> > model should update R10 if necessary as return value.
-> 
-> Hard NAK.
-> 
-> KVM needs its own ABI, under no circumstance should KVM inherit ABI directly from
-> the GHCI.  Even worse, this doesn't even sanity check the "unknown" VMCALLs, KVM
-> just blindly punts *everything* to userspace.  And even worse than that, KVM
-> already has at least one user exit that overlaps, TDVMCALL_MAP_GPA => KVM_HC_MAP_GPA_RANGE.
-> 
-> If the userspace VMM wants to run an end-around on KVM and directly communicate
-> with the guest, e.g. via a synthetic device (a la virtio), that's totally fine,
-> because *KVM* is not definining any unique ABI, KVM is purely providing the
-> transport, e.g. emulated MMIO or PIO (and maybe not even that).  IIRC, this option
-> even came up in the context of GET_QUOTE.
-> 
-> But explicit exiting to userspace with KVM_EXIT_TDX is very different.  KVM is
-> creating a contract with userspace that says "for TDX VMCALLs [a-z], KVM will exit
-> to userspace with values [a-z]".  *Every* new VMCALL that's added to the GHCI will
-> become KVM ABI, e.g. if Intel ships a TDX module that adds a new VMALL, then KVM
-> will forward the exit to userspace, and userspace can then start relying on that
-> behavior.
-> 
-> And punting all register state, decoding, etc. to userspace creates a crap ABI.
-> KVM effectively did this for SEV and SEV-ES by copying the PSP ABI verbatim into
-> KVM ioctls(), and it's a gross, ugly mess.
-> 
-> Each VMCALL that KVM wants to forward needs a dedicated KVM_EXIT_<reason> and
-> associated struct in the exit union.  Yes, it's slightly more work now, but it's
-> one time pain.  Whereas copying all registers is endless misery for everyone
-> involved, e.g. *every* userspace VMM needs to decipher the registers, do sanity
-> checking, etc.  And *every* end user needs to do the same when a debugging
-> inevitable failures.
-> 
-> This also solves Chao's comment about XMM registers.  Except for emualting Hyper-V
-> hypercalls, which have very explicit handling, KVM does NOT support using XMM
-> registers in hypercalls.
+> On 4/3/24 07:25, Eric Biggers wrote:
+>> On Tue, Apr 02, 2024 at 06:48:40PM +0300, Eugen Hristev via Linux-f2fs-devel wrote:
+>>> If the volume is in strict mode, generi c_ci_compare can report a broken
+>>> encoding name.  This will not trigger on a bad lookup, which is caught
+>>> earlier, only if the actual disk name is bad.
+>>>
+>>> Suggested-by: Gabriel Krisman Bertazi <krisman@suse.de>
+>>> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+>>> ---
+>>>  fs/f2fs/dir.c | 15 ++++++++++-----
+>>>  1 file changed, 10 insertions(+), 5 deletions(-)
+>>>
+>>> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+>>> index 88b0045d0c4f..64286d80dd30 100644
+>>> --- a/fs/f2fs/dir.c
+>>> +++ b/fs/f2fs/dir.c
+>>> @@ -192,11 +192,16 @@ static inline int f2fs_match_name(const struct inode *dir,
+>>>  	struct fscrypt_name f;
+>>>  
+>>>  #if IS_ENABLED(CONFIG_UNICODE)
+>>> -	if (fname->cf_name.name)
+>>> -		return generic_ci_match(dir, fname->usr_fname,
+>>> -					&fname->cf_name,
+>>> -					de_name, de_name_len);
+>>> -
+>>> +	if (fname->cf_name.name) {
+>>> +		int ret = generic_ci_match(dir, fname->usr_fname,
+>>> +					   &fname->cf_name,
+>>> +					   de_name, de_name_len);
+>>> +		if (ret == -EINVAL)
+>>> +			f2fs_warn(F2FS_SB(dir->i_sb),
+>>> +				"Directory contains filename that is invalid UTF-8");
+>>> +
+>> 
+>> Shouldn't this use f2fs_warn_ratelimited?
+>
+> f2fs_warn_ratelimited appears to be very new in the kernel,
+>
+> Krisman do you think you can rebase your for-next on top of latest such that this
+> function is available ? I am basing the series on your for-next
+> branch.
 
-Sure. I will introduce the followings.
-
-KVM_EXIT_TDX_GET_QUOTE
-  Request a quote.
-
-KVM_EXIT_TDX_SETUP_EVENT_NOTIFY_INTERRUPT
-  Guest tells which interrupt vector the VMM uses to notify the guest.
-  The use case if GetQuote. It is async request.  The user-space VMM uses
-  this interrupts to notify the guest on the completion. Or guest polls it.
-
-KVM_EXIT_TDX_REPORT_FATAL_ERROR
-  Guest panicked. This conveys extra 64 bytes in registers. Probably this should
-  be converted to KVM_EXIT_SYSTEM_EVENT and KVM_SYSTEM_EVENT_CRASH.
-  
-MapGPA is converted to KVM_HC_MAP_GPA_RANGE.
+I try to make unicode/for-next a non-rebase branch, and I don't want to
+pollute the tree with an unecessary backmerge.  Instead, why not base
+your work on a more recent branch, since it has no dependencies on
+anything from unicode/for-next?
 
 -- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Gabriel Krisman Bertazi
 
