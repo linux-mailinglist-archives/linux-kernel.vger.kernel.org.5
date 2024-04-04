@@ -1,116 +1,151 @@
-Return-Path: <linux-kernel+bounces-131393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131395-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B24E89870C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB42898710
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:19:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B56DB295794
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:19:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5159E296053
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C767127B69;
-	Thu,  4 Apr 2024 12:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD31128807;
+	Thu,  4 Apr 2024 12:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R1P2aKLH"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="cqkae22n"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D7A8127B50;
-	Thu,  4 Apr 2024 12:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7126612838A;
+	Thu,  4 Apr 2024 12:15:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712232890; cv=none; b=OXrfX9kgqKytUuyUPc0IRy108UipVCM//hu+tbskNfJoWc/w8+fdzDno+bnlkxJWTvzOOwrBkA0WZVTKzNYEhTSnT4b7qMa71v4y25+wM35irNDhJE+AiC6XTbhu1N4KXxdJTW9PGdshej3CF+guH3h+flTp/nOgKxY0fUGlYZk=
+	t=1712232953; cv=none; b=a6oc2aLl4zeC2UC+ukqvCHzzNlBfmtTDswpIOMvxX8Y9PTD7tR9plUb+PRllCEpQuiv9j9PPt7U+NqvoE2sZZ98dWFTPELclTgsGF9tkeMHRl0uuvpnYAm0rFE1AVnQs8g7U7ORutmYyjNlPv+W3qJGv+dqJ72hjOKY6K9VQz8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712232890; c=relaxed/simple;
-	bh=rOAdoL6tHaMG/zwN7wWRADpEydV7O+1IUICz69AHOf8=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Yz83CGo+JO20UzxOcHZkN+mnli3w7d0cJahlP3/5BPJBH+5hu55BJvCID1fXZsMM0wIBFex6CB+QGGucLX8JBeOvC0WyLxaIOCJtaNkyQ+sv/GNGGarHcT2/qYVCivcTOlPuuQevR4nutZjPnbMFVKNlkQ3vHdcxoYNYRRWjdDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R1P2aKLH; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d85da5a7d1so2520071fa.0;
-        Thu, 04 Apr 2024 05:14:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712232887; x=1712837687; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0bUZo/pGzDNuYFiyOW47yNiCIYxU4kzybrhVLN1vRNs=;
-        b=R1P2aKLHuiyQDlVyrvuve7a+OjWxN6n1HwpPApPQ1tjKjzJHLlhlxKqilli4tY+PwI
-         H6LEzKShyGm6v437490SQnKprn26vkw9FJMSOnnJt+ja1utBbRJZsQQcLL1SShBmUE+K
-         wJWyz66wnj7UAHGnVcEY8QwdmloOK8claXpoMSMpgudEPCkASY4eiXWtXnp/8VuNEkiD
-         66Abyt9dlhzfSGQ3v5hDjFfy2kuKxrfV1aM9teBDto0c0WNIJqc1sGoeqe+2S0SfZZ1N
-         ISjrcsBHuJP32cg0beai7L0X4EyUfTk9jmIVvB+c0vKGuN60P0SbLFev7yEecpX+ajZo
-         Qpjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712232887; x=1712837687;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0bUZo/pGzDNuYFiyOW47yNiCIYxU4kzybrhVLN1vRNs=;
-        b=OVrf1sfovlASQmHZpllBnw1yih7uj8a4cmg0Hgq7konUiuN1J/ChsgsSieg9U5YlH8
-         809i2rnKYBv9JV8tPQIs9Aj5425Slx2wGIJ3tbQ+QyH/Q/JvQCtsiqX0EctVV0L/n9tX
-         CcPrO7mDz1b6C4uKpB83TjQJgCcTUPGxuCnGcbcqTGXx8feEq/skBuAase+sMg95ARCJ
-         kmZEK8z5X0CUsjP0Pk+u0G2DX8zxVyEx1+0E9rjv37jO96nOsk3vOcGTfbPn/ZZParU1
-         JdXRq9N2WrQpOsYoFq9eLY79W+rqlriaSUgVl8SihXY3a6a7GqCE/ok6zwhwbC0ZbMC+
-         njHw==
-X-Forwarded-Encrypted: i=1; AJvYcCVqkFCeRFmXORs/taE7UzmccEHMC2P1IRWYuXI05ouXiNCt8wBlsKEQV14Rplk2egwhmrexTkGAnWlXAZkCdBmVIcwyGwABGvOOPrXd4jNo3Bijxm3BEdiu4TIEo96fmzSPlJ3JBR826g==
-X-Gm-Message-State: AOJu0YzoY+cIGaXpE6M+NkDuhNDbBr28qPc74IIcN4EFkoblA5pu/xGA
-	9e+gFjz59JNxtXGg44ipWyNMRG4TEWQioXaLYKZXI6f3lcLsLPjNm8cRdFfF
-X-Google-Smtp-Source: AGHT+IFx9UQY4y+jjtNaDdJmgXCy8TISkHZLbhqawJtLmLtM00wjEtv0sQJ4gIIXFwtWO1M1e8b/CA==
-X-Received: by 2002:a2e:bb84:0:b0:2d6:d044:aab5 with SMTP id y4-20020a2ebb84000000b002d6d044aab5mr817311lje.11.1712232886526;
-        Thu, 04 Apr 2024 05:14:46 -0700 (PDT)
-Received: from pc636 (host-90-235-13-217.mobileonline.telia.com. [90.235.13.217])
-        by smtp.gmail.com with ESMTPSA id u22-20020a2e8556000000b002d834cb0400sm532238ljj.17.2024.04.04.05.14.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 05:14:46 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Thu, 4 Apr 2024 14:14:43 +0200
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: "Paul E. McKenney" <paulmck@kernel.org>,
-	"Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Fixes tag needs some work in the rcu tree
-Message-ID: <Zg6Zs76UDYQsJTWM@pc636>
-References: <20240404083923.358c23da@canb.auug.org.au>
+	s=arc-20240116; t=1712232953; c=relaxed/simple;
+	bh=jaWNUV/0rYLFNLGYU8fO5mErt568OH4eL7UBJG8E3lY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lPbMJIcazE9CAdFcRlptRtPquwcRZePGXe8CU08qRiofqqx198G1nCbYix+dSuLsAoq6MOCAA6LBxYXC9YI4zguDVjgBQ7cCPnwkC7eNCDrC5XV9qSZB0z3D6JzbbRNGN+hWsIUQBqxTkRwkcGrHGkCsk+eoDbtLXWkMMn52pkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=cqkae22n; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id E7E0512000D;
+	Thu,  4 Apr 2024 15:15:39 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E7E0512000D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1712232939;
+	bh=ETwhhACPGuY4BnkEtYjTCpxmGzMAX5wMpPGvtWzJOJ0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
+	b=cqkae22nnOJqKTjS9Lp6VhJEf2QNNRAq4f7aVqH2buIB76IitunvIJ44Iwb6PtLsL
+	 I2cUykRoAANFgj1t4Rh2xZWfpdnTMB8oLdn2vqW9krJmEmZkVEQ94zwyKMjGUvMM2T
+	 lnfLlKg/rHTSY/uVsad5RK4aaS6KJevVoiOVJLKq/LOTtxXykCymr+uKd4Qwo1Rj7M
+	 jtwGTstLm5e4zXJ10VZcrafOxnvOAr9xb9AMWz45xIZrSqCkKLRG6tP61svUBo0qtm
+	 5j2mjXphjhEqE8bTCwzHo6BtKTTbZWmiPA754x60e7TY+uY2CuXTGXXSX68Xno0ca8
+	 F2E0WCNNAez6A==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Thu,  4 Apr 2024 15:15:39 +0300 (MSK)
+Received: from CAB-WSD-L081021.sberdevices.ru (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Thu, 4 Apr 2024 15:15:39 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: <quic_sridsn@quicinc.com>, <quic_mdalam@quicinc.com>, <ezra@easyb.ch>,
+	<gch981213@gmail.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
+	<sashal@kernel.org>, <gregkh@linuxfoundation.org>, <vigneshr@ti.com>
+CC: <kernel@salutedevices.com>, <rockosov@gmail.com>,
+	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Ezra Buehler
+	<ezra.buehler@husqvarnagroup.com>, <stable@vger.kernel.org>, Martin Kurbanov
+	<mmkurbanov@salutedevices.com>, Dmitry Rokosov <ddrokosov@salutedevices.com>
+Subject: [PATCH v1] mtd: spinand: Add support for 5-byte IDs
+Date: Thu, 4 Apr 2024 15:15:21 +0300
+Message-ID: <20240404121532.14755-1-ddrokosov@salutedevices.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404083923.358c23da@canb.auug.org.au>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184579 [Apr 04 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;lore.kernel.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/04/04 11:24:00
+X-KSMG-LinksScanning: Clean, bases: 2024/04/04 11:24:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/04 07:34:00 #24651931
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-Hello!
+From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
 
-> Hi all,
-> 
-> In commit
-> 
->   a55be9aacc45 ("rcu: Do not release a wait-head from a GP kthread")
-> 
-> Fixes tag
-> 
->   Fixes: 05a10b921000 ("rcu: Support direct wake-up of synchronize_rcu() users")
-> 
-> has these problem(s):
-> 
->   - Target SHA1 does not exist
-> 
-> Maybe you meant
-> 
-> Fixes: 654f59c6bc95 ("rcu: Support direct wake-up of synchronize_rcu() users")
-> 
-I have a question. Could you please clarify why those commits are in the linux-next?
-Those commits have to go over RCU tree. It looks like i am missing something but
-please elaborate.
+[ Upstream commit 34a956739d295de6010cdaafeed698ccbba87ea4 ]
 
---
-Uladzislau Rezki
+E.g. ESMT chips will return an identification code with a length of 5
+bytes. In order to prevent ambiguity, flash chips would actually need to
+return IDs that are up to 17 or more bytes long due to JEDEC's
+continuation scheme. I understand that if a manufacturer ID is located
+in bank N of JEDEC's database (there are currently 16 banks), N - 1
+continuation codes (7Fh) need to be added to the identification code
+(comprising of manufacturer ID and device ID). However, most flash chip
+manufacturers don't seem to implement this (correctly).
+
+Cc: <stable@vger.kernel.org> # 6.6.23
+Cc: <stable@vger.kernel.org> # 6.7.11
+Cc: <stable@vger.kernel.org> # 6.8.2
+Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
+Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20240125200108.24374-2-ezra@easyb.ch
+Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
+---
+
+In the patch series [1] only one patch was marked with Fixes tag, that's
+why the secon patch was not applied to 6.6.y, 6.7.y and 6.8y. It breaks
+ESMT detection flow with logs:
+
+[    0.770730] spi-nand spi0.0: unknown raw ID c8017f7f
+[    0.772688] spi-nand: probe of spi0.0 failed with error -524
+
+Please cherry-pick the second patch from the series to 6.6.y, 6.7.y and
+6.8.y.
+
+Links:
+    [1] https://lore.kernel.org/linux-mtd/20240125200108.24374-1-ezra@easyb.ch/
+
+---
+ include/linux/mtd/spinand.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
+index badb4c1ac079..5c19ead60499 100644
+--- a/include/linux/mtd/spinand.h
++++ b/include/linux/mtd/spinand.h
+@@ -169,7 +169,7 @@
+ struct spinand_op;
+ struct spinand_device;
+ 
+-#define SPINAND_MAX_ID_LEN	4
++#define SPINAND_MAX_ID_LEN	5
+ /*
+  * For erase, write and read operation, we got the following timings :
+  * tBERS (erase) 1ms to 4ms
+-- 
+2.43.0
 
 
