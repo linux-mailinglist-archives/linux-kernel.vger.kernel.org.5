@@ -1,158 +1,112 @@
-Return-Path: <linux-kernel+bounces-131458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0A44898841
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:50:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E2F289882B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:46:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2377B2DF0C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:46:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B71C129415F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04CD8061C;
-	Thu,  4 Apr 2024 12:46:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D6DD42072;
+	Thu,  4 Apr 2024 12:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="INwBympi"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="PFJiNdsv"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E3E7492;
-	Thu,  4 Apr 2024 12:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37A17492
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:46:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712234790; cv=none; b=Nu5MMDqMsH0WQcOj3I3+OhsytcquqgwtHH8pHUolX3WmSqa0Tk0EbPe5Zy5i5+xQUAey1gkRTcpXBFHxJ8wgWwMFj3fCQqR/kxerUkplb+gWPcgC4lowrWNb+PCWyCQ9j5kyR//Pq7R47unptad1B3p2EFYjSlfCyGOou6nLDgU=
+	t=1712234795; cv=none; b=kPZ3LimputPhb/qJLqCLikBgBEkUEdmEDp7htG65iHRqqw2IpkphBz9KpU1xHMUGvx9foe05JrqHbNW4j/bL8L9801HDq9JiO61Wqr017/LCN97QFHxoMSgcWUrchpAuiQm5Y/qdjun9ArkyobgQ3NZR1PseqwBr4nRPZUzCbFU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712234790; c=relaxed/simple;
-	bh=vSfmQlOnTjFhj0V1lM1jgKnxEb4/A8CPTuffchOy/y4=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Re0/+TT5DkdRPqQio5Wnpz8wMokz7VhXSSdqLHASKtAMuytTynXercI+0GA/DT42f9Z9qEwZxl6yQ1TIyJU0rNJP3UAlCeCSZfvwuFaY3UMWGdw1XeLtVZnw2kHdlIl7w198GMkl/tqLKZlaGvqUUmrD3yt/6XocOWehb7QPf0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=INwBympi; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 434CkJtG031225;
-	Thu, 4 Apr 2024 07:46:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712234779;
-	bh=qJg1mXxEBeSMHwRCIuB9hLceXhAMTVZyXHOqCCpB/kQ=;
-	h=From:To:CC:Subject:Date;
-	b=INwBympiz9+H+p/rPLx76IjQMfYsO/3ee8Tdgq2rZ6cihVSpKNxClCFjo6vQzHf0Z
-	 ZirSByzB+OKq7vqWy4DehAgkZj04M4v5iPTNbighs48m53yaeQRf0oXjA17XWe7xH3
-	 15brUwoJlVCBZf85ecWPkejaFTWte8UCQGk2lcTQ=
-Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 434CkJwv119773
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 4 Apr 2024 07:46:19 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE112.ent.ti.com
- (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 4
- Apr 2024 07:46:19 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 4 Apr 2024 07:46:18 -0500
-Received: from uda0492258.dhcp.ti.com (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 434CkFK0077955;
-	Thu, 4 Apr 2024 07:46:16 -0500
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
-        <krzk+dt@kernel.org>, <conor+dt@kernel.org>
-CC: <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>,
-        <s-vadapalli@ti.com>
-Subject: [PATCH v3] arm64: dts: ti: k3-am62p: use eFuse MAC Address for CPSW3G Port 1
-Date: Thu, 4 Apr 2024 18:16:14 +0530
-Message-ID: <20240404124614.891416-1-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1712234795; c=relaxed/simple;
+	bh=kEhubNZE4GoCJnbWmZx8xT0a6eg7XExvJYDkgz0QdbM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=sshBMwwX5sA1QQk4R+QYhIlISVYSoG0jPHlYSu1EBDqq0Kn94XWAdnMp0LPS+6X0p109tjn16HovdT47Yq5NkLGXoyI3lq2d78NB1ayHPXO+V8aBD06kQPdH3Zb3J8yxLCdcZxbPeLaMadxDh/hrhQiTM/Aa/3oX9cASKCGAK+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=PFJiNdsv; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712234792;
+	bh=kEhubNZE4GoCJnbWmZx8xT0a6eg7XExvJYDkgz0QdbM=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=PFJiNdsvee9e+UwX10Wo39znqqPFEH/kzhiAygPlnKZuwzpfBp4+tYj69Po9KDQHQ
+	 s8/zDltnLDKV9PVuFsTN2i5PZP4jdDGelt8gaqE4fbXXBSeiLjVdLht++2v6vd9g/J
+	 Se5tBtVhPaPw0MFX/zDu19mIEh6Sjt2kU9RNwBXMbuq4Bheq5YrjOIbsdcYEDYDOMJ
+	 v4+jyCX9P5C7yWoD5NOlQLUUFB71YxBUpe4ENzT0j4iIlw9oRAxlIJDZqZwO7ZINvR
+	 ++Irmaus9H39MsL4HaEvjCohq6GTiAZR6lC7Ddny9KWi6zp2drLIPXZOSeOffIP887
+	 lajuG9ll8cS3A==
+Received: from [100.77.12.232] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: obbardc)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id AFC7F37813DC;
+	Thu,  4 Apr 2024 12:46:31 +0000 (UTC)
+Message-ID: <10127a05c2c6b7ac3ec4331a3e590c122335800e.camel@collabora.com>
+Subject: Re: [PATCH] soc: mediatek: mtk-socinfo: Add entry for MT8395AV/ZA
+ Genio 1200
+From: Christopher Obbard <chris.obbard@collabora.com>
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
+	matthias.bgg@gmail.com
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, wenst@chromium.org
+Date: Thu, 04 Apr 2024 13:46:16 +0100
+In-Reply-To: <20240404082056.93454-1-angelogioacchino.delregno@collabora.com>
+References: <20240404082056.93454-1-angelogioacchino.delregno@collabora.com>
+Autocrypt: addr=chris.obbard@collabora.com; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3-1+b1 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Add the "ethernet-mac-syscon" node within "wkup_conf" node corresponding to
-the CTRLMMR_MAC_IDx registers within the CTRL_MMR space. Assign the
-compatible "ti,am62p-cpsw-mac-efuse" to enable "syscon_regmap" operations
-on these registers. The MAC Address programmed in the eFuse is accessible
-through the CTRLMMR_MAC_IDx registers. The "ti,syscon-efuse" device-tree
-property points to the CTRLMMR_MAC_IDx registers, allowing the CPSW driver
-to fetch the MAC Address and assign it to the network interface associated
-with CPSW3G MAC Port 1.
+Hi Angelo,
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
+On Thu, 2024-04-04 at 10:20 +0200, AngeloGioacchino Del Regno wrote:
+> Add an entry for the MT8395 SoC with commercial name Genio 1200.
+>=20
+> Signed-off-by: AngeloGioacchino Del Regno
+> <angelogioacchino.delregno@collabora.com>
 
-This patch is based on linux-next tagged next-20240404.
-Patch depends on:
-https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240402105708.4114146-1-s-vadapalli@ti.com/
-for the newly added "ti,am62p-cpsw-mac-efuse" compatible.
+Reviewed-by: Christopher Obbard <chris.obbard@collabora.com>
+Tested-by: Christopher Obbard <chris.obbard@collabora.com>
 
-v2:
-https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240404081845.622707-1-s-vadapalli@ti.com/
-Changes since v2:
-- Renamed "cpsw-mac-efuse" node as "ethernet-mac-syscon" based on
-  Krzysztof's suggestion.
-- Renamed "cpsw_mac_efuse" label as "cpsw_mac_syscon" to match
-  node naming convention.
-- Updated node-name in commit message to "ethernet-mac-syscon".
-
-v1:
-https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240402094200.4036076-1-s-vadapalli@ti.com/
-Changes since v1:
-- Since "wkup_conf" is modelled as a "simple-bus" rather than being
-  modelled as a System Controller node with the "syscon" compatible,
-  directly passing the reference to the "wkup_conf" node using the
-  "ti,syscon-efuse" device-tree property will not work.
-  Therefore, I posted the patch at:
-  https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240402105708.4114146-1-s-vadapalli@ti.com/
-  in order to add a new compatible to be used for modelling the
-  CTRLMMR_MAC_IDx registers as System Controller nodes, thereby
-  allowing the existing "ti,syscon-efuse" property to be used.
-  Now, "ti,syscon-efuse" points to the "cpsw_mac_efuse" node within
-  "wkup_conf" node, with "cpsw_mac_efuse" being a "syscon" node.
-
-Logs verifying that the CPSW driver assigns the MAC Address from the
-eFuse based on the CTRLMMR_MAC_IDx registers at 0x43000200 and 0x43000204
-to the interface eth0 corresponding to CPSW3G MAC Port 1:
-https://gist.github.com/Siddharth-Vadapalli-at-TI/63473d68e7a34860566c1339ce3da9f0
-
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi   | 1 +
- arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 5 +++++
- 2 files changed, 6 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-index 7337a9e13535..21020b7d3034 100644
---- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-@@ -696,6 +696,7 @@ cpsw_port1: port@1 {
- 				label = "port1";
- 				phys = <&phy_gmii_sel 1>;
- 				mac-address = [00 00 00 00 00 00];
-+				ti,syscon-efuse = <&cpsw_mac_syscon 0x0>;
- 			};
- 
- 			cpsw_port2: port@2 {
-diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-index a84756c336d0..7469b3d3a8c9 100644
---- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-@@ -18,6 +18,11 @@ chipid: chipid@14 {
- 			reg = <0x14 0x4>;
- 			bootph-all;
- 		};
-+
-+		cpsw_mac_syscon: ethernet-mac-syscon@200 {
-+			compatible = "ti,am62p-cpsw-mac-efuse", "syscon";
-+			reg = <0x200 0x8>;
-+		};
- 	};
- 
- 	wkup_uart0: serial@2b300000 {
--- 
-2.40.1
-
+> ---
+> =C2=A0drivers/soc/mediatek/mtk-socinfo.c | 1 +
+> =C2=A01 file changed, 1 insertion(+)
+>=20
+> diff --git a/drivers/soc/mediatek/mtk-socinfo.c b/drivers/soc/mediatek/mt=
+k-
+> socinfo.c
+> index 4494cca1d075..6943ab29f095 100644
+> --- a/drivers/soc/mediatek/mtk-socinfo.c
+> +++ b/drivers/soc/mediatek/mtk-socinfo.c
+> @@ -56,6 +56,7 @@ static struct socinfo_data socinfo_data_table[] =3D {
+> =C2=A0	MTK_SOCINFO_ENTRY("MT8195", "MT8195GV/EHZA", "Kompanio 1200",
+> 0x81950304, CELL_NOT_USED),
+> =C2=A0	MTK_SOCINFO_ENTRY("MT8195", "MT8195TV/EZA", "Kompanio 1380",
+> 0x81950400, CELL_NOT_USED),
+> =C2=A0	MTK_SOCINFO_ENTRY("MT8195", "MT8195TV/EHZA", "Kompanio 1380",
+> 0x81950404, CELL_NOT_USED),
+> +	MTK_SOCINFO_ENTRY("MT8395", "MT8395AV/ZA", "Genio 1200",
+> 0x83950100, CELL_NOT_USED),
+> =C2=A0};
+> =C2=A0
+> =C2=A0static int mtk_socinfo_create_socinfo_node(struct mtk_socinfo
+> *mtk_socinfop)
 
