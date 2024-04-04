@@ -1,126 +1,124 @@
-Return-Path: <linux-kernel+bounces-132008-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132009-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBA04898E8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:03:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91060898E94
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:04:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62C79B2B19A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:03:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F1B61F25EF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:04:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAEBE1332B8;
-	Thu,  4 Apr 2024 19:03:43 +0000 (UTC)
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B046F13340F;
+	Thu,  4 Apr 2024 19:04:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rrHS/o8F"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC76517997;
-	Thu,  4 Apr 2024 19:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7E1B1311B0;
+	Thu,  4 Apr 2024 19:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712257423; cv=none; b=SLLTb5XDDszYrlktu0Fqhsq1NF018150WtZiJIBAXcbm8FFgiIHXDl3zApIgiJ+jurRFr1Z6ye7gVyhQ0U4aWpylcfCUp/ijIUeWMqfMvkYgeTs0Cvgd5vfN4JZz4Y5Wzd+IN5aRlCulJLuuoGqWIpQHQRvC4JSHVUQBWylAM3U=
+	t=1712257458; cv=none; b=V2LxWbkict8Xi48D47mbWooFl98nbLBgmufkjVESZhvOABK7rVPp0u6PkuygKZnXZlya49ABUoYJBzg2NutGxQF88gLTamNhod1CJ3KzKOcnl0xX3bTZCfM5QGkZQCh5gCjUuLRIRU3DCuwh/KfvWoxzg723okHh48oIXxucQZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712257423; c=relaxed/simple;
-	bh=we79JR2ByEiMz9MNQ+mgKubXeXXnHTyCDoqlq7Vfzf4=;
+	s=arc-20240116; t=1712257458; c=relaxed/simple;
+	bh=rNly9F2P9OdTExq18M642lONbtjeAMZI50NvvyYjTA8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uUFMlbhPLhShHyq1mTYsi6MoNwiktwsBBbZkJbXb4opf+tEmro2uWgmbGSR0d5KBdAFoLuaguSsLoy0saKqZGfOkmkwfXroTe+zlXyErOX7jrfyPVcugHUa/lPKurWQlQ4x16LhjBRy0VEatHXa2AjviRlaXPlcNNP1QbxQ3Gw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a519eae91d1so24032266b.3;
-        Thu, 04 Apr 2024 12:03:41 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712257420; x=1712862220;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p+CbQTA2iSYs41dobAl4Mn03s52UBZLR03o420g0nXE=;
-        b=Eg8aKp2jK3xG1Lwu3Pf9tjDyv6FLs3KuTSjJEyA20d7aebi/OeAe5q5fg7WjcDqOfQ
-         5BgY8/qOMzKBA+OhyedvLiCjVkQe1GELKY7VkTfx3ZkBb5/XeVi3mXWZAE9yGKsEVW4k
-         hdCV8YSyBg8L5UIsJLzC5CfThyPP8AmIohVjYZN9JVlE1v4DwL7jbxSDD2MhMAFSJJtu
-         waQsTgsULTMJxwnRINND4rVl/WnQU/8O8Tps+BlNGbXZYDbSdUh7aqLJd2UnaK1re7QS
-         Q1R2OCYNqkKNp5v4A37ArC1ML3dsA1LSgQpOD96mUKfdNG5KTbsl/YuecKiyOrRMO+4F
-         +eVA==
-X-Forwarded-Encrypted: i=1; AJvYcCXfy3U2x1FTKw4leHKbW2TjTYcFbysBSONmXXP756jcMHBvKXX3VuQDKJc1YIllk8Appm4CGWFrrE5kDAH8l6rug/LGGzjdfbUjYPX8u0ZfGq5XVVhmNH4zI0Q/i9NVRsk5Ye3d4a/snCby3Bm/dWSu7mnFWL7eVRyM
-X-Gm-Message-State: AOJu0YyCo2iLfFKkIO0FA7nm8Z/v/FSgtrC48/dLNHvLgRW8Fc2k1nTr
-	W1k12XpcsHCzy7C3qOtlBpR+d6YgLcNEaUWvzlx8ozHrlgp0j4jP
-X-Google-Smtp-Source: AGHT+IHmvFcFisUvqZnNo8wPKYtf8P8HNEXIVh2KGY7KWKzBSyC21xcVPnv1zgUB7h6HBBv0BS0kWA==
-X-Received: by 2002:a17:907:10c2:b0:a4e:21e0:2e6e with SMTP id rv2-20020a17090710c200b00a4e21e02e6emr2104481ejb.5.1712257419825;
-        Thu, 04 Apr 2024 12:03:39 -0700 (PDT)
-Received: from gmail.com (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
-        by smtp.gmail.com with ESMTPSA id q6-20020a170906388600b00a4576dd5a8csm9326341ejd.201.2024.04.04.12.03.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 12:03:39 -0700 (PDT)
-Date: Thu, 4 Apr 2024 12:03:36 -0700
-From: Breno Leitao <leitao@debian.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: kuba@kernel.org, davem@davemloft.net, pabeni@redhat.com,
-	edumazet@google.com, elder@kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org, nbd@nbd.name,
-	sean.wang@mediatek.com, Mark-MC.Lee@mediatek.com,
-	lorenzo@kernel.org, taras.chornyi@plvision.eu,
-	quic_jjohnson@quicinc.com, kvalo@kernel.org, leon@kernel.org,
-	dennis.dalessandro@cornelisnetworks.com,
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-	bpf@vger.kernel.org, Jiri Pirko <jiri@resnulli.us>,
-	Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH net-next v3 1/5] net: create a dummy net_device allocator
-Message-ID: <Zg75iK8VtzZL9/G+@gmail.com>
-References: <20240404114854.2498663-1-leitao@debian.org>
- <20240404114854.2498663-2-leitao@debian.org>
- <1b1dfe1f-57ed-416d-a9c0-408aafa69583@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bXKc0P1wxztr1Fw04U6fVbLmvKOyc4o58qNziug0aUa9L8MmL3DQTXvD+VMOgEUGyaD6uperDOCz4iZCAmhwz/sMZUxzGpd6rC9jsRbxm98ZBXmZlmCpysJ4+oHd55YZ6Vb0oXkNAJpARc0oDJIA9B5oSfA3SvL32f3gdikmvGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rrHS/o8F; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7B1FC433C7;
+	Thu,  4 Apr 2024 19:04:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712257458;
+	bh=rNly9F2P9OdTExq18M642lONbtjeAMZI50NvvyYjTA8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rrHS/o8F+rLpX2ZKpX8B9hjkRFhechDLI6DI0vt9JNZg4IFEN2Yk75PF5PL8NnAgv
+	 g01Ak48kRGFEk0xR/32kl/QzD5QXbYMXXqwJ/TBW9J/87Gkldb5FVAGhvbNDEcS168
+	 v6TURXoHAavMjrBtDBzvm+kddqqpOhtZFzjVnCyS8WIKeCYcgy6j/zdX69zjWqhHTB
+	 BsYqDCpZhzhLckh7DHaKuZ/M0jFxzpaq0ukApjVqDN+FpkdEpk7CXa9WD4G7PWNwSG
+	 iUNJVR0y4ntzYgDmeidcdI2GYlbiOI4BjQnODSmARl+JY8eOSn64ri2mV0mkayTG1I
+	 lPSaQqjXu2OSQ==
+Date: Thu, 4 Apr 2024 20:04:00 +0100
+From: Mark Brown <broonie@kernel.org>
+To: David Hildenbrand <david@redhat.com>
+Cc: Deepak Gupta <debug@rivosinc.com>, paul.walmsley@sifive.com,
+	rick.p.edgecombe@intel.com, Szabolcs.Nagy@arm.com,
+	kito.cheng@sifive.com, keescook@chromium.org,
+	ajones@ventanamicro.com, conor.dooley@microchip.com,
+	cleger@rivosinc.com, atishp@atishpatra.org, alex@ghiti.fr,
+	bjorn@rivosinc.com, alexghiti@rivosinc.com,
+	samuel.holland@sifive.com, conor@kernel.org,
+	linux-doc@vger.kernel.org, linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-mm@kvack.org, linux-arch@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, corbet@lwn.net, palmer@dabbelt.com,
+	aou@eecs.berkeley.edu, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, oleg@redhat.com,
+	akpm@linux-foundation.org, arnd@arndb.de, ebiederm@xmission.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, lstoakes@gmail.com,
+	shuah@kernel.org, brauner@kernel.org, andy.chiu@sifive.com,
+	jerry.shih@sifive.com, hankuan.chen@sifive.com,
+	greentime.hu@sifive.com, evan@rivosinc.com, xiao.w.wang@intel.com,
+	charlie@rivosinc.com, apatel@ventanamicro.com,
+	mchitale@ventanamicro.com, dbarboza@ventanamicro.com,
+	sameo@rivosinc.com, shikemeng@huaweicloud.com, willy@infradead.org,
+	vincent.chen@sifive.com, guoren@kernel.org, samitolvanen@google.com,
+	songshuaishuai@tinylab.org, gerg@kernel.org, heiko@sntech.de,
+	bhe@redhat.com, jeeheng.sia@starfivetech.com, cyy@cyyself.name,
+	maskray@google.com, ancientmodern4@gmail.com,
+	mathis.salmen@matsal.de, cuiyunhui@bytedance.com,
+	bgray@linux.ibm.com, mpe@ellerman.id.au, baruch@tkos.co.il,
+	alx@kernel.org, catalin.marinas@arm.com, revest@chromium.org,
+	josh@joshtriplett.org, shr@devkernel.io, deller@gmx.de,
+	omosnace@redhat.com, ojeda@kernel.org, jhubbard@nvidia.com
+Subject: Re: [PATCH v3 08/29] mm: Define VM_SHADOW_STACK for RISC-V
+Message-ID: <d3689521-58a7-47df-bd6a-0e2e60464491@sirena.org.uk>
+References: <20240403234054.2020347-1-debug@rivosinc.com>
+ <20240403234054.2020347-9-debug@rivosinc.com>
+ <8fb37319-288c-4f77-9cd7-92f17bb567ee@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3H0qyxN/1AXzqBUq"
+Content-Disposition: inline
+In-Reply-To: <8fb37319-288c-4f77-9cd7-92f17bb567ee@redhat.com>
+X-Cookie: Buckle up!
+
+
+--3H0qyxN/1AXzqBUq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1b1dfe1f-57ed-416d-a9c0-408aafa69583@intel.com>
 
-Hello Alexander,
+On Thu, Apr 04, 2024 at 08:58:06PM +0200, David Hildenbrand wrote:
 
-On Thu, Apr 04, 2024 at 06:40:33PM +0200, Alexander Lobakin wrote:
-> > @@ -11063,6 +11070,17 @@ void free_netdev(struct net_device *dev)
-> >  }
-> >  EXPORT_SYMBOL(free_netdev);
-> >  
-> > +/**
-> > + * alloc_netdev_dummy - Allocate and initialize a dummy net device.
-> > + * @sizeof_priv: size of private data to allocate space for
-> > + */
-> > +struct net_device *alloc_netdev_dummy(int sizeof_priv)
-> 
-> Repeating my question from the previous thread: I see that in your
-> series you always pass 0 as @sizeof_priv, does it make sense to have
-> this argument or we can just pass 0 here to alloc_netdev() unconditionally?
-> Drivers that have &net_device embedded can't have any private data there
-> anyway.
+> or even introduce some ARCH_HAS_SHADOW_STACK so we can remove these
+> arch-specific thingies here.
 
-Sorry, I answered you this question in the previous thread, and gave you an
-example why we need the @sizeof_priv.
+It would be convenient if you could pull the ARCH_HAS_USER_SHADOW_STACK
+patch out of my clone3 series to do that:
 
-	https://lore.kernel.org/all/ZgWrcvKyAzDvl%2Fjn@gmail.com/
+   https://lore.kernel.org/all/20240203-clone3-shadow-stack-v5-3-322c69598e4b@kernel.org/
 
-I didn't see any reply from you, so, I suppose you were OK with it, but
-maybe you missed it?!
+--3H0qyxN/1AXzqBUq
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Anyway, let me paste what I've sent there here, so, we can continue the
-discussion in this thread, which might make the reviewing process here.
+-----BEGIN PGP SIGNATURE-----
 
-This is what I wrote in the thread/message above:
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYO+Z8ACgkQJNaLcl1U
+h9DK1Af9H1qYKVWDvox7q04WCtsfCFsMMGVPBMGaRQVduMIls1x5LQmfVpAOPyqf
+UZjyR8MbmEsEV+112AF9Fj3j7TK8j82BiGfS7vSX6Ui0DYE1o5X7g+7Dm7n1l5kz
+WVTXuxJTDrr5WAIj5i2XVJ7/IcGTG69iu+Dy5lAe8d4xwSZ7sBKWNbjV1TM31VR5
+AHXCdjeM9oNGJ6IdSvwjBrruoUwO8TUsLoZGHYEdxBdTYM7gNiJsDhRaFYgk4RdA
+mox+wfY+QCl/Q13A0+3194XiBpuCoo9PO6C8+zbQxR2mvFfC4YxE69wC3/U1iR4T
+VWxny2roSj6OTfzkesBui3R0qehJZA==
+=LTGw
+-----END PGP SIGNATURE-----
 
-  We need to have this private size for cases where we need to get the
-pointer to their private structure given the dummy device.  In the
-embedded case you can use container_of(), but, with a pointer to
-net_device, that is not the case anymore, and we should use the dummy private
-data pointer back to the private data.
-
-For instance, see the example of iwlwifi:
-https://lore.kernel.org/all/20240307174843.1719130-1-leitao@debian.org/
+--3H0qyxN/1AXzqBUq--
 
