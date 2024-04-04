@@ -1,102 +1,171 @@
-Return-Path: <linux-kernel+bounces-130816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29197897D6E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:34:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7184897D71
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:35:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDE89B23350
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:34:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3E660B2499A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:35:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6446010962;
-	Thu,  4 Apr 2024 01:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7144101CA;
+	Thu,  4 Apr 2024 01:35:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qb1JzlHC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AgioLU7P"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8532414285;
-	Thu,  4 Apr 2024 01:34:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1C17BE5E;
+	Thu,  4 Apr 2024 01:35:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712194455; cv=none; b=PH0a30A2BP3UeUxqqbbHn6XKGs9Qe9QcC294hECFJaFQP8RZKcBTL444TfQrhyC10vmyr/3LF+8zqKhV4vEz/k84hsM7vUdz1g3krF27/jlmqhr8Be0NQnfbSScHB3w7UsaytZz/NST6GoI7S9FFs/0PmQK7biFjaf7pgJi4jnQ=
+	t=1712194532; cv=none; b=FB8aty/t/mT2pUXTdF52V0oOodCU+nX9IFt162fuq3rdJTjQjZkpz/Nt6hW+7dk9bhjQ/grf72Lj0exMf32+GjQBBrFlxVCb242Z2l9p+LJwfcSZ9/6nDF2kt7lgZCcQMnXBgv9hgbRfbGYTry/REHU9iK2KmdOvn1uAqKKbGOs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712194455; c=relaxed/simple;
-	bh=PLHX9CmuF+jzJhTft7r/1Y8OPKACX4mI6u4er178G2M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kSymGw5ScfNgpXpy52rMtSiloUPRCHA5eJIHweEs9DSg5cnsmBOsotOjwrimS7dTw+pTckMMkFH6xLHT8fNTGh1lGtk8JmtHIhJtTdW+MtXHWGx5AhQe2TfBOTTO0ReN1f0FG4FIK/kgq+9KSTMR0r7e4kvlIZLBVeyDIHp3bqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qb1JzlHC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A94D4C433C7;
-	Thu,  4 Apr 2024 01:34:13 +0000 (UTC)
+	s=arc-20240116; t=1712194532; c=relaxed/simple;
+	bh=lwOCV3FC0LRPXqiYNtF6AMYcYrdZogCovKCtx16u8aI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h61BB6ppGMJO0zrTrVh4CEP4d6vl21U/0YaA7vIZdSU3Ao2kyRdNpxYL9nZDa7vZSRE/8AdP6/PHAnMr8bJOzxQMMaZpOUxnQGGnTzxhNEhd/G2tPZdTVU7Oz+hXzBYDliowNjx3Dm71fk3ivmVYUphPhevEPPCeRkFdSgsDGxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AgioLU7P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2200AC433C7;
+	Thu,  4 Apr 2024 01:35:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712194455;
-	bh=PLHX9CmuF+jzJhTft7r/1Y8OPKACX4mI6u4er178G2M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=qb1JzlHCkOQ0xQR9xEkxKvsw8OA1eBs2sTlr4JQ5PzuUXWpA08puhxOS0+HGL5xJt
-	 p+tSFhHdI0/W38jVkWUzbZ83SoA9Ze3oVX0I/xz35tzw9J8ehO4Ej2Z+v4WDgVFly6
-	 bK1uHAbfHAa/MKwQyDRnXJvZKbn2ZQDjArtD+Ho/3cPayZMvc1juvsoNzlmJRr/Ju4
-	 IiompHkE91W7nulKLmrSnjlpjrH1dYJE6//xltRqVI5kAJhGo2sMI29VSfrrA1CwJ3
-	 2VTX8Ds9j7vLv82qYyQgrRRjYVgNl7GVkee7GY7YJqfjkE9sRb6rgoQPF1hbD/SIKA
-	 JnLshHl50ZGTA==
-Date: Wed, 3 Apr 2024 18:34:12 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kselftest@vger.kernel.org, David Airlie <airlied@gmail.com>, Arnd
- Bergmann <arnd@arndb.de>, =?UTF-8?B?TWHDrXJh?= Canal <mcanal@igalia.com>,
- Dan Carpenter <dan.carpenter@linaro.org>, Kees Cook
- <keescook@chromium.org>, Daniel Diaz <daniel.diaz@linaro.org>, David Gow
- <davidgow@google.com>, Arthur Grillo <arthurgrillo@riseup.net>, Brendan
- Higgins <brendan.higgins@linux.dev>, Naresh Kamboju
- <naresh.kamboju@linaro.org>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Andrew Morton
- <akpm@linux-foundation.org>, Maxime Ripard <mripard@kernel.org>, Ville
- =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, Daniel Vetter
- <daniel@ffwll.ch>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org, kunit-dev@googlegroups.com,
- linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-sh@vger.kernel.org, loongarch@lists.linux.dev,
- netdev@vger.kernel.org, x86@kernel.org, Linux Kernel Functional Testing
- <lkft@linaro.org>, Eric Dumazet <edumazet@google.com>
-Subject: Re: [PATCH v3 06/15] net: kunit: Suppress lock warning noise at end
- of dev_addr_lists tests
-Message-ID: <20240403183412.16254318@kernel.org>
-In-Reply-To: <20240403131936.787234-7-linux@roeck-us.net>
-References: <20240403131936.787234-1-linux@roeck-us.net>
-	<20240403131936.787234-7-linux@roeck-us.net>
+	s=k20201202; t=1712194531;
+	bh=lwOCV3FC0LRPXqiYNtF6AMYcYrdZogCovKCtx16u8aI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AgioLU7PAkx3fTxnVtKopwt1d6oLqoQPKf/oVGEXLFhqo8Ag/6ww5vgRz3xqGbb2k
+	 z2FWkfrZe8EvWVfXwZz97PzTXWIMSlSWiCpfFcZ9q1Op/iiObwRoLFVRAoKB3xeOW7
+	 StEY3yVHTbJmE2onqWtV6OtmQOnKZO58RqW2EGGRVndbeAoGMVu2yFSAHnGH/QScsi
+	 GZpBSg3HqsdjwIhwZZPsthmLaMB4c67yeb6pDl4GxD1oRHxWGJokxGQn1YPqPK5d/h
+	 ZjUgqNodVGk888FiKj/E7F1vIgaxYCdGTqXEhvJ/0bjLZYfBmVtJCqRPzx5D+6Gyke
+	 BB4QCbLAd2DbA==
+Date: Wed, 3 Apr 2024 20:35:29 -0500
+From: Eric Biggers <ebiggers@kernel.org>
+To: David Laight <David.Laight@aculab.com>
+Cc: Ard Biesheuvel <ardb@kernel.org>,
+	"linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+	"x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	"Chang S . Bae" <chang.seok.bae@intel.com>
+Subject: Re: [PATCH 0/6] Faster AES-XTS on modern x86_64 CPUs
+Message-ID: <20240404013529.GB24248@quark.localdomain>
+References: <20240326080305.402382-1-ebiggers@kernel.org>
+ <CAMj1kXH4fNevFzrbazJptadxh_spEY3W91FZni5eMqD+UKrSUQ@mail.gmail.com>
+ <20240326164755.GB1524@sol.localdomain>
+ <6629b8120807458ab76e1968056f5e10@AcuMS.aculab.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6629b8120807458ab76e1968056f5e10@AcuMS.aculab.com>
 
-On Wed,  3 Apr 2024 06:19:27 -0700 Guenter Roeck wrote:
-> dev_addr_lists_test generates lock warning noise at the end of tests
-> if lock debugging is enabled. There are two sets of warnings.
-> 
-> WARNING: CPU: 0 PID: 689 at kernel/locking/mutex.c:923 __mutex_unlock_slowpath.constprop.0+0x13c/0x368
-> DEBUG_LOCKS_WARN_ON(__owner_task(owner) != __get_current())
-> 
-> WARNING: kunit_try_catch/1336 still has locks held!
-> 
-> KUnit test cleanup is not guaranteed to run in the same thread as the test
-> itself. For this test, this means that rtnl_lock() and rtnl_unlock() may
-> be called from different threads. This triggers the warnings.
-> Suppress the warnings because they are irrelevant for the test and just
-> confusing and distracting.
-> 
-> The first warning can be suppressed by using START_SUPPRESSED_WARNING()
-> and END_SUPPRESSED_WARNING() around the call to rtnl_unlock(). To suppress
-> the second warning, it is necessary to set debug_locks_silent while the
-> rtnl lock is held.
+Hi David,
 
-Is it okay if I move the locking into the tests, instead?
-It's only 4 lines more and no magic required, seems to work fine.
+On Wed, Apr 03, 2024 at 08:12:09AM +0000, David Laight wrote:
+> From: Eric Biggers
+> > Sent: 26 March 2024 16:48
+> ....
+> > Consider Intel Ice Lake for example, these are the AES-256-XTS encryption speeds
+> > on 4096-byte messages in MB/s I'm seeing:
+> > 
+> >     xts-aes-aesni                  5136
+> >     xts-aes-aesni-avx              5366
+> >     xts-aes-vaes-avx2              9337
+> >     xts-aes-vaes-avx10_256         9876
+> >     xts-aes-vaes-avx10_512         10215
+> > 
+> > So yes, on that CPU the biggest boost comes just from VAES, staying on AVX2.
+> > But taking advantage of AVX512 does help a bit more, first from the parts other
+> > than 512-bit registers, then a bit more from 512-bit registers.
+> 
+> How much does the kernel_fpu_begin() cost on real workloads?
+> (ie when the registers are live and it forces an extra save/restore)
+
+x86 Linux does lazy restore of the FPU state.  The first kernel_fpu_begin() can
+have a significant cost, as it issues an XSAVE (or equivalent) instruction and
+causes an XRSTOR (or equivalent) instruction to be issued when returning to
+userspace when it otherwise might not be needed.  Additional kernel_fpu_begin()
+/ kernel_fpu_end() pairs without returning to userspace have only a small cost,
+as they don't cause any more saves or restores of the FPU state to be done.
+
+My new xts(aes) implementations have one kernel_fpu_begin() / kernel_fpu_end()
+pair per message (if the message doesn't span any page boundaries, which is
+almost always the case).  That's exactly the same as the current xts-aes-aesni.
+
+I think what you may really be asking is how much the overhead of the XSAVE /
+XRSTOR pair associated with kernel-mode use of the FPU *increases* if the kernel
+clobbers AVX or AVX512 state, instead of just SSE state as xts-aes-aesni does.
+That's much more relevant to this patchset.
+
+I think the answer is that there is no additional overhead.  This is because the
+XSAVE / XRSTOR pair happens regardless of the type of state the kernel clobbers,
+and it operates on the userspace state, not the kernel's.  Some of the newer
+variants of XSAVE (XSAVEOPT and XSAVES) do have a "modified" optimization where
+they don't save parts of the state that are unmodified since the last XRSTOR;
+however, that is unimportant here because the kernel's FPU state is never saved.
+
+(This would change if x86 Linux were to support preemption of kernel-mode FPU
+code.  In that case, we may need to take more care to minimize use of AVX and
+AVX512 state.  That being said, AES-XTS tends to be used for bulk data anyway.)
+
+This is based on theory, though.  I'll do a test to confirm that there's indeed
+no additional overhead.  And also, even if there's no additional overhead, what
+the existing overhead actually is.
+
+> I've not looked at the code but I often see what looks like
+> excessive inlining in crypto code.
+> This will speed up benchmarks but can have a negative effect
+> on real code both because of the time taken to load the
+> code and the effect of displacing other code.
+> 
+> It might be that this code is a simple loop....
+
+This is a different topic.  By "inlining" I assume that you also mean things
+like loop unrolling.  I totally agree that some of the crypto assembly code goes
+way overboard on this, resulting in an unreasonably large machine code size.
+The AVX implementation of AES-GCM (aesni-intel_avx-x86_64.S), which was written
+by Intel, is the worst offender by far, generating 256011 bytes of machine code.
+In OpenSSL, Intel has even taken that to the next level with their VAES
+optimized implementation of AES-GCM generating 696040 bytes of machine code.
+
+For my AES-XTS code I've limited the code size to a much more reasonable level
+by focusing on the things that make the most difference.  My assembly file
+compiles to 14386 bytes of machine code (less than 6% of AES-GCM).  It consists
+of encryption and decryption functions for each of the four included
+implementations, and also the short function aes_xts_encrypt_iv().  On a
+particular CPU model, only one implementation is actually used, resulting in at
+most 3500-4000 bytes being actually used at runtime.  However, roughly half of
+that is code to handle messages that aren't a multiple of 256 bytes, which
+aren't really encountered in practice.  I've placed that code out-of-line to try
+to prevent it from polluting the CPU's instruction cache.
+
+On the C side in aesni-intel-glue.c, I have roughly ~600 bytes of code per
+implementation for the inlined fast path: half for encryption, half for
+decryption.  There arewith ~600 additional bytes for the rarely-executed slow
+path of page-spanning messages shared by all implementations.
+
+So in practice, at runtime just over 2 KB of AES-XTS code will get executed,
+half for encryption and half for decryption.  That seems reasonable for
+something as performance-critical as disk and file encryption.
+
+There are changes that could be made to make the code smaller, for example
+rolling up the AES rounds, making encryption and decryption share more code,
+doing 1x-wide instead of 4x-wide, etc.  We could also skip the AVX512
+implementations and top out at VAES + AVX2.  There are issues with these changes
+though -- either they straight up hurt performance on CPUs that I tested, or
+they demand a lot more out of the CPU (e.g. relying much more heavily on the
+branch predictor) and I was concerned about issues on non-tested or future CPUs.
+
+So, I think my current proposal is at a reasonable place regarding compiled code
+size, especially when it's compared to the monstrosity that is some of the
+existing crypto assembly code.  But let me know if there are any specific
+choices I've made that you may have a different opinion on.
+
+- Eric
 
