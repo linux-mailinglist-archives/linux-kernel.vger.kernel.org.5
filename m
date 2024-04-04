@@ -1,122 +1,105 @@
-Return-Path: <linux-kernel+bounces-131313-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131315-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F270589860F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:30:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04930898618
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:33:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D33228840A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:30:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2D3C288CBA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EE7B839E0;
-	Thu,  4 Apr 2024 11:30:47 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E721880BF7;
-	Thu,  4 Apr 2024 11:30:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12E4E839F7;
+	Thu,  4 Apr 2024 11:33:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OFuaz8fr"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5272433AE;
+	Thu,  4 Apr 2024 11:33:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712230246; cv=none; b=DHJmDwkGFl0uoVd2Z1y2kQPMqEZ64oYjWVtZ5gkgN4rTZtWGntAAy6toxc2kQXJlnMx5WVP/A6idh+gtHCuOv/c1629NzG2r9/+gKQroUOpqjwPwMqmNfohML+v5vYaqfgZQnUmmLQuc6LGMs06jEWbdagwYqnuQSzsRfyVv0jI=
+	t=1712230392; cv=none; b=TZcU8nsKXKvXxDASdnil2is+nmBaUNseq2oS9JoLO7nc7wgfd89oeRWRIynJOka1NXcmW1b+XKcIiwXN+KxSF/CMSQUiTLwDT62ec1VwKKyMbIxcGAA29lUtCawAVJJ1XZ2oPDQK/hoOlNEuAzrcYAgpMb1MHoXDA9sHjAG/6KE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712230246; c=relaxed/simple;
-	bh=pLVCf5e5q5NTHQHwxvNXS0PZwUAJ8fkbWjKNs0T5vac=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ki1CbEAA0bB3H3piRH0ItB0ac64f3u/JPDn449vJd6J8ELM0HC4jtO7jFQ8f64KUz+/Ovmoei/L3L9mwnykxySKNXxVucxggNIOiJtANx4kVt4gYTxCWD8Fl8zZmIIkRN8dgfBLyhkW8/35hOJy/Hv9IJRAAEXwt+z11IQ/mMD0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D9F60FEC;
-	Thu,  4 Apr 2024 04:31:14 -0700 (PDT)
-Received: from [10.57.73.43] (unknown [10.57.73.43])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D0ACE3F7B4;
-	Thu,  4 Apr 2024 04:30:42 -0700 (PDT)
-Message-ID: <b7821258-d0aa-4c04-9911-f4e6be0d4371@arm.com>
-Date: Thu, 4 Apr 2024 12:30:43 +0100
+	s=arc-20240116; t=1712230392; c=relaxed/simple;
+	bh=rsjRboU5+FZFYDOFymphsNOVY6c+pmI6IwHNJDV3zbo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JannhWf9tZADMLbl3Yk/lvNNx/KYqhioBi629wlUfpswk/Api+Ka8k+5NmGCispcvkMDwE2zPTRYQQPKUTvDaHDq69VSIb6IsumAjha638lLhuRAMjHPwM9TegYJ2r9K+/YBPTdGYWMhFpfFHe77Czxbaq+glFjYfdKJzcUEtxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OFuaz8fr; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a4e60a64abcso337254966b.1;
+        Thu, 04 Apr 2024 04:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712230389; x=1712835189; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rsjRboU5+FZFYDOFymphsNOVY6c+pmI6IwHNJDV3zbo=;
+        b=OFuaz8frcemt188fmumDn3WwbqGKFHdLNSfJiB7zrC9HIvQJEzC1ljpy/zihQ6bKvE
+         BeN1ijxGTRjq6JldOAYuHdxkS7MY9yJ8ye56cfjTnhv97efa1hbmXMNdZvO6t/kUrYMA
+         /fit0iL7WzjI13Xm5IvNdaK2bTH2Eu526r7i3dDuRNJ9RxGB21a6D8HOXtlpXQTiFszB
+         5Lq0udLmvS+2araf3aB4kE22+rN8wmpKxQ9IL+WImqXvD6+ket+ToHR8Te6Wi4qUIH3n
+         P5TzGgnynn2zO/Q8SLLoV77JfRGVC3eg2Nwlv5cqexwFPssdB2uMT6KOtxs5Pln/gIqV
+         zJcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712230389; x=1712835189;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rsjRboU5+FZFYDOFymphsNOVY6c+pmI6IwHNJDV3zbo=;
+        b=hu07SF7SHQZF21HMp9emWieaf0CRSwxAAduhMM23QlBYdnrIwEHwG71MBfQpYIYozs
+         CtPCnXWRnABpTZKJakSWpQhr3Jmh8S4KqpQM4fVxeL+7ZDx0v5k75YdbLbL5tR/U4on1
+         aNHTruIPrKf4BixUxEZkBCD9sGPbEvUCRvca7UGflEzMYdjhb9mjoYO/K/hiJf1PVQqm
+         s3mOoNjYTB7SwJTW0ll73dORycxSCaOkvfgHJjHm0A4BXHe+9dC/nt6M/QdG9JxoFhRj
+         ACymhWxhpCHgMy6oeRKzN+SN4tYG7syuWMoxfQU7aPnrfHei1OpkO7u1NCU2avPe/g7z
+         BcVw==
+X-Forwarded-Encrypted: i=1; AJvYcCVbNKem6DKYcnOZStgh9fEOEoqmUfzdWU5zl82vpD3AXuLep0YASVWLc21yBIvUBWl2BDUiuKSGfy5m6tZrhOuYkR/hvAGcn7tw/JFwRXh2IqG84MMsEkwydYomk08a9WR7I9EjyqycmA==
+X-Gm-Message-State: AOJu0YzbqkdfA9IKTp1c7DoQyqAMpUC3SqP5taMEfvovr2dnWHtNs+jf
+	/aS3NkY4tjmoSCpdSLWqvegHzAYZvHpaYmPDUknwaywPiBF1cqTG/iRGtDzP1CQhdk2NCyNnfIG
+	+B6TnXW4BrEK+5B0BB9UhE3Qzprw=
+X-Google-Smtp-Source: AGHT+IFq/w4RPf0xD1EUGE8hlMgNpyPYlxs4ucGQclr5xWdZ7KsXNkBdwp+3ZXd4y+p60Vspiv+MgRzsx4bXjmaYleE=
+X-Received: by 2002:a17:906:b0d8:b0:a47:3766:cfec with SMTP id
+ bk24-20020a170906b0d800b00a473766cfecmr5117745ejb.9.1712230389148; Thu, 04
+ Apr 2024 04:33:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/6] thermal: More separation between the core and
- drivers
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- "Rafael J. Wysocki" <rjw@rjwysocki.net>, Linux PM <linux-pm@vger.kernel.org>
-References: <4558251.LvFx2qVVIh@kreacher>
- <CAJZ5v0iSyTP4SbGBYESNy9NynMCQn8dojCFoOtQU4Q305ZKGTQ@mail.gmail.com>
-From: Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <CAJZ5v0iSyTP4SbGBYESNy9NynMCQn8dojCFoOtQU4Q305ZKGTQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240329105634.712457-1-andy.shevchenko@gmail.com>
+ <20240329105634.712457-12-andy.shevchenko@gmail.com> <CACRpkdagjPLMUjYa0z1sFGVJJ4+0Tp9Kvf6umU2JWHeOB+fbPw@mail.gmail.com>
+In-Reply-To: <CACRpkdagjPLMUjYa0z1sFGVJJ4+0Tp9Kvf6umU2JWHeOB+fbPw@mail.gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Thu, 4 Apr 2024 14:32:32 +0300
+Message-ID: <CAHp75VfroTNRuyH-q=MyZO4nxMnZ65D+TqokHPuhk+nsQxwtuQ@mail.gmail.com>
+Subject: Re: [PATCH v2 11/11] pinctrl: aw9523: Remove redundant dependency to OF
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>, linux-gpio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Apr 4, 2024 at 2:20=E2=80=AFPM Linus Walleij <linus.walleij@linaro.=
+org> wrote:
+> On Fri, Mar 29, 2024 at 11:56=E2=80=AFAM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+>
+> > Driver does not dependent on OF, remove it.
+> > While here, add missing mod_devicetable.h.
+> >
+> > Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>
+> Oh the kbuild complains about this one because the driver uses some
+> DT-only helpers. How typical. I kept patches 1-10 and dropped this
+> one.
 
+Thanks, you beat me to it, I was wanting to ask you to do exactly this.
 
-On 4/2/24 20:42, Rafael J. Wysocki wrote:
-> On Tue, Apr 2, 2024 at 9:04 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
->>
->> Hi Everyone,
->>
->> This is an update of
->>
->> https://lore.kernel.org/linux-pm/4558384.LvFx2qVVIh@kreacher/
->>
->> and
->>
->> https://lore.kernel.org/linux-pm/2331888.ElGaqSPkdT@kreacher/
->>
->> which rebases the first patch on top of 6.9-rc2, adds 3 patches and adjusts
->> the third patch from v2.
->>
->> The original description of the first two patches still applies:
->>
->>> Patch [1/2] is based on the observation that the threshold field in struct
->>> thermal_trip really should be core-internal and to make that happen it
->>> introduces a wrapper structure around struct thermal_trip for internal
->>> use in the core.
->>>
->>> Patch [2/2] moves the definition of the new structure and the struct
->>> thermal_zone_device one to a local header file in the core to enforce
->>> more separation between the core and drivers.
->>>
->>> The patches are not expected to introduce any observable differences in
->>> behavior, so please let me know if you see any of that.
->>
->> Note that these patches were first sent before the merge window and have not
->> really changed since then (except for a minor rebase of the first patch in
->> this series).  Moreover, no comments regarding the merit of these patches
->> have been made shared, so if this continues, I will be considering them as
->> good to go by the end of this week.
->>
->> Patch [3/6] is a rewrite of comments regarding trip crossing and threshold
->> computations.
->>
->> Patch [4/6] updates the trip crossing detection code to consolidate the
->> threshold initialization with trip crossing on the way up.
->>
->> Patch [5/6] ([3/3] in v2) adds a mechanism to sort notifications and debug
->> calls taking place during one invocation of __thermal_zone_device_update() so
->> they always go in temperature order.
->>
->> Patch [6/6] relocates the critical and trip point handling to avoid a
->> redundant temperature check.
->>
->> The series applies on top of 6.9-rc2 and I'm planning to create a test
->> branch containing it.
-> 
-> As promised:
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git/log/?h=thermal-core-testing
-
-Thanks Rafael for the handy branch. I'll play with it today.
-
-Regards,
-Lukasz
+--=20
+With Best Regards,
+Andy Shevchenko
 
