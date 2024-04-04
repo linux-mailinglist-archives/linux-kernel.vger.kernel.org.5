@@ -1,99 +1,162 @@
-Return-Path: <linux-kernel+bounces-131466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131468-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01CC0898839
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22FEE89883E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:49:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30C6B1C2150D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:49:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 418181C21377
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F6576041;
-	Thu,  4 Apr 2024 12:49:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="mnk1VaCs"
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1C178613E;
+	Thu,  4 Apr 2024 12:49:34 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56E9342072
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F8D42072
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:49:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712234939; cv=none; b=o0uwfrU8ptc5J4kzTUVcaWjossx0YNKbI6IsDvEVhRCJi3QYynYNWPLLYPLWAVcFiu8DIa6QiihmgCVxn5/Pbi7/G37c+CAIIsZsBOwr1EEHAsDnPJlCHPhJnXU7t4no1CXyxx4VS9CZX7jEEkJhebruI8hVY52JJG9DIuau+/8=
+	t=1712234974; cv=none; b=Jm8lYmF366vJW+knb+tlnA6MoS8XsRmRoELhl4H8Ds85+FtEJmhHqvosC3zJbca20mrbOeZBmAPVpWw58KlkqR7gGSjHI600duzZWpODG5BxagmKEhLYIXEmnDFYOOX4Asq6OxwcaDXYgGpviDWxMPT/uOo9yreklRsTRkSUGow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712234939; c=relaxed/simple;
-	bh=CDW+rWUwlBs2jr/h4xTTDqP5Pco98DLtx7p8J/ZzVus=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rIgCcdvrDiC/6fDTE+ygxtsz3cTGk0dcCfzaB3ject720kYYQmQ2t/yTEbq7jzQ11mYfSJB/BdAfSAJFOxhKIeftq6PnAWcibz9Mslhd8eCtpFjvpCLiTdpQmMZSlWOOpGk3+ZU2Mwbxex9Ckal5GVwr/ucxegQQwocOq9FAD9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=mnk1VaCs; arc=none smtp.client-ip=209.85.221.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4daa69dfc27so155156e0c.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:48:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712234935; x=1712839735; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CDW+rWUwlBs2jr/h4xTTDqP5Pco98DLtx7p8J/ZzVus=;
-        b=mnk1VaCsT+DrkDCFAbjnInE8cA7VV/Vt4fcDnK3yTuQ4nPh3fSKkCVtzNnK3Cf3JjQ
-         2RnykLQu1BpiTn6Wv+aUmmLed9AWuXDWxdww5ZLD5yExMm415sPePkyrVEAgMzIfdbr/
-         Mk7K7huVgTdq7XZ2LoK0tO5y6L5MAqy9QApxsnCMg+FhSqeSfLe8C7Vs/qZXhUiOY83C
-         wXOUe+SM/zpAtgcBacRNL9TEWDOoyTBSWJ+srzQl/JchDJ3EGvpwiS1IljIzl4LkXyq/
-         A6uZJ0hSFmOrZgwHYBPY0VJC8BEYvrFIdcYNyuKRDGaaCLsa1x6qtlT0uLDsEqGrXhVR
-         KcEQ==
+	s=arc-20240116; t=1712234974; c=relaxed/simple;
+	bh=sb4KZ5DnjkABLmFvWPyLD59JcXtsgt27QvqxFSn2aiQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=FQ1/D8jcbIqiHL+Z5TIFd364OucIreH1okhc6QbrVA+wcONcuT3160JiViUxLaGfqGs8VEK22++qGKO+EiJ4NsHniqFr+CZLNM9d1PRv9/GaXVWPx6R02zOFAr4pT+9gCmsiEtgFaXIg/e1CnKEgwIkJQX2dOnE8FE/maOAcmDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-369ec5c3c08so8962455ab.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:49:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712234935; x=1712839735;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CDW+rWUwlBs2jr/h4xTTDqP5Pco98DLtx7p8J/ZzVus=;
-        b=tQzOoIMS4d7PGkbMYVjLAaPoX0W5LqdRC6tpiqC2IV6hbZwiUjnFpreVBRAX+TdrhG
-         JvFu/Lz1LSmCXwnD7R5l25Yb5a4rF6dStwKCjs4cl17YFwGMTFyfbu0rG4K8L+oVZ/QL
-         47cZ8+/r0v0J5W7aDs6UEQyNo0IHB2IF4odpXbGEaxwYj9x1XCY+A8U/pFZ7S+18+kUY
-         7Zz1B38UwiJx2tueP9AniJ/mEY//FpMV8WDpF8vCfpR0Mf9XSy8RMZ9rO3BF2v9rg54r
-         Dyy09mv7+bggIniwwVMnzeaPh03UUF8Drz4KVOupIIAqG5rrdUdgu9XMR3vxSx+4mHZz
-         ukFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXFXSQdArXxO4FftGA0H3tnAa2+7eHvj94Opk8vuvFa3TwTyUsmIm7UX75p3VBZR8nOJGiKiBRfWLHYD7t+39AgYVGcWW9DTxl4VUBg
-X-Gm-Message-State: AOJu0Yz1opzuuK3ig6qWauX/8+6uHmCixsg5tsSkaFsk+rINOVHAdKDf
-	5q5EiTZwAWXP906YL+sVBNvvN2kwMLnte9/Ljv/Ww4ZZ/dSGMvCvLHcJlX7n7Ozgcd/Jhrdwioo
-	WlsInlodA6okNAl7/VMMteVaqtiqBt/p2RVCq
-X-Google-Smtp-Source: AGHT+IHBt43zs+C9TqoUJqSvnZSsuN94K72cszgVwXZ/P+H9S6ThVSgqdaK2Haea8KCJbJ1OgGJTRLLQtqcb+3X0JuY=
-X-Received: by 2002:a05:6122:468c:b0:4da:9aa1:dd5e with SMTP id
- di12-20020a056122468c00b004da9aa1dd5emr2612931vkb.10.1712234935216; Thu, 04
- Apr 2024 05:48:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712234971; x=1712839771;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VpwTCb/N6+jyMk/fXZkM5PIZRZLMUvuOzVXItB/Y9yk=;
+        b=KeLxFeFhyETNOzBrYAophIJ5xELkNVcrtMwgr9tgAXcNJZBvojs17qR6jBJYUBzdq3
+         yw4uX0s8RNrrRkn+zzlSd63YdFsNm0vKQCN48dYxSCgdXhdyxSdgYBaEjejptRNo3Qed
+         Pnb9rTMPb/W34IWpPD5NrQc9ERDTBucqvdaWEUWuZ5U4tXIGIS80yFUIHcA3UPtrZt9p
+         BROm1i2Np1tkN9iMJuBLoXGWwg6Jaj12bGWxQF0AMFS/81F2EcfrdDKp76psgN6f9MHV
+         slEl5YCoYx9xmTKjo4YUMfssTyNVPC/+dw2PgmYrQpIbbHqIYGAgj1orad1zYZ8AOw5Y
+         i1ew==
+X-Forwarded-Encrypted: i=1; AJvYcCWY4zSnCtN7hK/5O6nrbOpnt5t6ncIlPbFHw+0tyZ5326/dbNAH5UnrCCJKvdNkJ5+R/ZgX3T2KwRS5TbP1cC+RIVSG2+A3BKRdy7DC
+X-Gm-Message-State: AOJu0YxM30/EGpnK01JFbPZQX9hPG6inE5c/F4KuM/q2UQtGqQ1NgWul
+	W2Q7HZkKsyOUJNaxf/BnsUyZJcvCrfY+INUZ5o0f08HRLwSRqXUkA2dDWUbw9sqa7IAmsqJKeUb
+	yKUA0dsAP5CX4KrS6BUc47CfQGnpc7V+78i9AJpuTeZJ5/cRxuTY+tRU=
+X-Google-Smtp-Source: AGHT+IH5QdcGAKBpOAUvYhYjJZA7iLPcQe6gVhzzRDOvzFZBwg5fhfy0nQdFWfh3kP9KcxfgcHug0BFvTfDaA6pzO9iSeJAvBBE2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240328195457.225001-1-wedsonaf@gmail.com> <20240328195457.225001-6-wedsonaf@gmail.com>
-In-Reply-To: <20240328195457.225001-6-wedsonaf@gmail.com>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 4 Apr 2024 14:48:44 +0200
-Message-ID: <CAH5fLgjCQNxnZgSP_fx0NKq9TRi-byRTSb4qL3n45yMS1zrtHg@mail.gmail.com>
-Subject: Re: [PATCH v2 5/5] samples: rust: add in-place initialisation sample
-To: Wedson Almeida Filho <wedsonaf@gmail.com>
-Cc: rust-for-linux@vger.kernel.org, Miguel Ojeda <ojeda@kernel.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, 
-	Gary Guo <gary@garyguo.net>, =?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Benno Lossin <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, 
-	linux-kernel@vger.kernel.org, Wedson Almeida Filho <walmeida@microsoft.com>
+X-Received: by 2002:a92:c265:0:b0:369:f4bd:2df4 with SMTP id
+ h5-20020a92c265000000b00369f4bd2df4mr161162ild.1.1712234971567; Thu, 04 Apr
+ 2024 05:49:31 -0700 (PDT)
+Date: Thu, 04 Apr 2024 05:49:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000040a883061544c59f@google.com>
+Subject: [syzbot] [netfilter?] KMSAN: uninit-value in nf_flow_offload_ip_hook
+From: syzbot <syzbot+b6f07e1c07ef40199081@syzkaller.appspotmail.com>
+To: coreteam@netfilter.org, davem@davemloft.net, edumazet@google.com, 
+	kadlec@netfilter.org, kuba@kernel.org, linux-kernel@vger.kernel.org, 
+	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, pabeni@redhat.com, 
+	pablo@netfilter.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2024 at 8:55=E2=80=AFPM Wedson Almeida Filho <wedsonaf@gmai=
-l.com> wrote:
->
-> From: Wedson Almeida Filho <walmeida@microsoft.com>
->
-> This is a modified version of rust_minimal that is initialised in-place
-> and has a mutex.
->
-> Signed-off-by: Wedson Almeida Filho <walmeida@microsoft.com>
+Hello,
 
-Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+syzbot found the following issue on:
+
+HEAD commit:    3e92c1e6cd87 Merge tag 'selinux-pr-20240402' of git://git...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=135dbd3d180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5112b3f484393436
+dashboard link: https://syzkaller.appspot.com/bug?extid=b6f07e1c07ef40199081
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/ac287f716705/disk-3e92c1e6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f04f8cb0bdc6/vmlinux-3e92c1e6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a8eb9003da40/bzImage-3e92c1e6.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b6f07e1c07ef40199081@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in nf_flow_skb_encap_protocol net/netfilter/nf_flow_table_ip.c:290 [inline]
+BUG: KMSAN: uninit-value in nf_flow_offload_lookup net/netfilter/nf_flow_table_ip.c:352 [inline]
+BUG: KMSAN: uninit-value in nf_flow_offload_ip_hook+0x79a/0x3e40 net/netfilter/nf_flow_table_ip.c:424
+ nf_flow_skb_encap_protocol net/netfilter/nf_flow_table_ip.c:290 [inline]
+ nf_flow_offload_lookup net/netfilter/nf_flow_table_ip.c:352 [inline]
+ nf_flow_offload_ip_hook+0x79a/0x3e40 net/netfilter/nf_flow_table_ip.c:424
+ nf_hook_entry_hookfn include/linux/netfilter.h:154 [inline]
+ nf_hook_slow+0xf2/0x3f0 net/netfilter/core.c:626
+ nf_hook_ingress include/linux/netfilter_netdev.h:34 [inline]
+ nf_ingress net/core/dev.c:5318 [inline]
+ __netif_receive_skb_core+0x430b/0x6190 net/core/dev.c:5406
+ __netif_receive_skb_one_core net/core/dev.c:5536 [inline]
+ __netif_receive_skb+0xca/0xa00 net/core/dev.c:5652
+ netif_receive_skb_internal net/core/dev.c:5738 [inline]
+ netif_receive_skb+0x58/0x660 net/core/dev.c:5798
+ tun_rx_batched+0x3ee/0x980 drivers/net/tun.c:1549
+ tun_get_user+0x5566/0x69e0 drivers/net/tun.c:2002
+ tun_chr_write_iter+0x3af/0x5d0 drivers/net/tun.c:2048
+ call_write_iter include/linux/fs.h:2108 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xb63/0x1520 fs/read_write.c:590
+ ksys_write+0x20f/0x4c0 fs/read_write.c:643
+ __do_sys_write fs/read_write.c:655 [inline]
+ __se_sys_write fs/read_write.c:652 [inline]
+ __x64_sys_write+0x93/0xe0 fs/read_write.c:652
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+
+Uninit was created at:
+ __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
+ alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
+ alloc_pages+0x1bf/0x1e0 mm/mempolicy.c:2335
+ skb_page_frag_refill+0x2bf/0x7c0 net/core/sock.c:2921
+ tun_build_skb drivers/net/tun.c:1679 [inline]
+ tun_get_user+0x1258/0x69e0 drivers/net/tun.c:1819
+ tun_chr_write_iter+0x3af/0x5d0 drivers/net/tun.c:2048
+ call_write_iter include/linux/fs.h:2108 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xb63/0x1520 fs/read_write.c:590
+ ksys_write+0x20f/0x4c0 fs/read_write.c:643
+ __do_sys_write fs/read_write.c:655 [inline]
+ __se_sys_write fs/read_write.c:652 [inline]
+ __x64_sys_write+0x93/0xe0 fs/read_write.c:652
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+
+CPU: 0 PID: 5636 Comm: syz-executor.0 Not tainted 6.9.0-rc2-syzkaller-00042-g3e92c1e6cd87 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
