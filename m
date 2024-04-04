@@ -1,126 +1,186 @@
-Return-Path: <linux-kernel+bounces-131425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 361318987B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:32:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E18AF89877E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:28:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF00E1F22A68
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:32:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B6E11C21088
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:28:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A7751332A5;
-	Thu,  4 Apr 2024 12:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 952B7128398;
+	Thu,  4 Apr 2024 12:26:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rr7itNQW"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qofd5n/t";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="axmGiTcH";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.de header.i=@suse.de header.b="qofd5n/t";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="axmGiTcH"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668AF1327E7
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:27:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA037127B6A
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:26:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712233632; cv=none; b=f1+E7JffTgjWKw0rikAZegdulzVq8rgL3GbLv8iB/bXlDrn/L6tcieqsvxr2Gwgloe0RtOwBXv3zvO/rSdOujs9zwTMfwExatRIhJ4RiiYvKSAhJLEERcqr4uVTx72FO/3vIUSnYoF7fVjYe4Ocy7JZu/509IbTJwxiF2kVsJoo=
+	t=1712233581; cv=none; b=u+DMrmbK4ClRg4XCXTocaia0MsuJrFSmTF7ZsTmFSnmbfUJjUxDlDIRJShRvv37l9p9Gf/RDBPUdZdWkTlcjNDeziOgC0HupUcSrDbfqQhxU6TdBKyV1gb3y/wsheaAkSlZJ4CmLVma2ZhVBeLr7sPyMtKHWJCyp0F8JqW8gsgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712233632; c=relaxed/simple;
-	bh=6AaqtxccIWghtb/UtGyHHUuuDFbxr8NOLfecjzX6K1k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Dv885HcQXhEXpJoHokyE5di9r0qqfVQYZuNJIjiSV3kESKDsdjljvVBe+hmLOJtQXMvhySkqNVLw5MV5kp7I5T8Qb+s0p6bTshJpE9lQlNh58PXvnPSu7+0IgLd72zlWNef1q93JORvIQTuA1UCYSEZNoYd5HQZjLxeYnQjw1GM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rr7itNQW; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e0f3052145so8291865ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:27:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712233631; x=1712838431; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=QR0Y+B+yOGaAYXg8JSyYTv57ScUCaP0rjY0sMY2UN5c=;
-        b=rr7itNQW2w6wPK5qYUIvtZue2JapDu1hyWra8Kp3AgYUQqXZEoQQP5IGfB4gN1fT8i
-         GT0r21GmfL3k1cEE5uKetL61ZiOxLl7fFIwaPtqqjCIRi06ux+r56ozk2McBbqOqOukH
-         kdRrCNZT3u1YA4bNllTMXXJ1KvTaRMOuukRIrofSf5Ixq64HWm+IUhxSC8Y3ucwHlzUj
-         NoLqeybNHOXmPeAVGpof1hqo9ZtILix84RfCPTZd1lgTVVvZiCW6ybsDG3MAdtub4gaQ
-         xSK9FKSsVfNSw2Kf4Pth3ZIEm3Z5K7Rgcgduvb5pPguPfZIdS6nZ2DqqAQJ1glv1h6eZ
-         L6pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712233631; x=1712838431;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QR0Y+B+yOGaAYXg8JSyYTv57ScUCaP0rjY0sMY2UN5c=;
-        b=TzXCCXpMVjypLWKVg4G3gq4TYYO+6BTY9iaJVp9Bx1A9UcX5baAQngyapIsfZlDAaD
-         QKZRR3BhRShImmEsGlOgj3kxTVMft3XI2HRYNqyeQzzl3ldlHcrvNpNKWg84NP6AG1Ny
-         Hgd9G4D46xAMNQTIfghOcWCxgEZnu5z7dzn+fljfxSQhqPncqJxDxDAeCSdWhiy8ow1T
-         wfxprwG/9u4nif/0+wNSZsG6vT3nszrIcgGJPgv3Oy+eahCfh1ErJqqkynqm+fd9T1b0
-         vkGQwtHWsOzNCcm55HlZ5BlnXgjXjpzGt0cgrPSxbHgN8BcrsEdusLRUkuYmp3o+KIlt
-         xK3w==
-X-Forwarded-Encrypted: i=1; AJvYcCXOfBhWyLNEnsMjWnvZRLNk8fxjHW7g/4GVvFOlCAhMYoyGmzE+Ty1s0+BDhVpPuNYS99+8yTNc1D2A9oOUT1+KUEBmWDxJ9LiVOLJl
-X-Gm-Message-State: AOJu0YwOIGArfSU0LG2Z+dDUmvFSyGB0eXxr7ThjbF7vx8793Cg9iKCy
-	CEue2GqJn92ZoAyWMDifMOALhb7fOIaroaNq10iz1EeGcOjlLipEPLpLs0LRO0s7Ja1W50vRcoO
-	4+vGFNNUU5perD9y+Vff3BFPO6YpPS1WnjuaM/w==
-X-Google-Smtp-Source: AGHT+IHmfnSnKXCI7Mxb081VVyHmquQ5fGLtObMlW6Quf3xRZm2lKjkbd3bd04nWmy3CBVOS6JlK2CWqIaWbSxC1Lck=
-X-Received: by 2002:a17:90b:3841:b0:2a2:abc1:cb48 with SMTP id
- nl1-20020a17090b384100b002a2abc1cb48mr2309448pjb.18.1712233630660; Thu, 04
- Apr 2024 05:27:10 -0700 (PDT)
+	s=arc-20240116; t=1712233581; c=relaxed/simple;
+	bh=YLTKhOijlN00zs6uhZzcSfA/PrpGaDrjnPnIf5l8Vd8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sbTfcrkOBmq8pt3Xkz8eLuCvNIRRhpUHHmmLRDH/SlKfYW0XaSbnHnKGANxp/3VOfdQBAeCgYoUVbVpyh5lsVBt2h3XVUbrqdsdE58skoQTTMIzQijvXR1hb8CAa+iO1gAKg3ZyUPV24BmfUHXotU7euR+4Ry5s9gt7vz9mllsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qofd5n/t; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=axmGiTcH; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=qofd5n/t; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=axmGiTcH; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E40225D942;
+	Thu,  4 Apr 2024 12:26:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712233577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kaNBuiDg+Yyb0ktBS/Z1u/Z6C+/cWf4P8ez4emkur5c=;
+	b=qofd5n/tkDGjc5eFhdijwPecpVxKwVFrwnJo0HHEfIYVm4D1KQeCM629Q5yYPYYxD1j1lY
+	g5eThqmJ3r9lW7YEz1zrQQKcO2c8jUHTYdaK4Zh33fSw3bq1068Fn+qHBKWeQaAb6353uO
+	V6wlUdL4fSyy0zkjLdxKtKj1G7qe1Nc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712233577;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kaNBuiDg+Yyb0ktBS/Z1u/Z6C+/cWf4P8ez4emkur5c=;
+	b=axmGiTcH8F+XOxRTFHuKUxRS/ZYSLNUgepiydq7vuOUX86gOCJJCN9fh2biAwvkUcdCLqp
+	+gr/R2Avugsx4gAQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="qofd5n/t";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=axmGiTcH
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712233577; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kaNBuiDg+Yyb0ktBS/Z1u/Z6C+/cWf4P8ez4emkur5c=;
+	b=qofd5n/tkDGjc5eFhdijwPecpVxKwVFrwnJo0HHEfIYVm4D1KQeCM629Q5yYPYYxD1j1lY
+	g5eThqmJ3r9lW7YEz1zrQQKcO2c8jUHTYdaK4Zh33fSw3bq1068Fn+qHBKWeQaAb6353uO
+	V6wlUdL4fSyy0zkjLdxKtKj1G7qe1Nc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712233577;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kaNBuiDg+Yyb0ktBS/Z1u/Z6C+/cWf4P8ez4emkur5c=;
+	b=axmGiTcH8F+XOxRTFHuKUxRS/ZYSLNUgepiydq7vuOUX86gOCJJCN9fh2biAwvkUcdCLqp
+	+gr/R2Avugsx4gAQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 82C1113AA3;
+	Thu,  4 Apr 2024 12:26:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id pYszHWmcDmaSXwAAn2gu4w
+	(envelope-from <osalvador@suse.de>); Thu, 04 Apr 2024 12:26:17 +0000
+Date: Thu, 4 Apr 2024 14:27:37 +0200
+From: Oscar Salvador <osalvador@suse.de>
+To: "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	akpm@linux-foundation.org, muchun.song@linux.dev,
+	willy@infradead.org
+Subject: Re: [PATCH v2 1/3] hugetlb: Convert hugetlb_fault() to use struct
+ vm_fault
+Message-ID: <Zg6cualUqcsZYZxf@localhost.localdomain>
+References: <20240401202651.31440-1-vishal.moola@gmail.com>
+ <20240401202651.31440-2-vishal.moola@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712147341.git.vitaly@bursov.com> <03b7979666088f8d55db301c6649e0c75c727d6e.1712147341.git.vitaly@bursov.com>
-In-Reply-To: <03b7979666088f8d55db301c6649e0c75c727d6e.1712147341.git.vitaly@bursov.com>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Thu, 4 Apr 2024 14:26:59 +0200
-Message-ID: <CAKfTPtBCxpa0Pxx7=84dV1Mf_as6+YqcROGgGVr6Qpt-=ybrLg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] docs: cgroup-v1: clarify that domain levels are system-specific
-To: Vitalii Bursov <vitaly@bursov.com>
-Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240401202651.31440-2-vishal.moola@gmail.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.96 / 50.00];
+	BAYES_HAM(-1.95)[94.77%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	URIBL_BLOCKED(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.de:email];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.de:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:dkim,suse.de:email]
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: E40225D942
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Score: -2.96
 
-On Wed, 3 Apr 2024 at 15:28, Vitalii Bursov <vitaly@bursov.com> wrote:
->
-> Add a clarification that domain levels are system-specific
-> and where to check for system details.
->
-> Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
+On Mon, Apr 01, 2024 at 01:26:49PM -0700, Vishal Moola (Oracle) wrote:
+> Now that hugetlb_fault() has a vm_fault available for fault tracking, use
+> it throughout. This cleans up the code by removing 2 variables, and
+> prepares hugetlb_fault() to take in a struct vm_fault argument.
+> 
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
-Acked-by: Vincent Guittot <vincent.guittot@linaro.org>
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
 
-> ---
->  Documentation/admin-guide/cgroup-v1/cpusets.rst | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
->
-> diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-> index 7d3415eea05d..f401af5e2f09 100644
-> --- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
-> +++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-> @@ -568,7 +568,7 @@ on the next tick.  For some applications in special situation, waiting
->
->  The 'cpuset.sched_relax_domain_level' file allows you to request changing
->  this searching range as you like.  This file takes int value which
-> -indicates size of searching range in levels ideally as follows,
-> +indicates size of searching range in levels approximately as follows,
->  otherwise initial value -1 that indicates the cpuset has no request.
->
->  ====== ===========================================================
-> @@ -581,6 +581,11 @@ otherwise initial value -1 that indicates the cpuset has no request.
->     5   search system wide [on NUMA system]
->  ====== ===========================================================
->
-> +Not all levels can be present and values can change depending on the
-> +system architecture and kernel configuration. Check
-> +/sys/kernel/debug/sched/domains/cpu*/domain*/ for system-specific
-> +details.
-> +
->  The system default is architecture dependent.  The system default
->  can be changed using the relax_domain_level= boot parameter.
->
-> --
-> 2.20.1
->
+A question below:
+
+>  mm/hugetlb.c | 84 +++++++++++++++++++++++++---------------------------
+>  1 file changed, 41 insertions(+), 43 deletions(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 8267e221ca5d..360b82374a89 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+..  
+>  	/*
+> -	 * entry could be a migration/hwpoison entry at this point, so this
+> -	 * check prevents the kernel from going below assuming that we have
+> -	 * an active hugepage in pagecache. This goto expects the 2nd page
+> -	 * fault, and is_hugetlb_entry_(migration|hwpoisoned) check will
+> -	 * properly handle it.
+> +	 * vmf.orig_pte could be a migration/hwpoison vmf.orig_pte at this
+
+"vmf.orig_pte could be a migration/hwpoison entry at ..."
+
+> -	entry = pte_mkyoung(entry);
+> -	if (huge_ptep_set_access_flags(vma, haddr, ptep, entry,
+> +	vmf.orig_pte = pte_mkyoung(vmf.orig_pte);
+> +	if (huge_ptep_set_access_flags(vma, vmf.address, vmf.pte, vmf.orig_pte,
+>  						flags & FAULT_FLAG_WRITE))
+
+Would it make sense to teach huge_ptep_set_access_flags/set_huge_pte_at() to use
+vm_fault struct as well? All info we are passing is stored there.
+Maybe it is not worth the trouble though, just asking.
+
+
+-- 
+Oscar Salvador
+SUSE Labs
 
