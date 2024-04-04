@@ -1,272 +1,115 @@
-Return-Path: <linux-kernel+bounces-131184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FF8E89841D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:34:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE1E2898422
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:35:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23E8128B58B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:34:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8807E1F24952
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:35:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CD10128815;
-	Thu,  4 Apr 2024 09:30:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DD567640E;
+	Thu,  4 Apr 2024 09:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZLNqa3jp"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IDIQIVuS"
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E8D126F3A;
-	Thu,  4 Apr 2024 09:30:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE1274E37
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 09:31:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712223031; cv=none; b=SmXL0HPkibmjChUAUcVjDlf6QA84Q2uF5/IR1z2KtHhoUBKtK02eCHm71Lu0GMEXABZ0H9+UEYi5/7Go+WPopCWuVnRAs6R6nwfV/vPkAXHrSmDWoVVaskN1rING1CIgdyuKDct5felatfPGtiFaXs5QB6vlBY1364JuCTKHkW0=
+	t=1712223094; cv=none; b=Ek5aWYajoog++TTDQGIysotUsReEgq6Vk20VFTzyDNLovmLmDhPumOWAJIa2juRh9rsJmLfTBVHiwoMpX3d4YIe8H+oMIP8HuHdH7ZWJOgDszmmQTQ+kyNCf3gamLPRbp8Kxde2+QLaJeulOH9JayfyxSiO6+8cOPeqJjsPHsPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712223031; c=relaxed/simple;
-	bh=DQ8hSk/QJxJe8njna3CjdjUvXRpC9lpfP5lOddhR+M0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=if9snoqQWNkjaAwkpF50/JXKuIxXWfhI1nJuKtMH/1L2f48FD5MhC32RgtALV82nUFNEgu0WCDEsKZ49B+P/JHmAIKhn/yzCVvpwSwJD35OEDtIfpgDcvLl9oTW8J+YVKju6KyikDOjZI8cguznDBWwZBGxFerpr16GzwQnBu14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ZLNqa3jp; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0314EC000E;
-	Thu,  4 Apr 2024 09:30:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712223026;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1ezeQPX3yemno8CVusc6+tE9tnpV7ze5r18FDCeQGVc=;
-	b=ZLNqa3jpiQbp2Wc9Ii0TyGRXE3Jq5xAKzwkzCbkapovowiLgpE39ntM+XYbRKAzuaWjRsj
-	5DzI6hlCChq+GZU1XbIwNFyiaF88+wuSByUc8b4WNeCUoMNWMibW9AkHhvvUuKCZw2sEvM
-	iHFHavghW0rPMH9vcDNnHIO/05dCH3Cnj4LexOlrpu/Lm1nWJ0HmFSEoKyGutUlTuDc0rF
-	NVmtDGCpyzBEMsfNWU2jYxXxwd3hSPZ7ndSy6XNxPRp+SOLQyWTHo+7TAakNUz/K/9D7Bo
-	gQNJdkW8Epm7w4NPVm1p241Eum9Lj7/naJbJUasCA+C8HTrRDlMxPiKk2ZLxUA==
-From: Maxime Chevallier <maxime.chevallier@bootlin.com>
-To: davem@davemloft.net
-Cc: Maxime Chevallier <maxime.chevallier@bootlin.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	thomas.petazzoni@bootlin.com,
-	Andrew Lunn <andrew@lunn.ch>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	=?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	=?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	=?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>,
-	Simon Horman <horms@kernel.org>,
-	mwojtas@chromium.org
-Subject: [PATCH net-next v11 13/13] Documentation: networking: document phy_link_topology
-Date: Thu,  4 Apr 2024 11:30:03 +0200
-Message-ID: <20240404093004.2552221-14-maxime.chevallier@bootlin.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240404093004.2552221-1-maxime.chevallier@bootlin.com>
-References: <20240404093004.2552221-1-maxime.chevallier@bootlin.com>
+	s=arc-20240116; t=1712223094; c=relaxed/simple;
+	bh=eal+hbwuJR0GkxwgPiJg2NCYAvGM7tKiSJzcHq0j6dA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GGDu39kOOYYBTrgxVuEEeYsSH9NqfXMNATNNl/MffW/sO7CBxulMij+aD6K64wo2qV6NL802O00WeB8dPfbXtmV4kc1xHSOSq9gjJ/rGarkeG1cg6OjQcE2qn0QMciCWyAuylcxB9N0ZNT50RA3/WWEcUYctE+5T2CpuLf4ntt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IDIQIVuS; arc=none smtp.client-ip=209.85.219.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dd14d8e7026so757826276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 02:31:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712223091; x=1712827891; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QJzdwgYqSiXBG2wAbt+70V3f0hLZ0hXphRY5qJD39hQ=;
+        b=IDIQIVuSWzz/kI90Xib4W+1zCVY4pIjQCEiWSvoH9xAYiIDaC3HmgZPB70q3bF5Zqw
+         J3hlygutFS16HiA6/H5LLfPmfDTCBbjjPvquHBCVt6NyvlAanqlqHijX2yXkcRe3AIla
+         IqkOX86dse2kSa0XxKO16AsIJlq1Nr2gNhAb/1B8szRxoaYtoN5h+HzVlszju4xMaqGH
+         sbsO+JX9Czpr9v77XztS15C4DFvS6264r57pKsESNJeR4wm0QUtUz7x3aG+KgmpY70d1
+         SN7d2gEhfeHJW1sikNgHU/8J+An0bRPLQjOZS+9r+vRbn5mm1Zs4XCvjE4dAnkr+pwwJ
+         5wNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712223091; x=1712827891;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QJzdwgYqSiXBG2wAbt+70V3f0hLZ0hXphRY5qJD39hQ=;
+        b=czi3IeQVkEFFV/ia7UfOapW2Kd6tMvzUBJN/Lk9FSndCnYVjeZTA8McUxzQD75nSlo
+         AAy6SIgbfYWtvSKx/RufwkKZVArmBWlR7j1AFC++/zMZ1jfQE6vrhmgW8sM7/QQbIDB6
+         3muZs1jZ3+eKz5Q6mhjkdNG4pTadVJfOPJUgRY8CdZg2xTwvyoTu7U2ZsR6iO0e6Ora5
+         vj4Cq/OFpIHL4bNhqxtM7J9NsjiJu3ATpWtCFCBKshSIeZH1KpYlUEU4l/Jt3opXupss
+         RdjWbLdVrSSpECVR7BgGQdn+ng+37teE5N7RdKfGLBu7Bp3zKLOulY369aZ9rm3M0acn
+         K94Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVSqoFQDS+G9O/4JEDEAr5HB5dKzhnz3JO3NaAdbdmR5bW6bV/sMtTrIZTP3PZvMbhDeeekmvt65yYmnDu9W4ulNDkKq0ETRJW0pcTg
+X-Gm-Message-State: AOJu0Yz01VGDhkbm8eUdkLoAZCeYMcowNwQXyzSuDgAc5WJ11gDubnY4
+	3CXK/SpzdgfT51syFsC0P/ydhekFEU7fUga2noiV+aY6ekjfP6wp3GNy4I+BqpJ/JXWnUyuiZmw
+	JDdWfwZOadWbylO7EVd8wQd//2RiaoZdB8A0eeg==
+X-Google-Smtp-Source: AGHT+IHTXtbKZV4PRrgxvlL/R1tUqcSFTjPcwK6//feDtYUO9NjrShijYYET6/+oeV22B9HIEQVjv5iZuw/cw+hBGTs=
+X-Received: by 2002:a25:ac04:0:b0:dc7:423c:b8aa with SMTP id
+ w4-20020a25ac04000000b00dc7423cb8aamr1828891ybi.12.1712223091503; Thu, 04 Apr
+ 2024 02:31:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: maxime.chevallier@bootlin.com
+References: <20240403-module-owner-sdio-v2-0-ae46d6b955eb@linaro.org>
+In-Reply-To: <20240403-module-owner-sdio-v2-0-ae46d6b955eb@linaro.org>
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Date: Thu, 4 Apr 2024 11:30:54 +0200
+Message-ID: <CAPDyKFodTh-KN+=b1B3V+7aNEoR0SPo5-xjFaWu=gYEtsDy1pQ@mail.gmail.com>
+Subject: Re: [PATCH v2 0/7] mmc/wifi/bluetooth: store owner from modules with sdio_register_driver()
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, Kalle Valo <kvalo@kernel.org>, 
+	Jeff Johnson <jjohnson@kernel.org>, Arend van Spriel <arend.vanspriel@broadcom.com>, 
+	Brian Norris <briannorris@chromium.org>, Francesco Dolcini <francesco@dolcini.it>, 
+	=?UTF-8?B?SsOpcsO0bWUgUG91aWxsZXI=?= <jerome.pouiller@silabs.com>, 
+	linux-mmc@vger.kernel.org, linux-bluetooth@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-mediatek@lists.infradead.org, linux-wireless@vger.kernel.org, 
+	ath10k@lists.infradead.org, brcm80211@lists.linux.dev, 
+	brcm80211-dev-list.pdl@broadcom.com, Jeff Johnson <quic_jjohnson@quicinc.com>, 
+	Francesco Dolcini <francesco.dolcini@toradex.com>
+Content-Type: text/plain; charset="UTF-8"
 
-The newly introduced phy_link_topology tracks all ethernet PHYs that are
-attached to a netdevice. Document the base principle, internal and
-external APIs. As the phy_link_topology is expected to be extended, this
-documentation will hold any further improvements and additions made
-relative to topology handling.
+On Wed, 3 Apr 2024 at 16:17, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> Changes in v2:
+> 1. Add "wifi: ath10k: sdio: simplify module initialization" patch, from
+>    my other patchset to avoid conflicts.
+> 2. Add Acks/Rb tags.
+> 3. Drop applied SDIO patch, which was the dependency for the rest
+>    cleanups.
+> 4. Update subjects according to feedback.
+> - Link to v1: https://lore.kernel.org/r/20240329-module-owner-sdio-v1-0-e4010b11ccaa@linaro.org
+>
+> Merging
+> =======
+> With Acks from Kalle, please take entire set via mmc/sdio.
 
-Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
----
-V11: - Fixed some typos and phrasing
-     - Link to that page from the ethtool-netlink documentation
-V10: No changes
-V9: No changes
-V8: No changes
-V7: No changes
-V6: No changes
-V5: Fixed a lot of typos
-V4: No changes
-V3: New patch
+The series applied for next, thanks!
 
- Documentation/networking/ethtool-netlink.rst  |   3 +
- Documentation/networking/index.rst            |   1 +
- .../networking/phy-link-topology.rst          | 120 ++++++++++++++++++
- 3 files changed, 124 insertions(+)
- create mode 100644 Documentation/networking/phy-link-topology.rst
+[...]
 
-diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
-index 2871a6a772db..ef225d3acfc6 100644
---- a/Documentation/networking/ethtool-netlink.rst
-+++ b/Documentation/networking/ethtool-netlink.rst
-@@ -2018,10 +2018,13 @@ Retrieve information about a given Ethernet PHY sitting on the link. The DO
- operation returns all available information about dev->phydev. User can also
- specify a PHY_INDEX, in which case the DO request returns information about that
- specific PHY.
-+
- As there can be more than one PHY, the DUMP operation can be used to list the PHYs
- present on a given interface, by passing an interface index or name in
- the dump request.
- 
-+For more information, refer to :ref:`Documentation/networking/phy-link-topology.rst`
-+
- Request contents:
- 
-   ====================================  ======  ==========================
-diff --git a/Documentation/networking/index.rst b/Documentation/networking/index.rst
-index 473d72c36d61..c29bc5179d8a 100644
---- a/Documentation/networking/index.rst
-+++ b/Documentation/networking/index.rst
-@@ -89,6 +89,7 @@ Contents:
-    operstates
-    packet_mmap
-    phonet
-+   phy-link-topology
-    pktgen
-    plip
-    ppp_generic
-diff --git a/Documentation/networking/phy-link-topology.rst b/Documentation/networking/phy-link-topology.rst
-new file mode 100644
-index 000000000000..1f021419ae8c
---- /dev/null
-+++ b/Documentation/networking/phy-link-topology.rst
-@@ -0,0 +1,120 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=================
-+PHY link topology
-+=================
-+
-+Overview
-+========
-+
-+The PHY link topology representation in the networking stack aims at representing
-+the hardware layout for any given Ethernet link.
-+
-+An Ethernet interface from userspace's point of view is nothing but a
-+:c:type:`struct net_device <net_device>`, which exposes configuration options
-+through the legacy ioctls and the ethtool netlink commands. The base assumption
-+when designing these configuration APIs were that the link looks something like ::
-+
-+  +-----------------------+        +----------+      +--------------+
-+  | Ethernet Controller / |        | Ethernet |      | Connector /  |
-+  |       MAC             | ------ |   PHY    | ---- |    Port      | ---... to LP
-+  +-----------------------+        +----------+      +--------------+
-+  struct net_device               struct phy_device
-+
-+Commands that needs to configure the PHY will go through the net_device.phydev
-+field to reach the PHY and perform the relevant configuration.
-+
-+This assumption falls apart in more complex topologies that can arise when,
-+for example, using SFP transceivers (although that's not the only specific case).
-+
-+Here, we have 2 basic scenarios. Either the MAC is able to output a serialized
-+interface, that can directly be fed to an SFP cage, such as SGMII, 1000BaseX,
-+10GBaseR, etc.
-+
-+The link topology then looks like this (when an SFP module is inserted) ::
-+
-+  +-----+  SGMII  +------------+
-+  | MAC | ------- | SFP Module |
-+  +-----+         +------------+
-+
-+Knowing that some modules embed a PHY, the actual link is more like ::
-+
-+  +-----+  SGMII   +--------------+
-+  | MAC | -------- | PHY (on SFP) |
-+  +-----+          +--------------+
-+
-+In this case, the SFP PHY is handled by phylib, and registered by phylink through
-+its SFP upstream ops.
-+
-+Now some Ethernet controllers aren't able to output a serialized interface, so
-+we can't directly connect them to an SFP cage. However, some PHYs can be used
-+as media-converters, to translate the non-serialized MAC MII interface to a
-+serialized MII interface fed to the SFP ::
-+
-+  +-----+  RGMII  +-----------------------+  SGMII  +--------------+
-+  | MAC | ------- | PHY (media converter) | ------- | PHY (on SFP) |
-+  +-----+         +-----------------------+         +--------------+
-+
-+This is where the model of having a single net_device.phydev pointer shows its
-+limitations, as we now have 2 PHYs on the link.
-+
-+The phy_link topology framework aims at providing a way to keep track of every
-+PHY on the link, for use by both kernel drivers and subsystems, but also to
-+report the topology to userspace, allowing to target individual PHYs in configuration
-+commands.
-+
-+API
-+===
-+
-+The :c:type:`struct phy_link_topology <phy_link_topology>` is a per-netdevice
-+resource, that gets initialized at netdevice creation. Once it's initialized,
-+it is then possible to register PHYs to the topology through :
-+
-+:c:func:`phy_link_topo_add_phy`
-+
-+Besides registering the PHY to the topology, this call will also assign a unique
-+index to the PHY, which can then be reported to userspace to refer to this PHY
-+(akin to the ifindex). This index is a u32, ranging from 1 to U32_MAX. The value
-+0 is reserved to indicate the PHY doesn't belong to any topology yet.
-+
-+The PHY can then be removed from the topology through
-+
-+:c:func:`phy_link_topo_del_phy`
-+
-+These function are already hooked into the phylib subsystem, so all PHYs that
-+are linked to a net_device through :c:func:`phy_attach_direct` will automatically
-+join the netdev's topology.
-+
-+PHYs that are on a SFP module will also be automatically registered IF the SFP
-+upstream is phylink (so, no media-converter).
-+
-+PHY drivers that can be used as SFP upstream need to call :c:func:`phy_sfp_attach_phy`
-+and :c:func:`phy_sfp_detach_phy`, which can be used as a
-+.attach_phy / .detach_phy implementation for the
-+:c:type:`struct sfp_upstream_ops <sfp_upstream_ops>`.
-+
-+UAPI
-+====
-+
-+There exist a set of netlink commands to query the link topology from userspace,
-+see ``Documentation/networking/ethtool-netlink.rst``.
-+
-+The whole point of having a topology representation is to assign the phyindex
-+field in :c:type:`struct phy_device <phy_device>`. This index is reported to
-+userspace using the ``ETHTOOL_MSG_PHY_GET`` ethtnl command. Performing a DUMP operation
-+will result in all PHYs from all net_device being listed. The DUMP command
-+accepts either a ``ETHTOOL_A_HEADER_DEV_INDEX`` or ``ETHTOOL_A_HEADER_DEV_NAME``
-+to be passed in the request to filter the DUMP to a single net_device.
-+
-+The retrieved index can then be passed as a request parameter using the
-+``ETHTOOL_A_HEADER_PHY_INDEX`` field in the following ethnl commands :
-+
-+* ``ETHTOOL_MSG_STRSET_GET`` to get the stats string set from a given PHY
-+* ``ETHTOOL_MSG_CABLE_TEST_ACT`` and ``ETHTOOL_MSG_CABLE_TEST_ACT``, to perform
-+  cable testing on a given PHY on the link (most likely the outermost PHY)
-+* ``ETHTOOL_MSG_PSE_SET`` and ``ETHTOOL_MSG_PSE_GET`` for PHY-controlled PoE and PSE settings
-+* ``ETHTOOL_MSG_PLCA_GET_CFG``, ``ETHTOOL_MSG_PLCA_SET_CFG`` and ``ETHTOOL_MSG_PLCA_GET_STATUS``
-+  to set the PLCA (Physical Layer Collision Avoidance) parameters
-+
-+Note that the PHY index can be passed to other requests, which will silently
-+ignore it if present and irrelevant.
--- 
-2.44.0
-
+Kind regards
+Uffe
 
