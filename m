@@ -1,86 +1,201 @@
-Return-Path: <linux-kernel+bounces-130839-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F38FC897DC2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 04:39:14 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F89897DCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 04:40:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82799B2155C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:39:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFF8928A81A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:40:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00CF31CAA0;
-	Thu,  4 Apr 2024 02:39:07 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6853D1CD11;
+	Thu,  4 Apr 2024 02:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HGPCv6lz"
+Received: from mail-ua1-f44.google.com (mail-ua1-f44.google.com [209.85.222.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F49B3FC2
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 02:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E27E72137F;
+	Thu,  4 Apr 2024 02:40:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712198346; cv=none; b=hg1AUp2eNcbwXiHsGoCfVd5OPdN2Vb6b9JR1Vi2mtyuyrndMJ31rCFyEsZsZSaKUiNBG5jtk+H5KFx8K+Rg9X2zYOF0BAZ6WmtgIkfpfCv6thMjPmyT6AHoy9QUH9GtYhdji+5R6YuXwedsb4KdnyUlh98DOzYg8mmVkiAMePxg=
+	t=1712198437; cv=none; b=NhF/coWBkg6QUiaRB1t5Y7Vwpn9CLl8crKgROO9LVO82a1ZcGP65wAq6L8sOt9ejc2BhVlZkCu+yHQKbRfH+xhTR5s4/jj/2HIu9uFE3xOz+tii79O1/lPwdTpCqd/bJNCkwQRLvhGvXz9TfDezKct5FJglHLm3ar62W212tJ64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712198346; c=relaxed/simple;
-	bh=MEe0MzLGdJql/DnSM4nY1OscnovHyp03ahMc85LihZA=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=l6/NY9oXA1/+82zuo/L6n6U56IAkUX3V6qmxh/ek3S+5HdlPOrMW0/0/JFGrcC43TEe8I5h4/7ovlPUbdpFkSGKnBaTm9d6U7C53NnejkD9i68LbweG524h4TvP7f3bL4ydws+NWmtcDYmHN3WlGPEQUV1MzDNjOrjshQVEdJEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cbf092a502so59246639f.0
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 19:39:04 -0700 (PDT)
+	s=arc-20240116; t=1712198437; c=relaxed/simple;
+	bh=kFe6tPH/cWOyHNl56rrigW4jxnM0G4udQ16tF7NHiCU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ruK4QwU83q/lnJ1frq3ZeRM6iDb7qkmXNLcNhHsqiHN3tczp8oO2sOrMaeOZhlg+QsCwgdECobA1HadtQIinsIIDwTAyKxBs1YWjiCQwvIOD7GG25UMPOC80oEF6uwdJ4yr1HGWQdGYzEGPSSLRetkdXYOBDFkurMKbTSi0MAnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HGPCv6lz; arc=none smtp.client-ip=209.85.222.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f44.google.com with SMTP id a1e0cc1a2514c-7e406cf6263so42221241.1;
+        Wed, 03 Apr 2024 19:40:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712198435; x=1712803235; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VVREjhdwHsZfrwJAEoys2z1mQGNzhFFLniJpdksZomI=;
+        b=HGPCv6lzF55pG593uQWaTmnC6/BBtA2wvv4ASPywEPbuk5WNBzzXadJmlPYfIEtdeJ
+         0FcggMCKRH7c7INDV2fsF0x8OqrAAtPejpIRpM7hVC9kyH7FS+v1Iy1I6qig1fDG2rk8
+         l48s4xecGEjRjBW+CeLIoUfWaGB5h9kdbihv3eS0QYkRyD/QFUKm75b1iHi29sVfEJBV
+         hDV8lTlt0bZrLWrmtJN/+StXqPnvB/Fp3fT0zdnBq30426Xl0R9Z5uHj5vGJXssH1qGv
+         xnJ007iElDa4SYl3sIZSdQxazhnpYkQPPgQo4lrBMH6rLxIT17mh054nm8rrWF9G9jz1
+         lg/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712198344; x=1712803144;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nlKfiMMTgxpZSq4XnNY3uaq1k86EbBK7PbjDB3tI9r8=;
-        b=QzH00z/aO2SHiMqwjTj+5ai8Bawq033haZ/Dos3HVYYwkS4QaZDML/5Ro3Fv91vtfl
-         a2WHoICs8TxTakHJ5ynbfDfopJOL0BY+/rknQkzVA/RVCiOQ4POA+7h07yKXENXfINPl
-         WdJKBCw49B7l8CBRANPv4ybQ7n+fB3Ir7LDkgFLlGJcZdTb/O7xEqaXOSwsQ0ti4MmpZ
-         QXanC0ak7z21NgoSlWuGQDUX3E/bqctPuiqnt1Dx/0UsfK2EyCmBjsj9uhLo/Sp1OQBv
-         ab2Vz/LbzNJC9VP4W4i8KtN3eU/HIUYMRZdnlYPIR4nn111gcilMSHsu1IlZ5T+8aWJy
-         qIgA==
-X-Forwarded-Encrypted: i=1; AJvYcCUUJyD+MK2RRnB8xsswN/spb5C+QFvyBlga8xnhdVQhahl8SX9iVOnwV6uXNjIhoXpmdFQ2tvcDeFG/sFla2Ls4WTxIWvdKx6P4G2Ht
-X-Gm-Message-State: AOJu0Yzb/1BbecnyNUvwo00bzASVFIqe7VQCgaRdQGq1GleOjeb9nAMx
-	O6YnuEQoA545XaQ+y9KjZSHVUhTFCbHjAZ8ugDk79byI/KtCfd2weoHsnwSjsW5wJu2Nk300V6h
-	um/d3zceBhqF+BPfBVuhjAWnsjkc5KsWcFUfkcdJB7ui+7QGzQXCAnsI=
-X-Google-Smtp-Source: AGHT+IHuTan0Xxo2bC5qZvf0CFkhuAachumAjCI2fZZZJk83+PP2hEcAPk3bTxFWpBEIk6HbbFpi72VKWPEkthNwCUf5zupPn/Su
+        d=1e100.net; s=20230601; t=1712198435; x=1712803235;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VVREjhdwHsZfrwJAEoys2z1mQGNzhFFLniJpdksZomI=;
+        b=rCRSptBE+7iPA0PQ1vlz6cpOtOBKV93F7ryXtBy/NIsxkrEJbAl+sXPmDNzMW6yb3m
+         EQbUDAYtPPoL5W9HVCKfsm6+sTkU7mWzVVbOSudlZg7WYGaAaxdhVTGEr3E87yUk0U8C
+         +Kf1Q6YhGSQiaQHTTp29deDiyB9p3elqUtZ2poniojXdhZTeEyk08dAwJsdYnwT2HekY
+         QT6xPnnFj0nnCA8oyQP+khbwMKeXQqJNqwHUod+9rzoZULn4rSIRm0qUITWNLHyGyj5/
+         +PoCOitbqdfPmogv+6CRqamC32rw0vZMCaFSknBETZ+oXTg0+6FtSQuOcvosy/A+CL/B
+         n8/w==
+X-Forwarded-Encrypted: i=1; AJvYcCWsmhKJ+P6v+tuEM9XSdtiPOveRe2E8VVc0YwFmouPH6Likdwc4SPt/utTuU57yjthe7ogfIR6QjoEaOJOQrVNCV55DhUbHqirV7w6qCRbKHM3Zg+CNztWyRrf9SgL/GJwH
+X-Gm-Message-State: AOJu0YybIRcgv/dZSXCWMLrgmzYql3wOuxzbbTcwEKf26rhgWEmozMub
+	2FpTe20J39UI4j6G7QKRSntDZ6Qj+DYCgn4yJ3MvZbWbSqICZSRu19EO8Mr3Pr/zgLahcadmUEz
+	GXIm2Q8nEHkPlWdPOeVsj7RcqKNI=
+X-Google-Smtp-Source: AGHT+IFp0MAuYPUrQ13Gs+NAxjFLozHrIsEVlc8iE4G/jw+Jid5LJkvCLqzD3P+WiRRxRXh2xHTMb4AlpmcGJYX8KCs=
+X-Received: by 2002:a05:6102:4a02:b0:478:efaf:868 with SMTP id
+ jw2-20020a0561024a0200b00478efaf0868mr971359vsb.22.1712198434666; Wed, 03 Apr
+ 2024 19:40:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:6284:b0:47e:db25:8eb7 with SMTP id
- fh4-20020a056638628400b0047edb258eb7mr48890jab.2.1712198344346; Wed, 03 Apr
- 2024 19:39:04 -0700 (PDT)
-Date: Wed, 03 Apr 2024 19:39:04 -0700
-In-Reply-To: <20240404021257.4018-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000019a4fe06153c3e35@google.com>
-Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
-From: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <20240402212039.51815-1-harishankar.vishwanathan@gmail.com> <77f5c5ed-881e-c9a8-cfdb-200c322fb55d@amd.com>
+In-Reply-To: <77f5c5ed-881e-c9a8-cfdb-200c322fb55d@amd.com>
+From: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
+Date: Wed, 3 Apr 2024 22:40:23 -0400
+Message-ID: <CAM=Ch04xd5u75UFeQwVrzP7=A5KPAw3x7_drqQHK3C-43T4T2w@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] bpf: Fix latent unsoundness in and/or/xor
+ value tracking
+To: Edward Cree <ecree@amd.com>
+Cc: ast@kernel.org, harishankar.vishwanathan@rutgers.edu, paul@isovalent.com, 
+	Matan Shachnai <m.shachnai@rutgers.edu>, Srinivas Narayana <srinivas.narayana@rutgers.edu>, 
+	Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
+	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
+	"David S. Miller" <davem@davemloft.net>, bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Edward Cree <ecree.xilinx@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Wed, Apr 3, 2024 at 9:25=E2=80=AFAM Edward Cree <ecree@amd.com> wrote:
+>
+> On 4/2/24 22:20, Harishankar Vishwanathan wrote:
+> > Previous works [1, 2] have discovered and reported this issue. Our tool
+> > Agni [2, 3] consideres it a false positive. This is because, during the
+> > verification of the abstract operator scalar_min_max_and(), Agni restri=
+cts
+> > its inputs to those passing through reg_bounds_sync(). This mimics
+> > real-world verifier behavior, as reg_bounds_sync() is invariably execut=
+ed
+> > at the tail of every abstract operator. Therefore, such behavior is
+> > unlikely in an actual verifier execution.
+> >
+> > However, it is still unsound for an abstract operator to set signed bou=
+nds
+> > such that smin_value > smax_value. This patch fixes it, making the abst=
+ract
+> > operator sound for all (well-formed) inputs.
+>
+> Just to check I'm understanding correctly: you're saying that the existin=
+g
+>  code has an undocumented precondition, that's currently maintained by th=
+e
+>  callers, and your patch removes the precondition in case a future patch
+>  (or cosmic rays?) makes a call without satisfying it?
+> Or is it in principle possible (just "unlikely") for a program to induce
+>  the current verifier to call scalar_min_max_foo() on a register that
+>  hasn't been through reg_bounds_sync()?
+> If the former, I think Fixes: is inappropriate here as there is no need t=
+o
+>  backport this change to stable kernels, although I agree the change is
+>  worth making in -next.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+You are kind of right on both counts.
 
-Reported-and-tested-by: syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com
+The existing code contains an undocumented precondition. When violated,
+scalar_min_max_and() can produce unsound s64 bounds (where smin > smax).
+Certain well-formed register state inputs can violate this precondition,
+resulting in eventual unsoundness. However, register states that have
+passed through reg_bounds_sync() -- or those that are completely known or
+completely unknown -- satisfy the precondition, preventing unsoundness.
 
-Tested on:
+Since we haven=E2=80=99t examined all possible paths through the verifier, =
+and we
+cannot guarantee that every instruction preceding a BPF_AND in an eBPF
+program will maintain the precondition, we cannot definitively say that
+register state inputs to scalar_min_max_and() will always meet the
+precondition. There is a potential for an invocation of
+scalar_min_max_and() on a register state that hasn=E2=80=99t undergone
+reg_bounds_sync(). The patch indeed removes the precondition.
 
-commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=15410de3180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
-dashboard link: https://syzkaller.appspot.com/bug?extid=9a5b0ced8b1bfb238b56
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=153a4a3d180000
+Given the above, please advise if we should backport this patch to older
+kernels (and whether I should use the fixes tag).
 
-Note: testing is done by a robot and is best-effort only.
+> > It is worth noting that we can update the signed bounds using the unsig=
+ned
+> > bounds whenever the unsigned bounds do not cross the sign boundary (not
+> > just when the input signed bounds are positive, as was the case
+> > previously). This patch does exactly that
+> Commit message could also make clearer that the new code considers whethe=
+r
+>  the *output* ubounds cross sign, rather than looking at the input bounds
+>  as the previous code did.  At first I was confused as to why XOR didn't
+>  need special handling (since -ve xor -ve is +ve).
+
+Sounds good regarding making it clearer within the context of what the
+existing code does. However, I wanted to clarify that XOR does indeed use
+the same handling as all the other operations. Could you elaborate on what
+you mean?
+
+> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+> > index fcb62300f407..a7404a7d690f 100644
+> > --- a/kernel/bpf/verifier.c
+> > +++ b/kernel/bpf/verifier.c
+> > @@ -13326,23 +13326,21 @@ static void scalar32_min_max_and(struct bpf_r=
+eg_state *dst_reg,
+> >                 return;
+> >         }
+> >
+> > -       /* We get our minimum from the var_off, since that's inherently
+> > +       /* We get our minimum from the var32_off, since that's inherent=
+ly
+> >          * bitwise.  Our maximum is the minimum of the operands' maxima=
+.
+> >          */
+>
+> This change, adjusting a comment to match the existing code, should proba=
+bly
+>  be in a separate patch.
+
+Sounds good.
+
+> > @@ -13395,23 +13391,21 @@ static void scalar32_min_max_or(struct bpf_re=
+g_state *dst_reg,
+> >                 return;
+> >         }
+> >
+> > -       /* We get our maximum from the var_off, and our minimum is the
+> > -        * maximum of the operands' minima
+> > +       /* We get our maximum from the var32_off, and our minimum is th=
+e
+> > +        * maximum of the operands' minima.
+> >          */
+>
+> Same here.
+>
+> Apart from that,
+> Acked-by: Edward Cree <ecree.xilinx@gmail.com>
 
