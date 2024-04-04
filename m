@@ -1,163 +1,362 @@
-Return-Path: <linux-kernel+bounces-131859-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131860-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21600898CC7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:58:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CEEE898CCD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:58:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B62F51F2744B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:58:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2234F282ECA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:58:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA1BE12AAE8;
-	Thu,  4 Apr 2024 16:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7957D12CDAE;
+	Thu,  4 Apr 2024 16:58:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="gCFUcowO"
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VE+TMXT1"
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B5B0535AC
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:57:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB25A12AAD6
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712249874; cv=none; b=apDVytHqY7FAGDdw3a0398hxrtzTgaJ4PjYQ+VGuNL9aeLMLLp8JrSCCyM13z0uAW9BuPmQns1/RaKaIXa36DLOEPI1L8beqiiQ58AVhThDGnuIM+x3DTDcMMaozJUaLA2odTwu8gWqWZaFELSoqOyowg9UGnG5P+lrYhgQYC38=
+	t=1712249893; cv=none; b=Y5MWATKNLK5UoAd4HEmX180vdyGdibbDVMWo9wqCmBzTOGgftv3Pj0yTsqXCKqZghaUOXy78WJ7RpHm1vOa5R7YRU37ECTiFyoxoxtJ8y+CM/F2VuGsqBZm7gzlZMVqYtngen2y4l+vR5PpHUunVbcSz5NmZb7EoHdRfmhhmpE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712249874; c=relaxed/simple;
-	bh=2KPWHevbjorOUSsHZapNRmUD0fpaRYqhSR1Dgg8DGcU=;
+	s=arc-20240116; t=1712249893; c=relaxed/simple;
+	bh=Ug3wNn9rUYSiApUWsdmJAfxaH7gkdUjC0d0zsQR/y4Q=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rGttsp9qtm3/741CvqO90UALIfD6RW5zCRwKM4T6+Za68Q2tM1czrYeEXVb9gq6kXU4plfChddHUWpM8oUlo1MPFqN+SJrPjpr6iuXjg+kgqlZcHbFREFj/Pp+fQTZvpsNKJKo+1rk8Jkqf2qcEiswmyV01qKsUoocvnv/43mUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=gCFUcowO; arc=none smtp.client-ip=209.85.167.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
-Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-516bf5a145aso1570507e87.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 09:57:51 -0700 (PDT)
+	 To:Cc:Content-Type; b=WZq2JHNQrAFtUDuEOO7W2uBQYEHBg5nC85NscwDYxYFJgePnXNAuOyUOjHrvN70E/9QeqjZUQM0lDC+JjkEmVo39oFLoaHsYWX2NR/nOBLajMI4FkbgiUffGVUXwqEMQpCGiLsk7ps0ktqPjnJnitl92ZbI1VebR0y99FThnpgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VE+TMXT1; arc=none smtp.client-ip=209.85.128.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-6151d2489b4so14310907b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 09:58:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712249870; x=1712854670; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712249890; x=1712854690; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lTE8+oh/R1tis1FpRuf547JjNaef5iXS7/FKBvUGN+U=;
-        b=gCFUcowOCbOm/9NdxQBKmh/ioVV9o3cAMbVHhnnxyBAZiCnHznWLLeIq9ZvAc1c9As
-         WcFSS4q1X8W9z3ldcUtQcvqAzI+mto4jbEW1DDJNx7J0ZvYeH2kgYZdIH/A+rsQGLPmq
-         41WUPlP3FYK2zWstV7se0zLYc1yRoFZUxFb53ASJKlRN9OHhFi8Df0J2VnUr3AJhYa2i
-         P5AZaYe6h99h759hQsvHWuf8FU22kKP3yaFsCWJgLOhrcdXybC5v8erR5gBvVK7fKSUS
-         irrKf9cqwmPm4r4iBKmM1K1oNecfUZhSw8GjNjRVs05Exiw21iy7xLsvNMo71BTa6BPu
-         bgOg==
+        bh=SnNkrv9amLNSOChMZU1xiNRngWLHsWRGHJdyDWSVIjQ=;
+        b=VE+TMXT19IlGsNP/1GZ4QkeACDqlNHhbUWPxK9JAFxupGgfIy3o9CUYHwC3zIILeE/
+         dw0le8WSHyjn/yq30nG7WGIBs+X6a9VPfx1czXi3gORFjnFlex63/z9NmeK+P7uf4FiD
+         RHJKVnZ48GhO6Q4rq8jgk0qaybB9hdHz4S+E0g6+tSZchhycJvFOpbl7D2UtYx1SXGvj
+         gepwgqcJ7Jg/qqAYl7LvxwqsD5gHQVzcaToe3QQoSJR+sUbcEAX8lpWLwVUPvWrUQ6mm
+         MWXNXICHXg6DmfFEa3hCb/McRPKDAOzCAeHvys1ChiPt0IZ9j9LrXVHefmOmwHrmBH7X
+         jS3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712249870; x=1712854670;
+        d=1e100.net; s=20230601; t=1712249890; x=1712854690;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=lTE8+oh/R1tis1FpRuf547JjNaef5iXS7/FKBvUGN+U=;
-        b=BZRrELg3rb0QR9KNSl3xPjT08UAa+etCoFgHBHh3x3X3Gg29XJurgjNXC1UmLbWarH
-         7CQxaWE86187+t+kjyT8MWXFL3tHiQ9ugxMVhvwNf4xvKGnJEy4Cbz32h5lca66C904O
-         2DajWg/sRBlWuDzwOxULv/RoSFCQr4IVRxeEETwDwI73v7Ia/K7xhrTx0LTAnxFykz0A
-         IV/voRaNZcip3oAiaWWVMN7ooJXwOUYiuthbqnKhFnvS8aQNidy87Ne5tTojzMo5t1JA
-         24mMusyhaJPYMl0DGggUHbKZ+eGmRyP1IOhc5DMP/Q0KkJMhxLZk9jkRatvo/5qUZXqR
-         VGYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWGcQbjIR3P+VN5W0fwNhRWpE4lNh7jZACYKjSijL+T0vzzTfMOy3VBHJcrZIo8GLik9N0DbzOjK7I7A5xWbLOsd2yOtFoyhKkr9dii
-X-Gm-Message-State: AOJu0YzLZGsWjuSn99b/A7EyM7/kjqAGrgOi2oHk9qbD0U4deJBr7Kd3
-	iWhsbroG0P1GvqZBZ4msxn9jSHxWUH/vOcd0ctmQRW5xQu7IN3X6F0bN+XdH15oQoR9saqCHaMd
-	LLpLtUxTeeqa+xgiSKnxfzMH3C3fh65dC1PjzaA==
-X-Google-Smtp-Source: AGHT+IFE0+ahlc5nRL1hgLfZODKxbfrTp1Qc4vXsx4HOv/uC4g10dvAfQIHFs1k8Dy9M4egSuyjIIZGniBCN0XY0PDc=
-X-Received: by 2002:ac2:4826:0:b0:516:d1af:e4e9 with SMTP id
- 6-20020ac24826000000b00516d1afe4e9mr17779lft.25.1712249870133; Thu, 04 Apr
- 2024 09:57:50 -0700 (PDT)
+        bh=SnNkrv9amLNSOChMZU1xiNRngWLHsWRGHJdyDWSVIjQ=;
+        b=jejWYq6idn0CgL7U8G0KQ26ZNqfRqAMp19rJ7tUEjmW39sM9BnPGZoTxusg/eXQ83V
+         JuAw0zE2SYg+X51l2FE5bvkMvRA3BBbiTT0qIqyeSh9MWHyiLzNW5raHsCrQRWxEi8It
+         3tjdtHnnuE91/gEpg+WruQ0gO8r+p4Uj+QbIW1h2ZYeCl3KtyU3W0Tnn7BYDxs2qtcBI
+         pN7Xb4NsuhSn8cPmSWaYcHbOGwdIXVyRy/TPdcOekg7LYJgHdx4DPODV7zW/AhSKWKxX
+         YwfOh2/l0dx3hRwwdUYl6JnYnbO39BMKteEouVK4ulbwnYqPfMEN03VNnXdsJYcM2uet
+         FUfw==
+X-Forwarded-Encrypted: i=1; AJvYcCXOJykWYKIbI5kVo6IcllazcaRbjLZHHsa2ymCSzJu1zfzOxb8w3ID0Dnee3InDwu67QY3UnfAAqabqeCO2TtqT7C0ZKmCwwxEzJ3fF
+X-Gm-Message-State: AOJu0Yzp/NXDwNUL0LPQ+tZYPjVqsaV4bEZhriDOFRgTEsFNJUUe4+yV
+	yyensizuMU4zUHoR9nYj6ikY4nd9IZAj4rlZ53mZSfwL15lG253QhjMMn4c/e5qTu4IhaiYYElO
+	igbnaLIy4SZACNq4jrNxg+P1bnk/MvtQqHWYi
+X-Google-Smtp-Source: AGHT+IF7B3akhgfxRrnqjce/FXowsw1E3eakccZbE6M28J8HXpTOkV5OPQcXw5mCpvOPKhYETIzOkOwrlUerT+o2JDc=
+X-Received: by 2002:a5b:481:0:b0:dcc:9d30:58a0 with SMTP id
+ n1-20020a5b0481000000b00dcc9d3058a0mr2683124ybp.64.1712249889460; Thu, 04 Apr
+ 2024 09:58:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404093328.21604-1-brgl@bgdev.pl> <20240404093328.21604-3-brgl@bgdev.pl>
- <Zg7I7nYkZLcIgETq@smile.fi.intel.com>
-In-Reply-To: <Zg7I7nYkZLcIgETq@smile.fi.intel.com>
-From: Bartosz Golaszewski <brgl@bgdev.pl>
-Date: Thu, 4 Apr 2024 18:57:39 +0200
-Message-ID: <CAMRc=Me=nH0bWzd3WstJnkQYmLHN7c+c4_wq41JXzcfp5pODRg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] gpio: cdev: fix missed label sanitizing in debounce_setup()
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Kent Gibson <warthog618@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Alexey Dobriyan <adobriyan@gmail.com>, stable@vger.kernel.org, 
-	Stefan Wahren <wahrenst@gmx.net>, Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+References: <20240321163705.3067592-1-surenb@google.com> <20240321163705.3067592-6-surenb@google.com>
+ <20240321133147.6d05af5744f9d4da88234fb4@linux-foundation.org>
+ <gnqztvimdnvz2hcepdh3o3dpg4cmvlkug4sl7ns5vd4lm7hmao@dpstjnacdubq>
+ <20240321150908.48283ba55a6c786dee273ec3@linux-foundation.org>
+ <bliyhrwtskv5xhg3rxxszouxntrhnm3nxhcmrmdwwk4iyx5wdo@vodd22dbtn75> <CAJuCfpEO4NjYysJ7X8ME_GjHc41u-_dK4AhrhmaSMh_9mxaHSA@mail.gmail.com>
+In-Reply-To: <CAJuCfpEO4NjYysJ7X8ME_GjHc41u-_dK4AhrhmaSMh_9mxaHSA@mail.gmail.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 4 Apr 2024 09:57:55 -0700
+Message-ID: <CAJuCfpEGJHs=ygb2_PNcqEy__dvhby5N7dvwnno=3pDEvE1+2g@mail.gmail.com>
+Subject: Re: [PATCH v6 05/37] fs: Convert alloc_inode_sb() to a macro
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, mhocko@suse.com, vbabka@suse.cz, 
+	hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 4, 2024 at 5:36=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@intel.com> wrote:
+On Thu, Mar 21, 2024 at 3:47=E2=80=AFPM Suren Baghdasaryan <surenb@google.c=
+om> wrote:
 >
-> On Thu, Apr 04, 2024 at 11:33:28AM +0200, Bartosz Golaszewski wrote:
-> > From: Kent Gibson <warthog618@gmail.com>
+> On Thu, Mar 21, 2024 at 3:17=E2=80=AFPM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
 > >
-> > When adding sanitization of the label, the path through
-> > edge_detector_setup() that leads to debounce_setup() was overlooked.
-> > A request taking this path does not allocate a new label and the
-> > request label is freed twice when the request is released, resulting
-> > in memory corruption.
+> > On Thu, Mar 21, 2024 at 03:09:08PM -0700, Andrew Morton wrote:
+> > > On Thu, 21 Mar 2024 17:15:39 -0400 Kent Overstreet <kent.overstreet@l=
+inux.dev> wrote:
+> > >
+> > > > On Thu, Mar 21, 2024 at 01:31:47PM -0700, Andrew Morton wrote:
+> > > > > On Thu, 21 Mar 2024 09:36:27 -0700 Suren Baghdasaryan <surenb@goo=
+gle.com> wrote:
+> > > > >
+> > > > > > From: Kent Overstreet <kent.overstreet@linux.dev>
+> > > > > >
+> > > > > > We're introducing alloc tagging, which tracks memory allocation=
+s by
+> > > > > > callsite. Converting alloc_inode_sb() to a macro means allocati=
+ons will
+> > > > > > be tracked by its caller, which is a bit more useful.
+> > > > >
+> > > > > I'd have thought that there would be many similar
+> > > > > inlines-which-allocate-memory.  Such as, I dunno, jbd2_alloc_inod=
+e().
+> > > > > Do we have to go converting things to macros as people report
+> > > > > misleading or less useful results, or is there some more general
+> > > > > solution to this?
+> > > >
+> > > > No, this is just what we have to do.
+> > >
+> > > Well, this is something we strike in other contexts - kallsyms gives =
+us
+> > > an inlined function and it's rarely what we wanted.
+> > >
+> > > I think kallsyms has all the data which is needed to fix this - how
+> > > hard can it be to figure out that a particular function address lies
+> > > within an outer function?  I haven't looked...
 > >
-> > Add label sanitization to debounce_setup().
+> > This is different, though - even if a function is inlined in multiple
+> > places there's only going to be one instance of a static var defined
+> > within that function.
 >
-> ...
+> I guess one simple way to detect the majority of these helpers would
+> be to filter all entries from /proc/allocinfo which originate from
+> header files.
 >
-> > +static inline char *make_irq_label(const char *orig)
-> > +{
-> > +     char *new;
-> > +
-> > +     if (!orig)
-> > +             return NULL;
-> > +
-> > +     new =3D kstrdup_and_replace(orig, '/', ':', GFP_KERNEL);
-> > +     if (!new)
-> > +             return ERR_PTR(-ENOMEM);
-> > +
-> > +     return new;
-> > +}
-> > +
-> > +static inline void free_irq_label(const char *label)
-> > +{
-> > +     kfree(label);
-> > +}
+> ~# grep ".*\.h:." /proc/allocinfo
+>       933888      228 include/linux/mm.h:2863 func:pagetable_alloc
+>          848       53 include/linux/mm_types.h:1175 func:mm_alloc_cid
+>            0        0 include/linux/bpfptr.h:70 func:kvmemdup_bpfptr
+>            0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
+>            0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
+>            0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
+>            0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
+>            0        0 include/linux/bpf.h:2249 func:bpf_map_kvcalloc
+>            0        0 include/linux/bpf.h:2243 func:bpf_map_kzalloc
+>            0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
+>            0        0 include/linux/ptr_ring.h:471
+> func:__ptr_ring_init_queue_alloc
+>            0        0 include/linux/bpf.h:2256 func:bpf_map_alloc_percpu
+>            0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
+>            0        0 include/net/tcx.h:80 func:tcx_entry_create
+>            0        0 arch/x86/include/asm/pgalloc.h:156 func:p4d_alloc_o=
+ne
+>       487424      119 include/linux/mm.h:2863 func:pagetable_alloc
+>            0        0 include/linux/mm.h:2863 func:pagetable_alloc
+>          832       13 include/linux/jbd2.h:1607 func:jbd2_alloc_inode
+>            0        0 include/linux/jbd2.h:1591 func:jbd2_alloc_handle
+>            0        0 fs/nfs/iostat.h:51 func:nfs_alloc_iostats
+>            0        0 include/net/netlabel.h:281 func:netlbl_secattr_cach=
+e_alloc
+>            0        0 include/net/netlabel.h:381 func:netlbl_secattr_allo=
+c
+>            0        0 include/crypto/internal/acompress.h:76
+> func:__acomp_request_alloc
+>         8064       84 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>         1016       74 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>          384        4 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>          704        3 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>           32        1 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>           64        1 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>           40        2 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>           32        1 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>        30000      625 include/acpi/platform/aclinuxex.h:67
+> func:acpi_os_acquire_object
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>            0        0 include/acpi/platform/aclinuxex.h:67
+> func:acpi_os_acquire_object
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>          512        1 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>          192        6 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>          192        3 include/acpi/platform/aclinuxex.h:52 func:acpi_os_a=
+llocate
+>        61992      861 include/acpi/platform/aclinuxex.h:67
+> func:acpi_os_acquire_object
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 include/acpi/platform/aclinuxex.h:67
+> func:acpi_os_acquire_object
+>            0        0 include/acpi/platform/aclinuxex.h:57
+> func:acpi_os_allocate_zeroed
+>            0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtabl=
+e_page
+>            0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtabl=
+e_page
+>            0        0 drivers/iommu/amd/amd_iommu.h:141 func:alloc_pgtabl=
+e_page
+>            0        0 include/linux/dma-fence-chain.h:91
+> func:dma_fence_chain_alloc
+>            0        0 include/linux/dma-fence-chain.h:91
+> func:dma_fence_chain_alloc
+>            0        0 include/linux/dma-fence-chain.h:91
+> func:dma_fence_chain_alloc
+>            0        0 include/linux/dma-fence-chain.h:91
+> func:dma_fence_chain_alloc
+>            0        0 include/linux/dma-fence-chain.h:91
+> func:dma_fence_chain_alloc
+>            0        0 include/linux/hid_bpf.h:154 func:call_hid_bpf_rdesc=
+_fixup
+>            0        0 include/linux/skbuff.h:3392 func:__dev_alloc_pages
+>       114688       56 include/linux/ptr_ring.h:471
+> func:__ptr_ring_init_queue_alloc
+>            0        0 include/linux/skmsg.h:415 func:sk_psock_init_link
+>            0        0 include/linux/bpf.h:2237 func:bpf_map_kmalloc_node
+>            0        0 include/linux/ptr_ring.h:628 func:ptr_ring_resize_m=
+ultiple
+>        24576        3 include/linux/ptr_ring.h:471
+> func:__ptr_ring_init_queue_alloc
+>            0        0 include/net/netlink.h:1896 func:nla_memdup
+>            0        0 include/linux/sockptr.h:97 func:memdup_sockptr
+>            0        0 include/net/request_sock.h:131 func:reqsk_alloc
+>            0        0 include/net/tcp.h:2456 func:tcp_v4_save_options
+>            0        0 include/net/tcp.h:2456 func:tcp_v4_save_options
+>            0        0 include/crypto/hash.h:586 func:ahash_request_alloc
+>            0        0 include/linux/sockptr.h:97 func:memdup_sockptr
+>            0        0 include/linux/sockptr.h:97 func:memdup_sockptr
+>            0        0 net/sunrpc/auth_gss/auth_gss_internal.h:38
+> func:simple_get_netobj
+>            0        0 include/crypto/hash.h:586 func:ahash_request_alloc
+>            0        0 include/net/netlink.h:1896 func:nla_memdup
+>            0        0 include/crypto/skcipher.h:869 func:skcipher_request=
+_alloc
+>            0        0 include/net/fq_impl.h:361 func:fq_init
+>            0        0 include/net/netlabel.h:316 func:netlbl_catmap_alloc
 >
-> First of all this could have been done in the previous patch already, but=
- okay.
+> and it finds our example:
 >
-> ...
+>          832       13 include/linux/jbd2.h:1607 func:jbd2_alloc_inode
 >
-> > +                     label =3D make_irq_label(line->req->label);
-> > +                     if (IS_ERR(label))
-> > +                             return -ENOMEM;
-> > +
-> >                       irqflags =3D IRQF_TRIGGER_FALLING | IRQF_TRIGGER_=
-RISING;
-> >                       ret =3D request_irq(irq, debounce_irq_handler, ir=
-qflags,
-> >                                         line->req->label, line);
+> Interestingly the inlined functions which are called from multiple
+> places will have multiple entries with the same file+line:
 >
-> But the main point how does this change fix anything?
+>            0        0 include/linux/dma-fence-chain.h:91
+> func:dma_fence_chain_alloc
+>            0        0 include/linux/dma-fence-chain.h:91
+> func:dma_fence_chain_alloc
+>            0        0 include/linux/dma-fence-chain.h:91
+> func:dma_fence_chain_alloc
+>            0        0 include/linux/dma-fence-chain.h:91
+> func:dma_fence_chain_alloc
+>            0        0 include/linux/dma-fence-chain.h:91
+> func:dma_fence_chain_alloc
 >
-> Shouldn't be
->
-> -                                         line->req->label, line);
-> +                                         label, line);
+> So, duplicate entries can be also used as an indication of an inlined all=
+ocator.
+> I'll go chase these down and will post a separate patch converting them.
 
-It should, I badly copy-pasted Kent's correct code. Thanks, I fixed it in t=
-ree.
-
-Bart
-
->
-> ?
->
-> > +                     if (ret) {
-> > +                             free_irq_label(label);
-> >                               return ret;
-> > +                     }
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+I just posted https://lore.kernel.org/all/20240404165404.3805498-1-surenb@g=
+oogle.com/
+to report allocations done from the inlined functions in the headers
+to their callers.
 
