@@ -1,116 +1,148 @@
-Return-Path: <linux-kernel+bounces-131514-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B7928988E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:37:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ECED8988EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:38:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B0811C20D8D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:37:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 582E5289FA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBDEE128811;
-	Thu,  4 Apr 2024 13:37:23 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3306212883C;
+	Thu,  4 Apr 2024 13:37:41 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70C19128362;
-	Thu,  4 Apr 2024 13:37:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD65128362;
+	Thu,  4 Apr 2024 13:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712237843; cv=none; b=DVJOBGSnl3/6N8YxZs4J0V0OKxsNraNW6H0VE0JeqYCNgTSIQtgK4m2qZvd8je2A58iWbmy0dDGe5/nsFejYNRPKztr6fByzC3sJpqbtsgctRfM0ruUtcFh8zCS7gZrj/TaJfp9fJw5ZCMjXBcHdX5s6YDICWjv5aoj7F3VXlxk=
+	t=1712237860; cv=none; b=kBiOSWJlKv4UFBttlHMvuPyzvIIHXY75IgigWIG/sihzCQjD1SVQKlsXV6REc4BXHYDebYCljJqN9NURa543A+CBFQFP1IUor/KpgZElWKmL7G8wgVDnTMgMCTojmYif46YHJiNncwdb8qrCZGfUhw9Imu2YEsFOOpZW9H7ZYJI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712237843; c=relaxed/simple;
-	bh=L5JuVTwYjhYNtocqaBlZrcI4/RRu7dj6AmX+ESPnNdg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tECuZZQSqTJZjGFrfGiGUROpqWk88vcADcDBNUsLYT10bhsiWJ+aLTaZ4S4UJQWsV72xs3Pt2M0mbKUv26qAUL0SWd8EGqqaEZI3gOrmvyl+/MSVy6apioLTSCYxIWh1eF6elOoe8vg6NAdAI3VYrmVvbktsIB1Tj4gBdPaGpPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1989BC433F1;
-	Thu,  4 Apr 2024 13:37:19 +0000 (UTC)
-From: Huacai Chen <chenhuacai@loongson.cn>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Huacai Chen <chenhuacai@kernel.org>
-Cc: loongarch@lists.linux.dev,
-	linux-mm@kvack.org,
-	Xuefeng Li <lixuefeng@loongson.cn>,
-	Guo Ren <guoren@kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	linux-kernel@vger.kernel.org,
-	loongson-kernel@lists.loongnix.cn,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 3/3] LoongArch: Make virt_addr_valid()/__virt_addr_valid() work with KFENCE
-Date: Thu,  4 Apr 2024 21:36:36 +0800
-Message-ID: <20240404133642.971583-4-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240404133642.971583-1-chenhuacai@loongson.cn>
-References: <20240404133642.971583-1-chenhuacai@loongson.cn>
+	s=arc-20240116; t=1712237860; c=relaxed/simple;
+	bh=Mq8V4G+8NbZSQZrJJKuG0zWVsG03i73wOl1e9e2mO3Y=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YQ8KKzGzpPNM7AHbP7r2alPD3jEcqwaPSSYHq2+nUkjzgJfsKaOLaubnXEXhH5p7c+NGC9VSfNJcdO4MtHCgYXbDgwlHrokb08aLtyyvnEOxp5aQMCGAJaagbQ5bqeW+izIx6r2RJUZbZ2QyV3RmE31VqjpbJ6V1fOVc718wwqc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.31])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9Mxg3Zsyz6J7DR;
+	Thu,  4 Apr 2024 21:32:55 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id AFE8F1400DC;
+	Thu,  4 Apr 2024 21:37:34 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
+ 2024 14:37:33 +0100
+Date: Thu, 4 Apr 2024 14:37:33 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
+CC: "Huang, Ying" <ying.huang@intel.com>, Gregory Price
+	<gourry.memverge@gmail.com>, <aneesh.kumar@linux.ibm.com>, <mhocko@suse.com>,
+	<tj@kernel.org>, <john@jagalactic.com>, Eishan Mirakhur
+	<emirakhur@micron.com>, Vinicius Tavares Petrucci <vtavarespetr@micron.com>,
+	Ravis OpenSrc <Ravis.OpenSrc@micron.com>, Alistair Popple
+	<apopple@nvidia.com>, Srinivasulu Thanneeru <sthanneeru@micron.com>, SeongJae
+ Park <sj@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Vishal Verma
+	<vishal.l.verma@intel.com>, Dave Jiang <dave.jiang@intel.com>, "Andrew
+ Morton" <akpm@linux-foundation.org>, <nvdimm@lists.linux.dev>,
+	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Linux Memory
+ Management List" <linux-mm@kvack.org>, "Ho-Ren (Jack) Chuang"
+	<horenc@vt.edu>, "Ho-Ren (Jack) Chuang" <horenchuang@gmail.com>,
+	<qemu-devel@nongnu.org>, Hao Xiang <hao.xiang@bytedance.com>
+Subject: Re: [PATCH v10 2/2] memory tier: create CPUless memory tiers after
+ obtaining HMAT info
+Message-ID: <20240404143733.00004594@Huawei.com>
+In-Reply-To: <CAKPbEqoJZe+HWHhCvBTVSHXffGY2ign3Htp4pfbFb4YVJS_Q2A@mail.gmail.com>
+References: <20240402001739.2521623-1-horenchuang@bytedance.com>
+	<20240402001739.2521623-3-horenchuang@bytedance.com>
+	<20240403180425.00003be0@Huawei.com>
+	<CAKPbEqoJZe+HWHhCvBTVSHXffGY2ign3Htp4pfbFb4YVJS_Q2A@mail.gmail.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-When enabling both CONFIG_KFENCE and CONFIG_DEBUG_SG, I get the
-following backtraces when running LongArch kernels.
+<snip>
 
-[    2.496257] kernel BUG at include/linux/scatterlist.h:187!
-..
-[    2.501925] Call Trace:
-[    2.501950] [<9000000004ad59c4>] sg_init_one+0xac/0xc0
-[    2.502204] [<9000000004a438f8>] do_test_kpp+0x278/0x6e4
-[    2.502353] [<9000000004a43dd4>] alg_test_kpp+0x70/0xf4
-[    2.502494] [<9000000004a41b48>] alg_test+0x128/0x690
-[    2.502631] [<9000000004a3d898>] cryptomgr_test+0x20/0x40
-[    2.502775] [<90000000041b4508>] kthread+0x138/0x158
-[    2.502912] [<9000000004161c48>] ret_from_kernel_thread+0xc/0xa4
+> > > @@ -858,7 +910,8 @@ static int __init memory_tier_init(void)
+> > >        * For now we can have 4 faster memory tiers with smaller adistance
+> > >        * than default DRAM tier.
+> > >        */
+> > > -     default_dram_type = alloc_memory_type(MEMTIER_ADISTANCE_DRAM);
+> > > +     default_dram_type = mt_find_alloc_memory_type(MEMTIER_ADISTANCE_DRAM,
+> > > +                                                                     &default_memory_types);  
+> >
+> > Unusual indenting.  Align with just after (
+> >  
+> 
+> Aligning with "(" will exceed 100 columns. Would that be acceptable?
+I think we are talking cross purposes.
 
-The backtrace is always similar but not exactly the same. It is always
-triggered from cryptomgr_test, but not always from the same test.
+	default_dram_type = mt_find_alloc_memory_type(MEMTIER_ADISTANCE_DRAM,
+						      &default_memory_types);  
 
-Analysis shows that with CONFIG_KFENCE active, the address returned from
-kmalloc() and friends is not always below vm_map_base. It is allocated
-by kfence_alloc() which at least sometimes seems to get its memory from
-an address space above vm_map_base. This causes __virt_addr_valid() to
-return false for the affected objects.
+Is what I was suggesting.
 
-Let __virt_addr_valid() return 1 for kfence pool addresses, this make
-virt_addr_valid()/__virt_addr_valid() work with KFENCE.
+> 
+> > >       if (IS_ERR(default_dram_type))
+> > >               panic("%s() failed to allocate default DRAM tier\n", __func__);
+> > >
+> > > @@ -868,6 +921,14 @@ static int __init memory_tier_init(void)
+> > >        * types assigned.
+> > >        */
+> > >       for_each_node_state(node, N_MEMORY) {
+> > > +             if (!node_state(node, N_CPU))
+> > > +                     /*
+> > > +                      * Defer memory tier initialization on CPUless numa nodes.
+> > > +                      * These will be initialized after firmware and devices are  
+> >
+> > I think this wraps at just over 80 chars.  Seems silly to wrap so tightly and not
+> > quite fit under 80. (this is about 83 chars.
+> >  
+> 
+> I can fix this.
+> I have a question. From my patch, this is <80 chars. However,
+> in an email, this is >80 chars. Does that mean we need to
+> count the number of chars in an email, not in a patch? Or if I
+> missed something? like vim configuration or?
 
-Reported-by: Guenter Roeck <linux@roeck-us.net>
-Suggested-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- arch/loongarch/mm/mmap.c | 4 ++++
- 1 file changed, 4 insertions(+)
+3 tabs + 1 space + the text from * (58)
+= 24 + 1 + 58 = 83
 
-diff --git a/arch/loongarch/mm/mmap.c b/arch/loongarch/mm/mmap.c
-index a9630a81b38a..89af7c12e8c0 100644
---- a/arch/loongarch/mm/mmap.c
-+++ b/arch/loongarch/mm/mmap.c
-@@ -4,6 +4,7 @@
-  */
- #include <linux/export.h>
- #include <linux/io.h>
-+#include <linux/kfence.h>
- #include <linux/memblock.h>
- #include <linux/mm.h>
- #include <linux/mman.h>
-@@ -111,6 +112,9 @@ int __virt_addr_valid(volatile void *kaddr)
- {
- 	unsigned long vaddr = (unsigned long)kaddr;
- 
-+	if (is_kfence_address((void *)kaddr))
-+		return 1;
-+
- 	if ((vaddr < PAGE_OFFSET) || (vaddr >= vm_map_base))
- 		return 0;
- 
--- 
-2.43.0
+Advantage of using claws email for kernel stuff is it has a nice per character
+ruler at the top of the window.
+
+I wonder if you have a different tab indent size?  The kernel uses 8
+characters.  It might explain the few other odd indents if perhaps
+you have it at 4 in your editor?
+
+https://www.kernel.org/doc/html/v4.10/process/coding-style.html
+
+Jonathan
+
+> 
+> > > +                      * initialized.
+> > > +                      */
+> > > +                     continue;
+> > > +
+> > >               memtier = set_node_memory_tier(node);
+> > >               if (IS_ERR(memtier))
+> > >                       /*  
+> >  
+> 
+> 
 
 
