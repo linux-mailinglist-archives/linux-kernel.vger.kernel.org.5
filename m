@@ -1,108 +1,158 @@
-Return-Path: <linux-kernel+bounces-131474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C56D898853
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:55:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 216CC898856
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:55:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA05B1C213A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:55:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B63901F22186
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:55:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F39E1272A6;
-	Thu,  4 Apr 2024 12:55:17 +0000 (UTC)
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27D959157;
-	Thu,  4 Apr 2024 12:55:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33ADD85C70;
+	Thu,  4 Apr 2024 12:55:49 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4339C82C7E
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:55:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712235316; cv=none; b=Qm4IJu+gVC2ySmcE0D+9SytLC75QLIqIlql6zraEGPsYh8NFFXwP/obXL2WA0B+IbjCe7CXg5H6ePKgedLZ518pWu2jSr0UcGmDi/t8dkDbVZ1VH1oMqqvK7WgN7LXDZvaWwCth7+NkcEGMhxjRGmCugOMnJIWwf91VAPm6UpYI=
+	t=1712235348; cv=none; b=UNnc2kVpaIw4huIRSFrkwa2l7poY966PHH6LHIhh/WNoFpCqcALFP511vLrx7o1xViyPT6AfiE3p36Wx2jNjwr/vWzd5dyRTunhGkvTf0fVyJq1nsbGm0Nu4YU+Tw0XIcGBERp6E749W7I7qnjd0pRRBktEi/tD8Y+v45WAlmlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712235316; c=relaxed/simple;
-	bh=ostQ0XvbZ4Xswj3rkDxFH+u55Uw1YqBVGn08piL5Ih4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GagwH55Ha5JxWnq7So5Q2WMvQtTclCJazel1eTVAj9Bd3A7hB9AU+gd76n1eas++c7r2Ne/WQA+1m7G9eviOmPXsmPc/KRdJGiLHx2WFWdyfhQFo8GualHunbFdUVjFYQLd3n1MToIN3ptGX29p7UjPKTcQUOnfIemVLvlFUU4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a4a387ff7acso120434066b.2;
-        Thu, 04 Apr 2024 05:55:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712235313; x=1712840113;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6O2JKeZvqaoJNzaclf36Ur4Gc3+emicV0GwUt8uQmao=;
-        b=TTbSNeWQLH20YpGujWIEvKKex+Iy9AumzfM436MeuL1O/9Vg94oUmUMCG8OtFh8jMz
-         5UESFEzrtWlhHih27HH4fqA/605fWqKTGWUGIOQV5fFH1bx9+gCny5f+9DCy6f4bZjJ7
-         6gbdUlYbcR5UCzYLdrb+rC1JOLnw07T9JTvri1GTKr0pY5mp2dl7qD7L4UQg/LJ8HKve
-         +Ko/VJ3fZ6t2RQTwPD+g4zoVSghG6lsYVCuI0s3AZ5sO0uWXZFSD09uLoDxthf2bXzUC
-         kWxYUcr9HMJB3tNeJTyeGMLatxzXjcduUj18ia8UD6o0fPB0TCJfmDjI0q4Xxdy1YhAa
-         Et2w==
-X-Forwarded-Encrypted: i=1; AJvYcCXWtLT4Tl7u4YKIa+xGEhmthaKbGLV4i6nOUGVVwe7QQEg1PvR+gnH5dyckhQ0e8vd2kImrxUXdAqdUuDanZpCm9eukguPA
-X-Gm-Message-State: AOJu0YzvZc19hxfVXo8tmGFX76lKMaJV1f0izfGsEd2YxkMAJsRKW1Ie
-	VvlkNwYn0UC3AmhEyWjaTIm57U8uEwEdBXC8HsCQ0q5quV84r97d
-X-Google-Smtp-Source: AGHT+IFik+fbQrbMFPzpT5sag14+qCt6HdMSkhsjjRwPbfYxPNdO3b+FTDja065PzdWdD8NT7TlBTQ==
-X-Received: by 2002:a17:906:1687:b0:a4f:b391:886b with SMTP id s7-20020a170906168700b00a4fb391886bmr1491841ejd.69.1712235313187;
-        Thu, 04 Apr 2024 05:55:13 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
-        by smtp.gmail.com with ESMTPSA id gy18-20020a170906f25200b00a4e4f129d3bsm6478237ejb.26.2024.04.04.05.55.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 05:55:12 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: kuba@kernel.org,
-	davem@davemloft.net,
-	pabeni@redhat.com,
-	edumazet@google.com,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	David Ahern <dsahern@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH net-next 2/2] ip6_vti: Remove generic .ndo_get_stats64
-Date: Thu,  4 Apr 2024 05:52:52 -0700
-Message-ID: <20240404125254.2978650-2-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240404125254.2978650-1-leitao@debian.org>
-References: <20240404125254.2978650-1-leitao@debian.org>
+	s=arc-20240116; t=1712235348; c=relaxed/simple;
+	bh=KOJGuxT0IUjEwMScrZ+bttZSWR5mJLELkbU52u3b8n0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=usSwZl9T/DLd1Ji/RGT+r0GVecvFql6YTzKZhFjce6zq7htXvsTEMRIGhs+kDQ5Nx3UMsdTra8z3x1w3TFLsFGnVOfs7ArGYBcJagbO+LG1Q+02+BlQaHbI1eKAsiYzso9fFWMtGqtPYQ6yjdUIJnjcmxgsmO4d8qV+vduLPz2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15D28FEC;
+	Thu,  4 Apr 2024 05:56:15 -0700 (PDT)
+Received: from [10.34.100.133] (e126645.nice.arm.com [10.34.100.133])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D4FB13F64C;
+	Thu,  4 Apr 2024 05:55:41 -0700 (PDT)
+Message-ID: <cecd7e83-b83c-416e-b59b-296f84e5c574@arm.com>
+Date: Thu, 4 Apr 2024 14:55:40 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/7] sched/fair|isolation: Correctly clear
+ nohz.[nr_cpus|idle_cpus_mask] for isolated CPUs
+To: Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Aaron Lu <aaron.lu@intel.com>, Rui Zhang <rui.zhang@intel.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>
+References: <20240403150543.2793354-1-pierre.gondois@arm.com>
+ <98443f19-c653-493e-a2a9-e1d07b9d8468@redhat.com>
+Content-Language: en-US
+From: Pierre Gondois <pierre.gondois@arm.com>
+In-Reply-To: <98443f19-c653-493e-a2a9-e1d07b9d8468@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Commit 3e2f544dd8a33 ("net: get stats64 if device if driver is
-configured") moved the callback to dev_get_tstats64() to net core, so,
-unless the driver is doing some custom stats collection, it does not
-need to set .ndo_get_stats64.
+Hello Waiman,
+Thanks for the link, I didn't see the patchset previously.
 
-Since this driver is now relying in NETDEV_PCPU_STAT_TSTATS, then, it
-doesn't need to set the dev_get_tstats64() generic .ndo_get_stats64
-function pointer.
+On 4/4/24 05:01, Waiman Long wrote:
+> On 4/3/24 11:05, Pierre Gondois wrote:
+>> Zhang Rui reported that find_new_ilb() was iterating over CPUs in
+>> isolated cgroup partitions. This triggered spurious wakeups for
+>> theses CPUs. [1]
+>> The initial approach was to ignore CPUs on NULL sched domains, as
+>> isolated CPUs have a NULL sched domain. However a CPU:
+>> - with its tick disabled, so taken into account in
+>>     nohz.[idle_cpus_mask|nr_cpus]
+>> - which is placed in an isolated cgroup partition
+>> will never update nohz.[idle_cpus_mask|nr_cpus] again.
+>>
+>> To avoid that, the following variables should be cleared
+>> when a CPU is placed in an isolated cgroup partition:
+>> - nohz.idle_cpus_mask
+>> - nohz.nr_cpus
+>> - rq->nohz_tick_stopped
+>> This would allow to avoid considering wrong nohz.* values during
+>> idle load balance.
+>>
+>> As suggested in [2] and to avoid calling nohz_balance_[enter|exit]_idle()
+>> from a remote CPU and create concurrency issues, leverage the existing
+>> housekeeping HK_TYPE_SCHED mask to reflect isolated CPUs (i.e. on NULL
+>> sched domains).
+>> Indeed the HK_TYPE_SCHED mask is currently never set by the
+>> isolcpus/nohz_full kernel parameters, so it defaults to cpu_online_mask.
+>> Plus it's current usage fits CPUs that are isolated and should
+>> not take part in load balancing.
+>>
+>> Making use of HK_TYPE_SCHED for this purpose implies creating a
+>> housekeeping mask which can be modified at runtime.
+>>
+>> [1] https://lore.kernel.org/all/20230804090858.7605-1-rui.zhang@intel.com/
+>> [2] https://lore.kernel.org/all/CAKfTPtAMd_KNKhXXGk5MEibzzQUX3BFkWgxtEW2o8FFTX99DKw@mail.gmail.com/
+>>
+>> Pierre Gondois (7):
+>>     sched/isolation: Introduce housekeeping_runtime isolation
+>>     sched/isolation: Move HK_TYPE_SCHED to housekeeping runtime
+>>     sched/isolation: Use HKR_TYPE_SCHED in find_new_ilb()
+>>     sched/fair: Move/add on_null_domain()/housekeeping_cpu() checks
+>>     sched/topology: Remove CPUs with NULL sd from HKR_TYPE_SCHED mask
+>>     sched/fair: Remove on_null_domain() and redundant checks
+>>     sched/fair: Clear idle_cpus_mask for CPUs with NULL sd
+>>
+>>    include/linux/sched/isolation.h | 30 ++++++++++++++++++++-
+>>    include/linux/sched/nohz.h      |  2 ++
+>>    kernel/sched/fair.c             | 44 +++++++++++++++++-------------
+>>    kernel/sched/isolation.c        | 48 ++++++++++++++++++++++++++++++++-
+>>    kernel/sched/topology.c         |  7 +++++
+>>    5 files changed, 110 insertions(+), 21 deletions(-)
+>>
+> I had also posted a patch series on excluding isolated CPUs in isolated
+> partitions from housekeeping cpumasks earlier this year. See
+> 
+> https://lore.kernel.org/lkml/20240229021414.508972-1-longman@redhat.com/
+> 
+> It took a different approach from this series. It looks like I should
+> include HK_TYPE_MISC as well.
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- net/ipv6/ip6_vti.c | 1 -
- 1 file changed, 1 deletion(-)
+The common point between the 2 patchset is that find_new_ilb() won't
+take into account isolated CPUs.
+The present patchset also:
+- clears nohz.[idle_cpus_mask|nr_cpus] variable when a CPU becomes isolated,
+   cf. [PATCH 7/7] sched/fair: Clear idle_cpus_mask for CPUs with NULL sd
+- tries to clean up/gather on_null_domain()/HK_TYPE_SCHED/HK_TYPE_MISC
+   mask checks, as HK_TYPE_SCHED/HK_TYPE_MISC masks are currently never
+   set.
+but it also:
+- updates the housekeeping mask from sched/topology.c. It might be better
+   to do it from cpuset.c as you did as the update originally comes from
+   here and it is unlikely another place would require updating housekeeping
+   CPUs.
+   A new housekeeping_runtime type is also created, but I think the way you
+   handle updating housekeeping mask at runtime is better.
+- adds a dependency of sched/fair.c over CPU_ISOLATION (cf. housekeeping_*
+   calls), as Peter noted (IIUC) [1].
 
-diff --git a/net/ipv6/ip6_vti.c b/net/ipv6/ip6_vti.c
-index 71c749bb4b3e..4d68a0777b0c 100644
---- a/net/ipv6/ip6_vti.c
-+++ b/net/ipv6/ip6_vti.c
-@@ -887,7 +887,6 @@ static const struct net_device_ops vti6_netdev_ops = {
- 	.ndo_uninit	= vti6_dev_uninit,
- 	.ndo_start_xmit = vti6_tnl_xmit,
- 	.ndo_siocdevprivate = vti6_siocdevprivate,
--	.ndo_get_stats64 = dev_get_tstats64,
- 	.ndo_get_iflink = ip6_tnl_get_iflink,
- };
- 
--- 
-2.43.0
+Should I re-spin the patchset and try to correct those points ? Or do you
+think this should be done differently ?
 
+Regards,
+Pierre
+
+[1] https://lore.kernel.org/lkml/20240404072745.GA35684@noisy.programming.kicks-ass.net/
+
+> 
+> Cheers,
+> Longman
+> 
 
