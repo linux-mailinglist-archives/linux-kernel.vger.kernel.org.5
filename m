@@ -1,74 +1,75 @@
-Return-Path: <linux-kernel+bounces-131215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8DBD08984B3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:08:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F4AF8984B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:08:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48D6E2832CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:08:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D136282A61
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B35D74C09;
-	Thu,  4 Apr 2024 10:08:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C229B763F4;
+	Thu,  4 Apr 2024 10:08:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="a8wvQ7vr"
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bdP8f0jv"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F8748F7D
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 10:08:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B3BB757FA
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 10:08:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712225291; cv=none; b=TaYKAnSDdo5ZYLipwbQkXE8KitIbw0P8WFXheUOIQfDeRh9iiTIQtNzIb8nObj8PG7Wee4X+W9WD04HHBu3EDPQSluBoxdyHfNgZhi84C59rwUtAXlFEfrDy2/mPRpCXSwnLQnxDsLHPb0GtYvXoxkJg3iq6A4HDfwdFRcTxau0=
+	t=1712225293; cv=none; b=pARZo/NkAFq7gcv0kcT3Ak8tJmohsV4ui/KdehRqT2BRwBY3f4KMKWZOHNom4a7W71Bmwo50p0btvC9ux1Nc7jcng20Jlany3+nMAHuekdsLz4j2XQFK5JA+t6XEKlnXW8lsZEgiRmKo4hX7jgLbBZkldhSyq4WH1zEGAIQ/ERs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712225291; c=relaxed/simple;
-	bh=Du46wueKWvwkNxb//bx6Oplm8RijccGjLPvLCDL3hio=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=IwN9nGLRCpXOOniffpj2sJZJMOUg1pxYmYO9da+WwqNrJxGwHfh5x80JkZHPwxc54sr6+5WKtFQmJJlrRVFtDtZWhS8+Qck3D28MRFvChH3g5Xrak755gU9I4epgW/3BJe86diFAB64+iHNx3d6EV33fx/s9ztONjd+86vApwuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=a8wvQ7vr; arc=none smtp.client-ip=209.85.208.44
+	s=arc-20240116; t=1712225293; c=relaxed/simple;
+	bh=xtfhuUTM99xHxoMeoYk5bzlIduxzhp/GTlxP2mkYgaY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=ugcxyvkguKGlwLHbUIac6mdLjg852HEz9Ts3JBZymqfaZuF8kYM7chp0344fWCsTOQCmz2i3z9ZUtaxywzUneNztpxlAjDTPm8n5euj+Mq6cLUYNYJ4TovAeyheyBCQ4KiC1VBc8x7gMGLpOS6drOKlpP76Rt9JLMQXFrgJXwEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bdP8f0jv; arc=none smtp.client-ip=209.85.208.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56bf6591865so1135366a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 03:08:09 -0700 (PDT)
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e1baf0380so709297a12.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 03:08:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712225287; x=1712830087; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qmPmdTR9ZwPxhvP2c4bgI17aKaTHU1vV+VtVIiuiDB4=;
-        b=a8wvQ7vrpD19l4lBjBddTtRx+2Rh97pYKuZq+OuFi5sHKk4UmyJIPsnTkQKnr7fW5V
-         jwhhA69m7pDAaWF2odzTz6nCMwW0ogLJ18zLOzOnkK5bfC38QyRaUbs8oX4wHJc07jhQ
-         mzTSR88oPkH3NacYJkS9VBZYtBhCYAuaM0hBFntJpWX0QIeorOrtHDVpU07SHZRnLcKm
-         bJFGuRbJBVSLuRSv0ONdWApyCLlgw/vERJ6bZImiP99r32yyKBWRi0Sl7pAHnv9qmiuL
-         N31YP7xThQrMk0vRmkLoWHoz662oTYaBWWgYFIms14akch+q4WCA48h6wRhInTDdu+km
-         tdYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712225288; x=1712830088;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=linaro.org; s=google; t=1712225289; x=1712830089; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=qmPmdTR9ZwPxhvP2c4bgI17aKaTHU1vV+VtVIiuiDB4=;
-        b=HaJTxaoNXLZVLDfYnxvhwKSF5PZUPBRLmJluRU+EhCsWMhklEKMi/0xa7i96eVxnuD
-         of6xa1AOcO0tB1KbO8f4Byp2MJvNPKWlVvXXaeycjrnoUynXe2vQdYF4KAcnLEgEqTp3
-         hAOgXxn3Ejc60JV1EXmQHm9G++saHbIP1384hNsW5a0dlK3cP5i/ASs0FZkZA9z4LFoF
-         iL/wnMzTauv0TAXtzom6RarqWg1og/RI3c7w7JXqVo9kqo3YuDDcITpMYMz6KEPxLQS3
-         Wgm40Sz0U9+ke+oRAjDKazA9RxOfkwIPg7eyMbN6JfIN9s1MkrgcHNwyg4KWYgoUkc9h
-         0ENw==
-X-Forwarded-Encrypted: i=1; AJvYcCUqmit1W32dN2V7WK3i8+5XsGSbKEoLpS35VU4Q3839DEyauqW5ppAtR/Z1P4HdOMwUObEPenfFv6C7xav17GnSXbKqofz8BfNIAizW
-X-Gm-Message-State: AOJu0Yy4YcltdHcxDL8o7VG7yOIWxYXoongiHsvlHON0ajHcacctPtTN
-	aT1jSM84eCoaCRfKVfvihoEdsDXWZbDatW+e8Q/R1A/34wBDM2HmJDNZ72AdT6k=
-X-Google-Smtp-Source: AGHT+IGH9QuL6NMx64raNLiACxvVKWuZIeX2HIIWXh2fepAfblZYgtSLhQDB19KMz0mESLgiFnB8Hg==
-X-Received: by 2002:a50:9b1c:0:b0:56d:ece8:a5e8 with SMTP id o28-20020a509b1c000000b0056dece8a5e8mr1463406edi.14.1712225287519;
-        Thu, 04 Apr 2024 03:08:07 -0700 (PDT)
+        bh=Dp8USTzsG3ntp/LxWp9gHMeUcZJjL0z8l7/Rhp/dYWg=;
+        b=bdP8f0jvBZzFFGLvxufeHDfpNSFBNDnFaZWURYpoV9OcBfvUkIDRiFF0qmCTIlVhbC
+         xTkisHlyHE2pYA0J9w1TtP6HaFf6NH3Ih+ITuS+ewGnPFEtX7SELM+rFiXng0GT9MhRV
+         5CD/WXtSLDI/kzrP5H6pQd/K8UD9prWxY8qGBvpsQEqfFHO8u6YY93nYyxXPoMiG04gL
+         enpR0CobxVw4/Ry5mD/yPqQcvvBmmDcKGiuPi4DVVgf9uP4nc0pSm2tUewVJvKi46qGX
+         BPakQIUHDqazePcyZEu2muIjZ7y+m3r6/oBPXrhMOvhnj0KYwEi6Upe7RNnO7cLCHshV
+         g3jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712225289; x=1712830089;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Dp8USTzsG3ntp/LxWp9gHMeUcZJjL0z8l7/Rhp/dYWg=;
+        b=vlsMQ+mhkmEZPipiwf0eY7vdjmBQQdprajv1T5O2nXSdksSN7mprASAfcul1OC3PFR
+         H3fEp67hPuK+dHvwzVGno69Z3xw+Vf+reY813FDrNIbIkSzL1foGVEdduZd1DeKbxX3E
+         SZmzrt1twsYEqzUORnsEe1Pudz/oaDgEh1Wfr6tnaSpsn98va5K4vPDoVAZtFmqMuDr3
+         ktZWSSN8Hs0J0corH8/FCcNaLNLv+Qdl8byFh0IAGCVO/Le0/HtwP4OpxAVu77TRoTQv
+         YWnewIJ5iwPjrmopmkhRwnwJq9IK3zDQbHtWcKbveASQUo0ke8E86mfwgKAKWPmLbblC
+         yW6Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUdrF+OTSu0P8yHU9WAWg200Wg3uQ6FfThqNojWwlzymStaVcdHlHns84+1LNiu4wx4JpQCXC6EtQHiihUW6Nt28G10CrHCW/NVxEz6
+X-Gm-Message-State: AOJu0YyE7duseaCYhxwGFrLoBeqtGO2xq2An2viJUfN8Ru4kOrICL5n/
+	aBKA9H8rn6U/hCoDoVYcBfDjRdfIVxiJvqofYINSmfQUxc4QsOx0B2ASx7s3ItU=
+X-Google-Smtp-Source: AGHT+IHpY7DJnbfRwrN+pggOgCfH6syNZv4JzFQ7NFRdr6EFSZOLNeW3eQkAhrKYCeBUc5BBBg2YBA==
+X-Received: by 2002:a50:d4de:0:b0:56e:df1:534a with SMTP id e30-20020a50d4de000000b0056e0df1534amr1014440edj.42.1712225288726;
+        Thu, 04 Apr 2024 03:08:08 -0700 (PDT)
 Received: from umbar.lan ([192.130.178.91])
-        by smtp.gmail.com with ESMTPSA id ig10-20020a056402458a00b0056c0a668316sm1984219edb.3.2024.04.04.03.08.06
+        by smtp.gmail.com with ESMTPSA id ig10-20020a056402458a00b0056c0a668316sm1984219edb.3.2024.04.04.03.08.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 03:08:07 -0700 (PDT)
+        Thu, 04 Apr 2024 03:08:08 -0700 (PDT)
 From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Subject: [PATCH 0/6] drm/panel: small fixes for visionox and novatek panel
- drivers
-Date: Thu, 04 Apr 2024 13:07:58 +0300
-Message-Id: <20240404-drop-panel-unregister-v1-0-9f56953c5fb9@linaro.org>
+Date: Thu, 04 Apr 2024 13:07:59 +0300
+Subject: [PATCH 1/6] drm/panel: visionox-rm69299: don't unregister DSI
+ device
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,9 +78,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAP57DmYC/x2MQQqAIBAAvxJ7bqFCivpKdBBdayFU1opA/HsSc
- 5rDTIZEwpRgaTIIPZw4+Cp924A5tN8J2VaHoRtUV0ErIWLUnk68vdDO6SLBSSk9O6t6Y0aobRR
- y/P7fdSvlAyplgMhnAAAA
+Message-Id: <20240404-drop-panel-unregister-v1-1-9f56953c5fb9@linaro.org>
+References: <20240404-drop-panel-unregister-v1-0-9f56953c5fb9@linaro.org>
+In-Reply-To: <20240404-drop-panel-unregister-v1-0-9f56953c5fb9@linaro.org>
 To: Neil Armstrong <neil.armstrong@linaro.org>, 
  Jessica Zhang <quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, 
  Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
@@ -92,47 +93,44 @@ To: Neil Armstrong <neil.armstrong@linaro.org>,
 Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
  Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1356;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=944;
  i=dmitry.baryshkov@linaro.org; h=from:subject:message-id;
- bh=Du46wueKWvwkNxb//bx6Oplm8RijccGjLPvLCDL3hio=;
- b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmDnwFB4ymGew9A+j+lPaxjOF+3+3RraubF85ot
- OjFFlmnjvmJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZg58BQAKCRCLPIo+Aiko
- 1T43B/99SNedkXIzKq81LkZB/eLv5u0TTihQz/8l+QHHCWt0oOkMNGJ1OiuTLDr+ToE8FUWE6MR
- GuVpa19gteiQWaMoOMLaUlGG+yLtiytO3n9DtqRDSEdkeWshqiEW+YdN1Ur8opJZEYUlmnfPYcb
- uSQWI9uSHpch7sZk7im8Xu6b456C+r3slCqiLotvjlaHZ26ghhwV9M05njsLLcxzq1lwRlYMI3y
- XO9wtiu8lczQFupCgCRVuVAHl90JotvyLoC3RV5Vq8qdCEn/L5Cqy/GGdyzttgNeJkZ9PO78HVz
- nze2WXDRUaOPJYEP92kgYo/dSUBocbb3MZ93en0qQFGV7oXr
+ bh=xtfhuUTM99xHxoMeoYk5bzlIduxzhp/GTlxP2mkYgaY=;
+ b=owEBbQGS/pANAwAKAYs8ij4CKSjVAcsmYgBmDnwFymsormB7E2rQzeFs0/IGcTvRxMiWf2O5A
+ yUo7xUWQCKJATMEAAEKAB0WIQRMcISVXLJjVvC4lX+LPIo+Aiko1QUCZg58BQAKCRCLPIo+Aiko
+ 1TgJB/4z75ZXyRi0GestVgdCyBjlrKyuTdUKv5EevhWnh+aLaSOFY5w85Ts/sc4S/+3rDxvdwU2
+ CkN/oVbiKN54mlfRaS7cm0j6/4ZpwgfPkr9H/WmkWaCG5eC8HSr4z3U46sxjNJdaj3FuUW8ouk5
+ h04EnLDzSFxa+NJdOnAoFE/qEWblFiPDpVFKpw/ml2sjTU1HUObnzOLZtarfPdKnp10mk7Xmgte
+ pwYLYkrAbrUp0xySxMlW7cfEQS6poi0IhoOj0tt7YLGHJq5j5Cp7x/HwHMfaFAyrayEdvlIXJMT
+ TQ2msvq1B4rSIXl5Ein9MwCCBaktTd8fYP5gAedMvW3SnueF
 X-Developer-Key: i=dmitry.baryshkov@linaro.org; a=openpgp;
  fpr=8F88381DD5C873E4AE487DA5199BF1243632046A
 
-While taking a glance at the novatek-nt36672e driver I stumbled upon a
-call to unregister the DSI device for the panel, although it was not the
-panel driver that registered the device.
+The DSI device for the panel was registered by the DSI host, so it is an
+error to unregister it from the panel driver. Drop the call to
+mipi_dsi_device_unregister().
 
-Remove this call and a similar call from the visionox-rm69299 driver.
-While we are at it, also optimize regulator API calls in these two
-drivers and in the novatek-nt36672a driver.
-
+Fixes: c7f66d32dd43 ("drm/panel: add support for rm69299 visionox panel")
 Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 ---
-Dmitry Baryshkov (6):
-      drm/panel: visionox-rm69299: don't unregister DSI device
-      drm/panel: novatek-nt36682e: don't unregister DSI device
-      drm/panel: novatek-nt36672e: stop setting register load before disable
-      drm/panel: novatek-nt36672e: stop calling regulator_set_load manually
-      drm/panel: novatek-nt36672a: stop calling regulator_set_load manually
-      drm/panel: visionox-rm69299: stop calling regulator_set_load manually
+ drivers/gpu/drm/panel/panel-visionox-rm69299.c | 2 --
+ 1 file changed, 2 deletions(-)
 
- drivers/gpu/drm/panel/panel-novatek-nt36672a.c | 11 +++-----
- drivers/gpu/drm/panel/panel-novatek-nt36672e.c | 35 +++-----------------------
- drivers/gpu/drm/panel/panel-visionox-rm69299.c | 18 ++-----------
- 3 files changed, 9 insertions(+), 55 deletions(-)
----
-base-commit: a6bd6c9333397f5a0e2667d4d82fef8c970108f2
-change-id: 20240404-drop-panel-unregister-744a9fd41cc6
+diff --git a/drivers/gpu/drm/panel/panel-visionox-rm69299.c b/drivers/gpu/drm/panel/panel-visionox-rm69299.c
+index 775144695283..b15ca56a09a7 100644
+--- a/drivers/gpu/drm/panel/panel-visionox-rm69299.c
++++ b/drivers/gpu/drm/panel/panel-visionox-rm69299.c
+@@ -253,8 +253,6 @@ static void visionox_rm69299_remove(struct mipi_dsi_device *dsi)
+ 	struct visionox_rm69299 *ctx = mipi_dsi_get_drvdata(dsi);
+ 
+ 	mipi_dsi_detach(ctx->dsi);
+-	mipi_dsi_device_unregister(ctx->dsi);
+-
+ 	drm_panel_remove(&ctx->panel);
+ }
+ 
 
-Best regards,
 -- 
-Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+2.39.2
 
 
