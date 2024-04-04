@@ -1,113 +1,179 @@
-Return-Path: <linux-kernel+bounces-131794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27991898BD3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:08:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DB9A898BD2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:08:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D50D5281F47
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:08:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 758211F22617
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:08:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF03D12AAE0;
-	Thu,  4 Apr 2024 16:07:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=manguebit.com header.i=@manguebit.com header.b="KlqV4cg0"
-Received: from mx.manguebit.com (mx.manguebit.com [167.235.159.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E277912B163;
+	Thu,  4 Apr 2024 16:07:32 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A33F912E1E8;
-	Thu,  4 Apr 2024 16:07:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=167.235.159.17
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712246856; cv=pass; b=RpvX8g4Uy/jTAtyMf2DJjXpDgC/jj4uFEWDLnsJcD89FvAy965Pj+FEinjUQLcNrpoh31ghaZ94O2d/6OPFOHZGzMO9MjjntZ+IooPP1deG+bP6sHsUh/4D/HTFqIxF/EOkHYrk4u/Ib/5ro4L2N/TTt0zbJ/+MICtRKfTZmVVQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712246856; c=relaxed/simple;
-	bh=LUFWgRFtjQZ49bnS25rMZ1qtgXnfmx0q15Zi6FSjpy8=;
-	h=Message-ID:From:To:Cc:Subject:In-Reply-To:References:Date:
-	 MIME-Version:Content-Type; b=pnSCn6RM2DzaGK6Rqu/azCdHXHPOlXQgvuvjvLxfGG5CDnJE4WW1n748wyLlIxqn6fYJBBAzU/pndOLPB3xkqtV4e+Uc0Rx1Vp6dHuGlM89Stj7FAp/rGsRi5YIAZ0DfXqkrCbRsRrk0DYzH+KLrzwVuEvihvL4V5U2XCwXqPB8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manguebit.com; spf=pass smtp.mailfrom=manguebit.com; dkim=pass (2048-bit key) header.d=manguebit.com header.i=@manguebit.com header.b=KlqV4cg0; arc=pass smtp.client-ip=167.235.159.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=manguebit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=manguebit.com
-Message-ID: <14e66691a65e3d05d3d8d50e74dfb366@manguebit.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
-	s=dkim; t=1712246847;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/VfdAcUgMKKdIImznXQCsjzxihOdEcjXVNKwK2JA30Q=;
-	b=KlqV4cg0zu0RMjPJ2+96XschbtCo+vwr0mHQpil0K68WGDUrHUMZ12SFTM9S1BaqjjBIx/
-	EDwshMfEnj5+HudcR88Pd+PoK/32C0K5LZYosj9cm9gcnrosLu0R9G/tfchMknldVhDt6C
-	wuzB1TfYgNcugCcGsMWhys6ABmzuh2SSMKXAP6/0v/ZjS9tcvwofC5gmlaHAYEl1pI46nf
-	oQt/iOC7WOWRjJUqZDhSXkpNQ5jxexKcvgpwPS0WVgUrWI/A0nSPpKEMOjq4YQELdGJSIS
-	yWikbG8PAoFVM7LNXaOMp23uO7cRJomjSxHn2R1dfCpOjwD7pJSkWZGaNWsFyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=manguebit.com;
-	s=dkim; t=1712246847; h=from:from:sender:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/VfdAcUgMKKdIImznXQCsjzxihOdEcjXVNKwK2JA30Q=;
-	b=qzPWneXaxl526HZlYSdO9k7llZr6l9jznC3EaHDXdORExty5mLPf16WNWkEbAU3d8oczwA
-	GFdn6D/faaCebfoZuASOIBhvfLwOcOfGFx2QoEanuQjqkwjoWPTUVXIw2MXi7ZiTsW8ER4
-	FrGQxnWyzA+GA1xPOe6PRGpbSJNshzYrrinxQnNEJJ9rzWRLcYAKJjyQb87nqZPDWDq+JW
-	lwlJh/PF6Nie3bu90aLsh+lmC90Jp9QU4Kome9fs+MW+TlrZr+92xseh9NpB0VcpkZAoHN
-	Y3VmyIzi6zdbAdPKIVbbuOI/O+z/dMpJmriIn9aTCIsvzL2otGjovY1SByWZZQ==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.mailfrom=pc@manguebit.com
-ARC-Seal: i=1; s=dkim; d=manguebit.com; t=1712246847; a=rsa-sha256;
-	cv=none;
-	b=Mv6xhiXFLzmVYcG110KOH5zMR9BCpHlX2HcZQJrkSUrOb0RFTLgNEdwWkSM6GO9KyvSNN+
-	NXZRug3ua6MyoAAqSiG0+mO4sqqp29ZdTpqnLuqQNxktp/X5wRyUM+dgdxbF7KKebbmM02
-	o1Uor6zQz7E5UrLWo5n8QJmKdxrb2SsqoKkHiUj9COBabZc+f4s+j6XMoEJe3+jWBEv1fF
-	ElmeqtFCNr1tQfdxk1vrecvJbGL0cmI8wzZB2Lvjpb3NY/3tOcpAHPXMpErPSVzpllMgYb
-	bCOLcgs5tc0Iehr+Ppzngf3z1zCZ9hTDEtsn95S4BzSv7+iE9SA4zF2dYFq+Ag==
-From: Paulo Alcantara <pc@manguebit.com>
-To: David Howells <dhowells@redhat.com>, Steve French <sfrench@samba.org>
-Cc: dhowells@redhat.com, Shyam Prasad N <sprasad@microsoft.com>,
- linux-cifs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cifs: Fix reacquisition of volume cookie on still-live
- connection
-In-Reply-To: <3756406.1712244064@warthog.procyon.org.uk>
-References: <3756406.1712244064@warthog.procyon.org.uk>
-Date: Thu, 04 Apr 2024 13:07:24 -0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C446A12AAE0
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:07:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712246852; cv=none; b=RrxOT0tfqU6H3OEwXtbAw04fgJ4p01ga86Cd9puNJUYFBbzx/FZgA1mpLlqs6G/NKrTTKSuqQxI6s3mFZY8fAKVH5HaITQHl68ifVulucka3Xmc+IXoOxnuHV6J5FmfFlPwqpJNQcriQWlZGdA147qfpY25IQH262/uvE9nB80o=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712246852; c=relaxed/simple;
+	bh=hMsrU0MV/hxENKfm40nvfiZs3kucWCCykL/nLGFJclE=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=BGKwS36Hb9d63aRrQx7YE2L05SqSnCEVPDk1OoGsG/mtjibuYQIQ5LFXDMVETbS+A1pq/Lk9rYvNCq9Q9eqhTCMlEDQEkvzPNF2982pfc55u6ykAqnqcoAwcPS8EBamyczuICy5Rpr7w+GcF+LAZuBGFrLzyqWW3reFgxXzKD0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c7f57fa5eeso105230539f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 09:07:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712246850; x=1712851650;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=0EPABN1JYCI6VYUF2JPssH24ZBTpGfA+zEJyxFNmFfc=;
+        b=Q/+TVAUADLzsgiQShvsXw89blqW7L2vp5NlKrf6i/krM6+PLuEbyA7tF2gcqy4dKSG
+         Zt+sDh3lEcUzc0BuGAPIDNYJr00iGCuRiSsDy5eLLBToo94iynUvIj3jD0tk3V1WMHWs
+         QqhX70gN18zJsWcfXDZ/URCiB8T3RkTEo3RnGWQJBS8oGbrNFWxw8WMQ5uVRVUO5KTcU
+         LOYrfvObDSh9hLTK1Aw7i2p+U7KE+DSFH9MKA9z+FhiAUmdJmxsc3pAN5J2WAxQzJwj9
+         7mQHnWaQeCMAdPt9jO+0si5pBHv4r4NJCk/+QvgjN67vRxaqVPdnabiwL20aUjePGsn8
+         5g2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVHbVng3CgYNhyXQ5XJ/aV35B5jqEtHzNu0mE2VR37HR4mXUQf74pi2THlws0kpvSZEYSAFpUFNOoSzrOgcqhti9CVWzOEpuF7pQcke
+X-Gm-Message-State: AOJu0Yz+8fWK0MWcL4hm6uoNf2funwAJdor1l0jTvC5BrPi6OPF9+8UN
+	2Ga1i0MHfQEBzbkpYfRpcYtngUNC8gfavHFPk2h401RiwOFRc54PeyHXufjsXjg1+x6fvnmS6pj
+	LPk8wR/98mkgf9KTBb+L8U3NP0bq1yGteuYuTZxGAxpVaSTS1gnDi7WY=
+X-Google-Smtp-Source: AGHT+IGqkUIOTz7hJyga5lIBbhxYt4JBhTR6VSuPLW71bG26l6SpKSaryN5udw2PksoBpJXokXwXWODOPsf9eCVEpqbCbGgKId17
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6602:640e:b0:7cc:558:ee68 with SMTP id
+ gn14-20020a056602640e00b007cc0558ee68mr4820iob.1.1712246849910; Thu, 04 Apr
+ 2024 09:07:29 -0700 (PDT)
+Date: Thu, 04 Apr 2024 09:07:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000041c9d406154789a4@google.com>
+Subject: [syzbot] [net?] possible deadlock in unix_del_edges
+From: syzbot <syzbot+7f7f201cc2668a8fd169@syzkaller.appspotmail.com>
+To: davem@davemloft.net, edumazet@google.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Dave,
+Hello,
 
-David Howells <dhowells@redhat.com> writes:
+syzbot found the following issue on:
 
-> During mount, cifs_mount_get_tcon() gets a tcon resource connection record
-> and then attaches an fscache volume cookie to it.  However, it does this
-> irrespective of whether or not the tcon returned from cifs_get_tcon() is a
-> new record or one that's already in use.  This leads to a warning about a
-> volume cookie collision and a leaked volume cookie because tcon->fscache
-> gets reset.
->
-> Fix this be adding a mutex and a "we've already tried this" flag and only
-> doing it once for the lifetime of the tcon.
+HEAD commit:    2b3d5988ae2c Add linux-next specific files for 20240404
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=16c79d29180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c48fd2523cdee5e
+dashboard link: https://syzkaller.appspot.com/bug?extid=7f7f201cc2668a8fd169
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-Can't we just move the cookie acquisition to cifs_get_tcon() before it
-gets added to list @ses->tcon_list.  This way we'll guarantee that the
-cookie is set only once for the new tcon.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Besides, do we want to share a tcon with two different superblocks that
-have 'fsc' and 'nofsc', respectively?  If not, it would be better to fix
-match_tcon() as well to handle such case.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/136270ed2c7b/disk-2b3d5988.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/466d2f7c1952/vmlinux-2b3d5988.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/7dfaf3959891/bzImage-2b3d5988.xz
 
-> [!] Note: Looking at cifs_mount_get_tcon(), a more general solution may
-> actually be required.  Reacquiring the volume cookie isn't the only thing
-> that function does: it also partially reinitialises the tcon record without
-> any locking - which may cause live filesystem ops already using the tcon
-> through a previous mount to malfunction.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7f7f201cc2668a8fd169@syzkaller.appspotmail.com
 
-Agreed.
+============================================
+WARNING: possible recursive locking detected
+6.9.0-rc2-next-20240404-syzkaller #0 Not tainted
+--------------------------------------------
+kworker/u8:8/2805 is trying to acquire lock:
+ffffffff8f6dc178 (unix_gc_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ffffffff8f6dc178 (unix_gc_lock){+.+.}-{2:2}, at: unix_del_edges+0x30/0x590 net/unix/garbage.c:227
+
+but task is already holding lock:
+ffffffff8f6dc178 (unix_gc_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ffffffff8f6dc178 (unix_gc_lock){+.+.}-{2:2}, at: __unix_gc+0xc5/0x1830 net/unix/garbage.c:547
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(unix_gc_lock);
+  lock(unix_gc_lock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+4 locks held by kworker/u8:8/2805:
+ #0: ffff888015089148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3193 [inline]
+ #0: ffff888015089148 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_scheduled_works+0x90a/0x1830 kernel/workqueue.c:3299
+ #1: ffffc9000a25fd00 (unix_gc_work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3194 [inline]
+ #1: ffffc9000a25fd00 (unix_gc_work){+.+.}-{0:0}, at: process_scheduled_works+0x945/0x1830 kernel/workqueue.c:3299
+ #2: ffffffff8f6dc178 (unix_gc_lock){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ #2: ffffffff8f6dc178 (unix_gc_lock){+.+.}-{2:2}, at: __unix_gc+0xc5/0x1830 net/unix/garbage.c:547
+ #3: ffff88802317e118 (rlock-AF_UNIX){+.+.}-{2:2}, at: spin_lock include/linux/spinlock.h:351 [inline]
+ #3: ffff88802317e118 (rlock-AF_UNIX){+.+.}-{2:2}, at: unix_collect_skb+0xb8/0x700 net/unix/garbage.c:343
+
+stack backtrace:
+CPU: 0 PID: 2805 Comm: kworker/u8:8 Not tainted 6.9.0-rc2-next-20240404-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Workqueue: events_unbound __unix_gc
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ check_deadlock kernel/locking/lockdep.c:3062 [inline]
+ validate_chain+0x15c1/0x58e0 kernel/locking/lockdep.c:3856
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+ __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+ _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+ spin_lock include/linux/spinlock.h:351 [inline]
+ unix_del_edges+0x30/0x590 net/unix/garbage.c:227
+ unix_destroy_fpl+0x59/0x210 net/unix/garbage.c:286
+ unix_detach_fds net/unix/af_unix.c:1816 [inline]
+ unix_destruct_scm+0x13e/0x210 net/unix/af_unix.c:1873
+ skb_release_head_state+0x100/0x250 net/core/skbuff.c:1162
+ skb_release_all net/core/skbuff.c:1173 [inline]
+ __kfree_skb net/core/skbuff.c:1189 [inline]
+ kfree_skb_reason+0x16d/0x3b0 net/core/skbuff.c:1225
+ kfree_skb include/linux/skbuff.h:1262 [inline]
+ unix_collect_skb+0x5e4/0x700 net/unix/garbage.c:361
+ unix_walk_scc_fast net/unix/garbage.c:533 [inline]
+ __unix_gc+0x686/0x1830 net/unix/garbage.c:557
+ process_one_work kernel/workqueue.c:3218 [inline]
+ process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3299
+ worker_thread+0x86d/0xd70 kernel/workqueue.c:3380
+ kthread+0x2f0/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
