@@ -1,151 +1,114 @@
-Return-Path: <linux-kernel+bounces-131189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D52E5898432
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:36:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 587A0898433
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:36:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 886F21F28D5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:36:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 795051C26BD3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0E4811FF;
-	Thu,  4 Apr 2024 09:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3402C823DA;
+	Thu,  4 Apr 2024 09:33:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="LS1puUbm"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="lOXzeHgv"
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5BFE745D6
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 09:32:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 149CE77F1E
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 09:33:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712223181; cv=none; b=Xkp8ekoXV7hBEAHoHZGhkVbRGAO5LJU7Pg2Ls+qCTyt2PjK7A2fkUxN3yxVbqnVORFAVbWfAhi5nPUhojSyDs1W6/yR+jXjdF2wd1r4iZdOcZKTXBi4CnmmhVp6BmiKgEQ20U+Nt4uzzGeQivei5L+xpwds7ZzTFpEEkZf7Pb7s=
+	t=1712223218; cv=none; b=W0lUlMh3F6Vrkj7D1IdyjNWSv0fV8BOQQQkNBR5eB1jcxJVC0KcNTsXcUOwj/UnlY5lN/jwp+fqJF9WD8JTkVgKGfhvtaSvDtQfxLRT88nfrm/iYhJTdgAtXAZkQS4Os4qUu332Dt95zbt6akxZ0u1JQVPA1jCxGZm8Ti97/sGM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712223181; c=relaxed/simple;
-	bh=DMeWIz1Du52cE1BkXc9SPzON+93nq6RzYRZOTm7qPd8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C10A6EqU174Limu9MYLBl5cnVMNqpUYTXhw1EAnf7iXLQEc1RMZ/V2NsEMs3X473uCw2kE5YsY+ON7YHL9kPdZJRhpQcSgE/6o1Uho5/coMupWc4OGDWfoz12b56PjK5GiQKh9mvbJi+pdZsZTf1i7ziVPOrIFe3zqSrAXAXTrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=LS1puUbm; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712223179; x=1743759179;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DMeWIz1Du52cE1BkXc9SPzON+93nq6RzYRZOTm7qPd8=;
-  b=LS1puUbmudJkTQFdhgBVnd+bSlmS1aQVmf/UYHGVrZHF0OUWdXlpNGIk
-   XPAx4MID+jaGt2GvsD5h89gR2m5JNZOBitvce4xV3aPlJKo1KxOAzlxwc
-   5L2iM9FqG+uBo/41yGgmu4StoOb7GtLrMBrv+aP+y0C88EaaAC1pAvRp+
-   D1OEn92amJiaSNAPM0foI2QpEKX9A4SEMSiyBuJpzt9caDlCZ68GxQsdH
-   WWx4mDYOS6Sa1RIIzVcOy8/QzebLTx5FBqIznBuM7l08GV7zanYNh2Ut1
-   QTY+I1DbXzA7ab5XKWVmGKQNgFHh9qsmuuMa5GKWHytaQy4i44/3+FmQ4
-   w==;
-X-CSE-ConnectionGUID: VlR/+pz0S+u9pea/0WkBtQ==
-X-CSE-MsgGUID: 5N3VZKANQ6autQEp3dPVNA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="11267031"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="11267031"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 02:32:58 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="937086251"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="937086251"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 04 Apr 2024 02:32:53 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 4079A12C; Thu,  4 Apr 2024 12:32:52 +0300 (EEST)
-Date: Thu, 4 Apr 2024 12:32:52 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: Xiaoyao Li <xiaoyao.li@intel.com>, 
-	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Peter Zijlstra <peterz@infradead.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, "Kalra, Ashish" <ashish.kalra@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, Baoquan He <bhe@redhat.com>, kexec@lists.infradead.org, 
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv9 05/17] x86/kexec: Keep CR4.MCE set during kexec for TDX
- guest
-Message-ID: <cxwixclmgbx3xidn6g6keihampcbzcbosog6r6lyoa4hs3teu2@sqntzeltdajc>
-References: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
- <20240325103911.2651793-6-kirill.shutemov@linux.intel.com>
- <b94c81ef-50f2-4e66-9533-461791777d10@intel.com>
- <dlixf7bld4efdh5goir5nreabkgtcwfbvv2rovjqrvjttplqss@auuqnt4h2llj>
- <j4s4n5slt6a234w5o5r4zjmb3xj53odnmwekt6ihotfzotd7ur@ghyvphwcki57>
- <8e4e1d80-11ef-472f-befc-f61310281f18@intel.com>
+	s=arc-20240116; t=1712223218; c=relaxed/simple;
+	bh=XT8qfTbBDxmpkv3wi9MqFr3mAml1cvbPorzvDz9txyY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RfmyEP9d6Ue7tHNV6l8PMgCUKWZenqkO/UyghG0Pglw9SgGfSMvDaU1wePjgTSBrw5znhALbqOSzYfIgU2Mk/ATl8mTL1eXQu5TQv2VOL/zZ+sES8/SwHZBv5TFteTN4hZoA+RgvOm3i8YCwamkkiZlecF/Uzpi658JmejSFRsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=lOXzeHgv; arc=none smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3437f70078bso528555f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 02:33:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712223214; x=1712828014; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Iwi6HXvg3yM5JJ1Mku4nVoIzxX/h/Bvxo2KK8Xe1bO0=;
+        b=lOXzeHgvSp0xNv9xJZ4UNaeDzDNxD8VrAHs4t5WGS8A75vIw33GCvM6nNKJyEgLv4D
+         X9OrvdPh9rVmUoz8IclzPE3qi41EYXSGdCEC52rrrbIhVo7jD6J9FNe+bgD1yZhSdoe4
+         66maM6YAqIhRpIi0bUfVOFoMmMdGV4PqOwkuh5GID8pr+GcRTT+fqMlTlmgUoL9dawWa
+         YDs5tVfRIZWaKbtwheOD8Ip70srh5Mp+Mmh749nY5RcTBpbptYsa+Huei47lL568c3Ub
+         gjmbTgf9bpOXBBsnE4o5rU/pVrcFd0lGpkfmAK5QKEG7qFZ77Hx9jypyqiRADi42d9bs
+         eM0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712223214; x=1712828014;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Iwi6HXvg3yM5JJ1Mku4nVoIzxX/h/Bvxo2KK8Xe1bO0=;
+        b=ctSCjcpy6PslpoNVdRoIkOtpu02IvRFEwHkGjzKjMHXU9r8UYy1NXSoUeknMVs1fdc
+         QcyR5Z+YgynHeaw3kfeg/QvZqJmigIKmemD0ldV6RygdRPm5PK4UM+ogddA2GBa1Dl6O
+         II8/gSe6NW7+CBBsu9PE8jPEHr/+ep+W1fbe2hTG3h9X0/OwLSc+hYpCtpYQw6meIuMk
+         mO1MW+4IPau14KDBpcceNrAlprkRq+C+jg2nMsvIDh1C0jexZEZSWUrC/9Ksxpq/41yE
+         9TEjd1IupgLH9LlA/Ol9BIhxvHu0+0/QijFOdgWBtwdioD4ojpnkEJUsvCBb98DtALsJ
+         3jZA==
+X-Forwarded-Encrypted: i=1; AJvYcCWFyyy8kn/hfNQ6Ze0ADC0XIiGweHvZFsT3gw8peodssHGSZwSDGDUXaOpYyviTgsDlyY05pUkLukKus54jQHNovBnBP7q8aRgBgfW2
+X-Gm-Message-State: AOJu0YwDmKB3uwmKMhSScw74HzB3m8oVA66W8xN9VjUDebpcH9d3gINd
+	l191JmDzkJfrXZLjN17W8TqNQgPwMTsibd7j6oULK6++vLJW5lA1PWFUZ/b5gkw=
+X-Google-Smtp-Source: AGHT+IGL0b96w+Q2HwiPsxRXzggO4UGgmu7GjYYzWIr5gtnrvMiTJc1Hq3g5cGUH81UdEC31zK1uDA==
+X-Received: by 2002:adf:e48d:0:b0:343:a30e:bd9d with SMTP id i13-20020adfe48d000000b00343a30ebd9dmr1697909wrm.3.1712223214274;
+        Thu, 04 Apr 2024 02:33:34 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:220a:565e:2927:8cf0])
+        by smtp.gmail.com with ESMTPSA id dj13-20020a0560000b0d00b0033e9fca1e49sm19436385wrb.60.2024.04.04.02.33.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 02:33:34 -0700 (PDT)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Kent Gibson <warthog618@gmail.com>,
+	Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Alexey Dobriyan <adobriyan@gmail.com>,
+	stable@vger.kernel.org,
+	Stefan Wahren <wahrenst@gmx.net>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH v2 0/2] gpio: cdev: label sanitization fixes
+Date: Thu,  4 Apr 2024 11:33:26 +0200
+Message-Id: <20240404093328.21604-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8e4e1d80-11ef-472f-befc-f61310281f18@intel.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 04, 2024 at 10:40:34AM +1300, Huang, Kai wrote:
-> 
-> 
-> On 3/04/2024 4:42 am, Kirill A. Shutemov wrote:
-> > On Fri, Mar 29, 2024 at 06:48:21PM +0200, Kirill A. Shutemov wrote:
-> > > On Fri, Mar 29, 2024 at 11:21:32PM +0800, Xiaoyao Li wrote:
-> > > > On 3/25/2024 6:38 PM, Kirill A. Shutemov wrote:
-> > > > > TDX guests are not allowed to clear CR4.MCE. Attempt to clear it leads
-> > > > > to #VE.
-> > > > 
-> > > > Will we consider making it more safe and compatible for future to guard
-> > > > against X86_FEATURE_MCE as well?
-> > > > 
-> > > > If in the future, MCE becomes configurable for TD guest, then CR4.MCE might
-> > > > not be fixed1.
-> > > 
-> > > Good point.
-> > > 
-> > > I guess we can leave it clear if it was clear. This should be easy
-> > > enough. But we might want to clear even if was set if clearing is allowed.
-> > > 
-> > > It would require some kind of indication that clearing MCE is fine. We
-> > > don't have such indication yet. Not sure we can reasonably future-proof
-> > > the code at this point.
-> > > 
-> > > But let me think more.
-> > 
-> > I think I will go with the variant below.
-> > 
-> > diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
-> > index 56cab1bb25f5..8e2037d78a1f 100644
-> > --- a/arch/x86/kernel/relocate_kernel_64.S
-> > +++ b/arch/x86/kernel/relocate_kernel_64.S
-> > @@ -5,6 +5,8 @@
-> >    */
-> >   #include <linux/linkage.h>
-> > +#include <linux/stringify.h>
-> > +#include <asm/alternative.h>
-> >   #include <asm/page_types.h>
-> >   #include <asm/kexec.h>
-> >   #include <asm/processor-flags.h>
-> > @@ -145,11 +147,17 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
-> >   	 * Set cr4 to a known state:
-> >   	 *  - physical address extension enabled
-> >   	 *  - 5-level paging, if it was enabled before
-> > +	 *  - Machine check exception on TDX guest, if it was enabled before.
-> > +	 *    Clearing MCE might not allowed in TDX guests, depending on setup.
-> 
-> Nit:  Perhaps we can just call out:
-> 
-> 	Clearing MCE is not allowed if it _was_ enabled before.
-> 
-> Which is always true I suppose.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-It is true now. Future TDX will allow to clear CR4.MCE and we don't want
-to flip it back on in this case.
+This series fixes a couple of bugs in the sanitization of labels
+being passed to irq.
+
+Patch 1 fixes the case where userspace provides empty labels.
+
+Patch 2 fixes a missed path in the sanitization changes that can result
+in memory corruption.
+
+v1 -> v2:
+- switched the order of the patches in order to avoid introducing buggy
+  code in one just to fix it in the second
+
+Bartosz Golaszewski (1):
+  gpio: cdev: check for NULL labels when sanitizing them for irqs
+
+Kent Gibson (1):
+  gpio: cdev: fix missed label sanitizing in debounce_setup()
+
+ drivers/gpio/gpiolib-cdev.c | 46 +++++++++++++++++++++++++------------
+ 1 file changed, 31 insertions(+), 15 deletions(-)
 
 -- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+2.40.1
+
 
