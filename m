@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-131564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF9A0898992
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:09:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 809BE898994
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:09:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68E83284973
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:09:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0CCE1C285AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECC0412DD9D;
-	Thu,  4 Apr 2024 14:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F8AB12F58A;
+	Thu,  4 Apr 2024 14:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ty8ehNe8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M0vwesm3"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCED112CDB0
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:07:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07F4812D757
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:07:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712239671; cv=none; b=b++EPxZeNDE1AEXtv7Y8idgkaGvO2nFXAsLbUWf0iWc/AEgXgAxMBLZPuqYEEae0iw+xjmAx4TX6xiuib1qLCL09+01YxePZuqnGVt+3ZY7SUHGWQRKP3Dr80y+h667Mm+G2GQHGrcQSgqsCny0F7zd8pBWPf27BbLr7k9/cQug=
+	t=1712239672; cv=none; b=qJgrHwojKkZ4ZNk76kjS3Q/spgc2ThSTbDM3x1ooo+Og0IVb0dOPHFlcRkcW0QiVrlpRzknBCrPc7fd90bWRJ8hSyGh2LCzZIoUX0IHpwvqVUUGryoMVQkj9XVJFgZzvJVECqdpvwYRa3Tk8JTwNdRoqD+aLnddTj+W3X6teGDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712239671; c=relaxed/simple;
-	bh=tykj5BdnbBhEDoTqqhcWUzRiGTAAmqbSFh3K0DqcGjc=;
+	s=arc-20240116; t=1712239672; c=relaxed/simple;
+	bh=QVQ+khEPJUw9nvh3q5QXaZ2ET+kK+WCcVQhSSUOyRZA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RuUQb2epHXZGzQhkmZi2+f3KvsTpSrrmp7NIpZfkvkS3lDh9aEvz3h+QL7/UC47DqjXqkBo+VZAWTjYnscw3v9VpPeUwl9R4rBXA4R9HhTXQOJtFrpm+Ful+Sfmjg7Q7OYnwU9f+4K6b82gg0IaSD9g7/CzF2PE3x+CyRmupy8M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ty8ehNe8; arc=none smtp.client-ip=198.175.65.14
+	 MIME-Version; b=AhD6sM0hdS5uxfk7PGSDlwI+HzzPhx1xDXdLax94TKjdachmJai5wT7Ah5RJMsmTIfVtt7Wu0FCEBc5R3IjL0GO/NG85Q967M1kOBfdO9987+2Oay/W7v97Nlf+vHCyTmuOr4NjrAwXV5xDjgSIAicr41U/+6tWujGPlNSLWVX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M0vwesm3; arc=none smtp.client-ip=198.175.65.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712239669; x=1743775669;
+  t=1712239671; x=1743775671;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=tykj5BdnbBhEDoTqqhcWUzRiGTAAmqbSFh3K0DqcGjc=;
-  b=Ty8ehNe82cs3JdSh2GsM9kjirjLEj7NCVtGPiLKBF88jpu45CF7oI95h
-   txmrSFr9lIgkWe5+7xTJpW5gKR6S49zf35mWJkFPqN1rZtunJkXDjkZpV
-   nFTNsM0cKI2cXGz+8viJHmt4jeEFRNF/CdS1H4DIUY8/RPIzeSsvlFE9W
-   Bph6Jpa+3SKPG6CxUsCymqcBqJPJAPaJrkc9bJwAHwKql3waUUAMRV+Y1
-   AEtI4Fhc3xcBjawUpcygrdSbq/GVL3gowhGLshWe9HkYujVnoFcnlTzYu
-   OEbZFWDUzCjOFkVsaEp9JdaXBTogLSfOpJLeGZSdLoiU4C0xbC+25OkVY
-   Q==;
-X-CSE-ConnectionGUID: 8OehAmNZRVi7eqGjLdYaqQ==
-X-CSE-MsgGUID: Gv8iHljzTsar7nS9LjePAw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="11346554"
+  bh=QVQ+khEPJUw9nvh3q5QXaZ2ET+kK+WCcVQhSSUOyRZA=;
+  b=M0vwesm3bZcX7mPjsa7QP8Fb71zYUCvIGEVNbRD7U2GdRpAwSYfk6Zry
+   wX7anun7MAYM4L5p/TScuhLkWQH5eXoniE0PeaF7WdXawZwIiP+5q48kh
+   XuRmkgK9WChyKaJHU9rlf/C2TpplU3diQFOxR3n8Q+Cbx6Ka68fqVVmDi
+   5JX9yxkC9CbblfS/96vob9RYT7SlEv71NhiVPIDX62IzberQi9ZZvBAjS
+   fMSCJNxrIcqb/5bA2lAUZAV2QZoyJg1th2kZ991Lzyu2LL2JuWL1URMPI
+   GeO2IPN9yDIICQAPQKpw3O8xqg6Y45rNKBs1S4roB3+TscsYjCKYA2hOe
+   A==;
+X-CSE-ConnectionGUID: rBSvUdhgSAOy+9ck308G7g==
+X-CSE-MsgGUID: F1vlz+DGROSZvdA3F84jYA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="11346560"
 X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="11346554"
+   d="scan'208";a="11346560"
 Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 07:07:49 -0700
-X-CSE-ConnectionGUID: OWEJN3quSOeTB1c0CqdwQQ==
-X-CSE-MsgGUID: akytula2TNy7hjbabeKDKQ==
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 07:07:50 -0700
+X-CSE-ConnectionGUID: cWBXRGvNShmDZBrlyUCJCw==
+X-CSE-MsgGUID: KxSmooXaSRWHiFG1U+MjwA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="23258909"
+   d="scan'208";a="23258916"
 Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by fmviesa005.fm.intel.com with ESMTP; 04 Apr 2024 07:07:49 -0700
+  by fmviesa005.fm.intel.com with ESMTP; 04 Apr 2024 07:07:50 -0700
 From: kan.liang@linux.intel.com
 To: peterz@infradead.org,
 	mingo@redhat.com,
@@ -68,9 +68,9 @@ To: peterz@infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: ak@linux.intel.com,
 	Kan Liang <kan.liang@linux.intel.com>
-Subject: [PATCH 09/12] perf: Extend perf_output_read
-Date: Thu,  4 Apr 2024 07:06:34 -0700
-Message-Id: <20240404140637.1232635-10-kan.liang@linux.intel.com>
+Subject: [PATCH 10/12] perf/x86/intel: Move PEBS event update after the sample output
+Date: Thu,  4 Apr 2024 07:06:35 -0700
+Message-Id: <20240404140637.1232635-11-kan.liang@linux.intel.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20240404140637.1232635-1-kan.liang@linux.intel.com>
 References: <20240404140637.1232635-1-kan.liang@linux.intel.com>
@@ -84,88 +84,82 @@ Content-Transfer-Encoding: 8bit
 
 From: Kan Liang <kan.liang@linux.intel.com>
 
-The event may have been updated in the PMU-specific implementation,
-e.g., Intel PEBS counters snapshotting. The common code should not
-read and overwrite the value.
+In the drain_pebs(), besides outputting the sample data, the perf needs
+to update the PEBS event (e.g., prev_count, event->count, etc.) as well.
+Both operations may invoke the perf_event_update(), but the sequence of
+the two operations doesn't matter for now. Because the updated event
+value is read directly from the counter via rdpmc. The counter stops in
+the drain_pebs().
 
-The PERF_SAMPLE_READ in the data->sample_type can be used to detect
-whether the PMU-specific value is available. If yes, avoid the
-pmu->read() in the common code.
+But if the updated event value is from different places (PEBS record VS.
+counter), the sequence does matter. For example, with the new Intel PEBS
+counters snapshotting feature, the large PEBS can be enabled for the
+sample read, since counter values for each sample are recorded in PEBS
+records. The current perf does the PEBS event update first, which also
+updates the event for all the records altogether. It's impossible for
+the later sample read output to dump the value for each sample, since
+the prev_count is already the newest one from the current counter.
+
+Move PEBS event update after the sample output. For each sample read
+output, it will update and output the value only for this sample
+(according to the value in the PEBS record). Once all samples are
+output, update the PEBS event again according to the current counter,
+and set the left period.
+
+The !intel_pmu_save_and_restart() only happens when !hwc->event_base
+or the left > 0. The !hwc->event_base is impossible for the PEBS event
+which is only available on GP and fixed counters.
+The __intel_pmu_pebs_event() is only to process the overflowed sample.
+The left should be always <=0.
+It's safe to ignore the return from the !inel_pmu_save_and_restart()
+check.
 
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
 Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
 ---
- kernel/events/core.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ arch/x86/events/intel/ds.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 724e6d7e128f..3bf305d866ab 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -7219,7 +7219,7 @@ static void perf_output_read_one(struct perf_output_handle *handle,
+diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
+index 36425cff1a31..1df69a75b1f1 100644
+--- a/arch/x86/events/intel/ds.c
++++ b/arch/x86/events/intel/ds.c
+@@ -2158,17 +2158,6 @@ __intel_pmu_pebs_event(struct perf_event *event,
+ 	void *at = get_next_pebs_record_by_bit(base, top, bit);
+ 	static struct pt_regs dummy_iregs;
  
- static void perf_output_read_group(struct perf_output_handle *handle,
- 			    struct perf_event *event,
--			    u64 enabled, u64 running)
-+			    u64 enabled, u64 running, bool read)
- {
- 	struct perf_event *leader = event->group_leader, *sub;
- 	u64 read_format = event->attr.read_format;
-@@ -7241,7 +7241,7 @@ static void perf_output_read_group(struct perf_output_handle *handle,
- 	if (read_format & PERF_FORMAT_TOTAL_TIME_RUNNING)
- 		values[n++] = running;
+-	if (hwc->flags & PERF_X86_EVENT_AUTO_RELOAD) {
+-		/*
+-		 * Now, auto-reload is only enabled in fixed period mode.
+-		 * The reload value is always hwc->sample_period.
+-		 * May need to change it, if auto-reload is enabled in
+-		 * freq mode later.
+-		 */
+-		intel_pmu_save_and_restart_reload(event, count);
+-	} else if (!intel_pmu_save_and_restart(event))
+-		return;
+-
+ 	if (!iregs)
+ 		iregs = &dummy_iregs;
  
--	if ((leader != event) &&
-+	if ((leader != event) && read &&
- 	    (leader->state == PERF_EVENT_STATE_ACTIVE))
- 		leader->pmu->read(leader);
- 
-@@ -7256,7 +7256,7 @@ static void perf_output_read_group(struct perf_output_handle *handle,
- 	for_each_sibling_event(sub, leader) {
- 		n = 0;
- 
--		if ((sub != event) &&
-+		if ((sub != event) && read &&
- 		    (sub->state == PERF_EVENT_STATE_ACTIVE))
- 			sub->pmu->read(sub);
- 
-@@ -7283,7 +7283,8 @@ static void perf_output_read_group(struct perf_output_handle *handle,
-  * on another CPU, from interrupt/NMI context.
-  */
- static void perf_output_read(struct perf_output_handle *handle,
--			     struct perf_event *event)
-+			     struct perf_event *event,
-+			     bool read)
- {
- 	u64 enabled = 0, running = 0, now;
- 	u64 read_format = event->attr.read_format;
-@@ -7301,7 +7302,7 @@ static void perf_output_read(struct perf_output_handle *handle,
- 		calc_timer_values(event, &now, &enabled, &running);
- 
- 	if (event->attr.read_format & PERF_FORMAT_GROUP)
--		perf_output_read_group(handle, event, enabled, running);
-+		perf_output_read_group(handle, event, enabled, running, read);
- 	else
- 		perf_output_read_one(handle, event, enabled, running);
+@@ -2197,6 +2186,17 @@ __intel_pmu_pebs_event(struct perf_event *event,
+ 		if (perf_event_overflow(event, data, regs))
+ 			x86_pmu_stop(event, 0);
+ 	}
++
++	if (hwc->flags & PERF_X86_EVENT_AUTO_RELOAD) {
++		/*
++		 * Now, auto-reload is only enabled in fixed period mode.
++		 * The reload value is always hwc->sample_period.
++		 * May need to change it, if auto-reload is enabled in
++		 * freq mode later.
++		 */
++		intel_pmu_save_and_restart_reload(event, count);
++	} else
++		intel_pmu_save_and_restart(event);
  }
-@@ -7343,7 +7344,7 @@ void perf_output_sample(struct perf_output_handle *handle,
- 		perf_output_put(handle, data->period);
  
- 	if (sample_type & PERF_SAMPLE_READ)
--		perf_output_read(handle, event);
-+		perf_output_read(handle, event, !(data->sample_flags & PERF_SAMPLE_READ));
- 
- 	if (sample_type & PERF_SAMPLE_CALLCHAIN) {
- 		int size = 1;
-@@ -7944,7 +7945,7 @@ perf_event_read_event(struct perf_event *event,
- 		return;
- 
- 	perf_output_put(&handle, read_event);
--	perf_output_read(&handle, event);
-+	perf_output_read(&handle, event, true);
- 	perf_event__output_id_sample(event, &handle, &sample);
- 
- 	perf_output_end(&handle);
+ static void intel_pmu_drain_pebs_core(struct pt_regs *iregs, struct perf_sample_data *data)
 -- 
 2.35.1
 
