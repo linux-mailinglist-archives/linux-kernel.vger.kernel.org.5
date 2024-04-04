@@ -1,128 +1,112 @@
-Return-Path: <linux-kernel+bounces-130992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130993-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FB4F8981A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:49:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B7D98981A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:54:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A22D5B2610B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:49:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0A001F27374
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:54:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 680AA5C8FE;
-	Thu,  4 Apr 2024 06:48:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F4B8548F0;
+	Thu,  4 Apr 2024 06:54:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f9uqG2YF"
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="XWRX2Ro6"
+Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446855A116;
-	Thu,  4 Apr 2024 06:48:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6227053803;
+	Thu,  4 Apr 2024 06:54:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712213319; cv=none; b=OjSREZOvm6CS9Jtf/0FJCnC0HfVGtEbtw7zssHVQ/Udtwkl4CeB8xjgh/paDzjpFjX7He4tmRlsBozy6o4Xte4id4Ki2pQbkbB0fVxAs1I3fTp9ru+8jYULNs9BiFQY96y+8RorwTYxvocuhux4etJmc2BZJjWpNuNlAKPsgbV8=
+	t=1712213663; cv=none; b=bI4B+S1GImrggSZWdXj2h1GVhrMADH8DNCGp6B6byb5U5f/TMZjQGB8b5yWcMK44eB8zvMnL3YAJBWXdkZQShuMYROCJPbv6H9YTw0MGSGdj/ibwly1uqVjYNPRagwIRSVpG94jCZoUekgQR0+sdfGQJ3hzILXgV9t4wzK6+7J8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712213319; c=relaxed/simple;
-	bh=r6MCN9ZvsIa1h8Zy/FXDGNAgtZIDgAXA7dgDy16XxlM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AujyB1olWUAQcoRh0gkmczNX9B8iITKybVYfeO+DyKT44ntJUo/E13uBLRFmZUpgf/vRu5zrcSx2bUdjnY0hD/FncOPE1mShSKyxwk8wzpGZBXiv0rXcqcPh8a/MxP/QG6DlTgJaONT1hpBU8aiP/cfV1arh6I9EdjAXuSaaUas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f9uqG2YF; arc=none smtp.client-ip=209.85.167.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3c5d9383118so115563b6e.1;
-        Wed, 03 Apr 2024 23:48:38 -0700 (PDT)
+	s=arc-20240116; t=1712213663; c=relaxed/simple;
+	bh=vyYehCtmuOnkDyiTVtISMV19OYydyeZiEvgBYOzKtdU=;
+	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=UOLFY1yCAlC9G+w8qDaWN9GUQXypWEwApp+e63LJ2yE4qg+FNP82LA4DThiVVZk899MMyOpeoo/zjlckYHw5TGd0dMr6jkLZFULJiNGREMCm6zZ+i7WS4vPGj6KM1fDPXA07flpJS6kkoAIlRNOSVnvD15beQVct3EM+lDjaIMM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=XWRX2Ro6; arc=none smtp.client-ip=99.78.197.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712213317; x=1712818117; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RF2XRM49fP88q8qplmZ5n8Vm82ly5DhzkFDvFlIuMIc=;
-        b=f9uqG2YFHpDEDXa0hqGGeb9YIF4B1YFcIC6wPBw2ExONNvo1/+cKT0I9eB2zNHLJMJ
-         MCgQei496zcYi1vBwStisJIYjgnk4qt9il7BV/A+Sz2NWi5xup/86+M3dQenUMNDisPT
-         viwls/uwtoJ58ARkmpIAxR530fQLQatZli9cCA9j7zAATLuez5pK8F4MbRoRCW++1C8o
-         xoGmZ7zAfGzghii13MkzB2QGDeZGd+fABwB4AilrWVoBI1hyJcGAl7mQhqbxWdN9tqQf
-         YMayo+IjItdD6ZSbmq1ZaZ49F6yWXhP7KkkSLL3amtDajpG41MO8Fklqu4ZrJTwFGn8S
-         Cuig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712213317; x=1712818117;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RF2XRM49fP88q8qplmZ5n8Vm82ly5DhzkFDvFlIuMIc=;
-        b=cdBWtfxz+6qmeewru8lQ8LXCKDcV3K6tNf6jQ/jB44acwVa3qktNmXlDLxXp8gpdw0
-         k3fWbTmjL/nj7lOEBzimuezLVifKsdnZJe1uX2zcBeFClF7EPwZJSw/w5N5iaemFELSm
-         MrwePwLSAPy/HVZQxqR4v7TLGIyOwAkdmMw7DsX8aH7jFgtLy39mVpDtzUOna9V1I16z
-         o114MeF5Llrv1RND3/iypxksixT2jG4Fdd3wKsoSG8kuuHgGOziMDtO6F/Dw7hLVU1aE
-         ouQo8RkF3osb1xH6HCg5IrHWw2dJPWA4gWj46HVj+0M0d0/oJRWDCqegLuti5qFObN/d
-         EDxw==
-X-Forwarded-Encrypted: i=1; AJvYcCUAHl4/xcmSU9Rz8Zm8meJoeltIUoC4t9GVhU1WeEJKSC/h7HNVQY45cj1kvHh5XqUGVPL84a65asX28+HQZP1lBROOsQwVyrMTzOgAwzgnqa0iQQ4esJyIzmhXEXOUI5x0uhmVYBP+
-X-Gm-Message-State: AOJu0YyLeCiZ0ZJGmEbZzgqKlX8WXNSgMGGRgjJTmGx0+PgcYFUHf7Nf
-	R9wF2NvCZahZ+Zv91R8LneA9tCc4NVGOErUsIPHqRLQbzQXvROaz
-X-Google-Smtp-Source: AGHT+IG0T+NoyS2rni8cVrIvKuX08YygHmPNxHAsFUsvJu+tqpCv7cDZgk9gvcLObGtpsg30CzST2A==
-X-Received: by 2002:a05:6808:d54:b0:3c5:d6d0:86e4 with SMTP id w20-20020a0568080d5400b003c5d6d086e4mr1421313oik.19.1712213317244;
-        Wed, 03 Apr 2024 23:48:37 -0700 (PDT)
-Received: from kaiwan-dell-7550.wlan ([205.254.163.212])
-        by smtp.gmail.com with ESMTPSA id w10-20020aa79a0a000000b006e6aee6807dsm9624857pfj.22.2024.04.03.23.48.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Apr 2024 23:48:34 -0700 (PDT)
-From: Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
-To: Carlos Bilbao <carlos.bilbao@amd.com>
-Cc: corbet@lwn.net,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
-Subject: [PATCH v2 1/1] docs: Add relevant kernel publications to list of books; LKP 2E
-Date: Thu,  4 Apr 2024 12:18:28 +0530
-Message-Id: <20240404064828.208531-1-kaiwan.billimoria@gmail.com>
-X-Mailer: git-send-email 2.40.1
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1712213662; x=1743749662;
+  h=message-id:date:mime-version:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:subject;
+  bh=vyYehCtmuOnkDyiTVtISMV19OYydyeZiEvgBYOzKtdU=;
+  b=XWRX2Ro61lfVjiHUSNG93LjGzgb5ESGWcbEoign19AfwjGRHX5FhOxaN
+   frpmHuIyas6clSLySSv17BEA8T7kttUf0vMKNRpQyod3St+lAeAe2lB5C
+   MPKxntAstbRBHSaOAiKE4Rl1FnveDb7rNlaB/R5ULn/DfFX5SvloBFBtp
+   c=;
+X-IronPort-AV: E=Sophos;i="6.07,178,1708387200"; 
+   d="scan'208";a="78531287"
+Subject: Re: Implementing .shutdown method for efa module
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
+  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 06:54:20 +0000
+Received: from EX19MTAEUA002.ant.amazon.com [10.0.17.79:47413]
+ by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.28.213:2525] with esmtp (Farcaster)
+ id bb37eac2-f65b-438a-83c5-656e83f2691d; Thu, 4 Apr 2024 06:54:19 +0000 (UTC)
+X-Farcaster-Flow-ID: bb37eac2-f65b-438a-83c5-656e83f2691d
+Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
+ EX19MTAEUA002.ant.amazon.com (10.252.50.124) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Thu, 4 Apr 2024 06:54:19 +0000
+Received: from [192.168.84.64] (10.85.143.175) by
+ EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Thu, 4 Apr 2024 06:54:15 +0000
+Message-ID: <59c5dabd-c06e-4982-af68-bdee9b8174fd@amazon.com>
+Date: Thu, 4 Apr 2024 09:54:10 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@ziepe.ca>
+CC: Tao Liu <ltao@redhat.com>, Gal Pressman <gal.pressman@linux.dev>,
+	<sleybo@amazon.com>, <leon@kernel.org>, <kexec@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
+References: <CAO7dBbVNv5NWRN6hXeo5rNEixn-ctmTLLn2KAKhEBYvvR+Du2w@mail.gmail.com>
+ <5d81d6d0-5afc-4d0e-8d2b-445d48921511@linux.dev>
+ <CAO7dBbXLU5teiYm8VvES7e7m7dUzJQYV9HHLOFKperjwq-NJeA@mail.gmail.com>
+ <b6c0bd81-3b8d-465d-a0eb-faa5323a6b05@amazon.com>
+ <20240326153223.GF8419@ziepe.ca>
+ <0e7dddff-d7f3-4617-83e6-f255449a282b@amazon.com>
+ <20240403154414.GD1363414@ziepe.ca>
+From: "Margolin, Michael" <mrgolin@amazon.com>
+In-Reply-To: <20240403154414.GD1363414@ziepe.ca>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EX19D046UWB003.ant.amazon.com (10.13.139.174) To
+ EX19D031EUB003.ant.amazon.com (10.252.61.88)
 
-As the 2nd edition of my 'Linux Kernel Programming' book is recently published
-(29 Feb 2024), this patch is to request it's addition to the book list.
-Thanks,
-Kaiwan.
+Thanks, I'll send a patch.
 
-Signed-off-by: Kaiwan N Billimoria <kaiwan.billimoria@gmail.com>
----
- Documentation/process/kernel-docs.rst | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
 
-diff --git a/Documentation/process/kernel-docs.rst b/Documentation/process/kernel-docs.rst
-index 8660493b91d0..66bab5b04f9f 100644
---- a/Documentation/process/kernel-docs.rst
-+++ b/Documentation/process/kernel-docs.rst
-@@ -75,6 +75,17 @@ On-line docs
- Published books
- ---------------
- 
-+	* Title: **Linux Kernel Programming: A Comprehensive and practical guide to
-+Kernel Internals, Writing Modules, and Kernel Synchronization**
-+
-+      :Author: Kaiwan N Billimoria
-+      :Publisher: Packt Publishing Ltd
-+      :Date: February, 2024
-+      :Pages: 826
-+      :ISBN: 978-1803232225
-+      :Notes: 2nd Edition
-+
-+
-     * Title: **Linux Kernel Debugging: Leverage proven tools and advanced techniques to effectively debug Linux kernels and kernel modules**
- 
-       :Author: Kaiwan N Billimoria
-@@ -91,6 +102,7 @@ Published books
-       :Date: March, 2021
-       :Pages: 754
-       :ISBN: 978-1789953435
-+      :Notes: 1st Edition
- 
-     * Title: **Linux Kernel Programming Part 2 - Char Device Drivers and Kernel Synchronization: Create user-kernel interfaces, work with peripheral I/O, and handle hardware interrupts**
- 
--- 
-2.40.1
+Michael
 
+On 4/3/2024 6:44 PM, Jason Gunthorpe wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
+>
+>
+>
+> On Mon, Apr 01, 2024 at 04:23:32PM +0300, Margolin, Michael wrote:
+>> Jason
+>>
+>> Thanks for your response, efa_remove() is performing reset to the device
+>> which should stop all DMA from the device.
+>>
+>> Except skipping cleanups that are unnecessary for shutdown flow are there
+>> any other reasons to prefer a separate function for shutdown?
+> Yes you should skip "cleanups" like removing the IB device and
+> otherwise as there is a risk of system hang/deadlock in a shutdown
+> handler context.
+>
+> Jason
+>
 
