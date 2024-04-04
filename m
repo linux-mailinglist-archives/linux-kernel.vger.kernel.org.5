@@ -1,150 +1,218 @@
-Return-Path: <linux-kernel+bounces-131211-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131212-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C814898493
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:03:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69F9389849A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:04:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8B4B1F25446
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:03:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F8741C22F1B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:04:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D27D74C17;
-	Thu,  4 Apr 2024 10:03:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04D17757F5;
+	Thu,  4 Apr 2024 10:04:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LvLnljlt"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2l8lc0ho";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="N7ln2SMq"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D185274E10
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 10:02:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74DF66BB29
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 10:03:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712224979; cv=none; b=J+A3UaMDDgmI3UsemUxi2kxcPR9534CtK25J4SW9nDLb8MMLbGwQo1Z96gfLeEVUKOjFmlUD7K1IE92h4hHNHyKFtEr984i3Hz4d4wONw3RqUg3uWD9r0y+3BRSbErqtgZy00jJC7t2Y/+tf1+oHiMvxFIs2yzdtxUFD9c+naWc=
+	t=1712225040; cv=none; b=jYj+9HonJfK6qHspJiW7DXIQ8avvhkX2LEpfyCqAZar94dKV9xf1xVPlW9Hb3b8IUpS3taqa8u5RhOxA4j7+ngjUum6XhRJpQux0aQAFRJiCCy5No+wEoMV2wDFemzxQ4hkGu5cEC70NKCQfeIEl785FFXB6JLkuK/ZFVZsFmT8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712224979; c=relaxed/simple;
-	bh=GjQ6i597e+Tg5kZEZuOxHNpqIK+6JUo1PoPMIlQjjss=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mk4ONpAvgF2rdE19Njpmr2OSPiEPzRkSLhcWntjDGBlav1lWpKY9rECYX1hMMSCSTQmsMDfuhGkCfw+nFO8yG6eqwm/nWuiTNXlKH7g7wIpk//bVqUi9SBTbudqBvDs3fwsFqKc0I56iqtJbHKcVsLXi7mMEy4hCxVYYHFGFiLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LvLnljlt; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dbed0710c74so747321276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 03:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712224977; x=1712829777; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WSM3SSSDRISKG2xzZd8Db84CV8c+qWu1nf3t0po6PQs=;
-        b=LvLnljlt5unQGgxgL7KbB19HHX5HApqdiAJs2lZNm61Fi/nwRSPmV2MU0JaoHarWIt
-         KJr3XthYcUoQQjzTlDvqS2lhH+iUK9Gxv86VbUvANtvYy9Zc2yn6/wclct5DJ0814Hdx
-         AWJQOOWFlCZvsOoOfmL1Ow35LdtmFcrgRvF+AWGtxDbMOn6KMV6Fw2VNLobAt66kcMeE
-         39kiLMQXPWGK35gJjSv3aZo9CQVoC9lBw8xaMHC0Buw1KVgGlFxjvbNDirVy+StLjdZ1
-         pUMKbG2onmgBk9sK0njjQAHjF/fvkZcTE0eK83SWNjFpvLfrshL5zTgaCi0SR7hrKrdv
-         oQAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712224977; x=1712829777;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WSM3SSSDRISKG2xzZd8Db84CV8c+qWu1nf3t0po6PQs=;
-        b=ogV5qBI/+DwMQe+8PTOJddY5cWny3KPwT3/r030TZXAeRStgFwKTnoyISZGj+a7R9F
-         0yzzslSHwjZoTv/ker1gzo6ZzL8uQs73rl6rkFJOatqMSYz1AGLV25EQEcuTlaH4THXQ
-         XoZPCE7Btf5M4SY7MbmY7OEF2YRqeF8i1FmudHTQ6sut01POqqzRObeJPQu4ja9/pJGQ
-         UZ8N2MKL3WQs2ZP0CKlG7hny7Y+qeL6SR8dbnySzv7NFPtml8/8N7rSxrYT27ZNjHmZZ
-         owmqz3gWiBRGrLli7INPXk4sXdrUIW0G+vJBD24fOPqr6wdhnrNEQqAd/g6QDYXZnQTP
-         GIbw==
-X-Forwarded-Encrypted: i=1; AJvYcCV8oUy5+yN8vIoQ20yz5grw0g42iXyELxBDSglldsdde1o6Flx2bZoe81KAW45fjm8O0H5V/EU4BdyO/k7jKqOF47FhLy/Q1Hfka6c8
-X-Gm-Message-State: AOJu0YyHtNi1pDdGoOC3Yt5rgGhQn/fscLHOT9t2Wt79aPSfqPwZIzvZ
-	stDmelXA/HDEmNRICanrLx90kbUd9N+knc5j3R+fN+fgo79HiQRuEgxtgP9CrQWgKpk4Cm91/7L
-	PhMKLPTDHgcn1qSQeo0omcuQYlCaj5aCsjGflYA==
-X-Google-Smtp-Source: AGHT+IFm7zNDK6Xa3wkE7uder3AalB0PkZD0+78hHLf6dJfB6CcQXZnHbo8l7Iyk/qJcWuVWDZVuQ9UpgQfDLkYdDWQ=
-X-Received: by 2002:a25:1e54:0:b0:dc6:ff6b:71b2 with SMTP id
- e81-20020a251e54000000b00dc6ff6b71b2mr1790403ybe.4.1712224976606; Thu, 04 Apr
- 2024 03:02:56 -0700 (PDT)
+	s=arc-20240116; t=1712225040; c=relaxed/simple;
+	bh=LJmnknMDRIvNQIboyyxUYKcg9xZ4yM4T2msyo1vV4Cc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uhIdCtlMsSJqGBNSLAIydFLdwsCNTBqlmQzpEFNP72YVfpExtrCgIgfCvm5e4oWg4MclLa3l3XZ8ykbFzP6bYVyKFhWnfHD4dK6YQr9bB0sm1xbglgXKWFlaf90lhXQxIshkCMd2aIsFPtUTTOoFqXmxtj+RE5trK7Fjb+u3gac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2l8lc0ho; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=N7ln2SMq; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 9528C5D808;
+	Thu,  4 Apr 2024 10:03:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712225036; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=MvGiU7UVFHT9kv7ZfHgmPgNr6pSwPx8KGlxJN/LryeQ=;
+	b=2l8lc0hos0cD7vLnU30sa2eP2XXCL/StXvisMofrWj9zjoXHqxeyUPJgU0aVngC59gjsVa
+	qYR+4qZ3ZZu9tLAMZhIlPGOAGl7iAls7mSsDY5JhwX4TMWJtRlvaFCgO6YfVmTLfeghReU
+	T7y7YCRDZkYGOrLRqd4DjfYXo21xM5w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712225036;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=MvGiU7UVFHT9kv7ZfHgmPgNr6pSwPx8KGlxJN/LryeQ=;
+	b=N7ln2SMqaS9E+fD6H4P3eiu/hwHuQimYpjT4dDZhr/+vdxqOWH1ZCSx5BMBRAxLB3dSTSP
+	ZD5CEB9sImDRPzBA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8786413298;
+	Thu,  4 Apr 2024 10:03:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id +VTBIAx7DmaGMAAAn2gu4w
+	(envelope-from <vbabka@suse.cz>); Thu, 04 Apr 2024 10:03:56 +0000
+Message-ID: <76457ec5-d789-449b-b8ca-dcb6ceb12445@suse.cz>
+Date: Thu, 4 Apr 2024 12:03:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240327055732.28198-1-yu-chang.lee@mediatek.com>
- <20240327055732.28198-3-yu-chang.lee@mediatek.com> <6dd9959e-f741-47af-b10a-1894f72ae78f@linaro.org>
- <c3ca3d90-898e-44b0-ad0f-dd78c09c5fcd@linaro.org> <f3eedfb3495bb9c28b5cbf466387c24822c5b6f6.camel@mediatek.com>
- <7ff9c4c7-3b56-4a5b-95b7-c37cbf8bcd6d@linaro.org> <b957b072d5d88ed315982e914a7f700e0ccafb83.camel@mediatek.com>
- <038ccb20-71cb-40d2-9720-ce1a0d3eac8c@linaro.org> <7f24ca2806a7199e4de6fad17b8dc1f127c82180.camel@mediatek.com>
- <c59f2f33-ad6b-469d-96be-9345920370b4@linaro.org> <CAFGrd9qZhObQXvm2_abqaX83xMLqxjQETB2=wXpobDWU1CnvkA@mail.gmail.com>
- <3b04c5344435cdb941b5d132e8f5fbfdf9188d67.camel@mediatek.com>
-In-Reply-To: <3b04c5344435cdb941b5d132e8f5fbfdf9188d67.camel@mediatek.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 4 Apr 2024 12:02:20 +0200
-Message-ID: <CAPDyKFpokXV2gJDgowbixTvOH_5VL3B5H8eyhP+KJ5Fasm2rFg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/3] dt-bindings: power: Add mediatek larb definition
-To: =?UTF-8?B?WXUtY2hhbmcgTGVlICjmnY7nprnnkosp?= <Yu-chang.Lee@mediatek.com>
-Cc: "amergnat@baylibre.com" <amergnat@baylibre.com>, 
-	"krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>, 
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>, 
-	=?UTF-8?B?TWFuZHlKSCBMaXUgKOWKieS6uuWDlik=?= <MandyJH.Liu@mediatek.com>, 
-	"conor+dt@kernel.org" <conor+dt@kernel.org>, 
-	Project_Global_Chrome_Upstream_Group <Project_Global_Chrome_Upstream_Group@mediatek.com>, 
-	"robh@kernel.org" <robh@kernel.org>, =?UTF-8?B?WGl1ZmVuZyBMaSAo5p2O56eA5bOwKQ==?= <Xiufeng.Li@mediatek.com>, 
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, 
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>, 
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>, =?UTF-8?B?RmFuIENoZW4gKOmZs+WHoSk=?= <fan.chen@mediatek.com>, 
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: page_alloc: use the correct THP order for THP PCP
+Content-Language: en-US
+To: Baolin Wang <baolin.wang@linux.alibaba.com>, akpm@linux-foundation.org
+Cc: mgorman@techsingularity.net, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <a25c9e14cd03907d5978b60546a69e6aa3fc2a7d.1712151833.git.baolin.wang@linux.alibaba.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
+ KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
+ 87tMFA+u+L4Z5xAzIimfLD5EKC56kJ1CsXlM8S/LHcmdD9Ctkn3trYDNnat0eoAcfPIP2OZ+
+ 9oe9IF/R28zmh0ifLXyJQQz5ofdj4bPf8ecEW0rhcqHfTD8k4yK0xxt3xW+6Exqp9n9bydiy
+ tcSAw/TahjW6yrA+6JhSBv1v2tIm+itQc073zjSX8OFL51qQVzRFr7H2UQG33lw2QrvHRXqD
+ Ot7ViKam7v0Ho9wEWiQOOZlHItOOXFphWb2yq3nzrKe45oWoSgkxKb97MVsQ+q2SYjJRBBH4
+ 8qKhphADYxkIP6yut/eaj9ImvRUZZRi0DTc8xfnvHGTjKbJzC2xpFcY0DQbZzuwsIZ8OPJCc
+ LM4S7mT25NE5kUTG/TKQCk922vRdGVMoLA7dIQrgXnRXtyT61sg8PG4wcfOnuWf8577aXP1x
+ 6mzw3/jh3F+oSBHb/GcLC7mvWreJifUL2gEdssGfXhGWBo6zLS3qhgtwjay0Jl+kza1lo+Cv
+ BB2T79D4WGdDuVa4eOrQ02TxqGN7G0Biz5ZLRSFzQSQwLn8fbwARAQABzSBWbGFzdGltaWwg
+ QmFia2EgPHZiYWJrYUBzdXNlLmN6PsLBlAQTAQoAPgIbAwULCQgHAwUVCgkICwUWAgMBAAIe
+ AQIXgBYhBKlA1DSZLC6OmRA9UCJPp+fMgqZkBQJkBREIBQkRadznAAoJECJPp+fMgqZkNxIQ
+ ALZRqwdUGzqL2aeSavbum/VF/+td+nZfuH0xeWiO2w8mG0+nPd5j9ujYeHcUP1edE7uQrjOC
+ Gs9sm8+W1xYnbClMJTsXiAV88D2btFUdU1mCXURAL9wWZ8Jsmz5ZH2V6AUszvNezsS/VIT87
+ AmTtj31TLDGwdxaZTSYLwAOOOtyqafOEq+gJB30RxTRE3h3G1zpO7OM9K6ysLdAlwAGYWgJJ
+ V4JqGsQ/lyEtxxFpUCjb5Pztp7cQxhlkil0oBYHkudiG8j1U3DG8iC6rnB4yJaLphKx57NuQ
+ PIY0Bccg+r9gIQ4XeSK2PQhdXdy3UWBr913ZQ9AI2usid3s5vabo4iBvpJNFLgUmxFnr73SJ
+ KsRh/2OBsg1XXF/wRQGBO9vRuJUAbnaIVcmGOUogdBVS9Sun/Sy4GNA++KtFZK95U7J417/J
+ Hub2xV6Ehc7UGW6fIvIQmzJ3zaTEfuriU1P8ayfddrAgZb25JnOW7L1zdYL8rXiezOyYZ8Fm
+ ZyXjzWdO0RpxcUEp6GsJr11Bc4F3aae9OZtwtLL/jxc7y6pUugB00PodgnQ6CMcfR/HjXlae
+ h2VS3zl9+tQWHu6s1R58t5BuMS2FNA58wU/IazImc/ZQA+slDBfhRDGYlExjg19UXWe/gMcl
+ De3P1kxYPgZdGE2eZpRLIbt+rYnqQKy8UxlszsBNBFsZNTUBCACfQfpSsWJZyi+SHoRdVyX5
+ J6rI7okc4+b571a7RXD5UhS9dlVRVVAtrU9ANSLqPTQKGVxHrqD39XSw8hxK61pw8p90pg4G
+ /N3iuWEvyt+t0SxDDkClnGsDyRhlUyEWYFEoBrrCizbmahOUwqkJbNMfzj5Y7n7OIJOxNRkB
+ IBOjPdF26dMP69BwePQao1M8Acrrex9sAHYjQGyVmReRjVEtv9iG4DoTsnIR3amKVk6si4Ea
+ X/mrapJqSCcBUVYUFH8M7bsm4CSxier5ofy8jTEa/CfvkqpKThTMCQPNZKY7hke5qEq1CBk2
+ wxhX48ZrJEFf1v3NuV3OimgsF2odzieNABEBAAHCwXwEGAEKACYCGwwWIQSpQNQ0mSwujpkQ
+ PVAiT6fnzIKmZAUCZAUSmwUJDK5EZgAKCRAiT6fnzIKmZOJGEACOKABgo9wJXsbWhGWYO7mD
+ 8R8mUyJHqbvaz+yTLnvRwfe/VwafFfDMx5GYVYzMY9TWpA8psFTKTUIIQmx2scYsRBUwm5VI
+ EurRWKqENcDRjyo+ol59j0FViYysjQQeobXBDDE31t5SBg++veI6tXfpco/UiKEsDswL1WAr
+ tEAZaruo7254TyH+gydURl2wJuzo/aZ7Y7PpqaODbYv727Dvm5eX64HCyyAH0s6sOCyGF5/p
+ eIhrOn24oBf67KtdAN3H9JoFNUVTYJc1VJU3R1JtVdgwEdr+NEciEfYl0O19VpLE/PZxP4wX
+ PWnhf5WjdoNI1Xec+RcJ5p/pSel0jnvBX8L2cmniYnmI883NhtGZsEWj++wyKiS4NranDFlA
+ HdDM3b4lUth1pTtABKQ1YuTvehj7EfoWD3bv9kuGZGPrAeFNiHPdOT7DaXKeHpW9homgtBxj
+ 8aX/UkSvEGJKUEbFL9cVa5tzyialGkSiZJNkWgeHe+jEcfRT6pJZOJidSCdzvJpbdJmm+eED
+ w9XOLH1IIWh7RURU7G1iOfEfmImFeC3cbbS73LQEFGe1urxvIH5K/7vX+FkNcr9ujwWuPE9b
+ 1C2o4i/yZPLXIVy387EjA6GZMqvQUFuSTs/GeBcv0NjIQi8867H3uLjz+mQy63fAitsDwLmR
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <a25c9e14cd03907d5978b60546a69e6aa3fc2a7d.1712151833.git.baolin.wang@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: 2.27
+X-Spam-Flag: NO
+X-Spamd-Bar: ++
+X-Spamd-Result: default: False [2.27 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 MX_GOOD(-0.01)[];
+	 BAYES_HAM(-0.01)[50.39%];
+	 NEURAL_SPAM_LONG(0.38)[0.109];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Level: **
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 9528C5D808
 
-On Thu, 28 Mar 2024 at 07:06, Yu-chang Lee (=E6=9D=8E=E7=A6=B9=E7=92=8B)
-<Yu-chang.Lee@mediatek.com> wrote:
->
-> On Wed, 2024-03-27 at 12:55 +0100, Alexandre Mergnat wrote:
-> >
-> > External email : Please do not click links or open attachments until
-> > you have verified the sender or the content.
-> >  Hello Yu-chang Lee,
-> >
-> > SMI LARB must have a power domain, according to "mediatek,smi-
-> > larb.yaml"
-> > Now you try to create a link from power domain to larb.
-> >
-> > Here is my understanding: when you enable/disable power domain, the
-> > larb linked to this power domain may have an issue. Then you want to
-> > retrieve de LARB linked to the power domain though the dts to manage
-> > the LARB.
->
-> Yes, this is what I am trying to do.
->
-> > IMHO, using the dts to have this information into the power
-> > driver isn't necessary and may introduce some bugs if the LARB node
-> > and power node in the DTS aren't aligned.
-> >
-> > It seems not implemented today but during the LARB probe, it should
-> > "subscribe" to the linked power domain. Then, when the power domain
-> > status is changing, it is able to "notify" (callback) the LARB, then
-> > implement the good stuff to handle this power domain status change
-> > into LARB driver.
-> >
->
-> The problem with this method and why "smi clamp" is in power domain
-> driver is that our HW designer gave us a programming guide strictly
-> states the sequence of what we need to do to power on/off power domain.
-> Using callback, this sequence is no longer guaranteed and the side
-> effect is unknown...
+On 4/3/24 3:47 PM, Baolin Wang wrote:
+> Commit 44042b449872 ("mm/page_alloc: allow high-order pages to be stored
+> on the per-cpu lists") extends the PCP allocator to store THP pages, and
+> it determines whether to cache THP pags in PCP by comparing with pageblock_order.
+> But the pageblock_order is not always equal to THP order, it might also
+> be MAX_PAGE_ORDER, which could prevent PCP from caching THP pages.
+> 
+> Therefore, using HPAGE_PMD_ORDER instead to determine the need for caching
+> THP for PCP can fix this issue
+> 
+> Fixes: 44042b449872 ("mm/page_alloc: allow high-order pages to be stored on the per-cpu lists")
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-In most cases, using the runtime PM callbacks in the consumer driver
-(LARB driver) is sufficient to deal with resets. For some special
-cases drivers are making use of the genpd on/off notifiers
-(GENPD_NOTIFY_*), as they really need to know when their devices have
-been power collapsed. Have you tried both these options?
+IIUC this happens with CONFIG_HUGETLB_PAGE disabled because HUGETLBFS is
+disabled? But THPs are still enabled? I think there might be more of THP
+working suboptimally in that case with pageblock_order being larger
+(MAX_PAGE_ORDER).
 
-[...]
+In other words, should be rather make pageblock_order itself defined as
 
-Kind regards
-Uffe
+ min_t(unsigned int, HPAGE_PMD_ORDER, MAX_PAGE_ORDER)
+
+in case with !CONFIG_HUGETLB_PAGE but THP enabled.
+
+> ---
+>  mm/page_alloc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 1beb56f75319..915f4ef070da 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -506,7 +506,7 @@ static inline unsigned int order_to_pindex(int migratetype, int order)
+>  {
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  	if (order > PAGE_ALLOC_COSTLY_ORDER) {
+> -		VM_BUG_ON(order != pageblock_order);
+> +		VM_BUG_ON(order != HPAGE_PMD_ORDER);
+>  		return NR_LOWORDER_PCP_LISTS;
+>  	}
+>  #else
+> @@ -522,7 +522,7 @@ static inline int pindex_to_order(unsigned int pindex)
+>  
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>  	if (pindex == NR_LOWORDER_PCP_LISTS)
+> -		order = pageblock_order;
+> +		order = HPAGE_PMD_ORDER;
+>  #else
+>  	VM_BUG_ON(order > PAGE_ALLOC_COSTLY_ORDER);
+>  #endif
+> @@ -535,7 +535,7 @@ static inline bool pcp_allowed_order(unsigned int order)
+>  	if (order <= PAGE_ALLOC_COSTLY_ORDER)
+>  		return true;
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -	if (order == pageblock_order)
+> +	if (order == HPAGE_PMD_ORDER)
+>  		return true;
+>  #endif
+>  	return false;
+
 
