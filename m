@@ -1,102 +1,224 @@
-Return-Path: <linux-kernel+bounces-131056-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4853898283
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:52:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA07898287
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:54:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DAF11C261C3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:52:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33A2628A768
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E75364A9F;
-	Thu,  4 Apr 2024 07:52:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M8zHQR8J"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FC895D465;
+	Thu,  4 Apr 2024 07:54:22 +0000 (UTC)
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF685D8E1
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FFAE45970
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:54:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712217129; cv=none; b=CWFTE1C0f2LAjOQyFLca46WPrV/ttidIGtTD+BFu5rGEK/H2JOBdFRE39S+AS4Ve010Wvnp63lVYgwREpR+GWthGDUE8AB0adE9DzyKfycWFWD+sWo0LaAa7yX7vCCva44EVKm4rThkXi6iNMUCut9JJosvOJewUSbg5CbJdMkc=
+	t=1712217261; cv=none; b=AH/xqVuSUpzAQqe7Kvu0jQamM75hRde7Trj3J2WEDAk+9A/+0LT/hFBAhINLuUjt3KhGw8fwSBdYDYrdTFG1OfqgKW6SuutFtSrkPG1MMA0gzDuM9SkddxXigOz0sK5EA/piMo5JdUeWErFnpRDZ3dqVgzcro7qKctB8zwLZtSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712217129; c=relaxed/simple;
-	bh=xuyJ4Vq6zUtNBwqm/4jt8kNEn56EDs4LkP7OBIGqEmE=;
-	h=From:In-Reply-To:References:Cc:Subject:MIME-Version:Content-Type:
-	 Date:Message-ID; b=uRinTMYZk3XzGsj64ORei3Xkz7ilfRlc2HtclGa5HKvymZqa5oMw+U4ZHbgGsBMc+T2wVSJ1jLUUtYEV1sfUimvuPkaNcyJcnIy32xu0uinzu0katbUDRRAYno+1VG9hmZouDc5Agmz5N9YUvhn6KL4O5nuTjPqNGdEufiq7JrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M8zHQR8J; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712217127;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C9vFcjZDN/Fxaa0QMjaZwgnMDGjE5U9a9cC8FQf1Wik=;
-	b=M8zHQR8JbNA08ddSuEOy1A5jTP2se3bW2RRVTwNd8JpmQBoygLCW6xDPyw+mXHF2T/da/f
-	8sdS0qH5Uj3t0dsYBd7ViHQJTe5Sx0kYAnVz4DnImDg91dSKfYHPODwKHxE+aPwKVKpvrd
-	8oOTiv585pziah28yOYOGyvvyh0hKCo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-668-4vRV2FK2MnqAak7lNxvr5w-1; Thu,
- 04 Apr 2024 03:52:01 -0400
-X-MC-Unique: 4vRV2FK2MnqAak7lNxvr5w-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A8E333806736;
-	Thu,  4 Apr 2024 07:52:00 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.146])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 739012166B33;
-	Thu,  4 Apr 2024 07:51:56 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20240328163424.2781320-22-dhowells@redhat.com>
-References: <20240328163424.2781320-22-dhowells@redhat.com> <20240328163424.2781320-1-dhowells@redhat.com>
-Cc: dhowells@redhat.com, Christian Brauner <christian@brauner.io>,
-    Jeff Layton <jlayton@kernel.org>,
-    Gao Xiang <hsiangkao@linux.alibaba.com>,
-    Dominique Martinet <asmadeus@codewreck.org>,
-    Matthew Wilcox <willy@infradead.org>,
-    Steve French <smfrench@gmail.com>,
-    Marc Dionne <marc.dionne@auristor.com>,
-    Paulo Alcantara <pc@manguebit.com>,
-    Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-    Eric Van Hensbergen <ericvh@kernel.org>,
-    Ilya Dryomov <idryomov@gmail.com>, netfs@lists.linux.dev,
-    linux-cachefs@redhat.com, linux-afs@lists.infradead.org,
-    linux-cifs@vger.kernel.org, linux-nfs@vger.kernel.org,
-    ceph-devel@vger.kernel.org, v9fs@lists.linux.dev,
-    linux-erofs@lists.ozlabs.org, linux-fsdevel@vger.kernel.org,
-    linux-mm@kvack.org, netdev@vger.kernel.org,
-    linux-kernel@vger.kernel.org, Latchesar Ionkov <lucho@ionkov.net>,
-    Christian Schoenebeck <linux_oss@crudebyte.com>
-Subject: Re: [PATCH 21/26] netfs, 9p: Implement helpers for new write code
+	s=arc-20240116; t=1712217261; c=relaxed/simple;
+	bh=aR0wVCM5LaAu/ECnGr+i9aZMlzTwjmlOljzCBgud3vU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=DQolSJak1isuYsz+Jqw1rxVaTcleR0ymk+TMwkOG6k6EQs5tPKcoXiey8ZPwSpPf9FREFaitWzUBWlpg4oRWyKlw3Cz7mXR7JxsNJRF2T0O1dkM9mFHg7dRa5exuFGPHR7J59wsh/dzWX/xZLGAIBKu78Hwb9BpQFcZaehMVDnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-83-v2x10sXbPHaCrBeJxegpgg-1; Thu, 04 Apr 2024 08:54:14 +0100
+X-MC-Unique: v2x10sXbPHaCrBeJxegpgg-1
+Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
+ (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 4 Apr
+ 2024 08:53:48 +0100
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 4 Apr 2024 08:53:48 +0100
+From: David Laight <David.Laight@ACULAB.COM>
+To: 'Eric Biggers' <ebiggers@kernel.org>
+CC: Ard Biesheuvel <ardb@kernel.org>, "linux-crypto@vger.kernel.org"
+	<linux-crypto@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Andy
+ Lutomirski" <luto@kernel.org>, "Chang S . Bae" <chang.seok.bae@intel.com>
+Subject: RE: [PATCH 0/6] Faster AES-XTS on modern x86_64 CPUs
+Thread-Topic: [PATCH 0/6] Faster AES-XTS on modern x86_64 CPUs
+Thread-Index: AQHaf518oZDDPKfpuUWrj9ZpRMjHLrFWPMWwgAET/ICAAHT4IA==
+Date: Thu, 4 Apr 2024 07:53:48 +0000
+Message-ID: <142077804bee45daac3b0fad8bc4c2fe@AcuMS.aculab.com>
+References: <20240326080305.402382-1-ebiggers@kernel.org>
+ <CAMj1kXH4fNevFzrbazJptadxh_spEY3W91FZni5eMqD+UKrSUQ@mail.gmail.com>
+ <20240326164755.GB1524@sol.localdomain>
+ <6629b8120807458ab76e1968056f5e10@AcuMS.aculab.com>
+ <20240404013529.GB24248@quark.localdomain>
+In-Reply-To: <20240404013529.GB24248@quark.localdomain>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3655510.1712217111.1@warthog.procyon.org.uk>
-Date: Thu, 04 Apr 2024 08:51:51 +0100
-Message-ID: <3655511.1712217111@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-David Howells <dhowells@redhat.com> wrote:
+From: Eric Biggers
+> Sent: 04 April 2024 02:35
+>=20
+> Hi David,
+>=20
+> On Wed, Apr 03, 2024 at 08:12:09AM +0000, David Laight wrote:
+> > From: Eric Biggers
+> > > Sent: 26 March 2024 16:48
+> > ....
+> > > Consider Intel Ice Lake for example, these are the AES-256-XTS encryp=
+tion speeds
+> > > on 4096-byte messages in MB/s I'm seeing:
+> > >
+> > >     xts-aes-aesni                  5136
+> > >     xts-aes-aesni-avx              5366
+> > >     xts-aes-vaes-avx2              9337
+> > >     xts-aes-vaes-avx10_256         9876
+> > >     xts-aes-vaes-avx10_512         10215
+> > >
+> > > So yes, on that CPU the biggest boost comes just from VAES, staying o=
+n AVX2.
+> > > But taking advantage of AVX512 does help a bit more, first from the p=
+arts other
+> > > than 512-bit registers, then a bit more from 512-bit registers.
+> >
+> > How much does the kernel_fpu_begin() cost on real workloads?
+> > (ie when the registers are live and it forces an extra save/restore)
+>=20
+> x86 Linux does lazy restore of the FPU state.  The first kernel_fpu_begin=
+() can
+> have a significant cost, as it issues an XSAVE (or equivalent) instructio=
+n and
+> causes an XRSTOR (or equivalent) instruction to be issued when returning =
+to
+> userspace when it otherwise might not be needed.  Additional kernel_fpu_b=
+egin()
+> / kernel_fpu_end() pairs without returning to userspace have only a small=
+ cost,
+> as they don't cause any more saves or restores of the FPU state to be don=
+e.
+>=20
+> My new xts(aes) implementations have one kernel_fpu_begin() / kernel_fpu_=
+end()
+> pair per message (if the message doesn't span any page boundaries, which =
+is
+> almost always the case).  That's exactly the same as the current xts-aes-=
+aesni.
 
-> +	size_t len = subreq->len - subreq->transferred;
+I realised after sending it that the code almost certainly already did
+kernel_fpu_begin() - so there probably isn't a difference because all the
+fpu state is always saved.
+(I'm sure there should be a way of getting access to (say) 2 ymm registers
+by providing an on-stack save area to allow wide data copies or special
+instructions - but that is a different issue.)
 
-This actually needs to be 'int len' because of the varargs packet formatter.
+> I think what you may really be asking is how much the overhead of the XSA=
+VE /
+> XRSTOR pair associated with kernel-mode use of the FPU *increases* if the=
+ kernel
+> clobbers AVX or AVX512 state, instead of just SSE state as xts-aes-aesni =
+does.
+> That's much more relevant to this patchset.
 
-David
+It depends on what has to be saved, not on what is used.
+Although, since all the x/y/zmm registers are caller-saved I think they cou=
+ld
+be 'zapped' on syscall entry (and restored as zero later).
+Trouble is I suspect there is a single piece of code somewhere that relies
+on them being preserved across an inlined system call.
+
+> I think the answer is that there is no additional overhead.  This is beca=
+use the
+> XSAVE / XRSTOR pair happens regardless of the type of state the kernel cl=
+obbers,
+> and it operates on the userspace state, not the kernel's.  Some of the ne=
+wer
+> variants of XSAVE (XSAVEOPT and XSAVES) do have a "modified" optimization=
+ where
+> they don't save parts of the state that are unmodified since the last XRS=
+TOR;
+> however, that is unimportant here because the kernel's FPU state is never=
+ saved.
+>=20
+> (This would change if x86 Linux were to support preemption of kernel-mode=
+ FPU
+> code.  In that case, we may need to take more care to minimize use of AVX=
+ and
+> AVX512 state.  That being said, AES-XTS tends to be used for bulk data an=
+yway.)
+>=20
+> This is based on theory, though.  I'll do a test to confirm that there's =
+indeed
+> no additional overhead.  And also, even if there's no additional overhead=
+, what
+> the existing overhead actually is.
+
+Yes, I was wondering how it is used for 'real applications'.
+If a system call that would normally return immediately (or at least withou=
+t
+a full process switch) hits the aes code it gets the cost of the XSAVE adde=
+d.
+Whereas the benchmark probably doesn't do anywhere near as many.
+
+OTOH this is probably no different.
+
+>=20
+> > I've not looked at the code but I often see what looks like
+> > excessive inlining in crypto code.
+> > This will speed up benchmarks but can have a negative effect
+> > on real code both because of the time taken to load the
+> > code and the effect of displacing other code.
+> >
+> > It might be that this code is a simple loop....
+>=20
+> This is a different topic.  By "inlining" I assume that you also mean thi=
+ngs
+> like loop unrolling.  I totally agree that some of the crypto assembly co=
+de goes
+> way overboard on this, resulting in an unreasonably large machine code si=
+ze.
+> The AVX implementation of AES-GCM (aesni-intel_avx-x86_64.S), which was w=
+ritten
+> by Intel, is the worst offender by far, generating 256011 bytes of machin=
+e code.
+> In OpenSSL, Intel has even taken that to the next level with their VAES
+> optimized implementation of AES-GCM generating 696040 bytes of machine co=
+de.
+
+That is truly stunning!
+I can't believe anything that big is actually 'optimised'.
+Just think of all the TLB misses :-)
+Unless it is slightly faster if you are encrypting several TB of data.
+
+..
+> So, I think my current proposal is at a reasonable place regarding compil=
+ed code
+> size, especially when it's compared to the monstrosity that is some of th=
+e
+> existing crypto assembly code.  But let me know if there are any specific
+> choices I've made that you may have a different opinion on.
+
+At least you've thought about code size.
+
+=09David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
+PT, UK
+Registration No: 1397386 (Wales)
 
 
