@@ -1,150 +1,123 @@
-Return-Path: <linux-kernel+bounces-130851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130852-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0261897DF3
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:05:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3AC5897DF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:09:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40E001F28BD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:05:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5C062B261AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:09:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96791CFA8;
-	Thu,  4 Apr 2024 03:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 950891CD3F;
+	Thu,  4 Apr 2024 03:09:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O6saht0A"
-Received: from mail-vk1-f169.google.com (mail-vk1-f169.google.com [209.85.221.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RzZasvmc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 610971CD2D;
-	Thu,  4 Apr 2024 03:05:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DACC91CD2D
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 03:09:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712199914; cv=none; b=izmZ0GwHYYrZSF6jUEANmUbp1TtzHtfymk1nXxpTXWltxIN60LDzRCm/heHWbEf3oJ4YwlCW0OsDhWjXAxJgqqs03QFh9DeWzaLDPMgWmDDV9/Z4AWCJvHjK9PB0/CTT8e0F825hX83OWh4phMtUuImQT9d8alkIxTbW1p+1STo=
+	t=1712200161; cv=none; b=ud7gZpZkMUZmUE6VPwo+WU5PNqLkvKpTAmIydn72ii8rUDd3IiS3YrnXgEQSHN12i0qYqZD1TLcuqPuNEQICvcahD2sWxFE1vS3nx2qTCvCxhGJqpHWi3qadBq6dnUlVmCMuP8s1SMr7W8vylCmUhasL17UkOqKVJHnn0zu1Yzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712199914; c=relaxed/simple;
-	bh=n1Gy12ii5bN7QHH1APM2opNVzrdc9BSnxwogwL1EV3Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DlaywooWi/JxBG+AX9HE7Ajc/uZw6i5IPxZIXkex9PF5ObvygFgEcv2+jM6bwvXqE1VotW+6YWoisskDfmN5UuB152e3cSBmoYoID6e7JT1bWNJ2ifRwhNgL18TXOrkEG264txU/LonX14s1NV/Xa2fn7k6UP8qkm59kDUkyZnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O6saht0A; arc=none smtp.client-ip=209.85.221.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f169.google.com with SMTP id 71dfb90a1353d-4d8e4d0b267so205403e0c.1;
-        Wed, 03 Apr 2024 20:05:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712199911; x=1712804711; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DjHDnpA7O0SA2pBDBfzfbp7mcVeAfKFEgK+y0xJV6BU=;
-        b=O6saht0AfkgGFQz75gv8Yshb/5uBD623GjwjhDBVSOPs+T3zaVdCMkM1EZAEAJPBgE
-         iRwUbeRjKNgzuGUJEjwhVJWPfGNtFsEnY97PbEePnaW6v0eg0Cv0xW5ttQu6GV37W8Q7
-         WzN6qqyvwS8mX29ybSlGM86pXGvBtvp2RutkbD6nJYAmfPrO9U9WH0k2Aj4qlhD9695m
-         TQZZbKKkLfl2RRmswmEVYM8Du2uAXs60xGmGXtOicBEGqklI0qWbb84uZmmT42YVO8Rt
-         563iQtAEYcG0bTpXkhVOMxN8OvYd3R9Qy6l1Dk9MZpHaJI8sy2JIEuJGttQDRSA6KCq3
-         CibQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712199911; x=1712804711;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DjHDnpA7O0SA2pBDBfzfbp7mcVeAfKFEgK+y0xJV6BU=;
-        b=hpAUwtKL2qjBZTSggDX7JxjrVtGO6ahjbiJ96WinQMoP1b7LFWaY6yGEngfOhnUAWp
-         od4H98SEZcba6hE6qMPpdNmzsglMlUbbjT15o08Oh6icz/weGvRklCQZJDpKXlmfylSC
-         8f8kdje8sDQ2VaQCaRXxbzO6QZEBMD9ZuEpckmYiqwqGQh2ICunpKfTHAL4foiAKAub3
-         K4DK2SuLNqRvtpEnX8mL2cWSHAx/BReVs7NHAKEhvkh8u6ZM1ANn3HhZ+1P3HIzDHkXF
-         zENU5Br4AVTZwrRPMs5kNqmF3erhUerRbSwRcgcpwamSGhjYYKh+Uy/etZZ+/THk4nuH
-         Ns/w==
-X-Forwarded-Encrypted: i=1; AJvYcCXqUhExbMG8Jn4cbkJWRlMWbcIiLgpzMAGqN8lCJ2JShVbsmp9IvU5QP9XVIPYhpEMSzOYK2KmPtBaAOKf7R5MyPZam1xhRUiPxHe68e5u4nrvOvuQsmp3mBMZFf2ikIJk+
-X-Gm-Message-State: AOJu0YyrfUY3aj5+ySdfFNFtrebLqPwKZu23a7egNu3keaul0BVSaC6S
-	vqDwiI8VvrgvqJhyVDMAj1p6fEO3VNQbl2SFqTkFRIgTHMZ7Ucak3VVV9bFlZB/YURxT7b0PtFh
-	Ygwh0M5gNkIWkOPcO/Xg89A/0lIN+7bq4nBo=
-X-Google-Smtp-Source: AGHT+IE154OEEZxkmPiDJ5tY4+FxOYu0pDdm/usOrWPODO/EvEflbVdQTWMgWeImARWWbnYhdtJpp718LuJO136gPK8=
-X-Received: by 2002:a05:6122:468c:b0:4da:9aa1:dd5e with SMTP id
- di12-20020a056122468c00b004da9aa1dd5emr1437503vkb.10.1712199911102; Wed, 03
- Apr 2024 20:05:11 -0700 (PDT)
+	s=arc-20240116; t=1712200161; c=relaxed/simple;
+	bh=VeDsqzIDw+9y6Q1G53nbCpHTMO3LeJQlYx7W7Yi3jSM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pA7lYxyq0QUkk5ZPnAhsyhqclj0cSap2jJXaPBbGv0g9jCUL3Rfp3HVe8JrIxN95A3AZSrfPYYtQAqKJ0vAA/eEbcRUh89n5rYTxTri0VYWZ7CzAc/vfZu9M0fRIuL41rE5CTKJ7xbhRmDERwEnaMPxP9x2OQc+l6oOW9WsYGLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RzZasvmc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 658EFC433F1;
+	Thu,  4 Apr 2024 03:09:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712200161;
+	bh=VeDsqzIDw+9y6Q1G53nbCpHTMO3LeJQlYx7W7Yi3jSM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=RzZasvmcsRMTp33dFG8x+1sEkl14h39MN8HQ/TPzu7uHky1o2tJzapBkO/zM5ctUR
+	 5HAnhPIT6aNJ30FETgzkhPAtMe2PcZMMI1e5edBVVoAJiaGuqycqqgCaXy8CmwzdQ/
+	 3FwUVCWmLeKWwDGhE8yQoCtpk6WhNOa5lQruIwnVP5Q+TaRGg/lLZyYFHby3toAfo9
+	 rfG0KBcZZ9T04c/qBELknVaIIezJ1BPqppzujFuktbVH54FZbZgfE6JaESIz6Fb70r
+	 AK7KHzFmVdEw29ZrZg8E7BUpVV9rMGxUPKTZ2/zt8Y9FvK/fBWOGGyyhly7HpOn2zX
+	 ec5R1M38NjUjA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 0DAD8CE109B; Wed,  3 Apr 2024 20:09:21 -0700 (PDT)
+Date: Wed, 3 Apr 2024 20:09:21 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Palmer Dabbelt <palmer@rivosinc.com>, Arnd Bergmann <arnd@arndb.de>,
+	Marco Elver <elver@google.com>
+Subject: Re: [PATCH 1/8] sparc32: make __cmpxchg_u32() return u32
+Message-ID: <2676cf77-1374-4d39-a669-e2db4b9b7bf5@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240402041138.GF538574@ZenIV>
+ <20240402042835.11815-1-viro@zeniv.linux.org.uk>
+ <85837f16-903c-44cd-8277-377e0228eb61@paulmck-laptop>
+ <20240403222053.GK538574@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402212039.51815-1-harishankar.vishwanathan@gmail.com> <82892691-a48f-ad06-7005-5bbd7d0757eb@iogearbox.net>
-In-Reply-To: <82892691-a48f-ad06-7005-5bbd7d0757eb@iogearbox.net>
-From: Harishankar Vishwanathan <harishankar.vishwanathan@gmail.com>
-Date: Wed, 3 Apr 2024 23:05:00 -0400
-Message-ID: <CAM=Ch045iUe1vHy+h9FSURbffj1GD_WDhcFJ2W7_amVx-BQATw@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] bpf: Fix latent unsoundness in and/or/xor
- value tracking
-To: Daniel Borkmann <daniel@iogearbox.net>
-Cc: ast@kernel.org, harishankar.vishwanathan@rutgers.edu, paul@isovalent.com, 
-	Matan Shachnai <m.shachnai@rutgers.edu>, Srinivas Narayana <srinivas.narayana@rutgers.edu>, 
-	Santosh Nagarakatte <santosh.nagarakatte@rutgers.edu>, John Fastabend <john.fastabend@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Edward Cree <ecree@solarflare.com>, "David S. Miller" <davem@davemloft.net>, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403222053.GK538574@ZenIV>
 
-On Wed, Apr 3, 2024 at 5:09=E2=80=AFAM Daniel Borkmann <daniel@iogearbox.ne=
-t> wrote:
->
-> On 4/2/24 11:20 PM, Harishankar Vishwanathan wrote:
-> [...]
-> > diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> > index fcb62300f407..a7404a7d690f 100644
-> > --- a/kernel/bpf/verifier.c
-> > +++ b/kernel/bpf/verifier.c
-> > @@ -13326,23 +13326,21 @@ static void scalar32_min_max_and(struct bpf_r=
-eg_state *dst_reg,
-> >               return;
-> >       }
-> >
-> > -     /* We get our minimum from the var_off, since that's inherently
-> > +     /* We get our minimum from the var32_off, since that's inherently
-> >        * bitwise.  Our maximum is the minimum of the operands' maxima.
-> >        */
-> >       dst_reg->u32_min_value =3D var32_off.value;
-> >       dst_reg->u32_max_value =3D min(dst_reg->u32_max_value, umax_val);
-> > -     if (dst_reg->s32_min_value < 0 || smin_val < 0) {
->
-> The smin_val is now unused, triggering the following warnings :
->
-> ../kernel/bpf/verifier.c:13321:6: warning: unused variable 'smin_val' [-W=
-unused-variable]
->   13321 |         s32 smin_val =3D src_reg->s32_min_value;
->         |             ^~~~~~~~
-> ../kernel/bpf/verifier.c:13352:6: warning: unused variable 'smin_val' [-W=
-unused-variable]
->   13352 |         s64 smin_val =3D src_reg->smin_value;
->         |             ^~~~~~~~
-> ../kernel/bpf/verifier.c:13386:6: warning: unused variable 'smin_val' [-W=
-unused-variable]
->   13386 |         s32 smin_val =3D src_reg->s32_min_value;
->         |             ^~~~~~~~
-> ../kernel/bpf/verifier.c:13417:6: warning: unused variable 'smin_val' [-W=
-unused-variable]
->   13417 |         s64 smin_val =3D src_reg->smin_value;
->         |             ^~~~~~~~
-> ../kernel/bpf/verifier.c:13451:6: warning: unused variable 'smin_val' [-W=
-unused-variable]
->   13451 |         s32 smin_val =3D src_reg->s32_min_value;
->         |             ^~~~~~~~
-> ../kernel/bpf/verifier.c:13479:6: warning: unused variable 'smin_val' [-W=
-unused-variable]
->   13479 |         s64 smin_val =3D src_reg->smin_value;
->         |             ^~~~~~~~
->
-> Removing these builds fine then, please follow-up with a v3.
+On Wed, Apr 03, 2024 at 11:20:53PM +0100, Al Viro wrote:
+> On Tue, Apr 02, 2024 at 01:03:13PM -0700, Paul E. McKenney wrote:
+> > On Tue, Apr 02, 2024 at 12:28:28AM -0400, Al Viro wrote:
+> > > Conversion between u32 and unsigned long is tautological there,
+> > > and the only use of return value is to return it from
+> > > __cmpxchg() (which return unsigned long).
+> > > 
+> > > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> > 
+> > I have pulled these in as replacements for my patches in the meantime.
+> > 
+> > Thank you!
+> 
+> FWIW, updated branch force-pushed; the difference is that __cmpxchg()
+> on sparc32 went
+> -       switch (size) {
+> -       case 1:
+> -               return __cmpxchg_u8((u8 *)ptr, (u8)old, (u8)new_);
+> -       case 2:
+> -               return __cmpxchg_u16((u16 *)ptr, (u16)old, (u16)new_);
+> -       case 4:
+> -               return __cmpxchg_u32((u32 *)ptr, (u32)old, (u32)new_);
+> -       default:
+> -               __cmpxchg_called_with_bad_pointer();
+> -               break;
+> -       }
+> -       return old;
+> +       return
+> +               size == 1 ? __cmpxchg_u8(ptr, old, new_) :
+> +               size == 2 ? __cmpxchg_u16(ptr, old, new_) :
+> +               size == 4 ? __cmpxchg_u32(ptr, old, new_) :
+> +                       (__cmpxchg_called_with_bad_pointer(), old);
+> 
+> (and similar for parisc).  Rationale: sparse does generate constant
+> truncation warnings in unreachable statements, but not in never-evaluated
+> subexpressions.  Alternative would be what parisc used to do in mainline:
+> 	case 1: return __cmpxchg_u8((u8 *)ptr, old & 0xff, new_ & 0xff);
+> and we'd need the same in 16bit case (both on parisc and sparc32).
+> Explicit (and rather mysterious) & 0xff for passing unsigned long to
+> a function that takes u8 was there to tell sparse that e.g.
+> cmpxchg(&int_var, 0, 0x12345678) was *not* trying to feed
+> 0x12345678 to a __cmpxchg_u8(), which would quietly truncate it had
+> it ever been reached.  Use of conditional expression avoids that
+> without having to play with explicit (and utterly pointless from
+> C point of view) masking.  IMO it's better that way, not to mention
+> being more concise than use of switch.
 
-Apologies. Yes, these smin_vals are not required anymore. I'll remove
-them when sending
-the v3.
+Cute!  I replaced the old versions of your patches with this series.
 
-> Thanks,
-> Daniel
+However, I was too lazy to apply this transformation to the other
+cmpxchg() implementations.  ;-)
+
+							Thanx, Paul
 
