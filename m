@@ -1,198 +1,136 @@
-Return-Path: <linux-kernel+bounces-132060-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132057-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 208E8898F3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:53:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4A15898F2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:46:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA7192829CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:53:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D11691C277ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:46:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA9B13473D;
-	Thu,  4 Apr 2024 19:53:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF7AC134721;
+	Thu,  4 Apr 2024 19:46:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nj/C3MAl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PP4L2GS8";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ji3QTxuq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Kwfam1vJ"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NQXg7Ed/"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E92CA74C14;
-	Thu,  4 Apr 2024 19:53:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA9012B82;
+	Thu,  4 Apr 2024 19:46:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712260404; cv=none; b=aBHU6zlCNq2ehSLaZw5Yccuf0w9f1gBGOlrVnAs4qj3FWGA6v90ujSiWMCefzAeeZu90728huDo3oWB3mMpUZqP0UOj/NsNd4fcsgg84h8Q1Um87DVLSq+R0OQo1KHBmeriBT/hJaH3Ltcuoxm7+IIaptxvqClQX0g5O7XA+oXA=
+	t=1712260007; cv=none; b=am2Z2tM7WQYa0GD8oFrkWfIRFeQCo2YHdJpENxHBzWwDGjLYLrLwKJiDDTpJ5xIMpN/30uqOP9j4Dt4TzTRDPpnH9ptmcWfEeU6EGjRKnfInxHbqD8dh7T+5bhT1wURZr8F6jnLq5KI4qQzicwD3Zty2VCiVgTP+TRVi+htWoVo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712260404; c=relaxed/simple;
-	bh=WIaxxb/wJKgOnX2AIsmocmXM/m0z3iob9NXxQddI4Pg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CZoAVwnHGAJE41mhjTP+4ISLlCHMpOBjGznWfiM4yemOoVTWkcmrGcMiVukkaDsLhYGNp/KzS5zuF6eohMwHKokfqrmGfF3Xg2kTwKQAbJP5j4J0rG5JflByDwEhNYAb1w+nDNCFVXayiAQcyGsBCI5gU98JnfIBRKI/RywOIzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nj/C3MAl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PP4L2GS8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ji3QTxuq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Kwfam1vJ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DFF871F441;
-	Thu,  4 Apr 2024 19:53:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712260401;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0kGyYdvz1lGwPR6FgbkygCOdLQOLaJs4yjJ3ECXl6LI=;
-	b=nj/C3MAlqmkQc/GHgjaqRmYlbJS+5xTV1FMACJvdtg8riSwbl++lq296aqqMGgyVrvVJC+
-	g70q7Vn4mDLP5A5HEt0Ei/di0p/ZpZI4M7Ph4s/OBODN9ToGvX17KRfxIaUd+FDzzG/Lec
-	vmNUvz2jeguhSMPPHk6DOKhGyrgtkg4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712260401;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0kGyYdvz1lGwPR6FgbkygCOdLQOLaJs4yjJ3ECXl6LI=;
-	b=PP4L2GS8ki1HoCI3//JngIKC4kPQe4Y2WWYWVHX2hQ1snir6WrP+yDv2IDE0jK5yQT9oFr
-	AjKHp1X2QpNTkVDw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ji3QTxuq;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Kwfam1vJ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712260400;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0kGyYdvz1lGwPR6FgbkygCOdLQOLaJs4yjJ3ECXl6LI=;
-	b=ji3QTxuqAvPTAwRGLGMxv6NvIlKIvxIauFBNnrqBXlle6B5cnXc163/s7WIjZH/fdlG+uL
-	r/+6ACCwIy+WHlSgHvSJDQe23uCaCHtAitBgBANDtAn7deEPJ9h2jE87HqtwC3r+Fb2emb
-	5m4G4RYKxYU7dwIq5h5TSLGEzqwxjCo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712260400;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0kGyYdvz1lGwPR6FgbkygCOdLQOLaJs4yjJ3ECXl6LI=;
-	b=Kwfam1vJR4+biIZroMqZaewwhFLWPbJLzQxsjs4IEXmgvyj6PnMIiIMfEOivT6zj8icM7p
-	xM7jzxhWCQ61E2Dg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C4F6613298;
-	Thu,  4 Apr 2024 19:53:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id wxDyLzAFD2ZSbAAAn2gu4w
-	(envelope-from <dsterba@suse.cz>); Thu, 04 Apr 2024 19:53:20 +0000
-Date: Thu, 4 Apr 2024 21:45:58 +0200
-From: David Sterba <dsterba@suse.cz>
-To: Johannes Thumshirn <jth@kernel.org>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Hans Holmberg <Hans.Holmberg@wdc.com>,
-	Naohiro Aota <Naohiro.Aota@wdc.com>, hch@lst.de,
-	Damien LeMoal <dlemoal@kernel.org>, Boris Burkov <boris@bur.io>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: Re: [PATCH RFC PATCH 3/3] btrfs: zoned: kick cleaner kthread if low
- on space
-Message-ID: <20240404194558.GK14596@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20240328-hans-v1-0-4cd558959407@kernel.org>
- <20240328-hans-v1-3-4cd558959407@kernel.org>
+	s=arc-20240116; t=1712260007; c=relaxed/simple;
+	bh=WK3fqVgXyhO4SaUPgOZtatPngfwA0rXyE9bTEsovzVE=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=IQIwNJyY6QX4mfYLkvAXX+14KNazNDML5RzemA3wIJF/edVU+gzGCToZnW/VOecNb7B+G8u/uudUu6idwiq4vdS+K0EfLSG8ncLfwBNFmgerz5ZmeZ0TquePxE70Ti7wuIB9c8/9BctJIsi7PYdlOLhIrq27KpBwpWJTl3azhMY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NQXg7Ed/; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4162b016230so7105125e9.3;
+        Thu, 04 Apr 2024 12:46:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712260004; x=1712864804; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gyZX00utsqFHyIyMrK0p94XEseScZhVbdBOCzUKgoBI=;
+        b=NQXg7Ed/n35bhMoMh4PUqViJtU0pn474gi6KlGQ21yMTeiKBm5i6KMIE2kvIj1XvG0
+         pf+XCmw+6Jk60CggmyBs20LdbZss7c00japtRdJ0+hc673WhqeCVSnX7p0gO0JSewQmG
+         P5gfJWIXf6EDwzajys4b7NteLOEfxpdvi4/Xvnf/9SnDUymdint8sXpUfSZVkHTFRnIT
+         V3gRckMTkZ/+JMG3Kqdn+3F9QQhvWygZt2FiE06Fc8SXvorMJl+EnXVfmjnrAVEKfYlR
+         j0+0kfHDrGBCtnxWZfmADr02lZtpodR2FCqrrxmz188Fw0RMMxBpJhN/6096nflwK4UY
+         C1kA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712260004; x=1712864804;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=gyZX00utsqFHyIyMrK0p94XEseScZhVbdBOCzUKgoBI=;
+        b=uRSOqOKfOQf/HwyQaBMGduT9gVhlzX2xfDV1OrJ/y3r1eXAmJvm+BUAdzBluelkqGr
+         0UB0l70jO90nc9t/Q62NhrZpFKRaySDzMI1GO6L/C/C745uARCavPGvnPOyE5zj5vLnW
+         YNL/Hyj9kpaQAVEo3kOmclGgm/k2lx52yt+5XHHtXI1RlS2j4wZdo8LpY+7s4OB2wO8H
+         kbKL0FogYKO/+OzSbsJ10VWjBmNzwbdelGaE9i7GjXKda8XbW3icRsKwLVZGiVZ82jWH
+         BcCHZP8vUseVEYJ35pT6zh9BCzy3cYHbHv7aw/cPCqpgDyzlIgtJ+TT4K53i9+L0TZrr
+         WfVA==
+X-Forwarded-Encrypted: i=1; AJvYcCUFlPfNz2G+Ddsk8qbKYdKBPrzhaa2Ys3McUNFOH9gKVKpZmdgxkcr35mwwgIzzMKbyQ0czQ/U99GxPwIylEfzQx6aGPY7sUoihF/u48ibAb/kxR9X7R1h+qDDmEwrSI1iNB7D8
+X-Gm-Message-State: AOJu0YxBq9q5vm/IEZMwfxoCps3gVx++ie5r5KEWBXqYddaz/DsLyb7B
+	WTImD9HBfJK/xayipRzz9uJ5+eixFWdMQ4PS6Avr+1Or3c8L55nR
+X-Google-Smtp-Source: AGHT+IHekUzO777iLHR4liMlPFnVwBNBoqtPNNPXdvvu+XWFviFnIRx8MjBP7y94ROtz/nqECd2FNg==
+X-Received: by 2002:a05:600c:4a9f:b0:415:b921:6121 with SMTP id b31-20020a05600c4a9f00b00415b9216121mr2570868wmp.10.1712260003625;
+        Thu, 04 Apr 2024 12:46:43 -0700 (PDT)
+Received: from [192.168.1.122] (cpc159313-cmbg20-2-0-cust161.5-4.cable.virginm.net. [82.0.78.162])
+        by smtp.gmail.com with ESMTPSA id n7-20020a5d5887000000b00343d38ee4a2sm164430wrf.11.2024.04.04.12.46.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 12:46:42 -0700 (PDT)
+Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
+To: Leon Romanovsky <leon@kernel.org>
+Cc: Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+ David Ahern <dsahern@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Christoph Hellwig <hch@infradead.org>, Saeed Mahameed <saeed@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Jiri Pirko <jiri@nvidia.com>,
+ Leonid Bloch <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>,
+ Saeed Mahameed <saeedm@nvidia.com>,
+ Aron Silverton <aron.silverton@oracle.com>, linux-kernel@vger.kernel.org,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Andy Gospodarek <andrew.gospodarek@broadcom.com>
+References: <0ea32dd4-f408-5870-77eb-f18899f1ad44@gmail.com>
+ <20240402184832.GO11187@unreal>
+ <cefa2b9a-4227-969e-d31e-c19a552b9c1c@gmail.com>
+ <20240403190012.GV11187@unreal>
+ <d75ee9d5-36a9-4056-a0f3-0c05b2e744aa@kernel.org>
+ <20240403170149.7d2b8f2b@kernel.org> <20240404122338.GI1723999@nvidia.com>
+ <20240404074850.19ecd52e@kernel.org> <20240404174728.GL1723999@nvidia.com>
+ <d0b11055-1804-515b-7916-cb83a6274955@gmail.com>
+ <20240404183540.GX11187@unreal>
+From: Edward Cree <ecree.xilinx@gmail.com>
+Message-ID: <d09cc7f0-3e2c-f22d-51ce-43a36412425b@gmail.com>
+Date: Thu, 4 Apr 2024 20:46:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240328-hans-v1-3-4cd558959407@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: -1.38
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: DFF871F441
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.38 / 50.00];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	BAYES_HAM(-0.17)[69.78%];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.cz:replyto];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
+In-Reply-To: <20240404183540.GX11187@unreal>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 
-On Thu, Mar 28, 2024 at 02:56:33PM +0100, Johannes Thumshirn wrote:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On 04/04/2024 19:35, Leon Romanovsky wrote:
+> On Thu, Apr 04, 2024 at 07:06:53PM +0100, Edward Cree wrote:
+>> Why?  What does the kernel get out of it?
+>>
+>> Maybe *you* need them to be supported, but maybe you should have
+>>  thought of that earlier in the design process.  ("A failure on
+>>  your part to foresee the eminently foreseeable does not
+>>  constitute an emergency on mine.")
+>> If we let folks bypass our standards with a _fait accompli_, we
+>>  don't really have standards in the first place.
 > 
-> Kick the cleaner kthread on chunk allocation if we're slowly running out
-> of usable space on a zoned filesystem.
+> Sorry, who are "we" and what are "our standards"?
 
-For zoned mode it makes more sense, as Boris noted it could be done for
-non-zoned too but maybe based on additional criteria as reusing the
-space is easier.
+As should be obvious from context, "we" in that sentence referred to
+ the mainline kernel.  And while participants in this thread currently
+ disagree on what "our standards" are, I hope it is not contentious
+ that the kernel community *does* have standards as to what code and
+ design is acceptable for inclusion.
+Necessarily, for those standards to be meaningful, there cannot be an
+ exception for "oh, but we already built our product, it's too late
+ now", otherwise everyone would just ignore the standards and then
+ demand to be merged anyway.
+That is true regardless of the specific standards in question.
 
-Also cleaner does several things so it may start doing subvolume
-cleaning or defragmentation at the worst time.
+> And, please, please reread the thread, it is not about devlink at all.
 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/zoned.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index fb8707f4cab5..25c1a17873db 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -1040,6 +1040,7 @@ int btrfs_reset_sb_log_zones(struct block_device *bdev, int mirror)
->  u64 btrfs_find_allocatable_zones(struct btrfs_device *device, u64 hole_start,
->  				 u64 hole_end, u64 num_bytes)
->  {
-> +	struct btrfs_fs_info *fs_info = device->fs_info;
->  	struct btrfs_zoned_device_info *zinfo = device->zone_info;
->  	const u8 shift = zinfo->zone_size_shift;
->  	u64 nzones = num_bytes >> shift;
-> @@ -1051,6 +1052,11 @@ u64 btrfs_find_allocatable_zones(struct btrfs_device *device, u64 hole_start,
->  	ASSERT(IS_ALIGNED(hole_start, zinfo->zone_size));
->  	ASSERT(IS_ALIGNED(num_bytes, zinfo->zone_size));
->  
-> +	if (!test_bit(BTRFS_FS_CLEANER_RUNNING, &fs_info->flags) &&
-> +	    btrfs_zoned_should_reclaim(fs_info)) {
-> +		wake_up_process(fs_info->cleaner_kthread);
+Please, please, reread the email to which you are replying; it is
+ not about devlink at all.
 
-You can drop the BTRFS_FS_CLEANER_RUNNING condition, this is not a
-performance sensitive where the wake up of an already running process
-would hurt.
-
-> +	}
-> +
->  	while (pos < hole_end) {
->  		begin = pos >> shift;
->  		end = begin + nzones;
-> 
-> -- 
-> 2.35.3
-> 
+-ed
 
