@@ -1,100 +1,117 @@
-Return-Path: <linux-kernel+bounces-131203-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E357898471
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:56:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5273E89846A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:51:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 161551F286D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:56:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 808951C22389
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D03F757E4;
-	Thu,  4 Apr 2024 09:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7109E74BFE;
+	Thu,  4 Apr 2024 09:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="cOU24V9/"
-Received: from forward203b.mail.yandex.net (forward203b.mail.yandex.net [178.154.239.154])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Qj7CQ2JS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9E01803D;
-	Thu,  4 Apr 2024 09:56:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3FB28F7D;
+	Thu,  4 Apr 2024 09:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712224572; cv=none; b=AbXGHfFsXz8HcLMGUqU7lv/U2qB7Ok63M08hXNcfwlwP1jNUj33GBic/a/LT0ss4UGCgCuy5jTDeBlSiRFKe8AFXLeKv3k98pTkf04LqmG1Zs7ED5LwM6AD2qlX/vHJTy7dHzhCh2ceIst4XPyjRYV4lJUBXcTs/TgMQ3ghtoiY=
+	t=1712224292; cv=none; b=gFvoSTjpZpambtiplucToy40iTgKphs2cwtYIwDKYY/N6FalLiom3DWZFdXQgG4QUe9liX3PiaVRnnLMEyexrpxwzWixNgnmQ5k/FKgYnH4vI3X8apQhSPJaADl/qE7xRHIJQ/DRXlH+TMwBm1T/pG01fa0qxV0Z7/iAfebukoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712224572; c=relaxed/simple;
-	bh=pJMDg1eg6ejbUQsB/VhRS6kuW8PWYItofZ8I/HU16ok=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t9Mj/o0DFRKCDn2KTL1RPebGC1oHcMu8akYBZVjWRxtopS4J2iIGX29vHPfKpVAl5dbLQOtdO5SxdN0n4csv/k68Fj+lLy33A2MHpAabnA1Olum9NOn8tAeB8+PJl65mfhxSnd88vlyPt4q9Uw/p3FoVTwoGFyHE0an8DytaH9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=cOU24V9/; arc=none smtp.client-ip=178.154.239.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from forward103c.mail.yandex.net (forward103c.mail.yandex.net [IPv6:2a02:6b8:c03:500:1:45:d181:d103])
-	by forward203b.mail.yandex.net (Yandex) with ESMTPS id 6A73E64DBD;
-	Thu,  4 Apr 2024 12:50:24 +0300 (MSK)
-Received: from mail-nwsmtp-smtp-production-main-36.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-36.sas.yp-c.yandex.net [IPv6:2a02:6b8:c37:629:0:640:2d57:0])
-	by forward103c.mail.yandex.net (Yandex) with ESMTPS id D805E60900;
-	Thu,  4 Apr 2024 12:50:15 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-36.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 4oQ8Ed9k3Gk0-wDcBHWCM;
-	Thu, 04 Apr 2024 12:50:15 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1712224215; bh=agUHuLc6sWYp/vb7zT9L+aoPJ6k5EpklUa4uldWqnX4=;
-	h=Message-Id:Date:Cc:Subject:To:From;
-	b=cOU24V9/52/2sBbYoPY9HHCSSLmC9Q5l+oux3S+YL7k1HU2kGwudWbgTYjMCCzzEU
-	 E4Rgr/Roz5HUFpl8Zd9dx4/6Gd1UHdO+ShAW6f797XO8XYdrGtTGQ0r++ojSUwEA9N
-	 vv30KOk92C2EUSqNRMSQSEBfcdkAxsKeHXgF4ybM=
-Authentication-Results: mail-nwsmtp-smtp-production-main-36.sas.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Mikhail Ukhin <mish.uxin2012@yandex.ru>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Mikhail Ukhin <mish.uxin2012@yandex.ru>,
-	stable@vger.kernel.org,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Michail Ivanov <iwanov-23@bk.ru>,
-	Pavel Koshutin <koshutin.pavel@yandex.ru>,
-	Artem Sadovnikov <ancowi69@gmail.com>
-Subject: [PATCH] ext4: fix i_data_sem unlock order in ext4_ind_migrate()
-Date: Thu,  4 Apr 2024 12:50:00 +0300
-Message-Id: <20240404095000.5872-1-mish.uxin2012@yandex.ru>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712224292; c=relaxed/simple;
+	bh=QXkkR+15Nk+Hzti1dm3lVDSpnwBTvtUHwgacoad2c0Q=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=IEchrTZgcWNsItqKNKZAzrWwA8iYOrturHm/A1DeG7vfrKlA/PBb9e/bn7qyLB8Gs1dUfipXOFmmztSvkkv/Mf3skK+rHyZlLIGZuZi4YOz1GeZnpxrLxpjpYb4XYCKYnQvoQBo+1k5PhrltjR/1GAlkt7+WQga7acI/05t1Ig4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Qj7CQ2JS; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712224292; x=1743760292;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=QXkkR+15Nk+Hzti1dm3lVDSpnwBTvtUHwgacoad2c0Q=;
+  b=Qj7CQ2JSi5Slr5b6W100qrMOzcC+zGCQewKp3L6H08G9NWqRJexY5YGp
+   Krc8k7b1WBbe33z0vvs0YtZZN/67ektrx+4MCrOmizxsXwKnlaGp/cGyB
+   5OiguhQ6j5ttKUpwpq0PSs7ZVjGtVS/s2nxMRfEAieQMFajADxYMdnFhB
+   /65r9kX5IyzsGWCym04bR2XEnsjIJGsmDMs2nN17hC9kFe0l/OQX2qWqP
+   02vbZOhg4JVNRDcDCP48drU1te+x+MHUZum9VJtYaZqvwHszVrR7cmFZC
+   m5w9HADugAw3WBkBgqL/h4xHK2rHIZXICmuE+4qgENtv0HkKK8tuaoxLF
+   Q==;
+X-CSE-ConnectionGUID: 7B4gZy1nTeePolv4VVl5xg==
+X-CSE-MsgGUID: 46/ue34OTzOl+2STJaL90w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7393831"
+X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
+   d="scan'208";a="7393831"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 02:51:30 -0700
+X-CSE-ConnectionGUID: ZygVWsUXSny15fRqkdCyjw==
+X-CSE-MsgGUID: 42Z4lqgpT3m7ucWMfJP/9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="19186529"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.26])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 02:51:27 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Thu, 4 Apr 2024 12:51:20 +0300 (EEST)
+To: Lukas Wunner <lukas@wunner.de>
+cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
+    Mahesh J Salgaonkar <mahesh@linux.ibm.com>, 
+    Oliver O'Halloran <oohall@gmail.com>, LKML <linux-kernel@vger.kernel.org>, 
+    linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v2 1/2] PCI: Add TLP Prefix reading into
+ pcie_read_tlp_log()
+In-Reply-To: <Zg50P2JcpvO8S-a7@wunner.de>
+Message-ID: <cc4f4e53-22d3-b5b0-bc9d-3156bfec6652@linux.intel.com>
+References: <20240403100206.4403-1-ilpo.jarvinen@linux.intel.com> <20240403100206.4403-2-ilpo.jarvinen@linux.intel.com> <Zg50P2JcpvO8S-a7@wunner.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323328-71238506-1712224280=:2725"
 
-Fuzzing reports a possible deadlock in jbd2_log_wait_commit.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-The problem occurs in ext4_ind_migrate due to an incorrect order of
-unlocking of the journal and write semaphores - the order of unlocking
-must be the reverse of the order of locking.
+--8323328-71238506-1712224280=:2725
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Found by Linux Verification Center (linuxtesting.org) with syzkaller.
+On Thu, 4 Apr 2024, Lukas Wunner wrote:
 
-Signed-off-by: Artem Sadovnikov <ancowi69@gmail.com>
----
- fs/ext4/migrate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Wed, Apr 03, 2024 at 01:02:05PM +0300, Ilpo J=E4rvinen wrote:
+> > pcie_read_tlp_log() handles only 4 TLP Header Log DWORDs but TLP Prefix
+> > Log (PCIe r6.1 secs 7.8.4.12 & 7.9.14.13) may also be present.
+> >=20
+> > Generalize pcie_read_tlp_log() and struct pcie_tlp_log to handle also
+> > TLP Prefix Log. The layout of relevant registers in AER and DPC
+> > Capability is not identical but the offsets of TLP Header Log and TLP
+>                 ^^^           ^^^
+> Somehow this doesn't seem to make sense.  Is the "not" perhaps wrong here=
+?
 
-diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-index d98ac2af8199..a5e1492bbaaa 100644
---- a/fs/ext4/migrate.c
-+++ b/fs/ext4/migrate.c
-@@ -663,8 +663,8 @@ int ext4_ind_migrate(struct inode *inode)
- 	if (unlikely(ret2 && !ret))
- 		ret = ret2;
- errout:
--	ext4_journal_stop(handle);
- 	up_write(&EXT4_I(inode)->i_data_sem);
-+	ext4_journal_stop(handle);
- out_unlock:
- 	ext4_writepages_up_write(inode->i_sb, alloc_ctx);
- 	return ret;
--- 
-2.25.1
+Hi Lukas,
 
+How about changing it into plural and adding a comma:
+
+The layouts of relevant registers in AER and DPC Capabilities are not=20
+identical, but ...
+
+Does that sound better?
+
+> > Prefix Log vary so the callers must pass the offsets to
+> > pcie_read_tlp_log().
+
+
+--=20
+ i.
+
+--8323328-71238506-1712224280=:2725--
 
