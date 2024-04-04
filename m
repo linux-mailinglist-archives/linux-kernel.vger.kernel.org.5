@@ -1,173 +1,258 @@
-Return-Path: <linux-kernel+bounces-131207-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DD2289847D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:58:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 307B1898486
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:00:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8EA331C21526
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:58:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ADBCA1F2A900
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:00:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1380F75816;
-	Thu,  4 Apr 2024 09:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2C45757F5;
+	Thu,  4 Apr 2024 10:00:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z158XmQ5"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Omc8JwnB"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD9374BE2
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 09:58:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119B459B7F
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 10:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712224717; cv=none; b=KHiqCiCzi3O+aTZXslCfV9ped55O+Jgvoql3ilb5vv9TnbMpVjPJC3HicPMtiTbOF9uquGU7helHtSHdNJuVD1SZKhwNShqEA7lgTtYAGHTZ5SZ+FTCjPVJIbJRjSDO3oqyeR7KZntZaPnyOYXjBMwInFVLzvH/IBW9NqhyT66c=
+	t=1712224816; cv=none; b=kI6HC638AbLNvGfZci3MbAzRJHhG7virJcI8Wq+TIrRUMrljHKzupIwWMnL7mr4ZiY16NIpWd2S9ucO3gsziU+fRak/6YS5c2auoAWoRPABt0sa0KpYsW0FIerBlWyruHlawLF7Fl23FZChv+x2iK1p75nwBiSXWoIHC8gCfU7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712224717; c=relaxed/simple;
-	bh=ODiTlGgRQsjehNRj3kmLlyExikmmOkr5QSGrCtILmIE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZcTV7VZo/tGV1nYvQERUclP2RqDXVNsWCmtplmeyv1+yb7r1g16oZYKLC6Ju4rfX4ATAcpeSPdosVRxdWyH+Z8unCotpg85j3Ln1AyjIhe85ZALrXVHeH0rh5WB1+T5W3cx1HYvx/HBeANR04Vu/XAr/KQTJtVOsi8J45AaXZYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z158XmQ5; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712224714;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Orry6me8Y86MAhIHpdcMtXnc6PoIoyVukOysNCbSjdE=;
-	b=Z158XmQ5hqEp4XJ3OgdbeFaGbv/cqZWxoqEmWSeQkMj4aYYPqBnXlZxvPRGRODxCYBJJVV
-	QaSKnq2OaAfQXwcDxg0J8/naiE93CUInGzArPY7gWSJevIAgvGYozh+LMF9sQ5g+AHERGr
-	73TVO4UeRA1XaG+yJYyudTKrR8tKr2U=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-197-bPJlHVMpORigDFEwNvyR8w-1; Thu, 04 Apr 2024 05:58:32 -0400
-X-MC-Unique: bPJlHVMpORigDFEwNvyR8w-1
-Received: by mail-lj1-f198.google.com with SMTP id 38308e7fff4ca-2d6884f6de1so1563591fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 02:58:31 -0700 (PDT)
+	s=arc-20240116; t=1712224816; c=relaxed/simple;
+	bh=/Zv2Mmkyeknbs1cQs3cIQ1t1IUN6v39fcrntA/XgcZU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gCdwqd44rRvQ5vSys8qPKdeW9S+V/RfgXEmARZ4KND6KDUbKTVBsDfTSR0rr8YvMP8CqVJrMdZ9IhDck+2F8pEq9cHHFhUfzRX2WzOVA5h06dbVPaGkF80yxUBoISZt0X7kB6Yd7YsQO+jPlIdTdLXdwP1T4dqG//FY526e94oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Omc8JwnB; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a4644bde1d4so110283266b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 03:00:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712224812; x=1712829612; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=PLemqlCVgdSk6fHHLXtaSYo8vRodhoKn4waofG0cC2g=;
+        b=Omc8JwnBeoIKbndedzc/605jVynUCgcQ7rRFOQUOHOEWEu45s133KGuLMKbF5B7rN0
+         c/uv2s2LcG7b/JhiAtjxRBR7UWXgXt1/Sx8G0YdG2aw2+Ge5L4vyug7VXMaGi59nmqhb
+         U3Cx5WTKfyqA4sqSJoqiXkTpOBgG7aAEaPtdCmzi+KhANvQGKwWyp0udbmzpXYeVUxCe
+         fsTWEzimSPS9aEKIAqfwhkKmspgDpDSN2IyEnysurW8EiZc5tT+xuuqxJKGGhahKbN2Z
+         9o6JcUVwtVCv2gzflhYem8+vhTSgCQRTcINNyj7EnUBR1fExj85mXr0X6ZTCydfquWya
+         mYRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712224711; x=1712829511;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Orry6me8Y86MAhIHpdcMtXnc6PoIoyVukOysNCbSjdE=;
-        b=rqTKE1Z1KzwVfYUH7MhK4xgfa7Hehr6ufg0daBlwXMks7l0cwV8eX5XtJCqPBSbUHz
-         9zt2G/Z3Pb+AUUQgOVBc8vdkjPmjjZY/J3Vt3O9xKKtd1aBEMuagrF2KXvlqqb6Z9ZOu
-         QgsKOXhBNyZx/dAHMpAOooMYTYyEViyS7d3X4EUakovFC1bjeKT/LkZnO3dqbYJ7tm+f
-         VNA4DgNgXgB8Cfaqkh4VpJ2rR3jAamTLZ2aiBZPwYXy9Q6/Ek6tmcMMxbu66SxS2Zu2o
-         SUV0IX8qJXZfyzYSlmTdXlh+3kqpmX/UVvIBWqLkyGzPIUdaDoi1HMu2hcWvmJm08usR
-         jGtg==
-X-Forwarded-Encrypted: i=1; AJvYcCWWC+7zHRqtLYu9+0VocQIH0u+v31DLQ2GBiLNP3f+j2BzkSRpmX0zIrKqGepzntb6qaW4RQ3pLXLKoo9JUiPCU4lq7KD/To31mdLkP
-X-Gm-Message-State: AOJu0YwnjiMLPgXugWl4BMk6thg4E3fNIpEBCiv718cEIEaMA1GVgyDz
-	bJZwiVPg+yMqcGjo0GgK5PNrdeUC5lSUQcU2T+n0u1fGe81gAWXlq4bfkkGA1G6e4eOu4M6gmjw
-	vtavmtE2x0pAdo11du0NJ58dPbWH9kSo0fytvxAOOS9CsHeGWoQFyFYfvN1jxIw==
-X-Received: by 2002:a2e:8495:0:b0:2d4:25c5:df1e with SMTP id b21-20020a2e8495000000b002d425c5df1emr1307562ljh.5.1712224710817;
-        Thu, 04 Apr 2024 02:58:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGL9iywRDTD5XwyTF1/J3z+dPLA+SbOUXVfOYlOrhd3UzBRJvxC5ppQjeIq9Frucy4B4viYOQ==
-X-Received: by 2002:a2e:8495:0:b0:2d4:25c5:df1e with SMTP id b21-20020a2e8495000000b002d425c5df1emr1307537ljh.5.1712224710432;
-        Thu, 04 Apr 2024 02:58:30 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-247-213.dyn.eolo.it. [146.241.247.213])
-        by smtp.gmail.com with ESMTPSA id m10-20020a05600c4f4a00b0041562a58b75sm2097660wmq.13.2024.04.04.02.58.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 02:58:29 -0700 (PDT)
-Message-ID: <4f44a9cb2d7cbd00d5dfa571bf87068bfd91f622.camel@redhat.com>
-Subject: Re: [PATCH net-next v6 3/3] net: ethernet: ti: am65-cpsw: Add
- minimal XDP support
-From: Paolo Abeni <pabeni@redhat.com>
-To: Julien Panis <jpanis@baylibre.com>, "David S. Miller"
- <davem@davemloft.net>,  Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, Russell King <linux@armlinux.org.uk>,  Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Jesper Dangaard Brouer <hawk@kernel.org>, John Fastabend
- <john.fastabend@gmail.com>, Sumit Semwal <sumit.semwal@linaro.org>,
- Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>, Simon Horman
- <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>, Ratheesh Kannoth
- <rkannoth@marvell.com>, Naveen Mamindlapalli <naveenm@marvell.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org,  linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org,  linaro-mm-sig@lists.linaro.org
-Date: Thu, 04 Apr 2024 11:58:28 +0200
-In-Reply-To: <20240223-am65-cpsw-xdp-basic-v6-3-212eeff5bd5f@baylibre.com>
-References: <20240223-am65-cpsw-xdp-basic-v6-0-212eeff5bd5f@baylibre.com>
-	 <20240223-am65-cpsw-xdp-basic-v6-3-212eeff5bd5f@baylibre.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+        d=1e100.net; s=20230601; t=1712224812; x=1712829612;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PLemqlCVgdSk6fHHLXtaSYo8vRodhoKn4waofG0cC2g=;
+        b=AD8bwCEQWxAjc4sYNceNdaAXh5I8PlHUHYPX8WJS7z/Fu+9Ch/SmAKIsDwvtz5s+rE
+         ntZg3VrKOA6O0HL3Maw0kv/eQpvGsyfRwaGxO2cWMsucBD8Pf1t0Nj1K60mm0drD4nAL
+         slFIdOA4oUi60OYr7aRVWPEzAmb3PY/K0XIBhLhfPP1SvqsdispVokA73A1yD58w5SFz
+         lIPH7FDw8OdWrie9Y+RcC5lrjsfOJvwWIBzUPbIp3MQwziA80YIVZ1AvLoSN4qSCi8Fl
+         Pytu9JA/bL4PN8Sja/5DkIk7FqYZGL2RwoZKmCz+/Tvs+mxqbuNyu6Fs2a9VlFrGh/Z9
+         PB6g==
+X-Forwarded-Encrypted: i=1; AJvYcCUV4GlmooYrDQNfSuuTrB5wvcx/fAHibghYPtIZ5tjmq0SX/1X7Sn6XZADDEAEIEWwV35r0fsMI7hetjJ6qYgCgDKQU0JEUM89zPlGK
+X-Gm-Message-State: AOJu0Yzt1+fHG8sIAFs1Pe6TWJKot8WNVTS7nwsxy4QrzxZGXp/iU+vW
+	3QXwUA47VCv0nHnnzruXELifmBDvDhG9zgZUa6PVMAT5OtA9Cp9nDS2mlLjoWmw=
+X-Google-Smtp-Source: AGHT+IH3aNut1aQM1czCUuksasKGSfNmvmvxaL0dMKQ3yeF/mmfQCxRSAnuXsKxW+T2V2jB9s/kASw==
+X-Received: by 2002:a17:906:a51:b0:a4a:aaa9:8b3b with SMTP id x17-20020a1709060a5100b00a4aaaa98b3bmr1070546ejf.77.1712224812361;
+        Thu, 04 Apr 2024 03:00:12 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id js19-20020a170906ca9300b00a4e8353be19sm3361456ejb.224.2024.04.04.03.00.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 03:00:11 -0700 (PDT)
+Message-ID: <903ad855-ab26-4ef3-80bd-249917056188@linaro.org>
+Date: Thu, 4 Apr 2024 12:00:09 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] arm64: dts: ti: k3-am62p: use eFuse MAC Address for
+ CPSW3G Port 1
+To: Siddharth Vadapalli <s-vadapalli@ti.com>, afd@ti.com
+Cc: nm@ti.com, vigneshr@ti.com, kristo@kernel.org, robh@kernel.org,
+ krzk+dt@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ srk@ti.com
+References: <20240404081845.622707-1-s-vadapalli@ti.com>
+ <18eb0e55-38ad-44f9-90b7-1917d8c0d5bb@linaro.org>
+ <75b53dda-23aa-4915-944a-4d9a619bd165@ti.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <75b53dda-23aa-4915-944a-4d9a619bd165@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2024-04-02 at 12:33 +0200, Julien Panis wrote:
-[...]
-> +static int am65_cpsw_run_xdp(struct am65_cpsw_common *common, struct am6=
-5_cpsw_port *port,
-> +			     struct xdp_buff *xdp, int desc_idx, int cpu, int *len)
-> +{
-> +	struct am65_cpsw_rx_chn *rx_chn =3D &common->rx_chns;
-> +	struct net_device *ndev =3D port->ndev;
-> +	int ret =3D AM65_CPSW_XDP_CONSUMED;
-> +	struct am65_cpsw_tx_chn *tx_chn;
-> +	struct netdev_queue *netif_txq;
-> +	struct xdp_frame *xdpf;
-> +	struct bpf_prog *prog;
-> +	struct page *page;
-> +	u32 act;
-> +
-> +	prog =3D READ_ONCE(port->xdp_prog);
-> +	if (!prog)
-> +		return AM65_CPSW_XDP_PASS;
-> +
-> +	act =3D bpf_prog_run_xdp(prog, xdp);
-> +	/* XDP prog might have changed packet data and boundaries */
-> +	*len =3D xdp->data_end - xdp->data;
-> +
-> +	switch (act) {
-> +	case XDP_PASS:
-> +		ret =3D AM65_CPSW_XDP_PASS;
-> +		goto out;
-> +	case XDP_TX:
-> +		tx_chn =3D &common->tx_chns[cpu % AM65_CPSW_MAX_TX_QUEUES];
-> +		netif_txq =3D netdev_get_tx_queue(ndev, tx_chn->id);
-> +
-> +		xdpf =3D xdp_convert_buff_to_frame(xdp);
-> +		if (unlikely(!xdpf))
-> +			break;
-> +
-> +		__netif_tx_lock(netif_txq, cpu);
-> +		ret =3D am65_cpsw_xdp_tx_frame(ndev, tx_chn, xdpf,
-> +					     AM65_CPSW_TX_BUF_TYPE_XDP_TX);
-> +		__netif_tx_unlock(netif_txq);
-> +		if (ret)
-> +			break;
-> +
-> +		ndev->stats.rx_bytes +=3D *len;
-> +		ndev->stats.rx_packets++;
-> +		ret =3D AM65_CPSW_XDP_CONSUMED;
-> +		goto out;
-> +	case XDP_REDIRECT:
-> +		if (unlikely(xdp_do_redirect(ndev, xdp, prog)))
-> +			break;
-> +
-> +		xdp_do_flush();
+On 04/04/2024 11:12, Siddharth Vadapalli wrote:
+> On Thu, Apr 04, 2024 at 10:43:04AM +0200, Krzysztof Kozlowski wrote:
+>> On 04/04/2024 10:18, Siddharth Vadapalli wrote:
+>>> Add the "cpsw-mac-efuse" node within "wkup_conf" node corresponding to the
+>>> CTRLMMR_MAC_IDx registers within the CTRL_MMR space. Assign the compatible
+>>> "ti,am62p-cpsw-mac-efuse" to enable "syscon_regmap" operations on these
+>>> registers. The MAC Address programmed in the eFuse is accessible through
+>>> the CTRLMMR_MAC_IDx registers. The "ti,syscon-efuse" device-tree property
+>>> points to the CTRLMMR_MAC_IDx registers, allowing the CPSW driver to fetch
+>>> the MAC Address and assign it to the network interface associated with
+>>> CPSW3G MAC Port 1.
+>>>
+>>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+>>> ---
+>>>
+>>> This patch is based on linux-next tagged next-20240404.
+>>> Patch depends on:
+>>> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240402105708.4114146-1-s-vadapalli@ti.com/
+>>> for the newly added "ti,am62p-cpsw-mac-efuse" compatible.
+>>>
+>>> v1:
+>>> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240402094200.4036076-1-s-vadapalli@ti.com/
+>>> Changes since v1:
+>>> - Since "wkup_conf" is modelled as a "simple-bus" rather than being
+>>
+>> And maybe the hardware representation is not correct? What bus is it?
+> 
+> I will let Andrew comment on it. Andrew had posted a patch at:
+> https://lore.kernel.org/r/20240124184722.150615-10-afd@ti.com/
+> to convert an equivalent "main_conf" node for AM62 SoC to "simple-bus"
+> from the existing "syscon".
+> 
+>>
+>>>   modelled as a System Controller node with the "syscon" compatible,
+>>>   directly passing the reference to the "wkup_conf" node using the
+>>>   "ti,syscon-efuse" device-tree property will not work.
+>>>   Therefore, I posted the patch at:
+>>>   https://patchwork.kernel.org/project/linux-arm-kernel/patch/20240402105708.4114146-1-s-vadapalli@ti.com/
+>>>   in order to add a new compatible to be used for modelling the
+>>>   CTRLMMR_MAC_IDx registers as System Controller nodes, thereby
+>>>   allowing the existing "ti,syscon-efuse" property to be used.
+>>>   Now, "ti,syscon-efuse" points to the "cpsw_mac_efuse" node within
+>>>   "wkup_conf" node, with "cpsw_mac_efuse" being a "syscon" node.
+>>>
+>>> Logs verifying that the CPSW driver assigns the MAC Address from the
+>>> eFuse based on the CTRLMMR_MAC_IDx registers at 0x43000200 and 0x43000204
+>>> to the interface eth0 corresponding to CPSW3G MAC Port 1:
+>>> https://gist.github.com/Siddharth-Vadapalli-at-TI/9982c6f13bf9b8cfaf97e8517e7dea13
+>>>
+>>> Regards,
+>>> Siddharth.
+>>>
+>>>  arch/arm64/boot/dts/ti/k3-am62p-main.dtsi   | 1 +
+>>>  arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi | 5 +++++
+>>>  2 files changed, 6 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+>>> index 7337a9e13535..848ca454a411 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+>>> +++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
+>>> @@ -696,6 +696,7 @@ cpsw_port1: port@1 {
+>>>  				label = "port1";
+>>>  				phys = <&phy_gmii_sel 1>;
+>>>  				mac-address = [00 00 00 00 00 00];
+>>> +				ti,syscon-efuse = <&cpsw_mac_efuse 0x0>;
+>>
+>> Why this is not nvmem cell, like or efuses?
+> 
+> Since it belongs to the MMIO register set. You had recommended *not*
+> using nvmem for such MMIO registers at:
+> https://lore.kernel.org/r/48902771-5d3b-448a-8a74-ac18fb4f1a86@linaro.org/
+> "nvmem is for non-volatile memory, like OCOTP and eFUSE. This is not for
+> accessing regular MMIO registers of system-controller..."
+> 
+> Despite the "ti,syscon-efuse" property containing the term "efuse" in its
+> name, it is reading the CTRLMMR_MAC_IDx MMIO registers. So I assumed that
+> the existing approach which has been used on all K3 SoCs apart from this
+> one, will be suitable for this SoC as well.
 
-The above will kill XDP redirect performances. Even if this HW has the
-same limitation of cpsw, the above will still deserve an explicit
-comment.
+OK, I totally forgot we discussed this.
 
-Quickly skimming over the code it does not look so, so you could
-possibly move xdp_do_flush() in am65_cpsw_nuss_rx_poll().
+> 
+>>
+>>>  			};
+>>>  
+>>>  			cpsw_port2: port@2 {
+>>> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+>>> index a84756c336d0..df9d40f64e3b 100644
+>>> --- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+>>> +++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
+>>> @@ -18,6 +18,11 @@ chipid: chipid@14 {
+>>>  			reg = <0x14 0x4>;
+>>>  			bootph-all;
+>>>  		};
+>>> +
+>>> +		cpsw_mac_efuse: cpsw-mac-efuse@200 {
+>>
+>> Node names should be generic. See also an explanation and list of
+>> examples (not exhaustive) in DT specification:
+>> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+> 
+> I was following the convention that other mfd-syscon compatible nodes
+> seemed to be using:
+> https://github.com/torvalds/linux/blob/41bccc98fb7931d63d03f326a746ac4d429c1dd3/arch/arm64/boot/dts/ti/k3-am65-main.dtsi#L502
+> The node is:
+> dss_oldi_io_ctrl: dss-oldi-io-ctrl@41e0
+> corresponding to the compatible:
+> "ti,am654-dss-oldi-io-ctrl"
+> which was added by commit:
+> https://github.com/torvalds/linux/commit/cb523495ee2a5938fbdd30b8a35094d386c55c12
 
-Cheers,
+So if that one was wrong, then what? I don't know really what type of
+device is it, but just because one contributor called it that way, does
+not mean you should keep going. Maybe investigate why that contributor
+did not decide to follow Devicetree spec recommendation?
 
-Paolo
+Best regards,
+Krzysztof
 
 
