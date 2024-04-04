@@ -1,162 +1,117 @@
-Return-Path: <linux-kernel+bounces-131806-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131807-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4FE7F898BF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:18:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 283C0898BFD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:20:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 793921C2265D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:18:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C81DBB2B50D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:18:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DAC712A16A;
-	Thu,  4 Apr 2024 16:18:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D4812B148;
+	Thu,  4 Apr 2024 16:18:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="M0NLcUFj"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wDbkKZXL"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E44126F1E
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:18:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF1FC71734
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:18:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712247499; cv=none; b=MDlLp9gFGfNAW/oyA7lKxZfcv1ZJ8ypPke/kskR3tzQu8uvHCNsRhKa7yxc7bMhAu3Z5+sok+6Nv8NI64iBY45pXi5QLtvkcxjtpVkm6Qcv4pv0CDNOBC2wAlfqa/Gy+c+yBWncUPz8+xgXm5Iao8OZ/i3DzUO+EdN8292egXSc=
+	t=1712247529; cv=none; b=XFZh77gS3raLYHNK9+hgv5vyM1cBMheLlfNj0o7c7qUxSlXSyT/wKXo0K+XIhuxyqf3SRm45exvLaXkDFWeX0Gpg2WD5ttAlMIMV/yCTXUBR4nwOzg6X9qnkE+1yV285tCydvxfa5LZ7LwYYiGp5593fhGbSHyqNLOlIMpRcAcQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712247499; c=relaxed/simple;
-	bh=kAsemLpZF5gvKF3iRwKXe1owEO24xjO+cbsWgliCEOM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c6unC4IOcqdMhZXTXAs8a8030mUjOgvyelzstllYA2HkZizkJjSNmzbmOlRiyHCUzjvj49/n/hZSw5JXV3s2fkn7QZy4ziQCCkW9jPD6ZAnqCqWQGk57GXlaWAcQgJZyur6NeXyZOm9G9EoaM3oCBjoE2g9decEXppd9Xv3WDng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=M0NLcUFj; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-60a104601dcso13104067b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 09:18:17 -0700 (PDT)
+	s=arc-20240116; t=1712247529; c=relaxed/simple;
+	bh=ni9ef8/m9sbD2y1ei5GZR7E9mc/Du+rMHCoorxfhMe4=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=pa96d6wtol5Lze6UjkSLXELhpr3LwHBTWIdH5S8eqbaDtFLscaSwGblvIZy4B+yJvPAdER/9N5Zcop7wmZDhm+2XkweHCics+3/MNZ7pKjGD3o0IzwJUeLR3C5rcp8YAbj/bgXaEhSvLJu+hg7srD6bcaaBvsV5DbMqwf7vo4u8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wDbkKZXL; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d8dbe37d56so1028741a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 09:18:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712247496; x=1712852296; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=y2wfhwpj0GJm8stfsi7qk1/VC2m7+vGnm3FHrvFy46A=;
-        b=M0NLcUFjVKZsas5aVDZFMt5H3vMmpH8MA3sTixXN0aOOTXrEHrWqHdkEqu6dJhG5py
-         hmew0kuq774jr2yR6ZDX6vw0lkzlyGMXZpXeTH5w5HuJqfRrds19NTGFX+jbVj9tiGeQ
-         H1EdmAq2hKj1zPToCPKkDF6vAn+GTBfZ9jUu+WThorTvYtFDSM66flcEJuji4HXHvQNe
-         PUli+pCCsIcbwDexvSrsnzL0i7Ynh62gCu8gV/v7dQH+QSFgi20NwYkRjJbellKn/9Vt
-         dIF74+hNZ4t/ITA9wV+YWPOf7SYV5CkcCmj2ezLLLCP0WJcRllVYmJ2qQtYainx++S0U
-         3HFA==
+        d=google.com; s=20230601; t=1712247527; x=1712852327; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=iVwR60M09qp3eNkKBsyNij7ZpEjKjJ0flnXDpzKp76o=;
+        b=wDbkKZXLfKzxHt33oJWa05hJCPn+K8t8E8VNrofIflKRX7wd2KIUJiB6FxOQnE6CR/
+         Bc+eJ4kk5jUwrcSaL5YNLDHMEyppSc1/MRNwe8hv1tNvh4VTvtLu6HYmDXjliYvynwhp
+         VyaOQ+l75An+A6+4+D8FbS4wTnPTVUJmlAtA/mis2aVoFUmNTC+BuJKAyAnWn0BOXJzs
+         XIKlxGHqKdvOFqL0c4pPpZFBdT5JLISAfMdy/QSNL/Ax8xzFKW+kv9Km61NK/RkTowTV
+         fIwr2WiusfOY3hGt4GQY1T9Hqrjuedvu2YhqvpRBIhzjo59BVXTpA6muMrljpgQF85KV
+         XR/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712247496; x=1712852296;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=y2wfhwpj0GJm8stfsi7qk1/VC2m7+vGnm3FHrvFy46A=;
-        b=TOT3rU6mg7wjoukWdMcWPncLowo29kMF9Jx6gHh/v4tadlqQgHDsBWKzpY5K7RkF5x
-         gWwXlAzaxyRS8igRb3L3dAL4x3VzK0S8hrVTdsOFlPB5WXTwhNSrAG5IZKmCAfAQQ7Fe
-         yLUl3S2KZNb9R7sOr+sWy6DaVwGE7Gs2g4J5X1yVAlL+Jx48u3meq4bAyfYhQ0TLVouh
-         GLeTOYWdyE1RNReTUnveB5ZNzB4lbL9vcT1u1miDdttTsx49kTICAGhAyBVNxHDeyBlA
-         S0gBSIYV+5H5fXL+QhsT8sDlA2SToHpbTUodSUSjNizsZ5Hdw0eaDt69tJRbTPnaEVc9
-         i9jQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUSYcPYTTuny3HI4w+METWQd93kSJRHbMt/utusaclV5hK5dKh8f+EotPoHDNAx9IBrtD99IIuyECLOWgaf7Hbu+rs6feprI8r7qZ71
-X-Gm-Message-State: AOJu0Yy4RLabSaZ9ksLlnMf2YtgSf8lenrlCo5feENTn4P8MG18pgMVM
-	H1LUSi8ug3O42ESdFs/1AtKUDcYOwNFcxfZT7gFJGkD8vUxl1etT7di8Wo7Wg0cGin41XKfT9/R
-	jUpm5/tsrHAj12BurZaLC7AP5IaFJN9byWgYxpQ==
-X-Google-Smtp-Source: AGHT+IGZ1IsW5nVT5b4ImkAVo1aGzZo+2+alfh2eRUC563al7JWgpLpAeRPbbZe+AU7DlbaHjZwMfNJDOEDMGTtobIc=
-X-Received: by 2002:a25:8412:0:b0:dc7:594b:f72b with SMTP id
- u18-20020a258412000000b00dc7594bf72bmr2550436ybk.39.1712247496552; Thu, 04
- Apr 2024 09:18:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712247527; x=1712852327;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=iVwR60M09qp3eNkKBsyNij7ZpEjKjJ0flnXDpzKp76o=;
+        b=k6wkmPi3JeHW1Zm8hEzD39JoVhw6YtBUn2ysd+01QWuE0M4K9DU7KGQON5HLMl0v3a
+         87Qs1jSMcrnJFmjyWqp7QOOBOCCAaym9enQvfgiSdzSMU97RNrHGm8Nl6qCA8Ra0tPFI
+         7KGYeglKUKYoCU+f4Bv6on358GrMi3cSHWLAlBe63uJ2arw7TxpoEXyIiZ0TINd58sWj
+         j4fk+kAFj915QYwu5WY9XqHT4bi5tclxVkFlY2NJD3pNr9AANE0R5f82oJ+dLP4W7nnP
+         H4EztMNa1DqZoAMj3qajvgtqOkCr6H/oT0fcSWGf6EBY1JcjKY8TvynD03ShM/OJrEDk
+         WP7A==
+X-Forwarded-Encrypted: i=1; AJvYcCVavXDjOzkTNjKZG/+f/FhaYHjGqTjta9pyGlEUnDFNrBMqujLS740fjxXQcyt2h54dwwZ1mKqfVcOF9kqlqj5j8WSn8VXL0OcHQo1n
+X-Gm-Message-State: AOJu0YxCkZ/zLR8EmYTYY+F5g34RcO0f05eaVkLd9TCxQWJ8nT47EzqN
+	tvPjnboJyzVfAL3y5hSgdV37J57HPY0Wf7II0ophiJUndFFtN7HJWY8ZrUIcFDzKmQWrp1LMJmb
+	NiA==
+X-Google-Smtp-Source: AGHT+IH4lxIIGygCtPnjXkuaPIjBewuPAVBUw031r3nTYKt3ZePYzHSUJqrxURNuSVSr34EiZC9lyoOsXUQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:9a41:0:b0:5dc:11fe:525f with SMTP id
+ e1-20020a639a41000000b005dc11fe525fmr8407pgo.6.1712247527094; Thu, 04 Apr
+ 2024 09:18:47 -0700 (PDT)
+Date: Thu, 4 Apr 2024 09:18:45 -0700
+In-Reply-To: <SN6PR02MB41576028614CB7FE9A11EBEBD4362@SN6PR02MB4157.namprd02.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240401-additional-trailers-v1-1-f472bf158d2f@linaro.org> <ZgxVqIwPxiFtcBrB@hu-bjorande-lv.qualcomm.com>
-In-Reply-To: <ZgxVqIwPxiFtcBrB@hu-bjorande-lv.qualcomm.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 4 Apr 2024 19:18:05 +0300
-Message-ID: <CAA8EJppRB57ra7oqjrDM8bGt7b90_56HJPQ3gPeTFy6fiMBLKw@mail.gmail.com>
-Subject: Re: [PATCH] docs: submitting-patches: describe additional tags
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+References: <20240324190503.116160-1-xry111@xry111.site> <SN6PR02MB41576028614CB7FE9A11EBEBD4362@SN6PR02MB4157.namprd02.prod.outlook.com>
+Message-ID: <Zg7S5dk3J4Zc82nj@google.com>
+Subject: Re: [PATCH v2] x86/mm: Don't disable INVLPG if "incomplete Global
+ INVLPG flushes" is fixed by microcode
+From: Sean Christopherson <seanjc@google.com>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: Xi Ruoyao <xry111@xry111.site>, Dave Hansen <dave.hansen@linux.intel.com>, 
+	Andy Lutomirski <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	"H. Peter Anvin" <hpa@zytor.com>, "x86@kernel.org" <x86@kernel.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Dexuan Cui <decui@microsoft.com>
+Content-Type: text/plain; charset="us-ascii"
 
-On Tue, 2 Apr 2024 at 21:59, Bjorn Andersson <quic_bjorande@quicinc.com> wrote:
->
-> On Mon, Apr 01, 2024 at 08:17:03AM +0300, Dmitry Baryshkov wrote:
-> > Described tags do not fully cover development needs. For example the LKP
-> > robot insists on using Reported-by: tag, but that's not fully correct.
-> > The robot reports an issue with the patch, not the issue that is being
-> > fixed by the patch. Describe additional tags to be used while submitting
-> > patches.
-> >
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
-> >  Documentation/process/submitting-patches.rst | 19 +++++++++++++++++++
-> >  1 file changed, 19 insertions(+)
-> >
-> > diff --git a/Documentation/process/submitting-patches.rst b/Documentation/process/submitting-patches.rst
-> > index 66029999b587..3a24d90fa385 100644
-> > --- a/Documentation/process/submitting-patches.rst
-> > +++ b/Documentation/process/submitting-patches.rst
-> > @@ -544,6 +544,25 @@ future patches, and ensures credit for the testers.
-> >  Reviewed-by:, instead, indicates that the patch has been reviewed and found
-> >  acceptable according to the Reviewer's Statement:
-> >
-> > +Additional tags to be used while submitting patches
-> > +---------------------------------------------------
+On Mon, Mar 25, 2024, Michael Kelley wrote:
+> >  static void setup_pcid(void)
+> >  {
+> > +	const struct x86_cpu_id *invlpg_miss_match;
 > > +
-> > +The tags described previously do not always cover the needs of the development
-> > +process.
-> > +
-> > +For example, if the kernel test robot reports an issue in the patch, the robot
-> > +insists that the next version of the patch gets the Reported-by: and Closes:
-> > +tags.  While the Closes: tag can be considered correct in such a case, the
-> > +Reported-by: tag is definitely not correct. The LKP robot hasn't reported the
-> > +issue that is being fixed by the patch, but instead it has reported an issue
-> > +with the patch. To be more precise you may use the Improved-thanks-to: tag for
-> > +the next version of the patch.
-> > +
-> > +Another frequent case is when you want to express gratitude to the colleagues,
-> > +who helped to improve the patch, but neither the Co-developed-by: nor
-> > +Suggested-by: tags are appropriate. In such case you might prefer to use
-> > +Discussed-with:, Listened-by:, or Discussed-over-a-beer-with: tags.
-> > +
->
-> I really like the idea of defining two additional tags for these
-> purposes ("Improved-from-review-feedback/testing-by" and "Cred-to").
+> >  	if (!IS_ENABLED(CONFIG_X86_64))
+> >  		return;
+> > 
+> >  	if (!boot_cpu_has(X86_FEATURE_PCID))
+> >  		return;
+> > 
+> > -	if (x86_match_cpu(invlpg_miss_ids)) {
+> > +	invlpg_miss_match = x86_match_cpu(invlpg_miss_ids);
+> > +	if (invlpg_miss_match &&
+> > +	    invlpg_miss_match->driver_data > boot_cpu_data.microcode) {
+> >  		pr_info("Incomplete global flushes, disabling PCID");
+> >  		setup_clear_cpu_cap(X86_FEATURE_PCID);
+> >  		return;
+> 
+> As noted in similar places where microcode versions are
+> checked, hypervisors often lie to guests about microcode versions.
+> For example, see comments in bad_spectre_microcode().  I
+> know Hyper-V guests always see the microcode version as
+> 0xFFFFFFFF (max u32 value).  So in a Hyper-V guest the above
+> code will always leave PCID enabled.
 
-I think that the from-review / from-testing might be too verbose. I'd
-prefer to keep the existing tag.
-
-As for Cred-to I'm probably missing the usecase that you have in mind.
-
->
-> I do however think that in order to gain acceptance and widespread
-> usage, they need to be defined in the same clear fashion as the entires
-> under the "Using Reported-by:, Tested-by:, ..." section.
-
-Of course.
-
->
-> Regards,
-> Bjorn
->
-> >  Reviewer's statement of oversight
-> >  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> >
-> >
-> > ---
-> > base-commit: 13ee4a7161b6fd938aef6688ff43b163f6d83e37
-> > change-id: 20240401-additional-trailers-2b764f3e4aee
-> >
-> > Best regards,
-> > --
-> > Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> >
-
-
-
--- 
-With best wishes
-Dmitry
+Enumerating broken PCID support to a guest is very arguably a hypervisor bug.
+Hypervisors also lie to guest about FMS.  As KVM *user* with affected hardware
+(home box), I would want the kernel to assume PCID works if X86_FEATURE_HYPERVISOR
+is present.
 
