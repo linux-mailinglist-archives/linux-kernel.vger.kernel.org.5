@@ -1,78 +1,140 @@
-Return-Path: <linux-kernel+bounces-132230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF51C8991AD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:58:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EBC88991BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:01:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1CE7D1C210DF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:58:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 801301C218BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:01:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6804F13C671;
-	Thu,  4 Apr 2024 22:58:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12BD813C67A;
+	Thu,  4 Apr 2024 23:01:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Eh0hmAk1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RjT1djYl"
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE05130486;
-	Thu,  4 Apr 2024 22:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DBD0130E57;
+	Thu,  4 Apr 2024 23:01:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712271489; cv=none; b=mHaoLznYHq8sBWBWOTKJ2nMgxlGQpkScIxo/dZRxB4a3bRZMkgRKPTFuIIMyimPWmB0/tZc+1NjkbktODm3LxrxeC//0kiYKO6euXdPkTABAzWdkS5APFfPE5mtox3KFAd+PIWYrRoAP1N0unlIQ04cUNYk644Qdm9FHSA+QmHo=
+	t=1712271663; cv=none; b=CWV+U0XLnl2ifg0+rc/8+YGsvOY3FESLN6InC6cxdgskCLBxBfSLJMjsSWkwTQlxqAySNREzL0nQOAkSvJM9Q6owTyabQW5lR/Yz9lHK2OvULcAnURwj4AOgKp3aqLT4uRSdznLG79VjQX9pJEQBW8PH/uxVufTAQ0Fugco6300=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712271489; c=relaxed/simple;
-	bh=PezbfKWA9/zLRq5U0KKUBbgjiHoTTX4v6n8hqaaXERY=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=KMciqon0dLai6S5d/PSCtLBuqLZPVu1hpBPc50dkfsCd7xyf07FhcZoZPSltuws8atMtFmGFzAH1nFi1yyWltEht/dO+NY1GQb8tjn0kIAbNn9i39F/Ek3FFMdZhQiptrEIcNuNQykRQaF9W0ao0Up9utlNE6uNkX4V8W7kGogo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Eh0hmAk1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7540EC433F1;
-	Thu,  4 Apr 2024 22:58:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712271489;
-	bh=PezbfKWA9/zLRq5U0KKUBbgjiHoTTX4v6n8hqaaXERY=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=Eh0hmAk1WUPPuAVhDKb0YlcajjCBN2eMhdnOlW0Hle5wLbmStr5VEa5MdEASIQnLS
-	 s9k12FxE8dvBu8jX4HaF9GQOMCvZKpqgApwHn3XetK+ta/UCT8VoAo/HkXmH6zVcE8
-	 beyXRmYcOrv28PcwD5MXL9bYjUtJIslvbJyqEwFTW2SQLHhvH/GbgrJyCifJDUF4HE
-	 004keZmoDCeTqDzO8RHmFSEAwTU8+vHzbuPZUuBy1xfZNm0phJ+zw13vBkODgBoWrI
-	 GR0e+K8xjXRFsXIir30qDvD4YUNDaXucoUQmauBbZyCZcQQMlemv3coGufF2OG05hJ
-	 j2/LR191a3GEQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6CA4ED9A150;
-	Thu,  4 Apr 2024 22:58:09 +0000 (UTC)
-Subject: Re: [GIT PULL] Networking for v6.9-rc3
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240404211803.2089033-1-kuba@kernel.org>
-References: <20240404211803.2089033-1-kuba@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240404211803.2089033-1-kuba@kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.9-rc3
-X-PR-Tracked-Commit-Id: 1cfa2f10f4e90a353c3ee2150866b4cf72579153
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c88b9b4cde17aec34fb9bfaf69f9f72a1c44f511
-Message-Id: <171227148943.29192.3334113390444751593.pr-tracker-bot@kernel.org>
-Date: Thu, 04 Apr 2024 22:58:09 +0000
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: torvalds@linux-foundation.org, kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, pabeni@redhat.com, bpf@vger.kernel.org
+	s=arc-20240116; t=1712271663; c=relaxed/simple;
+	bh=7HXE5M3oO4PodeStVnSZa8DXP/cTOPjYZEumGvFvNpA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fiNhUZCHB7mEe7PSVvkGgaUVJ5PVg/u75rOz6gag/kV6gyQ8T+0nrxg1/vy3e00d1W/OwFFMgX7tLzGu9Y16YvUNaymtuk10T9DcitCWf5j4hq++fGJQTIq4VogpVosNlLuaP4Ynhp9DczXDoMZfntK2alrHZTYLZco60Wbyoew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RjT1djYl; arc=none smtp.client-ip=95.215.58.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 4 Apr 2024 19:00:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712271659;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KHLNB8rkpoKwDhM7NRf7iWUfLDgvBLjzklimu7mkdKs=;
+	b=RjT1djYlTZqBwHogqp4zy40F3SqAdaK+3oWOfGDaM6L3NSOO4dCastLQfuNaOlT1Dgo7Wv
+	i9k29lxad1FbeHT3aK6BLtfd8jnI/QWfQOgpcP7kCCmnpZ6YfJaUcPMAV7nzKK1Ptjb3Iu
+	+YlbAoFGlEHtL49GVJGZLcl1jqHQD6A=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox <willy@infradead.org>, 
+	Suren Baghdasaryan <surenb@google.com>, joro@8bytes.org, will@kernel.org, 
+	trond.myklebust@hammerspace.com, anna@kernel.org, arnd@arndb.de, herbert@gondor.apana.org.au, 
+	davem@davemloft.net, jikos@kernel.org, benjamin.tissoires@redhat.com, tytso@mit.edu, 
+	jack@suse.com, dennis@kernel.org, tj@kernel.org, cl@linux.com, 
+	jakub@cloudflare.com, penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com, 
+	vbabka@suse.cz, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, linux-input@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org, 
+	linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
+ the call site
+Message-ID: <jpaw4hdd73ngt7mvtcdryqscivx6m2ic76ikfkcopceb47becp@vox5czt5bec3>
+References: <20240404165404.3805498-1-surenb@google.com>
+ <Zg7dmp5VJkm1nLRM@casper.infradead.org>
+ <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
+ <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
+ <Zg8qstJNfK07siNn@casper.infradead.org>
+ <jb25mtkveqf63bv74jhynf6ncxmums5s37esveqsv52yurh4z7@5q55ttv34bia>
+ <20240404154150.c25ba3a0b98023c8c1eff3a4@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404154150.c25ba3a0b98023c8c1eff3a4@linux-foundation.org>
+X-Migadu-Flow: FLOW_OUT
 
-The pull request you sent on Thu,  4 Apr 2024 14:18:03 -0700:
+On Thu, Apr 04, 2024 at 03:41:50PM -0700, Andrew Morton wrote:
+> On Thu, 4 Apr 2024 18:38:39 -0400 Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> 
+> > On Thu, Apr 04, 2024 at 11:33:22PM +0100, Matthew Wilcox wrote:
+> > > On Thu, Apr 04, 2024 at 03:17:43PM -0700, Suren Baghdasaryan wrote:
+> > > > Ironically, checkpatch generates warnings for these type casts:
+> > > > 
+> > > > WARNING: unnecessary cast may hide bugs, see
+> > > > http://c-faq.com/malloc/mallocnocast.html
+> > > > #425: FILE: include/linux/dma-fence-chain.h:90:
+> > > > + ((struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chain),
+> > > > GFP_KERNEL))
+> > > > 
+> > > > I guess I can safely ignore them in this case (since we cast to the
+> > > > expected type)?
+> > > 
+> > > I find ignoring checkpatch to be a solid move 99% of the time.
+> > > 
+> > > I really don't like the codetags.  This is so much churn, and it could
+> > > all be avoided by just passing in _RET_IP_ or _THIS_IP_ depending on
+> > > whether we wanted to profile this function or its caller.  vmalloc
+> > > has done it this way since 2008 (OK, using __builtin_return_address())
+> > > and lockdep has used _THIS_IP_ / _RET_IP_ since 2006.
+> > 
+> > Except you can't. We've been over this; using that approach for tracing
+> > is one thing, using it for actual accounting isn't workable.
+> 
+> I missed that.  There have been many emails.  Please remind us of the
+> reasoning here.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-6.9-rc3
+I think it's on the other people claiming 'oh this would be so easy if
+you just do it this other way' to put up some code - or at least more
+than hot takes.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c88b9b4cde17aec34fb9bfaf69f9f72a1c44f511
+But, since you asked - one of the main goals of this patchset was to be
+fast enough to run in production, and if you do it by return address
+then you've added at minimum a hash table lookup to every allocate and
+free; if you do that, running it in production is completely out of the
+question.
 
-Thank you!
+Besides that - the issues with annotating and tracking the correct
+callsite really don't go away, they just shift around a bit. It's true
+that the return address approach would be easier initially, but that's
+not all we're concerned with; we're concerned with making sure
+allocations get accounted to the _correct_ callsite so that we're giving
+numbers that you can trust, and by making things less explicit you make
+that harder.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Additionally: the alloc_hooks() macro is for more than this. It's also
+for more usable fault injection - remember every thread we have where
+people are begging for every allocation to be __GFP_NOFAIL - "oh, error
+paths are hard to test, let's just get rid of them" - never mind that
+actually do have to have error paths - but _per callsite_ selectable
+fault injection will actually make it practical to test memory error
+paths.
+
+And Kees working on stuff that'll make use of the alloc_hooks() macro
+for segregating kmem_caches.
+
+This is all stuff that I've explained before; let's please dial back on
+the whining - or I'll just bookmark this for next time...
 
