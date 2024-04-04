@@ -1,126 +1,151 @@
-Return-Path: <linux-kernel+bounces-131728-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131730-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91DF8898B29
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:33:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95367898B2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:33:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 475B51F2B126
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:33:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 838801C25D95
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD0112A173;
-	Thu,  4 Apr 2024 15:33:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD07129A75;
+	Thu,  4 Apr 2024 15:33:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PQLRQoQ8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="xP+IHdHo"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA93C1292EE;
-	Thu,  4 Apr 2024 15:33:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21CB32C8E;
+	Thu,  4 Apr 2024 15:33:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712244781; cv=none; b=Ap1X0x0yW7X8vUxpvUpPFI5SX/oFwheKh1BRjk/8SOrov4vcKsrfuLWmdN1LGsek8AVy7WybS8Zs+pQB7wQf8u0Uc0WeFGB+lAliMz4WBJ5se+pR6XWYz8LCbyUIVLPbwMzzghIRj1voJ6xFMXhCP/Zf2y7TXs2vOzwm6Mp+QMQ=
+	t=1712244816; cv=none; b=pQ/vqhaTen38XjwyLYRt93bW7OY8QFy2BYbLWfC1S4+nOMKCTvw2wIIWZYCpzpyu6s72W23OI1+YCAUyr85lfo/SofC9X5Vo99Q9UqsaQriVFQ38TRPqvC5r5YTD6uogpuIli+lvhVKDiGy0is4TQnd79RDD24SKKOqgmTW8Bks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712244781; c=relaxed/simple;
-	bh=+ihKIoYDSDX/L3rUTACaGuGGhf6TLUZ/+4aywDsnmIM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UEt5xSpdYo0uctKDX1QyToz6xN01HMRwwuwzURpBDcd3VELKQzzpo7gRiAql9aFF8mFNv7JzBZkpms7RATLwSjS36yQ2dRDH8f+6QEi/kTOtAts+YpzNgv2wLYliqdBCuFvEHRJ2qJL0Dv0bR23r6L+ZP43rrDto7pXeJg5Qehw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PQLRQoQ8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96471C433F1;
-	Thu,  4 Apr 2024 15:33:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712244781;
-	bh=+ihKIoYDSDX/L3rUTACaGuGGhf6TLUZ/+4aywDsnmIM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PQLRQoQ8m3JLC2Td7LqTr9Gyx8iw2LqCI4y/rdO3jtZZbS+Jx+i1K/p9KSnZBmeME
-	 +c29ns5saD6bgCr/l+2SX/f4nFyiiSIxm/5E9rcRe8PW0ZE7NZpGIwjxhx5E89VL15
-	 82t9Vd7JFQgbffAMgIwa0aZMPBP883Z6LDkVPEtCDYG8PJHV9dhQXrPGeZxtYv/B+S
-	 TdPsbPup6lVeq9b/AlKD3BSDhXEVHVqOEnkLN8LdjH60jD/0MagUPdIpfuABSjbPKn
-	 Ca++IKiyI5MdVDhXG+zD+xnTEBgDZk67+RLYMxMdw2G32RjOdiVttZUzTgVOGqjsQP
-	 tS4iFvBCBEjKg==
-Date: Thu, 4 Apr 2024 08:32:58 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: Conor Dooley <conor@kernel.org>
-Cc: linux-riscv@lists.infradead.org,
-	Conor Dooley <conor.dooley@microchip.com>, stable@vger.kernel.org,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	Sami Tolvanen <samitolvanen@google.com>,
-	Kees Cook <keescook@chromium.org>, llvm@lists.linux.dev
-Subject: Re: [PATCH v3] rust: make mutually exclusive with CFI_CLANG
-Message-ID: <20240404153258.GA852748@dev-arch.thelio-3990X>
-References: <20240404-providing-emporium-e652e359c711@spud>
+	s=arc-20240116; t=1712244816; c=relaxed/simple;
+	bh=mMkr/dYqLpU1MsD5m4UuvQAkxg99rgTMBcVYr7tcEA4=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=sIfyiUMsiLuH77jwJ7TwKWpaD5qRcNltGWgDf+/6INA+ekr1J1FpZeS4WH32aKJ+qSUwaiyFpdEMzrwLxv290fdscimOiqGS/tKdWUJiraaZDKyNTNlOjz1oDmmxHiMR9Z7B8Nt1/Gs+IkDOSLWKEH3fqiKAiaBuXgFQZnPiZIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=xP+IHdHo; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 434FXJMJ074202;
+	Thu, 4 Apr 2024 10:33:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1712244799;
+	bh=ML1mhSa9Q7+kMHMImeTyEWgHXR1D+6Svt3w13mxjqjY=;
+	h=From:To:CC:Subject:Date;
+	b=xP+IHdHov6//Cdt7T63m8IxZ9iVzgWpfDZjn4k2bj7gi/ygts2ChwLLVkXgziY0tk
+	 iQ+o7BPY9jf4IdwsmfgYuofAzfmAHgvTmT/K24EJJY4EQfAHFF2KMoEd8zSgHktwDt
+	 yliNm3iersUonXNLqivAp07N0WX25TgVw/95Obos=
+Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 434FXJ9U057162
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 4 Apr 2024 10:33:19 -0500
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE109.ent.ti.com
+ (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 4
+ Apr 2024 10:33:19 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 4 Apr 2024 10:33:19 -0500
+Received: from judy-hp.dhcp.ti.com (judy-hp.dhcp.ti.com [128.247.81.105])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 434FXJma015284;
+	Thu, 4 Apr 2024 10:33:19 -0500
+From: Judith Mendez <jm@ti.com>
+To: Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck
+	<linux@roeck-us.net>
+CC: <linux-watchdog@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Francesco Dolcini <francesco@dolcini.it>
+Subject: [PATCH v2] watchdog: rti_wdt: Set min_hw_heartbeat_ms to accommodate 5% safety margin
+Date: Thu, 4 Apr 2024 10:33:19 -0500
+Message-ID: <20240404153319.1088644-1-jm@ti.com>
+X-Mailer: git-send-email 2.43.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404-providing-emporium-e652e359c711@spud>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On Thu, Apr 04, 2024 at 03:17:02PM +0100, Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
-> 
-> On RISC-V and arm64, and presumably x86, if CFI_CLANG is enabled,
-> loading a rust module will trigger a kernel panic. Support for
-> sanitisers, including kcfi (CFI_CLANG), is in the works, but for now
-> they're nightly-only options in rustc. Make RUST depend on !CFI_CLANG
-> to prevent configuring a kernel without symmetrical support for kfi.
-> 
-> Fixes: 2f7ab1267dc9 ("Kbuild: add Rust support")
-> cc: stable@vger.kernel.org
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+On AM62x, the watchdog is pet before the valid window
+is open. Fix min_hw_heartbeat and accommodate a 5% safety
+margin with the exception of open window size < 10%,
+which shall use <5% due to the smaller open window size.
 
-Acked-by: Nathan Chancellor <nathan@kernel.org>
+cc: stable@vger.kernel.org
+Fixes: 5527483f8f7c (" watchdog: rti-wdt: attach to running watchdog during probe")
+Signed-off-by: Judith Mendez <jm@ti.com>
+---
+ drivers/watchdog/rti_wdt.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-It seems like this won't be forgotten about but if there is not already
-an issue open for this somewhere, it would be good to have one, since we
-obviously want this for both C and Rust code.
+diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+index 8e1be7ba0103..0b16ada659cc 100644
+--- a/drivers/watchdog/rti_wdt.c
++++ b/drivers/watchdog/rti_wdt.c
+@@ -92,7 +92,7 @@ static int rti_wdt_start(struct watchdog_device *wdd)
+ 	 * to be 50% or less than that; we obviouly want to configure the open
+ 	 * window as large as possible so we select the 50% option.
+ 	 */
+-	wdd->min_hw_heartbeat_ms = 500 * wdd->timeout;
++	wdd->min_hw_heartbeat_ms = 550 * wdd->timeout;
+ 
+ 	/* Generate NMI when wdt expires */
+ 	writel_relaxed(RTIWWDRX_NMI, wdt->base + RTIWWDRXCTRL);
+@@ -126,31 +126,33 @@ static int rti_wdt_setup_hw_hb(struct watchdog_device *wdd, u32 wsize)
+ 	 * be petted during the open window; not too early or not too late.
+ 	 * The HW configuration options only allow for the open window size
+ 	 * to be 50% or less than that.
++	 * To avoid any glitches, we accommodate 5% safety margin, with the
++	 * exception of open window size < 10%.
+ 	 */
+ 	switch (wsize) {
+ 	case RTIWWDSIZE_50P:
+-		/* 50% open window => 50% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 500 * heartbeat;
++		/* 50% open window => 55% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 550 * heartbeat;
+ 		break;
+ 
+ 	case RTIWWDSIZE_25P:
+-		/* 25% open window => 75% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 750 * heartbeat;
++		/* 25% open window => 80% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 800 * heartbeat;
+ 		break;
+ 
+ 	case RTIWWDSIZE_12P5:
+-		/* 12.5% open window => 87.5% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 875 * heartbeat;
++		/* 12.5% open window => 92.5% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 925 * heartbeat;
+ 		break;
+ 
+ 	case RTIWWDSIZE_6P25:
+-		/* 6.5% open window => 93.5% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 935 * heartbeat;
++		/* 6.5% open window => 96.5% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 965 * heartbeat;
+ 		break;
+ 
+ 	case RTIWWDSIZE_3P125:
+-		/* 3.125% open window => 96.9% min heartbeat */
+-		wdd->min_hw_heartbeat_ms = 969 * heartbeat;
++		/* 3.125% open window => 97.9% min heartbeat */
++		wdd->min_hw_heartbeat_ms = 979 * heartbeat;
+ 		break;
+ 
+ 	default:
 
-As a general meta comment not directed at anyone in particualr, I think
-these 'depends on !' should all have some sort of comment or description
-as to why they are disabled. I can infer from most of them but it would
-still be good to be explicit, especially since someone might want to
-work on fixing the ones that are due to missing support and such.
+base-commit: 860bbe8e618fd62446309e286ab4a83d38201c0a
+-- 
+2.43.2
 
-> ---
-> Sending this one on its own, there's no explicit dep on this for the
-> riscv enabling patch, v3 to continue the numbering from there. Nothing
-> has changed since v2.
-> 
-> CC: Miguel Ojeda <ojeda@kernel.org>
-> CC: Alex Gaynor <alex.gaynor@gmail.com>
-> CC: Wedson Almeida Filho <wedsonaf@gmail.com>
-> CC: linux-kernel@vger.kernel.org (open list)
-> CC: rust-for-linux@vger.kernel.org
-> CC: Sami Tolvanen <samitolvanen@google.com>
-> CC: Kees Cook <keescook@chromium.org>
-> CC: Nathan Chancellor <nathan@kernel.org>
-> CC: llvm@lists.linux.dev
-> ---
->  init/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/init/Kconfig b/init/Kconfig
-> index aa02aec6aa7d..ad9a2da27dc9 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1899,6 +1899,7 @@ config RUST
->  	bool "Rust support"
->  	depends on HAVE_RUST
->  	depends on RUST_IS_AVAILABLE
-> +	depends on !CFI_CLANG
->  	depends on !MODVERSIONS
->  	depends on !GCC_PLUGINS
->  	depends on !RANDSTRUCT
-> -- 
-> 2.43.0
-> 
-> 
 
