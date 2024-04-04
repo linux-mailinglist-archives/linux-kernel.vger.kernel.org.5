@@ -1,61 +1,63 @@
-Return-Path: <linux-kernel+bounces-132140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD052899029
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:25:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F16D89902D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:25:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B75A61C2225D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:25:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B5DE282D80
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6185A13C9A2;
-	Thu,  4 Apr 2024 21:23:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4490713C3D1;
+	Thu,  4 Apr 2024 21:23:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GO7n9/LQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oW0aINKT"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8451113C8F7;
-	Thu,  4 Apr 2024 21:23:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F01813C9A5;
+	Thu,  4 Apr 2024 21:23:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712265809; cv=none; b=l4exUfBzA1NI9rx+ZZpAmhs0RppJFqbi5VBCmUiLY4rEHkjQNvrloeiREzldzVke1AbEplPbp6IlZGsK9SgbLalQcO4TQOl7cjBnH7Hswl512xesKQiJt/jIq8gPNk/Ma7uS219GhYr86BjVr/7YAx84Y+b00arkR5Opvk0dpMs=
+	t=1712265810; cv=none; b=l3sznh3sZRHcaIrdlBj034qZJhhY6HtvbaZl5EuxoBSTaLXvPhQY87lAPbMi97+uJmKNyLopv+fqvUah62CqrBtaYpwgnde2wLhhtpo22NTZm427En32shPMK3dFP4hsue4GWv2M6wH1sAGsJIL+6fjIR3xDEcp4G18Zy4xdw1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712265809; c=relaxed/simple;
-	bh=XskxHdCENVkS3EXRHaM/AyrUGlxXnbHidgr0G3usAfw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KGojMIMimdeQ3qIqJQPy1Y9xFPl9c7a+wdmBFZfrQJDFXf7smlSu3MFVkywaYs5gLvxlEfXm6LVuZNdahgog1tq2ElOGsuso+6dI+yy6pdTMCOdT9tt6AtxGvcrf6iyjoyoQfFNzH6LwIQV6tG7OnE1YfAygBlYmM1MZiJqMwVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GO7n9/LQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A984C433B1;
-	Thu,  4 Apr 2024 21:23:28 +0000 (UTC)
+	s=arc-20240116; t=1712265810; c=relaxed/simple;
+	bh=kovnjzwiC0G2cWnn4/jPF54CWL4xZ+ju8Z91pLGS6d4=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=BgKm2qmd1+bAc962VOsB5RSX0+9seyvIuahZYlyTd4DXX7/j/CPtcmVBTI2ss3Yj95fR49EpREXvbCfJGdvX+VTMa6XxOJeqT8fP7r99hMNs9EtegedgngmJYpmQ8xR59i5ib6e0lU2NXAGBYGEetLiqZpfZZe9vCs2ECIQSRO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oW0aINKT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5364AC43394;
+	Thu,  4 Apr 2024 21:23:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712265809;
-	bh=XskxHdCENVkS3EXRHaM/AyrUGlxXnbHidgr0G3usAfw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GO7n9/LQW3LoVzFX2NhIexwV5ymCkzVUDjkzics7DgcDi2pedGUsB0YjR04LwJ2co
-	 QeMUh0xmkNR02zEboKnEKjYeY9h9zkh/jpXgEjiUDhkZIpUuDUJu4NSNZfpFXEn7zt
-	 r+d3dsNUZua8vd9jvr1SzanlX9SEvxFzT2xhJ8KW1Pbm21VslG+ffX26TPLiCV4keq
-	 wE8iF2HLqHIXCy/b1CjNgrZy23bbWi1cRMCUYEGW651P5O2WYKtxLIGtO3mfxGSpEb
-	 mzg6XmhCy4qHT6UJ3X2p0hYE8P3XhsPD3M9DDlpa9zwtFJiisqKa/X6sOQrxUTJHi8
-	 vzr2J6n8FTHRg==
+	s=k20201202; t=1712265810;
+	bh=kovnjzwiC0G2cWnn4/jPF54CWL4xZ+ju8Z91pLGS6d4=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=oW0aINKTppo9dk7pY+UkZHeSVhSwlgU0aG7y5ps1ldIQUe7NxR0lBeNF0G22ih871
+	 PFW8i0JdLHQBlLN1gNRcfBvG8HiAX9T9NJpyLKN97lEtF+NNXJiNYALfFAtvLWoJJk
+	 nce05VHcj90RAGQdKLLZd1a/YfNGbgLWXz28OicmPwqIdVqgrgaKX3r0wRP4Z8qzRu
+	 kE6+WqINMG1X0ZDySpW60Dd2JxIKsSQDSNOgn4plpLTLt2liQPxIhRkU//61sdiZIM
+	 qm6INd0i4SV18Sqf0UMEQIBcjhHPVrF+4oc4NWtsDRbASMF/TVRpmLC9Wr2PpiEyOF
+	 8nldDmbyWA0eA==
 From: Bjorn Andersson <andersson@kernel.org>
 To: Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Danila Tikhonov <danila@jiaxyga.com>,
 	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Sumit Garg <sumit.garg@linaro.org>
-Subject: Re: [PATCH] arm64: dts: qcom: apq8016-sbc: correct GPIO LEDs node names
-Date: Thu,  4 Apr 2024 16:22:56 -0500
-Message-ID: <171226578682.615813.4008947568394540538.b4-ty@kernel.org>
+Subject: Re: [PATCH] arm64: dts: qcom: pm6150: correct Type-C compatible
+Date: Thu,  4 Apr 2024 16:22:57 -0500
+Message-ID: <171226578660.615813.8144995995970983880.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240314112657.167006-1-krzysztof.kozlowski@linaro.org>
-References: <20240314112657.167006-1-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20240328074544.5076-1-krzysztof.kozlowski@linaro.org>
+References: <20240328074544.5076-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,20 +68,20 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 14 Mar 2024 12:26:57 +0100, Krzysztof Kozlowski wrote:
-> Individual LEDs in a GPIO LEDs device node are not addressable, thus
-> unit address is not correct.
+On Thu, 28 Mar 2024 08:45:44 +0100, Krzysztof Kozlowski wrote:
+> The first part of the compatible of Type-C node misses ending quote,
+> thus we have one long compatible consisting of two compatible strings
+> leading to dtbs_check warnings:
 > 
-> dtc is also not happy:
-> 
->   Warning (unit_address_vs_reg): /leds/led@5: node has a unit name, but no reg or ranges property
+>   sc7180-idp.dtb: usb-vbus-regulator@1100: compatible:0: 'qcom,pm6150-vbus-reg,\n qcom,pm8150b-vbus-reg' does not match '^[a-zA-Z0-9][a-zA-Z0-9,+\\-._/]+$'
+>   sc7180-idp.dtb: /soc@0/spmi@c440000/pmic@0/usb-vbus-regulator@1100: failed to match any schema with compatible: ['qcom,pm6150-vbus-reg,\n          qcom,pm8150b-vbus-reg']
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: apq8016-sbc: correct GPIO LEDs node names
-      commit: 216e62744b91c9716228fe13f564e83381a1342e
+[1/1] arm64: dts: qcom: pm6150: correct Type-C compatible
+      commit: 5582e357d0c6bfdc889773ca3c9b7b0dd31dc334
 
 Best regards,
 -- 
