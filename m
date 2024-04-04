@@ -1,112 +1,107 @@
-Return-Path: <linux-kernel+bounces-130993-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130994-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B7D98981A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:54:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D53418981A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:54:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0A001F27374
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:54:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B794B24CCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:54:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F4B8548F0;
-	Thu,  4 Apr 2024 06:54:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0315C548F5;
+	Thu,  4 Apr 2024 06:54:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="XWRX2Ro6"
-Received: from smtp-fw-80008.amazon.com (smtp-fw-80008.amazon.com [99.78.197.219])
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="gahbLtNj"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6227053803;
-	Thu,  4 Apr 2024 06:54:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=99.78.197.219
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6121853809;
+	Thu,  4 Apr 2024 06:54:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712213663; cv=none; b=bI4B+S1GImrggSZWdXj2h1GVhrMADH8DNCGp6B6byb5U5f/TMZjQGB8b5yWcMK44eB8zvMnL3YAJBWXdkZQShuMYROCJPbv6H9YTw0MGSGdj/ibwly1uqVjYNPRagwIRSVpG94jCZoUekgQR0+sdfGQJ3hzILXgV9t4wzK6+7J8=
+	t=1712213678; cv=none; b=tNdu9bP9XPIQPEWSTCsUE6FCgygSiu8CnF2OX645XZEiyfW8ZsuUGrWup+GELuQ9Upvk8CyEmdwsR6tjcPxtn1aFOpllap6aWosr3UIuSwLVf+wC5Szh0Llhfgje+Y0vRwIR200HEMZcgwAMSj51W91rnKbG0gqrrl5UQJhsG7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712213663; c=relaxed/simple;
-	bh=vyYehCtmuOnkDyiTVtISMV19OYydyeZiEvgBYOzKtdU=;
-	h=Subject:Message-ID:Date:MIME-Version:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=UOLFY1yCAlC9G+w8qDaWN9GUQXypWEwApp+e63LJ2yE4qg+FNP82LA4DThiVVZk899MMyOpeoo/zjlckYHw5TGd0dMr6jkLZFULJiNGREMCm6zZ+i7WS4vPGj6KM1fDPXA07flpJS6kkoAIlRNOSVnvD15beQVct3EM+lDjaIMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=XWRX2Ro6; arc=none smtp.client-ip=99.78.197.219
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1712213662; x=1743749662;
-  h=message-id:date:mime-version:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:subject;
-  bh=vyYehCtmuOnkDyiTVtISMV19OYydyeZiEvgBYOzKtdU=;
-  b=XWRX2Ro61lfVjiHUSNG93LjGzgb5ESGWcbEoign19AfwjGRHX5FhOxaN
-   frpmHuIyas6clSLySSv17BEA8T7kttUf0vMKNRpQyod3St+lAeAe2lB5C
-   MPKxntAstbRBHSaOAiKE4Rl1FnveDb7rNlaB/R5ULn/DfFX5SvloBFBtp
-   c=;
-X-IronPort-AV: E=Sophos;i="6.07,178,1708387200"; 
-   d="scan'208";a="78531287"
-Subject: Re: Implementing .shutdown method for efa module
-Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.25.36.214])
-  by smtp-border-fw-80008.pdx80.corp.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 06:54:20 +0000
-Received: from EX19MTAEUA002.ant.amazon.com [10.0.17.79:47413]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.28.213:2525] with esmtp (Farcaster)
- id bb37eac2-f65b-438a-83c5-656e83f2691d; Thu, 4 Apr 2024 06:54:19 +0000 (UTC)
-X-Farcaster-Flow-ID: bb37eac2-f65b-438a-83c5-656e83f2691d
-Received: from EX19D031EUB003.ant.amazon.com (10.252.61.88) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.124) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 4 Apr 2024 06:54:19 +0000
-Received: from [192.168.84.64] (10.85.143.175) by
- EX19D031EUB003.ant.amazon.com (10.252.61.88) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Thu, 4 Apr 2024 06:54:15 +0000
-Message-ID: <59c5dabd-c06e-4982-af68-bdee9b8174fd@amazon.com>
-Date: Thu, 4 Apr 2024 09:54:10 +0300
+	s=arc-20240116; t=1712213678; c=relaxed/simple;
+	bh=8bxPw6Yh23YjxbHld45amerCkshEE+W5J9e6zeuMJ1k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SuklxacComA+S1ePcSmBPiJ8d+uvtEELcuBFe7P5y/Ew04SJTmqLQirctAClTmdOvTJJgK3nPlzdgBkBrFgeGlVHGTNdc3R0bduHaEfa+d5sYce3P0DE82c6UVjBH9APNNoRl6v5sRETqDNuXqrpcvhG7gm6i9Wm+LvhezFYIL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=gahbLtNj; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id A7C036042D;
+	Thu,  4 Apr 2024 06:54:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1712213675;
+	bh=8bxPw6Yh23YjxbHld45amerCkshEE+W5J9e6zeuMJ1k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gahbLtNjacj8rbrMUxLNcZuSdx7U8/mY7BQiFh1hPcPQP8Z0NgGlayNm5XhLmTW2y
+	 CNgARvw49GpPn3whBcNg8BAAwamjfY33gFDmkd5I3v5D9GRR5Nxsp9l71qmCANgaKg
+	 kA2iVjrAVMrNtsnh8kqB3fYb86IEJ/FsztfEGE453MPlRL26vO4y3o7uYGkAjwW0eN
+	 1FHXGiqdIiHBDyqVZ6ne6pzrxOwEv3Yk6ghvwrcPHWv9mQ6glHWukI2wiqPN7WKuu3
+	 89R7Jm7NdWwfVsC6RXSktVL63y2mNaC5qirMUiVB984BEJW54yhRoTnkB5arbopRVr
+	 SwutnjjUql8dQ==
+Date: Thu, 4 Apr 2024 09:54:15 +0300
+From: Tony Lindgren <tony@atomide.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: kernel test robot <oliver.sang@intel.com>,
+	Yicong Yang <yangyicong@hisilicon.com>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	stable <stable@kernel.org>, linux-serial@vger.kernel.org
+Subject: Re: [linus:master] [serial]  43066e3222:
+ BUG:kernel_NULL_pointer_dereference,address
+Message-ID: <20240404065415.GO5132@atomide.com>
+References: <202404031607.2e92eebe-lkp@intel.com>
+ <Zg1hBvRAxifo50sf@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@ziepe.ca>
-CC: Tao Liu <ltao@redhat.com>, Gal Pressman <gal.pressman@linux.dev>,
-	<sleybo@amazon.com>, <leon@kernel.org>, <kexec@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>
-References: <CAO7dBbVNv5NWRN6hXeo5rNEixn-ctmTLLn2KAKhEBYvvR+Du2w@mail.gmail.com>
- <5d81d6d0-5afc-4d0e-8d2b-445d48921511@linux.dev>
- <CAO7dBbXLU5teiYm8VvES7e7m7dUzJQYV9HHLOFKperjwq-NJeA@mail.gmail.com>
- <b6c0bd81-3b8d-465d-a0eb-faa5323a6b05@amazon.com>
- <20240326153223.GF8419@ziepe.ca>
- <0e7dddff-d7f3-4617-83e6-f255449a282b@amazon.com>
- <20240403154414.GD1363414@ziepe.ca>
-From: "Margolin, Michael" <mrgolin@amazon.com>
-In-Reply-To: <20240403154414.GD1363414@ziepe.ca>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: EX19D046UWB003.ant.amazon.com (10.13.139.174) To
- EX19D031EUB003.ant.amazon.com (10.252.61.88)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg1hBvRAxifo50sf@smile.fi.intel.com>
 
-Thanks, I'll send a patch.
+* Andy Shevchenko <andriy.shevchenko@linux.intel.com> [240403 14:00]:
+> Probably we need to check if the port is still open...
+> 
+> P.S. AFAIU the state / xmit is invalid pointer or so.
+> 
+> Culprit line:	serial_out(up, UART_TX, xmit->buf[xmit->tail]);
 
+Maybe we can set UPF_DEAD a bit earlier as below?
 
-Michael
+Regards,
 
-On 4/3/2024 6:44 PM, Jason Gunthorpe wrote:
-> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
->
->
->
-> On Mon, Apr 01, 2024 at 04:23:32PM +0300, Margolin, Michael wrote:
->> Jason
->>
->> Thanks for your response, efa_remove() is performing reset to the device
->> which should stop all DMA from the device.
->>
->> Except skipping cleanups that are unnecessary for shutdown flow are there
->> any other reasons to prefer a separate function for shutdown?
-> Yes you should skip "cleanups" like removing the IB device and
-> otherwise as there is a risk of system hang/deadlock in a shutdown
-> handler context.
->
-> Jason
->
+Tony
+
+8< ---------------------------
+diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
+--- a/drivers/tty/serial/serial_core.c
++++ b/drivers/tty/serial/serial_core.c
+@@ -3442,8 +3442,6 @@ void serial_core_unregister_port(struct uart_driver *drv, struct uart_port *port
+ 
+ 	mutex_lock(&port_mutex);
+ 
+-	port->flags |= UPF_DEAD;
+-
+ 	serial_core_remove_one_port(drv, port);
+ 
+ 	/* Note that struct uart_port *port is no longer valid at this point */
+diff --git a/drivers/tty/serial/serial_port.c b/drivers/tty/serial/serial_port.c
+index 22b9eeb23e68a..1571ef721ef10 100644
+--- a/drivers/tty/serial/serial_port.c
++++ b/drivers/tty/serial/serial_port.c
+@@ -104,6 +104,7 @@ EXPORT_SYMBOL(uart_add_one_port);
+ 
+ void uart_remove_one_port(struct uart_driver *drv, struct uart_port *port)
+ {
++	port->flags |= UPF_DEAD;
+ 	serial_ctrl_unregister_port(drv, port);
+ }
+ EXPORT_SYMBOL(uart_remove_one_port);
 
