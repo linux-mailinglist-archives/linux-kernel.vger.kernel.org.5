@@ -1,53 +1,53 @@
-Return-Path: <linux-kernel+bounces-131399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70F4A898721
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:20:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06DAE898724
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:21:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A094C1C229B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:20:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B684F297B3A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:21:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30E4F12AAEA;
-	Thu,  4 Apr 2024 12:18:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C386E12BF12;
+	Thu,  4 Apr 2024 12:18:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="a0KOPJNx"
-Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="tYHl59K8"
+Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9072212AACD;
-	Thu,  4 Apr 2024 12:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.51.139
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C93812BEAC
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:18:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.77.79.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712233080; cv=none; b=CwyudC9Tmb8ecBLdFlQSYUDxNSdm1gIIBkmo6dA2XelxV4ZMHgXdjsrpOylHVoOtirmdutCihGUH7nhuNKaHC4Iv2bx2CPtWZd2C195EGDUl0RK/G1ZAb5RcmaRmbsOGjHHQ6Di7ZUtmwLw2hbAlb8u8AKVzhFUzmIOHdv8m20E=
+	t=1712233094; cv=none; b=Am09RqOukssBrBhUJsDpYMMxmD9llP4lXEue7qM8XJIfnL3vf6hPmmvqBo802Ue5oiH2mgBfMvm7JlfBIKs7b6n9XTNi3/mKeBuxHFqYhhWY7L7dcu51XxHV8NnP/NmCUH/5/g8z43+0tx3U6ikCIlMpIqWO5Goq6KNtPaJGF34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712233080; c=relaxed/simple;
-	bh=PMo0OLo9NByjtxB884A1QBdj+5JMaimmtB5wEDa9g6M=;
+	s=arc-20240116; t=1712233094; c=relaxed/simple;
+	bh=GVxSMuaMMwDtSmPLzrzidTFjSfDHe8yr66fS7IQWKuY=;
 	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Vdloyq2+/iBHGCGTycBWdMbDswsFmFToaWf3kJZuT3bIRzNE+YIZ4XCKfa5q80AaxuXvnc8YsouHBFVtPDRo2j6Fi7VxfqbBveeOyAhAbJ1vPyNXvN/FmrBqSGYaOIEMdcS/3uqG38fk//o/xulc1QLVyygXHdZDADxKozbw2T8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=a0KOPJNx; arc=none smtp.client-ip=188.165.51.139
+	 MIME-Version:Content-Type; b=eujXqT2riZFQJGGBw9bjQ24p2iXVjBmw9bjSYBBwWQe1XlwV5IUcy5SAdKJYG7vEG2znekbKaJ/W3vEAzpfASov916rIihaMOQuPVE/xj+r0eWZFV/D+kQHbntg+eB5hR8BGg7OgHImLQpGcek057lqraygPTxKcLGuQoY01OZU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=tYHl59K8; arc=none smtp.client-ip=51.77.79.158
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1712233068; x=1712492268;
-	bh=ZsI0Kc59ub2NORBP4S91yZ4LzBptO868mH5JmTS46x4=;
+	s=protonmail3; t=1712233083; x=1712492283;
+	bh=SseXJJNHa/F6U0kOq29Q+JI+GmFAZYvDtNaSxxH9FJ0=;
 	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
 	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
 	 Message-ID:BIMI-Selector;
-	b=a0KOPJNxRpVAgGvQQYWcatFOR8SBFPE0fV8QtQzMPixtScHJ7r/KG7mzkKAtt2dTy
-	 RwDZO/bqfdXeqqIaImfacf1YgwBlwkJ64Y9h1jKukUPxspVFXsysrKES1aW5giZUQE
-	 WtrpGxzO0cBX/mkep9sUZ/sbmnj0NKwoZqJUEW+cWTPJGgsu9LsIizmV0HedQNTFaF
-	 2rxfzjaH3caefISmiZic9IvFp+FimpOjlzwur0b07I/kiXycQUeiElY5OYLUWTJDDl
-	 TV5tCMviY2m+UzQ8nWuOTr8ZISACOorym5U2idXPJtU8c+KKf1WA7rfd890ZcznAlt
-	 GPF1h6zDn2/uQ==
-Date: Thu, 04 Apr 2024 12:17:44 +0000
+	b=tYHl59K8FpvqoZ6F0UJJ1w7NHzL439qWNSxc/q78GtQtnU0/TWNQpDMbI/KgrTgfc
+	 SGt6jqT5cp5hX4vnUtLAMoVNo/kxmTecDaN6ysxvY0XVsObq1tts6+Y/0VwuPbfq3+
+	 UlJG4YUuzqsAugGLipyyDyDWuYKGYtYSZQWmgJCFMNDaDXdBRX+doZnLgxXnUQ4hHg
+	 xFLSA4/3YYdFsUdLzF6pMaIZCPdnwdwZ1Yi5x/gHnIiyeT/81OGzhPtpCz3zG3pcrK
+	 i2clQiUVnVIZOU1BfuSYLzst3/+hi7tYSeofzjdLWWTVSsE04xODK9h+MOO5ZsYI71
+	 4ioPWxz2bmDvQ==
+Date: Thu, 04 Apr 2024 12:17:57 +0000
 To: linux-kernel@vger.kernel.org
 From: Raymond Hackley <raymondhackley@protonmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Stephan Gerhold <stephan@gerhold.net>, Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, Joe Mason <buddyjojo06@outlook.com>
-Subject: [PATCH v3 1/2] arm64: dts: qcom: msm8916-samsung-fortuna: Add touchscreen
-Message-ID: <20240404121703.17086-2-raymondhackley@protonmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Stephan Gerhold <stephan@gerhold.net>, Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, Siddharth Manthan <siddharth.manthan@gmail.com>
+Subject: [PATCH v3 2/2] arm64: dts: qcom: msm8916-samsung-fortuna: Add PWM backlight
+Message-ID: <20240404121703.17086-3-raymondhackley@protonmail.com>
 In-Reply-To: <20240404121703.17086-1-raymondhackley@protonmail.com>
 References: <20240404121703.17086-1-raymondhackley@protonmail.com>
 Feedback-ID: 49437091:user:proton
@@ -60,107 +60,96 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-From: Joe Mason <buddyjojo06@outlook.com>
+From: Siddharth Manthan <siddharth.manthan@gmail.com>
 
-Like msm8916-samsung-a3u-eur, the Grand Prime uses a Zinitix BT541
-touchscreen. Add it together with the necessary fixed-regulator to the
-device tree.
+Most of the Galaxy Grand Prime use backlight drivers controlled with PWM
+signal.
+To simplify the description, add the backlight with the necessary clk-pwm
+to the common dtsi.
 
-Signed-off-by: Joe Mason <buddyjojo06@outlook.com>
-[Raymond: Move to fortuna-common. Use interrupts-extended]
+Signed-off-by: Siddharth Manthan <siddharth.manthan@gmail.com>
+[Stephan: Move to fortuna-common and disable on rossa-common]
+Signed-off-by: Stephan Gerhold <stephan@gerhold.net>
+[Raymond: Add the commit message]
 Signed-off-by: Raymond Hackley <raymondhackley@protonmail.com>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 ---
- .../qcom/msm8916-samsung-fortuna-common.dtsi  | 47 +++++++++++++++++++
- .../qcom/msm8916-samsung-rossa-common.dtsi    |  3 ++
- 2 files changed, 50 insertions(+)
+ .../qcom/msm8916-samsung-fortuna-common.dtsi  | 36 +++++++++++++++++++
+ .../qcom/msm8916-samsung-rossa-common.dtsi    |  9 +++++
+ 2 files changed, 45 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi b=
 /arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi
-index c2800ad2dd5b..6c66a24ef1af 100644
+index 6c66a24ef1af..5e933fb8b363 100644
 --- a/arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi
 +++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi
-@@ -66,6 +66,19 @@ reg_motor_vdd: regulator-motor-vdd {
- =09=09pinctrl-0 =3D <&motor_en_default>;
- =09=09pinctrl-names =3D "default";
+@@ -26,6 +26,30 @@ tz-apps@85a00000 {
+ =09=09};
  =09};
+=20
++=09clk_pwm_backlight: backlight {
++=09=09compatible =3D "pwm-backlight";
++=09=09pwms =3D <&clk_pwm 0 100000>;
 +
-+=09reg_vdd_tsp_a: regulator-vdd-tsp-a {
-+=09=09compatible =3D "regulator-fixed";
-+=09=09regulator-name =3D "vdd_tsp_a";
-+=09=09regulator-min-microvolt =3D <3000000>;
-+=09=09regulator-max-microvolt =3D <3000000>;
++=09=09enable-gpios =3D <&tlmm 98 GPIO_ACTIVE_HIGH>;
 +
-+=09=09gpio =3D <&tlmm 73 GPIO_ACTIVE_HIGH>;
-+=09=09enable-active-high;
++=09=09brightness-levels =3D <0 255>;
++=09=09num-interpolated-steps =3D <255>;
++=09=09default-brightness-level =3D <128>;
 +
-+=09=09pinctrl-0 =3D <&tsp_en_default>;
++=09=09pinctrl-0 =3D <&backlight_en_default>;
 +=09=09pinctrl-names =3D "default";
 +=09};
- };
-=20
- &blsp_i2c1 {
-@@ -94,6 +107,26 @@ fuel-gauge@35 {
- =09};
- };
-=20
-+&blsp_i2c5 {
-+=09status =3D "okay";
 +
-+=09touchscreen: touchscreen@20 {
-+=09=09compatible =3D "zinitix,bt541";
-+=09=09reg =3D <0x20>;
++=09clk_pwm: pwm {
++=09=09compatible =3D "clk-pwm";
++=09=09#pwm-cells =3D <2>;
 +
-+=09=09interrupts-extended =3D <&tlmm 13 IRQ_TYPE_EDGE_FALLING>;
++=09=09clocks =3D <&gcc GCC_GP2_CLK>;
 +
-+=09=09touchscreen-size-x =3D <540>;
-+=09=09touchscreen-size-y =3D <960>;
-+
-+=09=09vcca-supply =3D <&reg_vdd_tsp_a>;
-+=09=09vdd-supply =3D <&pm8916_l6>;
-+
-+=09=09pinctrl-0 =3D <&tsp_int_default>;
++=09=09pinctrl-0 =3D <&backlight_pwm_default>;
 +=09=09pinctrl-names =3D "default";
 +=09};
-+};
 +
- &blsp_uart2 {
- =09status =3D "okay";
+ =09gpio-keys {
+ =09=09compatible =3D "gpio-keys";
+=20
+@@ -199,6 +223,18 @@ &wcnss_mem {
  };
-@@ -200,4 +233,18 @@ sdc2_cd_default: sdc2-cd-default-state {
- =09=09drive-strength =3D <2>;
- =09=09bias-disable;
- =09};
-+
-+=09tsp_en_default: tsp-en-default-state {
-+=09=09pins =3D "gpio73";
+=20
+ &tlmm {
++=09backlight_en_default: backlight-en-default-state {
++=09=09pins =3D "gpio98";
 +=09=09function =3D "gpio";
 +=09=09drive-strength =3D <2>;
 +=09=09bias-disable;
 +=09};
 +
-+=09tsp_int_default: tsp-int-default-state {
-+=09=09pins =3D "gpio13";
-+=09=09function =3D "gpio";
-+=09=09drive-strength =3D <2>;
-+=09=09bias-disable;
++=09backlight_pwm_default: backlight-pwm-default-state {
++=09=09pins =3D "gpio50";
++=09=09function =3D "gcc_gp2_clk_a";
 +=09};
- };
++
+ =09fg_alert_default: fg-alert-default-state {
+ =09=09pins =3D "gpio121";
+ =09=09function =3D "gpio";
 diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.dtsi b/a=
 rch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.dtsi
-index 42843771ae2a..4048b72efcdc 100644
+index 4048b72efcdc..b438fa81886c 100644
 --- a/arch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.dtsi
 +++ b/arch/arm64/boot/dts/qcom/msm8916-samsung-rossa-common.dtsi
-@@ -5,6 +5,9 @@
- /* SM5504 MUIC instead of SM5502 */
- /delete-node/ &muic;
-=20
-+/* Touchscreen varies depending on model variant */
-+/delete-node/ &touchscreen;
+@@ -17,3 +17,12 @@ muic: extcon@14 {
+ =09=09pinctrl-names =3D "default";
+ =09};
+ };
 +
- &blsp_i2c1 {
- =09muic: extcon@14 {
- =09=09compatible =3D "siliconmitus,sm5504-muic";
++/* On rossa backlight is controlled with MIPI DCS commands */
++&clk_pwm {
++=09status =3D "disabled";
++};
++
++&clk_pwm_backlight {
++=09status =3D "disabled";
++};
 --=20
 2.39.2
 
