@@ -1,220 +1,129 @@
-Return-Path: <linux-kernel+bounces-132212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4F42899178
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B5205899180
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:41:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12B612853CE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:40:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDC35287D72
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5746FE16;
-	Thu,  4 Apr 2024 22:40:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C99DE6FBB7;
+	Thu,  4 Apr 2024 22:41:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BRDs1qFk"
-Received: from mail-yw1-f194.google.com (mail-yw1-f194.google.com [209.85.128.194])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="3SVQEvFL"
+Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A00F86F099;
-	Thu,  4 Apr 2024 22:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70EDC6F08B
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 22:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712270423; cv=none; b=jUnO6subj2PjHao3V/v7WKJdwgDeYmjXz9z59XEBSjBNCHp/fOUtrvAQcYwm8c8vT/Oh3v1FKiFT6qHWR9WN4NFNMFhcXMcnZbK7o+dnS7CWiTuEM3sHojCS8HXQh94WpO+uaZSgdb0OE+c/qcSINm7qHuov4WZSlWU8TnnRMmk=
+	t=1712270476; cv=none; b=fXwMA96elcFqJzguirK5+NqdK6WHXE9HKpeaYkJ898dG7Ivh1/nFU5jT/vCmkW1zMRqt11GGiXLCNMqDmhDRcgprlxmiR7kE6/taqC3J9qZS7ItxTlPykXMi4LDGx7kc8c84b3OZuU5LFv1LrL1sFt8cM4ca22t9LjCvMjmBKtI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712270423; c=relaxed/simple;
-	bh=vLERf+QX8KSMy6XI9NM+WgxZKTUBvVsma1I4xDMcYG8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LHJv/BZqmKvnUX1UZhmXMbl5vgNmjlszGqUZzO+D+qwbSsXDc8IDgYvXG4Ua7grXDwBxF/ce/RgVYS1fdSZSML1QlvlD9W3Tw7vudG8S+P0BFkTUwQaRTWRe6MnWl6rT/3P2ugS49nAbQgYbOzOw6jCRxwIoPxjaPjfZxvisuFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BRDs1qFk; arc=none smtp.client-ip=209.85.128.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f194.google.com with SMTP id 00721157ae682-61518d33293so17657327b3.2;
-        Thu, 04 Apr 2024 15:40:21 -0700 (PDT)
+	s=arc-20240116; t=1712270476; c=relaxed/simple;
+	bh=8A5tKiFBa0lbUbCLGluriwofV6tCs9WRKtzaqV10d5w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D4MXG8yfZAImTnvnCFam0SvtpDubiERfxW9j1Gfp5KTOkDjjt/qbLJbUsjghIEQFFrwQbaY/k1b+t6OEdMmQiGK3NwUwQKXwG/bXSbGKkA+kMBcqjt9H3fzhodd4DZGBA48cukqMm9XX13u9W81DYQDKlFb+gS93EZxB13QiSM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3SVQEvFL; arc=none smtp.client-ip=209.85.221.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4d42d18c683so451887e0c.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 15:41:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712270420; x=1712875220; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hnTW/weWTTG76gH50ECa2RV3vqrObly16JkLYAmVgOQ=;
-        b=BRDs1qFkzCsfzJnUL4PUE8s8vW2P3b+E8iLZWQN0Ql4aE9AeXLaLu9xydDUclZN+KQ
-         6jTIPei1ukttiQGeL+3cx1i1Oid1Vwz0DNrMeu8TG1FIGC9eNtMEf8zzSJ9lfPGwyuPJ
-         bbkGDv2PNA6vpebfWKoRulLuS6f9SXmvBPH+FCMo33OYxOjFQNinV4oZLgDc7QGYlh5n
-         osyxtL0bdQhGNpfmrY3C47cG22B6DFLNzfxBBFxdTGh7xhMxatqZnw/6tKuzd774F5fH
-         C2WsKzTfYuX8XEKwQx8mU0Km6/nfu89zeqtsz7WS2bHCCJHBbhXlrw2XeFxuxA/AQfmp
-         VSug==
+        d=google.com; s=20230601; t=1712270473; x=1712875273; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8A5tKiFBa0lbUbCLGluriwofV6tCs9WRKtzaqV10d5w=;
+        b=3SVQEvFLH5hC8C+pSGkZZOrGdYOXWU+uy6P1oO6NXphX+DIuoAD1HcgsF7Ybj4L+hn
+         PgMJwUkNWSsK3X159h6sgPIjoRXOpaw2PKdQTbPs2GzNA1GFIORCW6j3Eo5Q9LQVg3ey
+         tKHzxPWjf0Rc3f4+KpNdArHsnZ06QvXIIUgBbDw6/e4/j7Gh10WHfhfFsPZwENn3qMik
+         OXGcI3MK4td73qHmiJcuE9H8b8/QffXDvBcKBKS7iPgM9skUNk4bYdrNu/hsrtzyWD89
+         3Mrandzr92ryjSTXiANP4mDjMDUk0yy38jwgisdDpHpRnMKfdi6dCkrHLk2IwZuy1JF4
+         bHRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712270420; x=1712875220;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hnTW/weWTTG76gH50ECa2RV3vqrObly16JkLYAmVgOQ=;
-        b=ZXFY/vX7ZklvBgQ3u8152cJ6UzLI7LMd8+uFbkhWSvBQn8K9JOXuIPrML1lhzGdoyV
-         ewPT1uN4xl9fVdfXKdXnYOiw1hdFSKzvUucwzmjzuE8eFeACXBd+2IpWqJr5BUNJi/JV
-         HOHOhj8nffVX1zHJm0FM+zjdvbpg/6lLtSjcMGW91wQIoGo/35qA50udlMsXcBQWe3SU
-         Ge60iwC7Yu5z5mkZI1kOhIJhmSfCQbeXKLCfqOEKSwKaDVyGZZHx2BVdCiMJ7whVrNPw
-         2zbqDn4QVarWQrlLKLxdbUuxqT9OgxHrtDbHisXxscn/kG5a+9+aLPHcBmQzooCcQMEc
-         n2pA==
-X-Forwarded-Encrypted: i=1; AJvYcCV5cXzOpnin4CogMt58xePYKCy4t7b1SSsimxZOUfrKnKSqI3hqNiYsh2ffevg5lWTrrONQy9cARL2LDXAnHRr5UHX2OnDdHUbAjxYY48OlZ9i/ERiFyTEOZBFBgrII5Ny1lYNQ
-X-Gm-Message-State: AOJu0YypwePPvH0u4olBeWEmfTL0e4nq7i5HNRmVPdeGxyvsIFO59bYs
-	iyyn8rY1FXXmHMuo9WN5BmsXP8knduOCCyPxlaZPIWt1ZcpXG4/F
-X-Google-Smtp-Source: AGHT+IEjof9G6y/blJK7Ac3hvK4D8knpxecWVEsAJ9CXikvry9ZyxDVsK/tNVpl/erf/Jofapl2Kzw==
-X-Received: by 2002:a81:6055:0:b0:615:d7e:eb2 with SMTP id u82-20020a816055000000b006150d7e0eb2mr3721838ywb.16.1712270420524;
-        Thu, 04 Apr 2024 15:40:20 -0700 (PDT)
-Received: from [10.102.6.66] ([208.97.243.82])
-        by smtp.gmail.com with ESMTPSA id k34-20020a81ac22000000b006153f151dfdsm89704ywh.86.2024.04.04.15.40.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 15:40:19 -0700 (PDT)
-Message-ID: <2c3cddda-7ac6-4fc2-b1fa-775c048259e1@gmail.com>
-Date: Thu, 4 Apr 2024 18:40:19 -0400
+        d=1e100.net; s=20230601; t=1712270473; x=1712875273;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8A5tKiFBa0lbUbCLGluriwofV6tCs9WRKtzaqV10d5w=;
+        b=hNUejMTntWpIuobPPciMeuBKXTDRpJDvR039kpGTEQ3wiyEI1/Vgz+AIhduS4b6SUm
+         4Y5HgQsrQUQ2CboSUPooOeYvK87s8jJtKjxOKS8dy2SH8W9SW8N3L5tL3igbEWpFFGT5
+         +XdG134tJZagyLzlgfQw+xdJB6y1SMPehuQHkLK/2rBySYJ9YxY4ma9+VywVV0qw8ILS
+         CNpnioYN1qr5IT4WwbNuOnZAa3NE9bGgmd0TJeX9dAY9TEAEnz0BgytNNZ5HwpQNkLUj
+         tk50/sfeRCg7GEmDX6HUWTT2VnJX6jKxzIOopAZJQeAyNJvQB5qkHOdD8cgPizTUitCg
+         bCIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWb6x1WiI/wWBJLBk4kyl1i9Jp4T5VH9QyrVF60s2bbQxOZWeC6XZw3w8nJF51ChlDOxYl9gfnIKtI88A/abGb8+574Fk0HnFLoGOvv
+X-Gm-Message-State: AOJu0YzeqLt4SzPeVgc9jQY/6AgHt5YYt1vArLEsMNsYdxwaQhmMvoD6
+	6i+g0A1Zj2cL4aYmoxi6CH5UK9CgB7an52jtOKV9keOr1MtQvuO4IDggBN6haLvDbeQ0CG6ub4R
+	zaVuRfi0Z37W6jXvb9DrXxRiqIVS3AO2r1ftE
+X-Google-Smtp-Source: AGHT+IFZOijUz7nc+slBJ8zOHyZ8cj9MgnjzviT3lXApOXO2vYVNI4DlpN571/pk/cWTagxBQ7uu8R14TkT0NKKSOs4=
+X-Received: by 2002:ac5:cdf3:0:b0:4d3:3a0f:77ce with SMTP id
+ v19-20020ac5cdf3000000b004d33a0f77cemr3746386vkn.13.1712270473349; Thu, 04
+ Apr 2024 15:41:13 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next 00/10] MC Flood disable and snooping
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Joseph Huang <Joseph.Huang@garmin.com>, netdev@vger.kernel.org,
- Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
- <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Roopa Prabhu <roopa@nvidia.com>,
- Nikolay Aleksandrov <razor@blackwall.org>,
- =?UTF-8?Q?Linus_L=C3=BCssing?= <linus.luessing@c0d3.blue>,
- linux-kernel@vger.kernel.org, bridge@lists.linux.dev
-References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
- <f5512e7b-b572-4444-9d56-1eed9bbcda6b@lunn.ch>
- <4c28d59e-0c4f-462c-8a1c-d4bd72e25115@gmail.com>
- <630c37d6-b1c6-466b-8d00-fdc84585d5e7@lunn.ch>
-Content-Language: en-US
-From: Joseph Huang <joseph.huang.2024@gmail.com>
-In-Reply-To: <630c37d6-b1c6-466b-8d00-fdc84585d5e7@lunn.ch>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240404-providing-emporium-e652e359c711@spud>
+ <20240404153258.GA852748@dev-arch.thelio-3990X> <CANiq72kSfC2j07mAaV591i4kDwejWRYcFTvASgQmNnHVe5ZwCw@mail.gmail.com>
+In-Reply-To: <CANiq72kSfC2j07mAaV591i4kDwejWRYcFTvASgQmNnHVe5ZwCw@mail.gmail.com>
+From: Ramon de C Valle <rcvalle@google.com>
+Date: Fri, 5 Apr 2024 00:41:02 +0200
+Message-ID: <CAOcBZOS2kPyH0Dm7Fuh4GC3=v7nZhyzBj_-dKu3PfAnrHZvaxg@mail.gmail.com>
+Subject: Re: [PATCH v3] rust: make mutually exclusive with CFI_CLANG
+To: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org, 
+	Conor Dooley <conor.dooley@microchip.com>, stable@vger.kernel.org, 
+	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, linux-kernel@vger.kernel.org, 
+	rust-for-linux@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>, 
+	Kees Cook <keescook@chromium.org>, llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Andrew,
+>
+> We track the unstable feature(s) at
+> https://github.com/Rust-for-Linux/linux/issues/2 (I just moved this
+> one there since it is close to ready, but it was in #355 previously,
+> and cleaned things up a bit).
 
-On 4/4/2024 6:11 PM, Andrew Lunn wrote:
-> On Thu, Apr 04, 2024 at 05:35:41PM -0400, Joseph Huang wrote:
->> Hi Andrew,
->>
->> On 4/2/2024 8:43 AM, Andrew Lunn wrote:
->>> On Mon, Apr 01, 2024 at 08:10:59PM -0400, Joseph Huang wrote:
->>>> There is a use case where one would like to enable multicast snooping
->>>> on a bridge but disable multicast flooding on all bridge ports so that
->>>> registered multicast traffic will only reach the intended recipients and
->>>> unregistered multicast traffic will be dropped. However, with existing
->>>> bridge ports' mcast_flood flag implementation, it doesn't work as desired.
->>>>
->>>> This patchset aims to make multicast snooping work even when multicast
->>>> flooding is disabled on the bridge ports, without changing the semantic of
->>>> the mcast_flood flag too much. Patches 1 to 4 attempt to address this issue.
->>>>
->>>> Also, in a network where more than one multicast snooping capable bridges
->>>> are interconnected without multicast routers being present, multicast
->>>> snooping fails if:
->>>>
->>>>    1. The source is not directly attached to the Querier
->>>>    2. The listener is beyond the mrouter port of the bridge where the
->>>>       source is directly attached
->>>>    3. A hardware offloading switch is involved
->>>
->>> I've not studied the details here, but that last point makes me think
->>> the offload driver is broken. There should not be any difference
->>> between software bridging and hardware bridging. The whole idea is
->>> that you take what Linux can do in software and accelerate it by
->>> offloading to hardware. Doing acceleration should not change the
->>> behaviour.
->>>
->>
->> In patch 10 I gave a little more detail about the fix, but basically this is
->> what happened.
->>
->> Assuming we have a soft bridge like the following:
->>
->>              bp1 +------------+
->>    Querier <---- |   bridge   |
->>                  +------------+
->>                 bp2 |      | bp3
->>                     |      |
->>                     v      v
->>              MC Source    MC Listener
->>
->> Here bp1 is the mrouter port, bp2 is connected to the multicast source, and
->> bp3 is connected to the multicast listener who wishes to receive multicast
->> traffic for that group.
->>
->> After some Query/Report exchange, the snooping code in the bridge is going
->> to learn about the Listener from bp3, and is going to create an MDB group
->> which includes bp3 as the sole member. When the bridge receives a multicast
->> packet for that group from bp2, the bridge will do a look up to find the
->> members of that group (in this case, bp3) and forward the packet to every
->> single member in that group. At the same time, the bridge will also forward
->> the packet to every mrouter port so that listeners beyond mrouter ports can
->> receive that multicast packet as well.
->>
->> Now consider the same scenario, but with a hardware-offloaded switch:
->>
->>                  +------------+
->>                  |   bridge   |
->>                  +------------+
->>                        ^
->>                        |
->>                        | p6 (Host CPU port)
->>           p1/bp1 +------------+
->>    Querier <---- |     sw     |
->>                  +------------+
->>              p2/bp2 |      | p3/bp3
->>                     |      |
->>                     v      v
->>              MC Source    MC Listener
->>
->> Same Query/Report exchange, same MDB group, except that this time around the
->> MDB group will be offloaded to the switch as well. So in the switch's ATU we
->> will now have an entry for the multicast group and with p3 being the only
->> member of that ATU. When the multicast packet arrives at the switch from p2,
->> the switch will do an ATU lookup, and forward the packet to p3 only. This
->> means that the Host CPU (p6) will not get a copy of the packet, and so the
->> soft bridge will not have the opportunity to forward that packet to the
->> mrouter port. This is what patch 10 attempts to address.
->>
->> One possible solution of course is to add p6 to every MDB group, however
->> that's probably not very desirable. Besides, it will be more efficient if
->> the packet is forwarded to the mrouter port by the switch in hardware (i.e.,
->> offload mrouter forwarding), vs. being forwarded in the bridge by software.
-> 
-> Thanks for the explanation. So i think the key part which you said
-> above is:
-> 
->    At the same time, the bridge will also forward the packet to every
->    mrouter port so that listeners beyond mrouter ports can receive that
->    multicast packet as well.
-> 
-> How does the bridge know about the mrouter port? It seems like the
+Sorry about that, I should've done this already. In addition to the
+link you added above, here's a tracking issue for KCFI support for
+Rust:
+https://github.com/rust-lang/rust/issues/123479
 
-The bridge learns about the existence of the Querier by the reception of 
-Queries. The bridge will mark the port which it received Queries from as 
-the mrouter port.
+There are still a few unresolved questions that I'd like to hear from
+you as you experiment with it, which the tl,dr. is: KCFI support for
+Rust shares most of its implementation with the CFI support, with some
+key differences:
 
-> bridge needs to pass that information down to the switch. Is the
+KCFI performs type tests differently and are implemented as different
+LLVM passes than CFI to not require LTO.
+KCFI has the limitation that a function or method may have one type id
+assigned only.
 
-The bridge does pass that information down to switchdev. Patch 5 adds 
-DSA handling of that event as well. Patches 9 and 10 adds the support in 
-the mv88e6xxx driver.
+Because of limitation listed above (2), the current KCFI
+implementation (not CFI) does reifying of types (i.e., adds
+shims/trampolines for indirect calls in these cases) for:
 
-> mrouter itself performing a join on the group when it has members of
-> the group on the other side of it?
+Supporting casting between function items, closures, and Fn trait objects.
+Supporting methods being cast as function pointers.
 
-You hit a key point here. The Querier does not send Report (not with 
-IGMPv2 anyway), so the bridge will never add the mrouter port to any MDB 
-group. That's why patch 10 is needed. Prestera driver does something 
-similar (which is what patches 6,7, and 10 are modeled after).
+There may be possible costs of these added levels of indirections for
+KCFI for cache coherence/locality and performance, possible
+introduction of gadgets or KCFI bypasses, and increased
+artifact/binary sizes, which haven't been looked at yet, and I'm
+honestly not super happy about it (but it's better than the original
+proposal of adding shims/trampolines to every virtual call in the Rust
+compiler), so I'd be interested in any performance results or
+regressions you may have while experimenting with it, more
+specifically:
 
-> 
-> 	Andrew
-
-
+Linux Kernel without KCFI vs Linux Kernel with KCFI vs Linux Kernel
+with Rust and KCFI, possibly isolated to the code of a driver that has
+an implementation in C vs an alternative implementation in Rust.
 
