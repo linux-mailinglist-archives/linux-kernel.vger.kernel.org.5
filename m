@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-131000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DCEE8981CB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:58:24 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D2BD8981CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:00:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12FBC1F28A04
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:58:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C5D3B25D38
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21F36548F5;
-	Thu,  4 Apr 2024 06:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD5654905;
+	Thu,  4 Apr 2024 07:00:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MBjYt2fH"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="foUvcy+A"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913D4548E6
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 06:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 237A3548F0
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 06:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712213884; cv=none; b=Tbwn+/bihECVb6C03NJnTKvJ2FXPG3eR/m9HtdaY9zyQU5kITJ0DQEHjmbs7tAiqLArYPRifVZhArI6A8PBM/kW/F0aHRhpcpkul+Ymwh7eEKhb8B33hIM+Izq2L09V8qs3Oyihxc3D0F8EmwsSmc5+mphuxxLDh16JNTn+nUaE=
+	t=1712213999; cv=none; b=SQXZso2HkYdwY49zcTyoOieJbSM0G7CyBbSYRv4ADugdmrDaECGF3hsEl1QNugbAiGopjErjTdFA29dwb9eP/ZgSFhjsWFw2nrRfCg5+XPD4z4hwtaHAbJ2xu5fcoASlz3cyJYfTohfnD/HUeFe9YCE1kGkJKvypCzNAKlAEHsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712213884; c=relaxed/simple;
-	bh=a7TGkJdikC58XwZDxSCV1cuRYOmb1KIcYprnfbDgk30=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XnhvUYG4HXOCAnBA6ETIiaU0yoNs5TgE3o5sUqBDKHzeA3H4P6aC5xkUsgJR06Uh/HjQ7VKOFZgZDwb/xYY6mvg80jp/979c8P2k+mLURo3ZypeW4/U4UjFITOieT4FaPwa1NLNVC5GVs1K9L2ECA9vu3g2nn96qAIU5cNaZ8N4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MBjYt2fH; arc=none smtp.client-ip=209.85.128.43
+	s=arc-20240116; t=1712213999; c=relaxed/simple;
+	bh=d0yRyL4wf2hKFivuOtePISHJMZCg+wT0N1yR83khAC4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=cACANdLJ7hYDbxtTbqSBADrgwzsJStT/wRkfKA5FGKNBu0nbwcYFvisdE7EvWwMJSEV59JNJVEPgGUHPlrNuVPkl51BXncKXvGrhgNuPfsURN2POStTIdHFUzkVXvgZ0NtkiVOz9SHXh6fBjv5n6EeQ0nswVDd7i6qIYkzaptbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=foUvcy+A; arc=none smtp.client-ip=209.85.208.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-415523d9824so5887005e9.3
-        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 23:58:02 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56bf6591865so861148a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 23:59:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712213881; x=1712818681; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1712213996; x=1712818796; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=8C30NdtZ6fNxKiRHZurdUJwH8e6PRfdiRsx6FtyXH+Q=;
-        b=MBjYt2fHd50qU9NOhs6gIazDJPokPEuCDmdRB62gsy7FAOotQizTYdm6lYy6E0DW23
-         Ofdt3PdRZxIKWi84dgvcUA/bWJuJ4cOqIXJdhM7nVspv8D0h1c7TfwwwUaSzjB186+Wp
-         ioyW7fZOKmkvO+LxZrzt10lcXEBVzk9GqOLMKJYBO81nopLfQi9HkOEvO0KBd7Ef0Sps
-         SYsko4MFNTkLqpVCsrZX586g1Drrpt6U3QWuO4h4beWlbCp/UL8+Np9X+9N26lvFKkey
-         8vdDpjfXZezZol46QhnU28ixFAtSJl4NsIlEPtLQCqKXXIiI929jtTgc6tU7ASFoyxmT
-         +Y5A==
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=FSgC/1JV43xfaAhJEgBJHMt+9Uz5l3H1Go59RCD6nu0=;
+        b=foUvcy+AqPuaeAj+ce3gqpZa1BxR3D5n/O9eynbpwW1bUhlCG4w9SpBcyFM5+snmAS
+         3t0xlZj1tebzoQFlZHIosBA79jCntwt7Si9/20syhMk0AGiwIFrpZaBxLETXZ6JBs6Cq
+         dpqqMoq+sPD/DfKf7FEUyJm5j9s6GdOCGC0pNCR++ywjMDthYQ5HRwamHuDWnQ06XREH
+         d/IwpQgLIhiz6Ad0MBm3r8biemy3pReyFdrRstN2thVcphb+bPAYctdtQtJQsMYkvtQj
+         EIxNYcpbBl0jrCewZKRJgxuQw54cJpSm+7TjYEYnNeHFsKIh5q6Lpgb8LZ3e28IMMfBw
+         W4iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712213881; x=1712818681;
+        d=1e100.net; s=20230601; t=1712213996; x=1712818796;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8C30NdtZ6fNxKiRHZurdUJwH8e6PRfdiRsx6FtyXH+Q=;
-        b=lAeD1Wh/fSMrlEALS23b1ENPAAmhCxVrIpmAUe89J4cRYKYgXxhF+GULgvVsBKbD2V
-         l0D+JcaKrXlUGK7I1T9Gk9tOomejGxFkosCLGgUQN0etLbTdZmRHYWBU7MvlrcREGT4d
-         vOjKOdDo36CEgv36SSBM6PvherSkCVaBRvpZZwhNFyfR2+mBwTGpO/hXt9QQH4QLfKKj
-         JVNwzr9WDvJOiVPy0kNVTBiYgSaPPlz1pfT4JxTz4X2oRHPTg7eljQUWq7gFV9Ac+OL+
-         qYx/FmRHDz1M7nzhO+xc42oQ6ahd8iZohsEAWo9duClnR0yyITY9yy2WuFhCZ37JeFGl
-         kpfw==
-X-Forwarded-Encrypted: i=1; AJvYcCWcoUf4CrH5CP1Sc+Sa458Xe/RTgf+q54jpNcPLBZ/19bNFOLGddRFm+TSA3Dxc0FXQqt/h9QD5ml3zB8AVxDpWGIZI+LdzumghbPYw
-X-Gm-Message-State: AOJu0Yy1DNw6JDTguKanATkBlNib+JV/25tRFdUpV0+QrZGqxARhjbQW
-	yS6ETjiTtJste3EK9qBtcBeT6ANUp0uOiA6FMQ2erU1gWJSRB+Y9NCi5ux4kj6o=
-X-Google-Smtp-Source: AGHT+IFrOexegoL2ClOjKIuDGKaUNQb4kAkQqmKnibOBQAErSUAH9L6XR78pWsfSreont7LG0GF72g==
-X-Received: by 2002:adf:cb8a:0:b0:33d:dcd4:9d8f with SMTP id q10-20020adfcb8a000000b0033ddcd49d8fmr1127099wrh.65.1712213880971;
-        Wed, 03 Apr 2024 23:58:00 -0700 (PDT)
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FSgC/1JV43xfaAhJEgBJHMt+9Uz5l3H1Go59RCD6nu0=;
+        b=YHTv3D1fWw3jObylKiUodtBre/R62vmTx1tIr9mIroyDv7tEQO7ci/oStG5PEm8uhx
+         L82u/y0nCDVTX5d7IpfC4fLZ9fr6ZRunyaAj7qvRM63FxbcNxvF/WCRxFuyVsN9tkLu/
+         dq3gBDRaZ7apcfu746jy4tVEuzLVVyrRfXNGPh99SF7yUi8L9G/ezXY2DEBoWubBBcnx
+         eUMsFqzAtxenEeT8WmkjLxQ1ABDWBebQSxSpULiWMIWF2BK7GFXUinEUYtraStGyOVLJ
+         b680N4nEXPbLQjSM+E/z4eOIU6Z+7ADPDs6WLkKe1EHYOPFq/tKOS+VDuE9fQtae+DB1
+         9KXA==
+X-Forwarded-Encrypted: i=1; AJvYcCXXr4YWl8rXYafFw8mi4dwWGdasj8NagWG7GNfPNQf+yPvhEo5nsJktgk6LbydstkPm3oJ5K2X21oC7V7IWCuNhKCW216nrLdD4LEvC
+X-Gm-Message-State: AOJu0YzkQIwKirHPQcOgMV2zm/UjxmOTVfxWVUVavu0n2QWSduEtK5FW
+	ZcmgmrxGuNe/RtA4QFApDY+xEgGj1mCPo94lizJMT9/PjbljIGR2Nq1h4NqEIcY=
+X-Google-Smtp-Source: AGHT+IHHPMYpW708GK+4QijLIJcmFzfFabqHzvfQMGizDiRBP+jQ50mogsJywUeE9++0miO8w7vcgw==
+X-Received: by 2002:a50:cd99:0:b0:56c:2785:ca34 with SMTP id p25-20020a50cd99000000b0056c2785ca34mr1194275edi.5.1712213996500;
+        Wed, 03 Apr 2024 23:59:56 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id u23-20020a170906125700b00a47522c193asm8664090eja.196.2024.04.03.23.57.57
+        by smtp.gmail.com with ESMTPSA id w26-20020a50fa9a000000b0056e21a7df81sm56629edr.65.2024.04.03.23.59.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 23:58:00 -0700 (PDT)
-Message-ID: <9e59fad0-add1-42fb-8538-49e1b7d1b0d6@linaro.org>
-Date: Thu, 4 Apr 2024 08:57:56 +0200
+        Wed, 03 Apr 2024 23:59:55 -0700 (PDT)
+Message-ID: <6420ac43-f200-459c-8c38-7cd55c64a155@linaro.org>
+Date: Thu, 4 Apr 2024 08:59:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,50 +76,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND v7 27/37] dt-bindings: ata: ata-generic: Add new targets
-To: Yoshinori Sato <ysato@users.sourceforge.jp>, linux-sh@vger.kernel.org
-Cc: Damien Le Moal <dlemoal@kernel.org>, Niklas Cassel <cassel@kernel.org>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Geert Uytterhoeven <geert+renesas@glider.be>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- Thomas Gleixner <tglx@linutronix.de>, Bjorn Helgaas <bhelgaas@google.com>,
- Lorenzo Pieralisi <lpieralisi@kernel.org>,
- =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jiri Slaby <jirislaby@kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
- Daniel Lezcano <daniel.lezcano@linaro.org>, Rich Felker <dalias@libc.org>,
- John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
- Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>,
- Heiko Stuebner <heiko.stuebner@cherry.de>, Shawn Guo <shawnguo@kernel.org>,
- Sebastian Reichel <sre@kernel.org>, Chris Morgan <macromorgan@hotmail.com>,
- Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
- David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>,
- Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck
- <linux@roeck-us.net>, Kefeng Wang <wangkefeng.wang@huawei.com>,
- Stephen Rothwell <sfr@canb.auug.org.au>,
- Javier Martinez Canillas <javierm@redhat.com>, Guo Ren <guoren@kernel.org>,
- Azeem Shaikh <azeemshaikh38@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>,
- Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>,
- Herve Codina <herve.codina@bootlin.com>,
- Manikanta Guntupalli <manikanta.guntupalli@amd.com>,
- Anup Patel <apatel@ventanamicro.com>, Biju Das <biju.das.jz@bp.renesas.com>,
- =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
- Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>,
- Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
- linux-ide@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-pci@vger.kernel.org, linux-serial@vger.kernel.org,
- linux-fbdev@vger.kernel.org
-References: <cover.1712207606.git.ysato@users.sourceforge.jp>
- <53f85cc2e124d1c2e7394458b73293d797817d6d.1712207606.git.ysato@users.sourceforge.jp>
+Subject: Re: [PATCH 1/2] dt-bindings: mfd: Add ROHM BD71879
+To: Andreas Kemnade <andreas@kemnade.info>, lee@kernel.org,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ mazziesaccount@gmail.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240402193515.513713-1-andreas@kemnade.info>
+ <20240402193515.513713-2-andreas@kemnade.info>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -166,33 +129,34 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <53f85cc2e124d1c2e7394458b73293d797817d6d.1712207606.git.ysato@users.sourceforge.jp>
+In-Reply-To: <20240402193515.513713-2-andreas@kemnade.info>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 04/04/2024 07:14, Yoshinori Sato wrote:
-> Added new ata-generic target.
-> - iodata,usl-5p-ata
-> - renesas,rts7751r2d-ata
+On 02/04/2024 21:35, Andreas Kemnade wrote:
+> As this chip was seen in several devices in the wild, add it.
 > 
-> Each boards have simple IDE Interface. Use ATA generic driver.
+> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+> Suggested-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> ---
+>  Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
+> diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+> index 0b62f854bf6b..e4df09e8961c 100644
+> --- a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+> @@ -17,7 +17,9 @@ description: |
+>  
+>  properties:
+>    compatible:
+> -    const: rohm,bd71828
+> +    enum:
+> +      - rohm,bd71828
+> +      - rohm,bd71879
 
-This is a friendly reminder during the review process.
-
-It looks like you received a tag and forgot to add it.
-
-If you do not know the process, here is a short explanation:
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
-
-If a tag was not added on purpose, please state why and what changed.
+In your second commit you claim they are compatible, so why they are not
+marked as such?
 
 Best regards,
 Krzysztof
