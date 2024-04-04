@@ -1,107 +1,97 @@
-Return-Path: <linux-kernel+bounces-132061-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132062-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF4A2898F3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:53:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC970898F42
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:54:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4EAFAB263B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:53:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98CBD28B1D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:54:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DB213473D;
-	Thu,  4 Apr 2024 19:53:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333A51350C8;
+	Thu,  4 Apr 2024 19:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eWYsq6cd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b="kr0buz8g"
+Received: from mail2.andi.de1.cc (vmd64148.contaboserver.net [161.97.139.27])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F3412EBD0;
-	Thu,  4 Apr 2024 19:53:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E370513441C;
+	Thu,  4 Apr 2024 19:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=161.97.139.27
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712260421; cv=none; b=fft4hJC/Y5YkBjjaS0EW5uXH0+77rPB8X5AJEJmgy1/h3n11LzBJDtWx3W48Wmv7zXI1TfvfLB1iSc9sz3NUKU01Z2sWT5yqzdRpIFaKBP1yDVDgyglkOw60X0VNeHNqudXa4B07pzzQWfDOEJCrZleU/yrxIkd6OzJvAlatL1A=
+	t=1712260471; cv=none; b=AEXoU/ZcpW1pf66pYtfhWAVVOBgaxprJG81Nc6Kng2xu3jA93v0t8uGS9Z94S+CaPNBY9MdV17g+RsB+IYHJatHF6aWq97zyyMAqjwC8IFf+ocjLTrGOyBpBMzTBvG6ZJOLpc71TAitOjp/2MniUaYsXroUHNfiw6fIvfxZNWX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712260421; c=relaxed/simple;
-	bh=0dykGMEIzzbTlo2r7m+D7cx0I5fgw0FXn+BBmF6bBqw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=D5Q4O0QJzXz09noioYCw6Y2O6xt647rjydkI2jxKxpatHMat7z149NjSwBeuCxQz6eSptu2bktD3humaXZKv1aTxF2kh+ri1vsv5ENT6/zGOQbWzdv7fCg2vlsUp/jsp2xg5pWreF5nKPQ2xX9zMN7U6XHMsEtaG+61ozUsOtA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eWYsq6cd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C218C433C7;
-	Thu,  4 Apr 2024 19:53:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712260421;
-	bh=0dykGMEIzzbTlo2r7m+D7cx0I5fgw0FXn+BBmF6bBqw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=eWYsq6cdE8XB4cOK3AWiv8n3QZ7i+7Ni1D2SBgpPsoYmtOFo/K4li1lmayQOYqU6q
-	 yjJTyvuJ5jQ+QyIfywyVFnIBRMS+2hpTwxhuyw2AAJ/3mpZNLqL2kUWAup5M/JCwmW
-	 GfkQukIkoYzg/l4zheIQqzIDwvb4q8PN7bQqJN88/bfgTmNecNNjN7SXZhCyMnFJ33
-	 yjOhjoRGqEACQJOfyDf19bxVqjG5HrBw/1ueT4Q3dgELG190YplzvA5VKJsQtEAcA4
-	 10wMY21RPYKmLtjkHEZFB0RYx8AS3+FbXAtKQ+bhfIt/25Rh6alrkzNUvICWuTt81A
-	 Yr2fUEFzJTWug==
-Date: Thu, 4 Apr 2024 12:53:39 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: Edward Cree <ecree.xilinx@gmail.com>, David Ahern <dsahern@kernel.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christoph Hellwig
- <hch@infradead.org>, Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann
- <arnd@arndb.de>, Leon Romanovsky <leonro@nvidia.com>, Jiri Pirko
- <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>, Itay Avraham
- <itayavr@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, Aron Silverton
- <aron.silverton@oracle.com>, linux-kernel@vger.kernel.org,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Andy Gospodarek
- <andrew.gospodarek@broadcom.com>
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240404125339.14695f27@kernel.org>
-In-Reply-To: <20240404183305.GM1723999@nvidia.com>
-References: <2024032248-ardently-ribcage-a495@gregkh>
-	<510c1b6b-1738-4baa-bdba-54d478633598@kernel.org>
-	<Zf2n02q0GevGdS-Z@C02YVCJELVCG>
-	<20240322135826.1c4655e2@kernel.org>
-	<e5c61607-4d66-4cd8-bf45-0aac2b3af126@kernel.org>
-	<20240322154027.5555780a@kernel.org>
-	<1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
-	<0ea32dd4-f408-5870-77eb-f18899f1ad44@gmail.com>
-	<20240402184055.GP946323@nvidia.com>
-	<83025203-fefb-d828-724d-259e5df7c1b2@gmail.com>
-	<20240404183305.GM1723999@nvidia.com>
+	s=arc-20240116; t=1712260471; c=relaxed/simple;
+	bh=WCDOqr6T0DsPX0MrpS9Z6MYxudmPTc8g6TlfS4Ix9zU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cuXC/ohPD0764seCDF9Eb051fxDr+KxZUN2Vzo7bh+HEJXONPzFS3ZcDL7Enn9sQUPmx/7vVwikm5H0zOQOLgvseeqV/zzgspgIEbhjs1LDBApkXb2WSdp2Uh+KQXRKX17U3uQIwKWCcjzFzYvLULR2J7votLetm0DKJr5xboow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info; spf=pass smtp.mailfrom=kemnade.info; dkim=pass (2048-bit key) header.d=kemnade.info header.i=@kemnade.info header.b=kr0buz8g; arc=none smtp.client-ip=161.97.139.27
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kemnade.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kemnade.info
+Received: from mail.andi.de1.cc ([2a02:c205:3004:2154::1])
+	by mail2.andi.de1.cc with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1rsTAJ-003qnh-15;
+	Thu, 04 Apr 2024 21:54:27 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=kemnade.info; s=20220719; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=TbywA3K21x1kIvOru3LrZgufkrtlW6LRTTh7bpqzLBE=; b=kr0buz8gu+4rcb7e4h/Yrr3FeK
+	RlAofRkZMrVg531SyNH5LePYOMx6ZPXdXfHrJC7Jlz5PkLogIvyPUcA2mS+hkfSyE9MWOaZfTV/VF
+	mVXaFC06TpkgS3srXMl8iCbe0otxmbSKEDh9hHcWF36M9KEZ7N/IRC+oXvimUvYGjNFwmAo30qAW4
+	MVPsA5WECY+slpovUCddRvKk/VRfvTyzRZGIzJhi+xtMyph0pyMXIGcoy1pYLYvjwlxsFcwokH7bv
+	BbE6qYe+iDXrA8dNcclSd/b6g5hkWr+CiKOwZ2EuprS6lQX3f2ZHtFBVZ7PinljXRj6H0Pz5mG6NC
+	E7ha40Pw==;
+Received: from p2003010777026a001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:107:7702:6a00:1a3d:a2ff:febf:d33a] helo=aktux)
+	by mail.andi.de1.cc with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1rsTAH-000Ngh-1W;
+	Thu, 04 Apr 2024 21:54:25 +0200
+Received: from andi by aktux with local (Exim 4.96)
+	(envelope-from <andreas@kemnade.info>)
+	id 1rsTAH-002nNP-0N;
+	Thu, 04 Apr 2024 21:54:25 +0200
+From: Andreas Kemnade <andreas@kemnade.info>
+To: lee@kernel.org,
+	robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org,
+	conor+dt@kernel.org,
+	mazziesaccount@gmail.com,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Andreas Kemnade <andreas@kemnade.info>
+Subject: [PATCH v2 0/2] mfd: Add ROHM BD71879
+Date: Thu,  4 Apr 2024 21:54:21 +0200
+Message-Id: <20240404195423.666446-1-andreas@kemnade.info>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On Thu, 4 Apr 2024 15:33:05 -0300 Jason Gunthorpe wrote:
-> Uh no, mlx5 already has an excellent in-tree driver, thank you very
-> much. The configuration is not changing the driver, it is changing the
-> device.
-> 
-> Consider, I can ship unique devices pre-configured for each site's
-> special needs. They still work with the same inbox driver.
-> 
-> In fact that happens already for certain large customers. It is why
-> Jakub recently pointed out that Meta doesn't need any
-> provisioning/mlx5ctl/misc driver. They just buy different devices than
-> everyone else.
+Add software-compatible variant of the BD71828.
 
-> Further it is really rude and inappropriate to say that some customers
-> should not be able to enjoy intree drivers because of your aesthetic
-> opinion of hacks in a device's design.
+Changes in v2:
+allow compatible = "rohm,bd71879", "rohm,bd71828"
 
-To my knowledge the "customizations" are mostly around fitting into OCP
-servers. Those unfamiliar with how hyperscalers operate can mentally
-replace $hyperscaler with HP or Dell in your message. Minus all the
-proprietary OOB management stuff those guys also provide.
+Andreas Kemnade (2):
+  dt-bindings: mfd: Add ROHM BD71879
+  mfd: rohm-bd71828: Add software-compatible variant BD71879
 
-> Overreach. The job of the kernel maintainer is to review the driver
-> software, not the device design.
+ .../devicetree/bindings/mfd/rohm,bd71828-pmic.yaml         | 7 ++++++-
+ drivers/mfd/rohm-bd71828.c                                 | 4 ++++
+ 2 files changed, 10 insertions(+), 1 deletion(-)
 
-Agreed. I rarely if ever comment on what I think about device design.
+-- 
+2.39.2
 
-Discussion is about mlx5ctrl not "the device" as much as you'd like
-to equate the two.
 
