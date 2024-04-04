@@ -1,113 +1,172 @@
-Return-Path: <linux-kernel+bounces-132040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D17F1898F07
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:30:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7F1C898F0C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:30:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A4781C22127
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:30:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D300291A50
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:30:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A76134411;
-	Thu,  4 Apr 2024 19:30:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC1B134411;
+	Thu,  4 Apr 2024 19:30:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="l9DyFMpu"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SVTctHKB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E08E12883A
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7378913440C
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 19:30:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712259033; cv=none; b=ARlwAGDjb3xDgUPNIqQI4LEqtQRigJtgHCDY3Cv1+eLlVD69FTUeeqNpLF+2MYhPlUNTpo6d41tffiY2eEELLrwXeVII/TrIbpO5t/5U5YlmJn43aMXpXylmgCc/9FVIXpJfzbfz+o1Q85hvnwVS041V6W4gqRmni/R4h40ix04=
+	t=1712259044; cv=none; b=kfgy6AuRA1YlSTBiHYJm8Yxy4biYsqkeLi0qossp+ThzTxQADKLC42N6y0oYpaPZkTDaLD3HWuyiSYnafOio0pXLVvK+XnQQu5HHb61KjK1QCT5fIeaexhcoQEawvb35DML3+a9SbDCn7NngqoRVyTXtd4Kyz7clWDhue+nbHng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712259033; c=relaxed/simple;
-	bh=dXY4VqV2dgu2W0tvqxrSc6CK/AEkg1qzMSsPoi4MjiQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DxAC0jBRnuKblfDtBQT2uKRhZd1+q9M03Fffp3GYjz9eMmA4AMqDDIF8mJ78dQUTGa+3jzayEsFgcSDdRySVZKirqD6bSLcbLaEh/ydUN+b1APAR0QwAXayLgwAhY2P7OExakNa1q7acAhZ8PdrcCvMpurRoAivN2QtoUIgpcx0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=l9DyFMpu; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a4702457ccbso195183066b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 12:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712259029; x=1712863829; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YftQBH4K5k1eA4ljqzTyg0/24HcF6aTvgonFgjzZs9Q=;
-        b=l9DyFMpuH5iZp8yRXD2IEjiJeCrlX2btyTYA5n84C+kCiWjreXcDNA/9kUdMZhBNSM
-         3C3pRkikqkoPJbzOxLv1vn3qfOUdAAIF+GOxRBJywD3+hBk+SgPlAeSR5zmsAmhvIQ6g
-         Ibdo4r9at/r3P7RgU8rGqQ9qNWpW6urB/ah0umZ2PALWUinZC8ixt9v8NOeww9Eev1lQ
-         /lDRHDMlVRUm06EAAQT94cm4tJ+mntCp8XdV67eM6Dz1UToS4sbgi3nGFOAHtZVlSJPw
-         oTW5j4z52ZLsx9Hwqx+rQ7M/rxSwZ5WqwwcjmUlqXgkCzqfKrlPRVRtZu3z/d9CZpBGW
-         xx/w==
+	s=arc-20240116; t=1712259044; c=relaxed/simple;
+	bh=SrhCNdxzuBp3aZhSeTOGPH4YcHlLvWylC9ihFXpRUIE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tY32kRXyQ7YN8LDyWblcSGcVtOUsl3cSyQcjo0PtIUos4uTKTA5oYn4bBdSSOV9UW11va/gtH9Lg3ysHorLdFv4mYFOZSd+iwMBc5huyQuI/HmIMafv5h6A+PYa63OMtS9JaDmonWPB3ZqlWW0XooymazYtAp6vok7xtQZhszhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SVTctHKB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712259041;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=3fjf6rtzI7r/gGfnWwsdDNFZRhN01nHhVtY9EOEP8yI=;
+	b=SVTctHKBAVwniIcny2W6mh77G3VEZKYYLZz6jFD1tesj21qHcZK2j1dfGJBxe5pO/XMrsz
+	WZScEe+gYl9GdK+qeTJBkV9bK7p1CDskJvdsdsT+I9mdKN508CcpPrF20eoLSEetGKDj6Y
+	OC2reYBFhr6HZp+jH0iBd0pJT2zxllk=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-373-0PLgC1HZPqa-h-RXJrlSFA-1; Thu, 04 Apr 2024 15:30:39 -0400
+X-MC-Unique: 0PLgC1HZPqa-h-RXJrlSFA-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-343da0a889dso130813f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 12:30:39 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712259029; x=1712863829;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YftQBH4K5k1eA4ljqzTyg0/24HcF6aTvgonFgjzZs9Q=;
-        b=lfaBYZf/YsaVWRkDWj2SwFfPEa0JecAFSlSoY2P8I+WdCaMET9jV0TEPyzrMXXkgpL
-         hVyNynf2ug/p6vJe58K2b6oJDLY15fC9rGq4uBZWqU89XuPA0kWGzNT0vOB8/4ZBsDsn
-         NH+wY7Z7f8b6DL/bPVBXBOFi2dCUXoEk2Uk+fQm0dxKPqyM44phQA+OI1tkkDt1dX2uM
-         D70k2GLhL8yaDXgoq9+8wGqkMvcjpfpAH1/ixPKxZ21g7R3JHzatRt3E3p0Wd1fFp++M
-         chtbyAMDWVRtx429f6Vx7ge8nAKkjjys5LP83Jl15P09CKawLkJBwg5M8o6PEk7luHer
-         CKIA==
-X-Forwarded-Encrypted: i=1; AJvYcCWPxYw+dEwMXzSPcUTp3RcvGdxYJYjwc/+832gHuWA3bNHTNbzqzhwgLaZlFpgiOAORZnw0UZrquCyxdo6FgH/LBUusVmA41ztJx2ps
-X-Gm-Message-State: AOJu0YwSUJtEHukFCLwqZvL3Qc3hIXEwPv27GG7KFeTozuyrvOUC5WaF
-	t8AQm8TkgInoOOJniZlYoeWGOR7s8pgf8zBzJSdhKJQLQchoe47jrbkXET0RTwfn3TcqlmQXWQB
-	M
-X-Google-Smtp-Source: AGHT+IHCwoiLEcG6OP23A1J6qWX+Ltb1CEDPb6mHfowgHbsbwpZ3SH5Q1cIQNWi+cyWfm3Rk2qcrrQ==
-X-Received: by 2002:a17:906:456:b0:a4e:2777:37c7 with SMTP id e22-20020a170906045600b00a4e277737c7mr385955eja.49.1712259029236;
-        Thu, 04 Apr 2024 12:30:29 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id t25-20020a170906269900b00a4c9b39b726sm9394909ejc.75.2024.04.04.12.30.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 12:30:28 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: "David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>
-Cc: sparclinux@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] sparc: Compare pointers to NULL instead of 0
-Date: Thu,  4 Apr 2024 21:29:33 +0200
-Message-ID: <20240404192932.13075-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1712259038; x=1712863838;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3fjf6rtzI7r/gGfnWwsdDNFZRhN01nHhVtY9EOEP8yI=;
+        b=blOHxEbrwxJIIzOhEBKedCvmVfMCA7lYhhqKaki+gBdJllTtcFe81neSkeGFjAQKtQ
+         mhAOdrgKUfZUSKGLEkMl1BoASBGWE8i3sVmMb7eJDaf+tyP1JYewr+UtTIN8zbt5f2+f
+         esiDERwigS+IVSXV+IeCNqVVtakKto64yPjkMwT8ZUPB57wHxPyG555p2oH/+tKYQHe0
+         mlT9UJo2J5HBxt7Kyl8MPP0b64eRKlgXM2QQ8SJ8exDC8rtyJO2JQyEzPexwAvQ3aDUW
+         0oJUCLQ62Q2FJga1FbSNGsrT0JCR4xHnnu7IsJ7P69Ms8iBYqnk+nIXcf4VZy/OWswh6
+         pVZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVDModMnDB6D5z1p5PGe0vJOX+sg3GLKwleAY3WM+N/2HXCtaBDx1E8epxJodbEZokUigWyzcxtOsPA1s4ybkqJwATMEfMhpsHWDS9V
+X-Gm-Message-State: AOJu0YxWpbf/O1xb8qm7pK4iHOl41dboToPY/V99Gp7AzzksFMNXgzrD
+	6tcFUlcaej0EAk2JEGCioHx/ByBAbgTqcNyesevHTzR9A4uysqyRyuDruqG0f6xWAo8Or0l8e9v
+	0JcLTrOHvEm1isS6dlVLWJKI5U7b4aAWD9burvHF4+X51ib2uNS2zqveHjOeQFw==
+X-Received: by 2002:a05:6000:108f:b0:341:d7b5:27 with SMTP id y15-20020a056000108f00b00341d7b50027mr373783wrw.6.1712259038215;
+        Thu, 04 Apr 2024 12:30:38 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IF2SXGjRIUybnwvU1PNlkX+u+HsT+aDK/G+vko0Q4xz25zq3Q6onHmvaVX1AKkLXb57LXEWLw==
+X-Received: by 2002:a05:6000:108f:b0:341:d7b5:27 with SMTP id y15-20020a056000108f00b00341d7b50027mr373769wrw.6.1712259037812;
+        Thu, 04 Apr 2024 12:30:37 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c743:de00:7030:120f:d1c9:4c3c? (p200300cbc743de007030120fd1c94c3c.dip0.t-ipconnect.de. [2003:cb:c743:de00:7030:120f:d1c9:4c3c])
+        by smtp.gmail.com with ESMTPSA id dr20-20020a5d5f94000000b0033ea499c645sm137664wrb.4.2024.04.04.12.30.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 12:30:37 -0700 (PDT)
+Message-ID: <e8810a1c-2fbd-4c48-a462-43014dadc608@redhat.com>
+Date: Thu, 4 Apr 2024 21:30:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] mm: get_mm_counter() get the total memory usage of the
+ process
+To: Chen Taotao <chentt10@chinatelecom.cn>, akpm@linux-foundation.org
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240322151139.7417-1-chentt10@chinatelecom.cn>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240322151139.7417-1-chentt10@chinatelecom.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Fixes the following two Coccinelle/coccicheck warnings reported by
-badzero.cocci:
+On 22.03.24 16:11, Chen Taotao wrote:
+> Currently, the get_mm_counter() function returns only the value of
+> the process memory counter percpu_counter ->count record, ignoring
+> the memory usage count maintained by each CPU in the
+> percpu_counter->counters array, which leads to an error in obtaining
+> the memory usage count of a process, especially when there are many
+> CPU cores. counts, especially when there are many CPU cores.
+> 
+> It is now possible to have get_mm_counter() get the memory count of a
+> process by adding the memory counts maintained by each cpu, thus getting
+> an accurate memory count of the process.
+> 
+> This patch is an unofficial version that simply fixes the above problem,
+> as I'm not sure if it makes sense to do so.
 
-	WARNING comparing pointer to 0
-	WARNING comparing pointer to 0
+What is the effective change? Do you have any real examples where we can 
+observe a real difference, so it's worth the churn?
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- arch/sparc/prom/tree_64.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On the other hand, doing the sum gets more expensive, do we care? How 
+expensive is it?
 
-diff --git a/arch/sparc/prom/tree_64.c b/arch/sparc/prom/tree_64.c
-index 989e7992d629..88793e5b0ab5 100644
---- a/arch/sparc/prom/tree_64.c
-+++ b/arch/sparc/prom/tree_64.c
-@@ -332,7 +332,7 @@ prom_setprop(phandle node, const char *pname, char *value, int size)
- 
- 	if (size == 0)
- 		return 0;
--	if ((pname == 0) || (value == 0))
-+	if ((pname == NULL) || (value == NULL))
- 		return 0;
- 	
- #ifdef CONFIG_SUN_LDOMS
+Such a discussion should ideally be part of this change log.
+
+"I'm not sure if it makes sense" -- you tell us, how did you come up 
+with the idea? :)
+
 -- 
-2.44.0
+Cheers,
+
+David / dhildenb
 
 
