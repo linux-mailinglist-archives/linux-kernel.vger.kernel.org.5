@@ -1,351 +1,136 @@
-Return-Path: <linux-kernel+bounces-131509-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A25D28988DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:35:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76D4B8988DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:35:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5926928C6CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:35:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A5E41C2710F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB48128362;
-	Thu,  4 Apr 2024 13:35:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DFA9127B51;
+	Thu,  4 Apr 2024 13:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SNX4k0ej"
-Received: from mail-vs1-f41.google.com (mail-vs1-f41.google.com [209.85.217.41])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Gwb1Yspj"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324AC8613E;
-	Thu,  4 Apr 2024 13:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5D3127B45
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 13:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712237709; cv=none; b=kU7jXMGzFPps9gsmlBOI7Gb+hnmsz+qWDhuhHKgt616ZhC1iUhcqNRUlwn7hA/NwdLDlR7Uklrv3z4vFN2j9MAZb9NbzjT28Cxw+rMuIWs7VJFzFR4hSWo3MHOMrGNDvuaJETpZDFNd6AdCE2YL2VXUc0ap4aNz47oObLU6NRt0=
+	t=1712237725; cv=none; b=e9rP3UxfW551CxVhxl66ueHdGfQvCXnSqab3FrJ+MJxRJNj36f+mH6F2DC5Q2Oeu+V4mIEzan4cJvsGFXzWHBzCnl78EiNsvtIGq24sazG+a5avDg6/pca8ZL/oT+oD9gS+GdQ4nCtWV/JdcFlhkOqcdl3GjdUFNWX5AbndUqu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712237709; c=relaxed/simple;
-	bh=YfyzMeF6cXpeiNvp249LcMAU4DwRm9i3zFbC0zXRdLg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=S7ZV4VNk2E2K8thZJVspvaJJtzAI0J5ieencWOHNsRs216/ZO/9PHbjSG0obPsb6cdHNPL2fHR2C7dqc5jESpYo/fr1YnxknQfuFPIUC9NGo2TNRGhHiPb0JfDOhx80P/kiECLmQtOP5nZbPHnt8VB9DQxPDdtTgjvmV/eg0Vd4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SNX4k0ej; arc=none smtp.client-ip=209.85.217.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f41.google.com with SMTP id ada2fe7eead31-479cc1791bfso210096137.3;
-        Thu, 04 Apr 2024 06:35:06 -0700 (PDT)
+	s=arc-20240116; t=1712237725; c=relaxed/simple;
+	bh=T/e2Z+UzwFEEvo+yZto4ozOs7PdQ42qjues1cZwdgpM=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=pZ6EIpi/o7CmoHRqLEdhWiAy1Il3GltYaTSkx0P/yK9f4qcZXKKLqmTDgsY/V6G7nE4d9lI/BR2vhM/kJ9daX8g0+ZR8Njgh+MUug04vuY9YJEwD5gprvB5ZWT8wMoOSE903WW9Xm8EbtPLM6yxkUN/ecqttHlaI1NY2LkDGOjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kyletso.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Gwb1Yspj; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kyletso.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-615032a8ce5so17680467b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 06:35:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712237706; x=1712842506; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UFKCNlBFBmvvJg8tbNOd+dvwn4RRHL754vXI+45uAlI=;
-        b=SNX4k0ej7Q9XVrTqGuH/RWG9Vm/VdG78YHjOC3gdgb31LVoeBkOHoL78ocEjZw8KFK
-         JnfVmIFVtAVOaGpEwPNO/OZm7NGOB9fg+IrZB0GGIuzwX2/80JCdoVWpWU9fS6H/w3J7
-         0/C09NlEGP+Pc/U91w4HPExXhJKO5eLQI1YI62GE7oLNLe5OW1OhLA1LJxDEvKWcY88D
-         7NYF9ffMywtQsP3QrDi2+c+acu4ggr/zU00mNRnTCs1TOpuIjyzqHLeeeeYp2SIWERip
-         7y3/JvXv+PmLhRv9ALYwp0/EoKshzBuD/diNNNYusp1YRqzlApV2ClELfAZYId5AOrkF
-         N/CQ==
+        d=google.com; s=20230601; t=1712237723; x=1712842523; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hetVaClf/9lVuj24JMrL9FriyluZzetl+ezDnz2xhz4=;
+        b=Gwb1YspjPjlKQOzxQrEOzaNoio97brSgVgZtURqlFK9AQRkVjc+AKZhv9IPSw761QO
+         TK59d60amicIGvJb5ZYpe2sPP8ce9Y6bDKUxbzUhRZ99J0ZwuJHQTgOtvTxNo6ePOqnX
+         NAe5aKws2NtSJWI2X+3I4YMEF0ewNPeiyRp48TwahzssSauh3ldaxKuDjLt46VisuS5M
+         vP+R9jYZhqUXlD0d5DRQZVLcqUNxKVMjaGdBfvLVY0s0UdpDfvpB9v9Klf9pYroejlEn
+         aPouzLNfpfd5naljZHi+i8lAM7zi2RXRwz2xX7p8uob+8N/+lPH1jcL3FEr5O3tQLgsm
+         FxxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712237706; x=1712842506;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UFKCNlBFBmvvJg8tbNOd+dvwn4RRHL754vXI+45uAlI=;
-        b=WjC4n+CGZzExitcpAvoWRLDuNdZZAYbE5nx6VgaA3/OQqXNXnIIYnntEVM8O4wVDpd
-         O+USC195z/+k6oOIbPTg7AgFfJWixIg76BzLujn3siSyZw3fCKCqCxWAAamEhZQb1SYY
-         ZgpV7bMG3KXzJv70c1fR9/1SvORtwdFqgNMUzKDO9Fktpzftlfp1eeT5LQOVL5vs5mNy
-         TEMAsfEuTskOAwW+SrwscJHjoqHVxgkZ+7UEyOLNZ49/Gd+lBOA+rjThLPYclFG2hJxz
-         Zw0pvy5MODXKuOXtGaW9KKAT4IvCZd74B+//wOSWitnWshxhpPHXr0KwEPkU33l+aICq
-         yH0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWjoVHtYIo7Do8GUbyWKZgLIn9Xxcn22pwkbndTdTX27pFMBomKDhGhvlil2G6RIzwf7hidvIalmJWO/P5XRJoRY7w/3Eoeiu0VsHM+GfrMtOkBTJwm6b9JnNQZ4n/btYFpdjnJ0WjDnu78ca29g4EPZ6iPigLwV2ndCdRrbbXc50sLfRgZe6XF52c9
-X-Gm-Message-State: AOJu0YyBOU0gCbX6kGq2ptnfByC0Y588D/oIs5nSQsUmQGNtYPq4WWBz
-	tEEgvuDqr34fKPzK9S4UWOFsNkhfjXmmoV/mllfvkvSRqvxY/MighMEKjvyH/uqDVWf7usct954
-	6mUHg8ub1TQTvYmF9rpIgNKbwlaU=
-X-Google-Smtp-Source: AGHT+IHxijyUV1tt95o6QXEOZgm8gs7pq3/V0IbiiDujjNbDN0XvONN6co6X4+U+1QRcVai+xwZuZ0zTvqSDZSgS3fY=
-X-Received: by 2002:a1f:fc06:0:b0:4d8:797b:94d5 with SMTP id
- a6-20020a1ffc06000000b004d8797b94d5mr1817963vki.3.1712237706051; Thu, 04 Apr
- 2024 06:35:06 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712237723; x=1712842523;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hetVaClf/9lVuj24JMrL9FriyluZzetl+ezDnz2xhz4=;
+        b=r5+KJKiklTgQfAhW3Fso//2X5ZZNsQ++DaE8aEalDRamKgwJq1IYbnKXX+4ET/5nhF
+         hBXSimgLD3ijq4uk6N33hveuB6uJRhOMW1uEQMs9hjvv6H/B7KNm9/poE5CtaaDda5pY
+         rjB3JAno4dUcF89ktvroakcd/aJVQi7xyIYjjB0glJHR1xwDjjL9NUCgn7NHjurTLLfW
+         5Vo7R3w6mrrtN2SRp+VOOZL5u9+sYQn4QhaibAgznSPKPjS0FQsf8j+sCZtUzD3FxX28
+         MlLSqG7tPf6rqDgvoaxchKr29OFjFTzbCxxeA8euoVfspo1HYJvZJduojsAv73k1WXHj
+         QgMg==
+X-Forwarded-Encrypted: i=1; AJvYcCXAr6kwtY0VTWBwMkXb1mNbtX0q6Bz3m0ZbOoZ3xtQXXIWX9CCXnzx5nnRtTC+4ejjExF6/8R2m1VrEx3eDf2PKhsopgp2EKdyXBSv+
+X-Gm-Message-State: AOJu0Ywc5NPsFmP0+eNRivaJu7c+YsyqoVkUyRbUT9Z9kwvcVpz7uc4I
+	d13twM2kmj/NEz5KFweQa5VWRpXS/0oPAFllYPnj9R/ULn49KO1/U4tgb3Bu5L5CjeQc3/wu1hl
+	EpdFfLg==
+X-Google-Smtp-Source: AGHT+IFpeL1kU/z52ZFjT6Yrsam39v7avneNXzrxyor3Qi+k37OG1axFH7Cbl8OqGm1CW+N2ZPKFP/zd6MMX
+X-Received: from kyletso-p620lin01.ntc.corp.google.com ([2401:fa00:a7:c:ad10:daac:95a5:1fe1])
+ (user=kyletso job=sendgmr) by 2002:a05:690c:600d:b0:611:7166:1a4d with SMTP
+ id hf13-20020a05690c600d00b0061171661a4dmr699112ywb.3.1712237723382; Thu, 04
+ Apr 2024 06:35:23 -0700 (PDT)
+Date: Thu,  4 Apr 2024 21:35:17 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240403203503.634465-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240403203503.634465-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <OSAPR01MB1587ED05696A111612424CF6863C2@OSAPR01MB1587.jpnprd01.prod.outlook.com>
- <CA+V-a8s94e9PLuLipQo+rGZ8g7UHxZJJAZZgvL3PQ4b8PKR2Xw@mail.gmail.com> <OSAPR01MB15878C2C2EE7905D33182CFF863C2@OSAPR01MB1587.jpnprd01.prod.outlook.com>
-In-Reply-To: <OSAPR01MB15878C2C2EE7905D33182CFF863C2@OSAPR01MB1587.jpnprd01.prod.outlook.com>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Thu, 4 Apr 2024 14:34:39 +0100
-Message-ID: <CA+V-a8vjB-A+BRSpxk-dsu6XMvpG1y2f8g+LYcWV+gh2cx+6+g@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/Five SoC
-To: Biju Das <biju.das.jz@bp.renesas.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, Thomas Gleixner <tglx@linutronix.de>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, 
-	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>, 
-	"linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>, 
-	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240404133517.2707955-1-kyletso@google.com>
+Subject: [PATCH v3] usb: typec: tcpm: Correct the PDO counting in pd_set
+From: Kyle Tso <kyletso@google.com>
+To: linux@roeck-us.net, heikki.krogerus@linux.intel.com, 
+	gregkh@linuxfoundation.org
+Cc: badhri@google.com, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
+	Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 4, 2024 at 2:31=E2=80=AFPM Biju Das <biju.das.jz@bp.renesas.com=
-> wrote:
->
-> Hi Lad, Prabhakar,
->
-> > -----Original Message-----
-> > From: Lad, Prabhakar <prabhakar.csengg@gmail.com>
-> > Sent: Thursday, April 4, 2024 2:27 PM
-> > Subject: Re: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for RZ/F=
-ive SoC
-> >
-> > Hi Biju,
-> >
-> > Thank you for the review.
-> >
-> > On Thu, Apr 4, 2024 at 8:44=E2=80=AFAM Biju Das <biju.das.jz@bp.renesas=
-com> wrote:
-> > >
-> > > Hi Prabhakar,
-> > >
-> > > Thanks for the patch.
-> > >
-> > > > -----Original Message-----
-> > > > From: Prabhakar <prabhakar.csengg@gmail.com>
-> > > > Sent: Wednesday, April 3, 2024 9:35 PM
-> > > > Subject: [PATCH v2 2/5] irqchip/renesas-rzg2l: Add support for
-> > > > RZ/Five SoC
-> > > >
-> > > > From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > >
-> > > > The IX45 block has additional mask registers (NMSK/IMSK/TMSK) as
-> > > > compared to the RZ/G2L (family) SoC.
-> > > >
-> > > > Introduce masking/unmasking support for IRQ and TINT interrupts in
-> > > > IRQC controller driver. Two new registers, IMSK and TMSK, are
-> > > > defined to handle masking on RZ/Five SoC. The implementation
-> > > > utilizes a new data structure, `struct rzg2l_irqc_data`, to determi=
-ne mask support for a
-> > specific controller instance.
-> > > >
-> > > > Signed-off-by: Lad Prabhakar
-> > > > <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > > ---
-> > > > v1->v2
-> > > > - Added IRQCHIP_MATCH() for RZ/Five
-> > > > - Retaining a copy of OF data in priv
-> > > > - Rebased the changes
-> > > > ---
-> > > >  drivers/irqchip/irq-renesas-rzg2l.c | 137
-> > > > +++++++++++++++++++++++++++-
-> > > >  1 file changed, 132 insertions(+), 5 deletions(-)
-> > > >
-> > > > diff --git a/drivers/irqchip/irq-renesas-rzg2l.c
-> > > > b/drivers/irqchip/irq-renesas-rzg2l.c
-> > > > index f6484bf15e0b..6fa8d65605dc 100644
-> > > > --- a/drivers/irqchip/irq-renesas-rzg2l.c
-> > > > +++ b/drivers/irqchip/irq-renesas-rzg2l.c
-> > > > @@ -37,6 +37,8 @@
-> > > >  #define TSSEL_SHIFT(n)                       (8 * (n))
-> > > >  #define TSSEL_MASK                   GENMASK(7, 0)
-> > > >  #define IRQ_MASK                     0x3
-> > > > +#define IMSK                         0x10010
-> > > > +#define TMSK                         0x10020
-> > > >
-> > > >  #define TSSR_OFFSET(n)                       ((n) % 4)
-> > > >  #define TSSR_INDEX(n)                        ((n) / 4)
-> > > > @@ -66,15 +68,25 @@ struct rzg2l_irqc_reg_cache {
-> > > >       u32     titsr[2];
-> > > >  };
-> > > >
-> > > > +/**
-> > > > + * struct rzg2l_irqc_of_data - OF data structure
-> > > > + * @mask_supported: Indicates if mask registers are available  */
-> > > > +struct rzg2l_irqc_of_data {
-> > > > +     bool    mask_supported;
-> > > > +};
-> > > > +
-> > > >  /**
-> > > >   * struct rzg2l_irqc_priv - IRQ controller private data structure
-> > > >   * @base:    Controller's base address
-> > > > + * @data:    OF data pointer
-> > > >   * @fwspec:  IRQ firmware specific data
-> > > >   * @lock:    Lock to serialize access to hardware registers
-> > > >   * @cache:   Registers cache for suspend/resume
-> > > >   */
-> > > >  static struct rzg2l_irqc_priv {
-> > > >       void __iomem                    *base;
-> > > > +     const struct rzg2l_irqc_of_data *data;
-> > > >       struct irq_fwspec               fwspec[IRQC_NUM_IRQ];
-> > > >       raw_spinlock_t                  lock;
-> > > >       struct rzg2l_irqc_reg_cache     cache;
-> > > > @@ -138,18 +150,102 @@ static void rzg2l_irqc_eoi(struct irq_data *=
-d)
-> > > >       irq_chip_eoi_parent(d);
-> > > >  }
-> > > >
-> > > > +static void rzg2l_irqc_mask_irq_interrupt(struct rzg2l_irqc_priv *=
-priv,
-> > > > +                                       unsigned int hwirq) {
-> > > > +     u32 imsk =3D readl_relaxed(priv->base + IMSK);
-> > > > +     u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
-> > > > +
-> > > > +     writel_relaxed(imsk | bit, priv->base + IMSK); }
-> > > > +
-> > > > +static void rzg2l_irqc_unmask_irq_interrupt(struct rzg2l_irqc_priv=
- *priv,
-> > > > +                                         unsigned int hwirq) {
-> > > > +     u32 imsk =3D readl_relaxed(priv->base + IMSK);
-> > > > +     u32 bit =3D BIT(hwirq - IRQC_IRQ_START);
-> > > > +
-> > > > +     writel_relaxed(imsk & ~bit, priv->base + IMSK); }
-> > > > +
-> > > > +static void rzg2l_irqc_mask_tint_interrupt(struct rzg2l_irqc_priv =
-*priv,
-> > > > +                                        unsigned int hwirq) {
-> > > > +     u32 tmsk =3D readl_relaxed(priv->base + TMSK);
-> > > > +     u32 bit =3D BIT(hwirq - IRQC_TINT_START);
-> > > > +
-> > > > +     writel_relaxed(tmsk | bit, priv->base + TMSK); }
-> > > > +
-> > > > +static void rzg2l_irqc_unmask_tint_interrupt(struct rzg2l_irqc_pri=
-v *priv,
-> > > > +                                          unsigned int hwirq) {
-> > > > +     u32 tmsk =3D readl_relaxed(priv->base + TMSK);
-> > > > +     u32 bit =3D BIT(hwirq - IRQC_TINT_START);
-> > > > +
-> > > > +     writel_relaxed(tmsk & ~bit, priv->base + TMSK); }
-> > > > +
-> > > > +/* Must be called while priv->lock is held */ static void
-> > > > +rzg2l_irqc_mask_once(struct rzg2l_irqc_priv *priv, unsigned int
-> > > > +hwirq) {
-> > > > +     if (!priv->data->mask_supported)
-> > > > +             return;
-> > > > +
-> > > > +     if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUNT)
-> > > > +             rzg2l_irqc_mask_irq_interrupt(priv, hwirq);
-> > > > +     else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_IRQ)
-> > > > +             rzg2l_irqc_mask_tint_interrupt(priv, hwirq); }
-> > > > +
-> > > > +static void rzg2l_irqc_mask(struct irq_data *d) {
-> > > > +     struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
-> > > > +
-> > > > +     raw_spin_lock(&priv->lock);
-> > > > +     rzg2l_irqc_mask_once(priv, irqd_to_hwirq(d));
-> > > > +     raw_spin_unlock(&priv->lock);
-> > > > +     irq_chip_mask_parent(d);
-> > > > +}
-> > > > +
-> > > > +/* Must be called while priv->lock is held */ static void
-> > > > +rzg2l_irqc_unmask_once(struct rzg2l_irqc_priv *priv, unsigned int
-> > > > +hwirq) {
-> > > > +     if (!priv->data->mask_supported)
-> > > > +             return;
-> > > > +
-> > > > +     if (hwirq >=3D IRQC_IRQ_START && hwirq <=3D IRQC_IRQ_COUNT)
-> > > > +             rzg2l_irqc_unmask_irq_interrupt(priv, hwirq);
-> > > > +     else if (hwirq >=3D IRQC_TINT_START && hwirq < IRQC_NUM_IRQ)
-> > > > +             rzg2l_irqc_unmask_tint_interrupt(priv, hwirq); }
-> > > > +
-> > > > +static void rzg2l_irqc_unmask(struct irq_data *d) {
-> > > > +     struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
-> > > > +
-> > > > +     raw_spin_lock(&priv->lock);
-> > > > +     rzg2l_irqc_unmask_once(priv, irqd_to_hwirq(d));
-> > > > +     raw_spin_unlock(&priv->lock);
-> > > > +     irq_chip_unmask_parent(d);
-> > > > +}
-> > > > +
-> > > >  static void rzg2l_tint_irq_endisable(struct irq_data *d, bool
-> > > > enable)  {
-> > > > +     struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
-> > > >       unsigned int hw_irq =3D irqd_to_hwirq(d);
-> > > >
-> > > >       if (hw_irq >=3D IRQC_TINT_START && hw_irq < IRQC_NUM_IRQ) {
-> > > > -             struct rzg2l_irqc_priv *priv =3D irq_data_to_priv(d);
-> > > >               u32 offset =3D hw_irq - IRQC_TINT_START;
-> > > >               u32 tssr_offset =3D TSSR_OFFSET(offset);
-> > > >               u8 tssr_index =3D TSSR_INDEX(offset);
-> > > >               u32 reg;
-> > > >
-> > > >               raw_spin_lock(&priv->lock);
-> > > > +             if (enable)
-> > > > +                     rzg2l_irqc_unmask_once(priv, hw_irq);
-> > > > +             else
-> > > > +                     rzg2l_irqc_mask_once(priv, hw_irq);
-> > > >               reg =3D readl_relaxed(priv->base + TSSR(tssr_index));
-> > > >               if (enable)
-> > > >                       reg |=3D TIEN << TSSEL_SHIFT(tssr_offset); @@
-> > > > -157,6 +253,13 @@ static void rzg2l_tint_irq_endisable(struct irq_d=
-ata *d, bool enable)
-> > > >                       reg &=3D ~(TIEN << TSSEL_SHIFT(tssr_offset));
-> > > >               writel_relaxed(reg, priv->base + TSSR(tssr_index));
-> > > >               raw_spin_unlock(&priv->lock);
-> > > > +     } else {
-> > > > +             raw_spin_lock(&priv->lock);
-> > > > +             if (enable)
-> > > > +                     rzg2l_irqc_unmask_once(priv, hw_irq);
-> > > > +             else
-> > > > +                     rzg2l_irqc_mask_once(priv, hw_irq);
-> > > > +             raw_spin_unlock(&priv->lock);
-> > > >       }
-> > > >  }
-> > > >
-> > > > @@ -324,8 +427,8 @@ static struct syscore_ops rzg2l_irqc_syscore_op=
-s
-> > > > =3D {  static const struct irq_chip irqc_chip =3D {
-> > > >       .name                   =3D "rzg2l-irqc",
-> > > >       .irq_eoi                =3D rzg2l_irqc_eoi,
-> > > > -     .irq_mask               =3D irq_chip_mask_parent,
-> > > > -     .irq_unmask             =3D irq_chip_unmask_parent,
-> > > > +     .irq_mask               =3D rzg2l_irqc_mask,
-> > > > +     .irq_unmask             =3D rzg2l_irqc_unmask,
-> > >
-> > > I feel this will be clean, if we have
-> > >
-> > > static const struct irq_chip rzg2l_irqc_chip =3D {
-> > >         .name                   =3D "rzg2l-irqc",
-> > >         ...
-> > >         .irq_mask               =3D irq_chip_mask_parent,
-> > >         .irq_unmask             =3D irq_chip_unmask_parent,
-> > >         ....
-> > > };
-> > >
-> > > static const struct irq_chip rzfive_irqc_chip =3D {
-> > >         .name                   =3D "rzfive-irqc",
-> > >         ...
-> > >         .irq_mask               =3D rzfive_irqc_mask,
-> > >         .irq_unmask             =3D rzfive_irqc_unmask,
-> > >         ....
-> > > };
-> > >
-> > > And passing this in rzg2l_irqc_init() and rzfive_irqc_init(), see
-> > > below
-> > >
-> > > return rzg2l_irqc_init_helper(node, parent, & rzg2l_irqc_chip); retur=
-n
-> > > rzg2l_irqc_init_helper(node, parent, & rzfive_irqc_chip);
-> > >
-> > If we do the above we are stuck with "struct irq_chip" as data, for fur=
-ther upcoming SoCs (for
-> > example RZ/V2H) which have more features we need to pass custom data to=
- handle these features.
->
-> That time device data can be extended like below
->
-> struct rz_g2l_irq_chip {
->         struct irq_chip;
->         void *data; /* custom data */
-> }
->
-Ok, but i'll wait for Geert to come back on this as Geert suggested to
-me to do it this way.
+Off-by-one errors happen because nr_snk_pdo and nr_src_pdo are
+incorrectly added one. The index of the loop is equal to the number of
+PDOs to be updated when leaving the loop and it doesn't need to be added
+one.
 
-Cheers,
-Prabhakar
+When doing the power negotiation, TCPM relies on the "nr_snk_pdo" as
+the size of the local sink PDO array to match the Source capabilities
+of the partner port. If the off-by-one overflow occurs, a wrong RDO
+might be sent and unexpected power transfer might happen such as over
+voltage or over current (than expected).
+
+"nr_src_pdo" is used to set the Rp level when the port is in Source
+role. It is also the array size of the local Source capabilities when
+filling up the buffer which will be sent as the Source PDOs (such as
+in Power Negotiation). If the off-by-one overflow occurs, a wrong Rp
+level might be set and wrong Source PDOs will be sent to the partner
+port. This could potentially cause over current or port resets.
+
+Fixes: cd099cde4ed2 ("usb: typec: tcpm: Support multiple capabilities")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kyle Tso <kyletso@google.com>
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+---
+v2 -> v3:
+- rebase on top of usb-linus branch and fix conflicts
+- add Reviewed-by tag
+
+ drivers/usb/typec/tcpm/tcpm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index c26fb70c3ec6..ab6ed6111ed0 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -6855,14 +6855,14 @@ static int tcpm_pd_set(struct typec_port *p, struct usb_power_delivery *pd)
+ 	if (data->sink_desc.pdo[0]) {
+ 		for (i = 0; i < PDO_MAX_OBJECTS && data->sink_desc.pdo[i]; i++)
+ 			port->snk_pdo[i] = data->sink_desc.pdo[i];
+-		port->nr_snk_pdo = i + 1;
++		port->nr_snk_pdo = i;
+ 		port->operating_snk_mw = data->operating_snk_mw;
+ 	}
+ 
+ 	if (data->source_desc.pdo[0]) {
+ 		for (i = 0; i < PDO_MAX_OBJECTS && data->source_desc.pdo[i]; i++)
+ 			port->src_pdo[i] = data->source_desc.pdo[i];
+-		port->nr_src_pdo = i + 1;
++		port->nr_src_pdo = i;
+ 	}
+ 
+ 	switch (port->state) {
+-- 
+2.44.0.478.gd926399ef9-goog
+
 
