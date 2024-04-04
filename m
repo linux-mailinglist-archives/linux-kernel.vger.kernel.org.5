@@ -1,199 +1,206 @@
-Return-Path: <linux-kernel+bounces-131853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131854-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02B56898C97
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:50:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00B7F898C9C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:50:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 261C31C269BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:50:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C64F1F2962C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:50:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD0C6D1B5;
-	Thu,  4 Apr 2024 16:50:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A772C12D203;
+	Thu,  4 Apr 2024 16:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="accTUUmn"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="K+ud700O";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4v3ZzVKh"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6A814A8B;
-	Thu,  4 Apr 2024 16:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14BAA14A8B;
+	Thu,  4 Apr 2024 16:50:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712249423; cv=none; b=bqZ0dhjM0hPEPczmpp307C0gFgYPRbtPe8CNcxQi2bsdWNPTyjTd4Z9lf4RHAxmAiFREEXsG3muQWVEGox7G5z7UJ4nzcNPPJGxEjGVqSDWjmfVxyd7wFFtj/U7S6yEva0O5SntmtJeL2OaGC/s+ge4a6FK5TiNnwhwd7f38pic=
+	t=1712249431; cv=none; b=Z7ePKZD4K+hbrBrquUKoPdeSq4iYoypxXClXGhO5X9TLt08FC+MU1MRqrMA+cIcHKfKnrMb5CD3BG+GLhwxEtIgWP8Cmt6RdPxKFPncQbfUWxeI2Zmm7bkK6EoEeZ8G5BitSH01shfVSu95FRl2EB84pI4yWim7niZDbdOczFwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712249423; c=relaxed/simple;
-	bh=duuvXRyazU2+2lIzUlGDb5oo8et3T5/0CRetwEqiMgA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=iWMA8EKNc27r8cKnQkUHwXZJgWk4FInzWb6ClJoLhoPlAIZrvRWbUdWZEE9YPlHSxopRk4PNkxMvgz1bBcPIAQhdyjVFCbo9H1JCeZNdTioJJQPnNF7jAn8gBno98GfHjIiEHixh/Bbldx5Y/Et/TcdTDGLaAroJx0JSx3dYmEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=accTUUmn; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 434FuB8Z020276;
-	Thu, 4 Apr 2024 16:49:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=bdVj70TgvvAB/XwbPfr6Rf7uON1edbSCq/OzQHOOv9s=;
- b=accTUUmntu4DgR7NUZDo4p+mCy7P0fKn7263a5qWZ8SBAIv+klBDYwQcrK6YwrnBYA9b
- NtRZPxDfteZjSuGXx3+KKpZlMUhtcW+LAz7XHD8sDMdXVMgPhseT6qY4RdOQwJ2ummun
- LU1JCWhUDk964VwwyuG21s/uioRtZE+qYUmYhHiZ9/BhbSTF58Jqrbf3Sp7DWYvA3l96
- djkHlxBbsXQh08yM9bn3rm0IPyE79M8/A8PSq+AH9ILnQvgoaDrM9+KNLQDnMGaQhXht
- nj+YzrHFuSBv+hx+4P1IYMHIuQsKYoROWTWQ1CYLtAr6Pahah2tCLqAlffid4NVOO87Q vA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9xuw86vv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Apr 2024 16:49:59 +0000
-Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 434GnwOS023179;
-	Thu, 4 Apr 2024 16:49:58 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9xuw86vs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Apr 2024 16:49:58 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 434GVMYq003608;
-	Thu, 4 Apr 2024 16:49:57 GMT
-Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x9epydaqm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Apr 2024 16:49:57 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 434Gnskc11469416
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 4 Apr 2024 16:49:57 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 97D3E58056;
-	Thu,  4 Apr 2024 16:49:54 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0394A5805A;
-	Thu,  4 Apr 2024 16:49:54 +0000 (GMT)
-Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.110.28])
-	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu,  4 Apr 2024 16:49:53 +0000 (GMT)
-Message-ID: <27d36ec8e0539c5d6bc760de7305299a2142f9f1.camel@linux.ibm.com>
-Subject: Re: [PATCH v5][next] integrity: Avoid
- -Wflex-array-member-not-at-end warnings
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Roberto Sassu
- <roberto.sassu@huawei.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
-        Eric Snowberg <eric.snowberg@oracle.com>,
-        Paul Moore <paul@paul-moore.com>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>
-Cc: linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Date: Thu, 04 Apr 2024 12:49:53 -0400
-In-Reply-To: <Zg7AoOh7CL5ZD/fe@neat>
-References: <Zg7AoOh7CL5ZD/fe@neat>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-23.el8_9) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 7G1mvBz-_JYfcWI_EuIHlwQhBX0aA1n1
-X-Proofpoint-ORIG-GUID: rGa29e18cm8TrLTRwfsfd7u0yycR1-yR
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1712249431; c=relaxed/simple;
+	bh=CHdsYPxN3bpXMJJkVR+dGGAWeCL/FsCZhntl8455uWA=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=htaBFZKSI+seqFkI83mmrmyjf44EifK9UriSVAUgIVo3DwfMsKvYHLN6dru5ABozaFVah2YwRyt63Ouv0Xzn1LGkQHQD8HneTWkMv6I7mLwuZgCGUu6B3BEsA1QS5YncHyRLuggsngf3oDkaTJrF1klPMAjsynFEYkUULilFug0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=K+ud700O; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4v3ZzVKh; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712249427;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RIhVLHf/UkvLJ7KptHJFdF4HOgrXTkVv33D2+7H0p3E=;
+	b=K+ud700OCOVDYr7W5fBN476FnXp/Bn/gWMIBInbBxRCZi6Kr2BBqBrPZgA1WCGG55rx6cp
+	uO9FU0Jw/PIp1QbjZKjBcUNV2RYOi04sUfqxkxeZozALJ9GM75/cBh5eJ09GuiNHm19PV6
+	54ERePg+3IOYn79NHvq3xxn5HnLNTNXWA273xkIfdB9zoBFSCvfb7vY/IKq0GyvC17ktJY
+	j5Ek0HlkCvM/B+1DdBQ4HT8AUaFGDJeT+eojmcbxsKSSjJ3ydix8EoPEyP3pJfxwj0S/BZ
+	6+ZEUjlSv5CerCmf/1b2BSHKQ0iInmts6zFc1Wc0SCvX25w0e5ConYlceyDMVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712249427;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=RIhVLHf/UkvLJ7KptHJFdF4HOgrXTkVv33D2+7H0p3E=;
+	b=4v3ZzVKhoZgy6TyoZ/Q8cnb6+hU6cTba6VuNl51KhOXo6Xw9xgTTW5+pgTJZ1Sx5TMcaq4
+	itrsKp4MM7NMZdBQ==
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Florian Fainelli
+ <f.fainelli@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, "Russell
+ King (Oracle)" <linux@armlinux.org.uk>, Joel Fernandes
+ <joel@joelfernandes.org>, Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
+ mingo@kernel.org, rcu@vger.kernel.org, neeraj.upadhyay@amd.com,
+ urezki@gmail.com, qiang.zhang1211@gmail.com, bigeasy@linutronix.de,
+ chenzhongjin@huawei.com, yangjihong1@huawei.com, rostedt@goodmis.org,
+ Justin Chen <justin.chen@broadcom.com>
+Subject: [PATCH] timers/migration: Return early on deactivation
+In-Reply-To: <ZgMDcGOagCjfIB3i@localhost.localdomain>
+References: <f4a2a18c-1c81-4857-a3a0-d049ec5c79b3@gmail.com>
+ <ZfLUU+XuQC7W79tf@lothringen>
+ <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
+ <ZfNHNvzpqf8DOZd8@boqun-archlinux>
+ <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com> <87v85olez3.ffs@tglx>
+ <87sf0sldbi.ffs@tglx> <ZfN0wY41pU5UjP8T@boqun-archlinux>
+ <ZfOhB9ZByTZcBy4u@lothringen> <87zfulrlnn.fsf@somnus>
+ <ZgMDcGOagCjfIB3i@localhost.localdomain>
+Date: Thu, 04 Apr 2024 18:50:26 +0200
+Message-ID: <87bk6pvzql.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-04_13,2024-04-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- impostorscore=0 malwarescore=0 phishscore=0 lowpriorityscore=0
- clxscore=1015 bulkscore=0 mlxscore=0 adultscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404040117
+Content-Type: text/plain
 
-Hi Gustavo,
+Commit 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on
+deactivation") removed the logic to return early in tmigr_update_events()
+on deactivation. With this the problem with a not properly updated first
+global event in a hierarchy containing only a single group was fixed.
 
-On Thu, 2024-04-04 at 09:00 -0600, Gustavo A. R. Silva wrote:
-> -Wflex-array-member-not-at-end is coming in GCC-14, and we are getting
-> ready to enable it globally.
-> 
-> There is currently an object (`hdr)` in `struct ima_max_digest_data`
-> that contains a flexible structure (`struct ima_digest_data`):
-> 
->  struct ima_max_digest_data {
->         struct ima_digest_data hdr;
->         u8 digest[HASH_MAX_DIGESTSIZE];
->  } __packed;
-> 
-> So, in order to avoid ending up with a flexible-array member in the
-> middle of a struct, we use the `__struct_group()` helper to separate
-> the flexible array from the rest of the members in the flexible
-> structure:
-> 
-> struct ima_digest_data {
->         __struct_group(ima_digest_data_hdr, hdr, __packed,
-> 
->         ... the rest of the members
-> 
->         );
->         u8 digest[];
-> } __packed;
-> 
-> And similarly for `struct evm_ima_xattr_data`.
-> 
-> With the change described above, we can now declare an object of the
-> type of the tagged `struct ima_digest_data_hdr`, without embedding the
-> flexible array in the middle of another struct:
-> 
->  struct ima_max_digest_data {
->         struct ima_digest_data_hdr hdr;
->         u8 digest[HASH_MAX_DIGESTSIZE];
->  } __packed;
-> 
-> And similarly for `struct evm_digest` and `struct evm_xattr`.
-> 
-> We also use `container_of()` whenever we need to retrieve a pointer to
-> the flexible structure.
-> 
-> So, with these changes, fix the following warnings:
-> 
-> security/integrity/evm/evm.h:64:32: warning: structure containing a flexible
-> array member is not at the end of another structure [-Wflex-array-member-not-
-> at-end]
-> security/integrity/evm/../integrity.h:40:35: warning: structure containing a
-> flexible array member is not at the end of another structure [-Wflex-array-
-> member-not-at-end]
-> security/integrity/evm/../integrity.h:68:32: warning: structure containing a
-> flexible array member is not at the end of another structure [-Wflex-array-
-> member-not-at-end]
-> security/integrity/ima/../integrity.h:40:35: warning: structure containing a
-> flexible array member is not at the end of another structure [-Wflex-array-
-> member-not-at-end]
-> security/integrity/ima/../integrity.h:68:32: warning: structure containing a
-> flexible array member is not at the end of another structure [-Wflex-array-
-> member-not-at-end]
-> security/integrity/integrity.h:40:35: warning: structure containing a flexible
-> array member is not at the end of another structure [-Wflex-array-member-not-
-> at-end]
-> security/integrity/integrity.h:68:32: warning: structure containing a flexible
-> array member is not at the end of another structure [-Wflex-array-member-not-
-> at-end]
-> security/integrity/platform_certs/../integrity.h:40:35: warning: structure
-> containing a flexible array member is not at the end of another structure [-
-> Wflex-array-member-not-at-end]
-> security/integrity/platform_certs/../integrity.h:68:32: warning: structure
-> containing a flexible array member is not at the end of another structure [-
-> Wflex-array-member-not-at-end]
-> 
-> Link: https://github.com/KSPP/linux/issues/202
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+But when having a look at this code path with a hierarchy with more than a
+single level, now unnecessary work is done (example is partially copied
+from the message of the commit mentioned above):
 
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+                            [GRP1:0]
+                         migrator = GRP0:0
+                         active   = GRP0:0
+                         nextevt  = T0:0i, T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = 0              migrator = NONE
+           active   = 0              active   = NONE
+           nextevt  = T0i, T1        nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+      active         idle            idle       idle
 
-Thanks, Gustavo.  I already applied and tested v4, but was trying to actually
-see the errors with before pushing it out.
+0) CPU 0 is active thus its event is ignored (the letter 'i') and so are
+upper levels' events. CPU 1 is idle and has the timer T1 enqueued.
+CPU 2 also has a timer. The expiry order is T0 (ignored) < T1 < T2
 
-Mimi 
+                            [GRP1:0]
+                         migrator = GRP0:0
+                         active   = GRP0:0
+                         nextevt  = T0:0i, T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = NONE           migrator = NONE
+           active   = NONE           active   = NONE
+           nextevt  = T1             nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+        idle         idle            idle         idle
+
+1) CPU 0 goes idle without global event queued. Therefore KTIME_MAX is
+pushed as its next expiry and its own event kept as "ignore". Without this
+early return the following steps happen in tmigr_update_events() when
+child = null and group = GRP0:0 :
+
+  lock(GRP0:0->lock);
+  timerqueue_del(GRP0:0, T0i);
+  unlock(GRP0:0->lock);
 
 
+                            [GRP1:0]
+                         migrator = NONE
+                         active   = NONE
+                         nextevt  = T0:0, T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = NONE           migrator = NONE
+           active   = NONE           active   = NONE
+           nextevt  = T1             nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+        idle         idle            idle         idle
+
+2) The change now propagates up to the top. Then tmigr_update_events()
+updates the group event of GRP0:0 and executes the following steps
+(child = GRP0:0 and group = GRP0:0):
+
+  lock(GRP0:0->lock);
+  lock(GRP1:0->lock);
+  evt = tmigr_next_groupevt(GRP0:0); -> this removes the ignored events
+					in GRP0:0
+  ... update GRP1:0 group event and timerqueue ...
+  unlock(GRP1:0->lock);
+  unlock(GRP0:0->lock);
+
+So the dance in 1) with locking the GRP0:0->lock and removing the T0i from
+the timerqueue is redundand as this is done nevertheless in 2) when
+tmigr_next_groupevt(GRP0:0) is executed.
+
+Revert commit 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on
+deactivation") and add a condition into return path to skip the return
+only, when hierarchy contains a single group.
+
+Fixes: 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on deactivation")
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+---
+ kernel/time/timer_migration.c |   25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+--- a/kernel/time/timer_migration.c
++++ b/kernel/time/timer_migration.c
+@@ -751,6 +751,31 @@ bool tmigr_update_events(struct tmigr_gr
+ 
+ 		first_childevt = evt = data->evt;
+ 
++		/*
++		 * Walking the hierarchy is required in any case when a
++		 * remote expiry was done before. This ensures to not lose
++		 * already queued events in non active groups (see section
++		 * "Required event and timerqueue update after a remote
++		 * expiry" in the documentation at the top).
++		 *
++		 * The two call sites which are executed without a remote expiry
++		 * before, are not prevented from propagating changes through
++		 * the hierarchy by the return:
++		 *  - When entering this path by tmigr_new_timer(), @evt->ignore
++		 *    is never set.
++		 *  - tmigr_inactive_up() takes care of the propagation by
++		 *    itself and ignores the return value. But an immediate
++		 *    return is required because nothing has to be done in this
++		 *    level as the event could be ignored.
++		 *
++		 * But, if the hierarchy has only a single level so @group is
++		 * the top level group, make sure first event information of the
++		 * group is updated properly and also handled properly, so skip
++		 * this fast return path.
++		 */
++		if (evt->ignore && !remote && group->parent)
++			return true;
++
+ 		raw_spin_lock(&group->lock);
+ 
+ 		childstate.state = 0;
 
