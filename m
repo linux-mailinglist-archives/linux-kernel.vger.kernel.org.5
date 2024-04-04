@@ -1,157 +1,138 @@
-Return-Path: <linux-kernel+bounces-131297-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E00D08985DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:15:15 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A192B8985DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:15:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A3B528240F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:15:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 31800B2517E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:15:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC3482864;
-	Thu,  4 Apr 2024 11:15:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="LeY/pptd"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D2280C09
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:15:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CD4823AC;
+	Thu,  4 Apr 2024 11:15:24 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 133CF80C09;
+	Thu,  4 Apr 2024 11:15:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712229304; cv=none; b=rT/tz9FL3Kr6dD8AMEYYuR/kZaBol7RE0TZ2+5gdrM0elZ9CYuLde9Wk48rGjP4TUgAWfb3TxhuYdKQVBTd7nJ/XmNPwD6A49cmVlSAnaJWOUCNZ9L6JsGuDPrdj3/KRkxHgi0krIFRVlJpegyeEStvRrWf5hhLlbsU4AE0RolE=
+	t=1712229324; cv=none; b=aMsG51pn8kyvhzLn5/hK8u5H5VIY1DOao8dXwvx2alNCDBs6TWprwjSwulc+F2Drg5iLfUJzyIS5YqWqJ7UExbFiYVWflyba1GNvabonnEGDlMcBf9eiwIaGLj4SOGq3x4HThD0AVAJrRAaf6QSPsnzh//7lyXXrBn2ajIjTw0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712229304; c=relaxed/simple;
-	bh=lcJ+0RKOVKyrFkZyrW0bb1gbt91d8N2KUr9gV2aCHuQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I0R3iwZPDrx84lRByhzF0WB5m+1bSQ3NEzKvkLhunPK6giBXr74ouMfGvnFqrodLlvWNOM6hr9c8F2Xeu2/IccNf0zNFKm+2xl78vaOU0XUeTy5eIE6gEe+giYbdIQeydHNCSDwo0xD0aH1RQ+v8BaEDs/5lPvm/gzAIJcZUkLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=LeY/pptd; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso856211a12.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 04:15:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1712229301; x=1712834101; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=25ODCdRY+Jn4wzM+mEjHDke5+vqaysXX4gL6DfhOAvg=;
-        b=LeY/pptd4pc15OvlMMzvYYgW1REaFvv+8aB3TzuqRawEQUHFYNHLNVe2z1Zv/Svg6K
-         Dzb64pkVl8UFOhy2Fkgwl5B9cwlN0j5M+JkXiTCRFG0yVU4xGtXSzQuYQyiZrqHAhvGE
-         64jTqqgOIi3BGe0lRwZy8Lbsjmv5C3wStrplGZACVg1n2ZIwWLMmz3yNv6fZ7/HC2dbg
-         LudmSqah5AIRGyQuLYy61j8mEJoAlQQqdyvvjuopvHAlsBJHmG7hd46QPvnr7EiuLJQ3
-         HDqaGP/K1MQsZH4eJAs2UPbzaO82PErSFaVi8FeRah3q+LGwHpDQNsfL+rrIpET+Hbit
-         nPqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712229301; x=1712834101;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=25ODCdRY+Jn4wzM+mEjHDke5+vqaysXX4gL6DfhOAvg=;
-        b=tldUGjjR+DThdA7EWwly544kTwwMJpmsE34y7pyl/kC0xm/buOKSFOQyQJf5/AmTBz
-         nBFXoClNOSHGBSp1m1dEJTh3wmHeGvDTKR0mK987H+YqnQm3poOIJqMpAANoHjCKdZrz
-         kyY8tiLTkpXplkximAwG6En5tu76Zgr0J3MvV8h6yu3CgdBt8X6RcJf2ByftRGqna2dB
-         tJTLOvICYrFqmY+8bKZRSDgLFllK/tc2IBrlnkbLXX2qichfxrzomxjAMGMMoN/PeiG5
-         6q1k3xeZQFr6Bw2bsH+utqKbAkH9MULVFUikGC23Y8bvKppeZk+dE1cSpj4noDfvEM+O
-         mk+Q==
-X-Gm-Message-State: AOJu0YzvO9GGXZmWFObCWsjuUdFcmKx1gI15JKAorqJp89jj2Vxeb10v
-	KoacERmPwFqobx/f0XhJMNfk0xcXZN5vJmTOB599VtUNgtAx7qsMik8axEHoKgA=
-X-Google-Smtp-Source: AGHT+IHVQCEpGYXXQyLBKL2NnoOYXTEECAPh40NJ3Rd5iw4YTlh7y+zWHd66X26Mz6VjXnim0PWvpg==
-X-Received: by 2002:a50:8e4f:0:b0:567:824:e36c with SMTP id 15-20020a508e4f000000b005670824e36cmr1856431edx.14.1712229301530;
-        Thu, 04 Apr 2024 04:15:01 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id fj22-20020a0564022b9600b0056a2cc5c868sm9061098edb.72.2024.04.04.04.14.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 04:14:59 -0700 (PDT)
-Date: Thu, 4 Apr 2024 13:14:58 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Atish Patra <atishp@rivosinc.com>
-Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
-	Palmer Dabbelt <palmer@rivosinc.com>, Ajay Kaher <akaher@vmware.com>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Alexey Makhalov <amakhalov@vmware.com>, 
-	Conor Dooley <conor.dooley@microchip.com>, Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, 
-	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, 
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH v5 05/22] RISC-V: Add SBI PMU snapshot definitions
-Message-ID: <20240404-ecddd056e774ccec7cea3be8@orel>
-References: <20240403080452.1007601-1-atishp@rivosinc.com>
- <20240403080452.1007601-6-atishp@rivosinc.com>
+	s=arc-20240116; t=1712229324; c=relaxed/simple;
+	bh=Gb6TQcZhy8zvbAqHNSQ5R13gtVldiV+tKWL8vvqYeV0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TZPLdZKv8wgsrhfb7HpW9FEtYlnhS+RHn3qP7gn2p9B9Tg7L81RhQUfNyuUejGIC5hRK7K1jIEZj0r0sKs6Y8KXI6P0rsto1mf70Bn1+3btF9Rzk5ABULd9jYcg/Mzoznuj4upncMhgYwDslptSbrtYbefOMi4aSASYIWQTjlIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D4E9FEC;
+	Thu,  4 Apr 2024 04:15:52 -0700 (PDT)
+Received: from [10.57.73.43] (unknown [10.57.73.43])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A2B373F7B4;
+	Thu,  4 Apr 2024 04:15:20 -0700 (PDT)
+Message-ID: <7ebaa870-64d0-4944-bf62-d4ef1a97a1a9@arm.com>
+Date: Thu, 4 Apr 2024 12:15:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403080452.1007601-6-atishp@rivosinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 1/2] thermal: gov_step_wise: Simplify
+ get_target_state()
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Daniel Lezcano <daniel.lezcano@linaro.org>,
+ Linux PM <linux-pm@vger.kernel.org>
+References: <5766468.DvuYhMxLoT@kreacher> <4907519.31r3eYUQgx@kreacher>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <4907519.31r3eYUQgx@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 03, 2024 at 01:04:34AM -0700, Atish Patra wrote:
-> SBI PMU Snapshot function optimizes the number of traps to
-> higher privilege mode by leveraging a shared memory between the S/VS-mode
-> and the M/HS mode. Add the definitions for that extension and new error
-> codes.
+Hi Rafael,
+
+On 4/3/24 19:11, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> Reviewed-by: Anup Patel <anup@brainfault.org>
-> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> The step-wise governor's get_target_state() function contains redundant
+> braces, redundant parens and a redundant next_target local variable, so
+> get rid of all that stuff.
+> 
+> No intentional functional impact.
+> 
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > ---
->  arch/riscv/include/asm/sbi.h | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+>   drivers/thermal/gov_step_wise.c |   27 ++++++++++-----------------
+>   1 file changed, 10 insertions(+), 17 deletions(-)
 > 
-> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
-> index 4afa2cd01bae..9aada4b9f7b5 100644
-> --- a/arch/riscv/include/asm/sbi.h
-> +++ b/arch/riscv/include/asm/sbi.h
-> @@ -132,6 +132,7 @@ enum sbi_ext_pmu_fid {
->  	SBI_EXT_PMU_COUNTER_STOP,
->  	SBI_EXT_PMU_COUNTER_FW_READ,
->  	SBI_EXT_PMU_COUNTER_FW_READ_HI,
-> +	SBI_EXT_PMU_SNAPSHOT_SET_SHMEM,
->  };
->  
->  union sbi_pmu_ctr_info {
-> @@ -148,6 +149,13 @@ union sbi_pmu_ctr_info {
->  	};
->  };
->  
-> +/* Data structure to contain the pmu snapshot data */
-> +struct riscv_pmu_snapshot_data {
-> +	u64 ctr_overflow_mask;
-> +	u64 ctr_values[64];
-> +	u64 reserved[447];
-> +};
+> Index: linux-pm/drivers/thermal/gov_step_wise.c
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/gov_step_wise.c
+> +++ linux-pm/drivers/thermal/gov_step_wise.c
+> @@ -32,7 +32,6 @@ static unsigned long get_target_state(st
+>   {
+>   	struct thermal_cooling_device *cdev = instance->cdev;
+>   	unsigned long cur_state;
+> -	unsigned long next_target;
+>   
+>   	/*
+>   	 * We keep this instance the way it is by default.
+> @@ -40,32 +39,26 @@ static unsigned long get_target_state(st
+>   	 * cdev in use to determine the next_target.
+>   	 */
+>   	cdev->ops->get_cur_state(cdev, &cur_state);
+> -	next_target = instance->target;
+>   	dev_dbg(&cdev->device, "cur_state=%ld\n", cur_state);
+>   
+>   	if (!instance->initialized) {
+> -		if (throttle) {
+> -			next_target = clamp((cur_state + 1), instance->lower, instance->upper);
+> -		} else {
+> -			next_target = THERMAL_NO_TARGET;
+> -		}
+> +		if (throttle)
+> +			return clamp(cur_state + 1, instance->lower, instance->upper);
+>   
+> -		return next_target;
+> +		return THERMAL_NO_TARGET;
+>   	}
+>   
+>   	if (throttle) {
+>   		if (trend == THERMAL_TREND_RAISING)
+> -			next_target = clamp((cur_state + 1), instance->lower, instance->upper);
+> -	} else {
+> -		if (trend == THERMAL_TREND_DROPPING) {
+> -			if (cur_state <= instance->lower)
+> -				next_target = THERMAL_NO_TARGET;
+> -			else
+> -				next_target = clamp((cur_state - 1), instance->lower, instance->upper);
+> -		}
+> +			return clamp(cur_state + 1, instance->lower, instance->upper);
+> +	} else if (trend == THERMAL_TREND_DROPPING) {
+> +		if (cur_state <= instance->lower)
+> +			return THERMAL_NO_TARGET;
 > +
->  #define RISCV_PMU_RAW_EVENT_MASK GENMASK_ULL(47, 0)
->  #define RISCV_PMU_RAW_EVENT_IDX 0x20000
->  
-> @@ -244,9 +252,11 @@ enum sbi_pmu_ctr_type {
->  
->  /* Flags defined for counter start function */
->  #define SBI_PMU_START_FLAG_SET_INIT_VALUE BIT(0)
-> +#define SBI_PMU_START_FLAG_INIT_SNAPSHOT BIT(1)
->  
->  /* Flags defined for counter stop function */
->  #define SBI_PMU_STOP_FLAG_RESET BIT(0)
-> +#define SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT BIT(1)
->  
->  enum sbi_ext_dbcn_fid {
->  	SBI_EXT_DBCN_CONSOLE_WRITE = 0,
-> @@ -285,6 +295,7 @@ struct sbi_sta_struct {
->  #define SBI_ERR_ALREADY_AVAILABLE -6
->  #define SBI_ERR_ALREADY_STARTED -7
->  #define SBI_ERR_ALREADY_STOPPED -8
-> +#define SBI_ERR_NO_SHMEM	-9
->  
->  extern unsigned long sbi_spec_version;
->  struct sbiret {
-> -- 
-> 2.34.1
->
+> +		return clamp(cur_state - 1, instance->lower, instance->upper);
+>   	}
+>   
+> -	return next_target;
+> +	return instance->target;
+>   }
+>   
+>   static void thermal_zone_trip_update(struct thermal_zone_device *tz,
+> 
+> 
+> 
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+LGTM,
+
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
+
+Regards,
+Lukasz
 
