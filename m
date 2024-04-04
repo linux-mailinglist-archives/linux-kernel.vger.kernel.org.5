@@ -1,204 +1,119 @@
-Return-Path: <linux-kernel+bounces-130890-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130891-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B008F897F04
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:05:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 35636897F07
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:06:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B54D41C2704F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:05:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6331C1C271C7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 379537580B;
-	Thu,  4 Apr 2024 05:01:23 +0000 (UTC)
-Received: from sakura.ysato.name (ik1-413-38519.vs.sakura.ne.jp [153.127.30.23])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B15024642A;
-	Thu,  4 Apr 2024 05:01:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=153.127.30.23
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A1FC38DFB;
+	Thu,  4 Apr 2024 05:02:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=efault@gmx.de header.b="RXf66Y2m"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC58C1CFA0
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 05:02:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712206882; cv=none; b=pV+EtgDiCDuq0lj6MrPOoUfr4984T6rNyfO+GATs9Z0tF1ULAr6qArc9cSyaQQ8DyZ9LtEVYl6TPXU0lrrn9zn3Mx1kWo/2v8Ls2uQEq/fSe+P6WVeSXov70ompxZCTrbcAelpP5Gt6erOo0QDViSXoNtEwLQXorO/ZL1YCnurc=
+	t=1712206976; cv=none; b=e7sQexEgn5Dvq/rOEeeHeAE1F/7VQOBxThpKAJIp/CKVFa44QLrYV3kwa4m7G53xriBVHa1EgGTB5VKDIG86qSCnni8jwRfCPnMsthY45mghjK/oxky7ww62LFm725nDAa+WCVXLO8L+PG4o0x22NS454WXTqlY5deJ1JQYbkEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712206882; c=relaxed/simple;
-	bh=RfBIVerSVY5ro3iClkCuqoyBsbZfPpMYmGiZieoqKAU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RRk21OWuKexCZxDtqlzKiqDwdw9rsOwzqKIphxEFxJTjbWltrUch6Q8n83viHGFHE/Urd1aRo1O4FaZni45LPhy3/NwDJFqX/vGB1Vd2lzC+gAhsZLM83yDozF+GqTCMjqIUsc3W20Mj2gvlntLHtG1HLSLmTvX1pMyjYUheGVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=users.sourceforge.jp; spf=fail smtp.mailfrom=users.sourceforge.jp; arc=none smtp.client-ip=153.127.30.23
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=users.sourceforge.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=users.sourceforge.jp
-Received: from SIOS1075.ysato.name (al128006.dynamic.ppp.asahi-net.or.jp [111.234.128.6])
-	by sakura.ysato.name (Postfix) with ESMTPSA id AEDF81C0B3E;
-	Thu,  4 Apr 2024 14:01:18 +0900 (JST)
-From: Yoshinori Sato <ysato@users.sourceforge.jp>
-To: linux-sh@vger.kernel.org
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Niklas Cassel <cassel@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	=?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Magnus Damm <magnus.damm@gmail.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Rich Felker <dalias@libc.org>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Lee Jones <lee@kernel.org>,
-	Helge Deller <deller@gmx.de>,
-	Heiko Stuebner <heiko.stuebner@cherry.de>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sebastian Reichel <sre@kernel.org>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	David Rientjes <rientjes@google.com>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Baoquan He <bhe@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Kefeng Wang <wangkefeng.wang@huawei.com>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Javier Martinez Canillas <javierm@redhat.com>,
-	Guo Ren <guoren@kernel.org>,
-	Azeem Shaikh <azeemshaikh38@gmail.com>,
-	Max Filippov <jcmvbkbc@gmail.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Jacky Huang <ychuang3@nuvoton.com>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Manikanta Guntupalli <manikanta.guntupalli@amd.com>,
-	Anup Patel <apatel@ventanamicro.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	linux-ide@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org,
-	linux-clk@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-pci@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-fbdev@vger.kernel.org
-Subject: [PATCH v7 23/37] dt-bindings: display: sm501 register definition helper
-Date: Thu,  4 Apr 2024 14:00:02 +0900
-Message-Id: <dac98a697c8e850054f984964af62a209f241c83.1712205900.git.ysato@users.sourceforge.jp>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <cover.1712205900.git.ysato@users.sourceforge.jp>
-References: <cover.1712205900.git.ysato@users.sourceforge.jp>
+	s=arc-20240116; t=1712206976; c=relaxed/simple;
+	bh=gLk9WBGQMhRzD+UZauXPhtHxi5DGfP2yF2TpdHZr8rA=;
+	h=Message-ID:Subject:From:To:Cc:Date:Content-Type:MIME-Version; b=OkmmL9hv0lcFoQgqLYCzzf+cXDphqsndq6O6ZF95kyYaPqwxza68THY6eB1szFFIXscN1Lb4xTToYS+8ZIlms7Kjb9DGcnTe8wA1ImhPpROEK2XOJX4Rry4mOiNLib0ZvhWYIeNYxsnsQsNckJEYJSPbQyGtApakPp7zSz1y3EE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=efault@gmx.de header.b=RXf66Y2m; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1712206962; x=1712811762; i=efault@gmx.de;
+	bh=oOX9SnEbIf0w1VMcYYoATarHCLHil4Iy3g8GvrnyEU0=;
+	h=X-UI-Sender-Class:Subject:From:To:Cc:Date;
+	b=RXf66Y2mijs9iU4birVk42GZ42Ia0B9xZATLp5AB64zC5Xg/8HLyzE1xGOE943Wv
+	 QcIE8Yzv90+daumoTTW7MrBOvskX6JHynIg9rvfXivL4QGgKszl72ySBrx5yBxThH
+	 hLD3nE86SVWar+UI7ZEwzXihKHqSeRkoVVLSYGae3OlDp91Ar+xuOEV3AC3NeyvVm
+	 mtF0IvoUO72XlEmyZslpABUrIVPMJAbIJ1f9oZrkSnh8xVroDF0xjiXo+AdFF55cW
+	 xOJjOaP0YZZKLD9aKlpUNng+/C4gGgXXOSgNpK+YTHJAOHJ+Rxiq//jszu2EgJ6al
+	 Bc1HxiGmNLew8davdg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from homer.fritz.box ([185.146.51.26]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N9MpY-1svI7K1y4K-015Gdn; Thu, 04
+ Apr 2024 07:02:42 +0200
+Message-ID: <68731eaeb522ced5319e3c1e45f03cdca5c8fd2a.camel@gmx.de>
+Subject: [patchlet] locking: fix trivial f70405afc99b RT build breakage
+From: Mike Galbraith <efault@gmx.de>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Date: Thu, 04 Apr 2024 07:02:41 +0200
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.42.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:JEfvvZhfDa2gMmACDjQO9HxqN+hxtxjoXBbeth6A3iFnXOtcsnT
+ 8Nhiyq6XUVY9dXUgokOSXRhmrYprRQGKDddLiOKfjUGR5MdLV46P7rtZzMf1Lmg7LOZL9um
+ Cc73YOb1K3zJj/RsVP3/Uqit1y/HI53BKW1AGr1GhXcx4IIisVp8mi1MtbLxRwk9Yi5IsBm
+ ijqGhvYgGHb46ZdmOn8SA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:cTGXMd7LcL8=;YawPW2zyMUOBBsQHdnBrAk7j+B6
+ TDtuZwU+Zw7cRiZc7q5RqShEnfJHbeU/2d6g+ohf/dAQ0/klnHkds5Q6v2S0uPY0VkmX2H4+t
+ nLfvq179QJV37O/Lc6YkB5CsUBGwFBEp9hriYoc/5TTXF/rjhK+g+az8wUacx1y5EyoXKwe0b
+ zXpkAuHFV9uiJUFKXF+ugoOXqy1ds1ZO2fWTXg3KdRZyMlrOOUx6c1mZTlQPAjbF7GTcXmL+N
+ 5PZCm79Dx/WiU5dOPC9WZ3xubul2z/MphL5CjZNdQjtKkWR3JhEXNUBsAOgOnQn7ZKkxFAVP8
+ PrmB0PjolgJ/37oCa4YqF8hGEDO9vnSB+s0mqUnXB6MPazlsBne3CHdxehEvv9FX16vQQB9w2
+ YgqMobLwkxZXfL+dXpDWOHoAWRTd0KWdrmazLiTzSrgdZb8bXkdkQv6tpQ+ORcCd0+21CPPbe
+ LsuaYDxF01FLFfUfi1pEfEi6233jbQ3UdyFwqih+JEzPZ1iAmeryUNBMehyKlqzc+/N5UfOtt
+ gweT7hgVRv+vT9ROsoW62q4t9nSXei9iEdpdeEyCwNtK/O4hQfZmyMxKrJ/BDA/19QP0tLqE/
+ eaVrG6BzDtLJRI1Psy7Y8mK5T9S8aRqcQIVWiy3YgkHNwCjVtYauXeIFwh71Z7eEuyV9oKZFq
+ wIFXABFpNL+MMeTiakRcCgPzdKeLXDhg9hF0D4vN7cohHQSUm2eLHiYtwENOWxBDB0ASfDM+A
+ eAk7gkEgHdA3kHC0K5ZG1Y0g0jGtn6BpM78fZN7Ve/bTcuz+du2rXx9YW5oqknz5MplYuRDJJ
+ A5rqBBJCNkO1uKmzKL5D+rA5Ivb+625T/WtafvSlXEbOs=
 
-Miscellaneous Timing and Miscellaneous Control registers definition.
 
-Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
----
- include/dt-bindings/display/sm501.h | 76 +++++++++++++++++++++++++++++
- 1 file changed, 76 insertions(+)
- create mode 100644 include/dt-bindings/display/sm501.h
+Two trivial RT build issues arrived along with f70405afc99b: WARN_ON() bei=
+ng
+undefined as added to include/linux/rwbase_rt.h, and the wrong parameter (=
+typo)
+being passed to rw_base_assert_held_write().
 
-diff --git a/include/dt-bindings/display/sm501.h b/include/dt-bindings/display/sm501.h
-new file mode 100644
-index 000000000000..a6c6943642e4
---- /dev/null
-+++ b/include/dt-bindings/display/sm501.h
-@@ -0,0 +1,76 @@
-+/* SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
-+#ifndef __DT_BINDING_DISPALY_SM501__
-+#define __DT_BINDING_DISPALY_SM501__
-+
-+/* Miscellaneous Conntrol */
-+#define SM501_MISC_CONTROL_PAD_24	0
-+#define SM501_MISC_CONTROL_PAD_12	1
-+#define SM501_MISC_CONTROL_PAD_8	2
-+
-+#define SM501_MISC_CONTROL_USBCLK_XTAL	0
-+#define SM501_MISC_CONTROL_USBCLK_96MHZ	1
-+#define SM501_MISC_CONTROL_USBCLK_48MHZ	2
-+
-+#define SM501_MISC_CONTROL_RFSH_8US	0
-+#define SM501_MISC_CONTROL_RFSH_16US	1
-+#define SM501_MISC_CONTROL_RFSH_32US	2
-+#define SM501_MISC_CONTROL_RFSH_64US	3
-+
-+#define SM501_MISC_CONTROL_HOLD_EMPTY	0
-+#define SM501_MISC_CONTROL_HOLD_8TR	1
-+#define SM501_MISC_CONTROL_HOLD_16TR	2
-+#define SM501_MISC_CONTROL_HOLD_24TR	3
-+#define SM501_MISC_CONTROL_HOLD_32TR	4
-+
-+/* Miscellaneous timing */
-+#define SM501_MISC_TIMING_EX_HOLD_0	0
-+#define SM501_MISC_TIMING_EX_HOLD_16	1
-+#define SM501_MISC_TIMING_EX_HOLD_32	2
-+#define SM501_MISC_TIMING_EX_HOLD_48	3
-+#define SM501_MISC_TIMING_EX_HOLD_64	4
-+#define SM501_MISC_TIMING_EX_HOLD_80	5
-+#define SM501_MISC_TIMING_EX_HOLD_96	6
-+#define SM501_MISC_TIMING_EX_HOLD_112	7
-+#define SM501_MISC_TIMING_EX_HOLD_128	8
-+#define SM501_MISC_TIMING_EX_HOLD_144	9
-+#define SM501_MISC_TIMING_EX_HOLD_160	10
-+#define SM501_MISC_TIMING_EX_HOLD_176	11
-+#define SM501_MISC_TIMING_EX_HOLD_192	12
-+#define SM501_MISC_TIMING_EX_HOLD_208	13
-+#define SM501_MISC_TIMING_EX_HOLD_224	14
-+#define SM501_MISC_TIMING_EX_HOLD_240	15
-+
-+#define SM501_MISC_TIMING_XC_INTERNAL	0
-+#define SM501_MISC_TIMING_XC_HCLK	1
-+#define SM501_MISC_TIMING_XC_GPIO	2
-+
-+#define SM501_MISC_TIMING_SM_DIV1	0
-+#define SM501_MISC_TIMING_SM_DIV2	1
-+#define SM501_MISC_TIMING_SM_DIV4	2
-+#define SM501_MISC_TIMING_SM_DIV8	3
-+#define SM501_MISC_TIMING_SM_DIV16	4
-+#define SM501_MISC_TIMING_SM_DIV32	5
-+#define SM501_MISC_TIMING_SM_DIV64	6
-+#define SM501_MISC_TIMING_SM_DIV128	7
-+#define SM501_MISC_TIMING_SM_DIV3	8
-+#define SM501_MISC_TIMING_SM_DIV6	9
-+#define SM501_MISC_TIMING_SM_DIV12	10
-+#define SM501_MISC_TIMING_SM_DIV24	11
-+#define SM501_MISC_TIMING_SM_DIV48	12
-+#define SM501_MISC_TIMING_SM_DIV96	13
-+#define SM501_MISC_TIMING_SM_DIV192	14
-+#define SM501_MISC_TIMING_SM_DIV384	15
-+
-+#define SM501_MISC_TIMING_DIV336MHZ	0
-+#define SM501_MISC_TIMING_DIV288MHZ	1
-+#define SM501_MISC_TIMING_DIV240MHZ	2
-+#define SM501_MISC_TIMING_DIV192MHZ	3
-+
-+#define SM501_MISC_TIMING_DELAY_NONE	0
-+#define SM501_MISC_TIMING_DELAY_0_5	1
-+#define SM501_MISC_TIMING_DELAY_1_0	2
-+#define SM501_MISC_TIMING_DELAY_1_5	3
-+#define SM501_MISC_TIMING_DELAY_2_0	4
-+#define SM501_MISC_TIMING_DELAY_2_5	5
-+
-+#endif
--- 
-2.39.2
+Fixes: f70405afc99b ("locking: Add rwsem_assert_held() and rwsem_assert_he=
+ld_write()")
+Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Mike Galbraith <efault@gmx.de>
+=2D--
+ include/linux/rwbase_rt.h |    1 +
+ include/linux/rwsem.h     |    2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+
+=2D-- a/include/linux/rwbase_rt.h
++++ b/include/linux/rwbase_rt.h
+@@ -4,6 +4,7 @@
+
+ #include <linux/rtmutex.h>
+ #include <linux/atomic.h>
++#include <linux/bug.h>
+
+ #define READER_BIAS		(1U << 31)
+ #define WRITER_BIAS		(1U << 30)
+=2D-- a/include/linux/rwsem.h
++++ b/include/linux/rwsem.h
+@@ -174,7 +174,7 @@ static inline void rwsem_assert_held_nol
+
+ static inline void rwsem_assert_held_write_nolockdep(const struct rw_sema=
+phore *sem)
+ {
+-	rw_base_assert_held_write(sem);
++	rw_base_assert_held_write(&sem->rwbase);
+ }
+
+ static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
 
 
