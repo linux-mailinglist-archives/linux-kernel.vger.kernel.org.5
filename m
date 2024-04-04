@@ -1,288 +1,242 @@
-Return-Path: <linux-kernel+bounces-131878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 302D0898D0D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:13:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49803898D17
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:15:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1D561F23ACC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:13:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F413928E558
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:15:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58A01CAA2;
-	Thu,  4 Apr 2024 17:12:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EEVemeH5"
-Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0924712D768;
+	Thu,  4 Apr 2024 17:15:34 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16AAE12AAE8
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:12:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BF6D12B82;
+	Thu,  4 Apr 2024 17:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712250772; cv=none; b=PdLelEnYqzUORmL6zD6n3Dbr8pJxGS1Al5cLvNqlRIVCr51LS5pqrE36Mw9cRa8rANnC3jtQGgN//KimF7zvRZqNyRQo1ZNaeSAWAwkHbDtF/0E176LGEfGnmeuURWTx3pD4q5Y9rVcX7B7Labl3DzvTd8v3VDX+tVl4xs9YO4Q=
+	t=1712250933; cv=none; b=rq0zOS+/6xCu1fKJLkKO+4WXp1shVxHgRxdnavThPEkGooVwCClWLBt+oSB6suLmaO0n6LtHff08IVvOnqJwjlRyRZT6640hKjOiZexWO5R12LKKGotY8+DvQ582NEX+c52dFfcalm/JXk98T+VhVrQLpLjGBQMGoGSQIhwMsJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712250772; c=relaxed/simple;
-	bh=q2vSnLkZdK+cF5cwh1lLcPQrmaY/O+d2loT+u8w1Gjg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mn+C2yLrhuWhEtFUnsoWtJ8jKG8RhjjVtyCT44OMCvxYGH3Ui66tjMsrGWoj9eXAbbqKBf+AGFm0wj/5J2QGEBSmbZMALkZp6n6lQou5hdIC3rodk9OtEJQi3toGcvhtVrPNWwxSmzAHT/lNHWuNWQZQxaYxYhV5BfHtAQLUJz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EEVemeH5; arc=none smtp.client-ip=209.85.160.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-434453346ccso7123521cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1712250769; x=1712855569; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CrvNXh1BQUyZBtc3CRIqLlUYNYDJkZ5+/l+Xgjsutwo=;
-        b=EEVemeH50Z3f8Mw5CK6jPAQd2P3yqCaPJ0r9V9EUcDp7SihhCumnebeli42G0B69Fr
-         SBk9o0whnPCdnQCtRUYk9ZeJHVXlUjIr+wq//4xN4zcnbNa97zCFLYp8UAm2JphcTohM
-         /2DKYMi22TC4aN0r916C+UDYhIc4GaZ+wqhm0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712250769; x=1712855569;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CrvNXh1BQUyZBtc3CRIqLlUYNYDJkZ5+/l+Xgjsutwo=;
-        b=TYwy7vrZjHeGJrb3oS2ECKZTIDkKgKesnG43WQ3W9rvr83Iig1c3YZlwzyw/TpAB4q
-         hNFaFuNwqTgvw3Sq/pFb0apkamW0PtuzH8hq8RR1BViW34PHVp1lm/yALsGsF0G9AylO
-         JGi6tPObJSeefUnzn3djDBOuGKX3OBbXjjCEHGwZ160Lqwd3khLVWyfVTNNMAq2/TEZB
-         FOgTkdeDgaWNq4q+ozc3ZcjPG3GHlBKPzJlWyNqgOL19oDs4ep9GZ3iWFuGzomb5qUIJ
-         HWhkGadZUGf37nAeiiNTkzRn+GFfPjqfs10Rln8E+8O6VOrAiG3GW9RWmwa8DAWFfnrF
-         pZ0A==
-X-Forwarded-Encrypted: i=1; AJvYcCUZFCLR5RrQ+rkHqz6x4r6uku60KmIXnNAQlx5d7Y+bnsz5MDuRPERs/XaKdyEUP05UqPAGzGSWtsVCn7w/yc1tHYvGj53lbePNj1ec
-X-Gm-Message-State: AOJu0YwKtcf47pR5Bw+3n+eFkF5GcYGKQ4VkaLgFeWujDvTfqwjyOlcw
-	KliCuxg8HWLuo0LGhi6t5SGQn1g4Tbt6PNJItk5EZNc2fTYl/od2Bk353yz1EkGq0I01MMHUOv/
-	eD36K
-X-Google-Smtp-Source: AGHT+IHxQ6oC2gc6rcZk3YNSwuAx2gP4tF/4HZtUouOwsxhn8qihlmo0/iffMIzbiAwhntff+hr/3Q==
-X-Received: by 2002:ac8:5dd4:0:b0:434:3e7c:ff29 with SMTP id e20-20020ac85dd4000000b004343e7cff29mr320518qtx.8.1712250769370;
-        Thu, 04 Apr 2024 10:12:49 -0700 (PDT)
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com. [209.85.219.41])
-        by smtp.gmail.com with ESMTPSA id cf10-20020a05622a400a00b004343f36ab58sm2235482qtb.81.2024.04.04.10.12.48
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 10:12:48 -0700 (PDT)
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-6993bc144a4so1095066d6.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:12:48 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUiRkV1V++69dDtui5H/Io3HPFjjDNV6uzK08tydnX3TaRsU17piY5+agtqBMHCEFeKD3Rp4DLOr4WRlgV32vGV+1D4WQ/C2uRLndXd
-X-Received: by 2002:ad4:5949:0:b0:699:39ce:7453 with SMTP id
- eo9-20020ad45949000000b0069939ce7453mr286213qvb.33.1712250767706; Thu, 04 Apr
- 2024 10:12:47 -0700 (PDT)
+	s=arc-20240116; t=1712250933; c=relaxed/simple;
+	bh=fs3CAOejMkP5hhLgQTUxZcc8HVmLkZEh2BWRUW/2kUE=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=EjWxDmZUhSyy0vozNF6knM0jfTi8mSJpHTuWV365eD1S9vJUMQmbTlw4wpgjWkUtvyvqrrplK0/mB29AAeklm5xzxPLPUh+kb7shWt9Q01JgSJgG0IYBqT7A49IkrKadWxyZlMtA64hY8QaI81iRmHOJ+luYSgV3Q5eb8/WzSK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9Srp69W5z6J9h6;
+	Fri,  5 Apr 2024 01:14:02 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id 87530141546;
+	Fri,  5 Apr 2024 01:15:25 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
+ 2024 18:15:24 +0100
+Date: Thu, 4 Apr 2024 18:15:24 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Ira Weiny <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 19/26] dax/bus: Factor out dev dax resize logic
+Message-ID: <20240404181524.000007dc@Huawei.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-19-b7b00d623625@intel.com>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	<20240324-dcd-type2-upstream-v1-19-b7b00d623625@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230501-uvc-align-v1-1-0f713e4b84c3@chromium.org>
- <20240322115606.GA31979@pendragon.ideasonboard.com> <CANiDSCuB0jABPPsoj0RxJ2UbV1UD0i5WwnubySDB0p7LocNJDQ@mail.gmail.com>
- <20240404010414.GF23803@pendragon.ideasonboard.com>
-In-Reply-To: <20240404010414.GF23803@pendragon.ideasonboard.com>
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Thu, 4 Apr 2024 19:12:30 +0200
-X-Gmail-Original-Message-ID: <CANiDSCtkWtnJT28fzRuo8Tk7U3Z1OyeY0MuM3X26mbUaq9QXAQ@mail.gmail.com>
-Message-ID: <CANiDSCtkWtnJT28fzRuo8Tk7U3Z1OyeY0MuM3X26mbUaq9QXAQ@mail.gmail.com>
-Subject: Re: [PATCH] media: uvcvideo: Explicit alignment of uvc_frame and uvc_format
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500006.china.huawei.com (7.191.161.198) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hi Laurent
+On Sun, 24 Mar 2024 16:18:22 -0700
+Ira Weiny <ira.weiny@intel.com> wrote:
 
-On Thu, 4 Apr 2024 at 03:04, Laurent Pinchart
-<laurent.pinchart@ideasonboard.com> wrote:
->
-> Hi Ricardo,
->
-> On Fri, Mar 22, 2024 at 03:26:39PM +0100, Ricardo Ribalda wrote:
-> > On Fri, 22 Mar 2024 at 12:56, Laurent Pinchart wrote:
-> > > On Mon, May 01, 2023 at 04:49:31PM +0200, Ricardo Ribalda wrote:
-> > > > Struct uvc_frame and uvc_format are packaged together on
-> > > > streaming->formats on a sigle allocation.
-> > >
-> > > s/sigle/single/
-> > >
-> > > > This is working fine because both structures have a field with a
-> > > > pointer, but it will stop working when the sizeof() of any of those
-> > > > structs is not a muliple of the sizeof(void*).
-> > > >
-> > > > Make that aligment contract explicit.
-> > > >
-> > > > Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
-> > > > ---
-> > > > This is better than 3 allocations, and do not have any performance
-> > > > penalty.
-> > > > ---
-> > > >  drivers/media/usb/uvc/uvcvideo.h | 4 ++--
-> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/media/usb/uvc/uvcvideo.h b/drivers/media/usb/uvc/uvcvideo.h
-> > > > index 9a596c8d894a..03e8a543c8e6 100644
-> > > > --- a/drivers/media/usb/uvc/uvcvideo.h
-> > > > +++ b/drivers/media/usb/uvc/uvcvideo.h
-> > > > @@ -252,7 +252,7 @@ struct uvc_frame {
-> > > >       u8  bFrameIntervalType;
-> > > >       u32 dwDefaultFrameInterval;
-> > > >       u32 *dwFrameInterval;
-> > > > -};
-> > > > +} __aligned(sizeof(void *)); /* uvc_frame is packed on streaming->formats. */
-> > >
-> > > Don't we need u32 alignment here, not void * alignment, given that
-> > > uvc_frame is followed by an array of u32 ?
-> >
-> > Let me make sure that I explain myself :)
-> >
-> > I made a small program in compiler explorer:
-> > https://godbolt.org/z/7s9z8WTsx that shows the error that I want to
-> > avoid
-> >
-> > When we have a structure like this:
-> >
-> > struct n_foo_bar {
-> >    int n;
-> >    struct foo *foo;
-> >    struct bar *bar;
-> > };
-> >
-> > We expect that *foo and *bar point to memory addresses with the right
-> > cpu alignment for each struct. Otherwise accessing foo and bar could
-> > be slow or simply not work.
->
-> So far, so good.
->
-> > In the driver we are doing something like this to allocate the structure:
-> >
-> > int size
-> > struct n_foo_bar *out;
-> >
-> > size = n*sizeof(struct foo)+n*sizeof(struct bar) +sizeof(struct n_foo_bar);
-> > out = malloc(size);
-> > if (!out)
-> >   return out;
-> >
-> > out->foo=(void *)(out)+sizeof(struct n_foo_bar);
-> > out->bar=(void *)(out->foo)+n*sizeof(struct foo);
-> >
-> > But that only works if sizeof(struct foo) is a multiple of the
-> > alignment required by struct bar.
->
-> The real requirement is a bit more complex, it's sizeof(struct n_foo_bar) +
-> sizeof(struct foo) that needs to be a multiple of the alignment required
-> by struct bar (and even that is simplified, as it assumes that malloc()
-> returns a pointer aligned to the requirements of struct bar, which in
-> practice should always be the case).
->
+> Dynamic Capacity regions must limit dev dax resources to those areas
+> which have extents backing real memory.  Such DAX regions are dubbed
+> 'sparse' regions.  In order to manage where memory is available four
+> alternatives were considered:
+> 
+> 1) Create a single region resource child on region creation which
+>    reserves the entire region.  Then as extents are added punch holes in
+>    this reservation.  This requires new resource manipulation to punch
+>    the holes and still requires an additional iteration over the extent
+>    areas which may already have existing dev dax resources used.
+> 
+> 2) Maintain an ordered xarray of extents which can be queried while
+>    processing the resize logic.  The issue is that existing region->res
+>    children may artificially limit the allocation size sent to
+>    alloc_dev_dax_range().  IE the resource children can't be directly
+>    used in the resize logic to find where space in the region is.  This
+>    also poses a problem of managing the available size in 2 places.
+> 
+> 3) Maintain a separate resource tree with extents.  This option is the
+>    same as 2) but with the different data structure.  Most ideally there
+>    should be a unified representation of the resource tree not two places
+>    to look for space.
+> 
+> 4) Create region resource children for each extent.  Manage the dax dev
+>    resize logic in the same way as before but use a region child
+>    (extent) resource as the parents to find space within each extent.
+> 
+> Option 4 can leverage the existing resize algorithm to find space within
+> the extents.  It manages the available space in a singular resource tree
+> which is less complicated for finding space.
+> 
+> In preparation for this change, factor out the dev_dax_resize logic.
+> For static regions use dax_region->res as the parent to find space for
+> the dax ranges.  Future patches will use the same algorithm with
+> individual extent resources as the parent.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Seems like a straight forward refactor to me. Some trivial comments inline.
 
-struct n_foo_bar, has two pointers: foo and bar. Because of the
-padding, Its sizeof has to be a multiple of sizeof(void *).
-We only care about the sizeof(foo).
+However, maybe move this discussion to a different patch. It's a lot
+to have here when code it really refers to is later (22 I think?)
 
-And malloc has to provide an alignment of at least sizeof(void *),
-otherwise the implementation is pretty broken :)
+> 
+> ---
+> Changes for V1
+> [iweiny: Rebase on new DAX region locking]
+> [iweiny: Reword commit message]
+> [iweiny: Drop reviews]
+> ---
+>  drivers/dax/bus.c | 129 +++++++++++++++++++++++++++++++++---------------------
+>  1 file changed, 79 insertions(+), 50 deletions(-)
+> 
+> diff --git a/drivers/dax/bus.c b/drivers/dax/bus.c
+> index 4d5ed7ab6537..bab19fc578d0 100644
+> --- a/drivers/dax/bus.c
+> +++ b/drivers/dax/bus.c
 
-for kmalloc the alignment is ARCH_KMALLOC_MINALIGN
+>  
+> -static ssize_t dev_dax_resize(struct dax_region *dax_region,
+> -		struct dev_dax *dev_dax, resource_size_t size)
+> +/**
+> + * dev_dax_resize_static - Expand the device into the unused portion of the
+> + * region. This may involve adjusting the end of an existing resource, or
+> + * allocating a new resource.
+> + *
+> + * @parent: parent resource to allocate this range in
+> + * @dev_dax: DAX device to be expanded
+> + * @to_alloc: amount of space to alloc; must be <= space available in @parent
+> + *
+> + * Return the amount of space allocated or -ERRNO on failure
+> + */
+> +static ssize_t dev_dax_resize_static(struct resource *parent,
+> +				     struct dev_dax *dev_dax,
+> +				     resource_size_t to_alloc)
+>  {
+> -	resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
+> -	resource_size_t dev_size = dev_dax_size(dev_dax);
+> -	struct resource *region_res = &dax_region->res;
+> -	struct device *dev = &dev_dax->dev;
+>  	struct resource *res, *first;
+> -	resource_size_t alloc = 0;
+>  	int rc;
+>  
+> -	if (dev->driver)
+> -		return -EBUSY;
+> -	if (size == dev_size)
+> -		return 0;
+> -	if (size > dev_size && size - dev_size > avail)
+> -		return -ENOSPC;
+> -	if (size < dev_size)
+> -		return dev_dax_shrink(dev_dax, size);
+> -
+> -	to_alloc = size - dev_size;
+> -	if (dev_WARN_ONCE(dev, !alloc_is_aligned(dev_dax, to_alloc),
+> -			"resize of %pa misaligned\n", &to_alloc))
+> -		return -ENXIO;
+> -
+> -	/*
+> -	 * Expand the device into the unused portion of the region. This
+> -	 * may involve adjusting the end of an existing resource, or
+> -	 * allocating a new resource.
+> -	 */
+> -retry:
+> -	first = region_res->child;
+> -	if (!first)
+> -		return alloc_dev_dax_range(dev_dax, dax_region->res.start, to_alloc);
+> +	first = parent->child;
+> +	if (!first) {
+> +		rc = alloc_dev_dax_range(parent, dev_dax,
+> +					   parent->start, to_alloc);
+
+Quirky indent I think.
+
+..
+
+> +static ssize_t dev_dax_resize(struct dax_region *dax_region,
+> +		struct dev_dax *dev_dax, resource_size_t size)
+> +{
+> +	resource_size_t avail = dax_region_avail_size(dax_region), to_alloc;
+Trivial...
+Whilst here nice to tidy up and move that to_alloc to it's own line as
+not nice to mix declarations with assignments with those that aren't.
 
 
-> > We are "lucky" now because we have a
-> > pointer in each struct and that gives us a void* padding. ... but if
-> > we ever remove that pointer from the structure we will be in a bad
-> > position.
->
-> We have three levels in uvcvideo. The top-level structure (your
-> equivalent of n_foo_bar), struct uvc_format, has a pointer to an array
-> of struct uvc_frame. The second level, struct uvc_frame, has a pointer
-> to an array of u32. All three are then allocated in one go,
-> contiguously.
->
-> The largest field in uvc_frame is a pointer, so the alignment
-> requirement will be fulfilled if struct uvc_format is aligned to
-> sizeof(void *). When it comes to struct uvc_frame, however, its size
-> needs to be a multiple of sizeof(u32), not of sizeof(void *).
-
-OK, we might save 2 bytes :), at the cost that we cannot reshuffle the
-fields in the top-level struct.
-
->
-> Given that the alignment constraints are not intrinsic to these
-> structures, I think it would be better to handle them when allocating
-> the memory. Something along the line of
-
-This is what I was trying to avoid, but with the __alignof__ macros it
-does not look that bad...
-
-Maybe we should just make 3 allocations instead of having our mini
-malloc implementation :)
-
-Let me send a v2
-
-Thanks!
-
->
-> diff --git a/drivers/media/usb/uvc/uvc_driver.c b/drivers/media/usb/uvc/uvc_driver.c
-> index f33a01dbb329..cbc40d663e4f 100644
-> --- a/drivers/media/usb/uvc/uvc_driver.c
-> +++ b/drivers/media/usb/uvc/uvc_driver.c
-> @@ -687,8 +687,11 @@ static int uvc_parse_streaming(struct uvc_device *dev,
->                 goto error;
->         }
->
-> -       size = nformats * sizeof(*format) + nframes * sizeof(*frame)
-> +       size = nformats * sizeof(*format);
-> +       size = ALIGN(size, __alignof__(*frame)) + nframes * sizeof(*frame);
-> +       size = ALIGN(size, __alignof__(*interval))
->              + nintervals * sizeof(*interval);
+> +	resource_size_t dev_size = dev_dax_size(dev_dax);
+> +	struct device *dev = &dev_dax->dev;
+> +	resource_size_t alloc = 0;
 > +
->         format = kzalloc(size, GFP_KERNEL);
->         if (format == NULL) {
->                 ret = -ENOMEM;
->
-> plus a corresponding change when calculating the pointers to the frames
-> and intervals just after.
->
-> > With the  __aligned(sizeof(void *)); I want to explicitly say:
-> >
-> > "Ey, this struct is embedded in another struct and they are allocated
-> > contiguously"
-> >
-> > Does it make more sense now?
-> >
-> > > >
-> > > >  struct uvc_format {
-> > > >       u8 type;
-> > > > @@ -266,7 +266,7 @@ struct uvc_format {
-> > > >
-> > > >       unsigned int nframes;
-> > > >       struct uvc_frame *frame;
-> > > > -};
-> > > > +} __aligned(sizeof(void *)); /* uvc_format is packed on streaming->formats. */
-> > >
-> > > Same here, technically we need to ensure that the following uvc_frame
-> > > will be aligned. void * alignment will give us that now, but that's not
-> > > the actual constraint.
-> > >
-> > > Wouldn't it be better to handle the alignment constraints explicitly
-> > > when allocating the memory ? It's not that uvc_frame and uvc_format have
-> > > intrinsic alignment constraints, the constraints are only needed because
-> > > of the way memory is allocated.
-> > >
-> > > >
-> > > >  struct uvc_streaming_header {
-> > > >       u8 bNumFormats;
-> > > >
-> > > > ---
-> > > > base-commit: 58390c8ce1bddb6c623f62e7ed36383e7fa5c02f
-> > > > change-id: 20230501-uvc-align-6ff202b68dab
->
-> --
-> Regards,
->
-> Laurent Pinchart
+> +	if (dev->driver)
+> +		return -EBUSY;
+> +	if (size == dev_size)
+> +		return 0;
+> +	if (size > dev_size && size - dev_size > avail)
+> +		return -ENOSPC;
+> +	if (size < dev_size)
+> +		return dev_dax_shrink(dev_dax, size);
+> +
+> +	to_alloc = size - dev_size;
+> +	if (dev_WARN_ONCE(dev, !alloc_is_aligned(dev_dax, to_alloc),
+> +			"resize of %pa misaligned\n", &to_alloc))
+> +		return -ENXIO;
+> +
+> +retry:
+> +	alloc = dev_dax_resize_static(&dax_region->res, dev_dax, to_alloc);
+> +	if (alloc <= 0)
+> +		return alloc;
+>  	to_alloc -= alloc;
+>  	if (to_alloc)
+>  		goto retry;
+> @@ -1283,7 +1310,8 @@ static ssize_t mapping_store(struct device *dev, struct device_attribute *attr,
+>  
+>  	to_alloc = range_len(&r);
+>  	if (alloc_is_aligned(dev_dax, to_alloc))
+> -		rc = alloc_dev_dax_range(dev_dax, r.start, to_alloc);
+> +		rc = alloc_dev_dax_range(&dax_region->res, dev_dax, r.start,
+> +					 to_alloc);
+>  	up_write(&dax_dev_rwsem);
+>  	up_write(&dax_region_rwsem);
+>  
+> @@ -1506,7 +1534,8 @@ static struct dev_dax *__devm_create_dev_dax(struct dev_dax_data *data)
+>  	device_initialize(dev);
+>  	dev_set_name(dev, "dax%d.%d", dax_region->id, dev_dax->id);
+>  
+> -	rc = alloc_dev_dax_range(dev_dax, dax_region->res.start, data->size);
+> +	rc = alloc_dev_dax_range(&dax_region->res, dev_dax, dax_region->res.start,
+> +				 data->size);
+>  	if (rc)
+>  		goto err_range;
+>  
+> 
 
-
-
--- 
-Ricardo Ribalda
 
