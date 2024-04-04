@@ -1,123 +1,139 @@
-Return-Path: <linux-kernel+bounces-131882-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131879-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B10EA898D21
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:17:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A266A898D0E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:13:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC3EC1C25B5C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:17:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 582341F229E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:13:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA8E12F59F;
-	Thu,  4 Apr 2024 17:17:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C51712D75C;
+	Thu,  4 Apr 2024 17:13:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YhIAgd5N"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Lga1EpiR"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDDFD12D1ED
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A61B12BF22;
+	Thu,  4 Apr 2024 17:13:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712251058; cv=none; b=AAN4jgMUkGllg4SbyV5Vb1l8nrrYODfaNohAY4l3qT3C+ebamrTqfV2lfZasCd5faQrtBGFfYNXi+1DpADMaGE/obXFe0iH26M/THCNSV7XlWyjBa8IFajk1mWgCLU9iNO/PQUwKTCtp5ibGpPCee1IrnDNRBqaYmr4Z6WMf8xk=
+	t=1712250791; cv=none; b=QUt96AznVtZPAEt3Q0LDgjKsv1NnJhV/uC8uVN9D2ypHMmvrrY3GJdCpcrTbK3PeYbU8diSXczIpnB8TUxG3L+oneMhr+/HGHnaWFBIXvtnWtsdbgwzQkZX83RTDpz3zJFtyM5QHc31gAEb7Bx7dMYJ3UZOBPEwrxwXD5ghiETs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712251058; c=relaxed/simple;
-	bh=P0jxfOjJm5k13eNfwzSHtiYITpQkPdrZsOjPaq8EqwE=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=hvpp0BwUnfs7+y8vOG5wwv6Mnz0JTqcTzLwec6g8Py8I5vf9qmJFxoCLYovAKrKBbbngIO9+B9YrN4tmB1tvGR51Yy3UkJHqJudXqHjdgIs2HxS0agH8hkMjUNdycqRqDVwKDnCecAc8qjvkDF/4evn1iDTgH1Tkij+SVVsd8ws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YhIAgd5N; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--lokeshgidra.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-61517841a2eso21188067b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:17:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712251056; x=1712855856; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2HQDqzTFjNbgMV4giF4EAYbuZ4iKPL9b9RZ9WT7F6E4=;
-        b=YhIAgd5NOfj6TcRmnxtCGyV9r2JmO9XTOibvCy1b2Z1J0aEA5iHMPPZ33Q+S/Fo85u
-         +RWsHZwpRRJJEbMfsecbMhP0LU+3GJoP4F20VLgoqVrdLL5fharO2gMinhZdgt0zetGn
-         2HzbZn+f4g8ohs0eYzxDE8seqV5JrYgptKEHEOp5B4Q+m81jljsYajSfUbmqMBTlH9ML
-         XeJXsKAK9c/tAZ8DZDztTuHRGC3yC1cVzd8c64NrL58tEpa+WusUZSWDmbwSWzFkw2mS
-         vXNgWJYr5cNybo5jW3xVU8solhLuouM3tKFkT8eTzkLnuxYa/YlfKfp5cM45I3/25S5i
-         LibA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712251056; x=1712855856;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2HQDqzTFjNbgMV4giF4EAYbuZ4iKPL9b9RZ9WT7F6E4=;
-        b=edJ1HuPYHsveSaryFeNkW5WRyBcqwoaCg4cMdo4Z45PuyYiWcJEZrXQ086o7LrANmp
-         MPP4VoYrhBMOyPaHpa9tjxkCQahIcw5I7vfZ/s1jZgTQMoJ3u/oWjpfFeBiUYAqCOlji
-         M20FVsosiGKe3KG5tGdxb0VI2G7GS5Cw9f4tdqrnZeleEcsDNyRxYDHXHccbMb/rmQCu
-         xVDijRj9V/6XTczl7Jh+Jn3GNPFg0bLWJhI4YrBSlfk51u1zFD4DEtMCBP0K8RitZfOz
-         zBotAB9gu8Wwc8SfwV+3vnDuN1i4BLqxmG1rSZ0CyyVr6tRJY4IHAAiN+8EUdOWIlawh
-         2yKg==
-X-Forwarded-Encrypted: i=1; AJvYcCUw8n5kPRFMubA3iVTtTbQEBkwisYX0zDjqWLeWt38b1TLifc4ewv81LpGPrTR11YntdAZmP0p4SWFbde65wNriQPetCpOVO4gOeAca
-X-Gm-Message-State: AOJu0YwpOK6mxZQG5riyYZjh0f/AwoPwkIwPSdRxuDKoiwAr+SE3epIP
-	vIFJRJ1xgiB8DvhPPADWJKLHpVxLU+T6S3BI5DnQY3qjNzC2miNAs9pj9p5F9S3UfLpsQAe8xzd
-	quC/6UZwIR3Mx7sWKU+5ryw==
-X-Google-Smtp-Source: AGHT+IEj+hRLWesrgPpJFC7CIVqj9Dom65rQyl8Tl8TbY/1KOeBAJ8t7Hc5dczRRpk4ua4tLB0Z7mXt0bzzzGkbIxw==
-X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:b773:c760:3ce4:2d5c])
- (user=lokeshgidra job=sendgmr) by 2002:a0d:cac7:0:b0:615:e53:1c1 with SMTP id
- m190-20020a0dcac7000000b006150e5301c1mr42846ywd.7.1712251055864; Thu, 04 Apr
- 2024 10:17:35 -0700 (PDT)
-Date: Thu,  4 Apr 2024 10:17:26 -0700
+	s=arc-20240116; t=1712250791; c=relaxed/simple;
+	bh=Dlr+aCFuoxfoWJLhEEPEJmaI0L43dBfu9cHqUL4lZ9c=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZyfxQdxXV3dhvRt2mkhmpXOHoq8QzvMG1fNlVva3og4U5D6l9YeoSOreDIvyescQnujQoNX3IO3mN3YP99rNCYaGvvuAto0fLS5oJEdmISkiqPfU1rY0v2lybcTdQcIx0cycb+dc+2ni+1RR65kazIRoLe2UHJY2ZHbiNW6k+jE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Lga1EpiR; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712250790; x=1743786790;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Dlr+aCFuoxfoWJLhEEPEJmaI0L43dBfu9cHqUL4lZ9c=;
+  b=Lga1EpiRtfAqsXLK08fO1lDl30cK1LcqSk1S15uEYITkaXTsNrai+SnW
+   +jaZyJo+qnr0xLIfDqXAjpuJzEg4W2CHtgo8AHtjWE0nzhLv8hhFIAK6G
+   fQxoJzNpVXgr2NGmwMtkfLmJC6J6KSw7QJt1tqKgfJ0G/S0iIliWhlQkX
+   rD3CXyf8MMiCgL76M9nz/oqiZW0YhzWeNVYKm3nR9m9+dQb0VV8aPaep0
+   sqThTR7WOuumdbYhuRETKhqWt00sbMygQyp5cDQMGKHejTNur7bHACDCm
+   D8b6yxIkr9vJTfJcE41BmDUFo6aReHfXNrdtxY9oArn5WL2iyIcwlVz1W
+   Q==;
+X-CSE-ConnectionGUID: b1mJn7puTIqmbALvG2tZhA==
+X-CSE-MsgGUID: fNu2cwoKSImoMkSkF5XE8A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="25058748"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="25058748"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 10:13:09 -0700
+X-CSE-ConnectionGUID: YvT/tSvUSe2R+yQRAF8VxA==
+X-CSE-MsgGUID: eiA5oN3tS7aoaA6Umgebjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="18773748"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 10:13:08 -0700
+Date: Thu, 4 Apr 2024 10:17:35 -0700
+From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To: Robert Hoo <robert.hoo.linux@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
+ Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Thomas Gleixner
+ <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
+ kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>, Joerg Roedel
+ <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov
+ <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, Paul Luse
+ <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>, Jens
+ Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>, "Tian, Kevin"
+ <kevin.tian@intel.com>, maz@kernel.org, seanjc@google.com, Robin Murphy
+ <robin.murphy@arm.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 05/15] x86/irq: Reserve a per CPU IDT vector for posted
+ MSIs
+Message-ID: <20240404101735.402feec8@jacob-builder>
+In-Reply-To: <9734e080-96e4-4119-8ae6-28abb7877a3c@gmail.com>
+References: <20240126234237.547278-1-jacob.jun.pan@linux.intel.com>
+	<20240126234237.547278-6-jacob.jun.pan@linux.intel.com>
+	<9734e080-96e4-4119-8ae6-28abb7877a3c@gmail.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240404171726.2302435-1-lokeshgidra@google.com>
-Subject: [PATCH] userfaultfd: change src_folio after ensuring it's unpinned in UFFDIO_MOVE
-From: Lokesh Gidra <lokeshgidra@google.com>
-To: akpm@linux-foundation.org
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, surenb@google.com, 
-	kernel-team@android.com, aarcange@redhat.com, peterx@redhat.com, 
-	david@redhat.com, zhengqi.arch@bytedance.com, kaleshsingh@google.com, 
-	ngeoffray@google.com, Lokesh Gidra <lokeshgidra@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Commit d7a08838ab74 ("mm: userfaultfd: fix unexpected change to src_folio
-when UFFDIO_MOVE fails") moved the src_folio->{mapping, index} changing
-to after clearing the page-table and ensuring that it's not pinned. This
-avoids failure of swapout+migration and possibly memory corruption.
+Hi Robert,
 
-However, the commit missed fixing it in the huge-page case.
+On Thu, 4 Apr 2024 21:38:34 +0800, Robert Hoo <robert.hoo.linux@gmail.com>
+wrote:
 
-Fixes: adef440691ba ("userfaultfd: UFFDIO_MOVE uABI")
-Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
----
- mm/huge_memory.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> On 1/27/2024 7:42 AM, Jacob Pan wrote:
+> > When posted MSI is enabled, all device MSIs are multiplexed into a
+> > single notification vector. MSI handlers will be de-multiplexed at
+> > run-time by system software without IDT delivery.
+> > 
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---
+> >   arch/x86/include/asm/irq_vectors.h | 9 ++++++++-
+> >   1 file changed, 8 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/include/asm/irq_vectors.h
+> > b/arch/x86/include/asm/irq_vectors.h index 3a19904c2db6..08329bef5b1d
+> > 100644 --- a/arch/x86/include/asm/irq_vectors.h
+> > +++ b/arch/x86/include/asm/irq_vectors.h
+> > @@ -99,9 +99,16 @@
+> >   
+> >   #define LOCAL_TIMER_VECTOR		0xec
+> >   
+> > +/*
+> > + * Posted interrupt notification vector for all device MSIs delivered
+> > to
+> > + * the host kernel.
+> > + */
+> > +#define POSTED_MSI_NOTIFICATION_VECTOR	0xeb
+> >   #define NR_VECTORS			 256
+> >   
+> > -#ifdef CONFIG_X86_LOCAL_APIC
+> > +#ifdef X86_POSTED_MSI  
+> 
+> X86_POSTED_MSI --> CONFIG_X86_POSTED_MSI?
+Indeed, thanks for catching that!
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 9859aa4f7553..89f58c7603b2 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2259,9 +2259,6 @@ int move_pages_huge_pmd(struct mm_struct *mm, pmd_t *dst_pmd, pmd_t *src_pmd, pm
- 			goto unlock_ptls;
- 		}
- 
--		folio_move_anon_rmap(src_folio, dst_vma);
--		WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, dst_addr));
--
- 		src_pmdval = pmdp_huge_clear_flush(src_vma, src_addr, src_pmd);
- 		/* Folio got pinned from under us. Put it back and fail the move. */
- 		if (folio_maybe_dma_pinned(src_folio)) {
-@@ -2270,6 +2267,9 @@ int move_pages_huge_pmd(struct mm_struct *mm, pmd_t *dst_pmd, pmd_t *src_pmd, pm
- 			goto unlock_ptls;
- 		}
- 
-+		folio_move_anon_rmap(src_folio, dst_vma);
-+		WRITE_ONCE(src_folio->index, linear_page_index(dst_vma, dst_addr));
-+
- 		_dst_pmd = mk_huge_pmd(&src_folio->page, dst_vma->vm_page_prot);
- 		/* Follow mremap() behavior and treat the entry dirty after the move */
- 		_dst_pmd = pmd_mkwrite(pmd_mkdirty(_dst_pmd), dst_vma);
--- 
-2.44.0.478.gd926399ef9-goog
+> > +#define FIRST_SYSTEM_VECTOR
+> > POSTED_MSI_NOTIFICATION_VECTOR +#elif defined(CONFIG_X86_LOCAL_APIC)
+> >   #define FIRST_SYSTEM_VECTOR		LOCAL_TIMER_VECTOR
+> >   #else
+> >   #define FIRST_SYSTEM_VECTOR		NR_VECTORS  
+> 
 
+
+Thanks,
+
+Jacob
 
