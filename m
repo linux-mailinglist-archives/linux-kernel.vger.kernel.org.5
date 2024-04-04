@@ -1,160 +1,179 @@
-Return-Path: <linux-kernel+bounces-131363-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131364-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1CED8986BF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:03:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE4BA8986C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:04:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87D8028F80A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:03:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 754E228FAA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5712584FDF;
-	Thu,  4 Apr 2024 12:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43ACD85269;
+	Thu,  4 Apr 2024 12:04:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="0dsmgDBu";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SyMu+MEF"
-Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zpaaywsu"
+Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A9C83CDE
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:03:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C257583A09
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712232218; cv=none; b=ttzZ441hw8/49XxZd18d8hEMGfWJVqFgbvAGe7pGWtnAVdzZ00mTFH1Ocm6HnKkBwJfZ8qVW3eFbrog8Nb//LEgRIZ1ju08YGfqtS9VYBTT969lx2ySYblZgBu9wyHoXirrPlXjVCqlYZ0PBY4Jp17AB+RdHJcs+tz3DDQhmk9Y=
+	t=1712232257; cv=none; b=hPK+eyc+9BniPws/jWOi1agh+7gh5OEeKMp3P0ZgHSPmn85nK0E6GduJxDWRSSPtbNwSU0F6mm5hvxDmdIzzFkRcJeyBaZQHqxIbWt+I95eMuNYRU6llg6G8BlOjzwyjdc1j4lTY9eGZqPFrlqlPCD/5/66EfV4ezVVl0ZIhNRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712232218; c=relaxed/simple;
-	bh=KsgXs3wD5VmOAeTmkeoRt2QldH7cpRU7zdP1IF6V1ao=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hf/TxfipgZwMXXd1di1+5bc+slC1Ou+yaRP6DvTyBH9SpUpER4bA079Keju/J14jNQIROl9XEgSaczcYj7sqZ+QgWPm5MlQFnSYEzKs5wvIbKO2cyal4NzPc9ItlUlPjP8HNzmH320mfzkUIDt0DgmVpb1Yg1an7rMLDNxyeV9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=0dsmgDBu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SyMu+MEF; arc=none smtp.client-ip=64.147.123.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfout.west.internal (Postfix) with ESMTP id DC1DD1C00121;
-	Thu,  4 Apr 2024 08:03:34 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 04 Apr 2024 08:03:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
-	 t=1712232214; x=1712318614; bh=88x9mxGPrlrm2/bVzjR/yAKPi5qnyN26
-	p02qH751umI=; b=0dsmgDBuPnZAu/TkkrqdMUouB9Gi9muvjgwr6IftDzfPCFJ8
-	DRoNQQcAd4nIH7qFXXQpDmhs/6VkwXOYXQV6UNI2QT2cNjno5gInKAUd9qBL8lgR
-	95ri9f8CSwCUq1PO9TJ1aMQaqZIqdCDcDNuoqS8DVVsz9rF8oYAKt6g8MdVlgxAh
-	Es8yvwfFwQMWs9KBLKLhPz9SySKU3q2E4uRwyAb62F57ghgL+8X3dZlZlRHzf+y9
-	B9+GV8LY2714RFMbr94BpedLMMtAtDWpzurklJM8dDGry7NhmqHqRsxHq3O2Ik0q
-	5YcZISaot8wEkfYVkVwHQM4+G36p01YYazyTsg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712232214; x=
-	1712318614; bh=88x9mxGPrlrm2/bVzjR/yAKPi5qnyN26p02qH751umI=; b=S
-	yMu+MEFEI2BAvzdnyOebMqF5UVND4EH72vzZqaWIVeq2OEH6VRsWhIRv3sItlvJw
-	9aQV7cfzG48In81HNoxjYlIbqlfPU1TpKlv8kKhZGEYR+WDtrIQ62Eeb/El4o9Z0
-	lUupFO/YygMYh+Dvrj5V5VWHF4smrmLhX4FbVoaicb0/lkLVAeAsYx4WJE9ecLGc
-	BDoLEKzajCpvYr0/o63M57bJ3hkM/MNcf1ZQMWdmKWdcr2O1tgnHY8y9IdQMgY/y
-	2j1vJg8GPPAoh0FxHOyS9bwyTFhudFub3iKXuQ/CTVpil+D4I9j6fVi0HDiDA8QU
-	GfNOCLuaPwlFT/z2PwUSA==
-X-ME-Sender: <xms:FpcOZlJh_UeagPKv9qc3QoQVjZyHDt8Km0OfV9O0Xjphh_NfYxYRrA>
-    <xme:FpcOZhI44GdJJW0W_R_do5GgvOYiZ5hQOf8Bj9xKFyCqYlC7rv-1nQTCf11WrjM8x
-    vnS0dxErhDwZ2EaM2w>
-X-ME-Received: <xmr:FpcOZttj0PAn4XWDT488Q5dvR-v7N1eNZSE6uE0asKjGyTgOcTIDF_2IVATRGHClCe42s7VDN8lLg4ASyQMtoG5YbXgG0eepjlY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefkedggeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefvrghk
-    rghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhih
-    drjhhpqeenucggtffrrghtthgvrhhnpeefheffffduffehhfdvteeuvdfhkeekffdvgfej
-    heeujeevhfekudefteelfffgffenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhgih
-    hthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:FpcOZmayOP-a52bsc0igkZ24M3gN9dJ23VUPNuY9i8fdAZxhfouqNw>
-    <xmx:FpcOZsZdt8GZ6gIll1kgxu3LKFo0FyiHxM46Y4wdIDd5TwX3eGcZDA>
-    <xmx:FpcOZqBtweASGhlLeU5NvpdpvoZoeAVmhyzOf6i6nUgoVxepa3zrHQ>
-    <xmx:FpcOZqb-9rzkH60iNdMVhBQhJNiD83imMa8Zs0GpSuc9Vv2mJe2rKg>
-    <xmx:FpcOZhO_rcZr6ZqVekcAiq5tapf1WR6JfZyq7upAv8AX4drkG2mrY2WL>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 4 Apr 2024 08:03:32 -0400 (EDT)
-Date: Thu, 4 Apr 2024 21:03:30 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Allen Pais <apais@linux.microsoft.com>
-Cc: linux-kernel@vger.kernel.org, tj@kernel.org, keescook@chromium.org,
-	linux1394-devel@lists.sourceforge.net
-Subject: Re: [PATCH] firewire: Convert from tasklet to BH workqueue
-Message-ID: <20240404120330.GA303033@workstation.local>
-Mail-Followup-To: Allen Pais <apais@linux.microsoft.com>,
-	linux-kernel@vger.kernel.org, tj@kernel.org, keescook@chromium.org,
-	linux1394-devel@lists.sourceforge.net
-References: <20240403144558.13398-1-apais@linux.microsoft.com>
+	s=arc-20240116; t=1712232257; c=relaxed/simple;
+	bh=UScraqXPPVJ0cjYlAUkodB9M6d9/T5aTAQ5aSjNT6F0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KyFJPmWcHyecke1rk35SsF3VU0gx7MNzcqtPsJL3iLfnXa4edY/nmc3x1kZBaZFRO6CSEV070FkFuSglSBvik+qtFkxnNqi9EXKIknHXf2z3wMF6enxKwv19jgV0mU3SCgol5D9u2TG3n7tGACrx/5q+va1+09tMKnrJrpAVJzE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zpaaywsu; arc=none smtp.client-ip=209.85.167.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-516c97ddcc7so797044e87.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:04:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712232254; x=1712837054; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=m9cPHQQe1Hj9Ffz8OM+GePjteUbhs1Uu0DY8ScLn9tQ=;
+        b=zpaaywsumuLi3VFJf2xTDyGjAzfZCvMFltEwOvYSuE3lMk7YCXojzhZjCyJcAsCpbP
+         6f4BbjpxoLnzuvxQGVxxADfu9KLIrlBkw9hA90+ECbtllzkN1hvyj3QAt3h+TdAflpJA
+         Fn65B671RFFMTLOprzc0sKhOvfCe6r+tC6fkWs9RNUrQFcAl1APcPboMqBm8haKnfhpa
+         FB9jQFqtGmMDmT11OdhQT/D4x6OAMCJzb8FGzIU6WvNROFgNSf0g7dJr8BLC0oRPgn1b
+         Ognnnefsey1eJLQPXJj1iuSbB85p1BwNn4Cfo/YMn2Se0OL2BY1yUzqPZyTA9rs2uWKO
+         8BLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712232254; x=1712837054;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m9cPHQQe1Hj9Ffz8OM+GePjteUbhs1Uu0DY8ScLn9tQ=;
+        b=iKNSsBH5Fzot+JN8rYvAi9bGj8OU6c/bJd8NL5NGE9uIsnuReQ/F1cA2r3TyM+6LTY
+         FbknojjRTIz7jCkF5ubI6Epwr0P1kRgTaULaxxszseFBogHI6shlOeUeQjplfBwpW/D5
+         aC7MMWzB2UNdWZoEJcrY63sa8cW4mZ12uDumPQPbb8ovCF4hBSdOgFQEIW7rzpyKhA/l
+         D7zGHKTneaPGC+yWEfnleq2+HjvalhRUTVLeDocrRBH6dLV+8k9FbfHa+5/cEhM3D40r
+         ihudLOOdGWTSx0Iq81V6VMuQ9cdMLJuNoHFSt+WPCxNmKqSl6YfLptC3Fzh3iEDYhAbP
+         r5nw==
+X-Forwarded-Encrypted: i=1; AJvYcCVywFJ5L925Cy+yegk6L0JEwqTJ8dxQbFwpNmE/ThFgrS5Cb94CadWrtU276iIuEVo4NAdV+bX/cK9B9Q9GV/PjppWVWkungC8qNkH+
+X-Gm-Message-State: AOJu0YxcWUpToW5XKDtMd8+ft2n6RVjuXaxqWXby5VHuyimXow3IU9E3
+	6HIJpAMs2QPANkEbSMMdTRtcf5URV+j4FdozS+/zOrpU3di4EN9PNRmBcXdZ+cc=
+X-Google-Smtp-Source: AGHT+IFcCvhoAGbUsaHwpZRA4Qosof6fz75O3swKqNETnkXCzHGAatydq/YMcmYrcoCpZ2LVIWrLYw==
+X-Received: by 2002:a05:6512:748:b0:513:bf92:79ad with SMTP id c8-20020a056512074800b00513bf9279admr1633910lfs.45.1712232253993;
+        Thu, 04 Apr 2024 05:04:13 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id ew12-20020a056402538c00b0056a033fa007sm9068238edb.64.2024.04.04.05.04.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 05:04:13 -0700 (PDT)
+Message-ID: <8f37211a-57ed-48ab-8de8-cd5a0d4c6609@linaro.org>
+Date: Thu, 4 Apr 2024 14:04:11 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240403144558.13398-1-apais@linux.microsoft.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] dt-bindings: mfd: Add ROHM BD71879
+To: Andreas Kemnade <andreas@kemnade.info>
+Cc: lee@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, mazziesaccount@gmail.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240402193515.513713-1-andreas@kemnade.info>
+ <20240402193515.513713-2-andreas@kemnade.info>
+ <6420ac43-f200-459c-8c38-7cd55c64a155@linaro.org>
+ <20240404123010.69454fda@aktux>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240404123010.69454fda@aktux>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi,
-
-Thanks for the patch. The replacement of tasklet with workqueue is one
-of my TODO list, and the change would be helpful.
-
-On Wed, Apr 03, 2024 at 02:45:58PM +0000, Allen Pais wrote:
-> The only generic interface to execute asynchronously in the BH context is
-> tasklet; however, it's marked deprecated and has some design flaws. To
-> replace tasklets, BH workqueue support was recently added. A BH workqueue
-> behaves similarly to regular workqueues except that the queued work items
-> are executed in the BH context.
+On 04/04/2024 12:30, Andreas Kemnade wrote:
+> On Thu, 4 Apr 2024 08:59:54 +0200
+> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 > 
-> This patch converts drivers/firewire/* from tasklet to BH workqueue.
+>> On 02/04/2024 21:35, Andreas Kemnade wrote:
+>>> As this chip was seen in several devices in the wild, add it.
+>>>
+>>> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+>>> Suggested-by: Matti Vaittinen <mazziesaccount@gmail.com>
+>>> ---
+>>>  Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml | 4 +++-
+>>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+>>> index 0b62f854bf6b..e4df09e8961c 100644
+>>> --- a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+>>> +++ b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+>>> @@ -17,7 +17,9 @@ description: |
+>>>  
+>>>  properties:
+>>>    compatible:
+>>> -    const: rohm,bd71828
+>>> +    enum:
+>>> +      - rohm,bd71828
+>>> +      - rohm,bd71879  
+>>
+>> In your second commit you claim they are compatible, so why they are not
+>> marked as such?
+>>
+> so you mean allowing
 > 
-> Based on the work done by Tejun Heo <tj@kernel.org>
-> Branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/wq.git disable_work-v1
-> 
-> Changes are tested by: @recallmenot
-> (https://github.com/allenpais/for-6.9-bh-conversions/issues/1)
-> 
-> Signed-off-by: Allen Pais <allen.lkml@gmail.com>
-> ---
->  drivers/firewire/ohci.c | 54 ++++++++++++++++++++---------------------
->  1 file changed, 26 insertions(+), 28 deletions(-)
+> compatible = "rohm,bd71828"
+> and
+> compatible = "rohm,bd71879", "rohm,bd71828"
 
-However, the changes look to be too early, since some kernel APIs
-are referred from the change but locate just in Heo's tree. Thus,
-any application of the patch brings build failure, like:
+Yes. If there are reasons against, please briefly mention them in commit
+msg.
 
-```
-drivers/firewire/ohci.c: In function ‘at_context_flush’:
-drivers/firewire/ohci.c:1463:9: error: implicit declaration of function ‘disable_work_sync’; did you mean ‘disable_irq_nosync’? [-Werror=implicit-function-declaration]
- 1463 |         disable_work_sync(&ctx->work);
-      |         ^~~~~~~~~~~~~~~~~
-      |         disable_irq_nosync
-drivers/firewire/ohci.c:1468:9: error: implicit declaration of function ‘enable_and_queue_work’ [-Werror=implicit-function-declaration]
- 1468 |         enable_and_queue_work(system_bh_wq, &ctx->work);
-      |         ^~~~~~~~~~~~~~~~~~~~~
-```
+Best regards,
+Krzysztof
 
-In my humble opinion, the change proposal should be posted after merging
-Heo's work, to prevent developers and users from being puzzled.
-Furthermore, any kind of report for the performance test is preferable.
-
-Especially, in FireWire subsystem, 1394 OHCI IT/IR contexts can be
-processed by both tasklet and process (e.g. ioctl), thus the exclusive
-control of workqueue for the contexts is important between them. I wish
-it is done successfully by the new pair of enabling/disabling workqueue
-API, and need more information about it.
-
-
-Thanks
-
-Takashi Sakamoto
 
