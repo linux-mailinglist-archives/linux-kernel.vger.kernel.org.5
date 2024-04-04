@@ -1,105 +1,103 @@
-Return-Path: <linux-kernel+bounces-131714-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131715-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D963B898B00
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:23:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14C90898B01
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:23:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14DD81C223E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:23:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BEEA91F239D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:23:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2832A12AADB;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A19D812AAEF;
 	Thu,  4 Apr 2024 15:22:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H/AzJUXA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="1/8yhpIY"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A4776033;
-	Thu,  4 Apr 2024 15:22:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54DA612AACA
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 15:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712244178; cv=none; b=t+tImmtxCq5Nr+CZNp+uzHupo2YNCchV2i5/WKVaN7Ivatw5XWh1VKLMoSTswKQbbE+QjlzW9ml+0DqnQ4SjlLrbbnGTq7/IrVsqz3DYZmrUkXNwfW08bOdEwovtImOe2ffHfJFt+M6Z4k9yBimgLXfGxs0MWA6tDLENWsYkPiE=
+	t=1712244178; cv=none; b=Hc6HizHzkI84Inv5sHIIx1xGQCHhKkK+cV6V/NzxwTVuAjXxcDo29whdR9G+HYwkfeVMItnb7X6orDeLGvTDDeZtDBrKcvR0AwQIwCi5VrLnHqpDaNU8F3caaM0w9K6AizI3eXzat/9j2AtyBA56jEBxdLjQ/KFGLX3MD30HACU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712244178; c=relaxed/simple;
-	bh=mf7S4t8iN+Lv/e8q7/bkrS0IzTXYMUaXDsSXcEfbLh0=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=RmGbynjHsAxVrz0pYgTnOCKbIr0jC4ZkjwXvpIbxeI+3jr6FyN6lvIZ08UzfWcZpRwrgzLRnWvqYA82ir9uU+snh7ynMwPlTWQHw5V8z9+DNZ3gpWnpw7Xnv59BlOwq0pkxNjopUTo5fR7wNZ4rZFTGfohkRDaFppnEurz78Azs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H/AzJUXA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9519EC43390;
-	Thu,  4 Apr 2024 15:22:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712244177;
-	bh=mf7S4t8iN+Lv/e8q7/bkrS0IzTXYMUaXDsSXcEfbLh0=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=H/AzJUXAZd6iOlzm2MPTHsp7gWlSIptMAhm/LvIQUUOeHA+K889jlH3qbBbx4PEDC
-	 hWc3gBlf3yX9hszH8ar157IubNqzUabMuvFV5BLeeyV6qwd7E1WJNUDPzOycrL8yz/
-	 qguqZyYKTLZxA2OO93RJBjQEJZRh2uj8b2tiyXja3cciyv47Bj7/1rLHyw73ThO2i8
-	 LOY7y8jegD6ChjuCqZ2QMuZc+DRAb5JW5kk/uksuO0hYUPhDQ3qCDQf4ydq+wnSbL2
-	 HxVcBNrvYS+HaTBNhgXjfEyS9dT7m1LeHn0H3XZSF1mzinbXl6dFrSBMD5Zqk8URYn
-	 1s2njmpyk0d+w==
+	bh=EMwT4Y2inuVPzK35wOcuimN88Lo0Bzf/ESD4NioLRnw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Gnwtiup4HrrFNwqp0ZgiJrk8w6whgoUXz2gIOo5uPUrpcG5umPA4acLZcAO6netqMOO8NtQzYScCZJIxuUoRHg5IF8VNznxHflh4HI2onxLbF55Tfi18lgBWFFYSzxP/7YFHyd2fxw4xhB5GWgRQaTqG7IGzmFgn+4YJUtci62k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=1/8yhpIY; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712244175;
+	bh=EMwT4Y2inuVPzK35wOcuimN88Lo0Bzf/ESD4NioLRnw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=1/8yhpIYITyxW7arJHLQ6SLLqAevKgCLaeVHIKWnfYBV4KqGyJNm5GaojBpK5JyhZ
+	 qaLRWouh4TedmwYUw9tmlog5zvKnvG6zVpfi/XzBAtroqBLmTCUQWQ675y6owE1Eyo
+	 pFXkuLTRRmlkI/HVpiNJoJtGTdlIkmUiojGvvIXPQUDvjAmwg0EUCQPI/F18jDWMs6
+	 JD7sVdq4pLRwsHbseacSTp85MkPNuFZxQO0EI+6znI+iGSkaICzqD81HVlaDQ3mjzi
+	 uqu/HbFQdD910eBoMfEotInmsl559jso9jtD6mTQcUSljBwSaJo6iemgK1dtlcrMaU
+	 XrEnGyzRGwlDA==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: laura.nao)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2529E37813A4;
+	Thu,  4 Apr 2024 15:22:55 +0000 (UTC)
+From: Laura Nao <laura.nao@collabora.com>
+To: tglx@linutronix.de
+Cc: kernel@collabora.com,
+	laura.nao@collabora.com,
+	linux-kernel@vger.kernel.org,
+	regressions@leemhuis.info,
+	regressions@lists.linux.dev,
+	x86@kernel.org
+Subject: Re: [REGRESSION] mainline boot regression on AMD Stoney Ridge Chromebooks
+Date: Thu,  4 Apr 2024 17:23:17 +0200
+Message-Id: <20240404152317.464796-1-laura.nao@collabora.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <874jchb7na.ffs@tglx>
+References: <874jchb7na.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 04 Apr 2024 18:22:54 +0300
-Message-Id: <D0BFWIX9KZIQ.191P9DWKCSHSX@kernel.org>
-Cc: <linux-integrity@vger.kernel.org>, "Heiko Carstens" <hca@linux.ibm.com>,
- <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] char: tpm: handle HAS_IOPORT dependencies
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Arnd Bergmann" <arnd@kernel.org>, "Niklas Schnelle"
- <schnelle@linux.ibm.com>, "Peter Huewe" <peterhuewe@gmx.de>
-X-Mailer: aerc 0.17.0
-References: <20240404105840.3396821-1-schnelle@linux.ibm.com>
- <20240404105840.3396821-2-schnelle@linux.ibm.com>
- <95a63afe-ccd7-4551-86af-00b7fb0d8ff9@app.fastmail.com>
-In-Reply-To: <95a63afe-ccd7-4551-86af-00b7fb0d8ff9@app.fastmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Thu Apr 4, 2024 at 2:17 PM EEST, Arnd Bergmann wrote:
-> On Thu, Apr 4, 2024, at 12:58, Niklas Schnelle wrote:
-> > diff --git a/drivers/char/tpm/tpm_infineon.c b/drivers/char/tpm/tpm_inf=
-ineon.c
-> > index 9c924a1440a9..99c6e565ec8d 100644
-> > --- a/drivers/char/tpm/tpm_infineon.c
-> > +++ b/drivers/char/tpm/tpm_infineon.c
-> > @@ -26,7 +26,9 @@
-> >  #define	TPM_MAX_TRIES		5000
-> >  #define	TPM_INFINEON_DEV_VEN_VALUE	0x15D1
-> >=20
-> > +#ifdef CONFIG_HAS_IOPORT
-> >  #define TPM_INF_IO_PORT		0x0
-> > +#endif
-> >  #define TPM_INF_IO_MEM		0x1
->
-> I think hiding this definition in this version of a patch
-> results in a build failure because of the assignment that
-> you are not stubbing out:
->
->         /* read IO-ports through PnP */
->         if (pnp_port_valid(dev, 0) && pnp_port_valid(dev, 1) &&
->             !(pnp_port_flags(dev, 0) & IORESOURCE_DISABLED)) {
->                 tpm_dev.iotype =3D TPM_INF_IO_PORT;
->
-> I don't know what changed since the earlier versions I tested,
-> or if I just missed it, but I think you either have to remove
-> the #ifdef above or add another one in tpm_inf_pnp_probe().
->
->     Arnd
+Hi Thomas,
 
-Thanks for the remark. I placed the current patch to my master branch
-which is not too critical ('next' is mirrored to linux-next) if anyone
-wants to try it out:
+On 4/4/24 15:05, Thomas Gleixner wrote:
+> Laura!
+> 
+> On Thu, Apr 04 2024 at 15:01, Thomas Gleixner wrote:
+>> On Thu, Apr 04 2024 at 10:24, Linux regression tracking wrote:
+>>> On 28.03.24 12:50, Laura Nao wrote:
+>>>>>
+>>>>> I ran a manual bisection to track down the root cause for this
+>>>>> regression and landed on the c749ce
+>>>>> commit from this series:
+>>>>> https://lore.kernel.org/all/20240212153625.145745053@linutronix.de/
+>>>
+>>> FWIW, that commit is c749ce393b8fe9 ("x86/cpu: Use common topology code
+>>> for AMD") from tglx that was part of the "x86/cpu: Rework topology
+>>> evaluation" series.
+> 
+> Can you please provide a boot dmesg from a 6.8 kernel and the output of
+> 'cpuid' ?
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
+Sure, here's the output from an Acer Chromebook Spin 311 R721T device:
+- kernel log: https://pastebin.com/raw/NNbeJupE
+- cpuid output: https://pastebin.com/raw/ThmGqnqG
 
-I can repeal and replace it with a newer one later on.
+This is with kernel v6.8 (e8f897f4afef0031fe618a8e94127a0934896aba), let
+me know if you need the output from a different revision.
 
-BR, Jarkko
+Thank you!
+
+Laura
 
