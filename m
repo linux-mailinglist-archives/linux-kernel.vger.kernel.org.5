@@ -1,120 +1,105 @@
-Return-Path: <linux-kernel+bounces-131713-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C102898AFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:23:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D963B898B00
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:23:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B6EF1C2788D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:23:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14DD81C223E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:23:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4371292CE;
-	Thu,  4 Apr 2024 15:22:53 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2832A12AADB;
+	Thu,  4 Apr 2024 15:22:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H/AzJUXA"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9829354905;
-	Thu,  4 Apr 2024 15:22:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A4776033;
+	Thu,  4 Apr 2024 15:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712244173; cv=none; b=moDvLx796axkDjFTkt7ac8CYQpzl5hScZPwCztOIVnN8TNgJ7rYltD5JeNGd3TQvUkG6CpL0ATdFYzIOXKjHN1j9EfAsd8Q5cZYUPGQQlr4Fv3j8RhOanF5l7q3UoVFqmKh/13XOJCLXn1qfkx8kKjKftI0sArRC4TPtqrYGLwk=
+	t=1712244178; cv=none; b=t+tImmtxCq5Nr+CZNp+uzHupo2YNCchV2i5/WKVaN7Ivatw5XWh1VKLMoSTswKQbbE+QjlzW9ml+0DqnQ4SjlLrbbnGTq7/IrVsqz3DYZmrUkXNwfW08bOdEwovtImOe2ffHfJFt+M6Z4k9yBimgLXfGxs0MWA6tDLENWsYkPiE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712244173; c=relaxed/simple;
-	bh=pbUrWoLTt60RMl4SBLLdVoc3LE5DMHxvXjAxlhr3pLQ=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Efle/ojEaYo0WdJgyB2mwcRuy8FTXZ4d/eWXfqft5omapH13LZ4hV1nIXHSCUbPErRDKIFuZ0q9+62H+ujzCvSllKsKBfNqllaqBj+iNq6DDX1V46wGxOvIyEr3vz3gYWxJUEWyDMuis7mOk4SebX8iDd2BwFd/DSnHaVXUAMvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9QH34qBCz6J7YY;
-	Thu,  4 Apr 2024 23:18:07 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 028B5140A87;
-	Thu,  4 Apr 2024 23:22:47 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
- 2024 16:22:46 +0100
-Date: Thu, 4 Apr 2024 16:22:45 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 13/26] cxl/mem: Configure dynamic capacity interrupts
-Message-ID: <20240404162245.000032f3@Huawei.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-13-b7b00d623625@intel.com>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-	<20240324-dcd-type2-upstream-v1-13-b7b00d623625@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712244178; c=relaxed/simple;
+	bh=mf7S4t8iN+Lv/e8q7/bkrS0IzTXYMUaXDsSXcEfbLh0=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=RmGbynjHsAxVrz0pYgTnOCKbIr0jC4ZkjwXvpIbxeI+3jr6FyN6lvIZ08UzfWcZpRwrgzLRnWvqYA82ir9uU+snh7ynMwPlTWQHw5V8z9+DNZ3gpWnpw7Xnv59BlOwq0pkxNjopUTo5fR7wNZ4rZFTGfohkRDaFppnEurz78Azs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H/AzJUXA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9519EC43390;
+	Thu,  4 Apr 2024 15:22:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712244177;
+	bh=mf7S4t8iN+Lv/e8q7/bkrS0IzTXYMUaXDsSXcEfbLh0=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=H/AzJUXAZd6iOlzm2MPTHsp7gWlSIptMAhm/LvIQUUOeHA+K889jlH3qbBbx4PEDC
+	 hWc3gBlf3yX9hszH8ar157IubNqzUabMuvFV5BLeeyV6qwd7E1WJNUDPzOycrL8yz/
+	 qguqZyYKTLZxA2OO93RJBjQEJZRh2uj8b2tiyXja3cciyv47Bj7/1rLHyw73ThO2i8
+	 LOY7y8jegD6ChjuCqZ2QMuZc+DRAb5JW5kk/uksuO0hYUPhDQ3qCDQf4ydq+wnSbL2
+	 HxVcBNrvYS+HaTBNhgXjfEyS9dT7m1LeHn0H3XZSF1mzinbXl6dFrSBMD5Zqk8URYn
+	 1s2njmpyk0d+w==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500002.china.huawei.com (7.191.160.78) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 04 Apr 2024 18:22:54 +0300
+Message-Id: <D0BFWIX9KZIQ.191P9DWKCSHSX@kernel.org>
+Cc: <linux-integrity@vger.kernel.org>, "Heiko Carstens" <hca@linux.ibm.com>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] char: tpm: handle HAS_IOPORT dependencies
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Arnd Bergmann" <arnd@kernel.org>, "Niklas Schnelle"
+ <schnelle@linux.ibm.com>, "Peter Huewe" <peterhuewe@gmx.de>
+X-Mailer: aerc 0.17.0
+References: <20240404105840.3396821-1-schnelle@linux.ibm.com>
+ <20240404105840.3396821-2-schnelle@linux.ibm.com>
+ <95a63afe-ccd7-4551-86af-00b7fb0d8ff9@app.fastmail.com>
+In-Reply-To: <95a63afe-ccd7-4551-86af-00b7fb0d8ff9@app.fastmail.com>
 
-On Sun, 24 Mar 2024 16:18:16 -0700
-ira.weiny@intel.com wrote:
+On Thu Apr 4, 2024 at 2:17 PM EEST, Arnd Bergmann wrote:
+> On Thu, Apr 4, 2024, at 12:58, Niklas Schnelle wrote:
+> > diff --git a/drivers/char/tpm/tpm_infineon.c b/drivers/char/tpm/tpm_inf=
+ineon.c
+> > index 9c924a1440a9..99c6e565ec8d 100644
+> > --- a/drivers/char/tpm/tpm_infineon.c
+> > +++ b/drivers/char/tpm/tpm_infineon.c
+> > @@ -26,7 +26,9 @@
+> >  #define	TPM_MAX_TRIES		5000
+> >  #define	TPM_INFINEON_DEV_VEN_VALUE	0x15D1
+> >=20
+> > +#ifdef CONFIG_HAS_IOPORT
+> >  #define TPM_INF_IO_PORT		0x0
+> > +#endif
+> >  #define TPM_INF_IO_MEM		0x1
+>
+> I think hiding this definition in this version of a patch
+> results in a build failure because of the assignment that
+> you are not stubbing out:
+>
+>         /* read IO-ports through PnP */
+>         if (pnp_port_valid(dev, 0) && pnp_port_valid(dev, 1) &&
+>             !(pnp_port_flags(dev, 0) & IORESOURCE_DISABLED)) {
+>                 tpm_dev.iotype =3D TPM_INF_IO_PORT;
+>
+> I don't know what changed since the earlier versions I tested,
+> or if I just missed it, but I think you either have to remove
+> the #ifdef above or add another one in tpm_inf_pnp_probe().
+>
+>     Arnd
 
-> From: Navneet Singh <navneet.singh@intel.com>
-> 
-> Dynamic Capacity Devices (DCD) support extent change notifications
-> through the event log mechanism.  The interrupt mailbox commands were
-> extended in CXL 3.1 to support these notifications.
-> 
-> Firmware can't configure DCD events to be FW controlled but can retain
-> control of memory events.  Split irq configuration of memory events and
-> DCD events to allow for FW control of memory events while DCD is host
-> controlled.
-> 
-> Configure DCD event log interrupts on devices supporting dynamic
-> capacity.  Disable DCD if interrupts are not supported.
-> 
-> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
-> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+Thanks for the remark. I placed the current patch to my master branch
+which is not too critical ('next' is mirrored to linux-next) if anyone
+wants to try it out:
 
-Trivial comment inline and Fan's suggestion on the debug print seems sensible
-to me. Either way
+git://git.kernel.org/pub/scm/linux/kernel/git/jarkko/linux-tpmdd.git
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+I can repeal and replace it with a newer one later on.
 
->  /**
->   * cxl_dev_dynamic_capacity_identify() - Reads the dynamic capacity
-> diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
-> index 15d418b3bc9b..d585f5fdd3ae 100644
-> --- a/drivers/cxl/cxl.h
-> +++ b/drivers/cxl/cxl.h
-> @@ -164,11 +164,13 @@ static inline int ways_to_eiw(unsigned int ways, u8 *eiw)
->  #define CXLDEV_EVENT_STATUS_WARN		BIT(1)
->  #define CXLDEV_EVENT_STATUS_FAIL		BIT(2)
->  #define CXLDEV_EVENT_STATUS_FATAL		BIT(3)
-> +#define CXLDEV_EVENT_STATUS_DCD			BIT(4)
->  
->  #define CXLDEV_EVENT_STATUS_ALL (CXLDEV_EVENT_STATUS_INFO |	\
->  				 CXLDEV_EVENT_STATUS_WARN |	\
->  				 CXLDEV_EVENT_STATUS_FAIL |	\
-> -				 CXLDEV_EVENT_STATUS_FATAL)
-> +				 CXLDEV_EVENT_STATUS_FATAL|	\
-
-Space after L
-You could realign the others but I wouldn't bother.
-
-
-> +				 CXLDEV_EVENT_STATUS_DCD)
-
-
-
+BR, Jarkko
 
