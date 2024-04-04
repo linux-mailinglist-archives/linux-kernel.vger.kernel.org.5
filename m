@@ -1,85 +1,92 @@
-Return-Path: <linux-kernel+bounces-131798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131802-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4065E898BE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CC9C898BEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:15:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CFEC3B26C51
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:14:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 58AEEB29266
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:15:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9043F12BEAB;
-	Thu,  4 Apr 2024 16:13:55 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A225E12BEBC;
+	Thu,  4 Apr 2024 16:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="X0iUeh8p";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="n9Ky/D2N"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FFCA1BC46;
-	Thu,  4 Apr 2024 16:13:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 786AA1BC46
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:14:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712247235; cv=none; b=NnyU0qL2jeLw3c1NMiOdFiqq2H4+AOzcC3mjP6sc3FtgxggkEi3XdIG1Z91zdAsz7BA1yT39WdHp3ixxoneYZG84J+UTCxMdLSCMp8MCAXYvc1NhFDgpL6mqeLfkoPJGCubTtiM9GfgpfvPty4P4ZG95kBq5KBr85WV8hURc6Jw=
+	t=1712247274; cv=none; b=oYzTujkyNBlBcwQNEq2YlzInvOMMFDvinPfVW/DS01pyOI0jc0CjzudbVw3LdS/2n/OonPrIsYbb237AFm1n4ClX31jKiTc9/gfF9rlD/53Fq3MJ8DW8dHpegiDtGJzDnYeYFzxIXCswNHziS7NDER0CYwVWEqI09NZKFZOKiCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712247235; c=relaxed/simple;
-	bh=smLC32iJuY0yye4WDyksXPgIINq4NnqEPI4ivboWM28=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CzRHX+MjtEhfTvtLrsHb8qrpM28NZ3RDhq3C4iXaywAYj+h1xUHyerEz3CvYXKk8zwaHVecD9eeAvewlBFvptmNNpIr7GSK4scAckWR7N/7JKNRStl6xsu5XnboszZhi7GH2ACjahW8NmLqP1mwfVEj0+FeqH635Ss7IBtU4l1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9RPy0hFNz67kr9;
-	Fri,  5 Apr 2024 00:09:10 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 74C58141546;
-	Fri,  5 Apr 2024 00:13:49 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
- 2024 17:13:48 +0100
-Date: Thu, 4 Apr 2024 17:13:48 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: <ira.weiny@intel.com>
-CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
- Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
-	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 14/26] cxl/region: Read existing extents on region
- creation
-Message-ID: <20240404171348.00001cd6@Huawei.com>
-In-Reply-To: <20240324-dcd-type2-upstream-v1-14-b7b00d623625@intel.com>
-References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
-	<20240324-dcd-type2-upstream-v1-14-b7b00d623625@intel.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712247274; c=relaxed/simple;
+	bh=zQIu0W+9tdYoBo5T+slKZD8LMHqeZZgVgPHuv1ZgG/0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=FA7Kbdd2yUOrN+3V+t5Y6erml5s+s1ggg1HDoyTHtwDc25B7AKS81lUdCc5SKW5OYdZV8knig3ll6plaTslDqtOejwarxxbsdyS1UdwviOma+cMd3EPeaCV++qM3CtMbrok1X8pRQj7DC6mAZ9KXxObFeJOeqL10TRerDTJzMJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=X0iUeh8p; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=n9Ky/D2N; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712247270;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OGS/44FU5GIZLtaLg0w/7PHFNSThm+pNn7jES6aXJuY=;
+	b=X0iUeh8pWpCS8duV5Y428mGvbebbynLG7B3UpxtjFBZTSPubH13lV4alGWThaypltwE6FC
+	jujEHtP7JKFgnh7qL8xvm3oo0jhTD/1WbuHAR+fprlo/ShpHjWaKXIukXY+dS//bkq4ydK
+	62T7oY84f61D+KWyAdoWcR/gL2nbAWDXON5SEVID5TRwgYgEt2WHKABGrsrh1etaYDVCTR
+	eDoUOWp6vKdcn1N7WKPuY451UoUFVWD5S1Zlb8rM6pLodiLIOT3LkH1yvrxH7aIKS5eZqW
+	f1BYT8UA/UKlnnSdfCFNNeKN3vPfmTsp0KenXCXzWyZ170O+J/DyN0KIpeplyg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712247270;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OGS/44FU5GIZLtaLg0w/7PHFNSThm+pNn7jES6aXJuY=;
+	b=n9Ky/D2Ntwy8PG7Vns5taE92H5P268YAEDjBMMcaf9d+MuAbMwqmd3i7oJwXlyo34U9c3b
+	SI0NkQKVyJdXIYAQ==
+To: Laura Nao <laura.nao@collabora.com>
+Cc: kernel@collabora.com, laura.nao@collabora.com,
+ linux-kernel@vger.kernel.org, regressions@leemhuis.info,
+ regressions@lists.linux.dev, x86@kernel.org
+Subject: Re: [REGRESSION] mainline boot regression on AMD Stoney Ridge
+ Chromebooks
+In-Reply-To: <20240404152317.464796-1-laura.nao@collabora.com>
+References: <874jchb7na.ffs@tglx>
+ <20240404152317.464796-1-laura.nao@collabora.com>
+Date: Thu, 04 Apr 2024 18:14:30 +0200
+Message-ID: <87sf019kbd.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100004.china.huawei.com (7.191.162.219) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain
 
+Laura!
 
-> +static bool cxl_dc_extent_in_ed(struct cxl_endpoint_decoder *cxled,
-> +				struct cxl_dc_extent *extent)
-> +{
-> +	uint64_t start = le64_to_cpu(extent->start_dpa);
-> +	uint64_t length = le64_to_cpu(extent->length);
-> +	struct range ext_range = (struct range){
-space ) {
+On Thu, Apr 04 2024 at 17:23, Laura Nao wrote:
+> On 4/4/24 15:05, Thomas Gleixner wrote:
+>> Can you please provide a boot dmesg from a 6.8 kernel and the output of
+>> 'cpuid' ?
+>
+> Sure, here's the output from an Acer Chromebook Spin 311 R721T device:
+> - kernel log: https://pastebin.com/raw/NNbeJupE
+> - cpuid output: https://pastebin.com/raw/ThmGqnqG
 
-> +		.start = start,
-> +		.end = start + length - 1,
-> +	};
-> +	struct range ed_range = (struct range) {
-> +		.start = cxled->dpa_res->start,
-> +		.end = cxled->dpa_res->end,
-> +	};
+Thanks for the quick response.
+
+Can you please provide 'cpuid -r' output too as 'cpuid' does a few
+tweaks to the raw data and it's hard to match it back to the code.
+
+Thanks,
+
+        tglx
 
