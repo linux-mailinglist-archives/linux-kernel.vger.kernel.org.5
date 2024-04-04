@@ -1,239 +1,145 @@
-Return-Path: <linux-kernel+bounces-131777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131775-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03D34898BAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:57:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB0D8898BAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:57:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 237BD1C25B79
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:57:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D6F6292673
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71ECC1D531;
-	Thu,  4 Apr 2024 15:57:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56A6F12AAE1;
+	Thu,  4 Apr 2024 15:57:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IISVG3k9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="CcWtbQUt"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88DCF224DE
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 15:57:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A6B12B95;
+	Thu,  4 Apr 2024 15:57:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712246260; cv=none; b=VhSkfp85EJzFAhkmvlJoNnh7NC/6qfjflNz3molTbJ1kNtOdvnGXfZmw6Jm8yzqRjvTPeGTA3g7Lpclj4Q+IHjBPBj25y3sME7OqGNzrRWWucMjDlvT8wQikn3XBbvAhpdO+wJ+3/J1tF1wcBgoKfNOWSRvGek0CU1euVgVlSxY=
+	t=1712246223; cv=none; b=LlxuTrt0aCNQEzsRTtWLcRUq2O7xawfMLj82+HKEx4XwXKahy0TNrbUJ3WNuEzbwgiCBBBZn10ORBqy+DbEXqJOesej97FfL0DEKuu1uWvO9ILPBkrlO3kYfCgyE1FnLDlI0Fjv+c9CAMNtAUJMK2DQ3QVBZ15Rxs689Myh9voU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712246260; c=relaxed/simple;
-	bh=W+wU60ZPW3W9JIhL3CypslsBTwp7+UZfTV/ovpgWWJo=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=BkmdcyLk3jamhK8lKxofRmcxaAuX1JT/ap35r8M1/zdJGjt8dzO8jSKeCx4VMn1eOCeHdVzwAdsHnaySc8vydzOo0SZuc/+HK0nuhrYafpdatI6dxg2IYrLJQ1Vf9aaupIDj0sQPkAiCVhA8QZ05j9tvrFhDmQYuS8O3ntWZsro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IISVG3k9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D76E9C43394;
-	Thu,  4 Apr 2024 15:57:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712246260;
-	bh=W+wU60ZPW3W9JIhL3CypslsBTwp7+UZfTV/ovpgWWJo=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=IISVG3k9hNvM11VTLpU4Iv7Bhmg2h/l1Dv6ZS1sUSZgZqWoemfM3f4nUJXfY9bmhf
-	 qDj51GvPbhDFkMsxmTAR+QOQAs6SwpDoXXfvzLYIOegtmD3ZIeB/ekzfSBJjp40fVR
-	 5qzG+Hq2MBlE/a5oFsF+HP6ulXR1yo8wM0CVrdWUNUx+QAdQ6sTlszCsMafKeltBCz
-	 3SC+Ez/p5G85QkIDBWDJjubSLjIYwoyiEIOivZcmN0RDpkJOFcvu0qZ7eFcgTkZLos
-	 ZAXhAK3A9x55CSeYzVN3bUBarGRWXGryy9K47UsjEG18tYbQauaw5uP4dC/Lv5eufo
-	 /RF26skIkv7OQ==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id D83E51200032;
-	Thu,  4 Apr 2024 11:57:38 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 04 Apr 2024 11:57:38 -0400
-X-ME-Sender: <xms:8s0OZrCAj9o_nwJkTnzZWVfJdvL4cR-bYhw01DLfCPjo7Xip2aIIbg>
-    <xme:8s0OZhgH7oZIhrZsP1KiuaEvQZ1rpjFrdAD1Se0QFfKxUMr6ohONIdVAWKB4KHOBp
-    xuchoh5uyZawAEy2bQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefkedgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
-    grthhtvghrnhepvdeviefgtedugeevieelvdfgveeuvdfgteegfeeiieejjeffgeeghedu
-    gedtveehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
-    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
-    guvg
-X-ME-Proxy: <xmx:8s0OZmntOJ89YxUj9wURfXe4PW9gXlFtYpsvKIzNwHNZUjdd9loLug>
-    <xmx:8s0OZtzXOCAb_4C-RNCo6E-R_yTrinDjIBVpO80fF3_l3vvGQkfFFw>
-    <xmx:8s0OZgRVN83O5r-1s_6ceKu5MowPuYRJ9Il_iCxJWU-cXRa0FN9aRA>
-    <xmx:8s0OZgZnh2_cSXzn2HCT8G1ZpckZVsrPTLoaJRuUDs58Yk24uZYZXg>
-    <xmx:8s0OZmdn9_zT6BRbfl-NSVbzvpxnbCUgn1Y67fY1roaUIFiIjo65-RiD>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 8EE03B6008D; Thu,  4 Apr 2024 11:57:38 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
+	s=arc-20240116; t=1712246223; c=relaxed/simple;
+	bh=vvvHPDpFZbDyDQk3Ld550STpcnhIi6ap4/awPQYL3+k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CvT1rsZn2fOPbtpIuNlTvc9+0aXcOjShWTSeWB89ZbcgeaQEUdgzhPZkrb0lqbril1+bpLe4TDpI0ug3HPsHKapA09H24qZeiJVqsv+kHhdbPMx+FRfylrZcq9WY9J2jyPOQDhehwM5pFgvhUENm48xfNKRf23O/h7mFfBo3wk0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=CcWtbQUt; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=1f4OlMHCTglftLsccsnxMI7CfS7xy5tbZ+cp8vg03tM=;
+	t=1712246221; x=1712678221; b=CcWtbQUtdmYDqxwF7MzHN6XSRHWhZC1yDdfndx6RjjGU80P
+	SxUvK99wzBCejJXnfJufoIrlH2ZqrCdtov7f2Sz1/VCSL3ToqtFdixndFALygDfIBWEOZKTbWZqUp
+	5y/vqUwzAH0k3rYNEn+t6StfaApMdflXrejGsOL1ZnH05notgI0g9naVUW/CJngla0RF5XjSge787
+	+QW6Y+dRjMwleGoCktAJ0Eg/IHzQKhIn/oAgVbjwoGLQM4I3s3ieQpJpSI8doZ3fg4fMXT+OPinge
+	6t2UmfoFXLW++y+YH2+OBXJ5DxqdwXskPkXpTAXLNSAGMT4W46cg+bYOXeocodXA==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rsPSV-0007nG-9G; Thu, 04 Apr 2024 17:56:59 +0200
+Message-ID: <8488e647-d2f4-484f-939f-eb827802d5c6@leemhuis.info>
+Date: Thu, 4 Apr 2024 17:56:58 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <9d9fa267-067e-421b-9a39-aa178b913298@app.fastmail.com>
-In-Reply-To: <4cdb6399d803d37a883d1a2fbe119c0a14610106.camel@linux.ibm.com>
-References: <20240404105840.3396821-1-schnelle@linux.ibm.com>
- <20240404105840.3396821-2-schnelle@linux.ibm.com>
- <95a63afe-ccd7-4551-86af-00b7fb0d8ff9@app.fastmail.com>
- <4cdb6399d803d37a883d1a2fbe119c0a14610106.camel@linux.ibm.com>
-Date: Thu, 04 Apr 2024 17:56:47 +0200
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Niklas Schnelle" <schnelle@linux.ibm.com>,
- "Peter Huewe" <peterhuewe@gmx.de>, "Jarkko Sakkinen" <jarkko@kernel.org>
-Cc: linux-integrity@vger.kernel.org, "Heiko Carstens" <hca@linux.ibm.com>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] char: tpm: handle HAS_IOPORT dependencies
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: Do we need a "DoNotBackPort" tag?
+To: Greg KH <gregkh@linuxfoundation.org>,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>,
+ "stable@vger.kernel.org" <stable@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <ce4c2f67-c298-48a0-87a3-f933d646c73b@leemhuis.info>
+ <ZgylCe48FuOKNWtM@slm.duckdns.org>
+ <b6cdb17f-206c-4dff-bb45-a60317e0a55e@leemhuis.info>
+ <2024040328-surfacing-breezy-34c6@gregkh> <Zg10Keik4KORjXMh@slm.duckdns.org>
+ <2024040319-doorbell-ecosystem-7d31@gregkh>
+ <dfd87673-c581-4b4b-b37a-1cf5c817240d@leemhuis.info>
+ <2024040454-playful-tainted-7446@gregkh>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Content-Language: en-US, de-DE
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <2024040454-playful-tainted-7446@gregkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1712246221;6c48b54e;
+X-HE-SMSGID: 1rsPSV-0007nG-9G
 
-On Thu, Apr 4, 2024, at 17:41, Niklas Schnelle wrote:
->
-> Good find! I do see the same #ifdef in v5 but maybe something else
-> changed. I think this was also hidden during both my local test builds
-> and kernel test robot because of the PNP -> ACPI || ISA dependency
-> which I think implies HAS_IOPORT. So unless I'm missing something we
-> can't currently get here with HAS_IOPORT=n. Maybe that changed?
+On 04.04.24 17:44, Greg KH wrote:
+> On Thu, Apr 04, 2024 at 05:36:42PM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+>> On 03.04.24 18:10, Greg KH wrote:
+>>> On Wed, Apr 03, 2024 at 05:22:17AM -1000, Tejun Heo wrote:
+>>>> On Wed, Apr 03, 2024 at 07:11:04AM +0200, Greg KH wrote:
+>>>>>> Side note: I have no idea why the stable team backported those patches
+>>>>>> and no option on whether that was wise, just trying to help finding the best
+>>>>>> solution forward from the current state of things.
+>>>>>
+>>>>> The Fixes: tag triggered it, that's why they were backported.
+>>
+>> Yeah, this is what I assumed.
+>>
+>>>>>>> which would
+>>>>>>> be far too invasive for -stable, thus no Cc: stable.
+>>>>>>>
+>>>>>>> I didn't know a Fixes
+>>>>>>> tag automatically triggers backport to -stable. I will keep that in mind for
+>>>>>>> future.
+>>>>>>
+>>>>>> /me fears that more and more developers due to situations like this will
+>>>>>> avoid Fixes: tags and wonders what consequences that might have for the
+>>>>>> kernel as a whole
+>>>>>
+>>>>> The problem is that we have subsystems that only use Fixes: and not cc:
+>>>>> stable which is why we need to pick these up as well.  Fixes: is great,
+>>>>> but if everyone were to do this "properly" then we wouldn't need to pick
+>>>>> these other ones up, but instead, it's about 1/3 of our volume :(
+>>
+>> I'm also well aware of that and do not want to complain about it, as I
+>> think I grasped why the stable team works like that -- and even think
+>> given the circumstances it is round about the right approach. I also
+>> understand that mistakes will always happen.
+>>
+>> Nevertheless this thread and the Bluetooth thing we had earlier this
+>> week[1] makes me fear that this approach could lead to developer
+>> avoiding Fixes: tags. And funny thing, that's something that is already
+>> happening, as I noticed by chance today: "'"A "Fixes" tag has been
+>> deliberately omitted to avoid potential test failures and subsequent
+>> regression issues that could arise from backporting."'"[2].
+>>
+>> I wonder if that in the long term might be bad. But well, maybe it won't
+>> matter much. Still made me wonder if we should have a different solution
+>> for this kind of problem. Something like this?
+>>
+>>   Cc: <stable@vger.kernel.org> # DoNotBackport
+>>
+>> Or something like this?
+>>
+>>   Cc: <stable@vger.kernel.org> # DoNotBackport - or only after 16 weeks
+>> in mainline [but I don't care]
+> 
+> We do this today, with stuff like:
+> 	Cc: stable <stable@kernel.org>	# wait for -rc3 to be out
+> 
+> So if people want to do that, they can, the documentation says that you
+> can give us hints and the like in the # area, and usually we notice them :)
 
-Rihgt, I just found that as well, so the TCG_INFINEON driver
-won't ever be enabled without CONFIG_HAS_IOPORT after all.
+I know, as I wrote that (as you likely remember). ;-) But it seems it's
+not well known; and maybe making it explicit that this can be used to
+convey a "DoNotBackport" message is supported as well.
 
-> I'm now thinking maybe keeping TPM_INF_IO_PORT is the cleaner choice.
-> It saves us 4 lines of #ifdeffery at the cost of one sometimes "unused"
-> define.
+Guess I'll prepare a patch to do that then and we'll see how it goes
+from there.
 
-Agreed. I tried it out for reference, but it does get quite ugly,
-see below. Alternatively, we could just add a 'depends on HAS_IOPORT'
-to this driver after all. Even if it can be used on MMIO, it might
-never actually be built without PIO.
-
-     Arnd
-
-diff --git a/drivers/char/tpm/Kconfig b/drivers/char/tpm/Kconfig
-index 418c9ed59ffd..852bb9344788 100644
---- a/drivers/char/tpm/Kconfig
-+++ b/drivers/char/tpm/Kconfig
-@@ -157,7 +157,7 @@ config TCG_ATMEL
- 
- config TCG_INFINEON
- 	tristate "Infineon Technologies TPM Interface"
--	depends on PNP
-+	depends on PNP || COMPILE_TEST
- 	help
- 	  If you have a TPM security chip from Infineon Technologies
- 	  (either SLD 9630 TT 1.1 or SLB 9635 TT 1.2) say Yes and it
-diff --git a/drivers/char/tpm/tpm_infineon.c b/drivers/char/tpm/tpm_infineon.c
-index 99c6e565ec8d..768ca65960d8 100644
---- a/drivers/char/tpm/tpm_infineon.c
-+++ b/drivers/char/tpm/tpm_infineon.c
-@@ -51,10 +51,19 @@ struct tpm_inf_dev {
- 
- static struct tpm_inf_dev tpm_dev;
- 
-+static inline bool tpm_is_ioport(struct tpm_inf_dev *dev)
-+{
-+#ifdef CONFIG_HAS_IOPORT
-+	return tpm_dev.iotype == TPM_INF_IO_PORT;
-+#else
-+	return false;
-+#endif
-+}
-+
- static inline void tpm_data_out(unsigned char data, unsigned char offset)
- {
- #ifdef CONFIG_HAS_IOPORT
--	if (tpm_dev.iotype == TPM_INF_IO_PORT)
-+	if (tpm_is_ioport(&tpm_dev))
- 		outb(data, tpm_dev.data_regs + offset);
- 	else
- #endif
-@@ -64,7 +73,7 @@ static inline void tpm_data_out(unsigned char data, unsigned char offset)
- static inline unsigned char tpm_data_in(unsigned char offset)
- {
- #ifdef CONFIG_HAS_IOPORT
--	if (tpm_dev.iotype == TPM_INF_IO_PORT)
-+	if (tpm_is_ioport(&tpm_dev))
- 		return inb(tpm_dev.data_regs + offset);
- #endif
- 	return readb(tpm_dev.mem_base + tpm_dev.data_regs + offset);
-@@ -73,7 +82,7 @@ static inline unsigned char tpm_data_in(unsigned char offset)
- static inline void tpm_config_out(unsigned char data, unsigned char offset)
- {
- #ifdef CONFIG_HAS_IOPORT
--	if (tpm_dev.iotype == TPM_INF_IO_PORT)
-+	if (tpm_is_ioport(&tpm_dev))
- 		outb(data, tpm_dev.config_port + offset);
- 	else
- #endif
-@@ -83,7 +92,7 @@ static inline void tpm_config_out(unsigned char data, unsigned char offset)
- static inline unsigned char tpm_config_in(unsigned char offset)
- {
- #ifdef CONFIG_HAS_IOPORT
--	if (tpm_dev.iotype == TPM_INF_IO_PORT)
-+	if (tpm_is_ioport(&tpm_dev))
- 		return inb(tpm_dev.config_port + offset);
- #endif
- 	return readb(tpm_dev.mem_base + tpm_dev.index_off + offset);
-@@ -404,6 +413,7 @@ static int tpm_inf_pnp_probe(struct pnp_dev *dev,
- 	const char *chipname;
- 	struct tpm_chip *chip;
- 
-+#ifdef CONFIG_HAS_IOPORT
- 	/* read IO-ports through PnP */
- 	if (pnp_port_valid(dev, 0) && pnp_port_valid(dev, 1) &&
- 	    !(pnp_port_flags(dev, 0) & IORESOURCE_DISABLED)) {
-@@ -436,8 +446,10 @@ static int tpm_inf_pnp_probe(struct pnp_dev *dev,
- 			rc = -EINVAL;
- 			goto err_last;
- 		}
--	} else if (pnp_mem_valid(dev, 0) &&
--		   !(pnp_mem_flags(dev, 0) & IORESOURCE_DISABLED)) {
-+	} else
-+#endif
-+	if (pnp_mem_valid(dev, 0) &&
-+	   !(pnp_mem_flags(dev, 0) & IORESOURCE_DISABLED)) {
- 
- 		tpm_dev.iotype = TPM_INF_IO_MEM;
- 
-@@ -540,10 +552,10 @@ static int tpm_inf_pnp_probe(struct pnp_dev *dev,
- 			 "vendor id 0x%x%x (Infineon), "
- 			 "product id 0x%02x%02x"
- 			 "%s\n",
--			 tpm_dev.iotype == TPM_INF_IO_PORT ?
-+			 tpm_is_ioport(&tpm_dev) ?
- 			 tpm_dev.config_port :
- 			 tpm_dev.map_base + tpm_dev.index_off,
--			 tpm_dev.iotype == TPM_INF_IO_PORT ?
-+			 tpm_is_ioport(&tpm_dev) ?
- 			 tpm_dev.data_regs :
- 			 tpm_dev.map_base + tpm_dev.data_regs,
- 			 version[0], version[1],
-@@ -567,7 +579,7 @@ static int tpm_inf_pnp_probe(struct pnp_dev *dev,
- 	}
- 
- err_release_region:
--	if (tpm_dev.iotype == TPM_INF_IO_PORT) {
-+	if (tpm_is_ioport(&tpm_dev)) {
- 		release_region(tpm_dev.data_regs, tpm_dev.data_size);
- 		release_region(tpm_dev.config_port, tpm_dev.config_size);
- 	} else {
-@@ -585,11 +597,14 @@ static void tpm_inf_pnp_remove(struct pnp_dev *dev)
- 
- 	tpm_chip_unregister(chip);
- 
--	if (tpm_dev.iotype == TPM_INF_IO_PORT) {
-+#ifdef CONFIG_HAS_IOPORT
-+	if (tpm_is_ioport(&tpm_dev)) {
- 		release_region(tpm_dev.data_regs, tpm_dev.data_size);
- 		release_region(tpm_dev.config_port,
- 			       tpm_dev.config_size);
--	} else {
-+	} else
-+#endif
-+	{
- 		iounmap(tpm_dev.mem_base);
- 		release_mem_region(tpm_dev.map_base, tpm_dev.map_size);
- 	}
+Ciao, Thorsten
 
