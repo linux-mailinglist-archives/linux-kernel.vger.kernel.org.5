@@ -1,135 +1,179 @@
-Return-Path: <linux-kernel+bounces-130814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130815-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEEF3897D62
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:27:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F162897D65
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:33:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 90C3C1F28B9F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:27:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54466B22B20
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:33:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3B21125B9;
-	Thu,  4 Apr 2024 01:27:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0171AC12C;
+	Thu,  4 Apr 2024 01:33:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IGQ4Zx1K"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="JligCp8x"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A37DDA3;
-	Thu,  4 Apr 2024 01:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA21320E
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 01:33:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712194049; cv=none; b=Jngrj11dZx4ziX2Z+QP+s2VVJfk6tzKQp/WLW0Vk3EQ4qAScdKsCfU39fuFDuYV9i/KzZN1QITCS6YL/uJZ8/F7ucRtjS2VJo96uVkl3jJ0jfgaWXJ1ZrX7ZM6r5h/OxQXKxToCi/9GBjM9s8MAJvAHmUaq06kISYKzmGgLzoVU=
+	t=1712194420; cv=none; b=sLK/kJHmoFJK3+zzeBGxGzfNz7jbW+kJ7XhnzC91mi9muuf9178ZsHMWUTyGF4hYurRni3L1SckfqVmxl3rpfew2p72pv86FBu6a6WLLn1WiomHOGiMvxOFQiFtqUGhySH0ZS2QSq6I35NZtmMUl/zsAUaf/O993yvf/rJvwndI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712194049; c=relaxed/simple;
-	bh=zQZjF7w3cEt0YI/Qk6JRvDqqTu9qoiRVS2jKtLljvxs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RSztgCoRhxPeoRp98XxaZn6ze2SLA/2uU81njpvHFaN8jhplN4ONVA6A2HOxidf+BbOhJePtbZwokcR4aETK8yg1TnYCp2upBoJXER7iMl8gLsC1Dj2Th7jLTOl/e8XHbMRq6L5qeXZBKvwWfK/rURZgJTKkECKF117xlfdW1qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IGQ4Zx1K; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712194047; x=1743730047;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=zQZjF7w3cEt0YI/Qk6JRvDqqTu9qoiRVS2jKtLljvxs=;
-  b=IGQ4Zx1KANRew4D3j/+shAdf2wKH1mubrpjIKuVWx1Fu63ohowSZmrXS
-   5Zz+ONfO5As/igM5uMlQv7NmyGXmwJOpdhlEoy/naYgq4IQyTRz28yU7m
-   7knwxxz6Lk776aqfjGHfouznROaDFJmHAgTteaJwHG2BmiomA3gl2MBOV
-   qRw7OVHUHkcjsUUiB8X1okyX0zhbquyGDS9bmJTdtpV+hWqmRkw/qlhuJ
-   JR7xMAixF/0bWx2974FaG3pl2W40LDfViKeF7ilvUKSJHvAQNN0LshFFK
-   ZOokZCInHnF31y9o34fqaxiblQqF42IToFOKHo9PJXsvVN8kEdH0oEySF
-   A==;
-X-CSE-ConnectionGUID: Xq+9TEclQlqODQcvgoY5Ig==
-X-CSE-MsgGUID: BoAadz6oRcubYl7VtPZUCQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18617553"
-X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
-   d="scan'208";a="18617553"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 18:27:27 -0700
-X-CSE-ConnectionGUID: +Ef9LtV/RDO3JPODnsDAZg==
-X-CSE-MsgGUID: OCx6VRZBQjiMhvy88lLLnA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
-   d="scan'208";a="19077990"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Apr 2024 18:27:26 -0700
-Date: Wed, 3 Apr 2024 18:27:26 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Chao Gao <chao.gao@intel.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sean Christopherson <seanjc@google.com>,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 105/130] KVM: TDX: handle KVM hypercall with
- TDG.VP.VMCALL
-Message-ID: <20240404012726.GP2444378@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <ab54980da397e6e9b7b8d6636dc88c11c303364f.1708933498.git.isaku.yamahata@intel.com>
- <ZgvHXk/jiWzTrcWM@chao-email>
+	s=arc-20240116; t=1712194420; c=relaxed/simple;
+	bh=D1HLpi3FU8IDGF/aXJYP38qaxr1OoZI8SUSL6g8MQNY=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=VsyHSsjHEA72yR+uKbr+I7m1KsrMamtiHFCOxP/4LlZhfSlyNNjRvc1o2ON9IKLgRkh2RXTanW0DZEEmxlHHQZa7agqO5iSmNC7aTe4n9AlAv7EtOmuXTXGOW32dTNF0x4BU50b1GTBH38P/U9edXKmBnRxA43RKZp46KWwlzqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=JligCp8x; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7C73C433C7;
+	Thu,  4 Apr 2024 01:33:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1712194419;
+	bh=D1HLpi3FU8IDGF/aXJYP38qaxr1OoZI8SUSL6g8MQNY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=JligCp8xPNXLKgSPMMFZMvT3PsSXbVEAhq8o/zM9JKE74WlTimOXRPCMyu5IgAZRD
+	 4vrADQ0RNNGynJtRFuMwGgs26y2BkE+XlihZd0ZayEu5jBgucYTCMXUTtZnL/aMaQA
+	 qWWEHdk6BlghS4BE9Iwy3T4G24LMd8sPGLmotfP8=
+Date: Wed, 3 Apr 2024 18:33:39 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: syzbot <syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ syzkaller-bugs@googlegroups.com, Carlos Maiolino <cem@kernel.org>,
+ Christian Brauner <brauner@kernel.org>
+Subject: Re: [syzbot] [mm?] general protection fault in shmem_get_next_id
+Message-Id: <20240403183339.7a257066e79ac04a7d6e33fd@linux-foundation.org>
+In-Reply-To: <000000000000a1ff78061517a148@google.com>
+References: <000000000000a1ff78061517a148@google.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZgvHXk/jiWzTrcWM@chao-email>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Apr 02, 2024 at 04:52:46PM +0800,
-Chao Gao <chao.gao@intel.com> wrote:
+On Mon, 01 Apr 2024 23:58:20 -0700 syzbot <syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com> wrote:
 
-> >+static int tdx_emulate_vmcall(struct kvm_vcpu *vcpu)
-> >+{
-> >+	unsigned long nr, a0, a1, a2, a3, ret;
-> >+
+> Hello,
+
+Hello.
+
+Seems that the new TMPFS_QUOTA code has blown up.  Cc's added, thanks
+for the report and the reproducer!
+
+> syzbot found the following issue on:
 > 
-> do you need to emulate xen/hyper-v hypercalls here?
-
-
-No. kvm_emulate_hypercall() handles xen/hyper-v hypercalls,
-__kvm_emulate_hypercall() doesn't.
-
-> Nothing tells userspace that xen/hyper-v hypercalls are not supported and
-> so userspace may expose related CPUID leafs to TD guests.
+> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=10c90795180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=fe78468a74fdc3b7
+> dashboard link: https://syzkaller.appspot.com/bug?extid=05e63c0981a31f35f3fa
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17f51129180000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=150d3cee180000
 > 
-> >+	/*
-> >+	 * ABI for KVM tdvmcall argument:
-> >+	 * In Guest-Hypervisor Communication Interface(GHCI) specification,
-> >+	 * Non-zero leaf number (R10 != 0) is defined to indicate
-> >+	 * vendor-specific.  KVM uses this for KVM hypercall.  NOTE: KVM
-> >+	 * hypercall number starts from one.  Zero isn't used for KVM hypercall
-> >+	 * number.
-> >+	 *
-> >+	 * R10: KVM hypercall number
-> >+	 * arguments: R11, R12, R13, R14.
-> >+	 */
-> >+	nr = kvm_r10_read(vcpu);
-> >+	a0 = kvm_r11_read(vcpu);
-> >+	a1 = kvm_r12_read(vcpu);
-> >+	a2 = kvm_r13_read(vcpu);
-> >+	a3 = kvm_r14_read(vcpu);
-> >+
-> >+	ret = __kvm_emulate_hypercall(vcpu, nr, a0, a1, a2, a3, true, 0);
-> >+
-> >+	tdvmcall_set_return_code(vcpu, ret);
-> >+
-> >+	if (nr == KVM_HC_MAP_GPA_RANGE && !ret)
-> >+		return 0;
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/0f7abe4afac7/disk-fe46a7dd.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/82598d09246c/vmlinux-fe46a7dd.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/efa23788c875/bzImage-fe46a7dd.xz
 > 
-> Can you add a comment to call out that KVM_HC_MAP_GPA_RANGE is redirected to
-> the userspace?
-
-Yes, this is confusing.  We should refactor kvm_emulate_hypercall() more so that
-the caller shouldn't care about the return value like this.  Will refactor it
-and update this patch.
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+05e63c0981a31f35f3fa@syzkaller.appspotmail.com
+> 
+> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+> CPU: 0 PID: 5070 Comm: syz-executor253 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+> RIP: 0010:shmem_get_next_id+0x92/0x5c0 mm/shmem_quota.c:119
+> Code: 04 db 49 8d 9c c6 90 02 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 f8 66 1b 00 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 df 66 1b 00 4c 8b 23 48 8d 5d 07
+> RSP: 0018:ffffc900043a7be0 EFLAGS: 00010256
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880266c8000
+> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000004
+> RBP: ffffc900043a7d00 R08: ffffffff81dcdd47 R09: ffffffff822e7d5a
+> R10: 0000000000000003 R11: ffffffff81dcdcf0 R12: 1ffff92000874fa0
+> R13: ffff888022110000 R14: ffff888022110000 R15: dffffc0000000000
+> FS:  0000555578677380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020001000 CR3: 000000007a384000 CR4: 0000000000350ef0
+> Call Trace:
+>  <TASK>
+>  dquot_get_next_dqblk+0x75/0x3a0 fs/quota/dquot.c:2705
+>  quota_getnextquota+0x2c7/0x6c0 fs/quota/quota.c:250
+>  __do_sys_quotactl_fd fs/quota/quota.c:1002 [inline]
+>  __se_sys_quotactl_fd+0x2a1/0x440 fs/quota/quota.c:973
+>  do_syscall_64+0xfd/0x240
+>  entry_SYSCALL_64_after_hwframe+0x6d/0x75
+> RIP: 0033:0x7f5c0349b329
+> Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffc39d71138 EFLAGS: 00000246 ORIG_RAX: 00000000000001bb
+> RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007f5c0349b329
+> RDX: 0000000000000000 RSI: ffffffff80000901 RDI: 0000000000000003
+> RBP: 00007f5c0350e610 R08: 0000000000000000 R09: 00007ffc39d71308
+> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> R13: 00007ffc39d712f8 R14: 0000000000000001 R15: 0000000000000001
+>  </TASK>
+> Modules linked in:
+> ---[ end trace 0000000000000000 ]---
+> RIP: 0010:shmem_get_next_id+0x92/0x5c0 mm/shmem_quota.c:119
+> Code: 04 db 49 8d 9c c6 90 02 00 00 48 89 d8 48 c1 e8 03 42 80 3c 38 00 74 08 48 89 df e8 f8 66 1b 00 48 8b 1b 48 89 d8 48 c1 e8 03 <42> 80 3c 38 00 74 08 48 89 df e8 df 66 1b 00 4c 8b 23 48 8d 5d 07
+> RSP: 0018:ffffc900043a7be0 EFLAGS: 00010256
+> RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff8880266c8000
+> RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000004
+> RBP: ffffc900043a7d00 R08: ffffffff81dcdd47 R09: ffffffff822e7d5a
+> R10: 0000000000000003 R11: ffffffff81dcdcf0 R12: 1ffff92000874fa0
+> R13: ffff888022110000 R14: ffff888022110000 R15: dffffc0000000000
+> FS:  0000555578677380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 0000000020001000 CR3: 000000007a384000 CR4: 0000000000350ef0
+> ----------------
+> Code disassembly (best guess):
+>    0:	04 db                	add    $0xdb,%al
+>    2:	49 8d 9c c6 90 02 00 	lea    0x290(%r14,%rax,8),%rbx
+>    9:	00
+>    a:	48 89 d8             	mov    %rbx,%rax
+>    d:	48 c1 e8 03          	shr    $0x3,%rax
+>   11:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1)
+>   16:	74 08                	je     0x20
+>   18:	48 89 df             	mov    %rbx,%rdi
+>   1b:	e8 f8 66 1b 00       	call   0x1b6718
+>   20:	48 8b 1b             	mov    (%rbx),%rbx
+>   23:	48 89 d8             	mov    %rbx,%rax
+>   26:	48 c1 e8 03          	shr    $0x3,%rax
+> * 2a:	42 80 3c 38 00       	cmpb   $0x0,(%rax,%r15,1) <-- trapping instruction
+>   2f:	74 08                	je     0x39
+>   31:	48 89 df             	mov    %rbx,%rdi
+>   34:	e8 df 66 1b 00       	call   0x1b6718
+>   39:	4c 8b 23             	mov    (%rbx),%r12
+>   3c:	48 8d 5d 07          	lea    0x7(%rbp),%rbx
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
 
