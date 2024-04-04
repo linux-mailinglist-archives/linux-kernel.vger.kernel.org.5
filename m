@@ -1,123 +1,124 @@
-Return-Path: <linux-kernel+bounces-131521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131520-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A446E8988FD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:42:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34A148988FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:42:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37D7D1F24D54
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:42:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4D91281E8E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:42:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E45BA128815;
-	Thu,  4 Apr 2024 13:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48C6E127B7E;
+	Thu,  4 Apr 2024 13:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="YP8YeFFC"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="kqEylmTq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KkNAOZuR";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="kqEylmTq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KkNAOZuR"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5378127B6A;
-	Thu,  4 Apr 2024 13:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B43E17722
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 13:42:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712238141; cv=none; b=ZOgKsnyQYXX3SRpJ1PVgsaYl3g8bORE62fFJb6h08fqTrvc+B8Icd+51kQDwZzhKNIfFSn3Ym/xxmqVwx3/A3JuAwd2bxeKSgvpDAdUnSCuSsxL+M0H7lCA+mmOv9wQiwBBH+aIr7IzLqRFzkyJRakbsw6hIpXz+Pkw3jQ3o76E=
+	t=1712238139; cv=none; b=jZGOANIaQphTCuhrmx+4VQzUvUnMl00RqgR2zgzfTfktkGv4aV9frngqBKyLsGa0+RDFA/rC+UISZwPRXUhde2tFsPenHmQfeh4D23UGHxMpQ25YRYIaoOfeO6pjVIweJOyaX4tTnOBAnyqaacjpLzOFNhbN9zfJXKgiGBa5Wy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712238141; c=relaxed/simple;
-	bh=SiFNlvNoywBWrh9dJB2VKBaVx4+zJofi44aMlEqmAas=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QON9ORVgQjI4KIf/ncjRUSew+EwGutvrJ7Z3+LLNe4FduRHsuOW/bap2n+e886IV5Xr0g4VRJyWWUz2e7G2EGVhns1nlOgCi3ovBKdDeraUTmhnDGnaO9iRWpeeZetqMKKvRaPobV1d72Gi+dWwexynWhIfXKqNlF66ABKOc5zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=YP8YeFFC; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4E3BD40E0177;
+	s=arc-20240116; t=1712238139; c=relaxed/simple;
+	bh=qMD/lvlY3DoToWa/F0lmWjc16NjzdoQqwbmEIRR9314=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=YcFXwQneW+O7OIpnY5eF2f5soPbqlNIXBcOM+i2F4PzoigGYtYHSfBuz+R+AsfWonUuVDtv8/fhEblAHr8XuU2jGsCDkCICyMUYDXveOP415/GYkK9EeuJ6HY1BE02ojOflx1cm7fpQ72XpRDgXDFyVS2XXbJnZzXqlvgj5cZZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=kqEylmTq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KkNAOZuR; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=kqEylmTq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KkNAOZuR; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from hawking.nue2.suse.org (unknown [10.168.4.11])
+	by smtp-out2.suse.de (Postfix) with ESMTP id 40D985D9E9;
 	Thu,  4 Apr 2024 13:42:16 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id AG3-nPPPc-qB; Thu,  4 Apr 2024 13:42:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1712238132; bh=SnwD9Z8zRiZ36IaQVN6USZlKwVv26RZDYLKXu7FYw0o=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YP8YeFFCnpEp8rna7b+P2a0QTsBwQx6jMX+N3KUJxALwLPHkfiaNO879S246LE+Qi
-	 lSN1Z/CPvCElarNeyzuv7kIOfgcYnDt0yHuTbIGM8kUH/aQDaEYbCVWRj0bQ1V83a3
-	 7Xoke6VfzlxS97dIZzsvv551Fh8zXMT4hh3q3MU5TsPkh5IZJlgZw0JKlIDJVRa5DP
-	 QUKLGKdEFHQI6tvIMgvUql135tHFjbPn9Bw7Ti5W2fG0BJ79/GdWan+YSKTAkVsaiS
-	 srT+AypeNQm4YPoQoXYbrKzJZXglxVtIoUUdWhNbqjmPobXR8znv6ZCQV+zy4xEOwF
-	 t34Mn8k+fc7kJeAmSo0/0PC+UvQ420a+4M+4LVki+m0QnTIqu0SObBj2sbPn1CjncO
-	 k/y2FKDUlW36ZfV2Uor/WT6GhCZrklebwwt12N4LW2d4ccd7p9zaDcjmT/dt5+7aUz
-	 qPlggv7g5VWLFnmg1M+1csCwWEqaZjhOIeeapI01UB3Em+swlCIsP5emHfHz/FFD2n
-	 mgVTsYNwb4cgEjiOU2Tuo0hIUYl7Z4mW1T1ZTgJN4lJ9B3sXP/pBgJW+LdnbEMpC3G
-	 TYmgsVBYdr9IBWDkaiQDbgNWGPdW3gto+R2HlJG9Y9n88xWy3sEyDG7clgEre1wErc
-	 /Kg4IE6VuUmwVVvIjkCkwpZ4=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2FEC440E00F4;
-	Thu,  4 Apr 2024 13:41:51 +0000 (UTC)
-Date: Thu, 4 Apr 2024 15:41:42 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc: Michael Roth <michael.roth@amd.com>, bp@kernel.org, bgardon@google.com,
-	dave.hansen@linux.intel.com, dmatlack@google.com, hpa@zytor.com,
-	jpoimboe@kernel.org, kvm@vger.kernel.org, leitao@debian.org,
-	linux-kernel@vger.kernel.org, maz@kernel.org, mingo@redhat.com,
-	pawan.kumar.gupta@linux.intel.com, pbonzini@redhat.com,
-	peterz@infradead.org, seanjc@google.com, shahuang@redhat.com,
-	tabba@google.com, tglx@linutronix.de, x86@kernel.org
-Subject: Re: [BUG net-next] arch/x86/kernel/cpu/bugs.c:2935: "Unpatched
- return thunk in use. This should not happen!" [STACKTRACE]
-Message-ID: <20240404134142.GCZg6uFh_ZSzUFLChd@fat_crate.local>
-References: <1d10cd73-2ae7-42d5-a318-2f9facc42bbe@alu.unizg.hr>
- <20240318202124.GCZfiiRGVV0angYI9j@fat_crate.local>
- <12619bd4-9e9e-4883-8706-55d050a4d11a@alu.unizg.hr>
- <20240326101642.GAZgKgisKXLvggu8Cz@fat_crate.local>
- <8fc784c2-2aad-4d1d-ba0f-e5ab69d28ec5@alu.unizg.hr>
- <20240328123830.dma3nnmmlb7r52ic@amd.com>
- <20240402101549.5166-1-bp@kernel.org>
- <20240402133856.dtzinbbudsu7rg7d@amd.com>
- <f497a833-f945-4907-b916-1739324de014@alu.unizg.hr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712238136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jKECyJGr5HtdnaY4tsEoyLq946ISDZRIngiGxLxPkeQ=;
+	b=kqEylmTqvUE77JwCy+hG582za952DmmVZ9IFzsBtxTCoEm89d89I3FuVs4D6GbqbUBw9Gx
+	/sHNBke+ZcojfIQfncITw5u+dt/ZUEX0rfMOGdOpm7aZTKXLtklfsv0DlCiVq7T2i7wINH
+	cT13HaHBGHKuIMVcOsd5+7Gz+jz5ouU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712238136;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jKECyJGr5HtdnaY4tsEoyLq946ISDZRIngiGxLxPkeQ=;
+	b=KkNAOZuR118ii50urefvcvYFK1hYSXzWbOzMJWFmUQTK8w32+r9IzLsXZAAGMiBeDVx6D9
+	8bsnRCIPpN7aXdCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712238136; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jKECyJGr5HtdnaY4tsEoyLq946ISDZRIngiGxLxPkeQ=;
+	b=kqEylmTqvUE77JwCy+hG582za952DmmVZ9IFzsBtxTCoEm89d89I3FuVs4D6GbqbUBw9Gx
+	/sHNBke+ZcojfIQfncITw5u+dt/ZUEX0rfMOGdOpm7aZTKXLtklfsv0DlCiVq7T2i7wINH
+	cT13HaHBGHKuIMVcOsd5+7Gz+jz5ouU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712238136;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jKECyJGr5HtdnaY4tsEoyLq946ISDZRIngiGxLxPkeQ=;
+	b=KkNAOZuR118ii50urefvcvYFK1hYSXzWbOzMJWFmUQTK8w32+r9IzLsXZAAGMiBeDVx6D9
+	8bsnRCIPpN7aXdCQ==
+Received: by hawking.nue2.suse.org (Postfix, from userid 17005)
+	id 228F54A0553; Thu,  4 Apr 2024 15:41:46 +0200 (CEST)
+From: Andreas Schwab <schwab@suse.de>
+To: linux-riscv@lists.infradead.org
+Cc: Conor Dooley <conor@kernel.org>,  Palmer Dabbelt <palmer@dabbelt.com>,
+  Yunhui Cui <cuiyunhui@bytedance.com>,  =?utf-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@rivosinc.com>,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] riscv: use KERN_INFO in do_trap
+In-Reply-To: <mvmy1aegrhm.fsf@suse.de> (Andreas Schwab's message of "Tue, 19
+	Mar 2024 16:40:05 +0100")
+References: <mvmy1aegrhm.fsf@suse.de>
+X-Yow: All I can think of is a platter of organic PRUNE CRISPS being trampled
+ by an army of swarthy, Italian LOUNGE SINGERS...
+Date: Thu, 04 Apr 2024 15:41:46 +0200
+Message-ID: <mvmcyr5ckit.fsf@suse.de>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f497a833-f945-4907-b916-1739324de014@alu.unizg.hr>
+Content-Type: text/plain
+X-Spam-Flag: NO
+X-Spam-Score: -4.14
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.14 / 50.00];
+	BAYES_HAM(-2.94)[99.75%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	RCVD_NO_TLS_LAST(0.10)[];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_ONE(0.00)[1];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email]
 
-On Wed, Apr 03, 2024 at 03:43:02PM +0200, Mirsad Todorovac wrote:
-> I wonder if I could make any additional contribution to the project.
-
-I'd suggest:
-
-https://kernel.org/doc/html/latest/process/2.Process.html#getting-started-with-kernel-development
-
-and
-
-https://kernel.org/doc/html/latest/process/development-process.html
-
-which will give you a broader picture.
-
-You could test linux-next, build random configs:
-
-"make randconfig"
-
-and see if you trigger a compiler warning, try to analyze it, understand
-it and fix it.
-
-It is a steep climb but it is a lot of fun. :-)
-
-HTH.
+Ping!
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Andreas Schwab, SUSE Labs, schwab@suse.de
+GPG Key fingerprint = 0196 BAD8 1CE9 1970 F4BE  1748 E4D4 88E3 0EEA B9D7
+"And now for something completely different."
 
