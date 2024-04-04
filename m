@@ -1,191 +1,127 @@
-Return-Path: <linux-kernel+bounces-131577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96B888989AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CC5818989A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:14:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B88528497E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:14:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 816AB2846F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:14:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B24012A173;
-	Thu,  4 Apr 2024 14:14:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E3DC129A99;
+	Thu,  4 Apr 2024 14:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="okxy2CJ6"
-Received: from mail-yw1-f170.google.com (mail-yw1-f170.google.com [209.85.128.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HyAUxtnE"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 088211292FB
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:14:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E089D1C14
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:14:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712240067; cv=none; b=V/BXQZ3kuczYrmJduQvQAN1GdqZcW+6XcOQCHnjDh667o9rASQoBk+VTgVO7Q8tevTcskDVg52UlsHgjwmCNa24ElUStD0U2A2L+HzhCvID+Rnros2nAL2gIWe5HVUJ37gyvPA3+dKx4RF4wtG+y/lDxOkyLu3Qh1eaQzSohSe0=
+	t=1712240065; cv=none; b=QLqcxLI43qEMeeSRJwg44RyXjx0lAMNK9pWi62yUehNDy9x6yZVgiBVr4g2xWDMSiaL+4OCydOMFVaoyPDN4B1WMe8wKf8jTZ2eqG5t5ATXI78xsAJGjU0xK9uT3VlWQGkudwZlFqnmhE8hTQPS9Y5A6/B5cBDjz5tQW1dvkga8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712240067; c=relaxed/simple;
-	bh=wPNv0rAK4gkp3iAr/PUWZQQ3gdHika88yZSnlZ8mFvM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dUxg2M8Sfllu1T1o5xum249ijTH0LEf2dswK+zZ21GFhpd9dxYZUdRurUKfB7SYAfGs8uaOZrXYPImcrjXHtS29g7nRBAo72pSyH2UK/4P+FxSSQ5bkyE3zeOUAJYvJUMhGSZ9AcYIIV1bt2do8d64c813ZQxgSoHUuaq/vRXj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=okxy2CJ6; arc=none smtp.client-ip=209.85.128.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yw1-f170.google.com with SMTP id 00721157ae682-6157c30fbc9so10648087b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712240065; x=1712844865; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ThTdXKBRbeKtfvxTpWolYFeuiHKpOFysUOKZwvjPsjg=;
-        b=okxy2CJ6E8ANDm6XcWeBcpjHXxBvRT+JcI391ITweCFOMARdfwi6DhCuJ7Lw1dtxou
-         IMZAoI0j+1fX/qBKrMBNDSH/Kc52iHTN0k+Dj2BWoSW3izh9AiOVyQHhowK1jABkg080
-         iYNZZ3PqSDtjnOhL3TWZIkOEv7vpaEw7OTSCBiHYsJDd/eeJ8h/+/EA2iTa0RXAKitLy
-         e1ddeovga09M+7bieiIAFMteTfNKgMpfkNoF1SjU+S6UTY0odYMN/4RoFSsI/4olRM+0
-         Hr+yQTjZOM8Zc78I/oMWm5FgFI8UrDmv9iPVl0jSarmbn+CQLlyizAdyegUy/370So+i
-         SuoA==
+	s=arc-20240116; t=1712240065; c=relaxed/simple;
+	bh=M5cKSgIktruIPlmfo2M4VwRJUWCSGqh1YHcsOA1luPM=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=uz9UOSgK1VU5cKa+jEfl0RPZt/jJEBiQnzJmmGkiGb9SAm1HwIWY4wCkpfi//qSNElRPmvLFouEz60iMs83pc23dJPHOVKO+3Ag5AaxWTkiCsCkcqilYez0+dE/bvYewtUYpvfbPQcYMk3sk5WS7MSSLsTzpvjGP7hOItOyNLy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HyAUxtnE; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712240062;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ptd7fVXwM8iorXoyMAIOxNI8I0XxkLrDM0twBrkDu44=;
+	b=HyAUxtnELeU2sWnr+56SHshEUUbm9oWd1d4R8DfOo9G+9B91Fvw+eTIkt0/tUGwu5fCLt7
+	LxtIgnV3npsm6jL1Hd389wQHuPHg6h+RaSaawCAIoo4TkD/DLbt2YN8F/ADfXSsJD3E178
+	lxmMjQsfbizFh+1Y4TMRyZ1+Bfmm/WM=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-212-v92L5T_TOj-6fMhIC_fWzA-1; Thu, 04 Apr 2024 10:14:21 -0400
+X-MC-Unique: v92L5T_TOj-6fMhIC_fWzA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-34370ba4105so590857f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:14:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712240065; x=1712844865;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ThTdXKBRbeKtfvxTpWolYFeuiHKpOFysUOKZwvjPsjg=;
-        b=ko1/BQW0o2zHr5ATtEWmtSMlVSYn2iLZJAyNWW+h7EYn8g3qKac0pbtiSZQOrspYIR
-         m7tLIraXuXqxDIPBPT902X10geKLfdu4Pv0ctJaojBr5w7VLCRpPuVJrv7xpO5DHkCE3
-         r0Y1mEDQoGmRgtXP6UXXHDysuA1tt8Y9f4+CciwnVj1h6MFzV6UcljPaHI1Hgqc+awzm
-         vPgMdqpzuLnCz6wkvCFGorr3vFrhvZaMJKmINHZNTsMTZIdT1621mkmGzFLRLUXZ5mSS
-         pIrbjf29hi/JX6zCOMM94SKookoHcNDrYkG22E9jcMOfCxUVCb78yw6kRfmksIoN2Csu
-         TRnA==
-X-Forwarded-Encrypted: i=1; AJvYcCWMVWuHfk/FJlQsUZ+zW5SItCD2ODk1nB4j6E46qGkbC8uaq3C0zxt5cB0+MN5LhmSwXncmyk44JyDTIEim3HOD2zX3rS62KSOkRFir
-X-Gm-Message-State: AOJu0YwmM2VF/MZviPrWIHyzFyFtxef6+n2UGTLPcPNNac93TzbEZP08
-	kbroUs+G2b6tFYFTBVIlhHZU563XuFBWtJyhRuuQVyPx/TjwGWHvPYbKqHmBhkovPVqubJP8cju
-	IhoQQS0U3Rj3XL5CoKK05lRs3AWYp6qYaI7e2
-X-Google-Smtp-Source: AGHT+IGDUpNqNE89JPxkJnDxFJf7/PVFTdmFLJF3gZOL+YcWNT1lfbQ0eNtc40hL79Zon1479pqusNFqd3fCHU1wudQ=
-X-Received: by 2002:a81:a0c9:0:b0:608:ecd0:f894 with SMTP id
- x192-20020a81a0c9000000b00608ecd0f894mr2430209ywg.1.1712240064820; Thu, 04
- Apr 2024 07:14:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712240060; x=1712844860;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ptd7fVXwM8iorXoyMAIOxNI8I0XxkLrDM0twBrkDu44=;
+        b=VevXWRi5r6rY2LJWtOyW2fNBO+8kbnDPrlqD/eQIgSSFl1fnDE5izA5YdUo+dOKqEL
+         l+neKNVyLPjtWV1FZkCzbz600UBMexA2/uT/C9FFxiL1scPOmtO9AK1aWtpj9DompmPT
+         Wh90MjctOlclNjN2eth+CVwf4k4QzrgoYA/cJlnO81+UuRFZtYRe64iLk12wpvMOkRxn
+         m9/T65Mr+YKEFU3NDP+wvKk2Jqvwadq3mk6K+qsG0HKLAQZah4Io6lpPZ+4N/ujPyg8C
+         OplSsEpiSJoj0ak5+9ARXuO44+sZk026pjTci1+GN1pwT3QNOgDtzRUiuE+GKJ5PdyQc
+         xNuQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVReYdzgcFwP1RQANJkDM3+YFW9PrCbO40TN4koIOh+J/Rfzzp2hVZzcfb+qKFhIM9ZhqIZDhbh7sx6mP5wvFB81lyAbHoKOiWVNAQ8
+X-Gm-Message-State: AOJu0Yy2fQ6OdLlFJt+tm7NrCgTPuGQl8Ii54yhWytmlgx9egS6I7W1h
+	MQupOe2d+PARKzhLjZySQEFfQP8FdhWQ4CSFznnVLpSDd/jJmeIlO6tB7hxiR0W6q+DfWANE2JQ
+	viNIhR79OAUAz9MbcUW+HgJxaIfy9Ckcv/i+Mf/Br26HmN8uHHQqTLmtQ4pxKdw==
+X-Received: by 2002:a5d:5451:0:b0:343:8026:1180 with SMTP id w17-20020a5d5451000000b0034380261180mr2349310wrv.4.1712240059806;
+        Thu, 04 Apr 2024 07:14:19 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFwpBDR7805QXJg7IA/g4KxO9VQlvmx8d0MZnCbT+O7PvsHwMpri+5HFHTI30p2vEtFSZ8rQA==
+X-Received: by 2002:a5d:5451:0:b0:343:8026:1180 with SMTP id w17-20020a5d5451000000b0034380261180mr2349293wrv.4.1712240059473;
+        Thu, 04 Apr 2024 07:14:19 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id bn24-20020a056000061800b0034353b9c26bsm10255716wrb.9.2024.04.04.07.14.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 07:14:18 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Vitalii Bursov <vitaly@bursov.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
+ Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot
+ de Oliveira <bristot@redhat.com>, linux-kernel@vger.kernel.org, Vitalii
+ Bursov <vitaly@bursov.com>
+Subject: Re: [PATCH v3 1/3] sched/fair: allow disabling
+ sched_balance_newidle with sched_relax_domain_level
+In-Reply-To: <e97fd467bbe1d7168bbd73b7c9d182f46bf47a90.1712147341.git.vitaly@bursov.com>
+References: <cover.1712147341.git.vitaly@bursov.com>
+ <e97fd467bbe1d7168bbd73b7c9d182f46bf47a90.1712147341.git.vitaly@bursov.com>
+Date: Thu, 04 Apr 2024 16:14:18 +0200
+Message-ID: <xhsmh5xwxb4g5.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com>
- <20240402-linked-list-v1-2-b1c59ba7ae3b@google.com> <36306930-0390-4342-830d-03c11ec4a3a7@proton.me>
-In-Reply-To: <36306930-0390-4342-830d-03c11ec4a3a7@proton.me>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 4 Apr 2024 16:14:14 +0200
-Message-ID: <CAH5fLghHmuHxw1BL1F2-VF5KUXQLOwMqW6PfiAoLBXRE0Gyu=g@mail.gmail.com>
-Subject: Re: [PATCH 2/9] rust: list: add tracking for ListArc
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, 
-	Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, 
-	Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, 
-	Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, 
-	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 
-On Wed, Apr 3, 2024 at 5:52=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
-> wrote:
+On 03/04/24 16:28, Vitalii Bursov wrote:
+> Change relax_domain_level checks so that it would be possible
+> to include or exclude all domains from newidle balancing.
 >
-> I think the commit one-line description sounds a bit strange, how about
-> "rust: list: add ListArc tracking strategies"?
+> This matches the behavior described in the documentation:
+>   -1   no request. use system default or follow request of others.
+>    0   no search.
+>    1   search siblings (hyperthreads in a core).
 >
-> On 02.04.24 14:16, Alice Ryhl wrote:
-> > @@ -33,19 +34,64 @@ pub trait ListArcSafe<const ID: u64 =3D 0> {
-> >      unsafe fn on_drop_list_arc(&self);
-> >  }
-> >
-> > +/// Declares that this type is able to safely attempt to create `ListA=
-rc`s at any time.
-> > +///
-> > +/// # Safety
-> > +///
-> > +/// Implementers must ensure that `try_new_list_arc` does not return `=
-true` if a `ListArc` already
-> > +/// exists.
-> > +pub unsafe trait TryNewListArc<const ID: u64 =3D 0>: ListArcSafe<ID> {
-> > +    /// Attempts to convert an `Arc<Self>` into an `ListArc<Self>`. Re=
-turns `true` if the
-> > +    /// conversion was successful.
-> > +    fn try_new_list_arc(&self) -> bool;
-> > +}
-> > +
-> >  /// Declares that this type supports [`ListArc`].
-> >  ///
-> > -/// When using this macro, it will only be possible to create a [`List=
-Arc`] from a [`UniqueArc`].
-> > +/// When using this macro, you may choose between the `untracked` stra=
-tegy where it is not tracked
-> > +/// whether a [`ListArc`] exists, and the `tracked_by` strategy where =
-the tracking is deferred to a
-> > +/// field of the struct. The `tracked_by` strategy can be combined wit=
-h a field of type
-> > +/// [`AtomicListArcTracker`] to track whether a [`ListArc`] exists.
-> >  #[macro_export]
-> >  macro_rules! impl_list_arc_safe {
-> >      (impl$({$($generics:tt)*})? ListArcSafe<$num:tt> for $t:ty { untra=
-cked; } $($rest:tt)*) =3D> {
-> > -        impl$(<$($generics)*>)? $crate::list::ListArcSafe<$num> for $t=
- {
-> > +        impl$(<$($generics)*>)? ListArcSafe<$num> for $t {
+> "2" enables levels 0 and 1, level_max excludes the last (level_max)
+> level, and level_max+1 includes all levels.
 >
-> This change seems unintentional.
+> Fixes: 9ae7ab20b483 ("sched/topology: Don't set SD_BALANCE_WAKE on cpuset domain relax")
 
-Will fix.
+Not that it matters too much, but wasn't the behaviour the same back then?
+i.e.
 
-> >              unsafe fn on_create_list_arc_from_unique(&mut self) {}
-> >              unsafe fn on_drop_list_arc(&self) {}
-> >          }
-> >          $crate::list::impl_list_arc_safe! { $($rest)* }
-> >      };
-> >
-> > +    (impl$({$($generics:tt)*})? ListArcSafe<$num:tt> for $t:ty {
-> > +        tracked_by $field:ident : $fty:ty;
-> > +    } $($rest:tt)*) =3D> {
-> > +        impl$(<$($generics)*>)? ListArcSafe<$num> for $t {
->
-> Here you also want to access `ListArcSafe` via
-> `$crate::list::ListArcSafe`.
+        if (request < sd->level)
+                sd->flags &= ~(SD_BALANCE_WAKE|SD_BALANCE_NEWIDLE);
 
-Will fix.
+So if relax_domain_level=0 we wouldn't clear the flags on e.g. SMT
+(level=0)
 
-> > +            unsafe fn on_create_list_arc_from_unique(&mut self) {
-> > +                let me =3D self as *mut Self;
-> > +                let field: *mut $fty =3D unsafe { ::core::ptr::addr_of=
-_mut!((*me).$field) };
->
-> I think we should also have `SAFETY` comments in macros.
->
-> Also why can't this be done using safe code?:
->
->      let field: &mut $fty =3D &mut self.$field;
+AFAICT the docs & the code have always been misaligned:
 
-Not sure why. Probably a historical accident. Will change it to be safe.
+  4d5f35533fb9 ("sched, cpuset: customize sched domains, docs") [2008]
+  1d3504fcf560 ("sched, cpuset: customize sched domains, core") [2008]
 
-> > +                unsafe { <$fty as $crate::list::ListArcSafe<$num>>::on=
-_create_list_arc_from_unique(
-> > +                        &mut *field
-> > +                ) };
->
-> Formatting? rustfmt gives me this:
->
->                  unsafe {
->                      <$fty as $crate::list::ListArcSafe<$num>>::on_create=
-_list_arc_from_unique(
->                          &mut *field
->                      )
->                  };
->
-> (maybe the `;` should be inside the `unsafe` block in this case?)
+History nitpicking aside, I think this makes sense, but existing users are
+going to get a surprise...
 
-I can make the change, but rustfmt does not affect macros.
-
-Alice
 
