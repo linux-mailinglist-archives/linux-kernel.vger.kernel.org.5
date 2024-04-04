@@ -1,185 +1,102 @@
-Return-Path: <linux-kernel+bounces-132233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0879E8991C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id DF2838991D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:08:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CCD11C21B99
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:05:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C6FB1C218DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95CD313C3EF;
-	Thu,  4 Apr 2024 23:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A297D13C3CA;
+	Thu,  4 Apr 2024 23:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Bcky6LVO";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0e/jlncX";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CcbL799t";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="TN73Rs8E"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="vJic398R"
+Received: from smtp-fw-52002.amazon.com (smtp-fw-52002.amazon.com [52.119.213.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329F0130A76;
-	Thu,  4 Apr 2024 23:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CF11548FE;
+	Thu,  4 Apr 2024 23:08:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712271916; cv=none; b=jE2CVIx+tSwjs6MZy9lq6/IPTBQkll+qkGySl4RqQ3bhx7Gvsb5TT8U0qBTCCykSodeX/CU2YgU20RdaYIcPn57/aelKC3+JXjJPZZtAwC1d0uX7LwZ+bhDvQ4r9pMoy8epD2xCc8WDqosP4qpf2dvyISJzJvfAMEDDIyAA6CkU=
+	t=1712272113; cv=none; b=av3Urg3LHCT2GAkjuT00bg777HK/1ycM7MuoAzBWCuIP313Cv6FIDxevfSfPhgiYaD28dkhrAYqL8HGVDtKfGcwTC5oVFxhYcCrh8OaEHNQnMh08MBYKQi33TeKOJk6mZlln1PtO/lV6jABrfBS6Pdos+eUnZL/um085PcSDYrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712271916; c=relaxed/simple;
-	bh=b1kCDBDvOShJK96rPcAUIog34L3Yk7Ibpoxk4AGUui8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AvJgldvXUy40WrHZlo84UY2KrY9/tZbigvmDtibDPMcfLY3+BW21MEphhDvfGYw34Ij/bBPrQfnzVQ6a2BXou1T1GOy3tJaOFZonKONMkuH7IWpyJ8YI11twDTAeoi9A/hOAAhKkRDwda+J651fe3XGXZvi7N0qGtZn1PIsDl6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Bcky6LVO; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0e/jlncX; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CcbL799t; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=TN73Rs8E; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0D2011F456;
-	Thu,  4 Apr 2024 23:05:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712271913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
-	b=Bcky6LVOBlzfTS5gWcWJtwJoeaVRF90KYZbI6vpJ8CCT6ir5JPTKTwDJyWdiHbZz/AJWfe
-	7lfOEV+kOTlohOmZP9kox8debfyLNarmyf6IjLrEYaohaJxXViW/5kmKz4X25+3fY5xzP2
-	Gajbvsr4Sp/EM9pRbA3XUSKL0Snpll0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712271913;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
-	b=0e/jlncXZbZB5g91s3iKziBK5JWfQTxctQIKX14WlY1m7nd4/hgKhFOUyeN3yVJ6C5K/dN
-	bSP1nK3RbXXE/iBg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712271912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
-	b=CcbL799tKj3KExxNjYWMJZnMhI7aNJaApzcwMuzj6pe5Lfc3RrWTSYvrgOaU9jYw2hvGMB
-	Ec/U5HZ9zU4KmsF8HTXAT6J3aI+xLBkfsih5ZFg0/8A8DG6w2pk4HvwC/rWPagu3RO3o7y
-	RFSwlYH3rXU32IcPH05Lg7fJ55k78R4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712271912;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
-	b=TN73Rs8EamcWeu9yssAmGKbtBok/WbaXA9BgRNDFMilXw3WQ+E6MN86mAkGQXPQ7Cbr6cl
-	3KFzZaJo/fEknkCg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B0A5B139E8;
-	Thu,  4 Apr 2024 23:05:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id mA7jHicyD2YpIgAAn2gu4w
-	(envelope-from <krisman@suse.de>); Thu, 04 Apr 2024 23:05:11 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: Eric Biggers <ebiggers@kernel.org>,  tytso@mit.edu,
-  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  brauner@kernel.org,  jack@suse.cz,  linux-kernel@vger.kernel.org,
-  viro@zeniv.linux.org.uk,  kernel@collabora.com
-Subject: Re: [f2fs-dev] [PATCH v15 7/9] f2fs: Log error when lookup of
- encoded dentry fails
-In-Reply-To: <e6d1ad0b-719a-4693-bd34-bea3cf6e4fa2@collabora.com> (Eugen
-	Hristev's message of "Thu, 4 Apr 2024 17:50:29 +0300")
-References: <20240402154842.508032-1-eugen.hristev@collabora.com>
-	<20240402154842.508032-8-eugen.hristev@collabora.com>
-	<20240403042503.GI2576@sol.localdomain>
-	<e6d1ad0b-719a-4693-bd34-bea3cf6e4fa2@collabora.com>
-Date: Thu, 04 Apr 2024 19:05:10 -0400
-Message-ID: <87v84w3f15.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1712272113; c=relaxed/simple;
+	bh=YB3k73MSlgXhaZgBxLqPQ2GTe+rYPuSn+ymAiJvnNjk=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hSMWYBz9PnME3Y04I32ksfkJk/mPcJEzItMcdUt2mzLOKOD9OkgGPYpakEuhaYLsmJj7XdMrbFX8qqyNH0M2bXjHE1lK4M1Sni1QNkQjNBdWulSL3u55vwLD3a7rmOyzrGIRcioqKtD8LKR8lTtd/C9eP+diWp8SZGc7gt9vNL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.jp; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=vJic398R; arc=none smtp.client-ip=52.119.213.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.jp
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1712272111; x=1743808111;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=LYlULA1X6feFv3WTxvLyYvnsT80qwNGSBW46vZBwbD0=;
+  b=vJic398RT9sY4NnQUWRqDojpyHHcQyHWAwJ2KxTmc6imEHclmbAvS8lM
+   Su4mhcQlbMKKxeHjZXnvLYBBY3hkV+2NuutKQLlWwv8GMLOD/D8MPzCxD
+   jTzsDAGMrFYyWyVDKy4Xb7ii03GrhiXbx+nrOFybnZvKUE/HgGtnZmgNu
+   E=;
+X-IronPort-AV: E=Sophos;i="6.07,180,1708387200"; 
+   d="scan'208";a="624551142"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-52002.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 23:08:29 +0000
+Received: from EX19MTAUWA001.ant.amazon.com [10.0.7.35:26930]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.59.87:2525] with esmtp (Farcaster)
+ id 7f2003e6-55ab-4344-b717-c85b3a1bcc78; Thu, 4 Apr 2024 23:08:28 +0000 (UTC)
+X-Farcaster-Flow-ID: 7f2003e6-55ab-4344-b717-c85b3a1bcc78
+Received: from EX19D004ANA001.ant.amazon.com (10.37.240.138) by
+ EX19MTAUWA001.ant.amazon.com (10.250.64.204) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Thu, 4 Apr 2024 23:08:28 +0000
+Received: from 88665a182662.ant.amazon.com (10.106.100.6) by
+ EX19D004ANA001.ant.amazon.com (10.37.240.138) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.1258.28;
+ Thu, 4 Apr 2024 23:08:25 +0000
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+To: <sfr@canb.auug.org.au>
+CC: <kuniyu@amazon.com>, <linux-kernel@vger.kernel.org>,
+	<linux-next@vger.kernel.org>, <trond.myklebust@hammerspace.com>,
+	<trondmy@gmail.com>
+Subject: Re: linux-next: build failure after merge of the nfs tree
+Date: Thu, 4 Apr 2024 16:08:17 -0700
+Message-ID: <20240404230817.62526-1-kuniyu@amazon.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240405095341.3a9f0d95@canb.auug.org.au>
+References: <20240405095341.3a9f0d95@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:email,collabora.com:email]
+X-ClientProxiedBy: EX19D035UWA004.ant.amazon.com (10.13.139.109) To
+ EX19D004ANA001.ant.amazon.com (10.37.240.138)
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+Date: Fri, 5 Apr 2024 09:53:41 +1100
+> Hi all,
+> 
+> After merging the nfs tree, today's linux-next build (x86_64 allmodconfig)
+> failed like this:
+> 
+> fs/nfs/inode.c: In function 'nfs_net_init':
+> fs/nfs/inode.c:2434:13: error: assignment to 'int' from 'struct proc_dir_entry *' makes integer from pointer without a cast [-Werror=int-conversion]
+>  2434 |         err = rpc_proc_register(net, &nn->rpcstats);
+>       |             ^
+> cc1: all warnings being treated as errors
+> 
+> Caused by commit
+> 
+>   f290a586e31f ("nfs: Handle error of rpc_proc_register() in nfs_net_init().")
+> 
+> I have used the nfs tree from next-20240404 for today.
 
-> On 4/3/24 07:25, Eric Biggers wrote:
->> On Tue, Apr 02, 2024 at 06:48:40PM +0300, Eugen Hristev via Linux-f2fs-devel wrote:
->>> If the volume is in strict mode, generi c_ci_compare can report a broken
->>> encoding name.  This will not trigger on a bad lookup, which is caught
->>> earlier, only if the actual disk name is bad.
->>>
->>> Suggested-by: Gabriel Krisman Bertazi <krisman@suse.de>
->>> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
->>> ---
->>>  fs/f2fs/dir.c | 15 ++++++++++-----
->>>  1 file changed, 10 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
->>> index 88b0045d0c4f..64286d80dd30 100644
->>> --- a/fs/f2fs/dir.c
->>> +++ b/fs/f2fs/dir.c
->>> @@ -192,11 +192,16 @@ static inline int f2fs_match_name(const struct inode *dir,
->>>  	struct fscrypt_name f;
->>>  
->>>  #if IS_ENABLED(CONFIG_UNICODE)
->>> -	if (fname->cf_name.name)
->>> -		return generic_ci_match(dir, fname->usr_fname,
->>> -					&fname->cf_name,
->>> -					de_name, de_name_len);
->>> -
->>> +	if (fname->cf_name.name) {
->>> +		int ret = generic_ci_match(dir, fname->usr_fname,
->>> +					   &fname->cf_name,
->>> +					   de_name, de_name_len);
->>> +		if (ret == -EINVAL)
->>> +			f2fs_warn(F2FS_SB(dir->i_sb),
->>> +				"Directory contains filename that is invalid UTF-8");
->>> +
->> 
->> Shouldn't this use f2fs_warn_ratelimited?
->
-> f2fs_warn_ratelimited appears to be very new in the kernel,
->
-> Krisman do you think you can rebase your for-next on top of latest such that this
-> function is available ? I am basing the series on your for-next
-> branch.
-
-I try to make unicode/for-next a non-rebase branch, and I don't want to
-pollute the tree with an unecessary backmerge.  Instead, why not base
-your work on a more recent branch, since it has no dependencies on
-anything from unicode/for-next?
-
--- 
-Gabriel Krisman Bertazi
+Sorry, I posted v2 of the patch.
+https://lore.kernel.org/linux-nfs/20240404221200.52876-1-kuniyu@amazon.com/
 
