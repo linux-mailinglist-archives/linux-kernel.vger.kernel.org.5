@@ -1,223 +1,163 @@
-Return-Path: <linux-kernel+bounces-131082-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131083-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13D598982DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:08:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9B3D8982DC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:11:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB993282CFD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:08:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 37DDA289797
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765F267A0E;
-	Thu,  4 Apr 2024 08:07:53 +0000 (UTC)
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B92166B5E;
+	Thu,  4 Apr 2024 08:11:20 +0000 (UTC)
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1C7433B0;
-	Thu,  4 Apr 2024 08:07:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E9A75CDE4
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712218072; cv=none; b=XKXyf33IHzaW7EQT8KB7hNt9wtnM7woQZ4ph8FUljSHqsUcK6+HhJZRtR1WPkdSPe9x4/Y2r4cqRJFL7sAQiaYAhh6+Ll34+L5NxFOilLhALv0Cqeb8V7+GSMrdQmeD1b8pgg5K9Qr0ZAV8ju/sOAN7p8NO7dwGO1LOjxvjUSds=
+	t=1712218279; cv=none; b=K/C+wtd+48EZX1LZEb6q/pX8zj+1XLYKgBqt19mUKKA0XyregQDh4KipC8gc7JBZxNNVAnTYKgIVq1kSviWThbENVaAujB0/MVXz5cEU3PGgeVB5GXEcnPWOgOEHE/RLTZGmFCjdNvhPCHuCXB5F79pnkaq/kS3GD2XpOtKLvMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712218072; c=relaxed/simple;
-	bh=rExwqTNfKLv3TIywfVqg5viYD88ixVjYzp96V6sW5qE=;
-	h=From:In-Reply-To:Content-Type:References:Date:Cc:To:MIME-Version:
-	 Message-ID:Subject; b=gLSgULOX5A1PctiVTRhCbFFfwyL/vFKbONgkGrM8WufBUZxGG9vV9lsuDw+sEyqxQWHt0Csv12eWq5EYLGCdNLCGGCYPem5jb5KyFn7cXVv0uzBx4IOldSRqzpt8PxBA/ZvurC6gLxxZmh/XNk0LfYJgJOLg5SraoPZPeek61TQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Received: from harlem.collaboradmins.com (harlem.collaboradmins.com [IPv6:2a01:4f8:1c0c:5936::1])
-	by madrid.collaboradmins.com (Postfix) with ESMTP id 0F869378209A;
-	Thu,  4 Apr 2024 08:07:47 +0000 (UTC)
-From: "Shreeya Patel" <shreeya.patel@collabora.com>
-In-Reply-To: <c790c8ba-a9bd-4820-8084-1294e5e523d9@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-X-Forward: 127.0.0.1
-References: <20240327225057.672304-1-shreeya.patel@collabora.com>
- <35f774-660d3b80-3-513fcf80@97941910>
- <86150c89-11d5-4d52-987e-974b1a03018f@linaro.org> <3049149.687JKscXgg@diego> <c790c8ba-a9bd-4820-8084-1294e5e523d9@linaro.org>
-Date: Thu, 04 Apr 2024 09:07:47 +0100
-Cc: =?utf-8?q?Heiko_St=C3=BCbner?= <heiko@sntech.de>, mchehab@kernel.org, hverkuil@xs4all.nl, hverkuil-cisco@xs4all.nl, robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, mturquette@baylibre.com, sboyd@kernel.org, p.zabel@pengutronix.de, shawn.wen@rock-chips.com, kernel@collabora.com, linux-kernel@vger.kernel.org, linux-media@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-clk@vger.kernel.org, linux-arm@lists.infradead.org
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>
+	s=arc-20240116; t=1712218279; c=relaxed/simple;
+	bh=2zcR1ZLOP5P3n/jCwQlW8AS0/zhbXpQTbGoIC+wh9R0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K9iUn5KzNgo0r+bTQCPu1CNT9OMNpdeoWw3aLic8xycf9z0VZvksscyoUjCdvV9yDBpDVinb0WAzXwpDeaSFoN8uxov9SOsTYilfoOSFKPMa4gOzrL8rHjS8M9SzHGxSxk8Xs50uC+DbYaZRKZqkyWUqW2MceUzhDsMR310xQ8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d6fc3adaacso9091511fa.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 01:11:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712218276; x=1712823076;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gY1+8Ba0IUhV47SSlluAbb3kKLO9jgkMvgMyme1VXC8=;
+        b=c+FmpLSs+DXCWb4cPS1OkTmcIfN/pVj20XMoaflCyU7Si1DxJEyfmpJzv12a2wCjGc
+         WGVoAtSOJjb6kKnxJgi84CVS5nJrQ3uWXFg6DTU3QZMgFHIRRM9uWo5EbyGCWocBSVPv
+         Rbh6prkxFJLQNjEr86Oy8EEMKSnoqmYjEj+JG+89MNoQteCbJzgstplSYMRv6L/d3R29
+         ytP7o/JFuH6zxjrJX1tE4V6Cy82ysKlC12CSLsCj91o9KRALBHPFaCf6dDm3JYsUCUYP
+         AtO9nycBQGVFV9V6M8kCztwdfsqL/56UtkRIVzYbJYOIMDyTpTgqP/CaRdWEeIkh4tk9
+         297Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWzbMpO9jh3pJVRBFqdnKLqO2TmcReqLX1gz4ez7FRefU02ap0XySNA3WEy37A8Y6HtGSMRFoMPyj4GdWqg7WEpuKV8SyGVPmCvq5NE
+X-Gm-Message-State: AOJu0YxO05MKWAY2nypS8mA112uB66LE/wTW2u2PKVhr8Whvql/Fqnwo
+	uHkMI2fcX1b12d1JsdC1NzxxWrweAcVdNMLYRLEgnNumtl8PfD/OuQ5PJ5oO7Hs=
+X-Google-Smtp-Source: AGHT+IGgD6cYA1AXQR+xpHZBOVNfMRzZXJYkL8kcE5e+w6n51OJBT7OZQ+0NgTPFh5sKQgHWjqLP/w==
+X-Received: by 2002:ac2:48a7:0:b0:513:d3cb:249f with SMTP id u7-20020ac248a7000000b00513d3cb249fmr1244545lfg.52.1712218275986;
+        Thu, 04 Apr 2024 01:11:15 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
+        by smtp.gmail.com with ESMTPSA id e18-20020adfa452000000b00343c9ce4b50sm356307wra.53.2024.04.04.01.11.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 01:11:15 -0700 (PDT)
+Message-ID: <593747f1-4256-4931-9d5c-50f1b68d3c2b@kernel.org>
+Date: Thu, 4 Apr 2024 10:11:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <36bd27-660e6000-3-6c1c1e00@12777057>
-Subject: =?utf-8?q?Re=3A?= [PATCH v3 0/6] Add Synopsys DesignWare HDMI RX Controller
-User-Agent: SOGoMail 5.10.0
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] tty: xtensa/iss: Use min() to fix Coccinelle warning
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: chris@zankel.net, gregkh@linuxfoundation.org, jcmvbkbc@gmail.com,
+ linux-kernel@vger.kernel.org
+References: <528c6824-287e-4be2-82f3-7fcdd254eb15@kernel.org>
+ <20240404075811.6936-3-thorsten.blum@toblux.com>
+Content-Language: en-US
+From: Jiri Slaby <jirislaby@kernel.org>
+Autocrypt: addr=jirislaby@kernel.org; keydata=
+ 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
+In-Reply-To: <20240404075811.6936-3-thorsten.blum@toblux.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thursday, April 04, 2024 11:45 IST, Krzysztof Kozlowski <krzysztof.k=
-ozlowski@linaro.org> wrote:
+On 04. 04. 24, 9:58, Thorsten Blum wrote:
+> Inline strlen() and use min() to fix the following Coccinelle/coccicheck
+> warning reported by minmax.cocci:
+> 
+> 	WARNING opportunity for min()
+> 
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 
-> On 04/04/2024 00:48, Heiko St=C3=BCbner wrote:
-> > Am Mittwoch, 3. April 2024, 13:24:05 CEST schrieb Krzysztof Kozlows=
-ki:
-> >> On 03/04/2024 13:20, Shreeya Patel wrote:
-> >>> On Wednesday, April 03, 2024 15:51 IST, Krzysztof Kozlowski <krzy=
-sztof.kozlowski@linaro.org> wrote:
-> >>>
-> >>>> On 03/04/2024 11:24, Shreeya Patel wrote:
-> >>>>> On Thursday, March 28, 2024 04:20 IST, Shreeya Patel <shreeya.p=
-atel@collabora.com> wrote:
-> >>>>>
-> >>>>>> This series implements support for the Synopsys DesignWare
-> >>>>>> HDMI RX Controller, being compliant with standard HDMI 1.4b
-> >>>>>> and HDMI 2.0.
-> >>>>>>
-> >>>>>
-> >>>>> Hi Mauro and Hans,
-> >>>>>
-> >>>>> I haven't received any reviews so far. Hence, this is just a ge=
-ntle reminder to review this patch series.
-> >>>>
-> >>>> Why did you put clk changes here? These go via different subsyst=
-em. That
-> >>>> might be one of obstacles for your patchset.
-> >>>>
-> >>>
-> >>> I added clock changes in this patch series because HDMIRX driver =
-depends on it.
-> >>> I thought it is wrong to send the driver patches which don't even=
- compile?
-> >>
-> >> Hm, why HDMIRX driver depends on clock? How? This sounds really wr=
-ong.
-> >> Please get it reviewed internally first.
-> >=20
-> > For the change in question, the clock controller on the soc also ha=
-ndles
-> > the reset controls (hence its name CRU, clock-and-reset-unit) .
-> >=20
-> > There are at least 660 reset lines in the unit and it seems the hdm=
-i-rx one
-> > was overlooked on the initial submission, hence patches 1+2 add the
-> > reset-line.
-> >=20
-> > Of course, here only the "arm64: dts:" patch depends on the clock
-> > change, is it references the new reset-id.
->=20
-> Wait, that's expected, but it is not what was written. Claim was HDMI=
-RX
-> driver depends *build time* ("don't even compile").
->=20
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-For some context, when I was testing the downstream driver against the
-device tree, I saw some failures because of the missing reset ( which I=
- am trying
-to add in the first two patches for this series )
+Thanks.
 
-..
-	hdmirx=5Fdev->rst=5Fbiu =3D devm=5Freset=5Fcontrol=5Fget(hdmirx=5Fdev-=
->dev, "rst=5Fbiu");
-	if (IS=5FERR(hdmirx=5Fdev->rst=5Fbiu)) {
-		dev=5Ferr(dev, "failed to get rst=5Fbiu control\n");
-		return PTR=5FERR(hdmirx=5Fdev->rst=5Fbiu);
-	}
+> ---
+> Changes in v2:
+> - Use min() instead of umin() as suggested by Jiri Slaby
+> 
+> Changes in v3:
+> - Inline strlen() as suggested by Jiri Slaby
+> ---
+>   arch/xtensa/platforms/iss/console.c | 6 ++----
+>   1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/xtensa/platforms/iss/console.c b/arch/xtensa/platforms/iss/console.c
+> index 8896e691c051..abec44b687df 100644
+> --- a/arch/xtensa/platforms/iss/console.c
+> +++ b/arch/xtensa/platforms/iss/console.c
+> @@ -166,10 +166,8 @@ late_initcall(rs_init);
+>   
+>   static void iss_console_write(struct console *co, const char *s, unsigned count)
+>   {
+> -	if (s && *s != 0) {
+> -		int len = strlen(s);
+> -		simc_write(1, s, count < len ? count : len);
+> -	}
+> +	if (s && *s != 0)
+> +		simc_write(1, s, min(count, strlen(s)));
+>   }
+>   
+>   static struct tty_driver* iss_console_device(struct console *c, int *index)
 
-shreeya@shreeya:~/collabora/rd/rockchip/linux$ make dtbs
-  DTC     arch/arm64/boot/dts/rockchip/rk3588-coolpi-cm5-evb.dtb
-Error: arch/arm64/boot/dts/rockchip/rk3588.dtsi:187.23-24 syntax error
-FATAL ERROR: Unable to parse input tree
-make[3]: *** [scripts/Makefile.lib:419: arch/arm64/boot/dts/rockchip/rk=
-3588-coolpi-cm5-evb.dtb] Error 1
-make[2]: *** [scripts/Makefile.build:481: arch/arm64/boot/dts/rockchip]=
- Error 2
-make[1]: *** [/home/shreeya/collabora/rd/rockchip/linux/Makefile:1392: =
-dtbs] Error 2
-make: *** [Makefile:240: =5F=5Fsub-make] Error 2
-
-Sorry for referring this as a driver build failure but I am sure you wo=
-uld=20
-also have not been okay with the above issues.
-Ofcourse I can simply remove this dependency from the driver but maybe
-that will affect the functionality and I didn't want to send a buggy pa=
-tch series.
-
-My intention here was just like Heiko said, to keep all the dependent p=
-atches
-together. I didn't know that would be a trouble for Maintainers.
-
-FWIW, HDMIRX patch series was reviewed multiple times and that is why y=
-ou
-see a Reviewed-by tag from a Collabora Engineer. Sometimes the things t=
-hat look
-problematic to one might not look the same to others and that is why I =
-asked you
-to provide some more details about the problem that you were seeing.
-
-https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/=
-merge=5Frequests/21
-https://gitlab.collabora.com/hardware-enablement/rockchip-3588/linux/-/=
-merge=5Frequests/17
-
-
-> >=20
-> >=20
-> > Am Mittwoch, 3. April 2024, 12:22:57 CEST schrieb Krzysztof Kozlows=
-ki:
-> >> Please do not engage multiple subsystems in one patchset, if not
-> >> necessary. Especially do not mix DTS into media or USB subsystems.=
- And
-> >> do not put DTS in the middle!
-> >=20
-> > picking up your reply from patch 4/6, there seem to be different "s=
-chools
-> > of thought" for this. Some maintainers might want to really only se=
-e
-> > patches that are explicitly for their subsystem - I guess networkin=
-g
-> > might be a prime example for that, who will essentially apply whole=
- series'
-> > if nobody protests in time (including dts patches)
->=20
-> There is no school saying DTS is allowed to be in the middle.
->=20
-> Other schools are indeed saying that seeing DTS is good and
-> recommendation is to post it separate and provide a link. That's way =
-you
-> avoid DTS being pulled by Greg, media or networking.
->=20
-
-This was my mistake and I simply forgot to remove the DTS when I was
-testing the driver for the last time before sending the v3 upstream.
-Adding it in the middle was incorrect, I should have added it as a sepa=
-rate
-patch but honestly this has always been very confusing and the expectat=
-ion
-differs from maintainers to maintainers.
-
-> >=20
-> > On the other hand I also remember seeing requests for "the full pic=
-ture"
-> > and individual maintainers then just picking and applying the patch=
-es
-> > meant for their subsystem.
-> >=20
-> > The series as it stands right now is nice in that it allows (random=
-)
-> > developers to just pick it up, apply it to a tree and test the actu=
-al driver
-> > without needing to hunt for multiple dependant series.
-> >=20
-> >=20
-> > Of course you're right, the "arm64: dts:" patch should be the last =
-in the
-> > series and not be in the middle of it.
->=20
-
-I will make sure to correct this in my v4.
-
-Thanks,
-Shreeya Patel
->=20
-> Best regards,
-> Krzysztof
->
+-- 
+js
+suse labs
 
 
