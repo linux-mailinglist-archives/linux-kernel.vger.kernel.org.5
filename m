@@ -1,136 +1,127 @@
-Return-Path: <linux-kernel+bounces-131031-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131030-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0BA2898232
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:28:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72EDC898230
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:28:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8039E1F245E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:28:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2CD01C21408
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:28:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D9485CDE4;
-	Thu,  4 Apr 2024 07:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 640665A10F;
+	Thu,  4 Apr 2024 07:27:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="asXyt6EQ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e0nv9o2m"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C25159158;
-	Thu,  4 Apr 2024 07:27:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39C4659158
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:27:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712215680; cv=none; b=dOmerWTy8qFM3YwbvDWhPsY3vWgjrtfq2Cp1D2I0+WFI3URUuVRNQy+39HAaEnV9AKp4odu0T8ePO8wmjXhfG9K19hW29+nsJarsVahDCXQDAVcB9bUJ2EPya4XGpSN2ESMpPLKFSRIpadUdxdbzriJehF8fG9BEdexqGinVglI=
+	t=1712215674; cv=none; b=BvIPhW2kmCWECkh3/VnHoNIZvaYNQMfuBQLPbrqYEoOMaBcXEQs4s/oJjO2VCVbBYaW3RitSMnpmJFEnzBxPS7mElE53rTjIy3Zu+Y2ERX+rCHSev3HNcMo5TvFRaN8BF4+Zy2wur13oi7J+ysvu6OuJzbFKDCUid7ie56NfPk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712215680; c=relaxed/simple;
-	bh=RKQ+b/6tx0j5fcRbGd1+ZSjUZNL7pamhVmxxau7bjRk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B1AVk9S0tX8WOlXod62BmJKJnvtuJl6JBew18lV+7RNEDjsO7QT9kxyzLYlPvuLVY9E1gNxV1Nv673me+jAS9F66EDVe000T8iZCL83yK/YNINnvlAJsfYL02wuc239IodvJMro0Tar8UIc2FMGP8X5EwNqp5KkHKXiH0OxPT5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=asXyt6EQ; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712215679; x=1743751679;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=RKQ+b/6tx0j5fcRbGd1+ZSjUZNL7pamhVmxxau7bjRk=;
-  b=asXyt6EQqJKrNjoNw/DnP1R0Ggm+kIyoggjSe8OzmqOdqgi9jQoTed5B
-   yTAT5+wY/5p2Wq7s5hRWJKgUbTIRXjoG1Dxrutv1KlpwBG1eiDD6qPodq
-   R01UwcMllCIhaxASc8TdAEPHbJn9rf4IGN4rOuqCARlf9AMcullCnZ8NM
-   5W/5FiNbhd2rspK+qt92aLX2w2Sh8kF89NeSqc+64gHHORrMo7MJyRd7L
-   Bg5Y3s9eP6rCcV9wCSa5ukcb4Ph2Jlbg0i1U3Xq41boTviHqc41hBEf02
-   glCc1i+a+MXCfbBjyWyUOfb+jYd3YAQXk+LgzxQZvD1GFiX3dnnw2u+/c
-   Q==;
-X-CSE-ConnectionGUID: 9xeE+pR2QtScVCODI1CcMQ==
-X-CSE-MsgGUID: O5cOmguMQAOV/syGdiTSiw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18639036"
-X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
-   d="scan'208";a="18639036"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 00:27:58 -0700
-X-CSE-ConnectionGUID: oppg5AWXS++CeE9U/jyXuw==
-X-CSE-MsgGUID: Ivckoag3Qg6Aicdl0XJzcw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
-   d="scan'208";a="18802468"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 00:27:50 -0700
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-	by kekkonen.fi.intel.com (Postfix) with ESMTP id A685611F855;
-	Thu,  4 Apr 2024 10:27:47 +0300 (EEST)
-Date: Thu, 4 Apr 2024 07:27:47 +0000
-From: Sakari Ailus <sakari.ailus@linux.intel.com>
-To: Bjorn Helgaas <helgaas@kernel.org>
-Cc: Yong Zhi <yong.zhi@intel.com>, Bingbu Cao <bingbu.cao@intel.com>,
-	Dan Scally <djrscally@gmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Tianshu Qiu <tian.shu.qiu@intel.com>, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
-	Hyungwoo Yang <hyungwoo.yang@intel.com>,
-	Rajmohan Mani <rajmohan.mani@intel.com>,
-	Vijaykumar Ramya <ramya.vijaykumar@intel.com>,
-	Samu Onkalo <samu.onkalo@intel.com>,
-	Jouni =?iso-8859-1?Q?H=F6gander?= <jouni.hogander@intel.com>,
-	Jouni Ukkonen <jouni.ukkonen@intel.com>,
-	Antti Laakso <antti.laakso@intel.com>
-Subject: Re: [PATCH] media: ipu-cio2: Remove unnecessary runtime PM power
- state setting
-Message-ID: <Zg5Wc6DMPYBqlCFr@kekkonen.localdomain>
-References: <20240325220325.1452712-1-helgaas@kernel.org>
+	s=arc-20240116; t=1712215674; c=relaxed/simple;
+	bh=GSH6m/6gmzpdE4ilkVc5O/E3ikW4/Ya8/okCEmiU6Qg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jOJ/9A8U4zNZjvk/jPe4pc3qzSB1bzxR2Ikm+cyJ+zkpYXfNRz+z7YwZ18Vyy3OqIbFbzVCZoltziy15GBoE8b+R/SWUNCGQjw5Vq+7AONKJjyIZXM6Pg/b05AVlXWYLquMX2hv0rM9EAJrXvwLU9kZCexsc/a5ZWNmiSwQGMtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e0nv9o2m; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712215672;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t2tlqAQDqg/5deVRzvMbMah/jpwOnEqnfEQox5MDopI=;
+	b=e0nv9o2mHepGFzN5l5DEOpFJJWYqovEYryi9tjlgEpQE0D4MKGiLpLy4GDpJMsn3H0drKV
+	NN0k6OwulvipJ7TCCf4a4G39/88Qcv/YZ2gxqUxaDq4laKcDJevSHVqqXH4eo6bPHUIYkW
+	7OVvssI7m0xQGVXFKw7Z+EefQco+7n4=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-558-1YUdGLlgOwCnxL2-Jv35nA-1; Thu, 04 Apr 2024 03:27:50 -0400
+X-MC-Unique: 1YUdGLlgOwCnxL2-Jv35nA-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a5193257fb7so1165666b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 00:27:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712215669; x=1712820469;
+        h=mime-version:references:in-reply-to:message-id:date:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=t2tlqAQDqg/5deVRzvMbMah/jpwOnEqnfEQox5MDopI=;
+        b=w+tsuX8bpqq5GHsRcLqKwqj2zHkjvutvPnAAfsmPEsVrZCruMflL1hi1JbflWEkzKs
+         99Rktk0ah999gx4WTtUouUpUoHIzt1P1P3W7wFTZJbLZlFgKI2jspmh8ovUlfW09v0Am
+         5ZOw0MuLW2VFLU1hG2+daxN8FxldIzb/PMt/w/g86APMkptB7mqNKzDw575OL4QZVQgO
+         j3400eyNFQXDr5QEBe36xGQ0Pdcnd/T59YXzGx8O9cZ9R42EvfsYZ6En+1s4Es3K054f
+         ymY0bYIHvca0nF5txacJ/7PpYjcxSQDCikRt+E2a4qUS/gEMGxgBjQDSysPHwSOPfwbj
+         Wv/w==
+X-Forwarded-Encrypted: i=1; AJvYcCXtjFBIDy3LCXeTPv+dpjBeRQLuBSNK5GPDOjLZ/gulL6isrkW2dlLrncB6qAIToKREU6VpZnpcH14yQbobzVbRe/+4LoEYwOvExNMj
+X-Gm-Message-State: AOJu0YyIuxXOg6LuAZDoHb411yhFcLtsOWbsWQGWqMd8BIHQxLRcEyDP
+	gs1VR+Luo9HHxAfSJ09TUJm/tqz5INyBQiiX/j0hZWPUfq2+VICnQuU5aKq3oLtaXDFiwyWtSlg
+	vBQtyxOCg4wlRjGeXkL01zA5oksUBbdYxS+AWIAunbRwqjabByUVrUB2Jg1GoGA==
+X-Received: by 2002:a17:906:4804:b0:a4e:2777:37c7 with SMTP id w4-20020a170906480400b00a4e277737c7mr896127ejq.49.1712215669543;
+        Thu, 04 Apr 2024 00:27:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHxbPP/ODmWMUcbgi/9We+ccJFuLsAvC+2+RNcoWVGTULDHqqt1uu9PwBj8X4lBnIyjLGdgFQ==
+X-Received: by 2002:a17:906:4804:b0:a4e:2777:37c7 with SMTP id w4-20020a170906480400b00a4e277737c7mr896104ejq.49.1712215669185;
+        Thu, 04 Apr 2024 00:27:49 -0700 (PDT)
+Received: from [172.16.2.75] (5920ab7b.static.cust.trined.nl. [89.32.171.123])
+        by smtp.gmail.com with ESMTPSA id g4-20020a17090669c400b00a4673706b4dsm8698717ejs.78.2024.04.04.00.27.48
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Apr 2024 00:27:48 -0700 (PDT)
+From: Eelco Chaudron <echaudro@redhat.com>
+To: Ilya Maximets <i.maximets@ovn.org>
+Cc: netdev@vger.kernel.org, dev@openvswitch.org, linux-kernel@vger.kernel.org,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, "David S. Miller" <davem@davemloft.net>
+Subject: Re: [ovs-dev] [PATCH net] net: openvswitch: fix unwanted error log on
+ timeout policy probing
+Date: Thu, 04 Apr 2024 09:27:47 +0200
+X-Mailer: MailMate (1.14r6028)
+Message-ID: <AA6642E8-F501-42EB-8AB1-A8D4C4356888@redhat.com>
+In-Reply-To: <20240403203803.2137962-1-i.maximets@ovn.org>
+References: <20240403203803.2137962-1-i.maximets@ovn.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240325220325.1452712-1-helgaas@kernel.org>
+Content-Type: text/plain
 
-Hi Bjorn,
 
-On Mon, Mar 25, 2024 at 05:03:25PM -0500, Bjorn Helgaas wrote:
-> From: Bjorn Helgaas <bhelgaas@google.com>
-> 
-> ipu-cio2 uses generic power management, and pci_pm_runtime_suspend() and
-> pci_pm_runtime_resume() already take care of setting the PCI device power
-> state, so the driver doesn't need to do it explicitly.
-> 
-> Remove explicit setting to D3hot or D0 during runtime suspend and resume.
-> 
-> Remove #defines that are no longer used.
-> 
-> Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-> Cc: Hyungwoo Yang <hyungwoo.yang@intel.com>
-> Cc: Rajmohan Mani <rajmohan.mani@intel.com>
-> Cc: Vijaykumar Ramya <ramya.vijaykumar@intel.com>
-> Cc: Samu Onkalo <samu.onkalo@intel.com>
-> Cc: Jouni Högander <jouni.hogander@intel.com>
-> Cc: Jouni Ukkonen <jouni.ukkonen@intel.com>
-> Cc: Antti Laakso <antti.laakso@intel.com>
+
+On 3 Apr 2024, at 22:38, Ilya Maximets wrote:
+
+> On startup, ovs-vswitchd probes different datapath features including
+> support for timeout policies.  While probing, it tries to execute
+> certain operations with OVS_PACKET_ATTR_PROBE or OVS_FLOW_ATTR_PROBE
+> attributes set.  These attributes tell the openvswitch module to not
+> log any errors when they occur as it is expected that some of the
+> probes will fail.
+>
+> For some reason, setting the timeout policy ignores the PROBE attribute
+> and logs a failure anyway.  This is causing the following kernel log
+> on each re-start of ovs-vswitchd:
+>
+>   kernel: Failed to associated timeout policy `ovs_test_tp'
+>
+> Fix that by using the same logging macro that all other messages are
+> using.  The message will still be printed at info level when needed
+> and will be rate limited, but with a net rate limiter instead of
+> generic printk one.
+>
+> The nf_ct_set_timeout() itself will still print some info messages,
+> but at least this change makes logging in openvswitch module more
+> consistent.
+>
+> Fixes: 06bd2bdf19d2 ("openvswitch: Add timeout support to ct action")
+> Signed-off-by: Ilya Maximets <i.maximets@ovn.org>
 > ---
-> This code was initially added by c2a6a07afe4a ("media: intel-ipu3: cio2:
-> add new MIPI-CSI2 driver").
-> 
-> Even at that time, the explicit power state setting should not have been
-> necessary, so maybe there's a reason for it.  I have no way to test this,
-> so if it *is* needed, please:
-> 
->   - Add a comment about the reason and
-> 
->   - Convert it to use pci_set_power_state() so the PCI core knows about the
->     change and all the required state transition delays are observed.
 
-Thanks for the patch.
+Thanks for fixing this annoying startup message! The change looks good to me.
 
-The device seems to work fine with the patch applied so I presume it wasn't
-necessary to begin with.
+Acked-by: Eelco Chaudron <echaudro@redhat.com>
 
--- 
-Regards,
-
-Sakari Ailus
 
