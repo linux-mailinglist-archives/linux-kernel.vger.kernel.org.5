@@ -1,54 +1,85 @@
-Return-Path: <linux-kernel+bounces-132221-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81EC3899198
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:51:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A175A89919E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:53:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C7602854AD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:51:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19A581F2797A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED75070CD7;
-	Thu,  4 Apr 2024 22:51:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC4E7175D;
+	Thu,  4 Apr 2024 22:53:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="huuEDqmt"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jI6yA9Ei"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CACE6F510
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 22:51:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D78F71723;
+	Thu,  4 Apr 2024 22:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712271083; cv=none; b=PuI/oHrqkA6+rQIJgUj4dKremYID1MSXBcXecInOJ8s/zJVxv2a1SG6w1NAM7Nf8nnLCrQ6Lq2bstWjZZVWn162ENMMYWWNRMhr6f7CmuTUhzL+RsNlJI6k75UMn7h/clN8KHaL+LM/RA9djwIppRvjnvci2iic4jxv5yUPXjtY=
+	t=1712271203; cv=none; b=CQHoQL6+vktB/WTYdn0XDtDQarNlL4Iwp1gxFX0D7LTA5Qw+zgYPa159skWaEMjlYCBeyExL+V1UXKBonxOWPtLjjHrF7L6gyW2st/YYhQ8HpFsK+wxnXtf/+sKM+kj9MH8pUW/eZiiu3pZ/VLYh5kgN9v/aGLfQS7zxfoivkEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712271083; c=relaxed/simple;
-	bh=2UN5GNAtSEXlpTizfwZqp5koDj5Ow1gXjAgNuS85JkE=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=o+M8D635M/Ya1I5XUJTRvwu0HY4I+79tGC1f0ZuvNg+X616vpgf8YtQ2laETAAujQUCCf8ns0dk8uqBq1uw0/Gog/8QL11/ac6IKJR8TuX3L0hHH6WbU7C1yPgnb+rTrlAh3E/QUtQ1in/AVWj4pTRwvADqVe6njIPJSl26Tz0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=huuEDqmt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5612C433C7;
-	Thu,  4 Apr 2024 22:51:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712271082;
-	bh=2UN5GNAtSEXlpTizfwZqp5koDj5Ow1gXjAgNuS85JkE=;
-	h=Date:From:To:Cc:Subject:Reply-To:From;
-	b=huuEDqmtN8iA/Xlr6Lm8EbdM/UjkEeuCdKvRGDv8LaRhDpN5wpoc4NAX495xlbFKo
-	 DGjPxlB6nrvQzLNuDJ7gDFsepu7wbF1wjS29cY1yb1pH8lRc2n7aN7h7EJVZUljN4d
-	 VSkIaTi6lpgdB4xytWaaWy1rKGzOGl9kqt4MJNW82ArQxOG4fA9WMmSgYYn8g2QrpL
-	 pR8FZnh+8QP7MgLwBZ6tNkha21QRTQkYuuXtamyVsqQ2HeOhZhGx6/GWtCE0ep3fLM
-	 WXCdPQkSu078Sc8f8XQ341bVucchEaVou+4dPCjXmXrjpGHsrYOkPbzQ9rh5geCI0j
-	 ssLlntjqdP8tw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 68762CE0D0C; Thu,  4 Apr 2024 15:51:22 -0700 (PDT)
-Date: Thu, 4 Apr 2024 15:51:22 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Finding open-coded workarounds for 1/2-byte cmpxchg()?
-Message-ID: <f57bcb57-45a4-4dfb-8758-8f7302223ea9@paulmck-laptop>
-Reply-To: paulmck@kernel.org
+	s=arc-20240116; t=1712271203; c=relaxed/simple;
+	bh=nHDeIZjgG/ABq+COPbhriixxj1CJ1aiFsFPnz9B5/Ew=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nzXPltvc/38mxa0NM3bUVoz3/WDmJV9bb4Gffd77wvu/IRggzZ5bcSn0Ahz1dyD3UxIdk8C9x/x6KqNR3HfzjMM1eCmSdUtrmOv9wgJLJxxiAmHZ214Jkl4+nW3AGm91VaCm+GxrJ4Jomqbwu0L/Y6jd2OM2OZ6H4HDP1ghhQq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jI6yA9Ei; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712271202; x=1743807202;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nHDeIZjgG/ABq+COPbhriixxj1CJ1aiFsFPnz9B5/Ew=;
+  b=jI6yA9Ein2vQr/xrpwN8Wdagm7yBeJxof7VWn5CEPxe/EsC71g1w9spL
+   Y+VSCINywYjsWn4HO8pgnux8klDq/AJ4LGrR0UIyHE2tduDWPEIrx6IRg
+   Fpe7WN5hDQpt/GaO7Fo0cb2yFBTxU1Tgjq+EeDtn6R1yEEP9CoggIE28E
+   XHyyct9M1XPrvh6lVz6z7eW5Plzsyl0MpUh/X76w5Fj0weCWVjYMHycQt
+   r7J+3KzNtqMPZFwbTN1M8Ux+1+g6Z6Bc1CNRqylefVbjnTnrZnySJjGI/
+   HaY73yb3c9C07Q99wWYCCrNFAcsH+Yd+Nh1d3IDcDISvD8zA4rCAm1a8S
+   w==;
+X-CSE-ConnectionGUID: AxPZNNiXQ+Sm++dRuJQXTQ==
+X-CSE-MsgGUID: DGEll113QRa54DvJegj47A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7747184"
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="7747184"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 15:53:21 -0700
+X-CSE-ConnectionGUID: DMVI8dVNQt+mFpCKldjuFw==
+X-CSE-MsgGUID: qHDgff3ISNujXJMguBDG9Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="50191958"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 04 Apr 2024 15:53:14 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rsVxH-0001b6-2d;
+	Thu, 04 Apr 2024 22:53:11 +0000
+Date: Fri, 5 Apr 2024 06:52:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Peter Griffin <peter.griffin@linaro.org>, mturquette@baylibre.com,
+	sboyd@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+	conor+dt@kernel.org, vkoul@kernel.org, kishon@kernel.org,
+	alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
+	s.nawrocki@samsung.com, cw00.choi@samsung.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, chanho61.park@samsung.com,
+	ebiggers@kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, linux-scsi@vger.kernel.org,
+	linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-clk@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	tudor.ambarus@linaro.org, andre.draszik@linaro.org,
+	saravanak@google.com, willmcvicker@google.com,
+	Peter Griffin <peter.griffin@linaro.org>
+Subject: Re: [PATCH 08/17] clk: samsung: gs101: add support for cmu_hsi2
+Message-ID: <202404050633.EZfOttFD-lkp@intel.com>
+References: <20240404122559.898930-9-peter.griffin@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,68 +88,80 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240404122559.898930-9-peter.griffin@linaro.org>
 
-Hello, Julia!
+Hi Peter,
 
-I hope that things are going well for you and yours.
+kernel test robot noticed the following build warnings:
 
-TL;DR: Would you or one of your students be interested in looking for
-some interesting code patterns involving cmpxchg?  If such patterns exist,
-we would either need to provide fixes or to drop support for old systems.
+[auto build test WARNING on krzk/for-next]
+[also build test WARNING on robh/for-next clk/clk-next linus/master v6.9-rc2 next-20240404]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-If this would be of interest, please read on!
+url:    https://github.com/intel-lab-lkp/linux/commits/Peter-Griffin/dt-bindings-clock-google-gs101-clock-add-HSI2-clock-management-unit/20240404-205113
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/krzk/linux.git for-next
+patch link:    https://lore.kernel.org/r/20240404122559.898930-9-peter.griffin%40linaro.org
+patch subject: [PATCH 08/17] clk: samsung: gs101: add support for cmu_hsi2
+config: arm64-defconfig (https://download.01.org/0day-ci/archive/20240405/202404050633.EZfOttFD-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240405/202404050633.EZfOttFD-lkp@intel.com/reproduce)
 
-Arnd (CCed) and I are looking for open-coded emulations for one-byte
-and two-byte cmpxchg().  Such emulations might be attempting to work
-around the fact that not all architectures support those sizes, being
-as they are only required to support four-byte cmpxchg() and, if they
-are 64-bit architectures, eight-byte cmpxchg().
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404050633.EZfOttFD-lkp@intel.com/
 
-There is a one-byte emulation in RCU (kernel/rcu/tasks.h), which looks
-like this:
+All warnings (new ones prefixed by >>):
 
-------------------------------------------------------------------------
+   In file included from drivers/clk/samsung/clk-gs101.c:16:
+>> drivers/clk/samsung/clk-gs101.c:3640:7: warning: 'mout_hsi2_mmc_card_p' defined but not used [-Wunused-const-variable=]
+    3640 | PNAME(mout_hsi2_mmc_card_p)     = { "fout_shared2_pll", "fout_shared3_pll",
+         |       ^~~~~~~~~~~~~~~~~~~~
+   drivers/clk/samsung/clk.h:229:44: note: in definition of macro 'PNAME'
+     229 | #define PNAME(x) static const char * const x[] __initconst
+         |                                            ^
+>> drivers/clk/samsung/clk-gs101.c:3633:7: warning: 'mout_hsi2_bus_p' defined but not used [-Wunused-const-variable=]
+    3633 | PNAME(mout_hsi2_bus_p)          = { "dout_cmu_shared0_div4",
+         |       ^~~~~~~~~~~~~~~
+   drivers/clk/samsung/clk.h:229:44: note: in definition of macro 'PNAME'
+     229 | #define PNAME(x) static const char * const x[] __initconst
+         |                                            ^
+>> drivers/clk/samsung/clk-gs101.c:3631:7: warning: 'mout_hsi2_pcie_p' defined but not used [-Wunused-const-variable=]
+    3631 | PNAME(mout_hsi2_pcie_p)         = { "oscclk", "dout_cmu_shared2_div2" };
+         |       ^~~~~~~~~~~~~~~~
+   drivers/clk/samsung/clk.h:229:44: note: in definition of macro 'PNAME'
+     229 | #define PNAME(x) static const char * const x[] __initconst
+         |                                            ^
+>> drivers/clk/samsung/clk-gs101.c:3628:7: warning: 'mout_hsi2_ufs_embd_p' defined but not used [-Wunused-const-variable=]
+    3628 | PNAME(mout_hsi2_ufs_embd_p)     = { "oscclk", "dout_cmu_shared0_div4",
+         |       ^~~~~~~~~~~~~~~~~~~~
+   drivers/clk/samsung/clk.h:229:44: note: in definition of macro 'PNAME'
+     229 | #define PNAME(x) static const char * const x[] __initconst
+         |                                            ^
 
-u8 rcu_trc_cmpxchg_need_qs(struct task_struct *t, u8 old, u8 new)
-{
-	union rcu_special ret;
-	union rcu_special trs_old = READ_ONCE(t->trc_reader_special);
-	union rcu_special trs_new = trs_old;
 
-	if (trs_old.b.need_qs != old)
-		return trs_old.b.need_qs;
-	trs_new.b.need_qs = new;
-	ret.s = cmpxchg(&t->trc_reader_special.s, trs_old.s, trs_new.s);
-	return ret.b.need_qs;
-}
+vim +/mout_hsi2_mmc_card_p +3640 drivers/clk/samsung/clk-gs101.c
 
-------------------------------------------------------------------------
+  3627	
+> 3628	PNAME(mout_hsi2_ufs_embd_p)	= { "oscclk", "dout_cmu_shared0_div4",
+  3629					    "dout_cmu_shared2_div2", "fout_spare_pll" };
+  3630	
+> 3631	PNAME(mout_hsi2_pcie_p)		= { "oscclk", "dout_cmu_shared2_div2" };
+  3632	
+> 3633	PNAME(mout_hsi2_bus_p)		= { "dout_cmu_shared0_div4",
+  3634					    "dout_cmu_shared1_div4",
+  3635					    "dout_cmu_shared2_div2",
+  3636					    "dout_cmu_shared3_div2",
+  3637					    "fout_spare_pll", "oscclk", "oscclk",
+  3638					    "oscclk" };
+  3639	
+> 3640	PNAME(mout_hsi2_mmc_card_p)	= { "fout_shared2_pll", "fout_shared3_pll",
+  3641					    "dout_cmu_shared0_div4", "fout_spare_pll" };
+  3642	
 
-An additional issue is posed by these, also in kernel/rcu/tasks.h:
-
-------------------------------------------------------------------------
-
-	if (trs.b.need_qs == (TRC_NEED_QS_CHECKED | TRC_NEED_QS)) {
-
-	return smp_load_acquire(&t->trc_reader_special.b.need_qs);
-
-	smp_store_release(&t->trc_reader_special.b.need_qs, v);
-
-------------------------------------------------------------------------
-
-The additional issue is that these statements assume that each CPU
-architecture has single-byte load and store instructions, which some of
-the older Alpha systems do not.  Fortunately for me, Arnd was already
-thinking in terms of removing support for these systems.
-
-But there are additional systems that do not support 16-bit loads and
-stores.  So if there is a 16-bit counterpart to rcu_trc_cmpxchg_need_qs()
-on a quantity that is also subject to 16-bit loads or stores, either
-that function needs adjustment or a few more ancient systems need to
-lose their Linux-kernel support.
-
-Again, is looking for this sort of thing something that you or one of
-your students would be interested in?
-
-							Thanx, Paul
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
