@@ -1,122 +1,105 @@
-Return-Path: <linux-kernel+bounces-131052-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D985B89826E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:49:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 528BD898275
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:50:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14B2C1C259E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:49:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EE1D71F26A20
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:50:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75ED85CDC9;
-	Thu,  4 Apr 2024 07:48:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 989895D724;
+	Thu,  4 Apr 2024 07:50:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LvvJRoVv";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bB083CUy"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="chS54chS"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0296A5C8FE;
-	Thu,  4 Apr 2024 07:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 328AE200AE
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:50:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712216937; cv=none; b=STJOPSrvfhh4tTfyv7/zGQFX8f31oFCgPGI2aWNfdQNZx2lLjC67FQpKtdgcwl/u7V7X6UMZC227AU/hQj6EVPKYVFNPOOa632o+Di/SoqcmFNI30ak9XM74lTyOzSxEZR33VvAYoIk5mjbSYvcNmb4ht0iViAurip41AdWKI/c=
+	t=1712217017; cv=none; b=PIwhrMZpHB99HeosqxLiY8Ig4AC9vK4yPdeIflLvtgbYuf2u6Tt5k5ai7nYcvqVqUAkb1sIiW2XBvFDzSD+YVBHFJj3v0AYalRv97kijoL2PHNYtm+yW2P9ADgneHMtNq+ddViAAYeWYu3AIBGCfBn1FfzZZg4qqz3tJGwjrO+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712216937; c=relaxed/simple;
-	bh=4EAUPzFG2L2mvsRW5ix6EYbPaLtrMIhNleJQuZKgVtw=;
-	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
-	 Message-ID:Content-Type; b=ubaU0LspsghrqwND36wCOWmCeu6mVsX+BaiJu8dPFh3m578Eie0G9D+IrXXmhkVJoRKr/KaGRhjobQx+euQAKXl4Ep4wqiZGL01X/U1IJsvCk5VMT8ushGar7TdMKLWyGnb/XWATPOGX7I6jNA92Dl0FvIYh6gDl+ADCrQlqajE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LvvJRoVv; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bB083CUy; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Thu, 04 Apr 2024 07:48:52 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712216933;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
+	s=arc-20240116; t=1712217017; c=relaxed/simple;
+	bh=PDF8rAKtnoPQ5NeHKnC7IYfiaYEQ3BItds/rRYPd950=;
+	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
+	 Content-Type:Date:Message-ID; b=If23YoEh4iUGhkBW7S1cFiqJNevziaivziM22D8PQ0aKumfEeiXJFx7/IFf/wfGa/C3BaOqH9jc9QGCc0DwCMe014fNuRu5xjbK8Vd1bm3Lt+mtcrd7EwxDx5CSoSliF1XHhkHvgbkX39kPCsi0tQrTPWRZJQbPRi4aiEAN3etE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=chS54chS; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712217014;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bZPu1FmvjKlKUWPQ6fpj69VcJu6BMsXZsD7aYmWd9w4=;
-	b=LvvJRoVvYQxRg2bRTlfDD8piqAJkjVfnfbRdkxNLrQWrNbzFjDcDoFscrSEcfBtI+4bmNw
-	qVn7/+hK+RM9dKo19zdEoWzWbhpC2p+iR90MTbsIZ9Z1V4djevRRpIGj2ermxTL5YlP97r
-	hT12G7sDGjnVWK3971ei8hxJEe92ZC8PlFT535z7RlwUNSeBGSj9K4c0aR0iMw6DBbGwLH
-	RO9vD3pnaL2LPp2FPvmKQ9OZr6A4yj/Bmz/7wySZvgEM9ERIWE+s+poIR/Jp72FS1pCyKf
-	i6q6V3dJMWpEA2JdeZlxni78tuxQj/+zBcRPHjsGppCnSqBwZh1Ewrn6O+y6Vg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712216933;
-	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-	 content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bZPu1FmvjKlKUWPQ6fpj69VcJu6BMsXZsD7aYmWd9w4=;
-	b=bB083CUyi9x4a5lLyf+tACBmbqtd5WUvlwQBYb8Jsv5lmxLW2E6LxZds9SiJn/RiLOO5H4
-	Lk29CcWW2lqGiPDA==
-From: "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To: linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/numa/32: Include missing <asm/pgtable_areas.h>
-Cc: Arnd Bergmann <arnd@arndb.de>, Ingo Molnar <mingo@kernel.org>,
- x86@kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240403202344.3463169-1-arnd@kernel.org>
-References: <20240403202344.3463169-1-arnd@kernel.org>
+	bh=LvAHaZMN971uikkj/WIR5kxgCR1HxCvO96dpGZLwAzw=;
+	b=chS54chSHWiMhjEaDJNY7E7FvGDUiv0+OYmcWIgBSD2lc5sB4e2TWc3KuqUdLS4UG5NHSq
+	A3KNbIAiEFGVlWuiqbC2P2B0QN/qWCZuMTTQ/njZLzjcBiYKtY8yRJy7+efp20/adUj6RG
+	pveeM9hAYOL1Y1wVTPq2jK104j8cwjY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-441-ko-0_dPIO36rm-uMOucm5A-1; Thu, 04 Apr 2024 03:50:11 -0400
+X-MC-Unique: ko-0_dPIO36rm-uMOucm5A-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5453A87984B;
+	Thu,  4 Apr 2024 07:50:11 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.146])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id A11C6200A386;
+	Thu,  4 Apr 2024 07:50:10 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+	Kingdom.
+	Registered in England and Wales under Company Registration No. 3798903
+From: David Howells <dhowells@redhat.com>
+In-Reply-To: <20240404132456.579b8ae9@canb.auug.org.au>
+References: <20240404132456.579b8ae9@canb.auug.org.au>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: dhowells@redhat.com, Christian Brauner <brauner@kernel.org>,
+    Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+    Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the vfs-brauner tree
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <171221693236.10875.9400549582446889445.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe:
- Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Precedence: bulk
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <3655431.1712217006.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 04 Apr 2024 08:50:06 +0100
+Message-ID: <3655432.1712217006@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-The following commit has been merged into the x86/urgent branch of tip:
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-Commit-ID:     9852b1dc6a140365977d7bfb5fa03d413b3417ad
-Gitweb:        https://git.kernel.org/tip/9852b1dc6a140365977d7bfb5fa03d413b3417ad
-Author:        Arnd Bergmann <arnd@arndb.de>
-AuthorDate:    Wed, 03 Apr 2024 22:23:37 +02:00
-Committer:     Ingo Molnar <mingo@kernel.org>
-CommitterDate: Thu, 04 Apr 2024 09:39:38 +02:00
+> diff --git a/net/9p/client.c b/net/9p/client.c
+> index dada0033d71e..d4b88b7ff5ef 100644
+> --- a/net/9p/client.c
+> +++ b/net/9p/client.c
+> @@ -1699,7 +1699,7 @@ p9_client_write_subreq(struct netfs_io_subrequest =
+*subreq)
+>  	}
+>  =
 
-x86/numa/32: Include missing <asm/pgtable_areas.h>
+>  	if (written > len) {
+> -		pr_err("bogus RWRITE count (%d > %lu)\n", written, len);
+> +		pr_err("bogus RWRITE count (%d > %zu)\n", written, len);
+>  		written =3D len;
+>  	}
 
-The __vmalloc_start_set declaration is in a header that is not included
-in numa_32.c in current linux-next:
+Actually, that's the wrong fix.  'len' needs to be int not size_t because =
+of
+the varargs packet formatter.
 
-  arch/x86/mm/numa_32.c: In function 'initmem_init':
-  arch/x86/mm/numa_32.c:57:9: error: '__vmalloc_start_set' undeclared (first use in this function)
-     57 |         __vmalloc_start_set = true;
-        |         ^~~~~~~~~~~~~~~~~~~
-  arch/x86/mm/numa_32.c:57:9: note: each undeclared identifier is reported only once for each function it appears in
+David
 
-Add an explicit #include.
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20240403202344.3463169-1-arnd@kernel.org
----
- arch/x86/mm/numa_32.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/x86/mm/numa_32.c b/arch/x86/mm/numa_32.c
-index 1045443..025fd7e 100644
---- a/arch/x86/mm/numa_32.c
-+++ b/arch/x86/mm/numa_32.c
-@@ -24,6 +24,7 @@
- 
- #include <linux/memblock.h>
- #include <linux/init.h>
-+#include <asm/pgtable_areas.h>
- 
- #include "numa_internal.h"
- 
 
