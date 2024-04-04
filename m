@@ -1,167 +1,169 @@
-Return-Path: <linux-kernel+bounces-131851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131850-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C3CD898C90
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:49:21 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92F20898C8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:49:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5061028113E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:49:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C58F1F2403C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:49:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8754512D770;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C8212D742;
 	Thu,  4 Apr 2024 16:48:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K6ovYBBY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mZVvZ5Qt"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B6625337B;
-	Thu,  4 Apr 2024 16:48:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38CFE1C6A5;
+	Thu,  4 Apr 2024 16:48:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712249327; cv=none; b=EHhKHln7ScCbeZ8fiZTyuojfILqzfORIZBN6KiQ7/bmISRSYB/LFhwrqwy8CKmXHXYFw3OogxYUp/2X3fdM6aQ+pSmPYotkjhT3guwM6hWVmR2oIIyOHLycBn4Gu3qShs68wAkVvX1SKEyvmPUMKvSNdMntSiSYGpJ1RPmxrULg=
+	t=1712249327; cv=none; b=fTfPXjgtTs8ZqZFLuF/qb61Dnf3nGehB6sFWZa0CtK9znNpO3TPOYCgaATl0e/A6yhL8UDfD7xJ5emXynPnEQlc/6av1x5my8qB4p2G23HsZ5ancVftxTgUkXht+xO781iIGagv25BoagP77uAykj5OyyoJIL3Zi8o/FYOFgYwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1712249327; c=relaxed/simple;
-	bh=f0ZUc9cVkTYbWSm7SlkoyeQqtebVeW+MGfGHY9LAnds=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XkIv6zwE50hT+qH/4962mP55oKdMlopZnvJYnZQJIW8Qyl4IlaQdkQx1KLzxF4bNjxGb4IenYuop5uRB+Nz6/2IBGpdpcXZovcNLQdxmOD+jXUugf88bhrxYz6OqcbZC1cda4j4VzASQ7742PPTmqG+w+56byOifBfuiOEHwpVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K6ovYBBY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01DCEC433B2;
-	Thu,  4 Apr 2024 16:48:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712249327;
-	bh=f0ZUc9cVkTYbWSm7SlkoyeQqtebVeW+MGfGHY9LAnds=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=K6ovYBBYue9PM8NYfR7YR7xtB4whDjLcBUCl3DhZaB6oF3Hh1QGo6IYwTa/jtb5IV
-	 SJSicYDiRwiOCN8IdaRtBdQgTDx1J53CG/bVCcE3xEegd0umAbjISGW/i47PcRqajk
-	 6GusCggLy9XxctVsC27cT9gPXSN68HdIomjHPQqEf7MGLpTX2J+GA02Jhv3z9sEIcu
-	 65JnbqsBAWB829JqkRYC/EjjscXNWSQN7HrbuoEawtyWxiSONajpsAJrveIvGHapUV
-	 T0bVd8ses2r9LgZR3jSv8xmzMpBeq97ITtsq+hOSE3+YFElkoStrsuFrGW0OOHCGyw
-	 eNETT5AZQt1Sg==
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d700beb60bso21464621fa.1;
-        Thu, 04 Apr 2024 09:48:46 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU5vi4+zUMV6D5P1DLp9/oBQeYc8fDZQwMNZxiHvpIU8X+ReWTEGqfwm6JgE3WJjgUlOEflw+ryKJrOHcmZ0d7tNkzhB0TnTEQTrxnv3dWBJ7EwjjX5CPTuc5z6Ap1nLZvfQ2Csv0fges0Nrie0tWpWLyq4kWMjgXO4EKTK8OHSPaXxSJY6NSizB0zTohkmCxK8Zic54tKt2htiT/32VgeVT9JrUV3MI+x37YXulmkrZjqNP+SBcyEh/EkLJ9NY9VKhlaw9tvV7GpSpCzC+iBB7tesmAJ9MLgBliq/F2y53ur5CQ565Y6eLWF457YUeShDvFa0eY76UfQf0apUGLlQLIuWv/Bss9+5q0nWAOi5WMbnGkW9XevQ=
-X-Gm-Message-State: AOJu0YxjASAg226CYO0YGGxy83/2ltWxPq0Yd3EvARdsCK4UioKa9Osm
-	KmdUIrhjqXxJ1Li0oJTe4xui4IUoUvrC9ypOBsfDT1FOCZOuhBBfEOCqfTdb2MNcb4s/Ob7e6eK
-	7Hdr5WqFTc3lMorIieHg6Kx3wxg==
-X-Google-Smtp-Source: AGHT+IGA/B0Olc8HVdDCHlF8+fjMTjFHUiVbJhjDnxrx6ejO3lXuUhtHy5hp5vmBhc80/3eocgT9w6rQF0BvJQeGA5M=
-X-Received: by 2002:a05:651c:1417:b0:2d3:8c1f:c0ff with SMTP id
- u23-20020a05651c141700b002d38c1fc0ffmr2449840lje.16.1712249325311; Thu, 04
- Apr 2024 09:48:45 -0700 (PDT)
+	bh=FItxQKIKnB6xDpTy4OuJ7+aJw2KPqlzMNdwMCbAlF6c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pfb4GXbGLAP+qyUJNa2wieeOPLptd8Z4YYw3zuZgD7n29dHChK1SW3jjPGbo8yGq6W/aJKHm0EITRFQIPE9UmmeYGU8JZZxmFdVCFdlkviCaQ7cNpkxNcLVmO0af8wPyYfCtwQYBtbvQEu7sNwsYXWa8PyhH86W1wRxM4iu+zCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=mZVvZ5Qt; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=IAcMzbwzMSdGjUZJwsigBkmbiIdxzP3w50+Ad4sa5UQ=; b=mZVvZ5QtSrlprrhnUVhWEWIU7E
+	sphdhQo7g/IJfa+/FvwlZsRFYmJ5wkNkd4AWif4Utjy+vMZEnwOad5hHf+SRbN7FGKw+i0FGqJBM4
+	yF2PaxBkNGMpqYBfoujAS+qFScyAlz3vNlovdCRtdSYfHINucazB4MwtfIsMPo5qEa0NQKwlFZIUA
+	VfRN+/hUWdkFBdAGtszp5axo9ZNsq2cyjqNAFaNh3mFRGcmLETrtGXGf3qXwEZGqMoZx63OmbHyON
+	JugVn8XGevOpUa3bOez65lUMoibZGmnJJ93pBOBTs99hw8DRim6xKVB8Vqfk/oU+BU912iDFwt/nX
+	hMyfZDfA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rsQGP-00000008SrU-2u2m;
+	Thu, 04 Apr 2024 16:48:33 +0000
+Date: Thu, 4 Apr 2024 17:48:33 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: axboe@kernel.dk, kbusch@kernel.org, hch@lst.de, sagi@grimberg.me,
+	jejb@linux.ibm.com, martin.petersen@oracle.com, djwong@kernel.org,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, dchinner@redhat.com,
+	jack@suse.cz, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, tytso@mit.edu, jbongio@google.com,
+	linux-scsi@vger.kernel.org, ojaswin@linux.ibm.com,
+	linux-aio@kvack.org, linux-btrfs@vger.kernel.org,
+	io-uring@vger.kernel.org, nilay@linux.ibm.com,
+	ritesh.list@gmail.com
+Subject: Re: [PATCH v6 00/10] block atomic writes
+Message-ID: <Zg7Z4aJtn3SxY5w1@casper.infradead.org>
+References: <20240326133813.3224593-1-john.g.garry@oracle.com>
+ <ZgOXb_oZjsUU12YL@casper.infradead.org>
+ <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712207606.git.ysato@users.sourceforge.jp> <a4ce7771faec761b9bbb91ff6694a99e5bc293b6.1712207606.git.ysato@users.sourceforge.jp>
-In-Reply-To: <a4ce7771faec761b9bbb91ff6694a99e5bc293b6.1712207606.git.ysato@users.sourceforge.jp>
-From: Rob Herring <robh@kernel.org>
-Date: Thu, 4 Apr 2024 11:48:32 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLG+v1ujhMM45dQcMXiQkCvjif3pAWZxgeAcKFMe9Sy9Q@mail.gmail.com>
-Message-ID: <CAL_JsqLG+v1ujhMM45dQcMXiQkCvjif3pAWZxgeAcKFMe9Sy9Q@mail.gmail.com>
-Subject: Re: [RESEND v7 06/37] sh: kernel/setup Update DT support.
-To: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
-	Niklas Cassel <cassel@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>, 
-	Heiko Stuebner <heiko.stuebner@cherry.de>, Shawn Guo <shawnguo@kernel.org>, 
-	Sebastian Reichel <sre@kernel.org>, Chris Morgan <macromorgan@hotmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Guo Ren <guoren@kernel.org>, 
-	Azeem Shaikh <azeemshaikh38@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
-	Herve Codina <herve.codina@bootlin.com>, 
-	Manikanta Guntupalli <manikanta.guntupalli@amd.com>, Anup Patel <apatel@ventanamicro.com>, 
-	Biju Das <biju.das.jz@bp.renesas.com>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4c0dad5-41a4-44b4-8f40-2a250571180b@oracle.com>
 
-On Thu, Apr 4, 2024 at 12:15=E2=80=AFAM Yoshinori Sato
-<ysato@users.sourceforge.jp> wrote:
->
-> Fix extrnal fdt initialize and bootargs.
+On Wed, Mar 27, 2024 at 01:37:41PM +0000, John Garry wrote:
+> On 27/03/2024 03:50, Matthew Wilcox wrote:
+> > On Tue, Mar 26, 2024 at 01:38:03PM +0000, John Garry wrote:
+> > > The goal here is to provide an interface that allows applications use
+> > > application-specific block sizes larger than logical block size
+> > > reported by the storage device or larger than filesystem block size as
+> > > reported by stat().
+> > > 
+> > > With this new interface, application blocks will never be torn or
+> > > fractured when written. For a power fail, for each individual application
+> > > block, all or none of the data to be written. A racing atomic write and
+> > > read will mean that the read sees all the old data or all the new data,
+> > > but never a mix of old and new.
+> > > 
+> > > Three new fields are added to struct statx - atomic_write_unit_min,
+> > > atomic_write_unit_max, and atomic_write_segments_max. For each atomic
+> > > individual write, the total length of a write must be a between
+> > > atomic_write_unit_min and atomic_write_unit_max, inclusive, and a
+> > > power-of-2. The write must also be at a natural offset in the file
+> > > wrt the write length. For pwritev2, iovcnt is limited by
+> > > atomic_write_segments_max.
+> > > 
+> > > There has been some discussion on supporting buffered IO and whether the
+> > > API is suitable, like:
+> > > https://lore.kernel.org/linux-nvme/ZeembVG-ygFal6Eb@casper.infradead.org/
+> > > 
+> > > Specifically the concern is that supporting a range of sizes of atomic IO
+> > > in the pagecache is complex to support. For this, my idea is that FSes can
+> > > fix atomic_write_unit_min and atomic_write_unit_max at the same size, the
+> > > extent alignment size, which should be easier to support. We may need to
+> > > implement O_ATOMIC to avoid mixing atomic and non-atomic IOs for this. I
+> > > have no proposed solution for atomic write buffered IO for bdev file
+> > > operations, but I know of no requirement for this.
+> > 
+> > The thing is that there's no requirement for an interface as complex as
+> > the one you're proposing here.  I've talked to a few database people
+> > and all they want is to increase the untorn write boundary from "one
+> > disc block" to one database block, typically 8kB or 16kB.
+> > 
+> > So they would be quite happy with a much simpler interface where they
+> > set the inode block size at inode creation time,
+> 
+> We want to support untorn writes for bdev file operations - how can we set
+> the inode block size there? Currently it is based on logical block size.
 
-What is the problem you are trying to solve?
+ioctl(BLKBSZSET), I guess?  That currently limits to PAGE_SIZE, but I
+think we can remove that limitation with the bs>PS patches.
 
-And a typo.
+> > and then all writes to
+> > that inode were guaranteed to be untorn.  This would also be simpler to
+> > implement for buffered writes.
+> 
+> We did consider that. Won't that lead to the possibility of breaking
+> existing applications which want to do regular unaligned writes to these
+> files? We do know that mysql/innodb does have some "compressed" mode of
+> operation, which involves regular writes to the same file which wants untorn
+> writes.
 
->
-> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
-> ---
->  arch/sh/Kconfig             | 23 +++++++++++------------
->  arch/sh/include/asm/setup.h |  1 +
->  arch/sh/kernel/setup.c      | 36 +++++++++++++++++++++++-------------
->  3 files changed, 35 insertions(+), 25 deletions(-)
->
-> diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-> index 6711cde0d973..242cf30e704d 100644
-> --- a/arch/sh/Kconfig
-> +++ b/arch/sh/Kconfig
-> @@ -708,17 +708,22 @@ config ROMIMAGE_MMCIF
->           first part of the romImage which in turn loads the rest the ker=
-nel
->           image to RAM using the MMCIF hardware block.
->
-> +config CMDLINE
-> +       string "Kernel command line arguments string"
-> +       default "console=3DttySC1,115200"
-> +
->  choice
->         prompt "Kernel command line"
-> -       optional
-> -       default CMDLINE_OVERWRITE
-> -       depends on !OF || USE_BUILTIN_DTB
-> +       default CMDLINE_BOOTLOADER
-> +
-> +config CMDLINE_BOOTLOADER
-> +       bool "Use bootloader kernel arguments"
+If you're talking about "regular unaligned buffered writes", then that
+won't break.  If you cross a folio boundary, the result may be torn,
+but if you're crossing a block boundary you expect that.
 
-This should be the preferred, normal, default way. So why is it a user
-visible option?
+> Furthermore, untorn writes in HW are expensive - for SCSI anyway. Do we
+> always want these for such a file?
 
->         help
-> -         Setting this option allows the kernel command line arguments
-> -         to be set.
-> +         Uses the command-line options passed by the boot loader.
-> +         If boot loader dosen't provide kernel argments, Use built-in ar=
-gments.
+Do untorn writes actually exist in SCSI?  I was under the impression
+nobody had actually implemented them in SCSI hardware.
 
-typos
+> We saw untorn writes as not being a property of the file or even the inode
+> itself, but rather an attribute of the specific IO being issued from the
+> userspace application.
 
-bootloader in some spots, "boot loader" in others. Go with the former.
+The problem is that keeping track of that is expensive for buffered
+writes.  It's a model that only works for direct IO.  Arguably we
+could make it work for O_SYNC buffered IO, but that'll require some
+surgery.
 
->
->  config CMDLINE_OVERWRITE
-> -       bool "Overwrite bootloader kernel arguments"
-> +       bool "Overwrite built-in kernel arguments"
-
-The original made more sense to me. The default should be to use
-bootloader args. Any built-in kernel command line should be prepend,
-append (extend), or overwrite/replace.
-
-Rob
+> > Who's asking for this more complex interface?
+> 
+> It's not a case of someone specifically asking for this interface. This is
+> just a proposal to satisfy userspace requirement to do untorn writes in a
+> generic way.
+> 
+> From a user point-of-view, untorn writes for a regular file can be enabled
+> for up to a specific size* with FS_IOC_SETFLAGS API. Then they need to
+> follow alignment and size rules for issuing untorn writes, but they would
+> always need to do this. In addition, the user may still issue regular
+> (tearable) writes to the file.
+> 
+> * I think that we could change this to only allow writes for that specific
+> size, which was my proposal for buffered IO.
+> 
+> Thanks,
+> John
+> 
 
