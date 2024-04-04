@@ -1,47 +1,39 @@
-Return-Path: <linux-kernel+bounces-131280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131288-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C01A8985A2
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:03:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C39B8985B5
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:05:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06237287549
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:03:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B2901F236AC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:05:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C7B482D7A;
-	Thu,  4 Apr 2024 11:03:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mDTYor3G"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F87A59157;
-	Thu,  4 Apr 2024 11:03:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3987D811E2;
+	Thu,  4 Apr 2024 11:05:45 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D86A959157;
+	Thu,  4 Apr 2024 11:05:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712228603; cv=none; b=ToI6yNP5lZpEIh5xL6BwrhOKoD+2MxV/AjM/nvJuWiNqqbG0Fut8r9M9ZeglaXZSz2llVRJrVWtcZ/rBtcNF+V8EpNB+t7p3Scu+m/No177aVdQaqkKfUEbrXHJOHjGl5YC40kN3pN/yOQSGELcsgkeIPDRiWLE0bb8YblhuDMg=
+	t=1712228744; cv=none; b=h2r5jUNfZ75Q+QfS10JacV0LGJ0QAgF82BriDqIRrl7d+ErLKCo2PQhO5UsK8OLLRX9PpbELRXSXiwXOBMVq6k+hZBfL5H5uQvTO9VEWBeQ6tgeMWp8+dviB8tIx39M55lkXmNNPDyN+4zg3xDwR9276lNL1gf6kZGRKWYmtVF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712228603; c=relaxed/simple;
-	bh=Q14ggXy+y0e4OfUSS6sgHf6RZqlI/EP8PYD1AXlxvVw=;
+	s=arc-20240116; t=1712228744; c=relaxed/simple;
+	bh=wdbjKuAXBag0wP4Mj8I0Q4F5Fo+sCqKR7kQJZok6xR4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qOuCjVJ2ZwihhIrWa7OHKccsNQeGGMaXO3XM1jYpaWN5bfE4GtEOlYayaQOq5SdXKtYMajN2BQVYwEqvra2PcD2c66ZXo09VhvteZiTQfyVsuQuy604wiUDozzrroHLhzUJQg8bHAfohRfMzDO4w4knG3bzzs+TZQt4vOIbv+Cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mDTYor3G; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60563C43399;
-	Thu,  4 Apr 2024 11:03:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712228603;
-	bh=Q14ggXy+y0e4OfUSS6sgHf6RZqlI/EP8PYD1AXlxvVw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=mDTYor3GUqTiqx1mWDSXkEV1Vnm/cCTGnTl1eKZLn9l72ZgLAzRW16KGZ893QZmTJ
-	 HjHO8kjaJGFOGhC3oEJJq2/b0EkcS3b5UYeX0VJNn2GrLx8HfcnUhtMnNLkZJrpUd2
-	 AVuWLxDc80BMc4FEf6eSiWhhugSKsktgkAx7DZ8fgGXez1BC8W7gbDQIHk2qDLPNhi
-	 0HJ1LJCtDWGJJJ+0LQNfepO0MP4gXqM+5r44jJGWFea4furiWM8VIcH0RiSHZeoOXl
-	 Xj2RUHZGAmPFb2FxejqTvEJWWHaWHt5S5AVI3AUlYmyFtv8XC6UJ8tk+lFDUo556nH
-	 feq2HzpO7cx1g==
-Message-ID: <15064d90-e89d-4522-90a8-52aad643d7c8@kernel.org>
-Date: Thu, 4 Apr 2024 13:03:17 +0200
+	 In-Reply-To:Content-Type; b=Rj8Sc0idq+PjoMY180ZSjdlrM1dI2GX++clcoxqYzxaW3dBjcGvRZuOWMtigGpn4PSBP1bcyk+xEfQp8mxfDFcsBdfN3zBKKF8AQjYYoVRh7EI6MG+ynoz8FxTrfJ2qr+06RJYk9w01B3jMgJhQSnTuNJOU9speuNO+WsAWY9GM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C809BFEC;
+	Thu,  4 Apr 2024 04:06:12 -0700 (PDT)
+Received: from [10.57.73.43] (unknown [10.57.73.43])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E2E13F7B4;
+	Thu,  4 Apr 2024 04:05:39 -0700 (PDT)
+Message-ID: <7ecd3ec9-6990-4d3e-84ae-d0d3a1cccb78@arm.com>
+Date: Thu, 4 Apr 2024 12:05:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,115 +41,55 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] bpf: fix null ptr deref in dev_map_enqueue
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
- daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
- haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
- kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
- martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
- song@kernel.org, syzbot+af9492708df9797198d6@syzkaller.appspotmail.com,
- syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-References: <f45ad3e1-4433-422e-be28-17deaba4ade1@kernel.org>
- <tencent_A4FA0DA89270DDAC5D8519424F9B0DB42507@qq.com>
+Subject: Re: [PATCH] PM:EM: fix wrong utilization estimation in
+ em_cpu_energy()
 Content-Language: en-US
-From: Jesper Dangaard Brouer <hawk@kernel.org>
-In-Reply-To: <tencent_A4FA0DA89270DDAC5D8519424F9B0DB42507@qq.com>
+To: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: rui.zhang@intel.com, amit.kucheria@verdurent.com, amit.kachhap@gmail.com,
+ daniel.lezcano@linaro.org, viresh.kumar@linaro.org, len.brown@intel.com,
+ pavel@ucw.cz, mhiramat@kernel.org, qyousef@layalina.io, wvw@google.com,
+ xuewen.yan94@gmail.com, rafael@kernel.org, linux-kernel@vger.kernel.org,
+ linux-pm@vger.kernel.org, dietmar.eggemann@arm.com
+References: <20240404104200.1672208-1-vincent.guittot@linaro.org>
+From: Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20240404104200.1672208-1-vincent.guittot@linaro.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
+Hi Vincent,
 
+On 4/4/24 11:42, Vincent Guittot wrote:
+> Commit 1b600da51073 ("PM: EM: Optimize em_cpu_energy() and remove division")
+> has added back map_util_perf() in em_cpu_energy() computation which has
+> been removed with the rework of scheduler/cpufreq interface.
+> This is wrong because sugov_effective_cpu_perf() already takes care of
+> mapping the utilization to a performance level.
+> 
+> Fixes: 1b600da51073 ("PM: EM: Optimize em_cpu_energy() and remove division")
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> ---
+>   include/linux/energy_model.h | 1 -
+>   1 file changed, 1 deletion(-)
+> 
+> diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
+> index 770755df852f..70cd7258cd29 100644
+> --- a/include/linux/energy_model.h
+> +++ b/include/linux/energy_model.h
+> @@ -245,7 +245,6 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
+>   	 * max utilization to the allowed CPU capacity before calculating
+>   	 * effective performance.
+>   	 */
+> -	max_util = map_util_perf(max_util);
+>   	max_util = min(max_util, allowed_cpu_cap);
+>   
+>   	/*
 
-On 02/04/2024 05.03, Edward Adam Davis wrote:
-> On Mon, 1 Apr 2024 13:00:12 +0200, Jesper Dangaard Brouer wrote:
->>> [Fix]
->>> On the execution path of bpf_prog_test_run(), due to ri->map being NULL,
->>> ri->tgtvalue was not set correctly.
->>>
->>> Reported-and-tested-by:syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
->>> Signed-off-by: Edward Adam Davis<eadavis@qq.com>
->>> ---
->>>    kernel/bpf/devmap.c | 6 +++++-
->>>    1 file changed, 5 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
->>> index 4e2cdbb5629f..ef20de14154a 100644
->>> --- a/kernel/bpf/devmap.c
->>> +++ b/kernel/bpf/devmap.c
->>> @@ -86,6 +86,7 @@ struct bpf_dtab {
->>>    static DEFINE_PER_CPU(struct list_head, dev_flush_list);
->>>    static DEFINE_SPINLOCK(dev_map_lock);
->>>    static LIST_HEAD(dev_map_list);
->>> +static bool is_valid_dst(struct bpf_dtab_netdev *obj, struct xdp_frame *xdpf);
->>>
->>>    static struct hlist_head *dev_map_create_hash(unsigned int entries,
->>>    					      int numa_node)
->>> @@ -536,7 +537,10 @@ int dev_xdp_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
->>>    int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_frame *xdpf,
->>>    		    struct net_device *dev_rx)
->>>    {
->>> -	struct net_device *dev = dst->dev;
->>> +	struct net_device *dev;
->>> +	if (!is_valid_dst(dst, xdpf))
->> This is overkill, because __xdp_enqueue() already contains most of the
->> checks in is_valid_dst().
->>
->> Why not:
->>
->>    if (!dst)
->> 	return -EINVAL;
-> This can work, but I think is_valid_dst() is better, as its internal inspection
-> of dst is more thorough.
+LGTM. It was developed in parallel IIRC and that change which removes
+the extra margin to the util was lost from my radar. I can see it
+landed first.
 
+Reviewed-by: Lukasz Luba <lukasz.luba@arm.com>
 
-No, is_valid_dst() is not better, because it will repeat almost same
-checks (as I said) as __xdp_enqueue() already contains these checks.
-This is fast-path code, we don't want to repeat checks.
-
---Jesper
-(copy-pasted function below to easier compare)
-
-static inline int __xdp_enqueue(struct net_device *dev, struct xdp_frame 
-*xdpf,
-				struct net_device *dev_rx,
-				struct bpf_prog *xdp_prog)
-{
-	int err;
-
-	if (!(dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT))
-		return -EOPNOTSUPP;
-
-	if (unlikely(!(dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT_SG) &&
-		     xdp_frame_has_frags(xdpf)))
-		return -EOPNOTSUPP;
-
-	err = xdp_ok_fwd_dev(dev, xdp_get_frame_len(xdpf));
-	if (unlikely(err))
-		return err;
-
-	bq_enqueue(dev, xdpf, dev_rx, xdp_prog);
-	return 0;
-}
-
-
-static bool is_valid_dst(struct bpf_dtab_netdev *obj, struct xdp_frame 
-*xdpf)
-{
-	if (!obj)
-		return false;
-
-	if (!(obj->dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT))
-		return false;
-
-	if (unlikely(!(obj->dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT_SG) &&
-		     xdp_frame_has_frags(xdpf)))
-		return false;
-
-	if (xdp_ok_fwd_dev(obj->dev, xdp_get_frame_len(xdpf)))
-		return false;
-
-	return true;
-}
-
-
+Regards,
+Lukasz
 
