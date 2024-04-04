@@ -1,60 +1,74 @@
-Return-Path: <linux-kernel+bounces-130970-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130971-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27FAC898152
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:18:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13AF7898157
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:18:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC9F7B21277
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:18:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7CF72814F6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:18:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 305324C3DE;
-	Thu,  4 Apr 2024 06:18:30 +0000 (UTC)
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A86B94AEE5;
+	Thu,  4 Apr 2024 06:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="uBRpsB9L"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E91847796;
-	Thu,  4 Apr 2024 06:18:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D17E48CD4
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 06:18:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712211509; cv=none; b=StMZ8qHzhUFGEUhtgPL6b+7VfzVp7GxpQyCGl5TSv09uEPTsQwi1osAICKu4hp9QaUc3hW/6syAe5Dw4GIiVFLU4dBdMMwMO9ytZ7i4Ld1DEUiK/bOhNfjCEtde7wjcXlvyXdZBzIebFI0Iu7hIcDTAfkM87uPQX62pZq6slRWI=
+	t=1712211521; cv=none; b=i6/hMcp7LQKn40kEV03iE5D+jiuFSKOW73Cn9hbM8D9+kI6VeOyw+pHL2ALt+tGqLkpBbiLvOTVVfuLGb6zEsveiKewAP1Ev5Tp1SLvLNn3+c3KUntNnGSiwN08RtSavufy2O3+ICu14+qUKhnxE3kB0Bw6rSpOfT9618+5CoZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712211509; c=relaxed/simple;
-	bh=xZV5s80qnBkVRUrxTmMA6a9pTwG2E5R2vrBwabFXvlk=;
+	s=arc-20240116; t=1712211521; c=relaxed/simple;
+	bh=2J7Re/HyvlV+/ExJlexrUrhdCVIk2oInihJetZ94u+k=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oPyZTljA7ppQm+RJ1xKwHwpLkpZjOcT6BqdIaDefroqlr2DgCn3F3vmFFEoMHiHTROkpnFyqj31d9Z8hNxlW01Wxs126/uYDIvKvwMTvy3Rz2+jk+LSby+tMiSA2ZpL9c/MhPpOZnIaKmlkPJj05alaS63dH1JH7kqDOTiFl90c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d6c220a377so6628511fa.2;
-        Wed, 03 Apr 2024 23:18:27 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=PRTMpSakgpZaz6eQJrl+13cl4jiKvv3/9/haZVv1cdEuEJgvkKTAWqseCQx8Y39ym9U3i67Vrk2mMtrTbuWC8W+upPNRPGtSTCrD1U4mu7/BzQoDwGJdj7lYTog0IY4f52cBbbkNH6Ii4rlr/mFlYUY7ATaZBIF9qu41DULFtO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=uBRpsB9L; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56df87057bbso352349a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 23:18:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712211518; x=1712816318; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=0qKZ+iYWQHqYn9Rd3HRahOpCkdY1YAxGTET1Vitiv1k=;
+        b=uBRpsB9L9MfvKOfuSaSdGho9/DM4FZGlLw281grWQiwYWQd/ifuAgOXf45B9XTo5Xu
+         w7zd5VqzWZxsO80KA0VmaXqQA9NYKGyiwtp3hy2l3WCP0vrsIbdKVkkLDGu+WyQagF/n
+         V/H/tnLMmHvp/EAo6oCKxLK6+YDSjaDvgnkvzZPR4nxz2J62y0wVycDU11f6E3IeEIs+
+         bJLkQjpEA1H9n9EC6QJt/9ToKLY9nXEhnyfwIeq2WQ9uAHw+6u/tD5+jmcwoCnwSGg0S
+         RGGLmGKEAa+UVNqo+U19MiygWChq1EDiGsrQ5HokZEQakMoJwk/olHeu08f/DwbjF+nn
+         fCsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712211506; x=1712816306;
+        d=1e100.net; s=20230601; t=1712211518; x=1712816318;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DAD0iIzSNxfWPIAXf1xYavm5RzR0be8FFOXpNWWYhBs=;
-        b=Z6GtsruZE79u2ctpo47bNkPnW6qVenFdl8Oyvsk7AKnwgmdSw0++ikJDWsuwGA24yV
-         7ayDnrubaD/SV8EeVrPOEhnTJfCB05InE74M/nJMYqKh0sPQA7XHLzam0ODzGE981M17
-         f1ReBQD+wS98zwSy2DdWrhnj8rYNKUKRc7KbKnfDWwLUYkQy62vbXE1C3zWkLFCHuYDi
-         w1T5Fr8B/Vdac/qOj9sqPGmqJYv9hJONe9e+l9hqakk79kLj670TDXSgZMVtdUWCeXhY
-         QzZdf2SS8lzprq2x8RBNrJNK8KBMR+cWQ1UHwVsC5XSxJYMnBSvUAnyfZwyThP+Y/j0A
-         4QmA==
-X-Forwarded-Encrypted: i=1; AJvYcCVYYZzIHzpIUkhLjmQYr/iw0RT5tA3zwM+S5Bw8FXVoE5+8mCAwyKSXQJNMH5MTSqgOsCWkwjJyn430VTW8BqTlmY1JUUrvaCBEDqXrZV8pwbqTQM2CUg2Avu3BjNNGF2x8G0G5IXzLPe/+
-X-Gm-Message-State: AOJu0YwmnYracMe7TGYTe05TMUTxFCX+y0g1/IBKJxVgonHs3h/42HYj
-	jbqXkOu5j5w5s8E8zx+ATs/OQ8nWQ4jEfzHGIwTPjYqcXE5TwZLW
-X-Google-Smtp-Source: AGHT+IG/meR44lmFjpLBxaZfY+7UI0ISqr4QbmF+/OyJRWi+HnSUvwY3OKhoo1Kqflp+bYxXWFPbYw==
-X-Received: by 2002:a2e:8011:0:b0:2d4:99f8:8b9f with SMTP id j17-20020a2e8011000000b002d499f88b9fmr1080106ljg.50.1712211506060;
-        Wed, 03 Apr 2024 23:18:26 -0700 (PDT)
-Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:69? ([2a0b:e7c0:0:107::aaaa:69])
-        by smtp.gmail.com with ESMTPSA id jn18-20020a05600c6b1200b004155387c08esm1424014wmb.27.2024.04.03.23.18.25
+        bh=0qKZ+iYWQHqYn9Rd3HRahOpCkdY1YAxGTET1Vitiv1k=;
+        b=EGTu4q3RD01jWAR8FU9CpIM4AKZlEmHctbIAk1Bl6sdwOY6c8S2rldAPePJj3y8i7N
+         SWcoiQLWfS9zo0Vldug8t+iA7wAuD/cakfcfo1WfyGNV4XHv1xwyOByiVvrq41nG62sj
+         miulp9tYEJPmX1A1hAynwszPKOpGO5yogJ85e3kA7jTWJ7/yhDRDptvyYdjb/veLrLHL
+         2GEBFa84oTPXlKVclFQkoaE5yO9dA0EVLcJ7pD1IFrgH/MEf8//enC828QHNsxMNk9Jz
+         fhedoRut9OaTRimsdeaBnXLfsULql+fTL1KM3QCjKZpLHnz8Oats/x/8LDKZonvz0bEJ
+         Q4Qw==
+X-Forwarded-Encrypted: i=1; AJvYcCXUmzoFjmS8omZ4oN82WqTekpwbRueIaBQ0XU7CRyjxqrNNjM4Bc7F3POwEnwtnp/1/nu9/mu08RzDrGbom6BvZNY9Bjs+nXLrGgZOb
+X-Gm-Message-State: AOJu0Yz7/FXOAmcKh07dR48R8XxG4KH9yR63qJZE8OsC5J4Z94nyyvHM
+	/hMOSDKPyiiP1EPIESVOqFxRV5TELl9WOio7a7nHgmnpwTPVtfbDR0U4+FBVr3c=
+X-Google-Smtp-Source: AGHT+IE//YeUlWWl3VoukJKYZwvGoO7B7ADUvRMkhV4WjlUseoXIiGv4d/HSDyWXfteAYqN8TIYTlA==
+X-Received: by 2002:a50:9e46:0:b0:56d:fc9e:5143 with SMTP id z64-20020a509e46000000b0056dfc9e5143mr916358ede.14.1712211518504;
+        Wed, 03 Apr 2024 23:18:38 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id ew12-20020a056402538c00b0056a033fa007sm8745811edb.64.2024.04.03.23.18.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 03 Apr 2024 23:18:25 -0700 (PDT)
-Message-ID: <3358869b-db3a-40f3-b02b-4f1b46d5d724@kernel.org>
-Date: Thu, 4 Apr 2024 08:18:24 +0200
+        Wed, 03 Apr 2024 23:18:37 -0700 (PDT)
+Message-ID: <8e5fb9c0-fa7a-4691-a9f4-f2b42b66d1e5@linaro.org>
+Date: Thu, 4 Apr 2024 08:18:36 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,75 +76,150 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] tty: Convert from tasklet to BH workqueue
-To: Allen Pais <apais@linux.microsoft.com>, linux-kernel@vger.kernel.org
-Cc: tj@kernel.org, keescook@chromium.org, gregkh@linuxfoundation.org,
- richard.genoud@gmail.com, linux-serial@vger.kernel.org
-References: <20240403161559.19970-1-apais@linux.microsoft.com>
+Subject: Re: [PATCH 3/7] dt-bindings: PCI: qcom: Add IPQ9574 PCIe controller
+To: mr.nuke.me@gmail.com, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Bjorn Helgaas
+ <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: ansuelsmth@gmail.com, robimarko@gmail.com, linux-arm-msm@vger.kernel.org,
+ linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240402192555.1955204-1-mr.nuke.me@gmail.com>
+ <20240402192555.1955204-3-mr.nuke.me@gmail.com>
+ <bad88189-cf70-4200-9fa3-650ea923b4b8@linaro.org>
+ <d35c96ca-24af-fbad-74fe-ad85a433caa2@gmail.com>
 Content-Language: en-US
-From: Jiri Slaby <jirislaby@kernel.org>
-Autocrypt: addr=jirislaby@kernel.org; keydata=
- xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
- rrcDwGs6tFVrAHvdHeIdI07s1iIx5R/ndcHwt4fvI8CL5PzPmn5J+h0WERR5rFprRh6axhOk
- rSD5CwQl19fm4AJCS6A9GJtOoiLpWn2/IbogPc71jQVrupZYYx51rAaHZ0D2KYK/uhfc6neJ
- i0WqPlbtIlIrpvWxckucNu6ZwXjFY0f3qIRg3Vqh5QxPkojGsq9tXVFVLEkSVz6FoqCHrUTx
- wr+aw6qqQVgvT/McQtsI0S66uIkQjzPUrgAEtWUv76rM4ekqL9stHyvTGw0Fjsualwb0Gwdx
- ReTZzMgheAyoy/umIOKrSEpWouVoBt5FFSZUyjuDdlPPYyPav+hpI6ggmCTld3u2hyiHji2H
- cDpcLM2LMhlHBipu80s9anNeZhCANDhbC5E+NZmuwgzHBcan8WC7xsPXPaiZSIm7TKaVoOcL
- 9tE5aN3jQmIlrT7ZUX52Ff/hSdx/JKDP3YMNtt4B0cH6ejIjtqTd+Ge8sSttsnNM0CQUkXps
- w98jwz+Lxw/bKMr3NSnnFpUZaxwji3BC9vYyxKMAwNelBCHEgS/OAa3EJoTfuYOK6wT6nadm
- YqYjwYbZE5V/SwzMbpWu7Jwlvuwyfo5mh7w5iMfnZE+vHFwp/wARAQABzSFKaXJpIFNsYWJ5
- IDxqaXJpc2xhYnlAa2VybmVsLm9yZz7CwXcEEwEIACEFAlW3RUwCGwMFCwkIBwIGFQgJCgsC
- BBYCAwECHgECF4AACgkQvSWxBAa0cEnVTg//TQpdIAr8Tn0VAeUjdVIH9XCFw+cPSU+zMSCH
- eCZoA/N6gitEcnvHoFVVM7b3hK2HgoFUNbmYC0RdcSc80pOF5gCnACSP9XWHGWzeKCARRcQR
- 4s5YD8I4VV5hqXcKo2DFAtIOVbHDW+0okOzcecdasCakUTr7s2fXz97uuoc2gIBB7bmHUGAH
- XQXHvdnCLjDjR+eJN+zrtbqZKYSfj89s/ZHn5Slug6w8qOPT1sVNGG+eWPlc5s7XYhT9z66E
- l5C0rG35JE4PhC+tl7BaE5IwjJlBMHf/cMJxNHAYoQ1hWQCKOfMDQ6bsEr++kGUCbHkrEFwD
- UVA72iLnnnlZCMevwE4hc0zVhseWhPc/KMYObU1sDGqaCesRLkE3tiE7X2cikmj/qH0CoMWe
- gjnwnQ2qVJcaPSzJ4QITvchEQ+tbuVAyvn9H+9MkdT7b7b2OaqYsUP8rn/2k1Td5zknUz7iF
- oJ0Z9wPTl6tDfF8phaMIPISYrhceVOIoL+rWfaikhBulZTIT5ihieY9nQOw6vhOfWkYvv0Dl
- o4GRnb2ybPQpfEs7WtetOsUgiUbfljTgILFw3CsPW8JESOGQc0Pv8ieznIighqPPFz9g+zSu
- Ss/rpcsqag5n9rQp/H3WW5zKUpeYcKGaPDp/vSUovMcjp8USIhzBBrmI7UWAtuedG9prjqfO
- wU0ETpLnhgEQAM+cDWLL+Wvc9cLhA2OXZ/gMmu7NbYKjfth1UyOuBd5emIO+d4RfFM02XFTI
- t4MxwhAryhsKQQcA4iQNldkbyeviYrPKWjLTjRXT5cD2lpWzr+Jx7mX7InV5JOz1Qq+P+nJW
- YIBjUKhI03ux89p58CYil24Zpyn2F5cX7U+inY8lJIBwLPBnc9Z0An/DVnUOD+0wIcYVnZAK
- DiIXODkGqTg3fhZwbbi+KAhtHPFM2fGw2VTUf62IHzV+eBSnamzPOBc1XsJYKRo3FHNeLuS8
- f4wUe7bWb9O66PPFK/RkeqNX6akkFBf9VfrZ1rTEKAyJ2uqf1EI1olYnENk4+00IBa+BavGQ
- 8UW9dGW3nbPrfuOV5UUvbnsSQwj67pSdrBQqilr5N/5H9z7VCDQ0dhuJNtvDSlTf2iUFBqgk
- 3smln31PUYiVPrMP0V4ja0i9qtO/TB01rTfTyXTRtqz53qO5dGsYiliJO5aUmh8swVpotgK4
- /57h3zGsaXO9PGgnnAdqeKVITaFTLY1ISg+Ptb4KoliiOjrBMmQUSJVtkUXMrCMCeuPDGHo7
- 39Xc75lcHlGuM3yEB//htKjyprbLeLf1y4xPyTeeF5zg/0ztRZNKZicgEmxyUNBHHnBKHQxz
- 1j+mzH0HjZZtXjGu2KLJ18G07q0fpz2ZPk2D53Ww39VNI/J9ABEBAAHCwV8EGAECAAkFAk6S
- 54YCGwwACgkQvSWxBAa0cEk3tRAAgO+DFpbyIa4RlnfpcW17AfnpZi9VR5+zr496n2jH/1ld
- wRO/S+QNSA8qdABqMb9WI4BNaoANgcg0AS429Mq0taaWKkAjkkGAT7mD1Q5PiLr06Y/+Kzdr
- 90eUVneqM2TUQQbK+Kh7JwmGVrRGNqQrDk+gRNvKnGwFNeTkTKtJ0P8jYd7P1gZb9Fwj9YLx
- jhn/sVIhNmEBLBoI7PL+9fbILqJPHgAwW35rpnq4f/EYTykbk1sa13Tav6btJ+4QOgbcezWI
- wZ5w/JVfEJW9JXp3BFAVzRQ5nVrrLDAJZ8Y5ioWcm99JtSIIxXxt9FJaGc1Bgsi5K/+dyTKL
- wLMJgiBzbVx8G+fCJJ9YtlNOPWhbKPlrQ8+AY52Aagi9WNhe6XfJdh5g6ptiOILm330mkR4g
- W6nEgZVyIyTq3ekOuruftWL99qpP5zi+eNrMmLRQx9iecDNgFr342R9bTDlb1TLuRb+/tJ98
- f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
- DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
- S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20240403161559.19970-1-apais@linux.microsoft.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <d35c96ca-24af-fbad-74fe-ad85a433caa2@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 03. 04. 24, 18:15, Allen Pais wrote:
-> The only generic interface to execute asynchronously in the BH context is
-> tasklet; however, it's marked deprecated and has some design flaws. To
-> replace tasklets, BH workqueue support was recently added. A BH workqueue
-> behaves similarly to regular workqueues except that the queued work items
-> are executed in the BH context.
+On 03/04/2024 20:05, mr.nuke.me@gmail.com wrote:
 > 
-> This patch converts drivers/tty/* from tasklet to BH workqueue.
+> 
+> On 4/3/24 02:14, Krzysztof Kozlowski wrote:
+>> On 02/04/2024 21:25, Alexandru Gagniuc wrote:
+>>> IPQ9574 has PCIe controllers which are almost identical to IPQ6018.
+>>> The only difference is that the "iface" clock is not required.
+>>> Document this difference along with the compatible string.
+>>>
+>>> Signed-off-by: Alexandru Gagniuc <mr.nuke.me@gmail.com>
+>>> ---
+>>>   .../devicetree/bindings/pci/qcom,pcie.yaml    | 32 +++++++++++++++++++
+>>>   1 file changed, 32 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+>>> index cf9a6910b542..6eb29547c18e 100644
+>>> --- a/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+>>> +++ b/Documentation/devicetree/bindings/pci/qcom,pcie.yaml
+>>> @@ -26,6 +26,7 @@ properties:
+>>>             - qcom,pcie-ipq8064-v2
+>>>             - qcom,pcie-ipq8074
+>>>             - qcom,pcie-ipq8074-gen3
+>>> +          - qcom,pcie-ipq9574
+>>>             - qcom,pcie-msm8996
+>>>             - qcom,pcie-qcs404
+>>>             - qcom,pcie-sdm845
+>>> @@ -383,6 +384,35 @@ allOf:
+>>>               - const: axi_s # AXI Slave clock
+>>>               - const: axi_bridge # AXI bridge clock
+>>>               - const: rchng
+>>> +
+>>> +  - if:
+>>> +      properties:
+>>> +        compatible:
+>>> +          contains:
+>>> +            enum:
+>>> +              - qcom,pcie-ipq9574
+>>> +    then:
+>>> +      properties:
+>>> +        clocks:
+>>> +          minItems: 4
+>>> +          maxItems: 4
+>>> +        clock-names:
+>>> +          items:
+>>> +            - const: axi_m # AXI Master clock
+>>> +            - const: axi_s # AXI Slave clock
+>>> +            - const: axi_bridge # AXI bridge clock
+>>> +            - const: rchng
+>>> +
+>>> +  - if:
+>>> +      properties:
+>>> +        compatible:
+>>> +          contains:
+>>> +            enum:
+>>> +              - qcom,pcie-ipq6018
+>>> +              - qcom,pcie-ipq8074-gen3
+>>> +              - qcom,pcie-ipq9574
+>>> +    then:
+>>
+>> Do not introduce inconsistent style. All if:then: define both clocks and
+>> resets, right? And after your patch not anymore?
+>>
+> I kept the resets in one place because they are the same cross the ipq* 
+> variants.
+> 
+> Do I understand correctly that you wish me to split up the resets as well?
+> 
+>      if ipq8074 ipq6018
+>          clocks
+>          resets
+> 
+>      if ipq9754
+>          clocks
+>          resets
 
-Quickly looking into the changes, could you also elaborate why not to 
-convert most (all?) of them to (non-BH) wq? Or threaded IRQs. Much of 
-the code comes from the pre-WQ era.
+Yes, keep it consistent with all other cases.
 
-thanks,
--- 
-js
-suse labs
+Best regards,
+Krzysztof
 
 
