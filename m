@@ -1,224 +1,343 @@
-Return-Path: <linux-kernel+bounces-131057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131058-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EA07898287
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:54:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B05B5898293
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:56:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33A2628A768
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:54:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8E73B2207D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:56:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FC895D465;
-	Thu,  4 Apr 2024 07:54:22 +0000 (UTC)
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60F595D461;
+	Thu,  4 Apr 2024 07:56:26 +0000 (UTC)
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FFAE45970
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.58.86.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F09145970
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712217261; cv=none; b=AH/xqVuSUpzAQqe7Kvu0jQamM75hRde7Trj3J2WEDAk+9A/+0LT/hFBAhINLuUjt3KhGw8fwSBdYDYrdTFG1OfqgKW6SuutFtSrkPG1MMA0gzDuM9SkddxXigOz0sK5EA/piMo5JdUeWErFnpRDZ3dqVgzcro7qKctB8zwLZtSw=
+	t=1712217385; cv=none; b=jDEV74+yveFnrK8do6Tn+O/tBNxvVY21uEdXY0Fjvbv8mVpKyifVV8ucih/hZsuj2Zqgby24GZI39VwjR4BYyncqN/kce22EulcJitH7AKz06YRXFHcWd5otg0SHBUG67MaL6xr/A4RS8sbTcAOmUSk+KhzXnKXU6t4j845aopM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712217261; c=relaxed/simple;
-	bh=aR0wVCM5LaAu/ECnGr+i9aZMlzTwjmlOljzCBgud3vU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=DQolSJak1isuYsz+Jqw1rxVaTcleR0ymk+TMwkOG6k6EQs5tPKcoXiey8ZPwSpPf9FREFaitWzUBWlpg4oRWyKlw3Cz7mXR7JxsNJRF2T0O1dkM9mFHg7dRa5exuFGPHR7J59wsh/dzWX/xZLGAIBKu78Hwb9BpQFcZaehMVDnQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM; spf=pass smtp.mailfrom=aculab.com; arc=none smtp.client-ip=185.58.86.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ACULAB.COM
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aculab.com
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-83-v2x10sXbPHaCrBeJxegpgg-1; Thu, 04 Apr 2024 08:54:14 +0100
-X-MC-Unique: v2x10sXbPHaCrBeJxegpgg-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 4 Apr
- 2024 08:53:48 +0100
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 4 Apr 2024 08:53:48 +0100
-From: David Laight <David.Laight@ACULAB.COM>
-To: 'Eric Biggers' <ebiggers@kernel.org>
-CC: Ard Biesheuvel <ardb@kernel.org>, "linux-crypto@vger.kernel.org"
-	<linux-crypto@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Andy
- Lutomirski" <luto@kernel.org>, "Chang S . Bae" <chang.seok.bae@intel.com>
-Subject: RE: [PATCH 0/6] Faster AES-XTS on modern x86_64 CPUs
-Thread-Topic: [PATCH 0/6] Faster AES-XTS on modern x86_64 CPUs
-Thread-Index: AQHaf518oZDDPKfpuUWrj9ZpRMjHLrFWPMWwgAET/ICAAHT4IA==
-Date: Thu, 4 Apr 2024 07:53:48 +0000
-Message-ID: <142077804bee45daac3b0fad8bc4c2fe@AcuMS.aculab.com>
-References: <20240326080305.402382-1-ebiggers@kernel.org>
- <CAMj1kXH4fNevFzrbazJptadxh_spEY3W91FZni5eMqD+UKrSUQ@mail.gmail.com>
- <20240326164755.GB1524@sol.localdomain>
- <6629b8120807458ab76e1968056f5e10@AcuMS.aculab.com>
- <20240404013529.GB24248@quark.localdomain>
-In-Reply-To: <20240404013529.GB24248@quark.localdomain>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
+	s=arc-20240116; t=1712217385; c=relaxed/simple;
+	bh=1OEOur1SKjxHVLPsT6hyA70/hJ0Mb20v/LbXlbCP4qQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cVQYFAk47+3AwFTgcEELKQlVCOr6QOE2VkuLcxrRV1wxmFPLaMfJRziFTfK9AQF+QGfimiur3evQEZZFcPzmz//7Leo81BFrQpcLTf7rUEJvN/KUi42ZyRGqgQMObAe1MwGElXkVHSHPYERzy1P1A9oZPCfyxu1xRxc2HsOytP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 35CCF40005;
+	Thu,  4 Apr 2024 07:56:18 +0000 (UTC)
+Message-ID: <fb25f8bb-2f79-49ea-a06d-aecb11df0573@ghiti.fr>
+Date: Thu, 4 Apr 2024 09:56:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 03/13] riscv: Use IPIs for remote cache/TLB flushes by
+ default
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+To: Samuel Holland <samuel.holland@sifive.com>,
+ Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ Alexandre Ghiti <alexghiti@rivosinc.com>, Jisheng Zhang
+ <jszhang@kernel.org>, Yunhui Cui <cuiyunhui@bytedance.com>,
+ Anup Patel <anup@brainfault.org>
+References: <20240327045035.368512-1-samuel.holland@sifive.com>
+ <20240327045035.368512-4-samuel.holland@sifive.com>
+From: Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20240327045035.368512-4-samuel.holland@sifive.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: alex@ghiti.fr
 
-From: Eric Biggers
-> Sent: 04 April 2024 02:35
->=20
-> Hi David,
->=20
-> On Wed, Apr 03, 2024 at 08:12:09AM +0000, David Laight wrote:
-> > From: Eric Biggers
-> > > Sent: 26 March 2024 16:48
-> > ....
-> > > Consider Intel Ice Lake for example, these are the AES-256-XTS encryp=
-tion speeds
-> > > on 4096-byte messages in MB/s I'm seeing:
-> > >
-> > >     xts-aes-aesni                  5136
-> > >     xts-aes-aesni-avx              5366
-> > >     xts-aes-vaes-avx2              9337
-> > >     xts-aes-vaes-avx10_256         9876
-> > >     xts-aes-vaes-avx10_512         10215
-> > >
-> > > So yes, on that CPU the biggest boost comes just from VAES, staying o=
-n AVX2.
-> > > But taking advantage of AVX512 does help a bit more, first from the p=
-arts other
-> > > than 512-bit registers, then a bit more from 512-bit registers.
-> >
-> > How much does the kernel_fpu_begin() cost on real workloads?
-> > (ie when the registers are live and it forces an extra save/restore)
->=20
-> x86 Linux does lazy restore of the FPU state.  The first kernel_fpu_begin=
-() can
-> have a significant cost, as it issues an XSAVE (or equivalent) instructio=
-n and
-> causes an XRSTOR (or equivalent) instruction to be issued when returning =
-to
-> userspace when it otherwise might not be needed.  Additional kernel_fpu_b=
-egin()
-> / kernel_fpu_end() pairs without returning to userspace have only a small=
- cost,
-> as they don't cause any more saves or restores of the FPU state to be don=
-e.
->=20
-> My new xts(aes) implementations have one kernel_fpu_begin() / kernel_fpu_=
-end()
-> pair per message (if the message doesn't span any page boundaries, which =
-is
-> almost always the case).  That's exactly the same as the current xts-aes-=
-aesni.
 
-I realised after sending it that the code almost certainly already did
-kernel_fpu_begin() - so there probably isn't a difference because all the
-fpu state is always saved.
-(I'm sure there should be a way of getting access to (say) 2 ymm registers
-by providing an on-stack save area to allow wide data copies or special
-instructions - but that is a different issue.)
+On 27/03/2024 05:49, Samuel Holland wrote:
+> An IPI backend is always required in an SMP configuration, but an SBI
+> implementation is not. For example, SBI will be unavailable when the
+> kernel runs in M mode. For this reason, consider IPI delivery of cache
+> and TLB flushes to be the base case, and any other implementation (such
+> as the SBI remote fence extension) to be an optimization.
+>
+> Generally, if IPIs can be delivered without firmware assistance, they
+> are assumed to be faster than SBI calls due to the SBI context switch
+> overhead. However, when SBI is used as the IPI backend, then the context
+> switch cost must be paid anyway, and performing the cache/TLB flush
+> directly in the SBI implementation is more efficient than injecting an
+> interrupt to S-mode. This is the only existing scenario where
+> riscv_ipi_set_virq_range() is called with use_for_rfence set to false.
+>
+> sbi_ipi_init() already checks riscv_ipi_have_virq_range(), so it only
+> calls riscv_ipi_set_virq_range() when no other IPI device is available.
+> This allows moving the static key and dropping the use_for_rfence
+> parameter. This decouples the static key from the irqchip driver probe
+> order.
+>
+> Furthermore, the static branch only makes sense when CONFIG_RISCV_SBI is
+> enabled. Optherwise, IPIs must be used. Add a fallback definition of
+> riscv_use_sbi_for_rfence() which handles this case and removes the need
+> to check CONFIG_RISCV_SBI elsewhere, such as in cacheflush.c.
+>
+> Reviewed-by: Anup Patel <anup@brainfault.org>
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> ---
+>
+> Changes in v6:
+>   - Clarify the commit message for patch 3 based on ML discussion
+>
+> Changes in v5:
+>   - Also switch to riscv_use_sbi_for_rfence() in asm/pgalloc.h
+>
+> Changes in v4:
+>   - New patch for v4
+>
+>   arch/riscv/include/asm/pgalloc.h  |  7 ++++---
+>   arch/riscv/include/asm/sbi.h      |  4 ++++
+>   arch/riscv/include/asm/smp.h      | 15 ++-------------
+>   arch/riscv/kernel/sbi-ipi.c       | 11 ++++++++++-
+>   arch/riscv/kernel/smp.c           | 11 +----------
+>   arch/riscv/mm/cacheflush.c        |  5 ++---
+>   arch/riscv/mm/tlbflush.c          | 31 ++++++++++++++-----------------
+>   drivers/clocksource/timer-clint.c |  2 +-
+>   8 files changed, 38 insertions(+), 48 deletions(-)
+>
+> diff --git a/arch/riscv/include/asm/pgalloc.h b/arch/riscv/include/asm/pgalloc.h
+> index b34587da8882..f52264304f77 100644
+> --- a/arch/riscv/include/asm/pgalloc.h
+> +++ b/arch/riscv/include/asm/pgalloc.h
+> @@ -8,6 +8,7 @@
+>   #define _ASM_RISCV_PGALLOC_H
+>   
+>   #include <linux/mm.h>
+> +#include <asm/sbi.h>
+>   #include <asm/tlb.h>
+>   
+>   #ifdef CONFIG_MMU
+> @@ -17,10 +18,10 @@
+>   
+>   static inline void riscv_tlb_remove_ptdesc(struct mmu_gather *tlb, void *pt)
+>   {
+> -	if (riscv_use_ipi_for_rfence())
+> -		tlb_remove_page_ptdesc(tlb, pt);
+> -	else
+> +	if (riscv_use_sbi_for_rfence())
+>   		tlb_remove_ptdesc(tlb, pt);
+> +	else
+> +		tlb_remove_page_ptdesc(tlb, pt);
+>   }
+>   
+>   static inline void pmd_populate_kernel(struct mm_struct *mm,
+> diff --git a/arch/riscv/include/asm/sbi.h b/arch/riscv/include/asm/sbi.h
+> index 6e68f8dff76b..ea84392ca9d7 100644
+> --- a/arch/riscv/include/asm/sbi.h
+> +++ b/arch/riscv/include/asm/sbi.h
+> @@ -375,8 +375,12 @@ unsigned long riscv_cached_marchid(unsigned int cpu_id);
+>   unsigned long riscv_cached_mimpid(unsigned int cpu_id);
+>   
+>   #if IS_ENABLED(CONFIG_SMP) && IS_ENABLED(CONFIG_RISCV_SBI)
+> +DECLARE_STATIC_KEY_FALSE(riscv_sbi_for_rfence);
+> +#define riscv_use_sbi_for_rfence() \
+> +	static_branch_unlikely(&riscv_sbi_for_rfence)
+>   void sbi_ipi_init(void);
+>   #else
+> +static inline bool riscv_use_sbi_for_rfence(void) { return false; }
+>   static inline void sbi_ipi_init(void) { }
+>   #endif
+>   
+> diff --git a/arch/riscv/include/asm/smp.h b/arch/riscv/include/asm/smp.h
+> index 0d555847cde6..7ac80e9f2288 100644
+> --- a/arch/riscv/include/asm/smp.h
+> +++ b/arch/riscv/include/asm/smp.h
+> @@ -49,12 +49,7 @@ void riscv_ipi_disable(void);
+>   bool riscv_ipi_have_virq_range(void);
+>   
+>   /* Set the IPI interrupt numbers for arch (called by irqchip drivers) */
+> -void riscv_ipi_set_virq_range(int virq, int nr, bool use_for_rfence);
+> -
+> -/* Check if we can use IPIs for remote FENCEs */
+> -DECLARE_STATIC_KEY_FALSE(riscv_ipi_for_rfence);
+> -#define riscv_use_ipi_for_rfence() \
+> -	static_branch_unlikely(&riscv_ipi_for_rfence)
+> +void riscv_ipi_set_virq_range(int virq, int nr);
+>   
+>   /* Check other CPUs stop or not */
+>   bool smp_crash_stop_failed(void);
+> @@ -104,16 +99,10 @@ static inline bool riscv_ipi_have_virq_range(void)
+>   	return false;
+>   }
+>   
+> -static inline void riscv_ipi_set_virq_range(int virq, int nr,
+> -					    bool use_for_rfence)
+> +static inline void riscv_ipi_set_virq_range(int virq, int nr)
+>   {
+>   }
+>   
+> -static inline bool riscv_use_ipi_for_rfence(void)
+> -{
+> -	return false;
+> -}
+> -
+>   #endif /* CONFIG_SMP */
+>   
+>   #if defined(CONFIG_HOTPLUG_CPU) && (CONFIG_SMP)
+> diff --git a/arch/riscv/kernel/sbi-ipi.c b/arch/riscv/kernel/sbi-ipi.c
+> index a4559695ce62..1026e22955cc 100644
+> --- a/arch/riscv/kernel/sbi-ipi.c
+> +++ b/arch/riscv/kernel/sbi-ipi.c
+> @@ -13,6 +13,9 @@
+>   #include <linux/irqdomain.h>
+>   #include <asm/sbi.h>
+>   
+> +DEFINE_STATIC_KEY_FALSE(riscv_sbi_for_rfence);
+> +EXPORT_SYMBOL_GPL(riscv_sbi_for_rfence);
+> +
+>   static int sbi_ipi_virq;
+>   
+>   static void sbi_ipi_handle(struct irq_desc *desc)
+> @@ -72,6 +75,12 @@ void __init sbi_ipi_init(void)
+>   			  "irqchip/sbi-ipi:starting",
+>   			  sbi_ipi_starting_cpu, NULL);
+>   
+> -	riscv_ipi_set_virq_range(virq, BITS_PER_BYTE, false);
+> +	riscv_ipi_set_virq_range(virq, BITS_PER_BYTE);
+>   	pr_info("providing IPIs using SBI IPI extension\n");
+> +
+> +	/*
+> +	 * Use the SBI remote fence extension to avoid
+> +	 * the extra context switch needed to handle IPIs.
+> +	 */
+> +	static_branch_enable(&riscv_sbi_for_rfence);
+>   }
+> diff --git a/arch/riscv/kernel/smp.c b/arch/riscv/kernel/smp.c
+> index 45dd4035416e..8e6eb64459af 100644
+> --- a/arch/riscv/kernel/smp.c
+> +++ b/arch/riscv/kernel/smp.c
+> @@ -171,10 +171,7 @@ bool riscv_ipi_have_virq_range(void)
+>   	return (ipi_virq_base) ? true : false;
+>   }
+>   
+> -DEFINE_STATIC_KEY_FALSE(riscv_ipi_for_rfence);
+> -EXPORT_SYMBOL_GPL(riscv_ipi_for_rfence);
+> -
+> -void riscv_ipi_set_virq_range(int virq, int nr, bool use_for_rfence)
+> +void riscv_ipi_set_virq_range(int virq, int nr)
+>   {
+>   	int i, err;
+>   
+> @@ -197,12 +194,6 @@ void riscv_ipi_set_virq_range(int virq, int nr, bool use_for_rfence)
+>   
+>   	/* Enabled IPIs for boot CPU immediately */
+>   	riscv_ipi_enable();
+> -
+> -	/* Update RFENCE static key */
+> -	if (use_for_rfence)
+> -		static_branch_enable(&riscv_ipi_for_rfence);
+> -	else
+> -		static_branch_disable(&riscv_ipi_for_rfence);
+>   }
+>   
+>   static const char * const ipi_names[] = {
+> diff --git a/arch/riscv/mm/cacheflush.c b/arch/riscv/mm/cacheflush.c
+> index bc61ee5975e4..d76fc73e594b 100644
+> --- a/arch/riscv/mm/cacheflush.c
+> +++ b/arch/riscv/mm/cacheflush.c
+> @@ -21,7 +21,7 @@ void flush_icache_all(void)
+>   {
+>   	local_flush_icache_all();
+>   
+> -	if (IS_ENABLED(CONFIG_RISCV_SBI) && !riscv_use_ipi_for_rfence())
+> +	if (riscv_use_sbi_for_rfence())
+>   		sbi_remote_fence_i(NULL);
+>   	else
+>   		on_each_cpu(ipi_remote_fence_i, NULL, 1);
+> @@ -69,8 +69,7 @@ void flush_icache_mm(struct mm_struct *mm, bool local)
+>   		 * with flush_icache_deferred().
+>   		 */
+>   		smp_mb();
+> -	} else if (IS_ENABLED(CONFIG_RISCV_SBI) &&
+> -		   !riscv_use_ipi_for_rfence()) {
+> +	} else if (riscv_use_sbi_for_rfence()) {
+>   		sbi_remote_fence_i(&others);
+>   	} else {
+>   		on_each_cpu_mask(&others, ipi_remote_fence_i, NULL, 1);
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index 893566e004b7..0435605b07d0 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -79,10 +79,10 @@ static void __ipi_flush_tlb_all(void *info)
+>   
+>   void flush_tlb_all(void)
+>   {
+> -	if (riscv_use_ipi_for_rfence())
+> -		on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
+> -	else
+> +	if (riscv_use_sbi_for_rfence())
+>   		sbi_remote_sfence_vma_asid(NULL, 0, FLUSH_TLB_MAX_SIZE, FLUSH_TLB_NO_ASID);
+> +	else
+> +		on_each_cpu(__ipi_flush_tlb_all, NULL, 1);
+>   }
+>   
+>   struct flush_tlb_range_data {
+> @@ -103,7 +103,6 @@ static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
+>   			      unsigned long start, unsigned long size,
+>   			      unsigned long stride)
+>   {
+> -	struct flush_tlb_range_data ftd;
+>   	bool broadcast;
+>   
+>   	if (cpumask_empty(cmask))
+> @@ -119,20 +118,18 @@ static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
+>   		broadcast = true;
+>   	}
+>   
+> -	if (broadcast) {
+> -		if (riscv_use_ipi_for_rfence()) {
+> -			ftd.asid = asid;
+> -			ftd.start = start;
+> -			ftd.size = size;
+> -			ftd.stride = stride;
+> -			on_each_cpu_mask(cmask,
+> -					 __ipi_flush_tlb_range_asid,
+> -					 &ftd, 1);
+> -		} else
+> -			sbi_remote_sfence_vma_asid(cmask,
+> -						   start, size, asid);
+> -	} else {
+> +	if (!broadcast) {
+>   		local_flush_tlb_range_asid(start, size, stride, asid);
+> +	} else if (riscv_use_sbi_for_rfence()) {
+> +		sbi_remote_sfence_vma_asid(cmask, start, size, asid);
+> +	} else {
+> +		struct flush_tlb_range_data ftd;
+> +
+> +		ftd.asid = asid;
+> +		ftd.start = start;
+> +		ftd.size = size;
+> +		ftd.stride = stride;
+> +		on_each_cpu_mask(cmask, __ipi_flush_tlb_range_asid, &ftd, 1);
+>   	}
+>   
+>   	if (cmask != cpu_online_mask)
+> diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
+> index 09fd292eb83d..0bdd9d7ec545 100644
+> --- a/drivers/clocksource/timer-clint.c
+> +++ b/drivers/clocksource/timer-clint.c
+> @@ -251,7 +251,7 @@ static int __init clint_timer_init_dt(struct device_node *np)
+>   	}
+>   
+>   	irq_set_chained_handler(clint_ipi_irq, clint_ipi_interrupt);
+> -	riscv_ipi_set_virq_range(rc, BITS_PER_BYTE, true);
+> +	riscv_ipi_set_virq_range(rc, BITS_PER_BYTE);
+>   	clint_clear_ipi();
+>   #endif
+>   
 
-> I think what you may really be asking is how much the overhead of the XSA=
-VE /
-> XRSTOR pair associated with kernel-mode use of the FPU *increases* if the=
- kernel
-> clobbers AVX or AVX512 state, instead of just SSE state as xts-aes-aesni =
-does.
-> That's much more relevant to this patchset.
 
-It depends on what has to be saved, not on what is used.
-Although, since all the x/y/zmm registers are caller-saved I think they cou=
-ld
-be 'zapped' on syscall entry (and restored as zero later).
-Trouble is I suspect there is a single piece of code somewhere that relies
-on them being preserved across an inlined system call.
-
-> I think the answer is that there is no additional overhead.  This is beca=
-use the
-> XSAVE / XRSTOR pair happens regardless of the type of state the kernel cl=
-obbers,
-> and it operates on the userspace state, not the kernel's.  Some of the ne=
-wer
-> variants of XSAVE (XSAVEOPT and XSAVES) do have a "modified" optimization=
- where
-> they don't save parts of the state that are unmodified since the last XRS=
-TOR;
-> however, that is unimportant here because the kernel's FPU state is never=
- saved.
->=20
-> (This would change if x86 Linux were to support preemption of kernel-mode=
- FPU
-> code.  In that case, we may need to take more care to minimize use of AVX=
- and
-> AVX512 state.  That being said, AES-XTS tends to be used for bulk data an=
-yway.)
->=20
-> This is based on theory, though.  I'll do a test to confirm that there's =
-indeed
-> no additional overhead.  And also, even if there's no additional overhead=
-, what
-> the existing overhead actually is.
-
-Yes, I was wondering how it is used for 'real applications'.
-If a system call that would normally return immediately (or at least withou=
-t
-a full process switch) hits the aes code it gets the cost of the XSAVE adde=
-d.
-Whereas the benchmark probably doesn't do anywhere near as many.
-
-OTOH this is probably no different.
-
->=20
-> > I've not looked at the code but I often see what looks like
-> > excessive inlining in crypto code.
-> > This will speed up benchmarks but can have a negative effect
-> > on real code both because of the time taken to load the
-> > code and the effect of displacing other code.
-> >
-> > It might be that this code is a simple loop....
->=20
-> This is a different topic.  By "inlining" I assume that you also mean thi=
-ngs
-> like loop unrolling.  I totally agree that some of the crypto assembly co=
-de goes
-> way overboard on this, resulting in an unreasonably large machine code si=
-ze.
-> The AVX implementation of AES-GCM (aesni-intel_avx-x86_64.S), which was w=
-ritten
-> by Intel, is the worst offender by far, generating 256011 bytes of machin=
-e code.
-> In OpenSSL, Intel has even taken that to the next level with their VAES
-> optimized implementation of AES-GCM generating 696040 bytes of machine co=
-de.
-
-That is truly stunning!
-I can't believe anything that big is actually 'optimised'.
-Just think of all the TLB misses :-)
-Unless it is slightly faster if you are encrypting several TB of data.
-
-..
-> So, I think my current proposal is at a reasonable place regarding compil=
-ed code
-> size, especially when it's compared to the monstrosity that is some of th=
-e
-> existing crypto assembly code.  But let me know if there are any specific
-> choices I've made that you may have a different opinion on.
-
-At least you've thought about code size.
-
-=09David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1=
-PT, UK
-Registration No: 1397386 (Wales)
+Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
 
 
