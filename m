@@ -1,167 +1,133 @@
-Return-Path: <linux-kernel+bounces-130798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F14E5897D3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61A74897D3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 03:03:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69D9FB22620
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:01:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 02868B2788A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 01:03:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 546A08C06;
-	Thu,  4 Apr 2024 01:01:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Xt5Dbdpn"
-Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C986848A;
+	Thu,  4 Apr 2024 01:03:27 +0000 (UTC)
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E46D123CE;
-	Thu,  4 Apr 2024 01:01:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE684C7D;
+	Thu,  4 Apr 2024 01:03:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712192482; cv=none; b=jDVuDnglQkvluN2ShVF/olh4YI5RVtuY1l46MYY63suJMzR8R4u9wOjro3cO5/bF+q7Vo4dNbrXxv+1S6xGpqZ53RhuAI0LPvrr4V7g+v881SER83i8g2e8Xfw/B99iJUFwMkNoIknm3/d4SIcYuJfT8WW5V5iWVXBtLUvA65jk=
+	t=1712192606; cv=none; b=ucUhqeBAE/E7bry/VDYTSTkVm0kxS1dL4awgjC6pqnZTML1c8O6sRollN7vOlox3YO9DH9xcliz9MZgppP80mmvAxOIrdCF9kP7Ziq+guvHxAvO3Mv+AC8FooYsWGUEu8ldpvEUDviOx/Fp9bKQMgRChyrgfmhTgeAqR+Iy/UHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712192482; c=relaxed/simple;
-	bh=VcITItGHjtKY9dfEMl4G05gYTHqgBMk3fUlh/7jjiJc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lMJC7dYTlJX1NWVGmvVzpvPyVBb+0Mq+SUmpaT6L/h8gwR8Ac/hykqLDJ3Dse61PqKc4ktisdjksuTtli8kC6l7hRp9v6A2mYoMcKWI3Hfw1ImgTZQ9aOP+mgkbLwyEiUXcnNTbxODDYRFCFTyq6c9dEmBF9Tztzgt8KQAf2hHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Xt5Dbdpn; arc=none smtp.client-ip=209.85.221.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1712192606; c=relaxed/simple;
+	bh=LGd6saAhTNRNk6SUdRvYglHLJ9GcARn88XlV4Fy2oe4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=W4/aDxOU01nI0pmhdEeA66b29u3GUZ6d/TZ6HOPzpAnWC6D4ZsBviXxl+iCNaSbAbsmC5KcZ1LOoVPBxufQhDJTLPeXxVjtCyffKVALTBucv8SNH3qQLgGQQPhAgty7qFPNxHeSfBt6g9h5o8E47IQlAAQ9zCEd5F55gSXIe62c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.166.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-33ddd1624beso207012f8f.1;
-        Wed, 03 Apr 2024 18:01:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712192479; x=1712797279; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HLU2APTaqoheKuuzuNc2tSXn6E7XDkIQ0oPwW38nA4I=;
-        b=Xt5DbdpnBGpOIWyRpSnbHEtDXN0wnQd1F7Qou3PIzQSoe/wf57mdql9R4FJxiiEG8V
-         ffsNkTEMPFwGCSxykrCWYEGIs6Wfe7a7zsY3RdSe0zSxjT6u8TdQIiSh/4oCPfCOhTDO
-         j0WwvGfhZ1EWzyzN1R9AoXt0sEFgSfJE83YffBaiIWuMPh5Y+B6Z11Bo9jsQ81av5LyF
-         QtLzYxRkuZJEG3qndqKCs/GqMLfpN0JKA0yG6T/AenSuPMGyfr8JO+3XZU04C4mK4U9Z
-         ObN5UKhUnGc0fe7Xay/5W1qRSr+wvhmXqtMQqej4Y485rY/kkB8cH6bYU++b+CQC3SWd
-         QX+w==
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7c89cd8df36so14454939f.1;
+        Wed, 03 Apr 2024 18:03:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712192479; x=1712797279;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HLU2APTaqoheKuuzuNc2tSXn6E7XDkIQ0oPwW38nA4I=;
-        b=bzfBPktrhhOsbsS+4XdoHH2WMXxsxZcSSS2CucFW0NKFL4z5ciDQVUCnv4iIPr4Z4w
-         wbpjHip8I7GYxGfakJoVFBF2Tl4olddnDnrfatE/1zObmB/EPGVPmr5basbxFtqNt2kv
-         OJuZSJb1boqWJU2GX10sbAcMQnDA58dnK7y7G4CKVp5vRQGOyVRcxRt2ehXd/IwTW7VC
-         1Fy7LwsselMEiSyGRMQAwmMiEWKxIRZUJoft8BLpUqzEtxhFADfpHqMem8sbHVwxtWG2
-         g6UrbU2tW3JaNdsZ0rP7XJr89faXo3LAAsHXDD+DKVWzOoGZETkzcXN4M/GsdwwGIzNe
-         Q9CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3ovBuL1GzsPXy1KvQfVa2F2DnNXRdTyA1ELG2hSRDyB696Lkln7EICeEEZnfVT4bM/sawSnf8UdJefkKzsmsOmj/c1WRJzUBU1NOPCAx+nlx2Qk5/JwRijQVi5MK7jfIG6q4S32G415oHOSUsrjYLLLojLvAa187oi5J9alTmUGql
-X-Gm-Message-State: AOJu0YwpKjn+lYaIO+pa8wrRYQWwsjyXrCr5rWtbykkQnExEPA87Uqun
-	ukuWJPTt9S5gD1Txn4qWXXgPNIzAxXDUy/xIlXN72qIYASyXnALnvlzklyVbZzW+nNmCVKTCk3F
-	VLB8rJ89gbH5//dE6v29bLmAr3gQ=
-X-Google-Smtp-Source: AGHT+IGgve8RYBKKY6vg33L/syRyrb3Z5pP3xZmPioDKEq/WUwRK0ivhdEAPpSvjxORCV87KADxzfEeudnxPjlunbPA=
-X-Received: by 2002:a05:6000:4f1:b0:343:6c07:c816 with SMTP id
- cr17-20020a05600004f100b003436c07c816mr1064770wrb.16.1712192478995; Wed, 03
- Apr 2024 18:01:18 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712192603; x=1712797403;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=g6vxAkr4s6qgE7mbwQ5Lwv040fqC5GXe0Ujo9eHHndY=;
+        b=NT74vLcIT4iO54SVR8NL0G6kkftLRnxzYj4qhv8hN04e8QUzWenY3d9Q3GJPDx+ezT
+         vXgk1kxZg8l5LE5RljDYT3vW93fW3TqlN8sPtxV5o18W5lZEe2Rw/Tzy95svAMKx5iIt
+         7/XcZ70Hh3pi93OV4rVy4n7l2F4c/djUIvkTh+XdTan8LKbXSisWJRJSD5H5hK2WCeiU
+         wRPA08eIF8hZLPlqYxIRkp/BlxWRxJg2gau6niV9985+z0WTt5DI5zoxymUMj1GvjzZR
+         1p55AmaGbplhLamYx9uzD+j+svst2uPgmSHnjZBOnYrtn6QLSR2mfDI/Vigi1X4D+6zH
+         UYfQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVYo9VxQm3vvYg9gGI9FSH0NEcc4E2bvJ7s+JF9GShZjPKrUwgXmz0IYyRYXM+WTb2cIEI16zx2pDGkG1yI49p1gcnUs1fEYvs4Xa+7
+X-Gm-Message-State: AOJu0Yxhufz21zniE7aE/ihY7faYTWSb0+lkcY86tEORO+mg92IvmYqY
+	OpCxpuR4IbrM+94P9bURsn/iXZB8l4X8rGWZg1rDCpxaZKBtcewe5NnyhBzNi68=
+X-Google-Smtp-Source: AGHT+IHod2TfUcFpAwmb9wyGSXQqLBEZQypuU88VQILclSgT27zEVtPrfMXvG4Qt52wNhtvfP/Nutw==
+X-Received: by 2002:a05:6602:2195:b0:7d0:895b:5352 with SMTP id b21-20020a056602219500b007d0895b5352mr1414812iob.10.1712192603593;
+        Wed, 03 Apr 2024 18:03:23 -0700 (PDT)
+Received: from localhost (c-76-136-75-40.hsd1.il.comcast.net. [76.136.75.40])
+        by smtp.gmail.com with ESMTPSA id f23-20020a056638023700b00476def848f1sm4132719jaq.131.2024.04.03.18.03.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 18:03:23 -0700 (PDT)
+From: David Vernet <void@manifault.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next 1/2] bpf: Allow invoking kfuncs from BPF_PROG_TYPE_SYSCALL progs
+Date: Wed,  3 Apr 2024 20:03:07 -0500
+Message-ID: <20240404010308.334604-1-void@manifault.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
- <20240322-hid-bpf-sleepable-v5-1-179c7b59eaaa@kernel.org> <CAADnVQJdm7+7tbJC8yhPqDUijE0DTD9UG4LOQmNRCWchQ3uGsg@mail.gmail.com>
- <CAO-hwJKVVjhg6_0tAM75HGJL0WcERotyJc+7oBVvDiTGJAqTfw@mail.gmail.com> <CAADnVQ+5NqjqyeFS3XgDU0OCFgt1Y9bmTbHOPv6ekw1sJasyaA@mail.gmail.com>
-In-Reply-To: <CAADnVQ+5NqjqyeFS3XgDU0OCFgt1Y9bmTbHOPv6ekw1sJasyaA@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Wed, 3 Apr 2024 18:01:07 -0700
-Message-ID: <CAADnVQJm7bi=iFtWj1XCmEdyDwb64KjxeP5RFo57paG3-zZo_g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/6] bpf/helpers: introduce sleepable bpf_timers
-To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 3, 2024 at 11:50=E2=80=AFAM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Wed, Mar 27, 2024 at 10:02=E2=80=AFAM Benjamin Tissoires
-> <benjamin.tissoires@redhat.com> wrote:
-> > > >                 goto out;
-> > > >         }
-> > > > +       spin_lock(&t->sleepable_lock);
-> > > >         drop_prog_refcnt(t);
-> > > > +       spin_unlock(&t->sleepable_lock);
-> > >
-> > > this also looks odd.
-> >
-> > I basically need to protect "t->prog =3D NULL;" from happening while
-> > bpf_timer_work_cb is setting up the bpf program to be run.
->
-> Ok. I think I understand the race you're trying to fix.
-> The bpf_timer_cancel_and_free() is doing
-> cancel_work()
-> and proceeds with
-> kfree_rcu(t, rcu);
->
-> That's the only race and these extra locks don't help.
->
-> The t->prog =3D NULL is nothing to worry about.
-> The bpf_timer_work_cb() might still see callback_fn =3D=3D NULL
-> "when it's being setup" and it's ok.
-> These locks don't help that.
->
-> I suggest to drop sleepable_lock everywhere.
-> READ_ONCE of callback_fn in bpf_timer_work_cb() is enough.
-> Add rcu_read_lock_trace() before calling bpf prog.
->
-> The race to fix is above 'cancel_work + kfree_rcu'
-> since kfree_rcu might free 'struct bpf_hrtimer *t'
-> while the work is pending and work_queue internal
-> logic might UAF struct work_struct work.
-> By the time it may luckily enter bpf_timer_work_cb() it's too late.
-> The argument 'struct work_struct *work' might already be freed.
->
-> To fix this problem, how about the following:
-> don't call kfree_rcu and instead queue the work to free it.
-> After cancel_work(&t->work); the work_struct can be reused.
-> So set it up to call "freeing callback" and do
-> schedule_work(&t->work);
->
-> There is a big assumption here that new work won't be
-> executed before cancelled work completes.
-> Need to check with wq experts.
->
-> Another approach is to do something smart with
-> cancel_work() return code.
-> If it returns true set a flag inside bpf_hrtimer and
-> make bpf_timer_work_cb() free(t) after bpf prog finishes.
+Currently, a set of core BPF kfuncs (e.g. bpf_task_*, bpf_cgroup_*,
+bpf_cpumask_*, etc) cannot be invoked from BPF_PROG_TYPE_SYSCALL
+programs. The whitelist approach taken for enabling kfuncs makes sense:
+it not safe to call these kfuncs from every program type. For example,
+it may not be safe to call bpf_task_acquire() in an fentry to
+free_task().
 
-Looking through wq code... I think I have to correct myself.
-cancel_work and immediate free is probably fine from wq pov.
-It has this comment:
-        worker->current_func(work);
-        /*
-         * While we must be careful to not use "work" after this, the trace
-         * point will only record its address.
-         */
-        trace_workqueue_execute_end(work, worker->current_func);
+BPF_PROG_TYPE_SYSCALL, on the other hand, is a perfectly safe program
+type from which to invoke these kfuncs, as it's a very controlled
+environment, and we should never be able to run into any of the typical
+problems such as recursive invoations, acquiring references on freeing
+kptrs, etc. Being able to invoke these kfuncs would be useful, as
+BPF_PROG_TYPE_SYSCALL can be invoked with BPF_PROG_RUN, and would
+therefore enable user space programs to synchronously call into BPF to
+manipulate these kptrs.
 
-the bpf_timer_work_cb() might still be running bpf prog.
-So it shouldn't touch 'struct bpf_hrtimer *t' after bpf prog returns,
-since kfree_rcu(t, rcu); could have freed it by then.
-There is also this code in net/rxrpc/rxperf.c
-        cancel_work(&call->work);
-        kfree(call);
+This patch therefore enables invoking the aforementioned core kfuncs
+from BPF_PROG_TYPE_SYSCALL progs.
 
-So it looks like it's fine to drop sleepable_lock,
-add rcu_read_lock_trace() and things should be ok.
+Signed-off-by: David Vernet <void@manifault.com>
+---
+ kernel/bpf/cpumask.c | 1 +
+ kernel/bpf/helpers.c | 1 +
+ 2 files changed, 2 insertions(+)
+
+diff --git a/kernel/bpf/cpumask.c b/kernel/bpf/cpumask.c
+index dad0fb1c8e87..33c473d676a5 100644
+--- a/kernel/bpf/cpumask.c
++++ b/kernel/bpf/cpumask.c
+@@ -474,6 +474,7 @@ static int __init cpumask_kfunc_init(void)
+ 	ret = bpf_mem_alloc_init(&bpf_cpumask_ma, sizeof(struct bpf_cpumask), false);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_TRACING, &cpumask_kfunc_set);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &cpumask_kfunc_set);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &cpumask_kfunc_set);
+ 	return  ret ?: register_btf_id_dtor_kfuncs(cpumask_dtors,
+ 						   ARRAY_SIZE(cpumask_dtors),
+ 						   THIS_MODULE);
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index d9e7aca8ae9e..8cde717137bd 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2653,6 +2653,7 @@ static int __init kfunc_init(void)
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SCHED_CLS, &generic_kfunc_set);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_XDP, &generic_kfunc_set);
+ 	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS, &generic_kfunc_set);
++	ret = ret ?: register_btf_kfunc_id_set(BPF_PROG_TYPE_SYSCALL, &generic_kfunc_set);
+ 	ret = ret ?: register_btf_id_dtor_kfuncs(generic_dtors,
+ 						  ARRAY_SIZE(generic_dtors),
+ 						  THIS_MODULE);
+-- 
+2.44.0
+
 
