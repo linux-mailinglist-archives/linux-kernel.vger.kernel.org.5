@@ -1,296 +1,163 @@
-Return-Path: <linux-kernel+bounces-131958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 376E1898DF0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:29:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70F10898DF9
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:32:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1E9F284E30
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:29:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B6801C20F23
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:32:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12EA0130ADD;
-	Thu,  4 Apr 2024 18:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14AEA130485;
+	Thu,  4 Apr 2024 18:32:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HOLx1oSj"
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EjdqDyns"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48D98130A48;
-	Thu,  4 Apr 2024 18:29:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0C47134AC
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 18:31:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712255364; cv=none; b=QF30iXy/yGm1J3CLqa9ma9SSifGgYjx1grfE+kwELMxmU2NmBOaig/Qmvbn94OYJW26pHaQv3wzc5WgsjipzIprVnEdpccAH9xUuuONYhDgQju369VIQpbO3TbaLEz5OxHrnNKMV2Es0p0UmbGgiBAvUF63hrjfZVU29ycfugcM=
+	t=1712255521; cv=none; b=YP0qI1fSxmot4KbE3Lhmn07hbWPcPA8ctoweHIqW32tb0G9ET/ZGQ7X6j9IHH+TZE2kC3PB4uFj92rDMY0YtQLN5gsHmwrlkpxzCDxgW3X77hbdbSipnHbY+g+u7Ks/sQYkweW7NYIph+IcKzPoYSxSyIXtcY5cb8SwtrcrdV0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712255364; c=relaxed/simple;
-	bh=HMKk2OAtKW2x2LMdD/jWcBEfeS1RgaLvh6Ziw8H1c98=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ngClumJ0VnDag0CQCxUfh5hD2+75GqfVIJE1CbnTV4PdMDl7zKb26XNOlwO3PQJpZ14rCCypm3u5tappWaLUlERJz3elNEV3kINn1TleP7PFiiTPn6Yeho6/6aEXpd7Yc2UDCJQ/CLXjTf3PyYx4lvG5lG/+mvPd35/sW/Ub/D4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HOLx1oSj; arc=none smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-3438d7a05aaso829789f8f.0;
-        Thu, 04 Apr 2024 11:29:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712255360; x=1712860160; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RTpTxJ/h4Sy2oSmb8gB37Gwj4AEbOYQ5z8wuEnJIGRw=;
-        b=HOLx1oSjpfDjJEzh7TCvA+7gYQ+eWzDnh3pb9R2mUKEMgpSkiaXzbLghowX04Tjzyt
-         /AroJkVWMPYCU9yWcz0l3/Di0W4+JDoKpZDTKnM0QOn1kjMLDVOFtqs/uVVP2LYNwEqw
-         BTVezeh/HL9eKpmQ5CbQzgIA00GPsYZgPmiRBPaoe6PbNT4MOAaULf9zi71jKKxAB31t
-         vr1GwWtuRSlH8OcriU0QJ1w6jZdV3hNidMV1MWEeWu91KVpTl2/hFGqZ8CpJVTCB+t5c
-         0IA4V/lO6C3SxGFSLS3PN9opucYMIwwOuGbfEOvtnY2Dil5KfmBHLLihk3vekPD7BGqN
-         +g6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712255360; x=1712860160;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RTpTxJ/h4Sy2oSmb8gB37Gwj4AEbOYQ5z8wuEnJIGRw=;
-        b=MmVsbgJ4+NnNQA0YbS1+8W8ga5H+p7hkSSOSdy613EBelak0mZebdvfw1s/OBwkj+7
-         WlOs8P/xgpk8V60CbXGVuHRBqkGU3VXvwiKn05fGZsJ1UW9VGI1mTpNZY7U8FIpznGx9
-         0Yfoy8qursHd7NgaZQNCXVK87Qtue28MS9TM7BHCJB438TtWKptQc/+HjjVah3MiYWul
-         bLg5rnnD9YceqC0WSmKCfq190aX64fI0erkxQXslU+R1tAkkR/0cfr2VBdTjdWqaExm0
-         YyWn3D5BRBB6isthk8dnWVk6wRigxT3p1zxRkH2b6UfhOVoHQGdYR5vvgA+PrlTfUrhA
-         PeHg==
-X-Forwarded-Encrypted: i=1; AJvYcCUaL0u1gWFQfjUnf27k83HCN+LtmNF+Z/NISN0LuajP+b/OfZ4Qw7fSORNeZsCnmlaAABhBSnk2QJCB17JbT10y782yprvK25DWm+4YQ6xp17JvJXrHkgIPjkMiAt5YmU3GYKatTS1+b8R4GeUugb+UNEwqOfcjXn1RnzRZa48H7RNL
-X-Gm-Message-State: AOJu0Yyzk8yjwjaCk4QUFo+qCmvxH4XPNzjyYZ8kukyyPWwEN7phx0qR
-	Is/EFSuG6ml/2vnQg2FLsBsQzf6zWDCqJq6NyiV044As8IIvdMf3ynPckvnbWSmG9h+vgI9SK7D
-	BeNKgLP9J7y+InA91Kqh4MrLx8cw=
-X-Google-Smtp-Source: AGHT+IGVEGF08XZDzG15bu9gOfdbspeTE9QO+ua8mJgOIRn1Vq/L/BtUcTGdbsFwJ2X/XkYBaoi7b250MWo5d7NP88k=
-X-Received: by 2002:adf:a1c2:0:b0:343:c43d:2eeb with SMTP id
- v2-20020adfa1c2000000b00343c43d2eebmr354454wrv.0.1712255360571; Thu, 04 Apr
- 2024 11:29:20 -0700 (PDT)
+	s=arc-20240116; t=1712255521; c=relaxed/simple;
+	bh=sd2UZn5Oa4FTKHXxEBZyVQUL7ta51ipl/1LGeRiOzxg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l+Ic0Hl3rQUJc52h3XxwZfwGeEDopojBe3dpsb8yQvaz8mv8P4lsVEmg0dMOsU5QBknk3MHnBsNrNIXjTEMsIyWqcQf3JJuYqDUFyrS4lEk4U+Kvtn/irL7bwo/C4v/M0QhNcMXPKQvwvSEmTB5PDzcaKnTko18YCgaScc2mJz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EjdqDyns; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712255520; x=1743791520;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=sd2UZn5Oa4FTKHXxEBZyVQUL7ta51ipl/1LGeRiOzxg=;
+  b=EjdqDyns+XabW0GpCgN7k9FLMpR8ccgZ59Z+EfcsoKMilldk5zXNWSJs
+   Q+AmrjuNgHz3MGRnAoyztqgPSoGg9O3bAclqyS7PxVHPVb8geAaTxD253
+   BpZrGwXRbgJUKVNitqKBJOvj2r7M4EW8KTaobHRxsNcuy7OhCjPo6LpOi
+   MIdmz0BAfnLoqq+wsXDZDa6kLsHZF9vPSQ+hUssVNpT2oDhA/iYW0McqK
+   3wtAYN6CKOvC1B29eacxVW4HLb3x2/LntRYPgiK+09tA7zTYcJEDsoH5P
+   LecBjULlX5MmS2JsCB9NBSFvhZHJxl59HT+qwXuKH5c7u0ZHfl3tk/KEZ
+   A==;
+X-CSE-ConnectionGUID: Nk7/MR2zTcmUNLX+p+wjPQ==
+X-CSE-MsgGUID: 3nOyImR+SVOrbJ3bNg51qw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7798417"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="7798417"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 11:31:59 -0700
+X-CSE-ConnectionGUID: mg2wxoKbQDy56Wmk2bm9ZA==
+X-CSE-MsgGUID: 47sAUkSXRfqhptCHXB64nQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="18842373"
+Received: from vzaharie-mobl.amr.corp.intel.com (HELO [10.209.26.243]) ([10.209.26.243])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 11:31:58 -0700
+Message-ID: <8ae52273-7b79-46b7-9cd5-2a0c401311c3@intel.com>
+Date: Thu, 4 Apr 2024 11:31:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
- <20240322-hid-bpf-sleepable-v5-1-179c7b59eaaa@kernel.org> <CAADnVQJdm7+7tbJC8yhPqDUijE0DTD9UG4LOQmNRCWchQ3uGsg@mail.gmail.com>
- <CAO-hwJKVVjhg6_0tAM75HGJL0WcERotyJc+7oBVvDiTGJAqTfw@mail.gmail.com>
- <CAADnVQ+5NqjqyeFS3XgDU0OCFgt1Y9bmTbHOPv6ekw1sJasyaA@mail.gmail.com>
- <CAADnVQJm7bi=iFtWj1XCmEdyDwb64KjxeP5RFo57paG3-zZo_g@mail.gmail.com>
- <CAADnVQKSwdpfx8EoqURvzFymYNr1evkB3+4dRt_coPOZhW2LTw@mail.gmail.com>
- <CAO-hwJLDuGHDNLRAJit7+5Dh7MRmwmWNt0+rreMyjf7P6UpAYg@mail.gmail.com>
- <CAADnVQ+gikPakTuYpD4-oxS6yS5-Dd_HanfqyNnGW-nk7=eXNg@mail.gmail.com> <CAO-hwJLz4ET8Rba-_8icR+7t9T63BPnf97JrSFjviJWG+i8dVQ@mail.gmail.com>
-In-Reply-To: <CAO-hwJLz4ET8Rba-_8icR+7t9T63BPnf97JrSFjviJWG+i8dVQ@mail.gmail.com>
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date: Thu, 4 Apr 2024 11:29:09 -0700
-Message-ID: <CAADnVQ+MSqf1=FesorSxT63Qh83+4W79HX3HDyOWupajk_rTHg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v5 1/6] bpf/helpers: introduce sleepable bpf_timers
-To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] x86/mm/pae: Align up pteval_t, pmdval_t and pudval_t
+ to avoid split locks
+To: Sean Christopherson <seanjc@google.com>
+Cc: Javier Pello <devel@otheo.eu>, linux-kernel@vger.kernel.org,
+ x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>
+References: <20240401185451.6897208962d3fc47a12ffb5a@otheo.eu>
+ <20240401185712.a80deeb2fddeded0ad42cc04@otheo.eu>
+ <8ee463af-fdbf-4514-bb6e-bf2fd61fbc06@intel.com>
+ <20240402192314.a9b4e05637444314f47557e4@otheo.eu>
+ <d7e89d23-b692-4e70-baae-5df5b3984620@intel.com>
+ <20240403175407.f81ebc5cc3300ffa0c39f597@otheo.eu>
+ <7db8d0a8-c668-44be-a348-58120a97fc2b@intel.com>
+ <Zg7GpY0_U_7yhe6P@google.com>
+Content-Language: en-US
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <Zg7GpY0_U_7yhe6P@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 4, 2024 at 10:56=E2=80=AFAM Benjamin Tissoires
-<benjamin.tissoires@redhat.com> wrote:
->
-> On Thu, Apr 4, 2024 at 6:41=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Thu, Apr 4, 2024 at 8:27=E2=80=AFAM Benjamin Tissoires
-> > <benjamin.tissoires@redhat.com> wrote:
-> > >
-> > >
-> > > >
-> > > > So we need something like:
-> > > >
-> > > > struct bpf_hrtimer {
-> > > >   union {
-> > > >     struct hrtimer timer;
-> > > > +   struct work_struct work;
-> > > >   };
-> > > >   struct bpf_map *map;
-> > > >   struct bpf_prog *prog;
-> > > >   void __rcu *callback_fn;
-> > > >   void *value;
-> > > >   union {
-> > >
-> > > Are you sure we need an union here? If we get to call kfree_rcu() we
-> > > need to have both struct rcu_head and sync_work, not one or the other=
-.
-> >
-> > why? with an extra flag it's one or the other.
-> > In bpf_timer_cancel_and_free()
-> > if (flag & SLEEPABLE) {
-> >     schedule_work() to cancel_work_sync + kfree_rcu
-> > } else {
-> >    hrtimer_cancel
-> >    kfree_rcu
-> > }
->
-> I thought kfree_rcu required struct rcu_head, and given that we need
-> to initialize sync_work it will be poisoned...
+On 4/4/24 08:26, Sean Christopherson wrote:
+> In other words, practically speaking this isn't about supporting a new hardware
+> feature on 32-bit kernels, it's about preserving performance in real world
+> scenarios when running 32-bit kernels on new hardware.
 
-yes. It needs rcu_head.
-But where do you see a conflict?
-INIT_WORK + schedule_work() will use that space,
-then cancel_work_sync() will wait on a different work_struct,
-then kfree_rcu() will reuse that space.
+Realistically, most of the 32-bit kernels in the world are going to be
+*OLD* distros, right?  Old CentOS/RHEL/SLES kernels from before the
+kernel had split lock detection, or split lock fixes.  Those trip over
+VMM split lock detection now, and presumably will forever.
 
-In case of hrtimers none of the work_structs will be used.
+I suspect new CentOS/RHEL/SLES kernels that have split lock detection
+all happened after 32-bit support was dropped from those distros.
 
->
-> >
-> > > >     struct rcu_head rcu;
-> > > > +   struct work_struct sync_work;
-> > > >   };
-> > > > + u64 flags; // bpf_timer_init() will require BPF_F_TIMER_SLEEPABLE
-> > >
-> > > If I understand, you want BPF_F_TIMER_SLEEPABLE in bpf_timer_init()
-> > > (like in my v2 or v3 IIRC). But that means that once a timer is
-> > > initialized it needs to be of one or the other type (especially true
-> > > with the first union in this struct).
-> >
-> > yes. That's an idea.
-> > The code to support wq vs timer seems to be diverging more
-> > than what we expected initially.
-> > It seems cleaner to set it as init time and enforce in
-> > other helpers.
->
-> OK, works for me.
->
-> >
-> > Also with two work_struct-s we're pushing the sizeof(bpf_hrtimer)
-> > too far.
-> > It's already at 112 bytes and some people use bpf_timer per flow.
-> > So potentially millions of such timers.
-> > Adding extra sizeof(struct work_struct)=3D32 * 2 that won't be
-> > used is too much.
-> > Note that sizeof(struct hrtimer)=3D64, so unions make everything
-> > fit nicely.
->
-> Maybe we should do
-> union {
->   struct hrtimer timer;
->   struct {
->     struct work_struct work;
->     struct work_struct sync_work;
->   }
-> }
+I think that basically leaves Debian.  Someone would need to:
 
-It's also ok, but sharing rcu_head and work_struct seems
-cleaner, since it highlights that they're exclusive.
+ 1. Make a *new* 32-bit Debian distro install (or one of the other
+    less common distros that still do 32-bit)
+ 2. Run it on hardware with split lock detection
+ 3. On a VMM that enables split lock detection
+ 4. Stay close enough to mainline to get split lock fixes (like from
+    this thread)
+ 5. Care about performance, despite *ACTIVELY* choosing a 32-bit distro
+    on 64-bit hardware in 2024
 
-> (not nice to read but at least we don't change the size at the beginning)
->
-> >
-> > > So should we reject during run time bpf_timer_set_callback() for
-> > > sleepable timers and only allow bpf_timer_set_sleepable_cb() for
-> > > those? (and the invert in the other case).
-> >
-> > yes.
-> >
-> > > This version of the patch allows for one timer to be used as softIRQ
-> > > or WQ, depending on the timer_set_callback that is used. But it might
-> > > be simpler for the kfree_rcu race to define the bpf_timer to be of on=
-e
-> > > kind, so we are sure to call the correct kfree method.
-> >
-> > I think one or another simplifies the code and makes it easier
-> > to think through combinations.
-> >
-> > I'm still contemplating adding new "struct bpf_wq" and new kfuncs
-> > to completely separate wq vs timer.
-> > The code reuse seems to be relatively small.
->
-> There is some code reuse in the verifier, but it can be factored out I th=
-ink.
->
-> Though the biggest reuse might be in the map portion of bpf_timer,
-> which I haven't looked much TBH.
+Those steps are certainly possible.  I'm just not sure how much trouble
+we want to go to in 2024 to support people that choose new 32-bit
+distros and desire performance.  It feels to me to be approaching "I
+want a pony" territory.
 
-Right. It's all the 'case BPF_TIMER:' in various places.
-New 'struct bpf_wq' would need another entry in btf_field_type.
-But that should be a straightforward addition.
-
->
-> > We can potentially factor out internals of bpf_timer_* into smaller
-> > helpers and use them from bpf_timer_* and from new bpf_wq_* kfuncs.
->
-> Yeah, also, given that we are going to enforce delay =3D=3D 0 for
-> sleepable timers (wq), the user api would be much cleaner if we can
-> have a dedicated bpf_wq (and it would make the flags of bpf_timer_init
-> easier to deal with).
-
-It seems so.
-Kinda hard to judge one way or the other without looking at
-the final code, but it seems separation is worth attempting, at least.
-
-Also if we ever do hrtimer+wq we probably will be using
-'struct delayed_work' instead of rolling our own
-'struct hrtimer' + 'struct work_struct' combo.
-
-It seems wq logic already made such a combination special enough
-and thought through the races, so we better just follow that path.
-In that case it might be yet another 'struct bpf_delayed_wq'
-and another set of kfuncs.
-Considering that cancel_work() and cancel_delayed_work()
-are separate api in the kernel.
-Multiplexing all of them under bpf_timer_cancel()
-seems wrong.
-In the past we were somewhat limited in terms of helpers.
-We tried not to add them unless absolutely necessary because
-of uapi considerations.
-Now with kfuncs we can add/tweak/remove them at will.
-
->
-> >
-> > One more thing.
-> > bpf_timer_cancel() api turned out to be troublesome.
-> > Not only it cancels the timer, but drops callback too.
-> > It was a surprising behavior for people familiar with
-> > kernel timer api-s.
-> > We should not repeat this mistake with wq.
-> >
-> > We can try to fix bpf_timer_cancel() too.
-> > If we drop drop_prog_refcnt() from it it shouldn't affect
-> > existing bpf_timer users who are forced to do:
-> > bpf_timer_cancel()
-> > bpf_timer_set_callback()
-> > bpf_timer_start()
-> > all the time.
-> > If/when bpf_timer_cancel() stops dropping the callback
-> > such bpf prog won't be affected. So low chance of breaking any prog.
-> > wdyt?
-> >
->
-> How would a program know set_callback() is not required after a
-> cancel() because the kernel kept it around? It seems that it's going
-> to be hard for them to know that (unless by trying first a start()),
-> and it will add more code.
->
-> timer_cancel() would be hard to change but we can always do the change
-> and add a new kfunc timer_cancel_no_drop() which would clearly allow
-
-that works too.
-
-> for new programs to know that set_callback() is not required to be
-> called. In a few kernel releases we could remove it and say that
-> timer_cancel() is the same (and replaced by a #define)
-
-#define won't work, since mechanics of detecting and calling
-helpers vs kfuncs is quite different.
-
-> Anyway, the more I think of it, the more I think the best API would be
-> a dedicated wq API. It's probably going to need a little bit more
-> work, but it'll be more or less this work plus the new bpf_wq type in
-> the map.
-
-It seems to me as well.
-
-Thanks for brainstorming.
+Or am I just lacking empathy today? :)
 
