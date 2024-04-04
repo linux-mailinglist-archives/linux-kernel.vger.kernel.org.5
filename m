@@ -1,157 +1,120 @@
-Return-Path: <linux-kernel+bounces-131526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131523-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67F2389890B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:46:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 012E4898904
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:45:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85D571C25717
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:46:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FC89B21460
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:45:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBAA12838D;
-	Thu,  4 Apr 2024 13:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4319412838D;
+	Thu,  4 Apr 2024 13:44:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="B/6yTEiq"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="S5qcrfZm"
+Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D8D3127B51
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 13:45:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CF276023;
+	Thu,  4 Apr 2024 13:44:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712238354; cv=none; b=gm9jSvgfCMvO9vvOGCdTbH+EYVKJwl7ct0JJvInAXC5f9RhNlbZgT7xUJEhPANP4JXjHpArkggIjAfdB9zG7Y3wLDtaWUIWowXC4KtnCZoiw2WVdhRi37Cyjp1r2GfDQEBc7slOlSh+KiaP6FL3yRKKOg9S42JSJfazz2ZS7uEY=
+	t=1712238293; cv=none; b=k+zcoo2n/mfPb9uh8Sz5uERAwJqAKyhzbTct5EI9LwMtIiIgfSycE02F1eBaxW+t3vXKm5tWBSzJRNSgBNqT5TcdQ0e9bYcFDuK5NFKyGecZrZFw8nh/sMw33o8Oj2fJdETE8p7XuL5plfBCpkD6R00FCqySzU/L7c9a+CMnctM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712238354; c=relaxed/simple;
-	bh=rIJ5gF+bcRTkcUlaZMOl88O4Cd9tIV5iHXQOl87YQrE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lQ0k0CkkiEY6fKn9f0iQU3ypnoNqPKs1QNNryT1pmv1k2FNhsCE2eL7RXv6U2ctxEPUCtH8Y1DCoC36VwsPmZXuUIs26C+EPVyCCpGmKnX/wtn1l2qVM+JWzKWNavBlWdPEzXDa2tmH1J5WlvfRzb8MQ3D3vPQga2X3hCUpGYdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=B/6yTEiq; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712238352;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rIJ5gF+bcRTkcUlaZMOl88O4Cd9tIV5iHXQOl87YQrE=;
-	b=B/6yTEiqq0HnLD+kRMrGG0eH4mG9CZdN3UeR2CucS22b8Owf7g7ZUdqCw+/AKaqrOFX6Zn
-	q/epV/fWlgjdLiSj8rGfjY7IgDbmoQua42WHn2ODkSaq97cCjvXmPoQf0IIlIXyPRGmJwr
-	arxtwLU2yHaW+kaK1K1NxHqDpG4L9pM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-256-xFKJxaPUPkGlWmgqta_Asw-1; Thu, 04 Apr 2024 09:45:47 -0400
-X-MC-Unique: xFKJxaPUPkGlWmgqta_Asw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9E69F85A5B7;
-	Thu,  4 Apr 2024 13:45:30 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.225.21])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 8942F492BD1;
-	Thu,  4 Apr 2024 13:45:27 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Thu,  4 Apr 2024 15:44:05 +0200 (CEST)
-Date: Thu, 4 Apr 2024 15:43:57 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Dmitry Vyukov <dvyukov@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>,
-	Marco Elver <elver@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	kasan-dev@googlegroups.com, Edward Liaw <edliaw@google.com>,
-	Carlos Llamas <cmllamas@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH v6 1/2] posix-timers: Prefer delivery of signals to the
- current thread
-Message-ID: <20240404134357.GA7153@redhat.com>
-References: <20230316123028.2890338-1-elver@google.com>
- <CANDhNCqBGnAr_MSBhQxWo+-8YnPPggxoVL32zVrDB+NcoKXVPQ@mail.gmail.com>
- <87frw3dd7d.ffs@tglx>
- <CANDhNCqbJHTNcnBj=twHQqtLjXiGNeGJ8tsbPrhGFq4Qz53c5w@mail.gmail.com>
- <874jcid3f6.ffs@tglx>
- <20240403150343.GC31764@redhat.com>
- <87sf02bgez.ffs@tglx>
- <CACT4Y+a-kdkAjmACJuDzrhmUPmv9uMpYOg6LLVviMQn=+9JRgA@mail.gmail.com>
+	s=arc-20240116; t=1712238293; c=relaxed/simple;
+	bh=tAAtr7pnR4MH/4TMN77ugW13pgkeIiTR+g76NLCU3ds=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ayOWBDwlMlJCLtJzr47kkX41z9+LBT3lWXdzu/Pp1O1AKzCao+ZE750npVvjDFuGQnlSaqe2PZkEfgdpnajB6CX0f8SRIU3xa1ebnZLqe1RarD+uRd4X4t3mwC1nM96tUoTSvbmEaXEuZXOI5rrF9adJMP8u3MU3hGhlswhlF6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=S5qcrfZm; arc=none smtp.client-ip=115.124.30.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712238280; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=O+o5H6Rp/YKTpylXkB7+dR8XqLzGRaNwaFZPCluqRS8=;
+	b=S5qcrfZm1dko10hBCbO8YldAe+QslRnlpEVQBpZ76+NqGZUfVErND4p+JrABcyINl3+O3JmpGiQ2lC0P0YRDcgx3cqQ4V3A5Ypdo6CQE31FlAlb64oquLJPI0Jwu0v4Swah4Xq0HlN2JkGWFWLWsDauCmHa8h8nGs1c3ONIEhuU=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0W3uXJtx_1712238278;
+Received: from 30.236.60.242(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W3uXJtx_1712238278)
+          by smtp.aliyun-inc.com;
+          Thu, 04 Apr 2024 21:44:39 +0800
+Message-ID: <7c3733b7-a3f2-45ba-9b8d-880957ed5cdf@linux.alibaba.com>
+Date: Thu, 4 Apr 2024 21:44:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+a-kdkAjmACJuDzrhmUPmv9uMpYOg6LLVviMQn=+9JRgA@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v5 05/11] net/smc: implement DMB-related
+ operations of loopback-ism
+To: Niklas Schnelle <schnelle@linux.ibm.com>,
+ Gerd Bayer <gbayer@linux.ibm.com>, wintera@linux.ibm.com,
+ twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
+ agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
+Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
+ alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
+ linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20240324135522.108564-1-guwen@linux.alibaba.com>
+ <20240324135522.108564-6-guwen@linux.alibaba.com>
+ <9a17268d4046f99b30f3620079b5749a9ddc5cd9.camel@linux.ibm.com>
+ <92b0c4b1-4844-4adf-a15a-a9323fb859e1@linux.alibaba.com>
+ <6d3cfa04c9826a24f0ad8d401940af3ad02a67bc.camel@linux.ibm.com>
+From: Wen Gu <guwen@linux.alibaba.com>
+In-Reply-To: <6d3cfa04c9826a24f0ad8d401940af3ad02a67bc.camel@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Perhaps I am totally confused, but.
 
-On 04/04, Dmitry Vyukov wrote:
->
-> On Wed, 3 Apr 2024 at 17:43, Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > > Why distribution_thread() can't simply exit if got_signal != 0 ?
-> > >
-> > > See https://lore.kernel.org/all/20230128195641.GA14906@redhat.com/
-> >
-> > Indeed. It's too obvious :)
->
-> This test models the intended use-case that was the motivation for the change:
-> We want to sample execution of a running multi-threaded program, it
-> has multiple active threads (that don't exit), since all threads are
-> running and consuming CPU,
 
-Yes,
+On 2024/4/4 19:27, Niklas Schnelle wrote:
+> On Thu, 2024-04-04 at 18:20 +0800, Wen Gu wrote:
+>>
+>> On 2024/4/4 01:20, Gerd Bayer wrote:
+>>> On Sun, 2024-03-24 at 21:55 +0800, Wen Gu wrote:
+>>>
+>>> When I instrumented this to see, why I still see tons of my other
+>>> temporary instrumentation messages from the "ism" driver, I found that
+>>> in my setup loopback-ism is used rather infrequently.
+>>>
+>>> I suspect this is due to how the SMC proposals are constructed in
+>>> net/smc/af_smc.c and net/smc/smc_pnet.c - and later evaluated in
+>>> smc_check_ism_v2_match() - where there is a first-come-first-serve
+>>> selection.
+>>>
+>>> I wonder if one should change that to favour loopback-ism over "real"
+>>> ISM devices - and how this could be achieved elegantly.
+>>>
+>>> Just some food for thought... Probably little you can do on x86.
+>>>
+>>
+>> Yes, it is about the priority of available ISM devices, and now it
+>> is decided by their order in the smcd_dev_list. The later registered
+>> ISMv2 devices(without pnetid) will be added to the beginning of the
+>> list (see smcd_register_dev()). So there is a probability that
+>> loopback-ism will not be ranked first, since it is added into list
+>> earlier during smc_init().
+>>
+>> If we have the runtime switch of loopback-ism, we can re-active the
+>> loopback-ism, that make it be re-added into the beginning of the dev
+>> list and be chosen first. Or a new netlink command to adjust the slot
+>> order of available ISM devices in the list. As we discussed before,
+>> that could be tasks in stage 1 or stage 2.
+>>
+>> Thanks!
+> 
+> Maybe when adding the ISM devices we could instead make sure that all
+> ISM devices are added after loopback and loopback is added in the
+> beginning. I think loopback should always be preferred and would
+> consider it a bug if it isn't faster too. Between virtio-ism and ISM it
+> may be less clear so maybe for stage 2 we would want a priority setting
+> and then insert ordered by priority. Thoughts?
+I have no objection. If we all agree, I will keep it at the beginning of the list.
 
-> they all should get a signal eventually.
-
-Well, yes and no.
-
-No, in a sense that the motivation was not to ensure that all threads
-get a signal, the motivation was to ensure that cpu_timer_fire() paths
-will use the current task as the default target for signal_wake_up/etc.
-This is just optimization.
-
-But yes, all should get a signal eventually. And this will happen with
-or without the commit bcb7ee79029dca ("posix-timers: Prefer delivery of
-signals to the current thread"). Any thread can dequeue a shared signal,
-say, on return from interrupt.
-
-Just without that commit this "eventually" means A_LOT_OF_TIME statistically.
-
-> If threads will exit once they get a signal,
-
-just in case, the main thread should not exit ...
-
-> then the test will pass
-> even if signal delivery is biased towards a single running thread all
-> the time (the previous kernel impl).
-
-See above.
-
-But yes, I agree, if thread exits once it get a signal, then A_LOT_OF_TIME
-will be significantly decreased. But again, this is just statistical issue,
-I do not see how can we test the commit bcb7ee79029dca reliably.
-
-OTOH. If the threads do not exit after they get signal, then _in theory_
-nothing can guarantee that this test-case will ever complete even with
-that commit. It is possible that one of the threads will "never" have a
-chance to run cpu_timer_fire().
-
-In short, I leave this to you and Thomas. I have no idea how to write a
-"good" test for that commit.
-
-Well... perhaps the main thread should just sleep in pause(), and
-distribution_handler() should check that gettid() != getpid() ?
-Something like this maybe... We need to ensure that the main thread
-enters pause before timer_settime().
-
-Oleg.
+Thanks!
 
 
