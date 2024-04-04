@@ -1,185 +1,177 @@
-Return-Path: <linux-kernel+bounces-131306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 094DC8985FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:23:54 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC1D0898601
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:24:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 293561C23869
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:23:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48C2E1F27685
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEACA82C7D;
-	Thu,  4 Apr 2024 11:23:48 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09488823B0
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:23:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712229828; cv=none; b=qwOcGSv7JL22hx+cgDEULO0eTn9N03AjujsAzX7j0eKObiIK9xuuw9YMrY4L+WllInH/QY+cEOgZ+r824OVsuFrCEqr9QW7SlZT+S9yp9AFrQ3ikRiLBWMTTTDLZUcLjuDwvYjL+e7QwcuQJ5NIov505fgIP1oejNrgLZL+niuo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712229828; c=relaxed/simple;
-	bh=iZmpMS4EXe3ep587Gg/K97opAqkrmiU7wbFBPE9FUsw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=FLXtXdVWr+n5//30IV+6tiEFAvXe622VGTF/KZ3hmu0BZqSgHiWqTohO6dtYwTd/57ab49R3VzWo0i/fEpIsoYCiUdi1NSSSXi4/Ne+EPZ69aYJu9soc+zJadZNvnpySVY31X/53Y96aHGpBPVrWlAa4VuN3b/yEN6TVNOtI9Ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 28802FEC;
-	Thu,  4 Apr 2024 04:24:16 -0700 (PDT)
-Received: from [10.1.32.162] (XHFQ2J9959.cambridge.arm.com [10.1.32.162])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8FF333F7B4;
-	Thu,  4 Apr 2024 04:23:44 -0700 (PDT)
-Message-ID: <476ef488-5f3c-420d-97ea-bb281f2891f2@arm.com>
-Date: Thu, 4 Apr 2024 12:23:43 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09193839FD;
+	Thu,  4 Apr 2024 11:24:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LMKNjkNJ"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2134.outbound.protection.outlook.com [40.107.93.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 848EA82D9F
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:24:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.134
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712229852; cv=fail; b=HRpgYyFsoQ8YJFGgGIJwJ37LUsfzxcf3rBKgpvRQ+NB4GoAyLtt3cSJTxOrFYyR1Jxy8GY7UbBJclRlcutB16rXnFA15lHj7+XUTagn7xiilvmNP+JyQ2TID6gRnn64eSfrOjw+8LhHtYlZIK+B0qOPXvkyLR6RMKAo6F2/qu08=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712229852; c=relaxed/simple;
+	bh=drPXKAjgdlsGwlNJMNe6S1jM43W+0MoqtZD3dL7Lwig=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=Q9tRfEwkk3Ag3Zz6kvSC6e5ylO0bQnHfG708D/zaVIg494UEVJbaIyA9JnUVpisePvKPeQNE94PVDrqz0510eSikNx134YS4R6MWLfzZI0RYW4lmOHD31Xa5iwrkvsY81fqmXIZQ16gF8CtxQLQGUy8ohqMy3i1vf7yvyr/rmYI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LMKNjkNJ; arc=fail smtp.client-ip=40.107.93.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lrsSDNOqSyl7MNt5N2u5t+fg3Q0H6Rto8DApDQOr/Eq3Kh7GZVTa24aS+arm4WWBsXdcbDhJByAWIlfnlF+YZ6vzP2i5DGIxjVNg+SMMklz5PMBE8w3sEvwJV62+LnNaKPJi0Pr6p+5OVFu6wt9hUETOzanAHLpDJMGFZp1SyyApGNQjL8b2WnmqgUxw3sRzw/sBw/Q2Vlfp5WcN3HQLaRX9aaGAmxUV4CvIGaYIXmkDt7+qnOpUkIcAe7YaZPQmjPruWq6lzmFqnnycbaC100xzbyyOkCvbO+H3bwD2+ZrgyhVJSGbg2ICJuUhFB+PvPMYhnH7KyQEjJO1Evy9ntw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2kDkQ9/zv5NwfQuVZpmIVUSfPhkVZ48d4u/yZoLWCcM=;
+ b=XfVSmChfBHTxZCnWu4ytknFPwhgqaGaShsUPhVGjRDru14mPB0e3+jFSteifIiSelIAfx9fb+FTTtDLK7uAM1MZgHSMCvER5KCa8tsNA0vg6lekpvqvLMwFqGkHUo3LMdcTDxdrTr41AJVwHzU1ubtqSe+HYTHymiSWlLSoqzQdKAlfvBXl5hEJeSbdtc9V6X+nTJhJPdj3V6GoECt2J7rlh7Fr2wLwX8QNaPMVUmmNtZzusWiudtAH+l/yrZF3yMhRuLevUTqrpUGp7vYvksveNjlmBB0pYDZGqGquWkerxAKgAxyN0QRUEvrrjw+5jFFFqiFnGtt0T3eDIf0FxMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2kDkQ9/zv5NwfQuVZpmIVUSfPhkVZ48d4u/yZoLWCcM=;
+ b=LMKNjkNJNgspTQQeL9lBAdhoEJHpmrrbi3qlLaLKLMIn2D2PahxPUgWYg5m5fY5E4UxZrd34GcYHtGKfvG7iRofrFdIiSYSMbEFjnq9zB78dhiY3DU43sHMkGRBmy9VcDGxwqk3+Tq0D1DGgU0a43Ve9W0RvjPhq7dSpSreeSgFzkjwc/32n0cCrmkDLh/uOzVTFcvQDCSX27Cqfn71oHr4j8iJWkjyN7BWoSUDRps5rD4jcVgKGtWcnyPVTjm5ANr7BIH8gpc/zhJ9BtxT7NQ0hdePcGIeDMTgTswui/4JDpumKFSPio8MUWy9EkYdtnOD9HF32eIGqixBC7MiRIQ==
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by PH7PR12MB5974.namprd12.prod.outlook.com (2603:10b6:510:1d9::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Thu, 4 Apr
+ 2024 11:24:06 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7409.042; Thu, 4 Apr 2024
+ 11:24:06 +0000
+Date: Thu, 4 Apr 2024 08:24:04 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Peter Xu <peterx@redhat.com>
+Cc: Nathan Chancellor <nathan@kernel.org>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, Yang Shi <shy828301@gmail.com>,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Mike Kravetz <mike.kravetz@oracle.com>,
+	John Hubbard <jhubbard@nvidia.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Rik van Riel <riel@surriel.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	David Hildenbrand <david@redhat.com>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	James Houghton <jthoughton@google.com>,
+	Mike Rapoport <rppt@kernel.org>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>, loongarch@lists.linux.dev
+Subject: Re: [PATCH v4 05/13] mm/arch: Provide pud_pfn() fallback
+Message-ID: <20240404112404.GG1723999@nvidia.com>
+References: <20240327152332.950956-1-peterx@redhat.com>
+ <20240327152332.950956-6-peterx@redhat.com>
+ <20240402190549.GA706730@dev-arch.thelio-3990X>
+ <ZgyKLLVZ4vN56uZE@x1n>
+ <20240402225320.GU946323@nvidia.com>
+ <ZgyWUYVdUsAiXCC4@xz-m1.local>
+ <20240403120841.GB1723999@nvidia.com>
+ <Zg2fEP4eEeLhgDwE@x1n>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg2fEP4eEeLhgDwE@x1n>
+X-ClientProxiedBy: SN7PR04CA0025.namprd04.prod.outlook.com
+ (2603:10b6:806:f2::30) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [mm?] WARNING: bad unlock balance in
- madvise_cold_or_pageout_pte_range
-Content-Language: en-GB
-To: syzbot <syzbot+c641706ad4e9688cccdf@syzkaller.appspotmail.com>,
- akpm@linux-foundation.org, david@redhat.com, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-References: <000000000000b92a9d0615433065@google.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <000000000000b92a9d0615433065@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|PH7PR12MB5974:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	EhRUPTL0BFK+d07LVk9SoN/QpGp/aRHWcpkKHH75c+OpLEdeLbeLP4LipmcSfQW01jef+dp/vUsUvuiRjoaYUj1fEc2JfQ9BVpgUknslVXGsZww696g+WitO72VJ83lVLYQKeGYwJ/pXvgagNIRz8IQ2UmVEXFf7bTiiu2+QF/hQP1BK/dsNY3hoO796qQ8U7EfYwPjynbJXwSvDFI0H4/MCGbXI4/E2CQys0NPmVnMlfG6KFebLYfTIh+UPBNW2EfwD6aepXY1FSMuxrt/FMXWOEfI3YFbASKQ1e8MnbOlxj3EjLdL0aJOqjkeose2uEz2g+mCl8PoMUl26xHFmGVX7TAKPmDA/TH1dqDHz6hU8EJUyfcTYp41JAIrQiDxSUwwWfzpFc3H7yU+o9wvUgd1Q6xFaK39J3arscVvY07FsaHqtaCiG/nm2vV7xfAMj+CJ671pBRUuP1XIefnB9aYMtaJXg9GOVBf48d8kJGZmHticgHUpibHCzbzt1l+A0FFXU1sD0WrGKNgGzq2Q6NZl6xxl7ID99D2BCP+2nR7QiASNmN+5a0KlWTTPBcP2U6ZKfUHmCUefRmMpqPMhRvf4IZzc+3t2fgYZv63TP+5n4Bh2VgZ5LZwtQXpVSsKSOK0hVswNc9a6vD5Kw1W3wYliIc/+EQdtt6H5DQU2p97M=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?C854FYBwplDK2b2mVfpBsUhj7KjqPPDZPvQX/Sv7AeTTBoKA7jwQRfdtVaiH?=
+ =?us-ascii?Q?s4kCGdb54LXgKv33xrh1BYMThIzDZCevShJm09H5t6HxKLYSnfdhFCkIrzoc?=
+ =?us-ascii?Q?tQK7PJWEFGKuTJCOGPIwJVOm5Pav7Zag1S1EbSFwaR0x82eHo1YAQFCuwbvA?=
+ =?us-ascii?Q?dtzuERFsFTilIUJ0Br1xorWmduXeAzdqHl2imqpmWMeftBHHxSdWIXhM3BZE?=
+ =?us-ascii?Q?HA2ma9V+4MFUCFV4iFeJz+twk3iFOqT86DhwcnTZ2mL4yxSef60xzYjrjNXq?=
+ =?us-ascii?Q?ibshr49kRiLmCKfArUEE7LhJcGYbyRecG5+M4QYHEgPDuKnByvp27CGxnTLt?=
+ =?us-ascii?Q?IFDvqsrgMZ5Htrjjm4Ua16yxD2YEzv9dNCd+NkSBnEfwTjQARj/XCfqsd8vV?=
+ =?us-ascii?Q?OYDqbY9g94G3Jkblw8X8Vr/GBaFLSl8srAAT8hv7eWHgcX4CcahQLpSkYyRi?=
+ =?us-ascii?Q?l3AOuJEOO0qcS5c0yH/qTsPvEmyQf2m0C5rj7OsZFu0k/EmDj0Q0bD1E5+7Y?=
+ =?us-ascii?Q?HXZhYOs1cjl1bRxkmDFFKL+phQZ3nrbLympGWFsT8efJy1NfQhB5mVx5ZAnn?=
+ =?us-ascii?Q?vTuVymdxYee2EKJ5Qv+B95vijMw1fVuEF+ylmyFBOhl1TUqC7hMSsyW6iK+/?=
+ =?us-ascii?Q?94fiH11XtEb07MYCH1IOp5GeFsbUZ94DCyc5Kl2O8tP7gFeqWM05zzfXKQhQ?=
+ =?us-ascii?Q?0k2cK6ZtLk33tpEfwB5La2UBaYiWNylFpn6RFDqzb1IDv84iA27zSWV7Bpsr?=
+ =?us-ascii?Q?S8XPe/4smKU04AeVuYI+C9rgCEpm8pORKyZ54gNXk0OVeo7fuMZONnYxjlic?=
+ =?us-ascii?Q?RsVreaDPZ2+q2V2uq8SP56LYOsFty2uPVTBExUYnuZm7gpIfIDYg+aestGm1?=
+ =?us-ascii?Q?2lqSZn79waVji4HSfr1sLBjQWMZRVuHoImozY1XXlViGhkbiUGYrL32ThnzG?=
+ =?us-ascii?Q?El/lS/XOEROMwaLltHwo001l1s1hnFCNVbOufpHVcyLPPYQz1EZW6GeGwtEE?=
+ =?us-ascii?Q?PlRteep2rKKrthhjjurgji5IXwHQmbUGrm4kCqDrzgFD92kLoqlNq1OGD5RD?=
+ =?us-ascii?Q?KZ7C/x+G+4kZqd/o4S7G7Q2DdIQaYSvLyRyDEJhiF91ZJtMcDtEmkr1xMYSf?=
+ =?us-ascii?Q?R30vU2/GUYVcVfQShrz4lHHjEVECTIvlqNrM0DS1JL8NOCWiwoVubmp13sOW?=
+ =?us-ascii?Q?Y0zwUx4ZWeDu1Za2WwM/uNOgTz3wPkhiH0R5YMQbmYOF5WuTje7Yi+lZ0MAB?=
+ =?us-ascii?Q?V6UVKVq++2a3eLYhffjA2/+WCvPg9Glp9i7BEbm2iiXBrOzKFT6rN10b/MH1?=
+ =?us-ascii?Q?Zs/9nKaojeoy8fsE48hP/4XikCvwTtQ7M/bGDFGpg0q06oo0TBCX5prXoGwW?=
+ =?us-ascii?Q?TyNxpYtkjqK2djj9EYpY692AIjIRMRlhjeIWDDf0VhRYyTuxHDYPOmbsgeVZ?=
+ =?us-ascii?Q?NcXUFJYq+GNn124idWKscbVWwLLOWJl8E1Mkmot6LNJwKTZU1mhWCM+JjC7s?=
+ =?us-ascii?Q?VqxaSv/SkfooBIUfVXe8EmVqcfQDknznDg8QWnolQTDlvhr/jI2P2/9vPJuH?=
+ =?us-ascii?Q?2cJgd5jXQyqSZ8ix9G0Y+KNjjdocQd2AJCFRs3/5?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: edfc7635-92d2-44b6-3143-08dc5499bd29
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 11:24:06.3306
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IPAtOWolyisb3/wTTV8/MSg4tfw/iHU/cjfNRqEbNOnjvS+MN6kZEmxhEPCEbeIq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5974
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm mm-unstable
+On Wed, Apr 03, 2024 at 02:25:20PM -0400, Peter Xu wrote:
 
-mm-unstable now has the fix; let's check it actually fixes the problem.
+> > I'd say the BUILD_BUG has done it's job and found an issue, fix it by
+> > not defining pud_leaf? I don't see any calls to pud_leaf in loongarch
+> > at least
+> 
+> Yes, that sounds better too to me, however it means we may also risk other
+> archs that can fail another defconfig build.. and I worry I bring trouble
+> to multiple such cases.  Fundamentally it's indeed my patch that broke
+> those builds, so I still sent the change and leave that for arch developers
+> to decide the best for the archs.
 
+But your change causes silent data corruption if the code path is
+run.. I think we are overall better to wade through the compile time
+bugs from linux-next. Honestly if there were alot then I'd think there
+would be more complaints already.
 
-On 04/04/2024 11:56, syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
-> 
-> HEAD commit:    727900b675b7 Add linux-next specific files for 20240403
-> git tree:       linux-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=11f66223180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=c641706ad4e9688cccdf
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a62423180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13764a3d180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/f8fb4daa7a83/disk-727900b6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/d2a6994aee53/vmlinux-727900b6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/6759e5411c39/bzImage-727900b6.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+c641706ad4e9688cccdf@syzkaller.appspotmail.com
-> 
-> =====================================
-> WARNING: bad unlock balance detected!
-> 6.9.0-rc2-next-20240403-syzkaller #0 Not tainted
-> -------------------------------------
-> syz-executor799/5099 is trying to release lock (ptlock_ptr(ptdesc)) at:
-> [<ffffffff81f01f3f>] spin_unlock include/linux/spinlock.h:391 [inline]
-> [<ffffffff81f01f3f>] madvise_cold_or_pageout_pte_range+0x170f/0x3990 mm/madvise.c:480
-> but there are no more locks to release!
-> 
-> other info that might help us debug this:
-> 1 lock held by syz-executor799/5099:
->  #0: ffff888015073a98 (&mm->mmap_lock){++++}-{3:3}
-> , at: mmap_read_lock include/linux/mmap_lock.h:144 [inline]
-> , at: do_madvise+0x481/0x44a0 mm/madvise.c:1429
-> 
-> stack backtrace:
-> CPU: 1 PID: 5099 Comm: syz-executor799 Not tainted 6.9.0-rc2-next-20240403-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-> Call Trace:
->  <TASK>
->  __dump_stack lib/dump_stack.c:88 [inline]
->  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
->  print_unlock_imbalance_bug+0x256/0x2c0 kernel/locking/lockdep.c:5194
->  __lock_release kernel/locking/lockdep.c:5431 [inline]
->  lock_release+0x599/0x9f0 kernel/locking/lockdep.c:5774
->  __raw_spin_unlock include/linux/spinlock_api_smp.h:141 [inline]
->  _raw_spin_unlock+0x16/0x50 kernel/locking/spinlock.c:186
->  spin_unlock include/linux/spinlock.h:391 [inline]
->  madvise_cold_or_pageout_pte_range+0x170f/0x3990 mm/madvise.c:480
->  walk_pmd_range mm/pagewalk.c:143 [inline]
->  walk_pud_range mm/pagewalk.c:221 [inline]
->  walk_p4d_range mm/pagewalk.c:256 [inline]
->  walk_pgd_range+0xba1/0x1810 mm/pagewalk.c:293
->  __walk_page_range+0x132/0x720 mm/pagewalk.c:395
->  walk_page_range+0x58f/0x7c0 mm/pagewalk.c:521
->  madvise_cold_page_range mm/madvise.c:562 [inline]
->  madvise_cold mm/madvise.c:584 [inline]
->  madvise_vma_behavior mm/madvise.c:1028 [inline]
->  madvise_walk_vmas mm/madvise.c:1256 [inline]
->  do_madvise+0x1e7b/0x44a0 mm/madvise.c:1442
->  __do_sys_madvise mm/madvise.c:1457 [inline]
->  __se_sys_madvise mm/madvise.c:1455 [inline]
->  __x64_sys_madvise+0xa6/0xc0 mm/madvise.c:1455
->  do_syscall_64+0xfb/0x240
->  entry_SYSCALL_64_after_hwframe+0x72/0x7a
-> RIP: 0033:0x7f3928ac2419
-> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 51 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007f3928a5c218 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
-> RAX: ffffffffffffffda RBX: 00007f3928b4c318 RCX: 00007f3928ac2419
-> RDX: 0000000000000014 RSI: 00000000dfc3efff RDI: 00000000203c1000
-> RBP: 00007f3928b4c310 R08: 00007ffd7796b097 R09: 0000000000000000
-> R10: 0000000000000000 R11: 0000000000000246 R12: 00007f3928b19064
-> R13: 000000080000000e R14: 000000200000007f R15: 00000000dfc3efff
->  </TASK>
-> ------------[ cut here ]------------
-> pvqspinlock: lock 0xffff88802ec45b40 has corrupted value 0x0!
-> WARNING: CPU: 1 PID: 5099 at kernel/locking/qspinlock_paravirt.h:510 __pv_queued_spin_unlock_slowpath+0x241/0x2f0 kernel/locking/qspinlock_paravirt.h:508
-> Modules linked in:
-> 
-> CPU: 1 PID: 5099 Comm: syz-executor799 Not tainted 6.9.0-rc2-next-20240403-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-> RIP: 0010:__pv_queued_spin_unlock_slowpath+0x241/0x2f0 kernel/locking/qspinlock_paravirt.h:508
-> Code: 85 0a 6e f6 4c 89 f0 48 c1 e8 03 0f b6 04 18 84 c0 0f 85 9f 00 00 00 41 8b 16 48 c7 c7 c0 26 cb 8b 4c 89 f6 e8 40 b3 cb f5 90 <0f> 0b 90 90 eb 8d 44 89 f1 80 e1 07 38 c1 0f 8c 26 ff ff ff 4c 89
-> RSP: 0018:ffffc9000364f238 EFLAGS: 00010246
-> 
-> RAX: 9a7270b7f8439200 RBX: dffffc0000000000 RCX: ffff888023139e00
-> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-> RBP: dffffc0000000000 R08: ffffffff81580152 R09: 1ffffffff1f526cd
-> R10: dffffc0000000000 R11: fffffbfff1f526ce R12: 1ffff11005d88b6a
-> R13: ffff88802ec45b50 R14: ffff88802ec45b40 R15: ffff88802ec45b40
-> FS:  00007f3928a5c6c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000561c1eec8018 CR3: 00000000213dc000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  __raw_callee_save___pv_queued_spin_unlock_slowpath+0x15/0x30
->  .slowpath+0x9/0x16
->  pv_queued_spin_unlock arch/x86/include/asm/paravirt.h:589 [inline]
->  queued_spin_unlock arch/x86/include/asm/qspinlock.h:57 [inline]
->  do_raw_spin_unlock+0x13c/0x8b0 kernel/locking/spinlock_debug.c:142
->  __raw_spin_unlock include/linux/spinlock_api_smp.h:142 [inline]
->  _raw_spin_unlock+0x1e/0x50 kernel/locking/spinlock.c:186
->  spin_unlock include/linux/spinlock.h:391 [inline]
->  madvise_cold_or_pageout_pte_range+0x170f/0x3990 mm/madvise.c:480
->  walk_pmd_range mm/pagewalk.c:143 [inline]
->  walk_pud_range mm/pagewalk.c:221 [inline]
->  walk_p4d_range mm/pagewalk.c:256 [inline]
->  walk_pgd_range+0xba1/0x1810 mm/pagewalk.c:293
->  __walk_page_range+0x132/0x720 mm/pagewalk.c:395
->  walk_page_range+0x58f/0x7c0 mm/pagewalk.c:521
->  madvise_cold_page_range mm/madvise.c:562 [inline]
->  madvise_cold mm/madvise.c:584 [inline]
->  madvise_vma_behavior mm/madvise.c:1028 [inline]
->  madvise_walk_vmas mm/madvise.c:1256 [inline]
->  do_madvise+0x1e7b/0x44a0 mm/madvise.c:1442
-> 
-> 
-> ---
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
+Maybe it should just be a seperate step from this series.
 
+Jason
 
