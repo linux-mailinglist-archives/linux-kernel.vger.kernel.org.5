@@ -1,191 +1,159 @@
-Return-Path: <linux-kernel+bounces-131912-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BDD0898D82
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:50:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DAA6898D86
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:53:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 037FB1F29331
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:50:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E88E22815D1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A916112EBDC;
-	Thu,  4 Apr 2024 17:50:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBABE12F37C;
+	Thu,  4 Apr 2024 17:52:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QfWmcbZ4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=mt.com header.i=@mt.com header.b="fy0U7NXh"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2114.outbound.protection.outlook.com [40.107.20.114])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51099127B7D
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:50:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712253046; cv=none; b=FakfCvVxQMq39xYD5EEs/hMZTyEMJrHxcSM+Q4KjGX7+a/6z97h0lOwgIJLA8IfjVqWWEt5e648QY3b3SiMsWXQ4+vnRK1BSDalhHF7fxnHFv/l8TX/a56qGL6c3bCo2eeFl3LrRR5hlW8lsCb4U7AQAEzcu9XEwPFFLeA4zOs4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712253046; c=relaxed/simple;
-	bh=W21fuAF2rkys7Im4PKJVRHCVBK7AE+eMcJlc2OAzKmY=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:Subject:
-	 In-Reply-To:Content-Type; b=qMSdDQkCW4pGg2ajsz6ufN99TAr+mP1IXk/ZvJ+CLQ9ncwMgpEpt1wNo6NHkucJshfFrYenPqAJ1HtqgO/z/yJohnLSNdslpsV8cd6ZJ4X5GwWMm7UXb2/hDEIjPZuG2hbW7RZw6SuyE3BfMmvtUiVtq3E4+ec3+Wuclo4HzcNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QfWmcbZ4; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712253044;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UgKEb1rXTdvNH8JDPDJiSaFb25n7WatPE3FFaKX5XuI=;
-	b=QfWmcbZ4YGbwov5Rcu5oT+3Fia+Fu6bn2EW+VUGMsiLVhYbZ4ISrqdYqIClgKqytTcimGP
-	sz+C7YZxM9qNoRGa8ZHa+FKHl3YkuDv6Ce/3hj1tYFV7zWGs7104ndpCz4KQ32GPw+nEiG
-	z3Vjsd1kanUqTrRUPsAXYdt8txFpaBc=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-36-VPivc9aeOTSgzG-XVZC_dg-1; Thu, 04 Apr 2024 13:50:43 -0400
-X-MC-Unique: VPivc9aeOTSgzG-XVZC_dg-1
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-698fbfa5815so10694646d6.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:50:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712253042; x=1712857842;
-        h=content-transfer-encoding:in-reply-to:subject:from:references:cc:to
-         :content-language:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UgKEb1rXTdvNH8JDPDJiSaFb25n7WatPE3FFaKX5XuI=;
-        b=oxQ5DAtlPQgV9CNYxhznkdhtmIE2/fF/bhSCYDZUYfTCpKON51Qz1gXeyd+9dj9bIk
-         ATLZblVGYflJXcU9XMum9gc6WKCiu6FJehbKjzmZoHpzeVZj2Ck+dtZvDJwQ2b/s8Xcv
-         9N8TuX8YyT3u/vS8NUHC/y0nMIaIo0tK6uIMyq2Uw6Isf4X7iclAXPSTkUECaR6Zzm4t
-         IJXYFTCJg0Blkz733fI60neFHK+dFSokT7iRkwpQb4hpKp2Z9o2HN1JhFJqGNQWEsPFN
-         kogaMC+xwPh+DfyI+J6PlcaRMBGHA4kJ04RGPuCizenZo/oegQmZD6dTWpoAUGVqTjJQ
-         aWcA==
-X-Forwarded-Encrypted: i=1; AJvYcCVt+vRz+i5Xcl8iUE7www3aRyYmdpxBUmzulTXxz57cOGTtjJ5fy0d0U063OhVvCTFKDmEtYPoTdUltLLhpNusihOa7aX9vqYr/Hh6g
-X-Gm-Message-State: AOJu0YxOvVkHINwqpCSsCTt6I4NStnVz2I2QM4bj2TkNP68u4EUx0w7c
-	wY8NdGMXs/uG84sBRhoZtm0QDnbXb4yVRvOatjCGyRm4ND4QaahbEr6aCqE4+92234jKsDInnZq
-	CyQEQFuXBug+X6LB4Fq//K/tLD0AhxaaMiISkxd4/o2RDHleE31wuIvJH6Eih+Q==
-X-Received: by 2002:a05:6214:c45:b0:699:1b4e:86dd with SMTP id r5-20020a0562140c4500b006991b4e86ddmr355026qvj.46.1712253042652;
-        Thu, 04 Apr 2024 10:50:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEfqDyU+xRrhXUQaCFKdFFr5YaWy2EKNCdq89OVDW6wNlJQnyZidYDoNQfj+eQka0PnWuNdSw==
-X-Received: by 2002:a05:6214:c45:b0:699:1b4e:86dd with SMTP id r5-20020a0562140c4500b006991b4e86ddmr355009qvj.46.1712253042319;
-        Thu, 04 Apr 2024 10:50:42 -0700 (PDT)
-Received: from [192.168.1.34] (pool-68-160-135-240.bstnma.fios.verizon.net. [68.160.135.240])
-        by smtp.gmail.com with ESMTPSA id a1-20020a0562140c2100b00696804c73c5sm7657214qvd.115.2024.04.04.10.50.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 10:50:41 -0700 (PDT)
-Message-ID: <4506bb59-5524-8b0e-f97c-a0252d4784ad@redhat.com>
-Date: Thu, 4 Apr 2024 13:50:40 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2570012E4D;
+	Thu,  4 Apr 2024 17:52:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.114
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712253173; cv=fail; b=o8YkXHhG3A6WQZiBMGxeIy7MUyCHnT/8BPQAwrLrLmcRSlXWUf1zxlTJT4+9vGjXsAg0OSSI18jj5wo3OHRZ71rjrPfjG/kpjsLkPJzQOSnrPkZUH+WnT3b9ZMBwBgiB4fNMBfVgsPx8//wHRxxsBTUq6IRmN1cuwPejDo/vKgo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712253173; c=relaxed/simple;
+	bh=EZRytNjn7PfbCOUVKkks+WTif2utk3C6jyslB/FdvU8=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=lVGR2NF4mfi2hVY47NJi1p+cM5aH22+2fO/RG3MQAXlbAc4+s43oe82OLK+e4bnbD2XM8uI1J9+nQqvsLst6W/nwAT3na1PSpLrUsE2TRG4Gufyhp4hrINB+jyBmkJGNbaS2VrIz4ZWqIGH57R7DSlhLjBPYhT4dCdxWAlUf204=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mt.com; spf=pass smtp.mailfrom=mt.com; dkim=pass (2048-bit key) header.d=mt.com header.i=@mt.com header.b=fy0U7NXh; arc=fail smtp.client-ip=40.107.20.114
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mt.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D2Dh/KaigmJI/Pa+o+N0M+rkPTgFqPIPT/wBAxo6kSXHDxuhxY1npTegeuhzDF/p3p1ULzKVz4ViTZCDph4UWHedumYh73EL+ASa44f/kzw/azQ3T4qjICy+J4DCU23TR/e3/+XxTyjYm4DoS4mFdmikxo2nJa7ik6c7HTqCcdPJbYr2KggzyO6+3L7jnlTFWiYsocNN4/rmeKJjQQp54ykFX0kDbxuYiPQ4qJXZmJ9MvLs2j53HVyurTnDW+zNckeT2NbkPzzLhz94I0KIiRESBwqj2MN5G0Aa9I5V4KNtm8ATmweAfuY4j/xJxQdzONfU6SorIJ98oXX0yWPPsZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sRVzY8EgHsg0XmmkJ+UKXyTJa3wD15teSMAC5TFmXy8=;
+ b=PxwkQKunU9VhzUrYNUlzl+lX47xq85TuCEHjUNB9S97m2Ms2dEVWD6ptXxKeLV6akque+tKg5mq7K9ukDK6KCvIrrxEXGg3x//ewjY5QQXJ9klL2FFb2zYARQO620B9EW3Y0o+BbWJuyvCfItw7OVEcq/zkjfoOIlG9TYjT54Vd3D3azCBf5izd7oBjyVIdpKt3ZSZPwPmVtvSLuJHF0ENWrOlyR0AvI2yvFafdrn8aIKfUhOVM2UsoTE/CoYjBkbUyfL5IG3Ot1GuHg+Biir6CloJmV1t3m+YViV2FyJT22WQlWoy6flZ8+021fLpJZE4vHO2T3lKM0Ll1+1u2OOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mt.com; dmarc=pass action=none header.from=mt.com; dkim=pass
+ header.d=mt.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mt.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sRVzY8EgHsg0XmmkJ+UKXyTJa3wD15teSMAC5TFmXy8=;
+ b=fy0U7NXhVbdrCqwPng3OGZn3Uk0b2XDXiZmsAlLev0c1+e44iDszszoDegj4PxdfFNHIIxPkjBsV86JTP8/AF+UcfQa2OyRBu7ulabpaANvTRx+JSHT/Avn5vPX9+hDuJIF7JlnoDtGeDjq7fgVzYg+3xsvSqTz3scrpewgT4bx/IUcLALSb62o2ie0nm1oIqcHR51BJgkem4dP/5N1V6HBhue/zuFpLCjsUCED+KmEDPgpc466hgix3K/SXu6XKVfd5kslzX+bR9yMU3iHnQjcrib4TalE9fXyC2HjcAIWSNjLm3jQCPlxe/7B+gRc/P5pOsCPcTVYXnARIn9hNdw==
+Received: from DB9PR03MB7513.eurprd03.prod.outlook.com (2603:10a6:10:224::17)
+ by AS4PR03MB8339.eurprd03.prod.outlook.com (2603:10a6:20b:507::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26; Thu, 4 Apr
+ 2024 17:52:47 +0000
+Received: from DB9PR03MB7513.eurprd03.prod.outlook.com
+ ([fe80::99b5:2449:1fc2:b78e]) by DB9PR03MB7513.eurprd03.prod.outlook.com
+ ([fe80::99b5:2449:1fc2:b78e%6]) with mapi id 15.20.7409.042; Thu, 4 Apr 2024
+ 17:52:47 +0000
+From: Markus Burri <markus.burri@mt.com>
+To: linux-kernel@vger.kernel.org
+Cc: Markus Burri <markus.burri@mt.com>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Michael Hennerich <Michael.Hennerich@analog.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	linux-iio@vger.kernel.org
+Subject: [PATCH v1] iio: adc: ad_sigma_delta: Clear pending interrupts before enable
+Date: Thu,  4 Apr 2024 19:51:26 +0200
+Message-Id: <20240404175126.110208-1-markus.burri@mt.com>
+X-Mailer: git-send-email 2.39.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MI2P293CA0008.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:45::19) To DB9PR03MB7513.eurprd03.prod.outlook.com
+ (2603:10a6:10:224::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Content-Language: en-US
-To: Petr Mladek <pmladek@suse.com>, zhangwarden@gmail.com
-Cc: jpoimboe@kernel.org, mbenes@suse.cz, jikos@kernel.org,
- live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240402030954.97262-1-zhangwarden@gmail.com>
- <ZgwNn5+/Ryh05OOm@redhat.com> <Zg7EpZol5jB_gHH9@alley>
-From: Joe Lawrence <joe.lawrence@redhat.com>
-Subject: Re: [PATCH] livepatch: Add KLP_IDLE state
-In-Reply-To: <Zg7EpZol5jB_gHH9@alley>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9PR03MB7513:EE_|AS4PR03MB8339:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	ffJwxQGlgDMlEDJImeWnCBIxR42gf+Vrx1NDuKcNIn5VVz87YrluJU5643zaHxlJIH8bPo2xsDvRPfZcUaRWBzDdrh1vASGcZDM4ntKo6qtZaOHpsSkMBNF+994QwwfenBvhkSqbHKjOpe5b+nWjMFHwr0j/wwzlOwcLBErTa3+KmTLtBJNNpu4VUlIL3elS/bPUUskBLSKJtla2+0RMhjngTBj5alkIjIOatdYb7u3147XDy0v5fYd1yRdVdKzAcmXqxiN9dqrHWZKu4VHn3k2D4EPZ0NPqX56bsRX+tpz1ThfW/iEsDXl4KHOq/5PpakJZjBxBysuqgVv5SxhuZjpdhi9jlVFiH+a9U7nh78nRSm5geLpk6+YZ0pubmsC2Mx4J9uTkC30sAJ7ER89xPjE9KWEWx+2XRGDvHOuhFrlmBlvJNAq5U3R2mVfk53TbYwZ+aFvpAR4GwlZ9wrJuRvzIgM/ymqUTDVVo64hdb/rUa+McOLEBIRYUewegPI1XtfETX9OnPMpkNLhJvMoERTv/ugRJF8bvmyiHV1vIC3kUkqyBF1yzM9ZTXkmFsFOEru7Djguj6uJg/TlkQ/szEuskUWyVV4ubUTGZLDhipAE/ebMyw7jJibEzmYeUgdh5tGab6obltyEDxKUVzNDNaxwI4oMRNHeDKYc7L+vTXcfT6EfUdgcMX/3wTog+5yKQjoGhohzgBKkNHq0A+rzSG433Djeoma0h7FQSPbuodxI=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR03MB7513.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(366007)(376005)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Ul2duN86phhMzdxoM63VRaFR+bEU2eYEEYy1fTYpynZa4VyTUAUXaUkKSgWS?=
+ =?us-ascii?Q?84KKLTSApNofiN7COhx/A1cZ5UbcE/owSQXbJYJ7UWlfWyIe4FFKluhqsqx9?=
+ =?us-ascii?Q?12TQ249A8DDtiRd6gG8vtmr0uiL/9qEj+SC6Wb5P2VAgADYdZ6XP6SfKUXpU?=
+ =?us-ascii?Q?CrrmvMb6I9KPxnp2XTMIoYL29t3tCVC+BW8kPiFsyaUqYDJpmI2IRJMnSqD1?=
+ =?us-ascii?Q?HesMr8q2wTdzK53sqCc/87BWD6guq9G6WNUnJBbd9g+fWmDgLUe+Pd4R6/CK?=
+ =?us-ascii?Q?QA6dqYoV0lNORjlofwfTXzOs5pQgmXMw6WsYAMLt8wHIOR9hvkOWAvdVYxcd?=
+ =?us-ascii?Q?EdqJpZPIis93838JjC54kS8E2ZBVnPXUXFWXuTdljya/1sZwaayMsW2htbuT?=
+ =?us-ascii?Q?NjOhkAq38uWEdtV7eHutp8dh9jfIt5SxZjLPE7GipjXzzoqudAHXxZdOCiT/?=
+ =?us-ascii?Q?eZ+/yAAeIOvUgAOcuScXWpXLf3zkucVm3Nduw6I4Ayp6DbkXItRv4gFxTV1e?=
+ =?us-ascii?Q?VCRjjvJDyTxt7GTeLprWCKTDPKXa973yaCxRyU+QLWcQtGdbJqB0NA6hsE0a?=
+ =?us-ascii?Q?Y+7yAYMi+6oxHhFdPx044qMUOt+YdmuUyxxrCeEqShp4UITi7/C4Rc8OJpIt?=
+ =?us-ascii?Q?qHU6lqUyvKhSYMSraYPDu7AwXnb2cEE4PB4V0br+Csi+xGP9f+jegdfkuxQr?=
+ =?us-ascii?Q?FUFJ9bKp4dbGU39sL4X4jiJnfUFIAD0QpRarbdSly6WHtTaY7eu8irLKuYTK?=
+ =?us-ascii?Q?R+XPL5AJEOKo78Hlw4akT4zsAjVkmwNlvn5a8WW6SbKYUvSd2NliwqEEDsAG?=
+ =?us-ascii?Q?ZLKu36xrS4IJXwJ30Nrt5+CT+VRf7mcha9VCmjEqiyaAC/XmjhzZGUdkKIVN?=
+ =?us-ascii?Q?55RzqM+o2chQ5xRO0ceSZuGNmtUv4n12j+XeRLF7Z/nLJnSgU7W5xSL22MmG?=
+ =?us-ascii?Q?AzYTw0m1oY86r3AdNnb5+cXnplA7sggc8hcur5T7OrbhmdCviQcnv+Kxl5AQ?=
+ =?us-ascii?Q?811swNmgR5FCR6BDCMvwpx8fVgApZUyZLh17L9bGseuoMCxm5MvOm8ipYXBL?=
+ =?us-ascii?Q?6qtGlTEPYVaubm29Ysp0MyZqIDymhHjtHRY6xL0UswqnEllYCpkYm4mU5cL+?=
+ =?us-ascii?Q?v0aB1YYbq9g/UPmm2wVRl2+H0vCXzaacL0ouuMJE7HRzhpM5fiNOtYY7HhAk?=
+ =?us-ascii?Q?caak2F1C7qgWHC1nPEuH8NIojRSEgsOIwhAIKd5BLWeTmxfXowHhiUZW+S6y?=
+ =?us-ascii?Q?BsxRIyz6ZrupbVD0SkXFrjerbQXH2CDP9Sg19VWJwoiaQutKb3lhEess2SJ/?=
+ =?us-ascii?Q?72bOaHWOPfGFKJcX0A4f3IwcUrGYAB/cFIdpG5DKFcDL13vxY8TzgKMuDnUw?=
+ =?us-ascii?Q?6LKoXFbr4BAfxZ2oFz4+4BitQ1FwOMvf8EFF7kvzSH2pVTvlL5tlZXbviUF5?=
+ =?us-ascii?Q?HfXLQm2T/Hr+8SUhQhLbl/Rui3qlooMFgCi9LBpAqdeY7JJNcP5cSigBurJv?=
+ =?us-ascii?Q?Hr1MwrbYmMKAJExnYGGswugUaT+oWy044i7obqEIQ2LT+4AJ5V4Foc8I5k+y?=
+ =?us-ascii?Q?y4KV9ibMCLPlssd4LSVKT9++9WRUHVDD3nuMp4hX?=
+X-OriginatorOrg: mt.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c161d3e0-b2ac-4554-2a14-08dc54d009f9
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR03MB7513.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Apr 2024 17:52:47.8090
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: fb4c0aee-6cd2-482f-a1a5-717e7c02496b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: unnyy/YZxH9fQlZnt3fLW5pkXYoZWH4BQFQfSz6R4ijM9/8RJt8SMIxA8JZnw/hS1FQoj3IQ4wemqYcLt97WUA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR03MB8339
 
-On 4/4/24 11:17, Petr Mladek wrote:
-> On Tue 2024-04-02 09:52:31, Joe Lawrence wrote:
->> On Tue, Apr 02, 2024 at 11:09:54AM +0800, zhangwarden@gmail.com wrote:
->>> From: Wardenjohn <zhangwarden@gmail.com>
->>>
->>> In livepatch, using KLP_UNDEFINED is seems to be confused.
->>> When kernel is ready, livepatch is ready too, which state is
->>> idle but not undefined. What's more, if one livepatch process
->>> is finished, the klp state should be idle rather than undefined.
->>>
->>> Therefore, using KLP_IDLE to replace KLP_UNDEFINED is much better
->>> in reading and understanding.
->>> ---
->>>  include/linux/livepatch.h     |  1 +
->>>  kernel/livepatch/patch.c      |  2 +-
->>>  kernel/livepatch/transition.c | 24 ++++++++++++------------
->>>  3 files changed, 14 insertions(+), 13 deletions(-)
->>>
->>> diff --git a/include/linux/livepatch.h b/include/linux/livepatch.h
->>> index 9b9b38e89563..c1c53cd5b227 100644
->>> --- a/include/linux/livepatch.h
->>> +++ b/include/linux/livepatch.h
->>> @@ -19,6 +19,7 @@
->>>  
->>>  /* task patch states */
->>>  #define KLP_UNDEFINED	-1
->>> +#define KLP_IDLE       -1
->>
->> Hi Wardenjohn,
->>
->> Quick question, does this patch intend to:
->>
->> - Completely replace KLP_UNDEFINED with KLP_IDLE
->> - Introduce KLP_IDLE as an added, fourth potential state
->> - Introduce KLP_IDLE as synonym of sorts for KLP_UNDEFINED under certain
->>   conditions
->>
->> I ask because this patch leaves KLP_UNDEFINED defined and used in other
->> parts of the tree (ie, init/init_task.c), yet KLP_IDLE is added and
->> continues to use the same -1 enumeration.
-> 
-> Having two names for the same state adds more harm than good.
-> 
-> Honestly, neither "task->patch_state == KLP_UNDEFINED" nor "KLP_IDLE"
-> make much sense.
-> 
-> The problem is in the variable name. It is not a state of a patch.
-> It is the state of the transition. The right solution would be
-> something like:
-> 
->   klp_target_state -> klp_transition_target_state
->   task->patch_state -> task->klp_transition_state
->   KLP_UNKNOWN -> KLP_IDLE
-> 
+For device will enable and disable irq contiously like AD7195,
+it use DOUT/RDY pin for both SPI transfer and data ready.
+It will disable irq during SPI transfer, and re-eanble irq after SPI transfer.
+That may cause irq status bit set to 1 during spi transfer.
 
-Yes, this is exactly how I think of these when reading the code.  The
-model starts to make a lot more sense once you look at it thru this lens :)
+When the active condition has been detected, the corresponding bit
+remains set until cleared by software. Status flags are cleared
+by writing a 1 to the corresponding bit position.
 
-> But it would also require renaming:
-> 
->   /proc/<pid>/patch_state -> klp_transition_state
-> 
-> which might break userspace tools => likely not acceptable.
-> 
-> 
-> My opinion:
-> 
-> It would be nice to clean this up but it does not look worth the
-> effort.
-> 
+Signed-off-by: Markus Burri <markus.burri@mt.com>
+---
+ drivers/iio/adc/ad_sigma_delta.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Agreed.  Instead of changing code and the sysfs interface, we could
-still add comments like:
-
-  /* task patch transition target states */
-  #define KLP_UNDEFINED   -1      /* idle, no transition in progress */
-  #define KLP_UNPATCHED    0      /* transitioning to unpatched state */
-  #define KLP_PATCHED      1      /* transitioning to patched state */
-
-  /* klp transition target state */
-  static int klp_target_state = KLP_UNDEFINED;
-
-  struct task_struct = {
-      .patch_state    = KLP_UNDEFINED,   /* klp transition state */
-
-Maybe just one comment is enough?  Alternatively, we could elaborate in
-Documentation/livepatch/livepatch.rst if it's really confusing.
-
-Wardenjohn, since you're probably reading this code with fresh(er) eyes,
-would any of the above be helpful?
-
+diff --git a/drivers/iio/adc/ad_sigma_delta.c b/drivers/iio/adc/ad_sigma_delta.c
+index a602429cdde4..59544c39642a 100644
+--- a/drivers/iio/adc/ad_sigma_delta.c
++++ b/drivers/iio/adc/ad_sigma_delta.c
+@@ -515,6 +515,10 @@ static irqreturn_t ad_sd_trigger_handler(int irq, void *p)
+ 
+ irq_handled:
+ 	iio_trigger_notify_done(indio_dev->trig);
++	/*
++	 * ACK pending interrupts from spi transfer.
++	 */
++	irq_gc_ack_set_bit(irq_get_irq_data(sigma_delta->spi->irq));
+ 	sigma_delta->irq_dis = false;
+ 	enable_irq(sigma_delta->spi->irq);
+ 
 -- 
-Joe
+2.39.2
 
 
