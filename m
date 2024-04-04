@@ -1,128 +1,100 @@
-Return-Path: <linux-kernel+bounces-131402-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131404-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3D07898729
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:21:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF84A89872F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:22:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F3D4298169
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:21:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FD36B255A8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:22:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1503C85C70;
-	Thu,  4 Apr 2024 12:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F1AC1272B5;
+	Thu,  4 Apr 2024 12:19:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="i6P2868z"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="PGfGwHMq"
+Received: from out30-98.freemail.mail.aliyun.com (out30-98.freemail.mail.aliyun.com [115.124.30.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB71384FD8;
-	Thu,  4 Apr 2024 12:19:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32F691272AA
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:19:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712233147; cv=none; b=YAi5qjC3Ag+eclZm/PGxIXckA8wd52MOtWDW19jyyZLqxqHgNL8Yjt2yrOKTvq7+Ch+k9H8wJS2ttBbJR6YDFi45oQarELJPoRmEi/oJqFI58eEonYN9yc37esAu/nIru6dxEfQyVGRYx2hc5NJX2nGyEa+LMU1oQjwMlXWU0Xk=
+	t=1712233181; cv=none; b=l3/iwYthwT3z3aCzQjLIg7OkqWt9qpZ0kxroaOt9A7lZCVrMlPI+Osh+2BWglMT5wu1VWxF03gXYj+w9BhljcI5e5Qq41FnFa3e31iomaluUdpmJ/3ecWGgkWC5CjoEtASsFe4ThMqOaSFpuK9g3M8mx+tzTpbo6PKUQKoFbZWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712233147; c=relaxed/simple;
-	bh=mil+HQR04IvA/pn5IicgtVQd4s2jM36JG4PRtJicsTY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pg4oQdzxS0yPVtmya5qzoqT/+duS5OtuSSk/b1hZvUEriWAz1j/iCMlPB/5ul7x3117Se5p496ZcuB3rPfNcaXrzJSd2/NSjnrr9rBGX3SZV0aJzOQKnomBukTXeH5pHoPE9VpTdJLaDoYD3J/UKn3GUjW7A5xmgNHAiRDSsl/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=i6P2868z; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712233146; x=1743769146;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=mil+HQR04IvA/pn5IicgtVQd4s2jM36JG4PRtJicsTY=;
-  b=i6P2868zuuT20xDdFlvrkrSaSePHagN9oVumbNhBdMgds5S0S0h/iXdK
-   RCyrC9MAB7Ludp6ivmc0gBzzFtimy+70wahNqCDsoqgNf+Og+xQ2Fv6yw
-   7cySGbvPQMYaNc5spJ4aKgkiTvzPaOhTqNfma6wcpMbJYuXajREbOgs3M
-   lRjVLXTD1uAIM51uPYzD3F0jjgwg3BkAareDdOJCQNZzBZpz6K78RYuLL
-   rylOeaith6Nt1lw0GEbT+8kDB8OsnICf1gg/pSnKdXpSv7JlF83B5E8+m
-   wXtg05pdL+GWXguw29i0+mv4z2P293kXuCP6SMwfGM9j94T8aYlAwg0/L
-   w==;
-X-CSE-ConnectionGUID: WXBqaGseRNqiYTp4+J8qqA==
-X-CSE-MsgGUID: 9G/BbE/JRYaCp1J2xROuqg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="18663390"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="18663390"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 05:19:05 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="915216555"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="915216555"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 05:19:02 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rsM3X-00000001QHL-2Qqa;
-	Thu, 04 Apr 2024 15:18:59 +0300
-Date: Thu, 4 Apr 2024 15:18:59 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Nuno Sa <nuno.sa@analog.com>, Andi Shyti <andi.shyti@kernel.org>
-Cc: Petr Mladek <pmladek@suse.com>, Jonathan Cameron <jic23@kernel.org>,
-	Lars-Peter Clausen <lars@metafoo.de>,
-	Olivier Moysan <olivier.moysan@foss.st.com>,
-	Jyoti Bhayana <jbhayana@google.com>,
-	Chris Down <chris@chrisdown.name>,
-	John Ogness <john.ogness@linutronix.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
-Subject: Re: [PATCH 0/4] dev_printk: add dev_errp_probe() helper
-Message-ID: <Zg6as8asLMcLi6qM@smile.fi.intel.com>
-References: <20240404-dev-add_dev_errp_probe-v1-0-d18e3eb7ec3f@analog.com>
- <Zg6Z51uebr2dWLq2@smile.fi.intel.com>
+	s=arc-20240116; t=1712233181; c=relaxed/simple;
+	bh=YO48f1x2NlrJ3K2FnhVJkv7sNaC0Wo8Yk9d5hK3zOpk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=st0NgRdGEhjcpw1skr6cL9paTyBjugws0U3Z5HsXU6b+RzAoYRjdoVyvrBLX5DWBV9y8h0hGxZ7C3r6Qih2MamuMTZAEr7eGKrdRGJUqDtM2kdkQJyzTu9B30LrWt5dMsAj321RxPqeBSTfLvLWkIBpRwQLH/TPN3hCDab5ShNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=PGfGwHMq; arc=none smtp.client-ip=115.124.30.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712233170; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=Q/Xj/NVp/iPCOrj04cewJTw2OUemfY9s87BaeSgWeRk=;
+	b=PGfGwHMqG5gTx/ZZllWF15VkTPI0l69OgCj0Q58aKo19uuAIyxwaRyCnqQDOly5zLR5bytPVjiVs+8htOkmh0bml3O9ovuh+J1OZoARSAPoQytDjt/sUEu9B9Lcwib1V+mJK4g45lasH6c6DhLCvbNpkezlSHliUEW5+XrymLOE=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0W3uSCUF_1712233169;
+Received: from 30.120.150.29(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W3uSCUF_1712233169)
+          by smtp.aliyun-inc.com;
+          Thu, 04 Apr 2024 20:19:30 +0800
+Message-ID: <30bef3d6-3381-491e-a00a-bd1fb7e8d8f8@linux.alibaba.com>
+Date: Thu, 4 Apr 2024 20:19:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zg6Z51uebr2dWLq2@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-
-On Thu, Apr 04, 2024 at 03:15:35PM +0300, Andy Shevchenko wrote:
-> +Cc: Andi
-> 
-> On Thu, Apr 04, 2024 at 01:06:22PM +0200, Nuno Sa wrote:
-> > This series adds a dev_errp_probe() helper. This is similar to
-> > dev_err_probe() but for cases where an ERR_PTR() is to be returned
-> > simplifying patterns like:
-> > 
-> > 	dev_err_probe(dev, ret, ...);
-> > 	return ERR_PTR(ret)
-> 
-> What about ERR_CAST() cases?
-> 
-> > The other three patches are adding users for it. The main motivator for
-> > this were the changes in the commit ("iio: temperature: ltc2983: convert
-> > to dev_err_probe()"). Initially I just had a local helper [1] but then
-> > it was suggested to try a new, common helper. As a result, I looked for
-> > a couple more users.
-> > 
-> > I then move into dev_errp_probe() [2] but it was then suggested to separare
-> > the patch series so we have onde dedicated for the printk helper.
-> > 
-> > [1]: https://lore.kernel.org/all/20240301-ltc2983-misc-improv-v3-1-c09516ac0efc@analog.com/
-> > [2]: https://lore.kernel.org/all/20240328-ltc2983-misc-improv-v4-0-0cc428c07cd5@analog.com/
-> 
-> Have you seen mine?
-> 
-> 20220214143248.502-1-andriy.shevchenko@linux.intel.com
-> 
-> (Note, I'm pretty much fine and thankful that you take care of this)
-
-Also you might be interested to have this
-20231201151446.1593472-1-andriy.shevchenko@linux.intel.com
-
--- 
-With Best Regards,
-Andy Shevchenko
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm: page_alloc: use the correct THP order for THP PCP
+To: Vlastimil Babka <vbabka@suse.cz>, akpm@linux-foundation.org
+Cc: mgorman@techsingularity.net, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <a25c9e14cd03907d5978b60546a69e6aa3fc2a7d.1712151833.git.baolin.wang@linux.alibaba.com>
+ <76457ec5-d789-449b-b8ca-dcb6ceb12445@suse.cz>
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <76457ec5-d789-449b-b8ca-dcb6ceb12445@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
+
+On 2024/4/4 18:03, Vlastimil Babka wrote:
+> On 4/3/24 3:47 PM, Baolin Wang wrote:
+>> Commit 44042b449872 ("mm/page_alloc: allow high-order pages to be stored
+>> on the per-cpu lists") extends the PCP allocator to store THP pages, and
+>> it determines whether to cache THP pags in PCP by comparing with pageblock_order.
+>> But the pageblock_order is not always equal to THP order, it might also
+>> be MAX_PAGE_ORDER, which could prevent PCP from caching THP pages.
+>>
+>> Therefore, using HPAGE_PMD_ORDER instead to determine the need for caching
+>> THP for PCP can fix this issue
+>>
+>> Fixes: 44042b449872 ("mm/page_alloc: allow high-order pages to be stored on the per-cpu lists")
+>> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> 
+> IIUC this happens with CONFIG_HUGETLB_PAGE disabled because HUGETLBFS is
+> disabled? But THPs are still enabled? I think there might be more of THP
+
+Right, and seems the Powerpc arch will set pageblock_order via 
+set_pageblock_order() when the huge page sizes are variable (not sure if 
+this is always equal to THP order).
+
+Moreover, it still does not make sense to use pageblock_order to 
+indicate a THP page, especially when we already have HPAGE_PMD_ORDER to 
+represent THP.
+
+> working suboptimally in that case with pageblock_order being larger
+> (MAX_PAGE_ORDER).
+> 
+> In other words, should be rather make pageblock_order itself defined as
+> 
+>   min_t(unsigned int, HPAGE_PMD_ORDER, MAX_PAGE_ORDER)
+> 
+> in case with !CONFIG_HUGETLB_PAGE but THP enabled.
+
+Yes, this makes sense to me (I wonder why this wasn't done before?). I 
+can create a seperate patch to do this, what do you think? Thanks.
 
