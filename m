@@ -1,110 +1,115 @@
-Return-Path: <linux-kernel+bounces-130840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07890897DC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 04:40:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D75C897DCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 04:41:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A76B28A7D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:40:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 734DA1C2170E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:41:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D7051CD3C;
-	Thu,  4 Apr 2024 02:40:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DAC331A8F;
+	Thu,  4 Apr 2024 02:40:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pXVwxse+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ayh00Toi"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82E8EEB2;
-	Thu,  4 Apr 2024 02:40:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B28C81CD35;
+	Thu,  4 Apr 2024 02:40:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712198427; cv=none; b=CSDRzRPRKgOQTS7eLJw+0snzj+ytt6IQhDKX0jWCFbSqvKSlSKQQPTgp4r0p+Nasc4dIYBlXW8uGz/XQDr4g0ZqevzljSXqhb2erA4m0+0uBFJnDNX0KtsAP9R9HibaGJf9aWa0yKf8omr/0R6tr3ACQvMdop37OS4zIVVtEVgA=
+	t=1712198441; cv=none; b=I1GW8aUaP2tRru7IXaaBIEmOJVJI7HdfAUicMWNe4g35Oz4qJQFP/xf4fAGY9Ke9WYiVUmZI29OB3mW4+lwWX6IHCsPx272HXTW3jK3lC/JAnmJu+w0zkyZf+ja9dQ1PqazMwt2kERMqRunCvDvDjoR3ic3PBARiCFi8wacYKQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712198427; c=relaxed/simple;
-	bh=z1iXLvkFfv7cvcYmpQ/4o3DzldKRSGogDcrjWfkz/no=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=hAgq1+PHMe/XQmz54vkJM+94bagcQMIic9rdEqKL2pJVUOFuUOhvdgSekXYIpu4x+u9OphCvrBqHWTsU4NdiP95NYKt/otBZhA/Ev1kzefzCMTJ2vGSR3UeXQhLa0Aap6JJ/eZMIjh7p9ZOtL0+dtLNI6e7zojOWLDrBjqmSADE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pXVwxse+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 41F9DC433F1;
-	Thu,  4 Apr 2024 02:40:27 +0000 (UTC)
+	s=arc-20240116; t=1712198441; c=relaxed/simple;
+	bh=nWBOnkzfJqiTI89c9fyFiP7jWvqgYA/ILTaVMO7uAq4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Sh0u3aDVFdGBZ+7OQSIsOX+6jA9tgV6EC5Oys9Y21auJ05isBhXiG/FKMXBMgP13WByhLPW9UG+YJZUkuH6d+oBlrTd1u7l9VrazkPO12kSFQXN9WCMnB4lzz17xreRzVi1Xea9CBU5bQJKPJieYs0uEbVMztWkaVKgyinrCz38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ayh00Toi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30E71C433F1;
+	Thu,  4 Apr 2024 02:40:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712198427;
-	bh=z1iXLvkFfv7cvcYmpQ/4o3DzldKRSGogDcrjWfkz/no=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=pXVwxse+4leHQBCAqngVCssZ1Db/s7EX/otUfWPT8kcdnZlyzTP7XAki1eODxVXlv
-	 sRUnbNgRIKG+k4AI1koZH1px3gFXjfiMditk/+ecmOikQq68Z77/yf6EKmdnoZe08u
-	 fafw/k4+9FxQwdM1Vzu/TyMtWC1VS9Bxy1V0qyzx+9MbYr5T6Ui5fjy6CUkTqggFCV
-	 qRLXXKYmVd7xrvpw+ZcIRBdlawvjotu7VcwLsV5zRfE5Z0cwqD6aUp31mDic+QpHKz
-	 BlCO4q0ESelNHxfmzCRtp+zgs1i+0HlAGdAZ000PPj1OxmF0OK7v1CEoRCH3gnwFhV
-	 Eltyt/Bk0Jfmg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 31064C43168;
-	Thu,  4 Apr 2024 02:40:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1712198441;
+	bh=nWBOnkzfJqiTI89c9fyFiP7jWvqgYA/ILTaVMO7uAq4=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ayh00ToiXPZtL5GJsl3/F863u9O6MDDsWUSAWLT2VQZj1MHKal3sR/IBHAbb0f6Ci
+	 JsxvWGs1kdf89k7OFvQLUAhsdCU3oHE6isB4+ulHtquiQST5tkXJV03+J6NZYpa1Gm
+	 GttpkAjIdO6MgjxhgpG+sZkog6YrkWlfeu5Kh6zRaf9GM2o7EZuTsIoYI+yzDLSq29
+	 d+y11ZOd9agspXCKFKVZr6NO7e0cGe+3oYJ5Sgkvazd2T2M/13Gr/7796bWHJNyasw
+	 cYKFNVnhnC2JenmWLxcJ9U2KTUzc78JkCYMO9FO8HAREKkAuFxLSDNiJKVxEAJCWYx
+	 y/Jm9xkiA7ZwQ==
+Message-ID: <62ae8487-b768-424e-b6a5-a5f31b3b55bb@kernel.org>
+Date: Thu, 4 Apr 2024 11:40:37 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net,v2] net: mana: Fix Rx DMA datasize and skb_over_panic
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171219842719.31127.17495935498454370650.git-patchwork-notify@kernel.org>
-Date: Thu, 04 Apr 2024 02:40:27 +0000
-References: <1712087316-20886-1-git-send-email-haiyangz@microsoft.com>
-In-Reply-To: <1712087316-20886-1-git-send-email-haiyangz@microsoft.com>
-To: Haiyang Zhang <haiyangz@microsoft.com>
-Cc: linux-hyperv@vger.kernel.org, netdev@vger.kernel.org, decui@microsoft.com,
- stephen@networkplumber.org, kys@microsoft.com, paulros@microsoft.com,
- olaf@aepfle.de, vkuznets@redhat.com, davem@davemloft.net, wei.liu@kernel.org,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, leon@kernel.org,
- longli@microsoft.com, ssengar@linux.microsoft.com,
- linux-rdma@vger.kernel.org, daniel@iogearbox.net, john.fastabend@gmail.com,
- bpf@vger.kernel.org, ast@kernel.org, sharmaajay@microsoft.com,
- hawk@kernel.org, tglx@linutronix.de, shradhagupta@linux.microsoft.com,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/10] PCI: endpoint: Decouple EPC and PCIe bus
+ specific events
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Lorenzo Pieralisi <lpieralisi@kernel.org>,
+ =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+ Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+ Kishon Vijay Abraham I <kishon@kernel.org>,
+ Thierry Reding <thierry.reding@gmail.com>,
+ Jonathan Hunter <jonathanh@nvidia.com>, Jingoo Han <jingoohan1@gmail.com>,
+ linux-pci@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, mhi@lists.linux.dev,
+ linux-tegra@vger.kernel.org, Niklas Cassel <cassel@kernel.org>
+References: <20240401-pci-epf-rework-v2-0-970dbe90b99d@linaro.org>
+ <20240401-pci-epf-rework-v2-2-970dbe90b99d@linaro.org>
+ <45b2db99-2d03-469b-aa37-bc6c63cef141@kernel.org>
+ <20240403142650.GA72531@thinkpad>
+From: Damien Le Moal <dlemoal@kernel.org>
+Content-Language: en-US
+Organization: Western Digital Research
+In-Reply-To: <20240403142650.GA72531@thinkpad>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
-
-On Tue,  2 Apr 2024 12:48:36 -0700 you wrote:
-> mana_get_rxbuf_cfg() aligns the RX buffer's DMA datasize to be
-> multiple of 64. So a packet slightly bigger than mtu+14, say 1536,
-> can be received and cause skb_over_panic.
+On 4/3/24 23:26, Manivannan Sadhasivam wrote:
+> On Tue, Apr 02, 2024 at 09:14:20AM +0900, Damien Le Moal wrote:
+>> On 4/2/24 00:50, Manivannan Sadhasivam wrote:
+>>> Currently, 'struct pci_epc_event_ops' has a bunch of events that are sent
+>>> from the EPC driver to EPF driver. But those events are a mix of EPC
+>>> specific events like core_init and PCIe bus specific events like LINK_UP,
+>>> LINK_DOWN, BME etc...
+>>>
+>>> Let's decouple them to respective structs (pci_epc_event_ops,
+>>> pci_epc_bus_event_ops) to make the separation clear.
+>>
+>> I fail to see the benefits here. The event operation names are quite clear and,
+>> in my opinion, it is clear if an event op applies to the controller or to the
+>> bus/link. If anything, "core_init" could a little more clear, so renaming that
+>> "ep_controller_init" or something like that (clearly spelling out what is being
+>> initialized) seems enough to me. Similarly, the "bme" op name is very criptic.
+>> Renaming that to "bus_master_enable" would go a long way clarifying the code.
+>> For link events, "link_up", "link_down" are clear. So I think there is no need
+>> to split the event op struct like this. Renaming the ops is better.
+>>
+>> Note that I am not opposed to this patch, but I think it is just code churn
+>> that does not really bring any fundamental improvement. Regardless, renaming
+>> "core_init" and "bme" ops is I think desired.
+>>
 > 
-> Sample dmesg:
-> [ 5325.237162] skbuff: skb_over_panic: text:ffffffffc043277a len:1536 put:1536 head:ff1100018b517000 data:ff1100018b517100 tail:0x700 end:0x6ea dev:<NULL>
-> [ 5325.243689] ------------[ cut here ]------------
-> [ 5325.245748] kernel BUG at net/core/skbuff.c:192!
-> [ 5325.247838] invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
-> [ 5325.258374] RIP: 0010:skb_panic+0x4f/0x60
-> [ 5325.302941] Call Trace:
-> [ 5325.304389]  <IRQ>
-> [ 5325.315794]  ? skb_panic+0x4f/0x60
-> [ 5325.317457]  ? asm_exc_invalid_op+0x1f/0x30
-> [ 5325.319490]  ? skb_panic+0x4f/0x60
-> [ 5325.321161]  skb_put+0x4e/0x50
-> [ 5325.322670]  mana_poll+0x6fa/0xb50 [mana]
-> [ 5325.324578]  __napi_poll+0x33/0x1e0
-> [ 5325.326328]  net_rx_action+0x12e/0x280
+> Niklas shared the same view during v1, but I hate to see the events being mixed
+> in a single ops. Especially that it will confuse the developers who are not
+> familiar with the EP subsystem.
 > 
-> [...]
+> But since the argument is coming twice, I've decided to drop this for now and
+> just rename the 'core_init' callback to 'epc_init' and name the deinit callback
+> as 'epc_deinit'.
 
-Here is the summary with links:
-  - [net,v2] net: mana: Fix Rx DMA datasize and skb_over_panic
-    https://git.kernel.org/netdev/net/c/c0de6ab920aa
+Sounds good. Please also rename the completely unclear "bme" operation. Spell it
+out to be clear.
 
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Damien Le Moal
+Western Digital Research
 
 
