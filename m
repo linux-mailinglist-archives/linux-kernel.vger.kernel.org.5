@@ -1,146 +1,137 @@
-Return-Path: <linux-kernel+bounces-131197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A91E898457
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:40:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 699B089845A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:42:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38A611C220DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:40:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8F4A1F247B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:42:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DC1474BE2;
-	Thu,  4 Apr 2024 09:39:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2861B745F4;
+	Thu,  4 Apr 2024 09:42:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ca76V2on"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FuX1qgaA"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A1174438
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 09:39:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C187B74437
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 09:42:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712223594; cv=none; b=hLCZFApGjZnV9DA5chiZMSQxJIFnKSTiTIZZVzgJa8KQw4JLVXMx1J8mvTDOLjhe3ukmBxxQ/4YPtplPMyZgLRtq+rX7iK/icehStbGlQV+hoEZqFrt5DpxZj6yqBwcjWTM/qvoAAmlooCTgsngA4mz9j7CUN8NE2FDjeYhrI0M=
+	t=1712223745; cv=none; b=tERklNZtuah4obAUHkAf4GmL6kmNNB3F5igxt9OyO6YaWTYW4brDVGJm/T0j3ELA+a+VuAD6HaC0snDnrosN5A5qR0Cs7yTz3I26c3NIHT3UE6vHb83Uk7ErK9QFX9p+iprXR0GneXKQnxE8PzxY2fGKFCg1cePm2erfK9lusTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712223594; c=relaxed/simple;
-	bh=Q2J0SHdbDDTKk3cBCCZk1JWW4uClXx9Nvjj8wbCUCz8=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=co4egBoQyxLyvMQ+qXz7YT8LGfhcyHhwJKFlZhJ7TQ7DcEHPbAcJ7+WjVVqcvJmip0Z3SpaDGNGcO53EiDK7mKxMoh1iUdnNJYrYXp66ghn8aGjkM6nAtvPoUq3m0JntCOlSogM/B4TfxFAK5b4Dzuqb2nS9Kz4S9jG2R1eg8/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ca76V2on; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712223591;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=9Q0Gv0d6rBwe65qsruTCiuIlit9fW3dRsJmEeNPjWAs=;
-	b=ca76V2onUiOFhuKmtGMbMiibCyZgHaYh6RUTr1oCgzXzM+pLXzM0Yf0C/7SXRVJxZhJlUL
-	3AK3xIUG34NEX0dne5Ho0WoshT3Fa4euMa7yllT7zIedBBDvsSaKF97A1izMtGoDOiA8VS
-	mV9Go1omdevASO/b8B+1KJ80eTiY5Z4=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-453-3KsI3PBNM1-8XJ9da5_nog-1; Thu, 04 Apr 2024 05:39:50 -0400
-X-MC-Unique: 3KsI3PBNM1-8XJ9da5_nog-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C004485A5BA;
-	Thu,  4 Apr 2024 09:39:49 +0000 (UTC)
-Received: from ws.net.home (unknown [10.45.226.93])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 337BE1C060A4;
-	Thu,  4 Apr 2024 09:39:49 +0000 (UTC)
-Date: Thu, 4 Apr 2024 11:39:43 +0200
-From: Karel Zak <kzak@redhat.com>
-To: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	util-linux@vger.kernel.org
-Subject: [ANNOUNCE] util-linux maintenance release v2.39.4
-Message-ID: <20240404093943.jkyn4eimk3humbw2@ws.net.home>
+	s=arc-20240116; t=1712223745; c=relaxed/simple;
+	bh=48fh0II5kKEbt+TfWTXG1a6CIatXnzXJEE8M3I0OS8A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mUfyO/AFh1GtRA+qhvgV5zgX/GY79sIiIqw3DjUKTij944xw0I1UUjkqqGErcxQNcAFhoMQFyz9i2LPWl4UpdWXwUyfTlpxhs+a+hIbznkkqCMjsbQ757v615F4KfwvluSWS8m1belPrDr0NZHApJ7Xq1flubziobc3TnGCUtog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FuX1qgaA; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-56e0f359240so953427a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 02:42:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712223742; x=1712828542; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bjTddw2RcRfhhvnfv1p+DmU8UHIXO4Fbo1olKvzN4aA=;
+        b=FuX1qgaA/e7J/qMDsI9zQxA6wtfLlMZ3oeXiscFsjP0atkL0/pFxqYNkzeEoPr4Ekx
+         1ROgH91AQbQTfEu7CgX0v2m3Gm47lIGHVhi0vSsVfwgLN2Ra0okWFCFXAHaZ6ZqCI7V8
+         2rP3ZqYyjZdnXQ88qhrKRfSw6O4pouZXXFcvbWj8dptZ2r0olOOjWkkvfO0g7jZUo/LR
+         a6sDQ8h6OuVnptt0aO5Vd84yuKLuAzfAliWoEuBa6R9F6OETR7WZBdLcNbMyXvjnw46i
+         9kDp4eDkZ88bUV9denjbye/2TqIqG5HZDq/JnJ0/hnN9zyPuRoz4pPYPkvPbpbYf+DVo
+         IuDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712223742; x=1712828542;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bjTddw2RcRfhhvnfv1p+DmU8UHIXO4Fbo1olKvzN4aA=;
+        b=ZRMff9507MJJpdOj4ET/h/OM/9KlbE+pZrK3pGL0+essa6g88zPWlGLKl/TsUDbgMZ
+         PJi5g1/LymnZeSoaiin8rmK39auYedbGZDaJ3E1AsEK7E9dqkRIS/V6Hi+jigSZaB2BR
+         TyczzRDO00kKH3Zr42dHk7mRM+ZvlID2+to1/b1Ej5wTyeF2g/UjXIIBD15nDDz9CouD
+         cnLeg7ZiQJyqXrTokI9BbxhTD0Q/34j2C6TdbeWOVwVUkqnml7zjYdWq/f6c/ahz0OH2
+         09Yg+8hJJiNE2ZmqbQmNWwftyDcH7Eb6HLWyR/ZAptB9nAWlyPC/NGJFSrlxRc5Kk/o2
+         oTaA==
+X-Forwarded-Encrypted: i=1; AJvYcCXiWMz5+YIougI5MQfxi7tIZu3u+jLX7ZHgTHykqVHjdgvKxC/rA+6yW4PuTkda0sGoyCXPtNa442WRVuP7VctwOUkUggGIo2bGcANk
+X-Gm-Message-State: AOJu0Yyet6Dp/RarDTRyURR0a+K/yd6azOGKqAI4ahP0vGDRLErN2uS/
+	QeZj9TmtKS37yfl6gThLlpKjKfLZtb4Cv7Hgjx1idZWni+44GPc3au0cDW71/DJdNQ==
+X-Google-Smtp-Source: AGHT+IF8IcZzcekBALw9015GuB3wElHDNB6cUG/bScEHNYGPY/c39xctfKlW46a6hWH5bHIGwtXl4w==
+X-Received: by 2002:a17:906:6d4f:b0:a51:8540:c671 with SMTP id a15-20020a1709066d4f00b00a518540c671mr1209247ejt.50.1712223741971;
+        Thu, 04 Apr 2024 02:42:21 -0700 (PDT)
+Received: from fedora.iskraemeco.si ([193.77.86.250])
+        by smtp.gmail.com with ESMTPSA id l1-20020a1709061c4100b00a5194b5b932sm62362ejg.16.2024.04.04.02.42.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 02:42:21 -0700 (PDT)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Brian Gerst <brgerst@gmail.com>,
+	Denys Vlasenko <dvlasenk@redhat.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH v2 1/3] x86/percpu: Fix x86_this_cpu_variable_test_bit() asm template
+Date: Thu,  4 Apr 2024 11:42:01 +0200
+Message-ID: <20240404094218.448963-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
+Fix x86_this_cpu_variable_test_bit(), which is implemented with
+wrong asm template, where argument 2 (count argument) is considered
+as percpu variable. However, x86_this_cpu_test_bit() is currently
+used exclusively with constant bit number argument, so the called
+x86_this_cpu_variable_test_bit() function is never instantiated.
+The fix introduces named assembler operands to prevent this kind
+of errors.
 
-The util-linux stable maintenance release v2.39.4 is available at
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: Denys Vlasenko <dvlasenk@redhat.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+v2: Split from the original v1 patch.
+---
+ arch/x86/include/asm/percpu.h | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-  http://www.kernel.org/pub/linux/utils/util-linux/v2.39/
-
-Feedback and bug reports, as always, are welcomed.
-
-(Please note that the current stable release is v2.40.)
-
-  Karel
-
-
-util-linux v2.39.4 Release Notes
-================================
+diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percpu.h
+index 20696df5d567..cbfbbe836ee2 100644
+--- a/arch/x86/include/asm/percpu.h
++++ b/arch/x86/include/asm/percpu.h
+@@ -586,10 +586,11 @@ static inline bool x86_this_cpu_variable_test_bit(int nr,
+ {
+ 	bool oldbit;
  
-Security issues
----------------
-
-This release fixes CVE-2024-28085. The wall command does not filter escape
-sequences from command line arguments. The vulnerable code was introduced in
-commit cdd3cc7fa4 (2013). Every version since has been vulnerable.
-
-This allows unprivileged users to put arbitrary text on other users terminals,
-if mesg is set to y and *wall is setgid*. Not all distros are affected (e.g.
-CentOS, RHEL, Fedora are not; Ubuntu and Debian wall is both setgid and mesg is
-set to y by default).
-
-
-Changes between v2.39.3 and v2.39.4
------------------------------------
-
-build:
-   - only build test_enosys if an audit arch exists  [Thomas Weiﬂschuh]
-dmesg:
-   - (tests) validate json output  [Thomas Weiﬂschuh]
-   - -r LOG_MAKEPRI needs fac << 3  [Edward Chron]
-   - correctly print all supported facility names  [Thomas Weiﬂschuh]
-   - only write one message to json  [Thomas Weiﬂschuh]
-   - open-code LOG_MAKEPRI  [Thomas Weiﬂschuh]
-docs:
-   - update AUTHORS file  [Karel Zak]
-fadvise:
-   - (test) don't compare fincore page counts  [Thomas Weiﬂschuh]
-   - (test) dynamically calculate expected test values  [Thomas Weiﬂschuh]
-   - (test) test with 64k blocks  [Thomas Weiﬂschuh]
-   - (tests) factor out calls to "fincore"  [Thomas Weiﬂschuh]
-github:
-   - add labeler  [Karel Zak]
-jsonwrt:
-   - add ul_jsonwrt_value_s_sized  [Thomas Weiﬂschuh]
-libblkid:
-   - Check offset in LUKS2 header  [Milan Broz]
-   - topology/ioctl  correctly handle kernel types  [Thomas Weiﬂschuh]
-libmount:
-   - don't initialize variable twice (#2714)  [Thorsten Kukuk]
-   - make sure "option=" is used as string  [Karel Zak]
-libsmartcols:
-   - (tests) add test for continuous json output  [Thomas Weiﬂschuh]
-   - drop spourious newline in between streamed JSON objects  [Thomas Weiﬂschuh]
-   - flush correct stream  [Thomas Weiﬂschuh]
-   - only recognize closed object as final element  [Thomas Weiﬂschuh]
-po:
-   - merge changes  [Karel Zak]
-po-man:
-   - merge changes  [Karel Zak]
-wall:
-   - fix calloc cal [-Werror=calloc-transposed-args]  [Karel Zak]
-   - fix escape sequence Injection [CVE-2024-28085]  [Karel Zak]
-
+-	asm volatile("btl "__percpu_arg(2)",%1"
++	asm volatile("btl %[nr], " __percpu_arg([var])
+ 			CC_SET(c)
+ 			: CC_OUT(c) (oldbit)
+-			: "m" (*__my_cpu_ptr((unsigned long __percpu *)(addr))), "Ir" (nr));
++			: [var] "m" (*__my_cpu_ptr((unsigned long __percpu *)(addr))),
++			  [nr] "Ir" (nr));
+ 
+ 	return oldbit;
+ }
 -- 
- Karel Zak  <kzak@redhat.com>
- http://karelzak.blogspot.com
+2.44.0
 
 
