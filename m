@@ -1,139 +1,128 @@
-Return-Path: <linux-kernel+bounces-131863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131865-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51E5898CD9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:00:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C1DD898CDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:00:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6499BB2949B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:59:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D94E1C20EDD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B517612BF02;
-	Thu,  4 Apr 2024 16:59:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9824012AAD6;
+	Thu,  4 Apr 2024 17:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jjCgXMSo"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mGqfDqoQ"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609AC12AAE7
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:59:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32A2E1C6AF
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712249980; cv=none; b=dR1Fx83F64fsEGjJQNYftuPhXiDvgZLJDLPI38Bp9yhhQLCUQflSYuEFESqMOaUSwNzh1YmC1EnUBs7CUqKfrCIr2fPkBRPVETiaXKZzAsbB7TVVfYy1Typ550p916DWzziva/YrMEBFhidqyvfZ83xI/fVgXBoFcI9mYMJLUkE=
+	t=1712250026; cv=none; b=LhqegiwWAq+aY4Mx3kK96k1JW/VKjYnO3N0+Ey3fzWGQ/vp14X5n2AAY9k1b9d3YSTMlo2lC7yqzIxNMJkuELkjtqsJaItxXWby2RwWDT5xBnvnJ5iwPMMI0PCx/5r7kXOMUjpdfPtCRrXRU9tqsMGJAd7BelLiWbOPCs3Fai+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712249980; c=relaxed/simple;
-	bh=GlIb1zMcmJBClF5rkpKIcHRkG94ygBl89eq+SVxh8p0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:Cc:
-	 In-Reply-To:Content-Type; b=hKzJiAqmjXQAGKxS1+20Hy76tMqeWyDMg1a1/aQkv1q2Rsi6HfxHnzteny6Roje3HCu7kmA3zrUo9mThu8V408smaxZnnPEw0J+ff6Nx/giq9WT6KDk4waMvTuWL6HCf1hrvsp5phIt50NOeD2Gmpzy/X4F/P1+/0uRnzDqYj+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=jjCgXMSo; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 434GA783019225;
-	Thu, 4 Apr 2024 16:59:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : references : from : cc : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=nw6gfRmvKmSjH//Zggr7B2O5ZxWfQkhxAmZHffHFRyI=;
- b=jjCgXMSol7RMTHgxgmxGCapA8pT1uG6d2UfiRK6lhBIIiv6twSgJB0l0v4e4LL+F5bDQ
- ecV3VhyfK9DU/YOruTBBTpgJwviCbCV2lRZ0+Nz4+rMxoltuFH5j36wmk30cdanIgE00
- s0cRm/ZKa8v2vIxFQhzULvhXiwtPTfq2G2+chbXpRxugtQd2ui5hD+v/ELcaezE5BnUr
- evN/wAET2PISaDvjckEl9u8zG3Fj39iPaa2TS9rV9y/hjKedi4hZA11jzWwZCEvpurGt
- 0ELgfe9XAk4qFzO4lVFS5Ye3bB8Fhl1qYi5Tn7aMhcflRIwEd0EIXNo6m+GvMEfk/bvb jw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9yfr03q7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Apr 2024 16:59:24 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 434GxNi4029746;
-	Thu, 4 Apr 2024 16:59:23 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9yfr03q5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Apr 2024 16:59:23 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 434GY98E009092;
-	Thu, 4 Apr 2024 16:59:22 GMT
-Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x9epxwc8h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 04 Apr 2024 16:59:22 +0000
-Received: from smtpav01.dal12v.mail.ibm.com (smtpav01.dal12v.mail.ibm.com [10.241.53.100])
-	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 434GxKVq2949742
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 4 Apr 2024 16:59:22 GMT
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2FDEC5806E;
-	Thu,  4 Apr 2024 16:59:20 +0000 (GMT)
-Received: from smtpav01.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 38D0458058;
-	Thu,  4 Apr 2024 16:59:17 +0000 (GMT)
-Received: from [9.195.45.28] (unknown [9.195.45.28])
-	by smtpav01.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Thu,  4 Apr 2024 16:59:16 +0000 (GMT)
-Message-ID: <79632baa-746b-4da9-b73c-432f7a8d166a@linux.ibm.com>
-Date: Thu, 4 Apr 2024 22:29:14 +0530
+	s=arc-20240116; t=1712250026; c=relaxed/simple;
+	bh=BC4stwRnuZ8B9nod5blwzf4F2iZ6G+Mch86v9r92YKU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XgDCmrLZgSlqQ/ii/ri2V7gZM5Ux4gIsiz5Mu+ozORF5ZhcQxlvTma6pR7FlN6SCXRbuLVhaPuYzXEzWuWAKjtpWifB0GJYHdUOFCbggeAricajQOJ2I6vOc8/eE0oaLWQRBapLq/JIhhyUjTzPPJCYRy6CySAmar3qIrJjlJ/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mGqfDqoQ; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712250025; x=1743786025;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=BC4stwRnuZ8B9nod5blwzf4F2iZ6G+Mch86v9r92YKU=;
+  b=mGqfDqoQlM10WFxrZCFexHwQ+3ETKTREcNk1ynJya8xVyDEiv8/BOmZO
+   PhcmK+1Lv/TxAiB7h474xSa8m/+k40+a9zrrYJh13W/4OEtd1xvC4eLZx
+   aoMafmPimWHOkJ2VWky3kG5F+Hh0VFq0w+FZp0BH7JtFD2y5rWI+w9zV3
+   /RrWhuptnvkLtxZzEBkkWocrzpFHJE9kYOf0WJWFc35AGeDU44+QbY6Rr
+   61EQBKjwYntm4xSluZ5XlOP7GmZkC+/19owqr8NLiDkMNGkX5Ab7uWN3Y
+   GZYrLsq0GVxWdciucgakzRYXB0F4UK2WpjGRrS8SDIwFavpqzedhX5V1r
+   w==;
+X-CSE-ConnectionGUID: qtexuKQAS2mwumHqQMP3cA==
+X-CSE-MsgGUID: ij2C4s7LR5eKeL26uFp8Xg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="18986167"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="18986167"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 10:00:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="937086879"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="937086879"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 04 Apr 2024 10:00:23 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id EFFC3812; Thu,  4 Apr 2024 20:00:21 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Cc: Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>
+Subject: [PATCH v2 1/1] drivers/perf: thunderx2_pmu: Replace open coded acpi_match_acpi_device()
+Date: Thu,  4 Apr 2024 19:59:23 +0300
+Message-ID: <20240404170016.2466898-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched/fair: Fix update of rd->sg_overutilized
-To: Vincent Guittot <vincent.guittot@linaro.org>
-References: <20240404155738.2866102-1-vincent.guittot@linaro.org>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-Content-Language: en-US
-Cc: mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20240404155738.2866102-1-vincent.guittot@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: wQBNZjYr9GAU0K3ZdwX6Jc7i9hIHOPc2
-X-Proofpoint-GUID: vnjLPUvgi55mJ0N_FKD1S6GfqZftPlCI
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-04_13,2024-04-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=891 phishscore=0 priorityscore=1501 bulkscore=0 suspectscore=0
- adultscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015 mlxscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404040119
+Content-Transfer-Encoding: 8bit
 
+Replace open coded acpi_match_acpi_device() in get_tx2_pmu_type().
 
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
 
-On 4/4/24 9:27 PM, Vincent Guittot wrote:
-> sg_overloaded is used instead of sg_overutilized to update
-> rd->sg_overutilized.
+v2:
+switched to acpi_match_acpi_device() which is newer API suitable for this case
 
-Yes. Good find. I missed to notice this as well.
+ drivers/perf/thunderx2_pmu.c | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-> 
-> Fixes: 4475cd8bfd9b ("sched/balancing: Simplify the sg_status bitmask and use separate ->overloaded and ->overutilized flags")
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  kernel/sched/fair.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 1dd37168da50..bb1ae4ed0d91 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10661,7 +10661,7 @@ static inline void update_sd_lb_stats(struct lb_env *env, struct sd_lb_stats *sd
->  		set_rd_overloaded(env->dst_rq->rd, sg_overloaded);
->  
->  		/* Update over-utilization (tipping point, U >= 0) indicator */
-> -		set_rd_overutilized(env->dst_rq->rd, sg_overloaded);
-> +		set_rd_overutilized(env->dst_rq->rd, sg_overutilized);
->  	} else if (sg_overutilized) {
->  		set_rd_overutilized(env->dst_rq->rd, sg_overutilized);
->  	}
+diff --git a/drivers/perf/thunderx2_pmu.c b/drivers/perf/thunderx2_pmu.c
+index e16d10c763de..f03aa85072ec 100644
+--- a/drivers/perf/thunderx2_pmu.c
++++ b/drivers/perf/thunderx2_pmu.c
+@@ -504,24 +504,19 @@ static void tx2_uncore_event_update(struct perf_event *event)
+ 
+ static enum tx2_uncore_type get_tx2_pmu_type(struct acpi_device *adev)
+ {
+-	int i = 0;
+-	struct acpi_tx2_pmu_device {
+-		__u8 id[ACPI_ID_LEN];
+-		enum tx2_uncore_type type;
+-	} devices[] = {
++	struct acpi_device_id devices[] = {
+ 		{"CAV901D", PMU_TYPE_L3C},
+ 		{"CAV901F", PMU_TYPE_DMC},
+ 		{"CAV901E", PMU_TYPE_CCPI2},
+-		{"", PMU_TYPE_INVALID}
++		{}
+ 	};
++	const struct acpi_device_id *id;
+ 
+-	while (devices[i].type != PMU_TYPE_INVALID) {
+-		if (!strcmp(acpi_device_hid(adev), devices[i].id))
+-			break;
+-		i++;
+-	}
++	id = acpi_match_acpi_device(devices, adev);
++	if (!id)
++		return PMU_TYPE_INVALID;
+ 
+-	return devices[i].type;
++	return (enum tx2_uncore_type)id->driver_data;
+ }
+ 
+ static bool tx2_uncore_validate_event(struct pmu *pmu,
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-Reviewed-by: Shrikanth Hegde <sshegde@linux.ibm.com>
 
