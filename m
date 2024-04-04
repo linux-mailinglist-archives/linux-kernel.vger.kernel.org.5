@@ -1,105 +1,124 @@
-Return-Path: <linux-kernel+bounces-131571-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131550-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A990F89899E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:10:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FFA489897E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:05:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E7CB1F2BEF7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:10:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1AA351F2ACDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:05:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1A312C819;
-	Thu,  4 Apr 2024 14:08:52 +0000 (UTC)
-Received: from mailscanner05.zoner.fi (mailscanner05.zoner.fi [5.44.246.14])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4901A1292E6;
+	Thu,  4 Apr 2024 14:05:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qqz23xxk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4404312B14B
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.44.246.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A12B12880A;
+	Thu,  4 Apr 2024 14:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712239732; cv=none; b=UAnN91287xtJ4WM+SdonfBZSgxyFbNzdAkbqRZ95JhHxrepYShBymOFZg7WZA4wfruhex2P1lCuHBKtYVgUpDIvC92ETYCPPl54UNO3UMri/RzLxxYsYrSqPxAnnHLFZx+/8hDWpahCCU4zCPfXOwgKxvkPgk/h6KdVLvHZHQ/8=
+	t=1712239540; cv=none; b=ObpFi7EaolaJ+4qK/gwBceZj5Oi2030hUtL4eEpY/DaA8TpKfO7/ymrP1KZ0l0cUMbHIdFeHwrGzKcGg85lXQLcdCJgbdpt9nTbBy8zkoFGASqDaQedLSnrUar3swk+eAhGNNRFPmh3r89mSWRL0MXKYZdANDgF9yUL/mzBIKdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712239732; c=relaxed/simple;
-	bh=M6DblwVE8DiuDynQ1JBmK+7fzA81IsqT2VdwDG2Puho=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JlxbLZIlt+EpKCW2gokPF3KeWolz3GPN35UocuYZmiAWnjjx7/dWC2xJ5a15LkCyjawwbpIzXItjy+wx7do+1K7GudJZ119XDtfgSYylXVqp630Sfr96Uv+dxmLgIs8MaOBALYMliXStzzYcgdLVMvkPqNGYJ2hXKoh6ijKc+TM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org; spf=pass smtp.mailfrom=tukaani.org; arc=none smtp.client-ip=5.44.246.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tukaani.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tukaani.org
-Received: from www25.zoner.fi (www25.zoner.fi [84.34.147.45])
-	by mailscanner05.zoner.fi (Postfix) with ESMTPS id CBA03212D6;
-	Thu,  4 Apr 2024 17:01:18 +0300 (EEST)
-Received: from mail.zoner.fi ([84.34.147.244])
-	by www25.zoner.fi with esmtp (Exim 4.96.1-7-g79877b70e)
-	(envelope-from <lasse.collin@tukaani.org>)
-	id 1rsNeY-00084X-2E;
-	Thu, 04 Apr 2024 17:01:18 +0300
-Date: Thu, 4 Apr 2024 17:01:03 +0300
-From: Lasse Collin <lasse.collin@tukaani.org>
-To: <angel.lkml@16bits.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Jubin Zhong
- <zhongjubin@huawei.com>, linux-kernel@vger.kernel.org,
- vegard.nossum@oracle.com
-Subject: Re: [PATCH 11/11] xz: Adjust arch-specific options for better
- kernel compression
-Message-ID: <20240404170103.1bc382b3@kaneli>
-In-Reply-To: <20240403225903.0773746d@kaneli>
-References: <20240320183846.19475-1-lasse.collin@tukaani.org>
-	<20240320183846.19475-12-lasse.collin@tukaani.org>
-	<27db456edeb6f72e7e229c2333c5d8449718c26e.camel@16bits.net>
-	<20240403225903.0773746d@kaneli>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712239540; c=relaxed/simple;
+	bh=U/MPpQggBCzuKAhHoUOfvrR+Z2ao2griNbbZUp9Y+FY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J+X3DcFztgc2oAyGKt3BqDCxFmZTf2Yk+ayvPhbfDzvnMBmJE76T5j1EIoGZJfrbTio6WXrhVlk2uEbUFWG931hSGNdaCRp8J9CcoyM/GbF60dATVqaBkE4vb7Xedv/XNIl33PXEQM209JwHy3W0PuJZN7Hf1lfVrJGZlup13kA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qqz23xxk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1F06C433F1;
+	Thu,  4 Apr 2024 14:05:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712239540;
+	bh=U/MPpQggBCzuKAhHoUOfvrR+Z2ao2griNbbZUp9Y+FY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qqz23xxki1mIXnAn+WLvnaKU8EC8fa6V5d6k5Usmy77PxW7O+g/Val5wg3CcRaipW
+	 YKnVAkSAt+QkgRFy7T6+wLHcfe4VRNl0giMnZVtWuLT0+9vgk3x3IuFo0uSLILr2hF
+	 38oCiSGmm9D9TiUbfdAiYMMze3u6lqZvXK+Mue1IKwOqdQkFRedSI0nnU1oifJA2QB
+	 iZGyfT6ZgaetNmvNRoUi/q9h/GVHhLkUoyRguasgV/EGkIx+OAH5A6obocOLzCsIBk
+	 QP0TJfX532W1p7z0iTei/pgnZdunysyNUKsQy6RnsEmkOnTbev8yM6/4+fAolbICX6
+	 +HzJf7Dw7Gh3A==
+Date: Thu, 4 Apr 2024 16:05:37 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Oliver Sang <oliver.sang@intel.com>
+Cc: Anna-Maria Behnsen <anna-maria@linutronix.de>, oe-lkp@lists.linux.dev,
+	lkp@intel.com, linux-kernel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>, ying.huang@intel.com,
+	feng.tang@intel.com, fengwei.yin@intel.com
+Subject: Re: [linus:master] [timers]  7ee9887703:
+ stress-ng.uprobe.ops_per_sec -17.1% regression
+Message-ID: <Zg6zscsaZ0OA14yn@localhost.localdomain>
+References: <202403271623.f0b40181-oliver.sang@intel.com>
+ <Zgs5NxoUUoGIkuQO@pavilion.home>
+ <Zgtjdd0C2FzYVBto@xsang-OptiPlex-9020>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Zgtjdd0C2FzYVBto@xsang-OptiPlex-9020>
 
-On 2024-04-03 Lasse Collin wrote:
-> On 2024-03-31 angel.lkml@16bits.net wrote:
-> > So, in the spirit of keeping a fair amount of paranoia, and since it
-> > doesn't do any harm, any such code should be failproofed to ensure
-> > it can only import the expected shell variables with the right
-> > format[3]:
-> >
-> >  eval "$($XZ --robot --version | grep
-> > '^\(XZ\|LIBLZMA\)_VERSION=[0-9]*$')" || exit  
+Le Tue, Apr 02, 2024 at 09:46:29AM +0800, Oliver Sang a écrit :
+> hi, Frederic Weisbecker,
 > 
-> I would rather get rid of eval. I committed the following to the
-> upstream repository:
+> On Tue, Apr 02, 2024 at 12:46:15AM +0200, Frederic Weisbecker wrote:
+> > Le Wed, Mar 27, 2024 at 04:39:17PM +0800, kernel test robot a écrit :
+> > > 
+> > > 
+> > > Hello,
+> > > 
+> > > 
+> > > we reported
+> > > "[tip:timers/core] [timers]  7ee9887703:  netperf.Throughput_Mbps -1.2% regression"
+> > > in
+> > > https://lore.kernel.org/all/202403011511.24defbbd-oliver.sang@intel.com/
+> > > 
+> > > now we noticed this commit is in mainline and we captured further results.
+> > > 
+> > > still include netperf results for complete. below details FYI.
+> > > 
+> > > 
+> > > kernel test robot noticed a -17.1% regression of stress-ng.uprobe.ops_per_sec
+> > > on:
+> > 
+> > The good news is that I can reproduce.
+> > It has made me spot something already:
+> > 
+> >    https://lore.kernel.org/lkml/ZgsynV536q1L17IS@pavilion.home/T/#m28c37a943fdbcbadf0332cf9c32c350c74c403b0
+> > 
+> > But that's not enough to fix the regression. Investigation continues...
 > 
-> XZ_VERSION=$($XZ --robot --version | sed -n 's/^XZ_VERSION=//p') ||
-> exit
+> Thanks a lot for information! if you want us test any patch, please let us know.
 
-Both my new version and the suggested eval+grep version have error
-detection issues:
+The good news is that I can reproduce on two CPUs with just this:
 
-  - With the eval+grep version, if there are no matches, eval gets an
-    empty string as an argument in which case eval's exit status is
-    zero and "exit" won't be run. Exit status from $XZ is ignored.
-    XZ_VERSION won't be set or it might be inherited from the
-    environment.
+    ./tmp-pkg/stress-ng/src/stress-ng/stress-ng --uprobe-ops 1 --uprobe 2 --timeout 5 --metrics-brief
 
-  - With $XZ ... | sed ..., the exit status of $XZ is ignored. sed
-    will exit with 0 and thus "exit" won't be run even if $XZ fails.
+This reminds me I should try on a single CPU. 
 
-Upstream I changed to this:
+Anyway but the big problem with stress-ng.uprobe is that it consists in
+triggering uprobes events and consuming /sys/kernel/tracing/trace_pipe
 
-XZ_VERSION=$($XZ --robot --version) || exit
-XZ_VERSION=$(printf '%s\n' "$XZ_VERSION" | sed -n 's/^XZ_VERSION=//p')
+This makes this testcase nearly impossible to analyse because I can't use any
+tracing: the traces are consumed by the testcase. That alone took me quite
+some time to figure out.
 
-If output from $XZ is weird, XZ_VERSION might still become weird too.
-But the way the variable is used later should at worst result in
-"integer expression expected" error message.
+Then I tried using perf event to do the tracing, as it relies on a different
+ring buffer. It works but traces generate ring buffer consumer wake up, which
+doesn't work as we are analysing code that depends on idle behaviour.
 
-I think the above is a good enough balance for a shell script like
-this.
+Then I tried hacking stress-uprobe.c so that the consumed traces are recorded
+in a buffer that I writeback in the end. So I can add my own tracepoints in
+the flow. And it works but that again doesn't mix up well with tracing idle
+behaviour, similar to perf event: the fact that the testcase waits on
+/sys/kernel/tracing/trace_pipe produce wake ups from idle while a trace happen
+on idle. And that noise ruins the tracing.
 
--- 
-Lasse Collin
+So I'm kind of running out of options for now :-/
 
