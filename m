@@ -1,515 +1,129 @@
-Return-Path: <linux-kernel+bounces-131331-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 411F0898663
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:48:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D32A898668
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:49:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E99E5288C90
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:48:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F52D28BA47
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:49:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D593A84A36;
-	Thu,  4 Apr 2024 11:48:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594AE84FD0;
+	Thu,  4 Apr 2024 11:49:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="C1Hn49rH"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="lnvgy36I"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD8D81E89A;
-	Thu,  4 Apr 2024 11:48:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBBB3745C3
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:49:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712231326; cv=none; b=jyKe8p7lfdMFsa5k8r2wg6z5uaqgQXoYLMqHydcpQ8KJEPF8mAQ2QVYj7j9y/f7iVJev4JHac1ufePcHRcaKj/eghbKMyyTcu/1Da1EqBO1QB6nBLyyYKDv4rLJ4p33mkthqev4CUZm1zixuCbyQHwiqXpVPDmIeq28bRs9iEZQ=
+	t=1712231369; cv=none; b=BaGFTgG1Kf2IsuQn+yiTGNOrwgkq7kagojSDmklPGCH61fUfju7AxvKxb4IMc2up/4aVukl1EkohAECUH5Ej6+o6BfXrhvLqd4xJUlT9q902wc59zqE3WjQawUnri+WIbsk3uI1wAVqnTpBF9Xj5kQk8iZw+it3+YB6PlqI2SpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712231326; c=relaxed/simple;
-	bh=uIG7cKQbEbRH3NEtoBGq9EvdSJ5iVOo4n6osJYQ7k5U=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=L+pDObYjr9FZAHLpPVe1ShRozY/vnK62G+SXDJT7mmMmwtq1TgIbq0TYUFBq02UZgKUpTp2t8KWR0ID201WFWD3p+K+LpQw37KpmeWIt1Bi7K3FBcRudXLQdwpRV/YkUDHmcZtWinAH5hA8yRqXTr9uu68fN2zR9aoC1mEKopOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=C1Hn49rH; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712231323;
-	bh=uIG7cKQbEbRH3NEtoBGq9EvdSJ5iVOo4n6osJYQ7k5U=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=C1Hn49rHqft4S+9N1p+H32viWtc425l8fSp8IhMh+pOdee3yUY6kZ4V8nsZB2znjI
-	 P6EVuQu4xuaYMWwyhT1pdOditLECcvDVw1Ms1FirWoB+vjZroDkDQQpnpVzeYwFzIi
-	 bbrO0eM+QMLU56k6+oG5m6M/bXkZi91OK9IfoXNvpiyDUqDUpcd3GhOASAQ7OZ3AZw
-	 avC74mYi1fcx+brE+mI0Z0D0IoJcd3hFmhBZ3J1WW1RdGFfzvgqpB+eP2UB+qRrU9m
-	 JcnyhQpnPjzJkUkamG5uTCq4b3UctRgskNCIIgi6yL6Y8SlHepBhrD7GDHj2+kDg1r
-	 A6DtG4cVrhtKA==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id F2BFA378200D;
-	Thu,  4 Apr 2024 11:48:34 +0000 (UTC)
-Message-ID: <84cd09fe-0d80-4e30-a8ab-3da7a1d43089@collabora.com>
-Date: Thu, 4 Apr 2024 16:49:08 +0500
+	s=arc-20240116; t=1712231369; c=relaxed/simple;
+	bh=LCWAW+VOm6FrXEOYBB2mg7d0P/d+F63lRzQcYlEJDFg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TCpL+BBCKXnkylyNgc+Dw2jGeqddkob5WsYhvuZNtUipquh2AqSGrJcmkaHxStnZ8HDV8B3LHeQu5daS4zid1c5ITguXCo/waxxulfo+fdOjurjh6ESya2CRBl/r7O6Qf8W5zi0B67cUeTvPZZEzDFZTgyrLIWTtZx83j50PEWI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=lnvgy36I; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 434BRG5q020074;
+	Thu, 4 Apr 2024 11:49:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=ZJhMoA4/8PPu9Nyl7nddIUmvaUIpt0j8YsJpTQeATsg=;
+ b=lnvgy36I3YYqHtfk9KO8u2+tIZxYDzkZvYwC0BrlIH8j3s+LrGIrrjgwCb7h4QDI13G5
+ Fyjth7NVmras+gFojA/7UlBmwmCin2FrfRoO8aQYRSUHN1K2c9KaU00FPaCVuuCWf88q
+ IQ4wPjvWf8URrfK5w417lTqjnCerYrsZ7GhpI52kgkg1uFwekhjEMmowPLMVostxMgap
+ dbYLxsr2u6/dA95Mn/U1huUeb1XTNOoy74KY1LID1cI+rLz9z43kmgj+TiEZNI+dGhnk
+ 1yiLSpyn5LZ7XRU55e+8MUb/pacVgYaGNp9f/MjOPdkdsMFLAu2rDOc28VR+zx9Xxpcc fw== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9ubc01qb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 11:49:24 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 434ANbZp007759;
+	Thu, 4 Apr 2024 11:49:23 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x9epwkvnv-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 11:49:23 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 434BnHCQ45875496
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 4 Apr 2024 11:49:20 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CCC7A2004B;
+	Thu,  4 Apr 2024 11:49:17 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B2FAB20040;
+	Thu,  4 Apr 2024 11:49:17 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  4 Apr 2024 11:49:17 +0000 (GMT)
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@kernel.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH 0/1] /dev/port: Handle HAS_IOPORT dependencies
+Date: Thu,  4 Apr 2024 13:49:16 +0200
+Message-Id: <20240404114917.3627747-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: Lj2ScmAtP-imcuHAXZkXcG5WMtgurrRi
+X-Proofpoint-ORIG-GUID: Lj2ScmAtP-imcuHAXZkXcG5WMtgurrRi
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>, kernel@collabora.com,
- linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6] selftests/dmabuf-heap: conform test to TAP format
- output
-To: Shuah Khan <shuah@kernel.org>, "T.J. Mercier" <tjmercier@google.com>
-References: <20240327115353.3634735-1-usama.anjum@collabora.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <20240327115353.3634735-1-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-04_08,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 impostorscore=0 phishscore=0 clxscore=1011 mlxscore=0
+ suspectscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404040081
 
-Soft reminder
+Hi Greg, Hi Arnd,
 
-On 3/27/24 4:53 PM, Muhammad Usama Anjum wrote:
-> Conform the layout, informational and status messages to TAP. No
-> functional change is intended other than the layout of output messages.
-> Improve the TAP messages as well.
-> 
-> Reviewed-by: T.J. Mercier <tjmercier@google.com>
-> Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> ---
-> Changes since v5:
-> - Make the TAP messages more by adding more informat
-> 
-> Changes since v4:
-> - close fds correctly with code changes added in v3
-> 
-> Chanages since v3:
-> - abort test-case instead of exiting if heap/mem allocation fails
-> - Correct test_alloc_zeroed() test case in case of failure
-> 
-> Changes since v2:
-> - Minor improvements in test_alloc_zeroed() results
-> 
-> Changes since v1:
-> - Update some more error handling code
-> ---
->  .../selftests/dmabuf-heaps/dmabuf-heap.c      | 247 +++++++-----------
->  1 file changed, 101 insertions(+), 146 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-> index 890a8236a8ba7..5f541522364fb 100644
-> --- a/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-> +++ b/tools/testing/selftests/dmabuf-heaps/dmabuf-heap.c
-> @@ -15,6 +15,7 @@
->  #include <linux/dma-buf.h>
->  #include <linux/dma-heap.h>
->  #include <drm/drm.h>
-> +#include "../kselftest.h"
->  
->  #define DEVPATH "/dev/dma_heap"
->  
-> @@ -90,14 +91,13 @@ static int dmabuf_heap_open(char *name)
->  	char buf[256];
->  
->  	ret = snprintf(buf, 256, "%s/%s", DEVPATH, name);
-> -	if (ret < 0) {
-> -		printf("snprintf failed!\n");
-> -		return ret;
-> -	}
-> +	if (ret < 0)
-> +		ksft_exit_fail_msg("snprintf failed! %d\n", ret);
->  
->  	fd = open(buf, O_RDWR);
->  	if (fd < 0)
-> -		printf("open %s failed!\n", buf);
-> +		ksft_exit_fail_msg("open %s failed: %s\n", buf, strerror(errno));
-> +
->  	return fd;
->  }
->  
-> @@ -140,7 +140,7 @@ static int dmabuf_sync(int fd, int start_stop)
->  
->  #define ONE_MEG (1024 * 1024)
->  
-> -static int test_alloc_and_import(char *heap_name)
-> +static void test_alloc_and_import(char *heap_name)
->  {
->  	int heap_fd = -1, dmabuf_fd = -1, importer_fd = -1;
->  	uint32_t handle = 0;
-> @@ -148,27 +148,19 @@ static int test_alloc_and_import(char *heap_name)
->  	int ret;
->  
->  	heap_fd = dmabuf_heap_open(heap_name);
-> -	if (heap_fd < 0)
-> -		return -1;
->  
-> -	printf("  Testing allocation and importing:  ");
-> +	ksft_print_msg("Testing allocation and importing:\n");
->  	ret = dmabuf_heap_alloc(heap_fd, ONE_MEG, 0, &dmabuf_fd);
->  	if (ret) {
-> -		printf("FAIL (Allocation Failed!)\n");
-> -		ret = -1;
-> -		goto out;
-> +		ksft_test_result_fail("FAIL (Allocation Failed!) %d\n", ret);
-> +		return;
->  	}
-> +
->  	/* mmap and write a simple pattern */
-> -	p = mmap(NULL,
-> -		 ONE_MEG,
-> -		 PROT_READ | PROT_WRITE,
-> -		 MAP_SHARED,
-> -		 dmabuf_fd,
-> -		 0);
-> +	p = mmap(NULL, ONE_MEG, PROT_READ | PROT_WRITE, MAP_SHARED, dmabuf_fd, 0);
->  	if (p == MAP_FAILED) {
-> -		printf("FAIL (mmap() failed)\n");
-> -		ret = -1;
-> -		goto out;
-> +		ksft_test_result_fail("FAIL (mmap() failed): %s\n", strerror(errno));
-> +		goto close_and_return;
->  	}
->  
->  	dmabuf_sync(dmabuf_fd, DMA_BUF_SYNC_START);
-> @@ -178,71 +170,64 @@ static int test_alloc_and_import(char *heap_name)
->  
->  	importer_fd = open_vgem();
->  	if (importer_fd < 0) {
-> -		ret = importer_fd;
-> -		printf("(Could not open vgem - skipping):  ");
-> +		ksft_test_result_skip("Could not open vgem %d\n", importer_fd);
->  	} else {
->  		ret = import_vgem_fd(importer_fd, dmabuf_fd, &handle);
-> -		if (ret < 0) {
-> -			printf("FAIL (Failed to import buffer)\n");
-> -			goto out;
-> -		}
-> +		ksft_test_result(ret >= 0, "Import buffer %d\n", ret);
->  	}
->  
->  	ret = dmabuf_sync(dmabuf_fd, DMA_BUF_SYNC_START);
->  	if (ret < 0) {
-> -		printf("FAIL (DMA_BUF_SYNC_START failed!)\n");
-> +		ksft_print_msg("FAIL (DMA_BUF_SYNC_START failed!) %d\n", ret);
->  		goto out;
->  	}
->  
->  	memset(p, 0xff, ONE_MEG);
->  	ret = dmabuf_sync(dmabuf_fd, DMA_BUF_SYNC_END);
->  	if (ret < 0) {
-> -		printf("FAIL (DMA_BUF_SYNC_END failed!)\n");
-> +		ksft_print_msg("FAIL (DMA_BUF_SYNC_END failed!) %d\n", ret);
->  		goto out;
->  	}
->  
->  	close_handle(importer_fd, handle);
-> -	ret = 0;
-> -	printf(" OK\n");
-> +	ksft_test_result_pass("%s dmabuf sync succeeded\n", __func__);
-> +	return;
-> +
->  out:
-> -	if (p)
-> -		munmap(p, ONE_MEG);
-> -	if (importer_fd >= 0)
-> -		close(importer_fd);
-> -	if (dmabuf_fd >= 0)
-> -		close(dmabuf_fd);
-> -	if (heap_fd >= 0)
-> -		close(heap_fd);
-> +	ksft_test_result_fail("%s dmabuf sync failed\n", __func__);
-> +	munmap(p, ONE_MEG);
-> +	close(importer_fd);
->  
-> -	return ret;
-> +close_and_return:
-> +	close(dmabuf_fd);
-> +	close(heap_fd);
->  }
->  
-> -static int test_alloc_zeroed(char *heap_name, size_t size)
-> +static void test_alloc_zeroed(char *heap_name, size_t size)
->  {
->  	int heap_fd = -1, dmabuf_fd[32];
-> -	int i, j, ret;
-> +	int i, j, k, ret;
->  	void *p = NULL;
->  	char *c;
->  
-> -	printf("  Testing alloced %ldk buffers are zeroed:  ", size / 1024);
-> +	ksft_print_msg("Testing alloced %ldk buffers are zeroed:\n", size / 1024);
->  	heap_fd = dmabuf_heap_open(heap_name);
-> -	if (heap_fd < 0)
-> -		return -1;
->  
->  	/* Allocate and fill a bunch of buffers */
->  	for (i = 0; i < 32; i++) {
->  		ret = dmabuf_heap_alloc(heap_fd, size, 0, &dmabuf_fd[i]);
-> -		if (ret < 0) {
-> -			printf("FAIL (Allocation (%i) failed)\n", i);
-> -			goto out;
-> +		if (ret) {
-> +			ksft_test_result_fail("FAIL (Allocation (%i) failed) %d\n", i, ret);
-> +			goto close_and_return;
->  		}
-> +
->  		/* mmap and fill with simple pattern */
->  		p = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, dmabuf_fd[i], 0);
->  		if (p == MAP_FAILED) {
-> -			printf("FAIL (mmap() failed!)\n");
-> -			ret = -1;
-> -			goto out;
-> +			ksft_test_result_fail("FAIL (mmap() failed!): %s\n", strerror(errno));
-> +			goto close_and_return;
->  		}
-> +
->  		dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_START);
->  		memset(p, 0xff, size);
->  		dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_END);
-> @@ -251,48 +236,47 @@ static int test_alloc_zeroed(char *heap_name, size_t size)
->  	/* close them all */
->  	for (i = 0; i < 32; i++)
->  		close(dmabuf_fd[i]);
-> +	ksft_test_result_pass("Allocate and fill a bunch of buffers\n");
->  
->  	/* Allocate and validate all buffers are zeroed */
->  	for (i = 0; i < 32; i++) {
->  		ret = dmabuf_heap_alloc(heap_fd, size, 0, &dmabuf_fd[i]);
->  		if (ret < 0) {
-> -			printf("FAIL (Allocation (%i) failed)\n", i);
-> -			goto out;
-> +			ksft_test_result_fail("FAIL (Allocation (%i) failed) %d\n", i, ret);
-> +			goto close_and_return;
->  		}
->  
->  		/* mmap and validate everything is zero */
->  		p = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, dmabuf_fd[i], 0);
->  		if (p == MAP_FAILED) {
-> -			printf("FAIL (mmap() failed!)\n");
-> -			ret = -1;
-> -			goto out;
-> +			ksft_test_result_fail("FAIL (mmap() failed!): %s\n", strerror(errno));
-> +			goto close_and_return;
->  		}
-> +
->  		dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_START);
->  		c = (char *)p;
->  		for (j = 0; j < size; j++) {
->  			if (c[j] != 0) {
-> -				printf("FAIL (Allocated buffer not zeroed @ %i)\n", j);
-> -				break;
-> +				ksft_print_msg("FAIL (Allocated buffer not zeroed @ %i)\n", j);
-> +				dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_END);
-> +				munmap(p, size);
-> +				goto out;
->  			}
->  		}
->  		dmabuf_sync(dmabuf_fd[i], DMA_BUF_SYNC_END);
->  		munmap(p, size);
->  	}
-> -	/* close them all */
-> -	for (i = 0; i < 32; i++)
-> -		close(dmabuf_fd[i]);
-> -
-> -	close(heap_fd);
-> -	printf("OK\n");
-> -	return 0;
->  
->  out:
-> -	while (i > 0) {
-> -		close(dmabuf_fd[i]);
-> -		i--;
-> -	}
-> +	ksft_test_result(i == 32, "Allocate and validate all buffers are zeroed\n");
-> +
-> +close_and_return:
-> +	/* close them all */
-> +	for (k = 0; k < i; k++)
-> +		close(dmabuf_fd[k]);
-> +
->  	close(heap_fd);
-> -	return ret;
-> +	return;
->  }
->  
->  /* Test the ioctl version compatibility w/ a smaller structure then expected */
-> @@ -360,126 +344,97 @@ static int dmabuf_heap_alloc_newer(int fd, size_t len, unsigned int flags,
->  	return ret;
->  }
->  
-> -static int test_alloc_compat(char *heap_name)
-> +static void test_alloc_compat(char *heap_name)
->  {
-> -	int heap_fd = -1, dmabuf_fd = -1;
-> -	int ret;
-> +	int ret, heap_fd = -1, dmabuf_fd = -1;
->  
->  	heap_fd = dmabuf_heap_open(heap_name);
-> -	if (heap_fd < 0)
-> -		return -1;
->  
-> -	printf("  Testing (theoretical)older alloc compat:  ");
-> +	ksft_print_msg("Testing (theoretical) older alloc compat:\n");
->  	ret = dmabuf_heap_alloc_older(heap_fd, ONE_MEG, 0, &dmabuf_fd);
-> -	if (ret) {
-> -		printf("FAIL (Older compat allocation failed!)\n");
-> -		ret = -1;
-> -		goto out;
-> -	}
-> -	close(dmabuf_fd);
-> -	printf("OK\n");
-> +	if (dmabuf_fd >= 0)
-> +		close(dmabuf_fd);
-> +	ksft_test_result(!ret, "dmabuf_heap_alloc_older\n");
->  
-> -	printf("  Testing (theoretical)newer alloc compat:  ");
-> +	ksft_print_msg("Testing (theoretical) newer alloc compat:\n");
->  	ret = dmabuf_heap_alloc_newer(heap_fd, ONE_MEG, 0, &dmabuf_fd);
-> -	if (ret) {
-> -		printf("FAIL (Newer compat allocation failed!)\n");
-> -		ret = -1;
-> -		goto out;
-> -	}
-> -	printf("OK\n");
-> -out:
->  	if (dmabuf_fd >= 0)
->  		close(dmabuf_fd);
-> -	if (heap_fd >= 0)
-> -		close(heap_fd);
-> +	ksft_test_result(!ret, "dmabuf_heap_alloc_newer\n");
->  
-> -	return ret;
-> +	close(heap_fd);
->  }
->  
-> -static int test_alloc_errors(char *heap_name)
-> +static void test_alloc_errors(char *heap_name)
->  {
->  	int heap_fd = -1, dmabuf_fd = -1;
->  	int ret;
->  
->  	heap_fd = dmabuf_heap_open(heap_name);
-> -	if (heap_fd < 0)
-> -		return -1;
->  
-> -	printf("  Testing expected error cases:  ");
-> +	ksft_print_msg("Testing expected error cases:\n");
->  	ret = dmabuf_heap_alloc(0, ONE_MEG, 0x111111, &dmabuf_fd);
-> -	if (!ret) {
-> -		printf("FAIL (Did not see expected error (invalid fd)!)\n");
-> -		ret = -1;
-> -		goto out;
-> -	}
-> +	ksft_test_result(ret, "Error expected on invalid fd %d\n", ret);
->  
->  	ret = dmabuf_heap_alloc(heap_fd, ONE_MEG, 0x111111, &dmabuf_fd);
-> -	if (!ret) {
-> -		printf("FAIL (Did not see expected error (invalid heap flags)!)\n");
-> -		ret = -1;
-> -		goto out;
-> -	}
-> +	ksft_test_result(ret, "Error expected on invalid heap flags %d\n", ret);
->  
->  	ret = dmabuf_heap_alloc_fdflags(heap_fd, ONE_MEG,
->  					~(O_RDWR | O_CLOEXEC), 0, &dmabuf_fd);
-> -	if (!ret) {
-> -		printf("FAIL (Did not see expected error (invalid fd flags)!)\n");
-> -		ret = -1;
-> -		goto out;
-> -	}
-> +	ksft_test_result(ret, "Error expected on invalid heap flags %d\n", ret);
->  
-> -	printf("OK\n");
-> -	ret = 0;
-> -out:
->  	if (dmabuf_fd >= 0)
->  		close(dmabuf_fd);
-> -	if (heap_fd >= 0)
-> -		close(heap_fd);
-> +	close(heap_fd);
-> +}
->  
-> -	return ret;
-> +static int numer_of_heaps(void)
-> +{
-> +	DIR *d = opendir(DEVPATH);
-> +	struct dirent *dir;
-> +	int heaps = 0;
-> +
-> +	while ((dir = readdir(d))) {
-> +		if (!strncmp(dir->d_name, ".", 2))
-> +			continue;
-> +		if (!strncmp(dir->d_name, "..", 3))
-> +			continue;
-> +		heaps++;
-> +	}
-> +
-> +	return heaps;
->  }
->  
->  int main(void)
->  {
-> -	DIR *d;
->  	struct dirent *dir;
-> -	int ret = -1;
-> +	DIR *d;
-> +
-> +	ksft_print_header();
->  
->  	d = opendir(DEVPATH);
->  	if (!d) {
-> -		printf("No %s directory?\n", DEVPATH);
-> -		return -1;
-> +		ksft_print_msg("No %s directory?\n", DEVPATH);
-> +		return KSFT_SKIP;
->  	}
->  
-> -	while ((dir = readdir(d)) != NULL) {
-> +	ksft_set_plan(11 * numer_of_heaps());
-> +
-> +	while ((dir = readdir(d))) {
->  		if (!strncmp(dir->d_name, ".", 2))
->  			continue;
->  		if (!strncmp(dir->d_name, "..", 3))
->  			continue;
->  
-> -		printf("Testing heap: %s\n", dir->d_name);
-> -		printf("=======================================\n");
-> -		ret = test_alloc_and_import(dir->d_name);
-> -		if (ret)
-> -			break;
-> -
-> -		ret = test_alloc_zeroed(dir->d_name, 4 * 1024);
-> -		if (ret)
-> -			break;
-> -
-> -		ret = test_alloc_zeroed(dir->d_name, ONE_MEG);
-> -		if (ret)
-> -			break;
-> -
-> -		ret = test_alloc_compat(dir->d_name);
-> -		if (ret)
-> -			break;
-> -
-> -		ret = test_alloc_errors(dir->d_name);
-> -		if (ret)
-> -			break;
-> +		ksft_print_msg("Testing heap: %s\n", dir->d_name);
-> +		ksft_print_msg("=======================================\n");
-> +		test_alloc_and_import(dir->d_name);
-> +		test_alloc_zeroed(dir->d_name, 4 * 1024);
-> +		test_alloc_zeroed(dir->d_name, ONE_MEG);
-> +		test_alloc_compat(dir->d_name);
-> +		test_alloc_errors(dir->d_name);
->  	}
->  	closedir(d);
->  
-> -	return ret;
-> +	ksft_finished();
->  }
+This is a follow up in my ongoing effort of making inb()/outb() and
+similar I/O port accessors compile-time optional. Previously I sent this
+as a treewide series titled "treewide: Remove I/O port accessors for
+HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
+subset of patches merged I've changed over to per-subsystem series. These
+series are stand alone and should be merged via the relevant tree such
+that with all subsystems complete we can follow this up with the final
+patch that will make the I/O port accessors compile-time optional.
+
+The current state of the full series with changes to the remaining
+subsystems and the aforementioned final patch can be found for your
+convenience on my git.kernel.org tree in the has_ioport_v6 branch[1] with
+signed tags. As for compile-time vs runtime see Linus' reply to my first
+attempt[2].
+
+Thanks,
+Niklas
+
+[0] https://lore.kernel.org/all/20230522105049.1467313-1-schnelle@linux.ibm.com/
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=has_ioport_v6
+[2] https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
+
+Niklas Schnelle (1):
+  /dev/port: don't compile file operations without CONFIG_DEVPORT
+
+ drivers/char/mem.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
 -- 
-BR,
-Muhammad Usama Anjum
+2.40.1
+
 
