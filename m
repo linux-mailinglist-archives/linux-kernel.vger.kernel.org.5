@@ -1,107 +1,175 @@
-Return-Path: <linux-kernel+bounces-130994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130996-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D53418981A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:54:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 619BD8981AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:55:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B794B24CCF
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:54:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C98ADB25E07
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 06:55:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0315C548F5;
-	Thu,  4 Apr 2024 06:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01F0358139;
+	Thu,  4 Apr 2024 06:54:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="gahbLtNj"
-Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Hq9a3GkC"
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6121853809;
-	Thu,  4 Apr 2024 06:54:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95EC656740;
+	Thu,  4 Apr 2024 06:54:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712213678; cv=none; b=tNdu9bP9XPIQPEWSTCsUE6FCgygSiu8CnF2OX645XZEiyfW8ZsuUGrWup+GELuQ9Upvk8CyEmdwsR6tjcPxtn1aFOpllap6aWosr3UIuSwLVf+wC5Szh0Llhfgje+Y0vRwIR200HEMZcgwAMSj51W91rnKbG0gqrrl5UQJhsG7s=
+	t=1712213689; cv=none; b=NpTZhEzyOCTceyysJnBlhgsaarzzE2kbaQgXDNSmDvhuStjalNoB/haF5bAvgIbmM+QKhFSPNfiDASTaVc2bXYZu72SgLmbHWibc8XcBGArEZJQghXK/vHMe+WJRpMLbtWAJuoZXpyo5jP0Q2jjMcPmsV/TkepeCgu487ZZUNKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712213678; c=relaxed/simple;
-	bh=8bxPw6Yh23YjxbHld45amerCkshEE+W5J9e6zeuMJ1k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SuklxacComA+S1ePcSmBPiJ8d+uvtEELcuBFe7P5y/Ew04SJTmqLQirctAClTmdOvTJJgK3nPlzdgBkBrFgeGlVHGTNdc3R0bduHaEfa+d5sYce3P0DE82c6UVjBH9APNNoRl6v5sRETqDNuXqrpcvhG7gm6i9Wm+LvhezFYIL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=gahbLtNj; arc=none smtp.client-ip=74.50.62.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
-Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
-	by mail5.25mail.st (Postfix) with ESMTPSA id A7C036042D;
-	Thu,  4 Apr 2024 06:54:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
-	s=25mailst; t=1712213675;
-	bh=8bxPw6Yh23YjxbHld45amerCkshEE+W5J9e6zeuMJ1k=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gahbLtNjacj8rbrMUxLNcZuSdx7U8/mY7BQiFh1hPcPQP8Z0NgGlayNm5XhLmTW2y
-	 CNgARvw49GpPn3whBcNg8BAAwamjfY33gFDmkd5I3v5D9GRR5Nxsp9l71qmCANgaKg
-	 kA2iVjrAVMrNtsnh8kqB3fYb86IEJ/FsztfEGE453MPlRL26vO4y3o7uYGkAjwW0eN
-	 1FHXGiqdIiHBDyqVZ6ne6pzrxOwEv3Yk6ghvwrcPHWv9mQ6glHWukI2wiqPN7WKuu3
-	 89R7Jm7NdWwfVsC6RXSktVL63y2mNaC5qirMUiVB984BEJW54yhRoTnkB5arbopRVr
-	 SwutnjjUql8dQ==
-Date: Thu, 4 Apr 2024 09:54:15 +0300
-From: Tony Lindgren <tony@atomide.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: kernel test robot <oliver.sang@intel.com>,
-	Yicong Yang <yangyicong@hisilicon.com>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	stable <stable@kernel.org>, linux-serial@vger.kernel.org
-Subject: Re: [linus:master] [serial]  43066e3222:
- BUG:kernel_NULL_pointer_dereference,address
-Message-ID: <20240404065415.GO5132@atomide.com>
-References: <202404031607.2e92eebe-lkp@intel.com>
- <Zg1hBvRAxifo50sf@smile.fi.intel.com>
+	s=arc-20240116; t=1712213689; c=relaxed/simple;
+	bh=P4HRQlK3gIOZhynu3iitqpwrtMPK33V9qTle66OO+mQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GgV2q2e58UAslJ8AmyhkKbzsBDSQbSRgxZakYIRss4UYlx17KcUQ0u8XdLYYms4Z6SiYQ93Y2WKTuYuNeaQe0np23vD/mIxpiMkPkXaSKaOqrEFlHk5Kp9M8uTUGlCjqcNJzNCKJl8q0R840Bn3rTtbugwbp5YBN9jmRjPwQbfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Hq9a3GkC; arc=none smtp.client-ip=209.85.219.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-6992f97ec8eso3709366d6.3;
+        Wed, 03 Apr 2024 23:54:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712213686; x=1712818486; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lw65dET69SWIl1E/XYAbpA7W4BYrqXaCQ0IUnLjWA9A=;
+        b=Hq9a3GkCAhGD4Y+Y9Xdamz1qsCdP6VQFiMhsH2VsXzbP5AuUuAoGSQh0HVTNBse8k5
+         YZ2BI7xUcc98xhhMt0riIGK7E5+NHQF73FyipwTeZrU6aBcq5jp52JCprjXVnsGauIgk
+         GP+Wkd+6Sea+Y0DJ9kq8LNJztfu+9dWO61eZ+To4mM+mNMs4ZshDFiQKyHLYUQKoiJw5
+         M7zbotJGSf/rZqG/7UT6ZSFdka27eTVwWxfM0DfBP6opYqOFwCo+UkirDGQB9ALX3h/l
+         te/aZRWnOY0lJJLnap6L+V8nAXhwPLJdRlEAX642NHxp2CFV9vM97c4b9VScM4cSRqNA
+         yobA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712213686; x=1712818486;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lw65dET69SWIl1E/XYAbpA7W4BYrqXaCQ0IUnLjWA9A=;
+        b=HfdLag7n7HNADxhCJ486YllJx98gzWzCn2+Bo8NXd/2Qc6YdlijczWQbDZF6k+AXZw
+         jceTMTNd2mjn/P5JuSZXVtTMvFWKYX7FMRyw1k5ceirRGNwtjAw5KGq6htvkQQvieCQ/
+         pGjcynSLtpNIO+9hjCUiAW4HW6Z7PhTn3slyWLiMlSigqe+S6EKkQQ57/KJeG2hm7zYV
+         +VKQONA3vNKXsGdmov3nezPjmG5cxRrnkQ6QkFZb03v7uhcif8Z+W5gQR3Vw3eRgJEyH
+         pnl3tsl9ZkYkuAEkKCpSHkzJM4MHDk/8MxwOU7iHlQWrlOKJ5zQ2v76wYvjltzDM4j4b
+         PoUw==
+X-Forwarded-Encrypted: i=1; AJvYcCW5gKYJkiQ5PFPd25TAotd6kPCleSpMqY4TxHCYOPuDGA3oxp7h3EFN45HEJbdGiLOau0h1trE/dzgpH6bCUoD0KiG88czSIuNchF4j8mUCHDo7XXw/A6u6Wd/+8FmHnbTykIY8CvWsetT48g==
+X-Gm-Message-State: AOJu0YxORKVDSQdz651WMgE0OAbO6Awlp+ezLYHZx3vacC/1N5Z0uAtF
+	WDBH3P+AXc6LNd2XSy7re7l3Sg6ii0dI7803IOrQIcDpQnmJ+mYnNRHBcKcQGp0PYy/YDbJIVwe
+	R8dcHIoPT1bE4kNBPqwCH9zSA4Zo=
+X-Google-Smtp-Source: AGHT+IGC2+AfF1pywBGs2k+kBcpPpK4UcRei87wZYI1X7piC3TmIlAxmVD6isSsFawmYGgoVAIr5ySEJgzrtr/c57Co=
+X-Received: by 2002:ad4:5ecc:0:b0:699:197e:f689 with SMTP id
+ jm12-20020ad45ecc000000b00699197ef689mr1552673qvb.35.1712213686467; Wed, 03
+ Apr 2024 23:54:46 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zg1hBvRAxifo50sf@smile.fi.intel.com>
+References: <00000000000098f75506153551a1@google.com> <0000000000002f2066061539e54b@google.com>
+In-Reply-To: <0000000000002f2066061539e54b@google.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 4 Apr 2024 09:54:35 +0300
+Message-ID: <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
+Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
+To: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>
+Cc: gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org, 
+	valesini@yandex-team.ru, Christoph Hellwig <hch@lst.de>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-* Andy Shevchenko <andriy.shevchenko@linux.intel.com> [240403 14:00]:
-> Probably we need to check if the port is still open...
-> 
-> P.S. AFAIU the state / xmit is invalid pointer or so.
-> 
-> Culprit line:	serial_out(up, UART_TX, xmit->buf[xmit->tail]);
+On Thu, Apr 4, 2024 at 2:51=E2=80=AFAM syzbot
+<syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com> wrote:
+>
+> syzbot has bisected this issue to:
+>
+> commit 0fedefd4c4e33dd24f726b13b5d7c143e2b483be
+> Author: Valentine Sinitsyn <valesini@yandex-team.ru>
+> Date:   Mon Sep 25 08:40:12 2023 +0000
+>
+>     kernfs: sysfs: support custom llseek method for sysfs entries
+>
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17cb5e0318=
+0000
+> start commit:   fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kerne=
+l..
+> git tree:       upstream
+> final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D142b5e0318=
+0000
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D102b5e0318000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D4d90a36f0cab4=
+95a
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9a5b0ced8b1bfb2=
+38b56
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D17f1d93d180=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D15c3813918000=
+0
+>
+> Reported-by: syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com
+> Fixes: 0fedefd4c4e3 ("kernfs: sysfs: support custom llseek method for sys=
+fs entries")
+>
+> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
+ion
+>
 
-Maybe we can set UPF_DEAD a bit earlier as below?
+I think this commit is only the trigger for lockdep warning in this
+specific scenario, but the conceptual issue existed before that
+for example, with read from sysfs, which also can take of->mutex.
 
-Regards,
+I think (not sure) that the potential deadlock is real, not a false
+positive. OTOH, hibernation code may be crawling with potential
+and more likely deadlocks...
 
-Tony
+The conceptual issue (I think) is this:
 
-8< ---------------------------
-diff --git a/drivers/tty/serial/serial_core.c b/drivers/tty/serial/serial_core.c
---- a/drivers/tty/serial/serial_core.c
-+++ b/drivers/tty/serial/serial_core.c
-@@ -3442,8 +3442,6 @@ void serial_core_unregister_port(struct uart_driver *drv, struct uart_port *port
- 
- 	mutex_lock(&port_mutex);
- 
--	port->flags |= UPF_DEAD;
--
- 	serial_core_remove_one_port(drv, port);
- 
- 	/* Note that struct uart_port *port is no longer valid at this point */
-diff --git a/drivers/tty/serial/serial_port.c b/drivers/tty/serial/serial_port.c
-index 22b9eeb23e68a..1571ef721ef10 100644
---- a/drivers/tty/serial/serial_port.c
-+++ b/drivers/tty/serial/serial_port.c
-@@ -104,6 +104,7 @@ EXPORT_SYMBOL(uart_add_one_port);
- 
- void uart_remove_one_port(struct uart_driver *drv, struct uart_port *port)
- {
-+	port->flags |= UPF_DEAD;
- 	serial_ctrl_unregister_port(drv, port);
- }
- EXPORT_SYMBOL(uart_remove_one_port);
+Overlayfs is a stacked filesystem which regularly calls vfs helpers
+such as path lookup on other filesystems.
+This specialized behavior is accompanied with a declaration of
+s_stack_depth > 0, annotating ovl inode locks per stack depth
+(ovl_lockdep_annotate_inode_mutex_key) and restricting the
+types of filesystems that are allowed for writable upper layer.
+
+In the lockdep dependency chain, overlayfs inode lock is taken
+before kernfs internal of->mutex, where kernfs (sysfs) is the lower
+layer of overlayfs, which is sane.
+
+With /sys/power/resume (and probably other files), sysfs also
+behaves as a stacking filesystem, calling vfs helpers, such as
+lookup_bdev() -> kern_path(), which is a behavior of a stacked
+filesystem, without all the precautions that comes with behaving
+as a stacked filesystem.
+
+If an overlayfs path is written into /sys/power/resume and that
+overlayfs has sysfs as its lower layer, then there may be a small
+chance of hitting the ABBA deadlock, but there could very well
+be some conditions that prevent it.
+
+It's a shame that converting blockdev path to major:minor is
+not always done as a separate step by usersapce, but not much
+to do about it now...
+
+I don't think that Christoph's refactoring to blockdev interfaces
+have changed anything in this regard, but I wasn't sure so CCed
+the developers involved.
+
+A relatively easy way to avert this use case is to define a lookup
+flag LOOKUP_NO_STACKED, which does not traverse into any
+stacked fs (s_stack_depth > 0) and use this flag for looking up
+the hibernation blockdev.
+
+I suppose writing the hibernation blockdev from inside containers
+is not a common thing to do, so this mitigation could be good enough.
+
+Thoughts?
+Amir.
 
