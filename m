@@ -1,154 +1,153 @@
-Return-Path: <linux-kernel+bounces-131374-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131373-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF3AE8986E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:13:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A35838986DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:13:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4FDB91F25A3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:13:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54F5528963B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4721C8664B;
-	Thu,  4 Apr 2024 12:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3E28527D;
+	Thu,  4 Apr 2024 12:13:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RPlvPzsv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IM068pbN"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C545B84FCC
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:13:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B94D84FCC
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 12:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712232813; cv=none; b=U+KE8ho/sx7CnIorUZ/YHzxaqdGvkHEbnUaNTmNQwuHjDMvjeO9QmHaxiZWp59RIV3HLg7rw4SWouzwp7jOg0k4a1XcJZsc6X6IoHNGYg6TYpL+j1eYM0sjeFmJGjioS3OJ5XUii90LhSNE0gaYmKCbzN8GJLgfwHbCQVR5WPWM=
+	t=1712232800; cv=none; b=M+8uq6LPgQO9SQlnN7lZ0/qAX8Tw48iE0jbZkZwUsIW0ALRF9Ghkkyxl6xTNSM6stZ0xS2sBSt7hsbgkvGXZWuNEDqar3fyASERuLkkYEJeh083qellYovVkjb1bp42RYhBYD+7k47vV2kQ1HtBeC0Vvsmufm9YkC9GPGDRLBNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712232813; c=relaxed/simple;
-	bh=3UZOWxvel2gxNTwrPzBwKutiH6HW6UJXahf+TYTu8Rk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=c+HfAQVM6SPvPgQ1NJo2zj+PrLv764Q5W58+8ZTyhMxQ+aQViSq4CVwK1ZNlE0b5Bj30ch3j9Ajp5vpLOqwe5VYMjlTp5GpfFdzF19OsXvf7YkQYI04JkRjO4NPxI2sYN28bwHshJ2fkNJMXINFCNLgYHjqumlzgjnTZzkIxF+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RPlvPzsv; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712232810;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+IyuuUxiGnoaxGNnwqcPQ8aX2JAcsb4DAgIo+w+cUTM=;
-	b=RPlvPzsvGCSa+tNgdP6R+2hMTDUQ+wrdvNaJb3o8uG9d6BRRemVSnQfd0CFZKf4YUg2L4s
-	8yJmTYG0e+Re0hR5AtKutY/vC8RmlXkK7uKm9jOsyjSudLM6GR6ER7xoFzFq4HKlqLs97W
-	0zYDc9yMbIDfiYO8wbXXBWgCVhsJl2s=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-54-J2GjL78mPd-aU5DuVvTYUg-1; Thu,
- 04 Apr 2024 08:13:29 -0400
-X-MC-Unique: J2GjL78mPd-aU5DuVvTYUg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0A5A91C05AC8;
-	Thu,  4 Apr 2024 12:13:29 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id D59DE2024517;
-	Thu,  4 Apr 2024 12:13:28 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
-Cc: michael.roth@amd.com,
-	isaku.yamahata@intel.com,
-	Sean Christopherson <seanjc@google.com>
-Subject: [PATCH v5 03/17] KVM: x86: use u64_to_user_ptr()
-Date: Thu,  4 Apr 2024 08:13:13 -0400
-Message-ID: <20240404121327.3107131-4-pbonzini@redhat.com>
-In-Reply-To: <20240404121327.3107131-1-pbonzini@redhat.com>
-References: <20240404121327.3107131-1-pbonzini@redhat.com>
+	s=arc-20240116; t=1712232800; c=relaxed/simple;
+	bh=/aoGZSXS5Zh3fm31ppXjZxLJJ0BwGa0AN8HQtuQxqUY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=R1N9VjmZD64gKVLxIJ2874Rtrz6IpFgQXbBWiAtveZEEvouinx+psddjme3kwNp0C2v6Tn4zt8QqtyYuG757GYd0Kbu2DaqXk51ZNfhoBoSgB38WREkDhri2/SPYYPF0VEqsYQNUqTE0F/PpPNj0lTXyunhGg1DeNcyPJJJ9wcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IM068pbN; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a450bedffdfso122881666b.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 05:13:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712232797; x=1712837597; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=9RSXGCksH0heR6DFO0nV01ue5V1oLX+iy56EzGNTxF0=;
+        b=IM068pbN2vsGmGnnVhSxZiNTHzSHBNX1IQLNcUacRJq2tHnI3LZtHi/u34bXVZ+wqH
+         FcI/8rZArIOSCNtchCpungL5AZM/oTx9uwe0mw25+0FZTlmnLOJQUDt9jUFy2sCMgE4b
+         MA7GpJzST6xLdtsAsgeO/Oz8EwEr2P/sevzyX7Xo0JDz18FSw3+jXBs+MVjYw3SN3qE/
+         eZ0/CkxzmlCiyWg2OnxNEkfgBlLfpsEWxbjpNdc3YNiampKbkDNNDlzhqLoWxaRR9Iqg
+         3nZ/WSTla3S9pZPRkuEyvX3L1Y3B+y9tB5IH83Y0Z1tnLWxuX73NnyevuVDrsBpdPrw+
+         X8pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712232797; x=1712837597;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9RSXGCksH0heR6DFO0nV01ue5V1oLX+iy56EzGNTxF0=;
+        b=j2B8EcS46aZmlkwqS/anf2MLwo51AHHZ8qJkjJwLwWFuVEmy7hHKSOtTuB3T3Iaybr
+         1rg6EiAN6R7X0s5A32eOV+tzUd2Xmf5Eqa2QhhWme2T6atUkLrZHZXy6k1AY7oBiU9nT
+         hqwAty4tt0CrxVhUl0azBOh1MyqC/g5Fvhbol5mc8zcqh/PmVCbgTWx+PtOpHL2FZu86
+         BEFuqMidUzXsDaLk1fy/gM9wlmbmiTG0bFXEUACW9Nl3yhDwQo+xLwm+NornJbc1894x
+         8AZXMRXVi9g9UG38G5RCHIFo+CQQUj8r0mmTBM01UuDYgSFPqdjSkFYUJnovMkYL6Xdh
+         03Iw==
+X-Forwarded-Encrypted: i=1; AJvYcCWaZMTnKRXy2Hjj3Cvuj5rxsSzCCuu3GKnBMRxfx/oF3xmXJQxP0EwdhvSvJTP9nFKMGN4AWf3Tg09B6UjwfLmSPe5+Fstt7ikCA0A6
+X-Gm-Message-State: AOJu0Yz9Uc1qTn5njBs1fxRT9CTr9VqPxoQjouSycid7mBfzDahViYoU
+	8vh9l5tn1ZvsDIDG7BswpcjfLZ9ZDlVnTaSGa1DXphWcXYU8BC9q4NKHbCXOPjA=
+X-Google-Smtp-Source: AGHT+IHCUc5CYkRQzEFeUFI3Il/6mWOMB6j8B2NoGbWe7A3ruzFAOLHpd7Q7peA3VEEF/HcXg2Rrcw==
+X-Received: by 2002:a17:906:c0c2:b0:a4e:2683:53f4 with SMTP id bn2-20020a170906c0c200b00a4e268353f4mr1409092ejb.59.1712232797463;
+        Thu, 04 Apr 2024 05:13:17 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id q2-20020a170906b28200b00a4655976025sm8920438ejz.82.2024.04.04.05.13.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 05:13:16 -0700 (PDT)
+Message-ID: <f982de5a-a7de-43ee-82f8-1bf69a9a3f5b@linaro.org>
+Date: Thu, 4 Apr 2024 14:13:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: pwm: mediatek,pwm-disp: Document
+ power-domains property
+To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ u.kleine-koenig@pengutronix.de
+Cc: robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ matthias.bgg@gmail.com, jitao.shi@mediatek.com, thierry.reding@gmail.com,
+ miles.chen@mediatek.com, xinlei.lee@mediatek.com, linux-pwm@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
+ wenst@chromium.org, kernel@collabora.com
+References: <20240404081808.92199-1-angelogioacchino.delregno@collabora.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240404081808.92199-1-angelogioacchino.delregno@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-There is no danger to the kernel if 32-bit userspace provides a 64-bit
-value that has the high bits set, but for whatever reason happens to
-resolve to an address that has something mapped there.  KVM uses the
-checked version of get_user() and put_user(), so any faults are caught
-properly.
+On 04/04/2024 10:18, AngeloGioacchino Del Regno wrote:
+> Allow the power-domains property to the PWM_DISP block as on some SoCs
+> this does need at most one power domain.
+> 
+> Fixes: b09b179bac0a ("dt-bindings: pwm: Convert pwm-mtk-disp.txt to mediatek,pwm-disp.yaml format")
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> ---
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/x86.c | 24 +++---------------------
- 1 file changed, 3 insertions(+), 21 deletions(-)
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 47d9f03b7778..3d2029402513 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -4842,25 +4842,13 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 	return r;
- }
- 
--static inline void __user *kvm_get_attr_addr(struct kvm_device_attr *attr)
--{
--	void __user *uaddr = (void __user*)(unsigned long)attr->addr;
--
--	if ((u64)(unsigned long)uaddr != attr->addr)
--		return ERR_PTR_USR(-EFAULT);
--	return uaddr;
--}
--
- static int kvm_x86_dev_get_attr(struct kvm_device_attr *attr)
- {
--	u64 __user *uaddr = kvm_get_attr_addr(attr);
-+	u64 __user *uaddr = u64_to_user_ptr(attr->addr);
- 
- 	if (attr->group)
- 		return -ENXIO;
- 
--	if (IS_ERR(uaddr))
--		return PTR_ERR(uaddr);
--
- 	switch (attr->attr) {
- 	case KVM_X86_XCOMP_GUEST_SUPP:
- 		if (put_user(kvm_caps.supported_xcr0, uaddr))
-@@ -5712,12 +5700,9 @@ static int kvm_arch_tsc_has_attr(struct kvm_vcpu *vcpu,
- static int kvm_arch_tsc_get_attr(struct kvm_vcpu *vcpu,
- 				 struct kvm_device_attr *attr)
- {
--	u64 __user *uaddr = kvm_get_attr_addr(attr);
-+	u64 __user *uaddr = u64_to_user_ptr(attr->addr);
- 	int r;
- 
--	if (IS_ERR(uaddr))
--		return PTR_ERR(uaddr);
--
- 	switch (attr->attr) {
- 	case KVM_VCPU_TSC_OFFSET:
- 		r = -EFAULT;
-@@ -5735,13 +5720,10 @@ static int kvm_arch_tsc_get_attr(struct kvm_vcpu *vcpu,
- static int kvm_arch_tsc_set_attr(struct kvm_vcpu *vcpu,
- 				 struct kvm_device_attr *attr)
- {
--	u64 __user *uaddr = kvm_get_attr_addr(attr);
-+	u64 __user *uaddr = u64_to_user_ptr(attr->addr);
- 	struct kvm *kvm = vcpu->kvm;
- 	int r;
- 
--	if (IS_ERR(uaddr))
--		return PTR_ERR(uaddr);
--
- 	switch (attr->attr) {
- 	case KVM_VCPU_TSC_OFFSET: {
- 		u64 offset, tsc, ns;
--- 
-2.43.0
-
+Best regards,
+Krzysztof
 
 
