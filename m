@@ -1,138 +1,126 @@
-Return-Path: <linux-kernel+bounces-131290-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131291-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF4E68985BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:07:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E0BA8985BE
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:08:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6400B284729
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:07:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B12D1C20A78
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:08:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F46A80C0B;
-	Thu,  4 Apr 2024 11:07:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573CF81AC6;
+	Thu,  4 Apr 2024 11:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HhNRhFOA"
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dgFdV8Fb"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7848B80BF7
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:07:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F94B745D6;
+	Thu,  4 Apr 2024 11:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712228844; cv=none; b=JhfMgwRHDI2RdoZ1q8Jr18nH0mRY5gu6gqxH9yZTZZOMlQKYvy5U0zSNN4xIos28r1Clh+AMy+7pWE9BheELbwtfxxSmcFqOmqK/AYOxuyXFFC9cyhndb0CMeJCgqLKruaWNt2jqvbSpPdNCuKAF5NGV/oa5WIW7frBYIjX9Mts=
+	t=1712228872; cv=none; b=ZWZlOEZfyqOSpk8UefPGxcn0gBOvzehnlHh6FjAzUTHkdLMa6M0tU65pwUHSWmzVR28t0mc1x2ZGodEnrtEg2xumDXc+GiIaNQslf0RxqMAGGxk3sgyyByGasOJcJqh2PcX+WGIFiuuiBYllieaUBKC4dMB5bQvJdcTccNS3fY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712228844; c=relaxed/simple;
-	bh=bKpNseyzs35xJjlrg2U75nMP+r4dPa4IHVFOyJk4SZs=;
+	s=arc-20240116; t=1712228872; c=relaxed/simple;
+	bh=Jz9p+DbQLxCMAFIchnPWt9cu3a/3wToOtgTzitOYqPU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lNah59DMILiS2mPcQWGMDyMSFATYIvnHc3pXdPfi4YaU4Y4zYgeG9fevLaaNrdmvxY8ON3SLrLoPmR7WWSjQfeCKUUIiohF+TlRycgUKz7xk1KWofqX7zQ9vqXRc0vIKc0KiESwVGieHEyXVX+ioCtFM8+6nTZuI1kLWnFWkzR8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HhNRhFOA; arc=none smtp.client-ip=209.85.219.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcc6fc978ddso687380276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 04:07:22 -0700 (PDT)
+	 To:Cc:Content-Type; b=jLmOU9dNzJzGotwuNZHzrCaClzPqpfXXdxsfszov6ry6srprAAaEfInPgH4o7/xcNh6m1NwXQJKyILwGoLH1cIacuO1UShaAU7R6dEJMAxF4ertFGoYc3xz2MIwm12K5zT6bZVBL5XGE4amamd1c6tzbnvdVEZPo1d6Ci/MYm1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dgFdV8Fb; arc=none smtp.client-ip=209.85.210.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6eaf9565e6bso576819b3a.2;
+        Thu, 04 Apr 2024 04:07:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712228841; x=1712833641; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=oHD9JV4m82nygiSTDAq5ON48xPlEJ5FvZuZE2N1ZJm0=;
-        b=HhNRhFOAIPRgNlY3AVaoLv3N7UvDbMyqabq9f2B+5c9pGH6wE7t8G8q5RMRxerEKha
-         Xqd4E+VS1bq4fCFE+2XNNkDOPlHKDgzvcp7gIuhZeUxg+3CUwNcZh1KMFKb3u+9o2AmA
-         8h+IDMlQVh9+6jwi56lX6wCkPSG8VUHglkF1+yyocx68JZ9xsYOBc0g34By8xvaXKQpW
-         p/3/V3dEapsda25/H1t57mkMi28yK6peVH/7GKkKfij3k984TPGqFv4f2oA4oxqFKMR5
-         ngtAdufOXzoyqd7TKK8aDb3fvCPUBArDiQHn7IFC0mc5Ie7Ukom7HmcJJYM95PD4Arff
-         1NCg==
+        d=gmail.com; s=20230601; t=1712228870; x=1712833670; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ogzEmHcsMc/gb2xe+XOOLIlBT5FMyLswBi0I3OYWLQI=;
+        b=dgFdV8FbU2y5rdqCrCaCcMMgFEQwIkgmGtJFwpFZQhMJMN2Aa+5O7J4MDUpyPNmFOg
+         0oxIzmHNcBuvnm4D11zsH27SH1amAOZYaPb1fRFrPoXmTI+hagDl5COu1ajcO/+70s5Y
+         Gc3o5wd5lbnXhGBhuk/OPUqaPRuXmNX6cXfpe+Iqkz5sZ3Tpd3099WUw5dlltXM9k3nQ
+         iPQ1kfZUUtoTFneBsCp94k5zm4cSTRq41fDdMrMEuxO2xuOlD0+3yrI5VegurcxdPa2u
+         O3nU8XzkiEDlLLmn6E0TrmOAnGwCAR+FsrAU8iSN7w4HXu087CEW3UdPv7BRqQhll3rO
+         +qmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712228841; x=1712833641;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oHD9JV4m82nygiSTDAq5ON48xPlEJ5FvZuZE2N1ZJm0=;
-        b=RD4ZA1CBZn2TwpWaab/o3CEkPMKxmh36YSsu2qeKmk1GAVXEllMyPH0tWHF47HJy7+
-         LoRbcEwN8BBxa4CaXYHSSkCVZGlbLXHdpD+6mNO/SC1/tzTkxNqgRxrJ7Z8pd9hNTYoY
-         i1sigzxAy/yMAw9yhd+FucIRG1/oGZpIluAN+MXeSh1qO4J/+6HuK28K9H4UknBP0sjj
-         UGjp/Af7M22EZKPwWHIEqJOhRwYYy0NfKg9g2TBdK4gGfxKf/k5OS6Br0u9g6B2/j36S
-         ML4SygZydgRfaUk7Sbbb3tGu1N+u6UwtJ4PtUr5bzmtV2r6TbYlPSEFFKfwP3imVUSpg
-         LQPg==
-X-Forwarded-Encrypted: i=1; AJvYcCWOK6uKUPmx8dOXFmg4Efhz0B+ec1bt+rlIYQv5w4f4HiSXVhMzQLLg7J+NLqP44Zp7IG0igyo14vikWQAt2VXGEFT1spqMDoBojdq6
-X-Gm-Message-State: AOJu0YwyjmUhMCpybejhFk7XX72EVHug88pEYPdkKo+ihlxBaeL+S6sj
-	C6t/21P26ofAmXrL8hwO/+jzp7Vo7AkIfypTH59OLmfoiduX1Ps1iaV2P7UCi+TnN+9PnTkkJ2W
-	xkncpI/GcYpFm9k0/31a1ylcKf0hB4Vq0uYTfqg==
-X-Google-Smtp-Source: AGHT+IEdb5eDdMR2pzlmAeWFysl5vbrnmwOuO47TeOKmLsOviJwwZdcwKy2kO2pvO93pIdJM5SmQx94UTo9d6J6akDM=
-X-Received: by 2002:a25:bcd1:0:b0:dcf:eb30:c580 with SMTP id
- l17-20020a25bcd1000000b00dcfeb30c580mr1729408ybm.3.1712228841409; Thu, 04 Apr
- 2024 04:07:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712228870; x=1712833670;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ogzEmHcsMc/gb2xe+XOOLIlBT5FMyLswBi0I3OYWLQI=;
+        b=XjCIqW7c50GIqbqnAqf5dEzIVwdBLZNhj7uIoPol5Iuwa8lmc9nctHTNMQAAHriGJi
+         SaCRVdHMpguOBRUvrQ6M4UEyzOGgmq8/lShMgXl38QfH+aGSCZOoqv1Jml1eYTSpPuWp
+         FmfKzMUimdN5Z1vWQ6Yu8Ntomseol5uid5wq+i4o200tgQ0fR0Sd7kjDs+Bf7nowM0yK
+         AkQCFfuixPWHZagQVfmQus3C5DcOjHU0jV36yStqGVcwOyPA2v/O2yYfWnJyd7D8JO0j
+         SIV1bO20SfHih8iG48tbYoZoRMj7kAwKxpTyHMZYS/IhBTtHcmBV1btOPJiKQ+9t6vTI
+         aDvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVkaKQ3mN/L8deucN1tQhBpKrL0KXyDSFXK9axSwBXPFDPNnRqDHq0piXrPXEt8EC7c90EC7Gw44I97Z/8Cy7Q/OVZv5/p7A0wJ0Y2K1BB1oodnn2jpBxg1/RLe9Oer6xxgJXkHwvWMKyUq01Tm4LbI6xasjLv7tEgXLVeEX61/QNZgXuc=
+X-Gm-Message-State: AOJu0YyVm+3Pju7REe+aWwkMQ/wqEUjcd2Y2Kx42vokxa8e6ckPIkZNi
+	bgaeJGr60mtVHwqBRs3rgrs6PblmzCK10kYHM0jRoH6ZGx22QZFHxaMZLsM+DUrLbL4j+hl5d2G
+	u3Y8cuswutymOQJlDx79Resnldv8=
+X-Google-Smtp-Source: AGHT+IEz5P9kSGtfS29DeZ7LyXMiBHdAV3PkkgkFUpZhAkyfRiFGtrUYIbyut8xIB3UIoTVzaAYquulwbViRtTCs15A=
+X-Received: by 2002:a05:6a20:5486:b0:1a3:c4f4:5bb3 with SMTP id
+ i6-20020a056a20548600b001a3c4f45bb3mr2454966pzk.4.1712228870571; Thu, 04 Apr
+ 2024 04:07:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217-init_level-v1-0-bde9e11f8317@quicinc.com> <20240217-init_level-v1-1-bde9e11f8317@quicinc.com>
-In-Reply-To: <20240217-init_level-v1-1-bde9e11f8317@quicinc.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 4 Apr 2024 13:06:45 +0200
-Message-ID: <CAPDyKFrWHTcW=gSL8qPSovf8C-KnKpp67N6fD-wAn55Okb3PLg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] soc: qcom: Update init level to core_initcall() for
- cmd-db and rpmh-rsc
-To: Maulik Shah <quic_mkshah@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	quic_lsrao@quicinc.com
+References: <CA160A4E-561E-4918-837E-3DCEBA74F808@me.com>
+In-Reply-To: <CA160A4E-561E-4918-837E-3DCEBA74F808@me.com>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Thu, 4 Apr 2024 13:07:15 +0200
+Message-ID: <CANiq72mz3qDrNQgKRPPAdZ8Gndn0W6VSggu0B8e0erNbxyL4YA@mail.gmail.com>
+Subject: Re: [PATCH v4] rust: init: remove impl Zeroable for Infallible
+To: Laine Taffin Altman <alexanderaltman@me.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Benno Lossin <benno.lossin@proton.me>, rust-for-linux@vger.kernel.org, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	Martin Rodriguez Reboredo <yakoyoku@gmail.com>, lkml <linux-kernel@vger.kernel.org>, 
+	stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, 17 Feb 2024 at 14:57, Maulik Shah <quic_mkshah@quicinc.com> wrote:
+On Wed, Apr 3, 2024 at 11:07=E2=80=AFPM Laine Taffin Altman
+<alexanderaltman@me.com> wrote:
 >
-> cmd-db and rpmh-rsc are used by clients like regulators, interconnects and
-> clocks for resource voting. These clients are in core_initcall() while
-> cmd-db and rpmh-rsc are in arch_initcall(). Update init level for these
-> drivers also to core_initcall() to avoid unnecessary probe defer during
-> boot up.
+> In Rust, producing an invalid value of any type is immediate undefined
+> behavior (UB); this includes via zeroing memory.  Therefore, since an
+> uninhabited type has no valid values, producing any values at all for it =
+is
+> UB.
 >
-> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+> The Rust standard library type `core::convert::Infallible` is uninhabited=
+,
+> by virtue of having been declared as an enum with no cases, which always
+> produces uninhabited types in Rust.
+>
+> The current kernel code allows this UB to be triggered, for example by co=
+de
+> like `Box::<core::convert::Infallible>::init(kernel::init::zeroed())`.
+>
+> Thus, remove the implementation of `Zeroable` for `Infallible`, thereby
+> avoiding the unsoundness (potential for future UB).
+>
+> Cc: stable@vger.kernel.org
+> Fixes: 38cde0bd7b67 ("rust: init: add `Zeroable` trait and `init::zeroed`=
+ function")
+> Closes: https://github.com/Rust-for-Linux/pinned-init/pull/13
+> Signed-off-by: Laine Taffin Altman <alexanderaltman@me.com>
+> Reviewed-by: Alice Ryhl <aliceryhl@google.com>
+> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 
-I have picked up patch2, leaving this one for Bjorn/Konrad to manage.
+[ Reformatted the comment slightly. ]
 
-Kind regards
-Uffe
+Applied to `rust-fixes` -- thanks everyone! Please feel free to still send =
+tags.
 
-
-> ---
->  drivers/soc/qcom/cmd-db.c   | 2 +-
->  drivers/soc/qcom/rpmh-rsc.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/soc/qcom/cmd-db.c b/drivers/soc/qcom/cmd-db.c
-> index a5fd68411bed..c344107bc36c 100644
-> --- a/drivers/soc/qcom/cmd-db.c
-> +++ b/drivers/soc/qcom/cmd-db.c
-> @@ -362,7 +362,7 @@ static int __init cmd_db_device_init(void)
->  {
->         return platform_driver_register(&cmd_db_dev_driver);
->  }
-> -arch_initcall(cmd_db_device_init);
-> +core_initcall(cmd_db_device_init);
->
->  MODULE_DESCRIPTION("Qualcomm Technologies, Inc. Command DB Driver");
->  MODULE_LICENSE("GPL v2");
-> diff --git a/drivers/soc/qcom/rpmh-rsc.c b/drivers/soc/qcom/rpmh-rsc.c
-> index a021dc71807b..c4c7aad957e6 100644
-> --- a/drivers/soc/qcom/rpmh-rsc.c
-> +++ b/drivers/soc/qcom/rpmh-rsc.c
-> @@ -1154,7 +1154,7 @@ static int __init rpmh_driver_init(void)
->  {
->         return platform_driver_register(&rpmh_driver);
->  }
-> -arch_initcall(rpmh_driver_init);
-> +core_initcall(rpmh_driver_init);
->
->  MODULE_DESCRIPTION("Qualcomm Technologies, Inc. RPMh Driver");
->  MODULE_LICENSE("GPL v2");
->
-> --
-> 2.22.0
->
+Cheers,
+Miguel
 
