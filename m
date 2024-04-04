@@ -1,74 +1,84 @@
-Return-Path: <linux-kernel+bounces-131064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B26E68982A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:58:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A62588982B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:01:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1DF31C219E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:58:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08270B22FB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185106BFA4;
-	Thu,  4 Apr 2024 07:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD745D8EB;
+	Thu,  4 Apr 2024 08:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0d8LCh7C"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="Dn3azvWb"
+Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEDC95E07E
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 07:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DF0F5DF23
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712217484; cv=none; b=Ycj2GryP5gRSo0XCGVKZU6BsyLwby9iRMgFW8Rp9iPEcVtG5bbPiZEyxsjApuBYtOOOSTLclxRJC4JqOEHRfTsN4ZnWJU170MY++FfEwdwGGSxjkBMaHD7r+roDoahP3Zk3bTX0cLCQf73at7hheOXQMaBRPBVbKpmUsAX2/Tzs=
+	t=1712217675; cv=none; b=RGGZNaqhX1G1kys7nsTIltlV02JLjgEoKuKGRhnGJT/CkA/rmSDrTb46h3dliedUrsckEZ3QYPtL0XodNCLmE67IdmgZExzdwUAt8JDqtFuy+PjTeHCVYtGHDCK4DI2W3UnDR0HFDQfbnS0523eiNeGve12ZrsP+cwk6O5FlrD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712217484; c=relaxed/simple;
-	bh=91LD58avnRzxuTR+zgR6nRtCYpKIsz1H4g5/SZOkKwg=;
+	s=arc-20240116; t=1712217675; c=relaxed/simple;
+	bh=QJ/GvWjb7OikBvvYJpHNtU5PYtM/0hhzpUz62Zhr5IU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=EJIpqZEjxSTqPFhl5Z5+1Nea/QN5BNaW77UXNJNjgHnqtAMRie4cv7BP6a5xHPgqCqDUI5th75PN4JLJfn+UYy2V7FM6e83T3q7YP0nWgEDeTBU8IGwPkHBzWvouBWvSwsbPo9OTwMLJde4Z17Zr9Kk5j5u7Ur3mVzRDJCRGLxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0d8LCh7C; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712217481;
-	bh=91LD58avnRzxuTR+zgR6nRtCYpKIsz1H4g5/SZOkKwg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=0d8LCh7CqmqBKxae4zvzP7kHfKBt66Je/wOdytq86ZfN/ZU+QYUjnG9uBCm9DaedO
-	 2/ryyht8UR5L779RenbBXb/U4nhu4mQ4gj2xaUcmBAhaccXIH1XnblbNc11z4cpA/E
-	 CH4G+CcCtI55wdVim+Ao9rLEzG+3AQxloITitp5437x1av6QPW+Yw/thp+7u0n4vyO
-	 QkFmOXCJy0k/DuxaLTsOHFpILB1Ei5bwxXFod40AcybdjGXbsU18iGnt9/trJjnaO3
-	 BX31mPHMjR6JIqwIDmWJ2eUrHGaBBvdslslPpdnEUpN8LfI1ajeJsOErsEW9Y1UtmV
-	 UvwNLgh9o2qGw==
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2ACF3378212E;
-	Thu,  4 Apr 2024 07:58:00 +0000 (UTC)
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-To: chunkuang.hu@kernel.org
-Cc: p.zabel@pengutronix.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	matthias.bgg@gmail.com,
-	angelogioacchino.delregno@collabora.com,
-	ck.hu@mediatek.com,
-	nancy.lin@mediatek.com,
-	nathan.lu@mediatek.com,
-	dri-devel@lists.freedesktop.org,
-	linux-mediatek@lists.infradead.org,
+	 MIME-Version; b=Yv/eWBOaofA9a/RQxHRXIBanSwKeeXeTeBIJhNpNeGr9XsG2avHXa9xU2EL0l0LMHbdi7+AYpjRnpuWLq4H+qQTPBvUpqYs8FLA6jgSYWD9dMLPoOg0lpLl73PMal+GVlNExNuyhTLufJS9q+2sgoS1YXkf2vA+F9YTwr5QaW9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=Dn3azvWb; arc=none smtp.client-ip=209.85.208.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-56bf6591865so939837a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 01:01:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712217672; x=1712822472; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xv8R3IrhUaaiihMPdgbzD/Fg2YiT2HLoLPB2jJluhQk=;
+        b=Dn3azvWbj0P8Ck27vJgjnmhTFSKldKYdM4gZEB4thWRHTHO6NeRZJ8QpjFiSwKN20P
+         Ek336C706THQwwpiJ6snnG36hcP1CRDS+QSX/ZRBYyAbYQHcON93ljL3cKO4Zu07O1jw
+         yExQaHADM/ZRniVZCg+g4qnIWeGSSeIXktF1mnYyM7HwsyhFBAok8CxkGdkibShxWzCa
+         KNiXs82OQillF6Vs8xtGxvyJvAj/KRdr3zaXoPWDiFkj1wVfqlbH+3DTDhNVNFJNtm1p
+         G/ykNLfkhBuQ5IQfTpuOLaCa0rLSVLQzPcoSF3mHtf8tfXMOxAFB8IMZnDb2riUBnmqS
+         fJjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712217672; x=1712822472;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xv8R3IrhUaaiihMPdgbzD/Fg2YiT2HLoLPB2jJluhQk=;
+        b=kAD91A03JYZ1uueW+K4ZhFRA+hLlLxTVS073T2Z0LkZCmFTE/ZI8PfWu6gz9UZCXf/
+         wT7ln5DQ0ID1rwJs2R3HEFokP7ziYVGGoV261DgJa+gQqyAlon+dlcuat8hrEOuoVGQt
+         GxcUcgxQuZJ2zuGKIlB/W1qunu5RTWuToqCbEnOQXb9gCjpctXguhY2yM2QXB/ILtme4
+         5vB/A4mFrR4dttD24aO0T22oU7KKVBPZATm7PujB7MyCkRe4IXU9kfM3q1blVwEwz1Oa
+         daxKLCvlToPW+wH1kOFrHw6L77XX7IunhwhVLiAW8RnXf/QomDkx7r8uSBRMSAyXrGST
+         pZKw==
+X-Forwarded-Encrypted: i=1; AJvYcCUFdfjP4Mea3jfVoX5H7Mv+5Iv3dpnaUbXe6J6iRZ9c2fuFHrYtoAdjbMZDuUSSWuEtO8Eyaa7guVePhF4Qk+N/BZYmxZRBT9oERBTS
+X-Gm-Message-State: AOJu0YxS4Zgld+J5QP9/FoIGxyx69JKZqg8+29OlDHENBeZyQ3zweI2/
+	vInWYZuv0ptX1M/zbyEaJbmnpFYt4pr6uobR3E46WwccUbn2LdYSAhA4dcgc6Ko=
+X-Google-Smtp-Source: AGHT+IEQQDX7G43C5KmJflK3VEIWNWAS7ktsRAeYWb2ozLpk/ugg7MgwS4QMOHuKzIeKgxoa7JkVIg==
+X-Received: by 2002:a50:c315:0:b0:56b:9ef8:f656 with SMTP id a21-20020a50c315000000b0056b9ef8f656mr1125320edb.7.1712217671985;
+        Thu, 04 Apr 2024 01:01:11 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id k3-20020a056402340300b0056e06d5a301sm1681791edc.20.2024.04.04.01.01.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 01:01:11 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: jirislaby@kernel.org
+Cc: chris@zankel.net,
+	gregkh@linuxfoundation.org,
+	jcmvbkbc@gmail.com,
 	linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	kernel@collabora.com,
-	wenst@chromium.org
-Subject: [PATCH v2 3/3] drm/mediatek: drm_ddp_comp: Add mtk_ddp_is_simple_comp() internal helper
-Date: Thu,  4 Apr 2024 09:57:54 +0200
-Message-ID: <20240404075754.83455-4-angelogioacchino.delregno@collabora.com>
+	thorsten.blum@toblux.com
+Subject: [PATCH v3] tty: xtensa/iss: Use min() to fix Coccinelle warning
+Date: Thu,  4 Apr 2024 09:58:13 +0200
+Message-ID: <20240404075811.6936-3-thorsten.blum@toblux.com>
 X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240404075754.83455-1-angelogioacchino.delregno@collabora.com>
-References: <20240404075754.83455-1-angelogioacchino.delregno@collabora.com>
+In-Reply-To: <528c6824-287e-4be2-82f3-7fcdd254eb15@kernel.org>
+References: <528c6824-287e-4be2-82f3-7fcdd254eb15@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,97 +87,39 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Move the simple component check to a new mtk_ddp_is_simple_comp()
-internal helper to reduce code duplication.
+Inline strlen() and use min() to fix the following Coccinelle/coccicheck
+warning reported by minmax.cocci:
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
+	WARNING opportunity for min()
+
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 ---
- drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c | 57 +++++++++++----------
- 1 file changed, 31 insertions(+), 26 deletions(-)
+Changes in v2:
+- Use min() instead of umin() as suggested by Jiri Slaby
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-index 477fc1950a0e..d760285761b9 100644
---- a/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c
-@@ -576,6 +576,29 @@ unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
- 	return ret;
+Changes in v3:
+- Inline strlen() as suggested by Jiri Slaby
+---
+ arch/xtensa/platforms/iss/console.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/xtensa/platforms/iss/console.c b/arch/xtensa/platforms/iss/console.c
+index 8896e691c051..abec44b687df 100644
+--- a/arch/xtensa/platforms/iss/console.c
++++ b/arch/xtensa/platforms/iss/console.c
+@@ -166,10 +166,8 @@ late_initcall(rs_init);
+ 
+ static void iss_console_write(struct console *co, const char *s, unsigned count)
+ {
+-	if (s && *s != 0) {
+-		int len = strlen(s);
+-		simc_write(1, s, count < len ? count : len);
+-	}
++	if (s && *s != 0)
++		simc_write(1, s, min(count, strlen(s)));
  }
  
-+static bool mtk_ddp_is_simple_comp(enum mtk_ddp_comp_type type)
-+{
-+	switch (type) {
-+	case MTK_DISP_AAL:
-+	case MTK_DISP_BLS:
-+	case MTK_DISP_CCORR:
-+	case MTK_DISP_COLOR:
-+	case MTK_DISP_GAMMA:
-+	case MTK_DISP_MERGE:
-+	case MTK_DISP_OVL:
-+	case MTK_DISP_OVL_2L:
-+	case MTK_DISP_OVL_ADAPTOR:
-+	case MTK_DISP_PWM:
-+	case MTK_DISP_RDMA:
-+	case MTK_DP_INTF:
-+	case MTK_DPI:
-+	case MTK_DSI:
-+		return false;
-+	default:
-+		return true;
-+	}
-+}
-+
- int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
- 		      unsigned int comp_id)
- {
-@@ -606,19 +629,13 @@ int mtk_ddp_comp_init(struct device_node *node, struct mtk_ddp_comp *comp,
- 	}
- 	comp->dev = &comp_pdev->dev;
- 
--	if (type == MTK_DISP_AAL ||
--	    type == MTK_DISP_BLS ||
--	    type == MTK_DISP_CCORR ||
--	    type == MTK_DISP_COLOR ||
--	    type == MTK_DISP_GAMMA ||
--	    type == MTK_DISP_MERGE ||
--	    type == MTK_DISP_OVL ||
--	    type == MTK_DISP_OVL_2L ||
--	    type == MTK_DISP_PWM ||
--	    type == MTK_DISP_RDMA ||
--	    type == MTK_DPI ||
--	    type == MTK_DP_INTF ||
--	    type == MTK_DSI)
-+	/*
-+	 * Resources for simple components are retrieved here as those are
-+	 * managed in here without the need of more complex drivers; for
-+	 * the latter, their respective probe function will do the job, so
-+	 * we must avoid getting their resources here.
-+	 */
-+	if (!mtk_ddp_is_simple_comp(type))
- 		return 0;
- 
- 	priv = devm_kzalloc(comp->dev, sizeof(*priv), GFP_KERNEL);
-@@ -652,19 +669,7 @@ void mtk_ddp_comp_destroy(struct mtk_ddp_comp *comp)
- 		return;
- 
- 	/* Complex components are destroyed with their own remove callback */
--	if (mtk_ddp_matches[comp->id].type == MTK_DISP_AAL ||
--	    mtk_ddp_matches[comp->id].type == MTK_DISP_BLS ||
--	    mtk_ddp_matches[comp->id].type == MTK_DISP_CCORR ||
--	    mtk_ddp_matches[comp->id].type == MTK_DISP_COLOR ||
--	    mtk_ddp_matches[comp->id].type == MTK_DISP_GAMMA ||
--	    mtk_ddp_matches[comp->id].type == MTK_DISP_MERGE ||
--	    mtk_ddp_matches[comp->id].type == MTK_DISP_OVL ||
--	    mtk_ddp_matches[comp->id].type == MTK_DISP_OVL_2L ||
--	    mtk_ddp_matches[comp->id].type == MTK_DISP_PWM ||
--	    mtk_ddp_matches[comp->id].type == MTK_DISP_RDMA ||
--	    mtk_ddp_matches[comp->id].type == MTK_DPI ||
--	    mtk_ddp_matches[comp->id].type == MTK_DP_INTF ||
--	    mtk_ddp_matches[comp->id].type == MTK_DSI)
-+	if (!mtk_ddp_is_simple_comp(mtk_ddp_matches[comp->id].type))
- 		return;
- 
- 	priv = dev_get_drvdata(comp->dev);
+ static struct tty_driver* iss_console_device(struct console *c, int *index)
 -- 
 2.44.0
 
