@@ -1,198 +1,225 @@
-Return-Path: <linux-kernel+bounces-131788-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131789-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA5A5898BC9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:06:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AD43898BCB
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 18:06:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA0171C26A0A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:06:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7B9E1F2228D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:06:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF6012AAD4;
-	Thu,  4 Apr 2024 16:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244E912AAF7;
+	Thu,  4 Apr 2024 16:06:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UDiDUDsa"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g+9LmoP/"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B48A12AAD1
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 16:05:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 397AA1BC46;
+	Thu,  4 Apr 2024 16:06:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712246755; cv=none; b=syBtOgjL6oCnHcC28i41Z3RF4NHjU4doMwrRZGureLsfsjxFV7GGPwPJA7B30mJtgQRD7EsyNcU5T5ZcST/0rCUNNMlGsb7qe5JutEG7fI/UGo14j9LdVKTWn5KUBRxZ+1Ee5HfhAmbxJSHwxT0mNbZyvqxMh/u6r0YZRzyV16w=
+	t=1712246769; cv=none; b=t9AIG/wWdU2k49tF/s4A2vE5iXGTgK8mJ9RNJprZ9ogeIQN6v2JI/AAr19nav6o8AQ8I3hp3BlNv85cVKOS3FiHWqcplhW34MaTf0xs8DNAJX1szjDtSno0Wnit6YQnEYA7wtSad/cC4FsbGGI6GZXN1qirp5J0lOlJrPRueoqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712246755; c=relaxed/simple;
-	bh=Dju+y0EjZuxJaGKBRNnKMWatS2Hwo2dPJEG3wzZyBXU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EC2O+vVwHuFrLGuklAUE+KEcaR6b0g3mGhBfyzOawj+ZTxa+voK0ZWZbNztdF07GBtbt9zd1qVrrojJUW+Qc6aSW2CFS+qvj6+LtrCoJoRumb486qz++FLVErTO6hhuZHuLSjqobUY//sAGbI12Ta6G4b21EhqNsJHCzfbMiY3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UDiDUDsa; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dbed179f0faso1843825276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 09:05:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712246753; x=1712851553; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XYk+z4GPlvSLgbb1+lB3Uw//BsSPlCRUU8yX8yl3BmQ=;
-        b=UDiDUDsaIn/pr8iKPMZ6qHf04NHSkJ78dFI9O7tBmgMlcHs3S6XEUwWltqiwc4nsBa
-         m9WRtMVo5B/mD0mJhYbfSGf6t6EQCSg8FbcEp5fxmor115O7CHpLp3z05MxzD296O7Hk
-         uqVZzLSxF/juipEDzi+tWTDUqhP57mWuoGG3BXu0KooJep1SvOs5vbdLR01GXveo6vE6
-         U1V+HtAb2lE5fN7/70pvJpJqsE3/+BsOnL/o4cBMg4aafUyjL+Waeq+w1Hww0OEEXZIX
-         nuzTW9kzKxeZgNdSxAMapKQhGvEAUz/FCulRbSL0hSKetcTEjucXDYQkWXtMWi7vQegk
-         EXww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712246753; x=1712851553;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XYk+z4GPlvSLgbb1+lB3Uw//BsSPlCRUU8yX8yl3BmQ=;
-        b=op6DgiLhlvESwl8mL+i18eMf3w0rSvKXgohiTerZp5KbLSXJitwCNpnsMB6eLxWyrw
-         IwgnQRbRmG1sZ20c7gVR2t2G3xCLm6WcXLzqpTTJPwW/ToFHK4srPBpF/8YTse4cXVBu
-         W1//yx7+SOl7vj1qyMW/Ptb/fJRK40x54j2iXqPZ9M/g1WChgrWNzodie99P5utf5xLG
-         FW/53tx5Y4sXhCXaLPvltbe1cL9KWXL8Nu+O/p/zLFTiwbOZ/TvvMe1V+moVbOm2GG2a
-         7yezNq76rSnbaa/WIzpws2+FL1QDDkoSDfUVwXrFOu1sBd9+c5937g61pvpy1glKKSzh
-         /O2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWc94TOpRgXgFxabNinukSRCMRcFXSzntnuqiE1mzT7AEE7Izr6wcRgF8l2i2EnRUuKg3d5KYhj4N/XCzloPZCdadJc7YfnT+2pehtU
-X-Gm-Message-State: AOJu0YwK0h2xuGt8QNdUBMGiNmUHlhHWuIhltlaAZwZXWjOgbYVWC9ya
-	y4FmHsrWfkXGfQW6E7WTRvghcvWMHs39pgtLhpb3GPu065R0bsYXIRnjlI9AnKwKqZhSHdJltSd
-	wr7nEEEOVIa6eWniZoqfPEX51CuLcPLhOuPSOgw==
-X-Google-Smtp-Source: AGHT+IGLJgrzGkNaXq+Qj98xX/89ja6NF4j8NNNnlNdPgtZgZ99WA8WhUPyLVw3mozNsp2SP2VGgg/Z0Pkk8RGS2d3s=
-X-Received: by 2002:a25:8d0f:0:b0:ddd:7a88:2cd7 with SMTP id
- n15-20020a258d0f000000b00ddd7a882cd7mr4635600ybl.18.1712246753095; Thu, 04
- Apr 2024 09:05:53 -0700 (PDT)
+	s=arc-20240116; t=1712246769; c=relaxed/simple;
+	bh=+5n1opxFvTrkkm7rzpBmiqYFvlJrF7IWFtBu70bBigs=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=p6fT5hf2KqnF2T/RpHCCuL875l2tRM6PEc1eDJH9wOWbL2o86g32ZunSQu/LFx62qFhVxINayH4ENrpEJtMQEB58mx5QIGOJeas6HFmfZP5NEbO8WrE2M17rVQSn0C1vbUF6cGIWxgAMb46TNqwlrM/bi3BgRTAUFP12Qyti3Xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g+9LmoP/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79270C43390;
+	Thu,  4 Apr 2024 16:06:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712246768;
+	bh=+5n1opxFvTrkkm7rzpBmiqYFvlJrF7IWFtBu70bBigs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=g+9LmoP/qNM5Fayaerz57GtxMTmBUXsjnSbxebbCkQxULEi3MCu4hJBJzVmLZzcVh
+	 7jQ+YkTF0SnkK3uxx0dZGfgkxjvD7VvUIHQlTi3B/79sofEimfUjezt5UQZeOBDcEv
+	 a3QRqDuXvPUbMBA9RcjPB4i4jHeB0A49dVYhg10xQzGOsr512khahosuoZi1iUgXF2
+	 Ks0sl41DeIUiGVxyRGEW56kdBnFRb0AvRTsViKdufvUhNiMyfrV+L/vXWfTmPCDW2j
+	 yipFk6iA39YdQpVPb8z83KsbJdxVev2nrESqvgGMIA8SsxCGFVtPtPfJIlOefQw+XB
+	 MUE8BKBXFw8nQ==
+Date: Fri, 5 Apr 2024 01:06:03 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Jiri Olsa <olsajiri@gmail.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ linux-api@vger.kernel.org, Oleg Nesterov <oleg@redhat.com>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, Song Liu
+ <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
+ <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ x86@kernel.org
+Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
+ probe
+Message-Id: <20240405010603.58bd96cdf56d456103844e65@kernel.org>
+In-Reply-To: <Zg6V8y2-OP_9at2l@krava>
+References: <20240402093302.2416467-1-jolsa@kernel.org>
+	<20240402093302.2416467-2-jolsa@kernel.org>
+	<20240403100708.233575a8ac2a5bac2192d180@kernel.org>
+	<Zg0lvUIB4WdRUGw_@krava>
+	<20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
+	<CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
+	<20240404095829.ec5db177f29cd29e849169fa@kernel.org>
+	<CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
+	<Zg6V8y2-OP_9at2l@krava>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240321092529.13362-1-quic_jkona@quicinc.com>
- <20240321092529.13362-7-quic_jkona@quicinc.com> <CAA8EJppHGS+W-aiXvJ2cE=jCbua8Y0Q+zv_QTs+C9V5+Y1vuZg@mail.gmail.com>
- <008d574f-9c9e-48c6-b64e-89fb469cbde4@quicinc.com> <b3464321-0c52-4c41-9198-e9e7b16aa419@quicinc.com>
- <CAA8EJpqDwCVAjDphnC-HdfseMJ-xd8VVxb5+9UcGEcKLcn-heg@mail.gmail.com>
- <fba2474e-31a6-4fef-acf9-7069933584c8@quicinc.com> <CAA8EJprfaALkQe-wUrBow6B1A66ro0AoVpfnQJLXgqFmL8isNQ@mail.gmail.com>
- <8a5a3cf8-5b4f-487f-ad91-00499509f8ec@quicinc.com>
-In-Reply-To: <8a5a3cf8-5b4f-487f-ad91-00499509f8ec@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Thu, 4 Apr 2024 19:05:42 +0300
-Message-ID: <CAA8EJpoW8MQQ3OPfOVYRJtgsn1JgKd5Ew7vqgWx3xWE-xJ=R-g@mail.gmail.com>
-Subject: Re: [PATCH V2 RESEND 6/6] arm64: dts: qcom: sm8650: Add video and
- camera clock controllers
-To: Jagadeesh Kona <quic_jkona@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, linux-arm-msm@vger.kernel.org, 
-	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>, 
-	Satya Priya Kakitapalli <quic_skakitap@quicinc.com>, Ajit Pandey <quic_ajipan@quicinc.com>, 
-	Imran Shaik <quic_imrashai@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, 4 Apr 2024 at 13:06, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
->
->
->
-> On 4/4/2024 11:00 AM, Dmitry Baryshkov wrote:
-> > On Thu, 4 Apr 2024 at 08:13, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
-> >>
-> >>
-> >>
-> >> On 4/3/2024 9:24 PM, Dmitry Baryshkov wrote:
-> >>> On Wed, 3 Apr 2024 at 10:16, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 3/25/2024 11:38 AM, Jagadeesh Kona wrote:
-> >>>>>
-> >>>>>
-> >>>>> On 3/21/2024 6:43 PM, Dmitry Baryshkov wrote:
-> >>>>>> On Thu, 21 Mar 2024 at 11:27, Jagadeesh Kona <quic_jkona@quicinc.com>
-> >>>>>> wrote:
-> >>>>>>>
-> >>>>>>> Add device nodes for video and camera clock controllers on Qualcomm
-> >>>>>>> SM8650 platform.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
-> >>>>>>> ---
-> >>>>>>>     arch/arm64/boot/dts/qcom/sm8650.dtsi | 28 ++++++++++++++++++++++++++++
-> >>>>>>>     1 file changed, 28 insertions(+)
-> >>>>>>>
-> >>>>>>> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> >>>>>>> b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> >>>>>>> index 32c0a7b9aded..d862aa6be824 100644
-> >>>>>>> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> >>>>>>> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-> >>>>>>> @@ -4,6 +4,8 @@
-> >>>>>>>      */
-> >>>>>>>
-> >>>>>>>     #include <dt-bindings/clock/qcom,rpmh.h>
-> >>>>>>> +#include <dt-bindings/clock/qcom,sm8450-videocc.h>
-> >>>>>>> +#include <dt-bindings/clock/qcom,sm8650-camcc.h>
-> >>>>>>>     #include <dt-bindings/clock/qcom,sm8650-dispcc.h>
-> >>>>>>>     #include <dt-bindings/clock/qcom,sm8650-gcc.h>
-> >>>>>>>     #include <dt-bindings/clock/qcom,sm8650-gpucc.h>
-> >>>>>>> @@ -3110,6 +3112,32 @@ opp-202000000 {
-> >>>>>>>                            };
-> >>>>>>>                    };
-> >>>>>>>
-> >>>>>>> +               videocc: clock-controller@aaf0000 {
-> >>>>>>> +                       compatible = "qcom,sm8650-videocc";
-> >>>>>>> +                       reg = <0 0x0aaf0000 0 0x10000>;
-> >>>>>>> +                       clocks = <&bi_tcxo_div2>,
-> >>>>>>> +                                <&gcc GCC_VIDEO_AHB_CLK>;
-> >>>>>>> +                       power-domains = <&rpmhpd RPMHPD_MMCX>;
-> >>>>>>> +                       required-opps = <&rpmhpd_opp_low_svs>;
-> >>>>>>
-> >>>>>> The required-opps should no longer be necessary.
-> >>>>>>
-> >>>>>
-> >>>>> Sure, will check and remove this if not required.
-> >>>>
-> >>>>
-> >>>> I checked further on this and without required-opps, if there is no vote
-> >>>> on the power-domain & its peer from any other consumers, when runtime
-> >>>> get is called on device, it enables the power domain just at the minimum
-> >>>> non-zero level. But in some cases, the minimum non-zero level of
-> >>>> power-domain could be just retention and is not sufficient for clock
-> >>>> controller to operate, hence required-opps property is needed to specify
-> >>>> the minimum level required on power-domain for this clock controller.
-> >>>
-> >>> In which cases? If it ends up with the retention vote, it is a bug
-> >>> which must be fixed.
-> >>>
-> >>
-> >> The minimum non-zero level(configured from bootloaders) of MMCX is
-> >> retention on few chipsets but it can vary across the chipsets. Hence to
-> >> be on safer side from our end, it is good to have required-opps in DT to
-> >> specify the minimum level required for this clock controller.
-> >
-> > We are discussing sm8650, not some abstract chipset. Does it list
-> > retention or low_svs as a minimal level for MMCX?
-> >
->
-> Actually, the minimum level for MMCX is external to the clock
-> controllers.
+On Thu, 4 Apr 2024 13:58:43 +0200
+Jiri Olsa <olsajiri@gmail.com> wrote:
 
-Yes, it comes from cmd-db
+> On Wed, Apr 03, 2024 at 07:00:07PM -0700, Andrii Nakryiko wrote:
+> 
+> SNIP
+> 
+> > Check rt_sigreturn syscall (manpage at [0], for example).
+> > 
+> >        sigreturn() exists only to allow the implementation of signal
+> >        handlers.  It should never be called directly.  (Indeed, a simple
+> >        sigreturn() wrapper in the GNU C library simply returns -1, with
+> >        errno set to ENOSYS.)  Details of the arguments (if any) passed
+> >        to sigreturn() vary depending on the architecture.  (On some
+> >        architectures, such as x86-64, sigreturn() takes no arguments,
+> >        since all of the information that it requires is available in the
+> >        stack frame that was previously created by the kernel on the
+> >        user-space stack.)
+> > 
+> > This is a very similar use case. Also, check its source code in
+> > arch/x86/kernel/signal_64.c. It sends SIGSEGV to the calling process
+> > on any sign of something not being right. It's exactly the same with
+> > sys_uretprobe.
+> > 
+> >   [0] https://man7.org/linux/man-pages/man2/sigreturn.2.html
+> > 
+> > > And the number of syscalls are limited resource.
+> > 
+> > We have almost 500 of them, it didn't seems like adding 1-2 for good
+> > reasons would be a problem. Can you please point to where the limits
+> > on syscalls as a resource are described? I'm curious to learn.
+> > 
+> > >
+> > > I'm actually not sure how much we need to care of it, but adding a new
+> > > syscall is worth to be discussed carefully because all of them are
+> > > user-space compatibility.
+> > 
+> > Absolutely, it's a good discussion to have.
+> > 
+> > >
+> > > > > > > Also, we should run syzkaller on this syscall. And if uretprobe is
+> > > > > >
+> > > > > > right, I'll check on syzkaller
+> > > > > >
+> > > > > > > set in the user function, what happen if the user function directly
+> > > > > > > calls this syscall? (maybe it consumes shadow stack?)
+> > > > > >
+> > > > > > the process should receive SIGILL if there's no pending uretprobe for
+> > > > > > the current task, or it will trigger uretprobe if there's one pending
+> > > > >
+> > > > > No, that is too aggressive and not safe. Since the syscall is exposed to
+> > > > > user program, it should return appropriate error code instead of SIGILL.
+> > > > >
+> > > >
+> > > > This is the way it is today with uretprobes even through interrupt.
+> > >
+> > > I doubt that the interrupt (exception) and syscall should be handled
+> > > differently. Especially, this exception is injected by uprobes but
+> > > syscall will be caused by itself. But syscall can be called from user
+> > > program (of couse this works as sys_kill(self, SIGILL)).
+> > 
+> > Yep, I'd keep the behavior the same between uretprobes implemented
+> > through int3 and sys_uretprobe.
+> 
+> +1 
+> 
+> > 
+> > >
+> > > > E.g., it could happen that user process is using fibers and is
+> > > > replacing stack pointer without kernel realizing this, which will
+> > > > trigger some defensive checks in uretprobe handling code and kernel
+> > > > will send SIGILL because it can't support such cases. This is
+> > > > happening today already, and it works fine in practice (except for
+> > > > applications that manually change stack pointer, too bad, you can't
+> > > > trace them with uretprobes, unfortunately).
+> > >
+> > > OK, we at least need to document it.
+> > 
+> > +1, yep
+> > 
+> > >
+> > > >
+> > > > So I think it's absolutely adequate to have this behavior if the user
+> > > > process is *intentionally* abusing this API.
+> > >
+> > > Of course user expected that it is abusing. So at least we need to
+> > > add a document that this syscall number is reserved to uprobes and
+> > > user program must not use it.
+> > >
+> > 
+> > Totally agree about documenting this.
+> 
+> ok there's map page on sigreturn.. do you think we should add man page
+> for uretprobe or you can think of some other place to document it?
 
->  But the clock controller requires MMCX to be atleast at
-> lowsvs for it to be functional.
+I think it is better to have a man-page. Anyway, to discuss and explain
+this syscall, the man-page is a good format to describe it.
 
-Correct
+> 
+> > 
+> > > >
+> > > > > >
+> > > > > > but we could limit the syscall to be executed just from the trampoline,
+> > > > > > that should prevent all the user space use cases, I'll do that in next
+> > > > > > version and add more tests for that
+> > > > >
+> > > > > Why not limit? :) The uprobe_handle_trampoline() expects it is called
+> > > > > only from the trampoline, so it is natural to check the caller address.
+> > > > > (and uprobe should know where is the trampoline)
+> > > > >
+> > > > > Since the syscall is always exposed to the user program, it should
+> > > > > - Do nothing and return an error unless it is properly called.
+> > > > > - check the prerequisites for operation strictly.
+> > > > > I concern that new system calls introduce vulnerabilities.
+> > > > >
+> > > >
+> > > > As Oleg and Jiri mentioned, this syscall can't harm kernel or other
+> > > > processes, only the process that is abusing the API. So any extra
+> > > > checks that would slow down this approach is an unnecessary overhead
+> > > > and complication that will never be useful in practice.
+> > >
+> > > I think at least it should check the caller address to ensure the
+> > > address is in the trampoline.
+> > > But anyway, uprobes itself can break the target process, so no one
+> > > might care if this system call breaks the process now.
+> > 
+> > If we already have an expected range of addresses, then I think it's
+> > fine to do a quick unlikely() check. I'd be more concerned if we need
+> > to do another lookup or search to just validate this. I'm sure Jiri
+> > will figure it out.
+> 
+> Oleg mentioned the trampoline address check could race with another
+> thread's mremap call, however trap is using that check as well, it
+> still seems like good idea to do it also in the uretprobe syscall
 
-> Hence we need to keep required-opps to
-> ensure the same without relying on the actual minimum level for MMCX.
+Yeah, and also, can we add a stack pointer check if the trampoline is
+shared with other probe points?
 
-And this is not correct. There is no need for the DT to be redundant.
-I plan to send patches removing the existing required-opps when they
-are not required.
+Thank you,
+
+> 
+> jirka
+
 
 -- 
-With best wishes
-Dmitry
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
