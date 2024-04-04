@@ -1,262 +1,124 @@
-Return-Path: <linux-kernel+bounces-132107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12F6A898FC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:40:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A82C7898FC4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:43:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 326B71C21ADD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:40:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 038F3B21A42
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:43:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF3913A247;
-	Thu,  4 Apr 2024 20:40:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A47C13A41A;
+	Thu,  4 Apr 2024 20:43:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="f2cNO35/"
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I1ImY5ow"
+Received: from mail-yw1-f195.google.com (mail-yw1-f195.google.com [209.85.128.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36D801E868;
-	Thu,  4 Apr 2024 20:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0158E1292CE;
+	Thu,  4 Apr 2024 20:43:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712263235; cv=none; b=NQ8C+zx3pjrFcb2EAmzD2CckFuITNqSLUswnZws29CZwpfe1iV83yPFIzanBFI2/A7Uzrl4o4AIkRUq5rls7p0bqF1Ya7WNcQJSGGJ7yxo45BIkij7UAjs3DhCheiXk7d05EhxgXBCm8SMOl/3XxBj3U08V4dnZatzCxD3kjWms=
+	t=1712263423; cv=none; b=G6gQH0Xj6BSMEkJ5rMiDZE/j/DJwx2VA25ZzHCoekLnwpg+3iFL5MJFD3VA1H3Nt18muZRzii5XhL8cUWV7dpzAl3iAlzYD7zhABofnGy1HPUNmDyMLL4p+65fO4Pg9n4/00M5zU4aHoG8iBzPN0CihxA5TXmfzlmbJLy43cf9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712263235; c=relaxed/simple;
-	bh=yd3e8gE922eYsYs1vuWFayYKG3OJqH7isnN00dFQavQ=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=TMuHLbdf3gx9L3WpAn7w1d3j9zLJr6l/NZyKaMUQH165v7xjl/KuBRZ6A5l1fqhVD32nbh/eJPnV6mWxswvXT8AwA0RaEJZDPx+RJHpWnioGSmXkfbCKIiAcVLOi4DmU6BoswfOo5fFo56hTWs0JBOcDrlpwjeG5ivIj5/cUzm8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=f2cNO35/; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1712263229; x=1712522429;
-	bh=/r2dqqHabl6s0yl9bFd2ZPmBVmtjU4+UW6w3beXmG14=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=f2cNO35/R2nxiVhhEcnbzWuJBmvLAaPKSihWgXgw9Dx4EeXN1Tkn2Tq4Z9usRC5wr
-	 ewf4R20al1GzRJoZwnVK7wzD5w+uHnpLlJdmFe+OgmvEgCYdST1V/DeScMqB9F1N8m
-	 8NhAu8VHcp7rEpYi7wlYDFNbQfSk/ZwzO8D4q3aCJTO1HywnZPt4icfwQ/4EROBX/f
-	 fMyHzaealHFwMNPb8Oi7iN5sCHkgVor5N2rTJ6wit6GAPgzr2lsFn17Qhe4YjVtqYy
-	 SZgPBqdlP/0dB7c9IdjVdcwCq1szysQ9mnrf7LFews4x33uDN2WTND0k4WqxJFZd5H
-	 yg/CclUuyGBxw==
-Date: Thu, 04 Apr 2024 20:40:20 +0000
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, Kees Cook <keescook@chromium.org>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, =?utf-8?Q?Arve_Hj=C3=B8nnev=C3=A5g?= <arve@android.com>, Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v4 1/4] rust: uaccess: add userspace pointers
-Message-ID: <d0558622-c287-4efd-8ed9-0b2cf15d7c1a@proton.me>
-In-Reply-To: <20240404-alice-mm-v4-1-49a84242cf02@google.com>
-References: <20240404-alice-mm-v4-0-49a84242cf02@google.com> <20240404-alice-mm-v4-1-49a84242cf02@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712263423; c=relaxed/simple;
+	bh=oJzU1DchjJ7xBagvA/BSZcE6n68phH2iAnsMriy52xs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hx2Bfig2uWjUW022yHcoRHalzFCpyEXcv9Qb1gFaLFDZNQRiOouZWxHxCxEZCIFeOl5A2JqQDeDSw1kJMP/qEPyNztGa8qYApwwJN+iVosjFnYbLwSSWkmc4qXNtUf0vlvtVRdc7ieob1Giudp0vgAvWmmbw0NKHXZ9eazIuT1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I1ImY5ow; arc=none smtp.client-ip=209.85.128.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f195.google.com with SMTP id 00721157ae682-60a104601dcso16022327b3.2;
+        Thu, 04 Apr 2024 13:43:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712263421; x=1712868221; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OKmfpV6KrJ0i98Wh/0eskG0hyAllvgPjh1mOsK1t4hU=;
+        b=I1ImY5owmZqE6IhCJvRkMtcG9dxv8wOr4SVu739HRdzyDC4ZZn7Fv5i1oXlLaiyurv
+         unwgbO+aKznCtdpcFQ6VhEclpss9MRwC2WSuKjJYlm+XOtDkYsdCa0iRQGar1Bk6xAwu
+         kKZfHcXHHph0FO3SQx+5o2zDhELgdBq1aTXeMH48gaOVVNEaCqUZgjr14E4DJtLnWHRe
+         p/SzoQiqCnNd9W7clTWya74E+U6lnZb+DUuzVeIem01OnAKJWt7fqmnKfkCV4ywuNvt9
+         gWMeDFfuANj4ycGe/nuR9bbW1DBPcDd0MPQOOy6DpqT4BvwsAp7d1qr7uHp+gaaLqe+I
+         LZlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712263421; x=1712868221;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OKmfpV6KrJ0i98Wh/0eskG0hyAllvgPjh1mOsK1t4hU=;
+        b=nnuvnQZ/+rPNYQe/IoQr6IEgZhTo8XIWhYJ74Qa8Ob4L/MKfbrw38/ttAkBW40wsR8
+         RTUBOCOhXrmgdCdV9dI6rS5rlpzxVpsB4e86+8nznTQM1DSKcrf+kCJebuiO9/R/4orA
+         mvfohnR9xysR0C1o1BFzNPtMhzn4asvNGcnp7VB8Dvg+QbA4RR5gOeo3j0DbPVrDx3LF
+         O8PrVkdiWllf+TDf37tZmbMPnhN/kuifw4TCgfSJ2IgGyCMhLHEV1fZaTZlyKXthQUO0
+         kazFBYSA+fnufl4EWXy7LkAQUG9lA4ziCrTzxMscZkapqfdNVisSiKwCmCjFlPDyEujC
+         JzqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUNLDLvsNpt/+Dg8DvlUAj/80l899PP0y3X+/+MoZ+pU3JkkdCL30SOMRkx6/1xyNpQqenlIG9yG4azvWPeRPE64SlzzLKLF3b5EhEX
+X-Gm-Message-State: AOJu0Yww/lmYJGwRRhFC+TVY/e7tU6dbfjBiMnj4lkzbH98sfHetRa3r
+	NiRyNLAOJ8l+DvAwJuTJAGOLpbrX6PpWVLbFjMZmB2Lyd3ToBe/d
+X-Google-Smtp-Source: AGHT+IGDgKuMAKhqUpXoM3ovArMEGP+ceyMkb2rh8iiSQhZCVHS7jAbeIre6Po29dMVGSorIXuhCzQ==
+X-Received: by 2002:a0d:ca01:0:b0:615:1ba3:5732 with SMTP id m1-20020a0dca01000000b006151ba35732mr3527710ywd.11.1712263420902;
+        Thu, 04 Apr 2024 13:43:40 -0700 (PDT)
+Received: from [10.102.6.66] ([208.97.243.82])
+        by smtp.gmail.com with ESMTPSA id if3-20020a05690c690300b0061511220f16sm45006ywb.92.2024.04.04.13.43.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 13:43:39 -0700 (PDT)
+Message-ID: <b5f79571-b4a8-4f21-8dc8-e1aa11056a5d@gmail.com>
+Date: Thu, 4 Apr 2024 16:43:38 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC net-next 07/10] net: dsa: mv88e6xxx: Track bridge mdb
+ objects
+To: Vladimir Oltean <olteanv@gmail.com>,
+ Joseph Huang <Joseph.Huang@garmin.com>
+Cc: netdev@vger.kernel.org, Andrew Lunn <andrew@lunn.ch>,
+ Florian Fainelli <f.fainelli@gmail.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Roopa Prabhu <roopa@nvidia.com>, Nikolay Aleksandrov <razor@blackwall.org>,
+ =?UTF-8?Q?Linus_L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+ linux-kernel@vger.kernel.org, bridge@lists.linux.dev
+References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
+ <20240402001137.2980589-8-Joseph.Huang@garmin.com>
+ <20240402122343.a7o5narxsctrkaoo@skbuf>
+Content-Language: en-US
+From: Joseph Huang <joseph.huang.2024@gmail.com>
+In-Reply-To: <20240402122343.a7o5narxsctrkaoo@skbuf>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 04.04.24 14:31, Alice Ryhl wrote:
-> diff --git a/rust/kernel/uaccess.rs b/rust/kernel/uaccess.rs
-> new file mode 100644
-> index 000000000000..3f8ad4dc13c4
-> --- /dev/null
-> +++ b/rust/kernel/uaccess.rs
-> @@ -0,0 +1,311 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +//! Slices to user space memory regions.
-> +//!
-> +//! C header: [`include/linux/uaccess.h`](srctree/include/linux/uaccess.=
-h)
-> +
-> +use crate::{bindings, error::code::*, error::Result};
-> +use alloc::vec::Vec;
-> +use core::ffi::{c_ulong, c_void};
-> +use core::mem::MaybeUninit;
-> +
-> +/// A pointer to an area in userspace memory, which can be either read-o=
-nly or
-> +/// read-write.
-> +///
-> +/// All methods on this struct are safe: attempting to read or write on =
-bad
-> +/// addresses (either out of the bound of the slice or unmapped addresse=
-s) will
-> +/// return `EFAULT`. Concurrent access, *including data races to/from us=
-erspace
-> +/// memory*, is permitted, because fundamentally another userspace
-> +/// thread/process could always be modifying memory at the same time (in=
- the
-> +/// same way that userspace Rust's [`std::io`] permits data races with t=
-he
-> +/// contents of files on disk). In the presence of a race, the exact byt=
-e values
-> +/// read/written are unspecified but the operation is well-defined. Kern=
-elspace
-> +/// code should validate its copy of data after completing a read, and n=
-ot
-> +/// expect that multiple reads of the same address will return the same =
-value.
-> +///
-> +/// These APIs are designed to make it difficult to accidentally write T=
-OCTOU
-> +/// (time-of-check to time-of-use) bugs. Every time a memory location is=
- read,
-> +/// the reader's position is advanced by the read length and the next re=
-ad will
-> +/// start from there. This helps prevent accidentally reading the same l=
-ocation
-> +/// twice and causing a TOCTOU bug.
-> +///
-> +/// Creating a [`UserSliceReader`] and/or [`UserSliceWriter`] consumes t=
-he
-> +/// `UserSlice`, helping ensure that there aren't multiple readers or wr=
-iters to
-> +/// the same location.
-> +///
-> +/// If double-fetching a memory location is necessary for some reason, t=
-hen that
-> +/// is done by creating multiple readers to the same memory location, e.=
-g. using
-> +/// [`clone_reader`].
+Hi Vladimir,
 
-I think we should have consistent 100 column formatting. And not
-something less.
+On 4/2/2024 8:23 AM, Vladimir Oltean wrote:
+> Can you comment on the feasibility/infeasibility of Tobias' proposal of:
+> "The bridge could just provide some MDB iterator to save us from having
+> to cache all the configured groups."?
+> https://lore.kernel.org/netdev/87sg31n04a.fsf@waldekranz.com/
+> 
+> What is done here will have to be scaled to many drivers - potentially
+> all existing DSA ones, as far as I'm aware.
+> 
 
-> +///
-> +/// # Examples
+I thought about implementing an MDB iterator as suggested by Tobias, but 
+I'm a bit concerned about the coherence of these MDB objects. In theory, 
+when the device driver is trying to act on an event, the source of the 
+trigger may have changed its state in the bridge already. If, upon 
+receiving an event in the device driver, we iterate over what the bridge 
+has at that instant, the differences between the worlds as seen by the 
+bridge and the device driver might lead to some unexpected results. 
+However, if we cache the MDB objects in the device driver, at least the 
+order in which the events took place will be coherent and at any give 
+time the state of the MDB objects in the device driver can be guaranteed 
+to be sane. This is also the approach the prestera device driver took.
 
-[...]
-
-> +    /// Reads raw data from the user slice into a kernel buffer.
-> +    ///
-> +    /// Fails with `EFAULT` if the read happens on a bad address.
-> +    pub fn read_raw(&mut self, out: &mut [MaybeUninit<u8>]) -> Result {
-> +        let len =3D out.len();
-> +        let out_ptr =3D out.as_mut_ptr().cast::<c_void>();
-> +        if len > self.length {
-> +            return Err(EFAULT);
-> +        }
-> +        let Ok(len_ulong) =3D c_ulong::try_from(len) else {
-> +            return Err(EFAULT);
-> +        };
-> +        // SAFETY: The caller promises that `out` is valid for writing `=
-len` bytes.
-
-This comment needs updating.
-
-> +        let res =3D unsafe { bindings::copy_from_user(out_ptr, self.ptr,=
- len_ulong) };
-> +        if res !=3D 0 {
-> +            return Err(EFAULT);
-> +        }
-> +        // Userspace pointers are not directly dereferencable by the ker=
-nel, so
-> +        // we cannot use `add`, which has C-style rules for defined beha=
-vior.
-> +        self.ptr =3D self.ptr.wrapping_byte_add(len);
-> +        self.length -=3D len;
-> +        Ok(())
-> +    }
-> +
-> +    /// Reads raw data from the user slice into a kernel buffer.
-> +    ///
-> +    /// Fails with `EFAULT` if the read happens on a bad address.
-> +    pub fn read_slice(&mut self, out: &mut [u8]) -> Result {
-> +        // SAFETY: The types are compatible and `read_raw` doesn't write
-> +        // uninitialized bytes to `out`.
-
-Can you add this as a guarantee to `read_raw`?
-
-> +        let out =3D unsafe { &mut *(out as *mut [u8] as *mut [MaybeUnini=
-t<u8>]) };
-> +        self.read_raw(out)
-> +    }
-> +
-> +    /// Reads the entirety of the user slice, appending it to the end of=
- the
-> +    /// provided buffer.
-> +    ///
-> +    /// Fails with `EFAULT` if the read happens on a bad address.
-> +    pub fn read_all(mut self, buf: &mut Vec<u8>) -> Result {
-> +        let len =3D self.length;
-> +        buf.try_reserve(len)?;
-> +
-> +        // The call to `try_reserve` was successful, so the spare capaci=
-ty is at
-> +        // least `len` bytes long.
-> +        self.read_raw(&mut buf.spare_capacity_mut()[..len])?;
-> +
-> +        // SAFETY: Since the call to `read_raw` was successful, so the n=
-ext
-> +        // `len` bytes of the vector have been initialized.
-> +        unsafe { buf.set_len(buf.len() + len) };
-> +        Ok(())
-> +    }
-> +}
-> +
-> +/// A writer for [`UserSlice`].
-> +///
-> +/// Used to incrementally write into the user slice.
-> +pub struct UserSliceWriter {
-> +    ptr: *mut c_void,
-> +    length: usize,
-> +}
-> +
-> +impl UserSliceWriter {
-> +    /// Returns the amount of space remaining in this buffer.
-> +    ///
-> +    /// Note that even writing less than this number of bytes may fail.
-> +    pub fn len(&self) -> usize {
-> +        self.length
-> +    }
-> +
-> +    /// Returns `true` if no more data can be written to this buffer.
-> +    pub fn is_empty(&self) -> bool {
-> +        self.length =3D=3D 0
-> +    }
-> +
-> +    /// Writes raw data to this user pointer from a kernel buffer.
-> +    ///
-> +    /// Fails with `EFAULT` if the write happens on a bad address.
-> +    pub fn write_slice(&mut self, data: &[u8]) -> Result {
-> +        let len =3D data.len();
-> +        let data_ptr =3D data.as_ptr().cast::<c_void>();
-> +        if len > self.length {
-> +            return Err(EFAULT);
-> +        }
-> +        let Ok(len_ulong) =3D c_ulong::try_from(len) else {
-> +            return Err(EFAULT);
-> +        };
-> +        let res =3D unsafe { bindings::copy_to_user(self.ptr, data_ptr, =
-len_ulong) };
-
-Missing SAFETY comment.
-
---=20
-Cheers,
-Benno
-
-> +        if res !=3D 0 {
-> +            return Err(EFAULT);
-> +        }
-> +        // Userspace pointers are not directly dereferencable by the ker=
-nel, so
-> +        // we cannot use `add`, which has C-style rules for defined beha=
-vior.
-> +        self.ptr =3D self.ptr.wrapping_byte_add(len);
-> +        self.length -=3D len;
-> +        Ok(())
-> +    }
-> +}
->=20
-> --
-> 2.44.0.478.gd926399ef9-goog
->=20
-
+Thanks,
+Joseph
 
