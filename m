@@ -1,347 +1,205 @@
-Return-Path: <linux-kernel+bounces-131581-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFB1A8989B8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:16:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7110E8989BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:16:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 747E01F2D62C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:16:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E67611F2D925
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:16:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8127129E66;
-	Thu,  4 Apr 2024 14:15:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3D87129E88;
+	Thu,  4 Apr 2024 14:15:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eC98v50z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b="Y7VI8v9X"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5C6129A9A;
-	Thu,  4 Apr 2024 14:15:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0352C129E6E
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712240141; cv=none; b=DXR09WqZCqKgPi9LXmhUVEELEKO07Kw24Dd5O4Sv86eIkArbyKIJeQ8+zKrRB9fFebDfqNg9uLzBb/VUA4RuK06T7SnwWt+ZMlOtphJa9oDlx3Oy0PePMpr+OqV9LMgTNQBS6jzCZ4isOilS4eBWgTiwnz4fbObOG25An26CNWM=
+	t=1712240145; cv=none; b=ALPBhGQcBLtZyn60yNG+cjLFqwVhWLdElEN3wbkl6g/xhwzGBRQPFGmpDi7IAtH86KBJen041TanZ+NvpmXRDo5tF58XjyaH/B2HM4NXURc4te8f/IMbWhyZ7LX0mKjrW4CqtExSuyzQ75/Qh3sbM0PePvayYc6mn3wIxv4SzhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712240141; c=relaxed/simple;
-	bh=+tPhXsIiXNNLRaL9PO2nWdDpnfyN5wkWP/ceOwTMptM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=OORWihrQyQsoanZvQ2xAUZ0GHGKTU3RxUenmo/7BAI6DrjPVEjD6TK5bXD+lqEZmLeNnnNaAf2x4XSZRph3CAuMaJMMnpOsb+o7YhxivcFT7ADo668QK82v6QRv27uQ24lkMJjuGi0b2vofSObuO9TePTVVfCz2rev9X5MjhYvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eC98v50z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40579C433C7;
-	Thu,  4 Apr 2024 14:15:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712240140;
-	bh=+tPhXsIiXNNLRaL9PO2nWdDpnfyN5wkWP/ceOwTMptM=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=eC98v50zw8xKuQevrDgaMGLl7AICPcIgw1AGIP+N5S641/EZEN6DvSGgeg4IyQhOj
-	 wKXmV/GOGdWnHKGiK/kQlSfh+RflJWZBmfff1gGPBH067goHEhm8u37Bn8h9ev0SBj
-	 dakANYhkjCZ58h8X07U+DeuQn++dAAP/O8q9M4xA9ozXpUMAeNsSeInpVUESVFRmXV
-	 W5lhWYFlylXjh9kM+nNt6QuW7kdMO+aePArtvk4ddSqeO/v916BDzDGIW+vjQ++7nE
-	 E4Ur+BCZFPf83BKCQJKOeLJKJ004A3k3WplGXHp145FLNg/jTFjLJCQAYoZB59EgyJ
-	 s5B01R+uLk/FA==
-From: Rob Herring <robh@kernel.org>
-Date: Thu, 04 Apr 2024 09:15:12 -0500
-Subject: [PATCH 3/3] of: Use scope based of_node_put() cleanups
+	s=arc-20240116; t=1712240145; c=relaxed/simple;
+	bh=1WHK8xxK5txNWUkfWIrOkumfp4VOWMOySmuMpdklqew=;
+	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
+	 Content-Type; b=Jk/ksseCHpGBcOWNrOA4MmJq/YBDw1H7YEQUc3QfGuhGJ8nqQBV4SKvvh2aWxuqyGeQJp9iJRqtXdabbwUVPoYNyV6KhMJxvXz89KctxWhN6L8Qkpl8ESjcKaL8I0wa/RyQ6Y/isc4WiJc50gp5DaJzANA0UHs8IVHV/8n5qSFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com; spf=pass smtp.mailfrom=dabbelt.com; dkim=pass (2048-bit key) header.d=dabbelt-com.20230601.gappssmtp.com header.i=@dabbelt-com.20230601.gappssmtp.com header.b=Y7VI8v9X; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dabbelt.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dabbelt.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e28be94d32so7702715ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:15:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20230601.gappssmtp.com; s=20230601; t=1712240142; x=1712844942; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3dQTK01Mc93Hqq7XN7ozDnupNum3f6cBI1vXeUhrQTs=;
+        b=Y7VI8v9Xv6Zx76kx79+pfaphMGbcKrmRdgmUhMSEW6Dd76fuUGyt2TerP7+TzF2sVi
+         U1Xz7pfIIoUecsz2638u6zDG6NUekEK7gcq70kTYEr9hu9oaezxPqms5YCiIX+C8PsVx
+         jTzzrtJ42P7kqiAEE2M68Yc6YCV6UDDvi1xqAJ2qRvlYh3pXrpSqu7Fc7XOTqjJCSstl
+         ZiqtyEsCN+1kkjULg6JFKH9bEb8CFrhpNqyRVTSH9IVsaQlx83d7pUxjCIhcG3HUY4HY
+         fOaRHIVId163+HomqN6N66AirQzfD+ILjRPxc/7EFPZyNFvTyc/0tWFAl4+ckHB2V9U6
+         XR/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712240142; x=1712844942;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3dQTK01Mc93Hqq7XN7ozDnupNum3f6cBI1vXeUhrQTs=;
+        b=r/KmI8kHjMZIb5Vow71li9TNtwJtcOI+YPqrZIufbuPErgRqpCclYVPfE4oZhAmSsv
+         05WaazrlLtmFmZODrJFyMlqOV+Y9hvOTP9fMaD9iBHJErttLVjYyRHETrciGn343pm/w
+         95ZodXKkUn8uNHVXexSm02mfcowPH6acbHk9ND4XDoE4M5Bryt6tzZr87kMMYJhnha1A
+         C8V8wDpL0zrfxL4V9JAYjeyp2zHHUHFZ6njZZiI5YP4ZBZqCAZh9cPHJmaKmk1Di8MNR
+         zGotayqHoF5GRtVftKF3zllnfO3/16DTOGu4VnkAyP98ogvbmEB8KduJ00z0qCFLEVBX
+         F+xg==
+X-Gm-Message-State: AOJu0YyAmsddD39do2oYlxlVxqeBjq1XRAjuCDjoxfIWn8oTrWDsJJlO
+	153nQdOL9kK21djNTur7f2qym+3auzFZl9z7SKIc3YoAgd3ci2EmS19MVO1lzq/2LeW8EUedafz
+	E
+X-Google-Smtp-Source: AGHT+IFe8EfuHyfR6/MI5fUajRdSh/iNX7dmkKRiYA/xzF9WgxpkGHT5zehtXJ97sF4LICcgy/mGgg==
+X-Received: by 2002:a17:902:e542:b0:1dd:5f85:118c with SMTP id n2-20020a170902e54200b001dd5f85118cmr2773574plf.62.1712240141481;
+        Thu, 04 Apr 2024 07:15:41 -0700 (PDT)
+Received: from localhost ([50.145.13.30])
+        by smtp.gmail.com with ESMTPSA id k5-20020a170902c40500b001e252f2bdd2sm9133829plk.289.2024.04.04.07.15.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 07:15:40 -0700 (PDT)
+Date: Thu, 04 Apr 2024 07:15:40 -0700 (PDT)
+X-Google-Original-Date: Thu, 04 Apr 2024 07:15:36 PDT (-0700)
+Subject:     Re: [PATCH RFC cmpxchg 8/8] riscv: Emulate one-byte and two-byte cmpxchg
+In-Reply-To: <20240401213950.3910531-8-paulmck@kernel.org>
+CC: linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
+  andi.shyti@linux.intel.com, andrzej.hajda@intel.com, linux-riscv@lists.infradead.org
+From: Palmer Dabbelt <palmer@dabbelt.com>
+To: paulmck@kernel.org
+Message-ID: <mhng-d6a8a972-5054-4c48-a903-5a53a31da9ad@palmer-ri-x1c9a>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240404-dt-cleanup-free-v1-3-c60e6cba8da9@kernel.org>
-References: <20240404-dt-cleanup-free-v1-0-c60e6cba8da9@kernel.org>
-In-Reply-To: <20240404-dt-cleanup-free-v1-0-c60e6cba8da9@kernel.org>
-To: Saravana Kannan <saravanak@google.com>
-Cc: Jonathan Cameron <jic23@kernel.org>, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-X-Mailer: b4 0.13-dev
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Use the relatively new scope based of_node_put() cleanup to simplify
-function exit handling. Doing so reduces the chances of forgetting an
-of_node_put() and simplifies error paths by avoiding the need for goto
-statements.
+On Mon, 01 Apr 2024 14:39:50 PDT (-0700), paulmck@kernel.org wrote:
+> Use the new cmpxchg_emu_u8() and cmpxchg_emu_u16() to emulate one-byte
+> and two-byte cmpxchg() on riscv.
+>
+> [ paulmck: Apply kernel test robot feedback. ]
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- drivers/of/address.c  | 60 ++++++++++++++++-----------------------------------
- drivers/of/property.c | 22 ++++++-------------
- 2 files changed, 26 insertions(+), 56 deletions(-)
+I'm not entirely following the thread, but sounds like there's going to 
+be generic kernel users of this now?  Before we'd said "no" to the 
+byte/half atomic emulation routines beacuse they weren't used, but if 
+it's a generic thing then I'm find adding them.
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index ae46a3605904..f7b2d535a6d1 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -491,7 +491,6 @@ static u64 __of_translate_address(struct device_node *dev,
- 				  const __be32 *in_addr, const char *rprop,
- 				  struct device_node **host)
- {
--	struct device_node *parent = NULL;
- 	struct of_bus *bus, *pbus;
- 	__be32 addr[OF_MAX_ADDR_CELLS];
- 	int na, ns, pna, pns;
-@@ -504,7 +503,7 @@ static u64 __of_translate_address(struct device_node *dev,
- 
- 	*host = NULL;
- 	/* Get parent & match bus type */
--	parent = get_parent(dev);
-+	struct device_node *parent __free(device_node) = get_parent(dev);
- 	if (parent == NULL)
- 		goto bail;
- 	bus = of_match_bus(parent);
-@@ -573,7 +572,6 @@ static u64 __of_translate_address(struct device_node *dev,
- 		of_dump_addr("one level translation:", addr, na);
- 	}
-  bail:
--	of_node_put(parent);
- 	of_node_put(dev);
- 
- 	return result;
-@@ -654,19 +652,16 @@ EXPORT_SYMBOL(of_translate_dma_address);
- const __be32 *of_translate_dma_region(struct device_node *dev, const __be32 *prop,
- 				      phys_addr_t *start, size_t *length)
- {
--	struct device_node *parent;
-+	struct device_node *parent __free(device_node) = __of_get_dma_parent(dev);
- 	u64 address, size;
- 	int na, ns;
- 
--	parent = __of_get_dma_parent(dev);
- 	if (!parent)
- 		return NULL;
- 
- 	na = of_bus_n_addr_cells(parent);
- 	ns = of_bus_n_size_cells(parent);
- 
--	of_node_put(parent);
--
- 	address = of_translate_dma_address(dev, prop);
- 	if (address == OF_BAD_ADDR)
- 		return NULL;
-@@ -688,21 +683,19 @@ const __be32 *__of_get_address(struct device_node *dev, int index, int bar_no,
- {
- 	const __be32 *prop;
- 	unsigned int psize;
--	struct device_node *parent;
-+	struct device_node *parent __free(device_node) = of_get_parent(dev);
- 	struct of_bus *bus;
- 	int onesize, i, na, ns;
- 
--	/* Get parent & match bus type */
--	parent = of_get_parent(dev);
- 	if (parent == NULL)
- 		return NULL;
-+
-+	/* match the parent's bus type */
- 	bus = of_match_bus(parent);
--	if (strcmp(bus->name, "pci") && (bar_no >= 0)) {
--		of_node_put(parent);
-+	if (strcmp(bus->name, "pci") && (bar_no >= 0))
- 		return NULL;
--	}
-+
- 	bus->count_cells(dev, &na, &ns);
--	of_node_put(parent);
- 	if (!OF_CHECK_ADDR_COUNT(na))
- 		return NULL;
- 
-@@ -888,14 +881,13 @@ static u64 of_translate_ioport(struct device_node *dev, const __be32 *in_addr,
-  */
- int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
- {
--	struct device_node *node = of_node_get(np);
-+	struct device_node *node __free(device_node) = of_node_get(np);
- 	const __be32 *ranges = NULL;
- 	bool found_dma_ranges = false;
- 	struct of_range_parser parser;
- 	struct of_range range;
- 	struct bus_dma_region *r;
- 	int len, num_ranges = 0;
--	int ret = 0;
- 
- 	while (node) {
- 		ranges = of_get_property(node, "dma-ranges", &len);
-@@ -905,10 +897,9 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
- 			break;
- 
- 		/* Once we find 'dma-ranges', then a missing one is an error */
--		if (found_dma_ranges && !ranges) {
--			ret = -ENODEV;
--			goto out;
--		}
-+		if (found_dma_ranges && !ranges)
-+			return -ENODEV;
-+
- 		found_dma_ranges = true;
- 
- 		node = of_get_next_dma_parent(node);
-@@ -916,10 +907,8 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
- 
- 	if (!node || !ranges) {
- 		pr_debug("no dma-ranges found for node(%pOF)\n", np);
--		ret = -ENODEV;
--		goto out;
-+		return -ENODEV;
- 	}
--
- 	of_dma_range_parser_init(&parser, node);
- 	for_each_of_range(&parser, &range) {
- 		if (range.cpu_addr == OF_BAD_ADDR) {
-@@ -930,16 +919,12 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
- 		num_ranges++;
- 	}
- 
--	if (!num_ranges) {
--		ret = -EINVAL;
--		goto out;
--	}
-+	if (!num_ranges)
-+		return -EINVAL;
- 
- 	r = kcalloc(num_ranges + 1, sizeof(*r), GFP_KERNEL);
--	if (!r) {
--		ret = -ENOMEM;
--		goto out;
--	}
-+	if (!r)
-+		return -ENOMEM;
- 
- 	/*
- 	 * Record all info in the generic DMA ranges array for struct device,
-@@ -957,9 +942,7 @@ int of_dma_get_range(struct device_node *np, const struct bus_dma_region **map)
- 		r->size = range.size;
- 		r++;
- 	}
--out:
--	of_node_put(node);
--	return ret;
-+	return 0;
- }
- #endif /* CONFIG_HAS_DMA */
- 
-@@ -1016,11 +999,9 @@ phys_addr_t __init of_dma_get_max_cpu_address(struct device_node *np)
-  */
- bool of_dma_is_coherent(struct device_node *np)
- {
--	struct device_node *node;
-+	struct device_node *node __free(device_node) = of_node_get(np);
- 	bool is_coherent = dma_default_coherent;
- 
--	node = of_node_get(np);
--
- 	while (node) {
- 		if (of_property_read_bool(node, "dma-coherent")) {
- 			is_coherent = true;
-@@ -1032,7 +1013,6 @@ bool of_dma_is_coherent(struct device_node *np)
- 		}
- 		node = of_get_next_dma_parent(node);
- 	}
--	of_node_put(node);
- 	return is_coherent;
- }
- EXPORT_SYMBOL_GPL(of_dma_is_coherent);
-@@ -1049,19 +1029,17 @@ EXPORT_SYMBOL_GPL(of_dma_is_coherent);
-  */
- static bool of_mmio_is_nonposted(struct device_node *np)
- {
--	struct device_node *parent;
- 	bool nonposted;
- 
- 	if (!IS_ENABLED(CONFIG_ARCH_APPLE))
- 		return false;
- 
--	parent = of_get_parent(np);
-+	struct device_node *parent __free(device_node) = of_get_parent(np);
- 	if (!parent)
- 		return false;
- 
- 	nonposted = of_property_read_bool(parent, "nonposted-mmio");
- 
--	of_node_put(parent);
- 	return nonposted;
- }
- 
-diff --git a/drivers/of/property.c b/drivers/of/property.c
-index a6358ee99b74..b73daf81c99d 100644
---- a/drivers/of/property.c
-+++ b/drivers/of/property.c
-@@ -40,15 +40,12 @@
-  */
- bool of_graph_is_present(const struct device_node *node)
- {
--	struct device_node *ports, *port;
-+	struct device_node *ports __free(device_node) = of_get_child_by_name(node, "ports");
- 
--	ports = of_get_child_by_name(node, "ports");
- 	if (ports)
- 		node = ports;
- 
--	port = of_get_child_by_name(node, "port");
--	of_node_put(ports);
--	of_node_put(port);
-+	struct device_node *port __free(device_node) = of_get_child_by_name(node, "port");
- 
- 	return !!port;
- }
-@@ -610,9 +607,9 @@ EXPORT_SYMBOL(of_graph_parse_endpoint);
-  */
- struct device_node *of_graph_get_port_by_id(struct device_node *parent, u32 id)
- {
--	struct device_node *node, *port;
-+	struct device_node *port;
-+	struct device_node *node __free(device_node) = of_get_child_by_name(parent, "ports");
- 
--	node = of_get_child_by_name(parent, "ports");
- 	if (node)
- 		parent = node;
- 
-@@ -626,8 +623,6 @@ struct device_node *of_graph_get_port_by_id(struct device_node *parent, u32 id)
- 			break;
- 	}
- 
--	of_node_put(node);
--
- 	return port;
- }
- EXPORT_SYMBOL(of_graph_get_port_by_id);
-@@ -655,14 +650,13 @@ struct device_node *of_graph_get_next_endpoint(const struct device_node *parent,
- 	 * parent port node.
- 	 */
- 	if (!prev) {
--		struct device_node *node;
-+		struct device_node *node __free(device_node) =
-+			of_get_child_by_name(parent, "ports");
- 
--		node = of_get_child_by_name(parent, "ports");
- 		if (node)
- 			parent = node;
- 
- 		port = of_get_child_by_name(parent, "port");
--		of_node_put(node);
- 
- 		if (!port) {
- 			pr_debug("graph: no port node found in %pOF\n", parent);
-@@ -1052,15 +1046,13 @@ static int of_fwnode_graph_parse_endpoint(const struct fwnode_handle *fwnode,
- 					  struct fwnode_endpoint *endpoint)
- {
- 	const struct device_node *node = to_of_node(fwnode);
--	struct device_node *port_node = of_get_parent(node);
-+	struct device_node *port_node __free(device_node) = of_get_parent(node);
- 
- 	endpoint->local_fwnode = fwnode;
- 
- 	of_property_read_u32(port_node, "reg", &endpoint->port);
- 	of_property_read_u32(node, "reg", &endpoint->id);
- 
--	of_node_put(port_node);
--
- 	return 0;
- }
- 
+There's a patch set over here 
+<https://lore.kernel.org/all/20240103163203.72768-2-leobras@redhat.com/> 
+that implements these more directly using LR/SC.  I was sort of on the 
+fence about just taking it even with no direct users right now, as the 
+byte/half atomic extension is working its way through the spec process 
+so we'll have them for real soon.  I stopped right there for the last 
+merge window, though, as I figured it was too late to be messing with 
+the atomics...
 
--- 
-2.43.0
+So
 
+Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+
+if you guys want to take some sort of tree-wide change to make the 
+byte/half stuff be required everywhere.  We'll eventually end up with 
+arch routines for the extension, so at that point we might as well also 
+have the more direct LR/SC flavors.
+
+If you want I can go review/merge that RISC-V patch set and then it'll 
+have time to bake for a shared tag you can pick up for all this stuff?  
+No rush on my end, just LMK.
+
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> Cc: Andi Shyti <andi.shyti@linux.intel.com>
+> Cc: Andrzej Hajda <andrzej.hajda@intel.com>
+> Cc: <linux-riscv@lists.infradead.org>
+> ---
+>  arch/riscv/Kconfig               |  1 +
+>  arch/riscv/include/asm/cmpxchg.h | 25 +++++++++++++++++++++++++
+>  2 files changed, 26 insertions(+)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index be09c8836d56b..4eaf40d0a52ec 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -44,6 +44,7 @@ config RISCV
+>  	select ARCH_HAS_UBSAN
+>  	select ARCH_HAS_VDSO_DATA
+>  	select ARCH_KEEP_MEMBLOCK if ACPI
+> +	select ARCH_NEED_CMPXCHG_1_2_EMU
+>  	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+>  	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
+>  	select ARCH_STACKWALK
+> diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
+> index 2fee65cc84432..a5b377481785c 100644
+> --- a/arch/riscv/include/asm/cmpxchg.h
+> +++ b/arch/riscv/include/asm/cmpxchg.h
+> @@ -9,6 +9,7 @@
+>  #include <linux/bug.h>
+>
+>  #include <asm/fence.h>
+> +#include <linux/cmpxchg-emu.h>
+>
+>  #define __xchg_relaxed(ptr, new, size)					\
+>  ({									\
+> @@ -170,6 +171,12 @@
+>  	__typeof__(*(ptr)) __ret;					\
+>  	register unsigned int __rc;					\
+>  	switch (size) {							\
+> +	case 1:								\
+> +		__ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
+> +		break;							\
+> +	case 2:								\
+> +		break;							\
+> +		__ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
+>  	case 4:								\
+>  		__asm__ __volatile__ (					\
+>  			"0:	lr.w %0, %2\n"				\
+> @@ -214,6 +221,12 @@
+>  	__typeof__(*(ptr)) __ret;					\
+>  	register unsigned int __rc;					\
+>  	switch (size) {							\
+> +	case 1:								\
+> +		__ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
+> +		break;							\
+> +	case 2:								\
+> +		break;							\
+> +		__ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
+>  	case 4:								\
+>  		__asm__ __volatile__ (					\
+>  			"0:	lr.w %0, %2\n"				\
+> @@ -260,6 +273,12 @@
+>  	__typeof__(*(ptr)) __ret;					\
+>  	register unsigned int __rc;					\
+>  	switch (size) {							\
+> +	case 1:								\
+> +		__ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
+> +		break;							\
+> +	case 2:								\
+> +		break;							\
+> +		__ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
+>  	case 4:								\
+>  		__asm__ __volatile__ (					\
+>  			RISCV_RELEASE_BARRIER				\
+> @@ -306,6 +325,12 @@
+>  	__typeof__(*(ptr)) __ret;					\
+>  	register unsigned int __rc;					\
+>  	switch (size) {							\
+> +	case 1:								\
+> +		__ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
+> +		break;							\
+> +	case 2:								\
+> +		break;							\
+> +		__ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
+>  	case 4:								\
+>  		__asm__ __volatile__ (					\
+>  			"0:	lr.w %0, %2\n"				\
 
