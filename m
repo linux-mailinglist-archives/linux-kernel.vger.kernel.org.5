@@ -1,121 +1,111 @@
-Return-Path: <linux-kernel+bounces-131348-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C828898692
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:57:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A53CD898694
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:58:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D62528B716
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:57:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5872728B8BD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:58:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296DD85269;
-	Thu,  4 Apr 2024 11:57:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFC2385C69;
+	Thu,  4 Apr 2024 11:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="GHw7yOx5"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bGIPWXvv"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 302B284D05
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:57:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B03785276;
+	Thu,  4 Apr 2024 11:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712231861; cv=none; b=ZvWvERgi3mZWs0WvHs9Jf1pFkLWGjtq2P0JSxRO4aPARlulsAuhscdUaNSFfu9yW70fkgdN+0CGgPoD1P5QU0lkcMf7LdWzyFcAamPmXYcHSQl9Mod5Wl8Xu1tn5twr93ttbbYjX4au8awDLgKi7iLAZLFpanvhwvZPDs+Xp5e0=
+	t=1712231867; cv=none; b=MPQKuQQjoLTa9ZlP/HNL2ZC7D7ecYrimqzE5JP5YMBXcOA8LnI3mmqOd8dfukxXIsRWQhUtK/xdmC8qBHomIBFJTVQzcBsH449m/IkTjU4sCx2ASMSdbRh7JP5j5hkA4BW24L5Q5CfGqZia0qoL5zVY77Kpno1gQpay5Nuu9z9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712231861; c=relaxed/simple;
-	bh=r2y5XgIeaVFD9YYVCCQXxvPJe8jenW3QZdB/CzLVRdQ=;
+	s=arc-20240116; t=1712231867; c=relaxed/simple;
+	bh=vfjVnDcA4y40C1ptsdkzs8++Rd0MHm7wYp7KYKcJhZA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GC7iBRGOk+eLRPPxVKx3fC0iorsNrjF8iifNXC1SMqJbfOpExO0geV2siP4xflsi7cPzCTAePNTm+eFVciiBxzUy6kncFx6A2tZ9CxoKV20hZntbQ/9QZfqFdekSGeISuhs6OAUp55eQe5Ndf1RbHBKSai36UScPQbjMz/5i0RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=GHw7yOx5; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a5193f56986so33990166b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 04:57:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1712231857; x=1712836657; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wWw71C7jU1cEwI+5ODGcknLMAR0yYHVr8hihh6Lqglg=;
-        b=GHw7yOx5X/R0s614/5Rftzsrr1O3kiprSpaywNMKFkoxb2PHZ5gMMWYTnBDonwIj5u
-         W90RiXYhSFTzTc438kzJKNdb/BvBFWI11G/3uXbuC5BoNNl6HieILMP8xPUeJsI8UlaK
-         +mbFivmR/knt0tOhbaYVybM8RaXMDjRzBnmOvY4NgbVr3duzsdmHGa044Qtcaly83HYO
-         t/4ADBu49c9g/JplcxZDIzQrAXw7dkytaQ3S/V9pvxJ5MCYOQ8waR21dA/74GK1EzAnU
-         wxNrZ3aIIwJ6LqfFgNl1LfylufRqSPE4hdF8DEqE5vnhA2t+bwtuRkAd37BKPkM9yNUD
-         E/vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712231857; x=1712836657;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wWw71C7jU1cEwI+5ODGcknLMAR0yYHVr8hihh6Lqglg=;
-        b=kBVOoIyuc8t1ZhE7X4mxOUXB35KfSsp7zjXgL6tyfC3wDj+jSJ5JSF4fAP3P1sNHs6
-         0Wh9lAw8AeLQ69RuoF4fHkER1lVcP28IqXfPhjbwgZn7DZS0vKbgSD/SRr/PJgor5IDy
-         GCO1MKeoaaCDg6ILyRd8ztftvWOkUZxpe8fSpBi/U2X7bBg53ORg1/RpLzq6LnLhWbt0
-         jhfIOuB4FtQhIeRhtgxpYPU3cqmgM4TEpklfH6QmI3nam9qp3XGBAQYak2JRBywMnzkT
-         d3ko1uF87wfa5aI7ec7b5SYIh0mFgBPnTJe4lSfQ79x3gQHFHBFd5fcJzU8tl03KaNpp
-         c8NA==
-X-Gm-Message-State: AOJu0YxidBDGY/y0Q1OLsKG8Qft2wkJJenOkuRY3V9FEoY7Cr1Y7RCE7
-	UOJ8oG1HOHKntlzYBE0vFwbDlHek2JN03zNAJYoVzuy8vAKkaod477F9jdmEx+4=
-X-Google-Smtp-Source: AGHT+IF8SdqZ3HyZZ91FGKimTKayOc7UTusAbOGT6GeUZ2TkAX0/2dzA77WUR8ICDxbEhjc/oE44yQ==
-X-Received: by 2002:a17:907:c0d:b0:a50:f172:6994 with SMTP id ga13-20020a1709070c0d00b00a50f1726994mr1816047ejc.73.1712231857594;
-        Thu, 04 Apr 2024 04:57:37 -0700 (PDT)
-Received: from localhost (cst2-173-16.cust.vodafone.cz. [31.30.173.16])
-        by smtp.gmail.com with ESMTPSA id g15-20020a170906538f00b00a4e98679e7dsm2355698ejo.87.2024.04.04.04.57.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 04:57:37 -0700 (PDT)
-Date: Thu, 4 Apr 2024 13:57:36 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Atish Patra <atishp@rivosinc.com>
-Cc: linux-kernel@vger.kernel.org, Ajay Kaher <akaher@vmware.com>, 
-	Alexandre Ghiti <alexghiti@rivosinc.com>, Alexey Makhalov <amakhalov@vmware.com>, 
-	Anup Patel <anup@brainfault.org>, Conor Dooley <conor.dooley@microchip.com>, 
-	Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, 
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH v5 08/22] RISC-V: KVM: Fix the initial sample period value
-Message-ID: <20240404-1c3dc9b63f80fc451d3a732a@orel>
-References: <20240403080452.1007601-1-atishp@rivosinc.com>
- <20240403080452.1007601-9-atishp@rivosinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ortODAXbvv+CO8GcK4ysKj+O3ZFZciDOFaMCsv0yVXn1DeEk4hT31BeJn5VKNUQ2ZRT3bQtWlaCDULPtWos/5LPnuo91CxV57WDjknx+dBX0sfTl2idXoYOE95kocPfPEskTB1R7E/IgOoUIVWNWfkThbVJQmUZo4D1ClJR+cjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bGIPWXvv; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712231862; x=1743767862;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=vfjVnDcA4y40C1ptsdkzs8++Rd0MHm7wYp7KYKcJhZA=;
+  b=bGIPWXvvYI9w38+N4HOIwsBTuDB9Bx8g0hRE6/CwnkiyEqJIMiOUQ0Lh
+   6nFecPGgSa/x//O/3ePxupuR/w/lJMxqjkh9an1uo/rFy1IpEX/kkK8ow
+   QX1o16mYuUwamwvYQ/W0KNuL95iX49XCgLdJ6LNu4oj5HIMNWaUP75I/w
+   hOuhU9BFS5ZNwox75bYCxYt1mn9FUWR0QBRF6XgH+5xkCYILogz8BSyyH
+   pz4tqbuVyfytRJb33LYYAWSO6sIPdDMqBFzvjcDl6vXl+52yRQxQu+XJi
+   wUyYpuzmJbO/gczIRE6jSnUZr3BgBkUz/hYpbrnh6KFl3oAG1wpoA5HC5
+   A==;
+X-CSE-ConnectionGUID: IbiyF15MQtyWOHRKlXUWZw==
+X-CSE-MsgGUID: +PiQYXwDTB6RKHJ1RyZcYA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7349576"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="7349576"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 04:57:42 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="915216165"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="915216165"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 04:57:38 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rsLir-00000001PyV-2E4J;
+	Thu, 04 Apr 2024 14:57:37 +0300
+Date: Thu, 4 Apr 2024 14:57:37 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v1 2/2] ACPI: LPSS: Advertise number of chip selects via
+ property
+Message-ID: <Zg6Vsc-Uh-iUX8XB@smile.fi.intel.com>
+References: <20240402152952.3578659-1-andriy.shevchenko@linux.intel.com>
+ <20240402152952.3578659-3-andriy.shevchenko@linux.intel.com>
+ <CAJZ5v0iQZXbFQFsZ+gL3==LV7UsqfOr-FZuWdoPSv0veUkuCrQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240403080452.1007601-9-atishp@rivosinc.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJZ5v0iQZXbFQFsZ+gL3==LV7UsqfOr-FZuWdoPSv0veUkuCrQ@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, Apr 03, 2024 at 01:04:37AM -0700, Atish Patra wrote:
-> The initial sample period value when counter value is not assigned
-> should be set to maximum value supported by the counter width.
-> Otherwise, it may result in spurious interrupts.
+On Thu, Apr 04, 2024 at 12:58:29PM +0200, Rafael J. Wysocki wrote:
+> On Tue, Apr 2, 2024 at 5:30 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > Advertise number of chip selects via property for Intel Braswell.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> ---
->  arch/riscv/kvm/vcpu_pmu.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
-> index 86391a5061dd..cee1b9ca4ec4 100644
-> --- a/arch/riscv/kvm/vcpu_pmu.c
-> +++ b/arch/riscv/kvm/vcpu_pmu.c
-> @@ -39,7 +39,7 @@ static u64 kvm_pmu_get_sample_period(struct kvm_pmc *pmc)
->  	u64 sample_period;
->  
->  	if (!pmc->counter_val)
-> -		sample_period = counter_val_mask + 1;
-> +		sample_period = counter_val_mask;
->  	else
->  		sample_period = (-pmc->counter_val) & counter_val_mask;
->  
-> -- 
-> 2.34.1
->
+> A Fixes: tag, please?
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Sure.
+
+> Also, IIUC this should be applied before
+> https://lore.kernel.org/linux-acpi/20240403170302.1073841-1-andriy.shevchenko@linux.intel.com/
+> ?
+
+I believe yes for the sake of simplicity in maintaining / backporting
+(if needed).
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
