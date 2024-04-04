@@ -1,158 +1,109 @@
-Return-Path: <linux-kernel+bounces-131653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131655-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C839898A70
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:52:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6C57898A72
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:52:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CC764283E18
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:52:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58D191F21056
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:52:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61EFC1C2A1;
-	Thu,  4 Apr 2024 14:52:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9D5E1BDE6;
+	Thu,  4 Apr 2024 14:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QQ4d96sn"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="FKUU19VO"
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A34111C2AF;
-	Thu,  4 Apr 2024 14:52:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD5A41C68
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:52:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712242351; cv=none; b=dZyQch+7+UFGkeCgEMnaxCGB0dB72wf87daie3d77S6Ab7EeXhL/k3MDkJG4ttETNV221v3fEeQmR611QITyMkFuM2uuZiESMYkrmw/oOPCpHpFPBDVFWsVB7YaP8Nww0Gs1fEZwuqqHeFwnRLEZh/EmFX8qklGyBRbnVTdFCBk=
+	t=1712242362; cv=none; b=L+7Q3xIh1yK+QEVPa+0xJyYd06R0qUDyYs6S43bU7wPRqMcLsooIAG6yzGVuYdDgfy3o3DvAb80jQ0ea6XUfsHew/54CM6j3F6z/NN+0kg1KY1t+ovT451Uq9gEOaZLZrSyyhNuU7BA9VAFu6RA1tm7ihZIxWTQVIRS/kA6ptr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712242351; c=relaxed/simple;
-	bh=FVN+XU95iFZygTEUmTEWzjGUOeNxuFL1vZ2k7fKSY28=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kNdNB6/D1zE48QBfBjj4AKY7TLQkad69lRiDRKq1dwJdJwr1Do6lZ6PCLCMmOFc1ty4W19+ciCQJLDUy+Q0GxL8LCxkaIw2nyl9gnQbCXBDaczgPiFQP9XeZ/BnYRLNNPdPh/KcwBuoh3sevncne7NS4t2EZBKxejtxxrej933g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QQ4d96sn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6164BC433F1;
-	Thu,  4 Apr 2024 14:52:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712242351;
-	bh=FVN+XU95iFZygTEUmTEWzjGUOeNxuFL1vZ2k7fKSY28=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QQ4d96sncUwpLSXRdO3Bmos1MhA1dXSW/a4RAM3OmavozoeMqEpEcuw/x1YQ7C+bE
-	 NANpo8VvxRApMqAz3igOSWnt+K+4RYnyg3H16tgTnTgsjoqW0T2+59pNIApGekVC8Z
-	 TJCBZa+pdm4MGW6KzqwRuT7AxxWNlINIXlh0taPjKBRdF/uLRcEHu9tSUvn59l72lh
-	 DgVSNMFSSElRTnyxlYEbJm0atkhWS8DlgOoCS6DbOLDH9JqPMkIe3AdDa3ZHYu/0+s
-	 xWGG2DqJRg2xDBlJ94w+eRU5FT0uI7IN8un6YegcbCdjHljJ4lYdl+7EWHsJ+JDKwc
-	 HzzkhhwM22Lnw==
-Date: Thu, 4 Apr 2024 15:52:26 +0100
-From: Conor Dooley <conor@kernel.org>
-To: Jason-JH Lin =?utf-8?B?KOael+edv+elpSk=?= <Jason-JH.Lin@mediatek.com>
-Cc: Shawn Sung =?utf-8?B?KOWui+WtneismSk=?= <Shawn.Sung@mediatek.com>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-mediatek@lists.infradead.org" <linux-mediatek@lists.infradead.org>,
-	Houlong Wei =?utf-8?B?KOmtj+WOmum+mSk=?= <houlong.wei@mediatek.com>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	CK Hu =?utf-8?B?KOiDoeS/iuWFiSk=?= <ck.hu@mediatek.com>,
-	"conor+dt@kernel.org" <conor+dt@kernel.org>,
-	"robh@kernel.org" <robh@kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"jassisinghbrar@gmail.com" <jassisinghbrar@gmail.com>,
-	"angelogioacchino.delregno@collabora.com" <angelogioacchino.delregno@collabora.com>
-Subject: Re: [PATCH v5 02/10] dt-bindings: mailbox: Add mboxes property for
- CMDQ secure driver
-Message-ID: <20240404-lankiness-devouring-d4d012b22cb9@spud>
-References: <20240403102602.32155-1-shawn.sung@mediatek.com>
- <20240403102602.32155-3-shawn.sung@mediatek.com>
- <20240403-conflict-detest-717b4175a00c@spud>
- <9b9707a4a0e285a12741fe4140680ad2578d8d2b.camel@mediatek.com>
+	s=arc-20240116; t=1712242362; c=relaxed/simple;
+	bh=BkLSbtK8Nf5PzWncO5eh4M62k+sCM5Hlzp2GGZnYD2c=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bSNMxwjyBcOrr6gJrRbEivBqc4kVr1eUiGqaNfC0kPABVWtXnkNp6dYm/TBtngVYQdmEsgkq/ogO4lDk9ORoF5Kzct+6qlf5O8PSB0daXQWUjQV/NlMA/u6cwt3fhd09/W4jwQA3daVzHxEJzrg+Qya/hE3D2Zuyz+QIGLvZfjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=FKUU19VO; arc=none smtp.client-ip=185.70.43.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1712242358; x=1712501558;
+	bh=KHjrZ7L/o/5RAJWobPfw5bBLIJX2aXSEBFmB1P0i8VM=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=FKUU19VO9s8jHrtlRm0l4Oa9EYZ2LNskf59Lccmcx00wF0/hXavvOgNkICFTEXLr7
+	 eG8K7G3KU5pArEJW1gis6nSeajzvP2+wZKnU/5xlzLO0blbAsz6A1+2W0eg145IwXW
+	 1WBT+UOh3kz9e2WPI7eCgFETHOBtzCx9B8WXSpaZmm5YO2aclP7CMZJuvy9C0AXB1B
+	 u32vOV45Rtj7N4O/KWnUd6tK57LEGDdDBFRODtwfYX811JHexOP0qc3UMDnpmTQe9G
+	 lgNRtR0HIUvn0T7dFeSnhvU4H7Z8ukRI8WsWOyMmKN/iU42EwvP3Tn9x49eaTq3Tyt
+	 gH0efbnKxXcLg==
+Date: Thu, 04 Apr 2024 14:52:31 +0000
+To: Alice Ryhl <aliceryhl@google.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
+Subject: Re: [PATCH 6/9] rust: list: add iterators
+Message-ID: <4045af19-05a4-48f0-9ca1-0d8d4d2b865c@proton.me>
+In-Reply-To: <CAH5fLggS3qtCy20Y=kuxULUY9Q_4dSzJN5n2WitU362cYuqPLA@mail.gmail.com>
+References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com> <20240402-linked-list-v1-6-b1c59ba7ae3b@google.com> <98449574-4c1b-4281-bbd3-3ac2767020cb@proton.me> <CAH5fLggS3qtCy20Y=kuxULUY9Q_4dSzJN5n2WitU362cYuqPLA@mail.gmail.com>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="5sEXL4CMpiDMisKi"
-Content-Disposition: inline
-In-Reply-To: <9b9707a4a0e285a12741fe4140680ad2578d8d2b.camel@mediatek.com>
-
-
---5sEXL4CMpiDMisKi
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 04, 2024 at 04:31:06AM +0000, Jason-JH Lin (=E6=9E=97=E7=9D=BF=
-=E7=A5=A5) wrote:
-> Hi Conor,
+On 04.04.24 16:41, Alice Ryhl wrote:
+> On Thu, Apr 4, 2024 at 4:36=E2=80=AFPM Benno Lossin <benno.lossin@proton.=
+me> wrote:
+>>
+>> On 02.04.24 14:17, Alice Ryhl wrote:
+>>> +/// the end of the list. The `stop` pointer points at the first value =
+in the same list, or it is
+>>> +/// null if the list is empty.
+>>> +#[derive(Clone)]
+>>> +pub struct Iter<'a, T: ?Sized + ListItem<ID>, const ID: u64 =3D 0> {
+>>> +    current: *mut ListLinksFields,
+>>> +    stop: *mut ListLinksFields,
+>>> +    _ty: PhantomData<&'a ListArc<T, ID>>,
+>>> +}
+>>> +
+>>> +impl<'a, T: ?Sized + ListItem<ID>, const ID: u64> Iterator for Iter<'a=
+, T, ID> {
+>>> +    type Item =3D ArcBorrow<'a, T>;
+>>> +
+>>> +    fn next(&mut self) -> Option<ArcBorrow<'a, T>> {
+>>> +        if self.current.is_null() {
+>>> +            return None;
+>>> +        }
+>>> +
+>>> +        let current =3D self.current;
+>>> +
+>>> +        // SAFETY: We just checked that `current` is not null, so it i=
+s in a list, and hence not
+>>> +        // dangling. There's no race because the iterator holds an imm=
+utable borrow to the list.
+>>
+>> This (that the iterator holds an immutable borrow) is not true (there
+>> is no `&List` field in `Iter`), but you can make that an invariant
+>> instead.
 >=20
-> Thanks for the reviews.
->=20
-> On Wed, 2024-04-03 at 16:46 +0100, Conor Dooley wrote:
-> > On Wed, Apr 03, 2024 at 06:25:54PM +0800, Shawn Sung wrote:
-> > > From: "Jason-JH.Lin" <jason-jh.lin@mediatek.com>
-> > >=20
-> > > Add mboxes to define a GCE loopping thread as a secure irq handler.
-> > > This property is only required if CMDQ secure driver is supported.
-> > >=20
-> > > Signed-off-by: Jason-JH.Lin <jason-jh.lin@mediatek.com>
-> > > Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.com>
-> > > ---
-> > >  .../bindings/mailbox/mediatek,gce-mailbox.yaml         | 10
-> > > ++++++++++
-> > >  1 file changed, 10 insertions(+)
-> > >=20
-> > > diff --git
-> > > a/Documentation/devicetree/bindings/mailbox/mediatek,gce-
-> > > mailbox.yaml
-> > > b/Documentation/devicetree/bindings/mailbox/mediatek,gce-
-> > > mailbox.yaml
-> > > index cef9d76013985..c0d80cc770899 100644
-> > > --- a/Documentation/devicetree/bindings/mailbox/mediatek,gce-
-> > > mailbox.yaml
-> > > +++ b/Documentation/devicetree/bindings/mailbox/mediatek,gce-
-> > > mailbox.yaml
-> > > @@ -49,6 +49,16 @@ properties:
-> > >      items:
-> > >        - const: gce
-> > > =20
-> > > +  mediatek,gce-events:
-> > > +    description:
-> > > +      The event id which is mapping to the specific hardware event
-> > > signal
-> > > +      to gce. The event id is defined in the gce header
-> > > +      include/dt-bindings/gce/<chip>-gce.h of each chips.
-> >=20
-> > Missing any info here about when this should be used, hint - you have
-> > it
-> > in the commit message.
-> >=20
-> > > +    $ref: /schemas/types.yaml#/definitions/uint32-arrayi
-> >=20
-> > Why is the ID used by the CMDQ service not fixed for each SoC?
-> >=20
-> I forgot to sync with Shawn about this:
-> https://lore.kernel.org/all/20240124011459.12204-1-jason-
-> jh.lin@mediatek.com
->=20
-> I'll fix it at the next version.
+> What I mean is that the borrow-checker will consider the `List` to be
+> borrowed by `Iter`. Whether or not there is a real reference or not
+> doesn't matter.
 
-When I say "fixed" I don't mean "this is wrong, please fix it", I mean
-"why is the value not static for a particular SoC". This needs to be
-explained in the patch (and the description for the event here needs to
-explain what the gce-mailbox is reserving an event for).
+Yes, but that is implementation detail of the safe function
+`List::iter`, so I think it must also be captured by an invariant.
 
-Thanks,
-Conor.
+--=20
+Cheers,
+Benno
 
---5sEXL4CMpiDMisKi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZg6+qgAKCRB4tDGHoIJi
-0tiPAQCmKL+7qqsiglTH60MzilEx595s4NTTEM6sOmrSsCQmHwD9FA2Hgru6DIpV
-u2H+l/GfFPpbBLY5L/Sz6HL5EuzTfAk=
-=u8hN
------END PGP SIGNATURE-----
-
---5sEXL4CMpiDMisKi--
 
