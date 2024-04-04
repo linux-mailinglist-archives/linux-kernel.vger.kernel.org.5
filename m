@@ -1,113 +1,109 @@
-Return-Path: <linux-kernel+bounces-131324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B709A89864E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:45:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 298F589864D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:45:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 70EB12879A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:45:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 531CD1C211BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:45:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D43D684D3B;
-	Thu,  4 Apr 2024 11:45:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E0A83CDE;
+	Thu,  4 Apr 2024 11:45:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ox5FpK1A"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DVkYGhWF"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2113184D10
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A929B7F7C8
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712231108; cv=none; b=h1/nD4gYpmwYa64tUOWwIV72NNpan/HZcnETE+PMSt2AqxR0F3AbER7w3aaAKQxtzVv1txu7RkkYM8ax/FuRF3Q8M/vWQrr+ojmDGvihb0mN/aPFRying62osINcmubknXPceNFWkKnUGYPkPNOL5/CQZ2VWnhQjZFB5wHwutSQ=
+	t=1712231106; cv=none; b=NS/ztvrAIBeqxCzn+ZwpCO9dSz5oCkHUgGo8VpVzVXlQlQ0NLo3yaFZZn/VaPZ5ATxRj0VEpiedBQ/PJGpCcbRzl4pNfHA5r295vNbhB+/F5EEE5kKnNk85jfSSoc3L5cvY1zjaTJ9ofOcXz4hfzHO2r5vmp3RaMcaUKrrV/FrA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712231108; c=relaxed/simple;
-	bh=gv1Ocmcd5hUfsp3yAkdFPtRtCSZP9+xU7yTapbaEZQs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ep0isesOP7EwXsBtYfSP5Q0FZ2s7gOXlbBJgoj+mO8gnH3gwW5tBobJyNG5zJVViEWwRjU3hJs5sIbc2rmJoPBiJ3hQJDHUmBlUwKR2LygNGUDp3tDIvzMVacelqMm88kz5oYj5QlnSi5yrlqcThslesSnc3YlHd79n1FKKmne4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ox5FpK1A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9F5EC433C7;
-	Thu,  4 Apr 2024 11:45:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712231107;
-	bh=gv1Ocmcd5hUfsp3yAkdFPtRtCSZP9+xU7yTapbaEZQs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Ox5FpK1A1fizasks/Iq6eFp655qD7PNJoT+wg1+aYw9yGUDpYJ200snt5IdeU1/8h
-	 Fnp1aj9cD/WRXU7wCIJRVccTBJLiEK8ilU198qQuzOZkKUIgrgUDD5001Ih5/aM4un
-	 UEly6LwRgSfOA3mrlAWC/y0PZBiUEHq9Z65PmWDf5rc0ksZQsJ6BZTtl4jQwE+MQUC
-	 VN3/7ApTYYBMc0lbfDadwzx5o0HjqSMAxU5FHg+4q5BeRfxLI7k//4CrYZekoPrKnI
-	 /Jw51s8Fc5oVIGGIYc3YEVZPxipvhWlGjkWbIoLX90VKci9cFvIDsHlg/0pzit/Woq
-	 x+OJBVNXe+oBg==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Palmer Dabbelt <palmer@rivosinc.com>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Charlie Jenkins <charlie@rivosinc.com>,
-	Noah Goldstein <goldstein.w.n@gmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] lib: checksum: hide unused expected_csum_ipv6_magic[]
-Date: Thu,  4 Apr 2024 13:44:33 +0200
-Message-Id: <20240404114450.449683-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712231106; c=relaxed/simple;
+	bh=/eLKtqRVMeBA+chi62xtVXaYNjNu3QL5M36nmn2NBgs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mh+IErJDzIOzw/efxM5p164UUMQJWzSArl2vZtrNHlfCICJHqgO8PqZgl67kjC0HaEs8xQpTZZG0TK1U1pW+QwJhCouqZwzb3A/m58gz17cEWaAwct/FCT0vWU67TWN6Ee97ZcKXk7BMk2M8MblBnLHNB4SERpjWHpuVGl0B9uQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DVkYGhWF; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-616909c32cdso5061807b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 04:45:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712231103; x=1712835903; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rdNenNQMt+7XONzUW/9kB2yS6/Tol2kmLB8BmO6OGLU=;
+        b=DVkYGhWFfDN55ztook7u/m7XQt0/1DqgYEDQnuFZDO2f9sTQTLBrFr98sgJSAEPBTy
+         CYDUBrddaT3BTeeVQRTNHoomuhfbL0h3ksiBLbYWOwRkpk0Tk8UduqsZI0hnh9URk3Vg
+         XHCtdeiQw2W5IchOzIDCB6jlUZ/zutD7CWvoo+hqXzZS6AOTaSjDRhSRQwL2G+dVBalC
+         s6d3hKXJiDE7l3BHaoYQ6gKQMhHAHA2TUjRFQEU79gotNDh5VHhpOvhyC8A+VZm527jM
+         sFjPU+MfqQUo9YVqifBt9t30tT0EnkjMtQ1g4bHx2DXAQ+TsgVtqR6jiAdxPCgN5o7ln
+         BA/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712231103; x=1712835903;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rdNenNQMt+7XONzUW/9kB2yS6/Tol2kmLB8BmO6OGLU=;
+        b=rtkm2IoI5vdrSz1aNO4OkEcFgaKN/OXv2lmyf656u1mW3077dqKE/b8EAiRRiPMfiG
+         vAaE2gC8dmf7ohj07C1U+0eKFv9SiEvwEaUrFr8g1PMWZuDp5JXB/IWu12OFPmCUU7i9
+         Qz81Kemt8fVZLKSeHMYVxeOxiLDAjk1flcvMeF2Ho+UGKAROM5168RI9HH8UYJbtIh0w
+         upKTVVp70IauW9nuZNUvyxzE7Mzejm+j+Q+XGPqQBBqzJJIyXVQBLInkZ0NTjv5V0bGf
+         hpk6NomMgEv3PyKQ3RQFz5s+m5VBchP73DsIhcI4kEwMIB37JVJS73J4N1mNf8tGDbzr
+         iW3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWIJ04uzwRdWka6dPgCJgWosXLvciJvpFzBXD0jzKlqDM8u2DI/Kay2uRTYWr78L6MBzJYGWRWjIHy4Rx3G35lL76y3vC84AKuSaYRr
+X-Gm-Message-State: AOJu0YwlB43WJ019DP4o1QlMeKogWsIpPej+WC40uHulEbt543KD3r54
+	b6barYQZUcBgQzOP88J5tR7HxjJymkZ/kC8BcuxWXFUprOHrkMCxlgXscntZUSaVCWauyYy/Kqp
+	av9EWaQ5I58xVkRgxNsqAxfPLZ6Fpic4WQBDNig==
+X-Google-Smtp-Source: AGHT+IHx0tbRHl168yEBc6/WvmuxrXGfc7u38wmDLosnPzuHcIEhg0s1LVsQ751gQ9iNeQVSKkhCvmykx56Fu3EOO5U=
+X-Received: by 2002:a0d:ca02:0:b0:615:8174:61a2 with SMTP id
+ m2-20020a0dca02000000b00615817461a2mr2142897ywd.8.1712231102703; Thu, 04 Apr
+ 2024 04:45:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240401141031.3106216-1-peng.fan@oss.nxp.com>
+In-Reply-To: <20240401141031.3106216-1-peng.fan@oss.nxp.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Thu, 4 Apr 2024 13:44:50 +0200
+Message-ID: <CACRpkdZAuNXGyg2wwYcQG4oO9w7jPS6vj4Vt0=kqX5fJ+QpNmw@mail.gmail.com>
+Subject: Re: [PATCH] pinctrl: pinconf-generic: check error value EOPNOTSUPP
+To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc: brgl@bgdev.pl, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	cristian.marussi@arm.com, sudeep.holla@arm.com, Peng Fan <peng.fan@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Mon, Apr 1, 2024 at 4:02=E2=80=AFPM Peng Fan (OSS) <peng.fan@oss.nxp.com=
+> wrote:
 
-When CONFIG_NET is disabled, an extra warning shows up for this
-unused variable:
+> From: Peng Fan <peng.fan@nxp.com>
+>
+> The SCMI error value SCMI_ERR_SUPPORT maps to linux error value
+> '-EOPNOTSUPP', so when dump configs, need check the error value
+> EOPNOTSUPP, otherwise there will be log "ERROR READING CONFIG SETTING".
+>
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+(...)
+>                         ret =3D pin_config_get_for_pin(pctldev, pin, &con=
+fig);
+>                 /* These are legal errors */
+> -               if (ret =3D=3D -EINVAL || ret =3D=3D -ENOTSUPP)
+> +               if (ret =3D=3D -EINVAL || ret =3D=3D -ENOTSUPP || ret =3D=
+=3D -EOPNOTSUPP)
 
-lib/checksum_kunit.c:218:18: error: 'expected_csum_ipv6_magic' defined but not used [-Werror=unused-const-variable=]
+TBH it's a bit odd to call an in-kernel API such as pin_config_get_for_pin(=
+)
+and get -EOPNOTSUPP back. But it's not like I care a lot, so patch applied.
 
-Replace the #ifdef with an IS_ENABLED() check that makes the compiler's
-dead-code-elimination take care of the link failure.
-
-Fixes: f24a70106dc1 ("lib: checksum: Fix build with CONFIG_NET=n")
-Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- lib/checksum_kunit.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/lib/checksum_kunit.c b/lib/checksum_kunit.c
-index bf70850035c7..404dba36bae3 100644
---- a/lib/checksum_kunit.c
-+++ b/lib/checksum_kunit.c
-@@ -594,13 +594,15 @@ static void test_ip_fast_csum(struct kunit *test)
- 
- static void test_csum_ipv6_magic(struct kunit *test)
- {
--#if defined(CONFIG_NET)
- 	const struct in6_addr *saddr;
- 	const struct in6_addr *daddr;
- 	unsigned int len;
- 	unsigned char proto;
- 	__wsum csum;
- 
-+	if (!IS_ENABLED(CONFIG_NET))
-+		return;
-+
- 	const int daddr_offset = sizeof(struct in6_addr);
- 	const int len_offset = sizeof(struct in6_addr) + sizeof(struct in6_addr);
- 	const int proto_offset = sizeof(struct in6_addr) + sizeof(struct in6_addr) +
-@@ -618,7 +620,6 @@ static void test_csum_ipv6_magic(struct kunit *test)
- 		CHECK_EQ(to_sum16(expected_csum_ipv6_magic[i]),
- 			 csum_ipv6_magic(saddr, daddr, len, proto, csum));
- 	}
--#endif /* !CONFIG_NET */
- }
- 
- static struct kunit_case __refdata checksum_test_cases[] = {
--- 
-2.39.2
-
+Yours,
+Linus Walleij
 
