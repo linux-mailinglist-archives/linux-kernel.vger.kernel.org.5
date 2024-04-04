@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-132151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAFBA89904E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:28:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BAD78899051
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:28:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 283F11C22F3F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:28:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A4D71F22CAF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0539013D606;
-	Thu,  4 Apr 2024 21:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA1813D506;
+	Thu,  4 Apr 2024 21:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WE73n81a"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MoUgqwnD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 479E413D52B;
-	Thu,  4 Apr 2024 21:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6989013D2B1;
+	Thu,  4 Apr 2024 21:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712265822; cv=none; b=lxou034vr12S6Yw6KkctkXrKR7V42hi0pGyQGpNoOaP4+9RTy1W6JQdWt/p3DM0pctG54vnJ4NDFhgrZbpByqVyjDf4fGkKEiLR/AYBh2kDwfEpodIEPT2FSLjfzHAOTyB+9rh+1ykV2b+wK6UEQ3gteosYuNJZD44fYhH4o9Ws=
+	t=1712265823; cv=none; b=tdQIBMpi+v3GLSCnP2W+aYmM/kW6FtR2jCDNvcncqpwSs7knkTSeZy9fp2YzkexKBF1rx3tF2g2u/KjQz6x9giPGL+weeyBzdSxkotlN+bmGucHCGIql0PDMdxiN9JECphp4XL9jgHZFU65oqkm/ghsNZFj/7S3Ea0lFAgX0PzU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712265822; c=relaxed/simple;
-	bh=pKx5pEl7lbJZzVFbLbwYKUyOTmfXWn6rEDtp+m1OFEU=;
+	s=arc-20240116; t=1712265823; c=relaxed/simple;
+	bh=5lf1q6AxyShmbUmF17Kdei2JYEzOg7HuvtM4QqJ2CSA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=m7LW335Q/GOgS+CVk411gRvvlNNjWt0q2yiia2/eO134F8NtJX4C3jFA7is6D7Uip5lykOMj6EUGHGpHhK0Z7Dnkm9ahbHnjzKb3F+nP56I+sZDWxggiFh6McB0FlozIS16F7n5YZinwtLws5k3a0OvecLf70/fZXbPgWaE3xyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WE73n81a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02BEDC433C7;
-	Thu,  4 Apr 2024 21:23:40 +0000 (UTC)
+	 MIME-Version:Content-Type; b=TX6BaMGR3XJ88LM2FQT6eZhW+xtnpQtC48XRqCuQaOXZNKzDKFsnr8DZ+GkoIplwWYJM3pQ0O1Nyk0I5lGyRH2P9ZmgvrC85TZdE5l41NGfECx/GoZKOW39XAlgj7ROOGR16AQouDqeA6JP+5vVcPNQ8nKuBOWrmPCx27QoWXMw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MoUgqwnD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 647FFC433F1;
+	Thu,  4 Apr 2024 21:23:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712265822;
-	bh=pKx5pEl7lbJZzVFbLbwYKUyOTmfXWn6rEDtp+m1OFEU=;
+	s=k20201202; t=1712265823;
+	bh=5lf1q6AxyShmbUmF17Kdei2JYEzOg7HuvtM4QqJ2CSA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WE73n81aTQx5Tsg02WQy6mU9DiwEIS+5eOzWReHJQHlr0ML/IxSabjoC4Addy9f1+
-	 xM85Tb2ODlI4qo0cLdi/UcT35xy4+3/38pTfhZOUBZpCwTJ7hBJrCYB9+JzzXQM2kM
-	 GRbraJDXd3+TqN0n8azsTZ0N6spdoHIGeQ36xiWuReZs7R9UdP9Q7BybtpJZ6QwTi5
-	 QlJtt/AmOgJtA/I9GbzNnB03QFOOa/p9Wbb1Wbbxv7QhQjW2rlgYC5SKMga2f0gaT2
-	 kw4PKOiiAOtT7nakq+xZ6rS6JTgpkZa0mX3wA081l6QVqd8uCQCtN2mQ/6Z4nR9eYc
-	 gwwjVS+ycbXyg==
+	b=MoUgqwnDkrLhamDgseH67s3Qoz4MIJA7FwGZUNAtroBMZW+GOqAXO5WD/axUTpMiI
+	 7p8i2QNjD/Cb5PdwXBLMNsNlLJn6ARTHA+wt7cZIyrGJFSEQOD+Jq5rgF7vx3frE2c
+	 gxQrscEWDx54gqB4oJEefZMv6WJ/t0rLqcSFVSrTUeIE63+TV5EmevtOAuqS25mIaJ
+	 qTgcfOvA4gwHD3sXqA72kqxKSkFFNHM2pRfu6PjW1O4yjl+fzm8nYUpJDhQsSIdj46
+	 BESHfMpxvTlV82PDLSBI2GtDkez189pXXSxbCwjmIka5UL/DyRuthjo1p3GzKnnjwV
+	 OeIdg7UQbc7Qg==
 From: Bjorn Andersson <andersson@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	Raymond Hackley <raymondhackley@protonmail.com>
@@ -51,14 +51,13 @@ Cc: Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Nikita Travkin <nikita@trvn.ru>,
 	linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
-	~postmarketos/upstreaming@lists.sr.ht,
-	Joe Mason <buddyjojo06@outlook.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: msm8916-samsung-fortuna: Add touchscreen
-Date: Thu,  4 Apr 2024 16:23:07 -0500
-Message-ID: <171226578674.615813.17206217904604051160.b4-ty@kernel.org>
+	~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v3 0/2] arm64: dts: qcom: msm8916-samsung-fortuna: Add touchscreen and PWM backlight
+Date: Thu,  4 Apr 2024 16:23:08 -0500
+Message-ID: <171226578697.615813.16079470574814769657.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240312074536.62964-1-raymondhackley@protonmail.com>
-References: <20240312074536.62964-1-raymondhackley@protonmail.com>
+In-Reply-To: <20240404121703.17086-1-raymondhackley@protonmail.com>
+References: <20240404121703.17086-1-raymondhackley@protonmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,17 +68,24 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 12 Mar 2024 07:45:42 +0000, Raymond Hackley wrote:
+On Thu, 04 Apr 2024 12:17:28 +0000, Raymond Hackley wrote:
 > Like msm8916-samsung-a3u-eur, the Grand Prime uses a Zinitix BT541
 > touchscreen. Add it together with the necessary fixed-regulator to the
 > device tree.
 > 
+> Most of the Galaxy Grand Prime use backlight drivers controlled with PWM
+> signal.
+> To simplify the description, add the backlight with the necessary clk-pwm
+> to the common dtsi.
 > 
+> [...]
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: msm8916-samsung-fortuna: Add touchscreen
+[1/2] arm64: dts: qcom: msm8916-samsung-fortuna: Add touchscreen
       commit: f8dddefcb90eaa339c77b2cb3f5a87dec8b1e3b5
+[2/2] arm64: dts: qcom: msm8916-samsung-fortuna: Add PWM backlight
+      commit: 05c65922bd58cc3fc057b37628b143f76e524496
 
 Best regards,
 -- 
