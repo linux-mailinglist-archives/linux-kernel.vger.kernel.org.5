@@ -1,114 +1,135 @@
-Return-Path: <linux-kernel+bounces-130956-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130957-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66C2989811A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:51:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2502489811C
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 07:57:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21AF328CE3B
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:51:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FC441C21931
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 05:57:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8ED45945;
-	Thu,  4 Apr 2024 05:51:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF2D45942;
+	Thu,  4 Apr 2024 05:57:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b="sy+/1H0n"
-Received: from box.trvn.ru (box.trvn.ru [194.87.146.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b333WFN9"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C1222EE4;
-	Thu,  4 Apr 2024 05:51:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.87.146.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE951CFBD
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 05:57:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712209883; cv=none; b=DRv1H71WAh+fi2uC7L+mKI7H7EO08Q+6F8gmi/fUN0y2fv4TPOKiD/doW/9LRJBrvzbat8t5Edt4xiEs1aL2jQ1cmFaUQgv8eFvPwTaR70SROX9KloSnlWMmpv8f87A8IlCkHrzGWVPHH0PPGBKQiFxFBXn18ChqlPzeMhUFG3A=
+	t=1712210228; cv=none; b=i50O4zbxKPf25zx8ujoSzy51E8nQxzOiHnlQUoC06f/EHGeXFPteUUc3M5goX59s8/kRBLgTMnnnwAiGlUbpBF1rBSrzzxfmqrURveT7yM0kBmjjAHE2tjEi/lQkUlO1aM+cJ0YCH8vAcLmqa/kvSWxzueaQKqJyTtwvpo61GC8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712209883; c=relaxed/simple;
-	bh=Sif9OYlf7o5rH6HJtXnuHMHBMudAuoAS3AZeNXTSQtw=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=NaQ1vxoa7ofSgVbSuSOJrXY+ytIrbjFYGr+HK8rOWAgC8XX+/gHv7PxpmkIzan0T8IPg32D9/hYjjSzVS5xnAmClrieiTwtF2gcIE2fJ/PK3YaILfdS7K7DsKIQVGhpwDSNoyw+EZy5mzjWnvFZZ3DAQbAFROQtZo6dRm01fjU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru; spf=pass smtp.mailfrom=trvn.ru; dkim=pass (2048-bit key) header.d=trvn.ru header.i=@trvn.ru header.b=sy+/1H0n; arc=none smtp.client-ip=194.87.146.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=trvn.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=trvn.ru
-Received: from authenticated-user (box.trvn.ru [194.87.146.52])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	s=arc-20240116; t=1712210228; c=relaxed/simple;
+	bh=6bmbdoifZb2Jpy0PZiNXlrBy305qSk1zWYVTLBSmB0M=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=YYNXxJEaCDN7ocF3cfgOCi70LxRHBL0Q3SxSbLumVrobtWt87ba+IqegXjACGFUX5xvtGpZOnolv7zY3Bu6A/bVVN3F0gfckJkp9IG0cYk5oMGFvsFshw6NqYkQxDUNEzDIOUU+B0KdZBkjK6vDnIv588i/gJLDggeSNdseGVLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b333WFN9; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712210225;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Vba8fCSuLQZTKX30MTVAeYL8D2lP6F44uKwflbfLdSs=;
+	b=b333WFN9geaSigKM6s/p14W9FfvtBAAggWoxlZLO4P5qeCOFiJnxY6GQxBHg9OZEedKieN
+	j0vK9i8T94/un1TtJecV70N1P1a6D2+2z5AVDXc/+XBj33GtZFRl5mBKwuDj3lY6j1MM2E
+	Gmi7kMoKYMNLPY61XnIhuWwT8O/moSU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-82-kWB3J8DCM-uAP7gznsnZFA-1; Thu,
+ 04 Apr 2024 01:57:02 -0400
+X-MC-Unique: kWB3J8DCM-uAP7gznsnZFA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by box.trvn.ru (Postfix) with ESMTPSA id 85509401B5;
-	Thu,  4 Apr 2024 10:51:11 +0500 (+05)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=trvn.ru; s=mail;
-	t=1712209872; bh=Sif9OYlf7o5rH6HJtXnuHMHBMudAuoAS3AZeNXTSQtw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=sy+/1H0n879DQFwK5S1aRcnxXOy2DLSnh/tFK9jJBtWM24ThNfJ6PCWtPW1mkNfrX
-	 QXbDwL5A8nEbYD3zcH9daJozYZDxXHRuBWk5JTP32U5604DEQuIT/jzO60dYsSwNbl
-	 pzMu6zV1kaQxhV//UGl7+NbaZJ+URfAlFk8Ta+kxrdEOQMshI7qu7+qC/yqOCW0i1V
-	 s1MnD4gLsoCqROamEan3VLRXQiOAOMaexaQnqhqS+YFlToU9eiYzqqSpO7fD2uXtYU
-	 8PAFV7maE3tP/vCswjxE3NTQtLmCtgdDXANhCQsQydVPqfWD1qw68hQSs2bmub8s8D
-	 bBgnGS8Mk+LFw==
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1B8A03C02479;
+	Thu,  4 Apr 2024 05:57:02 +0000 (UTC)
+Received: from server.redhat.com (unknown [10.72.112.166])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 7530740C6CB5;
+	Thu,  4 Apr 2024 05:56:58 +0000 (UTC)
+From: Cindy Lu <lulu@redhat.com>
+To: lulu@redhat.com,
+	mst@redhat.com,
+	jasowang@redhat.com,
+	kvm@vger.kernel.org,
+	virtualization@lists.linux-foundation.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] Documentation: Add reconnect process for VDUSE
+Date: Thu,  4 Apr 2024 13:56:31 +0800
+Message-ID: <20240404055635.316259-1-lulu@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Thu, 04 Apr 2024 10:51:10 +0500
-From: Nikita Travkin <nikita@trvn.ru>
-To: Bjorn Andersson <andersson@kernel.org>
-Cc: Raymond Hackley <raymondhackley@protonmail.com>,
- linux-kernel@vger.kernel.org, Konrad Dybcio <konrad.dybcio@linaro.org>, Rob
- Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org,
- devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht, Joe Mason
- <buddyjojo06@outlook.com>
-Subject: Re: [PATCH v2] arm64: dts: qcom: msm8916-samsung-fortuna: Add
- touchscreen
-In-Reply-To: <dyeqnhgvlzw44baihb257lhacei723iqoskthh2bjsfsgvxfrq@6hnk4f3ncsfl>
-References: <20240312074536.62964-1-raymondhackley@protonmail.com>
- <dyeqnhgvlzw44baihb257lhacei723iqoskthh2bjsfsgvxfrq@6hnk4f3ncsfl>
-Message-ID: <13170c97e7b84001da966ec06b62b002@trvn.ru>
-X-Sender: nikita@trvn.ru
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-Bjorn Andersson писал(а) 03.04.2024 23:49:
-> On Tue, Mar 12, 2024 at 07:45:42AM +0000, Raymond Hackley wrote:
->> diff --git a/arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi b/arch/arm64/boot/dts/qcom/msm8916-samsung-fortuna-common.dtsi
-> [..]
->> +&blsp_i2c5 {
->> +	status = "okay";
->> +
->> +	touchscreen: touchscreen@20 {
->> +		compatible = "zinitix,bt541";
->> +		reg = <0x20>;
->> +
->> +		interrupts-extended = <&tlmm 13 IRQ_TYPE_EDGE_FALLING>;
->> +
->> +		touchscreen-size-x = <540>;
->> +		touchscreen-size-y = <960>;
->> +
->> +		vcca-supply = <&reg_vdd_tsp_a>;
->> +		vdd-supply = <&pm8916_l6>;
->> +
->> +		pinctrl-0 = <&tsp_int_default>;
->> +		pinctrl-names = "default";
->> +
->> +		linux,keycodes = <KEY_APPSELECT KEY_BACK>;
-> 
-> linux,keycodes is not a valid property of zinitix,bt541 according to the
-> DeviceTree binding. Is there a binding update for this somewhere?
-> 
+Add a document explaining the reconnect process, including what the
+Userspace App needs to do and how it works with the kernel.
 
-There is a series for this [1] that Dmitry seems to have no time to pick
-up for a long while now, which we carry downstream. Without correct
-touchkey definition the touch controller reassigns the tkey lanes to the
-screen surface and display calibration breaks a bit, but since we don't
-have the changes upstream for now, probably want to drop this line from
-the submission so we don't introduce more dtbs_check warnings.
+Signed-off-by: Cindy Lu <lulu@redhat.com>
+---
+ Documentation/userspace-api/vduse.rst | 41 +++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
 
-Nikita
+diff --git a/Documentation/userspace-api/vduse.rst b/Documentation/userspace-api/vduse.rst
+index bdb880e01132..7faa83462e78 100644
+--- a/Documentation/userspace-api/vduse.rst
++++ b/Documentation/userspace-api/vduse.rst
+@@ -231,3 +231,44 @@ able to start the dataplane processing as follows:
+    after the used ring is filled.
+ 
+ For more details on the uAPI, please see include/uapi/linux/vduse.h.
++
++HOW VDUSE devices reconnection works
++------------------------------------
++1. What is reconnection?
++
++   When the userspace application loads, it should establish a connection
++   to the vduse kernel device. Sometimes,the userspace application exists,
++   and we want to support its restart and connect to the kernel device again
++
++2. How can I support reconnection in a userspace application?
++
++2.1 During initialization, the userspace application should first verify the
++    existence of the device "/dev/vduse/vduse_name".
++    If it doesn't exist, it means this is the first-time for connection. goto step 2.2
++    If it exists, it means this is a reconnection, and we should goto step 2.3
++
++2.2 Create a new VDUSE instance with ioctl(VDUSE_CREATE_DEV) on
++    /dev/vduse/control.
++    When ioctl(VDUSE_CREATE_DEV) is called, kernel allocates memory for
++    the reconnect information. The total memory size is PAGE_SIZE*vq_mumber.
++
++2.3 Check if the information is suitable for reconnect
++    If this is reconnection :
++    Before attempting to reconnect, The userspace application needs to use the
++    ioctl(VDUSE_DEV_GET_CONFIG, VDUSE_DEV_GET_STATUS, VDUSE_DEV_GET_FEATURES...)
++    to get the information from kernel.
++    Please review the information and confirm if it is suitable to reconnect.
++
++2.4 Userspace application needs to mmap the memory to userspace
++    The userspace application requires mapping one page for every vq. These pages
++    should be used to save vq-related information during system running. Additionally,
++    the application must define its own structure to store information for reconnection.
++
++2.5 Completed the initialization and running the application.
++    While the application is running, it is important to store relevant information
++    about reconnections in mapped pages. When calling the ioctl VDUSE_VQ_GET_INFO to
++    get vq information, it's necessary to check whether it's a reconnection. If it is
++    a reconnection, the vq-related information must be get from the mapped pages.
++
++2.6 When the Userspace application exits, it is necessary to unmap all the
++    pages for reconnection
+-- 
+2.43.0
 
-[1] https://lore.kernel.org/r/20230801-zinitix-tkey-v4-0-b85526c5a474@trvn.ru/
-
-> Regards,
-> Bjorn
 
