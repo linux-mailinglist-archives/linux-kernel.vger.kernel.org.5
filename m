@@ -1,141 +1,175 @@
-Return-Path: <linux-kernel+bounces-131741-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 129CE898B53
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:41:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A271A898A7A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:55:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF47C28E941
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:41:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16176B26E95
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:55:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FCD0129E8A;
-	Thu,  4 Apr 2024 15:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31DC61D543;
+	Thu,  4 Apr 2024 14:55:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b="aMmopZ3/"
-Received: from sender-of-o59.zoho.eu (sender-of-e59.zoho.eu [136.143.169.59])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aen+RE8a"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECC5B129A78
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 15:41:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.169.59
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712245283; cv=pass; b=Xf1i3HGYY/npXNnLmBK0ReqCiBRklNTbQ5hYMXLGISGBhkzFCxhgq2tgjmQwBORFbPnUdo8HvXNGhwgqLgmdZJgD6MlR55R9d5FquvHlJStGBChy1nPTloU8G0rP9vhtJFtKaTu84XxEL3+GzG/a+zNIlmaq/Fk4zX5UlSYOr04=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712245283; c=relaxed/simple;
-	bh=7WUNDIIdg+v8IieczXCbxBakhQiel4UAYpE/uW5hLg8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=iTJ5TRmwXqU4Je0266kN5W8UIBOVp5mpy/on5uccNeMSN+VJFAptvlB1yNuOWvHaOjH+sDWB9EY2H3Y4+AArsXiCLp41EOXAZy8G87QJPZvmS2aW+togTyabrk6C/cg0WYE/mYpKyhFlQv4SQCf2CdeOp2VNZIAxSAuU0k1jn98=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com; spf=pass smtp.mailfrom=bursov.com; dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b=aMmopZ3/; arc=pass smtp.client-ip=136.143.169.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bursov.com
-ARC-Seal: i=1; a=rsa-sha256; t=1712242509; cv=none; 
-	d=zohomail.eu; s=zohoarc; 
-	b=afiOIb1CLnH8VcB/ojHN6DY8UDaGox8SmkUw0tAuZY14onWaVXeGqIg2SAqNR3bi8+5V/zmMaSR8PT2C09cNKSquOotxDNb5z1FnXvcDhHAumjgnvbjOddoZDYn02AuSF1KhfnyxKWda+M1lMO/QGefCWwb8t7LDYjMkCO2DE1Q=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1712242509; h=Content-Type:Content-Transfer-Encoding:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
-	bh=L0vD5NLd5FBlKTm0CUN0J8lJX+L9XvMOvLU1lQSrKhw=; 
-	b=IZZlDzPSmfdNWFfDvNfRYKLGVMfSeeSB2a/H2jgJiDdXnK7mkyW5YlCwxAkLzCDpU1p0I0A3K1pqvqzB5U5dm/v+VkYUSbgZQeCG+wGbmL+7KeoV0qVyupbIUNnC+loEZNK/hwmcgFDOJQ+Y0Z8AOnbRb7tXYY84Au/k50alcEw=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-	dkim=pass  header.i=bursov.com;
-	spf=pass  smtp.mailfrom=vitaly@bursov.com;
-	dmarc=pass header.from=<vitaly@bursov.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1712242509;
-	s=zoho; d=bursov.com; i=vitaly@bursov.com;
-	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
-	bh=L0vD5NLd5FBlKTm0CUN0J8lJX+L9XvMOvLU1lQSrKhw=;
-	b=aMmopZ3/CzKz+sqxRV6cFZPC5lj1cYBNJCqWkGyiVWvREeR4LGIL5RkKF/ewnoHE
-	VEHnBJsLOX1rH1Tme0TMOBL6o1rpRaUiRVUKC+12EkuDQ8YiLfzy/ljS4ZmSUzgtGEj
-	TelOpjRh/dBK1FwvDJNTbVtzNK12pbmOCkDDVt8o=
-Received: from [192.168.11.99] (92.60.179.150 [92.60.179.150]) by mx.zoho.eu
-	with SMTPS id 17122425082370.5114711016825595; Thu, 4 Apr 2024 16:55:08 +0200 (CEST)
-Message-ID: <9a27afea-046d-45f3-9ac4-98ccfd637068@bursov.com>
-Date: Thu, 4 Apr 2024 17:55:06 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E3F91BDE6;
+	Thu,  4 Apr 2024 14:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712242530; cv=none; b=lKIuEBVAU2gBGydAiySPoAhvnd7N3rVPO8j1w/LifFULJNFZuWxT31TfrbqeDywOjeDYTcfyVWv2h6fdo0UoIAsmbBkWjlh3cfvb3nHvJEkoFvtBmpxBdjVGXG9xs+6LQzW7qZnaxcdzY6i8np+CUb+9e0TIbApp2Vsve6O0OxY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712242530; c=relaxed/simple;
+	bh=G9lUvFywXgRdKLfamnkBnonk8oOiR9MI0r12zS6dtX0=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=M7QFfmio2YvYcrlL15LTlLDyF+1BrfFDLYZPNWnhUmZft8KcbUZViPyvPTISFgE1Qkg91KZjx7Mad69ZhXIL7ypl4CgNEzOCeF9TPch1D+7vY4mdn1bJsEkU2Grr7Pv4rrIebuXQSjkG45SI6ywagFxxIJyF/H7mRHdeOWd47Ok=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aen+RE8a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67D9FC433F1;
+	Thu,  4 Apr 2024 14:55:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712242529;
+	bh=G9lUvFywXgRdKLfamnkBnonk8oOiR9MI0r12zS6dtX0=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=aen+RE8ak25vlpX9Pe4w1s2I0IEuN0Xe8dsQ4xMCxRg401Ddm7Z4hTU7uhk3fCUgW
+	 GO+03+G0RSM+nLr2h8MsZmTZ+t+Y+YtN5Oi35yxECq2gH1KN+OeWgdWfs2BIGtmf07
+	 ozPdiS8nUL1wFS7zlORa+rjPcklbJXgUy6Y0Nvdq7gILpx6w1PCgVGDid/HHCyyQSZ
+	 egq4Ie94OJd3yeK5HZMzHWjCUNOtESyziFGcUDR12e/eav83l6kxPAo3YEAeC/nq/t
+	 2mXF9RP0DOWmABFVLYJWd7tjKUhoJwdz2l7KDmUWMIYSV8FBFzmoolBXAxqTe/LYpm
+	 Rk+PK0mphpHSg==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] sched/debug: dump domains' level
-To: Valentin Schneider <vschneid@redhat.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, linux-kernel@vger.kernel.org
-References: <cover.1712147341.git.vitaly@bursov.com>
- <d9af90271748e6035c5f8bfc03b7bacdde357766.1712147341.git.vitaly@bursov.com>
- <xhsmh34s1b43e.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
-Content-Language: en-US, ru-RU, uk-UA
-From: Vitalii Bursov <vitaly@bursov.com>
-In-Reply-To: <xhsmh34s1b43e.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
+Date: Thu, 04 Apr 2024 17:55:22 +0300
+Message-Id: <D0BFBFRVGG47.FXCTWETKP7H4@kernel.org>
+Cc: "Andrew Cooper" <andrew.cooper3@citrix.com>, "Ard Biesheuvel"
+ <ardb@kernel.org>, "Ross Philipson" <ross.philipson@oracle.com>, "Linux
+ Kernel Mailing List" <linux-kernel@vger.kernel.org>, "the arch/x86
+ maintainers" <x86@kernel.org>, <linux-integrity@vger.kernel.org>,
+ <linux-doc@vger.kernel.org>, "Linux Crypto Mailing List"
+ <linux-crypto@vger.kernel.org>, <kexec@lists.infradead.org>,
+ <linux-efi@vger.kernel.org>, <dpsmith@apertussolutions.com>, "Thomas
+ Gleixner" <tglx@linutronix.de>, "Ingo Molnar" <mingo@redhat.com>, "Borislav
+ Petkov" <bp@alien8.de>, "H. Peter Anvin" <hpa@zytor.com>, "Dave Hansen"
+ <dave.hansen@linux.intel.com>, "Matthew Garrett" <mjg59@srcf.ucam.org>,
+ <James.Bottomley@hansenpartnership.com>, <peterhuewe@gmx.de>, "Jason
+ Gunthorpe" <jgg@ziepe.ca>, "luto@amacapital.net" <luto@amacapital.net>,
+ "Arvind Sankar" <nivedita@alum.mit.edu>, "Herbert Xu"
+ <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+ <kanth.ghatraju@oracle.com>, <trenchboot-devel@googlegroups.com>
+Subject: Re: [PATCH v8 06/15] x86: Add early SHA support for Secure Launch
+ early measurements
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Eric Biggers" <ebiggers@kernel.org>, "Andy Lutomirski"
+ <luto@kernel.org>
+X-Mailer: aerc 0.17.0
+References: <CAMj1kXEmMBY_jc0uM5UgZbuZ3-C7NPKzg5AScaunyu9XzLgzZA@mail.gmail.com> <98ad92bb-ef17-4c15-88ba-252db2a2e738@citrix.com> <CAMj1kXFTu+bV2kQhAyu15hrYai20NcBLb4Zu8XG2Y-XjL0f+rw@mail.gmail.com> <1a8e69a7-89eb-4d36-94d6-0da662d8b72f@citrix.com> <CAMj1kXEvmGy9RJo4s8tECsFj2dufZ8jBPoJOEtkcGUoj+x2qsw@mail.gmail.com> <431a0b3a-47e5-4e61-a7fc-31cdf56f4e4c@citrix.com> <20240223175449.GA1112@sol.localdomain> <e641e2f1-16cf-4717-8a1f-8afac2644efe@citrix.com> <20240223183004.GE1112@sol.localdomain> <10db421c-77da-4a1c-a25e-2374a7a2ef79@app.fastmail.com> <20240403235635.GA24248@quark.localdomain>
+In-Reply-To: <20240403235635.GA24248@quark.localdomain>
 
+On Thu Apr 4, 2024 at 2:56 AM EEST, Eric Biggers wrote:
+> On Wed, Apr 03, 2024 at 09:32:02AM -0700, Andy Lutomirski wrote:
+> > On Fri, Feb 23, 2024, at 10:30 AM, Eric Biggers wrote:
+> > > On Fri, Feb 23, 2024 at 06:20:27PM +0000, Andrew Cooper wrote:
+> > >> On 23/02/2024 5:54 pm, Eric Biggers wrote:
+> > >> > On Fri, Feb 23, 2024 at 04:42:11PM +0000, Andrew Cooper wrote:
+> > >> >> Yes, and I agree.=C2=A0 We're not looking to try and force this i=
+n with
+> > >> >> underhand tactics.
+> > >> >>
+> > >> >> But a blind "nack to any SHA-1" is similarly damaging in the oppo=
+site
+> > >> >> direction.
+> > >> >>
+> > >> > Well, reviewers have said they'd prefer that SHA-1 not be included=
+ and given
+> > >> > some thoughtful reasons for that.  But also they've given suggesti=
+ons on how to
+> > >> > make the SHA-1 support more palatable, such as splitting it into a=
+ separate
+> > >> > patch and giving it a proper justification.
+> > >> >
+> > >> > All suggestions have been ignored.
+> > >>=20
+> > >> The public record demonstrates otherwise.
+> > >>=20
+> > >> But are you saying that you'd be happy if the commit message read
+> > >> something more like:
+> > >>=20
+> > >> ---8<---
+> > >> For better or worse, Secure Launch needs SHA-1 and SHA-256.
+> > >>=20
+> > >> The choice of hashes used lie with the platform firmware, not with
+> > >> software, and is often outside of the users control.
+> > >>=20
+> > >> Even if we'd prefer to use SHA-256-only, if firmware elected to star=
+t us
+> > >> with the SHA-1 and SHA-256 backs active, we still need SHA-1 to pars=
+e
+> > >> the TPM event log thus far, and deliberately cap the SHA-1 PCRs in o=
+rder
+> > >> to safely use SHA-256 for everything else.
+> > >> ---
+> > >
+> > > Please take some time to read through the comments that reviewers hav=
+e left on
+> > > previous versions of the patchset.
+> >=20
+> > So I went and read through the old comments, and I'm lost.  In brief su=
+mmary:
+> >=20
+> > If the hardware+firmware only supports SHA-1, then some reviewers would=
+ prefer
+> > Linux not to support DRTM.  I personally think this is a bit silly, but=
+ it's
+> > not entirely unreasonable.  Maybe it should be a config option?
+> >=20
+> > If the hardware+firmware does support SHA-256, then it sounds (to me, r=
+eading
+> > this -- I haven't dug into the right spec pages) that, for optimal secu=
+rity,
+> > something still needs to effectively turn SHA-1 *off* at runtime by cap=
+ping
+> > the event log properly.  And that requires computing a SHA-1 hash.  And=
+, to be
+> > clear, (a) this is only on systems that already support SHA-256 and tha=
+t we
+> > should support and (b) *not* doing so leaves us potentially more vulner=
+able to
+> > SHA-1 attacks than doing so.  And no SHA-256-supporting tooling will ac=
+tually
+> > be compromised by a SHA-1 compromise if we cap the event log.
+> >=20
+> > So is there a way forward?  Just saying "read through the comments" see=
+ms like
+> > a dead end.
+> >=20
+>
+> It seems there may be a justification for some form of SHA-1 support in t=
+his
+> feature.  As I've said, the problem is that it's not explained in the pat=
+chset
+> itself.  Rather, it just talks about "SHA" and pretends like SHA-1 and SH=
+A-2 are
+> basically the same.  In fact, SHA-1 differs drastically from SHA-2 in ter=
+ms of
+> security.  SHA-1 support should be added in a separate patch, with a clea=
+rly
+> explained rationale *in the patch itself* for the SHA-1 support *specific=
+ally*.
 
+Yeah, this is important so that we don't end up deleting that support
+by accident. Just adding to denote that this more than just a "process
+issue".
 
-On 04.04.24 17:21, Valentin Schneider wrote:
-> On 03/04/24 16:28, Vitalii Bursov wrote:
->> Knowing domain's level exactly can be useful when setting
->> relax_domain_level or cpuset.sched_relax_domain_level
->>
->> Usage:
->> cat /debug/sched/domains/cpu0/domain1/level
->> to dump cpu0 domain1's level.
->>
->> Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
->> ---
->>  kernel/sched/debug.c | 1 +
->>  1 file changed, 1 insertion(+)
->>
->> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
->> index 8d5d98a5834d..c1eb9a1afd13 100644
->> --- a/kernel/sched/debug.c
->> +++ b/kernel/sched/debug.c
->> @@ -425,6 +425,7 @@ static void register_sd(struct sched_domain *sd, struct dentry *parent)
->>
->>       debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
->>       debugfs_create_file("groups_flags", 0444, parent, &sd->groups->flags, &sd_flags_fops);
->> +	debugfs_create_u32("level", 0444, parent, (u32 *)&sd->level);
-> 
-> How about reusing the SDM macro? ->flags and ->groups_flags get special
-> treatment for pretty printing, but the others don't need that.
-> ---
-> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-> index c1eb9a1afd13e..f97902208b34d 100644
-> --- a/kernel/sched/debug.c
-> +++ b/kernel/sched/debug.c
-> @@ -419,13 +419,13 @@ static void register_sd(struct sched_domain *sd, struct dentry *parent)
->  	SDM(u32,   0644, busy_factor);
->  	SDM(u32,   0644, imbalance_pct);
->  	SDM(u32,   0644, cache_nice_tries);
-> +	SDM(u32,   0444, level);
->  	SDM(str,   0444, name);
->  
->  #undef SDM
->  
->  	debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
->  	debugfs_create_file("groups_flags", 0444, parent, &sd->groups->flags, &sd_flags_fops);
-> -	debugfs_create_u32("level", 0444, parent, (u32 *)&sd->level);
->  }
->  
->  void update_sched_domain_debugfs(void)
-> 
+> - Eric
 
-This worked when I tried it. The reason why I chose an explicit implementation
-with debugfs_create_u32() is because "level" is "int" and there's no
-debugfs_create_{s32,int}(). While casting is not the best option either, it
-hints that types mismatch.
-
-In a few other cases when types do not match, casting is usually used. e.g.
-mod_debug_add_ulong macro in kernel/module/stats.c:
-#define mod_debug_add_ulong(name) debugfs_create_ulong(#name, 0400, mod_debugfs_root, (unsigned long *) &name.counter)
-where "counter" can be s64 from the atomic64.
-
-Thanks
+BR, Jarkko
 
