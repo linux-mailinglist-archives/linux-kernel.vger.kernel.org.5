@@ -1,121 +1,141 @@
-Return-Path: <linux-kernel+bounces-131289-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F28E58985B9
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:07:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 351F98985AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:04:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A7CE8282E56
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:07:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB92CB23738
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 181C480C09;
-	Thu,  4 Apr 2024 11:07:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3A3182871;
+	Thu,  4 Apr 2024 11:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jLuw9HF3"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="nNcTYnhu"
+Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85898061C
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 11:07:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F7480C0B;
+	Thu,  4 Apr 2024 11:03:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712228823; cv=none; b=WfyjfnOagHKLLkLfRIlUscpZr2/MxjfKxQyiHEtyPkydLB1eKy0Qo1aeOZO8N+UL6i6GC/WWW20DDgWqreP5+Go8QEkIvuizo4lRjB3gGvSkUTL7lBKCBHVxsFeb1uclArbyL/Fj+E2l6x+bY6gmFt+Y20EdW1erU3ITgZYXaI4=
+	t=1712228637; cv=none; b=uXO8meo+PvmuyiojSEPLMGl9d78aPKF9TChXT3RFCZaFqGG/J39MnB3yjtE7NWaGXvkKlgPozYg3TtxD+g83K0Ijg2bqkoycXjszsjXyDHFFDDLFEJB5V6Dff8Am8nEWmcofyem9agDUQiyNeXFsAhvGrtVnZjKEchXwxGrDkXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712228823; c=relaxed/simple;
-	bh=smjTSYhH7gbTnsCwUt060q54oqGuPVkPiEP1WSeLBRE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qxSexWOLODWarkyNkwdg4NCOmC1bTddF6cBm0937gDLIIAmB7EQYxWHzPpOOm0bCejCu4Na1WLphGiCRU2lhQg0sl0YX1RjvB7FfasHf0KZE+CU5hleSZnjSpvgAJX0gkNgogzpTKq4XrkeY8Zx0lJcZ8DizGtZ3F6y31+JYtng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jLuw9HF3; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcc80d6004bso988575276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 04:07:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712228821; x=1712833621; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=CGsX++L9+ujhMyLx1u2hIAzny98z/SAWY5CGSjDOSb0=;
-        b=jLuw9HF3FArb+Q0y8ntGeFossdmnGvjqc/P4ly5RQPY5VUorbufzOceOYzCCuaTOxx
-         PkwelVx59Ghvdy6MQgp2BOn+6OBaVY0baFlR3tawLK1TTU1H4+v0izqoGroqJQSRuh1F
-         1TKG4GPqTzLk3j2yWJQ346WvX7b0Y1v5JX/tfGgUc5hFaZRSrIY7CSKUTyDJfsUh4hCg
-         PMp/E5U1I5RBV423Orf80ruq1X1SVCRAWn71NGMZ8wlmKu2PhKtp8Q0BelSrCiXPtj2a
-         PxVxLKnPKk8RW807MCeOhzxC+Qa5cXxgXaTo3l8eqr9yG78sd+/SZHngJDqs4LZ4Srtz
-         9eWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712228821; x=1712833621;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CGsX++L9+ujhMyLx1u2hIAzny98z/SAWY5CGSjDOSb0=;
-        b=lswCASINa/aMsl+6qMf5l/kU2SqGc5TXZ0/ReTdVeh4LxZSSwJzcw0uj0GgADaNMrZ
-         nzTjBoWzdq4+mTxB8MicTS9DDkqBHAwxQA13OpQ2BAAbTKvpNeiYo+LC/A5SDOmRCdNL
-         RAn4T0uJU+BvwFYrmAeqes0PuXc6KkcfdBDLHav0vI+cfnLgblIO5n1fNKaNQVG7yjmz
-         x8kx1eTOUeE/8emftuYlLnOBbIQghXZMPt+7wmpZNv9AatTxlZnIFPPCH/iniYeJ6Gvj
-         nqDqYUDyKpJP5uTL5BY/YmA6s4xBfRESYXlAeV0MGYL1MjgxTxLcDF+v7N0fdDsE3Hde
-         r4Wg==
-X-Forwarded-Encrypted: i=1; AJvYcCUaJGa8lHSF1iuGVPVwknruJhHjP1YSk3MZnKB9dfIg2XMpAOvgZC9Zrh4jKyBLHiznafY+NrVl8G2Vg0Wqr58q0tE7PA/2zcl1rpTA
-X-Gm-Message-State: AOJu0YyIir3D00gLdhmD3fmEtUPGi1AcuzTKfLDfPKqs+J3wZbMgH0aE
-	4kzu80MB71Fy04txvfnnjITZYNKLbN+5lGukPpMCbM2cAFORUQyf1STm+I6KwUW3XZRxb5CNbTC
-	wRUWZdbVYxHAq/odzC2LGez9sdApBo/jSI+QDJw==
-X-Google-Smtp-Source: AGHT+IFw+8brBd6LN/Kukzcljb9jj6pC2FMNpnmCLIgwBkv5VrTUBCR8g0DssTUbjdDazcsVvJj+fUy2FXpfWXLjx+Q=
-X-Received: by 2002:a05:6902:c0e:b0:dc7:4860:1214 with SMTP id
- fs14-20020a0569020c0e00b00dc748601214mr2686805ybb.4.1712228820938; Thu, 04
- Apr 2024 04:07:00 -0700 (PDT)
+	s=arc-20240116; t=1712228637; c=relaxed/simple;
+	bh=UI9LYwYsbzsvYImq/LHr54gyhLBEwgpl2jvt1KqrE14=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
+	 In-Reply-To:To:CC; b=Uxs8n1km6Rk4EgsFzmKiikTpxfFKXjByD8+47xYi5PfGtDLcECfv82j7RDnpxr2h8KYDar1wfd8BJV0rK3KE+4MlNsaB0AFuLvmcWgRL9Tr3LCpKrn+BYEN1sTJVOwLjJyT/2Z70rVv5OpjHP4iPklPCSCNBEoKvjP4zgz8wrNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=nNcTYnhu; arc=none smtp.client-ip=148.163.135.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
+	by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 434B0t7Q027727;
+	Thu, 4 Apr 2024 07:03:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
+	from:date:subject:mime-version:content-type
+	:content-transfer-encoding:message-id:references:in-reply-to:to
+	:cc; s=DKIM; bh=DVie1SwrMjiwlrzQLb/M1yZj1Vl6Rs0UnN786RZz6OU=; b=
+	nNcTYnhu1Ypp5Uua6EW3IgTZkQDFcAXkGU0fkBA2qcVm01e3JD88yj1oDivbJcub
+	mndqI1sopB4CKcRT1rCVYPuxlBODK3ZtVVQe+beo3UAASq+Zb41FBUuCsPwHZC6s
+	enwT1quXTCcJxTGben6/+GtptnFXQ5nge+il2868UFKKdXJ2tl5uIOdkbFvbRvlL
+	abKwH/i27KKEMSB1IoovhR/++Q8+0nAbfJIk3mqWBQe8Zr5ljb1ZYS/sbkHpzDhI
+	k0V3pDToNRK1asEt5qlfNQMXlpkej1QfAA+h/wJW4qI9uIjk+8cqaaJkkr+znrY8
+	LSPNKcj4A3bd+y0wuqNuhw==
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+	by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3x9ty900bp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 07:03:22 -0400 (EDT)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+	by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 434B3L9f018926
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Thu, 4 Apr 2024 07:03:21 -0400
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Thu, 4 Apr 2024
+ 07:03:20 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Thu, 4 Apr 2024 07:03:20 -0400
+Received: from [127.0.0.1] ([10.44.3.56])
+	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 434B2vcB008372;
+	Thu, 4 Apr 2024 07:03:17 -0400
+From: Nuno Sa <nuno.sa@analog.com>
+Date: Thu, 4 Apr 2024 13:06:25 +0200
+Subject: [PATCH 3/4] iio: backend: make use of dev_errp_probe()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240217-init_level-v1-0-bde9e11f8317@quicinc.com> <20240217-init_level-v1-2-bde9e11f8317@quicinc.com>
-In-Reply-To: <20240217-init_level-v1-2-bde9e11f8317@quicinc.com>
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Date: Thu, 4 Apr 2024 13:06:25 +0200
-Message-ID: <CAPDyKFpG3wRWicOnp5hshBNN7FF0mEqiooju3UR-21HUf30BPQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] cpuidle: psci: Update init level to core_initcall()
-To: Maulik Shah <quic_mkshah@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	quic_lsrao@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-ID: <20240404-dev-add_dev_errp_probe-v1-3-d18e3eb7ec3f@analog.com>
+References: <20240404-dev-add_dev_errp_probe-v1-0-d18e3eb7ec3f@analog.com>
+In-Reply-To: <20240404-dev-add_dev_errp_probe-v1-0-d18e3eb7ec3f@analog.com>
+To: Petr Mladek <pmladek@suse.com>, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Olivier Moysan
+	<olivier.moysan@foss.st.com>,
+        Jyoti Bhayana <jbhayana@google.com>,
+        Andy
+ Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Chris Down
+	<chris@chrisdown.name>,
+        John Ogness <john.ogness@linutronix.de>,
+        Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1712228790; l=964;
+ i=nuno.sa@analog.com; s=20231116; h=from:subject:message-id;
+ bh=UI9LYwYsbzsvYImq/LHr54gyhLBEwgpl2jvt1KqrE14=;
+ b=QpVM/CwFSB08m+dHiZ29iZzwzTePxpxfwoYGgEy0hgyimYu4ynHk3Ye0RAsdO1BJBhEMRYx1M
+ uPMEO9hw6K4DFL9AXLgnkn6Nvguu2I22cQ32KH0wgne9HEQX7MuA+AK
+X-Developer-Key: i=nuno.sa@analog.com; a=ed25519;
+ pk=3NQwYA013OUYZsmDFBf8rmyyr5iQlxV/9H4/Df83o1E=
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: ohDMsrMdtH-xBzVjz5Jt0KLbHxddhxou
+X-Proofpoint-ORIG-GUID: ohDMsrMdtH-xBzVjz5Jt0KLbHxddhxou
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-04_07,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 spamscore=0
+ clxscore=1015 mlxlogscore=999 malwarescore=0 bulkscore=0 adultscore=0
+ priorityscore=1501 phishscore=0 mlxscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404040075
 
-On Sat, 17 Feb 2024 at 14:57, Maulik Shah <quic_mkshah@quicinc.com> wrote:
->
-> Clients like regulators, interconnects and clocks depend on rpmh-rsc to
-> vote on resources and rpmh-rsc depends on psci power-domains to complete
-> probe. All of them are in core_initcall().
->
-> Change psci domain init level to core_initcall() to avoid probe defer from
-> all of the above.
->
-> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
+Using dev_errp_probe() to simplify the code.
 
-Queued up for next via my linux-pm.git (pmdomain), thanks!
+Signed-off-by: Nuno Sa <nuno.sa@analog.com>
+---
+ drivers/iio/industrialio-backend.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Kind regards
-Uffe
+diff --git a/drivers/iio/industrialio-backend.c b/drivers/iio/industrialio-backend.c
+index 2fea2bbbe47f..e0b08283d667 100644
+--- a/drivers/iio/industrialio-backend.c
++++ b/drivers/iio/industrialio-backend.c
+@@ -296,11 +296,9 @@ struct iio_backend *devm_iio_backend_get(struct device *dev, const char *name)
+ 	}
+ 
+ 	fwnode = fwnode_find_reference(dev_fwnode(dev), "io-backends", index);
+-	if (IS_ERR(fwnode)) {
+-		dev_err_probe(dev, PTR_ERR(fwnode),
+-			      "Cannot get Firmware reference\n");
+-		return ERR_CAST(fwnode);
+-	}
++	if (IS_ERR(fwnode))
++		return dev_errp_probe(dev, PTR_ERR(fwnode),
++				      "Cannot get Firmware reference\n");
+ 
+ 	guard(mutex)(&iio_back_lock);
+ 	list_for_each_entry(back, &iio_back_list, entry) {
 
+-- 
+2.44.0
 
-> ---
->  drivers/cpuidle/cpuidle-psci-domain.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/cpuidle/cpuidle-psci-domain.c b/drivers/cpuidle/cpuidle-psci-domain.c
-> index b88af1262f1a..3e5b1150f75b 100644
-> --- a/drivers/cpuidle/cpuidle-psci-domain.c
-> +++ b/drivers/cpuidle/cpuidle-psci-domain.c
-> @@ -200,4 +200,4 @@ static int __init psci_idle_init_domains(void)
->  {
->         return platform_driver_register(&psci_cpuidle_domain_driver);
->  }
-> -subsys_initcall(psci_idle_init_domains);
-> +core_initcall(psci_idle_init_domains);
->
-> --
-> 2.22.0
->
 
