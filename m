@@ -1,93 +1,123 @@
-Return-Path: <linux-kernel+bounces-131119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A79E89834C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:40:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD2B289834E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:41:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 565461C26D33
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:40:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FD4128A302
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:40:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34AB371B27;
-	Thu,  4 Apr 2024 08:40:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="lLV7uu3w"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC5671B24;
+	Thu,  4 Apr 2024 08:40:49 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2851E86F;
-	Thu,  4 Apr 2024 08:40:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A9576027D;
+	Thu,  4 Apr 2024 08:40:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712220016; cv=none; b=qaer2eMkm4JPe2fEW7s669rbyxcsDQq0x8yYiPkpHhv7PYWgWdlBtHR6KC7BjzT4dDyeV1rwaeHsT6tox9s6fC2RgMcM2/t7cAecPdav5avghgSQr0E7XrcjKf+j0oTRTtNsV4FuBwUzN+OEUWwhbTFz21vCFKjirV/R7PRulME=
+	t=1712220049; cv=none; b=cy5eZn6pyYvu1LBEuBmHCynKM44Xvzp6Ni7ZXIoFpNOaPOOxoJ9kzfkr7Nfe74ORpphU278Qhi/fbUvvGv2JvTi4WP9tOhFug66qNFLpE+P429MRnITvpImrWuHTEAdqfMdUHZIO7oMRXYyAAN6DRIroGn40CztCt61GGy8wjd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712220016; c=relaxed/simple;
-	bh=nu2xamLL/1Lp3Kabf5EBo8dr2TBNEAPViVPLxkTCtZs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OYvk9YydvNvMtslxBDM1vJwyh+41ddloLRf3D872y2mVcxJKW9x+oHy7A5uN1kTKk96LJ8W7q1vcShlz2k6kMZB62pAuHSFMa69Hw81yUDP5r04GcnlVAY2Jexep4vRtu6AxlNOc0lPdnY7V2ybrcjgESEAOAJ0PEihyZmkTzJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=lLV7uu3w; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=Mh1tS4YBpeQpEOMQvTRN1ABwZ4FVhqqFeSUifn51SkU=; b=lLV7uu3wHBn23R2nt5JOwZXJ9L
-	e3uVtdKkJep/jj7ZFI9NIBFgvD1+Wd5Fyvm0jB7KzgnEm7eNcANhL7jMuCa1cAjyw7jdXT0PDsOVw
-	tEcBVvRtfslABSr4M0fWPnuu8merb3rglMtKBtx/FaJp9ZWOSr21vpsX3I5fy73tOrQDsRGbwQO1g
-	lDpFkqkvqWLI0JeKjg87TAjQV0HvPD9LaBitqqNNJcmcYABVfOrvF5ViQSeiSKNqqcu9bZ0ViNP8z
-	Ja+HfCsvXkSboF1lu3cMx/hAIBzOyFu0FWtKjo30KubY9v89V/Zw/Bm3Yt1we5SbpzqaynDXr8Z4i
-	Ig+USciQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rsIdl-005SY0-0V;
-	Thu, 04 Apr 2024 08:40:09 +0000
-Date: Thu, 4 Apr 2024 09:40:09 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>,
-	gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	tj@kernel.org, valesini@yandex-team.ru,
-	Christoph Hellwig <hch@lst.de>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
-Message-ID: <20240404084009.GS538574@ZenIV>
-References: <00000000000098f75506153551a1@google.com>
- <0000000000002f2066061539e54b@google.com>
- <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
- <20240404081122.GQ538574@ZenIV>
- <20240404082110.GR538574@ZenIV>
+	s=arc-20240116; t=1712220049; c=relaxed/simple;
+	bh=wn7xtsjaTkXfKIzw5gjpPwLITNNhyQ7OfsOpriiQNiY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rkrpu4sauoCffvnZeJUto/zSm9RP3IH6wPJihpqHRFcy0R3FCMCh1QEXHc13xhuo2ecfW2TcU1hIfgj7qe2Y5mec+ZhfuygHBHlJffFfyHHKwmIFl/5tPEM80rgI+w1JI6de3bKfTiZ4gswqWaohGjbB8mzq4/+xTXBD96e6+DM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC91EC433C7;
+	Thu,  4 Apr 2024 08:40:46 +0000 (UTC)
+Message-ID: <1caa6a4c-d4c1-474a-abf2-63384dba3cbb@xs4all.nl>
+Date: Thu, 4 Apr 2024 10:40:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404082110.GR538574@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] media: cec: core: remove length check of Timer Status
+Content-Language: en-US, nl
+To: nini.song@mediatek.com
+Cc: ci.wu@mediatek.com, mchehab@kernel.org, nicolas@fjasle.eu,
+ linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org, Matthias Brugger
+ <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Jani Nikula <jani.nikula@intel.com>, linux-kernel@vger.kernel.org
+References: <20240125132850.10430-1-nini.song@mediatek.com>
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+In-Reply-To: <20240125132850.10430-1-nini.song@mediatek.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 04, 2024 at 09:21:10AM +0100, Al Viro wrote:
+Hi Nini,
 
-> Similar question applies to ovl_write_iter() - why do you
-> need to hold the overlayfs inode locked during the call of
-> backing_file_write_iter()?
+This patch has now been merged in mainline as commit ce5d241c3ad45
+("media: cec: core: remove length check of Timer Status").
 
-Consider the scenario when unlink() is called on that sucker
-during the write() that triggers that pathwalk.  We have
+To get this into older kernels please post this patch to
+stable@vger.kernel.org, CC the linux-media mailinglist, and mention the
+mainline commit that I provided above.
 
-unlink: blocked on overlayfs inode of file, while holding the parent directory.
-write: holding the overlayfs inode of file and trying to resolve a pathname
-that contains .../power/suspend_stats/../../...; blocked on attempt to lock
-parent so we could do a lookup in it.
+Also mention that this patch applies to 5.10 and up. You can mention
+that the patch applies to 5.4 and 4.19 as well after removing the '/core'
+directory from the pathnames.
 
-No llseek involved anywhere, kernfs of->mutex held, but not contended,
-deadlock purely on ->i_rwsem of overlayfs inodes.
+Since you are the author of the patch, you should be the one to post
+the patch.
 
-Holding overlayfs inode locked during the call of lookup_bdev() is really
-no-go.
+Regards,
+
+	Hans
+
+
+On 25/01/2024 14:28, nini.song@mediatek.com wrote:
+> From: "nini.song" <nini.song@mediatek.com>
+> 
+> The valid_la is used to check the length requirements,
+> including special cases of Timer Status. If the length is
+> shorter than 5, that means no Duration Available is returned,
+> the message will be forced to be invalid.
+> 
+> However, the description of Duration Available in the spec
+> is that this parameter may be returned when these cases, or
+> that it can be optionally return when these cases. The key
+> words in the spec description are flexible choices.
+> 
+> Remove the special length check of Timer Status to fit the
+> spec which is not compulsory about that.
+> 
+> Signed-off-by: Nini Song <nini.song@mediatek.com>
+> ---
+>  drivers/media/cec/core/cec-adap.c | 14 --------------
+>  1 file changed, 14 deletions(-)
+> 
+> diff --git a/drivers/media/cec/core/cec-adap.c b/drivers/media/cec/core/cec-adap.c
+> index 5741adf09a2e..559a172ebc6c 100644
+> --- a/drivers/media/cec/core/cec-adap.c
+> +++ b/drivers/media/cec/core/cec-adap.c
+> @@ -1151,20 +1151,6 @@ void cec_received_msg_ts(struct cec_adapter *adap,
+>  	if (valid_la && min_len) {
+>  		/* These messages have special length requirements */
+>  		switch (cmd) {
+> -		case CEC_MSG_TIMER_STATUS:
+> -			if (msg->msg[2] & 0x10) {
+> -				switch (msg->msg[2] & 0xf) {
+> -				case CEC_OP_PROG_INFO_NOT_ENOUGH_SPACE:
+> -				case CEC_OP_PROG_INFO_MIGHT_NOT_BE_ENOUGH_SPACE:
+> -					if (msg->len < 5)
+> -						valid_la = false;
+> -					break;
+> -				}
+> -			} else if ((msg->msg[2] & 0xf) == CEC_OP_PROG_ERROR_DUPLICATE) {
+> -				if (msg->len < 5)
+> -					valid_la = false;
+> -			}
+> -			break;
+>  		case CEC_MSG_RECORD_ON:
+>  			switch (msg->msg[2]) {
+>  			case CEC_OP_RECORD_SRC_OWN:
+
 
