@@ -1,120 +1,117 @@
-Return-Path: <linux-kernel+bounces-131523-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 012E4898904
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:45:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E119A898907
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:45:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6FC89B21460
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:45:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 966701F22091
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4319412838D;
-	Thu,  4 Apr 2024 13:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 384A21292D9;
+	Thu,  4 Apr 2024 13:45:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="S5qcrfZm"
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="VTBo4C/p"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CF276023;
-	Thu,  4 Apr 2024 13:44:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691721292CC;
+	Thu,  4 Apr 2024 13:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712238293; cv=none; b=k+zcoo2n/mfPb9uh8Sz5uERAwJqAKyhzbTct5EI9LwMtIiIgfSycE02F1eBaxW+t3vXKm5tWBSzJRNSgBNqT5TcdQ0e9bYcFDuK5NFKyGecZrZFw8nh/sMw33o8Oj2fJdETE8p7XuL5plfBCpkD6R00FCqySzU/L7c9a+CMnctM=
+	t=1712238322; cv=none; b=Qt7UFPWJBSR4BNiPBi0t9de/bjXADKL2g69+c9uplOqWaVT12xoJ03qzQNh/XuE/R1Auh3QsVbirBQhsXnq4K2APiaw1dE1df6KhcafdkBPtTDPgLsJpYzp6lUTZyLtu2UabkFQ0Z5scKFsFB5vYdsk/yl8wAvLft7A1QKzqOIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712238293; c=relaxed/simple;
-	bh=tAAtr7pnR4MH/4TMN77ugW13pgkeIiTR+g76NLCU3ds=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ayOWBDwlMlJCLtJzr47kkX41z9+LBT3lWXdzu/Pp1O1AKzCao+ZE750npVvjDFuGQnlSaqe2PZkEfgdpnajB6CX0f8SRIU3xa1ebnZLqe1RarD+uRd4X4t3mwC1nM96tUoTSvbmEaXEuZXOI5rrF9adJMP8u3MU3hGhlswhlF6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=S5qcrfZm; arc=none smtp.client-ip=115.124.30.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712238280; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=O+o5H6Rp/YKTpylXkB7+dR8XqLzGRaNwaFZPCluqRS8=;
-	b=S5qcrfZm1dko10hBCbO8YldAe+QslRnlpEVQBpZ76+NqGZUfVErND4p+JrABcyINl3+O3JmpGiQ2lC0P0YRDcgx3cqQ4V3A5Ypdo6CQE31FlAlb64oquLJPI0Jwu0v4Swah4Xq0HlN2JkGWFWLWsDauCmHa8h8nGs1c3ONIEhuU=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R431e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045192;MF=guwen@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0W3uXJtx_1712238278;
-Received: from 30.236.60.242(mailfrom:guwen@linux.alibaba.com fp:SMTPD_---0W3uXJtx_1712238278)
-          by smtp.aliyun-inc.com;
-          Thu, 04 Apr 2024 21:44:39 +0800
-Message-ID: <7c3733b7-a3f2-45ba-9b8d-880957ed5cdf@linux.alibaba.com>
-Date: Thu, 4 Apr 2024 21:44:37 +0800
+	s=arc-20240116; t=1712238322; c=relaxed/simple;
+	bh=lt7E2zXyUbMPBjxf4XmiRbNFbrymY6WXmeqg2i9JxxE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q7y74ar2ATME45FCfqmsfAyKiyFCZwigkTauOgVMNMbzfcczc2Km0/R2RAZsA5yR63XIkR8cQKyq5++KuqG+Nfr6RwMLLeJREtW9LQkL0VNtCp3LJCuH9+KFOKA7uIoS99WJ0r3sUD86QLFwo2YKIC6qoEmNl3apZT68+ufqvk4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=VTBo4C/p; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 23A9F40E019C;
+	Thu,  4 Apr 2024 13:45:18 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id KFtpLrkW2Zbg; Thu,  4 Apr 2024 13:45:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1712238314; bh=KYePjgKyrxaOLQX3sTefJA/mryMqM96mkB5p7azkNE8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VTBo4C/pxotQQ2bPyVDeqvaYiueLsOLbdQZDll5g3ZzIE7Kyup0p+vV96V6t70OpY
+	 COWgGMJG2WSKR0/kEV5/RVSjQXe+6Y6mqF3+vATFjpEUZyV2E00jx0aYQ32siV++BA
+	 XU2LEnoMqVGQZXD2BXxd+8AvfleG4o6as0eDMDOhoIEq7K/rGd7x//Ym0e5ezGqtv7
+	 g7EPORt+4YoazEyJkvcs/fVrOwwclj4/Y2hFFyTnPyC9iFMBJ5eZ45k954WzWgA6H/
+	 ZtxozH/dcXOIIxAJ1+Wz6Uxz5oJsSpQ2azqSyTEnKfMQxcrYadNInMAtG1cALG8YVH
+	 BWxIWgJzEMZFIIEtnx8gnzaZ0sQdsobihRWrMwtIBzbP7b95L67uoiEgOfJzw4csJR
+	 mXAF1ZGzZafZXhQskUx7Lw/yaXHgzTX5v9uhoSQyvHtRK6pNognGD22xVsfC6eM8LF
+	 0a/Au2ZGcHJDSVsfQ1X0jTIa239Yslny6HbYqqYW4io6xEo6B6ZmcqWLY2Bs2MMvBb
+	 rEnWrWJ5FcE/rZ8Tuizww6RiRapMDbyYn2m14uHo4ZDhXgy5Ue4RUS8ppJRefwum6Y
+	 4ICIFViVvRSpTXd0VDFkrlJCcZ/giC2/B7VTp7nmVkDscKlcieJzXtcAdSid41bSnV
+	 qbYTBG0nrhf9BzBPhOBS14hs=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 467EA40E00F4;
+	Thu,  4 Apr 2024 13:44:53 +0000 (UTC)
+Date: Thu, 4 Apr 2024 15:44:52 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Michael Roth <michael.roth@amd.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>, bp@kernel.org,
+	bgardon@google.com, dave.hansen@linux.intel.com,
+	dmatlack@google.com, hpa@zytor.com, kvm@vger.kernel.org,
+	leitao@debian.org, linux-kernel@vger.kernel.org, maz@kernel.org,
+	mingo@redhat.com, mirsad.todorovac@alu.unizg.hr,
+	pawan.kumar.gupta@linux.intel.com, pbonzini@redhat.com,
+	peterz@infradead.org, shahuang@redhat.com, tabba@google.com,
+	tglx@linutronix.de, x86@kernel.org
+Subject: Re: [BUG net-next] arch/x86/kernel/cpu/bugs.c:2935: "Unpatched
+ return thunk in use. This should not happen!" [STACKTRACE]
+Message-ID: <20240404134452.GDZg6u1A-mPTTRqs6d@fat_crate.local>
+References: <1d10cd73-2ae7-42d5-a318-2f9facc42bbe@alu.unizg.hr>
+ <20240318202124.GCZfiiRGVV0angYI9j@fat_crate.local>
+ <12619bd4-9e9e-4883-8706-55d050a4d11a@alu.unizg.hr>
+ <20240326101642.GAZgKgisKXLvggu8Cz@fat_crate.local>
+ <8fc784c2-2aad-4d1d-ba0f-e5ab69d28ec5@alu.unizg.hr>
+ <20240328123830.dma3nnmmlb7r52ic@amd.com>
+ <20240402101549.5166-1-bp@kernel.org>
+ <20240402133856.dtzinbbudsu7rg7d@amd.com>
+ <20240403121436.GDZg1ILCn0a4Ddif3g@fat_crate.local>
+ <Zg1QFlDdRrLRZchi@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH net-next v5 05/11] net/smc: implement DMB-related
- operations of loopback-ism
-To: Niklas Schnelle <schnelle@linux.ibm.com>,
- Gerd Bayer <gbayer@linux.ibm.com>, wintera@linux.ibm.com,
- twinkler@linux.ibm.com, hca@linux.ibm.com, gor@linux.ibm.com,
- agordeev@linux.ibm.com, davem@davemloft.net, edumazet@google.com,
- kuba@kernel.org, pabeni@redhat.com, wenjia@linux.ibm.com, jaka@linux.ibm.com
-Cc: borntraeger@linux.ibm.com, svens@linux.ibm.com,
- alibuda@linux.alibaba.com, tonylu@linux.alibaba.com,
- linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20240324135522.108564-1-guwen@linux.alibaba.com>
- <20240324135522.108564-6-guwen@linux.alibaba.com>
- <9a17268d4046f99b30f3620079b5749a9ddc5cd9.camel@linux.ibm.com>
- <92b0c4b1-4844-4adf-a15a-a9323fb859e1@linux.alibaba.com>
- <6d3cfa04c9826a24f0ad8d401940af3ad02a67bc.camel@linux.ibm.com>
-From: Wen Gu <guwen@linux.alibaba.com>
-In-Reply-To: <6d3cfa04c9826a24f0ad8d401940af3ad02a67bc.camel@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Zg1QFlDdRrLRZchi@google.com>
 
+On Wed, Apr 03, 2024 at 05:48:22AM -0700, Sean Christopherson wrote:
+> I'm guessing a general solution for OBJECT_FILES_NON_STANDARD is needed
 
+Yeah.
 
-On 2024/4/4 19:27, Niklas Schnelle wrote:
-> On Thu, 2024-04-04 at 18:20 +0800, Wen Gu wrote:
->>
->> On 2024/4/4 01:20, Gerd Bayer wrote:
->>> On Sun, 2024-03-24 at 21:55 +0800, Wen Gu wrote:
->>>
->>> When I instrumented this to see, why I still see tons of my other
->>> temporary instrumentation messages from the "ism" driver, I found that
->>> in my setup loopback-ism is used rather infrequently.
->>>
->>> I suspect this is due to how the SMC proposals are constructed in
->>> net/smc/af_smc.c and net/smc/smc_pnet.c - and later evaluated in
->>> smc_check_ism_v2_match() - where there is a first-come-first-serve
->>> selection.
->>>
->>> I wonder if one should change that to favour loopback-ism over "real"
->>> ISM devices - and how this could be achieved elegantly.
->>>
->>> Just some food for thought... Probably little you can do on x86.
->>>
->>
->> Yes, it is about the priority of available ISM devices, and now it
->> is decided by their order in the smcd_dev_list. The later registered
->> ISMv2 devices(without pnetid) will be added to the beginning of the
->> list (see smcd_register_dev()). So there is a probability that
->> loopback-ism will not be ranked first, since it is added into list
->> earlier during smc_init().
->>
->> If we have the runtime switch of loopback-ism, we can re-active the
->> loopback-ism, that make it be re-added into the beginning of the dev
->> list and be chosen first. Or a new netlink command to adjust the slot
->> order of available ISM devices in the list. As we discussed before,
->> that could be tasks in stage 1 or stage 2.
->>
->> Thanks!
-> 
-> Maybe when adding the ISM devices we could instead make sure that all
-> ISM devices are added after loopback and loopback is added in the
-> beginning. I think loopback should always be preferred and would
-> consider it a bug if it isn't faster too. Between virtio-ism and ISM it
-> may be less clear so maybe for stage 2 we would want a priority setting
-> and then insert ordered by priority. Thoughts?
-I have no objection. If we all agree, I will keep it at the beginning of the list.
+> but I have a series to drop it for vmenter.S.
+>
+> https://lore.kernel.org/all/20240223204233.3337324-9-seanjc@google.com
 
-Thanks!
+Cool, ship it.
 
+Holler if I should test it a bit on my pile of hw.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
