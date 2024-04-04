@@ -1,509 +1,113 @@
-Return-Path: <linux-kernel+bounces-131141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3065D89839F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:56:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE0A58983A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:57:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50A571C25208
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:56:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B27EA1F2164D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:57:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7AD973518;
-	Thu,  4 Apr 2024 08:56:34 +0000 (UTC)
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 758FE73527;
+	Thu,  4 Apr 2024 08:57:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e6AYak8e"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D17571B5C;
-	Thu,  4 Apr 2024 08:56:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.11.138.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25D5B71B5C
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:57:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712220994; cv=none; b=OpGCpkfyEI+oCCuPE5kkZCr6sZ6hW7DqXShBY38XYV3Lqid9PVu8AYK92jDgVFHYDVPnWDfR+VmZfOeGqSlgjPFQpco3aftNEL1F3VxGzzYqk8Ces5oNA3dYaDH26HovsxsEi8ZY2d1snIGPjNH/NNdQ/EfaqQr8qOWz1c5jgrg=
+	t=1712221026; cv=none; b=pN9ycp40R+SGooJ41cLws0/5yq28W3yi7JFiGvROwOkdwTuHuqFyL9V9U+jI+Zx7kiNBf633gRWaXKmPecnIOdgCv7aY4QcITC2c4v3CORCbt29o1fRb7nKF/5QKjRVPeafM4fO2oJ56Nz3LWDbosCPKoxy6MiY/bCTI0qH+sEA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712220994; c=relaxed/simple;
-	bh=s2Vzd4bI3iR1R7xzsFeWxElHHoRwdYdkcRTWXpx2in4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ajUnAscA4ppmby151honkteznZiFGRA1WJIlbV1mN9uKxCV8slP492amnGb73taisTtmWLT7TUMYcDcWV617ejTjkxqYrSZaruaDDIrgzDZqebkaC01hcOchy+/RgxEUn10wYz0dWv4CF96X1j0PqOEOrN1Lra68FA+6pkJXAlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de; spf=pass smtp.mailfrom=sntech.de; arc=none smtp.client-ip=185.11.138.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sntech.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
-Received: from i53875aaf.versanet.de ([83.135.90.175] helo=diego.localnet)
-	by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <heiko@sntech.de>)
-	id 1rsItV-0008GZ-FH; Thu, 04 Apr 2024 10:56:25 +0200
-From: Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To: Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
- David Jander <david@protonic.nl>, Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 2/2] arm64: dts: rockchip: add Protonic MECSBC device-tree
-Date: Thu, 04 Apr 2024 10:56:24 +0200
-Message-ID: <11120876.BaYr0rKQ5T@diego>
-In-Reply-To: <20240404-protonic-mecsbc-v1-2-ad5b42ade6c6@pengutronix.de>
-References:
- <20240404-protonic-mecsbc-v1-0-ad5b42ade6c6@pengutronix.de>
- <20240404-protonic-mecsbc-v1-2-ad5b42ade6c6@pengutronix.de>
+	s=arc-20240116; t=1712221026; c=relaxed/simple;
+	bh=payVFyGnjrWONQxZPASD2sELUcqQAHBtglUmm0Lf5IM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=NHhM3I07+0wPFhvfeK8SLMAi5FWkpQThIXyWaa7GwBDlgFPulrSi/rkT3Gqab3kT0Pl1lTnEXSxPc9AZRSTJ5bt+0143vXroAokDSVSDqzX7WlIRfgsv1Fuv1Bz/z6zrNg7vvqpvmguEosiG4XLOR2nQZYv9NTK4LeJ20j1ZR0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e6AYak8e; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712221024;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=KaZjg34ixG35MC2J/uQFBc+0lATRGuM6qjOLyn811BA=;
+	b=e6AYak8etWB0hs/BN7/o1nZ2ZDsxCmfi+C+p7zFmKNXWofLZBsmicE221e1gShioeHW1Dn
+	ezGJ5P3+MAHA7ue2ToCnyYSNGE1XlkE/z6GxumQ93Bb7Fn7bKccaUu5XoBgIjQhA1AobWK
+	+te2/OGLYeHEzD0MYjWrNYN8aHq6Iaw=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-629-jrDPL7idMmKzTehil0FfDQ-1; Thu, 04 Apr 2024 04:57:02 -0400
+X-MC-Unique: jrDPL7idMmKzTehil0FfDQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-41543b57f2dso1767155e9.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 01:57:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712221021; x=1712825821;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KaZjg34ixG35MC2J/uQFBc+0lATRGuM6qjOLyn811BA=;
+        b=scystlq6wciMKx5xoYU1VcZdXzCuwcq6vZv1qkw8em6EVlIb0qxq09eHoWM2tEL4sp
+         BhknF+IAHr0pE3XnqoJGRnRG7GAHekHxcE+kxiNMK7futM0YciQbru2ayFwDlP6nQ2MX
+         sd88cNfS2GjxuBxv4n0CCdUZ7fG2oqKOzp9CGVS1eFcfudnUb/vfrJjN8rzAlWp/PlBE
+         EAqwN/AR1YqXfFJFdzE6hpqDg7vDOusQZMqN+IQlXOeCaywrLM5861o47AohdYYHsCnL
+         q0148PDrPl8pMoLz3RZk4huXPyrsUfdBgKcvdtRnUq4b2icTLvOcufgsbGvaqp8S0tNu
+         he7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXyRBnMZVCmsjFwNUt+T6OTIh1uROhviBYTlUDmpVfP41XhJeaCaOPCbAREBJgVKEl+oierOesTQPYi5mI72NZtxSo47d01s6wjxetu
+X-Gm-Message-State: AOJu0Yzgv3VdrPpX4qy+GZTkfS6tJNQmCOYH/sqgEm3qIpk/AI5w8KKq
+	dx/LZ3QKN42tv53WlACYmAFZ/saOeZSRbmdBd4AEvFmOJjSWlnNa5F6N830NvdCGCZWyLMLArBn
+	0ZsO0VdVazIw6serlBc/qleo77ceh7TP8yJSezyyYAt1mqxQAcCnotKvUf33iWg==
+X-Received: by 2002:a05:6000:1887:b0:343:bccb:af41 with SMTP id a7-20020a056000188700b00343bccbaf41mr1114707wri.4.1712221021385;
+        Thu, 04 Apr 2024 01:57:01 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHYoTW/0xnQmkFpE+2Z699+rByuCUrILQa6di79cHcS1c9qPyT5/db+Oox9c/qVG9EP1+H8rQ==
+X-Received: by 2002:a05:6000:1887:b0:343:bccb:af41 with SMTP id a7-20020a056000188700b00343bccbaf41mr1114697wri.4.1712221021075;
+        Thu, 04 Apr 2024 01:57:01 -0700 (PDT)
+Received: from gerbillo.redhat.com (146-241-247-213.dyn.eolo.it. [146.241.247.213])
+        by smtp.gmail.com with ESMTPSA id b12-20020a5d4b8c000000b00343723c126asm6306182wrt.48.2024.04.04.01.56.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 01:57:00 -0700 (PDT)
+Message-ID: <4726fefd2a710cbee0d1a7fb15e361564915e955.camel@redhat.com>
+Subject: Re: [PATCH net-next v3] tg3: Remove residual error handling in
+ tg3_suspend
+From: Paolo Abeni <pabeni@redhat.com>
+To: Nikita Kiryushin <kiryushin@ancud.ru>
+Cc: mchan@broadcom.com, pavan.chebbi@broadcom.com, davem@davemloft.net, 
+ edumazet@google.com, kuba@kernel.org, rjw@rjwysocki.net,
+ netdev@vger.kernel.org,  linux-kernel@vger.kernel.org,
+ lvc-project@linuxtesting.org,  michael.chan@broadcom.com
+Date: Thu, 04 Apr 2024 10:56:59 +0200
+In-Reply-To: <171222062943.6705.9843920756752610864.git-patchwork-notify@kernel.org>
+References: <20240401191418.361747-1-kiryushin@ancud.ru>
+	 <171222062943.6705.9843920756752610864.git-patchwork-notify@kernel.org>
+Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
 
-Hi Sascha,
+On Thu, 2024-04-04 at 08:50 +0000, patchwork-bot+netdevbpf@kernel.org
+wrote:
+> Hello:
+>=20
+> This patch was applied to netdev/net.git (main)
+                                   ^^^^^^^
+Wrong tree, blame on me. I'm reverting it from net, I will re-apply to
+net-next. Sorry for the noise.
 
-Am Donnerstag, 4. April 2024, 10:34:40 CEST schrieb Sascha Hauer:
-> From: David Jander <david@protonic.nl>
-> 
-> MECSBC is a single board computer for blood analysis machines from
-> RR-Mechatronics, designed and manufactured by Protonic Holland, based on
-> the Rockchip RK3568 SoC.
-> 
-> Signed-off-by: David Jander <david@protonic.nl>
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
->  arch/arm64/boot/dts/rockchip/Makefile          |   1 +
->  arch/arm64/boot/dts/rockchip/rk3568-mecsbc.dts | 394 +++++++++++++++++++++++++
->  2 files changed, 395 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-> index f906a868b71ac..1152e0f6a25cb 100644
-> --- a/arch/arm64/boot/dts/rockchip/Makefile
-> +++ b/arch/arm64/boot/dts/rockchip/Makefile
-> @@ -104,6 +104,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-nanopi-r5c.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-nanopi-r5s.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-odroid-m1.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-qnap-ts433.dtb
-> +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-mecsbc.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-radxa-e25.dtb
-
-alphabetical sorting of entries please
-
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-roc-pc.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3568-rock-3a.dtb
-> diff --git a/arch/arm64/boot/dts/rockchip/rk3568-mecsbc.dts b/arch/arm64/boot/dts/rockchip/rk3568-mecsbc.dts
-> new file mode 100644
-> index 0000000000000..e50d135042ec7
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/rockchip/rk3568-mecsbc.dts
-> @@ -0,0 +1,394 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +
-> +/dts-v1/;
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/leds/common.h>
-> +#include <dt-bindings/pinctrl/rockchip.h>
-> +#include <dt-bindings/pwm/pwm.h>
-> +#include "rk3568.dtsi"
-> +
-> +/ {
-> +	model = "Protonic MECSBC";
-> +	compatible = "prt,mecsbc", "rockchip,rk3568";
-> +
-> +	aliases {
-> +		mmc0 = &sdhci;
-> +		mmc1 = &sdmmc0;
-> +	};
-> +
-> +	chosen: chosen {
-> +		stdout-path = "serial2:1500000n8";
-> +	};
-> +
-> +	tas2562-sound {
-> +		compatible = "simple-audio-card";
-> +		simple-audio-card,format = "i2s";
-> +		simple-audio-card,name = "Speaker";
-> +		simple-audio-card,mclk-fs = <256>;
-> +
-> +		simple-audio-card,cpu {
-> +			sound-dai = <&i2s1_8ch>;
-> +		};
-> +
-> +		simple-audio-card,codec {
-> +			sound-dai = <&tas2562>;
-> +		};
-> +	};
-> +
-> +	vdd_gpu: regulator-vdd-gpu {
-> +		compatible = "pwm-regulator";
-> +		pwms = <&pwm1 0 5000 PWM_POLARITY_INVERTED>;
-> +		regulator-name = "vdd_gpu";
-> +		regulator-min-microvolt = <915000>;
-> +		regulator-max-microvolt = <1000000>;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-settling-time-up-us = <250>;
-> +		pwm-dutycycle-range = <0 100>; /* dutycycle inverted 0% => 0.915V */
-> +	};
-> +
-> +	vdd_npu: regulator-vdd-npu {
-> +		compatible = "pwm-regulator";
-> +		pwms = <&pwm2 0 5000 PWM_POLARITY_INVERTED>;
-> +		regulator-name = "vdd_npu";
-> +		regulator-min-microvolt = <915000>;
-> +		regulator-max-microvolt = <1000000>;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-settling-time-up-us = <250>;
-> +		pwm-dutycycle-range = <0 100>; /* dutycycle inverted 0% => 0.915V */
-> +	};
-> +
-> +	p3v3: p3v3-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "p3v3";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +	};
-> +
-> +	p1v8: p1v8-regulator {
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "p1v8";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <1800000>;
-> +		regulator-max-microvolt = <1800000>;
-> +	};
-
-please sort alphabetical by node-name
-
-> +};
-> +
-> +&combphy0 {
-> +	status = "okay";
-> +};
-> +
-> +&combphy1 {
-> +	status = "okay";
-> +};
-> +
-> +&combphy2 {
-> +	status = "okay";
-> +};
-> +
-> +&cpu0 {
-> +	cpu-supply = <&vdd_cpu>;
-> +};
-> +
-> +&cpu1 {
-> +	cpu-supply = <&vdd_cpu>;
-> +};
-> +
-> +&cpu2 {
-> +	cpu-supply = <&vdd_cpu>;
-> +};
-> +
-> +&cpu3 {
-> +	cpu-supply = <&vdd_cpu>;
-> +};
-> +
-> +&gmac1 {
-> +	assigned-clocks = <&cru SCLK_GMAC1_RX_TX>, <&cru SCLK_GMAC1>;
-> +	assigned-clock-parents = <&cru SCLK_GMAC1_RGMII_SPEED>, <&cru CLK_MAC1_2TOP>;
-> +	phy-handle = <&rgmii_phy1>;
-> +	phy-mode = "rgmii";
-> +	clock_in_out = "output";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&gmac1m1_miim
-> +		     &gmac1m1_tx_bus2
-> +		     &gmac1m1_rx_bus2
-> +		     &gmac1m1_rgmii_clk
-> +		     &gmac1m1_clkinout
-> +		     &gmac1m1_rgmii_bus>;
-> +	status = "okay";
-> +	tx_delay = <0x30>;
-> +	rx_delay = <0x10>;
-> +};
-> +
-> +&gpu {
-> +	mali-supply = <&vdd_gpu>;
-> +	status = "okay";
-> +};
-> +
-> +&i2c0 {
-> +	status = "okay";
-> +
-> +	vdd_cpu: regulator@60 {
-> +		compatible = "fcs,fan53555";
-> +		reg = <0x60>;
-> +		fcs,suspend-voltage-selector = <1>;
-> +		regulator-name = "vdd_cpu";
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +		regulator-min-microvolt = <800000>;
-> +		regulator-max-microvolt = <1150000>;
-> +		regulator-ramp-delay = <2300>;
-> +
-> +		regulator-state-mem {
-> +			regulator-off-in-suspend;
-> +		};
-> +	};
-> +};
-> +
-> +&i2c2 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c2m0_xfer>;
-> +};
-> +
-> +&i2c3 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2c3m0_xfer>;
-> +	status = "okay";
-> +
-> +	tas2562: tas2562@4c {
-> +		compatible = "ti,tas2562";
-> +		reg = <0x4c>;
-> +		#sound-dai-cells = <0>;
-> +		shutdown-gpios = <&gpio1 RK_PD4 GPIO_ACTIVE_HIGH>;
-> +		interrupt-parent = <&gpio1>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_tas2562>;
-> +		interrupts = <RK_PD1 IRQ_TYPE_LEVEL_LOW>;
-> +		ti,imon-slot-no = <0>;
-> +	};
-> +};
-> +
-> +&i2c5 {
-> +	status = "okay";
-> +
-> +	tmp1075n@48 {
-> +		compatible = "ti,tmp1075";
-> +		reg = <0x48>;
-> +	};
-> +
-> +	pcf8563: rtc@51 {
-> +		compatible = "nxp,pcf85363";
-> +		reg = <0x51>;
-> +		#clock-cells = <0>;
-> +		clock-output-names = "rtcic_32kout";
-> +	};
-> +};
-> +
-> +&i2s1_8ch {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&i2s1m0_sclktx &i2s1m0_lrcktx &i2s1m0_sdi0 &i2s1m0_sdo0>;
-> +	rockchip,trcm-sync-tx-only;
-> +	status = "okay";
-> +};
-> +
-> +&mdio1 {
-> +	rgmii_phy1: ethernet-phy@2 {
-> +		compatible = "ethernet-phy-ieee802.3-c22";
-> +		reg = <0x2>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&eth_phy1_rst>;
-> +		reset-assert-us = <20000>;
-> +		reset-deassert-us = <100000>;
-> +		reset-gpios = <&gpio4 RK_PB3 GPIO_ACTIVE_LOW>;
-> +	};
-> +};
-> +
-> +&pcie2x1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pcie20m1_pins>;
-> +	reset-gpios = <&gpio3 RK_PC1 GPIO_ACTIVE_HIGH>;
-> +	status = "okay";
-> +};
-> +
-> +&pcie30phy {
-> +	status = "okay";
-> +};
-> +
-> +&pcie3x2 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pcie30x2m1_pins>;
-> +	reset-gpios = <&gpio2 RK_PD6 GPIO_ACTIVE_HIGH>;
-> +	vpcie3v3-supply = <&p3v3>;
-> +	status = "okay";
-> +};
-> +
-> +&pinctrl {
-> +	ethernet {
-> +		eth_phy1_rst: eth_phy1_rst {
-> +			rockchip,pins = <4 RK_PB3 RK_FUNC_GPIO &pcfg_pull_none>;
-> +		};
-> +	};
-> +
-> +	tas2562 {
-> +		pinctrl_tas2562: tas2562 {
-> +			rockchip,pins = <1 RK_PD4 RK_FUNC_GPIO &pcfg_pull_up>;
-> +		};
-> +	};
-> +};
-> +
-> +&pmu_io_domains {
-> +	pmuio1-supply = <&p3v3>;
-> +	pmuio2-supply = <&p3v3>;
-> +	vccio1-supply = <&p1v8>;
-> +	vccio2-supply = <&p1v8>;
-> +	vccio3-supply = <&p3v3>;
-> +	vccio4-supply = <&p1v8>;
-> +	vccio5-supply = <&p3v3>;
-> +	vccio6-supply = <&p1v8>;
-> +	vccio7-supply = <&p3v3>;
-> +	status = "okay";
-> +};
-> +
-> +&saradc {
-> +	vref-supply = <&p1v8>;
-> +	status = "okay";
-> +};
-> +
-> +&sdhci {
-> +	bus-width = <8>;
-> +	max-frequency = <200000000>;
-> +	non-removable;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&emmc_bus8 &emmc_clk &emmc_cmd &emmc_datastrobe>;
-> +	vmmc-supply = <&p3v3>;
-> +	vqmmc-supply = <&p1v8>;
-> +	mmc-hs200-1_8v;
-> +	non-removable;
-> +	no-sd;
-> +	no-sdio;
-> +	status = "okay";
-> +};
-> +
-> +&sdmmc0 {
-> +	bus-width = <4>;
-> +	cap-sd-highspeed;
-> +	cd-gpios = <&gpio0 RK_PA4 GPIO_ACTIVE_LOW>;
-> +	disable-wp;
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&sdmmc0_bus4 &sdmmc0_clk &sdmmc0_cmd &sdmmc0_det>;
-> +	sd-uhs-sdr50;
-> +	vmmc-supply = <&p3v3>;
-> +	vqmmc-supply = <&p3v3>;
-> +	status = "okay";
-> +};
-> +
-> +&tsadc {
-> +	rockchip,hw-tshut-mode = <1>;
-> +	rockchip,hw-tshut-polarity = <0>;
-> +	status = "okay";
-> +};
-> +
-> +&uart2 {
-> +	status = "okay";
-> +};
-> +
-> +&usb_host0_ehci {
-> +	status = "okay";
-> +};
-> +
-> +&usb_host0_ohci {
-> +	status = "okay";
-> +};
-> +
-> +&usb_host0_xhci {
-> +	extcon = <&usb2phy0>;
-> +	status = "okay";
-> +	dr_mode = "host";
-
-please sort properties alphabetical, with
-compatible at the top and status last.
-
-
-> +};
-> +
-> +&usb_host1_ehci {
-> +	status = "okay";
-> +};
-> +
-> +&usb_host1_ohci {
-> +	status = "okay";
-> +};
-> +
-> +&usb_host1_xhci {
-> +	status = "okay";
-> +};
-> +
-> +&usb2phy0 {
-> +	status = "okay";
-> +};
-> +
-> +&usb2phy0_host {
-> +	status = "okay";
-> +};
-> +
-> +&usb2phy0_otg {
-> +	status = "okay";
-> +};
-> +
-> +&usb2phy1 {
-> +	status = "okay";
-> +};
-> +
-> +&usb2phy1_host {
-> +	status = "okay";
-> +};
-> +
-> +&usb2phy1_otg {
-> +	status = "okay";
-> +};
-> +
-> +&pwm1 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pwm1m0_pins>;
-> +};
-> +
-> +&pwm2 {
-> +	status = "okay";
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&pwm2m0_pins>;
-> +};
-
-please sort phandles "&pwm2" alphabetical and status comes last
-
-
-> +
-> +&gpu_opp_table {
-> +	compatible = "operating-points-v2";
-> +
-> +	opp-200000000 {
-> +		opp-hz = /bits/ 64 <200000000>;
-> +		opp-microvolt = <915000>;
-> +	};
-> +
-> +	opp-300000000 {
-> +		opp-hz = /bits/ 64 <300000000>;
-> +		opp-microvolt = <915000>;
-> +	};
-> +
-> +	opp-400000000 {
-> +		opp-hz = /bits/ 64 <400000000>;
-> +		opp-microvolt = <915000>;
-> +	};
-> +
-> +	opp-600000000 {
-> +		opp-hz = /bits/ 64 <600000000>;
-> +		opp-microvolt = <920000>;
-> +	};
-> +
-> +	opp-700000000 {
-> +		opp-hz = /bits/ 64 <700000000>;
-> +		opp-microvolt = <950000>;
-> +	};
-> +
-> +	opp-800000000 {
-> +		opp-hz = /bits/ 64 <800000000>;
-> +		opp-microvolt = <1000000>;
-> +	};
-> +};
-
-a comment would be nice, why the OPPs get changed
-
-
-Heiko
-
+Paolo
 
 
