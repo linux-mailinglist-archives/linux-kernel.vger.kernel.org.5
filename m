@@ -1,114 +1,123 @@
-Return-Path: <linux-kernel+bounces-131640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C4F1898A51
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:42:49 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 084C5898A56
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:44:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CBF5228383E
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:42:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 76B07B22E41
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:44:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD311BF37;
-	Thu,  4 Apr 2024 14:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4414D1BDE6;
+	Thu,  4 Apr 2024 14:44:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XiJyVHzv"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="F7MiIFA2"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0591182D8;
-	Thu,  4 Apr 2024 14:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45BFF33EE;
+	Thu,  4 Apr 2024 14:44:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712241757; cv=none; b=Aq1nLj8KyZzwe1Ortaduxs1nIVqJbNaUOAQMLlT60mGZkkvlNAiywwaKKEBMDkVqAvD2hX+g1TSKS0LetdBxfPUoIECzTudcAtEHaFonjb9psb+jPl+nncHOrX9nM/WoCnd+/FDEPJ1LbAOcA0ElAQPnpL40masNbKEXAiwwTbs=
+	t=1712241863; cv=none; b=jD4Iy2Lz076wDeVaTjH3GV/FOrueEubSjXNReN5baZJX8bkBL2KUIw+K1UQAtho/fy29xQy9qDYWZiefDwJKpphNUjwL0RapHuYy4Sl+m3byb0f0iJBS/Htgy9tGBxnPJwSSvwnUlwQiFWcCxU+Gvuuvz5Ff0HSF4aCachuGlJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712241757; c=relaxed/simple;
-	bh=UTGGGrM2F/ayC3lHF5933J74dgJ9/c3oQCAPyRO10bI=;
+	s=arc-20240116; t=1712241863; c=relaxed/simple;
+	bh=LQayOTlG/JO3IHd7vRlybsoXaeGw9cHDkzFlQyFFYuY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=INwlwjjvoRsChwgyKCmmRhAYd2snm42+5qrsCFeGDK8mnKJ7tVCYDGL2Kja/TsxdjDsPVpZZ87A1XVciPonbDkqQ//7/EVEBkE1bRHKS4/4rjHvtqHqyfMS5BLkEhas3hG3cpcwK2S/2HCQz1TwApaxA43ph3U0wX26ICpgj6S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XiJyVHzv; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712241756; x=1743777756;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=UTGGGrM2F/ayC3lHF5933J74dgJ9/c3oQCAPyRO10bI=;
-  b=XiJyVHzvgRKGstqwQMx2RTJqK6sPFiMvw8pC2VNKDGz1J/qCHPXeGCgT
-   TR7TrpspnngN0pLLg/kl+O0/lxBKrHWVL+Yjc0aiWKkKxRHL/UqRmGVqp
-   kSaMAvHrvVjGDrpvnhF8rlgW8teMl4YeL0Dt+WSKraxs/EyFGf4SuZvmy
-   FKbpFijBKaGpzjc2KRM9zmtlxrIrviR5GAKh2TtybF+TjUEVyDAo28ACc
-   509wnpGzg9YdXjdw5qAFQKp0RnwHdIeDUgEKfL7T0KoIXcF/aZsVtNsCi
-   aLLfK05Uqr/5Fl0cC5T3O/YlBTxuYCxWQMvrWWukXKCJl2lDKxlxnmgPY
-   A==;
-X-CSE-ConnectionGUID: 365tAoy/TBqNXnhBpMAZ4A==
-X-CSE-MsgGUID: bQHJr8d+T3uBXn/TyIDxdw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7690168"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="7690168"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 07:42:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="915220229"
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="915220229"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 07:42:32 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rsOIP-00000001UBc-1qNB;
-	Thu, 04 Apr 2024 17:42:29 +0300
-Date: Thu, 4 Apr 2024 17:42:29 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Tony Lindgren <tony@atomide.com>
-Cc: kernel test robot <oliver.sang@intel.com>,
-	Yicong Yang <yangyicong@hisilicon.com>, oe-lkp@lists.linux.dev,
-	lkp@intel.com, linux-kernel@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	stable <stable@kernel.org>, linux-serial@vger.kernel.org
-Subject: Re: [linus:master] [serial]  43066e3222:
- BUG:kernel_NULL_pointer_dereference,address
-Message-ID: <Zg68VV8LW1A8g5BZ@smile.fi.intel.com>
-References: <202404031607.2e92eebe-lkp@intel.com>
- <Zg1hBvRAxifo50sf@smile.fi.intel.com>
- <20240404065415.GO5132@atomide.com>
- <Zg6WF0DMePE-V1V0@smile.fi.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=V96Vwf9qMb8TiGXjbenznW1QGIg5fLkuMhkad2yPeUrdDVqFaXgCJmJnNzvpq2MMDA8S5W7dtyEQF2jtUU3nsD5qoF42eIKLiGMGH3ScMQbGyryRg5Cgl/tdi7wghpVNykb0yJdwfs8j7XcIczM6YsiKC2q2qCig5TTwYRfmt/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=F7MiIFA2; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B787540E016B;
+	Thu,  4 Apr 2024 14:44:18 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id wEHAaU40xhaC; Thu,  4 Apr 2024 14:44:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1712241854; bh=DiZ5mWVhrG4nPWIZ2MMsXc8US/Df9BxuZOmel4lbnRk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=F7MiIFA2PKmqvFzO5iUZGENLdvyM/10LCTyLI5ufyIrEn2lge4cqYQJ4M7e0mwN/b
+	 ruR2ap2rkO4WqTa7XBOTM9614Wtb2hx+ReiE8giLbv+An2Ml7QplBCkWe8OIJzD149
+	 6JkppF0TB9B/EJEPURlyqRc7rsLitWS1oBftBVtVahEcayNr1OZ0lxcm+hA794sJ9J
+	 MkTLDK+VQeOaQlmbIfi0lZIUjpSqfgWUK/pS4OSLHQDNtt9efBYi1U1NWclhL7wLKz
+	 dttVR0uM6+h11/if5M0Yc9ghM27K0zuy2CBtESKQOumjP+bLs/OSBMdRg6Fm47gWu+
+	 D0+Iewcy57HS3EUTyOtGLNvp2Q++XNr1s41XkTPpEQgsmjrxYPIkcd0eoIt7tqIf+q
+	 g1PHACAoo5/K8Fhpwqb6h+WBhRnojBbA5DlT3l9uIQaDD1emK3B/899yZYLELNm/xQ
+	 UuIHduDqYuIRArC4gfIbUkTtnmlCGFcfdyCSJ5Ruwht8D3nmUw2rD8AyILJGDtHhYT
+	 No7nvr68dd3JkZk6fnbu/Q3MhzaBQP5YdeILjxl5tiucC6zxRq+Ex57AuFxmTR6kS8
+	 tkQM7C0NxfdiBtlrdzXbakMob36h6lNYUxteFErjZ8PcUVDujc86BPwH42ote51HZY
+	 Tg5Lypq2g7aA46R5NImQGCqk=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BBF9740E0177;
+	Thu,  4 Apr 2024 14:44:05 +0000 (UTC)
+Date: Thu, 4 Apr 2024 16:44:00 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Klara Modin <klarasmodin@gmail.com>
+Cc: Josh Poimboeuf <jpoimboe@kernel.org>,
+	"Kaplan, David" <David.Kaplan@amd.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-tip-commits@vger.kernel.org" <linux-tip-commits@vger.kernel.org>,
+	"Peter Zijlstra (Intel)" <peterz@infradead.org>,
+	"x86@kernel.org" <x86@kernel.org>,
+	David Howells <dhowells@redhat.com>
+Subject: Re: [PATCH -v2] x86/retpoline: Ensure default return thunk isn't
+ used at runtime
+Message-ID: <20240404144400.GEZg68sPtF1xTFmUUH@fat_crate.local>
+References: <20240104132623.GFZZax/wyf5Y3rMX5G@fat_crate.local>
+ <20240207175010.nrr34b2pp3ewe3ga@treble>
+ <20240207185328.GEZcPRqPsNInRXyNMj@fat_crate.local>
+ <20240207194919.qw4jk2ykadjn5d4e@treble>
+ <20240212104348.GCZcn2ZPr445KUyQ7k@fat_crate.local>
+ <78e0d19c-b77a-4169-a80f-2eef91f4a1d6@gmail.com>
+ <20240403173059.GJZg2SUwS8MXw7CdwF@fat_crate.local>
+ <f37a111b-f5c5-4337-8eaf-46a2c28f01da@gmail.com>
+ <20240403204113.GLZg2-6f0nH0Ne9CQt@fat_crate.local>
+ <edefa2e5-c320-4021-bf8c-c6b1adf87441@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <Zg6WF0DMePE-V1V0@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <edefa2e5-c320-4021-bf8c-c6b1adf87441@gmail.com>
 
-On Thu, Apr 04, 2024 at 02:59:19PM +0300, Andy Shevchenko wrote:
-> On Thu, Apr 04, 2024 at 09:54:15AM +0300, Tony Lindgren wrote:
-> > * Andy Shevchenko <andriy.shevchenko@linux.intel.com> [240403 14:00]:
-> > > Probably we need to check if the port is still open...
-> > > 
-> > > P.S. AFAIU the state / xmit is invalid pointer or so.
-> > > 
-> > > Culprit line:	serial_out(up, UART_TX, xmit->buf[xmit->tail]);
-> 
-> xmit.buf seems to be NULL, that's why this fails.
-> 
-> > Maybe we can set UPF_DEAD a bit earlier as below?
-> 
-> Lemme perform some tests later today.
+On Thu, Apr 04, 2024 at 12:25:42AM +0200, Klara Modin wrote:
+> All the more reason to continue then, even if only for nostalgia ;)
 
-Okay, so far it doesn't fix the issue AFAICT. The only reliable one right now
-to me is clearing circ buffer before NULLifying it.
+Here's an argument for you: please save the environment by using only
+64-bit hw. :-P
 
-I'll send a formal patch.
+> Jokes aside, I do run -next kernels regularly for my daily drivers (which
+> are x86_64), but it's honestly not very often I notice bugs there that
+> affect me. They have all been pretty minor or very obvious and would
+> probably have been caught regardless, but I'll of course still report them.
+
+That's good.
+
+What you could also do is build random configs on linux-next - "make
+randconfig" - and see if you catch something weird there. And maybe then
+try to boot them in a VM and see what explodes.
+
+In general, testing linux-next is a very good idea because it helps us
+catch crap early and fix it before it hits the official releases.
+
+Thx.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Regards/Gruss,
+    Boris.
 
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
