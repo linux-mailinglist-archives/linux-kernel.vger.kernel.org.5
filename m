@@ -1,75 +1,95 @@
-Return-Path: <linux-kernel+bounces-131481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74CF7898878
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:04:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCC4989887A
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:05:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4FDE1C21D44
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:04:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23FDA28A7B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:05:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ADFF126F3A;
-	Thu,  4 Apr 2024 13:03:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E5E8665A;
+	Thu,  4 Apr 2024 13:05:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="acikMhq+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="xe85SSJJ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="49Cb+ZzD"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 760728665A;
-	Thu,  4 Apr 2024 13:03:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 428D31E4A2
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 13:05:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712235837; cv=none; b=MpYxjcttHpeY0ZfIYZyF9sHNFAIEQJWDt2boIhMPThu/6zXW4SbF4u2Y5wQvLn/nLdRxPR/XxEBJsPjWi8VgJCYPE6zMszl5ovHdghzFgFrIYI1Ik24GDPEF+0T5Y6utCiE92O0PikaGljFnBXhhQbI3YEbL4Ug9amwRA53bVao=
+	t=1712235916; cv=none; b=SaQM75gHjCxtRrfoy24iDNVHCPucwzNIMhY4DpEmEnNG1oG8U7+zZ62jIgv2W8nozm18HAksEm370X4JMEewWTg1YdFUtCI0GKYM8pcYPpjfLGA9qdlqDz6zygZpZGgqYuvPL0DcmwFNKUnyC4ElO4QG4zpH1M9yFFczujNAAIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712235837; c=relaxed/simple;
-	bh=6vE+UcIUJNByBl+Hc1aeBMyGSNWr++Pony7d67w/f1Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HSeGlretz0b0zWoHzzULiT4j7dtx33wHLO5RHtaiboo+/iv7NLaaxsfASog2FKCoZDEZ9II30tNndMrCOjkl+XKhDJINOPR0P3NT4hAHwXEI8CztGPGZBNCpb95I+3dCy1MT0098+HZ40HItEOrt9IdqrKmyJkFzNKBGhoLj5cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=acikMhq+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60C32C43399;
-	Thu,  4 Apr 2024 13:03:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712235837;
-	bh=6vE+UcIUJNByBl+Hc1aeBMyGSNWr++Pony7d67w/f1Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=acikMhq+/EhUeZoAT1FUlGbw5zzuDSSPkHEEOcr4j1q4N7pR8kiIWPfxUHOqPw26G
-	 gswRqMI/qq515Oi1AhvXa6NYmiPvn57IWSpF58D8euIVFsTgakXSIZZI7vh5EQtH0w
-	 Uv8MLn7ohNis6jQp2SyuJsKH4jyj1RsLFWdWJMJM=
-Date: Thu, 4 Apr 2024 15:03:53 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: AKASH KUMAR <quic_akakum@quicinc.com>
-Cc: Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-	Jing Leng <jleng@ambarella.com>, Felipe Balbi <balbi@kernel.org>,
-	Pratham Pratap <quic_ppratap@quicinc.com>,
-	Jack Pham <quic_jackp@quicinc.com>, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [PATCH v3] usb: gadget: f_uac2: uevent changes for uac2
-Message-ID: <2024040415-parcel-statutory-ba79@gregkh>
-References: <20230829092132.1940-1-quic_akakum@quicinc.com>
- <2023091702-unbutton-handoff-558d@gregkh>
- <3d34daf2-1e8a-4087-a8df-ab5208ca83ca@quicinc.com>
+	s=arc-20240116; t=1712235916; c=relaxed/simple;
+	bh=R4d9+Tq2yuTymn2MJRI7oRSBN3ws9x0+B9iYO5ab3X4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Sh7GGusZHBTPTdxfRxZ6UQl+9+pb2B0FO2erqXs5+dV4U8KjTPrgn7Q1qMJWqEBzZyuAJ3Xh4MGoWS5Jw2ma8uxaE/vaaVOfOuNSyYem1zcdQb5SS65HQ3WaHxDepz7aLOmSI0STT/me96tfSzfRdDcAjvqHu4Brqxw+pkp2gGM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=xe85SSJJ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=49Cb+ZzD; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712235913;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=v9J5ctIKprExexRBqle5OJ6DAsejEIo1IBkZ/m315SM=;
+	b=xe85SSJJyn0iRd+9iRsKrNguKKvLiRaMSYyIGo9kA4qLu3fJMoc3ObHW6VxdoC+VFfrAZi
+	y8CZH3/n18yRay1D7nasonH76Vw3zcx2lcOf2iKAkJ256DpZ3gn4aTmnKpWyC3SWGnPX4o
+	XgVnmT8DrxMj5uBcFvmDC1jXXaaNL3qEdCJLbd7T5kDBQLOlBbTbu1xuE2A8eUgB4n+BQ+
+	SP1Zz4dL7VfwTB/qkvGKmNfOCOe7Wl7ltvrhspXfpwN4I2lfyR1tV5mZM2wRgF5Z0EjdQD
+	FweDaHWM/FpjGqtdTw9Epb41CvJtr+Mi+alSvABVS+ceD9BZoqNicLCTVN2SMQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712235913;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=v9J5ctIKprExexRBqle5OJ6DAsejEIo1IBkZ/m315SM=;
+	b=49Cb+ZzDIUuj4tXYjuk9qn5NqHRDqq2IqANma049TM4DQNE0ADo/zG1g7G7tFSciO0eDD5
+	50eMp9zAxy5VQODA==
+To: "Linux regression tracking (Thorsten Leemhuis)" <regressions@leemhuis.info>
+Cc: kernel@collabora.com, linux-kernel@vger.kernel.org,
+ regressions@lists.linux.dev, Laura Nao <laura.nao@collabora.com>, the
+ arch/x86 maintainers <x86@kernel.org>
+Subject: Re: [REGRESSION] mainline boot regression on AMD Stoney Ridge
+ Chromebooks
+In-Reply-To: <877chdb7tf.ffs@tglx>
+References: <20240328094433.20737-1-laura.nao@collabora.com>
+ <20240328115015.36646-1-laura.nao@collabora.com>
+ <09d67d1d-2c65-4872-b38e-665eda154339@leemhuis.info> <877chdb7tf.ffs@tglx>
+Date: Thu, 04 Apr 2024 15:05:13 +0200
+Message-ID: <874jchb7na.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d34daf2-1e8a-4087-a8df-ab5208ca83ca@quicinc.com>
+Content-Type: text/plain
 
-On Thu, Apr 04, 2024 at 06:03:03PM +0530, AKASH KUMAR wrote:
+Laura!
 
-<something in html removed>
+On Thu, Apr 04 2024 at 15:01, Thomas Gleixner wrote:
+> On Thu, Apr 04 2024 at 10:24, Linux regression tracking wrote:
+>> On 28.03.24 12:50, Laura Nao wrote:
+>>>>
+>>>> I ran a manual bisection to track down the root cause for this
+>>>> regression and landed on the c749ce
+>>>> commit from this series:
+>>>> https://lore.kernel.org/all/20240212153625.145745053@linutronix.de/
+>>
+>> FWIW, that commit is c749ce393b8fe9 ("x86/cpu: Use common topology code
+>> for AMD") from tglx that was part of the "x86/cpu: Rework topology
+>> evaluation" series.
 
-Please fix your email client, this was rejected by the mailing lists.
+Can you please provide a boot dmesg from a 6.8 kernel and the output of
+'cpuid' ?
 
-And get review from your internal team first, and get their
-signed-off-by on the commit, before sending a new version.
+Thanks,
 
-thanks,
-
-greg k-h
+        tglx
 
