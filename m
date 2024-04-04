@@ -1,140 +1,151 @@
-Return-Path: <linux-kernel+bounces-132231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EBC88991BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:01:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 029C58991C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:03:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 801301C218BC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:01:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 62F75B22810
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12BD813C67A;
-	Thu,  4 Apr 2024 23:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0F7313BC38;
+	Thu,  4 Apr 2024 23:02:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RjT1djYl"
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GRnQvFaT"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DBD0130E57;
-	Thu,  4 Apr 2024 23:01:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58406286A6;
+	Thu,  4 Apr 2024 23:02:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712271663; cv=none; b=CWV+U0XLnl2ifg0+rc/8+YGsvOY3FESLN6InC6cxdgskCLBxBfSLJMjsSWkwTQlxqAySNREzL0nQOAkSvJM9Q6owTyabQW5lR/Yz9lHK2OvULcAnURwj4AOgKp3aqLT4uRSdznLG79VjQX9pJEQBW8PH/uxVufTAQ0Fugco6300=
+	t=1712271770; cv=none; b=BPea717iIah5jlgdMeilO/eoET+DpXK7fhJEjsrFYCGld6WfkgZ3RvGoJGliUoJFbQjupoVvbw0TYsWJHn1exUll0mbR4WXAM+wcpNYrqoWIrcIZQZEv5li6HRIwlpPwWqAjjNbSEHvbk/CwkzFBNo6644Mo76plHTiTWK5k7qs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712271663; c=relaxed/simple;
-	bh=7HXE5M3oO4PodeStVnSZa8DXP/cTOPjYZEumGvFvNpA=;
+	s=arc-20240116; t=1712271770; c=relaxed/simple;
+	bh=GxxcTwd9Kj+TRtgAeuoV9VK7A5mv7deIX4spdFzPU3w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fiNhUZCHB7mEe7PSVvkGgaUVJ5PVg/u75rOz6gag/kV6gyQ8T+0nrxg1/vy3e00d1W/OwFFMgX7tLzGu9Y16YvUNaymtuk10T9DcitCWf5j4hq++fGJQTIq4VogpVosNlLuaP4Ynhp9DczXDoMZfntK2alrHZTYLZco60Wbyoew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RjT1djYl; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 4 Apr 2024 19:00:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712271659;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KHLNB8rkpoKwDhM7NRf7iWUfLDgvBLjzklimu7mkdKs=;
-	b=RjT1djYlTZqBwHogqp4zy40F3SqAdaK+3oWOfGDaM6L3NSOO4dCastLQfuNaOlT1Dgo7Wv
-	i9k29lxad1FbeHT3aK6BLtfd8jnI/QWfQOgpcP7kCCmnpZ6YfJaUcPMAV7nzKK1Ptjb3Iu
-	+YlbAoFGlEHtL49GVJGZLcl1jqHQD6A=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Matthew Wilcox <willy@infradead.org>, 
-	Suren Baghdasaryan <surenb@google.com>, joro@8bytes.org, will@kernel.org, 
-	trond.myklebust@hammerspace.com, anna@kernel.org, arnd@arndb.de, herbert@gondor.apana.org.au, 
-	davem@davemloft.net, jikos@kernel.org, benjamin.tissoires@redhat.com, tytso@mit.edu, 
-	jack@suse.com, dennis@kernel.org, tj@kernel.org, cl@linux.com, 
-	jakub@cloudflare.com, penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com, 
-	vbabka@suse.cz, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, linux-input@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-mm@kvack.org, netdev@vger.kernel.org, 
-	linux-security-module@vger.kernel.org
-Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
- the call site
-Message-ID: <jpaw4hdd73ngt7mvtcdryqscivx6m2ic76ikfkcopceb47becp@vox5czt5bec3>
-References: <20240404165404.3805498-1-surenb@google.com>
- <Zg7dmp5VJkm1nLRM@casper.infradead.org>
- <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
- <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
- <Zg8qstJNfK07siNn@casper.infradead.org>
- <jb25mtkveqf63bv74jhynf6ncxmums5s37esveqsv52yurh4z7@5q55ttv34bia>
- <20240404154150.c25ba3a0b98023c8c1eff3a4@linux-foundation.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=INb3haMGfPEYn6LYY7jUSqWbtX6a5rOlv7s56PtjbjgDFDZcINTGWtvdSrj6KeVeLWubW9cTcTqzs0z9DLU924CTvoYXn8QMva2vZ7w7weI1udH980LvtakQTTQeeuwZ4nlDTKYi/4Vl0qciA6nxERuKwzOVSr3Fsq1Wdjpp538=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GRnQvFaT; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712271769; x=1743807769;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GxxcTwd9Kj+TRtgAeuoV9VK7A5mv7deIX4spdFzPU3w=;
+  b=GRnQvFaTQfmLrvVzYUgCsDAGQmc05iKPeV5reop7uMurxd+d/qy6ytO9
+   XfLA/3nF5AX8OrznRWuGaukwa+5NFdMuYkq+0PX7l/Gc5lXatpjCrrOpW
+   9q+6Vl+X4E717p5ORjaBKkNsThWWvigsLtqDrKheeviHLjO9qzp8MNWIi
+   DrWC7ULZYZTPPAZrm/Ads8Cqc1yt78Mx33za80k4KzqtxJSPQivtHunSf
+   aoMZBIxt4bFRYbvIyonx2FQdHO/hN7jdynwQO8ceJ/0KI8PMhqbuvTEqQ
+   SGPlYmlbvL9JyobiqyC0j8lEu5z6vy0zcWx/nwqBQTVtfOahEh46nAiFW
+   w==;
+X-CSE-ConnectionGUID: 0Uu3qnx+QIiWhivB63PNKw==
+X-CSE-MsgGUID: rk3OKrVbQwWypy0A8rJv4A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="8167614"
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="8167614"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 16:02:48 -0700
+X-CSE-ConnectionGUID: U+bSPPzURaKcsT3Bxrb6IA==
+X-CSE-MsgGUID: ANqWJIqFSKuzIf2aG27MmA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
+   d="scan'208";a="23605646"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 16:02:48 -0700
+Date: Thu, 4 Apr 2024 16:02:47 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 106/130] KVM: TDX: Add KVM Exit for TDX TDG.VP.VMCALL
+Message-ID: <20240404230247.GU2444378@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <b9fbb0844fc6505f8fb1e9a783615b299a5a5bb3.1708933498.git.isaku.yamahata@intel.com>
+ <Zg18ul8Q4PGQMWam@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240404154150.c25ba3a0b98023c8c1eff3a4@linux-foundation.org>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <Zg18ul8Q4PGQMWam@google.com>
 
-On Thu, Apr 04, 2024 at 03:41:50PM -0700, Andrew Morton wrote:
-> On Thu, 4 Apr 2024 18:38:39 -0400 Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> 
-> > On Thu, Apr 04, 2024 at 11:33:22PM +0100, Matthew Wilcox wrote:
-> > > On Thu, Apr 04, 2024 at 03:17:43PM -0700, Suren Baghdasaryan wrote:
-> > > > Ironically, checkpatch generates warnings for these type casts:
-> > > > 
-> > > > WARNING: unnecessary cast may hide bugs, see
-> > > > http://c-faq.com/malloc/mallocnocast.html
-> > > > #425: FILE: include/linux/dma-fence-chain.h:90:
-> > > > + ((struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chain),
-> > > > GFP_KERNEL))
-> > > > 
-> > > > I guess I can safely ignore them in this case (since we cast to the
-> > > > expected type)?
-> > > 
-> > > I find ignoring checkpatch to be a solid move 99% of the time.
-> > > 
-> > > I really don't like the codetags.  This is so much churn, and it could
-> > > all be avoided by just passing in _RET_IP_ or _THIS_IP_ depending on
-> > > whether we wanted to profile this function or its caller.  vmalloc
-> > > has done it this way since 2008 (OK, using __builtin_return_address())
-> > > and lockdep has used _THIS_IP_ / _RET_IP_ since 2006.
+On Wed, Apr 03, 2024 at 08:58:50AM -0700,
+Sean Christopherson <seanjc@google.com> wrote:
+
+> On Mon, Feb 26, 2024, isaku.yamahata@intel.com wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
 > > 
-> > Except you can't. We've been over this; using that approach for tracing
-> > is one thing, using it for actual accounting isn't workable.
+> > Some of TDG.VP.VMCALL require device model, for example, qemu, to handle
+> > them on behalf of kvm kernel module. TDVMCALL_REPORT_FATAL_ERROR,
+> > TDVMCALL_MAP_GPA, TDVMCALL_SETUP_EVENT_NOTIFY_INTERRUPT, and
+> > TDVMCALL_GET_QUOTE requires user space VMM handling.
+> > 
+> > Introduce new kvm exit, KVM_EXIT_TDX, and functions to setup it. Device
+> > model should update R10 if necessary as return value.
 > 
-> I missed that.  There have been many emails.  Please remind us of the
-> reasoning here.
+> Hard NAK.
+> 
+> KVM needs its own ABI, under no circumstance should KVM inherit ABI directly from
+> the GHCI.  Even worse, this doesn't even sanity check the "unknown" VMCALLs, KVM
+> just blindly punts *everything* to userspace.  And even worse than that, KVM
+> already has at least one user exit that overlaps, TDVMCALL_MAP_GPA => KVM_HC_MAP_GPA_RANGE.
+> 
+> If the userspace VMM wants to run an end-around on KVM and directly communicate
+> with the guest, e.g. via a synthetic device (a la virtio), that's totally fine,
+> because *KVM* is not definining any unique ABI, KVM is purely providing the
+> transport, e.g. emulated MMIO or PIO (and maybe not even that).  IIRC, this option
+> even came up in the context of GET_QUOTE.
+> 
+> But explicit exiting to userspace with KVM_EXIT_TDX is very different.  KVM is
+> creating a contract with userspace that says "for TDX VMCALLs [a-z], KVM will exit
+> to userspace with values [a-z]".  *Every* new VMCALL that's added to the GHCI will
+> become KVM ABI, e.g. if Intel ships a TDX module that adds a new VMALL, then KVM
+> will forward the exit to userspace, and userspace can then start relying on that
+> behavior.
+> 
+> And punting all register state, decoding, etc. to userspace creates a crap ABI.
+> KVM effectively did this for SEV and SEV-ES by copying the PSP ABI verbatim into
+> KVM ioctls(), and it's a gross, ugly mess.
+> 
+> Each VMCALL that KVM wants to forward needs a dedicated KVM_EXIT_<reason> and
+> associated struct in the exit union.  Yes, it's slightly more work now, but it's
+> one time pain.  Whereas copying all registers is endless misery for everyone
+> involved, e.g. *every* userspace VMM needs to decipher the registers, do sanity
+> checking, etc.  And *every* end user needs to do the same when a debugging
+> inevitable failures.
+> 
+> This also solves Chao's comment about XMM registers.  Except for emualting Hyper-V
+> hypercalls, which have very explicit handling, KVM does NOT support using XMM
+> registers in hypercalls.
 
-I think it's on the other people claiming 'oh this would be so easy if
-you just do it this other way' to put up some code - or at least more
-than hot takes.
+Sure. I will introduce the followings.
 
-But, since you asked - one of the main goals of this patchset was to be
-fast enough to run in production, and if you do it by return address
-then you've added at minimum a hash table lookup to every allocate and
-free; if you do that, running it in production is completely out of the
-question.
+KVM_EXIT_TDX_GET_QUOTE
+  Request a quote.
 
-Besides that - the issues with annotating and tracking the correct
-callsite really don't go away, they just shift around a bit. It's true
-that the return address approach would be easier initially, but that's
-not all we're concerned with; we're concerned with making sure
-allocations get accounted to the _correct_ callsite so that we're giving
-numbers that you can trust, and by making things less explicit you make
-that harder.
+KVM_EXIT_TDX_SETUP_EVENT_NOTIFY_INTERRUPT
+  Guest tells which interrupt vector the VMM uses to notify the guest.
+  The use case if GetQuote. It is async request.  The user-space VMM uses
+  this interrupts to notify the guest on the completion. Or guest polls it.
 
-Additionally: the alloc_hooks() macro is for more than this. It's also
-for more usable fault injection - remember every thread we have where
-people are begging for every allocation to be __GFP_NOFAIL - "oh, error
-paths are hard to test, let's just get rid of them" - never mind that
-actually do have to have error paths - but _per callsite_ selectable
-fault injection will actually make it practical to test memory error
-paths.
+KVM_EXIT_TDX_REPORT_FATAL_ERROR
+  Guest panicked. This conveys extra 64 bytes in registers. Probably this should
+  be converted to KVM_EXIT_SYSTEM_EVENT and KVM_SYSTEM_EVENT_CRASH.
+  
+MapGPA is converted to KVM_HC_MAP_GPA_RANGE.
 
-And Kees working on stuff that'll make use of the alloc_hooks() macro
-for segregating kmem_caches.
-
-This is all stuff that I've explained before; let's please dial back on
-the whining - or I'll just bookmark this for next time...
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
