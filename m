@@ -1,142 +1,144 @@
-Return-Path: <linux-kernel+bounces-131162-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131163-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BF378983E8
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:24:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77E8D8983ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:25:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 422411F24895
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:24:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5DA51C22520
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:25:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4519745C2;
-	Thu,  4 Apr 2024 09:24:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 042DE745F4;
+	Thu,  4 Apr 2024 09:25:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mNqXEOVs"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="K87hT6eF"
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD0E5E07E;
-	Thu,  4 Apr 2024 09:24:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA871E86F;
+	Thu,  4 Apr 2024 09:25:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712222684; cv=none; b=rBnNEuvGCzz5pDOryqW/eY+qNuzkZcqHhPlsqk5X8/IFmtJc75mci0Dw+MTOQ9MUkKRl9MsNmfM/FrqSruFlW9GayJxVEvwDczbBDSXqJcw+fb2XVB/W5rmxNDvM/Ra5rZ60Jh6ixqSOcDJmsB1OSa1sDSL/m0cAxpqw8C4XsiU=
+	t=1712222716; cv=none; b=atVuPIoQO8i7RVuzGGb9359hg7bjawuHH6WENUEoKPUePBNQOekWnID+6mh0kLCjL0PcS43apXFKOj+EPWxngVpwaGN4ZimA/h/8CzRnA9HZvqPpqw609e2IeEBph9N5hnpMEfNbbqW7CBfVGq4g+Y0xU109z4uXB58zteho9jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712222684; c=relaxed/simple;
-	bh=RBVrbKnK3ovQO15P41mcUHM/iUWBDjuiISow2hRyoow=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=G1rva4fCRUhi2lDpP+jEcEWuKmeK8C57JKZZNaxlL0K3IJkF6OtAJ9NLKasB0e++fgKKEJIe+K/1ET5hrIQcaeRaSTp2woZPpV2cxKvdTeD8PEmg5H/1TF7A0NTYUscYonvGRMk8v/Z5UEMzzxAprNzJ7psq4iXRTRpmWRODzjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mNqXEOVs; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a466fc8fcccso98141466b.1;
-        Thu, 04 Apr 2024 02:24:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712222681; x=1712827481; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RBVrbKnK3ovQO15P41mcUHM/iUWBDjuiISow2hRyoow=;
-        b=mNqXEOVsf+pue+KHm24IpmiOAfnvPEmCqZjLDmS6yvkMYf+PlS6GRALfbV4kz638mu
-         djKY3ZT7CtU+iGvLn1Mm3VnNfVdxxMFADFQzXFg0lY0wi3J22Aqr09Mn6ZBEECVN/mOS
-         aS7K/23r/hij3wVjuNeiIRhcf4sNt6tlnQ2MI8k3Me8KQoBdchkneXBgG7FEIrLJuPk8
-         5801CJf952WMTppRNNAP2lLLV2nOrzW3AR1We9rvpSJSJSmLCk5YdQzQS0PuDQ7btbmL
-         iRxYDvRFf29Qw1s5u1t8K3rYGo5F9mE1DTl8LvOI1ljj4I0y41CekQu9voL8n+PDkiiv
-         BfIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712222681; x=1712827481;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RBVrbKnK3ovQO15P41mcUHM/iUWBDjuiISow2hRyoow=;
-        b=ee5Ecii1oSzobuH0E5CX9/oLKJ+icC4WR7jOaP/a17Kmklf7Cfu6Jp/M1keGd6i+aG
-         JWDF+24S0CJAvOQpEb7o5Z+jqRweSP31t5m13WWEzoLG79xpgD/EtT8lgeIE+hCODuuz
-         VU8DIXPvMnHULNiMIqLYDKWVFuXJsv95yySB9EsvOCK67R5yCHiJAYXkM3ohCRmjkCHK
-         4y/6ShZMRFs51mXZSJKUWWPfDGIP6nMsSlclBmYoqbvvTjA5qUJKznxewKHX5B6B4cJ1
-         x7j7ZmxqbZqXhZT60Duo9uBuTpaIiWqaiU5PeZKOG7YkXDwg6ljyELzmtjd1JPM7N8Hf
-         ButQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUNK2FNAFCsetn7kidKcAy7SoofAwOShhjjik0a87n9EgLiYXd2PxMfx1Spn1OMFERi/GTGs59OfU4Q9dHRK/fZFkbytgWxkEq/m1MQyuqfULkXPFDGMaBbd8qt4mkpjEl4YxF3/o4syIdB
-X-Gm-Message-State: AOJu0YyMQsueOtz4EsmBYpjTvbXcRpQuiK9bhLe9tDzyeUYw26ZcPAIo
-	qogBrMA4BToBbR430/63jgR7E3NKxWb0E0X+OQ3ktqEBKtBIMR8irGhWfm3jbLBi0IU+2Y5jCE1
-	LrNKAn0GEfNARWG6qrwMdGiIB9Aw=
-X-Google-Smtp-Source: AGHT+IFFuzK/Tj73r6cElPFLHYS0K+qrK8YOabFg09GALNmzfEyOCxxfGhkrrxxnyxPeh7bUQ1le67F9/FyVLwJu/PI=
-X-Received: by 2002:a17:906:6dd2:b0:a4e:1055:8602 with SMTP id
- j18-20020a1709066dd200b00a4e10558602mr1069503ejt.19.1712222680512; Thu, 04
- Apr 2024 02:24:40 -0700 (PDT)
+	s=arc-20240116; t=1712222716; c=relaxed/simple;
+	bh=goGoyXyy2aFQvi0+QqmO6oV3VAEgFQ1Y15GcxBwoZ28=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=udTVr4Gx5gj9Tbc0aY5enpUIDFCC9Lc7hQa8jzZhBBvuMjNYLcX5e8D0nK7ZhN94ViOTxY2yKI8Iob377bY0Htl7dCY/t4aLCcnEC5v2DsN3N07FvCg0wQBg4PiXX4o/JV4DWEZOeSYIMHi080YK5KLQsqa92XT+C473gzaBmuI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=K87hT6eF; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 074A260008;
+	Thu,  4 Apr 2024 09:25:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712222712;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JmD8Cz8LQvllwErFtC5QF38oacw9e604VmlkOt2aTy8=;
+	b=K87hT6eFy1B8OGtdw6c4NM4XNlL1sD85a1Uge3xud4ocA7A/Sh0ogIKA0De/miAF0B6wEq
+	fUWkit4VX2y1tVN0KhnXSMZy8aoAqRnwyf5j5Kkp/Fa8DiRti8LsC629SlqeSItha2dwrB
+	JljeqzL3D6OnnzHF0NMyZvtP0n633+FVoqSP+ABlnBurdoRSIIlq1XtbBUzPUPDjwnVoVu
+	+iUCEusnp+NAkyiT+85r7kqM7vZRoXz4GXHE0UF7yv+7pqYbODPTDxf11FJXL/C9ujBK+C
+	OalDYtvgOYDwpJhwlD2WJu53LgPGEvfLZyIN8A1FbgS+0/xZrSEsA8Xqm3rLNQ==
+Date: Thu, 4 Apr 2024 11:25:06 +0200
+From: Kory Maincent <kory.maincent@bootlin.com>
+To: Rob Herring <robh@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+ <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>, Luis Chamberlain
+ <mcgrof@kernel.org>, Russ Weight <russ.weight@linux.dev>, Greg
+ Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
+ <rafael@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Oleksij Rempel <o.rempel@pengutronix.de>, Mark Brown <broonie@kernel.org>,
+ Frank Rowand <frowand.list@gmail.com>, Andrew Lunn <andrew@lunn.ch>, Heiner
+ Kallweit <hkallweit1@gmail.com>, Russell King <linux@armlinux.org.uk>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ devicetree@vger.kernel.org, Dent Project <dentproject@linuxfoundation.org>
+Subject: Re: [PATCH net-next v6 11/17] dt-bindings: net: pse-pd: Add another
+ way of describing several PSE PIs
+Message-ID: <20240404112506.2e155bad@kmaincent-XPS-13-7390>
+In-Reply-To: <20240403143142.GA3508225-robh@kernel.org>
+References: <20240326-feature_poe-v6-0-c1011b6ea1cb@bootlin.com>
+	<20240326-feature_poe-v6-11-c1011b6ea1cb@bootlin.com>
+	<20240402132637.GA3744978-robh@kernel.org>
+	<20240403111548.30e780b5@kmaincent-XPS-13-7390>
+	<20240403143142.GA3508225-robh@kernel.org>
+Organization: bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <dda2187e128bfaaf092351812e4538e2e41c17f6.1711599093.git.fthain@linux-m68k.org>
- <Zg3YZN-QupyVaTPm@surfacebook.localdomain> <8f234f26-d5e3-66ed-ab0c-86d3c9852b4a@linux-m68k.org>
-In-Reply-To: <8f234f26-d5e3-66ed-ab0c-86d3c9852b4a@linux-m68k.org>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Thu, 4 Apr 2024 12:24:04 +0300
-Message-ID: <CAHp75VcxLez_Nm0N8=gpWd7SKGd9JF2QXEOOB_gvX3ZtTzj6HQ@mail.gmail.com>
-Subject: Re: [PATCH] serial/pmac_zilog: Remove flawed mitigation for rx irq flood
-To: Finn Thain <fthain@linux-m68k.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>, Michael Ellerman <mpe@ellerman.id.au>, 
-	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
-	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
-	linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
 
-On Thu, Apr 4, 2024 at 2:57=E2=80=AFAM Finn Thain <fthain@linux-m68k.org> w=
-rote:
-> On Thu, 4 Apr 2024, Andy Shevchenko wrote:
+On Wed, 3 Apr 2024 09:31:42 -0500
+Rob Herring <robh@kernel.org> wrote:
 
-..
+> >  =20
+> > > > +
+> > > > +          polarity-supported:
+> > > > +            $ref: /schemas/types.yaml#/definitions/string-array
+> > > > +            description:
+> > > > +              Polarity configuration supported by the PSE PI pairs=
+ets.
+> > > > +            minItems: 1
+> > > > +            maxItems: 4
+> > > > +            items:
+> > > > +              enum:
+> > > > +                - MDI-X
+> > > > +                - MDI
+> > > > +                - X
+> > > > +                - S
+> > > > +
+> > > > +          vpwr-supply:
+> > > > +            description: Regulator power supply for the PSE PI.   =
+=20
+> > >=20
+> > > I don't see this being used anywhere. =20
+> >=20
+> > Right, I forgot to add it to the PD692x0 and TPS23881 binding example! =
+=20
+>=20
+> But is this really common/generic? I would think input power rails would=
+=20
+> be chip specific.
 
-> > > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> > > Cc: Michael Ellerman <mpe@ellerman.id.au>
-> > > Cc: Nicholas Piggin <npiggin@gmail.com>
-> > > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> > > Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-> > > Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-> > > Cc: linux-m68k@lists.linux-m68k.org
-> >
-> > Second, please move these Cc to be after the '---' line
->
-> I thought they were placed above the line for audit (and signing)
-> purposes.
+I think as each PSE PI are seen as a regulator we may want it generic to tr=
+ack
+each PI parent. Having the parent regulator described like that would force=
+ the
+devicetree to describe where the power come from.
+In contrary, for example, on the pd692x0 controller the regulators are conn=
+ected
+to the managers (PD69208) and not directly to the PIs. So the devicetree wo=
+uld
+not really fit the hardware. It is indeed chip specific but having described
+like that would be more simple.
 
-I didn't get this, sorry.
+If we decided to make it chip specific the core would have a callback to ask
+the driver to fill the regulator_init_data structure for each PI before
+registering the regulators. It is feasible.
 
-> There are thousands of Cc lines in the mainline commit messages
-> since v6.8.
+Mmh in fact I am still unsure about the solution.
 
-Having thousands of mistaken cases does not prove it's a good thing to
-follow. I answered Jiri why it's better the way I suggested.
+Oleksij as you were the first to push the idea. Have you more argument in m=
+ind
+to make it generic?
+https://lore.kernel.org/netdev/ZeObuKHkPN3tiWz_@pengutronix.de/
 
-> > > Link: https://github.com/vivier/qemu-m68k/issues/44
-> > > Link: https://lore.kernel.org/all/1078874617.9746.36.camel@gaston/
-> >
-> > Missed Fixes tag?
->
-> Would this be ok: Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-> I have to ask because some reviewers do not like to see a Fixes tag cite
-> that commit.
-
-Yes, or you even may dig into the history.git from history group (see
-git.kernel.org) for the real first patch that brought it.
-
-> > > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
-> > > ---
-> > (here is a good location for Cc:)
->
-> Documentation/process/submitting-patches.rst indicats that it should be
-> above the "---" separator together with Acked-by etc. Has this convention
-> changed recently?
-
-I see, I will prepare a patch to discuss this aspect.
-
+Regards,
 --=20
-With Best Regards,
-Andy Shevchenko
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
