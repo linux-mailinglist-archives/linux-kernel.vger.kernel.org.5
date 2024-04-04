@@ -1,105 +1,163 @@
-Return-Path: <linux-kernel+bounces-131281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F1C88985A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:04:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C01A8985A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:03:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6ECD11C21AC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:04:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06237287549
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E222811E0;
-	Thu,  4 Apr 2024 11:03:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C7B482D7A;
+	Thu,  4 Apr 2024 11:03:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ncZz3BWq"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mDTYor3G"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D96983A07;
-	Thu,  4 Apr 2024 11:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F87A59157;
+	Thu,  4 Apr 2024 11:03:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712228606; cv=none; b=h1FnSvEk/oF/bPOXcruWJRl+9QHhUVwmicbmQE+mp3Jri+IpMpoooSskfMjwwCVExWDoTxTz+EOhGK9U4C9sIt2myt2toOla8RYPFfJ4wrXBZrStrFYzJEtdE21UZJ4hFU9k+wb4e7KKAXXFZ3R/hxESVUs+wLt9zJks/a6BtCU=
+	t=1712228603; cv=none; b=ToI6yNP5lZpEIh5xL6BwrhOKoD+2MxV/AjM/nvJuWiNqqbG0Fut8r9M9ZeglaXZSz2llVRJrVWtcZ/rBtcNF+V8EpNB+t7p3Scu+m/No177aVdQaqkKfUEbrXHJOHjGl5YC40kN3pN/yOQSGELcsgkeIPDRiWLE0bb8YblhuDMg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712228606; c=relaxed/simple;
-	bh=+hAeU74QQfbsZOvQyLbhO6tKobZra3FmBs+/7VBvJaE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EncSGdVUnlGmIUEGbO2rHKdPiUbBle/CuMCpiQS+9bxRHz3m2d/xx+tf4RrBcV0RECtM8Ey8Zmm/zUry7qW3kEbrYeQw4dBw/Yc6Gy0SWqhMgE7zSIkxX7of5J7hCTbIM6Nj0mpMV9Y6ggw1qssp0O6lUvptFpH3ZLzrhktL5K8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ncZz3BWq; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ecf1d22d78so95213b3a.0;
-        Thu, 04 Apr 2024 04:03:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712228605; x=1712833405; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+hAeU74QQfbsZOvQyLbhO6tKobZra3FmBs+/7VBvJaE=;
-        b=ncZz3BWqXMnSTxYkZrAbQ457QC7NzCagsI4GgAs0jqX8sxDPA0eu8Hh4urLtGXTuT7
-         FvRdSt9Nb385aVFG4/WNdNkIIExPdvdrBHqN0y/UKmVy+jnggpmobIxft81kLjJOWZeY
-         8GRDDbo27bfBHLeB3X+5yQHUzVlhKmzfRoZYOW8O1RTPJ/GdK1L2i7DFs2uvdstnNGcV
-         nP4l43iGvNjOD5w3GRzdE2431aKERYQTzPBL3CHJrdP0VoTtWT34LR9y1pxNZhoGwDI9
-         7icm/aE4ypebqJz7yu1d1Ffhtw45LL4cNd8ToVVKeSsMohN+Bkj6OwIu/opNqchXFydz
-         5mkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712228605; x=1712833405;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+hAeU74QQfbsZOvQyLbhO6tKobZra3FmBs+/7VBvJaE=;
-        b=VtpQF3ourOsk8CbaVx4My3jesVGWNZZqPxm0BQxG9adPH05yAOSdi832YOaW2ZvWFC
-         LwFTk+y1yLflDzWcGwSgr1/uET4rV0jqIT/jcNIkdag8rvzo8UwMv1Tav4RGVPOPXao+
-         DooNr0RDdxWVpdy3SgzvNF8scj37m6E7Ja44OZEj5beO+uxUmMgaB9/sAYsdBxhiXHbb
-         bMTeqlIC7eYJ9X/VGap/nfQmPwWpIZOBqLKmuMQjFZN0ZVEqOLbS5Wz6IRwWvUz7DyLb
-         Qf69J0qb6wGrdeZF8JKMuoU0KKLebJqZcYu2pYX3Jy05izpcy6Tr53sSg6YtMXBu3XYI
-         4X8w==
-X-Forwarded-Encrypted: i=1; AJvYcCWfHD5gGrCSoSwsrRYYznVZZspVzGeO+bn+6h/7Kw3rNJUvIQxf+mtFpudua5F6tNHMhidG2Vgkp+7AQX2weAaEN2khFsOJMQ6qfeuBJ0CAxKHScc1YigfhAKNR2kaP/ODgr2fHNchMlfgAvc05roogwRB6gtvQpCbXVpokBrufrrlTsGqy
-X-Gm-Message-State: AOJu0Yxi2pOmMxALkWXQYsQ2cRvmK6DPwI/cBZbZCRJgwZhHA6WKIo8Z
-	+Up/t0Y/tZT/AroFH8Z60c9yKMehH5f5WXvXHipuYyNHMfNkcCBGvK54hBZNLFKANO5Lsv8iaD6
-	9nHpRUIXw0zHLeNObJaBgwHKtYkQ=
-X-Google-Smtp-Source: AGHT+IEiV3mYP5jcL1qYae16r/KN6hqKughbDlZ4LxlcHlZBBb1xETAo6BgRMuLOSJwR/Fy2iLftYZBAuG/Ww1JZaBM=
-X-Received: by 2002:a05:6a21:6d88:b0:1a7:199:8ac5 with SMTP id
- wl8-20020a056a216d8800b001a701998ac5mr2303003pzb.4.1712228604634; Thu, 04 Apr
- 2024 04:03:24 -0700 (PDT)
+	s=arc-20240116; t=1712228603; c=relaxed/simple;
+	bh=Q14ggXy+y0e4OfUSS6sgHf6RZqlI/EP8PYD1AXlxvVw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qOuCjVJ2ZwihhIrWa7OHKccsNQeGGMaXO3XM1jYpaWN5bfE4GtEOlYayaQOq5SdXKtYMajN2BQVYwEqvra2PcD2c66ZXo09VhvteZiTQfyVsuQuy604wiUDozzrroHLhzUJQg8bHAfohRfMzDO4w4knG3bzzs+TZQt4vOIbv+Cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mDTYor3G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60563C43399;
+	Thu,  4 Apr 2024 11:03:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712228603;
+	bh=Q14ggXy+y0e4OfUSS6sgHf6RZqlI/EP8PYD1AXlxvVw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=mDTYor3GUqTiqx1mWDSXkEV1Vnm/cCTGnTl1eKZLn9l72ZgLAzRW16KGZ893QZmTJ
+	 HjHO8kjaJGFOGhC3oEJJq2/b0EkcS3b5UYeX0VJNn2GrLx8HfcnUhtMnNLkZJrpUd2
+	 AVuWLxDc80BMc4FEf6eSiWhhugSKsktgkAx7DZ8fgGXez1BC8W7gbDQIHk2qDLPNhi
+	 0HJ1LJCtDWGJJJ+0LQNfepO0MP4gXqM+5r44jJGWFea4furiWM8VIcH0RiSHZeoOXl
+	 Xj2RUHZGAmPFb2FxejqTvEJWWHaWHt5S5AVI3AUlYmyFtv8XC6UJ8tk+lFDUo556nH
+	 feq2HzpO7cx1g==
+Message-ID: <15064d90-e89d-4522-90a8-52aad643d7c8@kernel.org>
+Date: Thu, 4 Apr 2024 13:03:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404035205.59492-1-Frank.Li@nxp.com> <af602862-5120-4717-adb6-694ada09e8d8@linaro.org>
- <f5fa1872-0bae-4f04-aa94-27db937516e9@linaro.org>
-In-Reply-To: <f5fa1872-0bae-4f04-aa94-27db937516e9@linaro.org>
-From: Fabio Estevam <festevam@gmail.com>
-Date: Thu, 4 Apr 2024 08:03:12 -0300
-Message-ID: <CAOMZO5Dtd_p02YeX6tcWMGzujZ-GwLQMQBPBOx9xLmEgs6VVNg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] dt-bindings: media: imx-jpeg: add clocks,clock-names,slot
- to fix warning
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Frank Li <Frank.Li@nxp.com>, Mirela Rabulea <mirela.rabulea@nxp.com>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
-	Pengutronix Kernel Team <kernel@pengutronix.de>, 
-	"open list:NXP i.MX 8QXP/8QM JPEG V4L2 DRIVER" <imx@lists.linux.dev>, 
-	"open list:NXP i.MX 8QXP/8QM JPEG V4L2 DRIVER" <linux-media@vger.kernel.org>, 
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, 
-	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, 
-	open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] bpf: fix null ptr deref in dev_map_enqueue
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org,
+ daniel@iogearbox.net, davem@davemloft.net, eddyz87@gmail.com,
+ haoluo@google.com, john.fastabend@gmail.com, jolsa@kernel.org,
+ kpsingh@kernel.org, kuba@kernel.org, linux-kernel@vger.kernel.org,
+ martin.lau@linux.dev, netdev@vger.kernel.org, sdf@google.com,
+ song@kernel.org, syzbot+af9492708df9797198d6@syzkaller.appspotmail.com,
+ syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+References: <f45ad3e1-4433-422e-be28-17deaba4ade1@kernel.org>
+ <tencent_A4FA0DA89270DDAC5D8519424F9B0DB42507@qq.com>
+Content-Language: en-US
+From: Jesper Dangaard Brouer <hawk@kernel.org>
+In-Reply-To: <tencent_A4FA0DA89270DDAC5D8519424F9B0DB42507@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 4, 2024 at 3:54=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
 
-> And for the clocks, instead pick up this patch:
-> https://lore.kernel.org/all/20230721111020.1234278-3-alexander.stein@ew.t=
-q-group.com/
 
-Or maybe this one:
-https://lore.kernel.org/linux-devicetree/DB9PR04MB923493D0DA82C9EC4386BC2A8=
-FF1A@DB9PR04MB9234.eurprd04.prod.outlook.com/
+On 02/04/2024 05.03, Edward Adam Davis wrote:
+> On Mon, 1 Apr 2024 13:00:12 +0200, Jesper Dangaard Brouer wrote:
+>>> [Fix]
+>>> On the execution path of bpf_prog_test_run(), due to ri->map being NULL,
+>>> ri->tgtvalue was not set correctly.
+>>>
+>>> Reported-and-tested-by:syzbot+af9492708df9797198d6@syzkaller.appspotmail.com
+>>> Signed-off-by: Edward Adam Davis<eadavis@qq.com>
+>>> ---
+>>>    kernel/bpf/devmap.c | 6 +++++-
+>>>    1 file changed, 5 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/kernel/bpf/devmap.c b/kernel/bpf/devmap.c
+>>> index 4e2cdbb5629f..ef20de14154a 100644
+>>> --- a/kernel/bpf/devmap.c
+>>> +++ b/kernel/bpf/devmap.c
+>>> @@ -86,6 +86,7 @@ struct bpf_dtab {
+>>>    static DEFINE_PER_CPU(struct list_head, dev_flush_list);
+>>>    static DEFINE_SPINLOCK(dev_map_lock);
+>>>    static LIST_HEAD(dev_map_list);
+>>> +static bool is_valid_dst(struct bpf_dtab_netdev *obj, struct xdp_frame *xdpf);
+>>>
+>>>    static struct hlist_head *dev_map_create_hash(unsigned int entries,
+>>>    					      int numa_node)
+>>> @@ -536,7 +537,10 @@ int dev_xdp_enqueue(struct net_device *dev, struct xdp_frame *xdpf,
+>>>    int dev_map_enqueue(struct bpf_dtab_netdev *dst, struct xdp_frame *xdpf,
+>>>    		    struct net_device *dev_rx)
+>>>    {
+>>> -	struct net_device *dev = dst->dev;
+>>> +	struct net_device *dev;
+>>> +	if (!is_valid_dst(dst, xdpf))
+>> This is overkill, because __xdp_enqueue() already contains most of the
+>> checks in is_valid_dst().
+>>
+>> Why not:
+>>
+>>    if (!dst)
+>> 	return -EINVAL;
+> This can work, but I think is_valid_dst() is better, as its internal inspection
+> of dst is more thorough.
+
+
+No, is_valid_dst() is not better, because it will repeat almost same
+checks (as I said) as __xdp_enqueue() already contains these checks.
+This is fast-path code, we don't want to repeat checks.
+
+--Jesper
+(copy-pasted function below to easier compare)
+
+static inline int __xdp_enqueue(struct net_device *dev, struct xdp_frame 
+*xdpf,
+				struct net_device *dev_rx,
+				struct bpf_prog *xdp_prog)
+{
+	int err;
+
+	if (!(dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT))
+		return -EOPNOTSUPP;
+
+	if (unlikely(!(dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT_SG) &&
+		     xdp_frame_has_frags(xdpf)))
+		return -EOPNOTSUPP;
+
+	err = xdp_ok_fwd_dev(dev, xdp_get_frame_len(xdpf));
+	if (unlikely(err))
+		return err;
+
+	bq_enqueue(dev, xdpf, dev_rx, xdp_prog);
+	return 0;
+}
+
+
+static bool is_valid_dst(struct bpf_dtab_netdev *obj, struct xdp_frame 
+*xdpf)
+{
+	if (!obj)
+		return false;
+
+	if (!(obj->dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT))
+		return false;
+
+	if (unlikely(!(obj->dev->xdp_features & NETDEV_XDP_ACT_NDO_XMIT_SG) &&
+		     xdp_frame_has_frags(xdpf)))
+		return false;
+
+	if (xdp_ok_fwd_dev(obj->dev, xdp_get_frame_len(xdpf)))
+		return false;
+
+	return true;
+}
+
+
 
