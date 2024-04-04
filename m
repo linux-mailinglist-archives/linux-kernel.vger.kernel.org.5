@@ -1,131 +1,119 @@
-Return-Path: <linux-kernel+bounces-132091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 163D5898F84
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:19:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76BFA898F86
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 22:19:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B46B41F22D63
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:19:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18E9428ADD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 20:19:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C539D1350FA;
-	Thu,  4 Apr 2024 20:19:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7308B1350CF;
+	Thu,  4 Apr 2024 20:19:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oq4t3J+u"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DlLJLCs9"
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1084133413;
-	Thu,  4 Apr 2024 20:19:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5803613540B;
+	Thu,  4 Apr 2024 20:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712261955; cv=none; b=O2Z5Jze28+45JvPW83BLkr+39iD/qGStBb8oKFu/k49G1/zCuFOdL97YkBSqoyZUDFeqwMHSDFS6FI2wvSESlhmGL1RFcQ8mtff7Na9u7gV2Ua9Ya3kDxpvFrrVMD4d6VylofPmK2DOKx9xbZVxD4hi2PFWnHHtxGsFU67tXVcs=
+	t=1712261962; cv=none; b=hw8GAMOQfuyjcPwfSuV9Wdtjk9r6ZSDlRnEpSTiZL4tAIJdovu5t+dXrOVcv28bzkDP+NWXc8+LOFKAhguAAkk0dQegN7aDHAJ7HdObWoZq7JkXG/gN/FSUvIYZ2JsMcYTjNIc3+eJzfZY0L1/LIEt1YNXoG/7ZrNq2dHAxcf8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712261955; c=relaxed/simple;
-	bh=NS25OfLBD8D7Z7nX6XcFM2Jj4Yv1a95IhOl67KbfY8g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=slQyxlZacVSNLXRk3mbjbL2ENpJUaku7A0OHuG9etwJojSZaG9qjAogrRnbpEGUnIha7BfJiY9hH5G7hQY/vWJSgwvROHP8+sh0JRZ4XwcTNd//BbmJ9JRMvMORQEJbPObIYnyJOsGkRuP1zmYyJO6FuFeH1aFnT3wtzMkHPbC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oq4t3J+u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32A99C433C7;
-	Thu,  4 Apr 2024 20:19:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712261954;
-	bh=NS25OfLBD8D7Z7nX6XcFM2Jj4Yv1a95IhOl67KbfY8g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=oq4t3J+uL/lSQwkTjpPBKJRUTrpFUuVCx8gq+Qqj+12XoNRw1sZnJscdV2aX7rnO0
-	 JQsx3KDDrp3U8SBI3hFYmHVvdEDydn4wRd5GavqwAATcJoks318K2sgQL5C+AtE/AA
-	 sh1vfmAcdHXHFuw6g+3OYugBJ4gs9HdU7mBZgUEEg38HYezWNnJCO4oZJaJ0Lf/dvi
-	 PEBMVwpVL+VcKxi3WAVA+bSvFe32yV5XRcHQRAaL8Q4SGPgKLcLXSUpd9HApV5s3nA
-	 2sn651qA28MYbMqAgtFBgWDOUAqlZnwNyG6zwoCb/lXNLE+IkxgVJkv7i5q/Eq0sBm
-	 jOCS5a0Wy2Hfg==
-Date: Thu, 4 Apr 2024 22:19:11 +0200
-From: Frederic Weisbecker <frederic@kernel.org>
-To: "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc: linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, urezki@gmail.com,
-	neeraj.iitr10@gmail.com, rcu@vger.kernel.org
-Subject: Re: [PATCH v4] rcu/tree: Reduce wake up for synchronize_rcu() common
- case
-Message-ID: <Zg8LP9fEHlDPeq5L@pavilion.home>
-References: <20240319185458.3968308-1-joel@joelfernandes.org>
+	s=arc-20240116; t=1712261962; c=relaxed/simple;
+	bh=w0J4zbPe6JElF9mSTVzlFkygGNgh6g/7Byt7NDMak0E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=neHVnU+I5ybzuxG+9ATW4z99/rXlRebJ3gwZ5FGzngDduVWmOe3SdiSXDT5Yf02BgM02CEAJ4O34mftzp7Sjb7M4ZYABit7j+PQgdawO+U5tZ6IISo5HQAMdVpYQM0u7yd/ohOrgXB3IAAhKomemEw/5kZbYbhC+6c/9dYstokc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DlLJLCs9; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-78a26803f1aso85510085a.3;
+        Thu, 04 Apr 2024 13:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712261959; x=1712866759; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=zt4DKHBY+VHDIhqqlQCWnE/AGPM6SuI6iCdlV3YdRD0=;
+        b=DlLJLCs9jvWn7qaOZkmyUmPsnb6JBNHx21WtmF2ec8f3yL7SzoNBW2xgWTVCr3j0sQ
+         KYxDyPQNBiPkNxHeatukMgoYUdwy06Wsl2AY5Yh2c8uOxLjlhw2QJWtzw3pfMf381ZUI
+         uRV6BEuy+aAEYKyifsEN3kNSnoNsfOJbUKhbCWmMW5yyB16rdv4CsrbO+uOrIO63oiKw
+         roOYYoWgQx8IxyHE+9z6z2KVrstRfAG4JLLofY8IzgaDx5n7iFnOgaKr0847GuDqueLA
+         I7ZGxZpq5SI8v4DTPcqN4CwYD0HUtsrRtxg/wAnwmMt0j/vkvbTNmIUmXLVQu54cGx09
+         1aMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712261959; x=1712866759;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zt4DKHBY+VHDIhqqlQCWnE/AGPM6SuI6iCdlV3YdRD0=;
+        b=dFmIS/E5Wncc+lM84BwfEgJmGQinLMP0IyDnZng9ik/WkcRxgG3fP0wm/8g9vPPQTE
+         Rl1WsB3eorc96hOkeGs07c4WZilWCMaiql0EO0QvPAMxXD1FppD5SXypsgTMdeddW+s1
+         AQHfFFeKbveL4ACO8aI42uhU8zWwSMPVhmd5aF7K2ZxDxhRuJVeByDTWh+7X+r3vUBW+
+         XiDZGUL9HCJ3cMjsRG5hRyzPcFt4tjS+hkoc0EOT0U4QgRUalm35ffJN24OTKXj8gtHS
+         fXbnJsmgBeVG0ju+pSfBof4SMLAh2d33PUL5DHLodXbN/GCyRo/4oFLUi08P2MKasvHD
+         BgOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU24Le0mmMwuks1hxLg0n1rFrrhFiJDqBCPQRzmg6UdedEC2l44wf/cdTjUxkriWP2E2b5jraWwSLpSl9Ls2a2zFmKzdHfDhzeLkVCymUHvy2Fek4DBFGUGoE04ZbwZEAXQJzyy
+X-Gm-Message-State: AOJu0YyPok79Xfp1+xc/Bq6X8k7ct2eOdYIuQxYxoTjaSrRMJGQw2NOl
+	G9+vMLb0up5yT1rNTk+m/YHmrEE0D2YqhwHTDq8+yIRaO2ANvclj
+X-Google-Smtp-Source: AGHT+IHBHhv+pwO97xTouPmxltde0KQLvJ12DR+Cx/wmhXsuBOJCWB0WUtvNrCMHWomdYZQTKO8j4g==
+X-Received: by 2002:a05:620a:5685:b0:78a:462d:1bda with SMTP id wg5-20020a05620a568500b0078a462d1bdamr3904328qkn.66.1712261959179;
+        Thu, 04 Apr 2024 13:19:19 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id s9-20020a05620a030900b00789fb5397d4sm51934qkm.100.2024.04.04.13.19.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 13:19:18 -0700 (PDT)
+Message-ID: <003e00da-ac9c-4c98-800d-fcb5383a9e7d@gmail.com>
+Date: Thu, 4 Apr 2024 13:19:12 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240319185458.3968308-1-joel@joelfernandes.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.8 00/11] 6.8.4-rc1 review
+Content-Language: en-US
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org
+Cc: patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+ torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+ lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+ sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+ conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org
+References: <20240403175125.754099419@linuxfoundation.org>
+From: Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20240403175125.754099419@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Le Tue, Mar 19, 2024 at 02:54:57PM -0400, Joel Fernandes (Google) a écrit :
-> In the synchronize_rcu() common case, we will have less than
-> SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
-> is pointless just to free the last injected wait head since at that point,
-> all the users have already been awakened.
+On 4/3/24 10:55, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.8.4 release.
+> There are 11 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Introduce a new counter to track this and prevent the wakeup in the
-> common case.
+> Responses should be made by Fri, 05 Apr 2024 17:51:13 +0000.
+> Anything received after that time might be too late.
 > 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
-> v1->v2: Rebase on paul/dev
-> v2->v3: Additional optimization for wait_tail->next == NULL case.
-> v3->v4: Apply clean ups from Vlad. Tested rcutorture all scenarios.
-> ---
->  kernel/rcu/tree.c | 35 ++++++++++++++++++++++++++++++-----
->  kernel/rcu/tree.h |  1 +
->  2 files changed, 31 insertions(+), 5 deletions(-)
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.8.4-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.8.y
+> and the diffstat can be found below.
 > 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 9fbb5ab57c84..f3193670fe42 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
->  	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
->  	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
->  		rcu_sr_normal_gp_cleanup_work),
-> +	.srs_cleanups_pending = ATOMIC_INIT(0),
->  };
->  
->  /* Dump rcu_node combining tree at boot to verify correct setup. */
-> @@ -1642,8 +1643,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
->  	 * the done tail list manipulations are protected here.
->  	 */
->  	done = smp_load_acquire(&rcu_state.srs_done_tail);
-> -	if (!done)
-> +	if (!done) {
+> thanks,
+> 
+> greg k-h
 
-Can this really happen? And if not should we warn?
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels, build tested on 
+BMIPS_GENERIC:
 
-> +		/* See comments below. */
-> +		atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
 
-And if not should we really do that?
-
->  		return;
-> +	}
->  
->  	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
->  	head = done->next;
-> @@ -1666,6 +1670,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
->  
->  		rcu_sr_put_wait_head(rcu);
->  	}
-> +
-> +	/* Order list manipulations with atomic access. */
-> +	atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
-
-Can we have a sanity check here ensuring this never goes negative?
-
-Thanks.
 
