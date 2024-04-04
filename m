@@ -1,130 +1,141 @@
-Return-Path: <linux-kernel+bounces-131606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131608-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5426B8989FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:24:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C13DF8989FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:24:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CE2328216A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:23:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDD0A1C29233
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:24:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A63D12AAC7;
-	Thu,  4 Apr 2024 14:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380A112CD8F;
+	Thu,  4 Apr 2024 14:22:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FVZM3zLk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="a+aU6a7o"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25DC3129A74
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0443312BF02
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712240490; cv=none; b=KOsvXMKT1JT26rs/hBWg6srnh1+Zn/ex0tHzkMxeeqe13N68ufSCRikxBxVuKbNg47IiWFcm/mZEy0OgMVt3j5aDIwFLtPO2zhot/BP/a+ZGrjT/+0LGqFwOwtIZPotBjhGXvVRfttFz3o7o1oIuUIBi7lh/NTOHB15MZ8fogp4=
+	t=1712240532; cv=none; b=ojMxlCsrGOa/3vkrR3gOlQThbwqEe1LH0jVoWOjhiDiXExby9+K5VXfKZzKBlpfaqbpJlOXISKdWOGo2CAdUZkoRxMcBPsYC8z3wwEId87iMNkin7+vDtPKH2kRcJ4TeLwzdExavGlD+Jgrrddi1t9gcP/y2PqYPOBU1RFBWEkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712240490; c=relaxed/simple;
-	bh=uZs9vFWiBVwL0RNEsVNDtCzUyXIvEgWlKme4WB6s9cs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pNmTAlGuY4P+auUE6Sg3hoo5NXtgmchuIK/xzO3dKX+7cp1WD7uo51qaRf/7/3br1KyN0GhTigEmonDqkTvW6GWIC12UyU8dHCI8JYKmQxLKk6TdoUeZIcnrTCOaFySlNS1q2tuihI/4C/rNHSH8sdG1me4ueVZab0fyx0PKg2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FVZM3zLk; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1712240532; c=relaxed/simple;
+	bh=2cWTzX0zgJ2dUrcHjDb5nbu03D7jEnE/87jcgSZkCfQ=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NNvtrDvQAGy7cmjb6WCZPurdcYhj0OCbZVNMW94rSSiTOHItutWc7yAjT5QqayoOhdSwUFwz2ZkF7Kz7sA4L0Y0FcIeyxjvti4He5kS0O4dxnGElcw2uGW79gRtlwjXb7inJnDFMvMHHbWlfppxv2T1vqDbIif2kKHIQvGDrquE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=a+aU6a7o; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712240488;
+	s=mimecast20190719; t=1712240528;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GtUY7Ryd2UNJdbdMjsCmGsf3yGM88gtp0MfZqJx3q0c=;
-	b=FVZM3zLkuzHDbixk0sVRmAQJqZ8yqn1Y8yXsSVrvkdGTaGCiMTO9B+XUVqq6969+fnyBaE
-	0NT6peKSxPQInoOpTxkE6Y94OkIYdp9O6ZG75EHWguMsIb0Bb+NFpUT/fqZul5wHhsSYpb
-	eNzxzQVNmvWbbMO2zHewDkGSLrg4suk=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=pcnLrydmfQX8SlteWcvzLWBpNoquMDGK5EArArRbwgg=;
+	b=a+aU6a7oJ/m1wLHmrwPf8ituvrgyXTQo9xECRkUzZBNLnua1ykBCjOWcj1zv//9qNa0vHc
+	NtVBJFQvI+8kIcsHpjjQ4q00uTBrmC55OqF23/qO9stdWBJ3+g6aTR6GDYDo1m/LNIAOgS
+	8NDQQK1XfgjZl7y/uBZAQ7cfvc7e9nc=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-664-RKRQPkDYPIGX6daImIW-Xg-1; Thu, 04 Apr 2024 10:21:26 -0400
-X-MC-Unique: RKRQPkDYPIGX6daImIW-Xg-1
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-430c9bbe925so1636151cf.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:21:26 -0700 (PDT)
+ us-mta-147-8YizbzUrNSeGjimZw0c17Q-1; Thu, 04 Apr 2024 10:22:07 -0400
+X-MC-Unique: 8YizbzUrNSeGjimZw0c17Q-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-78a75243bfbso320245385a.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 07:22:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712240486; x=1712845286;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GtUY7Ryd2UNJdbdMjsCmGsf3yGM88gtp0MfZqJx3q0c=;
-        b=TK4G0fhyzV+gGGjU5JqgGk6tcoh2fNWf0432YnIX81zw8BH1Sz41ttc4QaZWihmcLn
-         g44crqH/dDpJ2jCNMHfGnI+lvcJjwd3yHhoEVdC/H+rDBOUOLR8C4ocxo26gsB/IqG8Y
-         TOszmrzQAjvobb9/q+LGru+G8uRZeV1puQV9eKgXCb5gjT7vHRtd4dhVhsegQCkDOVAM
-         OD6h2AAfRk7yKsrIUl0U/isArw/ja/hRaXcucu/PXjYSbvC1cABRCDMRA+AolROW/WjV
-         CDwsmAAkTXShTFbkgZOzHieuybqgJBFjc91UHc9G9LyFu2+G3j/QoXuQHZQBlEPeimRo
-         Wzxw==
-X-Forwarded-Encrypted: i=1; AJvYcCWrK2HWLKY3/HPvtHXE8qpQY+793BnrY0GGOXU92UQNLO3GYGwuKZb42+Qdw1wM5pOQiIoofZGsRNH464UK1KsCMDNMCohiBu5/HBIC
-X-Gm-Message-State: AOJu0YzbghBkh9n3Ke/eSQY2Oj7ZZDekrLAf6mRCUuo2m26qXyg1/k7u
-	D33PoDFw0W0mWZgWQALrWvbPsjp3aWtrR0s9nLEg2W8q+6+Mue7GvJ6O0BmWE0UvEh4sfQ5E3ly
-	V+/1+NzXSdMLM0SMTIvMNT0JeAOj3+ig47uCOR9Jvg+uUWPr3iBnfBE+P6vge6Q==
-X-Received: by 2002:ac8:5c8a:0:b0:431:810c:a96e with SMTP id r10-20020ac85c8a000000b00431810ca96emr2500149qta.1.1712240485559;
-        Thu, 04 Apr 2024 07:21:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFhRpq+S4LQZCpwLVYW+GY9j4DweRYw1JwLI2Ay6RMPXkR0iYHpJNomz2Qmf2zJxRBaHVxPfw==
-X-Received: by 2002:ac8:5c8a:0:b0:431:810c:a96e with SMTP id r10-20020ac85c8a000000b00431810ca96emr2500097qta.1.1712240484909;
-        Thu, 04 Apr 2024 07:21:24 -0700 (PDT)
-Received: from x1n ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id fk15-20020a05622a558f00b0043439982526sm2514858qtb.22.2024.04.04.07.21.23
+        d=1e100.net; s=20230601; t=1712240527; x=1712845327;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pcnLrydmfQX8SlteWcvzLWBpNoquMDGK5EArArRbwgg=;
+        b=PJnlc0kn22pPH8EvTw5SPSHlO36rcx1lFAg6o8fx+yK9Cv2SyDKY21kLJPPqczHDf6
+         pJjqPEs4d24HubWNcQj0LV+j/2QkJtk4EdUmunSeQGbva/MEDpYTfgAswDYlJfepHL97
+         8f7liFKoxzv4uwJQsMIr5Hedq2SAWEL41L+m0bYyrKYGS2P0wlJyGgDn3Pkun+3kfh4f
+         /zUsE0UtTSi17WOM+aN45qwxJg3umyR/mpxgLg1/NNyDCnQq1h9DMXxk0XLLZzdkxjTG
+         RRBZITGB0wPnmKGsRQrT3683N2c5SJHhImzPRP9gSLRW3toUQ7iLpqxYIwp2NleXC2rj
+         UGag==
+X-Forwarded-Encrypted: i=1; AJvYcCV1QTxjBHp2pNSSOp1yUBuOC7qC5BqP7VygWox4brnl4+CJ+OwG54zErcIJbckkK/tVBX5cH1sAvxPxTCNa9YvpVyKyhGFm6sPNU5uF
+X-Gm-Message-State: AOJu0YwpLaUe2QydHVafPKQDE/i7uTaOBGZoJRpGkX5YYPU4VrgkesF+
+	YW8NZuvteUmE+e8xkd1HQ/ocV4AtWkIaAmwJ60y9+U/kLeKB651IZH3t/7Q5BNwdahFjXFLM+++
+	G/pqURrgVGs31wfdALiud/8T9yiiUgYeld/8j16FUxk0HJpmTPe32hB5CzFHhzg==
+X-Received: by 2002:a05:620a:6124:b0:78d:3b55:21c8 with SMTP id oq36-20020a05620a612400b0078d3b5521c8mr3691965qkn.24.1712240526723;
+        Thu, 04 Apr 2024 07:22:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGlFYbfjgK7cm374RDiyUOkiv0HiQERfK/s5Fwc7/Q1SOG4DwUzk04ElPPDlMsmsbNlE9qXtQ==
+X-Received: by 2002:a05:620a:6124:b0:78d:3b55:21c8 with SMTP id oq36-20020a05620a612400b0078d3b5521c8mr3691933qkn.24.1712240526433;
+        Thu, 04 Apr 2024 07:22:06 -0700 (PDT)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
+        by smtp.gmail.com with ESMTPSA id p11-20020a05620a056b00b0078a210372fasm5931267qkp.86.2024.04.04.07.22.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 07:21:24 -0700 (PDT)
-Date: Thu, 4 Apr 2024 10:21:21 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Matthew Wilcox <willy@infradead.org>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	Huacai Chen <chenhuacai@kernel.org>,
-	David Hildenbrand <david@redhat.com>,
-	Jason Gunthorpe <jgg@nvidia.com>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Ryan Roberts <ryan.roberts@arm.com>, loongarch@lists.linux.dev
-Subject: Re: [PATCH 1/3] mm: Allow anon exclusive check over hugetlb tail
- pages
-Message-ID: <Zg63YZaXqYdSLHG-@x1n>
-References: <20240403013249.1418299-1-peterx@redhat.com>
- <20240403013249.1418299-2-peterx@redhat.com>
- <Zg3u5Sh9EbbYPhaI@casper.infradead.org>
- <Zg6vFtciZAl4SQHW@x1n>
- <Zg6z4ZEt7rbILgl8@casper.infradead.org>
+        Thu, 04 Apr 2024 07:22:05 -0700 (PDT)
+From: Valentin Schneider <vschneid@redhat.com>
+To: Vitalii Bursov <vitaly@bursov.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
+ Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot
+ de Oliveira <bristot@redhat.com>, linux-kernel@vger.kernel.org, Vitalii
+ Bursov <vitaly@bursov.com>
+Subject: Re: [PATCH v3 2/3] sched/debug: dump domains' level
+In-Reply-To: <d9af90271748e6035c5f8bfc03b7bacdde357766.1712147341.git.vitaly@bursov.com>
+References: <cover.1712147341.git.vitaly@bursov.com>
+ <d9af90271748e6035c5f8bfc03b7bacdde357766.1712147341.git.vitaly@bursov.com>
+Date: Thu, 04 Apr 2024 16:21:57 +0200
+Message-ID: <xhsmh34s1b43e.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Zg6z4ZEt7rbILgl8@casper.infradead.org>
+Content-Type: text/plain
 
-On Thu, Apr 04, 2024 at 03:06:25PM +0100, Matthew Wilcox wrote:
-> On Thu, Apr 04, 2024 at 09:45:58AM -0400, Peter Xu wrote:
-> > On Thu, Apr 04, 2024 at 01:05:57AM +0100, Matthew Wilcox wrote:
-> > > 	if (PageHuge(page))
-> > > 		page = compound_head(page);
-> > 
-> > I would think PageHead() check would help us to avoid compound_head() on
-> > heads, which should still be the majority cases iiuc (assuming page->flags
-> > is already around in the cache anyway).  I've no strong opinion though, as
-> > I can hardly tell a difference in reality.
-> 
-> compound_head() includes a check for PageHead().  Adding the check just
-> makes things slower.
+On 03/04/24 16:28, Vitalii Bursov wrote:
+> Knowing domain's level exactly can be useful when setting
+> relax_domain_level or cpuset.sched_relax_domain_level
+>
+> Usage:
+> cat /debug/sched/domains/cpu0/domain1/level
+> to dump cpu0 domain1's level.
+>
+> Signed-off-by: Vitalii Bursov <vitaly@bursov.com>
+> ---
+>  kernel/sched/debug.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+> index 8d5d98a5834d..c1eb9a1afd13 100644
+> --- a/kernel/sched/debug.c
+> +++ b/kernel/sched/debug.c
+> @@ -425,6 +425,7 @@ static void register_sd(struct sched_domain *sd, struct dentry *parent)
+>
+>       debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
+>       debugfs_create_file("groups_flags", 0444, parent, &sd->groups->flags, &sd_flags_fops);
+> +	debugfs_create_u32("level", 0444, parent, (u32 *)&sd->level);
 
-They check different fields (compound_head, offset 0x8 for the former).
-Again I'm ok with either way to go and I don't expect measurable
-difference.. so if you prefer this I'm happy with it too.
-
-Andrew, could you help update with Matthew's fixup?  The comment is
-definitely better than what I wrote in all cases.
-
-Thanks,
-
--- 
-Peter Xu
+How about reusing the SDM macro? ->flags and ->groups_flags get special
+treatment for pretty printing, but the others don't need that.
+---
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index c1eb9a1afd13e..f97902208b34d 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -419,13 +419,13 @@ static void register_sd(struct sched_domain *sd, struct dentry *parent)
+ 	SDM(u32,   0644, busy_factor);
+ 	SDM(u32,   0644, imbalance_pct);
+ 	SDM(u32,   0644, cache_nice_tries);
++	SDM(u32,   0444, level);
+ 	SDM(str,   0444, name);
+ 
+ #undef SDM
+ 
+ 	debugfs_create_file("flags", 0444, parent, &sd->flags, &sd_flags_fops);
+ 	debugfs_create_file("groups_flags", 0444, parent, &sd->groups->flags, &sd_flags_fops);
+-	debugfs_create_u32("level", 0444, parent, (u32 *)&sd->level);
+ }
+ 
+ void update_sched_domain_debugfs(void)
 
 
