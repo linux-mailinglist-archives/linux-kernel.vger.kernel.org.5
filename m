@@ -1,104 +1,186 @@
-Return-Path: <linux-kernel+bounces-131135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131136-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A19898379
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:51:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C2B889837B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:51:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBFE81F23D85
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:51:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52F1F28FAED
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:51:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60FE671B4E;
-	Thu,  4 Apr 2024 08:51:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="NSse4M6n"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910CB73504;
+	Thu,  4 Apr 2024 08:51:47 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190E113ADA;
-	Thu,  4 Apr 2024 08:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6040A4597A;
+	Thu,  4 Apr 2024 08:51:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712220662; cv=none; b=ogRBmwLC4t+Jy3oPhajRxRUn9vXNDQ5TyBworJ8NiIb6JBgwbYmOMW+qBq+sJ6PwON2zng0qsteSfYp9i/3feuTQwtA0r2qOXf4KQEAHJWPoD2fw3fNrbJjr4Cx9VqQIBnS/276zpxLGH4NXBTMrSkEo3INi0ELNma7E3v5nXC0=
+	t=1712220707; cv=none; b=GuMCkfUuErE0TA/f8cmGRpVWXKPwlzjuwYJPcI88Sd/s9Dbt6DuL/1tcxhMkrHKfWIQe4eQ6c/L5JA34SM9u2b+EEnkYw4ommEqgKLLOl/i5dJOPq05WY/eSNMIjKtrdUFLWU8jvTV3t0YISqr/udy0Nvydrbj1+4AG5uXI3G68=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712220662; c=relaxed/simple;
-	bh=RnV2XWrFzuPbTdYwdjhB8w1PdzG3lR941MZUKMz/d2c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fbb18zbg+d87J24kz/QoX86ifPmDecWQDK/v809F1mnRhB0ok7y3XoHtnY3MZ/a0f3QgRsBjF/eUiKH0YM1ts4TmEdOs12vDkeYL2HFuf0+vprZFikyQZZ+T6N73LUO6gITTbHbSgxvHRd+CqNqAodwf3x5+vMHcIsWkltqpHmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=NSse4M6n; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A89A6C0003;
-	Thu,  4 Apr 2024 08:50:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712220658;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bcl+blTYVb8UlfBhe34P71DucCEgZ+SnoyrFlukGhYg=;
-	b=NSse4M6n2yUdP7WfgUO9kn7FSff0z7MUhr9TapI4X8ASXHDcP4bYNzpz/S600fqqnNNlgI
-	tK/9Rzjfg/1VXFaab3A8IrizKEN6YzauDnVrUK5kBDFmrEJMb4NgudTvo8iIA8FXQqUqtJ
-	W2wHLDCn6l7OBIowSZ7NWoF2urbKV7rgkxm3KUI9hfrgvzdhfvxP4GLsK4QGpYkC/ST9IR
-	PS1wmiSwOe7RwbUdu1bNGe48ySJVZS0YwzWLUwYsTJuVEiBsGa3s9VzVePE4PX8JanhqSd
-	2xyTtGybTa/piQAwCKZsbLz6i7HYLe9RnMM1dW9RuGDzIj5rT0x9WfZranwK/Q==
-Message-ID: <d74836a8-9e5d-4a2f-900c-90ceb66bed7b@bootlin.com>
-Date: Thu, 4 Apr 2024 10:50:57 +0200
+	s=arc-20240116; t=1712220707; c=relaxed/simple;
+	bh=XfmsCBkDJ/6d+QejA2BzcnkkJvQKAbigpPnYoVfbLio=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=X74TW1EMxgEjgzOOBab6D50YYLrE+TsjtvVNoUwFddBRLUvJ6wTm8JETU2XoGPYiP8sMq8EFi1wx2908ZQ4B/9Fg5IvYUfsLvAfRpK95LRQw4XmpkIxwe5Zfatzx2f20eh8S7fwt7VcTiht7xjvHQYGxFhsZUz4XjOHQgXPYCH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9FgY6sP7z67hPh;
+	Thu,  4 Apr 2024 16:50:17 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id A4843140B35;
+	Thu,  4 Apr 2024 16:51:39 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 4 Apr
+ 2024 09:51:39 +0100
+Date: Thu, 4 Apr 2024 09:51:38 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: <ira.weiny@intel.com>
+CC: Dave Jiang <dave.jiang@intel.com>, Fan Ni <fan.ni@samsung.com>, "Navneet
+ Singh" <navneet.singh@intel.com>, Dan Williams <dan.j.williams@intel.com>,
+	Davidlohr Bueso <dave@stgolabs.net>, Alison Schofield
+	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>,
+	<linux-btrfs@vger.kernel.org>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 08/26] cxl/mem: Expose device dynamic capacity
+ capabilities
+Message-ID: <20240404095138.00004c7d@Huawei.com>
+In-Reply-To: <20240324-dcd-type2-upstream-v1-8-b7b00d623625@intel.com>
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+	<20240324-dcd-type2-upstream-v1-8-b7b00d623625@intel.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] serial: 8250_of: Add clock_notifier
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
- linux-serial@vger.kernel.org, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
- christophercordahi@nanometrics.ca
-References: <20240404074450.42708-1-bastien.curutchet@bootlin.com>
- <2024040455-bungee-subsidy-f5aa@gregkh>
-Content-Language: en-US
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-In-Reply-To: <2024040455-bungee-subsidy-f5aa@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-GND-Sasl: bastien.curutchet@bootlin.com
+X-ClientProxiedBy: lhrpeml100006.china.huawei.com (7.191.160.224) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hi Greg,
+On Sun, 24 Mar 2024 16:18:11 -0700
+ira.weiny@intel.com wrote:
 
-On 4/4/24 09:50, Greg Kroah-Hartman wrote:
-> On Thu, Apr 04, 2024 at 09:44:50AM +0200, Bastien Curutchet wrote:
->> The UART's input clock rate can change at runtime but this is not
->> handled by the driver.
->>
->> Add a clock_notifier callback that updates the divisors when the input
->> clock is updated. The serial8250_update_uartclk() is used to do so.
->> PRE_RATE_CHANGE and ABORT_RATE_CHANGE notifications are ignored, only
->> the POST_RATE_CHANGE is used.
+> From: Navneet Singh <navneet.singh@intel.com>
 > 
-> Why just this one notification?  You say they are ignored but do not say
-> why.
+> To properly configure CXL regions on Dynamic Capacity Devices (DCD),
+> user space will need to know the details of the DC Regions available on
+> a device.
+> 
+> Expose driver dynamic capacity capabilities through sysfs
+> attributes.
+> 
+> Signed-off-by: Navneet Singh <navneet.singh@intel.com>
+> Co-developed-by: Ira Weiny <ira.weiny@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+Trivial comments inline.
+Whilst I'd like the directory hidden as per the other suggestions,
+I don't mind that much.
+
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+
+
+> 
+> ---
+> Changes for v1:
+> [iweiny: remove review tags]
+> [iweiny: mark sysfs for 6.10 kernel]
+> ---
+>  Documentation/ABI/testing/sysfs-bus-cxl | 17 ++++++++
+>  drivers/cxl/core/memdev.c               | 76 +++++++++++++++++++++++++++++++++
+>  2 files changed, 93 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-cxl b/Documentation/ABI/testing/sysfs-bus-cxl
+> index 8b3efaf6563c..8a4f572c8498 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-cxl
+> +++ b/Documentation/ABI/testing/sysfs-bus-cxl
+> @@ -54,6 +54,23 @@ Description:
+>  		identically named field in the Identify Memory Device Output
+>  		Payload in the CXL-2.0 specification.
+>  
+> +What:		/sys/bus/cxl/devices/memX/dc/region_count
+> +Date:		June, 2024
+> +KernelVersion:	v6.10
+> +Contact:	linux-cxl@vger.kernel.org
+> +Description:
+> +		(RO) Number of Dynamic Capacity (DC) regions supported on the
+> +		device.  May be 0 if the device does not support Dynamic
+> +		Capacity.
+
+That will change if you go ahead and hide the directory as per suggestions.
+
+> +
+> +What:		/sys/bus/cxl/devices/memX/dc/regionY_size
+> +Date:		June, 2024
+> +KernelVersion:	v6.10
+> +Contact:	linux-cxl@vger.kernel.org
+> +Description:
+> +		(RO) Size of the Dynamic Capacity (DC) region Y.  Only
+
+Units always good to have in docs even if somewhat obvious.
+
+> +		available on devices which support DC and only for those
+> +		region indexes supported by the device.
+>  
+>  What:		/sys/bus/cxl/devices/memX/pmem/qos_class
+>  Date:		May, 2023
+> diff --git a/drivers/cxl/core/memdev.c b/drivers/cxl/core/memdev.c
+> index d4e259f3a7e9..a7b880e33a7e 100644
+> --- a/drivers/cxl/core/memdev.c
+> +++ b/drivers/cxl/core/memdev.c
+> @@ -101,6 +101,18 @@ static ssize_t pmem_size_show(struct device *dev, struct device_attribute *attr,
+
+..
+
+> +static struct attribute *cxl_memdev_dc_attributes[] = {
+> +	&dev_attr_region0_size.attr,
+> +	&dev_attr_region1_size.attr,
+> +	&dev_attr_region2_size.attr,
+> +	&dev_attr_region3_size.attr,
+> +	&dev_attr_region4_size.attr,
+> +	&dev_attr_region5_size.attr,
+> +	&dev_attr_region6_size.attr,
+> +	&dev_attr_region7_size.attr,
+> +	&dev_attr_region_count.attr,
+> +	NULL,
+> +};
+> +
+> +static umode_t cxl_dc_visible(struct kobject *kobj, struct attribute *a, int n)
+> +{
+> +	struct device *dev = kobj_to_dev(kobj);
+> +	struct cxl_memdev *cxlmd = to_cxl_memdev(dev);
+> +	struct cxl_memdev_state *mds = to_cxl_memdev_state(cxlmd->cxlds);
+> +
+> +	/* Not a memory device */
+> +	if (!mds)
+> +		return 0;
+> +
+> +	if (a == &dev_attr_region_count.attr)
+> +		return a->mode;
+> +
+> +	/* Show only the regions supported */
+> +	if (n < mds->nr_dc_region)
+> +		return a->mode;
+
+This feels a bit fragile if anyone adds new attrs in future and for whatever reason
+does it before these.
+
+Maybe add a comment at top of cxl_memdev_dc_attributes()?  Say they must be first.
+
+> +
+> +	return 0;
+> +}
+> +
+
 > 
 
-I don't need to react to PRE_RATE_CHANGE in my use case. A few bytes may
-be corrupted during the rate change but it is not a problem for my
-application (and I assumed that it would also be ok in many other use
-cases).
-
->>
->> Reorder the #include to match alphabetic order.
-> 
-> That is not needed here, why do that now?  And "alphabetic order" is not
-> an issue for tty drivers, no need to do that, but if you really want to,
-> a separate patch series is good for that.
-
-Ok sorry, I thought it was needed, I'll remove this in next iteration.
-
-
-Best regards,
-Bastien
 
