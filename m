@@ -1,97 +1,280 @@
-Return-Path: <linux-kernel+bounces-130792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-130793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EADB2897D26
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:43:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8E89897D2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 02:44:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A18471F2A650
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:43:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 595A2B2ACC7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 00:44:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81A5012B71;
-	Thu,  4 Apr 2024 00:43:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EDD4C83;
+	Thu,  4 Apr 2024 00:43:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="QKbDMANo"
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Dpo8It0M"
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1EF8DDA3;
-	Thu,  4 Apr 2024 00:43:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80E037E
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 00:43:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712191420; cv=none; b=uC1sPfpaLX9hY1G1FH9gdymmz73zyT5b71+hO/encfBhI2jA9QpUIJAeXRxUEYHcBZUbV9QjdkFLomBbLZb1N49YCN+TkpSB6MOJoRKS6M/LP7YDtwVxbN1dfuOZUwWtKFtDgVBaA0P7vilr9jZ6TBPo10OsnLAeogPB6+EZBQE=
+	t=1712191436; cv=none; b=b6ZfaTpvwJVHHGfP1lGSWIngpyhJN2c+yXQmPbDrMnt+rZpS3a2XEa+rpQLWEEtjx91u7przn0QWCFLD0TZe0GRk9TWBREI/Z8N96QfJfqEAn/Bv5HZWt0ef0/6tTejj4MsHfqJa6mgHTZBQnnKFkAVbzl5WS3zxhNaYN7gOmUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712191420; c=relaxed/simple;
-	bh=RkkOt127jRNBsyC6/SJ5S0q4ZCbfv408pXMS9DOdvf4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=SZcDETqenSs+qzYSaZxUmluyxViAaiaLKHX9Zf7jsJ/AwY8L69Sd1lBPM1bXhVA+9LROqVrn72SfUkUEvHm9Jq22X5qTUodx1qvhRYjQoErvj1DFdZyQyjM6Ljo9nuYMKbrUfR4L6Yo1K52g+A7+TU6gZUzHrIl+Da3o7pYU1eA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=QKbDMANo; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712191414; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=WpGECF9etbyajJ44AaV6qklkz1QRbKFBVu7gebo66/o=;
-	b=QKbDMANoCLoY3VVtW1NmQ+cBzAtpoTZy++IhzuVib/V//+CSyLw16Gmb+rDYbQhhlGbiNwhjmKOtg4Hn3KVGezK3j4E/+LD3I8YVJ+rbGK0cEhL17OIXWU9FaPgOfMkp/ugQI5vg3DncqnIlKMJr3fMsY4d5WjgbK0uVNrAnvq0=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R391e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0W3t.vBW_1712191411;
-Received: from 192.168.2.4(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0W3t.vBW_1712191411)
-          by smtp.aliyun-inc.com;
-          Thu, 04 Apr 2024 08:43:33 +0800
-Message-ID: <ad7ebace-9146-4824-85fb-d65416ad8895@linux.alibaba.com>
-Date: Thu, 4 Apr 2024 08:43:31 +0800
+	s=arc-20240116; t=1712191436; c=relaxed/simple;
+	bh=l7SjNlBscIXDHCJfPdHXfaKN62Yzih8xgtSq0+UhS8I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DWNdN9Ca494cE8Htx+BXrJZy53lqYQRDk10e5alq8IJoSOINDe+MADrbQCtfOACwR37nVOzeTql++f6z9moNApxiO/bweIwQcWynbdoInA12TW2bQikr445bZS3Qtea4206Sff0qiIY1UtgcKBLAqwtftp5ClpCow8w4SzAJdoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=Dpo8It0M; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso372649a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 03 Apr 2024 17:43:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712191433; x=1712796233; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=NPAkNpwkOcE2aj5H76UIs4DtdZThjvuKeLHUXLWOipM=;
+        b=Dpo8It0MpO/4EKZq/dLqnl8VTu/k+kFqte8YzPZCW+5NoceEpdaptDFvkM8/6Qp43d
+         9aypLH9C07xpgQMJtdus0fCSBOWsyIIhHZqIiZqqJ1XIpWOq6/mBSAombSzU7SMjrp+w
+         3ZG1rgfLsPJ2zA+DL1jUDkCwmaadAYXXFL4ifkZVdFcvFrK289icC7M4z0pvZvhSBW9w
+         PlakplbIsNIe0nOeBfn6Jkz5QZ99sYccO/6nFtSjHC1R4dyNSVAj9ul9ayPNggDfY0z2
+         EvhPU+WQSIjICum+rhVFKsJNw0PtJmGWsYEnoFHImkJUXgoiwCZ5bnf1Wvd9/PNqd/X2
+         azkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712191433; x=1712796233;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NPAkNpwkOcE2aj5H76UIs4DtdZThjvuKeLHUXLWOipM=;
+        b=nsnFuX/SB//5+K/sgMUpkY0HWZpvN6OWea8ZX6zRK2edEtFJ+BbR09C3KCDmEyQegB
+         NV88jVP1A8fbacubkuvvBWlx1z6gNi+qy6Gb/deySZjlYpXi2Oi4YSSaVyVIQ15jGq1g
+         tlYGKUCMOXWmTM59Wga2J2Q2Kwpr+IHe2k/au2pFPCQVotfNXo8IsSfdfzzkgQccnHbY
+         3LNXN75OSeYGiyzImJfMNPcueexrBnWQ7oHq7jgr3RRr9sM2S9xyyUwXsyRFFOuCRHZw
+         RSBHAFkDK3paXL5+hpL+sFXNJnJp6yhqumLAg3B+MPO2LTdsFgCwdTCp2MPGR5MQ4okT
+         oneQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWJ592Ec7O7jE/JBsWAlRSkVM7tl7fIZxbBXAJrxxKfUbX+o6Fwvw8cUcQgzI5ykzIROfymlE5m2YvNVh0xm/s1T1lw4HYAwbbHL4ev
+X-Gm-Message-State: AOJu0YzZyKIzjcpFVwze/hmDA9K8uXLgTfejzUsuOF7G2XFzDEWq7v/t
+	4KnvrggFUJgOh/a47z78NDMWkNJAUCDuSbG9IfcZD6H/mxh0Q6NRy26sNA/+7xI6kV02GIFYJz6
+	u
+X-Google-Smtp-Source: AGHT+IHnuXNye/1qJaXWs5vSMSc0DTbHIYysP8Hv++UrbD3hU/8w6vGpoI5sVVOGEgQrqnzTMEj70w==
+X-Received: by 2002:a17:90a:8d01:b0:2a2:b5db:79cf with SMTP id c1-20020a17090a8d0100b002a2b5db79cfmr1155132pjo.21.1712191433057;
+        Wed, 03 Apr 2024 17:43:53 -0700 (PDT)
+Received: from ghost ([2601:647:5700:6860:b005:9197:83df:91f1])
+        by smtp.gmail.com with ESMTPSA id t15-20020a17090a0d0f00b002a24886fa5asm358052pja.36.2024.04.03.17.43.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Apr 2024 17:43:52 -0700 (PDT)
+Date: Wed, 3 Apr 2024 17:43:50 -0700
+From: Charlie Jenkins <charlie@rivosinc.com>
+To: Vineet Gupta <vineetg@rivosinc.com>
+Cc: Shuah Khan <shuah@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Andy Chiu <andy.chiu@sifive.com>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] riscv: selftests: Add signal handling vector tests
+Message-ID: <Zg33xhwOe6Zwi23A@ghost>
+References: <20240403-vector_sigreturn_tests-v1-1-2e68b7a3b8d7@rivosinc.com>
+ <56863fe7-4d82-4f37-a518-2acf368c3ea6@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 00/13] fiemap extension for more physical information
-To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
- Jonathan Corbet <corbet@lwn.net>, Kent Overstreet
- <kent.overstreet@linux.dev>, Brian Foster <bfoster@redhat.com>,
- Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
- Chao Yu <chao@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- =?UTF-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- kernel-team@meta.com
-References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
- <dce83785-af96-4ff8-9552-56d73b5daf98@linux.alibaba.com>
- <2896ee5a-b381-45eb-abc0-54e914605e46@dorminy.me>
-From: Gao Xiang <hsiangkao@linux.alibaba.com>
-In-Reply-To: <2896ee5a-b381-45eb-abc0-54e914605e46@dorminy.me>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <56863fe7-4d82-4f37-a518-2acf368c3ea6@rivosinc.com>
 
-Hi,
-
-On 2024/4/3 23:11, Sweet Tea Dorminy wrote:
+On Wed, Apr 03, 2024 at 05:27:23PM -0700, Vineet Gupta wrote:
+> On 4/3/24 16:50, Charlie Jenkins wrote:
+> > Add two tests to check vector save/restore when a signal is received
+> > during a vector routine. One test ensures that a value is not clobbered
+> > during signal handling. The other verifies that vector registers
+> > modified in the signal handler are properly reflected when the signal
+> > handling is complete.
 > 
->>
->> I'm not sure why here iomap was excluded technically or I'm missing some
->> previous comments?
->>
->>
->> Could you also make iomap support new FIEMAP physical extent information?
->> since compressed EROFS uses iomap FIEMAP interface to report compressed
->> extents ("z_erofs_iomap_report_ops") but there is no way to return
->> correct compressed lengths, that is unexpected.
->>
+> Hmm, isn't this testing two contradictory things ?
 > 
-> I'll add iomap support in v4, I'd skipped it since I was worried it'd be an expansive additional part not necessary initially. Thank you for noting it!
+> We do want V regs to be not clobbered across a handled signal, o/w V
+> enabled code would just not work at all.
+> That implies that anything done by signal handler should just be
+> discarded - no ?
+> 
+> Am I missing something.
+> 
+> -Vineet
 
-Thanks, I think just fiemap report for iomap seems straight-forward.
-Thanks for your work!
+This is referring to the user-implemented signal handler. The test in
+question is testing the ability of the user-implemented signal handler
+to be able to modify the vector registers. In the test:
 
-Thanks,
-Gao Xiang
+static void vector_override(int sig_no, siginfo_t *info, void *vcontext)
+{ ...
+
+	*(int *)v_ext_state->datap = SIGNAL_HANDLER_OVERRIDE;
+
+	...  }
+
+This line is changing the saved state of the user program's vector
+registers.
+
+When the signal handling concludes and the original user program resumes
+execution, the content of the user-context registers that were modified
+by the signal handler should be restored into the hardware registers.
+Hence the test case checks that the v0 register contains the value
+SIGNAL_HANDLER_OVERRIDE.
+
+EXPECT_EQ(SIGNAL_HANDLER_OVERRIDE, result);
+
+- Charlie
 
 > 
-> Sweet Tea
+> >
+> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+> > ---
+> > These tests came about to highlight the bug fixed in
+> > https://lore.kernel.org/lkml/20240403072638.567446-1-bjorn@kernel.org/
+> > and will only pass with that fix applied.
+> > ---
+> >  tools/testing/selftests/riscv/Makefile             |  2 +-
+> >  tools/testing/selftests/riscv/sigreturn/.gitignore |  1 +
+> >  tools/testing/selftests/riscv/sigreturn/Makefile   | 12 ++++
+> >  .../testing/selftests/riscv/sigreturn/sigreturn.c  | 82 ++++++++++++++++++++++
+> >  4 files changed, 96 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/tools/testing/selftests/riscv/Makefile b/tools/testing/selftests/riscv/Makefile
+> > index 4a9ff515a3a0..7ce03d832b64 100644
+> > --- a/tools/testing/selftests/riscv/Makefile
+> > +++ b/tools/testing/selftests/riscv/Makefile
+> > @@ -5,7 +5,7 @@
+> >  ARCH ?= $(shell uname -m 2>/dev/null || echo not)
+> >  
+> >  ifneq (,$(filter $(ARCH),riscv))
+> > -RISCV_SUBTARGETS ?= hwprobe vector mm
+> > +RISCV_SUBTARGETS ?= hwprobe vector mm sigreturn
+> >  else
+> >  RISCV_SUBTARGETS :=
+> >  endif
+> > diff --git a/tools/testing/selftests/riscv/sigreturn/.gitignore b/tools/testing/selftests/riscv/sigreturn/.gitignore
+> > new file mode 100644
+> > index 000000000000..35002b8ae780
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/riscv/sigreturn/.gitignore
+> > @@ -0,0 +1 @@
+> > +sigreturn
+> > diff --git a/tools/testing/selftests/riscv/sigreturn/Makefile b/tools/testing/selftests/riscv/sigreturn/Makefile
+> > new file mode 100644
+> > index 000000000000..eb8bac9279a8
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/riscv/sigreturn/Makefile
+> > @@ -0,0 +1,12 @@
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (C) 2021 ARM Limited
+> > +# Originally tools/testing/arm64/abi/Makefile
+> > +
+> > +CFLAGS += -I$(top_srcdir)/tools/include
+> > +
+> > +TEST_GEN_PROGS := sigreturn
+> > +
+> > +include ../../lib.mk
+> > +
+> > +$(OUTPUT)/sigreturn: sigreturn.c
+> > +	$(CC) -static -o$@ $(CFLAGS) $(LDFLAGS) $^
+> > diff --git a/tools/testing/selftests/riscv/sigreturn/sigreturn.c b/tools/testing/selftests/riscv/sigreturn/sigreturn.c
+> > new file mode 100644
+> > index 000000000000..62397d5934f1
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/riscv/sigreturn/sigreturn.c
+> > @@ -0,0 +1,82 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +#include <signal.h>
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +#include <ucontext.h>
+> > +#include <linux/ptrace.h>
+> > +#include "../../kselftest_harness.h"
+> > +
+> > +#define RISCV_V_MAGIC		0x53465457
+> > +#define DEFAULT_VALUE		2
+> > +#define SIGNAL_HANDLER_OVERRIDE	3
+> > +
+> > +static void simple_handle(int sig_no, siginfo_t *info, void *vcontext)
+> > +{
+> > +	ucontext_t *context = vcontext;
+> > +
+> > +	context->uc_mcontext.__gregs[REG_PC] = context->uc_mcontext.__gregs[REG_PC] + 4;
+> > +}
+> > +
+> > +static void vector_override(int sig_no, siginfo_t *info, void *vcontext)
+> > +{
+> > +	ucontext_t *context = vcontext;
+> > +
+> > +	// vector state
+> > +	struct __riscv_extra_ext_header *ext;
+> > +	struct __riscv_v_ext_state *v_ext_state;
+> > +
+> > +	/* Find the vector context. */
+> > +	ext = (void *)(&context->uc_mcontext.__fpregs);
+> > +	if (ext->hdr.magic != RISCV_V_MAGIC) {
+> > +		fprintf(stderr, "bad vector magic: %x\n", ext->hdr.magic);
+> > +		abort();
+> > +	}
+> > +
+> > +	v_ext_state = (void *)((char *)(ext) + sizeof(*ext));
+> > +
+> > +	*(int *)v_ext_state->datap = SIGNAL_HANDLER_OVERRIDE;
+> > +
+> > +	context->uc_mcontext.__gregs[REG_PC] = context->uc_mcontext.__gregs[REG_PC] + 4;
+> > +}
+> > +
+> > +static int vector_sigreturn(int data, void (*handler)(int, siginfo_t *, void *))
+> > +{
+> > +	int after_sigreturn;
+> > +	struct sigaction sig_action = {
+> > +		.sa_sigaction = handler,
+> > +		.sa_flags = SA_SIGINFO
+> > +	};
+> > +
+> > +	sigaction(SIGSEGV, &sig_action, 0);
+> > +
+> > +	asm(".option push				\n\
+> > +		.option		arch, +v		\n\
+> > +		vsetivli	x0, 1, e32, ta, ma	\n\
+> > +		vmv.s.x		v0, %1			\n\
+> > +		# Generate SIGSEGV			\n\
+> > +		lw		a0, 0(x0)		\n\
+> > +		vmv.x.s		%0, v0			\n\
+> > +		.option pop" : "=r" (after_sigreturn) : "r" (data));
+> > +
+> > +	return after_sigreturn;
+> > +}
+> > +
+> > +TEST(vector_restore)
+> > +{
+> > +	int result;
+> > +
+> > +	result = vector_sigreturn(DEFAULT_VALUE, &simple_handle);
+> > +
+> > +	EXPECT_EQ(DEFAULT_VALUE, result);
+> > +}
+> > +
+> > +TEST(vector_restore_signal_handler_override)
+> > +{
+> > +	int result;
+> > +
+> > +	result = vector_sigreturn(DEFAULT_VALUE, &vector_override);
+> > +
+> > +	EXPECT_EQ(SIGNAL_HANDLER_OVERRIDE, result);
+> > +}
+> > +
+> > +TEST_HARNESS_MAIN
+> >
+> > ---
+> > base-commit: 4cece764965020c22cff7665b18a012006359095
+> > change-id: 20240403-vector_sigreturn_tests-8118f0ac54fa
+> 
 
