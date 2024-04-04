@@ -1,160 +1,100 @@
-Return-Path: <linux-kernel+bounces-131201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3502B898464
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:49:16 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E357898471
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:56:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C4AB9B24014
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:49:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 161551F286D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:56:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86BC474C0D;
-	Thu,  4 Apr 2024 09:49:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D03F757E4;
+	Thu,  4 Apr 2024 09:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VWsFBJlc"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="cOU24V9/"
+Received: from forward203b.mail.yandex.net (forward203b.mail.yandex.net [178.154.239.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0570F74438;
-	Thu,  4 Apr 2024 09:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9E01803D;
+	Thu,  4 Apr 2024 09:56:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712224142; cv=none; b=U5BPLZQXU1XJb/4GZAaB/0nFtqe9SZt1p1BiWHjvkIZRUZHHZzOslvTBtDx+lwOL8+/wKvP97GQ59cW4A8D58X2I4RdrceTSKvnkZZIp6ExquFeAU1UP1+rpWBFbaXQ3s/RYg3rwlp6yVABDCudY7R8HcXu2DClRJBl1np1rioM=
+	t=1712224572; cv=none; b=AbXGHfFsXz8HcLMGUqU7lv/U2qB7Ok63M08hXNcfwlwP1jNUj33GBic/a/LT0ss4UGCgCuy5jTDeBlSiRFKe8AFXLeKv3k98pTkf04LqmG1Zs7ED5LwM6AD2qlX/vHJTy7dHzhCh2ceIst4XPyjRYV4lJUBXcTs/TgMQ3ghtoiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712224142; c=relaxed/simple;
-	bh=HtkXVwM+iFAGGvr+kUD0dRiyp1DbZhZOQzSip15beRo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=onz9bQSe76F3rtV7yeWdiSE/6F5Au1AzMOlZ3vesf3aQJ1v0ekkT7mVvWWTi5qeFjLWojo0fSJs9v25P/EkvZSMkSUiNb3pJxYzXViBSlWzHba5/4FtELEAb8G9r7/EF6TEJM1cosP2FGsbs2zJkxO2hzP8p9jFeWuuvvqcrfWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VWsFBJlc; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712224138; x=1743760138;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HtkXVwM+iFAGGvr+kUD0dRiyp1DbZhZOQzSip15beRo=;
-  b=VWsFBJlcBTH1tLnwXNgjQezZM5kk21qupomVMp2eRC39bhK3DcE2DK/O
-   6M3/1rym143ubfDrH8Cnpv+/feSu5wTKgVGloI+1C+BXVT0vTKgiaS7Tj
-   rYIZTq8EQPNq8Hk0KepkXSzYQRRclZiT1syl0SNg3Y9LXfobd1ZsMjic3
-   O8h6NaG2t2JXesDXF9bf4+o5qgmUZhknMem1dHox/gCkLDoqMO0qOmeWp
-   0EOhWsiXK5J6wwhjvOI/j1RpsR86N1wsfCi+7FySHAzUogpe68QnyH7gQ
-   5aa9ivgli33JPvzZgmsHGTyWTL6vn9kMK/+MRMRCO0Cdky99TIixYZ9tP
-   Q==;
-X-CSE-ConnectionGUID: qbbmrJ7lQJawOnen1crRmw==
-X-CSE-MsgGUID: uCElAF3gSHy8LikxCd7HhA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7393419"
-X-IronPort-AV: E=Sophos;i="6.07,178,1708416000"; 
-   d="scan'208";a="7393419"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 02:46:13 -0700
-X-CSE-ConnectionGUID: ++d9YZT8TDytdMV2c2L46w==
-X-CSE-MsgGUID: WqeOzf9OQeK8oCmECxYFYw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
-   d="scan'208";a="41898069"
-Received: from unknown (HELO mev-dev) ([10.237.112.144])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 02:46:09 -0700
-Date: Thu, 4 Apr 2024 11:45:54 +0200
-From: Michal Swiatkowski <michal.swiatkowski@linux.intel.com>
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	nex.sw.ncis.osdt.itp.upstreaming@intel.com,
-	"intel-wired-lan@lists.osuosl.org" <intel-wired-lan@lists.osuosl.org>,
-	Netdev <netdev@vger.kernel.org>, linux-kernel@vger.kernel.org,
-	Marcin Szycik <marcin.szycik@linux.intel.com>,
-	Simon Horman <horms@kernel.org>, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH net-next v6 19/21] pfcp: always set pfcp metadata
-Message-ID: <Zg520gCPr+65sf5l@mev-dev>
-References: <20240327152358.2368467-1-aleksander.lobakin@intel.com>
- <20240327152358.2368467-20-aleksander.lobakin@intel.com>
- <701f8f93-f5fb-408b-822a-37a1d5c424ba@app.fastmail.com>
+	s=arc-20240116; t=1712224572; c=relaxed/simple;
+	bh=pJMDg1eg6ejbUQsB/VhRS6kuW8PWYItofZ8I/HU16ok=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=t9Mj/o0DFRKCDn2KTL1RPebGC1oHcMu8akYBZVjWRxtopS4J2iIGX29vHPfKpVAl5dbLQOtdO5SxdN0n4csv/k68Fj+lLy33A2MHpAabnA1Olum9NOn8tAeB8+PJl65mfhxSnd88vlyPt4q9Uw/p3FoVTwoGFyHE0an8DytaH9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=cOU24V9/; arc=none smtp.client-ip=178.154.239.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+Received: from forward103c.mail.yandex.net (forward103c.mail.yandex.net [IPv6:2a02:6b8:c03:500:1:45:d181:d103])
+	by forward203b.mail.yandex.net (Yandex) with ESMTPS id 6A73E64DBD;
+	Thu,  4 Apr 2024 12:50:24 +0300 (MSK)
+Received: from mail-nwsmtp-smtp-production-main-36.sas.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-36.sas.yp-c.yandex.net [IPv6:2a02:6b8:c37:629:0:640:2d57:0])
+	by forward103c.mail.yandex.net (Yandex) with ESMTPS id D805E60900;
+	Thu,  4 Apr 2024 12:50:15 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-36.sas.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 4oQ8Ed9k3Gk0-wDcBHWCM;
+	Thu, 04 Apr 2024 12:50:15 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1712224215; bh=agUHuLc6sWYp/vb7zT9L+aoPJ6k5EpklUa4uldWqnX4=;
+	h=Message-Id:Date:Cc:Subject:To:From;
+	b=cOU24V9/52/2sBbYoPY9HHCSSLmC9Q5l+oux3S+YL7k1HU2kGwudWbgTYjMCCzzEU
+	 E4Rgr/Roz5HUFpl8Zd9dx4/6Gd1UHdO+ShAW6f797XO8XYdrGtTGQ0r++ojSUwEA9N
+	 vv30KOk92C2EUSqNRMSQSEBfcdkAxsKeHXgF4ybM=
+Authentication-Results: mail-nwsmtp-smtp-production-main-36.sas.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
+From: Mikhail Ukhin <mish.uxin2012@yandex.ru>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Mikhail Ukhin <mish.uxin2012@yandex.ru>,
+	stable@vger.kernel.org,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Michail Ivanov <iwanov-23@bk.ru>,
+	Pavel Koshutin <koshutin.pavel@yandex.ru>,
+	Artem Sadovnikov <ancowi69@gmail.com>
+Subject: [PATCH] ext4: fix i_data_sem unlock order in ext4_ind_migrate()
+Date: Thu,  4 Apr 2024 12:50:00 +0300
+Message-Id: <20240404095000.5872-1-mish.uxin2012@yandex.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <701f8f93-f5fb-408b-822a-37a1d5c424ba@app.fastmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 03, 2024 at 10:59:36PM +0200, Arnd Bergmann wrote:
-> On Wed, Mar 27, 2024, at 16:23, Alexander Lobakin wrote:
-> 
-> > +static int pfcp_encap_recv(struct sock *sk, struct sk_buff *skb)
-> > +{
-> > +	IP_TUNNEL_DECLARE_FLAGS(flags) = { };
-> > +	struct metadata_dst *tun_dst;
-> > +	struct pfcp_metadata *md;
-> > +	struct pfcphdr *unparsed;
-> > +	struct pfcp_dev *pfcp;
-> > +
-> > +	if (unlikely(!pskb_may_pull(skb, PFCP_HLEN)))
-> > +		goto drop;
-> > +
-> > +	pfcp = rcu_dereference_sk_user_data(sk);
-> > +	if (unlikely(!pfcp))
-> > +		goto drop;
-> > +
-> > +	unparsed = pfcp_hdr(skb);
-> > +
-> > +	ip_tunnel_flags_zero(flags);
-> > +	tun_dst = udp_tun_rx_dst(skb, sk->sk_family, flags, 0,
-> > +				 sizeof(*md));
-> > +	if (unlikely(!tun_dst))
-> > +		goto drop;
-> > +
-> > +	md = ip_tunnel_info_opts(&tun_dst->u.tun_info);
-> > +	if (unlikely(!md))
-> > +		goto drop;
-> > +
-> > +	if (unparsed->flags & PFCP_SEID_FLAG)
-> > +		pfcp_session_recv(pfcp, skb, md);
-> > +	else
-> > +		pfcp_node_recv(pfcp, skb, md);
-> > +
-> > +	__set_bit(IP_TUNNEL_PFCP_OPT_BIT, flags);
-> > +	ip_tunnel_info_opts_set(&tun_dst->u.tun_info, md, sizeof(*md),
-> > +				flags);
-> > +
-> 
-> The memcpy() in the ip_tunnel_info_opts_set() causes
-> a string.h fortification warning, with at least gcc-13:
-> 
->     In function 'fortify_memcpy_chk',
->         inlined from 'ip_tunnel_info_opts_set' at include/net/ip_tunnels.h:619:3,
->         inlined from 'pfcp_encap_recv' at drivers/net/pfcp.c:84:2:
->     include/linux/fortify-string.h:553:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
->       553 |                         __write_overflow_field(p_size_field, size);
-> 
-> As far as I can tell, the warning is caused by the
-> ambiguity of the union, but what I noticed is that
-> it also seems to copy a buffer to itself, as 'md'
-> is initialized to tun_dst->u.tun_info as well.
-> 
-> Is this intentional?
+Fuzzing reports a possible deadlock in jbd2_log_wait_commit.
 
-I used ip_tunnel_info_opts_set() to set options_len and flags.
-You are right that it can and probably should be changed to:
+The problem occurs in ext4_ind_migrate due to an incorrect order of
+unlocking of the journal and write semaphores - the order of unlocking
+must be the reverse of the order of locking.
 
-__set_bit(IP_TUNNEL_PFCP_OPT_BIT, tun_dst->u.tun_info.key.tun_flags);
-tun_dst->u.tun_info.options_len = sizeof(*md);
+Found by Linux Verification Center (linuxtesting.org) with syzkaller.
 
-instead of copying the buffer. Thanks for pointing it.
+Signed-off-by: Artem Sadovnikov <ancowi69@gmail.com>
+---
+ fs/ext4/migrate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Should I sent a fix to the net or patch to the maintainer? Sorry, don't
-know how this kind of situations are being solved.
+diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
+index d98ac2af8199..a5e1492bbaaa 100644
+--- a/fs/ext4/migrate.c
++++ b/fs/ext4/migrate.c
+@@ -663,8 +663,8 @@ int ext4_ind_migrate(struct inode *inode)
+ 	if (unlikely(ret2 && !ret))
+ 		ret = ret2;
+ errout:
+-	ext4_journal_stop(handle);
+ 	up_write(&EXT4_I(inode)->i_data_sem);
++	ext4_journal_stop(handle);
+ out_unlock:
+ 	ext4_writepages_up_write(inode->i_sb, alloc_ctx);
+ 	return ret;
+-- 
+2.25.1
 
-Michal
-
-> 
->       Arnd
 
