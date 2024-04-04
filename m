@@ -1,138 +1,123 @@
-Return-Path: <linux-kernel+bounces-131519-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD37F8988FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:40:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A446E8988FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:42:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76C28283138
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:40:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 37D7D1F24D54
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 13:42:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D09E12837A;
-	Thu,  4 Apr 2024 13:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E45BA128815;
+	Thu,  4 Apr 2024 13:42:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PgH0YwT/"
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="YP8YeFFC"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D1B92E401
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 13:40:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5378127B6A;
+	Thu,  4 Apr 2024 13:42:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712238051; cv=none; b=iCx0MmZg8wxq5UkkRHBFDm065EI67PpDu6DykQJUzebMO9N+mBtrBVy566Api+CjcMfN8c2XLgOnSDt+uIcQNpUSXl9CzBll2xja04Ij95/su0xSJZiTKpC3iO9AAE6lCR6vpvEaCXfkbGSql9BbyhqJVeUsRNsuPsxCLGD2Zrw=
+	t=1712238141; cv=none; b=ZOgKsnyQYXX3SRpJ1PVgsaYl3g8bORE62fFJb6h08fqTrvc+B8Icd+51kQDwZzhKNIfFSn3Ym/xxmqVwx3/A3JuAwd2bxeKSgvpDAdUnSCuSsxL+M0H7lCA+mmOv9wQiwBBH+aIr7IzLqRFzkyJRakbsw6hIpXz+Pkw3jQ3o76E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712238051; c=relaxed/simple;
-	bh=z89MX8HYRU8eftunJgLf/N/hvA+22G0MlIRdKBYcBOQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jzSCXniAtQQTrW8GcvCMy3KVFCdzLgZKAsECOK+AR5tW6szhSyXf++BNEEhkNpn6xI3ylOyYpBf72y1H/bzKy7Si/v4Reuwq/VhkQT/fHEPzdJsmMFNWaQurAB/hs0yBkmMZBjzqxRMiEKQvKVjgCgXpBuO8mT+S7PaajtoIpyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PgH0YwT/; arc=none smtp.client-ip=209.85.222.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7e3d93697f7so332497241.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 06:40:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712238049; x=1712842849; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aOS6jB5q96k7GK5LtcB2yIdNav1TsSAYvbOvkVp9ZNE=;
-        b=PgH0YwT/maUKinOEMoJeJk4WnIxwiZTejcEeGmI/DPQLzkTNGgss4D9gmgLTe1l37p
-         6daai5ETDqoMwVDYmAyXjk8nLsPA12joiLU9WEvcYRA27ICOl4KipMdTFiS1IdRJb8LD
-         ZOwUy4nyc8vwwUIqeZ79nUayH7EduYwkxzGVA8YzUxrS38dQIIqLwNEBuBZXHexkrH/0
-         hLDKtDUDRp+ui+9lL0yLgCasVBSYz+e/swMLNP5RgFHTRPnPiNFpz0IuswuxfAnfYixy
-         Lf1z/9aGI6Uy64pPIfJyQFW6v4ErYNSLZmG9HqJ/F5fM0wJPuOy120CRPoM/LkCWVVzR
-         g0Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712238049; x=1712842849;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aOS6jB5q96k7GK5LtcB2yIdNav1TsSAYvbOvkVp9ZNE=;
-        b=kjLq6LA3Dy+bl7KfUeK1b/kO6T/mtaB96j4vRObXRgE8AfUIEx527Z+cZjrmjq11r4
-         Ed0Xr9Nl88Wrka956N9R7WKP3p5p2sSukp4p26b5C6aBpsayLJQ9yTBjE8zXpSvQre+/
-         qUChn/A4KtLpfBBRdiB0atgwAWqrm6qRG2UN0UifDTvsSGcX8MNzyFhJ7rYHzMBAAFVW
-         WCrD5SqV6E0mdKz/7X9HKNQH01/Faa3iBIvwl6eEbrYrin1URQMqMmisardUfMPfApv4
-         o1gFroeWjeKBrcmPYGUL1u5kmZbGKJMXaZBK3JgBbjOqQmetnyGQ8KPFRJxfNbBfnMw5
-         54YA==
-X-Forwarded-Encrypted: i=1; AJvYcCXPrFeLcsE/t08BwNxf1vwqwtMARxhmg1Uc+E2xU6yZI7R3jeSUcmc4+5PjISJe5V2lywHIdMuNd0kN2WP24UyUEpUG9YICM0f+4aMF
-X-Gm-Message-State: AOJu0YxwgxaDr6DDMCYTYKW0IYXylfG7AjlXSBrBKURqgxKdnk5nE1KJ
-	gNXzQXhuBxjO4W3b68SriPFeKC8LxHeHJHPBp1Q8vAkGjRo8mblQ0paVyoq2R093ZrG4Xi5wlJR
-	xH+eL5sv5SDyrMC0lJufAo6gPJPCdhLJt+GwH
-X-Google-Smtp-Source: AGHT+IGpIspdlUNbRLtFDNytIXGtHZMaPzFQpb3jBaHTsPiM4ZMVlngt4/RaBpp9RWjLv+l1kAIe39yYGp5s9H9JN5c=
-X-Received: by 2002:a05:6102:f0a:b0:479:c181:a659 with SMTP id
- v10-20020a0561020f0a00b00479c181a659mr3220344vss.14.1712238048672; Thu, 04
- Apr 2024 06:40:48 -0700 (PDT)
+	s=arc-20240116; t=1712238141; c=relaxed/simple;
+	bh=SiFNlvNoywBWrh9dJB2VKBaVx4+zJofi44aMlEqmAas=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QON9ORVgQjI4KIf/ncjRUSew+EwGutvrJ7Z3+LLNe4FduRHsuOW/bap2n+e886IV5Xr0g4VRJyWWUz2e7G2EGVhns1nlOgCi3ovBKdDeraUTmhnDGnaO9iRWpeeZetqMKKvRaPobV1d72Gi+dWwexynWhIfXKqNlF66ABKOc5zw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=YP8YeFFC; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4E3BD40E0177;
+	Thu,  4 Apr 2024 13:42:16 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id AG3-nPPPc-qB; Thu,  4 Apr 2024 13:42:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1712238132; bh=SnwD9Z8zRiZ36IaQVN6USZlKwVv26RZDYLKXu7FYw0o=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YP8YeFFCnpEp8rna7b+P2a0QTsBwQx6jMX+N3KUJxALwLPHkfiaNO879S246LE+Qi
+	 lSN1Z/CPvCElarNeyzuv7kIOfgcYnDt0yHuTbIGM8kUH/aQDaEYbCVWRj0bQ1V83a3
+	 7Xoke6VfzlxS97dIZzsvv551Fh8zXMT4hh3q3MU5TsPkh5IZJlgZw0JKlIDJVRa5DP
+	 QUKLGKdEFHQI6tvIMgvUql135tHFjbPn9Bw7Ti5W2fG0BJ79/GdWan+YSKTAkVsaiS
+	 srT+AypeNQm4YPoQoXYbrKzJZXglxVtIoUUdWhNbqjmPobXR8znv6ZCQV+zy4xEOwF
+	 t34Mn8k+fc7kJeAmSo0/0PC+UvQ420a+4M+4LVki+m0QnTIqu0SObBj2sbPn1CjncO
+	 k/y2FKDUlW36ZfV2Uor/WT6GhCZrklebwwt12N4LW2d4ccd7p9zaDcjmT/dt5+7aUz
+	 qPlggv7g5VWLFnmg1M+1csCwWEqaZjhOIeeapI01UB3Em+swlCIsP5emHfHz/FFD2n
+	 mgVTsYNwb4cgEjiOU2Tuo0hIUYl7Z4mW1T1ZTgJN4lJ9B3sXP/pBgJW+LdnbEMpC3G
+	 TYmgsVBYdr9IBWDkaiQDbgNWGPdW3gto+R2HlJG9Y9n88xWy3sEyDG7clgEre1wErc
+	 /Kg4IE6VuUmwVVvIjkCkwpZ4=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 2FEC440E00F4;
+	Thu,  4 Apr 2024 13:41:51 +0000 (UTC)
+Date: Thu, 4 Apr 2024 15:41:42 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc: Michael Roth <michael.roth@amd.com>, bp@kernel.org, bgardon@google.com,
+	dave.hansen@linux.intel.com, dmatlack@google.com, hpa@zytor.com,
+	jpoimboe@kernel.org, kvm@vger.kernel.org, leitao@debian.org,
+	linux-kernel@vger.kernel.org, maz@kernel.org, mingo@redhat.com,
+	pawan.kumar.gupta@linux.intel.com, pbonzini@redhat.com,
+	peterz@infradead.org, seanjc@google.com, shahuang@redhat.com,
+	tabba@google.com, tglx@linutronix.de, x86@kernel.org
+Subject: Re: [BUG net-next] arch/x86/kernel/cpu/bugs.c:2935: "Unpatched
+ return thunk in use. This should not happen!" [STACKTRACE]
+Message-ID: <20240404134142.GCZg6uFh_ZSzUFLChd@fat_crate.local>
+References: <1d10cd73-2ae7-42d5-a318-2f9facc42bbe@alu.unizg.hr>
+ <20240318202124.GCZfiiRGVV0angYI9j@fat_crate.local>
+ <12619bd4-9e9e-4883-8706-55d050a4d11a@alu.unizg.hr>
+ <20240326101642.GAZgKgisKXLvggu8Cz@fat_crate.local>
+ <8fc784c2-2aad-4d1d-ba0f-e5ab69d28ec5@alu.unizg.hr>
+ <20240328123830.dma3nnmmlb7r52ic@amd.com>
+ <20240402101549.5166-1-bp@kernel.org>
+ <20240402133856.dtzinbbudsu7rg7d@amd.com>
+ <f497a833-f945-4907-b916-1739324de014@alu.unizg.hr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com>
- <20240402-linked-list-v1-7-b1c59ba7ae3b@google.com> <4aaf7fd7-49ed-4b3e-b691-0d8d7d426d3a@proton.me>
- <CAH5fLghEg37m_PhJxE8FVORHGROE9rd1CJttaWBGc7cXZCX+yQ@mail.gmail.com> <fe34947f-2daa-438a-b621-8557b78f1da6@proton.me>
-In-Reply-To: <fe34947f-2daa-438a-b621-8557b78f1da6@proton.me>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Thu, 4 Apr 2024 15:40:37 +0200
-Message-ID: <CAH5fLghDBzaDf38FQtt=DROmJ7qV+cXCxDn3nAmeaZibW20Trg@mail.gmail.com>
-Subject: Re: [PATCH 7/9] rust: list: add cursor
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, 
-	Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, 
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, 
-	Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, 
-	Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, 
-	Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, 
-	Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <f497a833-f945-4907-b916-1739324de014@alu.unizg.hr>
 
-On Thu, Apr 4, 2024 at 3:28=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
-> wrote:
->
-> On 03.04.24 14:49, Alice Ryhl wrote:
-> > On Wed, Apr 3, 2024 at 2:19=E2=80=AFPM Benno Lossin <benno.lossin@proto=
-n.me> wrote:
-> >> On 02.04.24 14:17, Alice Ryhl wrote:
-> >>> +impl<'a, T: ?Sized + ListItem<ID>, const ID: u64> Cursor<'a, T, ID> =
-{
-> >>> +    /// Access the current element of this cursor.
-> >>> +    pub fn current(&self) -> ArcBorrow<'_, T> {
-> >>> +        // SAFETY: The `current` pointer points a value in the list.
-> >>> +        let me =3D unsafe { T::view_value(ListLinks::from_fields(sel=
-f.current)) };
-> >>> +        // SAFETY:
-> >>> +        // * All values in a list are stored in an `Arc`.
-> >>> +        // * The value cannot be removed from the list for the durat=
-ion of the lifetime annotated
-> >>> +        //   on the returned `ArcBorrow`, because removing it from t=
-he list would require mutable
-> >>> +        //   access to the cursor or the list. However, the `ArcBorr=
-ow` holds an immutable borrow
-> >>> +        //   on the cursor, which in turn holds an immutable borrow =
-on the list, so any such
-> >>
-> >> The cursor has a mutable borrow on the list.
-> >>
-> >>
-> >>> +        //   mutable access requires first releasing the immutable b=
-orrow on the cursor.
-> >>> +        // * Values in a list never have a `UniqueArc` reference.
-> >>
-> >> Is there some type invariant guaranteeing this?
-> >
-> > The List owns a ListArc reference to the value. It would be unsound
-> > for there to also be a UniqueArc reference to it.
->
-> I think it would be good to add the existence of the `ListArc` as an
-> explanation.
+On Wed, Apr 03, 2024 at 03:43:02PM +0200, Mirsad Todorovac wrote:
+> I wonder if I could make any additional contribution to the project.
 
-Will do. I'll do the other suggestions as well.
+I'd suggest:
 
-Alice
+https://kernel.org/doc/html/latest/process/2.Process.html#getting-started-with-kernel-development
+
+and
+
+https://kernel.org/doc/html/latest/process/development-process.html
+
+which will give you a broader picture.
+
+You could test linux-next, build random configs:
+
+"make randconfig"
+
+and see if you trigger a compiler warning, try to analyze it, understand
+it and fix it.
+
+It is a steep climb but it is a lot of fun. :-)
+
+HTH.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
 
