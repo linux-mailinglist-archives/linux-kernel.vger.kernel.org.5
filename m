@@ -1,56 +1,57 @@
-Return-Path: <linux-kernel+bounces-131473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131474-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C42F898851
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:55:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C56D898853
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:55:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B2ED81C2171A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:55:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA05B1C213A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73F3B8528F;
-	Thu,  4 Apr 2024 12:55:15 +0000 (UTC)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F39E1272A6;
+	Thu,  4 Apr 2024 12:55:17 +0000 (UTC)
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5704F74C00;
-	Thu,  4 Apr 2024 12:55:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F27D959157;
+	Thu,  4 Apr 2024 12:55:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712235315; cv=none; b=RDfE4SjrbG7ECTxWbZDM5bXfcnI6qjYKnM9IVt8awJ7uxHtdhFhURWQxYN+7eEYOqbcHdBCjvhqOe4q5BjWsZaLbhbeFQ2+njELt8bZRLhV0bXj4/7mBOB2ZYrO0xXhuMiQX3fcA58kSsqruzFPLShUqmer7YSEinO5I0ua0YnE=
+	t=1712235316; cv=none; b=Qm4IJu+gVC2ySmcE0D+9SytLC75QLIqIlql6zraEGPsYh8NFFXwP/obXL2WA0B+IbjCe7CXg5H6ePKgedLZ518pWu2jSr0UcGmDi/t8dkDbVZ1VH1oMqqvK7WgN7LXDZvaWwCth7+NkcEGMhxjRGmCugOMnJIWwf91VAPm6UpYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712235315; c=relaxed/simple;
-	bh=dPN1XIYZHMHhh9RnEpKeMSKeOJTNh6ZnfxvHKWA1TH8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DSB0ROu7HwKDpVxKkiecrxqhCZAj25hrSnlgKoSJT4KY82MBuQmLrlxfGrMpAzMHl4Rkhw7HPyo+6QmeWNcK2dPxevyAYOTyZwIcyUXCPmsYMu1bb3DXV1i/c6ZZ9yfj7GyIRTGV3tN4jwm8/Ox14bTxSRLxqu2PbyzAbcl8kqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.49
+	s=arc-20240116; t=1712235316; c=relaxed/simple;
+	bh=ostQ0XvbZ4Xswj3rkDxFH+u55Uw1YqBVGn08piL5Ih4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=GagwH55Ha5JxWnq7So5Q2WMvQtTclCJazel1eTVAj9Bd3A7hB9AU+gd76n1eas++c7r2Ne/WQA+1m7G9eviOmPXsmPc/KRdJGiLHx2WFWdyfhQFo8GualHunbFdUVjFYQLd3n1MToIN3ptGX29p7UjPKTcQUOnfIemVLvlFUU4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e0acaf69aso1159802a12.1;
-        Thu, 04 Apr 2024 05:55:13 -0700 (PDT)
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a4a387ff7acso120434066b.2;
+        Thu, 04 Apr 2024 05:55:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712235312; x=1712840112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3466ZjMjskIJftqg4f5cHcLCev2A3jUv1Ffxs6nlINg=;
-        b=ZwAnZ9QVT7UvtTRTQe/5eAEInX6iD2guDyPlR4v+io7HjRL5hLdI29IjRHwGtb/Ftt
-         W4OAM6H+LQJj/YzYt+QYDbcA/3u4DkdWrdW8eHT/nnt1c4hejBjYybTayuebqXlgCfAw
-         DCBZgfdr/FL6y267iD+TUCD+HGLdnHDpXl3MAyMjmChzAE975OHiT9D+uwlvuzehmU7f
-         hrZ9QG8UHhON5v1JDH/HnYbTLwBQr5HY5WwF2S1ihhsjCDc2Rl+IPWONFT6Cri82p8Rd
-         JMrE3Z4HupYMWX6StPY3JE9nFHANOn0VYzCrj8SEm1/Ct70SbFTzDLbRwOhpRJ1HRLSW
-         RN3A==
-X-Forwarded-Encrypted: i=1; AJvYcCUS0eQnSMxdmzERDNY8lOOfmCEAbe1ajUxAOWXlTGokr7DaQhG+ymcucu2ep12xr57QaCKq0fDRrNr1cXRmJcpNkLhByUj6
-X-Gm-Message-State: AOJu0Yw+0Nt61uuMgE8tOtpc1VsU2pcFH5Y06o6shvWvaYOJxTmSJw24
-	2syTvRXjS824xnKt68KhtbzSSOKBZJtuGMa7Ab7/jo+J5n2RocUf
-X-Google-Smtp-Source: AGHT+IGDrrFb5siytOmMVsdz8V3PBOY6CDdruFwkN0bRzC0kWY2xIbrlaz1+6c8++jg1SSd+v4b23A==
-X-Received: by 2002:a50:9b5a:0:b0:568:32cc:f808 with SMTP id a26-20020a509b5a000000b0056832ccf808mr1550610edj.15.1712235311336;
-        Thu, 04 Apr 2024 05:55:11 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
-        by smtp.gmail.com with ESMTPSA id fe8-20020a056402390800b0056c522d014esm9078701edb.57.2024.04.04.05.55.10
+        d=1e100.net; s=20230601; t=1712235313; x=1712840113;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6O2JKeZvqaoJNzaclf36Ur4Gc3+emicV0GwUt8uQmao=;
+        b=TTbSNeWQLH20YpGujWIEvKKex+Iy9AumzfM436MeuL1O/9Vg94oUmUMCG8OtFh8jMz
+         5UESFEzrtWlhHih27HH4fqA/605fWqKTGWUGIOQV5fFH1bx9+gCny5f+9DCy6f4bZjJ7
+         6gbdUlYbcR5UCzYLdrb+rC1JOLnw07T9JTvri1GTKr0pY5mp2dl7qD7L4UQg/LJ8HKve
+         +Ko/VJ3fZ6t2RQTwPD+g4zoVSghG6lsYVCuI0s3AZ5sO0uWXZFSD09uLoDxthf2bXzUC
+         kWxYUcr9HMJB3tNeJTyeGMLatxzXjcduUj18ia8UD6o0fPB0TCJfmDjI0q4Xxdy1YhAa
+         Et2w==
+X-Forwarded-Encrypted: i=1; AJvYcCXWtLT4Tl7u4YKIa+xGEhmthaKbGLV4i6nOUGVVwe7QQEg1PvR+gnH5dyckhQ0e8vd2kImrxUXdAqdUuDanZpCm9eukguPA
+X-Gm-Message-State: AOJu0YzvZc19hxfVXo8tmGFX76lKMaJV1f0izfGsEd2YxkMAJsRKW1Ie
+	VvlkNwYn0UC3AmhEyWjaTIm57U8uEwEdBXC8HsCQ0q5quV84r97d
+X-Google-Smtp-Source: AGHT+IFik+fbQrbMFPzpT5sag14+qCt6HdMSkhsjjRwPbfYxPNdO3b+FTDja065PzdWdD8NT7TlBTQ==
+X-Received: by 2002:a17:906:1687:b0:a4f:b391:886b with SMTP id s7-20020a170906168700b00a4fb391886bmr1491841ejd.69.1712235313187;
+        Thu, 04 Apr 2024 05:55:13 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
+        by smtp.gmail.com with ESMTPSA id gy18-20020a170906f25200b00a4e4f129d3bsm6478237ejb.26.2024.04.04.05.55.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 05:55:11 -0700 (PDT)
+        Thu, 04 Apr 2024 05:55:12 -0700 (PDT)
 From: Breno Leitao <leitao@debian.org>
 To: kuba@kernel.org,
 	davem@davemloft.net,
@@ -61,10 +62,12 @@ To: kuba@kernel.org,
 	David Ahern <dsahern@kernel.org>
 Cc: linux-kernel@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH net-next 1/2] ip6_vti: Do not use custom stat allocator
-Date: Thu,  4 Apr 2024 05:52:51 -0700
-Message-ID: <20240404125254.2978650-1-leitao@debian.org>
+Subject: [PATCH net-next 2/2] ip6_vti: Remove generic .ndo_get_stats64
+Date: Thu,  4 Apr 2024 05:52:52 -0700
+Message-ID: <20240404125254.2978650-2-leitao@debian.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240404125254.2978650-1-leitao@debian.org>
+References: <20240404125254.2978650-1-leitao@debian.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,59 +76,32 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-With commit 34d21de99cea9 ("net: Move {l,t,d}stats allocation to core and
-convert veth & vrf"), stats allocation could be done on net core
-instead of in this driver.
+Commit 3e2f544dd8a33 ("net: get stats64 if device if driver is
+configured") moved the callback to dev_get_tstats64() to net core, so,
+unless the driver is doing some custom stats collection, it does not
+need to set .ndo_get_stats64.
 
-With this new approach, the driver doesn't have to bother with error
-handling (allocation failure checking, making sure free happens in the
-right spot, etc). This is core responsibility now.
-
-Remove the allocation in the ip6_vti and leverage the network
-core allocation instead.
+Since this driver is now relying in NETDEV_PCPU_STAT_TSTATS, then, it
+doesn't need to set the dev_get_tstats64() generic .ndo_get_stats64
+function pointer.
 
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- net/ipv6/ip6_vti.c | 11 +----------
- 1 file changed, 1 insertion(+), 10 deletions(-)
+ net/ipv6/ip6_vti.c | 1 -
+ 1 file changed, 1 deletion(-)
 
 diff --git a/net/ipv6/ip6_vti.c b/net/ipv6/ip6_vti.c
-index 7f4f976aa24a..71c749bb4b3e 100644
+index 71c749bb4b3e..4d68a0777b0c 100644
 --- a/net/ipv6/ip6_vti.c
 +++ b/net/ipv6/ip6_vti.c
-@@ -174,11 +174,6 @@ vti6_tnl_unlink(struct vti6_net *ip6n, struct ip6_tnl *t)
- 	}
- }
+@@ -887,7 +887,6 @@ static const struct net_device_ops vti6_netdev_ops = {
+ 	.ndo_uninit	= vti6_dev_uninit,
+ 	.ndo_start_xmit = vti6_tnl_xmit,
+ 	.ndo_siocdevprivate = vti6_siocdevprivate,
+-	.ndo_get_stats64 = dev_get_tstats64,
+ 	.ndo_get_iflink = ip6_tnl_get_iflink,
+ };
  
--static void vti6_dev_free(struct net_device *dev)
--{
--	free_percpu(dev->tstats);
--}
--
- static int vti6_tnl_create2(struct net_device *dev)
- {
- 	struct ip6_tnl *t = netdev_priv(dev);
-@@ -907,9 +902,8 @@ static void vti6_dev_setup(struct net_device *dev)
- {
- 	dev->netdev_ops = &vti6_netdev_ops;
- 	dev->header_ops = &ip_tunnel_header_ops;
--	dev->needs_free_netdev = true;
--	dev->priv_destructor = vti6_dev_free;
- 
-+	dev->pcpu_stat_type = NETDEV_PCPU_STAT_TSTATS;
- 	dev->type = ARPHRD_TUNNEL6;
- 	dev->min_mtu = IPV4_MIN_MTU;
- 	dev->max_mtu = IP_MAX_MTU - sizeof(struct ipv6hdr);
-@@ -931,9 +925,6 @@ static inline int vti6_dev_init_gen(struct net_device *dev)
- 
- 	t->dev = dev;
- 	t->net = dev_net(dev);
--	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
--	if (!dev->tstats)
--		return -ENOMEM;
- 	netdev_hold(dev, &t->dev_tracker, GFP_KERNEL);
- 	netdev_lockdep_set_classes(dev);
- 	return 0;
 -- 
 2.43.0
 
