@@ -1,126 +1,210 @@
-Return-Path: <linux-kernel+bounces-131744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131745-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCCE1898B5F
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:44:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0351898B61
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:44:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 022381C21699
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:44:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 477961F29DA6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:44:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4572912A172;
-	Thu,  4 Apr 2024 15:44:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE92512BEA7;
+	Thu,  4 Apr 2024 15:44:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Clz870Dj"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="MtK9UE+G"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D26A763F4;
-	Thu,  4 Apr 2024 15:44:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F2712AAF3
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 15:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712245462; cv=none; b=Tfkw7vUaq67+Ub0ZNrefeuCol9ycHfYsW6A2TGu6eJrVACJFz0V1u6Ly5Q3V8It/4PQUJ6dkiLgMRKZX8B9cxaXMn6KBWxWR3UGfYBvEveg6r3HPqMLu0JhiO9rB4Chu5/3uD8PvdZs+RqBSOXofx0Muihv0WnxPb+3VBRAYO1I=
+	t=1712245466; cv=none; b=a0LTWowLO+Oqr57O9aRMdAKjWSXTkmG14FqJPSzVptb39SB3B2PmrMPo31U79vkzJiBJ9q2ALM8sqjIZJpTHEy7Gns2HXEEacRjnWndRkBKzrUszLzBniNXiI4PIKrxo4kD3CcahB+TQvfdL6e/Cd1DRVwUeiAq3Tle+cH6pjQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712245462; c=relaxed/simple;
-	bh=XyF/KPOxCX9FXqX/BdsHnu7IbjmJCKAUNKTfXOqk1v8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CHGxIwLlnbN3BVYFQX76QTY9aCc2YGI7Mf0/myi/9GI81yLt2MGvrL1p9K4TgRJkFhiOE6j8FcLfuY/CRAaluDtB5yndCOSWi26Kf+mPUjisQaT8Offe8XS4gPVF5gOuPiEClpmXX4UAX1Pyx0L4oK5EfLZC/bgaeykSPicJQ0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Clz870Dj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7445AC433F1;
-	Thu,  4 Apr 2024 15:44:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712245461;
-	bh=XyF/KPOxCX9FXqX/BdsHnu7IbjmJCKAUNKTfXOqk1v8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Clz870DjZTRnsAcEdvUqazZ8PFZrZ10E8IYBcCgZCKJCV3VZb138qfAS8JSNf9Pem
-	 FfjAlLdQYoAdf5/pRDobmSfUka9nqNV5MA+d77H77bNqPy+4tEWWmc0iuLjqeikBpU
-	 t/YEpw05pNUPEj2VBBmMS2rCVbo4d0FOEW3e8y+Y=
+	s=arc-20240116; t=1712245466; c=relaxed/simple;
+	bh=vUEXAE1ExZO22iPT/l5kPykxw4x6Cg0n7E0NIdHXubk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u0D65s40RJp3cqyI2jUPnPs4kj6iRecjH/qEmrDtUv9a1ocihoTbDG3NsSZDMwkBCOhy6RKlzIdM5lCeQ4XptJ14CrK4nAtPeBNjw0W1eB0BFMNV+V77oxWIn4BZHcSug50BURaD8QiF9/5aNFNNyndn5XESZnl1w+0CZKsI3ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=MtK9UE+G; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712245464;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=vSFCbNcwIq07vP682jf5aQYwrzaaEsHEuv2Mm/EFPIc=;
+	b=MtK9UE+GgYtWxMWaOGmqZ7Q6oE1wcSFIeXyPLbusnlosW+RdvN/DqLKEgKywg3tIQn+/Lo
+	VQMxy6ISen/2+dJxOzzEtxcEEcrKLAQQQZv2W6sO1Ics1EellMFhCw2zvIyImUOqlSqfZ6
+	djO6r2tbttc5Uo3ocn5NGFfYGb8+CmM=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-369-TzsA5RFtMbu9UdjAXBLz1A-1; Thu, 04 Apr 2024 11:44:21 -0400
+X-MC-Unique: TzsA5RFtMbu9UdjAXBLz1A-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-3437032fe82so1171917f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 08:44:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712245460; x=1712850260;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vSFCbNcwIq07vP682jf5aQYwrzaaEsHEuv2Mm/EFPIc=;
+        b=B3zKMuUzZNPwH/WmqXfKGKRUWPuJ3wJx0Y9gRMPDwNp0ZpeBcWzmqbYL/8ufSisOY1
+         IVytXpEkqoBGvDmg+OZOIusD7StHS7OqLP49sFgtvU5DqM+tWeyapzcJI2vlUc619a1D
+         NcNFEGuFAEOCOp5KZ8SI29TkEcpgrrx27Q0kE7sn+izpRwMOj1agaT77S64z8zC4rYix
+         sVuVw0gc4cO163Rrp6YsP3AXTkRgR20TSd7TdzAUzIeCQ/SOZvqUPStOc/qPL31OAlNw
+         5msZDj8XMHtVse2SRCE7oKICJ/gNxN3IttitJWmpLsLJkWGPT0NLNgqnRBgb+ktaPzYK
+         Sccw==
+X-Forwarded-Encrypted: i=1; AJvYcCXseuOAiMum8TU8dObPXP1C1yfWOVKSmRJQUMpOhAvRyrXycnWzcZ/Eton1CXOISCBpw65qFtDE1Ktx3bMARQEdn8UFyJXkToE6JoJ/
+X-Gm-Message-State: AOJu0YyOu/TGkrR7hNBvkAiVrayQiddXWjRyn+oi2tYy1cdHuhtHII2z
+	lIAvgpE18el5L9ZjCOR602CoFiFaDrLT/fvhbeVWEQtQizJe7NWMc+9fGHnBe4ulI95OIIKD0O6
+	RXPSUIWlnLhPcBrp1NfPOAwhbeDhtf449k1LZI12Eps7nAf+k3lLFg5O7Ey49yw==
+X-Received: by 2002:adf:e702:0:b0:343:8022:dd08 with SMTP id c2-20020adfe702000000b003438022dd08mr3103487wrm.0.1712245460464;
+        Thu, 04 Apr 2024 08:44:20 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFN2CJF3oIK4dnV/TEXgxl3MIzYjlSGFX1sv9jk5lJQFvPHeGcLCBfb34ox+kHl6yHVh+2enw==
+X-Received: by 2002:adf:e702:0:b0:343:8022:dd08 with SMTP id c2-20020adfe702000000b003438022dd08mr3103464wrm.0.1712245460113;
+        Thu, 04 Apr 2024 08:44:20 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c743:de00:7030:120f:d1c9:4c3c? (p200300cbc743de007030120fd1c94c3c.dip0.t-ipconnect.de. [2003:cb:c743:de00:7030:120f:d1c9:4c3c])
+        by smtp.gmail.com with ESMTPSA id bs26-20020a056000071a00b003439b45ca08sm4625123wrb.17.2024.04.04.08.44.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 08:44:19 -0700 (PDT)
+Message-ID: <42dbf562-5eab-4f82-ad77-5ee5b8c79285@redhat.com>
 Date: Thu, 4 Apr 2024 17:44:18 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>,
-	"stable@vger.kernel.org" <stable@vger.kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: Do we need a "DoNotBackPort" tag? (was: Re: Hibernate stuck
- after recent kernel/workqueue.c changes in Stable 6.6.23)
-Message-ID: <2024040454-playful-tainted-7446@gregkh>
-References: <ce4c2f67-c298-48a0-87a3-f933d646c73b@leemhuis.info>
- <ZgylCe48FuOKNWtM@slm.duckdns.org>
- <b6cdb17f-206c-4dff-bb45-a60317e0a55e@leemhuis.info>
- <2024040328-surfacing-breezy-34c6@gregkh>
- <Zg10Keik4KORjXMh@slm.duckdns.org>
- <2024040319-doorbell-ecosystem-7d31@gregkh>
- <dfd87673-c581-4b4b-b37a-1cf5c817240d@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dfd87673-c581-4b4b-b37a-1cf5c817240d@leemhuis.info>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/4] KVM: x86/mmu: Rework marking folios
+ dirty/accessed
+To: Sean Christopherson <seanjc@google.com>
+Cc: David Matlack <dmatlack@google.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+ David Stevens <stevensd@chromium.org>, Matthew Wilcox <willy@infradead.org>
+References: <20240320005024.3216282-1-seanjc@google.com>
+ <4d04b010-98f3-4eae-b320-a7dd6104b0bf@redhat.com>
+ <CALzav=eLH+V_5Y6ZWsRkmnbEb6fxPa55B7xyWxP3o6qsrs_nHA@mail.gmail.com>
+ <a2fff462-dfe6-4979-a7b2-131c6e0b5017@redhat.com>
+ <ZgygGmaEuddZGKyX@google.com>
+ <ca1f320b-dc06-48e0-b4f5-ce860a72f0e2@redhat.com>
+ <Zg3V-M3iospVUEDU@google.com>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <Zg3V-M3iospVUEDU@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 04, 2024 at 05:36:42PM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
-> On 03.04.24 18:10, Greg KH wrote:
-> > On Wed, Apr 03, 2024 at 05:22:17AM -1000, Tejun Heo wrote:
-> >> On Wed, Apr 03, 2024 at 07:11:04AM +0200, Greg KH wrote:
-> >>>> Side note: I have no idea why the stable team backported those patches
-> >>>> and no option on whether that was wise, just trying to help finding the best
-> >>>> solution forward from the current state of things.
-> >>>
-> >>> The Fixes: tag triggered it, that's why they were backported.
+On 04.04.24 00:19, Sean Christopherson wrote:
+> On Wed, Apr 03, 2024, David Hildenbrand wrote:
+>> On 03.04.24 02:17, Sean Christopherson wrote:
+>>> On Tue, Apr 02, 2024, David Hildenbrand wrote:
+>>> Aha!  But try_to_unmap_one() also checks that refcount==mapcount+1, i.e. will
+>>> also keep the folio if it has been GUP'd.  And __remove_mapping() explicitly states
+>>> that it needs to play nice with a GUP'd page being marked dirty before the
+>>> reference is dropped.
+>>
+>>>
+>>> 	 * Must be careful with the order of the tests. When someone has
+>>> 	 * a ref to the folio, it may be possible that they dirty it then
+>>> 	 * drop the reference. So if the dirty flag is tested before the
+>>> 	 * refcount here, then the following race may occur:
+>>>
+>>> So while it's totally possible for KVM to get a W=1,D=0 PTE, if I'm reading the
+>>> code correctly it's safe/legal so long as KVM either (a) marks the folio dirty
+>>> while holding a reference or (b) marks the folio dirty before returning from its
+>>> mmu_notifier_invalidate_range_start() hook, *AND* obviously if KVM drops its
+>>> mappings in response to mmu_notifier_invalidate_range_start().
+>>>
+>>
+>> Yes, I agree that it should work in the context of vmscan. But (b) is
+>> certainly a bit harder to swallow than "ordinary" (a) :)
 > 
-> Yeah, this is what I assumed.
-> 
-> >>>>> which would
-> >>>>> be far too invasive for -stable, thus no Cc: stable.
-> >>>>>
-> >>>>> I didn't know a Fixes
-> >>>>> tag automatically triggers backport to -stable. I will keep that in mind for
-> >>>>> future.
-> >>>>
-> >>>> /me fears that more and more developers due to situations like this will
-> >>>> avoid Fixes: tags and wonders what consequences that might have for the
-> >>>> kernel as a whole
-> >>>
-> >>> The problem is that we have subsystems that only use Fixes: and not cc:
-> >>> stable which is why we need to pick these up as well.  Fixes: is great,
-> >>> but if everyone were to do this "properly" then we wouldn't need to pick
-> >>> these other ones up, but instead, it's about 1/3 of our volume :(
-> 
-> I'm also well aware of that and do not want to complain about it, as I
-> think I grasped why the stable team works like that -- and even think
-> given the circumstances it is round about the right approach. I also
-> understand that mistakes will always happen.
-> 
-> Nevertheless this thread and the Bluetooth thing we had earlier this
-> week[1] makes me fear that this approach could lead to developer
-> avoiding Fixes: tags. And funny thing, that's something that is already
-> happening, as I noticed by chance today: "'"A "Fixes" tag has been
-> deliberately omitted to avoid potential test failures and subsequent
-> regression issues that could arise from backporting."'"[2].
-> 
-> I wonder if that in the long term might be bad. But well, maybe it won't
-> matter much. Still made me wonder if we should have a different solution
-> for this kind of problem. Something like this?
-> 
->   Cc: <stable@vger.kernel.org> # DoNotBackport
-> 
-> Or something like this?
-> 
->   Cc: <stable@vger.kernel.org> # DoNotBackport - or only after 16 weeks
-> in mainline [but I don't care]
+> Heh, all the more reason to switch KVM x86 from (b) => (a).
 
-We do this today, with stuff like:
-	Cc: stable <stable@kernel.org>	# wait for -rc3 to be out
+:)
 
-So if people want to do that, they can, the documentation says that you
-can give us hints and the like in the # area, and usually we notice them :)
+> 
+>> As raised, if having a writable SPTE would imply having a writable+dirty
+>> PTE, then KVM MMU code wouldn't have to worry about syncing any dirty bits
+>> ever back to core-mm, so patch #2 would not be required. ... well, it would
+>> be replaces by an MMU notifier that notifies about clearing the PTE dirty
+>> bit :)
+> 
+> Hmm, we essentially already have an mmu_notifier today, since secondary MMUs need
+> to be invalidated before consuming dirty status.  Isn't the end result essentially
+> a sane FOLL_TOUCH?
 
-thanks,
+Likely. As stated in my first mail, FOLL_TOUCH is a bit of a mess right now.
 
-greg k-h
+Having something that makes sure the writable PTE/PMD is dirty (or 
+alternatively sets it dirty), paired with MMU notifiers notifying on any 
+mkclean would be one option that would leave handling how to handle 
+dirtying of folios completely to the core. It would behave just like a 
+CPU writing to the page table, which would set the pte dirty.
+
+Of course, if frequent clearing of the dirty PTE/PMD bit would be a 
+problem (like we discussed for the accessed bit), that would not be an 
+option. But from what I recall, only clearing the PTE/PMD dirty bit is 
+rather rare.
+
+I think this GUP / GUP-user setting of folio dirty bits is a bit of a 
+mess, but it seems to be working so far, so ... who am I to judge :)
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
