@@ -1,149 +1,143 @@
-Return-Path: <linux-kernel+bounces-131230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7D948984E0
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:16:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D27298984E4
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:16:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 584F81F25612
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:16:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA6221C26517
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:16:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C76B7603A;
-	Thu,  4 Apr 2024 10:16:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88BBE762CD;
+	Thu,  4 Apr 2024 10:16:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=ti.com header.i=@ti.com header.b="OkfKZM0t"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="LKQ9lBh0";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="t+QAEfTO"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5AFA745C3;
-	Thu,  4 Apr 2024 10:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A27274BE2;
+	Thu,  4 Apr 2024 10:16:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712225789; cv=none; b=b2M6T5NqYBKQKFYFVMnRFIs6bb/dfs1sZ5NrU7LL60NT2ERet34HIck0yxvVgoNbVWBLBdWE5DsDVJ8yWFYh4vTI9wz10Y9bxXmmSJRrdWwUi6quxep2puT7o/LRGwfLJWO20S6e3URtFDi7Ik83TB/XLB90di7nxQLcfkITQ8Q=
+	t=1712225811; cv=none; b=r+vPJtaXhOPRYRsXuyKd6NVxkO5wuS4U0VaPgyCOiqHAfQXoy7g2OxdlVWMqmJcXIKNBPhUcHditLBPVjX3YRP2SYxNxYu2fVJiiE3cb+vppL1/zZU62roRUy6PCqp1iLsBUQ6Z0WaqPC+sFnUa44X1dHA14Ze6CJOtJJlFxh5M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712225789; c=relaxed/simple;
-	bh=RA3YXp95XvHtDO4XPP8u2yWotPeIqKvBg4+L0oRoQl4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JCh1dxFgAcHD2bCwzzJaDPBbwJaoFDRcd16EJh7xBf93PaGaa7TEjks1qd7E10pgDpltSMzoRUtriuBlqb1m4fAR9AydZcPA0QNS8Iga64XnNCpjBVdKbKUmM+mKI4Fhvfq2mrcFtHIMTkAhfCSWETVnzy/Orvm5eghuSYWoSVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=OkfKZM0t; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 434AGHZo010046;
-	Thu, 4 Apr 2024 05:16:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712225777;
-	bh=K09Az5yAkNL2uNDRy1cAcJwTnDrohVX6gc31VbDkJ0w=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=OkfKZM0teHraQX1K4KT5Dy2ROUID1ILnzShDL+cq2R9c1ReuRwsKy7frbA8y/F3xt
-	 ix5b8sftVgFrSztj8VyqrRTnnDU2Oq5FTUBNqdPldnh0BAya3lXnLo/BRusHHOYSsV
-	 +SWzn5FQx7ZojMTmQYCAb9otNj56ZbdTBsPfBF2A=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 434AGHON026933
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Thu, 4 Apr 2024 05:16:17 -0500
-Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 4
- Apr 2024 05:16:17 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Thu, 4 Apr 2024 05:16:17 -0500
-Received: from localhost (uda0492258.dhcp.ti.com [172.24.227.9])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 434AGGXY060696;
-	Thu, 4 Apr 2024 05:16:17 -0500
-Date: Thu, 4 Apr 2024 15:46:16 +0530
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC: Siddharth Vadapalli <s-vadapalli@ti.com>, <afd@ti.com>, <nm@ti.com>,
-        <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
-        <krzk+dt@kernel.org>, <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <srk@ti.com>
-Subject: Re: [PATCH v2] arm64: dts: ti: k3-am62p: use eFuse MAC Address for
- CPSW3G Port 1
-Message-ID: <a0df1035-8616-413d-9058-e6163bdf06cc@ti.com>
-References: <20240404081845.622707-1-s-vadapalli@ti.com>
- <18eb0e55-38ad-44f9-90b7-1917d8c0d5bb@linaro.org>
- <75b53dda-23aa-4915-944a-4d9a619bd165@ti.com>
- <903ad855-ab26-4ef3-80bd-249917056188@linaro.org>
+	s=arc-20240116; t=1712225811; c=relaxed/simple;
+	bh=eKJ893bTP2ZAMl0eplHbyOQmdpCa292D8CJNu7UnB1Q=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=A3sMKFGevuJSljDURt9UwH8aoxHUsdbpVh9LL1PL0iVewhnzKxgzg2DwXPRUF/BaS+ixcVGY4FvJFtilwWgktc3P2DW2g1vpdug7E2fzmMM/7hgjjYWttIV7KcGbdZtfg9W8IsavIDWyMdLgNrvXw6R4Bj5Sa6cJKYkzxdQOlvk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=LKQ9lBh0; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=t+QAEfTO; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Thu, 04 Apr 2024 10:16:41 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712225803;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mk2jf1Bfefxj5TMf2164pWJSRGhltl0GuHSomyCRU3k=;
+	b=LKQ9lBh0R5qXTL0Nw3YdmrRM4dyUW2r/ns08C+30TSrBJBEdJsQpF603/gKRA6z4HcT84M
+	Bsscw4+gsdwiSfE1fVwlh/PgWKTslW6mye+XnjtS80d5QGbmLxRvWdXKLmgsRPE818OCY3
+	2x4u3Xb9q4g+DjyiRXKy/fOGxR7I8gsaXltwEf62FdC6ViZVTiuvT1aj94IPgUt7zxClWv
+	zJ41jCcC7+1CRSxZaJ4PlNun2SqgjbxAgjouiTFUL5CO4oWD9/ImnRJUpsOZlgDn+x47jX
+	+BhID8pFNKxa/ODTQi2Wgcqfa/EmhUxUXhhY123kO2y7vjYUw+7FXRSld4X/pQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712225803;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=mk2jf1Bfefxj5TMf2164pWJSRGhltl0GuHSomyCRU3k=;
+	b=t+QAEfTO8WViW0IvXEfRvzRHh+LYNiAtoGR5pDN2iumqvsyOBfg2U0MpcfRRoirzhcSzZ9
+	+5a0f8C1vkalbXBg==
+From: "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject:
+ [tip: x86/alternatives] x86/alternatives: Catch late X86_FEATURE modifiers
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
+ Srikanth Aithal <sraithal@amd.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240327154317.29909-3-bp@alien8.de>
+References: <20240327154317.29909-3-bp@alien8.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <903ad855-ab26-4ef3-80bd-249917056188@linaro.org>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Message-ID: <171222580192.10875.2680389025942672029.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 04, 2024 at 12:00:09PM +0200, Krzysztof Kozlowski wrote:
-> On 04/04/2024 11:12, Siddharth Vadapalli wrote:
-> > On Thu, Apr 04, 2024 at 10:43:04AM +0200, Krzysztof Kozlowski wrote:
-> >> On 04/04/2024 10:18, Siddharth Vadapalli wrote:
-> >>> Add the "cpsw-mac-efuse" node within "wkup_conf" node corresponding to the
-> >>> CTRLMMR_MAC_IDx registers within the CTRL_MMR space. Assign the compatible
-> >>> "ti,am62p-cpsw-mac-efuse" to enable "syscon_regmap" operations on these
-> >>> registers. The MAC Address programmed in the eFuse is accessible through
-> >>> the CTRLMMR_MAC_IDx registers. The "ti,syscon-efuse" device-tree property
-> >>> points to the CTRLMMR_MAC_IDx registers, allowing the CPSW driver to fetch
-> >>> the MAC Address and assign it to the network interface associated with
-> >>> CPSW3G MAC Port 1.
-> >>>
-> >>> Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> >>> ---
-> >>>
+The following commit has been merged into the x86/alternatives branch of tip:
 
-..
+Commit-ID:     4175b45dec4cd8ae4563bf724d591ab5cc0ad9ce
+Gitweb:        https://git.kernel.org/tip/4175b45dec4cd8ae4563bf724d591ab5cc0ad9ce
+Author:        Borislav Petkov (AMD) <bp@alien8.de>
+AuthorDate:    Wed, 27 Mar 2024 16:43:14 +01:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Thu, 04 Apr 2024 12:09:17 +02:00
 
-> 
-> > 
-> >>
-> >>>  			};
-> >>>  
-> >>>  			cpsw_port2: port@2 {
-> >>> diff --git a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> >>> index a84756c336d0..df9d40f64e3b 100644
-> >>> --- a/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> >>> +++ b/arch/arm64/boot/dts/ti/k3-am62p-wakeup.dtsi
-> >>> @@ -18,6 +18,11 @@ chipid: chipid@14 {
-> >>>  			reg = <0x14 0x4>;
-> >>>  			bootph-all;
-> >>>  		};
-> >>> +
-> >>> +		cpsw_mac_efuse: cpsw-mac-efuse@200 {
-> >>
-> >> Node names should be generic. See also an explanation and list of
-> >> examples (not exhaustive) in DT specification:
-> >> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-> > 
-> > I was following the convention that other mfd-syscon compatible nodes
-> > seemed to be using:
-> > https://github.com/torvalds/linux/blob/41bccc98fb7931d63d03f326a746ac4d429c1dd3/arch/arm64/boot/dts/ti/k3-am65-main.dtsi#L502
-> > The node is:
-> > dss_oldi_io_ctrl: dss-oldi-io-ctrl@41e0
-> > corresponding to the compatible:
-> > "ti,am654-dss-oldi-io-ctrl"
-> > which was added by commit:
-> > https://github.com/torvalds/linux/commit/cb523495ee2a5938fbdd30b8a35094d386c55c12
-> 
-> So if that one was wrong, then what? I don't know really what type of
-> device is it, but just because one contributor called it that way, does
-> not mean you should keep going. Maybe investigate why that contributor
-> did not decide to follow Devicetree spec recommendation?
+x86/alternatives: Catch late X86_FEATURE modifiers
 
-Yes, it doesn't justify the convention. I seem to have picked a wrong
-example when figuring out the convention for naming the node. I plan to
-name it as:
-ethernet-mac-efuse
-while retaining the label "cpsw_mac_efuse" since CPSW is the name of the
-Ethernet Switch on the SoC. Please let me know if it is acceptable. I
-will post the v3 patch based on your feedback.
+After alternatives have been patched, changes to the X86_FEATURE flags
+won't take effect and could potentially even be wrong.
 
-Regards,
-Siddharth.
+Warn about it.
+
+This is something which has been long overdue.
+
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Tested-by: Srikanth Aithal <sraithal@amd.com>
+Link: https://lore.kernel.org/r/20240327154317.29909-3-bp@alien8.de
+---
+ arch/x86/include/asm/cpufeature.h | 8 ++++++--
+ arch/x86/kernel/cpu/cpuid-deps.c  | 3 +++
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
+index 17fd7be..f8d7a06 100644
+--- a/arch/x86/include/asm/cpufeature.h
++++ b/arch/x86/include/asm/cpufeature.h
+@@ -148,8 +148,12 @@ extern const char * const x86_bug_flags[NBUGINTS*32];
+ extern void setup_clear_cpu_cap(unsigned int bit);
+ extern void clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int bit);
+ 
+-#define setup_force_cpu_cap(bit) do { \
+-	set_cpu_cap(&boot_cpu_data, bit);	\
++#define setup_force_cpu_cap(bit) do {			\
++							\
++	if (!boot_cpu_has(bit))				\
++		WARN_ON(alternatives_patched);		\
++							\
++	set_cpu_cap(&boot_cpu_data, bit);		\
+ 	set_bit(bit, (unsigned long *)cpu_caps_set);	\
+ } while (0)
+ 
+diff --git a/arch/x86/kernel/cpu/cpuid-deps.c b/arch/x86/kernel/cpu/cpuid-deps.c
+index b717420..5dd427c 100644
+--- a/arch/x86/kernel/cpu/cpuid-deps.c
++++ b/arch/x86/kernel/cpu/cpuid-deps.c
+@@ -114,6 +114,9 @@ static void do_clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int feature)
+ 	if (WARN_ON(feature >= MAX_FEATURE_BITS))
+ 		return;
+ 
++	if (boot_cpu_has(feature))
++		WARN_ON(alternatives_patched);
++
+ 	clear_feature(c, feature);
+ 
+ 	/* Collect all features to disable, handling dependencies */
 
