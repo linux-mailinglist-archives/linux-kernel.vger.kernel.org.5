@@ -1,136 +1,198 @@
-Return-Path: <linux-kernel+bounces-131645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131647-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76F56898A60
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 71FDB898A62
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:50:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16816282CCC
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:48:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26304282797
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82C81C2AF;
-	Thu,  4 Apr 2024 14:48:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4896F1BF47;
+	Thu,  4 Apr 2024 14:50:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="blVn1f/g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n0wFkrhE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 341581BDE6;
-	Thu,  4 Apr 2024 14:48:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751F211718
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:50:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712242132; cv=none; b=je7IyW9hOBXN59c1VZ9X7iLR+aQk2fkT0CuOAzWZcL4/wprpzYB7AmzLRup9HZwHdU6SOURqw303klEAZU2g8rfvjRACUUcVXGbsXOUp2eG7op9bvFV0FvS3RFPctX3BMMBvVi0YfjA36Lw55QzDeUdUJNltZUcf1fv8/CBQ0Mw=
+	t=1712242222; cv=none; b=szZLG+Ug8fuV9Q2BTZ0cEUyWEwCGdDgmINlrw0aty8FfYcaORgT2DPwihq4FNIa5SZbohVBMhsjYveKQ/8N1wBNOkKnPj3LUcYWPqcla4NN7ShfAGYPff+8mtgJtgWiAxPfh8hcQgLWyH//r6UykOZ98RZx8YGcFh50qo0w1I78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712242132; c=relaxed/simple;
-	bh=rVRIqR3/LSX+jFXOSJrMgEG2eSzd5XHIYRaWmk+41kQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JlAgPSj7gRWWk8y7x3+xQjatkec2yc3ueo9I3skKgfSMeROfWkTOgSvVNT444Gcf0E7m+a4zEte2c0aW3j07f/Xg6exr1Hl2dUaxIbCwQiOPh2D/OVtjEkRQVinGnSsfkKfXtnMC2zPS8WH7c8OYNVrs0rg6XL2jrVQ0olbv5WU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=blVn1f/g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12664C433C7;
-	Thu,  4 Apr 2024 14:48:51 +0000 (UTC)
+	s=arc-20240116; t=1712242222; c=relaxed/simple;
+	bh=VQUx7ZNJr+N98eBw1xzMeVGvFXgo+jkoTRgmOCAwOE4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AawPrTad1bDkaQbdIG/P3P0i38mzcsVy8kvvR/GswS7fX9jphf+Tu2KfLVm0z47rMwS3ZcMgPP58E6ctWdF8c6M6ZwijgzhcpDryUJtlD0s/5demCeSLCws9OWFiivc/CWeoO2vq35s02yy+uzcLtmqV1vyX2hqj4opiRmEW/tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n0wFkrhE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06F9FC433F1;
+	Thu,  4 Apr 2024 14:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712242131;
-	bh=rVRIqR3/LSX+jFXOSJrMgEG2eSzd5XHIYRaWmk+41kQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=blVn1f/gWcaW6tA31PfGDLiXmGMv0hDXOvCB9tTDML5bk4BkZTi0z3c8ha/XqdSOG
-	 hZfMuxU6TXJo+RkmtTJLCr01O50LNmJf1jVYwJ+Dc3oDOYHpZ5ALYKNW6WllKI6t3+
-	 QDJMF6J67EE2NsZ594IVgbpVvRKHangYZcMZGL+ScifpWMxV8XrGs2Js43HjH33eKy
-	 tdVOhF/pjlfruioZf0EKmmPRjqsFhUZaAPwcw2fJQZiTwErrkt352nR3Bjek7n6lA+
-	 G/jWy2ztaGDIUClCBK2oqZvRb5VV3uPQL0QJH46QQyUE8a2HF7wI8KttvfcAR1neLn
-	 fuvP0uQKSr+4w==
-Date: Thu, 4 Apr 2024 07:48:50 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Jason Gunthorpe <jgg@nvidia.com>
-Cc: David Ahern <dsahern@kernel.org>, Leon Romanovsky <leon@kernel.org>,
- Edward Cree <ecree.xilinx@gmail.com>, Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>, Christoph Hellwig <hch@infradead.org>, Saeed
- Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>, Jiri Pirko
- <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>, Itay Avraham
- <itayavr@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, Aron Silverton
- <aron.silverton@oracle.com>, linux-kernel@vger.kernel.org,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Andy Gospodarek
- <andrew.gospodarek@broadcom.com>
-Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
-Message-ID: <20240404074850.19ecd52e@kernel.org>
-In-Reply-To: <20240404122338.GI1723999@nvidia.com>
-References: <20240322135826.1c4655e2@kernel.org>
-	<e5c61607-4d66-4cd8-bf45-0aac2b3af126@kernel.org>
-	<20240322154027.5555780a@kernel.org>
-	<1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
-	<0ea32dd4-f408-5870-77eb-f18899f1ad44@gmail.com>
-	<20240402184832.GO11187@unreal>
-	<cefa2b9a-4227-969e-d31e-c19a552b9c1c@gmail.com>
-	<20240403190012.GV11187@unreal>
-	<d75ee9d5-36a9-4056-a0f3-0c05b2e744aa@kernel.org>
-	<20240403170149.7d2b8f2b@kernel.org>
-	<20240404122338.GI1723999@nvidia.com>
+	s=k20201202; t=1712242222;
+	bh=VQUx7ZNJr+N98eBw1xzMeVGvFXgo+jkoTRgmOCAwOE4=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=n0wFkrhEhxyXwYM/D+yQ+1V5xZlkTepbLy5I+Ab7HFMaEnUMIBSJETCFGdIfbQJV/
+	 Zr5axTOD7PR/ub2PXGA1FIIZkcFYNwnDma3+yk+7BVY4cf6lJjh9APzsp11OqwLvBy
+	 Tp4SMUi1fCtz4Fpj5NmnoxHE3rfCBt6b1CrE3B43p8Qf49KNNpepP6Q00t/hT90apX
+	 V5AVmvF+J8hKrvv+3j9UT2mSSTBlqZtQ1olVwgBNk+oNiHIKGjQwURolDN+28oquh+
+	 Oc53UJGxrEFs4t+e0WctgMoPUAjJKB1BktxRMRzylXdbrq7ROovVae1Bsw56LV36Qa
+	 ZrRmX2qrXJHIQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id 9A912CE0D0C; Thu,  4 Apr 2024 07:50:21 -0700 (PDT)
+Date: Thu, 4 Apr 2024 07:50:21 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: linux-kernel@vger.kernel.org, kernel-team@meta.com,
+	andi.shyti@linux.intel.com, andrzej.hajda@intel.com,
+	linux-riscv@lists.infradead.org
+Subject: Re: [PATCH RFC cmpxchg 8/8] riscv: Emulate one-byte and two-byte
+ cmpxchg
+Message-ID: <7bbf09e5-24d5-43fb-8b1f-d2d95c370cc8@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240401213950.3910531-8-paulmck@kernel.org>
+ <mhng-d6a8a972-5054-4c48-a903-5a53a31da9ad@palmer-ri-x1c9a>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <mhng-d6a8a972-5054-4c48-a903-5a53a31da9ad@palmer-ri-x1c9a>
 
-On Thu, 4 Apr 2024 09:23:38 -0300 Jason Gunthorpe wrote:
-> > "didn't understand the discussion" is an ironic thing for you to +1,
-> > David. After all my emails about HNS3 RDMA you somehow concluded today
-> > that I want to make rules for the entire kernel:
-> > https://lore.kernel.org/all/6faa47b0-27c3-47f9-94be-1ec671d9543c@kernel.org/  
+On Thu, Apr 04, 2024 at 07:15:40AM -0700, Palmer Dabbelt wrote:
+> On Mon, 01 Apr 2024 14:39:50 PDT (-0700), paulmck@kernel.org wrote:
+> > Use the new cmpxchg_emu_u8() and cmpxchg_emu_u16() to emulate one-byte
+> > and two-byte cmpxchg() on riscv.
+> > 
+> > [ paulmck: Apply kernel test robot feedback. ]
 > 
-> What if (hypothetically) I tould you that the congestion control
-> settings in the device FW impacted netdev sourced ethernet trafic as
-> well? Would you be so sanguine that RDMA should have those settings?
+> I'm not entirely following the thread, but sounds like there's going to be
+> generic kernel users of this now?  Before we'd said "no" to the byte/half
+> atomic emulation routines beacuse they weren't used, but if it's a generic
+> thing then I'm find adding them.
 
-We can lawyer the words until the cows come home.
-The team I work on takes care of both RoCE/IB/pick your fav proto
-and TCP/IP NICs. It's fairly obvious what is RoCE and what is TCP
-or user UDP when there are no incentives to act otherwise :|
+RCU currently contains an open-coded counterpart of the proposed
+cmpxchg_emu_u8() function, so yes.  ;-)
 
-> > And I second what Ed said. I have asked multiple vendors preaching
-> > impossibilism in this thread to start posting those knobs. I offered
-> > to do a quick off-list review of the list of knobs they have to give 
-> > a quick yay / nay, so they don't waste time implementing things that
-> > would get nacked. None of the vendors bothered taking me up on that
-> > offer.  
+> There's a patch set over here
+> <https://lore.kernel.org/all/20240103163203.72768-2-leobras@redhat.com/>
+> that implements these more directly using LR/SC.  I was sort of on the fence
+> about just taking it even with no direct users right now, as the byte/half
+> atomic extension is working its way through the spec process so we'll have
+> them for real soon.  I stopped right there for the last merge window,
+> though, as I figured it was too late to be messing with the atomics...
+
+I would be extremely happy to drop my riscv patch in favor of an
+architecture-specific implementation, especially a more-efficient
+implementation.  ;-)
+
+> So
 > 
-> As far as configuration/provisioning goes, it is really all or
-> nothing.
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
 > 
-> If a specific site can configure only 90% of the stuff required
-> because you will NAK the missing 10% it then it is still not usable
-> and is a wasted effort for everyone.
-
-(a) are you saying that the device needs 100% of the knobs to be used?
-    oof, you better warn your prospective customers :S
-(b) as Ed pointed out some of the "knobs" are just hacks and lazy
-    workarounds so we rejected them for quality reasons; the remaining
-    rejects are because the knobs aren't really device specific, but
-    vendors don't want to extend existing APIs, as it is easier to
-    ship "features" without having a core kernel dependency...
-
-> You have never shown that there is a path to 100% with your approach
-> to devlink. In fact I believe you've said flat out that 100% is not
-> achievable. Right here you illustrate the fundamental problem again:
-> there are configurables that already exist in the device that you will
-> NAK for devlink.
+> if you guys want to take some sort of tree-wide change to make the byte/half
+> stuff be required everywhere.  We'll eventually end up with arch routines
+> for the extension, so at that point we might as well also have the more
+> direct LR/SC flavors.
 > 
-> This is fundamentally why no one is taking you up on these generous
-> offers to pre-NAK device's designs. You made it explicit that you will
-> will NAK something and then it is not 100%.
-> 
-> Saeed has said repeatedly he wants 100% of the endless configurables
-> in mlx5. You have the manual and know what they are, tell him how to
-> get to 100% in a few months of work and I will believe you that it is
-> not impossible.
+> If you want I can go review/merge that RISC-V patch set and then it'll have
+> time to bake for a shared tag you can pick up for all this stuff?  No rush
+> on my end, just LMK.
 
-Sorry, are you saying that I'm responsible for a providing a solution
-to allow arbitrary vendor tools to work and proprietary user space to
-communicate directly with the proprietary firmware?
+That sounds very good!  I will apply your ack to my emulatino commit
+in the meantime, so your schedule is my schedule.  And a big "thank
+you!" for both!!!
 
-> Then we only have fwctl's support for debugging and other topics to
-> argue about :P
+							Thanx, Paul
+
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > Cc: Andi Shyti <andi.shyti@linux.intel.com>
+> > Cc: Andrzej Hajda <andrzej.hajda@intel.com>
+> > Cc: <linux-riscv@lists.infradead.org>
+> > ---
+> >  arch/riscv/Kconfig               |  1 +
+> >  arch/riscv/include/asm/cmpxchg.h | 25 +++++++++++++++++++++++++
+> >  2 files changed, 26 insertions(+)
+> > 
+> > diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> > index be09c8836d56b..4eaf40d0a52ec 100644
+> > --- a/arch/riscv/Kconfig
+> > +++ b/arch/riscv/Kconfig
+> > @@ -44,6 +44,7 @@ config RISCV
+> >  	select ARCH_HAS_UBSAN
+> >  	select ARCH_HAS_VDSO_DATA
+> >  	select ARCH_KEEP_MEMBLOCK if ACPI
+> > +	select ARCH_NEED_CMPXCHG_1_2_EMU
+> >  	select ARCH_OPTIONAL_KERNEL_RWX if ARCH_HAS_STRICT_KERNEL_RWX
+> >  	select ARCH_OPTIONAL_KERNEL_RWX_DEFAULT
+> >  	select ARCH_STACKWALK
+> > diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
+> > index 2fee65cc84432..a5b377481785c 100644
+> > --- a/arch/riscv/include/asm/cmpxchg.h
+> > +++ b/arch/riscv/include/asm/cmpxchg.h
+> > @@ -9,6 +9,7 @@
+> >  #include <linux/bug.h>
+> > 
+> >  #include <asm/fence.h>
+> > +#include <linux/cmpxchg-emu.h>
+> > 
+> >  #define __xchg_relaxed(ptr, new, size)					\
+> >  ({									\
+> > @@ -170,6 +171,12 @@
+> >  	__typeof__(*(ptr)) __ret;					\
+> >  	register unsigned int __rc;					\
+> >  	switch (size) {							\
+> > +	case 1:								\
+> > +		__ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
+> > +		break;							\
+> > +	case 2:								\
+> > +		break;							\
+> > +		__ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
+> >  	case 4:								\
+> >  		__asm__ __volatile__ (					\
+> >  			"0:	lr.w %0, %2\n"				\
+> > @@ -214,6 +221,12 @@
+> >  	__typeof__(*(ptr)) __ret;					\
+> >  	register unsigned int __rc;					\
+> >  	switch (size) {							\
+> > +	case 1:								\
+> > +		__ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
+> > +		break;							\
+> > +	case 2:								\
+> > +		break;							\
+> > +		__ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
+> >  	case 4:								\
+> >  		__asm__ __volatile__ (					\
+> >  			"0:	lr.w %0, %2\n"				\
+> > @@ -260,6 +273,12 @@
+> >  	__typeof__(*(ptr)) __ret;					\
+> >  	register unsigned int __rc;					\
+> >  	switch (size) {							\
+> > +	case 1:								\
+> > +		__ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
+> > +		break;							\
+> > +	case 2:								\
+> > +		break;							\
+> > +		__ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
+> >  	case 4:								\
+> >  		__asm__ __volatile__ (					\
+> >  			RISCV_RELEASE_BARRIER				\
+> > @@ -306,6 +325,12 @@
+> >  	__typeof__(*(ptr)) __ret;					\
+> >  	register unsigned int __rc;					\
+> >  	switch (size) {							\
+> > +	case 1:								\
+> > +		__ret = cmpxchg_emu_u8((volatile u8 *)__ptr, __old, __new); \
+> > +		break;							\
+> > +	case 2:								\
+> > +		break;							\
+> > +		__ret = cmpxchg_emu_u16((volatile u16 *)__ptr, __old, __new); \
+> >  	case 4:								\
+> >  		__asm__ __volatile__ (					\
+> >  			"0:	lr.w %0, %2\n"				\
 
