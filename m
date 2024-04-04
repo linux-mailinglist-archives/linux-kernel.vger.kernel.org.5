@@ -1,107 +1,138 @@
-Return-Path: <linux-kernel+bounces-131270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CA5F89858A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:58:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79C8A89858D
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:59:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C38371F22E41
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:58:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A842C1C214A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:59:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B3280C03;
-	Thu,  4 Apr 2024 10:58:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E02F580BF7;
+	Thu,  4 Apr 2024 10:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d9DHWV28"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PEfiU9X4"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E3DF7580B;
-	Thu,  4 Apr 2024 10:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D3DA7580B;
+	Thu,  4 Apr 2024 10:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712228322; cv=none; b=HZCTI4OD4cXCUool0lTAxNavUjZATDHrRFmLgTeeYnHuIjKnIxhxuvtmZxirWJR731E2yVk9K0AfwEO32ZZKpbuSPqpYE5dbPASeqv3jmamvQN6Qq6W4/ndCEt4Qh48ob48rf4l3C+Zk1vvix5lYG8PtSB8D5pxNBZpatzX+RFM=
+	t=1712228332; cv=none; b=syiWMpYPQo62QO/89UofjJUIVh52+RSLSSlBE7uIHNoty1eGPXZ7+wfKlJz0IGVPPUwEgfCxxMhHXQEWoZ2VPWOrg3TgHuJ/KR4vmynl7i7YA3XXDfNrdvszdtV9WbJL1QgxnTTdgw4aew0Rm9JZKRTLpb8AMOtzqDWoWqKxSqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712228322; c=relaxed/simple;
-	bh=j0/b5icC4/y9iKwybRqd4qGBAgnSIe+hulZQpmzIqSI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rb1txrDx8WRkylVol0Z0RdW7DhtZ7M901yav2zDhEVr17A1mKEAa5LR+d4IvSYaIPI7T0cBNlwCP6q2S3Dx/NvzWKE/vp24KDtYziebnlUhsiRBUgsIjUbKhNC1TSjGV3rZXzG5uIKkMBfIgj0uDhbWubkFX44I/uFqAJ/G/FWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d9DHWV28; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF9FAC43390;
-	Thu,  4 Apr 2024 10:58:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712228321;
-	bh=j0/b5icC4/y9iKwybRqd4qGBAgnSIe+hulZQpmzIqSI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=d9DHWV28feoOxh3KI8vKWHtsPF1BHWx7EsxHL4bHWQkk8Yh9MGbsvn0UTdDi+ZfCu
-	 hsflcQeJk3lGvM1hMLTfoU8vxHrvsSCtncL8KL2np6IHpix0meyo1lYp3ikaGwJAqC
-	 1NLTIVf3XDbcoNdl6li9B9XQdFWsB8PCwtyuPR8QgeZ7YW7mfsYVA/2Yt/ocP/oKbj
-	 2GvDmfmyqGj8A9Zl2VTBJhLIOmg49SqRSn2+tUgd7e3hL8vzP3+AlX6rk+VehkZSBy
-	 rATLwFUEsOzp63EivWavqOx6Ok5TVePxVXhBxANE2XSZ+eA9fsSIUHoxp/wBulNbEs
-	 Me2MShD2/8mQg==
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5a46b30857bso153283eaf.1;
-        Thu, 04 Apr 2024 03:58:41 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWPzuZfj1F8oSzX78u5WJvup+NygC0NJtBZ5pqLE041bIaGDojyNLBvgcC0TJc1ffIbN7HImCCpQ3xAymkwllGS5FmnNplUQKuTF0NJifNIcnfhxP09hchWJ0Yfixp2SUVwJgMp9OOJdA==
-X-Gm-Message-State: AOJu0YwF+a13j8T3V4iTI2w5WSiawmB2RdlzWlQUhfDpoeERV2vIb2wk
-	+oJq+K68jtwD22P7M0XY3+gLX8GsUW4l7kyCWpSj4I1mQFEBEr3hczO2xbztGPr/CnudVRHGXC9
-	AbafGOZn6Bpf9lBFeZVy9z05eGgY=
-X-Google-Smtp-Source: AGHT+IEPyD/Py8AcpOLdageN0KMaqKGHz52ZV2Ws3RRCwPXwIQmpNyzG1+SqfqHWLDkzTS6BEMbw94MHGezgoOVrIVM=
-X-Received: by 2002:a4a:ea0f:0:b0:5a2:26c7:397b with SMTP id
- x15-20020a4aea0f000000b005a226c7397bmr1985048ood.0.1712228320933; Thu, 04 Apr
- 2024 03:58:40 -0700 (PDT)
+	s=arc-20240116; t=1712228332; c=relaxed/simple;
+	bh=74izii2I5bjSHt9CeEUwIxSyGfbdoLXigvccbRalNbA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NmsNBVlArZfKg3GIwcFOwlGbh4ekCSgIyAtJuN3fDBJNybwvFx3dnnTOf2TYPxgSpeX0rUMh0Rfc2P0n05qeCV7dgoY/0JD02go7LLbszt+9p21AG+yGUSsS9xUrOvU5kF0OOuHvEfB486Rtb+7a5y4H7G6BYzApzWjJmaHQTB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=PEfiU9X4; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 434AvG9j013992;
+	Thu, 4 Apr 2024 10:58:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=VKSRHzOGlluEMqS70eCRqda5wOVXaiy817kbRpjF9R4=;
+ b=PEfiU9X4JxyJM1C0vhIyR7xwYz7Qo3mFU3dQpCkbZi+e1QnhBHMiLROM7/GijKAIJlQf
+ gUN2QPFpjNrtqF9ksNjAzXhLUSS5Qt8i2OzFvzC0wjtEa5ol426C3Rvujs/Mo3DBHd2r
+ uZQy6PAxgVCTtKhcbVozsc3VzRK0S7k69QQIDyG+Ru7NOTkhnjzxJ0t61KXRogMFhrF3
+ zMn7G1WcyYtPsJ8ieMQPGyPvwaJz8MHxTfjbPc2co0Fn6MtQXZ0nbtIkcYXDBG+LTU5t
+ pYex5pROCmZdOIK+kWfkT09fP9FPrs4hCFMjb6Vs7njF310H39daU1oNl5bOV8Uu9Oh3 +Q== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9twb8083-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 10:58:47 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 434AwlfK016270;
+	Thu, 4 Apr 2024 10:58:47 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x9twb8081-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 10:58:47 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 434AVM8W003711;
+	Thu, 4 Apr 2024 10:58:46 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x9epybnwc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 04 Apr 2024 10:58:46 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 434AweFF48562586
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 4 Apr 2024 10:58:42 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A014C20040;
+	Thu,  4 Apr 2024 10:58:40 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6DBAC2004D;
+	Thu,  4 Apr 2024 10:58:40 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu,  4 Apr 2024 10:58:40 +0000 (GMT)
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Peter Huewe <peterhuewe@gmx.de>, Jarkko Sakkinen <jarkko@kernel.org>
+Cc: linux-integrity@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH 0/1] char: tpm: Handle HAS_IOPORT dependencies
+Date: Thu,  4 Apr 2024 12:58:39 +0200
+Message-Id: <20240404105840.3396821-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: x9_UfW0g6S7OFRCdasK6_-xJC9L_HMF9
+X-Proofpoint-ORIG-GUID: oLpX2ILrewyABTx7H1D8TZUEWPMQ9Wgu
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402152952.3578659-1-andriy.shevchenko@linux.intel.com> <20240402152952.3578659-3-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20240402152952.3578659-3-andriy.shevchenko@linux.intel.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Thu, 4 Apr 2024 12:58:29 +0200
-X-Gmail-Original-Message-ID: <CAJZ5v0iQZXbFQFsZ+gL3==LV7UsqfOr-FZuWdoPSv0veUkuCrQ@mail.gmail.com>
-Message-ID: <CAJZ5v0iQZXbFQFsZ+gL3==LV7UsqfOr-FZuWdoPSv0veUkuCrQ@mail.gmail.com>
-Subject: Re: [PATCH v1 2/2] ACPI: LPSS: Advertise number of chip selects via property
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>, linux-acpi@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Len Brown <lenb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-04_07,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ priorityscore=1501 impostorscore=0 mlxlogscore=999 adultscore=0
+ phishscore=0 spamscore=0 lowpriorityscore=0 bulkscore=0 suspectscore=0
+ clxscore=1011 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404040075
 
-On Tue, Apr 2, 2024 at 5:30=E2=80=AFPM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> Advertise number of chip selects via property for Intel Braswell.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Hi Peter, Jarkko,
 
-A Fixes: tag, please?
+This is a follow up in my ongoing effort of making inb()/outb() and
+similar I/O port accessors compile-time optional. Previously I sent this
+as a treewide series titled "treewide: Remove I/O port accessors for
+HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
+subset of patches merged I've changed over to per-subsystem series. These
+series are stand alone and should be merged via the relevant tree such
+that with all subsystems complete we can follow this up with the final
+patch that will make the I/O port accessors compile-time optional.
 
-Also, IIUC this should be applied before
-https://lore.kernel.org/linux-acpi/20240403170302.1073841-1-andriy.shevchen=
-ko@linux.intel.com/
-?
+The current state of the full series with changes to the remaining
+subsystems and the aforementioned final patch can be found for your
+convenience on my git.kernel.org tree in the has_ioport_v6 branch[1] with
+signed tags. As for compile-time vs runtime see Linus' reply to my first
+attempt[2].
 
-> ---
->  drivers/acpi/acpi_lpss.c | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/drivers/acpi/acpi_lpss.c b/drivers/acpi/acpi_lpss.c
-> index 5b56f198d005..a3d2d94be5c0 100644
-> --- a/drivers/acpi/acpi_lpss.c
-> +++ b/drivers/acpi/acpi_lpss.c
-> @@ -325,6 +325,7 @@ static const struct lpss_device_desc bsw_i2c_dev_desc=
- =3D {
->
->  static const struct property_entry bsw_spi_properties[] =3D {
->         PROPERTY_ENTRY_U32("intel,spi-pxa2xx-type", LPSS_BSW_SSP),
-> +       PROPERTY_ENTRY_U32("num-cs", 2),
->         { }
->  };
->
-> --
-> 2.43.0.rc1.1.gbec44491f096
->
+Thanks,
+Niklas
+
+[0] https://lore.kernel.org/all/20230522105049.1467313-1-schnelle@linux.ibm.com/
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=has_ioport_v6
+[2] https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
+
+Niklas Schnelle (1):
+  char: tpm: handle HAS_IOPORT dependencies
+
+ drivers/char/tpm/Kconfig        |  1 +
+ drivers/char/tpm/tpm_infineon.c | 16 ++++++++++++----
+ drivers/char/tpm/tpm_tis_core.c | 19 ++++++++-----------
+ 3 files changed, 21 insertions(+), 15 deletions(-)
+
+-- 
+2.40.1
+
 
