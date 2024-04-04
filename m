@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-131622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C4DE898A2D
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:33:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09F0C898A2F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 16:33:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6CB341C28F7A
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:33:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F4E7B276E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:33:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605CD1C2AF;
-	Thu,  4 Apr 2024 14:33:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 681911D54F;
+	Thu,  4 Apr 2024 14:33:24 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF6EB10A2A
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:33:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 690AE1B964
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 14:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712241202; cv=none; b=PXNkjzxq0giVdZG7zP2lKuD8Zy8NGtenttYYtAfDF3wG3CnDKV1ZHJjmOLtllkLGZ9Sf2N7Xp1B974+jmPxUt+Uv221lkQWA5EEz5CXn6DkeFyTPphiCCg2Q/NYcZ/r5evhRu2Ub/gO/fICi+CtHmVFagfH1u9i5mXkQoILtziY=
+	t=1712241204; cv=none; b=ccdPs2rHiGLQr24/jLmWR7TSC50KAaynoflYh0poPJpW0qLjj1Gm+YeHhQ2FTx3amhIHPnphZav2Z9oEWZln1o0ytC1XHwIU+q7GSJ+wtqNG1Q3AHKjY6/VIhlDlvKkCQnRm4jkRkfbRojG0t5zbq+eAmCyLYuIiwiI1pHtTUBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712241202; c=relaxed/simple;
-	bh=2W4jAY56ItNGNPH6UriMSM9dPK2eYLyKbq/Ye3HCnGw=;
+	s=arc-20240116; t=1712241204; c=relaxed/simple;
+	bh=SYO4oFNDFkL0s+N/cJYfdC8JBBGNx9XmnIIAMpjkrAQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TEtgxNcjtAXFn9XqFqacOYFmLXHM7k9q5a/IRWaDX13ToUkckVwXF5DJfM9kVpOtsN/+VS4DajsMcEuGGr+5Sx2rR0gxXkl8bMzZZbpxEaCnJ3rpJIP5xcRpaVfhxbubkXPXcOGNYPn0SEAXvxdF+bejw9RLyRNc0pnGuo3mGIA=
+	 MIME-Version; b=lF4UFIHerTdbQfQaPGlx/WoOg3Rn7l/pZ7tv02GaF2oBQREvKifFcG1ZTaB7vUaY+DbdTsCvUCD2ZKky9lygbdDBsXOPGWdNL60fLUQu+gBXEm7ztkC7YT3UzalGL6nr5AwMyP86LpNj9TWueIwUNpm/z7hBjGRV/UE15vswonk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 191FC1007;
-	Thu,  4 Apr 2024 07:33:51 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B87C1150C;
+	Thu,  4 Apr 2024 07:33:52 -0700 (PDT)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E9A1A3F64C;
-	Thu,  4 Apr 2024 07:33:18 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 94D6A3F64C;
+	Thu,  4 Apr 2024 07:33:20 -0700 (PDT)
 From: Ryan Roberts <ryan.roberts@arm.com>
 To: Catalin Marinas <catalin.marinas@arm.com>,
 	Will Deacon <will@kernel.org>,
@@ -44,9 +44,9 @@ Cc: Ryan Roberts <ryan.roberts@arm.com>,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	Itaru Kitayama <itaru.kitayama@fujitsu.com>
-Subject: [PATCH v2 1/4] arm64: mm: Don't remap pgtables per-cont(pte|pmd) block
-Date: Thu,  4 Apr 2024 15:33:05 +0100
-Message-Id: <20240404143308.2224141-2-ryan.roberts@arm.com>
+Subject: [PATCH v2 2/4] arm64: mm: Batch dsb and isb when populating pgtables
+Date: Thu,  4 Apr 2024 15:33:06 +0100
+Message-Id: <20240404143308.2224141-3-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240404143308.2224141-1-ryan.roberts@arm.com>
 References: <20240404143308.2224141-1-ryan.roberts@arm.com>
@@ -58,21 +58,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-A large part of the kernel boot time is creating the kernel linear map
-page tables. When rodata=full, all memory is mapped by pte. And when
-there is lots of physical ram, there are lots of pte tables to populate.
-The primary cost associated with this is mapping and unmapping the pte
-table memory in the fixmap; at unmap time, the TLB entry must be
-invalidated and this is expensive.
-
-Previously, each pmd and pte table was fixmapped/fixunmapped for each
-cont(pte|pmd) block of mappings (16 entries with 4K granule). This means
-we ended up issuing 32 TLBIs per (pmd|pte) table during the population
-phase.
-
-Let's fix that, and fixmap/fixunmap each page once per population, for a
-saving of 31 TLBIs per (pmd|pte) table. This gives a significant boot
-speedup.
+After removing uneccessary TLBIs, the next bottleneck when creating the
+page tables for the linear map is DSB and ISB, which were previously
+issued per-pte in __set_pte(). Since we are writing multiple ptes in a
+given pte table, we can elide these barriers and insert them once we
+have finished writing to the table.
 
 Execution time of map_mem(), which creates the kernel linear map page
 tables, was measured on different machines with different RAM configs:
@@ -82,127 +72,68 @@ tables, was measured on different machines with different RAM configs:
 ---------------|-------------|-------------|-------------|-------------
                |   ms    (%) |   ms    (%) |   ms    (%) |    ms    (%)
 ---------------|-------------|-------------|-------------|-------------
-before         |  153   (0%) | 2227   (0%) | 8798   (0%) | 17442   (0%)
-after          |   77 (-49%) |  431 (-81%) | 1727 (-80%) |  3796 (-78%)
+before         |   77   (0%) |  431   (0%) | 1727   (0%) |  3796   (0%)
+after          |   13 (-84%) |  162 (-62%) |  655 (-62%) |  1656 (-56%)
 
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 Tested-by: Itaru Kitayama <itaru.kitayama@fujitsu.com>
 Tested-by: Eric Chanudet <echanude@redhat.com>
 ---
- arch/arm64/mm/mmu.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+ arch/arm64/include/asm/pgtable.h |  7 ++++++-
+ arch/arm64/mm/mmu.c              | 13 ++++++++++++-
+ 2 files changed, 18 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index 495b732d5af3..fd91b5bdb514 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -172,12 +172,9 @@ bool pgattr_change_is_safe(u64 old, u64 new)
- 	return ((old ^ new) & ~mask) == 0;
+diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+index afdd56d26ad7..105a95a8845c 100644
+--- a/arch/arm64/include/asm/pgtable.h
++++ b/arch/arm64/include/asm/pgtable.h
+@@ -271,9 +271,14 @@ static inline pte_t pte_mkdevmap(pte_t pte)
+ 	return set_pte_bit(pte, __pgprot(PTE_DEVMAP | PTE_SPECIAL));
  }
  
--static void init_pte(pmd_t *pmdp, unsigned long addr, unsigned long end,
--		     phys_addr_t phys, pgprot_t prot)
-+static pte_t *init_pte(pte_t *ptep, unsigned long addr, unsigned long end,
-+		       phys_addr_t phys, pgprot_t prot)
+-static inline void __set_pte(pte_t *ptep, pte_t pte)
++static inline void __set_pte_nosync(pte_t *ptep, pte_t pte)
  {
--	pte_t *ptep;
--
--	ptep = pte_set_fixmap_offset(pmdp, addr);
+ 	WRITE_ONCE(*ptep, pte);
++}
++
++static inline void __set_pte(pte_t *ptep, pte_t pte)
++{
++	__set_pte_nosync(ptep, pte);
+ 
+ 	/*
+ 	 * Only if the new pte is valid and kernel, otherwise TLB maintenance
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index fd91b5bdb514..dc86dceb0efe 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -178,7 +178,11 @@ static pte_t *init_pte(pte_t *ptep, unsigned long addr, unsigned long end,
  	do {
  		pte_t old_pte = __ptep_get(ptep);
  
-@@ -193,7 +190,7 @@ static void init_pte(pmd_t *pmdp, unsigned long addr, unsigned long end,
- 		phys += PAGE_SIZE;
- 	} while (ptep++, addr += PAGE_SIZE, addr != end);
+-		__set_pte(ptep, pfn_pte(__phys_to_pfn(phys), prot));
++		/*
++		 * Required barriers to make this visible to the table walker
++		 * are deferred to the end of alloc_init_cont_pte().
++		 */
++		__set_pte_nosync(ptep, pfn_pte(__phys_to_pfn(phys), prot));
  
--	pte_clear_fixmap();
-+	return ptep;
- }
- 
- static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
-@@ -204,6 +201,7 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
- {
- 	unsigned long next;
- 	pmd_t pmd = READ_ONCE(*pmdp);
-+	pte_t *ptep;
- 
- 	BUG_ON(pmd_sect(pmd));
- 	if (pmd_none(pmd)) {
-@@ -219,6 +217,7 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
- 	}
- 	BUG_ON(pmd_bad(pmd));
- 
-+	ptep = pte_set_fixmap_offset(pmdp, addr);
- 	do {
- 		pgprot_t __prot = prot;
- 
-@@ -229,20 +228,20 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
- 		    (flags & NO_CONT_MAPPINGS) == 0)
- 			__prot = __pgprot(pgprot_val(prot) | PTE_CONT);
- 
--		init_pte(pmdp, addr, next, phys, __prot);
-+		ptep = init_pte(ptep, addr, next, phys, __prot);
- 
- 		phys += next - addr;
+ 		/*
+ 		 * After the PTE entry has been populated once, we
+@@ -234,6 +238,13 @@ static void alloc_init_cont_pte(pmd_t *pmdp, unsigned long addr,
  	} while (addr = next, addr != end);
+ 
+ 	pte_clear_fixmap();
 +
-+	pte_clear_fixmap();
++	/*
++	 * Ensure all previous pgtable writes are visible to the table walker.
++	 * See init_pte().
++	 */
++	dsb(ishst);
++	isb();
  }
  
--static void init_pmd(pud_t *pudp, unsigned long addr, unsigned long end,
--		     phys_addr_t phys, pgprot_t prot,
--		     phys_addr_t (*pgtable_alloc)(int), int flags)
-+static pmd_t *init_pmd(pmd_t *pmdp, unsigned long addr, unsigned long end,
-+		       phys_addr_t phys, pgprot_t prot,
-+		       phys_addr_t (*pgtable_alloc)(int), int flags)
- {
- 	unsigned long next;
--	pmd_t *pmdp;
- 
--	pmdp = pmd_set_fixmap_offset(pudp, addr);
- 	do {
- 		pmd_t old_pmd = READ_ONCE(*pmdp);
- 
-@@ -269,7 +268,7 @@ static void init_pmd(pud_t *pudp, unsigned long addr, unsigned long end,
- 		phys += next - addr;
- 	} while (pmdp++, addr = next, addr != end);
- 
--	pmd_clear_fixmap();
-+	return pmdp;
- }
- 
- static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
-@@ -279,6 +278,7 @@ static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
- {
- 	unsigned long next;
- 	pud_t pud = READ_ONCE(*pudp);
-+	pmd_t *pmdp;
- 
- 	/*
- 	 * Check for initial section mappings in the pgd/pud.
-@@ -297,6 +297,7 @@ static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
- 	}
- 	BUG_ON(pud_bad(pud));
- 
-+	pmdp = pmd_set_fixmap_offset(pudp, addr);
- 	do {
- 		pgprot_t __prot = prot;
- 
-@@ -307,10 +308,13 @@ static void alloc_init_cont_pmd(pud_t *pudp, unsigned long addr,
- 		    (flags & NO_CONT_MAPPINGS) == 0)
- 			__prot = __pgprot(pgprot_val(prot) | PTE_CONT);
- 
--		init_pmd(pudp, addr, next, phys, __prot, pgtable_alloc, flags);
-+		pmdp = init_pmd(pmdp, addr, next, phys, __prot, pgtable_alloc,
-+				flags);
- 
- 		phys += next - addr;
- 	} while (addr = next, addr != end);
-+
-+	pmd_clear_fixmap();
- }
- 
- static void alloc_init_pud(p4d_t *p4dp, unsigned long addr, unsigned long end,
+ static pmd_t *init_pmd(pmd_t *pmdp, unsigned long addr, unsigned long end,
 -- 
 2.25.1
 
