@@ -1,151 +1,123 @@
-Return-Path: <linux-kernel+bounces-131395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CB42898710
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 757A489870E
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 14:19:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5159E296053
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:19:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 305C2295049
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 12:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBD31128807;
-	Thu,  4 Apr 2024 12:15:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D04BA12837F;
+	Thu,  4 Apr 2024 12:15:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="cqkae22n"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KKjKxSi6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7126612838A;
-	Thu,  4 Apr 2024 12:15:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DEEB86244;
+	Thu,  4 Apr 2024 12:15:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712232953; cv=none; b=a6oc2aLl4zeC2UC+ukqvCHzzNlBfmtTDswpIOMvxX8Y9PTD7tR9plUb+PRllCEpQuiv9j9PPt7U+NqvoE2sZZ98dWFTPELclTgsGF9tkeMHRl0uuvpnYAm0rFE1AVnQs8g7U7ORutmYyjNlPv+W3qJGv+dqJ72hjOKY6K9VQz8M=
+	t=1712232946; cv=none; b=SaEuwH4LN5enqxdx1j9svExM3zUfkdKMHIWiky50WdHDxrIv6vozQx8EOjRUk9m+TlzlZQfsy4vsirq4mVYj9mt9iHFwGdqiGw9Jcx5qv8LrjUsB12KDEu64zAAOhPtLFC4GOiIW+xjNtSbXaDvvVr2cBY0YNDkY0g/X/9MtgWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712232953; c=relaxed/simple;
-	bh=jaWNUV/0rYLFNLGYU8fO5mErt568OH4eL7UBJG8E3lY=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lPbMJIcazE9CAdFcRlptRtPquwcRZePGXe8CU08qRiofqqx198G1nCbYix+dSuLsAoq6MOCAA6LBxYXC9YI4zguDVjgBQ7cCPnwkC7eNCDrC5XV9qSZB0z3D6JzbbRNGN+hWsIUQBqxTkRwkcGrHGkCsk+eoDbtLXWkMMn52pkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=cqkae22n; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id E7E0512000D;
-	Thu,  4 Apr 2024 15:15:39 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru E7E0512000D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1712232939;
-	bh=ETwhhACPGuY4BnkEtYjTCpxmGzMAX5wMpPGvtWzJOJ0=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:From;
-	b=cqkae22nnOJqKTjS9Lp6VhJEf2QNNRAq4f7aVqH2buIB76IitunvIJ44Iwb6PtLsL
-	 I2cUykRoAANFgj1t4Rh2xZWfpdnTMB8oLdn2vqW9krJmEmZkVEQ94zwyKMjGUvMM2T
-	 lnfLlKg/rHTSY/uVsad5RK4aaS6KJevVoiOVJLKq/LOTtxXykCymr+uKd4Qwo1Rj7M
-	 jtwGTstLm5e4zXJ10VZcrafOxnvOAr9xb9AMWz45xIZrSqCkKLRG6tP61svUBo0qtm
-	 5j2mjXphjhEqE8bTCwzHo6BtKTTbZWmiPA754x60e7TY+uY2CuXTGXXSX68Xno0ca8
-	 F2E0WCNNAez6A==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Thu,  4 Apr 2024 15:15:39 +0300 (MSK)
-Received: from CAB-WSD-L081021.sberdevices.ru (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Thu, 4 Apr 2024 15:15:39 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: <quic_sridsn@quicinc.com>, <quic_mdalam@quicinc.com>, <ezra@easyb.ch>,
-	<gch981213@gmail.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-	<sashal@kernel.org>, <gregkh@linuxfoundation.org>, <vigneshr@ti.com>
-CC: <kernel@salutedevices.com>, <rockosov@gmail.com>,
-	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>, Ezra Buehler
-	<ezra.buehler@husqvarnagroup.com>, <stable@vger.kernel.org>, Martin Kurbanov
-	<mmkurbanov@salutedevices.com>, Dmitry Rokosov <ddrokosov@salutedevices.com>
-Subject: [PATCH v1] mtd: spinand: Add support for 5-byte IDs
-Date: Thu, 4 Apr 2024 15:15:21 +0300
-Message-ID: <20240404121532.14755-1-ddrokosov@salutedevices.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1712232946; c=relaxed/simple;
+	bh=ExeJC1M+3bZl05QwBaKfCI9mym+Fc6VBmZBjMFs3yM8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RArrUv7xJIhFZeZ+UqLwD/R5sG+1ESJiJ/afJbNtUSacIIGLlE2QbELJ8Slx8W8COLm+OVaP0NTJAT/7F5T1cNuITyaaNouroEIp154pR2oSwjM+ngunprGO1vgWouE6eYZShjtmHrWBtZNeNnCdT7/u2lszGo7fR8xA5ehv/As=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KKjKxSi6; arc=none smtp.client-ip=192.198.163.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712232943; x=1743768943;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ExeJC1M+3bZl05QwBaKfCI9mym+Fc6VBmZBjMFs3yM8=;
+  b=KKjKxSi6qY+UA9lPHkkfz7bE+HAf8MJhK7dl0qc16nmxKocqHrlcJzVG
+   d55VAkTId2I53uKgT2STFD8PcUJUXMNJ12qmMFbqeWO0bwnCHfFc/R+FN
+   PCHrIzcNBqjDAfgZzrcKwo+4KJZcHvc0PY8xyTHIRRi1bq+DVwiry9glV
+   WFZdy8lxaelzehgvsZxP2nhJYn0W7yEYGraBs57kuBl2Qb2DZd0FxFsCn
+   XBtpb8yk5G6gFWVfJbht4RPHqg0yUvmNU7FNxQvLXDhQv2Y8JMO107fuw
+   yOOL568q5nnKL0O9Rd5+73sB6pgqqWIkwqhJKnqFk+fbjntuTeuu1pBKb
+   A==;
+X-CSE-ConnectionGUID: eGOvBaEkRhGGklZqBU/e8Q==
+X-CSE-MsgGUID: b0jMuyTPTs6ZkWU9QcJmAQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="7352015"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="7352015"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa112.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 05:15:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11033"; a="915216493"
+X-IronPort-AV: E=Sophos;i="6.07,179,1708416000"; 
+   d="scan'208";a="915216493"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 05:15:38 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rsM0F-00000001QEr-26v6;
+	Thu, 04 Apr 2024 15:15:35 +0300
+Date: Thu, 4 Apr 2024 15:15:35 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Nuno Sa <nuno.sa@analog.com>, Andi Shyti <andi.shyti@kernel.org>
+Cc: Petr Mladek <pmladek@suse.com>, Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Olivier Moysan <olivier.moysan@foss.st.com>,
+	Jyoti Bhayana <jbhayana@google.com>,
+	Chris Down <chris@chrisdown.name>,
+	John Ogness <john.ogness@linutronix.de>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org
+Subject: Re: [PATCH 0/4] dev_printk: add dev_errp_probe() helper
+Message-ID: <Zg6Z51uebr2dWLq2@smile.fi.intel.com>
+References: <20240404-dev-add_dev_errp_probe-v1-0-d18e3eb7ec3f@analog.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184579 [Apr 04 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 14 0.3.14 5a0c43d8a1c3c0e5b0916cc02a90d4b950c01f96, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, 100.64.160.123:7.1.2;lore.kernel.org:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/04/04 11:24:00
-X-KSMG-LinksScanning: Clean, bases: 2024/04/04 11:24:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/04 07:34:00 #24651931
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404-dev-add_dev_errp_probe-v1-0-d18e3eb7ec3f@analog.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
++Cc: Andi
 
-[ Upstream commit 34a956739d295de6010cdaafeed698ccbba87ea4 ]
+On Thu, Apr 04, 2024 at 01:06:22PM +0200, Nuno Sa wrote:
+> This series adds a dev_errp_probe() helper. This is similar to
+> dev_err_probe() but for cases where an ERR_PTR() is to be returned
+> simplifying patterns like:
+> 
+> 	dev_err_probe(dev, ret, ...);
+> 	return ERR_PTR(ret)
 
-E.g. ESMT chips will return an identification code with a length of 5
-bytes. In order to prevent ambiguity, flash chips would actually need to
-return IDs that are up to 17 or more bytes long due to JEDEC's
-continuation scheme. I understand that if a manufacturer ID is located
-in bank N of JEDEC's database (there are currently 16 banks), N - 1
-continuation codes (7Fh) need to be added to the identification code
-(comprising of manufacturer ID and device ID). However, most flash chip
-manufacturers don't seem to implement this (correctly).
+What about ERR_CAST() cases?
 
-Cc: <stable@vger.kernel.org> # 6.6.23
-Cc: <stable@vger.kernel.org> # 6.7.11
-Cc: <stable@vger.kernel.org> # 6.8.2
-Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
-Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20240125200108.24374-2-ezra@easyb.ch
-Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
----
+> The other three patches are adding users for it. The main motivator for
+> this were the changes in the commit ("iio: temperature: ltc2983: convert
+> to dev_err_probe()"). Initially I just had a local helper [1] but then
+> it was suggested to try a new, common helper. As a result, I looked for
+> a couple more users.
+> 
+> I then move into dev_errp_probe() [2] but it was then suggested to separare
+> the patch series so we have onde dedicated for the printk helper.
+> 
+> [1]: https://lore.kernel.org/all/20240301-ltc2983-misc-improv-v3-1-c09516ac0efc@analog.com/
+> [2]: https://lore.kernel.org/all/20240328-ltc2983-misc-improv-v4-0-0cc428c07cd5@analog.com/
 
-In the patch series [1] only one patch was marked with Fixes tag, that's
-why the secon patch was not applied to 6.6.y, 6.7.y and 6.8y. It breaks
-ESMT detection flow with logs:
+Have you seen mine?
 
-[    0.770730] spi-nand spi0.0: unknown raw ID c8017f7f
-[    0.772688] spi-nand: probe of spi0.0 failed with error -524
+20220214143248.502-1-andriy.shevchenko@linux.intel.com
 
-Please cherry-pick the second patch from the series to 6.6.y, 6.7.y and
-6.8.y.
+(Note, I'm pretty much fine and thankful that you take care of this)
 
-Links:
-    [1] https://lore.kernel.org/linux-mtd/20240125200108.24374-1-ezra@easyb.ch/
-
----
- include/linux/mtd/spinand.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/mtd/spinand.h b/include/linux/mtd/spinand.h
-index badb4c1ac079..5c19ead60499 100644
---- a/include/linux/mtd/spinand.h
-+++ b/include/linux/mtd/spinand.h
-@@ -169,7 +169,7 @@
- struct spinand_op;
- struct spinand_device;
- 
--#define SPINAND_MAX_ID_LEN	4
-+#define SPINAND_MAX_ID_LEN	5
- /*
-  * For erase, write and read operation, we got the following timings :
-  * tBERS (erase) 1ms to 4ms
 -- 
-2.43.0
+With Best Regards,
+Andy Shevchenko
+
 
 
