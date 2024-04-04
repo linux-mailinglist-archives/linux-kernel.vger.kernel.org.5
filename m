@@ -1,116 +1,95 @@
-Return-Path: <linux-kernel+bounces-132130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132133-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341F4899008
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:23:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF759899011
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 23:23:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E1F2828937C
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:23:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C8651C219A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 21:23:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D13F13BC0A;
-	Thu,  4 Apr 2024 21:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D65613C3F3;
+	Thu,  4 Apr 2024 21:23:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="C16XOPFc"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rdw+rZef"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5517912DD9B;
-	Thu,  4 Apr 2024 21:22:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D48812DD9B;
+	Thu,  4 Apr 2024 21:23:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712265777; cv=none; b=PazpdNd187PBBYNMsb+6L+UcoTS+n3nEHrzPntWMuZn3GeCDTCZE7JbclvVdqQRnXt/MQ+G9iQjTKn7GLuMMbVKjD63MhO6tnr5SakJC580Vvg+pvOl90t+hvM9SqgaquLlS6JX2XJcMjk13HVZSprlh9v4+XnxqeFI0yT5szuo=
+	t=1712265799; cv=none; b=n4W/R8s1M2PABPQfevRTFMJZGHR6nbYNiuXUxVE8KbFc4YhQaXlCuiUs62GRQM4fFG6aHG0kwLqCefcXkWk/l0nlWFmGAdDt1lEkGOJNh7nNYDah4Wh4dwjMs/TRLZHH2KXzbiXC8qmgp54jzFoCiEB4ULk1aGR1qmvmiu3G0ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712265777; c=relaxed/simple;
-	bh=rIO7RiRPDq+k3n0/SLUar4PSqPI1e24ngMzDAoiYJpk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=aYust3r8/VcTzygvBF6dfgUL9ak1YXpWq74gK8AHD3bBTD6eT9RTIv5DhnjDEmoyDjeznM2QMre0IpW47JJr6/vhb75uoy4edorjIbma2zSP3BGem5OLYqlc4ZRccfDn5O6nIkZmKTYwQvtfdNVKuLwydQM3BDwEfwMKosxMRwc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=C16XOPFc; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1712265772;
-	bh=38P+zYGFMcPTcXJryge5OAB4c4qWAdYh4T/ILFqnM0A=;
-	h=Date:From:To:Cc:Subject:From;
-	b=C16XOPFcQ61kGQeInt1DSpq76WsCl5gu112yo+Wkx1aMuZeh/VJOPU+lTLHs2Pu4S
-	 Vl73Aqf/pWot8sLwtUs8TfePMRqEDFXJVkQNvyIT5lM2MEUKwxadB/8BbWKE8md5oU
-	 spxKE1U7UUtb3T//h8i4SJ/nmvcwj4Epwc1sWIQeCurJshBAsiCvwbDVr1o31uAG92
-	 /n/xZIJqeS2jL3PbY94P0AZxf1Z7eIt5tHfUpiX//JDTn55Ra8StTXFWtL5Csev3VY
-	 aiIAssmLrPbX6Cban3044mJLzc9PIF1aC/FAvkvN7eHSSYrF0B84fT5KPUhzBgPPt1
-	 qATXUpgG73nTA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V9ZMv3Ycwz4wc5;
-	Fri,  5 Apr 2024 08:22:50 +1100 (AEDT)
-Date: Fri, 5 Apr 2024 08:22:47 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: David Miller <davem@davemloft.net>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Networking <netdev@vger.kernel.org>, Alexey Makhalov
- <alexey.makhalov@broadcom.com>, Krzysztof Kozlowski
- <krzysztof.kozlowski@linaro.org>, Linux Kernel Mailing List
- <linux-kernel@vger.kernel.org>, Linux Next Mailing List
- <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the net tree with the mm-hotfixes tree
-Message-ID: <20240405082247.177638cf@canb.auug.org.au>
+	s=arc-20240116; t=1712265799; c=relaxed/simple;
+	bh=PVLmlIvJKfob7xOlZGZcbXNRUxQbQRqb5Fmg9ZDcBJk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=QrKBfzWTdXHqBpgP6H8o/D+j4I/lijHC2xD1m6XQY7Ln0LaTWUY9vuQt9onm55sPJGH+YpXZrtr9JHuyDvw5uy8VAlMyo72IZUBuWPDfzU/0snNAJl+Nyk7KosL+scs5UDwVOqLbUausxgfx49xv5ZaUf88C3hXJFBKT5wlXRDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rdw+rZef; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D281CC43390;
+	Thu,  4 Apr 2024 21:23:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712265799;
+	bh=PVLmlIvJKfob7xOlZGZcbXNRUxQbQRqb5Fmg9ZDcBJk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=Rdw+rZefr1qzpCl9/JoPb60vhe8qEUu+7GJYXNCJsTvqNbrbjXw7aoyWgN5jWsSzH
+	 G+2E8+4I2DMBobN6ei8IxWGodIua896TKe1vBCfvPVDqMGBYNBZx7y4S6SIi2RtcTM
+	 PjXMV3GKl4nCU3v+K5a3B0lpMoSuh8RqEhG8sNTk1NbQnCqQEGjg+GCCT95ERfX+2c
+	 kuL3xNEHCjZS/SfFqACNmoUOKkR+nBFlxbgSkACcfmun5+9jUNlrfoQHonQGfaY0Dj
+	 fp81GQHmRkdUv9u4/vyGISfzil7Fe0om9LhGa4c+3Q0HvmNBtTPUUu8DXg5xmQbCYl
+	 LtZFBuB1XaGUA==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Anup Patel <anup@brainfault.org>,
+	David Heidelberg <david@ixit.cz>
+Cc: Luca Weiss <luca@z3ntu.xyz>,
+	Rob Herring <robh@kernel.org>,
+	Ulf Hansson <ulf.hansson@linaro.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-riscv@lists.infradead.org
+Subject: Re: (subset) [PATCH v4 1/3] dt-bindings: arm: merge qcom,idle-state with idle-state
+Date: Thu,  4 Apr 2024 16:22:48 -0500
+Message-ID: <171226578669.615813.12438355474081050798.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231202234832.155306-1-david@ixit.cz>
+References: <20231202234832.155306-1-david@ixit.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Wu_=e+S0FwX5G._gSarN6D=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
---Sig_/Wu_=e+S0FwX5G._gSarN6D=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Sun, 03 Dec 2023 00:47:17 +0100, David Heidelberg wrote:
+> Merge Qualcomm-specific idle-state binding with generic one.
+> 
+> 
 
-Today's linux-next merge of the net tree got a conflict in:
+Applied, thanks!
 
-  MAINTAINERS
+[2/3] ARM: dts: qcom: include cpu in idle-state node names
+      commit: e48919dc1ed568f895eca090dc6c5dc56b12480c
+[3/3] ARM: dts: qcom: msm8916: idle-state compatible require the generic idle-state
+      commit: 8f2cc88cd4a35e33931ca1375ea508c8c9267b57
 
-between commit:
-
-  ba74dd4f0460 ("MAINTAINERS: change vmware.com addresses to broadcom.com")
-
-from the mm-hotfixes tree and commit:
-
-  fa84513997e9 ("ptp: MAINTAINERS: drop Jeff Sipek")
-
-from the net tree.
-
-I fixed it up (I just used the former version) and can carry the fix as
-necessary. This is now fixed as far as linux-next is concerned, but any
-non trivial conflicts should be mentioned to your upstream maintainer
-when your tree is submitted for merging.  You may also want to consider
-cooperating with the maintainer of the conflicting tree to minimise any
-particularly complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Wu_=e+S0FwX5G._gSarN6D=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYPGicACgkQAVBC80lX
-0GydGAf/dOx1xO2dm4EYRytGjFb52JemaTVgMeKqvTIoczDzUnbOgnph/KChF7jg
-ofXam6zRFb1CbtXfwkKWb+msnAbdVdjGLamf8Ikxo4HG9aLXdWcoxris1GfH+vja
-YlbpWvHNilmArzQ/Frs0D8tEinl/ohR4SUL7k2JnBgKSMErxlWF0zFQH496JYEvv
-3Ck+1hrHFi37YSb7DrEwaOAsqq0cGfoUpyHpo5zn6DxYm+Rhy46uHlJ1SBCaHUYg
-MujhxHFOPr+4DaPeyLVfqBXJYfEYqVPxjG4mFc51ghS68W8zeyeiB65uFBzDBuUQ
-EseShsUVldDGaKOXkiuYRA1DpRyMHA==
-=s6ZW
------END PGP SIGNATURE-----
-
---Sig_/Wu_=e+S0FwX5G._gSarN6D=--
+Best regards,
+-- 
+Bjorn Andersson <andersson@kernel.org>
 
