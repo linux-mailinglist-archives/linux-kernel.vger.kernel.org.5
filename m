@@ -1,151 +1,122 @@
-Return-Path: <linux-kernel+bounces-131129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5C86898369
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:47:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7800898373
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:48:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C4A811C27207
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:47:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1059D1C25FFC
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:48:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94FB171B4B;
-	Thu,  4 Apr 2024 08:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EED2073196;
+	Thu,  4 Apr 2024 08:48:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Nyn8baRs"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FUqZnihh"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFEAF71B44
-	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540867175F
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 08:48:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712220463; cv=none; b=CQ7zn47WiFKAHccVRUZ+ZvfvFpGXOXm9273w8qC1+eFJ9IFPcYshei+9aIBCfwr8FX05EPNnuc+4nB7ZqFrcnFyrvvnisqDwChwDXPs971UotkmbpmbEguAOvhFwDouU84OHfJRiHPKNWAsnI5FcPZcrIjymai2sU+1FF08oTdc=
+	t=1712220509; cv=none; b=kqN2AIayhXTO53eBekZTzR1puZrAxkpmrPpaFRtHmfVxf7TL1fSFGNK06+WOhiDJ26o/lhSFPAE2ZxSpjg3sF+V/279cGkonANyzABQGbD+EFDgz0FwsuRf/r7uAHyHorkbcVPSF3YZz7DaMxBpULN05mHPMBexdT0bUmW3j8C0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712220463; c=relaxed/simple;
-	bh=UJ47I58e9bCpB0Hd3pDYj9sQHOwpBcRpqqo9WQqLoTg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=pexnEpxvX3V9P4U83V168sLfrH/7rT22YXTp4Os9iI4ZpaCe1tAVdJDeZQtcEtBDc800Y4UcpyKl72IdnEEl6BUrkOKA8UdKZtmbYwWI4RnZMSBJS2hBoskSnb64q2ipaRHF7ZbvfbNRNzi7YtXJL+O2e4KGGEH/DjG+1IzAYDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Nyn8baRs; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a4734ae95b3so103135366b.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 01:47:41 -0700 (PDT)
+	s=arc-20240116; t=1712220509; c=relaxed/simple;
+	bh=VAWm0UzP0DuDy5F1x5kFPa1dBtbP9phKW4djgHUapw8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CA2jZT1MBrQVDo0Kw/OynvqqLwpRa/auzvxDnvoP/GP/VnIjVY5et/YhOe47qgmD0wIemhJ+vVI5o/hPzDJCFT3hfdruKd0IBNJ6dI6yMoSDlPLjhFwVyKM560fqSwVrlTnEVGqijTVGVJZ91Uk8zZurFUBRoLGi0UgwleD5Fj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FUqZnihh; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d23114b19dso8147611fa.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 01:48:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712220460; x=1712825260; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=YrzVYVP8q/U3ZosOBymFI/cFRWUhncJf+rR2Gav5/xQ=;
-        b=Nyn8baRsJTuKN/f0nXU6Dq52j6pWeBoxjjRiW3RqKPASsw/MykqKYkT62RTB3jTl0Q
-         TYFflv56nA+LDIHT1yJjUI+bm32mJQpfg1txF6zsisDv9rB7R3ipyq2TF0BfMWIw+rDa
-         Fk+gYJRr46BULzVpqVNJxr959e8uNx0MW6q5Ofuf0AJrDC5hpHY/00YNVXRYroh1JCbR
-         fdo2DLvrzmcXnZHfVvpPVMeGHC375eE1tL7Skxt1wce7Hw10Igk1mMy/I4b27ot3VtWY
-         TU/hVGibUo9znfKdBzyLT0lmyy6jke3Tdqr6N2eMd9yrO+XC7IsMOAETdnnw6ahFmePT
-         bUjw==
+        d=gmail.com; s=20230601; t=1712220505; x=1712825305; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=201J+X1AYkvpNmreLpHZ+lzNZ8LWCQdS27PNve8BW0Y=;
+        b=FUqZnihheGopBLSod5/xdE32m/5mTjMhJONTXs8EBKRsH5w3bmR6ZaqOoboV1F3MXs
+         ZeDk8ud3562LIUYlNbDy0dQ6fvr7/VT8idRqN01n27WUaSYMnDgvZKELbGVk1I5kPJa1
+         S3xn3J6k1nv0AUXLqJneLEOVdHpUM0LltpVg9Fk5eIDGiZh2h+cL987Jm1RoWsO1aXV4
+         p0NQ2HhK6SHSfv90bbihSBjjYJfiBtN6arhqEgI1EgCZwPFjG7F+Y4RDye8FblUEPogX
+         w82yRTcfjpNk+TMWcJrRTS7FFo5WSBfLgWkfNKo7OpAQEo79ALSmb4TI7ui0YLAC4FPw
+         gKhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712220460; x=1712825260;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YrzVYVP8q/U3ZosOBymFI/cFRWUhncJf+rR2Gav5/xQ=;
-        b=EzK0Np7eX6b3M7bQlVM9ynpoe6dNrQT2K7khe1CdvpUg3cHeWHWRseRiHx7ZwIxYVa
-         3bfKpvFv2U4IBn7nv0Yi8xCllVy6DXHJfH9KwbNTd/5mctq3b8uxvy0D/cs79t7GppTD
-         zb8cpRTYrN3EmmNlkiiKoSENLb5dGpErGFjkuYDlDyzCtAr9EObd8LgrsWF99LaM7YTd
-         b+rGXhDoYY6By2f+nnQWKTO+QEX40fcpwkeE5JBdn/heEnT/eLnBz+ndOoqF+8/swQP3
-         b0SjrjbXPsYWgnBvd+YVHxIBl2BDreorCgZua9i2JL1K2LbbYsCgPvp7/mtwLxdmRiQs
-         Q9Lg==
-X-Forwarded-Encrypted: i=1; AJvYcCXOfakVDWo1wQU5GI/Wrbco4E8UXoJ66S0L9YQ0CAe32105xhsPkWJWxgvFawXA1kSZ19aP4o0Ni9HLd0Ctr4uDUU6hr5AC1OS4oBmz
-X-Gm-Message-State: AOJu0YxOHuTEb4nyjimR01eMwV2Zrt1hvj3BK1vk5A1fuEd9gpYTC4rq
-	Lin+PUCjJ5GAsSib/9Z/2knK/T9cg4EJxD4Dz90gcXUnLd/IK9kRY0b9ZMrzhuw=
-X-Google-Smtp-Source: AGHT+IGp7fdVTn/hyG/IBdw5CngK/Sr7bNYz1hC80z29CsR8dJetLg2tifWoZau3sKzkj0pWeYGP/A==
-X-Received: by 2002:a17:906:7947:b0:a47:3b6a:a29b with SMTP id l7-20020a170906794700b00a473b6aa29bmr1402476ejo.13.1712220460237;
-        Thu, 04 Apr 2024 01:47:40 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id b22-20020a170906d11600b00a46f95f5849sm8755487ejz.106.2024.04.04.01.47.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 01:47:39 -0700 (PDT)
-Message-ID: <e0358933-4aa1-4e40-9bb9-19b4785e8407@linaro.org>
-Date: Thu, 4 Apr 2024 10:47:38 +0200
+        d=1e100.net; s=20230601; t=1712220505; x=1712825305;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=201J+X1AYkvpNmreLpHZ+lzNZ8LWCQdS27PNve8BW0Y=;
+        b=T1TtfHyFjdfHOIBoxGhcyi2OOxJ4V2oniUUwQX88pBAzgmjdvfMX0woDapDquSC/aI
+         SFiWXDjT1+kj5vw9SQ7Joy/RrcjbuQHloTzYrsZm1hIHpnPGP8SP3Zu+LPpJQ5ER/jp3
+         zkEhUsjXPzuCIgRnNOngzPiG6ZcUMTqKLKWyCHefhNXzwDUk3D2dA3Tm2w5rinK6GXwD
+         jdyZkyH5uLP8uWYN/RJFGyMZhC0bVBNxLK1QcnkP5zqhRLZiFEUbCiWuBL7EyTgy5I+E
+         up1Gvn+Z83Mj82Z4ZTW5npl93VhcbcTnfFy5KAjXLTdjHlSkSrLV88yxM/GHul13GsnN
+         53DQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVfSHfz36uWB3ak/95fIiaE2tfbO7S5Nbdm8w2Vwu+ATs5YF7ITltTeHbRgNL/pfJ6+87PpYAuFkGP5FHM3TL7WZ3sHOKJakh2I4LKf
+X-Gm-Message-State: AOJu0YwPxEADD082YL/Dqhyp7BG4T2QRjXLeXSVmCeUdGZ20aY0u3QwZ
+	4fVxsuufQsAglPZPew4CgcG/4NMITF8E/RCklXcIei4k8lwFIT/I
+X-Google-Smtp-Source: AGHT+IENcpHrKciQr+7TH3OwDtFXrbFu+dS6LsqRUYA4DxkMAa8/mCNNc6uK0Wbsf1J+3ZRJmoXiIg==
+X-Received: by 2002:a2e:9a9a:0:b0:2d4:3d86:54e2 with SMTP id p26-20020a2e9a9a000000b002d43d8654e2mr1465676lji.27.1712220505083;
+        Thu, 04 Apr 2024 01:48:25 -0700 (PDT)
+Received: from gmail.com (84-236-113-97.pool.digikabel.hu. [84.236.113.97])
+        by smtp.gmail.com with ESMTPSA id hi23-20020a05600c535700b004146a1bf590sm1850034wmb.32.2024.04.04.01.48.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 01:48:24 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Thu, 4 Apr 2024 10:48:22 +0200
+From: Ingo Molnar <mingo@kernel.org>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>,
+	Denys Vlasenko <dvlasenk@redhat.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH] x86/percpu: Fix and improve x86_this_cpu_test_bit() and
+ friends
+Message-ID: <Zg5pVphMVAJ6W9Cc@gmail.com>
+References: <20240403144648.3885-1-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: arm: rockchip: Add Protonic MECSBC board
-To: Sascha Hauer <s.hauer@pengutronix.de>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc: devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
- David Jander <david@protonic.nl>
-References: <20240404-protonic-mecsbc-v1-0-ad5b42ade6c6@pengutronix.de>
- <20240404-protonic-mecsbc-v1-1-ad5b42ade6c6@pengutronix.de>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240404-protonic-mecsbc-v1-1-ad5b42ade6c6@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403144648.3885-1-ubizjak@gmail.com>
 
-On 04/04/2024 10:34, Sascha Hauer wrote:
-> MECSBC is a single board computer for blood analysis machines from
-> RR-Mechatronics, designed and manufactured by Protonic Holland, based on
-> the Rockchip RK3568 SoC.
+
+* Uros Bizjak <ubizjak@gmail.com> wrote:
+
+> Fix x86_this_cpu_variable_test_bit(), which is implemented with
+> wrong asm template, where argument 2 (count argument) is considered
+> as percpu variable. However, x86_this_cpu_test_bit() is currently
+> used exclusively with constant bit number argument, so the called
+> x86_this_cpu_variable_test_bit() function is never instantiated.
+> The fix introduces named assembler operands to prevent this kind
+> of errors.
 > 
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
-> ---
+> Also rewrite the whole family of x86_this_cpu_test_bit() functions
+> as macros, so standard __my_cpu_var() and raw_cpu_read() macros
+> can be used on percpu variables. This approach considerably
+> simplifies implementation of functions and also introduces standard
+> checks on accessed percpu variables.
+> 
+> No functional changes intended.
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Could you please split this into at least two patches?
 
-Best regards,
-Krzysztof
+Hint: 'also' in a changelog paragraph is an indicator of a new patch 
+being justified, in like 80% of the cases. :-)
 
+Thanks,
+
+	Ingo
 
