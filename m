@@ -1,98 +1,163 @@
-Return-Path: <linux-kernel+bounces-131680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2118898ABD
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:11:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E47C898AA1
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:06:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BDD9282568
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:11:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15831289C0F
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 15:06:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77951129A78;
-	Thu,  4 Apr 2024 15:10:43 +0000 (UTC)
-Received: from irl.hu (irl.hu [95.85.9.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAABF1D547;
+	Thu,  4 Apr 2024 15:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Glzqzh1P"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12681D551;
-	Thu,  4 Apr 2024 15:10:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4B3D272
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 15:05:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712243443; cv=none; b=nIH9l7cCWoxcdA9rOGC7KCq3aY3dS1bxHJNJYi3MYV6Yrc5/frQRUCdXx4TgNDZaMwasSgoQHJAZgNT+Y1sPk/PKIOgpdgUaib4dhnBXF/E8+rLrCGEUvKk1CYnQoNKsX8vF4QWN35sllUjY9mQRQ8y4JRzOQdn6nha99+kfd8I=
+	t=1712243157; cv=none; b=eyfV6JbpIcUUEBcl+9C6aA6AOvu9tAqFV/wV6wYLdFcwzAkA7z2w01RBKbmtUwpraiafgcraFxvTMmcNBra6sUZTyX+eoo3vZ46HQuc0LQHRCGfyQnmOLfMA5mZ4KU07/8S7kxurjJDjkpyTgo9GsPazF6ZeEkxdRuQ7Nq/kjMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712243443; c=relaxed/simple;
-	bh=vaEH/7UI3i+pPAefwLuVf+TqLBvLn9fh0xIiqmLVADw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fFgx0Z8MKofK+08151HGzoRZKJS38IPCqNx5/X2ihq9Tz6KW/sb3ACj6tOW4HxXKrm1l9e1MRUZ8cGVrvQUpCct1eEPyBfSGm9WCj1eHojvKqfSeqr8i5PIUaObSq9CBslXTGqCzfduF/yrugfrrf97mXYkHNMR/10B/oXoMrwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
-Received: from [192.168.2.4] (51b69867.dsl.pool.telekom.hu [::ffff:81.182.152.103])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 000000000006EF1D.00000000660EC1BA.002595F8; Thu, 04 Apr 2024 17:05:30 +0200
-Message-ID: <b5ad9ab4e1785266fbf9f9b9e68b41bec95e5820.camel@irl.hu>
-Subject: Re: [PATCH v3] platform/x86: ideapad-laptop: switch platform
- profiles using thermal management key
-From: Gergo Koteles <soyer@irl.hu>
-To: Daniel Lezcano <daniel.lezcano@linaro.org>,
-  Ike Panhc <ike.pan@canonical.com>,
-  Hans de Goede <hdegoede@redhat.com>,
-  Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Thu, 04 Apr 2024 17:05:29 +0200
-In-Reply-To: <45f12590-4f79-4875-a497-cbb1ac3deb38@linaro.org>
-References:
-	  <7c358ad8dd6de7889fa887954145a181501ac362.1712236099.git.soyer@irl.hu>
-	 <45f12590-4f79-4875-a497-cbb1ac3deb38@linaro.org>
-Autocrypt: addr=soyer@irl.hu; prefer-encrypt=mutual;
- keydata=mDMEZgeDQBYJKwYBBAHaRw8BAQdAD5oxV6MHkjzSfQL2O8VsPW3rSUeCHfbx/a6Yfj3NUnS0HEdlcmdvIEtvdGVsZXMgPHNveWVyQGlybC5odT6ImQQTFgoAQRYhBLSYvEYEgjzzEMQCqgtEJzXf/1IRBQJmB4NAAhsDBQkFo5qABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheAAAoJEAtEJzXf/1IRmdYA/0bE1BX7zOGKBgCa1DwzH2UHXawSKLpptADvI/ao6OOtAP4+wYgpR0kWR28lhmkRTpzG/+8GiMWsT60SV2bz9B7sCbg4BGYHg0ASCisGAQQBl1UBBQEBB0CPo8ow/E97WYtaek9EsLXvsvwpBsjWLq5mMOgJL/ukCwMBCAeIfgQYFgoAJhYhBLSYvEYEgjzzEMQCqgtEJzXf/1IRBQJmB4NAAhsMBQkFo5qAAAoJEAtEJzXf/1IRklEA/ipTfAI/onzNwZIp9sCdnt0bLhR5Oz8RD/FpbrJV1v7eAP0c/C6NQPDPWbQpobBR0pf1eTjWXjjr1fj2jxSvWbMRCw==
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1712243157; c=relaxed/simple;
+	bh=9pCwI5rLluyqtKsh2NShOZejLdkgTqnq8f0wSQ9Nb9g=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=m8eSaQruiye+ZyTCG7KrAHQpyht/rPtlUF136hR/mJ+sil21j76nkZ2xW8cDvqD6a2hVSurK62GJKOVZ1G2cFE6NLrZ412Mv0zematChUxN3L4cxulof9alJHLaOmgx/l9wrm7ed+ldiC/GqfY4mP9mI6NLskCjrIJ7C4qn8LzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Glzqzh1P; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dcbfe1a42a4so1968325276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 08:05:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712243154; x=1712847954; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yUXSMqrAFeMZhzUDd522kajaYKlUc1pmVeNZWeTCyCk=;
+        b=Glzqzh1PSwpinaoiw35fvGMKVNc/ejrJUbJ0TW5ou/ar5sm7NUSZBBOJZLmSwyG/wX
+         q2TAn4EANDM8A6NLlkFnfFBitNNXoc8LHZ6f3u7czIXFRAbHQXHbh4gcyMO4jV7gdeyr
+         A3ie/CF8NimS1rjcbPpwZRn4OwRFp4h9TuUeGXWovDIpzmaT0b8BPLc7s8W5ghGK4seH
+         V9w4uxAMe73wsBKZgRtAQQCSi8+0ha/khlPoJNCfonMIqDtNeEVMXBl35kPmw4jA7VPs
+         1eYFAE/J8xzwZDZmLSZNlwfX2tC1a7+PsD/t+cGGR/GW5UMcKz9BoluJQCyDipVbZfB9
+         p61w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712243154; x=1712847954;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yUXSMqrAFeMZhzUDd522kajaYKlUc1pmVeNZWeTCyCk=;
+        b=c8VXRWYYWT9YSMsyp2m5YIeUJsLYlg43GyxtV7tKEs0ZCEtWx74YiHiUfHxI8aKUC8
+         9Y/+kAECc9XmRyAS9nPNNvhns9gnQxKpQBhofsj0tzptkdFW6FyonZlAzIsXYlx6v03K
+         /9bHMLeo36btzGaLGMLBq0/WQROLp4Wbgm/Q1IQNp8pVuqF4r5I2GTURTYAfqTtuIkCS
+         IcMsIQPYnXN4ZNT4Ft6jmJYRI/iZqysUHicXVYTqpcNU0UN0uNRVA7I6lws+CV8lJ/ug
+         UegLXbgJUFGqwrsoc1aXPfqiF+TMzEenX6EUlUxm/aFcyLCHP9YmS+bUkfx5AVwdHVLg
+         gC4A==
+X-Gm-Message-State: AOJu0Yzyzl0qhaSKjzm7AOHAjiB9J3xj1wdC6HMCoMspoLPdQfKEgJj1
+	Utv1VcNo8DsLR3lD9z5w0V5zMiVa+d/vyKN6TvARC7/KWgMEjURQ5Meu7qrsPA+esdMMDitKQbz
+	2eQ==
+X-Google-Smtp-Source: AGHT+IHc0XI/w/DQGs36JwrzvGz3GFnwNtR/s0enRPkVbAxI/QW10yHMNjXC3YQLZZFA/t7SYTuV2ebO9c8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6902:2b83:b0:dc6:dfc6:4207 with SMTP id
+ fj3-20020a0569022b8300b00dc6dfc64207mr702053ybb.10.1712243154484; Thu, 04 Apr
+ 2024 08:05:54 -0700 (PDT)
+Date: Thu, 4 Apr 2024 08:05:52 -0700
+In-Reply-To: <20240403153514.CC2C9D13@davehans-spike.ostc.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <20240403153508.7328E749@davehans-spike.ostc.intel.com> <20240403153514.CC2C9D13@davehans-spike.ostc.intel.com>
+Message-ID: <Zg7B0JwJD6sfjVIY@google.com>
+Subject: Re: [PATCH 4/4] x86/xen: Enumerate NX from CPUID directly
+From: Sean Christopherson <seanjc@google.com>
+To: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org, jgross@suse.com, tglx@linutronix.de, 
+	x86@kernel.org, bp@alien8.de
+Content-Type: text/plain; charset="us-ascii"
 
-Hi Daniel,
+On Wed, Apr 03, 2024, Dave Hansen wrote:
+> +/*
+> + * It is too early for boot_cpu_has() and friends to work.
+> + * Use CPUID to directly enumerate NX support.
+> + */
+> +static inline void xen_configure_nx(void)
+> +{
+> +	bool nx_supported;
+> +	u32 eax = 0;
+> +
+> +	get_cpuid_region_leaf(0x80000001, CPUID_EDX, &eax);
+> +
+> +	nx_supported = eax & (X86_FEATURE_NX & 31);
 
-On Thu, 2024-04-04 at 15:27 +0200, Daniel Lezcano wrote:
-> > Cycling is done through modulo.
-> >=20
-> > Quick and dirty example:
-> >=20
-> > static int profiles[] =3D {
-> > 	PLATFORM_PROFILE_LOW_POWER,
-> > 	PLATFORM_PROFILE_BALANCED,
-> > 	PLATFORM_PROFILE_PERFORMANCE
-> > };
-> >=20
-> > static int current_profile_index =3D 0;
-> >=20
-> > static void dytc_profile_cycle(struct ideapad_private *priv)
-> > {
-> > 	current_profile_index++
-> >=20
-> > 	current_profile_index =3D
-> > 		current_profile_index % ARRAY_SIZE(profiles);
-> >=20
-> > 	dytc_profile_set(&priv->dytc->pprof,
-> > 			profiles[current_profile_index]);
-> >=20
-> > 	platform_profile_notify();
-> > }
-> >=20
+Heh, I wasn't looking to review this, but this is wrong, and the fly-by comment
+I was going to make is relevant (and got really long once I started typing...).
 
-Thanks for your suggestions. I thought about it.
-It would make this module complicated, but something like this fits
-well in the platform_profile module.
-I will implement the cycle there in v4.
+X86_FEATURE_NX isn't a bit, it's bit position: (1*32+20) & 0x31 == 20.  I.e. the
+code would actually need to be
 
-Best regards,
-Gergo
+	nx_supported = edx & BIT(X86_FEATURE_NX & 31);
 
+The TL;DR version of comment I came to give, is that KVM has a lot of infrastructure
+for manipulating raw CPUID values using X86_FEATURE_* flags, and that I think we
+should seriously consider moving much of KVM's infrastructure to core x86. 
+
+KVM has several macros for doing this sort of thing, and we solve the "way shorter
+than any helper" conundrum is by pasting tokens, e.g.
+
+	#define feature_bit(name)  __feature_bit(X86_FEATURE_##name)
+
+which yields fairly readable code, e.g. this would be
+
+	nx_supported = edx & feature_bit(NX);
+
+and if you want to go really terse with a macro that is local to a .c file
+
+	#define F feature_bit
+
+though I doubt that's necessary outside of KVM (KVM has ~200 uses in a single
+function that computes the support guest CPUID).
+
+Grabbing feature_bit() directly from KVM would be cumbersome, as __feature_bit()
+pulls in a _lot_ of dependencies that aren't strictly necessary.  But if you do
+do want to add a generic macro, I definitely think it's worth moving KVM's stuff
+to common code, because all of the dependencies are compile-time assertions to
+guard against incorrect usage.  E.g. using the "& 31" trick on scattered flags
+for raw CPUID will give the wrong result, because the bit position for scattered
+flags doesn't match the bit position for hardware-defined CPUID.
+
+But if we went a step further, KVM's code can also programatically generate the
+inputs to CPUID.  x86_feature_cpuid() returns a cpuid_reg structure, which gives
+the function, index, and register:
+
+	struct cpuid_reg {
+		u32 function;
+		u32 index;
+		int reg;
+	};
+
+E.g. if we move the KVM stuff to common code, we could have a helper like:
+
+	static __always_inline bool x86_cpuid_has(unsigned int feature)
+	{
+		struct cpuid_reg cpuid = x86_feature_cpuid(feature);
+		u32 val;
+
+		if (!get_cpuid_region_leaf(cpuid.function, cpuid.reg, &val))
+			return false;
+
+		return val & __feature_bit(feature);
+	}
+
+and then the NX Xen code is more simply
+
+	x86_configure_nx(x86_cpuid_has(X86_FEATURE_NX));
+
+If we wanted to go really crazy, I bet we could figure out a way to use an
+alternative-like implementation to automagically redirect boot_cpuid_has() to
+a raw CPUID-based check if it's invoked before boot_cpu_data() is populated,
+without increasing the code footprint.
 
