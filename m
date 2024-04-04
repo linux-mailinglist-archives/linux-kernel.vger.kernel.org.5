@@ -1,95 +1,104 @@
-Return-Path: <linux-kernel+bounces-131134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9641898377
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:50:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 23A19898379
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 10:51:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30CAB28F792
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:50:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBFE81F23D85
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 08:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B178C71B5C;
-	Thu,  4 Apr 2024 08:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60FE671B4E;
+	Thu,  4 Apr 2024 08:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XSAqf5bI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="NSse4M6n"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F390D13ADA;
-	Thu,  4 Apr 2024 08:50:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190E113ADA;
+	Thu,  4 Apr 2024 08:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712220630; cv=none; b=K0u4fU71NgIhj5H4v0xp2f7CQlotCGsewistdnXHqn/RQSOrcojTgSqfCkNUtH3KPAcbCsudLcOcWXNJZfU/FeCy3nS0B32OPt7QO7yg3Z4d1Ld7H9QSsZEbYIK8fvVm7ng9Rp8qbq6Y1hcetuhBooWF968+kSN/oX5HSGZu3Ww=
+	t=1712220662; cv=none; b=ogRBmwLC4t+Jy3oPhajRxRUn9vXNDQ5TyBworJ8NiIb6JBgwbYmOMW+qBq+sJ6PwON2zng0qsteSfYp9i/3feuTQwtA0r2qOXf4KQEAHJWPoD2fw3fNrbJjr4Cx9VqQIBnS/276zpxLGH4NXBTMrSkEo3INi0ELNma7E3v5nXC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712220630; c=relaxed/simple;
-	bh=xJzer2jAJHZxUf61y3SHUbHar0p36yviK55x6YXvG70=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=h8cMthdzOPba17B6lMjdpnox8CEQj89/ZsJ2CJqqIBrISaViqm8oHASKZCsb3ymH89bBjtwAongHXDTRD9MkgD/s0/WNgX24UbmErtSgA/DLNJlfeHvJaAIobzIFV6JJ2fx5tQ26g30pvtbAbS+kg12THBr+fDD9ss1zYElWaA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XSAqf5bI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7C56DC43390;
-	Thu,  4 Apr 2024 08:50:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712220629;
-	bh=xJzer2jAJHZxUf61y3SHUbHar0p36yviK55x6YXvG70=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=XSAqf5bIaFa4Uyn66gjoJ8h9ozXQzgaIuWo/9uqMiLWBPPgjCGpNQN4PBGESI3Qvw
-	 omDgX0BSXGRGltusC/KbvwLI0ZQBsRU7UmpGMhtwjX8tZwzyewiGZmsLGkCgP9Igpk
-	 qVYd1FYF4maKGSuTAhCDGqwbUVg0GA+9xa8ZZDAen82H77oQCV2cyo9xLj8l+8StYk
-	 NN6/qXwG80QFgkm1o3BXmCywWd+3GnXdTL0KpikYP/5fDffR9vXKKAD67jJ++sTy4f
-	 QfgwWUse2+d9Kn2BMTOODZeKsNGmmEI61wOfVrOgALLgLl2PjJE6lhs0KIj3Kgd/e3
-	 mLy6gG1d/svgw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 6B1F7D9A150;
-	Thu,  4 Apr 2024 08:50:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712220662; c=relaxed/simple;
+	bh=RnV2XWrFzuPbTdYwdjhB8w1PdzG3lR941MZUKMz/d2c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fbb18zbg+d87J24kz/QoX86ifPmDecWQDK/v809F1mnRhB0ok7y3XoHtnY3MZ/a0f3QgRsBjF/eUiKH0YM1ts4TmEdOs12vDkeYL2HFuf0+vprZFikyQZZ+T6N73LUO6gITTbHbSgxvHRd+CqNqAodwf3x5+vMHcIsWkltqpHmI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=NSse4M6n; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A89A6C0003;
+	Thu,  4 Apr 2024 08:50:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712220658;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bcl+blTYVb8UlfBhe34P71DucCEgZ+SnoyrFlukGhYg=;
+	b=NSse4M6n2yUdP7WfgUO9kn7FSff0z7MUhr9TapI4X8ASXHDcP4bYNzpz/S600fqqnNNlgI
+	tK/9Rzjfg/1VXFaab3A8IrizKEN6YzauDnVrUK5kBDFmrEJMb4NgudTvo8iIA8FXQqUqtJ
+	W2wHLDCn6l7OBIowSZ7NWoF2urbKV7rgkxm3KUI9hfrgvzdhfvxP4GLsK4QGpYkC/ST9IR
+	PS1wmiSwOe7RwbUdu1bNGe48ySJVZS0YwzWLUwYsTJuVEiBsGa3s9VzVePE4PX8JanhqSd
+	2xyTtGybTa/piQAwCKZsbLz6i7HYLe9RnMM1dW9RuGDzIj5rT0x9WfZranwK/Q==
+Message-ID: <d74836a8-9e5d-4a2f-900c-90ceb66bed7b@bootlin.com>
+Date: Thu, 4 Apr 2024 10:50:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3] tg3: Remove residual error handling in
- tg3_suspend
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171222062943.6705.9843920756752610864.git-patchwork-notify@kernel.org>
-Date: Thu, 04 Apr 2024 08:50:29 +0000
-References: <20240401191418.361747-1-kiryushin@ancud.ru>
-In-Reply-To: <20240401191418.361747-1-kiryushin@ancud.ru>
-To: Nikita Kiryushin <kiryushin@ancud.ru>
-Cc: mchan@broadcom.com, pavan.chebbi@broadcom.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, rjw@rjwysocki.net,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org, michael.chan@broadcom.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] serial: 8250_of: Add clock_notifier
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, Thomas Petazzoni
+ <thomas.petazzoni@bootlin.com>, herve.codina@bootlin.com,
+ christophercordahi@nanometrics.ca
+References: <20240404074450.42708-1-bastien.curutchet@bootlin.com>
+ <2024040455-bungee-subsidy-f5aa@gregkh>
+Content-Language: en-US
+From: Bastien Curutchet <bastien.curutchet@bootlin.com>
+In-Reply-To: <2024040455-bungee-subsidy-f5aa@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: bastien.curutchet@bootlin.com
 
-Hello:
+Hi Greg,
 
-This patch was applied to netdev/net.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Mon,  1 Apr 2024 22:14:18 +0300 you wrote:
-> As of now, tg3_power_down_prepare always ends with success, but
-> the error handling code from former tg3_set_power_state call is still here.
+On 4/4/24 09:50, Greg Kroah-Hartman wrote:
+> On Thu, Apr 04, 2024 at 09:44:50AM +0200, Bastien Curutchet wrote:
+>> The UART's input clock rate can change at runtime but this is not
+>> handled by the driver.
+>>
+>> Add a clock_notifier callback that updates the divisors when the input
+>> clock is updated. The serial8250_update_uartclk() is used to do so.
+>> PRE_RATE_CHANGE and ABORT_RATE_CHANGE notifications are ignored, only
+>> the POST_RATE_CHANGE is used.
 > 
-> This code became unreachable in commit c866b7eac073 ("tg3: Do not use
-> legacy PCI power management").
+> Why just this one notification?  You say they are ignored but do not say
+> why.
 > 
-> Remove (now unreachable) error handling code for simplification and change
-> tg3_power_down_prepare to a void function as its result is no more checked.
+
+I don't need to react to PRE_RATE_CHANGE in my use case. A few bytes may
+be corrupted during the rate change but it is not a problem for my
+application (and I assumed that it would also be ok in many other use
+cases).
+
+>>
+>> Reorder the #include to match alphabetic order.
 > 
-> [...]
+> That is not needed here, why do that now?  And "alphabetic order" is not
+> an issue for tty drivers, no need to do that, but if you really want to,
+> a separate patch series is good for that.
 
-Here is the summary with links:
-  - [net-next,v3] tg3: Remove residual error handling in tg3_suspend
-    https://git.kernel.org/netdev/net/c/9ab4ad295622
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Ok sorry, I thought it was needed, I'll remove this in next iteration.
 
 
+Best regards,
+Bastien
 
