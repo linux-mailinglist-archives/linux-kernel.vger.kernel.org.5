@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-131161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9805C8983E5
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:21:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BF378983E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 11:24:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C77101C228BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:21:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 422411F24895
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 09:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42E1174438;
-	Thu,  4 Apr 2024 09:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4519745C2;
+	Thu,  4 Apr 2024 09:24:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FqsEAVB+"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mNqXEOVs"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE0DD5C61D;
-	Thu,  4 Apr 2024 09:21:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD0E5E07E;
+	Thu,  4 Apr 2024 09:24:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712222496; cv=none; b=KkiLkclXRfsdyxtrRUevembsoSeOTLINwcLcL/QCFb7L5Mph57xw8HjY9KcI6GvX3irssH6JT2X9ETLpb1JjfEc5i0sWWmDouzzh+4gxPXxUSlOt3lR8WIEn41d+nJnxvU8Jx5ydmaVUUGrDglr9KZyyjCWnsIb9WEt47gv0qjU=
+	t=1712222684; cv=none; b=rBnNEuvGCzz5pDOryqW/eY+qNuzkZcqHhPlsqk5X8/IFmtJc75mci0Dw+MTOQ9MUkKRl9MsNmfM/FrqSruFlW9GayJxVEvwDczbBDSXqJcw+fb2XVB/W5rmxNDvM/Ra5rZ60Jh6ixqSOcDJmsB1OSa1sDSL/m0cAxpqw8C4XsiU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712222496; c=relaxed/simple;
-	bh=IBtqvebZipirK0kh1olnmPcc8MM/cNoL1tv0Wtc1tsU=;
+	s=arc-20240116; t=1712222684; c=relaxed/simple;
+	bh=RBVrbKnK3ovQO15P41mcUHM/iUWBDjuiISow2hRyoow=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sRTf2mKkTDQuCVP8ixOGRiMtE8DEaaMWrcrosJDSoR0042adF2bEJhTEJaHUnQ4DUYXUHETRdjXwCQHZBerSkQWSaTT55cnD7r9IvkFlA/ArB2ZK6lvBBoC/Q5hnidjCYX64O7YEcxZpdUU0A6b2dzkTg9wXCVvgYWsU6aKF144=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FqsEAVB+; arc=none smtp.client-ip=209.85.208.45
+	 To:Cc:Content-Type; b=G1rva4fCRUhi2lDpP+jEcEWuKmeK8C57JKZZNaxlL0K3IJkF6OtAJ9NLKasB0e++fgKKEJIe+K/1ET5hrIQcaeRaSTp2woZPpV2cxKvdTeD8PEmg5H/1TF7A0NTYUscYonvGRMk8v/Z5UEMzzxAprNzJ7psq4iXRTRpmWRODzjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mNqXEOVs; arc=none smtp.client-ip=209.85.218.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56e22574eb3so235068a12.3;
-        Thu, 04 Apr 2024 02:21:34 -0700 (PDT)
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a466fc8fcccso98141466b.1;
+        Thu, 04 Apr 2024 02:24:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712222493; x=1712827293; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712222681; x=1712827481; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=IBtqvebZipirK0kh1olnmPcc8MM/cNoL1tv0Wtc1tsU=;
-        b=FqsEAVB+mb5Q33F0YLS7CIsj1ukh+gk9w1Kfttn/cthVSRV1y21C+moUPKUaEpSaNP
-         m6e3T/lhxnowxtdxTe6wOXLTK/esGVXvGiKZM6YnWpoLRmOxMR59iTiCP0h8rKJTPQZQ
-         SyPPxsbeiFw3qrE1Gaj7YQ56Ae7B9iQGEi5k+Y4RIVJFbLaD18uwv8tLMGOQtcZBx/LE
-         r7UN7L48jGR3voCayr/ufWUQk/bkreQ8X3CqbUHdT8C2EKV4PuZjKqXTFYeVL+hbBptZ
-         SqvNagaOEEVdrXulrKn+6xNG9kVjI8eA54gtaataI9PNnu3To+xF+o9Jt9ftOjL+VNsO
-         HUng==
+        bh=RBVrbKnK3ovQO15P41mcUHM/iUWBDjuiISow2hRyoow=;
+        b=mNqXEOVsf+pue+KHm24IpmiOAfnvPEmCqZjLDmS6yvkMYf+PlS6GRALfbV4kz638mu
+         djKY3ZT7CtU+iGvLn1Mm3VnNfVdxxMFADFQzXFg0lY0wi3J22Aqr09Mn6ZBEECVN/mOS
+         aS7K/23r/hij3wVjuNeiIRhcf4sNt6tlnQ2MI8k3Me8KQoBdchkneXBgG7FEIrLJuPk8
+         5801CJf952WMTppRNNAP2lLLV2nOrzW3AR1We9rvpSJSJSmLCk5YdQzQS0PuDQ7btbmL
+         iRxYDvRFf29Qw1s5u1t8K3rYGo5F9mE1DTl8LvOI1ljj4I0y41CekQu9voL8n+PDkiiv
+         BfIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712222493; x=1712827293;
+        d=1e100.net; s=20230601; t=1712222681; x=1712827481;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=IBtqvebZipirK0kh1olnmPcc8MM/cNoL1tv0Wtc1tsU=;
-        b=rQLDCAx34tCdExH5sHH23d6ytGoONS64QT7DTUxupzPa58LE31fC2n4ta7E/A6+I8k
-         DODR96XfOjvpTdWoAjMkHmBVUSmZSWvg6ojpgmzMLVWWoBrblxXLuZ7f23O5jsGwMxpz
-         mC/PQVhx81kzDhRvcl3EHDoeHaIWhlbbBb1N6sM857jNGUKCPJEfChxCnCLurfTkgiGo
-         KB4boUKwje2zyprL5tZ6A+JUFQifEO/tMcy07dq3lK8594MA3kpYaJ1og4GQxFSyB2e3
-         KLmc7FO56cME6vrVBjL+C4y8WUU6M/2QWKSNXr5qpC0k4TE6Pe0N+uDsQ+e1JE9q6MPC
-         9JTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV4/8Gaf9fQeCRJvihQQSatypRa8sn7SeZYV4HZyDyYkOqQqcEShFfehWdBlrtiIBs6k6AnO8dlLL254nAew5GG/TgYKPhml8DImyDhML5oQmOAZfoJzV1NFfSCiBy5Yjx8J5KBaVwloqGe
-X-Gm-Message-State: AOJu0YwSIGeimymtkci/11LdiWNB805+4C5YAM4TznkbQZzqDCeEyVvL
-	O8hEyNrKqLPabgTn9Rpkh3vHtPFXT6yXPCh8GmAGwP2Rlps6tTgoYcWo22uJsJO4GpD0PmdkyZs
-	82oMD116rXnQ4pbx0txXRBzlwq54=
-X-Google-Smtp-Source: AGHT+IEuFsWQzjuoFKH6xP3gUs4bjys7kjQDLGl7XjPe+GUjpbLrwsjQcVsY5ZtSes7AfzSta2BDUCPfEFFQt++PcSk=
-X-Received: by 2002:a17:906:6d4:b0:a47:32b3:18c5 with SMTP id
- v20-20020a17090606d400b00a4732b318c5mr1130270ejb.68.1712222493009; Thu, 04
- Apr 2024 02:21:33 -0700 (PDT)
+        bh=RBVrbKnK3ovQO15P41mcUHM/iUWBDjuiISow2hRyoow=;
+        b=ee5Ecii1oSzobuH0E5CX9/oLKJ+icC4WR7jOaP/a17Kmklf7Cfu6Jp/M1keGd6i+aG
+         JWDF+24S0CJAvOQpEb7o5Z+jqRweSP31t5m13WWEzoLG79xpgD/EtT8lgeIE+hCODuuz
+         VU8DIXPvMnHULNiMIqLYDKWVFuXJsv95yySB9EsvOCK67R5yCHiJAYXkM3ohCRmjkCHK
+         4y/6ShZMRFs51mXZSJKUWWPfDGIP6nMsSlclBmYoqbvvTjA5qUJKznxewKHX5B6B4cJ1
+         x7j7ZmxqbZqXhZT60Duo9uBuTpaIiWqaiU5PeZKOG7YkXDwg6ljyELzmtjd1JPM7N8Hf
+         ButQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUNK2FNAFCsetn7kidKcAy7SoofAwOShhjjik0a87n9EgLiYXd2PxMfx1Spn1OMFERi/GTGs59OfU4Q9dHRK/fZFkbytgWxkEq/m1MQyuqfULkXPFDGMaBbd8qt4mkpjEl4YxF3/o4syIdB
+X-Gm-Message-State: AOJu0YyMQsueOtz4EsmBYpjTvbXcRpQuiK9bhLe9tDzyeUYw26ZcPAIo
+	qogBrMA4BToBbR430/63jgR7E3NKxWb0E0X+OQ3ktqEBKtBIMR8irGhWfm3jbLBi0IU+2Y5jCE1
+	LrNKAn0GEfNARWG6qrwMdGiIB9Aw=
+X-Google-Smtp-Source: AGHT+IFFuzK/Tj73r6cElPFLHYS0K+qrK8YOabFg09GALNmzfEyOCxxfGhkrrxxnyxPeh7bUQ1le67F9/FyVLwJu/PI=
+X-Received: by 2002:a17:906:6dd2:b0:a4e:1055:8602 with SMTP id
+ j18-20020a1709066dd200b00a4e10558602mr1069503ejt.19.1712222680512; Thu, 04
+ Apr 2024 02:24:40 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -71,14 +71,14 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <dda2187e128bfaaf092351812e4538e2e41c17f6.1711599093.git.fthain@linux-m68k.org>
- <Zg3YZN-QupyVaTPm@surfacebook.localdomain> <de576647-1147-4aa6-9d5f-aa6e3464fe1e@kernel.org>
-In-Reply-To: <de576647-1147-4aa6-9d5f-aa6e3464fe1e@kernel.org>
+ <Zg3YZN-QupyVaTPm@surfacebook.localdomain> <8f234f26-d5e3-66ed-ab0c-86d3c9852b4a@linux-m68k.org>
+In-Reply-To: <8f234f26-d5e3-66ed-ab0c-86d3c9852b4a@linux-m68k.org>
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Thu, 4 Apr 2024 12:20:56 +0300
-Message-ID: <CAHp75VcQXQv26M1aLias2xnsgehqOr1PzX9sztSa_b1Ws=_L4g@mail.gmail.com>
+Date: Thu, 4 Apr 2024 12:24:04 +0300
+Message-ID: <CAHp75VcxLez_Nm0N8=gpWd7SKGd9JF2QXEOOB_gvX3ZtTzj6HQ@mail.gmail.com>
 Subject: Re: [PATCH] serial/pmac_zilog: Remove flawed mitigation for rx irq flood
-To: Jiri Slaby <jirislaby@kernel.org>
-Cc: Finn Thain <fthain@linux-m68k.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+To: Finn Thain <fthain@linux-m68k.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
 	Benjamin Herrenschmidt <benh@kernel.crashing.org>, Michael Ellerman <mpe@ellerman.id.au>, 
 	Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy <christophe.leroy@csgroup.eu>, 
 	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
@@ -87,35 +87,54 @@ Cc: Finn Thain <fthain@linux-m68k.org>, Greg Kroah-Hartman <gregkh@linuxfoundati
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 4, 2024 at 8:07=E2=80=AFAM Jiri Slaby <jirislaby@kernel.org> wr=
-ote:
-> On 04. 04. 24, 0:29, Andy Shevchenko wrote:
+On Thu, Apr 4, 2024 at 2:57=E2=80=AFAM Finn Thain <fthain@linux-m68k.org> w=
+rote:
+> On Thu, 4 Apr 2024, Andy Shevchenko wrote:
 
-> >> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> >> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> >> Cc: Nicholas Piggin <npiggin@gmail.com>
-> >> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> >> Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
-> >> Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-> >> Cc: linux-m68k@lists.linux-m68k.org
+..
+
+> > > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+> > > Cc: Michael Ellerman <mpe@ellerman.id.au>
+> > > Cc: Nicholas Piggin <npiggin@gmail.com>
+> > > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> > > Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+> > > Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+> > > Cc: linux-m68k@lists.linux-m68k.org
 > >
 > > Second, please move these Cc to be after the '---' line
 >
-> Sorry, but why?
+> I thought they were placed above the line for audit (and signing)
+> purposes.
 
-Really need to create a Q&A entry for this.
+I didn't get this, sorry.
 
-This will pollute the commit messages with irrelevant (to some extent)
-information. Since we have a lore mail archive there is no need to
-have this (the email itself will be sent to the list of people,
-otherwise the Cc email headers can be tracked in the mail archive).
-Also note, some developers may read git history on the mobile devices,
-meaning small screens, this just (as for backtraces) simply blurs the
-information with a high potential to lose significant piece(s) of
-information). Last, but not least is environmentally friendly approach
-(I'm not joking): having it on thousands of computers, scrolling with
-longer time, power for compressing - decompressing -- all of this
-wastes a lot of energy (maybe kWh:s per such a Cc list).
+> There are thousands of Cc lines in the mainline commit messages
+> since v6.8.
+
+Having thousands of mistaken cases does not prove it's a good thing to
+follow. I answered Jiri why it's better the way I suggested.
+
+> > > Link: https://github.com/vivier/qemu-m68k/issues/44
+> > > Link: https://lore.kernel.org/all/1078874617.9746.36.camel@gaston/
+> >
+> > Missed Fixes tag?
+>
+> Would this be ok: Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+> I have to ask because some reviewers do not like to see a Fixes tag cite
+> that commit.
+
+Yes, or you even may dig into the history.git from history group (see
+git.kernel.org) for the real first patch that brought it.
+
+> > > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+> > > ---
+> > (here is a good location for Cc:)
+>
+> Documentation/process/submitting-patches.rst indicats that it should be
+> above the "---" separator together with Acked-by etc. Has this convention
+> changed recently?
+
+I see, I will prepare a patch to discuss this aspect.
 
 --=20
 With Best Regards,
