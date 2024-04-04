@@ -1,115 +1,109 @@
-Return-Path: <linux-kernel+bounces-131909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-131908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBE1B898D80
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:49:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F32B898D7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 19:48:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0044B28A84
-	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:48:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4133C1C27B98
+	for <lists+linux-kernel@lfdr.de>; Thu,  4 Apr 2024 17:48:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95DD112F5AA;
-	Thu,  4 Apr 2024 17:48:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78DDA12DDBD;
+	Thu,  4 Apr 2024 17:48:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="THdJiLxO"
-Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="OIRMCtj3"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E857129E88;
-	Thu,  4 Apr 2024 17:48:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD4BA12CD9C
+	for <linux-kernel@vger.kernel.org>; Thu,  4 Apr 2024 17:48:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712252921; cv=none; b=fpnOoblxHUL9/Uc8xCKrvKUbI617ELdJLte6CZxMrHbRC1WW9J6So2E37PhgFAWoTQtozjWw89ktqWhNnhLBLtg/vuWrvii7Vsyi/8i7ypozCARJmdqvS4vK75MRAyGJqiG9cy0rOTlVP0Ykl3JFMvf99kU4uySsCBw45CUPK+k=
+	t=1712252908; cv=none; b=fl3Z8HIu9uEbePVtx5h1qv/liT9YfMbV9IGAozebyKBW5OVEnt6KF1teWY8k8eehl/9ZYhQCnAyMbIv8/peq8lR4bSVn/Zc/bKU7GfpFlgn2QQfWTts9ZyTQpgQmLlGexU27/X3grJ82OuKawGmIi6t5Ykic6CF2d47AS2FPdB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712252921; c=relaxed/simple;
-	bh=vI4MrMdOzvU45Up4bUbJqH4cKKBdKrNwuFYQDyoAvgA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ta4jCYkWiF9TL/n7BDzwmdbdqF5gv6nm1+/YvC/NU35rWxwtD8aicOHM/40j8EFFiYxH7PvXmDKuQ1ORSy1KPrZTOkBX6J9IJ1oFyyMW3dmieqHp/wInapnS28Tk5U56hF4L/X1IKVlHEizeY+c4mUjnCG1KgEQ22dcO3tvgsQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=THdJiLxO; arc=none smtp.client-ip=209.85.216.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2a2474f2595so992595a91.1;
-        Thu, 04 Apr 2024 10:48:40 -0700 (PDT)
+	s=arc-20240116; t=1712252908; c=relaxed/simple;
+	bh=3cSbmZrjAfQIrrTlLR0hOFNu/HfpV2pnoC7RSDEECic=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uPko5QaziNFZvxo1LbJ/0geXUldhQ+2smXSChGald93pJCIOQEzSjsHT/IViD/+x4nJy2dr+QoN9TqWDfzsRpt4CTlX/t/o4j7V6R3oFH+Xmo5/V1lwkifUPLRr6Dz4QUiJuZq4gWDDEpxMSjpZHvvthADKIbunilTWcTsl07sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=OIRMCtj3; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7cc5e664d52so27086439f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 10:48:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712252920; x=1712857720; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vI4MrMdOzvU45Up4bUbJqH4cKKBdKrNwuFYQDyoAvgA=;
-        b=THdJiLxOtd45CdBOa5lP3B7wGUPMMqH9QU+JNjtZB1HGMq8GJTSwJXPZDx3/+4BL4D
-         gWNv6Z/jRzguwRA4mAi97VJHU6Wp20/myxTl2zMDgfdg7OnadGG5glSDMggcONddPO/T
-         6SDgvhuTIC2wPrqeH8SwVwgiI5UxBCpWmOnz/yefAzapKo6ywm1gbUy/ONzXWw+BoCD2
-         uYTzENDarPILW3OZexlaiC8IOtRgHXLSPB+SYSTYXy08Lb1EJbkXEgdGqxdWKxNbXYJ4
-         z+IABgUqD/tUPGBa5j8vwmDIjYNoA5dKMNa7AmGNsrvLW1NHCxdg6mnrPbXDApO6Z/wD
-         lcTQ==
+        d=linuxfoundation.org; s=google; t=1712252906; x=1712857706; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KY5NyprwqnUz5XuA9Kl5z+7VSecMAoWLl/z+MUE9h3s=;
+        b=OIRMCtj3/kGO/7uP4JL/ySFZnoCc7BiSL1RmL+60eii00FJKxt/6hS97g4YyrSLfyq
+         kOCg5j4O5+diKaawE3BZOS05l+Sn7hX6GxIShiU/ZXPyYttcZ8eP9vIG9h9xi/evHRC7
+         3WG8+n19o5WhvobuxmqQZVfvj1ADdIjhjdGag=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712252920; x=1712857720;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vI4MrMdOzvU45Up4bUbJqH4cKKBdKrNwuFYQDyoAvgA=;
-        b=xHCRYjVyN7Ntpk19wPrzPzVJpdSeDBNIm9rj7cuaqpA704MwLQ5u3c8fPi90lfHmvJ
-         Gt6/YzSLXWotGdDzw6D+miBxiV2EJDLnEes5PG3JLiESWYQtpIgbEhc8/izbZXH8AFq9
-         6x+y2QWREZGSdLUOgi4wf9rHlMEoH8XpkXEcwucedLP5+Wzl+UxSYEL8Lkx+WixxkX+G
-         jAVicP86LZBpW4IymVqLI+hOK8IU4BtpliYyWmhZk3rYiBiXgfzcgvP9K56doyLqkMxV
-         ELm87zg5rxPn0Kp5Bn1wLk2zAEPNu6HfOuUqOQcyIeAA++wh/oJBlKCg9j4MCU3D55wh
-         J+bw==
-X-Forwarded-Encrypted: i=1; AJvYcCUTfple234HKuArmpHKmjD7q4t84VZ6lcxYlB8Bc/QGkq2mVN3JKCmohkQDELdW7EkujwKSr3NTlRKYOZmcKPxxfnMd+o/KYFJveLjFdx1yMDOw2KLfPt02x7seRk4PYnGlOxaWFsIotWCSsv4uqBXGW0BMpxyHXpgfdFwv3opo5wPL/wA=
-X-Gm-Message-State: AOJu0Yw0xLLrKaWwzc4WGah+KYC7ezSLwrm3WT7jJ8SxJt5G3GBOKLkI
-	Or+TpLEmRsRCzGCP/kMa1xxAq2ERLSWqJZyqbY8OdSXq+WhwiFKzOGYTW7Rz8bO8GePCRRTMn/5
-	Lju62R6diioQZCxh1rqDsRN20Hu8=
-X-Google-Smtp-Source: AGHT+IHlscXTFbzvBDaANjdzeyYIU2Bzi1Z2mFW5dyNypC3v8GETs6/WUkm6FkEiMiVsMdRl7+HJ3JxRl5EHvirEJQY=
-X-Received: by 2002:a17:90a:e604:b0:2a2:ba9:ba61 with SMTP id
- j4-20020a17090ae60400b002a20ba9ba61mr3674127pjy.34.1712252919635; Thu, 04 Apr
- 2024 10:48:39 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712252906; x=1712857706;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KY5NyprwqnUz5XuA9Kl5z+7VSecMAoWLl/z+MUE9h3s=;
+        b=GqMnE/PPsUefIhmbG7VvR8nbu378OC5bsEQlvkvNh17gWM3bjfzxpQ8OJUpDJoaqGn
+         scthmSQmkfrCritBMazyPLQWjQ2XHl86JYRx1dvfz17HlgP9GXCSp6cF01bzPfgMpkML
+         cvD+DiiljyuDN8e6ElAGuye0VAx1Ou4xG8NfUJDTLHBeg7kxmXE1jay88qsPZ48tknRV
+         4wk4oNbqlOgD82LXvcn2f/XHPILePlEMfVg+wP2g3h2sSWVX6Pm3v6wpk23J2WOECfq9
+         dtuP+M+lYBkC4wHf+eiu5EjBQiC1d1MCkakY7gk6mo74mRvcQuGlpsh/VnXk/yuy33De
+         DsKg==
+X-Forwarded-Encrypted: i=1; AJvYcCVV9oUea8olm/3K4aIIgfxkaxv0WnsK5sEl7HFWcsqECYkN1MAtmqDNP+cHzZAFWAOl+3xpppb7DAL5TRuPAGVysuJc3XI5hG+3oYUI
+X-Gm-Message-State: AOJu0YzKqtuJe6G/wNCGExr8UkbTkf96+FgMp+WgngygnFcBoNiFc/ZS
+	F9BLi+e0jMjwO9mNZqt3Zz2R/JyuANMoYsXILxV5gj3wLfFRWHrCkh1f7EH6mwI=
+X-Google-Smtp-Source: AGHT+IEQpErISzxtGnTtE2N5Xs2rTdzy5TuY1rIwnpn+T8yboQI6fXwKLovL7m1U6HCU8niYZE9xgw==
+X-Received: by 2002:a92:cc4a:0:b0:369:b728:583c with SMTP id t10-20020a92cc4a000000b00369b728583cmr3556416ilq.3.1712252905984;
+        Thu, 04 Apr 2024 10:48:25 -0700 (PDT)
+Received: from [192.168.1.128] ([38.175.170.29])
+        by smtp.gmail.com with ESMTPSA id he21-20020a0566386d1500b0047f1a41f958sm1238024jab.56.2024.04.04.10.48.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 10:48:25 -0700 (PDT)
+Message-ID: <9a2b6f33-451b-4cb3-ad6b-be87b4c03a94@linuxfoundation.org>
+Date: Thu, 4 Apr 2024 11:48:25 -0600
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404-providing-emporium-e652e359c711@spud>
- <CANiq72m9YAu=dr1=WMSHOqfpszj4S6OkMEQ05vqbv_zKO5pOsg@mail.gmail.com> <CAGSQo024u1gHJgzsO38Xg3c4or+JupoPABQx_+0BLEpPg0cOEA@mail.gmail.com>
-In-Reply-To: <CAGSQo024u1gHJgzsO38Xg3c4or+JupoPABQx_+0BLEpPg0cOEA@mail.gmail.com>
-From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date: Thu, 4 Apr 2024 19:47:57 +0200
-Message-ID: <CANiq72k2HQHesGNaU3_yFZ7j8SKtWfZDAWdfoCDxo_bOEyn2ew@mail.gmail.com>
-Subject: Re: [PATCH v3] rust: make mutually exclusive with CFI_CLANG
-To: Matthew Maurer <mmaurer@google.com>
-Cc: Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org, 
-	Conor Dooley <conor.dooley@microchip.com>, stable@vger.kernel.org, 
-	Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, linux-kernel@vger.kernel.org, 
-	rust-for-linux@vger.kernel.org, Sami Tolvanen <samitolvanen@google.com>, 
-	Kees Cook <keescook@chromium.org>, Nathan Chancellor <nathan@kernel.org>, llvm@lists.linux.dev, 
-	Ramon de C Valle <rcvalle@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] selftests: add ksft_exit_fail_perror()
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>,
+ Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Shuah Khan <skhan@linuxfoundation.org>
+Cc: kernel@collabora.com
+References: <20240404161433.114497-1-usama.anjum@collabora.com>
+Content-Language: en-US
+From: Shuah Khan <skhan@linuxfoundation.org>
+In-Reply-To: <20240404161433.114497-1-usama.anjum@collabora.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 4, 2024 at 5:25=E2=80=AFPM Matthew Maurer <mmaurer@google.com> =
-wrote:
->
-> This patch is fine by me - the last patch needed for KCFI to be
-> functional in Rust just landed upstream last night, so we should
-> revisit this (in the form of enabling it) once we move to
-> `rustc-1.79.0` or later. In case anyone wants it for local
-> experimentation, I have a backport branch [1] which applies these to
-> the 1.73.0 compiler and enables it in the kernel [2] (not upstreamed
-> because the feature isn't yet in kernel's `rustc`), which Android will
-> be using for the Rust binder driver. This patch will require a recent
-> (last year or so) clang, as it relies on
-> `-fsanitize-cfi-icall-experimental-normalize-integers`.
->
-> [1]: https://github.com/maurer/rust/tree/1.73.0%2Bcfi
-> [2]: https://android-review.git.corp.google.com/c/kernel/common/+/2930616
+On 4/4/24 10:14, Muhammad Usama Anjum wrote:
+> In this series, ksft_exit_fail_perror() is being added which is helper
+> function on top of ksft_exit_fail_msg(). It prints errno and its string
+> form always. After writing and porting several kselftests, I've found
+> out that most of times ksft_exit_fail_msg() isn't useful if errno value
+> isn't printed. The ksft_exit_fail_perror() provides a convenient way to
+> always print errno when its used.
+> 
+> Muhammad Usama Anjum (2):
+>    selftests: add ksft_exit_fail_perror()>    selftests: exec: Use new ksft_exit_fail_perror() helper
+> 
+>   tools/testing/selftests/exec/recursion-depth.c | 10 +++++-----
+>   tools/testing/selftests/kselftest.h            | 14 ++++++++++++++
+>   2 files changed, 19 insertions(+), 5 deletions(-)
+> 
 
-Thanks for the update, Matthew!
+Applied the two patches to linux-kselftest next for Linux 6.10-rc1.
 
-I guess the public link is:
-https://android-review.googlesource.com/c/kernel/common/+/2930616
-
-Cheers,
-Miguel
+thanks,
+-- Shuah
 
