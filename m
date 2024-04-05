@@ -1,150 +1,270 @@
-Return-Path: <linux-kernel+bounces-132696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 266CD8998EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:04:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0A858998F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:05:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A870E28173F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:04:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 500ACB23301
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03E80161307;
-	Fri,  5 Apr 2024 09:03:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21A615FA9C;
+	Fri,  5 Apr 2024 09:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Ys7lT6yR"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NTHIOwZ+";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KToj6Ik8";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NTHIOwZ+";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KToj6Ik8"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B3C611E;
-	Fri,  5 Apr 2024 09:03:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191B317721;
+	Fri,  5 Apr 2024 09:04:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712307820; cv=none; b=e3sharrVeZAHiomWA0ePRfmmimkHbDih9+Z6TD+MZ5+8+NlEp2TXGF5v9hDftijrKolOkke7+UQzahGhjFDJlleKE33neslKiFpl7bKYk4S4YSqSzsdRJeq+Ti7NLrVRrpT0i5MlRPoczsbKdoPzwdoAjp6VuoQ9rIPe/IRH0sk=
+	t=1712307869; cv=none; b=giC8/D86pp78vwztcvEKYVq/bieXqxL1/GdigGj9CFoRCPR253CA3s8kEzXKEVeq3hUGvqUAJUnO9992sl6gGrrK4Bb5RTauIKJ5xbOxOYUqV8pjZ9Zoehj67PZaYFOS5oo1VLetCncRklUDJGMWCvSi1rh5AThxYRI/WgfH9Ng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712307820; c=relaxed/simple;
-	bh=8uDLqN77WbrxwfS6o4GIiUnXkw6hu0o+sH31k4g4boU=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B66nBsFGNHZ3VSAHxdGoqYRYOUZUXe4kPMNZSfPzXEECItUHDN65LwplWR/sAzgBEnHgsKjxYBLKRbcmIbX43XkF47qeJ1RGP5MDZiB2fVkCzs7qe+dWQHEZA+SE852tTrAdbfj7UaPYGVocFEhH1GTNMPWxW7Ap4Q3RXFupQ10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=Ys7lT6yR; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 46F34100022;
-	Fri,  5 Apr 2024 12:03:28 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 46F34100022
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1712307808;
-	bh=CfCrImPVfmasb+F60N8ul7gwP1ihbKd1RFWZG/QLcfQ=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
-	b=Ys7lT6yR7KzhOGZNrPGRI6tv3RSuYsEWhBSEA4iZi2kZPhYSPuF/iE6NjVtgrBgU9
-	 q8HtUxFLN4QiqDnj7IFJH7+xGeORMLsjYV0LX9IP/ybiCrIgHpuh/oF1aZpiGu6u3H
-	 IsBUzM1A3V2EmA64bevUJe6xtIPwQL993iO3qKc1OZrCKTspXPBhXfaG2ZUNeHX51i
-	 AwNlUdPk1BpYirRXsUiS7L4TVUUbp6Lt2BkA4QRppDD319LoWAdSuRCOAzZ/XUYTdp
-	 K7BKeJCR4452YBqAyxvPBnrB67tf9BSR9u0GAKTDtnikxWxy+eylO+dawgXiChGnvl
-	 um9yhUxwhP7jA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	s=arc-20240116; t=1712307869; c=relaxed/simple;
+	bh=CZ7sdleduXPFl026NflXweEHKoQ3VxVB/rZ/gonnO14=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BRXfKaoUj3UdX3Xh7cexJkp/mGWvubYXAtk0rCmfvq51aSRxEXIvdvec8NF5ZpWam9sLbfvCu4z+U3g3c0v3xn5mAcGiRy44TCZS5z7miPFvrt7O8Ww4KwN2PbmZkFIiMawtoUEBJUys4j8PKEiVpTpy8qs/0hVL8o7WMBEngO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NTHIOwZ+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KToj6Ik8; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NTHIOwZ+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KToj6Ik8; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Fri,  5 Apr 2024 12:03:28 +0300 (MSK)
-Received: from localhost (100.64.160.123) by p-i-exch-sc-m02.sberdevices.ru
- (172.16.192.103) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Fri, 5 Apr
- 2024 12:03:27 +0300
-Date: Fri, 5 Apr 2024 12:03:27 +0300
-From: Dmitry Rokosov <ddrokosov@salutedevices.com>
-To: Greg KH <gregkh@linuxfoundation.org>
-CC: <quic_sridsn@quicinc.com>, <quic_mdalam@quicinc.com>, <ezra@easyb.ch>,
-	<gch981213@gmail.com>, <miquel.raynal@bootlin.com>, <richard@nod.at>,
-	<sashal@kernel.org>, <vigneshr@ti.com>, <kernel@salutedevices.com>,
-	<rockosov@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<linux-mtd@lists.infradead.org>, Ezra Buehler
-	<ezra.buehler@husqvarnagroup.com>, <stable@vger.kernel.org>, Martin Kurbanov
-	<mmkurbanov@salutedevices.com>
-Subject: Re: [PATCH v1] mtd: spinand: Add support for 5-byte IDs
-Message-ID: <20240405090327.vowrj6aqjmmighs4@CAB-WSD-L081021>
-References: <20240404121532.14755-1-ddrokosov@salutedevices.com>
- <2024040509-faceless-passerby-10ad@gregkh>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1491D1F78A;
+	Fri,  5 Apr 2024 09:04:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712307866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=q6m7RkFG+I05tVEKqU5D+NUntnuekF2Z+soqECDuzWU=;
+	b=NTHIOwZ+L3b2OUEsvJLD8ClmWEK1V9PGjFmF3hXDlTtwirb0F7vborCm2hzx0SiFnjhbIv
+	zzjmLpjtndDKGRKFQdcMcew0yVU0osvQibX+CHvUnAA8pJZGyIsXDp0AdfGiyaEVYugdhw
+	ZyfnpyppmEFhkJ8JcRJr91khwROWpFk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712307866;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=q6m7RkFG+I05tVEKqU5D+NUntnuekF2Z+soqECDuzWU=;
+	b=KToj6Ik8dGLGisbepSgkxn4mN2+dzr6QWAUlbfj7teTNyD0Xb003EKLmDQCOQOFBFeFQjI
+	d81wCJIrvTO/D4Bw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=NTHIOwZ+;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=KToj6Ik8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712307866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=q6m7RkFG+I05tVEKqU5D+NUntnuekF2Z+soqECDuzWU=;
+	b=NTHIOwZ+L3b2OUEsvJLD8ClmWEK1V9PGjFmF3hXDlTtwirb0F7vborCm2hzx0SiFnjhbIv
+	zzjmLpjtndDKGRKFQdcMcew0yVU0osvQibX+CHvUnAA8pJZGyIsXDp0AdfGiyaEVYugdhw
+	ZyfnpyppmEFhkJ8JcRJr91khwROWpFk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712307866;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=q6m7RkFG+I05tVEKqU5D+NUntnuekF2Z+soqECDuzWU=;
+	b=KToj6Ik8dGLGisbepSgkxn4mN2+dzr6QWAUlbfj7teTNyD0Xb003EKLmDQCOQOFBFeFQjI
+	d81wCJIrvTO/D4Bw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 98D09139F1;
+	Fri,  5 Apr 2024 09:04:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id LEQAJJm+D2ZoTwAAn2gu4w
+	(envelope-from <tzimmermann@suse.de>); Fri, 05 Apr 2024 09:04:25 +0000
+Message-ID: <c281bb8e-0719-4b28-a637-56615ad16913@suse.de>
+Date: Fri, 5 Apr 2024 11:04:25 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <2024040509-faceless-passerby-10ad@gregkh>
-User-Agent: NeoMutt/20220415
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184597 [Apr 05 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 15 0.3.15 adb41f89e2951eb37b279104a7abb8e79494a5e7, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;lore.kernel.org:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/04/05 06:54:00
-X-KSMG-LinksScanning: Clean, bases: 2024/04/05 06:53:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/04/05 05:49:00 #24662499
-X-KSMG-AntiVirus-Status: Clean, skipped
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/3] arch: Remove fbdev dependency from video helpers
+To: arnd@arndb.de, sam@ravnborg.org, javierm@redhat.com, deller@gmx.de,
+ sui.jingfeng@linux.dev
+Cc: linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ linux-fbdev@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
+ linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org,
+ linux-kernel@vger.kernel.org
+References: <20240329203450.7824-1-tzimmermann@suse.de>
+Content-Language: en-US
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20240329203450.7824-1-tzimmermann@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -5.50
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 1491D1F78A
+X-Spam-Level: 
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-5.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	FREEMAIL_TO(0.00)[arndb.de,ravnborg.org,redhat.com,gmx.de,linux.dev];
+	FREEMAIL_ENVRCPT(0.00)[gmx.de];
+	DKIM_TRACE(0.00)[suse.de:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:dkim]
 
-On Fri, Apr 05, 2024 at 08:37:48AM +0200, Greg KH wrote:
-> On Thu, Apr 04, 2024 at 03:15:21PM +0300, Dmitry Rokosov wrote:
-> > From: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
-> > 
-> > [ Upstream commit 34a956739d295de6010cdaafeed698ccbba87ea4 ]
-> 
-> This commit is already in the following releases:
-> 	6.6.24 6.7.12 6.8.3 6.9-rc1
-> 
-> > E.g. ESMT chips will return an identification code with a length of 5
-> > bytes. In order to prevent ambiguity, flash chips would actually need to
-> > return IDs that are up to 17 or more bytes long due to JEDEC's
-> > continuation scheme. I understand that if a manufacturer ID is located
-> > in bank N of JEDEC's database (there are currently 16 banks), N - 1
-> > continuation codes (7Fh) need to be added to the identification code
-> > (comprising of manufacturer ID and device ID). However, most flash chip
-> > manufacturers don't seem to implement this (correctly).
-> > 
-> > Cc: <stable@vger.kernel.org> # 6.6.23
-> > Cc: <stable@vger.kernel.org> # 6.7.11
-> > Cc: <stable@vger.kernel.org> # 6.8.2
-> > Signed-off-by: Ezra Buehler <ezra.buehler@husqvarnagroup.com>
-> > Reviewed-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-> > Tested-by: Martin Kurbanov <mmkurbanov@salutedevices.com>
-> > Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-> > Link: https://lore.kernel.org/linux-mtd/20240125200108.24374-2-ezra@easyb.ch
-> > Signed-off-by: Dmitry Rokosov <ddrokosov@salutedevices.com>
-> > ---
-> > 
-> > In the patch series [1] only one patch was marked with Fixes tag, that's
-> > why the secon patch was not applied to 6.6.y, 6.7.y and 6.8y. It breaks
-> > ESMT detection flow with logs:
-> > 
-> > [    0.770730] spi-nand spi0.0: unknown raw ID c8017f7f
-> > [    0.772688] spi-nand: probe of spi0.0 failed with error -524
-> > 
-> > Please cherry-pick the second patch from the series to 6.6.y, 6.7.y and
-> > 6.8.y.
-> 
-> What commit id is "the second patch" here?  The one referenced above?
-> If so, again, this is already in a released kernel, so I'm confused as
-> to what to do here.
+Hi,
 
-Ah, I apologize for not checking versions 6.8.3 and 6.7.12. My test
-environment was running on versions 6.8.2 and 6.7.11. Therefore, the
-mistake was on my part. Please disregard the cherry-pick for those
-versions, and thank you for quick reply!
+if there are no further comments, can this series be merged through 
+asm-generic?
+
+Best regards
+Thomas
+
+Am 29.03.24 um 21:32 schrieb Thomas Zimmermann:
+> Make architecture helpers for display functionality depend on general
+> video functionality instead of fbdev. This avoids the dependency on
+> fbdev and makes the functionality available for non-fbdev code.
+>
+> Patch 1 replaces the variety of Kconfig options that control the
+> Makefiles with CONFIG_VIDEO. More fine-grained control of the build
+> can then be done within each video/ directory; see parisc for an
+> example.
+>
+> Patch 2 replaces fb_is_primary_device() with video_is_primary_device(),
+> which has no dependencies on fbdev. The implementation remains identical
+> on all affected platforms. There's one minor change in fbcon, which is
+> the only caller of fb_is_primary_device().
+>
+> Patch 3 renames the source and header files from fbdev to video.
+>
+> v3:
+> - arc, arm, arm64, sh, um: generate asm/video.h (Sam, Helge, Arnd)
+> - fix typos (Sam)
+> v2:
+> - improve cover letter
+> - rebase onto v6.9-rc1
+>
+> Thomas Zimmermann (3):
+>    arch: Select fbdev helpers with CONFIG_VIDEO
+>    arch: Remove struct fb_info from video helpers
+>    arch: Rename fbdev header and source files
+>
+>   arch/arc/include/asm/fb.h                    |  8 ------
+>   arch/arm/include/asm/fb.h                    |  6 -----
+>   arch/arm64/include/asm/fb.h                  | 10 --------
+>   arch/loongarch/include/asm/{fb.h => video.h} |  8 +++---
+>   arch/m68k/include/asm/{fb.h => video.h}      |  8 +++---
+>   arch/mips/include/asm/{fb.h => video.h}      | 12 ++++-----
+>   arch/parisc/Makefile                         |  2 +-
+>   arch/parisc/include/asm/fb.h                 | 14 -----------
+>   arch/parisc/include/asm/video.h              | 16 ++++++++++++
+>   arch/parisc/video/Makefile                   |  2 +-
+>   arch/parisc/video/{fbdev.c => video-sti.c}   |  9 ++++---
+>   arch/powerpc/include/asm/{fb.h => video.h}   |  8 +++---
+>   arch/powerpc/kernel/pci-common.c             |  2 +-
+>   arch/sh/include/asm/fb.h                     |  7 ------
+>   arch/sparc/Makefile                          |  4 +--
+>   arch/sparc/include/asm/{fb.h => video.h}     | 15 +++++------
+>   arch/sparc/video/Makefile                    |  2 +-
+>   arch/sparc/video/fbdev.c                     | 26 --------------------
+>   arch/sparc/video/video.c                     | 25 +++++++++++++++++++
+>   arch/um/include/asm/Kbuild                   |  2 +-
+>   arch/x86/Makefile                            |  2 +-
+>   arch/x86/include/asm/fb.h                    | 19 --------------
+>   arch/x86/include/asm/video.h                 | 21 ++++++++++++++++
+>   arch/x86/video/Makefile                      |  3 ++-
+>   arch/x86/video/{fbdev.c => video.c}          | 21 +++++++---------
+>   drivers/video/fbdev/core/fbcon.c             |  2 +-
+>   include/asm-generic/Kbuild                   |  2 +-
+>   include/asm-generic/{fb.h => video.h}        | 17 +++++++------
+>   include/linux/fb.h                           |  2 +-
+>   29 files changed, 124 insertions(+), 151 deletions(-)
+>   delete mode 100644 arch/arc/include/asm/fb.h
+>   delete mode 100644 arch/arm/include/asm/fb.h
+>   delete mode 100644 arch/arm64/include/asm/fb.h
+>   rename arch/loongarch/include/asm/{fb.h => video.h} (86%)
+>   rename arch/m68k/include/asm/{fb.h => video.h} (86%)
+>   rename arch/mips/include/asm/{fb.h => video.h} (76%)
+>   delete mode 100644 arch/parisc/include/asm/fb.h
+>   create mode 100644 arch/parisc/include/asm/video.h
+>   rename arch/parisc/video/{fbdev.c => video-sti.c} (78%)
+>   rename arch/powerpc/include/asm/{fb.h => video.h} (76%)
+>   delete mode 100644 arch/sh/include/asm/fb.h
+>   rename arch/sparc/include/asm/{fb.h => video.h} (75%)
+>   delete mode 100644 arch/sparc/video/fbdev.c
+>   create mode 100644 arch/sparc/video/video.c
+>   delete mode 100644 arch/x86/include/asm/fb.h
+>   create mode 100644 arch/x86/include/asm/video.h
+>   rename arch/x86/video/{fbdev.c => video.c} (66%)
+>   rename include/asm-generic/{fb.h => video.h} (89%)
+>
 
 -- 
-Thank you,
-Dmitry
+--
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Frankenstrasse 146, 90461 Nuernberg, Germany
+GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+HRB 36809 (AG Nuernberg)
+
 
