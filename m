@@ -1,206 +1,138 @@
-Return-Path: <linux-kernel+bounces-132939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132941-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22FA9899C3B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:59:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3976899C42
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:01:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E1821F23C14
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:59:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2E1311C235CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D60616D9AD;
-	Fri,  5 Apr 2024 11:58:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F9C16C6B5;
+	Fri,  5 Apr 2024 12:01:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fu+9BIpN"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="D72Ay4HA"
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B3F16D4DF
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 11:58:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB40C16C69E
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 12:01:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712318313; cv=none; b=lQUjsCOZtn8sdpioXacAYsfCgPI4g+Yv/jZYYKnJ9RXHlj1OxolgKwI13EMx1/cFvHt21Jbu/TjZiR8XEq+Lh/Ah9URCJFjAuE9kcoMIVHDd0H9jRKcD0rqFbPgWhwCIS5rbkLh8b1rdWUaPEWYKVo/sJflqZu8c/o7PWk0sEcU=
+	t=1712318480; cv=none; b=gVQ0TE5xlrfDK69/WB4/JDiv09bGr9gADCjzW2lcONH00jXYnDtYKEKIMQzzvzHdeD1aA11EOPLKoXZeJD336MtgNjf/yHZq1fwlhU+k2Kpwhwq14+5jqU0DwW8E4WRoxNVxjPQCkBs/KI/cAwg6BNZk4pGGlqgpJD0vI06PfoE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712318313; c=relaxed/simple;
-	bh=VOl9mQCZZBeBKTYD0q38JVa+rIW4wA9u/6sOyqn9PV4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eAV2+tk7obBqelqheTXVsTnH1tFuFQ8bJNis6pvGPqrejlBUfWSC/Pz4B8uLvon6xKb1eQC97aaRZuTivpzVzB6DWes4JYguPiFRs9tVAGStRM6U3hVYrmBxZrp2IAJLsjm1M6ajetA/3k+s67W1YpSlAHFMsp6kd4MKeR9PoBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fu+9BIpN; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1712318480; c=relaxed/simple;
+	bh=dAWJ3+cXxiuZbHkwBo+d8CXVXZTUmlRT6gNYyEXFD3Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mCe3RHP+sACJEDIDY1F/PsTsM56a/t51giTq2AsFrNkp/06G+fEnGgw/RaQs3sYMrfyy4fzxffctMx56jaW2DDZotI/8baKh8ESmroMK0SHxvO0ZobrUXiaNzkbUATeRIT2leheMTDKgPu6R9axsD23JJ13+k4OWG367kLUiWug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=D72Ay4HA; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712318310;
+	s=mimecast20190719; t=1712318477;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bNbIAMV3AIIh+finZC0kYCtErDA0HoO+gaZWe4mDURE=;
-	b=Fu+9BIpNpMdOLGNEXn4bn3Gm2YHQrppJwRkjUSRvWEmCcJfAjbel/dUfqphkcXtJqlp/Y+
-	6YTHvYV6i3v1QUujUKsqo/+0nglqdlTQf9LXpsqgLozoKJY8T8xSDO6WxKpYvK3p3ocDaI
-	sVRhWp1Pl4gaW+0/w9RJQJNIoaWGz0k=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fOyfVcrOV/57WM6ff0FNPDEGtLigdW9U20TrqvIPj9w=;
+	b=D72Ay4HA90Lg+JHT/oErgNyjIXGR7mEVrgsaGMsy11rNkHUahdADV/7mb7zRi73CbFLNCj
+	KbMPbhkZ1D39SJbCYm8PQm1IKny7wqa7X/4bNChHQKRrEtHEovg/W4mGOi2en/iGSih5vR
+	UJ9zVDzNeS9CuZYv4r5e1l8zQLnMAAY=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-216-j7EJIyIYM6OGTJqf_yp9KQ-1; Fri, 05 Apr 2024 07:58:23 -0400
-X-MC-Unique: j7EJIyIYM6OGTJqf_yp9KQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 584B885CF01;
-	Fri,  5 Apr 2024 11:58:22 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id D080D40C6CB5;
-	Fri,  5 Apr 2024 11:58:20 +0000 (UTC)
-From: Paolo Bonzini <pbonzini@redhat.com>
-To: linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org
+ us-mta-634-zVx69gFbOH2uFLAXfKidkg-1; Fri, 05 Apr 2024 08:01:16 -0400
+X-MC-Unique: zVx69gFbOH2uFLAXfKidkg-1
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-430b327e703so18947931cf.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 05:01:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712318476; x=1712923276;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fOyfVcrOV/57WM6ff0FNPDEGtLigdW9U20TrqvIPj9w=;
+        b=tEUt1MxvaYxdaUEC8gVJuUeRZ/WbJwXCbubDYOC+rWCTVnubcY/9fnP0wGtW3be27s
+         61JAqU4oVmF0EvHtOb6vmlRJ1wJacmO1+JyQbbxj9gjc7JnN4DkTbdkgRA8RtRY31KI7
+         G4EH5m8ylu/ZuWFK9MNnOQejJRSykOib4rCw7uP/q3jZ6AQmaakf8TYhgO/H4vdDqKiq
+         pC5L3G1CJnzBI/efJF3KSbwdbtmtoxbRHcylchiL5BBsJdexBifxHqN9t01BoyyFZFud
+         0m0mu37Yjelele3ZLaA0gF/hXhsUh/YRoAiMOYhqds06lJmgEdKuHw19fAhcBDBHrBer
+         /yEg==
+X-Forwarded-Encrypted: i=1; AJvYcCWVzcEqC3RFpbKAmWxOgH1bBEJGBpkepcB47M3673LCc0atG0Q72GRC2GvqzplXTlXiA5khVJgQ2Z1xPg6zqtFOXWwfSuZHaTvlNyds
+X-Gm-Message-State: AOJu0YxRtzOJOpVqlNf+HqIuT2mWYAWqSMqQRzxlO7iPsbjH3eoRYRp2
+	s48iQTMJRoOkY+hqqTSU4xcB27R+I5mAbOyHMcZd2W4YSj0IWbCRBopN9V0PHpMS0dSSrn2GOgD
+	GSiuhIfv9B1pGRqhaiZDnb/SepEQIN6+gwhRo/ACb54ulWjJkBEbdnUcnoXndyg==
+X-Received: by 2002:ac8:5f06:0:b0:432:cfa6:5d20 with SMTP id x6-20020ac85f06000000b00432cfa65d20mr1214363qta.12.1712318476287;
+        Fri, 05 Apr 2024 05:01:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFbkyu7lrarVuj8TBoNoTnVyIyQO0Zw8ghmwwqUIjLkAEOkX/uFF9qF4MU9eU2zyyX3VCAVhQ==
+X-Received: by 2002:ac8:5f06:0:b0:432:cfa6:5d20 with SMTP id x6-20020ac85f06000000b00432cfa65d20mr1214188qta.12.1712318473883;
+        Fri, 05 Apr 2024 05:01:13 -0700 (PDT)
+Received: from rh.redhat.com (p200300c93f4c24001316a1e598258370.dip0.t-ipconnect.de. [2003:c9:3f4c:2400:1316:a1e5:9825:8370])
+        by smtp.gmail.com with ESMTPSA id fb17-20020a05622a481100b00434383f2518sm679808qtb.87.2024.04.05.05.01.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 05:01:13 -0700 (PDT)
+From: Sebastian Ott <sebott@redhat.com>
+To: linux-arm-kernel@lists.infradead.org,
+	kvmarm@lists.linux.dev,
+	linux-kernel@vger.kernel.org
 Cc: Marc Zyngier <maz@kernel.org>,
 	Oliver Upton <oliver.upton@linux.dev>,
-	Tianrui Zhao <zhaotianrui@loongson.cn>,
-	Bibo Mao <maobibo@loongson.cn>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Anup Patel <anup@brainfault.org>,
-	Atish Patra <atishp@atishpatra.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@redhat.com>,
-	linux-arm-kernel@lists.infradead.org,
-	kvmarm@lists.linux.dev,
-	loongarch@lists.linux.dev,
-	linux-mips@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	kvm-riscv@lists.infradead.org,
-	linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org,
-	linux-perf-users@vger.kernel.org
-Subject: [PATCH 4/4] mm: replace set_pte_at_notify() with just set_pte_at()
-Date: Fri,  5 Apr 2024 07:58:15 -0400
-Message-ID: <20240405115815.3226315-5-pbonzini@redhat.com>
-In-Reply-To: <20240405115815.3226315-1-pbonzini@redhat.com>
-References: <20240405115815.3226315-1-pbonzini@redhat.com>
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>
+Subject: [PATCH 0/4] KVM: arm64: emulation for CTR_EL0
+Date: Fri,  5 Apr 2024 14:01:04 +0200
+Message-ID: <20240405120108.11844-1-sebott@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-With the demise of the .change_pte() MMU notifier callback, there is no
-notification happening in set_pte_at_notify().  It is a synonym of
-set_pte_at() and can be replaced with it.
+Hej folks,
 
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- include/linux/mmu_notifier.h | 2 --
- kernel/events/uprobes.c      | 5 ++---
- mm/ksm.c                     | 4 ++--
- mm/memory.c                  | 7 +------
- mm/migrate_device.c          | 8 ++------
- 5 files changed, 7 insertions(+), 19 deletions(-)
+I'm looking into supporting migration between 2 Ampere Altra (Max)
+machines (using Neoverse-N1). They are almost identical regarding
+their feature id register state except for CTR_EL0.DIC which is set
+on one machine but not the other.
 
-diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
-index 8c72bf651606..d39ebb10caeb 100644
---- a/include/linux/mmu_notifier.h
-+++ b/include/linux/mmu_notifier.h
-@@ -657,6 +657,4 @@ static inline void mmu_notifier_synchronize(void)
- 
- #endif /* CONFIG_MMU_NOTIFIER */
- 
--#define set_pte_at_notify set_pte_at
--
- #endif /* _LINUX_MMU_NOTIFIER_H */
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index e4834d23e1d1..f4523b95c945 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -18,7 +18,6 @@
- #include <linux/sched/coredump.h>
- #include <linux/export.h>
- #include <linux/rmap.h>		/* anon_vma_prepare */
--#include <linux/mmu_notifier.h>	/* set_pte_at_notify */
- #include <linux/swap.h>		/* folio_free_swap */
- #include <linux/ptrace.h>	/* user_enable_single_step */
- #include <linux/kdebug.h>	/* notifier mechanism */
-@@ -195,8 +194,8 @@ static int __replace_page(struct vm_area_struct *vma, unsigned long addr,
- 	flush_cache_page(vma, addr, pte_pfn(ptep_get(pvmw.pte)));
- 	ptep_clear_flush(vma, addr, pvmw.pte);
- 	if (new_page)
--		set_pte_at_notify(mm, addr, pvmw.pte,
--				  mk_pte(new_page, vma->vm_page_prot));
-+		set_pte_at(mm, addr, pvmw.pte,
-+			   mk_pte(new_page, vma->vm_page_prot));
- 
- 	folio_remove_rmap_pte(old_folio, old_page, vma);
- 	if (!folio_mapped(old_folio))
-diff --git a/mm/ksm.c b/mm/ksm.c
-index 8c001819cf10..108a4d167824 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -1345,7 +1345,7 @@ static int write_protect_page(struct vm_area_struct *vma, struct page *page,
- 		if (pte_write(entry))
- 			entry = pte_wrprotect(entry);
- 
--		set_pte_at_notify(mm, pvmw.address, pvmw.pte, entry);
-+		set_pte_at(mm, pvmw.address, pvmw.pte, entry);
- 	}
- 	*orig_pte = entry;
- 	err = 0;
-@@ -1447,7 +1447,7 @@ static int replace_page(struct vm_area_struct *vma, struct page *page,
- 	 * See Documentation/mm/mmu_notifier.rst
- 	 */
- 	ptep_clear_flush(vma, addr, ptep);
--	set_pte_at_notify(mm, addr, ptep, newpte);
-+	set_pte_at(mm, addr, ptep, newpte);
- 
- 	folio = page_folio(page);
- 	folio_remove_rmap_pte(folio, page, vma);
-diff --git a/mm/memory.c b/mm/memory.c
-index f2bc6dd15eb8..9a6f4d8aa379 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3327,13 +3327,8 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
- 		ptep_clear_flush(vma, vmf->address, vmf->pte);
- 		folio_add_new_anon_rmap(new_folio, vma, vmf->address);
- 		folio_add_lru_vma(new_folio, vma);
--		/*
--		 * We call the notify macro here because, when using secondary
--		 * mmu page tables (such as kvm shadow page tables), we want the
--		 * new page to be mapped directly into the secondary page table.
--		 */
- 		BUG_ON(unshare && pte_write(entry));
--		set_pte_at_notify(mm, vmf->address, vmf->pte, entry);
-+		set_pte_at(mm, vmf->address, vmf->pte, entry);
- 		update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
- 		if (old_folio) {
- 			/*
-diff --git a/mm/migrate_device.c b/mm/migrate_device.c
-index b6c27c76e1a0..66206734b1b9 100644
---- a/mm/migrate_device.c
-+++ b/mm/migrate_device.c
-@@ -664,13 +664,9 @@ static void migrate_vma_insert_page(struct migrate_vma *migrate,
- 	if (flush) {
- 		flush_cache_page(vma, addr, pte_pfn(orig_pte));
- 		ptep_clear_flush(vma, addr, ptep);
--		set_pte_at_notify(mm, addr, ptep, entry);
--		update_mmu_cache(vma, addr, ptep);
--	} else {
--		/* No need to invalidate - it was non-present before */
--		set_pte_at(mm, addr, ptep, entry);
--		update_mmu_cache(vma, addr, ptep);
- 	}
-+	set_pte_at(mm, addr, ptep, entry);
-+	update_mmu_cache(vma, addr, ptep);
- 
- 	pte_unmap_unlock(ptep, ptl);
- 	*src = MIGRATE_PFN_MIGRATE;
+CTR_EL0 is currently marked as invariant and migrating a VM between
+those 2 machines using qemu fails.
+
+I've send this out as an RFC before [0]. What I've changed here
+based on feedback I've got from Marc was:
+ * store the emulated value per VM and not per VCPU
+ * allow to change more values than just the DIC bit
+ * only trap guest access to that reg when needed
+ * make sure to not present the guest with an inconsistent register set
+
+Patch 2 adds a ctr_el0 member to struct kvm_arch - would it be preferred
+to add it into kvm->arch.id_regs[] (this would mean to increase that
+array 4x)?
+
+Patch 3 resets CLIDR_EL1 after a write to CTR_EL0 potentially changing
+the value for CLIDR_EL1 - would that be ok for userspace?
+
+Thanks,
+Sebastian
+
+[0]: https://lore.kernel.org/all/20240318111636.10613-1-sebott@redhat.com/T/
+
+
+Sebastian Ott (4):
+  KVM: arm64: change return value in arm64_check_features()
+  KVM: arm64: maintain per VM value for CTR_EL0
+  KVM: arm64: add emulation for CTR_EL0 register
+  KVM: arm64: show writable masks for feature registers
+
+ arch/arm64/include/asm/kvm_host.h |   1 +
+ arch/arm64/kvm/sys_regs.c         | 131 ++++++++++++++++++++----------
+ 2 files changed, 89 insertions(+), 43 deletions(-)
+
 -- 
-2.43.0
+2.42.0
 
 
