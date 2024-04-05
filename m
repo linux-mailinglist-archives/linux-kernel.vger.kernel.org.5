@@ -1,83 +1,61 @@
-Return-Path: <linux-kernel+bounces-133361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1052289A2D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:47:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E5E789A2DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:48:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 420571C2275A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:47:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78CFB28870B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97C6E171061;
-	Fri,  5 Apr 2024 16:47:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8893617164F;
+	Fri,  5 Apr 2024 16:48:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HhtYn1HP"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="t33EO4xO"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28C4817108E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 16:46:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F029163A97;
+	Fri,  5 Apr 2024 16:48:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712335621; cv=none; b=Ctqnb1lL1qC/3Mx3WmoAaMIUVRlztxgZ3+lX3AIF1+IXgAaAZ7FrEIr+peVUX8VePX0Uw6Li8AE5JF3w8Ig/cTKFCEFDJuhzmpCC38xtxF606fiiVJC2FFUzNoCqFbCYALRIfxeY4qz8nLPoUX8H0W/nwmtk8nbtg8w1CUlkn3g=
+	t=1712335690; cv=none; b=a/+9i3g7LrMlcS7AKcFSMNGDR0yE70VUcDsVhmvV7l2h2CqQ2Vfu4hdd64IH7EE3o2dG49oVM4+OteQbz8tT9C+uOfuunnkE5+yZljl5TPQGGU1s4R1OnY/cnRafGFYPYLkMW6Rs9D/7ovT+GYb69iY2qX8mJl1H4llKCRBAXQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712335621; c=relaxed/simple;
-	bh=KsPF6po0f631j8NvbzhzHLnGhKfPZwZJTUHih5WzFXc=;
+	s=arc-20240116; t=1712335690; c=relaxed/simple;
+	bh=Rca1o2FBhj6lgrKzncw2lDGKtrVSO+XtFw9fsH7yT8U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V/0pqGzvcDPgtxQwxtkvubEG3rLvMYVGhlHbkjCyhXLYAzPUwGxyaQvT5uWB30yE0Oa8v2XSbZosldC9md8fx653P0ovnslNwVIkT3EFYvwWxkxKkCr8Iicpen4vA08orHKLLjKHc76joNQb/jnJan8CzB5IyFkLQzJ0yh6rmdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HhtYn1HP; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-516d1c8dc79so1997653e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 09:46:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712335618; x=1712940418; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zjZDXXK2zwXeuxbCY+k8mNYZHEoQ+bEUvt9cCenwnEg=;
-        b=HhtYn1HPAxnw8gcUfekGwloyZyzjCIMJb92tIA+8wOI5XGreRXiXhhQqcQ52YrtjBB
-         LLGgJJLTUNhxIPAplxSPFLvSipb89u+Wg8xPXNDQLfkUGMYIgifqw8dPNkoXmJViJmd4
-         f30Wd9YRMqD0b0oKoihhtl1C8M3icfzggfHQHXn8TTxq6mHmURyn/+DyhkPmsSVV8D8I
-         OozbhYDhOzgdFELNdFBGSICGtTEA9nk+5l12ov07QlEg1qjQToTzM6j7nJNj4UNFzDas
-         T21qkmnB2OFsjX6fcFsrEqvG00q7IAEqJ6Gm3zY38bLjYaiU0BR/58YNHTGlUbuHj+73
-         YQOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712335618; x=1712940418;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zjZDXXK2zwXeuxbCY+k8mNYZHEoQ+bEUvt9cCenwnEg=;
-        b=QtbtUS+whRH2+o4JDuKWUbuZU7672qZt5USZVu5W1AJoLhONXfSDmpBEFf9ye6I3Jl
-         62cZDEMF9TBBPTpnz4+ay983F7kUXsciK9o0lr8YYpvU/X5jkUrEZEtxZkybne98jfnD
-         aPo00X74bCpd8wxrr3sxgErOUZ+qiDZ5FD2NjWgUHIA27frmqVzizWTDPf7Jc8cRWGHw
-         UqYqjVTQpTsTJZ7ASAU1R/pWjB2SQTCLT8bh42jJWXomKh1EVVQJB5B4kAmnUFCrH0jL
-         ArDFQUNlE7hRicyKI3ZFCJAm27kduCZciytvALAaASqLdybYXyqiyWMNjfi/YrGInA8A
-         X0Kw==
-X-Forwarded-Encrypted: i=1; AJvYcCV99VcfWCi4sX5tOAvmk6wdBmr/8sFqeoUHQWElI1qAv9YR88T/yGq5a+T28oKPJ+sxPEK5CxOEJ/FhKbdFg94uuAWgGJUqnXmuRyor
-X-Gm-Message-State: AOJu0Yx19SbkgPkj/YqzZcMmEjS5vN+XPGQpBN3QSlHziuG4VJCQqTw6
-	VLrdf3gAZseeKbgytBBWt1iAK0q0gjAisqolaZnvgdcWC85AvnY9cyz2OzchaXI1LRfXAJ8F1/b
-	D
-X-Google-Smtp-Source: AGHT+IFufXZNeav0WseEY6nRjlxRZCZWJPm4KsDfy/VrMhHziMpaWAR1CqPIEOMNojFKUGoxkwK9tw==
-X-Received: by 2002:a05:6512:224d:b0:515:ab92:6a82 with SMTP id i13-20020a056512224d00b00515ab926a82mr1791982lfu.17.1712335618108;
-        Fri, 05 Apr 2024 09:46:58 -0700 (PDT)
-Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
-        by smtp.gmail.com with ESMTPSA id r14-20020ac25f8e000000b00515c8ff6f52sm231480lfe.229.2024.04.05.09.46.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 09:46:57 -0700 (PDT)
-Date: Fri, 5 Apr 2024 19:46:56 +0300
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>, 
-	Marijn Suijten <marijn.suijten@somainline.org>, Helen Koike <helen.koike@collabora.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm: ci: fix the xfails for apq8016
-Message-ID: <oakh6gccuho2zq6aaaydq4hucz2ueuayo6qpq73uaw7ljt4gu7@haz3kdjjy7hp>
-References: <20240401204859.24223-1-quic_abhinavk@quicinc.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lCnTyj3IpTPpSWfOFz7tPACZ+8zE5UP4PAHcoDSndy3VWmpgE/hqBD/UwoRf9nun1MkrfxLNKND5SSmZlEY3bfk6RE4AX3KQ5QjGLrAJSypsNU8zATl3/RKDShIYoPUfLZ33PQ9o4wfUzPneD/QKfZERh9MkLvPs/FEyNPlJXik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=t33EO4xO; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 822EA1F8F7;
+	Fri,  5 Apr 2024 18:48:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1712335684;
+	bh=foR7bmaRUcq8x5BtLYzCdRDc3wu+vH8F2zTuBsXYaNc=; h=From:To:Subject;
+	b=t33EO4xO6wGe8mGOF++zT32IG9JaZc9pURFgkQmHbtI5p+AIE4VSEK76Hl3DuXXEP
+	 RK8ipqm4UWZRHEahyGwrUoABCK+hRDPkV3o7HB2xc9e2uf7oNLIE+sDiD3rIpcY5Go
+	 L3DRcwm/E/WkS+wOWrE/L0tCd1/BLsp2Kz+I80SbJrSVVPbWHysX1xgPMopINFmWqo
+	 B1olPRSGsUQOfBtDH46HZf5bb7kHvbEMVS2L2EvU3Z+OUk8fPQu2pprxJnXHqyZVIT
+	 Yx+PLRHeE4Ey0P/2Wziw7mXHHyGcTqiz4nCWHv5g25A0TvRnBdiMO9+329TWhB/Bw2
+	 J6hwWy18bIyPg==
+Date: Fri, 5 Apr 2024 18:48:00 +0200
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Stefan Eichenberger <eichest@gmail.com>
+Cc: robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	festevam@gmail.com, francesco.dolcini@toradex.com,
+	devicetree@vger.kernel.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Stefan Eichenberger <stefan.eichenberger@toradex.com>
+Subject: Re: [PATCH v1 1/4] arm64: dts: freescale: imx8mp-verdin: replace
+ sleep-moci hog with regulator
+Message-ID: <20240405164800.GA5994@francesco-nb>
+References: <20240405160720.5977-1-eichest@gmail.com>
+ <20240405160720.5977-2-eichest@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -86,31 +64,23 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240401204859.24223-1-quic_abhinavk@quicinc.com>
+In-Reply-To: <20240405160720.5977-2-eichest@gmail.com>
 
-On Mon, Apr 01, 2024 at 01:48:58PM -0700, Abhinav Kumar wrote:
-> After IGT migrating to dynamic sub-tests, the pipe prefixes
-> in the expected fails list are incorrect. Lets drop those
-> to accurately match the expected fails.
+On Fri, Apr 05, 2024 at 06:07:17PM +0200, Stefan Eichenberger wrote:
+> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
 > 
-> In addition, update the xfails list to match the current passing
-> list. This should have ideally failed in the CI run because some
-> tests were marked as fail even though they passed but due to the
-> mismatch in test names, the matching didn't correctly work and was
-> resulting in those failures not being seen.
+> The Verdin family has a signal called sleep-moci which can be used to
+> turn off peripherals on the carrier board when the SoM goes into
+> suspend. So far we have hogged this signal, which means the peripherals
+> are always on and it is not possible to add peripherals that depend on
+> the sleep-moci to be on. With this change, we replace the hog with a
+> regulator so that peripherals can add their own regulators that use the
+> same gpio. Carrier boards that allow peripherals to be powered off in
+> suspend can disable this regulator and implement their own regulator to
+> control the sleep-moci.
 > 
-> Here is the passing pipeline for apq8016 with this change:
-> 
-> https://gitlab.freedesktop.org/drm/msm/-/jobs/57050562
-> 
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->  drivers/gpu/drm/ci/xfails/msm-apq8016-fails.txt | 13 +------------
->  1 file changed, 1 insertion(+), 12 deletions(-)
+> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Reviewed-by: Francesco Dolcini <francesco.dolcini@toradex.com>
 
--- 
-With best wishes
-Dmitry
 
