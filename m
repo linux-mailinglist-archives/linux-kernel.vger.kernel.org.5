@@ -1,168 +1,167 @@
-Return-Path: <linux-kernel+bounces-133062-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D28E9899E3A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:25:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A73D899E44
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:26:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 032731C22C9F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:25:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E7021C22EEF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:26:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9C6A16D4C9;
-	Fri,  5 Apr 2024 13:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lFBNLNUb";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="fcOxNc9h";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lFBNLNUb";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="fcOxNc9h"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878E516D4F4;
+	Fri,  5 Apr 2024 13:25:51 +0000 (UTC)
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AED415FD16
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:25:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0913416D4C7;
+	Fri,  5 Apr 2024 13:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712323525; cv=none; b=TOhGR+juDFRWA3oVoFufh90oUrJundR7HA3bf88Ma0piQW3ZmH0CbagnRw2UqlAfaP6hHpw3Tu7gjMIUbw+8WPLMZ79wKH//jNJr77Hf8QfMq88LelXRxA98xTyJeDyOrELdkgVZLmTscVaT/zlGk5x2oirQWdIAO6NJhI5GDK8=
+	t=1712323550; cv=none; b=ENeMzW+oDPoUcrD58f/RxCmTmWH1A0lXCTyNPTLMJGDgIxBblrFYn9Ah9nIskdojbsKawD/lTZiK/zufOCashZqsErTjWEdp7MLE78aAS5bN7miPEhxM6xxvSWdh79uFQjNjtVenmlLYYvU8LkH0HP+4hiaSOtd6UfIFFlJ6eZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712323525; c=relaxed/simple;
-	bh=iLdba+FCvagX1vgwBB94s5I8geWS8ZAoFqavH1fpllg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RY10a+U32MNbjE6dLzaViqitwZ3qteTg47fPJ6H95eWD0ivPf/8MBmVwsizHLSm0pnrwHzzdNrfCNjO9mwSVUsfQyWgvY40m0PA74SwaJcrFpHKDU5puXIiEAAovdzyyfJ12lmC6lAYWFLcRo6SE1Kw/8SJsjmpRfsDjhyxdkTQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lFBNLNUb; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=fcOxNc9h; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lFBNLNUb; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=fcOxNc9h; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9629A21A41;
-	Fri,  5 Apr 2024 13:25:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712323522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PJC3Z1irT0+nnttWGlCwrHW635IJ8lN25LyXL+82QFU=;
-	b=lFBNLNUbFnYkutVradXzW3rkfxETWkp10yjx4uOPAAovCfUzOSt14yLOw4yCxI5CoDIeXk
-	Yv4X7qGxtc7LFCsfRJlI8RlTAE6MN55mq4GA+uYCbakhPmtEJ3dZXNs3Kku3nlflh19BWz
-	AxvhCTREQ2QUi6aqJ0QU5K61ZeAB8k0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712323522;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PJC3Z1irT0+nnttWGlCwrHW635IJ8lN25LyXL+82QFU=;
-	b=fcOxNc9hAkvQdUSSb/A5XSl4e8oEUWkmK31vPNqb8uhPfrNt+XntR/T1ZijH4b22MPIU/X
-	80LQdXPwvXVmgwDQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=lFBNLNUb;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=fcOxNc9h
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712323522; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PJC3Z1irT0+nnttWGlCwrHW635IJ8lN25LyXL+82QFU=;
-	b=lFBNLNUbFnYkutVradXzW3rkfxETWkp10yjx4uOPAAovCfUzOSt14yLOw4yCxI5CoDIeXk
-	Yv4X7qGxtc7LFCsfRJlI8RlTAE6MN55mq4GA+uYCbakhPmtEJ3dZXNs3Kku3nlflh19BWz
-	AxvhCTREQ2QUi6aqJ0QU5K61ZeAB8k0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712323522;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PJC3Z1irT0+nnttWGlCwrHW635IJ8lN25LyXL+82QFU=;
-	b=fcOxNc9hAkvQdUSSb/A5XSl4e8oEUWkmK31vPNqb8uhPfrNt+XntR/T1ZijH4b22MPIU/X
-	80LQdXPwvXVmgwDQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 83844139F1;
-	Fri,  5 Apr 2024 13:25:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id b/qrHsL7D2blLAAAn2gu4w
-	(envelope-from <dwagner@suse.de>); Fri, 05 Apr 2024 13:25:22 +0000
-Date: Fri, 5 Apr 2024 15:24:57 +0200
-From: Daniel Wagner <dwagner@suse.de>
-To: Christoph Hellwig <hch@lst.de>
-Cc: James Smart <james.smart@broadcom.com>, 
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>, Hannes Reinecke <hare@suse.de>, 
-	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, Hannes Reinecke <hare@kernel.org>
-Subject: Re: [PATCH v4 3/5] nvmet: return DHCHAP status codes from
- nvmet_setup_auth()
-Message-ID: <b2wntzlxa62nj7abvgsfc36tqbhuhun2e6ugqlvfs7lzfegzzm@q5mydisb7vaf>
-References: <20240405062055.GC3107@lst.de>
- <3qh6d2fensgck2rodnbhreirfwkf7lloqwvk6gyfafu4fvgxss@jxb4b4kzu224>
+	s=arc-20240116; t=1712323550; c=relaxed/simple;
+	bh=293GVfFo/UrwVaxem8QbPurukB9UNXuXn3FEZwFnetc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=TzSeFEmdukYHgvBZDeVqwiSorWUh6PbVJh4QOBW3xkgs7FeFki/ApODMuzcTAN0PUDkM+euqYdFo9QO0gyM7tISdZdHukNZJWMhJvIj+/qeYGS7jySx44IOo0J5kJeLBZ8fQ0aBRIWB3Y1iukBN09Hn1+znoAV4OAoRGOjd6bdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-6152be7c58bso22956547b3.0;
+        Fri, 05 Apr 2024 06:25:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712323545; x=1712928345;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cwsDRonjbPICxZMNgS8aH3ZFFLUCLJm1C0DAdV/AdRA=;
+        b=dEdzG/HbTj5MIZ0OthXT/2hJdX7v6TS18qvJ7wKhzZ8aTF0PR27/IvqOGCUE2s2SbZ
+         OpTAlXHFu6KuAR5tXowyI/qvLq80lN2Sf79E3aeMUWWNfC5l4vlzcJK+5fzrSkgACIvA
+         1Ij+28z01oNVFKY2goBIGaradLVbvvYt7wm343OuiMWB/GJziyD2U7irar59v/vsAev8
+         amfE5Giu2gjZKKuIxFKC/Z6chGCtpDxv+FbMHENCpgrFs6eJrtiuAmrHnilgNlGATNx/
+         wEQdl8PvNbnsoe+8gBA7Sm/O0YkHf8GJIYy8PySOIckG2vDeVaai4lDxCugZS4wdeyAg
+         oPpA==
+X-Forwarded-Encrypted: i=1; AJvYcCUUS0anNQXYKpuheIkDjpcD42EzNldJiCDiVTSV0X4DWryHoNDpKORxMynl2d3+Ffb9b3OsL0H2vRR6V2qNFFlIX4hFrsN7xE9c6NcJrShJy9eFRsWDh7kkr/t0CJjry/JJdUAN1YonFOI0cAn1P60GOsI1Saf8z/dG5vcaeklGYoVa8HSjOFW4P4pAFDCIFh04dJfpVFjS1kJk/wXv691Hs6Qenz8gFPe7Un12R33i07w7XCnN4J+Mc4hBgJ+hs4jxGl3yUnyj3IzyNvkaOxqaWLGMNLDfmdVRcEsWPl9e24YfaPRPmLUqYlvL+6Bcg36azbtdfU3tniL+DYweWrLtiA0/kycm9iaFtIIAc6TjlwV4fPY718A=
+X-Gm-Message-State: AOJu0YzczAnkoOQ2VptjHKldB9ft43u0Vf9/JCdqR9YNABFOS1c6qdO2
+	Bdex3fhK64jGdOe3Xnf2fMMGn7Es/k9bTJGOhgMAkY9oukzk6+J8gH11mXCZi2Y=
+X-Google-Smtp-Source: AGHT+IEJxZb/rvHnivt2/Jn9TqdtHD/x5Ql7tE5dwjxcPx/0mDN6PRNnVkmhOeixXnU+C0BePO+7eA==
+X-Received: by 2002:a0d:e287:0:b0:615:9a1:602b with SMTP id l129-20020a0de287000000b0061509a1602bmr1190969ywe.44.1712323544943;
+        Fri, 05 Apr 2024 06:25:44 -0700 (PDT)
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com. [209.85.219.170])
+        by smtp.gmail.com with ESMTPSA id by14-20020a05690c082e00b006152dd9f93esm344482ywb.132.2024.04.05.06.25.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Apr 2024 06:25:44 -0700 (PDT)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-dd161eb03afso2056354276.0;
+        Fri, 05 Apr 2024 06:25:43 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWQYAaMx2yKHFoAQQ6nMerI6WyIx7BilOj0Cl58TpLjIFcpvZAboe+vcRpjKsgKv3Jd3NseFwy6nu55nG+u5RjMpAvT4NBbuAk5wQr2VwLkJD6ad1l1/fHL09i4GMd9D6ieAH9MhEseMDC3DhsUddKOoehu8UyUjcAAqEIh2FQMvLP8+CWh1j9JtvG8eWlakd4kPKAiLlz/pKJDPW16IvUhvsEuCgt4HApJYxMyR8ds3/0bQPbev58vtnspMmUvXPpZtLL4s0/tBSBJAdmfBfUO+6uAsC44caCc3MSrHZ6MIpsLfsEFJjJQUBddri/xlp5IgODcDL6KdIV3eR6lHfcQy0mu8948zKqc29WamvGdPo4eLMTpWWg=
+X-Received: by 2002:a05:6902:220b:b0:dd1:37ff:696 with SMTP id
+ dm11-20020a056902220b00b00dd137ff0696mr1555021ybb.59.1712323543740; Fri, 05
+ Apr 2024 06:25:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3qh6d2fensgck2rodnbhreirfwkf7lloqwvk6gyfafu4fvgxss@jxb4b4kzu224>
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 9629A21A41
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	RCVD_TLS_ALL(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.de:+]
+References: <cover.1712207606.git.ysato@users.sourceforge.jp> <dac98a697c8e850054f984964af62a209f241c83.1712207606.git.ysato@users.sourceforge.jp>
+In-Reply-To: <dac98a697c8e850054f984964af62a209f241c83.1712207606.git.ysato@users.sourceforge.jp>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 5 Apr 2024 15:25:31 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVRLwv1c+L0DP_jRJh6_=-oTQJWOcYCzYqowW8tyOJK2A@mail.gmail.com>
+Message-ID: <CAMuHMdVRLwv1c+L0DP_jRJh6_=-oTQJWOcYCzYqowW8tyOJK2A@mail.gmail.com>
+Subject: Re: [RESEND v7 23/37] dt-bindings: display: sm501 register definition helper
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
+	Niklas Cassel <cassel@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>, 
+	Heiko Stuebner <heiko.stuebner@cherry.de>, Shawn Guo <shawnguo@kernel.org>, 
+	Sebastian Reichel <sre@kernel.org>, Chris Morgan <macromorgan@hotmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
+	David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Javier Martinez Canillas <javierm@redhat.com>, Guo Ren <guoren@kernel.org>, 
+	Azeem Shaikh <azeemshaikh38@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
+	Herve Codina <herve.codina@bootlin.com>, 
+	Manikanta Guntupalli <manikanta.guntupalli@amd.com>, Anup Patel <apatel@ventanamicro.com>, 
+	Biju Das <biju.das.jz@bp.renesas.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 05, 2024 at 12:02:52PM +0200, Daniel Wagner wrote:
-> On Fri, Apr 05, 2024 at 08:20:55AM +0200, Christoph Hellwig wrote:
-> > > @@ -131,7 +131,6 @@ int nvmet_setup_auth(struct nvmet_ctrl *ctrl)
-> > >  	int ret = 0;
-> > >  	struct nvmet_host_link *p;
-> > >  	struct nvmet_host *host = NULL;
-> > > -	const char *hash_name;
-> > >  
-> > >  	down_read(&nvmet_config_sem);
-> > >  	if (nvmet_is_disc_subsys(ctrl->subsys))
-> > > @@ -149,13 +148,16 @@ int nvmet_setup_auth(struct nvmet_ctrl *ctrl)
-> > >  	}
-> > >  	if (!host) {
-> > >  		pr_debug("host %s not found\n", ctrl->hostnqn);
-> > > -		ret = -EPERM;
-> > > +		ret = NVME_AUTH_DHCHAP_FAILURE_FAILED;
-> > >  		goto out_unlock;
-> > 
-> > This is now returning returning random on the wire fields that aren't
-> > even the NVMe status codes from a function otherwise returning Linux
-> > errno values.  I can't see how this works or is maintainable long term.
-> 
-> This is the target side and we generate the on wire return code here.
-> Are you sure I should map this to errno codes and the back to NVME
-> status codes? Sure, this is possible but don't really think it makes
-> sense.
+Hi Sato-san,
 
-I think I start to understand your feedback. I'll try to address it.
+Thanks for your patch!
+
+On Thu, Apr 4, 2024 at 7:15=E2=80=AFAM Yoshinori Sato
+<ysato@users.sourceforge.jp> wrote:
+> Miscellaneous Timing and Miscellaneous Control registers definition.
+
+Please do not put raw register value definitions into DT bindings.
+
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+
+> --- /dev/null
+> +++ b/include/dt-bindings/display/sm501.h
+
+> +/* Miscellaneous timing */
+> +#define SM501_MISC_TIMING_EX_HOLD_0    0
+> +#define SM501_MISC_TIMING_EX_HOLD_16   1
+> +#define SM501_MISC_TIMING_EX_HOLD_32   2
+> +#define SM501_MISC_TIMING_EX_HOLD_48   3
+> +#define SM501_MISC_TIMING_EX_HOLD_64   4
+> +#define SM501_MISC_TIMING_EX_HOLD_80   5
+> +#define SM501_MISC_TIMING_EX_HOLD_96   6
+> +#define SM501_MISC_TIMING_EX_HOLD_112  7
+> +#define SM501_MISC_TIMING_EX_HOLD_128  8
+> +#define SM501_MISC_TIMING_EX_HOLD_144  9
+> +#define SM501_MISC_TIMING_EX_HOLD_160  10
+> +#define SM501_MISC_TIMING_EX_HOLD_176  11
+> +#define SM501_MISC_TIMING_EX_HOLD_192  12
+> +#define SM501_MISC_TIMING_EX_HOLD_208  13
+> +#define SM501_MISC_TIMING_EX_HOLD_224  14
+> +#define SM501_MISC_TIMING_EX_HOLD_240  15
+
+E.g. these are used by the (not very descriptive) "ex" property:
+
+     ex:
+       $ref: /schemas/types.yaml#/definitions/uint32
+       description: Extend bus holding time.
+
+Please instead use an enum for the actual holding time ([ 0, 16, 32,
+..]) in the DT bindings, and convert from actual holding time to
+register value in the driver.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
