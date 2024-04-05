@@ -1,111 +1,127 @@
-Return-Path: <linux-kernel+bounces-133444-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB58589A3C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:58:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C396189A3C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:58:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECD671C21D40
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:58:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 09C251C21C10
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA45172764;
-	Fri,  5 Apr 2024 17:58:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BAAC171E60;
+	Fri,  5 Apr 2024 17:58:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XM68a/Fw"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b="pedXjZ2M"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4E4171E4E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:58:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5228217109C
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:58:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712339891; cv=none; b=ukpx29pTzk31Cc8sr8uKKqJ6g2SrPv0Tbdy66xnhycUY39Dw4b7DMBDgAyziqWOuiKs4DVP3ovVM5DwHAOmEio46qX2XsaJ36ajaK2I/2hml9qjXbUApQKG54ZAX7iYMXTrOSNLPV9OzX8MoWx8v9IGvCQtLQUFPaLOJtKJystQ=
+	t=1712339889; cv=none; b=IQOYsTAIQRoCGFAJP+IVnBCVcKfARt+LKai+kTHUajtx5j5IA79N14m0xj237gcgYAJVeq+cED2Me5ninBWvGFKHMqzbgEl1U5MWAG/zPDmX8vFR3V2CZEQqTn1rdi81WRROrkhNXhvWC+f9W8IXJFWEk+IbLMBVtLLV0tXzAR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712339891; c=relaxed/simple;
-	bh=OhLR3iFcGyOMlWUTvWA89GxCLTl14dKyEPs7NecTHTU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=E1qVhgF/XFJA/+KTGH0VczGryGgfBeQLT8IqhFCRozNwwotZ+2JaVC9Ke5oe6wHTMK1tcYUB4h+BH+rNp6hwdSjBX0ocQA0F7PZ1M6cJ6XVbcwO1FcnUS7FLRyKz+J6EeTPz+vZbEK7U9YD59XQQi6DAHfiCCP5zJsWG1eQNKUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XM68a/Fw; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712339888;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OhLR3iFcGyOMlWUTvWA89GxCLTl14dKyEPs7NecTHTU=;
-	b=XM68a/FwgHNprCpqSgJNunkolJLMVYT966+W+FknBnEn/ViFy6J99IIQZ6nK7hnoSocx7z
-	81uXfzwnWfRxDQSO15JJVhgp9fiWX3AVL3+hz7+OwrgkNeW2ZDgl62VASWZd0vVUHlY9Tm
-	YODQ43fiTY4Lo6D2LmSVRWyY3RqbbX4=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-220-2iqGZelRPOWsBqBnTdnKVw-1; Fri, 05 Apr 2024 13:58:07 -0400
-X-MC-Unique: 2iqGZelRPOWsBqBnTdnKVw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-343e00c8979so593561f8f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 10:58:06 -0700 (PDT)
+	s=arc-20240116; t=1712339889; c=relaxed/simple;
+	bh=H5myzdzWlAUjMb0ryKASPnq9blH7D7/mKRGJPIfwGpk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=u2ksVbYCE88BBwc/OoRRDWzAABC8iluqKh1jV37BrOrAw3VorQueRuZs99suzIouE6C7B+r5NqVPc8DzdmA7zrCapr4nO0LE0MKSv5I2fmSl0jCuMqitHRxR39Nlz0rpRH27FDvg4XrPCjFfL/YgdSuw6Rm34d3jPTaz3tUyNjc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl; spf=none smtp.mailfrom=bgdev.pl; dkim=pass (2048-bit key) header.d=bgdev-pl.20230601.gappssmtp.com header.i=@bgdev-pl.20230601.gappssmtp.com header.b=pedXjZ2M; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bgdev.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bgdev.pl
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3436b096690so2700181f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 10:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1712339886; x=1712944686; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1ztjXdzKTe7iNLjYo+NbZK1lY+kuiMYYFbOMFrJcZmo=;
+        b=pedXjZ2MdLWhv7xbCIKiDIX8vsqkgiTSbg7GqCfdXh2ObZTwYxtr3e6iEBXt33jSoM
+         UOrVSU9PN17FvAkFt0pL8ndDIcQ0d5lWqEMaIzjhoPVNWUzdwA81tidNzI0C2P3V1Fdb
+         +m+SuIZvbNE5DlpVmGJh+viX42Xi4u4wemVAErJZnJqoopyU/wB3POYqgMHBbFBWnTEf
+         Yc/j3CHzvkDIns3AQIRwwDHk7WOjEUqnTjxHKAf1KyvhkZpdQpbb5nPVzLKIXCVgrvHO
+         dW/XI912r9fNGEDHblxb7waLNqyDe/dSfl206YombG+1W1y1nf6sP9VnThaDVLBC+8ey
+         qc9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1712339886; x=1712944686;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OhLR3iFcGyOMlWUTvWA89GxCLTl14dKyEPs7NecTHTU=;
-        b=jA6Jg2fZycjGakhuwKnYc7Ne2eAN54cB8ADTNIoTBbo2nia3Mjk0h8CIEx2o8rT4MI
-         kSF8Ycbyi7M6tI6Kxrrc2qopJLF0QkxSjNssdyP0wGH94C76mO2VVF+EBEF3GPgm+Yy7
-         r5iUgEjpZAgbrIPhsUjlgyv0sncxJmqgolFHXiCz2ArjsNlSjL8fYHhZSIWv8zp87U9z
-         KUok+zcA3nh6vQY4/DCvvr0Du2kmzqG/6nf93OonCg+DDjXRiLoTKdYa2Po2BgYeoRBW
-         KigH9KIgtbj3epWmX5wWXdIjrxmVDjHZLiQOsugQhhvTJLMqmx4RDSniAoY1CQOODSAv
-         PlGQ==
-X-Gm-Message-State: AOJu0YwXr+Efgw+FF5ks2De2PeWoc8ScxuVjlxx/QYbtyB2a1/ahw4YS
-	4Xj0ia8EVVM6odR2l0k6eJsF7Yg5Udpuog0P+15q9m4Ug9Qkj0qiLfDQxTkplP6vJYif/ib4XTy
-	mGcMTCWLaocQ9Zpav+GuOX21KghzBpWu8nfsjsy0R/Bq/o50k4nztDi/t3vROCr7EkcUr5b3hz0
-	aVxtv8ytmQAbI3s5D1DYHkcpmKswkLgSXYGqef
-X-Received: by 2002:a5d:4f0e:0:b0:343:6f88:5e5 with SMTP id c14-20020a5d4f0e000000b003436f8805e5mr1340184wru.55.1712339886054;
-        Fri, 05 Apr 2024 10:58:06 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE3CWAbZ2yvXyD8JF17AyMAjvakK2b+OL6J+dTN23cnwf6QWbAXTlTGCRG23eceVxdEZJl2migUhbs+XDvpQjo=
-X-Received: by 2002:a5d:4f0e:0:b0:343:6f88:5e5 with SMTP id
- c14-20020a5d4f0e000000b003436f8805e5mr1340171wru.55.1712339885715; Fri, 05
- Apr 2024 10:58:05 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1ztjXdzKTe7iNLjYo+NbZK1lY+kuiMYYFbOMFrJcZmo=;
+        b=pbDtcDOxIqi0sHRar67Oy35WT8Jg7TZRURBbhsuCdZAVd1GFkAWHscsWTmc7lDRAiT
+         OteZSpZDlooKcwJVoZy637BBATazdYXVYuE5+5BITa6T7lIn1AznXWHSs/10XvYbsudh
+         fZD+jmbqvKvx4qXJap8mVUWbbsOykiiofvASlIiUrB96usbscGMw4FcicUDWk1j92F6j
+         AbqZoaJXpxHhWG9G4cKCwkKHfQyd4vIPkZbIKvvzm1Do/OyT/FymAtJPPFUh+MaR2oMy
+         2mgw7zDAa8NkqX778f2bTTQiF+9sTpR5knpBlj9V5pFE9x1g7fdaMtHpCDdGraxzqiRI
+         Iz6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWBg08S0wWGZWDIFmkNVLKTcIFHpL/xAt5Pkl7FOm3/8DSsIQUnmhnEhA1WyYOVpE2fJ9eRWFm7qlS09h/kMcjZHVksTg61sxRG64r1
+X-Gm-Message-State: AOJu0Yy0GXhOVEfmY5lgDmJuF4lap0tQOsmbB6QdMPq9FPKHW3Lc0GeW
+	7ocSbw7kBMFOEUIqjbbDhBesZjuvKISSbXgOXOUHeLB2eVwm9vSK/ejWjzlJls4=
+X-Google-Smtp-Source: AGHT+IHaJgnTg1DBtlEDDj3TVd5kmqS8br+lAv+XxhzDWvToD9+k2Q+EpCTODpJ+VbsAPWrNjfmrZw==
+X-Received: by 2002:adf:e9c4:0:b0:343:dde1:2ef6 with SMTP id l4-20020adfe9c4000000b00343dde12ef6mr2790199wrn.27.1712339885553;
+        Fri, 05 Apr 2024 10:58:05 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:75a:e000:1a1:8979:15bd:93f0])
+        by smtp.gmail.com with ESMTPSA id z15-20020a5d4c8f000000b00343daeddcb2sm2534668wrs.45.2024.04.05.10.58.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 10:58:05 -0700 (PDT)
+From: Bartosz Golaszewski <brgl@bgdev.pl>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linus Walleij <linus.walleij@linaro.org>,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [GIT PULL] gpio: fixes for v6.9-rc3
+Date: Fri,  5 Apr 2024 19:58:03 +0200
+Message-Id: <20240405175803.299328-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240227232100.478238-1-pbonzini@redhat.com> <20240227232100.478238-14-pbonzini@redhat.com>
- <754f2fcf-fc00-4f89-a17c-a80bbec1e2ff@intel.com>
-In-Reply-To: <754f2fcf-fc00-4f89-a17c-a80bbec1e2ff@intel.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Fri, 5 Apr 2024 19:57:53 +0200
-Message-ID: <CABgObfaGhH1aQyR-k_x=yrSRE3uwDpx9JJoMdiAdJCq72-O4DA@mail.gmail.com>
-Subject: Re: [PATCH 13/21] KVM: x86/mmu: Pass around full 64-bit error code
- for KVM page faults
-To: Xiaoyao Li <xiaoyao.li@intel.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com, 
-	michael.roth@amd.com, isaku.yamahata@intel.com, thomas.lendacky@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 4, 2024 at 9:57=E2=80=AFAM Xiaoyao Li <xiaoyao.li@intel.com> wr=
-ote:
->
-> On 2/28/2024 7:20 AM, Paolo Bonzini wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> >
-> ...
-> > The use of lower_32_bits() moves from kvm_mmu_page_fault() to
-> > FNAME(page_fault), since walking is independent of the data in the
-> > upper bits of the error code.
->
-> Is it a must? I don't see any issue if full u64 error_code is passed to
-> FNAME(page_fault) as well.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-The full error code *is* passed to kvm_mmu_do_page_fault() and
-FNAME(page_fault), it's only dropped when passed to FNAME(walk_addr).
+Linus,
 
-Paolo
+Please pull the following set of fixes for the next RC. Details are in
+the signed tag as usual.
 
+Thanks,
+Bartosz
+
+The following changes since commit 39cd87c4eb2b893354f3b850f916353f2658ae6f:
+
+  Linux 6.9-rc2 (2024-03-31 14:32:39 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v6.9-rc3
+
+for you to fetch changes up to 83092341e15d0dfee1caa8dc502f66c815ccd78a:
+
+  gpio: cdev: fix missed label sanitizing in debounce_setup() (2024-04-04 18:57:08 +0200)
+
+----------------------------------------------------------------
+gpio fixes for v6.9-rc3
+
+- make sure GPIO devices are registered with the subsystem before trying
+  to return them to a caller of gpio_device_find()
+- fix two issues with incorrect sanitization of the interrupt labels
+
+----------------------------------------------------------------
+Bartosz Golaszewski (1):
+      gpio: cdev: check for NULL labels when sanitizing them for irqs
+
+Hans de Goede (1):
+      gpiolib: Fix triggering "kobject: 'gpiochipX' is not initialized, yet" kobject_get() errors
+
+Kent Gibson (1):
+      gpio: cdev: fix missed label sanitizing in debounce_setup()
+
+ drivers/gpio/gpiolib-cdev.c | 48 ++++++++++++++++++++++++++++++---------------
+ drivers/gpio/gpiolib.c      |  3 +++
+ 2 files changed, 35 insertions(+), 16 deletions(-)
 
