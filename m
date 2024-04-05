@@ -1,190 +1,274 @@
-Return-Path: <linux-kernel+bounces-132526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB405899641
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:09:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED887899644
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:10:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90804282F82
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:09:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6578A1F2835B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:10:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A944E2C69F;
-	Fri,  5 Apr 2024 07:09:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C4212E83C;
+	Fri,  5 Apr 2024 07:09:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Bt7smaEL"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nogE8Ygh"
+Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693B22C1AD
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:09:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1A22C691
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712300977; cv=none; b=pLB+4JursvINp1EeZQTnykseZwluRjETI0NUg6FgAGOBu7aR19I/6fK5E+9gHXji4yz51jVynroAMtkl7KcSYArDEyuKAtQB9CKyLiV1XDsZwY7gIhe1sPerHtDV2M0ERnKvUz5PLqLvkzNGJea4nFRDUMuQINpAVI9x4EBOV2k=
+	t=1712300988; cv=none; b=BAIEPVItTgYN+5UFG1Bh3e0du1/8Z3l/E2ruEbYMwN044JcjmUjjbNk98FWw+XXg7fUF8BCesdhuWx5bG05oE2G8s/3pwm2kcTLEK1QdDFQQqwucKAnPXvlNq99iv5TeV5XTA2/l+yR5aKqZIdTUkGLVq2nElpiNft9bsG6Y00w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712300977; c=relaxed/simple;
-	bh=oBpQTQQF+RxUjK0qQTdFBdRzlIfgYkZc4RMyIDNRwQM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KFS2JUsKOBlusWRifsTxKXW9cLLIb7NGWUBp4bnxROAChbvjOOm16Eq/dDXzjrEjtMRlErRHuO8oyBHD4rN8DXcxZNyQR9ToK0YQs2yAbU62a07cdR0NXujX3vcUBT0a09dM937BrMmdv9CQ4SHm77rLAwxexteitwqBcLX/kpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Bt7smaEL; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712300974;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=bWsrv37YfNRYFkefj79IxZMucsyie5Vbns2PoB6HIB4=;
-	b=Bt7smaELrg3G9t9s3xRzqDdUGhB4XyMseCr9GZZp7dFr9XWJlujxkD2K9+Lt7/ekxUoZyY
-	XLI884qrwv+1dbvTC7DIAaUpe7tREUDJF5S0K0Pa86fS/uM2XcRvQoAFZ6a/QzuwA5fTyh
-	HxovIp2bJrJStuz4MBsYqTRavj1r0KY=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-104-Ur89Hn9RMVqwhIgBh33COw-1; Fri, 05 Apr 2024 03:09:33 -0400
-X-MC-Unique: Ur89Hn9RMVqwhIgBh33COw-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-415591b1500so11464715e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:09:33 -0700 (PDT)
+	s=arc-20240116; t=1712300988; c=relaxed/simple;
+	bh=VQdVOjuFNCXOa8vkszw3kZMD2q0Y4KMc33Opfqtl/As=;
+	h=Date:In-Reply-To:Message-Id:Mime-Version:References:Subject:From:
+	 To:Content-Type; b=NQOwNq7QvKgfvmvgONgqkvwZYtKNYPYW8ToVcXc2LZnJbE7oIikldS3i4vtMMhSIBXG7+g4StkQmp4Ufjs78ianL6JTBLlco0mWeROD3FaEG1X8R+WLFpfW2aktgaWd3I70ziXc4WX1UYluozcB8rC3rY+aupINmBwQ8HtLkxL4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nogE8Ygh; arc=none smtp.client-ip=209.85.128.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-610b96c8ca2so30903327b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:09:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712300986; x=1712905786; darn=vger.kernel.org;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=AT9Egetdt6A++F2BYy2vD+NdRNiosWU6soZGtG4+BZw=;
+        b=nogE8Ygh7A5HMW+f914ydS5RxObgEVskc/e/CStLuN4NQ4I1mkXxKIGYbuY+GQoT3M
+         v5c0eomMAiJV1/+iKMaXv/AvaIL6CnV3zLeRhmgJDZ2A90E1hvcPNtE8QB1ggLOrgK4i
+         ktwtX2nYkWZxO2EinJLyXcXHQ5vv0dNn95iQ7tK4/oBfDPfAUb65C3HzV8IdoguGU8an
+         PXZdKwy8JzM4T5vgTHYeLz43xEPBGtqZz8MAol+bOeKQbCoamqQmHrCZSWQ/z9STm7we
+         tQluKPp/hMtJNDIsJvOKJDcGmEXFKc62ZG31uXRtCijNG9oCY34fio/94Y4yddeoe90b
+         cA/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712300972; x=1712905772;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bWsrv37YfNRYFkefj79IxZMucsyie5Vbns2PoB6HIB4=;
-        b=Khti07fTfIj2vPsH3wumrM/vfrfTwQhtITUqmBrZSArwNOQ0DLhvUOApDva5wtBjOZ
-         DJH9tK0eaAeBltfkn27TUTTgFfGg5ulp1/DPeDZQGU3L5dCnHBOiZMsgdpaF5Jemm9zZ
-         Z+gjsnYZJPt8o4t9Uros1djWMpdU50iHku/1UlgVW3kX0LLxxJrACBikMdInNnh2nrMG
-         KUX9gRokDYwYrvRVLlEJBc8dCiB9gEQCWkTNre92i8DS/Pn8LVUXAfKDQyIeAX/BLMKT
-         bc80nYh9MrC90NZRjrbeZvNYEaJhO7lJXb+v7NPhirVHlSKB7lbvkKcRw1Ot3CE/x9mT
-         kEWQ==
-X-Gm-Message-State: AOJu0Yy+NUJ5ZiFL9/NdDOoEwA1Xgby9FIthq7kwvGSLWk5mSDCzHamx
-	lDwEYTzmV7MbkjiUsUUO2RtlsLJPJ4YJ5ubESekbmxsIJ5wSvvd7IqVvjxyrQQ5vnuoX6kRkVyv
-	Puf1nPXyqifp1PmNItixpakRQKw6sJgr9uEJ+700T6XoDk/h2IxzYcXIoRhORDQ==
-X-Received: by 2002:a05:600c:1c8a:b0:414:ff4:5957 with SMTP id k10-20020a05600c1c8a00b004140ff45957mr476462wms.5.1712300972207;
-        Fri, 05 Apr 2024 00:09:32 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGMRNTzpxyLjqqIYDr2QKngW3j1H6NrSOhPdqHJ7NeqOLqDxzD+y6/Jjotboqeo5fV1ubw0rw==
-X-Received: by 2002:a05:600c:1c8a:b0:414:ff4:5957 with SMTP id k10-20020a05600c1c8a00b004140ff45957mr476439wms.5.1712300971838;
-        Fri, 05 Apr 2024 00:09:31 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c74b:5500:e1f8:a310:8fa3:4ec1? (p200300cbc74b5500e1f8a3108fa34ec1.dip0.t-ipconnect.de. [2003:cb:c74b:5500:e1f8:a310:8fa3:4ec1])
-        by smtp.gmail.com with ESMTPSA id h12-20020adfa4cc000000b00343668bc492sm1272710wrb.71.2024.04.05.00.09.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 00:09:31 -0700 (PDT)
-Message-ID: <67557c5b-afd8-4578-a00d-6750accc1026@redhat.com>
-Date: Fri, 5 Apr 2024 09:09:30 +0200
+        d=1e100.net; s=20230601; t=1712300986; x=1712905786;
+        h=to:from:subject:references:mime-version:message-id:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AT9Egetdt6A++F2BYy2vD+NdRNiosWU6soZGtG4+BZw=;
+        b=vgwqpblYx0bIsabf8MCYIxb1xGLyLpCixU9In25UpXGFwDgxMkQIyD6WmAx9jgbBwH
+         pJuFTpc+Yu7Ek6e5PSfn4eD7cdQmESOLIzo2Yxuvr57lIiUxO57iqPhdPOLXjqcvOpxY
+         FG1UDLcsiptbLwta1BqJjMJ2j41PRFfOFbrF3Qyjcq++i/4Mnp5nGmWu9iZ5AUJWkfEN
+         E74RyuTYVHscxuMFfo76v1ckNK0tyXqegy0MZhkwk5HjHI6jtNc5KMlkLIFuGNeic3q9
+         zVgUpY870J2CLeghfx5rynLag7zXAY8XOuogb2CeDcqeqEaZRYvrCtby6P4Kl3pcKjO5
+         YuVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWVA6nfXGkDHDeq8feld3ChFkh+Y2gw9emKqf/YUjfk75YN4hWKNbrluODSkRE9CigSTILC5SNzVeThF6vfeoU7R1LN5kbTcGQzYDS1
+X-Gm-Message-State: AOJu0YykcMYp++E1on9y9bJTYVzN4FSS9i+a+5prcJg91WMI1GrNmkjB
+	wVLStanrNgPiCZ9Vx+LfOUenOLFqtMlzme2YNZRHv5m2OIc8wHBilHp5T5nK5afQyRbi5DhvNg0
+	aE3+d1g==
+X-Google-Smtp-Source: AGHT+IGhGx96fxbkEMZrzw8bqd79Y1y+1w5eH772l6o7gnSy1Ymlw+0QtvD3GcsuT0krXWaIobPvtTej3oAc
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:6765:20d3:72cb:f573])
+ (user=irogers job=sendgmr) by 2002:a05:690c:6382:b0:615:df:f4bc with SMTP id
+ hp2-20020a05690c638200b0061500dff4bcmr160786ywb.4.1712300986068; Fri, 05 Apr
+ 2024 00:09:46 -0700 (PDT)
+Date: Fri,  5 Apr 2024 00:09:31 -0700
+In-Reply-To: <20240405070931.1231245-1-irogers@google.com>
+Message-Id: <20240405070931.1231245-2-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 2/5] s390/uv: convert gmap_make_secure() to work on
- folios
-To: Matthew Wilcox <willy@infradead.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- linux-s390@vger.kernel.org, kvm@vger.kernel.org,
- Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
- Alexander Gordeev <agordeev@linux.ibm.com>,
- Christian Borntraeger <borntraeger@linux.ibm.com>,
- Sven Schnelle <svens@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>,
- Claudio Imbrenda <imbrenda@linux.ibm.com>,
- Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
- Thomas Huth <thuth@redhat.com>
-References: <20240404163642.1125529-1-david@redhat.com>
- <20240404163642.1125529-3-david@redhat.com>
- <Zg9wNKTu4JxGXrHs@casper.infradead.org>
-Content-Language: en-US
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <Zg9wNKTu4JxGXrHs@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+References: <20240405070931.1231245-1-irogers@google.com>
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Subject: [PATCH v1 2/2] perf test: Display number of remaining tests
+From: Ian Rogers <irogers@google.com>
+To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, James Clark <james.clark@arm.com>, 
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 05.04.24 05:29, Matthew Wilcox wrote:
-> On Thu, Apr 04, 2024 at 06:36:39PM +0200, David Hildenbrand wrote:
->> +		/* We might get PTE-mapped large folios; split them first. */
->> +		if (folio_test_large(folio)) {
->> +			rc = -E2BIG;
-> 
-> We agree to this point.  I just turned this into -EINVAL.
-> 
->>   
->> +	if (rc == -E2BIG) {
->> +		/*
->> +		 * Splitting might fail with -EBUSY due to unexpected folio
->> +		 * references, just like make_folio_secure(). So handle it
->> +		 * ahead of time without the PTL being held.
->> +		 */
->> +		folio_lock(folio);
->> +		rc = split_folio(folio);
->> +		folio_unlock(folio);
->> +		folio_put(folio);
->> +	}
-> 
-> Ummm ... if split_folio() succeeds, aren't we going to return 0 from
-> this function, which will be interpreted as make_folio_secure() having
-> succeeded?
+Before polling or sleeping to wait for a test to complete, print out
+": Running (<num> remaining)" where the number of remaining tests is
+determined by iterating over the remaining tests and seeing which
+return true for check_if_command_finished. After the delay, erase the
+line and either update it with the new number of remaining tests, or
+print the test's result. This allows a user to know a test is running
+and in parallel mode (default) how many of the tests are waiting to
+complete. If color mode is disabled then avoid displaying the
+"Running" message.
 
-I assume the code would have to handle that, because it must deal with 
-possible races that would try to convert the folio page.
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/tests/builtin-test.c | 77 ++++++++++++++++++++++-----------
+ tools/perf/util/color.h         |  1 +
+ 2 files changed, 53 insertions(+), 25 deletions(-)
 
-But the right thing to do is
-
-if (!rc)
-	goto again;
-
-after the put.
-
+diff --git a/tools/perf/tests/builtin-test.c b/tools/perf/tests/builtin-test.c
+index 73f53b02f733..15b8e8e32749 100644
+--- a/tools/perf/tests/builtin-test.c
++++ b/tools/perf/tests/builtin-test.c
+@@ -238,7 +238,10 @@ static int run_test_child(struct child_process *process)
+ 	return -err;
+ }
+ 
+-static int print_test_result(struct test_suite *t, int i, int subtest, int result, int width)
++#define TEST_RUNNING -3
++
++static int print_test_result(struct test_suite *t, int i, int subtest, int result, int width,
++			     int remaining)
+ {
+ 	if (has_subtests(t)) {
+ 		int subw = width > 2 ? width - 2 : width;
+@@ -248,6 +251,9 @@ static int print_test_result(struct test_suite *t, int i, int subtest, int resul
+ 		pr_info("%3d: %-*s:", i + 1, width, test_description(t, subtest));
+ 
+ 	switch (result) {
++	case TEST_RUNNING:
++		color_fprintf(stderr, PERF_COLOR_YELLOW, " Running (%d remaining)\n", remaining);
++		break;
+ 	case TEST_OK:
+ 		pr_info(" Ok\n");
+ 		break;
+@@ -269,13 +275,15 @@ static int print_test_result(struct test_suite *t, int i, int subtest, int resul
+ 	return 0;
+ }
+ 
+-static int finish_test(struct child_test *child_test, int width)
++static int finish_test(struct child_test **child_tests, int running_test, int child_test_num,
++		       int width)
+ {
++	struct child_test *child_test = child_tests[running_test];
+ 	struct test_suite *t = child_test->test;
+ 	int i = child_test->test_num;
+ 	int subi = child_test->subtest;
+ 	int err = child_test->process.err;
+-	bool err_done = err <= 0;
++	bool err_done = false;
+ 	struct strbuf err_output = STRBUF_INIT;
+ 	int ret;
+ 
+@@ -290,7 +298,7 @@ static int finish_test(struct child_test *child_test, int width)
+ 	 * Busy loop reading from the child's stdout/stderr that are set to be
+ 	 * non-blocking until EOF.
+ 	 */
+-	if (!err_done)
++	if (err > 0)
+ 		fcntl(err, F_SETFL, O_NONBLOCK);
+ 	if (verbose > 1) {
+ 		if (has_subtests(t))
+@@ -304,29 +312,48 @@ static int finish_test(struct child_test *child_test, int width)
+ 			  .events = POLLIN | POLLERR | POLLHUP | POLLNVAL,
+ 			},
+ 		};
+-		char buf[512];
+-		ssize_t len;
+-
+-		/* Poll to avoid excessive spinning, timeout set for 100ms. */
+-		poll(pfds, ARRAY_SIZE(pfds), /*timeout=*/100);
+-		if (!err_done && pfds[0].revents) {
+-			errno = 0;
+-			len = read(err, buf, sizeof(buf) - 1);
+-
+-			if (len <= 0) {
+-				err_done = errno != EAGAIN;
+-			} else {
+-				buf[len] = '\0';
+-				if (verbose > 1)
+-					fprintf(stdout, "%s", buf);
+-				else
++		if (perf_use_color_default) {
++			int tests_in_progress = running_test;
++
++			for (int y = running_test; y < child_test_num; y++) {
++				if (check_if_command_finished(&child_tests[y]->process))
++					tests_in_progress++;
++			}
++			print_test_result(t, i, subi, TEST_RUNNING, width,
++					  child_test_num - tests_in_progress);
++		}
++
++		err_done = true;
++		if (err <= 0) {
++			/* No child stderr to poll, sleep for 10ms for child to complete. */
++			usleep(10 * 1000);
++		} else {
++			/* Poll to avoid excessive spinning, timeout set for 100ms. */
++			poll(pfds, ARRAY_SIZE(pfds), /*timeout=*/100);
++			if (pfds[0].revents) {
++				char buf[512];
++				ssize_t len;
++
++				len = read(err, buf, sizeof(buf) - 1);
++
++				if (len > 0) {
++					err_done = false;
++					buf[len] = '\0';
+ 					strbuf_addstr(&err_output, buf);
++				}
+ 			}
+ 		}
++		if (err_done)
++			err_done = check_if_command_finished(&child_test->process);
++
++		if (perf_use_color_default) {
++			/* Erase "Running (.. remaining)" line printed before poll/sleep. */
++			fprintf(debug_file(), PERF_COLOR_DELETE_LINE);
++		}
+ 	}
+ 	/* Clean up child process. */
+ 	ret = finish_command(&child_test->process);
+-	if (verbose == 1 && ret == TEST_FAIL) {
++	if (verbose > 1 || (verbose == 1 && ret == TEST_FAIL)) {
+ 		/* Add header for test that was skipped above. */
+ 		if (has_subtests(t))
+ 			pr_info("%3d.%1d: %s:\n", i + 1, subi + 1, test_description(t, subi));
+@@ -335,7 +362,7 @@ static int finish_test(struct child_test *child_test, int width)
+ 		fprintf(stderr, "%s", err_output.buf);
+ 	}
+ 	strbuf_release(&err_output);
+-	print_test_result(t, i, subi, ret, width);
++	print_test_result(t, i, subi, ret, width, /*remaining=*/0);
+ 	if (err > 0)
+ 		close(err);
+ 	return 0;
+@@ -351,7 +378,7 @@ static int start_test(struct test_suite *test, int i, int subi, struct child_tes
+ 		pr_debug("--- start ---\n");
+ 		err = test_function(test, subi)(test, subi);
+ 		pr_debug("---- end ----\n");
+-		print_test_result(test, i, subi, err, width);
++		print_test_result(test, i, subi, err, width, /*remaining=*/0);
+ 		return 0;
+ 	}
+ 
+@@ -376,7 +403,7 @@ static int start_test(struct test_suite *test, int i, int subi, struct child_tes
+ 	err = start_command(&(*child)->process);
+ 	if (err || !sequential)
+ 		return  err;
+-	return finish_test(*child, width);
++	return finish_test(child, /*running_test=*/0, /*child_test_num=*/1, width);
+ }
+ 
+ #define for_each_test(j, k, t)					\
+@@ -461,7 +488,7 @@ static int __cmd_test(int argc, const char *argv[], struct intlist *skiplist)
+ 	}
+ 	for (i = 0; i < child_test_num; i++) {
+ 		if (!sequential) {
+-			int ret  = finish_test(child_tests[i], width);
++			int ret  = finish_test(child_tests, i, child_test_num, width);
+ 
+ 			if (ret)
+ 				return ret;
+diff --git a/tools/perf/util/color.h b/tools/perf/util/color.h
+index 01f7bed21c9b..4b9f8d5d4439 100644
+--- a/tools/perf/util/color.h
++++ b/tools/perf/util/color.h
+@@ -22,6 +22,7 @@
+ #define MIN_GREEN	0.5
+ #define MIN_RED		5.0
+ 
++#define PERF_COLOR_DELETE_LINE	"\033[A\33[2K\r"
+ /*
+  * This variable stores the value of color.ui
+  */
 -- 
-Cheers,
-
-David / dhildenb
+2.44.0.478.gd926399ef9-goog
 
 
