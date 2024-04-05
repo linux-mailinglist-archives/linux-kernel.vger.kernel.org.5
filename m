@@ -1,84 +1,109 @@
-Return-Path: <linux-kernel+bounces-133078-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133087-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60152899E81
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:38:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46480899E96
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:42:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3472B23CCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:38:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A233528375A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 588C316D4E7;
-	Fri,  5 Apr 2024 13:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843C116DEC0;
+	Fri,  5 Apr 2024 13:40:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bUPytcyK";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1Ha3b15v"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rz1rhltk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BE7E16131A
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:38:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C271B16D4F5;
+	Fri,  5 Apr 2024 13:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712324311; cv=none; b=rQAfbZ3u6YIxgFK9quiq4IFUy0jHt12jJbFxVqkCJNhUDJYJ/frup29XZ8BYXF8GjUGEDOtSeix1B8N3J8DEVOnvghEI4U1smFb2OcjAyAjXb4BZAAtTCdZ9JFudKepPv/f6SepZcJqYuRP4/zEcRUGfisU0CNaePUVv1FyY7uw=
+	t=1712324423; cv=none; b=UoR5fSYqOgUiw5MGQmXMJRuo+9QpqCeFFi71wBuWz6y21EtWYgDLxOKLiK9lEddJvpcvdaMEh5HXOCZ8ghbkr61bJBqodmAh6K+J8bMsTQtolo9CRSQfX3UqiECp0SKT0lKsQpemtl9t6F+3pc+kVeLEnMDIXCq4YpzZ/YL4JgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712324311; c=relaxed/simple;
-	bh=gVVkwjKSOSxE1WHVk8TRtXqBvz0cu/8FQsy/IAjzn/c=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:MIME-Version:
-	 Content-Type; b=O4/itNjhsaQ/10mpx2wc4ORueH+q5L8lN4OtXztiNeJRz7Br/ux3N+c4RIliOVsC9tGe5TWAE/Ne+Zar58BHI+M52Clzz7Z7iktikK83MIVOS2Tp1x1SstdxNdEs/bq0bWcvaB8VAbF24K2a8cReCJrOdPLMQLcuIv9sMPru6rQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bUPytcyK; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1Ha3b15v; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1712324308;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=Hu+U42+S4zBToBDAuZQBhuX/6fAEhCT+vYDnuINULMY=;
-	b=bUPytcyK3mjgIIOAciWJo9paiQFg5lDtJxUWHeFxyizTYPYpwHeTmT+pw0+vzCF94/46cQ
-	nmxHn4xQ7n/Jb0XtsuEc4QXisAPoxmjdU6eoPZcNfPZVGrI/r/blko3r3vg/+dRcY6YIlS
-	UwcyBPPaiC3TxwHJoMK+UyrA0q3RP9gUnB90NkaJnZYvTvTB6r7DNZqqBZwQbtrKC9GqN2
-	EVUxeaw0sqeCb3ovmKRNy/jE648FyzOzMnGfzrDKWgeWIz7NVgs15vU1QD5MzZbWn47IWL
-	IxBTqZl0zjUJhjNXaetH76zgBdHAEiyilch5ViP/9xOC13hkfba3CfgHMk6ABw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1712324308;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to; bh=Hu+U42+S4zBToBDAuZQBhuX/6fAEhCT+vYDnuINULMY=;
-	b=1Ha3b15v8LcJ5G1pG3EdungRQHgLsiVnq/wE2lRYST1jQcxoGrpeVT3lPsjWS8H0ZEqXk8
-	nunPzAZ7+i8akhBg==
-To: Laura Nao <laura.nao@collabora.com>
-Cc: kernel@collabora.com, laura.nao@collabora.com,
- linux-kernel@vger.kernel.org, regressions@leemhuis.info,
- regressions@lists.linux.dev, x86@kernel.org
-Subject: Re: [REGRESSION] mainline boot regression on AMD Stoney Ridge
- Chromebooks
-In-Reply-To: <20240405103233.268999-1-laura.nao@collabora.com>
-Date: Fri, 05 Apr 2024 15:38:27 +0200
-Message-ID: <87ttkg7wvg.ffs@tglx>
+	s=arc-20240116; t=1712324423; c=relaxed/simple;
+	bh=KxZQ7ehx1DNyePhFG2kzZH/j/invOxWdsA6YprcZ8Aw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZQcECgC+iKTdmX11Ig0Vt0YhOQ8+pBUzckDGxj0oGkZ/3j9LuOvqMFBuhPGz609AZg4j1lBIagohxYJSZ3O2lKFd1xffPZyrQ/m1ldzdqDtZU2hIh1qFdRjv16Yl/XcXYfqyaRC/KxfQ5NJxRjtKajxzmA3wLRK/twOELr7mYT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rz1rhltk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E22BC433F1;
+	Fri,  5 Apr 2024 13:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712324423;
+	bh=KxZQ7ehx1DNyePhFG2kzZH/j/invOxWdsA6YprcZ8Aw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rz1rhltkWxcNCP4HFVtDkm2b4YMwphSXw5Rse8DhpBG0tJ7kLZ7luQHF1oZVXU/Tu
+	 7Q5yFnAxuDpTeuEpSj3wYDqKiYqCauDgfU99AGiVxUWlMZ+ZSjZ2FP8UfoGnWsJELy
+	 wRwqibuER42W/3Qzw7luOSqilXNqOmuYDQZ8Huc54zuSpBY3wAyXUw+fSK4/QU/g63
+	 rQGk8VAE+zfiRp2lkt7yperviQPraW5at7cnCion4D8jxIrSxFk2p7eoUTRTk0wUTX
+	 J5Pofz7cuJvPVYtvt1hxuZrAHzvBk28/tz4rr30RbgZpb7+bFe8lYdrtdhe1WWWhqc
+	 LYsfzFGaqKlNQ==
+Date: Fri, 5 Apr 2024 14:40:16 +0100
+From: Mark Brown <broonie@kernel.org>
+To: Shenghao Ding <shenghao-ding@ti.com>
+Cc: linux-kernel@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	perex@perex.cz, tiwai@suse.com, 13916275206@139.com,
+	mohit.chawla@ti.com, soyer@irl.hu, jkhuang3@ti.com, tiwai@suse.de,
+	pdjuandi@ti.com, manisha.agrawal@ti.com, aviel@ti.com,
+	hnagalla@ti.com, praneeth@ti.com, Baojun.Xu@fpt.com
+Subject: Re: [PATCH v8 0/4] ASoc: PCM6240: mixer-test report
+Message-ID: <11c55770-a306-45f6-91fd-2dd9918bb39a@sirena.org.uk>
+References: <20240403003159.389-1-shenghao-ding@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="mnAkXzmNKO4zU4Z0"
+Content-Disposition: inline
+In-Reply-To: <20240403003159.389-1-shenghao-ding@ti.com>
+X-Cookie: Honk if you love peace and quiet.
 
-On Fri, Apr 05 2024 at 12:32, Laura Nao wrote:
-> I also tried applying the patch you attached above on top of
-> next-20240404 but it doesn't seem to make any difference unfortunately.
 
-As I said it won't help, but it fixes some other issue.
+--mnAkXzmNKO4zU4Z0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I'm still puzzled and trying to make sense of this.
+On Wed, Apr 03, 2024 at 08:31:54AM +0800, Shenghao Ding wrote:
+> mixer-test report:
+>  root@am335x-evm:/bin# mixer-test
+>  TAP version 13
+>  # Card 0 - TI BeagleBone Black (TI BeagleBone Black)
+>  1..7
+>  ok 1 get_value.0.0
+>  # 0.0 pcmd3180-i2c-2 Profile id
+>  ok 2 name.0.0
+>  ok 3 write_default.0.0
+>  ok 4 write_valid.0.0
+>  ok 5 write_invalid.0.0
+>  ok 6 event_missing.0.0
+>  ok 7 event_spurious.0.0
+>  # Totals: pass:7 fail:0 xfail:0 xpass:0 skip:0 error:0
+>  root@am335x-evm:/bin#
 
-Can you please boot a working kernel and provide the output of:
+None of the additional %s-i2c-%d-dev%d-ch%d-ana-gain type controls
+appear to have shown up here - what's the story there?
 
-# rdmsr 0xc0011005
+--mnAkXzmNKO4zU4Z0
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
+-----BEGIN PGP SIGNATURE-----
 
-        tglx
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYP/z8ACgkQJNaLcl1U
+h9DR8wf+IM1zIAXw8sdz9hd6YBuO8aMFJqEjXokQWNsOQKBM2ZmkvI4cqaAubt/L
+v5HlYUHmXTV90zSlk7A0e/CFT3AGyiDwNXHmn4Y+2VIpTMIWfqLcqBc3tauCuK2M
+fKFuWcXeFygJ4XHQspODnVO2WubCALtnHEUjnnJFI60e649rxLyz8oYbVz+26MW8
+9zfM9Fmwk0Rl5PTN22TOQoDQ74WpEJq/ZjlrUqdsDDb1MOrw88KuWBIrbqqVA2cq
+tlomERUxQRkPJayASezXVk4FBEtmcdvwhNgBDD+HgBHgpebIr6EtS81IzfBLjqE+
+D9nqWsITMs8s9KguCxWmoHAUfF3ZPQ==
+=7dyz
+-----END PGP SIGNATURE-----
+
+--mnAkXzmNKO4zU4Z0--
 
