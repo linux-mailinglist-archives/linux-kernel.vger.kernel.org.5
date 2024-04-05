@@ -1,113 +1,133 @@
-Return-Path: <linux-kernel+bounces-132795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132797-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DE54899A5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:10:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00C6F899A62
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:10:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 547B01F23702
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:10:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31AFA1C2037D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 583A916190F;
-	Fri,  5 Apr 2024 10:10:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D8ED161921;
+	Fri,  5 Apr 2024 10:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="GiHp6HYk"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="q0LAEyuc"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8555F15FCE0;
-	Fri,  5 Apr 2024 10:10:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CD6161339;
+	Fri,  5 Apr 2024 10:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712311801; cv=none; b=scppUemjeOEAlXKcm68SAH1TU5F80knb48Kej/DBVDXhbw2sJ+ALkEFEG8C7I1HcK1UYao0IcrC9qlfAG8XAtTcyxL8GOlSGVdKLaOAnPX3Nttyg3GlnS4+ViKbfQPRXgqi/cIPUgbGX/ud0WXogUoBtvu0PlXbytpaM5unMDq4=
+	t=1712311826; cv=none; b=bo9EzkkDkzvavMruOxAmPBfVfSuJ4PJHbjTyn8BrNcj8DRzMRpTZUMbhEbtKtAEB5nNszZ6r/tUNWa96yjLrRQpgxfl+ZI/53SrQAfjHqp0Ryio2CpcFLwujSryZAJQN0DSO7jQuFMkXQXiMcm6wIj2kcFOL7tny9jmLbQtXFxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712311801; c=relaxed/simple;
-	bh=ix0s/bluTe6gLu0m77aaguOcqppxByEHmYUIwuPl+Wo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jewPfMlP/bRGzGCH0m09gZ749TCq5nplCiThdMGbuCc1S8GRb3LP+9vSuiooU3nFq/zHUlIwWNVeUVHbtnoCDc6eT0eA9yPBWkdYz7Q8EliHWWz8tL//fW4VeQUvOTNL1lg9MceLIZzuiMYHUQ08MyKXe9+eCvNVMXRhyvuOZV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=GiHp6HYk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2F0D4C433F1;
-	Fri,  5 Apr 2024 10:10:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712311801;
-	bh=ix0s/bluTe6gLu0m77aaguOcqppxByEHmYUIwuPl+Wo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GiHp6HYku6CxT/MWuytSUrypoWCMit0na8GMfPqJKZeD4O+/wZBIFOhL3vXQxVjeW
-	 xLdeYF2RGmTWOZKj7OaJSsGDcNsL1CPU0wNq/95hmjkB3kMFZmfzms/tNA2wZw1GDI
-	 L1F+MvH7GZM9j4brRjKbNWtl5+fUssEcfakizY54=
-Date: Fri, 5 Apr 2024 12:09:57 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Markus Elfring <Markus.Elfring@web.de>
-Cc: Shahar Avidar <ikobh7@gmail.com>, linux-staging@lists.linux.dev,
-	kernel-janitors@vger.kernel.org,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	"Felix N. Kimbu" <felixkimbu1@gmail.com>,
-	Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-	Rob Herring <robh@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	Dan Carpenter <dan.carpenter@linaro.org>
-Subject: Re: [PATCH v3 5/7] staging: pi433: Remove duplicated code using the
- "goto" error recovery scheme.
-Message-ID: <2024040546-crudely-demanding-c13a@gregkh>
-References: <20240405074000.3481217-6-ikobh7@gmail.com>
- <12a5180c-fbac-41dc-b1bf-9eded9d8c5ed@web.de>
+	s=arc-20240116; t=1712311826; c=relaxed/simple;
+	bh=71yKhmZuNdU9lyq418HQ7sPSXvHmC1CePNkf4gV9Jo8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aeP3N2hE3zNntC1uai/3qRKN+Ntn8i0OZ4QKl5dKmHUU6rfH4jThp9lagFNvxjzgtHoYRV/5iQHfLX+YnH9sa5Zh63DNrHR21plrXVfZd80NXcDzepgfxTyyNEgPxd4lZcizota+Mr1gCfxIgxcglU0Da0msdr7QvoyarZo5oLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=q0LAEyuc; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4359Turj031940;
+	Fri, 5 Apr 2024 10:10:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=id5sUKVtQKYVZP/8b/VbvPIT4asGnWWxKnMW734qOQI=;
+ b=q0LAEyuceBCmz94gjvUfY3hI27PifrHEcuWLHEv7jztKXleX5C2KWDyzfGcbodrxhso2
+ AqHSxTfx0RCGiS/AhaX63AejLqmJbltwYJklXh8WRYXApHBsNvJF0VajMWa+p7FzyG6K
+ IUkgGstC5cCrkzu1qsyR7JaH6QJ8D5soqNQ5W31tjFKMeTTYakz3hnXMhOb2021pHI9M
+ oocb7C9NxL/mbeCr8Bl2weJwpe4lxkwdgb+4mkB9yxA8hL+4KUzmoHpYBu1zpRb8R2Vc
+ JqrVp+x8JqYgKIAzowbZAfpoLF58tb0yBrgO7CS65obE9Q6IJrUsTQcxSEqx9LMBPJvu 6A== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xadxrg6kg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 10:10:17 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4359iih4022281;
+	Fri, 5 Apr 2024 10:10:15 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x9eq0ht6b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 10:10:15 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 435AAAnU36438506
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 5 Apr 2024 10:10:12 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 52CAC20076;
+	Fri,  5 Apr 2024 10:10:10 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1FC1520070;
+	Fri,  5 Apr 2024 10:10:10 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  5 Apr 2024 10:10:10 +0000 (GMT)
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Andi Shyti <andi.shyti@kernel.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc: linux-i2c@vger.kernel.org, Arnd Bergmann <arnd@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH v2 0/1] i2c: Handle HAS_IOPORT dependencies
+Date: Fri,  5 Apr 2024 12:10:08 +0200
+Message-Id: <20240405101009.2807447-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 86RKLJwQsLKET8wTrp6xgdEjNq7Uh7oS
+X-Proofpoint-ORIG-GUID: 86RKLJwQsLKET8wTrp6xgdEjNq7Uh7oS
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <12a5180c-fbac-41dc-b1bf-9eded9d8c5ed@web.de>
-
-On Fri, Apr 05, 2024 at 12:05:56PM +0200, Markus Elfring wrote:
-> I suggest to use the summary phrase “Use common error handling code
-> in pi433_init()” instead.
-> 
-> 
-> > pi433_init had "unregister_chrdev" called twice.
-> > Remove it using goto statements.
-> 
-> How do you think about to use the following change description?
-> 
->    unregister_chrdev() was called in two if branches.
->    Thus add jump targets so that a bit of exception handling can be better
->    reused at the end of this function implementation.
-> 
-> 
-> …
-> v2->v3:
-> …
->           a seperate patch.
-> …
-> 
-> Would you like to avoid a typo here?
-> 
-> Regards,
-> Markus
-> 
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_09,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ bulkscore=0 adultscore=0 lowpriorityscore=0 malwarescore=0 phishscore=0
+ clxscore=1015 priorityscore=1501 suspectscore=0 impostorscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404050074
 
 Hi,
 
-This is the semi-friendly patch-bot of Greg Kroah-Hartman.
+This is a follow up in my ongoing effort of making inb()/outb() and
+similar I/O port accessors compile-time optional. Previously I sent this
+as a treewide series titled "treewide: Remove I/O port accessors for
+HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
+subset of patches merged I've changed over to per-subsystem series. These
+series are stand alone and should be merged via the relevant tree such
+that with all subsystems complete we can follow this up with the final
+patch that will make the I/O port accessors compile-time optional.
 
-Markus, you seem to have sent a nonsensical or otherwise pointless
-review comment to a patch submission on a Linux kernel developer mailing
-list.  I strongly suggest that you not do this anymore.  Please do not
-bother developers who are actively working to produce patches and
-features with comments that, in the end, are a waste of time.
+The current state of the full series with changes to the remaining subsystems
+and the aforementioned final patch can be found for your convenience on my
+git.kernel.org tree in the has_ioport branch[1]. As for compile-time vs runtime
+see Linus' reply to my first attempt[2].
 
-Patch submitter, please ignore Markus's suggestion; you do not need to
-follow it at all.  The person/bot/AI that sent it is being ignored by
-almost all Linux kernel maintainers for having a persistent pattern of
-behavior of producing distracting and pointless commentary, and
-inability to adapt to feedback.  Please feel free to also ignore emails
-from them.
+Thanks,
+Niklas
 
-thanks,
+[0] https://lore.kernel.org/all/20230522105049.1467313-1-schnelle@linux.ibm.com/
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=has_ioport
+[2] https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
 
-greg k-h's patch email bot
+Changes since v1:
+- Removed HAS_IOPORT dependency for I2C_PARPORT as it could be used with MMIO
+  based parallel port driver
+
+Niklas Schnelle (1):
+  i2c: add HAS_IOPORT dependencies
+
+ drivers/i2c/busses/Kconfig | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
+
+-- 
+2.40.1
+
 
