@@ -1,78 +1,83 @@
-Return-Path: <linux-kernel+bounces-133709-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133710-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 277CD89A7A2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 01:56:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2FFB89A7A4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 01:56:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3B37F1C21412
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:56:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1ACFAB232CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C19374EB;
-	Fri,  5 Apr 2024 23:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424463D0C5;
+	Fri,  5 Apr 2024 23:56:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QTTqibd0"
-Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JMun0koC"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9FA2364DC
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 23:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13B9374EA
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 23:56:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712361370; cv=none; b=DBI9dSAucO3fL/1CYHOHPNfzLyuWL5LnNBYxAbadxK0FqaykyM/ZMzmrhZ7UP7nru4E48NACibyG0NyKhkgie8MjpAZEBtId7FPbGsHsjCaaeVbOD8die0Xp3zoyZh9o9HKlv8eAAS0cruqtorxCauG6xxaAyYZoJTKXGnhtTE8=
+	t=1712361372; cv=none; b=VYiqCk0UvPTCrPYaL7GvEkqocyjhqsSJ2s70uv1AU3/eo41lTvH5FOzRMjos3xz27YysaBRK5Rem1Nsu2aBO0PXTnOAmV+wajnbRGpypi7nkUWPthto9WurxaXyBUq530Se0ewBqhL1661JlpJH3pj6doBX1U5JnDiLVT5/M1bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712361370; c=relaxed/simple;
-	bh=AccG0MiuF1gaQ/tlNrC7daiT5+/cGUIsCHnIXxtCfA8=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=WQJt+GZPdt5I+a6eE7G8NxfXhgH3Rr36aXIVkupyWsg15fQOszwAhXuaZ7R1EgYkMPRuFypXPSGnkvBYhkC2fDneGwun16fcYBxZc/UyDbuHF7xvtEuMANsZPL2zfIyKlwxul6YRDKI/otZSnmS1gx6QokBgw7rUNnJilVWE+9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QTTqibd0; arc=none smtp.client-ip=209.85.210.202
+	s=arc-20240116; t=1712361372; c=relaxed/simple;
+	bh=8lScNtViHEsyfm2JCHUZapYQ1CBggYo9daCone+eouU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=SZ2h4Qeyi62dun/Sa+IyC3/9izrWKcZM2vkjZm9MWsK4Vw7VrsvlLC/fUis+iYtf2gK3zJkBNzXuoHG7zEuNonRCNSzzzzP2WA9GmSncJzf4YjpOQsGjkHq8ghswN1gqgb9/oUSyTmCFOKPEAc+VIsPHJTnWMNG7ZwnHTIEIuKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JMun0koC; arc=none smtp.client-ip=209.85.215.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6ea80a33cf6so2376058b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 16:56:08 -0700 (PDT)
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5e4df21f22dso1864213a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 16:56:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712361368; x=1712966168; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ks+8RAw2AVd/RYLtBLu22q09dihoe7Q9j5ZsJkIm8XQ=;
-        b=QTTqibd0im7q5c92/z0O+PkQxGfosAjZmQznaBWrfNJ+2tDxJ6VcwyGyYzJODZSLX3
-         PmOT7Nb39IaJLCZVzONDx2fIQENazh7KL8OynWaegS8/1g6CcjFU5nj4agyxpxwvMrok
-         5lknVvpadmi1d9vZdnAUvp7sfcDcWS7JO9f/98N7L7BpIG8xMD6h5xdKIXEBmMjqbQD+
-         wfoGLGT3lWWaNKY2Z6duzjUmNzZyPuMr6cUIJ1Beu9cWXtT7gAW0i39syREJjI7VDghM
-         n17bnlUKeTuHLKN5ok72zP8l0kWCM86A+pqns8+c/pz0oA+WaMAoKEyBeT78+Orw7mXW
-         E2Gg==
+        d=google.com; s=20230601; t=1712361370; x=1712966170; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=4r+RoLEjqU5HCVgTykkvgt8C73/zrEV4zkUK1D/uSqA=;
+        b=JMun0koCqDkQPhTnkp6I1SPQCFzxwOWaNnzUwUmdLavH1PAr4gXP2TXExbRYZErwiM
+         du/aPi6/wrBL5y7nIUQYFhdKXk9go3E1y+1/r0vh0P/HxRbw5ITCTF4Eb2909mNX0a/M
+         jnkLMwYkZ5oT0aS7O+eEzkku/GZLVoA6zXln8L6P/jypNYj7LBt1huHyJj7s3ss2EgAh
+         oaJ/dw4/EkB9F9wbxWx/S1yCHoOZVFDqucI9hTdXOlcifFq1aSdvZAhTWMBDX+k+LHr4
+         tL50lq1g9h8aGfzTJJG13nQOTB6yW/TqbuDNxJjhFd52B0/zKqcexxp/5fYymPhpUT45
+         ouuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712361368; x=1712966168;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ks+8RAw2AVd/RYLtBLu22q09dihoe7Q9j5ZsJkIm8XQ=;
-        b=bD9y5OktoclJJG/JTgL6ABRy2NHjIAxIucaMQbcrySjlRXPrDVvsfd/d69+StKnD6f
-         RasofG0GYKfoJRXRK5u7+meXLudgAtlOzEniW8xYPVhVD1jCJELG/BthqxhB7UPURo8F
-         E7xaeNTz6Uk+5N3MW+6/b/MSEu7VOvT3YxX3EbsHsbzJxM+P+/WQ/QlxNcP/yfVHG2bN
-         1c5o5dWu4GgC80Yi/dC/TeKGlyUY7M7GrA8Pe8luZYZ61KPlioWnj2Apg8uyB/1gFOUi
-         HVGA/S99IvfbUwYLhf76VCgLMaq71fEK+40QwM4m9KGvTM7u+8dLMUvvdu3fqBff4tzQ
-         LY3w==
-X-Forwarded-Encrypted: i=1; AJvYcCU1K8FaAXNPMQDJWzchxYMcB56xXD0+BFAVeUCXLSW8Hq6AbjOb/bF2Nzg5IbPI21L2/iTwHU41wCOaZCGxYg9TPbvTtOQamF7xjJPn
-X-Gm-Message-State: AOJu0YwmaxZ5+5n7M3MZ9sz7A+QFySLDYxyO2amZ8iKke1Bt5KNnaoPI
-	GpZMiAwYzftV2PBkmE9i+MlIw/s8jsFy9/15MEnxYbRB5a+gQFXU4twV3qv2NhlREvWd2S7msQJ
-	Uow==
-X-Google-Smtp-Source: AGHT+IEv1Z/LGB9K0Ramp9Ut2hpjJVb2wlxWWFeYPrwmlwqzFmyiKeOqKlgmEwntGgpWSLYljFkVkrxidsQ=
+        d=1e100.net; s=20230601; t=1712361370; x=1712966170;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4r+RoLEjqU5HCVgTykkvgt8C73/zrEV4zkUK1D/uSqA=;
+        b=tN1/3JiJan1FLs/8ii1KJP50o4xA5MmdP8bCI+aow5r3e/ybHiFKOQTGTGXdDEtIdC
+         bUSpUaghZZq7UO6FtsKB/ujPYwcVoEF9Rgg96sY7FTUgNf1GFk9WmWh0YT+ByyvIv0+V
+         +BcDmNtg7SNwy7R7VOPmANZWMEb4IhbhEyAHm7KRcVIPR2uwjRIVMBCSiYBvJeEKMa0e
+         Qd3SXFKOMoBCLnOisFfjT7VPZLtme8yLMJ3JalBmsq8OnqkrOohVGG5bHLy8YdT3HvT/
+         WTuIxMScF7wTC4LiIWkEvuOwqgw2+M0eSuD50zm4CZtB0evVJyzianlXQYd7lJpV6dl3
+         gZVA==
+X-Forwarded-Encrypted: i=1; AJvYcCWvmtcM7w7P+jA6dnqSmDwEzt9hSLd1Ec1RaebzdL+rKCC8jtIwJ1RrQiuIgBrc0RvVRGH1JpH2s6oV+NE1sPlc8MqahJ+gGx+ZvO7w
+X-Gm-Message-State: AOJu0Yy5BRy316C5VwEKGtlK3+wN5Ua6cvC4t1fxPyuzQr6Mmqkfzr8a
+	kCi6hy2E1WtyOekbXDtOG+iO9uKIwLbXwXfH64ZpATrLg7cXGfuT6+VamWSC9FtmxHg56YLoj1s
+	yRw==
+X-Google-Smtp-Source: AGHT+IFUv4Qi4W+CY+cd4Q+YVTMoq2UI1X46jcY5pyYF/waoENQ2hrc55fo9CuZwfUzQglgS5ZSBR3X37bg=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:188f:b0:6eb:3b8d:dc9b with SMTP id
- x15-20020a056a00188f00b006eb3b8ddc9bmr368324pfh.3.1712361368118; Fri, 05 Apr
- 2024 16:56:08 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a63:ce14:0:b0:5dc:9e39:dbc7 with SMTP id
+ y20-20020a63ce14000000b005dc9e39dbc7mr12081pgf.6.1712361369977; Fri, 05 Apr
+ 2024 16:56:09 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  5 Apr 2024 16:55:53 -0700
+Date: Fri,  5 Apr 2024 16:55:54 -0700
+In-Reply-To: <20240405235603.1173076-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240405235603.1173076-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240405235603.1173076-1-seanjc@google.com>
-Subject: [PATCH 00/10] KVM: x86: Fix LVTPC masking on AMD CPUs
+Message-ID: <20240405235603.1173076-2-seanjc@google.com>
+Subject: [PATCH 01/10] KVM: x86: Snapshot if a vCPU's vendor model is AMD vs.
+ Intel compatible
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -80,58 +85,116 @@ Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Like Xu <like.xu.linux@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 
-This is kinda sorta v2 of Sandipan's fix for KVM's incorrect setting of
-the MASK bit when delivering PMIs through the LVTPC.
+Add kvm_vcpu_arch.is_amd_compatible to cache if a vCPU's vendor model is
+compatible with AMD, i.e. if the vCPU vendor is AMD or Hygon, along with
+helpers to check if a vCPU is compatible AMD vs. Intel.  To handle Intel
+vs. AMD behavior related to masking the LVTPC entry, KVM will need to
+check for vendor compatibility on every PMI injection, i.e. querying for
+AMD will soon be a moderately hot path.
 
-It's a bit rushed, as I want to get Sandipan's fix applied early next
-week so that it can make its way to Linus' tree for -rc4.  And I didn't
-want to apply Sandipan's patch as-is, because I'm a little paranoid that
-the guest CPUID check could be noticeable slow, and it's easy to avoid.
+Note!  This subtly (or maybe not-so-subtly) makes "Intel compatible" KVM's
+default behavior, both if userspace omits (or never sets) CPUID 0x0 and if
+userspace sets a completely unknown vendor.  One could argue that KVM
+should treat such vCPUs as not being compatible with Intel *or* AMD, but
+that would add useless complexity to KVM.
 
-My plan is to grab patches 1-2 for 6.9 asap, and let the rest simmer for
-much, much longer (they are *very* lightly tested).
+KVM needs to do *something* in the face of vendor specific behavior, and
+so unless KVM conjured up a magic third option, choosing to treat unknown
+vendors as neither Intel nor AMD means that checks on AMD compatibility
+would yield Intel behavior, and checks for Intel compatibility would yield
+AMD behavior.  And that's far worse as it would effectively yield random
+behavior depending on whether KVM checked for AMD vs. Intel vs. !AMD vs.
+!Intel.  And practically speaking, all x86 CPUs follow either Intel or AMD
+architecture, i.e. "supporting" an unknown third architecture adds no
+value.
 
-As for why this looks wildy different than Sandipan's compat_vendor idea,
-when I started looking at KVM's various AMD vs. Intel checks, I realized
-it makes no sense to support an "unknown" vendor.  KVM can't do *nothing*,
-and so practically speaking, an "unknown" vendor vCPU would actually end
-up with a weird mix of AMD *and* Intel behavior, not AMD *or* Intel
-behavior.
+Deliberately don't convert any of the existing guest_cpuid_is_intel()
+checks, as the Intel side of things is messier due to some flows explicitly
+checking for exactly vendor==Intel, versus some flows assuming anything
+that isn't "AMD compatible" gets Intel behavior.  The Intel code will be
+cleaned up in the future.
 
-Sandipan Das (1):
-  KVM: x86/pmu: Do not mask LVTPC when handling a PMI on AMD platforms
-
-Sean Christopherson (9):
-  KVM: x86: Snapshot if a vCPU's vendor model is AMD vs. Intel
-    compatible
-  KVM: x86/pmu: Squash period for checkpointed events based on host
-    HLE/RTM
-  KVM: x86: Apply Intel's TSC_AUX reserved-bit behavior to Intel compat
-    vCPUs
-  KVM: x86: Inhibit code #DBs in MOV-SS shadow for all Intel compat
-    vCPUs
-  KVM: x86: Use "is Intel compatible" helper to emulate SYSCALL in
-    !64-bit
-  KVM: SVM: Emulate SYSENTER RIP/RSP behavior for all Intel compat vCPUs
-  KVM: x86: Allow SYSENTER in Compatibility Mode for all Intel compat
-    vCPUs
-  KVM: x86: Open code vendor_intel() in string_registers_quirk()
-  KVM: x86: Bury guest_cpuid_is_amd_or_hygon() in cpuid.c
-
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
  arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/cpuid.c            | 13 ++++++
- arch/x86/kvm/cpuid.h            | 16 ++------
- arch/x86/kvm/emulate.c          | 71 ++++++++++-----------------------
- arch/x86/kvm/kvm_emulate.h      |  1 +
- arch/x86/kvm/lapic.c            |  3 +-
+ arch/x86/kvm/cpuid.c            |  1 +
+ arch/x86/kvm/cpuid.h            | 10 ++++++++++
  arch/x86/kvm/mmu/mmu.c          |  2 +-
- arch/x86/kvm/pmu.c              |  2 +-
- arch/x86/kvm/svm/svm.c          | 14 +++----
- arch/x86/kvm/x86.c              | 30 ++++++++------
- 10 files changed, 68 insertions(+), 85 deletions(-)
+ arch/x86/kvm/x86.c              |  2 +-
+ 5 files changed, 14 insertions(+), 2 deletions(-)
 
-
-base-commit: 8cb4a9a82b21623dbb4b3051dd30d98356cf95bc
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 16e07a2eee19..6efd1497b026 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -855,6 +855,7 @@ struct kvm_vcpu_arch {
+ 	int cpuid_nent;
+ 	struct kvm_cpuid_entry2 *cpuid_entries;
+ 	struct kvm_hypervisor_cpuid kvm_cpuid;
++	bool is_amd_compatible;
+ 
+ 	/*
+ 	 * FIXME: Drop this macro and use KVM_NR_GOVERNED_FEATURES directly
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index bfc0bfcb2bc6..77352a4abd87 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -376,6 +376,7 @@ static void kvm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+ 
+ 	kvm_update_pv_runtime(vcpu);
+ 
++	vcpu->arch.is_amd_compatible = guest_cpuid_is_amd_or_hygon(vcpu);
+ 	vcpu->arch.maxphyaddr = cpuid_query_maxphyaddr(vcpu);
+ 	vcpu->arch.reserved_gpa_bits = kvm_vcpu_reserved_gpa_bits_raw(vcpu);
+ 
+diff --git a/arch/x86/kvm/cpuid.h b/arch/x86/kvm/cpuid.h
+index 856e3037e74f..23dbb9eb277c 100644
+--- a/arch/x86/kvm/cpuid.h
++++ b/arch/x86/kvm/cpuid.h
+@@ -120,6 +120,16 @@ static inline bool guest_cpuid_is_intel(struct kvm_vcpu *vcpu)
+ 	return best && is_guest_vendor_intel(best->ebx, best->ecx, best->edx);
+ }
+ 
++static inline bool guest_cpuid_is_amd_compatible(struct kvm_vcpu *vcpu)
++{
++	return vcpu->arch.is_amd_compatible;
++}
++
++static inline bool guest_cpuid_is_intel_compatible(struct kvm_vcpu *vcpu)
++{
++	return !guest_cpuid_is_amd_compatible(vcpu);
++}
++
+ static inline int guest_cpuid_family(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_cpuid_entry2 *best;
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 992e651540e8..bf4de6d7e39c 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -4935,7 +4935,7 @@ static void reset_guest_rsvds_bits_mask(struct kvm_vcpu *vcpu,
+ 				context->cpu_role.base.level, is_efer_nx(context),
+ 				guest_can_use(vcpu, X86_FEATURE_GBPAGES),
+ 				is_cr4_pse(context),
+-				guest_cpuid_is_amd_or_hygon(vcpu));
++				guest_cpuid_is_amd_compatible(vcpu));
+ }
+ 
+ static void __reset_rsvds_bits_mask_ept(struct rsvd_bits_validate *rsvd_check,
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 47d9f03b7778..ebcc12d1e1de 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -3470,7 +3470,7 @@ static bool is_mci_status_msr(u32 msr)
+ static bool can_set_mci_status(struct kvm_vcpu *vcpu)
+ {
+ 	/* McStatusWrEn enabled? */
+-	if (guest_cpuid_is_amd_or_hygon(vcpu))
++	if (guest_cpuid_is_amd_compatible(vcpu))
+ 		return !!(vcpu->arch.msr_hwcr & BIT_ULL(18));
+ 
+ 	return false;
 -- 
 2.44.0.478.gd926399ef9-goog
 
