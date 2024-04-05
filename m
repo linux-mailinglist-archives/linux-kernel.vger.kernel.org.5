@@ -1,121 +1,252 @@
-Return-Path: <linux-kernel+bounces-133612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B060B89A680
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:49:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A636889A640
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:42:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 694F2283059
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:49:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5C16428356A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FDF3175551;
-	Fri,  5 Apr 2024 21:47:17 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAE9D175557;
+	Fri,  5 Apr 2024 21:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wantyapps.xyz header.i=@wantyapps.xyz header.b="Obsb3XeI"
+Received: from mail.wantyapps.xyz (mail.wantyapps.xyz [66.135.5.160])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65665175563
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 21:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE8F74C74;
+	Fri,  5 Apr 2024 21:42:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.135.5.160
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712353628; cv=none; b=jriFaWx+ANdnmDU+MX1WG64EtblYhIK8YsQ+i37HtHa/sCCmPUhQI2cbZufsfTxZcLOqaBAmemrDQBIr8BP5SjOwXYX4VOAWwDlZuLfc17+3JvxNeg3/OvgCFvDMifX88eCFsW9eAJILm7lwS/pxV1QJHJHLykn1vXfkp4XRrrU=
+	t=1712353363; cv=none; b=p5Ph1CuHD2w2bacrK8jv4BQJuXWAXAPEKGCDa1tyWeiPBYbFVd6GVNZLbcg/i7WtVwh9tJ/4/SPKKK3zkTR9K9iQdS+Jvy5bR6XmjYf5BZyk/3ren774oQ9j8gc+tNMPgO1cNmkZnUyDsy+OxPlYvfLFBXs1gHUo6jKVnxxZhAE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712353628; c=relaxed/simple;
-	bh=yZmDSTPhZOvaL6jQ+Hu5V62mzOUAeZvk6Y8wqKAZzdo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eExfKCQEzWLLz8cbZ/nrJ2ki4Oc3m/st/oPI5XxQEDTRxoolI11XvwjWeDTkJw/p/oLTWH8XVjSGBT075vWJERMp2tCavPvk0FDwSMWARz6DVUsdW/fhM1CRtKDJGK+0d1cONVYsFpalUJFvUtYOx9YANMufHxutvEdhShk+iy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rsrOe-0003f5-CR; Fri, 05 Apr 2024 23:46:52 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rsrOd-00Ad5f-Dr; Fri, 05 Apr 2024 23:46:51 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rsrOd-00FZqo-16;
-	Fri, 05 Apr 2024 23:46:51 +0200
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	devicetree@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Alexander Stein <alexander.stein@ew.tq-group.com>
-Subject: [PATCH v1 37/49] ARM: dts: imx6sl-evk: Use #pwm-cells = <3> for imx27-pwm device
-Date: Fri,  5 Apr 2024 23:42:24 +0200
-Message-ID:  <e37ba7a4050d1487be7def30742f9a0e9141490e.1712352665.git.u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1712352665.git.u.kleine-koenig@pengutronix.de>
-References: <cover.1712352665.git.u.kleine-koenig@pengutronix.de>
+	s=arc-20240116; t=1712353363; c=relaxed/simple;
+	bh=HZG6dXrNkcoRgeV+k8hA9G3top5k7OmbWR2k4HUy6gs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MbhIJKTbRykFcmQSOFeAt9P74MwczewI7z5tnJqg56OtHNLN57GCFM/GMbLBFp0IEfBnkaf8AgesZCO/jHRFN2PVNp7ZO2te6b8TbLp0BcL5z4aT42eu5lcM1X4xOWizpIq5EsnXsnBJKgRpGMS7LdQ7jFVqRbZDeAUmA2zK2+8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=wantyapps.xyz; spf=pass smtp.mailfrom=wantyapps.xyz; dkim=pass (2048-bit key) header.d=wantyapps.xyz header.i=@wantyapps.xyz header.b=Obsb3XeI; arc=none smtp.client-ip=66.135.5.160
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=wantyapps.xyz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wantyapps.xyz
+Received: from multivac.localdomain (unknown [147.235.205.62])
+	by mail.wantyapps.xyz (Postfix) with ESMTPSA id 0D4CF9508D;
+	Fri,  5 Apr 2024 21:42:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wantyapps.xyz;
+	s=mail; t=1712353355;
+	bh=HZG6dXrNkcoRgeV+k8hA9G3top5k7OmbWR2k4HUy6gs=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Obsb3XeItVVX+5LjAkHQIJesAl6Xqge9esmh/hUuHLmmmAUhCyizpxFNFoxXY7J2M
+	 sjr58e2sanShV8RRmiqA2iq4pXYsTzD6/gLh+g5xnNtY9jKkGeehh4M60QcaNd4HO9
+	 UOfwZZBRLCAdjcM0B3tQb2yp68l4UF/JRbdUd1CbEBM4+NFKJaeofF5DWBAD9yPSdh
+	 uN9IWb2OF0C/xjeQ97e5QIrxi68O25qMehfwxKsuKWEGIFyMHjTokT8x0Czi5xrBDT
+	 os/MeAZpHYqfqSrZBcqhMHlM/1/hzg/ZSrNJITgXEOue2E44lJB6i3CPowqh6bfEW3
+	 cL7g6zokgbL4g==
+From: me@wantyapps.xyz
+To: 
+Cc: me@wantyapps.xyz,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] Bluetooth: ath3k: Fix multiple issues reported by checkpatch.pl
+Date: Sat,  6 Apr 2024 00:42:24 +0300
+Message-ID: <20240405214225.2170476-1-me@wantyapps.xyz>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1287; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=yZmDSTPhZOvaL6jQ+Hu5V62mzOUAeZvk6Y8wqKAZzdo=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBmEHCmg9NAV7PtBonIgi2/BnIiec2Oknlvz233X VksSbkb6n+JATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZhBwpgAKCRCPgPtYfRL+ Tl7DB/43uULPHapISVDYRKOMCAXfOEp6VRmKdE7njMICQpNi+XVFjulQ20QFe1TG+yr6y/Dc+L0 xq/YUIi0ALPXFDgrrZQqS7t3Gyffq4B2mSlTvyPSQGtCDcU+uv6pFKJso4/BT7loCcL4yLRkBrM mYkNeEGDnLd+BDlJtw9ERqRaqaLeOiiG5WXcowiRfZA7dfBnDkD4+i31Ni31RPt663XBH/sTTwQ WjbIK/Nx6s4utLsRHG3Lozsqg5V0Hc6FybnvEolesIQjLokI8OIMVThnS/VUZKUBD0X9GPeItAm ETtZXlKFERLfb+4fTX0GPhavG2+Zuo7Lsz7l1kfHws4Ugem6
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-The binding dictates using 3 pwm-cells. Adhere to that.
+From: Uri Arev <me@wantyapps.xyz>
 
-This fixes the following dtbs_check warning:
+This fixes some CHECKs reported by the checkpatch script.
 
-	arch/arm/boot/dts/nxp/imx/imx6sl-evk.dtb: pwm@2080000: #pwm-cells:0:0: 3 was expected
-		from schema : http://devicetree.org/schemas/pwm/imx-pwm.yaml#
+Issues reported in ath3k.c:
+-------
+ath3k.c
+-------
+CHECK: Please don't use multiple blank lines
++
++
 
-There is no need for an explicit status = "okay" in the pwm node as
-the soc dtsi doesn't disable these devices. Drop this property, too.
+CHECK: Blank lines aren't necessary after an open brace '{'
++static const struct usb_device_id ath3k_blist_tbl[] = {
++
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+CHECK: Alignment should match open parenthesis
++static int ath3k_load_firmware(struct usb_device *udev,
++                               const struct firmware *firmware)
+
+CHECK: Alignment should match open parenthesis
++               err = usb_bulk_msg(udev, pipe, send_buf, size,
++                                       &len, 3000);
+
+CHECK: Unnecessary parentheses around 'len != size'
++               if (err || (len != size)) {
+
+CHECK: Alignment should match open parenthesis
++static int ath3k_get_version(struct usb_device *udev,
++                       struct ath3k_version *version)
+
+CHECK: Alignment should match open parenthesis
++static int ath3k_load_fwfile(struct usb_device *udev,
++               const struct firmware *firmware)
+
+CHECK: Alignment should match open parenthesis
++               err = usb_bulk_msg(udev, pipe, send_buf, size,
++                                       &len, 3000);
+
+CHECK: Unnecessary parentheses around 'len != size'
++               if (err || (len != size)) {
+
+CHECK: Blank lines aren't necessary after an open brace '{'
++       switch (fw_version.ref_clock) {
++
+
+CHECK: Alignment should match open parenthesis
++       snprintf(filename, ATH3K_NAME_LEN, "ar3k/ramps_0x%08x_%d%s",
++               le32_to_cpu(fw_version.rom_version), clk_value, ".dfu");
+
+CHECK: Alignment should match open parenthesis
++static int ath3k_probe(struct usb_interface *intf,
++                       const struct usb_device_id *id)
+
+CHECK: Alignment should match open parenthesis
++                       BT_ERR("Firmware file \"%s\" not found",
++                                                       ATH3K_FIRMWARE);
+
+CHECK: Alignment should match open parenthesis
++               BT_ERR("Firmware file \"%s\" request failed (err=%d)",
++                                               ATH3K_FIRMWARE, ret);
+
+total: 0 errors, 0 warnings, 14 checks, 540 lines checked
+
+Signed-off-by: Uri Arev <me@wantyapps.xyz>
 ---
- arch/arm/boot/dts/nxp/imx/imx6sl-evk.dts | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Changes in v2:
+  - Fix spelling mistake
+  - Fix gitlint errors
 
-diff --git a/arch/arm/boot/dts/nxp/imx/imx6sl-evk.dts b/arch/arm/boot/dts/nxp/imx/imx6sl-evk.dts
-index 239bc6dfc584..31eee0419af7 100644
---- a/arch/arm/boot/dts/nxp/imx/imx6sl-evk.dts
-+++ b/arch/arm/boot/dts/nxp/imx/imx6sl-evk.dts
-@@ -23,7 +23,7 @@ memory@80000000 {
+Changes in v3:
+  - Fix line length error in error section of commit
+---
+ drivers/bluetooth/ath3k.c | 25 +++++++++++--------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/bluetooth/ath3k.c b/drivers/bluetooth/ath3k.c
+index 88262d3a9392..ce97b336fbfb 100644
+--- a/drivers/bluetooth/ath3k.c
++++ b/drivers/bluetooth/ath3k.c
+@@ -3,7 +3,6 @@
+  * Copyright (c) 2008-2009 Atheros Communications Inc.
+  */
  
- 	backlight_display: backlight_display {
- 		compatible = "pwm-backlight";
--		pwms = <&pwm1 0 5000000>;
-+		pwms = <&pwm1 0 5000000 0>;
- 		brightness-levels = <0 4 8 16 32 64 128 255>;
- 		default-brightness-level = <6>;
- 	};
-@@ -584,10 +584,8 @@ display_out: endpoint {
- };
+-
+ #include <linux/module.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+@@ -128,7 +127,6 @@ MODULE_DEVICE_TABLE(usb, ath3k_table);
+  * for AR3012
+  */
+ static const struct usb_device_id ath3k_blist_tbl[] = {
+-
+ 	/* Atheros AR3012 with sflash firmware*/
+ 	{ USB_DEVICE(0x0489, 0xe04e), .driver_info = BTUSB_ATH3012 },
+ 	{ USB_DEVICE(0x0489, 0xe04d), .driver_info = BTUSB_ATH3012 },
+@@ -202,7 +200,7 @@ static inline void ath3k_log_failed_loading(int err, int len, int size,
+ #define TIMEGAP_USEC_MAX	100
  
- &pwm1 {
--	#pwm-cells = <2>;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_pwm1>;
--	status = "okay";
- };
+ static int ath3k_load_firmware(struct usb_device *udev,
+-				const struct firmware *firmware)
++			       const struct firmware *firmware)
+ {
+ 	u8 *send_buf;
+ 	int len = 0;
+@@ -237,9 +235,9 @@ static int ath3k_load_firmware(struct usb_device *udev,
+ 		memcpy(send_buf, firmware->data + sent, size);
  
- &reg_vdd1p1 {
+ 		err = usb_bulk_msg(udev, pipe, send_buf, size,
+-					&len, 3000);
++				   &len, 3000);
+ 
+-		if (err || (len != size)) {
++		if (err || len != size) {
+ 			ath3k_log_failed_loading(err, len, size, count);
+ 			goto error;
+ 		}
+@@ -262,7 +260,7 @@ static int ath3k_get_state(struct usb_device *udev, unsigned char *state)
+ }
+ 
+ static int ath3k_get_version(struct usb_device *udev,
+-			struct ath3k_version *version)
++			     struct ath3k_version *version)
+ {
+ 	return usb_control_msg_recv(udev, 0, ATH3K_GETVERSION,
+ 				    USB_TYPE_VENDOR | USB_DIR_IN, 0, 0,
+@@ -271,7 +269,7 @@ static int ath3k_get_version(struct usb_device *udev,
+ }
+ 
+ static int ath3k_load_fwfile(struct usb_device *udev,
+-		const struct firmware *firmware)
++			     const struct firmware *firmware)
+ {
+ 	u8 *send_buf;
+ 	int len = 0;
+@@ -310,8 +308,8 @@ static int ath3k_load_fwfile(struct usb_device *udev,
+ 		memcpy(send_buf, firmware->data + sent, size);
+ 
+ 		err = usb_bulk_msg(udev, pipe, send_buf, size,
+-					&len, 3000);
+-		if (err || (len != size)) {
++				   &len, 3000);
++		if (err || len != size) {
+ 			ath3k_log_failed_loading(err, len, size, count);
+ 			kfree(send_buf);
+ 			return err;
+@@ -425,7 +423,6 @@ static int ath3k_load_syscfg(struct usb_device *udev)
+ 	}
+ 
+ 	switch (fw_version.ref_clock) {
+-
+ 	case ATH3K_XTAL_FREQ_26M:
+ 		clk_value = 26;
+ 		break;
+@@ -441,7 +438,7 @@ static int ath3k_load_syscfg(struct usb_device *udev)
+ 	}
+ 
+ 	snprintf(filename, ATH3K_NAME_LEN, "ar3k/ramps_0x%08x_%d%s",
+-		le32_to_cpu(fw_version.rom_version), clk_value, ".dfu");
++		 le32_to_cpu(fw_version.rom_version), clk_value, ".dfu");
+ 
+ 	ret = request_firmware(&firmware, filename, &udev->dev);
+ 	if (ret < 0) {
+@@ -456,7 +453,7 @@ static int ath3k_load_syscfg(struct usb_device *udev)
+ }
+ 
+ static int ath3k_probe(struct usb_interface *intf,
+-			const struct usb_device_id *id)
++		       const struct usb_device_id *id)
+ {
+ 	const struct firmware *firmware;
+ 	struct usb_device *udev = interface_to_usbdev(intf);
+@@ -505,10 +502,10 @@ static int ath3k_probe(struct usb_interface *intf,
+ 	if (ret < 0) {
+ 		if (ret == -ENOENT)
+ 			BT_ERR("Firmware file \"%s\" not found",
+-							ATH3K_FIRMWARE);
++			       ATH3K_FIRMWARE);
+ 		else
+ 			BT_ERR("Firmware file \"%s\" request failed (err=%d)",
+-							ATH3K_FIRMWARE, ret);
++			       ATH3K_FIRMWARE, ret);
+ 		return ret;
+ 	}
+ 
 -- 
-2.43.0
+2.44.0
 
 
