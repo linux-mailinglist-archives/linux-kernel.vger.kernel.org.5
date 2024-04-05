@@ -1,62 +1,85 @@
-Return-Path: <linux-kernel+bounces-133093-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133094-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C7E899EB7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:48:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51736899EBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:50:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 778B71F24417
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:48:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0605E285112
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89DDB16D9B4;
-	Fri,  5 Apr 2024 13:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1156A16D9C8;
+	Fri,  5 Apr 2024 13:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tTPdHpmG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="fxWS8vfT";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vRvQnvnW"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B7916131A;
-	Fri,  5 Apr 2024 13:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F5AB2E401;
+	Fri,  5 Apr 2024 13:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712324907; cv=none; b=faQqLyQPt9eKve0ImXbzQlgD0HMaTkLTkBhyTBWZEaDgIHwUsB9Xpc5jPy9L5DctrSAgn73/avCoJdHkhDD/+xoAMLNhOmwoorWmhZ1u8OA//udTsDyDavSentJBzDhP0KU2nqzUZ+6QWElHvzoEW68ADY1/wnndJgjFMw63t5I=
+	t=1712324992; cv=none; b=q99gJXGBkXYpAkYsXC5wDFNH3Pv3QJ7JBsXDqCtFCfc204p1B7JbSC2541QLiLoXindvbFOrdrjVucf/xHnpv5ShAXRMoQAa35t9rbsfnP5Sn5bYGDX5NWng8CZeiDEk23JKsgUXMq0A1E4Bq+1AbIzSv5/jYh81AGaV8NFyLdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712324907; c=relaxed/simple;
-	bh=joolmc4LtKTv8gZerkw3rQ+TPn8Z4H7XsFQKjvP3UV0=;
+	s=arc-20240116; t=1712324992; c=relaxed/simple;
+	bh=Yh6tb71zvPKChuofRzQ+jAmdGm2HUzLM6pFKbvX9nEs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kMvHBYNAu0QEIz2z7Aa7bYvhHjaSNuHlmOGQsgtlShMPDK7hWLw8is96Odxm06cR07Tb5HJ7XhfLta4RQbaxSg2J6UE44GpgnK9SHRp8r9inlO2OUQNdw54uvEBfbgfyNQWX84Kua9RlqbbxZEwVPcjBSfVbwSsVgC+BqtGx2Uc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tTPdHpmG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AAEFC433F1;
-	Fri,  5 Apr 2024 13:48:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712324907;
-	bh=joolmc4LtKTv8gZerkw3rQ+TPn8Z4H7XsFQKjvP3UV0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tTPdHpmGUxHtdEjhVn5pMRejA0anBNCardSo/ZWe8tPR2tv6L1mdV05eI/4faBQ8m
-	 b0/BIVbYCUHuAZ14XFnfBorEI2IZZWj9J/zYqoQmXDrKL8vVgANzfe6n/ptuewqDXb
-	 JnDVfp6fGfPwceh5ALURhg3pS3P5RqcEgVE8Q36AiUU7Ep7xArDKb0CBIDy5Aa//fl
-	 rAXDL8z+JvzrhydoheDU4p829mc/GkZ85mdelO3hFnmy6weXgxe+C2vimt9Lz0bsqd
-	 PbhAwCqCnbUDunX5wPhd3TCVVAwuMqr0YflibS5mRgtrZlJDta16LPPnJvDcx6LE7t
-	 BpB6drS+Mk+CA==
-Date: Fri, 5 Apr 2024 15:48:20 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Amir Goldstein <amir73il@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>, 
-	syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>, gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org, 
-	valesini@yandex-team.ru, Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
-Message-ID: <20240405-liebschaft-effekt-ca71fb6e7699@brauner>
-References: <00000000000098f75506153551a1@google.com>
- <0000000000002f2066061539e54b@google.com>
- <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
- <20240404081122.GQ538574@ZenIV>
- <20240404082110.GR538574@ZenIV>
- <CAOQ4uximHfK78KFabJA3Hf4R0En6-GfJ3eF96Lzmc94PGuGayA@mail.gmail.com>
- <20240405065135.GA3959@lst.de>
- <20240405-ozonwerte-hungrig-326d97c62e65@brauner>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EBG+UqTPMsAEThxWMVEa18hWt5dXBTZ/UxZ1pppQZvmVXGCqiHCqjdC/eq+hAlLKjs0yDhuHjxjM+7VddA6a6IS1BB4JZ9CPpp1YTgBp3X1SUHA9EjzKUJhzOIDfPWJ/teahKPuMKnbm9KiSZp4yCWxeMJ1S1LQTiUXDn8f5NZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=fxWS8vfT; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vRvQnvnW; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 5 Apr 2024 15:49:46 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712324988;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KfinOOmRqv4TiYT3J4ii30g+NwwcvO6ie7kv9r4otrM=;
+	b=fxWS8vfThFgtVfNVrfxto+hy2vU3Cc4H2eBhmROJ8OHw+DRog7DYb4i7coSwQZSsWFAxGV
+	nETxmsR3lByOyCUdHItK90a5yxTqjf4c+oeJ9+ZNchI1mZind/YjdakyGsxiUZ6sC0VtC1
+	H7jw9BoKFT1R+Wio6Q4Etn+Vn+rQDrVDBwlvVEzAVBT9+cclOXSSIWoEQae/+c7VUF3e+g
+	vI/Up8UoJc8AryokLQfkgNfTf7IVy5UrHEVKppi3Py58a1/1I8AnoHyN1GWWAf8n5S3+uU
+	2Al7UE1uKNg+Au4lwPCiO3WfAeXMH++x9C6zr8Lo7KtdPAwHLLp3P6jDe7cDSw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712324988;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KfinOOmRqv4TiYT3J4ii30g+NwwcvO6ie7kv9r4otrM=;
+	b=vRvQnvnWLH1+h/yHjM4QKU6SVZhlNolDRNjj2oV+ctzgEuZeHyDtIuhBzZOmm8soM0eN16
+	6oPDnpSlQq2c3wDQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Yan Zhai <yan@cloudflare.com>
+Cc: paulmck@kernel.org, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@cloudflare.com,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v5 net 1/3] rcu: add a helper to report consolidated
+ flavor QS
+Message-ID: <20240405134946.NzqmEyX1@linutronix.de>
+References: <cover.1710877680.git.yan@cloudflare.com>
+ <90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com>
+ <20240322112413.1UZFdBq5@linutronix.de>
+ <123ca494-dc8c-47cc-a6d5-3c529bc7f549@paulmck-laptop>
+ <CAO3-PbqRztEC1JFg3SrgUi9a404Xpou_Xx9_mxXoZVY-KVkyGg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,57 +88,79 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240405-ozonwerte-hungrig-326d97c62e65@brauner>
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAO3-PbqRztEC1JFg3SrgUi9a404Xpou_Xx9_mxXoZVY-KVkyGg@mail.gmail.com>
 
-On Fri, Apr 05, 2024 at 01:19:35PM +0200, Christian Brauner wrote:
-> On Fri, Apr 05, 2024 at 08:51:35AM +0200, Christoph Hellwig wrote:
-> > On Thu, Apr 04, 2024 at 12:33:40PM +0300, Amir Goldstein wrote:
-> > > I don't follow what you are saying.
-> > > Which code is in non-starter violation?
-> > > kernfs for calling lookup_bdev() with internal of->mutex held?
-> > 
-> > That is a huge problem, and has been causing endless annoying lockdep
-> > chains in the block layer for us.  If we have some way to kill this
-> > the whole block layer would benefit.
-> 
-> Why not just try and add a better resume api that forces resume to not
-> use a path argument neither for resume_file nor for writes to
-> /sys/power/resume. IOW, extend the protocol what can get written to
-> /sys/power/resume and then phase out the path argument. It'll take a
-> while but it's a possibly clean solution.
+On 2024-03-22 21:02:02 [-0500], Yan Zhai wrote:
+> On Fri, Mar 22, 2024 at 4:31=E2=80=AFPM Paul E. McKenney <paulmck@kernel.=
+org> wrote:
+> >
+> > On Fri, Mar 22, 2024 at 12:24:13PM +0100, Sebastian Andrzej Siewior wro=
+te:
+> > > On 2024-03-19 13:44:34 [-0700], Yan Zhai wrote:
+> > > > + * The macro is not needed when CONFIG_PREEMPT_RT is defined. RT k=
+ernels would
+> > > > + * have more chance to invoke schedule() calls and provide necessa=
+ry quiescent
+> > > > + * states. As a contrast, calling cond_resched() only won't achiev=
+e the same
+> > > > + * effect because cond_resched() does not provide RCU-Tasks quiesc=
+ent states.
+> > > > + */
+> > >
+> > > Paul, so CONFIG_PREEMPTION is affected but CONFIG_PREEMPT_RT is not.
+> > > Why does RT have more scheduling points?
+> >
+> > In RT, isn't BH-disabled code preemptible?  But yes, this would not help
+> > RCU Tasks.
+Yes, it is but why does it matter? This is used in the NAPI thread which
+fully preemptible and does cond_resched(). This should be enough.
 
-In fact, just looking at this code with a naive set of eyes for a second:
+> By "more chance to invoke schedule()", my thought was that
+> cond_resched becomes no op on RT or PREEMPT kernel. So it will not
+> call __schedule(SM_PEREEMPT), which clears the NEED_RESCHED flag. On a
+It will nop cond_resched(), correct. However once something sends
+NEED_RESCHED then the receiver of this flag will __schedule(SM_PEREEMPT)
+as soon as possible. That is either because the scheduler sends an IPI
+and the CPU will do it in the irq-exit path _or_ the thread does
+preempt_enable() (which includes local_bh_enable()) and the counter hits
+zero at which point the same context switch happens.
 
-* There's early_lookup_bdev() which deals with PARTUUID,
-  PARTLABEL, raw device number, and lookup based on /dev. No actual path
-  lookup involved in that.
+Therefore I don't see a difference between CONFIG_PREEMPT and
+CONFIG_PREEMPT_RT.
 
-* So the only interesting case is lookup_bdev() for /sys/power/suspend.
-  That one takes arbitrary paths. But being realistic for a moment...
-  How many people will specify a device path that's _not_ some variant
-  of /dev/...? IOW, how many people will specify a device path that's
-  not on devtmpfs or a symlink on devtmpfs? Probably almost no one.
+> normal irq exit like timer, when NEED_RESCHED is on,
+> schedule()/__schedule(0) can be called time by time then.
 
-  Containers come to mind ofc. But they can't mount devtmpfs so usually
-  what they do is that they create a tmpfs mount at /dev and then
-  bind-mount device nodes they need into there. But unprivileged
-  containers cannot use suspend because that requires init_user_ns
-  capabilities. And privileged containers that are allowed to hibernate
-  and use custom paths seem extremly unlikely as well.
+This I can not parse. __schedule(0) means the task gives up on its own
+and goes to sleep. This does not happen for the NAPI-thread loop,
+kworker loop or any other loop that consumes one work item after the
+other and relies on cond_resched() in between.
 
-So really, _naively_ it seems to me that one could factor out the /dev/*
-part of the device number parsing logic in early_lookup_bdev() and port
-resume_store() to use that first and only if that fails fall back to
-full lookup_bdev(). (Possibly combined with some sort of logging that the
-user should use /dev/... paths or at least a way to recognize that this
-arbitrary path stuff is actually used.)
+> __schedule(0) is good for RCU tasks, __schedule(SM_PREEMPT) is not.
+Okay and that is why? This means you expect that every thread gives up
+on its own which may take some time depending on the workload. This
+should not matter.
 
-And citing from a chat with the hibernation maintainer in systemd:
+If I see this right, the only difference is rcu_tasks_classic_qs() and I
+didn't figure out yet what it does.
 
-<brauner> So /sys/power/resume does systemd ever write anything other than a /dev/* path in to there?
-<maintainer> Hmm? You never do that? It only accepts devno.
+> But I think this code comment does not take into account frequent
+> preempt_schedule and irqentry_exit_cond_resched on a PREEMPT kernel.
+> When returning to these busy kthreads, irqentry_exit_cond_resched is
+> in fact called now, not schedule(). So likely __schedule(PREEMPT) is
+> still called frequently, or even more frequently. So the code comment
+> looks incorrect on the RT argument part. We probably should remove the
+> "IS_ENABLED" condition really. Paul and Sebastian, does this sound
+> reasonable to you?
 
-So that takes away one of the main users of this api. So I really
-suspect that arbitrary device path is unused in practice. Maybe I'm all
-wrong though.
+Can you walk me through it? Why is it so important for a task to give up
+voluntary? There is something wrong here with how RCU tasks works.
+We want to get rid of the sprinkled cond_resched(). This looks like a
+another variant of it that might be required in places with no
+explanation except it takes too long.=20
+
+> Yan
+
+Sebastian
 
