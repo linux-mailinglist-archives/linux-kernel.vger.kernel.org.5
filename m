@@ -1,120 +1,189 @@
-Return-Path: <linux-kernel+bounces-132494-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132495-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4326D8995DA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:50:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55B6E8995DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:51:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 54DA51C21CEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:50:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 797201C20DDD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:51:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75AC928E2B;
-	Fri,  5 Apr 2024 06:49:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE3224B28;
+	Fri,  5 Apr 2024 06:51:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GcN9OhNq"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nvinfKEZ"
+Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F10BC2557A;
-	Fri,  5 Apr 2024 06:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3DD21CA9E
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 06:51:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712299797; cv=none; b=fVX5ugiaR7j81W/eO0ovqlNiAqP3z+3KjohzhysxRQEk00XT5A41RuBLAZWOdciEsIRO1CFXkoGQuQBEOJg3PDByhEmsWZ5xOX2EYK5jUfGeiSYxC1No31ueRP/aKuEfq5WCm1NDyM27WRi3YfIgGROvIRxn59XqXu1iB4/ctYs=
+	t=1712299882; cv=none; b=BTfCIudh4pwIHPPbAezGyprRd9Mfwm/2I8M+wAJEqsBxtiecubNd+MxyxZ+xtNRqOCbH2kcld76pvPNf2sB638wL/jzC546nVPrpV3GG+dF9KS4FTQ7P340fBUdqy6cCbmMT1l849sihwM4H8BIJN+IQPQv+SAb2+TK8yR6/SFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712299797; c=relaxed/simple;
-	bh=pM5eyZ6ngQNS72PsWbWA/pEt9fJ2yCxrs53GYxHbrvI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cQj7HaPvW5sGllPkXQ51inXjCb+vxVaE9o/H4FNtgb2GJeo434oSTywjbd9wN4bcICvbunW9nyZyw6wrFa3hfdK/q6YqP/sFAQlslVfVN2ZUzBNhP13o1JyPP9OaOcnQ41yUVeQB6rRrMRGOKDbeLuoOXcy29BMC127+GWCS5ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GcN9OhNq; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712299796; x=1743835796;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pM5eyZ6ngQNS72PsWbWA/pEt9fJ2yCxrs53GYxHbrvI=;
-  b=GcN9OhNq/TZ5ZMoxa4x86i7JO6ewKpJpQEHWdxuQ29tmxyp5qDDbWgYj
-   NAvg/+JVd/9gUq4EAPGcZMVk3sxd3KNfnSQaM9psI9SuM0FBq33oXIYOv
-   QaXiXqIsptyDKTLgQentGNM539HaWHUuhdhU1v6I62FBzo0wVL6HYc4kG
-   NcUqMpd959JVbQMjFty8er9xfimn3kVgMshAd/Iu+ZFq5QB19JVfH1naZ
-   GcqFpBaPWXpv6A+AyB/LtcX5DomE3HDQr0Beew2+5BHJECEZoeGwGzJaa
-   7ZyfDss7H4vy9zfAAaCBVOKQY8anZ2D2JLg5qLiShSSXQzkSiiF3iSBOE
-   w==;
-X-CSE-ConnectionGUID: kYLUhW6QTPimlfPCOXGN5Q==
-X-CSE-MsgGUID: M+i4ae5VQ+Ssl51iDt6ObQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="30090098"
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="30090098"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 23:49:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="937087429"
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="937087429"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 04 Apr 2024 23:49:52 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Fri, 05 Apr 2024 09:49:51 +0300
-Date: Fri, 5 Apr 2024 09:49:51 +0300
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Javier Carrasco <javier.carrasco@wolfvision.net>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Abdel Alkuor <abdelalkuor@geotab.com>, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH RESEND 2/2] usb: typec: tipd: fix event checking for
- tps6598x
-Message-ID: <Zg+fD6w1MykCsEe6@kuha.fi.intel.com>
-References: <20240328-tps6598x_fix_event_handling-v1-0-502721ff705b@wolfvision.net>
- <20240328-tps6598x_fix_event_handling-v1-2-502721ff705b@wolfvision.net>
- <ZgveG5Ly3mw0O0eo@kuha.fi.intel.com>
- <b6bf7f8e-7d46-4b70-930c-9483f13fd80a@wolfvision.net>
+	s=arc-20240116; t=1712299882; c=relaxed/simple;
+	bh=4oDVAHGYYcR/2l5FlZ2TZi7td9mGan3FkIWef+vpdkY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sm6uHK8HTEYKg2JEnoYNK8yMqK7OpH5szYM8JrPwLWnMLWvzl/d6oxb2wI1JuqGuMvTjTbOddPTEBJJk0KfN9nq9MJLh3GjMk/lt/QmksUR1+xD/Ng0F4qqb0TuerTFPEtNW1axznaEvV7WWbHRKd2STIukhPfcRtX4XZc+b5Hs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nvinfKEZ; arc=none smtp.client-ip=209.85.221.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-343e986aa6cso41445f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 23:51:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712299879; x=1712904679; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5/LaVfwoI2Gev4h8pd9kUELtSUqC9s7I3hRen4i8R0o=;
+        b=nvinfKEZSzD5YmtTGtIpvZKKTHgnGpX0XmdiKh5nFqaZaDMLbChosTffNZoxAHYnrX
+         ubanMps9gVtuK39aUh/RrF+quA+PVDIZwVn953gO1A5IOzFXATyIqTlf8Y6mfJdLU+6p
+         6VI3XZPV0yx1sfhraWlEQQSx+KaIO5kHDBUdqN2ZjFTlTTBhSNshFfc8RD5eLWWJQMNb
+         kK1yq1bqKScNJ8+G2b4u9HB9vcRR53alY1zs4bTwsZZC1IeROLbf7l0LIWI94SyYjN08
+         KPIHPz45W7SIIP87kuybRkIKceALOThTsrBld1tAWqLtxill14E62qvwUhfJJbFY0H7A
+         8cCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712299879; x=1712904679;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5/LaVfwoI2Gev4h8pd9kUELtSUqC9s7I3hRen4i8R0o=;
+        b=Acp3aZUVlZVfT37nWDT6DVPdFeb2iRYdr6a74nUWHtAimAEzzWjo/AjJaD4/eTPcC5
+         OeBwLI1YUHYU3hhkV2uwo2VJ52GwFjRLJDnnaUf2P6opH1/0mLWepOLQaMHmZmOebhb+
+         9oU1vzNlefmRJtwHAUVsjuYG32TJINAlNBwrUFDgfxgBdspmTcN2pvXFu8s4IkKXdmja
+         9+yKIDLvf2o1JGiEUAXKMiLtBfNrP7gXPiVol+QY0PehEQEhPbLamtsVXwDjDigCA8X6
+         5u4VY/ubO9iBYL45rK0I6jR5frCHIK2Gd0AXcE9l5l21B8PjDumiBvNgxhzwJQgNR3Wj
+         nCPQ==
+X-Gm-Message-State: AOJu0YwpOrP5rNMOrOsqNp1I4J2Ev5ReJ57TvhTytLA0Dw+W4vzvADsj
+	aCamBDpyk41Z3ebtBd6dPx5ZgaPzkNLtDFqoq/2Yi7GArMUd+yGShmv8dXiw6n8=
+X-Google-Smtp-Source: AGHT+IEyhPrmjE/oN6EOHsuw0ki2NGJjyj01bnaXLlQUKnVG5zEK9TNydD+65vOAyHQ2YpRh30qzqg==
+X-Received: by 2002:adf:f251:0:b0:343:77f4:e663 with SMTP id b17-20020adff251000000b0034377f4e663mr308655wrp.18.1712299879068;
+        Thu, 04 Apr 2024 23:51:19 -0700 (PDT)
+Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
+        by smtp.googlemail.com with ESMTPSA id y16-20020adff6d0000000b0034335f13570sm1211624wrp.116.2024.04.04.23.51.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 23:51:18 -0700 (PDT)
+Message-ID: <e3005e1d-02b8-4e2a-8f83-d6b67de9d4a9@linaro.org>
+Date: Fri, 5 Apr 2024 08:51:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b6bf7f8e-7d46-4b70-930c-9483f13fd80a@wolfvision.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] thermal: core: Relocate the struct thermal_governor
+ definition
+Content-Language: en-US
+To: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+ Linux PM <linux-pm@vger.kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Lukasz Luba <lukasz.luba@arm.com>
+References: <2725268.mvXUDI8C0e@kreacher>
+From: Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <2725268.mvXUDI8C0e@kreacher>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Apr 03, 2024 at 10:55:29AM +0200, Javier Carrasco wrote:
-> >> -	ret = tps6598x_read64(tps, TPS_REG_INT_EVENT1, &event1);
-> >> -	ret |= tps6598x_read64(tps, TPS_REG_INT_EVENT2, &event2);
-> >> +	ret = tps6598x_block_read(tps, TPS_REG_INT_EVENT1, event1, 11);
-> > 
-> > This is not going to work with the older TI PD controllers.
-> > 
-> > The lenght of these registers is 8 bytes on the older TI PD
-> > controllers (TPS65981, TPS65982, etc.). I think we need to split this
-> > function.
-> > 
+On 04/04/2024 21:27, Rafael J. Wysocki wrote:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 > 
-> That is a good point. I had a look at the older TI PD controllers and I
-> agree with you that we should split the function to cover both register
-> lengths separately.
+> Notice that struct thermal_governor is only used by the thermal core
+> and so move its definition to thermal_core.h.
 > 
-> I was thinking about adding a new compatible for the newer PD
-> controllers (tps65987 and tps65988), keeping the current tps6598x for
-> the older ones as well as backwards compatibility. But backwards
-> compatibility would also mean that flags beyond the first 8 bytes would
-> be ignored.
+> No functional impact.
 > 
-> On the other hand, the upper flags are only relevant for firmware
-> updates, so we could check those (i.e. read 11 bytes) if a firmware was
-> provided via "firmware-name", and ignore them (i.e. read 8 bytes) otherwise.
-> 
-> Other ideas or improvements to mine are more than welcome.
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I don't have any good ideas. On ACPI platforms the same device ID may
-be used with all of these, so we should actually try to figure out the
-version from registers like VID, DID and Version (if they are
-available).
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
 
-thanks,
+> ---
+>   drivers/thermal/thermal_core.h |   25 +++++++++++++++++++++++++
+>   include/linux/thermal.h        |   25 -------------------------
+>   2 files changed, 25 insertions(+), 25 deletions(-)
+> 
+> Index: linux-pm/drivers/thermal/thermal_core.h
+> ===================================================================
+> --- linux-pm.orig/drivers/thermal/thermal_core.h
+> +++ linux-pm/drivers/thermal/thermal_core.h
+> @@ -23,6 +23,31 @@ struct thermal_trip_desc {
+>   };
+>   
+>   /**
+> + * struct thermal_governor - structure that holds thermal governor information
+> + * @name:	name of the governor
+> + * @bind_to_tz: callback called when binding to a thermal zone.  If it
+> + *		returns 0, the governor is bound to the thermal zone,
+> + *		otherwise it fails.
+> + * @unbind_from_tz:	callback called when a governor is unbound from a
+> + *			thermal zone.
+> + * @throttle:	callback called for every trip point even if temperature is
+> + *		below the trip point temperature
+> + * @update_tz:	callback called when thermal zone internals have changed, e.g.
+> + *		thermal cooling instance was added/removed
+> + * @governor_list:	node in thermal_governor_list (in thermal_core.c)
+> + */
+> +struct thermal_governor {
+> +	const char *name;
+> +	int (*bind_to_tz)(struct thermal_zone_device *tz);
+> +	void (*unbind_from_tz)(struct thermal_zone_device *tz);
+> +	int (*throttle)(struct thermal_zone_device *tz,
+> +			const struct thermal_trip *trip);
+> +	void (*update_tz)(struct thermal_zone_device *tz,
+> +			  enum thermal_notify_event reason);
+> +	struct list_head	governor_list;
+> +};
+> +
+> +/**
+>    * struct thermal_zone_device - structure for a thermal zone
+>    * @id:		unique id number for each thermal zone
+>    * @type:	the thermal zone device type
+> Index: linux-pm/include/linux/thermal.h
+> ===================================================================
+> --- linux-pm.orig/include/linux/thermal.h
+> +++ linux-pm/include/linux/thermal.h
+> @@ -126,31 +126,6 @@ struct thermal_cooling_device {
+>   #endif
+>   };
+>   
+> -/**
+> - * struct thermal_governor - structure that holds thermal governor information
+> - * @name:	name of the governor
+> - * @bind_to_tz: callback called when binding to a thermal zone.  If it
+> - *		returns 0, the governor is bound to the thermal zone,
+> - *		otherwise it fails.
+> - * @unbind_from_tz:	callback called when a governor is unbound from a
+> - *			thermal zone.
+> - * @throttle:	callback called for every trip point even if temperature is
+> - *		below the trip point temperature
+> - * @update_tz:	callback called when thermal zone internals have changed, e.g.
+> - *		thermal cooling instance was added/removed
+> - * @governor_list:	node in thermal_governor_list (in thermal_core.c)
+> - */
+> -struct thermal_governor {
+> -	const char *name;
+> -	int (*bind_to_tz)(struct thermal_zone_device *tz);
+> -	void (*unbind_from_tz)(struct thermal_zone_device *tz);
+> -	int (*throttle)(struct thermal_zone_device *tz,
+> -			const struct thermal_trip *trip);
+> -	void (*update_tz)(struct thermal_zone_device *tz,
+> -			  enum thermal_notify_event reason);
+> -	struct list_head	governor_list;
+> -};
+> -
+>   /* Structure to define Thermal Zone parameters */
+>   struct thermal_zone_params {
+>   	const char *governor_name;
+> 
+> 
+> 
 
 -- 
-heikki
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
+
 
