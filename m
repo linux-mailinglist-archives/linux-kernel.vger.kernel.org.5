@@ -1,150 +1,128 @@
-Return-Path: <linux-kernel+bounces-132286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132287-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C01FD89927A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:11:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 836EB89927C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:11:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2630A2827EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:11:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D84A282A91
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:11:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3F3617FF;
-	Fri,  5 Apr 2024 00:10:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C78C617FF;
+	Fri,  5 Apr 2024 00:11:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iCm8ypvX"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gdhwxiS6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CEA9632
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 00:10:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F1B7393;
+	Fri,  5 Apr 2024 00:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712275856; cv=none; b=WKfAgzCEu6SRoT0kbiIZZ38Nm5uWDXjL0h7kcxX98zzRIMt0ZqOAASC4jk5g/+B89vR3pRLxgIp44eoZAy7EnO5xgetJXGirghcqSvvnI7E5z1wZDdPTt/H6xstz+JHvM/G9m7qfTI2BANlXV06+iMvgLpl8j6iOuILGsf3w43c=
+	t=1712275887; cv=none; b=oBjpH+XK8AulQYygOpXoUoUZBqrOD2GYS7VOSZSxPoTGc2j2bdjSUhednh+gtMrIB3ngvP6D7O06MGM/FOpa9IX4vL3wYnbT8fLWardmrqP3He7TCxaCrm2opQreTGRj+eqWPrGbvtB0oIv0X0jb0Hnl71HGBeut6lyJfpqeSAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712275856; c=relaxed/simple;
-	bh=BmBMLXUxUdQY6RZx6aOTeW4K15net+pmM7o/+Du4xfw=;
+	s=arc-20240116; t=1712275887; c=relaxed/simple;
+	bh=sixHw0qjmJ91KQBby8fLahkmtg5SQTAdxk0eoNbPRXo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q7KAN/7chVlZxK/dBuVLWUfOkOWiZd+em2UF5noa5ObZZZgWt6VwDQfPhvtnSYKhSFfZrWLXBhypxk99fh6Jal685b8kO5KDoLYykPa5yCrxetSyjXo2Aca1S4lmFRg/OC0FQx6WkiRdONAvUnvRNJ0PnCnd2tZr8zEk0LzmSMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iCm8ypvX; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712275853;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kPChRIv8A7YfUteYh5+G6hC7ECPnSAUjkzqqJ0L1F/Y=;
-	b=iCm8ypvX+3CZZ4jXItm3aJfV+6UgpQB2VKrT6TnHUYLO3RyC9PSggo+Ck2JvyygfhCsFdM
-	9oIaZpMGfx4dAm26a2KaK8LQYcQ2YeXVXwrGnS/CnGm3KQpRaJTbSF0Df7QmwH5qrfSQzV
-	LhtX5jV+wUhIM1/cBjXiCxi0SUhtuWA=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-418-8h-8ousONiuGiaGcOU8dMg-1; Thu, 04 Apr 2024 20:10:51 -0400
-X-MC-Unique: 8h-8ousONiuGiaGcOU8dMg-1
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3c3c73e89fdso1350943b6e.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 17:10:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712275851; x=1712880651;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kPChRIv8A7YfUteYh5+G6hC7ECPnSAUjkzqqJ0L1F/Y=;
-        b=sq0nwrUrenTMsYk7CxmZ12tdsyFNhVtUZ7oS99L0dQp7GOqVn9+nRWYVC4Grz8QiYT
-         NSClQgeSGJJkagUHfNoxO1+ElwGjX9/rgvEbfa+k9dOt6gzDfZNP1xZEQWnJXu+TnBsc
-         Mp7OFv4acKp/U4UhU6yhmNfYFHA1sS7fF4FIj3SrZ/YO25guCQaJMeHLc6sMKwC6AVIB
-         v3C4Kn0xjyE4BamFbIpDI7QzNNt3iy0iUn2iao6cY2Q64Wq8RQdmiNNdwE3A1KHZV6/a
-         8Ukt6V1JddlHqxs1hJLLEM/CbMogQoC97DqK2e+TyVR2alc0LU901iVFhkrlTJK9pXK+
-         apgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXwBad+Rw5KElVYPDGlL4OQhL+bZ5RBX7ZnD62LSGoSlaGrqHqIQXp3qwzSAGSTYCR4hgRy9r5YFpom2Z1g+O7DOaEUXL1DYNSj3pMx
-X-Gm-Message-State: AOJu0YxjAA44m2GgFQqa4m9cLqMQ4E4oqZ0D5N6pUq4PvDiY6L+wEpzu
-	NsnSXGXSiGlrFZer6MevhL8D238eJL44HiUg7wN3E1zCqs8NyiLoJV3qSUlHf9a+PRV3s+yIyGk
-	gD9NWguA0g1OSxDO18taFgebXQezawDD7kdivH5pwMaL0jjsQpxRTN1E6xYNLrg==
-X-Received: by 2002:a05:6808:1a94:b0:3c3:e78d:f1be with SMTP id bm20-20020a0568081a9400b003c3e78df1bemr3224535oib.57.1712275851133;
-        Thu, 04 Apr 2024 17:10:51 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHYvDwwFdzbAzzTkv9y5a2UnJif8xQ//ZZbKdgL0bzXnHd+ilqRDAJVDXGbLCNvPpqaWSRZYg==
-X-Received: by 2002:a05:6808:1a94:b0:3c3:e78d:f1be with SMTP id bm20-20020a0568081a9400b003c3e78df1bemr3224503oib.57.1712275850193;
-        Thu, 04 Apr 2024 17:10:50 -0700 (PDT)
-Received: from hatbackup ([71.217.47.58])
-        by smtp.gmail.com with ESMTPSA id cm23-20020a05622a251700b00432ed7d7b7csm213093qtb.85.2024.04.04.17.10.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 17:10:49 -0700 (PDT)
-Date: Thu, 4 Apr 2024 20:10:47 -0400
-From: "John B. Wyatt IV" <jwyatt@redhat.com>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: John Ogness <john.ogness@linutronix.de>, Petr Mladek <pmladek@suse.com>,
-	Clark Williams <williams@redhat.com>,
-	Juri Lelli <jlelli@redhat.com>, Derek Barbosa <debarbos@redhat.com>,
-	Bruno Goncalves <bgoncalv@redhat.com>,
-	"John B. Wyatt IV" <sageofredondo@gmail.com>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-rt-users <linux-rt-users@vger.kernel.org>
-Subject: Re: NMIs reported by console_blast.sh with 6.6.20-rt25
-Message-ID: <Zg9BhxtWepFZyH8t@hatbackup>
-References: <ZfSfrzak9WS0ZFv7@thinkpad2021>
- <20240322122921.U3WRsO4X@linutronix.de>
- <ZgSvVCDja6yFCC0Y@thinkpad2021>
- <20240402103414.KkkX5RuV@linutronix.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jq7j9Jj/Zm89gUIl0MH7xhVkp/rpxT+ptJnhSWGr4RWXrRXyBJANEDTCxRGUOHb73X8jOG8Iprodtnop0zWV+0qXhWN1/zW07DJVCdRdcdrRIIsFtKXCyk+qo1OKRbJ57MLik2/gFk+u0PGY4lrXguKAYit8uRrBCiGp1PQ71V8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gdhwxiS6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4EEA3C433C7;
+	Fri,  5 Apr 2024 00:11:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712275886;
+	bh=sixHw0qjmJ91KQBby8fLahkmtg5SQTAdxk0eoNbPRXo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gdhwxiS60I8BOwnw4Ii7T9f8fHRfg0lugQM1ZgrCTO9LWWy6iG9UrKJ5h8+pp0yHD
+	 hEOJ5WFR9DeR+dYhWWKK56lIedIojKe38g5sekEaULt9KfOGXTissDcgrC0tk5EsN7
+	 PrmuQF2xZlZP9wzyZbMKDAvBoZbhncFqsqiKjxD1HkqfrGoq+gtzBX1YyaeMY24GPb
+	 6tpMtWNnOe54ee9jRm1MvHmKRcUcM/ZpHuebCGV7B9w/l5igRzLVcH4TiNNnmlP5/m
+	 PAAwooWcMJa3/kblfrma4bG8j4R+oPiqpeNAQ0Ws3xVUglFQlhHUFwVoSEp7KRBDKv
+	 UQX04eW2AARkw==
+Date: Thu, 4 Apr 2024 20:11:23 -0400
+From: Eric Biggers <ebiggers@kernel.org>
+To: Dave Hansen <dave.hansen@intel.com>
+Cc: linux-crypto@vger.kernel.org, x86@kernel.org,
+	linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	"Chang S . Bae" <chang.seok.bae@intel.com>
+Subject: Re: [PATCH v2 6/6] crypto: x86/aes-xts - wire up VAES + AVX10/512
+ implementation
+Message-ID: <20240405001123.GA1958@quark.localdomain>
+References: <20240329080355.2871-1-ebiggers@kernel.org>
+ <20240329080355.2871-7-ebiggers@kernel.org>
+ <f5461df0-6609-42db-850c-de6a32728fe2@intel.com>
+ <20240404233600.GA746@quark.localdomain>
+ <c806bffe-6e87-4c51-ac99-4b2612d3c334@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240402103414.KkkX5RuV@linutronix.de>
+In-Reply-To: <c806bffe-6e87-4c51-ac99-4b2612d3c334@intel.com>
 
-On Tue, Apr 02, 2024 at 12:34:14PM +0200, Sebastian Andrzej Siewior wrote:
-> > Just before the sysrq that crashes the system.
-> 
-> so this is intentional.
-
-Yes.
-
+On Thu, Apr 04, 2024 at 04:53:12PM -0700, Dave Hansen wrote:
+> On 4/4/24 16:36, Eric Biggers wrote:
+> > 1. Never use zmm registers.
+> ...
+> > 4. Keep the proposed policy as the default behavior, but allow it to be
+> >    overridden on the kernel command line.  This would be a bit more flexible;
+> >    however, most people don't change defaults anyway.
 > > 
-> > This is part of the console_blast.sh script that John Ogness sent me.
+> > When you write "Some folks will also surely disagree with the kernel policy
+> > implemented here", are there any specific concerns that you anticipate?
+> 
+> Some people care less about the frequency throttling and only care about
+> max performance _using_ AVX512.
+> 
+> > Note that Intel has acknowledged the zmm downclocking issues on Ice
+> > Lake and suggested that using ymm registers instead would be
+> > reasonable:>
+> https://lore.kernel.org/linux-crypto/e8ce1146-3952-6977-1d0e-a22758e58914@intel.com/
 > > 
-> > Please see below:
-> …
+> > If there is really a controversy, my vote is that for now we just go with option
+> > (1), i.e. drop this patch from the series.  We can reconsider the issue when a
+> > CPU is released with better 512-bit support.
 > 
-> Okay. Then everything works as it should…
-
-Correct.
-
+> (1) is fine with me.
 > 
-> > > > NMI Backtrace for 6.6.20-rt25 no forced preemption with tuned throughput-performance profile
-> > > > -----------------------------
-> > > 
-> > > This and the following backtrace shows the same picture: The CPU is
-> > > crashing due to proc/sysrq request and does CPU-backtraces via NMI and
-> > > polls in early_printk, waiting for the UART to become idle (probably).
-> > > 
-> > > I don't see an issue here so far.
-> > 
-> > Luis Goncalves discussed it with me after reading your response. Thank
-> > you for your help. The NMI was needed to flush the buffers upon the
-> > system crashing itself. Does this part about NMI watchdog need to be
-> > documented?
+> (4) would also be fine.  But I don't think it absolutely _has_ to be a
+> boot-time switch.  What prevents you from registering, say,
+> "xts-aes-vaes-avx10" and then doing:
 > 
-> Not sure about that one. There is an _a_ _lot_ to be printed from NMI
-> and the NMI watchdog might trigger if nothing is triggering the
-> NMI-watchdog during the print job. Also, the crash was requested.
+> 	if (avx512_is_desired())
+> 		xts-aes-vaes-avx10_512(...);
+> 	else
+> 		xts-aes-vaes-avx10_256(...);
+> 
+> at runtime?
+> 
+> Where avx512_is_desired() can be changed willy-nilly, either with a
+> command-line parameter or runtime knob.  Sure, the performance might
+> change versus what was measured, but I don't think that's a deal breaker.
+> 
+> Then if folks want to do fancy benchmarks or model/family checks or
+> whatever, they can do it in userspace at runtime.
 
-I reran the 6.6 test and no NMI was reported with fully preemptive and
-the realtime tuned profile. It was my error; my apologies for that.
+It's certainly possible for a single crypto algorithm (using "algorithm" in the
+crypto API sense of the word) to have multiple alternative code paths, and there
+are examples of this in arch/x86/crypto/.  However, I think this is a poor
+practice, at least as the crypto API is currently designed, because it makes it
+difficult to test the different code paths.  Alternatives are best handled by
+registering them as separate algorithms with different cra_priority values.
 
-I did include more of logs if you want to see here for my 6.8 testing.
+Also, I forgot one property of my patch, which is that because I made the
+zmm_exclusion_list just decrease the priority of xts-aes-vaes-avx10_512 rather
+than skipping registering it, the change actually can be undone at runtime by
+increasing the priority of xts-aes-vaes-avx10_512 back to its original value.
+Userspace can do it using the "crypto user configuration API"
+(include/uapi/linux/cryptouser.h), specifically CRYPTO_MSG_UPDATEALG.
 
-https://lore.kernel.org/linux-rt-users/ZgWL2UyknaE2T70C@thinkpad2021/T/#u
+Maybe that is enough configurability already?
 
-Sincerely,
-John Wyatt
-Software Engineer, Core Kernel
-Red Hat
-
+- Eric
 
