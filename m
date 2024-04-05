@@ -1,202 +1,139 @@
-Return-Path: <linux-kernel+bounces-133459-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133465-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0180F89A406
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:18:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA6C089A41D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:21:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC4271F230C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:18:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93BFD28C4D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:21:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6573172776;
-	Fri,  5 Apr 2024 18:18:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05914171E7B;
+	Fri,  5 Apr 2024 18:21:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="pDfz/pHp"
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RqzsBt6s"
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 188E2171E64
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 18:18:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8656171E47
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 18:21:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712341097; cv=none; b=dOIsXdcmxYaz86B0uKVEhzOP5DEw+ZLbS0xMFynqyYvCUnCizYgpIqS5HTgfVNyONz1gms0SfwM0gyXDVzpRm434CFe1o4f3bKxTlIbEf44rP6hlB6Wwnvvz5qOJo6plMe6n/wuKOz00/DRqHG8tdfgo6AtIHprDMK8GwB+7qKk=
+	t=1712341264; cv=none; b=CSr1PCu4RLbo0D7MfPcJIEyAgx7awFLadCNyN2sk5tmbFjn72UCDsNJ1zlrzkstTraC6ilTwBrJ/E4fgR70+2hSXv+3Q8uOi/VtlFta+qa66ZSLQ0TwByFUpKrcUns4T1QgUGqelZFxRpZNHDEsF3W2MxvRA1iQIbR3thrBblxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712341097; c=relaxed/simple;
-	bh=wdMJhgg03J9ToLHXaFixR/36utzApFawE0KvfzXoqHs=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=kC/GhFghSl3UXJj9jyCC6OVQ4zkzwO4x5iVMiGi+vsq3zb4dc0P0dZLnm0K3IECJzxhzlWcZDBNalbD8ECXHW7lji9AhOiQFAphdtAH0wG12o6foR83wgAqdsfdlaLEEZyLz3plVa3ZLcqkSjSjjjbuPNZgRRiOZJoPZqtF8XWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=pDfz/pHp; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5cddfe0cb64so1652073a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 11:18:14 -0700 (PDT)
+	s=arc-20240116; t=1712341264; c=relaxed/simple;
+	bh=gE75rtpTvZRnUSJ6xctoCFOXk2fH+DWGzh0IgmMEylg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Wmhim0qQpSXUJjXnk8MbEasRUR6o+aLeenJd3fEvMKpw2MO3Z5tsC2L51LwHPF3gBi+wauteRo5b2MXXoF9YVtJ76QdwIHCcOgY73wdFbXry96E1kEqwz63fmkgVQC2O1GiSmsgJoEPp6MZt7A9euqm0sCisiokllZ2QP5wuRBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RqzsBt6s; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-6152088aa81so26644177b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 11:21:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712341094; x=1712945894; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Yt5fFOUcQfwmred9ry2pM1oK9JKeRbA+BTjVzFtQRM=;
-        b=pDfz/pHpB9sII143/jXXuhAPupP2d7QqElx2yN6GP5mJZLDzlEq2j3+FkgpvDG8R70
-         bByMj5Xf7C/7OBEFOHZJHxMZaAaeKda+7qN4Wqz17N0FoTKvF7NR+2bZhPvLtMV/EOhy
-         sGkxkLM1kj/Dnl5jKKvuGakKCPr3uUo4pKbYZMoRn9IpjWhB1qqqSSRqoOx07X/YaMjY
-         c3AixXB7DPaoEBUwJUZGapwQnmdKMrBJqoTGe6YglQ6eNqP3C6Cp+2GOJU1Vaq3wOAFN
-         ted3ttFSX/T1A1av5p3hdiK9+mzxI4Qd54n3bf7Ybmz3cmSvBuArKYuLL7sZuYgsBIHi
-         HNJA==
+        d=linaro.org; s=google; t=1712341262; x=1712946062; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6FshVhZKcqJky0lBiOIixXGsQBzKhd/9O9LkN4VAwkM=;
+        b=RqzsBt6sMz01dLchQoBSwVLYg469vbMyHHKIvqr9PiO0Nw0vz8uUpS3JADeiHD5Oie
+         WN6n3ry5TLqkddcZJhmwbFfekym63ABhTT3vCYVkkqqLPIDLjwGUDm3GA6XJ+5h7TCYQ
+         8b3KxGYM3C0vUduCZWAe90/dnbT5JHQU/x9ZMm4n0cjtQazOVZhp+0jzfnB1dimHBJqM
+         lPnLfbNPBixJk2xH0i+AheQnSyC4T17Z2PR0EhDpCkshBQThaP86bzvL/579DoOJ2yvC
+         lua+gYKWXbfyO7zs0udZAi2qqFHxebn6DWcc1tLxUJjpu6nTA7n9TOuPtwf/3HT+zKZE
+         cB/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712341094; x=1712945894;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Yt5fFOUcQfwmred9ry2pM1oK9JKeRbA+BTjVzFtQRM=;
-        b=fT+cN7/BXmbMzwt9J9d0mhZufiF8EYudF2rnTdbpUhigrTyaEgeopa1Vct+8BvZSQ9
-         KzAKpBXlORLkSY3gAUjYXHE6ZHw/+kkBdCuCdf2I9LyMoKWCV2JdrJkoGGf2fA8c0ooc
-         9wF2Cc4kLyuSc3nA26rJnPf9a3VbMSY4ho40zzNXelVRXHRVZkifLxBkckOrbdP/1HhG
-         7lQdqbsuSUbqiLsZaJlMn5QjoIw3S9f/3K+ko5U0756BCXVB7i+FFdKdjtYpHmUV5PR/
-         GmyK2aAOi30ym3lkdqj2DIs5ARY7C+5Kff3zIHyj60C1+uCS/XioFCuUuO9B92CsONCG
-         wCBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVIGHrbDqHIetsgILcWZ/J3TqaGNNcsAJgcBQHEa9Rno4Uk+cg7JacKdGD0li8UXfc118ba9QtVzjjs8X4aQNyrKHzgeIfhqXjjWmZ1
-X-Gm-Message-State: AOJu0YxU7G8+wtlGzV4K6hQFWREq91wIUi63o0rEPJYeqCF06kPY1AA6
-	pGZA6UwZM3UzPWW4hDQzU8IwXiJhMCFVdlWyF20vtp+QeX8ioPbow5GRikwvc6M=
-X-Google-Smtp-Source: AGHT+IEDn0os+fUgFYATLn+Iq6FZjbfsk3zOmEGVgE/EWJZEoD0wnOYoH0jftB7HpCio2JhiLuD6iA==
-X-Received: by 2002:a17:90a:1648:b0:2a1:f455:c3d7 with SMTP id x8-20020a17090a164800b002a1f455c3d7mr2069740pje.16.1712341094316;
-        Fri, 05 Apr 2024 11:18:14 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id bb20-20020a17090b009400b002a46d73ebdcsm1525837pjb.46.2024.04.05.11.18.12
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Apr 2024 11:18:13 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <BF24ACE8-3644-4378-8E7A-AFAF82C0CDD3@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        d=1e100.net; s=20230601; t=1712341262; x=1712946062;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6FshVhZKcqJky0lBiOIixXGsQBzKhd/9O9LkN4VAwkM=;
+        b=BjjDqVEBjf6vZXo/HXGBvpcbWszPRGWyHKYjLCbbRYGzBxYw7sKIJEmEYzGFKL+Wc/
+         xl1NSBW9wxM3yLXbI+Thv1oyvQjgvjxITpMPcL9iUnPL+5+PQf0DAeZWmZp8hB/NZwtl
+         AN0MPBwV6XI2uAyWHlUaSRzkFqDPG06jiZOYzg+BJCceEwXidJlZT/PW79X1PmEoQ130
+         NyMW+KqPmPd0k1JodnyTW2O4aKf95MM+EksQTJ/G1m9uy/xf1DDYPjwlZgXjwDuAWIlZ
+         BUmTrqpJnZoH/JPmlcQDgpt9k7vn8C19xgcU88QFeJ1J9gc7wsgFc1QavGYfmw/AezHN
+         dz9w==
+X-Forwarded-Encrypted: i=1; AJvYcCUA9Mo8mXA0PUauEBoVw6qK+T76yA7qUjfLdk4Zlag26AGHMAZmgCD3CGimQ8HUcfg9dj8TQ6wDRx/xMj6Hx+ErScfHEZf7pgEvZ1hs
+X-Gm-Message-State: AOJu0YzqsaHWUMkFc37itgt/ZCjSphKFCUEQM22ko6q6a0kFVDTAJNg9
+	kYnXf6ftfVyBzYtvfdg4MpNTDKesxMV7xWx+KuYHDFjM/4UAP3IH6imu7JjiNby4L0z28cLQQGO
+	eJKh6Ylnn4p0FLhnDFyf9inGkhsZ6fgLBAJhXRQ==
+X-Google-Smtp-Source: AGHT+IHUuUqv9XGZ9bYt/6FB0DSxASTzs7ENjMecr4yFUOen3MARyohRguewr1dgCgDY1mFhRU/AKlGWEip8NUHr6ww=
+X-Received: by 2002:a25:8250:0:b0:dcd:5bfa:8184 with SMTP id
+ d16-20020a258250000000b00dcd5bfa8184mr2366149ybn.39.1712341261719; Fri, 05
+ Apr 2024 11:21:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v3 00/13] fiemap extension for more physical information
-Date: Fri, 5 Apr 2024 12:20:21 -0600
-In-Reply-To: <vf4k3yagvb6vf3vfu7st7uj7asv4zbf5c3b2tef2g2xic5fkvj@olqxfakmkoew>
-Cc: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
- Jonathan Corbet <corbet@lwn.net>,
- Brian Foster <bfoster@redhat.com>,
- Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>,
- Jaegeuk Kim <jaegeuk@kernel.org>,
- Chao Yu <chao@kernel.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>,
- Jan Kara <jack@suse.cz>,
- =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
- linux-doc@vger.kernel.org,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-bcachefs@vger.kernel.org,
- linux-btrfs <linux-btrfs@vger.kernel.org>,
- linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- kernel-team@meta.com,
- djwong@kernel.org
-To: Kent Overstreet <kent.overstreet@linux.dev>
-References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
- <vf4k3yagvb6vf3vfu7st7uj7asv4zbf5c3b2tef2g2xic5fkvj@olqxfakmkoew>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+References: <20240405155855.3672853-1-arnd@kernel.org>
+In-Reply-To: <20240405155855.3672853-1-arnd@kernel.org>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 5 Apr 2024 21:20:50 +0300
+Message-ID: <CAA8EJpoVmyJhyrRz0p-8Ue0sa-XG+rSFwCajuR8b6GQVxBDM0Q@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: remove an unused-but-set variable
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Sean Paul <sean@poorly.run>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, David Airlie <airlied@gmail.com>, 
+	Daniel Vetter <daniel@ffwll.ch>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Connor Abbott <cwabbott0@gmail.com>, linux-arm-msm@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+
+On Fri, 5 Apr 2024 at 18:59, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The modification to a6xx_get_shader_block() had no effect other
+> than causing a warning:
+>
+> drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c:843:6: error: variable 'out' set but not used [-Werror,-Wunused-but-set-variable]
+>         u64 out = dumper->iova + A6XX_CD_DATA_OFFSET;
+>
+> Revert this part of the previous patch.
+>
+> Fixes: 64d6255650d4 ("drm/msm: More fully implement devcoredump for a7xx")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+Unfortunately this fix is not correct. The proper patch is present at
+https://patchwork.freedesktop.org/patch/584955/?series=131663&rev=1
+
+> ---
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c | 3 ---
+>  1 file changed, 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> index 1f5245fc2cdc..d4e1ebfcb021 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu_state.c
+> @@ -840,7 +840,6 @@ static void a6xx_get_shader_block(struct msm_gpu *gpu,
+>                 struct a6xx_crashdumper *dumper)
+>  {
+>         u64 *in = dumper->ptr;
+> -       u64 out = dumper->iova + A6XX_CD_DATA_OFFSET;
+>         size_t datasize = block->size * A6XX_NUM_SHADER_BANKS * sizeof(u32);
+>         int i;
+>
+> @@ -853,8 +852,6 @@ static void a6xx_get_shader_block(struct msm_gpu *gpu,
+>
+>                 in += CRASHDUMP_READ(in, REG_A6XX_HLSQ_DBG_AHB_READ_APERTURE,
+>                         block->size, dumper->iova + A6XX_CD_DATA_OFFSET);
+> -
+> -               out += block->size * sizeof(u32);
+>         }
+>
+>         CRASHDUMP_FINI(in);
+> --
+> 2.39.2
+>
 
 
---Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-On Apr 3, 2024, at 12:17 PM, Kent Overstreet <kent.overstreet@linux.dev> =
-wrote:
->=20
-> On Wed, Apr 03, 2024 at 03:22:41AM -0400, Sweet Tea Dorminy wrote:
->> For many years, various btrfs users have written programs to discover
->> the actual disk space used by files, using root-only interfaces.
->> However, this information is a great fit for fiemap: it is inherently
->> tied to extent information, all filesystems can use it, and the
->> capabilities required for FIEMAP make sense for this additional
->> information also.
->>=20
->> Hence, this patchset adds various additional information to fiemap,
->> and extends filesystems (but not iomap) to return it.  This uses some =
-of
->> the reserved padding in the fiemap extent structure, so programs =
-unaware
->> of the changes will be unaffected.
->>=20
->> This is based on next-20240403. I've tested the btrfs part of this =
-with
->> the standard btrfs testing matrix locally and manually, and done =
-minimal
->> testing of the non-btrfs parts.
->>=20
->> I'm unsure whether btrfs should be returning the entire physical =
-extent
->> referenced by a particular logical range, or just the part of the
->> physical extent referenced by that range. The v2 thread has a =
-discussion
->> of this.
->=20
-> I believe there was some talk of using the padding for a device ID, so
-> that fiemap could properly support multi device filesystems. Are we =
-sure
-> this is the best use of those bytes?
-
-The current (pre-patch) fiemap_extent struct is:
-
-struct fiemap_extent {
-        __u64 fe_logical;  /* logical offset in bytes for the start of
-                            * the extent from the beginning of the file =
-*/
-        __u64 fe_physical; /* physical offset in bytes for the start
-                            * of the extent from the beginning of the =
-disk */
-        __u64 fe_length;   /* length in bytes for this extent */
-        __u64 fe_reserved64[2];
-        __u32 fe_flags;    /* FIEMAP_EXTENT_* flags for this extent */
-        __u32 fe_reserved[3];
-};
-
-and this series is only changing fe_reserved64[0] to fe_phys_length.
-There was discussion in the past of using "fe_reserved[0]" for the =
-device
-ID, which is still OK.
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYQQOUACgkQcqXauRfM
-H+CHWg/+ImmZQ6Nzwva0Efg63ioqP0pS3airRAPWj+bfSnsIXaituGulL3hG2Lt5
-IORycBQ5w1uifrkGHdmcpOjoIsPuaQrjAdC700vt5TRhqLojhU6ZnLz/eZMFUSIe
-oS0f9OPJPx3vDKBfMBeVTZbrzka94z5Wl0pUohNFSshNfYOrAKyGiBc0KLzpslFo
-eQODjM5SpgwhN7Te0Wcpklr8JMQXI5e+QXkAnor25ImqCHB7PPL4BEt40/HS6hH/
-MfDLh7WHcatQFHB4prRJrULNDnOSJz+LD2UAu602/s03c2lIEHiVkTb8AATrFE8O
-FZvfEdge3gjEXaK1zO1/eNScUgHH8eESBDbWk2ACkU/p7Ip9MS5FgcWXVBxEUoDl
-46VkGOuqWFwGgY020Q+Tvo7I6r1+MahDttyCKe34bzu0WB/t19del0moZyHhicgS
-oNyZN8rIM5QPmuwi1glNkPi8uL23QLb3frSVmrTflx1GxKBhB+fyN/TQP+42Y1zJ
-eBbSWPgWoWHC7u3ULQYA1Mjbi5DUh8dAjwWIJXsFIJwL4oGb54mX/vE2ef9YAHpI
-x1p+7ds2vdDYqG2o5UXaI9YPg45kDNVm+/Io5+DXNMKGVH6XIyhr/Uy5dzx6tVHK
-CdPBC3K4hWSLU6rlwFhwXJ0d5kc2AuRrcmDi8Q+FzSOHlLyt9zM=
-=UxlY
------END PGP SIGNATURE-----
-
---Apple-Mail=_700566DC-00D7-4239-B730-9CEAF4C860C8--
+-- 
+With best wishes
+Dmitry
 
