@@ -1,127 +1,162 @@
-Return-Path: <linux-kernel+bounces-132959-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132960-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A669899C81
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:12:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A20DF899C86
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:13:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA9311C2095A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:12:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 23C19B21AFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B874416C857;
-	Fri,  5 Apr 2024 12:12:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A43116C867;
+	Fri,  5 Apr 2024 12:13:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="GAkCQLGG"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="gu06X8WS"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74E3212AACC;
-	Fri,  5 Apr 2024 12:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEF0916C84B
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 12:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712319145; cv=none; b=rl1WATnSOHWvlKOx4TL/UGKj6/tj7WkTR/ZPje57tjmSRpMleqlwNyey9428037Yo2uYdYya7xQiBJUklDBElBzSkSFb7elx5JFT21+ROyIjs+/2gbuPHoCQvXq4f7Cfoyqqpv5CRh+GwFsr5l7Ud6SePs3fB3MRNg2ryWGv79A=
+	t=1712319181; cv=none; b=Oc8lLOSy5a/xyLd6K7j9jtMokNh7S29MMEOYZ5RteGCWiXo38ecrOlVElHNj5fQJ34vpG4U4Yo0UuSb0mGA+yb1qbD9cl+iFuI+h+Ftt9nLQfLwxFRozJ5HMHNeYk6dPoSJBUobcBizNCVihJwsmZ8WEd/mqlbcRnncW8QBpoEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712319145; c=relaxed/simple;
-	bh=o5mEu5Kd5a4orlQIwiNSIchFEOFTYV7lAtQ710n+nlY=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CWSast9gGSMccvzE357gDsOhmyUfZtxfVXYHUGFfxDheWejnsSuJ7ncMyCtIbuK+lhFVBacAbxcgXTzgPeZW1S4XXqpRxfOIVaT8y83bQWgmq6/x2pJ4nHIpWLqgzaXiHlgMgoOi32IGa4Breo0zuWobvkdEe2EUz4IWvbTrSbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=GAkCQLGG; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712319143; x=1743855143;
-  h=message-id:subject:from:to:date:in-reply-to:references:
-   content-transfer-encoding:mime-version;
-  bh=o5mEu5Kd5a4orlQIwiNSIchFEOFTYV7lAtQ710n+nlY=;
-  b=GAkCQLGG2Ukipzj21zA1POSSZXSXyEP+Pgyvo/4+5kJORU2ajd8leUMC
-   DqvdhmHP8ciIqmKE54LXDsWhkz+yDT3iilgtn0cGrTRdRmtxaUh3w8i8y
-   dh5DjnCRDqaHHxQ1FvQTnUv/I+EEL7PHcTFtueS8RH30K1LnoeZa8y+k/
-   kYilYUiprNQxFQ70kWCWwm9b5O6YF5j5yI3dBjDBYYmLObCEJT+DewzEh
-   A/MUZ1AxTY4WcZUx7Yy53EOZdfQbaaE4FV5t6k1g3Yoq9wGK5O4D821Xz
-   CHlzmrvwwyCD1oLXX2ADoRwNezxlk84kamvCbdL3uQM7zhG3uvF+mCW85
-   A==;
-X-CSE-ConnectionGUID: rtQWDoDbQ42RGvH0JL2JKA==
-X-CSE-MsgGUID: SMCO29ftQeq1E554Gw6VNg==
-X-IronPort-AV: E=Sophos;i="6.07,181,1708412400"; 
-   d="scan'208";a="20178710"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa2.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Apr 2024 05:12:22 -0700
-Received: from chn-vm-ex02.mchp-main.com (10.10.85.144) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 5 Apr 2024 05:11:55 -0700
-Received: from den-her-m31857h.microchip.com (10.10.85.11) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Fri, 5 Apr 2024 05:11:52 -0700
-Message-ID: <66872c085710223d5bf43cd601cfbc3e54425bbc.camel@microchip.com>
-Subject: Re: [PATCH RFT 10/10] arm64: dts: microchip: sparx5_pcb135: drop
- duplicated NOR flash
-From: Steen Hegelund <steen.hegelund@microchip.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>, Conor Dooley <conor@kernel.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>, Claudiu Beznea
-	<claudiu.beznea@tuxon.dev>, Rob Herring <robh@kernel.org>, "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Lars Povlsen
-	<lars.povlsen@microchip.com>, Daniel Machon <daniel.machon@microchip.com>,
-	<UNGLinuxDriver@microchip.com>, "David S. Miller" <davem@davemloft.net>,
-	Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-	<linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Date: Fri, 5 Apr 2024 14:11:51 +0200
-In-Reply-To: <20240401153740.123978-10-krzk@kernel.org>
-References: <20240401153740.123978-1-krzk@kernel.org>
-	 <20240401153740.123978-10-krzk@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1712319181; c=relaxed/simple;
+	bh=dshtjM1v82zRVU8kvER3wDxbXe0KcYtKm0n9OIpWsWo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J9d60mRwpqSP/XWznzhPNrJWZGk8tNTRbqgVZF4KYYf2CG/ccucdcz0RJ9IDrIc9rzR27rG+nfLzKZj1vxPW8IlF06gVu6qoF+Py8IkUNlweYBboyHpb0N2CUApF3r1Vn9yWcjvatXQOlFBFAep5z1Xt74LHt3NFGjFqrfW/T8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=gu06X8WS; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d718ee7344so23944221fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 05:12:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1712319178; x=1712923978; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HYZcvWtsDvy2pse+vGPhkHFJFnqvbEcDhkbwdc6IM+c=;
+        b=gu06X8WSsXWUs6SO/U3Zt2ly3kHHeDvnI8Yq5WXvntsKwUkwdFzlu4RcoOJp9hh6yl
+         616RU/qFaoO4dchfZLDF7KXyO/eOcCox8GRXZqJ6Wsg5KvdPq+1lI8jZ1Y/gVh5l7oj0
+         xdUATFT929OEWiyA+T3269BycGS2RG2krE3dFFR7BBIyyTVNoTCaBTRoBY9F22c7FUH7
+         jvufGnAccgIpq6xD7C9GcEFRKYa68pOCxQcKIdBbPgi1hnZEtZcrwipMydyBz4uBoPzR
+         bdqfxz2dX3qqXQP6mCmm7pJLcxXE7gX9qAyOzR30Iyc9NzL5sJdtSVtwCpuXzFeD0Kpe
+         Ufzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712319178; x=1712923978;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HYZcvWtsDvy2pse+vGPhkHFJFnqvbEcDhkbwdc6IM+c=;
+        b=YFctv9MI1oyrgvox79rCd6Q84F5yXSe7yXagviibeTeuqlhnnNdtmi5cYKh5OiJDKt
+         weXcqFGkFqtXagsx1yf7IQgdP5pbUaAdKelIpthePB/XOgAUggncyfdnwe/Aqa+DZiGm
+         r8yUbVYvP01OuAWE4N0zMgcNjeN7c34HFpn6UyOuOQU/iM3VFn1Wb42tXXqoJulkWZ01
+         cafGloOo1ZEB24cJTq/2gBcs7fdcqoKYgwU6A4LX2EYl0xsE0ebhSz4or2I2e1OUghGd
+         Yg1FM+YKe56KqVhO7QrsjFKjYPnrN7qj/OVn92jW3qRXdhqwk7EIDWOBGStgTOvrx495
+         nqCw==
+X-Gm-Message-State: AOJu0YzsKE2SJNvPfTR9SgJfNWZs7TQzAvXLlTvh7HpG4Q+j1yN6eVkj
+	IBsQGQc2hOsd2WvIRP86gOpXuyOsw1RGvW1Hw1ipnvTRvy56UhQWYxriViSd1MY=
+X-Google-Smtp-Source: AGHT+IE7Lx9Gy8UPuI2Fe6F5yEOkQeAtXYhy3EeJ04SwdjNicn6qCSA5xJIY7awO1OB5cSxmhomVgg==
+X-Received: by 2002:a2e:8555:0:b0:2d7:9d4:f31c with SMTP id u21-20020a2e8555000000b002d709d4f31cmr1244137ljj.15.1712319178095;
+        Fri, 05 Apr 2024 05:12:58 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id iv9-20020a05600c548900b004162e3e5b9asm2463049wmb.44.2024.04.05.05.12.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 05:12:57 -0700 (PDT)
+Date: Fri, 5 Apr 2024 14:12:56 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Ajay Kaher <akaher@vmware.com>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Alexey Makhalov <amakhalov@vmware.com>, 
+	Anup Patel <anup@brainfault.org>, Conor Dooley <conor.dooley@microchip.com>, 
+	Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, 
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Will Deacon <will@kernel.org>, x86@kernel.org
+Subject: Re: [PATCH v5 15/22] RISC-V: KVM: Improve firmware counter read
+ function
+Message-ID: <20240405-dbb7765ae18820c57461dfff@orel>
+References: <20240403080452.1007601-1-atishp@rivosinc.com>
+ <20240403080452.1007601-16-atishp@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403080452.1007601-16-atishp@rivosinc.com>
 
-SGkgS3J6eXN6dG9mLAoKT24gTW9uLCAyMDI0LTA0LTAxIGF0IDE3OjM3ICswMjAwLCBLcnp5c3p0
-b2YgS296bG93c2tpIHdyb3RlOgo+IEVYVEVSTkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mg
-b3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQo+
-IAo+IFNpbmNlIGJlZ2lubmluZyB0aGUgRFRTIGV4dGVuZGVkIHRoZSBTUEkwIGluIHR3byBwbGFj
-ZXMgYWRkaW5nIHR3byBTUEkKPiBtdXhlcywgZWFjaCB3aXRoIHNhbWUgU1BJIE5PUiBmbGFzaC7C
-oCBCb3RoIHVzZWQgZXhhY3RseSB0aGUgc2FtZQo+IGNoaXAtc2VsZWN0cywgc28gdGhpcyB3YXMg
-Y2xlYXJseSBidWdneSBjb2RlLsKgIFdpdGhvdXQgY2hlY2tpbmcgaW4KPiBkYXRhc2hlZXQsIGFz
-c3VtZSBkZXZpY2UgaGFzIG9ubHkgb25lIFNQSSBOT1IgZmxhc2gsIHNvIGNvZGUgd2FzCj4gZHVw
-bGljYXRlZC4KPiAKPiBGaXhlcyBkdGMgVz0xIHdhcm5pbmdzOgo+IAo+IMKgIHNwYXJ4NV9wY2Ix
-MzVfYm9hcmQuZHRzaTo5Mi4xMC05Ni40OiBXYXJuaW5nICh1bmlxdWVfdW5pdF9hZGRyZXNzX2lm
-X2VuYWJsZWQpOgo+IC9heGlANjAwMDAwMDAwL3NwaUA2MDAxMDQwMDAvZmxhc2hAMDogZHVwbGlj
-YXRlIHVuaXQtYWRkcmVzcyAoYWxzbyB1c2VkIGluIG5vZGUKPiAvYXhpQDYwMDAwMDAwMC9zcGlA
-NjAwMTA0MDAwL3NwaUAwKQo+IAo+IFNpZ25lZC1vZmYtYnk6IEtyenlzenRvZiBLb3psb3dza2kg
-PGtyemtAa2VybmVsLm9yZz4KPiAKPiAtLS0KPiAKPiBOb3QgdGVzdGVkIG9uIGhhcmR3YXJlCj4g
-LS0tCj4gwqAuLi4vYm9vdC9kdHMvbWljcm9jaGlwL3NwYXJ4NV9wY2IxMzVfYm9hcmQuZHRzacKg
-IHwgMTYgLS0tLS0tLS0tLS0tLS0tLQo+IMKgMSBmaWxlIGNoYW5nZWQsIDE2IGRlbGV0aW9ucygt
-KQo+IAo+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21pY3JvY2hpcC9zcGFyeDVf
-cGNiMTM1X2JvYXJkLmR0c2kKPiBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWljcm9jaGlwL3NwYXJ4
-NV9wY2IxMzVfYm9hcmQuZHRzaQo+IGluZGV4IDIwMDE2ZWZiMzY1Ni4uZDY0ZTY0MmUzODczIDEw
-MDY0NAo+IC0tLSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWljcm9jaGlwL3NwYXJ4NV9wY2IxMzVf
-Ym9hcmQuZHRzaQo+ICsrKyBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWljcm9jaGlwL3NwYXJ4NV9w
-Y2IxMzVfYm9hcmQuZHRzaQo+IEBAIC05NiwyMiArOTYsNiBAQCBmbGFzaEAwIHsKPiDCoMKgwqDC
-oMKgwqDCoCB9Owo+IMKgfTsKPiAKPiAtJnNwaTAgewo+IC3CoMKgwqDCoMKgwqAgc3RhdHVzID0g
-Im9rYXkiOwo+IC3CoMKgwqDCoMKgwqAgc3BpQDAgewo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGNvbXBhdGlibGUgPSAic3BpLW11eCI7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgbXV4LWNvbnRyb2xzID0gPCZtdXg+Owo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgICNhZGRyZXNzLWNlbGxzID0gPDE+Owo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICNzaXplLWNlbGxzID0gPDA+Owo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlZyA9
-IDwwPjsgLyogQ1MwICovCj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZmxhc2hAOSB7
-Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvbXBhdGli
-bGUgPSAiamVkZWMsc3BpLW5vciI7Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIHNwaS1tYXgtZnJlcXVlbmN5ID0gPDgwMDAwMDA+Owo+IC3CoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZWcgPSA8MHg5PjsgLyogU1BJICov
-Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfTsKPiAtwqDCoMKgwqDCoMKgIH07Cj4g
-LX07Cj4gLQoKSSBhbHNvIHRlc3RlZCB0aGlzLCBhbmQgbm8gc3VycHJpc2U6IHNhbWUgY29tbWVu
-dCBhcyBmb3IgdGhlIHBjYjEzNCBwYXRjaC4uLgoKPiDCoCZzZ3BpbzEgewo+IMKgwqDCoMKgwqDC
-oMKgIHN0YXR1cyA9ICJva2F5IjsKPiDCoMKgwqDCoMKgwqDCoCBtaWNyb2NoaXAsc2dwaW8tcG9y
-dC1yYW5nZXMgPSA8MjQgMzE+Owo+IC0tCj4gMi4zNC4xCj4gCgpCZXN0IFJlZ2FyZHMKU3RlZW4K
+On Wed, Apr 03, 2024 at 01:04:44AM -0700, Atish Patra wrote:
+> Rename the function to indicate that it is meant for firmware
+> counter read. While at it, add a range sanity check for it as
+> well.
+> 
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>  arch/riscv/include/asm/kvm_vcpu_pmu.h | 2 +-
+>  arch/riscv/kvm/vcpu_pmu.c             | 7 ++++++-
+>  arch/riscv/kvm/vcpu_sbi_pmu.c         | 2 +-
+>  3 files changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/riscv/include/asm/kvm_vcpu_pmu.h b/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> index 55861b5d3382..fa0f535bbbf0 100644
+> --- a/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> +++ b/arch/riscv/include/asm/kvm_vcpu_pmu.h
+> @@ -89,7 +89,7 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu *vcpu, unsigned long ctr_ba
+>  				     unsigned long ctr_mask, unsigned long flags,
+>  				     unsigned long eidx, u64 evtdata,
+>  				     struct kvm_vcpu_sbi_return *retdata);
+> -int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
+> +int kvm_riscv_vcpu_pmu_fw_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
+>  				struct kvm_vcpu_sbi_return *retdata);
+>  int kvm_riscv_vcpu_pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
+>  				      struct kvm_vcpu_sbi_return *retdata);
+> diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
+> index ff326152eeff..94efa88d054d 100644
+> --- a/arch/riscv/kvm/vcpu_pmu.c
+> +++ b/arch/riscv/kvm/vcpu_pmu.c
+> @@ -235,6 +235,11 @@ static int pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
+>  	u64 enabled, running;
+>  	int fevent_code;
+>  
+> +	if (cidx >= kvm_pmu_num_counters(kvpmu) || cidx == 1) {
+> +		pr_warn("Invalid counter id [%ld] during read\n", cidx);
+> +		return -EINVAL;
+> +	}
+> +
+>  	pmc = &kvpmu->pmc[cidx];
+>  
+>  	if (pmc->cinfo.type == SBI_PMU_CTR_TYPE_FW) {
+> @@ -747,7 +752,7 @@ int kvm_riscv_vcpu_pmu_fw_ctr_read_hi(struct kvm_vcpu *vcpu, unsigned long cidx,
+>  	return 0;
+>  }
+>  
+> -int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
+> +int kvm_riscv_vcpu_pmu_fw_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
+>  				struct kvm_vcpu_sbi_return *retdata)
+>  {
+>  	int ret;
+> diff --git a/arch/riscv/kvm/vcpu_sbi_pmu.c b/arch/riscv/kvm/vcpu_sbi_pmu.c
+> index cf111de51bdb..e4be34e03e83 100644
+> --- a/arch/riscv/kvm/vcpu_sbi_pmu.c
+> +++ b/arch/riscv/kvm/vcpu_sbi_pmu.c
+> @@ -62,7 +62,7 @@ static int kvm_sbi_ext_pmu_handler(struct kvm_vcpu *vcpu, struct kvm_run *run,
+>  		ret = kvm_riscv_vcpu_pmu_ctr_stop(vcpu, cp->a0, cp->a1, cp->a2, retdata);
+>  		break;
+>  	case SBI_EXT_PMU_COUNTER_FW_READ:
+> -		ret = kvm_riscv_vcpu_pmu_ctr_read(vcpu, cp->a0, retdata);
+> +		ret = kvm_riscv_vcpu_pmu_fw_ctr_read(vcpu, cp->a0, retdata);
+>  		break;
+>  	case SBI_EXT_PMU_COUNTER_FW_READ_HI:
+>  		if (IS_ENABLED(CONFIG_32BIT))
+> -- 
+> 2.34.1
+>
 
-
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
