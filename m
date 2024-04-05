@@ -1,127 +1,136 @@
-Return-Path: <linux-kernel+bounces-133428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBC1089A388
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:34:19 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07A3889A38A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:34:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5B922B23A01
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:34:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 38A3B1C2142F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:34:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ECB3171E6E;
-	Fri,  5 Apr 2024 17:33:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="vAEYWKwU"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8AD171E46;
+	Fri,  5 Apr 2024 17:34:07 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0888171E4E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E603F17167A
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:34:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712338438; cv=none; b=lCersuKDjfAR+NZo1UtlRDIoLVYksbUdc7dGLU4EKq0ZktoyZEuX72QvmXgSVdIfKYUHu7jooq8nTDddvKlQNsb17uX+t3IgOGwN2UUmMC+zHfBI3nsIUFNVTQYZOUGCYNbCTh8lClYd+FLH6rreVIJaWCQRbxaRmmWhKEyMYNE=
+	t=1712338446; cv=none; b=PN5x7ChDXPA0GFY1050LNxv5ja0jJqY0II0j6a+gREfcB2hf6NPJQFiGJ4HWeeBRoF0bkf4RJZ2K4rasyS42um/t65Qm0H18hw/lBgW+sR3Ux4ZWRQ/oKodnjxL+mPWEh1D0IBialB8r771v/d1QZO2r/FamscGqd8y9vfir8zQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712338438; c=relaxed/simple;
-	bh=K3vmfqpd94g8+suqMPyLrxBzyLzdFpbPlGZ8DqHjkxQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gnp+5zXIfzRlnpFwU2LviDcFvieFa3vs+BhYYcmiON9/SLS9nd7EZN5tQ72xnHDIhD/BLHnuHu0Gor9bMA7B0gcHAKnvv5oC8+bW8fWW0hoI7+p3PU565zaO2J2CRdn4ATROU/sH9gLWcC01vMDwVBVECTVAPrFXIzxk+315l1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=vAEYWKwU; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcd9e34430cso2829480276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 10:33:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712338436; x=1712943236; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=K3vmfqpd94g8+suqMPyLrxBzyLzdFpbPlGZ8DqHjkxQ=;
-        b=vAEYWKwUqG7okVe/Y2WxNAE6BtAubziz2DaI+6cg0ypRpQFh0sUq+A8pLxpcE3q6Iv
-         zp/+vYVCDCGk7RPvcV9WbNxZOE2sf/I4XEIQEmlqoUwdZJv6E4xigynEcg65YSIlC6Uc
-         YsoOap7uogahgAnFiaqMGJzZ6ClIXWbEV2Wvs2yXo+5z+WDtCSN6953gW8m+ZWEoQrGG
-         QvfXaav98xkcE55RpG9ZN0wj9snPMFeu7ZwlETp1upIeBsuB9yJjUuiW0A6Ei8Yu14aQ
-         QjFZH9OLFvk4tkxh4bdJcpfmkYeW8LNxnMFHO3EtTzqs9jzr7KCxZYm5qmHgmbODEY0O
-         RYEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712338436; x=1712943236;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=K3vmfqpd94g8+suqMPyLrxBzyLzdFpbPlGZ8DqHjkxQ=;
-        b=gPkBqz5t2gNZObGu5dX2DFFi0HzXsb2ZF6B5S53w+DWfn/g6IQsK3Qxwhu6mP4qrbd
-         Zy+5//2EkrTbUBRDzaF8msS8DUS/YG7yLkeAMzHlrR7DPVGAZk1jbFWJm9mzKX/YcQGK
-         QhqAMiD65ebxJZOd5Tc+RfxaMxD3lG1bjwgcXM6UxDGo6ykTfLbW/Hzpyyc3TXCDXa6e
-         SGHy1QtdkeC0rapbNE+wEF/x8bOdphmcADSwxS+N1CoKSlzlqf930za9Oxu5JbPzj9vQ
-         SLOj/j1cWteaEGGfW91CLTgDfIjbiajkDUWgB2BAto9pPZqFqr48O5DMEn9HopFR52io
-         UeBg==
-X-Forwarded-Encrypted: i=1; AJvYcCVZWiPFGAvfkeRNzqmG6ln99T9IMW7iJ0RVkUYlHCwHUpX/gFi9kHCHAZJL910SdAxHSIwjqwVRDF0MZtKtAVrbFrHn5Loy/XpUcI4T
-X-Gm-Message-State: AOJu0Yy8zY7HjokIeMnNU/T3EozfMmEHEGsCzG4asVWnVHNFsnNczSHu
-	yFiSfoffbdLmWAsA8Rf2vyn8Uzx9pFC2l4QIRyuta5exjJIIxU22j18d+aqYebftEbrg9evN1HB
-	fhgh2hPHwyrhh4NGXxCA+dVq0pe/g20Nyn4ArVg==
-X-Google-Smtp-Source: AGHT+IHnKrc4PwDyhWJPdfeFqqNSHEu/4FbT6H+bcXEG7hzOD320BvkD3M+wSU/pjaJrd/w5bdcvFXKhZ2+tWNjNqrs=
-X-Received: by 2002:a25:f50b:0:b0:dda:a608:54bf with SMTP id
- a11-20020a25f50b000000b00ddaa60854bfmr1849823ybe.56.1712338435998; Fri, 05
- Apr 2024 10:33:55 -0700 (PDT)
+	s=arc-20240116; t=1712338446; c=relaxed/simple;
+	bh=yNKlQsRX9NX6jSUmt6M9DavRE3tT1/cEPwISWiiJF1o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CFXKY6vUyh/Tw9CWPodjvYkrFpQhWOW9Uyq0abEIdIH6aceGcjHuUa0BH1K1Bcz4y0LLUzT5kvOqzfZU1JVTPh3dxIxer51bzzup/4UirVB1qd5bPaqb7sxwVuCcSoRIC29hpoAdcXNgX2+VRGR83Xbra0jqQayHg8s4/TJnXQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rsnRo-0006ax-55; Fri, 05 Apr 2024 19:33:52 +0200
+Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1rsnRn-00AbC0-C5; Fri, 05 Apr 2024 19:33:51 +0200
+Received: from pengutronix.de (unknown [172.20.34.65])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id F30542B2CB5;
+	Fri,  5 Apr 2024 17:33:50 +0000 (UTC)
+Date: Fri, 5 Apr 2024 19:33:50 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Esben Haabendal <esben@geanix.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
+	Jiri Slaby <jirislaby@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+	Sascha Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Fabio Estevam <festevam@gmail.com>, linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/2] serial: imx: Introduce timeout when waiting on
+ transmitter empty
+Message-ID: <20240405-amused-cascade-0801f31c674a-mkl@pengutronix.de>
+References: <76cf9ce9cbf9dcdf78bc00ce7a919db1776ebce1.1712309058.git.esben@geanix.com>
+ <20240405-impurity-emerald-f67dc37adf9b-mkl@pengutronix.de>
+ <874jcf67xm.fsf@geanix.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404103254.1752834-1-cleger@rivosinc.com> <20240405-091c6c174f023d74b434059d@orel>
-In-Reply-To: <20240405-091c6c174f023d74b434059d@orel>
-From: Deepak Gupta <debug@rivosinc.com>
-Date: Fri, 5 Apr 2024 10:33:48 -0700
-Message-ID: <CAKC1njQ3qQ8mTMoYkhhoGQfRSVtp2Tfd2LjDhAmut7UcW9-bGw@mail.gmail.com>
-Subject: Re: [PATCH 0/5] Add parsing for Zimop ISA extension
-To: Andrew Jones <ajones@ventanamicro.com>
-Cc: =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <cleger@rivosinc.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Conor Dooley <conor@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Anup Patel <anup@brainfault.org>, 
-	Shuah Khan <shuah@kernel.org>, Atish Patra <atishp@atishpatra.org>, linux-doc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, kvm@vger.kernel.org, 
-	kvm-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="4bjqwdxylbl7erdi"
+Content-Disposition: inline
+In-Reply-To: <874jcf67xm.fsf@geanix.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: mkl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+
+
+--4bjqwdxylbl7erdi
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 5, 2024 at 8:26=E2=80=AFAM Andrew Jones <ajones@ventanamicro.co=
-m> wrote:
->
-> On Thu, Apr 04, 2024 at 12:32:46PM +0200, Cl=C3=A9ment L=C3=A9ger wrote:
-> > The Zimop ISA extension was ratified recently. This series adds support
-> > for parsing it from riscv,isa, hwprobe export and kvm support for
-> > Guest/VM.
->
-> I'm not sure we need this. Zimop by itself isn't useful, so I don't know
-> if we need to advertise it at all. When an extension comes along that
-> redefines some MOPs, then we'll advertise that extension, but the fact
-> Zimop is used for that extension is really just an implementation detail.
+On 05.04.2024 19:22:29, Esben Haabendal wrote:
+> Marc Kleine-Budde <mkl@pengutronix.de> writes:
+>=20
+> > On 05.04.2024 11:25:13, Esben Haabendal wrote:
+> >> By waiting at most 1 second for USR2_TXDC to be set, we avoid a potent=
+ital
+> >> deadlock.
+> >>=20
+> >> In case of the timeout, there is not much we can do, so we simply igno=
+re
+> >> the transmitter state and optimistically try to continue.
+> >>=20
+> >> Signed-off-by: Esben Haabendal <esben@geanix.com>
+> >> Acked-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> >
+> > Where's the cover letter and patch 2/2? Have a look at b4 [1], it's a
+> > great tool to help you with sending git patch series.
+>=20
+> It is left out on purpose.
+>=20
+> This patch is a stand-alone patch as it is. The other part of the series
+> you are talking about is not going to mainline for now. It needs still
+> quite some work, and will only go in after all the other printk stuff.
+>=20
+> I hope we can merge this patch as it to mainline now, instead of piling
+> up more than necessary in the rt tree.
 
-Only situation I see this can be useful is this:--
+Ok, then send it as patch 1/1.
 
-An implementer, implemented Zimops in CPU solely for the purpose that they =
-can
-run mainline distro & packages on their hardware and don't want to leverage=
- any
-feature which are built on top of Zimop.
+Marc
 
-As an example zicfilp and zicfiss are dependent on zimops. glibc can
-do following
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-1) check elf header if binary was compiled with zicfiss and zicfilp,
-if yes goto step 2, else goto step 6.
-2) check if zicfiss/zicfilp is available in hw via hwprobe, if yes
-goto step 5. else goto step 3
-3) check if zimop is available via hwprobe, if yes goto step 6, else goto s=
-tep 4
-4) This binary won't be able to run successfully on this platform,
-issue exit syscall. <-- termination
-5) issue prctl to enable shadow stack and landing pad for current task
-<-- enable feature
-6) let the binary run <-- let the binary run because no harm can be done
+--4bjqwdxylbl7erdi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmYQNfsACgkQKDiiPnot
+vG9DAgf7BXuZetpPFhgqfRuDFXD45sY0bXSNzz+OUWMCPPyz3WmXU0+EV74/QMCU
+un0y/QTd+SM5nYz4/hiRANBcDIXR71D0gDH1aNBNG6rpd3ZaZ/GnDfMmS6mj7MfJ
+xYRaMZ0wlKbrueg3up5K24qKL8J+HDWCVtEF06htScqSA33Z/sWC6x6vJ21qhU13
+KAYE8e+cy2QEcwUnBzxoYyNNS04hD1AyCGrtbJwyIwKJG7ZU8EqBsGZWGqyQDZCR
+WmfJvQGSjY2HuB0vTQD9hidq4pt9PIR6s0tVd8FQR+Xif02BK31KOlzsdkm0QVp4
+BimNplJFuQbXcL4cq8AW7EFuKkp9OQ==
+=SQHg
+-----END PGP SIGNATURE-----
+
+--4bjqwdxylbl7erdi--
 
