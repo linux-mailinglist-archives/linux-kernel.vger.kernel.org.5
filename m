@@ -1,145 +1,91 @@
-Return-Path: <linux-kernel+bounces-133293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CF6189A1D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:51:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8BF189A1DA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:51:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BA88B268AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:51:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3F721C238C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8FD171073;
-	Fri,  5 Apr 2024 15:50:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TcbCvz8C"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87C5B171664;
+	Fri,  5 Apr 2024 15:50:54 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54A3116F28B;
-	Fri,  5 Apr 2024 15:50:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0351171063
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 15:50:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712332252; cv=none; b=at2T4tZqQkh1oHXmnNr7N5sFKv4gskIaY0gO0onhz0bjB4U2loMN3ZtGMSUO4zVW6bBywfM2cybTSntpQV3JLoGNA5Y/sZPl3WLG1BKmEsxH1rSDrQiPQPXQ73eWuRjzyBz6lqLzQpf8MksY0k+25fwhI/TLvXtiL7cqA9eovwk=
+	t=1712332254; cv=none; b=M+DnjhoUN2MWoxD4LtitOWzefWou2jFA67ADK1fEWhY9ksBqxdFqGbKScorEZoNu9Sl+RtyhjxUa4/wLE66/jBB2mqJDXvFCS05vzu+9RUw618haetMk+3sIrEKBvpRKyv9Rr6uucEDB4Mit6dntFeWCV1Yw2BQOI06edmzIprY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712332252; c=relaxed/simple;
-	bh=QV5OlGrTEtG4KKZLN6xXEFl9Ht0QMzJyxZGOnp5ktK8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JKFqRhHJYaylTrQiS+0dJ42cX0XHFA+HHu5HmtBUCnX3vAkI7ARmBQd+3EyqaArobBLB23j6TZiJM7ZP9O08V/1B/NLlKOxz9FBwiNh9usFmCING9nxDb8F1JJ7brXQkAnOHhV6hKctQvxide/Gzx920KuPOAEQep6ULDRrT3tw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TcbCvz8C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21392C433C7;
-	Fri,  5 Apr 2024 15:50:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712332251;
-	bh=QV5OlGrTEtG4KKZLN6xXEFl9Ht0QMzJyxZGOnp5ktK8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=TcbCvz8CxFiSEYnJ+kZEdd8WeqBOQ7s5Bm4Skndh9eD8p8TmUEhthv0CvPHDkvsOQ
-	 yCvmr7XF/+8Fg8b9xx5NlasJ9uZS8YiwGqdo04JnJ0YMa+azf2vPT+24LUYtGZII+K
-	 WVB1UhLNB6ExBsgD7JbM9h0pPm6kYT4p/NDX3+9nCVkk6TCZPcFYIhrhM6tUDVzde4
-	 KvcYIcPtgIdWZQLCBaj+r7dt5Nk6NOBEh52XXPZthV2PwOOdcbNV3yYRtrxIydUchd
-	 A0knV8IEhUiHb9qUxO8Ys1hAszwxjq1Qya2CoybitsN1u61WoovsA0rQgdFOPGwZWY
-	 2DnScAq4ryBrA==
-Message-ID: <c599d2cd-2871-4f84-94bb-00656c1a9395@kernel.org>
-Date: Fri, 5 Apr 2024 17:50:41 +0200
+	s=arc-20240116; t=1712332254; c=relaxed/simple;
+	bh=t5Thu64Kz3nh7OCwdy/gx8xlBkgWJp2lex4k0XHGFTY=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=eKMjC4AvGkgmwsZIMBEjeH7bhX281livYwvBC7eJhv8BnvfYqEUzlfshv0uS+X9VUpCFn668LEe9prfgZSpxIqpRVqUsctboyTgSDC38RJ9/ketEqrn/vd1INVqxoCKksg5I8f+A5Cg5DjeyujUTvRIT/tzSvtyRfyuH08ca3gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc0a422d43so229901839f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 08:50:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712332252; x=1712937052;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q43kO6t/8BwfhJ9p2HK/8wPVXJ0IFuqPzoRhn/Eoops=;
+        b=b+34iIdOyCYp0SFQmrFI0yTl5TV7xti3/JhUL25FqQ0vFN8Y5rt3xTYlFJ0iD0Yk/M
+         lnbZHv97Bfm7stWdqEeRfPn9cEaGZasmUzbOCl80E7q5qm9g1Q+zyTeGKT5q5lr43KaU
+         CtuIKBsRRbE+XpbPHtaAMdVn+/Evh5qdSGRDimeHX6sEEqUBn7MYxHJZVJTjwl2u2dZZ
+         Y+42qI35Ixz9Jizoihm1P+CSyuL/9PHIwVkctVhAysEigecOFOmvCyMxXx39aYiYUW37
+         jPOgVMvWuErQ3sn1xi/3MVxsRrEGDZ0tZp71eD+Az7WAHkwxcKsMzcHTGELqTf6e/7+2
+         1Sqw==
+X-Gm-Message-State: AOJu0Yw43XeJyUN+lmy/KDOPJ1zgjFar1mkxwhDWEgB3L0QMjzuXZLFY
+	g4VnHltlCX0j9Y5D++nybJpwx6FLXUlbXOdBfZzcDzD7y/6V6Jt8wwYY2Uh2Ej4K6YslnE7E0N5
+	llQRalYuCEVcfyWaizDgMPC3NKPnVw3IEuyctXtkVOMmIBYpWFglIE5TEtw==
+X-Google-Smtp-Source: AGHT+IFy4gzjioWskKsUTbuMktiG5TS6K0QAiDAnliF7gwa80xoh86Pj9gS4q/9OJ2Y76GzgTrcunTKJf1p7/UcW66j+GqJRRWaN
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] dt-bindings: net: snps,dwmac: remove tx-sched-sp
- property
-To: Flavio Suligoi <f.suligoi@asem.it>,
- Alexandre Torgue <alexandre.torgue@foss.st.com>,
- Jose Abreu <joabreu@synopsys.com>, "David S . Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin
- <mcoquelin.stm32@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Giuseppe Cavallaro <peppe.cavallaro@st.com>
-Cc: netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
- linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240405152800.638461-1-f.suligoi@asem.it>
- <20240405152800.638461-2-f.suligoi@asem.it>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240405152800.638461-2-f.suligoi@asem.it>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6602:27c4:b0:7cc:ce74:4280 with SMTP id
+ l4-20020a05660227c400b007ccce744280mr70208ios.1.1712332251907; Fri, 05 Apr
+ 2024 08:50:51 -0700 (PDT)
+Date: Fri, 05 Apr 2024 08:50:51 -0700
+In-Reply-To: <00000000000003b4af060de27f6b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009cd77c06155b6b78@google.com>
+Subject: Re: [syzbot] [PATCH net] nfc: nci: Fix uninit-value in nci_rx_work
+From: syzbot <syzbot+d7b4dc6cd50410152534@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On 05/04/2024 17:27, Flavio Suligoi wrote:
-> The property "tx-sched-sp" no longer exists, as it was removed from the
-> file:
-> 
-> drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
-> 
-> by the commit:
-> 
-> commit aed6864035b1 ("net: stmmac: platform: Delete a redundant condition
-> branch")
-> 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> ---
->  .../devicetree/bindings/net/snps,dwmac.yaml        | 14 --------------
->  1 file changed, 14 deletions(-)
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-One more thought though:
-1. Missing net-next patch annotation,
-2. Please split DTS from net. DTS goes via separate trees.
+***
 
-Best regards,
-Krzysztof
+Subject: [PATCH net] nfc: nci: Fix uninit-value in nci_rx_work
+Author: ryasuoka@redhat.com
+
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 0d26c8ec9993..b7a020484131 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -1516,7 +1516,7 @@ static void nci_rx_work(struct work_struct *work)
+ 		nfc_send_to_raw_sock(ndev->nfc_dev, skb,
+ 				     RAW_PAYLOAD_NCI, NFC_DIRECTION_RX);
+ 
+-		if (!nci_plen(skb->data)) {
++		if (!skb->len || !nci_plen(skb->data)) {
+ 			kfree_skb(skb);
+ 			break;
+ 		}
 
 
