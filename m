@@ -1,244 +1,110 @@
-Return-Path: <linux-kernel+bounces-133373-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133376-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2398089A2F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:57:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8414289A2FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:59:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95EB91F22A00
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:57:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09547B23016
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82A5F171645;
-	Fri,  5 Apr 2024 16:57:19 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9E1171667;
+	Fri,  5 Apr 2024 16:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ee3cuSZ/"
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C53F9200CB;
-	Fri,  5 Apr 2024 16:57:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB0C1171651
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 16:58:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712336239; cv=none; b=Lhv9UgMz3OXNnUU6DSYIScqyNm/LRs1JznILcbS2xGhSMllDEgk27or4OIcF4UgOqjggLqgBwFA1CbpfFvCRRL4qOZYwB++tp7Jon1pMK86vP/sPETH+fg0oz6zPBvwBpWbQwlcMomHtErYzuutWViOqVFMdPLtPtG9dCVNbzg4=
+	t=1712336329; cv=none; b=SC62xty2qXbHLssNiGFZA7miVI35UMrarkxhfqsrFyiwmLwL2/Ps+k1nDApkTLdqBK4spCAraEmfn+W5c+dUKdRMHN8ZmGVO5lseEkLW3Yw9Zi1nyr2dI7DLy8d6KI2XJhbQeMiHpklv8AVKF3BOXgRZ+X3QgL4gv4a/lnHTP9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712336239; c=relaxed/simple;
-	bh=OBK6g/UNcxbJXiiBy+9wcG+hPawXuj0fMmCpxvwxpYk=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=hd8PYVMqOive8YepoSy9o1BicanVejHRg8uXEA5FqimMql+9wCdK/tgLRB1ZSIFv054qyA4Zv8rG0yk7DwJdl24E0/pj5GZ5bgJx00BSHEd4ltz1PfT8CZ9IwJX4tntC8wSSIj4k5Z9ew5BKCnYu8lPhymu7/Lloa6HNC1RVQbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VB4PH4fD8z6J9ds;
-	Sat,  6 Apr 2024 00:55:47 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 1C94A141251;
-	Sat,  6 Apr 2024 00:57:13 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 5 Apr
- 2024 17:57:12 +0100
-Date: Fri, 5 Apr 2024 17:57:11 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
-CC: Robert Richter <rrichter@amd.com>, Davidlohr Bueso <dave@stgolabs.net>,
-	Dave Jiang <dave.jiang@intel.com>, Alison Schofield
-	<alison.schofield@intel.com>, Vishal Verma <vishal.l.verma@intel.com>, "Ira
- Weiny" <ira.weiny@intel.com>, Dan Williams <dan.j.williams@intel.com>,
-	"linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Xingtao Yao
- (Fujitsu)" <yaoxt.fnst@fujitsu.com>
-Subject: Re: [Problem ?] cxl list show nothing after reboot Re: [PATCH v2]
- cxl/pci: Fix disabling memory if DVSEC CXL Range does not match a CFMWS
- window
-Message-ID: <20240405175711.000032c4@Huawei.com>
-In-Reply-To: <24b8b11d-a7ec-42ce-9fa6-8a24701cfe46@fujitsu.com>
-References: <20240216160113.407141-1-rrichter@amd.com>
-	<b0f5e2ce-d39e-4a8e-8f2f-ffa67b604e02@fujitsu.com>
-	<24b8b11d-a7ec-42ce-9fa6-8a24701cfe46@fujitsu.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712336329; c=relaxed/simple;
+	bh=kYxNSdByNJ1m5udrkC+/cqq0sc3hRu5OPcBDsIZ3Gf4=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Hg5Q4AkNH8+sm0Wlro14baRFBawx7NEQ9EXhZ1S8ejVfGXSrU6uUWokwJb6Zo2tbsO1bLLSeqMmHZDr3GmxMZaAUoyVtCR9Ax7Xg77QXviTuhArxhh11APYPtE9GayXtN4PCCFwI4NdjCXI/cFusianREZY4VCSFVK3nZmPsYEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ee3cuSZ/; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2a2fdf6eb3bso1332456a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 09:58:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712336327; x=1712941127; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oIaKqbHItjZpkeLlKYbk7Duobe/+p8JYcpNo0hsVcB4=;
+        b=ee3cuSZ/PmCUOwcIJB2qvnULBvdJaPiOG+DLN7uGg9FlUZxfVpTFsTLbyh1vds0wd3
+         K/yS2ySVGapxfJwvbgoJb0VsIPUUbPHoDqHgMaAqmUeysAsNBOObAcN3XWpfxcrU7JuT
+         wrLexnldFYDw3uWwlEzQFUbcyfrc+eGzyICS1XmX6UY3fnwrB55yQopf5Q4T4wibpfPo
+         m5ROP0ynkxcrMFiKnu7DAUNIazVMmb2O2xgS9rwwBWwPHs/c5qGWVz+epJZ3IwqZYQgk
+         rwBKSM1pznyk3lQMO/ubBpmMNtRauGUwh2znJlkL37xqZ3eEO9onwao0zLd3lLluJWls
+         jbLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712336327; x=1712941127;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oIaKqbHItjZpkeLlKYbk7Duobe/+p8JYcpNo0hsVcB4=;
+        b=NElfoIYGZ2OTbvRX9LpTl9KIwNeXKpnDSqnzbf8yejh2+KwZOyhby8cM3SKpIVCedE
+         RcvD1lhIy3JcOU0Vcgw7AMnV7pxWKrlP2955qMXMFzYT4AATXKtkSM3TttYg12lb+HYV
+         8AbR9YQ5iP7PbMlMsXjwY/V1/xAfZEJ25WG47+RvW+y7/m5LWfDZNI2t6Lgc8/IpZmLI
+         DrEVv8R49HM7Sd5mwwiL5eefNVSIyYbqAOIpzHdm1HROYZ3qWJaoxYe8eSR0kmYA1pMU
+         6jLduhjI9QhFGNjkuYhjyUzwiXqqNX+wb+W8WnCFfQW4Uzu0NArs0CNR3mjZKOGMPd2B
+         Vy/g==
+X-Forwarded-Encrypted: i=1; AJvYcCX0va6ydGybcnL0YZNUThj91Z+v6MqZxscxvCo26We9588QN3iF8KMJLhbVMNDLXGOGejQ+Y+E2otB/sBkCD2FOP9XhnOUzYJUiMrbq
+X-Gm-Message-State: AOJu0Ywx9io5elUSD8QPIlkUODviBif2nyFqI0fYuLVOtXDspLpL5eXq
+	KHoWjK6yFe74ueqXqQgpKrD4x13RXcHJhUhzHfR7SmVayYDGtYqR+8inBS4UEYcM2dJk1I96wh/
+	LXw==
+X-Google-Smtp-Source: AGHT+IGoqd3TklGeYcqwAk8h7GLRYYheErNCawJpvvIGGiJhhWOdi5tZcUmwXbQAsDVZm3CxPiydDP/0hIs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:cc0a:b0:29b:efaf:2bd7 with SMTP id
+ b10-20020a17090acc0a00b0029befaf2bd7mr6740pju.2.1712336327275; Fri, 05 Apr
+ 2024 09:58:47 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Fri,  5 Apr 2024 09:58:44 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240405165844.1018872-1-seanjc@google.com>
+Subject: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
+From: Sean Christopherson <seanjc@google.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Rick P Edgecombe <rick.p.edgecombe@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
+	Wei W Wang <wei.w.wang@intel.com>, David Skidmore <davidskidmore@google.com>, 
+	Steve Rutherford <srutherford@google.com>, Pankaj Gupta <pankaj.gupta@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 26 Mar 2024 08:26:21 +0000
-"Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com> wrote:
+ - Recording and slides uploaded[1].
 
-> All guys,
-> 
-> In order to make the CXL memdev work again, i have to modify the QEMU side
-> where it resets the "DVSEC CXL Control" during reboot. A draft changes is as below:
-> 
-> Per 8.1.3.2 DVSEC CXL Control (Offset 0Ch), Default value of BIT(2) is 0. So is it reasonable
-> to have a reset dvsecs in QEMU during reboot?
-> 
-> Any comments @Janathan
+ - Hold off on v20 for a few weeks, to try and land as much prep work as
+   possible before v20.
 
-Hi,
+ - Exactly how to slice n' dice the series to make it easier to review is TBD,
+   but generally speaking the plan is to queue patches into a "dead" branch,
+   e.g. kvm/kvm-coco-queue, when they are ready, to reduce the sheer volume of
+   the series and thus help alleviate reviewer fatigue.
 
-Sorry it took me so long to get to this.
+ - Don't hardcode fixed/required CPUID values in KVM, use available metadata
+   from TDX Module to reject "bad" guest CPUID (or let the TDX module reject?).
+   I.e. don't let a guest silently run with a CPUID that diverges from what
+   userspace provided.
 
-What are you attempting to do? Use an OS reboot on QEMU to check that the flows
-meant for BIOS configuration work - i.e. the OS rebuilds the state
-correctly by reading the current state of the devices?
+ - Ideally, the TDX Module would come with full metadata (not in JSON format)
+   that KVM can (a) use to reject a "bad" CPUID configuration (from userspace),
+   and (b) that KVM can provide to userspace to make debugging issues suck less.
 
-Would be good to fix that case but I want to check that's the aim before looking
-too closely at this.
+ - For guest MAXPHYADDR vs. GPAW, rely on KVM_GET_SUPPORTED_CPUID to enumerate
+   the usable MAXPHYADDR[2], and simply refuse to enable TDX if the TDX Module
+   isn't compatible.  Specifically, if MAXPHYADDR=52, 5-level paging is enabled,
+   but the TDX-Module only allows GPAW=0, i.e. only supports 4-level paging.
 
-Thanks,
-
-Jonathan
-
-> 
-> 
-> [root@iaas-rpma qemu]# git diff
-> diff --git a/hw/mem/cxl_type3.c b/hw/mem/cxl_type3.c
-> index b0a7e9f11b64..31755a9f9aab 100644
-> --- a/hw/mem/cxl_type3.c
-> +++ b/hw/mem/cxl_type3.c
-> @@ -899,6 +899,26 @@ MemTxResult cxl_type3_write(PCIDevice *d, hwaddr host_addr, uint64_t data,
->       return address_space_write(as, dpa_offset, attrs, &data, size);
->   }
->   
-> +static void dvsecs_ctrl_reset(CXLType3Dev *ct3d)
-> +{
-> +
-> +     if (ct3d->sn != UI64_NULL) {
-> +        pcie_dev_ser_num_init(ct3d->cxl_cstate.pdev, 0x100, ct3d->sn);
-> +        ct3d->cxl_cstate.dvsec_offset = 0x100 + 0x0c;
-> +    } else {
-> +        ct3d->cxl_cstate.dvsec_offset = 0x100;
-> +    }
-> +
-> +    // FIXME?: only reset ctrl instead of rebuilding the whole dvsecs
-> +#if 0
-> +    memcpy(pdev->config + offset + sizeof(DVSECHeader),
-> +           body + sizeof(DVSECHeader),
-> +           length - sizeof(DVSECHeader));
-> +#else
-> +    build_dvsecs(ct3d);
-> +#endif
-> +}
-> +
->   static void ct3d_reset(DeviceState *dev)
->   {
->       CXLType3Dev *ct3d = CXL_TYPE3(dev);
-> @@ -907,6 +927,7 @@ static void ct3d_reset(DeviceState *dev)
->   
->       cxl_component_register_init_common(reg_state, write_msk, CXL2_TYPE3_DEVICE);
->       cxl_device_register_init_t3(ct3d);
-> +    dvsecs_ctrl_reset(ct3d);
->   
->       /*
->        * Bring up an endpoint to target with MCTP over VDM.
-> 
-> 
-> 
-> 
-> 
-> On 22/03/2024 11:15, Zhijian Li (Fujitsu) wrote:
-> > Robert, Dan
-> > 
-> > It's noticed that 'cxl list' show nothing after a reboot in v6.8.(A fresh boot works)
-> > The git bisection pointed to this commit.
-> > 
-> > Haven't investigated it deeply, I'm wondering if it's a QEMU problem or
-> > something wrong with this patch.
-> > 
-> > 
-> > Reproduce step:
-> > 
-> > 1. Start a cxl QEMU VM
-> > 2. cxl list works
-> > cxl list
-> > [
-> >     {
-> >       "memdev":"mem0",
-> >       "ram_size":2147483648,
-> >       "serial":0,
-> >       "host":"0000:54:00.0"
-> >     },
-> >     {
-> >       "memdev":"mem1",
-> >       "pmem_size":2147483648,
-> >       "serial":0,
-> >       "host":"0000:36:00.0"
-> >     }
-> > ]
-> > 
-> > 3. reboot VM
-> > 4. cxl list show nothing and has following dmesg
-> > 
-> > cxl list
-> > [
-> > ]
-> >     Warning: no matching devices found
-> > 
-> > ...
-> > 
-> > [    6.249188]  pci0000:53: host supports CXL
-> > [    6.258168]  pci0000:35: host supports CXL
-> > [    6.490568] cxl_pci 0000:54:00.0: Range register decodes outside platform defined CXL ranges.
-> > [    6.494298] cxl_mem mem0: endpoint3 failed probe
-> > [    6.506072] cxl_pci 0000:36:00.0: Range register decodes outside platform defined CXL ranges.
-> > [    6.515092] cxl_mem mem1: endpoint3 failed probe
-> > [   12.181188] kauditd_printk_skb: 18 callbacks suppressed
-> > 
-> > 
-> > Thanks
-> > Zhijian
-> > 
-> > 
-> > On 17/02/2024 00:01, Robert Richter wrote:  
-> >> The Linux CXL subsystem is built on the assumption that HPA == SPA.
-> >> That is, the host physical address (HPA) the HDM decoder registers are
-> >> programmed with are system physical addresses (SPA).
-> >>
-> >> During HDM decoder setup, the DVSEC CXL range registers (cxl-3.1,
-> >> 8.1.3.8) are checked if the memory is enabled and the CXL range is in
-> >> a HPA window that is described in a CFMWS structure of the CXL host
-> >> bridge (cxl-3.1, 9.18.1.3).
-> >>
-> >> Now, if the HPA is not an SPA, the CXL range does not match a CFMWS
-> >> window and the CXL memory range will be disabled then. The HDM decoder
-> >> stops working which causes system memory being disabled and further a
-> >> system hang during HDM decoder initialization, typically when a CXL
-> >> enabled kernel boots.
-> >>
-> >> Prevent a system hang and do not disable the HDM decoder if the
-> >> decoder's CXL range is not found in a CFMWS window.
-> >>
-> >> Note the change only fixes a hardware hang, but does not implement
-> >> HPA/SPA translation. Support for this can be added in a follow on
-> >> patch series.
-> >>
-> >> Signed-off-by: Robert Richter <rrichter@amd.com>
-> >> ---
-> >>    drivers/cxl/core/pci.c | 4 ++--
-> >>    1 file changed, 2 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
-> >> index a0e7ed5ae25f..18616ca873e5 100644
-> >> --- a/drivers/cxl/core/pci.c
-> >> +++ b/drivers/cxl/core/pci.c
-> >> @@ -478,8 +478,8 @@ int cxl_hdm_decode_init(struct cxl_dev_state *cxlds, struct cxl_hdm *cxlhdm,
-> >>    	}
-> >>    
-> >>    	if (!allowed) {
-> >> -		cxl_set_mem_enable(cxlds, 0);
-> >> -		info->mem_enabled = 0;
-> >> +		dev_err(dev, "Range register decodes outside platform defined CXL ranges.\n");
-> >> +		return -ENXIO;
-> >>    	}
-> >>    
-> >>    	/  
-
+[1] https://drive.google.com/corp/drive/folders/1hm_ITeuB6DjT7dNd-6Ezybio4tRRQOlC
+[2] https://lore.kernel.org/all/20240313125844.912415-1-kraxel@redhat.com
 
