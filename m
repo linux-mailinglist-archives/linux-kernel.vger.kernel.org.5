@@ -1,183 +1,222 @@
-Return-Path: <linux-kernel+bounces-133524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22C6989A4D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:25:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 26E6A89A4D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:24:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5496B1C21651
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:25:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D875B20CCF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:24:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63FCA172BDB;
-	Fri,  5 Apr 2024 19:25:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80D15172BCB;
+	Fri,  5 Apr 2024 19:24:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JWxVF0iU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="j1og25Xo"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A65E8172BC6;
-	Fri,  5 Apr 2024 19:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D761171E5C
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 19:24:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712345100; cv=none; b=YlWP3R1iCnTNe5ubTVJbWgvcr6jOilNDdYpaIpWGUr1A6euQgl7B87pr1wQTWubFgdogzrZN0OLEH8p3hhh3zkJAvm/96jKgqu0IJ3E/fPebeedV5dZmOraHfEXhBOR1orNjCh5xOoRwyuJdL47fcpZxy5lQXF1/bf7uWqDTULY=
+	t=1712345071; cv=none; b=SjmBG1jgPc7j6RY6PBiivAfJ2vfq8fIGFOrV5+efCa61EASXWENRecJ8x+qA2jqi9oiKZ37Asmz76HJ/fEG5MjjuK3s+2W5GQ+qsTDkaaKlr4fPOab+NsGLNAlJZfBH7MkOsEhWNW5d1DMVexWZunPfgGnvkTgjZitswg1+vCNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712345100; c=relaxed/simple;
-	bh=FK4h/8Qb4PhaAp88iGaA8h7WqLJqCcrh+xeBVhK+WQs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=t5lH1wkleTLSSiaJNhMf3YTlQNGib9/uAjUJynzpLEHbY5gCD4vgBRt0u3WB1fdLcEUDmQlSfdsIe9i2XB/SnS6xxc9iTUNyFaMZyA0xh6sNShePugRh97MQ5uMz/wx4UOvDJPpi2g1wMTNV2M4+dDpttviLFj17vOYXaxVWLWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JWxVF0iU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAFD7C433F1;
-	Fri,  5 Apr 2024 19:24:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712345100;
-	bh=FK4h/8Qb4PhaAp88iGaA8h7WqLJqCcrh+xeBVhK+WQs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JWxVF0iU2MJc3v/1OhKOge0FpPHa2dL63n59rDezFWDFeGtaDh54MK657/FdoTlbC
-	 9knaxWY/DxXueBIocShzxs3X1qWupXPFogn0MZWVqrfhjffwavFJcJh4smCslyA80r
-	 rFbJOuQl+Q2MCyiEDVU3ybK2CeAbbj/Dxq58AN87pWH9cjxOI8sg9GgRfPYfmzUK00
-	 hCWrqbeFP78f5Yxa2JgruhOCcif4oTpwnEO01GlTZf0rtrJfdYelVLBEMfGFQcAgMH
-	 x3Tff5WbH2MGH+pY9zXork0Oh/eT5bl25k21Vg5MS5EjU+rUycjl/Yx7QXEsuohhya
-	 i3Md/yLT80zWA==
-From: SeongJae Park <sj@kernel.org>
-To: Hyeongtak Ji <hyeongtak.ji@gmail.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	Honggyu Kim <honggyu.kim@sk.com>,
-	akpm@linux-foundation.org,
-	apopple@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	dave.jiang@intel.com,
-	hyeongtak.ji@sk.com,
-	kernel_team@skhynix.com,
-	linmiaohe@huawei.com,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	mathieu.desnoyers@efficios.com,
-	mhiramat@kernel.org,
-	rakie.kim@sk.com,
-	rostedt@goodmis.org,
-	surenb@google.com,
-	yangx.jy@fujitsu.com,
-	ying.huang@intel.com,
-	ziy@nvidia.com,
-	42.hyeyoo@gmail.com,
-	art.jeongseob@gmail.com
-Subject: Re: [RFC PATCH v3 5/7] mm/damon/paddr: introduce DAMOS_MIGRATE_COLD action for demotion
-Date: Fri,  5 Apr 2024 12:24:57 -0700
-Message-Id: <20240405192457.67068-1-sj@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240405075557.464190-1-hyeongtak.ji@gmail.com>
-References: 
+	s=arc-20240116; t=1712345071; c=relaxed/simple;
+	bh=mEICjIS/Xm1y/adtTOt4oAM6pGc6Ltt0L3kruWttndY=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=uZgoM5ZQB9ziFnBiDTiZUOJCAvPKyeGdHP+t22EJGc16+K+fNGU7R9Es5bs53pcuBEBoztSaGfp1Qs4wlLib+WouQQyCDEmoB3dkK+6nWtJf4qIX+hnQbTwhcfpLCGf42zMe4r6e3Nax2RMQqAlpD0V5DjK04AeIQgZPQiBoG+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=j1og25Xo; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e782e955adso2391803b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 12:24:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712345069; x=1712949869; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=r+9PtxohNn5GLyNZPhR1TRelne4uxW9tVbigzA0Hv9E=;
+        b=j1og25Xodeh2U61879zqsSgDKsqz9mkJ6Fy4ZiEP/0JfRQOpwWq2BDmvPKvMmZqOv8
+         Eoi3xb3nkA+c2J6JCp0O4sx9mnVGe6vjaxwcUm/RkF0u8dtUqyH+qEl8VH2U5F+OsY1w
+         lWaJuFsVhtWqEj2VQHceIrnpoSzoraw9BQCRcMMzp9zBSP6Dk6dqGwIbkpFNDOTiWtPh
+         wZpkuJFt45E0Gui2Za26smu55yH2HfD41uIbL1mNkf4qQaPOrBNyDYDwPIUnQ8iwniZ/
+         nUsRu3NQprpW5sQoQfsPmi1rSb89ENpn1YzCwgDWxYFVtzf5Q89auV+34Tiff2wXWwWS
+         0/gQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712345069; x=1712949869;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=r+9PtxohNn5GLyNZPhR1TRelne4uxW9tVbigzA0Hv9E=;
+        b=JSNRdJSm0lyPUmMsfISdzz48YRAHGUxaXnY7XxqUcVbDGBoZCowopPyn4oRGujGWc4
+         5a2o/9H3JzcKYXFU8tzguK/lYUdFCfh8Xly1h/edhG2CMACwOm9tyr+ouaxldgRxjDRF
+         kte5mlqNrTnCursucRQDlvq+ZRMQtXPGRlFz8KU0qg/2XWxqgS9c5PHmPS8wokk8nvC8
+         4o08i58qyBbjhpkTVmIuVt2sREz5ruzdOq+Q44I0WH6P/pMKWtpJC0cLIh2bJy2WFzE9
+         eeNMMJxkECrC7j9dQ4LtYe6b1YS0iEuYGQ6E08/Rbq/VoHLB7cq90tVV/wHJJnpWXfBB
+         tQ4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVltG8MEQnVtWVrSQFUBzU7KtQEUK97m+luyn3IKlelRYjb4/pKrKrRgt19alDGx5AjWJ6D+71T1gGITb3senpk5zKm3uaeq6DPzq4q
+X-Gm-Message-State: AOJu0YwOPF8658uf0PQUS5i9Tuki5InyhV3UF/nnsf220PpY1fuZqx+2
+	czEmHKxEb6R7OYxOY2rPiO9TduGBLEIyLbP9bKT3ytPr0jXUMU6qF/9DgdSTBro=
+X-Google-Smtp-Source: AGHT+IHcY4t8f7Jv7XhoB88+cn6keDKBvN0wZ7yOTJw8SS3n/nX7rvkSTIIW/LwD2Rc2EvKdk2G7Hw==
+X-Received: by 2002:a05:6a20:dc95:b0:1a3:703c:c7d5 with SMTP id ky21-20020a056a20dc9500b001a3703cc7d5mr2194747pzb.34.1712345069022;
+        Fri, 05 Apr 2024 12:24:29 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id fj8-20020a056a003a0800b006ea8af1569asm1872700pfb.73.2024.04.05.12.24.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Apr 2024 12:24:28 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <CBF9FEA5-0FD4-44BE-A2DC-54B7E5D1A874@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_23208463-7A57-4687-8755-FF47195EDFA6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v3 06/13] nilfs2: fiemap: return correct extent physical
+ length
+Date: Fri, 5 Apr 2024 13:26:37 -0600
+In-Reply-To: <bd06389b4c9c33ab1411f2941875f02867b18642.1712126039.git.sweettea-kernel@dorminy.me>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ Brian Foster <bfoster@redhat.com>,
+ Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>,
+ Jaegeuk Kim <jaegeuk@kernel.org>,
+ Chao Yu <chao@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>,
+ Jan Kara <jack@suse.cz>,
+ =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ linux-doc@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-bcachefs@vger.kernel.org,
+ linux-btrfs <linux-btrfs@vger.kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org,
+ kernel-team@meta.com
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+ <bd06389b4c9c33ab1411f2941875f02867b18642.1712126039.git.sweettea-kernel@dorminy.me>
+X-Mailer: Apple Mail (2.3273)
 
-On Fri,  5 Apr 2024 16:55:57 +0900 Hyeongtak Ji <hyeongtak.ji@gmail.com> wrote:
 
-> On Fri,  5 Apr 2024 15:08:54 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
-> 
-> ...snip...
-> 
-> > +static unsigned long damon_pa_migrate_pages(struct list_head *folio_list,
-> > +					    enum migration_mode mm,
-> > +					    int target_nid)
-> > +{
-> > +	int nid;
-> > +	unsigned int nr_migrated = 0;
-> > +	LIST_HEAD(node_folio_list);
-> > +	unsigned int noreclaim_flag;
-> > +
-> > +	if (list_empty(folio_list))
-> > +		return nr_migrated;
-> 
-> How about checking if `target_nid` is `NUMA_NO_NODE` or not earlier,
-> 
-> > +
-> > +	noreclaim_flag = memalloc_noreclaim_save();
-> > +
-> > +	nid = folio_nid(lru_to_folio(folio_list));
-> > +	do {
-> > +		struct folio *folio = lru_to_folio(folio_list);
-> > +
-> > +		if (nid == folio_nid(folio)) {
-> > +			folio_clear_active(folio);
-> > +			list_move(&folio->lru, &node_folio_list);
-> > +			continue;
-> > +		}
-> > +
-> > +		nr_migrated += damon_pa_migrate_folio_list(&node_folio_list,
-> > +							   NODE_DATA(nid), mm,
-> > +							   target_nid);
-> > +		nid = folio_nid(lru_to_folio(folio_list));
-> > +	} while (!list_empty(folio_list));
-> > +
-> > +	nr_migrated += damon_pa_migrate_folio_list(&node_folio_list,
-> > +						   NODE_DATA(nid), mm,
-> > +						   target_nid);
-> > +
-> > +	memalloc_noreclaim_restore(noreclaim_flag);
-> > +
-> > +	return nr_migrated;
-> > +}
-> > +
-> 
-> ...snip...
-> 
-> > +static unsigned int migrate_folio_list(struct list_head *migrate_folios,
-> > +				       struct pglist_data *pgdat,
-> > +				       int target_nid)
-> > +{
-> > +	unsigned int nr_succeeded;
-> > +	nodemask_t allowed_mask = NODE_MASK_NONE;
-> > +
-> > +	struct migration_target_control mtc = {
-> > +		/*
-> > +		 * Allocate from 'node', or fail quickly and quietly.
-> > +		 * When this happens, 'page' will likely just be discarded
-> > +		 * instead of migrated.
-> > +		 */
-> > +		.gfp_mask = (GFP_HIGHUSER_MOVABLE & ~__GFP_RECLAIM) | __GFP_NOWARN |
-> > +			__GFP_NOMEMALLOC | GFP_NOWAIT,
-> > +		.nid = target_nid,
-> > +		.nmask = &allowed_mask
-> > +	};
-> > +
-> > +	if (pgdat->node_id == target_nid || target_nid == NUMA_NO_NODE)
-> > +		return 0;
-> 
-> instead of here.
+--Apple-Mail=_23208463-7A57-4687-8755-FF47195EDFA6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Agree.  As I replied on the previous reply, I think this check can be done from
-the caller (or the caller of the caller) of this function.
+On Apr 3, 2024, at 1:22 AM, Sweet Tea Dorminy =
+<sweettea-kernel@dorminy.me> wrote:
+>=20
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> ---
+> fs/nilfs2/inode.c | 12 ++++++++----
+> 1 file changed, 8 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/fs/nilfs2/inode.c b/fs/nilfs2/inode.c
+> index 4d3c347c982b..e3108f2cead7 100644
+> --- a/fs/nilfs2/inode.c
+> +++ b/fs/nilfs2/inode.c
+> @@ -1160,7 +1160,7 @@ int nilfs_fiemap(struct inode *inode, struct =
+fiemap_extent_info *fieinfo,
+> {
+> 	struct the_nilfs *nilfs =3D inode->i_sb->s_fs_info;
+> 	__u64 logical =3D 0, phys =3D 0, size =3D 0;
+> -	__u32 flags =3D 0;
+> +	__u32 flags =3D FIEMAP_EXTENT_HAS_PHYS_LEN;
+>=20
+> 	loff_t isize;
+> 	sector_t blkoff, end_blkoff;
+> 	sector_t delalloc_blkoff;
+> @@ -1197,7 +1197,9 @@ int nilfs_fiemap(struct inode *inode, struct =
+fiemap_extent_info *fieinfo,
+> 			if (blkoff > end_blkoff)
+> 				break;
+>=20
+> -			flags =3D FIEMAP_EXTENT_MERGED | =
+FIEMAP_EXTENT_DELALLOC;
+> +			flags =3D FIEMAP_EXTENT_MERGED |
+> +				FIEMAP_EXTENT_DELALLOC |
+> +				FIEMAP_EXTENT_HAS_PHYS_LEN;
 
-> 
-> > +
-> > +	if (list_empty(migrate_folios))
-> > +		return 0;
+IMHO, rather than setting "flags =3D FIEMAP..." here, it would be better =
+to
+initialize "flags |=3D FIEMAP_HAS_PHYS_LEN" right after =
+fiemap_fill_next_extent()
+is called, and use "flags |=3D FIEMAP_EXTENT_MERGED | =
+FIEMAP_EXTENT_DELALLOC" here.
 
-Same for this.
+That makes it more clear that MERGED|DELALLOC are "add-on" flags beyond =
+the
+base flags, and if more flags are added in the future (e.g. COMPRESSED) =
+then
+the flag management will be simpler (more on this below).
 
-> > +
-> > +	/* Migration ignores all cpuset and mempolicy settings */
-> > +	migrate_pages(migrate_folios, alloc_migrate_folio, NULL,
-> > +		      (unsigned long)&mtc, MIGRATE_ASYNC, MR_DAMON,
-> > +		      &nr_succeeded);
-> > +
-> > +	return nr_succeeded;
-> > +}
-> > +
-> 
-> ...snip...
-> 
-> Kind regards,
-> Hyeongtak
-> 
+> @@ -1261,14 +1263,16 @@ int nilfs_fiemap(struct inode *inode, struct =
+fiemap_extent_info *fieinfo,
+> 						break;
+>=20
+> 					/* Start another extent */
+> -					flags =3D FIEMAP_EXTENT_MERGED;
+> +					flags =3D FIEMAP_EXTENT_MERGED |
+> +						=
+FIEMAP_EXTENT_HAS_PHYS_LEN;
 
-Thanks,
-SJ
+Strictly speaking, this new extent should not have FIEMAP_EXTENT_MERGED =
+set,
+and start out with only FIEMAP_EXTENT_HAS_PHYS_LEN, since it has not =
+actually
+been merged with anything.
+
+> 					logical =3D blkoff << blkbits;
+> 					phys =3D blkphy << blkbits;
+> 					size =3D n << blkbits;
+> 				}
+> 			} else {
+> 				/* Start a new extent */
+> -				flags =3D FIEMAP_EXTENT_MERGED;
+> +				flags =3D FIEMAP_EXTENT_MERGED |
+> +					FIEMAP_EXTENT_HAS_PHYS_LEN;
+
+Then this should be "flags |=3D FIEMAP_EXTENT_MERGED" only once a second
+block has been merged into the prior one.
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_23208463-7A57-4687-8755-FF47195EDFA6
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYQUG0ACgkQcqXauRfM
+H+DusBAAjLzaPC76LsfW44HKtdh7+jVJ1aHtau12SOTY37rSSphdiw/F9U6SbJ4b
+PwbKUBwhMzFgGjXhyUE8AX8z7CmrggtnVzeRgw8ad+1O6HfDU6ibC1w04XREKgdZ
+yVFCaBcijZA3b8POL+pTCS+URpbfc355WbiS1ioIiIa+1KLoBqe83dqfO9PVuS5V
+BGUZh1pnUhpVxJOxppQ36NgweFjuEDvG32BpN9+NEZiQFrAj2GHP/QijiQTvNoPd
+7noTlgPq8zcbGPPI6HTpVyBz3ZWxYmVQ5ImDZlAOUM4WLUoyVPbUjffKC1Y66ts+
+FHQy/PRtvV2ohItJbfCTPTWjgBELQeONHyLnhbRoDYNGYyysyatprSq0TVpEVHN8
+gukb731ZJzStKaIHIa+FtyW2DlzCfgPgwxT8LAr57xVPvwUFU/im8OztJdRSERf3
+kkEg5t5fJsF+g/NekWV4g3ynWHNmKZ0dn40oanFNjHu6VsZj0Swzj9hOfRzYAm92
+yr6hPj1VQY7N5tW90Z7sMiJgFQje8/tunjh2/MEweezooqTQ3hVQrvdRykwR4j00
+ATlo/5vssOjOmRVThS0jxaSTSUUcW+nFxaEeJ00Cbm5AoRtLaGmpWBkvCVDqqavm
+dKadcnyZvZ4mwK24TlrHA9EgHUCaGvNmEP6WJ4lfnieswdJIj60=
+=J11M
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_23208463-7A57-4687-8755-FF47195EDFA6--
 
