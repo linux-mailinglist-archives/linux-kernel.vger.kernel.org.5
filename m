@@ -1,110 +1,79 @@
-Return-Path: <linux-kernel+bounces-133376-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133377-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8414289A2FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:59:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40C4089A2FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:59:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09547B23016
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:58:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF0A4281D2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9E1171667;
-	Fri,  5 Apr 2024 16:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A4F171672;
+	Fri,  5 Apr 2024 16:59:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ee3cuSZ/"
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lP+u2JXZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB0C1171651
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 16:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A464171654;
+	Fri,  5 Apr 2024 16:59:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712336329; cv=none; b=SC62xty2qXbHLssNiGFZA7miVI35UMrarkxhfqsrFyiwmLwL2/Ps+k1nDApkTLdqBK4spCAraEmfn+W5c+dUKdRMHN8ZmGVO5lseEkLW3Yw9Zi1nyr2dI7DLy8d6KI2XJhbQeMiHpklv8AVKF3BOXgRZ+X3QgL4gv4a/lnHTP9Y=
+	t=1712336354; cv=none; b=WsgGmPNuI0gLeOup8bH4VVxiyrVToUSlRAl0a5je3jMscdoRZtRinIkkcePhdsGaugaBLit9ygXKAbaHuCdaSVVeAxDEx0fhxj3Iy0NLDDe04A1Lq+IXTV3WB6B9VbRjOj75Z8xAeY9xiE0H0Bh9BzVEZMD6OSgOS9K7x8m3aUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712336329; c=relaxed/simple;
-	bh=kYxNSdByNJ1m5udrkC+/cqq0sc3hRu5OPcBDsIZ3Gf4=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Hg5Q4AkNH8+sm0Wlro14baRFBawx7NEQ9EXhZ1S8ejVfGXSrU6uUWokwJb6Zo2tbsO1bLLSeqMmHZDr3GmxMZaAUoyVtCR9Ax7Xg77QXviTuhArxhh11APYPtE9GayXtN4PCCFwI4NdjCXI/cFusianREZY4VCSFVK3nZmPsYEQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ee3cuSZ/; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2a2fdf6eb3bso1332456a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 09:58:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712336327; x=1712941127; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oIaKqbHItjZpkeLlKYbk7Duobe/+p8JYcpNo0hsVcB4=;
-        b=ee3cuSZ/PmCUOwcIJB2qvnULBvdJaPiOG+DLN7uGg9FlUZxfVpTFsTLbyh1vds0wd3
-         K/yS2ySVGapxfJwvbgoJb0VsIPUUbPHoDqHgMaAqmUeysAsNBOObAcN3XWpfxcrU7JuT
-         wrLexnldFYDw3uWwlEzQFUbcyfrc+eGzyICS1XmX6UY3fnwrB55yQopf5Q4T4wibpfPo
-         m5ROP0ynkxcrMFiKnu7DAUNIazVMmb2O2xgS9rwwBWwPHs/c5qGWVz+epJZ3IwqZYQgk
-         rwBKSM1pznyk3lQMO/ubBpmMNtRauGUwh2znJlkL37xqZ3eEO9onwao0zLd3lLluJWls
-         jbLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712336327; x=1712941127;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oIaKqbHItjZpkeLlKYbk7Duobe/+p8JYcpNo0hsVcB4=;
-        b=NElfoIYGZ2OTbvRX9LpTl9KIwNeXKpnDSqnzbf8yejh2+KwZOyhby8cM3SKpIVCedE
-         RcvD1lhIy3JcOU0Vcgw7AMnV7pxWKrlP2955qMXMFzYT4AATXKtkSM3TttYg12lb+HYV
-         8AbR9YQ5iP7PbMlMsXjwY/V1/xAfZEJ25WG47+RvW+y7/m5LWfDZNI2t6Lgc8/IpZmLI
-         DrEVv8R49HM7Sd5mwwiL5eefNVSIyYbqAOIpzHdm1HROYZ3qWJaoxYe8eSR0kmYA1pMU
-         6jLduhjI9QhFGNjkuYhjyUzwiXqqNX+wb+W8WnCFfQW4Uzu0NArs0CNR3mjZKOGMPd2B
-         Vy/g==
-X-Forwarded-Encrypted: i=1; AJvYcCX0va6ydGybcnL0YZNUThj91Z+v6MqZxscxvCo26We9588QN3iF8KMJLhbVMNDLXGOGejQ+Y+E2otB/sBkCD2FOP9XhnOUzYJUiMrbq
-X-Gm-Message-State: AOJu0Ywx9io5elUSD8QPIlkUODviBif2nyFqI0fYuLVOtXDspLpL5eXq
-	KHoWjK6yFe74ueqXqQgpKrD4x13RXcHJhUhzHfR7SmVayYDGtYqR+8inBS4UEYcM2dJk1I96wh/
-	LXw==
-X-Google-Smtp-Source: AGHT+IGoqd3TklGeYcqwAk8h7GLRYYheErNCawJpvvIGGiJhhWOdi5tZcUmwXbQAsDVZm3CxPiydDP/0hIs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90a:cc0a:b0:29b:efaf:2bd7 with SMTP id
- b10-20020a17090acc0a00b0029befaf2bd7mr6740pju.2.1712336327275; Fri, 05 Apr
- 2024 09:58:47 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  5 Apr 2024 09:58:44 -0700
+	s=arc-20240116; t=1712336354; c=relaxed/simple;
+	bh=d/B9BUVScbOGJpc3/gnx1X+oCXRIadBU2xdDvQPlLYA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eVjVXsS4FRwGFQksLL3cTFHV2dVTTI5+BkpV3XbcqvwiK+1xXZomgNYtAtmVFqXCoOQ8ldsiW8T26g7orQkIdDL/HA0stwLq0loSN0v5hk/ZIuOWljM8r6FzKAKXb/+FtmTlNJfihKRbI6ot6Mxr7xItuZwic96+ZcloPz+3hU0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lP+u2JXZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9AF4EC433F1;
+	Fri,  5 Apr 2024 16:59:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712336354;
+	bh=d/B9BUVScbOGJpc3/gnx1X+oCXRIadBU2xdDvQPlLYA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lP+u2JXZ9n8HUkFq4xNM0Ac+TW30ZZYeMNJSfpYqo4IUEy4JAzMYGqerY5AW/9VWP
+	 Kcd1UD3ByKFFaHpA0x1F+um1ud6Z78Q15h6CH3TXq52yZaYBYRD0x/EsypM0TflpqT
+	 cDPU8kFs7QA0/ChNKfaZcMBWgYywX0zAsDzwTxnnra1rHnj9cY5PwWmTbRWWh8k7r3
+	 8jTZRdMdCPVF1XicJyCuO4ET5XK8kdGhCpbgE3eiVXf0Dfx5I85nryWJSNyBY4E2f0
+	 m6hnSRRZwRN1BM9/muMUrH0XdGn+Fv+nzr6aBbHDY8nvDfAaxIMocW4oTVB+LrQ1CR
+	 YDXWG6in03LRA==
+Date: Fri, 5 Apr 2024 22:29:10 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Wayne Chang <waynec@nvidia.com>
+Cc: jonathanh@nvidia.com, thierry.reding@gmail.com, jckuo@nvidia.com,
+	kishon@kernel.org, gregkh@linuxfoundation.org,
+	linux-phy@lists.infradead.org, linux-tegra@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] phy: tegra: xusb: Add API to retrieve the port
+ number of phy
+Message-ID: <ZhAt3kPzn212vAH4@matsya>
+References: <20240307030328.1487748-1-waynec@nvidia.com>
+ <20240307030328.1487748-2-waynec@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240405165844.1018872-1-seanjc@google.com>
-Subject: [ANNOUNCE] PUCK Notes - 2024.04.03 - TDX Upstreaming Strategy
-From: Sean Christopherson <seanjc@google.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Rick P Edgecombe <rick.p.edgecombe@intel.com>, Isaku Yamahata <isaku.yamahata@intel.com>, 
-	Wei W Wang <wei.w.wang@intel.com>, David Skidmore <davidskidmore@google.com>, 
-	Steve Rutherford <srutherford@google.com>, Pankaj Gupta <pankaj.gupta@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240307030328.1487748-2-waynec@nvidia.com>
 
- - Recording and slides uploaded[1].
+On 07-03-24, 11:03, Wayne Chang wrote:
+> This patch introduces a new API, tegra_xusb_padctl_get_port_number,
+> to the Tegra XUSB Pad Controller driver. This API is used to identify
+> the USB port that is associated with a given PHY.
+> 
+> The function takes a PHY pointer for either a USB2 PHY or USB3 PHY as input
+> and returns the corresponding port number. If the PHY pointer is invalid,
+> it returns -ENODEV.
 
- - Hold off on v20 for a few weeks, to try and land as much prep work as
-   possible before v20.
+Acked-by: Vinod Koul <vkoul@kernel.org>
 
- - Exactly how to slice n' dice the series to make it easier to review is TBD,
-   but generally speaking the plan is to queue patches into a "dead" branch,
-   e.g. kvm/kvm-coco-queue, when they are ready, to reduce the sheer volume of
-   the series and thus help alleviate reviewer fatigue.
-
- - Don't hardcode fixed/required CPUID values in KVM, use available metadata
-   from TDX Module to reject "bad" guest CPUID (or let the TDX module reject?).
-   I.e. don't let a guest silently run with a CPUID that diverges from what
-   userspace provided.
-
- - Ideally, the TDX Module would come with full metadata (not in JSON format)
-   that KVM can (a) use to reject a "bad" CPUID configuration (from userspace),
-   and (b) that KVM can provide to userspace to make debugging issues suck less.
-
- - For guest MAXPHYADDR vs. GPAW, rely on KVM_GET_SUPPORTED_CPUID to enumerate
-   the usable MAXPHYADDR[2], and simply refuse to enable TDX if the TDX Module
-   isn't compatible.  Specifically, if MAXPHYADDR=52, 5-level paging is enabled,
-   but the TDX-Module only allows GPAW=0, i.e. only supports 4-level paging.
-
-[1] https://drive.google.com/corp/drive/folders/1hm_ITeuB6DjT7dNd-6Ezybio4tRRQOlC
-[2] https://lore.kernel.org/all/20240313125844.912415-1-kraxel@redhat.com
+-- 
+~Vinod
 
