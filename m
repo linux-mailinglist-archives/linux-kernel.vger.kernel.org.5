@@ -1,85 +1,114 @@
-Return-Path: <linux-kernel+bounces-132932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20907899C21
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:54:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B7A899C23
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:54:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF26D286C6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:54:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8560B1C22947
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:54:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B38616C6A8;
-	Fri,  5 Apr 2024 11:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LCJdQ2M8"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B379016C6B1;
+	Fri,  5 Apr 2024 11:54:39 +0000 (UTC)
+Received: from mail.lichtvoll.de (lichtvoll.de [89.58.27.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B4D36CDB7;
-	Fri,  5 Apr 2024 11:54:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C522B16C69D;
+	Fri,  5 Apr 2024 11:54:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.58.27.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712318063; cv=none; b=fyTWhiPtcGnJVgO8gFh+RXllvCuYsYyCYPdiHg9QeF2CM1IcJzBAwMxjy3C7rtdUnKH++BUvwWXty46sGz+EKDDxaJCt5waGS2M4/FESm4Qu0deC3RKSz+U7QI6mA6slKKkuHgY+28iXX/EsvZ2uVZwZQuzv8zfS6LwqlRwX0Ug=
+	t=1712318079; cv=none; b=X9oX+IXno4DDzxGgoBFwU5ilbEshp86LdUHi0IRP6q/5ilA/46ULJL6BxGv86GxKRc1Wa96507RkuzJMgScSiAC4kPdtiSLwkzUAq7VI+51nmpueugTpEf6TBOKweFCI04d9y8n925BdnU38+M4C8ji8zHglaCdGLrVX4EOO8U0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712318063; c=relaxed/simple;
-	bh=xtWDTgQnqWwlGt4hSK509dlzyI5ov0XFlUekFt9Elt4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XyeLVNACqJ7nNsH1eZ7rUqu3emmQXhKNk2+EIujcCsdNLS3ZQEdrpmwGFAwHhxH4Vxf2nGOCkSnCJ2v3+obcLet8nNr/53t/+rtTDtCtGFmRRjwLUsN6BCEYd+4tSU68j8LFxtxkgvLrQU4AJDudCZmu9msWsHqizn8rmow/L7w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LCJdQ2M8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0E741C433F1;
-	Fri,  5 Apr 2024 11:54:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712318063;
-	bh=xtWDTgQnqWwlGt4hSK509dlzyI5ov0XFlUekFt9Elt4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LCJdQ2M8SudtctJXICiqEHb5IW5cnvqyV8c2DgU/C3Jb0sDEtWhdj2JCUPlhLgjCY
-	 HbfBMDYfXvCJTWsP3yzz6cKHc3uxyZyeflmjb2f/Ra0Mi6j4kh/J8q2XpzafXXlbYs
-	 lGHCzLlb51yurcbLyacoBP/nW05DysT8gpH1o3IJiTrB0tfxVTzcUJdWHlrTIGpL9d
-	 zCspJvFYsiq4ZSuBxF8m9I8Y5Kg2z1I8EFKaxzk5JxzkRAfwFsN7DlGeJVmaeAziy8
-	 tp+CnEtUtjF0gbTsGmVzQM42blDR4wehkLTGLoTy2glcFfSSNdsr2MEm//6hYPsZ7r
-	 +A2R5gx9VlNPA==
-Date: Fri, 5 Apr 2024 17:24:18 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Bard Liao <yung-chuan.liao@linux.intel.com>,
-	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-	Sanyog Kale <sanyog.r.kale@intel.com>,
-	linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
-	linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND] soundwire: qcom: allow multi-link on newer devices
-Message-ID: <Zg_maukMaZXuJAWR@matsya>
-References: <20240403132716.325880-1-krzysztof.kozlowski@linaro.org>
- <Zg_fvU-SA9nwmzW8@matsya>
+	s=arc-20240116; t=1712318079; c=relaxed/simple;
+	bh=8mLPbX2YqMJtrQVpt/7ZkJIQ0ttb96FYDDYY/fHYIho=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=gJ+S0GnU9O24qArcPDu7lUzX8u6Ni3ECEdhTIve0LX7s00uSdP3KdlMvn7soA2AD3LNNOu7AymKwYlv9TUuWU895Ur0/52i4SUZRabO/y458lxFzbhbx8LXEmdqu1GPyQXNOG1mMKROrMtOH7dCoIj81EZW/U+GwJ+SN2QvoUK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=89.58.27.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by mail.lichtvoll.de (Postfix) with ESMTPSA id 05F27A160;
+	Fri,  5 Apr 2024 11:54:34 +0000 (UTC)
+Authentication-Results: mail.lichtvoll.de;
+	auth=pass smtp.auth=martin@lichtvoll.de smtp.mailfrom=martin@lichtvoll.de
+From: Martin Steigerwald <martin@lichtvoll.de>
+To: linux-pm@vger.kernel.org, regressions@lists.linux.dev,
+ linux-kernel@vger.kernel.org,
+ Linux regressions mailing list <regressions@lists.linux.dev>
+Subject:
+ Re: [regression] 6.8.1: fails to hibernate with
+ pm_runtime_force_suspend+0x0/0x120 returns -16
+Date: Fri, 05 Apr 2024 13:54:34 +0200
+Message-ID: <12413606.O9o76ZdvQC@lichtvoll.de>
+In-Reply-To: <6034738.lOV4Wx5bFT@lichtvoll.de>
+References:
+ <2325246.ElGaqSPkdT@lichtvoll.de>
+ <be5a7213-78b3-4917-b95b-ec31cd2350e4@leemhuis.info>
+ <6034738.lOV4Wx5bFT@lichtvoll.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zg_fvU-SA9nwmzW8@matsya>
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"
 
-On 05-04-24, 16:55, Vinod Koul wrote:
-> On 03-04-24, 15:27, Krzysztof Kozlowski wrote:
-> > Newer Qualcomm SoCs like X1E80100 might come with four speakers spread
-> > over two Soundwire controllers, thus they need a multi-link Soundwire
-> > stream runtime.
-> 
-> This does on apply on sdw/next.
+Martin Steigerwald - 05.04.24, 13:49:00 CEST:
+> Linux regression tracking (Thorsten Leemhuis) - 19.03.24, 09:40:06 CEST:
+> > On 16.03.24 17:12, Martin Steigerwald wrote:
+> > > Martin Steigerwald - 16.03.24, 17:02:44 CET:
+> > >> ThinkPad T14 AMD Gen 1 fails to hibernate with self-compiled 6.8.1.
+> > >> Hibernation works correctly with self-compiled 6.7.9.
+> > >=20
+> > > Apparently 6.8.1 does not even reboot correctly anymore. runit on
+> > > Devuan. It says it is doing the system reboot but then nothing
+> > > happens.
+> > >=20
+> > > As for hibernation the kernel cancels the attempt and returns back
+> > > to
+> > > user space desktop session.
+> > >=20
+> > >> Trying to use "no_console_suspend" to debug next. Will not do
+> > >> bisect
+> > >> between major kernel releases on a production machine.
+> >=20
+> > FWIW, without a bisection I guess no developer will take a closer look
+> > (but I might be wrong and you lucky here!), as any change in those
+> > hundreds of drivers used on that machine can possibly lead to problems
+> > like yours. So without a bisection we are likely stuck here, unless
+> > someone else runs into the same problem and bisects or fixes it.
+> > Sorry, but that's just how it is.
+>=20
+> The plot thickens, now 6.7.12 as compared to 6.7.11 which failed
+> hibernation with busy work queues=C2=B9 and 6.7.9 + bcachefs downgrade fi=
+xes
+> fails hibernation with the same error message than 6.8.1:
+[=E2=80=A6]
+> Not doing it today or probably the weekend, but now I have some
+> actionable git bisect plan without bisecting between major kernel
+> releases which as I have been told between 6.7 an 6.8-rc1 can lead to
+> non working modeset graphics on AMD Ryzen in between.
+>=20
+> It seems now I only need to git bisect between 6.7.11 and 6.7.12 to find
+> the patch that breaks hibernation on 6.8.1 as well. However first I
+> will briefly check whether 6.8.4 hibernates okay.
 
-s/does/does not
+6.8.4 is still affected and fails hibernation with the same error message.
 
-> 
-> Pls rebase
-> 
-> -- 
-> ~Vinod
+> [1] * 6.7.11: Fails to hibernate - work queues still busy
+> @ 2024-04-02 19:29 Martin Steigerwald
+>=20
+> https://lore.kernel.org/regressions/2ad93b57-8fdc-476e-83b7-2c0af1cfd41d
+> @leemhuis.info/T/#t
 
--- 
-~Vinod
+=2D-=20
+Martin
+
+
 
