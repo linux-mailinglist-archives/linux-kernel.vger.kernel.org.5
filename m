@@ -1,155 +1,162 @@
-Return-Path: <linux-kernel+bounces-133117-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F29C899F1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:10:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3B21899EF4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:06:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4206C1C21962
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:10:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 581511F21DD8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:06:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E72116E899;
-	Fri,  5 Apr 2024 14:10:16 +0000 (UTC)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A6316DEDD;
+	Fri,  5 Apr 2024 14:06:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dGlYVSZR"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEBF16E895;
-	Fri,  5 Apr 2024 14:10:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A3E3EA90
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712326215; cv=none; b=YxPX8FTaUr7aEum4zmolp1NXgjHlkYkZKUonLPcF4CAZmIY1Wr0tQWvAh6qDUpCuc3aqdBM4trutLlPMTDecEj71R6fFOVv2lAsvlGazwNUr66huZ8diTeoCmxAO25wjuorRm5xU2MFUhpVfgXu9zYdxYpdL1oYHB1iCywv+FlA=
+	t=1712325990; cv=none; b=VA3/aYXIKAhms/XHZLHnMzDQJVd8rz5F2r0SmmpU9gSc3jxP5f0ThYvyGRuSHjYChXc5bnjhUIdru8Mw36fI5ogs2ur6sLiM7ouftGoC2nDYfoJmEOPYGNLLjRu/ZSUOZ/HKTu13c7TMCZ3vi1jnlD2NL0dUu1GJ6nFYvAHiKCc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712326215; c=relaxed/simple;
-	bh=UhWkJrz23rKLc2rFOHT1xk+suq4P0R7Fe6anIWJ5btE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BG8kONHYPMshE2RImnJSk5JlghRwTpzRXRc1GYrmKyNaayno9prR/pQXvG7oNT6SC05XJLF2CF3fz20dl3Pmx7+CnqR7mPMLRd7SGwzolkW7RrSwBbe4owdN0Xe/ajhy17Fi+V/9IIF/XlPeAOUSKL9WLlMh1g1HS3WsBvL4IRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6151d2489b4so24101067b3.0;
-        Fri, 05 Apr 2024 07:10:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712326212; x=1712931012;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zo5dazFCTOKvFVcPPNzGvqZjg5emzEStKUearWVqE/4=;
-        b=smdZ4x4tSobCG7/AJB5NXCw4gj5Km1mPaySy2IcZA1wu9jYPko//VYA2ThdRPwanvA
-         MC1Z4Y3VGv4hECxKJs5DjkR9zFKaiZ9agYgKaDxmXlG8YTWDklPv1cyo9TyNpY5HMQ4X
-         elPVHuE4gcC0iqoatpXNO3Cgcx6rcpryFpdjOkRWgmsvI8+f72itOeKWid9q/mszdiDL
-         KbGb2lUXSxvndo2LiNJ0Tjev1lJ2U0AfLVPnbkWKWCgmu/WAV9g5wW8NVPlhzFTBtnLb
-         EaMj5oqSBRQ80ahEs9js7XJCbkMEk4kXQP8IPKM8TRDitOsHpyeANnXCIIYR4MIxXFae
-         BD5g==
-X-Forwarded-Encrypted: i=1; AJvYcCUnEuPbaOhRQLIvz56UXaXLOxm4jTwf7T6UngwMHp0zVfhpgPMHyle0bQilYUihq0RISIyz9Gzetfvw1/KrYIPptj6GLpDJspNfZOZeZVtlTJB//1UhLOt+diBGLCyWnzVMJ/lBYs3i59xFa+fnQDih1wiF+HuaKXFDM51zAs9yC53TfQchHWh5EbdwCtMHY8yLxk058HsQle5SsBRPUDAVK73+YJuIUgfeot4Qmxb5E/Np43Mg/PwCGMqhvGQCWuj0r65axXoptjutoJL39T4UY9CK3qUCHfvn/gGmZE50miEu5vNNFY2T1XvQwYlQtmwDuYaLNM1++keLG8Fd3DytCzu18/wrzrREdDaZzl/HWLwHZ8CyrpU=
-X-Gm-Message-State: AOJu0YwvxaRCIEVT/zVCfalDAmhBHItiMr88lLhGODcta3p0TFh2+iQj
-	CEkjDd7PpAQVHy1jAsq/Dc4UX2ZBZ2yztd0CcKFzfUYRlC3DRRzKgQffP5ZBkno=
-X-Google-Smtp-Source: AGHT+IEP7v2FRtp6YWsKqFOWKu6GX9ebD3Ahe7HH5QN4FxWDZZBjjTw+UOh4HM5EFGxMk02CQuTa9g==
-X-Received: by 2002:a81:6086:0:b0:615:31a9:83c4 with SMTP id u128-20020a816086000000b0061531a983c4mr1461190ywb.6.1712326212430;
-        Fri, 05 Apr 2024 07:10:12 -0700 (PDT)
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com. [209.85.219.178])
-        by smtp.gmail.com with ESMTPSA id g68-20020a81a947000000b00617cf273030sm278771ywh.82.2024.04.05.07.10.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 07:10:12 -0700 (PDT)
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dbed0710c74so2090306276.1;
-        Fri, 05 Apr 2024 07:10:12 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU3fJz6nL6cfIkiiG2ayy4RzOL2AldXVQJNoWYlsKDVgAtte9df/fQnzkurcNyjffaQcLcVhA4S1/tqOhyVS2GRh9SMU3sq26i9hekbCg8LNZa2J2H19KcNi+QjtS4guCcvsC6EmAOhRTNph3MwMjcW4zIDz07Z/QtLxLEM44PNeYAzb46Rxb4ly9UgBSzbCmTCXncx3LF1b2/hUCFUppVW/F1GSw94xx9lz9e5W4oDlinEzLdQtblFs+70X5XVeg++4X/Cn2saVSIvQHiLNc3YZm/B0juNwDEmxP/9DnGyNbTLbnNw292Jz7ufjJaDT19U4QMqhLE/udNFZ3IudIG2sCDaTB/GMUU5Fgghru5p6JAvKVqw6i0=
-X-Received: by 2002:a5b:b8f:0:b0:dc6:dd80:430e with SMTP id
- l15-20020a5b0b8f000000b00dc6dd80430emr1385717ybq.27.1712325790915; Fri, 05
- Apr 2024 07:03:10 -0700 (PDT)
+	s=arc-20240116; t=1712325990; c=relaxed/simple;
+	bh=e+u4Ao5S+rmG2eUjE0RQd8JMFTOeOcQvXmjvrzNEayo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R0yDrh0FjhocOkBJbM/+KRTcC7EtGC/5AsNO9kFOmRpdu6oNVVQ6etW+LOhvsySyFCCjiPGNq61O9uYw9cAqGrz4QNbe6rks9OefKmqGmmSU9G190ZdFGgaNOQSRsyVi9/bhL5EYQqCBHiXF2p6+cYFcRjL4/+wPJLQPbeXEeh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dGlYVSZR; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712325988;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BW/ZzqPyokm6N/ohEkWVW4bty7+GiTWiikMeHfT8Uig=;
+	b=dGlYVSZRdyQ0Zv5N+tuWLkq3kfTyWii0CtcmWGmUhSRtxtLmuDDLpnic9NJLtxuOBBqGyV
+	MT1FFtsYYjE9ZiSMcjCFajqNDPP2woBQsC5EpRgM7sLariaaubeTTIiqoHhPvRxtBVj8an
+	n47Vww+xIRpZrisweS/8LNjXjnxF5CY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-374-aZPfxSSnNYS6o1v-B2dPMg-1; Fri, 05 Apr 2024 10:06:22 -0400
+X-MC-Unique: aZPfxSSnNYS6o1v-B2dPMg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0276A185A781;
+	Fri,  5 Apr 2024 14:06:22 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.136])
+	by smtp.corp.redhat.com (Postfix) with SMTP id 52EBBC017A0;
+	Fri,  5 Apr 2024 14:06:19 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+	oleg@redhat.com; Fri,  5 Apr 2024 16:04:56 +0200 (CEST)
+Date: Fri, 5 Apr 2024 16:04:49 +0200
+From: Oleg Nesterov <oleg@redhat.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	linux-kernel@vger.kernel.org, Junyao Zhao <junzhao@redhat.com>,
+	Chris von Recklinghausen <crecklin@redhat.com>,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: Re: [PATCH v2 1/1] wq: Avoid using isolated cpus' timers on
+ queue_delayed_work
+Message-ID: <20240405140449.GB22839@redhat.com>
+References: <20240130010046.2730139-2-leobras@redhat.com>
+ <20240402105847.GA24832@redhat.com>
+ <Zg2qFinSkAOmRHcM@slm.duckdns.org>
+ <20240403203814.GD31764@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1712207606.git.ysato@users.sourceforge.jp> <f3af315d575fbec431bad9bfaf9790450ab31ad9.1712207606.git.ysato@users.sourceforge.jp>
-In-Reply-To: <f3af315d575fbec431bad9bfaf9790450ab31ad9.1712207606.git.ysato@users.sourceforge.jp>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 5 Apr 2024 16:02:59 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU1vhCZ+mCKB27N57N7atLdxSmEUV8RWJf7uiZkfUvG0A@mail.gmail.com>
-Message-ID: <CAMuHMdU1vhCZ+mCKB27N57N7atLdxSmEUV8RWJf7uiZkfUvG0A@mail.gmail.com>
-Subject: Re: [RESEND v7 21/37] dt-bindings: serial: renesas,scif: Add scif-sh7751.
-To: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
-	Niklas Cassel <cassel@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, Thomas Gleixner <tglx@linutronix.de>, 
-	Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
-	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
-	Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>, 
-	Heiko Stuebner <heiko.stuebner@cherry.de>, Shawn Guo <shawnguo@kernel.org>, 
-	Sebastian Reichel <sre@kernel.org>, Chris Morgan <macromorgan@hotmail.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
-	Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
-	Kefeng Wang <wangkefeng.wang@huawei.com>, Stephen Rothwell <sfr@canb.auug.org.au>, 
-	Javier Martinez Canillas <javierm@redhat.com>, Guo Ren <guoren@kernel.org>, 
-	Azeem Shaikh <azeemshaikh38@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, 
-	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
-	Herve Codina <herve.codina@bootlin.com>, 
-	Manikanta Guntupalli <manikanta.guntupalli@amd.com>, Anup Patel <apatel@ventanamicro.com>, 
-	Biju Das <biju.das.jz@bp.renesas.com>, 
-	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
-	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org, 
-	"Lad, Prabhakar" <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403203814.GD31764@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
 
-Hi Sato-san,
-
-On Thu, Apr 4, 2024 at 7:15=E2=80=AFAM Yoshinori Sato
-<ysato@users.sourceforge.jp> wrote:
-> Add Renesas SH7751 SCIF.
+On 04/03, Oleg Nesterov wrote:
 >
-> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-> --- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-> +++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-> @@ -18,6 +18,7 @@ properties:
->        - items:
->            - enum:
->                - renesas,scif-r7s72100     # RZ/A1H
-> +              - renesas,scif-sh7751       # SH7751
->            - const: renesas,scif           # generic SCIF compatible UART
+> > > OTOH, Documentation/timers/no_hz.rst says
+> > >
+> > > 	Therefore, the
+> > > 	boot CPU is prohibited from entering adaptive-ticks mode.  Specifying a
+> > > 	"nohz_full=" mask that includes the boot CPU will result in a boot-time
+> > > 	error message, and the boot CPU will be removed from the mask.
+> > >
+> > > and this doesn't match the reality.
+> >
+> > Don't some archs allow the boot CPU to go down too tho? If so, this doesn't
+> > really solve the problem, right?
 >
->        - items:
+> I do not know. But I thought about this too.
+>
+> In the context of this discussion we do not care if the boot CPU goes down.
+> But we need at least one housekeeping CPU after cpu_down(). The comment in
+> cpu_down_maps_locked() says
+>
+> 	Also keep at least one housekeeping cpu onlined
+>
+> but it checks HK_TYPE_DOMAIN, and I do not know (and it is too late for me
+> to try to read the code ;) if housekeeping.cpumasks[HK_TYPE_TIMER] can get
+> empty or not.
+
+This nearly killed me, but I managed to convince myself we shouldn't worry
+about cpu_down().
+
+HK_FLAG_TIMER implies HK_FLAG_TICK.
+
+HK_FLAG_TICK implies tick_nohz_full_setup() which sets
+tick_nohz_full_mask = non_housekeeping_mask.
+
+When tick_setup_device() is called on a housekeeping CPU it does
+		
+	else if (tick_do_timer_boot_cpu != -1 &&
+					!tick_nohz_full_cpu(cpu)) {
+		tick_take_do_timer_from_boot();
+		tick_do_timer_boot_cpu = -1;
 
 
-If this is applied after "[PATCH v2 2/2] dt-bindings: serial:
-renesas,scif: Validate 'interrupts' and 'interrupt-names'"[1], an extra
-"- renesas,scif-sh7751" line should be added to the 4-interrupt section
-(below "- renesas,scif-r7s72100").
+	and this sets tick_do_timer_cpu = first-housekeeping-cpu.
 
-[1] https://lore.kernel.org/all/20240307114217.34784-3-prabhakar.mahadev-la=
-d.rj@bp.renesas.com/
+cpu_down(tick_do_timer_cpu) will fail, tick_nohz_cpu_down() will nack it.
 
-Gr{oetje,eeting}s,
+So cpu_down() can't make housekeeping.cpumasks[HK_FLAG_TIMER] empty and I
+still think that the change below is the right approach.
 
-                        Geert
+But probably WARN_ON() in housekeeping_any_cpu() makes sense anyway.
 
+What do you think?
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
+Oleg.
 
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+> > > So it seems that we should fix housekeeping_setup() ? see the patch below.
+> > >
+> > > In any case the usage of cpu_present_mask doesn't look right to me.
+> > >
+> > > Oleg.
+> > >
+> > > --- a/kernel/sched/isolation.c
+> > > +++ b/kernel/sched/isolation.c
+> > > @@ -129,7 +154,7 @@ static int __init housekeeping_setup(char *str, unsigned long flags)
+> > >  	cpumask_andnot(housekeeping_staging,
+> > >  		       cpu_possible_mask, non_housekeeping_mask);
+> > >
+> > > -	if (!cpumask_intersects(cpu_present_mask, housekeeping_staging)) {
+> > > +	if (!cpumask_test_cpu(smp_processor_id(), housekeeping_staging)) {
+> > >  		__cpumask_set_cpu(smp_processor_id(), housekeeping_staging);
+> > >  		__cpumask_clear_cpu(smp_processor_id(), non_housekeeping_mask);
+> > >  		if (!housekeeping.flags) {
+> > >
+
 
