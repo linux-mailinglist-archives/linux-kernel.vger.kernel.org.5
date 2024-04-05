@@ -1,279 +1,155 @@
-Return-Path: <linux-kernel+bounces-133121-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133139-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F25AD899F33
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:14:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1637899F5F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:19:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74B441F2438F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:14:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1DCB31C2284D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:19:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9860516EC07;
-	Fri,  5 Apr 2024 14:14:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4BB316EC00;
+	Fri,  5 Apr 2024 14:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="m9cIbNdh"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NLcxvN8D"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEC716EBE4
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:14:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA7B116EBE7;
+	Fri,  5 Apr 2024 14:16:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712326467; cv=none; b=ZySOce6WXOPwINhdiSz7ZBYpjg7B2UVJOzEKeAfrdE41Lu7RrJ12N2ohQg7heZvkbMpjcKDcGmT206yhRmM99ri81WUvBlSH2PD90ITYNYpG7Tp8MECGMMZa4XgMy7Oiq54CTt4oRnNQbavuxR8mWMCAxAIdzTV7ahiy8OgMfXw=
+	t=1712326614; cv=none; b=dRSh12XzcWHE05/19wA4h8QYCPFxqS5ED7x0w9ZzEkx12VAA3NkixJZggucSA10/GxpXCr1ARjlDRrao7bHFC8Q0suNn5oaEpTT1Xo2gPxtJ05ZbK0A1yy8RaFgontFegBERcqw2wG965PVcfZThIld2pj2WCnJFcRu2V74aIm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712326467; c=relaxed/simple;
-	bh=/3Ff0ruSdSe2swlOVf02/BjidRrZyf0D/8DkjYb/ays=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jQlh3reEGZJt9UYmRfsRprO3HaZ9aS2bkaAU4AWNQ+v4s+dngT/A5M1xFLS0bWpfeIxoR+D+isugS1WM7YQLPl2iuIpAbWW7PP/5X4TYKQt70fsO+903eCe/zeQNmi5z577RfdywhyJJpiwNhtjLoUbJZqdF/SrUCXbGVwRo5jM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=m9cIbNdh; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dd045349d42so2184787276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712326465; x=1712931265; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hpu1q6SRpmnX63rYNMcOKU3gYj7mEiDBoir+Gp671n0=;
-        b=m9cIbNdhfbiUpGNUSPqcDbHILtBQP+M5o/MovmM8BAVPq9GI/VOtL/o3RGDDPc8dtv
-         Lj81qvHQsKZqY2+lN7WkFGWkSyV1KHRIYN0Af6zlIZJl5XRpqkbryrDRsBOET3UMX6az
-         go+D87uWk04bZWqJzuyHK5zINSei7kY+4REtcOi/q/YzPP/V+a1r9VaeKF5EAXWfS+L2
-         MOLSgmbAWbB5C7VTz4yQ6KTmTl0ljAAzc7QK0Q7eZSo0LJ6fiaKQoXiaxrCi24I6oFUg
-         y1CHV5cBBnsEDB0fgKjyS7P8HWj5ZzqOia5QJzgQ6v64sFz82e44gtzY3AUCHJuTwmzF
-         v5VA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712326465; x=1712931265;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hpu1q6SRpmnX63rYNMcOKU3gYj7mEiDBoir+Gp671n0=;
-        b=lXVBjGd27PMey9+Q7/UOKQsrjPtW9wTyI9Ppno+XaJBcI2bjDtteWdQ07jJnNBsl8b
-         7gJ/pTvK1yP4WY312y2GwcI63sAsNaHenbkRC0dPgfQvJdvXigPvu7ZFAkQ4hG5q0zjV
-         okambuiEQ5ZrF61pBEQTUTzwDAnDda2br70zIbCKKFddQZ80ItS3y7jwzKRqmKFgsrgZ
-         bjesjaPHgnZJB++8Q379pcTZbHUv47jltJAsf3GUlm/PX5qqR5M/eIRhQCvoToonAyUj
-         JBtRynwjshCpDHeQYeHoBtpQPNeFffeBQNQw7BNM948DX1wvPRp8l4Jf9POKbfiWW9Af
-         9b8w==
-X-Forwarded-Encrypted: i=1; AJvYcCX4/2RJTcq00jpZOK9i1u5xFfV5A5A4/yway7zmcYMognjye+b0MAZcFBc0VEa7R2GQOubFvrCQBKebtocglN6jajuwt8a3A+PUtsd2
-X-Gm-Message-State: AOJu0YwGeCwlk89XqJRon/YvExuMYA3Qe+evRmi4yNSqVzMnWbfUiVDd
-	0hxsEXeFmiDlSvqlOLN4nWpCYm0eIp+S3FzBT2ylcOplhOHGC5/LSHKiZQ8NP+6dxFnFUQPRqWU
-	STDzA0QolDWhrUX8JqXn5TrGKpPKGjHtEK+Xq
-X-Google-Smtp-Source: AGHT+IHDoL8CyE4JI6s6nrfOOaPQHBhIqvTMcGBGoOIQ6VIDYTEmV/Kyll+3WtknG2SvBV6fBNw77eOzOIYfr57jOZQ=
-X-Received: by 2002:a05:6902:4a:b0:dc7:32ea:c89f with SMTP id
- m10-20020a056902004a00b00dc732eac89fmr1241871ybh.15.1712326464281; Fri, 05
- Apr 2024 07:14:24 -0700 (PDT)
+	s=arc-20240116; t=1712326614; c=relaxed/simple;
+	bh=Hw+KO3P+18sZHmzC74dpfmnZvcgIJNwH7PxzRg8kCyw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=ZP1gtl251Y5fagcCCYW1zga/0jfcDuwW1cgvYYgFvOqsHU6cQ29zQiF1LWsJF2WVkYbw3Fegi1t0U4Pz88Wu52EO0NqpU2irwVNU5XqFy5XFQCVzE/Mclkp56yld33lm3+Nvgvi6WxWj/hh7DOFnBFkfIKzGcGa4nPJw6k0GigU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NLcxvN8D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5D8CC433F1;
+	Fri,  5 Apr 2024 14:16:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712326613;
+	bh=Hw+KO3P+18sZHmzC74dpfmnZvcgIJNwH7PxzRg8kCyw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=NLcxvN8DTCyS38Wo2c8q90q/2MoZExiascd6YXu8KFmC45GJekv4kw9UWrhP5O+n0
+	 T4xoLBCSAvDVEYvlrPQBTILTQwRgV33CHfTCNI7qRQM7BYrkuE03OQOLgno/wn77Hr
+	 PESugZv29avchfZsAMS7s+RgIUgsP4Oo55AJ5wVwthZ7azQ+bkK9VOK4bnmL9SeDKc
+	 1DW+tMTj256yPD6wXa43Wc+15PNllkAGj03SBSKmJkJyZ4+hPiynM7vGxR5en1wli/
+	 jky8B6fJI7vZ5nZqRQjLt+hBOkkkZ2VwAF70r1CsG/RVx+y3YKum8iJy4svQONVsyM
+	 VcZaxRzX6q6pg==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Puranjay Mohan <puranjay12@gmail.com>, Alexei Starovoitov
+ <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, Eduard
+ Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, Yonghong Song
+ <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, KP
+ Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo
+ <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, Paul Walmsley
+ <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+ <aou@eecs.berkeley.edu>, bpf@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, Pu Lehui
+ <pulehui@huawei.com>
+Cc: puranjay12@gmail.com
+Subject: Re: [PATCH bpf-next] riscv, bpf: add internal-only MOV instruction
+ to resolve per-CPU addrs
+In-Reply-To: <20240405124348.27644-1-puranjay12@gmail.com>
+References: <20240405124348.27644-1-puranjay12@gmail.com>
+Date: Fri, 05 Apr 2024 16:16:49 +0200
+Message-ID: <87wmpbnbce.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240321163705.3067592-1-surenb@google.com> <c14cd89b-c879-4474-a800-d60fc29c1820@gmail.com>
-In-Reply-To: <c14cd89b-c879-4474-a800-d60fc29c1820@gmail.com>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Fri, 5 Apr 2024 07:14:13 -0700
-Message-ID: <CAJuCfpHEt2n6sA7m5zvc-F+z=3-twVEKfVGCa0+y62bT10b0Bw@mail.gmail.com>
-Subject: Re: [PATCH v6 00/37] Memory allocation profiling
-To: Klara Modin <klarasmodin@gmail.com>
-Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
-	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
-	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
-	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
-	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
-	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
-	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
-	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
-	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
-	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
-	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
-	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
-	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
-	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
-	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
-	glider@google.com, elver@google.com, dvyukov@google.com, 
-	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
-	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
-	kernel-team@android.com, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
-	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
-	cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 5, 2024 at 6:37=E2=80=AFAM Klara Modin <klarasmodin@gmail.com> =
-wrote:
+Puranjay Mohan <puranjay12@gmail.com> writes:
+
+> Support an instruction for resolving absolute addresses of per-CPU
+> data from their per-CPU offsets. This instruction is internal-only and
+> users are not allowed to use them directly. They will only be used for
+> internal inlining optimizations for now between BPF verifier and BPF
+> JITs.
 >
-> Hi,
+> RISC-V uses generic per-cpu implementation where the offsets for CPUs
+> are kept in an array called __per_cpu_offset[cpu_number]. RISCV stores
+> the address of the task_struct in TP register. The first element in
+> tast_struct is struct thread_info, and we can get the cpu number by
+     ^
+     k ;-)
+> reading from the TP register + offsetof(struct thread_info, cpu).
 >
-> On 2024-03-21 17:36, Suren Baghdasaryan wrote:
-> > Overview:
-> > Low overhead [1] per-callsite memory allocation profiling. Not just for
-> > debug kernels, overhead low enough to be deployed in production.
-> >
-> > Example output:
-> >    root@moria-kvm:~# sort -rn /proc/allocinfo
-> >     127664128    31168 mm/page_ext.c:270 func:alloc_page_ext
-> >      56373248     4737 mm/slub.c:2259 func:alloc_slab_page
-> >      14880768     3633 mm/readahead.c:247 func:page_cache_ra_unbounded
-> >      14417920     3520 mm/mm_init.c:2530 func:alloc_large_system_hash
-> >      13377536      234 block/blk-mq.c:3421 func:blk_mq_alloc_rqs
-> >      11718656     2861 mm/filemap.c:1919 func:__filemap_get_folio
-> >       9192960     2800 kernel/fork.c:307 func:alloc_thread_stack_node
-> >       4206592        4 net/netfilter/nf_conntrack_core.c:2567 func:nf_c=
-t_alloc_hashtable
-> >       4136960     1010 drivers/staging/ctagmod/ctagmod.c:20 [ctagmod] f=
-unc:ctagmod_start
-> >       3940352      962 mm/memory.c:4214 func:alloc_anon_folio
-> >       2894464    22613 fs/kernfs/dir.c:615 func:__kernfs_new_node
-> >       ...
-> >
-> > Since v5 [2]:
-> > - Added Reviewed-by and Acked-by, per Vlastimil Babka and Miguel Ojeda
-> > - Changed pgalloc_tag_{add|sub} to use number of pages instead of order=
-, per Matthew Wilcox
-> > - Changed pgalloc_tag_sub_bytes to pgalloc_tag_sub_pages and adjusted t=
-he usage, per Matthew Wilcox
-> > - Moved static key check before prepare_slab_obj_exts_hook(), per Vlast=
-imil Babka
-> > - Fixed RUST helper, per Miguel Ojeda
-> > - Fixed documentation, per Randy Dunlap
-> > - Rebased over mm-unstable
-> >
-> > Usage:
-> > kconfig options:
-> >   - CONFIG_MEM_ALLOC_PROFILING
-> >   - CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
-> >   - CONFIG_MEM_ALLOC_PROFILING_DEBUG
-> >     adds warnings for allocations that weren't accounted because of a
-> >     missing annotation
-> >
-> > sysctl:
-> >    /proc/sys/vm/mem_profiling
-> >
-> > Runtime info:
-> >    /proc/allocinfo
-> >
-> > Notes:
-> >
-> > [1]: Overhead
-> > To measure the overhead we are comparing the following configurations:
-> > (1) Baseline with CONFIG_MEMCG_KMEM=3Dn
-> > (2) Disabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
-> >      CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dn)
-> > (3) Enabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
-> >      CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dy)
-> > (4) Enabled at runtime (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
-> >      CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dn && /proc/sys/vm/mem_prof=
-iling=3D1)
-> > (5) Baseline with CONFIG_MEMCG_KMEM=3Dy && allocating with __GFP_ACCOUN=
-T
-> > (6) Disabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
-> >      CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dn)  && CONFIG_MEMCG_KMEM=
-=3Dy
-> > (7) Enabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
-> >      CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dy) && CONFIG_MEMCG_KMEM=3D=
-y
-> >
-> > Performance overhead:
-> > To evaluate performance we implemented an in-kernel test executing
-> > multiple get_free_page/free_page and kmalloc/kfree calls with allocatio=
-n
-> > sizes growing from 8 to 240 bytes with CPU frequency set to max and CPU
-> > affinity set to a specific CPU to minimize the noise. Below are results
-> > from running the test on Ubuntu 22.04.2 LTS with 6.8.0-rc1 kernel on
-> > 56 core Intel Xeon:
-> >
-> >                          kmalloc                 pgalloc
-> > (1 baseline)            6.764s                  16.902s
-> > (2 default disabled)    6.793s  (+0.43%)        17.007s (+0.62%)
-> > (3 default enabled)     7.197s  (+6.40%)        23.666s (+40.02%)
-> > (4 runtime enabled)     7.405s  (+9.48%)        23.901s (+41.41%)
-> > (5 memcg)               13.388s (+97.94%)       48.460s (+186.71%)
-> > (6 def disabled+memcg)  13.332s (+97.10%)       48.105s (+184.61%)
-> > (7 def enabled+memcg)   13.446s (+98.78%)       54.963s (+225.18%)
-> >
-> > Memory overhead:
-> > Kernel size:
-> >
-> >     text           data        bss         dec         diff
-> > (1) 26515311        18890222    17018880    62424413
-> > (2) 26524728        19423818    16740352    62688898    264485
-> > (3) 26524724        19423818    16740352    62688894    264481
-> > (4) 26524728        19423818    16740352    62688898    264485
-> > (5) 26541782        18964374    16957440    62463596    39183
-> >
-> > Memory consumption on a 56 core Intel CPU with 125GB of memory:
-> > Code tags:           192 kB
-> > PageExts:         262144 kB (256MB)
-> > SlabExts:           9876 kB (9.6MB)
-> > PcpuExts:            512 kB (0.5MB)
-> >
-> > Total overhead is 0.2% of total memory.
-> >
-> > Benchmarks:
-> >
-> > Hackbench tests run 100 times:
-> > hackbench -s 512 -l 200 -g 15 -f 25 -P
-> >        baseline       disabled profiling           enabled profiling
-> > avg   0.3543         0.3559 (+0.0016)             0.3566 (+0.0023)
-> > stdev 0.0137         0.0188                       0.0077
-> >
-> >
-> > hackbench -l 10000
-> >        baseline       disabled profiling           enabled profiling
-> > avg   6.4218         6.4306 (+0.0088)             6.5077 (+0.0859)
-> > stdev 0.0933         0.0286                       0.0489
-> >
-> > stress-ng tests:
-> > stress-ng --class memory --seq 4 -t 60
-> > stress-ng --class cpu --seq 4 -t 60
-> > Results posted at: https://evilpiepirate.org/~kent/memalloc_prof_v4_str=
-ess-ng/
-> >
-> > [2] https://lore.kernel.org/all/20240306182440.2003814-1-surenb@google.=
-com/
+> Once we have the cpu number in a register we read the offset for that
+> cpu from address: &__per_cpu_offset + cpu_number << 3. Then we add this
+> offset to the destination register.
+
+Just to clarify for readers; BPF programs are run with migrate disable,
+which means that on RT we can be preempted, which means that per-cpu
+operations are trickier (disabling interrupts/preemption).
+
+However, this BPF instruction is about calculating the per-cpu address,
+so the look up can be inlined.
+
+It's not a per-cpu *operation*.
+
+> To measure the improvement from this change, the benchmark in [1] was
+> used on Qemu:
 >
-> If I enable this, I consistently get percpu allocation failures. I can
-> occasionally reproduce it in qemu. I've attached the logs and my config,
-> please let me know if there's anything else that could be relevant.
-
-Thanks for the report!
-In debug_alloc_profiling.log I see:
-
-[    7.445127] percpu: limit reached, disable warning
-
-That's probably the reason. I'll take a closer look at the cause of
-that and how we can fix it.
-
- In qemu-alloc3.log I see couple of warnings:
-
-[    1.111620] alloc_tag was not set
-[    1.111880] WARNING: CPU: 0 PID: 164 at
-include/linux/alloc_tag.h:118 kfree (./include/linux/alloc_tag.h:118
-(discriminator 1) ./include/linux/alloc_tag.h:161 (discriminator 1)
-mm/slub.c:2043 ...
-
-[    1.161710] alloc_tag was not cleared (got tag for fs/squashfs/cache.c:4=
-13)
-[    1.162289] WARNING: CPU: 0 PID: 195 at
-include/linux/alloc_tag.h:109 kmalloc_trace_noprof
-(./include/linux/alloc_tag.h:109 (discriminator 1)
-/include/linux/alloc_tag.h:149 (discriminator 1) ...
-
-Which means we missed to instrument some allocation. Can you please
-check if disabling CONFIG_MEM_ALLOC_PROFILING_DEBUG fixes QEMU case?
-In the meantime I'll try to reproduce and fix this.
-Thanks,
-Suren.
-
-
-
+> Before:
+> glob-arr-inc   :    1.127 =C2=B1 0.013M/s
+> arr-inc        :    1.121 =C2=B1 0.004M/s
+> hash-inc       :    0.681 =C2=B1 0.052M/s
 >
-> Kind regards,
-> Klara Modin
+> After:
+> glob-arr-inc   :    1.138 =C2=B1 0.011M/s
+> arr-inc        :    1.366 =C2=B1 0.006M/s
+> hash-inc       :    0.676 =C2=B1 0.001M/s
+>
+> [1] https://github.com/anakryiko/linux/commit/8dec900975ef
+>
+> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> ---
+>  arch/riscv/net/bpf_jit_comp64.c | 24 ++++++++++++++++++++++++
+>  1 file changed, 24 insertions(+)
+>
+> diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_com=
+p64.c
+> index 15e482f2c657..e95bd1d459a4 100644
+> --- a/arch/riscv/net/bpf_jit_comp64.c
+> +++ b/arch/riscv/net/bpf_jit_comp64.c
+> @@ -12,6 +12,7 @@
+>  #include <linux/stop_machine.h>
+>  #include <asm/patch.h>
+>  #include <asm/cfi.h>
+> +#include <asm/percpu.h>
+>  #include "bpf_jit.h"
+>=20=20
+>  #define RV_FENTRY_NINSNS 2
+> @@ -1089,6 +1090,24 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn,=
+ struct rv_jit_context *ctx,
+>  			emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
+>  			emit_mv(rd, RV_REG_T1, ctx);
+>  			break;
+> +		} else if (insn_is_mov_percpu_addr(insn)) {
+> +			if (rd !=3D rs)
+> +				emit_mv(rd, rs, ctx);
+> +#ifdef CONFIG_SMP
+> +				/* Load current CPU number in T1 */
+> +				emit_ld(RV_REG_T1, offsetof(struct thread_info, cpu), RV_REG_TP,
+> +					ctx);
+> +				/* << 3 because offsets are 8 bytes */
+> +				emit_slli(RV_REG_T1, RV_REG_T1, 3, ctx);
+> +				/* Load address of __per_cpu_offset array in T2 */
+> +				emit_imm(RV_REG_T2, (u64)&__per_cpu_offset, ctx);
+
+Did you try using emit_addr() here? I'd guess that'll be fewer
+instructions, no?
+
+
+Bj=C3=B6rn
 
