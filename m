@@ -1,166 +1,150 @@
-Return-Path: <linux-kernel+bounces-132903-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132904-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 384DD899BD2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:23:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C816899BD4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:24:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 693DF1C22798
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:23:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 06C98283C81
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:24:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D46A16C6A4;
-	Fri,  5 Apr 2024 11:23:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A164E16C69F;
+	Fri,  5 Apr 2024 11:23:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PxcJsTtc"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kyBJA0fh"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B465016C6A5;
-	Fri,  5 Apr 2024 11:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A3D16132B;
+	Fri,  5 Apr 2024 11:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712316193; cv=none; b=qRmVd4vZXaXGRbxC+8+0F2y1j6o2TVQnHp3T7oAoxwgQdgveNJ8S0vhrMSZ8FS9IQ+Hnhr2U+wpXGThQh4GBbYjCg8stRWSto/cAs2qUnR1Qw6PH/KzA1UsSX7ccz2W9aJ51HilZxs3aneacOKH5cBe6kAqz8a3sHZFZKtUxKWk=
+	t=1712316205; cv=none; b=lx1W0/mJVZi7tw9Q6vJLj31dfoK2fE7Nq/QcJBgauWMQ6Ekf7GwWNSF9FDBxPuJJZQQjrrhCeKdISkVPNftwskkZDIAFt3NptQaUjo76zjEiYErr2/ersf4kHf2gO0s1GvmgRSJGMr7TmTS238f4Q5g7NjqNKefgnpv9k3JfBio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712316193; c=relaxed/simple;
-	bh=RFBYteiUsDRtmHhvt8RCDv8kgTDEiNMm0DqviBfGnx4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=aUGgQ3pRZcfj1SY8XcLRM0EHTfavgVpa/XxhPOlJ2qCaCk4kiJSgI9D7eQ0MYlX5CBnNGZjhjeRr5FzDlPwkDa1KWGf9mEf168jS0UnZsp3fQIinWFXGWVh/jqNAIJ1LA51dNgWQVea3UH4fRpBMPQg6ItItXAMVCgXzWraZNEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PxcJsTtc; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 435AmO2I006512;
-	Fri, 5 Apr 2024 11:22:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=SDAabO8gn5di0giN8zcTGrQbYAhA5+USYJnh7uYKzLw=; b=Px
-	cJsTtcQIp5fTVa7qqXJjItqRTOlY7R4rYTBAFbFOT6hSYwmrGoq3Fyrcx87cC4EX
-	vTKkc3vW1jk3S2WaU3vftlptSuZ0ydNqBDnL0aDByaqGJwsf7bFaAmhll4HOVBKn
-	fMSWDLTBm5KCIe/aK5jFV6+StrGG73ZvW52fJ1vCKujtznHMmdgZ17olcfU7BItO
-	DIjAkxN8EvG4IThaYhj8J1F8C6ypPkhDduR0b7p+UbKMFrguK59LxklOOVGwK0/W
-	J2d6y34ruqygzruL+DHaaOuIi8JCgEktvsWqLYUFG3vs3iz7zGwJSLC/u6bxiyWn
-	GW5++xoV2euWN+NGdZzQ==
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x9v8jjhsf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 11:22:49 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 435BMmp1000993
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Apr 2024 11:22:48 GMT
-Received: from [10.214.67.128] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
- 04:22:44 -0700
-Message-ID: <7c616ed5-fd80-7afc-a881-9f21e85ea6b6@quicinc.com>
-Date: Fri, 5 Apr 2024 16:52:40 +0530
+	s=arc-20240116; t=1712316205; c=relaxed/simple;
+	bh=8jmFCfcAxxgCnDgB/AyUUYHnD8n+q6i6mhP2+L/Xzx4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=en9fLvCjQh7DqL7vamJbdQtr1qN7YiLJTI1yqrem/FRBrG1/K6fVi9Id0QwW3k81L2y929XawbszBg6KKh38BZRcAzB4HsfHmG34QIBEphT3raiLngqp9eOSWg/9/jjzytHvQAkfyP6tzuJl7aZhPqIapLYUUmpEKeQzE37mRH4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kyBJA0fh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94F20C433C7;
+	Fri,  5 Apr 2024 11:23:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712316204;
+	bh=8jmFCfcAxxgCnDgB/AyUUYHnD8n+q6i6mhP2+L/Xzx4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=kyBJA0fhcHsZdD8nqwa0Gr1aJ5MAqPiS25/Ug8KxCe3rk95OOG9SL+m5h3c3Epq/0
+	 tcXn7BDcxCw+dNebwGHRQwUe0psO6B4RJkfMvqEza/nTgFlrSN8bZVKyfBN/YEowxI
+	 9aIQPpCOffMdvE6x6PFlDFbsLWIoAYE0AMA08v8Jw1UmIsNgGQFWmI1gCelOAVD8Q7
+	 PVmWeRyvJRue/DPoLhLV2JT1VdAEbNLltrqnP+yj/640psRg2In1nPpzLkQXvDjZ1T
+	 rS479xp4p4U7jjjT+SISL7TL5jr0OPJujAUgT63P6bE/PFk9793C2xrUGcVhvP7m/1
+	 BKqzgWBXrLcaQ==
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] vfs fixes
+Date: Fri,  5 Apr 2024 13:22:56 +0200
+Message-ID: <20240405-vfs-fixes-3b957d5fde0f@brauner>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: qcs6490-rb3gen2: Enable various
- remoteprocs
-Content-Language: en-US
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_tsoni@quicinc.com>
-References: <20240402090349.30172-1-quic_kbajaj@quicinc.com>
- <20240402090349.30172-3-quic_kbajaj@quicinc.com>
- <Zg9nmVl9eqTbkkDe@hu-bjorande-lv.qualcomm.com>
-From: Komal Bajaj <quic_kbajaj@quicinc.com>
-In-Reply-To: <Zg9nmVl9eqTbkkDe@hu-bjorande-lv.qualcomm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: oukBI9rZ0PY-4A628WA1Qm1_KbBesS-X
-X-Proofpoint-ORIG-GUID: oukBI9rZ0PY-4A628WA1Qm1_KbBesS-X
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-05_10,2024-04-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 malwarescore=0 phishscore=0 priorityscore=1501 adultscore=0
- mlxscore=0 clxscore=1015 mlxlogscore=941 impostorscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404050081
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3551; i=brauner@kernel.org; h=from:subject:message-id; bh=8jmFCfcAxxgCnDgB/AyUUYHnD8n+q6i6mhP2+L/Xzx4=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTx3xdwNJS3mmHIzGozc47nB/94l5Sl8f0ThZrnTdBcP WXVy4StHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABM52s/IcOEKw2yPJ5KyfL/j vrVUWvVdL9KQtGVxDuu2ura44X7YPIb/Tj9bmZ8KBtdWzDS9qPXBXflitUkqo7r9QSm2fpPgis8 8AA==
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
+Hey Linus,
 
+/* Summary */
+This contains a few small fixes. This comes with some delay because I
+wanted to wait on people running their reproducers and the Easter
+Holidays meant that those replies came in a little later than usual:
 
-On 4/5/2024 8:23 AM, Bjorn Andersson wrote:
-> On Tue, Apr 02, 2024 at 02:33:49PM +0530, Komal Bajaj wrote:
->> Enable the ADSP, CDSP and WPSS that are found on qcs6490-rb3gen2.
->>
->> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
->> ---
->>   arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts | 15 +++++++++++++++
->>   1 file changed, 15 insertions(+)
->>
->> diff --git a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
->> index 97824c769ba3..a25431ddf922 100644
->> --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
->> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
->> @@ -434,6 +434,21 @@ &qupv3_id_0 {
->>   	status = "okay";
->>   };
->>
->> +&remoteproc_adsp {
->> +	firmware-name = "qcom/qcm6490/adsp.mbn";
-> 
-> Should this be qcm6490?
->  >
-> I already proposed a patch to add adsp and cdsp, using qcs6490, and this
-> was merged earlier this week. Please pay attention and review patches
-> posted on the public list.
+* Fix handling of preventing writes to mounted block devices.
 
-Apologies, I missed that.
-Will drop adsp and cdsp firmware path update in the next series.
+  Since last kernel we allow to prevent writing to mounted block devices
+  provided CONFIG_BLK_DEV_WRITE_MOUNTED isn't set and the block device
+  is opened with restricted writes. When we switched to opening block
+  devices as files we altered the mechanism by which we recognize when a
+  block device has been opened with write restrictions. The detection
+  logic assumed that only read-write mounted filesystems would apply
+  write restrictions to their block devices from other openers. That of
+  course is not true since it also makes sense to apply write
+  restrictions for filesystems that are read-only.
 
-Rebase this change on top of your change, also will add the firmware 
-path update for modem for GPS usecase.
+  Fix the detection logic using an FMODE_* bit. We still have a few left
+  since we freed up a couple a while ago. I also picked up a patch to
+  free up four additional FMODE_* bits scheduled for the next merge window.
 
-Thanks
-Komal
+* Fix counting the number of writers to a block device. This just
+  changes the logic to be consistent.
 
-> 
-> Either way, this will now have to be rebased on linux-next.
-> 
-> Thanks,
-> Bjorn
-> 
->> +	status = "okay";
->> +};
->> +
->> +&remoteproc_cdsp {
->> +	firmware-name = "qcom/qcm6490/cdsp.mbn";
->> +	status = "okay";
->> +};
->> +
->> +&remoteproc_wpss {
->> +	firmware-name = "qcom/qcm6490/wpss.mbn";
->> +	status = "okay";
->> +};
->> +
->>   &tlmm {
->>   	gpio-reserved-ranges = <32 2>, /* ADSP */
->>   			       <48 4>; /* NFC */
->> --
->> 2.42.0
->>
+* Fix a bug in aio causing a NULL pointer derefernce after we
+  implemented batched processing in aio.
+
+* Finally, add the changes we discussed that allows to yield block
+  devices early even though file closing itself is deferred. This also
+  allows us to remove two holder operations to get and release the
+  holder to align lifetime of file and holder of the block device.
+
+/* Testing */
+clang: Debian clang version 16.0.6 (19)
+gcc: (Debian 13.2.0-7) 13.2.0
+
+All patches are based on v6.9-rc1 and have been sitting in linux-next.
+No build failures or warnings were observed.
+
+/* Conflicts */
+No known conflicts.
+
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
+
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.9-rc3.fixes
+
+for you to fetch changes up to caeb4b0a11b3393e43f7fa8e0a5a18462acc66bd:
+
+  aio: Fix null ptr deref in aio_complete() wakeup (2024-04-05 11:20:28 +0200)
+
+Please consider pulling these changes from the signed vfs-6.9-rc3.fixes tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+vfs-6.9-rc3.fixes
+
+----------------------------------------------------------------
+Christian Brauner (3):
+      block: handle BLK_OPEN_RESTRICT_WRITES correctly
+      block: count BLK_OPEN_RESTRICT_WRITES openers
+      fs,block: yield devices early
+
+Kent Overstreet (1):
+      aio: Fix null ptr deref in aio_complete() wakeup
+
+ block/bdev.c                    | 84 ++++++++++++++++++++++++++++++++---------
+ drivers/mtd/devices/block2mtd.c |  2 +-
+ fs/aio.c                        |  2 +-
+ fs/bcachefs/super-io.c          |  2 +-
+ fs/cramfs/inode.c               |  2 +-
+ fs/ext4/super.c                 |  8 ++--
+ fs/f2fs/super.c                 |  2 +-
+ fs/jfs/jfs_logmgr.c             |  4 +-
+ fs/reiserfs/journal.c           |  2 +-
+ fs/romfs/super.c                |  2 +-
+ fs/super.c                      | 24 ++----------
+ fs/xfs/xfs_buf.c                |  2 +-
+ fs/xfs/xfs_super.c              |  6 +--
+ include/linux/blkdev.h          | 11 +-----
+ include/linux/fs.h              |  2 +
+ 15 files changed, 89 insertions(+), 66 deletions(-)
 
