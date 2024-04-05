@@ -1,109 +1,222 @@
-Return-Path: <linux-kernel+bounces-132577-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9394C8996C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:44:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8839D8996CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:45:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4EA422833DC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:44:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3C849285543
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D349F13D272;
-	Fri,  5 Apr 2024 07:44:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C588D13DB9C;
+	Fri,  5 Apr 2024 07:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="okUN6yzJ"
-Received: from mail-ua1-f47.google.com (mail-ua1-f47.google.com [209.85.222.47])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="c84w0mMz"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A47E613CFBF
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:44:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F283B13D289
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712303062; cv=none; b=IqFwF7ZUwqjquVstBP54wtN8xeUlsBB57E/0prlJHrCHgjg20nGu8OeVVMGAY/sFqpPeS6+kOLomb1CFlyob4tQE/N0CGG4oyNb6O8y3PPwNev4wyEy/LTeOcq+9rrM07XUphm15Oi+esvEP3P7ujtMvu6IlES2F12XQniy8QeM=
+	t=1712303077; cv=none; b=Ze96H/XgILHzu78nKANdIBHPNpdSl7zHtyHiYDxwdof0sDm2DucwUNvvC04LF05NYdFkpiPUlyYM4rRlEEjrKOJDzYWDLjhzl3nfuts9jFnhWQpXKhwJJL/3voX/K4JO0Z4OvuV32rBuP49j3/mg5r7vOcaGKLULRQBxdrDACOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712303062; c=relaxed/simple;
-	bh=SHGbtYE78WACdauHUN0T3sz6l7y4v0ZFIs1aCPJUAfs=;
+	s=arc-20240116; t=1712303077; c=relaxed/simple;
+	bh=bxMd5VtoFtZ5IA+lfWe6irnCCj68qYa5NaOxVXPK+Zs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DcmJJvvufslToR1XXF+7Hy6pTCsva8FCDICyEAq50+bhfeNcJS73Du3PrPZvVOJm3YW4Qhiha7jvz8wWg8uvTafSyfINUY0k7NAAlnI4Zaw9AhWwveXw3K6YIqrO7UNptZ1l3ad6TWE24IVSbgA/Eg1Rn9V7DLz/jqJO8/FwXWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=okUN6yzJ; arc=none smtp.client-ip=209.85.222.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f47.google.com with SMTP id a1e0cc1a2514c-7e3e522d803so1235523241.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:44:20 -0700 (PDT)
+	 To:Cc:Content-Type; b=RXQ5SU7/F6XT4KU6l/76loIE/IbLmZLf7HMkAurIAZeHn2fHS0QqsrLC+QNoxTqpY3GuuPYcU4cnMj/0shW//NAxsZzVR8VdCwjcr4dvtvzA3NRL+n7JQ3hNqIt8TbgOJCfjvkiWCs1/0xNuPtV+p92TWAY0WFUWjk5239pgLyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=c84w0mMz; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcbc6a6808fso1947767276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:44:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712303059; x=1712907859; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SHGbtYE78WACdauHUN0T3sz6l7y4v0ZFIs1aCPJUAfs=;
-        b=okUN6yzJEqwBDFZGJZL0LcADDUilMBNKJN8H7jWZR05NbtB4cpOanmzpMjHANSONZV
-         99U6ofHCD42rVReWS4zc6lFac32qpV0ihfRwWZSZQLTKqiSDg9DEL10UKYMMrWzPGeK3
-         EeauzsP/2fK3E7GeMPc1E+qRrnLULQ4XRqUPaPTvrKlw48pac09Mn9K75w7k4z61uKoV
-         TsOWZo2DND3gVyfh50eMzslQXDWlLaXrEAhA12adDuRbzCiU5aaQ9jFE9RkX8Q8dt7CV
-         eY4Iy7ZAm/LpmJz4w2mZuePUZbVwFSgmhyeMGh2RixH5ki2R7qlfUBhkuHHVTJws9j+N
-         B+bg==
+        d=linaro.org; s=google; t=1712303075; x=1712907875; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=zYQYHc96aAqkJY4oGXNQ40gKh1E9/vfyHDywYKQqVgk=;
+        b=c84w0mMzteKparFyfWw+KzRpMnkX2NbKQICh758hUtWdlVr1o5Js8TXjfy+lwLBjux
+         X+p+a2ddT36Cwt07YJUmepMSAbjJyDzgkfuf8LaosV2ktpDU4dbV5a5XX098dR+OAVVJ
+         MKCnODMoZBOHELCnHl6acIc+X097JlZmhPByWfXyVTQ1ZrEoOivMEvbUje204gGc0xDr
+         HtK1kTzCGI8R4VW2ynBUtqTeH0AlQ/aSZcM0G6Chta0I9hoJjvqg7YzgnwEij6KuRTCf
+         btiZrKx7kPDoAskNk87fFq0CkfRoLMT1cBcLjOU53/I4dBSz/16amjzSMI5mMJbN/wdt
+         7YFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712303059; x=1712907859;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SHGbtYE78WACdauHUN0T3sz6l7y4v0ZFIs1aCPJUAfs=;
-        b=h3xtLYNrqGVioKrgAlnYXoOiF/hN/J+xjtiIrwE2V2aDAZ9WB6y/GrB5yI7wD2LcA/
-         2sujNKFQ7kXFeH6wEHrg685iWwBPpygp6aAV6SR39CTa0vADbF3gOfaXYB9hLshTjuQn
-         Tbrou5CMWJezxpzUu2F6ox428TZ9DdJcxdleVluyzu+a+wp+tcotKljBKgojK/nhpLoD
-         0PEOs2myI6Jj7TsJEqgQITFnn/GqYd1Alt+et7rgvq9daBFctJ0CSjozV6Mj4+Lo3GVO
-         D2FBPXg6akf4MaqItQ7/9wxXEmfTsUivdisqanfnoxuFABxSnl8G6IJYUvK64Je4EZun
-         ujow==
-X-Forwarded-Encrypted: i=1; AJvYcCXTLLBfx+eXgb/hjFSl41i4xEPS0O1G/VxBMoNt4Kvttx4OzUFJ297xyciWDts6tvd4POw52KO9/LiU8fhClxxhQadiACgQ+xWEJwxV
-X-Gm-Message-State: AOJu0YyT3pxjz5pZp6uen14drKZfPNZTbqi+oHlv2AqlNau9AT9xUBY8
-	UpQPzD/Ire113GMcBMfiDF0jfojt/a0pHTfBIGl4W8ly1MqrhD7/0PWQuQhjrJLPIQXYXINYL89
-	gA51GMp7HsQkIFEI5JzFUab2H6xASZVMDJ5bC
-X-Google-Smtp-Source: AGHT+IGMeMqrXZ0hb7q26iSJbPXd6dY3rpQtcLC3/bDQAURqKv3BShFGpUtYoVqS9r2ldERtJ0iVFeg0BVc9I60Wl/c=
-X-Received: by 2002:a05:6102:512c:b0:479:c401:824 with SMTP id
- bm44-20020a056102512c00b00479c4010824mr1516533vsb.6.1712303059454; Fri, 05
- Apr 2024 00:44:19 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712303075; x=1712907875;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zYQYHc96aAqkJY4oGXNQ40gKh1E9/vfyHDywYKQqVgk=;
+        b=UBj7dohpxHNVZ+d7Tr2dljotH7HElpXTakCzHjm97kklwZ1kHWjI+09Z1JQY5hcasw
+         7l1CkmvjtmJyV36YyXdj8pxwST/qyhWziv1Y+F6Jylv1cFDmeNswVvzsLU6hDbXWbC/h
+         /vUuaSL1uf5i1DaKegn1i5TqKFr4JrV2BYUR0A3jUqsFrf0Wj4Kd9szaA8aMPwZnj4gP
+         znLq4oAYEojUTW3QPnvrVNg4+y+l0/cSz6U/360CEBId5cztIaGZw3SXjj7vyZmH3MIA
+         4iHoaf/SLREguMx7HBzXv6V9YlH+GJmJ5FZIcdY/W/EvDzJFbJ9qPcFUqK4khLrZ9Mib
+         6uqg==
+X-Forwarded-Encrypted: i=1; AJvYcCVOd2srywp9VaeRYVzzsQfqRBz5vdKlRbE9SOzJVCgqb/JFc6Rmqz1nfCZaZktxuxajufm7tDqeqjpBCxdjffHoJqhuJcUVQw1o2VXX
+X-Gm-Message-State: AOJu0YzbxQBWB05zG+8bqp8fUS4kYjCKpX+j6t1ZaYeni2CQDOfyQb1x
+	8+jpemSgAnF/yHxKewS10D2vvJRwImO6iejFV9cEoYaZnPHGtyh+CFfgoaL/2x1dgcs0UOnmKDY
+	AuJhftuel1Da2vJKX0D60oQ05rhHt/FofmuMSgw==
+X-Google-Smtp-Source: AGHT+IEu6kTYj/i3eHlvNZAWtBlfhRcBURjNaSYT7hSkM1HYOoTHlVFCzx0BUjloetjyotgljRz9/W3Z2OBtLyxBdoM=
+X-Received: by 2002:a25:800c:0:b0:dc7:4367:2527 with SMTP id
+ m12-20020a25800c000000b00dc743672527mr599078ybk.49.1712303075009; Fri, 05 Apr
+ 2024 00:44:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404-alice-mm-v4-0-49a84242cf02@google.com>
- <20240404-alice-mm-v4-4-49a84242cf02@google.com> <a48b2347-b58b-432e-bdb8-d5449016ab57@proton.me>
-In-Reply-To: <a48b2347-b58b-432e-bdb8-d5449016ab57@proton.me>
-From: Alice Ryhl <aliceryhl@google.com>
-Date: Fri, 5 Apr 2024 09:44:06 +0200
-Message-ID: <CAH5fLgg3wpcDE+n6nd0CGtDzyXSrD2nLhY8RxdTHjAD8hQ9VDQ@mail.gmail.com>
-Subject: Re: [PATCH v4 4/4] rust: add abstraction for `struct page`
-To: Benno Lossin <benno.lossin@proton.me>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, Andrew Morton <akpm@linux-foundation.org>, 
-	Kees Cook <keescook@chromium.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
-	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
-	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
-	Andreas Hindborg <a.hindborg@samsung.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	=?UTF-8?B?QXJ2ZSBIasO4bm5ldsOlZw==?= <arve@android.com>, 
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>, 
-	Joel Fernandes <joel@joelfernandes.org>, Carlos Llamas <cmllamas@google.com>, 
-	Suren Baghdasaryan <surenb@google.com>, Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org, 
-	Christian Brauner <brauner@kernel.org>
+References: <20240321092529.13362-1-quic_jkona@quicinc.com>
+ <20240321092529.13362-7-quic_jkona@quicinc.com> <CAA8EJppHGS+W-aiXvJ2cE=jCbua8Y0Q+zv_QTs+C9V5+Y1vuZg@mail.gmail.com>
+ <008d574f-9c9e-48c6-b64e-89fb469cbde4@quicinc.com> <b3464321-0c52-4c41-9198-e9e7b16aa419@quicinc.com>
+ <CAA8EJpqDwCVAjDphnC-HdfseMJ-xd8VVxb5+9UcGEcKLcn-heg@mail.gmail.com>
+ <fba2474e-31a6-4fef-acf9-7069933584c8@quicinc.com> <CAA8EJprfaALkQe-wUrBow6B1A66ro0AoVpfnQJLXgqFmL8isNQ@mail.gmail.com>
+ <8a5a3cf8-5b4f-487f-ad91-00499509f8ec@quicinc.com> <CAA8EJpoW8MQQ3OPfOVYRJtgsn1JgKd5Ew7vqgWx3xWE-xJ=R-g@mail.gmail.com>
+ <03f8d2ee-2467-48aa-9b76-06eb13202b8c@quicinc.com>
+In-Reply-To: <03f8d2ee-2467-48aa-9b76-06eb13202b8c@quicinc.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Fri, 5 Apr 2024 10:44:23 +0300
+Message-ID: <CAA8EJpqL_bkyoUKkY_nr7PvbvC-1dVKr9kNQKsAU-2PPO9717g@mail.gmail.com>
+Subject: Re: [PATCH V2 RESEND 6/6] arm64: dts: qcom: sm8650: Add video and
+ camera clock controllers
+To: Jagadeesh Kona <quic_jkona@quicinc.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	linux-clk@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Taniya Das <quic_tdas@quicinc.com>, 
+	Satya Priya Kakitapalli <quic_skakitap@quicinc.com>, Ajit Pandey <quic_ajipan@quicinc.com>, 
+	Imran Shaik <quic_imrashai@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 5, 2024 at 12:33=E2=80=AFAM Benno Lossin <benno.lossin@proton.m=
-e> wrote:
+On Fri, 5 Apr 2024 at 09:01, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
 >
-> On 04.04.24 14:31, Alice Ryhl wrote:
-> > +/// A bitwise shift for the page size.
-> > +#[allow(clippy::unnecessary_cast)]
 >
-> Why can't you remove the cast?
+>
+> On 4/4/2024 9:35 PM, Dmitry Baryshkov wrote:
+> > On Thu, 4 Apr 2024 at 13:06, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+> >>
+> >>
+> >>
+> >> On 4/4/2024 11:00 AM, Dmitry Baryshkov wrote:
+> >>> On Thu, 4 Apr 2024 at 08:13, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 4/3/2024 9:24 PM, Dmitry Baryshkov wrote:
+> >>>>> On Wed, 3 Apr 2024 at 10:16, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+> >>>>>>
+> >>>>>>
+> >>>>>>
+> >>>>>> On 3/25/2024 11:38 AM, Jagadeesh Kona wrote:
+> >>>>>>>
+> >>>>>>>
+> >>>>>>> On 3/21/2024 6:43 PM, Dmitry Baryshkov wrote:
+> >>>>>>>> On Thu, 21 Mar 2024 at 11:27, Jagadeesh Kona <quic_jkona@quicinc.com>
+> >>>>>>>> wrote:
+> >>>>>>>>>
+> >>>>>>>>> Add device nodes for video and camera clock controllers on Qualcomm
+> >>>>>>>>> SM8650 platform.
+> >>>>>>>>>
+> >>>>>>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
+> >>>>>>>>> ---
+> >>>>>>>>>      arch/arm64/boot/dts/qcom/sm8650.dtsi | 28 ++++++++++++++++++++++++++++
+> >>>>>>>>>      1 file changed, 28 insertions(+)
+> >>>>>>>>>
+> >>>>>>>>> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> >>>>>>>>> b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> >>>>>>>>> index 32c0a7b9aded..d862aa6be824 100644
+> >>>>>>>>> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> >>>>>>>>> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
+> >>>>>>>>> @@ -4,6 +4,8 @@
+> >>>>>>>>>       */
+> >>>>>>>>>
+> >>>>>>>>>      #include <dt-bindings/clock/qcom,rpmh.h>
+> >>>>>>>>> +#include <dt-bindings/clock/qcom,sm8450-videocc.h>
+> >>>>>>>>> +#include <dt-bindings/clock/qcom,sm8650-camcc.h>
+> >>>>>>>>>      #include <dt-bindings/clock/qcom,sm8650-dispcc.h>
+> >>>>>>>>>      #include <dt-bindings/clock/qcom,sm8650-gcc.h>
+> >>>>>>>>>      #include <dt-bindings/clock/qcom,sm8650-gpucc.h>
+> >>>>>>>>> @@ -3110,6 +3112,32 @@ opp-202000000 {
+> >>>>>>>>>                             };
+> >>>>>>>>>                     };
+> >>>>>>>>>
+> >>>>>>>>> +               videocc: clock-controller@aaf0000 {
+> >>>>>>>>> +                       compatible = "qcom,sm8650-videocc";
+> >>>>>>>>> +                       reg = <0 0x0aaf0000 0 0x10000>;
+> >>>>>>>>> +                       clocks = <&bi_tcxo_div2>,
+> >>>>>>>>> +                                <&gcc GCC_VIDEO_AHB_CLK>;
+> >>>>>>>>> +                       power-domains = <&rpmhpd RPMHPD_MMCX>;
+> >>>>>>>>> +                       required-opps = <&rpmhpd_opp_low_svs>;
+> >>>>>>>>
+> >>>>>>>> The required-opps should no longer be necessary.
+> >>>>>>>>
+> >>>>>>>
+> >>>>>>> Sure, will check and remove this if not required.
+> >>>>>>
+> >>>>>>
+> >>>>>> I checked further on this and without required-opps, if there is no vote
+> >>>>>> on the power-domain & its peer from any other consumers, when runtime
+> >>>>>> get is called on device, it enables the power domain just at the minimum
+> >>>>>> non-zero level. But in some cases, the minimum non-zero level of
+> >>>>>> power-domain could be just retention and is not sufficient for clock
+> >>>>>> controller to operate, hence required-opps property is needed to specify
+> >>>>>> the minimum level required on power-domain for this clock controller.
+> >>>>>
+> >>>>> In which cases? If it ends up with the retention vote, it is a bug
+> >>>>> which must be fixed.
+> >>>>>
+> >>>>
+> >>>> The minimum non-zero level(configured from bootloaders) of MMCX is
+> >>>> retention on few chipsets but it can vary across the chipsets. Hence to
+> >>>> be on safer side from our end, it is good to have required-opps in DT to
+> >>>> specify the minimum level required for this clock controller.
+> >>>
+> >>> We are discussing sm8650, not some abstract chipset. Does it list
+> >>> retention or low_svs as a minimal level for MMCX?
+> >>>
+> >>
+> >> Actually, the minimum level for MMCX is external to the clock
+> >> controllers.
+> >
+> > Yes, it comes from cmd-db
+> >
+> >>   But the clock controller requires MMCX to be atleast at
+> >> lowsvs for it to be functional.
+> >
+> > Correct
+> >
+> >> Hence we need to keep required-opps to
+> >> ensure the same without relying on the actual minimum level for MMCX.
+> >
+> > And this is not correct. There is no need for the DT to be redundant.
+> > I plan to send patches removing the existing required-opps when they
+> > are not required.
+> >
+> I agree this is not required if cmd-db minimum level is already at
+> lowsvs. But since MMCX running at lowsvs is a mandatory requirement for
+> clock controller to operate, I believe it is good to have required-opps
+> to ensure we meet this requirement in all cases, rather than relying on
+> the cmd-db minimum level which we have no control over.
 
-Bindgen could decide to use a different type in the future or on
-different platforms.
+IIf we follow this logic, we should throw cmd-db away and hardcode all
+those values in the RPMh drivers.
 
-Alice
+We have cmd-db. If it is correct, there is no need to duplicate it. If
+it is incorrect, it is a bug that should be fixed or worked around.
+
+>
+> Thanks,
+> Jagadeesh
+>
+
+
+-- 
+With best wishes
+Dmitry
 
