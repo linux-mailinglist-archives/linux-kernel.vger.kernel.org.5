@@ -1,66 +1,50 @@
-Return-Path: <linux-kernel+bounces-132582-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132580-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 424F78996D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:46:08 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 863408996D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:45:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 739901C210D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:46:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11C9F1F23158
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:45:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4053F13E3E3;
-	Fri,  5 Apr 2024 07:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="CfAs1bOw"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3325F13D538;
+	Fri,  5 Apr 2024 07:45:01 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82E1913D53E;
-	Fri,  5 Apr 2024 07:45:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059B013D534
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:44:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712303129; cv=none; b=bdzO4ioqH+kZG3SHkjqIAUnpvjJzsZw8qTIY5+4BWZnzy3ldGNO1LRA+aHAfJxJbW0rDl/BXC4YAI20Tgdxot8avCcrzpoGEKnVC8WOmdj2rs3zzCmkWZkVEth9n791MxpKRfbeFt7uJje9yQKXy6ZLmvKfVvQFX2nEcV/PMngI=
+	t=1712303100; cv=none; b=XrXe+ykX6KPE497xU9F33mtG2QQ7lu2rXPIafxRlw45GKa3Emd7rtCzie3m1SYw0+Qf5iMmTFtHVFYe8sSzdaaLGcq+3niTqm2jJkFNT8SdMmPBzEfBJIMTUL59YigxqFqIk2+DR2P8Zrg7VF1P4D7e5w3n/k50gXEvohLiV6Bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712303129; c=relaxed/simple;
-	bh=hG/7WXbVHwPtjqKBcDc2XwtEgfdfo2i1v9NTvMXhAsY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:References:
-	 In-Reply-To:To:CC; b=fRj0KIyz4EsEQIsusuZSWzTZ0xDNvHSUM8Msv5rCBn8aQ1X0/JR5rFC9sJjTwLGNfaawYrYQ69WhbnFGpqSTuDlULJP38U43Yb16TcLdIT21YrPNWwwC/Fo1TNZt9ZSF79uSQiozeNYY5d83t+wanGKtFsrvfTNMTGY8thSCU+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=CfAs1bOw; arc=none smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712303127; x=1743839127;
-  h=from:date:subject:mime-version:content-transfer-encoding:
-   message-id:references:in-reply-to:to:cc;
-  bh=hG/7WXbVHwPtjqKBcDc2XwtEgfdfo2i1v9NTvMXhAsY=;
-  b=CfAs1bOwTvtWL6AhDM1wS947iswdOUYniVJ6Gap59lTvdAkP+ALKJaaJ
-   wD/RsfKB30Jvmglr+3VCBzZqzERKlfSXaDbLGMSYaKvHZSUpDgCjL6LFT
-   cc/gSbaaN/CNHrMBIK1LY4aWBbTDBs91Wd3sEW9cvA7JxS4TsVN05+N4O
-   Bksk147FakfRU5zXLZkVlSujgIiw0r8jT7xavelgm5XLLs/4FB2lf/VR+
-   D+YtGOABkD3VF2YYAmKh9uw/fRSknzZdYM8CZRAxq/X25B+pnv7nx1rq3
-   3VHYh7xz7xC/m/WKVJmMmKF4S3gt3Xq9UMEH4loH5J8PZWxMIzedfGC6F
-   A==;
-X-CSE-ConnectionGUID: LnJ8QAI7QrCTf6/TR/LIZQ==
-X-CSE-MsgGUID: zx1E/0f7Tt+Tn7q5T9/slQ==
-X-IronPort-AV: E=Sophos;i="6.07,180,1708412400"; 
-   d="scan'208";a="19563251"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Apr 2024 00:45:23 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 5 Apr 2024 00:45:08 -0700
-Received: from DEN-DL-M70577.microchip.com (10.10.85.11) by
- chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Fri, 5 Apr 2024 00:45:06 -0700
-From: Daniel Machon <daniel.machon@microchip.com>
-Date: Fri, 5 Apr 2024 09:44:50 +0200
-Subject: [PATCH net-next v2 2/2] net: sparx5: add support for tc flower
- redirect action
+	s=arc-20240116; t=1712303100; c=relaxed/simple;
+	bh=EGFVhu5uEEGFBRV4ovRnzduyzuYnoarCf2q6cUuQ8OU=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=IaL+mycj8nWslvsSDXmF+LU8pstp1Fkbj7L1Ar6/DotHswfQ+uxtfkcflY5IIS8LbT/D2jrT19/Hj8WNJ8CIeN0fIy3BttgMCeZ0YEUZtBcrwoWKc9zCpAemF/q4l6+2jw9NcxPf3GE4VKR9+YezuNjfNWjWn/XgY1qDXJYwz3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rseFt-0001Wp-AV; Fri, 05 Apr 2024 09:44:57 +0200
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rseFs-00AWqy-ST; Fri, 05 Apr 2024 09:44:56 +0200
+Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
+	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rseFs-00DzJw-2h;
+	Fri, 05 Apr 2024 09:44:56 +0200
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Date: Fri, 05 Apr 2024 09:44:56 +0200
+Subject: [PATCH v2] usb: gadget: uvc: Improve error checking and tagging
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -69,77 +53,205 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20240405-mirror-redirect-actions-v2-2-875d4c1927c8@microchip.com>
-References: <20240405-mirror-redirect-actions-v2-0-875d4c1927c8@microchip.com>
-In-Reply-To: <20240405-mirror-redirect-actions-v2-0-875d4c1927c8@microchip.com>
-To: Lars Povlsen <lars.povlsen@microchip.com>, Steen Hegelund
-	<Steen.Hegelund@microchip.com>, <UNGLinuxDriver@microchip.com>, "David S.
- Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, "Jakub
- Kicinski" <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-CC: Ratheesh Kannoth <rkannoth@marvell.com>,
-	<linux-arm-kernel@lists.infradead.org>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, Daniel Machon <daniel.machon@microchip.com>
-X-Mailer: b4 0.14-dev
+Message-Id: <20240324-uvc-gadget-errorcheck-v2-1-f141b13ade0e@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAPerD2YC/4WNSwqDMBQAryJZ9xUTI0pXvUdxkc8zCZUoLxos4
+ t2beoEuZ2CYgyWkgIk9qoMR5pDCHAuIW8WMV9EhBFuYiVrIuhEStmzAKetwBSSayXg0b5Bc97x
+ T4yilZaXVKiFoUtH4UsdtmopcCMewX7PXUNiHtM70ud6Z/+y/TebAoW2b3rSd1qjVc8HotpXmG
+ Pa7RTac5/kFNO2MXtQAAAA=
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Daniel Scally <dan.scally@ideasonboard.com>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Michael Grzeschik <m.grzeschik@pengutronix.de>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6004;
+ i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
+ bh=EGFVhu5uEEGFBRV4ovRnzduyzuYnoarCf2q6cUuQ8OU=;
+ b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBmD6v4dkOR1+x1k0MdAqaO+E5Koh62lTp4/8eYL
+ mGId6/9C12JAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZg+r+AAKCRC/aVhE+XH0
+ qxLoD/9RwbdmTQR8SpV4BicvnulhQKbDIihIHJvHTj9/LnFfP5kadiYRGSbJB7iFpGhc3/Wve9a
+ kASzasUJ+zB6Lo+QS4+uyUl4WIkLlfM6yQ7wQ1CIRATxv5Byd4NBSx/mxxhyQOQbl7/hf95V+iK
+ kC+IBq9XcuNpdOlQp9xKEiOI39lt6KeCYt1shYI+K5p+z2rRddOJeh5X44eyVCotyLHaxmtNpBm
+ n89yOdHqx3wUXq1r7tsKMXinMi9jnQeeVBTtnfTWL3azvwDo1oYylpfDINXvMzoNHB9VlNyVVCn
+ O7XbDI8yHOkoQbQdKy/wsV5OBV1ao64SU4qtl7VfrusDt/A9A2asOicdqhvymeuSMK4j6vEOBJt
+ qXarZ78iR8KTPjugC3U8R3hAoPOsRomYvPi75YasFJxrX/nV+M7MWNsvqqnxrYQJowOHtBB/QYu
+ qHFxvPEcOPLb3x7czqJtisRKArEKRM2qkHOG9ejHUuFlWq7c+Yp+RsvEGIXpNIJTdfUwZ2qAeH9
+ IPxa/DqIe2Li0C77SprjU+ipHogQc8PPz0MgbSS9WvKgQ9iqbZqrpInmsf90hz9SYqArj/8P+0d
+ hLGmYyCwxi/fqCn9vsv2qg4eVgPe1yRQ5CQegknUXHFFudt8P2udiTowG5QKTgiJMhp/jIto7mr
+ rDLj/LM9ctnm3/A==
+X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
+ fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Add support for the flower redirect action. Two VCAP actions are encoded
-in the rule - one for the port mask, and one for the port mask mode.
-When the rule is hit, the port mask is used as the final destination
-set, replacing all other port masks.
+Right now after one transfer was completed with EXDEV the currently
+encoded frame will get the UVC_STREAM_ERR tag attached. Since the
+complete and encode path are handling separate requests from different
+threads, there is no direct correspondence between the missed transfer
+of one request and the currently encoded request which might already
+belong to an completely different frame.
 
-Signed-off-by: Daniel Machon <daniel.machon@microchip.com>
+When queueing requests into the hardware by calling ep_queue the
+underlying ringbuffer of the usb driver will be filled. However when
+one of these requests will have some issue while transfer the hardware
+will trigger an interrupt but will continue transferring the pending
+requests in the ringbuffer. This interrupt-latency will make it
+impossible to react in time to tag the fully enqueued frame with the
+UVC_STREAM_ERR in the header.
+
+This patch is also addressing this particular issue by delaying the
+transmit of the EOF/ERR tagged header by waiting for the last enqueued
+buffer of the frame to be completed. This way it is possible to react to
+send the EOF/ERR tag depending on the whole frame transfer status.
+
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
 ---
- .../ethernet/microchip/sparx5/sparx5_tc_flower.c   | 29 ++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+Changes in v2:
+- removed unnecessary uvc_gadget_errorcheck_param module parameter
+- Link to v1: https://lore.kernel.org/r/20240324-uvc-gadget-errorcheck-v1-1-5538c57bbeba@pengutronix.de
+---
+ drivers/usb/gadget/function/uvc.h       |  2 +
+ drivers/usb/gadget/function/uvc_video.c | 69 ++++++++++++++++++++++++++++-----
+ 2 files changed, 61 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
-index fb2e3004183a..82dd270adae6 100644
---- a/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
-+++ b/drivers/net/ethernet/microchip/sparx5/sparx5_tc_flower.c
-@@ -1038,6 +1038,30 @@ static int sparx5_tc_action_mirred(struct vcap_admin *admin,
- 	return vcap_rule_add_action_u72(vrule, VCAP_AF_PORT_MASK, &ports);
+diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+index cb35687b11e7e..210c9b5e6a5ee 100644
+--- a/drivers/usb/gadget/function/uvc.h
++++ b/drivers/usb/gadget/function/uvc.h
+@@ -91,6 +91,8 @@ struct uvc_video {
+ 	struct work_struct pump;
+ 	struct workqueue_struct *async_wq;
+ 
++	struct usb_request *last_req;
++
+ 	/* Frame parameters */
+ 	u8 bpp;
+ 	u32 fcc;
+diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+index d41f5f31dadd5..2bfeea94131a9 100644
+--- a/drivers/usb/gadget/function/uvc_video.c
++++ b/drivers/usb/gadget/function/uvc_video.c
+@@ -35,9 +35,6 @@ uvc_video_encode_header(struct uvc_video *video, struct uvc_buffer *buf,
+ 
+ 	data[1] = UVC_STREAM_EOH | video->fid;
+ 
+-	if (video->queue.flags & UVC_QUEUE_DROP_INCOMPLETE)
+-		data[1] |= UVC_STREAM_ERR;
+-
+ 	if (video->queue.buf_used == 0 && ts.tv_sec) {
+ 		/* dwClockFrequency is 48 MHz */
+ 		u32 pts = ((u64)ts.tv_sec * USEC_PER_SEC + ts.tv_nsec / NSEC_PER_USEC) * 48;
+@@ -62,9 +59,6 @@ uvc_video_encode_header(struct uvc_video *video, struct uvc_buffer *buf,
+ 
+ 	data[0] = pos;
+ 
+-	if (buf->bytesused - video->queue.buf_used <= len - pos)
+-		data[1] |= UVC_STREAM_EOF;
+-
+ 	return pos;
  }
  
-+static int sparx5_tc_action_redirect(struct vcap_admin *admin,
-+				     struct vcap_rule *vrule,
-+				     struct flow_cls_offload *fco,
-+				     struct flow_action_entry *act)
+@@ -366,6 +360,32 @@ static void uvc_video_ep_queue_initial_requests(struct uvc_video *video)
+ 	spin_unlock_irqrestore(&video->req_lock, flags);
+ }
+ 
++static void
++uvc_video_fixup_header(struct usb_request *next, struct usb_request *done,
++		       bool error)
 +{
-+	struct vcap_u72_action ports = {0};
-+	int err;
++	struct uvc_request *next_ureq = next->context;
++	struct uvc_request *done_ureq = done->context;
++	struct uvc_video *video = next_ureq->video;
++	struct uvc_video_queue *queue = &video->queue;
 +
-+	if (admin->vtype != VCAP_TYPE_IS0 && admin->vtype != VCAP_TYPE_IS2) {
-+		NL_SET_ERR_MSG_MOD(fco->common.extack,
-+				   "Redirect action not supported in this VCAP");
-+		return -EOPNOTSUPP;
++	u8 header = UVC_STREAM_EOF;
++
++	if (error)
++		header |= UVC_STREAM_ERR;
++
++	if (queue->use_sg) {
++		memcpy(next_ureq->header, done_ureq->header,
++				UVCG_REQUEST_HEADER_LEN);
++
++		((u8 *)next_ureq->header)[1] |= header;
++	} else {
++		memcpy(next->buf, done->buf, UVCG_REQUEST_HEADER_LEN);
++
++		((u8 *)next->buf)[1] |= header;
 +	}
-+
-+	err = vcap_rule_add_action_u32(vrule, VCAP_AF_MASK_MODE,
-+				       SPX5_PMM_REPLACE_ALL);
-+	if (err)
-+		return err;
-+
-+	sparx5_tc_flower_set_port_mask(&ports, act->dev);
-+
-+	return vcap_rule_add_action_u72(vrule, VCAP_AF_PORT_MASK, &ports);
 +}
 +
- /* Remove rule keys that may prevent templates from matching a keyset */
- static void sparx5_tc_flower_simplify_rule(struct vcap_admin *admin,
- 					   struct vcap_rule *vrule,
-@@ -1189,6 +1213,11 @@ static int sparx5_tc_flower_replace(struct net_device *ndev,
- 			if (err)
- 				goto out;
- 			break;
-+		case FLOW_ACTION_REDIRECT:
-+			err = sparx5_tc_action_redirect(admin, vrule, fco, act);
-+			if (err)
-+				goto out;
-+			break;
- 		case FLOW_ACTION_ACCEPT:
- 			err = sparx5_tc_set_actionset(admin, vrule);
- 			if (err)
+ static void
+ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
+ {
+@@ -377,6 +397,7 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
+ 	unsigned long flags;
+ 	bool is_bulk = video->max_payload_size;
+ 	int ret = 0;
++	bool error = false;
+ 
+ 	spin_lock_irqsave(&video->req_lock, flags);
+ 	if (!video->is_enabled) {
+@@ -419,6 +440,8 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
+ 
+ 	if (last_buf) {
+ 		spin_lock_irqsave(&queue->irqlock, flags);
++		if (queue->flags & UVC_QUEUE_DROP_INCOMPLETE)
++			error = true;
+ 		uvcg_complete_buffer(queue, last_buf);
+ 		spin_unlock_irqrestore(&queue->irqlock, flags);
+ 	}
+@@ -449,11 +472,37 @@ uvc_video_complete(struct usb_ep *ep, struct usb_request *req)
+ 	 * requests and cannot recover.
+ 	 */
+ 	to_queue->length = 0;
++
++	/* If the last request was queued just copy the previous
++	 * header without payload to the empty request and fixup the
++	 * tags with ERR/EOF to finish the frame.
++	 */
++	if (video->last_req == req) {
++		uvc_video_fixup_header(to_queue, req, error);
++		to_queue->length = UVCG_REQUEST_HEADER_LEN;
++		video->last_req = NULL;
++	}
++
+ 	if (!list_empty(&video->req_ready)) {
+-		to_queue = list_first_entry(&video->req_ready,
+-			struct usb_request, list);
+-		list_del(&to_queue->list);
+-		list_add_tail(&req->list, &video->req_free);
++		struct usb_request *next_req =
++				list_first_entry(&video->req_ready,
++						 struct usb_request, list);
++		struct uvc_request *next_ureq = next_req->context;
++
++		/* If the last request of the frame will be queued, we delay
++		 * the enqueueing of every next request. This way it is
++		 * possible to react to send the EOF/ERR tag depending
++		 * on the whole frame transfer status.
++		 */
++		if (!video->last_req && !to_queue->length) {
++			if (next_ureq->last_buf)
++				video->last_req = next_req;
++
++			to_queue = next_req;
++			list_del(&to_queue->list);
++			list_add_tail(&req->list, &video->req_free);
++		}
++
+ 		/*
+ 		 * Queue work to the wq as well since it is possible that a
+ 		 * buffer may not have been completely encoded with the set of
 
+---
+base-commit: 3295f1b866bfbcabd625511968e8a5c541f9ab32
+change-id: 20240324-uvc-gadget-errorcheck-41b817aff44d
+
+Best regards,
 -- 
-2.34.1
+Michael Grzeschik <m.grzeschik@pengutronix.de>
 
 
