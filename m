@@ -1,280 +1,156 @@
-Return-Path: <linux-kernel+bounces-133178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33B8389A002
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:41:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 372C8899FFE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:41:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 801FFB23485
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:41:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0FF9282981
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:41:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F167B16F28C;
-	Fri,  5 Apr 2024 14:41:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC6FA16F28C;
+	Fri,  5 Apr 2024 14:41:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="Ev+RxpEA"
-Received: from out203-205-251-72.mail.qq.com (out203-205-251-72.mail.qq.com [203.205.251.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NTAfw6zN"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A081C15FA95
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A3E15FA95
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:41:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712328106; cv=none; b=PXAtaTDmZnP1a012lB9rr3jMyCpYdrxo/KI7+IYy97JBASzPHBUJNs/SYHlH+HWrpiEa23N9C8UVvws48odU0HEeaU04bapGw/EWc/0InmBXFaIJf/4CnFFUNV6MFrRN7sv2uTXGO33Z5A8ymZ2U9J5n6qerlNCdDfuHkMIrols=
+	t=1712328066; cv=none; b=MPd2QpL+sSY9Rs1Lf+a2za+rTYpo48DtrOddOJEVg6vkHz56QRuivEbXDTWxM/MMni+vC97hZHhRqpX1vlqfH5pLyHqvfEM+6Xsmlnpy3fhSIwrj7orCTrCnVWe9Jj0saHZ2SeuRT7golt6Wfh3AiCDTVQyTWQ7J2Nk4gxsJCyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712328106; c=relaxed/simple;
-	bh=5NpUT3miNBD5LFLqv76YWlD13uZF47++BIZwJIrolzs=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=g9D7FXuvh9vke71ZXng2sFcq2IGC5ciJtJaINGWpC8pYVkPN/UDfr6ZiB/jO0KoP9z1IPPmAhnDQYq7i356tmdBQoJw4AxfiaDDUXF1HqsC8sFKc8G0eAxqB6gpVV94SwLd3ytPtmOSadt/GoHRaNgTt4XqudP+1CXSk56zoB4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=Ev+RxpEA; arc=none smtp.client-ip=203.205.251.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1712328095;
-	bh=h1szTFKuBBT4B0FZ8+/wAdJnH1vl0StVKZ/7ccts1xY=;
-	h=From:To:Cc:Subject:Date;
-	b=Ev+RxpEAYMA/GEH//o8AG6Flti1KIAefp3fh5W2YotrYAYqWPHE6nUJHtfvkpxk5a
-	 xL3yngAK2zxgJmBKApSvVtjtnkm0ykrN73FXVx6OZuQwxEf1eBSXl83naCn/R0/4+T
-	 oMKcd9hxE9bqNEt/BC0g2poSqHvbkw3kYbz78skM=
-Received: from localhost.localdomain ([2409:8a60:2a60:b160:dc34:caba:9ec4:65ef])
-	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
-	id A4A1A43D; Fri, 05 Apr 2024 22:41:10 +0800
-X-QQ-mid: xmsmtpt1712328070towhp7ula
-Message-ID: <tencent_70C2A71330E3F84D3D1F55F9521B04BD4C0A@qq.com>
-X-QQ-XMAILINFO: N/WmRbclY25Gbp5H5tlpB41qttfa717xaaHZ5yVNQnf2eLmcW3VXfJh6LSKxS2
-	 xuPbZl6YI8yqvyhXxb1kfHSdRRgKB981Q+B6yphCujW141/wlwS6fXsWJ6Xuxrl4xC0EpiozlkxE
-	 uuBFV/7JOIUzzf7+NmIV77QLDpXjYLMxVPGpSiqghzwPw1a/siBSyWFepsPgKDTdgqFK8pZRNUMz
-	 hW/XefP7uT4AgsG0qI/hokbk6WdGr8zm79xgyn7jQtqTnMb5hBadEl382rXxBWzS8FovGGtG59Wv
-	 IOfIblTlt7shydIekdqShzbt/L2YD3QgkO5XfrAHfg5kzTmHQMkhniaai/ryqbap7bwkwID6WOJP
-	 2mE5mvttygZ23nwOQhyebzm43ICWRCfkQeK/F27PJGWAo5VEfTQB0z/NnJ7o6QOkRTWvAOBrDEeY
-	 xTA8kXe6sgQgRlDCv2SZJJb1UkCCUmL5A1q6hXQiVOQmVJ8pN8/A/cIHnOrlD10uvMzAP99r2aIT
-	 jaWK/dYCW/WovCCfRQj37/eex9rl1YihbCoLIFZpurPXhiBRQ6zXn2OJccB3RpC4Ocxxfbp6nBdD
-	 DvwormNku63rTaEbVsI9sPAaK5IcEDxwMAujHCIN18OwGCNIMKJbHzvbEG4lxhLk9rKfFT+IWIzk
-	 76qVgvW2XVJvpklPdvwmUZw6Phjy88Ffrox97bHi3/+w9j79QOlC2ybQuN8U4d/9gtYEgpmh/mSO
-	 4szk1jgT/UJmFUcSlXjXWd3jEJ/fmWQs8I/KImRzkr1a4hGRlhLuwFIzI06mi+HlS00GHp3PyKj2
-	 zOzj2mfyDvxZVz1v3cXLkhx+0PIj84H1Dw35e1BSmkHHxz5PbJH1yz6NT0BgrG/r0gaeuyiun1Ir
-	 GTXFA4RIsZsSUiTkdG4h7x8a9RWtWvuB9NVkrQWmGXKxdvtW+HtA4CgHomhX7HGkSS38tyl50Nbg
-	 orl0QhF/9WxDDRgT4PalxZWF8vIi7n5VbG3/V7MszZzCFCBch9JHCS/ynOA4LHtJLm88mTh84oML
-	 u2w7zR3jgZ4yMzNUrfnUf6xscmzUbF9EA3N5KZRQ==
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-From: wenyang.linux@foxmail.com
-To: "Eric W . Biederman" <ebiederm@xmission.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Kees Cook <keescook@chromium.org>,
-	Joel Granados <j.granados@samsung.com>,
-	Christian Brauner <brauner@kernel.org>
-Cc: Wen Yang <wenyang.linux@foxmail.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] sysctl: move the extra1/2 boundary check of u8 to sysctl_check_table_array
-Date: Fri,  5 Apr 2024 22:40:59 +0800
-X-OQ-MSGID: <20240405144059.93871-1-wenyang.linux@foxmail.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712328066; c=relaxed/simple;
+	bh=6oTOBIexHbGnXLfOyOVWZsSMpB1KX5H4HlLoBIJVLV8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Z2hyo2pFuH+8WzX3EdFMZQdYkTZolQF0ztpTq5c7DlTcKslIMhzGQZU8NmP08Y5EodmbdAMU9wPaZD7/Hl2T8iJvHMeVJ1malWhEJsw6TO9/ODqxY/j9Nn1hBS0EvJTlKLh/o4YC+i3mwMS7nu1/bMvZSh/QNEL5ITBXV6mUezk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NTAfw6zN; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e0e1d162bso2364756a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:41:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712328063; x=1712932863; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=3sgX+M5RiTUzeiSjlZDWLigpfQIMw+b2CEe8ees/IsA=;
+        b=NTAfw6zNY/rh628GngqgIVjCzpnlAJ8rE0WrztLnynB+pLo6YMdhIv9KQ6KthS0ZxS
+         4k09tvKRU4T0Kcx1mxlXO7Yv92dh8TGJju5PvVelBLFv71pju7M4C4q5bnr8r9rZTzlY
+         57HbHtXJG85ne3tCRsB8DDBgcfTTRgRFBO1hGvCh4z3kYpW8kpYFb4fHqbollKBaF9Ip
+         3L8GfwIQOg7Dpt1yvwBJtC7hp9fK/glEhwYoy6hvFdpFjliF/aCkP0ye1KbCXjp7EEVx
+         IY8iRpaGoxLKkvktUxWPis+E5gHvdeSC82eDYC1MEPP/tYzRbcPdk74sg4nQ/ZuezXCL
+         Bhqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712328063; x=1712932863;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=3sgX+M5RiTUzeiSjlZDWLigpfQIMw+b2CEe8ees/IsA=;
+        b=Op7ntobx7+5LJbSyWU0gwmW38+SILG0eHhSh9w+1pkvktqvKyERC764gRA5bB7Hmbu
+         2FMUxKSeg0iHL3RF8JAj/ONCqqDNVrqaiDXMpEld+YS9VvTefsQu9WRkrgi0RWNlP7+s
+         uQpjHkE1Mx3FtNCJtjAMfAqpdLEftYgD19dlKFed3qraZ9a1HNRdHBbSg4uST26ROHKp
+         TOHn/z5IlfKlZOT8oB74AZacXdy82nWnOXpeaccraAGWKlOrp9QqVY3RORiSxT0ARvyB
+         +VJ+z5JE7zeCCoh0nReaH9IHnnhLtoFNd7nkWVXSB0PZJuCB1ABq+Ym5tninJt3jaKr+
+         rCfw==
+X-Forwarded-Encrypted: i=1; AJvYcCX3LK+RKZXqnukoXiYBbxXrwbK9HK9EnoOholrNNHo0ySQoWerpzcOiaU2zPqhM50xCk0wV2/6UwB2GW+DnwsNljVEFcAMUI4sLh+cv
+X-Gm-Message-State: AOJu0YwxLq/AMxa6zJx1IccvzIfwldLa/FthILdaOuL3m7SxvWgrjV67
+	2tbah247Ezvil7nbCi8vkGcWf+CRA+9H0W6F3DBzbTIbLGBN7jHqTIgYx/hbAok=
+X-Google-Smtp-Source: AGHT+IHBKyvwE/jKNgKCM2GarezYUH6DOzLwzj2I3Y0lemSH75Z/o2ZH8lPrH35bI0f9+L8j7/YduQ==
+X-Received: by 2002:a50:bb05:0:b0:56e:2393:cee4 with SMTP id y5-20020a50bb05000000b0056e2393cee4mr1053397ede.9.1712328062668;
+        Fri, 05 Apr 2024 07:41:02 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id f15-20020a056402150f00b0056e2f1d9152sm779810edw.93.2024.04.05.07.41.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Apr 2024 07:41:02 -0700 (PDT)
+Message-ID: <f063ed8b-44bf-4d6d-8df6-3ae0ec7f4904@linaro.org>
+Date: Fri, 5 Apr 2024 16:41:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RESEND] soundwire: qcom: allow multi-link on newer devices
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Bard Liao <yung-chuan.liao@linux.intel.com>,
+ Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+ Sanyog Kale <sanyog.r.kale@intel.com>, linux-arm-msm@vger.kernel.org,
+ alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+ Mark Brown <broonie@kernel.org>
+References: <20240403132716.325880-1-krzysztof.kozlowski@linaro.org>
+ <Zg_fvU-SA9nwmzW8@matsya>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <Zg_fvU-SA9nwmzW8@matsya>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Wen Yang <wenyang.linux@foxmail.com>
+On 05/04/2024 13:25, Vinod Koul wrote:
+> On 03-04-24, 15:27, Krzysztof Kozlowski wrote:
+>> Newer Qualcomm SoCs like X1E80100 might come with four speakers spread
+>> over two Soundwire controllers, thus they need a multi-link Soundwire
+>> stream runtime.
+> 
+> This does on apply on sdw/next.
+> 
 
-The boundary check of u8's extra is currently performed at runtime.
-This may result in some kernel modules that can be loaded normally without
-any errors, but not works, as follows:
+That's my fault, I had some other old soundwire patches on that branch
+(post bank switch delay), but I guess these aren't really needed.
+Resending soon.
 
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/sysctl.h>
-
-static struct ctl_table_header *_table_header;
-unsigned char _data = 0;
-struct ctl_table table[] = {
-	{
-		.procname       = "foo",
-		.data           = &_data,
-		.maxlen         = sizeof(u8),
-		.mode           = 0644,
-		.proc_handler   = proc_dou8vec_minmax,
-		.extra1         = SYSCTL_ZERO,
-		.extra2         = SYSCTL_ONE_THOUSAND,
-	},
-	{}
-};
-
-static int init_demo(void) {
-	if (!_table_header)
-		_table_header = register_sysctl("kernel", table);
-
-	pr_info("test: init module.\n");
-	return 0;
-}
-
-static void cleanup_demo(void) {
-	if (_table_header) {
-		unregister_sysctl_table(_table_header);
-	}
-
-	pr_info("test: cleanup module.\n");
-}
-
-module_init(init_demo);
-module_exit(cleanup_demo);
-MODULE_LICENSE("GPL");
-
- # insmod test.ko
-
- # cat /proc/sys/kernel/foo
- cat: /proc/sys/kernel/foo: Invalid argument
-
- # echo 1 >  /proc/sys/kernel/foo
- -bash: echo: write error: Invalid argument
-
-This patch moves boundary checking forward to module loading,
-thereby reporting errors in advance, and also adds a kunit test case.
-
-Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
-Cc: Luis Chamberlain <mcgrof@kernel.org>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Joel Granados <j.granados@samsung.com>
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Cc: Christian Brauner <brauner@kernel.org>
-Cc: linux-kernel@vger.kernel.org
----
-v3: 
-- kunit: using register_sysctl, and thus unnecessary sentries were removed
-- kunit: using constant ctl_tables
-v2:
-- kunit: detect registration failure with KUNIT_EXPECT_NULL
-
- fs/proc/proc_sysctl.c | 12 +++++++++++
- kernel/sysctl-test.c  | 49 +++++++++++++++++++++++++++++++++++++++++++
- kernel/sysctl.c       | 14 ++++---------
- 3 files changed, 65 insertions(+), 10 deletions(-)
-
-diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-index 37cde0efee57..136e3f8966c3 100644
---- a/fs/proc/proc_sysctl.c
-+++ b/fs/proc/proc_sysctl.c
-@@ -1096,6 +1096,7 @@ static int sysctl_err(const char *path, struct ctl_table *table, char *fmt, ...)
- 
- static int sysctl_check_table_array(const char *path, struct ctl_table *table)
- {
-+	unsigned int extra;
- 	int err = 0;
- 
- 	if ((table->proc_handler == proc_douintvec) ||
-@@ -1107,6 +1108,17 @@ static int sysctl_check_table_array(const char *path, struct ctl_table *table)
- 	if (table->proc_handler == proc_dou8vec_minmax) {
- 		if (table->maxlen != sizeof(u8))
- 			err |= sysctl_err(path, table, "array not allowed");
-+
-+		if (table->extra1) {
-+			extra = *(unsigned int *) table->extra1;
-+			if (extra > 255U)
-+				err |= sysctl_err(path, table, "array not allowed");
-+		}
-+		if (table->extra2) {
-+			extra = *(unsigned int *) table->extra2;
-+			if (extra > 255U)
-+				err |= sysctl_err(path, table, "array not allowed");
-+		}
- 	}
- 
- 	if (table->proc_handler == proc_dobool) {
-diff --git a/kernel/sysctl-test.c b/kernel/sysctl-test.c
-index 6ef887c19c48..4e7dcc9187e2 100644
---- a/kernel/sysctl-test.c
-+++ b/kernel/sysctl-test.c
-@@ -367,6 +367,54 @@ static void sysctl_test_api_dointvec_write_single_greater_int_max(
- 	KUNIT_EXPECT_EQ(test, 0, *((int *)table.data));
- }
- 
-+/*
-+ * Test that registering an invalid extra value is not allowed.
-+ */
-+static void sysctl_test_register_sysctl_sz_invalid_extra_value(
-+		struct kunit *test)
-+{
-+	unsigned char data = 0;
-+	struct ctl_table table_foo[] = {
-+		{
-+			.procname	= "foo",
-+			.data		= &data,
-+			.maxlen		= sizeof(u8),
-+			.mode		= 0644,
-+			.proc_handler	= proc_dou8vec_minmax,
-+			.extra1		= SYSCTL_FOUR,
-+			.extra2		= SYSCTL_ONE_THOUSAND,
-+		},
-+	};
-+
-+	struct ctl_table table_bar[] = {
-+		{
-+			.procname	= "bar",
-+			.data		= &data,
-+			.maxlen		= sizeof(u8),
-+			.mode		= 0644,
-+			.proc_handler	= proc_dou8vec_minmax,
-+			.extra1		= SYSCTL_NEG_ONE,
-+			.extra2		= SYSCTL_ONE_HUNDRED,
-+		},
-+	};
-+
-+	struct ctl_table table_qux[] = {
-+		{
-+			.procname	= "qux",
-+			.data		= &data,
-+			.maxlen		= sizeof(u8),
-+			.mode		= 0644,
-+			.proc_handler	= proc_dou8vec_minmax,
-+			.extra1		= SYSCTL_ZERO,
-+			.extra2		= SYSCTL_TWO_HUNDRED,
-+		},
-+	};
-+
-+	KUNIT_EXPECT_NULL(test, register_sysctl("foo", table_foo));
-+	KUNIT_EXPECT_NULL(test, register_sysctl("foo", table_bar));
-+	KUNIT_EXPECT_NOT_NULL(test, register_sysctl("foo", table_qux));
-+}
-+
- static struct kunit_case sysctl_test_cases[] = {
- 	KUNIT_CASE(sysctl_test_api_dointvec_null_tbl_data),
- 	KUNIT_CASE(sysctl_test_api_dointvec_table_maxlen_unset),
-@@ -378,6 +426,7 @@ static struct kunit_case sysctl_test_cases[] = {
- 	KUNIT_CASE(sysctl_test_dointvec_write_happy_single_negative),
- 	KUNIT_CASE(sysctl_test_api_dointvec_write_single_less_int_min),
- 	KUNIT_CASE(sysctl_test_api_dointvec_write_single_greater_int_max),
-+	KUNIT_CASE(sysctl_test_register_sysctl_sz_invalid_extra_value),
- 	{}
- };
- 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 81cc974913bb..3efe3a991743 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -977,16 +977,10 @@ int proc_dou8vec_minmax(struct ctl_table *table, int write,
- 	if (table->maxlen != sizeof(u8))
- 		return -EINVAL;
- 
--	if (table->extra1) {
--		min = *(unsigned int *) table->extra1;
--		if (min > 255U)
--			return -EINVAL;
--	}
--	if (table->extra2) {
--		max = *(unsigned int *) table->extra2;
--		if (max > 255U)
--			return -EINVAL;
--	}
-+	if (table->extra1)
-+		min = *(unsigned char *) table->extra1;
-+	if (table->extra2)
-+		max = *(unsigned char *) table->extra2;
- 
- 	tmp = *table;
- 
--- 
-2.25.1
+Best regards,
+Krzysztof
 
 
