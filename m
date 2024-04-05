@@ -1,103 +1,145 @@
-Return-Path: <linux-kernel+bounces-133367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133369-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6176689A2E4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:50:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 641D189A2EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:53:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92E711C22939
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:50:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 031D31F242AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 863D5171645;
-	Fri,  5 Apr 2024 16:50:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC00B171659;
+	Fri,  5 Apr 2024 16:53:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=permerror (0-bit key) header.d=gentwo.org header.i=@gentwo.org header.b="piJPZuR3"
-Received: from gentwo.org (gentwo.org [62.72.0.81])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="lU7XaCZy"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3176720B0F
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 16:50:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.72.0.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9CBE171064;
+	Fri,  5 Apr 2024 16:53:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712335824; cv=none; b=sq8GNA0rdXPBnxdsauMlxwdvSG8t+dzjKjLcgNiTn8OZbVm5ulmSu/sxPqFkrHioWW/XcgaEgJiGnEwp0ebLTPebmsXLXaKhU2hwnZ23M1kLs1QaZkoZCA9eMbmL0YxdROZBT+dZpz7m88pp0VRHOpg34m+rb+jbwny5N6WsoHI=
+	t=1712335986; cv=none; b=qJNO5ARdal3m/46eGjRCPr+b7ZUNdEIP8y+4uUhycFBxPRW6otV5IVvzp5cT7JNIOfnV4BKtbYrwD7nfDsxyRLt/9XJV0LRhn+qfl+ZttYrp1kElReRxwKVDLo0cmBTQ/lr7eD8A3Smt0SaIw7mptwcTOtuXXj/v2ZWsc97cpfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712335824; c=relaxed/simple;
-	bh=jxZRTYp0lYxN1n5vVd2kDP+TuexqmFFWBYOJfm6H/JM=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=FzVbl92QTmLRGYTj63HODUw53JYZ/9MqONoul5mzjer3zYh9o//YKwfIKJlWaWq4nCxUlWeMU/UwWV/CD+N3HwBYQg5ux4fE20ugnSXsb4erHhF/BwkUmtNj9q818Qtg91Cxo12TTQ7u9vgXXIKcPlSIZnLOI3k4eApbI2tYd8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentwo.org; spf=pass smtp.mailfrom=gentwo.org; dkim=permerror (0-bit key) header.d=gentwo.org header.i=@gentwo.org header.b=piJPZuR3; arc=none smtp.client-ip=62.72.0.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gentwo.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gentwo.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gentwo.org;
-	s=default; t=1712335822;
-	bh=jxZRTYp0lYxN1n5vVd2kDP+TuexqmFFWBYOJfm6H/JM=;
-	h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-	b=piJPZuR3WuXyKKeZUkRLm7V4YnJy7TTI73aqrg55gwu5F8ZMU81fXRcoKmHF3X0SV
-	 VGSYtgNfOe3zkVV8xWZGcKV94qcmo86MFGAcUJPLFVAb6AeDd6YnHTe+KcYOHuo5Pv
-	 Pj5apSkFLc6Z6dAau869/VBp6BNUIu6bj3Wtf4Irr/recf0wwROy2fCMY9Q27AsVwb
-	 0xd7SnavKu4cDKHNUoak54aWjh00XaII1HllAinbWvL5iYcDqQbcpespveTMGcoZP2
-	 NgMyXwLAohbtfj3e17T1vQDJhCp0wgLDuwjuZlqXkGvcnkTuorYcDlCDhriaYOScwn
-	 2e6QfdoToQJBA==
-Received: by gentwo.org (Postfix, from userid 1003)
-	id 365D540A86; Fri,  5 Apr 2024 09:50:22 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-	by gentwo.org (Postfix) with ESMTP id 3598540A80;
-	Fri,  5 Apr 2024 09:50:22 -0700 (PDT)
-Date: Fri, 5 Apr 2024 09:50:22 -0700 (PDT)
-From: "Christoph Lameter (Ampere)" <cl@gentwo.org>
-To: Chen Jun <chenjun102@huawei.com>
-cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, penberg@kernel.org, 
-    rientjes@google.com, iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, 
-    vbabka@suse.cz, roman.gushchin@linux.dev, 42.hyeyoo@gmail.com, 
-    xuqiang36@huawei.com, wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v2] mm/slub: Reduce memory consumption in extreme
- scenarios
-In-Reply-To: <20240330082335.29710-1-chenjun102@huawei.com>
-Message-ID: <0a59e5a1-1961-5eb2-2eb0-a930006e3f80@gentwo.org>
-References: <20240330082335.29710-1-chenjun102@huawei.com>
+	s=arc-20240116; t=1712335986; c=relaxed/simple;
+	bh=k9joHHASRmPK5bSi2qiPET8+F5CIP1hGsb5+swdvcLw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=tOGjisSmkTLATYs2Ouf5K27GYa2ZEmho/wJm9lBBT7tPM0EKnkXKAZT2xyByjjBm0eFisdQGGq6H10pa+HtMRnXgIyEiTwWdjYj1OV9a9wbFHtk4V8BNHQU69E7b7fEL5F3BeUglfgN/oBeBTNqium7UH8E2K1xdx1+cqngN8xA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=lU7XaCZy; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 435BKME5005086;
+	Fri, 5 Apr 2024 16:52:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Hah74lr9Dv4JVnj9mvH0KaLuHd9eWSeuO8TbdyaT1Ms=; b=lU
+	7XaCZym8+7U982/I5BBtfQTnuJ8i0ehtq2YVCv5lQuXJOwlgfOp4HbbmYhmlbXQd
+	EFoE5rt1NFIx9xte29wrUF49zkikkmAR/2g4rsHmZqCzG4Rn914wlaahrURmGTUO
+	HqlGDgTUrdb3N0sZOhhmnkr/C43XR77v4NlhvJdJEIB1Y79vLmJF+YzGhpFEMDH6
+	piJq2lIRdGDNtFbMU5qLfhYsZXq1f/lkN0Dy3WUws3yU9XbBHxHaolJ3Gu//aTML
+	w51flnZ7QuGF35Ah1BSDc3p7qoaSG107SWixba3ZhoFlbng4aJAS91XpqyFy3XSB
+	4Y1nulRwXdmJiFBhpiVw==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa1xaaefh-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 16:52:56 +0000 (GMT)
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 435Gqu6h008227
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 5 Apr 2024 16:52:56 GMT
+Received: from [10.216.23.38] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
+ 09:52:34 -0700
+Message-ID: <d95b43f1-76bd-d633-1058-17dcf29e1d38@quicinc.com>
+Date: Fri, 5 Apr 2024 22:22:07 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v2 2/2] soc: qcom: pmic_glink: notify clients about the
+ current state
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Neil
+ Armstrong <neil.armstrong@linaro.org>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew
+ Halaney <ahalaney@redhat.com>
+References: <20240403-pmic-glink-fix-clients-v2-0-aed4e02baacc@linaro.org>
+ <20240403-pmic-glink-fix-clients-v2-2-aed4e02baacc@linaro.org>
+From: Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20240403-pmic-glink-fix-clients-v2-2-aed4e02baacc@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: -sPUZFPp81TBgI-j6PmJh3E91mxQ3kFp
+X-Proofpoint-ORIG-GUID: -sPUZFPp81TBgI-j6PmJh3E91mxQ3kFp
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_19,2024-04-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 malwarescore=0
+ spamscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0 mlxlogscore=999
+ mlxscore=0 suspectscore=0 priorityscore=1501 phishscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404050118
 
-On Sat, 30 Mar 2024, Chen Jun wrote:
 
-> When kmalloc_node() is called without __GFP_THISNODE and the target node
-> lacks sufficient memory, SLUB allocates a folio from a different node
-> other than the requested node, instead of taking a partial slab from it.
 
-Hmmm... This would mean that we do not consult the partial lists of the 
-other nodes. That is something to be fixed in the allocator.
+On 4/3/2024 8:40 AM, Dmitry Baryshkov wrote:
+> In case the client is registered after the pmic-glink recived a response
 
-> However, since the allocated folio does not belong to the requested
-> node, it is deactivated and added to the partial slab list of the node
-> it belongs to.
+                                                         received
 
-That should only occur if a request for an object for node X follows a 
-request for an object from node Y.
+> from the Protection Domain mapper, it is going to miss the notification
+> about the state. Notify clients about the current state upon
+> registration.
+> 
+> Fixes: 58ef4ece1e41 ("soc: qcom: pmic_glink: Introduce base PMIC GLINK driver")
+> Reviewed-by: Andrew Halaney <ahalaney@redhat.com>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> ---
+>   drivers/soc/qcom/pmic_glink.c | 5 +++++
+>   1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/soc/qcom/pmic_glink.c b/drivers/soc/qcom/pmic_glink.c
+> index 2b2cdf479654..e85a12ec2aab 100644
+> --- a/drivers/soc/qcom/pmic_glink.c
+> +++ b/drivers/soc/qcom/pmic_glink.c
+> @@ -83,9 +83,14 @@ struct pmic_glink_client *devm_pmic_glink_register_client(struct device *dev,
+>   	client->pdr_notify = pdr;
+>   	client->priv = priv;
+>   
+> +	mutex_lock(&pg->state_lock);
+>   	mutex_lock(&pg->client_lock);
+> +
+>   	list_add(&client->node, &pg->clients);
+> +	client->pdr_notify(client->priv, pg->client_state);
+> +
+>   	mutex_unlock(&pg->client_lock);
+> +	mutex_unlock(&pg->state_lock);
 
-> This behavior can result in excessive memory usage when the requested
-> node has insufficient memory, as SLUB will repeatedly allocate folios
-> from other nodes without reusing the previously allocated ones.
+LGTM,
 
-That is bad. Can we avoid that by verifying proper allocator behavior
-during deactivation and ensuring that it searches remote partial objects 
-first before doing something drastic as going to the page allocator?
+Reviewed-by: Mukesh Ojha <quic_mojha@quicinc.com>
 
-> To prevent memory wastage,
-> when (node != NUMA_NO_NODE) && !(gfpflags & __GFP_THISNODE) is,
-> 1) try to get a partial slab from target node with GFP_NOWAIT |
->   __GFP_THISNODE opportunistically.
-
-Did we check the partial lists of that node first for available 
-objects before going to the page allocator?
-
-get_any_partial() should do that. Maybe it is not called in the 
-kmalloc_node case.
-
+-Mukesh
+>   
+>   	devres_add(dev, client);
+>   
+> 
 
