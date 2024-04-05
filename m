@@ -1,227 +1,214 @@
-Return-Path: <linux-kernel+bounces-133091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E800C899EA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:46:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5AB9899EB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:48:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DAC928491A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:46:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A32C1F23F9F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3874A16D9B4;
-	Fri,  5 Apr 2024 13:46:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3A816D9AE;
+	Fri,  5 Apr 2024 13:47:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EW+85BBJ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VUbNjwdS"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27D1916131A
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:46:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D46916D9B0
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:47:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712324766; cv=none; b=gekcAB0ifMPmpiVugC8WHrWrEgxs5g8VZGIUBVhkhROYu7couqFQLdFro4kdJJBB/EK13bcxs50A/DoPzU5B4WItsQQfT7rIm9icfnLFhLjjLs7mwePEUkaWq21w+G/JHplxi5oGoDyGiHgqvsnRWpOKfObnb7ecEDJHUorGtSQ=
+	t=1712324855; cv=none; b=UvPpPWzo3b+8FQWAuzY7t1lOUu3R18Tu9dcZeBq1pAdrJlgdOXRAGcbvJlLNbP3t7PXfL0S00yv0s1srCfBlyVo6hUKQ2XqHV4hMddAugaZjTM7IU/BgaXY8fNOu/lA4Hyiu9iafYgpUQMs9d3S5zYnHDu0TqW39G1qjUqhL5j4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712324766; c=relaxed/simple;
-	bh=/zinqNVTVxNGsbsEheCpLj9G3tHSvBu/H2D25u/4YHs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hL6n6kGDav697mY4j2nxDNA+/Wh8qRPErm86AgZ9AnGgjIuinzYrxDYk8JeH6NJk0bBdv33nnAKToiA+Hd9pymEuFDxLtiXDUXwA0axcugk4+sC7Adh/dWQDvuAUtQ7X5N/UBud4VriXTmNr+qe4m5l4E1lIt+xqEFFgUQQiAGs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EW+85BBJ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712324762;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ds5HqRlcZsJw1NwtspBjr4yi/f3BIcikQYMcgYaEtiE=;
-	b=EW+85BBJsHsM+cNztZodubUXzpSGOeIC2sK+wuFbbxCvgyVTeIbL54i2DwIQdYSGYHX78n
-	+ZgHtG4KYeyzJUL7W6JwsMpNv8haaUijDZNAjo6YQ0U/V+pzjtPb2fi6QQL4seerjHFvnk
-	cuvU4LG/SrBHHeNYgAFVIjPhlqrBNqg=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-687-ZNe6GffuObSLTYpt4S8s6Q-1; Fri, 05 Apr 2024 09:45:58 -0400
-X-MC-Unique: ZNe6GffuObSLTYpt4S8s6Q-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 25B8B811E81;
-	Fri,  5 Apr 2024 13:45:58 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.6])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 4BEFB3C21;
-	Fri,  5 Apr 2024 13:45:57 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id 43FF240135043; Fri,  5 Apr 2024 10:45:39 -0300 (-03)
-Date: Fri, 5 Apr 2024 10:45:39 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Leonardo Bras <leobras@redhat.com>, Paolo Bonzini <pbonzini@redhat.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org
-Subject: Re: [RFC PATCH v1 0/2] Avoid rcu_core() if CPU just left guest vcpu
-Message-ID: <ZhAAg8KNd8qHEGcO@tpad>
-References: <20240328171949.743211-1-leobras@redhat.com>
- <ZgsXRUTj40LmXVS4@google.com>
+	s=arc-20240116; t=1712324855; c=relaxed/simple;
+	bh=eHFqbIhCRlO8+eg0bsye3/gnRyfWteI0TtMg8FRqQjs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UpwZ5Ip21NgLh3VrinNxjA6CBo1H2CBdn8hhpddXQwGdymzQ7IJDT5Quo5p70VJgPkv5Yxd+wuIeVTD3uCeBGb4q4a83JzV5mPNw8LHpzgKBkltCsUQ6DY9dYXtc5KbH7D1HiCMt9rKpioV6OzDBn8bFHVfLl/s/kAXbogBhZ8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VUbNjwdS; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-617d25b2bc4so5439597b3.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 06:47:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712324851; x=1712929651; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RDkodhxPHjCRcYuHL8QJdxmj/UyX4mSAQyu360+3BOI=;
+        b=VUbNjwdSHuFql+0qqSA6ulfb92n/na/cVGs9xcWDSze4ziRSFHPv67sZK5aQUDeQsb
+         3TuuRG5ceBVzSdQWK6ylm141wxF/YJSyp+7F71VKNBSU9GB0yjWMTL1R9JapJSI8Gv9m
+         I1YxyWBxwMy9EqXxX8R1RPb6+AcZul2LuqH7ba1Yx/NabSMQyem5R3CkTZ1EEvowdeHa
+         isOarVU/YLDKbyYy/URONSvQu5EcZOyIrMIBbLa5ZzP8Yt3T81nTcDtmT3TWN3wm7gb6
+         4nPV0rPArcITIyCy945cZX7BGr6gY1nwBvjL1nNuQ7LjG+tRrC0uBdBtWdveKzp7pCJ0
+         OsiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712324851; x=1712929651;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RDkodhxPHjCRcYuHL8QJdxmj/UyX4mSAQyu360+3BOI=;
+        b=AG/oDGozwLL0L3SQ3vmGKyII88vmEOEB+973o2Q4EdwCuiq8BeImFooVq9779XGjJ2
+         1nTJ4e/5eUAPCK0PYyH1ztwNVXEXx8ek7DJVJbD2eFovZld7vzYDFgqCp3aDmP+rLm9o
+         RN31/aNMubwZG0yvPKn7MdbllhHhHbk3DZDJn8SGOIaDXBhNxtKxmx6zl0f9qsSNeTK9
+         8vj5z22f1PpuXbY8wwfvLV6Ie84Ccz+47Wo6TKBW/R84WzNlzb7gRvH7AgOok9jCGSb6
+         Ybe1P8QP//oUFaM/5UFITYkEZu8oGTHBT3raya6H6WtgAgd1u1U2RjYuw9nwhAXkxhxw
+         g7qw==
+X-Forwarded-Encrypted: i=1; AJvYcCWVWN1SI82evz020469bGQK0lPDrVPZhyabjX4C5EHHSY7CIjSvcYG7jo/uB3eF4n5AVKuNE+60xfp/wF60H9XGg+5kamnUUOCGd/wP
+X-Gm-Message-State: AOJu0YzJueS1nRZYIZu/FHng3YQlEdh4It4BIef2R+JoKRj0BXu6Nl5Q
+	S8aD9Q9p6CbmPWto5okdlrQcU+topg3An3Rh1eV6X6lWXzklXYmq5KaGX7OVo+bYXTPheA5mFwX
+	z5fDQwOr/PHTJw4awoG6HzYQHkF9IGaMivDT6
+X-Google-Smtp-Source: AGHT+IETt+9jSDY6jbVQEtdOA/2Ue8S5T1KTCdTuvtcb7ogtZ6i7ZvA/55fNMoiVG+R35qGWCJRB01iqaNVA/qZfNAE=
+X-Received: by 2002:a25:e30e:0:b0:dd0:2076:4706 with SMTP id
+ z14-20020a25e30e000000b00dd020764706mr1142654ybd.31.1712324850962; Fri, 05
+ Apr 2024 06:47:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZgsXRUTj40LmXVS4@google.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+References: <20240404165404.3805498-1-surenb@google.com> <Zg7dmp5VJkm1nLRM@casper.infradead.org>
+ <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
+ <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
+ <Zg8qstJNfK07siNn@casper.infradead.org> <jb25mtkveqf63bv74jhynf6ncxmums5s37esveqsv52yurh4z7@5q55ttv34bia>
+ <20240404154150.c25ba3a0b98023c8c1eff3a4@linux-foundation.org>
+ <jpaw4hdd73ngt7mvtcdryqscivx6m2ic76ikfkcopceb47becp@vox5czt5bec3>
+ <CAJuCfpF10COO2nh1nt3CcaZOFe4iSXszsup+a0qAEQ1ngyy5tQ@mail.gmail.com> <20240405095327.ufsimeplwahh6mem@quack3>
+In-Reply-To: <20240405095327.ufsimeplwahh6mem@quack3>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 5 Apr 2024 06:47:17 -0700
+Message-ID: <CAJuCfpHG5U5Radv+_D3nD3OxAgqzBa_Za28+RS=NTG53Y=xpsg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
+ the call site
+To: Jan Kara <jack@suse.cz>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Matthew Wilcox <willy@infradead.org>, joro@8bytes.org, will@kernel.org, 
+	trond.myklebust@hammerspace.com, anna@kernel.org, arnd@arndb.de, 
+	herbert@gondor.apana.org.au, davem@davemloft.net, jikos@kernel.org, 
+	benjamin.tissoires@redhat.com, tytso@mit.edu, jack@suse.com, 
+	dennis@kernel.org, tj@kernel.org, cl@linux.com, jakub@cloudflare.com, 
+	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com, 
+	vbabka@suse.cz, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-ext4@vger.kernel.org, linux-mm@kvack.org, 
+	netdev@vger.kernel.org, linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Apr 01, 2024 at 01:21:25PM -0700, Sean Christopherson wrote:
-> On Thu, Mar 28, 2024, Leonardo Bras wrote:
-> > I am dealing with a latency issue inside a KVM guest, which is caused by
-> > a sched_switch to rcuc[1].
-> > 
-> > During guest entry, kernel code will signal to RCU that current CPU was on
-> > a quiescent state, making sure no other CPU is waiting for this one.
-> > 
-> > If a vcpu just stopped running (guest_exit), and a syncronize_rcu() was
-> > issued somewhere since guest entry, there is a chance a timer interrupt
-> > will happen in that CPU, which will cause rcu_sched_clock_irq() to run.
-> > 
-> > rcu_sched_clock_irq() will check rcu_pending() which will return true,
-> > and cause invoke_rcu_core() to be called, which will (in current config)
-> > cause rcuc/N to be scheduled into the current cpu.
-> > 
-> > On rcu_pending(), I noticed we can avoid returning true (and thus invoking
-> > rcu_core()) if the current cpu is nohz_full, and the cpu came from either
-> > idle or userspace, since both are considered quiescent states.
-> > 
-> > Since this is also true to guest context, my idea to solve this latency
-> > issue by avoiding rcu_core() invocation if it was running a guest vcpu.
-> > 
-> > On the other hand, I could not find a way of reliably saying the current
-> > cpu was running a guest vcpu, so patch #1 implements a per-cpu variable
-> > for keeping the time (jiffies) of the last guest exit.
-> > 
-> > In patch #2 I compare current time to that time, and if less than a second
-> > has past, we just skip rcu_core() invocation, since there is a high chance
-> > it will just go back to the guest in a moment.
-> 
-> What's the downside if there's a false positive?
+On Fri, Apr 5, 2024 at 2:53=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
+>
+> On Thu 04-04-24 16:16:15, Suren Baghdasaryan wrote:
+> > On Thu, Apr 4, 2024 at 4:01=E2=80=AFPM Kent Overstreet
+> > <kent.overstreet@linux.dev> wrote:
+> > >
+> > > On Thu, Apr 04, 2024 at 03:41:50PM -0700, Andrew Morton wrote:
+> > > > On Thu, 4 Apr 2024 18:38:39 -0400 Kent Overstreet <kent.overstreet@=
+linux.dev> wrote:
+> > > >
+> > > > > On Thu, Apr 04, 2024 at 11:33:22PM +0100, Matthew Wilcox wrote:
+> > > > > > On Thu, Apr 04, 2024 at 03:17:43PM -0700, Suren Baghdasaryan wr=
+ote:
+> > > > > > > Ironically, checkpatch generates warnings for these type cast=
+s:
+> > > > > > >
+> > > > > > > WARNING: unnecessary cast may hide bugs, see
+> > > > > > > http://c-faq.com/malloc/mallocnocast.html
+> > > > > > > #425: FILE: include/linux/dma-fence-chain.h:90:
+> > > > > > > + ((struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_=
+chain),
+> > > > > > > GFP_KERNEL))
+> > > > > > >
+> > > > > > > I guess I can safely ignore them in this case (since we cast =
+to the
+> > > > > > > expected type)?
+> > > > > >
+> > > > > > I find ignoring checkpatch to be a solid move 99% of the time.
+> > > > > >
+> > > > > > I really don't like the codetags.  This is so much churn, and i=
+t could
+> > > > > > all be avoided by just passing in _RET_IP_ or _THIS_IP_ dependi=
+ng on
+> > > > > > whether we wanted to profile this function or its caller.  vmal=
+loc
+> > > > > > has done it this way since 2008 (OK, using __builtin_return_add=
+ress())
+> > > > > > and lockdep has used _THIS_IP_ / _RET_IP_ since 2006.
+> > > > >
+> > > > > Except you can't. We've been over this; using that approach for t=
+racing
+> > > > > is one thing, using it for actual accounting isn't workable.
+> > > >
+> > > > I missed that.  There have been many emails.  Please remind us of t=
+he
+> > > > reasoning here.
+> > >
+> > > I think it's on the other people claiming 'oh this would be so easy i=
+f
+> > > you just do it this other way' to put up some code - or at least more
+> > > than hot takes.
+> > >
+> > > But, since you asked - one of the main goals of this patchset was to =
+be
+> > > fast enough to run in production, and if you do it by return address
+> > > then you've added at minimum a hash table lookup to every allocate an=
+d
+> > > free; if you do that, running it in production is completely out of t=
+he
+> > > question.
+> > >
+> > > Besides that - the issues with annotating and tracking the correct
+> > > callsite really don't go away, they just shift around a bit. It's tru=
+e
+> > > that the return address approach would be easier initially, but that'=
+s
+> > > not all we're concerned with; we're concerned with making sure
+> > > allocations get accounted to the _correct_ callsite so that we're giv=
+ing
+> > > numbers that you can trust, and by making things less explicit you ma=
+ke
+> > > that harder.
+> > >
+> > > Additionally: the alloc_hooks() macro is for more than this. It's als=
+o
+> > > for more usable fault injection - remember every thread we have where
+> > > people are begging for every allocation to be __GFP_NOFAIL - "oh, err=
+or
+> > > paths are hard to test, let's just get rid of them" - never mind that
+> > > actually do have to have error paths - but _per callsite_ selectable
+> > > fault injection will actually make it practical to test memory error
+> > > paths.
+> > >
+> > > And Kees working on stuff that'll make use of the alloc_hooks() macro
+> > > for segregating kmem_caches.
+> >
+> > Yeah, that pretty much summarizes it. Note that we don't have to make
+> > the conversions in this patch and accounting will still work but then
+> > all allocations from different callers will be accounted to the helper
+> > function and that's less useful than accounting at the call site.
+> > It's a sizable churn but the conversions are straight-forward and we
+> > do get accurate, performant and easy to use memory accounting.
+>
+> OK, fair enough. I guess I can live with the allocation macros in jbd2 if
+> type safety is preserved. But please provide a short summary of why we ne=
+ed
+> these macros (e.g. instead of RET_IP approach) in the changelog (or at
+> least a link to some email explaining this if the explanation would get t=
+oo
+> long). Because I was wondering about the same as Andrew (and yes, this is
+> because I wasn't really following the huge discussion last time).
 
-rcuc wakes up (which might exceed the allowed latency threshold
-for certain realtime apps).
+Ack. I'll write up the explanation or if there is a good one already
+in our previous discussion will add a link to it. Thanks!
 
-> > What I know it's weird with this patch:
-> > 1 - Not sure if this is the best way of finding out if the cpu was
-> >     running a guest recently.
-> > 
-> > 2 - This per-cpu variable needs to get set at each guest_exit(), so it's
-> >     overhead, even though it's supposed to be in local cache. If that's
-> >     an issue, I would suggest having this part compiled out on 
-> >     !CONFIG_NO_HZ_FULL, but further checking each cpu for being nohz_full
-> >     enabled seems more expensive than just setting this out.
-> 
-> A per-CPU write isn't problematic, but I suspect reading jiffies will be quite
-> imprecise, e.g. it'll be a full tick "behind" on many exits.
-> 
-> > 3 - It checks if the guest exit happened over than 1 second ago. This 1
-> >     second value was copied from rcu_nohz_full_cpu() which checks if the
-> >     grace period started over than a second ago. If this value is bad,
-> >     I have no issue changing it.
-> 
-> IMO, checking if a CPU "recently" ran a KVM vCPU is a suboptimal heuristic regardless
-> of what magic time threshold is used.  
-
-Why? It works for this particular purpose.
-
-> IIUC, what you want is a way to detect if
-> a CPU is likely to _run_ a KVM vCPU in the near future.  KVM can provide that
-> information with much better precision, e.g. KVM knows when when it's in the core
-> vCPU run loop.
-
-ktime_t ktime_get(void)
-{
-        struct timekeeper *tk = &tk_core.timekeeper;
-        unsigned int seq;
-        ktime_t base;
-        u64 nsecs;
-
-        WARN_ON(timekeeping_suspended);
-
-        do {
-                seq = read_seqcount_begin(&tk_core.seq);
-                base = tk->tkr_mono.base;
-                nsecs = timekeeping_get_ns(&tk->tkr_mono);
-
-        } while (read_seqcount_retry(&tk_core.seq, seq));
-
-        return ktime_add_ns(base, nsecs);
-}
-EXPORT_SYMBOL_GPL(ktime_get);
-
-ktime_get() is more expensive than unsigned long assignment.
-
-What is done is: If vcpu has entered guest mode in the past, then RCU
-extended quiescent state has been transitioned into the CPU, therefore
-it is not necessary to wake up rcu core.
-
-The logic is copied from:
-
-/*
- * Is this CPU a NO_HZ_FULL CPU that should ignore RCU so that the
- * grace-period kthread will do force_quiescent_state() processing?
- * The idea is to avoid waking up RCU core processing on such a
- * CPU unless the grace period has extended for too long.
- *
- * This code relies on the fact that all NO_HZ_FULL CPUs are also
- * RCU_NOCB_CPU CPUs.
- */
-static bool rcu_nohz_full_cpu(void)
-{
-#ifdef CONFIG_NO_HZ_FULL
-        if (tick_nohz_full_cpu(smp_processor_id()) &&
-            (!rcu_gp_in_progress() ||
-             time_before(jiffies, READ_ONCE(rcu_state.gp_start) + HZ)))
-                return true;
-#endif /* #ifdef CONFIG_NO_HZ_FULL */
-        return false;
-}
-
-Note:
-
-avoid waking up RCU core processing on such a
-CPU unless the grace period has extended for too long.
-
-> > 4 - Even though I could detect no issue, I included linux/kvm_host.h into 
-> >     rcu/tree_plugin.h, which is the first time it's getting included
-> >     outside of kvm or arch code, and can be weird.
-> 
-> Heh, kvm_host.h isn't included outside of KVM because several architectures can
-> build KVM as a module, which means referencing global KVM varibles from the kernel
-> proper won't work.
-> 
-> >     An alternative would be to create a new header for providing data for
-> >     non-kvm code.
-> 
-> I doubt a new .h or .c file is needed just for this, there's gotta be a decent
-> landing spot for a one-off variable.  E.g. I wouldn't be at all surprised if there
-> is additional usefulness in knowing if a CPU is in KVM's core run loop and thus
-> likely to do a VM-Enter in the near future, at which point you could probably make
-> a good argument for adding a flag in "struct context_tracking".  Even without a
-> separate use case, there's a good argument for adding that info to context_tracking.
-
-Well, jiffies is cheap and just works. 
-
-Perhaps can add higher resolution later if required?
-
+>
+>                                                                 Honza
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 
