@@ -1,125 +1,208 @@
-Return-Path: <linux-kernel+bounces-132684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCDCD89988F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 092E2899895
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:54:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72C201F2224A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:53:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B374F1F22818
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADA915FA92;
-	Fri,  5 Apr 2024 08:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380C815FD07;
+	Fri,  5 Apr 2024 08:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="KH/O2kU4"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gV/9/Zoa";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="WXvQe5FG"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E155B15FA72
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 08:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E59E15FD04;
+	Fri,  5 Apr 2024 08:53:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712307187; cv=none; b=LInjKOQtYtdbxIG/UPzm1sAJ9zLDeSLUgalTXEM1nZ1IkvWZUIrDuikJGDJY63TaSUAQfJTlQlOttcip8+kWVgRG5PXBOYA7VyqzWmFwV2EyGKxbdQeIp/wDnuCmvU/AzIepUT6HKPDjUO3jRTFo92LViJlGZAF8brLa9g4It4s=
+	t=1712307206; cv=none; b=HAw2qEZBTlQ8Uw3YkWILNmrTv/bVAGieRC8Axss15ZLTHndkvNFQ98pSqgV+pSwWOKOXJpJjas2KTSr73Jm69o0+V4s8raB62h+rxOGKeB5lPKgDM5BMFof6v/1NrS+e42Yc6nJce2fWRAle+1vgSNhc4IbPWMO+bXFGXRV0kds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712307187; c=relaxed/simple;
-	bh=b58X/MIMUkzWJKfAi7xukhYyNxm3BVKa9wfMtsb3Sd4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WaIGDLpGH5K+cdNHtt/7+v5nRe0qxXJ8A815OAXVRKP6lZRAq6sEkIumkuIn1emzb5DboGdFzMYwOiz1Xvy0AWXw4TWEOl9Ij+tB96+y/HTx4sGiTfL9NylzsvhqsyDKoZYyHxGpKJv6LtCukVEfP0AGkoUV/fW66X1+LIrlBDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=KH/O2kU4; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=b58X
-	/MIMUkzWJKfAi7xukhYyNxm3BVKa9wfMtsb3Sd4=; b=KH/O2kU4AXBavxNzHugQ
-	Cr0XiXqp/GPDBSk990nWASPmI37jJSCyQb7Lmqf/oL1tdcIHRX8jcmo2vwR2Tob2
-	3MSo8HTQY7A27SYWA+SI/NfQ5pqpmi79n6McsjIcB3WFLNWrOIMRU9rOtunrND10
-	HWjAn9CXhCQ+B9a1mPUM02wRXvB9PLITUPY3IFp4RQdrilkojM5jzuhcnTiEv7VH
-	VYyQIaPUSbCJyxVg+Ps6gEY1GV7GeeCVXIVYwLifWiKRkws+ODNIdvmXrsiBWpB2
-	SNQ1HJX7xrINzXmGee9lezHXjMCnmDNUx7uK3emvEkF2ZwnnAUK7Pn+L+1Q5APd7
-	Jg==
-Received: (qmail 4047676 invoked from network); 5 Apr 2024 10:53:03 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Apr 2024 10:53:03 +0200
-X-UD-Smtp-Session: l3s3148p1@2SRllVUV0pYgAwDPXwEGAANOsN0UmmrN
-Date: Fri, 5 Apr 2024 10:53:02 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Russell King <linux@armlinux.org.uk>, 
-	Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>, 
-	James Clark <james.clark@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Andi Shyti <andi.shyti@kernel.org>, 
-	Olivia Mackall <olivia@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Vinod Koul <vkoul@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Michal Simek <michal.simek@amd.com>, 
-	Eric Auger <eric.auger@redhat.com>, Alex Williamson <alex.williamson@redhat.com>, 
-	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	dmaengine@vger.kernel.org, linux-input@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 14/19] i2c: nomadik: drop owner assignment
-Message-ID: <fgcn3ly4qk726eqv3lleqbrg7odgyklkyd6d7wmpyl73bbt5ir@tjui6nsxrlgk>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Russell King <linux@armlinux.org.uk>, 
-	Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>, 
-	James Clark <james.clark@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
-	Linus Walleij <linus.walleij@linaro.org>, Andi Shyti <andi.shyti@kernel.org>, 
-	Olivia Mackall <olivia@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
-	Vinod Koul <vkoul@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
-	Miquel Raynal <miquel.raynal@bootlin.com>, Michal Simek <michal.simek@amd.com>, 
-	Eric Auger <eric.auger@redhat.com>, Alex Williamson <alex.williamson@redhat.com>, 
-	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org, linux-crypto@vger.kernel.org, 
-	dmaengine@vger.kernel.org, linux-input@vger.kernel.org, kvm@vger.kernel.org
-References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
- <20240326-module-owner-amba-v1-14-4517b091385b@linaro.org>
+	s=arc-20240116; t=1712307206; c=relaxed/simple;
+	bh=TnYwP5yvNqnjcWreVYkWMt2UPBPBgIQJsFVyuIbmORE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Lw18L+8NiyWXVJHRCBA6JC+giEgUKBR/zz4YLlsvqw+fNY+beHFZmtQgUxlOpRl7Zd953uJJoE4bx8wRZ2dWGl/O58jP2mUCAzFK+V7iY4WiWLm2OxJztRFUjqv9ogJZK7rAGUREZr3gpXDazaqZklPpM0qpqyo8fIqmF/MB+W8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gV/9/Zoa; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=WXvQe5FG; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Anna-Maria Behnsen <anna-maria@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712307202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P41Z01goaraozDqj0xrujxPc5GUhupmm3onSXRgJ9RQ=;
+	b=gV/9/ZoaKxQKsgzhei66K52OI4DGLp6wJmlvBddmS74QP6aLkt06DU3DI+KhUMHIY6+PLb
+	2f0EumOqSHGos6Hj+vzzaBbH5bKWatU/EaDCNM7a+fJfo34qSLvc9fkdd6zAE6aTO9k0Se
+	7/JenpFL4j0HRPB1VIRDm869807UKi4eJu/3ktm9XnBcPxXivhw6PZI4krTReC8VBgguth
+	NB6Km2WXkxXbB2ZxZjbJHA3ohE3vOG/AJW/y1pTUc8e/0zgP5gwqimmiWhU1IvpdqKQFDX
+	i3k78UjQeXPb/ZmQatGPZuN2ll68/E1GFgH31aawjesivHXLvXbADP3MxlccEQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712307202;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P41Z01goaraozDqj0xrujxPc5GUhupmm3onSXRgJ9RQ=;
+	b=WXvQe5FGvDbv721kEAC+Te5JltVJfpAtBFotTvMDyQC7ak7RwTepHkiNmzIsHF3zlZgvwg
+	nmDP0kTiSldG5lBA==
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Boqun Feng <boqun.feng@gmail.com>, Florian Fainelli
+ <f.fainelli@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, "Russell
+ King (Oracle)" <linux@armlinux.org.uk>, Joel Fernandes
+ <joel@joelfernandes.org>, Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-kernel@vger.kernel.org, kernel-team@meta.com, paulmck@kernel.org,
+ mingo@kernel.org, rcu@vger.kernel.org, neeraj.upadhyay@amd.com,
+ urezki@gmail.com, qiang.zhang1211@gmail.com, bigeasy@linutronix.de,
+ chenzhongjin@huawei.com, yangjihong1@huawei.com, rostedt@goodmis.org,
+ Justin Chen <justin.chen@broadcom.com>
+Subject: [PATCH v2] timers/migration: Return early on deactivation
+In-Reply-To: <Zg8nVbKHPhUJfmgc@pavilion.home>
+References: <d6c8e4fe-17bf-443d-a6f5-54470390e1fd@gmail.com>
+ <ZfNHNvzpqf8DOZd8@boqun-archlinux>
+ <de038bee-cecd-4e76-b0f4-5822b68e439d@gmail.com> <87v85olez3.ffs@tglx>
+ <87sf0sldbi.ffs@tglx> <ZfN0wY41pU5UjP8T@boqun-archlinux>
+ <ZfOhB9ZByTZcBy4u@lothringen> <87zfulrlnn.fsf@somnus>
+ <ZgMDcGOagCjfIB3i@localhost.localdomain> <87bk6pvzql.fsf@somnus>
+ <Zg8nVbKHPhUJfmgc@pavilion.home>
+Date: Fri, 05 Apr 2024 10:53:21 +0200
+Message-ID: <87cyr49on2.fsf@somnus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="honofbm32v4z4vxk"
-Content-Disposition: inline
-In-Reply-To: <20240326-module-owner-amba-v1-14-4517b091385b@linaro.org>
+Content-Type: text/plain
+
+Commit 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on
+deactivation") removed the logic to return early in tmigr_update_events()
+on deactivation. With this the problem with a not properly updated first
+global event in a hierarchy containing only a single group was fixed.
+
+But when having a look at this code path with a hierarchy with more than a
+single level, now unnecessary work is done (example is partially copied
+from the message of the commit mentioned above):
+
+                            [GRP1:0]
+                         migrator = GRP0:0
+                         active   = GRP0:0
+                         nextevt  = T0:0i, T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = 0              migrator = NONE
+           active   = 0              active   = NONE
+           nextevt  = T0i, T1        nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+      active         idle            idle       idle
+
+0) CPU 0 is active thus its event is ignored (the letter 'i') and so are
+upper levels' events. CPU 1 is idle and has the timer T1 enqueued.
+CPU 2 also has a timer. The expiry order is T0 (ignored) < T1 < T2
+
+                            [GRP1:0]
+                         migrator = GRP0:0
+                         active   = GRP0:0
+                         nextevt  = T0:0i, T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = NONE           migrator = NONE
+           active   = NONE           active   = NONE
+           nextevt  = T1             nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+        idle         idle            idle         idle
+
+1) CPU 0 goes idle without global event queued. Therefore KTIME_MAX is
+pushed as its next expiry and its own event kept as "ignore". Without this
+early return the following steps happen in tmigr_update_events() when
+child = null and group = GRP0:0 :
+
+  lock(GRP0:0->lock);
+  timerqueue_del(GRP0:0, T0i);
+  unlock(GRP0:0->lock);
 
 
---honofbm32v4z4vxk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+                            [GRP1:0]
+                         migrator = NONE
+                         active   = NONE
+                         nextevt  = T0:0, T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = NONE           migrator = NONE
+           active   = NONE           active   = NONE
+           nextevt  = T1             nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+        idle         idle            idle         idle
 
-On Tue, Mar 26, 2024 at 09:23:44PM +0100, Krzysztof Kozlowski wrote:
-> Amba bus core already sets owner, so driver does not need to.
->=20
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->=20
+2) The change now propagates up to the top. Then tmigr_update_events()
+updates the group event of GRP0:0 and executes the following steps
+(child = GRP0:0 and group = GRP0:0):
 
-Acked-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+  lock(GRP0:0->lock);
+  lock(GRP1:0->lock);
+  evt = tmigr_next_groupevt(GRP0:0); -> this removes the ignored events
+					in GRP0:0
+  ... update GRP1:0 group event and timerqueue ...
+  unlock(GRP1:0->lock);
+  unlock(GRP0:0->lock);
 
+So the dance in 1) with locking the GRP0:0->lock and removing the T0i from
+the timerqueue is redundand as this is done nevertheless in 2) when
+tmigr_next_groupevt(GRP0:0) is executed.
 
---honofbm32v4z4vxk
-Content-Type: application/pgp-signature; name="signature.asc"
+Revert commit 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on
+deactivation") and add a condition into return path to skip the return
+only, when hierarchy contains a single group. Adapt comments accordingly.
 
------BEGIN PGP SIGNATURE-----
+Fixes: 4b6f4c5a67c0 ("timer/migration: Remove buggy early return on deactivation")
+Signed-off-by: Anna-Maria Behnsen <anna-maria@linutronix.de>
+Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
+---
+ kernel/time/timer_migration.c |   27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYPu+4ACgkQFA3kzBSg
-KbY+PhAAmNuSoACChosjYi33qGWzyeoBhz9tLue2x0d13airycgFlY6FyFx1aY+/
-NadTECwyu8TNhXdRAYk/Y1sTo9S+MezhsboJhiL8+5hiOBEZHXt7U5+8k/Pkg499
-9QHeM8PaeBfpoodRPGG7UCxHkjENntyyR4OV1X5eWgGheKFtzw6F2NwEMqTdus5H
-yGju+VYEMeH97wXMkPRPmqIAUfG140PY+fTfOInco1my/ejprCYy+OJdL+uMDBlG
-3MSIMIrLahtlKK6tkhnA9MdGaC3J4v5bzpo7lgDwM6qPcOHY6ftTfz726DpdI68w
-JLoRj/Ne4xKX4Munav7MMDCPGWaSY3fQ6F1xtzq+EdfVQHnSIxpuhH/zvpj7LDEz
-l+yVUvhjs41B3d8QkXmFp0ByjxaiIdO5EAkraw/OguBo6kv3N0TgEG1BZTdVa5+Q
-UfSRHLLAXCksCuADcBcHaRGXp3dlJB2Ywba2iCYBOeBD2DefxfHGcEurJyY3mp1h
-i+RlMmzHBKEoT5/nYkhzVZyQ8cosiJoL0LeK11p10xoexmDJzd7W8oshLhEDaB2L
-5zXqlT0JmawXt/SmDjByPFelFQPhEtWkIo/D65i4EBb0DnglGQSc4frb9FBiVP5U
-vPwuPyzkXVvObtEfHT2TL6wUD2IVZWJv4tCMQel7J/DK7WEJLjM=
-=o9jg
------END PGP SIGNATURE-----
-
---honofbm32v4z4vxk--
+--- a/kernel/time/timer_migration.c
++++ b/kernel/time/timer_migration.c
+@@ -751,6 +751,33 @@ bool tmigr_update_events(struct tmigr_gr
+ 
+ 		first_childevt = evt = data->evt;
+ 
++		/*
++		 * Walking the hierarchy is required in any case when a
++		 * remote expiry was done before. This ensures to not lose
++		 * already queued events in non active groups (see section
++		 * "Required event and timerqueue update after a remote
++		 * expiry" in the documentation at the top).
++		 *
++		 * The two call sites which are executed without a remote expiry
++		 * before, are not prevented from propagating changes through
++		 * the hierarchy by the return:
++		 *  - When entering this path by tmigr_new_timer(), @evt->ignore
++		 *    is never set.
++		 *  - tmigr_inactive_up() takes care of the propagation by
++		 *    itself and ignores the return value. But an immediate
++		 *    return is possible if there is a parent, sparing group
++		 *    locking at this level, because the upper walking call to
++		 *    the parent will take care about removing this event from
++		 *    within the group and update next_expiry accordingly.
++		 *
++		 * However if there is no parent, ie: the hierarchy has only a
++		 * single level so @group is the top level group, make sure the
++		 * first event information of the group is updated properly and
++		 * also handled properly, so skip this fast return path.
++		 */
++		if (evt->ignore && !remote && group->parent)
++			return true;
++
+ 		raw_spin_lock(&group->lock);
+ 
+ 		childstate.state = 0;
 
