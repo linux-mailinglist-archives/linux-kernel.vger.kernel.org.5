@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-132699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5566B8998FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:06:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 812FA8998FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:07:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AF9F2819A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:06:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 033D41F25A63
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:07:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5664F145FE4;
-	Fri,  5 Apr 2024 09:06:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CC5515F3E0;
+	Fri,  5 Apr 2024 09:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V/FI1WnW"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iHruDDk8"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3676611E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:06:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEDAF145B31
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712307993; cv=none; b=ahZyH/9qz0cdDxw56OB4wHFknEXAEZX6XC7VBoDtJIe2OBpgzSKMDHBRqwUtXjuptpzD8uwn3kyjjrneC/7n3OzhNsQYT1+NW+L+a99gu+YtupV7eZ43Y/vb0BNDEQU36JLBrAe5TmUQtUCpHWIc2ouk8BA7A8YXbXQftlSLrcg=
+	t=1712308020; cv=none; b=EX6jfbFbNGrwk4JEucgy94QKhgpJd/HDsBSHYljeOyU58TdGguscbWT/0vBUgzpOw84Ai4vWhiXUC0p0U5tw6CXZZeVh6Jk/v+hMymJ6vu3wabpNv/Em7k1riz+rV0xDYBVc6hc/jh0JrByCEjSevykvyltPWTnkEJmss0bZvt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712307993; c=relaxed/simple;
-	bh=OyyGdzehw2fZZ0tV7w05sTWY86GxZwpwuw8P/8pI+Yk=;
+	s=arc-20240116; t=1712308020; c=relaxed/simple;
+	bh=kAlys/9p/RCa+a21S5tq0RVGRqIPEuQQSepEFro2xNk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G47tIJx7MyQaJDzi4eTbCnqUv2Wn0wbAz268dRPYobcmdavNTrP+2ImK2jcmTKIF2dI6XtsfoYcZ7YBcAa9A5PYqRj0caBZAH/8AuF854uYj6l62kdeHqkojLCHFn4WBkYL2R05mXaYStPGl7rkD69juEqKq81Tm3EolVemrNpE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V/FI1WnW; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=ng1+oeU5AixBWddyvViBhED6LGp50BEJZi9GpsXwJaCrNNeivolevrIdO+CwEtjlUHhMfzjfnjvqsqDLdFPgtmPZIalQ6Eycex5LgR8iN1XnTciUOLzE1PwDy9d842+mwUft0P2CfvXEVc776/D4+HAmtzDS44JKJbZM7M/Nmwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iHruDDk8; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712307990;
+	s=mimecast20190719; t=1712308017;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=xvcvhRh6MByDfdF0RnRtqNmfRJilUMG9FsE390NV9Ak=;
-	b=V/FI1WnW9yvvJCWdkWF25V6OqGAVA1kujKms/u9L0+StR0Zuz1C29bQ0+RzCDLGD6exUsg
-	9ONsp9PtF8mP+wxW4wGS0Y97EzScU07P3169l+/o62uyVI3xx59m+6DXPx4HJXd5Mkd046
-	quvXb5mHO65JcBH++QaIh2XCwbkkPWw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=0zRRYELJxrPHEgjDy1ctAUfjOu8XzSDkxN2W0uvQ3RM=;
+	b=iHruDDk8vxyQ5n4x7DoOYufJK5abl3hjHLILyz1b4KtnN6UDzbBXdRO6a5jIsYHIrwbgne
+	Ks3/mLSFzyUHI1s7KaQPEiOvBsFmt3ZJX/+nJ5lpZbZCgGkmi3KKe42W9G3TIgucyv3IOY
+	xu6TFxEUhuj8cjOtAvOZ275qWHYWlMU=
+Received: from mail-lf1-f70.google.com (mail-lf1-f70.google.com
+ [209.85.167.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-574-G4L8MNq8PkqtqJSQXz-ABQ-1; Fri, 05 Apr 2024 05:06:29 -0400
-X-MC-Unique: G4L8MNq8PkqtqJSQXz-ABQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4156e6f39c6so9173715e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 02:06:28 -0700 (PDT)
+ us-mta-201-zoEczeoQMCOFIKIAcwpz5w-1; Fri, 05 Apr 2024 05:06:56 -0400
+X-MC-Unique: zoEczeoQMCOFIKIAcwpz5w-1
+Received: by mail-lf1-f70.google.com with SMTP id 2adb3069b0e04-516c8697daaso1507654e87.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 02:06:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712307988; x=1712912788;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xvcvhRh6MByDfdF0RnRtqNmfRJilUMG9FsE390NV9Ak=;
-        b=gzGf5sXVxVCiCXipTyZTDUTZPGYUORlYzEEjeKixJZmttXpXk7A21p975MRphIiFXs
-         f5WMKk3TB/xvz9vHml0tNoDS8uRJsPv8Za3yqRtplmgBYXG3O2SGk9QtmGVmL66WI+N0
-         DSslvmsuHsvb+3V3+Ts5Kws2qXVzpsi0dIogyuIvaVWTxly33Qui/e+Ln+hR2sfEBfza
-         phIf8GfHkxSbZLmvcH+nxioPyPfonT7vYV/BvEAFOs+kAs6co9B2ex3D6B7t3h4p3U6G
-         tE2GqQ82Qa444I5v+VBvp6mHMHLI0eeOWFMtqzvr05FW+/ugA93ltLOjZyegV1t/n6m4
-         NSRw==
-X-Forwarded-Encrypted: i=1; AJvYcCXPPsnJNc6Pev/XeE94Vfj2PF6iYrxtHcvK+rpwrk2DJex6J4bK58d4hOHRwO7/jb9A6dWNNK2XZeZ9vHs0vfN0XcPztUF+1q4FXdh/
-X-Gm-Message-State: AOJu0YxUucAiX3wDJJFAylYffqZIhZZAhISXVviRBdoD5A8/aCCGZSyX
-	QkzwWWiu8HKBWDS7cgxyuokrPg9/z0CrFYZKEOFYtRh9MOOWdbez8GWT9NzuASEsJkOtvTlpCd7
-	iNSidAYOmvp4WAArQy7AVfbUW8yMPtsEGBzbqLW+p5lIDCXrtQRcCeN1ciOYHhw==
-X-Received: by 2002:a05:600c:470c:b0:415:511c:f801 with SMTP id v12-20020a05600c470c00b00415511cf801mr650423wmo.34.1712307987883;
-        Fri, 05 Apr 2024 02:06:27 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFbrx4/ssTnIv4ztnQyJk8eIHAjmkCWgQup3YOTpp0Vl95g5n2VZZ0VrVXK6EgqCDXCWw7N+A==
-X-Received: by 2002:a05:600c:470c:b0:415:511c:f801 with SMTP id v12-20020a05600c470c00b00415511cf801mr650402wmo.34.1712307987477;
-        Fri, 05 Apr 2024 02:06:27 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712308014; x=1712912814;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0zRRYELJxrPHEgjDy1ctAUfjOu8XzSDkxN2W0uvQ3RM=;
+        b=mfznwBGZZX4M1FKq8QQJOqqxiTGYgDb+q58+/c5oll4xfp7swzII4nbE6UVOHhK7/R
+         KXtIeLJ6LMWAg1pzOvEU67whYDQLbQckKE89ciHRPO9yHxyEVmf+QaQhkhvuOrAv+M3Q
+         yk3gEZwJdUK/jnzKjMPrdvrrQe7c6yGtZHsblDzJnVY08d48bldBGa6hMxht9zwXodVB
+         xM1r2Ca4seGs3NZhdOxqtUa0F/8KBxFr0fV7EKK4ryb6FgsGbidzLJ9DbzjPNXlJKrqF
+         /UB7GNoct8G+aaWSyDJZ0u8ttnQ7VAFFgtML2GNQfax12bFdkR/+viaVLp+LFqo7I7KU
+         wthw==
+X-Forwarded-Encrypted: i=1; AJvYcCUai59Ryhe0eBhi/KdbTYsMsI38oaHgMRNbUdD1EOhlpE0rnSsUKpTzZCqMQrUroXgi5/juF/eKNgKwiN0aaBa/w+R3HQ56mLAWK5az
+X-Gm-Message-State: AOJu0YxUV2DNUwTFTElehkXTt0j/KovrTAINyHYhceCE17LhEnWuSVW9
+	RtvEeyLyK7OGqIQYEChGdluZw2j4fVjWu+MVhsgFNfz4bgUMHQzTp/FOgF+F5c+Nt1mxiPDVB4/
+	MuslxHD8aObOHjuSWvjP49639Lh3q9ABOXAr5KIkXpUeA0/yfbYE4hO0tENDhVQ==
+X-Received: by 2002:a05:6512:475:b0:516:c1b9:22e9 with SMTP id x21-20020a056512047500b00516c1b922e9mr644980lfd.17.1712308014673;
+        Fri, 05 Apr 2024 02:06:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFCQQbRCXessb7cmeerSHS4NLFh+aADVdDXL1rcQvtLSb51fucsBMtlYCwXl0HJTyrCJic3HQ==
+X-Received: by 2002:a05:6512:475:b0:516:c1b9:22e9 with SMTP id x21-20020a056512047500b00516c1b922e9mr644959lfd.17.1712308014201;
+        Fri, 05 Apr 2024 02:06:54 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c74b:5500:e1f8:a310:8fa3:4ec1? (p200300cbc74b5500e1f8a3108fa34ec1.dip0.t-ipconnect.de. [2003:cb:c74b:5500:e1f8:a310:8fa3:4ec1])
-        by smtp.gmail.com with ESMTPSA id j10-20020a05600c488a00b004161ea7ed6dsm5549625wmp.38.2024.04.05.02.06.26
+        by smtp.gmail.com with ESMTPSA id b2-20020a5d5502000000b0033e786abf84sm1519965wrv.54.2024.04.05.02.06.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 02:06:27 -0700 (PDT)
-Message-ID: <15080b4f-ac9f-4f5f-9a27-d1773d015fdc@redhat.com>
-Date: Fri, 5 Apr 2024 11:06:25 +0200
+        Fri, 05 Apr 2024 02:06:53 -0700 (PDT)
+Message-ID: <a8d30fa4-2381-40a8-9a22-63dfcf5054d5@redhat.com>
+Date: Fri, 5 Apr 2024 11:06:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,7 +82,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 11/14] mm/ksm: remove get_ksm_page and related info
+Subject: Re: [PATCH v3 13/14] mm/ksm: use folio_set_stable_node in
+ try_to_merge_one_page
 To: alexs@kernel.org, Matthew Wilcox <willy@infradead.org>,
  Andrea Arcangeli <aarcange@redhat.com>,
  Izik Eidus <izik.eidus@ravellosystems.com>,
@@ -90,9 +91,9 @@ To: alexs@kernel.org, Matthew Wilcox <willy@infradead.org>,
  linux-kernel@vger.kernel.org, ryncsn@gmail.com
 Cc: Hugh Dickins <hughd@google.com>, Chris Wright <chrisw@sous-sol.org>
 References: <20240325124904.398913-1-alexs@kernel.org>
- <20240325124904.398913-12-alexs@kernel.org>
-From: David Hildenbrand <david@redhat.com>
+ <20240325124904.398913-14-alexs@kernel.org>
 Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
  dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
@@ -138,15 +139,15 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20240325124904.398913-12-alexs@kernel.org>
+In-Reply-To: <20240325124904.398913-14-alexs@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 25.03.24 13:48, alexs@kernel.org wrote:
+On 25.03.24 13:49, alexs@kernel.org wrote:
 > From: "Alex Shi (tencent)" <alexs@kernel.org>
 > 
-> Now since all caller are changed to ksm_get_folio, let's sync up the
-> related usages with ksm_get_folio, and remove get_ksm_page.
+> Only single page could be reached where we set stable node after write
+> protect, so use folio converted func to replace page's.
 > 
 > Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
 > Cc: Izik Eidus <izik.eidus@ravellosystems.com>
@@ -155,8 +156,22 @@ On 25.03.24 13:48, alexs@kernel.org wrote:
 > Cc: Hugh Dickins <hughd@google.com>
 > Cc: Chris Wright <chrisw@sous-sol.org>
 > ---
-
-Move that after current #12, and then simply squash current 8,9,10,12
+>   mm/ksm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/ksm.c b/mm/ksm.c
+> index 15a78a9bab59..d7c4cc4a0cc1 100644
+> --- a/mm/ksm.c
+> +++ b/mm/ksm.c
+> @@ -1518,7 +1518,7 @@ static int try_to_merge_one_page(struct vm_area_struct *vma,
+>   			 * PageAnon+anon_vma to PageKsm+NULL stable_node:
+>   			 * stable_tree_insert() will update stable_node.
+>   			 */
+> -			set_page_stable_node(page, NULL);
+> +			folio_set_stable_node(page_folio(page), NULL);
+>   			mark_page_accessed(page);
+>   			/*
+>   			 * Page reclaim just frees a clean page with no dirty
 
 Reviewed-by: David Hildenbrand <david@redhat.com>
 
