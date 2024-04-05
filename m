@@ -1,127 +1,100 @@
-Return-Path: <linux-kernel+bounces-133483-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7658189A45E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:44:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB74D89A45A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:42:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16FCC1F2108A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:44:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81BC11F23249
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:42:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E3C217279B;
-	Fri,  5 Apr 2024 18:43:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C54B172799;
+	Fri,  5 Apr 2024 18:42:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b="hGoBIkun"
-Received: from 008.lax.mailroute.net (008.lax.mailroute.net [199.89.1.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ac1syLc6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1491A1EB36;
-	Fri,  5 Apr 2024 18:43:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.89.1.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C515172793;
+	Fri,  5 Apr 2024 18:42:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712342635; cv=none; b=FiR6yHUT3ucg0h5/XSFVQdZkt7oHkPUqQKW2AxN1hCiVaqo2xzIG8Bo4qi4Rpvu+YMuahQWSiKtLqSOjynWdcmrgxFptSfTmwwaGWlGVpnoKu99njbHKlnELVl8KICeYlw8sFRwqMuSAi3ARiiRFlhhBEevqqY8BDZZ7sJt+xw4=
+	t=1712342536; cv=none; b=jEnTOvX6AOpacSlZh8L4vWIw/IGvH01buC04cZljS8/rpTAK56DWtaDLRnlYVUcBX7yExiQdS2GXuuSCbvVlSpt6PCzU/jcwXlFDGcjSJdgEKSDwQE372h8IlkwQwqbUkxSee0nUSa9OTN/MJ4nuzaOHugEGIgs2VEWUE/QzKcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712342635; c=relaxed/simple;
-	bh=ZEC1qMsL2GXr2LN1cOLgyDd0sOBWxyJv/iuho8smCfY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KfRsmM+3D2i6CuUO6PeYZ3HM8/OzqE4Z/zDN533Jo798vmBCctZaisfYNHwwcEsxT92INRLfhozfp39WD1dBHbkpXiL1XdChGj75LAXgA5TUme+OmJ1Hb7dMb0HBHh1pTAH+BWnyne1TweQjKdXfAqe//2p+Rl+J4LIk+HbMj7g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org; spf=pass smtp.mailfrom=acm.org; dkim=pass (2048-bit key) header.d=acm.org header.i=@acm.org header.b=hGoBIkun; arc=none smtp.client-ip=199.89.1.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
-Received: from localhost (localhost [127.0.0.1])
-	by 008.lax.mailroute.net (Postfix) with ESMTP id 4VB6lX1bTlz6ChQsS;
-	Fri,  5 Apr 2024 18:41:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:references:content-language:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1712342497; x=1714934498; bh=VNC7WePIHudWvJ0AAT9LZu0v
-	6qRSozA1WrVYvu0F6II=; b=hGoBIkunSTVoGIkPld3Aw27ohCl1CyzhZ/kiGQH4
-	NBK/EOhy7WJgdJRDY37TbiJWLu4ordrIJrk0KgoozgD+oyo9/OE0F0K2xTDGt6IK
-	WxeUC2qVXW18x0+J21Dkn9hbXrMDjElDiyRaCunipep5sFaJBGk1g+yfJevNq/Wm
-	LEBwmMyP3TK/eSRGzXQtAdqzD5PKcdMJF8z+CH8MwIigJ+KP8RSYfGqRRj2gWJy/
-	5zecRrtx0YxQaOgFWGROMwC4oasM5eGyLO9xgPCv7KRfGVWpIDC5jEdweZnKfiqp
-	MWgyuqRneOsuatsnJqkjozSjZXuOSStLlhwvT4JcI+c5vA==
-X-Virus-Scanned: by MailRoute
-Received: from 008.lax.mailroute.net ([127.0.0.1])
- by localhost (008.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id frwn6AeDHquf; Fri,  5 Apr 2024 18:41:37 +0000 (UTC)
-Received: from [100.96.154.173] (unknown [104.132.1.77])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 008.lax.mailroute.net (Postfix) with ESMTPSA id 4VB6lM6wGRz6ChQs1;
-	Fri,  5 Apr 2024 18:41:35 +0000 (UTC)
-Message-ID: <a70f1a3d-1ec9-496b-9b93-5d4b06b4f967@acm.org>
-Date: Fri, 5 Apr 2024 11:41:35 -0700
+	s=arc-20240116; t=1712342536; c=relaxed/simple;
+	bh=Ak6v9rbGghmGpiFluFVzlaA5Oh6/1f4GbxQrsFllnAM=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=k7f5PWE7vOvXL4QDmJhAlSsyrU4FaBBYI9Zc6LZHD8UGvNXP8Qhf1dcIyVFPJV5GtBdP0Lpw73hKzGnLUfZQTSwhMXt87q+qg6CmVuoosRT37i5GFsfTTKI4W9LrjRIljhYCXX2UfP+m2K/J5YXVTmlDm2MTQ45E8fNL7qhzRPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ac1syLc6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AF06C43390;
+	Fri,  5 Apr 2024 18:42:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712342536;
+	bh=Ak6v9rbGghmGpiFluFVzlaA5Oh6/1f4GbxQrsFllnAM=;
+	h=From:Date:Subject:To:Cc:From;
+	b=Ac1syLc6m50kY4Mj4USrXx5wXtTyNkAGbzOS8/vpbe53ZyYJJpKMUkRBuwp++P6Us
+	 t6cIFlU1LV4y099Mzmqb2UnZygO1NlZL12gytrEPYaPv546DOK6PsreNz1ybFNjPg6
+	 TowI8u3fC6eAiI4OMCdeKTAGPnOTDmy3FKiqrlPR131qWC/JDApVjDRXAbLaPBc2ph
+	 5IA+vVb2r1oiS4zLlQru44RgJPUE7hJJr+7ISuMmz14SdkZAgOVM5NzY2AXT+Fe+/y
+	 P6Wo/7r6BzYaWt4rHXpNlX2PdZPpNRhGF+OkzNz/l/IacgkiVf8z3rUnEPDEHw1Gcm
+	 OQ+HuSCBVhwsA==
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5a9ef9ba998so374838eaf.1;
+        Fri, 05 Apr 2024 11:42:16 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVJirOL2bdlyR+Pzes/Mm1HWiG+WuTTsVnK2a2js1Zz1ADXxrX1sl1NrJFtEgeGnNH+6USDIbQ7inlE4pxv/bi2UGzlwrSZ9Ida/sSa
+X-Gm-Message-State: AOJu0YyeGqXr3Y1iqY0HhebG7TJQP99y+hC7yPb327fzwVdbpzVW6Y/m
+	PAT0I6twaSmc4mSE+HE1rLdOxxO+TPDU6C1Q7+eXmTIZMpoYQrItmVbtrPmyxx59cjNyTzOGM0r
+	neKfewDNqzVbuW+oSQ52wKHgrSDs=
+X-Google-Smtp-Source: AGHT+IHa4Y2pb37I/713DfZdVtE/UlHCMq7EzxKt8VxfzdWAjIbu4L/Z77dvQVqjyo17HZMlPQtC3iHlNwnlCHkWmzA=
+X-Received: by 2002:a05:6820:2b81:b0:5a6:2c6b:d3b with SMTP id
+ du1-20020a0568202b8100b005a62c6b0d3bmr2690755oob.0.1712342535472; Fri, 05 Apr
+ 2024 11:42:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] scsi: ufs: core: changing the status to check inflight
-Content-Language: en-US
-To: SEO HOYOUNG <hy50.seo@samsung.com>, linux-scsi@vger.kernel.org,
- linux-kernel@vger.kernel.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
- jejb@linux.ibm.com, martin.petersen@oracle.com, beanhuo@micron.com,
- kwangwon.min@samsung.com, kwmad.kim@samsung.com, sh425.lee@samsung.com,
- quic_nguyenb@quicinc.com, cpgs@samsung.com, h10.kim@samsung.com
-References: <CGME20240405071217epcas2p470124e9f6e9066cb5cdc7f78557042e3@epcas2p4.samsung.com>
- <20240405071601.84337-1-hy50.seo@samsung.com>
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20240405071601.84337-1-hy50.seo@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 5 Apr 2024 20:42:04 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0gVqOUuFfJ8um+_F_ubU4QsWYneyQsFBHu9rG10-rJYEg@mail.gmail.com>
+Message-ID: <CAJZ5v0gVqOUuFfJ8um+_F_ubU4QsWYneyQsFBHu9rG10-rJYEg@mail.gmail.com>
+Subject: [GIT PULL] Power management fixes for v6.9-rc3
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux PM <linux-pm@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 4/5/24 00:16, SEO HOYOUNG wrote:
-> According to below the patch applied, lrbp->cmd do not will NULL
-> after call release_scsi_cmd()
-> So check the rq->state unconditionally even if it is completed normally
-> in ufshcd_cmd_inflight()
-> 
-> If occurred abort status and tm_cmd timeout, will run err_handler
-> for re-init UFS.
-> Then err_handler will check pending request for clearing cmd.
-> At that time, check if the state of rq is not MQ_RQ_IDLE.
-> In other words, check if it is MQ_RQ_COMPLETE or MQ_RQ_IN_FLIGHT.
-> If rq->state is MQ_RQ_COMPLETE, it is already completed in the block,
-> so there is no need to process the queue.
+Hi Linus,
 
-The above description does not explain the motivation for this patch
-very well. How about the following description?
+Please pull from the tag
 
-"ufshcd_cmd_inflight() is used to check whether or not a command is
-in progress. Make it skip commands that have already completed by
-changing the !blk_mq_request_started(rq) check into blk_mq_rq_state(rq) 
-!= MQ_RQ_IN_FLIGHT. We cannot rely on lrbp->cmd since lrbp->cmd is not
-cleared when a command completes."
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-6.9-rc3
 
-> diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-> index 21429eec1b82..3f47ea584cb1 100644
-> --- a/drivers/ufs/core/ufshcd.c
-> +++ b/drivers/ufs/core/ufshcd.c
-> @@ -3088,7 +3088,7 @@ bool ufshcd_cmd_inflight(struct scsi_cmnd *cmd)
->   		return false;
->   
->   	rq = scsi_cmd_to_rq(cmd);
-> -	if (!blk_mq_request_started(rq))
-> +	if (blk_mq_rq_state(rq) != MQ_RQ_IN_FLIGHT)
->   		return false;
->   
->   	return true;
+with top-most commit 8130b05c559d1aa83d0c8971b422ba0da18ef24a
 
-Please convert the two return statements into a single return statement,
-e.g. as follows:
+ PM: EM: fix wrong utilization estimation in em_cpu_energy()
 
-	return cmd &&
-	    blk_mq_rq_state(scsi_cmd_to_rq(cmd)) == MQ_RQ_IN_FLIGHT;
+on top of commit 39cd87c4eb2b893354f3b850f916353f2658ae6f
 
-Thanks,
+ Linux 6.9-rc2
 
-Bart.
+to receive a power management fix for 6.9-rc3.
+
+This fixes a recent Energy Model change that went against a recent
+scheduler change made independently (Vincent Guittot).
+
+Thanks!
+
+
+---------------
+
+Vincent Guittot (1):
+      PM: EM: fix wrong utilization estimation in em_cpu_energy()
+
+---------------
+
+ include/linux/energy_model.h | 1 -
+ 1 file changed, 1 deletion(-)
 
