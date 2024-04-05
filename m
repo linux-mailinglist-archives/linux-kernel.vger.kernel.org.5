@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-132338-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132339-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21AE6899358
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E5B60899359
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:47:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 352DCB24CCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:47:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E19DB2529D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:47:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1201862A;
-	Fri,  5 Apr 2024 02:47:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82AD91D53C;
+	Fri,  5 Apr 2024 02:47:10 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6BB2171AD;
-	Fri,  5 Apr 2024 02:47:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3171E1CD35;
+	Fri,  5 Apr 2024 02:47:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712285223; cv=none; b=FOgDVH15P90SvZC5QBKW0SGtTC7nCAt8dbckZxH9vu8hNtQ69k1mMoBctEsIFCPoTxSwo5z0QV3jFXGdtypTTQRW8EzxOaZLlYD8MCdvxdk2WFs3B+VLWuL4Gn2IiIsDZB4jT+JEDanbpbz52ySKdF1HIpWPYP3/THx3/JAzdkg=
+	t=1712285230; cv=none; b=GFMAr2kKVZ1xuSDBX5kIl0vjUuiWSyt6AXNqcsAPLo2ySf0R19icGGkwVydf/6CYnBPwLXo/O4AuW0XjsPax6H+X8RnPC6NBqEx1+NbXzKs5Ri5ndZqmOUQEQ/X707e+RaynKiH4naYP9gDgxH19pUzJW/P3Izv6aDFjaV29Ejk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712285223; c=relaxed/simple;
-	bh=ZLOd6rm+Rs3qRSm1ggZsV6KLD4ZnR9wJaJ4/G9lK1IE=;
+	s=arc-20240116; t=1712285230; c=relaxed/simple;
+	bh=6vvI6hOuobBDdHS5Iy4QavnhfJGHpfR5o8reRq3TQ3s=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=aSQqW9E3lPap5cAAgWnGtRp0cfxfUfMYqG3kyeVDMMdNv89kXNbvqZ2E/HdkaNK5UdTpLi4am1K+dZxu9GM+JJG8XBT/kX2ppuDgmvQSgQIrePc93nBRAr6P32OX5Z7diVS2a10/gLM+Rn9I/mP4UGx7+5lLGQklL4UhonAKRZo=
+	 MIME-Version; b=sIb3jrHQInwmdJLlnHp2c4nGBhnw7eQLqUncJhinIuIy+kHrNBOxH2k5xuZa6lYVeZv4bJbyRZI7mpfVvjKycUE/GwM0PHfYlRpuzrpMz/SAeTE/YBp1SzSatZg/17dsmS6zpOo2oEXvji3O4ya3BO3WC5KWfhNgS0gT+C0+MQE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 905381007;
-	Thu,  4 Apr 2024 19:47:31 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12FE7FEC;
+	Thu,  4 Apr 2024 19:47:38 -0700 (PDT)
 Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.41.6])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E55213F766;
-	Thu,  4 Apr 2024 19:46:55 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BD77C3F766;
+	Thu,  4 Apr 2024 19:47:01 -0700 (PDT)
 From: Anshuman Khandual <anshuman.khandual@arm.com>
 To: linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
@@ -47,10 +47,13 @@ Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Ingo Molnar <mingo@redhat.com>,
 	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	linux-perf-users@vger.kernel.org
-Subject: [PATCH V17 1/9] arm64/sysreg: Add BRBE registers and fields
-Date: Fri,  5 Apr 2024 08:16:31 +0530
-Message-Id: <20240405024639.1179064-2-anshuman.khandual@arm.com>
+	linux-perf-users@vger.kernel.org,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	kvmarm@lists.linux.dev
+Subject: [PATCH V17 2/9] KVM: arm64: Explicitly handle BRBE traps as UNDEFINED
+Date: Fri,  5 Apr 2024 08:16:32 +0530
+Message-Id: <20240405024639.1179064-3-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240405024639.1179064-1-anshuman.khandual@arm.com>
 References: <20240405024639.1179064-1-anshuman.khandual@arm.com>
@@ -62,236 +65,141 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This adds BRBE related register definitions and various other related field
-macros there in. These will be used subsequently in a BRBE driver, which is
-being added later on. While here, this drops redundant register definitions
-from the header i.e (arch/arm64/include/asm/sysreg.h).
+The Branch Record Buffer Extension (BRBE) adds a number of system registers
+and instructions, which we don't currently intend to expose to guests. Our
+existing logic handles this safely, but this could be improved with some
+explicit handling of BRBE.
 
-BRBINFx_EL1_TYPE_IMPDEF_TRAP_EL3 register field value has been derived from
-latest ARM DDI 0601 ID121123, AKA 2023-12 instead of latest ARM ARM i.e ARM
-DDI 0487J.a. Please find the definition here.
+The presence of BRBE is currently hidden from guests as the cpufeature
+code's ftr_id_aa64dfr0[] table doesn't have an entry for the BRBE field,
+and so this will be zero in the sanitised value of ID_AA64DFR0 exposed to
+guests via read_sanitised_id_aa64dfr0_el1(). As the ftr_id_aa64dfr0[] table
+may gain an entry for the BRBE field in future, for robustness we should
+explicitly mask out the BRBE field in read_sanitised_id_aa64dfr0_el1().
 
-https://developer.arm.com/documentation/ddi0601/2023-12/
+The BRBE system registers and instructions are currently trapped by the
+existing configuration of the fine-grained traps. As neither the registers
+are not described in the sys_reg_descs[] nor the instructions are described
+in the sys_insn_descs[] table, emulate_sys_reg() will warn that these are
+unknown before injecting an UNDEFINED exception into the guest.
+Well-behaved guests shouldn't try to use the registers or instructions, but
+badly-behaved guests could use these, resulting in unnecessary warnings. To
+avoid those warnings, we should explicitly handle the BRBE registers, and
+instructions as UNDEFINED.
 
+Address the above by having read_sanitised_id_aa64dfr0_el1() mask out the
+ID_AA64DFR0.BRBE field, and by adding sys_reg_descs entries for all of the
+BRBE system registers, also by adding sys_insn_descs entries for all of the
+BRBE instructions, treating these all as UNDEFINED.
+
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Oliver Upton <oliver.upton@linux.dev>
+Cc: James Morse <james.morse@arm.com>
+Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will@kernel.org>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: kvmarm@lists.linux.dev
 Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-kernel@vger.kernel.org
-Reviewed-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ----
 Changes in V17:
 
-- Added back Reviewed-by tags from Mark Brown
-- Updated the commit message regarding the field BRBINFx_EL1_TYPE_IMPDEF_TRAP_EL3
-- Added leading 0s for all values as BRBIDR0_EL1.NUMREC is a 8 bit field
-- Added leading 0s for all values as BRBFCR_EL1.BANK is a 2 bit field
-- Reordered BRBCR_EL1/BRBCR_EL12/BRBCR_EL2 registers as per sysreg encodings
-- Renamed s/FIRST/BANK_0 and s/SECOND/BANK_1 in BRBFCR_EL1.BANK
-- Renamed s/UNCOND_DIRECT/DIRECT_UNCOND in BRBINFx_EL1.TYPE
-- Renamed s/COND_DIRECT/DIRECT_COND in BRBINFx_EL1.TYPE
-- Dropped __SYS_BRBINF/__SYS_BRBSRC/__SYS_BRBTGT and their expansions
-- Moved all existing BRBE registers from sysreg.h header to tools/sysreg format
+- Updated the commit message including about sys_insn_descs[]
+- Changed KVM to use existing SYS_BRBSRC/TGT/INF_EL1(n) format
+- Moved the BRBE instructions into sys_insn_descs[] array
 
- arch/arm64/include/asm/sysreg.h |  17 ++---
- arch/arm64/tools/sysreg         | 131 ++++++++++++++++++++++++++++++++
- 2 files changed, 137 insertions(+), 11 deletions(-)
+ arch/arm64/kvm/sys_regs.c | 56 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 56 insertions(+)
 
-diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
-index 9e8999592f3a..6db64ce5b12b 100644
---- a/arch/arm64/include/asm/sysreg.h
-+++ b/arch/arm64/include/asm/sysreg.h
-@@ -195,16 +195,8 @@
- #define SYS_DBGVCR32_EL2		sys_reg(2, 4, 0, 7, 0)
+diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+index c9f4f387155f..3981aa32c5a3 100644
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -1304,6 +1304,11 @@ static int set_pmcr(struct kvm_vcpu *vcpu, const struct sys_reg_desc *r,
+ 	return 0;
+ }
  
- #define SYS_BRBINF_EL1(n)		sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 0))
--#define SYS_BRBINFINJ_EL1		sys_reg(2, 1, 9, 1, 0)
- #define SYS_BRBSRC_EL1(n)		sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 1))
--#define SYS_BRBSRCINJ_EL1		sys_reg(2, 1, 9, 1, 1)
- #define SYS_BRBTGT_EL1(n)		sys_reg(2, 1, 8, (n & 15), (((n & 16) >> 2) | 2))
--#define SYS_BRBTGTINJ_EL1		sys_reg(2, 1, 9, 1, 2)
--#define SYS_BRBTS_EL1			sys_reg(2, 1, 9, 0, 2)
--
--#define SYS_BRBCR_EL1			sys_reg(2, 1, 9, 0, 0)
--#define SYS_BRBFCR_EL1			sys_reg(2, 1, 9, 0, 1)
--#define SYS_BRBIDR0_EL1			sys_reg(2, 1, 9, 2, 0)
++#define BRB_INF_SRC_TGT_EL1(n)				\
++	{ SYS_DESC(SYS_BRBINF_EL1(n)), undef_access },	\
++	{ SYS_DESC(SYS_BRBSRC_EL1(n)), undef_access },	\
++	{ SYS_DESC(SYS_BRBTGT_EL1(n)), undef_access }	\
++
+ /* Silly macro to expand the DBG{BCR,BVR,WVR,WCR}n_EL1 registers in one go */
+ #define DBG_BCR_BVR_WCR_WVR_EL1(n)					\
+ 	{ SYS_DESC(SYS_DBGBVRn_EL1(n)),					\
+@@ -1708,6 +1713,9 @@ static u64 read_sanitised_id_aa64dfr0_el1(struct kvm_vcpu *vcpu,
+ 	/* Hide SPE from guests */
+ 	val &= ~ID_AA64DFR0_EL1_PMSVer_MASK;
  
- #define SYS_TRCITECR_EL1		sys_reg(3, 0, 1, 2, 3)
- #define SYS_TRCACATR(m)			sys_reg(2, 1, 2, ((m & 7) << 1), (2 | (m >> 3)))
-@@ -270,8 +262,6 @@
- /* ETM */
- #define SYS_TRCOSLAR			sys_reg(2, 1, 1, 0, 4)
++	/* Hide BRBE from guests */
++	val &= ~ID_AA64DFR0_EL1_BRBE_MASK;
++
+ 	return val;
+ }
  
--#define SYS_BRBCR_EL2			sys_reg(2, 4, 9, 0, 0)
--
- #define SYS_MIDR_EL1			sys_reg(3, 0, 0, 0, 0)
- #define SYS_MPIDR_EL1			sys_reg(3, 0, 0, 0, 5)
- #define SYS_REVIDR_EL1			sys_reg(3, 0, 0, 0, 6)
-@@ -601,7 +591,6 @@
- #define SYS_CNTHV_CVAL_EL2		sys_reg(3, 4, 14, 3, 2)
+@@ -2226,6 +2234,52 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+ 	{ SYS_DESC(SYS_DBGCLAIMCLR_EL1), trap_raz_wi },
+ 	{ SYS_DESC(SYS_DBGAUTHSTATUS_EL1), trap_dbgauthstatus_el1 },
  
- /* VHE encodings for architectural EL0/1 system registers */
--#define SYS_BRBCR_EL12			sys_reg(2, 5, 9, 0, 0)
- #define SYS_SCTLR_EL12			sys_reg(3, 5, 1, 0, 0)
- #define SYS_CPACR_EL12			sys_reg(3, 5, 1, 0, 2)
- #define SYS_SCTLR2_EL12			sys_reg(3, 5, 1, 0, 3)
-@@ -794,6 +783,12 @@
- #define OP_COSP_RCTX			sys_insn(1, 3, 7, 3, 6)
- #define OP_CPP_RCTX			sys_insn(1, 3, 7, 3, 7)
++	/*
++	 * BRBE branch record sysreg address space is interleaved between
++	 * corresponding BRBINF<N>_EL1, BRBSRC<N>_EL1, and BRBTGT<N>_EL1.
++	 */
++	BRB_INF_SRC_TGT_EL1(0),
++	BRB_INF_SRC_TGT_EL1(16),
++	BRB_INF_SRC_TGT_EL1(1),
++	BRB_INF_SRC_TGT_EL1(17),
++	BRB_INF_SRC_TGT_EL1(2),
++	BRB_INF_SRC_TGT_EL1(18),
++	BRB_INF_SRC_TGT_EL1(3),
++	BRB_INF_SRC_TGT_EL1(19),
++	BRB_INF_SRC_TGT_EL1(4),
++	BRB_INF_SRC_TGT_EL1(20),
++	BRB_INF_SRC_TGT_EL1(5),
++	BRB_INF_SRC_TGT_EL1(21),
++	BRB_INF_SRC_TGT_EL1(6),
++	BRB_INF_SRC_TGT_EL1(22),
++	BRB_INF_SRC_TGT_EL1(7),
++	BRB_INF_SRC_TGT_EL1(23),
++	BRB_INF_SRC_TGT_EL1(8),
++	BRB_INF_SRC_TGT_EL1(24),
++	BRB_INF_SRC_TGT_EL1(9),
++	BRB_INF_SRC_TGT_EL1(25),
++	BRB_INF_SRC_TGT_EL1(10),
++	BRB_INF_SRC_TGT_EL1(26),
++	BRB_INF_SRC_TGT_EL1(11),
++	BRB_INF_SRC_TGT_EL1(27),
++	BRB_INF_SRC_TGT_EL1(12),
++	BRB_INF_SRC_TGT_EL1(28),
++	BRB_INF_SRC_TGT_EL1(13),
++	BRB_INF_SRC_TGT_EL1(29),
++	BRB_INF_SRC_TGT_EL1(14),
++	BRB_INF_SRC_TGT_EL1(30),
++	BRB_INF_SRC_TGT_EL1(15),
++	BRB_INF_SRC_TGT_EL1(31),
++
++	/* Remaining BRBE sysreg addresses space */
++	{ SYS_DESC(SYS_BRBCR_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBFCR_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTS_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBINFINJ_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBSRCINJ_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBTGTINJ_EL1), undef_access },
++	{ SYS_DESC(SYS_BRBIDR0_EL1), undef_access },
++
+ 	{ SYS_DESC(SYS_MDCCSR_EL0), trap_raz_wi },
+ 	{ SYS_DESC(SYS_DBGDTR_EL0), trap_raz_wi },
+ 	// DBGDTR[TR]X_EL0 share the same encoding
+@@ -2738,6 +2792,8 @@ static struct sys_reg_desc sys_insn_descs[] = {
+ 	{ SYS_DESC(SYS_DC_CISW), access_dcsw },
+ 	{ SYS_DESC(SYS_DC_CIGSW), access_dcgsw },
+ 	{ SYS_DESC(SYS_DC_CIGDSW), access_dcgsw },
++	{ SYS_DESC(OP_BRB_IALL), undef_access },
++	{ SYS_DESC(OP_BRB_INJ), undef_access },
+ };
  
-+/*
-+ * BRBE Instructions
-+ */
-+#define BRB_IALL_INSN	__emit_inst(0xd5000000 | OP_BRB_IALL | (0x1f))
-+#define BRB_INJ_INSN	__emit_inst(0xd5000000 | OP_BRB_INJ  | (0x1f))
-+
- /* Common SCTLR_ELx flags. */
- #define SCTLR_ELx_ENTP2	(BIT(60))
- #define SCTLR_ELx_DSSBS	(BIT(44))
-diff --git a/arch/arm64/tools/sysreg b/arch/arm64/tools/sysreg
-index a4c1dd4741a4..e5bf99234c74 100644
---- a/arch/arm64/tools/sysreg
-+++ b/arch/arm64/tools/sysreg
-@@ -1025,6 +1025,137 @@ UnsignedEnum	3:0	MTEPERM
- EndEnum
- EndSysreg
- 
-+
-+SysregFields BRBINFx_EL1
-+Res0	63:47
-+Field	46	CCU
-+Field	45:32	CC
-+Res0	31:18
-+Field	17	LASTFAILED
-+Field	16	T
-+Res0	15:14
-+Enum	13:8		TYPE
-+	0b000000	DIRECT_UNCOND
-+	0b000001	INDIRECT
-+	0b000010	DIRECT_LINK
-+	0b000011	INDIRECT_LINK
-+	0b000101	RET
-+	0b000111	ERET
-+	0b001000	DIRECT_COND
-+	0b100001	DEBUG_HALT
-+	0b100010	CALL
-+	0b100011	TRAP
-+	0b100100	SERROR
-+	0b100110	INSN_DEBUG
-+	0b100111	DATA_DEBUG
-+	0b101010	ALIGN_FAULT
-+	0b101011	INSN_FAULT
-+	0b101100	DATA_FAULT
-+	0b101110	IRQ
-+	0b101111	FIQ
-+	0b110000	IMPDEF_TRAP_EL3
-+	0b111001	DEBUG_EXIT
-+EndEnum
-+Enum	7:6	EL
-+	0b00	EL0
-+	0b01	EL1
-+	0b10	EL2
-+	0b11	EL3
-+EndEnum
-+Field	5	MPRED
-+Res0	4:2
-+Enum	1:0	VALID
-+	0b00	NONE
-+	0b01	TARGET
-+	0b10	SOURCE
-+	0b11	FULL
-+EndEnum
-+EndSysregFields
-+
-+SysregFields	BRBCR_ELx
-+Res0	63:24
-+Field	23 	EXCEPTION
-+Field	22 	ERTN
-+Res0	21:10
-+Field	9	FZPSS
-+Field	8 	FZP
-+Res0	7
-+Enum	6:5	TS
-+	0b01	VIRTUAL
-+	0b10	GUEST_PHYSICAL
-+	0b11	PHYSICAL
-+EndEnum
-+Field	4	MPRED
-+Field	3	CC
-+Res0	2
-+Field	1	ExBRE
-+Field	0	E0BRE
-+EndSysregFields
-+
-+Sysreg	BRBCR_EL1	2	1	9	0	0
-+Fields	BRBCR_ELx
-+EndSysreg
-+
-+Sysreg	BRBFCR_EL1	2	1	9	0	1
-+Res0	63:30
-+Enum	29:28	BANK
-+	0b00	BANK_0
-+	0b01	BANK_1
-+EndEnum
-+Res0	27:23
-+Field	22	CONDDIR
-+Field	21	DIRCALL
-+Field	20	INDCALL
-+Field	19	RTN
-+Field	18	INDIRECT
-+Field	17	DIRECT
-+Field	16	EnI
-+Res0	15:8
-+Field	7	PAUSED
-+Field	6	LASTFAILED
-+Res0	5:0
-+EndSysreg
-+
-+Sysreg	BRBTS_EL1	2	1	9	0	2
-+Field	63:0	TS
-+EndSysreg
-+
-+Sysreg	BRBINFINJ_EL1	2	1	9	1	0
-+Fields BRBINFx_EL1
-+EndSysreg
-+
-+Sysreg	BRBSRCINJ_EL1	2	1	9	1	1
-+Field	63:0 ADDRESS
-+EndSysreg
-+
-+Sysreg	BRBTGTINJ_EL1	2	1	9	1	2
-+Field	63:0 ADDRESS
-+EndSysreg
-+
-+Sysreg	BRBIDR0_EL1	2	1	9	2	0
-+Res0	63:16
-+Enum	15:12	CC
-+	0b101	20_BIT
-+EndEnum
-+Enum	11:8	FORMAT
-+	0b0	0
-+EndEnum
-+Enum	7:0		NUMREC
-+	0b00001000	8
-+	0b00010000	16
-+	0b00100000	32
-+	0b01000000	64
-+EndEnum
-+EndSysreg
-+
-+Sysreg	BRBCR_EL2	2	4	9	0	0
-+Fields	BRBCR_ELx
-+EndSysreg
-+
-+Sysreg	BRBCR_EL12	2	5	9	0	0
-+Fields	BRBCR_ELx
-+EndSysreg
-+
- Sysreg	ID_AA64ZFR0_EL1	3	0	0	4	4
- Res0	63:60
- UnsignedEnum	59:56	F64MM
+ static const struct sys_reg_desc *first_idreg;
 -- 
 2.25.1
 
