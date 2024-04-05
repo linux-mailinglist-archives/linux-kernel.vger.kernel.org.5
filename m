@@ -1,86 +1,150 @@
-Return-Path: <linux-kernel+bounces-132923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25D5E899C10
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:49:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C44D3899C15
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:50:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA2611F238BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:49:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51079283A97
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FEE216C69F;
-	Fri,  5 Apr 2024 11:49:06 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEA5016C6A6;
+	Fri,  5 Apr 2024 11:50:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jS6E/fO2"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE972032D
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 11:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACE2716ABCE;
+	Fri,  5 Apr 2024 11:49:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712317746; cv=none; b=oZp08xiKaMlxC24xYtGYdS992vlX1Cl9Vzr26fwRWFcaLUJhANCr8PNLu0Y3Cd/2hL4vHxmcGM0mx6O8lQ0+U+Pr2h4kaURKkxIK3B0f7QLYB7kCZJYT24+SCR/6Nypw69R0Hq/DiOyuECmyphNvR4AtCpzKYqtL1vbyujJttig=
+	t=1712317801; cv=none; b=kd+A7sKIhG758D3tVeVhNvhAzU4t7Pj4z7A38JsjXYlBai2ejYpjEfMoXws5XBeP+q+SmHscYMuk1ah+TNqLY1tQZ1rLAr1+Z7KRVbgSZtp6XIE9WeUvglf4jPMCcAvIXbn+7fXWqBK+ErH3PlcZj9Kt3b8d7wMHOWhnC1bG12A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712317746; c=relaxed/simple;
-	bh=iuJ0oOvr7o3R9DX7SFeNsPo3GqE0MvplUqMzCwp1wjo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=HJSdCZVd7giH1RFrC13Zj7QASl13UPmpOyGwV+R+BgvNND5dIbV37LtZU8/zvS6F/5yVccqVGw7maaa05mmGXyHc9sOtSnbkM4Ga2ZwUSe8QCQYIaLwBd8SlO/XR+yedSUe9amW4dlGbFO30+tPcRn7D6qFHM8Bq1JNySthPdG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cf179c3da4so224093539f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 04:49:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712317744; x=1712922544;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=I20oMVc/N5z49C49MuvYM28xURnCUIAvg0LYLO1HBnk=;
-        b=iwqzuscNgUTJbMv+ECOaa9Dn1hCFDHRFWz0Tjm4cT/6WLL47Mg0jwO8hj/FRWUkvBQ
-         W2pOTYcrCaX+ujeUvTyD+YYt66lnprrm8kM442tarG/fAIPm4DM5odUkBxcYg22eumJZ
-         MzG0X4XrMtr8AC7d3197tn//q/tc9KWPD75S3Q8S2otamntbObLNOryld31YwR1XM26+
-         fTAWjiBXpPBYw46FlNa4JjLjny1JC/MF9YItuw/F5Kd+2SePJ2viIsp7atdgnJLrlNfs
-         Gi9aIxl5OSiuurJXOSqjEAsf01mvDjsZ6mE4YnEeskWyCT06EyeJb0yDxZlD+ROLjd0D
-         8cFQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWGdeuvH7V4KdgnKNDM6Ca8uMCOC43mIT3tIETF63lGTLvW5BWO7w1YtMZszxCrzArgx7Z8alLJOElQr+36UOVNLm2LQiFFPT2IDhjY
-X-Gm-Message-State: AOJu0YxxTLnP0apF5sV+RXPbmD36/t5guiBh1s3Vtu8gqAJBelbh2+nj
-	DOBgxsnPRHf7EHi2SCxXfJqu//o9HYVJUdVwSUAJ7MIb02rrAIfS6rEShemd5L2QuoLMdSMHsZI
-	nyLOeqAwIBGeB+IhwCahmVBdCqTTvCUAmHVodHk/di3r709lO04J14I4=
-X-Google-Smtp-Source: AGHT+IEi8GDmcepfF+m+5H6tWqKtCl+XTsXConhKQCxFdIFtkwH6Un4xtDl8nAbakJNR1nlpPMuU0vrtAhMteAKQELmYhC5O8l4f
+	s=arc-20240116; t=1712317801; c=relaxed/simple;
+	bh=PIcpPeQSIYT3OojaOi7ZJiQHhKNaRInlfkv3wkwoKZQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:Content-Type:
+	 Content-Disposition:MIME-Version; b=oLX5Do/O+tGsoifzzKwHylM/luay03VBzjEkiDMQyGYMZ1g0XYa2p6mMLqRVeXmHG4bLKkQz1vqV4oJdZ8E9Wr/1l8+sXmPVJPqIUtIzPFIwX99aXQXL5hrwM5WXS5WAmzhJDZuhBgmtuqybDxDnG0VA3ghEx6mChpPsw51POKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=jS6E/fO2; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 435BSSOY028829;
+	Fri, 5 Apr 2024 11:49:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : content-type : mime-version; s=pp1;
+ bh=3+Lh9mxAecdBGIcwlYpun7XEk9Ey9kS2lJwm5SHNI+Q=;
+ b=jS6E/fO2YgdhL3bK4RvYllBM+3Sgjp173IT28pgCejAyosyHF3noI8MFsaJn+X5YFLEg
+ jHdQzOmdJbnCHZ4nihEpgNgWFX+qkM1MMwfK7OVeskoG4DCoXvmkLvb0apkmRxr2n2E2
+ i1Xm0iWnzuIBV5X5BPc0w1XmzbiN39vdDm9t5nZHEbrm+fFN/DtExn9Muo9oDGCS+uWq
+ t8EvSSUR/WpYuj4XecxoPz9mlYYQ5n1zkBbPtUVkk20GDIsjT5/tf0hDyRvgw6L9d9hH
+ BVc61hLwneqn8laZZCdm9Ysaims/Gue1vu2SSoSzELIJFUDpU1Ft5EJ4Ii22QrvtZz+t tA== 
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xagetr19w-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 11:49:56 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4359VwLi008686;
+	Fri, 5 Apr 2024 11:49:56 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x9epwa73a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 11:49:56 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 435BnoI411207000
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 5 Apr 2024 11:49:52 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1FF482004F;
+	Fri,  5 Apr 2024 11:49:50 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EAFBF2004E;
+	Fri,  5 Apr 2024 11:49:49 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri,  5 Apr 2024 11:49:49 +0000 (GMT)
+Date: Fri, 5 Apr 2024 13:49:48 +0200
+From: Alexander Gordeev <agordeev@linux.ibm.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Vasily Gorbik <gor@linux.ibm.com>, Heiko Carstens <hca@linux.ibm.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] s390 fixes for 6.9-rc3
+Message-ID: <Zg/lXGhJwPcyDqk2@tuxmaker.boeblingen.de.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: b_WY48pf6Rp6tIRI3sMSMwV-8k8zKtX5
+X-Proofpoint-ORIG-GUID: b_WY48pf6Rp6tIRI3sMSMwV-8k8zKtX5
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:198b:b0:36a:1275:4aea with SMTP id
- g11-20020a056e02198b00b0036a12754aeamr9374ilf.4.1712317743753; Fri, 05 Apr
- 2024 04:49:03 -0700 (PDT)
-Date: Fri, 05 Apr 2024 04:49:03 -0700
-In-Reply-To: <20240404235638.771-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dbffef0615580abe@google.com>
-Subject: Re: [syzbot] [net?] possible deadlock in unix_del_edges
-From: syzbot <syzbot+7f7f201cc2668a8fd169@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_10,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ lowpriorityscore=0 malwarescore=0 spamscore=0 mlxscore=0 bulkscore=0
+ adultscore=0 clxscore=1011 mlxlogscore=443 suspectscore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404050085
 
-Hello,
+Hi Linus,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+please pull s390 fixes for 6.9-rc3.
 
-Reported-and-tested-by: syzbot+7f7f201cc2668a8fd169@syzkaller.appspotmail.com
+Thanks,
+Alexander
 
-Tested on:
+The following changes since commit 39cd87c4eb2b893354f3b850f916353f2658ae6f:
 
-commit:         2b3d5988 Add linux-next specific files for 20240404
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=14d06aa9180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9c48fd2523cdee5e
-dashboard link: https://syzkaller.appspot.com/bug?extid=7f7f201cc2668a8fd169
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=11d94d8d180000
+  Linux 6.9-rc2 (2024-03-31 14:32:39 -0700)
 
-Note: testing is done by a robot and is best-effort only.
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-6.9-3
+
+for you to fetch changes up to 378ca2d2ad410a1cd5690d06b46c5e2297f4c8c0:
+
+  s390/entry: align system call table on 8 bytes (2024-04-03 15:00:20 +0200)
+
+----------------------------------------------------------------
+s390 updates for 6.9-rc3
+
+- Fix missing NULL pointer check when determining guest/host fault
+
+- Mark all functions in asm/atomic_ops.h, asm/atomic.h and asm/preempt.h
+  as __always_inline to avoid unwanted instrumentation
+
+- Fix removal of a Processor Activity Instrumentation (PAI) sampling
+  event in PMU device driver
+
+- Align system call table on 8 bytes
+
+----------------------------------------------------------------
+Heiko Carstens (1):
+      s390/mm: fix NULL pointer dereference
+
+Ilya Leoshkevich (2):
+      s390/atomic: mark all functions __always_inline
+      s390/preempt: mark all functions __always_inline
+
+Sumanth Korikkar (1):
+      s390/entry: align system call table on 8 bytes
+
+Thomas Richter (1):
+      s390/pai: fix sampling event removal for PMU device driver
+
+ arch/s390/include/asm/atomic.h     | 44 +++++++++++++++++++-------------------
+ arch/s390/include/asm/atomic_ops.h | 22 +++++++++----------
+ arch/s390/include/asm/preempt.h    | 36 +++++++++++++++----------------
+ arch/s390/kernel/entry.S           |  1 +
+ arch/s390/kernel/perf_pai_crypto.c | 10 ++++++---
+ arch/s390/kernel/perf_pai_ext.c    | 10 ++++++---
+ arch/s390/mm/fault.c               |  2 +-
+ 7 files changed, 67 insertions(+), 58 deletions(-)
 
