@@ -1,70 +1,101 @@
-Return-Path: <linux-kernel+bounces-132782-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132787-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEA60899A17
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:57:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4288C899A27
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:03:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B3791C20B49
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:57:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1CF528424C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:03:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D23161335;
-	Fri,  5 Apr 2024 09:56:06 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4197161309;
+	Fri,  5 Apr 2024 10:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=smtpcorp.com header.i=@smtpcorp.com header.b="PqoCYnD/";
+	dkim=pass (2048-bit key) header.d=asem.it header.i=@asem.it header.b="B0mEMFs8"
+Received: from e3i57.smtp2go.com (e3i57.smtp2go.com [158.120.84.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456D6161303;
-	Fri,  5 Apr 2024 09:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B68C160872
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:02:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=158.120.84.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712310965; cv=none; b=nENW4L6jC7azkY39hZheeEQVAWmSnHuaNvw+4JYmwBxXcmBKbHB3XzwAJ+G3F9oJENz4StZqb8ICDA9hQLIY8kFHzXGTSx+f67o3qBR05gkTLEFl2eRXSRhDPpJ8tuDbOGN3wq/cvypJhUP6oesUhGpys3chO+dvIdfDyqRVtio=
+	t=1712311373; cv=none; b=Ww2s89EkRWX1qbSjevyBR5s5dxwuoOH/x6+GKJ+fVf3YhAYD3yjw75qjkzlOwdvgmU7ZP7fyr6xQ3c4Ys+YmNu/cjZjlt6aKBPynOhFfgOHWVGukPGw2Whr/WLCHnbwDb2DWiAheQqgz3N0PsSmWQ1qNyDvH53UV9PTJWTRjwoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712310965; c=relaxed/simple;
-	bh=nAKV/KIjO0niNMWNTOLLP1H2qDBqS7M9ULvho+EQ1zA=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qj3k1MIp6haMEKg5L6flYwVM+Am2/NCgERIJk+FLa28Ul6saT/47zDMy59Zd1smbdcAGyGVSkwCF3SXzAHUtQCmtrHRtLjnoGqSg6rlnJ9dtJbuoptBAjEQQAzDQJxWA39EwKVHn3I7hygOVk02QMOHkGdd347YltowE0GQy2ic=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4V9tzY2lJqz6J7pn;
-	Fri,  5 Apr 2024 17:51:21 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id CEFDC1400D1;
-	Fri,  5 Apr 2024 17:56:01 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 5 Apr
- 2024 10:56:01 +0100
-Date: Fri, 5 Apr 2024 10:56:00 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Lukasz Luba <lukasz.luba@arm.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-	<dietmar.eggemann@arm.com>, <linux-arm-kernel@lists.infradead.org>,
-	<sudeep.holla@arm.com>, <cristian.marussi@arm.com>,
-	<linux-samsung-soc@vger.kernel.org>, <rafael@kernel.org>,
-	<viresh.kumar@linaro.org>, <quic_sibis@quicinc.com>
-Subject: Re: [PATCH 0/2] Update Energy Model with perfromance limits
-Message-ID: <20240405105600.000019fd@Huawei.com>
-In-Reply-To: <20240403162315.1458337-1-lukasz.luba@arm.com>
-References: <20240403162315.1458337-1-lukasz.luba@arm.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712311373; c=relaxed/simple;
+	bh=S/aNv2lF06ooFUIcmaegi/4jt++yjayJ5fVpl/t9Ymc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=L7IlriHGE9xTU88kVX5irI8x06lth0mMOsu8HuYm17vMQAo9D2x9sx1BdxyHSQri01mLIdmF0+kEkStnMaL1NWPXlfGoRKN+E/QBHxFHZqiJnbdk05GErM5EO6RW1wgrxOzyKskwYUf28j6mU8W31NCBB2DF80Kr5bDzdGvFa9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asem.it; spf=pass smtp.mailfrom=em1174574.asem.it; dkim=pass (2048-bit key) header.d=smtpcorp.com header.i=@smtpcorp.com header.b=PqoCYnD/; dkim=pass (2048-bit key) header.d=asem.it header.i=@asem.it header.b=B0mEMFs8; arc=none smtp.client-ip=158.120.84.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=asem.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=em1174574.asem.it
+Received: from [10.86.249.198] (helo=asas054.asem.intra)
+	by smtpcorp.com with esmtpa (Exim 4.96.1-S2G)
+	(envelope-from <f.suligoi@asem.it>)
+	id 1rsgNk-rloBri-0u
+	for linux-kernel@vger.kernel.org;
+	Fri, 05 Apr 2024 10:01:12 +0000
+Received: from flavio-x.asem.intra ([172.16.18.47]) by asas054.asem.intra with Microsoft SMTPSVC(10.0.14393.4169);
+	 Fri, 5 Apr 2024 12:01:10 +0200
+From: Flavio Suligoi <f.suligoi@asem.it>
+To: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>
+Cc: linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Flavio Suligoi <f.suligoi@asem.it>
+Subject: [PATCH 0/1] mtd: spi-nor: everspin: add em004lxb entry
+Date: Fri,  5 Apr 2024 12:01:03 +0200
+Message-Id: <20240405100104.480779-1-f.suligoi@asem.it>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Transfer-Encoding: 8bit
+X-OriginalArrivalTime: 05 Apr 2024 10:01:10.0750 (UTC) FILETIME=[2F9FA7E0:01DA8740]
+X-smtpcorp-track: 1rsgNkr_oUri0I.DxvpHifGoTRPv
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=smtpcorp.com;
+ i=@smtpcorp.com; q=dns/txt; s=a1-4; t=1712311369; h=feedback-id :
+ x-smtpcorp-track : date : message-id : to : subject : from : reply-to
+ : sender : list-unsubscribe;
+ bh=BEE1Q44IuerTAix98C68lkBVz054z7wXlAMnf+3bW8g=;
+ b=PqoCYnD/+u1ymfp7xfDd9qdsHV+ZcQTJJczVP9WSKLYlpJaVG+5IRKURUQCysIU/obNTB
+ Tldm9hUINCR7T6/UyPT79NfgZeNyd6coW0aIfJIMLyymllD01OrQgUTrqdhmv3MwBRFLGwf
+ WfLRdCO7X3TT3JvQ16pNgKdxz6gykjINtRopCnA5CRisJrUPyK2Ii9S5NqRxyLQhxvHSWNX
+ lmal8R1VxyZM8ABnGL9S9CZVliNHVoUymdW+pnS7P/St0Jengo/6J/6njy68cS2ZW/3ZVky
+ 1V68KWW+MjoAlEd5q/d7z4Q/mewoufrartbQDVo73E40/CJWma+lXq6mC7DQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=asem.it;
+ i=@asem.it; q=dns/txt; s=s1174574; t=1712311369; h=from : subject : to
+ : message-id : date; bh=BEE1Q44IuerTAix98C68lkBVz054z7wXlAMnf+3bW8g=;
+ b=B0mEMFs8ZPxm6bHwhftw2tl518X9caBsgFkU2XACRwYUmd8lrXX5k7AYDYVgXePm921ga
+ zVeBJa+bR7MklaMD7NY0zth2jQxo5DDxZv6vL7qoAx9uZEBB2wdMftou1Vh6kD1E2accoqF
+ eXyF6ZeJD7qnT2cfq07yDg/qt0FOEl8jWWt+RxerU9jPeewMdzvQv/mjrxDTN6E8WHaJX0M
+ J6Ft7qNlX7NYIzJBVNHGDfj8zLLNDoE0Z4PjQBSfhcUcM536NKrfdknn2yiI0pevuCY+xSv
+ NmqBKbBoYJPIcGCqJk7A7nkg9jXi9uJ5VisdLPnkDj59ZAPai8YI4NvrF7zg==
 
-On Wed,  3 Apr 2024 17:23:13 +0100
-Lukasz Luba <lukasz.luba@arm.com> wrote:
+Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
+Memory.
+This device is JEDEC compatible (JESD251 and JESD251-1), but it is not able
+to provide SFDP information.
 
-Typo in patch title.  performance
+Link: https://www.everspin.com/file/158244/download
+
+I currently use this MRAM on one of our i.MX8MP boards.
+
+Flavio Suligoi (1):
+  mtd: spi-nor: everspin: add em004lxb entry
+
+ drivers/mtd/spi-nor/everspin.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+-- 
+2.34.1
+
 
