@@ -1,104 +1,163 @@
-Return-Path: <linux-kernel+bounces-132908-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132909-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1FE8899BE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:31:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A231899BE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:32:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96F0A1F228E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:31:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D14801F230C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:31:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7098E16C691;
-	Fri,  5 Apr 2024 11:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73B1C1649D9;
+	Fri,  5 Apr 2024 11:31:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="W0lLN19B";
-	dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b="Zh7bpjv4"
-Received: from nautica.notk.org (nautica.notk.org [91.121.71.147])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VuMqUJtS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 289CD1649D9;
-	Fri,  5 Apr 2024 11:31:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.121.71.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91ABC2032D
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 11:31:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712316668; cv=none; b=GZHPDPR5E0co9DsxkXE6TfsXl+LNNT0GaePcbnLZhn6jMxTf/SxGcrP3I/acm+7031KK11D2EkzyjtgRvyh66RnrVYPemtl6v+GSgOHtpO5xaQocwu2ldty6qcUZD5yZMAE3Ah1iqtqTDnFbLhxWCB1HTTNufRFP55NRqOuGfBs=
+	t=1712316711; cv=none; b=shiTM4Qx+21rPBnhky8fpOb8SzJkSXnLJ0XODVKOQq8ILpYYJxf+24T4i7pyMr3mlYyOjWrc/gMEZrUVOjBBwckVKnzlMdI3uN1hKaxBEZXqPBe+55ZxMTgSMGFNPB3C2EV2N2WoY5R6ruIBl0627qEuSzSOrx8ilAJQIwFDOsc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712316668; c=relaxed/simple;
-	bh=m7K3xrh7Wz99GlOaVIqzX1ncJYiBtyR+jSDbU435dqE=;
+	s=arc-20240116; t=1712316711; c=relaxed/simple;
+	bh=P1Q+TD9aXToHjoMZ5pt7Cig3oxiTyod8aYgAxTlsc1U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iwMfVa0k26Bp78U01KzF9hHWxHoqenhWk2ejVgc9BlcO80aaoL6pX7D0dvNNJrjsRGfZR59575EQw+g0xH0eL7QTX1xRo/8IUO9RUGf7PCYPkkQGb5EXhA3FPWTTPDzXBibuGYGPTZ1q4L/WPBT0Xe/2OkSDgJnzZ+iF6LcvI0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org; spf=pass smtp.mailfrom=codewreck.org; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=W0lLN19B; dkim=pass (2048-bit key) header.d=codewreck.org header.i=@codewreck.org header.b=Zh7bpjv4; arc=none smtp.client-ip=91.121.71.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=codewreck.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=codewreck.org
-Received: by nautica.notk.org (Postfix, from userid 108)
-	id 5C646C01B; Fri,  5 Apr 2024 13:31:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1712316664; bh=mFIx+8k+ANOQ8BYwuRQQCSBqlnnopffUpvUlwuxTisk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=W0lLN19Bu1rxXBdVWoqZ98P3vVLkxIDL5sun5z7ZP1c01h+b36BllepjYp+ZXMDxF
-	 pJxQtxa8POrNEKW77JZtPynMo9mCgxlUwznE444NW2uB13ZE2v+hjl4Hvbq+wP6HNR
-	 eJLJLtu1sVjT+JrmlSgykChDlAPxiLiirErjWlFZterHEC8pcD5SDFgi4WVzCwTGnL
-	 mQVIx7swRLbicwtahrypx3888xbaJa/SXt8o6s/zHnrPz0It27DDGr/D27AIXLSj79
-	 r/5uY7/PNXuBR7rI2WpwmTMAXZK+tPnkonCcM0Ry9YWcG6TmnIbUSObTIYvJ495372
-	 rDFxrJWVUKnVg==
-X-Spam-Level: 
-Received: from gaia.codewreck.org (localhost [127.0.0.1])
-	by nautica.notk.org (Postfix) with ESMTPS id 71DFBC009;
-	Fri,  5 Apr 2024 13:30:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-	t=1712316660; bh=mFIx+8k+ANOQ8BYwuRQQCSBqlnnopffUpvUlwuxTisk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Zh7bpjv4FEj5oKlmEmYpdSD03U8Ortgvc7N5juSJ4S0p/rLp3UB/ZyBIPx42RiGO7
-	 6ya6kHjJVNdWY2g3sUy15wIG95eXLd9cbsNAQ3GJpiAgxu5HnSFjbw6P/vn49SPYz1
-	 GVZGfwIMIj5vOrVTcga9iLb1BcKHFE1bs0A9EFuSeRI0tw3jacCx7SV/GrCUxM0n3J
-	 atM9fyfQFA164g+RQ3qQR7KZVEOpV94YwtIXKKkLg3OO4zUbBbLcicIobLzP0wMxFy
-	 S6KpK1YC0sk3w3z4Nb5FYSDC1K3d1SUX6Es+zlH1ehGCkkUU9EM3IJGcF0AwBSv2I0
-	 WWicSBtpHMF9g==
-Received: from localhost (gaia.codewreck.org [local])
-	by gaia.codewreck.org (OpenSMTPD) with ESMTPA id a8448ac7;
-	Fri, 5 Apr 2024 11:30:53 +0000 (UTC)
-Date: Fri, 5 Apr 2024 20:30:38 +0900
-From: Dominique Martinet <asmadeus@codewreck.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: David Howells <dhowells@redhat.com>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Stephen Rothwell <sfr@canb.auug.org.au>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: duplicate patches in the vfs-brauner tree
-Message-ID: <Zg_g3usopd3KWtF0@codewreck.org>
-References: <20240404101038.11486a24@canb.auug.org.au>
- <Zg3tWULD56chInTG@codewreck.org>
- <5f56a81b-ac8a-417c-85ad-149f9f64649b@infradead.org>
- <Zg4F9SAGNcmKIa1v@codewreck.org>
- <20240405-entkleidet-performanz-2f46c4f67751@brauner>
+	 Content-Type:Content-Disposition:In-Reply-To; b=sINMReXDglrTGKjaxM1ml4tlOAGDO61ex0uC45u22eR9OTsGmNRlE1vBIZZR4T3M4Q9xbNt5MZc1xMqhd+ipyB8mflmZVuNXehZa8ePGmfkTf/a04B2PvlO9RvVGqaOJNLbSBZf6YxPCmYxTP6CcinOCBt9pdEDMJjrwPNg8a1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VuMqUJtS; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712316709; x=1743852709;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=P1Q+TD9aXToHjoMZ5pt7Cig3oxiTyod8aYgAxTlsc1U=;
+  b=VuMqUJtS4Sznjf6Xg3i7iqH+EqeqAJV0klMXboWsh7u0AaY6vLVgDh7a
+   MSOKjIObnL9tWZf1IuDXTOLCxUFA1SBWa7ofrn3VoZIQiSBNRcoCOBFS0
+   zAUF0+RHyKIIfrwCS80OeZ99xwiuqy17EkX2uD74aI19QVQHvlBy/O9jA
+   t3O5qsaFdyYITiBpo9cxDUE8qIIPYgPZ2akbroelaWGDwdwqdLZQDy0dJ
+   R0GJSdgDZ9CQ5fwQgRf38xqu2IhMK/Eu75Hg1Xm1xVjeURQHcs2ZViGQE
+   6Kw2ZLHAEf16esB7tnbqyN6vYpQ1qGuUHOrcNyb7Hk3DIhEyrvuBjhKrN
+   Q==;
+X-CSE-ConnectionGUID: Pa2QffwvSD+NLnJasV+RJw==
+X-CSE-MsgGUID: rIy1t9xSQpCvez0SeM6vOA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7523948"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="7523948"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 04:31:49 -0700
+X-CSE-ConnectionGUID: nA6gWKx0REmM0LXYHDtZ+w==
+X-CSE-MsgGUID: ctCtU/n4QCCmod+41Sd0ng==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="19056002"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 05 Apr 2024 04:31:43 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rshnI-0002Cq-10;
+	Fri, 05 Apr 2024 11:31:40 +0000
+Date: Fri, 5 Apr 2024 19:30:59 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ashish Kalra <Ashish.Kalra@amd.com>, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, rafael@kernel.org,
+	peterz@infradead.org, adrian.hunter@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com, jun.nakajima@intel.com,
+	rick.p.edgecombe@intel.com, thomas.lendacky@amd.com,
+	michael.roth@amd.com, seanjc@google.com, kai.huang@intel.com,
+	bhe@redhat.com, kirill.shutemov@linux.intel.com, bdas@redhat.com,
+	vkuznets@redhat.com, dionnaglaze@google.com, anisinha@redhat.com,
+	jroedel@suse.de, ardb@kernel.org, kexec@lists.infradead.org,
+	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] x86/snp: Convert shared memory back to private on
+ kexec
+Message-ID: <202404051940.mApchEy0-lkp@intel.com>
+References: <41db1ebbe58fb082dbe848f1c666ed23e83f1752.1712270976.git.ashish.kalra@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240405-entkleidet-performanz-2f46c4f67751@brauner>
+In-Reply-To: <41db1ebbe58fb082dbe848f1c666ed23e83f1752.1712270976.git.ashish.kalra@amd.com>
 
-Christian Brauner wrote on Fri, Apr 05, 2024 at 12:57:08PM +0200:
-> > Given this I'd favor keeping Randy's older commit in my tree, so I'll
-> > send it to Linus as soon as Christian gives his ok on dropping the
-> > patch (or I guess it doesn't really make that much sense to wait any
-> > longer at this point?)
-> 
-> The patches are part of David's larger netfs-writeback series afaict.
-> So what patch do you need dropped?
+Hi Ashish,
 
-This one:
- 528aa74c091d ("9p: Clean up a kdoc warning.")
+kernel test robot noticed the following build errors:
 
+[auto build test ERROR on efi/next]
+[also build test ERROR on linus/master v6.9-rc2 next-20240405]
+[cannot apply to tip/x86/core tip/master tip/x86/mm tip/auto-latest]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I'll take this as an ok, I've just sent Linus my patches, thanks!
+url:    https://github.com/intel-lab-lkp/linux/commits/Ashish-Kalra/efi-x86-skip-efi_arch_mem_reserve-in-case-of-kexec/20240405-071346
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/efi/efi.git next
+patch link:    https://lore.kernel.org/r/41db1ebbe58fb082dbe848f1c666ed23e83f1752.1712270976.git.ashish.kalra%40amd.com
+patch subject: [PATCH v3 4/4] x86/snp: Convert shared memory back to private on kexec
+config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20240405/202404051940.mApchEy0-lkp@intel.com/config)
+compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240405/202404051940.mApchEy0-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404051940.mApchEy0-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> ld.lld: error: duplicate symbol: snp_kexec_unshare_mem
+   >>> defined at init.c
+   >>>            arch/x86/realmode/init.o:(snp_kexec_unshare_mem) in archive vmlinux.a
+   >>> defined at extable.c
+   >>>            arch/x86/mm/extable.o:(.text+0x0) in archive vmlinux.a
+--
+>> ld.lld: error: duplicate symbol: snp_kexec_unshare_mem
+   >>> defined at init.c
+   >>>            arch/x86/realmode/init.o:(snp_kexec_unshare_mem) in archive vmlinux.a
+   >>> defined at fault.c
+   >>>            arch/x86/mm/fault.o:(.text+0x0) in archive vmlinux.a
+--
+>> ld.lld: error: duplicate symbol: snp_kexec_unshare_mem
+   >>> defined at init.c
+   >>>            arch/x86/realmode/init.o:(snp_kexec_unshare_mem) in archive vmlinux.a
+   >>> defined at amd.c
+   >>>            arch/x86/kernel/cpu/amd.o:(.text+0x0) in archive vmlinux.a
+--
+>> ld.lld: error: duplicate symbol: snp_kexec_unshare_mem
+   >>> defined at init.c
+   >>>            arch/x86/realmode/init.o:(snp_kexec_unshare_mem) in archive vmlinux.a
+   >>> defined at common.c
+   >>>            arch/x86/kernel/cpu/common.o:(.text+0x0) in archive vmlinux.a
+--
+>> ld.lld: error: duplicate symbol: snp_kexec_unshare_mem
+   >>> defined at init.c
+   >>>            arch/x86/realmode/init.o:(snp_kexec_unshare_mem) in archive vmlinux.a
+   >>> defined at probe_roms.c
+   >>>            arch/x86/kernel/probe_roms.o:(.text+0x0) in archive vmlinux.a
+--
+>> ld.lld: error: duplicate symbol: snp_kexec_unshare_mem
+   >>> defined at init.c
+   >>>            arch/x86/realmode/init.o:(snp_kexec_unshare_mem) in archive vmlinux.a
+   >>> defined at nmi.c
+   >>>            arch/x86/kernel/nmi.o:(.text+0x0) in archive vmlinux.a
+--
+>> ld.lld: error: duplicate symbol: snp_kexec_unshare_mem
+   >>> defined at init.c
+   >>>            arch/x86/realmode/init.o:(snp_kexec_unshare_mem) in archive vmlinux.a
+   >>> defined at head64.c
+   >>>            arch/x86/kernel/head64.o:(.text+0x0) in archive vmlinux.a
+
 -- 
-Dominique Martinet | Asmadeus
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
