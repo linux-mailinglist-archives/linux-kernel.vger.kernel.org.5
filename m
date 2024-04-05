@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-132583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132585-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35BAB8996D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:46:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABA328996E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:47:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E23052887B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:46:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEAC01C2161C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:47:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A34B13DBBB;
-	Fri,  5 Apr 2024 07:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E82E913DB9C;
+	Fri,  5 Apr 2024 07:46:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H6YfLLej"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lZcNmWC+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85DA3225D6;
-	Fri,  5 Apr 2024 07:45:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F29E712D20D;
+	Fri,  5 Apr 2024 07:46:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712303156; cv=none; b=ewS+Sypg7gBdLG4AuAPu63nTSvps3qhf+Uyvv+oIuuEb7j+H9UhCXkxzscDmYl0ph6HeNAwTdtYvkqsvXi05PwxLxn8RUrlUoGbFqFVgxln80eaQnA1t1HgNeAOs/OJTopWwkUN+UMytHGH+HSv/KLTEn53wTvyaWXtBIyfA9EY=
+	t=1712303192; cv=none; b=ezGO7Xgb06o1qPZES7UpGMNuuQI6CC29GVfs8NrOeDKKTYN4KL0bm/3QyVfg2gFOiFdUz2m8cQVAZYUmjFsXzpx4EdkewMEdZzAfsiIUtph0UlSeLrLSA38Kj2YUPLacDP1izw93QxSCBlSzoWGGH9zEvqeHwwecj421HwhZkyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712303156; c=relaxed/simple;
-	bh=AQ5k1Ebe5Fm4EtDbJnnbbMyqhwHlWArxIYkQrss7lyM=;
+	s=arc-20240116; t=1712303192; c=relaxed/simple;
+	bh=19hgbaU3P8IPVBIhjWEumRz5j4TbX2VV6q6o2CVSkvM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XjiJm0mdcQ8cBP7jUUUJlrEDwAgBDypF+dl3+Z1S1NdPSlJpaFDSj1nFqmfSWeAPVArikpP6014H7jIb7ewM71nUcgKKnGbyCUHgqoERovH3An76XTnZRuyKE5hYVCgeCgqK0HmyDtip/RoC5j9d0ed05BqsZlre4dQAIZhG+DY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H6YfLLej; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 919F4C433C7;
-	Fri,  5 Apr 2024 07:45:49 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=ilS1Ocyx3tvKU8couYEozvhLbu0FDCADZAi8E1gKvwe3gsS0Axqi9kjmYBkFLaoqyn9JSpHM8YlaE1P8cf6jzF/9HuS34LCuoD0EHz+o45lNkWKpHUdzOP7FD37vuo8sD9Uz5tfE/2JaCmiLJkJg2WHgH+PkJLQ297IO4GkBJTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lZcNmWC+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FE9EC433C7;
+	Fri,  5 Apr 2024 07:46:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712303156;
-	bh=AQ5k1Ebe5Fm4EtDbJnnbbMyqhwHlWArxIYkQrss7lyM=;
+	s=k20201202; t=1712303191;
+	bh=19hgbaU3P8IPVBIhjWEumRz5j4TbX2VV6q6o2CVSkvM=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=H6YfLLejAxrZxxFNmjJgj/DW4+tTj3G9EynkBu6+EjBdNBFsqwTa27hG1DyS9p/jW
-	 iUSEtKfvPy0ojzIrAdob/11+KUIZqo5biJn2I8RaDbPurUTY/TkmCs574+a/7fys66
-	 OOgdvcA3vefeoQ/EPg+cd+wVk55vxMSDoloZ3/mqQrGo5RNKKWPv0ctWGKLo+bb/X6
-	 5oHtkt5orCMp1He1kCoYbvuuljT17NKw8/Vwj04fTqA/quhN6i3HmRs/fi665HppaP
-	 fbwXfBrNmq9Uv9lBEpsW1IeLH0NepdDptBixolDwDP696lxgpRZPlKBV1pRo3kZX2B
-	 vKGsQ01pK3BKw==
-Message-ID: <948a70ed-e3de-41d6-ada8-b547aa004ef0@kernel.org>
-Date: Fri, 5 Apr 2024 09:45:46 +0200
+	b=lZcNmWC+TCfv6qwk4WglYGPuJyGJRbLBcYD/z1wDkQUV5HMeZVQ0FGTxtd1yd94mf
+	 kT/R32qUkNvn++EHnRIKZtWVzOeNQTnh8t4LyUNLajF6S8NwCj+jHn30weB+U7OVEz
+	 AnDEfedoT/0FIjOdERSkE/xn111acd8qiJWt1xY2ku6gYyv2s6sqESmg0Mipin4nXh
+	 wx3phujkHPN6hc9iNk/Px0QP8kmJW5FjH6yt2fKh4d8ytVBAxbIqIoPOH9CCfdzpE7
+	 U0uc1aYrl6BZzCUrE+WFu1tYbleQzo7Ctrx5BqIcQGibp2QPUQnaoKYndGekbChhVC
+	 IkgMZqtlliY7g==
+Message-ID: <6457f778-e42a-4240-9a38-c1300ef23ddb@kernel.org>
+Date: Fri, 5 Apr 2024 09:46:22 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,8 +49,10 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/17] HSI2, UFS & UFS phy support for Tensor GS101
-To: Peter Griffin <peter.griffin@linaro.org>, mturquette@baylibre.com,
+Subject: Re: [PATCH 01/17] dt-bindings: clock: google,gs101-clock: add HSI2
+ clock management unit
+To: =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ Peter Griffin <peter.griffin@linaro.org>, mturquette@baylibre.com,
  sboyd@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
  vkoul@kernel.org, kishon@kernel.org, alim.akhtar@samsung.com,
  avri.altman@wdc.com, bvanassche@acm.org, s.nawrocki@samsung.com,
@@ -60,8 +62,10 @@ Cc: linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org,
  devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
  linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org,
- andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com
+ saravanak@google.com, willmcvicker@google.com
 References: <20240404122559.898930-1-peter.griffin@linaro.org>
+ <20240404122559.898930-2-peter.griffin@linaro.org>
+ <d1aaa3a350315b8eb60aaee416fad4382385ca3a.camel@linaro.org>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -107,34 +111,64 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240404122559.898930-1-peter.griffin@linaro.org>
+In-Reply-To: <d1aaa3a350315b8eb60aaee416fad4382385ca3a.camel@linaro.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 04/04/2024 14:25, Peter Griffin wrote:
-> Hi folks,
+On 05/04/2024 09:15, André Draszik wrote:
+> Hi Pete,
 > 
-> This series adds support for the High Speed Interface (HSI) 2 clock
-> management unit, UFS controller and UFS phy calibration/tuning for GS101.
+> On Thu, 2024-04-04 at 13:25 +0100, Peter Griffin wrote:
+>> Add dt schema documentation and clock IDs for the High Speed Interface
+>> 2 (HSI2) clock management unit. This CMU feeds high speed interfaces
+>> such as PCIe and UFS.
+>>
+>> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+>> ---
+>>  .../bindings/clock/google,gs101-clock.yaml    | 30 +++++++++++++++++--
+>>  1 file changed, 28 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml b/Documentation/devicetree/bindings/clock/google,gs101-
+>> clock.yaml
+>> index 1d2bcea41c85..a202fd5d1ead 100644
+>> --- a/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+>> +++ b/Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+>> @@ -32,14 +32,15 @@ properties:
+>>        - google,gs101-cmu-misc
+>>        - google,gs101-cmu-peric0
+>>        - google,gs101-cmu-peric1
+>> +      - google,gs101-cmu-hsi2
 > 
-> With this series applied, UFS is now functional! The SKhynix HN8T05BZGKX015
-> can be enumerated, partitions mounted etc. This then allows us to move away
-> from the initramfs rootfs we have been using for development so far.
+> Can you keep this alphabetical and add hsi before misc please.
+>>  
+>>    clocks:
+>>      minItems: 1
+>> -    maxItems: 3
+>> +    maxItems: 5
+>>  
+>>    clock-names:
+>>      minItems: 1
+>> -    maxItems: 3
+>> +    maxItems: 5
+>>  
+>>    "#clock-cells":
+>>      const: 1
+>> @@ -112,6 +113,31 @@ allOf:
+>>              - const: bus
+>>              - const: ip
+>>  
+>> +  - if:
+>> +      properties:
+>> +        compatible:
+>> +          contains:
+>> +            enum:
+>> +              - google,gs101-cmu-hsi2
 > 
-> The intention is this series will be merged via Krzysztofs Samsung Exynos
-> tree(s). This series is rebased on next-20240404.
+> this block should also come before misc please.
 > 
-> The series is broadly split into the following parts:
-> 1) dt-bindings documentation updates
-> 2) gs101 device tree updates
-> 3) Prepatory patches for samsung-ufs driver
-> 4) GS101 ufs-phy support
-> 5) Prepatory patches for ufs-exynos driver
-> 6) GS101 ufs-exynos support
+> Once done, feel free to add
 
-UFS phy and host should go through their trees. What is the
-reason/need/requirement to put it into this patchset and merge via
-Samsung SoC tree?
+Yes, please, ack for both.
 
 Best regards,
 Krzysztof
