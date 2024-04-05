@@ -1,96 +1,187 @@
-Return-Path: <linux-kernel+bounces-132727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8796899957
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:21:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 573F3899958
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:22:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6807CB216E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:21:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 772271C21358
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:22:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E70CA15FCFA;
-	Fri,  5 Apr 2024 09:21:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6576615FCF3;
+	Fri,  5 Apr 2024 09:22:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEiy9Vug"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gtsTEtBJ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347ECEEB2
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C51146013
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:22:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712308897; cv=none; b=evBADD8r3KdqvbsmjQT4YxhcepaIgNbInO6If60u9J5cQx5yC0mFJL2EyaPtrD9EEbgeUc//sdO5Ev7grA6LLNafbEehimYtAIQAMsXLOdsbDeDXX7kOilszGBhOSTJlOe1pGXplk2PdfO7oAKGfjp0ymIExUNspOWBdDEcXnhY=
+	t=1712308971; cv=none; b=bBNeyMxbZw+CMATdZTmzR1KMuIJwLdHKgOPE7PBTS3DeuXBBlWXMF38q4g+vUSc4wdWmigLtGahScSI6ZPwAKvpCMARpfnmVfRlbDnihoB2LG4Fqwcy+yZ35ZDXZDb0iu3C4Ek5UMnYkWemEksBPqpedOVWxCvY3Zr25ccC1W0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712308897; c=relaxed/simple;
-	bh=kXYJax6SMc5fEX2Qq3xhhaKTyorpIOKA/K5ZRGBzgoQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rHUtu9zKBlI99q8qHLhI0YKMWYzsrhrgsks2W30kTC2vLqRBcQIiAeAkiTCUpXBlX1jpXsebjF/HCmVc+gdqxpV7dmiWd8KvBw6H1Y7I9DrzPHblcGAWIridjUMOL6OioaSjhC2eqCLzYFodsIsnfgproOX850yINVGcAFVbQYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AEiy9Vug; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC865C433B2
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:21:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712308896;
-	bh=kXYJax6SMc5fEX2Qq3xhhaKTyorpIOKA/K5ZRGBzgoQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=AEiy9VuguSsSP9FTOQZVjzlN9g+yYG5W2C6YmlATBWCiEQ1LOHjrhvb+8aTbUP2rT
-	 sCP4EAeVf38No9iaKZfWYFUlJ7VXeEpZjsAXO/LrBFbpID9itooKSJ7rfMkHKBXJCn
-	 OLp2dzop5QvtBgbJxfmhkIwk70cJn5mvB8UvSMMXBaNzQROFkXc0nlIwAwTEtmNGtT
-	 O2+R0aUZseK6o6+uDAev04QkNvq3keFMdU+uREVDnS3eoR0oTUUl23sT0vpa+hy4od
-	 K+lwjcwv2ItR3TZTqsdpmP0jXdtP2N1qWCo04cJ+l+tKsAESfwrEQlU8w2aQC17yLn
-	 +sOjnUFj1824Q==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e2ac1c16aso1103858a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 02:21:36 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWEoM7jfBG7k6ZGxW6++pU9eYJTVDmkRvbR0MnQtem4CLqqg8llgFDgNyqbZ6kIUUfCpDkfLspnNSd0+M8dbPqvIQ4kj/54chkt6dG2
-X-Gm-Message-State: AOJu0YzOikXHjA9cZ/TMwWTp6mqMzyFK+DyQeKMBORBGTXZs0I3a4S/M
-	XCcjIO3kR5JF+3pKt5gmiPWwOjYePOiLZF4OQSFUW5bD+QlMlbrsHPbSN8ygDu0sEzcLYORxVHE
-	a+8MchRqiAF2/872WS3psXfMXyaA=
-X-Google-Smtp-Source: AGHT+IHsvYvyZPc/Yacto/gLkYNUVzXawnN29Wxuvy2uRdc25PRnaix45JPTuO4eKx1jWxTqOetLynPZ9Yk3hTqjdsw=
-X-Received: by 2002:a17:906:454f:b0:a46:d5b9:c2ae with SMTP id
- s15-20020a170906454f00b00a46d5b9c2aemr586797ejq.32.1712308895263; Fri, 05 Apr
- 2024 02:21:35 -0700 (PDT)
+	s=arc-20240116; t=1712308971; c=relaxed/simple;
+	bh=IUMMRRzPWIQaO/HQgSkReoosUN9CT4t7yaNQBuuN+Qs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rrsRlD8cmmTlaIavaKI/uL9j3OUsULbw3zb2p3gC6JZQayo8w4+M6ppZLehiKYnPHHOfEgnbtoUmmcg2A14wxtJ2gnfngc7aiIjzVclHB0CtjWTTenY0PtXHjn7D/isKDF3TkeMKLrN9aFGQc+LBGVFley446YFZpJ0EbVX0caM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gtsTEtBJ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712308968;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=8zPE//uNeCCZxxqe8ogP7T/gFArApfz7PgGcXEOytjs=;
+	b=gtsTEtBJ/Z+OjlGHdTP0imiNhqeBtz5KVN8lotYD4EBD0ShYzCcRcee5Y4kZ95Y2pv/ZBR
+	sL17scRPU8wgy8VPvKMBAof0jcmEaEfGOGXX8hsQ0lqBuMNeRjQ53bF9Zm7W4OQYFl7eh+
+	btpFwze38/zET6V8VRq1dri7Dn+RrKg=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-159-CmcqZYr3MvKRLmVIhPs_Kg-1; Fri, 05 Apr 2024 05:22:44 -0400
+X-MC-Unique: CmcqZYr3MvKRLmVIhPs_Kg-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2d48517c975so16514801fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 02:22:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712308963; x=1712913763;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=8zPE//uNeCCZxxqe8ogP7T/gFArApfz7PgGcXEOytjs=;
+        b=JF3HKAI9lxki/3xU7skQKm8ALbw4o+JFUtjItbQVdR2/29wJaE9ioYEI4PytBACAJG
+         dg0ZBh1wvf1W1KyKHcE32WaP7K/RYCf69R8TmjBcRCKqMakWd3aJFOyJFITi5i8FrLTd
+         IGJ3pKZC+iZ0ssZTak4M4r3mifaQ6qwwtBfjOBBIZWRKwrmtLQHjpBsK8Ld4x4minpCf
+         JFIFD3mFzb8XoggPsmlhO6aL507jAVCJCLfxj5nkeBch1JKbHRMv1hFd9B0APKPkXoCN
+         jk9f2YqV2K3sr7NUMdFer7rv7EM3SvuGd42QapYH5QmphpjjijafWA2OWQ0Z0n89MKWz
+         +C5Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXgM5HtnpzS7rY6YEWikE5nt0ZmLFqMTB5lh+cZfuIseVfjmHxM/5akZeo/Sda9DJBHWoFeB1nsTc/dApeuaq4k9ytzpJnChziBUf06
+X-Gm-Message-State: AOJu0Yw8QBkzEfTzT+Tf3MMpVvfI72Bg9BbxgfV52c8Hdwehj9ZJ1vbf
+	LQrVywYaRi4xftGc5c5W9IxI7fQOmRt1YmADe+EPUw/CgkpT/kepVZAd0b23vdB0HIegrvJlZaU
+	i8rBlPlYRyUfcNPgfy9J1JSRts+2dqvyF5dXblB+rZHwz1s2mairebi09Uhoh2A==
+X-Received: by 2002:a2e:a9a2:0:b0:2d5:9703:263f with SMTP id x34-20020a2ea9a2000000b002d59703263fmr793540ljq.44.1712308963217;
+        Fri, 05 Apr 2024 02:22:43 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGqms6B/pVFeUdjTIvmD5KtrZzZmLbX5QFZHpnAE503W9m9gzb5hNZmHBbSLJEcH1uUOLaaaA==
+X-Received: by 2002:a2e:a9a2:0:b0:2d5:9703:263f with SMTP id x34-20020a2ea9a2000000b002d59703263fmr793518ljq.44.1712308962750;
+        Fri, 05 Apr 2024 02:22:42 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c74b:5500:e1f8:a310:8fa3:4ec1? (p200300cbc74b5500e1f8a3108fa34ec1.dip0.t-ipconnect.de. [2003:cb:c74b:5500:e1f8:a310:8fa3:4ec1])
+        by smtp.gmail.com with ESMTPSA id fs20-20020a05600c3f9400b0041628f694dfsm2234878wmb.23.2024.04.05.02.22.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Apr 2024 02:22:42 -0700 (PDT)
+Message-ID: <667a8c26-b9e1-427b-8fdc-61841d47a5bf@redhat.com>
+Date: Fri, 5 Apr 2024 11:22:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404133642.971583-1-chenhuacai@loongson.cn>
- <20240404133642.971583-2-chenhuacai@loongson.cn> <20240404112518.51204544a4e73c2639ce53b1@linux-foundation.org>
-In-Reply-To: <20240404112518.51204544a4e73c2639ce53b1@linux-foundation.org>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Fri, 5 Apr 2024 17:21:25 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6pFfFuLE9ARPCXS-5d1==H7hiEfySPnQdQbf-kiXx_XA@mail.gmail.com>
-Message-ID: <CAAhV-H6pFfFuLE9ARPCXS-5d1==H7hiEfySPnQdQbf-kiXx_XA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] mm: Move lowmem_page_address() a little later
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Huacai Chen <chenhuacai@loongson.cn>, loongarch@lists.linux.dev, linux-mm@kvack.org, 
-	Xuefeng Li <lixuefeng@loongson.cn>, Guo Ren <guoren@kernel.org>, 
-	Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
-	linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/6] mm: swap: Remove CLUSTER_FLAG_HUGE from
+ swap_cluster_info:flags
+To: Ryan Roberts <ryan.roberts@arm.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Matthew Wilcox <willy@infradead.org>, Huang Ying <ying.huang@intel.com>,
+ Gao Xiang <xiang@kernel.org>, Yu Zhao <yuzhao@google.com>,
+ Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@suse.com>,
+ Kefeng Wang <wangkefeng.wang@huawei.com>, Barry Song <21cnbao@gmail.com>,
+ Chris Li <chrisl@kernel.org>, Lance Yang <ioworker0@gmail.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20240327144537.4165578-1-ryan.roberts@arm.com>
+ <20240327144537.4165578-2-ryan.roberts@arm.com>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20240327144537.4165578-2-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 5, 2024 at 2:25=E2=80=AFAM Andrew Morton <akpm@linux-foundation=
-org> wrote:
->
-> On Thu,  4 Apr 2024 21:36:34 +0800 Huacai Chen <chenhuacai@loongson.cn> w=
-rote:
->
-> > LoongArch will override page_to_virt() which use page_address() in the
-> > KFENCE case (by defining WANT_PAGE_VIRTUAL/HASHED_PAGE_VIRTUAL). So mov=
-e
-> > lowmem_page_address() a little later to avoid such build errors:
-> >
-> > error: implicit declaration of function 'page_address'.
-> >
->
-> Acked-by: Andrew Morton <akpm@linux-foundation.org>
->
-> Please ensure that it spends adequate time in linux-next for the
-> compilation testing.
-OK, thanks.
+On 27.03.24 15:45, Ryan Roberts wrote:
+> As preparation for supporting small-sized THP in the swap-out path,
+> without first needing to split to order-0, Remove the CLUSTER_FLAG_HUGE,
+> which, when present, always implies PMD-sized THP, which is the same as
+> the cluster size.
+> 
+> The only use of the flag was to determine whether a swap entry refers to
+> a single page or a PMD-sized THP in swap_page_trans_huge_swapped().
+> Instead of relying on the flag, we now pass in nr_pages, which
+> originates from the folio's number of pages. This allows the logic to
+> work for folios of any order.
+> 
+> The one snag is that one of the swap_page_trans_huge_swapped() call
+> sites does not have the folio. But it was only being called there to
+> shortcut a call __try_to_reclaim_swap() in some cases.
+> __try_to_reclaim_swap() gets the folio and (via some other functions)
+> calls swap_page_trans_huge_swapped(). So I've removed the problematic
+> call site and believe the new logic should be functionally equivalent.
+> 
+> That said, removing the fast path means that we will take a reference
+> and trylock a large folio much more often, which we would like to avoid.
+> The next patch will solve this.
+> 
+> Removing CLUSTER_FLAG_HUGE also means we can remove split_swap_cluster()
+> which used to be called during folio splitting, since
+> split_swap_cluster()'s only job was to remove the flag.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
 
-Huacai
+Looks like a reasonable cleanup independent of everything else
+
+Acked-by: David Hildenbrand <david@redhat.com>
+
+-- 
+Cheers,
+
+David / dhildenb
+
 
