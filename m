@@ -1,170 +1,134 @@
-Return-Path: <linux-kernel+bounces-133226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79CFC89A0CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:17:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31DC889A0E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:20:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9CE4A1C23071
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:17:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0E982829C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10CE116F851;
-	Fri,  5 Apr 2024 15:17:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E855816F8F4;
+	Fri,  5 Apr 2024 15:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BR6crsSw"
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BmTamosB"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9406816F28B
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 15:17:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7249316F8E7;
+	Fri,  5 Apr 2024 15:19:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712330222; cv=none; b=m5Kn/F8CsYA+dk7wLvgSxdpO6hAnj/rWiN8tFK+qUMxJVMBnplRxtbyL5jR/szTlXoWuYALwBpbVjcOPJ5yesccJb0h3UTND5Zev8Hzt5z5bLGtKHBtgBfpPM30qD2Lo0FRZa94/B6p8MLvNTeGRgxzljPQnPndc8fx9SshojlI=
+	t=1712330399; cv=none; b=ZdCuPozdGO3C0XqxIOrjuISe4Pb+tGLhSbKgcbxJUh7lfxZkhDH/vh7AXzMVdYF8LoVv1diB759qAjGa0HfRA0aDm83QxSfyYsoXr6TIY99mNAOdoTzxpuZByW9U7ZdHSx4G4I+UHSIcq++SS26dbSXy/CE6/jXdt4SjHAAm3A8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712330222; c=relaxed/simple;
-	bh=z2aQ7DpVqxi/SOBMC1I1b8bannThp9LA1uhBUa3ir1Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WD/VW5ikx+5ZgJtEserReMuOmkvhOWTKUfOAE+qokHPY7DAoFkmtu1crb34Vmb4nhVMcIa+e7pkFMnfNKO4Pf0r2goqv5zEqRIKWIjZT3CMOsLWwdJkY52AEP7YvjPp0W7gj4wpsW/pQj0aNIRnFaCl8iKFuA/lgjiLe+Tqwuy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BR6crsSw; arc=none smtp.client-ip=209.85.208.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d872102372so1989391fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 08:17:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712330219; x=1712935019; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D2ENZHCS9JQV8b2GdMqLyoK4cT04Sq4gyCwITbWTEGI=;
-        b=BR6crsSwrukVZQVcBqT8rSpcb2kp1+5hfTfk0pKoAqMFu+kUhEkfDOtHeR21jzIKBm
-         WhubFg7kzosnuEz6NMS7p84vtzPcb1cRGaZAfDSW4O+/Qgg2SP4Rv9TRi7CIwnh37uVG
-         owf3im7KszIfGkPI4d071EDsdP4yCL8JN7+5g4slGM0cSR46T8mBTUzJqUDpInyg0UhK
-         DLokasFjsc/eYyfUs7a0O1SkkUSVCcutI1Jwyb3axP/9206f1CN39W4AQPsrZZCM88Ax
-         DNQYfsjFoSslgrrfuVfUDbnSi2vbH5l4hJAx02SxloYC8IlccOZYA82zmhBD4QIruy07
-         Bm7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712330219; x=1712935019;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=D2ENZHCS9JQV8b2GdMqLyoK4cT04Sq4gyCwITbWTEGI=;
-        b=cnYiD7AejPtp/SYHhUp9alp1kYxfDZIHuYwg0fB9fj2wAlxCVgu03XMwk5zVCuH3Ci
-         pUtHbw0iXjEpZE75Sjl8reei/v9PUWYQ5BZIlmR49MQZlGvxL+US5l7QPCLpdnjNPExl
-         EM6bk1FKvdeoqrD8aAEn4cuwzHfQjuoNZzvICQE2s9Q9TlCVjcFfH+MSWEB7bYrmMFYJ
-         jGvnKJ7TpGNDyPpPmHa71BBDWmzqFI8e/h1qDy1wvrCn9kFNmYq0dl4vMlwhMClLzHg4
-         Mpss/HCchawjQ2ZCQ8VmyRhwtkbccv7xfdEHEV9UPiqwB3OOjjJXanAUnt/WNPgoyWOm
-         DnpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXuwD+sKU7Q7yUDZX+j/ssHEtBBJhk4oWiFvg34nnExAIMSVbdqBRh/IYASMhi/9Rk23caGh2P12103l2cdnxlxqKTB/Qvw5h/xqZFH
-X-Gm-Message-State: AOJu0YzhQao9v7x7te/eaiZrJdcBRFCsNG6aqvKsoZHXgsbtD4Wk6Cfn
-	asK1oZ9KUepnryComVZ4b1tY1qKi+kQpUbg887JbptUdFy+zbd7urSlg4bRxzLstGQ9TeD+V46V
-	l0eVLiXMKxaI999E+XLr8n8n9qPI=
-X-Google-Smtp-Source: AGHT+IHGs366whFfeFHulBYqBWYZVeT/3v/poOaEEdA/Lyj0oV/G5vwbW1LQY0NaJuXRSvYhENtpV1LJT+RIO34KCBY=
-X-Received: by 2002:a2e:a312:0:b0:2d6:9054:5b5c with SMTP id
- l18-20020a2ea312000000b002d690545b5cmr597928lje.26.1712330218459; Fri, 05 Apr
- 2024 08:16:58 -0700 (PDT)
+	s=arc-20240116; t=1712330399; c=relaxed/simple;
+	bh=zMWTmQx2nT3RjbtOfOBywHBvYZe7yVPPkQiP6FlmHBM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Gm6jSGkEKmIvP8+SqbQoRZ9NGlwSKOsAAI3CnCSrYzKmlXa5u7XpUfFOGG3dduUmCiRSh1JU6cM4yJ3angoIz0tpHIITBaqvu9TOk7F8LjbdaGNLYqWf9RlUI4N3zTIWwVjbBKx2FVSW6600EUKyKdFbyhHtuhWX09ItkamFYV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BmTamosB; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712330398; x=1743866398;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=zMWTmQx2nT3RjbtOfOBywHBvYZe7yVPPkQiP6FlmHBM=;
+  b=BmTamosBHVMF/PMM+P2CzzqqMP1n7fIxXlWFTFArCW22OOEYM5Z2yH5G
+   2gn++f0YhscVTDN4SfZ3KOiE6j2QLjTMdMlccq6wEJnAw4ziRzbllAHoh
+   xF5HEszfWn3N3xwFj80MYYn5ItCO//ZdZbB+yUbZU6mdAvujNZqO95jS7
+   Avw4NzQThtjrhtZIRVmCpfxeqbpxdoqCmseyNXjhYcI8LuA3HrrRIYv7x
+   iVTT4ayoW3/I4GBqIgdz0gOmduifLXBDYQkoqBx3HIH0WwogFWVuRTeim
+   T0ILoJ29ho+RofqB0nwdbQv4kkpZJhk5XfXl7YbRouerwmUqxgsBcDwA2
+   A==;
+X-CSE-ConnectionGUID: d0zkD2IIQlCz6m1c9Cnlkg==
+X-CSE-MsgGUID: JCeEKZ7dR6yXGhI6aqdTAg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="18274035"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="18274035"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:17:59 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="915256747"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="915256747"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:17:56 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rslKE-00000001mTp-0ZeY;
+	Fri, 05 Apr 2024 18:17:54 +0300
+Date: Fri, 5 Apr 2024 18:17:53 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	Yicong Yang <yangyicong@hisilicon.com>,
+	Tony Lindgren <tony@atomide.com>,
+	kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v1 1/1] serial: core: Clearing the circular buffer before
+ NULLifying it
+Message-ID: <ZhAWIThfejjbmj8u@smile.fi.intel.com>
+References: <20240404150034.41648-1-andriy.shevchenko@linux.intel.com>
+ <f0f200b0-34dc-430b-b55e-b133faf4db44@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240402175058.52649-1-ubizjak@gmail.com> <0F9CDB7B-E8DD-43E5-9394-233A9289B3E0@gmail.com>
-In-Reply-To: <0F9CDB7B-E8DD-43E5-9394-233A9289B3E0@gmail.com>
-From: Uros Bizjak <ubizjak@gmail.com>
-Date: Fri, 5 Apr 2024 17:16:46 +0200
-Message-ID: <CAFULd4YWP7VE2aRF-wwaaHiea9UOkyjhbV7OE-a36HpyTecrmg@mail.gmail.com>
-Subject: Re: [PATCH] x86/percpu: Use __force to cast from __percpu address space
-To: Nadav Amit <nadav.amit@gmail.com>
-Cc: "the arch/x86 maintainers" <x86@kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
-	Charlemagne Lasse <charlemagnelasse@gmail.com>, 
-	Luc Van Oostenryck <luc.vanoostenryck@gmail.com>, Ingo Molnar <mingo@kernel.org>, 
-	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>, 
-	Denys Vlasenko <dvlasenk@redhat.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Josh Poimboeuf <jpoimboe@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f0f200b0-34dc-430b-b55e-b133faf4db44@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Fri, Apr 5, 2024 at 4:38=E2=80=AFPM Nadav Amit <nadav.amit@gmail.com> wr=
-ote:
->
->
->
-> > On 2 Apr 2024, at 20:50, Uros Bizjak <ubizjak@gmail.com> wrote:
-> >
-> > Fix sparse warning when casting from __percpu address space by using
-> > __force in the cast. x86 named address spaces are not considered to
-> > be subspaces of the generic (flat) address space, so explicit casts
-> > are required to convert pointers between these address spaces and the
-> > generic address space (the application should cast to uintptr_t and
-> > apply the segment base offset). The cast to uintptr_t removes
-> > __percpu address space tag and sparse reports:
-> >
-> >  warning: cast removes address space '__percpu' of expression
-> >
-> > Use __force to inform sparse that the cast is intentional.
-> >
-> > Reported-by: Charlemagne Lasse <charlemagnelasse@gmail.com>
-> > Closes: https://lore.kernel.org/lkml/CAFGhKbzev7W4aHwhFPWwMZQEHenVgZUj7=
-=3DaunFieVqZg3mt14A@mail.gmail.com/
-> > Fixes: 9a462b9eafa6 ("x86/percpu: Use compiler segment prefix qualifier=
-")
-> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> > Cc: Nadav Amit <nadav.amit@gmail.com>
-> > Cc: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
-> > Cc: Ingo Molnar <mingo@kernel.org>
-> > Cc: Andy Lutomirski <luto@kernel.org>
-> > Cc: Brian Gerst <brgerst@gmail.com>
-> > Cc: Denys Vlasenko <dvlasenk@redhat.com>
-> > Cc: H. Peter Anvin <hpa@zytor.com>
-> > Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Thomas Gleixner <tglx@linutronix.de>
-> > Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> > ---
-> > arch/x86/include/asm/percpu.h | 6 +++---
-> > 1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/x86/include/asm/percpu.h b/arch/x86/include/asm/percp=
-u.h
-> > index 1f6404e0c428..20696df5d567 100644
-> > --- a/arch/x86/include/asm/percpu.h
-> > +++ b/arch/x86/include/asm/percpu.h
-> > @@ -77,7 +77,7 @@
-> > #define arch_raw_cpu_ptr(_ptr) \
-> > ({ \
-> > unsigned long tcp_ptr__ =3D __raw_my_cpu_offset; \
-> > - tcp_ptr__ +=3D (unsigned long)(_ptr); \
-> > + tcp_ptr__ +=3D (__force unsigned long)(_ptr); \
-> > (typeof(*(_ptr)) __kernel __force *)tcp_ptr__; \
-> > })
-> > #else
-> > @@ -96,8 +96,8 @@
-> > #endif /* CONFIG_SMP */
-> >
-> > #define __my_cpu_type(var) typeof(var) __percpu_seg_override
-> > -#define __my_cpu_ptr(ptr) (__my_cpu_type(*ptr) *)(uintptr_t)(ptr)
-> > -#define __my_cpu_var(var) (*__my_cpu_ptr(&var))
-> > +#define __my_cpu_ptr(ptr) (__my_cpu_type(*ptr)*)(__force uintptr_t)(pt=
-r)
-> > +#define __my_cpu_var(var) (*__my_cpu_ptr(&(var)))
->
-> If you use "(var)=E2=80=9D in __my_cpu_var(),, you might just as well cha=
-nge the first to:
->
->   #define __my_cpu_ptr(ptr) (__my_cpu_type(*(ptr))*)(__force uintptr_t)(p=
-tr)
->
-> [ not that I think of any real issue it might cause - just for consistenc=
-y]
+On Fri, Apr 05, 2024 at 07:25:03AM +0200, Jiri Slaby wrote:
+> On 04. 04. 24, 16:59, Andy Shevchenko wrote:
+> > The circular buffer is NULLified in uart_tty_port_shutdown()
+> > under the spin lock. However, the PM or other timer based callbacks
+> > may still trigger after this event without knowning that buffer pointer
+> > is not valid. Since the serial code is a bit inconsistent in checking
+> > the buffer state (some rely on the head-tail positions, some on the
+> > buffer pointer), it's better to have both aligned, i.e. buffer pointer
+> > to be NULL and head-tail possitions to be the same, meaning it's empty.
+> > This will prevent asynchronous calls to dereference NULL pointer as
+> > reported recently in 8250 case:
+> > 
+> >    BUG: kernel NULL pointer dereference, address: 00000cf5
+> >    Workqueue: pm pm_runtime_work
+> >    EIP: serial8250_tx_chars (drivers/tty/serial/8250/8250_port.c:1809)
+> >    ...
+> >    ? serial8250_tx_chars (drivers/tty/serial/8250/8250_port.c:1809)
+> >    __start_tx (drivers/tty/serial/8250/8250_port.c:1551)
+> >    serial8250_start_tx (drivers/tty/serial/8250/8250_port.c:1654)
+> >    serial_port_runtime_suspend (include/linux/serial_core.h:667 drivers/tty/serial/serial_port.c:63)
+> >    __rpm_callback (drivers/base/power/runtime.c:393)
+> >    ? serial_port_remove (drivers/tty/serial/serial_port.c:50)
+> >    rpm_suspend (drivers/base/power/runtime.c:447)
+> 
+> Yeah, I noticed start_tx() is called repeatedly after shutdown() yesterday
+> too. So thanks for looking into this.
 
-Yes, I have changed it in one of the follow-up percpu patches [1].
+> And it's pretty weird. I think it's new with the runtime PM (sure, /me reads
+> Fixes: now). I am not sure if it is documented, but most of the code in tty/
+> assumes NO ordinary ->ops (like start_tx()) are called after shutdown().
+> Actually, to me it occurs like serial8250_start_tx() should not be called in
+> the first place. It makes no sense after all.
+> 
+> BTW cannot be x_char en/queued at that time too (the other check in the if)?
+> But again, serial8250_start_tx() should not be called after shutdown().
 
-[1] https://lore.kernel.org/lkml/20240404094218.448963-2-ubizjak@gmail.com/
+Yes, and I have no clue how we can check this as startup can be called again
+and so on. The PM callback is timer based AFAIU, meaning it may happen at any
+time.
 
-Thanks,
-Uros.
+But do you agree that this patch has value on its own?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
