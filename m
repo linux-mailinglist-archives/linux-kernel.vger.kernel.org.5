@@ -1,124 +1,136 @@
-Return-Path: <linux-kernel+bounces-133277-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133278-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3B2989A19A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:43:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6919189A19F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:43:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 558C1B2700F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:43:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B7131C22FBA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:43:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9463916FF2D;
-	Fri,  5 Apr 2024 15:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F2016FF3F;
+	Fri,  5 Apr 2024 15:43:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KAMfk9XH"
-Received: from mail-il1-f172.google.com (mail-il1-f172.google.com [209.85.166.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qb93qjIV"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95D1716EC0B;
-	Fri,  5 Apr 2024 15:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0672016F917;
+	Fri,  5 Apr 2024 15:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712331809; cv=none; b=CxBbzG/mdbsr3OjtttC3Hw9wiyOPppikHsb8T3gmfRRJslLvbXBuUhzoHQk42ZQ0por6i5Pjv+Pn+j04G5bdJn5dOr9KpGWw7J+kcOu3iB9q9QnBmcyl+ybRKWOpW1nGdycGghi+cXmdIzztQ5PcLWqKxwrfPiDVYCVOEWBxqK8=
+	t=1712331825; cv=none; b=Jq9k1sQ1POgcUI4GfyguIflZExuM5K8cWyKKdkP+RkZOg39hIp11pCmyvvfI5RQXqlL9ziakM16uUtdtK3lluN+97/0FvCQkEvUDCqZnOWZrZBOYCEL02mas7wF9m1PwmRq4llwnTPxWXc75Q9+DJ7AVmdjun9Xo/PM8QFPihnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712331809; c=relaxed/simple;
-	bh=3tjUb3aIhcJ6VyI06t2jNh/PHQu+242vcNQbZWuXUe0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p6eS0fX8xXCVCJ5FXZ0hw/vbeCCRChWna9YiL9I7g1a4gnCMH3Wif5kZXkFjOiErAnkdcx/c0SbCpyoB4Bf7Xb6L/gzarujGnWSIeqqkwVLmzsKUU9rWzn4PoX0koiJAjeI/jzI0fpzV3GkcSHbs6Zc5zCusp/VQ570CjRU30+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KAMfk9XH; arc=none smtp.client-ip=209.85.166.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f172.google.com with SMTP id e9e14a558f8ab-36a06a409caso7062995ab.3;
-        Fri, 05 Apr 2024 08:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712331807; x=1712936607; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=o5G4YX3A6SwCOkm+ekTzFYShVJvSdNT/a9NFK7+1Luc=;
-        b=KAMfk9XHKpOFEe5fiYRM38ZZFjCYFEnlI9zL30x6Kks1THopggeyTiFDHR8K8uc7Wt
-         D6SQQPKDF4a9++rqjLxxCbR7moQvoxlQDCM9wfrcajWp/D/owbELEQgwyY+7HccDuf3f
-         TrXLqfMG+poXhg21l+qE9YDHCAV+3U9Ouo9tSK+rt78zYz6axPRtf1yFkLsrkHUOKfYV
-         j00Rw1zekYsOgyb1PYqiHetHc71NMEZFYahzbqS/IEaiANIVFFWhogVqu7WTWjTdHkUi
-         w0rBxfl+pg+V2b1ur3bi7QA5vDLX8cMAUvgHieCA5tmmbUKc8UcOs0CdFTZE0xQFrJmu
-         2jng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712331807; x=1712936607;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=o5G4YX3A6SwCOkm+ekTzFYShVJvSdNT/a9NFK7+1Luc=;
-        b=Jdk4csJ0fAZxPOzfBsNPGnHmz38tyVRao4apSP1q8kQvAYqF1L+AZRyNBSAcjjMReu
-         W5H3kn7oJbPmNuNNrmNt+KmSv4mLgMHWAvs0NmSBjVfrr9jn2Fr/Swz04XCiERXbsEc5
-         Uicpt7GxysGCbBjCvUsClCdlc6O2shkNAbDCHtQIo6JRiZCWYlmmkVVBOBs55/m/vuma
-         mMqflszSnhU69FjOEM4twEoIcLQi6/0cQebKfWKwO+8kfoijknxUOuYUcWGdWo6LpkGb
-         YV7hT32aNcF7dXNuT6HMuqHruunVnmSxmWQtQhmfZ0lXHmBuBgmnyqrSQmW17ni9Xxyq
-         nDaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXPL0bZGyXH5EB7ERJVqcJIbOyePZiuinlVCMGjNHuwEZGvR1Fl03xmFxESDb/NNuHUbN8TB98jNYl/OoLR9uoM1st5Ia5LagU1qWVS
-X-Gm-Message-State: AOJu0YwOD6C6Jc7rGM8w4U4uZPyVdr2WaR3gmLmBEUD2PxPNajSX6vsA
-	qT9feqHITADDnNZjOWqmAI+JtDYIhyFgD2x8Juq7Ta1TKTE7agT5fHkoR11f
-X-Google-Smtp-Source: AGHT+IHnDWUKPgOIjBHX4/x1yAWbk+lxozZtWN8xafzN7p6tvmMwF2w0T76sJXYXwebbp63cnKNJ7w==
-X-Received: by 2002:a05:6e02:1fe5:b0:36a:bba:8d95 with SMTP id dt5-20020a056e021fe500b0036a0bba8d95mr1758790ilb.31.1712331807486;
-        Fri, 05 Apr 2024 08:43:27 -0700 (PDT)
-Received: from [192.168.0.171] ([223.166.28.146])
-        by smtp.gmail.com with ESMTPSA id j19-20020a63fc13000000b005e49bf50ff9sm1615582pgi.0.2024.04.05.08.43.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 08:43:27 -0700 (PDT)
-Message-ID: <4ac84262-d5b2-4f63-8d0a-23bb45f4ed2d@gmail.com>
-Date: Fri, 5 Apr 2024 23:43:21 +0800
+	s=arc-20240116; t=1712331825; c=relaxed/simple;
+	bh=GLYjitsvkl7e7DDPD5ICwfMOzIGkz/pBD2SvMceBBKo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hvr11bvElZNlVzl9bZxOKTd3ZyXFM3Vl5QX+DDzxNubaOCpkuaWdz9zXH3UH8hT160J/KTgsUC+HCzb6ZAjtrnOBq8HIuwTI5P+qjVVZMw1TBHJqhd5bMXp1I5Q6wEGba3R/6WmPu1YzXUxHFIpl53g/cdwxEKfn1SnFd8Gq3mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=qb93qjIV; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 435ERLCp007273;
+	Fri, 5 Apr 2024 15:43:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=Ud3E4K/jMbq9dT0lA4HOVwcj6RCy+VLBGogAjeFdCZg=;
+ b=qb93qjIVL0Y+3bQbSiOSj5+AVMnePnzdV3rTBfYuWD0nGMTf/ZQCaCOr1JjOla3+4+xR
+ iJXkCjaZqnXc1DLMkrkHMGjlIvMfHyaH90PosRmc7m7+bJPzgJMJRGIU2GiVdcmHi3Or
+ JQI6DDjH8CtBdQC5k+/0wuAdb44XNayhryJ6f3ZmNIJ/YKIZtBgyob2/+4/jRtThoRXc
+ jHOqAVUjlJ635CFWP95irqZqHvGqJ8rPDivMs9K4f5eMLTs0SNdOF7BD3+4Y2nqsOY4a
+ dXdd99/RJHvNWxMrrFNX4wdY/n+Xe0YtgFaZj5c3irCWNplMhjmZvV4/yBOs/e/wTiFb yQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xak2rr8v2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 15:43:39 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 435Fhdkk015292;
+	Fri, 5 Apr 2024 15:43:39 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xak2rr8v1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 15:43:39 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 435CxA5w008681;
+	Fri, 5 Apr 2024 15:43:38 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x9epwb997-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 15:43:37 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 435FhW3a31130302
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 5 Apr 2024 15:43:34 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 4113020043;
+	Fri,  5 Apr 2024 15:43:32 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1092D20040;
+	Fri,  5 Apr 2024 15:43:32 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri,  5 Apr 2024 15:43:32 +0000 (GMT)
+From: Niklas Schnelle <schnelle@linux.ibm.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Helge Deller <deller@gmx.de>
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Arnd Bergmann <arnd@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
+        linux-kernel@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>
+Subject: [PATCH 0/1] vgacon: Handle HAS_IOPORT dependencies
+Date: Fri,  5 Apr 2024 17:43:30 +0200
+Message-Id: <20240405154331.292421-1-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: M_PwfAPfdO4op4D1Ug7JiyYPfxxX23BG
+X-Proofpoint-ORIG-GUID: 3H4jt0DmnB4aMS1B2rnZS9r3XQpwDgm-
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] soc: qcom: pmic_glink: fix client handling
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>,
- Neil Armstrong <neil.armstrong@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
- Andrew Halaney <ahalaney@redhat.com>
-References: <20240403-pmic-glink-fix-clients-v2-0-aed4e02baacc@linaro.org>
-Content-Language: en-US
-From: Xilin Wu <wuxilin123@gmail.com>
-In-Reply-To: <20240403-pmic-glink-fix-clients-v2-0-aed4e02baacc@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_16,2024-04-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ spamscore=0 lowpriorityscore=0 bulkscore=0 priorityscore=1501 mlxscore=0
+ malwarescore=0 clxscore=1015 phishscore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2404010000
+ definitions=main-2404050112
 
+Hi Greg, Helge,
 
-On 2024/4/3 11:10, Dmitry Baryshkov wrote:
-> Fix two issues with the way the pmic_glink driver handles its clients.
-> First issue is mostly theoretical, while the second issue can easily be
-> reproduced if the drivers are built as modules.
->
-> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> ---
-> Changes in v2:
-> - Also take a lock at pmic_glink_rpmsg_callback() (Andrew Halaney)
-> - Link to v1: https://lore.kernel.org/r/20240402-pmic-glink-fix-clients-v1-0-885440b81c65@linaro.org
->
-> ---
-> Dmitry Baryshkov (2):
->        soc: qcom: pmic_glink: don't traverse clients list without a lock
->        soc: qcom: pmic_glink: notify clients about the current state
->
->   drivers/soc/qcom/pmic_glink.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
-> ---
-> base-commit: a6bd6c9333397f5a0e2667d4d82fef8c970108f2
-> change-id: 20240402-pmic-glink-fix-clients-5df0bab3e871
->
-> Best regards,
+This is a follow up in my ongoing effort of making inb()/outb() and
+similar I/O port accessors compile-time optional. Previously I sent this
+as a treewide series titled "treewide: Remove I/O port accessors for
+HAS_IOPORT=n" with the latest being its 5th version[0]. With a significant
+subset of patches merged I've changed over to per-subsystem series. These
+series are stand alone and should be merged via the relevant tree such
+that with all subsystems complete we can follow this up with the final
+patch that will make the I/O port accessors compile-time optional.
 
-Tested-by: Xilin Wu <wuxilin123@gmail.com> # on QCS8550 AYN Odin 2
-Fixes: 
-https://lore.kernel.org/all/20240311-qcom-pd-mapper-v4-0-24679cca5c24@linaro.org/
-
+The current state of the full series with changes to the remaining subsystems
+and the aforementioned final patch can be found for your convenience on my
+git.kernel.org tree in the has_ioport branch[1]. As for compile-time vs runtime
+see Linus' reply to my first attempt[2].
 
 Thanks,
-Xilin
+Niklas
+
+[0] https://lore.kernel.org/all/20230522105049.1467313-1-schnelle@linux.ibm.com/
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/niks/linux.git/log/?h=has_ioport
+[2] https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
+
+Niklas Schnelle (1):
+  vgacon: add HAS_IOPORT dependencies
+
+ drivers/video/console/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+-- 
+2.40.1
+
 
