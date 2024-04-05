@@ -1,481 +1,165 @@
-Return-Path: <linux-kernel+bounces-132305-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132306-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62AE18992CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:24:20 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20D858992CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:26:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E68C11F23AF5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:24:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E32F81C23527
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2BD7B65A;
-	Fri,  5 Apr 2024 01:24:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FECBDDA0;
+	Fri,  5 Apr 2024 01:26:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HZoun0fb"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aCIGYXMU"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688377484;
-	Fri,  5 Apr 2024 01:24:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C23D7484;
+	Fri,  5 Apr 2024 01:25:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712280250; cv=none; b=HzJLi26Wm3FYExf0logFNP9YfAUMkI3J80h9bYa1mB4jEx5b+YFPokSYwt8XpliMvU+zgqSyiSoPjDi9Im+BDdG2axaftX9xj/wVV/sxI9nIAQgBHlu0YtxE6CTS/Ug9UbWT37AP0IWpXmhIE0ltDFnP1bO9Tx2AF04txFAaRGY=
+	t=1712280359; cv=none; b=DcVF3FEqRhWcMfG4XtadDYIfUn0LHiV5DyTdKnJqQGgXSRV/RkFh2lGwxZKnw+C3vVfCHJCZjYrb6zP/MXDbzFwCeXv2MAfOJI19pE9zNDrhDtnlMy6Q0op7LVQidHteBOYlWWHImataZZSnZD8MZ5CHQTWJ3Ppr25suf3fngJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712280250; c=relaxed/simple;
-	bh=YPKRHv6WFnAfzv/nKxhMpe/XbVnWjOcVceGiSzSnzE0=;
-	h=Content-Type:To:Cc:Subject:References:Date:MIME-Version:From:
-	 Message-ID:In-Reply-To; b=ItBKDK22sKNsBj/zN2f82gXmOQdwe4LWgF30BdXkDoEuBcp7chnFemxeK67HUkGe34PRN9PiOx/Npoi10bSmzIoqZTiXS/Vw94UEy06wj68Pbz5Wld+lsIJQEnOXPFHtRj4uq61kcAB1aNGE1S4BBryZYrjA+LHqt46TSU5eDo8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HZoun0fb; arc=none smtp.client-ip=192.198.163.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712280248; x=1743816248;
-  h=to:cc:subject:references:date:mime-version:
-   content-transfer-encoding:from:message-id:in-reply-to;
-  bh=YPKRHv6WFnAfzv/nKxhMpe/XbVnWjOcVceGiSzSnzE0=;
-  b=HZoun0fby8ankw/6XPWx0MybN/Ubg4LFPkhZWVZYrsddCSaJKwZRXeVk
-   QX9BZdrWAmPJ5+5RbZPXlK0JAGtHerbR3ak3a+o+kHOq9Keq0muylKKkf
-   lONEhpGqip0N92l5uXKSIoCTg3JJI/EHHJT+0YPWMtbZxRgaBD1Ads15V
-   2rSfgjcIsfhiltc+Fw3xaGfHzmKBlniZh7t5y1Jv0I5V42yBRbUKy3pRE
-   nbETb2+yUzwNz1Co+Ckb/88MPM3nSPJuupcEzgoqLVuDNm/juj9YZeQ9s
-   RyKDO0PFH6DvUta7B4x7lk3s8UVfMnDre1p6MoEtHhRQzdLMcme0iZ58D
-   A==;
-X-CSE-ConnectionGUID: sl88ShJ2Qka4iE77FH9CUg==
-X-CSE-MsgGUID: wGjXPDU3T5iwTBAx3XJCVQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="11375075"
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="11375075"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 18:24:07 -0700
-X-CSE-ConnectionGUID: MiigtBY5QreKPX0qKPq2PQ==
-X-CSE-MsgGUID: /fQN0YYRRzCf1PIV6CE0Jg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="42163949"
-Received: from hhuan26-mobl.amr.corp.intel.com ([10.92.17.168])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/AES256-SHA; 04 Apr 2024 18:24:05 -0700
-Content-Type: text/plain; charset=iso-8859-15; format=flowed; delsp=yes
-To: "hpa@zytor.com" <hpa@zytor.com>, "tim.c.chen@linux.intel.com"
- <tim.c.chen@linux.intel.com>, "linux-sgx@vger.kernel.org"
- <linux-sgx@vger.kernel.org>, "x86@kernel.org" <x86@kernel.org>,
- "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
- "jarkko@kernel.org" <jarkko@kernel.org>, "cgroups@vger.kernel.org"
- <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "mkoutny@suse.com" <mkoutny@suse.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>, "Mehta, Sohil"
- <sohil.mehta@intel.com>, "tj@kernel.org" <tj@kernel.org>, "mingo@redhat.com"
- <mingo@redhat.com>, "bp@alien8.de" <bp@alien8.de>, "Huang, Kai"
- <kai.huang@intel.com>
-Cc: "mikko.ylinen@linux.intel.com" <mikko.ylinen@linux.intel.com>,
- "seanjc@google.com" <seanjc@google.com>, "anakrish@microsoft.com"
- <anakrish@microsoft.com>, "Zhang, Bo" <zhanb@microsoft.com>,
- "kristen@linux.intel.com" <kristen@linux.intel.com>, "yangjie@microsoft.com"
- <yangjie@microsoft.com>, "Li, Zhiquan1" <zhiquan1.li@intel.com>,
- "chrisyan@microsoft.com" <chrisyan@microsoft.com>
-Subject: Re: [PATCH v10 05/14] x86/sgx: Implement basic EPC misc cgroup
- functionality
-References: <20240328002229.30264-1-haitao.huang@linux.intel.com>
- <20240328002229.30264-6-haitao.huang@linux.intel.com>
- <89b4e053db21c31859cf2572428fd9d4ab4475ab.camel@intel.com>
-Date: Thu, 04 Apr 2024 20:24:04 -0500
+	s=arc-20240116; t=1712280359; c=relaxed/simple;
+	bh=VxNzn9NzUzbYGOkFQsAjckg4Rrz38PKu14VlBGuKaPw=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mp9nXFExocriKMULA37FGeVOkd/8wo+DZQ7CimgtLZZdiZJVEz6ErG7qTuNHq8pGjfHSPzBReaRpVxn9K/NnAVjtPzkVAe8iDBy04nugbLyAw6JwG+To1YpqRHIUfCg26wFK+/wcCcymAkmze28on8ArakqRM5L33KRdTKrXQTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aCIGYXMU; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4350oPk3007803;
+	Fri, 5 Apr 2024 01:25:51 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=O5dtNG1z2cvTQQaBaWNF2
+	qI0ydnL32rMZCbAqJKz7O4=; b=aCIGYXMUtcLAYxyc7NGn1fX/Vnf5LDCK3yKMM
+	Qzc31yat8acZy0xBrqkSEQXfLuBiBaIAa34CCGlUQ/7mRxkDNCkHuATFrgAwArk8
+	2rkO7WWtvGfeRJ6wpHWjGrltmbCVPi8LZ/5V7qQx+cutnqkdmE9ZmFlzOISg0Vwh
+	0jTr7IGeCl5uh1Syjx6ZG/R9JylJU1ffuj+ChXg9KDjWRbrCgkCcEUce0+L+GDYr
+	HrTSYaBOk0FyRIavIOtpZr88MLV/UeVXyfpiPLkvzVkFCQZI+5276j5aWQeEUwfb
+	iFfeyjP9+mg7jENdaiuR+8BEQB9ie4oLkWuNXpT7kBm1kn4uw==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x9en0jwdt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 01:25:50 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4351PnDl026050
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 5 Apr 2024 01:25:49 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Thu, 4 Apr 2024 18:25:49 -0700
+Date: Thu, 4 Apr 2024 18:25:48 -0700
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Johan Hovold
+	<johan@kernel.org>,
+        Krishna Kurapati <quic_kriskura@quicinc.com>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Rob Herring
+	<robh@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
+        Wesley Cheng
+	<quic_wcheng@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Conor
+ Dooley" <conor+dt@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Felipe Balbi <balbi@kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_ppratap@quicinc.com>,
+        <quic_jackp@quicinc.com>, Johan Hovold <johan+linaro@kernel.org>
+Subject: Re: [PATCH v19 2/9] usb: dwc3: core: Access XHCI address space
+ temporarily to read port info
+Message-ID: <Zg9THGBRuppfw4y+@hu-bjorande-lv.qualcomm.com>
+References: <20240404051229.3082902-1-quic_kriskura@quicinc.com>
+ <20240404051229.3082902-3-quic_kriskura@quicinc.com>
+ <Zg5VDnbaaBXJyRjV@hovoldconsulting.com>
+ <f16e1280-8f7e-40a7-ab45-9acaeb3e90cb@linaro.org>
+ <2024040455-sitting-dictator-170c@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-From: "Haitao Huang" <haitao.huang@linux.intel.com>
-Organization: Intel
-Message-ID: <op.2lqd6eavwjvjmi@hhuan26-mobl.amr.corp.intel.com>
-In-Reply-To: <89b4e053db21c31859cf2572428fd9d4ab4475ab.camel@intel.com>
-User-Agent: Opera Mail/1.0 (Win32)
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <2024040455-sitting-dictator-170c@gregkh>
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: vG80GPtb9uPykzBRJzi3geUKM6jy9qO7
+X-Proofpoint-GUID: vG80GPtb9uPykzBRJzi3geUKM6jy9qO7
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-04_22,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1011 impostorscore=0 adultscore=0 priorityscore=1501 phishscore=0
+ mlxscore=0 bulkscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404050009
 
-On Thu, 28 Mar 2024 07:53:45 -0500, Huang, Kai <kai.huang@intel.com> wrote:
+On Thu, Apr 04, 2024 at 02:58:29PM +0200, Greg Kroah-Hartman wrote:
+> On Thu, Apr 04, 2024 at 10:07:27AM +0200, Krzysztof Kozlowski wrote:
+> > On 04/04/2024 09:21, Johan Hovold wrote:
+> > > On Thu, Apr 04, 2024 at 10:42:22AM +0530, Krishna Kurapati wrote:
+> > >  
+> > >> +static int dwc3_get_num_ports(struct dwc3 *dwc)
+> > >> +{
+> > >> +	void __iomem *base;
+> > >> +	u8 major_revision;
+> > >> +	u32 offset;
+> > >> +	u32 val;
+> > >> +
+> > >> +	/*
+> > >> +	 * Remap xHCI address space to access XHCI ext cap regs since it is
+> > >> +	 * needed to get information on number of ports present.
+> > >> +	 */
+> > >> +	base = ioremap(dwc->xhci_resources[0].start,
+> > >> +		       resource_size(&dwc->xhci_resources[0]));
+> > >> +	if (!base)
+> > >> +		return PTR_ERR(base);
+> > > 
+> > > This is obviously still broken. You need to update the return value as
+> > > well.
+> > > 
+> > > Fix in v20.
+> > 
+> > If one patchset reaches 20 versions, I think it is time to stop and
+> > really think from the beginning, why issues keep appearing and reviewers
+> > are still not happy.
+> > 
+> > Maybe you did not perform extensive internal review, which you are
+> > encouraged to by your own internal policies, AFAIR. Before posting next
+> > version, please really get some internal review first.
+> 
+> Also get those internal reviewers to sign-off on the commits and have
+> that show up when you post them next.  That way they are also
+> responsible for this patchset, it's not fair that they are making you do
+> all the work here :)
+> 
 
->
->> --- /dev/null
->> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.c
->> @@ -0,0 +1,74 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +// Copyright(c) 2022 Intel Corporation.
->
-> It's 2024 now.
->
-> And looks you need to use C style comment for /* Copyright ... */, after  
-> looking
-> at some other C files.
->
-Ok, will update years and use C style.
+I like this idea and I'm open to us changing our way of handling this.
 
->> +
->> +#include <linux/atomic.h>
->> +#include <linux/kernel.h>
->> +#include "epc_cgroup.h"
->> +
->> +/* The root SGX EPC cgroup */
->> +static struct sgx_cgroup sgx_cg_root;
->> +
->> +/**
->> + * sgx_cgroup_try_charge() - try to charge cgroup for a single EPC page
->> + *
->> + * @sgx_cg:	The EPC cgroup to be charged for the page.
->> + * Return:
->> + * * %0 - If successfully charged.
->> + * * -errno - for failures.
->> + */
->> +int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg)
->> +{
->> +	return misc_cg_try_charge(MISC_CG_RES_SGX_EPC, sgx_cg->cg, PAGE_SIZE);
->> +}
->> +
->> +/**
->> + * sgx_cgroup_uncharge() - uncharge a cgroup for an EPC page
->> + * @sgx_cg:	The charged sgx cgroup
->> + */
->> +void sgx_cgroup_uncharge(struct sgx_cgroup *sgx_cg)
->> +{
->> +	misc_cg_uncharge(MISC_CG_RES_SGX_EPC, sgx_cg->cg, PAGE_SIZE);
->> +}
->> +
->> +static void sgx_cgroup_free(struct misc_cg *cg)
->> +{
->> +	struct sgx_cgroup *sgx_cg;
->> +
->> +	sgx_cg = sgx_cgroup_from_misc_cg(cg);
->> +	if (!sgx_cg)
->> +		return;
->> +
->> +	kfree(sgx_cg);
->> +}
->> +
->> +static int sgx_cgroup_alloc(struct misc_cg *cg);
->
-> Again, this declaration can be removed if you move the below structure  
-> ...
->
->> +
->> +const struct misc_res_ops sgx_cgroup_ops = {
->> +	.alloc = sgx_cgroup_alloc,
->> +	.free = sgx_cgroup_free,
->> +};
->> +
->> +static void sgx_cgroup_misc_init(struct misc_cg *cg, struct sgx_cgroup  
->> *sgx_cg)
->> +{
->> +	cg->res[MISC_CG_RES_SGX_EPC].priv = sgx_cg;
->> +	sgx_cg->cg = cg;
->> +}
->> +
->> +static int sgx_cgroup_alloc(struct misc_cg *cg)
->> +{
->> +	struct sgx_cgroup *sgx_cg;
->> +
->> +	sgx_cg = kzalloc(sizeof(*sgx_cg), GFP_KERNEL);
->> +	if (!sgx_cg)
->> +		return -ENOMEM;
->> +
->> +	sgx_cgroup_misc_init(cg, sgx_cg);
->> +
->> +	return 0;
->> +}
->
-> ... here.
->
+But unless such internal review brings significant input to the
+development I'd say a s-o-b would take the credit from the actual
+author.
 
-yes, thanks
+We've discussed a few times about carrying Reviewed-by et al from the
+internal reviews, but as maintainer I dislike this because I'd have no
+way to know if a r-b on vN means the patch was reviewed, or if it was
+just "accidentally" carried from v(N-1).
+But it might be worth this risk, is this something you think would be
+appropriate?
 
->> +
->> +void sgx_cgroup_init(void)
->> +{
->> +	misc_cg_set_ops(MISC_CG_RES_SGX_EPC, &sgx_cgroup_ops);
->> +	sgx_cgroup_misc_init(misc_cg_root(), &sgx_cg_root);
->> +}
->> diff --git a/arch/x86/kernel/cpu/sgx/epc_cgroup.h  
->> b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
->> new file mode 100644
->> index 000000000000..8f794e23fad6
->> --- /dev/null
->> +++ b/arch/x86/kernel/cpu/sgx/epc_cgroup.h
->> @@ -0,0 +1,70 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/* Copyright(c) 2022 Intel Corporation. */
->> +#ifndef _SGX_EPC_CGROUP_H_
->> +#define _SGX_EPC_CGROUP_H_
->> +
->> +#include <asm/sgx.h>
->> +#include <linux/cgroup.h>
->> +#include <linux/misc_cgroup.h>
->> +
->> +#include "sgx.h"
->> +
->> +#ifndef CONFIG_CGROUP_SGX_EPC
->
-> Nit: add an empty line to make text more breathable.
->
-
-ok
-
->> +#define MISC_CG_RES_SGX_EPC MISC_CG_RES_TYPES
->> +struct sgx_cgroup;
->> +
->> +static inline struct sgx_cgroup *sgx_get_current_cg(void)
->> +{
->> +	return NULL;
->> +}
->> +
->> +static inline void sgx_put_cg(struct sgx_cgroup *sgx_cg) { }
->> +
->> +static inline int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg)
->> +{
->> +	return 0;
->> +}
->> +
->> +static inline void sgx_cgroup_uncharge(struct sgx_cgroup *sgx_cg) { }
->> +
->> +static inline void sgx_cgroup_init(void) { }
->> +#else
->
-> Nit: I prefer two empty lines before and after the 'else'.
->
-
-ok
-
->> +struct sgx_cgroup {
->> +	struct misc_cg *cg;
->> +};
->> +
->> +static inline struct sgx_cgroup *sgx_cgroup_from_misc_cg(struct  
->> misc_cg *cg)
->> +{
->> +	return (struct sgx_cgroup *)(cg->res[MISC_CG_RES_SGX_EPC].priv);
->> +}
->> +
->> +/**
->> + * sgx_get_current_cg() - get the EPC cgroup of current process.
->> + *
->> + * Returned cgroup has its ref count increased by 1. Caller must call
->> + * sgx_put_cg() to return the reference.
->> + *
->> + * Return: EPC cgroup to which the current task belongs to.
->> + */
->> +static inline struct sgx_cgroup *sgx_get_current_cg(void)
->> +{
->> +	return sgx_cgroup_from_misc_cg(get_current_misc_cg());
->> +}
->
-> Again, I _think_ you need to check whether get_current_misc_cg() returns  
-> NULL?
->
-> Misc cgroup can be disabled by command line even it is on in the Kconfig.
->
-> I am not expert on cgroup, so could you check on this?
->
-
-Good catch. Will add NULL check in sgx_cgroup_from_misc_cg()
-
->> +
->> +/**
->> + * sgx_put_sgx_cg() - Put the EPC cgroup and reduce its ref count.
->> + * @sgx_cg - EPC cgroup to put.
->> + */
->> +static inline void sgx_put_cg(struct sgx_cgroup *sgx_cg)
->> +{
->> +	if (sgx_cg)
->> +		put_misc_cg(sgx_cg->cg);
->> +}
->> +
->> +int sgx_cgroup_try_charge(struct sgx_cgroup *sgx_cg);
->> +void sgx_cgroup_uncharge(struct sgx_cgroup *sgx_cg);
->> +void sgx_cgroup_init(void);
->> +
->> +#endif
->> +
->> +#endif /* _SGX_EPC_CGROUP_H_ */
->> diff --git a/arch/x86/kernel/cpu/sgx/main.c  
->> b/arch/x86/kernel/cpu/sgx/main.c
->> index d219f14365d4..023af54c1beb 100644
->> --- a/arch/x86/kernel/cpu/sgx/main.c
->> +++ b/arch/x86/kernel/cpu/sgx/main.c
->> @@ -6,6 +6,7 @@
->>  #include <linux/highmem.h>
->>  #include <linux/kthread.h>
->>  #include <linux/miscdevice.h>
->> +#include <linux/misc_cgroup.h>
->>  #include <linux/node.h>
->>  #include <linux/pagemap.h>
->>  #include <linux/ratelimit.h>
->> @@ -17,6 +18,7 @@
->>  #include "driver.h"
->>  #include "encl.h"
->>  #include "encls.h"
->> +#include "epc_cgroup.h"
->>
->>  struct sgx_epc_section sgx_epc_sections[SGX_MAX_EPC_SECTIONS];
->>  static int sgx_nr_epc_sections;
->> @@ -558,7 +560,16 @@ int sgx_unmark_page_reclaimable(struct  
->> sgx_epc_page *page)
->>   */
->>  struct sgx_epc_page *sgx_alloc_epc_page(void *owner, enum sgx_reclaim  
->> reclaim)
->>  {
->> +	struct sgx_cgroup *sgx_cg;
->>  	struct sgx_epc_page *page;
->> +	int ret;
->> +
->> +	sgx_cg = sgx_get_current_cg();
->> +	ret = sgx_cgroup_try_charge(sgx_cg);
->> +	if (ret) {
->> +		sgx_put_cg(sgx_cg);
->> +		return ERR_PTR(ret);
->> +	}
->>
->>  	for ( ; ; ) {
->>  		page = __sgx_alloc_epc_page();
->> @@ -567,8 +578,10 @@ struct sgx_epc_page *sgx_alloc_epc_page(void  
->> *owner, enum sgx_reclaim reclaim)
->>  			break;
->>  		}
->>
->> -		if (list_empty(&sgx_active_page_list))
->> -			return ERR_PTR(-ENOMEM);
->> +		if (list_empty(&sgx_active_page_list)) {
->> +			page = ERR_PTR(-ENOMEM);
->> +			break;
->> +		}
->>
->>  		if (reclaim == SGX_NO_RECLAIM) {
->>  			page = ERR_PTR(-EBUSY);
->> @@ -580,10 +593,24 @@ struct sgx_epc_page *sgx_alloc_epc_page(void  
->> *owner, enum sgx_reclaim reclaim)
->>  			break;
->>  		}
->>
->> +		/*
->> +		 * Need to do a global reclamation if cgroup was not full but free
->> +		 * physical pages run out, causing __sgx_alloc_epc_page() to fail.
->> +		 */
->
-> Again, to me this comment shouldn't be here, because it doesn't add any  
-> more
-> information.
->
-> If you can reach here, you have passed the charge().  In fact, I believe  
-> this
-> doesn't matter:
-> When you fail to allocate, you just need to reclaim.
->
-> Now you only have the global reclamation, thus you need to reclaim from  
-> it.
->
-> Perhaps it is useful when you have per-cgroup LRU list.  In that case  
-> you can
-> put this comment there.
->
-
-Ok
-
->>  		sgx_reclaim_pages();
->>  		cond_resched();
->>  	}
->>
->> +#ifdef CONFIG_CGROUP_SGX_EPC
->> +	if (!IS_ERR(page)) {
->> +		WARN_ON_ONCE(page->sgx_cg);
->> +		/* sgx_put_cg() in sgx_free_epc_page() */
->> +		page->sgx_cg = sgx_cg;
->> +	} else {
->> +		sgx_cgroup_uncharge(sgx_cg);
->> +		sgx_put_cg(sgx_cg);
->> +	}
->> +#endif
->
-> Again, IMHO having CONFIG_CGROUP_SGX_EPC here is ugly, because it  
-> doesn't even
-> match the try_charge() above, which doesn't have the  
-> CONFIG_CGROUP_SGX_EPC.
->
-> If you add a wrapper in "epc_cgroup.h"
->
-Agree. but in sgx.h so sgx_epc_page struct is not exposed in epc_cgroup.h.
-
-> static inline void sgx_epc_page_set_cgroup(struct epc_page *epc_page, 
-> 					   struct sgx_cgroup *sgx_cg)
-> {
-> #ifdef CONFIG_CGROUP_SGX_EPC
-> 	epc_page->sgx_cg = sgx_cg;
-> #endif		
-> }
->
-> Then I believe the above can be simplified to:
->
-> 	if (!IS_ERR(page)) {
-> 		sgx_epc_page_set_cgroup(page, sgx_cg);
-> 	} else {
-> 		sgx_cgroup_uncharge(sgx_cg);
-> 		sgx_put_cg(sgx_cg);
-> 	}
->
->>  	if (sgx_should_reclaim(SGX_NR_LOW_PAGES))
->>  		wake_up(&ksgxd_waitq);
->>
->> @@ -604,6 +631,14 @@ void sgx_free_epc_page(struct sgx_epc_page *page)
->>  	struct sgx_epc_section *section = &sgx_epc_sections[page->section];
->>  	struct sgx_numa_node *node = section->node;
->>
->> +#ifdef CONFIG_CGROUP_SGX_EPC
->> +	if (page->sgx_cg) {
->> +		sgx_cgroup_uncharge(page->sgx_cg);
->> +		sgx_put_cg(page->sgx_cg);
->> +		page->sgx_cg = NULL;
->> +	}
->> +#endif
->> +
->
-> Similarly, how about adding a wrapper in "epc_cgroup.h"
->
-> struct sgx_cgroup *sgx_epc_page_get_cgroup(struct sgx_epc_page *page)
-> {
-> #ifdef CONFIG_CGROUP_SGX_EPC
-> 	return page->sgx_cg;
-> #else
-> 	return NULL;
-> #endif
-> }
->
-> Then this can be:
->
-> 	sgx_cg = sgx_epc_page_get_cgroup(page);
-> 	sgx_cgroup_uncharge(sgx_cg);
-> 	sgx_put_cg(sgx_cg);
-> 	sgx_epc_page_set_cgroup(page, NULL);
->
-
-sure.
->>  	spin_lock(&node->lock);
->>
->>  	page->owner = NULL;
->> @@ -643,6 +678,11 @@ static bool __init sgx_setup_epc_section(u64  
->> phys_addr, u64 size,
->>  		section->pages[i].flags = 0;
->>  		section->pages[i].owner = NULL;
->>  		section->pages[i].poison = 0;
->> +
->> +#ifdef CONFIG_CGROUP_SGX_EPC
->> +		section->pages[i].sgx_cg = NULL;
->> +#endif
->
-> Can use the wrapper too.
->
-yes.
-> [...]
->
-> (Btw, I'll be away for couple of days due to public holiday and will  
-> review the
-> rest starting from late next week).
-Thanks
-Haitao
+Regards,
+Bjorn
 
