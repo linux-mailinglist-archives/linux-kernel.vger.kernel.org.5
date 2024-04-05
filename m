@@ -1,378 +1,184 @@
-Return-Path: <linux-kernel+bounces-133050-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133051-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02359899E12
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:11:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2448C899E14
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:12:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F35EB22E43
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:11:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FA731F22705
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7713816D4D6;
-	Fri,  5 Apr 2024 13:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7661B16D4CC;
+	Fri,  5 Apr 2024 13:11:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="iBbio1vu"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=beims.me header.i=@beims.me header.b="oYdAFV+/";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Vb9IlwIC"
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA5E66FE09
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:11:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2331E16D33A;
+	Fri,  5 Apr 2024 13:11:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712322674; cv=none; b=bWSaUNkIchXJWDGUkuXwArn44/0z55V9g1UN4Ax9ctNnG3F3YeFm6RClMNtdIxlUoPiQjGNo0A9BS+AHCpSmiAmseuwNnkFPAIll+xWdlqoNrk9V9Ub1p7f7WTpa4kmRiXStv3ipHeUuqMTgUKNU/slkTK7CSuwI2+Y294cAb/k=
+	t=1712322712; cv=none; b=MaQwH8eqV/fFlPafKPRxmpdSHtjSXic9Ypp16IoHznmsdq0CaOH/xdxINqI6wwG8SztY82LRAf4SLl0tlPQ7QLJoSd0Z/E18pFjWRZL7iSaDxhedzenkOH2CzDhuhqBVojlTQ4t6pCf56YtR/7BHrEPixc9P2Y8IbgE9NpQa11Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712322674; c=relaxed/simple;
-	bh=fHAxLDbcaIxHbfHsGsuoG1un+CSFtvHV+lyoBBHlgaY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Mkq50wVJh/uYJbVy0XOl2XGlykVAmmQClshAPS5PG4wK/1V4WPGfUDlKYuYrTt1HbBmtbTnvWVTGE2beg+UD/rdYa38rCt0M/jvkjXaZCtaviuWRDdge99HB0z7QJd+v2/5dhBXIDGIylNkeEvoBHczEJQndknCRq9d6t7+85f0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=iBbio1vu; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33ff53528ceso1570440f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 06:11:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1712322670; x=1712927470; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=BIFYSL8LJt6foHdfxw10rN1acsJrRDe5PI5D+QNa+Qs=;
-        b=iBbio1vu1ZxTvyWDVHcSgS75VL3R8IKAT6fHUQBfovQASpwUlI/mKI8fiRGZFC2T7Q
-         j6+BrdVAgqD2t9FjUAOzW7GgGctng6edEXEpiomP+EjB7mfooEseTd43RidCdwhg2wVn
-         ZXc/jM+wGSKw8X1HiqIjwN7GhZu4EsEcgB827vhMiNttkozuZW7yZPUhO1qvnQQXP0hP
-         BHu4mwjyqfmR/D3z90Kvsu+Xyp5zci5YkEEN7/EncaO3jwzIAm7cypV/+yjIseLQU3cz
-         eMcrIMpmnCcRwrYY6NPV4SHwchXFOqS2W4kAAvJPnqkjb8Y3tQzaATUHnorFw3SxB54E
-         ooww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712322670; x=1712927470;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BIFYSL8LJt6foHdfxw10rN1acsJrRDe5PI5D+QNa+Qs=;
-        b=U1nCDyFjlaXCh9TQHeZ6/zJzfHNJyTZJUBQ7lrs9UyhYJ6cvJxhyH6Rm3yblxkENpx
-         PMpZhqQYwdbEPmgENGxuyAUfzu9ECZ1ZU/Ph+Q5iMPjChmSOvOAemUX5vHtfAGHtngHd
-         kPsQYlO/nVZ1MfXXZzwRD+D2ftcYeIVCx/OVtLrRIqYq6Px/a9uSi8r7bPPGU8GSvlGB
-         AOm4HnzCZgRUxLgW98urEWN6omBd6+Yh8hXkz5F/1NozKA2UESED6pG8aYcbwBnAtrUa
-         MaCzh6/qS3PEGnnnUqFIxkL5gf+o1Xt82J1HxPl5ftYCkx96RU4aOAiFgEpc/ElAHDTj
-         9HEQ==
-X-Gm-Message-State: AOJu0YwA99Om6gO4CfiW7O+ucvCXSz4d5J2uY/LdRCZuzZuqZN0sCg5B
-	HadkQXj8M63KQmWIVlv0OSlnlHVFgt/mKmUxUXjz33tIrOy0o+QrLbAiHo2CCdI=
-X-Google-Smtp-Source: AGHT+IH6QOK2VOZDXQeYLcgWm2su03VMTaIdWBBWIhcwDxNyGR7vDIXVDmwGpRkaYjCW1TpcjR+oZw==
-X-Received: by 2002:adf:8b94:0:b0:33e:69db:bf8a with SMTP id o20-20020adf8b94000000b0033e69dbbf8amr1024264wra.59.1712322669954;
-        Fri, 05 Apr 2024 06:11:09 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id r4-20020a5d6944000000b00343b09729easm1998572wrw.69.2024.04.05.06.11.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 06:11:09 -0700 (PDT)
-Date: Fri, 5 Apr 2024 15:11:08 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Atish Patra <atishp@rivosinc.com>
-Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
-	Ajay Kaher <akaher@vmware.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Alexey Makhalov <amakhalov@vmware.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, 
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH v5 21/22] KVM: riscv: selftests: Add a test for PMU
- snapshot functionality
-Message-ID: <20240405-4e840120e8117c286cb593f9@orel>
-References: <20240403080452.1007601-1-atishp@rivosinc.com>
- <20240403080452.1007601-22-atishp@rivosinc.com>
+	s=arc-20240116; t=1712322712; c=relaxed/simple;
+	bh=Pnb0JVfDd2AT2wehrIl4AxYkTliXvgkqqIMPGXnCdc8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QeATi9FlrQxDEOpjh/2I0XHdYlHPSqR9KXryXBmOe392t6IUJz3nya+Wb3jlGVr2MSTJEE9WDQcBfaaldLtlOafkfPXFiUVheV34NMSI3OrVVuXrjKla+mRPzIIF9zi9L9gdCzDJBh4snOgSJYg3QEy27yko8enuUXtgJsXBR9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=beims.me; spf=pass smtp.mailfrom=beims.me; dkim=pass (2048-bit key) header.d=beims.me header.i=@beims.me header.b=oYdAFV+/; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Vb9IlwIC; arc=none smtp.client-ip=64.147.123.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=beims.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=beims.me
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailout.west.internal (Postfix) with ESMTP id A4E7C32000D9;
+	Fri,  5 Apr 2024 09:11:48 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 05 Apr 2024 09:11:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=beims.me; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1712322708;
+	 x=1712409108; bh=qI3pcWziRd9w6ZdQsFy3xHZSry+rZYZcRpH3Dy+mFlU=; b=
+	oYdAFV+/Pt5/XWbGQj+1X3aH+nbnfSAuH64MGl/FkZJrSCx5EKLtNHKSbmWa8jCt
+	RKECv0XEr48oSmz8BFquPUA/I4b8kDuiJfj8n3oG8cwQ/BBVgCPDhHigQMotPOlX
+	jJAEw2TR617nTk5dK5YjnsBEOkbsKsuxQ9+yJTpECdokqteC0zXvKWhZhtwCyRTY
+	dpp8STD52NdZw7W9tJdbZ2zGSOlIPxf4/2zbHk+RIPNRYnWTgMTdesAMkmNfr1xy
+	w7yjYERRwQusqtYd9hpHTNuMzz7X97WjRnGIjlj3lH/PNOk373Y9A9bYVEo1QifZ
+	0igm6eDHP3KCEcEvw0FswQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712322708; x=
+	1712409108; bh=qI3pcWziRd9w6ZdQsFy3xHZSry+rZYZcRpH3Dy+mFlU=; b=V
+	b9IlwICEXNv+Gfwxuws6pZFB8vSVmoR5BiPKNYYQkWoQe3OI7YZA60KZKDKQiUCQ
+	DP+jmzj5UMzpiG7SJMmnBiwASryDJ8z6H9JJ9mk8N6q22JzOjCZiGQhwRtYkfGv/
+	cbV6kNZlJUv6iTTJ3oY1KRrgizi/eN8+RITYN/gNzyvGaG+TAx2+FqIF7CoGwIES
+	PlrCBcWSh3vBpV0ICg+yD4t15lEIVjkUTaPcUMxKgoq2aBV+4llrLimEDeAe9EJf
+	ZiQn4zGzD9i7w7Uv9HPaqDyBo6Ya5LhJpJoDaYMAliM1lXtvhj+9HyvidoodJwxf
+	cggyS2nDovpn2YxBikM1A==
+X-ME-Sender: <xms:k_gPZvbZIF4YCi6u_ocVkOJjmYX-BXmS18-2dnMtG0Y-L2Zz1O0vug>
+    <xme:k_gPZubtjSJVGrGDSv90qtOVQo-nFfFeTW0B9IZu5FzbolDoOAK80eHUNh9aPhfXw
+    rx8XfmII3sDyb73wtU>
+X-ME-Received: <xmr:k_gPZh9Hk_XHH42X3pTkKYydKwrz9aclRc0ajXgnaui2ynW_4eoX1DDgBj75kEGR>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegtddgiedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtvdejnecuhfhrohhmpeftrghf
+    rggvlhcuuegvihhmshcuoehrrghfrggvlhessggvihhmshdrmhgvqeenucggtffrrghtth
+    gvrhhnpeejieejvdelgeduveejgeeltdevieefteejleeiieejgeeihfelleehtdegudei
+    ieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrg
+    hfrggvlhessggvihhmshdrmhgv
+X-ME-Proxy: <xmx:k_gPZlqOEpmwx1db4otyyrXdy7BxIN1yoO3HnuwNlth4f-1tRuihaA>
+    <xmx:k_gPZqo8B1zxGrkqLEagHCJIE2ATj7KUHeqA7taON4bcm-4vkdoYZw>
+    <xmx:k_gPZrQsNInDmFFMnxfythvCZwhCnztNsaAkT_XC-dPlNQk_GDVzug>
+    <xmx:k_gPZipS7gv70ZRgSwErG3dISj8BqoB3790p8OrDiM1DlMKS4KsHQA>
+    <xmx:lPgPZreo8NaQ6USuODbNdUu_pzNGWj7Wrdfb1mK635YeVjnWlNyH40qQJcar>
+Feedback-ID: idc214666:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 5 Apr 2024 09:11:46 -0400 (EDT)
+Message-ID: <96b7715e-8cbe-4f85-bdf3-3aca64536d4e@beims.me>
+Date: Fri, 5 Apr 2024 10:11:45 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403080452.1007601-22-atishp@rivosinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] watchdog: rti_wdt: Set min_hw_heartbeat_ms to
+ accommodate 5% safety margin
+Content-Language: pt-BR
+To: Judith Mendez <jm@ti.com>, Wim Van Sebroeck <wim@linux-watchdog.org>,
+ Guenter Roeck <linux@roeck-us.net>
+Cc: linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Francesco Dolcini <francesco@dolcini.it>
+References: <20240404153319.1088644-1-jm@ti.com>
+From: Rafael Beims <rafael@beims.me>
+In-Reply-To: <20240404153319.1088644-1-jm@ti.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 03, 2024 at 01:04:50AM -0700, Atish Patra wrote:
-> Verify PMU snapshot functionality by setting up the shared memory
-> correctly and reading the counter values from the shared memory
-> instead of the CSR.
-> 
-> Reviewed-by: Anup Patel <anup@brainfault.org>
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> ---
->  .../testing/selftests/kvm/include/riscv/sbi.h |  25 ++++
->  .../selftests/kvm/lib/riscv/processor.c       |  12 ++
->  .../selftests/kvm/riscv/sbi_pmu_test.c        | 127 ++++++++++++++++++
->  3 files changed, 164 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/kvm/include/riscv/sbi.h b/tools/testing/selftests/kvm/include/riscv/sbi.h
-> index 6675ca673c77..8c98bd99d450 100644
-> --- a/tools/testing/selftests/kvm/include/riscv/sbi.h
-> +++ b/tools/testing/selftests/kvm/include/riscv/sbi.h
-> @@ -8,6 +8,12 @@
->  #ifndef SELFTEST_KVM_SBI_H
->  #define SELFTEST_KVM_SBI_H
->  
-> +/* SBI spec version fields */
-> +#define SBI_SPEC_VERSION_DEFAULT	0x1
-> +#define SBI_SPEC_VERSION_MAJOR_SHIFT	24
-> +#define SBI_SPEC_VERSION_MAJOR_MASK	0x7f
-> +#define SBI_SPEC_VERSION_MINOR_MASK	0xffffff
-> +
->  /* SBI return error codes */
->  #define SBI_SUCCESS				 0
->  #define SBI_ERR_FAILURE				-1
-> @@ -33,6 +39,9 @@ enum sbi_ext_id {
->  };
->  
->  enum sbi_ext_base_fid {
-> +	SBI_EXT_BASE_GET_SPEC_VERSION = 0,
-> +	SBI_EXT_BASE_GET_IMP_ID,
-> +	SBI_EXT_BASE_GET_IMP_VERSION,
->  	SBI_EXT_BASE_PROBE_EXT = 3,
->  };
->  enum sbi_ext_pmu_fid {
-> @@ -60,6 +69,12 @@ union sbi_pmu_ctr_info {
->  	};
->  };
->  
-> +struct riscv_pmu_snapshot_data {
-> +	u64 ctr_overflow_mask;
-> +	u64 ctr_values[64];
-> +	u64 reserved[447];
-> +};
-> +
->  struct sbiret {
->  	long error;
->  	long value;
-> @@ -113,4 +128,14 @@ struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
->  
->  bool guest_sbi_probe_extension(int extid, long *out_val);
->  
-> +/* Make SBI version */
-> +static inline unsigned long sbi_mk_version(unsigned long major,
-> +					    unsigned long minor)
-> +{
-> +	return ((major & SBI_SPEC_VERSION_MAJOR_MASK) <<
-> +		SBI_SPEC_VERSION_MAJOR_SHIFT) | minor;
-
-Should also also mask 'minor'. I see this matches what we have in the
-kernel so we should fix it there too.
-
-> +}
-> +
-> +unsigned long get_host_sbi_spec_version(void);
-> +
->  #endif /* SELFTEST_KVM_SBI_H */
-> diff --git a/tools/testing/selftests/kvm/lib/riscv/processor.c b/tools/testing/selftests/kvm/lib/riscv/processor.c
-> index e8211f5d6863..ccb35573749c 100644
-> --- a/tools/testing/selftests/kvm/lib/riscv/processor.c
-> +++ b/tools/testing/selftests/kvm/lib/riscv/processor.c
-> @@ -502,3 +502,15 @@ bool guest_sbi_probe_extension(int extid, long *out_val)
->  
->  	return true;
->  }
-> +
-> +unsigned long get_host_sbi_spec_version(void)
-> +{
-> +	struct sbiret ret;
-> +
-> +	ret = sbi_ecall(SBI_EXT_BASE, SBI_EXT_BASE_GET_SPEC_VERSION, 0,
-> +		       0, 0, 0, 0, 0);
-> +
-> +	GUEST_ASSERT(!ret.error);
-> +
-> +	return ret.value;
-> +}
-> diff --git a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
-> index 8e7c7a3172d8..7d195be5c3d9 100644
-> --- a/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
-> +++ b/tools/testing/selftests/kvm/riscv/sbi_pmu_test.c
-> @@ -19,6 +19,11 @@
->  #define RISCV_MAX_PMU_COUNTERS 64
->  union sbi_pmu_ctr_info ctrinfo_arr[RISCV_MAX_PMU_COUNTERS];
->  
-> +/* Snapshot shared memory data */
-> +#define PMU_SNAPSHOT_GPA_BASE		BIT(30)
-> +static void *snapshot_gva;
-> +static vm_paddr_t snapshot_gpa;
-> +
->  /* Cache the available counters in a bitmask */
->  static unsigned long counter_mask_available;
->  
-> @@ -178,6 +183,32 @@ static unsigned long read_counter(int idx, union sbi_pmu_ctr_info ctrinfo)
->  	return counter_val;
->  }
->  
-> +static inline void verify_sbi_requirement_assert(void)
-> +{
-> +	long out_val = 0;
-> +	bool probe;
-> +
-> +	probe = guest_sbi_probe_extension(SBI_EXT_PMU, &out_val);
-> +	GUEST_ASSERT(probe && out_val == 1);
-> +
-> +	if (get_host_sbi_spec_version() < sbi_mk_version(2, 0))
-> +		__GUEST_ASSERT(0, "SBI implementation version doesn't support PMU Snapshot");
-> +}
-
-It's a pity we can't check the SBI spec version that KVM is advertising
-from KVM userspace. Normally we'd want to check something like this at
-the start of the test with TEST_REQUIRE() before running a VCPU in order
-to generate a skip exit.
-
-(We probably should allow reading and even writing the SBI spec version
-from the VMM in order to better support migration.)
-
-> +
-> +static void snapshot_set_shmem(vm_paddr_t gpa, unsigned long flags)
-> +{
-> +	unsigned long lo = (unsigned long)gpa;
-> +#if __riscv_xlen == 32
-> +	unsigned long hi = (unsigned long)(gpa >> 32);
-> +#else
-> +	unsigned long hi = gpa == -1 ? -1 : 0;
-> +#endif
-> +	struct sbiret ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_SNAPSHOT_SET_SHMEM,
-> +				      lo, hi, flags, 0, 0, 0);
-> +
-> +	GUEST_ASSERT(ret.value == 0 && ret.error == 0);
-> +}
-> +
->  static void test_pmu_event(unsigned long event)
->  {
->  	unsigned long counter;
-> @@ -210,6 +241,41 @@ static void test_pmu_event(unsigned long event)
->  	stop_reset_counter(counter, 0);
->  }
->  
-> +static void test_pmu_event_snapshot(unsigned long event)
-> +{
-> +	unsigned long counter;
-> +	unsigned long counter_value_pre, counter_value_post;
-> +	unsigned long counter_init_value = 100;
-> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
-> +
-> +	counter = get_counter_index(0, counter_mask_available, 0, event);
-> +	counter_value_pre = read_counter(counter, ctrinfo_arr[counter]);
-> +
-> +	/* Do not set the initial value */
-> +	start_counter(counter, 0, 0);
-> +	dummy_func_loop(10000);
-> +	stop_counter(counter, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
-> +
-> +	/* The counter value is updated w.r.t relative index of cbase */
-> +	counter_value_post = READ_ONCE(snapshot_data->ctr_values[0]);
-> +	__GUEST_ASSERT(counter_value_post > counter_value_pre,
-> +		       "counter_value_post %lx counter_value_pre %lx\n",
-> +		       counter_value_post, counter_value_pre);
-> +
-> +	/* Now set the initial value and compare */
-> +	WRITE_ONCE(snapshot_data->ctr_values[0], counter_init_value);
-> +	start_counter(counter, SBI_PMU_START_FLAG_INIT_SNAPSHOT, 0);
-> +	dummy_func_loop(10000);
-> +	stop_counter(counter, SBI_PMU_STOP_FLAG_TAKE_SNAPSHOT);
-> +
-> +	counter_value_post = READ_ONCE(snapshot_data->ctr_values[0]);
-> +	__GUEST_ASSERT(counter_value_post > counter_init_value,
-> +		       "counter_value_post %lx counter_init_value %lx for counter\n",
-> +		       counter_value_post, counter_init_value);
-> +
-> +	stop_reset_counter(counter, 0);
-> +}
-> +
->  static void test_invalid_event(void)
->  {
->  	struct sbiret ret;
-> @@ -272,6 +338,34 @@ static void test_pmu_basic_sanity(void)
->  	GUEST_DONE();
->  }
->  
-> +static void test_pmu_events_snaphost(void)
-> +{
-> +	int num_counters = 0;
-> +	struct riscv_pmu_snapshot_data *snapshot_data = snapshot_gva;
-> +	int i;
-> +
-> +	/* Verify presence of SBI PMU and minimum requrired SBI version */
-> +	verify_sbi_requirement_assert();
-> +
-> +	snapshot_set_shmem(snapshot_gpa, 0);
-> +
-> +	/* Get the counter details */
-> +	num_counters = get_num_counters();
-> +	update_counter_info(num_counters);
-> +
-> +	/* Validate shared memory access */
-> +	GUEST_ASSERT_EQ(READ_ONCE(snapshot_data->ctr_overflow_mask), 0);
-> +	for (i = 0; i < num_counters; i++) {
-> +		if (counter_mask_available & (BIT(i)))
-> +			GUEST_ASSERT_EQ(READ_ONCE(snapshot_data->ctr_values[i]), 0);
-> +	}
-> +	/* Only these two events are guranteed to be present */
-> +	test_pmu_event_snapshot(SBI_PMU_HW_CPU_CYCLES);
-> +	test_pmu_event_snapshot(SBI_PMU_HW_INSTRUCTIONS);
-> +
-> +	GUEST_DONE();
-> +}
-> +
->  static void run_vcpu(struct kvm_vcpu *vcpu)
->  {
->  	struct ucall uc;
-> @@ -328,13 +422,46 @@ static void test_vm_events_test(void *guest_code)
->  	test_vm_destroy(vm);
->  }
->  
-> +static void test_vm_setup_snapshot_mem(struct kvm_vm *vm, struct kvm_vcpu *vcpu)
-> +{
-> +	/* PMU Snapshot requires single page only */
-> +	vm_userspace_mem_region_add(vm, VM_MEM_SRC_ANONYMOUS, PMU_SNAPSHOT_GPA_BASE, 1, 1, 0);
-> +	/* PMU_SNAPSHOT_GPA_BASE is identity mapped */
-> +	virt_map(vm, PMU_SNAPSHOT_GPA_BASE, PMU_SNAPSHOT_GPA_BASE, 1);
-> +
-> +	snapshot_gva = (void *)(PMU_SNAPSHOT_GPA_BASE);
-> +	snapshot_gpa = addr_gva2gpa(vcpu->vm, (vm_vaddr_t)snapshot_gva);
-> +	sync_global_to_guest(vcpu->vm, snapshot_gva);
-> +	sync_global_to_guest(vcpu->vm, snapshot_gpa);
-> +}
-> +
-> +static void test_vm_events_snapshot_test(void *guest_code)
-> +{
-> +	struct kvm_vm *vm = NULL;
-> +	struct kvm_vcpu *vcpu;
-> +
-> +	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
-> +	__TEST_REQUIRE(__vcpu_has_sbi_ext(vcpu, KVM_RISCV_SBI_EXT_PMU),
-> +				   "SBI PMU not available, skipping test");
-> +
-> +	test_vm_setup_snapshot_mem(vm, vcpu);
-> +
-> +	run_vcpu(vcpu);
-> +
-> +	test_vm_destroy(vm);
-> +}
-> +
->  int main(void)
->  {
-> +	pr_info("SBI PMU basic test : starting\n");
->  	test_vm_basic_test(test_pmu_basic_sanity);
->  	pr_info("SBI PMU basic test : PASS\n");
->  
->  	test_vm_events_test(test_pmu_events);
->  	pr_info("SBI PMU event verification test : PASS\n");
->  
-> +	test_vm_events_snapshot_test(test_pmu_events_snaphost);
-> +	pr_info("SBI PMU event verification with snapshot test : PASS\n");
-> +
->  	return 0;
->  }
-> -- 
-> 2.34.1
+On 04/04/2024 12:33, Judith Mendez wrote:
+> On AM62x, the watchdog is pet before the valid window
+> is open. Fix min_hw_heartbeat and accommodate a 5% safety
+> margin with the exception of open window size < 10%,
+> which shall use <5% due to the smaller open window size.
 >
+> cc: stable@vger.kernel.org
+> Fixes: 5527483f8f7c (" watchdog: rti-wdt: attach to running watchdog during probe")
+> Signed-off-by: Judith Mendez <jm@ti.com>
+> ---
+>   drivers/watchdog/rti_wdt.c | 24 +++++++++++++-----------
+>   1 file changed, 13 insertions(+), 11 deletions(-)
+>
+> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+> index 8e1be7ba0103..0b16ada659cc 100644
+> --- a/drivers/watchdog/rti_wdt.c
+> +++ b/drivers/watchdog/rti_wdt.c
+> @@ -92,7 +92,7 @@ static int rti_wdt_start(struct watchdog_device *wdd)
+>   	 * to be 50% or less than that; we obviouly want to configure the open
+>   	 * window as large as possible so we select the 50% option.
+>   	 */
+> -	wdd->min_hw_heartbeat_ms = 500 * wdd->timeout;
+> +	wdd->min_hw_heartbeat_ms = 550 * wdd->timeout;
+>   
+>   	/* Generate NMI when wdt expires */
+>   	writel_relaxed(RTIWWDRX_NMI, wdt->base + RTIWWDRXCTRL);
+> @@ -126,31 +126,33 @@ static int rti_wdt_setup_hw_hb(struct watchdog_device *wdd, u32 wsize)
+>   	 * be petted during the open window; not too early or not too late.
+>   	 * The HW configuration options only allow for the open window size
+>   	 * to be 50% or less than that.
+> +	 * To avoid any glitches, we accommodate 5% safety margin, with the
+> +	 * exception of open window size < 10%.
+>   	 */
+>   	switch (wsize) {
+>   	case RTIWWDSIZE_50P:
+> -		/* 50% open window => 50% min heartbeat */
+> -		wdd->min_hw_heartbeat_ms = 500 * heartbeat;
+> +		/* 50% open window => 55% min heartbeat */
+> +		wdd->min_hw_heartbeat_ms = 550 * heartbeat;
+>   		break;
+>   
+>   	case RTIWWDSIZE_25P:
+> -		/* 25% open window => 75% min heartbeat */
+> -		wdd->min_hw_heartbeat_ms = 750 * heartbeat;
+> +		/* 25% open window => 80% min heartbeat */
+> +		wdd->min_hw_heartbeat_ms = 800 * heartbeat;
+>   		break;
+>   
+>   	case RTIWWDSIZE_12P5:
+> -		/* 12.5% open window => 87.5% min heartbeat */
+> -		wdd->min_hw_heartbeat_ms = 875 * heartbeat;
+> +		/* 12.5% open window => 92.5% min heartbeat */
+> +		wdd->min_hw_heartbeat_ms = 925 * heartbeat;
+>   		break;
+>   
+>   	case RTIWWDSIZE_6P25:
+> -		/* 6.5% open window => 93.5% min heartbeat */
+> -		wdd->min_hw_heartbeat_ms = 935 * heartbeat;
+> +		/* 6.5% open window => 96.5% min heartbeat */
+> +		wdd->min_hw_heartbeat_ms = 965 * heartbeat;
+>   		break;
+>   
+>   	case RTIWWDSIZE_3P125:
+> -		/* 3.125% open window => 96.9% min heartbeat */
+> -		wdd->min_hw_heartbeat_ms = 969 * heartbeat;
+> +		/* 3.125% open window => 97.9% min heartbeat */
+> +		wdd->min_hw_heartbeat_ms = 979 * heartbeat;
+>   		break;
+>   
+>   	default:
+>
+> base-commit: 860bbe8e618fd62446309e286ab4a83d38201c0a
 
-Since my comments are a bit out-of-scope for this patch,
 
-Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Tested-by: Rafael Beims <rafael.beims@toradex.com>
 
-Thanks,
-drew
+
+Rafael
+
 
