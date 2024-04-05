@@ -1,151 +1,101 @@
-Return-Path: <linux-kernel+bounces-132389-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132390-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB35A8993F0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:43:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17C318993F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:43:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84A8128BA86
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:43:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA36E1F28E95
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:43:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE06B1BF54;
-	Fri,  5 Apr 2024 03:42:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BiUkNHHy"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61111C6A8;
+	Fri,  5 Apr 2024 03:43:18 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27FE256D;
-	Fri,  5 Apr 2024 03:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E320328E2
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 03:43:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712288573; cv=none; b=F+GH+WdaSljr64UyIk1mDDefzCiz+c/Tn4SiR8C+lHSQIUEQ2FCvqoB8XcUN/rSDN2qVK+AKQ3aAOU92HY7DZ/bpaiwTVWuSvKMgAGjP8g8dgnEjTPOqSAfNlOEYNcYkRw0kccdmvVPNg92kiw70f5hA3R/5SpD6c1/dI/S3YTk=
+	t=1712288598; cv=none; b=K91ZWo8zMultU0U3VzWcHk7RSRuCm5+3WAsmpXVqGrRPD5X/8O+tTF8U6K/CGXfIc4Soo5czQMRSHOrGML5YooiLbYNs6lpZIS9vflwtuvdq5bgLhfLK6EAlo+M28l7DIPHymVIvi73fhQ/L9OAFJFPkiMlQm7RbtMemOkl4RRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712288573; c=relaxed/simple;
-	bh=1E4q9iSNFoJ5e8ve8agC1zRQQ+0F+2ROOW1SmEusQhQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V0H3eQUy6jAdgvlXEGrQ2qZgCUt0qSpk/pgAMe7nMfw+qImX5+KotZnzOBX4pqm+YWoxKFN6VQgXyvMLHZP6WVnGERtaG1fAq7hWuGU4qhxisSZIHMsjtirV/ePo4i4sxq9Q24+4XdcK0adz35W5/9mDEsUWUA8YWpf6Cz4isps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BiUkNHHy; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=GdrhCCARPBrZ0BeKtdp/2ujXMzoo79cn9UM+NnhXtOc=; b=BiUkNHHyRubp6ozZi9ENrekA++
-	yQOYyCgQCr+0Q/os9bqKoxPFMAbMbxNG6VK3KHRf8d5VUDBhQK2d5+yLPqCJMWNEi9A5Np7eRoKb/
-	DBIczCaUGUP4hAyXgNPEyzczgbll9TcpKdoOXd+GyloI5jB85moOyOiFUm+70vucequYLSfNiLsla
-	ICHIK+mjkvj8DeY0YHxe+itsx+qAUbmLmj20OriZ1nYpu04O7xrCKDWqCrYQ3Hc+/LOOT/Nc628nG
-	LvjTUu+/BGPTLzt1GjKxZsMEhtwzjcQrf4qkNfEQ7hNy60oBEO1E+Qkxv1rZfhKyXuJ6e19bJTSD+
-	hTAIPaBg==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsaTY-00000009Y3j-2mgL;
-	Fri, 05 Apr 2024 03:42:48 +0000
-Date: Fri, 5 Apr 2024 04:42:48 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-s390@vger.kernel.org, kvm@vger.kernel.org,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	Janosch Frank <frankja@linux.ibm.com>,
-	Claudio Imbrenda <imbrenda@linux.ibm.com>,
-	Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-	Thomas Huth <thuth@redhat.com>
-Subject: Re: [PATCH v1 0/5] s390: page_mapcount(), page_has_private() and
- PG_arch_1
-Message-ID: <Zg9zOJowhmOozmcp@casper.infradead.org>
-References: <20240404163642.1125529-1-david@redhat.com>
+	s=arc-20240116; t=1712288598; c=relaxed/simple;
+	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=H4kokDHRB9NNKL4e/ojz/h1q0t8ItU9zb28BWUkItdkPbcAgD3rQKXUt57+mdFCfm2FpGDZH6W43q1oCOqTg6dfCWsNsJD5k0O2TpPgjOYa35B8x26N9lKZmyCUwSUtsVqyUbaDFVug+T3bwW9FBXk3cCwPZ3LcegZofOwIREJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-369b59962cfso16847055ab.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 20:43:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712288596; x=1712893396;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+        b=wyZLtgZCGh9YoYPFYTfhQlU9XZz1ALF7Uw0l0Y7Yqre3WveGaW02C+fd13FEUrxyeo
+         ZfIW206gK6f5nN7xKePycoPhT0GGpOeY682OwAYG5QPgGlhzJj4xZGkCSE3R8Kuogjal
+         pfN/lJaN8Tkpcl6OzoK4jfdSj8RtTl/H0UJ2qfj34IGfArwZG/mMDgBCwLJHoWmEmUqc
+         DCUQUIpM1N7B0LPrv9/wk4cZcTFWoFv7ebXqc1LcTQjaXy4HqQvSa6X6QLLse8WerZfl
+         wIW0FkJgRRX45E6+pXneHJqDfREgtltfXBRXjmT+oja+urH7C2zGeab/4q5WZJGnvc8l
+         p9YA==
+X-Forwarded-Encrypted: i=1; AJvYcCVdmsZc3jcER1D1vyVDClMDUt8z5uIEIlZk+bUPmUjiGbvqF6UUNV939psN32H6Ss5kBQmhp71ViY2O7urs2juahA+dgIXeTk5Y4Qhs
+X-Gm-Message-State: AOJu0YyIrEIrS9R/TtklcKEG6PC2uOIlzqY0TOm2DF8k0b1wQUys7IhN
+	TVWc7NQ9c0JCZDLQBkwzjperPZNoSwfHtn+VdWvpYOO15RM/RCNy0qj0tMi3wuqTOZGBNoQ2TgQ
+	1UfW18SFFKgUa2AzQuRWL7JgHTIBJzZRL8tNQRvKjg/F2tmu3mRtppi4=
+X-Google-Smtp-Source: AGHT+IHFjzv8CNoc6/4+S+f/8xeraOyYdzTyewDxgRGtLwR+czgNzeoy4SNazCpVhYvJOMTKJpxR6ioDqjc478Je8Q7mka4bDHJ7
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404163642.1125529-1-david@redhat.com>
+X-Received: by 2002:a05:6e02:3892:b0:36a:a46:69e1 with SMTP id
+ cn18-20020a056e02389200b0036a0a4669e1mr8852ilb.6.1712288596096; Thu, 04 Apr
+ 2024 20:43:16 -0700 (PDT)
+Date: Thu, 04 Apr 2024 20:43:16 -0700
+In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000086534706155141d5@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
+From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Apr 04, 2024 at 06:36:37PM +0200, David Hildenbrand wrote:
-> On my journey to remove page_mapcount(), I got hooked up on other folio
-> cleanups that Willy most certainly will enjoy.
-> 
-> This series removes the s390x usage of:
-> * page_mapcount() [patches WIP]
-> * page_has_private() [have patches to remove it]
-> 
-> ... and makes PG_arch_1 only be set on folio->flags (i.e., never on tail
-> pages of large folios).
-> 
-> Further, one "easy" fix upfront.
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-Looks like you didn't see:
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-https://lore.kernel.org/linux-s390/20240322161149.2327518-1-willy@infradead.org/
+#syz fix: exact-commit-title
 
-> ... unfortunately there is one other issue I spotted that I am not
-> tackling in this series, because I am not 100% sure what we want to
-> do: the usage of page_ref_freeze()/folio_ref_freeze() in
-> make_folio_secure() is unsafe. :(
-> 
-> In make_folio_secure(), we're holding the folio lock, the mmap lock and
-> the PT lock. So we are protected against concurrent fork(), zap, GUP,
-> swapin, migration ... The page_ref_freeze()/ folio_ref_freeze() should
-> also block concurrent GUP-fast very reliably.
-> 
-> But if the folio is mapped into multiple page tables, we could see
-> concurrent zapping of the folio, a pagecache folios could get mapped/
-> accessed concurrent, we could see fork() sharing the page in another
-> process, GUP ... trying to adjust the folio refcount while we froze it.
-> Very bad.
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-Hmmm.  Why is that not then a problem for, eg, splitting or migrating?
-Is it because they unmap first and then try to freeze?
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
 
-> For anonymous folios, it would likely be sufficient to check that
-> folio_mapcount() == 1. For pagecache folios, that's insufficient, likely
-> we would have to lock the pagecache. To handle folios mapped into
-> multiple page tables, we would have to do what
-> split_huge_page_to_list_to_order() does (temporary migration entries).
-> 
-> So it's a bit more involved, and I'll have to leave that to s390x folks to
-> figure out. There are othe reasonable cleanups I think, but I'll have to
-> focus on other stuff.
-> 
-> Compile tested, but not runtime tested, I'll appreiate some testing help
-> from people with UV access and experience.
-> 
-> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Alexander Gordeev <agordeev@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@linux.ibm.com>
-> Cc: Sven Schnelle <svens@linux.ibm.com>
-> Cc: Janosch Frank <frankja@linux.ibm.com>
-> Cc: Claudio Imbrenda <imbrenda@linux.ibm.com>
-> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Cc: Thomas Huth <thuth@redhat.com>
-> 
-> David Hildenbrand (5):
->   s390/uv: don't call wait_on_page_writeback() without a reference
->   s390/uv: convert gmap_make_secure() to work on folios
->   s390/uv: convert PG_arch_1 users to only work on small folios
->   s390/uv: update PG_arch_1 comment
->   s390/hugetlb: convert PG_arch_1 code to work on folio->flags
-> 
->  arch/s390/include/asm/page.h |   2 +
->  arch/s390/kernel/uv.c        | 112 ++++++++++++++++++++++-------------
->  arch/s390/mm/gmap.c          |   4 +-
->  arch/s390/mm/hugetlbpage.c   |   8 +--
->  4 files changed, 79 insertions(+), 47 deletions(-)
-> 
-> -- 
-> 2.44.0
-> 
+---
+[1] I expect the commit to be present in:
+
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
