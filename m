@@ -1,215 +1,142 @@
-Return-Path: <linux-kernel+bounces-132819-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132820-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EDBC899AAD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:25:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AE7C899AAF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:26:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01E8A1F21C92
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:25:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 75E6BB21AC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2121649B3;
-	Fri,  5 Apr 2024 10:25:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 271C7142E73;
+	Fri,  5 Apr 2024 10:26:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b="oKAdne5q"
-Received: from sender-of-o59.zoho.eu (sender-of-e59.zoho.eu [136.143.169.59])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="p9BH6h0S"
+Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com [209.85.219.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D6C142E73
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:25:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.169.59
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712312750; cv=pass; b=KuZBQemVhM/QhSgdTIzlCUDQ5LqbZQSu0bUjRMvq3EhYJZBfRfqB2H/F96r4UEQ/Tn33SMiXXlP9ipY7s+qyxB6V11fjiGkM2ejhzIfmyc49WrYzANZ7NCDi7rh8zb8wh/QnixLDPmam9VzIH0yA3K4T82/QA3cr9lhFgpvB2WA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712312750; c=relaxed/simple;
-	bh=NzdroCERlTyOQBlWosl8EB63jaS7KRU4sBGAquMymM4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=LW7R5KUovP5C6VsAwZXyYjf+Lq12yyLoU6PhG/ETEhcHhWtyKYKryz/Nej6yUPgvSt9MqJJTTzBKi4770GSSz2kVKJuJVSz1SF03Su8tzjKT/M9BbzXnanjGdtCB5qdCtzhRiy3qgfloIMetQ9Q41A9yp/wv/I35UTB4KaAk5lU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com; spf=pass smtp.mailfrom=bursov.com; dkim=pass (1024-bit key) header.d=bursov.com header.i=vitaly@bursov.com header.b=oKAdne5q; arc=pass smtp.client-ip=136.143.169.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bursov.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bursov.com
-ARC-Seal: i=1; a=rsa-sha256; t=1712312719; cv=none; 
-	d=zohomail.eu; s=zohoarc; 
-	b=dvD9oHOGrjAyfvwXKrhGBV1kb6ct+tcPpF5MAIMBnlgJwsF3LPr/L2iNJ8KHSXPuwJ6Pu+CV0x3/Xm7rphqaixgc0foSsAnjKk/yxBd/DwPsGHWGWKcE78WsWHvIOLRgpxr5xPicufk+3SVykz3OxyhJB1E0vDXJMkjdmFhb7us=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.eu; s=zohoarc; 
-	t=1712312719; h=Content-Type:Content-Transfer-Encoding:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
-	bh=1zrzCwcvIoCSICK/9sPQ4pofoixARvk+ZlTPe2a/G50=; 
-	b=EEUHIsvIH2vBqXHYCxp/tq3DArVCr9wjEMKPMBQYjKC+SZBJuiPnMP7aFtCPYP69V8KspnyrgLOuHgy6RYxQUDBAiDgN/l/mZUZw788/3+xRP9uEOw9p2a3J8qG2GjdwN4zSqvknlc1zxH5yFYjIu158uXpHVHwLdCkkIA3kjyM=
-ARC-Authentication-Results: i=1; mx.zohomail.eu;
-	dkim=pass  header.i=bursov.com;
-	spf=pass  smtp.mailfrom=vitaly@bursov.com;
-	dmarc=pass header.from=<vitaly@bursov.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1712312719;
-	s=zoho; d=bursov.com; i=vitaly@bursov.com;
-	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
-	bh=1zrzCwcvIoCSICK/9sPQ4pofoixARvk+ZlTPe2a/G50=;
-	b=oKAdne5qrietXlmYE1zMpP7OsVfwI5dWM5fA7FihDghFsoDdGGKY5FPglJA6ArYp
-	GJUdZ/+MSvXWuEgGtiHzWLUpYMXqeOKo987R12rVMV6O3pkO6y9Yp1NzWlVIOp5ySrK
-	bDHABwPGg/EjxjmRZBr6jnqhsPjx5Vj4uuqQZ4Pg=
-Received: from [192.168.11.99] (92.60.179.150 [92.60.179.150]) by mx.zoho.eu
-	with SMTPS id 171231271894851.33875152371024; Fri, 5 Apr 2024 12:25:18 +0200 (CEST)
-Message-ID: <87543226-1edd-4692-84b5-31bac9cb0c5d@bursov.com>
-Date: Fri, 5 Apr 2024 13:25:17 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ADFA163A9B
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:26:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712312769; cv=none; b=azFp9A45MtHWTMtiGNvk/w68OhfMssgTF9yOLS+fh4hf7i6fwBaQyLRcfbMkVMax0PeEXbDEzhmGIOZsJT/cMry0P9jxsHL4C9eLjo7PR5yGqkZRXs05EiUpEYelvtilt6VMh5HCUIvB72bwU2k58fJzwUcSqKTWRUwSMXcDdCo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712312769; c=relaxed/simple;
+	bh=BmBFgykMPvqdnMoOyGWVJk45cd5kDC9vL/wpVpRu1Xs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Kle4pCPxLdE7DfO8V4w2DFx14FgcwWKC02ZU5W7CoxOWV1QGjugAqoAeN9mSU2CEvH5uTNEL7Besosgkwp56ZcL3F0RiBlYOUJn4Qr3uECWztEdcYROkipcef73Pcn/MVF3QBfCd8vNotPuIsV8sLVvBoepTLHseu/Fh43eS5a4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com; spf=pass smtp.mailfrom=raspberrypi.com; dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b=p9BH6h0S; arc=none smtp.client-ip=209.85.219.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
+Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-dbed0710c74so1863081276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 03:26:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1712312766; x=1712917566; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=iARPaYJhsEjl43QzURc5h56Y/6xNJ33w7/reZZghG84=;
+        b=p9BH6h0S5gK+WTCDV66QyrPRpG2IELHqzgoT2ckfqC/SmyxB9mCQAvRgO7mhWuz2NT
+         ojbvmKt9Y3swtLE50ZnkTHJUeFolks7+bZFbY3nfcFiA0dde6npQGzebgjiklP+4um8M
+         TQNN8MlDFAv8WRSV5ncwy2h5gqjiB4t9NFesBOIVTkd0BJIBIkiPQDsGQMWdyPLZ4PrR
+         QhUdRQ1njlk/d1KALeSEHnWmJ2lVvbLPbZo0KXkwGSR9tRF9HRYyXUnKLOhdA0QS2EaV
+         FD3BuTtyERfjzadLeYOfFxYHdPAD/c8K5x+1ox2dDwjzFctROywebUMgZcVH4hsADJOq
+         MwEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712312766; x=1712917566;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iARPaYJhsEjl43QzURc5h56Y/6xNJ33w7/reZZghG84=;
+        b=u10RjaGk3w9peocWIOSlI/vqzix53R9HM3xwbp/CMaMoR6kPhQcy8MM+BypPj2hLvb
+         7dapNjd9yfKwlr0KHapH6fmRDxHdt0nqJRfCy/4V7dcAJryPMbTGci3A0mc5fimGkEKw
+         OfbfAq0kxPWln8fgQL4hezSEwnSjOlRB/7vjy23BHDqxEggC6mJQfCaZX+yUEXgtmCEJ
+         w11hDcV30H54i3IHJmMTtsCsqTw19tXWpNLOej4VqB3cK0437Eb1jZ5OBVDPw1kYFP3Y
+         eqIt0VxwQz+QhUU05Mg0GphdfOuTeShO5MKMDBWC1uYf4CrThRbpAAnmeqHslcxtmas8
+         55yQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVY1znNap3ANJ9TOHRtjipOX5InY6WVZyyak/BzChC986cWCdd4wwsySoYc35rr5rBW9n3Qf42nAyoYbCsrk9wkf99F561RUk/PVnAh
+X-Gm-Message-State: AOJu0YxP9zM+pj0A/d837RKW3wTEmfkYGugMTCB3uIeJ9ncH5o16AkfE
+	1XlYG8TN34jwUMXPFskLXttzNBcYPheU5bwVnXG+ipgNE7xLprrSTl/DySp/EO47ayLRA6ZeOJA
+	qyHHQMjfXX9RCpG7Pm/scH/RjrmLS0wYOO1En/Q==
+X-Google-Smtp-Source: AGHT+IGiNf41UOijFcS+nvm5XPR4W+ctyL+gK32z/KhUeqbVvoF5ElMWQNkmalXvInXcffwLsTBQ8Hmu10M3phXGLpo=
+X-Received: by 2002:a5b:f04:0:b0:dc6:d22e:ef4c with SMTP id
+ x4-20020a5b0f04000000b00dc6d22eef4cmr765600ybr.17.1712312766450; Fri, 05 Apr
+ 2024 03:26:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/3] sched/fair: allow disabling sched_balance_newidle
- with sched_relax_domain_level
-To: Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org, Shrikanth Hegde <sshegde@linux.ibm.com>
-References: <cover.1712147341.git.vitaly@bursov.com>
- <3bf726af-e519-4cc2-a692-19a0cf99fca7@arm.com>
-Content-Language: en-US, ru-RU, uk-UA
-From: Vitalii Bursov <vitaly@bursov.com>
-In-Reply-To: <3bf726af-e519-4cc2-a692-19a0cf99fca7@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
+References: <20240403150355.189229-1-git@luigi311.com> <20240403150355.189229-19-git@luigi311.com>
+ <20240403-vista-defendant-ebadbaa52059@spud>
+In-Reply-To: <20240403-vista-defendant-ebadbaa52059@spud>
+From: Dave Stevenson <dave.stevenson@raspberrypi.com>
+Date: Fri, 5 Apr 2024 11:25:50 +0100
+Message-ID: <CAPY8ntC9SHJ6Ma17s0Vf2coB-0NUk-xgCLK9KCkxFMuXKHXNwg@mail.gmail.com>
+Subject: Re: [PATCH v3 18/25] dt-bindings: media: imx258: Add alternate
+ compatible strings
+To: Conor Dooley <conor@kernel.org>
+Cc: git@luigi311.com, linux-media@vger.kernel.org, 
+	jacopo.mondi@ideasonboard.com, mchehab@kernel.org, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, shawnguo@kernel.org, 
+	s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com, 
+	sakari.ailus@linux.intel.com, devicetree@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	pavel@ucw.cz, phone-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Conor
 
+On Wed, 3 Apr 2024 at 17:14, Conor Dooley <conor@kernel.org> wrote:
+>
+> On Wed, Apr 03, 2024 at 09:03:47AM -0600, git@luigi311.com wrote:
+> > From: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> >
+> > There are a number of variants of the imx258 modules that can not
+> > be differentiated at runtime, so add compatible strings for the
+> > PDAF variant.
+> >
+> > Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> > Signed-off-by: Luis Garcia <git@luigi311.com>
+> > ---
+> >  .../devicetree/bindings/media/i2c/sony,imx258.yaml       | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml b/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
+> > index bee61a443b23..c978abc0cdb3 100644
+> > --- a/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
+> > +++ b/Documentation/devicetree/bindings/media/i2c/sony,imx258.yaml
+> > @@ -13,11 +13,16 @@ description: |-
+> >    IMX258 is a diagonal 5.867mm (Type 1/3.06) 13 Mega-pixel CMOS active pixel
+> >    type stacked image sensor with a square pixel array of size 4208 x 3120. It
+> >    is programmable through I2C interface.  Image data is sent through MIPI
+> > -  CSI-2.
+> > +  CSI-2. The sensor exists in two different models, a standard variant
+> > +  (IMX258) and a variant with phase detection autofocus (IMX258-PDAF).
+> > +  The camera module does not expose the model through registers, so the
+> > +  exact model needs to be specified.
+> >
+> >  properties:
+> >    compatible:
+> > -    const: sony,imx258
+> > +    enum:
+> > +      - sony,imx258
+> > +      - sony,imx258-pdaf
+>
+> Does the pdaf variant support all of the features/is it register
+> compatible with the regular variant? If it is, the regular variant
+> should be a fallback compatible.
 
-On 05.04.24 12:17, Dietmar Eggemann wrote:
-> On 03/04/2024 15:28, Vitalii Bursov wrote:
->> Changes in v3:
->> - Remove levels table change from the documentation patch
->> - Link to v2: https://lore.kernel.org/lkml/cover.1711900396.git.vitaly@bursov.com/
->> Changes in v2:
->> - Split debug.c change in a separate commit and move new "level"
->> after "groups_flags"
->> - Added "Fixes" tag and updated commit message
->> - Update domain levels cgroup-v1/cpusets.rst documentation
->> - Link to v1: https://lore.kernel.org/all/cover.1711584739.git.vitaly@bursov.com/
->>
->> During the upgrade from Linux 5.4 we found a small (around 3%) 
->> performance regression which was tracked to commit 
->> c5b0a7eefc70150caf23e37bc9d639c68c87a097
->>
->>     sched/fair: Remove sysctl_sched_migration_cost condition
->>
->>     With a default value of 500us, sysctl_sched_migration_cost is
->>     significanlty higher than the cost of load_balance. Remove the
->>     condition and rely on the sd->max_newidle_lb_cost to abort
->>     newidle_balance.
->>
->> Looks like "newidle" balancing is beneficial for a lot of workloads, 
->> just not for this specific one. The workload is video encoding, there 
->> are 100s-1000s of threads, some are synchronized with mutexes and 
->> conditional variables. The process aims to have a portion of CPU idle, 
->> so no CPU cores are 100% busy. Perhaps, the performance impact we see 
->> comes from additional processing in the scheduler and additional cost 
->> like more cache misses, and not from an incorrect balancing. See
->> perf output below.
->>
->> My understanding is that "sched_relax_domain_level" cgroup parameter 
->> should control if sched_balance_newidle() is called and what's the scope
->> of the balancing is, but it doesn't fully work for this case.
->>
->> cpusets.rst documentation:
->>> The 'cpuset.sched_relax_domain_level' file allows you to request changing
->>> this searching range as you like.  This file takes int value which
->>> indicates size of searching range in levels ideally as follows,
->>> otherwise initial value -1 that indicates the cpuset has no request.
->>>  
->>> ====== ===========================================================
->>>   -1   no request. use system default or follow request of others.
->>>    0   no search.
->>>    1   search siblings (hyperthreads in a core).
->>>    2   search cores in a package.
->>>    3   search cpus in a node [= system wide on non-NUMA system]
->>>    4   search nodes in a chunk of node [on NUMA system]
->>>    5   search system wide [on NUMA system]
->>> ====== ===========================================================
-> 
-> IMHO, this list misses: 
-> 
->       2   search cores in a cluster.
-> 
-> Related to CONFIG_SCHED_CLUSTER.
-> Like you mentioned, if CONFIG_SCHED_CLUSTER is not configured MC becomes
-> level=1.
+It has the same register set, but certain registers have to be
+programmed differently so that the image is corrected for the
+partially shielded pixels used for phase detect auto focus (PDAF).
+Either compatible will "work" on either variant of the module, but
+you'll get weird image artifacts when using the wrong one.
 
-Previous discussion in v2 on this topic:
-https://lore.kernel.org/linux-kernel/78c60269-5aee-45d7-8014-2c0188f972da@bursov.com/T/#maf4ad0ef3b8c18c8bb3e3524c683b6459c6f7f64
+  Dave
 
-The table certainly depends on the kernel configuraion and describing this
-dependency in detail probably isn't worth it, so how the table should look
-like in the documentation is debatable...
-
-> I ran this on an Arm64 TaiShan 2280 v2, Kunpeng 920 - 4826 server:
-> 
-> $ numactl -H | tail -6
-> node distances:
-> node   0   1   2   3 
->   0:  10  12  20  22 
->   1:  12  10  22  24 
->   2:  20  22  10  12 
->   3:  22  24  12  10
-> 
-> $ head -8 /proc/schedstat | awk '{ print $1 " " $2 }' | tail -5
-> domain0 00000000,00000000,0000000f
-> domain1 00000000,00000000,00ffffff
-> domain2 00000000,0000ffff,ffffffff
-> domain3 000000ff,ffffffff,ffffffff
-> domain4 ffffffff,ffffffff,ffffffff
-> 
-> with additional debug:
-> 
-> [   18.196484] build_sched_domain() cpu=0 name=SMT level=0
-> [   18.202308] build_sched_domain() cpu=0 name=CLS level=1
-> [   18.208188] build_sched_domain() cpu=0 name=MC level=2
-> [   18.222550] build_sched_domain() cpu=0 name=PKG level=3
-> [   18.228371] build_sched_domain() cpu=0 name=NODE level=4
-> [   18.234515] build_sched_domain() cpu=0 name=NUMA level=5
-> [   18.246400] build_sched_domain() cpu=0 name=NUMA level=6
-> [   18.258841] build_sched_domain() cpu=0 name=NUMA level=7
-> 
-> /* search cores in a cluster */
-> # echo 2 > /sys/fs/cgroup/cpuset/cpuset.sched_relax_domain_level
-> 
-> # grep . /sys/kernel/debug/sched/domains/cpu0/*/{name,flags,level}
-> /sys/kernel/debug/sched/domains/cpu0/domain0/name:CLS
-> /sys/kernel/debug/sched/domains/cpu0/domain1/name:MC
-> /sys/kernel/debug/sched/domains/cpu0/domain2/name:NUMA
-> /sys/kernel/debug/sched/domains/cpu0/domain3/name:NUMA
-> /sys/kernel/debug/sched/domains/cpu0/domain4/name:NUMA
-> /sys/kernel/debug/sched/domains/cpu0/domain0/flags:SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_CLUSTER SD_SHARE_LLC SD_PREFER_SIBLING 
-> /sys/kernel/debug/sched/domains/cpu0/domain1/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SHARE_LLC SD_PREFER_SIBLING 
-> /sys/kernel/debug/sched/domains/cpu0/domain2/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA 
-> /sys/kernel/debug/sched/domains/cpu0/domain3/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA 
-> /sys/kernel/debug/sched/domains/cpu0/domain4/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA 
-> /sys/kernel/debug/sched/domains/cpu0/domain0/level:1
-> /sys/kernel/debug/sched/domains/cpu0/domain1/level:2
-> /sys/kernel/debug/sched/domains/cpu0/domain2/level:5
-> /sys/kernel/debug/sched/domains/cpu0/domain3/level:6
-> /sys/kernel/debug/sched/domains/cpu0/domain4/level:7
-> 
-> LGTM.
-> 
-> Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
->  
->> Setting cpuset.sched_relax_domain_level to 0 works as 1.
->>
->> On a dual-CPU server, domains and levels are as follows:
->>   domain 0: level 0, SMT
->>   domain 1: level 2, MC
-> 
-> This is with CONFIG_SCHED_CLUSTER=y ?
-> 
-Yes, I tested mostly with RHEL9 and Debian12 configs on (some) x86-64
-and those have CONFIG_SCHED_CLUSTER=y, but no separate CLS domain.
-
-Thanks
-
+> Cheers,
+> Conor.
 
