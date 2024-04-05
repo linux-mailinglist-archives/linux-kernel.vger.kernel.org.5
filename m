@@ -1,130 +1,119 @@
-Return-Path: <linux-kernel+bounces-133273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 718E089A183
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:40:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33A7A89A186
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:41:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E298CB2683F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:40:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0606284027
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:40:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85C8F16FF3F;
-	Fri,  5 Apr 2024 15:40:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4619F16FF3B;
+	Fri,  5 Apr 2024 15:40:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kHCC7GFO"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UFKUDwYo"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 629F01DFE4;
-	Fri,  5 Apr 2024 15:40:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F751DFE4;
+	Fri,  5 Apr 2024 15:40:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712331639; cv=none; b=KeAoc0+jEjQPV3p46psV0UsnZTY1vYrnFDBhKmgK/GfRb22SY9QERSRkyDfUDlMcxS65uluRIacCTOf6ZpS0jSAH8M3m7wmrfhGDxw8RXMx8Tu49C31qDrwKgAjvHSrHcHyLq6g/+wkw5sBI2qUd/AAzJsfn2b3Q0/+Gxa8/Lko=
+	t=1712331653; cv=none; b=tPJsIdtVge9tl6eXJW88A0x8R0/SZ3UJKKfJ/Od+h/cn4nIoTRCmFg4Yn/Z8Vo29cEi6pqVMTb71ez9cZH6o//6d8vi84jPFs/W/v/2ukDvwm8d/AH2V91odM7mMkG1Rd8w70yAdC+kPgv6Mn9DtXQ1tDsAO26JS/SMvcpSWWCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712331639; c=relaxed/simple;
-	bh=4UDA8EzJ3gi3sEkXmx8zXPtWkdeeRDoSfpA2OojKLk0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=lKfty24x1h2q9hXp/fm83Q1gjPXds/1VbD5IJ52EJXchmVmVJXHGYrQ23LFEGwd3kk1D7RQvxDcCmWa9Hk3NlcfkGKLjEDOo+Gey5A6YmmtBd/ZWfrpa5N2cDGLSf9AzaFDiiKSe5QplIib590YJVmQ5oyHxK3MmsY5Ybd5OuNk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kHCC7GFO; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4358pWOO029031;
-	Fri, 5 Apr 2024 15:40:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=X+Y5OX1FpF9VGjA2FJHiIXJLIoXc2ByicoZVy2EgtYk=; b=kH
-	CC7GFOOZtMslgpfDymwTT5rZ1bsKTI4oUKD5qQfCNY6bUAKOd8QIQE8e+NZR2zWS
-	imF4d7OXcrYn/7hIhU9RCH1MirBZVSc3HiKDA+l8T2AHgP1rbuCiL+YwwxP35Woe
-	cGk/1NUqSXv+rGvkAeRObCG//SxcvZ4l74JjP932RZzJ9Y+Z7cRrkW6+M7lzscCe
-	vW3cyyz0YZ6a012q59HF1HjyRhBkmeKgXhv5XWSBEew1/zVkFcnaiMR80zXyrWow
-	IYVy8jOX3jamLrCjR4B0FZ6r2q/nO7JPQdClYhBnEOHbMU3mf+WzXJo/tWkrk8/M
-	7o+PSm+ypCt26oPgU4mg==
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa4ej9wx6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 15:40:34 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 435FeXLJ006442
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Apr 2024 15:40:33 GMT
-Received: from [10.216.23.38] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
- 08:40:31 -0700
-Message-ID: <88d2f908-0b29-8ba2-04aa-adab13bf77fc@quicinc.com>
-Date: Fri, 5 Apr 2024 21:10:26 +0530
+	s=arc-20240116; t=1712331653; c=relaxed/simple;
+	bh=oEGg+zdE+WnyIiCnbzgQ7uRmt3VoH/bWDMJdCz6YnxE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oU8gtY0RTkqe2x7J7vULgIDH5UnyZyBV8PuRnmYL/CupD87KIYBs/+uPSUcs1Pn3f+K43qOrFPeD8DuqKfXFV90sRnAM3eFpd/mnYRt7nmnrHJDzhV7qqiTknCwQmEQEkpuOr/y6MPYgu596pOnx/1vHXn7c+9WBx4RP3hOh4pc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UFKUDwYo; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712331652; x=1743867652;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=oEGg+zdE+WnyIiCnbzgQ7uRmt3VoH/bWDMJdCz6YnxE=;
+  b=UFKUDwYorl+ZePM0igE7YL1+EXmeTNtz4QO5/TBJ8wAJJ0dAbFGqjnJz
+   V5ATCQ9/7TBFdgV1KynHSkQ+gFHry0P+xz8H/+r2I+FSxqT3Z9xI+hcNS
+   0PVMDCM9dJIRekZKYK0iYrXa4VltiLvZTQQa1kJyVReZ/dWnYMiXB2ZMl
+   zGkGoWGZnK/wW1UCcCkGyX7vV58O52zPPTpsmo2PQBBRu5N4YIaZhB1KL
+   KO095FJba6PzUJXjkTYK9gZixDDoQyrfJ4WvwZUERIkFi1dbKVEwY2SUB
+   WsN96jI83xI49CGdzXtG9tHrA1nRQCDEEvpsyK2EQBRrKxo11FlrxI3bC
+   Q==;
+X-CSE-ConnectionGUID: AJMlaFpkQvy6XhMjgZFWjw==
+X-CSE-MsgGUID: Bt830bM2T6aPJaNYzfIIBQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="7566076"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="7566076"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:40:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="915257359"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="915257359"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:40:48 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rslgM-00000001mwV-05xP;
+	Fri, 05 Apr 2024 18:40:46 +0300
+Date: Fri, 5 Apr 2024 18:40:45 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
+	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Mika Westerberg <mika.westerberg@linux.intel.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: Re: [PATCH v1 1/1] gpiolib: Update the kernel documentation - add
+ Return sections
+Message-ID: <ZhAbfcGkt-Bjj9NY@smile.fi.intel.com>
+References: <20240404212706.3587456-1-andriy.shevchenko@linux.intel.com>
+ <2df0e132-5599-4cb5-93f8-4ed664a5d1cc@infradead.org>
+ <ZhAYeMNzHg0x97gN@smile.fi.intel.com>
+ <47955de8-dfe5-48c0-bc9b-4e930b8f943e@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v2 1/4] firmware: qcom: scm: Remove log reporting memory
- allocation failure
-Content-Language: en-US
-To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1711034642-22860-1-git-send-email-quic_mojha@quicinc.com>
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <1711034642-22860-1-git-send-email-quic_mojha@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: LnTB7ACKVvgXu35v4H0DuEBECzYT-ycb
-X-Proofpoint-GUID: LnTB7ACKVvgXu35v4H0DuEBECzYT-ycb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-05_16,2024-04-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 clxscore=1015 adultscore=0 mlxlogscore=999 malwarescore=0
- impostorscore=0 spamscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404050112
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <47955de8-dfe5-48c0-bc9b-4e930b8f943e@infradead.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Gentle ping..
+On Fri, Apr 05, 2024 at 08:33:26AM -0700, Randy Dunlap wrote:
+> On 4/5/24 8:27 AM, Andy Shevchenko wrote:
+> > On Thu, Apr 04, 2024 at 09:10:09PM -0700, Randy Dunlap wrote:
+> >> On 4/4/24 2:27 PM, Andy Shevchenko wrote:
+> >>> $ scripts/kernel-doc -v -none -Wall drivers/gpio/gpiolib* 2>&1 | grep -w warning | wc -l
+> >>> 67
+> >>>
+> >>> Fix these by adding Return sections. While at it, make sure all of
+> >>> Return sections use the same style.
 
--Mukesh
+..
 
-On 3/21/2024 8:53 PM, Mukesh Ojha wrote:
-> Remove redundant memory allocation failure.
+> >> I would use %true, %false, %NULL, %0, and %1 in a few places.
+> > 
+> > Why? I specifically removed % from all of them, it's not so useful.
+> > Do we have, btw, generated HTML with these % as an example to see
+> > the difference. Maybe that helps to understand this better?
 > 
-> WARNING: Possible unnecessary 'out of memory' message
-> +       if (!mdata_buf) {
-> +               dev_err(__scm->dev, "Allocation of metadata buffer failed.\n");
-> 
-> Signed-off-by: Mukesh Ojha <quic_mojha@quicinc.com>
-> Reviewed-by: Bjorn Andersson <andersson@kernel.org>
-> ---
-> Changes in v2: https://lore.kernel.org/lkml/20240227155308.18395-7-quic_mojha@quicinc.com/
->   - Added R-by tag
-> 
->   drivers/firmware/qcom/qcom_scm.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
-> index 49ddbcab0680..a11fb063cc67 100644
-> --- a/drivers/firmware/qcom/qcom_scm.c
-> +++ b/drivers/firmware/qcom/qcom_scm.c
-> @@ -554,10 +554,9 @@ int qcom_scm_pas_init_image(u32 peripheral, const void *metadata, size_t size,
->   	 */
->   	mdata_buf = dma_alloc_coherent(__scm->dev, size, &mdata_phys,
->   				       GFP_KERNEL);
-> -	if (!mdata_buf) {
-> -		dev_err(__scm->dev, "Allocation of metadata buffer failed.\n");
-> +	if (!mdata_buf)
->   		return -ENOMEM;
-> -	}
-> +
->   	memcpy(mdata_buf, metadata, size);
->   
->   	ret = qcom_scm_clk_enable();
+> The leading '%' just changes the font style of constants.
+> I don't know of any HTML that compares them.
+
+I meant to compare the (HTML) render to see the difference, but you already
+explained that it adds/modifies <font> tag or so.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
