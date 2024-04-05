@@ -1,188 +1,150 @@
-Return-Path: <linux-kernel+bounces-133704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133705-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBE5389A78F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 01:18:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2828C89A791
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 01:19:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C4E5B22C2A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:18:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7928284294
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:19:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F75036AF8;
-	Fri,  5 Apr 2024 23:18:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA1C536B1C;
+	Fri,  5 Apr 2024 23:19:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UvR/mnCz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F5Yekg7L"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2C236121
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 23:18:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A64315672
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 23:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712359110; cv=none; b=c5R8em80cBOQBoyhCw6QHswJL518BBpvlRGh6txXwWXYqWdn1CgpFuHpqCcBb5ZQChFjzJnCgx4hK1dHzJ6mF8nFSxYg3B0pDauqZAYjmla/OhaQgMoujScIKfIVwfaExaAYM3y41Ny1KFxykeCoaW+IAjd7O16XFgG4IeQV3gI=
+	t=1712359169; cv=none; b=KrAh7WSvg8Afmm+LIOPqKu8D5mk9Eff7P31i+eSttTrd5CeodRTPOaX0hRYiym6Dlssh+xoFEikStiq691m/sU7F8UIoHOlHn9/vBHS7oTcRm0BnMd7hOKvEdMqRvq4uSsDRzwcdz9QMgqFZRPxweCTr9mvGehpSj3mUq7F3Fv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712359110; c=relaxed/simple;
-	bh=Idn3J2kbXhzTnx8TU25Kz+NfgIvOh0Me4gtzQGiH3/M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i9YEvC6Q+WMk/Wh2FNk4nk0d60wKjKIw2EFsw85UksLk2m90lyiAeCK7/dgSYHpjdgRQ5xjFsXb/A0hbB+aghRhhVXodZcsk/mmA+b5cBXjWmon/bF+6U4CK4slXkXYzRmtf13NwzQhSGH4QDAcSdRtjudlDcH1SJM5OqKmAPdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UvR/mnCz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02702C433C7;
-	Fri,  5 Apr 2024 23:18:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712359110;
-	bh=Idn3J2kbXhzTnx8TU25Kz+NfgIvOh0Me4gtzQGiH3/M=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=UvR/mnCzGXb8H3t46KE8KYjjSQ7AQO7lOsY2O4J7B5yYHGPCNuLtYm4A/5A7GPtj0
-	 BafL9kUCY5ELPzDUc85sqcdLdrwZLFFE744GPJnq96oqxc4b/2ZlOGPVc2stDC4Ljy
-	 Be6G127wXpCp3Z0E+KgIhsp53+3rc0xqyEpLC2PVJkABuPdUzVY7H23bGIsZ7Iwkbt
-	 7ZafvDb46/a0zhdMB2A+si2mTpoJLFUZfTdcz5v7UC9GFFUcmxaKGB2cZzlqyfk6sF
-	 kCCs2skX1jV5z6ipTwiDEJC0WTIeetDKZLiDGSmAXSRFXs5GvfwZ97ot5lZMDl0Iif
-	 iIQA+3Wjap0JQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 7C834CE11CE; Fri,  5 Apr 2024 16:18:29 -0700 (PDT)
-Date: Fri, 5 Apr 2024 16:18:29 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Julia Lawall <julia.lawall@inria.fr>
-Cc: Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: Re: Finding open-coded workarounds for 1/2-byte cmpxchg()?
-Message-ID: <0e489247-6350-4485-9976-320b457ae748@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <f57bcb57-45a4-4dfb-8758-8f7302223ea9@paulmck-laptop>
- <alpine.DEB.2.22.394.2404060057110.3446@hadrien>
+	s=arc-20240116; t=1712359169; c=relaxed/simple;
+	bh=nTD0gkfW1v3gofTr/mokto28ytoGlLof1Sal1Q1071Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WWeaCaeVhTbjHgklLj4uJ7L3QYEI6j0vKXcAmb5xGlK6XNlBfQUDPcE/FrB1p5gljVm+yTheaW+f2Ye+xIFvqT1MDIR0FtidJokwXI79MKei5yRT6d+MmqK9JZgPMDFMmLYmhXHzptVUeK8KaMwE/kEo49cGsHxbtym+QJX6I+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F5Yekg7L; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712359164;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=HKzTrJInktvfKVrY1P9Lu04jr4tbB0gdRSWQZFOhm8U=;
+	b=F5Yekg7Lgc/m3SeOuxUVQsvH64Jpw/bnuPmbqnF6x0SRunkwlM7rie7xIeuzPzrwSrdwpH
+	MysfPIibsHxJf45qN9vv2liPsyxgIprHp/D3EczF4m2bTqkQLRcsJkSnC8p9UvhKX61pfC
+	2sNPdGLSXKJhkJFfye5pcGlhN6jjivU=
+Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
+ [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-479-Vw69LP_EOTC9ZmHxASCdiA-1; Fri, 05 Apr 2024 19:19:23 -0400
+X-MC-Unique: Vw69LP_EOTC9ZmHxASCdiA-1
+Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6dea8b7e74aso796737a34.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 16:19:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712359163; x=1712963963;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HKzTrJInktvfKVrY1P9Lu04jr4tbB0gdRSWQZFOhm8U=;
+        b=WqXg8bX5kMA4ngoSm8TEOTkQXW0aHFqf8T720A+o/nBSyPU9h4iFob5P4t1/5ImhDp
+         3fkBNztTxydOAupU6P9InPp/fRAs3DD6hRFIgjLn+VkH2tU0E9m6xL1h/gKXLaDd0G+9
+         YD9z4uqmf04CBvpCe5s30qOUk6oXpwtBLlvzx9Agl6R79i+VmBIadivDvqGo7pw5n26p
+         rFgwIuLO5yGgkXqyVa7fHk3o0/QYclZ84onD7z8UIItXq5w0cCXMKEvLhvDScz9RLm9b
+         dzxlpviQLSs/pVRk7G0HOx0MGTM4Bl62byvmlzvWy9tIunVD/AHjD4RBzwc5KV+Tsqp8
+         utwA==
+X-Forwarded-Encrypted: i=1; AJvYcCW2cWfqHr2o+g4fOxkH1kb8wtABYdjobmnK/1fX4LJe3bJzcaQogohHuVm2FMXbRkTR5Da86nxT4tqFMWuOkG/7Js3oMGb7gPNohqyJ
+X-Gm-Message-State: AOJu0YwwutYx2aO50ktrIwHa9TfWHi0haXpaecZKyfOSDBQK4g/GRZ6p
+	o2gg3HquAiylZM0+LP+FN3lcD7BPaG+2Ma54X/MDRcwTqdnm7BM8TLU8hPU8V8nteZ6mAFhENvx
+	CTlR9XYnVguVooRsPHlrQt0dZ7K/+Gwk12BBcwXyqCE60JLS4fzvl0v8qk6BQXw==
+X-Received: by 2002:a05:6808:2385:b0:3c5:dc47:99e9 with SMTP id bp5-20020a056808238500b003c5dc4799e9mr3109026oib.5.1712359162428;
+        Fri, 05 Apr 2024 16:19:22 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFfjPnSmiyv8P7CJzOP7HOWBiDhIEG/B6ZJWV2xwl0fun8uJUpqbxe6oOulVbdccni8vhEdEA==
+X-Received: by 2002:a05:6808:2385:b0:3c5:dc47:99e9 with SMTP id bp5-20020a056808238500b003c5dc4799e9mr3109003oib.5.1712359161965;
+        Fri, 05 Apr 2024 16:19:21 -0700 (PDT)
+Received: from x1n.redhat.com ([99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id fb17-20020a05622a481100b00434383f2518sm1201198qtb.87.2024.04.05.16.19.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 16:19:21 -0700 (PDT)
+From: peterx@redhat.com
+To: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	peterx@redhat.com,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	linux-stable <stable@vger.kernel.org>,
+	syzbot+b07c8ac8eee3d4d8440f@syzkaller.appspotmail.com
+Subject: [PATCH] mm/userfaultfd: Allow hugetlb change protection upon poison entry
+Date: Fri,  5 Apr 2024 19:19:20 -0400
+Message-ID: <20240405231920.1772199-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2404060057110.3446@hadrien>
+Content-Transfer-Encoding: 8bit
 
-On Sat, Apr 06, 2024 at 01:00:35AM +0200, Julia Lawall wrote:
-> 
-> 
-> On Thu, 4 Apr 2024, Paul E. McKenney wrote:
-> 
-> > Hello, Julia!
-> >
-> > I hope that things are going well for you and yours.
-> >
-> > TL;DR: Would you or one of your students be interested in looking for
-> > some interesting code patterns involving cmpxchg?  If such patterns exist,
-> > we would either need to provide fixes or to drop support for old systems.
-> >
-> > If this would be of interest, please read on!
-> >
-> > Arnd (CCed) and I are looking for open-coded emulations for one-byte
-> > and two-byte cmpxchg().  Such emulations might be attempting to work
-> > around the fact that not all architectures support those sizes, being
-> > as they are only required to support four-byte cmpxchg() and, if they
-> > are 64-bit architectures, eight-byte cmpxchg().
-> >
-> > There is a one-byte emulation in RCU (kernel/rcu/tasks.h), which looks
-> > like this:
-> >
-> > ------------------------------------------------------------------------
-> >
-> > u8 rcu_trc_cmpxchg_need_qs(struct task_struct *t, u8 old, u8 new)
-> > {
-> > 	union rcu_special ret;
-> > 	union rcu_special trs_old = READ_ONCE(t->trc_reader_special);
-> > 	union rcu_special trs_new = trs_old;
-> >
-> > 	if (trs_old.b.need_qs != old)
-> > 		return trs_old.b.need_qs;
-> > 	trs_new.b.need_qs = new;
-> > 	ret.s = cmpxchg(&t->trc_reader_special.s, trs_old.s, trs_new.s);
-> > 	return ret.b.need_qs;
-> > }
-> >
-> > ------------------------------------------------------------------------
-> >
-> > An additional issue is posed by these, also in kernel/rcu/tasks.h:
-> >
-> > ------------------------------------------------------------------------
-> >
-> > 	if (trs.b.need_qs == (TRC_NEED_QS_CHECKED | TRC_NEED_QS)) {
-> >
-> > 	return smp_load_acquire(&t->trc_reader_special.b.need_qs);
-> >
-> > 	smp_store_release(&t->trc_reader_special.b.need_qs, v);
-> >
-> > ------------------------------------------------------------------------
-> >
-> > The additional issue is that these statements assume that each CPU
-> > architecture has single-byte load and store instructions, which some of
-> > the older Alpha systems do not.  Fortunately for me, Arnd was already
-> > thinking in terms of removing support for these systems.
-> >
-> > But there are additional systems that do not support 16-bit loads and
-> > stores.  So if there is a 16-bit counterpart to rcu_trc_cmpxchg_need_qs()
-> > on a quantity that is also subject to 16-bit loads or stores, either
-> > that function needs adjustment or a few more ancient systems need to
-> > lose their Linux-kernel support.
-> >
-> > Again, is looking for this sort of thing something that you or one of
-> > your students would be interested in?
-> 
-> Hello,
-> 
-> I tried, but without much success.  The following looks a little bit
-> promising, eg the use of the variable name "want", but it's not clear that
-> the rest of the context fits the pattern.
+From: Peter Xu <peterx@redhat.com>
 
-Thank you for digging into this!!!
+After UFFDIO_POISON, there can be two kinds of hugetlb pte markers, either
+the POISON one or UFFD_WP one.
 
-> diff -u -p /home/julia/linux/net/sunrpc/xprtsock.c
-> /tmp/nothing/net/sunrpc/xprtsock.c
-> --- /home/julia/linux/net/sunrpc/xprtsock.c
-> +++ /tmp/nothing/net/sunrpc/xprtsock.c
-> @@ -690,12 +690,9 @@ xs_read_stream(struct sock_xprt *transpo
->  		if (ret <= 0)
->  			goto out_err;
->  		transport->recv.offset = ret;
-> -		if (transport->recv.offset != want)
-> -			return transport->recv.offset;
+Allow change protection to run on a poisoned marker just like !hugetlb
+cases, ignoring the marker irrelevant of the permission.
 
-Agreed, though you are quite right that ->recv.copied and ->recv.offset
-are different lengths.  But yes, as you sugggest below, there must be
-a cmpxchg() of some type (cmpxchg(), cmpxchg_acquire(), ...) in the mix
-somewhere.  Also, the cmpxchg() must be applied to a pointer to either
-a 32-bit or a 64-bit quantity, but the change must be 16 bits (or 8 bits).
+Here the two bits are mutual exclusive. For example, when install a
+poisoned entry it must not be UFFD_WP already (by checking pte_none()
+before such install).  And it also means if UFFD_WP is set there must have
+no POISON bit set.  It makes sense because UFFD_WP is a bit to reflect
+permission, and permissions do not apply if the pte is poisoned and
+destined to sigbus.
 
-> The semantic patch in question was:
-> 
-> @r@
-> expression olde;
-> idexpression old;
-> @@
-> 
-> if (olde != old) { ... return olde; }
-> 
-> @@
-> expression newe != r.olde;
-> idexpression nw;
-> expression r.olde;
-> idexpression r.old;
-> @@
-> 
-> *if (olde != old) { ... return olde; }
-> ...
-> *newe = nw;
-> ...
-> *return newe;
-> 
-> The semantic patch doesn't include the cmpxchg.  I wasn't sure if that
-> would always be present, or in what form.
+So here we simply check uffd_wp bit set first, do nothing otherwise.
 
-It would be, but I am having trouble characterizing exactly what the
-pattern would look like beyond "emulating a 16-bit cmpxchg() using either
-a 32-bit cmpxchg() or a 64-bit cmpxchg()".  :-(
+Attach the Fixes to UFFDIO_POISON work, as before that it should not be
+possible to have poison entry for hugetlb (e.g., hugetlb doesn't do swap,
+so no chance of swapin errors).
 
-Thank you again, and something to think more about.
+Cc: Axel Rasmussen <axelrasmussen@google.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: linux-stable <stable@vger.kernel.org> # 6.6+
+Link: https://lore.kernel.org/r/000000000000920d5e0615602dd1@google.com
+Reported-by: syzbot+b07c8ac8eee3d4d8440f@syzkaller.appspotmail.com
+Fixes: fc71884a5f59 ("mm: userfaultfd: add new UFFDIO_POISON ioctl")
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ mm/hugetlb.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-							Thanx, Paul
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 8267e221ca5d..ba7162441adf 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -6960,9 +6960,13 @@ long hugetlb_change_protection(struct vm_area_struct *vma,
+ 			if (!pte_same(pte, newpte))
+ 				set_huge_pte_at(mm, address, ptep, newpte, psize);
+ 		} else if (unlikely(is_pte_marker(pte))) {
+-			/* No other markers apply for now. */
+-			WARN_ON_ONCE(!pte_marker_uffd_wp(pte));
+-			if (uffd_wp_resolve)
++			/*
++			 * Do nothing on a poison marker; page is
++			 * corrupted, permissons do not apply.  Here
++			 * pte_marker_uffd_wp()==true implies !poison
++			 * because they're mutual exclusive.
++			 */
++			if (pte_marker_uffd_wp(pte) && uffd_wp_resolve)
+ 				/* Safe to modify directly (non-present->none). */
+ 				huge_pte_clear(mm, address, ptep, psize);
+ 		} else if (!huge_pte_none(pte)) {
+-- 
+2.44.0
+
 
