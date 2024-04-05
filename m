@@ -1,117 +1,186 @@
-Return-Path: <linux-kernel+bounces-133531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62A4189A4F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:31:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05A5E89A4F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:32:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9424C2847EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:31:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 286361C211B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53DAB172BDB;
-	Fri,  5 Apr 2024 19:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F49F17333B;
+	Fri,  5 Apr 2024 19:31:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="aXjZLI8c"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="OfnyKkrm"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3329A16D328;
-	Fri,  5 Apr 2024 19:31:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA8D7172BCA
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 19:31:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712345503; cv=none; b=cZD9JiklCgNsv0iNj/B+UIb1dAnmnYYt4WsKNnk/Ie8GjMjqx3U3CRtKRiWiHG8fZXIJjHmQTxjJMyxiysihXvRDGLpFcMHpFkvLnyqfLTmnszfY4Oz9PTqPhEKXIO8pAQHH/KXwjgbymG+03q29HqiivL7297ILz5e3riaynIU=
+	t=1712345515; cv=none; b=FsEUikDRsSpsee/CXEXw+BwGSg+Jh9Y19+Fzxfw//NQ/qckEyTUh76ZpHFeAzrdNHKafzqAwnx6GYPE9TpiApR4LrZSU5FXr3y1EsOTGVcUWZdBYUpCKgnsp7rxY2/9Ur4uC8osyR3yaM/IhFXtXIFcHonhtBijewnfyojClbhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712345503; c=relaxed/simple;
-	bh=CCqosY6LwrXSOVMTJ5pTTL5HXPdD8OYPTtkbzw4LRIE=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gjc6pbtlEc3uO9mQPoFV0gCjfliPomFVo4mJ283KzdRBg/goc9M0mCSpdINe03skk3u+ylKtG4KrhI7HeZmbvkuTypRY1w2BMJHs1gNUBTGOjmPJjt6lVvHxsDonGRmNmNa3YJcYNLn/O6jPGn42mPfM6rsJBwxY03NUxdtuZqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=aXjZLI8c; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 435IrBYd022293;
-	Fri, 5 Apr 2024 19:31:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=BlNAeShZDOvgUo9npknTomdfOyDC0s2Vs6WntYULbdQ=; b=aX
-	jZLI8c++GogdAHBUN6Pm81OmUdyvuxYwb7kt9kmnvW+3W+HyqRuLG1Uc86AtPX5b
-	DyKWlQ62EIrVA9DYXcm0+GMJKSermzil4IHTS1rpPo46CKDu1HAx+evxy+1lfszp
-	lTuFrmKJFJattO2gzVpiPhfchW0l5mLzDsGjH37D7PjRYow9pSodIRZ/iI/IU8vg
-	UDo4DFGRgJTL0vPu87j3cmSWYiTd1ipDuh/m1ADmKnK9sFCxHKa9kFGL0XhhZdZX
-	FlhE6UkgdFYPymR/e90vVN9mIFQaNYvK24ynS8LZlbijz3IPThg5ZL/r7mLbJOKd
-	lS25mFrgRHV5K+oc2Fig==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa7m5j4n4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 19:31:34 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 435JVSGI028038
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Apr 2024 19:31:28 GMT
-Received: from jesszhan-linux.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.4; Fri, 5 Apr 2024 12:31:28 -0700
-From: Abhinav Kumar <quic_abhinavk@quicinc.com>
-To: <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
-        "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>,
-        Sean Paul
-	<sean@poorly.run>,
-        "Marijn Suijten" <marijn.suijten@somainline.org>,
-        David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh
-	<quic_khsieh@quicinc.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>
-CC: <dri-devel@lists.freedesktop.org>, <swboyd@chromium.org>,
-        <quic_jesszhan@quicinc.com>, <quic_parellan@quicinc.com>,
-        Rob Clark
-	<robdclark@chromium.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/msm/dp: fix typo in dp_display_handle_port_status_changed()
-Date: Fri, 5 Apr 2024 12:31:19 -0700
-Message-ID: <171234544659.7383.17823778354576081313.b4-ty@quicinc.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240306193515.455388-1-quic_abhinavk@quicinc.com>
-References: <20240306193515.455388-1-quic_abhinavk@quicinc.com>
+	s=arc-20240116; t=1712345515; c=relaxed/simple;
+	bh=8kF6zCx5kRw6Jm6yRPVqDMiT1Gzmz8s6r5iiyIiC1FY=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=g/smFCtBH9DT9D30JUKzTkgWvPrLOhHSiEwnj/CJNrKp+hf6ZVtLAtfGk1v3qWGcBM8Tu6DRJUHsXKo62P5CYM0vJavusFxG12R7kuNuSG0Fmm2xTs3PH4RoXx9HvWq4T1KGIkQwGovexcHVZ4LowjxyssL9+SzlvVKVMgijkUs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=OfnyKkrm; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e0878b76f3so21446255ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 12:31:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712345513; x=1712950313; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ehiwGS0Z8Xqga4/SUXxg4ntgcCdy89JIq8/1UnR2uY4=;
+        b=OfnyKkrmMpxS8E63Ua54ZDiz/m9wfoPfPUmhwmSnjH6pHXOqVZxpOGORD+iwkyDFOJ
+         bTsgoubdsRwZkJLAHOyAIMQSXfJar96hH0xFyot64ugfpNBcAHpni6XLjVPuG0azoq8j
+         GtEONsNMHdT6ypUE5jiQT49nNptq0Nq9IHarQN/qn3A3jvHvKnfVEp9tHuOp0dlut5Sj
+         aLhEbBBjW2R3raq7Ydjw4CXTdAbjTSQx/YZ52kZX453SdtBks8UUPWfhoa4m997n+OkI
+         B0Bi/60Vl3X05sPybQdmw08sbK46G6ewrKKcpFP1v8NDIjEQVYAWNV0/8A0WL9NLy8YA
+         Ca9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712345513; x=1712950313;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ehiwGS0Z8Xqga4/SUXxg4ntgcCdy89JIq8/1UnR2uY4=;
+        b=EEZVC7oQv3lPOfnu+arlyCbfIPWPidYiKlJWj4vHHXCk0T4WmBsEdM8HC16LiTer0n
+         1jPGGPHj5C5owxgv/g6/usEhTcPIt5yw/jP+II3L9SbPoIOpN4M8n8Hok2MYlp4WWQfz
+         9yg2Zs3u+9LuOAIEFwrlJEDOW5+etY9djNsewph/CchVU4CE3DNGXiIQU9u6dCHU7Om4
+         i689e1SWlaAWGVEXWBZAW013lL+AChIHhx59RX+2Weut1ZkVcaKjZhubrRLjhIdovxD/
+         PGNexWoXO1LLEn8Cn4QVPB+pvANTGWFd/fkpzlZk5jBWIUtSff2uEzrgCD4iFeb9bBjQ
+         fiIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWY3T+CHoLT2D10X4Hw8aeYZt/Z8bbX7nMRRgHjb+WlAU8fGobcvznmugMA50LGPiaak0ZhVhd6IjLb3pbhrWqMO6XPoXktgdAs2dFp
+X-Gm-Message-State: AOJu0YxlcBkYAzDT6FK9mqC6G7KZ35krEb8q8D7AzoL92v49t90akpTS
+	OVPtLx8bwja2z7G+cgGEjv0jQIzC5ruhOfhVVodj6qmqRAF5KiKXLoR8S0uBy4s=
+X-Google-Smtp-Source: AGHT+IHULb/f3rPAwSiSJQzmkPHmga62s3jlPMTEEo4kcs5KA8teOqWoWSLLG9DadK7OQz25CkIxEQ==
+X-Received: by 2002:a17:903:41ca:b0:1e2:6482:db0f with SMTP id u10-20020a17090341ca00b001e26482db0fmr3114175ple.29.1712345513217;
+        Fri, 05 Apr 2024 12:31:53 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id h18-20020a170902f2d200b001e29c4b7bd2sm1963190plc.240.2024.04.05.12.31.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Apr 2024 12:31:52 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <B6218039-714A-404F-BEDD-ADC54F99BE1C@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_0D1A6818-3729-442E-BD83-023C8BF27ABC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 7i4OSB_z0mQ5ymGTvxpNAQcBr-MBaljR
-X-Proofpoint-GUID: 7i4OSB_z0mQ5ymGTvxpNAQcBr-MBaljR
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-05_21,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 mlxscore=0 bulkscore=0 phishscore=0 adultscore=0
- suspectscore=0 malwarescore=0 impostorscore=0 clxscore=1015
- mlxlogscore=894 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404050138
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v3 13/13] bcachefs: fiemap: emit new COMPRESSED state
+Date: Fri, 5 Apr 2024 13:34:00 -0600
+In-Reply-To: <7CF0A3D0-50E7-448F-A992-90B9168D557F@dilger.ca>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+ Brian Foster <bfoster@redhat.com>,
+ Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>,
+ Jaegeuk Kim <jaegeuk@kernel.org>,
+ Chao Yu <chao@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>,
+ Jan Kara <jack@suse.cz>,
+ =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ linux-doc@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-bcachefs@vger.kernel.org,
+ linux-btrfs <linux-btrfs@vger.kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ kernel-team@meta.com
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
+ Kent Overstreet <kent.overstreet@linux.dev>
+References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+ <943938ff75580b210eebf6c885659dd95f029486.1712126039.git.sweettea-kernel@dorminy.me>
+ <7CF0A3D0-50E7-448F-A992-90B9168D557F@dilger.ca>
+X-Mailer: Apple Mail (2.3273)
 
 
-On Wed, 06 Mar 2024 11:35:15 -0800, Abhinav Kumar wrote:
-> Fix the typo in the name of dp_display_handle_port_status_changed().
-> 
-> 
+--Apple-Mail=_0D1A6818-3729-442E-BD83-023C8BF27ABC
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Applied, thanks!
 
-[1/1] drm/msm/dp: fix typo in dp_display_handle_port_status_changed()
-      (no commit info)
-      https://gitlab.freedesktop.org/drm/msm/-/commit/cd49cca222bc
-Best regards,
--- 
-Abhinav Kumar <quic_abhinavk@quicinc.com>
+> On Apr 5, 2024, at 1:17 PM, Andreas Dilger <adilger@dilger.ca> wrote:
+>=20
+> On Apr 3, 2024, at 1:22 AM, Sweet Tea Dorminy =
+<sweettea-kernel@dorminy.me> wrote:
+>>=20
+>> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+>> ---
+>> fs/bcachefs/fs.c | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>=20
+>> diff --git a/fs/bcachefs/fs.c b/fs/bcachefs/fs.c
+>> index d2793bae842d..54f613f977b4 100644
+>> --- a/fs/bcachefs/fs.c
+>> +++ b/fs/bcachefs/fs.c
+>> @@ -921,7 +921,7 @@ static int bch2_fill_extent(struct bch_fs *c,
+>> 				flags2 |=3D FIEMAP_EXTENT_UNWRITTEN;
+>>=20
+>> 			if (p.crc.compression_type) {
+>> -				flags2 |=3D FIEMAP_EXTENT_ENCODED;
+>> +				flags2 |=3D =
+FIEMAP_EXTENT_DATA_COMPRESSED;
+>=20
+> (defect) This should *also* set FIEMAP_EXTENT_ENCODED in this case,
+> along with FIEMAP_EXTENT_DATA_COMPRESSED.  Both for compatibility with
+> older code that doesn't understand FIEMAP_EXTENT_DATA_COMPRESSED, and
+> because the data still cannot be read directly from the volume when it
+> is not mounted.
+>=20
+> Probably Kent should chime in here with what needs to be done to set
+> the phys_len properly for bcachefs, or leave this patch out of your
+> series and let him submit it directly.  With proposed wrapper in the
+> first patch of the series there isn't a hard requirement to change
+> all of the filesystems in one shot.
+
+Ah, I missed the 11/13 patch that is handling up most of the bcachefs
+phys_len changes.  I think this should be folded into that patch so
+it is clear to the callers that the data is compressed when they see
+fe_physical_length is not the same as fe_logical_length.
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_0D1A6818-3729-442E-BD83-023C8BF27ABC
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYQUikACgkQcqXauRfM
+H+B07w/+MmXpmeeehpinb/y0l8UhYl0eqiljcSOE4SDFyKHRdwMRb9tUzdvr3ZOI
+YSglCdxdJ7umd1U5D38IjlSEfNPIJ4EQ7aYo/R8DaNballbpfROENbO7B2RxVQV/
+KiJ7kJjSIgDL+T8Evdt0VopojAHlPxJlWcMh4HR4KCeaaKstdKuC1IVncs/zFtD6
+Fui3/nG6LLK2dFTtvbY1cdN7MWRDPntZ7Kt5ovjZq2AWQHBc3bSF5LF/9KHD8yAS
+yBx8McpPFcH7jFcb/YG6oby4vsvNr+g7x+l6lBFPsxzwJeQ03L8ZcDNP4eUcDGTQ
+MxwgYvbktgldnwy6V2UIG8SWQhlUFkvu6Tes5mKtRi+k3kaBiTxCFiYRtGHUD5J7
+VvJI5Ttx1fWKZAD9w+viFAgyg+q7bLL7zNeb9yKiGN60GDZzJw8kCzNYPQGC2D/T
++q+vTtpn8hzJ89OYhDNfJRYWtpq2E3UCQZERcDHmGyjn+GVkpsXc+tCfqjYQUctD
+500EVWcI//t2TuZi7Khbp1enFw0Hg0tqbLPZcOcZxkQAm8NGTPIWr8+6PwMVI4qM
+SFYbecP+LjPBbcDggyOE63dZQfjo/Hl0LJByapB8gLLyrqhFYkC/Lwo6LyH+D6NE
+k6cJ4CjhLs67thiPQfWHvNId0/YTsQ7l02b7EGERyAkLuV637gA=
+=gQCH
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_0D1A6818-3729-442E-BD83-023C8BF27ABC--
 
