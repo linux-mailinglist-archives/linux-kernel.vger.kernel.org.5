@@ -1,86 +1,82 @@
-Return-Path: <linux-kernel+bounces-133666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDC1D89A71B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:21:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31BAF89A71F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:25:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77851B20B21
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 22:21:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0F02282F44
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 22:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23D4C171072;
-	Fri,  5 Apr 2024 22:21:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Es8U/96J"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB2217555E;
+	Fri,  5 Apr 2024 22:25:18 +0000 (UTC)
+Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B49117555B;
-	Fri,  5 Apr 2024 22:21:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B758174ECA
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 22:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712355668; cv=none; b=YTtiCIz/REHVIM5NeqyCs6UO5bmBDZ5HfqMegUgWeQ5fJu0d4iwjh8Opi6qrZdqyV1t9Qnid5lXGWH6XCTF6NwKlVoIEQB7YL3RP4nVu8H7PuTPkV8bVJZWpxhjKrqqAE60OhSFWW/IABxa1bxTOXntOm2qu5kJfkD5CWCnI0E4=
+	t=1712355918; cv=none; b=ihsLvx1eSyGMW79WXDvJyAT1C/FjmMylwdtAgx81yznBKuuq1tgwYDVvvmZdidmJFUbiNijuOvEcxXaTpU4tkRXWnq5vo/s9I8Xg0xnX8eyNvcUZAlvJhdHA9uQ/K3eza+K6GXR8ZoBpeDRB/mW9l2ynPpNxU1g6AtiNHiEcsG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712355668; c=relaxed/simple;
-	bh=weyVrY2rEhWcsaT9IB3fJ10/jNueaYJp5tsvKZBix0k=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=vBXmuetfd0sZgKEYzJEiaNalqDhUZt4PbUEzIRhevmowRnycVLRIFbUr46LqftdaJ/smyAo3gsCpanp1jyFYyyeRORu1sZLXzukUIRAVtJmRMSeN1fhxd1WxYZqVWQLInGon5ik8onXGxvFpj5bAeR+iElA8F1l7WxSxa5CW0qM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Es8U/96J; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E94CC433F1;
-	Fri,  5 Apr 2024 22:21:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712355668;
-	bh=weyVrY2rEhWcsaT9IB3fJ10/jNueaYJp5tsvKZBix0k=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Es8U/96J4kdVIZhBVExohQSRr2uZhT7tlzsBUnkpgLBs4fHonpnucQnIW++3Zguoe
-	 YxWF8F9ZeSdtNVZGxoYdvF0zfWIKF7iSWsC2rJCr5wP+2IbaVfeKS4ZY1Tpc4cGW62
-	 Ij4siMyAvHr8qsUWQrmar2lLkU4dw7Q/xa57fnDnYeIHbZYcZAYMG3FNJ+USLM7rEE
-	 P4XRPJaTyQN2R5MmpYAgwYYYjgg0pZMBcVLT9ajh9OSN0z7OxvJ/NYRZezczT1ivTa
-	 Scs0pvCBzBZIuQRixy5PDujxaRDXVmCThWEZHTKCkaHmGTD+KPPmwnTzvmLd0eLMU2
-	 ZwiJ1IPaSk8pQ==
-From: Mark Brown <broonie@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] SPI fixes for v6.9-rc2
-Date: Fri, 05 Apr 2024 23:20:57 +0100
-Message-Id: <20240405222106.6E94CC433F1@smtp.kernel.org>
+	s=arc-20240116; t=1712355918; c=relaxed/simple;
+	bh=9hz1CacEtBqBR2tMlHhXU8XFj54Ot+LLOeUrP6Vf7yY=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=phI2rpEROxcCOQ0qwnqegUlVIhBkB07E3fw4kRMbmEABAaRPrM2RwqP+xZzUX2mu3KP/oibtUdzIDvLCC0u2PEcqh9bTaGIynQweUlULrHiAGmKqS03rwRgDNtIJI54KQQrT2byrZ6Sg10YBB2zLVmj82ucmw5oBZv0qXsGqDFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+Received: from localhost (88-113-26-217.elisa-laajakaista.fi [88.113.26.217])
+	by fgw23.mail.saunalahti.fi (Halon) with ESMTP
+	id 5ade748f-f39b-11ee-b972-005056bdfda7;
+	Sat, 06 Apr 2024 01:25:06 +0300 (EEST)
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Sat, 6 Apr 2024 01:25:06 +0300
+To: syzbot <syzbot+837b8c9032c053262db8@syzkaller.appspotmail.com>
+Cc: gregkh@linuxfoundation.org, jirislaby@kernel.org,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [serial?] general protection fault in
+ serial8250_tx_chars
+Message-ID: <ZhB6Qt48rkC3zMUb@surfacebook.localdomain>
+References: <0000000000009e2dd805ffc595a3@google.com>
+ <000000000000706b5c0601125945@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000706b5c0601125945@google.com>
 
-The following changes since commit 4cece764965020c22cff7665b18a012006359095:
+Sat, Jul 22, 2023 at 05:16:21AM -0700, syzbot kirjoitti:
+> syzbot has found a reproducer for the following issue on:
+> 
+> HEAD commit:    d192f5382581 Merge tag 'arm64-fixes' of git://git.kernel.o..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=12d03ff4a80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=a4507c291b5ab5d4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=837b8c9032c053262db8
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17e4fe52a80000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/517e5a5be15c/disk-d192f538.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/59d41b43c30c/vmlinux-d192f538.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/99ed26179ccf/bzImage-d192f538.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+837b8c9032c053262db8@syzkaller.appspotmail.com
 
-  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+#syz test git@bitbucket.org:andy-shev/linux.git test-8250-pm
 
-are available in the Git repository at:
+-- 
+With Best Regards,
+Andy Shevchenko
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v6.9-rc2
 
-for you to fetch changes up to 1f886a7bfb3faf4c1021e73f045538008ce7634e:
-
-  spi: mchp-pci1xxx: Fix a possible null pointer dereference in pci1xxx_spi_probe (2024-04-03 11:04:58 +0100)
-
-----------------------------------------------------------------
-spi: Fixes for v6.9
-
-A few small driver specific fixes, the most important being the s3c64xx
-change which is likely to be hit during normal operation.
-
-----------------------------------------------------------------
-Carlos Song (1):
-      spi: spi-fsl-lpspi: remove redundant spi_controller_put call
-
-Huai-Yuan Liu (1):
-      spi: mchp-pci1xxx: Fix a possible null pointer dereference in pci1xxx_spi_probe
-
-Jaewon Kim (1):
-      spi: s3c64xx: Use DMA mode from fifo size
-
- drivers/spi/spi-fsl-lpspi.c | 14 ++++++--------
- drivers/spi/spi-pci1xxxx.c  |  2 ++
- drivers/spi/spi-s3c64xx.c   |  5 ++---
- 3 files changed, 10 insertions(+), 11 deletions(-)
 
