@@ -1,55 +1,55 @@
-Return-Path: <linux-kernel+bounces-132439-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132440-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 596A48994F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8096E8994F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:09:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C2791C2277F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:09:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B20511C2119B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:09:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E309E2C198;
-	Fri,  5 Apr 2024 06:08:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 751CA2C69B;
+	Fri,  5 Apr 2024 06:08:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cOQ2YFns"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GzfuGQBz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20E1528DD6;
-	Fri,  5 Apr 2024 06:08:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C992C1B6;
+	Fri,  5 Apr 2024 06:08:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712297325; cv=none; b=AEz+4NOBse2bqJfHO3YR7sDYO98G4loHPFxtDOOnqrWcy92OeM4gzcx6n5rGftbgGYFbpGhvkp6P9fo5oWaDwYCmIsb0lJZ7X4IjeGZQtKcbkOBIBn3TVw3IpSje2GsYDCDngBMveD6zHvoQ4cN5al8PwEfJj67g1gKdhaGPay0=
+	t=1712297326; cv=none; b=qZlUg2hN9P/aS6qB0T0MFQW324r2+Y/9XCMtwfLmqkxQ3OjFJe3pm6o3SmyfUHnV7YoTTopmmIQm1cWmH/Ce/pOsu9P3Y2WnrgO2C3w9YTZcmnJNIjy4p4eljOfQWkzFWvj2QwpHkBzsQzYCNN0mfr2eleD1Zo55Lj05tvp+0qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712297325; c=relaxed/simple;
-	bh=Y5yr2WoT18t+omb36hLfYnGJAHFNVuXaCL5M5ighc1g=;
+	s=arc-20240116; t=1712297326; c=relaxed/simple;
+	bh=eLFz8uhtcnkr+mmr2mJCW7abChfFurz5pgm0LRWZQB4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CIx/TXvldav+9U1EfWXhRpc03mXraFolNmS8VWfVTKvPXx4lwi9uUzepjuYGAA7jkkGd7yyGPCrzgaPxrDHkTqloAPPwwgtb/Bfh8yFWfydfR1+Q6jo0LJBUyaj+C7kP7T7yE3yzKNz50oouI2JYYGeay1YATs2nfBdClHoUy/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cOQ2YFns; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D15EC43142;
-	Fri,  5 Apr 2024 06:08:43 +0000 (UTC)
+	 MIME-Version; b=f+b2QoyVJVUvQPZ7O4LIjQQc8T3RaIXxr/KOd+1+iWIvL0CSzBWX4vfBtABg/0SUkmTEoCiEvgbC6e1kKVuQE0Tgo07fxFLvcT1oWBfAZmNhfuWrnHLPDmUtaFGNW4Xf35luISBHG4RWaS57l34914TFdA9gHSa746E4Co2p21k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GzfuGQBz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D70EC43390;
+	Fri,  5 Apr 2024 06:08:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712297324;
-	bh=Y5yr2WoT18t+omb36hLfYnGJAHFNVuXaCL5M5ighc1g=;
+	s=k20201202; t=1712297326;
+	bh=eLFz8uhtcnkr+mmr2mJCW7abChfFurz5pgm0LRWZQB4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cOQ2YFnsSC6gpEfUmjVMeRQgASHHQCI+W1dcBRM4feIn+U7CECd7Gsj3TCQTzD2xq
-	 J+xR2WajkI4JWRnC9zoF8pXMvilInYtx73AsWMbFluY0+81N2FjsSDw1y6mC6r5v1T
-	 V67HFdCmh8F0LFmCA6dsrXn8IxJEwnW6D2YDK0dqcyhLrNo0rIx+FJGo6uRFlICO80
-	 dwZaO08ABz37RRskzuhGUYWcB6NZJx6Ug+2VGZFlTFsqm21zHsfW8/NItZzc6pH9V+
-	 kAdenwxDq97kXVx1+WDgTbHg0U9hi4VLbQW8cfpdec1n+/sJ09u9ioCUjBU44KkTNJ
-	 DKlmaBRSsDGXQ==
+	b=GzfuGQBzmLL+POZxHTP2DAorvhpY4UPzoC2rpot1rpECWEcHLV5ob+fllk1vGfne3
+	 DOVFqB9dJSoW016vy7pgo6c+mrMsM0SbXCA+vAlV9fmCyd+5jVbHd/APjW2u4nSIR2
+	 Q6T/o4dIVKglkUmY/h+rpTk57A1m+r5JaxENwkMxAH+bMlutDjDRFxB9r3xr80n1mh
+	 07alDoPIMRu7FvhEfE/1a5yhnb5sz/FGl80YqL47Amp0jB2PRXEkm4z1+zCRra7TEx
+	 mbtO8sgSeHNzIMmWNVm9vpRDMiLQ/fn/p/wxSF8h2ddYTr1ltjslLlxc5ip69Kn9ks
+	 RqWHtrV2X0Pag==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: gregkh@linuxfoundation.org
 Cc: linux-serial@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Stefani Seibold <stefani@seibold.net>,
-	Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH 03/15] kfifo: add kfifo_out_linear{,_ptr}()
-Date: Fri,  5 Apr 2024 08:08:14 +0200
-Message-ID: <20240405060826.2521-4-jirislaby@kernel.org>
+	Andrew Morton <akpm@linux-foundation.org>,
+	Stefani Seibold <stefani@seibold.net>
+Subject: [PATCH 04/15] kfifo: remove support for physically non-contiguous memory
+Date: Fri,  5 Apr 2024 08:08:15 +0200
+Message-ID: <20240405060826.2521-5-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240405060826.2521-1-jirislaby@kernel.org>
 References: <20240405060826.2521-1-jirislaby@kernel.org>
@@ -61,162 +61,81 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-These are helpers which are going to be used in the serial layer. We
-need a wrapper around kfifo which provides us with a tail (sometimes
-"tail" offset, sometimes a pointer) to the kfifo data. And which returns
-count of available data -- but not larger than to the end of the buffer
-(hence _linear in the names). I.e. something like CIRC_CNT_TO_END() in
-the legacy circ_buf.
+First, there is no such user. The only user of this interface is
+caam_rng_fill_async() and that uses kfifo_alloc() -> kmalloc().
 
-This patch adds such two helpers.
+Second, the implementation does not allow anything else than direct
+mapping and kmalloc() (due to virt_to_phys()), anyway.
+
+Therefore, there is no point in having this dead (and complex) code in
+the kernel.
+
+Note the setup_sgl_buf() function now boils down to simple sg_set_buf().
+That is called twice from setup_sgl() to take care of kfifo buffer
+wrap-around.
+
+setup_sgl_buf() will be extended shortly, so keeping it in place.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Stefani Seibold <stefani@seibold.net>
 Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Stefani Seibold <stefani@seibold.net>
 ---
+ lib/kfifo.c | 38 +++++---------------------------------
+ 1 file changed, 5 insertions(+), 33 deletions(-)
 
-Notes:
-    [v2]
-      * added Andrew's fix -- missing right parenthesis
-      * simplify __kfifo_out_linear() -- min3() results can be returned
-        directly.
-
- include/linux/kfifo.h | 63 +++++++++++++++++++++++++++++++++++++++++++
- lib/kfifo.c           | 26 ++++++++++++++++++
- 2 files changed, 89 insertions(+)
-
-diff --git a/include/linux/kfifo.h b/include/linux/kfifo.h
-index 8f3369ec528b..3def70e1a3e3 100644
---- a/include/linux/kfifo.h
-+++ b/include/linux/kfifo.h
-@@ -827,6 +827,63 @@ __kfifo_uint_must_check_helper( \
- }) \
- )
- 
-+/**
-+ * kfifo_out_linear - gets a tail of/offset to available data
-+ * @fifo: address of the fifo to be used
-+ * @tail: pointer to an unsigned int to store the value of tail
-+ * @n: max. number of elements to point at
-+ *
-+ * This macro obtains the offset (tail) to the available data in the fifo
-+ * buffer and returns the
-+ * numbers of elements available. It returns the available count till the end
-+ * of data or till the end of the buffer. So that it can be used for linear
-+ * data processing (like memcpy() of (@fifo->data + @tail) with count
-+ * returned).
-+ *
-+ * Note that with only one concurrent reader and one concurrent
-+ * writer, you don't need extra locking to use these macro.
-+ */
-+#define kfifo_out_linear(fifo, tail, n) \
-+__kfifo_uint_must_check_helper( \
-+({ \
-+	typeof((fifo) + 1) __tmp = (fifo); \
-+	unsigned int *__tail = (tail); \
-+	unsigned long __n = (n); \
-+	const size_t __recsize = sizeof(*__tmp->rectype); \
-+	struct __kfifo *__kfifo = &__tmp->kfifo; \
-+	(__recsize) ? \
-+	__kfifo_out_linear_r(__kfifo, __tail, __n, __recsize) : \
-+	__kfifo_out_linear(__kfifo, __tail, __n); \
-+}) \
-+)
-+
-+/**
-+ * kfifo_out_linear_ptr - gets a pointer to the available data
-+ * @fifo: address of the fifo to be used
-+ * @ptr: pointer to data to store the pointer to tail
-+ * @n: max. number of elements to point at
-+ *
-+ * Similarly to kfifo_out_linear(), this macro obtains the pointer to the
-+ * available data in the fifo buffer and returns the numbers of elements
-+ * available. It returns the available count till the end of available data or
-+ * till the end of the buffer. So that it can be used for linear data
-+ * processing (like memcpy() of @ptr with count returned).
-+ *
-+ * Note that with only one concurrent reader and one concurrent
-+ * writer, you don't need extra locking to use these macro.
-+ */
-+#define kfifo_out_linear_ptr(fifo, ptr, n) \
-+__kfifo_uint_must_check_helper( \
-+({ \
-+	typeof((fifo) + 1) ___tmp = (fifo); \
-+	unsigned int ___tail; \
-+	unsigned int ___n = kfifo_out_linear(___tmp, &___tail, (n)); \
-+	*(ptr) = ___tmp->kfifo.data + ___tail * kfifo_esize(___tmp); \
-+	___n; \
-+}) \
-+)
-+
-+
- extern int __kfifo_alloc(struct __kfifo *fifo, unsigned int size,
- 	size_t esize, gfp_t gfp_mask);
- 
-@@ -856,6 +913,9 @@ extern unsigned int __kfifo_dma_out_prepare(struct __kfifo *fifo,
- extern unsigned int __kfifo_out_peek(struct __kfifo *fifo,
- 	void *buf, unsigned int len);
- 
-+extern unsigned int __kfifo_out_linear(struct __kfifo *fifo,
-+	unsigned int *tail, unsigned int n);
-+
- extern unsigned int __kfifo_in_r(struct __kfifo *fifo,
- 	const void *buf, unsigned int len, size_t recsize);
- 
-@@ -885,6 +945,9 @@ extern void __kfifo_skip_r(struct __kfifo *fifo, size_t recsize);
- extern unsigned int __kfifo_out_peek_r(struct __kfifo *fifo,
- 	void *buf, unsigned int len, size_t recsize);
- 
-+extern unsigned int __kfifo_out_linear_r(struct __kfifo *fifo,
-+	unsigned int *tail, unsigned int n, size_t recsize);
-+
- extern unsigned int __kfifo_max_r(unsigned int len, size_t recsize);
- 
- #endif
 diff --git a/lib/kfifo.c b/lib/kfifo.c
-index 958099cc4914..a36bfdbdb17d 100644
+index a36bfdbdb17d..d5830960ab87 100644
 --- a/lib/kfifo.c
 +++ b/lib/kfifo.c
-@@ -163,6 +163,19 @@ unsigned int __kfifo_out_peek(struct __kfifo *fifo,
+@@ -305,43 +305,15 @@ int __kfifo_to_user(struct __kfifo *fifo, void __user *to,
  }
- EXPORT_SYMBOL(__kfifo_out_peek);
+ EXPORT_SYMBOL(__kfifo_to_user);
  
-+unsigned int __kfifo_out_linear(struct __kfifo *fifo,
-+		unsigned int *tail, unsigned int n)
-+{
-+	unsigned int size = fifo->mask + 1;
-+	unsigned int off = fifo->out & fifo->mask;
-+
-+	if (tail)
-+		*tail = off;
-+
-+	return min3(n, fifo->in - fifo->out, size - off);
-+}
-+EXPORT_SYMBOL(__kfifo_out_linear);
-+
- unsigned int __kfifo_out(struct __kfifo *fifo,
- 		void *buf, unsigned int len)
+-static int setup_sgl_buf(struct scatterlist *sgl, void *buf,
+-		int nents, unsigned int len)
++static unsigned int setup_sgl_buf(struct scatterlist *sgl, void *buf,
++				  int nents, unsigned int len)
  {
-@@ -473,6 +486,19 @@ unsigned int __kfifo_out_peek_r(struct __kfifo *fifo, void *buf,
+-	int n;
+-	unsigned int l;
+-	unsigned int off;
+-	struct page *page;
+-
+-	if (!nents)
++	if (!nents || !len)
+ 		return 0;
+ 
+-	if (!len)
+-		return 0;
++	sg_set_buf(sgl, buf, len);
+ 
+-	n = 0;
+-	page = virt_to_page(buf);
+-	off = offset_in_page(buf);
+-	l = 0;
+-
+-	while (len >= l + PAGE_SIZE - off) {
+-		struct page *npage;
+-
+-		l += PAGE_SIZE;
+-		buf += PAGE_SIZE;
+-		npage = virt_to_page(buf);
+-		if (page_to_phys(page) != page_to_phys(npage) - l) {
+-			sg_set_page(sgl, page, l - off, off);
+-			sgl = sg_next(sgl);
+-			if (++n == nents || sgl == NULL)
+-				return n;
+-			page = npage;
+-			len -= l - off;
+-			l = off = 0;
+-		}
+-	}
+-	sg_set_page(sgl, page, len, off);
+-	return n + 1;
++	return 1;
  }
- EXPORT_SYMBOL(__kfifo_out_peek_r);
  
-+unsigned int __kfifo_out_linear_r(struct __kfifo *fifo,
-+		unsigned int *tail, unsigned int n, size_t recsize)
-+{
-+	if (fifo->in == fifo->out)
-+		return 0;
-+
-+	if (tail)
-+		*tail = fifo->out + recsize;
-+
-+	return min(n, __kfifo_peek_n(fifo, recsize));
-+}
-+EXPORT_SYMBOL(__kfifo_out_linear_r);
-+
- unsigned int __kfifo_out_r(struct __kfifo *fifo, void *buf,
- 		unsigned int len, size_t recsize)
- {
+ static unsigned int setup_sgl(struct __kfifo *fifo, struct scatterlist *sgl,
 -- 
 2.44.0
 
