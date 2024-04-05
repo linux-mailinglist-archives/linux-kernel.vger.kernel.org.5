@@ -1,328 +1,225 @@
-Return-Path: <linux-kernel+bounces-133027-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 535BF899DAF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:57:02 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B18CE899DC6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:58:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE29F1F23E3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:57:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10615B250B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:58:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D703B16D327;
-	Fri,  5 Apr 2024 12:56:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DCC316D4C1;
+	Fri,  5 Apr 2024 12:57:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="nahZn9pQ"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="CuScxH63";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="lIt/rXpx"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1035716ABFA;
-	Fri,  5 Apr 2024 12:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712321804; cv=none; b=JanqzgDWPCYEfWykdmiXq8k5iD2mXgfl/cuIoEDimVwPoL0B0LNIks7FQaz5BiNo97N4Cr6wFTrRsUQ6Q+iKtYK2+BsrGO0dDHM//aGmAHAY80L1NWGjBr5DxWspVJ97QBRRZEpKzCd30CxSN9O46EBrQFoZbgRtMlep/F3BNjU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712321804; c=relaxed/simple;
-	bh=E94Vm2YqIHWCP3Ytx38QK62FpLjk4a891f9RaR8YcQY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jkY0MbfuTxD9RUSB9Gv9zOIBItM40bPtafkHqLdSWxNNZvlpoQt/6x6cBFxTzAmuSX+CSnDxs/xYO6gDDSRKnpyQ9jN/aFZ+zIu8fOhX2bWRn6mEffsFRsEtXr8FzkZN/UOhz5WOOZRScdTSlBGC6oDc42OV5psRU1eMKMYsddY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=nahZn9pQ; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id E35C98E1;
-	Fri,  5 Apr 2024 14:56:00 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1712321762;
-	bh=E94Vm2YqIHWCP3Ytx38QK62FpLjk4a891f9RaR8YcQY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=nahZn9pQcSG2rMxbKmzi8excYLWCq9MQ0YVNbGg2kiuPENPJ2ASvkfvcQTVlCzeH5
-	 ZIpCY/U9uDZ53+opAPQ+2RVznnNzqhfULY6huwoJxL+RyZeLeJj6BAqNpXkdokebDW
-	 LMWubw4NfMuRmE9JLufVDcQ0CYFBzA2vxhkTbzFM=
-Message-ID: <47947c68-8f1d-46a2-acb4-4ac008e5cb74@ideasonboard.com>
-Date: Fri, 5 Apr 2024 15:56:36 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE30D16D330;
+	Fri,  5 Apr 2024 12:57:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712321844; cv=fail; b=XK7P78tkV0pfVKwfW9ehwFZqv4Ufk9U8nzd4EQo+TTiFl0P/C0YfjcUwZgM9NAQLgv+kWvcSbpYyYpgnA7SuMyalhV5mLc+GpOu6W5FliR5uVEv7IChTjIYS/vNC+d37eDJyVmP2vtEmi1cmhxXfR6GseeuijPH5RHV8KB4mmtU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712321844; c=relaxed/simple;
+	bh=FU/BnchMuASO+z5u8yA6s6J/rqihDaE9RBbR2yi1DKg=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=IglAZdD76rAs6z6f1JM0WKkg4dv5+whabDiElJj1tHXi7xoLj7ADlw2GXtZvF6Qiu9OFppep9EGaVHtj1BrDmjAbZc/uefaPlB4c8F9gHIGLi6VrG/oZXl9EyLpnBsL8PTC9LEh53jnmvG7lczpZqzWa/qbooGBSDik9hUN9wcg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=CuScxH63; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=lIt/rXpx; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0333520.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4358Y0HT020026;
+	Fri, 5 Apr 2024 12:56:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=FU/BnchMuASO+z5u8yA6s6J/rqihDaE9RBbR2yi1DKg=;
+ b=CuScxH635eOORKcAR0yWh8IJRzKUBHBf9qW/VO8au1PFMKbxthR3GpQJ6AKFx+5mJskO
+ xRBt8wBCKxpD1zC7J9mFYJD//8Inlg6EzlW5F3tVIVbzchYyBH3vV88MQXvAWw1aIRa5
+ 83o4L4/y8M9bVIzXMvTeLC+9A+gSi4ohW26/hmTQyjT+J7CKnv2EjuH7uenPc7JZs8WU
+ hSIYbHerkvH+/L9PaEEPLS9ldma2hdbIrtCkw9yasREhv5jP0b1WlhYi4yOugXcwJZve
+ IQ3wvKCr3qPcHUeNBFjXcQqC3+CK4qCLKUjYV25o7cGA10K3nkBzg0iY+F6o5tvkuWr/ fg== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x9emvuf6g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 05 Apr 2024 12:56:41 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 435CHIWJ039255;
+	Fri, 5 Apr 2024 12:56:41 GMT
+Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2101.outbound.protection.outlook.com [104.47.55.101])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3x9emsjm7b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 05 Apr 2024 12:56:41 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iKEFi+24JA3iPpjbhDSbXHDUo8VguokEVYuHjyQNRlhxv5n1u79L2W3RFjdonbpEhfUF2B2owl1pIVjgUZ0iHWY6QPtKVzgmaRABjo5sFaBlyuGoK1K5XDWagO7/TlZyoSivKp1O8bGHjvTSHcBbccy4Hr52jIz5uB06DMw3MtCL0QvXob2KQ9MmSxKMhEIYp+t+N5Ecli4vc3F/AEv2xC14w6BdSUnKzoKQzUqkpr+fKseuN9demrnb79WoBRhN0h5wAKhOyjetQ1GttQiI1KGio59QTc3IohDqFmJd+bHKsrWUI0ADj/VflCR21/fDKhnl1A/qMZwLkZA2LTONUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FU/BnchMuASO+z5u8yA6s6J/rqihDaE9RBbR2yi1DKg=;
+ b=Z4AEJyjNiOdmf0mwld+3b9ECDjpJXziRS/zz7wCosQ2IvMq/4S6gX69dygSHcLwRl0LyVnatQaQHQ3KLmET6ECBuj0wfU/8EY9I7qU4yDyEDaqTIIJ8oALjEAkM0DnaeQ41Wd5QG/929qcEx//orocXO3f9aASA8fkJ1m2jB2aNQQ1DtiPutcfPXAIGKNS08wNBgWmgwCJhrtqxlXXyLBAsH9PDeKtgRhUCgcpn0Mvs+3aNBK3S9QQlbgcB2lMoe5Z7XJaGrkWfeLoQrYBw+TDsoUv/yXKa4MUa/78KNzB9Omj8LDVSo3yxUjI9Pvtj4s0HM4LfvXCjV52cQceQogA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FU/BnchMuASO+z5u8yA6s6J/rqihDaE9RBbR2yi1DKg=;
+ b=lIt/rXpxFf/7/l7K3uCfa75gA5aK/Wv10Z57Wj3ieU8xcs02+ENVeCmQg3hBs6747PdVEFzuES7xDHivQcUCRyk+tIL8VYUPKy3nZoBye4glS6xp/MsohTJ2er/QKPrNCVL3r8CbgCqa4aXsYpWiw0G9pqEUi9a49pvoOvI83Vw=
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com (2603:10b6:610:ac::13)
+ by DS0PR10MB6751.namprd10.prod.outlook.com (2603:10b6:8:136::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 5 Apr
+ 2024 12:56:37 +0000
+Received: from CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::6db5:3501:4d88:1532]) by CH2PR10MB4150.namprd10.prod.outlook.com
+ ([fe80::6db5:3501:4d88:1532%3]) with mapi id 15.20.7409.042; Fri, 5 Apr 2024
+ 12:56:37 +0000
+From: Eric Snowberg <eric.snowberg@oracle.com>
+To: Mimi Zohar <zohar@linux.ibm.com>
+CC: "open list:SECURITY SUBSYSTEM" <linux-security-module@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        Ard Biesheuvel
+	<ardb@kernel.org>, Jarkko Sakkinen <jarkko@kernel.org>,
+        Paul Moore
+	<paul@paul-moore.com>, James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn"
+	<serge@hallyn.com>,
+        Roberto Sassu <roberto.sassu@huawei.com>,
+        Dmitry Kasatkin
+	<dmitry.kasatkin@gmail.com>,
+        =?utf-8?B?TWlja2HDq2wgU2FsYcO8bg==?=
+	<mic@digikod.net>,
+        "casey@schaufler-ca.com" <casey@schaufler-ca.com>,
+        Stefan
+ Berger <stefanb@linux.ibm.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-efi@vger.kernel.org" <linux-efi@vger.kernel.org>,
+        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>
+Subject: Re: [PATCH RFC 1/8] certs: Introduce ability to link to a system key
+Thread-Topic: [PATCH RFC 1/8] certs: Introduce ability to link to a system key
+Thread-Index: AQHac8/Wy3kR1DBbWUSwLVt/DZ3pl7FY2n4AgADvOYA=
+Date: Fri, 5 Apr 2024 12:56:37 +0000
+Message-ID: <3F255143-C9FE-426E-AD6B-4B4EF7709ED5@oracle.com>
+References: <20240311161111.3268190-1-eric.snowberg@oracle.com>
+ <20240311161111.3268190-2-eric.snowberg@oracle.com>
+ <c3267eef03fd3e8bffe77c86debd9353627108c1.camel@linux.ibm.com>
+In-Reply-To: <c3267eef03fd3e8bffe77c86debd9353627108c1.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3774.500.171.1.1)
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CH2PR10MB4150:EE_|DS0PR10MB6751:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ R8FZMWs5yS+HPrj3W90TEgPUBbIIP+txj8MnQpCjBlm+b8PUs++hKriYQ2aTGLEaytjnWGKety5DEqSApVdKsiPOsPFyvTTqkkDDbBqgyIasFVCs8ZNjEYyibLhuIBeZ64a/MpMCRMJLHlFsBo33dQjUJ5OHyp8yAkaxX/gkMUzLGCoMLnQJJt2CnZQFU7nAKzVCs+5JQMLNhk2oPW3foEddcPpDEzR2N0OJhUUmI+FLO/dq83ump5BbQr+bFQR/bHuySNUR9R8dOIf9if9g3tvo1foUy3lxLj5KbDp1WUJTO6GY8RTkyltAQUYWTbV6BxSHltW60ZDP8fmjYMeevsogSMTsdDpijA5bQ5HxoFQdrsOAuxirD6ZW/WRlKxUoFFoGkSYIEUuKLBEp9csca1zyMEfK12pjT6/zgVdLP42Q4ToHu3AMrvtbuYDb5wKIRCf/HThngz97fE+B78gNoFLdJAXjhyzihHgLafCS/GXgONNaF8w6+dUQhPudl+lvW+DmQ5S2HwzwEqpRmnMKzc9Gbu+VqDsMQXqY+ejL7NPehDPz10gSA30L4WiK0+N3xmj7td9jOaNRZgrR/w+tuFV/2cp26+1wkyMyUKin53TPDEpD3YjC3makNhmz7NR/Dt5Aks9DwDgS9GN9EGmFk9i78hQr9XCkSF406yRjzu4=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4150.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?Y1BEWGdTcHNhV1Q0ZDc0clZ6VGhyNGIvVUl3S3RtRjdLdzFHZzVoQmF1NEdH?=
+ =?utf-8?B?d2JIY1NlamV2eEx0anZwUjY5aHp1eGxsT3hZOFQwd0JVWkMzeXRlQTdaMUFZ?=
+ =?utf-8?B?WVN4SkhvR0VDTWJKRG5NTW5tRUtQbE5NdzdRS0dtaEFSRWV2Q2lJNXROVGtC?=
+ =?utf-8?B?ZFpkSVBnZS96ZFNQdFQzTUh0OCswQ2dQRDNzYWlpbUwxdG40M3Z2aDNXS1F4?=
+ =?utf-8?B?QW0xdm1KcWZVU3FOQko2WHpvNVZ6ZUF2Qk5DTkpDdVlNRVBRTjJuS091c0Qv?=
+ =?utf-8?B?R3QrRkNnWXVpdU1paGpXdkdEd3NmSm1JQWF0V05hK2dzOFhSRXJjekFac09r?=
+ =?utf-8?B?SjV3QXNRaGdSQzRNaUQvQjI4VHdWSHpVNENmSDBteGZ3OG9jT3pxOUwzSDJj?=
+ =?utf-8?B?T3RsWnQyM3l6TC92cUx0bVg4UmpXeWF0MWJrZTBpSmZpVVIwMFNBZGMzU3h3?=
+ =?utf-8?B?dzdFN1ZTaUR2T2tpbWRGdHZyMEtvZkROUWIzY2lTbUFqdUZ3VnJsYzN6ZTJX?=
+ =?utf-8?B?bitJeG90VXRuMGNLa3VqM0xidkR5ZzhsWW5kQUcrNWlmMU5HYVhFWG8vOFEz?=
+ =?utf-8?B?WHVQTWVzVDdNcDFKOUxWOFBNaGdteW1QOVVxMWF0Rnc3SFczeGF4YkpBSXV2?=
+ =?utf-8?B?cDZ5NlF1QkpIbE9OM0V1WEpvMjVIOHZBVCt1K1JnQUdDZ3BqelVrTlJQVEd3?=
+ =?utf-8?B?MlluVnJMMkgrNHdXYy9oR2xRVjlEbFBoWmEyVjB0Y1RZWGxFNUVlRXZPRDY0?=
+ =?utf-8?B?THNiK1R4c0VFZWNmaUVjdExuWFhWQk5WT1AwT0Y2K2lqem54MGRldHcvbzdz?=
+ =?utf-8?B?WitCbEJJb1ljd3VEM3Vwa2QwL3F0dlYxMzNjcGpvNko4NjBZTjhieFl1RDZV?=
+ =?utf-8?B?UEpIZGcwLzhTdzJsb215RmFtd1F1RENScXZXM3I4TDBiWFArbFNHR1U5Z0dt?=
+ =?utf-8?B?MHM3ZTh1a0Zyb01Nck92bGUyOEU2dDhtQ2p6ZHRZSFpTaWlhYkFCRXRhTHp2?=
+ =?utf-8?B?dHpuaHZxZmpabElUVjVVcHlPbHJNM0cvcHhDTm5ROW1za0pDSnlDdk1EcnNj?=
+ =?utf-8?B?UE5pTmpjZ0lIODRRU2NNR2lQUUNXS25OTXpqVE5FTjh3anlYV2pKSU04VTVi?=
+ =?utf-8?B?QjVsR2o0d0RjWXJuN1o4QnQ3MS9Rci8zaTJONGRkRnZ1eUl2c240UXB3aHFD?=
+ =?utf-8?B?Q1NCb1IzMy9hdXc5YlZvUHlHTWRzQ25SZ3krQURLRE5rSUN4L3NhMWRVRSti?=
+ =?utf-8?B?Z1ErUFJzWGwzZkpsMjJadkJ2Z3RPZFdSQ3BwcitrVzAvTUNZbEcrRHZTWEJP?=
+ =?utf-8?B?b3prcnI2RVkzU2ZqK0dUSENxRXJnV1Vub2RRbnFvalRLY1NkbUYxYWVBeHc2?=
+ =?utf-8?B?ajI4cms4eHE4MC9tMHE5OFU4elZYRGJ2a0hyZ2ZESGJWMjVYeGJVSmdnMXpN?=
+ =?utf-8?B?NEVKODFvS2lQWUxNWFNjVzJqNnpuQXRuMTdOR3FHVDNnZzN5RkFWRStpcFY3?=
+ =?utf-8?B?K0JQMjdkaEFMRXQwWXdMN1VocjdWVXI1ZWNQUjdkYW1EMjlURGZxeTFHOEtC?=
+ =?utf-8?B?WUVLZzdodmdBU0xQL1NrMHFGQi81N1ErUlFRNndUakgxZ1hPTVpmb09sNTYv?=
+ =?utf-8?B?V3N2MCtPQXAySGQ0d0w5bFJ0ZC90ZERyV0xCMWR0UVM2SVc1MTJHb0dZR0JZ?=
+ =?utf-8?B?Yk1IR0RqdFluREdqbFJRZmZtSzJlZ2lEMmRkZTVkZUtFakFUMVZyUThZSG15?=
+ =?utf-8?B?aGxzUGlYWU9XVkVwempsQVA0YjNoNjZyNlN2RlljWmgrelJMekp6Mnp1UDRj?=
+ =?utf-8?B?OXRjVUhqV1IyNTZDT3pTaEtad25yL2pEYnBkOXpwUmhRU3NTTnRmQjM5dmY2?=
+ =?utf-8?B?YkRMaHJTRlB5SXRwREhBbHRsM0JDQ3Y1VWdlQkFJTnpDY1hxNlZBcFBOS1g3?=
+ =?utf-8?B?ZHc4TEFSNXRTWitIMTFYL1BJb05VcjAwSVJweHV6UnhOemQzRVk0WUFxZnpD?=
+ =?utf-8?B?ZmZEM01RNTJseWthLzNWb1lEcTdJdVVkYkN2cWlYVmkrRjVVdmFVT0ZKSHdQ?=
+ =?utf-8?B?aU1aczd1dVduOHJUeVZ3cENHamhUTUtSVWRoNFV1YVJxVThuUDdBcVdOVzI4?=
+ =?utf-8?B?VkJPaXgraW01N2NWeDJmNG0zRWdMaVh5bFY3NVlrM2YxVE5QVXRrU1ZyNFJ4?=
+ =?utf-8?B?bHc9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <B91E732E93E24941811A1E9D65DD61AC@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 6/9] drm: xlnx: zynqmp_dpsub: Set input live format
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Cc: dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-media@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Michal Simek <michal.simek@amd.com>, Andrzej Hajda
- <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>,
- Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
- <20240321-dp-live-fmt-v3-6-d5090d796b7e@amd.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Content-Language: en-US
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- xsFNBE6ms0cBEACyizowecZqXfMZtnBniOieTuFdErHAUyxVgtmr0f5ZfIi9Z4l+uUN4Zdw2
- wCEZjx3o0Z34diXBaMRJ3rAk9yB90UJAnLtb8A97Oq64DskLF81GCYB2P1i0qrG7UjpASgCA
- Ru0lVvxsWyIwSfoYoLrazbT1wkWRs8YBkkXQFfL7Mn3ZMoGPcpfwYH9O7bV1NslbmyJzRCMO
- eYV258gjCcwYlrkyIratlHCek4GrwV8Z9NQcjD5iLzrONjfafrWPwj6yn2RlL0mQEwt1lOvn
- LnI7QRtB3zxA3yB+FLsT1hx0va6xCHpX3QO2gBsyHCyVafFMrg3c/7IIWkDLngJxFgz6DLiA
- G4ld1QK/jsYqfP2GIMH1mFdjY+iagG4DqOsjip479HCWAptpNxSOCL6z3qxCU8MCz8iNOtZk
- DYXQWVscM5qgYSn+fmMM2qN+eoWlnCGVURZZLDjg387S2E1jT/dNTOsM/IqQj+ZROUZuRcF7
- 0RTtuU5q1HnbRNwy+23xeoSGuwmLQ2UsUk7Q5CnrjYfiPo3wHze8avK95JBoSd+WIRmV3uoO
- rXCoYOIRlDhg9XJTrbnQ3Ot5zOa0Y9c4IpyAlut6mDtxtKXr4+8OzjSVFww7tIwadTK3wDQv
- Bus4jxHjS6dz1g2ypT65qnHen6mUUH63lhzewqO9peAHJ0SLrQARAQABzTBUb21pIFZhbGtl
- aW5lbiA8dG9taS52YWxrZWluZW5AaWRlYXNvbmJvYXJkLmNvbT7CwY4EEwEIADgWIQTEOAw+
- ll79gQef86f6PaqMvJYe9QUCX/HruAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRD6
- PaqMvJYe9WmFD/99NGoD5lBJhlFDHMZvO+Op8vCwnIRZdTsyrtGl72rVh9xRfcSgYPZUvBuT
- VDxE53mY9HaZyu1eGMccYRBaTLJSfCXl/g317CrMNdY0k40b9YeIX10feiRYEWoDIPQ3tMmA
- 0nHDygzcnuPiPT68JYZ6tUOvAt7r6OX/litM+m2/E9mtp8xCoWOo/kYO4mOAIoMNvLB8vufi
- uBB4e/AvAjtny4ScuNV5c5q8MkfNIiOyag9QCiQ/JfoAqzXRjVb4VZG72AKaElwipiKCWEcU
- R4+Bu5Qbaxj7Cd36M/bI54OrbWWETJkVVSV1i0tghCd6HHyquTdFl7wYcz6cL1hn/6byVnD+
- sR3BLvSBHYp8WSwv0TCuf6tLiNgHAO1hWiQ1pOoXyMEsxZlgPXT+wb4dbNVunckwqFjGxRbl
- Rz7apFT/ZRwbazEzEzNyrBOfB55xdipG/2+SmFn0oMFqFOBEszXLQVslh64lI0CMJm2OYYe3
- PxHqYaztyeXsx13Bfnq9+bUynAQ4uW1P5DJ3OIRZWKmbQd/Me3Fq6TU57LsvwRgE0Le9PFQs
- dcP2071rMTpqTUteEgODJS4VDf4lXJfY91u32BJkiqM7/62Cqatcz5UWWHq5xeF03MIUTqdE
- qHWk3RJEoWHWQRzQfcx6Fn2fDAUKhAddvoopfcjAHfpAWJ+ENc7BTQROprNHARAAx0aat8GU
- hsusCLc4MIxOQwidecCTRc9Dz/7U2goUwhw2O5j9TPqLtp57VITmHILnvZf6q3QAho2QMQyE
- DDvHubrdtEoqaaSKxKkFie1uhWNNvXPhwkKLYieyL9m2JdU+b88HaDnpzdyTTR4uH7wk0bBa
- KbTSgIFDDe5lXInypewPO30TmYNkFSexnnM3n1PBCqiJXsJahE4ZQ+WnV5FbPUj8T2zXS2xk
- 0LZ0+DwKmZ0ZDovvdEWRWrz3UzJ8DLHb7blPpGhmqj3ANXQXC7mb9qJ6J/VSl61GbxIO2Dwb
- xPNkHk8fwnxlUBCOyBti/uD2uSTgKHNdabhVm2dgFNVuS1y3bBHbI/qjC3J7rWE0WiaHWEqy
- UVPk8rsph4rqITsj2RiY70vEW0SKePrChvET7D8P1UPqmveBNNtSS7In+DdZ5kUqLV7rJnM9
- /4cwy+uZUt8cuCZlcA5u8IsBCNJudxEqBG10GHg1B6h1RZIz9Q9XfiBdaqa5+CjyFs8ua01c
- 9HmyfkuhXG2OLjfQuK+Ygd56mV3lq0aFdwbaX16DG22c6flkkBSjyWXYepFtHz9KsBS0DaZb
- 4IkLmZwEXpZcIOQjQ71fqlpiXkXSIaQ6YMEs8WjBbpP81h7QxWIfWtp+VnwNGc6nq5IQDESH
- mvQcsFS7d3eGVI6eyjCFdcAO8eMAEQEAAcLBXwQYAQIACQUCTqazRwIbDAAKCRD6PaqMvJYe
- 9fA7EACS6exUedsBKmt4pT7nqXBcRsqm6YzT6DeCM8PWMTeaVGHiR4TnNFiT3otD5UpYQI7S
- suYxoTdHrrrBzdlKe5rUWpzoZkVK6p0s9OIvGzLT0lrb0HC9iNDWT3JgpYDnk4Z2mFi6tTbq
- xKMtpVFRA6FjviGDRsfkfoURZI51nf2RSAk/A8BEDDZ7lgJHskYoklSpwyrXhkp9FHGMaYII
- m9EKuUTX9JPDG2FTthCBrdsgWYPdJQvM+zscq09vFMQ9Fykbx5N8z/oFEUy3ACyPqW2oyfvU
- CH5WDpWBG0s5BALp1gBJPytIAd/pY/5ZdNoi0Cx3+Z7jaBFEyYJdWy1hGddpkgnMjyOfLI7B
- CFrdecTZbR5upjNSDvQ7RG85SnpYJTIin+SAUazAeA2nS6gTZzumgtdw8XmVXZwdBfF+ICof
- 92UkbYcYNbzWO/GHgsNT1WnM4sa9lwCSWH8Fw1o/3bX1VVPEsnESOfxkNdu+gAF5S6+I6n3a
- ueeIlwJl5CpT5l8RpoZXEOVtXYn8zzOJ7oGZYINRV9Pf8qKGLf3Dft7zKBP832I3PQjeok7F
- yjt+9S+KgSFSHP3Pa4E7lsSdWhSlHYNdG/czhoUkSCN09C0rEK93wxACx3vtxPLjXu6RptBw
- 3dRq7n+mQChEB1am0BueV1JZaBboIL0AGlSJkm23kw==
-In-Reply-To: <20240321-dp-live-fmt-v3-6-d5090d796b7e@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	53HPwlfEJW+8M7Uct/IZVK/TSEu1I57tZF3Bv/1bELksUIhkJTA+eNsaLTDCHPYHsKleJarEz4UMTPF4oZjYmaPdSxjBIIOuqqsctOYzoOambTzMVkC1JA7+ls5H55VbmXUpXe3mzN5rxG04IlFOcIM0ievEynK0nxmGZ9OpBvrYjPa9DEf0+qKTQEKhJEZKH2jF1MalT9NosDp/Z+T0YUV09Z8zadtBt933klvcwRTjup1ghJ5bkuilzdcP81V6lIkEUPAYTJu7pe4Ss2LjLoTuy6APJijd708irlhM80uEuV34+zI4100I6vXR/DyAl5v83ApfBNPDioypzFOWHUkNR85vhH8kDT8kKaZMd9SuNwdUdyGzGMU5ZNmhSYlsVKesrrbmwqS09CJcGNIraf8gBbKIuLbdwRTCqtTJTrvo7zLJ8V0T7kK3M22lUW3/SCGF1jJnMwD9cWX9qTXQsREMbMifwhvMeCpAGJdhQfUEYmB60bQKveTNviaqR0+gous39UNqgmSH4N7SrpTuYj/nVaoO64XjyyrP8njRdOthfA746wfnznodiv0sGSoOyz0Ok9iVFkWk9Ep3csFd5Ky14oCbdRWI0RQM/v6Isng=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR10MB4150.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7d7ac4d4-387d-43f5-b946-08dc556fd48c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2024 12:56:37.5322
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: c+eQmMh/qm59LFl5bBYp+FcgAM3rKySoofVkQfLaO6nOEcwuxpKaD4p4XAZC6EmQT9QuI3CvncKmBLy1+rB6pgqBS5+Lk18YN1edsU+lIZ4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR10MB6751
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_10,2024-04-05_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ suspectscore=0 malwarescore=0 phishscore=0 bulkscore=0 adultscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2404010000 definitions=main-2404050093
+X-Proofpoint-GUID: fNWCtzfyO2oUjIuAYP7Y-12V3yZiihty
+X-Proofpoint-ORIG-GUID: fNWCtzfyO2oUjIuAYP7Y-12V3yZiihty
 
-On 21/03/2024 22:43, Anatoliy Klymenko wrote:
-> Program live video input format according to selected media bus format.
-> 
-> In the bridge mode of operation, DPSUB is connected to FPGA CRTC which
-> almost certainly supports a single media bus format as its output. Expect
-> this to be delivered via the new bridge atomic state. Program DPSUB
-> registers accordingly. Update zynqmp_disp_layer_set_format() API to fit
-> both live and non-live layer types.
-> 
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-> ---
->   drivers/gpu/drm/xlnx/zynqmp_disp.c | 66 +++++++++++++++++++++++++-------------
->   drivers/gpu/drm/xlnx/zynqmp_disp.h |  2 +-
->   drivers/gpu/drm/xlnx/zynqmp_dp.c   | 13 +++++---
->   drivers/gpu/drm/xlnx/zynqmp_kms.c  |  2 +-
->   4 files changed, 55 insertions(+), 28 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> index 0c2b3f4bffa6..a385d22d428e 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -436,19 +436,28 @@ static void zynqmp_disp_avbuf_set_format(struct zynqmp_disp *disp,
->   					 const struct zynqmp_disp_format *fmt)
->   {
->   	unsigned int i;
-> -	u32 val;
-> +	u32 val, reg;
->   
-> -	val = zynqmp_disp_avbuf_read(disp, ZYNQMP_DISP_AV_BUF_FMT);
-> -	val &= zynqmp_disp_layer_is_video(layer)
-> -	    ? ~ZYNQMP_DISP_AV_BUF_FMT_NL_VID_MASK
-> -	    : ~ZYNQMP_DISP_AV_BUF_FMT_NL_GFX_MASK;
-> -	val |= fmt->buf_fmt;
-> -	zynqmp_disp_avbuf_write(disp, ZYNQMP_DISP_AV_BUF_FMT, val);
-> +	layer->disp_fmt = fmt;
-> +	if (layer->mode == ZYNQMP_DPSUB_LAYER_NONLIVE) {
-> +		reg = ZYNQMP_DISP_AV_BUF_FMT;
-> +		val = zynqmp_disp_avbuf_read(disp, ZYNQMP_DISP_AV_BUF_FMT);
-> +		val &= zynqmp_disp_layer_is_video(layer)
-> +		    ? ~ZYNQMP_DISP_AV_BUF_FMT_NL_VID_MASK
-> +		    : ~ZYNQMP_DISP_AV_BUF_FMT_NL_GFX_MASK;
-> +		val |= fmt->buf_fmt;
-> +	} else {
-> +		reg = zynqmp_disp_layer_is_video(layer)
-> +		    ? ZYNQMP_DISP_AV_BUF_LIVE_VID_CONFIG
-> +		    : ZYNQMP_DISP_AV_BUF_LIVE_GFX_CONFIG;
-> +		val = fmt->buf_fmt;
-> +	}
-> +	zynqmp_disp_avbuf_write(disp, reg, val);
-
-Just write the registers inside the above if-else blocks.
-
->   
->   	for (i = 0; i < ZYNQMP_DISP_AV_BUF_NUM_SF; i++) {
-> -		unsigned int reg = zynqmp_disp_layer_is_video(layer)
-> -				 ? ZYNQMP_DISP_AV_BUF_VID_COMP_SF(i)
-> -				 : ZYNQMP_DISP_AV_BUF_GFX_COMP_SF(i);
-> +		reg = zynqmp_disp_layer_is_video(layer)
-> +		    ? ZYNQMP_DISP_AV_BUF_VID_COMP_SF(i)
-> +		    : ZYNQMP_DISP_AV_BUF_GFX_COMP_SF(i);
->   
->   		zynqmp_disp_avbuf_write(disp, reg, fmt->sf[i]);
->   	}
-> @@ -902,25 +911,33 @@ static void zynqmp_disp_audio_disable(struct zynqmp_disp *disp)
->    */
->   
->   /**
-> - * zynqmp_disp_layer_find_format - Find format information for a DRM format
-> + * zynqmp_disp_layer_find_format - Find format information for a DRM or media
-> + * bus format
->    * @layer: The layer
-> - * @drm_fmt: DRM format to search
-> + * @drm_or_bus_format: DRM or media bus format
->    *
->    * Search display subsystem format information corresponding to the given DRM
-> - * format @drm_fmt for the @layer, and return a pointer to the format
-> - * descriptor.
-> + * or media bus format @drm_or_bus_format for the @layer, and return a pointer
-> + * to the format descriptor. Search key choice depends on @layer mode, for live
-> + * layers search is done by zynqmp_disp_format.bus_fmt, and for non-live layers
-> + * zynqmp_disp_format.drm_fmt is used.
-
-Here also I recommend creating separate funcs for the fourcc and mbus 
-versions. They are different types, even if they happen to fit into u32.
-
->    *
->    * Return: A pointer to the format descriptor if found, NULL otherwise
->    */
->   static const struct zynqmp_disp_format *
->   zynqmp_disp_layer_find_format(struct zynqmp_disp_layer *layer,
-> -			      u32 drm_fmt)
-> +			      u32 drm_or_bus_format)
->   {
->   	unsigned int i;
-> +	const struct zynqmp_disp_format *disp_format;
->   
->   	for (i = 0; i < layer->info->num_formats; i++) {
-> -		if (layer->info->formats[i].drm_fmt == drm_fmt)
-> -			return &layer->info->formats[i];
-> +		disp_format = &layer->info->formats[i];
-> +		if ((layer->mode == ZYNQMP_DPSUB_LAYER_LIVE &&
-> +		     disp_format->bus_fmt == drm_or_bus_format) ||
-> +		    (layer->mode == ZYNQMP_DPSUB_LAYER_NONLIVE &&
-> +		     disp_format->drm_fmt == drm_or_bus_format))
-> +			return disp_format;
->   	}
->   
->   	return NULL;
-> @@ -992,20 +1009,25 @@ void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer)
->   /**
->    * zynqmp_disp_layer_set_format - Set the layer format
->    * @layer: The layer
-> - * @info: The format info
-> + * @drm_or_bus_format: DRM or media bus format
->    *
->    * Set the format for @layer to @info. The layer must be disabled.
->    */
->   void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
-> -				  const struct drm_format_info *info)
-> +				  u32 drm_or_bus_format)
-
-And here, with a quick look, a separate function would be fine.
-
-  Tomi
-
->   {
->   	unsigned int i;
->   
-> -	layer->disp_fmt = zynqmp_disp_layer_find_format(layer, info->format);
-> -	layer->drm_fmt = info;
-> +	layer->disp_fmt = zynqmp_disp_layer_find_format(layer, drm_or_bus_format);
-> +	if (WARN_ON(!layer->disp_fmt))
-> +		return;
->   
->   	zynqmp_disp_avbuf_set_format(layer->disp, layer, layer->disp_fmt);
->   
-> +	layer->drm_fmt = drm_format_info(layer->disp_fmt->drm_fmt);
-> +	if (!layer->drm_fmt)
-> +		return;
-> +
->   	if (layer->mode == ZYNQMP_DPSUB_LAYER_LIVE)
->   		return;
->   
-> @@ -1013,7 +1035,7 @@ void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
->   	 * Set pconfig for each DMA channel to indicate they're part of a
->   	 * video group.
->   	 */
-> -	for (i = 0; i < info->num_planes; i++) {
-> +	for (i = 0; i < layer->drm_fmt->num_planes; i++) {
->   		struct zynqmp_disp_layer_dma *dma = &layer->dmas[i];
->   		struct xilinx_dpdma_peripheral_config pconfig = {
->   			.video_group = true,
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.h b/drivers/gpu/drm/xlnx/zynqmp_disp.h
-> index 88c285a12e23..9f9a5f50ffbc 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.h
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.h
-> @@ -55,7 +55,7 @@ u32 *zynqmp_disp_layer_formats(struct zynqmp_disp_layer *layer,
->   void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer);
->   void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer);
->   void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
-> -				  const struct drm_format_info *info);
-> +				  u32 drm_or_bus_format);
->   int zynqmp_disp_layer_update(struct zynqmp_disp_layer *layer,
->   			     struct drm_plane_state *state);
->   
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index e3b9eb3d9273..200e63636006 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -1299,15 +1299,20 @@ static void zynqmp_dp_disp_enable(struct zynqmp_dp *dp,
->   				  struct drm_bridge_state *old_bridge_state)
->   {
->   	struct zynqmp_disp_layer *layer;
-> -	const struct drm_format_info *info;
-> +	struct drm_bridge_state *bridge_state;
-> +	u32 bus_fmt;
->   
->   	layer = zynqmp_dp_disp_connected_live_layer(dp);
->   	if (!layer)
->   		return;
->   
-> -	/* TODO: Make the format configurable. */
-> -	info = drm_format_info(DRM_FORMAT_YUV422);
-> -	zynqmp_disp_layer_set_format(layer, info);
-> +	bridge_state = drm_atomic_get_new_bridge_state(old_bridge_state->base.state,
-> +						       old_bridge_state->bridge);
-> +	if (WARN_ON(!bridge_state))
-> +		return;
-> +
-> +	bus_fmt = bridge_state->input_bus_cfg.format;
-> +	zynqmp_disp_layer_set_format(layer, bus_fmt);
->   	zynqmp_disp_layer_enable(layer);
->   
->   	if (layer == dp->dpsub->layers[ZYNQMP_DPSUB_LAYER_GFX])
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_kms.c b/drivers/gpu/drm/xlnx/zynqmp_kms.c
-> index bf9fba01df0e..d96b3f3f2e3a 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_kms.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_kms.c
-> @@ -111,7 +111,7 @@ static void zynqmp_dpsub_plane_atomic_update(struct drm_plane *plane,
->   		if (old_state->fb)
->   			zynqmp_disp_layer_disable(layer);
->   
-> -		zynqmp_disp_layer_set_format(layer, new_state->fb->format);
-> +		zynqmp_disp_layer_set_format(layer, new_state->fb->format->format);
->   	}
->   
->   	zynqmp_disp_layer_update(layer, new_state);
-> 
-
+DQoNCj4gT24gQXByIDQsIDIwMjQsIGF0IDQ6NDDigK9QTSwgTWltaSBab2hhciA8em9oYXJAbGlu
+dXguaWJtLmNvbT4gd3JvdGU6DQo+IA0KPiBIaSBFcmljLA0KPiANCj4+IGRpZmYgLS1naXQgYS9j
+ZXJ0cy9zeXN0ZW1fa2V5cmluZy5jIGIvY2VydHMvc3lzdGVtX2tleXJpbmcuYw0KPj4gaW5kZXgg
+OWRlNjEwYmYxZjRiLi5iNjQ3YmU0OWY2ZTAgMTAwNjQ0DQo+PiAtLS0gYS9jZXJ0cy9zeXN0ZW1f
+a2V5cmluZy5jDQo+PiArKysgYi9jZXJ0cy9zeXN0ZW1fa2V5cmluZy5jDQo+PiBAQCAtNDI2LDMg
+KzQyNiwzMiBAQCB2b2lkIF9faW5pdCBzZXRfcGxhdGZvcm1fdHJ1c3RlZF9rZXlzKHN0cnVjdCBr
+ZXkNCj4+ICprZXlyaW5nKQ0KPj4gcGxhdGZvcm1fdHJ1c3RlZF9rZXlzID0ga2V5cmluZzsNCj4+
+IH0NCj4+ICNlbmRpZg0KPj4gKw0KPj4gKy8qKg0KPj4gKyAqIHN5c3RlbV9rZXlfbGluayAtIExp
+bmsgdG8gYSBzeXN0ZW0ga2V5DQo+PiArICogQGtleXJpbmc6IFRoZSBrZXlyaW5nIHRvIGxpbmsg
+aW50bw0KPj4gKyAqIEBpZDogVGhlIGFzeW1tZXRyaWMga2V5IGlkIHRvIGxvb2sgZm9yIGluIHRo
+ZSBzeXN0ZW0ga2V5cmluZw0KPj4gKyAqLw0KPj4gK2ludCBzeXN0ZW1fa2V5X2xpbmsoc3RydWN0
+IGtleSAqa2V5cmluZywgc3RydWN0IGFzeW1tZXRyaWNfa2V5X2lkICppZCkNCj4+ICt7DQo+PiAr
+IHN0cnVjdCBrZXkgKnRrZXk7DQo+PiArDQo+PiArI2lmZGVmIENPTkZJR19TRUNPTkRBUllfVFJV
+U1RFRF9LRVlSSU5HDQo+PiArIHRrZXkgPSBmaW5kX2FzeW1tZXRyaWNfa2V5KHNlY29uZGFyeV90
+cnVzdGVkX2tleXMsIGlkLCBOVUxMLCBOVUxMLA0KPj4gZmFsc2UpOw0KPj4gKyNlbHNlDQo+PiAr
+IHRrZXkgPSBmaW5kX2FzeW1tZXRyaWNfa2V5KGJ1aWx0aW5fdHJ1c3RlZF9rZXlzLCBpZCwgTlVM
+TCwgTlVMTCwgZmFsc2UpOw0KPj4gKyNlbmRpZg0KPj4gKyBpZiAoIUlTX0VSUih0a2V5KSkNCj4+
+ICsgZ290byBmb3VuZDsNCj4+ICsNCj4+ICsgdGtleSA9IGZpbmRfYXN5bW1ldHJpY19rZXkocGxh
+dGZvcm1fdHJ1c3RlZF9rZXlzLCBpZCwgTlVMTCwgTlVMTCwNCj4+IGZhbHNlKTsNCj4+ICsNCj4+
+ICsgaWYgKCFJU19FUlIodGtleSkpDQo+PiArIGdvdG8gZm91bmQ7DQo+PiArDQo+PiArIHJldHVy
+biAtMTsNCj4gDQo+IE5vcm1hbGx5ICJnb3RvIiBpcyBmb3IgdGhlIGVycm9yLiAgSW52ZXJ0IHRo
+ZSBsb2dpYy4gDQoNCk9rLCBJJ2xsIGNoYW5nZSB0aGF0IGluIHRoZSBuZXh0IHZlcnNpb24uICBU
+aGFua3MuDQoNCg==
 
