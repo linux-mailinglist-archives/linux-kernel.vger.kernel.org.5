@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-133351-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133352-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6315589A2B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D06B289A2B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:41:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D06A01F24D9A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:41:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 451861F2498A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77887171091;
-	Fri,  5 Apr 2024 16:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3426E171677;
+	Fri,  5 Apr 2024 16:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jGU+hHFJ"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mZKuNskC"
+Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1C116EC0B;
-	Fri,  5 Apr 2024 16:41:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A282317164A;
+	Fri,  5 Apr 2024 16:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712335290; cv=none; b=diqO3saWeZDqmp12pxi4WfwdS/HfrHgZG6TKAsFcFWP+7639fsfl88vEFJj9PJkj2fdP4u82ESrFvwi4ETKZBp3noPEzO2v0W/q+j30ajmlqD7QnWvA31faEVaMJF4xB5xpZkZP1RrKVbze181mXLRYCg5Melxv1oEYMAkx0vxc=
+	t=1712335293; cv=none; b=SGRPyreOQIPllF44T5qCf6AVA3WuO3c74CYCkSLO6V+UEDqIwVmesUMJahU/rs+fQWHurTR3ozwib9Z61+vyiAYQP5VR/mzv0/JPyF8NPYYGPsx1EFOtsHyZYuf9WiMbv9ieeGHGfRUfqfZ+d8gp5ElXUqBHIPMLaxCDyDaXGuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712335290; c=relaxed/simple;
-	bh=BsbDTRXO5rbQuNOOWWDuZ228ZxNjfhgUzzAGBm8miTQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tgjERCoCmVQ/2SgQbhV1Nirhri4Ot5entf8Ph/19KA6iIiGPeZBdVnX5bf21xYpvO3gAKJxQMzDF5XnMkpeqH8ZQxPsYmTx9iMxVuH5JK+gk0cxPU35+nXw0B+iQw0cn1OXCVb494gT2xUFe6OPKvPtKjk75NkzRnPJ1Kiz/xzI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jGU+hHFJ; arc=none smtp.client-ip=209.85.208.176
+	s=arc-20240116; t=1712335293; c=relaxed/simple;
+	bh=qkH1n2ZJ4QVAdDXQQaJsqr3HhVev4kuqL3wJZVBjiJQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=TMcQYG1puMJHfaeN31TTe5PoEEMfqZ3jm54b0e61ZRhobGc0Zz+42WXflFOkdEtD7CmjjR5IX7SpXheQckpFVOwhYmKa7jbrG9/QcWdGGhwRETtVI4ltEJ05cQaqjrW6vaFu8hWHKbTzGnMWq3gX++275wIX1giXFjxlDEZ4gsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mZKuNskC; arc=none smtp.client-ip=209.85.208.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d68c6a4630so28173561fa.3;
-        Fri, 05 Apr 2024 09:41:28 -0700 (PDT)
+Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d68651e253so28064781fa.0;
+        Fri, 05 Apr 2024 09:41:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712335287; x=1712940087; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NLH/m+uT1QUdmDjnPqveVob8tvdRYsduJkgPdtTo/TA=;
-        b=jGU+hHFJouuZ2Xt4G0SUChoQb7QvZvdRrBB+Rq/0dayqTvfY/kFsVP97R0bTN/id7V
-         HzUknK17jX4A/mx0SzvZE9BqlizOmU9WQiq9miUIA7XbcPkeUaSfiPxzdVej4Nf+onK4
-         gYooFWvPGH0aBlLN6Z534JbigfYq1fDg0TrtnYiR0UU3LZF2tnmVC5dnSQ4Tf9i/OALt
-         2qkRlwCrSKcHSHaBQ1vnDY1Dz1eb3TvbeFF5NiHNXlLXDp4eMPpZ2e30hYefULDfj7Ib
-         GY0/3mKm84bhieg66oo3lYjycf0wtFSgeWvYIHy8m3ZYrx/mvbJ3iZGUQLo4BhA/s252
-         mJXg==
+        d=gmail.com; s=20230601; t=1712335290; x=1712940090; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N6AIAxCJz2R5rlggcf2OWr2A/Jt7N68nXNuioW63cJo=;
+        b=mZKuNskCabOm3Lpu+LHcn9JH+i9huakKae4vdZuA7GH3o8lqRcy7QvAeBtzbE7W43x
+         gUUJLx0Gvvi7alAulflhEWU27hcHbbxQ1toGxMyDHESrJz6ZqMdsPzC2Fak6P64fkp2l
+         7g1p9XHmlqkVDMqYrsoMCrUwcDiXq/RY8HjinaRCu+fa4W8rMw4zC2Vff63wSEWtWGuV
+         vbDyj8LkFkMgBoelJhgMwO+YgAUzUgweYQWfg0i8FVwVN6qFspVRQpFg0HhcNTxB/sRi
+         ivGNFD1gQi6hl8qlDaO9P3gvnvfLSuZ85U6fLpLds7ITlFmq9XqTsCScfRpKJmdCoGAR
+         xYGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712335287; x=1712940087;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NLH/m+uT1QUdmDjnPqveVob8tvdRYsduJkgPdtTo/TA=;
-        b=DaByVdO9h5aONEiew5grHdFjp8h9d3I6yFWTZof1Vh/gNXzGlIVeD4c9ac6SIfrwUp
-         UBQWhE2kwO7o0xSr0icuX3mk0POWAB8CPJrqoBAFLfqPwODVcZaDfSvA8UA87vZCEkt2
-         +iYA+atBEZmpuzx/okx3VkK2LP+mJmZ1KZPzot8JGX0WX0F4qVyWaZ+KF+QwWJbbsML3
-         pNQUjWgPOysWBXMLy1T3fCqj6dWV0CGM48pht8xq1a/Y13lPiGPr4QFQmprvGuxg3JAt
-         qPe1JTilhubXG/FCQMpNMjpb2sUqT+1jHQq6YT/8+lhGnnZThObSvzumhJalIvfHIM30
-         w6Tg==
-X-Forwarded-Encrypted: i=1; AJvYcCUHBhuoXUMXDpun0pDqW4vYjy/SL+FOG+01Yr8KTWQkEeXVoNUZp1Pn3rdJ3cH78t3nglPFV4td9ORPvjaTXARpb4iOlVlLUWOWGKCfzLTTJIgC4EnY1PbDfMeAoYVx2ohUylwU9iD9oNs=
-X-Gm-Message-State: AOJu0YziKr38bNN/u3v4V7fU6jjemv45DnSxa5yelrM8rxrrnhD64w+8
-	p72ILxdbjlmA/qRSCS3WtjHpf0yG3Tpeyy0h87tvdxeaMxxnUWsO
-X-Google-Smtp-Source: AGHT+IHORr1w8vtrY1pml1ibsAJCtWtZhnUV5KX/8kT8FZYqyn/0B5wlWzlmISObqN+GkuTCylmuKg==
-X-Received: by 2002:a05:651c:1057:b0:2d4:668f:baac with SMTP id x23-20020a05651c105700b002d4668fbaacmr2018504ljm.28.1712335286828;
-        Fri, 05 Apr 2024 09:41:26 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712335290; x=1712940090;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N6AIAxCJz2R5rlggcf2OWr2A/Jt7N68nXNuioW63cJo=;
+        b=oZBubHvh0CdmFusV3stodhflY6Nqf83msI5likSsEKZV4erQGha6WS3kETs2vlw9og
+         026U+2pzZPiQ3m28K3PrL9rAkYMarfgov4/zru8JWrcFmYGJOA6YQRb7GtlX/Wth7ta4
+         /t3ELhc10vicMEmqHP0G+UQE9tmwIPRLVNa2gpvQZZU5/vRO8IKhJvCf68BplkyiAdYR
+         t4mnvvdM9VoNgyPDfP9YgpBxrq+JJ4lbdKF/ubyknXJld/a2/kU1lcvvrIfyO8g6MZka
+         A/f/x3YVRTi6LGpgM3ZF3ghyqJcoHFPDsHx0wX24xK9TwEfaHMvUIe4+Rw2U37mMcjOz
+         BJFg==
+X-Forwarded-Encrypted: i=1; AJvYcCVwLWaUBGM/VBl03w5L8rfibHKcQtpP517XT/evpZXZeNcIo1ZLpELzoCETKML1d7I8SxS3Yn5k+epLDhDJxcIAIN6TjwGRtH9PaHVcX0vweTeUpc4YbWLn+r65uhaDkIE6fOA4++Py4Xs=
+X-Gm-Message-State: AOJu0YzQP35Xl6PW7d9h/tOIK1YjKdjCbxWAlUMelSauA6Z+Vj+qEXvl
+	SYXjbFzXPYY2tNTBqBoHOMNGBNulGiKImYOEUzCiEfBGir5zq+uQ
+X-Google-Smtp-Source: AGHT+IFjtQuZOZW0BDVNPhYb7bUR3Fz2orD/fw5MqatcEC0Ei9BdI8MB0UTP85FED3le6XQfnvxdLw==
+X-Received: by 2002:a2e:960a:0:b0:2d8:8b7:76e3 with SMTP id v10-20020a2e960a000000b002d808b776e3mr1565309ljh.11.1712335289629;
+        Fri, 05 Apr 2024 09:41:29 -0700 (PDT)
 Received: from localhost.localdomain ([178.70.43.28])
-        by smtp.gmail.com with ESMTPSA id h13-20020a05651c124d00b002d6c93793f1sm218372ljh.77.2024.04.05.09.41.25
+        by smtp.gmail.com with ESMTPSA id h13-20020a05651c124d00b002d6c93793f1sm218372ljh.77.2024.04.05.09.41.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 09:41:26 -0700 (PDT)
+        Fri, 05 Apr 2024 09:41:29 -0700 (PDT)
 From: Ivan Bornyakov <brnkv.i1@gmail.com>
 To: Nas Chung <nas.chung@chipsnmedia.com>,
 	Jackson Lee <jackson.lee@chipsnmedia.com>,
@@ -73,10 +75,12 @@ To: Nas Chung <nas.chung@chipsnmedia.com>,
 Cc: Ivan Bornyakov <brnkv.i1@gmail.com>,
 	linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/5] Wave515 decoder IP support
-Date: Fri,  5 Apr 2024 19:41:04 +0300
-Message-ID: <20240405164112.24571-1-brnkv.i1@gmail.com>
+Subject: [PATCH v3 1/5] media: chips-media: wave5: support decoding HEVC Main10 profile
+Date: Fri,  5 Apr 2024 19:41:05 +0300
+Message-ID: <20240405164112.24571-2-brnkv.i1@gmail.com>
 X-Mailer: git-send-email 2.44.0
+In-Reply-To: <20240405164112.24571-1-brnkv.i1@gmail.com>
+References: <20240405164112.24571-1-brnkv.i1@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -85,78 +89,86 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Initial support for Wave515 multi-decoder IP among other refinements.
-This was tested on FPGA prototype, so wave5_dt_ids[] was not expanded.
+Add support for decoding HEVC Main10 profile by scaling FBC buffer
+stride and size by the factor of (bitdepth / 8).
 
-fluster score for JCT-VC-HEVC_V1 testsuite with
-GStreamer-H.265-V4L2-Gst1.0 decoder is 132/147
+Signed-off-by: Ivan Bornyakov <brnkv.i1@gmail.com>
+---
+ .../chips-media/wave5/wave5-vpu-dec.c         | 30 +++++++++++--------
+ .../platform/chips-media/wave5/wave5-vpuapi.h |  1 +
+ 2 files changed, 18 insertions(+), 13 deletions(-)
 
-The issue with Main10 tests is that fluster expects decoded file to be
-in yuv420p10le format while this driver decodes HEVC Main10 into 8-bit
-yuv420p. Though result is looks alright to the naked eye, proper
-decoding into yuv420p10le is to be added.
-
-The rest failed fluster tests are common with Wave521.
-
-ChangeLog:
-  v1:
-https://lore.kernel.org/linux-media/20240318144225.30835-1-brnkv.i1@gmail.com/
-  v2:
-https://lore.kernel.org/linux-media/20240325064102.9278-1-brnkv.i1@gmail.com/
-    * drop patch "dt-bindings: media: cnm,wave521c: drop resets restriction"
-      The only user of Wave5 in mainline is TI K3 boards, thus there is
-      no real need to alter dt-bindings
-    * in patch "media: chips-media: wave5: support decoding HEVC Main10 profile"
-      add check for flag "support_hevc10bit_dec"
-    * in patch "media: chips-media: wave5: support reset lines" move
-      reset_control_deassert() out of else branch, add
-      reset_control_assert() to probe error path.
-    * rework patch "media: chips-media: wave5: drop "sram-size" DT prop"
-       - don't move alloc/free form device open/close
-       - intead of exact configuration of reserved SRAM memory in DT and
-	 allocating all of it, allocate all available SRAM memory up to
-	 WAVE5_MAX_SRAM_SIZE from whatever pool provided.
-    * adjust patch "media: chips-media: wave5: support Wave515 decoder"
-      according to changes in patches
-      "media: chips-media: wave5: support decoding HEVC Main10 profile" and
-      "media: chips-media: wave5: drop "sram-size" DT prop"
-  v3:
-    * reword patch "media: chips-media: wave5: separate irq setup routine"
-      a bit.
-    * in patch "media: chips-media: wave5: drop "sram-size" DT prop"
-       - move MAX_SRAM_SIZE define into match_data->sram_size
-       - add placeholders for validation that allocated SRAM memory is
-	 enough to encode/decode bitstream of given resolution before
-	 setting W5_USE_SEC_AXI and W5_CMD_ENC_PIC_USE_SEC_AXI registers
-       - reword accordingly
-    * in patch "media: chips-media: wave5: support Wave515 decoder"
-       - add comments around SRAM memory allocation/freeing about
-	 Wave515 specifics
-       - add comments about BSOPTION_RD_PTR_VALID_FLAG bit in
-	 W5_BS_OPTION register
-       - add W[AVE]521_ prefix to defines, for wich there are W[AVE]515_
-	 alternatieves
-       - add semi-magic Wave515 specific formulas to estimate SRAM usage
-
-Ivan Bornyakov (5):
-  media: chips-media: wave5: support decoding HEVC Main10 profile
-  media: chips-media: wave5: support reset lines
-  media: chips-media: wave5: separate irq setup routine
-  media: chips-media: wave5: drop "sram-size" DT prop
-  media: chips-media: wave5: support Wave515 decoder
-
- .../platform/chips-media/wave5/wave5-helper.c |   8 +-
- .../platform/chips-media/wave5/wave5-hw.c     | 395 +++++++++++++-----
- .../chips-media/wave5/wave5-regdefine.h       |   5 +
- .../platform/chips-media/wave5/wave5-vdi.c    |  27 +-
- .../chips-media/wave5/wave5-vpu-dec.c         |  51 ++-
- .../chips-media/wave5/wave5-vpu-enc.c         |   2 +-
- .../platform/chips-media/wave5/wave5-vpu.c    |  35 +-
- .../platform/chips-media/wave5/wave5-vpuapi.h |   3 +
- .../chips-media/wave5/wave5-vpuconfig.h       |  16 +-
- .../media/platform/chips-media/wave5/wave5.h  |   6 +
- 10 files changed, 407 insertions(+), 141 deletions(-)
-
+diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+index ef227af72348..5a71a711f2e8 100644
+--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
++++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+@@ -1055,6 +1055,22 @@ static int wave5_prepare_fb(struct vpu_instance *inst)
+ 	int ret, i;
+ 	struct v4l2_m2m_buffer *buf, *n;
+ 	struct v4l2_m2m_ctx *m2m_ctx = inst->v4l2_fh.m2m_ctx;
++	u32 bitdepth = inst->codec_info->dec_info.initial_info.luma_bitdepth;
++
++	switch (bitdepth) {
++	case 8:
++		break;
++	case 10:
++		if (inst->std == W_HEVC_DEC &&
++		    inst->dev->attr.support_hevc10bit_dec)
++			break;
++
++		fallthrough;
++	default:
++		dev_err(inst->dev->dev, "no support for %d bit depth\n", bitdepth);
++
++		return -EINVAL;
++	}
+ 
+ 	linear_num = v4l2_m2m_num_dst_bufs_ready(m2m_ctx);
+ 	non_linear_num = inst->fbc_buf_count;
+@@ -1063,7 +1079,7 @@ static int wave5_prepare_fb(struct vpu_instance *inst)
+ 		struct frame_buffer *frame = &inst->frame_buf[i];
+ 		struct vpu_buf *vframe = &inst->frame_vbuf[i];
+ 
+-		fb_stride = inst->dst_fmt.width;
++		fb_stride = ALIGN(inst->dst_fmt.width * bitdepth / 8, 32);
+ 		fb_height = ALIGN(inst->dst_fmt.height, 32);
+ 		luma_size = fb_stride * fb_height;
+ 
+@@ -1408,22 +1424,10 @@ static int wave5_vpu_dec_start_streaming(struct vb2_queue *q, unsigned int count
+ 		if (ret)
+ 			goto free_bitstream_vbuf;
+ 	} else if (q->type == V4L2_BUF_TYPE_VIDEO_CAPTURE_MPLANE) {
+-		struct dec_initial_info *initial_info =
+-			&inst->codec_info->dec_info.initial_info;
+-
+ 		if (inst->state == VPU_INST_STATE_STOP)
+ 			ret = switch_state(inst, VPU_INST_STATE_INIT_SEQ);
+ 		if (ret)
+ 			goto return_buffers;
+-
+-		if (inst->state == VPU_INST_STATE_INIT_SEQ) {
+-			if (initial_info->luma_bitdepth != 8) {
+-				dev_info(inst->dev->dev, "%s: no support for %d bit depth",
+-					 __func__, initial_info->luma_bitdepth);
+-				ret = -EINVAL;
+-				goto return_buffers;
+-			}
+-		}
+ 	}
+ 
+ 	return ret;
+diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+index 352f6e904e50..465ff9dfe8b1 100644
+--- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
++++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+@@ -327,6 +327,7 @@ struct vpu_attr {
+ 	u32 support_backbone: 1;
+ 	u32 support_avc10bit_enc: 1;
+ 	u32 support_hevc10bit_enc: 1;
++	u32 support_hevc10bit_dec: 1;
+ 	u32 support_vcore_backbone: 1;
+ 	u32 support_vcpu_backbone: 1;
+ };
 -- 
 2.44.0
 
