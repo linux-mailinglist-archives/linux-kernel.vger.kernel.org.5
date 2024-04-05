@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-132449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F48C899507
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:11:33 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A036089950F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:12:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B0D32825B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:11:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 418A8B26294
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:12:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D922574B;
-	Fri,  5 Apr 2024 06:09:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47A464D9E5;
+	Fri,  5 Apr 2024 06:09:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ekMXKAld"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SR5IkoVW"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22D68249FA;
-	Fri,  5 Apr 2024 06:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F014C627;
+	Fri,  5 Apr 2024 06:09:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712297353; cv=none; b=lNmPFJCkBSR5X8ni21vcphERah9aJbGPkAsRQ2Hl+TUEm5Oxw59izKXCrjcSXjJRqUy12R5N5/PESxS0zGSD4x6X+J9i5zTOOKY3SLvTcrXO9DXBm2wLp7R2ebIaAaAShQqGb7myF0/R2i/vHaGz5h/dHVCEITlzy1C0weGbCXk=
+	t=1712297355; cv=none; b=Xn7ZqqMU3+QykJzzrkA1ihusIofkQhI3GpwH6rwDcE7IpPDWkIKEtCgkhMtGw//c+JW4lQMcX1AgbKgpV68IlfLRX2kIYPumy4E/AemKLuz/CK+Fz8Sopp8I5FpyD1F4acl1kcnujYfcgaF1WxmjbgLlhePsaa1lVddKENBUBr0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712297353; c=relaxed/simple;
-	bh=KVsipsYsYMv/yG54CaStidUVpSv0BOqzJ7Q6MUmF5/o=;
+	s=arc-20240116; t=1712297355; c=relaxed/simple;
+	bh=5+bhGaEEsgnXQkvvlI11yrFLziNuirM9WUE4o2kU49s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NVQS7sJ2DzmYcJfzI+JAotXc/ZImN3mpc7k/c5xq62y+QsuGMcbMZwGvaorJwK7VPA/aiE0LYxw+3T1+uTLiLVm32C3bfI+E5bc7CvxzamqsKNjVqTuYP3gvOU+4miSUmqwpISFByDl7KKBQu/RIBOZplpgpJGOZ9asc5408BAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ekMXKAld; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ABEA9C43601;
-	Fri,  5 Apr 2024 06:09:10 +0000 (UTC)
+	 MIME-Version; b=PKI4O354IR1vnReQe9YR+GgQsqnZ2qTWjuofFHH4ps6z+t9eEoZ2giNyH2EvInEP5YfzkCkp80NUOko0wSXf4IwBhZOJlP6C/PkBVXiHqb58EVlibZ5exzPnenwTTXWBRvoxde7T3gH9tep9gKNce3U1qOOPugCBFYpkEaXkbb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SR5IkoVW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 202EDC433F1;
+	Fri,  5 Apr 2024 06:09:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712297352;
-	bh=KVsipsYsYMv/yG54CaStidUVpSv0BOqzJ7Q6MUmF5/o=;
+	s=k20201202; t=1712297355;
+	bh=5+bhGaEEsgnXQkvvlI11yrFLziNuirM9WUE4o2kU49s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ekMXKAldDk5A0/hhar1jOHHOX2Q5+uattPl9QYCAt6X9v1wnsFeNGA1JosAZ/es0X
-	 Tiv9Q7/ymF1zFeZK9G2HdhWRr/TJV+uklFxWM84Wfg7IhH7YNmqv6izFsp7pLjCcaS
-	 Rs2fYi35XmLWrR1l31E9Q+PVEjdJxhqzlrYUjIhJywMzefdHXaGf188SisQHImiei7
-	 1amEhnFN4i+aa5BPaH5qv4CFUSnoJtveexr2aIp1C/ugP6OBhcgDT8WjJLJcBNVQRM
-	 36p6EhJNL1HkZOoKC5fkGjeH4CVtZY3jbuW3dHjT+F4rCvlZ3j8F4+LyXnd088JGIW
-	 eOUjnglwhNl3A==
+	b=SR5IkoVWCThIz/IBG4dzQ2NMBOZgCa6oO3mHsRDzKtpnJI73i/leg0yhmXB/ELmoo
+	 k4tJVUb5AYY5fzBvjdbtoGwC7z571VIunje+PC3+0xHmQUzw1S6C2e1HyoVJpEGRR/
+	 GNdgND2effh9za7S8E1C7Ho5IKLUTJyHiRL8kaa9hlKzm05fpge3Gyi4OWord4zqVo
+	 hF7fwsJ+JIfygO36D2ObOsvpI8Nb8t5wTYEyhZIsd+9e++sd170qbM9glC/WnukVk6
+	 NvpxDyXWqS5ONegWMu11GvD322p2uJ6xULNYpFWk9xYyaDnPE17xrmxCMyAdOrAPeC
+	 9+F2fxqtatrpg==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: gregkh@linuxfoundation.org
 Cc: linux-serial@vger.kernel.org,
@@ -50,9 +50,9 @@ Cc: linux-serial@vger.kernel.org,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
 	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 13/15] tty: atmel_serial: use single DMA mapping for TX
-Date: Fri,  5 Apr 2024 08:08:24 +0200
-Message-ID: <20240405060826.2521-14-jirislaby@kernel.org>
+Subject: [PATCH 14/15] tty: atmel_serial: define macro for RX size
+Date: Fri,  5 Apr 2024 08:08:25 +0200
+Message-ID: <20240405060826.2521-15-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240405060826.2521-1-jirislaby@kernel.org>
 References: <20240405060826.2521-1-jirislaby@kernel.org>
@@ -64,12 +64,12 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-dma_map_single() provides much easier interface for simple mappings as
-used for TX in atmel_serial. So switch to that, removing all the s-g
-unnecessary handling.
+It is repeated in the code and there is also a big warning by
+ATMEL_SERIAL_RINGSIZE. So define ATMEL_SERIAL_RX_SIZE and use it
+appropriatelly.
 
-Note that it is not easy (maybe impossible) to use kfifo_dma_* API for
-atmel's serial purposes. It handles DMA very specially.
+The macro uses array_size() and kmalloc_array() is switched to
+kmalloc().
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
 Cc: Richard Genoud <richard.genoud@gmail.com>
@@ -78,103 +78,44 @@ Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc: Claudiu Beznea <claudiu.beznea@tuxon.dev>
 Cc: linux-arm-kernel@lists.infradead.org
 ---
- drivers/tty/serial/atmel_serial.c | 35 +++++++++++++------------------
- 1 file changed, 14 insertions(+), 21 deletions(-)
+ drivers/tty/serial/atmel_serial.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/drivers/tty/serial/atmel_serial.c b/drivers/tty/serial/atmel_serial.c
-index 5bb5e4303754..69ec80ffc97b 100644
+index 69ec80ffc97b..5cde5077c429 100644
 --- a/drivers/tty/serial/atmel_serial.c
 +++ b/drivers/tty/serial/atmel_serial.c
-@@ -132,7 +132,7 @@ struct atmel_uart_port {
- 	struct dma_async_tx_descriptor	*desc_rx;
- 	dma_cookie_t			cookie_tx;
- 	dma_cookie_t			cookie_rx;
--	struct scatterlist		sg_tx;
-+	dma_addr_t			tx_phys;
- 	struct scatterlist		sg_rx;
- 	struct tasklet_struct	tasklet_rx;
- 	struct tasklet_struct	tasklet_tx;
-@@ -904,8 +904,8 @@ static void atmel_release_tx_dma(struct uart_port *port)
- 	if (chan) {
- 		dmaengine_terminate_all(chan);
- 		dma_release_channel(chan);
--		dma_unmap_sg(port->dev, &atmel_port->sg_tx, 1,
--				DMA_TO_DEVICE);
-+		dma_unmap_single(port->dev, atmel_port->tx_phys,
-+				 UART_XMIT_SIZE, DMA_TO_DEVICE);
- 	}
+@@ -96,7 +96,9 @@ struct atmel_uart_char {
+  * can contain up to 1024 characters in PIO mode and up to 4096 characters in
+  * DMA mode.
+  */
+-#define ATMEL_SERIAL_RINGSIZE 1024
++#define ATMEL_SERIAL_RINGSIZE	1024
++#define ATMEL_SERIAL_RX_SIZE	array_size(sizeof(struct atmel_uart_char), \
++					   ATMEL_SERIAL_RINGSIZE)
  
- 	atmel_port->desc_tx = NULL;
-@@ -922,7 +922,7 @@ static void atmel_tx_dma(struct uart_port *port)
- 	struct tty_port *tport = &port->state->port;
- 	struct dma_chan *chan = atmel_port->chan_tx;
- 	struct dma_async_tx_descriptor *desc;
--	struct scatterlist sgl[2], *sg, *sg_tx = &atmel_port->sg_tx;
-+	struct scatterlist sgl[2], *sg;
- 	unsigned int tx_len, tail, part1_len, part2_len, sg_len;
- 	dma_addr_t phys_addr;
+ /*
+  * at91: 6 USARTs and one DBGU port (SAM9260)
+@@ -1208,7 +1210,7 @@ static int atmel_prepare_rx_dma(struct uart_port *port)
+ 	BUG_ON(!PAGE_ALIGNED(ring->buf));
+ 	sg_set_page(&atmel_port->sg_rx,
+ 		    virt_to_page(ring->buf),
+-		    sizeof(struct atmel_uart_char) * ATMEL_SERIAL_RINGSIZE,
++		    ATMEL_SERIAL_RX_SIZE,
+ 		    offset_in_page(ring->buf));
+ 	nent = dma_map_sg(port->dev,
+ 			  &atmel_port->sg_rx,
+@@ -2947,9 +2949,7 @@ static int atmel_serial_probe(struct platform_device *pdev)
  
-@@ -955,7 +955,7 @@ static void atmel_tx_dma(struct uart_port *port)
- 
- 		sg_init_table(sgl, 2);
- 		sg_len = 0;
--		phys_addr = sg_dma_address(sg_tx) + tail;
-+		phys_addr = atmel_port->tx_phys + tail;
- 		if (part1_len) {
- 			sg = &sgl[sg_len++];
- 			sg_dma_address(sg) = phys_addr;
-@@ -987,7 +987,8 @@ static void atmel_tx_dma(struct uart_port *port)
- 			return;
- 		}
- 
--		dma_sync_sg_for_device(port->dev, sg_tx, 1, DMA_TO_DEVICE);
-+		dma_sync_single_for_device(port->dev, atmel_port->tx_phys,
-+					   UART_XMIT_SIZE, DMA_TO_DEVICE);
- 
- 		atmel_port->desc_tx = desc;
- 		desc->callback = atmel_complete_tx_dma;
-@@ -1014,7 +1015,7 @@ static int atmel_prepare_tx_dma(struct uart_port *port)
- 	dma_cap_mask_t		mask;
- 	struct dma_slave_config config;
- 	struct dma_chan *chan;
--	int ret, nent;
-+	int ret;
- 
- 	dma_cap_zero(mask);
- 	dma_cap_set(DMA_SLAVE, mask);
-@@ -1029,26 +1030,18 @@ static int atmel_prepare_tx_dma(struct uart_port *port)
- 		dma_chan_name(atmel_port->chan_tx));
- 
- 	spin_lock_init(&atmel_port->lock_tx);
--	sg_init_table(&atmel_port->sg_tx, 1);
- 	/* UART circular tx buffer is an aligned page. */
- 	BUG_ON(!PAGE_ALIGNED(tport->xmit_buf));
--	sg_set_page(&atmel_port->sg_tx,
--			virt_to_page(tport->xmit_buf),
--			UART_XMIT_SIZE,
--			offset_in_page(tport->xmit_buf));
--	nent = dma_map_sg(port->dev,
--				&atmel_port->sg_tx,
--				1,
--				DMA_TO_DEVICE);
-+	atmel_port->tx_phys = dma_map_single(port->dev, tport->xmit_buf,
-+					     UART_XMIT_SIZE, DMA_TO_DEVICE);
- 
--	if (!nent) {
-+	if (dma_mapping_error(port->dev, atmel_port->tx_phys)) {
- 		dev_dbg(port->dev, "need to release resource of dma\n");
- 		goto chan_err;
- 	} else {
--		dev_dbg(port->dev, "%s: mapped %d@%p to %pad\n", __func__,
--			sg_dma_len(&atmel_port->sg_tx),
--			tport->xmit_buf,
--			&sg_dma_address(&atmel_port->sg_tx));
-+		dev_dbg(port->dev, "%s: mapped %lu@%p to %pad\n", __func__,
-+			UART_XMIT_SIZE, tport->xmit_buf,
-+			&atmel_port->tx_phys);
- 	}
- 
- 	/* Configure the slave DMA */
+ 	if (!atmel_use_pdc_rx(&atmel_port->uart)) {
+ 		ret = -ENOMEM;
+-		data = kmalloc_array(ATMEL_SERIAL_RINGSIZE,
+-				     sizeof(struct atmel_uart_char),
+-				     GFP_KERNEL);
++		data = kmalloc(ATMEL_SERIAL_RX_SIZE, GFP_KERNEL);
+ 		if (!data)
+ 			goto err_clk_disable_unprepare;
+ 		atmel_port->rx_ring.buf = data;
 -- 
 2.44.0
 
