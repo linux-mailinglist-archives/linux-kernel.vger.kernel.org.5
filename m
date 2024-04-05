@@ -1,143 +1,89 @@
-Return-Path: <linux-kernel+bounces-133583-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133584-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE09189A5FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:15:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B83E889A5FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:18:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E2F21F215E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:15:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E29E51C213F4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:18:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 584D7175543;
-	Fri,  5 Apr 2024 21:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58794175548;
+	Fri,  5 Apr 2024 21:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PGFEWxMz"
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OdQHHlSf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F4EC171072;
-	Fri,  5 Apr 2024 21:15:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F741C687;
+	Fri,  5 Apr 2024 21:18:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712351709; cv=none; b=Qgr7yKnEIM3CLNuByuuNlNSoAJEf/CPsicNCKvi+OeSws0c5govcw/JkqF1vPRpCnwTaNOHJraSyY9KrgGYk1kelbPamHh5vxPJKOf2/Kc8tf87bJkYPfhMyNDBvUT3oxtIVeR/C/5297kSuW9bPd5rSV08PPl9Qp+Z//FnD3YM=
+	t=1712351882; cv=none; b=MgX2ETF1VZJJFVeZZYeCd156k2ICmz2uPrLwguOtBgaN6j8/uZZEJ9Fga/dCmgdMU8pIJ+olXZCTKwEmZQ1ip7tSDtKP/9XRGwHSMgcK6G3XBIEWiSC1VQUuXLtzfSr2226HwSqVldrkiRi1mieIc086dkUr+JYWsuftjqdy0AA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712351709; c=relaxed/simple;
-	bh=HeNEhIGrzcGEZrocdkVTvsddhLnVgsVIbEn+zKxLMn8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p/migCLxZDl/p0UBlJlVCKaawu5U87Dp101ANqzh1oGDeiho0TkIAGRdmNmbLazEIsGOcv6iMn/lLP55h0tqKwYBBQyIZhTGVHccFnBBwgbWrce9MpgRsmZQrZc+pPJqTw9FJjwvB43n8366em54Kq2I6O5j3r22sx/4OM3gFfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PGFEWxMz; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2d82713f473so45028801fa.3;
-        Fri, 05 Apr 2024 14:15:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712351706; x=1712956506; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o2vV+ljPu+LnmovF94XbYF/3sqJWOm/WOolsuT6CmUg=;
-        b=PGFEWxMz4tQcFt2BYityYj/xUahJMbYAefJcDE2F9KDpTvIaLc0I40iksU14ciSkOR
-         iRmR0+EAzxQzRamygaE++qg0RB3LjRia0QaaR+0DItadnws7oO3gQFoXbuBoDBgKLi9l
-         JkRWFb0jlJ0zNiwjKOMciRx2ro1iuA4y377pb6Ls3/clh4FLxVz1/tIuGIQACwdj55wV
-         Pgli/GHyDYgOjNrkhNTKZfDVkLhBt9+v186m/5+svVvJxMbcKppiqauAJaKY2BqbuPrP
-         6qcnpX6fdwA1VYNkK46EIidKc0sr2nzblzHU/mbeK/uRnt2PzqNlUH18euVmtcrm0MqN
-         m+Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712351706; x=1712956506;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o2vV+ljPu+LnmovF94XbYF/3sqJWOm/WOolsuT6CmUg=;
-        b=JNkCAX2TU9vo6Gp1E3gw/4XZkz9Ulnel0AvvvqPxRe6ocX5ISKypbqvcrn3ZlrwNPJ
-         Pw99jc3dXRdI/hbZYWezlpQcKX6M3mmVozzlWZIwQkE7Q2zQEnXaaodmT4Slx+5iOUZf
-         Hu5ZbaYmh8b+nRFY+SLWY9RSPwdPyIIKdSpk+21ASSte06T4D2H00n0GtHZ1xhnaOQNW
-         E3WiKPf2V+v+vyzc5cwBr72uC5/noXhTBCIa8rpHDc2nFWc7QmYy4Q8sKjn/MIw8CTsN
-         lWOeLuu+gvx3d1L5/4b8MyeGFXszySUnOca8bIzKvkr4ZmDp0h5RBDE1P2CPUHSyWHk4
-         Qfbg==
-X-Forwarded-Encrypted: i=1; AJvYcCXS/72+27TeE7RuwdOd+NdROj6BiE5cvjLUnHiBauO5C4axLVYAKAOlNCF9ddK6J6HVL/DVM9SAQ0JOYiXUR0QalilhYe9LBi2H5DREqnIBtVGzfpR3TUXiNGfuLI5qmPVWCi1i
-X-Gm-Message-State: AOJu0YxGb5qweokLB7PTae3j4inL3g08cg9EbUW6LEK8OQx3H88yi1q3
-	sx26TJOcsnFyZ/dnyhYczZ2clV9NCJ5TJvhh7MjoeHuMaBlyTnXY
-X-Google-Smtp-Source: AGHT+IGvqldN6HhRWWnSY5+EnUP2pam16riYtoUm7Q1wDs8Ky3sSiGU3pUJdfw1lLyEvKoUGXAwYHA==
-X-Received: by 2002:a2e:8ed5:0:b0:2d8:6b3c:1eb8 with SMTP id e21-20020a2e8ed5000000b002d86b3c1eb8mr2430875ljl.4.1712351705883;
-        Fri, 05 Apr 2024 14:15:05 -0700 (PDT)
-Received: from skbuf ([2a02:2f04:d700:2000::b2c])
-        by smtp.gmail.com with ESMTPSA id de26-20020a056402309a00b0056c1cca33bfsm1169683edb.6.2024.04.05.14.15.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 14:15:05 -0700 (PDT)
-Date: Sat, 6 Apr 2024 00:15:02 +0300
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Joseph Huang <joseph.huang.2024@gmail.com>
-Cc: Nikolay Aleksandrov <razor@blackwall.org>,
-	Joseph Huang <Joseph.Huang@garmin.com>, netdev@vger.kernel.org,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Roopa Prabhu <roopa@nvidia.com>,
-	Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>,
-	linux-kernel@vger.kernel.org, bridge@lists.linux.dev
-Subject: Re: [PATCH RFC net-next 00/10] MC Flood disable and snooping
-Message-ID: <20240405211502.q5gfwcwyhkm6w7xy@skbuf>
-References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
- <7fc8264a-a383-4682-a144-8d91fe3971d9@blackwall.org>
- <20240402174348.wosc37adyub5o7xu@skbuf>
- <a8968719-a63b-4969-a971-173c010d708f@blackwall.org>
- <20240402204600.5ep4xlzrhleqzw7k@skbuf>
- <065b803f-14a9-4013-8f11-712bb8d54848@blackwall.org>
- <804b7bf3-1b29-42c4-be42-4c23f1355aaf@gmail.com>
- <20240405102033.vjkkoc3wy2i3vdvg@skbuf>
- <935c18c1-7736-416c-b5c5-13ca42035b1f@blackwall.org>
- <651c87fc-1f21-4153-bade-2dad048eecbd@gmail.com>
+	s=arc-20240116; t=1712351882; c=relaxed/simple;
+	bh=tCCd1z5eJPCWR12UPaSgmUTe7fVkb7E0/uRdD8rdRpM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IwNktzGgguHDWfKBE57QFB6PFPbQKc3csJwbCDvbozXbst4YS8+Fa4NHOGlaYLMjZbJhKLIMSfCdZWE2kS61j6xprV8sFdYBGX+DXMaB4qyQ/1GIgFosPKVIcpry+eSVYqJ4jWj+VieWgYGvt4tX1usl9M6gETU0L5qT9F+sZOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OdQHHlSf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B905C433F1;
+	Fri,  5 Apr 2024 21:18:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712351882;
+	bh=tCCd1z5eJPCWR12UPaSgmUTe7fVkb7E0/uRdD8rdRpM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OdQHHlSfCKuwflpqeoV71BtCnypygaVCiVJses1Knma6hcQyq8CDPNwlG2Yx7Nsza
+	 utlwXF+GJzCdORQ8HAv0RkxnglNvRNhZ9yIE50dOrSmHN3L2/D/EB5jIsiARJr/y8h
+	 I7SNbDftSp+bxF5RqW5sELEFBHNW42LNBeTDHIenqc/JSoAuQR+SL133VQyHwyw+pp
+	 oxGTBimY0ncSMjRbf8m3IPewABGYOKsGsxI28oiTBc9Nt8H8keTgcOdqQFusg18lYc
+	 5hMMXb31rllheRRUOrY+JqWjr7Z9hWYrrEpO0Pp91wQuItamE6X26T6Jm2Nj2emNMY
+	 Ri0FNN0SwfQQQ==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Kan Liang <kan.liang@linux.intel.com>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org
+Subject: [PATCH 0/4] perf annotate-data: small random fixes and updates
+Date: Fri,  5 Apr 2024 14:17:56 -0700
+Message-ID: <20240405211800.1412920-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <651c87fc-1f21-4153-bade-2dad048eecbd@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 05, 2024 at 04:22:43PM -0400, Joseph Huang wrote:
-> Like this?
-> 
-> bridge link set dev swp0 mcast_flood off
->   - all flooding disabled
-> 
-> bridge link set dev swp0 mcast_flood on
->   - all flooding enabled
-> 
-> bridge link set dev swp0 mcast_flood on mcast_ipv4_data_flood off
-> mcast_ipv6_data_flood off
->   - IPv4 data packets flooding disabled, IPv6 data packets flooding
-> disabled, everything else floods (that is to say, only allow IPv4 local
-> subnet and IPv6 link-local to flood)
-> 
-> ?
+Hello,
 
-Yeah.
+I found some problems in the data type profiling with perf annotate.
+The patch 1 should go to perf-tools and others can go to perf-tools-next.
 
-> The syntax seems to be counterintuitive.
-> 
-> Or like this?
-> 
-> bridge link set dev swp0 mcast_flood on mcast_ipv4_ctrl_flood on
->   - only allow IPv4 local subnet to flood, everything else off
-> 
-> ?
+Thanks,
+Namhyung
 
-Nope.
 
-> So basically the question is, what should the behavior be when something is
-> omitted from the command line?
+Namhyung Kim (4):
+  perf annotate: Make sure to call symbol__annotate2() in TUI
+  perf annotate-data: Fix global variable lookup
+  perf annotate-data: Do not delete non-asm lines
+  perf annotate: Get rid of symbol__ensure_annotate()
 
-The answer is always: "new options should default to behaving exactly
-like before". It's not just about the command line arguments, but also
-about the actual netlink attributes that iproute2 (and other tooling)
-creates when communicating with the kernel. Old user space has no idea
-about the existence of mcast_ipv4_ctrl_flood et. al. So, if netlink
-attributes specifying their value are not sent by user space, their
-value in the kernel must mimic the value of mcast_flood.
+ tools/perf/ui/browsers/annotate.c |   2 +-
+ tools/perf/util/annotate-data.c   |  10 ++-
+ tools/perf/util/annotate.c        | 104 ++++++++++++++++++++----------
+ 3 files changed, 80 insertions(+), 36 deletions(-)
+
+
+base-commit: b6347cb5e04e9c1d17342ab46e2ace2d448de727
+-- 
+2.44.0.478.gd926399ef9-goog
+
 
