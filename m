@@ -1,121 +1,132 @@
-Return-Path: <linux-kernel+bounces-132687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132688-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EACF899898
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:55:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 967AE89989F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:56:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 196FAB226D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:54:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C45EB21520
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:56:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9067F15FA6B;
-	Fri,  5 Apr 2024 08:54:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1C915FA8D;
+	Fri,  5 Apr 2024 08:56:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M2ew5+H9"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QtRX9Adn"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F06611E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 08:54:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511E7611E;
+	Fri,  5 Apr 2024 08:56:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712307291; cv=none; b=m8ezy8h3CJ0nBOXlEfbJy0RGBLeYX5IQErclSuimnHA2UtI3RpRz7GMQ8IjLFwLnxNOJuElt4SpIu7MchBucw6nso0JsjTEwuFm3LSBSyJQFXTUED59wsUaXpIwTwKqkMMBsQW+xwAhjfWBB6jOqK51Bdc5zSIjMeitIZsY/OPs=
+	t=1712307371; cv=none; b=NpdJ7X5z7MYUCivQCJK1hGOd4cxbOsYadYjdK6CgwyQVKSeLBp7pwatTLuLyU4lPz13CpEupkLYwdAqP/eoAoZqsxLc7KjFhR/NB0fDN/8Utn54Gn4raVaVh3lNduriyt6HKLRzBv8n0c9RO0lkUNiL4Dg86vQCGdRN7rkEp+J8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712307291; c=relaxed/simple;
-	bh=N3tSnJJ5B9cvcmlA05jWhatlsn0eDJOoakXmXKZPw0M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i7WANIbWBrG9Ne3WEsCb9hLKLanubU/nZFL2od/X6lWJHA2R6BwlFxmkWOwvHAuJ2nKQUT9+N+7oAtP46PXVMnPrtfaaBFw0VLEJaZUYzWlKfnq6ETs9iG4t9Tqaa+N+4tzWc2VJchqF8cpFl2xuaZ+jJscEJjrem/8bLGRX1C0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M2ew5+H9; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712307289;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+rd7OWEfOgaXcRrsSTTxKuVoa46Lnc9mtKHiCb+X01E=;
-	b=M2ew5+H90/7juVMGikvT9yDGOFEHkznzPfDOjOJKANyhEtNetDh681RcpKg8sSrziRuQNG
-	icmRjfcJr6bmYEdQSozkpPi7ZU13KyWJAwRNfkzRt4sxQQ1zegNnUzJa7GgzX8aE7C7WmX
-	ONeCkCQ/RpKs7vaUi1hpjO05wYE3G/E=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-10-3OhZOoMvOJ6BR-EB9nfbtQ-1; Fri, 05 Apr 2024 04:54:47 -0400
-X-MC-Unique: 3OhZOoMvOJ6BR-EB9nfbtQ-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a467a6d4e3eso109280866b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 01:54:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712307286; x=1712912086;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+rd7OWEfOgaXcRrsSTTxKuVoa46Lnc9mtKHiCb+X01E=;
-        b=IgrnB44GTUbPC0mcLTq0S+HZY59rX3PI7jOXnMjxS+FoJAcOIjn+mVdkOTRqOdN2q9
-         g++DBnqrgljOw8XqIGCedYHL9va7xXeYONRM9D5+OSOFSS6M14Lf15Pp+cnCkG3buCV2
-         f8i+OylLHS9ttDYgDI8i6cePGyf44EeC2T2D7NNvHRl+jVAOwWXYm5KAzZRoTkpJhHil
-         VCa5dYbXZvhinPFAj6cdtt4C9iz5ejWlOGQxHeY2APMQ3bFTM30USoZL7iAaJVhskNBn
-         X4cw/ZpcDTj4vo7HlqUaTMWsXeGFeGbLKtLrlkKv3Kr91wi2fI2LhuLgbocJsJsyIcok
-         IsiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVXggjOzhK5XZQLJzyCtbHbdMGJ+FmQ+yjds36/O2S3VXJ7KFwH2pSG3uexlYFli+0mRw2KxceoAPYWW/PuyByQNSuswT/w540ECfe7
-X-Gm-Message-State: AOJu0Yxz0Uk/3UhILOFRcGxz7T2PrrI7DwuFEi3PTAB2CWRQnJlT8BA2
-	RsnLaldYHAALe+fTa0p2vAIQPxVJGWZYDR8U19hpOoeKZXquR0MH9wJvXm3q4uZIUx4eNwHN8zk
-	KUEJ0yHXLp6HHZ0IiZp5XS/8JFZCnDM5vbmLzZzVUYTLm4MOnJqd7iE+2x/rWjg==
-X-Received: by 2002:a17:907:7b89:b0:a51:9d99:78ae with SMTP id ne9-20020a1709077b8900b00a519d9978aemr712166ejc.67.1712307286661;
-        Fri, 05 Apr 2024 01:54:46 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGsJl6PzDAKkRMB2gDp39CI1VRHpD8SlyhCvrBgGiMcgRk44TtWhmTbhlXsf+UCBaojR6xdQQ==
-X-Received: by 2002:a17:907:7b89:b0:a51:9d99:78ae with SMTP id ne9-20020a1709077b8900b00a519d9978aemr712152ejc.67.1712307286440;
-        Fri, 05 Apr 2024 01:54:46 -0700 (PDT)
-Received: from [192.168.0.182] (host-87-2-128-150.retail.telecomitalia.it. [87.2.128.150])
-        by smtp.gmail.com with ESMTPSA id z12-20020a17090655cc00b00a42f6d17123sm594252ejp.46.2024.04.05.01.54.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 01:54:45 -0700 (PDT)
-Message-ID: <4f30b6cd-8077-4ab3-87ab-8f29a66cc6c4@redhat.com>
-Date: Fri, 5 Apr 2024 10:54:44 +0200
+	s=arc-20240116; t=1712307371; c=relaxed/simple;
+	bh=wGKl8M0KGVCfuWC968Hnzb25vs3AyVEmZN6DO2nu+to=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lLDzqaWsAm//N/yPqRHBOZyzul+4AYH5ZKRPU1PdS0pK3f45+qbIaC4HrbBN6uAVWJOAlpIy9P2nSNBflJKePniTVchUTjpCNNZ0m4gUZI0GjVRUJCQK4qp6vwJISSKBJDIyCAwcykKb62Q4HRuKvs1YqP9rGMEXZEx9+Vwhxkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QtRX9Adn; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712307365;
+	bh=wGKl8M0KGVCfuWC968Hnzb25vs3AyVEmZN6DO2nu+to=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QtRX9Adnok9ub5w71euVdVDrQCvCoofDVJ9fVJURGaQqt9lQO2G+sUobIZDzX6PVH
+	 +HXeWPJ0WQYR/Gm7JzyrGot4JMKs+iL+LWNTvtLatKmqotgLOAE6hkXUXYW+Y8OtPv
+	 3BvNtuunP7ssmc/6VBdYfJnXN8vKrr7UMVPVnKuWJMQXttTm/Qg26KxLM2xjErq/Yq
+	 tMzGCHCA6PkFBrFlCY4jQ655/Wszqr+/md7YftPYvUhjtz/w9iIXz/b/GeyWTxz59J
+	 ZW7rk/mNiKpHqCmSCe/F1cqauUe94dJHebTvPxGmr1gtr8HJQYHIVRBQqVblttU9lP
+	 IuuRsMpJYz1Lw==
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: sebastianfricke)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 45E823780EC6;
+	Fri,  5 Apr 2024 08:56:05 +0000 (UTC)
+Date: Fri, 5 Apr 2024 10:56:04 +0200
+From: "sebastian.fricke@collabora.com" <sebastian.fricke@collabora.com>
+To: Nicolas Dufresne <nicolas@ndufresne.ca>
+Cc: Nas Chung <nas.chung@chipsnmedia.com>,
+	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"jackson.lee" <jackson.lee@chipsnmedia.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH v2 4/5] media: chips-media: wave5: drop "sram-size" DT
+ prop
+Message-ID: <20240405085604.lzsekrtrtudvdh6c@basti-XPS-13-9310>
+References: <20240325064102.9278-1-brnkv.i1@gmail.com>
+ <20240325064102.9278-5-brnkv.i1@gmail.com>
+ <SL2P216MB1246537DD623B813453B28F9FB342@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
+ <5hd7duzqhgdxpmvom3opkhwxkq55dmitk4gwdl4dy46q662in6@xxkmvdj6plqb>
+ <SL2P216MB1246499CC9FED9BFB5B11DA3FB3B2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
+ <7lro7ryzjajpzvkjdj5cndkmzmjkqvhts6dmer4pkkt7dluiii@wp7ael4ae7jd>
+ <SL2P216MB1246597E5880A5A590CE1DB2FB3F2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
+ <20240404080235.kab6taeimsxpjtr3@basti-XPS-13-9310>
+ <4f781313ddb2b7657fadc35dc04c0e3c3de3b27c.camel@ndufresne.ca>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 12/15] sched/deadline: Reverse args to dl_time_before
- in replenish
-Content-Language: en-US, pt-BR, it-IT
-To: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
- linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
-Cc: Suleiman Souhlal <suleiman@google.com>,
- Youssef Esmat <youssefesmat@google.com>, David Vernet <void@manifault.com>,
- Thomas Gleixner <tglx@linutronix.de>, "Paul E . McKenney"
- <paulmck@kernel.org>, joseph.salisbury@canonical.com,
- Luca Abeni <luca.abeni@santannapisa.it>,
- Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
- Vineeth Pillai <vineeth@bitbyteword.org>,
- Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>
-References: <20240313012451.1693807-1-joel@joelfernandes.org>
- <20240313012451.1693807-13-joel@joelfernandes.org>
-From: Daniel Bristot de Oliveira <bristot@redhat.com>
-In-Reply-To: <20240313012451.1693807-13-joel@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4f781313ddb2b7657fadc35dc04c0e3c3de3b27c.camel@ndufresne.ca>
 
-On 3/13/24 02:24, Joel Fernandes (Google) wrote:
-> From: Suleiman Souhlal <suleiman@google.com>
-> 
-> dl_time_before() seems to be incorrectly used, we need to check that the
-> 0-laxity time is ahead of the rq_clock. Fix it.
-> 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+Hey Nicolas,
 
-Makes sense, I am adding it to the defer patch in v6 as it is a fix for it...
+On 04.04.2024 14:56, Nicolas Dufresne wrote:
+>Hi,
+>
+>Le jeudi 04 avril 2024 à 10:02 +0200, sebastian.fricke@collabora.com a écrit :
+>> > > > > > Wave5 can enable/disable the sec_axi_info option for each instance.
+>> > > > > >
+>> > > > > > How about handle sram-size through match_data ?
+>> > > > > > I can find some drivers which use match_data to configure the sram
+>> > > size.
+>> >
+>> > I proposed using match_data to allocate different sram size for each device.
+>> > Do you think this is a reasonable approach ?
+>>
+>> As discussed here:
+>> https://patchwork.linuxtv.org/project/linux-media/patch/20240201184238.2542695-1-b-brnich@ti.com/
+>>
+>> To quote Brandon Brnich from TI:
+>>
+>> If static SRAM allocation is the correct method to go, then this series
+>> can be ignored and I will add section in device tree and remove check
+>> for parameter in driver as that will now be a bug.
+>>
+>> I would like to adhere to that.
+>
+>I feel your statement is a bit ambiguous. Can you clarify what you adhere too ?
+>That we should hardcode fixed sram size in the DT ?
 
--- Daniel
+Sorry wasn't aware that my statement is ambiguous, my intention was to
+say that we do not add the sram size to the DT as it was discussed with
+the DT maintainer in the thread above, my adherence was pointed towards
+the statement from Brandon: "then this series can be ignored".
 
+>
+>When I read earlier today "How about handle sram-size through match_data ?",
+>what I saw was a static C structure in the driver. Like what we do with HW
+>variants usually.
+>
+>I was pretty convince that the right solution is to allocate sram when the
+>driver is used (open() seems appropriate), and drop it when its not used. With
+>the clear benefit that we can change our mind later if we find valid arguments.
+>
+>So with that in mind, dropping (cleaning up) that old code seems helpful to
+>create a clean slate to re-introduce a better version.
+>
+>Nicolas
+
+Greetings,
+Sebastian
 
