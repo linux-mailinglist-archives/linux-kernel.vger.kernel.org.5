@@ -1,195 +1,141 @@
-Return-Path: <linux-kernel+bounces-132625-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C5D289976A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:02:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC4E8899760
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:00:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE05B1C22CC8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:02:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47903B20AF8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:00:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EF3C1465A8;
-	Fri,  5 Apr 2024 08:00:56 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D153E142E81;
-	Fri,  5 Apr 2024 08:00:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A7A142E8F;
+	Fri,  5 Apr 2024 08:00:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u96lNQ9g"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B42AC171CC;
+	Fri,  5 Apr 2024 08:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712304055; cv=none; b=AwRHH5OGOassAg3SK8of8t5lGJH9b3Z32dmcnuY+hQfoNQ0/FeOso4DLGLmL9ZIOUDa1B3ZR9wyyPq3zAawXVxtSDkuu5/cvm0MqNDxSP0xH2vHLJ1yv4IFk+d/i+mN9ZyO/SPdcs035EjuslMQ66p+ZTWVJ2NJ3w+h3mD5fnFU=
+	t=1712304019; cv=none; b=kWknw4tbB6RbwsdHN0gwXnw21nmhD6qeMQVpKQJ13zJPrYptrH288kw7hsJiF86A+rd41jFIuWQkz+pBFNuawmeZvX8aqcv2zizDDi9B6jEa7x0L4XyHNEleNAPuij9MNtbvbjuYIqc899zt32sucgWA4aj8fIsNJ9Z8GluVwYQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712304055; c=relaxed/simple;
-	bh=iSwZRZL9c5VQt+IMlIUvW9RR22JtUFl2SybvCS3S/38=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hXrkkw0j0Y+P+2U8O6OwgP7AOTkweTyCraUnZ4EbVCWjU/AXkM0WFqYrEjGh2IwQRwrQFIqAiUqvGFsaBhlfHFz/oLboY/+FRs1F6I9JhyC8UgHTPQnW5dod55WM/HP7hTSeVRXlX46MeoIZw5stDoCQv1iIzwmb7fYODBUHKVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E3CFC1007;
-	Fri,  5 Apr 2024 01:01:23 -0700 (PDT)
-Received: from a077893.blr.arm.com (a077893.blr.arm.com [10.162.41.6])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EB97B3F64C;
-	Fri,  5 Apr 2024 01:00:48 -0700 (PDT)
-From: Anshuman Khandual <anshuman.khandual@arm.com>
-To: linux-arm-kernel@lists.infradead.org
-Cc: Anshuman Khandual <anshuman.khandual@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org
-Subject: [RFC 7/8] arm64/boot: Enable EL2 requirements for FEAT_Debugv8p9
-Date: Fri,  5 Apr 2024 13:30:07 +0530
-Message-Id: <20240405080008.1225223-8-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240405080008.1225223-1-anshuman.khandual@arm.com>
-References: <20240405080008.1225223-1-anshuman.khandual@arm.com>
+	s=arc-20240116; t=1712304019; c=relaxed/simple;
+	bh=IZRrX7XpE+4FP7wBYx2ZuBhTerHvqKeOEt7zeIB6fbk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bYFnBHdZfKcwHnAyEA9IEJbVsRdUmdNESrZ7ooQvWvWsaKiOZBDIOJdmBoGfXD8bVQU6Og0EzZp63GGPlAitS+CJIFYi1m3ngNDQpwVppdW8fYfV6+TY6W83nEnzRA2UlZoYhaod+uhrz8oM7AlN6av4uXkugOFqfNCWq7I6+oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u96lNQ9g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E4FCC433C7;
+	Fri,  5 Apr 2024 08:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712304019;
+	bh=IZRrX7XpE+4FP7wBYx2ZuBhTerHvqKeOEt7zeIB6fbk=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=u96lNQ9g7rzhJVO5YSuaTSLcO8l5TZxj9nriXwg/NHXCi2gc5Zqor0K2wLhWMgS+0
+	 KDodbIO9tf8r1jtwW0vhcC4qg5CcEgHNcmOP617kX2to7ha62nzjLUH5GMYf/AFxPz
+	 D9vNsUpCbelB/vauSI6/zcY0t4kCC3TbBM9KmWBrav0TdaC20aP+j8BczWSp6/LmCg
+	 J9OViP8NYXY0VnygybjrslNd6CV9QYVo5WXmTLZxbBOOFsohSSCOUDXtUPU/nawV+b
+	 zZE3gWV7gE/i7P8B3GIUyKp7QiV1rybvULLtaK2sfiGSajTa+lJhncklkQf7IpmEla
+	 6l0uSJRLKP/nw==
+Message-ID: <9f202f3a-fec8-4570-8c37-64927bdbb276@kernel.org>
+Date: Fri, 5 Apr 2024 10:00:07 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 17/17] MAINTAINERS: Add phy-gs101-ufs file to Tensor
+ GS101.
+To: Peter Griffin <peter.griffin@linaro.org>, mturquette@baylibre.com,
+ sboyd@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
+ vkoul@kernel.org, kishon@kernel.org, alim.akhtar@samsung.com,
+ avri.altman@wdc.com, bvanassche@acm.org, s.nawrocki@samsung.com,
+ cw00.choi@samsung.com, jejb@linux.ibm.com, martin.petersen@oracle.com,
+ chanho61.park@samsung.com, ebiggers@kernel.org
+Cc: linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org,
+ devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+ linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org,
+ andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com
+References: <20240404122559.898930-1-peter.griffin@linaro.org>
+ <20240404122559.898930-18-peter.griffin@linaro.org>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <20240404122559.898930-18-peter.griffin@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Fine grained trap control for MDSELR_EL1 register needs to be configured in
-HDFGRTR2_EL2, and HDFGWTR2_EL2 registers when kernel enters at EL1, but EL2
-is also present. This adds a new helper __init_el2_fgt2() initializing this
-new FEAT_FGT2 based fine grained registers.
+On 04/04/2024 14:25, Peter Griffin wrote:
+> Add the newly created ufs phy for GS101 to MAINTAINERS.
+> 
+> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+> ---
+>  MAINTAINERS | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 491d48f7c2fa..48ac9bd64f22 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -9256,6 +9256,7 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/clock/google,gs101-clock.yaml
+>  F:	arch/arm64/boot/dts/exynos/google/
+>  F:	drivers/clk/samsung/clk-gs101.c
+> +F:	drivers/phy/samsung/phy-gs101-ufs.c
 
-MDCR_EL2.EBWE needs to be enabled for additional (beyond 16) breakpoint and
-watchpoint exceptions when kernel enters at EL1, but EL2 is also present.
-This updates __init_el2_debug() as required for FEAT_Debugv8p9.
+This could go also via phy-tree:
 
-While here, also update booting.rst with MDCR_EL3 and SCR_EL3 requirements.
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: Oliver Upton <oliver.upton@linux.dev>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: kvmarm@lists.linux.dev
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- Documentation/arch/arm64/booting.rst | 19 +++++++++++++++++++
- arch/arm64/include/asm/el2_setup.h   | 27 +++++++++++++++++++++++++++
- arch/arm64/include/asm/kvm_arm.h     |  1 +
- 3 files changed, 47 insertions(+)
-
-diff --git a/Documentation/arch/arm64/booting.rst b/Documentation/arch/arm64/booting.rst
-index b57776a68f15..e69d972018cf 100644
---- a/Documentation/arch/arm64/booting.rst
-+++ b/Documentation/arch/arm64/booting.rst
-@@ -285,6 +285,12 @@ Before jumping into the kernel, the following conditions must be met:
- 
-     - SCR_EL3.FGTEn (bit 27) must be initialised to 0b1.
- 
-+  For CPUs with the Fine Grained Traps (FEAT_FGT2) extension present:
-+
-+  - If EL3 is present and the kernel is entered at EL2:
-+
-+    - SCR_EL3.FGTEn2 (bit 59) must be initialised to 0b1.
-+
-   For CPUs with support for HCRX_EL2 (FEAT_HCX) present:
- 
-   - If EL3 is present and the kernel is entered at EL2:
-@@ -319,6 +325,19 @@ Before jumping into the kernel, the following conditions must be met:
-     - ZCR_EL2.LEN must be initialised to the same value for all CPUs the
-       kernel will execute on.
- 
-+  For CPUs with FEAT_Debugv8p9 extension present:
-+
-+  - If the kernel is entered at EL1 and EL2 is present:
-+
-+    - HDFGRTR2_EL2.nMDSELR_EL1 (bit 5) must be initialized to 0b1
-+    - HDFGWTR2_EL2.nMDSELR_EL1 (bit 5) must be initialized to 0b1
-+    - MDCR_EL2.EBWE (bit 43) must be initialized to 0b1
-+
-+  - If EL3 is present:
-+
-+    - MDCR_EL3.TDA (bit 9) must be initialized to 0b0
-+    - MDCR_EL3.EBWE (bit 43) must be initialized to 0b1
-+
-   For CPUs with the Scalable Matrix Extension (FEAT_SME):
- 
-   - If EL3 is present:
-diff --git a/arch/arm64/include/asm/el2_setup.h b/arch/arm64/include/asm/el2_setup.h
-index b7afaa026842..0425067a93d9 100644
---- a/arch/arm64/include/asm/el2_setup.h
-+++ b/arch/arm64/include/asm/el2_setup.h
-@@ -96,6 +96,14 @@
- 						// to own it.
- 
- .Lskip_trace_\@:
-+	mrs	x1, id_aa64dfr0_el1
-+	ubfx	x1, x1, #ID_AA64DFR0_EL1_DebugVer_SHIFT, #4
-+	cmp	x1, #ID_AA64DFR0_EL1_DebugVer_V8P9
-+	b.lt	.Lskip_dbg_v8p9_\@
-+
-+	mov	x0, #MDCR_EL2_EBWE
-+	orr	x2, x2, x0
-+.Lskip_dbg_v8p9_\@:
- 	msr	mdcr_el2, x2			// Configure debug traps
- .endm
- 
-@@ -203,6 +211,24 @@
- .Lskip_fgt_\@:
- .endm
- 
-+.macro __init_el2_fgt2
-+	mrs	x1, id_aa64mmfr0_el1
-+	ubfx	x1, x1, #ID_AA64MMFR0_EL1_FGT_SHIFT, #4
-+	cmp	x1, #ID_AA64MMFR0_EL1_FGT_FGT2
-+	b.lt	.Lskip_fgt2_\@
-+
-+	mrs	x1, id_aa64dfr0_el1
-+	ubfx	x1, x1, #ID_AA64DFR0_EL1_DebugVer_SHIFT, #4
-+	cmp	x1, #ID_AA64DFR0_EL1_DebugVer_V8P9
-+	b.lt	.Lskip_dbg_v8p9_\@
-+
-+	mov_q   x0, HDFGWTR2_EL2_nMDSELR_EL1
-+	msr_s	SYS_HDFGWTR2_EL2, x0
-+	msr_s	SYS_HDFGRTR2_EL2, x0
-+.Lskip_dbg_v8p9_\@:
-+.Lskip_fgt2_\@:
-+.endm
-+
- .macro __init_el2_nvhe_prepare_eret
- 	mov	x0, #INIT_PSTATE_EL1
- 	msr	spsr_el2, x0
-@@ -228,6 +254,7 @@
- 	__init_el2_nvhe_idregs
- 	__init_el2_cptr
- 	__init_el2_fgt
-+	__init_el2_fgt2
- .endm
- 
- #ifndef __KVM_NVHE_HYPERVISOR__
-diff --git a/arch/arm64/include/asm/kvm_arm.h b/arch/arm64/include/asm/kvm_arm.h
-index e01bb5ca13b7..9d77dfc43e08 100644
---- a/arch/arm64/include/asm/kvm_arm.h
-+++ b/arch/arm64/include/asm/kvm_arm.h
-@@ -306,6 +306,7 @@
- 				 BIT(11))
- 
- /* Hyp Debug Configuration Register bits */
-+#define MDCR_EL2_EBWE		(UL(1) << 43)
- #define MDCR_EL2_E2TB_MASK	(UL(0x3))
- #define MDCR_EL2_E2TB_SHIFT	(UL(24))
- #define MDCR_EL2_HPMFZS		(UL(1) << 36)
--- 
-2.25.1
+Best regards,
+Krzysztof
 
 
