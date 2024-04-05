@@ -1,165 +1,279 @@
-Return-Path: <linux-kernel+bounces-133138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133121-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E2B9899F5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:19:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F25AD899F33
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:14:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 04B3A281653
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:19:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74B441F2438F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:14:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5BB171E7F;
-	Fri,  5 Apr 2024 14:15:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9860516EC07;
+	Fri,  5 Apr 2024 14:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yCIY2Y5r"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="m9cIbNdh"
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BC8416F0D3
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:15:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEC716EBE4
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712326536; cv=none; b=Wk66UdIAhbSvGF27wLpXC4vmbI4CrHmpwRhdknh5aua/zT1iT709bpgawSkvDmutQkXwnR6RREzvFys7Huf1Jz6XIoaaWU6Dd+EP50Kk7kGU2pUhasYT4Onq6RFchr9sq3VeGLfIVdMkr53eowI+NFHmLPh3AEEjpImf8t/UIEU=
+	t=1712326467; cv=none; b=ZySOce6WXOPwINhdiSz7ZBYpjg7B2UVJOzEKeAfrdE41Lu7RrJ12N2ohQg7heZvkbMpjcKDcGmT206yhRmM99ri81WUvBlSH2PD90ITYNYpG7Tp8MECGMMZa4XgMy7Oiq54CTt4oRnNQbavuxR8mWMCAxAIdzTV7ahiy8OgMfXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712326536; c=relaxed/simple;
-	bh=i4Tr+nVq+Xi4RO9+q//9cew+LkXLU25d9j5EEYLNZ0w=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=XmoTCjvLThMe/PtUpUgOgw9PnlzDXwWNZQ8cp9/Q20SyleQRFZRr/EDxSenNT+cUfPQMaeZ+P32MaDBsTEZ2UcOrpg0eIQyVSfK+LhLuN++G0qwpnuhWyxT3i1FFXGF0awaRNs5Y+mJq20eH/CTmJfv0CeVwnXLLjmvkT2AwjB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yCIY2Y5r; arc=none smtp.client-ip=209.85.128.201
+	s=arc-20240116; t=1712326467; c=relaxed/simple;
+	bh=/3Ff0ruSdSe2swlOVf02/BjidRrZyf0D/8DkjYb/ays=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jQlh3reEGZJt9UYmRfsRprO3HaZ9aS2bkaAU4AWNQ+v4s+dngT/A5M1xFLS0bWpfeIxoR+D+isugS1WM7YQLPl2iuIpAbWW7PP/5X4TYKQt70fsO+903eCe/zeQNmi5z577RfdywhyJJpiwNhtjLoUbJZqdF/SrUCXbGVwRo5jM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=m9cIbNdh; arc=none smtp.client-ip=209.85.219.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a61b31993so36780037b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:15:35 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dd045349d42so2184787276.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:14:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712326534; x=1712931334; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zsDOfX+3b1RUaLhcJa3oIsCx6Cf2GznngtDV1SnNmvI=;
-        b=yCIY2Y5r52Kg6SeycmYxCmlYo5begxTNog5Kx0TJ9ixkHE7TKjqSHA6Ykf72dzaucG
-         fYUsOsB7xI2/Lp8dPDQxyitXD+hKdadvHKdreDk03wTWvegycvnnQjysvhOYd+GmNsJM
-         V9INDvqTjD6zRrL1UW3oVrRwAyVStaq89EU2rLASAn4InIOBcK9XUKm64D7zObIAPVT7
-         +KDf2U0j1fJXvQZ9EI4wj4PkXVmfYySLWw921dCyKovkc0JlgyxyAMVugJreVfC8K6+J
-         41LVyunD7aJBqE0+iKbMHbJOz3IsO3XgHc8nHPNZUCuxYx74dTJV0yRqaiYug50wnzoc
-         13Eg==
+        d=google.com; s=20230601; t=1712326465; x=1712931265; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hpu1q6SRpmnX63rYNMcOKU3gYj7mEiDBoir+Gp671n0=;
+        b=m9cIbNdhfbiUpGNUSPqcDbHILtBQP+M5o/MovmM8BAVPq9GI/VOtL/o3RGDDPc8dtv
+         Lj81qvHQsKZqY2+lN7WkFGWkSyV1KHRIYN0Af6zlIZJl5XRpqkbryrDRsBOET3UMX6az
+         go+D87uWk04bZWqJzuyHK5zINSei7kY+4REtcOi/q/YzPP/V+a1r9VaeKF5EAXWfS+L2
+         MOLSgmbAWbB5C7VTz4yQ6KTmTl0ljAAzc7QK0Q7eZSo0LJ6fiaKQoXiaxrCi24I6oFUg
+         y1CHV5cBBnsEDB0fgKjyS7P8HWj5ZzqOia5QJzgQ6v64sFz82e44gtzY3AUCHJuTwmzF
+         v5VA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712326534; x=1712931334;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zsDOfX+3b1RUaLhcJa3oIsCx6Cf2GznngtDV1SnNmvI=;
-        b=dZxE7JgrwutEmjkX0ffme9uj+EH4icf8+tHf9e78K+59FJT6MPhKkyEdwJA29IGBv8
-         JMQ4aZT7Nnj3FPJ/cyjRRclTFG7gaCP43EOB04eFLpqaB24q3OTiBZeXFG0//cdN5SOO
-         vke9NIJ8uc3WlztbaRchzUW6GlywVycbzsKdtJhcZfjfeE87I4sINPbGoAOrUDcaQJPw
-         QAlG3thNARnR/Lg3ubHYQ10CjLC7TU66xxH3Gn2VaYkupwk3ZB5AOGdZSytTigvO2rbe
-         2la1EzZg76e6ahpf6KFUFA8PW2Uu1jdQqsBMiTrIwV9gT0CqUJIb9HdJYFoLIKSntz3n
-         o8Iw==
-X-Forwarded-Encrypted: i=1; AJvYcCXIIJCTnQtvH8AecAKR9A+ynbthBjSTx8WjF9tRSGsZBl3wL4lWZaEK+21OlziAObXgWY/QJXw6mwrnTzwT4Y5wwzbbXCV/rxcmNIJe
-X-Gm-Message-State: AOJu0YzrImmr0kxumqx4yoLiP+jsARWHaLBJVmz8Bav8dXYZHptENgC9
-	JwA6c0zdKuWUkRZNHSbsBiJnMHmIPMeYtgCjwEyELc/SlfamFDWSnL9W1qeenHuNldoc+jGsWax
-	oX68Cbi/uoA==
-X-Google-Smtp-Source: AGHT+IEazU1D3+af0NVMWywuHy/ujQAr1fDtXw2VNn2XTE2hgtIiqfvfx0Pk6JxWWw8zhjW8vAbmO2PrbYxeKw==
-X-Received: from szatan.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2d83])
- (user=panikiel job=sendgmr) by 2002:a81:6c92:0:b0:617:cb4f:a5df with SMTP id
- h140-20020a816c92000000b00617cb4fa5dfmr370403ywc.3.1712326534377; Fri, 05 Apr
- 2024 07:15:34 -0700 (PDT)
-Date: Fri,  5 Apr 2024 14:14:11 +0000
-In-Reply-To: <20240405141411.1807189-1-panikiel@google.com>
+        d=1e100.net; s=20230601; t=1712326465; x=1712931265;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hpu1q6SRpmnX63rYNMcOKU3gYj7mEiDBoir+Gp671n0=;
+        b=lXVBjGd27PMey9+Q7/UOKQsrjPtW9wTyI9Ppno+XaJBcI2bjDtteWdQ07jJnNBsl8b
+         7gJ/pTvK1yP4WY312y2GwcI63sAsNaHenbkRC0dPgfQvJdvXigPvu7ZFAkQ4hG5q0zjV
+         okambuiEQ5ZrF61pBEQTUTzwDAnDda2br70zIbCKKFddQZ80ItS3y7jwzKRqmKFgsrgZ
+         bjesjaPHgnZJB++8Q379pcTZbHUv47jltJAsf3GUlm/PX5qqR5M/eIRhQCvoToonAyUj
+         JBtRynwjshCpDHeQYeHoBtpQPNeFffeBQNQw7BNM948DX1wvPRp8l4Jf9POKbfiWW9Af
+         9b8w==
+X-Forwarded-Encrypted: i=1; AJvYcCX4/2RJTcq00jpZOK9i1u5xFfV5A5A4/yway7zmcYMognjye+b0MAZcFBc0VEa7R2GQOubFvrCQBKebtocglN6jajuwt8a3A+PUtsd2
+X-Gm-Message-State: AOJu0YwGeCwlk89XqJRon/YvExuMYA3Qe+evRmi4yNSqVzMnWbfUiVDd
+	0hxsEXeFmiDlSvqlOLN4nWpCYm0eIp+S3FzBT2ylcOplhOHGC5/LSHKiZQ8NP+6dxFnFUQPRqWU
+	STDzA0QolDWhrUX8JqXn5TrGKpPKGjHtEK+Xq
+X-Google-Smtp-Source: AGHT+IHDoL8CyE4JI6s6nrfOOaPQHBhIqvTMcGBGoOIQ6VIDYTEmV/Kyll+3WtknG2SvBV6fBNw77eOzOIYfr57jOZQ=
+X-Received: by 2002:a05:6902:4a:b0:dc7:32ea:c89f with SMTP id
+ m10-20020a056902004a00b00dc732eac89fmr1241871ybh.15.1712326464281; Fri, 05
+ Apr 2024 07:14:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240405141411.1807189-1-panikiel@google.com>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240405141411.1807189-17-panikiel@google.com>
-Subject: [PATCH 16/16] media: v4l2-subdev: Remove non-pad dv timing callbacks
-From: "=?UTF-8?q?Pawe=C5=82=20Anikiel?=" <panikiel@google.com>
-To: kieran.bingham@ideasonboard.com, mchehab@kernel.org, 
-	hverkuil-cisco@xs4all.nl, tharvey@gateworks.com, 
-	niklas.soderlund@ragnatech.se, prabhakar.csengg@gmail.com, 
-	charles-antoine.couret@nexvision.fr, thierry.reding@gmail.com, 
-	jonathanh@nvidia.com, skomatineni@nvidia.com, luca.ceresoli@bootlin.com
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	chromeos-krk-upstreaming@google.com, 
-	"=?UTF-8?q?Pawe=C5=82=20Anikiel?=" <panikiel@google.com>
+MIME-Version: 1.0
+References: <20240321163705.3067592-1-surenb@google.com> <c14cd89b-c879-4474-a800-d60fc29c1820@gmail.com>
+In-Reply-To: <c14cd89b-c879-4474-a800-d60fc29c1820@gmail.com>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 5 Apr 2024 07:14:13 -0700
+Message-ID: <CAJuCfpHEt2n6sA7m5zvc-F+z=3-twVEKfVGCa0+y62bT10b0Bw@mail.gmail.com>
+Subject: Re: [PATCH v6 00/37] Memory allocation profiling
+To: Klara Modin <klarasmodin@gmail.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-After the conversion of dv timing calls to use a pad argument is done,
-remove the old callbacks. Update the subdev ioctl handlers to use the
-new callbacks.
+On Fri, Apr 5, 2024 at 6:37=E2=80=AFAM Klara Modin <klarasmodin@gmail.com> =
+wrote:
+>
+> Hi,
+>
+> On 2024-03-21 17:36, Suren Baghdasaryan wrote:
+> > Overview:
+> > Low overhead [1] per-callsite memory allocation profiling. Not just for
+> > debug kernels, overhead low enough to be deployed in production.
+> >
+> > Example output:
+> >    root@moria-kvm:~# sort -rn /proc/allocinfo
+> >     127664128    31168 mm/page_ext.c:270 func:alloc_page_ext
+> >      56373248     4737 mm/slub.c:2259 func:alloc_slab_page
+> >      14880768     3633 mm/readahead.c:247 func:page_cache_ra_unbounded
+> >      14417920     3520 mm/mm_init.c:2530 func:alloc_large_system_hash
+> >      13377536      234 block/blk-mq.c:3421 func:blk_mq_alloc_rqs
+> >      11718656     2861 mm/filemap.c:1919 func:__filemap_get_folio
+> >       9192960     2800 kernel/fork.c:307 func:alloc_thread_stack_node
+> >       4206592        4 net/netfilter/nf_conntrack_core.c:2567 func:nf_c=
+t_alloc_hashtable
+> >       4136960     1010 drivers/staging/ctagmod/ctagmod.c:20 [ctagmod] f=
+unc:ctagmod_start
+> >       3940352      962 mm/memory.c:4214 func:alloc_anon_folio
+> >       2894464    22613 fs/kernfs/dir.c:615 func:__kernfs_new_node
+> >       ...
+> >
+> > Since v5 [2]:
+> > - Added Reviewed-by and Acked-by, per Vlastimil Babka and Miguel Ojeda
+> > - Changed pgalloc_tag_{add|sub} to use number of pages instead of order=
+, per Matthew Wilcox
+> > - Changed pgalloc_tag_sub_bytes to pgalloc_tag_sub_pages and adjusted t=
+he usage, per Matthew Wilcox
+> > - Moved static key check before prepare_slab_obj_exts_hook(), per Vlast=
+imil Babka
+> > - Fixed RUST helper, per Miguel Ojeda
+> > - Fixed documentation, per Randy Dunlap
+> > - Rebased over mm-unstable
+> >
+> > Usage:
+> > kconfig options:
+> >   - CONFIG_MEM_ALLOC_PROFILING
+> >   - CONFIG_MEM_ALLOC_PROFILING_ENABLED_BY_DEFAULT
+> >   - CONFIG_MEM_ALLOC_PROFILING_DEBUG
+> >     adds warnings for allocations that weren't accounted because of a
+> >     missing annotation
+> >
+> > sysctl:
+> >    /proc/sys/vm/mem_profiling
+> >
+> > Runtime info:
+> >    /proc/allocinfo
+> >
+> > Notes:
+> >
+> > [1]: Overhead
+> > To measure the overhead we are comparing the following configurations:
+> > (1) Baseline with CONFIG_MEMCG_KMEM=3Dn
+> > (2) Disabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
+> >      CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dn)
+> > (3) Enabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
+> >      CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dy)
+> > (4) Enabled at runtime (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
+> >      CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dn && /proc/sys/vm/mem_prof=
+iling=3D1)
+> > (5) Baseline with CONFIG_MEMCG_KMEM=3Dy && allocating with __GFP_ACCOUN=
+T
+> > (6) Disabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
+> >      CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dn)  && CONFIG_MEMCG_KMEM=
+=3Dy
+> > (7) Enabled by default (CONFIG_MEM_ALLOC_PROFILING=3Dy &&
+> >      CONFIG_MEM_ALLOC_PROFILING_BY_DEFAULT=3Dy) && CONFIG_MEMCG_KMEM=3D=
+y
+> >
+> > Performance overhead:
+> > To evaluate performance we implemented an in-kernel test executing
+> > multiple get_free_page/free_page and kmalloc/kfree calls with allocatio=
+n
+> > sizes growing from 8 to 240 bytes with CPU frequency set to max and CPU
+> > affinity set to a specific CPU to minimize the noise. Below are results
+> > from running the test on Ubuntu 22.04.2 LTS with 6.8.0-rc1 kernel on
+> > 56 core Intel Xeon:
+> >
+> >                          kmalloc                 pgalloc
+> > (1 baseline)            6.764s                  16.902s
+> > (2 default disabled)    6.793s  (+0.43%)        17.007s (+0.62%)
+> > (3 default enabled)     7.197s  (+6.40%)        23.666s (+40.02%)
+> > (4 runtime enabled)     7.405s  (+9.48%)        23.901s (+41.41%)
+> > (5 memcg)               13.388s (+97.94%)       48.460s (+186.71%)
+> > (6 def disabled+memcg)  13.332s (+97.10%)       48.105s (+184.61%)
+> > (7 def enabled+memcg)   13.446s (+98.78%)       54.963s (+225.18%)
+> >
+> > Memory overhead:
+> > Kernel size:
+> >
+> >     text           data        bss         dec         diff
+> > (1) 26515311        18890222    17018880    62424413
+> > (2) 26524728        19423818    16740352    62688898    264485
+> > (3) 26524724        19423818    16740352    62688894    264481
+> > (4) 26524728        19423818    16740352    62688898    264485
+> > (5) 26541782        18964374    16957440    62463596    39183
+> >
+> > Memory consumption on a 56 core Intel CPU with 125GB of memory:
+> > Code tags:           192 kB
+> > PageExts:         262144 kB (256MB)
+> > SlabExts:           9876 kB (9.6MB)
+> > PcpuExts:            512 kB (0.5MB)
+> >
+> > Total overhead is 0.2% of total memory.
+> >
+> > Benchmarks:
+> >
+> > Hackbench tests run 100 times:
+> > hackbench -s 512 -l 200 -g 15 -f 25 -P
+> >        baseline       disabled profiling           enabled profiling
+> > avg   0.3543         0.3559 (+0.0016)             0.3566 (+0.0023)
+> > stdev 0.0137         0.0188                       0.0077
+> >
+> >
+> > hackbench -l 10000
+> >        baseline       disabled profiling           enabled profiling
+> > avg   6.4218         6.4306 (+0.0088)             6.5077 (+0.0859)
+> > stdev 0.0933         0.0286                       0.0489
+> >
+> > stress-ng tests:
+> > stress-ng --class memory --seq 4 -t 60
+> > stress-ng --class cpu --seq 4 -t 60
+> > Results posted at: https://evilpiepirate.org/~kent/memalloc_prof_v4_str=
+ess-ng/
+> >
+> > [2] https://lore.kernel.org/all/20240306182440.2003814-1-surenb@google.=
+com/
+>
+> If I enable this, I consistently get percpu allocation failures. I can
+> occasionally reproduce it in qemu. I've attached the logs and my config,
+> please let me know if there's anything else that could be relevant.
 
-Signed-off-by: Pawe=C5=82 Anikiel <panikiel@google.com>
----
- drivers/media/v4l2-core/v4l2-subdev.c |  6 +++---
- include/media/v4l2-subdev.h           | 14 --------------
- 2 files changed, 3 insertions(+), 17 deletions(-)
+Thanks for the report!
+In debug_alloc_profiling.log I see:
 
-diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-cor=
-e/v4l2-subdev.c
-index 07759cdd0844..6572667fd5c4 100644
---- a/drivers/media/v4l2-core/v4l2-subdev.c
-+++ b/drivers/media/v4l2-core/v4l2-subdev.c
-@@ -906,16 +906,16 @@ static long subdev_do_ioctl(struct file *file, unsign=
-ed int cmd, void *arg,
- 	}
-=20
- 	case VIDIOC_SUBDEV_QUERY_DV_TIMINGS:
--		return v4l2_subdev_call(sd, video, query_dv_timings, arg);
-+		return v4l2_subdev_call(sd, pad, query_dv_timings, 0, arg);
-=20
- 	case VIDIOC_SUBDEV_G_DV_TIMINGS:
--		return v4l2_subdev_call(sd, video, g_dv_timings, arg);
-+		return v4l2_subdev_call(sd, pad, g_dv_timings, 0, arg);
-=20
- 	case VIDIOC_SUBDEV_S_DV_TIMINGS:
- 		if (ro_subdev)
- 			return -EPERM;
-=20
--		return v4l2_subdev_call(sd, video, s_dv_timings, arg);
-+		return v4l2_subdev_call(sd, pad, s_dv_timings, 0, arg);
-=20
- 	case VIDIOC_SUBDEV_G_STD:
- 		return v4l2_subdev_call(sd, video, g_std, arg);
-diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-index a5213411ef2b..1af16b16f0bf 100644
---- a/include/media/v4l2-subdev.h
-+++ b/include/media/v4l2-subdev.h
-@@ -452,14 +452,6 @@ enum v4l2_subdev_pre_streamon_flags {
-  *
-  * @g_pixelaspect: callback to return the pixelaspect ratio.
-  *
-- * @s_dv_timings: Set custom dv timings in the sub device. This is used
-- *	when sub device is capable of setting detailed timing information
-- *	in the hardware to generate/detect the video signal.
-- *
-- * @g_dv_timings: Get custom dv timings in the sub device.
-- *
-- * @query_dv_timings: callback for VIDIOC_QUERY_DV_TIMINGS() ioctl handler=
- code.
-- *
-  * @s_rx_buffer: set a host allocated memory buffer for the subdev. The su=
-bdev
-  *	can adjust @size to a lower value and must not write more data to the
-  *	buffer starting at @data than the original value of @size.
-@@ -490,12 +482,6 @@ struct v4l2_subdev_video_ops {
- 	int (*g_input_status)(struct v4l2_subdev *sd, u32 *status);
- 	int (*s_stream)(struct v4l2_subdev *sd, int enable);
- 	int (*g_pixelaspect)(struct v4l2_subdev *sd, struct v4l2_fract *aspect);
--	int (*s_dv_timings)(struct v4l2_subdev *sd,
--			struct v4l2_dv_timings *timings);
--	int (*g_dv_timings)(struct v4l2_subdev *sd,
--			struct v4l2_dv_timings *timings);
--	int (*query_dv_timings)(struct v4l2_subdev *sd,
--			struct v4l2_dv_timings *timings);
- 	int (*s_rx_buffer)(struct v4l2_subdev *sd, void *buf,
- 			   unsigned int *size);
- 	int (*pre_streamon)(struct v4l2_subdev *sd, u32 flags);
---=20
-2.44.0.478.gd926399ef9-goog
+[    7.445127] percpu: limit reached, disable warning
 
+That's probably the reason. I'll take a closer look at the cause of
+that and how we can fix it.
+
+ In qemu-alloc3.log I see couple of warnings:
+
+[    1.111620] alloc_tag was not set
+[    1.111880] WARNING: CPU: 0 PID: 164 at
+include/linux/alloc_tag.h:118 kfree (./include/linux/alloc_tag.h:118
+(discriminator 1) ./include/linux/alloc_tag.h:161 (discriminator 1)
+mm/slub.c:2043 ...
+
+[    1.161710] alloc_tag was not cleared (got tag for fs/squashfs/cache.c:4=
+13)
+[    1.162289] WARNING: CPU: 0 PID: 195 at
+include/linux/alloc_tag.h:109 kmalloc_trace_noprof
+(./include/linux/alloc_tag.h:109 (discriminator 1)
+/include/linux/alloc_tag.h:149 (discriminator 1) ...
+
+Which means we missed to instrument some allocation. Can you please
+check if disabling CONFIG_MEM_ALLOC_PROFILING_DEBUG fixes QEMU case?
+In the meantime I'll try to reproduce and fix this.
+Thanks,
+Suren.
+
+
+
+>
+> Kind regards,
+> Klara Modin
 
