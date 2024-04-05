@@ -1,32 +1,32 @@
-Return-Path: <linux-kernel+bounces-132458-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28831899516
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:12:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1AA75899518
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:13:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 482301C20E03
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:12:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60D76B2698F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:13:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFCC865BAD;
-	Fri,  5 Apr 2024 06:09:19 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF274CB4B;
-	Fri,  5 Apr 2024 06:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1302F8061F;
+	Fri,  5 Apr 2024 06:09:22 +0000 (UTC)
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5EA55E45;
+	Fri,  5 Apr 2024 06:09:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712297358; cv=none; b=KBDty4oBptMCwUHoBjLemKcdjlspz9Gttu62EkUfsFkrIJBRfRY4+82leFk7wz3uF2ndtziz6vnlVp1KvHtw90evTiDbd937z6EceIS7ZTBdf+J4ygbBq6lTUGWXswj/YRM0QG3zHsiZuj5gAu0yuvLIhQZwvWN91BwCvkI6/GU=
+	t=1712297361; cv=none; b=bW4ALew6qoGarNrnYRaSULrcIEQPi9418XnVi3Ykd9ewHbXYOGQTmG/Alnz7LoXkDh3B9+GgqZU0qHQwBfxPD6eBCf59kDyMmYx57h5jXbZRsz6sgAVvxr/Hh9zFN/FEnOybEOPFu+a0QwAsVXrAWdAo+QyHoJU+S5Gkz37XW3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712297358; c=relaxed/simple;
-	bh=gsAAZc9cuhVh+ZidXiXs6Qt6krpw6tKnwYRowtFGyuY=;
+	s=arc-20240116; t=1712297361; c=relaxed/simple;
+	bh=1NLtaDXpkC9ZSmLCYjLXJroBuC67b3ZA9SER/MNivlo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UkZWvFNKg96f18ToQiX4t0DQQFkCsYxO2xymMcb2DKjUH2640awMQ5UvzNlhX6915q9VKAsbXElDFvDN0B67zY6/0yVob1fIsRlbME3ZaVjBFBQnj2YQjG/6bzpQIhb8+IRdnsolHAsJyeSLL83mUvKWjWqyvpbgHEZOOIUgktw=
+	 MIME-Version; b=XtMHxl35Nv0ftP2zq6yCh7FpugMCrewzdNky1YK9DuTKUdG1VmnY0m6xdswRXCObt67isl8qhi8sof654g/pl1Vju8KRkQp9tpdjFM9z+921K1A/HJn4WNjCgcwQc2+2PW+jtdMjrEAd0o/96L/2RCH/hNeMMVGhqNHpfUpeis0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-bf-660f9584a273
+X-AuditID: a67dfc5b-d6dff70000001748-ce-660f958600fc
 From: Honggyu Kim <honggyu.kim@sk.com>
 To: sj@kernel.org,
 	damon@lists.linux.dev,
@@ -51,9 +51,9 @@ Cc: akpm@linux-foundation.org,
 	ziy@nvidia.com,
 	42.hyeyoo@gmail.com,
 	art.jeongseob@gmail.com
-Subject: [RFC PATCH v3 5/7] mm/damon/paddr: introduce DAMOS_MIGRATE_COLD action for demotion
-Date: Fri,  5 Apr 2024 15:08:54 +0900
-Message-ID: <20240405060858.2818-6-honggyu.kim@sk.com>
+Subject: [RFC PATCH v3 6/7] mm/damon/paddr: introduce DAMOS_MIGRATE_HOT action for promotion
+Date: Fri,  5 Apr 2024 15:08:55 +0900
+Message-ID: <20240405060858.2818-7-honggyu.kim@sk.com>
 X-Mailer: git-send-email 2.43.0.windows.1
 In-Reply-To: <20240405060858.2818-1-honggyu.kim@sk.com>
 References: <20240405060858.2818-1-honggyu.kim@sk.com>
@@ -64,49 +64,50 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrCIsWRmVeSWpSXmKPExsXC9ZZnkW7rVP40g/cv2S0m9hhYzFm/hs1i
-	140Qi/sPXrNb/N97jNHiyf/frBYnbjayWXR+X8picXnXHDaLe2v+s1ocWX+WxWLz2TPMFouX
-	q1ns63jAZHH46xsmi8mXFrBZvJhyhtHi5KzJLBazj95jdxD2WHr6DZvHhiYgsXPWXXaPln23
-	2D0WbCr1aDnyltVj8Z6XTB6bVnWyeWz6NInd48SM3yweOx9aerzYPJPRo7f5HZvH501yAXxR
-	XDYpqTmZZalF+nYJXBlzt39lKXjmWHFx+wPWBsafJl2MnBwSAiYS1yY8ZIWxv8xYwQRiswmo
-	SVx5OQnI5uAQEXCQWPVVoYuRi4NZ4D+zxOXeX2D1wgIxEltu9bGA2CwCqhLv23+xg9i8AmYS
-	6w5MYYSYqSnxePtPsDingLnEvMcbwGwhoJpPB49B1QtKnJz5BGwOs4C8RPPW2cwgyyQEjrFL
-	dPcuZ4EYJClxcMUNlgmM/LOQ9MxC0rOAkWkVo1BmXlluYmaOiV5GZV5mhV5yfu4mRmDcLav9
-	E72D8dOF4EOMAhyMSjy8HnP50oRYE8uKK3MPMUpwMCuJ8HY78KYJ8aYkVlalFuXHF5XmpBYf
-	YpTmYFES5zX6Vp4iJJCeWJKanZpakFoEk2Xi4JRqYGTO1Z7VPcNyR8qcL2IbfwY1nGD8ukzz
-	+eKnGe9WXD7HyMGgt2rulqqdLZvMHSYqXVwqe+C3yd11/tf+fNp1klX585qpDUsnG79RadJT
-	fXK06keZ/Zeea8XyZxRCi++/PGd4V3NX6LmrjzSqmBgmH+lY+Vb+b2CvjcWd/XNPMzpsqb9j
-	Pvuk/9oCJZbijERDLeai4kQAHlV+d7cCAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHIsWRmVeSWpSXmKPExsXCNUNLT7dlKn+awYajxhYTewws5qxfw2ax
-	60aIxf0Hr9kt/u89xmjx5P9vVosTNxvZLD4/e81s0fnkO6PF4bknWS06vy9lsbi8aw6bxb01
-	/1ktjqw/y2Kx+ewZZovFy9UsDl17zmqxr+MBk8Xhr2+YLCZfWsBm8WLKGUaLk7Mms1jMPnqP
-	3UHcY+npN2weG5qAxM5Zd9k9WvbdYvdYsKnUo+XIW1aPxXteMnlsWtXJ5rHp0yR2jxMzfrN4
-	7Hxo6fFi80xGj97md2we3257eCx+8YHJ4/MmuQCBKC6blNSczLLUIn27BK6Mudu/shQ8c6y4
-	uP0BawPjT5MuRk4OCQETiS8zVjCB2GwCahJXXk4Csjk4RAQcJFZ9Vehi5OJgFvjPLHG59xcr
-	SI2wQIzEllt9LCA2i4CqxPv2X+wgNq+AmcS6A1MYIWZqSjze/hMszilgLjHv8QYwWwio5tPB
-	Y1D1ghInZz4Bm8MsIC/RvHU28wRGnllIUrOQpBYwMq1iFMnMK8tNzMwx1SvOzqjMy6zQS87P
-	3cQIjLVltX8m7mD8ctn9EKMAB6MSD6/HXL40IdbEsuLK3EOMEhzMSiK83Q68aUK8KYmVValF
-	+fFFpTmpxYcYpTlYlMR5vcJTE4QE0hNLUrNTUwtSi2CyTBycUg2MrXcDg/iWGvI5yvDcEPSw
-	P7yqU3jJ5C2Pvy4L8fm1582vb8cbBHa9dWFsOCph3xcfE7ij53oE2/o5kXf2dcY+e1Nr+oMr
-	4Hrr5n1XHJdsEYkI9Jt05UHSp92tM6sTGmznMuj59LzSXeVnl+zzf8/UavV1Jhr7TaNcmH7q
-	CmYbMthL8AfIuscosRRnJBpqMRcVJwIAr8ixFrECAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRmVeSWpSXmKPExsXC9ZZnkW7bVP40g9Mt8hYTewws5qxfw2ax
+	60aIxf0Hr9kt/u89xmjx5P9vVosTNxvZLDq/L2WxuLxrDpvFvTX/WS2OrD/LYrH57Blmi8XL
+	1Sz2dTxgsjj89Q2TxeRLC9gsXkw5w2hxctZkFovZR++xOwh7LD39hs1jQxOQ2DnrLrtHy75b
+	7B4LNpV6tBx5y+qxeM9LJo9NqzrZPDZ9msTucWLGbxaPnQ8tPV5snsno0dv8js3j8ya5AL4o
+	LpuU1JzMstQifbsEroyNM8+xFLxTqph67Cd7A+M0mS5GDg4JAROJ26v9uxg5wcyli64ygdhs
+	AmoSV15OYgIpERFwkFj1VaGLkYuDWeA/s8Tl3l+sIDXCAjESH2aeB7NZBFQlfjxbzAJi8wqY
+	SRw9PpMJYqamxOPtP9lBbE4Bc4l5jzeA2UJANZ8OHmOHqBeUODnzCVgvs4C8RPPW2cwgyyQE
+	jrFLrOjdyAYxSFLi4IobLBMY+Wch6ZmFpGcBI9MqRqHMvLLcxMwcE72MyrzMCr3k/NxNjMCo
+	W1b7J3oH46cLwYcYBTgYlXh4PebypQmxJpYVV+YeYpTgYFYS4e124E0T4k1JrKxKLcqPLyrN
+	SS0+xCjNwaIkzmv0rTxFSCA9sSQ1OzW1ILUIJsvEwSnVwLjet/qB7OnPBmzmEtdW13gl7fzQ
+	fE8npWbXjF1p/bUfO7U8bPxSv3r8iWBgl+bfYtiRfthSR/BMzsLy9y9ZH/1oEVYM8bqpde9h
+	oNTii+dV0nu2hpq9ivT4c/XS+lVx92TvmdWafWDdyfD727TJrsks92M9GZdaPOrXedf19mK4
+	HN+XfdPcdiixFGckGmoxFxUnAgAvypFstgIAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHIsWRmVeSWpSXmKPExsXCNUNLT7dtKn+aQd9CQYuJPQYWc9avYbPY
+	dSPE4v6D1+wW//ceY7R48v83q8WJm41sFp+fvWa26HzyndHi8NyTrBad35eyWFzeNYfN4t6a
+	/6wWR9afZbHYfPYMs8Xi5WoWh649Z7XY1/GAyeLw1zdMFpMvLWCzeDHlDKPFyVmTWSxmH73H
+	7iDusfT0GzaPDU1AYuesu+weLftusXss2FTq0XLkLavH4j0vmTw2repk89j0aRK7x4kZv1k8
+	dj609HixeSajR2/zOzaPb7c9PBa/+MDk8XmTXIBAFJdNSmpOZllqkb5dAlfGxpnnWAreKVVM
+	PfaTvYFxmkwXIyeHhICJxNJFV5lAbDYBNYkrLycB2RwcIgIOEqu+KnQxcnEwC/xnlrjc+4sV
+	pEZYIEbiw8zzYDaLgKrEj2eLWUBsXgEziaPHZzJBzNSUeLz9JzuIzSlgLjHv8QYwWwio5tPB
+	Y+wQ9YISJ2c+AetlFpCXaN46m3kCI88sJKlZSFILGJlWMYpk5pXlJmbmmOoVZ2dU5mVW6CXn
+	525iBMbasto/E3cwfrnsfohRgINRiYfXYy5fmhBrYllxZe4hRgkOZiUR3m4H3jQh3pTEyqrU
+	ovz4otKc1OJDjNIcLErivF7hqQlCAumJJanZqakFqUUwWSYOTqkGRuM05lmL5/4X2KG0/vU9
+	/zehc5peCP9NUohbvKtUgNlj+xYrg3mJyjNlDPVsbDze1gVFuy9207+Yd0de6BmDIcvz6dHL
+	pn0z3h4ancnct2bJ9yUThRcd4D/i1Zx6TfbDwZpFWjP93HiLEzvVvT6U7Hyy47v/5k15i3uX
+	thu2Mz8M2RlzI8XjoRJLcUaioRZzUXEiAIKQFJOxAgAA
 X-CFilter-Loop: Reflected
 
-This patch introduces DAMOS_MIGRATE_COLD action, which is similar to
-DAMOS_PAGEOUT, but migrate folios to the given 'target_nid' in the sysfs
-instead of swapping them out.
+From: Hyeongtak Ji <hyeongtak.ji@sk.com>
 
-The 'target_nid' sysfs knob is created by this patch to inform the
-migration target node ID.
+This patch introduces DAMOS_MIGRATE_HOT action, which is similar to
+DAMOS_MIGRATE_COLD, but it is targeted to migrate hot pages.
 
-Here is one of the example usage of this 'migrate_cold' action.
+It migrates pages inside the given region to the 'target_nid' NUMA node
+in the sysfs.
+
+Here is one of the example usage of this 'migrate_hot' action.
 
   $ cd /sys/kernel/mm/damon/admin/kdamonds/<N>
   $ cat contexts/<N>/schemes/<N>/action
-  migrate_cold
-  $ echo 2 > contexts/<N>/schemes/<N>/target_nid
+  migrate_hot
+  $ echo 0 > contexts/<N>/schemes/<N>/target_nid
   $ echo commit > state
-  $ numactl -p 0 ./hot_cold 500M 600M &
+  $ numactl -p 2 ./hot_cold 500M 600M &
   $ numastat -c -p hot_cold
 
   Per-node process memory usage (in MBs)
@@ -114,256 +115,107 @@ Here is one of the example usage of this 'migrate_cold' action.
   --------------  ------ ------ ------ -----
   701 (hot_cold)     501      0    601  1101
 
-Since there are some common routines with pageout, many functions have
-similar logics between pageout and migrate cold.
-
-damon_pa_migrate_folio_list() is a minimized version of
-shrink_folio_list(), but it's minified only for demotion.
-
-Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
 Signed-off-by: Hyeongtak Ji <hyeongtak.ji@sk.com>
+Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
 ---
- include/linux/damon.h    |   2 +
- mm/damon/paddr.c         | 146 ++++++++++++++++++++++++++++++++++++++-
- mm/damon/sysfs-schemes.c |   4 ++
- 3 files changed, 151 insertions(+), 1 deletion(-)
+ include/linux/damon.h    |  2 ++
+ mm/damon/paddr.c         | 12 ++++++++++--
+ mm/damon/sysfs-schemes.c |  4 +++-
+ 3 files changed, 15 insertions(+), 3 deletions(-)
 
 diff --git a/include/linux/damon.h b/include/linux/damon.h
-index 24ea33a03d5d..df8671e69a70 100644
+index df8671e69a70..934c95a7c042 100644
 --- a/include/linux/damon.h
 +++ b/include/linux/damon.h
 @@ -105,6 +105,7 @@ struct damon_target {
   * @DAMOS_NOHUGEPAGE:	Call ``madvise()`` for the region with MADV_NOHUGEPAGE.
   * @DAMOS_LRU_PRIO:	Prioritize the region on its LRU lists.
   * @DAMOS_LRU_DEPRIO:	Deprioritize the region on its LRU lists.
-+ * @DAMOS_MIGRATE_COLD: Migrate for the given cold region.
++ * @DAMOS_MIGRATE_HOT:  Migrate for the given hot region.
+  * @DAMOS_MIGRATE_COLD: Migrate for the given cold region.
   * @DAMOS_STAT:		Do nothing but count the stat.
   * @NR_DAMOS_ACTIONS:	Total number of DAMOS actions
-  *
-@@ -122,6 +123,7 @@ enum damos_action {
+@@ -123,6 +124,7 @@ enum damos_action {
  	DAMOS_NOHUGEPAGE,
  	DAMOS_LRU_PRIO,
  	DAMOS_LRU_DEPRIO,
-+	DAMOS_MIGRATE_COLD,
++	DAMOS_MIGRATE_HOT,
+ 	DAMOS_MIGRATE_COLD,
  	DAMOS_STAT,		/* Do nothing but only record the stat */
  	NR_DAMOS_ACTIONS,
- };
 diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
-index 277a1c4d833c..fe217a26f788 100644
+index fe217a26f788..fd9d35b5cc83 100644
 --- a/mm/damon/paddr.c
 +++ b/mm/damon/paddr.c
-@@ -12,6 +12,9 @@
- #include <linux/pagemap.h>
- #include <linux/rmap.h>
- #include <linux/swap.h>
-+#include <linux/memory-tiers.h>
-+#include <linux/migrate.h>
-+#include <linux/mm_inline.h>
- 
- #include "../internal.h"
- #include "ops-common.h"
-@@ -226,8 +229,137 @@ static bool damos_pa_filter_out(struct damos *scheme, struct folio *folio)
+@@ -229,6 +229,7 @@ static bool damos_pa_filter_out(struct damos *scheme, struct folio *folio)
  
  enum migration_mode {
  	MIG_PAGEOUT,
-+	MIG_MIGRATE_COLD,
++	MIG_MIGRATE_HOT,
+ 	MIG_MIGRATE_COLD,
  };
  
-+static unsigned int migrate_folio_list(struct list_head *migrate_folios,
-+				       struct pglist_data *pgdat,
-+				       int target_nid)
-+{
-+	unsigned int nr_succeeded;
-+	nodemask_t allowed_mask = NODE_MASK_NONE;
-+
-+	struct migration_target_control mtc = {
-+		/*
-+		 * Allocate from 'node', or fail quickly and quietly.
-+		 * When this happens, 'page' will likely just be discarded
-+		 * instead of migrated.
-+		 */
-+		.gfp_mask = (GFP_HIGHUSER_MOVABLE & ~__GFP_RECLAIM) | __GFP_NOWARN |
-+			__GFP_NOMEMALLOC | GFP_NOWAIT,
-+		.nid = target_nid,
-+		.nmask = &allowed_mask
-+	};
-+
-+	if (pgdat->node_id == target_nid || target_nid == NUMA_NO_NODE)
-+		return 0;
-+
-+	if (list_empty(migrate_folios))
-+		return 0;
-+
-+	/* Migration ignores all cpuset and mempolicy settings */
-+	migrate_pages(migrate_folios, alloc_migrate_folio, NULL,
-+		      (unsigned long)&mtc, MIGRATE_ASYNC, MR_DAMON,
-+		      &nr_succeeded);
-+
-+	return nr_succeeded;
-+}
-+
-+static unsigned int damon_pa_migrate_folio_list(struct list_head *folio_list,
-+						struct pglist_data *pgdat,
-+						enum migration_mode mm,
-+						int target_nid)
-+{
-+	unsigned int nr_migrated = 0;
-+	struct folio *folio;
-+	LIST_HEAD(ret_folios);
-+	LIST_HEAD(migrate_folios);
-+
-+	cond_resched();
-+
-+	while (!list_empty(folio_list)) {
-+		struct folio *folio;
-+
-+		cond_resched();
-+
-+		folio = lru_to_folio(folio_list);
-+		list_del(&folio->lru);
-+
-+		if (!folio_trylock(folio))
-+			goto keep;
-+
-+		VM_BUG_ON_FOLIO(folio_test_active(folio), folio);
-+
-+		/* Relocate its contents to another node. */
-+		list_add(&folio->lru, &migrate_folios);
-+		folio_unlock(folio);
-+		continue;
-+keep:
-+		list_add(&folio->lru, &ret_folios);
-+		VM_BUG_ON_FOLIO(folio_test_lru(folio), folio);
-+	}
-+	/* 'folio_list' is always empty here */
-+
-+	/* Migrate folios selected for migration */
-+	nr_migrated += migrate_folio_list(&migrate_folios, pgdat, target_nid);
-+	/* Folios that could not be migrated are still in @migrate_folios */
-+	if (!list_empty(&migrate_folios)) {
-+		/* Folios which weren't migrated go back on @folio_list */
-+		list_splice_init(&migrate_folios, folio_list);
-+	}
-+
-+	try_to_unmap_flush();
-+
-+	list_splice(&ret_folios, folio_list);
-+
-+	while (!list_empty(folio_list)) {
-+		folio = lru_to_folio(folio_list);
-+		list_del(&folio->lru);
-+		folio_putback_lru(folio);
-+	}
-+
-+	return nr_migrated;
-+}
-+
-+static unsigned long damon_pa_migrate_pages(struct list_head *folio_list,
-+					    enum migration_mode mm,
-+					    int target_nid)
-+{
-+	int nid;
-+	unsigned int nr_migrated = 0;
-+	LIST_HEAD(node_folio_list);
-+	unsigned int noreclaim_flag;
-+
-+	if (list_empty(folio_list))
-+		return nr_migrated;
-+
-+	noreclaim_flag = memalloc_noreclaim_save();
-+
-+	nid = folio_nid(lru_to_folio(folio_list));
-+	do {
-+		struct folio *folio = lru_to_folio(folio_list);
-+
-+		if (nid == folio_nid(folio)) {
-+			folio_clear_active(folio);
-+			list_move(&folio->lru, &node_folio_list);
-+			continue;
+@@ -375,8 +376,10 @@ static unsigned long damon_pa_migrate(struct damon_region *r, struct damos *s,
+ 		if (damos_pa_filter_out(s, folio))
+ 			goto put_folio;
+ 
+-		folio_clear_referenced(folio);
+-		folio_test_clear_young(folio);
++		if (mm != MIG_MIGRATE_HOT) {
++			folio_clear_referenced(folio);
++			folio_test_clear_young(folio);
 +		}
-+
-+		nr_migrated += damon_pa_migrate_folio_list(&node_folio_list,
-+							   NODE_DATA(nid), mm,
-+							   target_nid);
-+		nid = folio_nid(lru_to_folio(folio_list));
-+	} while (!list_empty(folio_list));
-+
-+	nr_migrated += damon_pa_migrate_folio_list(&node_folio_list,
-+						   NODE_DATA(nid), mm,
-+						   target_nid);
-+
-+	memalloc_noreclaim_restore(noreclaim_flag);
-+
-+	return nr_migrated;
-+}
-+
- static unsigned long damon_pa_migrate(struct damon_region *r, struct damos *s,
- 				      enum migration_mode mm)
- {
-@@ -247,7 +379,11 @@ static unsigned long damon_pa_migrate(struct damon_region *r, struct damos *s,
- 		folio_test_clear_young(folio);
  		if (!folio_isolate_lru(folio))
  			goto put_folio;
--		if (folio_test_unevictable(folio))
-+		/*
-+		 * Since unevictable folios can be demoted or promoted,
-+		 * unevictable test is needed only for pageout.
-+		 */
-+		if (mm == MIG_PAGEOUT && folio_test_unevictable(folio))
- 			folio_putback_lru(folio);
- 		else
- 			list_add(&folio->lru, &folio_list);
-@@ -258,6 +394,10 @@ static unsigned long damon_pa_migrate(struct damon_region *r, struct damos *s,
+ 		/*
+@@ -394,6 +397,7 @@ static unsigned long damon_pa_migrate(struct damon_region *r, struct damos *s,
  	case MIG_PAGEOUT:
  		applied = reclaim_pages(&folio_list);
  		break;
-+	case MIG_MIGRATE_COLD:
-+		applied = damon_pa_migrate_pages(&folio_list, mm,
-+						 s->target_nid);
-+		break;
- 	default:
- 		/* Unexpected migration mode. */
- 		return 0;
-@@ -314,6 +454,8 @@ static unsigned long damon_pa_apply_scheme(struct damon_ctx *ctx,
++	case MIG_MIGRATE_HOT:
+ 	case MIG_MIGRATE_COLD:
+ 		applied = damon_pa_migrate_pages(&folio_list, mm,
+ 						 s->target_nid);
+@@ -454,6 +458,8 @@ static unsigned long damon_pa_apply_scheme(struct damon_ctx *ctx,
  		return damon_pa_mark_accessed(r, scheme);
  	case DAMOS_LRU_DEPRIO:
  		return damon_pa_deactivate_pages(r, scheme);
-+	case DAMOS_MIGRATE_COLD:
-+		return damon_pa_migrate(r, scheme, MIG_MIGRATE_COLD);
++	case DAMOS_MIGRATE_HOT:
++		return damon_pa_migrate(r, scheme, MIG_MIGRATE_HOT);
+ 	case DAMOS_MIGRATE_COLD:
+ 		return damon_pa_migrate(r, scheme, MIG_MIGRATE_COLD);
  	case DAMOS_STAT:
- 		break;
- 	default:
-@@ -334,6 +476,8 @@ static int damon_pa_scheme_score(struct damon_ctx *context,
+@@ -476,6 +482,8 @@ static int damon_pa_scheme_score(struct damon_ctx *context,
  		return damon_hot_score(context, r, scheme);
  	case DAMOS_LRU_DEPRIO:
  		return damon_cold_score(context, r, scheme);
-+	case DAMOS_MIGRATE_COLD:
-+		return damon_cold_score(context, r, scheme);
++	case DAMOS_MIGRATE_HOT:
++		return damon_hot_score(context, r, scheme);
+ 	case DAMOS_MIGRATE_COLD:
+ 		return damon_cold_score(context, r, scheme);
  	default:
- 		break;
- 	}
 diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
-index 1a30ea82c890..18b7d054c748 100644
+index 18b7d054c748..1d2f62aa79ca 100644
 --- a/mm/damon/sysfs-schemes.c
 +++ b/mm/damon/sysfs-schemes.c
 @@ -1406,6 +1406,7 @@ static const char * const damon_sysfs_damos_action_strs[] = {
  	"nohugepage",
  	"lru_prio",
  	"lru_deprio",
-+	"migrate_cold",
++	"migrate_hot",
+ 	"migrate_cold",
  	"stat",
  };
- 
-@@ -1659,6 +1660,9 @@ static ssize_t target_nid_store(struct kobject *kobj,
+@@ -1660,7 +1661,8 @@ static ssize_t target_nid_store(struct kobject *kobj,
  			struct damon_sysfs_scheme, kobj);
  	int err = 0;
  
-+        if (scheme->action != DAMOS_MIGRATE_COLD)
-+                return -EINVAL;
-+
- 	/* TODO: error handling for target_nid range. */
- 	err = kstrtoint(buf, 0, &scheme->target_nid);
+-        if (scheme->action != DAMOS_MIGRATE_COLD)
++        if (scheme->action != DAMOS_MIGRATE_HOT &&
++            scheme->action != DAMOS_MIGRATE_COLD)
+                 return -EINVAL;
  
+ 	/* TODO: error handling for target_nid range. */
 -- 
 2.34.1
 
