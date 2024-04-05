@@ -1,87 +1,326 @@
-Return-Path: <linux-kernel+bounces-132919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51AD899C07
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:44:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E197899C0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:46:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53BB81F239B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:44:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9249E283FF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:46:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4816816C698;
-	Fri,  5 Apr 2024 11:44:06 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4009816C6AE;
+	Fri,  5 Apr 2024 11:45:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jfK+6cAY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF1F12AACC
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 11:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D0C32032D;
+	Fri,  5 Apr 2024 11:45:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712317445; cv=none; b=hgytYKx+H76xtCqlfMcBmjDbxi4vnLtt8SuqHFGjFKWNSbvNs4cmnzfvmd8p0ide3IhZK1eEb64Wg5cuafmD2EyJYToMgr0z57yVYirIjp97jkP+BwvsbolzwtfJcVoXz4gVToIgPVKUZIpkty5MMyyV2fnitvL76K5gugvrZgg=
+	t=1712317552; cv=none; b=Z9PS786hwb1oYA0fcgX5C0vE62p4w6uidrLUkCPIad6dScr1rT4M1XrZHimde2cqp6YmByuIdRVt72vxB6R0TcvovEgh5oLbvnfyiLTb5/kPq7RSCW7OZHy2l995I5e4m0RWQM6aSGiIsP5puYfapgrHvdIqERWWRZb2Gye3Pmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712317445; c=relaxed/simple;
-	bh=1n69jQnZNKEzS+BuCynTJ6wVLAELOXGFXKr66F84Wh0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=gkJmshlG0VWJymU1rZjkRZlmV+Zc0f6WRExYuRf66vd9GTOwhoY/7g+kldUDvvaB8yt/9ItWmupjRQjVrAwSr0cGOt7thxeG5vuT+BFcZOSZpu/JBUUzJysFNFwzgq62rwcSU6bgrNYFOVi6n43BdAg8De4n79+Pg9IYQeTRceg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc7a930922so240496039f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 04:44:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712317443; x=1712922243;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3W1dhKn+FkCzjrz6qZe3J8mK4nAfdKOIBP/9TwsFfk8=;
-        b=oU0YSBSjOTqkR9U6VjYb6rWQlt3dp/sA8nbEkrqHeG3Se26vXYiIgcDJC7SemShRHC
-         8DCju4iqfa979dh4UhknWJDmWdmM0ht7nloOgceCRuTJNs97wYpXAM30xSx6q1IfSe5O
-         mg1PbPozmYsSYfFwc9yFoPjn8jcN7C1v0XH+O42DN4Xi2JKRDXWUYlnh1Dtn6C6HQfYl
-         Mof4bGMXbMe9gjU8LDquRlg0jlAxMw0+SPT5TUs7sGeUGawh+Dq/e3yWH++mkTPi3BUW
-         KLgz+Eljf7pF1xhfC45tK3OjeeXgSHoRTkl+8Dw1lIsjNABBQ4oHtfaV4ZZRFRzhsU10
-         8Kmg==
-X-Forwarded-Encrypted: i=1; AJvYcCUtl7JIqY/Xvm8NhdgZ4dZSeaKwjilUQ9UC9uUxTi3fZ4djn7rZ30gMktUoES9ii+MG53fgS28QCY/bhCX+Xj/AAa2bql3LnP8seML8
-X-Gm-Message-State: AOJu0YxHPVHoP92V6Xn0iEFA7tEIqnWE6KfbPQGfxmFwSb7nXE3APkMd
-	WBxYBLewM4rujv+8WKMy4VZwPSyunedIOAqb+H8yYxgI/i/P/5J/PLrqfSY6kZljBlOf4jTDn7O
-	3Tb5Sn8LQKpayia20fC3JOpOV0XqvQBZCGU89r9WJz0wlH++Yz/fOhYM=
-X-Google-Smtp-Source: AGHT+IF1B54lz2GNKBGpo9CB2HDcO5BX30XoyjcTHrl6IQMYGyJfgiMBpRzXZ+ON/P4IcwwJUfOSNWH0QZPvTA6NZ71t4FDGY8tC
+	s=arc-20240116; t=1712317552; c=relaxed/simple;
+	bh=yFjpIS3whW+ZjA1+hS3kVGbmKjV/ELzS5HrcQgHGDig=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TL0KXKARa9btYgDYPRDxGq78BDgcnt/H0tP1BV57ePj7xtKJUGysSfNFy4z2rQOCj7YtrACzdTNO3JnQck+xGz1XbmMIPqxDHlbmF08XAlF8/LTko3VpdtjA9oUUZMI5yAYwG3Z3+bHflkMLBYTyG6RUevZmwmaVRjTmXAr86L8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jfK+6cAY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46693C433C7;
+	Fri,  5 Apr 2024 11:45:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712317551;
+	bh=yFjpIS3whW+ZjA1+hS3kVGbmKjV/ELzS5HrcQgHGDig=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jfK+6cAYZuyNsnDLvCmN0zbLbKymTXGfe+Gt5BQlEzUvR3XEwSrBdkxF1i0Umwt58
+	 kWL0OLykxNOuGuYI3Lh+o1WYxOWeVh7QktuxMQQQfCpu1DNvVqtZurJp++jwHTNPcP
+	 32Tg9QZATdVxK88acUSs11SNkFXq+5l/NDas+128/ON1HPJLCk6HR+GU7vNJhfqEXP
+	 2tBFrSXJyes11GjmcxeYK7P3qvwRc5MJMi1A3JAgZ5+IkaChJyFrdBd2B3WFUoM+za
+	 BKC0AhftvobGWtooSKSV24UvzwRpsjRIuLZXJtjoWPQR/UJFXn+a5Zv1bJuNRwA8VT
+	 djqG3bpkqUHdw==
+Date: Fri, 5 Apr 2024 17:15:47 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org,
+	pierre-louis.bossart@linux.intel.com, bard.liao@intel.com
+Subject: Re: [PATCH 6/7] soundwire: debugfs: add interface to read/write
+ commands
+Message-ID: <Zg_ka02zLnXrADGj@matsya>
+References: <20240326090122.1051806-1-yung-chuan.liao@linux.intel.com>
+ <20240326090122.1051806-7-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:22d0:b0:47f:1ad4:2c66 with SMTP id
- j16-20020a05663822d000b0047f1ad42c66mr42868jat.5.1712317443514; Fri, 05 Apr
- 2024 04:44:03 -0700 (PDT)
-Date: Fri, 05 Apr 2024 04:44:03 -0700
-In-Reply-To: <f42ee0ef-8754-4acc-94ea-9574de83c9c9@I-love.SAKURA.ne.jp>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f6bbc4061557f8ad@google.com>
-Subject: Re: [syzbot] [arm] BUG: bad usercopy in fpa_set
-From: syzbot <syzbot+cb76c2983557a07cdb14@syzkaller.appspotmail.com>
-To: keescook@chromium.org, linux-kernel@vger.kernel.org, 
-	penguin-kernel@i-love.sakura.ne.jp, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326090122.1051806-7-yung-chuan.liao@linux.intel.com>
 
-Hello,
+On 26-03-24, 09:01, Bard Liao wrote:
+> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> 
+> We have an existing debugfs files to read standard registers
+> (DP0/SCP/DPn).
+> 
+> This patch provides a more generic interface to ANY set of read/write
+> contiguous registers in a peripheral device. In follow-up patches,
+> this interface will be extended to use BRA transfers.
+> 
+> The sequence is to use the following files added under the existing
+> debugsfs directory for each peripheral device:
+> 
+> command (write 0, read 1)
+> num_bytes
+> start_address
+> firmware_file (only for writes)
+> read_buffer (only for reads)
+> 
+> Example for a read command - this checks the 6 bytes used for
+> enumeration.
+> 
+> cd /sys/kernel/debug/soundwire/master-0-0/sdw\:0\:025d\:0711\:01/
+> echo 1 > command
+> echo 6 > num_bytes
+> echo 0x50 > start_address
+> echo 1 > go
 
-syzbot tried to test the proposed patch but the build/boot failed:
+can we have a simpler interface? i am not a big fan of this kind of
+structure for debugging.
 
-/include/linux/stddef.h:16:33: error: invalid use of undefined type 'struct task_struct'
-/arch/arm/include/asm/processor.h:44:24: error: invalid application of 'sizeof' to incomplete type 'struct thread_info'
+How about two files read_bytes and write_bytes where you read/write
+bytes.
 
+echo 0x50 6 > read_bytes
+cat read_bytes
 
-Tested on:
+in this format I would like to see addr and values (not need to print
+address /value words (regmap does that too)
 
-commit:         8cb4a9a8 x86/cpufeatures: Add CPUID_LNX_5 to track rec..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f0bf9b3a0ca93c59
-dashboard link: https://syzkaller.appspot.com/bug?extid=cb76c2983557a07cdb14
-compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=157e1bb5180000
+For write
 
+echo start_addr N byte0 byte 1 ... byte N > write_bytes
+
+ 
+> cat read_buffer
+> address 0x50 val 0x30
+> address 0x51 val 0x02
+> address 0x52 val 0x5d
+> address 0x53 val 0x07
+> address 0x54 val 0x11
+> address 0x55 val 0x01
+> 
+> Example with a 2-byte firmware file written in DP0 address 0x22
+> 
+> od -x /lib/firmware/test_firmware
+> 0000000 0a37
+> 0000002
+> 
+> cd /sys/kernel/debug/soundwire/master-0-0/sdw\:0\:025d\:0711\:01/
+> echo 0 > command
+> echo 2 > num_bytes
+> echo 0x22 > start_address
+> echo "test_firmware" > firmware_file
+> echo 1 > go
+> 
+> cd /sys/kernel/debug/soundwire/master-0-0/sdw\:0\:025d\:0711\:01/
+> echo 1 > command
+> echo 2 > num_bytes
+> echo 0x22 > start_address
+> echo 1 > go
+> cat read_buffer
+> 
+> address 0x22 val 0x37
+> address 0x23 val 0x0a
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Reviewed-by: Rander Wang <rander.wang@intel.com>
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+> ---
+>  drivers/soundwire/debugfs.c | 150 ++++++++++++++++++++++++++++++++++++
+>  1 file changed, 150 insertions(+)
+> 
+> diff --git a/drivers/soundwire/debugfs.c b/drivers/soundwire/debugfs.c
+> index 67abd7e52f09..6d253d69871d 100644
+> --- a/drivers/soundwire/debugfs.c
+> +++ b/drivers/soundwire/debugfs.c
+> @@ -3,6 +3,7 @@
+>  
+>  #include <linux/device.h>
+>  #include <linux/debugfs.h>
+> +#include <linux/firmware.h>
+>  #include <linux/mod_devicetable.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/slab.h>
+> @@ -137,6 +138,145 @@ static int sdw_slave_reg_show(struct seq_file *s_file, void *data)
+>  }
+>  DEFINE_SHOW_ATTRIBUTE(sdw_slave_reg);
+>  
+> +#define MAX_CMD_BYTES 256
+> +
+> +static int cmd;
+> +static u32 start_addr;
+> +static size_t num_bytes;
+> +static u8 read_buffer[MAX_CMD_BYTES];
+> +static char *firmware_file;
+> +
+> +static int set_command(void *data, u64 value)
+> +{
+> +	struct sdw_slave *slave = data;
+> +
+> +	if (value > 1)
+> +		return -EINVAL;
+> +
+> +	/* Userspace changed the hardware state behind the kernel's back */
+> +	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
+> +
+> +	dev_dbg(&slave->dev, "command: %s\n", value ? "read" : "write");
+> +	cmd = value;
+> +
+> +	return 0;
+> +}
+> +DEFINE_DEBUGFS_ATTRIBUTE(set_command_fops, NULL,
+> +			 set_command, "%llu\n");
+> +
+> +static int set_start_address(void *data, u64 value)
+> +{
+> +	struct sdw_slave *slave = data;
+> +
+> +	/* Userspace changed the hardware state behind the kernel's back */
+> +	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
+> +
+> +	dev_dbg(&slave->dev, "start address %#llx\n", value);
+> +
+> +	start_addr = value;
+> +
+> +	return 0;
+> +}
+> +DEFINE_DEBUGFS_ATTRIBUTE(set_start_address_fops, NULL,
+> +			 set_start_address, "%llu\n");
+> +
+> +static int set_num_bytes(void *data, u64 value)
+> +{
+> +	struct sdw_slave *slave = data;
+> +
+> +	if (value == 0 || value > MAX_CMD_BYTES)
+> +		return -EINVAL;
+> +
+> +	/* Userspace changed the hardware state behind the kernel's back */
+> +	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
+> +
+> +	dev_dbg(&slave->dev, "number of bytes %lld\n", value);
+> +
+> +	num_bytes = value;
+> +
+> +	return 0;
+> +}
+> +DEFINE_DEBUGFS_ATTRIBUTE(set_num_bytes_fops, NULL,
+> +			 set_num_bytes, "%llu\n");
+> +
+> +static int cmd_go(void *data, u64 value)
+> +{
+> +	struct sdw_slave *slave = data;
+> +	int ret;
+> +
+> +	if (value != 1)
+> +		return -EINVAL;
+> +
+> +	/* one last check */
+> +	if (start_addr > SDW_REG_MAX ||
+> +	    num_bytes == 0 || num_bytes > MAX_CMD_BYTES)
+> +		return -EINVAL;
+> +
+> +	ret = pm_runtime_get_sync(&slave->dev);
+> +	if (ret < 0 && ret != -EACCES) {
+> +		pm_runtime_put_noidle(&slave->dev);
+> +		return ret;
+> +	}
+> +
+> +	/* Userspace changed the hardware state behind the kernel's back */
+> +	add_taint(TAINT_USER, LOCKDEP_STILL_OK);
+> +
+> +	dev_dbg(&slave->dev, "starting command\n");
+> +
+> +	if (cmd == 0) {
+> +		const struct firmware *fw;
+> +
+> +		ret = request_firmware(&fw, firmware_file, &slave->dev);
+> +		if (ret < 0) {
+> +			dev_err(&slave->dev, "firmware %s not found\n", firmware_file);
+> +			goto out;
+> +		}
+> +
+> +		if (fw->size != num_bytes) {
+> +			dev_err(&slave->dev,
+> +				"firmware %s: unexpected size %zd, desired %zd\n",
+> +				firmware_file, fw->size, num_bytes);
+> +			release_firmware(fw);
+> +			goto out;
+> +		}
+> +
+> +		ret = sdw_nwrite_no_pm(slave, start_addr, num_bytes, fw->data);
+> +		release_firmware(fw);
+> +	} else {
+> +		ret = sdw_nread_no_pm(slave, start_addr, num_bytes, read_buffer);
+> +	}
+> +
+> +	dev_dbg(&slave->dev, "command completed %d\n", ret);
+> +
+> +out:
+> +	pm_runtime_mark_last_busy(&slave->dev);
+> +	pm_runtime_put(&slave->dev);
+> +
+> +	return ret;
+> +}
+> +DEFINE_DEBUGFS_ATTRIBUTE(cmd_go_fops, NULL,
+> +			 cmd_go, "%llu\n");
+> +
+> +#define MAX_LINE_LEN 128
+> +
+> +static int read_buffer_show(struct seq_file *s_file, void *data)
+> +{
+> +	char buf[MAX_LINE_LEN];
+> +	int i;
+> +
+> +	if (num_bytes == 0 || num_bytes > MAX_CMD_BYTES)
+> +		return -EINVAL;
+> +
+> +	for (i = 0; i < num_bytes; i++) {
+> +		scnprintf(buf, MAX_LINE_LEN, "address %#x val 0x%02x\n",
+> +			  start_addr + i, read_buffer[i]);
+> +		seq_printf(s_file, "%s", buf);
+> +	}
+> +
+> +	return 0;
+> +}
+> +DEFINE_SHOW_ATTRIBUTE(read_buffer);
+> +
+>  void sdw_slave_debugfs_init(struct sdw_slave *slave)
+>  {
+>  	struct dentry *master;
+> @@ -151,6 +291,16 @@ void sdw_slave_debugfs_init(struct sdw_slave *slave)
+>  
+>  	debugfs_create_file("registers", 0400, d, slave, &sdw_slave_reg_fops);
+>  
+> +	/* interface to send arbitrary commands */
+> +	debugfs_create_file("command", 0200, d, slave, &set_command_fops);
+> +	debugfs_create_file("start_address", 0200, d, slave, &set_start_address_fops);
+> +	debugfs_create_file("num_bytes", 0200, d, slave, &set_num_bytes_fops);
+> +	debugfs_create_file("go", 0200, d, slave, &cmd_go_fops);
+> +
+> +	debugfs_create_file("read_buffer", 0400, d, slave, &read_buffer_fops);
+> +	firmware_file = NULL;
+> +	debugfs_create_str("firmware_file", 0200, d, &firmware_file);
+> +
+>  	slave->debugfs = d;
+>  }
+>  
+> -- 
+> 2.34.1
+
+-- 
+~Vinod
 
