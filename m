@@ -1,222 +1,192 @@
-Return-Path: <linux-kernel+bounces-132920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89F9C899C09
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:44:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0834899C01
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:39:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E12D6B21B25
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:44:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F4841F2383F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:39:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0B2016C6A5;
-	Fri,  5 Apr 2024 11:44:37 +0000 (UTC)
-Received: from hi1smtp01.de.adit-jv.com (smtp1.de.adit-jv.com [93.241.18.167])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2BB16C69D;
+	Fri,  5 Apr 2024 11:39:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A9iAWFpX"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5668116C692;
-	Fri,  5 Apr 2024 11:44:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.241.18.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AA2233993;
+	Fri,  5 Apr 2024 11:39:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712317477; cv=none; b=gSQC/LhVpgSoADxTqevoP43TdZM4pr7VPItc7f4lHIQFlR6oVMqb52ywoJ1S/6hcB20zyqDVPmF/3ZXXqV8RobRvdRCU1onczlGD4y1SctaTlcZx69taNzpDdEDeb7YF32hInQb/a1efpzV52gLAwPgkuezCfHY1yUU2k7u/39c=
+	t=1712317148; cv=none; b=k4Kg9hinQPwwi4It1rICh1uHxNHThuA84EjGOsW8VQDEYcLTaTR5DfeP83Aori1qPZYcXp0LMGyfJOzqABnVBzbJs+O45TLciAkxmpDuZdAhDGA6Lg5qc9tZCBv2zzEgtstQxKYmEQvxFxDdUF/BDmmvByDWLOBGytUt3FfDPVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712317477; c=relaxed/simple;
-	bh=2JBzSHDGY98Yx0uLAifekWBTCBn0Y25oNrSFPLoeaVk=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u4wwKgdQdqa1bE+/I1uZLsex1zmZnMgxkOAgRPBVUwMUmUnd+7Z/2zjC/VSMh7Khothob2WI+CEZAMCsUsKogku+gl5TUkYYjjCOKsn3LxxQmSCmR609pxIgWp5K122s530r4DSD3PInXyW4NNBvuTElJU1Rl9lw1d15Ff6NUyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com; spf=pass smtp.mailfrom=de.adit-jv.com; arc=none smtp.client-ip=93.241.18.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=de.adit-jv.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=de.adit-jv.com
-Received: from hi2exch02.adit-jv.com (hi2exch02.adit-jv.com [10.72.92.28])
-	by hi1smtp01.de.adit-jv.com (Postfix) with ESMTP id 61DF3520100;
-	Fri,  5 Apr 2024 13:39:03 +0200 (CEST)
-Received: from vmlxhi-118.adit-jv.com (10.72.93.77) by hi2exch02.adit-jv.com
- (10.72.92.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.37; Fri, 5 Apr
- 2024 13:39:03 +0200
-Date: Fri, 5 Apr 2024 13:38:55 +0200
-From: Hardik Gajjar <hgajjar@de.adit-jv.com>
-To: Ferry Toth <fntoth@gmail.com>
-CC: Hardik Gajjar <hgajjar@de.adit-jv.com>, Andy Shevchenko
-	<andriy.shevchenko@intel.com>, <gregkh@linuxfoundation.org>,
-	<s.hauer@pengutronix.de>, <jonathanh@nvidia.com>,
-	<linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<quic_linyyuan@quicinc.com>, <paul@crapouillou.net>,
-	<quic_eserrao@quicinc.com>, <erosca@de.adit-jv.com>
-Subject: Re: [PATCH v4] usb: gadget: u_ether: Replace netif_stop_queue with
- netif_device_detach
-Message-ID: <20240405113855.GA121923@vmlxhi-118.adit-jv.com>
-References: <20231006153808.9758-1-hgajjar@de.adit-jv.com>
- <20231006155646.12938-1-hgajjar@de.adit-jv.com>
- <ZaQS5x-XK08Jre6I@smile.fi.intel.com>
- <20240115132720.GA98840@vmlxhi-118.adit-jv.com>
- <f25283fc-4550-4725-960b-2ea783fd62e1@gmail.com>
- <aeee83d8-dee3-42ed-b705-988b17800721@gmail.com>
+	s=arc-20240116; t=1712317148; c=relaxed/simple;
+	bh=pgAWf/UK0ViUl4tlABjZek6EdyuooN2XyOdISvJAJEg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qQ74jE8wyejeERo0ryJoQS7H3fdp2ui/I8L5NQYplH+cL9lK21s+Qryq/QDQfzHLg4jZePjiu+/Hlv/cOKbsnqakd/+Xt9QP3ixwrgkAh4/q0HVUzO/NDlaKG4xs8FqMo3kvjDdi8WABStMlu6p7Iz1eIS3fQZk4A2MhQvKZFIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A9iAWFpX; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d84a5f4a20so4566411fa.1;
+        Fri, 05 Apr 2024 04:39:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712317144; x=1712921944; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=j0t6RB1T6H6KDkvTfVfey5J6t4MwPgPr68GDvsqnUf0=;
+        b=A9iAWFpXuWEGpMdtGSNXtH0QIjd3LKzccax1rMq0HEariwl4xDpWU0qo4/IzvywYpR
+         ipyHvwyLa2ovJ+ZhVZ+yb40aRi33ZdWznU+CpUS590mXus6458T7Xc3GvzSmMxNVO/zk
+         NPWV3zIBZEuQLi40NNNLzqhxkyvRuSk+J950z11ItGpOUr/TWG7Xw2Y/668miC6IcLNs
+         JV13E/T5IaWdtM+DJxtuSHH5RdnGtKc1JYdSQaoWWCdi0wabZzQLo+XfwbZ3G6yTWbbN
+         Z7+eZNP0TRhZZeQ1SyQlmTUv+SSxjx6Lw5zBoLGrVjXJXRh0kDgYrOXIb7FKnZHA2OzT
+         SV5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712317144; x=1712921944;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=j0t6RB1T6H6KDkvTfVfey5J6t4MwPgPr68GDvsqnUf0=;
+        b=OvVmS5ZXVY6s1BB1E0Vp+zyFc6j6dc5I390qcj7d7JMpQfEA40iHZRazWaVUSKXuxQ
+         u2UKsLAza3Tg2qdq067y7s2q7kvSgibhhVUSN3+SUIkxMIPtK88KgrJAeVhaGHppqMqW
+         qKYvu7YrKEpNObGBAtGqoGb/kk2+Vaw1zMeAtv1WbslO+J474oggefZOi0jUzgP7PUHL
+         ht/tGtJmiktozSXGLlhA5DFLVw7asao+o8OW3bpyzQkbshbJoPo1PwJK8jdO6LGvsGIf
+         Th+3liauMAatQa0jqc7+n/WmZodrNnAztYDDCvK5E03d2sAc8pvVBCbZkpTBED5bKBl9
+         wlig==
+X-Forwarded-Encrypted: i=1; AJvYcCUhTqaF3aomZ1KjgqL2xeR0H7Kh0EAQk3fcwEvOfLX2nYOMroWzIl6p6Vmk1epRF19/X9SzmSc/lB2BiEOzm3cVeeeTOIYjyYCir4Y/w4cmUgmIjJIWkN5slfB34J4a7kcXqafrovLqpGN/zYit
+X-Gm-Message-State: AOJu0Yy5NpsGY6MlJn1GY5+IvoGhUeW5EhgrAED2cBl9w+VtZA8z7rkt
+	8tz3UcDHiBYODNw4ARhwOl1ZCBFl1kro89ZxidEUsaDpci/NssR35tn8f45Y
+X-Google-Smtp-Source: AGHT+IFFvZgEmBvRLdjW9wbUzrUrg/N0Mgs0why89U67SHWeFVH5yrhHYoCV8YkfKJYKGobxVebzzA==
+X-Received: by 2002:a2e:3619:0:b0:2d6:93fa:ce20 with SMTP id d25-20020a2e3619000000b002d693face20mr965811lja.0.1712317144349;
+        Fri, 05 Apr 2024 04:39:04 -0700 (PDT)
+Received: from [10.0.0.4] ([37.174.58.205])
+        by smtp.gmail.com with ESMTPSA id s14-20020a05600c45ce00b004162ef30447sm2023038wmo.18.2024.04.05.04.39.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Apr 2024 04:39:03 -0700 (PDT)
+Message-ID: <32f25edc-4b4e-49b8-a9a4-50ed9da258bf@gmail.com>
+Date: Fri, 5 Apr 2024 13:39:02 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <aeee83d8-dee3-42ed-b705-988b17800721@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-ClientProxiedBy: hi2exch02.adit-jv.com (10.72.92.28) To
- hi2exch02.adit-jv.com (10.72.92.28)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net/socket: the length value of the input socket option
+ parameter is too small
+Content-Language: en-US
+To: Edward Adam Davis <eadavis@qq.com>,
+ syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com
+Cc: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+ linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org,
+ syzkaller-bugs@googlegroups.com, edumazet@google.com
+References: <000000000000b9b20e061553f06e@google.com>
+ <tencent_7A77E9664E3C953694964A37444AF474AF09@qq.com>
+From: Eric Dumazet <eric.dumazet@gmail.com>
+In-Reply-To: <tencent_7A77E9664E3C953694964A37444AF474AF09@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Apr 03, 2024 at 11:01:58PM +0200, Ferry Toth wrote:
-> Hi,
-> 
-> Op 15-01-2024 om 21:10 schreef Ferry Toth:
-> > Hi,
-> > 
-> > Op 15-01-2024 om 14:27 schreef Hardik Gajjar:
-> > > On Sun, Jan 14, 2024 at 06:59:19PM +0200, Andy Shevchenko wrote:
-> > > > +Cc: Ferry.
-> > > > 
-> > > > On Fri, Oct 06, 2023 at 05:56:46PM +0200, Hardik Gajjar wrote:
-> > > > > This patch replaces the usage of netif_stop_queue with
-> > > > > netif_device_detach
-> > > > > in the u_ether driver. The netif_device_detach function not
-> > > > > only stops all
-> > > > > tx queues by calling netif_tx_stop_all_queues but also marks
-> > > > > the device as
-> > > > > removed by clearing the __LINK_STATE_PRESENT bit.
-> > > > > 
-> > > > > This change helps notify user space about the disconnection
-> > > > > of the device
-> > > > > more effectively, compared to netif_stop_queue, which only
-> > > > > stops a single
-> > > > > transmit queue.
-> > > > 
-> > > > This change effectively broke my USB ether setup.
-> > > > 
-> > > > git bisect start
-> > > > # status: waiting for both good and bad commits
-> > > > # good: [1f24458a1071f006e3f7449c08ae0f12af493923] Merge tag
-> > > > 'tty-6.7-rc1' of
-> > > > git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/tty
-> > > > git bisect good 1f24458a1071f006e3f7449c08ae0f12af493923
-> > > > # status: waiting for bad commit, 1 good commit known
-> > > > # bad: [2c40c1c6adab90ee4660caf03722b3a3ec67767b] Merge tag
-> > > > 'usb-6.7-rc1' of
-> > > > git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb
-> > > > git bisect bad 2c40c1c6adab90ee4660caf03722b3a3ec67767b
-> > > > # bad: [17d6b82d2d6d467149874b883cdba844844b996d] usb/usbip: fix
-> > > > wrong data added to platform device
-> > > > git bisect bad 17d6b82d2d6d467149874b883cdba844844b996d
-> > > > # good: [ba6b83a910b6d8a9379bda55cbf06cb945473a96] usb:
-> > > > xhci-mtk: add a bandwidth budget table
-> > > > git bisect good ba6b83a910b6d8a9379bda55cbf06cb945473a96
-> > > > # good: [dddc00f255415b826190cfbaa5d6dbc87cd9ded1] Revert "usb:
-> > > > gadget: uvc: cleanup request when not in correct state"
-> > > > git bisect good dddc00f255415b826190cfbaa5d6dbc87cd9ded1
-> > > > # bad: [8f999ce60ea3d47886b042ef1f22bb184b6e9c59] USB: typec:
-> > > > tps6598x: Refactor tps6598x port registration
-> > > > git bisect bad 8f999ce60ea3d47886b042ef1f22bb184b6e9c59
-> > > > # bad: [f49449fbc21e7e9550a5203902d69c8ae7dfd918] usb: gadget:
-> > > > u_ether: Replace netif_stop_queue with netif_device_detach
-> > > > git bisect bad f49449fbc21e7e9550a5203902d69c8ae7dfd918
-> > > > # good: [97475763484245916735a1aa9a3310a01d46b008] USB: usbip:
-> > > > fix stub_dev hub disconnect
-> > > > git bisect good 97475763484245916735a1aa9a3310a01d46b008
-> > > > # good: [0f5aa1b01263b8b621bc4f031a1f2983ef8517b7] usb: usbtest:
-> > > > fix a type promotion bug
-> > > > git bisect good 0f5aa1b01263b8b621bc4f031a1f2983ef8517b7
-> > > > # first bad commit: [f49449fbc21e7e9550a5203902d69c8ae7dfd918]
-> > > > usb: gadget: u_ether: Replace netif_stop_queue with
-> > > > netif_device_detach
-> > > > 
-> > > > Note, revert indeed helps. Should I send a revert?
-> > > > 
-> > > > I use configfs to setup USB EEM function and it worked till this
-> > > > commit.
-> > > > If needed, I can share my scripts, but I believe it's not needed
-> > > > as here
-> > > > we see a clear regression.
-> > > > 
-> > > > -- 
-> > > > With Best Regards,
-> > > > Andy Shevchenko
-> > > > 
-> > > > 
-> > > 
-> > > Without this patch, there may be a potential crash in a race
-> > > condition, as __LINK_STATE_PRESENT is monitored at many places in
-> > > the Network stack to determine the status of the link.
-> > > 
-> > > Could you please provide details on how this patch affects your
-> > > functionality? Are you experiencing connection problems or data
-> > > transfer interruptions?
-> > 
-> > In my case on mrfld (Intel Edison Arduino) using configfs with this
-> > patch no config from host through dhcp is received. Manual setting
-> > correct ipv4 addr / mask / gw still no connection.
-> > 
-> > > Instead of reverting this patch, consider trying the upcoming patch
-> > > (soon to be available in the mainline) to see if it resolves your
-> > > issue.
-> > > 
-> > > https://urldefense.proofpoint.com/v2/url?u=https-3A__lore.kernel.org_lkml_2023122900-2Dcommence-2Dagenda-2Ddb2c-40gregkh_T_-23m36a812d3f1e5d744ee32381f6ae4185940b376de&d=DwICaQ&c=euGZstcaTDllvimEN8b7jXrwqOf-v5A_CdpgnVfiiMM&r=SAhjP5GOmrADp1v_EE5jWoSuMlYCIt9gKduw-DCBPLs&m=4g6EtvkKKfp8YYHpU196b2HzQxCMgsAhuo8pFng3X4TCWdcOVEUCug2-l2hRfLyV&s=t82wZAFwm2FTSaacgsmSpZWvWEa89jN8GX-okIJrwFw&e=
-> > > 
-> > 
-> > This patch works for me with v6.7.0.
-> 
-> I need to revisit this. The patch in this topic landed in v6.7.0-rc1
-> (f49449fbc21e) and breaks the gadget mrfld (Intel Edison Arduino) and other
-> platforms as well.
-> 
-> The mentioned fix "usb: gadget: u_ether: Re-attach netif device to mirror
-> detachment*" * has landed in v6.8.0-rc1 (76c945730). What it does fix: I am
-> able to make a USB EEM function again.
-> 
-> However, now a hidden issue appears. With mrfld there is an external switch
-> to easily switch between host and device mode.
-> 
-> What is not fixed:
-> 
-> - when in device mode and unplugging/plugging the cable when using `ifconfig
-> usb0` the line "usb0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>" changes to
-> "usb0: flags=4099<UP,BROADCAST,MULTICAST>" as is supposed to, the route
-> table is updated and the dir `/sys/class/net/usb0` exists and in the dir
-> `cat carrier*` shows the carrier up and down counts. This is the expected
-> behavior.
-> 
-> - when in device mode and switching to host mode `ifconfig usb0` continues
-> to show "RUNNING", the route table is not modified and the dir
-> `/sys/class/net/usb0` no longer exists.
-> 
-> - switching to device mode again, USB EEM works fine, no changes to RUNNING
-> or the route table happen and the dir `/sys/class/net/usb0` still is non-
-> existing.
-> 
-> - unplugging/plugging the cable in device mode after this does not restore
-> the original situation.
-> 
-> This behavior I tested on v6.9.0-rc2 (with a few unrelated but essential
-> patches on top) and bisected back to this patch in v6.70-rc1.
-> 
-> It seems `netif_device_detach` does not completely clean up as expected and
-> `netif_device_attach` does not completely rebuild.
-> 
-> I am wondering if on other platforms this can be reproduced? If so, inho it
-> would be best to revert the both patches until the issue is resolved.
-> 
-> Thanks,
-> 
-> Ferry
 
-I'm wondering why the /sys/class/net/usb0 directory is being removed when the network interface is still available.
-This behavior seems not correct.
+On 4/5/24 12:16, Edward Adam Davis wrote:
+> [Syzbot reported]
+> BUG: KASAN: slab-out-of-bounds in copy_from_sockptr_offset include/linux/sockptr.h:49 [inline]
+> BUG: KASAN: slab-out-of-bounds in copy_from_sockptr include/linux/sockptr.h:55 [inline]
+> BUG: KASAN: slab-out-of-bounds in rfcomm_sock_setsockopt_old net/bluetooth/rfcomm/sock.c:632 [inline]
+> BUG: KASAN: slab-out-of-bounds in rfcomm_sock_setsockopt+0x893/0xa70 net/bluetooth/rfcomm/sock.c:673
+> Read of size 4 at addr ffff8880209a8bc3 by task syz-executor632/5064
+>
+> CPU: 0 PID: 5064 Comm: syz-executor632 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+> Call Trace:
+>   <TASK>
+>   __dump_stack lib/dump_stack.c:88 [inline]
+>   dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+>   print_address_description mm/kasan/report.c:377 [inline]
+>   print_report+0x169/0x550 mm/kasan/report.c:488
+>   kasan_report+0x143/0x180 mm/kasan/report.c:601
+>   copy_from_sockptr_offset include/linux/sockptr.h:49 [inline]
+>   copy_from_sockptr include/linux/sockptr.h:55 [inline]
+>   rfcomm_sock_setsockopt_old net/bluetooth/rfcomm/sock.c:632 [inline]
+>   rfcomm_sock_setsockopt+0x893/0xa70 net/bluetooth/rfcomm/sock.c:673
+>   do_sock_setsockopt+0x3af/0x720 net/socket.c:2311
+>   __sys_setsockopt+0x1ae/0x250 net/socket.c:2334
+>   __do_sys_setsockopt net/socket.c:2343 [inline]
+>   __se_sys_setsockopt net/socket.c:2340 [inline]
+>   __x64_sys_setsockopt+0xb5/0xd0 net/socket.c:2340
+>   do_syscall_64+0xfb/0x240
+>   entry_SYSCALL_64_after_hwframe+0x6d/0x75
+> RIP: 0033:0x7f36ff898dc9
+> Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 91 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007ffe010c2208 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+> RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f36ff898dc9
+> RDX: 0000000000000003 RSI: 0000000000000012 RDI: 0000000000000006
+> RBP: 0000000000000006 R08: 0000000000000002 R09: 0000000000000000
+> R10: 00000000200000c0 R11: 0000000000000246 R12: 0000555567399338
+> R13: 000000000000000e R14: 0000000000000000 R15: 0000000000000000
+>   </TASK>
+>
+> Allocated by task 5064:
+>   kasan_save_stack mm/kasan/common.c:47 [inline]
+>   kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+>   poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
+>   __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
+>   kasan_kmalloc include/linux/kasan.h:211 [inline]
+>   __do_kmalloc_node mm/slub.c:3966 [inline]
+>   __kmalloc+0x233/0x4a0 mm/slub.c:3979
+>   kmalloc include/linux/slab.h:632 [inline]
+>   __cgroup_bpf_run_filter_setsockopt+0xd2f/0x1040 kernel/bpf/cgroup.c:1869
+>   do_sock_setsockopt+0x6b4/0x720 net/socket.c:2293
+>   __sys_setsockopt+0x1ae/0x250 net/socket.c:2334
+>   __do_sys_setsockopt net/socket.c:2343 [inline]
+>   __se_sys_setsockopt net/socket.c:2340 [inline]
+>   __x64_sys_setsockopt+0xb5/0xd0 net/socket.c:2340
+>   do_syscall_64+0xfb/0x240
+>   entry_SYSCALL_64_after_hwframe+0x6d/0x75
+>
+> The buggy address belongs to the object at ffff8880209a8bc0
+>   which belongs to the cache kmalloc-8 of size 8
+> The buggy address is located 1 bytes to the right of
+>   allocated 2-byte region [ffff8880209a8bc0, ffff8880209a8bc2)
+> [Fix]
+> The optlen value passed by syzbot to _sys_setsockopt() is 2, which results in
+> only 2 bytes being allocated when allocating memory to kernel_optval, and the
+> optval size passed when calling the function copy_from_sockptr() is 4 bytes.
+> Here, optlen is determined uniformly in the entry function __sys_setsockopt().
+> If its value is less than 4, the parameter is considered invalid.
+>
+> Reported-by: syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>   net/socket.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/net/socket.c b/net/socket.c
+> index e5f3af49a8b6..ac8fd4f6ebfe 100644
+> --- a/net/socket.c
+> +++ b/net/socket.c
+> @@ -2327,6 +2327,9 @@ int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
+>   	int err, fput_needed;
+>   	struct socket *sock;
+>   
+> +	if (optlen < sizeof(int))
+> +		return -EINVAL;
+> +
 
-The gether_cleanup function should remove the interface along with the associated kobject,
-and this function should only be called during the unloading of the driver or deleting the gadget.
-Could you please confirm whether any of your custom modifications are removing the net interface kobject?
 
-> 
-> > > Thanks,
-> > > Hardik
-> > 
+Please cc netdev@ for core networking patches.
+
+This patch is not good, please fix net/bluetooth/rfcomm/sock.c instead
+
+I think I did this yesterday already :
+
+https://lore.kernel.org/netdev/20240404124723.2429464-1-edumazet@google.com/T/
+
+
+>   	sock = sockfd_lookup_light(fd, &err, &fput_needed);
+>   	if (!sock)
+>   		return err;
 
