@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-132381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132384-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EEA28993D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 971C78993D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:27:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0CB11C23369
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:26:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8AE11C23E78
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:27:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DCE286BF;
-	Fri,  5 Apr 2024 03:25:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1152E646;
+	Fri,  5 Apr 2024 03:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H3DP2uwe"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QdtNvVfU"
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75BD4219FC;
-	Fri,  5 Apr 2024 03:25:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8293522EEF;
+	Fri,  5 Apr 2024 03:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712287519; cv=none; b=k8IiOlIwxtmczPpBFCNUJKZ9P7Rld8zqB4/mMvHpt3LwX/V+5ZG93lJRDqlmQzbFWaA4Xjg09BBbrwMSzTEDK7Rbya02O3MTB18XvgVAPjCsltQ9YhzA9RYHmBSME6T1Zfe/et6OLERdkFZ88OWurt5yXbRVAGKa3uGh/QjpQXU=
+	t=1712287521; cv=none; b=B00w1mEuWMxeW29Z0lPOhWrdfWyKWb0oPguxbIk5BjegeATIT6cK+o0faaghNt7Wx1Ek0B/kdJfKhL7JLvTLQRXNmLytOy9ovsZHSaI56yhx2SC+oaUsvjOlxyHka5vs4SDLk4xhQoxiR/1lKJNRatzfSiHRH8YF1k9Vck7U47g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712287519; c=relaxed/simple;
-	bh=Qvg5RVrUDranDSeYRI0HQG8F+ZoiW29zPcZUdHgKobs=;
+	s=arc-20240116; t=1712287521; c=relaxed/simple;
+	bh=4+zOGgONv/PHR45HxcG9SdDuhPsuOA8XY6mYEd8/s4w=;
 	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=P9Olnk7yhTaVxPQjQleOti/8OILiAx5IAHZLjGOClV4iJh6686elCwyfJPV1JT4iTEH/1W8/3Jx2UejFL6VozKkm2wd8WcbmJ5lKrrdeGYz0FDsWqpdT+EoTGaMzFVFidgqhvc9rMfX92ap1JXhObqmGoxnxBXnFaZ8OZ8GR0Pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H3DP2uwe; arc=none smtp.client-ip=192.198.163.8
+	 MIME-Version; b=kh7Fr8ncFc1Pnm2GTIpWPBDMQ0GWrjPjdaLA+yoskKYw0MTAnRmULuijjskOk9bWBfoloVNpPCGUO1HqIJH5PoLKYuQ1M/ay68IojwEhplFP/QKebHajoz1uujwQvi+otomf/30lnFedUHDQLvPFim2rh17ETkCQzbsHhzwDlrs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QdtNvVfU; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712287518; x=1743823518;
+  t=1712287519; x=1743823519;
   h=from:to:subject:date:message-id:in-reply-to:references:
    mime-version:content-transfer-encoding;
-  bh=Qvg5RVrUDranDSeYRI0HQG8F+ZoiW29zPcZUdHgKobs=;
-  b=H3DP2uweAMVACxG9uYvSMKbK3q/MFkXvNsM+LVZk+lj5nI2/rQl9eEot
-   IAroGJ5j/i74c41kQ83YPbIITuOcBJsuZONU8EOCx8t2mjt9QZzydI3wc
-   o6veqYsSPpHjTvQuVbYk4pxlUkA2eSNOOJ1Azh9s6Rg0XMLazYmjd8EzD
-   /oz7t4f7vfZ2QoAY9H253JA6WMUeW6fclso5KX42zW3IPiI1eyxH/PjtP
-   3yrZpsZFysK6Wekotk2B/UzRUOA5/4lXYxg12MUeEvbjvKWv5PunIm8Ft
-   KXcCL8b4NfZZSSLeoBmnpygtXba1iUIsvt0v1B8JO3uvI8VXghAafBYiv
-   A==;
-X-CSE-ConnectionGUID: klSBbrTaQUa8f2FWakea8w==
-X-CSE-MsgGUID: /keANGOqS8qOqSLtsr8YBA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="25112472"
+  bh=4+zOGgONv/PHR45HxcG9SdDuhPsuOA8XY6mYEd8/s4w=;
+  b=QdtNvVfUlEgwtCxCqJ7i7fyKYN6ek9NRKaUHt6h3QH7I9tQr0IdJ9Nuy
+   Spcy75beiPHGB6iqCphaW9SU1bvrqMLxPvatdBwYHxWPc9KawrHrGmiBZ
+   gK8UZ6QOTYuEBs0S84UMS10yyJa4VHi8rLecDCYpzmm9ZU2rYZSqJ/WVR
+   PAA+MnB8Rq0dYMvdkFkeUfI+GLSQyudujZhMzW5rny9sUZwh5wz6w69b9
+   rw1Z9fTtk23Oxc01Tio7Z6D45ECmhCXSlBFD0JBYNUKUKbWfGQyHk29ri
+   2sIG2XK6IvDhr0jrxcnGYwlJUoC0kqyyil8X0mBhIvb8m1cjp5+mrMUkK
+   Q==;
+X-CSE-ConnectionGUID: pwDRpvLMRSOWubLV1bu5iA==
+X-CSE-MsgGUID: LhMTFxxfTS2I5zRXA6IrKA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="25112474"
 X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="25112472"
+   d="scan'208";a="25112474"
 Received: from fmviesa010.fm.intel.com ([10.60.135.150])
   by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 20:25:15 -0700
-X-CSE-ConnectionGUID: ejWy7LVIT8i8ykIsqrKsDQ==
-X-CSE-MsgGUID: LRBbbz2XQQCOI5hE46/+Mg==
+X-CSE-ConnectionGUID: h1XgiHBwSYu9p702Q7pxDw==
+X-CSE-MsgGUID: /keb5FYYQFyCuJsICgBbHA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="18955989"
+   d="scan'208";a="18955991"
 Received: from alexpabo-mobl.amr.corp.intel.com (HELO debox1-desk4.lan) ([10.209.49.45])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 20:25:14 -0700
+  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 20:25:15 -0700
 From: "David E. Box" <david.e.box@linux.intel.com>
 To: david.e.box@linux.intel.com,
 	hdegoede@redhat.com,
@@ -64,9 +64,9 @@ To: david.e.box@linux.intel.com,
 	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: [PATCH V3 7/9] tools/arch/x86/intel_sdsi: Fix meter_certificate decoding
-Date: Thu,  4 Apr 2024 20:25:05 -0700
-Message-Id: <20240405032507.2637311-8-david.e.box@linux.intel.com>
+Subject: [PATCH V3 8/9] platform/x86/intel/sdsi: Simplify ascii printing
+Date: Thu,  4 Apr 2024 20:25:06 -0700
+Message-Id: <20240405032507.2637311-9-david.e.box@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240405032507.2637311-1-david.e.box@linux.intel.com>
 References: <20240405032507.2637311-1-david.e.box@linux.intel.com>
@@ -78,53 +78,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fix errors in the calculation of the start position of the counters and in
-the display loop. While here, use a #define for the bundle count and size.
+Use printf width specifier to set the display length of encoded feature
+names.
 
-Fixes: 7fdc03a7370f ("tools/arch/x86: intel_sdsi: Add support for reading meter certificates")
 Signed-off-by: David E. Box <david.e.box@linux.intel.com>
 Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
 
-V3 - Use macros for bundle size and count
+V3 - Add FEAT_LEN #def
 
 V2 - Split of V1 patch 7
 
- tools/arch/x86/intel_sdsi/intel_sdsi.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ tools/arch/x86/intel_sdsi/intel_sdsi.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
 diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/intel_sdsi/intel_sdsi.c
-index a0711177e1bb..45bc69e6718e 100644
+index 45bc69e6718e..0c9670ba1f15 100644
 --- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
 +++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
-@@ -394,7 +394,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
- 	printf("MMRC encoding:                %.4s\n", name);
+@@ -43,6 +43,7 @@
+ #define METER_CERT_MAX_SIZE	4096
+ #define STATE_MAX_NUM_LICENSES	16
+ #define STATE_MAX_NUM_IN_BUNDLE	(uint32_t)8
++#define FEAT_LEN		4
  
- 	printf("MMRC counter:                 %d\n", mc->mmrc_counter);
--	if (mc->bundle_length % 8) {
-+	if (mc->bundle_length % METER_BUNDLE_SIZE) {
- 		fprintf(stderr, "Invalid bundle length\n");
- 		return -1;
- 	}
-@@ -405,15 +405,16 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
- 		return -1;
- 	}
- 
--	bec = (void *)(mc) + sizeof(mc);
-+	bec = (void *)(mc) + sizeof(*mc);
+ #define __round_mask(x, y) ((__typeof__(x))((y) - 1))
+ #define round_up(x, y) ((((x) - 1) | __round_mask(x, y)) + 1)
+@@ -409,11 +410,10 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
  
  	printf("Number of Feature Counters:   %ld\n", BUNDLE_COUNT(mc->bundle_length));
--	while (count++ < mc->bundle_length / 8) {
-+	while (count < BUNDLE_COUNT(mc->bundle_length)) {
- 		char feature[5];
+ 	while (count < BUNDLE_COUNT(mc->bundle_length)) {
+-		char feature[5];
++		char feature[FEAT_LEN];
  
- 		feature[4] = '\0';
+-		feature[4] = '\0';
  		get_feature(bec[count].encoding, feature);
- 		printf("    %s:          %d\n", feature, bec[count].counter);
-+		++count;
+-		printf("    %s:          %d\n", feature, bec[count].counter);
++		printf("    %.4s:          %d\n", feature, bec[count].counter);
+ 		++count;
  	}
  
- 	return 0;
+@@ -494,7 +494,7 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
+ 			sizeof(*lki) +			// size of the license key info
+ 			offset;				// offset to this blob content
+ 		struct bundle_encoding *bundle = (void *)(lbc) + sizeof(*lbc);
+-		char feature[5];
++		char feature[FEAT_LEN];
+ 		uint32_t i;
+ 
+ 		printf("     Blob %d:\n", count - 1);
+@@ -507,11 +507,9 @@ static int sdsi_state_cert_show(struct sdsi_dev *s)
+ 		printf("        Blob revision ID:           %u\n", lbc->rev_id);
+ 		printf("        Number of Features:         %u\n", lbc->num_bundles);
+ 
+-		feature[4] = '\0';
+-
+ 		for (i = 0; i < min(lbc->num_bundles, STATE_MAX_NUM_IN_BUNDLE); i++) {
+ 			get_feature(bundle[i].encoding, feature);
+-			printf("                 Feature %d:         %s\n", i, feature);
++			printf("                 Feature %d:         %.4s\n", i, feature);
+ 		}
+ 
+ 		if (lbc->num_bundles > STATE_MAX_NUM_IN_BUNDLE)
 -- 
 2.34.1
 
