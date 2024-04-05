@@ -1,134 +1,175 @@
-Return-Path: <linux-kernel+bounces-133171-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15065899FE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:37:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0D8B899FF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:38:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7B031F22640
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:37:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2ACCE1F226CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:38:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52EDE16F28D;
-	Fri,  5 Apr 2024 14:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347EE16F28E;
+	Fri,  5 Apr 2024 14:38:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y3gsiQ8s"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eqBptXTX"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C50341C68;
-	Fri,  5 Apr 2024 14:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9E5716D318
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:38:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712327827; cv=none; b=CjBfQCGWn/9yiJ2ZCPxLKieWvs19KiQj/FO3deY6veVaUmHBm2JFmtPNTd07CT/D65HhBl+tOJMjVC9MxdZPMpxEtcIW3G0IsfIzhFFVKRvGanjA92o2v854wz23Jz2NtLGNh5WuNhCNpJ0nTtCZR2Sa7RVmgiZG8PxurLhKOPw=
+	t=1712327910; cv=none; b=ss3S1tittdC4t9Zswon14Az8eiGHysYxuo66vf/GBI0nc6/r7z8b8qhUXPh86csKbzzY+mXuQ9vhUy2Y+BuWF/6o9kRpMv9jC7ygcFbmfgmIV72FgDqGceljxdGphU/MNmtmjRG1dKntXNa7pUca2tgrhdoHX3XTeYJiHOoKNyk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712327827; c=relaxed/simple;
-	bh=eIorOYYZiLdm+pbueizWefpBql/HDSgTVKhM4Iafk9s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cPB3PcqWrQSkXUiWDOUNpitnlf9VQ8IHIFd5vrsL33oCyuMU1vqBKl/K/HQ0842iYiNdztiTwqQSZyWflvF4pAVH+oMb2NrlnL+NGDPMgxsm1Uijy9gcLczq1UQ/ITtTbn+tkOJkZJjD8bZ+eHNZJvOz9q+56hF8qKXuoAM3+6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y3gsiQ8s; arc=none smtp.client-ip=209.85.208.47
+	s=arc-20240116; t=1712327910; c=relaxed/simple;
+	bh=krI3p7b8O/0LkrqfedOET3v9JRzVve86MfeUXCHoD/U=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=kfPp6eyt0duByNLuFWHmFphVFpk5RYVAtvNqI/6Eud79Wx7IH015LJ5UwcOZ7LaqcC1IsMTbfREV5mvNtdLF3wYZzJVejbVoXKGF0xetKwglE8c4JzPiBnRMFAUiZcMum5lndg/8uoD1QIO8+a6IOHgw9qTuWEp5bQ1tMDQwgDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eqBptXTX; arc=none smtp.client-ip=209.85.208.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56e0acaf69aso2863359a12.1;
-        Fri, 05 Apr 2024 07:37:05 -0700 (PDT)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56e1a1c0ec9so2267580a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:38:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712327824; x=1712932624; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=CSJRYNqAmVBKiGPVSvhxhy0tW7FVAqspgSB3v6fe5Ds=;
-        b=Y3gsiQ8svPUtQZrrCXc27NzBXOLlsTreXBahRXZUiBffEsgfbld9wgmy3/u6zdJFNO
-         47aGdkjkbOcXTY2NXnpajYoUgj1CNNg0CmRkZfXN1azPc0Bff8o9awEWoVvqfwcC7Qb2
-         YWw3W86F/ktfCPvSo3fE+LACIAPOVp4OY1hqKcNEwJQfKhxqT3RkuEjgt+Uyl5DTfbn+
-         6uQ3SI0MsFRQmbs+JzmV9xfXZEwViUOpkQ/7GiWqf7QSikJa1nNB/8okqYMbHFdoRxtH
-         2EvFUpmLZiWnYLhj3jbmQgWzc7/Hcql5CK+q1F4SnrEh/PKUC/yjekO7AxRavP78bCK7
-         ZtQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712327824; x=1712932624;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1712327907; x=1712932707; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CSJRYNqAmVBKiGPVSvhxhy0tW7FVAqspgSB3v6fe5Ds=;
-        b=lmHYuzvhj8Wyg+i7gXbGzVfi37lbn2rPx3M8UjdLsC32WzWRlOlyZkCclpd4RN1NLc
-         VDtLApv3VtNaFPvrAW9o9xW0tvsOEkD3Wqii7DtqmhhB0/6x6+atjdfdw1tE9bQl6w8l
-         8yGflySh4BJ2MynloiNsEq5LOZ03EvAr1LAHvb7Kb48RAuSvg0Cx+Qq5KXuPm/WJrLK3
-         KDgsSGZL5kwGZS9wahFSoHKAibSdHAtThFJi1fwXnL4drZwYEge+KzZcp1EjtCDe/0Cx
-         7ZcsSKWqFu6g0ULG7j/AlZ/7sHuNWo+wPoeInIEeDTRTixizHDViUDo8AuFQt7TteOnj
-         /ViQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUT2R1anYi6iEMJkqfSrFCZ/m3ADe++9wVnLhxnDm5tMYSOY94+7VwgENm7v8XJDc3b8psa2x25iR1EsxmSRMYBXYsnpv7INYcVL+nm
-X-Gm-Message-State: AOJu0YwIkGfjjjgBTfm3tl0oFOF0iFVlWojTTYRnKpTs1UddP4zr3pni
-	JGvo300V8/d8wQn661bbprs18o6bjP8gONqMhOHCCy/iNZhJRBaC
-X-Google-Smtp-Source: AGHT+IHZlbgRHFlooAtDFVBN7jM5NrSJFl77rEcVoUJUAp4b0sSOmB3NQgvCCqIeb055tv+wzACddg==
-X-Received: by 2002:a50:d6d6:0:b0:56d:ee61:6874 with SMTP id l22-20020a50d6d6000000b0056dee616874mr973236edj.20.1712327824238;
-        Fri, 05 Apr 2024 07:37:04 -0700 (PDT)
-Received: from skbuf ([2a02:2f04:d700:2000::b2c])
-        by smtp.gmail.com with ESMTPSA id es18-20020a056402381200b0056a033fa007sm845735edb.64.2024.04.05.07.37.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 07:37:03 -0700 (PDT)
-Date: Fri, 5 Apr 2024 17:37:00 +0300
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Pawel Dembicki <paweldembicki@gmail.com>
-Cc: netdev@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-	Simon Horman <horms@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Claudiu Manoil <claudiu.manoil@nxp.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v8 05/16] net: dsa: vsc73xx: add structure
- descriptions
-Message-ID: <20240405143700.vaohtglfzcbrcd3f@skbuf>
-References: <20240403103734.3033398-1-paweldembicki@gmail.com>
- <20240403103734.3033398-6-paweldembicki@gmail.com>
+        bh=Jq64EytimHF5MsTrKaB8604ERPcd6n9oHVseoGQ2LmI=;
+        b=eqBptXTXx9q6YZXF2+zesnkWUwtWa8tgLJrtK6q4sltgZ+efiWl3+9UOU/2875JyQb
+         yo3m+6MBJ9ZqHXJYUutw59fzYiOmYR8FmN2gkNRejb/+9P/Wk/YW2C/dAAg6yAz7jDg9
+         IqCCs9DJ5BA0jBalbbiLqzKc/P0Po6lnIwTE/AvanMqnjjugybyyy8MFcEi3todkyYaB
+         zR0m4nxNt25FSgG3aNhXCHXCo9aHc11YtHpliBKfzG35Ajt/tdbNp8nKYjsOxDGAHwZM
+         X4Fi3WpyIxT5IRQPceSuRYnRjeVgVftl30dG1BY2IcfW2nij0NiFG9Q6uCCGQleS1fSO
+         +/mQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712327907; x=1712932707;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jq64EytimHF5MsTrKaB8604ERPcd6n9oHVseoGQ2LmI=;
+        b=W8XQwmwBnxZIt28zqhT06SU3uUyUs12F+wruOZIXfE1fM9QconDybaM5R5xqmJv/Xp
+         cZ0EzNrk/iJZhd/b2WbiRSJF0ZCzZuWz7VoiCKlG0fCkbMSpigqfwEwoRNmuCSAN7yUE
+         TnVJ8miVa3/W+/juIRlUiSVytj6KnZTFMcr8vj4/pCLha/DnC1plNB/JWunCjtL+U/sU
+         Zxwlk0UTbG78UFbWo5thNCbQTSA99YbBJ9oq8vEJMBbgBEH6dnl7r3yno4tILaTeex+j
+         QX/WBL+OKLUfnMVPDeYmcLDJeW9bsVt25lB95Xbf5edvFE5Y/dyUYxzRuFFn5wLlbbtT
+         RrLw==
+X-Forwarded-Encrypted: i=1; AJvYcCVt1LzO8vr5CGUb+8kOtIp4QVnIdulpTpDLdB3N/AqpVhVqz1C8PwSUNmZy3gML7anPR3QeOYPfpGW756JX/aZA6JVcms4RP62HGX3S
+X-Gm-Message-State: AOJu0YxnhwwPOztDWklAEKeDdcoV+nbCuQy0oHAIgzXKxCOm0ZN2yyO/
+	6K0JjDDCuRaIouOelaDqPWt/EjOC4hy92I71eq6UiZkD3AA6OqzP
+X-Google-Smtp-Source: AGHT+IFDhv+vjtsOlRxdmgq8zBMFrUc9BOJ3Rr/vsuyRzT3WC7eg4jtJDuBAVV1F60SijHgdh3D78g==
+X-Received: by 2002:a50:c348:0:b0:56d:c6e9:ca01 with SMTP id q8-20020a50c348000000b0056dc6e9ca01mr1261481edb.15.1712327906740;
+        Fri, 05 Apr 2024 07:38:26 -0700 (PDT)
+Received: from smtpclient.apple ([132.68.46.1])
+        by smtp.gmail.com with ESMTPSA id j13-20020a50ed0d000000b0056c4372c161sm855756eds.55.2024.04.05.07.38.24
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Apr 2024 07:38:26 -0700 (PDT)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403103734.3033398-6-paweldembicki@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [PATCH] x86/percpu: Use __force to cast from __percpu address
+ space
+From: Nadav Amit <nadav.amit@gmail.com>
+In-Reply-To: <20240402175058.52649-1-ubizjak@gmail.com>
+Date: Fri, 5 Apr 2024 17:38:13 +0300
+Cc: the arch/x86 maintainers <x86@kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Charlemagne Lasse <charlemagnelasse@gmail.com>,
+ Luc Van Oostenryck <luc.vanoostenryck@gmail.com>,
+ Ingo Molnar <mingo@kernel.org>,
+ Andy Lutomirski <luto@kernel.org>,
+ Brian Gerst <brgerst@gmail.com>,
+ Denys Vlasenko <dvlasenk@redhat.com>,
+ "H. Peter Anvin" <hpa@zytor.com>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Josh Poimboeuf <jpoimboe@redhat.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <0F9CDB7B-E8DD-43E5-9394-233A9289B3E0@gmail.com>
+References: <20240402175058.52649-1-ubizjak@gmail.com>
+To: Uros Bizjak <ubizjak@gmail.com>
+X-Mailer: Apple Mail (2.3774.500.171.1.1)
 
-On Wed, Apr 03, 2024 at 12:37:21PM +0200, Pawel Dembicki wrote:
-> This commit adds updates to the documentation describing the structures
-> used in vsc73xx. This will help prevent kdoc-related issues in the future.
-> 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> Signed-off-by: Pawel Dembicki <paweldembicki@gmail.com>
+
+
+> On 2 Apr 2024, at 20:50, Uros Bizjak <ubizjak@gmail.com> wrote:
+>=20
+> Fix sparse warning when casting from __percpu address space by using
+> __force in the cast. x86 named address spaces are not considered to
+> be subspaces of the generic (flat) address space, so explicit casts
+> are required to convert pointers between these address spaces and the
+> generic address space (the application should cast to uintptr_t and
+> apply the segment base offset). The cast to uintptr_t removes
+> __percpu address space tag and sparse reports:
+>=20
+>  warning: cast removes address space '__percpu' of expression
+>=20
+> Use __force to inform sparse that the cast is intentional.
+>=20
+> Reported-by: Charlemagne Lasse <charlemagnelasse@gmail.com>
+> Closes: =
+https://lore.kernel.org/lkml/CAFGhKbzev7W4aHwhFPWwMZQEHenVgZUj7=3DaunFieVq=
+Zg3mt14A@mail.gmail.com/
+> Fixes: 9a462b9eafa6 ("x86/percpu: Use compiler segment prefix =
+qualifier")
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> Cc: Nadav Amit <nadav.amit@gmail.com>
+> Cc: Luc Van Oostenryck <luc.vanoostenryck@gmail.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Brian Gerst <brgerst@gmail.com>
+> Cc: Denys Vlasenko <dvlasenk@redhat.com>
+> Cc: H. Peter Anvin <hpa@zytor.com>
+> Cc: Linus Torvalds <torvalds@linux-foundation.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
 > ---
+> arch/x86/include/asm/percpu.h | 6 +++---
+> 1 file changed, 3 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/arch/x86/include/asm/percpu.h =
+b/arch/x86/include/asm/percpu.h
+> index 1f6404e0c428..20696df5d567 100644
+> --- a/arch/x86/include/asm/percpu.h
+> +++ b/arch/x86/include/asm/percpu.h
+> @@ -77,7 +77,7 @@
+> #define arch_raw_cpu_ptr(_ptr) \
+> ({ \
+> unsigned long tcp_ptr__ =3D __raw_my_cpu_offset; \
+> - tcp_ptr__ +=3D (unsigned long)(_ptr); \
+> + tcp_ptr__ +=3D (__force unsigned long)(_ptr); \
+> (typeof(*(_ptr)) __kernel __force *)tcp_ptr__; \
+> })
+> #else
+> @@ -96,8 +96,8 @@
+> #endif /* CONFIG_SMP */
+>=20
+> #define __my_cpu_type(var) typeof(var) __percpu_seg_override
+> -#define __my_cpu_ptr(ptr) (__my_cpu_type(*ptr) *)(uintptr_t)(ptr)
+> -#define __my_cpu_var(var) (*__my_cpu_ptr(&var))
+> +#define __my_cpu_ptr(ptr) (__my_cpu_type(*ptr)*)(__force =
+uintptr_t)(ptr)
+> +#define __my_cpu_var(var) (*__my_cpu_ptr(&(var)))
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+If you use "(var)=E2=80=9D in __my_cpu_var(),, you might just as well =
+change the first to:
 
-> diff --git a/drivers/net/dsa/vitesse-vsc73xx.h b/drivers/net/dsa/vitesse-vsc73xx.h
-> index fee1378508b5..e7b08599a625 100644
-> --- a/drivers/net/dsa/vitesse-vsc73xx.h
-> +++ b/drivers/net/dsa/vitesse-vsc73xx.h
-> @@ -15,7 +15,16 @@
->  #define VSC73XX_MAX_NUM_PORTS	8
->  
->  /**
-> - * struct vsc73xx - VSC73xx state container
-> + * struct vsc73xx - VSC73xx state container: main data structure
-> + * @dev: The device pointer
-> + * @reset: The descriptor for the GPIO line tied to the reset pin
-> + * @ds: Pointer to the DSA core structure
-> + * @gc: Main structure of the GPIO controller
-> + * @chipid: Storage for the Chip ID value read from the CHIPID register of the
-> + *	sswitch
+  #define __my_cpu_ptr(ptr) (__my_cpu_type(*(ptr))*)(__force =
+uintptr_t)(ptr)
 
-Nitpick (not a request to resend): "switch"
+[ not that I think of any real issue it might cause - just for =
+consistency]
 
-> + * @addr: MAC address used in flow control frames
-> + * @ops: Structure with hardware-dependent operations
-> + * @priv: Pointer to the configuration interface structure
->   */
->  struct vsc73xx {
->  	struct device			*dev;
+Anyhow,
+
+Asked-by: Nadav Amit <nadav.amit@gmail.com>=
 
