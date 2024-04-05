@@ -1,112 +1,245 @@
-Return-Path: <linux-kernel+bounces-132478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 311EF899592
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:37:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92109899596
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:37:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C59CF1F21879
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:37:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5FC21C208AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097B124205;
-	Fri,  5 Apr 2024 06:36:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0FD249FA;
+	Fri,  5 Apr 2024 06:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="BlHXSaqW"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="a79eE/aF"
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61204219FC;
-	Fri,  5 Apr 2024 06:36:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B76D417BB7
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 06:37:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712299018; cv=none; b=l7Uv6qbWpN5R7zfxMDtpyfidao6DGNHp0wZM8BqeL+4VfwRydbD/CSz6eZm9a3u0pknr04yPHnXjr1NsbanRPvzYkui4zPDtXmHRJhDdgo61j0Ict0IbL14cHSealWiYhLbtl++pLCXT9/9AkFLVq0tEtnnvTbJ9oDM1mQFy4So=
+	t=1712299062; cv=none; b=RFgqiCdE/PfigH7J4h+kd6Ll18r0FDckQO6yHNI3/sET8zrZBJFRwsxWpCDS9pagn97Rh5e/wGHdIj52qJRu3+au9ujnsBESbBFtsl6BYAqwkPjH6sW6HIRwr7wvOHr0PB7MB/Y8Z921XmmhNFP3opD4ew+TXszZqTSLnO/EUs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712299018; c=relaxed/simple;
-	bh=MF9x0u+ja/f5NG5xBWtjLFDFjBEi4bSDETo9bvduU0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JzWTrPzxyOFreOj31gP9rxGeyqUQzAcbthNwsgNtTjhNiQbTv1s9lXrJKqf3+c8Lrzi/F0xGR2Z74hsgUQh2rdZThh5kc4cHQV7T/ZEzL8QKE1GArht0cUrcZmFHU/z8fQk5k2WqyB4oc6J3RrutLLYdvFd01HzFtSPGm0+pWSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=BlHXSaqW; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id 941101F930;
-	Fri,  5 Apr 2024 08:36:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1712299013;
-	bh=UC3T4Qz0UwYKpOOwA7clFwRt2M9KxDI2AekTfv3g9ns=; h=From:To:Subject;
-	b=BlHXSaqWBfs60fQTTc+F47Eq2cXsItS6heieelM4AyiV1KlXwpzlS83Sk5Snl/rDZ
-	 8QC2D93r4m01aixdZKcjUoR3mDHhMJtuBdwvt9mhkk2D0UCUZzAlVkkZkrqWGxQhOq
-	 uRhupWPIOjE5SUoDFPK+hg3MZaWPfYV709gjmGojrfjPrkDZRj4AvXofOHQ6/HgMjd
-	 f1v/2RiUHzoBQB24KudG4hmUNOM3+HS9AxaGwQKOYP7IGESXzuVK3+GwRh7klpnvmL
-	 DYmhv00V17Atlh2LNAjgvEuU68j8RMOHfNhYcFCuodm7DpVk8lKjiKtzWF4dmC1uK1
-	 G6M47heIyNU4Q==
-Date: Fri, 5 Apr 2024 08:36:48 +0200
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
-	"open list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <imx@lists.linux.dev>,
-	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] arm64: dts: imx8qxp-mek: add cm40_i2c, wm8960/wm8962
- and sai[0,1,4,5]
-Message-ID: <20240405063648.GA4562@francesco-nb>
-References: <20240404161914.1655305-1-Frank.Li@nxp.com>
+	s=arc-20240116; t=1712299062; c=relaxed/simple;
+	bh=4KKrOAUgtvFzWwEeFckdFEnHHxIs4bk8RNDTh0Z+ew8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=m8bzGT/0quXdjnkU2QgAQtXCT9/GtS/J838uzoXbUGpIFXhZiySguAd6cK4/sQl0GXRkP3WYwbbsV12XFVbd5Mqoaks6ED7J+8ojTtcKsCqQ3hEh+SzSKmRhdMuQx5GFqEAOtgYIOFqSP9a7iHhVVklznCh35ly1DYC5kCaX7zo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=a79eE/aF; arc=none smtp.client-ip=203.254.224.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240405063732epoutp0321d9df36220d312826952825d12eab82~DTuqMSsDC0974709747epoutp03S
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 06:37:32 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240405063732epoutp0321d9df36220d312826952825d12eab82~DTuqMSsDC0974709747epoutp03S
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1712299052;
+	bh=7gP/5naD++bxmajPl7elEI7F1kgdeQwpQ3HndpQNEEc=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=a79eE/aF3ByXlvQ2cFtQkL1inLTqornHGRBwhJX2e+ex3FeWCK5yurvRqqTyLK9JM
+	 7tOZplEkpNgmS2UOOs5mIHtZA9FlpKGJRF6U8CCU8r+gB+D+7Vzus1Lh/45dBdDGst
+	 FgVxocH5s30uvy3d49nFsvlB85XG/wn7PYsMSM3w=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+	epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+	20240405063732epcas2p2e44664f7aae5fc96fc25ec909c1f51ee~DTupr-nkE0911409114epcas2p2f;
+	Fri,  5 Apr 2024 06:37:32 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.36.70]) by
+	epsnrtp3.localdomain (Postfix) with ESMTP id 4V9pgv3Kbzz4x9Pt; Fri,  5 Apr
+	2024 06:37:31 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+	epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+	34.63.09673.B2C9F066; Fri,  5 Apr 2024 15:37:31 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+	epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+	20240405063731epcas2p160d72b7fd452359a821d6a03de0d53fe~DTuowijPm0900509005epcas2p1w;
+	Fri,  5 Apr 2024 06:37:31 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+	20240405063731epsmtrp25cbc5ce1d3f2da6b34bcf0144fe4c7f8~DTuovpz8n2705427054epsmtrp2v;
+	Fri,  5 Apr 2024 06:37:31 +0000 (GMT)
+X-AuditID: b6c32a45-82dff700000025c9-ad-660f9c2b3758
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+	BD.3C.08924.A2C9F066; Fri,  5 Apr 2024 15:37:30 +0900 (KST)
+Received: from [172.27.222.155] (unknown [10.229.38.76]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20240405063730epsmtip2464ab5d19c0333d2d1604326a3bc8cd0~DTuojR0pD1227812278epsmtip2G;
+	Fri,  5 Apr 2024 06:37:30 +0000 (GMT)
+Message-ID: <76954c9b-e87a-c530-edb7-a8be4e3327ab@samsung.com>
+Date: Fri, 5 Apr 2024 15:37:30 +0900
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404161914.1655305-1-Frank.Li@nxp.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+	Thunderbird/102.15.1
+Subject: Re: [PATCH v2 0/2] Make reader optimistic spinning optional
+Content-Language: en-US
+To: Waiman Long <longman@redhat.com>, John Stultz <jstultz@google.com>
+Cc: peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+	boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
+	gregkh@linuxfoundation.org, bongkyu7.kim@samsung.com
+From: Bongkyu Kim <bongkyu7.kim@samsung.com>
+In-Reply-To: <45ddde77-a5dd-41e8-933f-36ed0f8cf178@redhat.com>
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLJsWRmVeSWpSXmKPExsWy7bCmua72HP40g2U3JCxeN75kslizpZHJ
+	onnxejaLPyc2sllc3jWHzeL0sRMsFpcOLGCyON57gMmi5Y6pA6fHzll32T0WbCr12LxCy2PT
+	qk42j/1z17B7vN93lc2jb8sqRo/Pm+QCOKKybTJSE1NSixRS85LzUzLz0m2VvIPjneNNzQwM
+	dQ0tLcyVFPISc1NtlVx8AnTdMnOAjlNSKEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTk
+	FJgX6BUn5haX5qXr5aWWWBkaGBiZAhUmZGccnzibqWCeZkXr+nvsDYzPlLoYOTkkBEwkPq79
+	x9LFyMUhJLCDUWLfi0lMEM4nRonXc66yQjjfGCW2v/0JlOEAa5k2QQAivpdRYtWdvWwQzltG
+	ibNfFrKCzOUVsJN41PqBDcRmEVCR2Lj0HFRcUOLkzCcsILaoQLTEzGkLGUFsYQEXibbv68Fs
+	ZgFxiVtP5jOB2CICbhLLvvSwQsRXMko8mZIEYrMJ6Ej8Xz0DrIYTaNf9w7ehauQlmrfOZgY5
+	SEJgLYdE45dDzBCPukgcmHifDcIWlnh1fAs7hC0l8fndXqh4scTEl1OhmhsYJZpeb2eBSBhL
+	zHrWzgjyPrOApsT6XfqQkFCWOHKLBWIvn0TH4b/sEGFeiY42IYhGNYndz1tZIWwZiYNn1zJB
+	2B4S1w5OZprAqDgLKVRmIfl+FpJvZiHsXcDIsopRLLWgODc9tdiowBAe2cn5uZsYwelWy3UH
+	4+S3H/QOMTJxMB5ilOBgVhLh7XbgTRPiTUmsrEotyo8vKs1JLT7EaAqMm4nMUqLJ+cCEn1cS
+	b2hiaWBiZmZobmRqYK4kznuvdW6KkEB6YklqdmpqQWoRTB8TB6dUA5OU5Ouk+YnMjbfe7uFe
+	LPpKaPrjwraET92qps/XKjg56D2d6bnNzPm3+Lf2ZyvO/t60StuO84bjFqs4jnm3zOr4J+cV
+	qcay8tjFflDVY3g/593LnYVtEbek3+7/eNL0TXNyStbFzPBlEcxalanWby/cXLuM6Q1v8DzR
+	l71Wn6+ZKGvL+84yTtDUe8p4eTLv8ZuSD26//hKau4ApfkWB0CfVe6tiFIuE339aJzlBJSQi
+	7oxTYNxti0VX030m2obffMiZaGA7M1uwlOdIuopbJ5v3Z+eXX5IDdIySDtoevJm8I0ZEpTRj
+	wmMOCctIpZhN/mvynTxs8nmTn/sFXvnCv2f9egHFUMv6tBP/JJ2XKbEUZyQaajEXFScCAEs1
+	B7dABAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmkeLIzCtJLcpLzFFi42LZdlhJXldrDn+awfQJNhavG18yWazZ0shk
+	0bx4PZvFnxMb2Swu75rDZnH62AkWi0sHFjBZHO89wGTRcsfUgdNj56y77B4LNpV6bF6h5bFp
+	VSebx/65a9g93u+7yubRt2UVo8fnTXIBHFFcNimpOZllqUX6dglcGccnzmYqmKdZ0br+HnsD
+	4zOlLkYODgkBE4lpEwS6GLk4hAR2M0p0zfnE2sXICRSXkTj0by0ThC0scb/lCCtE0WtGie57
+	t1hAErwCdhKPWj+wgdgsAioSG5eeY4WIC0qcnPmEBWSBqEC0RNdLY5CwsICLRNv39YwgNrOA
+	uMStJ/PB5osIuEks+9IDNp9ZYCWjxKYnj5ghlr1llujo/gnWwSagI/F/9QywDk6gxfcP32YF
+	WcAsoC6xfp4QxFB5ieats5knMArNQnLGLCT7ZiF0zELSsYCRZRWjZGpBcW56brFhgWFearle
+	cWJucWleul5yfu4mRnB8aWnuYNy+6oPeIUYmDsZDjBIczEoivN0OvGlCvCmJlVWpRfnxRaU5
+	qcWHGKU5WJTEecVf9KYICaQnlqRmp6YWpBbBZJk4OKUamLKbynpOaTZ0be4/YHvzjE4SW0ah
+	0M7dq0Vmhb9o9+Ixn/lj75tt1VGrdqw53/RcVvjlZoU49Rzzecfv1K7VufRJ5kHSxnz5trOV
+	KckSM0WOcMjWTzvza8bdwK1vhXN2Bdg6ZAaGK7Od/Pz1vsi8xMMvqxh7izvDX/CwV2a16i69
+	e6fM7oOTrKxgzM43gmyXWrRUPPNl1l1/fm1P64xz+/y9QnMmir9q/rzr+/Yu2SlhihwHz4Qe
+	2SnQ6DtT7Z/FyoNrLrul1rIX/gnJqG8+VMt2m+nt94tNa1ufrGfY8qNsnUWJ/uyv9mK52gun
+	TFRL1Or+nrhc/Kbz7xnT07mEN6r3bG1d6LKOI7jYzFRdWYmlOCPRUIu5qDgRAJY7KXweAwAA
+X-CMS-MailID: 20240405063731epcas2p160d72b7fd452359a821d6a03de0d53fe
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20230901010734epcas2p4aadced02d68d3db407fda23de34601d2
+References: <CGME20230901010734epcas2p4aadced02d68d3db407fda23de34601d2@epcas2p4.samsung.com>
+	<20230901010704.18493-1-bongkyu7.kim@samsung.com>
+	<CANDhNCoFRr=qizswLm-dzxJK0fHuCx98Z2B1pUspdwGqBEejYg@mail.gmail.com>
+	<20240403012132.GA460@KORCO045595.samsungds.net>
+	<CANDhNCpvKj6Swer-8DtQEotdnOiqfAg43oZLw_HZs6ogwqPwzg@mail.gmail.com>
+	<20240403014207.GA499@KORCO045595.samsungds.net>
+	<23fd78bb-76a7-46e8-9523-5d2cab4186f5@redhat.com>
+	<45ddde77-a5dd-41e8-933f-36ed0f8cf178@redhat.com>
 
-Hello Frank,
-
-On Thu, Apr 04, 2024 at 12:19:13PM -0400, Frank Li wrote:
-> imx8qxp-mek use two kind audio codec, wm8960 and wm8962. Using dummy gpio
-> i2c bus mux to connect both i2c devices. One will probe failure and other
-> will probe success when devices driver check whoami. So one dtb can cover
-> both board configuration.
+On 4/5/24 12:06, Waiman Long wrote:
+> On 4/4/24 13:44, Waiman Long wrote:
+>>
+>> On 4/2/24 21:42, Bongkyu Kim wrote:
+>>> On Tue, Apr 02, 2024 at 06:27:40PM -0700, John Stultz wrote:
+>>>> On Tue, Apr 2, 2024 at 6:21 PM Bongkyu Kim
+>>>> <bongkyu7.kim@samsung.com> wrote:
+>>>>> On Tue, Apr 02, 2024 at 04:46:06PM -0700, John Stultz wrote:
+>>>>>> On Thu, Aug 31, 2023 at 6:07 PM Bongkyu Kim
+>>>>>> <bongkyu7.kim@samsung.com> wrote:
+>>>>>>> This is rework of the following discussed patch.
+>>>>>>> https://lore.kernel.org/all/20230613043308.GA1027@KORCO045595.samsungds.net/
+>>>>>>>
+>>>>>>> Changes from the previous patch
+>>>>>>> - Split to revert and modify patches
+>>>>>>> - Change according to Waiman Long's review
+>>>>>>>      More wording to documentation part
+>>>>>>>      Change module_param to early_param
+>>>>>>>      Code change by Waiman Long's suggestion
+>>>>>>>
+>>>>>>> In mobile environment, reader optimistic spinning is still useful
+>>>>>>> because there're not many readers. In my test result at android
+>>>>>>> device,
+>>>>>>> it improves application startup time about 3.8%
+>>>>>>> App startup time is most important factor for android user
+>>>>>>> expriences.
+>>>>>>> So, re-enable reader optimistic spinning by this commit. And,
+>>>>>>> make it optional feature by cmdline.
+>>>>>>>
+>>>>>>> Test result:
+>>>>>>> This is 15 application startup performance in our exynos soc.
+>>>>>>> - Cortex A78*2 + Cortex A55*6
+>>>>>>> - unit: ms (lower is better)
+>>>>>>>
+>>>>>>> Application             base  opt_rspin  Diff  Diff(%)
+>>>>>>> --------------------  ------  ---------  ----  -------
+>>>>>>> * Total(geomean)         343        330   -13    +3.8%
+>>>>>>> --------------------  ------  ---------  ----  -------
+>>>>>>> helloworld               110        108    -2    +1.8%
+>>>>>>> Amazon_Seller            397        388    -9    +2.3%
+>>>>>>> Whatsapp                 311        304    -7    +2.3%
+>>>>>>> Simple_PDF_Reader        500        463   -37    +7.4%
+>>>>>>> FaceApp                  330        317   -13    +3.9%
+>>>>>>> Timestamp_Camera_Free    451        443    -8    +1.8%
+>>>>>>> Kindle                   629        597   -32    +5.1%
+>>>>>>> Coinbase                 243        233   -10    +4.1%
+>>>>>>> Firefox                  425        399   -26    +6.1%
+>>>>>>> Candy_Crush_Soda         552        538   -14    +2.5%
+>>>>>>> Hill_Climb_Racing        245        230   -15    +6.1%
+>>>>>>> Call_Recorder            437        426   -11    +2.5%
+>>>>>>> Color_Fill_3D            190        180   -10    +5.3%
+>>>>>>> eToro                    512        505    -7    +1.4%
+>>>>>>> GroupMe                  281        266   -15    +5.3%
+>>>>>>>
+>>>>>> Hey Bongkyu,
+>>>>>>    I wanted to reach out to see what the current status of this patch
+>>>>>> set? I'm seeing other parties trying to work around the loss of the
+>>>>>> optimistic spinning functionality since commit 617f3ef95177
+>>>>>> ("locking/rwsem: Remove reader optimistic spinning") as well, with
+>>>>>> their own custom variants (providing some substantial gains), and
+>>>>>> would really like to have a common solution.
+>>>>>>
+>>>>> I didn't get an reply, so I've been waiting.
+>>>>> Could you let me know about their patch?
+>>>> I don't have insight/access to any other implementations, but I have
+>>>> nudged folks to test your patch and chime in here.
+>>>>
+>>>> Mostly I just wanted to share that others are also seeing performance
+>>>> trouble from the loss of optimistic spinning, so it would be good to
+>>>> get some sort of shared solution upstream.
+>>>>
+>>>> thanks
+>>>> -john
+>>>>
+>> When this patch series was originally posted last year, we gave some
+>> comments and suggestion on how to improve it as well as request for
+>> more information on certain area. We were expecting a v2 with the
+>> suggested changes, but we never got one and so it just fell off the
+>> cliff.
+>>
+>> Please send a v2 with the requested change and we can continue our
+>> discussion.
 > 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> ---
->  arch/arm64/boot/dts/freescale/imx8qxp-mek.dts | 210 ++++++++++++++++++
->  1 file changed, 210 insertions(+)
+> The major reason that reader optimistic spinning was taken out is
+> because of reader fragmentation especially now that we essentially wake
+> up all the readers all at once when it is reader's turn to take the read
+> lock. I do admit I am a bit biased toward systems with large number of
+> CPU cores. On smaller systems with just a few CPU cores, reader
+> optimistic spinning may help performance. So one idea that I have is
+> that one of the command line option values is an auto mode (beside on
+> and off) that reader optimistic spinning is enabled for, say, <= 8 CPUs,
+> but disabled with more CPUs.
 > 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-> index 8360bb851ac03..adff87c7cf305 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-> +++ b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
-> @@ -44,6 +51,105 @@ usb3_data_ss: endpoint {
+> Anyway, this is just one of my ideas.
+> 
+> Cheers,
+> Longman
+> 
+> 
 
-[...]
+Hi Longman,
 
-> +	/*
-> +	 * This dummy i2c mux. GPIO actually will not impact selection. At actual boards, only 1
-> +	 * device connectted. I2C client driver will check ID when probe. Only matched ID's driver
-> +	 * probe successfully.
-> +	 */
-> +	i2cvmux: i2cmux {
-> +		compatible = "i2c-mux-gpio";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +		mux-gpios = <&lsio_gpio5 0 GPIO_ACTIVE_HIGH>; /* use an unused gpio */
+Including your idea, I will reconsider and resend patch.
 
-There is for sure people that have more experience and competency that
-me and it would be interesting to hear their feedback, but this
-looks like a bad hack, and you are just playing with the driver
-behavior to ensure that you get what you need.
-
-Francesco
-
-
+Thanks,
+Bongkyu
 
