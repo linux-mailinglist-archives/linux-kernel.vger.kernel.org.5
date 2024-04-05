@@ -1,88 +1,71 @@
-Return-Path: <linux-kernel+bounces-132602-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F2DC89971D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:56:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D47FD899720
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:57:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A036C1C21A5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:56:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73413B24033
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F0814386A;
-	Fri,  5 Apr 2024 07:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="0BoBP0SN"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A790114291E;
+	Fri,  5 Apr 2024 07:56:23 +0000 (UTC)
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7EA913CAA6;
-	Fri,  5 Apr 2024 07:56:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0BF91428F8;
+	Fri,  5 Apr 2024 07:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.6.53.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712303773; cv=none; b=tFdEDWZTnrwv07FNBbHkM7l3fkolD1AcZMo9ckHqia7+3rOBhwa8MNu9tIpCkOda4EPYdw1PtbI08gWXY+UpHoAxWhNYsy7vrAgMBpeBpUd+H5sqdHIbARqePpgsB52W29cmRO8g4waJKRQWdZX5cy6HABTr9736Ul/NmFoLDpU=
+	t=1712303783; cv=none; b=FTg6Ou/n6ErliASPlRPsehQu8u6aoYo9N0WQjuyMg894kSX0TwIsR/GTNPR5ycxQ88jiReqHXNvfg7yvUietZekwPhvpSi4Ze+9Awn+7Ick36BId1J1zt9ZhrftwUKfB4Je6MBFtiWSjwP6tKBmG1/iZ0ytPnL+yo61LYKP1xWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712303773; c=relaxed/simple;
-	bh=UOvIIKmubenoyIw9JeU3732AeboKAgBMh0mZzQYZxGQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gXBEjuEoMq1IPeECk2l+EaBxMPMNrv9RWb7UaTToyVMfOuiWhQoAQtjtEBlHQpL1UZzYRFI8z5EuRtfd4o9ty13XNFLc/75SEn6C0r5xCT5hrcyhD+yR4z2fkbPunU7HZQlVhyICJ6jvNXFAJ8I8WLGhHGlUH7nJu2YRFSwaIA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=0BoBP0SN; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712303770;
-	bh=UOvIIKmubenoyIw9JeU3732AeboKAgBMh0mZzQYZxGQ=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=0BoBP0SN3xyOSmoRd6ZAVyJHv09U/lfB/m4fS0Fepa1f8LTE8l4OO/c2NALN7h/M+
-	 0u6d0MZv/6lufVG2VtrncNdoh7aktpnLR+YRgYLjQmAunwtceZ2mTBq8xvI/WgA8P7
-	 oDXtLYpblaS6udJzMYMSmXdct14ZFitjCsVax1JCFZxKqp2BQ3jTQT9f0yjrUcKmvj
-	 4fW3O6lmj8oHl09se36A0c5dsVfz74XOebsBQe6cPkmgbUOZwqH5pdGCq2vXyTc7zt
-	 nug9HaRomM28NbtlNb3WpcDOD46uUJolnTN8v/cVCyE+4DRWER3hAclVkS6U+/y1cV
-	 vehpQVY8Z+G6Q==
-Received: from [100.113.186.2] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: kholk11)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 60865378212D;
-	Fri,  5 Apr 2024 07:56:09 +0000 (UTC)
-Message-ID: <dab837f9-a36e-43a4-94c3-00876140dfe9@collabora.com>
-Date: Fri, 5 Apr 2024 09:56:08 +0200
+	s=arc-20240116; t=1712303783; c=relaxed/simple;
+	bh=SMgSnO0dEhQ8NbC3AA5vERFlEK7T5wnHtoSPEChbVrk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TNOfFQbaBbLZ6E7oSSp+5baXTi9p7TwClm2SrSwzfaomwRiQovhkpPFSnl4/pUdMfcSWtl4YwrYPtRsvBYGk/fA3R9fH8js/Dagit6yC7GeirH9gMxN8j7x86MUx9Nw+Mq46RCVKVM6qsryLP6sBriYNa6Vo2dnoMV1jWP0BTag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au; spf=pass smtp.mailfrom=gondor.apana.org.au; arc=none smtp.client-ip=144.6.53.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gondor.apana.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gondor.apana.org.au
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+	by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+	id 1rseQn-00FU8r-5J; Fri, 05 Apr 2024 15:56:14 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 05 Apr 2024 15:56:30 +0800
+Date: Fri, 5 Apr 2024 15:56:30 +0800
+From: Herbert Xu <herbert@gondor.apana.org.au>
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: davem@davemloft.net, linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] crypto: jitter - Remove duplicate word in comment
+Message-ID: <Zg+urvO2r39OI9H/@gondor.apana.org.au>
+References: <20240328160401.445647-2-thorsten.blum@toblux.com>
+ <20240329154455.1733-3-thorsten.blum@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] arm64: dts: mediatek: mt7988: add XHCI controllers
-To: =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
- Matthias Brugger <matthias.bgg@gmail.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: Chunfeng Yun <chunfeng.yun@mediatek.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Daniel Golle <daniel@makrotopia.org>, linux-usb@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-References: <20240213130044.1976-1-zajec5@gmail.com>
- <20240213130044.1976-2-zajec5@gmail.com>
-From: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Content-Language: en-US
-In-Reply-To: <20240213130044.1976-2-zajec5@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240329154455.1733-3-thorsten.blum@toblux.com>
 
-Il 13/02/24 14:00, Rafał Miłecki ha scritto:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Fri, Mar 29, 2024 at 04:44:54PM +0100, Thorsten Blum wrote:
+> s/in//
 > 
-> Add bindings of two on-SoC XHCI controllers.
-> 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+> ---
+> Changes in v2:
+> - Fix the commit diff because I made a mistake when breaking up changes
+>   into individual patches
+> ---
+>  crypto/jitterentropy.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-
-
+Patch applied.  Thanks.
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
 
