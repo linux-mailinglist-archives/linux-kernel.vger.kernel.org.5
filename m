@@ -1,141 +1,136 @@
-Return-Path: <linux-kernel+bounces-133217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133218-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CD6C89A0A9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:06:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E253D89A0AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:08:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4DB92852A2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:06:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 67D7FB22734
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C33216F8F4;
-	Fri,  5 Apr 2024 15:06:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3307A16F84F;
+	Fri,  5 Apr 2024 15:08:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I4Ua375V"
-Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JFFmoZoa"
+Received: from mail-qv1-f54.google.com (mail-qv1-f54.google.com [209.85.219.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E926D16F832;
-	Fri,  5 Apr 2024 15:06:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1015316EBF3;
+	Fri,  5 Apr 2024 15:08:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712329590; cv=none; b=YwXmTNYZYiNsRz1aCo8VwRwcy0y9zA8Gci6W57rp4eU+PM/Fp43g3+EvYW+MdMeLuDat6Rc7QPDtp3gU6/xB27qOzjygTLIL/le+JIwH59E+jRRppV+pgoN4gohvMidFMAX5PQsZeUWYWV7XNSuf1tgUFHT5MOueJr8tAfRVcEU=
+	t=1712329707; cv=none; b=RcxNkvjD2bX6U9mqRAiZg8TqpTRL9khWPga6Ip7KcibX97bGEUfenYKGZe21Bl0BccEjEwIb+OIrb6GS8gXxOSR5rnW0zIdaG45ETwNUsh7iCETzmilWZ8kbHSMRNxwRQBrTbFK6GUnoZ/c/Ga69jQHtWKG89uKTo6t42PgS32c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712329590; c=relaxed/simple;
-	bh=nDClXF3j4lc22O9XFA6Ptr+e7CswgCu/KhRNNcL/s2k=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=RF2MewbJzX7d7B4uWFCa/JrJyBHsYLrKa2R1GTHVdibgkMEx03QFn6PcogXfxgQs5IuiTd5QbjhmZOuTl4CYSLOy7xkD3hKxPRoKVN9hM61gTOli+Zg8zj8qSnHUuhGuRTEo/1muas0S6RVCJoxeKKMNnT4crIW9ZKQ2odaTKPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I4Ua375V; arc=none smtp.client-ip=209.85.221.52
+	s=arc-20240116; t=1712329707; c=relaxed/simple;
+	bh=8OTJYRkxJEPH+ieN+Wz+w9QPRHjkaVsc32knKowB3cU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MOkJ10xsY8bTODKtsWcZbH1mZhfVUXeDB7hS2N7BJjs3Yd/gJfXIZE7vWiftB9sTAXdUGBTUJQaTnLqMe1f0DqKOFbDs014N0va/OTVEiCp4Ft5StuLkRtdZKyd/5ZN2+BOZ9NvnCHg2gjs+p60gPAUeZbZuzsWVoIvQIDWzclo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JFFmoZoa; arc=none smtp.client-ip=209.85.219.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-343d88460cdso859204f8f.2;
-        Fri, 05 Apr 2024 08:06:28 -0700 (PDT)
+Received: by mail-qv1-f54.google.com with SMTP id 6a1803df08f44-6993f39ac53so3839516d6.1;
+        Fri, 05 Apr 2024 08:08:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712329587; x=1712934387; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=cBcaVMbSMZkgJPIkV9Rq48dY7hxQJkftAGqxOYcj3jc=;
-        b=I4Ua375Vu2cxCySRVctA7MQy4P5adUzw7E+o75qNtSljM9hKQIMmgJ/wnrNMoiyOIl
-         6jmi/v9OcZ5HNfTRNiMC1AndJvcm9wuI8g/jorGcsF6hDOuGdhDBcNOypOzzZ3XWHqcm
-         aKpcnP5hvodyTfRnrE+C2ZZsA89fG+ViRCMDKdZ98juUIAiGWnJPlafN8WzE0Efo0ErU
-         41TbNJULb0TNBf+al/hqJfqQowR9s9MafT5idLwqwVtC5zHAdsc5/SQCt43tvccI6L1E
-         Ot1PNSPdxOcAHH3o2wOEyHXMnOOg7qlw7ZJrlIKw00PygWYxb4CkFm9l3MbNfHwhWGa2
-         kPxw==
+        d=gmail.com; s=20230601; t=1712329705; x=1712934505; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d56tBBvKhdU/LZ/YsQQXpTmVNEsS5p7VvT7fAO/irxw=;
+        b=JFFmoZoa/Rptz37vqJ3VSqJU5RmAWxOJzIwnwNsGNLesESCpoucwCDPqHryReQklgf
+         1cRZdoiBjv/ZkbR3lg/dUuBK1Qhm3RsfatEwYHyc+aX9LFZW7gqlJcNto5zk1Kfzxvo8
+         uLQeMfe+Sgq+U4TCCglYRNQpx3Oti2/XoCMA2fmupPrQvAeGa5ezMcka1qqfY0dIo5fw
+         7YM0dbQKGm6dx4Wx2UDlTiTxUDZEgaLbMLLOnU3+c7AMMCXXGPaIpGg+Pja/Umv7NmJe
+         jP+uQDAzN0Of6ATgcOuI+vLRgMa5v2uxANdxvAA35Z7HXDQgFQqZJ1Y1NfkLhKxAZ5fK
+         e/4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712329587; x=1712934387;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cBcaVMbSMZkgJPIkV9Rq48dY7hxQJkftAGqxOYcj3jc=;
-        b=s4ng1CbWbD5h6ZyMm7SCsV4sTK6B9T2kde3dqiWjtoz0d01INsDGWs4EI07VNBHDWA
-         cS4Pl5xbkJVJe4MsFgX1r0cgsJU4aEWrE2gk6qDmnt9jnBGhUh0Wt1a0cBBk/9f+KTdQ
-         5nPDM2xxu5BFRh3KMz0rEJ6AeurtmiuZVWTAQgh+yx1gqHC5NHn0Tib6jkzfX8PnjyWQ
-         g/ePcuXMdQ8kGY0VtLTG4hgkRZ0A1CcmIsGly9XUB8ACwzdqjybVFJ7vApY2UI5BRMdt
-         +3YaB7YSebWhg+4dfSX95n8FUROJ/k0QbujLltHEHtB9V7c2gwl9LqJ7PVLCpkw+Yu2S
-         VfHQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXTgpIKn0xYKXPgWnqYzLNy4NXXa+/mFcRPIRGNcbrZCP09dEgWoq6h3cJzUHFLi0R6I5zZtcTO+jCkIstuDG2vZbyppejJzRDx0UmD
-X-Gm-Message-State: AOJu0Yz7K2TcvADG2hXUl4qvXv6JbxroMzKUokfMsUGm2OQnAtNKFR71
-	QoQcBRX+lIFNh63y3/ZQyIddAmwR0xUfkCRUaiJuQ5EzY//HBFqeSNDmz3QojzE=
-X-Google-Smtp-Source: AGHT+IGup9KuT3bGcXDYshgualkO8wp4iqLuiaYwB3pv/mfMPLTy4X+Az68C+QLsBtuAw65y5iqOgg==
-X-Received: by 2002:adf:e510:0:b0:33e:8aba:cd0a with SMTP id j16-20020adfe510000000b0033e8abacd0amr1267736wrm.9.1712329586904;
-        Fri, 05 Apr 2024 08:06:26 -0700 (PDT)
-Received: from ?IPv6:2001:8a0:e622:f700:b890:c074:f63d:508d? ([2001:8a0:e622:f700:b890:c074:f63d:508d])
-        by smtp.gmail.com with ESMTPSA id a17-20020a5d5091000000b00341ba91c1f5sm2210015wrt.102.2024.04.05.08.06.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 08:06:26 -0700 (PDT)
-Message-ID: <4e781d80fbec0db13555456ab8af6bdae6dee168.camel@gmail.com>
-Subject: Re: iMX8M Mini suspend/resume hanging on imx8m_blk_ctrl_power_on()
-From: vitor <ivitro@gmail.com>
-To: linux-pm@vger.kernel.org, imx@lists.linux.dev, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc: vitor.soares@toradex.com, ulf.hansson@linaro.org, shawnguo@kernel.org, 
-	s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com, 
-	rafael@kernel.org, geert+renesas@glider.be, peng.fan@nxp.com, 
-	linus.walleij@linaro.org, u.kleine-koenig@pengutronix.de, marex@denx.de
-Date: Fri, 05 Apr 2024 16:06:25 +0100
-In-Reply-To: <fccbb040330a706a4f7b34875db1d896a0bf81c8.camel@gmail.com>
-References: <fccbb040330a706a4f7b34875db1d896a0bf81c8.camel@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.44.4-0ubuntu2 
+        d=1e100.net; s=20230601; t=1712329705; x=1712934505;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=d56tBBvKhdU/LZ/YsQQXpTmVNEsS5p7VvT7fAO/irxw=;
+        b=h3u+z8Zq2gQa58dJ0GVHu82wiFdwzeeh6ICDJdNYKiuVKZZwgiqXcxshd/5wUa2pEH
+         x/GljFnlfkoCBg3v/VDWGL3QDk12ESEYwsu0t6PaMX1BGJz+Bn7GoR2yf2qsZdBsYEbG
+         qts6UQbeilCTJE3+qq0Di1s4l+3crYWEHHOKVoHk23JagR38ekTgjF1KPQwd/TGHUK5b
+         TYo6vD0bIgiH/vC8j+Udw7yNv31pwVhQl//XRaqicuDLdZLNr23Im6JMK68+HZDFykkY
+         hc9/or64LHVJRW1wFEOIWtvUbx8ErUxKzxjv488PWcxKLEO5mM2ahtw36hM1SiJPNWwY
+         SC5g==
+X-Forwarded-Encrypted: i=1; AJvYcCXMmgpIqQ8IapK2xm9RpPH36YqWQOZkjW4GYg+huQt7WIxv/x3KP9PGbYKJdqTMaZ4y6uPRBDAtVn4GLqEtAPqHvZIBGkWdncoJCHpGKa0HTLo6GRw/CySvnYi1k1MSQ14lVDj2Bq50FU8Gkw==
+X-Gm-Message-State: AOJu0YwCNbk57M+JLBbgB4R2r/NJOwMLsJ2u9ngndMzPSv1ojR0/g77N
+	+zqQE20kZ6C+pGmnbezzXP4GAmMIHN/Q418NZ9Cfp7f5abE6Ol46K0YglyFo5e9/K+5JQ0fClKD
+	C5MkS0znO8gwKXZx3j7lMybdKy0U=
+X-Google-Smtp-Source: AGHT+IHsrzycOXlQkse5JPUfdRu4z8p9YwMV+DwDSeufk6DF3ue8UQQXBW6CwnVEK5l1XwTuje/F5xYnB/KwXUA3A5Y=
+X-Received: by 2002:a05:6214:20aa:b0:696:4256:9fa6 with SMTP id
+ 10-20020a05621420aa00b0069642569fa6mr1916749qvd.26.1712329704925; Fri, 05 Apr
+ 2024 08:08:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+References: <00000000000098f75506153551a1@google.com> <0000000000002f2066061539e54b@google.com>
+ <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
+In-Reply-To: <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 5 Apr 2024 18:08:13 +0300
+Message-ID: <CAOQ4uxhm5m9CvX0y2RcJGuP=vryZLp9M+tS6vH1o_9BGUqxrvg@mail.gmail.com>
+Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
+To: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>
+Cc: gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org, 
+	valesini@yandex-team.ru, Christoph Hellwig <hch@lst.de>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Thu, Apr 4, 2024 at 9:54=E2=80=AFAM Amir Goldstein <amir73il@gmail.com> =
+wrote:
+>
+> On Thu, Apr 4, 2024 at 2:51=E2=80=AFAM syzbot
+> <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com> wrote:
+> >
+> > syzbot has bisected this issue to:
+> >
+> > commit 0fedefd4c4e33dd24f726b13b5d7c143e2b483be
+> > Author: Valentine Sinitsyn <valesini@yandex-team.ru>
+> > Date:   Mon Sep 25 08:40:12 2023 +0000
+> >
+> >     kernfs: sysfs: support custom llseek method for sysfs entries
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17cb5e03=
+180000
+> > start commit:   fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.ker=
+nel..
+> > git tree:       upstream
+> > final oops:     https://syzkaller.appspot.com/x/report.txt?x=3D142b5e03=
+180000
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D102b5e03180=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D4d90a36f0ca=
+b495a
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D9a5b0ced8b1bf=
+b238b56
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D17f1d93d1=
+80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D15c38139180=
+000
+> >
+> > Reported-by: syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com
+> > Fixes: 0fedefd4c4e3 ("kernfs: sysfs: support custom llseek method for s=
+ysfs entries")
+> >
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bise=
+ction
+> >
+>
 
-On Thu, 2024-04-04 at 16:53 +0100, vitor wrote:
-> Greetings,
->=20
-> I'm trying to suspend/resume our Verdin iMX8M Mini with VPU IP using
-> the latest 6.9.0-rc2 Kernel. While the system can suspend without
-> issues, it hangs on the resume routine. After some investigation, I
-> can
-> see the Kernel hanging on imx8m_blk_ctrl_power_on()[1] while resuming
-> the hantro-vpu power domain.
->=20
-> Any hint about that?
->=20
-> [1]
-> https://elixir.bootlin.com/linux/v6.9-rc2/source/drivers/pmdomain/imx
-> /imx8m-blk-ctrl.c#L101
->=20
+Let's test Al's solution.
 
-Looking at other child nodes of the pgc node, pgc_vpu_[g1|g2|h1] seems
-to be nested into pgc_vpumix.
+#syz test: https://github.com/amir73il/linux/ vfs-fixes
 
-After applying the following changes to imx8mm.dtsi, the suspend/resume
-is working.
-
-
-@@ -739,16 +739,19 @@ pgc_vpumix: power-domain@6 {
-	pgc_vpu_g1: power-domain@7 {
-		#power-domain-cells =3D <0>;
-		reg =3D <IMX8MM_POWER_DOMAIN_VPUG1>;
-+		power-domains =3D <&pgc_vpumix>;
-	};
-
-	pgc_vpu_g2: power-domain@8 {
-		#power-domain-cells =3D <0>;
-		reg =3D <IMX8MM_POWER_DOMAIN_VPUG2>;
-+		power-domains =3D <&pgc_vpumix>;
-	};
-
-	pgc_vpu_h1: power-domain@9 {
-		#power-domain-cells =3D <0>;
-		reg =3D <IMX8MM_POWER_DOMAIN_VPUH1>;
-+		power-domains =3D <&pgc_vpumix>;
-	};
-
-
-I will prepare the patch to send in the next couple of days.
-
-Regards,
-Vitor Soares
+Thanks,
+Amir.
 
