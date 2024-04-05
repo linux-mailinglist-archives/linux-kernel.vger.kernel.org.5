@@ -1,37 +1,37 @@
-Return-Path: <linux-kernel+bounces-133068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133069-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34360899E58
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:33:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 366FF899E59
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:34:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E224C281FB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:33:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58F431C21D6D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D3E116D9AE;
-	Fri,  5 Apr 2024 13:33:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26ACB16D9D1;
+	Fri,  5 Apr 2024 13:33:46 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC5E16D4DB
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:33:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B261316D4F0
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712324024; cv=none; b=IHepgF+a4LHKtDUvHpzgEFZtsA6RNTfXoFle7pPDxT6/RzThv2aKA0uklPAjcik6yimJxgNqFTp1D+zv08GGIfWCPYHTw9uDnFg9g9deLHs4XIYD+V75jJ9U9wN+Z4SE82ZaMQp1uouU/NchWootjyBzSYtpesPO8lVwS55qTDI=
+	t=1712324025; cv=none; b=au4G4hppFWXaU6VrWaG7LUj8LwiYt9JX/EFz5jAe/obMCa+iQwKUxhf2dwtQNh5f/yw6X7DTc7x2wZ/W/wUiIpcdiWtf51Xa2XGh+nwPauIetBIjj9opcBClgdqgNaGTm7qbmevEiZdn0Phmwxhfgzm+5/QaUVdih2OCj3lLZ/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712324024; c=relaxed/simple;
-	bh=3m++agGg9LMrEIrVry1NTk+nR2ElsK5com/aXDFqL/g=;
+	s=arc-20240116; t=1712324025; c=relaxed/simple;
+	bh=ps6HKEXP7kVBdfc6Ge4JKgvOhVJczVbMf9EQXmSXdkg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=hyx7ccNQnlh80zL+/mfFWVCr4gmpeLp0qsqsfaD4IeJY5PUlqb2QhbU7QX7OQ0vyv3XUfuIVkMJHX6QtVKYN9Q3B62yuLCYYnW6i6ZUPUxsbc3Hrrh3yrX9dcyHX0mz65AFxDoSbk9m0r4gsxCbB/22U7DN3yj2vd3EFHcz0lYk=
+	 MIME-Version; b=LxYZ815QNFj9CIrMVtnqduaNbOFO3JtqmjvFyoB1kxOMJ0bEqgs4wjNYNSNbEH3Nqhi03Q2EUBl5xnQA5PZM9sfawKez+Mq4cEEVJtlPo9q9XussoeLtYjaEARa4NEeKGvjrjakBmQRqkgSmR1+CdeZNLgFmW7+C0izTp+Ct+1Q=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7BE81007;
-	Fri,  5 Apr 2024 06:34:11 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6EEB8169C;
+	Fri,  5 Apr 2024 06:34:13 -0700 (PDT)
 Received: from e125905.cambridge.arm.com (e125905.cambridge.arm.com [10.1.194.73])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id BD0503F7B4;
-	Fri,  5 Apr 2024 06:33:39 -0700 (PDT)
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 645213F7B4;
+	Fri,  5 Apr 2024 06:33:41 -0700 (PDT)
 From: Beata Michalska <beata.michalska@arm.com>
 To: linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
@@ -44,9 +44,9 @@ Cc: sudeep.holla@arm.com,
 	sumitg@nvidia.com,
 	yang@os.amperecomputing.com,
 	lihuisong@huawei.com
-Subject: [PATCH v4 1/4] arch_topology: init capacity_freq_ref to 0
-Date: Fri,  5 Apr 2024 14:33:16 +0100
-Message-Id: <20240405133319.859813-2-beata.michalska@arm.com>
+Subject: [PATCH v4 2/4] arm64: Provide an AMU-based version of arch_freq_get_on_cpu
+Date: Fri,  5 Apr 2024 14:33:17 +0100
+Message-Id: <20240405133319.859813-3-beata.michalska@arm.com>
 In-Reply-To: <20240405133319.859813-1-beata.michalska@arm.com>
 References: <20240405133319.859813-1-beata.michalska@arm.com>
 Precedence: bulk
@@ -57,55 +57,194 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Ionela Voinescu <ionela.voinescu@arm.com>
+With the Frequency Invariance Engine (FIE) being already wired up with
+sched tick and making use of relevant (core counter and constant
+counter) AMU counters, getting the current frequency for a given CPU,
+can be achieved by utilizing the frequency scale factor which reflects
+an average CPU frequency for the last tick period length.
 
-It's useful to have capacity_freq_ref initialized to 0 for users of
-arch_scale_freq_ref() to detect when capacity_freq_ref was not
-yet set.
+The solution is partially based on APERF/MPERF implementation of
+arch_freq_get_on_cpu.
 
-The only scenario affected by this change in the init value is when a
-cpufreq driver is never loaded. As a result, the only setter of a
-cpu scale factor remains the call of topology_normalize_cpu_scale()
-from parse_dt_topology(). There we cannot use the value 0 of
-capacity_freq_ref so we have to compensate for its uninitialized state.
-
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
+Suggested-by: Ionela Voinescu <ionela.voinescu@arm.com>
 Signed-off-by: Beata Michalska <beata.michalska@arm.com>
 ---
- drivers/base/arch_topology.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/arm64/kernel/topology.c | 112 +++++++++++++++++++++++++++++++----
+ 1 file changed, 102 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-index 024b78a0cfc1..7d4c92cd2bad 100644
---- a/drivers/base/arch_topology.c
-+++ b/drivers/base/arch_topology.c
-@@ -27,7 +27,7 @@
- static DEFINE_PER_CPU(struct scale_freq_data __rcu *, sft_data);
- static struct cpumask scale_freq_counters_mask;
- static bool scale_freq_invariant;
--DEFINE_PER_CPU(unsigned long, capacity_freq_ref) = 1;
-+DEFINE_PER_CPU(unsigned long, capacity_freq_ref) = 0;
- EXPORT_PER_CPU_SYMBOL_GPL(capacity_freq_ref);
+diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
+index 1a2c72f3e7f8..b03fe8617721 100644
+--- a/arch/arm64/kernel/topology.c
++++ b/arch/arm64/kernel/topology.c
+@@ -17,6 +17,7 @@
+ #include <linux/cpufreq.h>
+ #include <linux/init.h>
+ #include <linux/percpu.h>
++#include <linux/sched/isolation.h>
  
- static bool supports_scale_freq_counters(const struct cpumask *cpus)
-@@ -292,13 +292,15 @@ void topology_normalize_cpu_scale(void)
+ #include <asm/cpu.h>
+ #include <asm/cputype.h>
+@@ -88,18 +89,28 @@ int __init parse_acpi_topology(void)
+  * initialized.
+  */
+ static DEFINE_PER_CPU_READ_MOSTLY(unsigned long, arch_max_freq_scale) =  1UL << (2 * SCHED_CAPACITY_SHIFT);
+-static DEFINE_PER_CPU(u64, arch_const_cycles_prev);
+-static DEFINE_PER_CPU(u64, arch_core_cycles_prev);
+ static cpumask_var_t amu_fie_cpus;
  
- 	capacity_scale = 1;
- 	for_each_possible_cpu(cpu) {
--		capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu);
-+		capacity = raw_capacity[cpu] *
-+			   (per_cpu(capacity_freq_ref, cpu) ?: 1);
- 		capacity_scale = max(capacity, capacity_scale);
++struct amu_cntr_sample {
++	u64		arch_const_cycles_prev;
++	u64		arch_core_cycles_prev;
++	unsigned long	last_update;
++};
++
++static DEFINE_PER_CPU_SHARED_ALIGNED(struct amu_cntr_sample, cpu_amu_samples);
++
+ void update_freq_counters_refs(void)
+ {
+-	this_cpu_write(arch_core_cycles_prev, read_corecnt());
+-	this_cpu_write(arch_const_cycles_prev, read_constcnt());
++	struct amu_cntr_sample *amu_sample = this_cpu_ptr(&cpu_amu_samples);
++
++	amu_sample->arch_core_cycles_prev = read_corecnt();
++	amu_sample->arch_const_cycles_prev = read_constcnt();
+ }
+ 
+ static inline bool freq_counters_valid(int cpu)
+ {
++	struct amu_cntr_sample *amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
++
+ 	if ((cpu >= nr_cpu_ids) || !cpumask_test_cpu(cpu, cpu_present_mask))
+ 		return false;
+ 
+@@ -108,8 +119,8 @@ static inline bool freq_counters_valid(int cpu)
+ 		return false;
  	}
  
- 	pr_debug("cpu_capacity: capacity_scale=%llu\n", capacity_scale);
- 	for_each_possible_cpu(cpu) {
--		capacity = raw_capacity[cpu] * per_cpu(capacity_freq_ref, cpu);
-+		capacity = raw_capacity[cpu] *
-+			   (per_cpu(capacity_freq_ref, cpu) ?: 1);
- 		capacity = div64_u64(capacity << SCHED_CAPACITY_SHIFT,
- 			capacity_scale);
- 		topology_set_cpu_scale(cpu, capacity);
+-	if (unlikely(!per_cpu(arch_const_cycles_prev, cpu) ||
+-		     !per_cpu(arch_core_cycles_prev, cpu))) {
++	if (unlikely(!amu_sample->arch_const_cycles_prev ||
++		     !amu_sample->arch_core_cycles_prev)) {
+ 		pr_debug("CPU%d: cycle counters are not enabled.\n", cpu);
+ 		return false;
+ 	}
+@@ -152,17 +163,22 @@ void freq_inv_set_max_ratio(int cpu, u64 max_rate)
+ 
+ static void amu_scale_freq_tick(void)
+ {
++	struct amu_cntr_sample *amu_sample = this_cpu_ptr(&cpu_amu_samples);
+ 	u64 prev_core_cnt, prev_const_cnt;
+ 	u64 core_cnt, const_cnt, scale;
+ 
+-	prev_const_cnt = this_cpu_read(arch_const_cycles_prev);
+-	prev_core_cnt = this_cpu_read(arch_core_cycles_prev);
++	prev_const_cnt = amu_sample->arch_const_cycles_prev;
++	prev_core_cnt = amu_sample->arch_core_cycles_prev;
+ 
+ 	update_freq_counters_refs();
+ 
+-	const_cnt = this_cpu_read(arch_const_cycles_prev);
+-	core_cnt = this_cpu_read(arch_core_cycles_prev);
++	const_cnt = amu_sample->arch_const_cycles_prev;
++	core_cnt = amu_sample->arch_core_cycles_prev;
+ 
++	/*
++	 * This should not happen unless the AMUs have been reset and the
++	 * counter values have not been restored - unlikely
++	 */
+ 	if (unlikely(core_cnt <= prev_core_cnt ||
+ 		     const_cnt <= prev_const_cnt))
+ 		return;
+@@ -182,6 +198,8 @@ static void amu_scale_freq_tick(void)
+ 
+ 	scale = min_t(unsigned long, scale, SCHED_CAPACITY_SCALE);
+ 	this_cpu_write(arch_freq_scale, (unsigned long)scale);
++
++	amu_sample->last_update = jiffies;
+ }
+ 
+ static struct scale_freq_data amu_sfd = {
+@@ -189,6 +207,80 @@ static struct scale_freq_data amu_sfd = {
+ 	.set_freq_scale = amu_scale_freq_tick,
+ };
+ 
++#define AMU_SAMPLE_EXP_MS	20
++
++unsigned int arch_freq_get_on_cpu(int cpu)
++{
++	struct amu_cntr_sample *amu_sample;
++	cpumask_var_t ref_cpumask = NULL;
++	unsigned long last_update;
++	unsigned int freq;
++	u64 scale;
++
++	if (!cpumask_test_cpu(cpu, amu_fie_cpus) || !arch_scale_freq_ref(cpu))
++		return 0;
++retry:
++	amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
++
++	last_update = amu_sample->last_update;
++
++	/*
++	 * For those CPUs that are in full dynticks mode,
++	 * and those that have not seen tick for a while
++	 * try an alternative source for the counters (and thus freq scale),
++	 * if available, for given policy:
++	 * this boils down to identifying an active cpu within the same freq
++	 * domain, if any.
++	 */
++	if (!housekeeping_cpu(cpu, HK_TYPE_TICK) ||
++	    time_is_before_jiffies(last_update + msecs_to_jiffies(AMU_SAMPLE_EXP_MS))) {
++		struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
++		int ref_cpu = cpu;
++
++		if (!policy_is_shared(policy)) {
++			cpufreq_cpu_put(policy);
++			return 0;
++		}
++
++		if (!ref_cpumask) {
++			if (!zalloc_cpumask_var(&ref_cpumask, GFP_KERNEL)) {
++				cpufreq_cpu_put(policy);
++				return 0;
++			}
++
++			cpumask_copy(ref_cpumask, policy->cpus);
++		}
++
++		cpufreq_cpu_put(policy);
++
++		do {
++			cpumask_clear_cpu(ref_cpu, ref_cpumask);
++			ref_cpu = cpumask_first(ref_cpumask);
++
++		} while (ref_cpu < nr_cpu_ids && idle_cpu(ref_cpu));
++
++		if (ref_cpu >= nr_cpu_ids) {
++			/* No alternative to pull info from */
++			free_cpumask_var(ref_cpumask);
++			return 0;
++		}
++		cpu = ref_cpu;
++		goto retry;
++	}
++	/*
++	 * Reversed computation to the one used to determine
++	 * the arch_freq_scale value
++	 * (see amu_scale_freq_tick for details)
++	 */
++	scale = arch_scale_freq_capacity(cpu);
++	freq = scale * arch_scale_freq_ref(cpu);
++	freq >>= SCHED_CAPACITY_SHIFT;
++
++	free_cpumask_var(ref_cpumask);
++
++	return freq;
++}
++
+ static void amu_fie_setup(const struct cpumask *cpus)
+ {
+ 	int cpu;
 -- 
 2.25.1
 
