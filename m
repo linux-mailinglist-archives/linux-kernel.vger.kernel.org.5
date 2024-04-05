@@ -1,180 +1,198 @@
-Return-Path: <linux-kernel+bounces-132721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF749899946
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:18:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D21E789994B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:19:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E31F7B21577
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:18:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 49CA81F247FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:19:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296C415FD05;
-	Fri,  5 Apr 2024 09:17:29 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C86315F31D
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:17:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1696A15FD01;
+	Fri,  5 Apr 2024 09:19:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="MJmfTMOY"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956FD13D265;
+	Fri,  5 Apr 2024 09:19:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712308648; cv=none; b=YxCK92dgkSd2bk0c/BjpsC5/qth9UrBB+VKdSvs1fA+pZkfEaefHYQA4amPVWqbNo2qg8JksYqXRAeKrNPdxBuDSNCkqQrRakbT+i0j8Mh0DxNmiMiIMY6JvGD26Oh2Lhxlc+7wG9V/IBiTkjdzS/AwCXdgX/FIQn4pGcjFriPc=
+	t=1712308754; cv=none; b=m61ECbSloj83aIaQKgQvk+2J+xpmydUOmsvh1mnsf4rB78s2yXELe1ZQhP5NVJbgW65sqg+BXW4hc33sHOoFj35FgH5QbZttkrFqloBvagrHM3VsCmu0Yu5h/P1zZl/sgA9O/G5MANm3pzedllAfDGpT4RJnXFscSwwYZsFBHRw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712308648; c=relaxed/simple;
-	bh=jRuRyU8skw5nXFDFIhbz+jtOVhngSn/6xq8P5ODa4I0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=nD7BS/5Ja3Wv3YT7XwVJ6fLYINstd3e0n1+FIuKnSIAjqC+TG59X8DGkMFLNd6xyBWBwaoKixsZKnPR/DYyK82QEwzZo3+/Ur0scWZC7Fw7fGpLE41J4JX44pEtoXnL/ci8JLLyLFwEWg6pGIFvDO8N1jGazL+LY97KZOYb6fnw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F70FFEC;
-	Fri,  5 Apr 2024 02:17:56 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 34D063F64C;
-	Fri,  5 Apr 2024 02:17:24 -0700 (PDT)
-Message-ID: <3bf726af-e519-4cc2-a692-19a0cf99fca7@arm.com>
-Date: Fri, 5 Apr 2024 11:17:14 +0200
+	s=arc-20240116; t=1712308754; c=relaxed/simple;
+	bh=RMmTgTiM6AekMReGIHsGkEpQVtvna/w6We09nnKfFLg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=W/gWvkBW7Bugy9xqQnWvr6eMmgBnPaQQiXljOA0FPObxROL/Len7CsulmndOTF+eyyo9W58ekt/rwJK66kFujupMQDuQdDNJqFHllaQtfUAF6gbKioyXTVigaG1o2qgtOEGAMvNRUNthb51Fw4ngNpK5eLojEXqOK5JrZmCPHWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=MJmfTMOY; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4356cSFK027558;
+	Fri, 5 Apr 2024 09:19:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=Yht7Xcc05+Ym6Fmdn8oyFxXQHLV5+oEHVmmq7hXQb9o=; b=MJ
+	mfTMOYhFiFLi7dBBpNcVNBaOkeLqytcppXHE/uUjiQ0N9NEzgN+aidKpLDYv0esh
+	NfClPWMZ7OI3gjSQSenApD/WEPazs2xvsi2b4bBTqAsOtn5Y9p+k4XjUnDvZ7pQK
+	Rp7c4x86OTniXPAEMQK1OjWkT7YwwWli1bYmtpCKTDBjcdeOLmfLUeY8+xg4VDIN
+	EG7viIXhhQmkmgHOG9EvHu2TmogDubu74+Glk7ZSfUMgE7t21Mas5yuyaqbOQoHZ
+	Jf6kFzAp6nrZtuwdgZWtIG6QiUeUNXU8Sk04J8K+VY5bgWBJpA9BraRvJMp/Q4FL
+	9+cjTLKzusY8wAO3g3qw==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa1gx9e87-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 09:19:02 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4359J1GQ010157
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 5 Apr 2024 09:19:01 GMT
+Received: from [10.216.11.24] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
+ 02:18:56 -0700
+Message-ID: <704e4a60-ae8b-e951-87c0-3b0aa4cf26d6@quicinc.com>
+Date: Fri, 5 Apr 2024 14:48:51 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/3] sched/fair: allow disabling sched_balance_newidle
- with sched_relax_domain_level
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 08/19] media: venus: core: Get rid of vcodec_num
 Content-Language: en-US
-To: Vitalii Bursov <vitaly@bursov.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
- <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org
-References: <cover.1712147341.git.vitaly@bursov.com>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <cover.1712147341.git.vitaly@bursov.com>
-Content-Type: text/plain; charset=UTF-8
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stanimir Varbanov
+	<stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross
+	<agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Mauro Carvalho
+ Chehab" <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC: Marijn Suijten <marijn.suijten@somainline.org>,
+        Stanimir Varbanov
+	<stanimir.varbanov@linaro.org>,
+        Mauro Carvalho Chehab
+	<mchehab+huawei@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
+ <20230911-topic-mars-v3-8-79f23b81c261@linaro.org>
+From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <20230911-topic-mars-v3-8-79f23b81c261@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: MdkkAsO5D-Pr1RBt7OrM3WeHgL_UyTq0
+X-Proofpoint-GUID: MdkkAsO5D-Pr1RBt7OrM3WeHgL_UyTq0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_08,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ adultscore=0 priorityscore=1501 lowpriorityscore=0 impostorscore=0
+ mlxscore=0 malwarescore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404050068
 
-On 03/04/2024 15:28, Vitalii Bursov wrote:
-> Changes in v3:
-> - Remove levels table change from the documentation patch
-> - Link to v2: https://lore.kernel.org/lkml/cover.1711900396.git.vitaly@bursov.com/
-> Changes in v2:
-> - Split debug.c change in a separate commit and move new "level"
-> after "groups_flags"
-> - Added "Fixes" tag and updated commit message
-> - Update domain levels cgroup-v1/cpusets.rst documentation
-> - Link to v1: https://lore.kernel.org/all/cover.1711584739.git.vitaly@bursov.com/
+
+
+On 3/27/2024 11:38 PM, Konrad Dybcio wrote:
+> That field was only introduced to differentiate between the legacy and
+> non-legacy SDM845 binding. Get rid of it.
 > 
-> During the upgrade from Linux 5.4 we found a small (around 3%) 
-> performance regression which was tracked to commit 
-> c5b0a7eefc70150caf23e37bc9d639c68c87a097
+> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.c       | 5 -----
+>  drivers/media/platform/qcom/venus/core.h       | 1 -
+>  drivers/media/platform/qcom/venus/pm_helpers.c | 2 +-
+>  3 files changed, 1 insertion(+), 7 deletions(-)
 > 
->     sched/fair: Remove sysctl_sched_migration_cost condition
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index 5e7cb54e6088..26a0c264685a 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -651,7 +651,6 @@ static const struct venus_resources sdm660_res = {
+>  	.vcodec0_clks = { "vcodec0_core" },
+>  	.vcodec1_clks = { "vcodec0_core" },
+>  	.vcodec_clks_num = 1,
+> -	.vcodec_num = 1,
+>  	.max_load = 1036800,
+>  	.hfi_version = HFI_VERSION_3XX,
+>  	.vmem_id = VIDC_RESOURCE_NONE,
+> @@ -725,7 +724,6 @@ static const struct venus_resources sdm845_res_v2 = {
+>  	.vcodec_pmdomains = (const char *[]) { "venus", "vcodec0", "vcodec1" },
+>  	.vcodec_pmdomains_num = 3,
+>  	.opp_pmdomain = pd_names_cx,
+> -	.vcodec_num = 2,
+>  	.max_load = 3110400,	/* 4096x2160@90 */
+>  	.hfi_version = HFI_VERSION_4XX,
+>  	.vpu_version = VPU_VERSION_AR50,
+> @@ -774,7 +772,6 @@ static const struct venus_resources sc7180_res = {
+>  	.vcodec_pmdomains = (const char *[]) { "venus", "vcodec0" },
+>  	.vcodec_pmdomains_num = 2,
+>  	.opp_pmdomain = pd_names_cx,
+> -	.vcodec_num = 1,
+>  	.hfi_version = HFI_VERSION_4XX,
+>  	.vpu_version = VPU_VERSION_AR50,
+>  	.vmem_id = VIDC_RESOURCE_NONE,
+> @@ -831,7 +828,6 @@ static const struct venus_resources sm8250_res = {
+>  	.vcodec_pmdomains = (const char *[]) { "venus", "vcodec0" },
+>  	.vcodec_pmdomains_num = 2,
+>  	.opp_pmdomain = pd_names_mx,
+> -	.vcodec_num = 1,
+>  	.max_load = 7833600,
+>  	.hfi_version = HFI_VERSION_6XX,
+>  	.vpu_version = VPU_VERSION_IRIS2,
+> @@ -890,7 +886,6 @@ static const struct venus_resources sc7280_res = {
+>  	.vcodec_pmdomains = (const char *[]) { "venus", "vcodec0" },
+>  	.vcodec_pmdomains_num = 2,
+>  	.opp_pmdomain = pd_names_cx,
+> -	.vcodec_num = 1,
+>  	.hfi_version = HFI_VERSION_6XX,
+>  	.vpu_version = VPU_VERSION_IRIS2_1,
+>  	.num_vpp_pipes = 1,
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index 6a77de374454..376de1161114 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -74,7 +74,6 @@ struct venus_resources {
+>  	const char **vcodec_pmdomains;
+>  	unsigned int vcodec_pmdomains_num;
+>  	const char **opp_pmdomain;
+> -	unsigned int vcodec_num;
+>  	const char * const resets[VIDC_RESETS_NUM_MAX];
+>  	unsigned int resets_num;
+>  	enum hfi_version hfi_version;
+> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+> index 5b2a40a2f524..ba63e6427eb9 100644
+> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
+> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+> @@ -622,7 +622,7 @@ min_loaded_core(struct venus_inst *inst, u32 *min_coreid, u32 *min_load, bool lo
+>  			VIDC_CORE_ID_1 : VIDC_CORE_ID_2;
+>  	*min_load = min(core1_load, core2_load);
+>  
+> -	if (cores_max < VIDC_CORE_ID_2 || core->res->vcodec_num < 2> +	if (cores_max < VIDC_CORE_ID_2 || legacy_binding) {
+core->res->vcodec_num < 2 doesn't mean legacy binding.
+7180, 8250 and 7280 have vcodec num as 1 but they don't follow legacy
+binding and they still have one core which is VIDC_CORE_ID_1.
+>  		*min_coreid = VIDC_CORE_ID_1;
+>  		*min_load = core1_load;
+>  	}
 > 
->     With a default value of 500us, sysctl_sched_migration_cost is
->     significanlty higher than the cost of load_balance. Remove the
->     condition and rely on the sd->max_newidle_lb_cost to abort
->     newidle_balance.
-> 
-> Looks like "newidle" balancing is beneficial for a lot of workloads, 
-> just not for this specific one. The workload is video encoding, there 
-> are 100s-1000s of threads, some are synchronized with mutexes and 
-> conditional variables. The process aims to have a portion of CPU idle, 
-> so no CPU cores are 100% busy. Perhaps, the performance impact we see 
-> comes from additional processing in the scheduler and additional cost 
-> like more cache misses, and not from an incorrect balancing. See
-> perf output below.
-> 
-> My understanding is that "sched_relax_domain_level" cgroup parameter 
-> should control if sched_balance_newidle() is called and what's the scope
-> of the balancing is, but it doesn't fully work for this case.
-> 
-> cpusets.rst documentation:
->> The 'cpuset.sched_relax_domain_level' file allows you to request changing
->> this searching range as you like.  This file takes int value which
->> indicates size of searching range in levels ideally as follows,
->> otherwise initial value -1 that indicates the cpuset has no request.
->>  
->> ====== ===========================================================
->>   -1   no request. use system default or follow request of others.
->>    0   no search.
->>    1   search siblings (hyperthreads in a core).
->>    2   search cores in a package.
->>    3   search cpus in a node [= system wide on non-NUMA system]
->>    4   search nodes in a chunk of node [on NUMA system]
->>    5   search system wide [on NUMA system]
->> ====== ===========================================================
 
-IMHO, this list misses: 
-
-      2   search cores in a cluster.
-
-Related to CONFIG_SCHED_CLUSTER.
-Like you mentioned, if CONFIG_SCHED_CLUSTER is not configured MC becomes
-level=1.
-
-I ran this on an Arm64 TaiShan 2280 v2, Kunpeng 920 - 4826 server:
-
-$ numactl -H | tail -6
-node distances:
-node   0   1   2   3 
-  0:  10  12  20  22 
-  1:  12  10  22  24 
-  2:  20  22  10  12 
-  3:  22  24  12  10
-
-$ head -8 /proc/schedstat | awk '{ print $1 " " $2 }' | tail -5
-domain0 00000000,00000000,0000000f
-domain1 00000000,00000000,00ffffff
-domain2 00000000,0000ffff,ffffffff
-domain3 000000ff,ffffffff,ffffffff
-domain4 ffffffff,ffffffff,ffffffff
-
-with additional debug:
-
-[   18.196484] build_sched_domain() cpu=0 name=SMT level=0
-[   18.202308] build_sched_domain() cpu=0 name=CLS level=1
-[   18.208188] build_sched_domain() cpu=0 name=MC level=2
-[   18.222550] build_sched_domain() cpu=0 name=PKG level=3
-[   18.228371] build_sched_domain() cpu=0 name=NODE level=4
-[   18.234515] build_sched_domain() cpu=0 name=NUMA level=5
-[   18.246400] build_sched_domain() cpu=0 name=NUMA level=6
-[   18.258841] build_sched_domain() cpu=0 name=NUMA level=7
-
-/* search cores in a cluster */
-# echo 2 > /sys/fs/cgroup/cpuset/cpuset.sched_relax_domain_level
-
-# grep . /sys/kernel/debug/sched/domains/cpu0/*/{name,flags,level}
-/sys/kernel/debug/sched/domains/cpu0/domain0/name:CLS
-/sys/kernel/debug/sched/domains/cpu0/domain1/name:MC
-/sys/kernel/debug/sched/domains/cpu0/domain2/name:NUMA
-/sys/kernel/debug/sched/domains/cpu0/domain3/name:NUMA
-/sys/kernel/debug/sched/domains/cpu0/domain4/name:NUMA
-/sys/kernel/debug/sched/domains/cpu0/domain0/flags:SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_CLUSTER SD_SHARE_LLC SD_PREFER_SIBLING 
-/sys/kernel/debug/sched/domains/cpu0/domain1/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SHARE_LLC SD_PREFER_SIBLING 
-/sys/kernel/debug/sched/domains/cpu0/domain2/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA 
-/sys/kernel/debug/sched/domains/cpu0/domain3/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA 
-/sys/kernel/debug/sched/domains/cpu0/domain4/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA 
-/sys/kernel/debug/sched/domains/cpu0/domain0/level:1
-/sys/kernel/debug/sched/domains/cpu0/domain1/level:2
-/sys/kernel/debug/sched/domains/cpu0/domain2/level:5
-/sys/kernel/debug/sched/domains/cpu0/domain3/level:6
-/sys/kernel/debug/sched/domains/cpu0/domain4/level:7
-
-LGTM.
-
-Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
- 
-> Setting cpuset.sched_relax_domain_level to 0 works as 1.
-> 
-> On a dual-CPU server, domains and levels are as follows:
->   domain 0: level 0, SMT
->   domain 1: level 2, MC
-
-This is with CONFIG_SCHED_CLUSTER=y ?
-
-[...]
+Thanks,
+Dikshita
 
