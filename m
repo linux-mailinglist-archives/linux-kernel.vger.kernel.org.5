@@ -1,126 +1,170 @@
-Return-Path: <linux-kernel+bounces-132810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7DA899A86
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:16:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B8F899ADD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:30:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D915C1C21EDE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:16:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A98091C20ED4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:30:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 884F7161B43;
-	Fri,  5 Apr 2024 10:16:34 +0000 (UTC)
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22BE216ABC3;
+	Fri,  5 Apr 2024 10:29:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="ilOJSdeQ"
+Received: from out203-205-251-80.mail.qq.com (out203-205-251-80.mail.qq.com [203.205.251.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE87216190D
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:16:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2694527447;
+	Fri,  5 Apr 2024 10:29:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712312194; cv=none; b=QccQr/5f9X1VDyzNV0hcTVQlHLEPEJcHZSrQWgKJ7WYRfNJeddjxZOsPNmgi3WD0fNDCLb4OVWjGjxG0p20CQn88Lk+HrrMlIFcdZbADMS4VRpG48GSsJr/Z2kgrXP4t4iOz6FgITkg586uVCyHBQOrGUqcBGzke30ZJJnrwh9Q=
+	t=1712312992; cv=none; b=gsNJTdD/o0s05z4pXM0T4ZE8wTMqRjrJ0noEf7ex0iKdmYxfhPxgSO9q6XuJkbw0kXji+DffliDkP8hIzV1BszLxIOmwVxySicWuFqxizdN8btaqnzbT+Z8xSw5vMzT3Lcu4kUHrbr4Y3e18RGImfaEuGZGS+0D+bn4ZCS1Njcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712312194; c=relaxed/simple;
-	bh=JcY82/C76s0/t6n/adQHbGR8IvfyPU6uK0CJHQnDc3Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M9Jf+x7+hNK89jYiQaXkePPGIDLMx0PqXnLspmkqYKd0mVB1mUAlnXyZ3yLKgHJlZy2+fGSlkAYP0LFGfk6U0lVeFvzOk2ZuUPj/XbafhJIRtxa12rnNDhOT7RA29Uw2j3QLFmLImma0u4qji5eq2pxurt3mSGy2WTFeJfU8AJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-6114c9b4d83so18467467b3.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 03:16:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712312190; x=1712916990;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r+r8oBMZYIdH7mEh+EvZMzslbveSo86ivNfgm6OLNsA=;
-        b=g1F1FFxcNIfU7YL1e2K4eTEzYHsxrafN/Qr8Jl5eNAGwQVvBKgRpeWT5wLvkRAOqWT
-         Aa2uwFOxX/zSQUm6QJ6bSyPF4W7XateRAkTTCO1bREDBBifcbOUTdDf1QwetmC6qpntv
-         pa6nsTsaBU1FL4EqwboO6VbJGe1TfDoleVFE2PNo5LiLT0+iOgYbKI0+3k3X3S3iJRFl
-         3memw20vGSA9bdZlvyej/D4T3veYGhMUuACERcbXm/9Ppg5sYgnaa2aNjh++UxSRXStW
-         oRXhoAPwGWOGERQVEy/0Nm/nII2pNCKV29f8kUhBgisER7H9Y/U0DQnAerLVzARNAxdO
-         uNCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUBetTs83iWfRGLp5k6s1T+9kzTw1GPO6QE9XRiW/Yez1fpGSQyFMhW0Ll0arwTKXGQkymifJcHUXEKRXcVBaI20Oy4fQUEMxS9RPeX
-X-Gm-Message-State: AOJu0YxrfPdKhpxySqMk+hA8d6FfgF9NJ+kTVSBv4YEHfVvhjGbianoy
-	ftUmRere9tBoKfSDdww/HEcsNk2qyjDvn/WflVnXitIO0VibF9PJcnCVwlHk0I4=
-X-Google-Smtp-Source: AGHT+IHLKLRFBGgA5sKPcOq9yGSNzXyEuZyJ0kereCLSJ0Mxa6tQq74W332JJ2kghwFmNZ+YSv70kA==
-X-Received: by 2002:a25:3083:0:b0:dcb:e432:cb06 with SMTP id w125-20020a253083000000b00dcbe432cb06mr786002ybw.29.1712312190344;
-        Fri, 05 Apr 2024 03:16:30 -0700 (PDT)
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com. [209.85.128.176])
-        by smtp.gmail.com with ESMTPSA id l12-20020a25bccc000000b00dccdf447047sm235805ybm.65.2024.04.05.03.16.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 03:16:29 -0700 (PDT)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-617d4797d9bso2551787b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 03:16:29 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWOV/zEjkqCb5zT6q3HpEOnJ7cpDAvtj1i/B/8SHgXIMB83Pp4wNz+GfBlgY+7jARfxg16bnJdw2g7WK0rl6RYK1zoqkapbYfMKVpHG
-X-Received: by 2002:a5b:2c2:0:b0:dd9:20d6:fd2 with SMTP id h2-20020a5b02c2000000b00dd920d60fd2mr741410ybp.27.1712312189491;
- Fri, 05 Apr 2024 03:16:29 -0700 (PDT)
+	s=arc-20240116; t=1712312992; c=relaxed/simple;
+	bh=BroQavTwVXKhYcOxCeyHgRm5Lf2bnHD/v6yEJjqHO7g=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=p3QsL2uvMTB5aXQZrG9pHanbEu97JZkZc9oWbF+HyqA+UyzcVWdN8AIMPDoYDkK8Smmj+PZdtPOTtQ/uw4lL3LvUeTTzDCB2xMsOc+fScLwvgkKddjJhFoT+pdI/od8SjmuugMJk3C3ieo9Mk+jyMWZnFho0xgzxEyObhmDRFIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=ilOJSdeQ; arc=none smtp.client-ip=203.205.251.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712312988; bh=WrqgBxPkvI6XXjQlFOMTo2LeveGikRfDs1ScFmq+qNY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=ilOJSdeQ+emB3vMqr5qPR8E93VPwGQHGOEVANtcmS58R0zAEAOTEXokxCdUyNwn7D
+	 DBBVo2HCCVnZ0F9/hxdYxIiBObueUYpJmixxGPJTTzv/i9IuAyr92LnznCJu07J8Yh
+	 aFDKS4AFs9GI/XzdoBijkhGzONb7rG1ihwjUOAGo=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
+	id 41D2E06C; Fri, 05 Apr 2024 18:16:29 +0800
+X-QQ-mid: xmsmtpt1712312189tckr4w7xc
+Message-ID: <tencent_7A77E9664E3C953694964A37444AF474AF09@qq.com>
+X-QQ-XMAILINFO: NQR8mRxMnur9EWvzZcbDggbR8qCE1SJg8KGpNB0/q6DjF1HISqr2Nc++sPg2za
+	 ftiQvoaYMJdbjeHxgnBTEYsQUKxEb6rmRItMqjVVvZ2twzLW0iY8mERov1oNDMESxZf45fuxfdPs
+	 pRQjLr+7f53wYeWFK6WNJK2yWDplpMH2hVJomWih0btIp5ISOwHqXIeOMtSTxUR/5/3rlY2qW+t0
+	 b3MWhfgLUVZ3C/dKF3LcaJYnnyrh/NT8aNs4c/ub5uI1UCwtPr1cbVaWJWlKAtCURZUd5tohc/8Q
+	 bcCq4FbSmZTiAE7xK50fz6DBrVYpdkRuhUSiSWzAr90V0zADNwOxV9/JGnEJ494fx7kDkuPAmSRw
+	 QLzCyLxGDr48qSSstY4LLWZ/l2ieZSv6D0TX64C93NTnzu42dzTFocH45vdEH922gSa6Pjh+9OKc
+	 3VEk8sQ7wzHICoyLrfEr3+FOfcAQU0P+iXOFyEbRzuf47dhGY/U7L9a9TKJQJSinaKJv+NE8dMLJ
+	 j6Urh7KyOc6CeUjcwMMR9+XtO84MVUhw16uAUrWJbK36nhy9aRvNJW8CjIHAG0PO5IStjvXrpL9Y
+	 yS7u34rnI6ydcJc0glUJ0fvXGCes867Ij8zcKsGYKGO8xtk3ireWSZekzk/OJs2xCLmywSGzWCYM
+	 i9oEL3emc1bZvEk47dn/XwNrzQMI0U75ZB+8OqhsEzKx+KhZJ8Jrtgai7gwITpSRsI0bJK2qQLbq
+	 S1zsP2UcjD+4Qys3G7D1oqIacaZaQTZXAcuiPaWnV6INR3LtzUAiUrKr0fXI6sLGFrcuyuiUUNq+
+	 J+gl0n/kKB6AGqHA1/5o3/mvrkcqnzTis1v5hAvAc9k4DI+se48FbGBYR6eOgZsjTrjqDbMdIhYj
+	 dZA2S49uxz3C2GCxXs+hRuDfM36VCOygh0Q9MLVvJSlkr2aIrTeoy2waaZeQbqAhh0gYJPL3TL2Y
+	 sMOr14DwDzKwbOnXLOBoMhbjtHNA01b6nFSDhVfxitfkGV2VIz4Oq238OQsSEY
+X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com
+Cc: johan.hedberg@gmail.com,
+	linux-bluetooth@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	luiz.dentz@gmail.com,
+	marcel@holtmann.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH] net/socket: the length value of the input socket option parameter is too small
+Date: Fri,  5 Apr 2024 18:16:29 +0800
+X-OQ-MSGID: <20240405101629.562985-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000b9b20e061553f06e@google.com>
+References: <000000000000b9b20e061553f06e@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403122851.38808-1-schnelle@linux.ibm.com>
- <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com> <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
-In-Reply-To: <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 5 Apr 2024 12:16:17 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
-Message-ID: <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
-Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Michael Schmitz <schmitzmic@gmail.com>, Niklas Schnelle <schnelle@linux.ibm.com>, 
-	linux-m68k@lists.linux-m68k.org, Heiko Carstens <hca@linux.ibm.com>, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi Arnd,
+[Syzbot reported]
+BUG: KASAN: slab-out-of-bounds in copy_from_sockptr_offset include/linux/sockptr.h:49 [inline]
+BUG: KASAN: slab-out-of-bounds in copy_from_sockptr include/linux/sockptr.h:55 [inline]
+BUG: KASAN: slab-out-of-bounds in rfcomm_sock_setsockopt_old net/bluetooth/rfcomm/sock.c:632 [inline]
+BUG: KASAN: slab-out-of-bounds in rfcomm_sock_setsockopt+0x893/0xa70 net/bluetooth/rfcomm/sock.c:673
+Read of size 4 at addr ffff8880209a8bc3 by task syz-executor632/5064
 
-On Wed, Apr 3, 2024 at 8:35=E2=80=AFPM Arnd Bergmann <arnd@kernel.org> wrot=
-e:
-> On Wed, Apr 3, 2024, at 20:11, Michael Schmitz wrote:
-> > how do you propose we handle legacy drivers that do depend on
-> > inb()/outb() functions (_not_ actual ISA I/O) on architectures that map
-> > inb()/outb() to MMIO functions?
-> >
-> > (In my case, that's at least ne.c - Geert ought to have a better
-> > overview what else does use inb()/outb() on m68k)
->
-> If a machine provides an inb()/outb() set of operations that
-> is actually used, it should set HAS_IOPORT.
->
-> For the Q40, it may be better in the long run to change the
-> drivers to just use MMIO directly though.
+CPU: 0 PID: 5064 Comm: syz-executor632 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+ print_address_description mm/kasan/report.c:377 [inline]
+ print_report+0x169/0x550 mm/kasan/report.c:488
+ kasan_report+0x143/0x180 mm/kasan/report.c:601
+ copy_from_sockptr_offset include/linux/sockptr.h:49 [inline]
+ copy_from_sockptr include/linux/sockptr.h:55 [inline]
+ rfcomm_sock_setsockopt_old net/bluetooth/rfcomm/sock.c:632 [inline]
+ rfcomm_sock_setsockopt+0x893/0xa70 net/bluetooth/rfcomm/sock.c:673
+ do_sock_setsockopt+0x3af/0x720 net/socket.c:2311
+ __sys_setsockopt+0x1ae/0x250 net/socket.c:2334
+ __do_sys_setsockopt net/socket.c:2343 [inline]
+ __se_sys_setsockopt net/socket.c:2340 [inline]
+ __x64_sys_setsockopt+0xb5/0xd0 net/socket.c:2340
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f36ff898dc9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 91 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe010c2208 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f36ff898dc9
+RDX: 0000000000000003 RSI: 0000000000000012 RDI: 0000000000000006
+RBP: 0000000000000006 R08: 0000000000000002 R09: 0000000000000000
+R10: 00000000200000c0 R11: 0000000000000246 R12: 0000555567399338
+R13: 000000000000000e R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
 
-Q40 uses ISA.
+Allocated by task 5064:
+ kasan_save_stack mm/kasan/common.c:47 [inline]
+ kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
+ poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
+ __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
+ kasan_kmalloc include/linux/kasan.h:211 [inline]
+ __do_kmalloc_node mm/slub.c:3966 [inline]
+ __kmalloc+0x233/0x4a0 mm/slub.c:3979
+ kmalloc include/linux/slab.h:632 [inline]
+ __cgroup_bpf_run_filter_setsockopt+0xd2f/0x1040 kernel/bpf/cgroup.c:1869
+ do_sock_setsockopt+0x6b4/0x720 net/socket.c:2293
+ __sys_setsockopt+0x1ae/0x250 net/socket.c:2334
+ __do_sys_setsockopt net/socket.c:2343 [inline]
+ __se_sys_setsockopt net/socket.c:2340 [inline]
+ __x64_sys_setsockopt+0xb5/0xd0 net/socket.c:2340
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
 
-Michael is worried about non-ISA drivers using inb() and friends.
-At some point in time (i.e. eons ago), we were told it was better to
-use in[bwl]()/read[bwl]() instead of directly dereferencing volatile
-pointers...
+The buggy address belongs to the object at ffff8880209a8bc0
+ which belongs to the cache kmalloc-8 of size 8
+The buggy address is located 1 bytes to the right of
+ allocated 2-byte region [ffff8880209a8bc0, ffff8880209a8bc2)
+[Fix]
+The optlen value passed by syzbot to _sys_setsockopt() is 2, which results in
+only 2 bytes being allocated when allocating memory to kernel_optval, and the
+optval size passed when calling the function copy_from_sockptr() is 4 bytes.
+Here, optlen is determined uniformly in the entry function __sys_setsockopt(). 
+If its value is less than 4, the parameter is considered invalid.
 
-Anyway, I don't think we have many users of inb() and friends left, and
-I assume the bots should have detected any/most remaining users in Niklas'
-branch...
+Reported-by: syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ net/socket.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-arch/m68k/include/asm/floppy.h on Sun-3x might be the only offender?
+diff --git a/net/socket.c b/net/socket.c
+index e5f3af49a8b6..ac8fd4f6ebfe 100644
+--- a/net/socket.c
++++ b/net/socket.c
+@@ -2327,6 +2327,9 @@ int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
+ 	int err, fput_needed;
+ 	struct socket *sock;
+ 
++	if (optlen < sizeof(int))
++		return -EINVAL;
++
+ 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
+ 	if (!sock)
+ 		return err;
+-- 
+2.43.0
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
 
