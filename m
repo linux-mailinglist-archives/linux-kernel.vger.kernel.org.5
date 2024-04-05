@@ -1,133 +1,252 @@
-Return-Path: <linux-kernel+bounces-133457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133458-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B2F89A3F7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:16:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7202C89A3F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:16:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 067081C22157
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:16:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 951381C222DB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953D9172761;
-	Fri,  5 Apr 2024 18:16:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F195171E67;
+	Fri,  5 Apr 2024 18:16:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="n8w0w+lx"
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="VHzvvWsn"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2103.outbound.protection.outlook.com [40.107.243.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4D3171E54;
-	Fri,  5 Apr 2024 18:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712340992; cv=none; b=kJofTFN4j0ehYtDoZ4ngLTshRhdYwK+hV86+BiIAlYZFBAnQBSRAZBlJNZp5YakCwbf20RSyYJ/QBw0PuorXpyksQnISc82q/B7mDBXEKnd/siFwpIKz3H/je4XoHGx8KMmufGYiQoisBz/GzgB9QGHOZrI6AuzQZMko60LY4RI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712340992; c=relaxed/simple;
-	bh=VtFKK/jfhCsVbtST+JldzZDI92XQgK1NCBu0q2Y5DdM=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=FST4V0SMRF4+Y5uepvU9XLKlxoAREYFydPvqgV9MBymfSBAMTEI8JnmPgEx99lbnrqgN04sxhvm8ZikfmgySoRAWEejLxqPz6Lt+VDsdUMlSYZCSo4/mvf6vOO+iv+Tw6rvqSJce458bK0jJi2jrCrKFgX1Evn62IaeBtTuJR/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=n8w0w+lx; arc=none smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 435F3kqk013276;
-	Fri, 5 Apr 2024 18:16:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2023-11-20;
- bh=EWs5UJY2oRvMOI8RouVDl15Ag8zcxUtHlmybtttZUqw=;
- b=n8w0w+lxlHPS98Ui55V0aJrMYq4QJr3PN5lu5GtEimFwTJSuMY3PHH6qoEZ83NWOA4rQ
- 7vEFjzTJuvYIePtcTuLfSvrCTALHJZyNajpSbMnrSb8jN3KRtXHpDgMG49Ije9ttBhZV
- 6JMndJNhhZpXCEHjdMAfPDFY+EJivRCXFP6uJmfeSpLLXUrUb6ArzgHrHB+YQPLilIvA
- 5S9mUcSyqsm5xdHYwrxnXSljBXGmWsZdtWclx2qWPcdOAgiPdMTWaZnjKe8ATpjHk29f
- sVJ6aLPZoBy5TPByeTBXesFuHSXwn4fAR9eVrdpJbWOi1AB/9JGmEF+RXU41k18BM8LB 8w== 
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3x9euy4332-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 05 Apr 2024 18:16:25 +0000
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 435H24hc039368;
-	Fri, 5 Apr 2024 18:16:24 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3x9emsxhfw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 05 Apr 2024 18:16:24 +0000
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 435IEvBe036160;
-	Fri, 5 Apr 2024 18:16:23 GMT
-Received: from ca-common-hq.us.oracle.com (ca-common-hq.us.oracle.com [10.211.9.209])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3x9emsxhf0-1;
-	Fri, 05 Apr 2024 18:16:23 +0000
-From: Venkat Venkatsubra <venkat.x.venkatsubra@oracle.com>
-To: davem@davemloft.net, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        maheshb@google.com, edumazet@google.com, kuba@kernel.org
-Cc: gia-khanh.nguyen@oracle.com
-Subject: [PATCH net-next v2] ipvlan: handle NETDEV_DOWN event
-Date: Fri,  5 Apr 2024 11:16:12 -0700
-Message-Id: <1712340972-13643-1-git-send-email-venkat.x.venkatsubra@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-05_19,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
- suspectscore=0 malwarescore=0 phishscore=0 bulkscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404050128
-X-Proofpoint-ORIG-GUID: -OZSUsglpzX1hdjzRnptRf7Sp-d6cUGc
-X-Proofpoint-GUID: -OZSUsglpzX1hdjzRnptRf7Sp-d6cUGc
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1783171E73
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 18:16:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.103
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712341000; cv=fail; b=nr8R70lx9ijOF/ku779IrHmoxaFDUkurDD4ECTLBtK4QXjSuM1tl81CrdW7r5YhkL3fF4HeIC5IDHNmEH/HEh5LU01emFAWd3yWHWk75d676iZ00V93yN8TKqXPrGoKSTztQ0mE410N8wusFrdG6BR3ZFUuVCQ34qeq5RcHIyNY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712341000; c=relaxed/simple;
+	bh=b+VOh4nd7oGjj+46zRtjT+gXfViWPw4o8+/5APRAqGk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=F4SUZ8vXOpOrIit1VR858D0L5dPsQ46dzB2ldTcaWO/GDWvfOU1kQxJ5YU4qdN73qYBc+3itYrL1QFl3H51BEOzEUxFc+Nu/NEQMBEhx0UmAtTWhMGgmsZD347ehgqPFzH+O4l/mv+J+NbePB9N7kDgpmUSJuPdh+zheGoYxxK8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=VHzvvWsn; arc=fail smtp.client-ip=40.107.243.103
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mdt9B1785xflqM8UneTmI37q0sahMuEQdiWB5m/81s/Rm+3MGhfKMGhyEdFhhuzQkmJDZ7CxVXv3g23YWxxoujwNJAWs9wPd7ltzPW5anP1s1/Mkjvk0xAJ8AG4rSdKXL2iDTo3UsA8FVkS2v9Y8wlqhXqHrOuB2lT1dqOO9KCO1E2UZGwW1ivUEdiJBDZCKJ83HHZrYyciwnKxbr0W97tPmJwNSvjLYGDa1nFgbprF427k53/ya0FGBnnoRuyfLbRYmDIKYYS7XJgVf/wmb7UwbMiKOluddungNswkZoKkPg3Id91dzgEmZAYJ2RHpoUbrlupKh00d0XpS8IkFXVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+NL/KIvxvAV++WeDu1cV5CmNrcO0AJ7LxX7Dumkmbg4=;
+ b=f3z/osyfoSFWhFX+xNqJEFoq7eZVex92rf8pDdY/rXJ4nOJFvCcJv1aNpR2VF7tWZIhu8VzDZQAHQcVFjFofykdKDSAPTfNeXU6Rd94Z7JnuiAsOx1UArfOFwMxjV+BJ/HYetwc3PZDzlOkDGsEe2Th3aWWRdRf91XZG4IiaMhsJ+I30YpVW3Meyc6gstJnAmbSAxG/ZJmqQ+F14hsLJ1vWLvU228U4txgi9coonRm4RZYmJGTrcT0VCQ0SUfefXrj0LQ7/EjWVNM/7kWXRffi5UY/Rp2buwz//ojxAe5/KTrFsudeC/gmnp1Ht9a/jIDKYrS10uushloGH7FcUK9Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+NL/KIvxvAV++WeDu1cV5CmNrcO0AJ7LxX7Dumkmbg4=;
+ b=VHzvvWsnAWum7AL2cx/98WHqjEtZCgf0av4TUO05PHkfnTUe2Ska/W8umFjZARYbYWKCdEMi7kDbtUuBBY/oQI8SqWMVCQX+1HS7MHvqfdEqNLdWTG05OEhaqwRKU0oUsyDFbnd04oP+LvCciPRovC/Wp0wZy6lQEvnfJR/hg+HL4LETcHcs0bPbgLvbFvNP+32uLW3tvVwqYOTElyo1HtfQ+ITfw+o1OH+zgy6s9MtE3d9iT+1s+Fs2Au9eFdxOx51xTQwsAltWYKXqSgwdG+oF0lmmrVR0Ib10DUqTLAjbKALtYjlOuZlfO+Q7ko2S33QWOyryIP0aDn9Doqd6Zw==
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by SA3PR12MB7831.namprd12.prod.outlook.com (2603:10b6:806:311::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 5 Apr
+ 2024 18:16:34 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7409.042; Fri, 5 Apr 2024
+ 18:16:34 +0000
+Date: Fri, 5 Apr 2024 15:16:33 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Peter Xu <peterx@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Matthew Wilcox <willy@infradead.org>,
+	Rik van Riel <riel@surriel.com>,
+	Lorenzo Stoakes <lstoakes@gmail.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yang Shi <shy828301@gmail.com>, John Hubbard <jhubbard@nvidia.com>,
+	linux-arm-kernel@lists.infradead.org,
+	"Kirill A . Shutemov" <kirill@shutemov.name>,
+	Andrew Jones <andrew.jones@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	Christoph Hellwig <hch@infradead.org>,
+	linux-riscv@lists.infradead.org,
+	James Houghton <jthoughton@google.com>,
+	David Hildenbrand <david@redhat.com>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	"Aneesh Kumar K . V" <aneesh.kumar@kernel.org>,
+	Mike Kravetz <mike.kravetz@oracle.com>
+Subject: Re: [PATCH v3 00/12] mm/gup: Unify hugetlb, part 2
+Message-ID: <20240405181633.GH5383@nvidia.com>
+References: <20240321220802.679544-1-peterx@redhat.com>
+ <20240322161000.GJ159172@nvidia.com>
+ <ZgHJaJSpoeJVEccN@x1n>
+ <20240326140252.GH6245@nvidia.com>
+ <Zg8gEyE4o_VJsTmx@x1n>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg8gEyE4o_VJsTmx@x1n>
+X-ClientProxiedBy: BL1PR13CA0358.namprd13.prod.outlook.com
+ (2603:10b6:208:2c6::33) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|SA3PR12MB7831:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	yljun5jxC6+bMauIhUrHuM3mpOo3fH2aaqlY+KB+Un20/tVjDiX0P5MAWqdnK1wqRgBDtgP/UfNEeU+3/cheVL/DRY18NENb3YWDRQOpj6lMpxLxRsZx0sZlxNMTNm5bgk3mq5vbFoU0jTqUE/+IB9APhCS+4WlqbPqynQUC2jtl77629Q2jGmkVZ0a2CFWE+DMkii/EAoyJUGGZqAyaA2U0oxNMJsmkLm6xZ+OAAPjQ7SRFLpdZY1Zb8E/FBp/HbpZaGfOHYp42/M68LCJv05yW1bkVGsmiCjPe4Yc1DPpcwLqtQUXQSCN0fiNT6io8ljFpgaYtRSEzlq8/GWD+eYNBqLFMV8M2hB4GacDgjwSN3udV6iXjC7X95/8pyVCWHDuXB0rUcnptM18O419hoNrhmromrTL8WXLVFISjqGy+JeZCzBALnQJUyHEViAjKgXNqYZixFhQVLz78t+TwEWbJQFH5EzPLxg8GJwdqABpsT6RaRJ9GjMAbsaahYxFbaUeWaTeikR5EKEtwJv4sMN+OAeacZavNup0VWXPBjqmsUgiAczuXwsa2icNfF0OhVUUi6zP9cIcNMkQqgKLRKHzm21SuHJTdBj6E2NTu31WT3h5eTCZxAxJH8LI49e9ViOYH3ca2nw65WVKD16vtWnaiU411olpl7I0P3i7vFeU=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(7416005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Dprj84UPiOHIf0k82+m2bA+qbgU1qsrRoZEpdjDdzIfYTRv+pW7LoXaF/N7c?=
+ =?us-ascii?Q?GAJiWpyqwNE+Pf1KwlNWeU+60JtY7mLj+vCRuUsCl6ZtK/Dqjp1hHU1ePsN4?=
+ =?us-ascii?Q?l5JSCWbRRzlXipY3AaKT/1Zl9jPMWs6N3gmms0lLWpLGnMBT6qtZERRU0mZw?=
+ =?us-ascii?Q?96K5M42ty1axc4nE+wrIUp615mcV1WTZCZSPpZf2/foa+yTRh7dkNxB0SQr6?=
+ =?us-ascii?Q?KVoyOyEufNNU2IWuEKJpQk3+/msFSv4hq5T4fbhBk9/5tu/FGF1uW3Si7Yez?=
+ =?us-ascii?Q?nu6BAzmqyGu/X5PsnzFpDiRs+Zi/FSSKrxYcQSe5gCop+BMTQjX814Pk9C4j?=
+ =?us-ascii?Q?+gq8FZ3AwZucl9yhZxd4qw6LUy/LuZIlHXOBLJGihO93ZA3ohcBaLywq20uW?=
+ =?us-ascii?Q?vmzgmsN4siZw9f1JGtRJ/BWYg2LaB/HRkAlOtZXpB797T9dfelHEdzcd9csG?=
+ =?us-ascii?Q?kvC4Dtb+mE2MyfHB+ZXayFXT2Mrs2qjlMCkmVQap3gcSQosOTwIThjFuIYxq?=
+ =?us-ascii?Q?oGbQvc2oek6ZCgHx+mvIwjPDOG1GTQ91dci5J9SlRPX6WaY7hu6X6R8B5QAJ?=
+ =?us-ascii?Q?ZuFScyBLtR9JqDAYTidYpVBlm2rubBeNxcdP4qsC8wsuI+NNUA5O4reO5CdD?=
+ =?us-ascii?Q?ixikDVlurZSDkp9ZJ3KZakDtroy/NY5vtBMDGK/bdbfY6n9j0e5GUH6Mv9Uo?=
+ =?us-ascii?Q?mc7DpIFKbFhYE5oShqxI2lRkezcJmQ6JZfrAMN1DsszHKUEh8skKfdG0Be3l?=
+ =?us-ascii?Q?x4li06zEubxY6CSnUKnIuac/QIKXX/0SQyTIbkciFonb9cl31DUMf+RQABOq?=
+ =?us-ascii?Q?TXAzJ8l4tHjVKWpa5aKFq7sStyF5UOwTO4fHOwI4d6tCcjkn/Ki8zAcmxMWs?=
+ =?us-ascii?Q?kuGlGH9DfMbpVW6KHt5bzEieGPffZy6BRVGqIOt7pmYjwwF3V0hohR+WnqCU?=
+ =?us-ascii?Q?E7zSy+z1mThrbmP2abBvfEd5F2S3okuYNk6qottAN65bgQr66eVti6/mA6Zn?=
+ =?us-ascii?Q?Exlm038siVBSRCrfBRa0BALgJ5/5ruV/1qXWooe6vBr8dmpSox939cFkXVVF?=
+ =?us-ascii?Q?+WoTwPqGC2kD6aPcywVLZhDBuUFrzQAfwp03mKnDDqJznl/n/fJ3JputTr2K?=
+ =?us-ascii?Q?PWhF7x5lKAVtesZXUdqQy2kp/izhrwsrkyuYNBSXb4IDfb1A7k+Vmiwix+t1?=
+ =?us-ascii?Q?3DQ86id61o7uGrmgwnSpnHh+L2K+fb/mm5LJQcmjrHIlul/b9N6yyOFj+jqw?=
+ =?us-ascii?Q?0o7Qeey+KzVG2UsakWevu7BJeLLRmmTnJSfTm8AD11zMOAWE8WELDljNUH1P?=
+ =?us-ascii?Q?S2H/vEfXv+YZnKF43HSsqGuEMWfXucUYOzzd8TPrMMnRbBVmOJgApPfS1Ev6?=
+ =?us-ascii?Q?S4oFSiP+lELPp9s2ZOO3Iv+rKIoMD/S0XQFlU0FDwCJxfDd6Ab6766d3JTlA?=
+ =?us-ascii?Q?tmcQqj9/upc/JQ9hi7tbsVW6y2isckMqdUGrCPJ90UqbeudD1iMGwmSiYovW?=
+ =?us-ascii?Q?cGqnz86x/7c4cs40SGM1CSfIPSBI4s6ff4KxUSPaMUvZ3xgz0sgkmXGfNt/m?=
+ =?us-ascii?Q?6iEjQSEgE78mRyj9KN3Go7x1UvIvBdIkLOXfiFK7?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 07cbcf67-69a9-4c94-f0a2-08dc559c86b1
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2024 18:16:34.4601
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: AgYvKRlYuSGWNegSxgNgI+MfCtxmNafRohpyYhPJoWvsVF5U0AE6UyRNZyZ6O7BN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB7831
 
-In case of stacked devices, to help propagate the down
-link state from the parent/root device (to this leaf device),
-handle NETDEV_DOWN event like it is done now for NETDEV_UP.
+On Thu, Apr 04, 2024 at 05:48:03PM -0400, Peter Xu wrote:
+> On Tue, Mar 26, 2024 at 11:02:52AM -0300, Jason Gunthorpe wrote:
+> > The more I look at this the more I think we need to get to Matthew's
+> > idea of having some kind of generic page table API that is not tightly
+> > tied to level. Replacing the hugetlb trick of 'everything is a PTE'
+> > with 5 special cases in every place seems just horrible.
+> > 
+> >    struct mm_walk_ops {
+> >        int (*leaf_entry)(struct mm_walk_state *state, struct mm_walk *walk);
+> >    }
+> > 
+> > And many cases really want something like:
+> >    struct mm_walk_state state;
+> > 
+> >    if (!mm_walk_seek_leaf(state, mm, address))
+> >           goto no_present
+> >    if (mm_walk_is_write(state)) ..
+> > 
+> > And detailed walking:
+> >    for_each_pt_leaf(state, mm, address) {
+> >        if (mm_walk_is_write(state)) ..
+> >    }
+> > 
+> > Replacing it with a mm_walk_state that retains the level or otherwise
+> > to allow decoding any entry composes a lot better. Forced Loop
+> > unrolling can get back to the current code gen in alot of places.
+> > 
+> > It also makes the power stuff a bit nicer as the mm_walk_state could
+> > automatically retain back pointers to the higher levels in the state
+> > struct too...
+> > 
+> > The puzzle is how to do it and still get reasonable efficient codegen,
+> > many operations are going to end up switching on some state->level to
+> > know how to decode the entry.
+> 
+> These discussions are definitely constructive, thanks Jason.  Very helpful.
+> 
+> I thought about this last week but got interrupted.  It does make sense to
+> me; it looks pretty generic and it is flexible enough as a top design.  At
+> least that's what I thought.
 
-In the below example, ens5 is the host interface which is the
-parent of the ipvlan interface eth0 in the container.
+Yeah, exactly..
 
-Host:
+> However now when I rethink about it, and look more into the code when I got
+> the chance, it turns out this will be a major rewrite of mostly every
+> walkers..  
 
-[root@gkn-podman-x64 ~]# ip link set ens5 down
-[root@gkn-podman-x64 ~]# ip -d link show dev ens5
-3: ens5: <BROADCAST,MULTICAST> mtu 9000 qdisc mq state DOWN
-      ...
-[root@gkn-podman-x64 ~]#
+Indeed, it is why it may not be reasonable.
 
-Container:
+> Consider that what we (or.. I) want to teach the pXd layers are two things
+> right now: (1) hugetlb mappings (2) MMIO (PFN) mappings.  That mostly
+> shares the generic concept when working on the mm walkers no matter which
+> way to go, just different treatment on different type of mem.  (2) is on
+> top of current code and new stuff, while (1) is a refactoring to drop
+> hugetlb_entry() hook point as the goal.
 
-[root@testnode-ol8 /]# ip -d link show dev eth0
-2: eth0@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9000 state UNKNOWN
-        ...
-    ipvlan mode l2 bridge
-        ...
-[root@testnode-ol8 /]#
+Right, I view this as a two pronged attack
 
-eth0's state continues to show up as UP even though ens5 is now DOWN.
+One one front you teach the generic pXX_* macros to process huge pages
+and push that around to the performance walkers like GUP
 
-For macvlan the handling of NETDEV_DOWN event was added in
-commit 80fd2d6ca546 ("macvlan: Change status when lower device goes down").
+On another front you want to replace use of the hugepte with the new
+walkers.
 
-Reported-by: Gia-Khanh Nguyen <gia-khanh.nguyen@oracle.com>
-Signed-off-by: Venkat Venkatsubra <venkat.x.venkatsubra@oracle.com>
----
- drivers/net/ipvlan/ipvlan_main.c | 1 +
- 1 file changed, 1 insertion(+)
+The challenge with the hugepte code is that it is all structured to
+assume one API that works at all levels and that may be a hard fit to
+replace with pXX_* functions.
 
-diff --git a/drivers/net/ipvlan/ipvlan_main.c b/drivers/net/ipvlan/ipvlan_main.c
-index 5920f7e63352..094f44dac5c8 100644
---- a/drivers/net/ipvlan/ipvlan_main.c
-+++ b/drivers/net/ipvlan/ipvlan_main.c
-@@ -735,6 +735,7 @@ static int ipvlan_device_event(struct notifier_block *unused,
- 
- 	switch (event) {
- 	case NETDEV_UP:
-+	case NETDEV_DOWN:
- 	case NETDEV_CHANGE:
- 		list_for_each_entry(ipvlan, &port->ipvlans, pnode)
- 			netif_stacked_transfer_operstate(ipvlan->phy_dev,
--- 
-1.8.3.1
+The places that are easy to switch from hugetlb to pXX_* may as well
+do so.
 
+Other places maybe need a hugetlb replacement that has a similar
+abstraction level of pointing to any page table level.
+
+I think if you do the easy places for pXX conversion you will have a
+good idea about what is needed for the hard places.
+
+> Now the important question I'm asking myself is: do we really need huge p4d
+> or even bigger?
+
+Do we need huge p4d support with folios? Probably not..
+
+huge p4d support for pfnmap, eg in VFIO. Yes I think that is possibly
+interesting - but I wouldn't ask anyone to do the work :)
+
+But then again we come back to power and its big list of page sizes
+and variety :( Looks like some there have huge sizes at the pgd level
+at least.
+
+> So, can we over-engineer too much if we go the generic route now?
+
+Yes we can, and it will probably be slow as well. The pXX macros are
+the most efficient if code can be adapted to use them.
+
+> Considering that we already have most of pmd/pud entries around in the mm
+> walker ops.
+
+Yeah, so you add pgd and maybe p4d and then we can don't need any
+generic thing. If it is easy it would be nice.
+
+Jason
 
