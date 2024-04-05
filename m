@@ -1,158 +1,103 @@
-Return-Path: <linux-kernel+bounces-132840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B107E899B03
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:39:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90042899B0A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:41:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 506F61F22778
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:39:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20DC3B22816
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:41:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47BB115FCE7;
-	Fri,  5 Apr 2024 10:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E3C1607A2;
+	Fri,  5 Apr 2024 10:41:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iOA/EM9F"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LRqjR1oO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD0C11CD03;
-	Fri,  5 Apr 2024 10:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5525F18E02;
+	Fri,  5 Apr 2024 10:41:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712313583; cv=none; b=kvkN7b7tf2dOZUBN77q86dEbE+TrtToR6N9I5Ij4tDMLASwlMXV5vSgepJ9j5HAkV/aDMJ4J63cDK7rhaWukvD75vM8+mCyiEc5ozU38eKAPL7O+3KHyj/FGdIG6SxAn9Z/LkPXhksFogknJ4sMX+VBSbQHDcTIr0uzJddDvCnw=
+	t=1712313704; cv=none; b=sOMnvFYo/JU/62jzGfdpeZzAVuURg5skDb0X3FsOSM299iGLO3PrXZsplUWH19QwDZeKLGSXB0zYb+kae0rAbZ6hT31zzClAE8PJmMo8oRV1dxGV1i4UcPjziQfCa2i074nhcJRBbEX3qzddNcwyRiL/LqDfZYQAPDHIv0dHfnY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712313583; c=relaxed/simple;
-	bh=2E17j7Ve7FOfk4tx0gvsLANCrYkPs6Skdo6dyBA9/zw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=DbXr6Ln4yZdHYFpv1VufVb7bOxODnQ480A49WqDK9G6ihn5H3MCSaGdbxGRyGj2ljVomeD1b54BSo5PxXSsw6BcI6iHOL9a2lIufCIy7WBRGgs1/WaPVxmlb1beJlpUoZ8qsNb8ZIjMxgK58lHRzCzayF0DTVuWDgyijLNNtO98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=iOA/EM9F; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4359ptLe003900;
-	Fri, 5 Apr 2024 10:39:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=vMAf/nBH0Lm+9CPcj0kvlu1Nzkm+iBU7ikLptAux34M=; b=iO
-	A/EM9F31Bwst/NWC1EU3qsryTgFMIpsxJVIFknTAFgkI85aVQhfvTBf6U1XGXfuL
-	+PfhWRbPAhQuC28HA6egyf/FB2J6KrgxdqnTp+lUkUnPMBFgqMXEd2sHWtdpWEq+
-	dNvHmIhQrTjcFE1u82Mto1QPJFjBKJylDh0zH5ZarjhEOcDAO9jYQYn9V9tqAxiY
-	GxLo6EQiLWQaH2xLawvl0hLrWvZRlOAerPXwbM1GwxM5EJ6YcSTSSiOTN7hnvE+K
-	DQWWaYyCsOfZ4cDElIfMCdhlCA8dxraLsb/Z/iJr/rUXb3U/H7UhfMDHZGBvqI2C
-	o0J+zEdB0UuT8BtaW/Jg==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa7m5gy5v-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 10:39:02 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 435Ad1hg012862
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Apr 2024 10:39:01 GMT
-Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
- 03:38:58 -0700
-Message-ID: <95bc8e95-3e52-9e50-9fe6-7ba1d4e07ca4@quicinc.com>
-Date: Fri, 5 Apr 2024 16:08:55 +0530
+	s=arc-20240116; t=1712313704; c=relaxed/simple;
+	bh=xCpACVpsGefQ3cwv4WVd0LUAr0cjofRtcGcTdFBplJU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jsq20I072eQLtObhMuI/w1yq3+wviSoc9s2MLsBj4ZCBA9/XBhAMnynazPcN2mn7aGCdYIHV0rvIA7jY75hRkZickPOGkPCm0qxXe+0CD7E9NHfUq/1JB0pK3e/Pf1UODWExBsyzO6RbNMkH9+dac+2LtOXPGEoOWQIt59fB+v4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LRqjR1oO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CA7FC433F1;
+	Fri,  5 Apr 2024 10:41:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712313704;
+	bh=xCpACVpsGefQ3cwv4WVd0LUAr0cjofRtcGcTdFBplJU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LRqjR1oONHUB4q7mfpbgRTfbMmEvVf4fg1nV0IqVgzhYMDxI5qko2nQrRdZZeTv12
+	 aAenfA8kOH6JBJcwZBfszwVjlLNgrC3SILomY+P8TwXkQp1a/oBJ0/JYt7yPpiwztL
+	 VRhcE0UZdYY3w+08QyCcOpwtapyFkfvAfGX+iYeG441uvMNFFy+coplKUJj7G7hh7Q
+	 +FAYOQtJ4iSSIkyfFc6VTQbu8UhrJOMSSUEmKqoWMJUWs4OwuSSo8uAkfskj9qrS9L
+	 xaf31PPBfhOiGosrZdvr8gqIKGKwirMSXVz+zHUGfe8rIEz2PcvNJaD5iv9zeqCnfv
+	 yeMwewkshuCvQ==
+Date: Fri, 5 Apr 2024 13:41:40 +0300
+From: Leon Romanovsky <leon@kernel.org>
+To: Edward Cree <ecree.xilinx@gmail.com>
+Cc: Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+	David Ahern <dsahern@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Jiri Pirko <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>,
+	Itay Avraham <itayavr@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	linux-kernel@vger.kernel.org,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>
+Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
+Message-ID: <20240405104140.GZ11187@unreal>
+References: <cefa2b9a-4227-969e-d31e-c19a552b9c1c@gmail.com>
+ <20240403190012.GV11187@unreal>
+ <d75ee9d5-36a9-4056-a0f3-0c05b2e744aa@kernel.org>
+ <20240403170149.7d2b8f2b@kernel.org>
+ <20240404122338.GI1723999@nvidia.com>
+ <20240404074850.19ecd52e@kernel.org>
+ <20240404174728.GL1723999@nvidia.com>
+ <d0b11055-1804-515b-7916-cb83a6274955@gmail.com>
+ <20240404183540.GX11187@unreal>
+ <d09cc7f0-3e2c-f22d-51ce-43a36412425b@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] cppc_cpufreq: Fix possible null pointer dereference
-To: Aleksandr Mishin <amishin@t-argos.ru>,
-        Ionela Voinescu
-	<ionela.voinescu@arm.com>
-CC: "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar
-	<viresh.kumar@linaro.org>, <linux-pm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>
-References: <20240405094005.18545-1-amishin@t-argos.ru>
-Content-Language: en-US
-From: Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20240405094005.18545-1-amishin@t-argos.ru>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4kWrjpNpQ5uudnOwQwrAhMPfSnV1neMA
-X-Proofpoint-GUID: 4kWrjpNpQ5uudnOwQwrAhMPfSnV1neMA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-05_09,2024-04-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 mlxscore=0 bulkscore=0 phishscore=0 adultscore=0
- suspectscore=0 malwarescore=0 impostorscore=0 clxscore=1011
- mlxlogscore=999 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404050078
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d09cc7f0-3e2c-f22d-51ce-43a36412425b@gmail.com>
 
-
-
-On 4/5/2024 3:10 PM, Aleksandr Mishin wrote:
-> cppc_cpufreq_get_rate() and hisi_cppc_cpufreq_get_rate() can be called from
-> different places with various parameters. So cpufreq_cpu_get() can return
-> null as 'policy' in some circumstances.
-> Fix this bug by adding null return check.
+On Thu, Apr 04, 2024 at 08:46:41PM +0100, Edward Cree wrote:
+> On 04/04/2024 19:35, Leon Romanovsky wrote:
+> > On Thu, Apr 04, 2024 at 07:06:53PM +0100, Edward Cree wrote:
+> >> Why?  What does the kernel get out of it?
+> >>
+> >> Maybe *you* need them to be supported, but maybe you should have
+> >>  thought of that earlier in the design process.  ("A failure on
+> >>  your part to foresee the eminently foreseeable does not
+> >>  constitute an emergency on mine.")
+> >> If we let folks bypass our standards with a _fait accompli_, we
+> >>  don't really have standards in the first place.
+> > 
+> > Sorry, who are "we" and what are "our standards"?
 > 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: a28b2bfc099c ("cppc_cpufreq: replace per-cpu data array with a list")
-> Signed-off-by: Aleksandr Mishin <amishin@t-argos.ru>
-> ---
->   drivers/cpufreq/cppc_cpufreq.c | 6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> diff --git a/drivers/cpufreq/cppc_cpufreq.c b/drivers/cpufreq/cppc_cpufreq.c
-> index 64420d9cfd1e..5f7e04e8497b 100644
-> --- a/drivers/cpufreq/cppc_cpufreq.c
-> +++ b/drivers/cpufreq/cppc_cpufreq.c
-> @@ -741,6 +741,9 @@ static unsigned int cppc_cpufreq_get_rate(unsigned int cpu)
->   {
->   	struct cppc_perf_fb_ctrs fb_ctrs_t0 = {0}, fb_ctrs_t1 = {0};
->   	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
-> +	if (!policy)
-> +		return -ENODEV;
-> +
+> As should be obvious from context, "we" in that sentence referred to
+>  the mainline kernel.  And while participants in this thread currently
+>  disagree on what "our standards" are, I hope it is not contentious
+>  that the kernel community *does* have standards as to what code and
+>  design is acceptable for inclusion.
 
-You should be doing this after all variable declaration, somewhere
+You didn't answer my question. What are "our standards"?
 
-..
-..
-struct cppc_cpudata *cpu_data;
-u64 delivered_perf;
-int ret;
-
-if (!policy)
-	return -ENODEV;
-
-cpu_data = policy->driver_data;
-.
-.
-
->   	struct cppc_cpudata *cpu_data = policy->driver_data;
->   	u64 delivered_perf;
->   	int ret;
-> @@ -822,6 +825,9 @@ static struct cpufreq_driver cppc_cpufreq_driver = {
->   static unsigned int hisi_cppc_cpufreq_get_rate(unsigned int cpu)
->   {
->   	struct cpufreq_policy *policy = cpufreq_cpu_get(cpu);
-
-same here.
-
-> +	if (!policy)
-> +		return -ENODEV;
-> +
->   	struct cppc_cpudata *cpu_data = policy->driver_data;
->   	u64 desired_perf;
->   	int ret;
-
--Mukesh
+Thanks
 
