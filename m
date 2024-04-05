@@ -1,112 +1,144 @@
-Return-Path: <linux-kernel+bounces-132399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EF30899407
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:10:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72C6889940A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:16:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A008C1C24D4F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:10:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B5941F29750
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:16:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2497D1CA89;
-	Fri,  5 Apr 2024 04:10:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E4F1CA81;
+	Fri,  5 Apr 2024 04:16:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="d3g6iIFk"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yHhShf11"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AC0F18E2A;
-	Fri,  5 Apr 2024 04:10:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F0D41AAD7
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 04:16:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712290215; cv=none; b=JUD9ILNUkRmTJG+83G5u/AyO0mLe6R/qq7/oP956kGFuFzYcj2MX1Gi8cOvjsgpYyX/R2ErYGCB/BlipQJBtnPckVATMJxnltYD3hvsGSbWRegvGoN3DLKhdxJObATKUSui3HVv0SXBYSmg98GEDry07vIRfUjQWbqQodt7cODI=
+	t=1712290600; cv=none; b=ao6JBPeTGXXEt+tm6FxhIjSBoCpjHvJRqVOiy6cLmr85UXFvjeKd9jtqt5z6XmHJleGbFDormPip5T5eI6M37139MaegPwl2dWGd6ylML/ymto4Nqi38XigjkAfYRY0ReyAOa4Lyu3MMXLrLuvOoTJhDQkped5leTSIfETiFwlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712290215; c=relaxed/simple;
-	bh=g7BQtInmRrLi+M5GE0wFlNQnSVd6g23d07lp51zGVzI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AkvcTORALrBrWvjkjg8qtvpCEssYfPNyFONm6+8pzhAiD5wlIeiGDdD60rGH35Eo3Q/uHnUbKpya12WDdrlOkrAft7I8kv42S3dXlh+9xIpbYqpVvPPO2ilxt6lDH5C8/+FKjFhJrCOhAA2TQWcz3ncWHZpV1mkTKkwp0MNirr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=d3g6iIFk; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=nSPrZsWCYvArB4boS+pxoaKtULxq2hWNfqCbSHuZGp0=; b=d3g6iIFkTBjoDGDsoT4rR4mRKB
-	fnoRlIasjLao0N0/kvQ4SyspHeB22M+5OV+KfpBJkWEMfEQCj/piOe29f+EOfjYr6vXYLULT+CMpX
-	EHCmvYaE47DTi/cFYiFmmCPVrI1dnDXenLCJqFTY8JUKVF9XnEwNiP49Ub+82ip+1945FVdGVA3aF
-	HGYmdhaSsqA0IA/sLo8ciSfoRnUi2hONym1a13L3KJwopqoWvzGFzt/SncuS/zPl1JicXRe09AZ4A
-	jyVrXN8d8z63xnzXtrYJXksxPOvfWbjQWl5yWEiPgLn6u9ZEL5SXVaRF9ANriu0xffFYuOny83MWL
-	syZsNBeQ==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsau3-000000057M5-1q8y;
-	Fri, 05 Apr 2024 04:10:11 +0000
-Message-ID: <2df0e132-5599-4cb5-93f8-4ed664a5d1cc@infradead.org>
-Date: Thu, 4 Apr 2024 21:10:09 -0700
+	s=arc-20240116; t=1712290600; c=relaxed/simple;
+	bh=jKz1vkvj06M5TC2ER2UR9NOMXgnvaGL6mNg1X4l/lhc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CjDMQHbsPYMoNM1rUk5TLbk1rZq6eDtvynSoUP/nmVPRj1BNlBJ08+r0uHtwZKucMD/oKYAwjuf+8SQlX12Pt4F/4RjcH6RI+jXHQ9bnKD5uN584p3rwh9CaH+IVQ7Pa63UabynR4Wg3hRHmruC44+n5otjwvNJ0Ehcw0k8axSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yHhShf11; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a51a20a6041so32611766b.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 21:16:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712290597; x=1712895397; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cydfC+H9xsE4MXqT0hqtXVg8XyYzWAE2MO9hp55ZxcM=;
+        b=yHhShf117EUrCdRoH2TzcbeMqgkpsofh4fUF64frPXVu6YGbIvFPSZ9ReUip5Q4KPs
+         tFJZww6Jc8aUfpNecDXlc+aQXdLWOLh4tpinKUCd27Uci9I9MhWDsNlQvvALZ8UPYhV/
+         NmUrX/dZkQRpkD38gFUopOOoqPJBtKkhxiQVP8YdlqMvuY0TBUGEDPxPbl24cLFlwfDz
+         l5uNoe0SP6+ftOjyRKcPj4nl4obrqd37eTOVVXqSiwpeiwZ7Fq9NeapW7JAm7jCPHypG
+         yBeTUJns/gu5OUQ89kqusO0L5Hr69Fgsje0GMQ1o/qsL2rwzZj85Bd0oBAhwzqD8tKY9
+         QTXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712290597; x=1712895397;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cydfC+H9xsE4MXqT0hqtXVg8XyYzWAE2MO9hp55ZxcM=;
+        b=bTMx4aMUHWkucVdL5QTmZW/y6ROGnO2LF/BwsHnkWDeJ1Cme/o5myczQ8KzDfArjxL
+         SVcsLlN1tST/pjPFd9KvA1GedF2ROUr6CTXb41pAS/+IDSxcs2/JrWEkxWPb9SmZevdz
+         0sYnLoMgebbd9dqaMuOvm7XbDPA5sArauu2yf3W3Wmx+vxK9YLG7GEi3aK0Lno+/jIAz
+         mJ70ejbZmUTD+5PDgqMg3yyGKqMDSnuq5XD4zGPJzJx0J9AvVf1q48COz1r8PbtnrHVo
+         iYAXkj8CZr5kAFWneu6AE30WaNvd5LhuZ7ptCLSQELeGW4pCUuP6S9LsvcL6xQsuDdGg
+         kWmA==
+X-Forwarded-Encrypted: i=1; AJvYcCU3bp4Rw4OL22bmhYC3CvydkAVM6Nui1ISCkmiQNZqbAdbPXM37Ri+Li4Q8LIpiZ8dcvwpiPTPbqwhM4QmBgR9r0hCZGQlQ+7r3MWO8
+X-Gm-Message-State: AOJu0YzKooOiphPN3hvIm6CSr2NaV0h1k/+bADRWQ53uoBrNY5SZDW3y
+	BzNGMadTTU6KQ7EvW7iQc3Z4kIQxGoX8qpcSqsPRp2L1qTw2dsOT+JQXutngmm1Cwqwa2KZovLf
+	jUJVRqIfe2cgXCVZits/n39W9rs/OwmicoIB8
+X-Google-Smtp-Source: AGHT+IEmezE7CD49WKnmsBrzb2WNWu1lEJTkRDyBYMZ2hukQ8fZl6Kj9Cb3kpok8ArAf9XcTUV6l6ULNi1d8qzu4MLA=
+X-Received: by 2002:a17:906:e295:b0:a51:95f1:14fe with SMTP id
+ gg21-20020a170906e29500b00a5195f114femr129985ejb.13.1712290597127; Thu, 04
+ Apr 2024 21:16:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 1/1] gpiolib: Update the kernel documentation - add
- Return sections
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
- Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
- linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Mika Westerberg <mika.westerberg@linux.intel.com>,
- Linus Walleij <linus.walleij@linaro.org>, Bartosz Golaszewski <brgl@bgdev.pl>
-References: <20240404212706.3587456-1-andriy.shevchenko@linux.intel.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240404212706.3587456-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240405013547.1859126-1-yosryahmed@google.com>
+ <20240405013547.1859126-3-yosryahmed@google.com> <20240405024459.GE641486@cmpxchg.org>
+In-Reply-To: <20240405024459.GE641486@cmpxchg.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 4 Apr 2024 21:15:59 -0700
+Message-ID: <CAJD7tkZz6+L1vLkWhmV4PTHp-2qhuZ76m14qJAJ0ZEQeEuXVKw@mail.gmail.com>
+Subject: Re: [PATCH v1 2/5] mm: zswap: refactor limit checking from zswap_store()
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Nhat Pham <nphamcs@gmail.com>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Thu, Apr 4, 2024 at 7:45=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org>=
+ wrote:
+>
+> On Fri, Apr 05, 2024 at 01:35:44AM +0000, Yosry Ahmed wrote:
+> > Refactor limit and acceptance threshold checking outside of
+> > zswap_store(). This code will be moved around in a following patch, so
+> > it would be cleaner to move a function call around.
+> >
+> > Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> > ---
+> >  mm/zswap.c | 32 ++++++++++++++++----------------
+> >  1 file changed, 16 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/mm/zswap.c b/mm/zswap.c
+> > index 1cf3ab4b22e64..fba8f3c3596ab 100644
+> > --- a/mm/zswap.c
+> > +++ b/mm/zswap.c
+> > @@ -1391,6 +1391,21 @@ static void zswap_fill_page(void *ptr, unsigned =
+long value)
+> >       memset_l(page, value, PAGE_SIZE / sizeof(unsigned long));
+> >  }
+> >
+> > +static bool zswap_check_full(void)
+> > +{
+> > +     unsigned long cur_pages =3D zswap_total_pages();
+> > +     unsigned long thr =3D zswap_accept_thr_pages();
+>
+> I know this looks neater, but it adds an extra division to the very
+> common path where the limit hasn't been reached yet. It should really
+> stay inside the branch.
 
-On 4/4/24 2:27 PM, Andy Shevchenko wrote:
-> $ scripts/kernel-doc -v -none -Wall drivers/gpio/gpiolib* 2>&1 | grep -w warning | wc -l
-> 67
-> 
-> Fix these by adding Return sections. While at it, make sure all of
-> Return sections use the same style.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/gpio/gpiolib-acpi.c   |  22 +++--
->  drivers/gpio/gpiolib-cdev.c   |   8 +-
->  drivers/gpio/gpiolib-devres.c |  44 +++++++++-
->  drivers/gpio/gpiolib-legacy.c |   3 +
->  drivers/gpio/gpiolib-of.c     |  48 ++++++++---
->  drivers/gpio/gpiolib-swnode.c |   4 +-
->  drivers/gpio/gpiolib-sysfs.c  |   6 +-
->  drivers/gpio/gpiolib.c        | 157 +++++++++++++++++++++++++++-------
->  8 files changed, 233 insertions(+), 59 deletions(-)
+I assumed the compiler is smart enough to do the division only when
+necessary, but I didn't check tbh.
 
+>
+> Another option could be to precalculate the max and the accept
+> threshold in absolute pages whenever their respective module param
+> changes. That would eliminate both divisions from the hot path.
 
-I would use %true, %false, %NULL, %0, and %1 in a few places.
+Yeah, that's better and cleaner. I will do that in the next version.
 
-s/error-code/error code/
-or
-s/error-code/errno/
+Thanks!
 
-I would s/active-low/active low/
-
-
-or it can just be merged as is. It's a nice improvement.
-
-
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
--- 
-#Randy
+>
+> > +     unsigned long max_pages =3D zswap_max_pages();
+> > +
+> > +     if (cur_pages >=3D max_pages) {
+> > +             zswap_pool_limit_hit++;
+> > +             zswap_pool_reached_full =3D true;
+> > +     } else if (zswap_pool_reached_full && cur_pages <=3D thr) {
+> > +             zswap_pool_reached_full =3D false;
+> > +     }
+> > +     return zswap_pool_reached_full;
+> > +}
+> > +
+> >  bool zswap_store(struct folio *folio)
+> >  {
+> >       swp_entry_t swp =3D folio->swap;
 
