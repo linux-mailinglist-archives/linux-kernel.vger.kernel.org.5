@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-132826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B81C9899ACA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:27:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D46A899ACC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:27:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DBA531C214EE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:27:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 608D21C218A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43DE31649D7;
-	Fri,  5 Apr 2024 10:27:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D959716ABC9;
+	Fri,  5 Apr 2024 10:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cmmk86d3"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RWWkZXSp"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F30991649B3
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:27:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A99B81649B3
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712312852; cv=none; b=PTmp1MYBaNgriqHblHtFgORS6TP7bPokg0MKFRvvIGdcMnoNk3kAR2e9iur8ZVDm3k4WVSZU6IvU31me7FJXfrUodHNluqz+PanFmDWJa88ZdRzQUGvC/F+jky28Dq7WLC7Ml2yybPdSuI0tUXXnxh/yKhx5DNntG4er94IqIjU=
+	t=1712312858; cv=none; b=V6uMkkZJUODO4nce5H8H67HFjukFLZolndBqfBFSCu5DLVZZlGOBpBjPrKNLkpDSxeVTpDm8Y2VaL2//R4gY5rYZn52D9mMox8bh6JSZKPwhV7uCBZWaLCEysX4OoELhS/GAZJGxBN5OfJMHDwV1kOIDB7ZsGE9VOH+1xzSVHAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712312852; c=relaxed/simple;
-	bh=WURzhiHUsRPfCjHdtBvME0gbF+PimGo+jHoV15Bt+so=;
+	s=arc-20240116; t=1712312858; c=relaxed/simple;
+	bh=xU+87YeJV2oMg/LrboKIyNFcwar7pMcfTUa1FZYXXlg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WTwRDEawWXJwRwRoEqhD/NnYs4IbM9ZumVgmYQAtjswd4v2pgpj3nVPcq4Q4bdAUZmEUVnkxjZiTkE/sC6k7j0JbbQa3gWHXz7qWA+LJXAfUsNt9t4Ch+501PCGkZvtWo9tsOqKlz1JpQxl4Cgkx+fzVnJotRN0E/41LdDIbT5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cmmk86d3; arc=none smtp.client-ip=209.85.210.181
+	 MIME-Version; b=ulJtbZIBmTFsZ0aZK5nPP95v3VKa7p4eGusX6zmhNrmunxxj3KJftV72w7aMvnF/j5bfequLwAyxqMU4hE6Ithy3N0ezWMxDYBMukX5D0nB3TBzVdPdHwTiUI+Iz9fjwICqJaJLHTEh0qCKYNv6s5Swy1MoZUUHG5GrrgBl2ZIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RWWkZXSp; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6ecf8ebff50so834220b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 03:27:30 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6ecfeefe94cso358194b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 03:27:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712312850; x=1712917650; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712312856; x=1712917656; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=4ZWljBCC9KrF5CNn3q7EM6c1BT8pMAntpGQOmXRtUQU=;
-        b=Cmmk86d3bGG04uqXzVrGIV6IjcEO/RaK0rU5k1HJEDcV8b0noog4g53wnKHJ09Ll5J
-         Ac/mSLmRfMd9UpevprcY5tqfizMMqzsyakXPxHo7ITzTpuZjaZIVp5an8cfI0alnFwlY
-         L1FiuHKMND9vLGgIJQAp6/lOdpAcJ4hikdBspKTxe/JFKwtJJMpTpBX8vpPkdEOpfcPf
-         6uoqELwnmFhfP0o8xb27wufU2UbCKOtHPJupQo7lW3nrqrWrEPAgQldhSLE74sQqCS7H
-         uEM7hY4gjltPcrmeGhesgt5T0gnUMDdxUnPn7saqGrl6OdHuvCKAUXbd2jEM0b1g6+be
-         LmFw==
+        bh=ykuY6i2Fu38nsDbXE/VtCFZLlgGKZpXgb6cmPoEsG8o=;
+        b=RWWkZXSpcytbPO9+InhPbUk3jdAz92PM6gSi2zMSMPCTq+BRU22KwbARcklHoReVE/
+         Lde/g9CuqItTs1XobhAGmczeGhf7Z6hPpuser4qfCJPyU57ySb2iapDfGDqHfdKsuRNw
+         jro36eiQ6VpHbnjZGAfj3MdG0NNlADdk6UOErNfy3eeSUdR/H0qMiGzhkn7N+hVF96D9
+         D71JFmxAsAq1uQRLfwkNTPRva8auH/MfCsDvFR76WWQ2fBsNWhXTWbxu6WKrmT6BsQXj
+         4KThhbnwvH7Qp1cgorfICzRbv9JjUIDF9PDyb4DDD0qQMiexaPHMMahrC3W4+LDc1owJ
+         2ikw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712312850; x=1712917650;
+        d=1e100.net; s=20230601; t=1712312856; x=1712917656;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4ZWljBCC9KrF5CNn3q7EM6c1BT8pMAntpGQOmXRtUQU=;
-        b=ecoHuJRgfHYIs4iEfNkoHDcC8c8KuuKFtgzlel1Yv3Z0EFjQ7wQQ7VbJIqBT8iN63O
-         Eh5glg10Rc5LXxQqv8WCZhq/EdNTwP43JLz6vNKlfoR1T2XCBCPAs7yq5SQUFRcSfgdj
-         oe2z5OM0VpmZt6UzqPs6RTR4Xim9T5ikM7cJPhknvCfmP58tTO8YKR0rvhLCBdKJP6qW
-         MxHEmZpvkpqWAbpo1Q1fpesZiYAG0EFywq1TcZxa8xIDo5PQtu55zRbz/1nFpWTeGycl
-         ilrLSRE6YjQE5EFkngrZ5rMWWFHFu6FVW8Wf8+VsjkGjNsY0uQliFpIQnNUm4KnIp0Fc
-         rA2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVBY4iwn4qLR56wMTzioJC3TzyVoiDbNL1JeY50PimA/OEw5utcQy9mxmqpilSl3FPBtwIhtVz5rl5DvFCZYKimnwRKIVDm6Ld96rF5
-X-Gm-Message-State: AOJu0YwMUZsAR9UBGAiifwAd2Frci6RJm12DPvhznRTIWFlYn2P/MpA+
-	8epj2r5eXphdTnfB+p//c1XFlCA4R/r9Jc0HOlmejV3d1HRGHvN8
-X-Google-Smtp-Source: AGHT+IGtMKiEbIdv0FWwPdoZQEr/By0dCwSDG7UHQlGksBrCqvl3FEssVeROn/+hGtNQ6NcBdk65wA==
-X-Received: by 2002:a05:6a21:a5a9:b0:1a7:2451:aeac with SMTP id gd41-20020a056a21a5a900b001a72451aeacmr1784226pzc.16.1712312850194;
-        Fri, 05 Apr 2024 03:27:30 -0700 (PDT)
+        bh=ykuY6i2Fu38nsDbXE/VtCFZLlgGKZpXgb6cmPoEsG8o=;
+        b=orGtLcfZcR4Ct8lCQgROeiLyO9+zeI+LD4WP0kUiwHAbuox4cByTqcKZjGL7Nod93d
+         8cQcYHeWu7umHx9GGWHxxlSKeFCGH2r0t3RKqmQ4sjTjlalLKHgc3bDFE1yiAoMi66vG
+         Odkj7GM5lODiPgYUmMq8TzAO8dt+oBEoWNghCNuLTIfKXtwDDNiYj+5xCoWf0tpUhSgx
+         PbNIPN32lSC4efgIbaB0F7YkDWa8ReZbroXX7cxp0PtuHtbmkBn4eanWNclJIlQBGj2F
+         QKjqxcjCki0vj1Z55mHkNWC5ZJ4ZKZLmiThG8zXrp1xeDnmgUX4cx4iFSDlkvd/6LIrz
+         9VyA==
+X-Forwarded-Encrypted: i=1; AJvYcCXoxPGuLwk5hs9qa/yvLQyq32T2x2/HekGC+4BS/AViuP3jLh375/NVyutQB/eIKzqUaIxdoeA12WnAYEhesAqmfD81ubyQGfTC8sPb
+X-Gm-Message-State: AOJu0YwaD7yVSqTi+hpQvFemQhheN68OlnXZjAwuf2efGUSx3hwjsjAA
+	AxIU5m5ClCGJal+dbbsyznhsEO/grrC/MctqpZE13kLGqB26N9yZ
+X-Google-Smtp-Source: AGHT+IH7lyqbZgiy6gFtYdrA72hCZMiuUcdajSkaC+qbDc4j+Oz8Sw3oeAQrQ+KFY+9839aPVaFHvA==
+X-Received: by 2002:a05:6a00:2341:b0:6ea:9b37:c288 with SMTP id j1-20020a056a00234100b006ea9b37c288mr1454381pfj.15.1712312855698;
+        Fri, 05 Apr 2024 03:27:35 -0700 (PDT)
 Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
-        by smtp.gmail.com with ESMTPSA id f20-20020a056a00229400b006ed06aa3604sm113334pfe.82.2024.04.05.03.27.24
+        by smtp.gmail.com with ESMTPSA id f20-20020a056a00229400b006ed06aa3604sm113334pfe.82.2024.04.05.03.27.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 03:27:29 -0700 (PDT)
+        Fri, 05 Apr 2024 03:27:35 -0700 (PDT)
 From: Barry Song <21cnbao@gmail.com>
 To: david@redhat.com,
 	akpm@linux-foundation.org,
@@ -81,9 +81,9 @@ Cc: cerasuolodomenico@gmail.com,
 	yosryahmed@google.com,
 	yuzhao@google.com,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 1/2] mm: add per-order mTHP anon_alloc and anon_alloc_fallback counters
-Date: Fri,  5 Apr 2024 23:27:03 +1300
-Message-Id: <20240405102704.77559-2-21cnbao@gmail.com>
+Subject: [PATCH v4 2/2] mm: add per-order mTHP anon_swpout and anon_swpout_fallback counters
+Date: Fri,  5 Apr 2024 23:27:04 +1300
+Message-Id: <20240405102704.77559-3-21cnbao@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240405102704.77559-1-21cnbao@gmail.com>
 References: <20240405102704.77559-1-21cnbao@gmail.com>
@@ -97,146 +97,89 @@ Content-Transfer-Encoding: 8bit
 
 From: Barry Song <v-songbaohua@oppo.com>
 
-Profiling a system blindly with mTHP has become challenging due to the
-lack of visibility into its operations. Presenting the success rate of
-mTHP allocations appears to be pressing need.
-
-Recently, I've been experiencing significant difficulty debugging
-performance improvements and regressions without these figures.
-It's crucial for us to understand the true effectiveness of mTHP in
-real-world scenarios, especially in systems with fragmented memory.
-
-This patch sets up the framework for per-order mTHP counters, starting
-with the introduction of anon_alloc and anon_alloc_fallback counters.
-Incorporating additional counters should now be straightforward as well.
+This helps to display the fragmentation situation of the swapfile,
+knowing the proportion of how much we haven't split large folios.
+So far, we only support non-split swapout for anon memory, with
+the possibility of expanding to shmem in the future.  So, we add
+the "anon" prefix to the counter names.
 
 Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 ---
- include/linux/huge_mm.h | 19 ++++++++++++++++
- mm/huge_memory.c        | 48 +++++++++++++++++++++++++++++++++++++++++
- mm/memory.c             |  2 ++
- 3 files changed, 69 insertions(+)
+ include/linux/huge_mm.h | 2 ++
+ mm/huge_memory.c        | 4 ++++
+ mm/page_io.c            | 6 +++++-
+ mm/vmscan.c             | 3 +++
+ 4 files changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index e896ca4760f6..c5d33017a4dd 100644
+index c5d33017a4dd..1d893a358df6 100644
 --- a/include/linux/huge_mm.h
 +++ b/include/linux/huge_mm.h
-@@ -264,6 +264,25 @@ unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
- 					  enforce_sysfs, orders);
- }
- 
-+enum mthp_stat_item {
-+	MTHP_STAT_ANON_ALLOC,
-+	MTHP_STAT_ANON_ALLOC_FALLBACK,
-+	__MTHP_STAT_COUNT
-+};
-+
-+struct mthp_stat {
-+	unsigned long stats[PMD_ORDER + 1][__MTHP_STAT_COUNT];
-+};
-+
-+DECLARE_PER_CPU(struct mthp_stat, mthp_stats);
-+
-+static inline void count_mthp_stat(int order, enum mthp_stat_item item)
-+{
-+	if (unlikely(order > PMD_ORDER))
-+		return;
-+	this_cpu_inc(mthp_stats.stats[order][item]);
-+}
-+
- #define transparent_hugepage_use_zero_page()				\
- 	(transparent_hugepage_flags &					\
- 	 (1<<TRANSPARENT_HUGEPAGE_USE_ZERO_PAGE_FLAG))
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 9d4b2fbf6872..5b875f0fc923 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -526,6 +526,46 @@ static const struct kobj_type thpsize_ktype = {
- 	.sysfs_ops = &kobj_sysfs_ops,
+@@ -267,6 +267,8 @@ unsigned long thp_vma_allowable_orders(struct vm_area_struct *vma,
+ enum mthp_stat_item {
+ 	MTHP_STAT_ANON_ALLOC,
+ 	MTHP_STAT_ANON_ALLOC_FALLBACK,
++	MTHP_STAT_ANON_SWPOUT,
++	MTHP_STAT_ANON_SWPOUT_FALLBACK,
+ 	__MTHP_STAT_COUNT
  };
  
-+DEFINE_PER_CPU(struct mthp_stat, mthp_stats) = {{{0}}};
-+
-+static unsigned long sum_mthp_stat(int order, enum mthp_stat_item item)
-+{
-+	unsigned long sum = 0;
-+	int cpu;
-+
-+	for_each_online_cpu(cpu) {
-+		struct mthp_stat *this = &per_cpu(mthp_stats, cpu);
-+
-+		sum += this->stats[order][item];
-+	}
-+
-+	return sum;
-+}
-+
-+#define DEFINE_MTHP_STAT_ATTR(_name, _index)					\
-+static ssize_t _name##_show(struct kobject *kobj,			\
-+			struct kobj_attribute *attr, char *buf)		\
-+{									\
-+	int order = to_thpsize(kobj)->order;				\
-+									\
-+	return sysfs_emit(buf, "%lu\n", sum_mthp_stat(order, _index));	\
-+}									\
-+static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
-+
-+DEFINE_MTHP_STAT_ATTR(anon_alloc, MTHP_STAT_ANON_ALLOC);
-+DEFINE_MTHP_STAT_ATTR(anon_alloc_fallback, MTHP_STAT_ANON_ALLOC_FALLBACK);
-+
-+static struct attribute *stats_attrs[] = {
-+	&anon_alloc_attr.attr,
-+	&anon_alloc_fallback_attr.attr,
-+	NULL,
-+};
-+
-+static struct attribute_group stats_attr_group = {
-+	.name = "stats",
-+	.attrs = stats_attrs,
-+};
-+
- static struct thpsize *thpsize_create(int order, struct kobject *parent)
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 5b875f0fc923..28113f8fdf18 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -554,10 +554,14 @@ static struct kobj_attribute _name##_attr = __ATTR_RO(_name)
+ 
+ DEFINE_MTHP_STAT_ATTR(anon_alloc, MTHP_STAT_ANON_ALLOC);
+ DEFINE_MTHP_STAT_ATTR(anon_alloc_fallback, MTHP_STAT_ANON_ALLOC_FALLBACK);
++DEFINE_MTHP_STAT_ATTR(anon_swpout, MTHP_STAT_ANON_SWPOUT);
++DEFINE_MTHP_STAT_ATTR(anon_swpout_fallback, MTHP_STAT_ANON_SWPOUT_FALLBACK);
+ 
+ static struct attribute *stats_attrs[] = {
+ 	&anon_alloc_attr.attr,
+ 	&anon_alloc_fallback_attr.attr,
++	&anon_swpout_attr.attr,
++	&anon_swpout_fallback_attr.attr,
+ 	NULL,
+ };
+ 
+diff --git a/mm/page_io.c b/mm/page_io.c
+index a9a7c236aecc..7669452e8b4d 100644
+--- a/mm/page_io.c
++++ b/mm/page_io.c
+@@ -212,13 +212,17 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
+ 
+ static inline void count_swpout_vm_event(struct folio *folio)
  {
- 	unsigned long size = (PAGE_SIZE << order) / SZ_1K;
-@@ -549,6 +589,12 @@ static struct thpsize *thpsize_create(int order, struct kobject *parent)
- 		return ERR_PTR(ret);
- 	}
- 
-+	ret = sysfs_create_group(&thpsize->kobj, &stats_attr_group);
-+	if (ret) {
-+		kobject_put(&thpsize->kobj);
-+		return ERR_PTR(ret);
-+	}
++	long nr_pages = folio_nr_pages(folio);
 +
- 	thpsize->order = order;
- 	return thpsize;
- }
-@@ -1050,8 +1096,10 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
- 	folio = vma_alloc_folio(gfp, HPAGE_PMD_ORDER, vma, haddr, true);
- 	if (unlikely(!folio)) {
- 		count_vm_event(THP_FAULT_FALLBACK);
-+		count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_ALLOC_FALLBACK);
- 		return VM_FAULT_FALLBACK;
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	if (unlikely(folio_test_pmd_mappable(folio))) {
+ 		count_memcg_folio_events(folio, THP_SWPOUT, 1);
+ 		count_vm_event(THP_SWPOUT);
  	}
-+	count_mthp_stat(HPAGE_PMD_ORDER, MTHP_STAT_ANON_ALLOC);
- 	return __do_huge_pmd_anonymous_page(vmf, &folio->page, gfp);
++	if (nr_pages > 0)
++		count_mthp_stat(folio_order(folio), MTHP_STAT_ANON_SWPOUT);
+ #endif
+-	count_vm_events(PSWPOUT, folio_nr_pages(folio));
++	count_vm_events(PSWPOUT, nr_pages);
  }
  
-diff --git a/mm/memory.c b/mm/memory.c
-index 649e3ed94487..1723c8ddf9cb 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4374,8 +4374,10 @@ static struct folio *alloc_anon_folio(struct vm_fault *vmf)
- 			}
- 			folio_throttle_swaprate(folio, gfp);
- 			clear_huge_page(&folio->page, vmf->address, 1 << order);
-+			count_mthp_stat(order, MTHP_STAT_ANON_ALLOC);
- 			return folio;
- 		}
-+		count_mthp_stat(order, MTHP_STAT_ANON_ALLOC_FALLBACK);
- next:
- 		order = next_order(&orders, order);
- 	}
+ #if defined(CONFIG_MEMCG) && defined(CONFIG_BLK_CGROUP)
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index ffc4553c8615..b30e6294f82a 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1247,6 +1247,9 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+ 						count_vm_event(
+ 							THP_SWPOUT_FALLBACK);
+ 					}
++					if (nr_pages > 0)
++						count_mthp_stat(get_order(nr_pages * PAGE_SIZE),
++							MTHP_STAT_ANON_SWPOUT_FALLBACK);
+ #endif
+ 					if (!add_to_swap(folio))
+ 						goto activate_locked_split;
 -- 
 2.34.1
 
