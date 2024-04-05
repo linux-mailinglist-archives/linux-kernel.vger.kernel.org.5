@@ -1,143 +1,199 @@
-Return-Path: <linux-kernel+bounces-132411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0F2B89948E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:45:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B228C899495
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:48:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2080C1C20DD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:45:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 405BA2821F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:48:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F5F3224DD;
-	Fri,  5 Apr 2024 04:44:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9954F21379;
+	Fri,  5 Apr 2024 04:48:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="Kl3pFkAp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gvs8UBj2"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94A2DC138;
-	Fri,  5 Apr 2024 04:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A8D18054
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 04:48:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712292245; cv=none; b=Wc2dqQHT1Hg39cy0GRCRKAXJFcRtzfVZhQjNV64vRuTzVmWfSbHFabvzvysPfp21kqPGb5pnbTnH6phzgP1C5EcJUoHekMDEicjb+uOeWxbtxGtkyKEvLBSqjsaf2WndfnvNjvrNky6vOOEnFcHlAffmuM0+w0175P0rkShs5KI=
+	t=1712292495; cv=none; b=Q+fksHyXAXxc439qNFjX4Arl9qxR54s+V2jK/rSM96JY9MCH7SsXO7qFWYCyjUIz9G94QRdn978WPx7upkkb1HGUMn8jQZBigruoejFait5jtb+ZpUGGi6ZXNaqxcycuMn6FIFCcg8hPQ1oG4mxYH33WRzn/vM990yw8ZTV5/MU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712292245; c=relaxed/simple;
-	bh=nP5LSoPmz6tMExekbFggHQmASZ3xuQAUPcPQ6315p7c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XwG8jG8IPX2Ly9u4vL0/TKrq1aEgisam1CDtXprbgkuiqb07AYMuwBAwmn/jkmfj9Q5muuJi0TaQpg5bdkRDOePE4RSxQaaQUKrGji/x1IDJutzjnvWUvAa7019pTdKMPQX1Ayn7BlwWBgR+KnHbMRajrVmPVgl+QJ99SVeeDJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=Kl3pFkAp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B1DFC433F1;
-	Fri,  5 Apr 2024 04:44:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712292245;
-	bh=nP5LSoPmz6tMExekbFggHQmASZ3xuQAUPcPQ6315p7c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Kl3pFkAptITw2b7BMS4ccJYJ2GNDXaJVO9O2I+YNvsiM4STCe/AskFJrIQiE8WtpP
-	 xcSI6CknCzHADaD8kDSEBWy3SgeAMTngU2YKd79J8ItyAAgzk6tqee3uDuv79S5pGO
-	 LlRwKqADyKQhOzkI6QSxHbDPYcBRKhwCn9LulNRg=
-Date: Fri, 5 Apr 2024 06:43:56 +0200
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Johan Hovold <johan@kernel.org>,
-	Krishna Kurapati <quic_kriskura@quicinc.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Wesley Cheng <quic_wcheng@quicinc.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-	Felipe Balbi <balbi@kernel.org>, devicetree@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-	linux-kernel@vger.kernel.org, quic_ppratap@quicinc.com,
-	quic_jackp@quicinc.com, Johan Hovold <johan+linaro@kernel.org>
-Subject: Re: [PATCH v19 2/9] usb: dwc3: core: Access XHCI address space
- temporarily to read port info
-Message-ID: <2024040558-undercut-sandbar-7ffc@gregkh>
-References: <20240404051229.3082902-1-quic_kriskura@quicinc.com>
- <20240404051229.3082902-3-quic_kriskura@quicinc.com>
- <Zg5VDnbaaBXJyRjV@hovoldconsulting.com>
- <f16e1280-8f7e-40a7-ab45-9acaeb3e90cb@linaro.org>
- <2024040455-sitting-dictator-170c@gregkh>
- <Zg9THGBRuppfw4y+@hu-bjorande-lv.qualcomm.com>
+	s=arc-20240116; t=1712292495; c=relaxed/simple;
+	bh=/sP0SD/6VqgaBAHZ+LHcRfVmnRlCmXpDOr9SbVDicas=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rNWs7dA3/AvTO14MgzL/HJGk2i+7K4+8A7+5rrRX6qPR7v5EfebzudM0WcGKPi3DpZq2zUFTLeadthW6SK69CroDD5NdLvnRrI+5Eta86pGuf4MV0SQ5YxY6ANw4dJQ0hGRUvoR8uWpVBsU3VTHG4xLTucH7tVK8hSKMPB7p1+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gvs8UBj2; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a51a7dc45easo11232466b.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 21:48:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712292492; x=1712897292; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OFngNohcsIWWF9VBx68/C+XJdy9eZcqacGTQk/W+jbI=;
+        b=gvs8UBj2OZ7kfvX/yxpZHfvqZC8IaTsGdI8dQKranVqAFIjghKq+sNal8aKTGEB/9K
+         w8ErvSX5EQNs3YFQxcc0Msb4OGyRjLlAmpV4I9EHoIVI/zP5er14NQjaigywFPJInd3Z
+         emDjMlddFBl3//+NYcjjr/eNmMGM0Md0xlx5yUDGGnH9QIchu4dOY1DsXvKm+yhjiK4n
+         +XRC3cbKSHoW6R70poDKYLdt4rDnpfH/PhcE829Dtwcy2HOsQTtvxTcqUd6SMvz74jn6
+         mgW8SaEorxPMLZhneH3NhH93Q9/Zj9R3+MKPOY1sJDrcNswmUIv3KF/bcnZVq5UNMJYj
+         8zXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712292492; x=1712897292;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OFngNohcsIWWF9VBx68/C+XJdy9eZcqacGTQk/W+jbI=;
+        b=r/WnWkTIu2Ti0lV8VV/lSwEWnDU/kV7ZO+GijRFXLpK4vY9rOwvmPgdF/w7/Dv3nGE
+         6+y97/aXC975D8SFUOdipmYyFF9TcAWi1rosKLuJeb9CCYRYq/t9rczJPLbHCq3ec+F7
+         E6divy2/+Q1MEB7WAUdt9Ld/8C70euZos9EsAn0IRqtY80hd0ZjAPCvlZj2fJYvksnIv
+         t16q/W4lqExVlcXruo6bI65SHKpYA27GPgQt49D9V2f/O4RXS6fCmu8LjQp4+J4wKwBK
+         ytVmeliiKpfz6Eynw1VRaowDop1SDJMUFqxRXfkfeo/nAbUUvAzzUuE3wObqC1xcKzrG
+         KKng==
+X-Forwarded-Encrypted: i=1; AJvYcCUu8eahehY6tB0IkLdObMpva0hG4ZrocTn5E4Jf1CldccFAEhe5E92n21ZBV40O0P322astDiYc/vQD10ESBVBrH/buInMwTWWNbXdd
+X-Gm-Message-State: AOJu0YxtYCUNf0J7q7m/bwY+ewEPX/X5W3L3Tpk4bLgoTVa33Z84NAQo
+	6a8+7N0SLlJ4s5U631NdM7Iwc609kCAxqcFWB9rdh3MLqAUTjlBUOUdygA0hjUfmglvf92SXu2T
+	fOEJIgQm2mC8/Sr34Ey7Y7MC6qR2NmfQw+9Ce
+X-Google-Smtp-Source: AGHT+IG0FTUjSAmspO/nmTPWRrODUK6jOybARjqK66uz0z8iWEoCJvp6YB5mNy5YKEO10BQdeJehh0/wHKz/44T7/BE=
+X-Received: by 2002:a17:907:985b:b0:a4e:109f:7b4b with SMTP id
+ jj27-20020a170907985b00b00a4e109f7b4bmr215688ejc.41.1712292492092; Thu, 04
+ Apr 2024 21:48:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zg9THGBRuppfw4y+@hu-bjorande-lv.qualcomm.com>
+References: <0000000000007545d00615188a03@google.com> <20240403180752.f95e1b77e033b5e03164c160@linux-foundation.org>
+ <CAJD7tkakCEg9zkwCrBr8GyObO7b9KOD6rUgyqniFN+YTCePd0A@mail.gmail.com> <CAOUHufZPLEmrh0x43k2ysqvwYwEotGk8Bw=fwyO9aLXXv0aM9Q@mail.gmail.com>
+In-Reply-To: <CAOUHufZPLEmrh0x43k2ysqvwYwEotGk8Bw=fwyO9aLXXv0aM9Q@mail.gmail.com>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Thu, 4 Apr 2024 21:47:34 -0700
+Message-ID: <CAJD7tkbMR1AdKz3GquHym1MGROgpMcjiubKQ2oOzmpObTHd9Tw@mail.gmail.com>
+Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in __mod_memcg_lruvec_state
+To: Yu Zhao <yuzhao@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, 
+	syzbot <syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com>, 
+	cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 04, 2024 at 06:25:48PM -0700, Bjorn Andersson wrote:
-> On Thu, Apr 04, 2024 at 02:58:29PM +0200, Greg Kroah-Hartman wrote:
-> > On Thu, Apr 04, 2024 at 10:07:27AM +0200, Krzysztof Kozlowski wrote:
-> > > On 04/04/2024 09:21, Johan Hovold wrote:
-> > > > On Thu, Apr 04, 2024 at 10:42:22AM +0530, Krishna Kurapati wrote:
-> > > >  
-> > > >> +static int dwc3_get_num_ports(struct dwc3 *dwc)
-> > > >> +{
-> > > >> +	void __iomem *base;
-> > > >> +	u8 major_revision;
-> > > >> +	u32 offset;
-> > > >> +	u32 val;
-> > > >> +
-> > > >> +	/*
-> > > >> +	 * Remap xHCI address space to access XHCI ext cap regs since it is
-> > > >> +	 * needed to get information on number of ports present.
-> > > >> +	 */
-> > > >> +	base = ioremap(dwc->xhci_resources[0].start,
-> > > >> +		       resource_size(&dwc->xhci_resources[0]));
-> > > >> +	if (!base)
-> > > >> +		return PTR_ERR(base);
-> > > > 
-> > > > This is obviously still broken. You need to update the return value as
-> > > > well.
-> > > > 
-> > > > Fix in v20.
-> > > 
-> > > If one patchset reaches 20 versions, I think it is time to stop and
-> > > really think from the beginning, why issues keep appearing and reviewers
-> > > are still not happy.
-> > > 
-> > > Maybe you did not perform extensive internal review, which you are
-> > > encouraged to by your own internal policies, AFAIR. Before posting next
-> > > version, please really get some internal review first.
-> > 
-> > Also get those internal reviewers to sign-off on the commits and have
-> > that show up when you post them next.  That way they are also
-> > responsible for this patchset, it's not fair that they are making you do
-> > all the work here :)
-> > 
-> 
-> I like this idea and I'm open to us changing our way of handling this.
-> 
-> But unless such internal review brings significant input to the
-> development I'd say a s-o-b would take the credit from the actual
-> author.
+On Thu, Apr 4, 2024 at 6:44=E2=80=AFPM Yu Zhao <yuzhao@google.com> wrote:
+>
+> On Thu, Apr 4, 2024 at 7:36=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
+> wrote:
+> >
+> > On Wed, Apr 3, 2024 at 6:08=E2=80=AFPM Andrew Morton <akpm@linux-founda=
+tion.org> wrote:
+> > >
+> > > On Tue, 02 Apr 2024 01:03:26 -0700 syzbot <syzbot+9319a4268a640e26b72=
+b@syzkaller.appspotmail.com> wrote:
+> > >
+> > > > Hello,
+> > > >
+> > > > syzbot found the following issue on:
+> > > >
+> > > > HEAD commit:    317c7bc0ef03 Merge tag 'mmc-v6.9-rc1' of git://git.=
+kernel...
+> > > > git tree:       upstream
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D15fd40c=
+5180000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Df64ec42=
+7e98bccd7
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D9319a4268=
+a640e26b72b
+> > > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils=
+ for Debian) 2.40
+> > > >
+> > > > Unfortunately, I don't have any reproducer for this issue yet.
+> > > >
+> > > > Downloadable assets:
+> > > > disk image (non-bootable): https://storage.googleapis.com/syzbot-as=
+sets/7bc7510fe41f/non_bootable_disk-317c7bc0.raw.xz
+> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/efab473d72c0/=
+vmlinux-317c7bc0.xz
+> > > > kernel image: https://storage.googleapis.com/syzbot-assets/5ba3f56d=
+362d/bzImage-317c7bc0.xz
+> > > >
+> > > > IMPORTANT: if you fix the issue, please add the following tag to th=
+e commit:
+> > > > Reported-by: syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com
+> > > >
+> > > > ------------[ cut here ]------------
+> > > > WARNING: CPU: 0 PID: 30105 at mm/memcontrol.c:865 __mod_memcg_lruve=
+c_state+0x3fa/0x550 mm/memcontrol.c:865
+> > > > Modules linked in:
+> > > > CPU: 0 PID: 30105 Comm: syz-executor.2 Not tainted 6.9.0-rc1-syzkal=
+ler-00178-g317c7bc0ef03 #0
+> > > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-deb=
+ian-1.16.2-1 04/01/2014
+> > > > RIP: 0010:__mod_memcg_lruvec_state+0x3fa/0x550 mm/memcontrol.c:865
+> > > > Code: 45 85 e4 75 1d 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 c=
+c cc cc cc b8 00 04 00 00 e9 80 fd ff ff 89 c6 e9 a0 fd ff ff 90 <0f> 0b 90=
+ e9 a7 fc ff ff 48 c7 c7 18 43 e1 8f e8 32 51 f8 ff e9 5e
+> > > > RSP: 0018:ffffc900034beef8 EFLAGS: 00010202
+> > > > RAX: 0000000000000292 RBX: 0000000000000001 RCX: 1ffffffff1fc2863
+> > > > RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff888024b92bc8
+> > > > RBP: ffff888024b92000 R08: 0000000000000005 R09: 0000000000000000
+> > > > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
+> > > > R13: ffff88801c326000 R14: 0000000000000001 R15: ffff888024b92000
+> > > > FS:  00007f0811bf96c0(0000) GS:ffff88806b000000(0000) knlGS:0000000=
+000000000
+> > > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > > > CR2: 000000000cfff1dd CR3: 000000003e4e2000 CR4: 0000000000350ef0
+> > > > DR0: 0000000000000031 DR1: 0000000000000000 DR2: 0000000000000000
+> > > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> > > > Call Trace:
+> > > >  <TASK>
+> > > >  __update_lru_size include/linux/mm_inline.h:47 [inline]
+> > > >  lru_gen_update_size include/linux/mm_inline.h:199 [inline]
+> > > >  lru_gen_add_folio+0x62d/0xe80 include/linux/mm_inline.h:262
+> > > >  lruvec_add_folio include/linux/mm_inline.h:323 [inline]
+> > > >  lru_add_fn+0x3fc/0xd80 mm/swap.c:215
+> > > >  folio_batch_move_lru+0x243/0x400 mm/swap.c:233
+> > >
+> > > Well it beats me.  I assume we failed to update for a new case.  I'll
+> > > toss this into -next to perhaps shed a bit of light.
+> > >
+> > > --- a/mm/memcontrol.c~__mod_memcg_lruvec_state-enhance-diagnostics
+> > > +++ a/mm/memcontrol.c
+> > > @@ -860,10 +860,12 @@ void __mod_memcg_lruvec_state(struct lru
+> > >                 case NR_ANON_THPS:
+> > >                 case NR_SHMEM_PMDMAPPED:
+> > >                 case NR_FILE_PMDMAPPED:
+> > > -                       WARN_ON_ONCE(!in_task());
+> > > +                       if (WARN_ON_ONCE(!in_task()))
+> > > +                               pr_warn("stat item index: %d\n", idx)=
+;
+> > >                         break;
+> > >                 default:
+> > > -                       VM_WARN_ON_IRQS_ENABLED();
+> > > +                       if (VM_WARN_ON_IRQS_ENABLED())
+> > > +                               pr_warn("stat item index: %d\n", idx)=
+;
+> >
+> > Line 865 from this commit should be this warning (i.e. warning because
+> > IRQs are enabled). This also makes sense because __update_lru_size()
+> > should not be updating any of the above stats.
+> >
+> > folio_batch_move_lru() in the above call stack should be acquiring the
+> > lock with IRQs disabled though, so I am not sure what's going on from
+> > a quick look.
+> >
+> > Adding Yu Zhao here.
+>
+> Probably an RT build where _irqsave doesn't disable IRQ?
 
-It does not do that at all.  It provides proof that someone else has
-reviewed it and agrees with it.  Think of it as a "path of blame" for
-when things go bad (i.e. there is a bug in the submission.)  Putting
-your name on it makes you take responsibility if that happens.
-
-> We've discussed a few times about carrying Reviewed-by et al from the
-> internal reviews, but as maintainer I dislike this because I'd have no
-> way to know if a r-b on vN means the patch was reviewed, or if it was
-> just "accidentally" carried from v(N-1).
-> But it might be worth this risk, is this something you think would be
-> appropriate?
-
-For some companies we REQUIRE this to happen due to low-quality
-submissions and waste of reviewer's time.  Based on the track record
-here for some of these patchsets, hopefully it doesn't become a
-requirement for this company as well :)
-
-thanks,
-
-greg k-h
+Yeah, that's possible. I don't have enough familiarity with RT to know
+for sure. Perhaps lruvec->lru_lock needs to be changed to a
+raw_spinlock_t? I am not sure if that's the correct course of action.
 
