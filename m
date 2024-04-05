@@ -1,241 +1,180 @@
-Return-Path: <linux-kernel+bounces-132722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E05D7899948
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:18:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF749899946
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:18:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FC871C20F76
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:18:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E31F7B21577
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:18:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 148C415F31D;
-	Fri,  5 Apr 2024 09:17:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kzJtCOip"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F18015FD1B;
-	Fri,  5 Apr 2024 09:17:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296C415FD05;
+	Fri,  5 Apr 2024 09:17:29 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C86315F31D
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712308653; cv=none; b=hm7ZAkaF2oUPiNBnQHblQfA6tUH07ksvE0+z3V2VaB0zhRhSAqdlmcSV//M4MhfkzJxC3Em9lzstB8pQulTdTg4uaz33pnLAxqxHCd9orGzNxGJ0PyBpE+1iIX8g4WFtjETp/x3dFnlkf102MIEScgsRBsmwdhSDP+KiKFyLmSQ=
+	t=1712308648; cv=none; b=YxCK92dgkSd2bk0c/BjpsC5/qth9UrBB+VKdSvs1fA+pZkfEaefHYQA4amPVWqbNo2qg8JksYqXRAeKrNPdxBuDSNCkqQrRakbT+i0j8Mh0DxNmiMiIMY6JvGD26Oh2Lhxlc+7wG9V/IBiTkjdzS/AwCXdgX/FIQn4pGcjFriPc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712308653; c=relaxed/simple;
-	bh=arne33H5//u9DO+V442IJ7DrQF6kabb/of8ByX5eni0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=qPOghpStzjlat6loyHGvcvM3f0uO8PoX7Z90/0M3FmehnJu+NMEMoo1ULP6kb8yRqYmwR3vyg7sFJf2WCYP5je6w/9YZyt/z0chsM6/fdTPlsYtNpGp74TTb4DsH/HzXyPSSqXZFcyDUuYuxiFo4d52oVZHpLUzrlYv5CZr77dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kzJtCOip; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41551639550so13904365e9.2;
-        Fri, 05 Apr 2024 02:17:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712308649; x=1712913449; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LX/ma26TDvYVdpCIWg6iUhgi/+t6jX0tkNjGdFErDfk=;
-        b=kzJtCOipc0PGWTAIzhWCt42nTXcjST16Q0DJqovup6Kl2OipUZ4lCEas0BGjcX51J9
-         JVRUrbL6Qpyj7tMZWtmXOUgP9oFqQC116k116DECpseJK3hBU8AGmqf83gZePNFZEAyp
-         FIajbu9wkXBLPurCvFNgyMfHRs90gQE15FPN6aAnn44AFDF+YQB09GGtrI9ygg7zTxLZ
-         FaGJE695m22z0/o+HfHdYGWVepN+selmKRrgA6sCyH8xLSOZ1eYyow4aXUC9PRjth2Rx
-         Bu836SqoX5pjs4GLVxDZwW0Pp1lPWrBpxfhFoVrhH36qEgT56lQfTE7svPwkTRmdHV+Z
-         UoLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712308649; x=1712913449;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LX/ma26TDvYVdpCIWg6iUhgi/+t6jX0tkNjGdFErDfk=;
-        b=WxG6H3i/Kyxx1dqweEV97VTZXatzVNm7XaOtSgEe9GIhovxVT0WSWcu09P2YVcHaRJ
-         C3uRz5UsCtVVjfMWdjzhwHXUFNN9r5LTRBCTHPbMZ2OcWMsb3NaNMMuHARe00KWHaZKQ
-         8XxgcOTrHmlt+3TcfF+2GhKYNtscNgC/oh2lslGGBihGdXji3HikPZZDChomCnsx8SrI
-         HhJHk1mtF/aPkjtarl6CriqKuD5GfboNC5A0m3C9e1UwzgyTGfSpBr9pJeNcgQrpSZY2
-         UUjQAP1enyQAxs9XY3E5uiWU4gGcxcRHBcX5gnuFMwoIBv3szXm6pClSyWQxctGAWpQ3
-         E7Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCUEIlqKh0a50/dMExoO3GYBRsrA4OTJvKBAl8bcBzx70QhmC/0pX39m1n6QmPhh0VtOwQK142riwmm2GSSGKF5sXW613IbiaVAVCFkUKFpMIKtglhvBC0Mu7mdMgEuhoChP
-X-Gm-Message-State: AOJu0YxKSUmYKDRl8/LfGcjSV/z7fQGofcgFMKWl2oX4QVj68oIJMvJ2
-	2BtQ7QDpXE3jMVgq2WOCqhT/qfatjlz2UnIwTgn1qrugcKFk8LimuHD2fDl9KlyPaeyx
-X-Google-Smtp-Source: AGHT+IGgfHTLTIsVgQ3B5HauM2cnUDg4HorY6H22kp7XWlCO7vVHucxahGea+Fkf1Sjbk1Up4r//pg==
-X-Received: by 2002:a05:600c:4f41:b0:416:1df0:7c06 with SMTP id m1-20020a05600c4f4100b004161df07c06mr933170wmq.6.1712308648855;
-        Fri, 05 Apr 2024 02:17:28 -0700 (PDT)
-Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
-        by smtp.gmail.com with ESMTPSA id v13-20020a05600c444d00b00416306c17basm1017286wmn.14.2024.04.05.02.17.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 05 Apr 2024 02:17:28 -0700 (PDT)
-From: Puranjay Mohan <puranjay12@gmail.com>
-To: Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Zi Shen Lim <zlim.lnx@gmail.com>,
-	Xu Kuohai <xukuohai@huawei.com>,
-	Florent Revest <revest@chromium.org>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Cc: puranjay12@gmail.com
-Subject: [PATCH bpf-next] arm64, bpf: add internal-only MOV instruction to resolve per-CPU addrs
-Date: Fri,  5 Apr 2024 09:17:07 +0000
-Message-Id: <20240405091707.66675-1-puranjay12@gmail.com>
-X-Mailer: git-send-email 2.40.1
+	s=arc-20240116; t=1712308648; c=relaxed/simple;
+	bh=jRuRyU8skw5nXFDFIhbz+jtOVhngSn/6xq8P5ODa4I0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=nD7BS/5Ja3Wv3YT7XwVJ6fLYINstd3e0n1+FIuKnSIAjqC+TG59X8DGkMFLNd6xyBWBwaoKixsZKnPR/DYyK82QEwzZo3+/Ur0scWZC7Fw7fGpLE41J4JX44pEtoXnL/ci8JLLyLFwEWg6pGIFvDO8N1jGazL+LY97KZOYb6fnw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F70FFEC;
+	Fri,  5 Apr 2024 02:17:56 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 34D063F64C;
+	Fri,  5 Apr 2024 02:17:24 -0700 (PDT)
+Message-ID: <3bf726af-e519-4cc2-a692-19a0cf99fca7@arm.com>
+Date: Fri, 5 Apr 2024 11:17:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/3] sched/fair: allow disabling sched_balance_newidle
+ with sched_relax_domain_level
+Content-Language: en-US
+To: Vitalii Bursov <vitaly@bursov.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ linux-kernel@vger.kernel.org
+References: <cover.1712147341.git.vitaly@bursov.com>
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <cover.1712147341.git.vitaly@bursov.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Support an instruction for resolving absolute addresses of per-CPU
-data from their per-CPU offsets. This instruction is internal-only and
-users are not allowed to use them directly. They will only be used for
-internal inlining optimizations for now between BPF verifier and BPF
-JITs.
+On 03/04/2024 15:28, Vitalii Bursov wrote:
+> Changes in v3:
+> - Remove levels table change from the documentation patch
+> - Link to v2: https://lore.kernel.org/lkml/cover.1711900396.git.vitaly@bursov.com/
+> Changes in v2:
+> - Split debug.c change in a separate commit and move new "level"
+> after "groups_flags"
+> - Added "Fixes" tag and updated commit message
+> - Update domain levels cgroup-v1/cpusets.rst documentation
+> - Link to v1: https://lore.kernel.org/all/cover.1711584739.git.vitaly@bursov.com/
+> 
+> During the upgrade from Linux 5.4 we found a small (around 3%) 
+> performance regression which was tracked to commit 
+> c5b0a7eefc70150caf23e37bc9d639c68c87a097
+> 
+>     sched/fair: Remove sysctl_sched_migration_cost condition
+> 
+>     With a default value of 500us, sysctl_sched_migration_cost is
+>     significanlty higher than the cost of load_balance. Remove the
+>     condition and rely on the sd->max_newidle_lb_cost to abort
+>     newidle_balance.
+> 
+> Looks like "newidle" balancing is beneficial for a lot of workloads, 
+> just not for this specific one. The workload is video encoding, there 
+> are 100s-1000s of threads, some are synchronized with mutexes and 
+> conditional variables. The process aims to have a portion of CPU idle, 
+> so no CPU cores are 100% busy. Perhaps, the performance impact we see 
+> comes from additional processing in the scheduler and additional cost 
+> like more cache misses, and not from an incorrect balancing. See
+> perf output below.
+> 
+> My understanding is that "sched_relax_domain_level" cgroup parameter 
+> should control if sched_balance_newidle() is called and what's the scope
+> of the balancing is, but it doesn't fully work for this case.
+> 
+> cpusets.rst documentation:
+>> The 'cpuset.sched_relax_domain_level' file allows you to request changing
+>> this searching range as you like.  This file takes int value which
+>> indicates size of searching range in levels ideally as follows,
+>> otherwise initial value -1 that indicates the cpuset has no request.
+>>  
+>> ====== ===========================================================
+>>   -1   no request. use system default or follow request of others.
+>>    0   no search.
+>>    1   search siblings (hyperthreads in a core).
+>>    2   search cores in a package.
+>>    3   search cpus in a node [= system wide on non-NUMA system]
+>>    4   search nodes in a chunk of node [on NUMA system]
+>>    5   search system wide [on NUMA system]
+>> ====== ===========================================================
 
-Since commit 7158627686f0 ("arm64: percpu: implement optimised pcpu
-access using tpidr_el1"), the per-cpu offset for the CPU is stored in
-the tpidr_el1/2 register of that CPU.
+IMHO, this list misses: 
 
-To support this BPF instruction in the ARM64 JIT, the following ARM64
-instructions are emitted:
+      2   search cores in a cluster.
 
-mov dst, src		// Move src to dst, if src != dst
-mrs tmp, tpidr_el1/2	// Move per-cpu offset of the current cpu in tmp.
-add dst, dst, tmp	// Add the per cpu offset to the dst.
+Related to CONFIG_SCHED_CLUSTER.
+Like you mentioned, if CONFIG_SCHED_CLUSTER is not configured MC becomes
+level=1.
 
-If CONFIG_SMP is not defined, then nothing is emitted if src == dst, and
-mov dst, src is emitted if dst != src.
+I ran this on an Arm64 TaiShan 2280 v2, Kunpeng 920 - 4826 server:
 
-To measure the performance improvement provided by this change, the
-benchmark in [1] was used:
+$ numactl -H | tail -6
+node distances:
+node   0   1   2   3 
+  0:  10  12  20  22 
+  1:  12  10  22  24 
+  2:  20  22  10  12 
+  3:  22  24  12  10
 
-Before:
-glob-arr-inc   :   23.597 ± 0.012M/s
-arr-inc        :   23.173 ± 0.019M/s
-hash-inc       :   12.186 ± 0.028M/s
+$ head -8 /proc/schedstat | awk '{ print $1 " " $2 }' | tail -5
+domain0 00000000,00000000,0000000f
+domain1 00000000,00000000,00ffffff
+domain2 00000000,0000ffff,ffffffff
+domain3 000000ff,ffffffff,ffffffff
+domain4 ffffffff,ffffffff,ffffffff
 
-After:
-glob-arr-inc   :   23.819 ± 0.034M/s
-arr-inc        :   23.285 ± 0.017M/s
-hash-inc       :   12.419 ± 0.011M/s
+with additional debug:
 
-[1] https://github.com/anakryiko/linux/commit/8dec900975ef
+[   18.196484] build_sched_domain() cpu=0 name=SMT level=0
+[   18.202308] build_sched_domain() cpu=0 name=CLS level=1
+[   18.208188] build_sched_domain() cpu=0 name=MC level=2
+[   18.222550] build_sched_domain() cpu=0 name=PKG level=3
+[   18.228371] build_sched_domain() cpu=0 name=NODE level=4
+[   18.234515] build_sched_domain() cpu=0 name=NUMA level=5
+[   18.246400] build_sched_domain() cpu=0 name=NUMA level=6
+[   18.258841] build_sched_domain() cpu=0 name=NUMA level=7
 
-Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
----
- arch/arm64/include/asm/insn.h |  7 +++++++
- arch/arm64/lib/insn.c         | 11 +++++++++++
- arch/arm64/net/bpf_jit.h      |  6 ++++++
- arch/arm64/net/bpf_jit_comp.c | 16 ++++++++++++++++
- 4 files changed, 40 insertions(+)
+/* search cores in a cluster */
+# echo 2 > /sys/fs/cgroup/cpuset/cpuset.sched_relax_domain_level
 
-diff --git a/arch/arm64/include/asm/insn.h b/arch/arm64/include/asm/insn.h
-index db1aeacd4cd9..d16d68550c22 100644
---- a/arch/arm64/include/asm/insn.h
-+++ b/arch/arm64/include/asm/insn.h
-@@ -135,6 +135,11 @@ enum aarch64_insn_special_register {
- 	AARCH64_INSN_SPCLREG_SP_EL2	= 0xF210
- };
+# grep . /sys/kernel/debug/sched/domains/cpu0/*/{name,flags,level}
+/sys/kernel/debug/sched/domains/cpu0/domain0/name:CLS
+/sys/kernel/debug/sched/domains/cpu0/domain1/name:MC
+/sys/kernel/debug/sched/domains/cpu0/domain2/name:NUMA
+/sys/kernel/debug/sched/domains/cpu0/domain3/name:NUMA
+/sys/kernel/debug/sched/domains/cpu0/domain4/name:NUMA
+/sys/kernel/debug/sched/domains/cpu0/domain0/flags:SD_BALANCE_NEWIDLE SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_CLUSTER SD_SHARE_LLC SD_PREFER_SIBLING 
+/sys/kernel/debug/sched/domains/cpu0/domain1/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SHARE_LLC SD_PREFER_SIBLING 
+/sys/kernel/debug/sched/domains/cpu0/domain2/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA 
+/sys/kernel/debug/sched/domains/cpu0/domain3/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA 
+/sys/kernel/debug/sched/domains/cpu0/domain4/flags:SD_BALANCE_EXEC SD_BALANCE_FORK SD_WAKE_AFFINE SD_SERIALIZE SD_OVERLAP SD_NUMA 
+/sys/kernel/debug/sched/domains/cpu0/domain0/level:1
+/sys/kernel/debug/sched/domains/cpu0/domain1/level:2
+/sys/kernel/debug/sched/domains/cpu0/domain2/level:5
+/sys/kernel/debug/sched/domains/cpu0/domain3/level:6
+/sys/kernel/debug/sched/domains/cpu0/domain4/level:7
+
+LGTM.
+
+Tested-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
  
-+enum aarch64_insn_system_register {
-+	AARCH64_INSN_SYSREG_TPIDR_EL1	= 0xC684,
-+	AARCH64_INSN_SYSREG_TPIDR_EL2	= 0xE682,
-+};
-+
- enum aarch64_insn_variant {
- 	AARCH64_INSN_VARIANT_32BIT,
- 	AARCH64_INSN_VARIANT_64BIT
-@@ -686,6 +691,8 @@ u32 aarch64_insn_gen_cas(enum aarch64_insn_register result,
- }
- #endif
- u32 aarch64_insn_gen_dmb(enum aarch64_insn_mb_type type);
-+u32 aarch64_insn_gen_mrs(enum aarch64_insn_register result,
-+			 enum aarch64_insn_system_register sysreg);
- 
- s32 aarch64_get_branch_offset(u32 insn);
- u32 aarch64_set_branch_offset(u32 insn, s32 offset);
-diff --git a/arch/arm64/lib/insn.c b/arch/arm64/lib/insn.c
-index a635ab83fee3..b008a9b46a7f 100644
---- a/arch/arm64/lib/insn.c
-+++ b/arch/arm64/lib/insn.c
-@@ -1515,3 +1515,14 @@ u32 aarch64_insn_gen_dmb(enum aarch64_insn_mb_type type)
- 
- 	return insn;
- }
-+
-+u32 aarch64_insn_gen_mrs(enum aarch64_insn_register result,
-+			 enum aarch64_insn_system_register sysreg)
-+{
-+	u32 insn = aarch64_insn_get_mrs_value();
-+
-+	insn &= ~GENMASK(19, 0);
-+	insn |= sysreg << 5;
-+	return aarch64_insn_encode_register(AARCH64_INSN_REGTYPE_RT,
-+					    insn, result);
-+}
-diff --git a/arch/arm64/net/bpf_jit.h b/arch/arm64/net/bpf_jit.h
-index 23b1b34db088..b627ef7188c7 100644
---- a/arch/arm64/net/bpf_jit.h
-+++ b/arch/arm64/net/bpf_jit.h
-@@ -297,4 +297,10 @@
- #define A64_ADR(Rd, offset) \
- 	aarch64_insn_gen_adr(0, offset, Rd, AARCH64_INSN_ADR_TYPE_ADR)
- 
-+/* MRS */
-+#define A64_MRS_TPIDR_EL1(Rt) \
-+	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL1)
-+#define A64_MRS_TPIDR_EL2(Rt) \
-+	aarch64_insn_gen_mrs(Rt, AARCH64_INSN_SYSREG_TPIDR_EL2)
-+
- #endif /* _BPF_JIT_H */
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 76b91f36c729..e9ad9f257a18 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -877,6 +877,17 @@ static int build_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 			emit(A64_ORR(1, tmp, dst, tmp), ctx);
- 			emit(A64_MOV(1, dst, tmp), ctx);
- 			break;
-+		} else if (insn_is_mov_percpu_addr(insn)) {
-+			if (dst != src)
-+				emit(A64_MOV(1, dst, src), ctx);
-+#ifdef CONFIG_SMP
-+			if (cpus_have_cap(ARM64_HAS_VIRT_HOST_EXTN))
-+				emit(A64_MRS_TPIDR_EL2(tmp), ctx);
-+			else
-+				emit(A64_MRS_TPIDR_EL1(tmp), ctx);
-+			emit(A64_ADD(1, dst, dst, tmp), ctx);
-+#endif
-+			break;
- 		}
- 		switch (insn->off) {
- 		case 0:
-@@ -2527,6 +2538,11 @@ bool bpf_jit_supports_arena(void)
- 	return true;
- }
- 
-+bool bpf_jit_supports_percpu_insn(void)
-+{
-+	return true;
-+}
-+
- void bpf_jit_free(struct bpf_prog *prog)
- {
- 	if (prog->jited) {
--- 
-2.40.1
+> Setting cpuset.sched_relax_domain_level to 0 works as 1.
+> 
+> On a dual-CPU server, domains and levels are as follows:
+>   domain 0: level 0, SMT
+>   domain 1: level 2, MC
 
+This is with CONFIG_SCHED_CLUSTER=y ?
+
+[...]
 
