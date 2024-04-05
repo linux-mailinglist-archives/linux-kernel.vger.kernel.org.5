@@ -1,265 +1,163 @@
-Return-Path: <linux-kernel+bounces-132888-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132889-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28052899B97
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:06:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AE636899B9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:08:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 731A0B2368E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:06:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4A4A5B240D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:08:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D68716C43F;
-	Fri,  5 Apr 2024 11:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9456B16C42D;
+	Fri,  5 Apr 2024 11:07:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UE+Va/cP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VK2/kpTw"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42BFF16C42D;
-	Fri,  5 Apr 2024 11:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B85418659;
+	Fri,  5 Apr 2024 11:07:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712315166; cv=none; b=qNuYH98u7x3jePX18psmaaJQM3y+oQZ89ZYDkhiuz9sH8J6RMe9daOaRVpfO7f54607gd8b92rmCVy9Zej0Iey52e4sKz1I97wyNxwOiJRWq2E5GAR52mAoqMOK4ah60bVkryBla96Y1ws13SRRKDWFVjbafJRwX1nn8C8cwtOg=
+	t=1712315272; cv=none; b=JCc8eiP2fiKK1py8LyqXKrUa5ZB5CeqO4zov+beRInZzjXJQBgQlkj+HbH2bxMD+hzcwXsLo9ZkH8zg4HmwTVPRMLmez6/SwtY/4vXFeHEcvEwr62CJgXEzoOthY2oDX0Sr7EbxG37WuZMZqRxrVhV05HNWBwa9DtDhLRzhC7SY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712315166; c=relaxed/simple;
-	bh=S8tJp9tlrFrniCs2F68u2zvpKyZISH6tFt+bDbVN8hU=;
+	s=arc-20240116; t=1712315272; c=relaxed/simple;
+	bh=87fmuLbik3W4Ac3ZqTmrh4k5PYq0/NphQip5MWUxITw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PnqraPhLCXAT93RDYnbskfaRh4bfY8EDH1RAfur6dqMVuj8H9JYsjMhXPwbBgbQ29Rd15NCg7TkNffXk7ZwlvKOWeGKAS0E/fSwuDpLYwcvk5hIP6b9eGiFbKxQLn3cdyJzSgkLhQNjPr5z9/ZuzSwoAgS7E/onVMuKJ8gnWk9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UE+Va/cP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85C53C43390;
-	Fri,  5 Apr 2024 11:06:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712315165;
-	bh=S8tJp9tlrFrniCs2F68u2zvpKyZISH6tFt+bDbVN8hU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UE+Va/cPmg/8gSlj/HbF6tCZHY5b5oYJ8nlvAqXk7stNJeGHPY/GGbQsRVDXOqSgm
-	 cM2/tWVi/BrUwO85C5B5SaPfPqiayXkHiEzVy0iB6rWBmV7lGiFPfDorJ0Lu+ig+6y
-	 A62+ETPUXMCqjDkDVE6dnXj839ESQ3DRA/xBFkrG19nd9mUtcxj1uMU/Z+f920FJwh
-	 JR90VgC4W7VkOQqt3MuH+aNFRTdz9vERhRN1WoctQ6SqH++Kp9Ge2oldQYrJpGI3eh
-	 op0zs0pMcs0ok2k/zIQYa6Y74gEb2Gug+yrflyJelCzzwZXV4GOZ0nnS+Rzgs9sa5D
-	 +1uW+re1V0p8Q==
-Date: Fri, 5 Apr 2024 13:05:59 +0200
-From: Christian Brauner <brauner@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Kemeng Shi <shikemeng@huaweicloud.com>, gregkh@linuxfoundation.org, 
-	konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-nilfs@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org, 
-	viro@zeniv.linux.org.uk
-Subject: Re: [syzbot] [nilfs?] KASAN: slab-out-of-bounds Read in wb_writeback
-Message-ID: <20240405-heilbad-eisbrecher-cd0cbc27f36f@brauner>
-References: <000000000000fd0f2a061506cc93@google.com>
- <00000000000003b8c406151e0fd1@google.com>
- <20240403094717.zex45tc2kpkfelny@quack3>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PgazBHl7MqLli3As6Tj9NyW0bK+/npeYfxenoD52ZK2VEnqdWNMFo3KvMQ81B/ujjc2nnJYjDmllNbEZYPFhIdAMrAXMNVb5EYgbO0I+LtKxiAj78QpcalPtU3+aZrvLUTP5l126fO/eAHJfDzv2K1OVh6ckDLmO1HL64niPNZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VK2/kpTw; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-566e869f631so2106298a12.0;
+        Fri, 05 Apr 2024 04:07:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712315269; x=1712920069; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=C9xHgLw53zJpmruDx7tv4qUMo9+hzZpsIUuIr1l11KM=;
+        b=VK2/kpTwGbuAoa8/qYPTFDhfXX7D9eXhiWT/c0JymtNfLAGckdFxOTAd8qf99Fy5/X
+         pTXLmoohWMT0T8e43NaRxi4TA+KVJNzehCynFTS1vrnhyKWy8/W9dVxStbW44Q+B+Hz9
+         +hFUmYPZ4jkI6uauOFSHvQNJ8SmfmT2u+/CJug1tGl2FOeCY/TSthcqcra8PNIp/3UhK
+         ThdNpBvIkBgNd/QM51NeCO9sShey9y587RudBkhnkKDFXa11NVcqcuzFHRGDvUaTvGgo
+         yc9RunG4CHf2KgW0K/MHvg1L6aNlXzJ/bFHa3Dxw86lBeNqvLZ2Aese3JbblZtTCoEEn
+         E3pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712315269; x=1712920069;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C9xHgLw53zJpmruDx7tv4qUMo9+hzZpsIUuIr1l11KM=;
+        b=w58SOOoFAOV3Raflmc0zkHTtWCG1uA88oP9y6WVB76ZJm6cFJsJdMjFxF84zlq741D
+         YvDxPrxtFsYTv6tUezgZeNJG4SuOwwAZIfrvwSl3wBuRiTNUJBZ9B4/7VsweOKpwyOxt
+         YtdJmfsS1VfNpjxpIm9ahMO0WcG7VesCouB6fW7q+87h3zlbkzsPs7Mi8+9IZuNBCSd6
+         3jV6HsflhTX1qgpPyYeVUwAhOVk9eWR3edZ4bHdikucz1OKSb8G28lHg4flK/Y3Q7qg9
+         cr83dSgj0VxHjj5CrL7gt0DuUFg355g5pEQGipoauj5Ab+jNKrI+1fTgjFJZOLRDyNpO
+         FtyQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVqFsUAJu5RbK+ATAAEZgoPNeHZ7RrCdQiO6NPXPmGQqDiAg77YpOtpi4P2cY2L099FkiuNs7FsJ6bftuGxxGI2PDbuVkARp84cOlK7fy60o6rJY0FBhva51pL0FGSoyAq6OBrO
+X-Gm-Message-State: AOJu0YycssYy9ZnUUp+FbOEXz9xtGzO6Ig3A+dCoAZnrRjBIGJFFAtrc
+	132VdbTehnlrwe+pWjAxPhHNv8M0CAgUvtvEAeB3FaJ+0gkHY8rz
+X-Google-Smtp-Source: AGHT+IGG1+9Mqc13eWk/3SacISlrxycbkz+FTzpktzUPXrv/hdfTUb1d5xcoorCxuKaN2KMIYlqb4Q==
+X-Received: by 2002:a50:9316:0:b0:56c:4db:33f7 with SMTP id m22-20020a509316000000b0056c04db33f7mr829730eda.10.1712315269128;
+        Fri, 05 Apr 2024 04:07:49 -0700 (PDT)
+Received: from skbuf ([2a02:2f04:d700:2000::b2c])
+        by smtp.gmail.com with ESMTPSA id p15-20020a05640243cf00b0056c2d0052c0sm666532edc.60.2024.04.05.04.07.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 04:07:48 -0700 (PDT)
+Date: Fri, 5 Apr 2024 14:07:45 +0300
+From: Vladimir Oltean <olteanv@gmail.com>
+To: Joseph Huang <joseph.huang.2024@gmail.com>
+Cc: Joseph Huang <Joseph.Huang@garmin.com>, netdev@vger.kernel.org,
+	Andrew Lunn <andrew@lunn.ch>,
+	Florian Fainelli <f.fainelli@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Roopa Prabhu <roopa@nvidia.com>,
+	Nikolay Aleksandrov <razor@blackwall.org>,
+	Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>,
+	linux-kernel@vger.kernel.org, bridge@lists.linux.dev
+Subject: Re: [PATCH RFC net-next 07/10] net: dsa: mv88e6xxx: Track bridge mdb
+ objects
+Message-ID: <20240405110745.si4gc567jt5gwpbr@skbuf>
+References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
+ <20240402001137.2980589-8-Joseph.Huang@garmin.com>
+ <20240402122343.a7o5narxsctrkaoo@skbuf>
+ <b5f79571-b4a8-4f21-8dc8-e1aa11056a5d@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240403094717.zex45tc2kpkfelny@quack3>
+In-Reply-To: <b5f79571-b4a8-4f21-8dc8-e1aa11056a5d@gmail.com>
 
-On Wed, Apr 03, 2024 at 11:47:17AM +0200, Jan Kara wrote:
-> On Tue 02-04-24 07:38:25, syzbot wrote:
-> > syzbot has found a reproducer for the following issue on:
+On Thu, Apr 04, 2024 at 04:43:38PM -0400, Joseph Huang wrote:
+> Hi Vladimir,
+> 
+> On 4/2/2024 8:23 AM, Vladimir Oltean wrote:
+> > Can you comment on the feasibility/infeasibility of Tobias' proposal of:
+> > "The bridge could just provide some MDB iterator to save us from having
+> > to cache all the configured groups."?
+> > https://lore.kernel.org/netdev/87sg31n04a.fsf@waldekranz.com/
 > > 
-> > HEAD commit:    c0b832517f62 Add linux-next specific files for 20240402
-> > git tree:       linux-next
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=14af7dd9180000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=7b219b86935220db6dd8
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1729f003180000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17fa4341180000
+> > What is done here will have to be scaled to many drivers - potentially
+> > all existing DSA ones, as far as I'm aware.
 > > 
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/0d36ec76edc7/disk-c0b83251.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/6f9bb4e37dd0/vmlinux-c0b83251.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/2349287b14b7/bzImage-c0b83251.xz
-> > mounted in repro: https://storage.googleapis.com/syzbot-assets/9760c52a227c/mount_0.gz
-> > 
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+7b219b86935220db6dd8@syzkaller.appspotmail.com
-> > 
-> > ==================================================================
-> > BUG: KASAN: slab-out-of-bounds in __lock_acquire+0x78/0x1fd0 kernel/locking/lockdep.c:5005
-> > Read of size 8 at addr ffff888020485fa8 by task kworker/u8:2/35
 > 
-> Looks like the writeback cleanups are causing some use-after-free issues.
-> The code KASAN is complaining about is:
-> 
-> 		/*
-> 		 * Nothing written. Wait for some inode to
-> 		 * become available for writeback. Otherwise
-> 		 * we'll just busyloop.
-> 		 */
-> 		trace_writeback_wait(wb, work);
-> 		inode = wb_inode(wb->b_more_io.prev);
-> >>>>>		spin_lock(&inode->i_lock); <<<<<<
-> 		spin_unlock(&wb->list_lock);
-> 		/* This function drops i_lock... */
-> 		inode_sleep_on_writeback(inode);
-> 
-> in wb_writeback(). Now looking at the changes indeed the commit
-> 167d6693deb ("fs/writeback: bail out if there is no more inodes for IO and
-> queued once") is buggy because it will result in trying to fetch 'inode'
-> from empty b_more_io list and thus we'll corrupt memory. I think instead of
-> modifying the condition:
-> 
-> 		if (list_empty(&wb->b_more_io)) {
-> 
-> we should do:
-> 
-> -		if (progress) {
-> +		if (progress || !queued) {
->                         spin_unlock(&wb->list_lock);
->                         continue;
->                 }
-> 
-> Kemeng?
+> I thought about implementing an MDB iterator as suggested by Tobias, but I'm
+> a bit concerned about the coherence of these MDB objects. In theory, when
+> the device driver is trying to act on an event, the source of the trigger
+> may have changed its state in the bridge already.
 
-Fwiw, I observed this on xfstest too the last few days and tracked it
-down to this series. Here's the splat I got in case it helps:
+Yes, this is the result of SWITCHDEV_F_DEFER, used by both
+SWITCHDEV_ATTR_ID_PORT_MROUTER and SWITCHDEV_OBJ_ID_PORT_MDB.
 
-Apr 05 00:33:06 localhost kernel: ==================================================================
-Apr 05 00:33:06 localhost kernel: BUG: KASAN: slab-out-of-bounds in __lock_acquire.isra.0+0x1075/0x1280
-Apr 05 00:33:06 localhost kernel: Read of size 8 at addr ffff88810ed40f48 by task kworker/u128:2/305560
-Apr 05 00:33:06 localhost kernel:
-Apr 05 00:33:06 localhost kernel: CPU: 5 PID: 305560 Comm: kworker/u128:2 Not tainted 99.9.0-rc2-gdebeafad51e2 #262
-Apr 05 00:33:06 localhost kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009)/Incus, BIOS unknown 2/2/2022
-Apr 05 00:33:06 localhost kernel: Workqueue: writeback wb_workfn (flush-259:0)
-Apr 05 00:33:06 localhost kernel: Call Trace:
-Apr 05 00:33:06 localhost kernel:  <TASK>
-Apr 05 00:33:06 localhost kernel:  dump_stack_lvl+0x5a/0x90
-Apr 05 00:33:06 localhost kernel:  print_report+0xce/0x650
-Apr 05 00:33:06 localhost kernel:  ? __virt_addr_valid+0x217/0x320
-Apr 05 00:33:06 localhost kernel:  kasan_report+0xd7/0x110
-Apr 05 00:33:06 localhost kernel:  ? __lock_acquire.isra.0+0x1075/0x1280
-Apr 05 00:33:06 localhost kernel:  ? __lock_acquire.isra.0+0x1075/0x1280
-Apr 05 00:33:06 localhost kernel:  __lock_acquire.isra.0+0x1075/0x1280
-Apr 05 00:33:06 localhost kernel:  lock_acquire+0x136/0x330
-Apr 05 00:33:06 localhost kernel:  ? wb_writeback+0x255/0x870
-Apr 05 00:33:06 localhost kernel:  _raw_spin_lock+0x33/0x40
-Apr 05 00:33:06 localhost kernel:  ? wb_writeback+0x255/0x870
-Apr 05 00:33:06 localhost kernel:  wb_writeback+0x255/0x870
-Apr 05 00:33:06 localhost kernel:  ? __pfx_wb_writeback+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  ? __pfx_lock_release+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  wb_workfn+0x221/0xc80
-Apr 05 00:33:06 localhost kernel:  ? __pfx_wb_workfn+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  ? lock_acquire+0x136/0x330
-Apr 05 00:33:06 localhost kernel:  process_one_work+0x82d/0x1790
-Apr 05 00:33:06 localhost kernel:  ? __pfx_process_one_work+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  ? assign_work+0x16c/0x240
-Apr 05 00:33:06 localhost kernel:  worker_thread+0x724/0x1300
-Apr 05 00:33:06 localhost kernel:  ? __kthread_parkme+0xba/0x1f0
-Apr 05 00:33:06 localhost kernel:  ? __pfx_worker_thread+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  kthread+0x2ed/0x3d0
-Apr 05 00:33:06 localhost kernel:  ? __pfx_kthread+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  ret_from_fork+0x31/0x70
-Apr 05 00:33:06 localhost kernel:  ? __pfx_kthread+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  ret_from_fork_asm+0x1a/0x30
-Apr 05 00:33:06 localhost kernel:  </TASK>
-Apr 05 00:33:06 localhost kernel:
-Apr 05 00:33:06 localhost kernel: Allocated by task 1:
-Apr 05 00:33:06 localhost kernel:  kasan_save_stack+0x33/0x60
-Apr 05 00:33:06 localhost kernel:  kasan_save_track+0x14/0x30
-Apr 05 00:33:06 localhost kernel:  __kasan_kmalloc+0xaa/0xb0
-Apr 05 00:33:06 localhost kernel:  psi_cgroup_alloc+0x57/0x2b0
-Apr 05 00:33:06 localhost kernel:  cgroup_mkdir+0x4f8/0xfb0
-Apr 05 00:33:06 localhost kernel:  kernfs_iop_mkdir+0x133/0x1c0
-Apr 05 00:33:06 localhost kernel:  vfs_mkdir+0x3b9/0x610
-Apr 05 00:33:06 localhost kernel:  do_mkdirat+0x27e/0x300
-Apr 05 00:33:06 localhost kernel:  __x64_sys_mkdir+0x65/0x80
-Apr 05 00:33:06 localhost kernel:  do_syscall_64+0x64/0x190
-Apr 05 00:33:06 localhost kernel:  entry_SYSCALL_64_after_hwframe+0x71/0x79
-Apr 05 00:33:06 localhost kernel:
-Apr 05 00:33:06 localhost kernel: Last potentially related work creation:
-Apr 05 00:33:06 localhost kernel:  kasan_save_stack+0x33/0x60
-Apr 05 00:33:06 localhost kernel:  __kasan_record_aux_stack+0xad/0xc0
-Apr 05 00:33:06 localhost kernel:  insert_work+0x32/0x1f0
-Apr 05 00:33:06 localhost kernel:  __queue_work+0x5cb/0xcb0
-Apr 05 00:33:06 localhost kernel:  call_timer_fn+0x16d/0x490
-Apr 05 00:33:06 localhost kernel:  __run_timers+0x488/0x980
-Apr 05 00:33:06 localhost kernel:  run_timer_base+0xfb/0x170
-Apr 05 00:33:06 localhost kernel:  run_timer_softirq+0x1a/0x30
-Apr 05 00:33:06 localhost kernel:  __do_softirq+0x26a/0x7d2
-Apr 05 00:33:06 localhost kernel:
-Apr 05 00:33:06 localhost kernel: Second to last potentially related work creation:
-Apr 05 00:33:06 localhost kernel:  kasan_save_stack+0x33/0x60
-Apr 05 00:33:06 localhost kernel:  __kasan_record_aux_stack+0xad/0xc0
-Apr 05 00:33:06 localhost kernel:  insert_work+0x32/0x1f0
-Apr 05 00:33:06 localhost kernel:  __queue_work+0x5cb/0xcb0
-Apr 05 00:33:06 localhost kernel:  call_timer_fn+0x16d/0x490
-Apr 05 00:33:06 localhost kernel:  __run_timers+0x488/0x980
-Apr 05 00:33:06 localhost kernel:  timer_expire_remote+0xe6/0x150
-Apr 05 00:33:06 localhost kernel:  tmigr_handle_remote+0x6e2/0xe00
-Apr 05 00:33:06 localhost kernel:  __do_softirq+0x26a/0x7d2
-Apr 05 00:33:06 localhost kernel:
-Apr 05 00:33:06 localhost kernel: The buggy address belongs to the object at ffff88810ed40000
-                                   which belongs to the cache kmalloc-2k of size 2048
-Apr 05 00:33:06 localhost kernel: The buggy address is located 2792 bytes to the right of
-                                   allocated 1120-byte region [ffff88810ed40000, ffff88810ed40460)
-Apr 05 00:33:06 localhost kernel:
-Apr 05 00:33:06 localhost kernel: The buggy address belongs to the physical page:
-Apr 05 00:33:06 localhost kernel: page: refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88810ed45000 pfn:0x10ed40
-Apr 05 00:33:06 localhost kernel: head: order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-Apr 05 00:33:06 localhost kernel: flags: 0x200000000000840(slab|head|node=0|zone=2)
-Apr 05 00:33:06 localhost kernel: page_type: 0xffffffff()
-Apr 05 00:33:06 localhost kernel: raw: 0200000000000840 ffff888100042f00 ffffea00040f1a00 dead000000000002
-Apr 05 00:33:06 localhost kernel: raw: ffff88810ed45000 0000000080080006 00000001ffffffff 0000000000000000
-Apr 05 00:33:06 localhost kernel: head: 0200000000000840 ffff888100042f00 ffffea00040f1a00 dead000000000002
-Apr 05 00:33:06 localhost kernel: head: ffff88810ed45000 0000000080080006 00000001ffffffff 0000000000000000
-Apr 05 00:33:06 localhost kernel: head: 0200000000000003 ffffea00043b5001 dead000000000122 00000000ffffffff
-Apr 05 00:33:06 localhost kernel: head: 0000000800000000 0000000000000000 00000000ffffffff 0000000000000000
-Apr 05 00:33:06 localhost kernel: page dumped because: kasan: bad access detected
-Apr 05 00:33:06 localhost kernel:
-Apr 05 00:33:06 localhost kernel: Memory state around the buggy address:
-Apr 05 00:33:06 localhost kernel:  ffff88810ed40e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-Apr 05 00:33:06 localhost kernel:  ffff88810ed40e80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-Apr 05 00:33:06 localhost kernel: >ffff88810ed40f00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-Apr 05 00:33:06 localhost kernel:                                               ^
-Apr 05 00:33:06 localhost kernel:  ffff88810ed40f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-Apr 05 00:33:06 localhost kernel:  ffff88810ed41000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-Apr 05 00:33:06 localhost kernel: ==================================================================
-Apr 05 00:33:06 localhost kernel: Disabling lock debugging due to kernel taint
-Apr 05 00:33:06 localhost kernel: INFO: trying to register non-static key.
-Apr 05 00:33:06 localhost kernel: The code is fine but needs lockdep annotation, or maybe
-Apr 05 00:33:06 localhost kernel: you didn't initialize this object before use?
-Apr 05 00:33:06 localhost kernel: turning off the locking correctness validator.
-Apr 05 00:33:06 localhost kernel: CPU: 5 PID: 305560 Comm: kworker/u128:2 Tainted: G    B              99.9.0-rc2-gdebeafad51e2 #262
-Apr 05 00:33:06 localhost kernel: Hardware name: QEMU Standard PC (Q35 + ICH9, 2009)/Incus, BIOS unknown 2/2/2022
-Apr 05 00:33:06 localhost kernel: Workqueue: writeback wb_workfn (flush-259:0)
-Apr 05 00:33:06 localhost kernel: Call Trace:
-Apr 05 00:33:06 localhost kernel:  <TASK>
-Apr 05 00:33:06 localhost kernel:  dump_stack_lvl+0x5a/0x90
-Apr 05 00:33:06 localhost kernel:  register_lock_class+0x11dd/0x1860
-Apr 05 00:33:06 localhost kernel:  ? add_taint+0x2a/0x90
-Apr 05 00:33:06 localhost kernel:  ? end_report+0x85/0x180
-Apr 05 00:33:06 localhost kernel:  ? __pfx_register_lock_class+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  __lock_acquire.isra.0+0x7f/0x1280
-Apr 05 00:33:06 localhost kernel:  lock_acquire+0x136/0x330
-Apr 05 00:33:06 localhost kernel:  ? wb_writeback+0x255/0x870
-Apr 05 00:33:06 localhost kernel:  _raw_spin_lock+0x33/0x40
-Apr 05 00:33:06 localhost kernel:  ? wb_writeback+0x255/0x870
-Apr 05 00:33:06 localhost kernel:  wb_writeback+0x255/0x870
-Apr 05 00:33:06 localhost kernel:  ? __pfx_wb_writeback+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  ? __pfx_lock_release+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  wb_workfn+0x221/0xc80
-Apr 05 00:33:06 localhost kernel:  ? __pfx_wb_workfn+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  ? lock_acquire+0x136/0x330
-Apr 05 00:33:06 localhost kernel:  process_one_work+0x82d/0x1790
-Apr 05 00:33:06 localhost kernel:  ? __pfx_process_one_work+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  ? assign_work+0x16c/0x240
-Apr 05 00:33:06 localhost kernel:  worker_thread+0x724/0x1300
-Apr 05 00:33:06 localhost kernel:  ? __kthread_parkme+0xba/0x1f0
-Apr 05 00:33:06 localhost kernel:  ? __pfx_worker_thread+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  kthread+0x2ed/0x3d0
-Apr 05 00:33:06 localhost kernel:  ? __pfx_kthread+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  ret_from_fork+0x31/0x70
-Apr 05 00:33:06 localhost kernel:  ? __pfx_kthread+0x10/0x10
-Apr 05 00:33:06 localhost kernel:  ret_from_fork_asm+0x1a/0x30
-Apr 05 00:33:06 localhost kernel:  </TASK>
+> If, upon receiving an event in the device driver, we iterate over what
+> the bridge has at that instant, the differences between the worlds as
+> seen by the bridge and the device driver might lead to some unexpected
+> results.
+
+Translated: iterating over bridge MDB objects needs to be serialized
+with new switchdev events by acquiring rtnl_lock(). Then, once switchdev
+events are temporarily blocked, the pending ones need to be flushed
+using switchdev_deferred_process(), so resync the bridge state with the
+driver state. Once the resync is done, the iteration is safe until
+rtnl_unlock().
+
+Applied to our case, the MDB iterator is needed in mv88e6xxx_port_mrouter().
+This is already called with rtnl_lock() acquired. The resync procedure
+will indirectly call mv88e6xxx_port_mdb_add()/mv88e6xxx_port_mdb_del()
+through switchdev_deferred_process(), and then the walk is consistent
+for the remainder of the mv88e6xxx_port_mrouter() function.
+
+A helper which does this is what would be required - an iterator
+function which calls an int (*cb)(struct net_device *brport, const struct switchdev_obj_port_mdb *mdb)
+for each MDB entry. The DSA core could then offer some post-processing
+services over this API, to recover the struct dsa_port associated with
+the bridge port (in the LAG case they aren't the same) and the address
+database associated with the bridge.
+
+Do you think there would be unexpected results even if we did this?
+br_switchdev_mdb_replay() needs to handle a similarly complicated
+situation of synchronizing with deferred MDB events.
+
+> However, if we cache the MDB objects in the device driver, at least
+> the order in which the events took place will be coherent and at any
+> give time the state of the MDB objects in the device driver can be
+> guaranteed to be sane. This is also the approach the prestera device
+> driver took.
+
+Not contesting this, but I wouldn't like to see MDBs cached in each
+device driver just for this. Switchdev is not very high on the list of
+APIs which are easy to use, and making MDB caching a requirement
+(for the common case that MDB entry destinations need software fixups
+with the mrouter ports) isn't exactly going to make that any better.
+Others' opinion may differ, but mine is that core offload APIs need to
+consider what hardware is available in the real world, make the common
+case easy, and the advanced cases possible. Rather than make every case
+"advanced" :)
 
