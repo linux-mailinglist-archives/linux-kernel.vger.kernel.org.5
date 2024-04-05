@@ -1,162 +1,148 @@
-Return-Path: <linux-kernel+bounces-132380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33FA08993CF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:26:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A6B18993D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:26:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6E50F28A076
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:26:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBEF91C2388E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A149B262BE;
-	Fri,  5 Apr 2024 03:25:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B922C69B;
+	Fri,  5 Apr 2024 03:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="G7aGPwjI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="VjKdmhCR"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DCA820DFF;
-	Fri,  5 Apr 2024 03:25:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C0B1225D6;
+	Fri,  5 Apr 2024 03:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712287518; cv=none; b=QQ43/Y7xB95DLe4txi5XL36dYexxfosKH/03e/EW+n+yprTdQvLuKiClGwiAcbfoR1l7c9qdZ/hawvfQeqTG6xyzwfR301gI+J6y1lwZozUa9nP1GNwzAAAg0c3OmFFnVgL9Zqe8I49mZZOUNIG0GdpFv3KnDIh+b8bQAHtWZNA=
+	t=1712287519; cv=none; b=MuQDxNVmf/wsbTvLvZa/0oF6UrBRBgEUJ+yeyQpuQY1Z6c6RII3Gsn5oQxhF01ez8GL/lXXqKaRG3ke4Hhi6vvBKyjkxHXxnqWcO3TTL73lF0IT1YAjWBvP8syo49l6NjbJ+cMvJbO3GJ2/HHr52I68P3N4vb+v1o/92pIwuCRY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712287518; c=relaxed/simple;
-	bh=LSyc9Dm8TDs0NYggrHtFbz7Muqryx6ObuYUPSDrvryY=;
-	h=From:To:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OHOQEQPV2Vn9WBOXSVU2W8+10S2MpS0stmyD7CmwljQvyxWhHxbqixNH8tdXzpAeleDGsZmR2DV1Lgm4nzKcmvkyJaod7+ugN27UljVhFVK/WYH6E/7eNO3dSlpxhtRYMqywBA9rWdys/SGIW2Dw+JXcnIawCSno5Qc6w44UFP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=G7aGPwjI; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712287517; x=1743823517;
-  h=from:to:subject:date:message-id:in-reply-to:references:
-   mime-version:content-transfer-encoding;
-  bh=LSyc9Dm8TDs0NYggrHtFbz7Muqryx6ObuYUPSDrvryY=;
-  b=G7aGPwjIqPY9Zb7TSkN7ftkmbutTsv8vpw2wNB8mA4alNXONZ5aTd/l8
-   eCkRzM/1zY3d7lB6z59wp0IloYpXxobEfg1Lv6A5LzBMvi1CmfPvSEISI
-   MQIkCxZbyuNKG3327JpYReY8R1a987YtcVqyqWtuHhfiHJIQoJfpvibNh
-   OKIDsiO6RW6nFEPvha2USz+7R8xqetcqV+y7DZTkpe6q/XIf8a+28P5UN
-   YZVj/DPIbx0Kl2X9tnvLudLQ+bjKQALSELV4ATnCFPk9Ddvs7NV/lNd2F
-   zmaa3Scoib81hUvfXkX7TiwKiYQugbyHmZZ50vfdtuF33atPp+efiwOyu
-   w==;
-X-CSE-ConnectionGUID: rLtUwk1YQ5mFaoE7t+CAqg==
-X-CSE-MsgGUID: /yeX4IttTaSGQz+KWwwIoA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="25112470"
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="25112470"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 20:25:15 -0700
-X-CSE-ConnectionGUID: z3NCHSYmRh2ycQ0rKiGkTA==
-X-CSE-MsgGUID: tU2skXYXTOiX1DjoXaCBlA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="18955987"
-Received: from alexpabo-mobl.amr.corp.intel.com (HELO debox1-desk4.lan) ([10.209.49.45])
-  by fmviesa010-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 20:25:14 -0700
-From: "David E. Box" <david.e.box@linux.intel.com>
-To: david.e.box@linux.intel.com,
-	hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	sathyanarayanan.kuppuswamy@linux.intel.com
-Subject: [PATCH V3 6/9] tools/arch/x86/intel_sdsi: Fix meter_show display
-Date: Thu,  4 Apr 2024 20:25:04 -0700
-Message-Id: <20240405032507.2637311-7-david.e.box@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240405032507.2637311-1-david.e.box@linux.intel.com>
-References: <20240405032507.2637311-1-david.e.box@linux.intel.com>
+	s=arc-20240116; t=1712287519; c=relaxed/simple;
+	bh=cXdbJLTNqU91g03IUWPDt9s3dcd9a7zvX2yVIwFMzkg=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YOypWZDYXBsJWG3a9aZVx2HH+5/G5oXIi8NQdqCFNBnTQ/UozYNsLDvMDCS3w36gUDGwYU7W7CdXbo8QgXyiCQ0U16kWlIzWfZcUDGO7SW72Pn0PiJ60PC4IXjOaFnuCxEUqXNjuO4bTpl5LplAVozqwekcd5saquo1izd5mR8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=VjKdmhCR; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4352MsDR017309;
+	Fri, 5 Apr 2024 03:25:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=O7pAdYq0gXOgAPMzGRLRY
+	4J+NTxIeiW5B+fKq2Jblkc=; b=VjKdmhCR2DqBfiSGs5KIDs2vvtA3TCPpPG4Qs
+	909hppOeReNK9fubIFvFD2+3C3nVCkZ9hWypVEHggQptJNNZ1USy3WaoqC1qjkQW
+	nCv+SclwSXTepllJwcXHINswpzW/r+eERH3Q81CZEmSiFDqUs5nRfuknaJBkOsrD
+	7ryAk3cLeWNSxoAiiPwd+nu7KgWRS+wCmMrrgpyJW/VRDpcuBIX2ahHhUCYV3by4
+	sbpnAUDPCD/TqeEkG40vbOsxvzRYfsEw14y7HBO5aZBzsvsIVx/kenGMvCV8cjsI
+	e57SOq4JxW1VoA71cJ4MQ2h35lfeIZ6kG58qoXbHrx8zFuK/Q==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa8fc02fe-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 03:25:06 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4353P5U4029645
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 5 Apr 2024 03:25:05 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Thu, 4 Apr 2024 20:25:05 -0700
+Date: Thu, 4 Apr 2024 20:25:04 -0700
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: Andrew Halaney <ahalaney@redhat.com>
+CC: <linux-arm-msm@vger.kernel.org>, <robdclark@gmail.com>, <will@kernel.org>,
+        <iommu@lists.linux.dev>, <joro@8bytes.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <quic_c_gdjako@quicinc.com>, <quic_cgoldswo@quicinc.com>,
+        <quic_sukadev@quicinc.com>, <quic_pdaly@quicinc.com>,
+        <quic_sudaraja@quicinc.com>
+Subject: Re: sa8775p-ride: What's a normal SMMU TLB sync time?
+Message-ID: <Zg9vEJV5JyGoM8KY@hu-bjorande-lv.qualcomm.com>
+References: <kord5qq6mywc7rbkzeoliz2cklrlljxm74qmrfwwjf6irx4fp7@6f5wsonafstt>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <kord5qq6mywc7rbkzeoliz2cklrlljxm74qmrfwwjf6irx4fp7@6f5wsonafstt>
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: kkGa_eprPLj8gEcvkM7IOIyfEexXuxYn
+X-Proofpoint-ORIG-GUID: kkGa_eprPLj8gEcvkM7IOIyfEexXuxYn
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_02,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=576 bulkscore=0 suspectscore=0 clxscore=1011
+ priorityscore=1501 adultscore=0 phishscore=0 impostorscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404050023
 
-Fixes sdsi_meter_cert_show() to correctly decode and display the meter
-certificate output. Adds and displays a missing version field, displays the
-ASCII name of the signature, and fixes the print alignment.
+On Tue, Apr 02, 2024 at 04:22:31PM -0500, Andrew Halaney wrote:
+> Hey,
+> 
+> Sorry for the wide email, but I figured someone recently contributing
+> to / maintaining the Qualcomm SMMU driver may have some proper insights
+> into this.
+> 
+> Recently I remembered that performance on some Qualcomm platforms
+> takes a major hit when you use iommu.strict=1/CONFIG_IOMMU_DEFAULT_DMA_STRICT.
+> 
+> On the sa8775p-ride, I see most TLB sync calls to be about 150 us long,
+> with some spiking to 500 us, etc:
+> 
+>     [root@qti-snapdragon-ride4-sa8775p-09 ~]# trace-cmd start -p function_graph -g qcom_smmu_tlb_sync --max-graph-depth 1
+>       plugin 'function_graph'
+>     [root@qti-snapdragon-ride4-sa8775p-09 ~]# trace-cmd show
+>     # tracer: function_graph
+>     #
+>     # CPU  DURATION                  FUNCTION CALLS
+>     # |     |   |                     |   |   |   |
+>      0) ! 144.062 us  |  qcom_smmu_tlb_sync();
+> 
+> On my sc8280xp-lenovo-thinkpad-x13s (only other Qualcomm platform I can compare
+> with) I see around 2-15 us with spikes up to 20-30 us. That's thanks to this
+> patch[0], which I guess improved the platform from 1-2 ms to the ~10 us number.
+> 
+> It's not entirely clear to me how a DPU specific programming affects system
+> wide SMMU performance, but I'm curious if this is the only way to achieve this?
+> sa8775p doesn't have the DPU described even right now, so that's a bummer
+> as there's no way to make a similar immediate optimization, but I'm still struggling
+> to understand what that patch really did to improve things so maybe I'm missing
+> something.
+> 
 
-Fixes: 7fdc03a7370f ("tools/arch/x86: intel_sdsi: Add support for reading meter certificates")
-Signed-off-by: David E. Box <david.e.box@linux.intel.com>
----
-V3 - Change patch subject and changelog to clarify changes.
-   - Use new BUNDLE_COUNT #def
+The cause was that the TLB sync is synchronized with the display updates,
+but without appropriate safe_lut_tlb values the display side wouldn't
+play nice.
 
-V2 - Split of V1 patch 7
+Regards,
+Bjorn
 
- tools/arch/x86/intel_sdsi/intel_sdsi.c | 29 +++++++++++++++++---------
- 1 file changed, 19 insertions(+), 10 deletions(-)
-
-diff --git a/tools/arch/x86/intel_sdsi/intel_sdsi.c b/tools/arch/x86/intel_sdsi/intel_sdsi.c
-index 7eaffcbff788..a0711177e1bb 100644
---- a/tools/arch/x86/intel_sdsi/intel_sdsi.c
-+++ b/tools/arch/x86/intel_sdsi/intel_sdsi.c
-@@ -153,11 +153,12 @@ struct bundle_encoding {
- };
- 
- struct meter_certificate {
--	uint32_t block_signature;
-+	uint32_t signature;
-+	uint32_t version;
-+	uint64_t ppin;
- 	uint32_t counter_unit;
--	uint64_t ppin;
- 	uint32_t bundle_length;
--	uint32_t reserved;
-+	uint64_t reserved;
- 	uint32_t mmrc_encoding;
- 	uint32_t mmrc_counter;
- };
-@@ -338,6 +339,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
- 	uint32_t count = 0;
- 	FILE *cert_ptr;
- 	int ret, size;
-+	char name[4];
- 
- 	ret = sdsi_update_registers(s);
- 	if (ret)
-@@ -379,12 +381,19 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
- 	printf("\n");
- 	printf("Meter certificate for device %s\n", s->dev_name);
- 	printf("\n");
--	printf("Block Signature:       0x%x\n", mc->block_signature);
--	printf("Count Unit:            %dms\n", mc->counter_unit);
--	printf("PPIN:                  0x%lx\n", mc->ppin);
--	printf("Feature Bundle Length: %d\n", mc->bundle_length);
--	printf("MMRC encoding:         %d\n", mc->mmrc_encoding);
--	printf("MMRC counter:          %d\n", mc->mmrc_counter);
-+
-+	get_feature(mc->signature, name);
-+	printf("Signature:                    %.4s\n", name);
-+
-+	printf("Version:                      %d\n", mc->version);
-+	printf("Count Unit:                   %dms\n", mc->counter_unit);
-+	printf("PPIN:                         0x%lx\n", mc->ppin);
-+	printf("Feature Bundle Length:        %d\n", mc->bundle_length);
-+
-+	get_feature(mc->mmrc_encoding, name);
-+	printf("MMRC encoding:                %.4s\n", name);
-+
-+	printf("MMRC counter:                 %d\n", mc->mmrc_counter);
- 	if (mc->bundle_length % 8) {
- 		fprintf(stderr, "Invalid bundle length\n");
- 		return -1;
-@@ -398,7 +407,7 @@ static int sdsi_meter_cert_show(struct sdsi_dev *s)
- 
- 	bec = (void *)(mc) + sizeof(mc);
- 
--	printf("Number of Feature Counters:          %d\n", mc->bundle_length / 8);
-+	printf("Number of Feature Counters:   %ld\n", BUNDLE_COUNT(mc->bundle_length));
- 	while (count++ < mc->bundle_length / 8) {
- 		char feature[5];
- 
--- 
-2.34.1
-
+> I'm honestly not even sure what a "typical" range for TLB sync time would be,
+> but on sa8775p-ride its bad enough that some IRQs like UFS can cause RCU stalls
+> (pretty easy to reproduce with fio basic-verify.fio for example on the platform).
+> It also makes running with iommu.strict=1 impractical as performance for UFS,
+> ethernet, etc drops 75-80%.
+> 
+> Does anyone have any bright ideas on how to improve this, or if I'm even in
+> the right for assuming that time is suspiciously long?
+> 
+> Thanks,
+> Andrew
+> 
+> [0] https://lore.kernel.org/linux-arm-msm/CAF6AEGs9PLiCZdJ-g42-bE6f9yMR6cMyKRdWOY5m799vF9o4SQ@mail.gmail.com/
+> 
 
