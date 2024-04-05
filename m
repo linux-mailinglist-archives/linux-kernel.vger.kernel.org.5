@@ -1,207 +1,165 @@
-Return-Path: <linux-kernel+bounces-132902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132906-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F52E899BCF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:23:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E481899BD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:26:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 832741C23972
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:23:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0198282E89
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:26:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE69D16C693;
-	Fri,  5 Apr 2024 11:23:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83F4516C458;
+	Fri,  5 Apr 2024 11:26:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="EBZIspQc"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZCHLFEzu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0413116C458
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 11:23:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C183A16132B
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 11:26:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712316191; cv=none; b=TH4VBqu8s0UXaBrYXy6opfUOYlsaFp5c86O+Qx1jHf07p/oMwsp7abwDtVW8tSde85MAtbgx5uQg7e84zOkMI0ffLbYwCPgjwrnZP7D9/0xsuxV9VGH69tAitzm58IEdSQQUInAU7NW410e4aqcIfR87lFVoaK0oP4bvCHH4qH0=
+	t=1712316366; cv=none; b=A/zFpJ2czuI5tEyxPEL/btGsmURy0mXp1HT0QWHQG0NdJW0Un4f5NAEalKb6XiaJopNcgBSh+r9KEnD3KBf846imtLlLFeBTe5uP/tW1hPrdZWogxMnv09h03581GfBKrYx60bp4ikErEgHQ+jPgT8lwObilto7OPHrrdUqf9LQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712316191; c=relaxed/simple;
-	bh=oGJdt/19LKDTvxYgKTkWSed86buXn0F4UgK7eTA38I8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ngBzamyyGxr9CKWVhV2Yl4mpmjKZrwIaTfZ8HTX62ybF2fZZE0Il2RCzcjq5vkMZieKUIwfqL43LcChFVbkLRxIYeQmMwT/2ujXFEAtvzouBKxgRUSs5et2FxsaMyuNnUdOHndhdtSOidpbAwh4bxJVMbhN2B41JlTkTB6phV/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=EBZIspQc; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516d3776334so919056e87.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 04:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1712316187; x=1712920987; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q1StIt3kBG1sKfWkM0jYTmYiHX1k739mPkjj6luO5sU=;
-        b=EBZIspQcH6nRcs0FQNCSRQe0/PoQETZSI/qLyhbucOenbz71Bk3qbbmix75sSTdP0H
-         Z7KhXg9SKo4ybM4MoQWN5aGUBbCBZaWo2joWBuRFxQ8xN4FNVPVTfEQUSyLeM1X5bPsW
-         FwBCbRnCHZPORZnx9RK3YiTII2jTLYH9wYjnWUonjwWyAoAMaG8wrkTK99xtSrMgma/o
-         0zEkUW8pPR96nNvp4X/JZHfUY2Rp47NA5xemWKQ6qjJ1ORzcAKy+etLpj7uvmD5pgkma
-         277WHnJlDMWMO4384HnJmUEDJwo56pYnJ8iXdd6I5dsl/Tz5ez/nhpNCnAYI3rWEQPvw
-         YgOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712316187; x=1712920987;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q1StIt3kBG1sKfWkM0jYTmYiHX1k739mPkjj6luO5sU=;
-        b=K1K3X+o7bRJQ2nMX+JGdxhULw+IRmPJH5OKR/75TTJqbMr5linco3/d/gSEvJwemvD
-         eV+0yAJb/aZyo+zv78yBw+HX1jTGhStN/tUCO/8bgUG2E6BwiY129kMqPrfBODZhoYUe
-         X3cmP55gNNIpvdx0rIUR9lLaA8kTDvmjDZWLcQaqO2yvtXkeLEJG+6ciUvGGP/nfKQ6Z
-         o8NUOZhrfqrxvpoI+kdY6Qec0zO7rsPRG7H6p0MOd9ySkODkyBd3w3wWolq5xRHZb8Xr
-         epsLi8C2PNwvhIIR1nstpyKHNx1rpMCCMvawv1UHCFULXnFfHzpL4mZAosZlQAWcqMiU
-         JJEg==
-X-Gm-Message-State: AOJu0Yznj/sIB/cxuT692H7w2WZ8ygOgRVKJTeNF4MeAcGDlTHLnl4nl
-	WKvVWSL5W3wpTSvEzxyGbzvQYbAA/wOX2QZRBlv7i71W33jKmiIUbOYUpLdqFWs=
-X-Google-Smtp-Source: AGHT+IHkj15u2Bxl0RbCYsvSnoaNnRvyO2MnsCgl4V2xQvxUMx8unnpUY36pEW96b3ybfXEcZnPVSw==
-X-Received: by 2002:a19:f604:0:b0:516:d152:b892 with SMTP id x4-20020a19f604000000b00516d152b892mr952297lfe.60.1712316186941;
-        Fri, 05 Apr 2024 04:23:06 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id j13-20020a50ed0d000000b0056c4372c161sm686856eds.55.2024.04.05.04.23.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 04:23:06 -0700 (PDT)
-Date: Fri, 5 Apr 2024 13:23:04 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Atish Patra <atishp@rivosinc.com>
-Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
-	Ajay Kaher <akaher@vmware.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Alexey Makhalov <amakhalov@vmware.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
-	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, 
-	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Will Deacon <will@kernel.org>, x86@kernel.org
-Subject: Re: [PATCH v5 12/22] RISC-V: KVM: Implement SBI PMU Snapshot feature
-Message-ID: <20240405-1060c986299eaac3528c7d4f@orel>
-References: <20240403080452.1007601-1-atishp@rivosinc.com>
- <20240403080452.1007601-13-atishp@rivosinc.com>
+	s=arc-20240116; t=1712316366; c=relaxed/simple;
+	bh=AMRPVsvI5Nb+bU3i5rw5NJTnOuE7WZWcpxBq0NNIJW8=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=CgsVQHVgMNUwnL71depc0M95E3uWs1qoQjvuZLTYqcJP6j9abP5EmwRii3Cy9uC/M0GJJ/GVGu3oxK0HtSSpErh+lT7Buh2lJd4xVTSJ/SQzI7Ba0oMEoN1SCSm06yM6Ppq19y6K/fhaq+f4tDLIK9GFweVySEg7q1O9tGON1Gk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZCHLFEzu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15543C433F1;
+	Fri,  5 Apr 2024 11:26:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712316366;
+	bh=AMRPVsvI5Nb+bU3i5rw5NJTnOuE7WZWcpxBq0NNIJW8=;
+	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+	b=ZCHLFEzu7ooQeu3JhW5gMzG4vZ3pI/Zr22X4uVkkpnHQxTbi086KWJkbCAuWzmDZu
+	 ezFa8bbN3Z44L9Krtg1jPB9gxHSxv7C1bhZhf0TlW0I6pbfGpyLtmvItzOo1byjDky
+	 CHforGBTC++H1YqaqqWu0vTuAKrqgQmg3DczMUXla+gy4kwddNB5dbTQkqpy2BUW5H
+	 wCl8zGuyKbY/lOvYljmGxOYkW/S47hXx/Qn1/6lCiBmcTGpLsX5EtL/aFPnkbBpqWm
+	 ycfIsOvpomjcd80TsS7kGtlzw6sNhMFPiKgaSpbfbwqECH/ej+SYURUftAyn73so3k
+	 uxkec+udmKhpQ==
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 1AD4F1200066;
+	Fri,  5 Apr 2024 07:26:05 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 05 Apr 2024 07:26:05 -0400
+X-ME-Sender: <xms:zN8PZtl8dBQOoFn0pPzpIk9HVbL9UPQI-O1zmnA_eHHNtqfyps_aZw>
+    <xme:zN8PZo06xuvzAZ-9kvmxg3gER3llDPRWTk6dX59ZeuCGgzSgd8vFUQa_7E_u3t2d7
+    TnQZWUIAPGSDYk39i4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegtddggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugeskhgvrhhnvghlrdhorhhgqeenucggtf
+    frrghtthgvrhhnpedvtddtffejfeeggefgleefgfeghfehfeefffetgffgleegudevveet
+    hfefjeevkeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegrrhhnugdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidquddvkeehudej
+    tddvgedqvdekjedttddvieegqdgrrhhnugeppehkvghrnhgvlhdrohhrghesrghrnhgusg
+    druggv
+X-ME-Proxy: <xmx:zN8PZjr0XbPifJ8DapHQtMO0amYb56bWiyejGHmxV5bIPMAk8IsU4w>
+    <xmx:zN8PZtmEyH6ShLFD8pXH0vpOb3mvuEqoZmXHR4Od683sO2IEOfys7A>
+    <xmx:zN8PZr1KCwVkF_wuMUx6mwWb4dGEvThXKKB5APwcv2S1H-4KRWS1rw>
+    <xmx:zN8PZss8F5hk-MMH16sN-fAbhnaVzWoxeWBAwXfKiZLZgPBmynzrvw>
+    <xmx:zd8PZsxQwM37j_3ARK_qh-hUkR-BTEpl1AClH80twVE9GHmEOZdicu-H>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 6DB2EB6008D; Fri,  5 Apr 2024 07:26:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403080452.1007601-13-atishp@rivosinc.com>
+Message-Id: <11fdef9b-413d-4f88-b3d3-e5b27a88cf6f@app.fastmail.com>
+In-Reply-To: 
+ <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
+References: <20240403122851.38808-1-schnelle@linux.ibm.com>
+ <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com>
+ <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
+ <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
+Date: Fri, 05 Apr 2024 13:24:28 +0200
+From: "Arnd Bergmann" <arnd@kernel.org>
+To: "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc: "Michael Schmitz" <schmitzmic@gmail.com>,
+ "Niklas Schnelle" <schnelle@linux.ibm.com>, linux-m68k@lists.linux-m68k.org,
+ "Heiko Carstens" <hca@linux.ibm.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 03, 2024 at 01:04:41AM -0700, Atish Patra wrote:
-> PMU Snapshot function allows to minimize the number of traps when the
-> guest access configures/access the hpmcounters. If the snapshot feature
-> is enabled, the hypervisor updates the shared memory with counter
-> data and state of overflown counters. The guest can just read the
-> shared memory instead of trap & emulate done by the hypervisor.
-> 
-> This patch doesn't implement the counter overflow yet.
-> 
-> Reviewed-by: Anup Patel <anup@brainfault.org>
-> Signed-off-by: Atish Patra <atishp@rivosinc.com>
-> ---
->  arch/riscv/include/asm/kvm_vcpu_pmu.h |   7 ++
->  arch/riscv/kvm/vcpu_pmu.c             | 121 +++++++++++++++++++++++++-
->  arch/riscv/kvm/vcpu_sbi_pmu.c         |   3 +
->  3 files changed, 130 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/include/asm/kvm_vcpu_pmu.h b/arch/riscv/include/asm/kvm_vcpu_pmu.h
-> index 395518a1664e..77a1fc4d203d 100644
-> --- a/arch/riscv/include/asm/kvm_vcpu_pmu.h
-> +++ b/arch/riscv/include/asm/kvm_vcpu_pmu.h
-> @@ -50,6 +50,10 @@ struct kvm_pmu {
->  	bool init_done;
->  	/* Bit map of all the virtual counter used */
->  	DECLARE_BITMAP(pmc_in_use, RISCV_KVM_MAX_COUNTERS);
-> +	/* The address of the counter snapshot area (guest physical address) */
-> +	gpa_t snapshot_addr;
-> +	/* The actual data of the snapshot */
-> +	struct riscv_pmu_snapshot_data *sdata;
->  };
->  
->  #define vcpu_to_pmu(vcpu) (&(vcpu)->arch.pmu_context)
-> @@ -85,6 +89,9 @@ int kvm_riscv_vcpu_pmu_ctr_cfg_match(struct kvm_vcpu *vcpu, unsigned long ctr_ba
->  int kvm_riscv_vcpu_pmu_ctr_read(struct kvm_vcpu *vcpu, unsigned long cidx,
->  				struct kvm_vcpu_sbi_return *retdata);
->  void kvm_riscv_vcpu_pmu_init(struct kvm_vcpu *vcpu);
-> +int kvm_riscv_vcpu_pmu_snapshot_set_shmem(struct kvm_vcpu *vcpu, unsigned long saddr_low,
-> +				      unsigned long saddr_high, unsigned long flags,
-> +				      struct kvm_vcpu_sbi_return *retdata);
->  void kvm_riscv_vcpu_pmu_deinit(struct kvm_vcpu *vcpu);
->  void kvm_riscv_vcpu_pmu_reset(struct kvm_vcpu *vcpu);
->  
-> diff --git a/arch/riscv/kvm/vcpu_pmu.c b/arch/riscv/kvm/vcpu_pmu.c
-> index 2d9929bbc2c8..f706c688b338 100644
-> --- a/arch/riscv/kvm/vcpu_pmu.c
-> +++ b/arch/riscv/kvm/vcpu_pmu.c
-> @@ -14,6 +14,7 @@
->  #include <asm/csr.h>
->  #include <asm/kvm_vcpu_sbi.h>
->  #include <asm/kvm_vcpu_pmu.h>
-> +#include <asm/sbi.h>
->  #include <linux/bitops.h>
->  
->  #define kvm_pmu_num_counters(pmu) ((pmu)->num_hw_ctrs + (pmu)->num_fw_ctrs)
-> @@ -311,6 +312,80 @@ int kvm_riscv_vcpu_pmu_read_hpm(struct kvm_vcpu *vcpu, unsigned int csr_num,
->  	return ret;
->  }
->  
-> +static void kvm_pmu_clear_snapshot_area(struct kvm_vcpu *vcpu)
-> +{
-> +	struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
-> +	int snapshot_area_size = sizeof(struct riscv_pmu_snapshot_data);
-> +
-> +	if (kvpmu->sdata) {
-> +		if (kvpmu->snapshot_addr != INVALID_GPA) {
-> +			memset(kvpmu->sdata, 0, snapshot_area_size);
-> +			kvm_vcpu_write_guest(vcpu, kvpmu->snapshot_addr,
-> +					     kvpmu->sdata, snapshot_area_size);
-> +		} else {
-> +			pr_warn("snapshot address invalid\n");
-> +		}
-> +		kfree(kvpmu->sdata);
-> +		kvpmu->sdata = NULL;
-> +	}
-> +	kvpmu->snapshot_addr = INVALID_GPA;
-> +}
-> +
-> +int kvm_riscv_vcpu_pmu_snapshot_set_shmem(struct kvm_vcpu *vcpu, unsigned long saddr_low,
-> +				      unsigned long saddr_high, unsigned long flags,
-> +				      struct kvm_vcpu_sbi_return *retdata)
-> +{
-> +	struct kvm_pmu *kvpmu = vcpu_to_pmu(vcpu);
-> +	int snapshot_area_size = sizeof(struct riscv_pmu_snapshot_data);
-> +	int sbiret = 0;
-> +	gpa_t saddr;
-> +	unsigned long hva;
-> +	bool writable;
-> +
-> +	if (!kvpmu || flags) {
-> +		sbiret = SBI_ERR_INVALID_PARAM;
-> +		goto out;
-> +	}
-> +
-> +	if (saddr_low == SBI_SHMEM_DISABLE && saddr_high == SBI_SHMEM_DISABLE) {
-> +		kvm_pmu_clear_snapshot_area(vcpu);
-> +		return 0;
-> +	}
-> +
-> +	saddr = saddr_low;
-> +
-> +	if (saddr_high != 0) {
-> +		if (IS_ENABLED(CONFIG_32BIT))
-> +			saddr |= ((gpa_t)saddr << 32);
+On Fri, Apr 5, 2024, at 12:16, Geert Uytterhoeven wrote:
+> On Wed, Apr 3, 2024 at 8:35=E2=80=AFPM Arnd Bergmann <arnd@kernel.org>=
+ wrote:
+>> On Wed, Apr 3, 2024, at 20:11, Michael Schmitz wrote:
+>>
+>> For the Q40, it may be better in the long run to change the
+>> drivers to just use MMIO directly though.
+>
+> Q40 uses ISA.
 
-saddr |= ((gpa_t)saddr_high << 32)
+Ah, indeed. I got confused by  the NE2000 example as that
+contains "depends on (ISA || (Q40 && m)", which would have
+indicated that it's not actually using CONFIG_ISA.
 
-> +		else
-> +			sbiret = SBI_ERR_INVALID_ADDRESS;
-> +		goto out;
-> +	}
-> +
+> Michael is worried about non-ISA drivers using inb() and friends.
+> At some point in time (i.e. eons ago), we were told it was better to
+> use in[bwl]()/read[bwl]() instead of directly dereferencing volatile
+> pointers...
 
-Thanks,
-drew
+It's definitely still better to use an abstraction layer for MMIO
+accesses using inline asm instructions than open-coding the
+volatile pointer dereferences. Over time we have gotten better
+at defining which of the available abstractions should be used
+for a given bus, so inb()/outb() is now only really used for
+things derived from ISA in some form, including e.g. PCI and LPC.
+
+> Anyway, I don't think we have many users of inb() and friends left, and
+> I assume the bots should have detected any/most remaining users in Nik=
+las'
+> branch...
+>
+> arch/m68k/include/asm/floppy.h on Sun-3x might be the only offender?
+
+Could be. I think we can leave this one to whoever tries to get
+sun3x floppy support working, it's been marked broken for a while
+(see below). If there are any others, they will cause pretty
+obvious build failures once inb()/outb() are removed from the
+build, and they should be trivial to fix then.
+
+     Arnd
+
+commit f1e0f28a85001f4faa3ea930fcf201933f42340e
+Author: akpm <akpm>
+Date:   Mon Jan 19 18:31:30 2004 +0000
+
+    [PATCH] M68k floppy selection
+   =20
+    From: Geert Uytterhoeven <geert@linux-m68k.org>
+   =20
+    Floppy: On m68k, PC-style floppies are used on Q40/Q60 and Sun-3x on=
+ly. Sun-3x
+    floppy is currently broken (needs I/O abstractions)
+   =20
+    BKrev: 400c2282G1O-TsH5FiwzPbOorftQhg
+
+diff --git a/drivers/block/Kconfig b/drivers/block/Kconfig
+index 2dce1d2699a9..32fdec34568e 100644
+--- a/drivers/block/Kconfig
++++ b/drivers/block/Kconfig
+@@ -6,7 +6,7 @@ menu "Block devices"
+=20
+ config BLK_DEV_FD
+        tristate "Normal floppy disk support"
+-       depends on !X86_PC9800 && !ARCH_S390
++       depends on (!X86_PC9800 && !ARCH_S390 && !M68K) || Q40 || (SUN3X=
+ && BROKEN)
+        ---help---
+          If you want to use the floppy disk drive(s) of your PC under L=
+inux,
+          say Y. Information about this driver, especially important for=
+ IBM
 
