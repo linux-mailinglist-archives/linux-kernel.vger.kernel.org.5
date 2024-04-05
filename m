@@ -1,48 +1,49 @@
-Return-Path: <linux-kernel+bounces-132710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 875C9899923
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:15:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 902AB899931
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:15:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 41709283BC9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:15:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C227F1C20DDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:15:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 051F515FD17;
-	Fri,  5 Apr 2024 09:14:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22E361607AD;
+	Fri,  5 Apr 2024 09:14:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="W5bHRzKr"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="fQ/TxB00"
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6BC415FA6C;
-	Fri,  5 Apr 2024 09:14:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF3D15FD14;
+	Fri,  5 Apr 2024 09:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712308485; cv=none; b=HcbggogfLxngUb7XfA16uUcX/1XRXC2DbZGMpzmxhSvzVoONNaMdeTGGcwQkyvc6GPYN95bS+WHb40YEma6FYQ1lKL5+1nTM+9GHQps2xnjqFPopzmM7VF5T5bLTL51Zgd8lmOz/S+ULUmt8YVXSTWao6DjG+8pQi/TTiyKZ39M=
+	t=1712308487; cv=none; b=BxFtqy8HhYIymF2uer2QvFZHD50ksKOWBbu+MvnFSPHha6mN2jIgB4MIb4L1fsgnHV5yU3tg9WnMk1U56COUBc6eNFG9mmIuCZrt67/Bip94cYuvlqJNiQWf633OrYX0zceCJnrE9HdZgKsNvfO7ayc502yNqNMjvJIVyhG/W5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712308485; c=relaxed/simple;
-	bh=9mXTtGDpitUEzyHWLPsdvBFtHi7vvqqQxqsj2Nz0lu4=;
+	s=arc-20240116; t=1712308487; c=relaxed/simple;
+	bh=UE2b6SzpsQRbGE5W0cWVQkZnin+2haEBI6zkPJQq4uo=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FeNkK2n/avCy2Gq3G5uenaASe6mNeSpsv/ZzlMfaDZ3lVtbkhLWTrl8r6JKgL8fQnUR6y0em8mhREdlDTSUlRHfdZYzvNZGEzOLhZRCq3n9oWIjzyRKrTJymlQGdPU9CSmY8xKk63PePqTmue92GOzDleB7xTNROG2NtfJqQs4o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=W5bHRzKr; arc=none smtp.client-ip=213.167.242.64
+	 In-Reply-To:To:Cc; b=W3nZqicT5CFyIXNSCCDs82e7fMNxmC5DE4DVeLDG2wLQKpWtU14clm86Yn6YnFJ5gD30x1XOVUBn5KnapAsdzd0rzKSHlAYes6s7Y4FdtvscD900BpLfyEmsA9ZwORoVyjLrnH/8tSYcb58p6NTQEXdHyrZusQpRPm4aixjfVyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=fQ/TxB00; arc=none smtp.client-ip=213.167.242.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
 Received: from [127.0.1.1] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id B518DDC9;
-	Fri,  5 Apr 2024 11:14:02 +0200 (CEST)
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 47E5EE4F;
+	Fri,  5 Apr 2024 11:14:03 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
 	s=mail; t=1712308443;
-	bh=9mXTtGDpitUEzyHWLPsdvBFtHi7vvqqQxqsj2Nz0lu4=;
+	bh=UE2b6SzpsQRbGE5W0cWVQkZnin+2haEBI6zkPJQq4uo=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=W5bHRzKrFAvISyg13zUuyoz3wwwRzSHotxpZTD0jIdZ2bPJM/2b8/8bPj7MS0unf7
-	 6HCsWefCjzYz3rhM9F3CV3pK00d9QKwDk8ogDS2YKfFXrU7FBI7rFcRxmAuHLiXYjy
-	 FYYVgrU5q5Yc14D2rG+H4pZodObfYIhPCEKiwqLI=
+	b=fQ/TxB00wibOG4PkD2IT1yqNGRvkHQUTpEIyW0hsfjWQBMQu7yTcRRJg4oOGc+kam
+	 OM6q3NqoWyfVHI00+euDdmwoWOkUxnKPhsMDrk+H2jBzLoNN4Ixrd6yjIY/ZQa5OaE
+	 djzn9n+sQg98MPo1UzkG5JfJRximRP4MeofcByAA=
 From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date: Fri, 05 Apr 2024 12:14:19 +0300
-Subject: [PATCH v2 1/9] media: subdev: Add privacy led helpers
+Date: Fri, 05 Apr 2024 12:14:20 +0300
+Subject: [PATCH v2 2/9] media: subdev: Use v4l2_subdev_has_op() in
+ v4l2_subdev_enable/disable_streams()
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -51,7 +52,7 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240405-enable-streams-impro-v2-1-22bca967665d@ideasonboard.com>
+Message-Id: <20240405-enable-streams-impro-v2-2-22bca967665d@ideasonboard.com>
 References: <20240405-enable-streams-impro-v2-0-22bca967665d@ideasonboard.com>
 In-Reply-To: <20240405-enable-streams-impro-v2-0-22bca967665d@ideasonboard.com>
 To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
@@ -62,83 +63,53 @@ To: Mauro Carvalho Chehab <mchehab@kernel.org>,
 Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1915;
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1222;
  i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=9mXTtGDpitUEzyHWLPsdvBFtHi7vvqqQxqsj2Nz0lu4=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBmD8D9PKk5m/aneVv3WUawS0bT8nWPrkksElujb
- rmAHCaFW7yJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZg/A/QAKCRD6PaqMvJYe
- 9RLAEACYtjUDlFJ7FR4epbNukPUUDe68AtpfG1hqKIi6H5qlJTgNRiRaR0nVqM6dXNKgrOYpU/4
- oz7tD7t3hATzqAUKTSb0V7/fkfx47rlOk4OZuipqNZk06NHgyFXQeObzMQpWxQBu/sEHqZMrrjk
- 5GMwgskmvW+4UH7FnDDrwG0FepOxsfktooZ4Hfgf95OeLoD7tDkAQWIjPdaMwbvHwPxOhZTRd6n
- nSSqZFY0SkyZhGH5azenbA9HO0+cU0a14h2SZbLyJkRhDYstY+Iehe4BJzkLl+fm1MMyx1eRihw
- qlhwlIf28PHbKBOPXsMRcSv+br4wgU6qKa3RP+FHajNoJhf+kIv5O7nRkNBRb3mZz/tGRJFHNBH
- j22cSjmnhor786XrSvtTOmQxdGF37jhCNfyiqwe9tNhdfvb9n8LVQSsuUdr52kNdyc64NzVsWtF
- Rmm/yRnz77cLO4wVnoLSlyW05ciEdQ+ATlkCaFExtavbnzz0LqJC6HvrdIHufr5pSHORDMxnq/e
- xuz8puyQpCcrYS+GrTg7znad/qojZyE8bvv2BSkpOJiyNk9tb4Qla5SnDuzuN0tQZr6OQyUNAUR
- q+y7c1qnJ9/YFF60gjRjFCk4mVnZ813WL8HzaqBJHNd4EoAME4NJ+51D4J0kwO14gFRRKoBYiQl
- DHIwP4pyHxt89XQ==
+ bh=UE2b6SzpsQRbGE5W0cWVQkZnin+2haEBI6zkPJQq4uo=;
+ b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBmD8D9K5iIjKVUtmtwZf2pTelg9lof7jPSMpSIZ
+ V8xePwiY2+JAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZg/A/QAKCRD6PaqMvJYe
+ 9YIID/9T5pG6gvmH5sYZJc+FmbqXnGAj4Y5miV2l2t2/wpKay6dL/kRUFgETLFSGthPCZmezRb/
+ OQhHE+kKSzD2dlOPynHZ7WBsHxPzTY6CJR09owJCkCheTAUvFrRdhNN7Uzbn8ccNe1/o28MQ8FN
+ 1qp94vIyNjye7fVAoOzs0k4LwiGmEhFKzJtPjKe6sAO2pEn3vv765sKKIOMeElu1w65DWlfqPe1
+ g3+91ZpOGtOhvqOV+U5pzqxUk1HSIK8vRbi1g1ges8J9aQvWdGFtQRAobJhctWpvNajcTx5XLdG
+ 2etZdm8/7aK9CWjA2nzF2FsJtcR17QcB7eZQ8svxpHK/S9l+yzWdKz1cdNe6YPDfmIW7M3Kz037
+ U+m13ccnw+o566BfwKAoruG62lJUno5BlarM3HF/j22JQwtW9JoCtHYSJifVrVKCJWjMd/qaB8Z
+ gJP6uwHkms5dhdhx2Lk6u/TlfSS/Tyf0HRT+28ShcZ2KLZexnyqybOGmNOxhL/gdCD/7YDmKLsf
+ if+83pCq9Twujwtc3Mx4DFX0pgNpokxeQgFHtNGxIr1Em/QFJiSNjhRZeJpf5SIoB1g212jDpAx
+ n3hmZzL9isEaos/SDli8lnVFNylN4SmMDVBNeVmOMQwqWDoy3CtPatKv4TSi4fEthgChKvgo3Ef
+ qm/G0vaYBJt6i9A==
 X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
  fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
 
-Add helper functions to enable and disable the privacy led. This moves
-the #if from the call site to the privacy led functions, and makes
-adding privacy led support to v4l2_subdev_enable/disable_streams()
-cleaner.
+Use v4l2_subdev_has_op() in v4l2_subdev_enable/disable_streams().
 
 Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 ---
- drivers/media/v4l2-core/v4l2-subdev.c | 31 ++++++++++++++++++++++---------
- 1 file changed, 22 insertions(+), 9 deletions(-)
+ drivers/media/v4l2-core/v4l2-subdev.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
-index 4c6198c48dd6..942c7a644033 100644
+index 942c7a644033..c8124919b92c 100644
 --- a/drivers/media/v4l2-core/v4l2-subdev.c
 +++ b/drivers/media/v4l2-core/v4l2-subdev.c
-@@ -148,6 +148,23 @@ static int subdev_close(struct file *file)
- }
- #endif /* CONFIG_VIDEO_V4L2_SUBDEV_API */
- 
-+static void v4l2_subdev_enable_privacy_led(struct v4l2_subdev *sd)
-+{
-+#if IS_REACHABLE(CONFIG_LEDS_CLASS)
-+	if (!IS_ERR_OR_NULL(sd->privacy_led))
-+		led_set_brightness(sd->privacy_led,
-+				   sd->privacy_led->max_brightness);
-+#endif
-+}
-+
-+static void v4l2_subdev_disable_privacy_led(struct v4l2_subdev *sd)
-+{
-+#if IS_REACHABLE(CONFIG_LEDS_CLASS)
-+	if (!IS_ERR_OR_NULL(sd->privacy_led))
-+		led_set_brightness(sd->privacy_led, 0);
-+#endif
-+}
-+
- static inline int check_which(u32 which)
- {
- 	if (which != V4L2_SUBDEV_FORMAT_TRY &&
-@@ -412,15 +429,11 @@ static int call_s_stream(struct v4l2_subdev *sd, int enable)
- 	if (WARN_ON(!!sd->enabled_streams == !!enable))
+@@ -2132,7 +2132,7 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
  		return 0;
  
--#if IS_REACHABLE(CONFIG_LEDS_CLASS)
--	if (!IS_ERR_OR_NULL(sd->privacy_led)) {
--		if (enable)
--			led_set_brightness(sd->privacy_led,
--					   sd->privacy_led->max_brightness);
--		else
--			led_set_brightness(sd->privacy_led, 0);
--	}
--#endif
-+	if (enable)
-+		v4l2_subdev_enable_privacy_led(sd);
-+	else
-+		v4l2_subdev_disable_privacy_led(sd);
-+
- 	ret = sd->ops->video->s_stream(sd, enable);
+ 	/* Fallback on .s_stream() if .enable_streams() isn't available. */
+-	if (!sd->ops->pad || !sd->ops->pad->enable_streams)
++	if (!v4l2_subdev_has_op(sd, pad, enable_streams))
+ 		return v4l2_subdev_enable_streams_fallback(sd, pad,
+ 							   streams_mask);
  
- 	if (!enable && ret < 0) {
+@@ -2249,7 +2249,7 @@ int v4l2_subdev_disable_streams(struct v4l2_subdev *sd, u32 pad,
+ 		return 0;
+ 
+ 	/* Fallback on .s_stream() if .disable_streams() isn't available. */
+-	if (!sd->ops->pad || !sd->ops->pad->disable_streams)
++	if (!v4l2_subdev_has_op(sd, pad, disable_streams))
+ 		return v4l2_subdev_disable_streams_fallback(sd, pad,
+ 							    streams_mask);
+ 
 
 -- 
 2.34.1
