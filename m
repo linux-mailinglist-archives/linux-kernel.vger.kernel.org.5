@@ -1,62 +1,73 @@
-Return-Path: <linux-kernel+bounces-132434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C82C38994E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:01:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A99528994E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:01:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 34281B2150B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:01:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33A041F237AD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:01:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DDA42262B;
-	Fri,  5 Apr 2024 06:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F9022619;
+	Fri,  5 Apr 2024 06:01:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WltaWoPf"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QtnvZWkT"
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F67CC138;
-	Fri,  5 Apr 2024 06:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22AD224EF;
+	Fri,  5 Apr 2024 06:01:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712296875; cv=none; b=alehaMQdtF5YH+3ymIPAIjGLyMoKFtBiOajM0PCDMeeG9wA4yEVMdbE1A42V+k4ka33i5mc5PtQrI3l7Z26S4jnPFJlTvn1IbIzde8HUEmOjfVpec0IZ4sLiKTZz7MOj7QzzsDhhLmgiX5zvn/EawyyomHS/GxZ8VMZZwaEZq6Y=
+	t=1712296890; cv=none; b=gv5z2yGQr0qxb6LyN6yjWYO/iffb5kkwOZ0cx2P0Fku8SJ8z1krTLVn+1OgIWJ/cLZ1cjsgETC1qTexL30bfX4C5j6nKofCRMXFHNODYECK4lkaE7AH8Mco2mAFKt/LERVAfOe3615fkK7lm94D9LZ5bTviDp4GPAiguYStVrME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712296875; c=relaxed/simple;
-	bh=FF8ujqDvKIVKW0WdhbhddUyBexJAjeOcU3bpTfy2cGo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=mfoW8fBBnO8vlFsU1GaS9sEVqFBRQm+zb87Fya1DuRZkJxb874nFj3rtNwoeiA7cjH84qPz22jA50imG7MERBBjRk+Nlvd+HNi73OjYwMbp0jZuvv30JZ8pu4mRZJB7Bqx6C5A+wOppRD3RZ3aAQRLgyozhvSPAC+8wPq06sfPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=WltaWoPf; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4352uoMZ029789;
-	Fri, 5 Apr 2024 06:01:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=h+6iGhowO/ibh6f8VBak99kpwtJW3mVkQSpIcSkFvhE=; b=Wl
-	taWoPf3C8GH/m7EB8o7XNYDEyzsRMzQ8yFjw8/nY1+OQWtPgqYtoCmItgnxOP/OD
-	G4bBv7X1D6PS58Bmkae4M/dSw9e1QlsmxHQGcEYRKCak7hZMtyJUcm4QhuLBRk2l
-	0EKc/aEHVIHR6pvTbZVYu2NdF42EzMzxPX4Ya/6vuz66LWfQIdTY9Qp1IefVCUn2
-	pDMEaFFRQ36wGcN0JZYkYqkiTuDJ0zcVpa7iaVyxDNh+1dcfc14I9e9P+W6dcIlA
-	1xGEcNROcDTaMSY84TaltSVTWxnMo3JNF+d9I+mfZWBUUrbXbofTUELLRND+NeBm
-	7DKNGKg4C69L5d5+bfcA==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa1xa90w5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 06:01:09 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4356180c011177
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Apr 2024 06:01:08 GMT
-Received: from [10.218.5.19] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 4 Apr 2024
- 23:01:02 -0700
-Message-ID: <03f8d2ee-2467-48aa-9b76-06eb13202b8c@quicinc.com>
-Date: Fri, 5 Apr 2024 11:30:59 +0530
+	s=arc-20240116; t=1712296890; c=relaxed/simple;
+	bh=AEz91L3w4/BpWSBDQDJsIDJt7JVxo4Ob0QsD7kPva/w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jNolyCzkqbLeF6XVyE9lRe87Ktvzyyt3U1sv1FE9t0zYitnlaIZEbPY+J8YZ7YVJd4aak5QHRvm/0H0HktBL7J+uEcIJtwVHK8d65jIkgiaREiSOQ6jHCEOJsDvF2sGpR0UTX+wgyRR34o+gBts0itBcNMXKe34i/n+0fDla8/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QtnvZWkT; arc=none smtp.client-ip=209.85.167.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-51381021af1so2822445e87.0;
+        Thu, 04 Apr 2024 23:01:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712296887; x=1712901687; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uUbJzYH8/GjAOeHJC0H+nvPY2BdnYIwFHY5/SfgrKT8=;
+        b=QtnvZWkT6szqnvXIvCNPttGikK+lmsfM/VNDu6Svbvwn8b2jTDZghhZ04kp1//L79e
+         r+iw8v5daWvGE7KKNnhrGw/AhBjVEzY26UZsTRubtpb2KD+WWlzo1ozBvDMLXE32UUMZ
+         3v+A044Ca/cFk7/OyLO2VB7CxfyW3UPci5Qb+mxgpymnjleJfm1D/Y4y559LI8gLIHnk
+         weTXr9ugsAxNSTAZ++wjKpaaG4k0JMP9t0focPGCtd7/SHoUsTknHQ4bIor7IGDIo8HC
+         LRxezdNF9ahwz7vnlecM3Rp4spH501qpDF9FL1NhR6xCVG0Ywt80Y+Gdgs6PrNz63rqI
+         YytA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712296887; x=1712901687;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uUbJzYH8/GjAOeHJC0H+nvPY2BdnYIwFHY5/SfgrKT8=;
+        b=rVRpPvys2jR3Cl+eaGZ1BS/NotwTGxPZ0S6o1IkKRLEbisVEoI8fkpRnMlrBfd8otr
+         Rh4FgY6tdz7oNFbjyj+2j+YsO6DDyWcsvS5jK9uZH7Zpw5eYHiEHOEiAaKjZTrfayz+R
+         xKHEMTKIZ/w9XyGKU+PE74vCQiqJdMrbkla22EIJRaxobUB4rquUi3xgXol/aqOXIrYj
+         T7doJDV5yswva0ThpLJ81N4OYuFXeIqFNq+HjNXWa6Fk0APQsO9vQgWxgBnFXvnczIoZ
+         RU7r8KcqTWbTDmV8LR4gSaj63WCHVjBy4dgNk1Xq3hU/WHlPRt6wdaWeZcGjJam88VvO
+         vT1g==
+X-Forwarded-Encrypted: i=1; AJvYcCVOBadzZwMevCyXfRDROAIRzBcDkFBtS1Z1wePvdp1GvP52AsQRlBuNRLEhYfXv5MWaIgAgIF9qyL5bOrVafvzBFQSShUKMYcCWDM7NSPJQwYYQ1dzgxmCXDbaHKlBLWPgHvxEyutmPUg==
+X-Gm-Message-State: AOJu0YwhoNafNcfyfvXOu6wDj3vmSlkH+1mJGHuNwaetgHBqNYf4JDq4
+	poQM+9i51uCAGDJyHdIm/mXoD1izGiqizI/XEQmchDIdadp/rl1+
+X-Google-Smtp-Source: AGHT+IHKLgYZfyGzkcUB0B7vve2jsQjKlZ7oe4oYMeYQQGuhr4OytF9qE9DF5KJ5fuPHpjPeoa9l5g==
+X-Received: by 2002:a19:641c:0:b0:516:c44a:657d with SMTP id y28-20020a19641c000000b00516c44a657dmr370940lfb.64.1712296886429;
+        Thu, 04 Apr 2024 23:01:26 -0700 (PDT)
+Received: from ?IPV6:2001:14ba:7426:df00::6? (drtxq0yyyyyyyyyyyyydy-3.rev.dnainternet.fi. [2001:14ba:7426:df00::6])
+        by smtp.gmail.com with ESMTPSA id f23-20020ac251b7000000b00513e24c304fsm99344lfk.193.2024.04.04.23.01.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 04 Apr 2024 23:01:26 -0700 (PDT)
+Message-ID: <0295c8db-b01e-45e7-b44e-79d36d81cd48@gmail.com>
+Date: Fri, 5 Apr 2024 09:01:25 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,166 +75,100 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 RESEND 6/6] arm64: dts: qcom: sm8650: Add video and
- camera clock controllers
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC: Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof
- Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>,
-        Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Taniya Das
-	<quic_tdas@quicinc.com>,
-        Satya Priya Kakitapalli <quic_skakitap@quicinc.com>,
-        Ajit Pandey <quic_ajipan@quicinc.com>,
-        Imran Shaik
-	<quic_imrashai@quicinc.com>
-References: <20240321092529.13362-1-quic_jkona@quicinc.com>
- <20240321092529.13362-7-quic_jkona@quicinc.com>
- <CAA8EJppHGS+W-aiXvJ2cE=jCbua8Y0Q+zv_QTs+C9V5+Y1vuZg@mail.gmail.com>
- <008d574f-9c9e-48c6-b64e-89fb469cbde4@quicinc.com>
- <b3464321-0c52-4c41-9198-e9e7b16aa419@quicinc.com>
- <CAA8EJpqDwCVAjDphnC-HdfseMJ-xd8VVxb5+9UcGEcKLcn-heg@mail.gmail.com>
- <fba2474e-31a6-4fef-acf9-7069933584c8@quicinc.com>
- <CAA8EJprfaALkQe-wUrBow6B1A66ro0AoVpfnQJLXgqFmL8isNQ@mail.gmail.com>
- <8a5a3cf8-5b4f-487f-ad91-00499509f8ec@quicinc.com>
- <CAA8EJpoW8MQQ3OPfOVYRJtgsn1JgKd5Ew7vqgWx3xWE-xJ=R-g@mail.gmail.com>
-Content-Language: en-US
-From: Jagadeesh Kona <quic_jkona@quicinc.com>
-In-Reply-To: <CAA8EJpoW8MQQ3OPfOVYRJtgsn1JgKd5Ew7vqgWx3xWE-xJ=R-g@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH 1/2] dt-bindings: mfd: Add ROHM BD71879
+Content-Language: en-US, en-GB
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Andreas Kemnade <andreas@kemnade.info>
+Cc: lee@kernel.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240402193515.513713-1-andreas@kemnade.info>
+ <20240402193515.513713-2-andreas@kemnade.info>
+ <6420ac43-f200-459c-8c38-7cd55c64a155@linaro.org>
+ <20240404123010.69454fda@aktux>
+ <8f37211a-57ed-48ab-8de8-cd5a0d4c6609@linaro.org>
+From: Matti Vaittinen <mazziesaccount@gmail.com>
+In-Reply-To: <8f37211a-57ed-48ab-8de8-cd5a0d4c6609@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: HmuYKecfWjlKZSgXwRfjOxxcbIuBOWnQ
-X-Proofpoint-ORIG-GUID: HmuYKecfWjlKZSgXwRfjOxxcbIuBOWnQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-05_05,2024-04-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
- spamscore=0 lowpriorityscore=0 adultscore=0 bulkscore=0 mlxlogscore=999
- mlxscore=0 suspectscore=0 priorityscore=1501 phishscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404050042
 
-
-
-On 4/4/2024 9:35 PM, Dmitry Baryshkov wrote:
-> On Thu, 4 Apr 2024 at 13:06, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+On 4/4/24 15:04, Krzysztof Kozlowski wrote:
+> On 04/04/2024 12:30, Andreas Kemnade wrote:
+>> On Thu, 4 Apr 2024 08:59:54 +0200
+>> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
 >>
->>
->>
->> On 4/4/2024 11:00 AM, Dmitry Baryshkov wrote:
->>> On Thu, 4 Apr 2024 at 08:13, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
+>>> On 02/04/2024 21:35, Andreas Kemnade wrote:
+>>>> As this chip was seen in several devices in the wild, add it.
 >>>>
+>>>> Signed-off-by: Andreas Kemnade <andreas@kemnade.info>
+>>>> Suggested-by: Matti Vaittinen <mazziesaccount@gmail.com>
+>>>> ---
+>>>>   Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml | 4 +++-
+>>>>   1 file changed, 3 insertions(+), 1 deletion(-)
 >>>>
->>>>
->>>> On 4/3/2024 9:24 PM, Dmitry Baryshkov wrote:
->>>>> On Wed, 3 Apr 2024 at 10:16, Jagadeesh Kona <quic_jkona@quicinc.com> wrote:
->>>>>>
->>>>>>
->>>>>>
->>>>>> On 3/25/2024 11:38 AM, Jagadeesh Kona wrote:
->>>>>>>
->>>>>>>
->>>>>>> On 3/21/2024 6:43 PM, Dmitry Baryshkov wrote:
->>>>>>>> On Thu, 21 Mar 2024 at 11:27, Jagadeesh Kona <quic_jkona@quicinc.com>
->>>>>>>> wrote:
->>>>>>>>>
->>>>>>>>> Add device nodes for video and camera clock controllers on Qualcomm
->>>>>>>>> SM8650 platform.
->>>>>>>>>
->>>>>>>>> Signed-off-by: Jagadeesh Kona <quic_jkona@quicinc.com>
->>>>>>>>> ---
->>>>>>>>>      arch/arm64/boot/dts/qcom/sm8650.dtsi | 28 ++++++++++++++++++++++++++++
->>>>>>>>>      1 file changed, 28 insertions(+)
->>>>>>>>>
->>>>>>>>> diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi
->>>>>>>>> b/arch/arm64/boot/dts/qcom/sm8650.dtsi
->>>>>>>>> index 32c0a7b9aded..d862aa6be824 100644
->>>>>>>>> --- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
->>>>>>>>> +++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
->>>>>>>>> @@ -4,6 +4,8 @@
->>>>>>>>>       */
->>>>>>>>>
->>>>>>>>>      #include <dt-bindings/clock/qcom,rpmh.h>
->>>>>>>>> +#include <dt-bindings/clock/qcom,sm8450-videocc.h>
->>>>>>>>> +#include <dt-bindings/clock/qcom,sm8650-camcc.h>
->>>>>>>>>      #include <dt-bindings/clock/qcom,sm8650-dispcc.h>
->>>>>>>>>      #include <dt-bindings/clock/qcom,sm8650-gcc.h>
->>>>>>>>>      #include <dt-bindings/clock/qcom,sm8650-gpucc.h>
->>>>>>>>> @@ -3110,6 +3112,32 @@ opp-202000000 {
->>>>>>>>>                             };
->>>>>>>>>                     };
->>>>>>>>>
->>>>>>>>> +               videocc: clock-controller@aaf0000 {
->>>>>>>>> +                       compatible = "qcom,sm8650-videocc";
->>>>>>>>> +                       reg = <0 0x0aaf0000 0 0x10000>;
->>>>>>>>> +                       clocks = <&bi_tcxo_div2>,
->>>>>>>>> +                                <&gcc GCC_VIDEO_AHB_CLK>;
->>>>>>>>> +                       power-domains = <&rpmhpd RPMHPD_MMCX>;
->>>>>>>>> +                       required-opps = <&rpmhpd_opp_low_svs>;
->>>>>>>>
->>>>>>>> The required-opps should no longer be necessary.
->>>>>>>>
->>>>>>>
->>>>>>> Sure, will check and remove this if not required.
->>>>>>
->>>>>>
->>>>>> I checked further on this and without required-opps, if there is no vote
->>>>>> on the power-domain & its peer from any other consumers, when runtime
->>>>>> get is called on device, it enables the power domain just at the minimum
->>>>>> non-zero level. But in some cases, the minimum non-zero level of
->>>>>> power-domain could be just retention and is not sufficient for clock
->>>>>> controller to operate, hence required-opps property is needed to specify
->>>>>> the minimum level required on power-domain for this clock controller.
->>>>>
->>>>> In which cases? If it ends up with the retention vote, it is a bug
->>>>> which must be fixed.
->>>>>
->>>>
->>>> The minimum non-zero level(configured from bootloaders) of MMCX is
->>>> retention on few chipsets but it can vary across the chipsets. Hence to
->>>> be on safer side from our end, it is good to have required-opps in DT to
->>>> specify the minimum level required for this clock controller.
+>>>> diff --git a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+>>>> index 0b62f854bf6b..e4df09e8961c 100644
+>>>> --- a/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+>>>> +++ b/Documentation/devicetree/bindings/mfd/rohm,bd71828-pmic.yaml
+>>>> @@ -17,7 +17,9 @@ description: |
+>>>>   
+>>>>   properties:
+>>>>     compatible:
+>>>> -    const: rohm,bd71828
+>>>> +    enum:
+>>>> +      - rohm,bd71828
+>>>> +      - rohm,bd71879
 >>>
->>> We are discussing sm8650, not some abstract chipset. Does it list
->>> retention or low_svs as a minimal level for MMCX?
+>>> In your second commit you claim they are compatible, so why they are not
+>>> marked as such?
 >>>
+>> so you mean allowing
 >>
->> Actually, the minimum level for MMCX is external to the clock
->> controllers.
-> 
-> Yes, it comes from cmd-db
-> 
->>   But the clock controller requires MMCX to be atleast at
->> lowsvs for it to be functional.
-> 
-> Correct
-> 
->> Hence we need to keep required-opps to
->> ensure the same without relying on the actual minimum level for MMCX.
-> 
-> And this is not correct. There is no need for the DT to be redundant.
-> I plan to send patches removing the existing required-opps when they
-> are not required.
->
-I agree this is not required if cmd-db minimum level is already at 
-lowsvs. But since MMCX running at lowsvs is a mandatory requirement for 
-clock controller to operate, I believe it is good to have required-opps 
-to ensure we meet this requirement in all cases, rather than relying on 
-the cmd-db minimum level which we have no control over.
+>> compatible = "rohm,bd71828"
+>> and
+>> compatible = "rohm,bd71879", "rohm,bd71828"
 
-Thanks,
-Jagadeesh
+
+This makes me slightly nervous. It wouldn't be the first time when I've 
+been told "they are similar", and later the reality has turned out to be 
+"they are similar, except...". Furthermore, even if these devices seem 
+similar to software (which is what the comment in the MFD driver is 
+referring to), it does not mean these devices are 100% electrically 
+compatible so that they could be used as a "drop-in" replacement to each 
+others. I wouldn't guarantee that.
+
+Furthermore, my current understanding is that the BD71828 was a model 
+that was used for a limited purposes. So, maybe creating an dt-entry like:
+compatible = "rohm,bd71879", "rohm,bd71828"
+
+might not prove to be too useful. (But I'm not 100% certain on this).
+
+> Yes. If there are reasons against, please briefly mention them in commit
+> msg.
+
+I would like to understand the rationale for allowing:
+compatible = "rohm,bd71879", "rohm,bd71828".
+
+Is the intention to:
+1) allow boards which tell the software that "the hardware may be 
+bd71828 or bd71879", or
+2) to tell a binding reader that these ICs are likely to be usable as 
+replacements to each others?
+(Or, is there some other rationale beyond these?)
+
+If it's 1), then I see limited sense in doing so, while I expect that 
+not so many bd71828 variants will be seen out there - and at least not 
+in that many different products. If it's the 2), then I wouldn't say we 
+have the facts to do this.
+And, as always, if there is 3), 4), ... - I am keen to learn :)
+
+Yours,
+	-- Matti
+
+-- 
+Matti Vaittinen
+Linux kernel developer at ROHM Semiconductors
+Oulu Finland
+
+~~ When things go utterly wrong vim users can always type :help! ~~
 
 
