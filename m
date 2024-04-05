@@ -1,72 +1,52 @@
-Return-Path: <linux-kernel+bounces-132790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60800899A2E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:05:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEA9A899A32
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:06:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3B081F23115
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:05:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B2AD1C20E1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B24161336;
-	Fri,  5 Apr 2024 10:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7FF1161339;
+	Fri,  5 Apr 2024 10:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Npm0cDWT"
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="IxP8PvBs"
+Received: from mout.web.de (mout.web.de [212.227.15.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02A0161907
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CA327447;
+	Fri,  5 Apr 2024 10:06:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712311525; cv=none; b=IQvIMYWw3joyCiaPtdvZJ2fVimVtGW1eJkMwu4x9oL67DgCpwSW08XYZ6aaqKhOTSFRBLcW6i2jcGY8Ri9dLvjbRAprMuxvtso8pw+w/hFvX3sq7EBYAigS/Q1ESDRbn5LhioihOmuEPh5yIrMqNU/U4pVbM8p4rMYoFEwYoxaM=
+	t=1712311591; cv=none; b=VrOV1DfPDUWCa7OJsj3xaoDLgxlpRioErPlpbbB2LipqExT1P0PXnCGbQaakXShkNR/sxKmXq+WF591O9V0UjljSggNXzeZhx+nYRhQpPKJ0wh8IHXgJHqOWao4/ed1Z0xVJDkQ5qoTWE/TAxR8VViNCxoWKK5YVDtRaC3vq9wQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712311525; c=relaxed/simple;
-	bh=5faoT9xunTo9gmrfIgQNKCITOx66fCo3gMcXas4GecM=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=ZR6fuwkPCAwGP1BFD4PO/K3ReKmO24Os630JbRJrnR/PCf3m1aVAwvbIfji3QZ/wMtzUDfcqvx2b05G9rPsm1/SabqGGG06q/DQQeXe8tAPqdf7ByuNceswFa86GneDVeqKhayCyT4/8ksFd9R1dhzDBdftCF8vjJLfc/dpE+sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Npm0cDWT; arc=none smtp.client-ip=209.85.208.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d4a8bddc21so25312331fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 03:05:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712311522; x=1712916322; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:from:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WwcV05X3lqi4MM+buZxa5Jcly8fqYYsYkniToo40n50=;
-        b=Npm0cDWT7zT0KM1edc2dkRy9SPK6iBF80s0AqPGNYSoi92cDbMHdk25VKESGV3KG8G
-         HLzgvDAjp2cwKDHnyJyzJ/0rxrvPrWTsTm0TA6Yag/O1rH9dHByhDTCqMzmXmGVgYoam
-         XBtM14eJ+mzZbeMg0Fz0S7hw0nrl2yvHkhbup6hw2LifBT+yMhckns4+Ze9Psr4gxKQ1
-         b10FAoqQWFBEx5pfPeenJZzCHXZvVxqUsuspTRUhOPmYv454/d+vfTyRQJARmZjJwXzk
-         s64n5TdAQxWJVch7f78ycZXPvJFg+Lacux7DfqONl7kNLkLnSjdvdoXdpkm4/z/HfMDm
-         U54w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712311522; x=1712916322;
-        h=content-transfer-encoding:cc:to:subject:from:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WwcV05X3lqi4MM+buZxa5Jcly8fqYYsYkniToo40n50=;
-        b=JksuGg+8XSFEPT4h87cLd7TjMYaLh0wIqZlBoMTL9mgzBtfuZMt8UXNnxtRN8JRqmD
-         +9baElFg6bjJ8KhpD5tO+rDkmTWDewm+n9jtmr4nX85gnTs1DOIct4xKYCaRVrrYYSIM
-         Bmoz93wvQpltnEQlXBBcdC2mernaI57kdjE4tbzArFMzWLcbHQjvsU6Nm4dxUWfGT7bx
-         QX2Ns+Tz4CjFpCfdD3ExReV3Yu2+OaDxU/YTbsPVNQij2q/cA+g8G6yUEoFx4OQsADW6
-         uNtVXKOxsCYqCTY9MRaNi8A0EVselCRujsJLfybpzkodzVxdkgbgslGkrkJiO7Z9aUm6
-         2S1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU8ShRYUvci+/ODZ+gONmWQZjOUo3u2iGKbEQO4OZGdFfug1WZBF7K6FG6rpyeT1x/AYNzPeqz9bhvmqoTO6ho3Nf4td8oM6Vks3afC
-X-Gm-Message-State: AOJu0YxWk4DTMsSjFoySv+idflHoBiMnkLBAOZUaQVBIG6LyFi/uLfeK
-	wIoU07ysjdQA6bkgkwrpMQd3j3ML7wAwz42mZr+T9+JGjAmN23plHvSPODy/5EY=
-X-Google-Smtp-Source: AGHT+IF/mnkjD81MfQ9NRJLmv+Df3tYQPOjV/tVLAZmpQGuXJx5AC651mf0V7ABqFuKf8dZ5K3m+Xg==
-X-Received: by 2002:a2e:9b0b:0:b0:2d7:1830:d5f9 with SMTP id u11-20020a2e9b0b000000b002d71830d5f9mr742081lji.31.1712311521856;
-        Fri, 05 Apr 2024 03:05:21 -0700 (PDT)
-Received: from [192.168.2.107] ([82.76.204.14])
-        by smtp.gmail.com with ESMTPSA id u11-20020a05600c210b00b00414674a1a40sm2312275wml.45.2024.04.05.03.05.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 03:05:21 -0700 (PDT)
-Message-ID: <e4089855-aca9-4993-bac6-e59370cf7954@linaro.org>
-Date: Fri, 5 Apr 2024 11:05:18 +0100
+	s=arc-20240116; t=1712311591; c=relaxed/simple;
+	bh=46/M8frtVI1xwHwJDfzOWBILidy1qF/nbknjFjniG0Y=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=I65StV5mdgcdNDrhriClKl9q4OrC2wlJNDsTnwiqTed+GXtEC+5YNHXCeTSYm3rt9yj375ai/0dYwy9zEwOIPqQdTOFBn+fgeIuenQb04lYAQiBFWOs3YucYd1vQLoC8yGifj7Cyp2z2FJJrzBhBkrYY0W+GvV5TIR7R5ZZvl3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=IxP8PvBs; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1712311570; x=1712916370; i=markus.elfring@web.de;
+	bh=h1rD7cl36D2n8I8nOEC0tJ1ZmmxTzOTFUREe8MP1MAI=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=IxP8PvBsbBgI06W49RzUSQBvZz6BCq3PFnpRVr/ZpiFKbUMPG2UB3AtDHpkN84U+
+	 lT2K2HCZIswoF7yj0G0WE/4+yM03xYmvhfvywElv5UJEsgo2Ma08KexaUyPV5Vopq
+	 596Br/ZBhBLA8drDiizBzHtnFT6JxVd3NzW1Igh8OwUFw5TGkG6+ZN28EdXTLFilk
+	 rpuGxpOjfkT+IpMbnLy3Pkk5OuuLB9eBZdgfeEJ5RB+ZC/D11D/Ou9A5BUnTLgtH0
+	 s8ssHbY3ADf6l6wcr6Ad5Jc80L8ue+aqO4pJ4TAekuXq1JPhFbWAJBikPEvE1nZG9
+	 3CcfR/cYv4/prJWrhQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MKdHE-1s6txd3UOS-00Ubi9; Fri, 05
+ Apr 2024 12:06:09 +0200
+Message-ID: <12a5180c-fbac-41dc-b1bf-9eded9d8c5ed@web.de>
+Date: Fri, 5 Apr 2024 12:05:56 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,82 +54,64 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-From: Tudor Ambarus <tudor.ambarus@linaro.org>
-Subject: GS101 pl330 AxCACHE
-To: Arnd Bergmann <arnd@kernel.org>, =?UTF-8?B?6rmA7J6s7JuQL0pBRVdPTiBLSU0=?=
- <jaewon02.kim@samsung.com>, Vinod Koul <vkoul@kernel.org>,
- dmaengine@vger.kernel.org, bumyong.lee@samsung.com, surendran.k@samsung.com,
- l.stelmach@samsung.com, m.szyprowski@samsung.com
-Cc: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
- linux-samsung-soc@vger.kernel.org,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
- Peter Griffin <peter.griffin@linaro.org>,
- William McVicker <willmcvicker@google.com>, kernel-team@android.com,
- Sam Protsenko <semen.protsenko@linaro.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- sugar.zhang@rock-chips.com, Alim Akhtar <alim.akhtar@samsung.com>,
- Sylwester Nawrocki <s.nawrocki@samsung.com>,
- Chanwoo Choi <cw00.choi@samsung.com>, jassisinghbrar@gmail.com,
- "Simek, Michal" <michal.simek@amd.com>
+To: Shahar Avidar <ikobh7@gmail.com>, linux-staging@lists.linux.dev,
+ kernel-janitors@vger.kernel.org,
+ Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+ "Felix N. Kimbu" <felixkimbu1@gmail.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>, Rob Herring <robh@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+References: <20240405074000.3481217-6-ikobh7@gmail.com>
+Subject: Re: [PATCH v3 5/7] staging: pi433: Remove duplicated code using the
+ "goto" error recovery scheme.
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240405074000.3481217-6-ikobh7@gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:mhQpAhLFo7ec/e+NSRI//PqcCKVx4mChnrxS6HgTJKN0F9eJODN
+ G18UTr3jFVbFS535x0kRrC5Awju3Fb7FQ92s/mBaG0mf5PQqG4RqxsUiadSxY9v/37CJQlW
+ X/hJhWIZc44ruv9F+DgP29MYONiq7YK11IdqjEn2PMe5nqZ1gE2QtkCdgAIwPrT9mZ7PkYG
+ usLzoDhNnMUOr835xL+bA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:4QjQawHPQ3k=;1+SIoM3nxoQyGRfDtsKMlr3BPbY
+ sdbnZGu6YO8wbYi7c8JOY+023ecEHxj6USL226LwddImTF4Y3ZRIDL21VzzUNJzTkXoj9Jola
+ KJuvXL9NU3RAt9khWJBLEz4zbFlBZRFEctFR48ihhFvb1A/SeHNJDXMHqTZZ0zOla2AB58IeF
+ cnNoUkmRk/tuRv+r9u89DNXhL/wX8HSmLvj3x8IFDlT2aZOUWJn51FnK3tja/Lb9KId0QIU4U
+ ug13HJdwEMqv3IfHLf/QNFjdsTDxti0foXDAwFdOO3PYKMyuO52Vbc2ded8ZKGXRs6fyVAUud
+ Dk6c+eFzTX0wYE28V+spJDjy+XPWnsCuROE1NZj5oxvQ6OG25zxDDXL+VuHxdRaGRMnX4G+VI
+ RmFasWpvZ1zISIdmbmwTsNCILH4fVPvJf7a9ysDk2PljsWPMVdh1r82QsIz7GAoBRQM6ksoFm
+ BR3cd+CkDUnXN5pslGn9BXiWQkIt8mwHU2vKtgshzIjJVkhsEsGSGb83e6tbPuRTfAjW+gxdk
+ 6DLA8D6SFvnTIa/UpaWRMalvbvvPoo0iXqScdvHx+9tVZXMK6B6CeLx0CkYs8/mxT/tL6s3B3
+ e03KDak7pRwe1BsOmh0RnewcUWdfiVwcqmK3bSdJkAzBJoPyL5tMauBMezomezVIbnr/66oJe
+ tk/E12ppxp94FdEBLmvGeBUyhDq+x98VD+jWjgwW+FniFMuu1sIIPBVaf0ptavuFMafGTDe1q
+ OROECt+eoy3ivkVtxind6TOYLH3yx+kf8dlzo50XkTOAXkeZByOei8Y9N+W6qSDrOVwjSzA1q
+ xs8WAb+Axc/tetLGUkn7TqGY4wJpKFf3Js0F1JxBsaZvs=
 
-Hi,
+I suggest to use the summary phrase =E2=80=9CUse common error handling cod=
+e
+in pi433_init()=E2=80=9D instead.
 
-I'm trying to enable the pl330 DMA controller in GS101 and I'm facing
-some problems related to AxCACHE. I'm writing this with the hope that
-someone (from samsung?) knows a bit more about the pl330 integration and
-its AxCACHE use.
 
-For simplicity, let's consider just the DMA_MEM_TO_MEM case for the
-moment. With the current upstream pl330 driver I see that the dmatest
-module complains with errors like:
-  [ 6572.661927][ T6358] dmatest: dma0chan0-copy0: dstbuf[0x18e0] not
-copied! Expected cf, got 3f
+> pi433_init had "unregister_chrdev" called twice.
+> Remove it using goto statements.
 
-Checked the downstream driver and found a fix:
--       desc->rqcfg.scctl = CCTRL0;
--       desc->rqcfg.dcctl = CCTRL0;
-+       desc->rqcfg.scctl = CCTRL2;
-+       desc->rqcfg.dcctl = CCTRL2;
+How do you think about to use the following change description?
 
-According to CoreLing DMA-330 TRM [1], the {dst,src}_cache_ctrl fields
-program the state of AxCACHE.
+   unregister_chrdev() was called in two if branches.
+   Thus add jump targets so that a bit of exception handling can be better
+   reused at the end of this function implementation.
 
-AMBA AXI and ACE Protocol Specification [2] says that these signals
-specify the memory attributes of a request.
-  - CTRL0 -> AxCACHE[3:0] = 0b0000 (Device non-bufferable)
-  - CTRL2 -> AxCACHE[3:0] = 0b0010 (Normal Non-cacheable Non-bufferable)
 
-AxCACHE[1] bit is the Modifiable bit. I guess that GS101 can not meet
-the requirements of Non-modifiable transactions. But why? Culprit could
-be TREX, the non-coherent interconnect, which collects requests from
-different masters and sends the request to cache coherent interconnect
-and to System-Level Cache. But I can't pin-point the exact restriction
-that comes with it. Any hints here are appreciated.
+=E2=80=A6
+v2->v3:
+=E2=80=A6
+          a seperate patch.
+=E2=80=A6
 
-Thanks for reading up to here. Let's consider now the DMA_MEM_TO_DEV and
-DMA_DEV_TO_MEM cases. I guess that for simplicity the driver author
-chose to always set CCTRL0 for both src and dst regardless of the memory
-type, device or normal. This is possible because normal non-cacheable
-memory can be accessed by any Manager using a device memory transaction
-(see "A4.5 Mismatched memory attributes" section of [2]). This can be
-improved however, if we use CTRL0 (thus Device non-bufferable) for DEV,
-and CTRL2 (thus Normal Non-cacheable Non-bufferable) for MEM. I tried
-this suggestion on GS101 for a MEM to DEV transaction and I get
-timeouts. I tried the downstream driver as well. The downstream GS101
-device tree defines all the USI nodes without DMA support, I guess the
-to/from DEV transactions are not sorted out yet. I enabled the DMA use
-for USI in downstream and ITMON complains with "Unsupported transaction
-error". Any feedback is welcomed.
+Would you like to avoid a typo here?
 
-Thanks!
-ta
-
-[1]
-https://documentation-service.arm.com/static/5e8e25befd977155116a5ad9?token=
-[2]
-https://documentation-service.arm.com/static/602a9df190ee6824a1e02b98?token=
+Regards,
+Markus
 
