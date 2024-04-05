@@ -1,216 +1,155 @@
-Return-Path: <linux-kernel+bounces-132789-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132790-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF532899A2B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:05:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60800899A2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:05:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A57B72849B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:05:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3B081F23115
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:05:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 567E8161328;
-	Fri,  5 Apr 2024 10:05:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B24161336;
+	Fri,  5 Apr 2024 10:05:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QGZzqsqC"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Npm0cDWT"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D970F27447;
-	Fri,  5 Apr 2024 10:05:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A02A0161907
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712311521; cv=none; b=HSPiC6D000hitAH+kLRdA/titRX5PVg+AMCzW2HDph7VMYwF1MNbIWU6r2Fv60+x+PRimm0zBQL1z2S/dTDKgcbQkb9qWxoN4W/N53pkYESVngYw7uy9MRVCZaTepy3JWVTd3PwgvO/3WP+z8RkwPSEQsgBabb67W1SLG4RXwPA=
+	t=1712311525; cv=none; b=IQvIMYWw3joyCiaPtdvZJ2fVimVtGW1eJkMwu4x9oL67DgCpwSW08XYZ6aaqKhOTSFRBLcW6i2jcGY8Ri9dLvjbRAprMuxvtso8pw+w/hFvX3sq7EBYAigS/Q1ESDRbn5LhioihOmuEPh5yIrMqNU/U4pVbM8p4rMYoFEwYoxaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712311521; c=relaxed/simple;
-	bh=7kM1F19yoDOcUM2VHaBFp2c+soyX1IiwreAYmFx4a+s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fmfnQMP5B+7IySTDet8N7EDNMzESVclg6Zx5WDFUbzUqRj9P9huJY4w97OD2RW5/fhk857H/CIyKscwQavk9zWuoo4vhz7YI3gxiWxKbTZs6mVdd2V5k4YAJF8MDJwFguEc5lksBV9pZqFut+mnrxdIEXckrJE5tRipUOBoeBI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QGZzqsqC; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41551500a7eso15673425e9.2;
-        Fri, 05 Apr 2024 03:05:19 -0700 (PDT)
+	s=arc-20240116; t=1712311525; c=relaxed/simple;
+	bh=5faoT9xunTo9gmrfIgQNKCITOx66fCo3gMcXas4GecM=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=ZR6fuwkPCAwGP1BFD4PO/K3ReKmO24Os630JbRJrnR/PCf3m1aVAwvbIfji3QZ/wMtzUDfcqvx2b05G9rPsm1/SabqGGG06q/DQQeXe8tAPqdf7ByuNceswFa86GneDVeqKhayCyT4/8ksFd9R1dhzDBdftCF8vjJLfc/dpE+sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Npm0cDWT; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d4a8bddc21so25312331fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 03:05:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712311518; x=1712916318; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7VnK8I425dCI37ex6fueoi4IBtnoCCvi/FqHwWJZqFc=;
-        b=QGZzqsqCxu2dBhB7OPb9oJCfC2mXNgNvv91ZNtCLWEP9kcB6O5g/bSOim370Tiunq+
-         Ue/1YXAQkrVuwm+v/udWZCaFG+u0nAKo8wVu5/fBCgzkOd98QfngW8vPjmzsYxrvS1yl
-         w0FgVwGTxGWXC4jfdmTfNgf39fr7wJeh1Eev4IVPhKjGBF+fbi+XSDm/uNwwcM4bObqL
-         ZZPAk/zaoszYU/+Suw57lwGPP/IhN2+qPtQ9qoisvVZlcW5TIjQimw4hYSlsTsoa00eI
-         am5QVAyz5hjbdGIFnZfoQozEgHbAroonT4uizCPEcgGxCP97FSQAztJ9tGGUKne6DgCB
-         Mh8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712311518; x=1712916318;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=linaro.org; s=google; t=1712311522; x=1712916322; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7VnK8I425dCI37ex6fueoi4IBtnoCCvi/FqHwWJZqFc=;
-        b=cuzPeMQWGBzbl2p9kWb3pJoUs3xoMztaVLIKJEcRKI5lu8nAN+1fp2kFrEwC/WY7Cg
-         3drrhVE4Uxj7WAM38PioGIqCAIztwwzmcNtuQlWsuEADT10kufoZDvKjf5u0Ew6nGwhq
-         msTLK3R0IJxX3py2BxGJ2pJm5nYjvV+wAOUnVIS6xTjZC6a1cPL9Ud59VgFrMdQ/Pkqy
-         FiOwlT+G7/nLy/vxj6jDiPtHE3CLZzRJ0qyKDwiO2/MftHO5hNLKT8DXZl6sXHDN2a1c
-         AQRnoY6zVPv0i1nBeO7kBYQim0j+uuBy7RtsE8hKH+p5He1kJ/e+CHJ3N3jV9Jzss+Y/
-         mkrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVlBQvvpu2rj0GTNHqVaC7WtcvxpwZh22OKVpKoLBAR/rR9+u9b6+PldYWJgC1d33iMLD2q2FF0cSv2/EoU0DY6CXcOcmtXgyYW9rp+irmfaenZuNUV14xAd+goKZ7TmU4pY/QnXA==
-X-Gm-Message-State: AOJu0YxRAZCK5EsfFJgSfsh3Db6eggvK/jEsJDiCY2o1tsoHsNBO63+n
-	jPFIptxXp7BnXKPA8a2J8TIzadjYup/MprfgCaBbl6Jf/sI6+/M6
-X-Google-Smtp-Source: AGHT+IHmwsqWFX78cI8qG9wG7iEN0QIO4wBuRjuQHpMWUf6mVAabIxXpRFZnZkvY3v0ce1Vc92K0/A==
-X-Received: by 2002:a05:600c:4e4a:b0:415:63df:6513 with SMTP id e10-20020a05600c4e4a00b0041563df6513mr746663wmq.39.1712311517988;
-        Fri, 05 Apr 2024 03:05:17 -0700 (PDT)
-Received: from andrea ([31.189.25.240])
-        by smtp.gmail.com with ESMTPSA id m13-20020a05600c4f4d00b00416326cc353sm310063wmq.8.2024.04.05.03.05.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 03:05:17 -0700 (PDT)
-Date: Fri, 5 Apr 2024 12:05:11 +0200
-From: Andrea Parri <parri.andrea@gmail.com>
-To: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	kernel-team@meta.com, mingo@kernel.org, stern@rowland.harvard.edu,
-	will@kernel.org, peterz@infradead.org, boqun.feng@gmail.com,
-	npiggin@gmail.com, dhowells@redhat.com, j.alglave@ucl.ac.uk,
-	luc.maranget@inria.fr, akiyks@gmail.com,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Daniel Lustig <dlustig@nvidia.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH memory-model 2/3] Documentation/litmus-tests: Demonstrate
- unordered failing cmpxchg
-Message-ID: <Zg/M141yzwnwPbCi@andrea>
-References: <8550daf1-4bfd-4607-8325-bfb7c1e2d8c7@paulmck-laptop>
- <20240404192649.531112-2-paulmck@kernel.org>
+        bh=WwcV05X3lqi4MM+buZxa5Jcly8fqYYsYkniToo40n50=;
+        b=Npm0cDWT7zT0KM1edc2dkRy9SPK6iBF80s0AqPGNYSoi92cDbMHdk25VKESGV3KG8G
+         HLzgvDAjp2cwKDHnyJyzJ/0rxrvPrWTsTm0TA6Yag/O1rH9dHByhDTCqMzmXmGVgYoam
+         XBtM14eJ+mzZbeMg0Fz0S7hw0nrl2yvHkhbup6hw2LifBT+yMhckns4+Ze9Psr4gxKQ1
+         b10FAoqQWFBEx5pfPeenJZzCHXZvVxqUsuspTRUhOPmYv454/d+vfTyRQJARmZjJwXzk
+         s64n5TdAQxWJVch7f78ycZXPvJFg+Lacux7DfqONl7kNLkLnSjdvdoXdpkm4/z/HfMDm
+         U54w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712311522; x=1712916322;
+        h=content-transfer-encoding:cc:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=WwcV05X3lqi4MM+buZxa5Jcly8fqYYsYkniToo40n50=;
+        b=JksuGg+8XSFEPT4h87cLd7TjMYaLh0wIqZlBoMTL9mgzBtfuZMt8UXNnxtRN8JRqmD
+         +9baElFg6bjJ8KhpD5tO+rDkmTWDewm+n9jtmr4nX85gnTs1DOIct4xKYCaRVrrYYSIM
+         Bmoz93wvQpltnEQlXBBcdC2mernaI57kdjE4tbzArFMzWLcbHQjvsU6Nm4dxUWfGT7bx
+         QX2Ns+Tz4CjFpCfdD3ExReV3Yu2+OaDxU/YTbsPVNQij2q/cA+g8G6yUEoFx4OQsADW6
+         uNtVXKOxsCYqCTY9MRaNi8A0EVselCRujsJLfybpzkodzVxdkgbgslGkrkJiO7Z9aUm6
+         2S1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU8ShRYUvci+/ODZ+gONmWQZjOUo3u2iGKbEQO4OZGdFfug1WZBF7K6FG6rpyeT1x/AYNzPeqz9bhvmqoTO6ho3Nf4td8oM6Vks3afC
+X-Gm-Message-State: AOJu0YxWk4DTMsSjFoySv+idflHoBiMnkLBAOZUaQVBIG6LyFi/uLfeK
+	wIoU07ysjdQA6bkgkwrpMQd3j3ML7wAwz42mZr+T9+JGjAmN23plHvSPODy/5EY=
+X-Google-Smtp-Source: AGHT+IF/mnkjD81MfQ9NRJLmv+Df3tYQPOjV/tVLAZmpQGuXJx5AC651mf0V7ABqFuKf8dZ5K3m+Xg==
+X-Received: by 2002:a2e:9b0b:0:b0:2d7:1830:d5f9 with SMTP id u11-20020a2e9b0b000000b002d71830d5f9mr742081lji.31.1712311521856;
+        Fri, 05 Apr 2024 03:05:21 -0700 (PDT)
+Received: from [192.168.2.107] ([82.76.204.14])
+        by smtp.gmail.com with ESMTPSA id u11-20020a05600c210b00b00414674a1a40sm2312275wml.45.2024.04.05.03.05.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Apr 2024 03:05:21 -0700 (PDT)
+Message-ID: <e4089855-aca9-4993-bac6-e59370cf7954@linaro.org>
+Date: Fri, 5 Apr 2024 11:05:18 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404192649.531112-2-paulmck@kernel.org>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+From: Tudor Ambarus <tudor.ambarus@linaro.org>
+Subject: GS101 pl330 AxCACHE
+To: Arnd Bergmann <arnd@kernel.org>, =?UTF-8?B?6rmA7J6s7JuQL0pBRVdPTiBLSU0=?=
+ <jaewon02.kim@samsung.com>, Vinod Koul <vkoul@kernel.org>,
+ dmaengine@vger.kernel.org, bumyong.lee@samsung.com, surendran.k@samsung.com,
+ l.stelmach@samsung.com, m.szyprowski@samsung.com
+Cc: linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+ linux-samsung-soc@vger.kernel.org,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ =?UTF-8?Q?Andr=C3=A9_Draszik?= <andre.draszik@linaro.org>,
+ Peter Griffin <peter.griffin@linaro.org>,
+ William McVicker <willmcvicker@google.com>, kernel-team@android.com,
+ Sam Protsenko <semen.protsenko@linaro.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ sugar.zhang@rock-chips.com, Alim Akhtar <alim.akhtar@samsung.com>,
+ Sylwester Nawrocki <s.nawrocki@samsung.com>,
+ Chanwoo Choi <cw00.choi@samsung.com>, jassisinghbrar@gmail.com,
+ "Simek, Michal" <michal.simek@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
->  DCL-broken.litmus
-> -	Demonstrates that double-checked locking needs more than just
-> -	the obvious lock acquisitions and releases.
-> +    Demonstrates that double-checked locking needs more than just
-> +    the obvious lock acquisitions and releases.
->  
->  DCL-fixed.litmus
-> -	Demonstrates corrected double-checked locking that uses
-> -	smp_store_release() and smp_load_acquire() in addition to the
-> -	obvious lock acquisitions and releases.
-> +    Demonstrates corrected double-checked locking that uses
-> +    smp_store_release() and smp_load_acquire() in addition to the
-> +    obvious lock acquisitions and releases.
->  
->  RM-broken.litmus
-> -	Demonstrates problems with "roach motel" locking, where code is
-> -	freely moved into lock-based critical sections.  This example also
-> -	shows how to use the "filter" clause to discard executions that
-> -	would be excluded by other code not modeled in the litmus test.
-> -	Note also that this "roach motel" optimization is emulated by
-> -	physically moving P1()'s two reads from x under the lock.
-> +    Demonstrates problems with "roach motel" locking, where code is
-> +    freely moved into lock-based critical sections.  This example also
-> +    shows how to use the "filter" clause to discard executions that
-> +    would be excluded by other code not modeled in the litmus test.
-> +    Note also that this "roach motel" optimization is emulated by
-> +    physically moving P1()'s two reads from x under the lock.
->  
-> -	What is a roach motel?	This is from an old advertisement for
-> -	a cockroach trap, much later featured in one of the "Men in
-> -	Black" movies.	"The roaches check in.	They don't check out."
-> +    What is a roach motel?  This is from an old advertisement for
-> +    a cockroach trap, much later featured in one of the "Men in
-> +    Black" movies.  "The roaches check in.  They don't check out."
->  
->  RM-fixed.litmus
-> -	The counterpart to RM-broken.litmus, showing P0()'s two loads from
-> -	x safely outside of the critical section.
-> +    The counterpart to RM-broken.litmus, showing P0()'s two loads from
-> +    x safely outside of the critical section.
+Hi,
 
-AFAIU, the changes above belong to patch #1.  Looks like you realigned
-the text, but forgot to integrate the changes in #1?
+I'm trying to enable the pl330 DMA controller in GS101 and I'm facing
+some problems related to AxCACHE. I'm writing this with the hope that
+someone (from samsung?) knows a bit more about the pl330 integration and
+its AxCACHE use.
 
+For simplicity, let's consider just the DMA_MEM_TO_MEM case for the
+moment. With the current upstream pl330 driver I see that the dmatest
+module complains with errors like:
+  [ 6572.661927][ T6358] dmatest: dma0chan0-copy0: dstbuf[0x18e0] not
+copied! Expected cf, got 3f
 
-> +C cmpxchg-fail-ordered-1
-> +
-> +(*
-> + * Result: Never
-> + *
-> + * Demonstrate that a failing cmpxchg() operation will act as a full
-> + * barrier when followed by smp_mb__after_atomic().
-> + *)
-> +
-> +{}
-> +
-> +P0(int *x, int *y, int *z)
-> +{
-> +	int r0;
-> +	int r1;
-> +
-> +	WRITE_ONCE(*x, 1);
-> +	r1 = cmpxchg(z, 1, 0);
-> +	smp_mb__after_atomic();
-> +	r0 = READ_ONCE(*y);
-> +}
-> +
-> +P1(int *x, int *y, int *z)
-> +{
-> +	int r0;
-> +
-> +	WRITE_ONCE(*y, 1);
-> +	r1 = cmpxchg(z, 1, 0);
+Checked the downstream driver and found a fix:
+-       desc->rqcfg.scctl = CCTRL0;
+-       desc->rqcfg.dcctl = CCTRL0;
++       desc->rqcfg.scctl = CCTRL2;
++       desc->rqcfg.dcctl = CCTRL2;
 
-P1's r1 is undeclared (so klitmus7 will complain).
+According to CoreLing DMA-330 TRM [1], the {dst,src}_cache_ctrl fields
+program the state of AxCACHE.
 
-The same observation holds for cmpxchg-fail-unordered-1.litmus.
+AMBA AXI and ACE Protocol Specification [2] says that these signals
+specify the memory attributes of a request.
+  - CTRL0 -> AxCACHE[3:0] = 0b0000 (Device non-bufferable)
+  - CTRL2 -> AxCACHE[3:0] = 0b0010 (Normal Non-cacheable Non-bufferable)
 
+AxCACHE[1] bit is the Modifiable bit. I guess that GS101 can not meet
+the requirements of Non-modifiable transactions. But why? Culprit could
+be TREX, the non-coherent interconnect, which collects requests from
+different masters and sends the request to cache coherent interconnect
+and to System-Level Cache. But I can't pin-point the exact restriction
+that comes with it. Any hints here are appreciated.
 
-> +	smp_mb__after_atomic();
-> +	r0 = READ_ONCE(*x);
-> +}
-> +
-> +locations[0:r1;1:r1]
-> +exists (0:r0=0 /\ 1:r0=0)
+Thanks for reading up to here. Let's consider now the DMA_MEM_TO_DEV and
+DMA_DEV_TO_MEM cases. I guess that for simplicity the driver author
+chose to always set CCTRL0 for both src and dst regardless of the memory
+type, device or normal. This is possible because normal non-cacheable
+memory can be accessed by any Manager using a device memory transaction
+(see "A4.5 Mismatched memory attributes" section of [2]). This can be
+improved however, if we use CTRL0 (thus Device non-bufferable) for DEV,
+and CTRL2 (thus Normal Non-cacheable Non-bufferable) for MEM. I tried
+this suggestion on GS101 for a MEM to DEV transaction and I get
+timeouts. I tried the downstream driver as well. The downstream GS101
+device tree defines all the USI nodes without DMA support, I guess the
+to/from DEV transactions are not sorted out yet. I enabled the DMA use
+for USI in downstream and ITMON complains with "Unsupported transaction
+error". Any feedback is welcomed.
 
+Thanks!
+ta
 
-> +C cmpxchg-fail-ordered-2
-> +
-> +(*
-> + * Result: Never
-> + *
-> + * Demonstrate use of smp_mb__after_atomic() to make a failing cmpxchg
-> + * operation have acquire ordering.
-> + *)
-> +
-> +{}
-> +
-> +P0(int *x, int *y)
-> +{
-> +	int r0;
-> +	int r1;
-> +
-> +	WRITE_ONCE(*x, 1);
-> +	r1 = cmpxchg(y, 0, 1);
-> +}
-> +
-> +P1(int *x, int *y)
-> +{
-> +	int r0;
-> +
-> +	r1 = cmpxchg(y, 0, 1);
-> +	smp_mb__after_atomic();
-> +	r2 = READ_ONCE(*x);
-
-P1's r1 and r2 are undeclared.  P0's r0 and P1's r0 are unused.
-
-Same for cmpxchg-fail-unordered-2.litmus.
-
-  Andrea
+[1]
+https://documentation-service.arm.com/static/5e8e25befd977155116a5ad9?token=
+[2]
+https://documentation-service.arm.com/static/602a9df190ee6824a1e02b98?token=
 
