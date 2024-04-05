@@ -1,132 +1,195 @@
-Return-Path: <linux-kernel+bounces-132688-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132689-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 967AE89989F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:56:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD8F18998A2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:56:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0C45EB21520
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:56:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 33C7DB21DC2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:56:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1C915FA8D;
-	Fri,  5 Apr 2024 08:56:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBEED15FCEE;
+	Fri,  5 Apr 2024 08:56:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="QtRX9Adn"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WIrPQ3fO"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 511E7611E;
-	Fri,  5 Apr 2024 08:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAB3611E;
+	Fri,  5 Apr 2024 08:56:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712307371; cv=none; b=NpdJ7X5z7MYUCivQCJK1hGOd4cxbOsYadYjdK6CgwyQVKSeLBp7pwatTLuLyU4lPz13CpEupkLYwdAqP/eoAoZqsxLc7KjFhR/NB0fDN/8Utn54Gn4raVaVh3lNduriyt6HKLRzBv8n0c9RO0lkUNiL4Dg86vQCGdRN7rkEp+J8=
+	t=1712307382; cv=none; b=Ve8bWcb+cy26rOm6mdmEVTY+WDtA1Ge2ul3veXoAFsTIvQOYbGX/HaU2xwb+Jl1kPN6uA3cej/2XWqZYkNRhyTAwp0hbjJ3Jz44OW9b/jmCWX5mJJgbON2ZvPp7ZyWNolmz+V6P0eq6JtNxPPSuKXW6xuVpNTca+DUNoRldPDPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712307371; c=relaxed/simple;
-	bh=wGKl8M0KGVCfuWC968Hnzb25vs3AyVEmZN6DO2nu+to=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lLDzqaWsAm//N/yPqRHBOZyzul+4AYH5ZKRPU1PdS0pK3f45+qbIaC4HrbBN6uAVWJOAlpIy9P2nSNBflJKePniTVchUTjpCNNZ0m4gUZI0GjVRUJCQK4qp6vwJISSKBJDIyCAwcykKb62Q4HRuKvs1YqP9rGMEXZEx9+Vwhxkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=QtRX9Adn; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712307365;
-	bh=wGKl8M0KGVCfuWC968Hnzb25vs3AyVEmZN6DO2nu+to=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=QtRX9Adnok9ub5w71euVdVDrQCvCoofDVJ9fVJURGaQqt9lQO2G+sUobIZDzX6PVH
-	 +HXeWPJ0WQYR/Gm7JzyrGot4JMKs+iL+LWNTvtLatKmqotgLOAE6hkXUXYW+Y8OtPv
-	 3BvNtuunP7ssmc/6VBdYfJnXN8vKrr7UMVPVnKuWJMQXttTm/Qg26KxLM2xjErq/Yq
-	 tMzGCHCA6PkFBrFlCY4jQ655/Wszqr+/md7YftPYvUhjtz/w9iIXz/b/GeyWTxz59J
-	 ZW7rk/mNiKpHqCmSCe/F1cqauUe94dJHebTvPxGmr1gtr8HJQYHIVRBQqVblttU9lP
-	 IuuRsMpJYz1Lw==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sebastianfricke)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 45E823780EC6;
-	Fri,  5 Apr 2024 08:56:05 +0000 (UTC)
-Date: Fri, 5 Apr 2024 10:56:04 +0200
-From: "sebastian.fricke@collabora.com" <sebastian.fricke@collabora.com>
-To: Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc: Nas Chung <nas.chung@chipsnmedia.com>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"jackson.lee" <jackson.lee@chipsnmedia.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH v2 4/5] media: chips-media: wave5: drop "sram-size" DT
- prop
-Message-ID: <20240405085604.lzsekrtrtudvdh6c@basti-XPS-13-9310>
-References: <20240325064102.9278-1-brnkv.i1@gmail.com>
- <20240325064102.9278-5-brnkv.i1@gmail.com>
- <SL2P216MB1246537DD623B813453B28F9FB342@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
- <5hd7duzqhgdxpmvom3opkhwxkq55dmitk4gwdl4dy46q662in6@xxkmvdj6plqb>
- <SL2P216MB1246499CC9FED9BFB5B11DA3FB3B2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
- <7lro7ryzjajpzvkjdj5cndkmzmjkqvhts6dmer4pkkt7dluiii@wp7ael4ae7jd>
- <SL2P216MB1246597E5880A5A590CE1DB2FB3F2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
- <20240404080235.kab6taeimsxpjtr3@basti-XPS-13-9310>
- <4f781313ddb2b7657fadc35dc04c0e3c3de3b27c.camel@ndufresne.ca>
+	s=arc-20240116; t=1712307382; c=relaxed/simple;
+	bh=9mH29mPxAOKPezMYs3FWiNFuq+e72vmkdp75jHJFhvk=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q+CM7z9koMmlY85cOEM0h3ZZgYsB50qx8yjFnJ4iyio/DjAvWiCXWJWL5qBCJhEAN4a47EzlQuHHrvAFSLDdqLmCTlh9MkEWe+2MJ8ft4PWW7wSEDlzeopQ6cs1eDIYsTnb089BsOVV+UzUEJI81K9UcNQ53XuLg7Az9L19gBOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WIrPQ3fO; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56df87057bbso2004020a12.3;
+        Fri, 05 Apr 2024 01:56:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712307379; x=1712912179; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=mTuc9EJwZIHipEqAi292Whn+sPWqCiAHFZmxuUeoSkY=;
+        b=WIrPQ3fOTArPaZaCtyXuurtNGgyR7P+rsSjgTTd6rDq21UKa+C6T4mHvHo9Tq04ARW
+         TUjS42aUZR0fG0TdcR5xU7MPMmpBRV1W6ZOsAVaYAZZ8XAYrWf6eniVnMg/S1SnJXEUR
+         USsMGuvH6A+OBYVuBGehwP/l0Zjs1OO3KF2V9Wd0PnU6eVyYUSTKBy+isOsN9yJoua7s
+         uoDlMlP2mwebeU+oBTYzEH2omp1LhbMaWdCgSD7ACWVB4KT2Z7stOCwHZqgK0Y/0hUfL
+         1a/QDoC6GJlY0jFUQ68b1rIbYj4bnUJk3Zdw4nM0kNeAD0LiGTIamNbOUGH9dPVMDF+O
+         BzDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712307379; x=1712912179;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mTuc9EJwZIHipEqAi292Whn+sPWqCiAHFZmxuUeoSkY=;
+        b=Dhk2751snr76CzKjBoDHORmIG663/DG4212oDjQgqyGXo0fX+0PW/wA9WADNbbTw7X
+         AUseiXMGapdrGrnDnbA7zYr13YS2kNikc6CQlo+7JLKAu7pIK0kbeHzEynIw/awOwryJ
+         BCW0zYbPuQzjxnaJuJY8hnJMLq9pUajO7hgk86DUlyhdq5XE6A4KNnHN56Iuz17OtsfI
+         zoRyQRwQWZTspCxAPfpmRJC+qgcuRgSYNZU2p72q5FwGh+iVbculPF5oEKwFz4I7BVMQ
+         R9FxlAsdjWmDV9LsXaA0MR+KO3Sb4NCnGsUvKTecbkpjb5h0CC1Lnx65UL1tQavn1N7A
+         Prng==
+X-Forwarded-Encrypted: i=1; AJvYcCXOxNOMxYhyVRxThEaT3GXNYKh6EpPlZykkkpQlbuh191XencLGF3cVEVSgcGWnu1gujre2uIRCBC23gTXqTWmgbqQrA1kYvjPU1V8rfydw64EJDda26aKRltOHWcfESTJS3IWFIMaegJJAP0MhwtlDOparfxqL3aS+VbmbivQvjbs5bMhntAUR3KXsu+huc8fIQKexqPMi2XRyaavEkV9Y
+X-Gm-Message-State: AOJu0YwDBaMQs8WloiSqGx4UWDosur0W4zO/YsTu2l2CPU/rXLExNzYE
+	krjWfbhnhYK9eCUZ5imCKlOYJlcQKNCoDQZJEtmN3hP9drE1M1px
+X-Google-Smtp-Source: AGHT+IH8u6z6LZMoimxuXhlPOWiRu65ig2OfNbn7jhKaH1xlHNq6MOqkQjgf4Zy/I+i4HPS8WNS20Q==
+X-Received: by 2002:a50:8d11:0:b0:56e:cde:8983 with SMTP id s17-20020a508d11000000b0056e0cde8983mr667980eds.7.1712307378387;
+        Fri, 05 Apr 2024 01:56:18 -0700 (PDT)
+Received: from krava ([83.240.63.239])
+        by smtp.gmail.com with ESMTPSA id a1-20020a508581000000b0056e2432d10bsm562570edh.70.2024.04.05.01.56.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 01:56:17 -0700 (PDT)
+From: Jiri Olsa <olsajiri@gmail.com>
+X-Google-Original-From: Jiri Olsa <jolsa@kernel.org>
+Date: Fri, 5 Apr 2024 10:56:15 +0200
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Oleg Nesterov <oleg@redhat.com>,
+	Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+	Jiri Olsa <olsajiri@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+	Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+	John Fastabend <john.fastabend@gmail.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	"Borislav Petkov (AMD)" <bp@alien8.de>, x86@kernel.org,
+	linux-api@vger.kernel.org
+Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
+ probe
+Message-ID: <Zg-8r63tPSkuhN7p@krava>
+References: <20240402093302.2416467-2-jolsa@kernel.org>
+ <20240403100708.233575a8ac2a5bac2192d180@kernel.org>
+ <Zg0lvUIB4WdRUGw_@krava>
+ <20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
+ <CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
+ <20240404095829.ec5db177f29cd29e849169fa@kernel.org>
+ <CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
+ <20240405005405.9bcbe5072d2f32967501edb3@kernel.org>
+ <20240404161108.GG7153@redhat.com>
+ <20240405102203.825c4a2e9d1c2be5b2bffe96@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4f781313ddb2b7657fadc35dc04c0e3c3de3b27c.camel@ndufresne.ca>
+In-Reply-To: <20240405102203.825c4a2e9d1c2be5b2bffe96@kernel.org>
 
-Hey Nicolas,
+On Fri, Apr 05, 2024 at 10:22:03AM +0900, Masami Hiramatsu wrote:
+> On Thu, 4 Apr 2024 18:11:09 +0200
+> Oleg Nesterov <oleg@redhat.com> wrote:
+> 
+> > On 04/05, Masami Hiramatsu wrote:
+> > >
+> > > Can we make this syscall and uprobe behavior clearer? As you said, if
+> > > the application use sigreturn or longjump, it may skip returns and
+> > > shadow stack entries are left in the kernel. In such cases, can uretprobe
+> > > detect it properly, or just crash the process (or process runs wrongly)?
+> > 
+> > Please see the comment in handle_trampoline(), it tries to detect this case.
+> > This patch should not make any difference.
+> 
+> I think you mean this loop will skip and discard the stacked return_instance
+> to find the valid one.
+> 
+> ----
+>         do {
+>                 /*
+>                  * We should throw out the frames invalidated by longjmp().
+>                  * If this chain is valid, then the next one should be alive
+>                  * or NULL; the latter case means that nobody but ri->func
+>                  * could hit this trampoline on return. TODO: sigaltstack().
+>                  */
+>                 next = find_next_ret_chain(ri);
+>                 valid = !next || arch_uretprobe_is_alive(next, RP_CHECK_RET, regs);
+> 
+>                 instruction_pointer_set(regs, ri->orig_ret_vaddr);
+>                 do {
+>                         if (valid)
+>                                 handle_uretprobe_chain(ri, regs);
+>                         ri = free_ret_instance(ri);
+>                         utask->depth--;
+>                 } while (ri != next);
+>         } while (!valid);
+> ----
+> 
+> I think this expects setjmp/longjmp as below
+> 
+> foo() { <- retprobe1
+> 	setjmp()
+> 	bar() { <- retprobe2
+> 		longjmp()
+> 	}
+> } <- return to trampoline
+> 
+> In this case, we need to skip retprobe2's instance.
+> My concern is, if we can not find appropriate return instance, what happen?
+> e.g.
+> 
+> foo() { <-- retprobe1
+>    bar() { # sp is decremented
+>        sys_uretprobe() <-- ??
+>     }
+> }
+> 
+> It seems sys_uretprobe() will handle retprobe1 at that point instead of
+> SIGILL.
 
-On 04.04.2024 14:56, Nicolas Dufresne wrote:
->Hi,
->
->Le jeudi 04 avril 2024 à 10:02 +0200, sebastian.fricke@collabora.com a écrit :
->> > > > > > Wave5 can enable/disable the sec_axi_info option for each instance.
->> > > > > >
->> > > > > > How about handle sram-size through match_data ?
->> > > > > > I can find some drivers which use match_data to configure the sram
->> > > size.
->> >
->> > I proposed using match_data to allocate different sram size for each device.
->> > Do you think this is a reasonable approach ?
->>
->> As discussed here:
->> https://patchwork.linuxtv.org/project/linux-media/patch/20240201184238.2542695-1-b-brnich@ti.com/
->>
->> To quote Brandon Brnich from TI:
->>
->> If static SRAM allocation is the correct method to go, then this series
->> can be ignored and I will add section in device tree and remove check
->> for parameter in driver as that will now be a bug.
->>
->> I would like to adhere to that.
->
->I feel your statement is a bit ambiguous. Can you clarify what you adhere too ?
->That we should hardcode fixed sram size in the DT ?
+yes, and I think it's fine, you get the consumer called in wrong place,
+but it's your fault and kernel won't crash
 
-Sorry wasn't aware that my statement is ambiguous, my intention was to
-say that we do not add the sram size to the DT as it was discussed with
-the DT maintainer in the thread above, my adherence was pointed towards
-the statement from Brandon: "then this series can be ignored".
+this can be fixed by checking the syscall is called from the trampoline
+and prevent handle_trampoline call if it's not
 
->
->When I read earlier today "How about handle sram-size through match_data ?",
->what I saw was a static C structure in the driver. Like what we do with HW
->variants usually.
->
->I was pretty convince that the right solution is to allocate sram when the
->driver is used (open() seems appropriate), and drop it when its not used. With
->the clear benefit that we can change our mind later if we find valid arguments.
->
->So with that in mind, dropping (cleaning up) that old code seems helpful to
->create a clean slate to re-introduce a better version.
->
->Nicolas
+> 
+> Can we avoid this with below strict check?
+> 
+> if (ri->stack != regs->sp + expected_offset)
+> 	goto sigill;
 
-Greetings,
-Sebastian
+hm the current uprobe 'alive' check makes sure the return_instance is above
+or at the same stack address, not sure we can match it exactly, need to think
+about that more
+
+> 
+> expected_offset should be 16 (push * 3 - ret) on x64 if we ri->stack is the
+> regs->sp right after call.
+
+the syscall trampoline already updates the regs->sp before calling
+handle_trampoline
+
+        regs->sp += sizeof(r11_cx_ax);
+
+jirka
 
