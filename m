@@ -1,100 +1,99 @@
-Return-Path: <linux-kernel+bounces-132984-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D739899CDA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:24:41 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10889899D2E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:39:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E6CF1C20C35
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:24:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84AABB23EE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6763816C866;
-	Fri,  5 Apr 2024 12:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A69941649DF;
+	Fri,  5 Apr 2024 12:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Wgxkv1rQ"
-Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J1r6MLJ7"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1171C161B43
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 12:24:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED381DFE4;
+	Fri,  5 Apr 2024 12:39:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712319874; cv=none; b=AS3wCGOU6QfsI72DUJWR+R6o2ZpzdsluEPNQ2/7UO19HFwElt1HBCnpHuwUkzjexR/rBgcCvnuFx0yAzwjp2nhSlA1/qdP1q7Qmburd8inu/sMru1lVvcTA0oaPc7WJPRXRUQIQh25YOYTDztYVYFncKRDV6vmCbgzDLqDrKhx0=
+	t=1712320766; cv=none; b=JES9F4ebE3mgUJ3Sx9vLJMsQ8KZCswUtRXpTPMkwbkhRAOaN3rq7fi3HeM601zAPrRqu9EQfQ2Wq2iBC1087mqoAIWkJXPlher9wf1C31x16HP7hmNZy7zaGi45ceDjBJYIUNIFU5pkxFoD4tCfL6O5VUonwYSeF1Ut5TrsqwNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712319874; c=relaxed/simple;
-	bh=TMV6W+86/NP9K6bri+78PHBBLg88f2DQxrOZVXBrspA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UHfyyfn8TIlEHu+P/fe6CokPBRZ/CwO8zFd2sEOKVFAvN2DqfeL8RD3ZPGAd0zD0Aj7YSmlUAXREYFwiNJvtsYhrUWuAPhQ4rLB8J5phPutwyaqG/E3ZDmUt5qRGkTlw4QoXuVFGdudstT0anvDqeCitVOFy6DNdj19/MGgvrHc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Wgxkv1rQ; arc=none smtp.client-ip=115.124.30.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712319864; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=Xgh9CRUBvGZe+XyUWVoXRS+621S2VeB7U0nxfDSeTKc=;
-	b=Wgxkv1rQ78vkZqULUWLyf1lFuFyHrgHZwiATuW110pEgWvUgt0XGUt1k+glpHM0ldw2+LekL0w/tCbWfuIISTgLR8dBwPB60fk1iFJMmZDqzDD6sjUId5MFaLmB6c2djLud02ON9PbR1YzRQhePgkSjnr69A70uVd8fhemEDGts=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W3wypEZ_1712319863;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W3wypEZ_1712319863)
-          by smtp.aliyun-inc.com;
-          Fri, 05 Apr 2024 20:24:24 +0800
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-To: akpm@linux-foundation.org
-Cc: mgorman@techsingularity.net,
-	vbabka@suse.cz,
-	baolin.wang@linux.alibaba.com,
-	linux-mm@kvack.org,
+	s=arc-20240116; t=1712320766; c=relaxed/simple;
+	bh=ZKeANhgTUQ8MeecSfiWfk4B2eYxgbQsdvyAYyRCr27w=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=UAqgR3byMijVpD8kaOkKG5/G6ChBglqPosk9OgOEli73x3Z08mimnpGQz2cBgEFPuPQF2e+oAcpsE6T6VAUP9iANuM1OGW8chVA8iD/LEz3NmjdLGt9d8hjpHSxPL48O823Nj13SBkGlRBQx23/CIO9E5yU0/wPCIj1fKLpsrMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J1r6MLJ7; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712320765; x=1743856765;
+  h=from:to:cc:subject:date:message-id;
+  bh=ZKeANhgTUQ8MeecSfiWfk4B2eYxgbQsdvyAYyRCr27w=;
+  b=J1r6MLJ73aWEOzVTqhlk5LCx5Q3osBZcRRqb0db1KuEN5wm+KWh7mNMz
+   1t5s7PlgQ5btna9/Iq1DpzfLijv9HGNUQjCoCKL/ki5wBf9maLwpdbwWL
+   bi26lJN9qHDuUM8uz71T8zat0uiwtTqibjSRlVGzyXV5cE8oFnFcnVRvM
+   2svvlwWGorlgLGU3J55z+Md5iguC7PKw9BZtwBIqCw62PIn2v20VbCcTQ
+   5Mk4uydfmYnQI1jjtG2zr9kGIron2QbZRTDjqskKeiC42wCaHibWeTyAm
+   DIAKSNDnZdOL/Yv5DOFK6Lyk81fnSjZ0uixTlcVj1q78NsWSLIAGcQNUv
+   w==;
+X-CSE-ConnectionGUID: DywZJ8VaTI6gCS3/j9GieQ==
+X-CSE-MsgGUID: gFlIuWA8TAe1B0NmsISQmQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="11464018"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="11464018"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 05:39:24 -0700
+X-CSE-ConnectionGUID: tr50e2YESf+nmGmKkC6nTw==
+X-CSE-MsgGUID: 7M8Pl57oRaC07wIT8Ns/UQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="19582177"
+Received: from srpawnik.iind.intel.com ([10.223.107.103])
+  by orviesa007.jf.intel.com with ESMTP; 05 Apr 2024 05:39:21 -0700
+From: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
+To: alexhung@gmail.com,
+	hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	platform-driver-x86@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: set pageblock_order to HPAGE_PMD_ORDER in case with !CONFIG_HUGETLB_PAGE but THP enabled
-Date: Fri,  5 Apr 2024 20:24:16 +0800
-Message-Id: <3d57d253070035bdc0f6d6e5681ce1ed0e1934f7.1712286863.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 2.39.3
+Cc: srinivas.pandruvada@linux.intel.com,
+	sumeet.r.pawnikar@intel.com
+Subject: [PATCH] platform/x86/intel/hid: Add Lunar Lake and Arrow Lake support
+Date: Fri,  5 Apr 2024 17:56:30 +0530
+Message-Id: <20240405122630.32154-1-sumeet.r.pawnikar@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-As Vlastimil suggested in previous discussion[1], it doesn't make sense to set
-pageblock_order as MAX_PAGE_ORDER when hugetlbfs is not enabled and THP is enabled.
-Instead, it should be set to HPAGE_PMD_ORDER.
+Add INTC107B for Lunar Lake and INTC10CB for Arrow Lake ACPI devices IDs.
 
-[1] https://lore.kernel.org/all/76457ec5-d789-449b-b8ca-dcb6ceb12445@suse.cz/
-Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Signed-off-by: Sumeet Pawnikar <sumeet.r.pawnikar@intel.com>
 ---
- include/linux/pageblock-flags.h | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/platform/x86/intel/hid.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/include/linux/pageblock-flags.h b/include/linux/pageblock-flags.h
-index 3f2409b968ec..547e82cdc89a 100644
---- a/include/linux/pageblock-flags.h
-+++ b/include/linux/pageblock-flags.h
-@@ -28,7 +28,7 @@ enum pageblock_bits {
- 	NR_PAGEBLOCK_BITS
+diff --git a/drivers/platform/x86/intel/hid.c b/drivers/platform/x86/intel/hid.c
+index 7457ca2b27a6..66410ab9925d 100644
+--- a/drivers/platform/x86/intel/hid.c
++++ b/drivers/platform/x86/intel/hid.c
+@@ -49,6 +49,8 @@ static const struct acpi_device_id intel_hid_ids[] = {
+ 	{"INTC1076", 0},
+ 	{"INTC1077", 0},
+ 	{"INTC1078", 0},
++	{"INTC107B", 0},
++	{"INTC10CB", 0},
+ 	{"", 0},
  };
- 
--#ifdef CONFIG_HUGETLB_PAGE
-+#if defined(CONFIG_HUGETLB_PAGE)
- 
- #ifdef CONFIG_HUGETLB_PAGE_SIZE_VARIABLE
- 
-@@ -45,7 +45,11 @@ extern unsigned int pageblock_order;
- 
- #endif /* CONFIG_HUGETLB_PAGE_SIZE_VARIABLE */
- 
--#else /* CONFIG_HUGETLB_PAGE */
-+#elif defined(CONFIG_TRANSPARENT_HUGEPAGE)
-+
-+#define pageblock_order		min_t(unsigned int, HPAGE_PMD_ORDER, MAX_PAGE_ORDER)
-+
-+#else /* CONFIG_TRANSPARENT_HUGEPAGE */
- 
- /* If huge pages are not used, group by MAX_ORDER_NR_PAGES */
- #define pageblock_order		MAX_PAGE_ORDER
+ MODULE_DEVICE_TABLE(acpi, intel_hid_ids);
 -- 
-2.39.3
+2.17.1
 
 
