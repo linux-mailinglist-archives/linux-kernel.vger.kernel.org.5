@@ -1,125 +1,156 @@
-Return-Path: <linux-kernel+bounces-132414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132415-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E57289949B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 49C7289949C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:53:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC9F21F2351B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:53:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF1211F22774
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:53:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB76F28E2;
-	Fri,  5 Apr 2024 04:53:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229AD2135B;
+	Fri,  5 Apr 2024 04:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DeONMByD"
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b5B+Blpq"
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF8E219F3;
-	Fri,  5 Apr 2024 04:53:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3D5D1803D
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 04:53:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712292800; cv=none; b=roT/8gBjtlLlEu0dO8k/RrBAiF4PmUBU6zKzuBNVuSBeFKMrCZTkTFePJ2uv3TooL6RN1humXmZXWaa/YcIEiXxPMBz8MWeFL+KY9xxkihL2wA9BqicYEUe/3bUcFtqJsrN+TgYwv43vWXtg7rezdAYOA5MK6CnP0/Nmdt2YHmY=
+	t=1712292818; cv=none; b=P/VfXpPXytc7FyjUJ01hZBMngV7JcbFKu1iEQnl5XncNKVwxQBoQZT09P0QLGbIB2k2XOKOSAUldjaEqyrIt4Myhwjxbke/g73lelCImewSWaJGJVerADQ3unjCLw1qoQZFYZ5PR67bHJG3BglQJ2FO/BqFDMib7qlCoxOSY0LY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712292800; c=relaxed/simple;
-	bh=4PSIbJRAdwSQ+A2mcGfM0TGur5UUo2fSFeOm0iqbDH8=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tiYaL+LhZ8oj9qFr8kL/bD3NJYW5c+qYNoPd0IA0idStEHeZb3qODdPurUw1KDIeSuxF6WbuDAFXszvn7fB3rDzbaiTremGm9JPMn2A9mDZwV1sP5gTjxT7bthderjduOuN21LgTvpOYUXQxaBwdok4joTJxunEjmRE1db6s/5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DeONMByD; arc=none smtp.client-ip=209.85.128.50
+	s=arc-20240116; t=1712292818; c=relaxed/simple;
+	bh=cBigDdDQBOpbv8DLHntSqepb64ZImTDRrNw1p6BwOFQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ofSRnRkKh8sL4URfBoMuOH0U4ZvCPIFyg3I16vwwHPgn4p+gjnMMiEe4E/VgBj6uoPYOaq0U3DZKmqEAXh+8ZBYVLdeLLDZYiI0kELxPUZnK2WVe+nc9VO/+OAWJ/29nOX0FzaY3VDEKt4HT+l4TKw+djDsPKhjyvOx3NSxO8oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b5B+Blpq; arc=none smtp.client-ip=209.85.222.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4162ebc598fso2262485e9.2;
-        Thu, 04 Apr 2024 21:53:18 -0700 (PDT)
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7e389d74dcaso971219241.0
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 21:53:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712292796; x=1712897596; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1712292816; x=1712897616; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=63ypm68bp6z/qvv7PrXhqzz9zbPfjRJbzDP7aqMQAKs=;
-        b=DeONMByDaYc6wizVdaAaT61kU6sQwTZBu0uQUUF6dA+Q6OolYD2M0NFzyyfDYeNoFr
-         0LwbGn6G3YqiLM07Ct7RvPZjHKbKG2rLqvTFUBgKPldroWA6ar8jgxhwol1SKZwFZ3ds
-         3RaiwPpeAvex1YLdMiQVj+nRW6IvlRxlh0dUQKXjCl3wIYRVk8iMwkIsxH4Qr4e2Slk5
-         49wQ980S5Nm8VHBH/7qVejSTtzeZTBNWFmFt3gAwUnalMFuF3cCh07BtuYXjwWdBAz0V
-         AWbYtqCCEePg1EHAkqG3bZKUKcsK7QuEGMErgkSJXIYJFBjn/Xo6K1roqILueMrfUEJH
-         XLrA==
+        bh=bFVkjkG3EDW3xTK2+dLWlF2WsS83zvxGEi3lzpt+3ww=;
+        b=b5B+Blpq9cRYhBxXLm4h2mcVwRu97NW/ZVJqaPKhPa/BrnkDNlpu3IsjuVtXWTMD7h
+         J/dZCCilnEyuqxt753gFkjoFnIfD1LT7PQm0PKUcVah5CJAtc3yK9p93O0tH4DMMftUS
+         HNF6eW5RVCRZdMByvTQIGzRj0MeBjoTjZ7ZUmD3DqmyQgVXRXOkkQqchxCdnTUbdaOy7
+         kWD1EDNFACVAfrbTKgpFYCl4ruCi5h7u2WB5XFxVQoRC3vyB3ZQo95U+VVBIfJD8zq07
+         NtlkrMlIi+o3FO8AWBGuB/dA3ZbpTcXF7c1sC1XLbCO1JGzsJ7KCaMWRByBd9F4E4lBv
+         qqqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712292796; x=1712897596;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1712292816; x=1712897616;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=63ypm68bp6z/qvv7PrXhqzz9zbPfjRJbzDP7aqMQAKs=;
-        b=cwMG7xxuwCjSaJ4mjT81Q+BuQ0fcewAGKoVWXhlrj6gRfQiHqULkqKT1xO3nk21Xge
-         FlVEFjD752Ippi9pgrJEOxC3qnJdJRVva34+hBKOXOlTMCL0dvf77RSIA3W02L5HkgG3
-         BtspPDnFPgo9Uxy2GWSVu4cYUj//0C15c3agfupWttiooOwdSgRhCVsTLVuWK0lQfTDV
-         Cuf1DO0p5fMfH44YxyTakn4bzBzJylpCEwcm1FG28e1u0KhiAWmoSwKFjxF6nqogX95e
-         ipbUNORC6BwQjJQdsHcPOb/aqz/hS1gzgqFc2EZFYQGoTaqIsT2LHt1iVjVdF0Sk/Baw
-         1fYg==
-X-Forwarded-Encrypted: i=1; AJvYcCUdWfUzKNkW4I5pAFLWZnBNMS7V2asQVBcrsuxYeDRxjRfzSvxPB95NjJ99jen68sQX9XhVcxGb70bo15zY8x6BmRhxgqVBZkBt
-X-Gm-Message-State: AOJu0Yw2b83xzMVXX4U684DsZrE4A99+IHLo0AcAjecMSZpsktHusJOy
-	CRWW1WRBC33scPcOC/kX6pqk31bysvXb4tm9p6CITpoo7zvYu63QyA0sQSZS
-X-Google-Smtp-Source: AGHT+IGWAbFrNtztqpnta7IOaDzs0+Kzw40HXRJXLHn/bNsZ22E8aRIb0TdkVux+idCWEUHLrm3rAQ==
-X-Received: by 2002:adf:ec0c:0:b0:33e:7133:ee31 with SMTP id x12-20020adfec0c000000b0033e7133ee31mr199970wrn.40.1712292796134;
-        Thu, 04 Apr 2024 21:53:16 -0700 (PDT)
-Received: from rbolboac.. ([2a02:2f0e:370e:900:9daf:1dd4:230e:4f59])
-        by smtp.gmail.com with ESMTPSA id j15-20020a5d452f000000b00343e825d679sm488302wra.87.2024.04.04.21.53.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 21:53:14 -0700 (PDT)
-From: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	jic23@kernel.org,
-	nuno.sa@analog.com,
-	linux-iio@vger.kernel.org
-Cc: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
-Subject: [PATCH v2 1/1] iio:imu: adis16475: Fix sync mode setting
-Date: Fri,  5 Apr 2024 07:53:09 +0300
-Message-Id: <20240405045309.816328-2-ramona.bolboaca13@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240405045309.816328-1-ramona.bolboaca13@gmail.com>
-References: <20240405045309.816328-1-ramona.bolboaca13@gmail.com>
+        bh=bFVkjkG3EDW3xTK2+dLWlF2WsS83zvxGEi3lzpt+3ww=;
+        b=ZslvfwrD4VJhSik62f0U/qiaES8dpi8EeG+VPephBSyQrMomYEKDaBJqco3AxQ5u40
+         +k/CK3Zj2MgKUz476kgWTSODkt3byoV5XXWIv0dtSob31cRv6QA2Xf9ZuDuBl3dUpF1E
+         5UxBbb2PCuh30jtF8JN6FGDCXzXmq3LXI850Gv/+kFmAVs2j4BQGH9AQkjrLC3P6w+mq
+         cTvIrvWzsWuX4deLxNQkq7w4TzMmbMZA7ylxLN6NxVVMDXOJqG8QtJbSH1lMCgUuukbZ
+         b7UgpCEyWFF8t5PoXf47G6q+MnLgAFZcu8Swx3qfqfc8MxBvuFia0fmi/g+jdlyxL+jk
+         YxaQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU5vwOow2T4WfN7gbiX/bhw+hCB+hCnsTuo1fFWRvKH0DeVCxRoA9AR+0U1mDeuWUfZ9SyB39bR0vkIzkQhv6O2+pqkMT3L6a2dF2NL
+X-Gm-Message-State: AOJu0YyzA8PitVrY/cVXm3wuNPglzg3RZG05rCtw2BN1U9ZZVck5zXE6
+	AL/EhCJXfZZ58nru49jVksKO7ltWkInwJpRjwCjsl9LzFM2DszgsVqTlaUzYC/MPCDYDCxK2bEK
+	sfO5LBY15H+eGX5+zhsY+m8lu7jo=
+X-Google-Smtp-Source: AGHT+IHvjIVIWR4WSYqi79hjDTimfy2HNP7Pth7ojX29LaztBG1WJ/QETo4JB0zzqSIBaUIXaSvkwozrZ9JEnygHqPc=
+X-Received: by 2002:a05:6102:4424:b0:478:7191:966c with SMTP id
+ df36-20020a056102442400b004787191966cmr225076vsb.12.1712292815680; Thu, 04
+ Apr 2024 21:53:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <a25c9e14cd03907d5978b60546a69e6aa3fc2a7d.1712151833.git.baolin.wang@linux.alibaba.com>
+In-Reply-To: <a25c9e14cd03907d5978b60546a69e6aa3fc2a7d.1712151833.git.baolin.wang@linux.alibaba.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Fri, 5 Apr 2024 17:53:24 +1300
+Message-ID: <CAGsJ_4xvXT6Qy1JgP2khH0DKvTGhjsrexsSj8ddieM_XXn8bng@mail.gmail.com>
+Subject: Re: [PATCH] mm: page_alloc: use the correct THP order for THP PCP
+To: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: akpm@linux-foundation.org, mgorman@techsingularity.net, vbabka@suse.cz, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Fix sync mode setting by applying the necessary shift bits.
+On Thu, Apr 4, 2024 at 2:47=E2=80=AFAM Baolin Wang
+<baolin.wang@linux.alibaba.com> wrote:
+>
+> Commit 44042b449872 ("mm/page_alloc: allow high-order pages to be stored
+> on the per-cpu lists") extends the PCP allocator to store THP pages, and
+> it determines whether to cache THP pags in PCP by comparing with pagebloc=
+k_order.
+> But the pageblock_order is not always equal to THP order, it might also
+> be MAX_PAGE_ORDER, which could prevent PCP from caching THP pages.
+>
+> Therefore, using HPAGE_PMD_ORDER instead to determine the need for cachin=
+g
+> THP for PCP can fix this issue
+>
+> Fixes: 44042b449872 ("mm/page_alloc: allow high-order pages to be stored =
+on the per-cpu lists")
+> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 
-Fixes: fff7352bf7a3 ("iio: imu: Add support for adis16475")
-Signed-off-by: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
----
-changes in v2:
- - added u16 value to call __adis_update_bits to fix build error
- drivers/iio/imu/adis16475.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+LGTM,
+Reviewed-by: Barry Song <baohua@kernel.org>
 
-diff --git a/drivers/iio/imu/adis16475.c b/drivers/iio/imu/adis16475.c
-index 01f55cc902fa..060a21c70460 100644
---- a/drivers/iio/imu/adis16475.c
-+++ b/drivers/iio/imu/adis16475.c
-@@ -1289,6 +1289,7 @@ static int adis16475_config_sync_mode(struct adis16475 *st)
- 	struct device *dev = &st->adis.spi->dev;
- 	const struct adis16475_sync *sync;
- 	u32 sync_mode;
-+	u16 val;
+In the context of using mTHP, perhaps there arises a need for PCP
+allocation for frequently
+requested mTHP orders. These orders typically exceed PAGE_ALLOC_COSTLY_ORDE=
+R
+but are smaller than HPAGE_PMD_ORDER.
 
- 	/* default to internal clk */
- 	st->clk_freq = st->info->int_clk * 1000;
-@@ -1350,8 +1351,9 @@ static int adis16475_config_sync_mode(struct adis16475 *st)
- 	 * I'm keeping this for simplicity and avoiding extra variables
- 	 * in chip_info.
- 	 */
-+	val = ADIS16475_SYNC_MODE(sync->sync_mode);
- 	ret = __adis_update_bits(&st->adis, ADIS16475_REG_MSG_CTRL,
--				 ADIS16475_SYNC_MODE_MASK, sync->sync_mode);
-+				 ADIS16475_SYNC_MODE_MASK, val);
- 	if (ret)
- 		return ret;
+> ---
+>  mm/page_alloc.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index 1beb56f75319..915f4ef070da 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -506,7 +506,7 @@ static inline unsigned int order_to_pindex(int migrat=
+etype, int order)
+>  {
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>         if (order > PAGE_ALLOC_COSTLY_ORDER) {
+> -               VM_BUG_ON(order !=3D pageblock_order);
+> +               VM_BUG_ON(order !=3D HPAGE_PMD_ORDER);
+>                 return NR_LOWORDER_PCP_LISTS;
+>         }
+>  #else
+> @@ -522,7 +522,7 @@ static inline int pindex_to_order(unsigned int pindex=
+)
+>
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>         if (pindex =3D=3D NR_LOWORDER_PCP_LISTS)
+> -               order =3D pageblock_order;
+> +               order =3D HPAGE_PMD_ORDER;
+>  #else
+>         VM_BUG_ON(order > PAGE_ALLOC_COSTLY_ORDER);
+>  #endif
+> @@ -535,7 +535,7 @@ static inline bool pcp_allowed_order(unsigned int ord=
+er)
+>         if (order <=3D PAGE_ALLOC_COSTLY_ORDER)
+>                 return true;
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -       if (order =3D=3D pageblock_order)
+> +       if (order =3D=3D HPAGE_PMD_ORDER)
+>                 return true;
+>  #endif
+>         return false;
+> --
+> 2.39.3
+>
 
---
-2.34.1
-
+Thanks
+Barry
 
