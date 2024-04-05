@@ -1,84 +1,115 @@
-Return-Path: <linux-kernel+bounces-133039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133040-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4227E899DE7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:04:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 030A4899DED
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:06:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0BD0B228C8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:04:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B29D8283B3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A176516D330;
-	Fri,  5 Apr 2024 13:04:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CE116D4CD;
+	Fri,  5 Apr 2024 13:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="ltlx3w2v"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j4I8sVlg"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2344516ABFA
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:04:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7832F1DFE4;
+	Fri,  5 Apr 2024 13:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712322256; cv=none; b=eTm+gM2QAI5yZWfA/qbCHtjMoUyc+wmC9OD7ofr9giGjACuwjvqCfOPkibIxT2MpBXpB/SfRgTOzokBZ/kBaui1ulvaAgfuxam/NTrmXrezYxbpjEfDsKggrsnUvI0N9vCL9UN8y+WeIecIxes5NCdKgaeArxNTFwOZ8LWnOdBE=
+	t=1712322396; cv=none; b=LeLOAC9EaPUi7Fu2vv2InEJVdu0S2ial6aThB0m94YTeyG29XDucWlMhQh4VtmDqdxICwgYsgBqqkxvXOUmft/+qZwbQqvf8iHJX80ezLJLRrhOCL4kIlXC3x8KqQyhEmpn+aB2BrnFNd78vmYvWjcsRo9Ziqn/UlMXcE3j4MeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712322256; c=relaxed/simple;
-	bh=Y7FhNkty0RG4vAetdYjkiZPH7ajVjh25aWBa4yvu+aI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qALDvCKZtq4yycTMabSWB2CLEU1yt9xEjnVOB47kk8TZwsONXE2xlioiRPPdgLnXmRgQmHi6Rj3YM53WkV2s772qGKeWeKETwKB8Aqs+X2ch+T6AnNSgYAiVPjCw4AbxHbSs6FAZflFcqfhxdrm3nrebJuQ7c1XoTf1Emh0k36k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=ltlx3w2v; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id 14ACD2027B;
-	Fri,  5 Apr 2024 15:04:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1712322244;
-	bh=l7CqLckDLbgqOsa5j//MSRXiFTqbO5DRUoXwQ6kAxls=; h=From:To:Subject;
-	b=ltlx3w2vw3Y+QWe1kOtgzo7BfRzUla8vaHq4YMv9qw2AUtt6fmMGbdFvqOK8LDRyi
-	 T58fmgOad+HwY0S1XAOFI9b0EawRz6A40OTrTGbdMzqkSwAchh1KzxdG/db3r7Qvfl
-	 /W9DSR+fTbtnEEfPo8koKpoHoKZZvY2EVd6flsP5lD5xW2RNbSNH8uVmQGQUm1QGe7
-	 1GPGAHek+s3BFLEoPTfM0M0zDnSuQeGo4w8fe1Imo53XOx/zEGoJ0E+M0vJ5tyHWUf
-	 Q0BZ2o5vbnZVs91k2Xkau32pQKhQ9NS4RUPVsHBIiLIn3eOUvjIAgkLoXWUdXtWMlx
-	 nGO9TVFcS9+Wg==
-Date: Fri, 5 Apr 2024 15:03:59 +0200
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Flavio Suligoi <f.suligoi@asem.it>
-Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
-	Pratyush Yadav <pratyush@kernel.org>,
-	Michael Walle <mwalle@kernel.org>,
-	Miquel Raynal <miquel.raynal@bootlin.com>,
-	Richard Weinberger <richard@nod.at>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb entry
-Message-ID: <20240405130359.GA308940@francesco-nb>
-References: <20240405100104.480779-1-f.suligoi@asem.it>
- <20240405100104.480779-2-f.suligoi@asem.it>
+	s=arc-20240116; t=1712322396; c=relaxed/simple;
+	bh=aiTtOgawA1gl+sKd/BL+KKsnX7hyyYugKZCpLonIlAk=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=necKBGHKqE4XQGjV5CAIZBTGx1cQYvI+uxgrBJJxZsLrTrCbbVna+pOrIHuvxN9ftCuUtWKYGHwdN4A6j+sel81PX0nQ2118EHQ5zgalyz19EXPXQr03bb5hyUvPheiIMlfTx8S53v3DsHisjT6xjEYQBuVJSkc7CN5Nlw9panw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j4I8sVlg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D319C433F1;
+	Fri,  5 Apr 2024 13:06:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712322396;
+	bh=aiTtOgawA1gl+sKd/BL+KKsnX7hyyYugKZCpLonIlAk=;
+	h=From:Subject:Date:To:Cc:From;
+	b=j4I8sVlgrQ3jetssQjEvZ926rndqiioLxqiNtHYXfK1GV1hjwD4EBfbQAvpERTKsH
+	 XDoA+HdX1ovylqxGPDOeS1uSEVfhQZaiX8DP/14b/Uf2ZkVmT2W5BwChg2MF2tIaMr
+	 pmoluv2TrZb48BnvEpz8U1duOplkukiFmOoFwN+jiRtbfHFYcLTkoAy+ybnGjDK0rk
+	 axF+BeY6gALyi7pYSIC01mZKPG2X/1A1ZWNlcnloTKKANGNRCiK8XpGX3pkfLmvTTR
+	 axm06j/PTigcgp4klJwNzdnyjT26B+WKPbf/QINQ0mKDKSd81f8sXW5ZMzQ30Egm73
+	 uvL9qh8jgxj4A==
+From: "Matthieu Baerts (NGI0)" <matttbe@kernel.org>
+Subject: [PATCH net-next 0/2] mptcp: add last time fields in mptcp_info
+Date: Fri, 05 Apr 2024 15:06:20 +0200
+Message-Id: <20240405-upstream-net-next-20240405-mptcp-last-time-info-v1-0-52dc49453649@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240405100104.480779-2-f.suligoi@asem.it>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAEz3D2YC/z2NwQrCMBBEf6Xs2YVNW6X6K9JDWje6YNKQrFIo/
+ XcXQQ9zeAzzZoPKRbjCpdmg8FuqLMnAHRqYHz7dGeVmDC21PfV0xFeuWthHTKyWVfFfxaxzxqe
+ viirRlikseJ6oO7mBaQgOzJoLB1m/j1f4OWDc9w9b+edaiwAAAA==
+To: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>, 
+ Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, 
+ "Matthieu Baerts (NGI0)" <matttbe@kernel.org>, 
+ Geliang Tang <tanggeliang@kylinos.cn>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1238; i=matttbe@kernel.org;
+ h=from:subject:message-id; bh=aiTtOgawA1gl+sKd/BL+KKsnX7hyyYugKZCpLonIlAk=;
+ b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBmD/dYTs4Nh1M3Y3r9Yx3wcV7xGdpd2pup/0HIL
+ HFlecIH0z+JAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZg/3WAAKCRD2t4JPQmmg
+ c2UoD/9m56ReagBAujFA3sYu5/Z8OuB4jsQqPGMSSoHZpLzAlx8QacdEAsbVgLioaf3b1btSBoY
+ 09W4qNP8uwrLYx25BecWFoe+PzFsecCNjUtYgfCdMlQnt+sbbzpwgfgyELl0fFHsgNewI8VVqD2
+ Yxtv/A4VBB6MitPaS+QQ/MQD2j0pqOB/+lNZtd6c9PKkYzpyjxp6iWMlUfTbKIl8bLWZlp+/7lx
+ bheh5G9+wUtipZn6VpINqfxuVXOACFTILk5as97XeEE/xq9yMwchWqwa6w7kY6lzc7zRGx16W2g
+ i7x0BhMLfhpmQcFUNmwZL5MTgOs3O7C5TCYUiULeEA8JElFlYDvmppLI2knW2h2MeA1GfoiphSI
+ iADfUf0CW+surlAvS4F2MMVMFVaktJGCYfM/Mk//kFBrUU7+UrkX+booNvx6fkCXTjMSAEL6WeG
+ YWN0opPw4K5nJGC6/rMHnrwfOYtyilBffMHY28qW/vI2aaXmLakCEkexSiPolLjqB77ZhPIVsvg
+ w+VD+ApD5yKG9bgB9MSjDfJaYm3w9d9k/kBpcJJac9w6+wePpL0TlRE/4HWyCkxZLoA3yMgn+Pc
+ baTUNW2bTz7I44mT0VcO36MEvVA/6VQ6iJt05T/fmxZDO56T0k8AGKbwH/cSMAveeGRbu36LGN1
+ rynsFVEpFmsERFA==
+X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
+ fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
 
-Hello Flavio, thanks for your patch.
+These patches from Geliang add support for the "last time" field in
+MPTCP Info, and verify that the counters look valid.
 
-On Fri, Apr 05, 2024 at 12:01:04PM +0200, Flavio Suligoi wrote:
-> Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
-> Memory.
-> This device is JEDEC compatible (JESD251 and JESD251-1), but it is not
-> able to provide SFDP information.
-> 
-> Link: https://www.everspin.com/file/158244/download
-> 
-No empty lines in-between tags
+Patch 1 adds these counters: last_data_sent, last_data_recv and
+last_ack_recv. They are available in the MPTCP Info, so exposed via
+getsockopt(MPTCP_INFO) and the Netlink Diag interface.
 
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+Patch 2 adds a test in diag.sh MPTCP selftest, to check that the
+counters have moved by at least 250ms, after having waited twice that
+time.
 
-Francesco
+Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
+---
+Geliang Tang (2):
+      mptcp: add last time fields in mptcp_info
+      selftests: mptcp: test last time mptcp_info
+
+ include/uapi/linux/mptcp.h                |  4 +++
+ net/mptcp/options.c                       |  1 +
+ net/mptcp/protocol.c                      |  7 ++++
+ net/mptcp/protocol.h                      |  3 ++
+ net/mptcp/sockopt.c                       |  4 +++
+ tools/testing/selftests/net/mptcp/diag.sh | 53 +++++++++++++++++++++++++++++++
+ 6 files changed, 72 insertions(+)
+---
+base-commit: d76c740b2eaaddc5fc3a8b21eaec5b6b11e8c3f5
+change-id: 20240405-upstream-net-next-20240405-mptcp-last-time-info-9b03618e08f1
+
+Best regards,
+-- 
+Matthieu Baerts (NGI0) <matttbe@kernel.org>
+
 
