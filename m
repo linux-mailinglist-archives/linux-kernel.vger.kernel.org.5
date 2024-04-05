@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-133123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA6EA899F3B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:15:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E2EE899F3D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:15:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1414A283C24
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:15:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66D3B1C21BE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CA4016F0C4;
-	Fri,  5 Apr 2024 14:15:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7684416F0E0;
+	Fri,  5 Apr 2024 14:15:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NoHgHgf4"
-Received: from mail-wm1-f73.google.com (mail-wm1-f73.google.com [209.85.128.73])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="r5l6/Ip/"
+Received: from mail-wr1-f74.google.com (mail-wr1-f74.google.com [209.85.221.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CECA916EC03
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:15:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BAEF16EC1D
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712326505; cv=none; b=j5yti2t8NGwFjNa1c5RHNUqRiC0I+cMmjeqddSJjjeMjavQX5InpmKzD2j4U5UeaJWwg52WS5FPgdBv4pW3GXMluhRTY2nagTA8b6ZcuWEaOH+kmH//bL8g45l22r4yRyw1o3kBE+3COLij2QPTKrKOh+abRvCkypDpEP7YUDck=
+	t=1712326507; cv=none; b=S1qL+M/aPkx0UznHvaTYrDXpterxyZgpvYYB+Hyip9pt4Iw9CZYzQoN4E7+hHxYQPYjgE63qlZhq0MXwA5S9fYTnjjzb5PiywacWuDpo3jX5+65xXTB7CepGpyqDcKABNU9LPlGNiY5UUYcEFrr1eILSCWOXy6KM6H7D0U+Cf9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712326505; c=relaxed/simple;
-	bh=5XRJmffCvoTFmT8VVV2m0fHxLKA4GHevMj3V5iq7Qd8=;
+	s=arc-20240116; t=1712326507; c=relaxed/simple;
+	bh=6EehccEvTPWYOq7+XxW7U39Z7ElCZmB+5qet67lPQQs=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=nZ5VBsNDGi/b6yXXMDZAQikIWIcdoC52LG6JQeXt/Tk04QhrdmxTUVCkhLJeI78HxwXjO6ghH1U6V9NFJr2dRnoNhaF5lmXcUINL2OpVjR9WDGbR1OZIua1ZMTQkQKUnousNUzZfcN/nQaBJrH5GTNpBomFRRPL6F8KhjjDWaSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NoHgHgf4; arc=none smtp.client-ip=209.85.128.73
+	 To:Cc:Content-Type; b=Mhav7C/nyF21LTTjWzyygF7bRyELOzB3vvI5As4FCJxYvrtke1pqCyhHwn7O+n1EWeThAhu/Uih+qKoYWmeo3wh6CMyHhffqeDOJzru9oMvifnIVlODgmmV52nvXSA3kupix5DRPBchQgH1x0mypcHrYZBj5orVPvjZ/2V41+kE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=r5l6/Ip/; arc=none smtp.client-ip=209.85.221.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com
-Received: by mail-wm1-f73.google.com with SMTP id 5b1f17b1804b1-4155e2ed5d8so16674095e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:15:03 -0700 (PDT)
+Received: by mail-wr1-f74.google.com with SMTP id ffacd0b85a97d-3418412a734so1425092f8f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:15:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712326502; x=1712931302; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712326504; x=1712931304; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:from:subject:message-id:references
          :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=jnT4iGgtwWQMG15A5RV71jOjD3/1N8JXSjbIzrqMBWI=;
-        b=NoHgHgf4dxBorDPnOm1HhYp+TU+A6W7awm1ERggt9ry6y4s34IZH6OJnurh1inBy7w
-         p+9R2TMXipvSLut8Q+0OwJzVkzUj85XtT963Qw8FqjEMXw+NRGrj83bXd4sskoEj1vsm
-         Dhx+bhuZVXscvcVLw00TAoQMNekqPrjlXQYOEpLiMyrML60gDD5zAMIFXhYtYKZjrTlu
-         pjMWUQujFM3r13E1JaVYjVqOyAjRAaKQr5ny258C8eyplzfCUyMdKX0p2NlpyLM150YI
-         tnjwH8wHsVBrGymsjNTmc96Ph+4qPQRX+FJE+ApkWwLuPyNOwc0Zdx4gosGVkY5aE5y5
-         Z09A==
+        bh=EB1OqCeM+zzEWfmV9H/3BRd83N3O3aUGhb7gLO7v4Gs=;
+        b=r5l6/Ip/rFUB8dW3ahq9kAitPKmB9Lngsi3ub2sxepQil40+4ROeQkPAvQUAWFsgc7
+         xfoIezE6JCZf0nD0tTKsr9FE45OVKMVrhqf8oRuZalW7p9cqKECi7SCf4r7kMhhk8PV9
+         VtZ4vBAVwJ+TSwkOejCwdapx0zwPQulR1jxfEsZBN3dv9HHPZDEYMbfnOBVLak/cs64X
+         6AFdmUBQRJc2rQvdeWkjbNOXH8VZhBpTs3e2QI1XiCvBmj2zzUk/vpvXc2CTtASlaGyj
+         0X/Sbeaud4Q3qWHRDdxmj/+HF6J+DOfqAjBL6IZnhhImCMxKfsirjt/VC9J+dVQyqDmL
+         0mZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712326502; x=1712931302;
+        d=1e100.net; s=20230601; t=1712326504; x=1712931304;
         h=content-transfer-encoding:cc:to:from:subject:message-id:references
          :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=jnT4iGgtwWQMG15A5RV71jOjD3/1N8JXSjbIzrqMBWI=;
-        b=DBCWHkYGrW/KXoGjORZUtoPOK01PFHV8MhRz4aDSCUezC0AeRwAIJGO9LIwtko2nZJ
-         5L3b15vXK2LO4wbag6CwLXuyYC/iuVV9rGXjtl8q5m87k3Zx/73ok50ZQw0ZbpohviLS
-         bgeXoYyI5VetGvrmycskH8WKoEE2px0333uOJHDNeJGBgnbqJqpGMVEGbZ+1vbmRAmmU
-         ep8ofpZwuQHzLbZxRRqv+IV6p+5sUtn6disdsOrtA8qQzB3dHbVQQdERv+GmkfMPgXSd
-         myGw8qO5bPHzdUk5mNymNnhAP89/xARTu5CwuFKxfsfuCj60doktN11hyT+OEOMpIkXk
-         NuhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW5voMXEoF2ENAOPf1Ls45WsmDAB0HDFykoWp1Kgw7/jMQIMX2Iewo9MWWcxvFU9UJa7YKJKyNWod1ieoZQ9j4IQ080ZrFTHBIdHhew
-X-Gm-Message-State: AOJu0YwQcldvPu5OJXt7chbxGkkqwrW3tfGmVZ+HJZ42fX8MY3J2sEt3
-	EmUHu6c0sxwMdzcWZ5CakezdNg/AuDAc06xEx9g5s6ZN1zMf3Av4szlO0q2dTPxkieeiHc5GLce
-	ysXxRlVl86A==
-X-Google-Smtp-Source: AGHT+IF7fT+tsywJe0mO2bG/yk2w9c89FveDuuUwn/6Zcv/Ube9lm7A2JE006Ic154bx2/3VtCB/27lzySO0ug==
+        bh=EB1OqCeM+zzEWfmV9H/3BRd83N3O3aUGhb7gLO7v4Gs=;
+        b=vSrWGoY8KoghKV90qnti/g6PrEbbx/HzVM5PCXqfPIaCPg6N/6hcbvNdf8/Ez6wZ0b
+         TAoHiL5WkdLISax8oaZEvD5NIObNhKA8MDHrmj4Pi6df3cnrFBGpAZCIk6wL2W9D8vPm
+         S1Lfozqs3b4qhGtZXtK10wS6cB3WTJxp88qegs2xx4gaEycgQfeVKuMZdh3uqom0tnrw
+         be7lXcmxxa6aRLLrv5KQBjF4bfq8k3qd/Syro4Vp4F5P3i1gK8wsidogHliEosm88o3o
+         vud0ZWW8/wZkSfX7G4h8uLlch2XCIb1LZCiVwBd10xbgIkZUOoX3MnnHDHZAoDsJh5SJ
+         G05w==
+X-Forwarded-Encrypted: i=1; AJvYcCWEBapIiJAUXGsrt0Mxwlf8t2PFY4p8es5/vECkJUhpgpZClBEdTh/0Ojzz09tPEWlKKFiTKn/ijG36l+0oXhLqT4IOYRpe9j+X70ez
+X-Gm-Message-State: AOJu0YwSM4UXNI8Y50tc94TA8TfhGLpLtS16KLVcR3yQYth4xwoysrt0
+	ARCs3ANIKblK+dZGMYX3jKWgx+beeoy/ni4OxOkA8Bf4Z6pmxIcMXRE12njJ06Dxb9jtqfA0uP2
+	5cN1+tZFnpA==
+X-Google-Smtp-Source: AGHT+IHxUh/sNELzePmUjUKXOONpTWRH6C10MHQYsitlB4/bEok8pDIcPZmqe/e/AmmgnCRzPUYVo9trVTS96A==
 X-Received: from szatan.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2d83])
- (user=panikiel job=sendgmr) by 2002:a05:600c:470d:b0:416:3307:a047 with SMTP
- id v13-20020a05600c470d00b004163307a047mr17569wmo.2.1712326502095; Fri, 05
- Apr 2024 07:15:02 -0700 (PDT)
-Date: Fri,  5 Apr 2024 14:13:56 +0000
+ (user=panikiel job=sendgmr) by 2002:a05:6000:1d9c:b0:343:ce9e:3732 with SMTP
+ id bk28-20020a0560001d9c00b00343ce9e3732mr2847wrb.11.1712326504331; Fri, 05
+ Apr 2024 07:15:04 -0700 (PDT)
+Date: Fri,  5 Apr 2024 14:13:57 +0000
 In-Reply-To: <20240405141411.1807189-1-panikiel@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,9 +75,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240405141411.1807189-1-panikiel@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240405141411.1807189-2-panikiel@google.com>
-Subject: [PATCH 01/16] media: v4l2-subdev: Add pad versions of dv timing
- subdev calls
+Message-ID: <20240405141411.1807189-3-panikiel@google.com>
+Subject: [PATCH 02/16] media: i2c: adv748x: Switch dv timing callbacks to pad ops
 From: "=?UTF-8?q?Pawe=C5=82=20Anikiel?=" <panikiel@google.com>
 To: kieran.bingham@ideasonboard.com, mchehab@kernel.org, 
 	hverkuil-cisco@xs4all.nl, tharvey@gateworks.com, 
@@ -90,109 +89,93 @@ Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Currently, subdev dv timing calls (i.e. g/s/query_dv_timings) are video
-ops without a pad argument. This is a problem if the subdevice can have
-different dv timings for each pad (e.g. a DisplayPort receiver with
-multiple virtual channels).
-
-To solve this, change these calls to include a pad argument, and put
-them into pad ops. Keep the old ones temporarily to make the switch
-easier.
+Change all (s|g|query)_dv_timings subdev callbacks to include
+a pad argument.
 
 Signed-off-by: Pawe=C5=82 Anikiel <panikiel@google.com>
 ---
- drivers/media/v4l2-core/v4l2-subdev.c | 33 +++++++++++++++++++++++++++
- include/media/v4l2-subdev.h           | 14 ++++++++++++
- 2 files changed, 47 insertions(+)
+ drivers/media/i2c/adv748x/adv748x-hdmi.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-cor=
-e/v4l2-subdev.c
-index 4c6198c48dd6..07759cdd0844 100644
---- a/drivers/media/v4l2-core/v4l2-subdev.c
-+++ b/drivers/media/v4l2-core/v4l2-subdev.c
-@@ -369,6 +369,36 @@ static int call_set_edid(struct v4l2_subdev *sd, struc=
-t v4l2_subdev_edid *edid)
- 	return check_edid(sd, edid) ? : sd->ops->pad->set_edid(sd, edid);
+diff --git a/drivers/media/i2c/adv748x/adv748x-hdmi.c b/drivers/media/i2c/a=
+dv748x/adv748x-hdmi.c
+index ec151dc69c23..a4db9bae5f79 100644
+--- a/drivers/media/i2c/adv748x/adv748x-hdmi.c
++++ b/drivers/media/i2c/adv748x/adv748x-hdmi.c
+@@ -214,7 +214,7 @@ static int adv748x_hdmi_set_video_timings(struct adv748=
+x_state *state,
+  * v4l2_subdev_video_ops
+  */
+=20
+-static int adv748x_hdmi_s_dv_timings(struct v4l2_subdev *sd,
++static int adv748x_hdmi_s_dv_timings(struct v4l2_subdev *sd, unsigned int =
+pad,
+ 				     struct v4l2_dv_timings *timings)
+ {
+ 	struct adv748x_hdmi *hdmi =3D adv748x_sd_to_hdmi(sd);
+@@ -254,7 +254,7 @@ static int adv748x_hdmi_s_dv_timings(struct v4l2_subdev=
+ *sd,
+ 	return ret;
  }
 =20
-+static int call_s_dv_timings(struct v4l2_subdev *sd, unsigned int pad,
-+			     struct v4l2_dv_timings *timings)
-+{
-+	if (!timings)
-+		return -EINVAL;
-+
-+	return check_pad(sd, pad) ? :
-+	       sd->ops->pad->s_dv_timings(sd, pad, timings);
-+}
-+
-+static int call_g_dv_timings(struct v4l2_subdev *sd, unsigned int pad,
-+			     struct v4l2_dv_timings *timings)
-+{
-+	if (!timings)
-+		return -EINVAL;
-+
-+	return check_pad(sd, pad) ? :
-+	       sd->ops->pad->g_dv_timings(sd, pad, timings);
-+}
-+
-+static int call_query_dv_timings(struct v4l2_subdev *sd, unsigned int pad,
-+				 struct v4l2_dv_timings *timings)
-+{
-+	if (!timings)
-+		return -EINVAL;
-+
-+	return check_pad(sd, pad) ? :
-+	       sd->ops->pad->query_dv_timings(sd, pad, timings);
-+}
-+
- static int call_dv_timings_cap(struct v4l2_subdev *sd,
- 			       struct v4l2_dv_timings_cap *cap)
+-static int adv748x_hdmi_g_dv_timings(struct v4l2_subdev *sd,
++static int adv748x_hdmi_g_dv_timings(struct v4l2_subdev *sd, unsigned int =
+pad,
+ 				     struct v4l2_dv_timings *timings)
  {
-@@ -487,6 +517,9 @@ static const struct v4l2_subdev_pad_ops v4l2_subdev_cal=
-l_pad_wrappers =3D {
- 	.set_frame_interval	=3D call_set_frame_interval,
- 	.get_edid		=3D call_get_edid,
- 	.set_edid		=3D call_set_edid,
-+	.s_dv_timings		=3D call_s_dv_timings,
-+	.g_dv_timings		=3D call_g_dv_timings,
-+	.query_dv_timings	=3D call_query_dv_timings,
- 	.dv_timings_cap		=3D call_dv_timings_cap,
- 	.enum_dv_timings	=3D call_enum_dv_timings,
- 	.get_frame_desc		=3D call_get_frame_desc,
-diff --git a/include/media/v4l2-subdev.h b/include/media/v4l2-subdev.h
-index a9e6b8146279..a5213411ef2b 100644
---- a/include/media/v4l2-subdev.h
-+++ b/include/media/v4l2-subdev.h
-@@ -791,6 +791,14 @@ struct v4l2_subdev_state {
-  *
-  * @set_edid: callback for VIDIOC_SUBDEV_S_EDID() ioctl handler code.
-  *
-+ * @s_dv_timings: Set custom dv timings in the sub device. This is used
-+ *	when sub device is capable of setting detailed timing information
-+ *	in the hardware to generate/detect the video signal.
-+ *
-+ * @g_dv_timings: Get custom dv timings in the sub device.
-+ *
-+ * @query_dv_timings: callback for VIDIOC_QUERY_DV_TIMINGS() ioctl handler=
- code.
-+ *
-  * @dv_timings_cap: callback for VIDIOC_SUBDEV_DV_TIMINGS_CAP() ioctl hand=
-ler
-  *		    code.
-  *
-@@ -864,6 +872,12 @@ struct v4l2_subdev_pad_ops {
- 				  struct v4l2_subdev_frame_interval *interval);
- 	int (*get_edid)(struct v4l2_subdev *sd, struct v4l2_edid *edid);
- 	int (*set_edid)(struct v4l2_subdev *sd, struct v4l2_edid *edid);
-+	int (*s_dv_timings)(struct v4l2_subdev *sd, unsigned int pad,
-+			    struct v4l2_dv_timings *timings);
-+	int (*g_dv_timings)(struct v4l2_subdev *sd, unsigned int pad,
-+			    struct v4l2_dv_timings *timings);
-+	int (*query_dv_timings)(struct v4l2_subdev *sd, unsigned int pad,
-+				struct v4l2_dv_timings *timings);
- 	int (*dv_timings_cap)(struct v4l2_subdev *sd,
- 			      struct v4l2_dv_timings_cap *cap);
- 	int (*enum_dv_timings)(struct v4l2_subdev *sd,
+ 	struct adv748x_hdmi *hdmi =3D adv748x_sd_to_hdmi(sd);
+@@ -269,7 +269,7 @@ static int adv748x_hdmi_g_dv_timings(struct v4l2_subdev=
+ *sd,
+ 	return 0;
+ }
+=20
+-static int adv748x_hdmi_query_dv_timings(struct v4l2_subdev *sd,
++static int adv748x_hdmi_query_dv_timings(struct v4l2_subdev *sd, unsigned =
+int pad,
+ 					 struct v4l2_dv_timings *timings)
+ {
+ 	struct adv748x_hdmi *hdmi =3D adv748x_sd_to_hdmi(sd);
+@@ -392,9 +392,6 @@ static int adv748x_hdmi_g_pixelaspect(struct v4l2_subde=
+v *sd,
+ }
+=20
+ static const struct v4l2_subdev_video_ops adv748x_video_ops_hdmi =3D {
+-	.s_dv_timings =3D adv748x_hdmi_s_dv_timings,
+-	.g_dv_timings =3D adv748x_hdmi_g_dv_timings,
+-	.query_dv_timings =3D adv748x_hdmi_query_dv_timings,
+ 	.g_input_status =3D adv748x_hdmi_g_input_status,
+ 	.s_stream =3D adv748x_hdmi_s_stream,
+ 	.g_pixelaspect =3D adv748x_hdmi_g_pixelaspect,
+@@ -413,7 +410,7 @@ static int adv748x_hdmi_propagate_pixelrate(struct adv7=
+48x_hdmi *hdmi)
+ 	if (!tx)
+ 		return -ENOLINK;
+=20
+-	adv748x_hdmi_query_dv_timings(&hdmi->sd, &timings);
++	adv748x_hdmi_query_dv_timings(&hdmi->sd, 0, &timings);
+=20
+ 	return adv748x_csi2_set_pixelrate(tx, timings.bt.pixelclock);
+ }
+@@ -610,6 +607,9 @@ static const struct v4l2_subdev_pad_ops adv748x_pad_ops=
+_hdmi =3D {
+ 	.get_fmt =3D adv748x_hdmi_get_format,
+ 	.get_edid =3D adv748x_hdmi_get_edid,
+ 	.set_edid =3D adv748x_hdmi_set_edid,
++	.s_dv_timings =3D adv748x_hdmi_s_dv_timings,
++	.g_dv_timings =3D adv748x_hdmi_g_dv_timings,
++	.query_dv_timings =3D adv748x_hdmi_query_dv_timings,
+ 	.dv_timings_cap =3D adv748x_hdmi_dv_timings_cap,
+ 	.enum_dv_timings =3D adv748x_hdmi_enum_dv_timings,
+ };
+@@ -734,7 +734,7 @@ int adv748x_hdmi_init(struct adv748x_hdmi *hdmi)
+ 	struct v4l2_dv_timings cea1280x720 =3D V4L2_DV_BT_CEA_1280X720P30;
+ 	int ret;
+=20
+-	adv748x_hdmi_s_dv_timings(&hdmi->sd, &cea1280x720);
++	adv748x_hdmi_s_dv_timings(&hdmi->sd, 0, &cea1280x720);
+=20
+ 	/* Initialise a default 16:9 aspect ratio */
+ 	hdmi->aspect_ratio.numerator =3D 16;
 --=20
 2.44.0.478.gd926399ef9-goog
 
