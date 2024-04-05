@@ -1,94 +1,84 @@
-Return-Path: <linux-kernel+bounces-133038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EF49899DE1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:02:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4227E899DE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:04:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C00A1C23077
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:02:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A0BD0B228C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57AE116D4C5;
-	Fri,  5 Apr 2024 13:02:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A176516D330;
+	Fri,  5 Apr 2024 13:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="bsHKARNq"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="ltlx3w2v"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104BA1370;
-	Fri,  5 Apr 2024 13:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2344516ABFA
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:04:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712322141; cv=none; b=EGWBeY+40seOkJK0XNq4BzwKS4masOYHxcYt4APePFBmADx3fg8Cw8bGxyaj0GU7bVuByKOXn4zeHIhIwB27BppKQbyJPNfk/PsG2Zoq0rXZHzRB96CfjIGk7JJ+VcYFYV4O8iuA3XdHKAJ5vNW+I13JHnbZmJrz3XKjtZ/WNx4=
+	t=1712322256; cv=none; b=eTm+gM2QAI5yZWfA/qbCHtjMoUyc+wmC9OD7ofr9giGjACuwjvqCfOPkibIxT2MpBXpB/SfRgTOzokBZ/kBaui1ulvaAgfuxam/NTrmXrezYxbpjEfDsKggrsnUvI0N9vCL9UN8y+WeIecIxes5NCdKgaeArxNTFwOZ8LWnOdBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712322141; c=relaxed/simple;
-	bh=0qxne+41P4xydT7YiBxh6DYcIOjLCZo3g8yosL1RhTk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jxo5VE4w0gcjylfHkCwk/GHgVZn4j5sa/eBtlAmQbdxk/u1BXCzNxlc3eTGWzdV/VkTrjsVbdzQ4ak0pM5TU6uEC52VpM6rv2Z3qOekKsphW5q4BeCTCITCPpb1GmvMRwfPB6KaX6BuTNEfZA8/MaSqKGZVOAdHfyyJfO+qAEFk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=bsHKARNq; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712322138;
-	bh=0qxne+41P4xydT7YiBxh6DYcIOjLCZo3g8yosL1RhTk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=bsHKARNqS+OHF4+T+1kHOH7GHkI35avfbG9C1FlCEbDEK3uZ9zafaM3qj+HhJ8lep
-	 3DK6D0WttksR1tAoEAoxuhE3LzCnZVDVsgkma3uQbhk9fG0RbTc85fqxAxUV0TJrqR
-	 qcKC6IVIdzhNqOKFwXuaBoQ7ZZfzlz0NO+Zaz6pm6JbmNi5+o8UtudjHZ+aYwQvquC
-	 kfLMQF4/0MZlKRwnmuw7nWdT+FiPNjBNF3EtUw8VfKyMjPPgMWNQyRjH4IFK4WBFQx
-	 MoOHhF0gIIcYbc/nS8+62EPxPNMNd7TnKtUs+ItmLESFUTGLpEADRTESvaMpoTRMKP
-	 QaNifUJP3N1lQ==
-Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 82AA9378200D;
-	Fri,  5 Apr 2024 13:02:16 +0000 (UTC)
-Message-ID: <ec3a3946-d6d6-40e1-8645-34b258d8b507@collabora.com>
-Date: Fri, 5 Apr 2024 16:02:15 +0300
+	s=arc-20240116; t=1712322256; c=relaxed/simple;
+	bh=Y7FhNkty0RG4vAetdYjkiZPH7ajVjh25aWBa4yvu+aI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qALDvCKZtq4yycTMabSWB2CLEU1yt9xEjnVOB47kk8TZwsONXE2xlioiRPPdgLnXmRgQmHi6Rj3YM53WkV2s772qGKeWeKETwKB8Aqs+X2ch+T6AnNSgYAiVPjCw4AbxHbSs6FAZflFcqfhxdrm3nrebJuQ7c1XoTf1Emh0k36k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=ltlx3w2v; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 14ACD2027B;
+	Fri,  5 Apr 2024 15:04:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1712322244;
+	bh=l7CqLckDLbgqOsa5j//MSRXiFTqbO5DRUoXwQ6kAxls=; h=From:To:Subject;
+	b=ltlx3w2vw3Y+QWe1kOtgzo7BfRzUla8vaHq4YMv9qw2AUtt6fmMGbdFvqOK8LDRyi
+	 T58fmgOad+HwY0S1XAOFI9b0EawRz6A40OTrTGbdMzqkSwAchh1KzxdG/db3r7Qvfl
+	 /W9DSR+fTbtnEEfPo8koKpoHoKZZvY2EVd6flsP5lD5xW2RNbSNH8uVmQGQUm1QGe7
+	 1GPGAHek+s3BFLEoPTfM0M0zDnSuQeGo4w8fe1Imo53XOx/zEGoJ0E+M0vJ5tyHWUf
+	 Q0BZ2o5vbnZVs91k2Xkau32pQKhQ9NS4RUPVsHBIiLIn3eOUvjIAgkLoXWUdXtWMlx
+	 nGO9TVFcS9+Wg==
+Date: Fri, 5 Apr 2024 15:03:59 +0200
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Flavio Suligoi <f.suligoi@asem.it>
+Cc: Tudor Ambarus <tudor.ambarus@linaro.org>,
+	Pratyush Yadav <pratyush@kernel.org>,
+	Michael Walle <mwalle@kernel.org>,
+	Miquel Raynal <miquel.raynal@bootlin.com>,
+	Richard Weinberger <richard@nod.at>,
+	Vignesh Raghavendra <vigneshr@ti.com>,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb entry
+Message-ID: <20240405130359.GA308940@francesco-nb>
+References: <20240405100104.480779-1-f.suligoi@asem.it>
+ <20240405100104.480779-2-f.suligoi@asem.it>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v16 0/9] Cache insensitive cleanup for ext4/f2fs
-To: Matthew Wilcox <willy@infradead.org>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- jaegeuk@kernel.org, chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
- jack@suse.cz, krisman@suse.de, ebiggers@kernel.org
-References: <20240405121332.689228-1-eugen.hristev@collabora.com>
- <Zg_sF1uPG4gdnJxI@casper.infradead.org>
-Content-Language: en-US
-From: Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <Zg_sF1uPG4gdnJxI@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405100104.480779-2-f.suligoi@asem.it>
 
-On 4/5/24 15:18, Matthew Wilcox wrote:
-> On Fri, Apr 05, 2024 at 03:13:23PM +0300, Eugen Hristev wrote:
->> Hello,
->>
->> I am trying to respin the series here :
->> https://www.spinics.net/lists/linux-ext4/msg85081.html
+Hello Flavio, thanks for your patch.
+
+On Fri, Apr 05, 2024 at 12:01:04PM +0200, Flavio Suligoi wrote:
+> Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
+> Memory.
+> This device is JEDEC compatible (JESD251 and JESD251-1), but it is not
+> able to provide SFDP information.
 > 
-> The subject here is "Cache insensitive cleanup for ext4/f2fs".
-> Cache insensitive means something entirely different
-> https://en.wikipedia.org/wiki/Cache-oblivious_algorithm
+> Link: https://www.everspin.com/file/158244/download
 > 
-> I suspect you mean "Case insensitive".
+No empty lines in-between tags
 
-You are correct, I apologize for the typo.
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
 
-> _______________________________________________
-> Kernel mailing list -- kernel@mailman.collabora.com
-> To unsubscribe send an email to kernel-leave@mailman.collabora.com
-> This list is managed by https://mailman.collabora.com
-
+Francesco
 
