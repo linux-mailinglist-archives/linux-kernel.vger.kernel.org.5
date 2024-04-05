@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-132901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0072899BCB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:22:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 384DD899BD2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:23:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70351B24580
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:22:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 693DF1C22798
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC95E16C68D;
-	Fri,  5 Apr 2024 11:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D46A16C6A4;
+	Fri,  5 Apr 2024 11:23:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="mkERQ8kk"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PxcJsTtc"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7746616132B;
-	Fri,  5 Apr 2024 11:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B465016C6A5;
+	Fri,  5 Apr 2024 11:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712316160; cv=none; b=dF5MEB/ktj1niVdT+Hbb/V+bEs1X+ipNAGQNRKVwNfASM50pQ8gfaia9bOK5p/n4kkeFP2MvYavExLrmZkrwdlBWpg/rFboPhFfYow+HZvQM+FEikNB2afm6AGvDiXSwBbCTC1Ljp+PNw5lrUFJcqAnb2oieJnQhpKCkU3xOr9U=
+	t=1712316193; cv=none; b=qRmVd4vZXaXGRbxC+8+0F2y1j6o2TVQnHp3T7oAoxwgQdgveNJ8S0vhrMSZ8FS9IQ+Hnhr2U+wpXGThQh4GBbYjCg8stRWSto/cAs2qUnR1Qw6PH/KzA1UsSX7ccz2W9aJ51HilZxs3aneacOKH5cBe6kAqz8a3sHZFZKtUxKWk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712316160; c=relaxed/simple;
-	bh=1tjDRUcH77n7AFaN2cajrY2o4bzMBKqdbpc28HYee/w=;
+	s=arc-20240116; t=1712316193; c=relaxed/simple;
+	bh=RFBYteiUsDRtmHhvt8RCDv8kgTDEiNMm0DqviBfGnx4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=VdZj+sjZSlV2fRM3uoONsdlZOCmJo/ts9tNYAJ7Vzakl/3ruAlS8DZuXmbeVPiWJAV26fox9TyQh4Gl/+rocZIzDum3TgAfZW3uHePs+kE86n0kwKt/tIDuS9woFwxdvUaY69jY+NWu/tpiqs/yKkyjxFIv7uGL/y98CEBIpa2M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=mkERQ8kk; arc=none smtp.client-ip=205.220.180.131
+	 In-Reply-To:Content-Type; b=aUGgQ3pRZcfj1SY8XcLRM0EHTfavgVpa/XxhPOlJ2qCaCk4kiJSgI9D7eQ0MYlX5CBnNGZjhjeRr5FzDlPwkDa1KWGf9mEf168jS0UnZsp3fQIinWFXGWVh/jqNAIJ1LA51dNgWQVea3UH4fRpBMPQg6ItItXAMVCgXzWraZNEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PxcJsTtc; arc=none smtp.client-ip=205.220.168.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 435BDYWD031510;
-	Fri, 5 Apr 2024 11:22:34 GMT
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 435AmO2I006512;
+	Fri, 5 Apr 2024 11:22:54 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	message-id:date:mime-version:subject:to:cc:references:from
 	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=YudMWaGyIH7qK971PvnZqUSurFzuszHH/y7TZFTPi68=; b=mk
-	ERQ8kkdvjzLdEgWm1mjkoBVk3eHNBhxhZs8rqGQA13mUd9s5S9O1g/ZNaiAHXaky
-	VIGB5ATpoMAF0tWmA5t1T1zdBGvgwckXFeECdSaXNPEVlVzxqfhFDSIdFaCGPsB4
-	neNV8Eg1ns0JVSolL5IzdaupDrthz6NyfDqBee7S8TyXgSwn4C/Q98O1nK0gZ3iU
-	0zHTBkichv8ZPaYrV7WdBxbNe76of+vrmUcL8mQx2mouSIGT/TRE9wG8+Ra+bZg0
-	a6NHc2ptOlUVDx7Bj5t9JgMTcEDwlHZT+szh1tsDvK9ctHyolrfbtWZ6AU7Du5Jt
-	+vWxmG6y4rZ8VjUdIC9Q==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa8fc100y-1
+	qcppdkim1; bh=SDAabO8gn5di0giN8zcTGrQbYAhA5+USYJnh7uYKzLw=; b=Px
+	cJsTtcQIp5fTVa7qqXJjItqRTOlY7R4rYTBAFbFOT6hSYwmrGoq3Fyrcx87cC4EX
+	vTKkc3vW1jk3S2WaU3vftlptSuZ0ydNqBDnL0aDByaqGJwsf7bFaAmhll4HOVBKn
+	fMSWDLTBm5KCIe/aK5jFV6+StrGG73ZvW52fJ1vCKujtznHMmdgZ17olcfU7BItO
+	DIjAkxN8EvG4IThaYhj8J1F8C6ypPkhDduR0b7p+UbKMFrguK59LxklOOVGwK0/W
+	J2d6y34ruqygzruL+DHaaOuIi8JCgEktvsWqLYUFG3vs3iz7zGwJSLC/u6bxiyWn
+	GW5++xoV2euWN+NGdZzQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x9v8jjhsf-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 11:22:34 +0000 (GMT)
+	Fri, 05 Apr 2024 11:22:49 +0000 (GMT)
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 435BMXHD030955
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 435BMmp1000993
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Apr 2024 11:22:33 GMT
+	Fri, 5 Apr 2024 11:22:48 GMT
 Received: from [10.214.67.128] (10.80.80.8) by nalasex01b.na.qualcomm.com
  (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
- 04:22:29 -0700
-Message-ID: <a59e7378-a3c3-4ec6-6566-346ae9cb3017@quicinc.com>
-Date: Fri, 5 Apr 2024 16:52:25 +0530
+ 04:22:44 -0700
+Message-ID: <7c616ed5-fd80-7afc-a881-9f21e85ea6b6@quicinc.com>
+Date: Fri, 5 Apr 2024 16:52:40 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -68,7 +68,7 @@ User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
 Subject: Re: [PATCH v2 2/2] arm64: dts: qcom: qcs6490-rb3gen2: Enable various
  remoteprocs
 Content-Language: en-US
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
 CC: Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio
 	<konrad.dybcio@linaro.org>,
@@ -81,46 +81,31 @@ CC: Bjorn Andersson <andersson@kernel.org>,
         <quic_tsoni@quicinc.com>
 References: <20240402090349.30172-1-quic_kbajaj@quicinc.com>
  <20240402090349.30172-3-quic_kbajaj@quicinc.com>
- <CAA8EJpofbeyER39_tjG=sYmVp+vN2WbNZyhU6NEaePxd-QUZaQ@mail.gmail.com>
+ <Zg9nmVl9eqTbkkDe@hu-bjorande-lv.qualcomm.com>
 From: Komal Bajaj <quic_kbajaj@quicinc.com>
-In-Reply-To: <CAA8EJpofbeyER39_tjG=sYmVp+vN2WbNZyhU6NEaePxd-QUZaQ@mail.gmail.com>
+In-Reply-To: <Zg9nmVl9eqTbkkDe@hu-bjorande-lv.qualcomm.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Nd10BpdFJGfvA74wVJgYD9FU74RqEJWW
-X-Proofpoint-ORIG-GUID: Nd10BpdFJGfvA74wVJgYD9FU74RqEJWW
+X-Proofpoint-GUID: oukBI9rZ0PY-4A628WA1Qm1_KbBesS-X
+X-Proofpoint-ORIG-GUID: oukBI9rZ0PY-4A628WA1Qm1_KbBesS-X
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-05_10,2024-04-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=648 bulkscore=0 suspectscore=0 clxscore=1011
- priorityscore=1501 adultscore=0 phishscore=0 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404050081
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 malwarescore=0 phishscore=0 priorityscore=1501 adultscore=0
+ mlxscore=0 clxscore=1015 mlxlogscore=941 impostorscore=0 bulkscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404050081
 
 
 
-On 4/2/2024 2:47 PM, Dmitry Baryshkov wrote:
-> On Tue, 2 Apr 2024 at 12:04, Komal Bajaj <quic_kbajaj@quicinc.com> wrote:
->>
+On 4/5/2024 8:23 AM, Bjorn Andersson wrote:
+> On Tue, Apr 02, 2024 at 02:33:49PM +0530, Komal Bajaj wrote:
 >> Enable the ADSP, CDSP and WPSS that are found on qcs6490-rb3gen2.
-> 
-> No MPSS even for GPS?
-
-Earlier was thinking of sending a separate patch for that.
-Anyway, will add MPSS too in the next series.
-
-Thanks
-Komal
-
-> 
-> Anyway,
-> 
-> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> 
 >>
 >> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
 >> ---
@@ -132,31 +117,50 @@ Komal
 >> --- a/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
 >> +++ b/arch/arm64/boot/dts/qcom/qcs6490-rb3gen2.dts
 >> @@ -434,6 +434,21 @@ &qupv3_id_0 {
->>          status = "okay";
+>>   	status = "okay";
 >>   };
 >>
 >> +&remoteproc_adsp {
->> +       firmware-name = "qcom/qcm6490/adsp.mbn";
->> +       status = "okay";
+>> +	firmware-name = "qcom/qcm6490/adsp.mbn";
+> 
+> Should this be qcm6490?
+>  >
+> I already proposed a patch to add adsp and cdsp, using qcs6490, and this
+> was merged earlier this week. Please pay attention and review patches
+> posted on the public list.
+
+Apologies, I missed that.
+Will drop adsp and cdsp firmware path update in the next series.
+
+Rebase this change on top of your change, also will add the firmware 
+path update for modem for GPS usecase.
+
+Thanks
+Komal
+
+> 
+> Either way, this will now have to be rebased on linux-next.
+> 
+> Thanks,
+> Bjorn
+> 
+>> +	status = "okay";
 >> +};
 >> +
 >> +&remoteproc_cdsp {
->> +       firmware-name = "qcom/qcm6490/cdsp.mbn";
->> +       status = "okay";
+>> +	firmware-name = "qcom/qcm6490/cdsp.mbn";
+>> +	status = "okay";
 >> +};
 >> +
 >> +&remoteproc_wpss {
->> +       firmware-name = "qcom/qcm6490/wpss.mbn";
->> +       status = "okay";
+>> +	firmware-name = "qcom/qcm6490/wpss.mbn";
+>> +	status = "okay";
 >> +};
 >> +
 >>   &tlmm {
->>          gpio-reserved-ranges = <32 2>, /* ADSP */
->>                                 <48 4>; /* NFC */
+>>   	gpio-reserved-ranges = <32 2>, /* ADSP */
+>>   			       <48 4>; /* NFC */
 >> --
 >> 2.42.0
 >>
->>
-> 
-> 
 
