@@ -1,202 +1,185 @@
-Return-Path: <linux-kernel+bounces-133095-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133096-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED80F899EC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:52:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3FCF899EC9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:53:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 790992850F2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:52:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E75961C20D29
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E29116D9C8;
-	Fri,  5 Apr 2024 13:52:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D74516DEB9;
+	Fri,  5 Apr 2024 13:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HhNEvKlo"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aYTVf2I+"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CC6A16D309;
-	Fri,  5 Apr 2024 13:52:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5976F16D9BA
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:53:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712325130; cv=none; b=RNriGSmXxxVTRpUFsHn20TS9YRruGAbcDO9vziinaddP+Et/qdCymV1w/m5H2d1PE2nwdtdcDXF/MI11njPEm0uOFQsHWGiVEQZbTbhcOmQURBcMxkv4fg3birF6DwEjDr32LqtHPLQPTV7unj3uFnR0P9vizM44H421PywlOjc=
+	t=1712325203; cv=none; b=itEBIthWUjcNvJgdJOgaJf7Sj9taIKcIVgKrRv4DSCCVtTgccJ+LOhLAKBgD2WrToehdMcdFnQwUm+RwfgnHttmV+mWoDbXG/foE4KVb4kb4KZZCHoS9zZpnCf7HiwlGBL4u8VQX5Q4NzlvTuK8dU3GhO+XqF/rBJb9S2kOLQ80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712325130; c=relaxed/simple;
-	bh=XqlrFMow+DfUuNoWXAqGHAP/Ea4CAhFI638WoT8N7pk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=r3mfYfwN/xyI/nsr+MtnPkTOjOdk9hjtpT3GT+JnwGsfOE8fRuO/k8H25TJ0nv8cKwR6mJGxQjtmnTn/i4S0uhkU6fvMpVJKqfLUXRHp3dV2At76jehaoHrhvXXe+87lPFiW8trRaocaUBbui+2Bs+idxTs5KgCEfc6aqpwFYbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HhNEvKlo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50964C433F1;
-	Fri,  5 Apr 2024 13:52:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712325129;
-	bh=XqlrFMow+DfUuNoWXAqGHAP/Ea4CAhFI638WoT8N7pk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=HhNEvKloXhrbkZjlX8IYjDuZJaFgymf8W5wsAn8acyNT8mCWNDlQnLej/XJRmGp6n
-	 YobD5bq01JoXW1mYrEvPGDHu4OD+ZCOcJ+q12YXJXoZ7mIk9+IUHs2j97w5xttftb8
-	 f/IVlx/IPLTD5U+FkWkRJjRgfoyxwqBnveoV7Wl5CiS4MCH2rosebxt/9aX9LqJ9JS
-	 urYTLlErPoOutuNBI/lje/lo9lPtGPaXwAnbTqPQvbuT6onGFUYKOgwJtT/tZnWUam
-	 0njrX9NWk+S9Ziy2dI4XDhZI3nMic/MZuGUuwXL5Xjb8zaP8CAbEgY7lTNXn0p4uqF
-	 tE/pJETO9SvVg==
-Message-ID: <39588f6b-b466-4a1a-bd30-729c5da37a22@kernel.org>
-Date: Fri, 5 Apr 2024 15:52:05 +0200
+	s=arc-20240116; t=1712325203; c=relaxed/simple;
+	bh=0BksyQPOyLKGmYa0FEtepwJD1JDHx0EJaEKX0tpkO58=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ILNjJ+VlLB8IBKPqXxdy3PQKMuWqRYxyrztFyZcGjwLgApzUWdHFVCGTcRcr7E3T/jqTLSK3hHNe+nG/R0c6Z/o1l8DNEniFlda13Yu/vwfRYoxhCkL0f97aIrPyS4eHJFJ70sQqYGpIgqK8z6RjL+lIo4x4UZAX1KC4wLQqvuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aYTVf2I+; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dcc80d6006aso2280294276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 06:53:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712325200; x=1712930000; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lAHdE5NFk++ufix28SzhuwWBAI0pKipkj98VJiYe3GU=;
+        b=aYTVf2I+TyRnSSdH8+I/CVMYO1BJa7hB9/v01eKTU4OrNL9qd16Jg0wQfeflZu4I00
+         bJzKgnoYGjlF2wFjjjOIkrUvFIjP/gbka8Ca/nK2NNuY96Fo8i0pVlzBoXDg1TkGWJgh
+         e74bm5LQIwxwotdUhDKtFybHE4VYNE/OXkfP4r8mdYC/WVnYYO2zvp0is9rK/LvGlb1u
+         rNp+xyY2kEDgPEpFHmoCvWu4DRKLOea8E3f1pcxL98WGt6zjQX+gyOrqvrhhCb7mBZhQ
+         NliJCHdvq8o1zOgd+ypWl8ttBwBOiemAKjdJsQE5P4duBu286hd2IUmiV+Z3y72bJNxi
+         hYIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712325200; x=1712930000;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lAHdE5NFk++ufix28SzhuwWBAI0pKipkj98VJiYe3GU=;
+        b=rDCtWbn/EhPQJkfkaF2Ju7n+9ok0ORLz0NoAwU5MGhczeEN/QgW3IuMyb0rsf4Ep5B
+         pm4G/JHkjARXADnkP1LZvt/wmESOdVoSypP2RM/kpVenWrFZkIOpvLHnSgHe0g+ByxW6
+         mA6Y8b37Dxke7X4d91aF5l+dvBDZLmj33lwgmHe6igZz3y6or9u9x4iwcB7+cA7TC6oa
+         f9IGEd16pg1CqBPmN9YFxS2FStxuRc5IsU3u1S1IfoeF6D6sv44P0OcU9sMkpz6ceNDP
+         hA+Jmsuz5fTiTO/Vx52F767lPt3/nUNE48VEGhUbpXmW6qMIanpr4vCCxm+WO9Ik0cpI
+         FZfg==
+X-Forwarded-Encrypted: i=1; AJvYcCWu91ptRXWOHefmqsye7y50Hi+0FufI3GutOWn8CYTSDXZyXI8+wH9rCDP9JAIgqEnvHdOZoZm1fXX99vdZZ2YsIRIqoF+a3nt/ZakA
+X-Gm-Message-State: AOJu0YwhQZad6RcC3i6EC8H0qKK7OQrH+2jjxV62EXaVPeGWfGJMfdWX
+	3KzMoOKcCi2aozwrHkAi5DZIu5zEbEWfOW9oabzaPVROTt4HIscB1+epRKA+xhTJbHYmiSMCeHX
+	hY7o0Xu9RB4l6pPWCGY4KdVev7GiUSE2P0as1
+X-Google-Smtp-Source: AGHT+IH/KRHN+9M5N1gYIB2bCPgMB25x0KPnvuKiHgvgSCGh43Ngn+0mkz51p67LhizDAcBL1UgazcYTNlxqGDPZP2o=
+X-Received: by 2002:a25:f454:0:b0:dcd:b624:3e55 with SMTP id
+ p20-20020a25f454000000b00dcdb6243e55mr1115241ybe.54.1712325200128; Fri, 05
+ Apr 2024 06:53:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH net-next 1/2] mptcp: add last time fields in mptcp_info
-Content-Language: en-GB
-To: Eric Dumazet <edumazet@google.com>
-Cc: mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
- Geliang Tang <geliang@kernel.org>, "David S. Miller" <davem@davemloft.net>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Shuah Khan <shuah@kernel.org>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- Geliang Tang <tanggeliang@kylinos.cn>
-References: <20240405-upstream-net-next-20240405-mptcp-last-time-info-v1-0-52dc49453649@kernel.org>
- <20240405-upstream-net-next-20240405-mptcp-last-time-info-v1-1-52dc49453649@kernel.org>
- <CANn89i+2TMNF7chYaDFEBNRng3iLPaXBqXKNtZYevDd95-PqmQ@mail.gmail.com>
-From: Matthieu Baerts <matttbe@kernel.org>
-Autocrypt: addr=matttbe@kernel.org; keydata=
- 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
- lzVbFe7fduHbABmYz9cefQpO7wDE/Q==
-Organization: NGI0 Core
-In-Reply-To: <CANn89i+2TMNF7chYaDFEBNRng3iLPaXBqXKNtZYevDd95-PqmQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20240404165404.3805498-1-surenb@google.com> <Zg7dmp5VJkm1nLRM@casper.infradead.org>
+ <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
+ <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
+ <Zg8qstJNfK07siNn@casper.infradead.org> <jb25mtkveqf63bv74jhynf6ncxmums5s37esveqsv52yurh4z7@5q55ttv34bia>
+ <20240404154150.c25ba3a0b98023c8c1eff3a4@linux-foundation.org>
+ <jpaw4hdd73ngt7mvtcdryqscivx6m2ic76ikfkcopceb47becp@vox5czt5bec3> <Zg_yHGKpw4HJHdpb@casper.infradead.org>
+In-Reply-To: <Zg_yHGKpw4HJHdpb@casper.infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 5 Apr 2024 06:53:09 -0700
+Message-ID: <CAJuCfpGMSHv7drSu7Veo5CVz3d_Upt8S6Rdx3isi7orct9-uNQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
+ the call site
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	joro@8bytes.org, will@kernel.org, trond.myklebust@hammerspace.com, 
+	anna@kernel.org, arnd@arndb.de, herbert@gondor.apana.org.au, 
+	davem@davemloft.net, jikos@kernel.org, benjamin.tissoires@redhat.com, 
+	tytso@mit.edu, jack@suse.com, dennis@kernel.org, tj@kernel.org, cl@linux.com, 
+	jakub@cloudflare.com, penberg@kernel.org, rientjes@google.com, 
+	iamjoonsoo.kim@lge.com, vbabka@suse.cz, edumazet@google.com, kuba@kernel.org, 
+	pabeni@redhat.com, iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-ext4@vger.kernel.org, linux-mm@kvack.org, 
+	netdev@vger.kernel.org, linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Eric,
+On Fri, Apr 5, 2024 at 5:44=E2=80=AFAM Matthew Wilcox <willy@infradead.org>=
+ wrote:
+>
+> On Thu, Apr 04, 2024 at 07:00:51PM -0400, Kent Overstreet wrote:
+> > On Thu, Apr 04, 2024 at 03:41:50PM -0700, Andrew Morton wrote:
+> > > On Thu, 4 Apr 2024 18:38:39 -0400 Kent Overstreet <kent.overstreet@li=
+nux.dev> wrote:
+> > >
+> > > > On Thu, Apr 04, 2024 at 11:33:22PM +0100, Matthew Wilcox wrote:
+> > > > > On Thu, Apr 04, 2024 at 03:17:43PM -0700, Suren Baghdasaryan wrot=
+e:
+> > > > > > Ironically, checkpatch generates warnings for these type casts:
+> > > > > >
+> > > > > > WARNING: unnecessary cast may hide bugs, see
+> > > > > > http://c-faq.com/malloc/mallocnocast.html
+> > > > > > #425: FILE: include/linux/dma-fence-chain.h:90:
+> > > > > > + ((struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_ch=
+ain),
+> > > > > > GFP_KERNEL))
+> > > > > >
+> > > > > > I guess I can safely ignore them in this case (since we cast to=
+ the
+> > > > > > expected type)?
+> > > > >
+> > > > > I find ignoring checkpatch to be a solid move 99% of the time.
+> > > > >
+> > > > > I really don't like the codetags.  This is so much churn, and it =
+could
+> > > > > all be avoided by just passing in _RET_IP_ or _THIS_IP_ depending=
+ on
+> > > > > whether we wanted to profile this function or its caller.  vmallo=
+c
+> > > > > has done it this way since 2008 (OK, using __builtin_return_addre=
+ss())
+> > > > > and lockdep has used _THIS_IP_ / _RET_IP_ since 2006.
+> > > >
+> > > > Except you can't. We've been over this; using that approach for tra=
+cing
+> > > > is one thing, using it for actual accounting isn't workable.
+> > >
+> > > I missed that.  There have been many emails.  Please remind us of the
+> > > reasoning here.
+> >
+> > I think it's on the other people claiming 'oh this would be so easy if
+> > you just do it this other way' to put up some code - or at least more
+> > than hot takes.
+>
+> Well, /proc/vmallocinfo exists, and has existed since 2008, so this is
+> slightly more than a "hot take".
+>
+> > But, since you asked - one of the main goals of this patchset was to be
+> > fast enough to run in production, and if you do it by return address
+> > then you've added at minimum a hash table lookup to every allocate and
+> > free; if you do that, running it in production is completely out of the
+> > question.
+>
+> And yet vmalloc doesn't do that.
+>
+> > Besides that - the issues with annotating and tracking the correct
+> > callsite really don't go away, they just shift around a bit. It's true
+> > that the return address approach would be easier initially, but that's
+> > not all we're concerned with; we're concerned with making sure
+> > allocations get accounted to the _correct_ callsite so that we're givin=
+g
+> > numbers that you can trust, and by making things less explicit you make
+> > that harder.
+>
+> I'm not convinced that _THIS_IP_ is less precise than a codetag.  They
+> do essentially the same thing, except that codetags embed the source
+> location in the file while _THIS_IP_ requires a tool like faddr2line
+> to decode kernel_clone+0xc0/0x430 into a file + line number.
+>
+> > This is all stuff that I've explained before; let's please dial back on
+> > the whining - or I'll just bookmark this for next time...
+>
+> Please stop mischaracterising serious thoughtful criticism as whining.
+> I don't understand what value codetags bring over using _THIS_IP_ and
+> _RET_IP_ and you need to explain that.
 
-Thank you for the review!
-
-On 05/04/2024 15:29, Eric Dumazet wrote:
-> On Fri, Apr 5, 2024 at 3:06 PM Matthieu Baerts (NGI0)
-> <matttbe@kernel.org> wrote:
->>
->> From: Geliang Tang <tanggeliang@kylinos.cn>
->>
->> This patch adds "last time" fields last_data_sent, last_data_recv and
->> last_ack_recv in struct mptcp_sock to record the last time data_sent,
->> data_recv and ack_recv happened. They all are initialized as
->> tcp_jiffies32 in __mptcp_init_sock(), and updated as tcp_jiffies32 too
->> when data is sent in __subflow_push_pending(), data is received in
->> __mptcp_move_skbs_from_subflow(), and ack is received in ack_update_msk().
->>
->> Similar to tcpi_last_data_sent, tcpi_last_data_recv and tcpi_last_ack_recv
->> exposed with TCP, this patch exposes the last time "an action happened" for
->> MPTCP in mptcp_info, named mptcpi_last_data_sent, mptcpi_last_data_recv and
->> mptcpi_last_ack_recv, calculated in mptcp_diag_fill_info() as the time
->> deltas between now and the newly added last time fields in mptcp_sock.
->>
->> Also add three reserved bytes in struct mptcp_info not to have holes in
->> this structure exposed to userspace.
->>
->> Closes: https://github.com/multipath-tcp/mptcp_net-next/issues/446
->> Signed-off-by: Geliang Tang <tanggeliang@kylinos.cn>
->> Reviewed-by: Mat Martineau <martineau@kernel.org>
->> Signed-off-by: Matthieu Baerts (NGI0) <matttbe@kernel.org>
->> ---
->>  include/uapi/linux/mptcp.h | 4 ++++
-> 
-> 
->> diff --git a/net/mptcp/sockopt.c b/net/mptcp/sockopt.c
->> index 73fdf423de44..2ec2fdf9f4af 100644
->> --- a/net/mptcp/sockopt.c
->> +++ b/net/mptcp/sockopt.c
->> @@ -896,6 +896,7 @@ static int mptcp_getsockopt_first_sf_only(struct mptcp_sock *msk, int level, int
->>  void mptcp_diag_fill_info(struct mptcp_sock *msk, struct mptcp_info *info)
->>  {
->>         struct sock *sk = (struct sock *)msk;
->> +       u32 now = tcp_jiffies32;
->>         u32 flags = 0;
->>         bool slow;
->>
->> @@ -930,6 +931,7 @@ void mptcp_diag_fill_info(struct mptcp_sock *msk, struct mptcp_info *info)
->>         info->mptcpi_snd_una = msk->snd_una;
->>         info->mptcpi_rcv_nxt = msk->ack_seq;
->>         info->mptcpi_bytes_acked = msk->bytes_acked;
->> +       info->mptcpi_last_ack_recv = jiffies_to_msecs(now - msk->last_ack_recv);
->>         mptcp_data_unlock(sk);
->>
->>         slow = lock_sock_fast(sk);
-> 
->  lock_sock_fast(sk) can sleep and be quite slow...
-> 
-> I suggest you reload now = jiffies32;
-
-Good point, it would make more sense to reload it after this lock!
-
-(or defining "now" only here, under this lock_sock_fast(), and move the
-block here above that is under the data spin lock, after, so all the
-"time" counter are "in sync"?)
-
-pw-bot: changes-requested
-
-> 
-> 
->> @@ -942,6 +944,8 @@ void mptcp_diag_fill_info(struct mptcp_sock *msk, struct mptcp_info *info)
->>         info->mptcpi_bytes_retrans = msk->bytes_retrans;
->>         info->mptcpi_subflows_total = info->mptcpi_subflows +
->>                 __mptcp_has_initial_subflow(msk);
->> +       info->mptcpi_last_data_sent = jiffies_to_msecs(now - msk->last_data_sent);
->> +       info->mptcpi_last_data_recv = jiffies_to_msecs(now - msk->last_data_recv);
->>         unlock_sock_fast(sk, slow);
->>  }
->>  EXPORT_SYMBOL_GPL(mptcp_diag_fill_info);
->>
->> --
->> 2.43.0
->>
-> 
-
-Cheers,
-Matt
--- 
-Sponsored by the NGI0 Core fund.
-
+The conceptual difference between codetag and _THIS_IP_/_RET_IP_ is
+that codetag injects counters at the call site, so you don't need to
+spend time finding the appropriate counter to operate on during
+allocation.
 
