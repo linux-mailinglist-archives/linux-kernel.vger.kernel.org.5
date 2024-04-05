@@ -1,112 +1,178 @@
-Return-Path: <linux-kernel+bounces-132655-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132656-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16A9A8997D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:31:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D9308997DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:32:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 92E96B21343
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:31:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AD011F22CE9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:32:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 131F21514EA;
-	Fri,  5 Apr 2024 08:31:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE742156F2C;
+	Fri,  5 Apr 2024 08:32:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="artZWtV9"
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b="tM5Z4qbO"
+Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDD0D15099E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 08:31:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8186D156F3D
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 08:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712305864; cv=none; b=Ibzox6IoNLaw6SFKq6Js8A8O62auNiuz2JONTiBRo8AeQ5map0qxuENscy/iMkZrxSV2rcSDk72FbmldEuImXUr9zhGlAHguhFG8/LR4gM+g//YbwzZ28FJY9rx/zo51MX62nOq9s0RcDh+awgwhiXthDfxCdEYUO9k9z/EoIlw=
+	t=1712305943; cv=none; b=rmRPTcmmciYlaj5y7wuTzNryDJK1BY1IyBEpUZ+CtC0fpYEO1pL+b/IjlKqtTUJAYoA1YM2sECB2TjPZMOjJm637x/EwhB65QTmdvDh6AYrESij9uyg5lk4zyT0OGjHYhnwp1gENk2PgxA3bobzj0BG/dAomxdSWg2wrm3aXrX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712305864; c=relaxed/simple;
-	bh=yxdBB10ArDmSlmE0g0r1a9LmbtngWEnM0SlxQmAvBY4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IkrvrYbgE9WOO6P6jmPj31nfpAPmG55eWxxUpv05wizRtfwZrn9Abcc/UJs1DAifVw9be6veMEFFu+0y32+AHhCmvVhhmAXggOWX9c4DT0ocb5y6SKFYjtLACrCQSB+G9bBYX8h4Dt4dEM7Mhrc0nciie4j9LNH68qEENxXbR/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=artZWtV9; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-415584360c0so14873305e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 01:31:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712305859; x=1712910659; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=k+yiJOo7/g4gpSdzIrOskjwlXwHDi0ApeHqIT18FSLE=;
-        b=artZWtV9YaxV7ecokOgz02QMDGSdua/wB+XoZK/eo3Vh/wC/1cWYBFhS49mM6AhauJ
-         GOK6sF+0LTqD+mGqqUuBVuN0RA4ArYbsCsK9XepqP5jjlhM5FHX+0jGZob3uHSgnsHYQ
-         11i6RFzuV6mEHKmegfFRkjWqsTIPxE5kG8479OVelXnqTo7Kp3NPmXxEvVpgFDZaTJ85
-         QpjyogaqcyZlAIt6Zfu6cy2jKxqAEAgz2czKwUj+wZYsRmyorpa0vC+se23o7jrZ1WT0
-         pA8sbdVYL/6FEWrm6bYf64DNNksStpTGatQddBFEsVoFu9QQ5NXW/p27/yVaWokBemL0
-         EiQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712305859; x=1712910659;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k+yiJOo7/g4gpSdzIrOskjwlXwHDi0ApeHqIT18FSLE=;
-        b=BKt4dgdl0+4g7CMjYYaLFIGClXzM0p7YUJe2f1rxWCII0oQmlZm/Ntdv9EwOqAa7ue
-         W7TtNEpP/yUrlX5/RYuhgSj5BwMFLsceAZydgPDreOhUlG8LO3o2f+Jasa01QesJut+6
-         NToZCL9pj4eGKb2Fx7lDfspkmbF5lu0JiWbAuSYPx8hIUhbhZoyenzpY9/LVEzSxlquf
-         /GAej7AWQKYoGBQW28GSVYYyflpS7imOJvdxtla76r6CSxpfUlM8/XV+owMbYuLMDC6J
-         MqiVmxfeIMJ6AcNHOAFDatg39LmHdWgt7LHb/OR0NmTRSAx3pnXmu/yhVivcaUXjxIUX
-         IbQg==
-X-Gm-Message-State: AOJu0YzXQKHGKYzM3vjs73soPDQzZ0MC5rqeuYe1hSk+a/CV1NHTwzc5
-	k0Bbfi058gLLAEKvmkcIvpffHj4u5x8b8G+/g0bDzbsfTlXoZK50bjKbcZHs02E6daVHe9uNuxg
-	Y
-X-Google-Smtp-Source: AGHT+IHwzZg6mqbOsTet1vE1TEWA9BHTjUj5nkdl33/YZd+0KsGS7zI4vNLvez40dZEnn1sQDzcRBw==
-X-Received: by 2002:a05:600c:1f93:b0:416:2a95:6e8b with SMTP id je19-20020a05600c1f9300b004162a956e8bmr572430wmb.26.1712305859037;
-        Fri, 05 Apr 2024 01:30:59 -0700 (PDT)
-Received: from [192.168.10.46] (146725694.box.freepro.com. [130.180.211.218])
-        by smtp.googlemail.com with ESMTPSA id n8-20020a5d4c48000000b0033e7b05edf3sm1446622wrt.44.2024.04.05.01.30.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 01:30:58 -0700 (PDT)
-Message-ID: <cf1ad84d-3983-4595-aeab-e421bc1f95b5@linaro.org>
-Date: Fri, 5 Apr 2024 10:30:57 +0200
+	s=arc-20240116; t=1712305943; c=relaxed/simple;
+	bh=NALxV+zs5Tnjgphk/TpkK7zxaU7vpIhcOCwZW6f35is=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Tetk+9MXEFLREQwqQ/Z4ymcUe1RMbvGWc12v4ijH0XcWXRAidVS9N/7m8e1sBAUgOw8w8ucmHXv0SZtdQ1SjRsb37X/Eg4ni8TLEV2AeHkrA9HjWWfvUHfkHXUZEq4D+cHcs/W9stE4jH9Aj2Pe6qcuY6yGwL92wSxn3s9YsPxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com; spf=pass smtp.mailfrom=thefossguy.com; dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b=tM5Z4qbO; arc=none smtp.client-ip=185.70.40.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thefossguy.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thefossguy.com;
+	s=protonmail; t=1712305932; x=1712565132;
+	bh=NALxV+zs5Tnjgphk/TpkK7zxaU7vpIhcOCwZW6f35is=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=tM5Z4qbOnuDyhJmzm7Iqonyk3hz9cJ1q0eVMFcprGM5Adx5wfRTd2MSQgRoIB16k4
+	 wCJD5FWeZv2sph+EMZPLCBWYwPbz3MIo7p7LnOwstEw1xX6Tn62LTm2yWtjcJ2Mvwh
+	 IE3R2EEVAaF5mQKAyTeClc1l6JctSa8QcHOFHpOqv17HOodFID44p7mHbm6Qs0RjSa
+	 xjjRoGuoJRxhy6fCcYFs3hoSdqxtQSUDUnrhIdNvVw4K20l37hgLJnJSXaXxQQAoKN
+	 wsEn21ph5v9wM2SpHo/DmZW5Xu8sd8dOFyaw0KUv94Gz6DHVXj9I1A6QEmhNWvVm8A
+	 TMX4k9EP74VUw==
+Date: Fri, 05 Apr 2024 08:32:08 +0000
+To: Saravana Kannan <saravanak@google.com>
+From: Pratham Patel <prathampatel@thefossguy.com>
+Cc: Dragan Simic <dsimic@manjaro.org>, sebastian.reichel@collabora.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, regressions@lists.linux.dev, stable@vger.kernel.org
+Subject: Re: Fixing the devicetree of Rock 5 Model B (and possibly others)
+Message-ID: <Z6J7NF8AKNHDzwd1lbld1obVJZrKq0UKLSzKVtoL0TmOzpdyM8PRMvel8IUyhwsphxBg1bjku4ZaeQcwMhfKagEM2lRYtMChYv6VNPK5Tvg=@thefossguy.com>
+In-Reply-To: <D0A2ZL6S8UG6.2BQKIBQWYB36D@thefossguy.com>
+References: <tQ0L3-34g4t-mzfQIP6KDe5OYelGnEo6Udzq6Kb_nEcljppSQUXOktpE__nL-CdLOu9gW-4tIIbjtSbqrdCrjEkdhZLPiiHTqRcCB6WORuM=@thefossguy.com> <ac4246bf3786230eb9ca85b329e7d0df@manjaro.org> <CAGETcx89V5CJrAq6XwuGiusQnkR804pTgYAtS94v7Q+v=Cv+qA@mail.gmail.com> <D0A122WK7CB9.33B2TP6UCMJBJ@thefossguy.com> <CAGETcx_ToHsp_c+Yt0qqST4Zd-GC7dPn_j=PpB1n1xpZtOnMfg@mail.gmail.com> <D0A2ZL6S8UG6.2BQKIBQWYB36D@thefossguy.com>
+Feedback-ID: 104309535:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/6] thermal: core: Rewrite comments in
- handle_thermal_trip()
-Content-Language: en-US
-To: "Rafael J. Wysocki" <rjw@rjwysocki.net>,
- Linux PM <linux-pm@vger.kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
- Lukasz Luba <lukasz.luba@arm.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-References: <4558251.LvFx2qVVIh@kreacher> <3284691.aeNJFYEL58@kreacher>
-From: Daniel Lezcano <daniel.lezcano@linaro.org>
-In-Reply-To: <3284691.aeNJFYEL58@kreacher>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 02/04/2024 20:59, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> 
-> Make the comments regarding trip crossing and threshold updates in
-> handle_thermal_trip() slightly more clear.
-> 
-> No functional impact.
-> 
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wednesday, April 3rd, 2024 at 06:33, Pratham Patel <prathampatel@thefoss=
+guy.com> wrote:
 
-Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+>=20
+>=20
+> On Wed Apr 3, 2024 at 6:16 AM IST, Saravana Kannan wrote:
+>=20
+> > On Tue, Apr 2, 2024 at 4:32=E2=80=AFPM Pratham Patel
+> > prathampatel@thefossguy.com wrote:
+> >=20
+> > > On Tue Apr 2, 2024 at 4:54 AM IST, Saravana Kannan wrote:
+> > >=20
+> > > > On Sat, Mar 23, 2024 at 10:10=E2=80=AFAM Dragan Simic dsimic@manjar=
+o.org wrote:
+> > > >=20
+> > > > > Hello Pratham,
+> > > > >=20
+> > > > > On 2024-03-23 18:02, Pratham Patel wrote:
+> > > > >=20
+> > > > > > I looked at the patch and tried several things, neither resulte=
+d in
+> > > > > > anything that would point me to the core issue. Then I tried th=
+is:
+> > > > >=20
+> > > > > Could you, please, clarify a bit what's the actual issue you're
+> > > > > experiencing on your Rock 5B?
+> > > >=20
+> > > > Pratham, can you reply to this please? I don't really understand wh=
+at
+> > > > your issue is for me to be able to help.
+> > >=20
+> > > Hi,
+> > >=20
+> > > I apologize for not replying. Somehow, I did not notice the reply fro=
+m
+> > > Dragan. :(
+> > >=20
+> > > Since this patch was applied, an issue in the Rock 5B's DT has been
+> > > unearthed which now results in the kernel being unable to boot proper=
+ly.
+> > >=20
+> > > Following is the relevant call trace from the UART capture:
+> > >=20
+> > > [ 21.595068] Call trace:
+> > > [ 21.595288] smp_call_function_many_cond+0x174/0x5f8
+> > > [ 21.595728] on_each_cpu_cond_mask+0x2c/0x40
+> > > [ 21.596109] cpuidle_register_driver+0x294/0x318
+> > > [ 21.596524] cpuidle_register+0x24/0x100
+> > > [ 21.596875] psci_cpuidle_probe+0x2e4/0x490
+> > > [ 21.597247] platform_probe+0x70/0xd0
+> > > [ 21.597575] really_probe+0x18c/0x3d8
+> > > [ 21.597905] __driver_probe_device+0x84/0x180
+> > > [ 21.598294] driver_probe_device+0x44/0x120
+> > > [ 21.598669] __device_attach_driver+0xc4/0x168
+> > > [ 21.599063] bus_for_each_drv+0x8c/0xf0
+> > > [ 21.599408] __device_attach+0xa4/0x1c0
+> > > [ 21.599748] device_initial_probe+0x1c/0x30
+> > > [ 21.600118] bus_probe_device+0xb4/0xc0
+> > > [ 21.600462] device_add+0x68c/0x888
+> > > [ 21.600775] platform_device_add+0x19c/0x270
+> > > [ 21.601154] platform_device_register_full+0xdc/0x178
+> > > [ 21.601602] psci_idle_init+0xa0/0xc8
+> > > [ 21.601934] do_one_initcall+0x60/0x290
+> > > [ 21.602275] kernel_init_freeable+0x20c/0x3e0
+> > > [ 21.602664] kernel_init+0x2c/0x1f8
+> > > [ 21.602979] ret_from_fork+0x10/0x20
+> >=20
+> > This doesn't make a lot of sense. "remote-endpoint" shouldn't be
+> > related to anything to do with psci cpuidle. I'm guessing something
+> > else is failing much earlier in boot that's indirectly causing this
+> > somehow? Can you please take a look at what's failing earlier and let
+> > us know? Or see what driver probe is failing up to this point but used
+> > to work in the good case.
+>=20
+>=20
+> I'm pretty new to this, "just starting". I'm not sure how to do that,
+> since the kernel doesn't really "move forward". I will verify if
+> a8037ceb8964 fixes it or not and get back by the end of this week.
+>=20
+> > Also, where is the dts file that corresponds to this board in upstream?=
+ Is it
+> > arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
+>=20
+>=20
+> Yes.
+>=20
+> > > > Also, can you give the output of <debugfs>/devices_deferred for the
+> > > > good vs bad case?
+> > >=20
+> > > I can't provide you with requested output from the bad case, since th=
+e
+> > > kernel never moves past this to an initramfs rescue shell, but follow=
+ing
+> > > is the output from v6.8.1 (with aforementioned patch reverted).
+> > >=20
+> > > # cat /sys/kernel/debug/devices_deferred
+> > > fc400000.usb platform: wait for supplier /phy@fed90000/usb3-port
+> > > 1-0022 typec_fusb302: cannot register tcpm port
+> > > fc000000.usb platform: wait for supplier /phy@fed80000/usb3-port
+> > >=20
+> > > It seems that v6.8.2 works without needing to revert the patch. I wil=
+l
+> > > have to look into this sometime this week but it seems like
+> > > a8037ceb8964 (arm64: dts: rockchip: drop rockchip,trcm-sync-tx-only f=
+rom rk3588 i2s)
+> > > seems to be the one that fixed the root issue. I will have to test it
+> > > sometime later this week.
+> >=20
+> > Ok, once you find the patch that fixes things, let me know too.
 
--- 
-<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+I confirm that a8037ceb8964 fixed this issue for me. Now, v6.8.2+ boots on =
+my Rock 5B,
+with my distro's config and the arm64 defconfig.
 
-Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
-<http://twitter.com/#!/linaroorg> Twitter |
-<http://www.linaro.org/linaro-blog/> Blog
-
+ -- Pratham Patel
 
