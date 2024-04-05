@@ -1,158 +1,90 @@
-Return-Path: <linux-kernel+bounces-133344-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3909289A296
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:35:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABC9889A29A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:35:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E28A51F249C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:35:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 682E52873FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F05163A97;
-	Fri,  5 Apr 2024 16:35:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF8D16EBFD;
+	Fri,  5 Apr 2024 16:35:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="AIbz7XCx"
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TcqVZ8o6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BADBB2869B
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 16:35:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ECE0DF4D;
+	Fri,  5 Apr 2024 16:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712334912; cv=none; b=NftED30EUk6KlZbBVqq80LybtAVTdMGJaHhe2uKpv1nxJqrwTlgbHJlcEEpaEAyrPKht8SemfyJxCB+5Y9BQnGEevk476brJb43+/x1KDW3ye8AvxQRepE0SNQsBnHa16GroDwzK34F0gvjIf1mt7IzdCWPNAtpnCBlnhev9/oY=
+	t=1712334952; cv=none; b=q+3kmNoQ9IhgmBUAfMCSOSBwD5VcoAihpFbVuQXe82jwD5sL5y37cfe7L1vpmiUAYy2JrYjWvhI5P7I82jpJK5M5hRhgXGTGiklHmHjOTQlXUvOYHHejfBtK9vXmBV9I+QrFTrRrKwFNmBPNg0iNlp7T4DgfYJFOBWfobjyxVA0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712334912; c=relaxed/simple;
-	bh=O+UnvDut8VP1erLUptBy2LRJVciHe8+vp0N0w/zfIa4=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=p5ee74fwqFJ72PybWKR/849h1p/l4rheSeFtfBfExXT4zGBzLSpAbJAhhzpvSJ8k1c9O9rGOw2WUG5HAGxWI57WWxJ0zXSFaNe5+Ju02MIIRUc6C8FRIFZHxCV7lyVXf7FatSYgJuwoUktwkyGmIvlpefeeDT0+/AQ2nx/F964Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=AIbz7XCx; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1712334901; x=1712594101;
-	bh=S3WQALqPQkgNA4pAsO5tIwgQszOpcZJAo1yOP3F/ne0=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=AIbz7XCx1kxCmMrfMHXFnmgxeaXtcWXNZHadfoIuneQnq8ltsXCS45mrqKOztcfmL
-	 82aRIXMWdvr7D5s7S0O2A55FUGTNQDcIDMb95xf1i1vCw8TpEoO/nUgr9BFejmPeSC
-	 wun1UzgVf5gQDrt/FScjLqTNc0WQ4SkKKWQVWnjRpVqOxreF3XFQM5r4/Jgr/mZcl9
-	 3X2XkDKMGTlylO4zOrqaEUzCaTgEPWnrjH0SHPc+b02vIJdaGmHwyAcjnHQqQl0mpA
-	 rIuVsPwXD+vQbq9Ryd+irQgGunhfbUAcCX83e+S5B/fv8wdVmoFxUPv/LTdWa3LlxQ
-	 GFjWbwZN1Qhdw==
-Date: Fri, 05 Apr 2024 16:34:58 +0000
-To: Gergo Koteles <soyer@irl.hu>
-From: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>, Ike Panhc <ike.pan@canonical.com>, Hans de Goede <hdegoede@redhat.com>, =?utf-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>, Henrique de Moraes Holschuh <hmh@hmh.eng.br>, linux-acpi@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net, platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/3] ACPI: platform-profile: add platform_profile_cycle()
-Message-ID: <g_07w0jkBp9IeComzpK26YHPB1QZNjN_amEZ2bTG6xrOMMltvaav0Rd9Oh4a0nlzPsW2guvvUHkNQrfzSdFGbJhKDB0SHgUJB4belZNrapI=@protonmail.com>
-In-Reply-To: <fdc1b0b9f910753967b7a9b1996e4923cc63124f.1712282976.git.soyer@irl.hu>
-References: <cover.1712282976.git.soyer@irl.hu> <fdc1b0b9f910753967b7a9b1996e4923cc63124f.1712282976.git.soyer@irl.hu>
-Feedback-ID: 20568564:user:proton
+	s=arc-20240116; t=1712334952; c=relaxed/simple;
+	bh=oDN6wQ8VzoG9OW2mJZ7hpzN5TSjN0YJC9IxQ2U0tMHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MGXdN8oovDOhEMFXe843zRspAJ0aT+bPs9QTZOcsoHG9jz7WdS/k60IwEzYtTqJ0uqUiUYKh+xj/HQzVXhSlDvs+IUGshdPeG9ulH7QCMzi02B6uWsm4g7lLG3s6AgdiS5euGxe8h6yrNcu4ZAMG0m5QII7iZtqwb9YbrzB2dNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TcqVZ8o6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DE45C433C7;
+	Fri,  5 Apr 2024 16:35:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712334951;
+	bh=oDN6wQ8VzoG9OW2mJZ7hpzN5TSjN0YJC9IxQ2U0tMHc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TcqVZ8o6kG0k/k91Y+FZDa/l8c53J7dkG7KmrWFQPW1cRubI3wNvHGC6oLeSEnVJB
+	 fOhO5tOI7N4A+8Rs0Rt2sFEmuNplZb/qZquIVXPxi1y/u5VtS4SSDfwRulwCh9QRKx
+	 EaARAq1VBxGRAyfhoatVQMys/DGZE3fHvoTP9/s+96M+69ujkLPiAWF2xdhFrM1YT+
+	 1M1GkRzI8pBEBXMnyNww9WNuoXn0jVDv9dcl9/oHbwsoVfk89G2y+kWeW+j2fLmDCe
+	 Ih0g84+ofUw5kuFC6uaXI4llLzi54ooxZwurdAYWbVJgnPVdZudCYWTq1tc84q/LX/
+	 cusVl2ZEjKKPw==
+Date: Fri, 5 Apr 2024 22:05:47 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Gabor Juhos <j4g8y7@gmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Sricharan Ramabadhran <quic_srichara@quicinc.com>,
+	Varadarajan Narayanan <quic_varada@quicinc.com>,
+	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] phy: qcom: m31: match requested regulator name with dt
+ schema
+Message-ID: <ZhAoY4snnfkGv77B@matsya>
+References: <20240220-phy-qcom-m31-regulator-fix-v1-1-7675b4a916b3@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240220-phy-qcom-m31-regulator-fix-v1-1-7675b4a916b3@gmail.com>
 
-Hi
+On 20-02-24, 20:13, Gabor Juhos wrote:
+> According to the 'qcom,ipq5332-usb-hsphy.yaml' schema, the 5V
+> supply regulator must be defined via the 'vdd-supply' property.
+> The driver however requests for the 'vdda-phy' regulator which
+> results in the following message when the driver is probed on
+> a IPQ5018 based board with a device tree matching to the schema:
+> 
+>   qcom-m31usb-phy 5b000.phy: supply vdda-phy not found, using dummy regulator
+>   qcom-m31usb-phy 5b000.phy: Registered M31 USB phy
+> 
+> This means that the regulator specified in the device tree never
+> gets enabled.
+> 
+> Change the driver to use the 'vdd' name for the regulator as per
+> defined in the schema in order to ensure that the corresponding
+> regulator gets enabled.
 
+This lgtm, but it doesnt apply on phy/fixes
 
-2024. =C3=A1prilis 5., p=C3=A9ntek 5:05 keltez=C3=A9ssel, Gergo Koteles <so=
-yer@irl.hu> =C3=ADrta:
+Can you please rebase
 
-> Some laptops have a key to switch platform profiles.
->=20
-> Add a platform_profile_cycle() function to cycle between the enabled
-> profiles.
->=20
-> Signed-off-by: Gergo Koteles <soyer@irl.hu>
-> ---
->  drivers/acpi/platform_profile.c  | 42 ++++++++++++++++++++++++++++++++
->  include/linux/platform_profile.h |  1 +
->  2 files changed, 43 insertions(+)
->=20
-> diff --git a/drivers/acpi/platform_profile.c b/drivers/acpi/platform_prof=
-ile.c
-> index d418462ab791..1579f380d469 100644
-> --- a/drivers/acpi/platform_profile.c
-> +++ b/drivers/acpi/platform_profile.c
-> @@ -136,6 +136,48 @@ void platform_profile_notify(void)
->  }
->  EXPORT_SYMBOL_GPL(platform_profile_notify);
->=20
-> +int platform_profile_cycle(void)
-> +{
-> +=09enum platform_profile_option profile;
-> +=09enum platform_profile_option next;
-> +=09int err;
-> +
-> +=09err =3D mutex_lock_interruptible(&profile_lock);
-> +=09if (err)
-> +=09=09return err;
-> +
-> +=09if (!cur_profile) {
-> +=09=09mutex_unlock(&profile_lock);
-> +=09=09return -ENODEV;
-> +=09}
-> +
-> +=09err =3D cur_profile->profile_get(cur_profile, &profile);
-> +=09if (err) {
-> +=09=09mutex_unlock(&profile_lock);
-> +=09=09return err;
-> +=09}
-> +
-> +=09next =3D ffs(cur_profile->choices[0] >> (profile + 1)) + profile;
-> +
-> +=09/* current profile is the highest, select the lowest */
-> +=09if (next =3D=3D profile)
-> +=09=09next =3D ffs(cur_profile->choices[0]) - 1;
-
-I think you can use `find_next_bit()` or similar instead.
-
-
-> +
-> +=09if (WARN_ON((next < 0) || (next >=3D ARRAY_SIZE(profile_names)))) {
-> +=09=09mutex_unlock(&profile_lock);
-> +=09=09return -EINVAL;
-> +=09}
-> +
-> +=09err =3D cur_profile->profile_set(cur_profile, next);
-> +=09mutex_unlock(&profile_lock);
-> +
-> +=09if (!err)
-> +=09=09sysfs_notify(acpi_kobj, NULL, "platform_profile");
-> +
-> +=09return err;
-> +}
-> +EXPORT_SYMBOL_GPL(platform_profile_cycle);
-> +
->  int platform_profile_register(struct platform_profile_handler *pprof)
->  {
->  =09int err;
-> diff --git a/include/linux/platform_profile.h b/include/linux/platform_pr=
-ofile.h
-> index e5cbb6841f3a..f5492ed413f3 100644
-> --- a/include/linux/platform_profile.h
-> +++ b/include/linux/platform_profile.h
-> @@ -36,6 +36,7 @@ struct platform_profile_handler {
->=20
->  int platform_profile_register(struct platform_profile_handler *pprof);
->  int platform_profile_remove(void);
-> +int platform_profile_cycle(void);
->  void platform_profile_notify(void);
->=20
->  #endif  /*_PLATFORM_PROFILE_H_*/
-> --
-> 2.44.0
->=20
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
+-- 
+~Vinod
 
