@@ -1,178 +1,148 @@
-Return-Path: <linux-kernel+bounces-132656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D9308997DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:32:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A4F68997E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:33:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AD011F22CE9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:32:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AD28D1C21040
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE742156F2C;
-	Fri,  5 Apr 2024 08:32:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF51A15EFDB;
+	Fri,  5 Apr 2024 08:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b="tM5Z4qbO"
-Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZaprvcCt"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8186D156F3D
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 08:32:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 665A015EFA3
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 08:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712305943; cv=none; b=rmRPTcmmciYlaj5y7wuTzNryDJK1BY1IyBEpUZ+CtC0fpYEO1pL+b/IjlKqtTUJAYoA1YM2sECB2TjPZMOjJm637x/EwhB65QTmdvDh6AYrESij9uyg5lk4zyT0OGjHYhnwp1gENk2PgxA3bobzj0BG/dAomxdSWg2wrm3aXrX8=
+	t=1712306027; cv=none; b=utnG+wsT5zz8c5HTy47rp28/1zAAZQspdFUsoF9UFVDELJXFhhid3er8PwHAje10b1o5WeDolzhBPg6sumKMBYCayxfMG2J3mRfEQrWMmDwGIoz6GycZ3DeZI9sK07kIp9gIP2yogp1NVtRWWhHGAcroTpV97db74UzBq9ekqjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712305943; c=relaxed/simple;
-	bh=NALxV+zs5Tnjgphk/TpkK7zxaU7vpIhcOCwZW6f35is=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Tetk+9MXEFLREQwqQ/Z4ymcUe1RMbvGWc12v4ijH0XcWXRAidVS9N/7m8e1sBAUgOw8w8ucmHXv0SZtdQ1SjRsb37X/Eg4ni8TLEV2AeHkrA9HjWWfvUHfkHXUZEq4D+cHcs/W9stE4jH9Aj2Pe6qcuY6yGwL92wSxn3s9YsPxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com; spf=pass smtp.mailfrom=thefossguy.com; dkim=pass (2048-bit key) header.d=thefossguy.com header.i=@thefossguy.com header.b=tM5Z4qbO; arc=none smtp.client-ip=185.70.40.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=thefossguy.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thefossguy.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=thefossguy.com;
-	s=protonmail; t=1712305932; x=1712565132;
-	bh=NALxV+zs5Tnjgphk/TpkK7zxaU7vpIhcOCwZW6f35is=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=tM5Z4qbOnuDyhJmzm7Iqonyk3hz9cJ1q0eVMFcprGM5Adx5wfRTd2MSQgRoIB16k4
-	 wCJD5FWeZv2sph+EMZPLCBWYwPbz3MIo7p7LnOwstEw1xX6Tn62LTm2yWtjcJ2Mvwh
-	 IE3R2EEVAaF5mQKAyTeClc1l6JctSa8QcHOFHpOqv17HOodFID44p7mHbm6Qs0RjSa
-	 xjjRoGuoJRxhy6fCcYFs3hoSdqxtQSUDUnrhIdNvVw4K20l37hgLJnJSXaXxQQAoKN
-	 wsEn21ph5v9wM2SpHo/DmZW5Xu8sd8dOFyaw0KUv94Gz6DHVXj9I1A6QEmhNWvVm8A
-	 TMX4k9EP74VUw==
-Date: Fri, 05 Apr 2024 08:32:08 +0000
-To: Saravana Kannan <saravanak@google.com>
-From: Pratham Patel <prathampatel@thefossguy.com>
-Cc: Dragan Simic <dsimic@manjaro.org>, sebastian.reichel@collabora.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, regressions@lists.linux.dev, stable@vger.kernel.org
-Subject: Re: Fixing the devicetree of Rock 5 Model B (and possibly others)
-Message-ID: <Z6J7NF8AKNHDzwd1lbld1obVJZrKq0UKLSzKVtoL0TmOzpdyM8PRMvel8IUyhwsphxBg1bjku4ZaeQcwMhfKagEM2lRYtMChYv6VNPK5Tvg=@thefossguy.com>
-In-Reply-To: <D0A2ZL6S8UG6.2BQKIBQWYB36D@thefossguy.com>
-References: <tQ0L3-34g4t-mzfQIP6KDe5OYelGnEo6Udzq6Kb_nEcljppSQUXOktpE__nL-CdLOu9gW-4tIIbjtSbqrdCrjEkdhZLPiiHTqRcCB6WORuM=@thefossguy.com> <ac4246bf3786230eb9ca85b329e7d0df@manjaro.org> <CAGETcx89V5CJrAq6XwuGiusQnkR804pTgYAtS94v7Q+v=Cv+qA@mail.gmail.com> <D0A122WK7CB9.33B2TP6UCMJBJ@thefossguy.com> <CAGETcx_ToHsp_c+Yt0qqST4Zd-GC7dPn_j=PpB1n1xpZtOnMfg@mail.gmail.com> <D0A2ZL6S8UG6.2BQKIBQWYB36D@thefossguy.com>
-Feedback-ID: 104309535:user:proton
+	s=arc-20240116; t=1712306027; c=relaxed/simple;
+	bh=uSs3vQDQdyugqG4s1lMSgYhJIT3pNYdW7ZqIjWSeERE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FrP0nk0jbHgWcTB8E0sgU6+OMA5bpiLtrrmPrhhuF1Ri3BbWAJs1d0on5u0SbNif4OACxww2v+0ngqjrP70MLQUPS6i/KphK7YTrs2JxUg+vXw7vlYuVP+k7XKUOEIgucS7vKRXS3zCLENiJPR9oOAFz7XzQdzeGEQQEVsJoB/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZaprvcCt; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a51a701bc21so36749666b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 01:33:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712306024; x=1712910824; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UbtbyNCk6KsAiwat1danRvLj4rWxtebP2css0h/SV0s=;
+        b=ZaprvcCt3O9cMoxNV5yFoEc1SUZiMmlV32z2xWXxapoaBAwFUz2eCbWpDMOmC70QB9
+         TNP6rgFgsIyrL5mgdAxM64uHxnESyaskVQ2U0bsRXLQa8a8gpW1HPPk3sHrdaSdZYm7f
+         ASc0r202O9zKmJErFpYxcuQnlHqD7ahBkh7R5ell8DE7Lhzb8NA8sWTJWjT+pz+jT2vq
+         i2YBVO60x4DVl3QAlVzCuFk5PsJsKNDKlCuDIiS7jSnb26U3o4xgoJTGxDIH82g27o5h
+         mXCno+GvJH35dnxhlEhfkw6Nh4IyfbFN2D469+4apORhSjelbzh2AL6evMwC7Mr2+AJt
+         FSgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712306024; x=1712910824;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UbtbyNCk6KsAiwat1danRvLj4rWxtebP2css0h/SV0s=;
+        b=MpbqCWtk479b7XuRutj5SJPEPOtsjc93sxvk0TdM+lacBP+Ddcy6ZRcwvyq9pCSBHr
+         vzxEsAg+VV9kszW40QnyO8yH3tPAQOPSNaBjq8Qh+0CICmFGRVUmVsWM9bDsDrwXaKjY
+         Cp+rgECinSWVBXQCcKuePTGnIeGXA6aFjmkj7xu5K56QN6yqNERmMrmfUTtaQStms2Qx
+         bHll6bMF7e5SF88D7bXpj7yFZd+S/QQBlBhhBzBZrba7KnmVKCEAl8TzVCwtXSw0LVgF
+         pMcdYgjMbWTfB3gkTNtmi/ANxE0jkC/yXvbRkxRvOjfjYKaG4bJF+0by7HYF3fUGzrbO
+         l/Sw==
+X-Forwarded-Encrypted: i=1; AJvYcCW870O8rgTuFsHKwrIUxPMYHCwgARlh7mjsuXVdIX79hR1xls1Q+Q8/6yQCMQzpbK64PVYiJLIzSm64xA+ARlsL79ZYRaTQzpuLEnGj
+X-Gm-Message-State: AOJu0YwLz1g/RmDGFffTUQMYc7ndsbb/Ybs1xrDAPHiLgsy6CtTv0+tP
+	WY0tEFjlU2ltk7fOQCfkpkmsBvT6XGd4k4tzfo5zb1NI502rnWgu
+X-Google-Smtp-Source: AGHT+IEK1RsegEAenrgJrW4WSZu/82Cct3JgprPhVKTKLSfyVFRJ6BM5Hhiuzqsr/VHp0OUWzyXEIw==
+X-Received: by 2002:a17:906:c102:b0:a51:abb0:a8a1 with SMTP id do2-20020a170906c10200b00a51abb0a8a1mr221604ejc.54.1712306023519;
+        Fri, 05 Apr 2024 01:33:43 -0700 (PDT)
+Received: from fedora.iskraemeco.si ([193.77.86.250])
+        by smtp.gmail.com with ESMTPSA id g15-20020a170906198f00b00a4e2bf2f743sm569629ejd.184.2024.04.05.01.33.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 01:33:42 -0700 (PDT)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: xen-devel@lists.xenproject.org,
+	x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Juergen Gross <jgross@suse.com>,
+	Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH] locking/x86/xen: Use try_cmpxchg() in xen_alloc_p2m_entry()
+Date: Fri,  5 Apr 2024 10:32:53 +0200
+Message-ID: <20240405083335.507471-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wednesday, April 3rd, 2024 at 06:33, Pratham Patel <prathampatel@thefoss=
-guy.com> wrote:
+Use try_cmpxchg() instead of cmpxchg(*ptr, old, new) == old.
 
->=20
->=20
-> On Wed Apr 3, 2024 at 6:16 AM IST, Saravana Kannan wrote:
->=20
-> > On Tue, Apr 2, 2024 at 4:32=E2=80=AFPM Pratham Patel
-> > prathampatel@thefossguy.com wrote:
-> >=20
-> > > On Tue Apr 2, 2024 at 4:54 AM IST, Saravana Kannan wrote:
-> > >=20
-> > > > On Sat, Mar 23, 2024 at 10:10=E2=80=AFAM Dragan Simic dsimic@manjar=
-o.org wrote:
-> > > >=20
-> > > > > Hello Pratham,
-> > > > >=20
-> > > > > On 2024-03-23 18:02, Pratham Patel wrote:
-> > > > >=20
-> > > > > > I looked at the patch and tried several things, neither resulte=
-d in
-> > > > > > anything that would point me to the core issue. Then I tried th=
-is:
-> > > > >=20
-> > > > > Could you, please, clarify a bit what's the actual issue you're
-> > > > > experiencing on your Rock 5B?
-> > > >=20
-> > > > Pratham, can you reply to this please? I don't really understand wh=
-at
-> > > > your issue is for me to be able to help.
-> > >=20
-> > > Hi,
-> > >=20
-> > > I apologize for not replying. Somehow, I did not notice the reply fro=
-m
-> > > Dragan. :(
-> > >=20
-> > > Since this patch was applied, an issue in the Rock 5B's DT has been
-> > > unearthed which now results in the kernel being unable to boot proper=
-ly.
-> > >=20
-> > > Following is the relevant call trace from the UART capture:
-> > >=20
-> > > [ 21.595068] Call trace:
-> > > [ 21.595288] smp_call_function_many_cond+0x174/0x5f8
-> > > [ 21.595728] on_each_cpu_cond_mask+0x2c/0x40
-> > > [ 21.596109] cpuidle_register_driver+0x294/0x318
-> > > [ 21.596524] cpuidle_register+0x24/0x100
-> > > [ 21.596875] psci_cpuidle_probe+0x2e4/0x490
-> > > [ 21.597247] platform_probe+0x70/0xd0
-> > > [ 21.597575] really_probe+0x18c/0x3d8
-> > > [ 21.597905] __driver_probe_device+0x84/0x180
-> > > [ 21.598294] driver_probe_device+0x44/0x120
-> > > [ 21.598669] __device_attach_driver+0xc4/0x168
-> > > [ 21.599063] bus_for_each_drv+0x8c/0xf0
-> > > [ 21.599408] __device_attach+0xa4/0x1c0
-> > > [ 21.599748] device_initial_probe+0x1c/0x30
-> > > [ 21.600118] bus_probe_device+0xb4/0xc0
-> > > [ 21.600462] device_add+0x68c/0x888
-> > > [ 21.600775] platform_device_add+0x19c/0x270
-> > > [ 21.601154] platform_device_register_full+0xdc/0x178
-> > > [ 21.601602] psci_idle_init+0xa0/0xc8
-> > > [ 21.601934] do_one_initcall+0x60/0x290
-> > > [ 21.602275] kernel_init_freeable+0x20c/0x3e0
-> > > [ 21.602664] kernel_init+0x2c/0x1f8
-> > > [ 21.602979] ret_from_fork+0x10/0x20
-> >=20
-> > This doesn't make a lot of sense. "remote-endpoint" shouldn't be
-> > related to anything to do with psci cpuidle. I'm guessing something
-> > else is failing much earlier in boot that's indirectly causing this
-> > somehow? Can you please take a look at what's failing earlier and let
-> > us know? Or see what driver probe is failing up to this point but used
-> > to work in the good case.
->=20
->=20
-> I'm pretty new to this, "just starting". I'm not sure how to do that,
-> since the kernel doesn't really "move forward". I will verify if
-> a8037ceb8964 fixes it or not and get back by the end of this week.
->=20
-> > Also, where is the dts file that corresponds to this board in upstream?=
- Is it
-> > arch/arm64/boot/dts/rockchip/rk3588-rock-5b.dts
->=20
->=20
-> Yes.
->=20
-> > > > Also, can you give the output of <debugfs>/devices_deferred for the
-> > > > good vs bad case?
-> > >=20
-> > > I can't provide you with requested output from the bad case, since th=
-e
-> > > kernel never moves past this to an initramfs rescue shell, but follow=
-ing
-> > > is the output from v6.8.1 (with aforementioned patch reverted).
-> > >=20
-> > > # cat /sys/kernel/debug/devices_deferred
-> > > fc400000.usb platform: wait for supplier /phy@fed90000/usb3-port
-> > > 1-0022 typec_fusb302: cannot register tcpm port
-> > > fc000000.usb platform: wait for supplier /phy@fed80000/usb3-port
-> > >=20
-> > > It seems that v6.8.2 works without needing to revert the patch. I wil=
-l
-> > > have to look into this sometime this week but it seems like
-> > > a8037ceb8964 (arm64: dts: rockchip: drop rockchip,trcm-sync-tx-only f=
-rom rk3588 i2s)
-> > > seems to be the one that fixed the root issue. I will have to test it
-> > > sometime later this week.
-> >=20
-> > Ok, once you find the patch that fixes things, let me know too.
+The x86 CMPXCHG instruction returns success in the ZF flag,
+so this change saves a compare after CMPXCHG.
 
-I confirm that a8037ceb8964 fixed this issue for me. Now, v6.8.2+ boots on =
-my Rock 5B,
-with my distro's config and the arm64 defconfig.
+Also, try_cmpxchg() implicitly assigns old *ptr value to "old"
+when CMPXCHG fails. There is no need to explicitly assign
+old *ptr value to the temporary, which can simplify the
+surrounding source code.
 
- -- Pratham Patel
+No functional change intended.
+
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Juergen Gross <jgross@suse.com>
+Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+---
+ arch/x86/xen/p2m.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/arch/x86/xen/p2m.c b/arch/x86/xen/p2m.c
+index 9bdc3b656b2c..99918beccd80 100644
+--- a/arch/x86/xen/p2m.c
++++ b/arch/x86/xen/p2m.c
+@@ -555,7 +555,6 @@ int xen_alloc_p2m_entry(unsigned long pfn)
+ 			/* Separately check the mid mfn level */
+ 			unsigned long missing_mfn;
+ 			unsigned long mid_mfn_mfn;
+-			unsigned long old_mfn;
+ 
+ 			mid_mfn = alloc_p2m_page();
+ 			if (!mid_mfn)
+@@ -565,12 +564,12 @@ int xen_alloc_p2m_entry(unsigned long pfn)
+ 
+ 			missing_mfn = virt_to_mfn(p2m_mid_missing_mfn);
+ 			mid_mfn_mfn = virt_to_mfn(mid_mfn);
+-			old_mfn = cmpxchg(top_mfn_p, missing_mfn, mid_mfn_mfn);
+-			if (old_mfn != missing_mfn) {
+-				free_p2m_page(mid_mfn);
+-				mid_mfn = mfn_to_virt(old_mfn);
+-			} else {
++			/* try_cmpxchg() updates missing_mfn on failure. */
++			if (try_cmpxchg(top_mfn_p, &missing_mfn, mid_mfn_mfn)) {
+ 				p2m_top_mfn_p[topidx] = mid_mfn;
++			} else {
++				free_p2m_page(mid_mfn);
++				mid_mfn = mfn_to_virt(missing_mfn);
+ 			}
+ 		}
+ 	} else {
+-- 
+2.44.0
+
 
