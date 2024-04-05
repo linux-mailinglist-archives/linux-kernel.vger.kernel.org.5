@@ -1,109 +1,115 @@
-Return-Path: <linux-kernel+bounces-133286-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0580589A1BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:47:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43F3389A1C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:49:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEF6B281DAE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:47:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED9DA1F2230F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0120916FF47;
-	Fri,  5 Apr 2024 15:47:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5779171078;
+	Fri,  5 Apr 2024 15:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gXve/qOJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZNCLxQV/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 403E816FF33
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 15:47:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2122E17106D;
+	Fri,  5 Apr 2024 15:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712332067; cv=none; b=c4ofm/elaRtEd3BB49eA1saTMEBPplr2pgn0XQq9LIFsiH/mG1FDgDMuUhjlTxROqfGd4QAC/VDGYl/G/vGcgzzDD7XjiwWLUGoawSh5Tpz4tVaYPWREFls8vdj1LjUflFBnnJwiza3J4KJNeekArvUVf/UjdiLXyxNFHoq9iAE=
+	t=1712332137; cv=none; b=Mb5torBwP8WpqbXyQ7fyQ63akeUp8+3d1G6Pv0vcSA+A52ygBr79f2F85y/4P0nc3H0+M1012ZMmXFH4FRuTe0cGcUmDr3M3XQhajc/kFhH1cCrKFJA/vR9TNSqu2mY0HBJL8vDC1lzoeoc8TBzovU4vsRpus6iKgOt4qNPzfc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712332067; c=relaxed/simple;
-	bh=Qz4VZK/ytP0/9s88wplqYqEn1ox2CjHWrrOC2AmtCjQ=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=ko7fQFNyqbWUX/wtooI0WghKkn6MeVOjZv8ncU3dQWGzCd5Qg+3ijhtzM3lBLxRA8GUK2sAmpEFUHRF0anYvCO6zkbMBRKh/UZAKu8yockeL3Ej9BXyNN0d06pzYigZBLVz6QtfiEdKHAVdoC4AUdWh6SzdrZxOnfRa11ayQ0gU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gXve/qOJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CAF7C433F1;
-	Fri,  5 Apr 2024 15:47:46 +0000 (UTC)
+	s=arc-20240116; t=1712332137; c=relaxed/simple;
+	bh=IgoFna4ozbyY4uim9EA58wTZVLELUeO04TswSLteP6s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DzWxP4GQd9O4OIpgLNN3ZAaDloMrUh/XW3kdsdTL9zW+/gJKiFLqFxqTBD1zEZOJPkmE+9lTRVvVCOT3AVaLnQQyDNCoB1oOwAhKnLrgeK+91ZKMSYRI49UcdZeLHj5cdI2bE4XoH5PV01AcNFmrBDqzsAyqWKpBxQXFxIy+ZHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZNCLxQV/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CBC0C433B1;
+	Fri,  5 Apr 2024 15:48:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712332066;
-	bh=Qz4VZK/ytP0/9s88wplqYqEn1ox2CjHWrrOC2AmtCjQ=;
-	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-	b=gXve/qOJy2MI9o2c1q8zE5qlqxTpZYzEYcG/lAXMV1wnWf77yf+abI4hYQIkNCQ1P
-	 2rvdYUB+C0PkMh/12FhQy5yNqJpePutP7GfebB9NIf6n4RiIJtZVLS5SrZ9XU0cYe7
-	 gmCuZyiDyj/PyqaWGMKMza6iuy8yHDp8XwdWxU8Sz4MSibWanxfQmFwttwR26kSkRN
-	 NWpqsZkWOm7exLt4mS1f/qCTQ+SWNxcJG9on95EV/hxkscgZ963H2VccMxN+uHDG2u
-	 CvdKb6HwBaMZWLwALCO6CvzTfVweSyS34AXaqNPFJqo1Ea7a6MHS69Sq1SCTnonWdz
-	 mUgEb2s6nzFHg==
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 930A6120008F;
-	Fri,  5 Apr 2024 11:47:45 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Fri, 05 Apr 2024 11:47:45 -0400
-X-ME-Sender: <xms:IR0QZsplW-_ktFdGPCKuRLqTT2VHn6agD75T3GCa1r47_H5Qp4ODvw>
-    <xme:IR0QZirvi1FFsSTamDsCKMwp6-7MWDlywyUIBDcA-Au6hQHbQVlOEko6f-vO8s4AQ
-    yQ5HsMC4_txRe7NeHY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegtddgleegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecuggftrf
-    grthhtvghrnhepvdeviefgtedugeevieelvdfgveeuvdfgteegfeeiieejjeffgeeghedu
-    gedtveehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    eprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedujedt
-    vdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnuggsrd
-    guvg
-X-ME-Proxy: <xmx:IR0QZhPpjE8I7K1OMB6CwkGjmhikvFd6jidJ1RjWl_QWmGlpac1slg>
-    <xmx:IR0QZj67zRQv4RABBN40awWEN1AXIM2_iUYq0rNGb0gSwhsQUAEcMw>
-    <xmx:IR0QZr4xPk9YIh4SbMtGBl9860p4KsymijgELnXyVHEUjGRgpkgwTA>
-    <xmx:IR0QZjh-Or6AWnDSXBDsIqK4xP5vFffeTflerfFNOcnAFIzi85h4fg>
-    <xmx:IR0QZu17grOZ_OQZ5kWkV_OkGa2CfvsdBd4y6bH8NwouFprJzflcdmuM>
-Feedback-ID: i36794607:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 473E1B6008D; Fri,  5 Apr 2024 11:47:45 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
+	s=k20201202; t=1712332137;
+	bh=IgoFna4ozbyY4uim9EA58wTZVLELUeO04TswSLteP6s=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ZNCLxQV/d9Gm8N9ut19bdF6HDO8Xy+cMGp/jd3klpEHI9GaRqDgTpd+BEyR/Ne7+m
+	 jmzc7s4ds+hI4pRDmzI0bnHMXtYvqA1G171h8rzfmeT0U4Taorij1FLbUgitNeitcj
+	 HvOLoIXoz+qZzCjTnM6FpZeRSfnt/+czJccKjMFVFU/OsSGZ8tP4qz3ATyVApCe6em
+	 sRKC0PXoChZKTfUOybhKGkukVeUuMeOUSif3EmyuqCNJBGtMi3xYqV+GO4gNjnmR/z
+	 ua5epYOwdOisi0YLgiqbbvyai5CxnwUubZrMrUinYnVOwmr730HIb6U1tW4zMnSV8G
+	 pgE01LuYwi7DA==
+From: Conor Dooley <conor@kernel.org>
+To: linux-riscv@lists.infradead.org,
+	Yangyu Chen <cyy@cyyself.name>
+Cc: Conor Dooley <conor.dooley@microchip.com>,
+	Conor Dooley <conor@kernel.org>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Dan Carpenter <dan.carpenter@linaro.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Guo Ren <guoren@kernel.org>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	linux-gpio@vger.kernel.org,
+	linux-clk@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 0/5] riscv: Kconfig.socs: Deprecate SOC_CANAAN and use SOC_CANAAN_K210 for K210
+Date: Fri,  5 Apr 2024 16:47:36 +0100
+Message-ID: <20240405-revolt-food-4654ca0ac5b4@spud>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <tencent_2E60E33C1F88A090B6B3A332AE528C6B8806@qq.com>
+References: <tencent_2E60E33C1F88A090B6B3A332AE528C6B8806@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <8287be1d-06d7-4ce8-806a-de4e764fdda3@app.fastmail.com>
-In-Reply-To: <20240405154331.292421-2-schnelle@linux.ibm.com>
-References: <20240405154331.292421-1-schnelle@linux.ibm.com>
- <20240405154331.292421-2-schnelle@linux.ibm.com>
-Date: Fri, 05 Apr 2024 17:47:24 +0200
-From: "Arnd Bergmann" <arnd@kernel.org>
-To: "Niklas Schnelle" <schnelle@linux.ibm.com>,
- "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
- "Helge Deller" <deller@gmx.de>
-Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- "Heiko Carstens" <hca@linux.ibm.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] vgacon: add HAS_IOPORT dependencies
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1455; i=conor.dooley@microchip.com; h=from:subject:message-id; bh=MZ6COhcm44GicWVOSRcaxUS9DaBxroGchNqsbFCZFmg=; b=owGbwMvMwCFWscWwfUFT0iXG02pJDGkCsuIr+IwaOV9x8rQLzjqXWXXzZomHRVWxd3DoOmmNX rPIwJKOUhYGMQ4GWTFFlsTbfS1S6/+47HDueQszh5UJZAgDF6cATGTrbEaGB2F7Vix9F969e0Fx VOaE7aXFhWHTlr8TvT2zZZrlUX6LIEaGlkl2b/7KfJCc8Fm175dm+YW5rlzyWkxLQ7ZzTFKa1fu eEwA=
+X-Developer-Key: i=conor.dooley@microchip.com; a=openpgp; fpr=F9ECA03CF54F12CD01F1655722E2C55B37CF380C
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 5, 2024, at 17:43, Niklas Schnelle wrote:
-> In a future patch HAS_IOPORT=n will disable inb()/outb() and friends at
-> compile time. We thus need to add HAS_IOPORT as dependency for
-> those drivers using them.
->
-> Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-> Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
-> ---
-> Note: This patch does not depend any not-yet-mainline HAS_IOPORT changes
-> and may be merged via subsystem specific trees at your earliest
-> convenience.
+From: Conor Dooley <conor.dooley@microchip.com>
 
-I think this patch can just get dropped now, no need to merge
-it because it's already handled by e9e3300b6e77 ("vgacon:
-rework Kconfig dependencies").
+On Fri, 29 Mar 2024 01:03:22 +0800, Yangyu Chen wrote:
+> Since SOC_FOO should be deprecated from patch [1], and cleanup for other
+> SoCs is already in the mailing list [2,3,4], so we deprecate the use of
+> SOC_CANAAN and use ARCH_CANAAN for SoCs vendored by Canaan instead from now
+> on.
+> 
+> However, the K210 SoC is so special for NoMMU and built for loader.bin, if
+> we share the ARCH_CANAAN symbol directly for K210 and other new SoCs which
+> has MMU and no need for loader, it will confuse some users who may try to
+> boot MMU Kernel on K210, but it will fail. Thus, this patch set renamed the
+> original use of SOC_CANAAN to SOC_CANAAN_K210 for K210 SoC, as Damien
+> suggested from the list [5]. Then, it made some adaptations for soc, clk,
+> pinctrl, and reset drivers.
+> 
+> [...]
 
-     Arnd
+Applied to riscv-dt-for-next, thanks!
+
+[1/5] riscv: Kconfig.socs: Split ARCH_CANAAN and SOC_CANAAN_K210
+      https://git.kernel.org/conor/c/ef10bdf9c3e6
+[2/5] soc: canaan: Deprecate SOC_CANAAN and use SOC_CANAAN_K210 for K210
+      https://git.kernel.org/conor/c/915fb0e31c5b
+[3/5] clk: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+      https://git.kernel.org/conor/c/8e5b7234ded5
+[4/5] pinctrl: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+      https://git.kernel.org/conor/c/c1556a9b426e
+[5/5] reset: k210: Deprecate SOC_CANAAN and use SOC_CANAAN_K210
+      https://git.kernel.org/conor/c/68f41105ea07
+
+I added another commit at the end, deleting SOC_CANAAN given all the users
+are gone and it is not user-visible:
+	https://git.kernel.org/conor/c/0eea987088a22d73d81e968de7347cdc7e594f72
+
+Thanks,
+Conor.
 
