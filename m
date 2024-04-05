@@ -1,192 +1,135 @@
-Return-Path: <linux-kernel+bounces-132334-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132335-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42086899344
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:43:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9F90899345
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:45:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C472E1F228A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:43:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE88FB236E9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:45:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04C6175BE;
-	Fri,  5 Apr 2024 02:43:35 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD54171AD;
+	Fri,  5 Apr 2024 02:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="h0UaRVHj"
+Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8EACBE4D
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 02:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FCA3BE4D
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 02:45:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712285015; cv=none; b=QGWJ0VeZbEpHxPj6oLh83Myk6/+ZuMnYsrqwOf3yjk7OJFrV77kjzRjwxg4iQc2bLrFETf2xIP4vaCB2RxvuEcQQUXTq/FdIb4Kk67P9xn/ow+LfieZx2NYm18gkcxMLZpHKaxUogCFfMKQTsDgn9lnGzM1Uy2H3jLU0X4yMKfQ=
+	t=1712285105; cv=none; b=WoXNc4nDwVLtuNDRzFwkj9YPUTV6MwJpGfyWfpVZtzDlGfgdsVMfRsEEpjI7EWPOLpPePl518wDgCaa38V2DNbWHJ9J1iSc/RrSAXLImKL5rOqJcex15Fdpvy5Hy6lup83JsRnK9UFVM4gGaQy32CQDX26YB/7W3Q/BeAAr5HX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712285015; c=relaxed/simple;
-	bh=eAPnINuulwva4/WG+mAw8dx+PfgjHUwBTcHaTHqnwlI=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=JWOgjl+6ri6/blSUF7+QWv73Ew14tYIK9jRBspUwE/ph9fxv2/bT58tEOGmMAbHvYW9r3cxVSR70oBPzfrVUPs/dhNw8M3BJDRnqx5jjmfejhlGuj7xpkJps9y/pT1WZ7+mSV7uR2rLz1WiCg7PtplicOGFNYXdZtHuKKVfBAvM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cf179c3da4so187658839f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 19:43:33 -0700 (PDT)
+	s=arc-20240116; t=1712285105; c=relaxed/simple;
+	bh=64W2UQQFPjouK1278dNE6r4EnUBen8IgVNpaRRS1OFA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oXaNOeTusOg8aLefGzzVtOEdcYfJeqMRiBnyIwjYsmtymkAvcqyn7GWcDuaUVkm87olnLA81aBencrPOei9z7xOXYuGwkftx7oduznm48ME3CUERzTC4f3o34xgiGQd+X09rLtrW61w4tWW6qpS3D7mhftWrID7tAoyFCz8vYfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=h0UaRVHj; arc=none smtp.client-ip=209.85.160.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-43182c2457bso8665701cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 19:45:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1712285101; x=1712889901; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=14/Jmqw/F513fEFD4zyhSbn6EUBGIv7v5bPF2RRkA6k=;
+        b=h0UaRVHj7/9Eg834KAq7B1dZv+1F5kx9It9XiGOKZ29VQyyEf0dLogRWoFYExlV5DD
+         Dgd2ATYIsShAej+PRqxjrY8sUWRr/19M+qf3b9KFMdsH1pKi+P/SeyXxE4A/LDo4+AY3
+         CZf6fKw9wzseKDdM6ZDiTid4ofqPl0XvXyPH0Cm0UtKyGD/KHvbFsxRPhuo2pIr/EhnT
+         QZSr/IsMlGIu81Ojotkoo7Dbr9DJZJqnHN8WEp1jhEsWXH8aSUUPhDg/Ga3wZcgYyB/d
+         TmLlk2fukM0Zf9dLgiEYe5Ch9MbTQrFfYE85wKm+8CjlQ7WNqL1clu4kcwcB9Fk2LpJJ
+         KyAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712285013; x=1712889813;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kWzCF7oLLz2o8r549zshwntVI6I7m8Wr8tld17xYk5c=;
-        b=e4UEqUzyKkU+oHKtFvLQyC63D3UOCKdzr6o2pcg20bnNvftpqdP9morDc6+ZQLFnyM
-         Tj/R3pWjdHyru0xAwSrshX57QI+dCUCcWeTPBOwrLzHeCxEgCIg5qzzCz8gj4yiEoJiM
-         gVkaarBEBEdtDlG2BO2DiH1og5ugrvwkJMR5zdIfHIlQ8Mbgn1IGOEGInxm60xSbnn8x
-         EgKbUiYMxCoZjvXcSF21LLr+RKUbz8CWLsEUNcJNiOYAAoVMC29wOSZgg08DWWF5zscI
-         SXeQtPtR9rZHRYpJwyeI79Zjl3QLftYOcMl/JaXh4G1RbiobRr3AwfklJhyHk7snPQzJ
-         85ZA==
-X-Forwarded-Encrypted: i=1; AJvYcCX8F1WXz6SGcyv+SegtVHRvZZCE6GqeTJl5Vq1r0qM6CkwGjqUU/3YTPEsbrdUOdRFtzeFDajND7BwnI0ERpR9mmhelceD5A/NGo+WD
-X-Gm-Message-State: AOJu0YwqAE6CImP5vovugAcpkAStfmxtryFqw0czIEFCy3E4OjnL7TcL
-	7PM2N3TrQqH3Gj3tCzKGTwR1Ag/5k1rcDafuqW+vvHAouX0o3CO0Xi9WLxL/mg1LU9fthX9i3sD
-	6CdTWdzBLpogDgj/Zl7ssF4XH3XDQVP8emMsngHVgzzDNtvv622tIkOI=
-X-Google-Smtp-Source: AGHT+IEmugyoL4Q2wlslLEKgKm8uc6/OAU+oX6OjsJ7Jf5wcT6vkI7I+jowp+riAj8MPNOYunbZ00Cfsl93cgkAZqrUTauqOhuC/
+        d=1e100.net; s=20230601; t=1712285101; x=1712889901;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=14/Jmqw/F513fEFD4zyhSbn6EUBGIv7v5bPF2RRkA6k=;
+        b=HgK37wtwffIHCTh9d3LJtsRuW8B0n+TDvrjGrzL43UgYLb112kjGePqk8c/+xu6/+v
+         dTsCDKnt8VX0qDUjWgFwJffqKl56RYHkyjmycy03U7NjxWqgVKzQlwiM4sCAN8SEfQnf
+         S0BZm9YmC5xwFq2v3bicRonyYCddXJAGwMDt7CR5CA8hjKyJRHYYRF/lXdIiW1hmBJzb
+         0ZFqPtRk9KQmNWKJCDAbDCx+7ij27xq00EVtnHX0l2YD/gIfRDgMLmFkk2mn6UjGqIWC
+         ZOmzWjKrOAmOJmYJKqza7WItIW1vTdIWEy8zEu8TtaydRaxiAfat1aVeqS7ktdXHH8qW
+         NKXg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHYjzL+RMXTVeLxRRkb6xGwxRB988SY/GGUZGbHMR9JOs75BcD5zNQYa6cNbuyh3K2FGH1fD9zywG61Z/gNeuynuSUN9RVhQjOnZRw
+X-Gm-Message-State: AOJu0YzvWiWzIXeaE8Af1s/BgmyualYNwy+LgPusiFX5+JFPpUDDFKKv
+	eKvPEf0dWyKqyFeizPIo9iN818XqbciK6fuIiaM23CJDlSczcM2zf2/WkBZt1qs=
+X-Google-Smtp-Source: AGHT+IGavZtnoQPJhG1A86bHtiTFeAPWXXoTPEGfjOceSc3n9e3JOO+zdDrP6qQRqwZUkdkKfBNXnw==
+X-Received: by 2002:ac8:5dd0:0:b0:434:515e:4120 with SMTP id e16-20020ac85dd0000000b00434515e4120mr110174qtx.42.1712285100819;
+        Thu, 04 Apr 2024 19:45:00 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id c12-20020ac86e8c000000b00432cf894d57sm322016qtv.48.2024.04.04.19.45.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 19:45:00 -0700 (PDT)
+Date: Thu, 4 Apr 2024 22:44:59 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Nhat Pham <nphamcs@gmail.com>,
+	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 2/5] mm: zswap: refactor limit checking from
+ zswap_store()
+Message-ID: <20240405024459.GE641486@cmpxchg.org>
+References: <20240405013547.1859126-1-yosryahmed@google.com>
+ <20240405013547.1859126-3-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:489:b0:7d0:ad03:af10 with SMTP id
- y9-20020a056602048900b007d0ad03af10mr4579iov.1.1712285012980; Thu, 04 Apr
- 2024 19:43:32 -0700 (PDT)
-Date: Thu, 04 Apr 2024 19:43:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f40f0c0615506b93@google.com>
-Subject: [syzbot] [netfs?] divide error in netfs_submit_writethrough
-From: syzbot <syzbot+f3a09670f3d2a55b89b2@syzkaller.appspotmail.com>
-To: dhowells@redhat.com, jlayton@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, netfs@lists.linux.dev, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405013547.1859126-3-yosryahmed@google.com>
 
-Hello,
+On Fri, Apr 05, 2024 at 01:35:44AM +0000, Yosry Ahmed wrote:
+> Refactor limit and acceptance threshold checking outside of
+> zswap_store(). This code will be moved around in a following patch, so
+> it would be cleaner to move a function call around.
+> 
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> ---
+>  mm/zswap.c | 32 ++++++++++++++++----------------
+>  1 file changed, 16 insertions(+), 16 deletions(-)
+> 
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 1cf3ab4b22e64..fba8f3c3596ab 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1391,6 +1391,21 @@ static void zswap_fill_page(void *ptr, unsigned long value)
+>  	memset_l(page, value, PAGE_SIZE / sizeof(unsigned long));
+>  }
+>  
+> +static bool zswap_check_full(void)
+> +{
+> +	unsigned long cur_pages = zswap_total_pages();
+> +	unsigned long thr = zswap_accept_thr_pages();
 
-syzbot found the following issue on:
+I know this looks neater, but it adds an extra division to the very
+common path where the limit hasn't been reached yet. It should really
+stay inside the branch.
 
-HEAD commit:    39cd87c4eb2b Linux 6.9-rc2
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=133bffe6180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8c2c72b264636e25
-dashboard link: https://syzkaller.appspot.com/bug?extid=f3a09670f3d2a55b89b2
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
+Another option could be to precalculate the max and the accept
+threshold in absolute pages whenever their respective module param
+changes. That would eliminate both divisions from the hot path.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-39cd87c4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9e28c9b1ddc4/vmlinux-39cd87c4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/17cff5c46535/bzImage-39cd87c4.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f3a09670f3d2a55b89b2@syzkaller.appspotmail.com
-
-divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 2 PID: 7215 Comm: syz-executor.1 Not tainted 6.9.0-rc2-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-RIP: 0010:netfs_submit_writethrough+0x201/0x280 fs/netfs/output.c:427
-Code: fc ff df 48 89 fa 48 c1 ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 1a 8b 8b 0c 01 00 00 48 89 e8 31 d2 <48> f7 f1 48 89 c5 48 0f af e9 e9 1d ff ff ff e8 6b 1c b9 ff eb df
-RSP: 0018:ffffc90001f1f740 EFLAGS: 00010246
-RAX: 0000000000001000 RBX: ffff88801fd08c00 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff82317e29 RDI: ffff88801fd08d0c
-RBP: 0000000000001000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000003 R12: 0000000000000000
-R13: ffff8880545c2920 R14: ffff88801fd08d20 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff88802c400000(0063) knlGS:00000000f5ecab40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 000000002000f000 CR3: 0000000053f7e000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- netfs_advance_writethrough+0x13f/0x170 fs/netfs/output.c:449
- netfs_perform_write+0x1b9f/0x26b0 fs/netfs/buffered_write.c:385
- netfs_buffered_write_iter_locked+0x213/0x2c0 fs/netfs/buffered_write.c:454
- netfs_file_write_iter+0x1e0/0x470 fs/netfs/buffered_write.c:493
- v9fs_file_write_iter+0xa1/0x100 fs/9p/vfs_file.c:407
- call_write_iter include/linux/fs.h:2108 [inline]
- do_iter_readv_writev+0x504/0x780 fs/read_write.c:741
- vfs_writev+0x36f/0xdb0 fs/read_write.c:971
- do_pwritev+0x1b2/0x260 fs/read_write.c:1072
- __do_compat_sys_pwritev2 fs/read_write.c:1218 [inline]
- __se_compat_sys_pwritev2 fs/read_write.c:1210 [inline]
- __ia32_compat_sys_pwritev2+0x121/0x1b0 fs/read_write.c:1210
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0x7a/0x120 arch/x86/entry/common.c:321
- do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
- entry_SYSENTER_compat_after_hwframe+0x7f/0x89
-RIP: 0023:0xf72d0579
-Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
-RSP: 002b:00000000f5eca5ac EFLAGS: 00000292 ORIG_RAX: 000000000000017b
-RAX: ffffffffffffffda RBX: 0000000000000007 RCX: 0000000020000780
-RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000016 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:netfs_submit_writethrough+0x201/0x280 fs/netfs/output.c:427
-Code: fc ff df 48 89 fa 48 c1 ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 1a 8b 8b 0c 01 00 00 48 89 e8 31 d2 <48> f7 f1 48 89 c5 48 0f af e9 e9 1d ff ff ff e8 6b 1c b9 ff eb df
-RSP: 0018:ffffc90001f1f740 EFLAGS: 00010246
-RAX: 0000000000001000 RBX: ffff88801fd08c00 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff82317e29 RDI: ffff88801fd08d0c
-RBP: 0000000000001000 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000003 R12: 0000000000000000
-R13: ffff8880545c2920 R14: ffff88801fd08d20 R15: 0000000000000000
-FS:  0000000000000000(0000) GS:ffff88802c400000(0063) knlGS:00000000f5ecab40
-CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
-CR2: 000000002000f000 CR3: 0000000053f7e000 CR4: 0000000000350ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess), 2 bytes skipped:
-   0:	df 48 89             	fisttps -0x77(%rax)
-   3:	fa                   	cli
-   4:	48 c1 ea 03          	shr    $0x3,%rdx
-   8:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx
-   c:	48 89 f8             	mov    %rdi,%rax
-   f:	83 e0 07             	and    $0x7,%eax
-  12:	83 c0 03             	add    $0x3,%eax
-  15:	38 d0                	cmp    %dl,%al
-  17:	7c 04                	jl     0x1d
-  19:	84 d2                	test   %dl,%dl
-  1b:	75 1a                	jne    0x37
-  1d:	8b 8b 0c 01 00 00    	mov    0x10c(%rbx),%ecx
-  23:	48 89 e8             	mov    %rbp,%rax
-  26:	31 d2                	xor    %edx,%edx
-* 28:	48 f7 f1             	div    %rcx <-- trapping instruction
-  2b:	48 89 c5             	mov    %rax,%rbp
-  2e:	48 0f af e9          	imul   %rcx,%rbp
-  32:	e9 1d ff ff ff       	jmp    0xffffff54
-  37:	e8 6b 1c b9 ff       	call   0xffb91ca7
-  3c:	eb df                	jmp    0x1d
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> +	unsigned long max_pages = zswap_max_pages();
+> +
+> +	if (cur_pages >= max_pages) {
+> +		zswap_pool_limit_hit++;
+> +		zswap_pool_reached_full = true;
+> +	} else if (zswap_pool_reached_full && cur_pages <= thr) {
+> +		zswap_pool_reached_full = false;
+> +	}
+> +	return zswap_pool_reached_full;
+> +}
+> +
+>  bool zswap_store(struct folio *folio)
+>  {
+>  	swp_entry_t swp = folio->swap;
 
