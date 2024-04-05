@@ -1,150 +1,126 @@
-Return-Path: <linux-kernel+bounces-133705-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133706-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2828C89A791
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 01:19:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B619889A794
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 01:20:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7928284294
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:19:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4470CB21814
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA1C536B1C;
-	Fri,  5 Apr 2024 23:19:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11392374D3;
+	Fri,  5 Apr 2024 23:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F5Yekg7L"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pfB410vd"
+Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A64315672
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 23:19:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9E7F22EF8
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 23:20:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712359169; cv=none; b=KrAh7WSvg8Afmm+LIOPqKu8D5mk9Eff7P31i+eSttTrd5CeodRTPOaX0hRYiym6Dlssh+xoFEikStiq691m/sU7F8UIoHOlHn9/vBHS7oTcRm0BnMd7hOKvEdMqRvq4uSsDRzwcdz9QMgqFZRPxweCTr9mvGehpSj3mUq7F3Fv4=
+	t=1712359245; cv=none; b=DJn+Zl5rwbRsflfEElvp25Ng1KZjMXn7hgMcX3ceS1rkNAXyjCvq4RhIhqkyz27eXIo2XIsCRhQDFGxTZUhGvmYzvTYwzfil24sDUelVKsNXwDO3Wj5vN0RCHcDL3zcEcB3vOWozPauuRcy+DzTh5dmc+dfnxLe55IrEz/C3FpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712359169; c=relaxed/simple;
-	bh=nTD0gkfW1v3gofTr/mokto28ytoGlLof1Sal1Q1071Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WWeaCaeVhTbjHgklLj4uJ7L3QYEI6j0vKXcAmb5xGlK6XNlBfQUDPcE/FrB1p5gljVm+yTheaW+f2Ye+xIFvqT1MDIR0FtidJokwXI79MKei5yRT6d+MmqK9JZgPMDFMmLYmhXHzptVUeK8KaMwE/kEo49cGsHxbtym+QJX6I+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F5Yekg7L; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712359164;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=HKzTrJInktvfKVrY1P9Lu04jr4tbB0gdRSWQZFOhm8U=;
-	b=F5Yekg7Lgc/m3SeOuxUVQsvH64Jpw/bnuPmbqnF6x0SRunkwlM7rie7xIeuzPzrwSrdwpH
-	MysfPIibsHxJf45qN9vv2liPsyxgIprHp/D3EczF4m2bTqkQLRcsJkSnC8p9UvhKX61pfC
-	2sNPdGLSXKJhkJFfye5pcGlhN6jjivU=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-479-Vw69LP_EOTC9ZmHxASCdiA-1; Fri, 05 Apr 2024 19:19:23 -0400
-X-MC-Unique: Vw69LP_EOTC9ZmHxASCdiA-1
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6dea8b7e74aso796737a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 16:19:23 -0700 (PDT)
+	s=arc-20240116; t=1712359245; c=relaxed/simple;
+	bh=6JYCjL9C4AfaDryXf5XSZhrO2zWHCuIkX8eHeXELHqU=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=a6Y4Xr9NK0nrOFLQd3yQtEZTMoM7Px03QAMsqe09LD6MiZcS9JTprsZqEBbnTkO5moqcVxFar2dUOqDY1aluRKMhBIpJVcUXrGS1KPcwX8Eho+DUffIbIpM+ffrdrs8sOemesofWtuPc6qHmyZ+gMUHiI1XlPfXpdZY7lIFhEbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pfB410vd; arc=none smtp.client-ip=209.85.215.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d8bcf739e5so2345514a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 16:20:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712359243; x=1712964043; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=12i/1U6e69lGZbnks+aFjU43EdHvF/EYY258ON1Z+QY=;
+        b=pfB410vdjh/TM3n9ksMNXrl7zddiS1npxNi0FlxrlJ+4I8UZH6S/cnIEdSpZ1LiJAL
+         4WHMwlvY4lOHClZz2FUQxxVes3/dYRH7mXqcqUApf3WZfZvPOdeV/+9hOJXd38EY/xsn
+         zD5l4RgUxVjuSeUejen4ULbnOSPfnxh19ACcnzvl7XsxsLNV29XNMIIrp9LK7mXgsPDe
+         eArJO7kPEWqr52JX+ajKqX5KpVcnW1s0jGXDwdgxBd+IPNyUJRPxFOFuKPcuR1+PnQhy
+         PWJ/GsmT2SZHWIp+jnkjEEYbbZ4muBuXe01OxGsjCOBbx9p9uKkNb1fZE3vwzFJ8BbYd
+         ntQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712359163; x=1712963963;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HKzTrJInktvfKVrY1P9Lu04jr4tbB0gdRSWQZFOhm8U=;
-        b=WqXg8bX5kMA4ngoSm8TEOTkQXW0aHFqf8T720A+o/nBSyPU9h4iFob5P4t1/5ImhDp
-         3fkBNztTxydOAupU6P9InPp/fRAs3DD6hRFIgjLn+VkH2tU0E9m6xL1h/gKXLaDd0G+9
-         YD9z4uqmf04CBvpCe5s30qOUk6oXpwtBLlvzx9Agl6R79i+VmBIadivDvqGo7pw5n26p
-         rFgwIuLO5yGgkXqyVa7fHk3o0/QYclZ84onD7z8UIItXq5w0cCXMKEvLhvDScz9RLm9b
-         dzxlpviQLSs/pVRk7G0HOx0MGTM4Bl62byvmlzvWy9tIunVD/AHjD4RBzwc5KV+Tsqp8
-         utwA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2cWfqHr2o+g4fOxkH1kb8wtABYdjobmnK/1fX4LJe3bJzcaQogohHuVm2FMXbRkTR5Da86nxT4tqFMWuOkG/7Js3oMGb7gPNohqyJ
-X-Gm-Message-State: AOJu0YwwutYx2aO50ktrIwHa9TfWHi0haXpaecZKyfOSDBQK4g/GRZ6p
-	o2gg3HquAiylZM0+LP+FN3lcD7BPaG+2Ma54X/MDRcwTqdnm7BM8TLU8hPU8V8nteZ6mAFhENvx
-	CTlR9XYnVguVooRsPHlrQt0dZ7K/+Gwk12BBcwXyqCE60JLS4fzvl0v8qk6BQXw==
-X-Received: by 2002:a05:6808:2385:b0:3c5:dc47:99e9 with SMTP id bp5-20020a056808238500b003c5dc4799e9mr3109026oib.5.1712359162428;
-        Fri, 05 Apr 2024 16:19:22 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFfjPnSmiyv8P7CJzOP7HOWBiDhIEG/B6ZJWV2xwl0fun8uJUpqbxe6oOulVbdccni8vhEdEA==
-X-Received: by 2002:a05:6808:2385:b0:3c5:dc47:99e9 with SMTP id bp5-20020a056808238500b003c5dc4799e9mr3109003oib.5.1712359161965;
-        Fri, 05 Apr 2024 16:19:21 -0700 (PDT)
-Received: from x1n.redhat.com ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id fb17-20020a05622a481100b00434383f2518sm1201198qtb.87.2024.04.05.16.19.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 16:19:21 -0700 (PDT)
-From: peterx@redhat.com
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	peterx@redhat.com,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	David Hildenbrand <david@redhat.com>,
-	linux-stable <stable@vger.kernel.org>,
-	syzbot+b07c8ac8eee3d4d8440f@syzkaller.appspotmail.com
-Subject: [PATCH] mm/userfaultfd: Allow hugetlb change protection upon poison entry
-Date: Fri,  5 Apr 2024 19:19:20 -0400
-Message-ID: <20240405231920.1772199-1-peterx@redhat.com>
-X-Mailer: git-send-email 2.44.0
+        d=1e100.net; s=20230601; t=1712359243; x=1712964043;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=12i/1U6e69lGZbnks+aFjU43EdHvF/EYY258ON1Z+QY=;
+        b=KyUL/s9UzrSSwAJARQO15+zwRum5acS8bBzdp0vuhF9IhR/4MzuL5eqUT3qqkhXGRD
+         l/p2LkLlqi3c8apOq6olNC9HXEKyrILRzn1RDH9e7AxQvu3zQDKFPTBrJTrksfKqM3zY
+         Rb5bKzWqgMyizI8P9Ldt07FqC6sOhci4IuibOImXOwV4vVqo1UFjRh59hNH2jRyeTaGa
+         EMry9vkfP8Y5x9DEmdZbrQMMfDD7aSiwhQ7qifkCpM8yBZ2dLxtgrsFvhc17G2NIc0zl
+         yrszXrazUuhTjTJTftbVgdBfZFd5/whg5kubEjaxCwrv2SgGh/Ey/cJFX2dvv80aNjrZ
+         iumg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJkdjKnWh3f0ys/WbxU0vcaPgD4ia8K66QkAKMdbTRMaFc6/ASoBU4maDUKBjt9KqUrP9I+E6seWCFxmw0zaTmtW2kVaY5gdOK35DI
+X-Gm-Message-State: AOJu0YzyeG/OyvFwWuz4/T9CX8xEAJxI2GDXIvgUOj84E0YZPEBvnyCU
+	QamSopS9gOr8lvd6456MQY4Xq1J+0E5qh9QezsWAbgxEHRuk4T9TLRrNtsjcCmVUfRikhKacLV6
+	z3A==
+X-Google-Smtp-Source: AGHT+IEUYFveyLiskfYb2sLUp535rDaaKamTXvVef0iSV4YFA3At2jAAYj0djH4lUTfne66XFXNLoy2e1Dc=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a63:1115:0:b0:5f3:fddf:e819 with SMTP id
+ g21-20020a631115000000b005f3fddfe819mr4204pgl.10.1712359243207; Fri, 05 Apr
+ 2024 16:20:43 -0700 (PDT)
+Date: Fri, 5 Apr 2024 16:20:41 -0700
+In-Reply-To: <20240323080541.10047-2-pmenzel@molgen.mpg.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240323080541.10047-2-pmenzel@molgen.mpg.de>
+Message-ID: <ZhCHSYwS5_o-OKs0@google.com>
+Subject: Re: [PATCH] KVM: VMX: make vmx_init a late init call to get to init
+ process faster
+From: Sean Christopherson <seanjc@google.com>
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, 
+	Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
+	"H. Peter Anvin" <hpa@zytor.com>, Colin Ian King <colin.i.king@intel.com>, kvm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
 
-From: Peter Xu <peterx@redhat.com>
+On Sat, Mar 23, 2024, Paul Menzel wrote:
+> From: Colin Ian King <colin.i.king@intel.com>
+> 
+> Making vmx_init a late initcall improves QEMU kernel boot times to
+> get to the init process. Average of 100 boots, QEMU boot average
+> reduced from 0.776 seconds to 0.622 seconds (~19.8% faster) on
+> Alder Lake i9-12900 and ~0.5% faster for non-QEMU UEFI boots.
 
-After UFFDIO_POISON, there can be two kinds of hugetlb pte markers, either
-the POISON one or UFFD_WP one.
+The changelog needs to better explain what "QEMU kernel boot times" means.  I
+assume the test is a QEMU VM running a kernel KVM_INTEL built-in?  This should
+also call out that late_initcall is #defined to module_init() when KVM is built
+as a module.
 
-Allow change protection to run on a poisoned marker just like !hugetlb
-cases, ignoring the marker irrelevant of the permission.
+> Signed-off-by: Colin Ian King <colin.i.king@intel.com>
+> [Take patch
+> https://github.com/clearlinux-pkgs/linux/commit/797db35496031b19ba37b1639ac5fa5db9159a06
+> and fix spelling of Alder Lake.]
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> ---
+>  arch/x86/kvm/vmx/vmx.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index c37a89eda90f..0a9f4b20fbda 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -8783,4 +8783,4 @@ static int __init vmx_init(void)
+>  	kvm_x86_vendor_exit();
+>  	return r;
+>  }
+> -module_init(vmx_init);
+> +late_initcall(vmx_init);
 
-Here the two bits are mutual exclusive. For example, when install a
-poisoned entry it must not be UFFD_WP already (by checking pte_none()
-before such install).  And it also means if UFFD_WP is set there must have
-no POISON bit set.  It makes sense because UFFD_WP is a bit to reflect
-permission, and permissions do not apply if the pte is poisoned and
-destined to sigbus.
+_If_ we do this, then we should also give svm_init() and kvm_x86_init() the same
+treatment.  I see no reason for vmx_init() to be special.
 
-So here we simply check uffd_wp bit set first, do nothing otherwise.
-
-Attach the Fixes to UFFDIO_POISON work, as before that it should not be
-possible to have poison entry for hugetlb (e.g., hugetlb doesn't do swap,
-so no chance of swapin errors).
-
-Cc: Axel Rasmussen <axelrasmussen@google.com>
-Cc: David Hildenbrand <david@redhat.com>
-Cc: linux-stable <stable@vger.kernel.org> # 6.6+
-Link: https://lore.kernel.org/r/000000000000920d5e0615602dd1@google.com
-Reported-by: syzbot+b07c8ac8eee3d4d8440f@syzkaller.appspotmail.com
-Fixes: fc71884a5f59 ("mm: userfaultfd: add new UFFDIO_POISON ioctl")
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- mm/hugetlb.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 8267e221ca5d..ba7162441adf 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -6960,9 +6960,13 @@ long hugetlb_change_protection(struct vm_area_struct *vma,
- 			if (!pte_same(pte, newpte))
- 				set_huge_pte_at(mm, address, ptep, newpte, psize);
- 		} else if (unlikely(is_pte_marker(pte))) {
--			/* No other markers apply for now. */
--			WARN_ON_ONCE(!pte_marker_uffd_wp(pte));
--			if (uffd_wp_resolve)
-+			/*
-+			 * Do nothing on a poison marker; page is
-+			 * corrupted, permissons do not apply.  Here
-+			 * pte_marker_uffd_wp()==true implies !poison
-+			 * because they're mutual exclusive.
-+			 */
-+			if (pte_marker_uffd_wp(pte) && uffd_wp_resolve)
- 				/* Safe to modify directly (non-present->none). */
- 				huge_pte_clear(mm, address, ptep, psize);
- 		} else if (!huge_pte_none(pte)) {
--- 
-2.44.0
-
+I'm not opposed to this, but I also have zero idea if this could have a negative
+impact userspace.  E.g. what happens if some setup's init process expects /dev/kvm
+to exist?  Will this break that?
 
