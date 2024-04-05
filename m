@@ -1,157 +1,131 @@
-Return-Path: <linux-kernel+bounces-132954-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132956-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5173899C6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:10:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7A41899C76
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:11:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D29861C20963
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:10:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 91909283326
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:11:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A6BA16C859;
-	Fri,  5 Apr 2024 12:10:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 345BC16C85A;
+	Fri,  5 Apr 2024 12:11:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="X3av7g1s"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="eat3qmIr"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B6BE16C458;
-	Fri,  5 Apr 2024 12:10:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB9B16C848;
+	Fri,  5 Apr 2024 12:11:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712319017; cv=none; b=ZxnXuOZ2NoiGaRq5r30iW7VSDnbRGnUoIgb84RxIEf7rqoIxzjddzFOxup/T8BSFZA/5tx2r3bJNPzTPoalKGoIDjbpCzlJlB0K/nT8gJp95jTPLusbM/ZZxTqMSJn5EtAEePMDwZ759rvHbbzNZn2MZIEbuJcRCUGzU5PM3gEo=
+	t=1712319067; cv=none; b=QYPM5fFoPaAhHmKQUbC69ahrx6KV99uS3jvEKp8s/gibumUnzo6qTyNIa8taLioOGmFOjMh4BFs7dfAoFMQiBf7VPH9q9m/y/a7SoN7tqVshdaFeNZFcB9WDJbi4/F4lMLmWRH+yR3fFnKdRs4CH7+Np1jqtTUrXAbUz+Wc+HhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712319017; c=relaxed/simple;
-	bh=jOtEULjQwp1xofWzW2EcwB8eD0K6YYHrQKfAoz2rzgU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=G70A62fSqtVezK+ZffKVr+AgZj1bcibF+uBf3drqa7azDW0L+lqdAnkrJevZWnrCllaHPCmLpsUTDogOI4VzhDbLiJZhXXVlUlNHpnSGWiNdYkuz9p5a3P0ydLK2vkS5jbodF4aHSHy6HHfxhqNYcqgaaNhyfnJWsBYbbMH5Wck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=X3av7g1s; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id DE7848E1;
-	Fri,  5 Apr 2024 14:09:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1712318975;
-	bh=jOtEULjQwp1xofWzW2EcwB8eD0K6YYHrQKfAoz2rzgU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=X3av7g1skBjPPB2jJm+C+FKmn2ytbbjQGAgemaxf+O/vJVOjjTuNVX6BhXTe9dnp/
-	 m6kyat02hObvT3WMaWnV4O71bEy5B1Q1KYW617HztLWk0K5fIhJz6X3wYKbEXwTF8i
-	 OQ040D8SIHdNYhiNoxLAwmUeQQN8y/d6/hukb6Vs=
-Message-ID: <e79ca193-0452-47ab-bbdf-56d7c52130a3@ideasonboard.com>
-Date: Fri, 5 Apr 2024 15:10:09 +0300
+	s=arc-20240116; t=1712319067; c=relaxed/simple;
+	bh=2y3FPyV6HSvnZaoGXs2ERFJRCnrD7omEs8OKzeD/qwE=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=j9/p/bPZuRzZhUWFgBusvsV4c5NZjOu4ikdeRcqLoSt1asrFUIDXqJ2j/m6lSPkhK2bvlRvLCr84rW8s92bCjhnMCGEPhsRFxPyoSS3TuWafs0MOLCQTmAe0cgA2sG0CCgDitL5tklPmChE85pQ4Hh+kO4Yh8fPD/yjaCmiF08o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=eat3qmIr; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712319062; x=1743855062;
+  h=message-id:subject:from:to:date:in-reply-to:references:
+   content-transfer-encoding:mime-version;
+  bh=2y3FPyV6HSvnZaoGXs2ERFJRCnrD7omEs8OKzeD/qwE=;
+  b=eat3qmIrYMfRAw6gTAvFvFOidF+ncBycTPNtabu3vv8SwG9lrfc5/JRU
+   0T3RXAXrhfUoLp5rBy0WfHjg9q/D/4u6JvrnyJ9/U4OkoIbh+DxiaUKqn
+   lUTcL/WOAsIlGMjy4Gmn2Gse2tEh0aam15BdVz8DNW3uyHeZUU8QmB5iR
+   SksdfEfG67B3xCmWaKUucbakQgg72kf+qN3z3FpZY3mZVyUnHV6YghAm2
+   J/767Hkm9qynsL5t+kgkGT/I2pC7H2mNIdB8LQCh6kOlaYdT4/q+15SLo
+   HARK6od8fx26+Pr5UamDDBKepp9MO2/TzdwwQdaSL2lJzGe/YikLPk28g
+   Q==;
+X-CSE-ConnectionGUID: SXg+XRrSS0KpY0LY8rrGYQ==
+X-CSE-MsgGUID: UaI54ZyIRLuNLKJH3MuHWg==
+X-IronPort-AV: E=Sophos;i="6.07,181,1708412400"; 
+   d="scan'208";a="19593931"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Apr 2024 05:11:01 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 5 Apr 2024 05:10:33 -0700
+Received: from den-her-m31857h.microchip.com (10.10.85.11) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Fri, 5 Apr 2024 05:10:30 -0700
+Message-ID: <67f29fa86207a68b148b826b71b1349d3552453d.camel@microchip.com>
+Subject: Re: [PATCH RFT 09/10] arm64: dts: microchip: sparx5_pcb134: drop
+ duplicated NOR flash
+From: Steen Hegelund <steen.hegelund@microchip.com>
+To: Krzysztof Kozlowski <krzk@kernel.org>, Conor Dooley <conor@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>, Claudiu Beznea
+	<claudiu.beznea@tuxon.dev>, Rob Herring <robh@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, Lars Povlsen
+	<lars.povlsen@microchip.com>, Daniel Machon <daniel.machon@microchip.com>,
+	<UNGLinuxDriver@microchip.com>, "David S. Miller" <davem@davemloft.net>,
+	Bjarni Jonasson <bjarni.jonasson@microchip.com>,
+	<linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Date: Fri, 5 Apr 2024 14:10:30 +0200
+In-Reply-To: <20240401153740.123978-9-krzk@kernel.org>
+References: <20240401153740.123978-1-krzk@kernel.org>
+	 <20240401153740.123978-9-krzk@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+User-Agent: Evolution 3.44.4-0ubuntu2 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/9] drm: xlnx: zynqmp_dpsub: Update live format
- defines
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Cc: dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-media@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Michal Simek <michal.simek@amd.com>, Andrzej Hajda
- <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>,
- Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
- <20240321-dp-live-fmt-v3-2-d5090d796b7e@amd.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Content-Language: en-US
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- xsFNBE6ms0cBEACyizowecZqXfMZtnBniOieTuFdErHAUyxVgtmr0f5ZfIi9Z4l+uUN4Zdw2
- wCEZjx3o0Z34diXBaMRJ3rAk9yB90UJAnLtb8A97Oq64DskLF81GCYB2P1i0qrG7UjpASgCA
- Ru0lVvxsWyIwSfoYoLrazbT1wkWRs8YBkkXQFfL7Mn3ZMoGPcpfwYH9O7bV1NslbmyJzRCMO
- eYV258gjCcwYlrkyIratlHCek4GrwV8Z9NQcjD5iLzrONjfafrWPwj6yn2RlL0mQEwt1lOvn
- LnI7QRtB3zxA3yB+FLsT1hx0va6xCHpX3QO2gBsyHCyVafFMrg3c/7IIWkDLngJxFgz6DLiA
- G4ld1QK/jsYqfP2GIMH1mFdjY+iagG4DqOsjip479HCWAptpNxSOCL6z3qxCU8MCz8iNOtZk
- DYXQWVscM5qgYSn+fmMM2qN+eoWlnCGVURZZLDjg387S2E1jT/dNTOsM/IqQj+ZROUZuRcF7
- 0RTtuU5q1HnbRNwy+23xeoSGuwmLQ2UsUk7Q5CnrjYfiPo3wHze8avK95JBoSd+WIRmV3uoO
- rXCoYOIRlDhg9XJTrbnQ3Ot5zOa0Y9c4IpyAlut6mDtxtKXr4+8OzjSVFww7tIwadTK3wDQv
- Bus4jxHjS6dz1g2ypT65qnHen6mUUH63lhzewqO9peAHJ0SLrQARAQABzTBUb21pIFZhbGtl
- aW5lbiA8dG9taS52YWxrZWluZW5AaWRlYXNvbmJvYXJkLmNvbT7CwY4EEwEIADgWIQTEOAw+
- ll79gQef86f6PaqMvJYe9QUCX/HruAIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRD6
- PaqMvJYe9WmFD/99NGoD5lBJhlFDHMZvO+Op8vCwnIRZdTsyrtGl72rVh9xRfcSgYPZUvBuT
- VDxE53mY9HaZyu1eGMccYRBaTLJSfCXl/g317CrMNdY0k40b9YeIX10feiRYEWoDIPQ3tMmA
- 0nHDygzcnuPiPT68JYZ6tUOvAt7r6OX/litM+m2/E9mtp8xCoWOo/kYO4mOAIoMNvLB8vufi
- uBB4e/AvAjtny4ScuNV5c5q8MkfNIiOyag9QCiQ/JfoAqzXRjVb4VZG72AKaElwipiKCWEcU
- R4+Bu5Qbaxj7Cd36M/bI54OrbWWETJkVVSV1i0tghCd6HHyquTdFl7wYcz6cL1hn/6byVnD+
- sR3BLvSBHYp8WSwv0TCuf6tLiNgHAO1hWiQ1pOoXyMEsxZlgPXT+wb4dbNVunckwqFjGxRbl
- Rz7apFT/ZRwbazEzEzNyrBOfB55xdipG/2+SmFn0oMFqFOBEszXLQVslh64lI0CMJm2OYYe3
- PxHqYaztyeXsx13Bfnq9+bUynAQ4uW1P5DJ3OIRZWKmbQd/Me3Fq6TU57LsvwRgE0Le9PFQs
- dcP2071rMTpqTUteEgODJS4VDf4lXJfY91u32BJkiqM7/62Cqatcz5UWWHq5xeF03MIUTqdE
- qHWk3RJEoWHWQRzQfcx6Fn2fDAUKhAddvoopfcjAHfpAWJ+ENc7BTQROprNHARAAx0aat8GU
- hsusCLc4MIxOQwidecCTRc9Dz/7U2goUwhw2O5j9TPqLtp57VITmHILnvZf6q3QAho2QMQyE
- DDvHubrdtEoqaaSKxKkFie1uhWNNvXPhwkKLYieyL9m2JdU+b88HaDnpzdyTTR4uH7wk0bBa
- KbTSgIFDDe5lXInypewPO30TmYNkFSexnnM3n1PBCqiJXsJahE4ZQ+WnV5FbPUj8T2zXS2xk
- 0LZ0+DwKmZ0ZDovvdEWRWrz3UzJ8DLHb7blPpGhmqj3ANXQXC7mb9qJ6J/VSl61GbxIO2Dwb
- xPNkHk8fwnxlUBCOyBti/uD2uSTgKHNdabhVm2dgFNVuS1y3bBHbI/qjC3J7rWE0WiaHWEqy
- UVPk8rsph4rqITsj2RiY70vEW0SKePrChvET7D8P1UPqmveBNNtSS7In+DdZ5kUqLV7rJnM9
- /4cwy+uZUt8cuCZlcA5u8IsBCNJudxEqBG10GHg1B6h1RZIz9Q9XfiBdaqa5+CjyFs8ua01c
- 9HmyfkuhXG2OLjfQuK+Ygd56mV3lq0aFdwbaX16DG22c6flkkBSjyWXYepFtHz9KsBS0DaZb
- 4IkLmZwEXpZcIOQjQ71fqlpiXkXSIaQ6YMEs8WjBbpP81h7QxWIfWtp+VnwNGc6nq5IQDESH
- mvQcsFS7d3eGVI6eyjCFdcAO8eMAEQEAAcLBXwQYAQIACQUCTqazRwIbDAAKCRD6PaqMvJYe
- 9fA7EACS6exUedsBKmt4pT7nqXBcRsqm6YzT6DeCM8PWMTeaVGHiR4TnNFiT3otD5UpYQI7S
- suYxoTdHrrrBzdlKe5rUWpzoZkVK6p0s9OIvGzLT0lrb0HC9iNDWT3JgpYDnk4Z2mFi6tTbq
- xKMtpVFRA6FjviGDRsfkfoURZI51nf2RSAk/A8BEDDZ7lgJHskYoklSpwyrXhkp9FHGMaYII
- m9EKuUTX9JPDG2FTthCBrdsgWYPdJQvM+zscq09vFMQ9Fykbx5N8z/oFEUy3ACyPqW2oyfvU
- CH5WDpWBG0s5BALp1gBJPytIAd/pY/5ZdNoi0Cx3+Z7jaBFEyYJdWy1hGddpkgnMjyOfLI7B
- CFrdecTZbR5upjNSDvQ7RG85SnpYJTIin+SAUazAeA2nS6gTZzumgtdw8XmVXZwdBfF+ICof
- 92UkbYcYNbzWO/GHgsNT1WnM4sa9lwCSWH8Fw1o/3bX1VVPEsnESOfxkNdu+gAF5S6+I6n3a
- ueeIlwJl5CpT5l8RpoZXEOVtXYn8zzOJ7oGZYINRV9Pf8qKGLf3Dft7zKBP832I3PQjeok7F
- yjt+9S+KgSFSHP3Pa4E7lsSdWhSlHYNdG/czhoUkSCN09C0rEK93wxACx3vtxPLjXu6RptBw
- 3dRq7n+mQChEB1am0BueV1JZaBboIL0AGlSJkm23kw==
-In-Reply-To: <20240321-dp-live-fmt-v3-2-d5090d796b7e@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 21/03/2024 22:43, Anatoliy Klymenko wrote:
-> Update live format defines to match DPSUB AV_BUF_LIVE_VID_CONFIG register
-> layout.
-
-I think this description needs a bit more. Mention that the defines are 
-not currently used,  so we can change them like this without any other 
-change.
-
-  Tomi
-
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-> ---
->   drivers/gpu/drm/xlnx/zynqmp_disp_regs.h | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h b/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
-> index f92a006d5070..fa3935384834 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
-> @@ -165,10 +165,10 @@
->   #define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_BPC_10		0x2
->   #define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_BPC_12		0x3
->   #define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_BPC_MASK		GENMASK(2, 0)
-> -#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_RGB		0x0
-> -#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YUV444	0x1
-> -#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YUV422	0x2
-> -#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YONLY	0x3
-> +#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_RGB		(0x0 << 4)
-> +#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YUV444	(0x1 << 4)
-> +#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YUV422	(0x2 << 4)
-> +#define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_YONLY	(0x3 << 4)
->   #define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_MASK		GENMASK(5, 4)
->   #define ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_CB_FIRST		BIT(8)
->   #define ZYNQMP_DISP_AV_BUF_PALETTE_MEMORY		0x400
-> 
+SGkgS3J6eXN6dG9mLAoKT24gTW9uLCAyMDI0LTA0LTAxIGF0IDE3OjM3ICswMjAwLCBLcnp5c3p0
+b2YgS296bG93c2tpIHdyb3RlOgo+IEVYVEVSTkFMIEVNQUlMOiBEbyBub3QgY2xpY2sgbGlua3Mg
+b3Igb3BlbiBhdHRhY2htZW50cyB1bmxlc3MgeW91IGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZQo+
+IAo+IFNpbmNlIGJlZ2lubmluZyB0aGUgRFRTIGV4dGVuZGVkIHRoZSBTUEkwIGluIHR3byBwbGFj
+ZXMgYWRkaW5nIHR3byBTUEkKPiBtdXhlcywgZWFjaCB3aXRoIHNhbWUgU1BJIE5PUiBmbGFzaC7C
+oCBCb3RoIHVzZWQgZXhhY3RseSB0aGUgc2FtZQo+IGNoaXAtc2VsZWN0cywgc28gdGhpcyB3YXMg
+Y2xlYXJseSBidWdneSBjb2RlLsKgIFdpdGhvdXQgY2hlY2tpbmcgaW4KPiBkYXRhc2hlZXQsIGFz
+c3VtZSBkZXZpY2UgaGFzIG9ubHkgb25lIFNQSSBOT1IgZmxhc2gsIHNvIGNvZGUgd2FzCj4gZHVw
+bGljYXRlZC4KPiAKPiBGaXhlcyBkdGMgVz0xIHdhcm5pbmdzOgo+IAo+IMKgIHNwYXJ4NV9wY2Ix
+MzRfYm9hcmQuZHRzaToyNzcuMTAtMjgxLjQ6IFdhcm5pbmcgKHVuaXF1ZV91bml0X2FkZHJlc3Nf
+aWZfZW5hYmxlZCk6Cj4gL2F4aUA2MDAwMDAwMDAvc3BpQDYwMDEwNDAwMC9mbGFzaEAwOiBkdXBs
+aWNhdGUgdW5pdC1hZGRyZXNzIChhbHNvIHVzZWQgaW4gbm9kZQo+IC9heGlANjAwMDAwMDAwL3Nw
+aUA2MDAxMDQwMDAvc3BpQDApCj4gCj4gU2lnbmVkLW9mZi1ieTogS3J6eXN6dG9mIEtvemxvd3Nr
+aSA8a3J6a0BrZXJuZWwub3JnPgo+IAo+IC0tLQo+IAo+IE5vdCB0ZXN0ZWQgb24gaGFyZHdhcmUK
+PiAtLS0KPiDCoC4uLi9ib290L2R0cy9taWNyb2NoaXAvc3Bhcng1X3BjYjEzNF9ib2FyZC5kdHNp
+wqAgfCAxNiAtLS0tLS0tLS0tLS0tLS0tCj4gwqAxIGZpbGUgY2hhbmdlZCwgMTYgZGVsZXRpb25z
+KC0pCj4gCj4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWljcm9jaGlwL3NwYXJ4
+NV9wY2IxMzRfYm9hcmQuZHRzaQo+IGIvYXJjaC9hcm02NC9ib290L2R0cy9taWNyb2NoaXAvc3Bh
+cng1X3BjYjEzNF9ib2FyZC5kdHNpCj4gaW5kZXggZjE2NWE0MDliYzFkLi5kYzdiNTlkZmNiNDAg
+MTAwNjQ0Cj4gLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9taWNyb2NoaXAvc3Bhcng1X3BjYjEz
+NF9ib2FyZC5kdHNpCj4gKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9taWNyb2NoaXAvc3Bhcng1
+X3BjYjEzNF9ib2FyZC5kdHNpCj4gQEAgLTI4MSwyMiArMjgxLDYgQEAgZmxhc2hAMCB7Cj4gwqDC
+oMKgwqDCoMKgwqAgfTsKPiDCoH07Cj4gCj4gLSZzcGkwIHsKPiAtwqDCoMKgwqDCoMKgIHN0YXR1
+cyA9ICJva2F5IjsKPiAtwqDCoMKgwqDCoMKgIHNwaUAwIHsKPiAtwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBjb21wYXRpYmxlID0gInNwaS1tdXgiOwo+IC3CoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIG11eC1jb250cm9scyA9IDwmbXV4PjsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCAjYWRkcmVzcy1jZWxscyA9IDwxPjsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCAjc2l6ZS1jZWxscyA9IDwwPjsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBy
+ZWcgPSA8MD47wqDCoMKgwqDCoCAvKiBDUzAgKi8KPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBmbGFzaEA5IHsKPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgY29tcGF0aWJsZSA9ICJqZWRlYyxzcGktbm9yIjsKPiAtwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3BpLW1heC1mcmVxdWVuY3kgPSA8ODAwMDAwMD47
+Cj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJlZyA9IDww
+eDk+O8KgwqDCoCAvKiBTUEkgKi8KPiAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB9Owo+
+IC3CoMKgwqDCoMKgwqAgfTsKPiAtfTsKPiAtCgpXaGVuIHRlc3RpbmcgdGhpcyBvbiBhY3R1YWwg
+SFcgdGhlIFNQSSBOT1IgaXMgbm8gbG9uZ2VyIGFjY2Vzc2libGUuClRoZSByZWFzb24gaXMgdGhh
+dCBpdCBzaXRzIGJlaGluZCBhIFNQSS1NVVggYW5kIHRoYXQgbmVlZHMgdG8gYmUgcHJlc2VudCBp
+biB0aGUgRGV2aWNlIFRyZWUuCgpTbyBpZiB5b3UgZG8gdGhlICJyZXZlcnNlIiBjbGVhbi11cCBp
+dCB3b3JrcyBmaW5lOiBSZW1vdmUgdGhlIHNpbXBsZSBzcGkwIG5vZGUgYW5kIGtlZXAgdGhlIG9u
+ZSB0aGF0CmhhcyB0aGUgc3BpLW11eCByZWZlcmVuY2UuCgo+IMKgJnNncGlvMCB7Cj4gwqDCoMKg
+wqDCoMKgwqAgc3RhdHVzID0gIm9rYXkiOwo+IMKgwqDCoMKgwqDCoMKgIG1pY3JvY2hpcCxzZ3Bp
+by1wb3J0LXJhbmdlcyA9IDw4IDE1PjsKPiAtLQo+IDIuMzQuMQo+IAoKVGhhbmtzIGZvciB0aGUg
+Y2xlYW51cCBvZiB0aGUgRFQgZmlsZXMhCgpCZXN0IFJlZ2FyZHMKU3RlZW4K
 
 
