@@ -1,179 +1,129 @@
-Return-Path: <linux-kernel+bounces-132725-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132726-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF46E899951
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:19:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55337899953
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:20:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3CEB21F24AB0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:19:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B97A283E6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:20:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 211DA15FD14;
-	Fri,  5 Apr 2024 09:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E4115FD05;
+	Fri,  5 Apr 2024 09:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G5Jb0svV"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="Sa9ZNWh/";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="kz9OOXXd"
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8413913D265;
-	Fri,  5 Apr 2024 09:19:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712308785; cv=none; b=oVwWRDf9lZEiHGEIMrxI97wsHL5cJx2udirtQjMPrmRq19ucStyhRrRXct7II6tVCvI/MShSqywGXvBVhfGKt+pR9UfG+JPKWim9U4Uz525w1+Pv8P7IIehM1uxT6nAPTGtXt+XHq+jDC5ZeMb/39RZbL0vkRbxntgAtkdLTues=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712308785; c=relaxed/simple;
-	bh=a5NXg44BFMiguNC2tDuNWXwZ4iS92c+ZUzIznAf1Qf0=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=oIWw166U8qVdjK8n0h+qbO78Uijpg+hZXB5zUJOSFWDREnEEGnxW4aseKL+1/Vxg8mpywksNwUaCXNBDzAbN4aGPbtK869OofFZskHsFQXSFpLTGDd9K3cYXA/zyHAZjM/HHkeHWi8g7Kf09VOIxCv9tAYU9CDs1Z12vSi1Bl/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G5Jb0svV; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516d536f6f2so383696e87.2;
-        Fri, 05 Apr 2024 02:19:43 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7C0B15FD01;
+	Fri,  5 Apr 2024 09:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=210.61.82.184
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712308800; cv=fail; b=hwN+XRDTgL5g5cGSzbcqfv3RixY0J6Aalvj4e17Xw6+D0/poJRnIZDdZB4IX87P7fZ3Dz2oL+pisrXMvt0ZP6zCWcvSmq8iiHKG5M5qdDmSiAadnh35XDekZtw91bN1ppNxzjE+exDqIUSljVtu6O1k1wX9a7tglapEeeGrD2gc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712308800; c=relaxed/simple;
+	bh=hTf0upw0HQjpnQ6UQarFtMoCKi8zE4LKkr6HqiuKwo8=;
+	h=From:Date:Subject:Message-Id:To:CC:MIME-Version:Content-Type; b=raTVY3Q861oecYsC/IJuAC6CBxM5OF+1uECBAzlCmGAAGy/s2Xy3jFMSRHtKhb+s0lWQK5G3WcaheZzdFOSsPXlIfyaSHf0m/pOqYDoxBXIcDwin6UrJQxiPLFsUHihoGOX93cnln5KZgjzxcG5m1Ru0MVCl2yAfS5K87G4zFbY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=Sa9ZNWh/; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=kz9OOXXd; arc=fail smtp.client-ip=210.61.82.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: aa539bdcf32d11ee935d6952f98a51a9-20240405
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:CC:To:Message-Id:Subject:Date:From; bh=hTf0upw0HQjpnQ6UQarFtMoCKi8zE4LKkr6HqiuKwo8=;
+	b=Sa9ZNWh/rx970elANfro1D7OGj7XHXNSjc73a8fAlWIlAl9fQMIigOESggg7FbO1EswhCusOMgX++5xwigdr54McDQ0AOlM9ddx/+WFD+AVrN91UjRj1Hy4ThTB87O1n7vK+n+6oVrV42/wd/lcgdGsDnnTTi3vmRPZvT0JyOks=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:312ab479-4314-4c9f-a24f-6e581d820b97,IP:0,U
+	RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:6f543d0,CLOUDID:7227b900-c26b-4159-a099-3b9d0558e447,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: aa539bdcf32d11ee935d6952f98a51a9-20240405
+Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
+	(envelope-from <deren.wu@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 214234302; Fri, 05 Apr 2024 17:19:55 +0800
+Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
+ mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 5 Apr 2024 17:19:53 +0800
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 5 Apr 2024 17:19:53 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IQrZouLhwXwTOGUqiNnePlyb5Uyf13bHh55/u1qLCu8PuVl36uF+iVf5QA8Pc8wVXJ2q7heXPtKboUaTfYSZhfrzwwKgqWetpllOtLR9HZ4BlC7kSInGMLiRmJWZz1rYwLmEydbDs4wUKTet0n7PTHNJ8M1bTGvaty99YcLuwFb+IWYpsKdAzzOLnZCUp65SNKYrY7FxZvHu/6jnt6ucR1v6QjlExGL2dDQ4bicIqoauZpPUTgPmK8j8W6Nf5Se0GLvkBQzPadS3WN+F7b7SMh10hK2Z4GaUAmvoYuAVGm8wl20c/Xq34Vppb87k5Z70FsmeaTUzjZiHC/4UI1L3Xg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hTf0upw0HQjpnQ6UQarFtMoCKi8zE4LKkr6HqiuKwo8=;
+ b=VTLEUoOVxQ5FtXeaOrOAHuTrp5RzSXS9J9x22fGwVP+eaAHir8T4twqTj18I3/z0S8DGRVuzlULFZeaiSUF7Fgujr3jv3RXeqD1Mi4IAKCsI/uLd/TIq0UKEXXqAXD+PSYUvHWjohTIpvNnFzOqPdJZ9SEIuO8k5gAlooC92ue9YDOe0BKDKdKcUkduZcY06j+RjrsRgK3urTuDtWPp0nt6EWziSpwn/Yzv5H/UH/C/hVfA5AfP14bh0UqxMBkVvz9w5CAF1cPofIUvFqQIda+ImEPTIDfAl8KCavQdF+9exX+VGhMD4OrAMfVU/Ltu49auJM7SRjT152VImDuTmgA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712308782; x=1712913582; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3GMoznVWR9nEnA6pyqwAybCVYGsx+tACDaMjpLe/PK4=;
-        b=G5Jb0svVDVBU9BS5xJmBshitddTLtUEaLl87PbTVhplVIS1j11LvuJpOdB6obp1fGu
-         SNS5RS/CZjcY5d4/5VktbUaa3gUHfupyfXL5G9M2KgOmDbuAxLd45Muqn6JmImJ4sZnP
-         MEUUpMbJVIOTAJ89xrEworeDyMIXtwEsNWEv3xULrZdOQPuLO7y+xfTUkd+olIa0eOra
-         B+B6uszPpZCC0vMk0pSiHXzr3OfEQFsiaRhEqgU7Px3CAE2IUSk/LJmM9eIj47/zvdlV
-         mUBXTL7qAFUMDlgKCyyYjDUhVIcd4BkVsEitWvZzbplx4u6cSHRDxVFqpHGXFddfDp9K
-         J8ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712308782; x=1712913582;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3GMoznVWR9nEnA6pyqwAybCVYGsx+tACDaMjpLe/PK4=;
-        b=TqFXntpK0wX8csIYLEFyaKJqObKj225AebtCORNvjN/cM/Rwk06cdBVd7O14900FJh
-         km7CGEn5cJIIo5SW/frqZTZHmpKythzoLIaRtTKHJiAHFLO4Y3Kdm0IUg+WQtd5Qm7bL
-         h4sOEaMZshQUIDbHmX/AYffISq7EDyJGKe3SujiFFPAWAAEyxxsAPfd8Wo8QymfWBDiL
-         Q2qovfxPDT2c2EMckcPIXCMBptLj/HisPuW0I/R3s5F9lqGzdnipif7Axd+/NHhI+0Sq
-         08RrMSm3GD2lGyDK+WxbB3h7KndcX8dRSDDQYktoum98X/PYOSOEnjVyoofFQOo8NJbz
-         +Otw==
-X-Forwarded-Encrypted: i=1; AJvYcCWykpQHjR2HNXklaN0LMRZiP76nK/7vkS0OkHOvwaKW7yjZCq4YVKPL9Oxk+c9qKn1I6FrdaX5ZgCvnQqTucxX6jY2dG/2E+UUqav+0s77QEJtivJf3nrmfVZdHAmTBiV66dbClrZKD1UhnF5NMmEDna3/t9/OKvjYUBqILw//H5ylwoBKeH5+W
-X-Gm-Message-State: AOJu0Yxzd+XBF9foexuQtxIz0FmM0KduQLiLfl5Nd96/52nVpVyWWjtp
-	7idE1bSd0s6EfxiOC3XsHK1fMNaSkpbY5wryICTTkzErVH2VEAcd7wRCxDgD
-X-Google-Smtp-Source: AGHT+IEquSfinz1Ed9BFfdbScz0luX5oc2a4k7Opcpql+MuJP/6bMAdj9F9EyRATWvqJobWtzq6IoA==
-X-Received: by 2002:ac2:5ec1:0:b0:513:d640:ff16 with SMTP id d1-20020ac25ec1000000b00513d640ff16mr736418lfq.29.1712308781372;
-        Fri, 05 Apr 2024 02:19:41 -0700 (PDT)
-Received: from [172.16.183.82] ([213.255.186.46])
-        by smtp.gmail.com with ESMTPSA id w24-20020a05651234d800b00513cb309c8asm139649lfr.52.2024.04.05.02.19.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 02:19:41 -0700 (PDT)
-Message-ID: <f1e3d31d-8c24-4cdc-ae26-747f383a937b@gmail.com>
-Date: Fri, 5 Apr 2024 12:19:40 +0300
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hTf0upw0HQjpnQ6UQarFtMoCKi8zE4LKkr6HqiuKwo8=;
+ b=kz9OOXXdjVNz9kByk0+HdFulsgjkfEw9b2e/tKSeLe4wwN1H6gAtgcSUB6BVemou3XMzmmr+wYYDNt9h0P1pCms34c4v/u7IYX4ArbR0M0hn6RYaDslivMvXG5CqAa1Foc76xUOsVE4ArMllyN6nnnDfE650koV/KBe8zbJdUVU=
+Received: from substrate.office.com (2603:1096:101:183::7) by
+ SEZPR03MB8122.apcprd03.prod.outlook.com with HTTP via
+ PU1PR06CA0020.APCPRD06.PROD.OUTLOOK.COM; Fri, 5 Apr 2024 09:19:51 +0000
+From: Deren Wu =?utf-8?b?KOatpuW+t+S7gSk=?= <Deren.Wu@mediatek.com>
+Date: Fri, 05 Apr 2024 09:19:51 +0000
+Subject: Recall: Re: [SPAM]Re: [PATCH] [PATCH] Bluetooth: btusb: Add support
+ Mediatek MT7920
+Message-Id: <A28MT1PXPMU4.9N1TSV0GJ9WQ2@si2pr03mb5515>
+To: <regressions@lists.linux.dev>, <mike@fireburn.co.uk>,
+	<Peter.Tsao@mediatek.com>
+CC: <Aaron.Hou@mediatek.com>, <Chris.Lu@mediatek.com>,
+	<johan.hedberg@gmail.com>, <linux-bluetooth@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+	<luiz.dentz@gmail.com>, <marcel@holtmann.org>, <Sean.Wang@mediatek.com>,
+	<steve.lee@mediatek.com>, <regressions@lists.linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/6] Support ROHM BD96801 scalable PMIC
-Content-Language: en-US, en-GB
-From: Matti Vaittinen <mazziesaccount@gmail.com>
-To: Mark Brown <broonie@kernel.org>
-Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
- Lee Jones <lee@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>,
- Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck
- <linux@roeck-us.net>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-References: <cover.1712058690.git.mazziesaccount@gmail.com>
- <f7d454ac-6ecb-4431-a1de-c9b5d1240969@gmail.com>
- <eb03ec33-0627-4986-be04-8e35da390d6b@sirena.org.uk>
- <b6279be8-cf7d-4608-b556-3c01587f0d43@gmail.com>
-In-Reply-To: <b6279be8-cf7d-4608-b556-3c01587f0d43@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+X-MS-PublicTrafficType: Email
+client-request-id: 8cb3ab86-11f1-4966-5fac-605dad4d4705
+request-id: 8cb3ab86-11f1-4966-5fac-605dad4d4705
+X-MS-TrafficTypeDiagnostic: SEZPR03MB8122:EE_MessageRecallEmail
+X-MS-Exchange-RecallReportGenerated: true
+X-MS-Exchange-RecallReportCfmGenerated: true
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FEt121WSqyxpOEpGptroDvbYRl0/56Z5TbFaHu3RzYHfWNnbJUXK7oYwZ4F0y9EhrZgd9hUe4N+ZNM8PuqBg90rhM9CNoqixcrECAG+7Wh/IJGOLPN64rMg3F7OuwEtVDSLXNfOx5fcsGM3tdzo4HBKq3k4Of++jhX/+vSnO5y2Be2i5YaqokSViuAhewNIWEWATHCrWH/DYoyadf+mcD9C3PpeyeQHNjeNbx6ECsO+J6WVtUPy6Wd/pfed5mp5IMSE6OxJRXf67+kXO0+zc3az1EklXf6K82BECYorifMiC7/DffnWerh5YKM2Y7dgW3vwkdIqtkj+Cvqdqyc4gXprsAGXIVU9hdPTjhaB1Z3TfqZpo4WURtKewYUbntJgk+vo85NsJplUdGkJ7Hqx2ivKNKd3roFprF8K1vSLHLOr3cEZ2NpApEEqGtn61z0uhb+IFf64YGTg04+YdgC7pkP4af9138t/urMtN6GEHT1OlHkEutqEa4Bt7MSX8MgsXwvfExgyZzqltrDhz0YlIzgKu8ExeSwVKdldduPSFSd5XTL7sng6Fj65gfHf5qL5ETEdn2/bIfctK2lXWuYc58mc26nYpK+TvCLdTs/qLGIW4Noo1eOwsPyMBamDJgl2iSlERmYCUuO53Jc57CVS3yKRf5m9jDqL+ufDl0HsuXPHyH9RbcuwSf3syY1jUyIxT/7mzLkoTU534vO/YVP3fNQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(217643003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 085e89RHFP+FdVSOzhCzCtF8QsYJSaEnXsLR1Jw0M9qwXOroNpLUCvUvdyln/3z11HCqOVGqDnGsVZDWFXPQyWFRYbLd9foY6YzgWwDJOTHP4yFHuze1G2t9qBPjk2t3TVEswJwJoBgknFtSTLT/znLd+YxqnYcFn9wt7btMVIUV1wPkDM/GYEUDjzT9wDEtgzRGhAgYoFMYc0k/WAhHy4sdmL0q3FqVLi4H2Z3B1z50Yerr6ofmJbZQQ0JAzld6UpqovpNEzpmh8jsGgkbXBR0UO6GT1mwuLnCH4lXoTX9oahedttJM2j36KhLBFCBaKXjvDh6kp4sJlBsAP6+WzYzoVfzIDbwwJnh8Gz3VCq9KkgEsf7lHTAVuDDAyrxrNSIFJQX6aLHaZrGavY2b97Yf+boIoeFA4ayiEdMKuo/o=
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HttpSubmission-SEZPR03MB8122
+X-MS-Exchange-CrossTenant-Id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2024 09:19:51.2982 (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: addf9e4c-0fac-4335-990f-08dc55518c45
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR03MB8122
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--0.375800-8.000000
+X-TMASE-MatchedRID: uX0qRX/JYJSALnLwcLJ8c0+4wmL9kCTxjzwigoyOACTd1Nq3SV2z16PF
+	jJEFr+olmP38c3DNiySKpAefy6FsjO2eKH3LGf9LanE1Ybb9x4X3FLeZXNZS4CiM3WUt6LtFJ4R
+	unYQZH/UPM0KP7wGGBtF9xxnqBdR/Z+5pUUnZoXcJW8x7nv6dHg4SVUX42+9WP5uMSYbkz+bZZr
+	s9ioNnot+cnxLKcBb8lExlQIQeRG0=
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--0.375800-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	87B3475F4BF228255B343FD9A117781AD4643BFAF4B31CB4E05559A659DD8B602000:8
 
-On 4/4/24 16:15, Matti Vaittinen wrote:
-> Hi Mark,
-> 
-> On 4/4/24 15:09, Mark Brown wrote:
->> On Thu, Apr 04, 2024 at 10:26:34AM +0300, Matti Vaittinen wrote:
->>
->>> 1. Should we be able to have more than 1 IRQ domain / device?
->>> 2. Should regmap_irq support having more than 1 HWIRQ
->>
->> I would expect each parent interrupt to show up as a separate remap_irq.
->>
->>> then it seems that reading the IRQ information from the /proc/interrupts
->>> works as expected. Here I am making a wild guess that the name of the 
->>> domain
->>> is used as a key for some data-lookups, and having two domains with a 
->>> same
->>> name will either overwrite something or cause wrong domain data to be
->>> fetched. (This is just guessing for now).
-
-This was wrong guessing.
-
->> So if we arrange to supply a name when we register multiple domains
->> things should work fine?
-
-After my latest findings, yes, I think so. How to do this correctly is 
-beyond me though. The __irq_domain_create() seems to me that the name is 
-meant to be the dt-node name when the controller is backed by a real 
-dt-node. Naming of the irq_domain_alloc_named_fwnode() sounds to me like 
-it is only intended to be used when there is no real fwnode. All 
-suggestions appreciated. Using the:
-irq_domain_update_bus_token(intb_domain, DOMAIN_BUS_WIRED);
-feels like a dirty hack, and won't scale if there is more HWIRQs.
-
-> Thanks for taking the time to look at my questions :)
-> I have been debugging this thing whole day today, without getting too 
-> far :) It seems there is something beyond the name collision though.
-> 
-> After I tried adding '-1' to the end of the other domain name to avoid 
-> the debugfs name collision I managed to do couple of successful runs - 
-> after which I reported here that problem seems to be just the naming. 
-> Soon after sending that mail I hit the oops again even though the naming 
-> was fixed.
-> 
-> Further debugging shows that the desc->action->name for the last 28 
-> 'errb' IRQs get corrupted. This might point more to the IRQ requester 
-> side - so I need to further study the BD96801 driver side as well as the 
-> regulator_irq_helper. I'm having the creeping feeling that at the end of 
-> the day I need to find the guilty one from the mirror :)
-
-I was not wrong on this one. The regulator_irq_helper() duplicates 
-memory for the data given in  const struct regulator_irq_desc *d - but 
-it does not duplicate the irq name pointed from the given 
-regulator_irq_desc. Nor does the request_threaded_irq(). I passed some 
-of the IRQ names from the stack in the BD96801 driver ... a bug I 
-should've caught earlier.
-
-Well, good thing is that now I can fix the regulator_irq_helper() to do:
-
---- a/drivers/regulator/irq_helpers.c
-+++ b/drivers/regulator/irq_helpers.c
-@@ -352,6 +352,9 @@ void *regulator_irq_helper(struct device *dev,
-
-         h->irq = irq;
-         h->desc = *d;
-+       h->desc.name = devm_kstrdup(dev, d->name, GFP_KERNEL);
-+       if (!h->desc.name)
-+               return ERR_PTR(-ENOMEM);
-
-         ret = init_rdev_state(dev, h, rdev, common_errs, per_rdev_errs,
-                               rdev_amount);
-
-I'll send a patch if this sounds like a correct thing to do.
-
-
-
--- 
-Matti Vaittinen
-Linux kernel developer at ROHM Semiconductors
-Oulu Finland
-
-~~ When things go utterly wrong vim users can always type :help! ~~
-
+Deren.Wu@mediatek.com would like to recall the message, "Re: [SPAM]Re: [PATCH] [PATCH] Bluetooth: btusb: Add support Mediatek MT7920".
 
