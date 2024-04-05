@@ -1,183 +1,137 @@
-Return-Path: <linux-kernel+bounces-132362-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132363-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 588E8899393
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:07:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C211E899396
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:07:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B48E1C22538
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:07:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F18171C21E62
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:07:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7693718E01;
-	Fri,  5 Apr 2024 03:06:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EA5B1CA9C;
+	Fri,  5 Apr 2024 03:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AvQsmfHi"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="nt7LyYr0"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B809117BAA
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 03:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3441BF54;
+	Fri,  5 Apr 2024 03:06:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712286380; cv=none; b=lXRHQlt7lunK6lucetT20vgbPGyzJXXyNQFRZFsVAHlkw01OTqDr6mZFuNNt3weIfF+gkiCHnXVKW6gtiNb+7M35Fbx42wF3pKJB99UguvrEz9jFNPjwI+yycnnA8a8aDkob5Kxsmg7OUVFO0waJ9/+BsbzlP+2Kf9cJDahNOXE=
+	t=1712286400; cv=none; b=L6DmXJ0QauVf27VfeFPLWAIn0Q7MPp5TdfNjXk2jSRhlbARvdPJ8scIUDzvw1FS/VhkTN2B0ldPqauTbQ5sJ0jwQYxvds38UIXFsK/pn3RCD6S39MjoD9ViFDUN8jz+gLHvmwcsQkHn6Y+qGwqEVlG+k4YBZ2RCWIQ3J+69QDiY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712286380; c=relaxed/simple;
-	bh=bPy78RgFcQqYIR6eQ0c/0CWyvzHC2nIaKAlBWizSY2I=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=UPrCh+R+uPVAfFoyXbwC+3imJJflDVm+ySDcdNDeiQZL22b2PsCsq5EXnGZyZF795yal5f2B/eKe3A1NE7sr3mITsUGrSVJUPN1ngFhSN5NNmKg/dD4j48cvYz6M6PpzChfBIb7KtUmQYXxe4CRD8VtyXYMbxg0gf4JPOex9mts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AvQsmfHi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712286377;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rReCZ4SHEw1Ti2FMC8gAT8gtkro230Es2AuywmRWnSw=;
-	b=AvQsmfHiDBu8nlXilRsoDPe2Jv/uugwIcSZM5KNkCoJqOX25utwh9ojTSHXcEQBZYTE9sD
-	QAyzxQpYdMFDC5L1VAAwMc8YJMm2J13wFqdQwMMO7sKgxhBH37VhjNvhkc2bNZ7gmtWHx/
-	2eRNmNs0zdpvXa9CZsJZxutakwr09po=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-647-K6ik-vtCNiSW_qod4wBhQQ-1; Thu,
- 04 Apr 2024 23:06:14 -0400
-X-MC-Unique: K6ik-vtCNiSW_qod4wBhQQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+	s=arc-20240116; t=1712286400; c=relaxed/simple;
+	bh=rQll83np3ZgmfrTNhgz1E+J4NbFfxMVThydcSzQ/0Mk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AxqjQXvLZcuV45yCkfEDunCmcrOSjwfiPNNnazzaSbNgZH3TEdLIZ5mI68INCur91SZp+5jju8K8tDenxERBlj2VNGFYetdWe/8qRZwvAqgj9iW0lB/Y+vhEvbRAT1XAz7jWqSHLHL8XrqgpEcTUmaJV53fcDLeIKDkuNuytY58=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=nt7LyYr0; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
+	s=201909; t=1712286396;
+	bh=rQll83np3ZgmfrTNhgz1E+J4NbFfxMVThydcSzQ/0Mk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=nt7LyYr0VgKC2PN8Uh4OBsDE8MRTMWxElbEIkAPup4qXOCqn6AeSByhif9P5ytgiV
+	 Y0b9YCVHe1603OzGz1CuS1UAonEljsDSUXb5aXtmNm2o9cF2iq4pQFZqtJIChURkSw
+	 9Vt5EdU6CLx1RvuzF9z1OvCmkN9sZhtAHHCCj4sIWvoMK2OVCaJcbR1qBuG6pLcPbs
+	 P8Cy/gvYiz9sm+Bzo2/y8VephuLdily3Dwf/bvYfJWL4L0jnQ6kLLqnzyvVClaF+3a
+	 RSl6KVE7ivbi9liHBQ1OUQ5K6a71jyuPucAmq3YfgXcEbtZfpIPt3ZoJgTWSh7Y0kd
+	 Qj08GU1zIAhJw==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6D53528B7409;
-	Fri,  5 Apr 2024 03:06:13 +0000 (UTC)
-Received: from [10.22.33.193] (unknown [10.22.33.193])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id F02711C060A4;
-	Fri,  5 Apr 2024 03:06:12 +0000 (UTC)
-Message-ID: <45ddde77-a5dd-41e8-933f-36ed0f8cf178@redhat.com>
-Date: Thu, 4 Apr 2024 23:06:12 -0400
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4V9k0V5tFtz4wcb;
+	Fri,  5 Apr 2024 14:06:34 +1100 (AEDT)
+From: Michael Ellerman <mpe@ellerman.id.au>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>, Finn Thain
+ <fthain@linux-m68k.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby
+ <jirislaby@kernel.org>, Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+ Nicholas Piggin <npiggin@gmail.com>, Christophe Leroy
+ <christophe.leroy@csgroup.eu>, "Aneesh Kumar K.V"
+ <aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+ linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
+ linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] serial/pmac_zilog: Remove flawed mitigation for rx irq
+ flood
+In-Reply-To: <CAHp75VcxLez_Nm0N8=gpWd7SKGd9JF2QXEOOB_gvX3ZtTzj6HQ@mail.gmail.com>
+References: <dda2187e128bfaaf092351812e4538e2e41c17f6.1711599093.git.fthain@linux-m68k.org>
+ <Zg3YZN-QupyVaTPm@surfacebook.localdomain>
+ <8f234f26-d5e3-66ed-ab0c-86d3c9852b4a@linux-m68k.org>
+ <CAHp75VcxLez_Nm0N8=gpWd7SKGd9JF2QXEOOB_gvX3ZtTzj6HQ@mail.gmail.com>
+Date: Fri, 05 Apr 2024 14:06:33 +1100
+Message-ID: <87y19s7bk6.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/2] Make reader optimistic spinning optional
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-To: Bongkyu Kim <bongkyu7.kim@samsung.com>, John Stultz <jstultz@google.com>
-Cc: peterz@infradead.org, mingo@redhat.com, will@kernel.org,
- boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
- gregkh@linuxfoundation.org
-References: <CGME20230901010734epcas2p4aadced02d68d3db407fda23de34601d2@epcas2p4.samsung.com>
- <20230901010704.18493-1-bongkyu7.kim@samsung.com>
- <CANDhNCoFRr=qizswLm-dzxJK0fHuCx98Z2B1pUspdwGqBEejYg@mail.gmail.com>
- <20240403012132.GA460@KORCO045595.samsungds.net>
- <CANDhNCpvKj6Swer-8DtQEotdnOiqfAg43oZLw_HZs6ogwqPwzg@mail.gmail.com>
- <20240403014207.GA499@KORCO045595.samsungds.net>
- <23fd78bb-76a7-46e8-9523-5d2cab4186f5@redhat.com>
-In-Reply-To: <23fd78bb-76a7-46e8-9523-5d2cab4186f5@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 4/4/24 13:44, Waiman Long wrote:
+Andy Shevchenko <andy.shevchenko@gmail.com> writes:
+> On Thu, Apr 4, 2024 at 2:57=E2=80=AFAM Finn Thain <fthain@linux-m68k.org>=
+ wrote:
+>> On Thu, 4 Apr 2024, Andy Shevchenko wrote:
 >
-> On 4/2/24 21:42, Bongkyu Kim wrote:
->> On Tue, Apr 02, 2024 at 06:27:40PM -0700, John Stultz wrote:
->>> On Tue, Apr 2, 2024 at 6:21 PM Bongkyu Kim 
->>> <bongkyu7.kim@samsung.com> wrote:
->>>> On Tue, Apr 02, 2024 at 04:46:06PM -0700, John Stultz wrote:
->>>>> On Thu, Aug 31, 2023 at 6:07 PM Bongkyu Kim 
->>>>> <bongkyu7.kim@samsung.com> wrote:
->>>>>> This is rework of the following discussed patch.
->>>>>> https://lore.kernel.org/all/20230613043308.GA1027@KORCO045595.samsungds.net/ 
->>>>>>
->>>>>>
->>>>>> Changes from the previous patch
->>>>>> - Split to revert and modify patches
->>>>>> - Change according to Waiman Long's review
->>>>>>      More wording to documentation part
->>>>>>      Change module_param to early_param
->>>>>>      Code change by Waiman Long's suggestion
->>>>>>
->>>>>> In mobile environment, reader optimistic spinning is still useful
->>>>>> because there're not many readers. In my test result at android 
->>>>>> device,
->>>>>> it improves application startup time about 3.8%
->>>>>> App startup time is most important factor for android user 
->>>>>> expriences.
->>>>>> So, re-enable reader optimistic spinning by this commit. And,
->>>>>> make it optional feature by cmdline.
->>>>>>
->>>>>> Test result:
->>>>>> This is 15 application startup performance in our exynos soc.
->>>>>> - Cortex A78*2 + Cortex A55*6
->>>>>> - unit: ms (lower is better)
->>>>>>
->>>>>> Application             base  opt_rspin  Diff  Diff(%)
->>>>>> --------------------  ------  ---------  ----  -------
->>>>>> * Total(geomean)         343        330   -13    +3.8%
->>>>>> --------------------  ------  ---------  ----  -------
->>>>>> helloworld               110        108    -2    +1.8%
->>>>>> Amazon_Seller            397        388    -9    +2.3%
->>>>>> Whatsapp                 311        304    -7    +2.3%
->>>>>> Simple_PDF_Reader        500        463   -37    +7.4%
->>>>>> FaceApp                  330        317   -13    +3.9%
->>>>>> Timestamp_Camera_Free    451        443    -8    +1.8%
->>>>>> Kindle                   629        597   -32    +5.1%
->>>>>> Coinbase                 243        233   -10    +4.1%
->>>>>> Firefox                  425        399   -26    +6.1%
->>>>>> Candy_Crush_Soda         552        538   -14    +2.5%
->>>>>> Hill_Climb_Racing        245        230   -15    +6.1%
->>>>>> Call_Recorder            437        426   -11    +2.5%
->>>>>> Color_Fill_3D            190        180   -10    +5.3%
->>>>>> eToro                    512        505    -7    +1.4%
->>>>>> GroupMe                  281        266   -15    +5.3%
->>>>>>
->>>>> Hey Bongkyu,
->>>>>    I wanted to reach out to see what the current status of this patch
->>>>> set? I'm seeing other parties trying to work around the loss of the
->>>>> optimistic spinning functionality since commit 617f3ef95177
->>>>> ("locking/rwsem: Remove reader optimistic spinning") as well, with
->>>>> their own custom variants (providing some substantial gains), and
->>>>> would really like to have a common solution.
->>>>>
->>>> I didn't get an reply, so I've been waiting.
->>>> Could you let me know about their patch?
->>> I don't have insight/access to any other implementations, but I have
->>> nudged folks to test your patch and chime in here.
->>>
->>> Mostly I just wanted to share that others are also seeing performance
->>> trouble from the loss of optimistic spinning, so it would be good to
->>> get some sort of shared solution upstream.
->>>
->>> thanks
->>> -john
->>>
-> When this patch series was originally posted last year, we gave some 
-> comments and suggestion on how to improve it as well as request for 
-> more information on certain area. We were expecting a v2 with the 
-> suggested changes, but we never got one and so it just fell off the 
-> cliff.
+>> > > Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+>> > > Cc: Michael Ellerman <mpe@ellerman.id.au>
+>> > > Cc: Nicholas Piggin <npiggin@gmail.com>
+>> > > Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> > > Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+>> > > Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+>> > > Cc: linux-m68k@lists.linux-m68k.org
+>> >
+>> > Second, please move these Cc to be after the '---' line
+>>
+>> I thought they were placed above the line for audit (and signing)
+>> purposes.
 >
-> Please send a v2 with the requested change and we can continue our 
-> discussion.
+> I didn't get this, sorry.
+>
+>> There are thousands of Cc lines in the mainline commit messages
+>> since v6.8.
+>
+> Having thousands of mistaken cases does not prove it's a good thing to
+> follow. I answered Jiri why it's better the way I suggested.
+>
+>> > > Link: https://github.com/vivier/qemu-m68k/issues/44
+>> > > Link: https://lore.kernel.org/all/1078874617.9746.36.camel@gaston/
+>> >
+>> > Missed Fixes tag?
+>>
+>> Would this be ok: Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+>> I have to ask because some reviewers do not like to see a Fixes tag cite
+>> that commit.
+>
+> Yes, or you even may dig into the history.git from history group (see
+> git.kernel.org) for the real first patch that brought it.
+>
+>> > > Signed-off-by: Finn Thain <fthain@linux-m68k.org>
+>> > > ---
+>> > (here is a good location for Cc:)
+>>
+>> Documentation/process/submitting-patches.rst indicats that it should be
+>> above the "---" separator together with Acked-by etc. Has this convention
+>> changed recently?
 
-The major reason that reader optimistic spinning was taken out is 
-because of reader fragmentation especially now that we essentially wake 
-up all the readers all at once when it is reader's turn to take the read 
-lock. I do admit I am a bit biased toward systems with large number of 
-CPU cores. On smaller systems with just a few CPU cores, reader 
-optimistic spinning may help performance. So one idea that I have is 
-that one of the command line option values is an auto mode (beside on 
-and off) that reader optimistic spinning is enabled for, say, <= 8 CPUs, 
-but disabled with more CPUs.
+The docs don't really say where to put the Cc: tags, although they are
+mentioned along with other tags which clearly are intended to go above
+the separator.
 
-Anyway, this is just one of my ideas.
+> I see, I will prepare a patch to discuss this aspect.
 
-Cheers,
-Longman
+FYI there was a discussion about this several years ago, where at least
+some maintainers agreed that Cc: tags don't add much value and are
+better placed below the --- separator.
 
+Thread starts here: https://lore.kernel.org/all/87y31eov1l.fsf@concordia.el=
+lerman.id.au/
+
+cheers
 
