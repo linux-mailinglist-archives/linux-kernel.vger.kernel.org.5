@@ -1,71 +1,57 @@
-Return-Path: <linux-kernel+bounces-132303-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132304-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 077938992C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:22:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0F038992C8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:23:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0704C1C22C21
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:22:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52C5C287E7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AEDD26A;
-	Fri,  5 Apr 2024 01:22:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77B9BE4D;
+	Fri,  5 Apr 2024 01:23:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pWghTJZU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BT9kujUC"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC1A7484;
-	Fri,  5 Apr 2024 01:22:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 300C75258;
+	Fri,  5 Apr 2024 01:23:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712280130; cv=none; b=NJ2M24clVjY+4eUKka5WY13RNfTlbTwvb91PSVIi1l3w/A+PKBl3q10ERMdyUCPBLTDyhEJi2JWakQyU7UDLqHordWsAQm1udXTNLduGEXMPArk/IgqGHnrhcbzzG7/+1npm3er0gaU4YuciK1VJwhJXwhB82c7GxdqRtC06ZQ4=
+	t=1712280209; cv=none; b=DFgIP9dcRABk7MEoInPewu/lDvOmvvzj05ZAicNXogNnwRRIZwXdxtfzx7zTwhc4jONA+nlub/FkRiP2srTNGH0h/KQ0kCc0NOQ1vpUXzQF33cfcYDtjULpy61vNi/DDwf55Sustdy3nS1WrM4Cx2OkkooV9rgJEpI7UtRZI4Vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712280130; c=relaxed/simple;
-	bh=szljdTDB94eQ+EkiXsSkkkx9Poh6qFx1veGM9Mfl0+w=;
+	s=arc-20240116; t=1712280209; c=relaxed/simple;
+	bh=Yj3fosI2py6gli0fQo4zYWZ/1MQ/0R+9tBHTb/oq+2M=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=oeiiWVwGy2IVqb4hOhaoM9NCq9tf7EUauDslv1ouxgfLP4vcCRVFvhf+QrjBS8yikSuEG4/KcS92meUpETLiVulYio4P8EuJM/BqVnE/nxf3v8tf9/fNau51jPfblzk+9Er95KMXzWE3ks+rfaJ72xwdW8ETE3EJXV+mgS1nTOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pWghTJZU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A8CEC433C7;
-	Fri,  5 Apr 2024 01:22:05 +0000 (UTC)
+	 Mime-Version:Content-Type; b=IgVUuRnFS3XTvy2pCD78CseemaR1IA+4cIf34/De65kZvLIhJUXBuNruE7pmWwK3tUeoJQjQlBPceJ2oJ/l+qTijosgBFIyjgn4lL6ynU45OF/FCrfaNzaHuxe1Rc6jUF/BhqRadnkfGp9zbhsQlLCo9q/P26LSNLeZKRu9lGZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BT9kujUC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D5AFC433F1;
+	Fri,  5 Apr 2024 01:23:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712280129;
-	bh=szljdTDB94eQ+EkiXsSkkkx9Poh6qFx1veGM9Mfl0+w=;
+	s=k20201202; t=1712280208;
+	bh=Yj3fosI2py6gli0fQo4zYWZ/1MQ/0R+9tBHTb/oq+2M=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=pWghTJZUHmUJad0KDGhWYm1a9qB9arTjFvpqXMQ7nVDgKzHACTber46um0xQNJNQO
-	 4KQDZEG0lw6FGodDUdKkwzX1El///teqLI1cWXh4SNJtGdzWAHThtnSKKdiFlbZ+Rp
-	 /3ZpiKOD0MENLm5kf70YSRuzRE34dHbCCzKfJs58yocLrCdbHZ2x5XibvfvpLkl/sf
-	 XcssPS5/y0T6Q/xeWmBwbbYLaN4Gb6G94Pc6uglyGHejEF1yxWnthCIg0XYbkyZuYD
-	 1jVuQhiowsnC+EbIT9qMm133Af2MTnerT5G4ZMKfIBFufXYBiqUgilNrWE2W0kFlxW
-	 ANrVfPjxgeWYQ==
-Date: Fri, 5 Apr 2024 10:22:03 +0900
+	b=BT9kujUC2fD2iGCfeiEN5yf5qd+mJFKWKBFeiDtA+MSF15iuR4soG2SoNMKu7WWVy
+	 XjaW9fOWNrosv5f4ICvjasfYDb9rThBENzcOxi3aVRcD4JKE6+yPFOpaV8CMvySI+M
+	 1UQmNUTv3R8psOwGjKJcwW9I8jsw8L9rBvKJaHwh1Pi9Qm0XbYNBb2VOCMBhRTjgUN
+	 F1X15W1c4ajaMdEiekdIZA8Atv579WjBEacA0ngJBN1/F2XGBwU8JfZk8rMhHDtVjT
+	 tlsxsbfmyOVhXNzquOMBRmdgpaizQ4Dg5ozWBZcNQODbNjLCzLmT0cF4sHZkmx1wOm
+	 eIcuH6MMy/7IQ==
+Date: Fri, 5 Apr 2024 10:23:24 +0900
 From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: Oleg Nesterov <oleg@redhat.com>
-Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa
- <olsajiri@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Alexei
- Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, Song Liu
- <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
- <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
- Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>,
- x86@kernel.org, linux-api@vger.kernel.org
-Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
- probe
-Message-Id: <20240405102203.825c4a2e9d1c2be5b2bffe96@kernel.org>
-In-Reply-To: <20240404161108.GG7153@redhat.com>
-References: <20240402093302.2416467-1-jolsa@kernel.org>
-	<20240402093302.2416467-2-jolsa@kernel.org>
-	<20240403100708.233575a8ac2a5bac2192d180@kernel.org>
-	<Zg0lvUIB4WdRUGw_@krava>
-	<20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
-	<CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
-	<20240404095829.ec5db177f29cd29e849169fa@kernel.org>
-	<CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
-	<20240405005405.9bcbe5072d2f32967501edb3@kernel.org>
-	<20240404161108.GG7153@redhat.com>
+To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Zhenhua Huang <quic_zhenhuah@quicinc.com>
+Subject: Re: [PATCH fs/proc/bootconfig] remove redundant comments from
+ /proc/bootconfig
+Message-Id: <20240405102324.b7bb9fa052754d352cd2708e@kernel.org>
+In-Reply-To: <26d56fa5-2c95-46da-8268-35642f857d6d@paulmck-laptop>
+References: <f036c5b0-20cc-40c1-85f9-69fa9edd0c95@paulmck-laptop>
+	<20240404085522.63bf8cce6f961c07c8ce3f17@kernel.org>
+	<26d56fa5-2c95-46da-8268-35642f857d6d@paulmck-laptop>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -76,74 +62,90 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 4 Apr 2024 18:11:09 +0200
-Oleg Nesterov <oleg@redhat.com> wrote:
+On Thu, 4 Apr 2024 10:43:14 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-> On 04/05, Masami Hiramatsu wrote:
-> >
-> > Can we make this syscall and uprobe behavior clearer? As you said, if
-> > the application use sigreturn or longjump, it may skip returns and
-> > shadow stack entries are left in the kernel. In such cases, can uretprobe
-> > detect it properly, or just crash the process (or process runs wrongly)?
+> On Thu, Apr 04, 2024 at 08:55:22AM +0900, Masami Hiramatsu wrote:
+> > On Wed, 3 Apr 2024 12:16:28 -0700
+> > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > 
+> > > commit 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to
+> > > /proc/bootconfig") adds bootloader argument comments into /proc/bootconfig.
+> > > 
+> > > /proc/bootconfig shows boot_command_line[] multiple times following
+> > > every xbc key value pair, that's duplicated and not necessary.
+> > > Remove redundant ones.
+> > > 
+> > > Output before and after the fix is like:
+> > > key1 = value1
+> > > *bootloader argument comments*
+> > > key2 = value2
+> > > *bootloader argument comments*
+> > > key3 = value3
+> > > *bootloader argument comments*
+> > > ...
+> > > 
+> > > key1 = value1
+> > > key2 = value2
+> > > key3 = value3
+> > > *bootloader argument comments*
+> > > ...
+> > > 
+> > > Fixes: 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to /proc/bootconfig")
+> > > Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+> > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > > Cc: <linux-trace-kernel@vger.kernel.org>
+> > > Cc: <linux-fsdevel@vger.kernel.org>
+> > 
+> > OOps, good catch! Let me pick it.
+> > 
+> > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
 > 
-> Please see the comment in handle_trampoline(), it tries to detect this case.
-> This patch should not make any difference.
+> Thank you, and I have applied your ack and pulled this into its own
+> bootconfig.2024.04.04a.
+> 
+> My guess is that you will push this via your own tree, and so I will
+> drop my copy as soon as yours hits -next.
 
-I think you mean this loop will skip and discard the stacked return_instance
-to find the valid one.
-
-----
-        do {
-                /*
-                 * We should throw out the frames invalidated by longjmp().
-                 * If this chain is valid, then the next one should be alive
-                 * or NULL; the latter case means that nobody but ri->func
-                 * could hit this trampoline on return. TODO: sigaltstack().
-                 */
-                next = find_next_ret_chain(ri);
-                valid = !next || arch_uretprobe_is_alive(next, RP_CHECK_RET, regs);
-
-                instruction_pointer_set(regs, ri->orig_ret_vaddr);
-                do {
-                        if (valid)
-                                handle_uretprobe_chain(ri, regs);
-                        ri = free_ret_instance(ri);
-                        utask->depth--;
-                } while (ri != next);
-        } while (!valid);
-----
-
-I think this expects setjmp/longjmp as below
-
-foo() { <- retprobe1
-	setjmp()
-	bar() { <- retprobe2
-		longjmp()
-	}
-} <- return to trampoline
-
-In this case, we need to skip retprobe2's instance.
-My concern is, if we can not find appropriate return instance, what happen?
-e.g.
-
-foo() { <-- retprobe1
-   bar() { # sp is decremented
-       sys_uretprobe() <-- ??
-    }
-}
-
-It seems sys_uretprobe() will handle retprobe1 at that point instead of
-SIGILL.
-
-Can we avoid this with below strict check?
-
-if (ri->stack != regs->sp + expected_offset)
-	goto sigill;
-
-expected_offset should be 16 (push * 3 - ret) on x64 if we ri->stack is the
-regs->sp right after call.
+Thanks! I would like to make PR this soon as bootconfig fixes for v6.9-rc2.
 
 Thank you,
+
+> 
+> 							Thanx, Paul
+> 
+> > Thank you!
+> > 
+> > > 
+> > > diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+> > > index 902b326e1e560..e5635a6b127b0 100644
+> > > --- a/fs/proc/bootconfig.c
+> > > +++ b/fs/proc/bootconfig.c
+> > > @@ -62,12 +62,12 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+> > >  				break;
+> > >  			dst += ret;
+> > >  		}
+> > > -		if (ret >= 0 && boot_command_line[0]) {
+> > > -			ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+> > > -				       boot_command_line);
+> > > -			if (ret > 0)
+> > > -				dst += ret;
+> > > -		}
+> > > +	}
+> > > +	if (ret >= 0 && boot_command_line[0]) {
+> > > +		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+> > > +			       boot_command_line);
+> > > +		if (ret > 0)
+> > > +			dst += ret;
+> > >  	}
+> > >  out:
+> > >  	kfree(key);
+> > 
+> > 
+> > -- 
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
 
 -- 
 Masami Hiramatsu (Google) <mhiramat@kernel.org>
