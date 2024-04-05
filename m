@@ -1,104 +1,133 @@
-Return-Path: <linux-kernel+bounces-133416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B99F689A36B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:19:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3770489A371
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:22:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20734283724
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:19:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DE8F8288964
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:22:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B866171667;
-	Fri,  5 Apr 2024 17:19:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3380171678;
+	Fri,  5 Apr 2024 17:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DfVrLC7X"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DGRD+ag2"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 760FE6AB6;
-	Fri,  5 Apr 2024 17:19:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C819200CB;
+	Fri,  5 Apr 2024 17:21:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712337556; cv=none; b=ggPl61ihm3rtMCm+Qnud/Ke+Ezq+6sehnJ7Pf4hw/tpEIOklagynHTsmNKij/4RQdAC/SEqSUXlNkVQ0i5Uakf5LF9XNbOtHaXZHVFqjq57vf+c7UAvUc1RGe01g1Swjk2lplfvK83Qh8x2ePDTtbHvkRVkms6KSflwm4jA7+SE=
+	t=1712337720; cv=none; b=jkBCCCERwzKDmXKj24e+l7bT0Bw4yH+BPwDmyc+ppXMYtWPEhiRcjTKnpQdKzM7tzKxl4ExzN9rXtK2ZU8FBIElWZ1W1PUXc8ZlayaYUWKh8m+V6z5cFcomDAdJP/u+e+W+9oyDm+4dSp4TRwtiL24l9YjrFCx/XcLVyfVVwACY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712337556; c=relaxed/simple;
-	bh=QRMeVHlXFsGyPck1GAXCXiTs+tmUSKXsHHrqCVNReVs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nMgXpVyMZdTJ7VJBtVx2RFDet2MttT0oh7epnw4RVxBPyCVNAJZpro3ZUQQ9o/yjsrzYELFmUIeeDZNLLqksXQM/SN8eZo9RQ5dg+Vk4ZHTeRoWgaWTQBT3CShtsMs/IeC3OLZs32cY7dBFv6FZ2GzwE0n3iuUVgZMGEjxi8M04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DfVrLC7X; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=7n33e9TOqfHdPSOxwwAXF/+bIY86Q75KlStQt98tMCM=; b=DfVrLC7XkfKVXbfbHth4Q1ve5o
-	YHsGv6kKKy1Cq3igmNMC3xwNRsFOWrbnS2OF7XKrNOpnLgknEGab+XA7+vLtWVInSlftOi1r8+C2W
-	yP41B4MqLaG/HJ4ZfmO6vtLB6KCN9KvqE0SmlYcBEmf2tnjnpDVIxcI/hRAxOdqCttZc/8jy6DCv7
-	bYRmOuc5eRI21661mlnb/UWYf+AM0yFTR3lkvLr2vcBG2PWvdruoF1Z/BcWPTf3OTRYLZyky9y0Zy
-	B9+Ht8InRco1L4cMbCmtCcrMmITwZKNVpQPZ+pz09RQdrG+Gk4Mjjn37t3teX9HEDVc/s0I4yVJg5
-	gdivTJ6g==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rsnDZ-00000008CaJ-29Yd;
-	Fri, 05 Apr 2024 17:19:09 +0000
-Message-ID: <1536720f-7fba-4c47-8708-bfa80b701e7a@infradead.org>
-Date: Fri, 5 Apr 2024 10:19:08 -0700
+	s=arc-20240116; t=1712337720; c=relaxed/simple;
+	bh=AG++jet0Ju0MNLOi4sGysJ+XJ0j7+TCv1jTw1EYZCP4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jPLDZfB6f1PEBzQ092631kHytbvC+sP5v5Zg1NVeOehiUREXSg38wZ1GFTi8mSODTYc5Dg4uJSZB9Bxmc1Uj2VwqauOYUuFpKle6K2zWq73MygxRayBHwwwwPQCSRw34+pflUdu/KSs5BfBGwURO7NblsKPg0XlYpBrWUbRUd+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DGRD+ag2; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a4715991c32so360248966b.1;
+        Fri, 05 Apr 2024 10:21:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712337716; x=1712942516; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y0Yb4LJqqMLdtzqM+ApTC2MgN2Bfk3iYcGWwBxFXQRk=;
+        b=DGRD+ag2Q8ApxdruPTyg8UqUrE+13n7pNG+HN/20fLQLTGhYxKN+DWSMRKVQw1CHEl
+         Mt8ISOQdR3iLgAW7pf+9UC0uwxrYJ8JfWZM6Oh8xup5WuE6clvU+kXxQ6toBv/Ov/dyP
+         nmpehCCkJh3sGhf0Wxi7s0ure7C17Rq1vU1HIf9nxKaIH2Xl3NTASiAfwOraLTwR6Gwo
+         ZBoYbBD1FN3lYFLTza/4e1JfAVlV7oTCcCZc/WoMdC6covH6E0+dyhfBRqWeP3oZ7TBA
+         NhAGnwUlU6/uRfEA1XPTznmO9PvsuAxcJ9QDfmAEuzyuiTnIYfbud0v8fYnXrjauytGj
+         sIJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712337716; x=1712942516;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y0Yb4LJqqMLdtzqM+ApTC2MgN2Bfk3iYcGWwBxFXQRk=;
+        b=vMih1zl3e9JvjFyU7Qxf2jNZddyRdIlCgPzk6vX6q9Vl40lqPlsbvhlJz7qxXTeMSs
+         L319PjRD3bbyhLQmKKJxKFsTK51klyVHz6q3U5ONKaFw0VP0Izp+aFdXSVt7FErt5HlE
+         5q+DiTTwNAGPQboxRBPgCAQj6wL0rCxKb82K5fwhksYAgoi0w3ZESRJ+6Iskz4AQ/8F1
+         hbTkqxGHcWYxRhydld/N00+vIIiZ1RZE6294iF8R3+bRmJCl4AEZX3bJFSM8CqiZDKD9
+         KoUOaTxeq9ataNuA/wX75tU1GbDboI3abycIp+0Yx+rkF+cc8Z2S5Rv7+gQAs8rlS+Si
+         gGTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV++9joXCvO331639ax+mUYw/5GzciLGrJ9cytut/8SROm0PeThXzWNj1XkefFtdq6+038s3H1mS7MV5UdLcqwUp6tR6LaaSWws3+02ZqzHi6Q+VS1+JWdzkEbGdS5wZP8X1U+6XpT3wkGH+o0fSwCnN1TeiOJ2vgVxBFMao2DKz23Iqr7w
+X-Gm-Message-State: AOJu0Yw/P0701HvAvAImztuHaQLcyDFeOO8boz6sBrod5Y84yCPBgSro
+	My0h4HoOsioqZwZm/DGLUfcNxPGDzsa2MarwzL1PtERjc2ptCtHL6zqZBeiej7Ktpg92DNAd63u
+	2bsqiVxxda0jgx+JtdY1pztTk788=
+X-Google-Smtp-Source: AGHT+IH9eqCGLMewQsBd25x4ugQJjxugZHkB5hLHdxUnO16fY7EHHOUW0s1GO8tpYkQAtHkTXH8KkppOe04i9yO1gdI=
+X-Received: by 2002:a17:907:7ea5:b0:a51:8540:c671 with SMTP id
+ qb37-20020a1709077ea500b00a518540c671mr1681972ejc.50.1712337716323; Fri, 05
+ Apr 2024 10:21:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] Add MO(mod objs) variable to process ext modules with
- subdirs
-To: Valerii Chernous <vchernou@cisco.com>,
- Masahiro Yamada <masahiroy@kernel.org>, Nathan Chancellor
- <nathan@kernel.org>, Nicolas Schier <nicolas@fjasle.eu>
-Cc: xe-linux-external@cisco.com, Jonathan Corbet <corbet@lwn.net>,
- linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240405165610.1537698-1-vchernou@cisco.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240405165610.1537698-1-vchernou@cisco.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240404222009.670685-1-andreas@kemnade.info> <20240404222009.670685-3-andreas@kemnade.info>
+ <CAHp75VeZ9U_+1rJQjr4KvvzjYQGzfKtk+BK00vqvKcVn2-yP3g@mail.gmail.com> <20240405182832.4e457695@aktux>
+In-Reply-To: <20240405182832.4e457695@aktux>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Fri, 5 Apr 2024 20:21:19 +0300
+Message-ID: <CAHp75VckoDheCN-KQ0KcSk9rE_-cXFUujurtA4sK6KAixDttQQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] Input: edt-ft5x06 - add ft5426
+To: Andreas Kemnade <andreas@kemnade.info>
+Cc: dmitry.torokhov@gmail.com, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	o.rempel@pengutronix.de, u.kleine-koenig@pengutronix.de, hdegoede@redhat.com, 
+	ye.xingchen@zte.com.cn, p.puschmann@pironex.com, linux-input@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	caleb.connolly@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Valerii,
+On Fri, Apr 5, 2024 at 7:28=E2=80=AFPM Andreas Kemnade <andreas@kemnade.inf=
+o> wrote:
+> On Fri, 5 Apr 2024 18:13:45 +0300
+> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > On Fri, Apr 5, 2024 at 1:20=E2=80=AFAM Andreas Kemnade <andreas@kemnade=
+info> wrote:
 
-On 4/5/24 9:56 AM, Valerii Chernous wrote:
-> The change allow to build external modules with nested makefiles.
-> With current unofficial way(using "src" variable) it is possible to build
-> external(out of tree) kernel module with separate source and build
-> artifacts dirs but with nested makefiles it doesn't work properly.
-> Build system trap to recursion inside makefiles, artifacts output dir
-> path grow with each iteration until exceed max path len and build failed.
-> Providing "MO" variable and using "override" directive with declaring
-> "src" variable solves the problem
-> Usage example:
-> make -C KERNEL_SOURCE_TREE MO=BUILD_OUT_DIR M=EXT_MOD_SRC_DIR modules
-> 
-> Cc: xe-linux-external@cisco.com
-> Cc: Valerii Chernous <vchernou@cisco.com>
-> Signed-off-by: Valerii Chernous <vchernou@cisco.com>
-> ---
->  Documentation/kbuild/kbuild.rst  | 14 +++++++++++++-
->  Documentation/kbuild/modules.rst | 16 +++++++++++++++-
->  Makefile                         | 17 +++++++++++++++++
->  scripts/Makefile.build           |  7 +++++++
->  4 files changed, 52 insertions(+), 2 deletions(-)
-> 
+..
 
-I can read it now. There are still a few small things that I would
-change, but they aren't a big deal.
+> > > @@ -1484,6 +1484,7 @@ static const struct of_device_id edt_ft5x06_of_=
+match[] =3D {
+> > >         { .compatible =3D "edt,edt-ft5206", .data =3D &edt_ft5x06_dat=
+a },
+> > >         { .compatible =3D "edt,edt-ft5306", .data =3D &edt_ft5x06_dat=
+a },
+> > >         { .compatible =3D "edt,edt-ft5406", .data =3D &edt_ft5x06_dat=
+a },
+> > > +       { .compatible =3D "focaltech,ft5426", .data =3D &edt_ft5506_d=
+ata },
+> >
+> > Why a different vendor prefix?
+> > In case you need to use this one, keep the list sorted, currently this
+> > splits the edt,* ones.
+> >
+> How do I know whether to use evervision or edt instead?
 
-I'll leave it for Masahiro or others to comment on.
+Ask DT people, the vendor-prefixes lists both...
 
-Thanks.
--- 
-#Randy
+> I sorted by the numbers. Looking at datasheets for other controllers I se=
+e
+> https://www.displayfuture.com/Display/datasheet/controller/FT5x06.pdf
+> it only mentions FocalTech Systems Co., Ltd.
+
+But does the driver use that? AFAICS it uses edt. Perhaps it's due to
+a business split, not to my knowledge anyway.
+
+> So how the vendor prefixes are derived?
+
+Rob, Krzysztof?
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
