@@ -1,127 +1,135 @@
-Return-Path: <linux-kernel+bounces-132557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81486899697
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:33:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D807C89969A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:34:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2052E1F254E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:33:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7750F1F22CD4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:34:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B6C374F5;
-	Fri,  5 Apr 2024 07:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFC9848CFD;
+	Fri,  5 Apr 2024 07:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZReNa9YX"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JxdH4r7g"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B87C374FB
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:33:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29D6847F7E;
+	Fri,  5 Apr 2024 07:34:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712302406; cv=none; b=rYIqw55xz6srVHUEfaMLs97lj0CWm46Ta7VA4VVMBNpfDWFqOas+Ye7SXM6v/lCZO9E4YEvc5xgIwJisV1iORPYn1oJUAAJDlcLgTyBmNuCbtaZLlqgZFpLF1Q1WwlJilJ5XbIPHbXMZHSu7VwUYo+NfZ2z6Ur8EmlhQTPUd6NY=
+	t=1712302466; cv=none; b=n6HWexNCumLhCFzpDh7AXt21OiXPTzUEP/Ac5sLKdoCag7HIk7mUY2+lTvHqoTl4ItfcY/qidT4hiEIcBHN1XWODj94Sq80Iv4SYlz0QmzURnAJinPvabjm0G1HdtSfq0+KK8dluXBPTsFkdMXujiDarjHKfoim/nzCP4pNvTBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712302406; c=relaxed/simple;
-	bh=BUGMRCvz83jiXivIrS9EOBSbeWYOBA5HEJF91ADZrAA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=imBcBAviLE7cbP6C4+TtJK0Ut5UM61rdQPyJuBjmwKrz2Y/5X6ol6wFtxXumBIpKL219SNJaogYfNJ/UvP34oS1jiy4oE2c+c2Vq1kDVpIkYq2pEiW0T7wkbJ9WypkC2ejkCPaesJ596dImWVxpuc4wtv8sxiy/ZPF2TeAhMIaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZReNa9YX; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4162fe73594so2222125e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:33:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712302402; x=1712907202; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=B8/hEIuRB1LDRqXgcrFwyhIe4/Hv1tlerPiYLnPY8pA=;
-        b=ZReNa9YXS8ZMfOWeqpFpP4tq58pukI0QowpdIpckGF2mcLvUzbzAzMBoCeyUTVB9BP
-         oYGEJIddMB5GJTWPbYk9T4X5zKxaHwCRK0I7eI4zWUcSkxRFWqzZvraZ491yF6soDDUF
-         9sxa2XlImdBFLL9Ni6ZSsBpyoi9EXFZkskDI08l5AnRGZONRqn1HgdtzNfp2dY6At/g6
-         xTOG5PYbD0BMnEAM9EvmWMcpG0to9L/5Lp5zW02GOpRnS4IEqUYBCiJR9ahGujW8fnV4
-         pznDLDytm8r/GicMTSTPRgjCO+f0kyWKeQK5LD9pa2EpK5AuM/jHVCf6sU6K2kh5sBif
-         HzFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712302402; x=1712907202;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=B8/hEIuRB1LDRqXgcrFwyhIe4/Hv1tlerPiYLnPY8pA=;
-        b=eA78OJCppGlT1iKgW+o3DER1IE2lEMTffvC2vQsYg72BGpM9FMq8e6iInGxXpQSUc/
-         uRvZaJSs0wX1lzS0K2rRgT9rA3B8yf0YemfJiy93rf3Zzzm3cwdw9VvIBle9yexcrFzm
-         3qGHBslvmuDYMvz3i3cvlwetHN2vSH10Aza79QEXV4V5sGx8KBRDIPnscikrnRgF72ki
-         EfiSDzqf3TcQIKymy0OQGVn585O9DR5fdgeTQKdXMGo7zGeGYPCDHlAU+comc0s1jvaW
-         +sewnyE8k9NNAh2Cfs7wOg+F2CKRDNadpQ0EzkwyT1o9T2EFK4k3CINv2JdRhauQJO0d
-         hFgg==
-X-Forwarded-Encrypted: i=1; AJvYcCUhMqTk4EPa6PvVvu7M2W33pokhT9ikrlpPl9OtGS22z4YyvMhlf3fvWJcelXIUJ06vVU6BdghCJRsoweI70BsYj3rQfkjrMM0adGlu
-X-Gm-Message-State: AOJu0YwKpO95WjihdD/wpIitLwomQf8I6udxru6Mc6F4IKRfdAfNY4rK
-	ZdkpDCRXaQmrP6dOWbxzLA3KrqV141tlAqVD47tfw13A7hKn6Gj15JaZkhJNVxo=
-X-Google-Smtp-Source: AGHT+IFauYr0ttYbvunq4xdpMe1oQLsmvrROpymwVJP8xmztwIB4iqaH0gjqAwcT0IX2HxafV4aRTQ==
-X-Received: by 2002:a05:600c:1d25:b0:414:7e73:1f5b with SMTP id l37-20020a05600c1d2500b004147e731f5bmr543430wms.4.1712302402435;
-        Fri, 05 Apr 2024 00:33:22 -0700 (PDT)
-Received: from draszik.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id v19-20020a05600c471300b004157ff88ad7sm1903275wmo.7.2024.04.05.00.33.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 00:33:22 -0700 (PDT)
-Message-ID: <560e9a5b236728f62be4bfd8df187071c4bffb23.camel@linaro.org>
-Subject: Re: [PATCH 06/17] arm64: dts: exynos: gs101: Add the hsi2 sysreg
- node
-From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To: Peter Griffin <peter.griffin@linaro.org>, mturquette@baylibre.com, 
- sboyd@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-  vkoul@kernel.org, kishon@kernel.org, alim.akhtar@samsung.com,
- avri.altman@wdc.com,  bvanassche@acm.org, s.nawrocki@samsung.com,
- cw00.choi@samsung.com,  jejb@linux.ibm.com, martin.petersen@oracle.com,
- chanho61.park@samsung.com,  ebiggers@kernel.org
-Cc: linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org, 
-	saravanak@google.com, willmcvicker@google.com
-Date: Fri, 05 Apr 2024 08:33:20 +0100
-In-Reply-To: <20240404122559.898930-7-peter.griffin@linaro.org>
-References: <20240404122559.898930-1-peter.griffin@linaro.org>
-	 <20240404122559.898930-7-peter.griffin@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3-1 
+	s=arc-20240116; t=1712302466; c=relaxed/simple;
+	bh=oaq9Chvq0Xt0yDSaB529RRq1eKJleLzX7w7NqMqrl24=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FeIce2uWxvlLx1AMQYQf7OHaOvslyxZsmrrRR8QQ2NF3WadeKatDXBjk615OO50teqbVK7s3ZtBqoVHwkeFLE2gBDF72P8WvkGpeXejf4/Jufhln3jDJ3cnO58LGoxjsGtTGfFypHTqymGkzB0vtjRNdSMBLlc6ulwhG2x/9ZfU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JxdH4r7g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90EA8C433F1;
+	Fri,  5 Apr 2024 07:34:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712302465;
+	bh=oaq9Chvq0Xt0yDSaB529RRq1eKJleLzX7w7NqMqrl24=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JxdH4r7gT+DnO3b8C6d9K6qOC8OKy698/iGb6CRqMtMtnyI4yH1atmnDXRWbgVy8C
+	 dHELKn+OiiNNbpkAck78a62oRO+Z5dNhnHD/e4EtarFk4DRIz0Ovl65AcAwi8b48yQ
+	 RYktGhaJWEeehCVL7D788Zx/rRiFvrf7+nSmP71t4MzrD7b9DMt0eWHGLlCEiqMERL
+	 dPJMUjDboxCy5KNlW3JsnEHHnsATZ73IOdHeft6RdkvPIdtRi9AgPBBHhUGMDP22po
+	 FlzrcRKnsRYvrRsrBva8j1TJENfLaXQzC9kfE3Ql9H1Akk8knq0BAqBgyRpyx0Zb9E
+	 Bh9W4Kef6EUqQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rse5j-00000000606-2pQx;
+	Fri, 05 Apr 2024 09:34:27 +0200
+Date: Fri, 5 Apr 2024 09:34:27 +0200
+From: Johan Hovold <johan@kernel.org>
+To: Bjorn Andersson <quic_bjorande@quicinc.com>
+Cc: Stephen Boyd <swboyd@chromium.org>, Vinod Koul <vkoul@kernel.org>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+	linux-arm-msm@vger.kernel.org,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	linux-phy@lists.infradead.org, freedreno@lists.freedesktop.org,
+	Douglas Anderson <dianders@chromium.org>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Abel Vesa <abel.vesa@linaro.org>,
+	Steev Klimaszewski <steev@kali.org>,
+	Johan Hovold <johan+linaro@kernel.org>
+Subject: Re: [PATCH] phy: qcom: qmp-combo: Fix register base for
+ QSERDES_DP_PHY_MODE
+Message-ID: <Zg-pg-QAAfC9Pybr@hovoldconsulting.com>
+References: <20240405000111.1450598-1-swboyd@chromium.org>
+ <Zg9MQOAZpsndSNtb@hu-bjorande-lv.qualcomm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zg9MQOAZpsndSNtb@hu-bjorande-lv.qualcomm.com>
 
-Hi Pete,
+On Thu, Apr 04, 2024 at 05:56:32PM -0700, Bjorn Andersson wrote:
+> On Thu, Apr 04, 2024 at 05:01:03PM -0700, Stephen Boyd wrote:
+> > The register base that was used to write to the QSERDES_DP_PHY_MODE
+> > register was 'dp_dp_phy' before commit 815891eee668 ("phy:
+> > qcom-qmp-combo: Introduce orientation variable"). There isn't any
+> > explanation in the commit why this is changed, so I suspect it was an
+> > oversight or happened while being extracted from some other series.
+> 
+> Thanks for catching that, I wrote that patch long before Johan did the
+> rename of "pcs" to "dp_dp_phy", and must have missed that while later
+> rebasing the patch.
+> 
+> Reviewed-by: Bjorn Andersson <quic_bjorande@quicinc.com>
+>
+> > Oddly the value being 0x4c or 0x5c doesn't seem to matter for me, so I
+> > suspect this is dead code, but that can be fixed in another patch. It's
+> > not good to write to the wrong register space, and maybe some other
+> > version of this phy relies on this.
 
-On Thu, 2024-04-04 at 13:25 +0100, Peter Griffin wrote:
-> This has some configuration bits such as sharability that
-> are required by UFS.
->=20
-> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
-> ---
-> =C2=A0arch/arm64/boot/dts/exynos/google/gs101.dtsi | 6 ++++++
-> =C2=A01 file changed, 6 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/bo=
-ot/dts/exynos/google/gs101.dtsi
-> index 38ac4fb1397e..608369cec47b 100644
-> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> @@ -1265,6 +1265,12 @@ cmu_hsi2: clock-controller@14400000 {
-> =C2=A0			clock-names =3D "oscclk", "bus", "pcie", "ufs_embd", "mmc_card";
-> =C2=A0		};
-> =C2=A0
-> +		sysreg_hsi2: syscon@14420000 {
-> +			compatible =3D "google,gs101-hsi2-sysreg", "syscon";
-> +			reg =3D <0x14420000 0x1000>;
+This code is still reached on sc8280xp, but I guess only Qualcomm can
+tell us what these bits are for (and they should).
 
-Should the length not be 0x10000?
+The write to qmp->pcs + QSERDES_DP_PHY_MODE does not seem to have any
+effect on sc8280xp and that register still reads back as 0x2020202 after
+the incorrect write.
 
-Cheers,
-Andre'
+qmp->dp_dp_phy + QSERDES_DP_PHY_MODE reads back as 0x4c4c4c4c before the
+fixed write and either 0x4c4c4c4c or 0x5c5c5c5c after depending on the
+orientation.
 
+Can someone please replace the magic constants in this driver, and at
+least explain what the impact of bit 0x10 not reflecting the orientation
+is?
+
+> > Fixes: 815891eee668 ("phy: qcom-qmp-combo: Introduce orientation variable")
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+
+Either way, good catch, this was clearly unintentional:
+
+Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
+
+I think this should go to stable as well even if the impact is currently
+not fully understood:
+
+Cc: stable@vger.kernel.org	# 6.5
+
+> > @@ -2150,9 +2150,9 @@ static bool qmp_combo_configure_dp_mode(struct qmp_combo *qmp)
+> >  	writel(val, qmp->dp_dp_phy + QSERDES_DP_PHY_PD_CTL);
+> >  
+> >  	if (reverse)
+> > -		writel(0x4c, qmp->pcs + QSERDES_DP_PHY_MODE);
+> > +		writel(0x4c, qmp->dp_dp_phy + QSERDES_DP_PHY_MODE);
+> >  	else
+> > -		writel(0x5c, qmp->pcs + QSERDES_DP_PHY_MODE);
+> > +		writel(0x5c, qmp->dp_dp_phy + QSERDES_DP_PHY_MODE);
+
+Johan
 
