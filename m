@@ -1,128 +1,189 @@
-Return-Path: <linux-kernel+bounces-132672-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132673-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BD9989986C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:48:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4CD899870
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:49:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21BEA1F21882
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:48:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DEC521F2186E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4357515FA6C;
-	Fri,  5 Apr 2024 08:48:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC1B15F3E0;
+	Fri,  5 Apr 2024 08:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="R8T/4zsl"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VU+vHkfQ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B94615F3E0
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 08:48:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219E31E898
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 08:49:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712306921; cv=none; b=Ah9jCDRMoGLYzdYc7Zxn6JUN1NAlyerWomN4cw52vE8h+z2GUHQL/TFTHoooNwi9NH07Txh2i2FNkgblYt7XHY9Tv3WqxeEu1UQKlBNNAsY1ZUb4KWKmD08lnvE4sIbo+AQ4jXtN6tWDZ6szomtaf6604sh9r8RQJTda2bsPnZg=
+	t=1712306977; cv=none; b=kWXAv3KZcX5ZqLR3sTA1jA9qrPBgm/oKjWvINwhPOjwp4x2X8IHD31hlu0qwPGNb8RvHRVgG3uRozxOytHdFyx/34RI/+xqetUCAUjywnEGlUgz0IemOlxRoQdPsYpIFxJMwF/W1p4QpL+u7gLOsYXlbOkulUQvP4wndiYqOLYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712306921; c=relaxed/simple;
-	bh=rs0vw5LW9UM/y60I9xGZqbakggiNBHyoOs4B+0ZsN6s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=if/iITmOZWfT2Q0uhPswmoVue9XQ3g/SeRwqSvsuI2HQemoX2EreOj5Ub9DfPb5losXtbhfviESItdBDr9SPtkFCIBmP4e4a7mByDV4vKI4u7vK/WkKVV53R4hM5WhEpqn/FEdIxSRX4QaKg5JZFSPeTwnVCrWtmC+2KuK10gKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=R8T/4zsl; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=D3bA
-	ysj0N+3ktsukYn/zGLisNXUDp098hBJ07HyHzKc=; b=R8T/4zsl0Zd0dNbaommC
-	kCLTauMRf6yuGZlEbnNrPo+sDuLbN4s8BfD2QtEyqFV73GtOSagiQmnkLEuHWGCQ
-	vRejlIPlKU/mYMv+6t8UkEAMEtwYdgwHTAQorcdRr9Ope6KAX7AmqTkxF537SxfY
-	hbp2DrU8wtJm0oExDm1ozx0tnjR+RM/n3EJ7Hxedj1A/sxIF9bIEt0Q6uqjDDZO6
-	DhN5dSoCZRnlewvb/Wq/ACyPQ8GtSN3yttgw0BjHvy2Oz86yt92QQcC0xPBJXssA
-	1OMpCVAZHpK9gwh4XkivjtbsyOTJWxSQAZ6QWGsn2F7XdFdDJmCqNTrRYM5kOmvv
-	nA==
-Received: (qmail 4044863 invoked from network); 5 Apr 2024 10:48:34 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Apr 2024 10:48:34 +0200
-X-UD-Smtp-Session: l3s3148p1@j8VihVUV/oogAwDPXwEGAANOsN0UmmrN
-Date: Fri, 5 Apr 2024 10:48:34 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: linux-i2c@vger.kernel.org, asahi@lists.linux.dev, 
-	chrome-platform@lists.linux.dev, imx@lists.linux.dev, linux-actions@lists.infradead.org, 
-	linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
-	linux-mediatek@lists.infradead.org, linux-mips@vger.kernel.org, linux-omap@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-renesas-soc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-rockchip@lists.infradead.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	openbmc@lists.ozlabs.org, virtualization@lists.linux.dev
-Subject: Re: [PATCH 00/64] i2c: reword i2c_algorithm according to newest
- specification
-Message-ID: <kd2gnsosi5xar3mwc3zz7wqtqkfgicq3wical5ch34sbmlgegk@mb2c2hxzzoi4>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org, asahi@lists.linux.dev, 
-	chrome-platform@lists.linux.dev, imx@lists.linux.dev, linux-actions@lists.infradead.org, 
-	linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org, 
-	linux-mediatek@lists.infradead.org, linux-mips@vger.kernel.org, linux-omap@vger.kernel.org, 
-	linuxppc-dev@lists.ozlabs.org, linux-renesas-soc@vger.kernel.org, 
-	linux-riscv@lists.infradead.org, linux-rockchip@lists.infradead.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, 
-	linux-stm32@st-md-mailman.stormreply.com, linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org, 
-	openbmc@lists.ozlabs.org, virtualization@lists.linux.dev
-References: <20240322132619.6389-1-wsa+renesas@sang-engineering.com>
- <ug266trshvhhbsln3eoh53fmsuj3l63ziz6gavcl7rv2jhjr5t@3av5givh5n7m>
- <j2l7tu24itjelylrgwe6gdsy3mfrw3dnve4rdofmri3z7xdroc@se56t5ylmdak>
+	s=arc-20240116; t=1712306977; c=relaxed/simple;
+	bh=CcGWoWhzEExD4MH4WkbMes6Va/FXnq1kW36mXut8klg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nIP081G080jQV5ene3GGQY1DOx3e8aNVVgXED7OKoMTFdmTVvYxfbzpIRlBvqIbJXKjuGEyzdSvIhIu9SDL1E0e9qxqTRfVsLuRbYvNK7v51fXfUECPQzVXwCvCSB07J9KiGy2YFDS4dQONPM0li9DKfXD0NhVmEuoBxDe/somI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VU+vHkfQ; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712306975;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zcM/YTlsSAdLdvSqzygbsbJd0JHZIm14V+q4HXF7Xd4=;
+	b=VU+vHkfQzFpEHtdZkaCdYmaG6rLlf++WOjAZmQYBOFMXHQCYuIOiiLOcLN5/vZbjsCq4dw
+	jnNgr9ddaQlr0W3kxS6j63I6+XUJufz9gzvEMab1C2ay+RAFM2hNZjoVdgme1AW0exqRJQ
+	eeqgHNDEGomHKBAhB6conIuVZPpZ4jI=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-668-s-bORnRvO2aS4LXPyj6Mug-1; Fri, 05 Apr 2024 04:49:33 -0400
+X-MC-Unique: s-bORnRvO2aS4LXPyj6Mug-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a51abd0d7c6so6722366b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 01:49:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712306972; x=1712911772;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zcM/YTlsSAdLdvSqzygbsbJd0JHZIm14V+q4HXF7Xd4=;
+        b=PylEap65YMTK7MlF6mYZTMer8XqitT2GNWE3SyD6bAXiNiwHeHgs9bRMpsgVHSWEmZ
+         Dl50CBSL2vfaRFQrg8jkUdAnruvlJbMF83zZXsD41s4gLAEY07xHD0e1beOuB0Cy9qMQ
+         q171f6xpeApRZuc8MYQs3kZkHQIjsLkdzyNQb0+om1HWzedQ26or224fShz2pOaT4raZ
+         3NEdq0OgQ7WhaQMA4JyqwWtlSyvEygEsrsBZM3LrBS+pv8q5Tx1B2tgQLj+0kfsRofX8
+         7W4g2v6N+jCYPTyarsBD5c90OLFrG2aHmusf3P6OczcSZlthp6MJMfWraBwH/VRid1AB
+         m8hQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUH3l6IiHHA+7jt+6RICZeXKkdy+rEkbzW8KJZXptpH+M3rPs/3G+r+7tgyz3zj4mqrSPbC2T+BLlN/uV/fVPgILaGt/j0rkRTdeZxL
+X-Gm-Message-State: AOJu0YyTLIxLJcnEGxrCU5sT//8AxRCNM2nTVm1KcarKLuWBWVaaiBAS
+	2RM8VsluWI9DM7Xad8Gvaw3PY836SQHE+SHX0loZoJX6mqbOdmED3ACrMC0lhvFrcfYaNZwzIhk
+	tAfig3k8NEiyMlRglLZ6OwsVpVRz1HXeDTJYrJVv19sb/rVBBW82P+djX55L94g==
+X-Received: by 2002:a17:906:3791:b0:a4e:9324:8df4 with SMTP id n17-20020a170906379100b00a4e93248df4mr574498ejc.48.1712306972558;
+        Fri, 05 Apr 2024 01:49:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHg+C8Hwf/RkhomP7AdWKXe0Ug7DslPby8N9KMJptQ8O6P+kHKFiraUGLdw20NXyZvb+kea1g==
+X-Received: by 2002:a17:906:3791:b0:a4e:9324:8df4 with SMTP id n17-20020a170906379100b00a4e93248df4mr574473ejc.48.1712306972182;
+        Fri, 05 Apr 2024 01:49:32 -0700 (PDT)
+Received: from [192.168.0.182] (host-87-2-128-150.retail.telecomitalia.it. [87.2.128.150])
+        by smtp.gmail.com with ESMTPSA id o9-20020a1709062e8900b00a45c9945251sm584473eji.192.2024.04.05.01.49.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Apr 2024 01:49:31 -0700 (PDT)
+Message-ID: <a9dd5c5e-0095-48f9-9628-d5901d469ff3@redhat.com>
+Date: Fri, 5 Apr 2024 10:49:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="c5kq2kdwqrnl4eet"
-Content-Disposition: inline
-In-Reply-To: <j2l7tu24itjelylrgwe6gdsy3mfrw3dnve4rdofmri3z7xdroc@se56t5ylmdak>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 06/15] sched: server: Don't start hrtick for DL server
+ tasks
+To: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+ linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
+Cc: Suleiman Souhlal <suleiman@google.com>,
+ Youssef Esmat <youssefesmat@google.com>, David Vernet <void@manifault.com>,
+ Thomas Gleixner <tglx@linutronix.de>, "Paul E . McKenney"
+ <paulmck@kernel.org>, joseph.salisbury@canonical.com,
+ Luca Abeni <luca.abeni@santannapisa.it>,
+ Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+ Vineeth Pillai <vineeth@bitbyteword.org>,
+ Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>
+References: <20240313012451.1693807-1-joel@joelfernandes.org>
+ <20240313012451.1693807-7-joel@joelfernandes.org>
+Content-Language: en-US, pt-BR, it-IT
+From: Daniel Bristot de Oliveira <bristot@redhat.com>
+In-Reply-To: <20240313012451.1693807-7-joel@joelfernandes.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+On 3/13/24 02:24, Joel Fernandes (Google) wrote:
+> From: Suleiman Souhlal <suleiman@google.com>
+> 
+> Otherwise, we might start it even for tasks in a sched class that should
+> have it off.
+> 
+> Signed-off-by: Suleiman Souhlal <suleiman@google.com>
+> ---
+>  kernel/sched/deadline.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+> index 8fafe3f8b59c..5adfc15803c3 100644
+> --- a/kernel/sched/deadline.c
+> +++ b/kernel/sched/deadline.c
+> @@ -2325,11 +2325,12 @@ static struct task_struct *pick_next_task_dl(struct rq *rq)
+>  	if (!p)
+>  		return p;
+>  
+> -	if (!p->dl_server)
+> +	if (!p->dl_server) {
+>  		set_next_task_dl(rq, p, true);
+>  
+> -	if (hrtick_enabled(rq))
+> -		start_hrtick_dl(rq, &p->dl);
+> +		if (hrtick_enabled(rq))
+> +			start_hrtick_dl(rq, &p->dl);
+> +	}
 
---c5kq2kdwqrnl4eet
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The rational for having hrtick for the dl server too is the following:
 
-Hi Andi, hi everyone,
+This hrtick is reponsible for adding a hr timer for throttling. The throttling
+serves as a protection for the other tasks, to avoid them missing their deadlines
+because the current task overun for too long. Like, a task with 200us of runtime
+actually running for 1 ms because of the non-hr-tick.
 
-thank you for reviewing and waiting. I had a small personal hiatus over
-Easter but now I am back. This series needs another cycle, so no need to
-hurry. I will address some of the review comments but not all. The
-conversion (and API improvements) are some bigger tasks, so
-inconsistencies inbetween can't be avoided AFAICS.
+For example, let's get the case we have at red hat, where we want to use the
+dl server to provide a minimum bandwidth to avoid starvation, keeping the noise
+on real-time tasks low.
 
-I'll keep you updated.
+On this case, we will set the runtime for the fair server with number as low
+as 20 us... 40 us. With hrtick, when the fair server is enqueued, it will be
+throttle in the us scale... Without the hrtick, the server can run for an entire
+tick before being throttled.
 
-Happy hacking,
+here is an example of this scenario using osnoise with/withoutout arming the hrtick
+for the server that was set for 20 us of runtime:
 
-   Wolfram
+There is a kernel compilation in CPU 1. Then osnoise is dispatched as fifo,
+on CPU 1.
 
+ # osnoise -c 1 -P f:1
 
---c5kq2kdwqrnl4eet
-Content-Type: application/pgp-signature; name="signature.asc"
+removing hrtick:
+ ############
+ duration:   0 00:02:00 | time is in us
+ CPU Period       Runtime        Noise  % CPU Aval   Max Noise   Max Single          HW          NMI          IRQ      Softirq       Thread
+   1 #119       119000000         6482    99.99455        1220         1009           0            0          244           59           50
+ ############
 
------BEGIN PGP SIGNATURE-----
+See max single noise... it when longer than the 20 us i've set...
 
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYPut4ACgkQFA3kzBSg
-KbbwnxAAtFWKOWnU/VyFFeZnqQCgQ76FzO93xERcjysHlgnZv3BnA6UpxFnrHrs4
-Cn7RTWa0i9Ct1ns2AkkjOQ5rUIqczF7M2dVS0tqODwyazGPaDHYtsa3urfkCsLT7
-Gz0y5V+oHHUNj1hypkKtQ37/7iFSYbo5oryt9MFK6eFfs878jel/4BCGJk3SEa48
-ewNnEuM8aYfzlrn7/VbkWqHkCS5J6x8/VFk3PjlxgEW45UtEI3r30K6/jT9HOdx4
-6lCofEZKn4Bl0VbfJJ7MXd1Be2/Dk6ZaY09e97iAKt2+fM1OLrBwig2V8PAdV7ei
-LlHolA153CWJAAkzXE2bJsr252IuCLpVpZobTSQRfr+u5vVV354dfo2ek11R8iff
-DSr94kqdKVvOvegpxt4vyHUxQrfy70R9vlkgVhkdvdGbi3JfLeiCK+C+IcBZlbXr
-uTaPlNvOt6p+VJNAlucnKQF3mK0FvVMK7bTwqjbKR8ZzB8J20qj5pqxqtBZDjfOl
-fpTR9f9+kHWdmBuCLBq35aes6Lxq4JtNRH+czt8F8wIAfx/xcgTf2uPThVoFPO9s
-jyO4fy773Wsfo8PGo9SqSKr7K6gQW3dIDoFTk489lp3e9Y/DYJ+ZV2ixvCQKATjO
-3K0umrWHYd25+mhripLMPzaz3h1GPtmAiQq/dq2GUviAFUPoZas=
-=RWT2
------END PGP SIGNATURE-----
+With hrtick:
+ ############
+  duration:   0 00:02:30 | time is in us
+  CPU Period       Runtime        Noise  % CPU Aval   Max Noise   Max Single          HW          NMI          IRQ      Softirq       Thread
+    1 #149       149000472         3730    99.99749          33           33           0            0          641            3          155
+ ############
 
---c5kq2kdwqrnl4eet--
+the max single goes down to 33 us. It is not exactly 20 because there is
+one timer to enqueue the server, and another timer to throttle it. Still,
+the granularity is in the same order.
+
+So, maybe, what we can do is to get it back to hrtick_enabled_dl() instead
+of hrtick_enabled(), to have it only when HRTICK_DL is set.
+
+am I missing a point?
+
+-- Daniel
+
 
