@@ -1,220 +1,150 @@
-Return-Path: <linux-kernel+bounces-132302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A14F8992BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:16:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 077938992C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:22:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76531285DA1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:16:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0704C1C22C21
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:22:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D3C79E5;
-	Fri,  5 Apr 2024 01:16:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55AEDD26A;
+	Fri,  5 Apr 2024 01:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MZDZJFjB"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pWghTJZU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA41256A
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 01:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC1A7484;
+	Fri,  5 Apr 2024 01:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712279806; cv=none; b=plJo7nQem0rphH7hCvVSF6c0MRZzao9xmj5M8YnlEw84gFBMYn703FE7Rr8J2MrastWwpK0/CHUf34z5BXhV3y4Mhq3lS+HMcM6wJElpUe36dKHsRMiPcD3vdWD6I8yW3rS1JxGHmcvQcMgUJA5ldGfgFSkQ9hqOGg69MAJ74pE=
+	t=1712280130; cv=none; b=NJ2M24clVjY+4eUKka5WY13RNfTlbTwvb91PSVIi1l3w/A+PKBl3q10ERMdyUCPBLTDyhEJi2JWakQyU7UDLqHordWsAQm1udXTNLduGEXMPArk/IgqGHnrhcbzzG7/+1npm3er0gaU4YuciK1VJwhJXwhB82c7GxdqRtC06ZQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712279806; c=relaxed/simple;
-	bh=2/2Kj338jH+uBPSbzYrJGs8uligsmRJYmh5N5iDFTMY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=U6d0hmVqcIwYZDb0Kn4F/PmeG9giwVDvsz1EEWx+NBet3ct0hFdNi/fD9ui3RSgfNv5PLkazm+M/KGm1WBPhoDRrtv3fveKlj+6QutYDSIMfuSLPH4S2+CjZ+KeVTTD+1WS6esf4dcw37e9iPgHjFY6rAS0QRk2/jRT2KQ5OAY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MZDZJFjB; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-432d55b0fa9so109191cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 18:16:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712279803; x=1712884603; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fz47VsQ4PR0UnZ5hKlGOlqLoTfw+m5you2mPgmtXA/4=;
-        b=MZDZJFjB1JtRnH1aqC9xvOQuxmNrvgHmqYDOAMXscp6qB+/qDg3wR1DKv9UufBUHid
-         OL6Mt/cR6bxoeEd2Mw114w5vZakkfGf9YVndAOSQJk3RdjjMHh9jF0dO+gFEfjxRET/I
-         QwJbKrg/23mQotcTMI2UqEf94/RJDU4RMWuToPETO5UjeE/370T4u0taF3xV1iq6Mbpo
-         Kn5+YLkXkyyrtseDXJXuWEge5PQT+vMODTPZdQG3tz+UrwnHZMzAj12D+vXhiuO4QYMw
-         pVObRgn0Gjazsb4+l1+piO9TyWkRWB+xqCov6KPzfUJfxVtPGRKOM15NnEUZQx+dOVNu
-         iKLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712279803; x=1712884603;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fz47VsQ4PR0UnZ5hKlGOlqLoTfw+m5you2mPgmtXA/4=;
-        b=wJkb/8t6t+CeMJxKOHzd5ma05912kKiBdszZhhwjYpR+pf2pdBD5JOKTfmJbLLuqKQ
-         NeIQLKGx5UkqJMEQUjM18kATH+EBfDgZMOeW4y5hdf5kIOWxXKD0eIyd91N1O3gct2rP
-         pltNPoFBFFY8PqqY2OaiHDOqKLx1RgNMjfdWTkcN/EI8W/fBsmWqNqEqi+vkQ4NU36Nl
-         GoU+g3ZVQEn7IceBXupVm4uwfFNwNPvpDAKbq46f9HTDsVX8tx/iHb+YZs4feymdZXVn
-         nUSqST4IVzLA+q0JFOyNMX6Dg16ViXfsBmQpFWiiuRcEaJ8qV/M4TwY0exgoRWmxxAYN
-         u06A==
-X-Forwarded-Encrypted: i=1; AJvYcCUIwKChLlNeDtc0ZMJ9jy7Sl0Wrp6KJFMXv28gvj/k9mIVKkmVzp9Ja36CY4C1J9aUz+z35Tmv3gvjCN5O2l36HK3E0J1o+aC2FNhrw
-X-Gm-Message-State: AOJu0Yxk+QMHPcCHP/86VoHJKoNEcMjoq0cKKoga/r/C18huwuLjWy1g
-	7stb6IG/5itl8D+KQKlH45FxUcj984y2lGyCyKe3bHMYz00Rwo5cmo8/nwYgXam9P6WV142TVHI
-	BgIs+Hj4NS/QTeCn1o1hR1ZEHItBkqzeq9fbp
-X-Google-Smtp-Source: AGHT+IFUq9vJBzX6fyePrn42Vhylhz/H9PviQBjHEDP52yrzxEujRAw4KtQPEpY2WIpMRGhwGJAsgB7TUS3MOds3rkA=
-X-Received: by 2002:a05:622a:4296:b0:434:5ea8:2eef with SMTP id
- cr22-20020a05622a429600b004345ea82eefmr29925qtb.7.1712279802902; Thu, 04 Apr
- 2024 18:16:42 -0700 (PDT)
+	s=arc-20240116; t=1712280130; c=relaxed/simple;
+	bh=szljdTDB94eQ+EkiXsSkkkx9Poh6qFx1veGM9Mfl0+w=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=oeiiWVwGy2IVqb4hOhaoM9NCq9tf7EUauDslv1ouxgfLP4vcCRVFvhf+QrjBS8yikSuEG4/KcS92meUpETLiVulYio4P8EuJM/BqVnE/nxf3v8tf9/fNau51jPfblzk+9Er95KMXzWE3ks+rfaJ72xwdW8ETE3EJXV+mgS1nTOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pWghTJZU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A8CEC433C7;
+	Fri,  5 Apr 2024 01:22:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712280129;
+	bh=szljdTDB94eQ+EkiXsSkkkx9Poh6qFx1veGM9Mfl0+w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=pWghTJZUHmUJad0KDGhWYm1a9qB9arTjFvpqXMQ7nVDgKzHACTber46um0xQNJNQO
+	 4KQDZEG0lw6FGodDUdKkwzX1El///teqLI1cWXh4SNJtGdzWAHThtnSKKdiFlbZ+Rp
+	 /3ZpiKOD0MENLm5kf70YSRuzRE34dHbCCzKfJs58yocLrCdbHZ2x5XibvfvpLkl/sf
+	 XcssPS5/y0T6Q/xeWmBwbbYLaN4Gb6G94Pc6uglyGHejEF1yxWnthCIg0XYbkyZuYD
+	 1jVuQhiowsnC+EbIT9qMm133Af2MTnerT5G4ZMKfIBFufXYBiqUgilNrWE2W0kFlxW
+	 ANrVfPjxgeWYQ==
+Date: Fri, 5 Apr 2024 10:22:03 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Oleg Nesterov <oleg@redhat.com>
+Cc: Andrii Nakryiko <andrii.nakryiko@gmail.com>, Jiri Olsa
+ <olsajiri@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, Alexei
+ Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org, Song Liu
+ <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>, John Fastabend
+ <john.fastabend@gmail.com>, Peter Zijlstra <peterz@infradead.org>, Thomas
+ Gleixner <tglx@linutronix.de>, "Borislav Petkov (AMD)" <bp@alien8.de>,
+ x86@kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCHv2 1/3] uprobe: Add uretprobe syscall to speed up return
+ probe
+Message-Id: <20240405102203.825c4a2e9d1c2be5b2bffe96@kernel.org>
+In-Reply-To: <20240404161108.GG7153@redhat.com>
+References: <20240402093302.2416467-1-jolsa@kernel.org>
+	<20240402093302.2416467-2-jolsa@kernel.org>
+	<20240403100708.233575a8ac2a5bac2192d180@kernel.org>
+	<Zg0lvUIB4WdRUGw_@krava>
+	<20240403230937.c3bd47ee47c102cd89713ee8@kernel.org>
+	<CAEf4BzZ2RFfz8PNgJ4ENZ0us4uX=DWhYFimXdtWms-VvGXOjgQ@mail.gmail.com>
+	<20240404095829.ec5db177f29cd29e849169fa@kernel.org>
+	<CAEf4BzYH60TwvBipHWB_kUqZZ6D-iUVnnFsBv06imRikK3o-bg@mail.gmail.com>
+	<20240405005405.9bcbe5072d2f32967501edb3@kernel.org>
+	<20240404161108.GG7153@redhat.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240403164636.3429091-1-irogers@google.com> <dcb0121f-611d-4104-80b9-941d535c5fd2@linux.intel.com>
- <CAP-5=fUgiafmLEKEUJ5r5_tK+jqv30P0TGFCMvR8DkW7J4qYsQ@mail.gmail.com>
- <b9868e97-e353-45e0-83b7-aa28bc35dd67@linux.intel.com> <CAP-5=fX+YuEgD4pF-2YRcqgD2cwLw_7Z4ak+wszctvagPS+Xbw@mail.gmail.com>
- <ceca5922-6b83-464f-9e64-e8999068f734@linux.intel.com>
-In-Reply-To: <ceca5922-6b83-464f-9e64-e8999068f734@linux.intel.com>
-From: Ian Rogers <irogers@google.com>
-Date: Thu, 4 Apr 2024 18:16:27 -0700
-Message-ID: <CAP-5=fUA_SZVHtO82pUgL+MT0XQFVyuLw=Sd_s10W-XvcNqaDQ@mail.gmail.com>
-Subject: Re: [PATCH v1] perf metrics: Remove the "No_group" metric group
-To: "Liang, Kan" <kan.liang@linux.intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 4, 2024 at 1:29=E2=80=AFPM Liang, Kan <kan.liang@linux.intel.co=
-m> wrote:
->
->
->
-> On 2024-04-03 4:26 p.m., Ian Rogers wrote:
-> > On Wed, Apr 3, 2024 at 11:57=E2=80=AFAM Liang, Kan <kan.liang@linux.int=
-el.com> wrote:
-> >>
-> >>
-> >>
-> >> On 2024-04-03 2:31 p.m., Ian Rogers wrote:
-> >>> On Wed, Apr 3, 2024 at 10:59=E2=80=AFAM Liang, Kan <kan.liang@linux.i=
-ntel.com> wrote:
-> >>>>
-> >>>>
-> >>>>
-> >>>> On 2024-04-03 12:46 p.m., Ian Rogers wrote:
-> >>>>> Rather than place metrics without a metric group in "No_group" plac=
-e
-> >>>>> them in a a metric group that is their name. Still allow such metri=
-cs
-> >>>>> to be selected if "No_group" is passed, this change just impacts pe=
-rf
-> >>>>> list.
-> >>>>
-> >>>> So it looks like the "No_group" is not completely removed.
-> >>>> They are just not seen in the perf list, but users can still use it =
-via
-> >>>> perf stat -M No_group, right?
-> >>>>
-> >>>> If so, why we want to remove it from perf list? Where can the end us=
-er
-> >>>> know which metrics are included in the No_group?
-> >>>>
-> >>>> If the No_group is useless, why not completely remove it?
-> >>>
-> >>> Agreed. For command line argument deprecation we usually keep the
-> >>> option but hide it from help with PARSE_OPT_HIDDEN, so I was trying t=
-o
-> >>> follow that pattern albeit that a metric group isn't a command line
-> >>> option it's an option to an option.
-> >>>
-> >>
-> >> Perf list has a deprecated option to show the deprecated events.
-> >> The "No_group" should be a deprecated metrics group.
-> >>
-> >> If so, to follow the same pattern, I think perf list should still
-> >> display the "No_group" with the --deprecated option at least.
+On Thu, 4 Apr 2024 18:11:09 +0200
+Oleg Nesterov <oleg@redhat.com> wrote:
+
+> On 04/05, Masami Hiramatsu wrote:
 > >
-> > Such metrics would be shown twice, once under No_group and once under
-> > a metric group of their name.
-> You mean with the --deprecated option?
-> Yes, that's because the old/deprecated metrics group (No_group) is not
-> complete removed. So both the new name and old/deprecated name are shown
-> with the --deprecated option. The metrics which belong to both groups
-> will be shown twice.
->
-> Without the --deprecated option, only the new group and its members are
-> shown.
->
-> > With deprecated events this isn't the
-> > case, you can only see them with --deprecated. Given we can see the
-> > metric without the No_group grouping, what is being added by having a
-> > No_group grouping? It feels entirely redundant and something we don't
-> > need to advertise.
->
-> I just want to have a generic pattern for deprecating a metrics/metrics
-> group that everybody can follow.
+> > Can we make this syscall and uprobe behavior clearer? As you said, if
+> > the application use sigreturn or longjump, it may skip returns and
+> > shadow stack entries are left in the kernel. In such cases, can uretprobe
+> > detect it properly, or just crash the process (or process runs wrongly)?
+> 
+> Please see the comment in handle_trampoline(), it tries to detect this case.
+> This patch should not make any difference.
 
-Currently there is no concept of a metric group in the json except for
-descriptions. Metrics and events share the same encoding, and the
-deprecated flag belongs to the event.
+I think you mean this loop will skip and discard the stacked return_instance
+to find the valid one.
 
-> I treat the "No_group" as a normal metrics group name. So this patch is
-> to introduce a new name, and hide the old name. Both new and old names
-> can still be used.
+----
+        do {
+                /*
+                 * We should throw out the frames invalidated by longjmp().
+                 * If this chain is valid, then the next one should be alive
+                 * or NULL; the latter case means that nobody but ri->func
+                 * could hit this trampoline on return. TODO: sigaltstack().
+                 */
+                next = find_next_ret_chain(ri);
+                valid = !next || arch_uretprobe_is_alive(next, RP_CHECK_RET, regs);
 
-Why are you using No_group? I stand firm that it has no real use.
+                instruction_pointer_set(regs, ri->orig_ret_vaddr);
+                do {
+                        if (valid)
+                                handle_uretprobe_chain(ri, regs);
+                        ri = free_ret_instance(ri);
+                        utask->depth--;
+                } while (ri != next);
+        } while (!valid);
+----
 
-> If it's for a deprecated event, the expectation is to only see the new
-> name by default, and see both new name and old name with the
-> --deprecated option.
->
-> Now, if it's a generic deprecated metrics group, what's the expected
-> behavior? I prefer to follow the same pattern as a deprecated event.
-> If we do so, yes, there will be some redundancy with the --deprecated
-> option, since some members may belong to both old and new groups.
-> But I don't think it's an issue. It's normal that metrics belong to
-> different groups.
+I think this expects setjmp/longjmp as below
 
-What you are requesting here isn't something that is unreasonable, it
-is just something unconnected with this change and requires a
-reorganization of the json to facilitate. As such I consider it to be
-something for follow up work.
+foo() { <- retprobe1
+	setjmp()
+	bar() { <- retprobe2
+		longjmp()
+	}
+} <- return to trampoline
 
-I think if we're going to restructure metric groups it would be nice
-to add a more tree-like structure which could be used to visualize
-metrics better. For example here:
-https://lore.kernel.org/lkml/20240314055919.1979781-11-irogers@google.com/
-the metrics could be shown under a tree like:
-ldst
- - ldst_total
-   - ldst_total_loads
- - ldst_prcnt
-   - ldst_prcnt_loads
-   - ldst_prcnt_stores
- - ldst_ret_lds
-   - ldst_ret_lds_1
-   - ldst_ret_lds_2
-   - ldst_ret_lds_3
- - ldst_ret_sts
-   - ldst_ret_sts_1
-   - ldst_ret_sts_2
-   - ldst_ret_sts_3
- - ldst_ld_hit_swpf
- - ldst_atomic_lds
+In this case, we need to skip retprobe2's instance.
+My concern is, if we can not find appropriate return instance, what happen?
+e.g.
 
-but again it is follow up work to do this. In this change I just
-wanted a way to list all sensibly grouped metrics or metrics in a
-group just on their own which doesn't require some kind of analysis of
-metric groups. No_group has no use so let's just get rid of it.
+foo() { <-- retprobe1
+   bar() { # sp is decremented
+       sys_uretprobe() <-- ??
+    }
+}
 
-Thanks,
-Ian
+It seems sys_uretprobe() will handle retprobe1 at that point instead of
+SIGILL.
 
-> Thanks,
-> Kan
+Can we avoid this with below strict check?
+
+if (ri->stack != regs->sp + expected_offset)
+	goto sigill;
+
+expected_offset should be 16 (push * 3 - ret) on x64 if we ri->stack is the
+regs->sp right after call.
+
+Thank you,
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
