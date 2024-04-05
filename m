@@ -1,168 +1,160 @@
-Return-Path: <linux-kernel+bounces-132871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E551899B7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:01:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C884A899B7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:01:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1CD0B22F8F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:01:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4075D1F23572
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:01:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4289F16ABED;
-	Fri,  5 Apr 2024 11:00:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E251916C423;
+	Fri,  5 Apr 2024 11:01:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b="gCaMtLDw"
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="j8WQOId5"
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2105.outbound.protection.outlook.com [40.107.223.105])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD0114F9D3
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 11:00:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712314842; cv=none; b=DSUFxljrEuGVxYPkJ+VhFWUwIYuEmFwv5OpUr9+jvs5FwoUuLiGj8FRkAkBrwD09Dbj2BqMc1KRmEEPZI9WogeFcUy5mxpURBaYsR5AFCyohwidecsFnP7Vr+IMHF8yQmn0QMfiGuJY+c/qoRbNtQrj//DjqIBW9zRfSusMlrKE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712314842; c=relaxed/simple;
-	bh=8rZDGF1iD9i2x0a8J1PHWsjcy9nOihuEXXdBaAOHovw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UFIDQ94pN1Ag+XEREpkmmMrWLyajpkEsyEbWAmMadvgKLqE1RGuPYnWxDL/+Q5zkatpD+xmF2tlokRijGriaZZzoNDWyLtJxfKbvgECgVe1+TSeRGV5ri9hTjZQEaXVyfntqtvRa3uvBRRMoDoieoW1ITnUS4LcD9+X5yW0tn00=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org; spf=none smtp.mailfrom=blackwall.org; dkim=pass (2048-bit key) header.d=blackwall-org.20230601.gappssmtp.com header.i=@blackwall-org.20230601.gappssmtp.com header.b=gCaMtLDw; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackwall.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=blackwall.org
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4162f7eb479so3266795e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 04:00:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=blackwall-org.20230601.gappssmtp.com; s=20230601; t=1712314839; x=1712919639; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=h2SNOpfKhYOTvQjVb100qkElwlfRDNRRIOGKWqHxTVc=;
-        b=gCaMtLDwM0wLVM5p6H/gr8NM+liGJTGrkQTlFobaiYc3gcamma9WmHO2/6ieK6Dwj4
-         CW8WZIETMXeBsUXLN+km2yNC7Zk+VEqOeyfO3eFniZ3JUnh0I2A7JghdkPAQSd7N4RzH
-         XhUdR3VLQYv9y8PUYl7bfEOhvdmknXv+4FL+Hv9zIihIOj7/GUaAiX7X2VbMFZhjM4YJ
-         zLJWx+SlNdgP52hbc3RJUZjWJEE+naeXwlpAJJ6E8vGfOP124AJuRXPrayc9ymg5fMuI
-         mfLQR2MZfIV9Q/rtTIVdI0i79Czd8Rw2UmjO4C3nbd7PV+dyiDqohnI6/QTxZGjPxsv3
-         AW1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712314839; x=1712919639;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=h2SNOpfKhYOTvQjVb100qkElwlfRDNRRIOGKWqHxTVc=;
-        b=glMjXZWfBNM2runG2+X8kXP27IhEYc145RgFleMfaJqM2V1NEDXsDAKOHClutfXm//
-         UDqFHYfQVEduRek0gr0uTz6Y6dbfhhJcn3cjmMKHFypx6F6glCUGizu1shQSsdmZFARm
-         Pe1fAWqdqeWWDzhdvP5bgaNj00LNhmUt+7ElZNSRE2rx739GE4j8llUmXYW0YhnauH7k
-         NO8LfJEDakfyVLf8BUKLzxB1X2fnNQPXAO/oqcGsizV7IicbNBwfVmJ8WzFpZzArv0L9
-         CWY6RJdONb+x0TK2NsAOTs/czGiSgEJwLfSjAsgZdUDb+Yoftkv+jVqZRNYLUsltvJ9r
-         nOrg==
-X-Forwarded-Encrypted: i=1; AJvYcCUJSdIvf628AzD1J+2Lq6/AukskMAfnrj774do49kXf6s2B8ZS15xY0BwQRnxa7KlI+R+lAZy2GjHmEj28ki8tQ+90ti7di8KBcOuMg
-X-Gm-Message-State: AOJu0YxGn5ZCSduGycIxgzLszvAD6GkGkKMcshEFpVD8WL1qqXfmfVQ/
-	2VYzfztcp+Ini7nLghnBx2P9AA6jIuWWDq7maVJgj161GNZyEKgMHcbsPG326Pg=
-X-Google-Smtp-Source: AGHT+IGSfAxS2rw+zL4MNyDCrX6ZE179qSgiR2IP9OlAizBrSQvuiEh5snBhCoUFA8KtT30gDd6sqA==
-X-Received: by 2002:a05:600c:46d0:b0:415:6b9a:326d with SMTP id q16-20020a05600c46d000b004156b9a326dmr975063wmo.4.1712314838680;
-        Fri, 05 Apr 2024 04:00:38 -0700 (PDT)
-Received: from [192.168.0.106] (176.111.182.227.kyiv.volia.net. [176.111.182.227])
-        by smtp.gmail.com with ESMTPSA id m17-20020adfa3d1000000b0034355b7e995sm1794676wrb.13.2024.04.05.04.00.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 04:00:38 -0700 (PDT)
-Message-ID: <935c18c1-7736-416c-b5c5-13ca42035b1f@blackwall.org>
-Date: Fri, 5 Apr 2024 14:00:31 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08FF14F9D3;
+	Fri,  5 Apr 2024 11:01:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.105
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712314867; cv=fail; b=tzZYxhLhp/TpMD2/H/1t2knSnfxJHSx8Uav4Jnu0kabPRHB289+0Stc2XWlttXGCQLcOd8mFZr/aASrONlYufmS6CztiGrRT3pIpAKOKRL6zRPCBSdRveuLePgA6CdNXROkUBq6g0qX7ueHf9Z1mduhnaVcxXf38ddoXayi4BDs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712314867; c=relaxed/simple;
+	bh=tYm5nfBuirI52SKwDM1T9VTde34tC84754rYA8rMTJQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=GvhKZxW/D3395IN8SyaghJGGIzH5rt31Ovy2MfFaGi49y1N73uhstHT30co1Wn+Tg1xkM3zhY0Nc/0JEDGRn3J1ezBBbGiKCChd7HEbNzKr6cWAbP+/4aDesr+RNG9Lef89yn1oc39wqNdscPHxIHD6a/sH2QVFdSfHeU+cOlbk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=j8WQOId5; arc=fail smtp.client-ip=40.107.223.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z0547+APvMWh91FhmANWu4jBS7m9Esmq5i48IwUl2vvKBk5bl9g2dsxtu635mVA6UA3nq6hnP/i/zASohzcbFAcyaDgZD0oETHapuWPnlI1WhJiFPozoAVDkMGEewRRnNzRdY+9Zp36q/fYw3Fb2LpsI6ymbYz4oKLHUve2y4Zfn9HPzVYdT71tJaJCjmUXmcykn1jETO9mNRYRXr7+ih+FITJmI8myEbYPvBrj/f5NQRnd0AIhCBSSgo3k9QHAcAGck/vdiB8AREdHkZBwsox382vHkOvvXeGYWoWyb0S62RCA2cr6LacBN6PZ3/orNCAlZTgskm3Gcpl3agiOHqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TpdbH0RcN/z19qt39hF45h8w2aTHabcRh0LtK9mgnu8=;
+ b=MzMWOO9jjINjyicDBcmmwCnXMeDsy6iqp+wYRecapzEHuVum9e62k5KYUkE8WpR8ax6L+BpRy0rJPb/9vA3py1RdFRT7puS0DrD5jhmGNV9MuUeQsep3yYK+AbOwfYeMVCSISrDCEOL6frM6bSRk7crv5/xdmoqKmL6OO8Up/eGFFAlB+gfp6knwY3S+RH9NHI58Ce/JP+7gA+gcczIdg3NuurxvMOIRdB+MH3ZHLxeSwZzzX8/e2LCD0sw4ON7T9Lu43s6xav72hTVkZ+UWEldqmqrjmEckD90wLqigquE0VtTDXkGf6T2a4J3mxLz58+95sHDBU+L0iupTXVe09w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TpdbH0RcN/z19qt39hF45h8w2aTHabcRh0LtK9mgnu8=;
+ b=j8WQOId5J7jM9dr+ipvu105JEsnL5RinMjHo4noxt4KuhoCKsZWw6vTTAHayhpqTWEf6jTqlkFCqEwoI02GTb8INkL+mGM0FCJ7IpUOKfySKzVj1tgEeShABVm17B2fusVBT+1/z1bqKlNga9jIaYmbFOjZIbeUa1uZgPWag13VDFkLsYq5cDg8jzZys74bCiaDRh8xSaBizeKJDO7SiOYon26IJiSI0koJsBsgofNzjmKenhMKJlYwqFFfKIFEOt6kp2To7Na+qzw0/WQDLj4R0w4pvqThULad3ahGd7PhJVgWpDNdbHFylLWVX/JFZS/2LLsd2Z2gcGLHctXG+Mw==
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by PH7PR12MB6609.namprd12.prod.outlook.com (2603:10b6:510:213::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 5 Apr
+ 2024 11:01:00 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7409.042; Fri, 5 Apr 2024
+ 11:00:59 +0000
+Date: Fri, 5 Apr 2024 08:00:58 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Edward Cree <ecree.xilinx@gmail.com>
+Cc: Andrew Lunn <andrew@lunn.ch>, David Ahern <dsahern@kernel.org>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Leon Romanovsky <leonro@nvidia.com>, Jiri Pirko <jiri@nvidia.com>,
+	Leonid Bloch <lbloch@nvidia.com>, Itay Avraham <itayavr@nvidia.com>,
+	Saeed Mahameed <saeedm@nvidia.com>,
+	Aron Silverton <aron.silverton@oracle.com>,
+	linux-kernel@vger.kernel.org,
+	"netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	Andy Gospodarek <andrew.gospodarek@broadcom.com>
+Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
+Message-ID: <20240405110058.GA5383@nvidia.com>
+References: <20240322135826.1c4655e2@kernel.org>
+ <e5c61607-4d66-4cd8-bf45-0aac2b3af126@kernel.org>
+ <20240322154027.5555780a@kernel.org>
+ <1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
+ <0ea32dd4-f408-5870-77eb-f18899f1ad44@gmail.com>
+ <20240402184055.GP946323@nvidia.com>
+ <83025203-fefb-d828-724d-259e5df7c1b2@gmail.com>
+ <b8f2f824-e8da-4767-a378-b20bc42d4e8f@lunn.ch>
+ <20240404202536.GN1723999@nvidia.com>
+ <f1110157-868e-3e2f-6593-6a219ac5e96b@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f1110157-868e-3e2f-6593-6a219ac5e96b@gmail.com>
+X-ClientProxiedBy: BL0PR0102CA0036.prod.exchangelabs.com
+ (2603:10b6:207:18::49) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC net-next 00/10] MC Flood disable and snooping
-Content-Language: en-US
-To: Vladimir Oltean <olteanv@gmail.com>,
- Joseph Huang <joseph.huang.2024@gmail.com>
-Cc: Joseph Huang <Joseph.Huang@garmin.com>, netdev@vger.kernel.org,
- Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Roopa Prabhu <roopa@nvidia.com>, =?UTF-8?Q?Linus_L=C3=BCssing?=
- <linus.luessing@c0d3.blue>, linux-kernel@vger.kernel.org,
- bridge@lists.linux.dev
-References: <20240402001137.2980589-1-Joseph.Huang@garmin.com>
- <7fc8264a-a383-4682-a144-8d91fe3971d9@blackwall.org>
- <20240402174348.wosc37adyub5o7xu@skbuf>
- <a8968719-a63b-4969-a971-173c010d708f@blackwall.org>
- <20240402204600.5ep4xlzrhleqzw7k@skbuf>
- <065b803f-14a9-4013-8f11-712bb8d54848@blackwall.org>
- <804b7bf3-1b29-42c4-be42-4c23f1355aaf@gmail.com>
- <20240405102033.vjkkoc3wy2i3vdvg@skbuf>
-From: Nikolay Aleksandrov <razor@blackwall.org>
-In-Reply-To: <20240405102033.vjkkoc3wy2i3vdvg@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|PH7PR12MB6609:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	UN9TwjCIiHj5EFR55Czdg7nNSzf6pgB98PGD/D3wqe/SbL+hqxqMJipHr1BPgWopcI/3unqDlLcwPUnDM/+aRLPYbPxNw/GZWwa3F+p6aTg3f1dPE+1zkUglwz/4o+2JHIvhzb9y5fUXKAIkHtUtZEnBKHVPTK48gIEvwddNuF9l2uvyElDIXAf8YBecndFFmb88JiZ+TkcyxQUFzuz/bm3w6tDrutZnIxWSimm8cfHFX7TWtFyiJS+pY7k0Jb2+GnlFeiKWg68FMWqNxrE9uZfZqchq9veNWZRlNtLu8SuYSc4BXrTBnNaCfdg0G8UTLESRfiimi1fzzYGm4bDCGdq5+YD8meRh6/vVrFS23g2jd3ki0/lDyDh7XLaFrxJ83OhKDFBLK15rXmEQwf2+0OImzBRwKxZ2AUMtn+oTC8HUFWVE3zFK/xU0J8LxWANQ7+UmzaZ6nRjTcZmTThxtn+m/FaeKXTCV5jEJWNNAVBYwfZSQWs0yAKEPC/tfnwQwy+UrxvrZKgvn6rWprRwkkSX4qdw8sEaVm4aDPl3hLLw4Z38bsD30eBCYS3sc4YkzVb3kOj2rj/EzzoAGGfyTsbzup+naObm1ZmvUZSwxQizjX3wf4Spb5+mkfjPJrRAzakV1op5YN+MiUu12R4TZ7zx9C5KmhUfEp/WBv+YyNsQ=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(7416005)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?j4XhjDgSdeI/eZBjmh2LYvZv4ml3Lplj9t+Z/OYStOmHNTag6VYxAEICVjLj?=
+ =?us-ascii?Q?Wudrh3VPgLm5B6QghshYtb/BhfnPxAGpFalDXb7/QsIHXMXktzPLj0oRUBed?=
+ =?us-ascii?Q?b5KwDcJlyuP7KgxKUyqcOEe/k6kha+8HUZ5JQoL4zgb7egycxmUE2B0okQ2W?=
+ =?us-ascii?Q?nY25lCbm3e3aNb3FXcFUk2FASqs8vZNdh3PDzW0bWJCAwsJ2dBGqI7EYGDYI?=
+ =?us-ascii?Q?oRXvo4uiREwwZbajsK+UI2d/pXmQ670fiTkEpek/gYEZc3E57Vb3mV1zO2o5?=
+ =?us-ascii?Q?6De4l0n+nqPL+0fsFhIwIRxlYSAAlvnPbNerZN+erLrZxMmPQMHt4FoF9hB1?=
+ =?us-ascii?Q?VL1bnIrXGe7vKUemuXDU8PndWYP7rz32n2LiUwNWWcqpK/MO82VMPvVibDN+?=
+ =?us-ascii?Q?DDijyzry6SN3KEI6OS6geCgEeWXEvsksX989y2rXivjXMd2KsAw8fFabUrMu?=
+ =?us-ascii?Q?NRbz67TnLa8T3ELght7AR2lUt6QwglhcrO0d13zdhNt1p2fYHCRfry+1dUxN?=
+ =?us-ascii?Q?k1/N41V5zV/Qv9uIMnIQnt6sMg6oYdlxEB5tw/j2H/wysGxTIr/HAUHtioou?=
+ =?us-ascii?Q?OppVHKu6hb7uT6e6jwvRM3dD1R6EqtdwsABbaooOgn4GoxbHnLT/ngUSDNKw?=
+ =?us-ascii?Q?xIQKYn6iJF0jhA91CfHhJ4H2bKw93xSMs6lfNaIsE0X6EgQQc5GIbeUHf8jL?=
+ =?us-ascii?Q?N6roHCiwrRG9FsCTq1lbtcjNkkLexjX961fWfBSn8jOIrZrftlqEwNAbMkOh?=
+ =?us-ascii?Q?eMVB5Ql5gqsfetkvu7MeJkhI6Yav1As4TfD4KyFdHcY00zpCUVOB0YNfgC/0?=
+ =?us-ascii?Q?pqU0m0D21Hur36MRYzHesK2sm9jthoS4se7VM5BvOGJFflcBT79HOz6GRgRR?=
+ =?us-ascii?Q?YzRzRKs2rHvjNjN30qswOlWjHOYeVBJBPOLp3QJEl0QCj7ETsx7JxAzC+vRW?=
+ =?us-ascii?Q?AgVvELzBb5DJORDi+Lg/3xngsJPP7Fxcmsc0UEfe8QCkfuC+gyZUkzepOoMC?=
+ =?us-ascii?Q?1mQm9NXiCcVFfTaSBm7o/JXR0yGjBuqO0o7dUfiSryjsRxYFJcO+p8oy/LkA?=
+ =?us-ascii?Q?hi6/XS4oKdQoklNSJJJdP59UfebtpzG6t8Xdskua6PXRgb2Py0Q/efhqcqS1?=
+ =?us-ascii?Q?XzWSvxEGJZXKunGM2cHL0wFxjGWRK2sIBdPZ6Fvojj97KR5uCiaZg5cb6Ah/?=
+ =?us-ascii?Q?nTTtSNQm3dtwjoTcmxmfAS25CrPO/x67f3RFHg9EBIEMs+5Yog3v5Z7DIrgu?=
+ =?us-ascii?Q?JuKoTS9Ntbt1DyGIdcBNPvdU0r0L29woQtOTFpynpDXB69NFPyqvwqUgPpb0?=
+ =?us-ascii?Q?l+Dv5XoB/4oEfW7ukNeHD/qCnAkQGOcXrBRG1RT0DK20EQPWKbOvkD/ZPtec?=
+ =?us-ascii?Q?9DfBCXW7buiRjPLHOwzzBKTnkyvrOwKJE8Zi25LPYb51vdn1LtmFCmBAw/EA?=
+ =?us-ascii?Q?BIbuWQkVIeFz4JaehVXUsrhRTdu9yJC6bYeIYGzs3k/Ob2BA9qsIxJwBjcW7?=
+ =?us-ascii?Q?BOb/94mLb0RekDs1/SPKgyl8bCzcZSl9NSs9aAnuuuX7842qsR6oPQMQewYz?=
+ =?us-ascii?Q?Bf7m45Puq8W449f0JwbVj5QmfR+2JJhUprikCkn/?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b563c84e-a327-4a7e-2f50-08dc555fad3b
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2024 11:00:59.8054
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dG6uS0XRhpAVEUKex+2b9NAmElUFDFDJq5htsaWBcW34HI9K3pgyn8IhqTSXC3tB
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB6609
 
-On 4/5/24 13:20, Vladimir Oltean wrote:
-> On Thu, Apr 04, 2024 at 06:16:12PM -0400, Joseph Huang wrote:
->>>> mcast_flood == off:
->>>> - mcast_ipv4_ctrl_flood: don't care (maybe can force to "off")
->>>> - mcast_ipv4_data_flood: don't care
->>>> - mcast_ipv6_ctrl_flood: don't care
->>>> - mcast_ipv6_data_flood: don't care
->>>> - mcast_l2_flood: don't care
->>>> mcast_flood == on:
->>>> - Flood 224.0.0.x according to mcast_ipv4_ctrl_flood
->>>> - Flood all other IPv4 multicast according to mcast_ipv4_data_flood
->>>> - Flood ff02::/16 according to mcast_ipv6_ctrl_flood
->>>> - Flood all other IPv6 multicast according to mcast_ipv6_data_flood
->>>> - Flood L2 according to mcast_l2_flood
->>
->> Did you mean
->>
->> if mcast_flood == on (meaning mcast_flood is ENABLED)
->> - mcast_ipv4_ctrl_flood: don't care (since 224.0.0.x will be flooded anyway)
->> ...
->>
->> if mcast_flood == off (meaning mcast_flood is DISABLED)
->> - Flood 224.0.0.x according to mcast_ipv4_ctrl_flood
->> ...
->>
->> ? Otherwise the problem is still not solved when mcast_flood is disabled.
+On Thu, Apr 04, 2024 at 09:53:14PM +0100, Edward Cree wrote:
+> On 04/04/2024 21:25, Jason Gunthorpe wrote:
+> > For instance there is a bunch that configure the UEFI option
+> > rom. Various devices can PXE boot, iSCSI boot and so on.
 > 
-> No, I mean exactly as I said. My goal was not to "solve the problem"
-> when mcast_flood is disabled, but to give you an option to configure the
-> bridge to achieve what you want, in a way which I think is more acceptable.
-> 
-> AFAIU, there is not really any "problem" - the bridge behaves exactly as
-> instructed given the limited language available to instruct it ("mcast_flood"
-> covers all multicast). So the other knobs have the role of fine-tuning
-> what gets flooded when mcast_flood is on. Like "yes, but..."
-> 
-> You can't "solve the problem" when it involves changing an established
-> behavior that somebody probably depended on to be just like that.
-> 
->>> Yep, sounds good to me. I was thinking about something in these lines
->>> as well if doing a kernel solution in order to make it simpler and more
->>> generic. The ctrl flood bits need to be handled more carefully to make
->>> sure they match only control traffic and not link-local data.
->>
->> Do we consider 224.0.0.251 (mDNS) to be control or data? What qualifies as
->> control I guess that's my question.
-> 
-> Well, as I said, I'm proposing that 224.0.0.x qualifies as control and
-> the rest of IPv4 multicast as data. Which means that, applied to your
-> case, "mcast_flood on mcast_ipv4_ctrl_flood on mcast_ipv4_data_flood off"
-> will "force flood" mDNS just like the IGMP traffic from your patches.
-> I'm not aware if this could be considered problematic (I don't think so).
-> 
-> The reason behind this proposal is that, AFAIU, endpoints may choose to
-> join IGMP groups in the 224.0.0.x range or not, but RFC4541 says that
-> switches shouldn't prune the destinations towards endpoints that don't
-> join this range anyway: https://www.rfc-editor.org/rfc/rfc4541#page-6
-> 
-> Whereas for IP multicast traffic towards an address outside 224.0.0.x,
-> pruning will happen as per the IGMP join tracking mechanism.
+> Sounds like a perfect example of something that should have a
+>  standardised cross-vendor configuration mechanism, rather than
+>  every vendor having its own special tool as is sadly the case
+>  today.
 
-+1, non-IGMP traffic to 224.0.0.x must be flooded to all anyway
-so this should allow for a better control over it, but perhaps
-the naming should be link_local instead because control usually
-means IGMP, maybe something like mcast_ip_link_local_flood
+Sure, I imagine exploring this kind of commonality in userspace with a
+fwctl based tool. The kernel is the wrong layer to do it.
 
+Jason
 
