@@ -1,217 +1,190 @@
-Return-Path: <linux-kernel+bounces-132527-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDF1A899643
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:10:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB405899641
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:09:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF77E1C21CA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:10:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90804282F82
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDDBC2C694;
-	Fri,  5 Apr 2024 07:09:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A944E2C69F;
+	Fri,  5 Apr 2024 07:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="aC8A6Eze"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Bt7smaEL"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96AD12D606
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693B22C1AD
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:09:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712300986; cv=none; b=nN7ML8mG3OVesxyawjm3rBV3VG8dDMwV3BkaUfjqYtzdR7lhWc15nAJS6qf36/DTyQvBRo9o/2ymBjHN9ldGrPCH8V4tr8R8xSekxyk3/BdMEmVtCMIfZI1Sv4UJE48SuoKX+hFIAe0eORnVPZohWOjxQR9UkR440oYUBkkZlGo=
+	t=1712300977; cv=none; b=pLB+4JursvINp1EeZQTnykseZwluRjETI0NUg6FgAGOBu7aR19I/6fK5E+9gHXji4yz51jVynroAMtkl7KcSYArDEyuKAtQB9CKyLiV1XDsZwY7gIhe1sPerHtDV2M0ERnKvUz5PLqLvkzNGJea4nFRDUMuQINpAVI9x4EBOV2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712300986; c=relaxed/simple;
-	bh=8e9KWBvPyofUY9y0WRoCSTVhc7X7fvbk4pxXNNYyPx4=;
-	h=Date:Message-Id:Mime-Version:Subject:From:To:Content-Type; b=VgBjL0XIdkgaLTapmxFIxK4c829SEhkvB0mLVaZBUU/sNqOfYUP93SagD1GQTTxrgci38woegZEZVleD/rgntZFiSPZrnzVB2nC3rPJO/O5ce9aJecrQudIUtu0HLBTjmBxZ7WV8C6Fsg8atga53OzQXAI+8+SuG86E39N+Ow/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=aC8A6Eze; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--irogers.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60cbba6f571so30343837b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:09:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712300983; x=1712905783; darn=vger.kernel.org;
-        h=to:from:subject:mime-version:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=0Ob7TzpDpTM9SCKkDzrXTBQ/YxjYsrPaKVbzk6RxhdE=;
-        b=aC8A6Eze0FwSxcNzfpl74IOV4pdnzvKZxVFE+o1WOI78aTVuBY/0stL97OPGyqFZPP
-         mjCLJ6l/BZFLfE+C6OH4X1+sRCLtwEiIXPs39/Q3Cyv0b6QcOdubSCeyLB1E7Ge5ky7Q
-         CmEySy6/2NqIYNxxKeEFvikHpxGq0HCh1UVPqBNe0QDACuD6v0USzJVcsl3utQIbRe6Q
-         GUphOIaBE3xD1fURRctceDQmcyE3t3vUUDXGK5mTyUcJvcXVbiCRHePZiFdMNncPXKNs
-         zjog8j9PIBaJlr74R0BZe4VaRl9L6qVJuZdLu+wJYeGexQBCOJCHJMhJwwFm1Pd6l2GG
-         Q3ww==
+	s=arc-20240116; t=1712300977; c=relaxed/simple;
+	bh=oBpQTQQF+RxUjK0qQTdFBdRzlIfgYkZc4RMyIDNRwQM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KFS2JUsKOBlusWRifsTxKXW9cLLIb7NGWUBp4bnxROAChbvjOOm16Eq/dDXzjrEjtMRlErRHuO8oyBHD4rN8DXcxZNyQR9ToK0YQs2yAbU62a07cdR0NXujX3vcUBT0a09dM937BrMmdv9CQ4SHm77rLAwxexteitwqBcLX/kpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Bt7smaEL; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712300974;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=bWsrv37YfNRYFkefj79IxZMucsyie5Vbns2PoB6HIB4=;
+	b=Bt7smaELrg3G9t9s3xRzqDdUGhB4XyMseCr9GZZp7dFr9XWJlujxkD2K9+Lt7/ekxUoZyY
+	XLI884qrwv+1dbvTC7DIAaUpe7tREUDJF5S0K0Pa86fS/uM2XcRvQoAFZ6a/QzuwA5fTyh
+	HxovIp2bJrJStuz4MBsYqTRavj1r0KY=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-104-Ur89Hn9RMVqwhIgBh33COw-1; Fri, 05 Apr 2024 03:09:33 -0400
+X-MC-Unique: Ur89Hn9RMVqwhIgBh33COw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-415591b1500so11464715e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:09:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712300983; x=1712905783;
-        h=to:from:subject:mime-version:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0Ob7TzpDpTM9SCKkDzrXTBQ/YxjYsrPaKVbzk6RxhdE=;
-        b=mBEa5jLdfp0la+S/ZUC8U91hT81uY2ipDw02Ti0LHarvbQSpn4FgrN3EdfMJikhBwI
-         RR54zcnU3ksm+FGlmPcfkGh4RLiTXm122ZueJOht4vYaB0e4FsZaA/1QIFiXFgNtbQqM
-         Q6uYO7s7ngq7afxxtUcB33nOvCCnb9wyTEfzOgsel29iSdYoc3VQMzkU/6Xqy8dOYYyp
-         JL3Af2gRmrJPiVaVd2Q0/crq2PUuLBN14qxvDk4Ifp1wVQfN+lg4e81kaJXpUMhi3YkE
-         D15DXGmjQX7k2pLDiDqLtcGW6nWhrLAtRbh4uJcpbeyyuLVWM628V3HXUGn0B0Qycz+Y
-         FdVw==
-X-Forwarded-Encrypted: i=1; AJvYcCWEBjYQa99kixQr4oBMUyl3dLRyAPj8/WRXWHTT0gryiv9tljB1d8JXy2TAjEIeLgFYt0Z5cHsK4OuyfrcZSPtwtznr25jS5cQmFr0L
-X-Gm-Message-State: AOJu0Yy5fr+IeCt8UPloHQZT+LNZMpQfQwfrApUIit1iOO19bLYLzims
-	XMSo3/uZQDf45BTybYNyRyfwdzD4i9JnXmhxIqooozjEpjNe6iICkfgQ2/n3p+wFH33uf+WfU58
-	6kUV/nw==
-X-Google-Smtp-Source: AGHT+IFcU9sQHia2Mb0d3O/yCjE4MOE0iAyf7ZUHX4r565opxam1MGsSvxr6cU2YG4krjMG3mQrf4pd+2jk6
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2a3:200:6765:20d3:72cb:f573])
- (user=irogers job=sendgmr) by 2002:a81:fe0c:0:b0:611:747a:daac with SMTP id
- j12-20020a81fe0c000000b00611747adaacmr162273ywn.0.1712300983701; Fri, 05 Apr
- 2024 00:09:43 -0700 (PDT)
-Date: Fri,  5 Apr 2024 00:09:30 -0700
-Message-Id: <20240405070931.1231245-1-irogers@google.com>
+        d=1e100.net; s=20230601; t=1712300972; x=1712905772;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bWsrv37YfNRYFkefj79IxZMucsyie5Vbns2PoB6HIB4=;
+        b=Khti07fTfIj2vPsH3wumrM/vfrfTwQhtITUqmBrZSArwNOQ0DLhvUOApDva5wtBjOZ
+         DJH9tK0eaAeBltfkn27TUTTgFfGg5ulp1/DPeDZQGU3L5dCnHBOiZMsgdpaF5Jemm9zZ
+         Z+gjsnYZJPt8o4t9Uros1djWMpdU50iHku/1UlgVW3kX0LLxxJrACBikMdInNnh2nrMG
+         KUX9gRokDYwYrvRVLlEJBc8dCiB9gEQCWkTNre92i8DS/Pn8LVUXAfKDQyIeAX/BLMKT
+         bc80nYh9MrC90NZRjrbeZvNYEaJhO7lJXb+v7NPhirVHlSKB7lbvkKcRw1Ot3CE/x9mT
+         kEWQ==
+X-Gm-Message-State: AOJu0Yy+NUJ5ZiFL9/NdDOoEwA1Xgby9FIthq7kwvGSLWk5mSDCzHamx
+	lDwEYTzmV7MbkjiUsUUO2RtlsLJPJ4YJ5ubESekbmxsIJ5wSvvd7IqVvjxyrQQ5vnuoX6kRkVyv
+	Puf1nPXyqifp1PmNItixpakRQKw6sJgr9uEJ+700T6XoDk/h2IxzYcXIoRhORDQ==
+X-Received: by 2002:a05:600c:1c8a:b0:414:ff4:5957 with SMTP id k10-20020a05600c1c8a00b004140ff45957mr476462wms.5.1712300972207;
+        Fri, 05 Apr 2024 00:09:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGMRNTzpxyLjqqIYDr2QKngW3j1H6NrSOhPdqHJ7NeqOLqDxzD+y6/Jjotboqeo5fV1ubw0rw==
+X-Received: by 2002:a05:600c:1c8a:b0:414:ff4:5957 with SMTP id k10-20020a05600c1c8a00b004140ff45957mr476439wms.5.1712300971838;
+        Fri, 05 Apr 2024 00:09:31 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c74b:5500:e1f8:a310:8fa3:4ec1? (p200300cbc74b5500e1f8a3108fa34ec1.dip0.t-ipconnect.de. [2003:cb:c74b:5500:e1f8:a310:8fa3:4ec1])
+        by smtp.gmail.com with ESMTPSA id h12-20020adfa4cc000000b00343668bc492sm1272710wrb.71.2024.04.05.00.09.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Apr 2024 00:09:31 -0700 (PDT)
+Message-ID: <67557c5b-afd8-4578-a00d-6750accc1026@redhat.com>
+Date: Fri, 5 Apr 2024 09:09:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Subject: [PATCH v1 1/2] tools subcmd: Add check_if_command_finished
-From: Ian Rogers <irogers@google.com>
-To: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
-	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, James Clark <james.clark@arm.com>, 
-	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 2/5] s390/uv: convert gmap_make_secure() to work on
+ folios
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ linux-s390@vger.kernel.org, kvm@vger.kernel.org,
+ Heiko Carstens <hca@linux.ibm.com>, Vasily Gorbik <gor@linux.ibm.com>,
+ Alexander Gordeev <agordeev@linux.ibm.com>,
+ Christian Borntraeger <borntraeger@linux.ibm.com>,
+ Sven Schnelle <svens@linux.ibm.com>, Janosch Frank <frankja@linux.ibm.com>,
+ Claudio Imbrenda <imbrenda@linux.ibm.com>,
+ Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+ Thomas Huth <thuth@redhat.com>
+References: <20240404163642.1125529-1-david@redhat.com>
+ <20240404163642.1125529-3-david@redhat.com>
+ <Zg9wNKTu4JxGXrHs@casper.infradead.org>
+Content-Language: en-US
+From: David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <Zg9wNKTu4JxGXrHs@casper.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add non-blocking function to check if a child_process has
-completed. If the process has completed the exit code is stored in the
-child_process so that finish_command returns it.
+On 05.04.24 05:29, Matthew Wilcox wrote:
+> On Thu, Apr 04, 2024 at 06:36:39PM +0200, David Hildenbrand wrote:
+>> +		/* We might get PTE-mapped large folios; split them first. */
+>> +		if (folio_test_large(folio)) {
+>> +			rc = -E2BIG;
+> 
+> We agree to this point.  I just turned this into -EINVAL.
+> 
+>>   
+>> +	if (rc == -E2BIG) {
+>> +		/*
+>> +		 * Splitting might fail with -EBUSY due to unexpected folio
+>> +		 * references, just like make_folio_secure(). So handle it
+>> +		 * ahead of time without the PTL being held.
+>> +		 */
+>> +		folio_lock(folio);
+>> +		rc = split_folio(folio);
+>> +		folio_unlock(folio);
+>> +		folio_put(folio);
+>> +	}
+> 
+> Ummm ... if split_folio() succeeds, aren't we going to return 0 from
+> this function, which will be interpreted as make_folio_secure() having
+> succeeded?
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/lib/subcmd/run-command.c | 70 ++++++++++++++++++++++------------
- tools/lib/subcmd/run-command.h |  3 ++
- 2 files changed, 49 insertions(+), 24 deletions(-)
+I assume the code would have to handle that, because it must deal with 
+possible races that would try to convert the folio page.
 
-diff --git a/tools/lib/subcmd/run-command.c b/tools/lib/subcmd/run-command.c
-index d435eb42354b..4e3a557a2f37 100644
---- a/tools/lib/subcmd/run-command.c
-+++ b/tools/lib/subcmd/run-command.c
-@@ -165,43 +165,65 @@ int start_command(struct child_process *cmd)
- 	return 0;
- }
- 
--static int wait_or_whine(pid_t pid)
-+static int wait_or_whine(struct child_process *cmd, bool block)
- {
--	char sbuf[STRERR_BUFSIZE];
-+	bool finished = cmd->finished;
-+	int result = cmd->finish_result;
- 
--	for (;;) {
-+	while (!finished) {
- 		int status, code;
--		pid_t waiting = waitpid(pid, &status, 0);
-+		pid_t waiting = waitpid(cmd->pid, &status, block ? 0 : WNOHANG);
-+
-+		if (!block && waiting == 0)
-+			break;
-+
-+		if (waiting < 0 && errno == EINTR)
-+			continue;
- 
-+		finished = true;
- 		if (waiting < 0) {
--			if (errno == EINTR)
--				continue;
-+			char sbuf[STRERR_BUFSIZE];
-+
- 			fprintf(stderr, " Error: waitpid failed (%s)",
- 				str_error_r(errno, sbuf, sizeof(sbuf)));
--			return -ERR_RUN_COMMAND_WAITPID;
--		}
--		if (waiting != pid)
--			return -ERR_RUN_COMMAND_WAITPID_WRONG_PID;
--		if (WIFSIGNALED(status))
--			return -ERR_RUN_COMMAND_WAITPID_SIGNAL;
--
--		if (!WIFEXITED(status))
--			return -ERR_RUN_COMMAND_WAITPID_NOEXIT;
--		code = WEXITSTATUS(status);
--		switch (code) {
--		case 127:
--			return -ERR_RUN_COMMAND_EXEC;
--		case 0:
--			return 0;
--		default:
--			return -code;
-+			result = -ERR_RUN_COMMAND_WAITPID;
-+		} else if (waiting != cmd->pid) {
-+			result = -ERR_RUN_COMMAND_WAITPID_WRONG_PID;
-+		} else if (WIFSIGNALED(status)) {
-+			result = -ERR_RUN_COMMAND_WAITPID_SIGNAL;
-+		} else if (!WIFEXITED(status)) {
-+			result = -ERR_RUN_COMMAND_WAITPID_NOEXIT;
-+		} else {
-+			code = WEXITSTATUS(status);
-+			switch (code) {
-+			case 127:
-+				result = -ERR_RUN_COMMAND_EXEC;
-+				break;
-+			case 0:
-+				result = 0;
-+				break;
-+			default:
-+				result = -code;
-+				break;
-+			}
- 		}
- 	}
-+	if (finished) {
-+		cmd->finished = 1;
-+		cmd->finish_result = result;
-+	}
-+	return result;
-+}
-+
-+int check_if_command_finished(struct child_process *cmd)
-+{
-+	wait_or_whine(cmd, /*block=*/false);
-+	return cmd->finished;
- }
- 
- int finish_command(struct child_process *cmd)
- {
--	return wait_or_whine(cmd->pid);
-+	return wait_or_whine(cmd, /*block=*/true);
- }
- 
- int run_command(struct child_process *cmd)
-diff --git a/tools/lib/subcmd/run-command.h b/tools/lib/subcmd/run-command.h
-index d794138a797f..b2d39de6e690 100644
---- a/tools/lib/subcmd/run-command.h
-+++ b/tools/lib/subcmd/run-command.h
-@@ -41,17 +41,20 @@ struct child_process {
- 	int err;
- 	const char *dir;
- 	const char *const *env;
-+	int finish_result;
- 	unsigned no_stdin:1;
- 	unsigned no_stdout:1;
- 	unsigned no_stderr:1;
- 	unsigned exec_cmd:1; /* if this is to be external sub-command */
- 	unsigned stdout_to_stderr:1;
-+	unsigned finished:1;
- 	void (*preexec_cb)(void);
- 	 /* If set, call function in child rather than doing an exec. */
- 	int (*no_exec_cmd)(struct child_process *process);
- };
- 
- int start_command(struct child_process *);
-+int check_if_command_finished(struct child_process *);
- int finish_command(struct child_process *);
- int run_command(struct child_process *);
- 
+But the right thing to do is
+
+if (!rc)
+	goto again;
+
+after the put.
+
 -- 
-2.44.0.478.gd926399ef9-goog
+Cheers,
+
+David / dhildenb
 
 
