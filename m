@@ -1,196 +1,106 @@
-Return-Path: <linux-kernel+bounces-133411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133412-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06E2789A358
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:14:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B52C89A35F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:14:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6003AB26305
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:14:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3B5EEB2632B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:14:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E89F217164E;
-	Fri,  5 Apr 2024 17:13:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C3KuxGcD"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 757FA17166F;
+	Fri,  5 Apr 2024 17:14:22 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F99D1E494
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:13:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58F1716C858;
+	Fri,  5 Apr 2024 17:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712337235; cv=none; b=D2zlyXp2EGzoe6PXvDyngzosn7Me6+UqTXtoJ+ElRSkJ39TuvEVmbyoGy+tGGYAL/cKytpgNI1rw8y1ooZ9tGJJ2C5Kqv4laPEU9yZfyaHSyYpRTpdY5Jb+abpjcqR+fcaoD/KMb8OfQ8ut0Td1ruBg4mGyRWyfsyAN/gQHyeuY=
+	t=1712337262; cv=none; b=FosKjcjEo03eYs9SYjUzzWr9aRBxnKS3zzR/Z+NzzG2xySeRsHyr4h5seLwu9hxL317j6z0gUI5d8RcNbejrA/lVxNxeC27Ie+h+aONw2ZhIZQEge/w7TNVU77gmYe4NdMjnZMsOeon16JHe3PPHaf1hyC+iBOUMHwuE2y4tcnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712337235; c=relaxed/simple;
-	bh=lPpM0wT4yWeklYwKPrb4XynteXC/5k41kP/uRm4NnA0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=h3zNvO6Rz9axNz+Izz1V0yQCNa8kGoJmOHGB42q8loiQBXtuFxwNuSrzL3j56yq7k+bAf/Yyzn5X1Cc1GP0T5KUyPQl3cJTz4GAX4lknf9SAFPIy0pCWAlwg2YP9DLWEoWVfUN1+MKSNNolUVgkcldOCwlTcLz/31hZoSQbFJ+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C3KuxGcD; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712337232;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=lPpM0wT4yWeklYwKPrb4XynteXC/5k41kP/uRm4NnA0=;
-	b=C3KuxGcDk8a/F2LtBBiz0Hd0oqcwc/5AFL3d3D0o9wwz67u5xXrd/mLwxFmnwi9N+CH44S
-	RGdsRBZEgPg5eo8BuW06z3dXjOqh5r3HdKX7GaP69/n5EsRS4GXYwEmH2xAAl1gKaCv61K
-	rMYVRM1dkeR7/ubX3/cvnMyIZYlefI8=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-28-5_USE4OcN4izObdXd8KhXg-1; Fri, 05 Apr 2024 13:13:51 -0400
-X-MC-Unique: 5_USE4OcN4izObdXd8KhXg-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d871ee2f2cso560741fa.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 10:13:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712337228; x=1712942028;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lPpM0wT4yWeklYwKPrb4XynteXC/5k41kP/uRm4NnA0=;
-        b=kG8dmoLlrrXrYWIIwalhMooIhf3xe1qLlXPGBhzDxaMXSThrgIh2i0/IwLS7TiFgPj
-         UjCBpiFWhK0Y7KRj4wVP42XbdJQ7FySXnDtBguqAJY6rjMsf8ZV0YWEYP3ARKKuWexkR
-         dznQQkWKOuPfkWlOevGimJhUTiY2fJjgrsg8gTrPJtXO2Ld4Zx8u1YgIq62nk3bbNS3r
-         V7Exyp4AS+ptU14NJjjCAGr7vjU/vSavlFox6/opqMps1fnYvKSqdcP+A1pUmixgrB+q
-         ZJ2mQMTl7b/6QGd0QipxyWBfyzeZVHvbUcbDv/15tscBWahSPnb+VVNEmwH0nTJPgi6R
-         pyFw==
-X-Forwarded-Encrypted: i=1; AJvYcCXxCmD3UtfSfK15Pm7FEj+1WRAdksTFDvMx6B0Kp2ctTtEC9Iy8oCVsWPtDbdBj/57wy7AjLXMhEryd4MrmMLx549wDwiq/zsjqye3f
-X-Gm-Message-State: AOJu0Yy+ebh7jIIeLFAAeX5LwklmJu+2FFLcofFszp5z8TRLuYnaNLwI
-	aBcj19nUi1a9TGqHW5pmIKR9EocYaF3TX26GACG1120ZMnNndw9dHmowW22yKRzFtlOiNPDj6eC
-	BMjLKb3uCIRLLAniagjTSo88fb2awmeMbaRI7zRENEtnQ5R1QJz99vRk7pCLnxA==
-X-Received: by 2002:a2e:8095:0:b0:2d6:c59e:37bd with SMTP id i21-20020a2e8095000000b002d6c59e37bdmr1535987ljg.3.1712337228337;
-        Fri, 05 Apr 2024 10:13:48 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE7mr/0zQsW+7ufXN8Cy1V8GjLrwfuTgftu9UYTsupPGSbHO+hK+Reby8puICIcwXAsNILmAA==
-X-Received: by 2002:a2e:8095:0:b0:2d6:c59e:37bd with SMTP id i21-20020a2e8095000000b002d6c59e37bdmr1535935ljg.3.1712337227885;
-        Fri, 05 Apr 2024 10:13:47 -0700 (PDT)
-Received: from pstanner-thinkpadt14sgen1.remote.csb ([2001:9e8:32e2:c00:227b:d2ff:fe26:2a7a])
-        by smtp.gmail.com with ESMTPSA id d2-20020adffd82000000b00343e085fb89sm2317448wrr.2.2024.04.05.10.13.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 10:13:47 -0700 (PDT)
-Message-ID: <2aaca204c110d33025c3b4fd7e6f67b78d72ab59.camel@redhat.com>
-Subject: Re: [WIP 0/3] Memory model and atomic API in Rust
-From: Philipp Stanner <pstanner@redhat.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>, Kent Overstreet
-	 <kent.overstreet@linux.dev>
-Cc: comex <comexk@gmail.com>, "Dr. David Alan Gilbert" <dave@treblig.org>, 
- Boqun Feng <boqun.feng@gmail.com>, rust-for-linux
- <rust-for-linux@vger.kernel.org>,  linux-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, llvm@lists.linux.dev,  Miguel Ojeda
- <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida
- Filho <wedsonaf@gmail.com>, Gary Guo <gary@garyguo.net>,
- =?ISO-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>, Benno Lossin
- <benno.lossin@proton.me>, Andreas Hindborg <a.hindborg@samsung.com>, Alice
- Ryhl <aliceryhl@google.com>, Alan Stern <stern@rowland.harvard.edu>, Andrea
- Parri <parri.andrea@gmail.com>, Will Deacon <will@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, Nicholas Piggin <npiggin@gmail.com>, David
- Howells <dhowells@redhat.com>, Jade Alglave <j.alglave@ucl.ac.uk>, Luc
- Maranget <luc.maranget@inria.fr>, "Paul E. McKenney" <paulmck@kernel.org>,
- Akira Yokosawa <akiyks@gmail.com>, Daniel Lustig <dlustig@nvidia.com>, Joel
- Fernandes <joel@joelfernandes.org>, Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, kent.overstreet@gmail.com, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Marco Elver
- <elver@google.com>, Mark Rutland <mark.rutland@arm.com>,  Thomas Gleixner
- <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov
- <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,  Catalin Marinas
- <catalin.marinas@arm.com>, linux-arm-kernel@lists.infradead.org,
- linux-fsdevel@vger.kernel.org
-Date: Fri, 05 Apr 2024 19:13:45 +0200
-In-Reply-To: <CAHk-=wgQy+FRKjO_BvZgZN56w6-+jDO8p-Mt=X=zM70CG=CVBQ@mail.gmail.com>
-References: 
-	<CAHk-=whY5A=S=bLwCFL=043DoR0TTgSDUmfPDx2rXhkk3KANPQ@mail.gmail.com>
-	 <u2suttqa4c423q4ojehbucaxsm6wguqtgouj7vudp55jmuivq3@okzfgryarwnv>
-	 <CAHk-=whkQk=zq5XiMcaU3xj4v69+jyoP-y6Sywhq-TvxSSvfEA@mail.gmail.com>
-	 <c51227c9a4103ad1de43fc3cda5396b1196c31d7.camel@redhat.com>
-	 <CAHk-=wjP1i014DGPKTsAC6TpByC3xeNHDjVA4E4gsnzUgJBYBQ@mail.gmail.com>
-	 <bu3seu56hfozsvgpdqjarbdkqo3lsjfc4lhluk5oj456xmrjc7@lfbbjxuf4rpv>
-	 <CAHk-=wgLGWBXvNODAkzkVHEj7zrrnTq_hzMft62nKNkaL89ZGQ@mail.gmail.com>
-	 <ZgIRXL5YM2AwBD0Y@gallifrey>
-	 <CAHk-=wjwxKD9CxYsf5x+K5fJbJa_JYZh1eKB4PT5cZJq1+foGw@mail.gmail.com>
-	 <160DB953-1588-418E-A490-381009CD8DE0@gmail.com>
-	 <qyjrex54hbhvhw4gmn7b6l2hr45o56bwt6fazfalykwcp5zzkx@vwt7k3d6kdwt>
-	 <CAHk-=wgQy+FRKjO_BvZgZN56w6-+jDO8p-Mt=X=zM70CG=CVBQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+	s=arc-20240116; t=1712337262; c=relaxed/simple;
+	bh=PS5evwJ8xyi+GjWxAU4gBBflc4VGXU88R/XiJlorDvQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ie16h9NrFqwr0JlbAmbs0F2xy5KphbGzrdJOdAo+PfOqu294Huek5u7zxMcIFvxwzfDwPg85JlLx7/f1k1WC/RsvfGXvESnKsKZBv/65GT1YYl5GM7RQg3Qrtx1jnlAqIlNtd2YFRAjIH2ZEtQNyrQmb6ulLdssGaUNI1yp59FI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=fail smtp.mailfrom=kernel.org; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=kernel.org
+X-CSE-ConnectionGUID: B/jJA5c9R2yy4rIvTzuYDg==
+X-CSE-MsgGUID: tdmbOsdIRKqZ0FSC78MqJg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="19031169"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="19031169"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 10:14:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="915259793"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="915259793"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 10:14:13 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andy@kernel.org>)
+	id 1rsn8k-00000001oG4-1imE;
+	Fri, 05 Apr 2024 20:14:10 +0300
+Date: Fri, 5 Apr 2024 20:14:10 +0300
+From: Andy Shevchenko <andy@kernel.org>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Thomas Richard <thomas.richard@bootlin.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <brgl@bgdev.pl>,
+	Tony Lindgren <tony@atomide.com>,
+	Haojian Zhuang <haojian.zhuang@linaro.org>,
+	Vignesh R <vigneshr@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>,
+	Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+	Andi Shyti <andi.shyti@kernel.org>, Peter Rosin <peda@axentia.se>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
+	linux-i2c@vger.kernel.org, linux-phy@lists.infradead.org,
+	linux-pci@vger.kernel.org, gregory.clement@bootlin.com,
+	theo.lebrun@bootlin.com, thomas.petazzoni@bootlin.com,
+	u-kumar1@ti.com
+Subject: Re: [PATCH v4 08/18] phy: ti: phy-j721e-wiz: add resume support
+Message-ID: <ZhAxYjMgLToZWh_m@smile.fi.intel.com>
+References: <20240102-j7200-pcie-s2r-v4-0-6f1f53390c85@bootlin.com>
+ <20240102-j7200-pcie-s2r-v4-8-6f1f53390c85@bootlin.com>
+ <ZhAqWWdZvGcFDWlM@matsya>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhAqWWdZvGcFDWlM@matsya>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Wed, 2024-03-27 at 12:07 -0700, Linus Torvalds wrote:
-> On Wed, 27 Mar 2024 at 11:51, Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> >=20
-> > On Wed, Mar 27, 2024 at 09:16:09AM -0700, comex wrote:
-> > > Meanwhile, Rust intentionally lacks strict aliasing.
-> >=20
-> > I wasn't aware of this. Given that unrestricted pointers are a real
-> > impediment to compiler optimization, I thought that with Rust we
-> > were
-> > finally starting to nail down a concrete enough memory model to
-> > tackle
-> > this safely. But I guess not?
->=20
-> Strict aliasing is a *horrible* mistake.
->=20
-> It's not even *remotely* "tackle this safely". It's the exact
-> opposite. It's completely broken.
->=20
-> Anybody who thinks strict aliasing is a good idea either
->=20
-> =C2=A0(a) doesn't understand what it means
->=20
-> =C2=A0(b) has been brainwashed by incompetent compiler people.
->=20
-> it's a horrendous crock that was introduced by people who thought it
-> was too complicated to write out "restrict" keywords, and that
-> thought
-> that "let's break old working programs and make it harder to write
-> new
-> programs" was a good idea.
->=20
-> Nobody should ever do it. The fact that Rust doesn't do the C strict
-> aliasing is a good thing. Really.
+On Fri, Apr 05, 2024 at 10:14:09PM +0530, Vinod Koul wrote:
+> On 04-03-24, 16:35, Thomas Richard wrote:
 
-Btw, for the interested, that's a nice article on strict aliasing:
-https://blog.regehr.org/archives/1307
+..
 
-Dennis Ritchie, the Man Himself, back in the 1980s pushed back quite
-strongly on (different?) aliasing experiments:
-https://www.yodaiken.com/2021/03/19/dennis-ritchie-on-alias-analysis-in-the=
--c-programming-language-1988/
+> > +static int wiz_resume_noirq(struct device *dev)
+> 
+> I think this should be annotated with __maybe_unused
 
+No...
 
-No idea why they can't just leave C alone... It's not without reason
-that new languages like Zig and Hare want to freeze the language
-(standard) once they are released.
+> > +		.pm	= pm_sleep_ptr(&wiz_pm_ops),
 
-P.
+..because of magic of PTR_IF() here.
 
->=20
-> I suspect you have been fooled by the name. Because "strict aliasing"
-> sounds like a good thing. It sounds like "I know these strictly can't
-> alias". But despite that name, it's the complete opposite of that,
-> and
-> means "I will ignore actual real aliasing even if it exists, because
-> I
-> will make aliasing decisions on entirely made-up grounds".
->=20
-> Just say no to strict aliasing. Thankfully, there's an actual
-> compiler
-> flag for that: -fno-strict-aliasing. It should absolutely have been
-> the default.
->=20
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 Linus
->=20
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
 
