@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-133396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3454389A33C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:09:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F85A89A33F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:10:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A9701C20C95
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:09:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39629285EB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:10:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D1BA172772;
-	Fri,  5 Apr 2024 17:08:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84EF16F8EF;
+	Fri,  5 Apr 2024 17:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ay1MDXUH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R3rozz+a"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9ECA172791
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:08:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E084E16C858;
+	Fri,  5 Apr 2024 17:09:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712336934; cv=none; b=q3yKpjnksmxr5oYlBfkQMBHIxU4grJMGfMDLIboWMIRp3x2BCjmmiC5AotvzVIvFtx0OFGxTgeZKEa3KuvIEEgUx56u5xaWwpbEsufv8bNN4in36d5Y+DXTsIxZbfqlQpXaPdtSUH+VGvQJSdXzoF9cCloQcyfAv0eG1DX851Mg=
+	t=1712336947; cv=none; b=UbYjtP5L1SZSb82OOrJAEbZYPwC2KiLnOlmgQz8CuZmaw40NNrNMCSBP61RoOE/HlJk/a0DBkCGLdwQLOSUIerx71UcxfR9yOXi77anN3TWBsqHuO7a6edSwoWHK1CSacZwjb0XaVRwStDSNKKTEuH/hXbS9bR+/f2ac5R0vFCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712336934; c=relaxed/simple;
-	bh=bB7oNyHkvKT4PfIsWvGWCvvkKlXK/RSEvYSvcEJjJfg=;
+	s=arc-20240116; t=1712336947; c=relaxed/simple;
+	bh=H9vEkwAxYj5wWq9yqiD29L3VLUbFY7RZslsH1Qj/VMU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=o0PRjJKxKF8H/VNnNUaq3sdJbBXdn4paJ/2wGYwt2pYz/eD++O3IqPX0SqKamxuMnfiwCirwID/QSG5Rt3QTXUcLfcTLs1nUDLG3S17pbdYutoXU6EPxvurukgrW8aFMuMsN4afBij3UBwQI6FUgTRM4knlYuY1eXjxmTrHdQ+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ay1MDXUH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B902C433F1;
-	Fri,  5 Apr 2024 17:08:51 +0000 (UTC)
+	 MIME-Version:Content-Type; b=EutXQ8VRhWVOYCsXCHpE8eRqbQPps0ep+C4jXoynV4ZhIkj9a5MAocTuxOTKRkGv7mK3BFnSdrh5fNTvqUH8z+LOpaD43bsI9GB46WdP6HWwge3kUWxDpNON0xELPCwRJt1mlR4ZjyGq0m4BC4THs9jtlB0mmIdNJrIy6lQLg8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R3rozz+a; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF43AC433F1;
+	Fri,  5 Apr 2024 17:09:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712336934;
-	bh=bB7oNyHkvKT4PfIsWvGWCvvkKlXK/RSEvYSvcEJjJfg=;
+	s=k20201202; t=1712336946;
+	bh=H9vEkwAxYj5wWq9yqiD29L3VLUbFY7RZslsH1Qj/VMU=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=Ay1MDXUHeyoL2K1xDhZWBsWIUVMBcaAGr2K2jSP9JH6ic1P7ACdeFX+Fte5sKg+zj
-	 M0c5jJ6857NywjXp+pn75VCXzC/jJzud3T3OUCP6S3MYjIj6rgvBKLsL92dfj82bIZ
-	 jXMRVawTulIc2m7YFJ+f1H/5D5p7uw1H2hbOBuhppMMTgmOgWblR6uNKKOx5YuTdaL
-	 zSS0tDBpAFZD3A/LKyaErC1mj437J6C02z2imsAeYjIuLSgtw4jm2MIWJHY+sj3PQw
-	 97vMXwy+Y8jranp+ljzPsGTi5aaPNWk6GCUJglNJzhYBuEaq0jCJVufRNIiFrSatTz
-	 cTnyEPXjk+Giw==
+	b=R3rozz+a0B1YpNvB4vfXKtdF7QEdy3dG1YafDVgmfBpbuzYPfTa91bgsIRwc8EgVI
+	 v4s7/oL7+AgdOqVl2KmgB1zqG6Qr+cBq2/dqbA/V6hHI+726GOASKO3CkQ5+GXXfZ6
+	 IA99s/DigM7iZXoftJjwNCrh7cvtblteI6hfk3MEEp4WH8D6dPReWf+iVd1SLGfVj+
+	 IAU2aywjYNc4Pn0xVhLpYu3upppPYYn/p97e2WlazkOtg6FOx7MckzIUXoUFCDZD1k
+	 GAXAnqvauMbResQ63Fk51YV7SswZJVLVoWxxRsa12bsn4478igh8zIb+ba9DSNV3gy
+	 3Rw/zKiu4l43A==
 From: Vinod Koul <vkoul@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Mikhail Kobuk <m.kobuk@ispras.ru>
-Cc: Kishon Vijay Abraham I <kishon@kernel.org>, 
- =?utf-8?q?Marek_Beh=C3=BAn?= <kabel@kernel.org>, 
- =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
- linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
- lvc-project@linuxtesting.org, Alexey Khoroshilov <khoroshilov@ispras.ru>
-In-Reply-To: <20240321164734.49273-1-m.kobuk@ispras.ru>
-References: <20240321164734.49273-1-m.kobuk@ispras.ru>
-Subject: Re: [PATCH 1/2] phy: marvell: a3700-comphy: Fix out of bounds read
-Message-Id: <171233693092.304466.7167467366245404657.b4-ty@kernel.org>
-Date: Fri, 05 Apr 2024 22:38:50 +0530
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Neil Armstrong <neil.armstrong@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240226-topic-sm8650-upstream-combo-phy-swing-update-v1-1-08707ebca92a@linaro.org>
+References: <20240226-topic-sm8650-upstream-combo-phy-swing-update-v1-1-08707ebca92a@linaro.org>
+Subject: Re: [PATCH] phy: qcom: qmp-combo: fix sm8650 voltage swing table
+Message-Id: <171233694335.304553.13639721114299894293.b4-ty@kernel.org>
+Date: Fri, 05 Apr 2024 22:39:03 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,23 +64,20 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.3
 
 
-On Thu, 21 Mar 2024 19:47:30 +0300, Mikhail Kobuk wrote:
-> There is an out of bounds read access of 'gbe_phy_init_fix[fix_idx].addr'
-> every iteration after 'fix_idx' reaches 'ARRAY_SIZE(gbe_phy_init_fix)'.
+On Mon, 26 Feb 2024 16:22:36 +0100, Neil Armstrong wrote:
+> The QMP USB3/DP PHY found in the SM8650 SoC requires a slighly
+> different Voltage Swing table for HBR/RBR link speeds.
 > 
-> Make sure 'gbe_phy_init[addr]' is used when all elements of
-> 'gbe_phy_init_fix' array are handled.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> Add a new hbr/rbr voltage switch table named "v6" used in a new
+> sm8650 qmp_phy_cfg struct replacing the sm8550 fallback used for
+> the sm8650 compatible.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/2] phy: marvell: a3700-comphy: Fix out of bounds read
-      commit: e4308bc22b9d46cf33165c9dfaeebcf29cd56f04
-[2/2] phy: marvell: a3700-comphy: Fix hardcoded array size
-      commit: 627207703b73615653eea5ab7a841d5b478d961e
+[1/1] phy: qcom: qmp-combo: fix sm8650 voltage swing table
+      commit: f320268fcebcbab02631d2070fa19ad4856a5a5e
 
 Best regards,
 -- 
