@@ -1,134 +1,205 @@
-Return-Path: <linux-kernel+bounces-132653-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132654-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 130228997CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:30:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38D0E8997D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:30:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44BF11C20E07
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:30:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3EFCB21167
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:30:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 983ED146A94;
-	Fri,  5 Apr 2024 08:29:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6547C14D70C;
+	Fri,  5 Apr 2024 08:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XtdK2RmT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="GsFLDj/e"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2A81145B3A;
-	Fri,  5 Apr 2024 08:29:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C8D14D2AB;
+	Fri,  5 Apr 2024 08:30:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712305798; cv=none; b=NXdiDWFpXKvt98qjeUVoZht/VZWDrnBmJXC1J5dCeTU2GtumbtkC2Cb1fmWoeMiyJHDdRJLaNQsUHBwO3LoruUOdbo/60X4VFN0yo7+MjKky1y175SnC5qAf9k20kO4RrYx7JK1nQYzPOqKPuxuCMyN1fTNRPaIbSD7V1yiBDsQ=
+	t=1712305833; cv=none; b=doOkKmon5hXjXn1ybMsrD1H7bt4wbd5Wo3ku6UnTt051GKfLgVIvFtiZF9XpSw2Sg5pKzYaPGnb4lDWyrOUmwoqHeSdtJa+aQBq2lOaKl8kjdl3abmDi2fsqODJlIGdudoPnqB6Zxr9h/EQUE18slPHa6WXRuk7YOu069/HYZXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712305798; c=relaxed/simple;
-	bh=FoeVOgMwFaoVJU8txrUpqriYLH8fDMf3kDQnY5ZpSRo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MEZfMBEM58+wuyrfOJoa/T6BCGEhHHjoN1nCY0RSLhvDLutKeghieoGPT4b+l2pNWYY3e/otuwX/fevxdWqAFvPjdl+hwekmIrqSqqMtULj4XdqYeREXVD5YMZomC3DYNg+i0aeTSCj7f3Rofw+oGDmWxMQERACs74dB/gBlim8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XtdK2RmT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 012A8C433F1;
-	Fri,  5 Apr 2024 08:29:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712305798;
-	bh=FoeVOgMwFaoVJU8txrUpqriYLH8fDMf3kDQnY5ZpSRo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XtdK2RmTKX9NwDlPKJRn6RvGiZ1ugZMbMyFsjacOnfc1xkvxIM+IDh3VN2V+lU9vp
-	 63FowDkfBUJPv4VU5bdLRNzExflstBbhGVnXcen+/8WQYB31Xb0Kn7TndT68usQnQT
-	 Dz0MIDpkA5N0SOibLFuMW20u6KM11yjzmZbAAEmj6zXYcFJvFf6A76hByKQ1UCTs9l
-	 pMfJmUqSpK4R4AhkTp5o6YtVyO2a/qEpSyqHXa7tUltEjufO0bJFtDUciLmvmxLNW2
-	 EhsBUUvyfdtpVfWNfW7ZmYHrrtMFNgcwp6bEymLOVAw2/YtHRF9m5NKNfD2S2JsoW7
-	 qlxw4qRKDaZ8g==
-Date: Fri, 5 Apr 2024 13:59:44 +0530
-From: Manivannan Sadhasivam <mani@kernel.org>
-To: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Brian Masney <bmasney@redhat.com>,
-	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
-	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, vireshk@kernel.org,
-	quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
-	quic_nitegupt@quicinc.com, quic_parass@quicinc.com,
-	Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Subject: Re: [PATCH v8 3/7] PCI: qcom: Add ICC bandwidth vote for CPU to PCIe
- path
-Message-ID: <20240405082944.GE2953@thinkpad>
-References: <20240302-opp_support-v8-0-158285b86b10@quicinc.com>
- <20240302-opp_support-v8-3-158285b86b10@quicinc.com>
- <20240304174111.GB31079@thinkpad>
- <9d878f69-c9d1-1ee4-f80e-1d8f16c6920e@quicinc.com>
+	s=arc-20240116; t=1712305833; c=relaxed/simple;
+	bh=LE9kcDHuYvI9jTeyySzcqd6yMPIj1SuKKRQt/X3Sinc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=nxbPAqvxhY30F7CzeJ1Zoc3FqLKth4ZiaiMC6fLVgch3qMtpQlvAJorQwYeq3nj/pFc1ZHSYhtsQhjE76mE8DNFbyVNOyIG1sJIQh7AcZ/3a8QQFcH8lW70Bi39+zsTj0s9jPYWxRHpJxHCRvftiqHfarB0+ywgs2bPP7oKZ4QQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=GsFLDj/e; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4355Bn2N010957;
+	Fri, 5 Apr 2024 08:30:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=+G0j8IW88PEArlm/qC8NPfjW9x8m5NPgi3w8vh4fE6E=; b=Gs
+	FLDj/eJNmlCCaVQ9fTZteD1rohCIcJtSJmDVdGw4+iHDmhDoEy3Rj/qCK4+g+muK
+	R+03247s4RZrA++7VRQ47bjj73rDruP51pPKnK1JnmthvgqcwivFKJSJ324fwpJ+
+	okdu5/MPUFzvdtvfqOyarSzi/nyrEh1wrux3FibE4X9jq84aiQgys/hXJnGsucEp
+	vZbVZYBmQT4v2gi9C2OzIhFS9KRHk+wjv0S3OLsSGTf7mSFQjHmPzyPggMFDOHeb
+	kG6U1gYYH1BDeqaswa8Lrja9siZYGmfUrBV3DHUAUYoUI6ZCGRtykcdQTaJac3NS
+	6M6tEB6g9YBCWJrtea5w==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa2q397a2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 08:30:21 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4358UK4Q022917
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 5 Apr 2024 08:30:20 GMT
+Received: from [10.216.11.24] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
+ 01:30:16 -0700
+Message-ID: <79c2b0eb-e7f3-3826-d977-3c4367d42d7f@quicinc.com>
+Date: Fri, 5 Apr 2024 14:00:11 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9d878f69-c9d1-1ee4-f80e-1d8f16c6920e@quicinc.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 19/19] media: venus: pm_helpers: Use reset_bulk API
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stanimir Varbanov
+	<stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross
+	<agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Mauro Carvalho
+ Chehab" <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC: Marijn Suijten <marijn.suijten@somainline.org>,
+        Stanimir Varbanov
+	<stanimir.varbanov@linaro.org>,
+        Mauro Carvalho Chehab
+	<mchehab+huawei@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
+ <20230911-topic-mars-v3-19-79f23b81c261@linaro.org>
+From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <20230911-topic-mars-v3-19-79f23b81c261@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: LwJS-YydmJf_7PgsKyOs2GUSgD952wXE
+X-Proofpoint-GUID: LwJS-YydmJf_7PgsKyOs2GUSgD952wXE
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_07,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ priorityscore=1501 clxscore=1015 malwarescore=0 bulkscore=0
+ mlxlogscore=999 adultscore=0 impostorscore=0 lowpriorityscore=0
+ spamscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404050062
 
-On Tue, Mar 05, 2024 at 04:23:21PM +0530, Krishna Chaitanya Chundru wrote:
+
+
+On 3/27/2024 11:38 PM, Konrad Dybcio wrote:
+> All of the resets are toggled together. Use the bulk api to save on some
+> code complexity.
 > 
+> The delay between resets is now correctly determined by the reset
+> framework.
 > 
-> On 3/4/2024 11:11 PM, Manivannan Sadhasivam wrote:
-> > On Sat, Mar 02, 2024 at 09:29:57AM +0530, Krishna chaitanya chundru wrote:
-> > > To access PCIe registers, PCIe BAR space, config space the CPU-PCIe
-> > > ICC (interconnect consumers) path should be voted otherwise it may
-> > > lead to NoC (Network on chip) timeout. We are surviving because of
-> > > other driver vote for this path.
-> > > 
-> > > As there is less access on this path compared to PCIe to mem path
-> > > add minimum vote i.e 1KBps bandwidth always.
-> > 
-> > Please add the info that 1KBps is what shared by the HW team.
-> > 
-> Ack to all the comments
-> > > 
-> > > When suspending, disable this path after register space access
-> > > is done.
-> > > 
-> > > Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> > > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> > > ---
-> > >   drivers/pci/controller/dwc/pcie-qcom.c | 38 ++++++++++++++++++++++++++++++++--
-> > >   1 file changed, 36 insertions(+), 2 deletions(-)
-> > > 
-> > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > index 10f2d0bb86be..a0266bfe71f1 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-
-[...]
-
-> > > +	ret = icc_disable(pcie->icc_cpu);
-> > > +	if (ret) {
-> > > +		dev_err(dev, "failed to disable icc path of cpu-pcie: %d\n", ret);
-> > 
-> > "CPU-PCIe"
-> > 
-> > > +		if (pcie->suspended) {
-> > > +			qcom_pcie_host_init(&pcie->pci->pp);
-> > 
-> > Interesting. So if icc_disable() fails, can the IP continue to function?
-> > 
-> As the ICC already enable before icc_disable() fails, the IP should work.
-
-If icc_disable() fails, then most likely something is wrong with RPMh. How can
-the IP continue to work in that case?
-
-- Mani
-
--- 
-மணிவண்ணன் சதாசிவம்
+> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/media/platform/qcom/venus/core.c       | 15 ++++++++++-----
+>  drivers/media/platform/qcom/venus/core.h       |  4 ++--
+>  drivers/media/platform/qcom/venus/pm_helpers.c | 15 +++------------
+>  3 files changed, 15 insertions(+), 19 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index 6914fa991efb..f1762c725a11 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -328,11 +328,16 @@ static int venus_probe(struct platform_device *pdev)
+>  	if (ret)
+>  		return ret;
+>  
+> -	for (i = 0; i < res->resets_num; i++) {
+> -		core->resets[i] = devm_reset_control_get_exclusive(dev, res->resets[i]);
+> -		if (IS_ERR(core->resets[i]))
+> -			return PTR_ERR(core->resets[i]);
+> -	}
+> +	core->resets = devm_kcalloc(dev, res->resets_num, sizeof(*core->resets), GFP_KERNEL);
+> +	if (res->resets_num && !core->resets)
+> +		return -ENOMEM;
+> +
+> +	for (i = 0; i < res->resets_num; i++)
+> +		core->resets[i].id = res->resets[i];
+> +
+> +	ret = devm_reset_control_bulk_get_exclusive(dev, res->resets_num, core->resets);
+> +	if (ret)
+> +		return dev_err_probe(dev, ret, "Failed to get resets\n");
+>  
+>  	ret = venus_get_resources(core);
+>  	if (ret)
+> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+> index b4c41dc0f8c7..287bcf905057 100644
+> --- a/drivers/media/platform/qcom/venus/core.h
+> +++ b/drivers/media/platform/qcom/venus/core.h
+> @@ -130,7 +130,7 @@ struct venus_format {
+>   * @pmdomains:	a pointer to a list of pmdomains
+>   * @opp_dl_venus: an device-link for device OPP
+>   * @opp_pmdomain: an OPP power-domain
+> - * @resets: an array of reset signals
+> + * @resets: a reset_control_bulk_data array of hardware reset signals
+>   * @vdev_dec:	a reference to video device structure for decoder instances
+>   * @vdev_enc:	a reference to video device structure for encoder instances
+>   * @v4l2_dev:	a holder for v4l2 device structure
+> @@ -183,7 +183,7 @@ struct venus_core {
+>  	struct dev_pm_domain_list *pmdomains;
+>  	struct device_link *opp_dl_venus;
+>  	struct device *opp_pmdomain;
+> -	struct reset_control *resets[VIDC_RESETS_NUM_MAX];
+> +	struct reset_control_bulk_data *resets;
+>  	struct video_device *vdev_dec;
+>  	struct video_device *vdev_enc;
+>  	struct v4l2_device v4l2_dev;
+> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+> index 5d174b83926b..7690f66d1184 100644
+> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
+> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+> @@ -865,21 +865,12 @@ void vcodec_domains_put(struct venus_core *core)
+>  static int core_resets_reset(struct venus_core *core)
+>  {
+>  	const struct venus_resources *res = core->res;
+> -	unsigned int i;
+>  	int ret;
+>  
+> -	for (i = 0; i < res->resets_num; i++) {
+> -		ret = reset_control_assert(core->resets[i]);
+> -		if (ret)
+> -			goto err;
+> -
+> -		usleep_range(150, 250);
+> -		ret = reset_control_deassert(core->resets[i]);
+> -		if (ret)
+> -			goto err;
+> -	}
+> +	ret = reset_control_bulk_reset(res->resets_num, core->resets);
+> +	if (ret)
+> +		dev_err(core->dev, "Failed to toggle resets: %d\n", ret);
+>  
+> -err:
+>  	return ret;
+>  }
+>  
+> 
+Reviewed-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
 
