@@ -1,119 +1,151 @@
-Return-Path: <linux-kernel+bounces-133545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F88089A562
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 22:05:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E66589A563
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 22:05:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C86002833D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:05:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB0F3282D7B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:05:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A5E17335D;
-	Fri,  5 Apr 2024 20:05:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5EE4174ED7;
+	Fri,  5 Apr 2024 20:05:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="sfTdrQvs"
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AC1BYAJH"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA662173327;
-	Fri,  5 Apr 2024 20:05:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99EE9173328
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 20:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712347540; cv=none; b=curyD7qYk8CQCu4SUHzGu7mNgnMV+7t0CvLxKbnWpoej/scWRQu+5b/Bc9tG/OcKJD3ipLBd+cPGzkMMJZxfxQv6HcZK119iNrz14zO7tYkq9GXpQkm6gp3mIO/zwcAXi1i8MoUzjCuFPSba056MN+j7brVD/jy7g1a+p0vMJxY=
+	t=1712347541; cv=none; b=KHLApA9Mwx9dAqfbG9X6hJO4sqNJ1ELvtXMbVTnLY9r82kjYVye+A7D6ItdMZ/DL7QlMDJqlT/CslopuUbuSEsk8KcQrv1Gmr2V07bAsSvh/TwHnCNw/obzeVyB2TkPDY5HPhNv3ovbleZvApDFYiyfJhc61S8rn2TgfikIzGYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712347540; c=relaxed/simple;
-	bh=xmC+LFdcm+XbuEyCKOL6T3bLhwKTI1BC7Eyovvl0bY4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rSsWMSC/P7WTvdYxZz0cheTpn3UWWPcsx9f4F5R78VaI76ZOtmZ8XGrKFsCPb/FQqdmiHWHZG1h3IDUmXmI5h1pXAYNBrer0bk/f9CHbr2OXBhvqGxM7xP8b2zQd/Jq79xzF18xvFnmOTUdN9UmrexpYP/86tvUgT82Aq4Pqp0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=sfTdrQvs; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=fzWPtz+payU1xrhrC/vqSs/lVzZZifr9fvxjOXlFSgU=; b=sfTdrQvse6nVgXscLcnZXmd1A9
-	ZsNWEs8w2HZsWtNeqRyZBh+MEMjn0EvzDniSe8c59vRWfCuBUs8Lq4sh27gJD4wwsXFS1TZR8IW09
-	2GnmFHinxvn7bsJREhrOwMCmzvI1t9NPzhdu7Eeja9H7ZZpXXTXt+k+/JiEIe11PQKerolnR28/9Z
-	xO5ByZ0d3qAzmG7k8Z0w5ijjITxoTyYW+MfNPdl/tduNx1FDBg45HVM07i9RGpgP8kf4qjK/JYTIX
-	oKIG6k0W5pBu2R0qUo6pBAuDLhKsDCsCqSL/R3nnhJJz452YphpQcV3LF81nAViFhHZ8a3WljhKiQ
-	ws1lEWtw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:54122)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1rspoS-0002ou-1c;
-	Fri, 05 Apr 2024 21:05:24 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1rspoR-0001dv-EF; Fri, 05 Apr 2024 21:05:23 +0100
-Date: Fri, 5 Apr 2024 21:05:23 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Daniel Machon <daniel.machon@microchip.com>
-Cc: "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Lars Povlsen <lars.povlsen@microchip.com>,
-	Steen Hegelund <Steen.Hegelund@microchip.com>,
-	UNGLinuxDriver@microchip.com,
-	Bjarni Jonasson <bjarni.jonasson@microchip.com>,
-	netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: sparx5: fix reconfiguration of PCS on link mode
- change
-Message-ID: <ZhBZg7x9U+fzPYTP@shell.armlinux.org.uk>
-References: <20240405-link-mode-reconfiguration-fix-v1-1-c1480bc2346a@microchip.com>
- <Zg/Qf4P5gAzRUYuK@shell.armlinux.org.uk>
- <20240405194556.ngto6ddgf5r2br33@DEN-DL-M70577>
+	s=arc-20240116; t=1712347541; c=relaxed/simple;
+	bh=kVOg6+8kVRoCisrfwR7WOhMe3mNooVqy6FvtcCAm8ro=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=HogOyoK1m+y0hqXY1V8rRwU/BAUxwpm9gGALzJtDo/Jd6Sw3Tw/ucJFWCP4ZiQM3BQrDdC693vsBuHby1j1DdrM4/+PKDgSorlKgyR4zayRHBq4HhSvjIQ5y5qft67ixU17eH0PqCmtJnjx0MbrrwHr6ASKXrrXrwJ41goFZGxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AC1BYAJH; arc=none smtp.client-ip=209.85.215.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jstultz.bounces.google.com
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5d8df7c5500so1850229a12.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 13:05:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712347539; x=1712952339; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=vX/8UUj3bTMhmjE/Pb7I5CpQrbYOm5sxUlxUaaI9t04=;
+        b=AC1BYAJHhACGgPOCaUO791leGnGo9WCTlu+iTK2IJSix4fH6foWNsL4TixlW40gG0y
+         6OHtoa7OAwgzBIwQRtJ3YW7oaJIuLIdRGIdJlnI46oX93LWZo5ZQSAUFClZ/kRZFt69L
+         jwYn3FyeD/p0VQEcrI7nFhWPDSIlLk7PtmETtOwlZF3KZQvuDUtQGdkb0lfQ2K6rkdF/
+         pOeIOaGkMa8FFPKg/orio2wMJEqH/1x7+N7fe0ir+4/6D9Yj+mcK3Y727zxtpRbX+xQr
+         hTsUD6L5sUzA1Fbk/tL7TrMMYfIngbhQSxpngFuWp1J6jNF/0aCHAXdARzgMr0B4HJ0w
+         3Pwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712347539; x=1712952339;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vX/8UUj3bTMhmjE/Pb7I5CpQrbYOm5sxUlxUaaI9t04=;
+        b=CntGm5VYnr1hrwIYRRWfSVACpUfPqFb0OJTgLk/S4oBa0kKjGnJfrL6C4gYv8o+eaA
+         jUSjPN1rfG3krTD+VuHRW9mYQtJKR7CK6HH2ekXa4JREzjO3zpzTsLMRHiLVxbNGfc/E
+         2BWkv41kwpfgFZzkQ/YNTJgR7ynP8nrO3FVdZb097ua3QVb/cfCHxhGrSTGerQzxQLf5
+         n90QJ3bV5QxRhiOwrFIBLF5xJ/9OiMVkoBYgm6ODliTJ9FS9oM9BG2Ehs8NVIdW95wBv
+         pnvYR59BQs8HSNVpodADRNz5RKx61G0XAM0ZqJGKEjBOwa9ZS0YVIjV608U5gO63O0PJ
+         Kp6w==
+X-Gm-Message-State: AOJu0YxV+O2De2WNE6uIz/WILWa34d2noFp6tKrwJSrYuGv93p26eQSs
+	hdUyKsfySK8qxbB4rnvG9B9IX+EXPiyaSWZD+GoSU/6zXzqhme4fJSDtHEkQgDhfL0GZcsJu335
+	vCvH7Pnr4vhZfHNZ2ptdX0qsVLSozhoBYaa12fpOdGE5Wo7B7jfG/G/AItMnh3ZU8t33QuyxQJy
+	RN1bQpSaWGIs3mQhu0Nm11lMm39bpn2l5yr3I9NA0oHMF4
+X-Google-Smtp-Source: AGHT+IFNkn2QwgxrkI/NGgPh1Q+aCI9+i47Zbn0mtLUIYmwXUsJ0Q0NtLpRDcpMTA6rh/dWxLN5V0I0gOUgx
+X-Received: from jstultz-noogler2.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:600])
+ (user=jstultz job=sendgmr) by 2002:a63:5966:0:b0:5d5:ad56:55ee with SMTP id
+ j38-20020a635966000000b005d5ad5655eemr7480pgm.4.1712347538468; Fri, 05 Apr
+ 2024 13:05:38 -0700 (PDT)
+Date: Fri,  5 Apr 2024 13:05:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240405194556.ngto6ddgf5r2br33@DEN-DL-M70577>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
+Message-ID: <20240405200535.2239155-1-jstultz@google.com>
+Subject: [RFC][PATCH] locking/rwsem: Add __always_inline annotation to
+ __down_write_common() and inlined callers
+From: John Stultz <jstultz@google.com>
+To: LKML <linux-kernel@vger.kernel.org>
+Cc: John Stultz <jstultz@google.com>, Tim Murray <timmurray@google.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>, Waiman Long <longman@redhat.com>, 
+	Boqun Feng <boqun.feng@gmail.com>, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Apr 05, 2024 at 07:45:56PM +0000, Daniel Machon wrote:
-> Hi Russel,
-> 
-> > It does change conf.autoneg slightly in that this will always be true
-> > for SGMII, but will only be true for Autoneg + 802.3z modes.
-> > 
-> > As far as your code change goes, it looks correct to me, but I think
-> > it's fixing a bug that goes back long before the commit you have
-> > identified.
-> 
-> Just to be clear - by commit do you mean the phylink change or the commit
-> referenced in the fixes tag?
+Apparently despite it being marked inline, the compiler
+may not inline __down_write_common() which makes it difficult
+to identify the cause of lock contention, as the blocked
+function in traceevents will always be listed as
+__down_write_common().
 
-I think the bug technically exists prior to the phylink change if
-there is any possibility that the link may switch between inband
-and a non-inband mode. (e.g. as a result of inserting a SFP module.)
+So add __always_inline annotation to the common function (as
+well as the inlined helper callers) to force it to be inlined
+so the blocking function will be listed (via Wchan) in
+traceevents.
 
-> > However, I think there's another issue here which is more relevant to
-> > the problem you describe in your commit message. If you look at
-> > port_conf_has_changed(), you will notice that it fails to compare
-> > conf.inband, and thus fails to notice any change in the setting of
-> > that configuration item. This will result in sparx5_port_pcs_set()
-> > not even being called if only conf.inband changes state.
-> > 
-> > Thus, changing from in-band to out-of-band or vice versa won't have
-> > any effect if this is the only change that occurs, and this also
-> > exists prior to my change.
-> 
-> Yes. I agree this is an issue that deserves a fix - separate from this
-> one I would think.
+This mirrors commit 92cc5d00a431 ("locking/rwsem: Add
+__always_inline annotation to __down_read_common() and inlined
+callers") which did the same for __down_read_common.
 
-Agreed, thanks.
+I sort of worry that I'm playing wack-a-mole here, and talking
+with compiler people, they tell me inline means nothing, which
+makes me want to cry a little. So I'm wondering if we need to
+replace all the inlines with __always_inline, or remove them
+because either we mean something by it, or not.
 
+Cc: Tim Murray <timmurray@google.com>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: kernel-team@android.com
+Fixes: c995e638ccbb ("locking/rwsem: Fold __down_{read,write}*()")
+Reported-by: Tim Murray <timmurray@google.com>
+Signed-off-by: John Stultz <jstultz@google.com>
+---
+ kernel/locking/rwsem.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
+index c6d17aee4209..33cac79e3994 100644
+--- a/kernel/locking/rwsem.c
++++ b/kernel/locking/rwsem.c
+@@ -1297,7 +1297,7 @@ static inline int __down_read_trylock(struct rw_semaphore *sem)
+ /*
+  * lock for writing
+  */
+-static inline int __down_write_common(struct rw_semaphore *sem, int state)
++static __always_inline int __down_write_common(struct rw_semaphore *sem, int state)
+ {
+ 	int ret = 0;
+ 
+@@ -1310,12 +1310,12 @@ static inline int __down_write_common(struct rw_semaphore *sem, int state)
+ 	return ret;
+ }
+ 
+-static inline void __down_write(struct rw_semaphore *sem)
++static __always_inline void __down_write(struct rw_semaphore *sem)
+ {
+ 	__down_write_common(sem, TASK_UNINTERRUPTIBLE);
+ }
+ 
+-static inline int __down_write_killable(struct rw_semaphore *sem)
++static __always_inline int __down_write_killable(struct rw_semaphore *sem)
+ {
+ 	return __down_write_common(sem, TASK_KILLABLE);
+ }
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+2.44.0.478.gd926399ef9-goog
+
 
