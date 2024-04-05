@@ -1,151 +1,150 @@
-Return-Path: <linux-kernel+bounces-133535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FEC789A521
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:45:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D736989A531
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:46:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 720E81C20EA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:45:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9170E283C83
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64FD173336;
-	Fri,  5 Apr 2024 19:45:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9CC2173355;
+	Fri,  5 Apr 2024 19:46:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4Pmp957s"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="biWxvr8U"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C855173343
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 19:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3203172BA3;
+	Fri,  5 Apr 2024 19:46:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712346311; cv=none; b=sS/RU/ebroqUBSXRb6BMqg+ej/9bgR6iEAAvCr1KFlFT67nYhUgh/nOjWAlMmtfOb+rTVU4yaW1tk7gNgYKgN7rKAuxSzHGjSEYaYr/vWjLFb5eRKOLlgU6gMkFmXiooIdHEcdR5eHFdfVi2ZKOA3S4Mj0gGrpM5dtty3gpB18U=
+	t=1712346393; cv=none; b=JKa7GL93HooZrmfS/O5ShCp8VzbPKmrW1HF0lcqWBeUVjHifElEPfBsnqmHNvltV7bJY+yfRh+9Z3rAc5dl0sXMFNaoafmjO6DIZKUzFKReUM9Q2PllnjVOZyqh2Aejqf3FcRIYJbTtBJbc7QAMqJ3sLbLPX6tJmPAE9b+Jr8Ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712346311; c=relaxed/simple;
-	bh=T3ejxbb56c+nrn15llqrQ7RzaittgP9efQjwG4WBQuo=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Mf0Xpitr+MR2QroBuNRSzkoVtx6HsHnMo/V7Zt7ZI9eI4KHbNnBszmP1uIkCthHcU7OrhS7IfIhjD4LE9HWdPuQH5SapopeiqTlMIMqMK/JBnOcDjVqrF9An0UCNnX0rh9ID/iVxjTTtMPRc8do1SNTaVoJ8gIjSU+SOgMNLxLM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4Pmp957s; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b2682870so3948737276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 12:45:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712346308; x=1712951108; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=2vtixN1wtkWuNV0Qa4mXNUhaVbrMuwdt0CR0qhCTFhg=;
-        b=4Pmp957sWq/92GZ0Wc/xV8rICwS0Nq62eLltef3DLe1QSq61I/W+yCR7PyyG+LSZ0p
-         68WXe2aczCWywL8r5EH4EORFAldWfoTizAyc4vGQVjX7fPmXFHZYpE634xw0UVmcr28e
-         RrChrp6TiatQgaKYwoUw05BGCfSqIsSH120KbgvAVZOOROjKobAS/n4KVTA85wcmyHm1
-         GEMLhg20PRXl+ZZOs+vRb4XIsFs54a3HTkz5XrGs/0jSVPEuP2Q/T1P29n07Ofaw15kg
-         84bEEbqSaJ8TJq/MJ5hM/ahj2lTpcfGYXY+wyBMR3okvki2I9diPt9gIAVzsaINdYjiS
-         51vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712346308; x=1712951108;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2vtixN1wtkWuNV0Qa4mXNUhaVbrMuwdt0CR0qhCTFhg=;
-        b=Z6/JHK53V5ODxWkZSRklATloiDkEHFlXmcoCXNtkdiD2f6CKypk3BAKtGtIpT2SUH+
-         TADYFO1dEGMciez7ZGlrLu43R4n8yP/T6sDL8ZTu/UIYue+ANy+m1REOmzFZO72ge2Bm
-         OLDiWpu0L3JaC+j+2l/eFzKxBwzpGQ662A+ywcvghhlfy5NQkBlaL0S6qSpI78syJYzz
-         Ob94VAjEKgPk53GqlUDo1mr+qEjAwQ26dIj/9PwMrIuieNHoNCQHeI5b8c/usCP+0+Wg
-         d3JWKi0ql0KwuMigECqhhu8OPvpW3C2/9OZo8i4cjm0sjnSJiPXJ/UrL0Z2QCeF00s29
-         KDCw==
-X-Forwarded-Encrypted: i=1; AJvYcCWTNLwn/0vzLDhZzX4VSt5KK0LVvCs16hCpHVlSZE72D/bQn5U1Sbg03chtqgwzI8xhTe2myzvbXGppXWewfhslVjvFe+Hm0hVavR8f
-X-Gm-Message-State: AOJu0Ywgw0lcrnBNFLswnC2bg/N5kZ4SNOiL55U8G8ndjbjHmHFkQ5X2
-	Docwei/sR3Q4E80wnH1tSkW/+XOlCLCQLm1YZQfTREMK+ezJO58LiIFt2fJIv8P8RjYObZkqsDl
-	hkOW1SqCRm7z+t7DU3RlbEw==
-X-Google-Smtp-Source: AGHT+IGQaWsEMLLYQanS2Lwqb6aaiWTFAVRKofb23kbm/JtMo/+pr+L8fTYQOVjDpYmss57BpRnWpLm22Llm8Gso7A==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a25:8411:0:b0:dcd:5e5d:458b with SMTP
- id u17-20020a258411000000b00dcd5e5d458bmr602236ybk.3.1712346308719; Fri, 05
- Apr 2024 12:45:08 -0700 (PDT)
-Date: Fri, 05 Apr 2024 19:45:08 +0000
+	s=arc-20240116; t=1712346393; c=relaxed/simple;
+	bh=/PmtoA+LEViAKJ0fcog5saUVPgiPgx5ZMgX0tIQr6Ew=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SJFcoUrZadAgcG2HbAR2LKpkxmdF8Hj3Mgh+dYilf6Wox/DVBZhaWNQ0vRye8+Oz5anY+PM77dn0DC4CBW1AU4+5Lft5WAguntptMUAUin1rnvXcHnS8UHhfkOzm2GnSSx1ovWNc0GKmtni2EOYYeIaAYFdW8qmtdZQujcmx3qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=biWxvr8U; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1712346390; x=1743882390;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/PmtoA+LEViAKJ0fcog5saUVPgiPgx5ZMgX0tIQr6Ew=;
+  b=biWxvr8U3qblss0NyZzyCvTWiZL+Uluj+7VmRQSYGN0IZROc4FZK9SsI
+   p3VZlwe4IeK80uPENYe2gWmY4qHPhhq/+hT5DwzZaa1gQQETy69tXfXWh
+   OpkGyi0Uk7L41Ft4MKMksPNFmht8yv7YYviuVEDMbG3EpVxRLP4WFvyZH
+   oBPgy9lS4t1BXCzFRKlSytqBcZfSG2isYRqjDVmCh2XRA8jAgC42qbWld
+   fZ+BxIPqWmIB9KrX9oXUhfozXS6CEjtiSr6otBWmd9JHu+rIfufIuQ6Nl
+   AMRBL/5BB/P+GrEi4Y/ModxFFzkN9j2DOv70WEwChYD6U5aBBfipnm3il
+   g==;
+X-CSE-ConnectionGUID: xpLuj8wMSr2hyqqrVe0wTA==
+X-CSE-MsgGUID: D4qVjqWhT9Wf7GT1Q4fnUQ==
+X-IronPort-AV: E=Sophos;i="6.07,182,1708412400"; 
+   d="scan'208";a="250502725"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Apr 2024 12:46:13 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex02.mchp-main.com (10.10.85.144) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Fri, 5 Apr 2024 12:45:59 -0700
+Received: from DEN-DL-M70577 (10.10.85.11) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server id 15.1.2507.35 via Frontend
+ Transport; Fri, 5 Apr 2024 12:45:57 -0700
+Date: Fri, 5 Apr 2024 19:45:56 +0000
+From: Daniel Machon <daniel.machon@microchip.com>
+To: "Russell King (Oracle)" <linux@armlinux.org.uk>
+CC: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
+	<edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni
+	<pabeni@redhat.com>, Lars Povlsen <lars.povlsen@microchip.com>, "Steen
+ Hegelund" <Steen.Hegelund@microchip.com>, <UNGLinuxDriver@microchip.com>,
+	Bjarni Jonasson <bjarni.jonasson@microchip.com>, <netdev@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] net: sparx5: fix reconfiguration of PCS on link mode
+ change
+Message-ID: <20240405194556.ngto6ddgf5r2br33@DEN-DL-M70577>
+References: <20240405-link-mode-reconfiguration-fix-v1-1-c1480bc2346a@microchip.com>
+ <Zg/Qf4P5gAzRUYuK@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAMNUEGYC/x3MwQqDMAyA4VeRnBeIVXfYqwwPoaYaGF1JylDEd
- 1/x+B3+/wQXU3F4dSeY/NT1mxv6Rwdx47wK6tIMgcJII03o1XIsB+5cq6GXj9aAxAOnRPHJgaC lxSTpfm/f83X9AQuPS9JmAAAA
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1712346307; l=2126;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=T3ejxbb56c+nrn15llqrQ7RzaittgP9efQjwG4WBQuo=; b=vM4znULoH125X+4VZ0HIeV+udu59Elb7Dpzi4RgxOBcA1cIaWxOo2FSqK8bf9iocWinmC32eH
- FxLPTDU2wM/BbG0Jq6CPnD7D5QkYleqzvrhLT8U2VTYV8JrH2frfGaa
-X-Mailer: b4 0.12.3
-Message-ID: <20240405-strncpy-xattr-split2-v1-1-90ab18232407@google.com>
-Subject: [PATCH] xfs: xattr: replace strncpy and check for truncation
-From: Justin Stitt <justinstitt@google.com>
-To: Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-xfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <Zg/Qf4P5gAzRUYuK@shell.armlinux.org.uk>
 
-strncpy is deprecated and as such we should prefer less ambiguous and
-more robust string interfaces [1].
+Hi Russel,
 
-There's a lot of manual memory management to get a prefix and name into
-a string. Let's use an easier to understand and more robust interface in
-scnprintf() to accomplish the same task while enabling us to check for
-possible truncation, resulting in a soft warning.
+> > It was observed that the PCS would be misconfigured on link mode change,
+> > if the negotiated link mode went from no-inband capabilities to in-band
+> > capabilities. This bug appeared after the neg_mode change of phylink [1],
+> > but is really due to the wrong config being used when reconfiguring the PCS.
+> 
+> I don't see how the change you point to could have changed the
+> behaviour. Old code:
+> 
+>         conf.inband = phylink_autoneg_inband(mode);
+>         conf.autoneg = phylink_test(advertising, Autoneg);
+> 
+> New code:
+> 
+>         conf.inband = neg_mode == PHYLINK_PCS_NEG_INBAND_DISABLED ||
+>                       neg_mode == PHYLINK_PCS_NEG_INBAND_ENABLED;
+>         conf.autoneg = neg_mode == PHYLINK_PCS_NEG_INBAND_ENABLED;
+> 
+> where, for SGMII or 802.3z modes, neg_mode will be one of
+> PHYLINK_PCS_NEG_INBAND_DISABLED or PHYLINK_PCS_NEG_INBAND_ENABLED if
+> phylink_autoneg_inband(mode) is true, or PHYLINK_PCS_NEG_OUTBAND if
+> not.
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Split from https://lore.kernel.org/all/20240401-strncpy-fs-xfs-xfs_ioctl-c-v1-1-02b9feb1989b@google.com/
-with feedback from Christoph H.
----
- fs/xfs/xfs_xattr.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+For inband/10GBase-R, conf.inband would be true, prior to the
+phylink change. This is fine since conf.inband is only used when
+configuring low speed devices.
 
-diff --git a/fs/xfs/xfs_xattr.c b/fs/xfs/xfs_xattr.c
-index 364104e1b38a..bc7246eaebdd 100644
---- a/fs/xfs/xfs_xattr.c
-+++ b/fs/xfs/xfs_xattr.c
-@@ -206,6 +206,7 @@ __xfs_xattr_put_listent(
- {
- 	char *offset;
- 	int arraytop;
-+	size_t combined_len, actual_len;
- 
- 	if (context->count < 0 || context->seen_enough)
- 		return;
-@@ -220,11 +221,16 @@ __xfs_xattr_put_listent(
- 		return;
- 	}
- 	offset = context->buffer + context->count;
--	memcpy(offset, prefix, prefix_len);
--	offset += prefix_len;
--	strncpy(offset, (char *)name, namelen);			/* real name */
--	offset += namelen;
--	*offset = '\0';
-+
-+	combined_len = prefix_len + namelen;
-+
-+	/* plus one byte for \0 */
-+	actual_len = scnprintf(offset, combined_len + 1, "%s%s", prefix, name);
-+
-+	if (actual_len < combined_len)
-+		xfs_warn(context->dp->i_mount,
-+	"cannot completely copy %s%s to context buffer resulting in truncation",
-+			prefix, name);
- 
- compute_size:
- 	context->count += prefix_len + namelen + 1;
+After the change, conf.inband will be false when opting in through
+phylink_pcs.net_mode = true. This causes the SGMII to be misconfigured,
+since the inband parameter from the old config is used, and that
+parameter is actually used for configuring SGMII..
 
----
-base-commit: c85af715cac0a951eea97393378e84bb49384734
-change-id: 20240405-strncpy-xattr-split2-0a3aff0c6a20
+TBH the commit description is inadequate at best. I will revise it in a
+v2.
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+> 
+> It does change conf.autoneg slightly in that this will always be true
+> for SGMII, but will only be true for Autoneg + 802.3z modes.
+> 
+> As far as your code change goes, it looks correct to me, but I think
+> it's fixing a bug that goes back long before the commit you have
+> identified.
 
+Just to be clear - by commit do you mean the phylink change or the commit
+referenced in the fixes tag?
+
+> 
+> However, I think there's another issue here which is more relevant to
+> the problem you describe in your commit message. If you look at
+> port_conf_has_changed(), you will notice that it fails to compare
+> conf.inband, and thus fails to notice any change in the setting of
+> that configuration item. This will result in sparx5_port_pcs_set()
+> not even being called if only conf.inband changes state.
+> 
+> Thus, changing from in-band to out-of-band or vice versa won't have
+> any effect if this is the only change that occurs, and this also
+> exists prior to my change.
+
+Yes. I agree this is an issue that deserves a fix - separate from this
+one I would think.
+
+> 
+> --
+> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
