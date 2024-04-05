@@ -1,109 +1,153 @@
-Return-Path: <linux-kernel+bounces-133202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8657389A06C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:01:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C95989A076
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:02:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3BD8B1F2437F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:01:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E78FA284DE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:02:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0211516F840;
-	Fri,  5 Apr 2024 15:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7946216F85E;
+	Fri,  5 Apr 2024 15:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tW+/vp2A"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="JxRT5eL3"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08E0216F293
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 15:01:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 576FA16F29F;
+	Fri,  5 Apr 2024 15:02:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712329271; cv=none; b=sKLuK0RqbrSBHj1IM1iF2WVd+DD/NE5Q5/z+B6ZIDHDelN7DeB/ey4HPOQVvSJFNj9KjpE/aMQWFdtPP7Cg19ZdQJxZRlTKPHxoSwdFtOH9oZnlHx4vcssgbZnpPt9fw5KyU3xWyx/EunGPXU3APdMRTaF9CbMZNHZ9j+EoRqjc=
+	t=1712329339; cv=none; b=qdvIi7+/hp79ME86rJnR2xkDJhkJxgg8U39fGo0wWpAY3b1EY2rph6eXQBBhmIxWCvz4YBjA+8kdJxKSiVn9Lart9Y4yWwUFmBxEi49xFYvKHw8WwAcmIPgyiioLiyQeluszeJtebqPoWMX7mzyWvKF7FuIEcWYaxt8G71FbTlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712329271; c=relaxed/simple;
-	bh=FDM+rqfjgcFF5IHN0e96vKKuLr3OVua6OMs3SeJABUo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=cnxcmJjkVFYshNwLRybSa+W5qem5PzJcTy+q2h0o2KDMvH7HaJhDRipKLLD+KPeXmruaiRbvFDjPFCGp5A/iZBZVWKB+Sp0x60u1PJsBxYUOhoRzEKAfqpRqD/9alT7lbOaE/nB0zjz6fs408LLvoc9Rmnc8dr0yf1lc5vSCD4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tW+/vp2A; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56e0acaf69aso2904933a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 08:01:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712329267; x=1712934067; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Ls3xSfROj02Oi9qADH98tOOJ7brRe2Fo3DATo6V7VGo=;
-        b=tW+/vp2ADq5/tEdf9Z8vMZH7zjFrfszf5L9zT9mwHzxKLFq89WJkhAStubuJ6F+H9p
-         3uAL8BJyUPnGyYTKsZf230oqRGImGRi4cg5lsxLTMW8WhLF+uPG21wgO7AXTnZHp1i3h
-         nFaCCDnR1ktGOc9/HUhR8jE6OV6ByGFrR+sXiqOl4lkAHHyTxF4ThMd5XDNyh6jbyyAl
-         LJ0zsyT9dnllf79P+7CLwj38ZvJ3LtGnYYAgOqV+EysZ7MP8XHeAXQLsOU3gVceXh826
-         4y0IXsQHBTGvA3xROWC70MQxDA4ig3QyCBsMfLQRw9XU4WckqxfLeImkl311WINcQ5Kk
-         6zFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712329267; x=1712934067;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ls3xSfROj02Oi9qADH98tOOJ7brRe2Fo3DATo6V7VGo=;
-        b=aE40TDnPs1NEizh6LoFvX9B1Njfm38tbpV8qK+qDybfBoLhg2SNpcEqRa2cPNN24Xh
-         ySMwsT429p8MmWsC123Wz+NegRYnVB3jgWtqT36+iBTDj/jQaEk3xX5q4aMeMfBWkTzB
-         E0U3ngeee1+NP6lY8NLx8Hc0bubZzUtkS+8+g+rrxdjhOPapRazyrCgxGd2ofgm3pEqx
-         Y+Tq7ZzYa4aVCcSGyiJAJUejxtyKJOkDs318TrFcT/IDHme7RgdY1ABpFl8ZRfRdBEVl
-         gWhmveA4CnJ43jGBPrmC4VRndcupDxjR8wiSTQsn64DgssOuB8Juecw+bYk8Y0mshLh5
-         J3lw==
-X-Forwarded-Encrypted: i=1; AJvYcCW4lba21mcs4KQ7mOZrbIwQtwrL3RaBg56xacLmC6vqG5zVyyzPDYqD7e75VWE3mNj51zWscH5zAPz2TamZgOIaFroTDdt2Ak2SIcxZ
-X-Gm-Message-State: AOJu0Yw5JIQiQICbbYx2JQMfwF96p0rF5pH0z+Eq+MG6cXvUIUjQZ/uk
-	aQ647FDOifGneGuMkdY06hLRZJbzK4hsGQN4whmFKQewbmj9M1pDy+Sd/1Zegdk=
-X-Google-Smtp-Source: AGHT+IHKy57nSuGOHzyW+AHTWzhaIS8bsMFdSatM6N6CkW3nKL+4boqP2WuHmw6B6CE+NVXx+7nQUw==
-X-Received: by 2002:a17:907:7245:b0:a4e:768a:1445 with SMTP id ds5-20020a170907724500b00a4e768a1445mr1664506ejc.16.1712329267179;
-        Fri, 05 Apr 2024 08:01:07 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id jx24-20020a170907761800b00a46baba1a0asm926271ejc.100.2024.04.05.08.01.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 08:01:06 -0700 (PDT)
-Date: Fri, 5 Apr 2024 18:01:02 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: Brian Foster <bfoster@redhat.com>, linux-bcachefs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] bcachefs: fix ! vs ~ typo in __clear_bit_le64()
-Message-ID: <5ecccc80-70b2-4c04-8c09-1113fef3e515@moroto.mountain>
+	s=arc-20240116; t=1712329339; c=relaxed/simple;
+	bh=Qd6G5maD/2bB1FBCGYcJGy50moLaCDUjrKAdzbS6uh4=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=EulqVlXik8Oa3nXXhqA5hcpWnF0cZ4gVlVy4pYzs/Qw5O73sv8X0sWkoh0Ire2Srhz0912zZ6UUkecJrZBHo8zh6A8xusrzw8P2x5j+RY6BLWkWHFq3/2Zt8iBcE5+qdKxlP7m2Iv/8vc3TJ0EG01AY5HHWzDCuoBZ98eh6g5OE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=JxRT5eL3; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8FB601BF20F;
+	Fri,  5 Apr 2024 15:02:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712329335;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=jePpTY9wJhZN+709Nb4n6FZ8IJ1Mh7MLk4EHKC+eTMg=;
+	b=JxRT5eL3R3EXBHm0arUs8v088hDO1F4xaZiNcL62n2ehvtBnR0V0tB9pc1S1FoC2CIEYV6
+	M73Slz1iGfdqETMbMYi1hgjb6EB2YsXyqZjckQBrb85TpNqxr0utviSLgFEMskUoYuUGEl
+	+Yw23A3rvlWlejGs0ahEcjSd4JxtEHRHhbCUYnBqzXrZETwpkRc4bOm3PKIcjL+cOr9CoY
+	Bh9MuesdboX5aFzgkZwSbU4h87qMfJog7ZzVzYvqsLEAcyBYIwCVNLefLyq7rdzO5iv5ww
+	4QlMBCspCiuNwOUdqdLkJC3W65E7Y3Ey8YNPXHEwMkAUGNUmrpkNghvQ+vmXzg==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: [PATCH v2 00/11] spi: cadence-qspi: add Mobileye EyeQ5 support
+Date: Fri, 05 Apr 2024 17:02:10 +0200
+Message-Id: <20240405-cdns-qspi-mbly-v2-0-956679866d6d@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAHISEGYC/13MQQ6CMBCF4auQWTtmKK1BV97DsChtlUmghZYQC
+ eHuVty5/F/yvg2Si+wS3IoNols4cfA5xKkA02n/csg2NwgSkgRd0VifcEoj49D2K1onBCktpW4
+ ryKcxuie/D/DR5O44zSGuh7+U3/VHVVT/U0uJhFpRVauLtVm9tyHMPfuzCQM0+75/AOuSe1+uA
+ AAA
+To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Vaishnav Achath <vaishnav.a@ti.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Rob Herring <robh@kernel.org>
+Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-The ! was obviously intended to be ~.  As it is, this function does
-the equivalent to: "addr[bit / 64] = 0;".
+Hi all,
 
-Fixes: 27fcec6c27ca ("bcachefs: Clear recovery_passes_required as they complete without errors")
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+V2 of this series adding octal SPI-NOR support to Mobileye EyeQ5
+platform. It has been tested on EyeQ5 hardware successfully.
+V1 cover letter [5] contains a brief summary of what gets added.
+
+There is no dependency except if you want zero errors in devicetree:
+system-controller series [3] for <&clocks> phandle.
+
+Have a nice day,
+Théo
+
+[0]: https://lore.kernel.org/lkml/20240216174227.409400-1-gregory.clement@bootlin.com/
+[1]: https://lore.kernel.org/linux-mips/20240209-regname-v1-0-2125efa016ef@flygoat.com/
+[2]: https://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/log/
+[3]: https://lore.kernel.org/lkml/20240301-mbly-clk-v9-0-cbf06eb88708@bootlin.com/
+[4]: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/log/
+[5]: https://lore.kernel.org/lkml/20240308-cdns-qspi-mbly-v1-0-a503856dd205@bootlin.com/
+
+To: Mark Brown <broonie@kernel.org>
+To: Rob Herring <robh+dt@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Vaishnav Achath <vaishnav.a@ti.com>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Rob Herring <robh@kernel.org>
+Cc: linux-spi@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+Cc: Gregory CLEMENT <gregory.clement@bootlin.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Cc: Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+
+Changes in v2:
+- Rebase upon v6.9-rc2.
+- Fix dt-bindings commit subject tags.
+- Take Reviewed-by: Krzysztof Kozlowski on dt-bindings commit.
+- Add dt-bindings commit to order compatibles alphabetically.
+  adding EyeQ5 compatible can be taken alone easily.
+- Drop patch taken upstream:
+- Add To: Rob Herring, following get_maintainer.pl recommendation.
+- Link to v1: https://lore.kernel.org/r/20240308-cdns-qspi-mbly-v1-0-a503856dd205@bootlin.com
+
+Krzysztof: unsure if you want this. It is second so that commit
+spi: cadence-qspi: switch from legacy names to modern ones
 ---
- fs/bcachefs/util.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Théo Lebrun (11):
+      spi: dt-bindings: cdns,qspi-nor: add mobileye,eyeq5-ospi compatible
+      spi: dt-bindings: cdns,qspi-nor: sort compatibles alphabetically
+      spi: cadence-qspi: allow building for MIPS
+      spi: cadence-qspi: store device data pointer in private struct
+      spi: cadence-qspi: add FIFO depth detection quirk
+      spi: cadence-qspi: minimise register accesses on each op if !DTR
+      spi: cadence-qspi: add no-IRQ mode to indirect reads
+      spi: cadence-qspi: add early busywait to cqspi_wait_for_bit()
+      spi: cadence-qspi: add mobileye,eyeq5-ospi compatible
+      MIPS: mobileye: eyeq5: Add SPI-NOR controller node
+      MIPS: mobileye: eyeq5: add octal flash node to eval board DTS
 
-diff --git a/fs/bcachefs/util.h b/fs/bcachefs/util.h
-index b7e7c29278fc..de639e8a3ab5 100644
---- a/fs/bcachefs/util.h
-+++ b/fs/bcachefs/util.h
-@@ -795,7 +795,7 @@ static inline void __set_bit_le64(size_t bit, __le64 *addr)
- 
- static inline void __clear_bit_le64(size_t bit, __le64 *addr)
- {
--	addr[bit / 64] &= !cpu_to_le64(BIT_ULL(bit % 64));
-+	addr[bit / 64] &= ~cpu_to_le64(BIT_ULL(bit % 64));
- }
- 
- static inline bool test_bit_le64(size_t bit, __le64 *addr)
+ .../devicetree/bindings/spi/cdns,qspi-nor.yaml     |  19 +++-
+ arch/mips/boot/dts/mobileye/eyeq5-epm5.dts         |  15 +++
+ arch/mips/boot/dts/mobileye/eyeq5.dtsi             |  15 +++
+ drivers/spi/Kconfig                                |   2 +-
+ drivers/spi/spi-cadence-quadspi.c                  | 114 ++++++++++++++++-----
+ 5 files changed, 132 insertions(+), 33 deletions(-)
+---
+base-commit: afccf1991d034a11ce0a1c21d90feba510838e34
+change-id: 20240209-cdns-qspi-mbly-de2205a44ab3
+
+Best regards,
 -- 
-2.43.0
+Théo Lebrun <theo.lebrun@bootlin.com>
 
 
