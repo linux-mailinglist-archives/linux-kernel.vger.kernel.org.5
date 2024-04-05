@@ -1,196 +1,312 @@
-Return-Path: <linux-kernel+bounces-133556-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133557-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB37389A57F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 22:12:01 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB05789A587
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 22:14:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90E8C2830CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:12:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DE2CB20D87
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:14:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43299173358;
-	Fri,  5 Apr 2024 20:11:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6899717335A;
+	Fri,  5 Apr 2024 20:14:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HTM0Bqsk"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GtatqMjR"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4FA5D905
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 20:11:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A21171E42
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 20:14:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712347912; cv=none; b=fXKJUrC+oGAngzP12rAx5Nj22Qkotl0ZEEbQ01tEbNZcjGa10Xuk+WbK+BnADpbo9p+f13ButMlKhaGXmqMJLP8MLF08pTp0C3L8gf6sh54LyGhaHj7gSPU/Wcoyd9P607IN+08ce3f100u2Rk0+pyKbB+Mz5W65gtatppV7tmo=
+	t=1712348047; cv=none; b=XT6+hvBhcYKs+0Muhq56hdG/SB+ZgvtR+outtBK+uFy+aF0+CRVbKQ0BqLJaM27+wsvb4uIOlbMRvT4UDF7tWNs/5BJZ9oHujMzc/3e8vOBarxRypnCYAjAmQx16R3WXQ4lDQt9w5IwnUNwOw8MpeCPkWK+s5m0Z4rUbf3u959Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712347912; c=relaxed/simple;
-	bh=+WOGzChq2Kxqaxaf0+jxeK0j7+8EmTC2PshNHOBZahY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=EN8zgU+yB/9vXTY3Hj7R5hzSa7e1p1i0g/+NfoMGXL/4yeTUUAogav1LgbuWgyDrq/hhysE/LS9Y7CHBfOjNIiQPzll8TMXec1dje4+JpPHUNhmjAP5WJPZdDj+xwOevxC8lSDuPSclB2v2REhqT+kqbCnzSmi0fkdyIFOxHcFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HTM0Bqsk; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712347909;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SAgOnBaLMvzVz7iNRcvA3GgHfkxFPcBiz3Kz5lopPUc=;
-	b=HTM0BqskiOPi7OnUzvd/55PqH7lXnzbGiVAUbBNlHV3eD33kDZsQlxsfcR3oN/6kTRFSgx
-	GRzZdr+Knfptg7AaCUH0XjuuBWPjXoSH6BnH0pkJ9fmnvW+PuA4lDXipqG5dPmN2GLoUEw
-	QU1MOT662VBUewMC1yXHTVFKNvbZXeI=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-478-1S-h9MCjMJ6ODERsBQxm-w-1; Fri, 05 Apr 2024 16:11:48 -0400
-X-MC-Unique: 1S-h9MCjMJ6ODERsBQxm-w-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a51a6691238so71759866b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 13:11:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712347907; x=1712952707;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SAgOnBaLMvzVz7iNRcvA3GgHfkxFPcBiz3Kz5lopPUc=;
-        b=EV6oXe4p9tQYWcvhgKNgOWTI9QI0QuLBysWm293IB+nPBEjuX5mm8ORI08vtUiZkQx
-         k+nFXKjLWOsgms2sstwd+hyQ5ngq3ZDESTfSx4L6cuDyo7irlxj3KFYejIvjf3QAEg29
-         QCTOf6WnBZ7do7VlFhUrcu5OOTgeQMMXuBQC8/2lDV4kAIzodzck3XxpPaIXlFTS6VWw
-         CFesYGcG20RVbQ1EA97gCLLO/IE5jP794Gt6ccj2JhoGX+NpdKDdCNw68QSPdeIBhEjp
-         ecGZLX27dO89LQ8wwfVsMjp8AZPiyIoiQSxFC7UAKfZI4yb/yUnCbWnsgu7s23nwMbJs
-         nwZA==
-X-Forwarded-Encrypted: i=1; AJvYcCVlQOVWo4GKPq0wmJPI9GL27nqkt7wguCWWCFogzgjUcKY8hKk2EHvkjysEwfVeFz0S1G7fyBcA1fzfBa6DAMR1ovqPqv2sMt6qa+Wh
-X-Gm-Message-State: AOJu0YyRJXMJTZDunaSyj0BasK2d4xtqk7+S8Jr0zWzJ3Scr7KbTv3ux
-	Cpdv0/IotIs+2bll709WNDMS549HaE+d/TRiKxzkOiA3A7rHa3j7iW3WQLIhrQxNm280BeN+4HA
-	TxLEL6Ao4xAa11QsBscQrs4Qcat23doTaQ9qZOWG7RC6jn6vaheOFD2qNBIW9xw==
-X-Received: by 2002:a17:906:3b4d:b0:a4e:24af:d8a4 with SMTP id h13-20020a1709063b4d00b00a4e24afd8a4mr1738770ejf.28.1712347907204;
-        Fri, 05 Apr 2024 13:11:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHnvO/Os4SHQi+5vTGAC2ejxy/i2mN/3FawVVfJbvGqJnm12XmhZQ2H0tRZQbWRHhCxo/1UBQ==
-X-Received: by 2002:a17:906:3b4d:b0:a4e:24af:d8a4 with SMTP id h13-20020a1709063b4d00b00a4e24afd8a4mr1738765ejf.28.1712347906828;
-        Fri, 05 Apr 2024 13:11:46 -0700 (PDT)
-Received: from [192.168.1.121] (cst2-173-128.cust.vodafone.cz. [31.30.173.128])
-        by smtp.gmail.com with ESMTPSA id va12-20020a17090711cc00b00a4eeb5ff4ddsm1179370ejb.152.2024.04.05.13.11.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 13:11:46 -0700 (PDT)
-Message-ID: <2ebbe58df9575136583f65cd19d133bdb61d5c20.camel@redhat.com>
-Subject: Re: [PATCH v2] nfsd: hold a lighter-weight client reference over
- CB_RECALL_ANY
-From: vbenes@redhat.com
-To: Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>
-Cc: Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, Dai
- Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
- linux-nfs@vger.kernel.org,  linux-kernel@vger.kernel.org
-Date: Fri, 05 Apr 2024 22:11:45 +0200
-In-Reply-To: <ZhA93BQSxkJqmqaw@tissot.1015granger.net>
-References: <20240405-rhel-31513-v2-1-b0f6c10be929@kernel.org>
-	 <ZhA93BQSxkJqmqaw@tissot.1015granger.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1712348047; c=relaxed/simple;
+	bh=MauAJ22yHYagcZfjpHra3lN/mo7DYJopjdnrUhrDfgE=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=oM8P+EM1grvT/UdkFh0swcsYvZsM6D4bP/Wc1ZgW2rOiGyUJqA/P64tFonYAp094GgxIWI8cZsepjyaBh0NGeircOqEPK+j7rTk894BLbxPCJmlxdIaUWRwzf8h9scy/NV0pYMIzZnc00eo+RJ96uYJlxBK3IwRHBaVwVCbznmY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GtatqMjR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9288FC433C7;
+	Fri,  5 Apr 2024 20:14:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712348047;
+	bh=MauAJ22yHYagcZfjpHra3lN/mo7DYJopjdnrUhrDfgE=;
+	h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
+	b=GtatqMjRcQEjmaKQqHgse4nsmxyosMlOCd6nWUIUgH2hkjKtBMxT7qjIUSvrd3yFn
+	 bzeGadxs8zkoDpE5ulfDpzuIthuXaxb2NLu3a6J12u6DjIRQVjd3N/LiVntX042LhY
+	 7SietNtnz/LuwvGImp+busp34OP52MZqVc1J9zAVOIQATMTEaU5BDTJk/cS1Tu8Tz5
+	 fTA8BV/j8RUsG53DGI4ZpHg60Wdx+X8Kpa/+MdsbDbCt513B2DGEvo7oPshopXWNqD
+	 C44cigvG2NNz+a4L91zKIQfHJfdPzpKZO9PrkqAJWQeVnv9XMLSiS1jSfN81YiGqMn
+	 lo4YitwnWbM+Q==
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 962081200068;
+	Fri,  5 Apr 2024 16:14:05 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Fri, 05 Apr 2024 16:14:05 -0400
+X-ME-Sender: <xms:jFsQZqLwxgkPtLnQH9PVc4cqFtolkFLRDgpVlnhjwAxI02HdhSXScg>
+    <xme:jFsQZiIdNH-EBxl5WagFj8kfyjXa4KTFhHJWCTBwLEca0hmG9h3Z2qSctFpbsYHS7
+    uF1MZANqhyIlyK1vOw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegtddgudeglecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusehkvghrnhgvlhdrohhrgheqnecugg
+    ftrfgrthhtvghrnhepvddttdffjeefgeeggfelfefggefhheeffefftefggfelgeduveev
+    tefhfeejveeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homheprghrnhguodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdduvdekhedu
+    jedtvdegqddvkeejtddtvdeigedqrghrnhgupeepkhgvrhhnvghlrdhorhhgsegrrhhnug
+    gsrdguvg
+X-ME-Proxy: <xmx:jFsQZqtLFUoXOlHogjlMx6x2TxwHYwbUo-nPHNpo1rEE3tTO8g3nRA>
+    <xmx:jFsQZvZFlP2f7MWdYVzarCRTCF0CN3Ft6BB8HvK0q_EpGJqPfHEySg>
+    <xmx:jFsQZhaSCD7aeRLlVgL1zEWKNcgrsIrU1HqOGwLSk1KNGJcMVjFNLw>
+    <xmx:jFsQZrCTFF4fUHqWU9h_FENsrurErAmcwlXpAXTyPY1cif2dMW5gjw>
+    <xmx:jVsQZlG_eXZBo_yzzUa2b85AFOdQ5KahgbEG5DBjxqw0Iy__tFLHWi0J>
+Feedback-ID: i36794607:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id BCC0AB6008D; Fri,  5 Apr 2024 16:14:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-333-gbfea15422e-fm-20240327.001-gbfea1542
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Message-Id: <6b308ab0-dda7-4052-98b3-cb03e17e3e12@app.fastmail.com>
+In-Reply-To: <d9bdfa48-572a-caa1-229b-44565690d9e6@gmail.com>
+References: <20240403122851.38808-1-schnelle@linux.ibm.com>
+ <dd55afa6-8cb6-4e25-b720-d2df62dbb5e6@gmail.com>
+ <bf276f98-2712-4fcf-a119-f984a1aedbf2@app.fastmail.com>
+ <CAMuHMdX+M1VuhDVnC9n4hCBDjHywwsByNK1w8ibazc+-8_C53A@mail.gmail.com>
+ <d9bdfa48-572a-caa1-229b-44565690d9e6@gmail.com>
+Date: Fri, 05 Apr 2024 22:13:43 +0200
+From: "Arnd Bergmann" <arnd@kernel.org>
+To: "Michael Schmitz" <schmitzmic@gmail.com>,
+ "Geert Uytterhoeven" <geert@linux-m68k.org>
+Cc: "Niklas Schnelle" <schnelle@linux.ibm.com>,
+ linux-m68k@lists.linux-m68k.org, "Heiko Carstens" <hca@linux.ibm.com>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/1] m68k: Handle HAS_IOPORT dependencies
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2024-04-05 at 14:07 -0400, Chuck Lever wrote:
-> On Fri, Apr 05, 2024 at 01:56:18PM -0400, Jeff Layton wrote:
-> > Currently the CB_RECALL_ANY job takes a cl_rpc_users reference to
-> > the
-> > client. While a callback job is technically an RPC that counter is
-> > really more for client-driven RPCs, and this has the effect of
-> > preventing the client from being unhashed until the callback
-> > completes.
-> >=20
-> > If nfsd decides to send a CB_RECALL_ANY just as the client reboots,
-> > we
-> > can end up in a situation where the callback can't complete on the
-> > (now
-> > dead) callback channel, but the new client can't connect because
-> > the old
-> > client can't be unhashed. This usually manifests as a NFS4ERR_DELAY
-> > return on the CREATE_SESSION operation.
-> >=20
-> > The job is only holding a reference to the client so it can clear a
-> > flag
-> > in the after the RPC completes. Fix this by having CB_RECALL_ANY
-> > instead
-> > hold a reference to the cl_nfsdfs.cl_ref. Typically we only take
-> > that
-> > sort of reference when dealing with the nfsdfs info files, but it
-> > should
-> > work appropriately here to ensure that the nfs4_client doesn't
-> > disappear.
-> >=20
-> > Fixes: 44df6f439a17 ("NFSD: add delegation reaper to react to low
-> > memory condition")
-> > Reported-by: Vladimir Benes <vbenes@redhat.com>
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
->=20
-> Applied to nfsd-fixes while waiting for review and testing. Thanks!
->=20
->=20
-> > ---
-> > Changes in v2:
-> > - Clean up the changelog
-> > - Add Fixes: tag
-> > - Use kref_get instead of kref_get_unless_zero
-> > ---
-> > =C2=A0fs/nfsd/nfs4state.c | 7 ++-----
-> > =C2=A01 file changed, 2 insertions(+), 5 deletions(-)
-> >=20
-> > diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-> > index 5fcd93f7cb8c..3cef81e196c6 100644
-> > --- a/fs/nfsd/nfs4state.c
-> > +++ b/fs/nfsd/nfs4state.c
-> > @@ -3042,12 +3042,9 @@ static void
-> > =C2=A0nfsd4_cb_recall_any_release(struct nfsd4_callback *cb)
-> > =C2=A0{
-> > =C2=A0	struct nfs4_client *clp =3D cb->cb_clp;
-> > -	struct nfsd_net *nn =3D net_generic(clp->net, nfsd_net_id);
-> > =C2=A0
-> > -	spin_lock(&nn->client_lock);
-> > =C2=A0	clear_bit(NFSD4_CLIENT_CB_RECALL_ANY, &clp->cl_flags);
-> > -	put_client_renew_locked(clp);
-> > -	spin_unlock(&nn->client_lock);
-> > +	drop_client(clp);
-> > =C2=A0}
-> > =C2=A0
-> > =C2=A0static int
-> > @@ -6616,7 +6613,7 @@ deleg_reaper(struct nfsd_net *nn)
-> > =C2=A0		list_add(&clp->cl_ra_cblist, &cblist);
-> > =C2=A0
-> > =C2=A0		/* release in nfsd4_cb_recall_any_release */
-> > -		atomic_inc(&clp->cl_rpc_users);
-> > +		kref_get(&clp->cl_nfsdfs.cl_ref);
-> > =C2=A0		set_bit(NFSD4_CLIENT_CB_RECALL_ANY, &clp-
-> > >cl_flags);
-> > =C2=A0		clp->cl_ra_time =3D ktime_get_boottime_seconds();
-> > =C2=A0	}
-> >=20
-> > ---
-> > base-commit: 05258a0a69b3c5d2c003f818702c0a52b6fea861
-> > change-id: 20240405-rhel-31513-028ab6f14252
-> >=20
-> > Best regards,
-> > --=20
-> > Jeff Layton <jlayton@kernel.org>
-> >=20
-> >=20
->=20
-Hi,=20
-I've just finished the testing of the new patch on the same HW
-configuration and the dracut test suite is stable again.
+On Fri, Apr 5, 2024, at 20:36, Michael Schmitz wrote:
+> Am 05.04.2024 um 23:16 schrieb Geert Uytterhoeven:
+>> On Wed, Apr 3, 2024 at 8:35=E2=80=AFPM Arnd Bergmann <arnd@kernel.org=
+> wrote:
+>>> On Wed, Apr 3, 2024, at 20:11, Michael Schmitz wrote:
+>>>> how do you propose we handle legacy drivers that do depend on
+>>>> inb()/outb() functions (_not_ actual ISA I/O) on architectures that=
+ map
+>>>> inb()/outb() to MMIO functions?
+>>>>
+>>>> (In my case, that's at least ne.c - Geert ought to have a better
+>>>> overview what else does use inb()/outb() on m68k)
+>>>
+>>> If a machine provides an inb()/outb() set of operations that
+>>> is actually used, it should set HAS_IOPORT.
+>>>
+>>> For the Q40, it may be better in the long run to change the
+>>> drivers to just use MMIO directly though.
+>>
+>> Q40 uses ISA.
+>>
+>> Michael is worried about non-ISA drivers using inb() and friends.
+>> At some point in time (i.e. eons ago), we were told it was better to
+>> use in[bwl]()/read[bwl]() instead of directly dereferencing volatile
+>> pointers...
+>>
+>> Anyway, I don't think we have many users of inb() and friends left, a=
+nd
+>> I assume the bots should have detected any/most remaining users in Ni=
+klas'
+>> branch...
+>
+> All the 8390 based ethernet drivers still use inb() and friends.
+>
+> That is the main reason for the terrible hacks in=20
+> arch/m68k/include/asm/io_mm.h ...
+>
+> The last time I tried to add support for a different PCMCIA ethernet=20
+> adapter to apne.c _without_ adding to the hacks in io_mm.h, I wasn't=20
+> getting anywhere with the netdev crowd. That was ages ago, and I doubt=20
+> their enthusiasm for a rewrite of the 8390 code base to avoid using=20
+> inb() on MMIO architectures will be any better now.
 
-Thank you for your patches!
-Vladimir Benes
+From what I can see, there is already an abstraction layer in
+these drivers that is used by all m68k drivers except apne:
 
-Tested-by: Vladimir Benes <vbenes@redhat.com>
+$ git grep -w 'define\sei_inb'
+drivers/net/ethernet/8390/8390.h:#define ei_inb(_p)     inb(_p)
+drivers/net/ethernet/8390/8390p.c:#define ei_inb(_p)    inb(_p)
+drivers/net/ethernet/8390/ax88796.c:#define ei_inb(_a) readb(ax_convert_=
+addr(_a))
+drivers/net/ethernet/8390/etherh.c:#define ei_inb(_p)    readb((void __i=
+omem *)_p)
+drivers/net/ethernet/8390/hydra.c:#define ei_inb(port)   in_8(port)
+drivers/net/ethernet/8390/mac8390.c:#define ei_inb(port)        in_8(por=
+t)
+drivers/net/ethernet/8390/mcf8390.c:#define     ei_inb  ei_inb
+drivers/net/ethernet/8390/xsurf100.c:#define ei_inb(_a) z_readb(ax_conve=
+rt_addr(_a))
+drivers/net/ethernet/8390/zorro8390.c:#define ei_inb(port)              =
+in_8(port)
 
+Can't apne.c just do the same here? The patch below didn't
+take that long to come up with, but I may be missing something
+here of course.
 
+    Arnd
 
+8<---
+From 5dd43e612a52adf499b1ea3d33e3b2b45894d275 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 5 Apr 2024 21:47:51 +0200
+Subject: [PATCH] net: apne: convert to lib8390
 
+The apne driver still uses the ISA-style inb()/outb() wappers through the
+8390.c helper module, which won't work in the future.
 
+Change it to include lib8390.c like all the other m68k variants of this
+driver do, so it can have custom MMIO abstractions.
 
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+
+diff --git a/drivers/net/ethernet/8390/Makefile b/drivers/net/ethernet/8=
+390/Makefile
+index 85c83c566ec6..ec1b325da4e4 100644
+--- a/drivers/net/ethernet/8390/Makefile
++++ b/drivers/net/ethernet/8390/Makefile
+@@ -4,7 +4,7 @@
+ #
+=20
+ obj-$(CONFIG_MAC8390) +=3D mac8390.o
+-obj-$(CONFIG_APNE) +=3D apne.o 8390.o
++obj-$(CONFIG_APNE) +=3D apne.o
+ obj-$(CONFIG_ARM_ETHERH) +=3D etherh.o
+ obj-$(CONFIG_AX88796) +=3D ax88796.o
+ obj-$(CONFIG_HYDRA) +=3D hydra.o
+diff --git a/drivers/net/ethernet/8390/apne.c b/drivers/net/ethernet/839=
+0/apne.c
+index 828edca8d30c..ea3747723b3c 100644
+--- a/drivers/net/ethernet/8390/apne.c
++++ b/drivers/net/ethernet/8390/apne.c
+@@ -41,7 +41,15 @@
+ #include <asm/amigayle.h>
+ #include <asm/amipcmcia.h>
+=20
+-#include "8390.h"
++#define ei_inb(port)            in_8(port)
++#define ei_outb(val, port)      out_8(port, val)
++#define ei_inb_p(port)          in_8(port)
++#define ei_outb_p(val, port)    out_8(port, val)
++
++static const char version[] =3D
++    "apne.c:v1.1 7/10/98 Alain Malek (Alain.Malek@cryogen.ch)\n";
++
++#include "lib8390.c"
+=20
+ /* ---- No user-serviceable parts below ---- */
+=20
+@@ -105,14 +113,21 @@ static int init_pcmcia(void);
+ #define MANUAL_HWADDR5 0x9a
+ */
+=20
+-static const char version[] =3D
+-    "apne.c:v1.1 7/10/98 Alain Malek (Alain.Malek@cryogen.ch)\n";
+-
+ static int apne_owned;	/* signal if card already owned */
+=20
+-static u32 apne_msg_enable;
+-module_param_named(msg_enable, apne_msg_enable, uint, 0444);
+-MODULE_PARM_DESC(msg_enable, "Debug message level (see linux/netdevice.=
+h for bitmap)");
++static const struct net_device_ops apne_netdev_ops =3D {
++	.ndo_open		=3D __ei_open,
++	.ndo_stop		=3D __ei_close,
++	.ndo_start_xmit		=3D __ei_start_xmit,
++	.ndo_tx_timeout		=3D __ei_tx_timeout,
++	.ndo_get_stats		=3D __ei_get_stats,
++	.ndo_set_rx_mode	=3D __ei_set_multicast_list,
++	.ndo_validate_addr	=3D eth_validate_addr,
++	.ndo_set_mac_address	=3D eth_mac_addr,
++#ifdef CONFIG_NET_POLL_CONTROLLER
++	.ndo_poll_controller	=3D __ei_poll,
++#endif
++};
+=20
+ static struct net_device * __init apne_probe(void)
+ {
+@@ -141,11 +156,11 @@ static struct net_device * __init apne_probe(void)
+ 		return ERR_PTR(-ENODEV);
+ 	}
+=20
+-	dev =3D alloc_ei_netdev();
++	dev =3D ____alloc_ei_netdev(0);
+ 	if (!dev)
+ 		return ERR_PTR(-ENOMEM);
+ 	ei_local =3D netdev_priv(dev);
+-	ei_local->msg_enable =3D apne_msg_enable;
++	ei_local->msg_enable =3D msg_enable;
+=20
+ 	/* disable pcmcia irq for readtuple */
+ 	pcmcia_disable_irq();
+@@ -203,7 +218,7 @@ static int __init apne_probe1(struct net_device *dev=
+, int ioaddr)
+ #endif
+     static unsigned version_printed;
+=20
+-    if ((apne_msg_enable & NETIF_MSG_DRV) && (version_printed++ =3D=3D =
+0))
++    if ((msg_enable & NETIF_MSG_DRV) && (version_printed++ =3D=3D 0))
+ 		netdev_info(dev, version);
+=20
+     netdev_info(dev, "PCMCIA NE*000 ethercard probe");
+@@ -309,7 +324,7 @@ static int __init apne_probe1(struct net_device *dev=
+, int ioaddr)
+=20
+     dev->base_addr =3D ioaddr;
+     dev->irq =3D IRQ_AMIGA_PORTS;
+-    dev->netdev_ops =3D &ei_netdev_ops;
++    dev->netdev_ops =3D &apne_netdev_ops;
+=20
+     /* Install the Interrupt handler */
+     i =3D request_irq(dev->irq, apne_interrupt, IRQF_SHARED, DRV_NAME, =
+dev);
+@@ -333,7 +348,7 @@ static int __init apne_probe1(struct net_device *dev=
+, int ioaddr)
+     ei_status.block_output =3D &apne_block_output;
+     ei_status.get_8390_hdr =3D &apne_get_8390_hdr;
+=20
+-    NS8390_init(dev, 0);
++    __NS8390_init(dev, 0);
+=20
+     pcmcia_ack_int(pcmcia_get_intreq());		/* ack PCMCIA int req */
+     pcmcia_enable_irq();
+@@ -513,7 +528,7 @@ apne_block_output(struct net_device *dev, int count,
+ 	if (time_after(jiffies, dma_start + 2*HZ/100)) {	/* 20ms */
+ 		netdev_warn(dev, "timeout waiting for Tx RDC.\n");
+ 		apne_reset_8390(dev);
+-		NS8390_init(dev,1);
++		__NS8390_init(dev,1);
+ 		break;
+ 	}
+=20
+@@ -534,10 +549,10 @@ static irqreturn_t apne_interrupt(int irq, void *d=
+ev_id)
+         pcmcia_ack_int(pcmcia_intreq);
+         return IRQ_NONE;
+     }
+-    if (apne_msg_enable & NETIF_MSG_INTR)
++    if (msg_enable & NETIF_MSG_INTR)
+ 	pr_debug("pcmcia intreq =3D %x\n", pcmcia_intreq);
+     pcmcia_disable_irq();			/* to get rid of the sti() within ei_interr=
+upt */
+-    ei_interrupt(irq, dev_id);
++    __ei_interrupt(irq, dev_id);
+     pcmcia_ack_int(pcmcia_get_intreq());
+     pcmcia_enable_irq();
+     return IRQ_HANDLED;
 
