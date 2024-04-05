@@ -1,74 +1,54 @@
-Return-Path: <linux-kernel+bounces-132983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB3DD899CD8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:24:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D739899CDA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:24:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 199351F22EA6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:24:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3E6CF1C20C35
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:24:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A100D16D9C0;
-	Fri,  5 Apr 2024 12:23:07 +0000 (UTC)
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6763816C866;
+	Fri,  5 Apr 2024 12:24:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Wgxkv1rQ"
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57FB716D4DC;
-	Fri,  5 Apr 2024 12:23:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1171C161B43
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 12:24:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712319787; cv=none; b=Ved9b2v4WDbDNbZXiFrl1w2FBpcRCMluNN1JKxgfNvL32dVEP7h4TYLwevQw8ojHWtCbxfV+UFlm3QVW8WBUI8rURbs5FV12Nrz6Dk6mlDdN716sT6OHtFg6MbdQ5RjET94m1sl/8VORz0yZ7cb56ExAiRnYFaLo44GZyR5IEUM=
+	t=1712319874; cv=none; b=AS3wCGOU6QfsI72DUJWR+R6o2ZpzdsluEPNQ2/7UO19HFwElt1HBCnpHuwUkzjexR/rBgcCvnuFx0yAzwjp2nhSlA1/qdP1q7Qmburd8inu/sMru1lVvcTA0oaPc7WJPRXRUQIQh25YOYTDztYVYFncKRDV6vmCbgzDLqDrKhx0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712319787; c=relaxed/simple;
-	bh=H4qwwcs9QCBhu2Nhj/At6l3PyJNuCbZmSkaPnBPTv2g=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JMQVBuXU6cEiHqxEtM/C9RiNlgTh4amuD/hp5F9xSYIx7tUwz4sxMxpVF55bAsgqzH8mnJVxoSVWHOOOjMQXwI2LNwtlqUFbD7yNAg6EPPoyDecHj2yJRPH3o6gy2azr7aQrUQdYxzPuneRtM/Tbd49RKYc/wG+C30DMP1SjwwY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso2882300a12.2;
-        Fri, 05 Apr 2024 05:23:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712319784; x=1712924584;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0b6ZTZP28B582Ew9wb8M6SnVQx+DzS3AWFgjM5huBrw=;
-        b=EfQmn2Lzgfv12+rK2dFvdU1/dss8K7UZVj5PukvJvVYQyPQJNgSF1/TyjfKpkJebRc
-         sj0CszgbfREZVBLcr4/jO+UdlfD2qh5NRAUnso34DyfJC9GS09HTr22vTcb+Hb9LLgCt
-         Hq2jm+kJuCdr/wREup+7emPjJvENI4Dps6ITNo0SddQqnffrJ+u/4QiNUSu7B0KOR/rd
-         AY59/hM35+2alONuWKd0EYXavzrBwh91pTl2TJyP3alTyhuCx89n9IFNkSq8dKMjn7Fe
-         DkAXt1XLhgKewtnik2XUOVAVrk4gUwT4IgmyRCOrwQJrR0U3MoE2E0rT58pbtVv4JXku
-         OliQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU0Y546E+BxVQ9B9CCAA38QkNBGCYXF/6/WWZ0X9hOX/GqwExmUTDisf9kOYuS7aaZKv6KG7nMCeqwgwoqeYrVJCk7qZzAcXh2UyzX4AXkWN23vwpzeS1BQOgX/5KThguVFKJLyUBM=
-X-Gm-Message-State: AOJu0YxpQ+/8FRXHeRA6qfXo1teRPnfEptjei4oQfMdRiU5yZwIjv735
-	D62TGYUX3PqlSQB9VGeuc/x0//jTIIysGxXv9bQJwpGiyd8x90vp
-X-Google-Smtp-Source: AGHT+IEUq9r/2bByh0SZDeLS9YE8AIX/kJ1yrrwbEiNuiEdzLaWWM9/L5wr+eIzvXbdrrpRvHGpXSg==
-X-Received: by 2002:a50:c04c:0:b0:56d:c40d:b921 with SMTP id u12-20020a50c04c000000b0056dc40db921mr974312edd.20.1712319783449;
-        Fri, 05 Apr 2024 05:23:03 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-005.fbsv.net. [2a03:2880:30ff:5::face:b00c])
-        by smtp.gmail.com with ESMTPSA id o9-20020aa7c509000000b0056bf6287f32sm736426edq.26.2024.04.05.05.23.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 05:23:03 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: kuba@kernel.org,
-	ath11k@lists.infradead.org,
-	ath10k@lists.infradead.org,
-	linux-wireless@vger.kernel.org,
-	imitsyanko@quantenna.com,
-	geomatsi@gmail.com,
-	kvalo@kernel.org,
-	Jeff Johnson <jjohnson@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH 3/3] wifi: ath11k: allocate dummy net_device dynamically
-Date: Fri,  5 Apr 2024 05:21:18 -0700
-Message-ID: <20240405122123.4156104-4-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240405122123.4156104-1-leitao@debian.org>
-References: <20240405122123.4156104-1-leitao@debian.org>
+	s=arc-20240116; t=1712319874; c=relaxed/simple;
+	bh=TMV6W+86/NP9K6bri+78PHBBLg88f2DQxrOZVXBrspA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UHfyyfn8TIlEHu+P/fe6CokPBRZ/CwO8zFd2sEOKVFAvN2DqfeL8RD3ZPGAd0zD0Aj7YSmlUAXREYFwiNJvtsYhrUWuAPhQ4rLB8J5phPutwyaqG/E3ZDmUt5qRGkTlw4QoXuVFGdudstT0anvDqeCitVOFy6DNdj19/MGgvrHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Wgxkv1rQ; arc=none smtp.client-ip=115.124.30.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1712319864; h=From:To:Subject:Date:Message-Id:MIME-Version;
+	bh=Xgh9CRUBvGZe+XyUWVoXRS+621S2VeB7U0nxfDSeTKc=;
+	b=Wgxkv1rQ78vkZqULUWLyf1lFuFyHrgHZwiATuW110pEgWvUgt0XGUt1k+glpHM0ldw2+LekL0w/tCbWfuIISTgLR8dBwPB60fk1iFJMmZDqzDD6sjUId5MFaLmB6c2djLud02ON9PbR1YzRQhePgkSjnr69A70uVd8fhemEDGts=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W3wypEZ_1712319863;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W3wypEZ_1712319863)
+          by smtp.aliyun-inc.com;
+          Fri, 05 Apr 2024 20:24:24 +0800
+From: Baolin Wang <baolin.wang@linux.alibaba.com>
+To: akpm@linux-foundation.org
+Cc: mgorman@techsingularity.net,
+	vbabka@suse.cz,
+	baolin.wang@linux.alibaba.com,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: set pageblock_order to HPAGE_PMD_ORDER in case with !CONFIG_HUGETLB_PAGE but THP enabled
+Date: Fri,  5 Apr 2024 20:24:16 +0800
+Message-Id: <3d57d253070035bdc0f6d6e5681ce1ed0e1934f7.1712286863.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,129 +57,44 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Embedding net_device into structures prohibits the usage of flexible
-arrays in the net_device structure. For more details, see the discussion
-at [1].
+As Vlastimil suggested in previous discussion[1], it doesn't make sense to set
+pageblock_order as MAX_PAGE_ORDER when hugetlbfs is not enabled and THP is enabled.
+Instead, it should be set to HPAGE_PMD_ORDER.
 
-Un-embed the net_device from struct ath11k_ext_irq_grp by converting it
-into a pointer. Then use the leverage alloc_netdev() to allocate the
-net_device object at ath11k_ahb_config_ext_irq() for ahb, and
-ath11k_pcic_ext_irq_config() for pcic.
-
-The free of the device occurs at ath11k_ahb_free_ext_irq() for the ahb
-case, and ath11k_pcic_free_ext_irq() for the pcic case.
-
-[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-
-Signed-off-by: Breno Leitao <leitao@debian.org>
+[1] https://lore.kernel.org/all/76457ec5-d789-449b-b8ca-dcb6ceb12445@suse.cz/
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 ---
- drivers/net/wireless/ath/ath11k/ahb.c  |  9 +++++++--
- drivers/net/wireless/ath/ath11k/core.h |  2 +-
- drivers/net/wireless/ath/ath11k/pcic.c | 21 +++++++++++++++++----
- 3 files changed, 25 insertions(+), 7 deletions(-)
+ include/linux/pageblock-flags.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath11k/ahb.c b/drivers/net/wireless/ath/ath11k/ahb.c
-index 7c0a23517949..7f3f6479d553 100644
---- a/drivers/net/wireless/ath/ath11k/ahb.c
-+++ b/drivers/net/wireless/ath/ath11k/ahb.c
-@@ -442,6 +442,7 @@ static void ath11k_ahb_free_ext_irq(struct ath11k_base *ab)
- 			free_irq(ab->irq_num[irq_grp->irqs[j]], irq_grp);
- 
- 		netif_napi_del(&irq_grp->napi);
-+		free_netdev(irq_grp->napi_ndev);
- 	}
- }
- 
-@@ -533,8 +534,12 @@ static int ath11k_ahb_config_ext_irq(struct ath11k_base *ab)
- 
- 		irq_grp->ab = ab;
- 		irq_grp->grp_id = i;
--		init_dummy_netdev(&irq_grp->napi_ndev);
--		netif_napi_add(&irq_grp->napi_ndev, &irq_grp->napi,
-+
-+		irq_grp->napi_ndev = alloc_netdev_dummy(0);
-+		if (!irq_grp->napi_ndev)
-+			return -ENOMEM;
-+
-+		netif_napi_add(irq_grp->napi_ndev, &irq_grp->napi,
- 			       ath11k_ahb_ext_grp_napi_poll);
- 
- 		for (j = 0; j < ATH11K_EXT_IRQ_NUM_MAX; j++) {
-diff --git a/drivers/net/wireless/ath/ath11k/core.h b/drivers/net/wireless/ath/ath11k/core.h
-index b3fb74a226fb..590307ca7a11 100644
---- a/drivers/net/wireless/ath/ath11k/core.h
-+++ b/drivers/net/wireless/ath/ath11k/core.h
-@@ -174,7 +174,7 @@ struct ath11k_ext_irq_grp {
- 	u64 timestamp;
- 	bool napi_enabled;
- 	struct napi_struct napi;
--	struct net_device napi_ndev;
-+	struct net_device *napi_ndev;
+diff --git a/include/linux/pageblock-flags.h b/include/linux/pageblock-flags.h
+index 3f2409b968ec..547e82cdc89a 100644
+--- a/include/linux/pageblock-flags.h
++++ b/include/linux/pageblock-flags.h
+@@ -28,7 +28,7 @@ enum pageblock_bits {
+ 	NR_PAGEBLOCK_BITS
  };
  
- enum ath11k_smbios_cc_type {
-diff --git a/drivers/net/wireless/ath/ath11k/pcic.c b/drivers/net/wireless/ath/ath11k/pcic.c
-index add4db4c50bc..79eb3f9c902f 100644
---- a/drivers/net/wireless/ath/ath11k/pcic.c
-+++ b/drivers/net/wireless/ath/ath11k/pcic.c
-@@ -316,6 +316,7 @@ static void ath11k_pcic_free_ext_irq(struct ath11k_base *ab)
- 			free_irq(ab->irq_num[irq_grp->irqs[j]], irq_grp);
+-#ifdef CONFIG_HUGETLB_PAGE
++#if defined(CONFIG_HUGETLB_PAGE)
  
- 		netif_napi_del(&irq_grp->napi);
-+		free_netdev(irq_grp->napi_ndev);
- 	}
- }
+ #ifdef CONFIG_HUGETLB_PAGE_SIZE_VARIABLE
  
-@@ -558,7 +559,7 @@ ath11k_pcic_get_msi_irq(struct ath11k_base *ab, unsigned int vector)
+@@ -45,7 +45,11 @@ extern unsigned int pageblock_order;
  
- static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
- {
--	int i, j, ret, num_vectors = 0;
-+	int i, j, n, ret, num_vectors = 0;
- 	u32 user_base_data = 0, base_vector = 0;
- 	unsigned long irq_flags;
+ #endif /* CONFIG_HUGETLB_PAGE_SIZE_VARIABLE */
  
-@@ -578,8 +579,11 @@ static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
- 
- 		irq_grp->ab = ab;
- 		irq_grp->grp_id = i;
--		init_dummy_netdev(&irq_grp->napi_ndev);
--		netif_napi_add(&irq_grp->napi_ndev, &irq_grp->napi,
-+		irq_grp->napi_ndev = alloc_netdev_dummy(0);
-+		if (!irq_grp->napi_ndev)
-+			return -ENOMEM;
+-#else /* CONFIG_HUGETLB_PAGE */
++#elif defined(CONFIG_TRANSPARENT_HUGEPAGE)
 +
-+		netif_napi_add(irq_grp->napi_ndev, &irq_grp->napi,
- 			       ath11k_pcic_ext_grp_napi_poll);
++#define pageblock_order		min_t(unsigned int, HPAGE_PMD_ORDER, MAX_PAGE_ORDER)
++
++#else /* CONFIG_TRANSPARENT_HUGEPAGE */
  
- 		if (ab->hw_params.ring_mask->tx[i] ||
-@@ -601,8 +605,13 @@ static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
- 			int vector = (i % num_vectors) + base_vector;
- 			int irq = ath11k_pcic_get_msi_irq(ab, vector);
- 
--			if (irq < 0)
-+			if (irq < 0) {
-+				for (n = 0; n <= i; n++) {
-+					irq_grp = &ab->ext_irq_grp[n];
-+					free_netdev(irq_grp->napi_ndev);
-+				}
- 				return irq;
-+			}
- 
- 			ab->irq_num[irq_idx] = irq;
- 
-@@ -615,6 +624,10 @@ static int ath11k_pcic_ext_irq_config(struct ath11k_base *ab)
- 			if (ret) {
- 				ath11k_err(ab, "failed request irq %d: %d\n",
- 					   vector, ret);
-+				for (n = 0; n <= i; n++) {
-+					irq_grp = &ab->ext_irq_grp[n];
-+					free_netdev(irq_grp->napi_ndev);
-+				}
- 				return ret;
- 			}
- 		}
+ /* If huge pages are not used, group by MAX_ORDER_NR_PAGES */
+ #define pageblock_order		MAX_PAGE_ORDER
 -- 
-2.43.0
+2.39.3
 
 
