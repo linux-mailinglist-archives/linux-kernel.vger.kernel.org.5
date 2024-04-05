@@ -1,299 +1,220 @@
-Return-Path: <linux-kernel+bounces-132301-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132302-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A5CC88992BC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:14:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A14F8992BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:16:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C93161C22476
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:14:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 76531285DA1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:16:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D608AB64B;
-	Fri,  5 Apr 2024 01:14:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2D3C79E5;
+	Fri,  5 Apr 2024 01:16:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="i5hBUqRM";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="SAO/dVqO"
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MZDZJFjB"
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 886D2256A;
-	Fri,  5 Apr 2024 01:14:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712279647; cv=fail; b=O+s0RdtdnabxuzHKfOt7+0wC1d3QF5BQA0HXiuY1DHLV17Axqq4fwjymTqef+YegAB73+qJhZndjTPaflDkL1gQE7S69Do4/taxRHttsI4Ph2NWBl/Cg0DIFIpCVX8hO5d4+3pX6IZjpROQn5HlaGiDlvdkS5M0n5wC9eqpW/p4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712279647; c=relaxed/simple;
-	bh=oxbZTWqs0hW8jQjFqeAUMNyhXAL9pTQ6yV3oSeZE0m4=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=pEkF0NwHf0oYe2ORUanCDiRaXBtUambgwimYIdhGy6PJqQ3vX6uKLziVzmmxhQ9t8H5DnY10NGp4T62B2KUgbgGZzNfz1v8pwLmzVyjnK7vR+Hm15Z6qb1JN6CTqqLhDtV/epAnF3iwvk9Zv+9R6CXMEDJZtIFNv/KByJTVwDGc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=i5hBUqRM; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=SAO/dVqO; arc=fail smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1712279645; x=1743815645;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=oxbZTWqs0hW8jQjFqeAUMNyhXAL9pTQ6yV3oSeZE0m4=;
-  b=i5hBUqRMwkB6YgWn2aDMwf8MOvXa9K9Re/7LysQXEtmsNRo/Ls2rIpj+
-   wGCi7N7tryKhTzkc2GTQbbIfHgzj+dZEdsrbQsjB7bzi6PNFDzWuhFc/1
-   BGwsk3tup/9I69uKABrSW0r6PgtlTlda3f0YOoWJWQHhJL3321GkWo5gn
-   nKLc/WLdeYdJHLtiQz83Wq7iVo+bBDwGF6uPMOKL9a1divl0LO/bb48uJ
-   VlgZixEQ3oLcrdPe2jb4uuyVN4X9kzVG4+euCSb5l6HSjaIxtAMcR/+/e
-   gH7foGqMSYGUkeWUI9VorSXvr7K1XXCra9SFAd7FKebR2ZhykSSgQLSnT
-   Q==;
-X-CSE-ConnectionGUID: vPlm52hKSziKv7rrQhw4Sg==
-X-CSE-MsgGUID: e4h/AyIuThmVUIvoxh/jHQ==
-X-IronPort-AV: E=Sophos;i="6.07,180,1708358400"; 
-   d="scan'208";a="13540671"
-Received: from mail-dm6nam10lp2101.outbound.protection.outlook.com (HELO NAM10-DM6-obe.outbound.protection.outlook.com) ([104.47.58.101])
-  by ob1.hgst.iphmx.com with ESMTP; 05 Apr 2024 09:14:03 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HnFgndIYwAinpY37IPH0IhXRfGJ8b9phgpIexysaGYznK955FhBZsvA7yIxO7Ce4/ern7xmDd8rlA5MG5KMoALEu9XjIyBlvIgxFcK3pMbtFbkrMnc0c5wBK2VPE6drnOnui7MLLw+hcq+5gixK+9n3KFqz74HP+/m49HYkOYV8Gn/AY/zdXCFCKgcHH/jRY/43LBXgxhGL8De1TIAaYAGpzx9dIqSO3kdlSuh580EM38oxGJt2PiqxL2zZJleoJTQdvwtKTGdefGVMxXzQ6iDDV+2DOD8earD2qQeaxVQz/PSPz+w0m47wZM8HA33ZLAzS/F01jUGcastcLsdNeHg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7itllXJsqW/jwa363nzfKUN3sMxOEglsR4mHzg378u4=;
- b=Qd1mpTZCI7hkdDRQnN9L+vbqyXSmmq+1WVe44hFYl4PdORvRZUbPvB2basz4yYXXwvhJUgdk9dV0tqIqS8IkXkH/15HaNSYU2Xe36b2+G9uyrcRnKfKOR6u/eprlp+fYPlBVU7sGhs2ATysMytCXNGDbYufWXiInRxJ26Bes9wm6k14+2PTpx3dPPfY96pPtjKhjeZO4+YC6Puh/BGeuHrb8b10iKyWdUwzHB2TqH0oAxO0mb1THW3DT2Js0P70JHiqwfR8lWfqjQEvMIXFTe/McVGEkdzS08mplWXwhbfxpB0jvNAfvh0LGPIFEI7XBb7/An2M8I4t/i8odvJHF9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA41256A
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 01:16:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712279806; cv=none; b=plJo7nQem0rphH7hCvVSF6c0MRZzao9xmj5M8YnlEw84gFBMYn703FE7Rr8J2MrastWwpK0/CHUf34z5BXhV3y4Mhq3lS+HMcM6wJElpUe36dKHsRMiPcD3vdWD6I8yW3rS1JxGHmcvQcMgUJA5ldGfgFSkQ9hqOGg69MAJ74pE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712279806; c=relaxed/simple;
+	bh=2/2Kj338jH+uBPSbzYrJGs8uligsmRJYmh5N5iDFTMY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=U6d0hmVqcIwYZDb0Kn4F/PmeG9giwVDvsz1EEWx+NBet3ct0hFdNi/fD9ui3RSgfNv5PLkazm+M/KGm1WBPhoDRrtv3fveKlj+6QutYDSIMfuSLPH4S2+CjZ+KeVTTD+1WS6esf4dcw37e9iPgHjFY6rAS0QRk2/jRT2KQ5OAY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MZDZJFjB; arc=none smtp.client-ip=209.85.160.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-432d55b0fa9so109191cf.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 18:16:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7itllXJsqW/jwa363nzfKUN3sMxOEglsR4mHzg378u4=;
- b=SAO/dVqOmdcXXECdAQANQ4OpimyMMVB1GusvsAtn/HwVpu57R0Xl92wQxzbBF60BVFbgeR+BBJLVeQR0U7lDi8z7i0ywotE4XN2Iy2TZoZPepe2qe7033wj94JYelAgvJzeDsJOLbPfdVmRfPrkbtY1htXpz5MspaP3HJZxo8ss=
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com (2603:10b6:a03:300::11)
- by CO6PR04MB7571.namprd04.prod.outlook.com (2603:10b6:303:ab::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 5 Apr
- 2024 01:14:01 +0000
-Received: from SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::117f:b6cf:b354:c053]) by SJ0PR04MB7776.namprd04.prod.outlook.com
- ([fe80::117f:b6cf:b354:c053%7]) with mapi id 15.20.7409.042; Fri, 5 Apr 2024
- 01:14:01 +0000
-From: Naohiro Aota <Naohiro.Aota@wdc.com>
-To: Johannes Thumshirn <jth@kernel.org>
-CC: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
-	<dsterba@suse.com>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Hans Holmberg <Hans.Holmberg@wdc.com>,
-	"hch@lst.de" <hch@lst.de>, Damien LeMoal <dlemoal@kernel.org>, Boris Burkov
-	<boris@bur.io>, Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Subject: Re: [PATCH RFC PATCH 2/3] btrfs: zoned: reserve relocation zone on
- mount
-Thread-Topic: [PATCH RFC PATCH 2/3] btrfs: zoned: reserve relocation zone on
- mount
-Thread-Index: AQHagRfFZPYyrls190GkY8abHfqDl7FY6uOA
-Date: Fri, 5 Apr 2024 01:14:01 +0000
-Message-ID: <rmcoehidi2a2in3c767vcpetuz2txqilhpjjsg6mxjqd6wum3s@wav53ox52gun>
-References: <20240328-hans-v1-0-4cd558959407@kernel.org>
- <20240328-hans-v1-2-4cd558959407@kernel.org>
-In-Reply-To: <20240328-hans-v1-2-4cd558959407@kernel.org>
-Accept-Language: ja-JP, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR04MB7776:EE_|CO6PR04MB7571:EE_
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- xq+d3Y0tq+HkBPMp76H2UTKntqb1nrc5R84zpFt9srbRInKpYfxTF92VSUzvRzKOrxQ1bJwiudBchrOfkvAxFOcrIKeNJsxdBQ7lGdiBUAxe3WoWyEurxx13X7kK7aeONw2zGeupfCbzkf9EwyU/WX3u5K+B6BgomYjzOLJ6xftZ6L0mtQ5tr1ugYCZfnBdaptTXY4gsEiYRAOUc0ti84VPhHsgyu4QDhyip+azcEMLK2RR+53gp6/Cqi5O7UNtsRiT70Mj/m70YTVVxUJkRFtrkvKgAmZ8YI3uUa6Fr1eQdJE6IsLMLbgo6x7XRpqwrJJwxBehWYIQT9M1rG5HhzEbU6NNz7Qof9Ctqu4ihTCeYBcNv9Ua9NQcsJM5Y6MiKwvNfxzUCWOdrflFHSHncozOnCIZCUMq98knYvViYCbAqvLNEqnDqPG23LsTODX8MCdQ42EqxRfB9tDsKWQJHwVQXOEpxGSxT2qeUdULltVt061PRqbu8cpQX8OeRm7uLzW6yXHx282MxsQN5IeRbKPwyCiGKHmUXRS8zOQUp0vaTT3svwb4TjfU9m0JDpts58zKAuiJ4XMuM8WCB7ZLSchYWyq7tJNb79HNIOee0pa2NdgV5yyjDiwK0Mj77anWbyKji3Jq4hKiPWz7yWkz1JttQsfXqw3dE5Nm+NhnnAiI=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR04MB7776.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?6KdkOexZGdrgeE7SNQR0w9frdO7/gSj/fd14++zi6lM4eCyZJMhXnzenjg9q?=
- =?us-ascii?Q?wjaJZAKLksSqL0eZttBG2pxUC7c6/+dbop8jaWJcBommo9AzX8sPlsfAE9lM?=
- =?us-ascii?Q?jxdnkxOglKz5kRznkLJjd1Qx3fYzRY7HjGW5EsC2Sa0zO1gDG6eYSJlDS7E6?=
- =?us-ascii?Q?9tOcTKPoM1nLCDVatPzA5/VQLI/9JRSoVgKv47Lk3vYdg9P39gq+0elSkXt+?=
- =?us-ascii?Q?rtkBqnPdPSeDAITpitkp9Oglun51/Dt59sCSFB/XgSxTMd7Mm/EkZIBIRLe+?=
- =?us-ascii?Q?7KeEMESV3K0F94qLwVBsvrW0tIS0kPzYHp19ooncz0YY2AazyLyjHBcZkaiF?=
- =?us-ascii?Q?rQhYt00JEKiPS3e8pdI+kG0bt/GlkFIIlzFHhKFp5wA9b8VcBGoQOF6ffPkf?=
- =?us-ascii?Q?T8Q5+FJiKWFW8yX8ck4Ga5Wa7p29zXohOHA81dzJFfwNi/+H3Ulh3YDZF2W7?=
- =?us-ascii?Q?jF/7fRELhPFyaFL/sOVTSEoTy9lw6544LZdpHc68y4VdkfrTzUvxuWNi10tI?=
- =?us-ascii?Q?G/xs98qQTj+JCvhzyiMeTE0kaoYPsNIx37qYF9tbN5VW8mYPJ+sa3ZrdWxQq?=
- =?us-ascii?Q?KYNF9xPlCnBjIdncS1cwWQGpCcIbfUWYRq2wFpdrijlhxwnSrGmJgfZsDCbs?=
- =?us-ascii?Q?SucqYXnV160WKa89sTrGmOLLoCIqD1qpM0Oq2tay8mlzyI2aBqSZDtRuzvLa?=
- =?us-ascii?Q?vsron+lrDuPFvcMbdjti37NDQLtS6Jo0fB/QBMsFm9RO4LJmIf0CPHvh3HLR?=
- =?us-ascii?Q?lv7fvqoPTSVQujrTDlhVjpR3wR5U52/+Dh82gL0T92m6qd9VxyBs9B383mAr?=
- =?us-ascii?Q?Lrl/HQ6ru1lvrWsT6dqprPvqouguMCCzNdpAp8F3X9jW2+H8ynoFcZwOWRbb?=
- =?us-ascii?Q?mJ4SDEjFAXE00FUhTxiUphjaKhN4cihO8NHJNM39SJvbjQ+NG6Ga4WTopH6n?=
- =?us-ascii?Q?77AUN6+OK9AMdeLy8z0AVbJ4eD7gyuMojEWGLdXX3t2MN0Qd2F880Z8wsrgX?=
- =?us-ascii?Q?c6RMKT08FTDm/GjAzJEJ5D04P5+7fQ+hdrfgKoIU2LcpID6ORcKnvHZuYfjD?=
- =?us-ascii?Q?AubKMMSQhIgzUDN2sMJRJiMxinZjfdH5HJ6VI/7KAruHGJJ2nuS+QC6K1ojr?=
- =?us-ascii?Q?HFI0i5jStDlOoh6SRt/nrONSXGuPShKNr1NYOJYqjZ9k9uJAFejH1ThzeS71?=
- =?us-ascii?Q?Wqu9ab8pk8PAUHIGtYKymCBuvWFze4syFz5WhhIq6VaPck5SpC1WbV0PjE04?=
- =?us-ascii?Q?TRUAMw/tk3NBQGuWd7S9MV6BBY07T7bVPvVBGv2nzFvNyK5QpC6AixugjwSv?=
- =?us-ascii?Q?aydZWi9CNH0PpXWoaDcDtzc1iJOyEbj6QKPzUsms3AfnaBzchwmLngCqlxm3?=
- =?us-ascii?Q?iipsvEuo33WwStFlfvKJonFlH4AAdBWEcUO2ds/+6HtkPh4Di3AZUZXkqi+Q?=
- =?us-ascii?Q?BrHwu83+u79mD46v3gXylRtjOTDuRhh6W8Yvn8YDvWT+5UvCnc8VxjJkWqcq?=
- =?us-ascii?Q?IP2BxDdLyEe7cizGBykK0x2tc9hZE6sHoJlsxrdfi32RokExxaO96F6ZVxPR?=
- =?us-ascii?Q?CmuXdwgTMQPWRr7VQu9KFaiS8G89WMvO3+c0L9/irRtHiUAsQ22+2MhNyu42?=
- =?us-ascii?Q?6g=3D=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <61B0C137E30DE84AB2F5A44E6AFDB92E@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        d=google.com; s=20230601; t=1712279803; x=1712884603; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fz47VsQ4PR0UnZ5hKlGOlqLoTfw+m5you2mPgmtXA/4=;
+        b=MZDZJFjB1JtRnH1aqC9xvOQuxmNrvgHmqYDOAMXscp6qB+/qDg3wR1DKv9UufBUHid
+         OL6Mt/cR6bxoeEd2Mw114w5vZakkfGf9YVndAOSQJk3RdjjMHh9jF0dO+gFEfjxRET/I
+         QwJbKrg/23mQotcTMI2UqEf94/RJDU4RMWuToPETO5UjeE/370T4u0taF3xV1iq6Mbpo
+         Kn5+YLkXkyyrtseDXJXuWEge5PQT+vMODTPZdQG3tz+UrwnHZMzAj12D+vXhiuO4QYMw
+         pVObRgn0Gjazsb4+l1+piO9TyWkRWB+xqCov6KPzfUJfxVtPGRKOM15NnEUZQx+dOVNu
+         iKLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712279803; x=1712884603;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fz47VsQ4PR0UnZ5hKlGOlqLoTfw+m5you2mPgmtXA/4=;
+        b=wJkb/8t6t+CeMJxKOHzd5ma05912kKiBdszZhhwjYpR+pf2pdBD5JOKTfmJbLLuqKQ
+         NeIQLKGx5UkqJMEQUjM18kATH+EBfDgZMOeW4y5hdf5kIOWxXKD0eIyd91N1O3gct2rP
+         pltNPoFBFFY8PqqY2OaiHDOqKLx1RgNMjfdWTkcN/EI8W/fBsmWqNqEqi+vkQ4NU36Nl
+         GoU+g3ZVQEn7IceBXupVm4uwfFNwNPvpDAKbq46f9HTDsVX8tx/iHb+YZs4feymdZXVn
+         nUSqST4IVzLA+q0JFOyNMX6Dg16ViXfsBmQpFWiiuRcEaJ8qV/M4TwY0exgoRWmxxAYN
+         u06A==
+X-Forwarded-Encrypted: i=1; AJvYcCUIwKChLlNeDtc0ZMJ9jy7Sl0Wrp6KJFMXv28gvj/k9mIVKkmVzp9Ja36CY4C1J9aUz+z35Tmv3gvjCN5O2l36HK3E0J1o+aC2FNhrw
+X-Gm-Message-State: AOJu0Yxk+QMHPcCHP/86VoHJKoNEcMjoq0cKKoga/r/C18huwuLjWy1g
+	7stb6IG/5itl8D+KQKlH45FxUcj984y2lGyCyKe3bHMYz00Rwo5cmo8/nwYgXam9P6WV142TVHI
+	BgIs+Hj4NS/QTeCn1o1hR1ZEHItBkqzeq9fbp
+X-Google-Smtp-Source: AGHT+IFUq9vJBzX6fyePrn42Vhylhz/H9PviQBjHEDP52yrzxEujRAw4KtQPEpY2WIpMRGhwGJAsgB7TUS3MOds3rkA=
+X-Received: by 2002:a05:622a:4296:b0:434:5ea8:2eef with SMTP id
+ cr22-20020a05622a429600b004345ea82eefmr29925qtb.7.1712279802902; Thu, 04 Apr
+ 2024 18:16:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	xX5UOxJ1GxZM9nbZWB0q//54tidcy8qpADBuTpb/bZT9B7Bw5FcSyMHA7xhjIMBCEYQS0LLapQ5PjwJH5ApZCreZQvMmun6QUADCfJiHcbqziRcIS8Fjo5a80dBAhqPbDZ6Xk+opG1dERyg6f+f/z3HBaLNzHB5Ab3eqcOVg9ou2JdkEb3C5DtShGzYuBH2G2X0E5+vOANtCemRBiABVy2AisM+4xC1I5EBXrOHtxSUIMqT6m1y7muyDOvGqIS65vnn2PVTwkpTwlSlA6kC4W0aWflMLAYrAbxM+KP28K76bWwEWL+K4P18cQzO4KAK/gbN6cZMO6mncIXBg+gPoBj8vJHOE249N57Bi0rlGU/XUe7RfXaLz2yzu9zDUUm7nUquf6dMm4/+n78pk4PGMRU6YCyc+w1+U1WrNXcc9IYbwmn3xr62HhnDAdYGXWRx4Miphkf8yIGdE5grfyZ9Wyp9o6EYt0XzAdSDy0wG+BYH3dIwyJmjrXSwPt6cL2komwURkGIVoJ+qCsjIevEKTZJj4H+indxBwDbUnagc7fKstrcFXbUMdOaG+LTMir9k2XWDl4RUto9qj7BBFDIylzu61CiBVeyIqco4kNjAHfcBG8n0yuThgAkRd6NSwQUoG
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR04MB7776.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0560f0fb-75a2-447b-f03f-08dc550dad72
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2024 01:14:01.2448
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zJkvfQ2fyRmzmhcnvdWmy7fWZLw7x1iwti4FT+SKfB4HQ26x5b16csMwnwDf9693IwyzSMW9jTVW5of8iNCJVw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR04MB7571
+References: <20240403164636.3429091-1-irogers@google.com> <dcb0121f-611d-4104-80b9-941d535c5fd2@linux.intel.com>
+ <CAP-5=fUgiafmLEKEUJ5r5_tK+jqv30P0TGFCMvR8DkW7J4qYsQ@mail.gmail.com>
+ <b9868e97-e353-45e0-83b7-aa28bc35dd67@linux.intel.com> <CAP-5=fX+YuEgD4pF-2YRcqgD2cwLw_7Z4ak+wszctvagPS+Xbw@mail.gmail.com>
+ <ceca5922-6b83-464f-9e64-e8999068f734@linux.intel.com>
+In-Reply-To: <ceca5922-6b83-464f-9e64-e8999068f734@linux.intel.com>
+From: Ian Rogers <irogers@google.com>
+Date: Thu, 4 Apr 2024 18:16:27 -0700
+Message-ID: <CAP-5=fUA_SZVHtO82pUgL+MT0XQFVyuLw=Sd_s10W-XvcNqaDQ@mail.gmail.com>
+Subject: Re: [PATCH v1] perf metrics: Remove the "No_group" metric group
+To: "Liang, Kan" <kan.liang@linux.intel.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Arnaldo Carvalho de Melo <acme@kernel.org>, Namhyung Kim <namhyung@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Andi Kleen <ak@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 28, 2024 at 02:56:32PM +0100, Johannes Thumshirn wrote:
-> From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
->=20
-> Reserve one zone as a data relocation target on each mount. If we already
-> find one empty block group, there's no need to force a chunk allocation,
-> but we can use this empty data block group as our relocation target.
->=20
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/disk-io.c |  2 ++
->  fs/btrfs/zoned.c   | 46 ++++++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/zoned.h   |  3 +++
->  3 files changed, 51 insertions(+)
->=20
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 5a35c2c0bbc9..83b56f109d29 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3550,6 +3550,8 @@ int __cold open_ctree(struct super_block *sb, struc=
-t btrfs_fs_devices *fs_device
->  	}
->  	btrfs_discard_resume(fs_info);
-> =20
-> +	btrfs_reserve_relocation_zone(fs_info);
-> +
->  	if (fs_info->uuid_root &&
->  	    (btrfs_test_opt(fs_info, RESCAN_UUID_TREE) ||
->  	     fs_info->generation !=3D btrfs_super_uuid_tree_generation(disk_sup=
-er))) {
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index d51faf7f4162..fb8707f4cab5 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -17,6 +17,7 @@
->  #include "fs.h"
->  #include "accessors.h"
->  #include "bio.h"
-> +#include "transaction.h"
-> =20
->  /* Maximum number of zones to report per blkdev_report_zones() call */
->  #define BTRFS_REPORT_NR_ZONES   4096
-> @@ -2634,3 +2635,48 @@ void btrfs_check_active_zone_reservation(struct bt=
-rfs_fs_info *fs_info)
->  	}
->  	spin_unlock(&fs_info->zone_active_bgs_lock);
->  }
-> +
-> +static u64 find_empty_block_group(struct btrfs_space_info *sinfo)
-> +{
-> +	struct btrfs_block_group *bg;
-> +
-> +	for (int i =3D 0; i < BTRFS_NR_RAID_TYPES; i++) {
+On Thu, Apr 4, 2024 at 1:29=E2=80=AFPM Liang, Kan <kan.liang@linux.intel.co=
+m> wrote:
+>
+>
+>
+> On 2024-04-03 4:26 p.m., Ian Rogers wrote:
+> > On Wed, Apr 3, 2024 at 11:57=E2=80=AFAM Liang, Kan <kan.liang@linux.int=
+el.com> wrote:
+> >>
+> >>
+> >>
+> >> On 2024-04-03 2:31 p.m., Ian Rogers wrote:
+> >>> On Wed, Apr 3, 2024 at 10:59=E2=80=AFAM Liang, Kan <kan.liang@linux.i=
+ntel.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2024-04-03 12:46 p.m., Ian Rogers wrote:
+> >>>>> Rather than place metrics without a metric group in "No_group" plac=
+e
+> >>>>> them in a a metric group that is their name. Still allow such metri=
+cs
+> >>>>> to be selected if "No_group" is passed, this change just impacts pe=
+rf
+> >>>>> list.
+> >>>>
+> >>>> So it looks like the "No_group" is not completely removed.
+> >>>> They are just not seen in the perf list, but users can still use it =
+via
+> >>>> perf stat -M No_group, right?
+> >>>>
+> >>>> If so, why we want to remove it from perf list? Where can the end us=
+er
+> >>>> know which metrics are included in the No_group?
+> >>>>
+> >>>> If the No_group is useless, why not completely remove it?
+> >>>
+> >>> Agreed. For command line argument deprecation we usually keep the
+> >>> option but hide it from help with PARSE_OPT_HIDDEN, so I was trying t=
+o
+> >>> follow that pattern albeit that a metric group isn't a command line
+> >>> option it's an option to an option.
+> >>>
+> >>
+> >> Perf list has a deprecated option to show the deprecated events.
+> >> The "No_group" should be a deprecated metrics group.
+> >>
+> >> If so, to follow the same pattern, I think perf list should still
+> >> display the "No_group" with the --deprecated option at least.
+> >
+> > Such metrics would be shown twice, once under No_group and once under
+> > a metric group of their name.
+> You mean with the --deprecated option?
+> Yes, that's because the old/deprecated metrics group (No_group) is not
+> complete removed. So both the new name and old/deprecated name are shown
+> with the --deprecated option. The metrics which belong to both groups
+> will be shown twice.
+>
+> Without the --deprecated option, only the new group and its members are
+> shown.
+>
+> > With deprecated events this isn't the
+> > case, you can only see them with --deprecated. Given we can see the
+> > metric without the No_group grouping, what is being added by having a
+> > No_group grouping? It feels entirely redundant and something we don't
+> > need to advertise.
+>
+> I just want to have a generic pattern for deprecating a metrics/metrics
+> group that everybody can follow.
 
-This starting index prefers SINGLE to DUP/RAID profiles, which is bad. We
-can use something like get_alloc_profile_by_root() to decide a proper
-starting index.
+Currently there is no concept of a metric group in the json except for
+descriptions. Metrics and events share the same encoding, and the
+deprecated flag belongs to the event.
 
-> +		list_for_each_entry(bg, &sinfo->block_groups[i], list) {
-> +			if (bg->used =3D=3D 0)
-> +				return bg->start;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +void btrfs_reserve_relocation_zone(struct btrfs_fs_info *fs_info)
-> +{
-> +	struct btrfs_root *tree_root =3D fs_info->tree_root;
-> +	struct btrfs_space_info *sinfo =3D fs_info->data_sinfo;
-> +	struct btrfs_trans_handle *trans;
-> +	u64 flags =3D btrfs_get_alloc_profile(fs_info, sinfo->flags);
-> +	u64 bytenr =3D 0;
-> +
-> +	if (!btrfs_is_zoned(fs_info))
-> +		return;
-> +
-> +	bytenr =3D find_empty_block_group(sinfo);
-> +	if (!bytenr) {
-> +		int ret;
-> +
-> +		trans =3D btrfs_join_transaction(tree_root);
-> +		if (IS_ERR(trans))
-> +			return;
-> +
-> +		ret =3D btrfs_chunk_alloc(trans, flags, CHUNK_ALLOC_FORCE);
-> +		btrfs_end_transaction(trans);
-> +
-> +		if (!ret)
-> +			bytenr =3D find_empty_block_group(sinfo);
-> +	}
-> +
-> +	spin_lock(&fs_info->relocation_bg_lock);
+> I treat the "No_group" as a normal metrics group name. So this patch is
+> to introduce a new name, and hide the old name. Both new and old names
+> can still be used.
 
-Currently, this function is called in the mount process: there is no
-relocation BG set. To prevent future misuse, I'd like to add an
-ASSERT(fs_info->relocation_bg_lock =3D=3D 0).
+Why are you using No_group? I stand firm that it has no real use.
 
-> +	fs_info->data_reloc_bg =3D bytenr;
+> If it's for a deprecated event, the expectation is to only see the new
+> name by default, and see both new name and old name with the
+> --deprecated option.
+>
+> Now, if it's a generic deprecated metrics group, what's the expected
+> behavior? I prefer to follow the same pattern as a deprecated event.
+> If we do so, yes, there will be some redundancy with the --deprecated
+> option, since some members may belong to both old and new groups.
+> But I don't think it's an issue. It's normal that metrics belong to
+> different groups.
 
-We can activate that block group as well to ensure it's ready to go.
+What you are requesting here isn't something that is unreasonable, it
+is just something unconnected with this change and requires a
+reorganization of the json to facilitate. As such I consider it to be
+something for follow up work.
 
-> +	spin_unlock(&fs_info->relocation_bg_lock);
-> +}
-> diff --git a/fs/btrfs/zoned.h b/fs/btrfs/zoned.h
-> index 77c4321e331f..048ffada4549 100644
-> --- a/fs/btrfs/zoned.h
-> +++ b/fs/btrfs/zoned.h
-> @@ -97,6 +97,7 @@ int btrfs_zone_finish_one_bg(struct btrfs_fs_info *fs_i=
-nfo);
->  int btrfs_zoned_activate_one_bg(struct btrfs_fs_info *fs_info,
->  				struct btrfs_space_info *space_info, bool do_finish);
->  void btrfs_check_active_zone_reservation(struct btrfs_fs_info *fs_info);
-> +void btrfs_reserve_relocation_zone(struct btrfs_fs_info *fs_info);
->  #else /* CONFIG_BLK_DEV_ZONED */
->  static inline int btrfs_get_dev_zone(struct btrfs_device *device, u64 po=
-s,
->  				     struct blk_zone *zone)
-> @@ -271,6 +272,8 @@ static inline int btrfs_zoned_activate_one_bg(struct =
-btrfs_fs_info *fs_info,
-> =20
->  static inline void btrfs_check_active_zone_reservation(struct btrfs_fs_i=
-nfo *fs_info) { }
-> =20
-> +static inline void btrfs_reserve_relocation_zone(struct btrfs_fs_info *f=
-s_info) { }
-> +
->  #endif
-> =20
->  static inline bool btrfs_dev_is_sequential(struct btrfs_device *device, =
-u64 pos)
->=20
-> --=20
-> 2.35.3
-> =
+I think if we're going to restructure metric groups it would be nice
+to add a more tree-like structure which could be used to visualize
+metrics better. For example here:
+https://lore.kernel.org/lkml/20240314055919.1979781-11-irogers@google.com/
+the metrics could be shown under a tree like:
+ldst
+ - ldst_total
+   - ldst_total_loads
+ - ldst_prcnt
+   - ldst_prcnt_loads
+   - ldst_prcnt_stores
+ - ldst_ret_lds
+   - ldst_ret_lds_1
+   - ldst_ret_lds_2
+   - ldst_ret_lds_3
+ - ldst_ret_sts
+   - ldst_ret_sts_1
+   - ldst_ret_sts_2
+   - ldst_ret_sts_3
+ - ldst_ld_hit_swpf
+ - ldst_atomic_lds
+
+but again it is follow up work to do this. In this change I just
+wanted a way to list all sensibly grouped metrics or metrics in a
+group just on their own which doesn't require some kind of analysis of
+metric groups. No_group has no use so let's just get rid of it.
+
+Thanks,
+Ian
+
+> Thanks,
+> Kan
 
