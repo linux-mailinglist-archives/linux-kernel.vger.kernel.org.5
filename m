@@ -1,117 +1,174 @@
-Return-Path: <linux-kernel+bounces-133438-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133439-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AA8389A3B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A814D89A3BB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:50:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BB011F25C6F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:50:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 206631F23EF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:50:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0153171E56;
-	Fri,  5 Apr 2024 17:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18758134AC;
+	Fri,  5 Apr 2024 17:50:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Axped4Ai"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PvF4Uok+"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 856C516C858
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC3F716C858;
+	Fri,  5 Apr 2024 17:50:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712339431; cv=none; b=H72IFtvE6bKswa7jCG6JqH77vY+lu/gD9322iNAB7RqTcoqk01lUmrEvQ0XdmPQW6u0orEqgU3fJRnH9pDDoXWriFYo7rkU51pFO0xuD/8AoK8HnhCP7+BHP96iKmW+Q2cncCGuaHbXa10u1afkApQk1voBD3nEXB9ZXOSoCZ8w=
+	t=1712339445; cv=none; b=CvMfPYBeyOUtETmbSv/dmc1mpzfWCgymdZxgNG8t1F2Ttvau5B9/a0IwFEkxcB4/+n3oFoa+G221udxCNpb0TE2MY2NEnwZau2NU7OJ4kINOx+piVMs67hLTKx1Objkj/20dB9hCJJ2ILLoijcPzzFTz1luSyC6kXIPuuL2lv0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712339431; c=relaxed/simple;
-	bh=7RIALOu/9x3WkNZWuR9Q1oMuZZ5fYMMxEPUf9ifsfx8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XQxI0v4PeWsmL9h5ocUw7r+gQic293k1yh74B03NihoqWI/21lWRlkNZD8LlGJTiH8bxcAh53RAkwlVOWKYd+YSkJ2bMxMmdAB/aJz2DxYgaAIyKyuFRTq+mYHKASWGbp5b2pwckggYUtcG28LFV4VEb1Ic4m7VzPEoTN6gZlVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Axped4Ai; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 4263240E0202;
-	Fri,  5 Apr 2024 17:50:26 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id meQO34YTxU0p; Fri,  5 Apr 2024 17:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1712339421; bh=b9seBZkpFcoCbEKoVKjpSGEbjYI77Tgb7NCZi1WVnB4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Axped4Ai+cR6DjAs4HmoxBVlcfGH/8mOBJP5kaAQaTWTMwO4XUoMrtTJkhUzEDY+N
-	 52eRhL0RSzybX39CzhI3N3uKRgQx389896DUQ4dF5lFyFKO05hvckpE2lkdRtDBG4l
-	 qkBXJE5OACjUa5ecGA5GDBV/vur11IZT/coC1JjmE85ExpNg7MY/ZQ80qJI4ywk91g
-	 LtEVe1M+ly+v1Lbt4v4TSL8OYfkRNrvoPtsnBfOkVgE6COVdKZeeFlXasdBG13ilVI
-	 7a4sD/gCIaOj/vNXb4x5bkb1//71SUg8BrUHihYNHhyeuQZW5KVvYZHyBV8ixlwCVk
-	 7MXRg4yRVeq3yQKoiWuYXlbnKMJpvR0ZDTBk+7G5ioAfxDhYZEhn/BrerzyJjzoOra
-	 19zOhMuXBLuEOBdkvh9EK9gT5OweK82JnxcTPg07mu13CKoYkx0GM/6q899vfYs6wk
-	 u7p8u7hGw/Ffjt1DuQS1r0Q2/wLjto6Fk78SAzJZnx9VnrpxHfqIrH66eHYcB7d5oj
-	 +1BM/MAxJYQxWbQT3kUMm8ODg9TNJuCR6Xyz/3aVWNSzfBWIuTAdsR6mY2+7rfNk++
-	 zWKYZwS50Avy2gRFSNEZ56dWyP23Th/VxOynzCdCqLzbKf6sObnZ7t0x7Ve9SpXx49
-	 nCY+2wQ6F0OJBt7MhBKvjb7A=
-Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 266DF40E0192;
-	Fri,  5 Apr 2024 17:50:18 +0000 (UTC)
-Date: Fri, 5 Apr 2024 19:50:17 +0200
-From: Borislav Petkov <bp@alien8.de>
-To: bp@kernel.org
-Cc: X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/retpoline: Add NOENDBR annotation to the SRSO dummy
- return thunk
-Message-ID: <20240405175017.GFZhA52eQFEWrHPxV3@fat_crate.local>
-References: <20240405144637.17908-1-bp@kernel.org>
+	s=arc-20240116; t=1712339445; c=relaxed/simple;
+	bh=7xRtyC2oGbip6V/1vKy7bPkAqN5vTVKOSEEb4uMls2k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=uWF+wGVTXeCc5NLex4DHYCVHtXgS1UnYh7BmKDYCe65qEzCilD+r+aBCzA5i0cEiwOEqbhHOywt9WrW0OtP1kJhb1/5E5MZVvsdh7y23J3HjREicdud44VK5Hr1V73fvleQYlkXTqwdLrTk74khIIPAT4AzzLsvMjPxjAfTdY3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PvF4Uok+; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5ca29c131ebso1657597a12.0;
+        Fri, 05 Apr 2024 10:50:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712339443; x=1712944243; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0NSsPU5M48s4rI658F1csJu8k2YCO+6QQmL+k7+e88M=;
+        b=PvF4Uok+dOJP4vQHN8iHxGLSM7qHIVJcMB65S3EP7u/DeY2qk3IwQM0we450MckwT1
+         97Uo2d66U9GqGzCkicEg4rDRF/1V0OXhT3YvtYMhUFJ5JqlKeVrl/glfOeIHTX38wBsA
+         Lw4R8OBKQi4RGMz2EOMG5B8lBDMDDZrIZeDc2anzQmEIcU9ORG/8w69D8uU3CqO0kAQz
+         KjvWh9+XJosevEFjwvga4+24Kox8M3Fzk2XdERKKETKeLz6YABVwjILe3yWbF2lEZ721
+         Qwd9c20TQaMC1c7/xol+B6SZzhjlSXy4aeRNItWyYKRveSmw7m1D6JtWv/k7OVdOogDH
+         Xy5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712339443; x=1712944243;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0NSsPU5M48s4rI658F1csJu8k2YCO+6QQmL+k7+e88M=;
+        b=tm0PrMYaq0nglm5iu3zG6IV+gw+rmzabo5PpM/Eq1dH8YtjJBGsoLYbOzuTXYz8Zs0
+         Qc7wguV9ysgA/67pBqo7ZNfHooAFI/688NUOZbZk0BHYmChpASoytfXi82vFnYcWu19Z
+         LQjg9Pz9VKb+Py6Vu2irP6gZnz6cAFdlwMzpCBpOfhPaC21V1y3cZkWVsT40opZeIUbe
+         kaKxGdsk/J3jOMrXdFHIjXWDVwDbMfwziHsqEZALpnUA45ECNHmdLEjNhSSjjqPLjcl3
+         3xIfDoYrRo1bVJpqZHT4uBBrYFSkXIrsF0GBzoLigG8gmzlat+L5/A1fkzhlmY3gAQvN
+         t3Iw==
+X-Forwarded-Encrypted: i=1; AJvYcCVcgXqaCfR+2z55tugPubpeH/JgabwFfTvB+cvM8RtUdpr3/5zg/KT/q354EIYwkWkK0x1DcoXGdOWHJECJYN83L+a9FvletiJWmVPVRjLmNuRcjYX9FDoQ8q4AYlT6BUkV
+X-Gm-Message-State: AOJu0YzVYyyYSaDv/d+LlTqXBFZx7IQIkMHdheVICLgEnBGXrnqxP1/W
+	nmdPuaSFvc5sTPMLc8ZyIiAdWWVFxdFv/WFOv0kHyAbu7/lmfbhwciqFv7FEJiMeNcI7YnU8z7J
+	In0AIS/mb4GQgKurm4Tc1D4nOVoI=
+X-Google-Smtp-Source: AGHT+IHKQ+e01QOfkUkTera7rsG656oXJGAD0wnuG6VEuN3Uejzja8J1dcKtLGIYjOdUs+eEZNSEyCxHzHghnqJZ6D4=
+X-Received: by 2002:a17:90a:eacf:b0:2a0:39e8:91b5 with SMTP id
+ ev15-20020a17090aeacf00b002a039e891b5mr2134652pjb.33.1712339443199; Fri, 05
+ Apr 2024 10:50:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240405144637.17908-1-bp@kernel.org>
+References: <000000000000e9a8d80615163f2a@google.com> <20240403184149.0847a9d614f11b249529fd02@linux-foundation.org>
+ <CAADnVQ+meL1kvXUehDT3iO2mxiZNeSUqeRKYx1C=3c0h=NSiqA@mail.gmail.com>
+ <Zg_aTFoC2Pwakyl1@FVFF77S0Q05N> <Zg/iGQCDKa9bllyI@shell.armlinux.org.uk> <CAADnVQ+LKO2Y90DVZ4qQv3dXyuWKkvFqqJ0E_p_=qwscsvnaVg@mail.gmail.com>
+In-Reply-To: <CAADnVQ+LKO2Y90DVZ4qQv3dXyuWKkvFqqJ0E_p_=qwscsvnaVg@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 5 Apr 2024 10:50:30 -0700
+Message-ID: <CAEf4BzYNc-cxRu9qEe2DWdCBNwXAvpSBHKtUhXtoEhB_XNc1Gg@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
+ copy_from_kernel_nofault (2)
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>, Puranjay Mohan <puranjay12@gmail.com>, 
+	Mark Rutland <mark.rutland@arm.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	syzbot <syzbot+186522670e6722692d86@syzkaller.appspotmail.com>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>, 
+	syzkaller-bugs <syzkaller-bugs@googlegroups.com>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 05, 2024 at 04:46:37PM +0200, bp@kernel.org wrote:
-> From: "Borislav Petkov (AMD)" <bp@alien8.de>
-> 
-> It is special code even if it is a dummy which is called in the !SRSO
-> case so annotate it like its real counterpart to address:
-> 
->   vmlinux.o: warning: objtool: .export_symbol+0x2b290: data relocation to !ENDBR: srso_alias_untrain_ret+0x0
-> 
+On Fri, Apr 5, 2024 at 9:30=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Apr 5, 2024 at 4:36=E2=80=AFAM Russell King (Oracle)
+> <linux@armlinux.org.uk> wrote:
+> >
+> > On Fri, Apr 05, 2024 at 12:02:36PM +0100, Mark Rutland wrote:
+> > > On Thu, Apr 04, 2024 at 03:57:04PM -0700, Alexei Starovoitov wrote:
+> > > > On Wed, Apr 3, 2024 at 6:56=E2=80=AFPM Andrew Morton <akpm@linux-fo=
+undationorg> wrote:
+> > > > >
+> > > > > On Mon, 01 Apr 2024 22:19:25 -0700 syzbot <syzbot+186522670e67226=
+92d86@syzkaller.appspotmail.com> wrote:
+> > > > >
+> > > > > > Hello,
+> > > > >
+> > > > > Thanks.  Cc: bpf@vger.kernel.org
+> > > >
+> > > > I suspect the issue is not on bpf side.
+> > > > Looks like the bug is somewhere in arm32 bits.
+> > > > copy_from_kernel_nofault() is called from lots of places.
+> > > > bpf is just one user that is easy for syzbot to fuzz.
+> > > > Interestingly arm defines copy_from_kernel_nofault_allowed()
+> > > > that should have filtered out user addresses.
+> > > > In this case ffffffe9 is probably a kernel address?
+> > >
+> > > It's at the end of the kernel range, and it's ERR_PTR(-EINVAL).
+> > >
+> > > 0xffffffe9 is -0x16, which is -22, which is -EINVAL.
+> > >
+> > > > But the kernel is doing a write?
+> > > > Which makes no sense, since copy_from_kernel_nofault is probe readi=
+ng.
+> > >
+> > > It makes perfect sense; the read from 'src' happened, then the kernel=
+ tries to
+> > > write the result to 'dst', and that aligns with the disassembly in th=
+e report
+> > > below, which I beleive is:
+> > >
+> > >      8: e4942000        ldr     r2, [r4], #0  <-- Read of 'src', faul=
+t fixup is elsewhere
+> > >      c: e3530000        cmp     r3, #0
+> > >   * 10: e5852000        str     r2, [r5]      <-- Write to 'dst'
+> > >
+> > > As above, it looks like 'dst' is ERR_PTR(-EINVAL).
+> > >
+> > > Are you certain that BPF is passing a sane value for 'dst'? Where doe=
+s that
+> > > come from in the first place?
+> >
+> > It looks to me like it gets passed in from the BPF program, and the
+> > "type" for the argument is set to ARG_PTR_TO_UNINIT_MEM. What that
+> > means for validation purposes, I've no idea, I'm not a BPF hacker.
+> >
+> > Obviously, if BPF is allowing copy_from_kernel_nofault() to be passed
+> > an arbitary destination address, that would be a huge security hole.
+>
+> If that's the case that's indeed a giant security hole,
+> but I doubt it. We would be crashing other archs as well.
+> I cannot really tell whether arm32 JIT is on.
+> If it is, it's likely a bug there.
+> Puranjay,
+> could you please take a look.
+>
 
-Fixes: 4535e1a4174c ("x86/bugs: Fix the SRSO mitigation on Zen3/4")
+I dumped the BPF program that repro.c is loading, it works on x86-64
+and there is nothing special there. We are probe-reading 5 bytes from
+somewhere into the stack. Everything is unaligned here, but stays
+within a well-defined memory slot.
 
-> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
-> ---
->  arch/x86/lib/retpoline.S | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
-> index 0795b3464058..e674ccf720b9 100644
-> --- a/arch/x86/lib/retpoline.S
-> +++ b/arch/x86/lib/retpoline.S
-> @@ -229,6 +229,7 @@ SYM_CODE_END(srso_return_thunk)
->  /* Dummy for the alternative in CALL_UNTRAIN_RET. */
->  SYM_CODE_START(srso_alias_untrain_ret)
->  	ANNOTATE_UNRET_SAFE
-> +	ANNOTATE_NOENDBR
->  	ret
->  	int3
->  SYM_FUNC_END(srso_alias_untrain_ret)
-> -- 
-> 2.43.0
-> 
+Note the r3 =3D (s8)r1, that's a new-ish thing, maybe bug is somewhere
+there (but then it would be JIT, not verifier itself)
 
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+   0: (7a) *(u64 *)(r10 -8) =3D 896542069
+   1: (bf) r1 =3D r10
+   2: (07) r1 +=3D -7
+   3: (b7) r2 =3D 5
+   4: (bf) r3 =3D (s8)r1
+   5: (85) call bpf_probe_read_kernel#-72390
+   6: (b7) r0 =3D 0
+   7: (95) exit
 
