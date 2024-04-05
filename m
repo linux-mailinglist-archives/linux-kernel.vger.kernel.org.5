@@ -1,259 +1,258 @@
-Return-Path: <linux-kernel+bounces-132785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B343899A1F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:01:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0460899A26
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:03:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C512284BA5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:01:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 484311F22C20
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E584161303;
-	Fri,  5 Apr 2024 10:01:33 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21998161316;
+	Fri,  5 Apr 2024 10:02:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b="SiXKl45A"
+Received: from alln-iport-5.cisco.com (alln-iport-5.cisco.com [173.37.142.92])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB1C160781
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:01:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373B2160783;
+	Fri,  5 Apr 2024 10:02:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=173.37.142.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712311293; cv=none; b=YWXiIEaDa7hWEgDlNyTzhaETOsJxwOsMzepb9y9htz0hmzgn0vz3j7zj4i1zd22VHCI2sxfWvOpgzm8QrWbzcMv5QawFu8Kgw5HhWsGwMqQt09aSIFy/kmmgkZDOHaygfc6oUWnNLJy7bIoYzDFX9J5KkHE18gaXJjMRS+t5050=
+	t=1712311373; cv=none; b=GuMfMlvYQuLcs6A9cInmLRtB9I+hHGT10k6SHs7CBNg7u5ANPCzmzKjayutSSYw5W1xrD2JKLtlgOCCTrgDqwfrsvvfBqCKj/5GmIPDV28kaWwhnuUAMlIxuf4AjAbipoN7CT4WOMh8qGHI4iVdB1Y+Fv5T81xSvfLfHYPXSuV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712311293; c=relaxed/simple;
-	bh=/qOGRDyHKWj/fwIKjQfKdRdDJFVN7A7k5JuEor+MQF8=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ILDYAenb0MLZHWexCoxejcRJVFeLI0DgJ05/cswUctY5/Z4/4COGPjGsk8lgrCWYHQSjcChtt9vJASiT7No5Pp15FVeDldDxYuOOo00fuN1KPFEhdVuRvnyNH2Ot/OB3OMVRiC5H5W4JIdMM4nn3h8c7bhEmAOt+8/amB6cnutU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d04135eb47so199625439f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 03:01:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712311290; x=1712916090;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=445TRXAVmjH4O2IS6/Ji32WBWYko0u0kvTDkSdMao+8=;
-        b=Q4uf74MB6pjqwsqPwo53G2sjqG+HGDpDq14NJWIedCwJcvGISBeD0/wkdiQfWkNV6+
-         g4BsHvok+YdT2c8qJG4Qp9FhxaKEPB34HoQ+QHKixufNmr99qh9llznJ6yfkE0e2Vh00
-         xnAEjdtrzxvOdRnrDN+UmRBcRIy1Lq0P4YF7QwNSpl8hqoQ/ngJFqBdXhk5Qpue/1cfH
-         6ny5bWEc118hqw8i2Io4wmFzdJ0uyA/aKXr0Ba9z81obXRaomoBAOMvmhwJw33oqi1SE
-         fp8Xj4s/50RY7RlDuWgGnn1wzmTNN8j1BALLPwzzBaMyxaQORDoA9acmfz1raYYu9w2l
-         IlJg==
-X-Forwarded-Encrypted: i=1; AJvYcCVLE2Wky+Ltfl247MnCHhDIm5jnSXiK2/+/JJOkhIcBGF2VpD2l3xVLQ6pdq5rlV8inW6fRvY7yY6Xd9cV0tWpZd40Xqh6z7gy7EpmH
-X-Gm-Message-State: AOJu0YzcVMu1hx9Pn0umQt5ZRck9KWTen+G395UXoH/+fb3QdEySVLvc
-	pCBCD8EAQxfOWn5brwypDoywKXsGkSy83P58DnGZhQvSm5hiheBsvsCruZEW5xbljJRm7VT7Ooj
-	AED7pZE2C6bZaNi2HYPD3oGsiR9S3sRacdI74wLNQ+EHa4YJd2AOiveo=
-X-Google-Smtp-Source: AGHT+IF9qeoaTXjy5G7O5FcDTQyaw7YGFi4/1FGYAzCeRse6ENIrye7Iy/ow7UyR1XttBUeTB0TOGll9dM6Ew04QTqIOr3P6KqIq
+	s=arc-20240116; t=1712311373; c=relaxed/simple;
+	bh=EGWGbEK4PUsKwc70vkiP6VAuTOJPQgfxrESjpAm84Vw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Vs4BaKwb+Lu35a+Z4gWrFz3VJSrL/KsgloOQhuknME7GlhorMamM2/Bh8paEwD9XFxNJ3MeeEaqNaR6gu6Vz0+ptEtlYKhNJwd9bO63nl1ywyc3vzquhtmurbDa74/v3FvIU0PYFrAaxIO3yvqQTUJBJUUEG2L4VYlPpkjutxws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cisco.com; spf=pass smtp.mailfrom=cisco.com; dkim=pass (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b=SiXKl45A; arc=none smtp.client-ip=173.37.142.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cisco.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cisco.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=cisco.com; i=@cisco.com; l=5342; q=dns/txt; s=iport;
+  t=1712311371; x=1713520971;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=IIsUhLgbNNdmnBkjYQ0HE6V5+KPIcu6NFN76XdqX3ck=;
+  b=SiXKl45A25hll6h2F6yC11xjSqs4VuddjCR+mHc0/6Y7ul7FW+6Smq/9
+   0KCptQCrLUNEC2o6wZc4eHXROlAGFnCM3n19cSUHihdcfF3cF9cTmJvPu
+   YPa0vX4a9fGGZIDgJA18hzTBDzTLwwLGyY41JHXg28a4XuAlN9EYCKQxq
+   o=;
+X-CSE-ConnectionGUID: s61VkzV5QzykVMURJlleDQ==
+X-CSE-MsgGUID: LIC5oCIhRgSjSpi0byH07A==
+X-IPAS-Result: =?us-ascii?q?A0CQAQAhyw9mmIENJK1aHgEBCxIMggQLg0BWQUiWPItzh?=
+ =?us-ascii?q?ySKc4ElA1YPAQEBDzETBAEBhQaIEQImNgcOAQIEAQEBAQMCAwEBAQEBAQEBB?=
+ =?us-ascii?q?gEBBQEBAQIBBwUUAQEBAQEBAQEeGQUOECeFbQ2GXDYBRoE9ARKDAAGCXwIBr?=
+ =?us-ascii?q?1aCLIEB3i6BahiBMIx7hWEnG4FJRIEVgTuNMwSCYYoBhFiGe4I8hFlKgSMDW?=
+ =?us-ascii?q?SERAVUVMhkYCTwPDBoCGxQNJCMCLD4DCQoQAhYDHRQEMBEJCyYDKgY2AhIMB?=
+ =?us-ascii?q?gYGWyAWCQQjAwgEA1ADIHARAwQaBAsHdoM9BBNEAxCBMgaKEIMVAgUjKYF3g?=
+ =?us-ascii?q?REYgwtOghMCgSoDCQMHBUlAAwsYDUgRLDUGDhsGIh9vB5t4AYJsBgE9PhMBg?=
+ =?us-ascii?q?SZKCDdzkk4RkXCBMp84hB2MDpUdGjOFW6RYmGIgpAKEY4FrByyBW00jFYMiC?=
+ =?us-ascii?q?UkZD445gwOaMSM1OwIHCwEBAwmKaAEB?=
+IronPort-Data: A9a23:FWqxJKwdQisHjvsSZNh6t+exxirEfRIJ4+MujC+fZmUNrF6WrkVVz
+ 2RMDWiCP/7YZTTzc9FwOt+yoRsOsJLQxoNrTwY4qlhgHilAwSbn6Xt1DatR0we6dJCroJdPt
+ p1GAjX4BJlpCCea/lH0auSJQUBUjcmgXqD7BPPPJhd/TAplTDZJoR94kobVuKYw6TSCK13L4
+ YyaT/H3Ygf/h2Yoaj9MsspvlTs21BjMkGJA1rABTagjUG/2zxE9EJ8ZLKetGHr0KqE88jmSH
+ rurIBmRpws1zj91Yj+Xuu+Tnn4iHtY+CTOzZk9+AMBOtPTtShsaic7XPNJEAateZq7gc9pZk
+ L2hvrToIesl0zGldOk1C3Fl/y9C0aJu4+GeH3utj5Gq3VzFTV7R+ddqCEwaBNhNkgp3KTkmG
+ f0wITQJaFWIgPi7heP9Qeh3jcNlJ87uVG8dkig/lneCU7B/GtaaGfSiCdxwhF/cguhQFvbTf
+ cwedBJkbQ/LZFtEPVJ/5JcWxrv23yGkI2IFwL6TjY4WyDXU5y1x6rfWMuHNe4SAVOUNwW/N8
+ woq+EyiX0lFb4bAodafyVqoh+nSjWb4VZgUGbmQ6PFnmhuQy3YVBRlQUkG0ydG9i0ijS5dTL
+ Ec85CUjt+4x+VatQ927WAe3yFaAvxgBS59TGfA77A2l1KXZ+UCaC3ICQzoHb8Yp3Oc9QiYg2
+ 0Ohm8zvQzpirNW9T3OW8bOdthu8OyEOKWJEaDJsZQ0M/9nqpqkwgwjJQ9IlF7S65vXwECr5w
+ zGQqzkWhLgJi8MPkaKh8jj6bymEr5zNSEs+4R/aGzPj5QJib4njbIutgbTG0RpeBJ3HF2eCr
+ kZZotqP794rMKuvkCiAbNxYSdlF+M25GDHbhFduGbwo+DKs52OvcOhsDNdWeh4B3iEsJ2aBX
+ aPDhT698qO/K5dDUEOaS4u1D8Jvxq/6GJG0EPvVddFJJJN2cWdrHR2Ch2bOgQgBc2B1zcnT3
+ Kt3l+73UR727ow8k1KLqx81i+ND+8zH7Tq7qWrH5xqmy6GCQ3WeVK0INlCDBshgs/re+liIr
+ 4kEapTUo/m6bAEYSnSHmWL0BQ1bRUXX+binwyCqXrfafVo4Qj1J5wH5mON8J+SJYJi5Zs+To
+ yniARUHoLYOrXbGMg6NImtyc6/iWI03rHQwe0QR0aWAhRAejXKUxP5HLfMfJOB/nMQ6lKIcZ
+ 6deIa2oXK8QIgkrDhxAN/ERWqQ4KkTy7e9PVgL4CAUCk2lIHlGZqoC4JVSwrEHjzEOf7KMDn
+ lFp7SuDKbJreuioJJ++hC6Hp79pgUUgpQ==
+IronPort-HdrOrdr: A9a23:Gu6h8ax6VPJCUexiXhc6KrPwI71zdoMgy1knxilNoNJuHvBw8P
+ re/sjzuiWbtN98YhsdcLO7Scq9qA3nlKKdiLN5VdyftWLd11dAQrsO0WLK+UyEJ8SHzI5gPW
+ MKSdkYNDU2ZmIK6frH3A==
+X-Talos-CUID: 9a23:Jxx5yG7PMmgb3avHEtss7xBNJMM3TCDk3mbTHWqFM0RtTLC5cArF
+X-Talos-MUID: =?us-ascii?q?9a23=3Ardm5WA3v+YUoCMW/Z7OZ8q/ZTTUjx4WFVUcmsJU?=
+ =?us-ascii?q?8tPKGDjRxYz2MrGzoa9py?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="6.07,181,1708387200"; 
+   d="scan'208";a="246103875"
+Received: from alln-core-9.cisco.com ([173.36.13.129])
+  by alln-iport-5.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 10:01:42 +0000
+Received: from sjc-ads-1541.cisco.com (sjc-ads-1541.cisco.com [171.70.59.233])
+	by alln-core-9.cisco.com (8.15.2/8.15.2) with ESMTP id 435A1fVn028453;
+	Fri, 5 Apr 2024 10:01:41 GMT
+From: Valerii Chernous <vchernou@cisco.com>
+To: Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nicolas Schier <nicolas@fjasle.eu>
+Cc: xe-linux-external@cisco.com, Jonathan Corbet <corbet@lwn.net>,
+        linux-kbuild@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] Add MO(mod objs) variable to process ext modules with subdirs
+Date: Fri,  5 Apr 2024 03:01:38 -0700
+Message-Id: <20240405100140.1394290-1-vchernou@cisco.com>
+X-Mailer: git-send-email 2.35.6
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:190b:b0:36a:1104:2d42 with SMTP id
- w11-20020a056e02190b00b0036a11042d42mr45597ilu.1.1712311290205; Fri, 05 Apr
- 2024 03:01:30 -0700 (PDT)
-Date: Fri, 05 Apr 2024 03:01:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000032adb00615568aee@google.com>
-Subject: [syzbot] [jffs2?] [nilfs?] KASAN: slab-use-after-free Read in jffs2_garbage_collect_pass
-From: syzbot <syzbot+e84662c5f30b8c401437@syzkaller.appspotmail.com>
-To: dwmw2@infradead.org, konishi.ryusuke@gmail.com, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mtd@lists.infradead.org, linux-nilfs@vger.kernel.org, richard@nod.at, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 171.70.59.233, sjc-ads-1541.cisco.com
+X-Outbound-Node: alln-core-9.cisco.com
 
-Hello,
+The change allow to build external modules with nested makefiles.
+With current unofficial way(using "src" variable) it is possible to build
+external(out of tree) kernel module with separating source and build
+artifacts dirs but with nested makefiles it doesn't work properly.
+Build system trap to recursion inside makefiles, artifacts output dir
+path grow with each iteration until exceed max path len and build failed
+Providing "MO" variable and using "override" directive with declaring
+"src" variable solve the problem
+Usage example:
+make -C KERNEL_SOURCE_TREE MO=BUILD_OUT_DIR M=EXT_MOD_SRC_DIR modules
 
-syzbot found the following issue on:
-
-HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=15ea8b3d180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
-dashboard link: https://syzkaller.appspot.com/bug?extid=e84662c5f30b8c401437
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=141bc615180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=148423e3180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/72ab73815344/disk-fe46a7dd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/2d6d6b0d7071/vmlinux-fe46a7dd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/48e275e5478b/bzImage-fe46a7dd.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/a3126c30eb43/mount_2.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e84662c5f30b8c401437@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-use-after-free in __mutex_lock_common kernel/locking/mutex.c:587 [inline]
-BUG: KASAN: slab-use-after-free in __mutex_lock+0xfe/0xd70 kernel/locking/mutex.c:752
-Read of size 8 at addr ffff88807e402130 by task jffs2_gcd_mtd0/5063
-
-CPU: 0 PID: 5063 Comm: jffs2_gcd_mtd0 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x169/0x550 mm/kasan/report.c:488
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- __mutex_lock_common kernel/locking/mutex.c:587 [inline]
- __mutex_lock+0xfe/0xd70 kernel/locking/mutex.c:752
- jffs2_garbage_collect_pass+0xae/0x2120 fs/jffs2/gc.c:134
- jffs2_garbage_collect_thread+0x651/0x6e0 fs/jffs2/background.c:155
- kthread+0x2f0/0x390 kernel/kthread.c:388
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-Allocated by task 5052:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
- kasan_kmalloc include/linux/kasan.h:211 [inline]
- kmalloc_trace+0x1db/0x360 mm/slub.c:3997
- kmalloc include/linux/slab.h:628 [inline]
- kzalloc include/linux/slab.h:749 [inline]
- jffs2_init_fs_context+0x4f/0xc0 fs/jffs2/super.c:313
- alloc_fs_context+0x68a/0x800 fs/fs_context.c:318
- do_new_mount+0x160/0xb40 fs/namespace.c:3331
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3875
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-Freed by task 5052:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- kasan_save_free_info+0x40/0x50 mm/kasan/generic.c:579
- poison_slab_object+0xa6/0xe0 mm/kasan/common.c:240
- __kasan_slab_free+0x37/0x60 mm/kasan/common.c:256
- kasan_slab_free include/linux/kasan.h:184 [inline]
- slab_free_hook mm/slub.c:2106 [inline]
- slab_free mm/slub.c:4280 [inline]
- kfree+0x14a/0x380 mm/slub.c:4390
- deactivate_locked_super+0xc4/0x130 fs/super.c:472
- cleanup_mnt+0x426/0x4c0 fs/namespace.c:1267
- task_work_run+0x24f/0x310 kernel/task_work.c:180
- exit_task_work include/linux/task_work.h:38 [inline]
- do_exit+0xa1b/0x27e0 kernel/exit.c:878
- do_group_exit+0x207/0x2c0 kernel/exit.c:1027
- __do_sys_exit_group kernel/exit.c:1038 [inline]
- __se_sys_exit_group kernel/exit.c:1036 [inline]
- __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1036
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-The buggy address belongs to the object at ffff88807e402000
- which belongs to the cache kmalloc-4k of size 4096
-The buggy address is located 304 bytes inside of
- freed 4096-byte region [ffff88807e402000, ffff88807e403000)
-
-The buggy address belongs to the physical page:
-page:ffffea0001f90000 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x7e400
-head:ffffea0001f90000 order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0xfff00000000840(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000840 ffff888014c42140 ffffea0000937e00 0000000000000002
-raw: 0000000000000000 0000000000040004 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd2040(__GFP_IO|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 4727, tgid 4727 (dhcpcd), ts 35281916523, free_ts 35270327271
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1533
- prep_new_page mm/page_alloc.c:1540 [inline]
- get_page_from_freelist+0x33ea/0x3580 mm/page_alloc.c:3311
- __alloc_pages+0x256/0x680 mm/page_alloc.c:4569
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page+0x5f/0x160 mm/slub.c:2175
- allocate_slab mm/slub.c:2338 [inline]
- new_slab+0x84/0x2f0 mm/slub.c:2391
- ___slab_alloc+0xc73/0x1260 mm/slub.c:3525
- __slab_alloc mm/slub.c:3610 [inline]
- __slab_alloc_node mm/slub.c:3663 [inline]
- slab_alloc_node mm/slub.c:3835 [inline]
- __do_kmalloc_node mm/slub.c:3965 [inline]
- __kmalloc+0x2e5/0x4a0 mm/slub.c:3979
- kmalloc include/linux/slab.h:632 [inline]
- tomoyo_realpath_from_path+0xcf/0x5e0 security/tomoyo/realpath.c:251
- tomoyo_get_realpath security/tomoyo/file.c:151 [inline]
- tomoyo_check_open_permission+0x255/0x500 security/tomoyo/file.c:771
- security_file_open+0x69/0x570 security/security.c:2955
- do_dentry_open+0x327/0x15a0 fs/open.c:942
- do_open fs/namei.c:3642 [inline]
- path_openat+0x2860/0x3240 fs/namei.c:3799
- do_filp_open+0x235/0x490 fs/namei.c:3826
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __x64_sys_openat+0x247/0x2a0 fs/open.c:1432
- do_syscall_64+0xfb/0x240
-page last free pid 4727 tgid 4727 stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1140 [inline]
- free_unref_page_prepare+0x95d/0xa80 mm/page_alloc.c:2346
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2486
- discard_slab mm/slub.c:2437 [inline]
- __put_partials+0xeb/0x130 mm/slub.c:2906
- put_cpu_partial+0x17c/0x250 mm/slub.c:2981
- __slab_free+0x2ea/0x3d0 mm/slub.c:4151
- qlink_free mm/kasan/quarantine.c:163 [inline]
- qlist_free_all+0x5e/0xc0 mm/kasan/quarantine.c:179
- kasan_quarantine_reduce+0x14f/0x170 mm/kasan/quarantine.c:286
- __kasan_slab_alloc+0x23/0x80 mm/kasan/common.c:322
- kasan_slab_alloc include/linux/kasan.h:201 [inline]
- slab_post_alloc_hook mm/slub.c:3798 [inline]
- slab_alloc_node mm/slub.c:3845 [inline]
- kmem_cache_alloc+0x174/0x340 mm/slub.c:3852
- getname_flags+0xbd/0x4f0 fs/namei.c:139
- vfs_fstatat+0x11c/0x190 fs/stat.c:303
- __do_sys_newfstatat fs/stat.c:468 [inline]
- __se_sys_newfstatat fs/stat.c:462 [inline]
- __x64_sys_newfstatat+0x117/0x190 fs/stat.c:462
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-Memory state around the buggy address:
- ffff88807e402000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807e402080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88807e402100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                     ^
- ffff88807e402180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88807e402200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
+Cc: xe-linux-external@cisco.com
+Cc: Valerii Chernous <vchernou@cisco.com>
+Signed-off-by: Valerii Chernous <vchernou@cisco.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ Documentation/kbuild/kbuild.rst  | 14 +++++++++++++-
+ Documentation/kbuild/modules.rst | 16 +++++++++++++++-
+ Makefile                         | 17 +++++++++++++++++
+ scripts/Makefile.build           |  7 +++++++
+ 4 files changed, 52 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/Documentation/kbuild/kbuild.rst b/Documentation/kbuild/kbuild.rst
+index 9c8d1d046ea5..63e1a71a3b9a 100644
+--- a/Documentation/kbuild/kbuild.rst
++++ b/Documentation/kbuild/kbuild.rst
+@@ -121,10 +121,22 @@ Setting "V=..." takes precedence over KBUILD_VERBOSE.
+ KBUILD_EXTMOD
+ -------------
+ Set the directory to look for the kernel source when building external
+-modules.
++modules. In case of using separate sources and module artifatcs directories
++(KBUILD_EXTMOD + KBUILD_EXTMOD_SRC), KBUILD_EXTMOD working as output
++artifacts directory
+ 
+ Setting "M=..." takes precedence over KBUILD_EXTMOD.
+ 
++KBUILD_EXTMOD_SRC
++-------------
++Set the external module source directory in case when separate module
++sources and build artifacts directories required. Working in pair with
++KBUILD_EXTMOD. If KBUILD_EXTMOD_SRC is set then KBUILD_EXTMOD working as
++module build artifacts directory
++
++Setting "MO=..." takes precedence over KBUILD_EXTMOD.
++Setting "M=..." takes precedence over KBUILD_EXTMOD_SRC.
++
+ KBUILD_OUTPUT
+ -------------
+ Specify the output directory when building the kernel.
+diff --git a/Documentation/kbuild/modules.rst b/Documentation/kbuild/modules.rst
+index a1f3eb7a43e2..135be2fc798e 100644
+--- a/Documentation/kbuild/modules.rst
++++ b/Documentation/kbuild/modules.rst
+@@ -79,6 +79,14 @@ executed to make module versioning work.
+ 	The kbuild system knows that an external module is being built
+ 	due to the "M=<dir>" option given in the command.
+ 
++	To build an external module with separate src and artifacts dirs use::
++
++		$ make -C <path_to_kernel_src> M=$PWD MO=<output_dir>
++
++	The kbuild system knows that an external module with separate sources
++	and build artifacts dirs is being built due to the "M=<dir>" and
++	"MO=<output_dir>" options given in the command.
++
+ 	To build against the running kernel use::
+ 
+ 		$ make -C /lib/modules/`uname -r`/build M=$PWD
+@@ -93,7 +101,7 @@ executed to make module versioning work.
+ 
+ 	($KDIR refers to the path of the kernel source directory.)
+ 
+-	make -C $KDIR M=$PWD
++	make -C $KDIR M=$PWD MO=<module_output_dir>
+ 
+ 	-C $KDIR
+ 		The directory where the kernel source is located.
+@@ -106,6 +114,12 @@ executed to make module versioning work.
+ 		directory where the external module (kbuild file) is
+ 		located.
+ 
++	MO=<module_output_dir>
++		Informs kbuild that an external module build artifacts
++		should be placed into specific dir(<module_output_dir>)
++		This parameter optional, without it "M" working as
++		source provider and build output location
++
+ 2.3 Targets
+ ===========
+ 
+diff --git a/Makefile b/Makefile
+index 4bef6323c47d..3d45a41737a6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -142,6 +142,7 @@ ifeq ("$(origin M)", "command line")
+   KBUILD_EXTMOD := $(M)
+ endif
+ 
++define kbuild_extmod_check_TEMPLATE
+ $(if $(word 2, $(KBUILD_EXTMOD)), \
+ 	$(error building multiple external modules is not supported))
+ 
+@@ -152,9 +153,25 @@ $(foreach x, % :, $(if $(findstring $x, $(KBUILD_EXTMOD)), \
+ ifneq ($(filter %/, $(KBUILD_EXTMOD)),)
+ KBUILD_EXTMOD := $(shell dirname $(KBUILD_EXTMOD).)
+ endif
++endef
++$(eval $(call kbuild_extmod_check_TEMPLATE))
+ 
+ export KBUILD_EXTMOD
+ 
++# Use make M=src_dir MO=ko_dir or set the environment variables:
++# KBUILD_EXTMOD_SRC, KBUILD_EXTMOD to specify separate directories of
++# external module sources and build artifacts.
++ifeq ("$(origin MO)", "command line")
++ifeq ($(KBUILD_EXTMOD),)
++	$(error Ext module objects without module sources is not supported))
++endif
++KBUILD_EXTMOD_SRC := $(KBUILD_EXTMOD)
++KBUILD_EXTMOD := $(MO)
++$(eval $(call kbuild_extmod_check_TEMPLATE))
++endif
++
++export KBUILD_EXTMOD_SRC
++
+ # backward compatibility
+ KBUILD_EXTRA_WARN ?= $(KBUILD_ENABLE_EXTRA_GCC_CHECKS)
+ 
+diff --git a/scripts/Makefile.build b/scripts/Makefile.build
+index baf86c0880b6..a293950e2e07 100644
+--- a/scripts/Makefile.build
++++ b/scripts/Makefile.build
+@@ -3,7 +3,14 @@
+ # Building
+ # ==========================================================================
+ 
++ifeq ($(KBUILD_EXTMOD_SRC),)
+ src := $(obj)
++else ifeq ($(KBUILD_EXTMOD),$(obj))
++override src := $(KBUILD_EXTMOD_SRC)
++else
++src_subdir := $(patsubst $(KBUILD_EXTMOD)/%,%,$(obj))
++override src := $(KBUILD_EXTMOD_SRC)/$(src_subdir)
++endif
+ 
+ PHONY := $(obj)/
+ $(obj)/:
+-- 
+2.35.6
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
