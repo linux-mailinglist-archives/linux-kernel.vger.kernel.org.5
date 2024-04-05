@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-133353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BC6989A2B8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:42:10 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CA7F89A2BA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:42:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4F3F1C2256D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:42:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30F44287D33
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:42:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E34816FF2A;
-	Fri,  5 Apr 2024 16:41:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA5A0171E74;
+	Fri,  5 Apr 2024 16:41:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NrwapMbU"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O207QbHU"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13408171671;
-	Fri,  5 Apr 2024 16:41:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BA72171E49;
+	Fri,  5 Apr 2024 16:41:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712335295; cv=none; b=fbhr2qCLS3qYhKVthSDrw50UwfXDo7veol49lAIeGl2BR793n+EhhmEzrcfh4jPsr5IJvYmuiZqsvW6ItLviAmWUacRsJl3K7RlMvLvf4n/WfpCvz8jEYwOR1SZHktsis0ESoYLTkWzo4V0RL4+Xu20DFIH/ZMO4lAGJnGwVXI0=
+	t=1712335298; cv=none; b=FH4GbmWiYMaAZ55PA79VinWgEZjVOpo7SPkvMkowhbM+NzyEyWp2M+36Ay/CyJqqLziMigvnXp01QkrnBcM3uUi4DGjkcGc60mlj9I+CCLIa2KdPOjyq8XwHmoV0W5SlBhZwhWLzcqIltO788N78kYrxmVDsjkRfCVRonUC+4g4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712335295; c=relaxed/simple;
-	bh=CNyZv7F7MM6DJREsMjJWxzU9kMvkiJmWI7Qjwel8lhk=;
+	s=arc-20240116; t=1712335298; c=relaxed/simple;
+	bh=aDbcpQbcbf0YX/mOf1pvgn7kmm9ITS7w0AmOppIc5a0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oXNS4iVEJpoAxWPIasJaU3f+54qirbx6VcRi1BcS35UWCHtgobnIL6tyubA4R3Wr2KDUSAhLXWVg+EEY67dGho4Hgbe9T5n9sZWf/NUB1Au/QoyGqOmgdObndFcu/Vd/8LTury2gizJ78q5ORTCYBZANUsjbOZNSYVnbVDdPKzE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NrwapMbU; arc=none smtp.client-ip=209.85.167.45
+	 MIME-Version; b=OO6QT7IWpJIzuWNDqTp36w8XGkUaT36tzZ3q0sooEl5RYVfIIDXr0xDcQSCokCMUsv0vvnPUeu/crzzMRtmtZteLi4pJd+YKOmuu0vS6KDUksOh8QHdfzKGSGxK8J0drpOdMqvlvxq6VNNfvcvlHiTpmBvY3BKb1FHR16d2y6nU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O207QbHU; arc=none smtp.client-ip=209.85.208.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516d6898bebso692769e87.3;
-        Fri, 05 Apr 2024 09:41:33 -0700 (PDT)
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d86e6908ecso7801091fa.2;
+        Fri, 05 Apr 2024 09:41:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712335292; x=1712940092; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712335294; x=1712940094; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=oushmNgLEoSiFSU+fvxV91NyvXwpQw1n1UeXr157a84=;
-        b=NrwapMbUSGXQ22+GoLEGdr9hsHdi9ndXKdpazLzll5CA3PWfDsa51ngJ1PqT8d1bcK
-         xHoJfTYQgBvbn2eYHiZTi5LRyMQAQ8qhcxLqyx0dG8o2P1gFG/0YGNP7DY1VAlfBMoG6
-         GlBaL3lwKfrDQ+k27I3El6zwVeP9IfINgtOJmyi4qzoGS5b3N87KdavGff2XQyAaueIH
-         qGEJGDkobQLtj5G6Bf7vo1m/euXeULvaSUOzTX+JSCQ8WMm7ubOuozEmMbR6dKYYOM6G
-         hrhYVox6TsbwzbEyYEp/npk7pLuoMBg1A9xbtz227/WAZKPm2GqNPx8d753n2I9QtuSH
-         mkBw==
+        bh=rcWuWwbYDzN/Eba2XHYlH7krkiOlk1hd506TNmQ/SjY=;
+        b=O207QbHURNgItat4yVH5QXLWUiUwU/0Pq5/dcEG09BH1KZjRntC46SZRgUUfP/tI+2
+         wDmlZeWx4dwbrW5ycDa2ZwiuvSW//5Co7/YOqvT1N/Zu75P2lAe3EvqvMENuRXvohmvi
+         5zQx+u8tRtCrw+ZpQXZ23bJxr0LaQ2wU0fHCmyTHfI7Znbe9ydWsPH2MmaxN+bMcwWqm
+         Ry9aWt+i5epXCVSGZ8ZS9MBDTbm9Zp3J1rno5mtcQh/eEopIel2akfNOv/Mt46uVlXOf
+         RiTStcqQE858AFzWzsqL59SVJh/uh8pUMWkgjxwzP+Vkx5zi/zU+jCO5A88JXi1o+Tq9
+         Q+tA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712335292; x=1712940092;
+        d=1e100.net; s=20230601; t=1712335294; x=1712940094;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=oushmNgLEoSiFSU+fvxV91NyvXwpQw1n1UeXr157a84=;
-        b=ksF6ELvTa/rVcJjKvpTgJfuulwEb0hyzzDi5f2pLnO9SW9q2Tk/Yt9YVlKAeX/O+3K
-         mEqmRI1nQNKi7h0UFEuP/xshk3+z9ZG0tQB1ueWK2RVbnEunqKyKbmdEq+DsKMrBUENM
-         j2ctA2LzXbasYHqjwTfb92W2eZEuIKSZ5hK+ennY0Mi7Fd5pYaqHD9TN2X+qn8e1x2JN
-         /Klh4jXAQSZrrEq0s87sqbk0uFSMX/7P8FtneI8ZRPMPOjsYvTM7kZyfS3Q91T5r4JoD
-         mO7WzadxmsHqODS3bAg111Gp5nMlX+x4Eht0y2DSxlN1wA1O/f9zgW8mv1+PSJDfWiBK
-         u13g==
-X-Forwarded-Encrypted: i=1; AJvYcCVTbemXBiYXhlwbFkYVpQl6DnfxMe3psBJTlvr1UjhC7cYcUbp6NfHyBNqsr4G9lj77Kse5FBhE5wSpoH+odDGjPkOgr13LbiLbJDDAohO72WrGe4Lspd5c2YQaPqTI5QbVUE0S/XgYrQU=
-X-Gm-Message-State: AOJu0YwdiKOxW90/ZTWY6BjfVzMqSLBzN0uZc/sMPrB6W6q8V/jEXnDA
-	7sar2pxpwhHqv0fnRhNXDDJmDnNjGEx1OaspIGU3HM2wXD+p0T/GfvDxIodNneA=
-X-Google-Smtp-Source: AGHT+IHKx/AFFoYlz2wsU7Ow4QEd1FTQYHkZhM2bjswqqJyLYJTgiqOPI9cpnPVCIAiE7UMQ7DlscA==
-X-Received: by 2002:a2e:8911:0:b0:2d8:713c:8313 with SMTP id d17-20020a2e8911000000b002d8713c8313mr663883lji.45.1712335291918;
-        Fri, 05 Apr 2024 09:41:31 -0700 (PDT)
+        bh=rcWuWwbYDzN/Eba2XHYlH7krkiOlk1hd506TNmQ/SjY=;
+        b=Z7Rux40OJw/t2eaOu0pD+IUSQxr+j5AYCne6qBUaKGwPYPViZjjiLByCZGYv3Ij3gi
+         bWHOr2E0DTGlINrYvVBMQ7+bWRGPoFjinlnON3xKt18wk5cxKXnXfegqB7cgHH6K7Nxz
+         81vU1D9RI2wYiKFDph+IQDlKhy8AaRuWFoanTYkmoNxKE+Rxdpwxph+ocuwe3PeHsY33
+         sNTwGFi5EXkvgj/5Tz5W4j9/QhgQU6Twg4Vkt9oyRNef+JxYVDrOKi8z6ookY9O9f/hv
+         1QqpEPyulRgGvVq3/AxNbYMJdlqsA+i5Gw2qBHhsrIKk/MD/dr/gDZdZHkVGW20mDnoy
+         rREg==
+X-Forwarded-Encrypted: i=1; AJvYcCWOguD6Jk/W+pDd4mSid54Y4SMROiVvPldugtcVkshB/G4GWjVgBEfcDugRJS4urzQtthugNgshv+OBUaMKpdrlgn1b2oEn/nHT8iXdvZyVLH7JKUuRJvTSG5uXBGk/YxJjf3/eylIFBME=
+X-Gm-Message-State: AOJu0YxTzpfrs3ZvfmWxRzneBQEumhCFE0CAH/D+Ku/z1viEytZS/g3Y
+	vbnbu52VTKpXMFdxKGItzYKkDS8p3L2zA4Lfg+spOZUYRR0imxxPYQHParr9u7Q=
+X-Google-Smtp-Source: AGHT+IGl9F4dDCyChCMVoGYfXSICfhCtrpA1CCVSJDV4PiNlLxXJekc8k+xez46y2labugUQne6I8w==
+X-Received: by 2002:a2e:914b:0:b0:2d8:4897:39a0 with SMTP id q11-20020a2e914b000000b002d8489739a0mr1619646ljg.15.1712335294013;
+        Fri, 05 Apr 2024 09:41:34 -0700 (PDT)
 Received: from localhost.localdomain ([178.70.43.28])
-        by smtp.gmail.com with ESMTPSA id h13-20020a05651c124d00b002d6c93793f1sm218372ljh.77.2024.04.05.09.41.31
+        by smtp.gmail.com with ESMTPSA id h13-20020a05651c124d00b002d6c93793f1sm218372ljh.77.2024.04.05.09.41.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 09:41:31 -0700 (PDT)
+        Fri, 05 Apr 2024 09:41:33 -0700 (PDT)
 From: Ivan Bornyakov <brnkv.i1@gmail.com>
 To: Nas Chung <nas.chung@chipsnmedia.com>,
 	Jackson Lee <jackson.lee@chipsnmedia.com>,
@@ -75,9 +75,9 @@ To: Nas Chung <nas.chung@chipsnmedia.com>,
 Cc: Ivan Bornyakov <brnkv.i1@gmail.com>,
 	linux-media@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/5] media: chips-media: wave5: support reset lines
-Date: Fri,  5 Apr 2024 19:41:06 +0300
-Message-ID: <20240405164112.24571-3-brnkv.i1@gmail.com>
+Subject: [PATCH v3 3/5] media: chips-media: wave5: separate irq setup routine
+Date: Fri,  5 Apr 2024 19:41:07 +0300
+Message-ID: <20240405164112.24571-4-brnkv.i1@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240405164112.24571-1-brnkv.i1@gmail.com>
 References: <20240405164112.24571-1-brnkv.i1@gmail.com>
@@ -89,82 +89,108 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add initial support for optional reset lines. For now, simply deassert
-resets on driver probe and assert them back on driver remove.
+Implement a separate setup routine for interrupts to reduce code
+duplication. Also enable interrupts based on vpu_attr->support_encoders
+and vpu_attr->support_decoders fields to facilitate support for other
+Wave5xx IPs, because not all of them are both encoders and decoders.
 
 Signed-off-by: Ivan Bornyakov <brnkv.i1@gmail.com>
 ---
- .../media/platform/chips-media/wave5/wave5-vpu.c | 16 +++++++++++++++-
- .../platform/chips-media/wave5/wave5-vpuapi.h    |  1 +
- 2 files changed, 16 insertions(+), 1 deletion(-)
+ .../platform/chips-media/wave5/wave5-hw.c     | 53 +++++++++----------
+ 1 file changed, 24 insertions(+), 29 deletions(-)
 
-diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-index 1b3df5b04249..1e631da58e15 100644
---- a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
-@@ -10,6 +10,7 @@
- #include <linux/clk.h>
- #include <linux/firmware.h>
- #include <linux/interrupt.h>
-+#include <linux/reset.h>
- #include "wave5-vpu.h"
- #include "wave5-regdefine.h"
- #include "wave5-vpuconfig.h"
-@@ -151,6 +152,16 @@ static int wave5_vpu_probe(struct platform_device *pdev)
- 	dev_set_drvdata(&pdev->dev, dev);
- 	dev->dev = &pdev->dev;
+diff --git a/drivers/media/platform/chips-media/wave5/wave5-hw.c b/drivers/media/platform/chips-media/wave5/wave5-hw.c
+index 2d82791f575e..cdd0a0948a94 100644
+--- a/drivers/media/platform/chips-media/wave5/wave5-hw.c
++++ b/drivers/media/platform/chips-media/wave5/wave5-hw.c
+@@ -299,6 +299,27 @@ static int wave5_send_query(struct vpu_device *vpu_dev, struct vpu_instance *ins
+ 	return wave5_vpu_firmware_command_queue_error_check(vpu_dev, NULL);
+ }
  
-+	dev->resets = devm_reset_control_array_get_optional_exclusive(&pdev->dev);
-+	if (IS_ERR(dev->resets)) {
-+		return dev_err_probe(&pdev->dev, PTR_ERR(dev->resets),
-+				     "Failed to get reset control\n");
++static void setup_wave5_interrupts(struct vpu_device *vpu_dev)
++{
++	u32 reg_val = 0;
++
++	if (vpu_dev->attr.support_encoders) {
++		/* Encoder interrupt */
++		reg_val |= BIT(INT_WAVE5_ENC_SET_PARAM);
++		reg_val |= BIT(INT_WAVE5_ENC_PIC);
++		reg_val |= BIT(INT_WAVE5_BSBUF_FULL);
 +	}
 +
-+	ret = reset_control_deassert(dev->resets);
-+	if (ret)
-+		return dev_err_probe(&pdev->dev, ret, "Failed to deassert resets\n");
++	if (vpu_dev->attr.support_decoders) {
++		/* Decoder interrupt */
++		reg_val |= BIT(INT_WAVE5_INIT_SEQ);
++		reg_val |= BIT(INT_WAVE5_DEC_PIC);
++		reg_val |= BIT(INT_WAVE5_BSBUF_EMPTY);
++	}
 +
- 	ret = devm_clk_bulk_get_all(&pdev->dev, &dev->clks);
++	return vpu_write_reg(vpu_dev, W5_VPU_VINT_ENABLE, reg_val);
++}
++
+ static int setup_wave5_properties(struct device *dev)
+ {
+ 	struct vpu_device *vpu_dev = dev_get_drvdata(dev);
+@@ -340,6 +361,8 @@ static int setup_wave5_properties(struct device *dev)
+ 	p_attr->support_vcpu_backbone = FIELD_GET(FEATURE_VCPU_BACKBONE, hw_config_def0);
+ 	p_attr->support_vcore_backbone = FIELD_GET(FEATURE_VCORE_BACKBONE, hw_config_def0);
  
- 	/* continue without clock, assume externally managed */
-@@ -163,7 +174,7 @@ static int wave5_vpu_probe(struct platform_device *pdev)
- 	ret = clk_bulk_prepare_enable(dev->num_clks, dev->clks);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Enabling clocks, fail: %d\n", ret);
--		return ret;
-+		goto err_reset_assert;
- 	}
- 
- 	ret = of_property_read_u32(pdev->dev.of_node, "sram-size",
-@@ -246,6 +257,8 @@ static int wave5_vpu_probe(struct platform_device *pdev)
- 	wave5_vdi_release(&pdev->dev);
- err_clk_dis:
- 	clk_bulk_disable_unprepare(dev->num_clks, dev->clks);
-+err_reset_assert:
-+	reset_control_assert(dev->resets);
- 
- 	return ret;
++	setup_wave5_interrupts(vpu_dev);
++
+ 	return 0;
  }
-@@ -256,6 +269,7 @@ static void wave5_vpu_remove(struct platform_device *pdev)
  
- 	mutex_destroy(&dev->dev_lock);
- 	mutex_destroy(&dev->hw_lock);
-+	reset_control_assert(dev->resets);
- 	clk_bulk_disable_unprepare(dev->num_clks, dev->clks);
- 	wave5_vpu_enc_unregister_device(dev);
- 	wave5_vpu_dec_unregister_device(dev);
-diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
-index 465ff9dfe8b1..da530fd98964 100644
---- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
-+++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
-@@ -758,6 +758,7 @@ struct vpu_device {
- 	struct ida inst_ida;
- 	struct clk_bulk_data *clks;
- 	int num_clks;
-+	struct reset_control *resets;
- };
+@@ -417,16 +440,6 @@ int wave5_vpu_init(struct device *dev, u8 *fw, size_t size)
+ 	wave5_fio_writel(vpu_dev, W5_BACKBONE_AXI_PARAM, 0);
+ 	vpu_write_reg(vpu_dev, W5_SEC_AXI_PARAM, 0);
  
- struct vpu_instance;
+-	/* Encoder interrupt */
+-	reg_val = BIT(INT_WAVE5_ENC_SET_PARAM);
+-	reg_val |= BIT(INT_WAVE5_ENC_PIC);
+-	reg_val |= BIT(INT_WAVE5_BSBUF_FULL);
+-	/* Decoder interrupt */
+-	reg_val |= BIT(INT_WAVE5_INIT_SEQ);
+-	reg_val |= BIT(INT_WAVE5_DEC_PIC);
+-	reg_val |= BIT(INT_WAVE5_BSBUF_EMPTY);
+-	vpu_write_reg(vpu_dev, W5_VPU_VINT_ENABLE, reg_val);
+-
+ 	reg_val = vpu_read_reg(vpu_dev, W5_VPU_RET_VPU_CONFIG0);
+ 	if (FIELD_GET(FEATURE_BACKBONE, reg_val)) {
+ 		reg_val = ((WAVE5_PROC_AXI_ID << 28) |
+@@ -1034,16 +1047,6 @@ int wave5_vpu_re_init(struct device *dev, u8 *fw, size_t size)
+ 		wave5_fio_writel(vpu_dev, W5_BACKBONE_AXI_PARAM, 0);
+ 		vpu_write_reg(vpu_dev, W5_SEC_AXI_PARAM, 0);
+ 
+-		/* Encoder interrupt */
+-		reg_val = BIT(INT_WAVE5_ENC_SET_PARAM);
+-		reg_val |= BIT(INT_WAVE5_ENC_PIC);
+-		reg_val |= BIT(INT_WAVE5_BSBUF_FULL);
+-		/* Decoder interrupt */
+-		reg_val |= BIT(INT_WAVE5_INIT_SEQ);
+-		reg_val |= BIT(INT_WAVE5_DEC_PIC);
+-		reg_val |= BIT(INT_WAVE5_BSBUF_EMPTY);
+-		vpu_write_reg(vpu_dev, W5_VPU_VINT_ENABLE, reg_val);
+-
+ 		reg_val = vpu_read_reg(vpu_dev, W5_VPU_RET_VPU_CONFIG0);
+ 		if (FIELD_GET(FEATURE_BACKBONE, reg_val)) {
+ 			reg_val = ((WAVE5_PROC_AXI_ID << 28) |
+@@ -1134,15 +1137,7 @@ static int wave5_vpu_sleep_wake(struct device *dev, bool i_sleep_wake, const uin
+ 		wave5_fio_writel(vpu_dev, W5_BACKBONE_AXI_PARAM, 0);
+ 		vpu_write_reg(vpu_dev, W5_SEC_AXI_PARAM, 0);
+ 
+-		/* Encoder interrupt */
+-		reg_val = BIT(INT_WAVE5_ENC_SET_PARAM);
+-		reg_val |= BIT(INT_WAVE5_ENC_PIC);
+-		reg_val |= BIT(INT_WAVE5_BSBUF_FULL);
+-		/* Decoder interrupt */
+-		reg_val |= BIT(INT_WAVE5_INIT_SEQ);
+-		reg_val |= BIT(INT_WAVE5_DEC_PIC);
+-		reg_val |= BIT(INT_WAVE5_BSBUF_EMPTY);
+-		vpu_write_reg(vpu_dev, W5_VPU_VINT_ENABLE, reg_val);
++		setup_wave5_interrupts(vpu_dev);
+ 
+ 		reg_val = vpu_read_reg(vpu_dev, W5_VPU_RET_VPU_CONFIG0);
+ 		if (FIELD_GET(FEATURE_BACKBONE, reg_val)) {
 -- 
 2.44.0
 
