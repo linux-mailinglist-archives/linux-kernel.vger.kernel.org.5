@@ -1,209 +1,253 @@
-Return-Path: <linux-kernel+bounces-132986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0CCF899CEC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:31:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 312E8899CF5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:31:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48C94286D57
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:31:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B31B41F23282
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2487613C678;
-	Fri,  5 Apr 2024 12:31:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 292F116C68C;
+	Fri,  5 Apr 2024 12:31:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UEFrgDPj"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="JLGdZ/e9"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F89D1DDD1;
-	Fri,  5 Apr 2024 12:31:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 910661E52C;
+	Fri,  5 Apr 2024 12:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712320272; cv=none; b=YZkHIQ+gMFVZ7ALXCAiSfcdz4ayXHtz6NosAh26ZVAKVKkR5+JKSSjFby0K/oB+W4dNsVxvr/uwaapnS4rf7H7ov9sW1nZw1Rhm0t79na8HE64nLL4IVadPRntnyWiROtfUY3M2AD6+OmEB0cgYPGRbsj78DFIZ/fkbOSK1D458=
+	t=1712320290; cv=none; b=MPn8rH29gIpDPSdSfqFjx0Maqm7Cp7pAFWqFuhX0EeoyW80Nt/FhZ9tFnPGpxrlPCPiWtcZAttlm9dhAaJewiu62bCcz/T0sVET/YkZH5vhCj6wWwaxym1XHXcg9IiWbVxkiZ4LU6lyrLlYoPZio7ZKjHemQVSXgrJBXgQBOSsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712320272; c=relaxed/simple;
-	bh=dj6A9j4F1ponuNhAjpfYgX+BKe/KCrhT9UuubkuWGKw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cmzOlvs81e4qWodG93ncLa78Jua/nq01rpffetuTmPGKaUxL6LlsyGG9oMSCx3gFaUn52YhxEV/VikfRtSbT4VEtjT1N77tz0xuGz9WPZrQng0b9BVRTRI3DLv/eqltig8glfO12z4/D3yQ0TjFb88Ce8tp5JFKJo+fkfY3okP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UEFrgDPj; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 435CTF2q008709;
-	Fri, 5 Apr 2024 12:30:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=ulT9lRp050SFEj+EXxpPExDse9jrJZlssl47OyNS3JM=; b=UE
-	FrgDPjDBOdQsRXKCDbuBu4aujNCQKDOc3ELeEV8G3nsqVW899iCU/4LYEJhT/6oe
-	pdc1g8Rkj9XJqOkeWQUUPKv2DSg/5qenKBFS5sKf6Z+NPZUZxC0SIgDDvBtZUUJx
-	tm5WZQh/3ALvoPRX2Ztt/fmpoUrBLWgsYO97VcHDtn/+tL85sG6nWpJrCZPaOIzU
-	2P2yNeCAlXxejxcfSAROgpmkNdHxKQGG9VsDGkvxYOy+I8PFvQrSpwKkVvpnrqxo
-	qCwz6l0d3NPDr+HNDTzZ+e+9djlhQVqvv9nJA3+lDCM9ndX/Io4E/w+0gOp0SI7l
-	j/8EUuATEcD3OOgWNWaA==
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xahb1005d-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 12:30:57 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 435CUuP9031840
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Apr 2024 12:30:56 GMT
-Received: from [10.216.12.56] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
- 05:30:52 -0700
-Message-ID: <4ee9e2b9-2de6-db73-9ff5-9f6d4d33bcef@quicinc.com>
-Date: Fri, 5 Apr 2024 18:00:48 +0530
+	s=arc-20240116; t=1712320290; c=relaxed/simple;
+	bh=KRPKqvNbg4Tz2Kh9PFfjApEuX40woj7+wPYcZIqO5+g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hceASqJIc03rbNgi3xznfW4zebDw+T65uKdzFqfS2Jr+hfkghR7q71VMZikeuKwCI0+kmsSKacMSLNcPFSBcvfeIWcdZj09LnOU59RECXjTOAyOfmbBWb7/1gVqnvKu9IbQYcyQaWsCOphQEXhDa7RLxov8DF7iIHqAq1aGV6lY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=JLGdZ/e9; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 8611D8E1;
+	Fri,  5 Apr 2024 14:30:46 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1712320247;
+	bh=KRPKqvNbg4Tz2Kh9PFfjApEuX40woj7+wPYcZIqO5+g=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=JLGdZ/e9eGPub9wKHNbL+g9vQNiHehS66wjodPeuVn6vzykNEyfswMicafLU0y4MZ
+	 6LjHxt9QJf2xj6n+IXyHELl8GMceIY3HtjMmkpZ32hnmZIYJXKDtM2RIfhQ1z2FZiD
+	 W3r/JYLKuEqwTV4LgNXuDKQKZT9YDWDtuula2S90=
+Message-ID: <0dc8d701-3bc7-4f50-8852-5cce2b405c2e@ideasonboard.com>
+Date: Fri, 5 Apr 2024 15:31:22 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 08/19] media: venus: core: Get rid of vcodec_num
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/9] drm: xlnx: zynqmp_dpsub: Set layer mode during
+ creation
+To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+Cc: dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-media@vger.kernel.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ Michal Simek <michal.simek@amd.com>, Andrzej Hajda
+ <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>,
+ Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
+ <20240321-dp-live-fmt-v3-1-d5090d796b7e@amd.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 Content-Language: en-US
-To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Stanimir Varbanov
-	<stanimir.k.varbanov@gmail.com>,
-        Bryan O'Donoghue
-	<bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Philipp
- Zabel" <p.zabel@pengutronix.de>
-CC: Marijn Suijten <marijn.suijten@somainline.org>,
-        Stanimir Varbanov
-	<stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab
-	<mchehab+huawei@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
- <20230911-topic-mars-v3-8-79f23b81c261@linaro.org>
- <704e4a60-ae8b-e951-87c0-3b0aa4cf26d6@quicinc.com>
-From: Vikash Garodia <quic_vgarodia@quicinc.com>
-In-Reply-To: <704e4a60-ae8b-e951-87c0-3b0aa4cf26d6@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20240321-dp-live-fmt-v3-1-d5090d796b7e@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: G7z3xkkSjDHnCXrNECQnkS-vC0uPJ9Eb
-X-Proofpoint-GUID: G7z3xkkSjDHnCXrNECQnkS-vC0uPJ9Eb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-05_10,2024-04-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 spamscore=0 malwarescore=0 impostorscore=0 mlxlogscore=999
- mlxscore=0 suspectscore=0 priorityscore=1501 clxscore=1015 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404050090
 
-Hi Konrad,
+On 21/03/2024 22:43, Anatoliy Klymenko wrote:
+> Set layer mode of operation (live or dma-based) during layer creation.
+> 
+> Each DPSUB layer mode of operation is defined by corresponding DT node port
+> connection, so it is possible to assign it during layer object creation.
+> Previously it was set in layer enable functions, although it is too late
+> as setting layer format depends on layer mode, and should be done before
+> given layer enabled.
+> 
+> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> ---
+>   drivers/gpu/drm/xlnx/zynqmp_disp.c | 20 ++++++++++++++++----
+>   drivers/gpu/drm/xlnx/zynqmp_disp.h | 13 +------------
+>   drivers/gpu/drm/xlnx/zynqmp_dp.c   |  2 +-
+>   drivers/gpu/drm/xlnx/zynqmp_kms.c  |  2 +-
+>   4 files changed, 19 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> index 8a39b3accce5..e6d26ef60e89 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> @@ -64,6 +64,16 @@
+>   
+>   #define ZYNQMP_DISP_MAX_NUM_SUB_PLANES			3
+>   
+> +/**
+> + * enum zynqmp_dpsub_layer_mode - Layer mode
+> + * @ZYNQMP_DPSUB_LAYER_NONLIVE: non-live (memory) mode
+> + * @ZYNQMP_DPSUB_LAYER_LIVE: live (stream) mode
+> + */
+> +enum zynqmp_dpsub_layer_mode {
+> +	ZYNQMP_DPSUB_LAYER_NONLIVE,
+> +	ZYNQMP_DPSUB_LAYER_LIVE,
+> +};
+> +
+>   /**
+>    * struct zynqmp_disp_format - Display subsystem format information
+>    * @drm_fmt: DRM format (4CC)
+> @@ -902,15 +912,12 @@ u32 *zynqmp_disp_layer_drm_formats(struct zynqmp_disp_layer *layer,
+>   /**
+>    * zynqmp_disp_layer_enable - Enable a layer
+>    * @layer: The layer
+> - * @mode: Operating mode of layer
+>    *
+>    * Enable the @layer in the audio/video buffer manager and the blender. DMA
+>    * channels are started separately by zynqmp_disp_layer_update().
+>    */
+> -void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer,
+> -			      enum zynqmp_dpsub_layer_mode mode)
+> +void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer)
+>   {
+> -	layer->mode = mode;
+>   	zynqmp_disp_avbuf_enable_video(layer->disp, layer);
+>   	zynqmp_disp_blend_layer_enable(layer->disp, layer);
+>   }
+> @@ -1134,6 +1141,11 @@ static int zynqmp_disp_create_layers(struct zynqmp_disp *disp)
+>   		layer->id = i;
+>   		layer->disp = disp;
+>   		layer->info = &layer_info[i];
+> +		/* For now assume dpsub works in either live or non-live mode for both layers.
+> +		 * Hybrid mode is not supported yet.
+> +		 */
 
-On 4/5/2024 2:48 PM, Dikshita Agarwal wrote:
-> 
-> 
-> On 3/27/2024 11:38 PM, Konrad Dybcio wrote:
->> That field was only introduced to differentiate between the legacy and
->> non-legacy SDM845 binding. Get rid of it.
->>
->> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>  drivers/media/platform/qcom/venus/core.c       | 5 -----
->>  drivers/media/platform/qcom/venus/core.h       | 1 -
->>  drivers/media/platform/qcom/venus/pm_helpers.c | 2 +-
->>  3 files changed, 1 insertion(+), 7 deletions(-)
->>
->> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
->> index 5e7cb54e6088..26a0c264685a 100644
->> --- a/drivers/media/platform/qcom/venus/core.c
->> +++ b/drivers/media/platform/qcom/venus/core.c
->> @@ -651,7 +651,6 @@ static const struct venus_resources sdm660_res = {
->>  	.vcodec0_clks = { "vcodec0_core" },
->>  	.vcodec1_clks = { "vcodec0_core" },
->>  	.vcodec_clks_num = 1,
->> -	.vcodec_num = 1,
->>  	.max_load = 1036800,
->>  	.hfi_version = HFI_VERSION_3XX,
->>  	.vmem_id = VIDC_RESOURCE_NONE,
->> @@ -725,7 +724,6 @@ static const struct venus_resources sdm845_res_v2 = {
->>  	.vcodec_pmdomains = (const char *[]) { "venus", "vcodec0", "vcodec1" },
->>  	.vcodec_pmdomains_num = 3,
->>  	.opp_pmdomain = pd_names_cx,
->> -	.vcodec_num = 2,
->>  	.max_load = 3110400,	/* 4096x2160@90 */
->>  	.hfi_version = HFI_VERSION_4XX,
->>  	.vpu_version = VPU_VERSION_AR50,
->> @@ -774,7 +772,6 @@ static const struct venus_resources sc7180_res = {
->>  	.vcodec_pmdomains = (const char *[]) { "venus", "vcodec0" },
->>  	.vcodec_pmdomains_num = 2,
->>  	.opp_pmdomain = pd_names_cx,
->> -	.vcodec_num = 1,
->>  	.hfi_version = HFI_VERSION_4XX,
->>  	.vpu_version = VPU_VERSION_AR50,
->>  	.vmem_id = VIDC_RESOURCE_NONE,
->> @@ -831,7 +828,6 @@ static const struct venus_resources sm8250_res = {
->>  	.vcodec_pmdomains = (const char *[]) { "venus", "vcodec0" },
->>  	.vcodec_pmdomains_num = 2,
->>  	.opp_pmdomain = pd_names_mx,
->> -	.vcodec_num = 1,
->>  	.max_load = 7833600,
->>  	.hfi_version = HFI_VERSION_6XX,
->>  	.vpu_version = VPU_VERSION_IRIS2,
->> @@ -890,7 +886,6 @@ static const struct venus_resources sc7280_res = {
->>  	.vcodec_pmdomains = (const char *[]) { "venus", "vcodec0" },
->>  	.vcodec_pmdomains_num = 2,
->>  	.opp_pmdomain = pd_names_cx,
->> -	.vcodec_num = 1,
->>  	.hfi_version = HFI_VERSION_6XX,
->>  	.vpu_version = VPU_VERSION_IRIS2_1,
->>  	.num_vpp_pipes = 1,
->> diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
->> index 6a77de374454..376de1161114 100644
->> --- a/drivers/media/platform/qcom/venus/core.h
->> +++ b/drivers/media/platform/qcom/venus/core.h
->> @@ -74,7 +74,6 @@ struct venus_resources {
->>  	const char **vcodec_pmdomains;
->>  	unsigned int vcodec_pmdomains_num;
->>  	const char **opp_pmdomain;
->> -	unsigned int vcodec_num;
->>  	const char * const resets[VIDC_RESETS_NUM_MAX];
->>  	unsigned int resets_num;
->>  	enum hfi_version hfi_version;
->> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
->> index 5b2a40a2f524..ba63e6427eb9 100644
->> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
->> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
->> @@ -622,7 +622,7 @@ min_loaded_core(struct venus_inst *inst, u32 *min_coreid, u32 *min_load, bool lo
->>  			VIDC_CORE_ID_1 : VIDC_CORE_ID_2;
->>  	*min_load = min(core1_load, core2_load);
->>  
->> -	if (cores_max < VIDC_CORE_ID_2 || core->res->vcodec_num < 2> +	if (cores_max < VIDC_CORE_ID_2 || legacy_binding) {
-> core->res->vcodec_num < 2 doesn't mean legacy binding.
-> 7180, 8250 and 7280 have vcodec num as 1 but they don't follow legacy
-> binding and they still have one core which is VIDC_CORE_ID_1.
-+1 to above comments. The change is misusing legacy bindings to decide the
-cores, while its more readable to keep it with number of vcodec cores.
+This comment style is not according to the style guide, and in fact you 
+fix it in the patch 4. So please fix it here instead.
 
-Thanks,
-Vikash
->>  		*min_coreid = VIDC_CORE_ID_1;
->>  		*min_load = core1_load;
->>  	}
->>
+  Tomi
+
+> +		layer->mode = disp->dpsub->dma_enabled ? ZYNQMP_DPSUB_LAYER_NONLIVE
+> +						       : ZYNQMP_DPSUB_LAYER_LIVE;
+>   
+>   		ret = zynqmp_disp_layer_request_dma(disp, layer);
+>   		if (ret)
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.h b/drivers/gpu/drm/xlnx/zynqmp_disp.h
+> index 123cffac08be..9b8b202224d9 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.h
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.h
+> @@ -42,16 +42,6 @@ enum zynqmp_dpsub_layer_id {
+>   	ZYNQMP_DPSUB_LAYER_GFX,
+>   };
+>   
+> -/**
+> - * enum zynqmp_dpsub_layer_mode - Layer mode
+> - * @ZYNQMP_DPSUB_LAYER_NONLIVE: non-live (memory) mode
+> - * @ZYNQMP_DPSUB_LAYER_LIVE: live (stream) mode
+> - */
+> -enum zynqmp_dpsub_layer_mode {
+> -	ZYNQMP_DPSUB_LAYER_NONLIVE,
+> -	ZYNQMP_DPSUB_LAYER_LIVE,
+> -};
+> -
+>   void zynqmp_disp_enable(struct zynqmp_disp *disp);
+>   void zynqmp_disp_disable(struct zynqmp_disp *disp);
+>   int zynqmp_disp_setup_clock(struct zynqmp_disp *disp,
+> @@ -62,8 +52,7 @@ void zynqmp_disp_blend_set_global_alpha(struct zynqmp_disp *disp,
+>   
+>   u32 *zynqmp_disp_layer_drm_formats(struct zynqmp_disp_layer *layer,
+>   				   unsigned int *num_formats);
+> -void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer,
+> -			      enum zynqmp_dpsub_layer_mode mode);
+> +void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer);
+>   void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer);
+>   void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
+>   				  const struct drm_format_info *info);
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index 1846c4971fd8..04b6bcac3b07 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -1295,7 +1295,7 @@ static void zynqmp_dp_disp_enable(struct zynqmp_dp *dp,
+>   	/* TODO: Make the format configurable. */
+>   	info = drm_format_info(DRM_FORMAT_YUV422);
+>   	zynqmp_disp_layer_set_format(layer, info);
+> -	zynqmp_disp_layer_enable(layer, ZYNQMP_DPSUB_LAYER_LIVE);
+> +	zynqmp_disp_layer_enable(layer);
+>   
+>   	if (layer_id == ZYNQMP_DPSUB_LAYER_GFX)
+>   		zynqmp_disp_blend_set_global_alpha(dp->dpsub->disp, true, 255);
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_kms.c b/drivers/gpu/drm/xlnx/zynqmp_kms.c
+> index db3bb4afbfc4..43bf416b33d5 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_kms.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_kms.c
+> @@ -122,7 +122,7 @@ static void zynqmp_dpsub_plane_atomic_update(struct drm_plane *plane,
+>   
+>   	/* Enable or re-enable the plane if the format has changed. */
+>   	if (format_changed)
+> -		zynqmp_disp_layer_enable(layer, ZYNQMP_DPSUB_LAYER_NONLIVE);
+> +		zynqmp_disp_layer_enable(layer);
+>   }
+>   
+>   static const struct drm_plane_helper_funcs zynqmp_dpsub_plane_helper_funcs = {
 > 
-> Thanks,
-> Dikshita
+
 
