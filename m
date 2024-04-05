@@ -1,237 +1,337 @@
-Return-Path: <linux-kernel+bounces-133022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C656899D97
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:54:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F3E8899DA2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:56:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9B73B21FB3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:54:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7DF11C22D7A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:56:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 234D116D313;
-	Fri,  5 Apr 2024 12:54:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 119F716D322;
+	Fri,  5 Apr 2024 12:56:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="d1og2vLx";
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="iy9YBG0v"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
+	dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b="quVeVfye"
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D4F81DFE4;
-	Fri,  5 Apr 2024 12:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.154.123
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712321659; cv=fail; b=TPvAEvroHOvFLMX73RBjmESgxC7S/0bEKvF1B7dP42zHToIh5+Ko0IuxHJdw1nsZGGkGOzJLNLbYiscQFCldHvA1uvYVeQfpd0f6ar2i3RvVfv/pJRw/0XkrtsZ8R+e3PaLWUFOUwnnMlo81M42jrRa7Ju6Htfdr8MqqmQCckXg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712321659; c=relaxed/simple;
-	bh=/FIJvKg3Nhr0/MFCKh8vur+ev2yooMmYFmNu3ymbpDE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=AXvgaUbYBfPnll0m6yu5iJe/Z+ZVKuAP6G2OS5nCdh1fkmW0tn+pnCB3jC/kFym2KQIElZgXIo0Fwv7jmuUmbUSo06YH82QWoEFhI1ZWuJoYRGd8ONolhAHevHNgkZTECaDsBS3f0PKCuyZ4FnKpKh40be7DKlJ5BfExXewDpaQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=d1og2vLx; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=iy9YBG0v; arc=fail smtp.client-ip=68.232.154.123
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1712321657; x=1743857657;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=/FIJvKg3Nhr0/MFCKh8vur+ev2yooMmYFmNu3ymbpDE=;
-  b=d1og2vLxTJTdL+M1+vtaQlpQmXLPZ1a7WTKkfuJMgy7Ibog9jYaEcfuv
-   oiW0D8e4SVUFZzYTG6DbzfkOogfsYwCd0VQC+3ESF22wQ3xcHLE7wDbuY
-   N3e4gLKKPsLpakQ5ozU2cGr61MQPqMWPTdasJepbf3jCB54Q0TmSt75wa
-   rjv02c66HmxAxdYC44kp+bNbyXoqnA93UFNA1MzARqtTrSysjw5eFpcUj
-   adaVKWy0J42iVAs9asjqzY0p1KGsTLfNN+Mju6dx/gfdKXHmbBomVaRQ9
-   SKEn0okOk3yrelHaWxlKxjkdfudPnmwtUAz/t18iVcDGel9Cc3XCOBAr3
-   w==;
-X-CSE-ConnectionGUID: /aocNBZtTHKH1E4yeMPQ6w==
-X-CSE-MsgGUID: e726OJLWRIy1h1mgcqEP6Q==
-X-IronPort-AV: E=Sophos;i="6.07,181,1708412400"; 
-   d="scan'208";a="186925418"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Apr 2024 05:54:10 -0700
-Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 5 Apr 2024 05:53:40 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (10.10.215.250)
- by email.microchip.com (10.10.87.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 5 Apr 2024 05:53:39 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Evu5buvQ/ZV18NT/ZudzHEl2mVUUBF4TBzYdwOLAZrcNsxol2D5wKbCcE+uympkMAZKI+6zWNgBNO83yOILO9purZBLcWS7iTm4Xuag2zrHJiSUc0AFVsJeWxzefKubqpmorSNMgPWkkz0MV2R8bup6W3lkCQvHdF/EO6/fg1hwG2xFT9ppqEamMwFJIJfv5nlSTCvpyUo5FjwS6AwHNA2LKJoXjllpOEim6eF6oZvXGHVXK2CmavJp/XHdHCdPJYC+3FP1ObR0Jz/6+JorQE2E2YZPhsXl4kXSX1tKS5CvDis7Sxgm9U6LRYTYf1bZQVxTYHm3nADfEbBw/YcNULw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/FIJvKg3Nhr0/MFCKh8vur+ev2yooMmYFmNu3ymbpDE=;
- b=L1yb0Ij7LxZL1VEd3oGzcYNQxSxDdUoCmWFtsRUzqTxcJLsBPhxT9QeW5+Mn2G15COB7I270zfrvLElUK5rKlMEwUoRV1CwRnI5qAdP3zipOoU/EW02ROJk3fBbLCTGIa5WvV/MbeWb/bRCgbrql8qj1gEc22Xr3PBtvpB7Y0z3bnhMeuqLxfyPsFhpxjc6gGqdmM/BFu4yz+K4pMWDQY1Vn4BQY/FXn0VSAB9sBXnrxyoaPBwn5/Cr5tmfBRkiJEKxCjTwvw6CGGPXE3eeWZeK4Qqa3xXeKdif2k2tIEEncfjJef83cbibOAoERmQS2kT+slhjlUEntvWBhK40TVQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microchip.com; dmarc=pass action=none
- header.from=microchip.com; dkim=pass header.d=microchip.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microchip.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/FIJvKg3Nhr0/MFCKh8vur+ev2yooMmYFmNu3ymbpDE=;
- b=iy9YBG0vArryhW99nI0ddeBk34JmVcn37UOA0wVKCdz/Uq8OL8UaFDjterib352NmZtSGiGVH3ymxl/Hy6ELn8XvACVrSSiV4SxiyATSe4zP1+axFoZF7L4e3ZEuh4/g5qEwUzV7kzsuTnsf+ZrwwVc69uG9wbJnJTpburueBw2JnMucksmUH1nWFM+oP6CPYlbPKjqkCBxWEZqJNXu50XEQE6BWwra5tUNXJJx9UelzHWDfwt1gI2/NCtb0pzABqGqq01p+KeIgUJfsDgVgUSk6SzEpVmX1B4/2grv5mmV+PUrBoJiiE/a9DjZpQoUveuAQWYh9uJcQGPfdhzpLpA==
-Received: from SN6PR11MB3167.namprd11.prod.outlook.com (2603:10b6:805:c6::10)
- by MW4PR11MB6933.namprd11.prod.outlook.com (2603:10b6:303:22a::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.25; Fri, 5 Apr
- 2024 12:53:38 +0000
-Received: from SN6PR11MB3167.namprd11.prod.outlook.com
- ([fe80::b059:198c:9128:7b43]) by SN6PR11MB3167.namprd11.prod.outlook.com
- ([fe80::b059:198c:9128:7b43%3]) with mapi id 15.20.7452.019; Fri, 5 Apr 2024
- 12:53:38 +0000
-From: <Marius.Cristea@microchip.com>
-To: <jic23@kernel.org>, <Conor.Dooley@microchip.com>
-CC: <linux@roeck-us.net>, <jdelvare@suse.com>, <linux-iio@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <lars@metafoo.de>,
-	<linux-kernel@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <robh+dt@kernel.org>,
-	<conor+dt@kernel.org>
-Subject: Re: [PATCH v5 2/2] iio: adc: adding support for PAC193x
-Thread-Topic: [PATCH v5 2/2] iio: adc: adding support for PAC193x
-Thread-Index: AQHaZa41DnEBQNNY0k6p6RiYUs7Fp7EZ4G+AgEABbwCAAANSgA==
-Date: Fri, 5 Apr 2024 12:53:38 +0000
-Message-ID: <e432bddc16952d9144ccf6da5a54b88e3171b947.camel@microchip.com>
-References: <20240222164206.65700-1-marius.cristea@microchip.com>
-	 <20240222164206.65700-3-marius.cristea@microchip.com>
-	 <20240224191559.40d233db@jic23-huawei>
-	 <20240405-embellish-bonnet-ab5f10560d93@wendy>
-In-Reply-To: <20240405-embellish-bonnet-ab5f10560d93@wendy>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN6PR11MB3167:EE_|MW4PR11MB6933:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: D77TJ1DYIGrGv6DGPpIls3UTo8jC7rycuOI/iXTQ5J3mE1d6AVO9IQVH7PRk5Vw6+lOdC/JBbTmAhUtINu5QZJ0XLVpbHmYKwIvJyrkr16EHT1FrJx3DH8S+iLo5GrSiZIpDcTHocwIlwX74SNd/bCSGu7WPMY5K0TAB4zwCGAw6CeiPZEfIWaaylJU3VRkea9TMydTGuD49iFRMK1xaXxCbciH7zpaZAPy9qwWLHJDlKwzCqVj9Kmb6CQb2FQVR4vrwQG0GOeC2XCYq7YMcGvl4KRQGt14eRs8lZGHQsFhdpr/ly0lkPf8zWaNlTd02XdVvcNNbs+SF3VjVve+dk8gGkW5IBZvgMtv2/d9BwwU5oFjr11Xx5hwPXCwTDafAzbhNPX8DQjJ2W5ps7TNwS5WkwbgApC83nqzGZV3gb1zPM6l/NQX1iP0Haxjm2WEDObJq4CeonmK4xU2E1jwbt5kOnFMoDwb7eJVKokC0q7QauBX6R+NUBa677Q49s9AsWRCH6bhuI0rvPZP2qg1Q+3bY5TqAayozFZP0phZcy0nVXJ/b8iBYTTxbOjv9jIjuBNOM62q2aU5HerB5sUQWzofpqt/snwHfiF2cXq+xkDF7B9FLcH3LufPj1QuBXqKIhIjVVPh4Sv2RCMVt9UwMkUisjfF6LpPX4qvsn/Hs65Q=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3167.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?T0VrSDhwTkZ4VElGc2FaZnlIelJDSDNvdlltcUEvNjRtdlcyZVdxRzE2RW94?=
- =?utf-8?B?TDBCU3hlWURlOVpPN3JCU0IrL25rQ05XYzZ6ZzBVM24ya3NNNnF6cVcyZGlB?=
- =?utf-8?B?MHU2eWZQWWN2UnVpdVkyaFpMT1Vpajk2dytBOHh6MjVGdVhJUWVuWFNyMnk3?=
- =?utf-8?B?QWVKQ2cydFY3S1k2ZHRSMklGMkhrM2tEM3FHK2kzYWcyN3lFcGxUTXc5RU81?=
- =?utf-8?B?TWZ2cnZUdTVoWFVJSkUxeVlSZnhBSzdsSzQ4U0l6OUNvY0xDaWlLMWIrUXFJ?=
- =?utf-8?B?U2VGcHNERmY2OUpIWFlhOTdPc0lKVUluUm9LWGY2WmZ0ZDdlZUd6YkJBM2Fu?=
- =?utf-8?B?ejhZL0VjaFhOV2tLQTdKN3dZenlPQWZsZkZDdHNyOHQ5WnBIUTg3ak4vTHcz?=
- =?utf-8?B?UFVJdEwvNEtXYlFlV1ZuRWZRKzhnYmVQeHBlaS9nTDlyenlsUEhJT1VnWFls?=
- =?utf-8?B?K2tUWGFxWldlUlhoeldabDk4MGdRM1VsL1BwcFVCWjRMQk9MWWozd3NxaVh0?=
- =?utf-8?B?NjBqdEttb3BTWStvZlZmYVQ0VzFSLzQzSVNHcVFDOVRNanhkZ0ozQXBnWGZw?=
- =?utf-8?B?bjVVZG9OYWlUZW96WkV5aFBiU2pSeU0vQ29waHdRbEdybytaSTE0MjNJNXlI?=
- =?utf-8?B?emlTQVE2cDRBTW1mSXpwa3d6OEpUSWQwdU1ja3UvYmFDbmN6ZVJmYkhOTHNT?=
- =?utf-8?B?eWhTeWlDdGJLaFlpcFZPMHRSc3VmUUFMK1VxRjdjbnNPVWVJRFB4b01GRlpT?=
- =?utf-8?B?cnQ0TXJTVXpQYnBLMjUvTnBLR3JHWGswS3pTWFNUS29mMTA2YVNkRHRLakJs?=
- =?utf-8?B?RnpyZUZieDFvVFZ4eE1ZMjV5TmVycEc3a01FMDkxZG8yRnhxWk5BMVFJWDhD?=
- =?utf-8?B?aEZaellNcDJYeFh5Q2VGNGQ5YkpLajFvY2s2SlBYS1dIMDBWa2kzOXVaTXRC?=
- =?utf-8?B?UFJ2dVRrRExMcjlONnRRUC8rZkZxVHh3SlFWWXZEaWxRNXJJNmlGdjdhaHBU?=
- =?utf-8?B?UVd4d1NwcHB0eUZTeWpzeCtOZFNPWERMZTByL2lZaUMwRjUzNkZBSXpWWmpP?=
- =?utf-8?B?dTJSczNCU0k1T2VTV04yWm4rTWkveHcrUkRGSklNalBzeGJOb3NiWnVHUUsy?=
- =?utf-8?B?ZS9PVzV2NXcwOXpiMTNQcnZyN1BETU94TEtPcGxFZ1JRZDNUemhQdmJVKzVj?=
- =?utf-8?B?Z2tOTThGMFhmNXoyK3RNQ1paUWQyMzJsV0d5UjlNMXVreVVtZ3d2Z0NWM1Fz?=
- =?utf-8?B?SmJiUGRHN3BzaVo3VUxxRGQwak9GU2RZQnd0TndwdjZkK0V0L0lmbzBsaVFX?=
- =?utf-8?B?N2RwUHFJY0YxWlhwdUZtRXd0d3ZMdkd0bTZCeGZ3WFlJSXVwUFZSek9KN2pT?=
- =?utf-8?B?NnRydjlqenJXS3ZmQXVZNDR4c0tvQU53d2dTU0lmWWl1QkY4bXdWKytzaEs4?=
- =?utf-8?B?T1lmcXZGSXR5bDJNcE9YMHNKV05QL05kbTdvNkg1VktFV1VRVTBWS3o0Q3NK?=
- =?utf-8?B?NWIxL1dvTVEyQjFkQisrMDE1U2owNk0yV1BPdE1zM1h5Zmo3aWZXS1I1YU01?=
- =?utf-8?B?NFdLRUlHWE1NVDdDSHVXWDFlcGs1TlNYWnF3elFaUFdQRG03S3RJWE1lYzRr?=
- =?utf-8?B?R2V4ellZM3hMdUxOQXRVVTdqUmhjQmxEajVUMWFQYmQ0V1ZNaTNaQ1JsUXV0?=
- =?utf-8?B?U29MWXUrZkFMaEs4aDhPWVZOMEZUYzNYWUp2K0d3NTY3dGFybDVWekFGYVZY?=
- =?utf-8?B?MUJOcjl1OXdYK1JsOEdzbTFLMWdkSXh3VUNIWU1PTGszRmhkR3JnMk1XOUtQ?=
- =?utf-8?B?Njd3ZEFFY3hCVzRpZGdsRzR1SW9OVlZZeVJ5UzFwYkQrV0xNbnFBTkxTVzY3?=
- =?utf-8?B?eU1IWTlpcUdVdG5seUoxQnpKNDJpVTB5Wll4L2xTeG9yNUJOV1F6N3ZKM21i?=
- =?utf-8?B?SUVZMGltMU0vdG1kK2pYckd6TzVWNDFkN0JEYUJTWjhlVmQvaktFUCtVZ0dv?=
- =?utf-8?B?cTREQ0szSm55NlRmODNIcE9qdXFlVUQvSjNOaG00RURzWlJud0NrMElzcjdk?=
- =?utf-8?B?Q0VkZFFVUUVhSkpNdDFMdE5qTTNxTHJiRyt4VkVPOWczdFpZRUIyZ3loaUhV?=
- =?utf-8?B?MFBPTVBDVS82UkU0ZWFDVy84RDN1dERneDF2bmw4eS9JQ0ZEQ2VWaWNGcjJX?=
- =?utf-8?B?RXc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <E19D4DE676DBEA4CBA88323BBB29BB67@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE3A16C865;
+	Fri,  5 Apr 2024 12:56:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.207.212.93
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712321765; cv=none; b=Gcyhn6HZlCEyAyFkUcV2Zc+DiCuT9nrH0sgbccrBk6lcN0Qc0JuW/NYHrW/V1vsJJ+Rv9lNYvB8pMnzGyrAHGdBUtmdLG6ZSWa9HBAns0Mk6Ytkagwz8ucRxUCQaZeU9rpvwBnZ0cdYLMeH4ZlIvDaQNei1iNXkDgXDlu0SCVik=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712321765; c=relaxed/simple;
+	bh=Jt7XdZcky85qUvtj0r+UUgcnr1CXhmm50Fbe7A6YBL8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=oMgwwrWuayASyY+wZMxjH6zd2IoW9uE8KMw2uGOUwonJE4scE+oOABz1y2w8NTczyYyeElrY2k0PH2ecjHZYFFWjQfer8JBV7DKJ5nr3OdilvNPIBOadezUvViTGyuQR2n3m+D6Ve2cHmAXkYDXp6eSAwo8A03Wy3NGD1a5eBQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com; spf=pass smtp.mailfrom=foss.st.com; dkim=pass (2048-bit key) header.d=foss.st.com header.i=@foss.st.com header.b=quVeVfye; arc=none smtp.client-ip=91.207.212.93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foss.st.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foss.st.com
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+	by mx07-00178001.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4359k059006253;
+	Fri, 5 Apr 2024 14:55:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	selector1; bh=u9U4WwRzJom55b4PN6C3BKumZRjKpy21ICeFTyNM43U=; b=qu
+	VeVfyeceGvHaxQgU5Lb1nnhXiC+JKizmuSxZGN+7Oz3AvM4P+tmgO9pE/PFiKWhi
+	E2iPNoZ5hWNtGJJR6blWxmcjyFkj7tKrKJ54OCmKwxgXvGftf8XdhpJY7VFcdlZI
+	r6+TPhDvcA6kpPSKhFK3jn5zoAjgRMjxqdzJ8ibXlJ1Ht+nWWMhGeyuF8f2PwXoU
+	ZBG+UYqERY5t+JzLsi5SVOJyf+C0K/Pr4ZUWXc293IPBKcRgt+RkPT5WHWdHJRkb
+	4FcSft5mRe5x9qD/lK26dwQ2P/3wmhj1owvpGFRMl8v3NpZLNpaLY4PQp1dw3pb2
+	93JhR8jYvTIQwr66vLGQ==
+Received: from beta.dmz-ap.st.com (beta.dmz-ap.st.com [138.198.100.35])
+	by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3x9empqj14-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 14:55:28 +0200 (MEST)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+	by beta.dmz-ap.st.com (STMicroelectronics) with ESMTP id D581D4002D;
+	Fri,  5 Apr 2024 14:55:23 +0200 (CEST)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+	by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 15CA521682F;
+	Fri,  5 Apr 2024 14:54:33 +0200 (CEST)
+Received: from [10.252.8.38] (10.252.8.38) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 5 Apr
+ 2024 14:54:31 +0200
+Message-ID: <2b9bf652-fc8e-4c9a-9761-ce42ad6e8316@foss.st.com>
+Date: Fri, 5 Apr 2024 14:54:31 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3167.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8d925e5a-124e-4bc9-0897-08dc556f69ba
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2024 12:53:38.2843
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3f4057f3-b418-4d4e-ba84-d55b4e897d88
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: zdX1g17jwHwuEGoNzZ+aqzy8F0/GWzhD8kik0tnKQAi05sMRw+qZcQWatcTvKj9kwGZc5+DvaZr9H4/xyQzHwfL5NOrYWniol92iSPN/Sso=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB6933
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v9 2/4] dt-bindings: stm32: update DT bingding for
+ stm32mp25
+To: Rob Herring <robh@kernel.org>
+CC: Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd
+	<sboyd@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Maxime Coquelin
+	<mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+References: <20240402125312.277052-1-gabriel.fernandez@foss.st.com>
+ <20240402125312.277052-3-gabriel.fernandez@foss.st.com>
+ <20240404135201.GA2320777-robh@kernel.org>
+Content-Language: en-US
+From: Gabriel FERNANDEZ <gabriel.fernandez@foss.st.com>
+In-Reply-To: <20240404135201.GA2320777-robh@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EQNCAS1NODE3.st.com (10.75.129.80) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_10,2024-04-05_01,2023-05-22_02
 
-SGkgQ29ub3IsCgogICAgVGhhbmtzIGZvciByZXBvcnRpbmcgdGhlIGJ1Zy4gSSBoYXZlIGRldGVj
-dCBpdCBhbmQgSSdtIGFscmVhZHkKd29ya2luZyBvbiBhIHBhdGNoIGZvciBpdC4KClRoYW5rcywK
-TWFyaXVzCgpPbiBGcmksIDIwMjQtMDQtMDUgYXQgMTM6NDEgKzAxMDAsIENvbm9yIERvb2xleSB3
-cm90ZToKPiBPbiBTYXQsIEZlYiAyNCwgMjAyNCBhdCAwNzoxNTo1OVBNICswMDAwLCBKb25hdGhh
-biBDYW1lcm9uIHdyb3RlOgo+ID4gT24gVGh1LCAyMiBGZWIgMjAyNCAxODo0MjowNiArMDIwMAo+
-ID4gPG1hcml1cy5jcmlzdGVhQG1pY3JvY2hpcC5jb20+IHdyb3RlOgo+ID4gCj4gPiA+IEZyb206
-IE1hcml1cyBDcmlzdGVhIDxtYXJpdXMuY3Jpc3RlYUBtaWNyb2NoaXAuY29tPgo+ID4gPiAKPiA+
-ID4gVGhpcyBpcyB0aGUgaWlvIGRyaXZlciBmb3IgTWljcm9jaGlwCj4gPiA+IFBBQzE5M1ggc2Vy
-aWVzIG9mIFBvd2VyIE1vbml0b3Igd2l0aCBBY2N1bXVsYXRvciBjaGlwIGZhbWlseS4KPiA+ID4g
-Cj4gPiA+IFNpZ25lZC1vZmYtYnk6IE1hcml1cyBDcmlzdGVhIDxtYXJpdXMuY3Jpc3RlYUBtaWNy
-b2NoaXAuY29tPgo+ID4gU28gSSBoYWQgYSBmZXcgY29tbWVudHMgb24gdGhpcywgYnV0IG5vdGhp
-bmcgdGhhdCBjYW4ndCBiZSBjbGVhbmVkCj4gPiB1cCBsYXRlci4KPiA+ICsgSSdsbCBmaXggdGhl
-IHRoaW5nIHRoZSBib3RzIGRpZG4ndCBsaWtlIG9uIHRoZSBiaW5kaW5ncy4KPiA+IAo+ID4gU2Vy
-aWVzIGFwcGxpZWQgdG8gdGhlIHRvZ3JlZyBicmFuY2ggb2YgaWlvLmdpdCBhbmQgcHVzaGVkIG91
-dAo+ID4gYXMgdGVzdGluZyBmb3IgMC1kYXkgdG8gdGFrZSBhIGxvb2sgYXQgaXQuCj4gCj4gSSB0
-ZXN0ZWQgdGhpcyBvdXQgb24gdjYuOS1yYzIgYW5kIHByb21wdGVkIGEgYmFja3RyYWNlIHdoZW4g
-Y29sbGVjdGQKPiBzdGFydGVkIHJ1bm5pbmc6Cj4gwqDCoMKgwqDCoMKgwqDCoC0tLS0tLS0tLS0t
-LVsgY3V0IGhlcmUgXS0tLS0tLS0tLS0tLQo+IMKgwqDCoMKgwqDCoMKgwqBVQlNBTjogYXJyYXkt
-aW5kZXgtb3V0LW9mLWJvdW5kcyBpbgo+IC9ob21lL2Nvbm9yL3N0dWZmL2xpbnV4L2RyaXZlcnMv
-aWlvL2FkYy9wYWMxOTM0LmM6ODU3OjI1Cj4gwqDCoMKgwqDCoMKgwqDCoGluZGV4IDcgaXMgb3V0
-IG9mIHJhbmdlIGZvciB0eXBlICd1MzIgWzRdJwo+IMKgwqDCoMKgwqDCoMKgwqBDUFU6IDEgUElE
-OiAxNzkgQ29tbTogaWlvZCBOb3QgdGFpbnRlZCA2LjkuMC1yYzItZGlydHkgIzEKPiDCoMKgwqDC
-oMKgwqDCoMKgSGFyZHdhcmUgbmFtZTogTWljcm9jaGlwIFBvbGFyRmlyZS1Tb0MgSWNpY2xlIEtp
-dCAoRFQpCj4gwqDCoMKgwqDCoMKgwqDCoENhbGwgVHJhY2U6Cj4gwqDCoMKgwqDCoMKgwqDCoFs8
-ZmZmZmZmZmY4MDAwNmJiYT5dIGR1bXBfYmFja3RyYWNlKzB4MjgvMHgzMAo+IMKgwqDCoMKgwqDC
-oMKgwqBbPGZmZmZmZmZmODBiZDY3ZDg+XSBzaG93X3N0YWNrKzB4MzgvMHg0NAo+IMKgwqDCoMKg
-wqDCoMKgwqBbPGZmZmZmZmZmODBiZTc4MjA+XSBkdW1wX3N0YWNrX2x2bCsweDZlLzB4OWEKPiDC
-oMKgwqDCoMKgwqDCoMKgWzxmZmZmZmZmZjgwYmU3ODY0Pl0gZHVtcF9zdGFjaysweDE4LzB4MjAK
-PiDCoMKgwqDCoMKgwqDCoMKgWzxmZmZmZmZmZjgwYmUxNDUyPl0gdWJzYW5fZXBpbG9ndWUrMHgx
-MC8weDQ2Cj4gwqDCoMKgwqDCoMKgwqDCoFs8ZmZmZmZmZmY4MDYxNTM1OD5dIF9fdWJzYW5faGFu
-ZGxlX291dF9vZl9ib3VuZHMrMHg2YS8weDc4Cj4gwqDCoMKgwqDCoMKgwqDCoFs8ZmZmZmZmZmY4
-MDk4MWYzYT5dIHBhYzE5MzRfcmVhZF9yYXcrMHgyMGMvMHgzNGMKPiDCoMKgwqDCoMKgwqDCoMKg
-WzxmZmZmZmZmZjgwOTc3YzRjPl0gaWlvX3JlYWRfY2hhbm5lbF9pbmZvKzB4NWMvMHhiZQo+IMKg
-wqDCoMKgwqDCoMKgwqBbPGZmZmZmZmZmODA3MzUxNmU+XSBkZXZfYXR0cl9zaG93KzB4MWMvMHg0
-YQo+IMKgwqDCoMKgwqDCoMKgwqBbPGZmZmZmZmZmODAzODcyOTI+XSBzeXNmc19rZl9zZXFfc2hv
-dysweDgwLzB4Y2MKPiDCoMKgwqDCoMKgwqDCoMKgWzxmZmZmZmZmZjgwMzg1YjEyPl0ga2VybmZz
-X3NlcV9zaG93KzB4M2MvMHg0YQo+IMKgwqDCoMKgwqDCoMKgwqBbPGZmZmZmZmZmODAzMWUzZDg+
-XSBzZXFfcmVhZF9pdGVyKzB4MTM2LzB4MmU0Cj4gwqDCoMKgwqDCoMKgwqDCoFs8ZmZmZmZmZmY4
-MDM4NWNkZT5dIGtlcm5mc19mb3BfcmVhZF9pdGVyKzB4MzgvMHgxNmEKPiDCoMKgwqDCoMKgwqDC
-oMKgWzxmZmZmZmZmZjgwMmU5MDRhPl0gdmZzX3JlYWQrMHgxYmUvMHgyYmEKPiDCoMKgwqDCoMKg
-wqDCoMKgWzxmZmZmZmZmZjgwMmU5YzQ4Pl0ga3N5c19yZWFkKzB4NjQvMHhkMgo+IMKgwqDCoMKg
-wqDCoMKgwqBbPGZmZmZmZmZmODAyZTljZDY+XSBfX3Jpc2N2X3N5c19yZWFkKzB4MjAvMHgyOAo+
-IMKgwqDCoMKgwqDCoMKgwqBbPGZmZmZmZmZmODBiZTgzOGE+XSBkb190cmFwX2VjYWxsX3UrMHhl
-ZS8weDIwNAo+IMKgwqDCoMKgwqDCoMKgwqBbPGZmZmZmZmZmODBiZjU3ZDA+XSByZXRfZnJvbV9l
-eGNlcHRpb24rMHgwLzB4NjQKPiDCoMKgwqDCoMKgwqDCoMKgLS0tWyBlbmQgdHJhY2UgXS0tLQo+
-IAo+IFRoZSBkZXZpY2UgaXRzZWxmIG9ubHkgaGFzIDQgY2hhbm5lbHMsIGJ1dCBpbiBzeXNmcyB0
-aGVyZSBhcmUgImZha2UiCj4gY2hhbm5lbHMgZm9yIHRoZSBhdmVyYWdlIHZvbHRhZ2VzIGFuZCBj
-dXJyZW50cyB0b28uIFVCU0FOIHBvaW50cyBhdDoKPiDCoMKgwqDCoMKgwqDCoMKgY2FzZSBQQUMx
-OTM0X1ZTRU5TRV9BVkdfNF9BRERSOgo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-KnZhbCA9IFBBQzE5MzRfTUFYX1ZTRU5TRV9SU0hJRlRFRF9CWV8xNkI7Cj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoY2hhbi0+c2Nhbl90eXBlLnNpZ24gPT0gJ3UnKQo+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCp2YWwyID0gaW5m
-by0+c2h1bnRzW2NoYW5uZWxdOwo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZWxz
-ZQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCp2YWwy
-ID0gaW5mby0+c2h1bnRzW2NoYW5uZWxdID4+IDE7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqByZXR1cm4gSUlPX1ZBTF9GUkFDVElPTkFMOwo+IAo+IEFuZCBpbmZvLT5zaHVudHMg
-aXMgb25seSB2YWxpZCBmb3IgdGhlIDQgcmVhbCBjaGFubmVscywgc28gSSBndWVzcwo+IHRoZQo+
-IGF2ZXJhZ2VkIGNoYW5uZWxzIHByb2JhYmx5IG5lZWQgdG8gZG8gYSBbY2hhbm5lbCAtIDRdIG9y
-IHNpbWlsYXIuIEkKPiBkdW5ubyBpZiB0aGF0IHJlbGF0aW9uIGJldHdlZW4gYXZlcmFnZWQgY2hh
-bm5lbHMgYW5kIHRoZWlyICJyZWFsIgo+IGNvdW50ZXJwYXJ0cyBpcyBmaXhlZCBvciBpZiBkaWZm
-ZXJlbnQgcGFjIGRldmljZXMgbmVlZCBkaWZmZXJlbnQKPiB2YWx1ZXMsCj4gYnV0IG9uIG15IHN5
-c3RlbSBoZXJlIHRoYXQgd291bGQgd29yay4KPiAKPiBJIGRvIHF1aXRlIGxpa2UgdGhhdCBVQlNB
-TiBwb2ludHMgb3V0IHRoZSBsaW5lIGluIHF1ZXN0aW9uIDopCj4gCj4gQ2hlZXJzLAo+IENvbm9y
-LgoK
+
+On 4/4/24 15:52, Rob Herring wrote:
+> On Tue, Apr 02, 2024 at 02:53:10PM +0200, gabriel.fernandez@foss.st.com wrote:
+>> From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+>>
+>> Now RCC driver use '.index' of clk_parent_data struct to define a parent.
+>> The majority of parents are SCMI clocks, then dt-bindings must be fixed.
+> This is an ABI change. Please make that clear and justify why that is
+> okay. Changing a driver is not a valid reason. What about other drivers
+> besides Linux?
+
+As the SoC STM32MP25X is not yet official and it is not available
+
+outside STMicroelectronics, it is not a issue to have ABI change
+and I will upstream the driver in other component (TF-A, U-Boot
+and OP-TEE) when binding and driver will be accepted and merged
+in Linux repository to avoid binding divergence.
+
+Today no other STM32MP25 RCC drivers are yet upstreamed.
+
+Best Regards,
+
+Gabriel
+
+>> Fixes: b5be49db3d47 ("dt-bindings: stm32: add clocks and reset binding for stm32mp25 platform")
+>>
+> Should not have a blank line here.
+ok
+>
+>> Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+>> ---
+> Please put version history for a patch within the patch here.
+
+ok
+
+
+>
+>>   .../bindings/clock/st,stm32mp25-rcc.yaml      | 171 ++++++++++++++++--
+>>   1 file changed, 155 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+>> index 7732e79a42b9..57bd4e7157bd 100644
+>> --- a/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+>> +++ b/Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+>> @@ -38,22 +38,87 @@ properties:
+>>         - description: CK_SCMI_MSI Low Power Internal oscillator (~ 4 MHz or ~ 16 MHz)
+>>         - description: CK_SCMI_LSE Low Speed External oscillator (32 KHz)
+>>         - description: CK_SCMI_LSI Low Speed Internal oscillator (~ 32 KHz)
+>> -
+>> -  clock-names:
+>> -    items:
+>> -      - const: hse
+>> -      - const: hsi
+>> -      - const: msi
+>> -      - const: lse
+>> -      - const: lsi
+>> -
+>> +      - description: CK_SCMI_HSE_DIV2 CK_SCMI_HSE divided by 2 (coud be gated)
+>> +      - description: CK_SCMI_ICN_HS_MCU High Speed interconnect bus clock
+>> +      - description: CK_SCMI_ICN_LS_MCU Low Speed interconnect bus clock
+>> +      - description: CK_SCMI_ICN_SDMMC SDMMC interconnect bus clock
+>> +      - description: CK_SCMI_ICN_DDR DDR interconnect bus clock
+>> +      - description: CK_SCMI_ICN_DISPLAY Display interconnect bus clock
+>> +      - description: CK_SCMI_ICN_HSL HSL interconnect bus clock
+>> +      - description: CK_SCMI_ICN_NIC NIC interconnect bus clock
+>> +      - description: CK_SCMI_ICN_VID Video interconnect bus clock
+>> +      - description: CK_SCMI_FLEXGEN_07 flexgen clock 7
+>> +      - description: CK_SCMI_FLEXGEN_08 flexgen clock 8
+>> +      - description: CK_SCMI_FLEXGEN_09 flexgen clock 9
+>> +      - description: CK_SCMI_FLEXGEN_10 flexgen clock 10
+>> +      - description: CK_SCMI_FLEXGEN_11 flexgen clock 11
+>> +      - description: CK_SCMI_FLEXGEN_12 flexgen clock 12
+>> +      - description: CK_SCMI_FLEXGEN_13 flexgen clock 13
+>> +      - description: CK_SCMI_FLEXGEN_14 flexgen clock 14
+>> +      - description: CK_SCMI_FLEXGEN_15 flexgen clock 15
+>> +      - description: CK_SCMI_FLEXGEN_16 flexgen clock 16
+>> +      - description: CK_SCMI_FLEXGEN_17 flexgen clock 17
+>> +      - description: CK_SCMI_FLEXGEN_18 flexgen clock 18
+>> +      - description: CK_SCMI_FLEXGEN_19 flexgen clock 19
+>> +      - description: CK_SCMI_FLEXGEN_20 flexgen clock 20
+>> +      - description: CK_SCMI_FLEXGEN_21 flexgen clock 21
+>> +      - description: CK_SCMI_FLEXGEN_22 flexgen clock 22
+>> +      - description: CK_SCMI_FLEXGEN_23 flexgen clock 23
+>> +      - description: CK_SCMI_FLEXGEN_24 flexgen clock 24
+>> +      - description: CK_SCMI_FLEXGEN_25 flexgen clock 25
+>> +      - description: CK_SCMI_FLEXGEN_26 flexgen clock 26
+>> +      - description: CK_SCMI_FLEXGEN_27 flexgen clock 27
+>> +      - description: CK_SCMI_FLEXGEN_28 flexgen clock 28
+>> +      - description: CK_SCMI_FLEXGEN_29 flexgen clock 29
+>> +      - description: CK_SCMI_FLEXGEN_30 flexgen clock 30
+>> +      - description: CK_SCMI_FLEXGEN_31 flexgen clock 31
+>> +      - description: CK_SCMI_FLEXGEN_32 flexgen clock 32
+>> +      - description: CK_SCMI_FLEXGEN_33 flexgen clock 33
+>> +      - description: CK_SCMI_FLEXGEN_34 flexgen clock 34
+>> +      - description: CK_SCMI_FLEXGEN_35 flexgen clock 35
+>> +      - description: CK_SCMI_FLEXGEN_36 flexgen clock 36
+>> +      - description: CK_SCMI_FLEXGEN_37 flexgen clock 37
+>> +      - description: CK_SCMI_FLEXGEN_38 flexgen clock 38
+>> +      - description: CK_SCMI_FLEXGEN_39 flexgen clock 39
+>> +      - description: CK_SCMI_FLEXGEN_40 flexgen clock 40
+>> +      - description: CK_SCMI_FLEXGEN_41 flexgen clock 41
+>> +      - description: CK_SCMI_FLEXGEN_42 flexgen clock 42
+>> +      - description: CK_SCMI_FLEXGEN_43 flexgen clock 43
+>> +      - description: CK_SCMI_FLEXGEN_44 flexgen clock 44
+>> +      - description: CK_SCMI_FLEXGEN_45 flexgen clock 45
+>> +      - description: CK_SCMI_FLEXGEN_46 flexgen clock 46
+>> +      - description: CK_SCMI_FLEXGEN_47 flexgen clock 47
+>> +      - description: CK_SCMI_FLEXGEN_48 flexgen clock 48
+>> +      - description: CK_SCMI_FLEXGEN_49 flexgen clock 49
+>> +      - description: CK_SCMI_FLEXGEN_50 flexgen clock 50
+>> +      - description: CK_SCMI_FLEXGEN_51 flexgen clock 51
+>> +      - description: CK_SCMI_FLEXGEN_52 flexgen clock 52
+>> +      - description: CK_SCMI_FLEXGEN_53 flexgen clock 53
+>> +      - description: CK_SCMI_FLEXGEN_54 flexgen clock 54
+>> +      - description: CK_SCMI_FLEXGEN_55 flexgen clock 55
+>> +      - description: CK_SCMI_FLEXGEN_56 flexgen clock 56
+>> +      - description: CK_SCMI_FLEXGEN_57 flexgen clock 57
+>> +      - description: CK_SCMI_FLEXGEN_58 flexgen clock 58
+>> +      - description: CK_SCMI_FLEXGEN_59 flexgen clock 59
+>> +      - description: CK_SCMI_FLEXGEN_60 flexgen clock 60
+>> +      - description: CK_SCMI_FLEXGEN_61 flexgen clock 61
+>> +      - description: CK_SCMI_FLEXGEN_62 flexgen clock 62
+>> +      - description: CK_SCMI_FLEXGEN_63 flexgen clock 63
+>> +      - description: CK_SCMI_ICN_APB1 Peripheral bridge 1
+>> +      - description: CK_SCMI_ICN_APB2 Peripheral bridge 2
+>> +      - description: CK_SCMI_ICN_APB3 Peripheral bridge 3
+>> +      - description: CK_SCMI_ICN_APB4 Peripheral bridge 4
+>> +      - description: CK_SCMI_ICN_APBDBG Peripheral bridge for degub
+>> +      - description: CK_SCMI_TIMG1 Peripheral bridge for timer1
+>> +      - description: CK_SCMI_TIMG2 Peripheral bridge for timer2
+>> +      - description: CK_SCMI_PLL3 PLL3 clock
+>> +      - description: clk_dsi_txbyte DSI byte clock
+> Need a blank line here.
+>
+>>   required:
+>>     - compatible
+>>     - reg
+>>     - '#clock-cells'
+>>     - '#reset-cells'
+>>     - clocks
+>> -  - clock-names
+>>   
+>>   additionalProperties: false
+>>   
+>> @@ -66,11 +131,85 @@ examples:
+>>           reg = <0x44200000 0x10000>;
+>>           #clock-cells = <1>;
+>>           #reset-cells = <1>;
+>> -        clock-names = "hse", "hsi", "msi", "lse", "lsi";
+>> -        clocks = <&scmi_clk CK_SCMI_HSE>,
+>> -                 <&scmi_clk CK_SCMI_HSI>,
+>> -                 <&scmi_clk CK_SCMI_MSI>,
+>> -                 <&scmi_clk CK_SCMI_LSE>,
+>> -                 <&scmi_clk CK_SCMI_LSI>;
+>> +        clocks =  <&scmi_clk CK_SCMI_HSE>,
+>> +                  <&scmi_clk CK_SCMI_HSI>,
+>> +                  <&scmi_clk CK_SCMI_MSI>,
+>> +                  <&scmi_clk CK_SCMI_LSE>,
+>> +                  <&scmi_clk CK_SCMI_LSI>,
+>> +                  <&scmi_clk CK_SCMI_HSE_DIV2>,
+>> +                  <&scmi_clk CK_SCMI_ICN_HS_MCU>,
+>> +                  <&scmi_clk CK_SCMI_ICN_LS_MCU>,
+>> +                  <&scmi_clk CK_SCMI_ICN_SDMMC>,
+>> +                  <&scmi_clk CK_SCMI_ICN_DDR>,
+>> +                  <&scmi_clk CK_SCMI_ICN_DISPLAY>,
+>> +                  <&scmi_clk CK_SCMI_ICN_HSL>,
+>> +                  <&scmi_clk CK_SCMI_ICN_NIC>,
+>> +                  <&scmi_clk CK_SCMI_ICN_VID>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_07>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_08>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_09>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_10>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_11>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_12>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_13>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_14>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_15>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_16>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_17>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_18>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_19>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_20>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_21>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_22>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_23>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_24>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_25>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_26>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_27>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_28>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_29>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_30>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_31>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_32>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_33>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_34>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_35>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_36>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_37>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_38>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_39>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_40>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_41>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_42>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_43>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_44>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_45>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_46>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_47>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_48>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_49>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_50>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_51>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_52>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_53>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_54>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_55>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_56>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_57>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_58>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_59>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_60>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_61>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_62>,
+>> +                  <&scmi_clk CK_SCMI_FLEXGEN_63>,
+>> +                  <&scmi_clk CK_SCMI_ICN_APB1>,
+>> +                  <&scmi_clk CK_SCMI_ICN_APB2>,
+>> +                  <&scmi_clk CK_SCMI_ICN_APB3>,
+>> +                  <&scmi_clk CK_SCMI_ICN_APB4>,
+>> +                  <&scmi_clk CK_SCMI_ICN_APBDBG>,
+>> +                  <&scmi_clk CK_SCMI_TIMG1>,
+>> +                  <&scmi_clk CK_SCMI_TIMG2>,
+>> +                  <&scmi_clk CK_SCMI_PLL3>,
+>> +                  <&clk_dsi_txbyte>;
+>>       };
+>>   ...
+>> -- 
+>> 2.25.1
+>>
 
