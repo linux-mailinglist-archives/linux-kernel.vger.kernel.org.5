@@ -1,271 +1,117 @@
-Return-Path: <linux-kernel+bounces-133159-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133162-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4B7E899FC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:31:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43818899FCA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:32:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C872E1C22FFA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:31:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD4271F23497
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD0C516EC02;
-	Fri,  5 Apr 2024 14:30:49 +0000 (UTC)
-Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D37116F287;
-	Fri,  5 Apr 2024 14:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0771516F919;
+	Fri,  5 Apr 2024 14:30:58 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0464516F265;
+	Fri,  5 Apr 2024 14:30:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712327449; cv=none; b=m0/ogDpwOJjr5h4s6T11g7s3BINlJdZSMyOgLRWyuQrVVr8vCbQ6sm7Q65uNqPxho3hiPcNRsJLErJKaKX0FLN9kk52CB0p1aLadZhNEGQo+vDZCnhqsjD+sFcUm7fvJIR7aY5gzGc8h4IbwAeweI8MmmUII4BglEIhyt3hSQm8=
+	t=1712327457; cv=none; b=FZm77f6kKtMRQifb6gbQeu4QBVC+dhVefvIDbEe8FiXaSeB/nPz2cnPezdGbXu2klsYf1IQnAawDm/K3imvGhHCvRkLe+HFg2zT/BV2FWibakf6Aj1f8XXjSdVNmjYRFEUWv3LHKklMhJBH622KK3voczaYD6eEIprr4Imk2khk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712327449; c=relaxed/simple;
-	bh=Af7RfGng24yIeWpBRm0kOdGB8o4WJWgS/TCB+Uarq9Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GJRXXgUkUs/fhwZ3h3ZvEB+HbpV9ftN1ITsIQugmJU30y0/mhLDPrPNS3n0PlWqrI+c1ObRH6ciczAH5ipdzrr6HZKLH84ROYuv1DvYcJVCIJCq14bS0Mn+xZB3p5nzNc0hL/b0jFjZa+jg3Ffvu2k9BJaEseezXglTz6ed0Zb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.166.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7d0486e3250so97924239f.1;
-        Fri, 05 Apr 2024 07:30:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712327446; x=1712932246;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=PRdyQGjH5h8G6pfTdtidr525YhFZdrjl1y7kv2e1qZU=;
-        b=vHvUwNxf2DtwtBcgkk1RyYJC3jpG3OfbjyOIVKTMyKKENdCGVN9R7b8k9pEJ7Ar0YY
-         olU+V+0BsvNNic/F5DZkq3WoSIc1GR3i7lOqYvW42wwA+zaC3tDTSnkue+o/d4TfVmnc
-         2l1Tm/r4VVk3xfYdojelUnlfGlNK1oTPGHrJ5vppDpkAZgAKlWEsgZpvLYT3IUvJD8hB
-         ZwvihycTE3psYphLnpezGEEpYEepW1b9jlB8l8wfKbANXqSvR2VOeGwvaS9FnlqgrMM7
-         0CtuD+ovG1CRQdr3NHNWtAw6qSrZS4dHKt2Pf2Gg99CI37Zzc6hvJP50kflE8uezzwTw
-         TAyw==
-X-Forwarded-Encrypted: i=1; AJvYcCUoOKwmU2ts2m0mi2fqCrzzsoz5rSYWJEmKI5slbGG4AiSwq8QCgfgXUzTPei0SEe0W8hxVrl+3QoxkBX3RtZ+cMJPr8Y1Mxxlbx499
-X-Gm-Message-State: AOJu0YytjDwk9BukpZYWoEvqPD9k79ImpVwg1LHQs1N8HWeQXCokBjMM
-	cm6VLf0JKj7sYEPngpLTwlr/YqY7qFBFe72U6yvYSTmELSoEazStVaVWVshWp6o=
-X-Google-Smtp-Source: AGHT+IHwCpC+nlq92i3i64MzB7M2JZOQULTAu4iHJxah0OkDaWK28l6hGw6L6Xzey5XCVLCxEJqL0w==
-X-Received: by 2002:a6b:e704:0:b0:7d3:3e0d:9daa with SMTP id b4-20020a6be704000000b007d33e0d9daamr1706139ioh.7.1712327446257;
-        Fri, 05 Apr 2024 07:30:46 -0700 (PDT)
-Received: from localhost (c-76-136-75-40.hsd1.il.comcast.net. [76.136.75.40])
-        by smtp.gmail.com with ESMTPSA id x25-20020a6b6a19000000b007d35949850asm527741iog.26.2024.04.05.07.30.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 07:30:45 -0700 (PDT)
-From: David Vernet <void@manifault.com>
-To: bpf@vger.kernel.org
-Cc: ast@kernel.org,
-	daniel@iogearbox.net,
-	andrii@kernel.org,
-	martin.lau@linux.dev,
-	song@kernel.org,
-	yonghong.song@linux.dev,
-	john.fastabend@gmail.com,
-	kpsingh@kernel.org,
-	sdf@google.com,
-	haoluo@google.com,
-	jolsa@kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH bpf-next v2 2/2] selftests/bpf: Verify calling core kfuncs from BPF_PROG_TYPE_SYCALL
-Date: Fri,  5 Apr 2024 09:30:41 -0500
-Message-ID: <20240405143041.632519-3-void@manifault.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240405143041.632519-1-void@manifault.com>
-References: <20240405143041.632519-1-void@manifault.com>
+	s=arc-20240116; t=1712327457; c=relaxed/simple;
+	bh=YFwqn7103KaIEJsbClKdLm4y4hgjLT+JwR9D/hbmpUs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TVAsaG9euEPfl5DypwzPBGi5Zxp0M2KjLVULd+3IPiNgthmfDmaqJxRTDGnFVZTkV6AM6ZezVorqUO/p3ZfebES/u24AOs7fUFGTSn4aR8T2f3w7QKGSQ54qahVIuailY/KFKctZ845EPgjgWGQG/j2bevNXYshdGdAzeRKv0SE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 22A4CFEC;
+	Fri,  5 Apr 2024 07:31:26 -0700 (PDT)
+Received: from [10.57.54.111] (unknown [10.57.54.111])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7D3883F7B4;
+	Fri,  5 Apr 2024 07:30:53 -0700 (PDT)
+Message-ID: <5ab9bd5b-87e9-4e09-af49-7f15b0cc48d5@arm.com>
+Date: Fri, 5 Apr 2024 15:30:51 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/9] perf/arm-cmn: Avoid explicit cpumask var allocation
+ from stack
+Content-Language: en-GB
+To: Dawei Li <dawei.li@shingroup.cn>, will@kernel.org, mark.rutland@arm.com
+Cc: xueshuai@linux.alibaba.com, renyu.zj@linux.alibaba.com,
+ yangyicong@hisilicon.com, jonathan.cameron@huawei.com, andersson@kernel.org,
+ konrad.dybcio@linaro.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
+References: <20240402105610.1695644-1-dawei.li@shingroup.cn>
+ <20240402105610.1695644-3-dawei.li@shingroup.cn>
+From: Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20240402105610.1695644-3-dawei.li@shingroup.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Now that we can call some kfuncs from BPF_PROG_TYPE_SYSCALL progs, let's
-add some selftests that verify as much. As a bonus, let's also verify
-that we can't call the progs from raw tracepoints. Do do this, we add a
-new selftest suite called verifier_kfunc_prog_types.
+On 2024-04-02 11:56 am, Dawei Li wrote:
+> For CONFIG_CPUMASK_OFFSTACK=y kernel, explicit allocation of cpumask
+> variable on stack is not recommended since it can cause potential stack
+> overflow.
+> 
+> Instead, kernel code should always use *cpumask_var API(s) to allocate
+> cpumask var in config- neutral way, leaving allocation strategy to
+> CONFIG_CPUMASK_OFFSTACK.
+> 
+> Use *cpumask_var API(s) to address it.
 
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-Signed-off-by: David Vernet <void@manifault.com>
----
- .../prog_tests/verifier_kfunc_prog_types.c    |  11 ++
- .../selftests/bpf/progs/cgrp_kfunc_common.h   |   2 +-
- .../selftests/bpf/progs/task_kfunc_common.h   |   2 +-
- .../bpf/progs/verifier_kfunc_prog_types.c     | 119 ++++++++++++++++++
- 4 files changed, 132 insertions(+), 2 deletions(-)
- create mode 100644 tools/testing/selftests/bpf/prog_tests/verifier_kfunc_prog_types.c
- create mode 100644 tools/testing/selftests/bpf/progs/verifier_kfunc_prog_types.c
+I think the temporary mask may simply be redundant anyway. It seems like 
+I may have misunderstood, and cpumask_of_node() actually only covers 
+online CPUs already.
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/verifier_kfunc_prog_types.c b/tools/testing/selftests/bpf/prog_tests/verifier_kfunc_prog_types.c
-new file mode 100644
-index 000000000000..3918ecc2ee91
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/verifier_kfunc_prog_types.c
-@@ -0,0 +1,11 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include <test_progs.h>
-+
-+#include "verifier_kfunc_prog_types.skel.h"
-+
-+void test_verifier_kfunc_prog_types(void)
-+{
-+	RUN_TESTS(verifier_kfunc_prog_types);
-+}
-diff --git a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
-index 22914a70db54..73ba32e9a693 100644
---- a/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
-+++ b/tools/testing/selftests/bpf/progs/cgrp_kfunc_common.h
-@@ -13,7 +13,7 @@ struct __cgrps_kfunc_map_value {
- 	struct cgroup __kptr * cgrp;
- };
- 
--struct hash_map {
-+struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
- 	__type(key, int);
- 	__type(value, struct __cgrps_kfunc_map_value);
-diff --git a/tools/testing/selftests/bpf/progs/task_kfunc_common.h b/tools/testing/selftests/bpf/progs/task_kfunc_common.h
-index 41f2d44f49cb..6720c4b5be41 100644
---- a/tools/testing/selftests/bpf/progs/task_kfunc_common.h
-+++ b/tools/testing/selftests/bpf/progs/task_kfunc_common.h
-@@ -13,7 +13,7 @@ struct __tasks_kfunc_map_value {
- 	struct task_struct __kptr * task;
- };
- 
--struct hash_map {
-+struct {
- 	__uint(type, BPF_MAP_TYPE_HASH);
- 	__type(key, int);
- 	__type(value, struct __tasks_kfunc_map_value);
-diff --git a/tools/testing/selftests/bpf/progs/verifier_kfunc_prog_types.c b/tools/testing/selftests/bpf/progs/verifier_kfunc_prog_types.c
-new file mode 100644
-index 000000000000..b7f17c6b3443
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/verifier_kfunc_prog_types.c
-@@ -0,0 +1,119 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2024 Meta Platforms, Inc. and affiliates. */
-+
-+#include <vmlinux.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_helpers.h>
-+
-+#include "bpf_misc.h"
-+#include "cgrp_kfunc_common.h"
-+#include "cpumask_common.h"
-+#include "task_kfunc_common.h"
-+
-+char _license[] SEC("license") = "GPL";
-+
-+/***************
-+ * Task kfuncs *
-+ ***************/
-+
-+static inline void task_kfunc_load_test(void)
-+{
-+	struct task_struct *current, *ref_1, *ref_2;
-+
-+	current = bpf_get_current_task_btf();
-+	ref_1 = bpf_task_from_pid(current->pid);
-+	if (!ref_1)
-+		return;
-+
-+	ref_2 = bpf_task_acquire(ref_1);
-+	if (ref_2)
-+		bpf_task_release(ref_2);
-+	bpf_task_release(ref_1);
-+}
-+
-+SEC("raw_tp")
-+__failure __msg("calling kernel function")
-+int BPF_PROG(task_kfunc_raw_tp)
-+{
-+	task_kfunc_load_test();
-+	return 0;
-+}
-+
-+SEC("syscall") __success
-+int BPF_PROG(task_kfunc_syscall)
-+{
-+	task_kfunc_load_test();
-+	return 0;
-+}
-+
-+/*****************
-+ * cgroup kfuncs *
-+ *****************/
-+
-+static inline void cgrp_kfunc_load_test(void)
-+{
-+	struct cgroup *cgrp, *ref;
-+
-+	cgrp = bpf_cgroup_from_id(0);
-+	if (!cgrp)
-+		return;
-+
-+	ref = bpf_cgroup_acquire(cgrp);
-+	if (!ref) {
-+		bpf_cgroup_release(cgrp);
-+		return;
-+	}
-+
-+	bpf_cgroup_release(ref);
-+	bpf_cgroup_release(cgrp);
-+}
-+
-+SEC("raw_tp")
-+__failure __msg("calling kernel function")
-+int BPF_PROG(cgrp_kfunc_raw_tp)
-+{
-+	cgrp_kfunc_load_test();
-+	return 0;
-+}
-+
-+SEC("syscall") __success
-+int BPF_PROG(cgrp_kfunc_syscall)
-+{
-+	cgrp_kfunc_load_test();
-+	return 0;
-+}
-+
-+/******************
-+ * cpumask kfuncs *
-+ ******************/
-+
-+static inline void cpumask_kfunc_load_test(void)
-+{
-+	struct bpf_cpumask *alloc, *ref;
-+
-+	alloc = bpf_cpumask_create();
-+	if (!alloc)
-+		return;
-+
-+	ref = bpf_cpumask_acquire(alloc);
-+	bpf_cpumask_set_cpu(0, alloc);
-+	bpf_cpumask_test_cpu(0, (const struct cpumask *)ref);
-+
-+	bpf_cpumask_release(ref);
-+	bpf_cpumask_release(alloc);
-+}
-+
-+SEC("raw_tp")
-+__failure __msg("calling kernel function")
-+int BPF_PROG(cpumask_kfunc_raw_tp)
-+{
-+	cpumask_kfunc_load_test();
-+	return 0;
-+}
-+
-+SEC("syscall") __success
-+int BPF_PROG(cpumask_kfunc_syscall)
-+{
-+	cpumask_kfunc_load_test();
-+	return 0;
-+}
--- 
-2.44.0
+Thanks,
+Robin.
 
+> Signed-off-by: Dawei Li <dawei.li@shingroup.cn>
+> ---
+>   drivers/perf/arm-cmn.c | 13 +++++++++----
+>   1 file changed, 9 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/perf/arm-cmn.c b/drivers/perf/arm-cmn.c
+> index 7ef9c7e4836b..7278fd72d3da 100644
+> --- a/drivers/perf/arm-cmn.c
+> +++ b/drivers/perf/arm-cmn.c
+> @@ -1949,21 +1949,26 @@ static int arm_cmn_pmu_offline_cpu(unsigned int cpu, struct hlist_node *cpuhp_no
+>   {
+>   	struct arm_cmn *cmn;
+>   	unsigned int target;
+> +	cpumask_var_t mask;
+>   	int node;
+> -	cpumask_t mask;
+>   
+>   	cmn = hlist_entry_safe(cpuhp_node, struct arm_cmn, cpuhp_node);
+>   	if (cpu != cmn->cpu)
+>   		return 0;
+>   
+> +	if (!alloc_cpumask_var(&mask, GFP_KERNEL))
+> +		return 0;
+> +
+>   	node = dev_to_node(cmn->dev);
+> -	if (cpumask_and(&mask, cpumask_of_node(node), cpu_online_mask) &&
+> -	    cpumask_andnot(&mask, &mask, cpumask_of(cpu)))
+> -		target = cpumask_any(&mask);
+> +	if (cpumask_and(mask, cpumask_of_node(node), cpu_online_mask) &&
+> +	    cpumask_andnot(mask, mask, cpumask_of(cpu)))
+> +		target = cpumask_any(mask);
+>   	else
+>   		target = cpumask_any_but(cpu_online_mask, cpu);
+>   	if (target < nr_cpu_ids)
+>   		arm_cmn_migrate(cmn, target);
+> +
+> +	free_cpumask_var(mask);
+>   	return 0;
+>   }
+>   
 
