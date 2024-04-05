@@ -1,199 +1,96 @@
-Return-Path: <linux-kernel+bounces-132412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B228C899495
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:48:24 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA190899499
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:53:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 405BA2821F8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:48:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E443284576
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:53:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9954F21379;
-	Fri,  5 Apr 2024 04:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31A7820DC3;
+	Fri,  5 Apr 2024 04:53:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gvs8UBj2"
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X1s8Hl5m"
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A8D18054
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 04:48:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F33D928E2;
+	Fri,  5 Apr 2024 04:53:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712292495; cv=none; b=Q+fksHyXAXxc439qNFjX4Arl9qxR54s+V2jK/rSM96JY9MCH7SsXO7qFWYCyjUIz9G94QRdn978WPx7upkkb1HGUMn8jQZBigruoejFait5jtb+ZpUGGi6ZXNaqxcycuMn6FIFCcg8hPQ1oG4mxYH33WRzn/vM990yw8ZTV5/MU=
+	t=1712292797; cv=none; b=VV8yJp/0VVqILp2qIneQCWiAeor5pBmUSplMQx0JoyirEggwozMlZN/WR1tJ+EGzhtQ+KZ3ytI1XFZlFyBSmbxYB//PRNqZRmQSYsy3piuCSrPjLCReeZVRb057rtWfvdztmhHB6/gHBrW5AZFdycif0TJpnfeXwMuNWmIxaRQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712292495; c=relaxed/simple;
-	bh=/sP0SD/6VqgaBAHZ+LHcRfVmnRlCmXpDOr9SbVDicas=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rNWs7dA3/AvTO14MgzL/HJGk2i+7K4+8A7+5rrRX6qPR7v5EfebzudM0WcGKPi3DpZq2zUFTLeadthW6SK69CroDD5NdLvnRrI+5Eta86pGuf4MV0SQ5YxY6ANw4dJQ0hGRUvoR8uWpVBsU3VTHG4xLTucH7tVK8hSKMPB7p1+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gvs8UBj2; arc=none smtp.client-ip=209.85.218.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a51a7dc45easo11232466b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 21:48:13 -0700 (PDT)
+	s=arc-20240116; t=1712292797; c=relaxed/simple;
+	bh=GZnrGBN9X5DCj+ZTywIyLhZvY0sns6POFvF9IftpFaQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AzaRrgHgPs7QuMpJmNlUjT59udOzeoJ2P9L3dlXvELt0iw4Uqbcfm1h+8myTUkdiHxX+zUvIsFJiIMBl950lLmUNWhdCYmGfQ5DIAL5s5wF8+RvrFJwi2qpSS5HWrcIsrSajN54P7fYPlsDHLHSyCpPZ3ySq1/RozEaar5go5WM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X1s8Hl5m; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-343ec8a1504so36158f8f.0;
+        Thu, 04 Apr 2024 21:53:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712292492; x=1712897292; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OFngNohcsIWWF9VBx68/C+XJdy9eZcqacGTQk/W+jbI=;
-        b=gvs8UBj2OZ7kfvX/yxpZHfvqZC8IaTsGdI8dQKranVqAFIjghKq+sNal8aKTGEB/9K
-         w8ErvSX5EQNs3YFQxcc0Msb4OGyRjLlAmpV4I9EHoIVI/zP5er14NQjaigywFPJInd3Z
-         emDjMlddFBl3//+NYcjjr/eNmMGM0Md0xlx5yUDGGnH9QIchu4dOY1DsXvKm+yhjiK4n
-         +XRC3cbKSHoW6R70poDKYLdt4rDnpfH/PhcE829Dtwcy2HOsQTtvxTcqUd6SMvz74jn6
-         mgW8SaEorxPMLZhneH3NhH93Q9/Zj9R3+MKPOY1sJDrcNswmUIv3KF/bcnZVq5UNMJYj
-         8zXQ==
+        d=gmail.com; s=20230601; t=1712292794; x=1712897594; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FZRtbPPT/bG9zERbjZdijLfQPAJAhV3+LksckhYDXMI=;
+        b=X1s8Hl5mwXFe90Ty1gX34NYGVV13NvSu/p4ccWsoF9Zq8/mdqXtfdZRl/WyhN3NcIx
+         KaKy2oUmdZr+BVNp/4ldgj1uZzR+y2wscfqZYSYJzHhQuY1LGUXU2L+i+eGdttdGH+DA
+         ae6xIKKbt2lD/BIfx+Qk9tb8NDDlrwIGj928dw0BqzUUZgd7H4bB/Rx5wqUpgoSwhIhW
+         /rTrPed251ZBtBdBB0cq39RkaRkhRsCdIRY0xGPgCPWf/s+KhMiFO5VcblUKgbLAt4PN
+         R3KgG3UPZi9/T+QPeIZnYAy7biTG5YqS9qqjoMwn3j7UB/Nr+ZZ80OrXXqklX1hdLGyD
+         5Gug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712292492; x=1712897292;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OFngNohcsIWWF9VBx68/C+XJdy9eZcqacGTQk/W+jbI=;
-        b=r/WnWkTIu2Ti0lV8VV/lSwEWnDU/kV7ZO+GijRFXLpK4vY9rOwvmPgdF/w7/Dv3nGE
-         6+y97/aXC975D8SFUOdipmYyFF9TcAWi1rosKLuJeb9CCYRYq/t9rczJPLbHCq3ec+F7
-         E6divy2/+Q1MEB7WAUdt9Ld/8C70euZos9EsAn0IRqtY80hd0ZjAPCvlZj2fJYvksnIv
-         t16q/W4lqExVlcXruo6bI65SHKpYA27GPgQt49D9V2f/O4RXS6fCmu8LjQp4+J4wKwBK
-         ytVmeliiKpfz6Eynw1VRaowDop1SDJMUFqxRXfkfeo/nAbUUvAzzUuE3wObqC1xcKzrG
-         KKng==
-X-Forwarded-Encrypted: i=1; AJvYcCUu8eahehY6tB0IkLdObMpva0hG4ZrocTn5E4Jf1CldccFAEhe5E92n21ZBV40O0P322astDiYc/vQD10ESBVBrH/buInMwTWWNbXdd
-X-Gm-Message-State: AOJu0YxtYCUNf0J7q7m/bwY+ewEPX/X5W3L3Tpk4bLgoTVa33Z84NAQo
-	6a8+7N0SLlJ4s5U631NdM7Iwc609kCAxqcFWB9rdh3MLqAUTjlBUOUdygA0hjUfmglvf92SXu2T
-	fOEJIgQm2mC8/Sr34Ey7Y7MC6qR2NmfQw+9Ce
-X-Google-Smtp-Source: AGHT+IG0FTUjSAmspO/nmTPWRrODUK6jOybARjqK66uz0z8iWEoCJvp6YB5mNy5YKEO10BQdeJehh0/wHKz/44T7/BE=
-X-Received: by 2002:a17:907:985b:b0:a4e:109f:7b4b with SMTP id
- jj27-20020a170907985b00b00a4e109f7b4bmr215688ejc.41.1712292492092; Thu, 04
- Apr 2024 21:48:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712292794; x=1712897594;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FZRtbPPT/bG9zERbjZdijLfQPAJAhV3+LksckhYDXMI=;
+        b=UZz+jGP1KrAO16kZE9YdWvWfP6Z4Owu8LdJZZrEyLowFZBlgPI76p1pjzFLIgWu1I6
+         xipzmsqELNNrTsEJIyBcJTEOLEXf/yyywUzXTbOB5BbFuvjzjzFmE+KQJp8R4CK9GQaa
+         MdKKHWfjKijzvc5u5NMM3DoTdHIZ4z6e1P8soFCbw1+kzmGSlyAXnDSgFRPwJMevBkaf
+         a2YhHFhJkpDH6s6GP2NvuIcCQsC8pJKjq3nrsfsDmE1g1XJwiPtICplhzVEiSJyscU9O
+         Z5O0P5YtrRogTxSGYYZOBEmIp0CDjWold7zwI1GVxVNw2x9qAwzw+1tRUfHX8p/lgMap
+         am2g==
+X-Forwarded-Encrypted: i=1; AJvYcCUbHWAmVRSOwDFr2G2ShK0rm8v7X/SZAtHZACGWcBcBzyiU3FKQcUrZrXqokNr6LJb+2VWC17wRskM7F4WyCWwUyYSgjZPII/ow
+X-Gm-Message-State: AOJu0YxjVDaVJJBaAAOsblhY6/ltWxgE4H4Wj1pdRT4HW9TRisLM2Vb6
+	KRssqEJIx/SpLrip1MZxz1bvAh2JYFCDXU97uBQ3ENbAL7CJZHkDaglHEwN2
+X-Google-Smtp-Source: AGHT+IHa6B2jnJxWwLQx0GRAkL1EXjGbruaypCl/JaIFXG4cWViOD4M+N95m0YjVppK7imAUTKCaKA==
+X-Received: by 2002:a5d:64cf:0:b0:341:d7b5:27 with SMTP id f15-20020a5d64cf000000b00341d7b50027mr410069wri.6.1712292794128;
+        Thu, 04 Apr 2024 21:53:14 -0700 (PDT)
+Received: from rbolboac.. ([2a02:2f0e:370e:900:9daf:1dd4:230e:4f59])
+        by smtp.gmail.com with ESMTPSA id j15-20020a5d452f000000b00343e825d679sm488302wra.87.2024.04.04.21.53.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 21:53:13 -0700 (PDT)
+From: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	jic23@kernel.org,
+	nuno.sa@analog.com,
+	linux-iio@vger.kernel.org
+Cc: Ramona Gradinariu <ramona.bolboaca13@gmail.com>
+Subject: [PATCH v2 0/1] iio:imu: adis16475: Fix sync mode setting
+Date: Fri,  5 Apr 2024 07:53:08 +0300
+Message-Id: <20240405045309.816328-1-ramona.bolboaca13@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000007545d00615188a03@google.com> <20240403180752.f95e1b77e033b5e03164c160@linux-foundation.org>
- <CAJD7tkakCEg9zkwCrBr8GyObO7b9KOD6rUgyqniFN+YTCePd0A@mail.gmail.com> <CAOUHufZPLEmrh0x43k2ysqvwYwEotGk8Bw=fwyO9aLXXv0aM9Q@mail.gmail.com>
-In-Reply-To: <CAOUHufZPLEmrh0x43k2ysqvwYwEotGk8Bw=fwyO9aLXXv0aM9Q@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Thu, 4 Apr 2024 21:47:34 -0700
-Message-ID: <CAJD7tkbMR1AdKz3GquHym1MGROgpMcjiubKQ2oOzmpObTHd9Tw@mail.gmail.com>
-Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in __mod_memcg_lruvec_state
-To: Yu Zhao <yuzhao@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	syzbot <syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com>, 
-	cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Thu, Apr 4, 2024 at 6:44=E2=80=AFPM Yu Zhao <yuzhao@google.com> wrote:
->
-> On Thu, Apr 4, 2024 at 7:36=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
-> >
-> > On Wed, Apr 3, 2024 at 6:08=E2=80=AFPM Andrew Morton <akpm@linux-founda=
-tion.org> wrote:
-> > >
-> > > On Tue, 02 Apr 2024 01:03:26 -0700 syzbot <syzbot+9319a4268a640e26b72=
-b@syzkaller.appspotmail.com> wrote:
-> > >
-> > > > Hello,
-> > > >
-> > > > syzbot found the following issue on:
-> > > >
-> > > > HEAD commit:    317c7bc0ef03 Merge tag 'mmc-v6.9-rc1' of git://git.=
-kernel...
-> > > > git tree:       upstream
-> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D15fd40c=
-5180000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3Df64ec42=
-7e98bccd7
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D9319a4268=
-a640e26b72b
-> > > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils=
- for Debian) 2.40
-> > > >
-> > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > >
-> > > > Downloadable assets:
-> > > > disk image (non-bootable): https://storage.googleapis.com/syzbot-as=
-sets/7bc7510fe41f/non_bootable_disk-317c7bc0.raw.xz
-> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/efab473d72c0/=
-vmlinux-317c7bc0.xz
-> > > > kernel image: https://storage.googleapis.com/syzbot-assets/5ba3f56d=
-362d/bzImage-317c7bc0.xz
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to th=
-e commit:
-> > > > Reported-by: syzbot+9319a4268a640e26b72b@syzkaller.appspotmail.com
-> > > >
-> > > > ------------[ cut here ]------------
-> > > > WARNING: CPU: 0 PID: 30105 at mm/memcontrol.c:865 __mod_memcg_lruve=
-c_state+0x3fa/0x550 mm/memcontrol.c:865
-> > > > Modules linked in:
-> > > > CPU: 0 PID: 30105 Comm: syz-executor.2 Not tainted 6.9.0-rc1-syzkal=
-ler-00178-g317c7bc0ef03 #0
-> > > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-deb=
-ian-1.16.2-1 04/01/2014
-> > > > RIP: 0010:__mod_memcg_lruvec_state+0x3fa/0x550 mm/memcontrol.c:865
-> > > > Code: 45 85 e4 75 1d 48 83 c4 18 5b 5d 41 5c 41 5d 41 5e 41 5f c3 c=
-c cc cc cc b8 00 04 00 00 e9 80 fd ff ff 89 c6 e9 a0 fd ff ff 90 <0f> 0b 90=
- e9 a7 fc ff ff 48 c7 c7 18 43 e1 8f e8 32 51 f8 ff e9 5e
-> > > > RSP: 0018:ffffc900034beef8 EFLAGS: 00010202
-> > > > RAX: 0000000000000292 RBX: 0000000000000001 RCX: 1ffffffff1fc2863
-> > > > RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff888024b92bc8
-> > > > RBP: ffff888024b92000 R08: 0000000000000005 R09: 0000000000000000
-> > > > R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000001
-> > > > R13: ffff88801c326000 R14: 0000000000000001 R15: ffff888024b92000
-> > > > FS:  00007f0811bf96c0(0000) GS:ffff88806b000000(0000) knlGS:0000000=
-000000000
-> > > > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > > > CR2: 000000000cfff1dd CR3: 000000003e4e2000 CR4: 0000000000350ef0
-> > > > DR0: 0000000000000031 DR1: 0000000000000000 DR2: 0000000000000000
-> > > > DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> > > > Call Trace:
-> > > >  <TASK>
-> > > >  __update_lru_size include/linux/mm_inline.h:47 [inline]
-> > > >  lru_gen_update_size include/linux/mm_inline.h:199 [inline]
-> > > >  lru_gen_add_folio+0x62d/0xe80 include/linux/mm_inline.h:262
-> > > >  lruvec_add_folio include/linux/mm_inline.h:323 [inline]
-> > > >  lru_add_fn+0x3fc/0xd80 mm/swap.c:215
-> > > >  folio_batch_move_lru+0x243/0x400 mm/swap.c:233
-> > >
-> > > Well it beats me.  I assume we failed to update for a new case.  I'll
-> > > toss this into -next to perhaps shed a bit of light.
-> > >
-> > > --- a/mm/memcontrol.c~__mod_memcg_lruvec_state-enhance-diagnostics
-> > > +++ a/mm/memcontrol.c
-> > > @@ -860,10 +860,12 @@ void __mod_memcg_lruvec_state(struct lru
-> > >                 case NR_ANON_THPS:
-> > >                 case NR_SHMEM_PMDMAPPED:
-> > >                 case NR_FILE_PMDMAPPED:
-> > > -                       WARN_ON_ONCE(!in_task());
-> > > +                       if (WARN_ON_ONCE(!in_task()))
-> > > +                               pr_warn("stat item index: %d\n", idx)=
-;
-> > >                         break;
-> > >                 default:
-> > > -                       VM_WARN_ON_IRQS_ENABLED();
-> > > +                       if (VM_WARN_ON_IRQS_ENABLED())
-> > > +                               pr_warn("stat item index: %d\n", idx)=
-;
-> >
-> > Line 865 from this commit should be this warning (i.e. warning because
-> > IRQs are enabled). This also makes sense because __update_lru_size()
-> > should not be updating any of the above stats.
-> >
-> > folio_batch_move_lru() in the above call stack should be acquiring the
-> > lock with IRQs disabled though, so I am not sure what's going on from
-> > a quick look.
-> >
-> > Adding Yu Zhao here.
->
-> Probably an RT build where _irqsave doesn't disable IRQ?
+Fix sync mode setting by applying the necessary shift bits.
 
-Yeah, that's possible. I don't have enough familiarity with RT to know
-for sure. Perhaps lruvec->lru_lock needs to be changed to a
-raw_spinlock_t? I am not sure if that's the correct course of action.
+Ramona Gradinariu (1):
+  iio:imu: adis16475: Fix sync mode setting
+
+ drivers/iio/imu/adis16475.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+--
+2.34.1
+
 
