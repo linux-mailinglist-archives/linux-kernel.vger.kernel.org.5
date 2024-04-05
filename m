@@ -1,177 +1,163 @@
-Return-Path: <linux-kernel+bounces-133350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3821789A2B2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:41:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6315589A2B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:41:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC1301F24DE8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:41:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D06A01F24D9A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:41:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7AD17164F;
-	Fri,  5 Apr 2024 16:41:03 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77887171091;
+	Fri,  5 Apr 2024 16:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jGU+hHFJ"
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E88616F858;
-	Fri,  5 Apr 2024 16:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC1C116EC0B;
+	Fri,  5 Apr 2024 16:41:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712335263; cv=none; b=dRJggNSgXps2f98o/PpCfzv8wvMDSGy4vNiQ/7VVxsQ6CPzwcmiNBpIW/Fim88EkpRVqeNNcc+bIf7pOHXJ0OZSpBNP+ZugaXmSXFpDG0pv8fhu0K76l58C1AbMNm/1LmSW1LUOgL43uBjwLZHH6VqZ4W8oP2qR9bgU0/c3TfUc=
+	t=1712335290; cv=none; b=diqO3saWeZDqmp12pxi4WfwdS/HfrHgZG6TKAsFcFWP+7639fsfl88vEFJj9PJkj2fdP4u82ESrFvwi4ETKZBp3noPEzO2v0W/q+j30ajmlqD7QnWvA31faEVaMJF4xB5xpZkZP1RrKVbze181mXLRYCg5Melxv1oEYMAkx0vxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712335263; c=relaxed/simple;
-	bh=3Atpy12ZUgPWTseaHFws+5AQqqQErgzz9HigTS5MKvA=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=WGkLRVJJaho9uGhXBu+k1GvzoYShzVwNzjVApyGAKVMO6JVJjcL0gJgAR+XhP8B+h2jLPpiWXc6mjdpbzyeXnsZUsM8Sxb+b13KUouv/Z49/KIakjNK8hTHlgse652FK6KcVehSwGSAz3//mzH+LIXNe0p/irZ5XfrQpZzSrYxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.216])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VB42X2RK7z6J9Zb;
-	Sat,  6 Apr 2024 00:39:32 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id C8200140C98;
-	Sat,  6 Apr 2024 00:40:57 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 5 Apr
- 2024 17:40:57 +0100
-Date: Fri, 5 Apr 2024 17:40:56 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Alison Schofield <alison.schofield@intel.com>
-CC: Kwangjin Ko <kwangjin.ko@sk.com>, <dave@stgolabs.net>,
-	<dave.jiang@intel.com>, <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
-	<dan.j.williams@intel.com>, <linux-cxl@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <kernel_team@skhynix.com>
-Subject: Re: [PATCH v2 1/1] cxl/core: Fix initialization of
- mbox_cmd.size_out in get event
-Message-ID: <20240405174056.00005422@Huawei.com>
-In-Reply-To: <ZhAhAL/GOaWFrauw@aschofie-mobl2>
-References: <20240402081404.1106-1-kwangjin.ko@sk.com>
-	<20240402081404.1106-2-kwangjin.ko@sk.com>
-	<ZhAhAL/GOaWFrauw@aschofie-mobl2>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712335290; c=relaxed/simple;
+	bh=BsbDTRXO5rbQuNOOWWDuZ228ZxNjfhgUzzAGBm8miTQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tgjERCoCmVQ/2SgQbhV1Nirhri4Ot5entf8Ph/19KA6iIiGPeZBdVnX5bf21xYpvO3gAKJxQMzDF5XnMkpeqH8ZQxPsYmTx9iMxVuH5JK+gk0cxPU35+nXw0B+iQw0cn1OXCVb494gT2xUFe6OPKvPtKjk75NkzRnPJ1Kiz/xzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jGU+hHFJ; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d68c6a4630so28173561fa.3;
+        Fri, 05 Apr 2024 09:41:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712335287; x=1712940087; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NLH/m+uT1QUdmDjnPqveVob8tvdRYsduJkgPdtTo/TA=;
+        b=jGU+hHFJouuZ2Xt4G0SUChoQb7QvZvdRrBB+Rq/0dayqTvfY/kFsVP97R0bTN/id7V
+         HzUknK17jX4A/mx0SzvZE9BqlizOmU9WQiq9miUIA7XbcPkeUaSfiPxzdVej4Nf+onK4
+         gYooFWvPGH0aBlLN6Z534JbigfYq1fDg0TrtnYiR0UU3LZF2tnmVC5dnSQ4Tf9i/OALt
+         2qkRlwCrSKcHSHaBQ1vnDY1Dz1eb3TvbeFF5NiHNXlLXDp4eMPpZ2e30hYefULDfj7Ib
+         GY0/3mKm84bhieg66oo3lYjycf0wtFSgeWvYIHy8m3ZYrx/mvbJ3iZGUQLo4BhA/s252
+         mJXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712335287; x=1712940087;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NLH/m+uT1QUdmDjnPqveVob8tvdRYsduJkgPdtTo/TA=;
+        b=DaByVdO9h5aONEiew5grHdFjp8h9d3I6yFWTZof1Vh/gNXzGlIVeD4c9ac6SIfrwUp
+         UBQWhE2kwO7o0xSr0icuX3mk0POWAB8CPJrqoBAFLfqPwODVcZaDfSvA8UA87vZCEkt2
+         +iYA+atBEZmpuzx/okx3VkK2LP+mJmZ1KZPzot8JGX0WX0F4qVyWaZ+KF+QwWJbbsML3
+         pNQUjWgPOysWBXMLy1T3fCqj6dWV0CGM48pht8xq1a/Y13lPiGPr4QFQmprvGuxg3JAt
+         qPe1JTilhubXG/FCQMpNMjpb2sUqT+1jHQq6YT/8+lhGnnZThObSvzumhJalIvfHIM30
+         w6Tg==
+X-Forwarded-Encrypted: i=1; AJvYcCUHBhuoXUMXDpun0pDqW4vYjy/SL+FOG+01Yr8KTWQkEeXVoNUZp1Pn3rdJ3cH78t3nglPFV4td9ORPvjaTXARpb4iOlVlLUWOWGKCfzLTTJIgC4EnY1PbDfMeAoYVx2ohUylwU9iD9oNs=
+X-Gm-Message-State: AOJu0YziKr38bNN/u3v4V7fU6jjemv45DnSxa5yelrM8rxrrnhD64w+8
+	p72ILxdbjlmA/qRSCS3WtjHpf0yG3Tpeyy0h87tvdxeaMxxnUWsO
+X-Google-Smtp-Source: AGHT+IHORr1w8vtrY1pml1ibsAJCtWtZhnUV5KX/8kT8FZYqyn/0B5wlWzlmISObqN+GkuTCylmuKg==
+X-Received: by 2002:a05:651c:1057:b0:2d4:668f:baac with SMTP id x23-20020a05651c105700b002d4668fbaacmr2018504ljm.28.1712335286828;
+        Fri, 05 Apr 2024 09:41:26 -0700 (PDT)
+Received: from localhost.localdomain ([178.70.43.28])
+        by smtp.gmail.com with ESMTPSA id h13-20020a05651c124d00b002d6c93793f1sm218372ljh.77.2024.04.05.09.41.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 09:41:26 -0700 (PDT)
+From: Ivan Bornyakov <brnkv.i1@gmail.com>
+To: Nas Chung <nas.chung@chipsnmedia.com>,
+	Jackson Lee <jackson.lee@chipsnmedia.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	Sebastian Fricke <sebastian.fricke@collabora.com>
+Cc: Ivan Bornyakov <brnkv.i1@gmail.com>,
+	linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/5] Wave515 decoder IP support
+Date: Fri,  5 Apr 2024 19:41:04 +0300
+Message-ID: <20240405164112.24571-1-brnkv.i1@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Transfer-Encoding: 8bit
 
-On Fri, 5 Apr 2024 09:04:16 -0700
-Alison Schofield <alison.schofield@intel.com> wrote:
+Initial support for Wave515 multi-decoder IP among other refinements.
+This was tested on FPGA prototype, so wave5_dt_ids[] was not expanded.
 
-> On Tue, Apr 02, 2024 at 05:14:03PM +0900, Kwangjin Ko wrote:
-> > Since mbox_cmd.size_out is overwritten with the actual output size in
-> > the function below, it needs to be initialized every time.
-> > 
-> > cxl_internal_send_cmd -> __cxl_pci_mbox_send_cmd
-> > 
-> > Problem scenario:
-> > 
-> > 1) The size_out variable is initially set to the size of the mailbox.
-> > 2) Read an event.
-> >    - size_out is set to 160 bytes(header 32B + one event 128B).
-> >    - Two event are created while reading.
-> > 3) Read the new *two* events.
-> >    - size_out is still set to 160 bytes.
-> >    - Although the value of out_len is 288 bytes, only 160 bytes are
-> >      copied from the mailbox register to the local variable.
-> >    - record_count is set to 2.
-> >    - Accessing records[1] will result in reading incorrect data.  
-> 
-> Agree with the other comments on need to set .out_size when doing
-> cxl_internal_send_cmd() in a loop. Poison list retrieval can hit
-> this case if the MORE flag is set and a follow on read of the list
-> delivers more records than the previous read. ie. device gives one
-> record, sets the _MORE flag, then gives 5.
-> 
-> 2 other things appeared to me while looking at this:
-> 
-> First, it seems that there is another cleanup wrt accessing records
-> with invalid data.  Still focusing on get_events and get_poison
-> since those loop through output data based on a device supplied
-> record count. The min_out check means the driver at least gets a
-> count of records to expect. That's good. The problem occurs::
-> 
-> if (mbox.size_out != struct_size(payload, records, 'record_count'))
-> 
-> The driver will log garbage trace events, and that could lead to
-> bad actions based on bad data. (like a needless scan of device based
-> on a false overflow flag). So, checking that size.out is the proper
-> multiple of record_count protects driver from bad device behavior.
-> 
-> I think that can be combined w the patch Dan is suggesting to
-> reset mbox.size_out on each loop.
-Hi Alison,
+fluster score for JCT-VC-HEVC_V1 testsuite with
+GStreamer-H.265-V4L2-Gst1.0 decoder is 132/147
 
-I'd split it.  Dan's one is a bug fix, this is hardening against
-a device bug. Good to have but not really backport material unless
-we think there are devices like this out there.
+The issue with Main10 tests is that fluster expects decoded file to be
+in yuv420p10le format while this driver decodes HEVC Main10 into 8-bit
+yuv420p. Though result is looks alright to the naked eye, proper
+decoding into yuv420p10le is to be added.
 
-> 
-> Second thing is the pci-driver quiet handling of PAYLOAD LENGTH
-> values reported by the device. It seems like at a minimum the
-> pci-driver could emit an info or debug message when the device
-> is reporting payload lengths that exceed what the driver can
-> copy in.
+The rest failed fluster tests are common with Wave521.
 
-When does this happen?
-1. New fields on end of a fixed length message.
-   Correct to silently eat it as the spec is buggy if we don't
-    have backwards compatibility.
-    I don't think the spec has had that particular type of bug yet,
-    but maybe I'm forgetting one.
-2. Device bug.  Can't tell that is different from 1.
+ChangeLog:
+  v1:
+https://lore.kernel.org/linux-media/20240318144225.30835-1-brnkv.i1@gmail.com/
+  v2:
+https://lore.kernel.org/linux-media/20240325064102.9278-1-brnkv.i1@gmail.com/
+    * drop patch "dt-bindings: media: cnm,wave521c: drop resets restriction"
+      The only user of Wave5 in mainline is TI K3 boards, thus there is
+      no real need to alter dt-bindings
+    * in patch "media: chips-media: wave5: support decoding HEVC Main10 profile"
+      add check for flag "support_hevc10bit_dec"
+    * in patch "media: chips-media: wave5: support reset lines" move
+      reset_control_deassert() out of else branch, add
+      reset_control_assert() to probe error path.
+    * rework patch "media: chips-media: wave5: drop "sram-size" DT prop"
+       - don't move alloc/free form device open/close
+       - intead of exact configuration of reserved SRAM memory in DT and
+	 allocating all of it, allocate all available SRAM memory up to
+	 WAVE5_MAX_SRAM_SIZE from whatever pool provided.
+    * adjust patch "media: chips-media: wave5: support Wave515 decoder"
+      according to changes in patches
+      "media: chips-media: wave5: support decoding HEVC Main10 profile" and
+      "media: chips-media: wave5: drop "sram-size" DT prop"
+  v3:
+    * reword patch "media: chips-media: wave5: separate irq setup routine"
+      a bit.
+    * in patch "media: chips-media: wave5: drop "sram-size" DT prop"
+       - move MAX_SRAM_SIZE define into match_data->sram_size
+       - add placeholders for validation that allocated SRAM memory is
+	 enough to encode/decode bitstream of given resolution before
+	 setting W5_USE_SEC_AXI and W5_CMD_ENC_PIC_USE_SEC_AXI registers
+       - reword accordingly
+    * in patch "media: chips-media: wave5: support Wave515 decoder"
+       - add comments around SRAM memory allocation/freeing about
+	 Wave515 specifics
+       - add comments about BSOPTION_RD_PTR_VALID_FLAG bit in
+	 W5_BS_OPTION register
+       - add W[AVE]521_ prefix to defines, for wich there are W[AVE]515_
+	 alternatieves
+       - add semi-magic Wave515 specific formulas to estimate SRAM usage
 
-So maybe dev_dbg(). I'm not sure why the cxl-driver would ever want to
-know.
+Ivan Bornyakov (5):
+  media: chips-media: wave5: support decoding HEVC Main10 profile
+  media: chips-media: wave5: support reset lines
+  media: chips-media: wave5: separate irq setup routine
+  media: chips-media: wave5: drop "sram-size" DT prop
+  media: chips-media: wave5: support Wave515 decoder
 
-> I'm referring to the mbox.size_out adjustment in
-> __cxl_pci_mbox_send_cmd(). Or, if it's not the pci-drivers job
-> to judge, pass that actual payload length value back in the
-> mbox structure (new field) so that the cxl-driver can use it.
-> The pci driver would still do it's "#8 Sanitize the copy" work,
-> but it would allow the cxl-driver to clearly see why it got the
-> .size_out it got, and squawk about it if needed.
-> 
-> --Alison
-> 
-> > 
-> > Signed-off-by: Kwangjin Ko <kwangjin.ko@sk.com>
-> > ---
-> >  drivers/cxl/core/mbox.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> > index 9adda4795eb7..a38531a055c8 100644
-> > --- a/drivers/cxl/core/mbox.c
-> > +++ b/drivers/cxl/core/mbox.c
-> > @@ -958,13 +958,14 @@ static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
-> >  		.payload_in = &log_type,
-> >  		.size_in = sizeof(log_type),
-> >  		.payload_out = payload,
-> > -		.size_out = mds->payload_size,
-> >  		.min_out = struct_size(payload, records, 0),
-> >  	};
-> >  
-> >  	do {
-> >  		int rc, i;
-> >  
-> > +		mbox_cmd.size_out = mds->payload_size;
-> > +
-> >  		rc = cxl_internal_send_cmd(mds, &mbox_cmd);
-> >  		if (rc) {
-> >  			dev_err_ratelimited(dev,
-> > -- 
-> > 2.34.1
-> >   
+ .../platform/chips-media/wave5/wave5-helper.c |   8 +-
+ .../platform/chips-media/wave5/wave5-hw.c     | 395 +++++++++++++-----
+ .../chips-media/wave5/wave5-regdefine.h       |   5 +
+ .../platform/chips-media/wave5/wave5-vdi.c    |  27 +-
+ .../chips-media/wave5/wave5-vpu-dec.c         |  51 ++-
+ .../chips-media/wave5/wave5-vpu-enc.c         |   2 +-
+ .../platform/chips-media/wave5/wave5-vpu.c    |  35 +-
+ .../platform/chips-media/wave5/wave5-vpuapi.h |   3 +
+ .../chips-media/wave5/wave5-vpuconfig.h       |  16 +-
+ .../media/platform/chips-media/wave5/wave5.h  |   6 +
+ 10 files changed, 407 insertions(+), 141 deletions(-)
+
+-- 
+2.44.0
 
 
