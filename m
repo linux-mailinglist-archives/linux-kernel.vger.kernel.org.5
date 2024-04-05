@@ -1,180 +1,124 @@
-Return-Path: <linux-kernel+bounces-133304-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133305-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24F9D89A207
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:00:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB66889A20A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:04:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 869DBB24B8C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:00:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63D422843B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:04:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD8E5171083;
-	Fri,  5 Apr 2024 15:59:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FEC617106A;
+	Fri,  5 Apr 2024 16:04:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="CdTjE8AR"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O/LhSlfy"
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9DA416FF4A
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 15:59:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7261F16FF30;
+	Fri,  5 Apr 2024 16:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712332788; cv=none; b=ZjIbc/KHL3FeNERGyPFBAflbatd940pzTektcaD4zS1ppaT3GLbbBaFZNrnYfGkpEhinpa/TsMaD/WGG+947LWRMex/lTcCxNXXIH9dB7WNClHsBuT4E8vMJ0YmtQXH8RzlojlfW+HbNnTG5EU6tcI2fLI6bfs7E87mZsJOv03o=
+	t=1712333041; cv=none; b=aeg/i9CHK3QZ7mTykUcLMujnXeyET2e4OgF6f2EY17NpA05fSIhL6mraTqAUWACawIOiFBRjo5UBJSA8HeSDaO3flokh8mzwHVkJzNUATPj+/tDOKuXPe3YQs/V+kK0S7oH3lt1gaqVxUSyLMDJV5iPcIudev1Hj8fPmLAn9I3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712332788; c=relaxed/simple;
-	bh=6WysufP42FX2Az3Xx8MgB1cNuc1CYX+XUTX4q5FvCN4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EWhpYVrLjkE2ydS5aYV0W9Y5QD7ClIxTcJMuPLBOSBGjHznXf2rM8js6Brn/o9odIk8Xu80bFjqygj97r+AU5yYPhsgjV/2wBdYWakYtlFT172ZKTM0/nCX2RmieyOMmY1nPTzB/mkF4nzKnsB2c6esEYfEccd7NZmH75DcRnzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=CdTjE8AR; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-415584360c0so18545045e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 08:59:44 -0700 (PDT)
+	s=arc-20240116; t=1712333041; c=relaxed/simple;
+	bh=XZEbvzuSGL/q8fWAhduZQ1/BD/N6nnhdCQ9Uj8IkLD8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YW7suM23lAhc1kedxbN8R/pcxPA9VWB3mS6jn7L0XEYiTc0XUPg7d9Uqw7JZRRMrPY0Q13dxjjWIyNYaTnS7v7/uifUfgqLHeJlZkYJQfoBTsusPJnVWzhj6zS/Hj7ydJtxP3zMLuFaeqOGxHJxd2cHcyzYEHTZZVSEpsyO1Itk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O/LhSlfy; arc=none smtp.client-ip=209.85.214.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1e244c7cbf8so20894395ad.0;
+        Fri, 05 Apr 2024 09:04:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1712332783; x=1712937583; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z/+tn7yaOy1bWCod1Hwz4ffQkyy0MXOXzF4xEGdBkSM=;
-        b=CdTjE8ARyIrDoCIL7WSqdKga/mX+JFEK79Pi4jCyaf58yf9SvW7NkQNcfHqbHp4W5r
-         QPbw7HCfvDOKgZ5bR1EmCP3Nfn1Tn40R+eOWRXyXyahTFxDWNNlptlLkTJ9rLzKeQCA7
-         HnZW0wWacuyTjqy85ar0AkWeZCOIasnLZlW3/AftFoGtEa6MUUPVHpms2GrWdvXOAkx1
-         nFLnZ2IonAAOcX4LlKDVyfCWj/tVwHuULEz4NbH3X6bYscW3VUaUzsysVqgcSqUreJGs
-         sWXp9dkTrCwWkSLVGBjjLlEbNfT7exPe5e2MDN3Ll4xaFqU4eMITnytPqpuqQRbTpky0
-         Qw6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712332783; x=1712937583;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1712333040; x=1712937840; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Z/+tn7yaOy1bWCod1Hwz4ffQkyy0MXOXzF4xEGdBkSM=;
-        b=aWEmkjHeEqLhRqWZ9vWgfZf3PqfWYq+nJN0Dd81TERV4r6jNCoT7N9tngX3VhaQMWT
-         +rpF8VTwVR6D9zj0ct/CXf6EYrf3WtXgl5b3hj+8qxgMIm9gW0LCZBXY3rs7IBgXzYiw
-         K3i/xzOnypaWmNHo7j4rv0MOSlqi/ubjALrz+vOGqMsr1ZgD5qtSBqgc2iQBWIjYHmis
-         TNqdy9OTSN0oxjejHbYAvMvrrPx0zF5ZXNDgXroNVsCQZy7NyqSOrtKwCbo8uyrY4iue
-         2SpeqDOi/IlkeSt2yIw3tTIrqfpH9eWRYG54/abQ1As8r6PCjEJaPhUh7Wyd9zDqThbs
-         WT5w==
-X-Forwarded-Encrypted: i=1; AJvYcCVtG651KS35VHBqQzYUT/5wUgr346Q1RTjvmbsePEEuLJs4rYxmQMfxegdiCCrYBAJsIU4emFq8FWptk7WlUvC4vjsi+9KLsP3PmUiE
-X-Gm-Message-State: AOJu0YxPbtOQVZ9Mn1qRQSxs09dZJQkd2rdnb9rzhzIymCB/y2Z6Z2Dd
-	tjeSSgT1sFKon3vg12ugwhV27Zks7Pxc+sC47D1qiR+qH2Yle6QQ4VxFgzE1g7E=
-X-Google-Smtp-Source: AGHT+IHm5FdCsOG2D2FwTVsRXO+4kOPqszWyczb81zB17ksFNLVDMEKpcib6RWK3ysnM3lM9cg2ZBw==
-X-Received: by 2002:a05:600c:3107:b0:414:7909:6680 with SMTP id g7-20020a05600c310700b0041479096680mr1487874wmo.16.1712332783307;
-        Fri, 05 Apr 2024 08:59:43 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id m20-20020a05600c4f5400b0041632171f51sm1770044wmq.13.2024.04.05.08.59.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 08:59:42 -0700 (PDT)
-Date: Fri, 5 Apr 2024 17:59:41 +0200
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Conor Dooley <conor.dooley@microchip.com>
-Cc: Max Hsu <max.hsu@sifive.com>, Conor Dooley <conor@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Pavel Machek <pavel@ucw.cz>, Anup Patel <anup@brainfault.org>, 
-	Atish Patra <atishp@atishpatra.org>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Shuah Khan <shuah@kernel.org>, Palmer Dabbelt <palmer@sifive.com>, 
-	linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-pm@vger.kernel.org, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, 
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC 02/11] dt-bindings: riscv: Add Sdtrig optional CSRs
- existence on DT
-Message-ID: <20240405-ebdb2943657ab08d2d563c03@orel>
-References: <20240329-dev-maxh-lin-452-6-9-v1-0-1534f93b94a7@sifive.com>
- <20240329-dev-maxh-lin-452-6-9-v1-2-1534f93b94a7@sifive.com>
- <20240329-affidavit-anatomist-1118a12c3e60@wendy>
+        bh=etbSwzYuABShtb+O6Ks2+ioR0GpoW20VrH8Vqwfvekc=;
+        b=O/LhSlfymIxX+AB66D074I6kkAn2sNQy4E3jLFLpx8XjatqqZm/X82DPglf9f66Z0+
+         cJslajx92fKH2NwCKOeBdufELmx+mW9nuEcCJM91v84JObjFkVDF5EALV7JQxhhWQQQ6
+         AkpQiPIF6xg5Ommq27M/uiLDJq/P2itFkapyUFmkLwFMVCB7X00LGCx+rrJ3ycDdljuu
+         +cyEKm+9Fb0JD4vkyMxZJEow5ZZfCji2yOHI9XLrnldMBR+iANQf7tq5nhXW1XF+GUek
+         6JlgZl6RoMS1F6o7WN1DAtHpl/paitSoRLqdBXcdqtGO4kh6zEGojD9gSSAcs96vJZg8
+         SmLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712333040; x=1712937840;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=etbSwzYuABShtb+O6Ks2+ioR0GpoW20VrH8Vqwfvekc=;
+        b=JBCUAdrslRKRJs7NKQOZgIQlO/zthOaq72dPaimaUX73wzRAQ1kTkAMuHCVGbFqWFc
+         v+94A6Qd1qLZpmFJ0FzDps33pTqoOTCMHI2pZZdB7gvbTZRP8cSOjM4AZ6IgyrIy7PpY
+         XhOsyg2DXz2gcabvLjrZZy6vccjoaxJH7lZBkBfOvRiI7Muj32qi89t8Mr4bdCx9YpVm
+         j0yuSzwJ1V5oJ4O6d9k3VskyrwwNL9AdLPSw7K6hMLlMDlEC8lM1d9KCT6KbNoGQq3yV
+         Q9/fax/v50x5e84qmwbj0bDr6AxLR00C8OTJynb+2xNVzpTU1Ui5QoA9JlNh1TXQu7RK
+         Lvhw==
+X-Forwarded-Encrypted: i=1; AJvYcCUna/TLsQwdVvJ5nr+cCmLvmnLv1mr9ANPIuYHIFu3tJ1CBsX8NzP0pmw4F3RbA1JTnHfBBlp7AW1zeILqjXcU2TDxVeXWdMIHUpP1GnhcXnTnzXerbacxMwU6QxyC9zY77qhpuzg==
+X-Gm-Message-State: AOJu0YykM6tjRTMRuiDk6ALGpb3Nu3S1nc3xABtJcybgew5S1UfMzeTV
+	96hbSCKh1x2GxbGLmIzez46rM6yFQ6qBAKyhd++4hdK1cWqPTE657NCHqcdlyLzI/E83+841vMU
+	Y6uGvZyNwLLAP4H7fsxkEtEsoRDl4TWeM
+X-Google-Smtp-Source: AGHT+IHtg0bOFEUGXO3Rcvw1vYQBIFhqv/Q71ImZaJBf3ONgwUEQAilOGCikPeqFD/kJi4YqaRmPl71ZJuLlK6IzDm4=
+X-Received: by 2002:a17:902:f813:b0:1dd:c288:899f with SMTP id
+ ix19-20020a170902f81300b001ddc288899fmr1583349plb.18.1712333039584; Fri, 05
+ Apr 2024 09:03:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240329-affidavit-anatomist-1118a12c3e60@wendy>
+References: <20240405141907.166334-1-richard120310@gmail.com>
+In-Reply-To: <20240405141907.166334-1-richard120310@gmail.com>
+From: Stephen Smalley <stephen.smalley.work@gmail.com>
+Date: Fri, 5 Apr 2024 12:03:48 -0400
+Message-ID: <CAEjxPJ7C=fq3uM0t_uQJ00ZZbieMP5ZO3BXMVY7FzB0ENJU1Nw@mail.gmail.com>
+Subject: Re: [PATCH] netlink: Remove the include of files doesn't exist
+To: I Hsin Cheng <richard120310@gmail.com>
+Cc: akpm@linux-foundation.org, paul@paul-moore.com, eparis@parisplace.org, 
+	selinux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 29, 2024 at 10:31:10AM +0000, Conor Dooley wrote:
-> On Fri, Mar 29, 2024 at 05:26:18PM +0800, Max Hsu wrote:
-> > The mcontext/hcontext/scontext CSRs are optional in the Sdtrig extension,
-> > to prevent RW operations to the missing CSRs, which will cause
-> > illegal instructions.
-> > 
-> > As a solution, we have proposed the dt format for these CSRs.
-> 
-> As I mentioned in your other patch, I amn't sure what the actual value
-> is in being told about "sdtrig" itself if so many of the CSRs are
-> optional. I think we should define pseudo extensions that represent
-> usable subsets that are allowed by riscv,isa-extensions, such as
-> those you describe here: sdtrig + mcontext, sdtrig + scontext and
-> sdtrig + hcontext. Probably also for strig + mscontext. What
-> additional value does having a debug child node give us that makes
-> it worth having over something like the above?
+On Fri, Apr 5, 2024 at 10:19=E2=80=AFAM I Hsin Cheng <richard120310@gmail.c=
+om> wrote:
+>
+> The file for /security/selinux/security.h and the file for
+> /include/linux/selinux_netlink.h are no long exist. However the
+> preprocessor still performs the inclusion of those files, these
+> behaviors should be removed to ensure it's bug-free.
+>
+> Signed-off-by: I Hsin Cheng <richard120310@gmail.com>
 
-Yeah, Sdtrig, which doesn't tell you what you get, isn't nice at all.
-I wonder if we can start with requiring Sdtrig to be accompanied by
-Ssstrict in order to enable the context CSRs, i.e.
+NAK. You are incorrect on both counts and evidently didn't try compiling.
+At a purely source level, I agree it might look confusing, but the
+Makefile adds the security/selinux/include directory (where security.h
+lives) to the include path and selinux_netlink.h lives under
+include/uapi/linux which is auto-magically included.
 
- Sdtrig          - support without optional CSRs
- Sdtrig+Ssstrict - probe for optional CSRs, support what's found
-
-If there are platforms with Sdtrig and optional CSRs, but not Ssstrict,
-then maybe the optional CSRs can be detected in some vendor-specific way,
-where the decision as to whether or not that vendor-specific way is
-acceptable is handled case-by-case.
-
-Thanks,
-drew
-
-> 
-> Thanks,
-> Conor.
-> 
-> > 
-> > Signed-off-by: Max Hsu <max.hsu@sifive.com>
-> > ---
-> >  Documentation/devicetree/bindings/riscv/cpus.yaml | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/riscv/cpus.yaml b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> > index d87dd50f1a4b..c713a48c5025 100644
-> > --- a/Documentation/devicetree/bindings/riscv/cpus.yaml
-> > +++ b/Documentation/devicetree/bindings/riscv/cpus.yaml
-> > @@ -137,6 +137,24 @@ properties:
-> >        DMIPS/MHz, relative to highest capacity-dmips-mhz
-> >        in the system.
-> >  
-> > +  debug:
-> > +    type: object
-> > +    properties:
-> > +      compatible:
-> > +        const: riscv,debug-v1.0.0
-> > +      trigger-module:
-> > +        type: object
-> > +        description: |
-> > +          An indication set of optional CSR existence from
-> > +          riscv-debug-spec Sdtrig extension
-> > +        properties:
-> > +          mcontext-present:
-> > +            type: boolean
-> > +          hcontext-present:
-> > +            type: boolean
-> > +          scontext-present:
-> > +            type: boolean
-> > +
-> >  anyOf:
-> >    - required:
-> >        - riscv,isa
-> > 
-> > -- 
-> > 2.43.2
-> > 
-
-
-
-> -- 
-> kvm-riscv mailing list
-> kvm-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/kvm-riscv
-
+> ---
+>  security/selinux/netlink.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/security/selinux/netlink.c b/security/selinux/netlink.c
+> index 1760aee71..8ce36abaa 100644
+> --- a/security/selinux/netlink.c
+> +++ b/security/selinux/netlink.c
+> @@ -13,11 +13,9 @@
+>  #include <linux/kernel.h>
+>  #include <linux/export.h>
+>  #include <linux/skbuff.h>
+> -#include <linux/selinux_netlink.h>
+>  #include <net/net_namespace.h>
+>  #include <net/netlink.h>
+>
+> -#include "security.h"
+>
+>  static struct sock *selnl __ro_after_init;
+>
+> --
+> 2.34.1
+>
 
