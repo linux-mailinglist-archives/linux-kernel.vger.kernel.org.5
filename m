@@ -1,92 +1,119 @@
-Return-Path: <linux-kernel+bounces-132759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A25B8999D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:47:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4B3D8999D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:48:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8FEE2843B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:47:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 893601F2248D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:48:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4400716087B;
-	Fri,  5 Apr 2024 09:47:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="JvxeNbEq"
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32AD1A26E;
-	Fri,  5 Apr 2024 09:47:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D9541607BF;
+	Fri,  5 Apr 2024 09:48:17 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 628641A26E
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:48:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712310456; cv=none; b=XHGNmMzBjuLku9OWIs/fVbra6DCSvTxuOlpMBrQkqqV/kDBudj27l0xEcbsrBz2AXOe6astT9zjsUzuAlLgmEDPDz1Qhc6KMUFyiZpDZBKLS4IlK16Nsz8f8+bw9hzvgzKThwYbGc86TNxxAOnGU60KBIaQWEcUlmOAjJ28IiQk=
+	t=1712310497; cv=none; b=QD9heXD5Nmh5EvAI4hcbF+pRG1gXNktzBXPvJ5EYmrUdpHmZ6HNzZEPc/osQ3MspzuRc/W0ebxq+/bH4uBFLkJqyzXNFb6yMEhV1Nta1+H/jwKM5/TXX+JRVC2sOHxElGUsWuV/yGinKjw7zrPuXUhLzEKw188FT7v4MWudsgCg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712310456; c=relaxed/simple;
-	bh=F5izhsD4G3SI0Rk/8S99UY1gDQNUNsaPEQp+ZSnHcRk=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PpI0RB1oNz3NiJYfgxFMh8/uc64dWwZNIUuzsF5rNw9jMM0dcf1zp3bHOpwgw7SfiNp/xdcym8EgKog9/6tc6R/t9lUmYbX6FDpmcLKqZJI+z6ddoKtNS0Dpa5rJhi8HWGh4/zNLbT8a1Xi2fz7DkL0Wltn8t7+UsfLrN2Uc1Kc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=JvxeNbEq; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-	s=protonmail; t=1712310452; x=1712569652;
-	bh=rLmpZrzNrBXqu+xt/ZCUi25drzPdpOCa8IMXdFNbdc8=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=JvxeNbEq6egthg86ERFlZgIt8Ffa9WRNQao5xrKEbdogccX8tJ6XU221TPPj2oQf8
-	 +WaBVkqK9vGY2GN8knfFKUUawkgrphu35+Df/7uUmYBzN9p7SbQn/fP5sHxFX00avv
-	 1m040ef2uOOXUPOcy6wybgQ/w9MM5vV8qzI9XCpmcegAVLaYeKypQujds0S18Nas0A
-	 CcQ+PM3vx84lfVewXxF6EPsog5kh1acT/eSAP0gtGUfwNwSuLwmre4ZtkDNAigXm3O
-	 NLRxUO1VLMJmUAOULSMuDPiYUOJl9kTJawsZHuD5pQSrE5h68Px+ggGSEh+7RiHSK9
-	 kmBLeBKKQoqow==
-Date: Fri, 05 Apr 2024 09:47:28 +0000
-To: Alice Ryhl <aliceryhl@google.com>, Miguel Ojeda <ojeda@kernel.org>, Andrew Morton <akpm@linux-foundation.org>
-From: Benno Lossin <benno.lossin@proton.me>
-Cc: Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>, Coly Li <colyli@suse.de>, Paolo Abeni <pabeni@redhat.com>, Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@kernel.org>, Jakub Kicinski <kuba@kernel.org>, Wei Yang <richard.weiyang@gmail.com>, Matthew Wilcox <willy@infradead.org>, linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org
-Subject: Re: [PATCH 3/9] rust: list: add struct with prev/next pointers
-Message-ID: <c715d559-0f03-4659-a515-1dd58e683f31@proton.me>
-In-Reply-To: <20240402-linked-list-v1-3-b1c59ba7ae3b@google.com>
-References: <20240402-linked-list-v1-0-b1c59ba7ae3b@google.com> <20240402-linked-list-v1-3-b1c59ba7ae3b@google.com>
-Feedback-ID: 71780778:user:proton
+	s=arc-20240116; t=1712310497; c=relaxed/simple;
+	bh=cJbnnlU2IrQbKX6MyuGanbX91V+FSwBB56HgQEm7moE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f9HiIA1N4hhvdFYVSzqtSf298utKEQT6rGedo3MjCM2z4ycFCorKnzTSqxEf/Z6KC2KFBQ/KDdIDjXnCSwd0PbjH2JuInhQedFGjFxxTAUxR0cmh/6dApMeioac5PVmHNbeJSJO+tVx0u5v7UUTJTvaJQWw5gR4TK1mbA0WrbfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 422C1FEC;
+	Fri,  5 Apr 2024 02:48:45 -0700 (PDT)
+Received: from [10.57.72.221] (unknown [10.57.72.221])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7C9753F64C;
+	Fri,  5 Apr 2024 02:48:10 -0700 (PDT)
+Message-ID: <a73e4a31-cd32-4e75-ad79-10492b2cd0e4@arm.com>
+Date: Fri, 5 Apr 2024 11:48:07 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/7] sched/fair: Remove on_null_domain() and redundant
+ checks
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Aaron Lu <aaron.lu@intel.com>,
+ Rui Zhang <rui.zhang@intel.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>, Ingo Molnar <mingo@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Daniel Bristot de Oliveira
+ <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>,
+ Waiman Long <longman@redhat.com>, Andrew Morton <akpm@linux-foundation.org>,
+ Michal Hocko <mhocko@suse.com>
+References: <20240403150543.2793354-1-pierre.gondois@arm.com>
+ <20240403150543.2793354-7-pierre.gondois@arm.com>
+ <20240404072745.GA35684@noisy.programming.kicks-ass.net>
+Content-Language: en-US
+From: Pierre Gondois <pierre.gondois@arm.com>
+In-Reply-To: <20240404072745.GA35684@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 02.04.24 14:17, Alice Ryhl wrote:
-> +impl<const ID: u64> ListLinks<ID> {
-> +    /// Creates a new initializer for this type.
-> +    pub fn new() -> impl PinInit<Self> {
-> +        // INVARIANT: Pin-init initializers can't be used on an existing=
- `Arc`, so this value will
-> +        // not be constructed in an `Arc` that already has a `ListArc`.
-> +        ListLinks {
-> +            inner: Opaque::new(ListLinksFields {
-> +                prev: ptr::null_mut(),
-> +                next: ptr::null_mut(),
-> +            }),
+Hello Peter,
 
-You might want to implement `Zeroable` (using the derive macro) for this
-struct, since then you could just return `init::zeroed()`.
-You can also use that for the `ListLinksSelfPtr` in the other patch.
+On 4/4/24 09:27, Peter Zijlstra wrote:
+> On Wed, Apr 03, 2024 at 05:05:38PM +0200, Pierre Gondois wrote:
+>> CPUs with a NULL sched domain are removed from the HKR_TYPE_SCHED
+>> isolation mask. The two following checks are equialent:
+>> - !housekeeping_runtime_test_cpu(cpu, HKR_TYPE_SCHED)
+>> - on_null_domain(rq)
+>>
+>> Remove on_null_domain() and the redundant checks.
+>>
+>> Signed-off-by: Pierre Gondois <pierre.gondois@arm.com>
+>> ---
+>>   kernel/sched/fair.c | 18 ++++++------------
+>>   1 file changed, 6 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 3e0f2a0f153f..9657c8f2176b 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -11830,11 +11830,6 @@ static void sched_balance_domains(struct rq *rq, enum cpu_idle_type idle)
+>>   
+>>   }
+>>   
+>> -static inline int on_null_domain(struct rq *rq)
+>> -{
+>> -	return unlikely(!rcu_dereference_sched(rq->sd));
+>> -}
+>> -
+>>   #ifdef CONFIG_NO_HZ_COMMON
+>>   /*
+>>    * NOHZ idle load balancing (ILB) details:
+>> @@ -12040,7 +12035,7 @@ void nohz_balance_exit_idle(struct rq *rq)
+>>   	SCHED_WARN_ON(rq != this_rq());
+>>   
+>>   	/* If we're a completely isolated CPU, we don't play: */
+>> -	if (on_null_domain(rq))
+>> +	if (!housekeeping_runtime_test_cpu(cpu_of(rq), HKR_TYPE_SCHED))
+>>   		return;
+>>   
+>>   	if (likely(!rq->nohz_tick_stopped))
+> 
+> This seems broken, the whole null domain can happen with cpusets, but
+> this housekeeping nonsense is predicated on CPU_ISOLATION and none of
+> that is mandatory for CPUSETS.
 
---=20
-Cheers,
-Benno
+ok right,
+I will try to remove this implicit dependency,
 
-> +        }
-> +    }
-> +}
->=20
-> --
-> 2.44.0.478.gd926399ef9-goog
->=20
-
+Regards,
+Pierre
 
