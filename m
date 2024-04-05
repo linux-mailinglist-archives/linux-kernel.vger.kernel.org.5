@@ -1,90 +1,63 @@
-Return-Path: <linux-kernel+bounces-133275-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133276-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7B9D89A192
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28E1C89A196
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:42:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBD3F1C237C6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:41:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A3591C23056
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A51F816FF30;
-	Fri,  5 Apr 2024 15:41:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB75516FF30;
+	Fri,  5 Apr 2024 15:42:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cIbe4UZc"
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="kgerwkWI"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9425F4689;
-	Fri,  5 Apr 2024 15:41:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 728C516F909;
+	Fri,  5 Apr 2024 15:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712331695; cv=none; b=rL4J2vHKgpKsDoa6TwnZVrKbZuwMaStLe13jOD2vsRMhakRW3ncGUz2+AUx6rK8jYngp/mEzY/nVhc+ih6lsD/ozkaqdT4NtJgCHigTnJQYA7NuUxvdpAGVUPf6cG0j13S0Cn9IUXNxp3yHXMq42ZkS3Id6RcydylSKEj+SOEVw=
+	t=1712331727; cv=none; b=nGcK5LKZOEHJRFgZ1xaPaynmZYA0SFQP445vhyf1CJFjs0HQIbP7sVzgEAYT65XBa6moNPQXYl2MadjLg5b4Br5NXw/gSdhpGOKtfVBzmbtqixtTqJZz2bSXnAwdzMUmtWR6wJxqGvyW4XvDMz0eFRSMCfRlVTadC0KxEcncAzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712331695; c=relaxed/simple;
-	bh=fjFv2oGljsYZ8RlUB2XmSpfbt8CKLn8bKBCjtdk8lZ8=;
+	s=arc-20240116; t=1712331727; c=relaxed/simple;
+	bh=akVLxZ0gpLRY8TlRqVNs9BhyJy3GXMw2rIkL1JXP3Hg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q/j1c/5wLjGanZgTiWa6qNMLVTIpMrlEwF4NiTVHTUYGH/RLawpTj6n/Gs5/CM/7DpuvC4GhF5cTUS6Kja+rtzUmfdCd32o/zhAirJsnfduKzMEuU+2kj+/9zeVWR3hKwY+2w+mM8OvsIrMbYR3JTdJayajkOfYwXtcr6uuRKaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cIbe4UZc; arc=none smtp.client-ip=209.85.215.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so1747687a12.1;
-        Fri, 05 Apr 2024 08:41:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712331693; x=1712936493; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=tZ5Mwph3/XmYRqypIO/r8wSsIZPfEOkaYE7lglREnJo=;
-        b=cIbe4UZcoD57IsRNUDKdHGwXUip+bwQu//hWtlZgjuodMLdqdicajRGTSfTHI9xcC3
-         zepVR/fK5SzaSrvE4I++rIipXUyZ2FhnkX3d0VKfe5FC+MghHcsf1/dxzDCatZbg5SRl
-         kqqWtONiEf4PCFPl0qTQkOGRlsVXgtZczk3hl/vB5EUSi/FtgGuneyo1G7E7F2CpOD33
-         kf2xAWLJA2xk8mWo1FhwM26CpijYNz0yTTJlKju5SCslgRYBG7uUPolVXEwJHTc/SdRW
-         AnGI70lzHf9PwAUv+jOVqhsuG1MFE/WVBbOqnsNfp5P1/xA8BrRdsWdhLvZHgdAkGot7
-         +Y9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712331693; x=1712936493;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tZ5Mwph3/XmYRqypIO/r8wSsIZPfEOkaYE7lglREnJo=;
-        b=hVx4t6J85f9GXFbbUR6UrmDf3/hH2mMNnQooi8XsCK1fE3N49Qn6D6THYskPDTCia7
-         Kz5EoHLOr4T+45R8BnEFoDy7u5TEAvooVOYyx749brQXMD9a11fmDuhmTUQbJKg4p+Mt
-         o5JRL0qyX3Gnsi2tTIsxYZxVPAqQne649LFVW2wu80KzsCG+gE/bvrmyI4jgJ2TAYw6S
-         gmyrBaZo6au4EKKMlhE0ROR4c9n1ZA9rfwYNQyXWwE6Ui7jcCVIix+pbuvaAvypUaNA0
-         7LnMaHcWdxXiVSgqeJSUR77YMqjiFrXxNhUf+ayUi/41/o+lyqvGx6B6TegO6wtQd2D8
-         xNtA==
-X-Forwarded-Encrypted: i=1; AJvYcCUTVhvVbqUUT1d/eLXNxaBDKDVUsZ0bBoT+qDb5LU18NejVVObxCTUuXuRLhGl+XXZ0okCcLHkZv9FpFTglwf4FSNXr4/aa4fnURZEzqUxcsOE0vSOlCJ8oiDfbuwopR/5RYYJsEuwI7X6t7A==
-X-Gm-Message-State: AOJu0YxHEtOJlHmI3QKd3RpFVIIzXOxl2sm1gURu+Pv90z7eAdYQWexi
-	waGsFkYMU0O6nZOkYKCkVsmKOyetcIzhmaEaDZsT6Yh2naBdyNxg
-X-Google-Smtp-Source: AGHT+IEi5erSHhlEtyUDl4ceLZr3Ogc9RUtr0VOL67S+SNiFqrklx1MYFA8hVBtxvmQQZtaaq/dLLg==
-X-Received: by 2002:a17:90b:4414:b0:2a3:be59:e969 with SMTP id hx20-20020a17090b441400b002a3be59e969mr1447018pjb.47.1712331692857;
-        Fri, 05 Apr 2024 08:41:32 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:400::5:25ab])
-        by smtp.gmail.com with ESMTPSA id d18-20020a17090ac25200b002a219f8079fsm1656244pjx.33.2024.04.05.08.41.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 08:41:32 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Fri, 5 Apr 2024 05:41:30 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Amir Goldstein <amir73il@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>,
-	syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>,
-	gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	valesini@yandex-team.ru, Christian Brauner <brauner@kernel.org>,
-	Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
-Message-ID: <ZhAbqvXeeZ0mz2ZX@slm.duckdns.org>
-References: <00000000000098f75506153551a1@google.com>
- <0000000000002f2066061539e54b@google.com>
- <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
- <20240404081122.GQ538574@ZenIV>
- <20240404082110.GR538574@ZenIV>
- <CAOQ4uximHfK78KFabJA3Hf4R0En6-GfJ3eF96Lzmc94PGuGayA@mail.gmail.com>
- <20240405065135.GA3959@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Z6RNVKxbhiVhQbNJfulnIw+IiNY/95PU/5z6ujsMe6CR0Bzj9Sk7BkChJtS4SShyh2z1QbeixynCnGFZwoJgGis17IIjhbp0rXpS5KAcORvdx6bawguVUYevcnMqT90h+oJSQEXQwcw4lRITUOAeXRpK26mSqLgxoTjK4oJVYn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=kgerwkWI; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=S57qMLoX/N03NSRqT8ItgFLssRfNbaxDJ602DHQX86Q=; b=kgerwkWIGchJgjxLMSKV8H6iVL
+	gi7daibq/FhGvRLZuOJf2aspraCNzLS6tI6gpqI2VD2AzNz1XzHmM827BBenkUgJSUzEuB53d3s5a
+	DVbT4O0eFc3ZMMh5IM+6SH5qVNBw9J9r1+y3rH2JEQqQBwljyShFWuqGH+0LeQ8XY9dE=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rslhL-00CJiq-KA; Fri, 05 Apr 2024 17:41:47 +0200
+Date: Fri, 5 Apr 2024 17:41:47 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Alexander Lobakin <aleksander.lobakin@intel.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	David Ahern <dsahern@kernel.org>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+	nex.sw.ncis.osdt.itp.upstreaming@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC net-next 1/7] netdev_features: remove unused
+ __UNUSED_NETIF_F_1
+Message-ID: <10a14ce9-1cbb-4906-8363-99c8fc3c7fb6@lunn.ch>
+References: <20240405133731.1010128-1-aleksander.lobakin@intel.com>
+ <20240405133731.1010128-2-aleksander.lobakin@intel.com>
+ <f6d9db1c-bde2-4704-a3cf-69e84a5a6fd3@lunn.ch>
+ <bbdb5c3c-1a2a-4fa3-8e08-2e1a3fc51b85@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,28 +66,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240405065135.GA3959@lst.de>
+In-Reply-To: <bbdb5c3c-1a2a-4fa3-8e08-2e1a3fc51b85@intel.com>
 
-Hello,
-
-On Fri, Apr 05, 2024 at 08:51:35AM +0200, Christoph Hellwig wrote:
-> On Thu, Apr 04, 2024 at 12:33:40PM +0300, Amir Goldstein wrote:
-> > I don't follow what you are saying.
-> > Which code is in non-starter violation?
-> > kernfs for calling lookup_bdev() with internal of->mutex held?
+On Fri, Apr 05, 2024 at 05:15:58PM +0200, Alexander Lobakin wrote:
+> From: Andrew Lunn <andrew@lunn.ch>
+> Date: Fri, 5 Apr 2024 16:12:50 +0200
 > 
-> That is a huge problem, and has been causing endless annoying lockdep
-> chains in the block layer for us.  If we have some way to kill this
-> the whole block layer would benefit.
+> > On Fri, Apr 05, 2024 at 03:37:25PM +0200, Alexander Lobakin wrote:
+> >> NETIF_F_NO_CSUM was removed in 3.2-rc2 by commit 34324dc2bf27
+> >> ("net: remove NETIF_F_NO_CSUM feature bit") and became
+> >> __UNUSED_NETIF_F_1. It's not used anywhere in the code.
+> >> Remove this bit waste.
+> >>
+> >> Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+> >> ---
+> >>  include/linux/netdev_features.h | 1 -
+> >>  1 file changed, 1 deletion(-)
+> >>
+> >> diff --git a/include/linux/netdev_features.h b/include/linux/netdev_features.h
+> >> index 7c2d77d75a88..44c428d62db4 100644
+> >> --- a/include/linux/netdev_features.h
+> >> +++ b/include/linux/netdev_features.h
+> >> @@ -14,7 +14,6 @@ typedef u64 netdev_features_t;
+> >>  enum {
+> >>  	NETIF_F_SG_BIT,			/* Scatter/gather IO. */
+> >>  	NETIF_F_IP_CSUM_BIT,		/* Can checksum TCP/UDP over IPv4. */
+> >> -	__UNUSED_NETIF_F_1,
+> >>  	NETIF_F_HW_CSUM_BIT,		/* Can checksum all the packets. */
+> >>  	NETIF_F_IPV6_CSUM_BIT,		/* Can checksum TCP/UDP over IPV6 */
+> >>  	NETIF_F_HIGHDMA_BIT,		/* Can DMA to high memory. */
+> > 
+> > Are you sure this enum is not ABI?
+> 
+> Why should this be ABI? It's not a part of UAPI and Ethtool receives
+> these bits together with string names.
 
-of->mutex is mostly there as a convenience to kernfs (here, sysfs) users so
-that they don't have to worry about concurrent invocation of the callbacks.
-It needs more careful look but on cursory observation, it shouldn't be
-difficult to implement a flag or different op type which skips of->mutex if
-this causes a lot of pain.
+As a reviewer, i think about ABI. When looking at a change like this,
+it is the first thing i think of. Our code is not always clean, there
+could well be things outside of include/uapi which influence the
+ABI. For some reason ("net: remove NETIF_F_NO_CSUM feature bit")
+renamed rather than removed it? Why?
 
-Thanks.
+I assume you have looked into the code in this respect, you have
+tested both and ioctl and netlink code, and concluded it does not
+cause an ABI change. It could of been removed in 3.2-rc2. But i don't
+see anything in the cover letter or commit message which indicates you
+have done that. That is partially what the cover letter and the commit
+message is about. Explaining things you have done, but cannot be seen
+in the code change.
 
--- 
-tejun
+	Andrew
 
