@@ -1,152 +1,196 @@
-Return-Path: <linux-kernel+bounces-133393-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C7EF89A336
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:09:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D2B189A338
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:09:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCBD91F22567
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:09:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61C33B268FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFEC2171666;
-	Fri,  5 Apr 2024 17:08:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9979171E6D;
+	Fri,  5 Apr 2024 17:08:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qC0d2Hyb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b="rDe9hRhp"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F031B17166B;
-	Fri,  5 Apr 2024 17:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24483171E68
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:08:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712336885; cv=none; b=MGeLWRCP3PMKW+OTfujocMUuMxWobQsfb4HHmroTEGrsgQG8USo6HZryk5j8ZKHaHGhTettQvyl/uEQPjRzJ8Uxn8Plj16LSb07yXr3r+w4Ik+gzyKiDw+c1uh1mBJJ//LgheVxY1ZLxaA4jRVyuYKVr9vmEZTmW15X6bvfqbRA=
+	t=1712336894; cv=none; b=c88ztps15Y8nESUv6jpLXpTH9dLAgYHSL0gkY8RnyAFUrb62obDHwEL2ory1+eG1/lu/2AEedb9oIVS+yR0tWuHpoXK/Xs6Uuy4mhtNEMlxQIR505nMCVxlFs/6PT5Kqdh1+X9nVRcikwbRNW4pVilsrQKuMScvSyd6zvpaz/oU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712336885; c=relaxed/simple;
-	bh=euUf2KQ8DD+0BzrIAZHUzsbNhJYPngVgmr19kIzw/BI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hEZsE48E36uvW7A0jLp/Bsjtz8p968gFTCMhvTZezTsvzVCzqWBNpyYnW73ykAGZ8QzupFXuvVoaJZ7qAd+g8ZmnUpgwuyWBzGuYOy1LAObVwxUywrO4HLyOmnkUTCCxGyIAQ507w1WR2RmVpym4btL5BgXoRA0ZnxSxoOv8GPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qC0d2Hyb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7F68C433F1;
-	Fri,  5 Apr 2024 17:08:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712336884;
-	bh=euUf2KQ8DD+0BzrIAZHUzsbNhJYPngVgmr19kIzw/BI=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=qC0d2HybdOOoS2ZNs0D7GY1GdhuChCc7zULP+CMtX5gT4aTz8FQQLW5eeVXp6B2H1
-	 i7Qv4S0RvcqJpglQ5wUBSJ7PU6My4VXTkjonCj1kfSxf7giXOmRvVkISDjzOlUbO7B
-	 nrD8eqVPeI1hYcYaFKcsNeWoPC6hi7hNntYegJ8frdrwrGHdR+KrUK03IE5bV59mi7
-	 2vrrPmMgptStindAvuv/EwjjRDldqxAhAW5XkZr/inJvWfzJ4/4PwWKTerP82HZjvn
-	 NqDX3ndrZPV67Sag8Ar5c71Y41aZjE/5K4nmtX7/5s6rvGFzY5ZhS186r746ZuKQkq
-	 HkWsuzPhzdghQ==
-Message-ID: <51fdd36542d253e92153ed3bc28f69866821735c.camel@kernel.org>
-Subject: Re: [PATCH] nfsd: hold a lighter-weight client reference over
- CB_RECALL_ANY
-From: Jeff Layton <jlayton@kernel.org>
-To: Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, Olga
- Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
- <tom@talpey.com>
-Cc: Vladimir Benes <vbenes@redhat.com>, linux-nfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Date: Fri, 05 Apr 2024 13:08:02 -0400
-In-Reply-To: <20240405-rhel-31513-v1-1-40633463f9da@kernel.org>
-References: <20240405-rhel-31513-v1-1-40633463f9da@kernel.org>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=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
-	kZWuOsJdJQdmwlWC5L5ln9xgfr/4mOY38B0U=
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1712336894; c=relaxed/simple;
+	bh=GMxbFhRgw5yfXi1j+ccoYRSW3nkas6eAR14+YGjH+64=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kb1W51sH3GsBxW4J0NOhYVbthcA9Nn9qOprsgloIcrSjluwMQw2uvP0WWpYYU62lw5hyrNOM+mQQkiVBhldgUKttjoSpARThbuNhKminUXK07oiNVHARyWAIlhzIXE9qV+vAFKBHCl8k2nHtZt0JyV4W1XiOFrVtqV5dkM1O3M8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=marliere.net header.i=@marliere.net header.b=rDe9hRhp; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=marliere.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e3cf5b171eso3104675ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 10:08:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712336892; x=1712941692;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:dkim-signature:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=XnwA3IQIKVbX5TtpnpowKO0T6lwnxkQ6mM8Ph3vpATI=;
+        b=aUQ04igq2tYE8rISbDh4uKoSbvJ2tjKkEOnuho/dzKOOYi5RDEu4vSyWxngSH4dOvI
+         WKyv2k3SUZts5p1uR0zfI3aU9FRkNLZnciHxuwNT/YK0ikPoIX52R88nSk+0fpHyeLDH
+         6+cgiexfEy8WOpYgpQJQyqNhYyAtcN5BSjhr4OZ97eiE74ni0IFs0lzed4eoSY8ZL7zO
+         aVIhpA48yAyZ7Pj4DVy+YFc8S4jRRONs8hTp5B1l5H2VX1Fvw/Btes2UaTmYLSBnrJCi
+         sH0+pI+V8ELXI3nRNmsqf7l+O3GqVAbA1qcjD64rvk3mb5cVHNWeTlStGs66PoRGbHQP
+         GU/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUi8ksQXXmEmEYQhfgQ5No0HsIkzaRrANtNU5VqgshXKl4p7Kvm3DCrqLeK+63NywbJSBOvgkVk7B9KjB1nRvG8u31VsciTVG2mJgJp
+X-Gm-Message-State: AOJu0YwWHU8c1XX390u5v5oTr/UN+TSyfqQRPOY+NgyfbQa58XZ4aYPX
+	5J0+bDwbCMqYkost3XwyJZmiBNM7pPAjEatImhDgL1zu5rqP8vmS
+X-Google-Smtp-Source: AGHT+IEASoP3F94AXrP/j8HTv/ikxF7pg4M+6ywVmU6cnIUTIRjvyRm3C2Ux7lJjevJhmXt0VLvfAw==
+X-Received: by 2002:a17:903:32d0:b0:1e2:6165:80cd with SMTP id i16-20020a17090332d000b001e2616580cdmr2475431plr.38.1712336892391;
+        Fri, 05 Apr 2024 10:08:12 -0700 (PDT)
+Received: from mail.marliere.net ([24.199.118.162])
+        by smtp.gmail.com with ESMTPSA id kr12-20020a170903080c00b001db37fd26bcsm1820471plb.116.2024.04.05.10.08.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 10:08:11 -0700 (PDT)
+Date: Fri, 5 Apr 2024 14:08:07 -0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marliere.net;
+	s=2024; t=1712336890;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XnwA3IQIKVbX5TtpnpowKO0T6lwnxkQ6mM8Ph3vpATI=;
+	b=rDe9hRhptOqWLf7DP7DE7KkviR7KGu4+QARyO4C94hn1S3211fVZuUtazrUf71pBUnOxsr
+	2ZoCYvJ23rw7TvHr/6YKe+YpZWwyaATvYTb+cZZMlVNALgAQ+55o8rlAruZE8I0OtQPNyC
+	XjIfhDqxL5m4JW3kZ4qRSJN96wwhbP0OQZ77vT4YWG631w5hnxwUOV97DzCJBGpK0vk3Su
+	W5hYf5C9dYgNllTF+zrcmopBSLY22O24eDqRgi9YeE63hrmlgiXdv5IrCHA8KL1n5IdFvQ
+	bnVClunI+pvMZ+gEBx2XIxmAcAST/kNi1JRLZ3MOW3ZF4vZqsfyeGBeuFq4CGg==
+Authentication-Results: ORIGINATING;
+	auth=pass smtp.auth=ricardo@marliere.net smtp.mailfrom=ricardo@marliere.net
+From: "Ricardo B. Marliere" <ricardo@marliere.net>
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Kishon Vijay Abraham I <kishon@kernel.org>, 
+	linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] net: phy: core: make phy_class constant
+Message-ID: <4yxiyk555fts7ibsjubatreugv7pdmvcbnnamcuqoxpwx4g3wr@f6t33jkfwcve>
+References: <20240305-class_cleanup-phy-v1-1-106013a644dc@marliere.net>
+ <ZhAtQngu2uChbCCt@matsya>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhAtQngu2uChbCCt@matsya>
 
-On Fri, 2024-04-05 at 13:00 -0400, Jeff Layton wrote:
-> Currently the CB_RECALL_ANY job takes a cl_rpc_users reference to the
-> client. While a callback job is technically an RPC, this has the effect
-> of preventing the client from being unhashed.
->=20
-> If nfsd decides to send a CB_RECALL_ANY just as the client reboots, we
-> can end up in a situation where the callback can't complete on the (now
-> dead) callback channel, but the new client also can't connect because
-> the old client can't be unhashed.
->=20
-> The job is only holding a reference to the client so it can clear a flag
-> in the client after it completes. This patch attempts to alleviate this
-> by having the job instead hold a reference to the cl_nfsdfs.cl_ref.
->=20
-> Typically we only take that sort of reference when dealing with the
-> nfsdfs info files, but it should work appropriately here too.
->=20
+On  5 Apr 22:26, Vinod Koul wrote:
+> On 05-03-24, 15:18, Ricardo B. Marliere wrote:
+> > Since commit 43a7206b0963 ("driver core: class: make class_register() take
+> > a const *"), the driver core allows for struct class to be in read-only
+> > memory, so move the phy_class structure to be declared at build time
+> > placing it into read-only memory, instead of having to be dynamically
+> > allocated at boot time.
+> 
+> why is this tagged net: ...??
+> This has nothing to do with networking!
 
-This should probably also have:
+Hi Vinod.
 
-    Fixes: 44df6f439a17 NFSD: add delegation reaper to react to low memory =
-condition
+My mistake, it was due to poor local tree management. Please let me know
+if you can review and take it as is, changing the subject line, or if
+you want me to resend.
 
-> Reported-by: Vladimir Benes <vbenes@redhat.com>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
-> This patch seems to break the livelock in my testing. It's not the
-> prettiest fix, but it's narrowly targeted and should be appropriate for
-> 6.9-rc. Longer term, I think we need to rework how the nfs4_clients
-> refcounts are managed, but that's a larger project.
->=20
-> Many thanks to Vladimir for all his help with tracking this down!
-> ---
->  fs/nfsd/nfs4state.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
->=20
-> diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-> index 5fcd93f7cb8c..4311d608a297 100644
-> --- a/fs/nfsd/nfs4state.c
-> +++ b/fs/nfsd/nfs4state.c
-> @@ -3042,12 +3042,9 @@ static void
->  nfsd4_cb_recall_any_release(struct nfsd4_callback *cb)
->  {
->  	struct nfs4_client *clp =3D cb->cb_clp;
-> -	struct nfsd_net *nn =3D net_generic(clp->net, nfsd_net_id);
-> =20
-> -	spin_lock(&nn->client_lock);
->  	clear_bit(NFSD4_CLIENT_CB_RECALL_ANY, &clp->cl_flags);
-> -	put_client_renew_locked(clp);
-> -	spin_unlock(&nn->client_lock);
-> +	drop_client(clp);
->  }
-> =20
->  static int
-> @@ -6613,10 +6610,12 @@ deleg_reaper(struct nfsd_net *nn)
->  				clp->cl_ra_time < 5)) {
->  			continue;
->  		}
-> -		list_add(&clp->cl_ra_cblist, &cblist);
-> =20
->  		/* release in nfsd4_cb_recall_any_release */
-> -		atomic_inc(&clp->cl_rpc_users);
-> +		if (!kref_get_unless_zero(&clp->cl_nfsdfs.cl_ref))
-> +			continue;
-> +
-> +		list_add(&clp->cl_ra_cblist, &cblist);
->  		set_bit(NFSD4_CLIENT_CB_RECALL_ANY, &clp->cl_flags);
->  		clp->cl_ra_time =3D ktime_get_boottime_seconds();
->  	}
->=20
-> ---
-> base-commit: 05258a0a69b3c5d2c003f818702c0a52b6fea861
-> change-id: 20240405-rhel-31513-028ab6f14252
->=20
-> Best regards,
+Best regards,
+-	Ricardo.
 
---=20
-Jeff Layton <jlayton@kernel.org>
+
+> 
+> > 
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> > ---
+> >  drivers/phy/phy-core.c | 26 +++++++++++++++-----------
+> >  1 file changed, 15 insertions(+), 11 deletions(-)
+> > 
+> > diff --git a/drivers/phy/phy-core.c b/drivers/phy/phy-core.c
+> > index 7f9b4de772ee..5776d44fd32f 100644
+> > --- a/drivers/phy/phy-core.c
+> > +++ b/drivers/phy/phy-core.c
+> > @@ -20,7 +20,12 @@
+> >  #include <linux/pm_runtime.h>
+> >  #include <linux/regulator/consumer.h>
+> >  
+> > -static struct class *phy_class;
+> > +static void phy_release(struct device *dev);
+> > +static const struct class phy_class = {
+> > +	.name = "phy",
+> > +	.dev_release = phy_release,
+> > +};
+> > +
+> >  static struct dentry *phy_debugfs_root;
+> >  static DEFINE_MUTEX(phy_provider_mutex);
+> >  static LIST_HEAD(phy_provider_list);
+> > @@ -706,7 +711,7 @@ struct phy *of_phy_simple_xlate(struct device *dev,
+> >  	struct phy *phy;
+> >  	struct class_dev_iter iter;
+> >  
+> > -	class_dev_iter_init(&iter, phy_class, NULL, NULL);
+> > +	class_dev_iter_init(&iter, &phy_class, NULL, NULL);
+> >  	while ((dev = class_dev_iter_next(&iter))) {
+> >  		phy = to_phy(dev);
+> >  		if (args->np != phy->dev.of_node)
+> > @@ -969,7 +974,7 @@ struct phy *phy_create(struct device *dev, struct device_node *node,
+> >  	device_initialize(&phy->dev);
+> >  	mutex_init(&phy->mutex);
+> >  
+> > -	phy->dev.class = phy_class;
+> > +	phy->dev.class = &phy_class;
+> >  	phy->dev.parent = dev;
+> >  	phy->dev.of_node = node ?: dev->of_node;
+> >  	phy->id = id;
+> > @@ -1238,14 +1243,13 @@ static void phy_release(struct device *dev)
+> >  
+> >  static int __init phy_core_init(void)
+> >  {
+> > -	phy_class = class_create("phy");
+> > -	if (IS_ERR(phy_class)) {
+> > -		pr_err("failed to create phy class --> %ld\n",
+> > -			PTR_ERR(phy_class));
+> > -		return PTR_ERR(phy_class);
+> > -	}
+> > +	int err;
+> >  
+> > -	phy_class->dev_release = phy_release;
+> > +	err = class_register(&phy_class);
+> > +	if (err) {
+> > +		pr_err("failed to register phy class");
+> > +		return err;
+> > +	}
+> >  
+> >  	phy_debugfs_root = debugfs_create_dir("phy", NULL);
+> >  
+> > @@ -1256,6 +1260,6 @@ device_initcall(phy_core_init);
+> >  static void __exit phy_core_exit(void)
+> >  {
+> >  	debugfs_remove_recursive(phy_debugfs_root);
+> > -	class_destroy(phy_class);
+> > +	class_unregister(&phy_class);
+> >  }
+> >  module_exit(phy_core_exit);
+> > 
+> > ---
+> > base-commit: 00ca8a15dafa990d391abc37f2b8256ddf909b35
+> > change-id: 20240305-class_cleanup-phy-668a148b2acd
+> > 
+> > Best regards,
+> > -- 
+> > Ricardo B. Marliere <ricardo@marliere.net>
+> 
+> -- 
+> ~Vinod
 
