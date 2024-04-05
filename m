@@ -1,136 +1,246 @@
-Return-Path: <linux-kernel+bounces-133473-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7314F89A444
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:37:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90F1B89A455
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:42:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96D041C22518
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:37:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E31D8284C78
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D55F17279B;
-	Fri,  5 Apr 2024 18:37:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C723B17279A;
+	Fri,  5 Apr 2024 18:41:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bkmLIHuX"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UgcQ26Xe"
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60BEE171E58
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 18:36:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112C517278E;
+	Fri,  5 Apr 2024 18:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712342221; cv=none; b=K8LC2DdUI18/zhr+2VkJzsJtDPbLuqdQugapdOksflYiZgFFd9ZsVlBXF+npp5zwlSMtvVXxGAsaEX7K3NyBkNpFp25l1xxp8qAp0f83oBiVOw2kFgcVEv7UDbL//GhVbDRHFkkgwFeLx5w2lGWUf+f2LnM8GlYKBrtuCDNIQk8=
+	t=1712342469; cv=none; b=D45fagc6O+iRTcgEY1xczqb4kRCWXE3U6bogsPNBWZiqhv+Rdnmh+qalgbD8wi0dobf7PDYI87TJjUVoB9Rwz8MRHC3txgfCQ+SRoVajMclxQUN1n/FaCc+cXW1D65QnHzciDatfBmlL9CvBky9Rv2YiuibMAoaMHpZXcSpYR8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712342221; c=relaxed/simple;
-	bh=qvKsrMsm5amCXrkHqNf0dwZRvuZponfYbk9G0oYCwa0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=EdvkS7eOATRiq+bJ0IRqmLgzX3o/rWi7d5VjJM/LPJ2mozOk8mpJiyBIgAvjG2t+FgtY04uokW3571W6mWTPty2LUkRnD3saFmMPHOdQFvzzY6xzbhQtiIIKpLRSvhjKN38QsNkVwMjV8qj2M60nAfhJ7c1JhpZ177aiHKkmgUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bkmLIHuX; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712342218;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=qvKsrMsm5amCXrkHqNf0dwZRvuZponfYbk9G0oYCwa0=;
-	b=bkmLIHuXHWylDHV3WzY3VGR5Ih99VfMb+b8oggnFECST0sWagWeL3urNqjAQnlyCm3vXDX
-	ZoBeOGp94qADvpKVLLeifSWsvCVUerTo2AgPjTob6VX+GN24b+LkzUOJdLXyRJZjmpVloP
-	eov2PjZSdAnpLKnFLcb1Sup67WKkt2E=
-Received: from mail-ot1-f72.google.com (mail-ot1-f72.google.com
- [209.85.210.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-393-0MG2goEtOuK7G1_lky-pMw-1; Fri, 05 Apr 2024 14:36:57 -0400
-X-MC-Unique: 0MG2goEtOuK7G1_lky-pMw-1
-Received: by mail-ot1-f72.google.com with SMTP id 46e09a7af769-6e45f6273a2so1525567a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 11:36:57 -0700 (PDT)
+	s=arc-20240116; t=1712342469; c=relaxed/simple;
+	bh=gInCOA+sfPewoaseFEvU8tzLuv1U9E3UhaEqPuZNAw0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cpyJrN5S8dWy/MXIP8Pm6NpK0QPYAgLWfonP9+Il8Oww3whd3feExCE8fUSfnb/4KNnQ0e6LfeEvhWaoz4YqfkZZFc6aD1XkYQG4yf59o37JiZ/YdBI/jKl4rTHc2w/A5XscM5myumpEYWBlsy8WT1v3XbRtJy1RhltL36jhW8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UgcQ26Xe; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d8129797fcso32652371fa.1;
+        Fri, 05 Apr 2024 11:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712342466; x=1712947266; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eVlxOZUtKUrfgHZukB+ngKkuy1iBG6tY8rl6phcN1Bo=;
+        b=UgcQ26XeP3BsHY3BHV7bXxCGW+e4FV2KC3+fHgSFbXyelB7ha99dgP8HhlHrsni3Oi
+         Dz1lP5HX1tfB6HuHKV7tIBEn7TZHgCcOHpScsgvVo8C3kJiOUDqMAs4xX42w/h2KkVAR
+         Kq6Iy612NWyS0Wq0SxwPSvQhTFPls6ATZRlTcYmayi+utl8knLeU2FcdL70PDIznpvoj
+         1e3giabiUotdP8VnOhjxHQ8sI8wFpziqpLwn3mI90ZPCFfIiOMKHOfz+cRPTyMMmXh8m
+         3nT2KL/KD6HAuQOOsL+QsxFPsUm2zOv0x4dFVmLvkrlKAsgkzXiz57+j4WMrJVkDydbc
+         ervA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712342216; x=1712947016;
-        h=mime-version:user-agent:content-transfer-encoding:organization
-         :autocrypt:references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qvKsrMsm5amCXrkHqNf0dwZRvuZponfYbk9G0oYCwa0=;
-        b=j4aViGaV4bIK80kpjjThg4CRj3eXYID4zzRKxfeUrv7qZcuFvP0TgYcMMJp6AyaaSl
-         8h/iEUeucSDfwlrnLMzivOtyyRoyntE1StTR3SSrFxgINBtgYyG69iSlOFaPmBNxuBiL
-         9pETgoEU5daVScboo23eUFhg8UXZimMuVBZvXPkFGwTxdHigU/4Vkmc1PNhyyCG0cGj9
-         mBzjNE3UKTh44RWNDEX21UU/EShaOFTzjVAYue9dclsJyLmQDbTuP1rTrHca+c96Wzzu
-         3U/W4nZQwhIB3pse0cHQ1OwNgPwRGyj37io3RQrGAIw0tG6niB84c9EYJm/DmdKWz1ar
-         6oIw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+xuaFptGPAkuMlBLNkl4MVjBjI65DZqSn3JXT9v3HXEpPmwfBha3n4wMQ4vnN4lUf8wt+2BcjnzeZjrXSe39i5Y4ma8RsuwRc01Kg
-X-Gm-Message-State: AOJu0Yz6iKTFMtB3mIWouNfLO4L73dGXCA/N3WrDBfB/yes+AmFyTIfj
-	ejt5S58kk6rJ2grEa6xZkGlxgMKBFvNPOgHbJozWlnt3hXTZhI+oIgMcW28vD2H1JER8RKTJtcW
-	4TsNy4DmufkHaOt39nUohLUQMUpQpfhllmBECq0DF+vTdS1auM9CDXVobTW+VUQ==
-X-Received: by 2002:a9d:6755:0:b0:6e9:e829:2c77 with SMTP id w21-20020a9d6755000000b006e9e8292c77mr2188584otm.27.1712342216543;
-        Fri, 05 Apr 2024 11:36:56 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFt+D771XMHHFySTD83Ks6yYhCqZ6qH+nHPbjpQmLbCiVM6E3jPPssFvgzLpd4PouzY8zRNoQ==
-X-Received: by 2002:a9d:6755:0:b0:6e9:e829:2c77 with SMTP id w21-20020a9d6755000000b006e9e8292c77mr2188569otm.27.1712342216298;
-        Fri, 05 Apr 2024 11:36:56 -0700 (PDT)
-Received: from ?IPv6:2600:4040:5c6c:a300::789? ([2600:4040:5c6c:a300::789])
-        by smtp.gmail.com with ESMTPSA id qr2-20020a05620a390200b00789e2805f85sm854603qkn.21.2024.04.05.11.36.54
+        d=1e100.net; s=20230601; t=1712342466; x=1712947266;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eVlxOZUtKUrfgHZukB+ngKkuy1iBG6tY8rl6phcN1Bo=;
+        b=fmQMxyGvP+llQVowXdY61J3SSrWModa46D1aj4J8GRD1McVbeuh0yAlNVSx+t0s7rw
+         /V4Liv/cHnJSG+X0x/Ej48gsev5teA7jdVVkLqf8yzEfEmKRmaSrvwQm3tl9tqpbXXyO
+         0EIXMPNexLIW7MBMRXMM/1cF5evLCDlnKid4tl+n9dg13fLosj0Vzt432Y6yf19MrVit
+         PhYYoUmNA93w33VnWtABkiYqc+Csivu7Ia/N2iv+2sbaPcVYTJexb3MLyQ1A3jeGaWp0
+         8DO5x+iu1QDX0iN88kgHT1rAMxvmOPjjpiXyLG2Lct6eX+AQCyb7cDRVkWj43kmlfbaN
+         RU6A==
+X-Forwarded-Encrypted: i=1; AJvYcCWtkAnYwWu86baireE0AWEMjJuQg2RRt3Okl7Ap+9HlFU+w62ZMXt9biHBsk8YbOp5K+mwAueRWc0z5SMxfthxyfiLW8+kdpnNKCWPMStT4mJIUkcwd+mdRpqLi6EZN17mL3pfwxBsX8g==
+X-Gm-Message-State: AOJu0YzMuV2PB1IQ0GboMBllEveatW78BioM7mDS0JdgV+Aed/queUUw
+	lMEPC54KDZWSZDaATeUf40rUFeEIx0yjQpc1hUHIwHqd4UepEmEn
+X-Google-Smtp-Source: AGHT+IGBcuQYWYXn+Fnf2i2A3BrvKvhz1jRcgJNoH2q9Bcwfs3czJqByLoIPjxPS3JpVqjT9jyUr7A==
+X-Received: by 2002:a2e:3210:0:b0:2d7:aaf:54ab with SMTP id y16-20020a2e3210000000b002d70aaf54abmr1809661ljy.38.1712342465860;
+        Fri, 05 Apr 2024 11:41:05 -0700 (PDT)
+Received: from cherry.localnet ([178.69.224.101])
+        by smtp.gmail.com with ESMTPSA id c12-20020a05651c014c00b002d80a2da6d2sm236545ljd.129.2024.04.05.11.41.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 11:36:55 -0700 (PDT)
-Message-ID: <190fda6f12aa77170631fb12e505779ce33d1c64.camel@redhat.com>
-Subject: Re: [PATCH v0 13/14] drm/nouveau: Make I2C terminology more
- inclusive
-From: Lyude Paul <lyude@redhat.com>
-To: Easwar Hariharan <eahariha@linux.microsoft.com>, Danilo Krummrich
- <dakr@redhat.com>, Karol Herbst <kherbst@redhat.com>, David Airlie
- <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, "open list:DRM DRIVER
- FOR NVIDIA GEFORCE/QUADRO GPUS" <dri-devel@lists.freedesktop.org>, "open
- list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS"
- <nouveau@lists.freedesktop.org>, open list <linux-kernel@vger.kernel.org>
-Cc: Wolfram Sang <wsa+renesas@sang-engineering.com>, "open list:RADEON and
- AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>, "open list:INTEL DRM
- DISPLAY FOR XE AND I915 DRIVERS" <intel-gfx@lists.freedesktop.org>, "open
- list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS"
- <intel-xe@lists.freedesktop.org>, "open list:I2C SUBSYSTEM HOST DRIVERS"
- <linux-i2c@vger.kernel.org>, "open list:BTTV VIDEO4LINUX DRIVER"
- <linux-media@vger.kernel.org>, "open list:FRAMEBUFFER LAYER"
- <linux-fbdev@vger.kernel.org>
-Date: Fri, 05 Apr 2024 14:36:54 -0400
-In-Reply-To: <e6b04b76-c695-47b4-9432-f2316e174585@linux.microsoft.com>
-References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
-	 <20240329170038.3863998-14-eahariha@linux.microsoft.com>
-	 <4dc6fb16-3d85-4a7f-85f9-ed249da0df1a@redhat.com>
-	 <e6b04b76-c695-47b4-9432-f2316e174585@linux.microsoft.com>
-Autocrypt: addr=lyude@redhat.com; prefer-encrypt=mutual; keydata=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
-Organization: Red Hat Inc.
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+        Fri, 05 Apr 2024 11:41:05 -0700 (PDT)
+From: Artem Sadovnikov <ancowi69@gmail.com>
+To: Mikhail Ukhin <mish.uxin2012@yandex.ru>, Theodore Ts'o <tytso@mit.edu>
+Cc: stable@vger.kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Michail Ivanov <iwanov-23@bk.ru>, Pavel Koshutin <koshutin.pavel@yandex.ru>,
+ lvc-project@linuxtesting.org
+Subject: Re: [PATCH] ext4: fix i_data_sem unlock order in ext4_ind_migrate()
+Date: Fri, 05 Apr 2024 21:40:14 +0300
+Message-ID: <1845977.e0hk0VWMCB@cherry>
+In-Reply-To: <20240405022651.GB13376@mit.edu>
+References:
+ <20240404095000.5872-1-mish.uxin2012@yandex.ru>
+ <20240405022651.GB13376@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-On Fri, 2024-04-05 at 09:30 -0700, Easwar Hariharan wrote:
+On Friday, April 5, 2024 5:26:51=E2=80=AFAM MSK Theodore Ts'o wrote:
 >=20
-> Thanks for the review, and for the appetite to go further! So we are
-> on the same page, you would prefer
-> renaming to controller/target like the feedback on other drm drivers
-> (i915, gma500, radeon)?
-
-FWIW I'm in support of this as well! As long as we make sure it gets
-renamed everywhere :)
-
+> This doesn't make any sense.  Lock order matters; the order in which
+> you unlock shouldn't (and doesn't) make a difference.  This is also
+> something which lockdep doesn't complain about --- because it's not a
+> problem.
 >=20
-> Thanks,
-> Easwar
+> So how was this "found by syzkaller"?
 >=20
+> 					- Ted
 
---=20
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
+This issue only occurs when CONFIG_PROVE_LOCKING is set, in which case=20
+jbd2_might_wait_for_commit macro will lock jbd2_handle in jbd2_journal_stop=
+=20
+function, which, while i_data_sem is locked, will trigger lockdep, because=
+=20
+jbd2_journal_start function might also lock on same jbd2_handle at the same=
+=20
+time
+
+Without CONFIG_PROVE_LOCKING this issue is not possible because=20
+jbd2_journal_stop never calls jbd2_might_wait_for_commit
+
+Since syzkaller report was local and wasn't inserted in initial patch messa=
+ge,=20
+I will put it in this message
+It wasn't been able to create a reproducer for that problem, so there's onl=
+y a=20
+crash report
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+WARNING: possible circular locking dependency detected
+5.10.208-syzkaller #0 Not tainted
+=2D-----------------------------------------------------
+syz-fuzzer/1080 is trying to acquire lock:
+ffff88810b09e8e0 (jbd2_handle){++++}-{0:0}, at: jbd2_log_wait_commit+0x142/=
+0x430=20
+fs/jbd2/journal.c:693
+
+but task is already holding lock:
+ffff88805eec5c78 (&ei->i_data_sem){++++}-{3:3}, at: ext4_ind_migrate+0x2fe/=
+0x840=20
+fs/ext4/migrate.c:633
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+=2D> #1 (&ei->i_data_sem){++++}-{3:3}:
+       down_read+0x96/0x420 kernel/locking/rwsem.c:1504
+       ext4_da_map_blocks fs/ext4/inode.c:1776 [inline]
+       ext4_da_get_block_prep+0x5b4/0x11a0 fs/ext4/inode.c:1857
+       ext4_block_write_begin+0x479/0x1230 fs/ext4/inode.c:1076
+       ext4_da_write_begin+0x3ca/0x1060 fs/ext4/inode.c:3063
+       generic_perform_write+0x210/0x500 mm/filemap.c:3336
+       ext4_buffered_write_iter+0x232/0x4a0 fs/ext4/file.c:269
+       ext4_file_write_iter+0x429/0x1420 fs/ext4/file.c:683
+       call_write_iter include/linux/fs.h:1962 [inline]
+       new_sync_write+0x427/0x660 fs/read_write.c:518
+       vfs_write+0x774/0xab0 fs/read_write.c:605
+       ksys_write+0x12d/0x260 fs/read_write.c:658
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x62/0xc7
+
+=2D> #0 (jbd2_handle){++++}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2988 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3113 [inline]
+       validate_chain kernel/locking/lockdep.c:3729 [inline]
+       __lock_acquire+0x29c4/0x53c0 kernel/locking/lockdep.c:4955
+       lock_acquire kernel/locking/lockdep.c:5566 [inline]
+       lock_acquire+0x19f/0x4a0 kernel/locking/lockdep.c:5531
+       jbd2_log_wait_commit+0x177/0x430 fs/jbd2/journal.c:696
+       jbd2_journal_stop+0x5b0/0xde0 fs/jbd2/transaction.c:1933
+       __ext4_journal_stop+0xde/0x1f0 fs/ext4/ext4_jbd2.c:127
+       ext4_ind_migrate+0x402/0x840 fs/ext4/migrate.c:666
+       ext4_ioctl_setflags+0xaef/0xc70 fs/ext4/ioctl.c:459
+       __ext4_ioctl+0x3742/0x4e20 fs/ext4/ioctl.c:870
+       vfs_ioctl fs/ioctl.c:48 [inline]
+       __do_sys_ioctl fs/ioctl.c:753 [inline]
+       __se_sys_ioctl fs/ioctl.c:739 [inline]
+       __x64_sys_ioctl+0x19a/0x210 fs/ioctl.c:739
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x62/0xc7
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->i_data_sem);
+                               lock(jbd2_handle);
+                               lock(&ei->i_data_sem);
+  lock(jbd2_handle);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-fuzzer/1080:
+ #0: ffff88810bc42460 (sb_writers#4){.+.+}-{0:0}, at: __ext4_ioctl+0x76a/0x=
+4e20=20
+fs/ext4/ioctl.c:861
+ #1: ffff88805eec5e88 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_loc=
+k=20
+include/linux/fs.h:774 [inline]
+ #1: ffff88805eec5e88 (&type->i_mutex_dir_key#3){++++}-{3:3}, at:=20
+__ext4_ioctl+0x799/0x4e20 fs/ext4/ioctl.c:865
+ #2: ffff88810bc44ac0 (&sbi->s_writepages_rwsem){++++}-{0:0}, at:=20
+ext4_ind_migrate+0x237/0x840 fs/ext4/migrate.c:625
+ #3: ffff88805eec5c78 (&ei->i_data_sem){++++}-{3:3}, at: ext4_ind_migrate+0=
+x2fe/
+0x840 fs/ext4/migrate.c:633
+
+stack backtrace:
+CPU: 0 PID: 1080 Comm: syz-fuzzer Not tainted 5.10.208-syzkaller #0
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1=20
+04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x167 lib/dump_stack.c:118
+ check_noncircular+0x26c/0x320 kernel/locking/lockdep.c:2123
+ check_prev_add kernel/locking/lockdep.c:2988 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3113 [inline]
+ validate_chain kernel/locking/lockdep.c:3729 [inline]
+ __lock_acquire+0x29c4/0x53c0 kernel/locking/lockdep.c:4955
+ lock_acquire kernel/locking/lockdep.c:5566 [inline]
+ lock_acquire+0x19f/0x4a0 kernel/locking/lockdep.c:5531
+ jbd2_log_wait_commit+0x177/0x430 fs/jbd2/journal.c:696
+ jbd2_journal_stop+0x5b0/0xde0 fs/jbd2/transaction.c:1933
+ __ext4_journal_stop+0xde/0x1f0 fs/ext4/ext4_jbd2.c:127
+ ext4_ind_migrate+0x402/0x840 fs/ext4/migrate.c:666
+ ext4_ioctl_setflags+0xaef/0xc70 fs/ext4/ioctl.c:459
+ __ext4_ioctl+0x3742/0x4e20 fs/ext4/ioctl.c:870
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x19a/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x62/0xc7
+RIP: 0033:0x49e0bb
+Code: e8 0a 4b fc ff eb 88 cc cc cc cc cc cc cc cc e8 1b 8f fc ff 48 8b 7c =
+24 10=20
+48 8b 74 24 18 48 8b 54 24 20 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 2=
+0 48=20
+c7 44 24 28 ff ff ff ff 48 c7 44 24 30
+RSP: 002b:000000c002b65ae8 EFLAGS: 00000212 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000c000025000 RCX: 000000000049e0bb
+RDX: 000000c002b65b64 RSI: 0000000040086602 RDI: 000000000000001b
+RBP: 000000c002b65b28 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000212 R12: 000000c02b38c840
+R13: 0000000000000001 R14: 000000c018a321a0 R15: ffffffffffffffff
+
 
 
