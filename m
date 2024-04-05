@@ -1,147 +1,111 @@
-Return-Path: <linux-kernel+bounces-133442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133444-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3249B89A3C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:56:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB58589A3C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:58:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B607E1F240BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:56:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ECD671C21D40
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:58:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60BC5171E60;
-	Fri,  5 Apr 2024 17:56:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FA45172764;
+	Fri,  5 Apr 2024 17:58:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AKn2vHcp"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XM68a/Fw"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A002F17109C;
-	Fri,  5 Apr 2024 17:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4E4171E4E
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:58:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712339796; cv=none; b=NzUUoCDBZxR2MDN5VrhkTMonhXpcng7qGQmIwkjQqDeYsz9fLJLSPzb/ZLr047kN2whQmI2F9ZdWQzU2Kznzbs3QGf7oolpKGYus+pTHu5FvYcIUXTFqdZseEzCgSxs86N2z/RvX00eGqAEbR5N3eX9kHooTvOV+G25ZG87J+7s=
+	t=1712339891; cv=none; b=ukpx29pTzk31Cc8sr8uKKqJ6g2SrPv0Tbdy66xnhycUY39Dw4b7DMBDgAyziqWOuiKs4DVP3ovVM5DwHAOmEio46qX2XsaJ36ajaK2I/2hml9qjXbUApQKG54ZAX7iYMXTrOSNLPV9OzX8MoWx8v9IGvCQtLQUFPaLOJtKJystQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712339796; c=relaxed/simple;
-	bh=JRjEaIMmngOjNnpfg5q4+lawVX0ZNNOFgJyaMl6eIuo=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Qnk4VZgobIrZ3yAo+U+fN+uFGlj1rwPAnOjXcxEw3H4jANHiX4kezfjswyEGwofYlbgFjbb9lgmwdAFVVYaUQR5xVvSdFOIFC4GGHvJ1Uk+/7ZNk1rfzkp3i4hEFiCEMQs8Mn3R6B9shUXetzQDANYMl0GJHD2rWE8zSv/xJ0rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AKn2vHcp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AA61C433F1;
-	Fri,  5 Apr 2024 17:56:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712339796;
-	bh=JRjEaIMmngOjNnpfg5q4+lawVX0ZNNOFgJyaMl6eIuo=;
-	h=From:Date:Subject:To:Cc:From;
-	b=AKn2vHcpvPe7FQLxUXV2mEFD6f9xMyi6127qjJx3Su/fdUBcDZAPbEUN1257I9tpw
-	 fO018bGZaQa/IZ13zqnQlj0UxSM4Vrd0D2FFNFIoqZt2dixc3X68Br3+Wz8hG4YXvP
-	 BPCJe8W2ZjuivIGtalPNvy3H9QePXFgFU2iCGVNjNWpe0QuTz+NQn6dHJlvy8rLqrp
-	 H9vNTlUOnvE+5b5SB6ef/7uU4IBNHfDx+gZlJ5hilWbFKIyPA3FGM9kp+5/qF4CPiN
-	 tyQBLClwhJQdvOsaWcoeeWbazlI+s4uNDPX/WErYJh6c6MwqqfJw1QXShtE5Ac/YrW
-	 Bs1fRWrCUuTLA==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Fri, 05 Apr 2024 13:56:18 -0400
-Subject: [PATCH v2] nfsd: hold a lighter-weight client reference over
- CB_RECALL_ANY
+	s=arc-20240116; t=1712339891; c=relaxed/simple;
+	bh=OhLR3iFcGyOMlWUTvWA89GxCLTl14dKyEPs7NecTHTU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=E1qVhgF/XFJA/+KTGH0VczGryGgfBeQLT8IqhFCRozNwwotZ+2JaVC9Ke5oe6wHTMK1tcYUB4h+BH+rNp6hwdSjBX0ocQA0F7PZ1M6cJ6XVbcwO1FcnUS7FLRyKz+J6EeTPz+vZbEK7U9YD59XQQi6DAHfiCCP5zJsWG1eQNKUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XM68a/Fw; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712339888;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OhLR3iFcGyOMlWUTvWA89GxCLTl14dKyEPs7NecTHTU=;
+	b=XM68a/FwgHNprCpqSgJNunkolJLMVYT966+W+FknBnEn/ViFy6J99IIQZ6nK7hnoSocx7z
+	81uXfzwnWfRxDQSO15JJVhgp9fiWX3AVL3+hz7+OwrgkNeW2ZDgl62VASWZd0vVUHlY9Tm
+	YODQ43fiTY4Lo6D2LmSVRWyY3RqbbX4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-220-2iqGZelRPOWsBqBnTdnKVw-1; Fri, 05 Apr 2024 13:58:07 -0400
+X-MC-Unique: 2iqGZelRPOWsBqBnTdnKVw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-343e00c8979so593561f8f.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 10:58:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712339886; x=1712944686;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OhLR3iFcGyOMlWUTvWA89GxCLTl14dKyEPs7NecTHTU=;
+        b=jA6Jg2fZycjGakhuwKnYc7Ne2eAN54cB8ADTNIoTBbo2nia3Mjk0h8CIEx2o8rT4MI
+         kSF8Ycbyi7M6tI6Kxrrc2qopJLF0QkxSjNssdyP0wGH94C76mO2VVF+EBEF3GPgm+Yy7
+         r5iUgEjpZAgbrIPhsUjlgyv0sncxJmqgolFHXiCz2ArjsNlSjL8fYHhZSIWv8zp87U9z
+         KUok+zcA3nh6vQY4/DCvvr0Du2kmzqG/6nf93OonCg+DDjXRiLoTKdYa2Po2BgYeoRBW
+         KigH9KIgtbj3epWmX5wWXdIjrxmVDjHZLiQOsugQhhvTJLMqmx4RDSniAoY1CQOODSAv
+         PlGQ==
+X-Gm-Message-State: AOJu0YwXr+Efgw+FF5ks2De2PeWoc8ScxuVjlxx/QYbtyB2a1/ahw4YS
+	4Xj0ia8EVVM6odR2l0k6eJsF7Yg5Udpuog0P+15q9m4Ug9Qkj0qiLfDQxTkplP6vJYif/ib4XTy
+	mGcMTCWLaocQ9Zpav+GuOX21KghzBpWu8nfsjsy0R/Bq/o50k4nztDi/t3vROCr7EkcUr5b3hz0
+	aVxtv8ytmQAbI3s5D1DYHkcpmKswkLgSXYGqef
+X-Received: by 2002:a5d:4f0e:0:b0:343:6f88:5e5 with SMTP id c14-20020a5d4f0e000000b003436f8805e5mr1340184wru.55.1712339886054;
+        Fri, 05 Apr 2024 10:58:06 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IE3CWAbZ2yvXyD8JF17AyMAjvakK2b+OL6J+dTN23cnwf6QWbAXTlTGCRG23eceVxdEZJl2migUhbs+XDvpQjo=
+X-Received: by 2002:a5d:4f0e:0:b0:343:6f88:5e5 with SMTP id
+ c14-20020a5d4f0e000000b003436f8805e5mr1340171wru.55.1712339885715; Fri, 05
+ Apr 2024 10:58:05 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240405-rhel-31513-v2-1-b0f6c10be929@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAEI7EGYC/23MSwrCMBSF4a2UOzaSN+rIfUgH0d40wZKUGwlKy
- d6NHTv8D5xvg4IUscBl2ICwxhJz6iEPAzyCSzOyOPUGyaXmmhtGARemhBGKcXlyd+uFlkZCP6y
- EPr537Db2DrG8Mn12u4rf+pepggmmuVVKW+XPk7s+kRIux0wzjK21L/nvzSGlAAAA
-To: Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>
-Cc: Vladimir Benes <vbenes@redhat.com>, linux-nfs@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2422; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=JRjEaIMmngOjNnpfg5q4+lawVX0ZNNOFgJyaMl6eIuo=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBmEDtNQkE2HuQ910LLd1UzFqnpajBHhFC2+/2bN
- xGB235LPEuJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZhA7TQAKCRAADmhBGVaC
- FcN4D/94x5SNIMOx2NXzJgRKLSj7eN3I0WLl+0UOq3bHoJ+RgJbJGL2cIRHLG4I2ErBiy91gUgw
- GkNKGz4QA8NVMj6Bc5bF9tOJSYlUJSP6UqdfzZKNezA9qq4pwEBYv1iDSDMBixAfoM1oFxteUYq
- wBaW2bY3qoWgDx+sTrs9v88fi0doR8kKrY8xKrBXblmqNrj3ZdlmmA3wVgKKL4fN9gPo1tP+Bxw
- F7djeTgfzZzcS9UOGUpKQ1FRzOgdhZAhLIBgymsDBa+QYvOSFOqNqSqgq2qgdPWZxtN5ejXpEBg
- 4vPI9E1HCv5L8PcR11z6jmQLzVzf5gMOqpb5QGELE9ec+q3d150Jngd3tv09DIX3A5LpU7r75it
- 5CK9iw+62HKu3rTQqGavKnUveiK/BEEZXHr6i1EAMnzpVACc4//BZLwnIwCLqO/S/hmPQx+7PUM
- sESSiZ3odPA63jHJjHPW4Ks+Fskb9ds8+de+qGvfbpwmf+TSk4/NnMt/CSjtMhErcPSkN0S2x5p
- zYjm1ocy6OVPbUfLnM0CwBbqI0kDDnT41wDb4pj/z/NiulAF+tpRrw1gLElnOQtlDGVZTFFriDg
- MwTEb+mwUHjTtRvzxKzuOOtgJt9OIuqLYLWVspryIuTmEszOR/yckn4rgDzdPiC2bCvyHltDC/3
- EsEXz7OwJu/qAhA==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+References: <20240227232100.478238-1-pbonzini@redhat.com> <20240227232100.478238-14-pbonzini@redhat.com>
+ <754f2fcf-fc00-4f89-a17c-a80bbec1e2ff@intel.com>
+In-Reply-To: <754f2fcf-fc00-4f89-a17c-a80bbec1e2ff@intel.com>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Fri, 5 Apr 2024 19:57:53 +0200
+Message-ID: <CABgObfaGhH1aQyR-k_x=yrSRE3uwDpx9JJoMdiAdJCq72-O4DA@mail.gmail.com>
+Subject: Re: [PATCH 13/21] KVM: x86/mmu: Pass around full 64-bit error code
+ for KVM page faults
+To: Xiaoyao Li <xiaoyao.li@intel.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, seanjc@google.com, 
+	michael.roth@amd.com, isaku.yamahata@intel.com, thomas.lendacky@amd.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Currently the CB_RECALL_ANY job takes a cl_rpc_users reference to the
-client. While a callback job is technically an RPC that counter is
-really more for client-driven RPCs, and this has the effect of
-preventing the client from being unhashed until the callback completes.
+On Mon, Mar 4, 2024 at 9:57=E2=80=AFAM Xiaoyao Li <xiaoyao.li@intel.com> wr=
+ote:
+>
+> On 2/28/2024 7:20 AM, Paolo Bonzini wrote:
+> > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> >
+> ...
+> > The use of lower_32_bits() moves from kvm_mmu_page_fault() to
+> > FNAME(page_fault), since walking is independent of the data in the
+> > upper bits of the error code.
+>
+> Is it a must? I don't see any issue if full u64 error_code is passed to
+> FNAME(page_fault) as well.
 
-If nfsd decides to send a CB_RECALL_ANY just as the client reboots, we
-can end up in a situation where the callback can't complete on the (now
-dead) callback channel, but the new client can't connect because the old
-client can't be unhashed. This usually manifests as a NFS4ERR_DELAY
-return on the CREATE_SESSION operation.
+The full error code *is* passed to kvm_mmu_do_page_fault() and
+FNAME(page_fault), it's only dropped when passed to FNAME(walk_addr).
 
-The job is only holding a reference to the client so it can clear a flag
-in the after the RPC completes. Fix this by having CB_RECALL_ANY instead
-hold a reference to the cl_nfsdfs.cl_ref. Typically we only take that
-sort of reference when dealing with the nfsdfs info files, but it should
-work appropriately here to ensure that the nfs4_client doesn't
-disappear.
-
-Fixes: 44df6f439a17 ("NFSD: add delegation reaper to react to low memory condition")
-Reported-by: Vladimir Benes <vbenes@redhat.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-Changes in v2:
-- Clean up the changelog
-- Add Fixes: tag
-- Use kref_get instead of kref_get_unless_zero
----
- fs/nfsd/nfs4state.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index 5fcd93f7cb8c..3cef81e196c6 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -3042,12 +3042,9 @@ static void
- nfsd4_cb_recall_any_release(struct nfsd4_callback *cb)
- {
- 	struct nfs4_client *clp = cb->cb_clp;
--	struct nfsd_net *nn = net_generic(clp->net, nfsd_net_id);
- 
--	spin_lock(&nn->client_lock);
- 	clear_bit(NFSD4_CLIENT_CB_RECALL_ANY, &clp->cl_flags);
--	put_client_renew_locked(clp);
--	spin_unlock(&nn->client_lock);
-+	drop_client(clp);
- }
- 
- static int
-@@ -6616,7 +6613,7 @@ deleg_reaper(struct nfsd_net *nn)
- 		list_add(&clp->cl_ra_cblist, &cblist);
- 
- 		/* release in nfsd4_cb_recall_any_release */
--		atomic_inc(&clp->cl_rpc_users);
-+		kref_get(&clp->cl_nfsdfs.cl_ref);
- 		set_bit(NFSD4_CLIENT_CB_RECALL_ANY, &clp->cl_flags);
- 		clp->cl_ra_time = ktime_get_boottime_seconds();
- 	}
-
----
-base-commit: 05258a0a69b3c5d2c003f818702c0a52b6fea861
-change-id: 20240405-rhel-31513-028ab6f14252
-
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
+Paolo
 
 
