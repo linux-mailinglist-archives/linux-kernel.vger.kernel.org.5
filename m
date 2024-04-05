@@ -1,193 +1,95 @@
-Return-Path: <linux-kernel+bounces-132737-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132738-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D3F1899973
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:30:05 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D9B4899976
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:31:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02FEF282190
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:30:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6586EB217F9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:31:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9973815FD1F;
-	Fri,  5 Apr 2024 09:29:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 032A415FD17;
+	Fri,  5 Apr 2024 09:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="5RUoa4u7"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="D/ufva2J"
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3851115FCE2;
-	Fri,  5 Apr 2024 09:29:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA0615FCE2
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712309394; cv=none; b=HDZzeVuMzou43LzFfJyO8zpmAV8Os8lxrkKhXjEkjMV3nKGURejou4hzNuwu8SFknvUTSo+3UVD1haW8wfU6uX7cAcvTgOBH7hs6IeM17y59Jpa2EnSwKziGd7ceZ43xB1Xu4S5jcH2Rt46OgBYmS0FZANMAXsiDeJsLsAm04k4=
+	t=1712309454; cv=none; b=PdLt9dqm1MzOMlcorwKmTuc+63Eu8uamMBJPlMbCcxgm2XCj/slGAR0N/EubE6rrqRaaIEj4J8sqTw8ksB99E9MqoSM8eW1Ze7zd3BfIMQ30SfEzfk9oleF9OrOlxLVqlb/wqOrDf21/B9x3iGhpeGd/3wcFOXvdJNZ2afOLGfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712309394; c=relaxed/simple;
-	bh=1XOKZGXshsQ///KoTh0XHfCQcdhzM+EgFmJYlctb1iY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mv7hVfWFjNkwnV8DDATJK5wxSBZtdK9nWaJWCawa02Jj+5ilCad7UEZqSyIwQ27zqs/iFK35bi095EazChrxzL44MV3wsSaMhbQ/NlGRvXKaTE2L7SCK15AsCAf/z085zPFTGHC+21AHT7WdjPvVQwWl4PxL7ipYSY8JaMLxTFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=5RUoa4u7; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712309391;
-	bh=1XOKZGXshsQ///KoTh0XHfCQcdhzM+EgFmJYlctb1iY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=5RUoa4u77q8qb4bYxjP5FFYd8uzH/rCVesLHzZoDTFNxy2tZoPZ8eGkUr+4RUeO7C
-	 QSQMpQMh87gUg88C9ZU8X9EQTOupiPPVH5s6yAz1k0wQFB+EbDiIfwQAlrkAhphGP1
-	 vLZg9o0GaeDYcfuEdNFI3LqGv1I9oYrgqAQ9kg3P4EeA1KsbRMDcHn4yHsnEIPTIWJ
-	 VcCb2dajWYbJFVxRp1dMSv/X4BgJf0LrIYRTKXWSgkkPn27lCxeSTCaYhirUafeiGh
-	 lSp1iyZFIFp3klvcjneUG8h21mP8tDgWystHbsBp0mKn0vqUA844nt3qwlfvCXKbh5
-	 oWwV7lC1aZf5w==
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: sebastianfricke)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4152B3781116;
-	Fri,  5 Apr 2024 09:29:51 +0000 (UTC)
-Date: Fri, 5 Apr 2024 11:29:50 +0200
-From: Sebastian Fricke <sebastian.fricke@collabora.com>
-To: Ivan Bornyakov <brnkv.i1@gmail.com>
-Cc: Nas Chung <nas.chung@chipsnmedia.com>,
-	Jackson Lee <jackson.lee@chipsnmedia.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>, linux-media@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] media: chips-media: wave5: separate irq setup
- routine
-Message-ID: <20240405092950.wt5cvhvhiujicc5h@basti-XPS-13-9310>
-References: <20240325064102.9278-1-brnkv.i1@gmail.com>
- <20240325064102.9278-4-brnkv.i1@gmail.com>
+	s=arc-20240116; t=1712309454; c=relaxed/simple;
+	bh=ZjqWxZw0CpXAMF92F46qs89BsptssQuf3V8Ss6R76y4=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=lmWDz00KBCHAP5hFh4NPJQ/OJsHOp6JW4vrjlwCKfnA7Rviw/NbWRhWIFaksKEamwU+jBVpHn8Le2GhiD2/8gvYoqm8Y7lJG1VF31hfOZ5S6RW4OFk6PdUET7lFDJgl5MMy4rjZ+v6gujJFxUKhWVEpjjrb540pzhwFFHXTcrxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=D/ufva2J; arc=none smtp.client-ip=162.62.58.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1712309447; bh=ByF400UQhr8ehKCqeLooARmm/A8Q6UaeBuIDAMycFTE=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=D/ufva2JAUKGc0lpOVmFwsias7wuknIu9RHdICnGKeKbuperR9aQo2Yy/2gQ+UXf9
+	 X35Iq/BrW2QgSQMgzraH3trk5JECCkyOLYm7M1gTegdIK+a5rohk5bmCA6QhHkZurO
+	 A01HgZmM2LzuCk/V1zYkEkg1u3/5IgXRQnR0TnTs=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 7AE114C6; Fri, 05 Apr 2024 17:30:46 +0800
+X-QQ-mid: xmsmtpt1712309446td1n5rfli
+Message-ID: <tencent_53918DA792625DBADD92991DCFD98DDF2507@qq.com>
+X-QQ-XMAILINFO: NvH2zBBgt3uT6SfvEicVD2L0azpIUZsry5UZlZ/RieIYOCWufmbvfBoj3qo0pF
+	 R4JEHDx4TohK6Rn1CFs+i8hWfV6gY7azQT+PTT/HJ56WKvfbYJpeWwNFEqMNflL2Aa2TQ4DjMUA5
+	 k8fjry3WBHuVo6FPenVaXnidy7g/Q1mGl0KSHJjE6GQC61A2hQZMsQbAvpT1I+GdCDHD/FCXWQRe
+	 Ha4uAiP3OAPGEwNM9P9fiHhb8KPh+PHBB8cAYLw655RG3Y7xdjhs7eihaGv3GH7DdLRvx+WZhqMY
+	 m4yOpxLTkjjlGXjrYqh/oDzNTu4tLlQMkY3tJtPqgqw13OAH6w9k4QZVPM/FRGASnWdxLDrPHmSM
+	 tgZbmWhtS6aP/je+0va+8YGhQ61HYMmLtzZj8vSAJdF7LlCnb3xkaVQasdR99r29Irs3HI4mGENL
+	 SZPH8y1nU0Fm06sl2R3hZdDpCgV+daV8vAm8j7i7c9IySTwxGVnkwwe2/DccVQwU1e+HCL+kqn9I
+	 jsPP/65jg66uIIK+WahvVjEC6kZN0NyeXQHoSZgj7j8/IrpudUyPgTsEEz8SNBKTnf53zaA0OO3E
+	 znBtsB0kgTb8S/M8jBt28IvgPVYmmY3eh4Kc99/WopFkNVMjAc9hyGEj9p2Sd+DNNBlHaKsNsU8k
+	 9e6uDWSiDXf5AywiIuDGSt4+bwcZ+zmzf2J6Mt7aK8SkxHqqcgyFsK3r/LXfEzFs07R5HMgJcVwx
+	 yc/ZoBkEHNBC2FoF6H/R7vy9+XZtnbiAKxRlMoLnFRKc4XE1AX2v1Qew6Mz0V6iAvXM0fC+sEZeH
+	 cMvcO86zcMv8RgEeLrWBhIoK7dRuoNOVfr6NmdUQbNDAN6TvHee/gqV7zTnBYMqZ3r66UlYcfaB6
+	 rVq2mB2paHOSBAAp1FJejkWagbD4dzz5++n0ukykcll9PXbtNY4IPsb/JPp2ke5Zd3ZYpSVe7cht
+	 qOVvsniFn8QO7SdIK8eA==
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-out-of-bounds Read in rfcomm_sock_setsockopt
+Date: Fri,  5 Apr 2024 17:30:46 +0800
+X-OQ-MSGID: <20240405093045.520623-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000b9b20e061553f06e@google.com>
+References: <000000000000b9b20e061553f06e@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240325064102.9278-4-brnkv.i1@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hey Ivan,
+please test oob in rfcomm_sock_setsockopt
 
-On 25.03.2024 09:40, Ivan Bornyakov wrote:
->Separate interrupts setup routine to reduce code duplication. Also
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fe46a7dd189e
 
-s/Separate interrupts setup routine/Implement a separate setup routine for interrupts/
+diff --git a/net/bluetooth/rfcomm/sock.c b/net/bluetooth/rfcomm/sock.c
+index b54e8a530f55..42c55c756b51 100644
+--- a/net/bluetooth/rfcomm/sock.c
++++ b/net/bluetooth/rfcomm/sock.c
+@@ -629,7 +629,7 @@ static int rfcomm_sock_setsockopt_old(struct socket *sock, int optname,
+ 
+ 	switch (optname) {
+ 	case RFCOMM_LM:
+-		if (copy_from_sockptr(&opt, optval, sizeof(u32))) {
++		if (copy_from_sockptr(&opt, optval, min_t(int, sizeof(u32), optlen))) {
+ 			err = -EFAULT;
+ 			break;
+ 		}
 
->enable interrupts based on vpu_attr->support_encoders and
->vpu_attr->support_decoders fields to facilitate other Wave5xx IPs
->support, because not all of them are both encoders and decoders.
-
-s/other Wave5xx IPs support/support for other Wave5xx IPs/
-
-The rest looks good to me.
-
-Greetings,
-Sebastian
-
->
->Signed-off-by: Ivan Bornyakov <brnkv.i1@gmail.com>
->---
-> .../platform/chips-media/wave5/wave5-hw.c     | 53 +++++++++----------
-> 1 file changed, 24 insertions(+), 29 deletions(-)
->
->diff --git a/drivers/media/platform/chips-media/wave5/wave5-hw.c b/drivers/media/platform/chips-media/wave5/wave5-hw.c
->index 2d82791f575e..cdd0a0948a94 100644
->--- a/drivers/media/platform/chips-media/wave5/wave5-hw.c
->+++ b/drivers/media/platform/chips-media/wave5/wave5-hw.c
->@@ -299,6 +299,27 @@ static int wave5_send_query(struct vpu_device *vpu_dev, struct vpu_instance *ins
-> 	return wave5_vpu_firmware_command_queue_error_check(vpu_dev, NULL);
-> }
->
->+static void setup_wave5_interrupts(struct vpu_device *vpu_dev)
->+{
->+	u32 reg_val = 0;
->+
->+	if (vpu_dev->attr.support_encoders) {
->+		/* Encoder interrupt */
->+		reg_val |= BIT(INT_WAVE5_ENC_SET_PARAM);
->+		reg_val |= BIT(INT_WAVE5_ENC_PIC);
->+		reg_val |= BIT(INT_WAVE5_BSBUF_FULL);
->+	}
->+
->+	if (vpu_dev->attr.support_decoders) {
->+		/* Decoder interrupt */
->+		reg_val |= BIT(INT_WAVE5_INIT_SEQ);
->+		reg_val |= BIT(INT_WAVE5_DEC_PIC);
->+		reg_val |= BIT(INT_WAVE5_BSBUF_EMPTY);
->+	}
->+
->+	return vpu_write_reg(vpu_dev, W5_VPU_VINT_ENABLE, reg_val);
->+}
->+
-> static int setup_wave5_properties(struct device *dev)
-> {
-> 	struct vpu_device *vpu_dev = dev_get_drvdata(dev);
->@@ -340,6 +361,8 @@ static int setup_wave5_properties(struct device *dev)
-> 	p_attr->support_vcpu_backbone = FIELD_GET(FEATURE_VCPU_BACKBONE, hw_config_def0);
-> 	p_attr->support_vcore_backbone = FIELD_GET(FEATURE_VCORE_BACKBONE, hw_config_def0);
->
->+	setup_wave5_interrupts(vpu_dev);
->+
-> 	return 0;
-> }
->
->@@ -417,16 +440,6 @@ int wave5_vpu_init(struct device *dev, u8 *fw, size_t size)
-> 	wave5_fio_writel(vpu_dev, W5_BACKBONE_AXI_PARAM, 0);
-> 	vpu_write_reg(vpu_dev, W5_SEC_AXI_PARAM, 0);
->
->-	/* Encoder interrupt */
->-	reg_val = BIT(INT_WAVE5_ENC_SET_PARAM);
->-	reg_val |= BIT(INT_WAVE5_ENC_PIC);
->-	reg_val |= BIT(INT_WAVE5_BSBUF_FULL);
->-	/* Decoder interrupt */
->-	reg_val |= BIT(INT_WAVE5_INIT_SEQ);
->-	reg_val |= BIT(INT_WAVE5_DEC_PIC);
->-	reg_val |= BIT(INT_WAVE5_BSBUF_EMPTY);
->-	vpu_write_reg(vpu_dev, W5_VPU_VINT_ENABLE, reg_val);
->-
-> 	reg_val = vpu_read_reg(vpu_dev, W5_VPU_RET_VPU_CONFIG0);
-> 	if (FIELD_GET(FEATURE_BACKBONE, reg_val)) {
-> 		reg_val = ((WAVE5_PROC_AXI_ID << 28) |
->@@ -1034,16 +1047,6 @@ int wave5_vpu_re_init(struct device *dev, u8 *fw, size_t size)
-> 		wave5_fio_writel(vpu_dev, W5_BACKBONE_AXI_PARAM, 0);
-> 		vpu_write_reg(vpu_dev, W5_SEC_AXI_PARAM, 0);
->
->-		/* Encoder interrupt */
->-		reg_val = BIT(INT_WAVE5_ENC_SET_PARAM);
->-		reg_val |= BIT(INT_WAVE5_ENC_PIC);
->-		reg_val |= BIT(INT_WAVE5_BSBUF_FULL);
->-		/* Decoder interrupt */
->-		reg_val |= BIT(INT_WAVE5_INIT_SEQ);
->-		reg_val |= BIT(INT_WAVE5_DEC_PIC);
->-		reg_val |= BIT(INT_WAVE5_BSBUF_EMPTY);
->-		vpu_write_reg(vpu_dev, W5_VPU_VINT_ENABLE, reg_val);
->-
-> 		reg_val = vpu_read_reg(vpu_dev, W5_VPU_RET_VPU_CONFIG0);
-> 		if (FIELD_GET(FEATURE_BACKBONE, reg_val)) {
-> 			reg_val = ((WAVE5_PROC_AXI_ID << 28) |
->@@ -1134,15 +1137,7 @@ static int wave5_vpu_sleep_wake(struct device *dev, bool i_sleep_wake, const uin
-> 		wave5_fio_writel(vpu_dev, W5_BACKBONE_AXI_PARAM, 0);
-> 		vpu_write_reg(vpu_dev, W5_SEC_AXI_PARAM, 0);
->
->-		/* Encoder interrupt */
->-		reg_val = BIT(INT_WAVE5_ENC_SET_PARAM);
->-		reg_val |= BIT(INT_WAVE5_ENC_PIC);
->-		reg_val |= BIT(INT_WAVE5_BSBUF_FULL);
->-		/* Decoder interrupt */
->-		reg_val |= BIT(INT_WAVE5_INIT_SEQ);
->-		reg_val |= BIT(INT_WAVE5_DEC_PIC);
->-		reg_val |= BIT(INT_WAVE5_BSBUF_EMPTY);
->-		vpu_write_reg(vpu_dev, W5_VPU_VINT_ENABLE, reg_val);
->+		setup_wave5_interrupts(vpu_dev);
->
-> 		reg_val = vpu_read_reg(vpu_dev, W5_VPU_RET_VPU_CONFIG0);
-> 		if (FIELD_GET(FEATURE_BACKBONE, reg_val)) {
->-- 
->2.44.0
->
->
 
