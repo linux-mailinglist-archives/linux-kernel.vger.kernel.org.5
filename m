@@ -1,60 +1,64 @@
-Return-Path: <linux-kernel+bounces-132477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36EDE899590
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:37:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 311EF899592
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:37:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AEAFBB20A85
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:37:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C59CF1F21879
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC694224CC;
-	Fri,  5 Apr 2024 06:36:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097B124205;
+	Fri,  5 Apr 2024 06:36:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="DGZ39aBW"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="BlHXSaqW"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8DD1BF27;
-	Fri,  5 Apr 2024 06:36:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61204219FC;
+	Fri,  5 Apr 2024 06:36:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712298967; cv=none; b=uVpdI5G2UhRD1lDqr+O3SPY/sF6UthhPk8Whmk5fs0PY0SIwDFRkk3cwH0ojYsMqlNz1JQL8an3sLvwVRyC8IYKHpy58LFrII5ACZ7vC7wDkprOSf6nF+srtcyR3AEaC5MvX1QCCvtPPdwlZvxCWFg7u1HuV3172iBf9q6GhBDU=
+	t=1712299018; cv=none; b=l7Uv6qbWpN5R7zfxMDtpyfidao6DGNHp0wZM8BqeL+4VfwRydbD/CSz6eZm9a3u0pknr04yPHnXjr1NsbanRPvzYkui4zPDtXmHRJhDdgo61j0Ict0IbL14cHSealWiYhLbtl++pLCXT9/9AkFLVq0tEtnnvTbJ9oDM1mQFy4So=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712298967; c=relaxed/simple;
-	bh=rCXu4epE+VTWM+HBe7qOASe0JtrD/GpcjyADbon9iVs=;
+	s=arc-20240116; t=1712299018; c=relaxed/simple;
+	bh=MF9x0u+ja/f5NG5xBWtjLFDFjBEi4bSDETo9bvduU0o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o0VW+TLvSl3K2aWKUk3yQG+y5Ms9r7MXGwOtkCQnXwiefKfvUGiWgXV3Tz5klq38YOSPSBVYbkMGdg7ZNcXJ1ON/E+qGGOAusupjvROoCnogGweGtM9zK+qQe8r8QKHO/Wd3rMzXMJ3utpkXlfOYkh3sOIvLIjBgFyGGqlfmoq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=DGZ39aBW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 26CC8C433F1;
-	Fri,  5 Apr 2024 06:36:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712298966;
-	bh=rCXu4epE+VTWM+HBe7qOASe0JtrD/GpcjyADbon9iVs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DGZ39aBWy9/eqltVfphM20ylODyQHL41s0ElfcCxmn4adpCjvZ8Ao3elLDEF1XZ33
-	 knS88Iz28eXrQVzqaBl2Y7wZ9ONDhQQu94OtFzIz+57OEfLAVrXTMBQWe7agDYzwRy
-	 Niw4LIgk39SLdroDUEAdr3Ctyif8EynxXv3DimyU=
-Date: Fri, 5 Apr 2024 08:36:03 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Sasha Levin <sashal@kernel.org>, stable@vger.kernel.org,
-	Rik van Riel <riel@surriel.com>,
-	Mel Gorman <mgorman@techsingularity.net>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: FAILED: Patch "bounds: support non-power-of-two CONFIG_NR_CPUS"
- failed to apply to 5.4-stable tree
-Message-ID: <2024040545-diligence-suffrage-d430@gregkh>
-References: <20240327122125.2836828-1-sashal@kernel.org>
- <ZgQowqqGf-E7Cpcz@casper.infradead.org>
- <2024032935-antsy-imitation-1453@gregkh>
- <2024032959-ladies-circling-3a5e@gregkh>
- <ZguYw9Dke_uq5UZU@casper.infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JzWTrPzxyOFreOj31gP9rxGeyqUQzAcbthNwsgNtTjhNiQbTv1s9lXrJKqf3+c8Lrzi/F0xGR2Z74hsgUQh2rdZThh5kc4cHQV7T/ZEzL8QKE1GArht0cUrcZmFHU/z8fQk5k2WqyB4oc6J3RrutLLYdvFd01HzFtSPGm0+pWSU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=BlHXSaqW; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 941101F930;
+	Fri,  5 Apr 2024 08:36:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1712299013;
+	bh=UC3T4Qz0UwYKpOOwA7clFwRt2M9KxDI2AekTfv3g9ns=; h=From:To:Subject;
+	b=BlHXSaqWBfs60fQTTc+F47Eq2cXsItS6heieelM4AyiV1KlXwpzlS83Sk5Snl/rDZ
+	 8QC2D93r4m01aixdZKcjUoR3mDHhMJtuBdwvt9mhkk2D0UCUZzAlVkkZkrqWGxQhOq
+	 uRhupWPIOjE5SUoDFPK+hg3MZaWPfYV709gjmGojrfjPrkDZRj4AvXofOHQ6/HgMjd
+	 f1v/2RiUHzoBQB24KudG4hmUNOM3+HS9AxaGwQKOYP7IGESXzuVK3+GwRh7klpnvmL
+	 DYmhv00V17Atlh2LNAjgvEuU68j8RMOHfNhYcFCuodm7DpVk8lKjiKtzWF4dmC1uK1
+	 G6M47heIyNU4Q==
+Date: Fri, 5 Apr 2024 08:36:48 +0200
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Frank Li <Frank.Li@nxp.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	"open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>,
+	"open list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <imx@lists.linux.dev>,
+	"moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+	open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] arm64: dts: imx8qxp-mek: add cm40_i2c, wm8960/wm8962
+ and sai[0,1,4,5]
+Message-ID: <20240405063648.GA4562@francesco-nb>
+References: <20240404161914.1655305-1-Frank.Li@nxp.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,54 +67,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZguYw9Dke_uq5UZU@casper.infradead.org>
+In-Reply-To: <20240404161914.1655305-1-Frank.Li@nxp.com>
 
-On Tue, Apr 02, 2024 at 06:33:55AM +0100, Matthew Wilcox wrote:
-> On Fri, Mar 29, 2024 at 06:05:20PM +0100, Greg KH wrote:
-> > On Fri, Mar 29, 2024 at 02:34:43PM +0100, Greg KH wrote:
-> > > On Wed, Mar 27, 2024 at 02:10:10PM +0000, Matthew Wilcox wrote:
-> > > > On Wed, Mar 27, 2024 at 08:21:25AM -0400, Sasha Levin wrote:
-> > > > > The patch below does not apply to the 5.4-stable tree.
-> > > > > If someone wants it applied there, or to any other stable or longterm
-> > > > > tree, then please email the backport, including the original git commit
-> > > > > id to <stable@vger.kernel.org>.
-> > > > 
-> > > > Looks like you just need a little more fuzz on the patch.
-> > > > 
-> > > > diff --git a/kernel/bounds.c b/kernel/bounds.c
-> > > > index 9795d75b09b2..a94e3769347e 100644
-> > > > --- a/kernel/bounds.c
-> > > > +++ b/kernel/bounds.c
-> > > > @@ -19,7 +19,7 @@ int main(void)
-> > > >  	DEFINE(NR_PAGEFLAGS, __NR_PAGEFLAGS);
-> > > >  	DEFINE(MAX_NR_ZONES, __MAX_NR_ZONES);
-> > > >  #ifdef CONFIG_SMP
-> > > > -	DEFINE(NR_CPUS_BITS, ilog2(CONFIG_NR_CPUS));
-> > > > +	DEFINE(NR_CPUS_BITS, bits_per(CONFIG_NR_CPUS));
-> > > >  #endif
-> > > >  	DEFINE(SPINLOCK_SIZE, sizeof(spinlock_t));
-> > > >  	/* End of constants */
-> > > 
-> > > Now fuzzed, thanks.
-> > 
-> > But it breaks the build on 4.19.y, so I'll go drop it from there.  If
-> > you want it added there, please provide a working fix.
-> 
-> Looks like bits_per() didn't exist in 4.19.  It was added as part of commit 69842cba9ace84849bb9b8edcdf2cefccd97901c
-> Author: Patrick Bellasi <patrick.bellasi@arm.com>
-> Date:   Fri Jun 21 09:42:02 2019 +0100
-> 
->     sched/uclamp: Add CPU's clamp buckets refcounting
-> 
-> Up to you; I can provide bits_per() to 4.19 which will aid backporting
-> other fixes (we currently have 17 uses of bits_per() in 6.9), or we can
-> just drop this whole thing for 4.19.
-> 
+Hello Frank,
 
-At this point in time for 4.19, unless it's really criticial, I would
-just say drop it.
+On Thu, Apr 04, 2024 at 12:19:13PM -0400, Frank Li wrote:
+> imx8qxp-mek use two kind audio codec, wm8960 and wm8962. Using dummy gpio
+> i2c bus mux to connect both i2c devices. One will probe failure and other
+> will probe success when devices driver check whoami. So one dtb can cover
+> both board configuration.
+> 
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8qxp-mek.dts | 210 ++++++++++++++++++
+>  1 file changed, 210 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
+> index 8360bb851ac03..adff87c7cf305 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
+> +++ b/arch/arm64/boot/dts/freescale/imx8qxp-mek.dts
+> @@ -44,6 +51,105 @@ usb3_data_ss: endpoint {
 
-thanks,
+[...]
 
-greg k-h
+> +	/*
+> +	 * This dummy i2c mux. GPIO actually will not impact selection. At actual boards, only 1
+> +	 * device connectted. I2C client driver will check ID when probe. Only matched ID's driver
+> +	 * probe successfully.
+> +	 */
+> +	i2cvmux: i2cmux {
+> +		compatible = "i2c-mux-gpio";
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +		mux-gpios = <&lsio_gpio5 0 GPIO_ACTIVE_HIGH>; /* use an unused gpio */
+
+There is for sure people that have more experience and competency that
+me and it would be interesting to hear their feedback, but this
+looks like a bad hack, and you are just playing with the driver
+behavior to ensure that you get what you need.
+
+Francesco
+
+
 
