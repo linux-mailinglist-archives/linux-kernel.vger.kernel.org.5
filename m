@@ -1,257 +1,196 @@
-Return-Path: <linux-kernel+bounces-133681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B46C89A73C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C49F189A751
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:32:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03DFB1F248DE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 22:30:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 50B2F1F25038
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 22:32:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74DEE17B4FB;
-	Fri,  5 Apr 2024 22:26:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F5B728DC9;
+	Fri,  5 Apr 2024 22:32:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TnJGte1Y"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PuX9Pyki"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2694179961;
-	Fri,  5 Apr 2024 22:26:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3301F60A;
+	Fri,  5 Apr 2024 22:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712356017; cv=none; b=QOETdDAbPKkz2KDw9OAQGOxPCNxMrqd7YU4VA32G0F6+3V2x7R2LwZfigt7VIqwiU7ChF4qaeGAlg9Q65+r+UaIjGQz1bzs3V/b/q51PM/jCy3xMtWc+524ktG0Cmn51ESHcBGKIzZL/dgmDEC4jwDcs0mPgSu1QaFm5x+mx4Wk=
+	t=1712356332; cv=none; b=SIQg7wDHr3dz6zNfkN8RPcUvLexX03Chgw+x1gBR1sf+Ly+Zaa4ec1eMU5i6ksmeRGY4+0u4RXcFr9VbQveAH0BSvS3zApAu0QKPBbm3zNXnJDUWkRcYNRNO+G1k2MULZfRToVfKp04Kar/j8gf7PsJqTEIqTFSWPFbEQHboViI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712356017; c=relaxed/simple;
-	bh=ZGWBCczfujdRtFbtPKsDRo5XDo8fcTnRO3bkTJQexVw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Q1AnuOLSod+XXPNUNAldrVt4aUJrAUHXF7Odi9as2yCq9ffJv3vEUiydUdcLK9fiki9EQxMaICsv6TgVTFSZHI45iWxA6pGvd1IKX4GdHIY4OvInhUjDWv9e/Z+/XD7gcrXAPEJEQ4Lplvns8AoLAd6s9/PgjksZnwJ9I/ClAjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TnJGte1Y; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1712356332; c=relaxed/simple;
+	bh=iacJbwqVzLZ+QPu0PsxC62e+0CS6vwkuBBz/tOH/PtA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hv+z/LCVMXr4BneAKbBfuopJmpClOphIN4QPy1N3USkFtTOc6AdWeq3EQN2rX8iOEjm80k67Jbr0MzaTYkWIh/DV0bmSALL0/S5S2BtdJ7+x1VCwLZXs2Dw1mwAQDOc1HcppZwmV/ZXpGKBL+TDtdGFN+96ZUgZGqwjzVtCPnhc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PuX9Pyki; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712356016; x=1743892016;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZGWBCczfujdRtFbtPKsDRo5XDo8fcTnRO3bkTJQexVw=;
-  b=TnJGte1YL+nyCRoQLZcXNkdQ2AfgvE3IQg/foLXtWevw6xCX22aY/XQE
-   xlMuHjz/Zqp04UmVke+k7W2p4p1g3ElEgC+15CqJIWoQRr9OsnzA6kFwB
-   5ZZCFh5+qQEWuZYwnuyShe/P48uVl29tQraCJXq6MIdXoRAWKia4bt73K
-   qVz4W5BN8j1wh+h9pSgT5cYt9guxxTWOqcB4mtpa7962ag6zpS4hm2qAf
-   mbAQlit4JQF6dKkZNYdCD3tTq4sZmTKUGURrfx8OtkcfhSiTTGrSVhyiS
-   CS0yTqwUBIkW+WjES0489u0HYSGYHwGw0RMq218IceN24+BMZ0cdAMs1/
-   w==;
-X-CSE-ConnectionGUID: Run8SIX+SWiU9HpnW8Geyw==
-X-CSE-MsgGUID: NC5Ia1NgTe6WY+u2eFMCrA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="19062853"
+  t=1712356331; x=1743892331;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=iacJbwqVzLZ+QPu0PsxC62e+0CS6vwkuBBz/tOH/PtA=;
+  b=PuX9Pykiem0nWHWHDcw00oYe3CRcSWZLuUnb4hUkT0VXTtkRabc+7wqx
+   lE0I989jvN2aBS5PdSwA/Z+dAmDgajJO9f8SC6BnLlK3e777Gz+TSUcag
+   Zw7yzxgXT/lt9zGEmcHqlCkXbvshEf1rw46ZOERZNbQKtVASC80tgECWa
+   fuZ0Jc/G2gPpPGoU9Gi2Z9sfZ5y+cYcAF+qbqZp4Yl3Bo5yaPbsD354Th
+   hJUBHi9rlZyjKJJYwkXCjSdPTYso74wJPY15NITNVMWh1zmS8Wf0XzXVj
+   N/khTa80EIazPRVv1mWLiMe3W5o0PQaSIns1eTSaXtPKwN3ZORflrYhNc
+   g==;
+X-CSE-ConnectionGUID: BAoXTa8sTaies97WQL68fA==
+X-CSE-MsgGUID: o+y3ZLyhQ2aj4py/DK2dNQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="18437354"
 X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
-   d="scan'208";a="19062853"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 15:26:54 -0700
-X-CSE-ConnectionGUID: dqE0TdDNQ62K5gm9q66mFQ==
-X-CSE-MsgGUID: icfEMMlNRoyitei5C2xCcw==
+   d="scan'208";a="18437354"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 15:32:10 -0700
+X-CSE-ConnectionGUID: HJwq05CxRKyOrruQhDcgjQ==
+X-CSE-MsgGUID: qJXN4bJnRcOu1ZawYBRsfQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
-   d="scan'208";a="23928356"
-Received: from jacob-builder.jf.intel.com ([10.54.39.125])
-  by fmviesa004.fm.intel.com with ESMTP; 05 Apr 2024 15:26:52 -0700
-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To: LKML <linux-kernel@vger.kernel.org>,
-	X86 Kernel <x86@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	iommu@lists.linux.dev,
-	Thomas Gleixner <tglx@linutronix.de>,
-	"Lu Baolu" <baolu.lu@linux.intel.com>,
-	kvm@vger.kernel.org,
-	Dave Hansen <dave.hansen@intel.com>,
-	Joerg Roedel <joro@8bytes.org>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"Borislav Petkov" <bp@alien8.de>,
-	"Ingo Molnar" <mingo@redhat.com>
-Cc: Paul Luse <paul.e.luse@intel.com>,
-	Dan Williams <dan.j.williams@intel.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Raj Ashok <ashok.raj@intel.com>,
-	"Tian, Kevin" <kevin.tian@intel.com>,
-	maz@kernel.org,
-	seanjc@google.com,
-	"Robin Murphy" <robin.murphy@arm.com>,
-	jim.harris@samsung.com,
-	a.manzanares@samsung.com,
-	"Bjorn Helgaas" <helgaas@kernel.org>,
-	guang.zeng@intel.com,
-	robert.hoo.linux@gmail.com,
-	Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH v2 13/13] iommu/vt-d: Enable posted mode for device MSIs
-Date: Fri,  5 Apr 2024 15:31:10 -0700
-Message-Id: <20240405223110.1609888-14-jacob.jun.pan@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
+   d="scan'208";a="19739547"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa006.jf.intel.com with ESMTP; 05 Apr 2024 15:32:05 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rss6M-0002mu-2A;
+	Fri, 05 Apr 2024 22:32:02 +0000
+Date: Sat, 6 Apr 2024 06:31:21 +0800
+From: kernel test robot <lkp@intel.com>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Rob Clark <robdclark@gmail.com>,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	Sean Paul <sean@poorly.run>,
+	Marijn Suijten <marijn.suijten@somainline.org>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+	devicetree@vger.kernel.org,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>
+Subject: Re: [PATCH 2/6] soc: qcom: smem: Add pcode/fcode getters
+Message-ID: <202404060648.DOjOYUSf-lkp@intel.com>
+References: <20240405-topic-smem_speedbin-v1-2-ce2b864251b1@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405-topic-smem_speedbin-v1-2-ce2b864251b1@linaro.org>
 
-With posted MSI feature enabled on the CPU side, iommu interrupt
-remapping table entries (IRTEs) for device MSI/x can be allocated,
-activated, and programed in posted mode. This means that IRTEs are
-linked with their respective PIDs of the target CPU.
+Hi Konrad,
 
-Handlers for the posted MSI notification vector will de-multiplex
-device MSI handlers. CPU notifications are coalesced if interrupts
-arrive at a high frequency.
+kernel test robot noticed the following build warnings:
 
-Excluding the following:
-- legacy devices IOAPIC, HPET (may be needed for booting, not a source
-of high MSIs)
-- VT-d's own IRQs (not remappable).
+[auto build test WARNING on 2b3d5988ae2cb5cd945ddbc653f0a71706231fdd]
 
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+url:    https://github.com/intel-lab-lkp/linux/commits/Konrad-Dybcio/soc-qcom-Move-some-socinfo-defines-to-the-header-expand-them/20240405-164231
+base:   2b3d5988ae2cb5cd945ddbc653f0a71706231fdd
+patch link:    https://lore.kernel.org/r/20240405-topic-smem_speedbin-v1-2-ce2b864251b1%40linaro.org
+patch subject: [PATCH 2/6] soc: qcom: smem: Add pcode/fcode getters
+config: arm-defconfig (https://download.01.org/0day-ci/archive/20240406/202404060648.DOjOYUSf-lkp@intel.com/config)
+compiler: clang version 14.0.6 (https://github.com/llvm/llvm-project.git f28c006a5895fc0e329fe15fead81e37457cb1d1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240406/202404060648.DOjOYUSf-lkp@intel.com/reproduce)
 
----
-v2: Fold in helper function for retrieving PID address
-v1: Added a warning if the effective affinity mask is not set up
----
- drivers/iommu/intel/irq_remapping.c | 69 +++++++++++++++++++++++++++--
- 1 file changed, 65 insertions(+), 4 deletions(-)
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404060648.DOjOYUSf-lkp@intel.com/
 
-diff --git a/drivers/iommu/intel/irq_remapping.c b/drivers/iommu/intel/irq_remapping.c
-index fa719936b44e..ac5f9e83943b 100644
---- a/drivers/iommu/intel/irq_remapping.c
-+++ b/drivers/iommu/intel/irq_remapping.c
-@@ -19,6 +19,7 @@
- #include <asm/cpu.h>
- #include <asm/irq_remapping.h>
- #include <asm/pci-direct.h>
-+#include <asm/posted_intr.h>
- 
- #include "iommu.h"
- #include "../irq_remapping.h"
-@@ -49,6 +50,7 @@ struct irq_2_iommu {
- 	u16 sub_handle;
- 	u8  irte_mask;
- 	enum irq_mode mode;
-+	bool posted_msi;
- };
- 
- struct intel_ir_data {
-@@ -1118,6 +1120,14 @@ static void prepare_irte(struct irte *irte, int vector, unsigned int dest)
- 	irte->redir_hint = 1;
- }
- 
-+static void prepare_irte_posted(struct irte *irte)
-+{
-+	memset(irte, 0, sizeof(*irte));
-+
-+	irte->present = 1;
-+	irte->p_pst = 1;
-+}
-+
- struct irq_remap_ops intel_irq_remap_ops = {
- 	.prepare		= intel_prepare_irq_remapping,
- 	.enable			= intel_enable_irq_remapping,
-@@ -1126,6 +1136,47 @@ struct irq_remap_ops intel_irq_remap_ops = {
- 	.enable_faulting	= enable_drhd_fault_handling,
- };
- 
-+#ifdef CONFIG_X86_POSTED_MSI
-+
-+static phys_addr_t get_pi_desc_addr(struct irq_data *irqd)
-+{
-+	int cpu = cpumask_first(irq_data_get_effective_affinity_mask(irqd));
-+
-+	if (WARN_ON(cpu >= nr_cpu_ids))
-+		return 0;
-+
-+	return __pa(per_cpu_ptr(&posted_interrupt_desc, cpu));
-+}
-+
-+static void intel_ir_reconfigure_irte_posted(struct irq_data *irqd)
-+{
-+	struct intel_ir_data *ir_data = irqd->chip_data;
-+	struct irte *irte = &ir_data->irte_entry;
-+	struct irte irte_pi;
-+	u64 pid_addr;
-+
-+	pid_addr = get_pi_desc_addr(irqd);
-+
-+	if (!pid_addr) {
-+		pr_warn("Failed to setup IRQ %d for posted mode", irqd->irq);
-+		return;
-+	}
-+
-+	memset(&irte_pi, 0, sizeof(irte_pi));
-+
-+	/* The shared IRTE already be set up as posted during alloc_irte */
-+	dmar_copy_shared_irte(&irte_pi, irte);
-+
-+	irte_pi.pda_l = (pid_addr >> (32 - PDA_LOW_BIT)) & ~(-1UL << PDA_LOW_BIT);
-+	irte_pi.pda_h = (pid_addr >> 32) & ~(-1UL << PDA_HIGH_BIT);
-+
-+	modify_irte(&ir_data->irq_2_iommu, &irte_pi);
-+}
-+
-+#else
-+static inline void intel_ir_reconfigure_irte_posted(struct irq_data *irqd) {}
-+#endif
-+
- static void intel_ir_reconfigure_irte(struct irq_data *irqd, bool force)
- {
- 	struct intel_ir_data *ir_data = irqd->chip_data;
-@@ -1139,8 +1190,9 @@ static void intel_ir_reconfigure_irte(struct irq_data *irqd, bool force)
- 	irte->vector = cfg->vector;
- 	irte->dest_id = IRTE_DEST(cfg->dest_apicid);
- 
--	/* Update the hardware only if the interrupt is in remapped mode. */
--	if (force || ir_data->irq_2_iommu.mode == IRQ_REMAPPING)
-+	if (ir_data->irq_2_iommu.posted_msi)
-+		intel_ir_reconfigure_irte_posted(irqd);
-+	else if (force || ir_data->irq_2_iommu.mode == IRQ_REMAPPING)
- 		modify_irte(&ir_data->irq_2_iommu, irte);
- }
- 
-@@ -1194,7 +1246,7 @@ static int intel_ir_set_vcpu_affinity(struct irq_data *data, void *info)
- 	struct intel_ir_data *ir_data = data->chip_data;
- 	struct vcpu_data *vcpu_pi_info = info;
- 
--	/* stop posting interrupts, back to remapping mode */
-+	/* stop posting interrupts, back to the default mode */
- 	if (!vcpu_pi_info) {
- 		modify_irte(&ir_data->irq_2_iommu, &ir_data->irte_entry);
- 	} else {
-@@ -1320,6 +1372,11 @@ static void intel_irq_remapping_prepare_irte(struct intel_ir_data *data,
- 		break;
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSI:
- 	case X86_IRQ_ALLOC_TYPE_PCI_MSIX:
-+		if (posted_msi_supported()) {
-+			prepare_irte_posted(irte);
-+			data->irq_2_iommu.posted_msi = 1;
-+		}
-+
- 		set_msi_sid(irte,
- 			    pci_real_dma_dev(msi_desc_to_pci_dev(info->desc)));
- 		break;
-@@ -1407,7 +1464,11 @@ static int intel_irq_remapping_alloc(struct irq_domain *domain,
- 
- 		irq_data->hwirq = (index << 16) + i;
- 		irq_data->chip_data = ird;
--		irq_data->chip = &intel_ir_chip;
-+		if (posted_msi_supported() &&
-+			((info->type == X86_IRQ_ALLOC_TYPE_PCI_MSI) || (info->type == X86_IRQ_ALLOC_TYPE_PCI_MSIX)))
-+			irq_data->chip = &intel_ir_chip_post_msi;
-+		else
-+			irq_data->chip = &intel_ir_chip;
- 		intel_irq_remapping_prepare_irte(ird, irq_cfg, info, index, i);
- 		irq_set_status_flags(virq + i, IRQ_MOVE_PCNTXT);
- 	}
+All warnings (new ones prefixed by >>):
+
+>> drivers/soc/qcom/smem.c:807: warning: Function parameter or struct member 'code' not described in 'qcom_smem_get_feature_code'
+>> drivers/soc/qcom/smem.c:807: warning: Excess function parameter 'id' description in 'qcom_smem_get_feature_code'
+>> drivers/soc/qcom/smem.c:840: warning: Function parameter or struct member 'code' not described in 'qcom_smem_get_product_code'
+>> drivers/soc/qcom/smem.c:840: warning: Excess function parameter 'id' description in 'qcom_smem_get_product_code'
+
+
+vim +807 drivers/soc/qcom/smem.c
+
+   797	
+   798	/**
+   799	 * qcom_smem_get_feature_code() - return the feature code
+   800	 * @id:	On success, we return the feature code here.
+   801	 *
+   802	 * Look up the feature code identifier from SMEM and return it.
+   803	 *
+   804	 * Return: 0 on success, negative errno on failure.
+   805	 */
+   806	int qcom_smem_get_feature_code(u32 *code)
+ > 807	{
+   808		struct socinfo *info;
+   809		u32 raw_code;
+   810	
+   811		info = qcom_smem_get(QCOM_SMEM_HOST_ANY, SMEM_HW_SW_BUILD_ID, NULL);
+   812		if (IS_ERR(info))
+   813			return PTR_ERR(info);
+   814	
+   815		/* This only makes sense for socinfo >= 16 */
+   816		if (__le32_to_cpu(info->fmt) < SOCINFO_VERSION(0, 16))
+   817			return -EINVAL;
+   818	
+   819		raw_code = __le32_to_cpu(info->feature_code);
+   820	
+   821		/* Ensure the value makes sense */
+   822		if (raw_code >= SOCINFO_FC_INT_RESERVE)
+   823			raw_code = SOCINFO_FC_UNKNOWN;
+   824	
+   825		*code = raw_code;
+   826	
+   827		return 0;
+   828	}
+   829	EXPORT_SYMBOL_GPL(qcom_smem_get_feature_code);
+   830	
+   831	/**
+   832	 * qcom_smem_get_product_code() - return the product code
+   833	 * @id:	On success, we return the product code here.
+   834	 *
+   835	 * Look up feature code identifier from SMEM and return it.
+   836	 *
+   837	 * Return: 0 on success, negative errno on failure.
+   838	 */
+   839	int qcom_smem_get_product_code(u32 *code)
+ > 840	{
+   841		struct socinfo *info;
+   842		u32 raw_code;
+   843	
+   844		info = qcom_smem_get(QCOM_SMEM_HOST_ANY, SMEM_HW_SW_BUILD_ID, NULL);
+   845		if (IS_ERR(info))
+   846			return PTR_ERR(info);
+   847	
+   848		/* This only makes sense for socinfo >= 16 */
+   849		if (__le32_to_cpu(info->fmt) < SOCINFO_VERSION(0, 16))
+   850			return -EINVAL;
+   851	
+   852		raw_code = __le32_to_cpu(info->pcode);
+   853	
+   854		/* Ensure the value makes sense */
+   855		if (raw_code >= SOCINFO_FC_INT_RESERVE)
+   856			raw_code = SOCINFO_FC_UNKNOWN;
+   857	
+   858		*code = raw_code;
+   859	
+   860		return 0;
+   861	}
+   862	EXPORT_SYMBOL_GPL(qcom_smem_get_product_code);
+   863	
+
 -- 
-2.25.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
