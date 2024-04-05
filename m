@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-133712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D92589A7A8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 01:57:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98C7589A7AA
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 01:57:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D9F21F22CB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:57:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 470A81F210F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54D464DA0B;
-	Fri,  5 Apr 2024 23:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46ECF4F5F8;
+	Fri,  5 Apr 2024 23:56:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="wBirsjR1"
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YjM4qu6B"
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EDBA45BE2
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 23:56:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1264AEF7
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 23:56:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712361375; cv=none; b=oGSDwZlNzgnUmJiZ4I5tnnSRvTjn7CCwOSzEMlrBmZ5lLC+ViZk4iKbh17lkTwgoUg1Mx/wSYrBPsMZhRKBSCF22J5iH253X6jZg8dNRv18dMgAK0kQxryHma5d3yeBaCDlRQAGiqbQ89wq2g2EHojvZTY1gZCs5GoQzxySreS0=
+	t=1712361377; cv=none; b=oIsAsX3/3g0kLemJ4biaZInOLnhyVXSXApMW+fAFyHrTG1KWwWt1LQew1jvAKZzfUr3t/n5Fl/lFUMPJpP5aSjRCXecFXgJelkhc4WwfOva1n6qZF6TbwEFQsZMTlLW/DOSJjt/XUYHtmaQazdbnDZGAsyDxvgDwGDfH+Chk9+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712361375; c=relaxed/simple;
-	bh=chnMm1zFatZ8q6GaXGi1GZwfE6vOSQp47VdBoBbf3AE=;
+	s=arc-20240116; t=1712361377; c=relaxed/simple;
+	bh=torl8B7uqungrFtG8/K2MGtZpZ3nwc8GBWa8Ngm8w58=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=QdwxYeECyf6wdfdBTSp5Y9Mn0wt/i9/0w89741fk5WU4E66aZr4eN+4N+JP/25K46dK5V7H4iz8F0EStr6daKYvKDoz8JUWtn3a5m+GLvyfgDJhbiQE9mC8rG3qL5OXyvRUfcWFnh0lZ2RUSY621aqnxxth6XbUAfiWV+b1E8mM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=wBirsjR1; arc=none smtp.client-ip=209.85.216.74
+	 To:Cc:Content-Type; b=ESvN+zYtKER276kVYph6vxOkW39M9uKfXqZ+XP+M+xk9bC071TQEtgkW778PQnD7C6I+4oYSi3xr6WTrkn3cBVi9RQXTLbCLZJLefzf1qIZSEx3cTxziVVwdtt1jeOXobouJFx3fm/KzeCw2nFnd7KY8hrQxSB/hf7u+HpA7ESQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YjM4qu6B; arc=none smtp.client-ip=209.85.215.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2a48ed89c7eso580863a91.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 16:56:14 -0700 (PDT)
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-5e4df21f22dso1864240a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 16:56:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712361373; x=1712966173; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712361375; x=1712966175; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=FffwbB6LnatDKMg9SsqQhArJTyGAeiJWu5lvAsN6Mjk=;
-        b=wBirsjR1NQA8cfl+0rDDEQQTvtCOhHgWFQOvuigI9slaJg3pojGmoWmYEFG+toUt2U
-         ktmEjlG2SZVoKsvaFfv7kzjIyoiDLpzWDkEpJjYSCLrO1p1izH+LTZVzbPa+xreddn1r
-         V6A8boPyQdpB4AsPHmaQFRDhBhM6iz/7wXLM8GxGV4fR3LtEhoubtGk7uvOlgim7PG+W
-         ZgksZRd/M41UcpP56SCXRXXuMvcw2RSKuFWXO68p1CQk3l9K8WxOOfU4RSai4W/Rj0vx
-         0+zibG0725gigIv/EtMiaYqKCHsrqiVCYhnv6nGO/C4ZETH6nZBBTo/rbWolKCirLVmI
-         DSLQ==
+        bh=33EqBa4idiXBlKLk1bB/GrgkrHxm1+OWlCnF+mCuARU=;
+        b=YjM4qu6B/aBJINhFpoKfYsuPWqCMVqcrTH5fx8t4TMv9AdtFh+/Ypx0qNqXS+M5PtQ
+         5UGZxAmDheyelzx0x77277dHpSgHxQEIeVAkmuvRv2XRsSovDySxorN1UYqbcGhjruXx
+         SNsyPz5GES0JqsBq7dThm+1PO+OS8Ud5Bw5Hjr8dEAtv1t5BdMO2Z4Anu4vymuwbMO3J
+         GVZC2RqEdOuBbcH6yf0scaajChowARibphLngvTRO3es93MtS4KkL6Nm63hHoX7P94KC
+         QwyHr3rY9hRrR+naFKU6FKaEtZ1uJEW2BaBsFnAdxFd9Z/2P0JvpVJN+4BGrUwH6H8rY
+         FiTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712361373; x=1712966173;
+        d=1e100.net; s=20230601; t=1712361375; x=1712966175;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=FffwbB6LnatDKMg9SsqQhArJTyGAeiJWu5lvAsN6Mjk=;
-        b=T1Rsz8vYTDu/1BOi2Crub2+9igXfMJYVRMVku/W2g+4MUps3OH7HrdyLvVazkCnydJ
-         mLZvb4zYDmTSDmcywcCg10uu8RKDeZuCNLj5euh6msJGv7ZQ4z8FdXfFyBQlmnIhga8c
-         MkcphFS4yCNMYhDVpogTpmQWtgREGHRvvoEVr5vbuRsu+TV9PCKDSNr8asaGel5dkmjs
-         BsmJaDsQECSSwv1uqtuLSsUNPvYIz8LfJtx3C02TFCHHnsEIS13Ruv4n1anvffhmrvXl
-         VoOv1t20caIWRfYVz4DWEDDdxzuGbNlVe0mFuXAsKkGDT7H8Tettb1w4J7HENvttry9x
-         soyw==
-X-Forwarded-Encrypted: i=1; AJvYcCVan9NcVAIK06pDft/Dn9lIy9pwcFsqs1qBeqZUW5N4zXRNRnS+blgbQQD3baSGbVy8vLIEiLMs929y/n1IrwifzTB4D0VOcn/980vv
-X-Gm-Message-State: AOJu0Yxav5lHypJYUmmCLFNQ87FPZnqoyEFO1/xAYLBZPuUa0RqYWH4J
-	QyYn/iqRVB9OEhaBkC/BzIEf3hobjVay5dwSc6yX1b9GldIrX+hq4eOORMCOjSEMkhobTc13kOw
-	F8w==
-X-Google-Smtp-Source: AGHT+IH9aecytVAOtnV2yNzg2I3ctJJZWmYrY4cvrhScbFQqL+6+y5ypppJF5bqHYcJe2XUZwFiInnFZSBA=
+        bh=33EqBa4idiXBlKLk1bB/GrgkrHxm1+OWlCnF+mCuARU=;
+        b=jvjRBRymKJ4WANVVilEXnQ/FfO/JHKxCgFd47qlMh+kBaFDKVqaMcFBv8pAPVLHP0I
+         gzBWAijWKSyb5uIgwoQuSSRLc1D1Jimyej10nHYUyznP8Ld0WLd6TNs8uL9M8dMIdQ8Z
+         tAd1+iuWe704ruiCvHPXZ9xrk2peB2FHOZOW4osfftUQHbNIzOGkb+fN74ec424BVOAM
+         pwFhYfOIcTnePlnmhb98G9FwqA+UHrbjJKVDmYvJEqVxX5+256Ga5sMB79OrFe9aBBi5
+         HJkBp2l8UKLrFDYjseXXmSx7omurCb1GTQm63NFerTOn2METCRK0mrVyypEEKvDcX54M
+         PHsg==
+X-Forwarded-Encrypted: i=1; AJvYcCWJ/Yrj7lc3xMGDx8fB3FdbcGwmiiwHqZT0Y4+ErLbaJJsB5n5gGOMN6P6FBTQKYPEzoHBMw+r5iPmZ4foyHeKcDvucMETuviWYxNf9
+X-Gm-Message-State: AOJu0Yy3CmB59Yh7mpdkEVnaXEeO+/pUswGW7A50kGCSTqlNauBk4kEc
+	Jio7GviXNsBd0QPgDJywww0KYt4XW+/zLLZZ5fB9hCSuZLWElNpP1JoZ9VX6/4iXhUbfUViHmv8
+	9Vw==
+X-Google-Smtp-Source: AGHT+IF/gFn9ejmWPWLzczLWx54pSx+kzM32Cqmgdh9HBzRcO6XJurThB4YInPhTEun/QvpjJo/Q33QHoJ8=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:d4c1:b0:1e3:d0fa:dedf with SMTP id
- o1-20020a170902d4c100b001e3d0fadedfmr49827plg.4.1712361373581; Fri, 05 Apr
- 2024 16:56:13 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a65:6a50:0:b0:5e4:2b26:960a with SMTP id
+ o16-20020a656a50000000b005e42b26960amr12959pgu.4.1712361375228; Fri, 05 Apr
+ 2024 16:56:15 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri,  5 Apr 2024 16:55:56 -0700
+Date: Fri,  5 Apr 2024 16:55:57 -0700
 In-Reply-To: <20240405235603.1173076-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,9 +75,9 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240405235603.1173076-1-seanjc@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240405235603.1173076-4-seanjc@google.com>
-Subject: [PATCH 03/10] KVM: x86/pmu: Squash period for checkpointed events
- based on host HLE/RTM
+Message-ID: <20240405235603.1173076-5-seanjc@google.com>
+Subject: [PATCH 04/10] KVM: x86: Apply Intel's TSC_AUX reserved-bit behavior
+ to Intel compat vCPUs
 From: Sean Christopherson <seanjc@google.com>
 To: Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
 Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
@@ -85,39 +85,39 @@ Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
 	Like Xu <like.xu.linux@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Zero out the sampling period for checkpointed events if the host supports
-HLE or RTM, i.e. supports transactions and thus checkpointed events, not
-based on whether the vCPU vendor model is Intel.  Perf's refusal to allow
-a sample period for checkpointed events is based purely on whether or not
-the CPU supports HLE/RTM transactions, i.e. perf has no knowledge of the
-vCPU vendor model.
+Extend Intel's check on MSR_TSC_AUX[63:32] to all vCPU models that are
+Intel compatible, i.e. aren't AMD or Hygon in KVM's world, as the behavior
+is architectural, i.e. applies to any CPU that is compatible with Intel's
+architecture.  Applying the behavior strictly to Intel wasn't intentional,
+KVM simply didn't have a concept of "Intel compatible" as of commit
+61a05d444d2c ("KVM: x86: Tie Intel and AMD behavior for MSR_TSC_AUX to
+guest CPU model").
 
-Note, it is _extremely_ unlikely that the existing code is a problem in
-real world usage, as there are far, far bigger hurdles that would need to
-be cleared to support cross-vendor vPMUs.  The motivation is mainly to
-eliminate the use of guest_cpuid_is_intel(), in order to get to a state
-where KVM pivots on AMD vs. Intel compatibility, i.e. doesn't check for
-exactly vendor==Intel except in rare circumstances (i.e. for CPU quirks).
-
-Cc: Like Xu <like.xu.linux@gmail.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/pmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/x86.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/pmu.c b/arch/x86/kvm/pmu.c
-index c397b28e3d1b..8c3564917953 100644
---- a/arch/x86/kvm/pmu.c
-+++ b/arch/x86/kvm/pmu.c
-@@ -194,7 +194,7 @@ static int pmc_reprogram_counter(struct kvm_pmc *pmc, u32 type, u64 config,
- 	attr.sample_period = get_sample_period(pmc, pmc->counter);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index ebcc12d1e1de..d9719141502a 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -1883,11 +1883,11 @@ static int __kvm_set_msr(struct kvm_vcpu *vcpu, u32 index, u64 data,
+ 		 * incomplete and conflicting architectural behavior.  Current
+ 		 * AMD CPUs completely ignore bits 63:32, i.e. they aren't
+ 		 * reserved and always read as zeros.  Enforce Intel's reserved
+-		 * bits check if and only if the guest CPU is Intel, and clear
+-		 * the bits in all other cases.  This ensures cross-vendor
+-		 * migration will provide consistent behavior for the guest.
++		 * bits check if the guest CPU is Intel compatible, otherwise
++		 * clear the bits.  This ensures cross-vendor migration will
++		 * provide consistent behavior for the guest.
+ 		 */
+-		if (guest_cpuid_is_intel(vcpu) && (data >> 32) != 0)
++		if (guest_cpuid_is_intel_compatible(vcpu) && (data >> 32) != 0)
+ 			return 1;
  
- 	if ((attr.config & HSW_IN_TX_CHECKPOINTED) &&
--	    guest_cpuid_is_intel(pmc->vcpu)) {
-+	    (boot_cpu_has(X86_FEATURE_RTM) || boot_cpu_has(X86_FEATURE_HLE))) {
- 		/*
- 		 * HSW_IN_TX_CHECKPOINTED is not supported with nonzero
- 		 * period. Just clear the sample period so at least
+ 		data = (u32)data;
 -- 
 2.44.0.478.gd926399ef9-goog
 
