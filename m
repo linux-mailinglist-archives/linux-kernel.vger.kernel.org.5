@@ -1,152 +1,133 @@
-Return-Path: <linux-kernel+bounces-133300-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCA9689A1F4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:53:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17C6589A1D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:51:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0D951C23A9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:53:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8517A1F214DD
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04DDB16FF5A;
-	Fri,  5 Apr 2024 15:53:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F88171097;
+	Fri,  5 Apr 2024 15:50:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wy0rCCCv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mDejj3ET"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B84616F919
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 15:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A5F16F28B;
+	Fri,  5 Apr 2024 15:50:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712332415; cv=none; b=lyab8O/YquCYSazxAZ8Ftt+c3vHsqYtxf7rztyxDe9dQqh6fsNugZmBXhj605f/NRzEBXslatQfEK4gN1LZ8wXpgtuGIYH9NRRe27kT0tYUJRexCy40caSr5e40nbrEaKjaqLdzr2oXtzenxMZlY5TQrMf9icSWQ4qXFaZLJW0w=
+	t=1712332231; cv=none; b=Ma+zSv8DXX2U0UQiqfXsJ8cds57f5OSUhOlg+uzWlv9hWuFI/7AF3DSOSpwxLO7SgtzvjyN039vwajIy0OglrU76Ohb/X6phXrQ26d304vgLPME4zca6FypY4TZlDVKB5UMiO+5DGnQO+NU8qAJ1Qhedu0eUbQw7s310Bng9Exo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712332415; c=relaxed/simple;
-	bh=Iei/2ssZLrKn2nm3sbBfFc+ThN4tjUj62NIgvrziHig=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GjdN0N0Y7ub28uQ9TGGBjPd5DAGqEBU1aXtWhnWWyKwQmJUvar05CiysguSspSMGJ1Ctzk4I09040w3CEcOssqjVj0EohrCWXfWUYyhs5d3sKk/keOKEg/PL3ILxsKCFVFcrNW+dIUmpoKqVtQCmhEqEedBeLZ7iRbUfeC8Xg/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wy0rCCCv; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712332412;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aI80OQSSTp75Yz5rWxOaRLVcBrwx8DfV0TdIcg8SDyg=;
-	b=Wy0rCCCvFvl3t/RmBr2ksjv9jAprigjRV+75jbm/u1/dciDxE4p1HXQuRr+/u8wVvgoR/L
-	u5I1h8xukOZx1H5Gw11a+B6dCTape5tKTPRipGDFyHEuFSUy2s/1e+e7vlkzURqI5gsm2r
-	V9aXnlGYHCHSV6RjN7xard8IJbEiCtY=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-326-Sgp_AjeTOLKT1tarl_vI2Q-1; Fri, 05 Apr 2024 11:53:30 -0400
-X-MC-Unique: Sgp_AjeTOLKT1tarl_vI2Q-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-414908c5403so11244985e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 08:53:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712332409; x=1712937209;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aI80OQSSTp75Yz5rWxOaRLVcBrwx8DfV0TdIcg8SDyg=;
-        b=ND9Cy2lE+pJF6/d/vbF+iCcQOUwsPyZazeULVlRF2c2EQQfJC7bGjO0UKFl2wmGg9E
-         Rd6WbN2jzcef9XtQ7tiJVR5+J//qr0o140i5NzboXZDkk+0jP8toSVkg8Q/VxFVx9JZ0
-         r+1pE7HWZZw1apveY9vYaQsYvuGeXFGsM7+wQruTUAqAdsMmsHC+0SuZPzL5almUUJ34
-         4CB65VpuG1VOqe+BE5TR8G/MuOjr3KlmuClcuZCSyCF9dPZf25nv8ZPfviNwyQ2hMgvr
-         bgKtZYHcQM/kLXofa2oInYucD3lbA8X9e009dFG5gDxNkjYdG7uWnK2m3f6DPzTcmEBj
-         GcNw==
-X-Forwarded-Encrypted: i=1; AJvYcCU1C074Yr82ccaaUPtlg4SlGDiPq0KU2pMq6V15UG94ROO0LZtJZ+t+Bok55h3ne14+QHXGsUahV6vDR2vXYKxwLzGYp/JBJvojpbA+
-X-Gm-Message-State: AOJu0Yy9HZ0aYEXT0kQa7GzRXXmhxX3NnPhpGbObqzMB+MnozTBlx4pH
-	MgE0di97B5+3m02qHzjSKER828zmu09V1aOP8LoaHM/rcWq0e6H8RPCzb0E7j23exQSM1LtQekn
-	Vtkh/MkbYunJ1T7QOQS+lLrV6NIQSLHW4BV01l/V53QqcTRG67q9SI51M159MZQ==
-X-Received: by 2002:a05:600c:5494:b0:416:29e1:48ab with SMTP id iv20-20020a05600c549400b0041629e148abmr1383264wmb.29.1712332409496;
-        Fri, 05 Apr 2024 08:53:29 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHWYKp3MvuNtM1C4UI8yZRQC9e7WA0mMptREYTTgtMTckNkCjjIeh8XWt2OzPDA7mSt68JtQQ==
-X-Received: by 2002:a05:600c:5494:b0:416:29e1:48ab with SMTP id iv20-20020a05600c549400b0041629e148abmr1383245wmb.29.1712332409119;
-        Fri, 05 Apr 2024 08:53:29 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:ee94:abf:b8ff:feee:998b? ([2a02:810d:4b3f:ee94:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id m13-20020a05600c4f4d00b00416326cc353sm1340950wmq.8.2024.04.05.08.53.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 08:53:28 -0700 (PDT)
-Message-ID: <c3253f8a-e654-4016-b0c6-d92703107c48@redhat.com>
-Date: Fri, 5 Apr 2024 17:53:26 +0200
+	s=arc-20240116; t=1712332231; c=relaxed/simple;
+	bh=JuwIBPyywPFitWU0GAYwZuSb8x811YnAxbc/FR7Z6kg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jBU5MY1W6QRh0+Mx+W/ACK6CMe5kHj6J+IatiYganWDrI5TlDM+zFsOSK4JCSUnBhAt8EVm0ANxwnu/kHMPzM5U8WiwJL2+B3wrl4Iuvu87Ft4bYS9pXqJogKrEAG98O+rEnFJ5HkRyQrFUcPgp6gGDxSYE8eJU15voiYKZYavY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mDejj3ET; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712332229; x=1743868229;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=JuwIBPyywPFitWU0GAYwZuSb8x811YnAxbc/FR7Z6kg=;
+  b=mDejj3ETBMQC3/UBpoaBLyPhW94V8rkm/P03UDmXMLfTpQPQp+is3t2s
+   VIjeBble3YCNSruCKVEp+1PrkGqMS9U1Mx1UpDwonWsEPNHTigC7XIupg
+   EEas9o2WnYkZT9r+Lx7rZiCsfkLsKxz14dvneTgcH1++SsTrDZ/rISp7o
+   EJWdQCBncoiEoqdKTFAoMSY42drhBKfDUWaLbJFVmClcmTaclZTRF+cHM
+   3asCrbsPy0m39UxlaDIRqAFrU2rB1It1mvri/xOkpfkhF1ZaCrgzY+suT
+   e0tc1pYTf0IjvbSjtlw1XULiu3wGfplKm3mjxVozb6G4i9ri7/5Pp4v3l
+   g==;
+X-CSE-ConnectionGUID: xaUgz2DZTJOPoNF5yyEW9Q==
+X-CSE-MsgGUID: n9S30rN/TRqFM6u0dFIVzA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="7830974"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="7830974"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:50:19 -0700
+X-CSE-ConnectionGUID: b+flWz2dSiyMWDRXybRuQw==
+X-CSE-MsgGUID: xBkY6l/yQaKUhOjf4ieNSA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="23905135"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:50:19 -0700
+Date: Fri, 5 Apr 2024 08:54:46 -0700
+From: Jacob Pan <jacob.jun.pan@linux.intel.com>
+To: Robert Hoo <robert.hoo.linux@gmail.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
+ Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Thomas Gleixner
+ <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
+ kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>, Joerg Roedel
+ <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov
+ <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, Paul Luse
+ <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>, Jens
+ Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>, "Tian, Kevin"
+ <kevin.tian@intel.com>, maz@kernel.org, seanjc@google.com, Robin Murphy
+ <robin.murphy@arm.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH 04/15] x86/irq: Add a Kconfig option for posted MSI
+Message-ID: <20240405085001.2bb3e8ad@jacob-builder>
+In-Reply-To: <89927174-6ca9-4299-8157-a0404b30b156@gmail.com>
+References: <20240126234237.547278-1-jacob.jun.pan@linux.intel.com>
+ <20240126234237.547278-5-jacob.jun.pan@linux.intel.com>
+ <89927174-6ca9-4299-8157-a0404b30b156@gmail.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm: nv04: Add check to avoid out of bounds access
-To: Mikhail Kobuk <m.kobuk@ispras.ru>, Karol Herbst <kherbst@redhat.com>,
- Lyude Paul <lyude@redhat.com>
-Cc: David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Francisco Jerez <currojerez@riseup.net>, dri-devel@lists.freedesktop.org,
- nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- lvc-project@linuxtesting.org, Fedor Pchelkin <pchelkin@ispras.ru>,
- Alexey Khoroshilov <khoroshilov@ispras.ru>
-References: <20240331064552.6112-1-m.kobuk@ispras.ru>
-Content-Language: en-US
-From: Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <20240331064552.6112-1-m.kobuk@ispras.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 3/31/24 08:45, Mikhail Kobuk wrote:
-> Output Resource (dcb->or) value is not guaranteed to be non-zero (i.e.
-> in drivers/gpu/drm/nouveau/nouveau_bios.c, in 'fabricate_dcb_encoder_table()'
-> 'dcb->or' is assigned value '0' in call to 'fabricate_dcb_output()').
+Hi Robert,
 
-I don't really know much about the semantics of this code.
+On Fri, 5 Apr 2024 10:28:59 +0800, Robert Hoo <robert.hoo.linux@gmail.com>
+wrote:
 
-Looking at fabricate_dcb_output() though I wonder if the intention was to assign
-BIT(or) to entry->or.
-
-@Lyude, can you help here?
-
-Otherwise, for parsing the DCB entries, it seems that the bound checks are
-happening in olddcb_outp_foreach() [1].
-
-[1] https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/nouveau/nouveau_bios.c#L1331
-
+> On 1/27/2024 7:42 AM, Jacob Pan wrote:
+> > This option will be used to support delivering MSIs as posted
+> > interrupts. Interrupt remapping is required.
+> > 
+> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
+> > ---
+> >   arch/x86/Kconfig | 11 +++++++++++
+> >   1 file changed, 11 insertions(+)
+> > 
+> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> > index 5edec175b9bf..79f04ee2b91c 100644
+> > --- a/arch/x86/Kconfig
+> > +++ b/arch/x86/Kconfig
+> > @@ -463,6 +463,17 @@ config X86_X2APIC
+> >   
+> >   	  If you don't know what to do here, say N.
+> >   
+> > +config X86_POSTED_MSI
+> > +	bool "Enable MSI and MSI-x delivery by posted interrupts"
+> > +	depends on X86_X2APIC && X86_64 && IRQ_REMAP  
 > 
-> Add check to validate 'dcb->or' before it's used.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: 2e5702aff395 ("drm/nouveau: fabricate DCB encoder table for iMac G4")
-> Signed-off-by: Mikhail Kobuk <m.kobuk@ispras.ru>
-> ---
->   drivers/gpu/drm/nouveau/dispnv04/dac.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/nouveau/dispnv04/dac.c b/drivers/gpu/drm/nouveau/dispnv04/dac.c
-> index d6b8e0cce2ac..0c8d4fc95ff3 100644
-> --- a/drivers/gpu/drm/nouveau/dispnv04/dac.c
-> +++ b/drivers/gpu/drm/nouveau/dispnv04/dac.c
-> @@ -428,7 +428,7 @@ void nv04_dac_update_dacclk(struct drm_encoder *encoder, bool enable)
->   	struct drm_device *dev = encoder->dev;
->   	struct dcb_output *dcb = nouveau_encoder(encoder)->dcb;
->   
-> -	if (nv_gf4_disp_arch(dev)) {
-> +	if (nv_gf4_disp_arch(dev) && ffs(dcb->or)) {
->   		uint32_t *dac_users = &nv04_display(dev)->dac_users[ffs(dcb->or) - 1];
->   		int dacclk_off = NV_PRAMDAC_DACCLK + nv04_dac_output_offset(encoder);
->   		uint32_t dacclk = NVReadRAMDAC(dev, 0, dacclk_off);
-> @@ -453,7 +453,7 @@ bool nv04_dac_in_use(struct drm_encoder *encoder)
->   	struct drm_device *dev = encoder->dev;
->   	struct dcb_output *dcb = nouveau_encoder(encoder)->dcb;
->   
-> -	return nv_gf4_disp_arch(encoder->dev) &&
-> +	return nv_gf4_disp_arch(encoder->dev) && ffs(dcb->or) &&
->   		(nv04_display(dev)->dac_users[ffs(dcb->or) - 1] & ~(1 << dcb->index));
->   }
->   
+> Does posted_msi really depend on x2APIC? PID.NDST encoding supports both
+> xAPIC and x2APIC.
+No, posted_msi works with xAPIC as well. I just fixed a bug in NDST xAPIC
+encoding, will be in v2.
 
+I was thinking from the performance advantage of x2APIC. But you are right
+they are orthogonal.
+
+> If posted_msi posts more stringent requirement, I think it deserves an 
+> explanation in this patch's description.
+> And, X86_X2APIC already depends on IRQ_REMAP, can we just list one of
+> them here?
+Will drop X2APIC dependency.
+
+Thanks,
+
+Jacob
 
