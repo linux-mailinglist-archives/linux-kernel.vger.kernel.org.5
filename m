@@ -1,163 +1,96 @@
-Return-Path: <linux-kernel+bounces-132836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DA85899AF8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:34:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0564F899AFA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:34:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 309B61C20B4F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:34:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35EFD1C208F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:34:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43C3B15572F;
-	Fri,  5 Apr 2024 10:34:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A13013AD12;
+	Fri,  5 Apr 2024 10:34:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="R+yEvri7"
-Received: from mail-qv1-f48.google.com (mail-qv1-f48.google.com [209.85.219.48])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lWpQ/Df6"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B145F28E34;
-	Fri,  5 Apr 2024 10:34:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28AE4745C2
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712313266; cv=none; b=aqpbVBqskHJ6duEyp5ua2Lk5l+MgaSK8+7ge4TCJW6CWjJNJVVCJXT62uHcz09YEN3iT0YUgm+O+ClqWi9gWNQZKPUaoBh0ytpBxIoU/oSDshvDCWnloTcJcHyV6+3XXj133RMemzBYpR8yM/G1hbB3glS5uUFPvBhTIQSKwkwc=
+	t=1712313278; cv=none; b=sy/NOtgkuKAccjqiBZ+bTBg19u/ed5vIyb0sZoALMrSnHGYQqq6v9hpRRFlEqWAmIFfr2uiWRCuh9oTLlKP8Vy62KG8J3cWKvN1nj65PuYSB4UI2uCKsQoIlD/ECaV4br/pmz96NfUwOfhxghIQMuTghzXXdiQ6XXq1koC+T4jw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712313266; c=relaxed/simple;
-	bh=IM8yRnLoNZO3t73cB9oQMGDYuOL8b1mn3L19YyINA0Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UIkelC6ivxqW9SdkISFZbaFnVwyy/HKAOAYpDZAPGunLM3zfdVF5R51LHw4BPin+BcdbxBG063EknWMCdkl9Mcdiz9A7Gu6SVVSMM7iaLlg7DaXtvnQoBuVcu0PuWLcQB5pb0FYQ1CU58xF74CVkmDuwBTlMet/f64LcBMRm4KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=R+yEvri7; arc=none smtp.client-ip=209.85.219.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f48.google.com with SMTP id 6a1803df08f44-6992d93c146so8206266d6.0;
-        Fri, 05 Apr 2024 03:34:24 -0700 (PDT)
+	s=arc-20240116; t=1712313278; c=relaxed/simple;
+	bh=1U926oL0MDod9834V/+y8z2gIy7U+dCjf8CDW1Dhy+k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pFw33kj43fam3lCe1+Cf/Eas8D2qmLjAXwjQFB3448qZwvp1uE1iUDkwpICQaALDzgnOOnNxKe1TEE19YIpn9YuB+BNbo4s9TO4mQ5bK8WV8AD7OW0rFy3seS3+HP+mECuHLxN0I9hzxagGuxoDfW0NYpnhH2ajJUPpbniaOwpw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lWpQ/Df6; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a51a1c8d931so77739466b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 03:34:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712313263; x=1712918063; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J67Sjl5xWX+e5LsxQMjjIEZZQweXsXHadZoDWiJQYvc=;
-        b=R+yEvri7w+YubIw2Mc09v2IXNBpfRxeMsD9mJMV8DxN89R4ZCU0QGtpafyA/nkfEIE
-         yIM8CyOy6MMgYaxr9hLnvi9yqFQAW1wWrzsE+ZKV/+np/x3kaInI0dcmujWaiBUoDwCF
-         NMlav4MkTbUpIt0sEhywb/VCesWz2U6MqEc57yXM5DH77nMVDcuvGEiLAhS/BIvdU15v
-         3sT6xHlIGs+zYUsbdk8eScnS1CqAcFW+Rx4jLl01FbqKJ/1FNaV35BWjkOmqtw3NeykY
-         gMyASGqkiYA4JSQhxm1Uhthv5U0JBMm5UmBKQNyROJY66QvhwIHddSvHuq3LYErvdMQb
-         BUog==
+        d=linaro.org; s=google; t=1712313275; x=1712918075; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1U926oL0MDod9834V/+y8z2gIy7U+dCjf8CDW1Dhy+k=;
+        b=lWpQ/Df6KeZkRDsnpw1ccvtuyPy2Qf4qOpcElzm1Um1otWz7c7tIvWlV5rNTgit7f9
+         gbh2wA2R1JSXlAduh4ZNgw+SAa7A6WjoSlCLYoj/gZcJZchy+SfWFr1WTq52AiYgKqCR
+         luzgSC1T/CgfmX5zcAHQZx3wZz+tpHVfP1k2oLnWBgogUcp3wSXP93lksn0NAnEAMqmE
+         rviRf1wsWUyYBHCfdG8YoHd9yOuIhMs4J1gnRTRf0I6bKGBvf8dOK8OiiPjwThvgvMlv
+         TkMyo5U4vwjNU8ZGL0YvHlwN9NKAQ1SOR+rdEbQZkHli0nsKw4qXmCt6BljNe/HKhMm8
+         h8FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712313263; x=1712918063;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=J67Sjl5xWX+e5LsxQMjjIEZZQweXsXHadZoDWiJQYvc=;
-        b=wLA/iezQ/gO9HtjpWZXbuJH3/Qbghn6K583xZR8SW/GuVGIKPDKdpQfytq6x3IxaJe
-         d7QNA0gLYACmZNjARKfAAQcqKAIure3YvYFl6r5zoX2b/M0cK8JthTvANXdg3RoORmK+
-         1NGszHyiDzbUC0pnAvk1sjwxQVlfQeSrp4JLVf3a1Hiv22iJXKQE8jDZNuYF8E/+gTTh
-         8CETTQ1DFZXyXsWhTfeKz56lxeGuPvTpPPaqy3+LXNqm5Z/VKhNJ4M1B85TtBP3ioHji
-         4h5a/Vxpkeia42iOikoyF0SNWmX3l2tzffS7188luQuLQ1+xZBVcyJWipLKD+dN/0a92
-         oVjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU6y4PmRdxo7RQjXFXeR0zHgX/VYLoKMYCx9e2MvHMi/UIanuO10OcvCCJF9GZhsRwEOxidcfLn+tF+VBlsOHCtrvvCreJh8rPKHbBLui9YDo1n4lK/2Gj+jQE76OOs1jHV3+5YBJ1SyOpO8Q==
-X-Gm-Message-State: AOJu0YwIReQoeB25fduVgBsgr+aMvY0msukFDaxNTW4/LfyCgQzQHgIb
-	wAXArv5nC3wSyFPxCrAqsAAgbRzYe4tuIy45DgM1zxVdAnGVXoq3yF/FaeGLu5D+V2jADT2BJa6
-	S6BUKQKlEtwMmCcR5FU1hRoX58jI=
-X-Google-Smtp-Source: AGHT+IHVzDcoIfAw3OpbW/JPOAWic54HXrUx4a5XEjIt1iGR9oc12tTYK37+DyC5xFw7NjGv2i6q0jy74WPZB9vZyqY=
-X-Received: by 2002:ad4:5dec:0:b0:696:4086:5e1 with SMTP id
- jn12-20020ad45dec000000b00696408605e1mr1660367qvb.2.1712313263642; Fri, 05
- Apr 2024 03:34:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712313275; x=1712918075;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1U926oL0MDod9834V/+y8z2gIy7U+dCjf8CDW1Dhy+k=;
+        b=OZC/aYeGFSt2mf6HVGYSsXVHctkOZNVJh8IoKSfVREz6XoJ2Vzq5VIHl+VIc78dkpi
+         hCwjA6cw3yU6bDSELgOVKtU8oYJEue4mT6m8LaGxmOFTPdoB6TMmTcuq/1YiTK7MYZVh
+         pv20cuYuI7ps7Viqlx7NOZX8Hks5x6A7tx0I1MSYzpAA5cx8B+WHLmY1q9Qxqcrcn6W7
+         JuOcGUpzCyPB/tYNlXZHHZ5N8+P8K8q4XRznJvWz9eHEmLS5zY+IQXzfnC23fx6mUDhL
+         onwMJRFMKMlTf8vagek1qHTyXx13TBk6IWzdaGvflv3utAc8X7h4uf6rHDnqcLsYVaDd
+         vZEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVa55fmEtZAc4XL88eYuykZmLCkpyssPHN7fmdjemrFMaqm0RTcHP2cP/oUOIArtB6DJxh1aB5jyiMfgHkJytFAqLSSVbaWp9/JHoGB
+X-Gm-Message-State: AOJu0YzSZG8NlhEyyOWXn33mkq19vZtHwRuMgSU0Z0C0vj4BVK/+I7O/
+	zGKMAuGVi7LTd3ZNC+s7+ZJUzdFq9H9bC5/gAdVD5TSi7CtsXZY61ZeU4dkGuH0=
+X-Google-Smtp-Source: AGHT+IGRtQuOF6VxMAza2Cyl1XCPnfmisCkY/idqQHtJmUn1wqBML60U9vGFXtOnfI/sNbHots1E5A==
+X-Received: by 2002:a17:906:b849:b0:a51:9f3f:3042 with SMTP id ga9-20020a170906b84900b00a519f3f3042mr630592ejb.1.1712313275194;
+        Fri, 05 Apr 2024 03:34:35 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id p25-20020a170906b21900b00a46c39e6a47sm677153ejz.148.2024.04.05.03.34.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 03:34:34 -0700 (PDT)
+Date: Fri, 5 Apr 2024 13:34:31 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Shahar Avidar <ikobh7@gmail.com>
+Cc: gregkh@linuxfoundation.org, hverkuil-cisco@xs4all.nl,
+	andriy.shevchenko@linux.intel.com, robh@kernel.org,
+	felixkimbu1@gmail.com, linux-staging@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] staging: pi433: Cleanup & fix potential resource
+ leak.
+Message-ID: <a8dda2a2-0dc7-4f44-862c-f282c1856af4@moroto.mountain>
+References: <20240405074000.3481217-1-ikobh7@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000098f75506153551a1@google.com> <0000000000002f2066061539e54b@google.com>
- <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
- <20240404081122.GQ538574@ZenIV> <20240404082110.GR538574@ZenIV>
- <CAOQ4uximHfK78KFabJA3Hf4R0En6-GfJ3eF96Lzmc94PGuGayA@mail.gmail.com> <20240404220108.GT538574@ZenIV>
-In-Reply-To: <20240404220108.GT538574@ZenIV>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 5 Apr 2024 13:34:11 +0300
-Message-ID: <CAOQ4uxiAvWbEGavQuukzTf9JFkMKRL7T_1t8-YHUpYPuifmyHg@mail.gmail.com>
-Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>, 
-	gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org, 
-	valesini@yandex-team.ru, Christoph Hellwig <hch@lst.de>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405074000.3481217-1-ikobh7@gmail.com>
 
-On Fri, Apr 5, 2024 at 1:01=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> wr=
-ote:
->
-> On Thu, Apr 04, 2024 at 12:33:40PM +0300, Amir Goldstein wrote:
->
-> > This specifically cannot happen because sysfs is not allowed as an
-> > upper layer only as a lower layer, so overlayfs itself will not be writ=
-ing to
-> > /sys/power/resume.
->
-> Then how could you possibly get a deadlock there?  What would your minima=
-l
-> deadlocked set look like?
->
-> 1.  Something is blocked in lookup_bdev() called from resume_store(), cal=
-led
-> from sysfs_kf_write(), called from kernfs_write_iter(), which has acquire=
-d
-> ->mutex of struct kernfs_open_file that had been allocated by
-> kernfs_fop_open() back when the file had been opened.  Note that each
-> struct file instance gets a separate struct kernfs_open_file.  Since we a=
-re
-> calling ->write_iter(), the file *MUST* have been opened for write.
->
-> 2.  Something is blocked in kernfs_fop_llseek() on the same of->mutex,
-> i.e. using the same struct file as (1).  That something is holding an
-> overlayfs inode lock, which is what the next thread is blocked on.
->
-> + at least one more thread, to complete the cycle.
->
-> Right?  How could that possibly happen without overlayfs opening /sys/pow=
-er/resume
-> for write?  Again, each struct file instance gets a separate of->mutex;
-> for a deadlock you need a cycle of threads and a cycle of locks, such
-> that each thread is holding the corresponding lock and is blocked on
-> attempt to get the lock that comes next in the cyclic order.
+Thanks!
 
-Absolutely right.
-I had it in my mind that this was a node lock. Did not look closely.
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
->
-> If overlayfs never writes to that sucker, it can't participate in that
-> cycle.  Sure, you can get overlayfs llseek grabbing of->mutex of *ANOTHER=
-*
-> struct file opened for the same sysfs file.  Since it's not the same
-> struct file and since each struct file there gets a separate kernfs_open_=
-file
-> instance, the mutex won't be the same.
->
-> Unless I'm missing something else, that can't deadlock.  For a quick and
-> dirty experiment, try to give of->mutex on r/o opens a class separate fro=
-m
-> that on r/w and w/o opens (mutex_init() in kernfs_fop_open()) and see
-> if lockdep warnings persist.
->
-> Something like
->
->         if (has_mmap)
->                 mutex_init(&of->mutex);
->         else if (file->f_mode & FMODE_WRITE)
->                 mutex_init(&of->mutex);
->         else
->                 mutex_init(&of->mutex);
+regards,
+dan carpenter
 
-Why a quick experiment?
-Why not a permanent kludge?
-
-It is not any better or worse than the already existing has_mmap
-subclass annotation. huh?
-
-Thanks,
-Amir.
 
