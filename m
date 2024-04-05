@@ -1,164 +1,162 @@
-Return-Path: <linux-kernel+bounces-133106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133150-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06AC3899EF2
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:05:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE4E9899F93
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:27:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 69E7FB224F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:04:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6311E2841C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:27:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F16E16E87D;
-	Fri,  5 Apr 2024 14:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i7t1TVfO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24DF216D32D;
+	Fri,  5 Apr 2024 14:27:47 +0000 (UTC)
+Received: from mail-oo1-f68.google.com (mail-oo1-f68.google.com [209.85.161.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E7F16DEB9
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC2D416D318;
+	Fri,  5 Apr 2024 14:27:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712325891; cv=none; b=GMuv/7P8AhPkjmRC4H0kCPx1s+KcZvhhzpjHJ+ILv8VbTxPmSaKt8wGLrQ7GK5bTsdJnG9Ok7luDzDMCPsKYACq4F6+eWZkU7nX1UiHLyd19Ia8EjwrDgZgBk/VF46ziLKEA7e8z+NycaRbyA8VODqNh5IohD2jCKsVyEEFdxj8=
+	t=1712327266; cv=none; b=nCjVEGPGRp8CDWnDa5m21wvI0sv/BAN5Rwlmx4v1TLJkX+u5dJogxHgyxu70EpC1hTYd6GwmDRimzQeI3YgRpXvaZyGMkcSrDxjrbJjjoQAmi0/IxjkeqG/2jV5ToFZt///XgsbyA9vAPW4IavBFfUlMfDqD0+sTcg2CTYBdqwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712325891; c=relaxed/simple;
-	bh=YLppziVi18FS86lsRUFYbik4pdpKw9o5av3kYjqyrXM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FQnqh4VtwO/ANbUGiZw0iuWkRXX6ZskdJPNPNNXYEzuVTZYNW0r5kKUs8XIVfj4KzMDFevFOwR0EDUUaVRQ4G3whb67ZHIKfYiA7VytD5uhrNCibrFO/nO+BxPcw0OKSYgRQsdk5EgPm+wTIMA8O62gwUURgFNJ4lUgYDUF2S9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i7t1TVfO; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712325888;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SJZjF5huZ/IS92CnJZN2AYaHFZSXzZinDMU0oFLcit0=;
-	b=i7t1TVfO0HOEXTMC65+a7B6Lgc2RIzofh9Cicw99C94tM5lLb8c8bDMn8bIR7EW77V7lRi
-	fRaT53+kz7chQJVxf6R6GQQ1R6br197ywdjN6VUQfDO4YHrpiUNoFp35zbsvxz6vykhujl
-	y1n5BCf6+DCkSCEvdpif+4rsi/Ywi50=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-269-21Upf3aQNLmTuWpvX18YBg-1; Fri, 05 Apr 2024 10:04:47 -0400
-X-MC-Unique: 21Upf3aQNLmTuWpvX18YBg-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-78a687cc579so255256185a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:04:47 -0700 (PDT)
+	s=arc-20240116; t=1712327266; c=relaxed/simple;
+	bh=txEEOwGjitw5rYbE/djW7+ZIv3gDGXm7WfJRnMoiIpc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lC5PA6t0dEz9Qe9B0/6A+EfvB85FUtV9Aj0vz31vylYOHroDwJXPt1fXkGhkWeVesp7+lBunadSSYmX/qPbTgV8i1ZXfT+HfGgtzp1YyT72hUSQifgUeunKyvCd4vFMiowr5X+zpCfGEo/bCtJOkihULJcmdBtgDh9NSJWYSrAQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f68.google.com with SMTP id 006d021491bc7-5a9ec68784cso630986eaf.2;
+        Fri, 05 Apr 2024 07:27:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712325887; x=1712930687;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SJZjF5huZ/IS92CnJZN2AYaHFZSXzZinDMU0oFLcit0=;
-        b=rkd/Z6ad8xqefdZ+FwAQSAg8nL5G7iFMJozMyTMCOLUE1fXHZAhWzKfL868di6UKHR
-         +8Pd916RXM/8TDvMVc+aEcCZe3IXXwn+zDBvU8VFbQiYX590JCPHqNhHhl2+VCMn37Lv
-         WGYNyq3BW2wsV3XHtVSuMJyrsoms2nJdaJCOWFzwfoMEG6xB0WcJG/jMWDHRp+RWicRz
-         wNX8LCY7NkJJwisEzcTAWlDCEycuLzzVaZv2yWIC+zMlDPsFy5nAJFwCDehvzDMaFPr5
-         LmKip46vrKq9KF2SGCxKROQtlwz7ENP8vGDxi86B31eEK/1XRw/dcFGpkFzH3PTezfGo
-         6ftQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUXbRZG1Xo85M5u/aylaxaPIOD0zLS3KJj/XxZWM7VfGdKrvfrkg313tF5eClQEyBAnVZlfIk0nBrx8XrJ+sWC32ya4xS9SUv/0NNxA
-X-Gm-Message-State: AOJu0YwZjuVDyS4uU0SxKIWPmFY7OBTbWdLmyFddcAcN3xG3T2avd97w
-	9lTvqSeKLt5MTs88KOFKsOM0/hBaGqM9is5FeXNMDTecT7s5nMMEICX4rGGFHAvI/liufbPL8OH
-	qwsNKEtvTBQ9QWMBPXJb9MifcU6YfZsXQlO9O254C9jocp2ljeX9zAd3+k0byMw==
-X-Received: by 2002:a05:620a:2b84:b0:78a:72b3:b629 with SMTP id dz4-20020a05620a2b8400b0078a72b3b629mr1708178qkb.44.1712325887098;
-        Fri, 05 Apr 2024 07:04:47 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHeHEjy/9A/4fTjZi0cCVsMnWNGemn3Slh0adyB59fLgBdpF4HyFXzqH7mBOCLvsV91+RB47w==
-X-Received: by 2002:a05:620a:2b84:b0:78a:72b3:b629 with SMTP id dz4-20020a05620a2b8400b0078a72b3b629mr1708136qkb.44.1712325886596;
-        Fri, 05 Apr 2024 07:04:46 -0700 (PDT)
-Received: from x1gen2nano ([2600:1700:1ff0:d0e0::33])
-        by smtp.gmail.com with ESMTPSA id s9-20020a05620a030900b00789fb5397d4sm654993qkm.100.2024.04.05.07.04.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 07:04:46 -0700 (PDT)
-Date: Fri, 5 Apr 2024 09:04:43 -0500
-From: Andrew Halaney <ahalaney@redhat.com>
-To: Bjorn Andersson <quic_bjorande@quicinc.com>
-Cc: linux-arm-msm@vger.kernel.org, robdclark@gmail.com, will@kernel.org, 
-	iommu@lists.linux.dev, joro@8bytes.org, linux-arm-kernel@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, quic_c_gdjako@quicinc.com, quic_cgoldswo@quicinc.com, 
-	quic_sukadev@quicinc.com, quic_pdaly@quicinc.com, quic_sudaraja@quicinc.com
-Subject: Re: sa8775p-ride: What's a normal SMMU TLB sync time?
-Message-ID: <lqdosfpb7gdjooqswgjnabzxapocndzam3ws7dq7god5bn55an@igvaowz6h7ye>
-References: <kord5qq6mywc7rbkzeoliz2cklrlljxm74qmrfwwjf6irx4fp7@6f5wsonafstt>
- <Zg9vEJV5JyGoM8KY@hu-bjorande-lv.qualcomm.com>
+        d=1e100.net; s=20230601; t=1712327264; x=1712932064;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PocJzIJm9BmbxkIOP3QKpq0ppKs7IoB/uMDxWflb82Q=;
+        b=Ej0LcxuzAzpqLtxsBDs5INfO0bVTvSutmGch2FeGi4aH1gUgVd7Om+65NdgukYI2Jx
+         LvHanbFp9LoqY0NBnoKIhBD/mA14jqQ5kpwLvzrbdta2Os9SrxJ6FvjothH/xJF2jQWY
+         ant4amW0MoUoM2Rb7AAmFnFsKc5M+89ZdMSip5hFeSBfbOWVLMPKLbKHNDo9ZmjZ3pXq
+         oVuQll8urXmCSzDVUejFuXZxn7yyPkW3ts30Gc7DHfEEvtyxFCtQICCzhp5vgDc9Eh2T
+         zL10TFlO8kPvJvR3Gqu7E4hqFNeEv+hqrUERN829yRs/UgA0flL6FirlYTHjzjG/wFCa
+         40nA==
+X-Forwarded-Encrypted: i=1; AJvYcCUEsLCt6GAsPxamr3GPvD0Bi6/RE60k+pncQoArtURGpH94Xo4ylaNPZebgnKT0LuLVPrMIgl4gPoORARSB0fAui3+nxNCwPf2dSNyKNdUz4aZtAzrTfnPbtGDbFIelVCUTEkyilTf2/82jHkPyFpJGQzFNuTZOm6tPxValcV4jhBuWjBe5TvTNMyn0axxKvky92otKiPNHnn9xoqeyoj+/KjoYU8xxm2jl8XWCh/KlTlQSGES3TYzwsvvnunKK6YPr70SjOH+ii/eQqBp6qCu1gvR29E7AedQ5Uxu0SPVraeLGprCVbax+F7LQtWOC/D+6C0dYwmropJJbP7wQ4+ifFWen2uUmhlzF+9+oBGrZoiOD/O9Dr2M=
+X-Gm-Message-State: AOJu0YzliBBMMdH5OU0mGt2056PuEb+J8BmrAZEPYPbg+iTwNC+I0req
+	jQHJafjzzarLa6ZZXlZ+25J0YVWqIZh5k4bIHcUyKshYfjrDr6oqhN79LKh+JEDLyg==
+X-Google-Smtp-Source: AGHT+IG33HrZubBpzY8CpjRIQwVD80jMhPy2dSPTMGLUVGxGflRdQJ0BZwQCntKNtwbopvefvVBfOQ==
+X-Received: by 2002:a0d:c845:0:b0:610:ca8b:9a1a with SMTP id k66-20020a0dc845000000b00610ca8b9a1amr1164098ywd.46.1712320862179;
+        Fri, 05 Apr 2024 05:41:02 -0700 (PDT)
+Received: from mail-yb1-f176.google.com (mail-yb1-f176.google.com. [209.85.219.176])
+        by smtp.gmail.com with ESMTPSA id jw1-20020a05690c74c100b006144dd11472sm331431ywb.83.2024.04.05.05.41.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Apr 2024 05:41:02 -0700 (PDT)
+Received: by mail-yb1-f176.google.com with SMTP id 3f1490d57ef6-dc74e33fe1bso2067042276.0;
+        Fri, 05 Apr 2024 05:41:02 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCV0xJzsjm2isj8Cc+w+NQb30rBTV98QfS4Uo5wL6Sr0oiul+gz+xIigjwnQ8P6Hv4wksmkydeB6mzO+9oMQPmPq7BnWrD6FVyoUurMotxGzeXkyp8FQ94Z6cKYTwS2g/vzAlrYTtkYV7ThBiZU03NlEbeUw74VWdoAQM4r8WeQHHDWkL1HDyV6D3UHz6WatyOjpv93Mf5OlXEn5I+1xVEr5Sq3BnGNmowDyfTEVpA9n0PM3tzJny1j+CCgVqm5AoYJNDDB/DxAbHmjf5R9cY0Fjbxina0zMeRKHDsCtKlb9GrztaU04qKbWhTFtknnQiqPJGdSdQMnQSwtaV5aa7b5hB9XkL0uohwER8VgW3t7MjkrVEv73TTQ=
+X-Received: by 2002:a05:6902:c06:b0:dcf:56c5:4298 with SMTP id
+ fs6-20020a0569020c0600b00dcf56c54298mr1422009ybb.12.1712320861884; Fri, 05
+ Apr 2024 05:41:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zg9vEJV5JyGoM8KY@hu-bjorande-lv.qualcomm.com>
+References: <cover.1712207606.git.ysato@users.sourceforge.jp> <1db8627e4ca50b9d2d27e95d245518cac1cd62dc.1712207606.git.ysato@users.sourceforge.jp>
+In-Reply-To: <1db8627e4ca50b9d2d27e95d245518cac1cd62dc.1712207606.git.ysato@users.sourceforge.jp>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 5 Apr 2024 14:40:50 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdWnioh8er_xDvEY8ny9TgEyfb9AR-p2paS7D4OrbKykvg@mail.gmail.com>
+Message-ID: <CAMuHMdWnioh8er_xDvEY8ny9TgEyfb9AR-p2paS7D4OrbKykvg@mail.gmail.com>
+Subject: Re: [RESEND v7 13/37] dt-bindings: clock: sh7750-cpg: Add
+ renesas,sh7750-cpg header.
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
+	Niklas Cassel <cassel@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>, 
+	Heiko Stuebner <heiko.stuebner@cherry.de>, Shawn Guo <shawnguo@kernel.org>, 
+	Sebastian Reichel <sre@kernel.org>, Chris Morgan <macromorgan@hotmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
+	David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Javier Martinez Canillas <javierm@redhat.com>, Guo Ren <guoren@kernel.org>, 
+	Azeem Shaikh <azeemshaikh38@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
+	Herve Codina <herve.codina@bootlin.com>, 
+	Manikanta Guntupalli <manikanta.guntupalli@amd.com>, Anup Patel <apatel@ventanamicro.com>, 
+	Biju Das <biju.das.jz@bp.renesas.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 04, 2024 at 08:25:04PM -0700, Bjorn Andersson wrote:
-> On Tue, Apr 02, 2024 at 04:22:31PM -0500, Andrew Halaney wrote:
-> > Hey,
-> > 
-> > Sorry for the wide email, but I figured someone recently contributing
-> > to / maintaining the Qualcomm SMMU driver may have some proper insights
-> > into this.
-> > 
-> > Recently I remembered that performance on some Qualcomm platforms
-> > takes a major hit when you use iommu.strict=1/CONFIG_IOMMU_DEFAULT_DMA_STRICT.
-> > 
-> > On the sa8775p-ride, I see most TLB sync calls to be about 150 us long,
-> > with some spiking to 500 us, etc:
-> > 
-> >     [root@qti-snapdragon-ride4-sa8775p-09 ~]# trace-cmd start -p function_graph -g qcom_smmu_tlb_sync --max-graph-depth 1
-> >       plugin 'function_graph'
-> >     [root@qti-snapdragon-ride4-sa8775p-09 ~]# trace-cmd show
-> >     # tracer: function_graph
-> >     #
-> >     # CPU  DURATION                  FUNCTION CALLS
-> >     # |     |   |                     |   |   |   |
-> >      0) ! 144.062 us  |  qcom_smmu_tlb_sync();
-> > 
-> > On my sc8280xp-lenovo-thinkpad-x13s (only other Qualcomm platform I can compare
-> > with) I see around 2-15 us with spikes up to 20-30 us. That's thanks to this
-> > patch[0], which I guess improved the platform from 1-2 ms to the ~10 us number.
-> > 
-> > It's not entirely clear to me how a DPU specific programming affects system
-> > wide SMMU performance, but I'm curious if this is the only way to achieve this?
-> > sa8775p doesn't have the DPU described even right now, so that's a bummer
-> > as there's no way to make a similar immediate optimization, but I'm still struggling
-> > to understand what that patch really did to improve things so maybe I'm missing
-> > something.
-> > 
-> 
-> The cause was that the TLB sync is synchronized with the display updates,
-> but without appropriate safe_lut_tlb values the display side wouldn't
-> play nice.
+Hi Sato-san,
 
-In my case we don't have display being driven at all. I'm not sure if
-that changes the situation, or just complicates it. i.e. I'm unsure if
-that means we're not hitting the display situation at all but something
-else entirely (assuming this time is longer than ideal), or if the
-safe_lut_tlb values still effect things despite Linux knowing nothing
-about the display, which as far as I know is not configured by anyone
-at the moment.
+Thanks for the update!
 
-Any thoughts on that?
+On Thu, Apr 4, 2024 at 7:15=E2=80=AFAM Yoshinori Sato
+<ysato@users.sourceforge.jp> wrote:
+>
+> SH7750 CPG Clock output define.
 
-> 
-> Regards,
-> Bjorn
-> 
-> > I'm honestly not even sure what a "typical" range for TLB sync time would be,
-> > but on sa8775p-ride its bad enough that some IRQs like UFS can cause RCU stalls
-> > (pretty easy to reproduce with fio basic-verify.fio for example on the platform).
-> > It also makes running with iommu.strict=1 impractical as performance for UFS,
-> > ethernet, etc drops 75-80%.
-> > 
-> > Does anyone have any bright ideas on how to improve this, or if I'm even in
-> > the right for assuming that time is suspiciously long?
-> > 
-> > Thanks,
-> > Andrew
-> > 
-> > [0] https://lore.kernel.org/linux-arm-msm/CAF6AEGs9PLiCZdJ-g42-bE6f9yMR6cMyKRdWOY5m799vF9o4SQ@mail.gmail.com/
-> > 
-> 
+(from my comments on v6) Please improve the patch description.
 
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
+
+> index 000000000000..04c10b0834ee
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/renesas,sh7750-cpg.yaml
+
+The actual bindings LGTM.
+
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/sh7750-cpg.h>
+> +    cpg: clock-controller@ffc00000 {
+> +        #clock-cells =3D <1>;
+> +        #power-domain-cells =3D <0>;
+> +        compatible =3D "renesas,sh7751r-cpg";
+> +        clocks =3D <&extal>;
+> +        clock-names =3D "extal";
+> +        reg =3D <0xffc00000 20>, <0xfe0a0000 16>;
+> +        reg-names =3D "FRQCR", "CLKSTP00";
+> +        renesas,mode =3D <0>;
+> +    };
+
+Please read
+https://docs.kernel.org/devicetree/bindings/dts-coding-style.html#order-of-=
+properties-in-device-node
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
