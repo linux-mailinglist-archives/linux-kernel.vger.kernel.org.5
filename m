@@ -1,145 +1,116 @@
-Return-Path: <linux-kernel+bounces-133478-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1382E89A452
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:41:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B117889A458
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:42:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2F31284CA9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:41:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 519E01F215A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:42:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0F9917332C;
-	Fri,  5 Apr 2024 18:41:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3788174ECB;
+	Fri,  5 Apr 2024 18:41:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mT46KpkE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iFzTlWaL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3427C172BCE;
-	Fri,  5 Apr 2024 18:41:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B517172766;
+	Fri,  5 Apr 2024 18:41:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712342464; cv=none; b=mb95Yoy4Kyun9EmJutbQGpgm185zlYHG2Enqp/I58uZwK0JfuGDoMPW9H1P0PySjfsUBAMqC/EiX82SU4V65wGL6FkOFk/YpavYf1g/md3zfb6wJuKqP5SOranAlRLVxwdB3ewksetL1f8fgwb8FE/WSd00LZIBTDDLMYgoeM5w=
+	t=1712342476; cv=none; b=l0d60MKdRKAZu9ts45jB9bSGD4S9zDWk8FOTYW5Wc8/VwTlzDwRC1GnFpH8Do9P+VD14aINZRw64xbIvAHM5GZo2YG9aYV0ucyffJo2NX0UVfYQyQgEPokyhXv0F5xomQrsS3mD1rd5fkO0LRDxxRFU8wFP8GBuSq1vPu9I8k30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712342464; c=relaxed/simple;
-	bh=1Pi5PIFKWzOHDFMVv16vL3HB67cVIN7Y+lJtjE4ssfE=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=tO9YT7KnUt4ccnNKdyZbA3DSr9SusHxtOJ+IJEaVdvCsLQ/53iBMEIKgd5UPQg62CD2kJzCVwRuJzTwGleRP45iyFmy3eIzTWAFBV+V8JSigaIIF7DgnhU0qCxJQ0vxo5vmYj9TRZSn8tDiycMwrHzfC9Ih7DlJuqeQoB/kG1Rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mT46KpkE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0D956C4166C;
-	Fri,  5 Apr 2024 18:41:02 +0000 (UTC)
+	s=arc-20240116; t=1712342476; c=relaxed/simple;
+	bh=ahFnZ0vavyaYu2qL/A3OV5znLtsIcqMrPE06H3bADIA=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=rdzbdR0sxEqlviw2GcKnkBCuw3MQ4a6OXJ/mh1iMls59ZaFy6/vCftWPKWGsEPvM3ZV0yHCIuXP04ij1WkCuE5RdQI6jrRfe4wzrV4OHPTG1eT6GdRFQI6wlx6iGvd7E2a2kD01U+OduDRNcLJ6GSvpX48Xn1NoYme4aV4GYG2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iFzTlWaL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B8C0C43601;
+	Fri,  5 Apr 2024 18:41:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712342463;
-	bh=1Pi5PIFKWzOHDFMVv16vL3HB67cVIN7Y+lJtjE4ssfE=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=mT46KpkEDRoMkbW7ty3vb6LL9KcuNG3LLV2IF2AxpZO4RcVf/Bu+rL/0Z9CP0lrQg
-	 buEXmW3jpS358YrzDzvDc+1Axi5QuJiBt0SbjHo2mKmeJpomnZoLJDhUAaayfLfq4L
-	 Q8Cofnh0Xxp9XqMt9z4qUfHmH2Mvg8eedD9fdYwLaw5UP7tIfpdqho0qfPX2Gzxdwo
-	 /3io6CEvcOaqOQArSbfy430Zq2nUXrba8RAoUh1ab1QVMulaNpSofvtJax+tmW1zOT
-	 PFKqieyGZKL/yEo3IjMS4GuGFRjOF6FrYelq6cuTl/7yfq6SrsY5+G8IWiWDo18tG+
-	 bGmtr0J/v9/dQ==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Fri, 05 Apr 2024 14:40:51 -0400
-Subject: [PATCH 3/3] nfsd: add tracepoint in mark_client_expired_locked
+	s=k20201202; t=1712342476;
+	bh=ahFnZ0vavyaYu2qL/A3OV5znLtsIcqMrPE06H3bADIA=;
+	h=From:Date:Subject:To:Cc:From;
+	b=iFzTlWaLQTeMd9XvbeleRgWhGAIQr9PUENHM8uWLJZgfbMpaxFX+71yRNICh8zl/H
+	 E9F/g5+CMQD/XSKdojWjRHx2iCaMACFBZbja2nP4hnji6p3DAQGDf07JHrmROnUG0H
+	 OUCCM3+3PpJUJn5mPwSsX3qw0yp/9XHF38Deh/WqlAJhnt8vfybNIs0e5+CZJl9rxm
+	 vjt7JV5M5+N68zEvzN3iYAzv+A/00h6PrjJ6EDYBS7fD8nyqsNI6UzwYj16qwSlVK3
+	 iol/I9BUbCNxCsjC6ttdg1cG+lJqlN/vashy7XPQIq22gKVWZhKko8KKbWlAGgcVWl
+	 su5FVFmDsFbAg==
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5a47680a806so732645eaf.0;
+        Fri, 05 Apr 2024 11:41:16 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXwox0CeC3BQdi8vxNnJXgdxt01M/Oq8pl2CYghbhYXmlyxOwQCq+mJ/0UOuON+zNZuuBLhC8Es8npdZs906TTJXzu/Z7gJ2EU3C7jK3rc+vBIIK6yZ8u2gjP63SpAj0wslt8Mv36dUyQ==
+X-Gm-Message-State: AOJu0YwlmKjwURm5CEP8YmGQkauj4EKE6mqNcjtTfAfgQvvOEav+nHab
+	tJbEhKXnP/Dwwrscap7n4s3S1IrbGEo0WBIDyVWz1GSs+FjfV5hiIGZgg8S/WuvWax4F23/Pygy
+	JPQbQc7FQushx0lDprTV5pSPN5Z0=
+X-Google-Smtp-Source: AGHT+IGWs1c8u7OEOwNopt7d01lGeC9+Ckks5+bsi/GEKX5c7e0wX/vghKSGy2MIGCgKqoLRArct50Z9D68anlgGuww=
+X-Received: by 2002:a05:6820:2b81:b0:5a6:2c6b:d3b with SMTP id
+ du1-20020a0568202b8100b005a62c6b0d3bmr2688220oob.0.1712342475428; Fri, 05 Apr
+ 2024 11:41:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240405-nfsd-fixes-v1-3-e017bfe9a783@kernel.org>
-References: <20240405-nfsd-fixes-v1-0-e017bfe9a783@kernel.org>
-In-Reply-To: <20240405-nfsd-fixes-v1-0-e017bfe9a783@kernel.org>
-To: Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>
-Cc: linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1863; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=1Pi5PIFKWzOHDFMVv16vL3HB67cVIN7Y+lJtjE4ssfE=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBmEEW75SjWy1aDQNBXHYSBcZlz91tWhCKwzax8x
- 9ciP6k6H1GJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZhBFuwAKCRAADmhBGVaC
- FeEdD/43xhDGNY39uWy/9tVuzu+E2f47ecY7C9qqmJFImxRJXJhBEEiQNNaF8i3+RTUXRhjn6MT
- LSGNfVp0lyk9SRmx7UXRjiwSe3a0k/Una9UAHI2DThnERxSyOGmX+NNCpfDf5e/xZ2bWDyzmKgd
- xIHIEN3vQyYqVcuzpLvdtofkzDo2y+GCV4dHjvC6tvAnsh0TwD36TjNSa4oq/1Rdts4azGXhvoN
- KX/0LbTtjloH9qP4bGNqtA8nn3hxVD7bdg8FXKERNUCEQYgGYVcspI++EipiMrNYMOPnpEUNKzu
- n3+ITqUHClpX39CqxUV4s6/hZe/WJ7w6Tw08LbsAIMyqXUlXN1ZusWzYK/qIjBz6eoEn0G42uOg
- IGK6TpSi/n5lGd9Ir+yFMBonH6F/A9WfXJDmK2zEWvMlTYT1edC8zUXf3obyFGGxTva35faXb3V
- aQ8BJ5ujKYmCibMw8cwnR8j90RgoD8X9P4sMVTx0uV0qrXjNsU7R3c25SE9as3WVVVyXK419bo0
- v3PTLw36klCAVWpFiPAmpZKna81syGMgMV1TGeqnIY3lmWlz47idtz6maR+rR3ojA8eO8KMneBs
- 4+Un0ibPa3rlBQgcM+jEzgnIGTakuQI+HVg/eelUCb6OKhUp4kmgskUuZONeUsPOk+nOYcP5Gou
- lOBmFN1CS+ygq1Q==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 5 Apr 2024 20:41:04 +0200
+X-Gmail-Original-Message-ID: <CAJZ5v0hHLvQWGDtwk=yXv_bJxZH2KTW2SWSUopdRDHHQp0sqow@mail.gmail.com>
+Message-ID: <CAJZ5v0hHLvQWGDtwk=yXv_bJxZH2KTW2SWSUopdRDHHQp0sqow@mail.gmail.com>
+Subject: [GIT PULL] Thermal control fixes for v6.9-rc3
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux PM <linux-pm@vger.kernel.org>, 
+	ACPI Devel Maling List <linux-acpi@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Daniel Lezcano <daniel.lezcano@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Show client info alongside the number of cl_rpc_users. If that's
-elevated, then we can infer that this function returned nfserr_jukebox.
+Hi Linus,
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/nfsd/nfs4state.c |  6 +++++-
- fs/nfsd/trace.h     | 24 ++++++++++++++++++++++++
- 2 files changed, 29 insertions(+), 1 deletion(-)
+Please pull from the tag
 
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index 5891bc3e2b0b..2b5dadeed8c9 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -2352,7 +2352,11 @@ unhash_client(struct nfs4_client *clp)
- 
- static __be32 mark_client_expired_locked(struct nfs4_client *clp)
- {
--	if (atomic_read(&clp->cl_rpc_users))
-+	int users = atomic_read(&clp->cl_rpc_users);
-+
-+	trace_mark_client_expired_locked(clp, users);
-+
-+	if (users)
- 		return nfserr_jukebox;
- 	unhash_client_locked(clp);
- 	return nfs_ok;
-diff --git a/fs/nfsd/trace.h b/fs/nfsd/trace.h
-index ec00ca7ecfc8..b50d6a71c7d9 100644
---- a/fs/nfsd/trace.h
-+++ b/fs/nfsd/trace.h
-@@ -1576,6 +1576,30 @@ TRACE_EVENT(check_slot_seqid,
- 	)
- );
- 
-+TRACE_EVENT(mark_client_expired_locked,
-+	TP_PROTO(
-+		const struct nfs4_client *clp,
-+		int cl_rpc_users
-+	),
-+	TP_ARGS(clp, cl_rpc_users),
-+	TP_STRUCT__entry(
-+		__field(int, cl_rpc_users)
-+		__field(u32, cl_boot)
-+		__field(u32, cl_id)
-+		__sockaddr(addr, clp->cl_cb_conn.cb_addrlen)
-+	),
-+	TP_fast_assign(
-+		__entry->cl_rpc_users = cl_rpc_users;
-+		__entry->cl_boot = clp->cl_clientid.cl_boot;
-+		__entry->cl_id = clp->cl_clientid.cl_id;
-+		__assign_sockaddr(addr, &clp->cl_cb_conn.cb_addr,
-+				  clp->cl_cb_conn.cb_addrlen)
-+	),
-+	TP_printk("addr=%pISpc client %08x:%08x cl_rpc_users=%d",
-+		__get_sockaddr(addr), __entry->cl_boot, __entry->cl_id,
-+		__entry->cl_rpc_users)
-+);
-+
- TRACE_EVENT(nfsd_cb_free_slot,
- 	TP_PROTO(
- 		const struct rpc_task *task,
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ thermal-6.9-rc3
 
--- 
-2.44.0
+with top-most commit 6f824c9fccd494319988fa529601923edf5caacb
 
+ Merge branch 'acpi-thermal'
+
+on top of commit 39cd87c4eb2b893354f3b850f916353f2658ae6f
+
+ Linux 6.9-rc2
+
+to receive thermal control fixes for 6.9-rc3.
+
+These fix two power allocator thermal governor issues and an ACPI
+thermal driver regression that all were introduced during the 6.8
+development cycle.
+
+Specifics:
+
+ - Allow the power allocator thermal governor to bind to a thermal zone
+   without cooling devices and/or without trip points (Nikita Travkin).
+
+ - Make the ACPI thermal driver register a tripless thermal zone when
+   it cannot find any usable trip points instead of returning an error
+   from acpi_thermal_add() (Stephen Horvath).
+
+Thanks!
+
+
+---------------
+
+Nikita Travkin (2):
+      thermal: gov_power_allocator: Allow binding without cooling devices
+      thermal: gov_power_allocator: Allow binding without trip points
+
+Stephen Horvath (1):
+      ACPI: thermal: Register thermal zones without valid trip points
+
+---------------
+
+ drivers/acpi/thermal.c                | 22 ++++++++++------------
+ drivers/thermal/gov_power_allocator.c | 14 +++++---------
+ 2 files changed, 15 insertions(+), 21 deletions(-)
 
