@@ -1,94 +1,145 @@
-Return-Path: <linux-kernel+bounces-133291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133293-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCE1189A1D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:50:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CF6189A1D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:51:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E5D21F220F1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:50:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7BA88B268AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A116017106F;
-	Fri,  5 Apr 2024 15:50:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C8FD171073;
+	Fri,  5 Apr 2024 15:50:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QVBeBj8u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TcbCvz8C"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF45616FF5C;
-	Fri,  5 Apr 2024 15:50:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54A3116F28B;
+	Fri,  5 Apr 2024 15:50:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712332230; cv=none; b=mgmTYrGIuI2OetkxekR7aerltCjUcK3ut1BsjU0RZ9GV2ayLSVeHwtkd2aGBeSD7mydaH6g4xgBU4CAXP4MxAj8WYtLWVj2jsYUdoxjnm+FFvnRK3XYRMKkJnji3TZ7cX6VdnFffrA1SAcx95pISORegH4u8Yi/RAwcJg0+kBiE=
+	t=1712332252; cv=none; b=at2T4tZqQkh1oHXmnNr7N5sFKv4gskIaY0gO0onhz0bjB4U2loMN3ZtGMSUO4zVW6bBywfM2cybTSntpQV3JLoGNA5Y/sZPl3WLG1BKmEsxH1rSDrQiPQPXQ73eWuRjzyBz6lqLzQpf8MksY0k+25fwhI/TLvXtiL7cqA9eovwk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712332230; c=relaxed/simple;
-	bh=dYWFC4dTPThsm4mKcrWmIM9MEbrMaA57mtINggeOeiQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=SB8okl4rYNA6k0H7gnAL9fGoXELVdYGGEUw+1Cvcycc+Ytfe54e/QJ0Hr6qjapZT4uuHaChuA2PINZ0o68Dt+r8WhyhxZj9xbwWyKTBKKtw4AAFXOmmXDGTBoR1aMRuG4CtFcSosZ1UHIhvsTcOUjWQEGKl054DTVK+Fmm4YTpw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QVBeBj8u; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 68EE2C43399;
-	Fri,  5 Apr 2024 15:50:29 +0000 (UTC)
+	s=arc-20240116; t=1712332252; c=relaxed/simple;
+	bh=QV5OlGrTEtG4KKZLN6xXEFl9Ht0QMzJyxZGOnp5ktK8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JKFqRhHJYaylTrQiS+0dJ42cX0XHFA+HHu5HmtBUCnX3vAkI7ARmBQd+3EyqaArobBLB23j6TZiJM7ZP9O08V/1B/NLlKOxz9FBwiNh9usFmCING9nxDb8F1JJ7brXQkAnOHhV6hKctQvxide/Gzx920KuPOAEQep6ULDRrT3tw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TcbCvz8C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21392C433C7;
+	Fri,  5 Apr 2024 15:50:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712332229;
-	bh=dYWFC4dTPThsm4mKcrWmIM9MEbrMaA57mtINggeOeiQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=QVBeBj8ublFEaE3qaj8F6ucZRkTiQp0RBlw07zx0XTUFAPJ7R8PfM64Rq3OnUb7s0
-	 MjR6eykjh2cyBd6zK6pEjYjEAErAsjhO72oUi6YPpUD7K2Jhvzp/Kb37pNEnLhgOAp
-	 90SeP2Joiyz9Sy99O/5Q/NycqMSD2XgmRsl+4AQv6XEgZ30D7tI7GOsV8h992fhyRk
-	 G5dYzB5nrmKUMsT81l+2I6ZtQa1Yitrmd3JRip3HEcNZyaEC3vHt+inFD9yie2BZe4
-	 th+JVYVBK1ED0/Wfx4rYBT12c/7y5OVhIOElzJN2TVV6YqlyWfpiPB162i8q6lRQdG
-	 eBMIco4aTwnIg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 54C3CD2D0F1;
-	Fri,  5 Apr 2024 15:50:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=k20201202; t=1712332251;
+	bh=QV5OlGrTEtG4KKZLN6xXEFl9Ht0QMzJyxZGOnp5ktK8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=TcbCvz8CxFiSEYnJ+kZEdd8WeqBOQ7s5Bm4Skndh9eD8p8TmUEhthv0CvPHDkvsOQ
+	 yCvmr7XF/+8Fg8b9xx5NlasJ9uZS8YiwGqdo04JnJ0YMa+azf2vPT+24LUYtGZII+K
+	 WVB1UhLNB6ExBsgD7JbM9h0pPm6kYT4p/NDX3+9nCVkk6TCZPcFYIhrhM6tUDVzde4
+	 KvcYIcPtgIdWZQLCBaj+r7dt5Nk6NOBEh52XXPZthV2PwOOdcbNV3yYRtrxIydUchd
+	 A0knV8IEhUiHb9qUxO8Ys1hAszwxjq1Qya2CoybitsN1u61WoovsA0rQgdFOPGwZWY
+	 2DnScAq4ryBrA==
+Message-ID: <c599d2cd-2871-4f84-94bb-00656c1a9395@kernel.org>
+Date: Fri, 5 Apr 2024 17:50:41 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] bpf: fix perf_snapshot_branch_stack link failure
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171233222934.27726.10866961945362995147.git-patchwork-notify@kernel.org>
-Date: Fri, 05 Apr 2024 15:50:29 +0000
-References: <20240405142637.577046-1-arnd@kernel.org>
-In-Reply-To: <20240405142637.577046-1-arnd@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
- yonghong.song@linux.dev, john.fastabend@gmail.com, arnd@arndb.de,
- martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, kpsingh@kernel.org,
- shung-hsi.yu@suse.com, memxor@gmail.com, davemarchevsky@fb.com,
- bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/6] dt-bindings: net: snps,dwmac: remove tx-sched-sp
+ property
+To: Flavio Suligoi <f.suligoi@asem.it>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>, "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Maxime Coquelin
+ <mcoquelin.stm32@gmail.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+ <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
+ Konrad Dybcio <konrad.dybcio@linaro.org>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>
+Cc: netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
+ linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+ imx@lists.linux.dev, linux-arm-msm@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240405152800.638461-1-f.suligoi@asem.it>
+ <20240405152800.638461-2-f.suligoi@asem.it>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <20240405152800.638461-2-f.suligoi@asem.it>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello:
-
-This patch was applied to bpf/bpf-next.git (master)
-by Alexei Starovoitov <ast@kernel.org>:
-
-On Fri,  5 Apr 2024 16:26:25 +0200 you wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 05/04/2024 17:27, Flavio Suligoi wrote:
+> The property "tx-sched-sp" no longer exists, as it was removed from the
+> file:
 > 
-> The newly added code to handle bpf_get_branch_snapshot fails to link when
-> CONFIG_PERF_EVENTS is disabled:
+> drivers/net/ethernet/stmicro/stmmac/stmmac_platform.c
 > 
-> aarch64-linux-ld: kernel/bpf/verifier.o: in function `do_misc_fixups':
-> verifier.c:(.text+0x1090c): undefined reference to `__SCK__perf_snapshot_branch_stack'
+> by the commit:
 > 
-> [...]
+> commit aed6864035b1 ("net: stmmac: platform: Delete a redundant condition
+> branch")
+> 
+> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
+> ---
+>  .../devicetree/bindings/net/snps,dwmac.yaml        | 14 --------------
+>  1 file changed, 14 deletions(-)
 
-Here is the summary with links:
-  - bpf: fix perf_snapshot_branch_stack link failure
-    https://git.kernel.org/bpf/bpf-next/c/58babe27180c
+One more thought though:
+1. Missing net-next patch annotation,
+2. Please split DTS from net. DTS goes via separate trees.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Best regards,
+Krzysztof
 
 
