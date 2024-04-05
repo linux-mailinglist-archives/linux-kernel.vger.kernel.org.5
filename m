@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-133281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA30689A1AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 077BB89A1B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:46:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 196231C2378F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:45:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 375EF1C2374F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:46:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A75F416EC0B;
-	Fri,  5 Apr 2024 15:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A6FB16FF3D;
+	Fri,  5 Apr 2024 15:46:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZiX5QSqJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rjPbYZ/z"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCD7017BA0;
-	Fri,  5 Apr 2024 15:45:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B456617BA0;
+	Fri,  5 Apr 2024 15:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712331946; cv=none; b=ksO/9g6TWZ0qNaeXsg3YaMhtaq0N6P5thaxsmdKaClW0tZedVwATgJ4QZaGamLzOeqk8DzaRsR5xw/zrlGIW3wj3qUuuek67ba7uCHZlPFB/kQKo3blxi6IUpkRqbbOhFI3jXC2chIn3zmom4Z7T85CitBAk/FGyqpFnwZjSnJY=
+	t=1712331988; cv=none; b=XHaH4oDOAinvtXiA1YZAxp8w1n/kSyCvxJyAl4dQE8jjbnX0ORBkGvfIF3Cr2AkCc1wiKy+w0mgNYYUzHoLzsR4DFUPAOCwy44Gv0mazZEq31eVBfXE5jFLfXq2yp3dn3zXJj4em2qubqUkBAx481xsmGzJ1wU1ShEIfvatMHIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712331946; c=relaxed/simple;
-	bh=qBnmNSTIQGGq5p7KWZLcDobYUZB2qgjqJ13DpGAaklE=;
+	s=arc-20240116; t=1712331988; c=relaxed/simple;
+	bh=hT8uZ4lRpHguoRPfZWNHk8uXOomTbY0ib/N4Q/yp5oY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=b6WCxMfmeOrmXGzA1fLO4TblgWnP79PqVZvp24sCOZxZqzPZay7NLmhPSVvjJNbWN8CggHAmVcRX58z+m0nyyYzKrAveI/PNlmrwuqV8KpIBaGst7BbPaQtHORFrXjMG7FC244OEaMODTGWsQYIL/CDTb2FMIIt8GKIJS0rwAP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZiX5QSqJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A44DC433C7;
-	Fri,  5 Apr 2024 15:45:43 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=TvQza06s3M/4BEs40inQqj1+9C+TS2Q+77Ycu+HYReUCJ2RY7hM4sZLNxGG7edkRCQusuHbvOfkTNucXoJsXVHehNFeE1QjZwn3vWajsoAn4vRDywpwZ7SACGijR97xizMHfGl3gzO7zq1LbwgCaSssj2u1sWstHkaulefPRlGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rjPbYZ/z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55769C433C7;
+	Fri,  5 Apr 2024 15:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712331946;
-	bh=qBnmNSTIQGGq5p7KWZLcDobYUZB2qgjqJ13DpGAaklE=;
+	s=k20201202; t=1712331988;
+	bh=hT8uZ4lRpHguoRPfZWNHk8uXOomTbY0ib/N4Q/yp5oY=;
 	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=ZiX5QSqJd6Aqfzn9U3U3ZsRiUZqWpR2NlaW4g5wb+O79AjLkO0oe29EHplaeibh5H
-	 +CjvvaKxlGC+i70BJYr6Wryn+VIKcnTNdOTkGteqokfR1OV3unC65E4MMELUw/wt5p
-	 snEB1pe/DlMM2n/qD9fHJRo/ixWa1FYFUBlOt76PlGKoGW6oxr0IMakWA/h2volPd4
-	 42tMyjCB0Qjh2+nWH+DzPtjYKWgXzkQfOhdloXM7AdT6QiVBD+2k2dUK+oVuniMpY7
-	 Lx9ZVGeL89nppNQfX3JOteRrEZ/qC3bw1Q9SS3i1jF1g4PwrGafZ+jW3wnOV6GoPvN
-	 LRkUyHvwa28HQ==
-Message-ID: <e3723943-f6af-4a1d-81c7-3f4e890493ec@kernel.org>
-Date: Fri, 5 Apr 2024 17:45:41 +0200
+	b=rjPbYZ/z2cKmSkaG8PdrI1EqZOguqGOjHCPWg3eMcQnvSnoz5GDTUvyqIwMOYSHLO
+	 jM0reVV2DiknBdG49dmIsb8o25iYbh6e2o4kBN7gJNOwqZLNdhJ+tsRAVKdTl40FdX
+	 Y4SaiVqSPFVjahAiYHGLTu48C7qbPzhaUiZ2+4TN+2GOfOZy3GhG6I2v1Tl5GozZNA
+	 +u0zffrUKV+441iALYCX/bFewKelPZDOyvbgBRMEL5gjygi22YWTwlWhGJWXdcGRdi
+	 iON5Ziaf6Rei57qqH5vk48ifSnEZ4LRupEPy1hRNrxFfhmn2LlNdJu8w5zEvnyyDt9
+	 snU1dE6Ug8CRw==
+Message-ID: <ad9e438d-192f-4ea3-ae09-090abdc973b9@kernel.org>
+Date: Fri, 5 Apr 2024 17:46:20 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,7 +49,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFT 09/10] arm64: dts: microchip: sparx5_pcb134: drop
+Subject: Re: [PATCH RFT 10/10] arm64: dts: microchip: sparx5_pcb135: drop
  duplicated NOR flash
 To: Steen Hegelund <steen.hegelund@microchip.com>,
  Conor Dooley <conor@kernel.org>, Nicolas Ferre
@@ -63,8 +63,8 @@ To: Steen Hegelund <steen.hegelund@microchip.com>,
  linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org
 References: <20240401153740.123978-1-krzk@kernel.org>
- <20240401153740.123978-9-krzk@kernel.org>
- <67f29fa86207a68b148b826b71b1349d3552453d.camel@microchip.com>
+ <20240401153740.123978-10-krzk@kernel.org>
+ <66872c085710223d5bf43cd601cfbc3e54425bbc.camel@microchip.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -110,45 +110,11 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <67f29fa86207a68b148b826b71b1349d3552453d.camel@microchip.com>
+In-Reply-To: <66872c085710223d5bf43cd601cfbc3e54425bbc.camel@microchip.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On 05/04/2024 14:10, Steen Hegelund wrote:
-> Hi Krzysztof,
-> 
-> On Mon, 2024-04-01 at 17:37 +0200, Krzysztof Kozlowski wrote:
->> EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
->>
->> Since beginning the DTS extended the SPI0 in two places adding two SPI
->> muxes, each with same SPI NOR flash.  Both used exactly the same
->> chip-selects, so this was clearly buggy code.  Without checking in
->> datasheet, assume device has only one SPI NOR flash, so code was
->> duplicated.
->>
->> Fixes dtc W=1 warnings:
->>
->>   sparx5_pcb134_board.dtsi:277.10-281.4: Warning (unique_unit_address_if_enabled):
->> /axi@600000000/spi@600104000/flash@0: duplicate unit-address (also used in node
->> /axi@600000000/spi@600104000/spi@0)
->>
->> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
->>
->> ---
->>
->> Not tested on hardware
->> ---
->>  .../boot/dts/microchip/sparx5_pcb134_board.dtsi  | 16 ----------------
->>  1 file changed, 16 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
->> b/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
->> index f165a409bc1d..dc7b59dfcb40 100644
->> --- a/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
->> +++ b/arch/arm64/boot/dts/microchip/sparx5_pcb134_board.dtsi
->> @@ -281,22 +281,6 @@ flash@0 {
->>         };
->>  };
+On 05/04/2024 14:11, Steen Hegelund wrote:
 >>
 >> -&spi0 {
 >> -       status = "okay";
@@ -157,23 +123,19 @@ On 05/04/2024 14:10, Steen Hegelund wrote:
 >> -               mux-controls = <&mux>;
 >> -               #address-cells = <1>;
 >> -               #size-cells = <0>;
->> -               reg = <0>;      /* CS0 */
+>> -               reg = <0>; /* CS0 */
 >> -               flash@9 {
 >> -                       compatible = "jedec,spi-nor";
 >> -                       spi-max-frequency = <8000000>;
->> -                       reg = <0x9>;    /* SPI */
+>> -                       reg = <0x9>; /* SPI */
 >> -               };
 >> -       };
 >> -};
 >> -
 > 
-> When testing this on actual HW the SPI NOR is no longer accessible.
-> The reason is that it sits behind a SPI-MUX and that needs to be present in the Device Tree.
-> 
-> So if you do the "reverse" clean-up it works fine: Remove the simple spi0 node and keep the one that
-> has the spi-mux reference.
+> I also tested this, and no surprise: same comment as for the pcb134 patch...
 
-Aaaa, so we need to do it that way. Thanks for testing! I'll send v2.
+Thanks, I will send v2.
 
 Best regards,
 Krzysztof
