@@ -1,146 +1,109 @@
-Return-Path: <linux-kernel+bounces-132284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FE42899276
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:10:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07153899277
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:10:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CD0B7282A3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:10:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A1E41F22140
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:10:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B6F01367;
-	Fri,  5 Apr 2024 00:09:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC54181F;
+	Fri,  5 Apr 2024 00:10:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L4MH14xC"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="AC+dYQvl"
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7244D36F;
-	Fri,  5 Apr 2024 00:09:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963A94C7C
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 00:10:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712275797; cv=none; b=BaOBvfSlMOhHrrV6EDu08DdZ5a4ABAV/+Ig2EJCEbWUe41vzSIMDnhztIs7JO7ncQpqEVg6iPKThs6z1e9d8r8LKnl9iegRuxBae4adNjJfzGKhO5pBd25BegdLp+/FnoZuSQ9+0Le89mGDpSodm+mvpiYHXbV3jcI96vHN82ko=
+	t=1712275824; cv=none; b=qQX/VBu7OSUlrZHeypcNu9zvyS+/15eJzUNugu62IeTb1JSu81+tReRth2KUMP5Arhc8NnOjt5zrFen3LyEpYaSg18i+c0ELX9DepcRMX4U2+JBZotRHquCDqMuA6nnN3IR/ZBOiQ11zveGv2sE+zdW1YSZHAklsX0d4sxlFs3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712275797; c=relaxed/simple;
-	bh=VslqtpWV8HZ2n6jsi2flLRXK1lNliMOrPOyCoQd/QcM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ezHg0+rsoXU9z6lu02IcG5JmFdJACvqv8oQXX9ypDmKXuaT3kMaZiSt7flIwemnG1s+TSUelBoU7KkQVOTyZe7+zCMeH0/eG+7EtqiVvnDS6Ul42wh0SHuPT3TQhw9uY2IpkSJuxwoQyByV7KAEIUEJwx1QBNzJbN08x4mTX1Ss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L4MH14xC; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ead4093f85so1403967b3a.3;
-        Thu, 04 Apr 2024 17:09:56 -0700 (PDT)
+	s=arc-20240116; t=1712275824; c=relaxed/simple;
+	bh=sPDQJ05/TQ4qe3SR/jxdqKkXBS1tuENTJJthlGc29hk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VuoIQetCCiEcBEy3twdOvWDhXFOceUaaLaKueEXKdLDYpYX3yuMPJ2wI0Wsz91Ynqrm1gp1fK63sjN7U1SLUxq/0xr2gMxPYRdpjdgwjZngofRFceJWKF93uzSvl8bSzGqDiWutGmmkbOPk7JmbUT9X8k9PlPvqzHax6ARL9xXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=AC+dYQvl; arc=none smtp.client-ip=209.85.210.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6e69a9c0eaeso1072000a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 17:10:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712275796; x=1712880596; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=DrEadAnWsc+S5I9mQlpyw9ef/mT3Xvv+Fy/i8/caB1o=;
-        b=L4MH14xCKZd8t54HVCwUYaSR90xY+EXmRKLUuE3XF7iJAFt+V0v8L8+7G5mNUn+hXX
-         U4Wqd1NDMIUCnc64iKAyobfbl2ZiuGgwHF6zMITqHYgp4XiWqHQwWQ8bnfHg8FhfVXBX
-         lB8lpGyBXIOzgRomLmAs5uvk+W/SwTDIybZe3b3KU50ZLXD6wIiXKyBt52OJSMpQ2Bfd
-         0YzsS/kwwcvWTstIWG8fF6Fum8mHktFC0QC6uC31HT8yMG414r0XRNvvS88RFp31jahC
-         odUHBFJmQxyxpK6fcmsbSE6Tx2lJgnc1+5SE6/kdursJRNZr9649cCp6pbP/MZFjv3kK
-         eOWA==
+        d=ziepe.ca; s=google; t=1712275822; x=1712880622; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4+Ek+p9fVawjZ7qm9N+x1SgR6NYTn+xc7F3vNghiclw=;
+        b=AC+dYQvlRhoraElL1GLpSLbIefDUzp+uPydWAnpCDd2fNbdVdomqcgAURJZeEIEXs9
+         a7O/el0mKnsIxn/r+XY3pK+T6otYCbEj4M7a2/MkDTLNjGnu4qg1JHpYTnbEHXByZszv
+         JBZrOjMBNZ/QuiDMoMPVjukhcjEB5jPt82nz5UyRm/F2VfvyK4gr1wAckF09d2NX4gZR
+         U+cE8YY3CHQQq0DkHMrl1UAKKaG6tKUaGKCAsnFM6vRZeBxjShTfAPwV1sC9P6Z8PZrD
+         S80Ib22leMO35fZJrVPSjF/XwAGbhR8A0fs8UVHpls5bYqiJDO7vJ5b5KiAIy4uUoTrX
+         5R5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712275796; x=1712880596;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DrEadAnWsc+S5I9mQlpyw9ef/mT3Xvv+Fy/i8/caB1o=;
-        b=PjFvI3FhI+CgenWHzLCE4UHhxgNPqDiFfrCPhyzOffGRCrRZTDCJs6fnVbSkIj1KW8
-         qR9hegPEHZNLjc0jvo7iRDaSvqgxUDeTdooVfoOz2VZEW4kpySrOZJ/Hrl9+b8uWgJIS
-         HcvUIlwTYtBUhBin+KBr+V7LHPA26i6Bt3lqCfTSyAFDUQFevZpv9/OuXdIRN7STu4it
-         cVlGgYcmw2L7Lf/eRwmvoQPIE0Ki7sjwJsnpGbxzgO8YoQRGMEetck0azFOrqbaFW7LC
-         /jjqFGXHEiPfXozF0YmhiAI3bOn/p7h1jauWn5kZmJLdE8z5DIxJW1IPEUz+M9N0LhfI
-         srKg==
-X-Forwarded-Encrypted: i=1; AJvYcCV9dvo/xuX2uHoGcG0Mn2rWp9kufKVF+Yi7J1DhMIFIIVSRiT3C9jLKc2p9MSyhgYhHpgz9w40iXGPIP8wgTNZ0kZMeoS14kkOqVQxhLNb+RI1VF0ktT1STFRF+tagHsjBIsWbC6enO0oCTuEZ2Kg==
-X-Gm-Message-State: AOJu0Yz+k5e3EkOLc72FXoIjOC85Db4a7iC7EdaXMg0qjhQnwnV4Kf4k
-	lvn21xIdqkmfoB+2obnF7HgN6hLulzeIL9N/1c/F7oaFYUqLLk06
-X-Google-Smtp-Source: AGHT+IEcdC5Fj+xZsa6xKFUVGzWAnng2NU9K2uBBv1ktE65A/1SnfTCrPvgaXU54obPC2xiNLu7riw==
-X-Received: by 2002:a05:6a20:d80d:b0:1a3:c549:62ef with SMTP id iv13-20020a056a20d80d00b001a3c54962efmr69231pzb.1.1712275795657;
-        Thu, 04 Apr 2024 17:09:55 -0700 (PDT)
-Received: from [192.168.54.105] (static.220.238.itcsa.net. [190.15.220.238])
-        by smtp.gmail.com with ESMTPSA id 3-20020a631843000000b005e485fbd455sm253708pgy.45.2024.04.04.17.09.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 17:09:55 -0700 (PDT)
-Message-ID: <3485d1b1-7824-4e62-82b4-ed52360122dd@gmail.com>
-Date: Thu, 4 Apr 2024 21:09:51 -0300
+        d=1e100.net; s=20230601; t=1712275822; x=1712880622;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4+Ek+p9fVawjZ7qm9N+x1SgR6NYTn+xc7F3vNghiclw=;
+        b=ocoYMywmlnalm1gqRER6y54SrfyxPDo4qA76ZP4Z+1pDIF+fyLFdKfRz8v9V7au5ly
+         6ugXrfMX+KbQ8uI7I40swmHQNVHxJiTsuE4uAHR/qKipjxZGikhr8zeLIPN2JO2+R00T
+         RtwMQdEgrEKZ4fed3mNoTxuMDMC1buVktchkDAvfDGgs2EaXIJv7/J3aeIXQ3OAHNbzJ
+         n1kLS8KUQACRbCT0fd845wVZAE/HpBN1wcSVmiJe97Cl2ADKT7+TUDfoURFS4m8sVZiO
+         B1F/5GBBqkMV8LMp06ihPjYlqVw2F1yC7BgcKMHh9TNKMXLylcvWj+lD1CKAysPq0faC
+         oaqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUZ5p/aO5PozYIkNie0ecEEe6n7WZY16eh8hITZAF8shTFLnVh5vwbvJeNH0w7CIFqVDDWUnOXmu5TMIel1euSc4sjk86eeMaB1oaTW
+X-Gm-Message-State: AOJu0Yzb6bdoquWVBqwYmr6K1Qfs55bWJkWGvqWJ6IHWIC7PCJbM4IJE
+	O3MFy7PlevdUHurMlaZv/tgDkuOxrCyfa9TGzEHQBWXNl6wnOKfZpccGB48iE6ILT1Pckpzn9m+
+	v
+X-Google-Smtp-Source: AGHT+IEKMKYTQECfUlI5Xqkk2n1CcC+Bn9kk/cYoX2vF7L9C8xyQOyAac6X58xIRZYOETJnlR1vW7A==
+X-Received: by 2002:a9d:6511:0:b0:6e6:c9a5:6585 with SMTP id i17-20020a9d6511000000b006e6c9a56585mr1312038otl.23.1712275821781;
+        Thu, 04 Apr 2024 17:10:21 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-80-239.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.80.239])
+        by smtp.gmail.com with ESMTPSA id bn11-20020a05620a2acb00b00789f221a46bsm193731qkb.119.2024.04.04.17.10.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 17:10:21 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rsX9w-0002Iz-Kz;
+	Thu, 04 Apr 2024 21:10:20 -0300
+Date: Thu, 4 Apr 2024 21:10:20 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc: Kevin Tian <kevin.tian@intel.com>, Shuah Khan <shuah@kernel.org>,
+	kernel@collabora.com, iommu@lists.linux.dev,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] selftests: iommu: add config needed for iommufd_fail_nth
+Message-ID: <20240405001020.GB5792@ziepe.ca>
+References: <20240325090048.1423908-1-usama.anjum@collabora.com>
+ <45b4d209-675a-4b42-b62c-6644bafa36c0@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf srcline: Implement addr2line using libdw
-To: Namhyung Kim <namhyung@kernel.org>, Ian Rogers <irogers@google.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
- Arnaldo Carvalho de Melo <acme@kernel.org>,
- Mark Rutland <mark.rutland@arm.com>,
- Alexander Shishkin <alexander.shishkin@linux.intel.com>,
- Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
- linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240401160805.51277-1-yakoyoku@gmail.com>
- <CAP-5=fXu4uM=cU8Q=1JP19sELfarNE9BtBmbFW0Uyq2e_HJ6QA@mail.gmail.com>
- <CAM9d7cjgfQpo6dgV4f5Wm4shVpknzP4_m36AkTwaUaF4jLrV1w@mail.gmail.com>
-Content-Language: en-US
-From: Martin Rodriguez Reboredo <yakoyoku@gmail.com>
-In-Reply-To: <CAM9d7cjgfQpo6dgV4f5Wm4shVpknzP4_m36AkTwaUaF4jLrV1w@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45b4d209-675a-4b42-b62c-6644bafa36c0@collabora.com>
 
-On 4/1/24 8:31 PM, Namhyung Kim wrote:
-> [...]
-> 
-> Thanks for doing this!  Yep, we could unset the env temporarily.
-> 
-> As a general comment, perf has some helper functions for libdw
-> in util/dwarf-aux.[ch].  Please take a look and use/update them.
+On Mon, Mar 25, 2024 at 02:11:41PM +0500, Muhammad Usama Anjum wrote:
+> On 3/25/24 2:00 PM, Muhammad Usama Anjum wrote:
+> > Add FAULT_INJECTION_DEBUG_FS and FAILSLAB configurations which are
+> > needed by iommufd_fail_nth test.
+> > 
+> > Signed-off-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> > ---
+> > While building and running these tests on x86, defconfig had these
+> > configs enabled. But ARM64's defconfig doesn't enable these configs.
+> > Hence the config options are being added explicitly in this patch.
+> Please disregard this extra comment. Overall this patch is needed to enable
+> these config options of x86 and ARM both.
 
-Whoops! I haven't seen that file, thanks for mentioning it.
+I picked this and the other patch up, thanks
 
-> [...]
-> 
-> Probably we can use cu_find_lineinfo().
-
-I could use that, I'll see.
-
-> [...]
-> 
->>> +static struct a2l_data *addr2line_init(const char *path)
-> 
-> debuginfo__new()?
-
-`libdw_a2l_new` can be another option too.
-
-> [...]
-> 
->>> +static int get_inline_function(struct dso *dso, struct inline_node *node,
->>> +                              struct symbol *sym)
->>> +{
->>> +       struct a2l_data *a2l = dso->a2l;
->>> +       Dwarf_Addr addr = a2l->addr + a2l->bias;
->>> +       Dwarf_Addr bias = 0;
->>> +       Dwarf_Die *cudie = dwfl_module_addrdie(a2l->mod, addr, &bias);
->>> +
->>> +       Dwarf_Die *scopes = NULL;
->>> +       int nscopes = dwarf_getscopes(cudie, addr - bias, &scopes);
-> 
-> It's not clear to me how this dwarf_getscopes() and later
-> dwarf_getscopes_die() work together.  Can you please add some
-> comment?  Also we have die_get_scopes() and I think it's simpler.
-
-I think the first is to get the scopes at an address and the second is
-for the scopes with the addr offset at that DIE. Off the top of my head.
-
-> [...]
-> 
-> Why not get the function name from the abstract origin?
-
-I'm not getting it, where's that abstract origin?
-
-> [...]
+Jason
 
