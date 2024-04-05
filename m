@@ -1,64 +1,70 @@
-Return-Path: <linux-kernel+bounces-133184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 125DA89A00F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:45:39 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2784389A011
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:46:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4368D1C21B7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:45:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A39BD1F2409E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:46:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2B416F299;
-	Fri,  5 Apr 2024 14:45:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE57816F29B;
+	Fri,  5 Apr 2024 14:46:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FXIsGZFI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ljmhc9b6"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D954416F282;
-	Fri,  5 Apr 2024 14:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE56016EC00;
+	Fri,  5 Apr 2024 14:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712328332; cv=none; b=oaAkHS+xhuafWzQIu6kM6xY9omsBJJKpdGaxeFGRtloENCXAak4DsNDtvOUjDMzgp3U1dZfC1QS8sivF9hr497LjqVxkmEs0fu2k7dI03YHx7EtKzwfkUgA04UktWuONcz47dh4y2/X2TZDZRyUdRryqS3E2nQf1KvzqdaodVEY=
+	t=1712328364; cv=none; b=U8gQX8JueATAoOtTQEKfaBuMhBcT1Rbh/Y9WDXn0kF0Oa4WM1kIGdLO4DyqWBanE4SgkE6zz1pfiA/VbOOcSH79NiaMgT90dW7lnFS/g1+msl1AFE1nJGoWmgBtPJtNtjjCK2EgdRI76b7hHP2RU8vLVKcLVR25ut5u6vL2Z0qE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712328332; c=relaxed/simple;
-	bh=wx0o2Z5tSAT890BrFAAEPL/keq/8qKXJCb6Gvx7H1Tc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jaxTjeWcuPS5xKeyPnNsPF0X8zVu+wimCtL6jtY+pEZ3hzwD1ql21nxTRtqj5BlZYLsiXf5IMSvj0jx4y4XKxFBNap9iq9Lgi2KY5Rvz8Gq1jojIXlCzrxRbbl0R4EJFgnruwJ9m0rXp7ZOEh3yiCaHkoooEoB5/B4hfB02OKW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FXIsGZFI; arc=none smtp.client-ip=192.198.163.13
+	s=arc-20240116; t=1712328364; c=relaxed/simple;
+	bh=ceEL4mAfzMOa2yjome0jtGAnEvqrf3nTfaQB4S9ZAtc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=lR0nZLLlSwVibLdlz7Mqdc1Smn0mIsZPedn330ZEMCWgMQMKgJUYonfEBarFN8rb3fhMpNq01SB0WY6IAPfecyRvkdciVZGVaCkiKYnnm7S6tMZ3FvGMJpRTHMzVV6BHJa6vANlwnD+jdKQKdGx9OI2p5LvS3RKM1MEr2Q7bslw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ljmhc9b6; arc=none smtp.client-ip=192.198.163.9
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712328331; x=1743864331;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=wx0o2Z5tSAT890BrFAAEPL/keq/8qKXJCb6Gvx7H1Tc=;
-  b=FXIsGZFImr95O8Yqc0f3lyrwNhz3I76k+cdclf9CH0jLCeXBZRXqBPXH
-   UI7zPo1lRDsXcHdNUTY+xDekDLYij456hZc03bqjpSeySpTqW49anNmR8
-   K/w015mxfeSfjTNlMAG8FAD77Ad6VU4GJ3ZfCtvZXy0T8f/NbYMfQ57Dp
-   y+Injtu97ZMIWQDb7Mb4zsBFHDP+t8yAvkhTwD/L5YYEdEmYcfE128OV1
-   quhyHHEhrzplY9VgG15FCqBePMrqV3XPgS6+BPIW2e7tzC0U88Qj6cdBn
-   vwESVS9br+vMWD0x4PJZHO4Xf0qUWMXfmxBeJG8ibTwQFOPFOxQGksGi3
+  t=1712328363; x=1743864363;
+  h=message-id:date:mime-version:subject:to:references:from:
+   in-reply-to:content-transfer-encoding;
+  bh=ceEL4mAfzMOa2yjome0jtGAnEvqrf3nTfaQB4S9ZAtc=;
+  b=Ljmhc9b68VPm53VF4BfMPZCUuqfo7H302tGqKZiyacRVP7eTbjlHN5X8
+   B2Tf73KMc1hE9mIPRtP4JNO+gdI9lqfojprx49CrlqCDy2xk0WXQbr3nH
+   i9m8ufjLwmZO5/jh+w96FcUK5ZKyXrB/NNqtK9pnmPWBGqN4QMS0lB+7d
+   OSTK3C15f+CvxScZ+hP7MpnZBQd0Wb2y/8TbeDyvl11+XxJ+WKFkGYgCg
+   V+UhpTc2bmjNuCC3b6kn0s5bjQzESk/vcdLWKTPHH2hLckzSXUTYd8Fyf
+   YD9UxsT2WSNmZxehS4lyzBC7u4V+8mgfG7fZ354Kqs1ITkmOY+Vlh4XzI
    w==;
-X-CSE-ConnectionGUID: FtTfUEq3SeuK3Y/6GJobPg==
-X-CSE-MsgGUID: KIHBIVVdQNad4if/mS2tKw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="10629563"
+X-CSE-ConnectionGUID: 6e6E40moT9SzEDq7G2BsEQ==
+X-CSE-MsgGUID: SONwuYOCQYOEXwWxO3v9rQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="18392296"
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="10629563"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 07:45:30 -0700
-X-CSE-ConnectionGUID: 0coRnFRuQImk/HMaCOpNkw==
-X-CSE-MsgGUID: lvWCND/2RpmQWbUDm286kQ==
+   d="scan'208";a="18392296"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 07:46:02 -0700
+X-CSE-ConnectionGUID: 63p7/dcvQTibZOYuBBQiKA==
+X-CSE-MsgGUID: T7E7nsViQaSPu6gnhrlNYg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="19750839"
-Received: from mdawoo-mobl.amr.corp.intel.com (HELO [10.212.152.63]) ([10.212.152.63])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 07:45:30 -0700
-Message-ID: <aac4b3ea-72dc-4afd-8f1f-06821de953c4@linux.intel.com>
-Date: Fri, 5 Apr 2024 07:45:29 -0700
+   d="scan'208";a="19209263"
+Received: from linux.intel.com ([10.54.29.200])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 07:46:00 -0700
+Received: from [10.213.182.74] (kliang2-mobl1.ccr.corp.intel.com [10.213.182.74])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by linux.intel.com (Postfix) with ESMTPS id 4033920C0655;
+	Fri,  5 Apr 2024 07:46:00 -0700 (PDT)
+Message-ID: <8e60ccd6-907e-445c-85e0-785b1426e98c@linux.intel.com>
+Date: Fri, 5 Apr 2024 10:45:59 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,54 +72,60 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/4] ACPI: x86: Move x86 stuff into dedicated folder
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
- Zhang Rui <rui.zhang@intel.com>,
- "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
- linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>
-References: <20240404183448.3310449-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1] perf metrics: Remove the "No_group" metric group
+To: Ian Rogers <irogers@google.com>, Peter Zijlstra <peterz@infradead.org>,
+ Ingo Molnar <mingo@redhat.com>, Arnaldo Carvalho de Melo <acme@kernel.org>,
+ Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+ Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+ Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>,
+ linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Andi Kleen <ak@linux.intel.com>
+References: <20240403164636.3429091-1-irogers@google.com>
 Content-Language: en-US
-From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <20240404183448.3310449-1-andriy.shevchenko@linux.intel.com>
+From: "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20240403164636.3429091-1-irogers@google.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 
-On 4/4/24 11:23 AM, Andy Shevchenko wrote:
-> Move x86 related modules (which are solely for x86) to the dedicated
-> folder.
-> Note, there are more modules, but they are related to tables and
-> potentially might be used for other architectures in the future.
-> Hence touched only non-table related code.
 
-Except the blacklisted patch Nit, rest looks good to me.
+On 2024-04-03 12:46 p.m., Ian Rogers wrote:
+> Rather than place metrics without a metric group in "No_group" place
+> them in a a metric group that is their name. Still allow such metrics
+> to be selected if "No_group" is passed, this change just impacts perf
+> list.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
 
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
->
-> In v2:
-> - fixed acpi_lpss_init() stub visibility (LKP)
->
-> Andy Shevchenko (4):
->   ACPI: x86: Introduce a Makefile
->   ACPI: x86: Move acpi_cmos_rtc to x86 folder
->   ACPI: x86: Move blacklist to x86 folder
->   ACPI: x86: Move LPSS to x86 folder
->
->  drivers/acpi/Makefile                            | 7 +------
->  drivers/acpi/internal.h                          | 3 ++-
->  drivers/acpi/x86/Makefile                        | 8 ++++++++
->  drivers/acpi/{ => x86}/blacklist.c               | 2 +-
->  drivers/acpi/{acpi_cmos_rtc.c => x86/cmos_rtc.c} | 2 +-
->  drivers/acpi/{acpi_lpss.c => x86/lpss.c}         | 2 +-
->  6 files changed, 14 insertions(+), 10 deletions(-)
->  create mode 100644 drivers/acpi/x86/Makefile
->  rename drivers/acpi/{ => x86}/blacklist.c (99%)
->  rename drivers/acpi/{acpi_cmos_rtc.c => x86/cmos_rtc.c} (98%)
->  rename drivers/acpi/{acpi_lpss.c => x86/lpss.c} (99%)
->
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Reviewed-by: Kan Liang <kan.liang@linux.intel.com>
 
+Thanks,
+Kan
+
+> ---
+>  tools/perf/util/metricgroup.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/util/metricgroup.c b/tools/perf/util/metricgroup.c
+> index 79ef6095ab28..6ec083af14a1 100644
+> --- a/tools/perf/util/metricgroup.c
+> +++ b/tools/perf/util/metricgroup.c
+> @@ -455,7 +455,7 @@ static int metricgroup__add_to_mep_groups(const struct pmu_metric *pm,
+>  	const char *g;
+>  	char *omg, *mg;
+>  
+> -	mg = strdup(pm->metric_group ?: "No_group");
+> +	mg = strdup(pm->metric_group ?: pm->metric_name);
+>  	if (!mg)
+>  		return -ENOMEM;
+>  	omg = mg;
+> @@ -466,7 +466,7 @@ static int metricgroup__add_to_mep_groups(const struct pmu_metric *pm,
+>  		if (strlen(g))
+>  			me = mep_lookup(groups, g, pm->metric_name);
+>  		else
+> -			me = mep_lookup(groups, "No_group", pm->metric_name);
+> +			me = mep_lookup(groups, pm->metric_name, pm->metric_name);
+>  
+>  		if (me) {
+>  			me->metric_desc = pm->desc;
 
