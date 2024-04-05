@@ -1,140 +1,207 @@
-Return-Path: <linux-kernel+bounces-132562-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F26BA8996AA
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:38:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EB008996B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:39:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0946282142
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:38:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E52B01F22F97
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:39:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D7112B141;
-	Fri,  5 Apr 2024 07:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677AB12FB25;
+	Fri,  5 Apr 2024 07:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="DQgyZXI3"
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="jBTG5G5W"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A903012B175
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3586F12BF2D;
+	Fri,  5 Apr 2024 07:39:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712302726; cv=none; b=qryzMcAIdmpN9uSNgA743DuMjOA9gvl+gkwZlHmEdiPXf3lOJjTBxUEeCkco1vfNS8QO2vccIWyupgGLexI0b3OT2kUnnSbIwYacC/fOqwoX0OMSWERau/Ady/D8AcgLxvtb5pN/KzyW9qFs2SFsQDMEP9MISAV1nOx1j4Rkx8o=
+	t=1712302776; cv=none; b=WxOJfuxgwdpqgrCyqYGMb17VUZ3RDBYg4VyjeCEE/QCwHJZ9WeDsSSFJN+GW2CxNKk/M40c+PJQxJhaPD5qg6A+HrILE3FsaF3W/mqxfSKy+FgyPv69OyQIzpfSH9q72vzDtAwTD3h/FP0biglJYukG0p8KYux9Fi3z5W8A1i3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712302726; c=relaxed/simple;
-	bh=xFcwRdTwA4TzkokrASxaN9DG3qMv3QQuyut1PFwZfZQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=aO/oJj9RsFsWQDnDuSV9fjcoT+De8hzEnpH6sSwuLLsLvHGGMW4ZFmntHbBsvpkyT6Yd0pDXIAhBgp5opei2zKAePU83JzJVgCzjhzkl8bc0OHNrq8X+LYRmCP7/ktHByo3g4P9vUWSrtJg+DpKUf+p4BzrDihPalHs5FuxsCEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=DQgyZXI3; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4162ef30461so2484185e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712302723; x=1712907523; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=oRN7BO8gsn/Gv38F95MOeso16MuC+d8zGIKmfkHHaDA=;
-        b=DQgyZXI3x1STatr+0V5Ro3Wk0y7erpHx4qLdWtvEXBILyNtVpuItEyFDo89+HGD7WE
-         npdnvmeWQRs1q8SnfAXTkXrDwmobn9X6VTpDl9rHVi/WqjKQSnp/o4+ajvQI2L9hh6si
-         MTT3K7L4VUCVHvsIOl8TKyh/E1p+Q1CMlLEL16Lq+Zk5jn56rnGpx3z3xKKlBM+kHAS6
-         Wym1s2q3CTOTL/rPMZ0CgIkI5ANQpG6W1X3M9O81E81oRSCJ9hldOk4frB0u8BGJmRLu
-         lVlpjKxa5bR8WG1FqmIZzOvNRC4K1sr+aidt+zX+ziwTEs/VG8L07rHAN0cvR9BoMh+T
-         2K+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712302723; x=1712907523;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oRN7BO8gsn/Gv38F95MOeso16MuC+d8zGIKmfkHHaDA=;
-        b=q1uscyj5GtvnEMBijJJTseMrdxyDeeQQ4g/86X3su8/rs00v6HMIGXPQgiD28C/apn
-         FCr7qUuGO0zi9H2qdYS3fiNy4I2nzFntai8k0f3aKEdVzREPJlbuWEGCW7/GoTBEYfW2
-         evEaqPwRLIXqh3q1L1lG9Kdt+di9B9Aq1pMqT3I91LpVk+5sMf30GktnZU2JOfAyUGkK
-         Ntelln1GV+rFo+MVnO4k5luzw6lRPayBr6rmHVyQXlaY/7Ei72HZu608szthwJXRZW+h
-         Xtj09zsv1V/jFEWh7uPq7+rQ8pFN/NXEY+6QoWEDfro8A4sUEqOLgchSymB/gp67Z96P
-         8AxQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX963jXLTL0Wtl7qZ2RbLtU7EjSXs5S6skJsJn0j+CwuTTcoT9biZ/SLM6IC1jSlZc0O13V4FZatBXIV9unikCQQ0bWbvIBqchBXZR+
-X-Gm-Message-State: AOJu0YxLiVrt32iFwF4oIBsl3baekOx38ZVt4po7xfLc9vc+asbaUm7r
-	76rIBn9l1g4kLrl23ntqWBizKjD66OB69yYR/a8pGajcgzlLRE6gD0+eI7mlH5U=
-X-Google-Smtp-Source: AGHT+IFwiMH8B1ar/OpUPlryON/lBUN5RQvLyQ7JRAx2qevkuOIGYn3OYMCBDXtlsBDfdcoJKEIrbw==
-X-Received: by 2002:a5d:4906:0:b0:341:c589:8aea with SMTP id x6-20020a5d4906000000b00341c5898aeamr502410wrq.63.1712302722944;
-        Fri, 05 Apr 2024 00:38:42 -0700 (PDT)
-Received: from draszik.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id p13-20020a5d638d000000b00343ad4bca7dsm1317091wru.85.2024.04.05.00.38.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 00:38:42 -0700 (PDT)
-Message-ID: <391a874522a4141b4bc7f0314a9e50d27142123a.camel@linaro.org>
-Subject: Re: [PATCH 05/17] arm64: dts: exynos: gs101: enable cmu-hsi2 clock
- controller
-From: =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To: Peter Griffin <peter.griffin@linaro.org>, mturquette@baylibre.com, 
- sboyd@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
-  vkoul@kernel.org, kishon@kernel.org, alim.akhtar@samsung.com,
- avri.altman@wdc.com,  bvanassche@acm.org, s.nawrocki@samsung.com,
- cw00.choi@samsung.com,  jejb@linux.ibm.com, martin.petersen@oracle.com,
- chanho61.park@samsung.com,  ebiggers@kernel.org
-Cc: linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org, 
-	saravanak@google.com, willmcvicker@google.com
-Date: Fri, 05 Apr 2024 08:38:41 +0100
-In-Reply-To: <20240404122559.898930-6-peter.griffin@linaro.org>
-References: <20240404122559.898930-1-peter.griffin@linaro.org>
-	 <20240404122559.898930-6-peter.griffin@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3-1 
+	s=arc-20240116; t=1712302776; c=relaxed/simple;
+	bh=QORV4pD15vZ3OzypvqpxnQvSoqXSnK5DsqvoayCIrCU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=momG6MSmijrnjFHhTlBIh3/xKR+aHWbsIrqkExPMu/vhIcrAG8gxRuwxwU4x/pURi7W8KjsvdP08y8NHchFfKmlOHs6kunLYIryRccZ2cMu5YBNhF0+vlWL0rW5KlGMSiDbA+yBjRUv4IhMgfIntkZMYonpw26wG67254QLlJdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=jBTG5G5W; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4355ATg1031822;
+	Fri, 5 Apr 2024 07:39:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=3Z1qhTERAHY9u7xtJ3fTK4uczfNK3XCfZWVKTFMT7DY=; b=jB
+	TG5G5WM3Dpx6ELoYVHtsiNaaHSgwLHIc/P00q8kyb8kRU8tMCdk+y73yhgiMFoFL
+	1XI16Tksf02Fuhvy5geA9meNS1U49qZccNWE3sHoFRW24BOhuBNHnAVXrFJUkuvR
+	FAuJgAlFuAcL2ycfmTjte9y50YQOmAoF8TuwR+omUMKoxvUSLGVJF4AlPOvZDmzt
+	KQkvxW6HDtSTfPiajfhEwdGGJIQr+3a3W5kdsSCFfiWnw7fiFO1GWv2rceL4cr90
+	9K2tUYq/ys9nAIUOprF6WNiFCkCJHqdklEQ45b4oFTrw7QbYnUF4nsK3hpG+hAsq
+	UOiYTotuL9QaJpSkCuzQ==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3x9en0kjhb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 07:39:24 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4357dD7f031799
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 5 Apr 2024 07:39:13 GMT
+Received: from [10.216.11.24] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
+ 00:39:08 -0700
+Message-ID: <5c3f6747-86f6-3fe9-6dfa-edc44b53c0b1@quicinc.com>
+Date: Fri, 5 Apr 2024 13:09:04 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH v3 04/19] media: venus: core: Set OPP clkname in a common
+ code path
+Content-Language: en-US
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stanimir Varbanov
+	<stanimir.k.varbanov@gmail.com>,
+        Vikash Garodia <quic_vgarodia@quicinc.com>,
+        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Andy Gross
+	<agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        "Mauro Carvalho
+ Chehab" <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+CC: Marijn Suijten <marijn.suijten@somainline.org>,
+        Stanimir Varbanov
+	<stanimir.varbanov@linaro.org>,
+        Mauro Carvalho Chehab
+	<mchehab+huawei@kernel.org>,
+        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
+ <20230911-topic-mars-v3-4-79f23b81c261@linaro.org>
+From: Dikshita Agarwal <quic_dikshita@quicinc.com>
+In-Reply-To: <20230911-topic-mars-v3-4-79f23b81c261@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: 57Arb5L_f6dJ5K6qzLk9j6jW-c6fzNul
+X-Proofpoint-GUID: 57Arb5L_f6dJ5K6qzLk9j6jW-c6fzNul
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_06,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1015 impostorscore=0 adultscore=0 priorityscore=1501 phishscore=0
+ mlxscore=0 bulkscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404050055
 
-On Thu, 2024-04-04 at 13:25 +0100, Peter Griffin wrote:
-> Enable the cmu_hsi2 clock management unit. It feeds some of
-> the high speed interfaces such as PCIe and UFS.
->=20
-> Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
+
+
+On 3/27/2024 11:38 PM, Konrad Dybcio wrote:
+> Calling devm_pm_opp_set_clkname() is repeated for all HFI versions in
+> pm_ops->core_power.
+> 
+> Move it to the common codepath.
+> 
+> This also lets us get rid of core_get_v1.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 > ---
-> =C2=A0arch/arm64/boot/dts/exynos/google/gs101.dtsi | 12 ++++++++++++
-> =C2=A01 file changed, 12 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/exynos/google/gs101.dtsi b/arch/arm64/bo=
-ot/dts/exynos/google/gs101.dtsi
-> index eddb6b326fde..38ac4fb1397e 100644
-> --- a/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/google/gs101.dtsi
-> @@ -1253,6 +1253,18 @@ pinctrl_hsi1: pinctrl@11840000 {
-> =C2=A0			interrupts =3D <GIC_SPI 471 IRQ_TYPE_LEVEL_HIGH 0>;
-> =C2=A0		};
-> =C2=A0
-> +		cmu_hsi2: clock-controller@14400000 {
-> +			compatible =3D "google,gs101-cmu-hsi2";
-> +			reg =3D <0x14400000 0x4000>;
-> +			#clock-cells =3D <1>;
-> +			clocks =3D <&ext_24_5m>,
-> +				 <&cmu_top CLK_DOUT_CMU_HSI2_BUS>,
-> +				 <&cmu_top CLK_DOUT_CMU_HSI2_PCIE>,
-> +				 <&cmu_top CLK_DOUT_CMU_HSI2_UFS_EMBD>,
-> +				 <&cmu_top CLK_DOUT_CMU_HSI2_MMC_CARD>;
-> +			clock-names =3D "oscclk", "bus", "pcie", "ufs_embd", "mmc_card";
-> +		};
-
-This doesn't build because you didn't add the clock ids in the binding patc=
-h.
-
-Other than that,
-
-Reviewed-by: Andr=C3=A9 Draszik <andre.draszik@linaro.org>
-
+>  drivers/media/platform/qcom/venus/core.c       |  5 +++++
+>  drivers/media/platform/qcom/venus/pm_helpers.c | 23 ++---------------------
+>  2 files changed, 7 insertions(+), 21 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/venus/core.c b/drivers/media/platform/qcom/venus/core.c
+> index ce206b709754..5ab3c414ec0f 100644
+> --- a/drivers/media/platform/qcom/venus/core.c
+> +++ b/drivers/media/platform/qcom/venus/core.c
+> @@ -14,6 +14,7 @@
+>  #include <linux/of.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_opp.h>
+>  #include <linux/slab.h>
+>  #include <linux/types.h>
+>  #include <linux/pm_domain.h>
+> @@ -319,6 +320,10 @@ static int venus_probe(struct platform_device *pdev)
+>  	if (!core->pm_ops)
+>  		return -ENODEV;
+>  
+> +	ret = devm_pm_opp_set_clkname(dev, "core");
+> +	if (ret)
+> +		return ret;
 > +
-> =C2=A0		pinctrl_hsi2: pinctrl@14440000 {
-> =C2=A0			compatible =3D "google,gs101-pinctrl";
-> =C2=A0			reg =3D <0x14440000 0x00001000>;
-
+>  	if (core->pm_ops->core_get) {
+>  		ret = core->pm_ops->core_get(core);
+>  		if (ret)
+> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
+> index cf91f50a33aa..ef4b0f0da36f 100644
+> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
+> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
+> @@ -318,21 +318,6 @@ static int load_scale_v1(struct venus_inst *inst)
+>  	return ret;
+>  }
+>  
+> -static int core_get_v1(struct venus_core *core)
+> -{
+> -	int ret;
+> -
+> -	ret = venus_clks_get(core);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = devm_pm_opp_set_clkname(core->dev, "core");
+> -	if (ret)
+> -		return ret;
+> -
+> -	return 0;
+> -}
+> -
+>  static void core_put_v1(struct venus_core *core)
+>  {
+>  }
+> @@ -350,7 +335,7 @@ static int core_power_v1(struct venus_core *core, int on)
+>  }
+>  
+>  static const struct venus_pm_ops pm_ops_v1 = {
+> -	.core_get = core_get_v1,
+> +	.core_get = venus_clks_get,
+>  	.core_put = core_put_v1,
+>  	.core_power = core_power_v1,
+>  	.load_scale = load_scale_v1,
+> @@ -423,7 +408,7 @@ static int venc_power_v3(struct device *dev, int on)
+>  }
+>  
+>  static const struct venus_pm_ops pm_ops_v3 = {
+> -	.core_get = core_get_v1,
+> +	.core_get = venus_clks_get,
+>  	.core_put = core_put_v1,
+>  	.core_power = core_power_v1,
+>  	.vdec_get = vdec_get_v3,
+> @@ -1013,10 +998,6 @@ static int core_get_v4(struct venus_core *core)
+>  	if (legacy_binding)
+>  		return 0;
+>  
+> -	ret = devm_pm_opp_set_clkname(dev, "core");
+> -	if (ret)
+> -		return ret;
+> -
+>  	ret = vcodec_domains_get(core);
+>  	if (ret)
+>  		return ret;
+> 
+>
+Reviewed-by: Dikshita Agarwal <quic_dikshita@quicinc.com>
 
