@@ -1,152 +1,158 @@
-Return-Path: <linux-kernel+bounces-133378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF65589A304
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:01:06 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C94E889A305
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:02:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F05851C22C2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:01:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5AD0528809B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71439171668;
-	Fri,  5 Apr 2024 17:00:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04233171659;
+	Fri,  5 Apr 2024 17:02:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hE+d1t8/"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DNqnRYxO"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4922200CB;
-	Fri,  5 Apr 2024 17:00:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B4355A4DC
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:02:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712336458; cv=none; b=IGoKnBHtK317mnTVFjt7aJCK0xnDdQmCYhl790cG7zdhp/SpRyV5p+VoYqCXEumHax7ar8prrUUBxfnMTfnmy9KJwBAb9lAF/UlbTxvaDAf687APm1Nq5VHsPLUtlBI8uTZplPKuSymbNsrzz/g02JOaDsnEGsHLY0bW6gRrFA4=
+	t=1712336556; cv=none; b=efy4gs1sJ8aU3zsV+JwREIu9d5N9qoRwSFsopw9m873tgrzRvqvut1l5jkipBihJCUfUpqgdSzr67ra7Z+vXFriVKKL3nFKkVr5PlTe8bCWMcbU9lzHZedTueJ05WRi7uEVrukj6RKsSXUgZ4ojyKbIhkBI+PdARlf6jwBxwZaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712336458; c=relaxed/simple;
-	bh=CT4KbWmp4a2wM7xpgM64qDlkfPI7YHfSuBZdBpdtbm0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=PSES8ntwK2+TZ+Eydp3KBxFAfuhBcHDSI8zNo7OHmonliAok62S2XaTS/KCc1ek4y8NuS4wnWh+XLOgwy/Pq/iCHbY9zPmSVdz5PpdlmHlKSVO5rGYV+SU70RK+MIry4pojr3l2Wumnr7Yx0Q0Dvmfdd9iRz7WZLobMJOyzqd6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hE+d1t8/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 849C5C433C7;
-	Fri,  5 Apr 2024 17:00:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712336458;
-	bh=CT4KbWmp4a2wM7xpgM64qDlkfPI7YHfSuBZdBpdtbm0=;
-	h=From:Date:Subject:To:Cc:From;
-	b=hE+d1t8/HdSpQfGk3nd4Sa8XiXoARvTOPA6d6Y5aj0OebxYYRH1Mc0Gn0ROMM3tRa
-	 OkKAnL9/bYB7S4bCuOfI1YWxMED8IDkBCtq5l+49m4tjKOQAheEHbcHRXUhbozx6iY
-	 CBkEf7gcTw9gSqXsTup6houVUAdlkwbWCnX/h0gCWx0ehlDESqTTf5f1pU6gdpXMAs
-	 eBC22gXCbfAmCM5L2A8/rvBPB8NNUbgcthUwFYOWciVSsppP9ZY+TlrgmvJs8gH563
-	 toeRtouUKQkNjMIzpgd3O6jLsSREAwBsRqSnGn2pkdWjf34ty/fI3nvefSr+q/HeiM
-	 Y0XlStBCiF2XQ==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Fri, 05 Apr 2024 13:00:39 -0400
-Subject: [PATCH] nfsd: hold a lighter-weight client reference over
- CB_RECALL_ANY
+	s=arc-20240116; t=1712336556; c=relaxed/simple;
+	bh=MOYV1921efHrJ07Pg46Tj17i+5Tr+D9vo4vTZzq2bUc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gIMOhTJKaxAvtFJmDdb9sK7J2Dlbv6tCQBvZWHPKxMfYHZXP98bEwyC00lcOM0Eq9EDvEnUowX3Rw1K/dBLtEO/j+V6w0JfD7qsHct5N9cRESLsrPTTXTeZncvneJBF03FLSRPz42X7PGqdWCWP/UDVDdXN66niiJsL1qGcCVNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DNqnRYxO; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712336554; x=1743872554;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=MOYV1921efHrJ07Pg46Tj17i+5Tr+D9vo4vTZzq2bUc=;
+  b=DNqnRYxO2A4Oc6X3AWTisNTEklcqfKIIq81OUn+jdzBLFZKFC2gNqiz5
+   s7NKWN9ZQzdPbP6x2gPSA4LC1UPSzOOqsMKePYHdJQj1aIIypdTt7nC8b
+   pwmintZZfzdjBxIJOq+OzoGomN2nSXNHPOR7tu7JjQoGyb8lrr7/T0Rju
+   eaE95ferQ7RStrDQ46yDNUrMyTVtLwh0XQdZW6wqtTButnSwFfqzoipYb
+   2kPMC4SwMU8IkID6ioxBJ29VNtUv4BsNQlc1uZf1l5Y+cQtvQPb7DGu/L
+   KUsLNb0kGHsU6JltKiFlhrVdKbiG7tKotGoaKSGYFsFV4q+8AHh7ZmFFw
+   g==;
+X-CSE-ConnectionGUID: q6+TXZl0Rm6JcqlM3Wb4aw==
+X-CSE-MsgGUID: px46xWotSRqdnre3nnxH5g==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="33075377"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="33075377"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 10:02:34 -0700
+X-CSE-ConnectionGUID: ue9lL3lvQfORewbsYQn0Iw==
+X-CSE-MsgGUID: mxkQdWVLS7uJsFH/c2LUZA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="23941152"
+Received: from twwright-mobl1.amr.corp.intel.com (HELO [10.209.65.212]) ([10.209.65.212])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 10:02:32 -0700
+Message-ID: <c6e8a19b-e6a6-4fa0-81dc-d8747ba648c0@linux.intel.com>
+Date: Fri, 5 Apr 2024 10:02:33 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] efi/x86: skip efi_arch_mem_reserve() in case of
+ kexec.
+To: Ashish Kalra <Ashish.Kalra@amd.com>, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org
+Cc: rafael@kernel.org, peterz@infradead.org, adrian.hunter@intel.com,
+ jun.nakajima@intel.com, rick.p.edgecombe@intel.com, thomas.lendacky@amd.com,
+ michael.roth@amd.com, seanjc@google.com, kai.huang@intel.com,
+ bhe@redhat.com, kirill.shutemov@linux.intel.com, bdas@redhat.com,
+ vkuznets@redhat.com, dionnaglaze@google.com, anisinha@redhat.com,
+ jroedel@suse.de, ardb@kernel.org, kexec@lists.infradead.org,
+ linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
+ <cover.1712270975.git.ashish.kalra@amd.com>
+ <7ca8179d7671a149f2808d8d081b6e736eea4394.1712270976.git.ashish.kalra@amd.com>
+Content-Language: en-US
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <7ca8179d7671a149f2808d8d081b6e736eea4394.1712270976.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240405-rhel-31513-v1-1-40633463f9da@kernel.org>
-X-B4-Tracking: v=1; b=H4sIADYuEGYC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDEwNT3aKM1BxdY0NTQ2NdAyOLxCSzNEMTI1MjJaCGgqLUtMwKsGHRsbW
- 1ABi1EA5cAAAA
-To: Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>
-Cc: Vladimir Benes <vbenes@redhat.com>, linux-nfs@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2514; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=CT4KbWmp4a2wM7xpgM64qDlkfPI7YHfSuBZdBpdtbm0=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBmEC5EnKCr5VyEwsY2Qgz7d5DwE5TiB4eovrwsa
- eh0uvPwGP+JAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZhAuRAAKCRAADmhBGVaC
- FWncD/44BegUyx3yei7jnayS9YfB54oRi/9enY0gC4PjCSKl1S1KKnRmtHX4qpJ2oszuxiVFLnq
- G1yDRUfxgzVoHD74Y8vvxjid0/FJnb95FN/XVHcw9KeA0AjktexD5L5WzUh3Hjw1BLu0kTu3SVT
- FdM0XanHttRcFF7ROGSMubbUI7XiPM4D2Wl1IFOkfavfODqd9YY+TwNNpABAuNHL8IgncX4SegI
- aQjN4boLoWoCxMX1gfSIutnHrFrloH8M6b/gSGPpfqJhr4G6qtd9OjfvjpfUFULj3zd6cKwJKem
- m4aTiSg6Y0nP2B14nTMtDFN2UV3FwlDUK0ycvDehGM9gJUZWEVI8XGtYv74v7Q+BXoGyudgIQGr
- 6yO0ayc9FkX/3Kre+CVVs2w2lSIst2ilzRcyfGvHvdXatzYEcH4vhwHQPROJ5/6HBMlV4qlzupD
- GAiwbMGfOyyXlIM93Y1CUFHAcdVqSF8A2wfLoO/wo1kfRj3OUwuQlT4dOXbwhpPlB0TYNXgL6Wl
- UvTr8nb2td17xVA0OBEnHqR5sEQJSs7hJS9H0NEPTdBtULefIyGSKT5mGcMi1WWQ+CsTFHgNd0O
- J5Y7qaTWRrLpLdAsSEZaKEj7eDSO0y0NL2Ukd+u+dDh1UmrDVnZe/hsfGVbB08tN7oi47xxWrDe
- /HJYaG45FWBZSoQ==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
-Currently the CB_RECALL_ANY job takes a cl_rpc_users reference to the
-client. While a callback job is technically an RPC, this has the effect
-of preventing the client from being unhashed.
 
-If nfsd decides to send a CB_RECALL_ANY just as the client reboots, we
-can end up in a situation where the callback can't complete on the (now
-dead) callback channel, but the new client also can't connect because
-the old client can't be unhashed.
+On 4/4/24 4:11 PM, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
+>
+> For kexec use case, need to use and stick to the EFI memmap passed
+> from the first kernel via boot-params/setup data, hence,
+> skip efi_arch_mem_reserve() during kexec.
+>
+> Additionally during SNP guest kexec testing discovered that EFI memmap
+> is corrupted during chained kexec. kexec_enter_virtual_mode() during
+> late init will remap the efi_memmap physical pages allocated in
+> efi_arch_mem_reserve() via memblock & then subsequently cause random
+> EFI memmap corruption once memblock is freed/teared-down.
+>
+> Suggested-by: Dave Young <dyoung@redhat.com>
+> [Dave Young: checking the md attribute instead of checking the efi_setup]
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
+>  arch/x86/platform/efi/quirks.c | 23 ++++++++++++++++++++---
+>  1 file changed, 20 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+> index f0cc00032751..2b65b3863912 100644
+> --- a/arch/x86/platform/efi/quirks.c
+> +++ b/arch/x86/platform/efi/quirks.c
+> @@ -255,15 +255,32 @@ void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
+>  	struct efi_memory_map_data data = { 0 };
+>  	struct efi_mem_range mr;
+>  	efi_memory_desc_t md;
+> -	int num_entries;
+> +	int num_entries, ret;
+>  	void *new;
+>  
+> -	if (efi_mem_desc_lookup(addr, &md) ||
+> -	    md.type != EFI_BOOT_SERVICES_DATA) {
+> +	/*
+> +	 * For kexec use case, we need to use the EFI memmap passed from the first
+> +	 * kernel via setup data, so we need to skip this.
+> +	 * Additionally kexec_enter_virtual_mode() during late init will remap
+> +	 * the efi_memmap physical pages allocated here via memboot & then
+> +	 * subsequently cause random EFI memmap corruption once memblock is freed.
+> +	 */
+> +
+> +	ret = efi_mem_desc_lookup(addr, &md);
 
-The job is only holding a reference to the client so it can clear a flag
-in the client after it completes. This patch attempts to alleviate this
-by having the job instead hold a reference to the cl_nfsdfs.cl_ref.
+Since you are not using ret, why not directly use if (efi_mem_desc_lookup(..))?
 
-Typically we only take that sort of reference when dealing with the
-nfsdfs info files, but it should work appropriately here too.
+> +	if (ret) {
+>  		pr_err("Failed to lookup EFI memory descriptor for %pa\n", &addr);
+>  		return;
+>  	}
+>  
+> +	if (md.type != EFI_BOOT_SERVICES_DATA) {
+> +		pr_err("Skip reserving non EFI Boot Service Data memory for %pa\n", &addr);
+> +		return;
+> +	}
+> +
+> +	/* Kexec copied the efi memmap from the first kernel, thus skip the case */
+> +	if (md.attribute & EFI_MEMORY_RUNTIME)
+> +		return;
+> +
+>  	if (addr + size > md.phys_addr + (md.num_pages << EFI_PAGE_SHIFT)) {
+>  		pr_err("Region spans EFI memory descriptors, %pa\n", &addr);
+>  		return;
 
-Reported-by: Vladimir Benes <vbenes@redhat.com>
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-This patch seems to break the livelock in my testing. It's not the
-prettiest fix, but it's narrowly targeted and should be appropriate for
-6.9-rc. Longer term, I think we need to rework how the nfs4_clients
-refcounts are managed, but that's a larger project.
-
-Many thanks to Vladimir for all his help with tracking this down!
----
- fs/nfsd/nfs4state.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
-
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index 5fcd93f7cb8c..4311d608a297 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -3042,12 +3042,9 @@ static void
- nfsd4_cb_recall_any_release(struct nfsd4_callback *cb)
- {
- 	struct nfs4_client *clp = cb->cb_clp;
--	struct nfsd_net *nn = net_generic(clp->net, nfsd_net_id);
- 
--	spin_lock(&nn->client_lock);
- 	clear_bit(NFSD4_CLIENT_CB_RECALL_ANY, &clp->cl_flags);
--	put_client_renew_locked(clp);
--	spin_unlock(&nn->client_lock);
-+	drop_client(clp);
- }
- 
- static int
-@@ -6613,10 +6610,12 @@ deleg_reaper(struct nfsd_net *nn)
- 				clp->cl_ra_time < 5)) {
- 			continue;
- 		}
--		list_add(&clp->cl_ra_cblist, &cblist);
- 
- 		/* release in nfsd4_cb_recall_any_release */
--		atomic_inc(&clp->cl_rpc_users);
-+		if (!kref_get_unless_zero(&clp->cl_nfsdfs.cl_ref))
-+			continue;
-+
-+		list_add(&clp->cl_ra_cblist, &cblist);
- 		set_bit(NFSD4_CLIENT_CB_RECALL_ANY, &clp->cl_flags);
- 		clp->cl_ra_time = ktime_get_boottime_seconds();
- 	}
-
----
-base-commit: 05258a0a69b3c5d2c003f818702c0a52b6fea861
-change-id: 20240405-rhel-31513-028ab6f14252
-
-Best regards,
 -- 
-Jeff Layton <jlayton@kernel.org>
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
 
 
