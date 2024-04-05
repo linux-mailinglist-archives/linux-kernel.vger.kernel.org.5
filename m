@@ -1,197 +1,247 @@
-Return-Path: <linux-kernel+bounces-132972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAD27899CB1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:16:53 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BF80899CB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:17:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED7A71C23199
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:16:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6F8F91F23CCB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:17:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0658216C44C;
-	Fri,  5 Apr 2024 12:15:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33ACE16D31E;
+	Fri,  5 Apr 2024 12:16:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="zBdEcRV5"
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="l9HHAiKe"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BCBC16C69E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 12:15:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B18E16D307
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 12:16:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712319320; cv=none; b=nBoBNrp4RNSSTUHaghc6GRGS8mPz5EcWrElHr2j7Yy2zVg5n0fDZ/p06Nm05hL4kvOBliZzphwGPLkK/TFBQt9FNTHpIEIm8+yqqDPgm1EAUic8oqlpxbVBUVjZEVZ6QrnJ28iFRzT+BYq57MsZaSxgOhLF/OSvtMoZZwwwHQlc=
+	t=1712319394; cv=none; b=ofBKiQTxeh6teDGz/n8x8bjIPWOleORyS0acSaBofh5TAuETnBfkoM6vQEDXDsfUayy2uT8WJjtqKfJFIMvQu+C5Gx+gYkhKPvKpA4Ifo+ZEp3n0wUQIWUxQ0p/bw88BFyJQdaM57Dr0Qn1sKLXNTLcM/opQ71G0JucW2UwgcDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712319320; c=relaxed/simple;
-	bh=Dwl47Xw/UaKT3Or1qk5X+ECM730kMnq85KKO8t7OEN0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nPxEWEXovQY1vs+k6JXNEA4hwKuJCyX/Ekb2a9W3bOv6B4t59dO2CKh3vFZtK6XakdnvoILzefljqvSRkzFtC2ukBfd28OqJPM5ctaS00lzGtX9eK2mvaP3l2mFzX1fKLyzHhtymZhJy2SL3md959h6Twid6oSops+N02J9sZ+o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=zBdEcRV5; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2a4706cd005so262566a91.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 05:15:18 -0700 (PDT)
+	s=arc-20240116; t=1712319394; c=relaxed/simple;
+	bh=WjeDlT9dBOQe+BLqgl2oRIytcPuInRU8X9ml0l76d9Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tLi7tSS4pIj5NlBc5FVMd51wbBXWM7yvsAq/LLR18JaYagZ2oJ0WA9ejqDcztBm/vsZBlCfcYHchRQ9g9V+DhI+AJcvQesADNnLmJeQV+LL1Av6aAp3DLGpIzK0QaGSvVsiTC6iaxNhyCu49LGTWnNECpq8nj/g+bS+GIbRb874=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=l9HHAiKe; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4162ef30461so4340085e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 05:16:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712319318; x=1712924118; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ih3PtW8gSBt1naF66h5cf3kKmHxMDYlZf9KoPVxVNgc=;
-        b=zBdEcRV5djf8arAGQgRKUC+XBRepOhm36kdBbrUCx0TqcyMZEe/mOZyqdmH2UoBO5+
-         D416aIrxzMKoZruvH23PH+/nzljFPZ8A2Mma0s3wj4eyJArQ8s9K3eGy6qTYoXdbsnt4
-         4Sxq0pevQEQhjMrvKNRRVUDFjV6TaS60vaJW/VoVG5ea749C45EOoQlpixcuC2jrYG4f
-         a1foZnbN1otnbe26uxntaZTpWCqpK59J8AkBzXGfJbrxgMqWTqoU5XwXF08b1M3VY0Ix
-         H7cOcz6hxpnu7qqDSJUBEHd2ifCJOgrvAM6o6qYqt0U5CIblq6e2z4wPRxYxhnb8qLyH
-         RECw==
+        d=ventanamicro.com; s=google; t=1712319390; x=1712924190; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YIBbg/0Gkc3vc8eXQdCLIpelrpcjO2owsNnM3FfwOWI=;
+        b=l9HHAiKeS5T++SgBczi0RQ9c0Y9gqDzXkYnjQLLdlPy45mOj4vSzJ8DuDIx5KR/Xvw
+         Oig8i4piOzHSybQ+8nhTrJ5Kr7o8n82TwKqNbvv+5nnJvVlKv4MffgQ2+GXBopb5ITPX
+         lJLHXGR6zuIstAZXZSTtzotPoFvOe7y6y3MLLtEw1ntfKfe62ECCTBGGuoj5cpdj0WJN
+         QpMM5hZx4Lf9wtxRMDVxN4w/wFEojAsyaZsnpinLhE7u4XP0vsG15Mw1bHf4e4fjU66k
+         sk3K1YdueM8JZoNx+POETKG8r4x7ECkvfwhUBsvBSQQq2eKcfymwinAivF3vm8jgnQmM
+         wRKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712319318; x=1712924118;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ih3PtW8gSBt1naF66h5cf3kKmHxMDYlZf9KoPVxVNgc=;
-        b=OHLPneh9T2yhLiTj+1rhGHL8d2Bkp9EAHkFveUZjrnEkUe8sqK+Jz9N0CAPjjGiodD
-         dKbCmox3NgZ4ZpjBjDCfRl0k5zWtv7Pf/Z5TynG05+Wwz94/tIyoAn6QGlCH+OTOIhDC
-         P97/F82K3WahDK+Xrq3q3bHExVk82SfzQNvNH9Zkp6m5Yxa1Kn0nrpd6N4lODBmMbGJJ
-         N2bRRnTxySR7vl8bxT3VTM4fjMFJdm1c9KpDXs60ZoeyHjia9qKEy9ZMfROghJsW154G
-         wdEOoo6kMUjDlBTxi0iKMc73JeWSH7V7E9v6JkDru0GdDPnb0Fz/89jujYbkF5Wqk2Gs
-         iytQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXZ4B+dYc6yb+SrWATtVWnBBD8UB6A1NGu5qjUWrrZI5OP3Uk+kyG1HQhYCTkp7ivQI0zCNfUvuiBJzcdqhr7fMOIy++ifEgqDGlM8s
-X-Gm-Message-State: AOJu0YzuquzxzokbXx860Du9tvLAjKc4iUseTG86SI8Gp1By+feDxKDd
-	SFOkColbXcwKtRacCRGJbOMat0WnEtD9+rD00ighbsLssQ2U5y5uQzVOcDU17qkUJSJDUFeQ7S4
-	n/7ScMA0+ZQh6RBCd/LiSwYkcz3FHT31emt0MMg==
-X-Google-Smtp-Source: AGHT+IENgJy5xyQDznS4zTZoB9QDIulnpRJ57o7nEvQjpdXH3GvQL4CfSmVufwybuIoLjG+bOCRUeTE/TDXcLAs3m64=
-X-Received: by 2002:a17:90a:db84:b0:2a2:dc9e:a2cd with SMTP id
- h4-20020a17090adb8400b002a2dc9ea2cdmr1165813pjv.18.1712319317669; Fri, 05 Apr
- 2024 05:15:17 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712319390; x=1712924190;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YIBbg/0Gkc3vc8eXQdCLIpelrpcjO2owsNnM3FfwOWI=;
+        b=NApdNJAUdsHsZUJOhOw2nNhErxt+43/mCmi2OzI8xXPCxjBfOr3K2N+bLuyi6u2Yzp
+         tohtPibRV7sh48/sXEYTXs12cgegKyqDFNM9jfTSx5StNEE3RRIQhS0EUTzBp8gyP4DH
+         uEf3KzdBpRSEBhQB1q8zSmqKGTnjE5Bl/5KDa9VKdyRdmG9euGh7nJpz0tjtXKOUfb47
+         0YqRiIbTPdvHlkznFoBxpkZM7v3+TWxJkuTl85k7D9eKe80NXtEqsfFU6+LFZVIa3b/z
+         NoMCN1Akwi1PHnvMyiTmtj4/sWQgcRKy1ZQi+O8xk/4KQeYkWBaMW+X18oOFIJK63j9n
+         Nq5A==
+X-Gm-Message-State: AOJu0YzKSuOb8sO6ylGF3yUV8J1+JZ4gMZBvWdqir2Se747sM+XCdMt5
+	bnGQ+I3iLSvqsWQqfN8KodyyZqzmQsWIztMGHR34j/lz+/5bxRF+Tv0ar9ku3ng=
+X-Google-Smtp-Source: AGHT+IHWoJ0SVigRSQdE8aAqZ9Ahbq2SNfjubKUhDIh9/SPSG+4VJxdmaUN4mIX3yesibcIkwnQlKw==
+X-Received: by 2002:a05:600c:4e0c:b0:414:250:ccaa with SMTP id b12-20020a05600c4e0c00b004140250ccaamr1142350wmq.12.1712319390374;
+        Fri, 05 Apr 2024 05:16:30 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id fc9-20020a05600c524900b004162a9f03a6sm5867007wmb.7.2024.04.05.05.16.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 05:16:29 -0700 (PDT)
+Date: Fri, 5 Apr 2024 14:16:29 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Ajay Kaher <akaher@vmware.com>, 
+	Alexandre Ghiti <alexghiti@rivosinc.com>, Alexey Makhalov <amakhalov@vmware.com>, 
+	Anup Patel <anup@brainfault.org>, Conor Dooley <conor.dooley@microchip.com>, 
+	Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, 
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Will Deacon <will@kernel.org>, x86@kernel.org
+Subject: Re: [PATCH v5 16/22] KVM: riscv: selftests: Move sbi definitions to
+ its own header file
+Message-ID: <20240405-a09f9ed26805b6988179132c@orel>
+References: <20240403080452.1007601-1-atishp@rivosinc.com>
+ <20240403080452.1007601-17-atishp@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240403005930.1587032-1-qyousef@layalina.io> <CAKfTPtDB8D6bouxJN9q8gXqG+BQYcsrJYEodDWtOB2kQwPH53A@mail.gmail.com>
- <20240404220500.dmfl2krll37znbi5@airbuntu>
-In-Reply-To: <20240404220500.dmfl2krll37znbi5@airbuntu>
-From: Vincent Guittot <vincent.guittot@linaro.org>
-Date: Fri, 5 Apr 2024 14:15:06 +0200
-Message-ID: <CAKfTPtDP7if0gozSrnj+E_hH5xR-vpGAM2TwN4qWXcg5BtrEtw@mail.gmail.com>
-Subject: Re: [PATCH] sched/pi: Reweight fair_policy() tasks when inheriting prio
-To: Qais Yousef <qyousef@layalina.io>
-Cc: Ingo Molnar <mingo@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, Thomas Gleixner <tglx@linutronix.de>, 
-	"Paul E. McKenney" <paulmck@kernel.org>, Joel Fernandes <joel@joelfernandes.org>, 
-	John Stultz <jstultz@google.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
-	linux-kernel@vger.kernel.org, Yabin Cui <yabinc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403080452.1007601-17-atishp@rivosinc.com>
 
-On Fri, 5 Apr 2024 at 00:05, Qais Yousef <qyousef@layalina.io> wrote:
+On Wed, Apr 03, 2024 at 01:04:45AM -0700, Atish Patra wrote:
+> The SBI definitions will continue to grow. Move the sbi related
+> definitions to its own header file from processor.h
+> 
+> Suggested-by: Andrew Jones <ajones@ventanamicro.com>
+> Signed-off-by: Atish Patra <atishp@rivosinc.com>
+> ---
+>  .../selftests/kvm/include/riscv/processor.h   | 39 ---------------
+>  .../testing/selftests/kvm/include/riscv/sbi.h | 50 +++++++++++++++++++
+>  .../selftests/kvm/include/riscv/ucall.h       |  1 +
+>  tools/testing/selftests/kvm/steal_time.c      |  4 +-
+>  4 files changed, 54 insertions(+), 40 deletions(-)
+>  create mode 100644 tools/testing/selftests/kvm/include/riscv/sbi.h
+> 
+> diff --git a/tools/testing/selftests/kvm/include/riscv/processor.h b/tools/testing/selftests/kvm/include/riscv/processor.h
+> index ce473fe251dd..3b9cb39327ff 100644
+> --- a/tools/testing/selftests/kvm/include/riscv/processor.h
+> +++ b/tools/testing/selftests/kvm/include/riscv/processor.h
+> @@ -154,45 +154,6 @@ void vm_install_interrupt_handler(struct kvm_vm *vm, exception_handler_fn handle
+>  #define PGTBL_PAGE_SIZE				PGTBL_L0_BLOCK_SIZE
+>  #define PGTBL_PAGE_SIZE_SHIFT			PGTBL_L0_BLOCK_SHIFT
+>  
+> -/* SBI return error codes */
+> -#define SBI_SUCCESS				0
+> -#define SBI_ERR_FAILURE				-1
+> -#define SBI_ERR_NOT_SUPPORTED			-2
+> -#define SBI_ERR_INVALID_PARAM			-3
+> -#define SBI_ERR_DENIED				-4
+> -#define SBI_ERR_INVALID_ADDRESS			-5
+> -#define SBI_ERR_ALREADY_AVAILABLE		-6
+> -#define SBI_ERR_ALREADY_STARTED			-7
+> -#define SBI_ERR_ALREADY_STOPPED			-8
+> -
+> -#define SBI_EXT_EXPERIMENTAL_START		0x08000000
+> -#define SBI_EXT_EXPERIMENTAL_END		0x08FFFFFF
+> -
+> -#define KVM_RISCV_SELFTESTS_SBI_EXT		SBI_EXT_EXPERIMENTAL_END
+> -#define KVM_RISCV_SELFTESTS_SBI_UCALL		0
+> -#define KVM_RISCV_SELFTESTS_SBI_UNEXP		1
+> -
+> -enum sbi_ext_id {
+> -	SBI_EXT_BASE = 0x10,
+> -	SBI_EXT_STA = 0x535441,
+> -};
+> -
+> -enum sbi_ext_base_fid {
+> -	SBI_EXT_BASE_PROBE_EXT = 3,
+> -};
+> -
+> -struct sbiret {
+> -	long error;
+> -	long value;
+> -};
+> -
+> -struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+> -			unsigned long arg1, unsigned long arg2,
+> -			unsigned long arg3, unsigned long arg4,
+> -			unsigned long arg5);
+> -
+> -bool guest_sbi_probe_extension(int extid, long *out_val);
+> -
+>  static inline void local_irq_enable(void)
+>  {
+>  	csr_set(CSR_SSTATUS, SR_SIE);
+> diff --git a/tools/testing/selftests/kvm/include/riscv/sbi.h b/tools/testing/selftests/kvm/include/riscv/sbi.h
+> new file mode 100644
+> index 000000000000..ba04f2dec7b5
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/include/riscv/sbi.h
+> @@ -0,0 +1,50 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * RISC-V SBI specific definitions
+> + *
+> + * Copyright (C) 2024 Rivos Inc.
+> + */
+> +
+> +#ifndef SELFTEST_KVM_SBI_H
+> +#define SELFTEST_KVM_SBI_H
+> +
+> +/* SBI return error codes */
+> +#define SBI_SUCCESS				 0
+> +#define SBI_ERR_FAILURE				-1
+> +#define SBI_ERR_NOT_SUPPORTED			-2
+> +#define SBI_ERR_INVALID_PARAM			-3
+> +#define SBI_ERR_DENIED				-4
+> +#define SBI_ERR_INVALID_ADDRESS			-5
+> +#define SBI_ERR_ALREADY_AVAILABLE		-6
+> +#define SBI_ERR_ALREADY_STARTED			-7
+> +#define SBI_ERR_ALREADY_STOPPED			-8
+> +
+> +#define SBI_EXT_EXPERIMENTAL_START		0x08000000
+> +#define SBI_EXT_EXPERIMENTAL_END		0x08FFFFFF
+> +
+> +#define KVM_RISCV_SELFTESTS_SBI_EXT		SBI_EXT_EXPERIMENTAL_END
+> +#define KVM_RISCV_SELFTESTS_SBI_UCALL		0
+> +#define KVM_RISCV_SELFTESTS_SBI_UNEXP		1
+> +
+> +enum sbi_ext_id {
+> +	SBI_EXT_BASE = 0x10,
+> +	SBI_EXT_STA = 0x535441,
+> +};
+> +
+> +enum sbi_ext_base_fid {
+> +	SBI_EXT_BASE_PROBE_EXT = 3,
+> +};
+> +
+> +struct sbiret {
+> +	long error;
+> +	long value;
+> +};
+> +
+> +struct sbiret sbi_ecall(int ext, int fid, unsigned long arg0,
+> +			unsigned long arg1, unsigned long arg2,
+> +			unsigned long arg3, unsigned long arg4,
+> +			unsigned long arg5);
+> +
+> +bool guest_sbi_probe_extension(int extid, long *out_val);
+> +
+> +#endif /* SELFTEST_KVM_SBI_H */
+> diff --git a/tools/testing/selftests/kvm/include/riscv/ucall.h b/tools/testing/selftests/kvm/include/riscv/ucall.h
+> index be46eb32ec27..a695ae36f3e0 100644
+> --- a/tools/testing/selftests/kvm/include/riscv/ucall.h
+> +++ b/tools/testing/selftests/kvm/include/riscv/ucall.h
+> @@ -3,6 +3,7 @@
+>  #define SELFTEST_KVM_UCALL_H
+>  
+>  #include "processor.h"
+> +#include "sbi.h"
+>  
+>  #define UCALL_EXIT_REASON       KVM_EXIT_RISCV_SBI
+>  
+> diff --git a/tools/testing/selftests/kvm/steal_time.c b/tools/testing/selftests/kvm/steal_time.c
+> index bae0c5026f82..2ff82c7fd926 100644
+> --- a/tools/testing/selftests/kvm/steal_time.c
+> +++ b/tools/testing/selftests/kvm/steal_time.c
+> @@ -11,7 +11,9 @@
+>  #include <pthread.h>
+>  #include <linux/kernel.h>
+>  #include <asm/kvm.h>
+> -#ifndef __riscv
+> +#ifdef __riscv
+> +#include "sbi.h"
+> +#else
+>  #include <asm/kvm_para.h>
+>  #endif
+>  
+> -- 
+> 2.34.1
 >
-> On 04/03/24 15:11, Vincent Guittot wrote:
-> > On Wed, 3 Apr 2024 at 02:59, Qais Yousef <qyousef@layalina.io> wrote:
-> > >
-> > > For fair tasks inheriting the priority (nice) without reweighting is
-> > > a NOP as the task's share won't change.
-> >
-> > AFAICT, there is no nice priority inheritance with rt_mutex; All nice
->
-> Hmm from what I see there is
->
-> > tasks are sorted with the same "default prio" in the rb waiter tree.
-> > This means that the rt top waiter is not the cfs with highest prio but
-> > the 1st cfs waiting for the mutex.
->
-> This is about the order on which tasks contending for the lock more than the
-> effective priority the task holding the lock should run at though, no?
 
-No, they are ordered by priority in the rb tree so you can get the
-priority of the top waiter and apply it to the owner of the lock
 
->
-> >
-> > >
-> > > This is visible when running with PTHREAD_PRIO_INHERIT where fair tasks
-> > > with low priority values are susceptible to starvation leading to PI
-> > > like impact on lock contention.
-> > >
-> > > The logic in rt_mutex will reset these low priority fair tasks into nice
-> > > 0, but without the additional reweight operation to actually update the
-> > > weights, it doesn't have the desired impact of boosting them to allow
-> > > them to run sooner/longer to release the lock.
-> > >
-> > > Apply the reweight for fair_policy() tasks to achieve the desired boost
-> > > for those low nice values tasks. Note that boost here means resetting
-> > > their nice to 0; as this is what the current logic does for fair tasks.
-> >
-> > But you can at the opposite decrease the cfs prio of a task
-> > and even worse with the comment :
-> > /* XXX used to be waiter->prio, not waiter->task->prio */
-> >
-> > we use the prio of the top cfs waiter (ie the one waiting for the
-> > lock) not the default 0 so it can be anything in the range [-20:19]
-> >
-> > Then, a task with low prio (i.e. nice > 0) can get a prio boost even
-> > if this task and the waiter are low priority tasks
->
-> I don't see this effect. The only change I am doing here
-> is that when we set the prio that we are supposed to be inheriting, instead of
-> simply changing prio, I also ensure we reweight so that we run at the inherited
-> nice value. I am not changing how the waiter logic works.
-
-But if you look more deeply in the code, you will see that all cfs are
-sorted with the same default prio so cfs tasks are not sorted and are
-considered to be the same.
-
-All that to say that I think the weight is not applied on purpose.
-This might work for your particular case but there are more changes to
-be done if you want to apply prio inheritance between cfs tasks.
-
-As an example, what about the impact of cgroup on the actual weight
-and the inherited priority of a task ? If the owner and the waiter
-don't belong to the same cgroup their own prio is meaningless... task
-nice -20 in a group with a weight equal to nice 19 vs a task nice 19
-in a group with a weight equals to nice -20
-
-
->
-> Here's my test app FWIW
->
->         https://github.com/qais-yousef/pi_test
->
-> When I run
->
->         pi_test --lp-nice 0 --lp-nice 10
->
-> the lp thread runs at 0 still
->
-> If I do
->
->         pi_test --lp-nice 10 --lp-nice 5
->
-> low priority thread runs at 5
->
-> What combination are you worried about? I can give it a try. I use
-> sched-analyzer-pp [1] to see the division of runnable/running or you can
-> monitor them on top
->
->         #!/bin/bash
->         set -eux
->
->         sudo sched-analyzer &
->
->         ./pi_test --lp-nice ${1:-10} --hp-nice ${2:-0} --affine-cpu ${3:-0} &
->
->         sleep 10
->
->         pkill -SIGKILL pi_test
->
->         sudo pkill -SIGINT sched-analyzer
->
->         sched-analyzer-pp --sched-states pi_test sched-analyzer.perfetto-trace
->
-> Picutres of output is attached for before and after
->
->         pi_test --lp-nice 10 --hp-nice 0
->
-> [1] https://github.com/qais-yousef/sched-analyzer
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
 
