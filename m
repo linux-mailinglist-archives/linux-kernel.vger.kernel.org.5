@@ -1,135 +1,168 @@
-Return-Path: <linux-kernel+bounces-132335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9F90899345
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:45:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B147F899354
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:46:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE88FB236E9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:45:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 669871F250DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCD54171AD;
-	Fri,  5 Apr 2024 02:45:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72247179BD;
+	Fri,  5 Apr 2024 02:45:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="h0UaRVHj"
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="NyNLyw/v"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FCA3BE4D
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 02:45:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBFF9200C7;
+	Fri,  5 Apr 2024 02:45:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712285105; cv=none; b=WoXNc4nDwVLtuNDRzFwkj9YPUTV6MwJpGfyWfpVZtzDlGfgdsVMfRsEEpjI7EWPOLpPePl518wDgCaa38V2DNbWHJ9J1iSc/RrSAXLImKL5rOqJcex15Fdpvy5Hy6lup83JsRnK9UFVM4gGaQy32CQDX26YB/7W3Q/BeAAr5HX8=
+	t=1712285147; cv=none; b=B0NhvgbJI/RF4Y0zrHwGa+/zcqXcqfLFBJUv+KmMdJAoecOeZ5aOLXeKREzfElngzOPgkGUgxPfdyGJE3BbhNOLR5wazPG7bf5DowH9Tkmw+yUNaM4/3kfnGkjy1A+xcGoy5vcvxx8FXLqEX0ZJOiwIqi15MjRoRjF704TDoRlA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712285105; c=relaxed/simple;
-	bh=64W2UQQFPjouK1278dNE6r4EnUBen8IgVNpaRRS1OFA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oXaNOeTusOg8aLefGzzVtOEdcYfJeqMRiBnyIwjYsmtymkAvcqyn7GWcDuaUVkm87olnLA81aBencrPOei9z7xOXYuGwkftx7oduznm48ME3CUERzTC4f3o34xgiGQd+X09rLtrW61w4tWW6qpS3D7mhftWrID7tAoyFCz8vYfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=h0UaRVHj; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-43182c2457bso8665701cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 19:45:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1712285101; x=1712889901; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=14/Jmqw/F513fEFD4zyhSbn6EUBGIv7v5bPF2RRkA6k=;
-        b=h0UaRVHj7/9Eg834KAq7B1dZv+1F5kx9It9XiGOKZ29VQyyEf0dLogRWoFYExlV5DD
-         Dgd2ATYIsShAej+PRqxjrY8sUWRr/19M+qf3b9KFMdsH1pKi+P/SeyXxE4A/LDo4+AY3
-         CZf6fKw9wzseKDdM6ZDiTid4ofqPl0XvXyPH0Cm0UtKyGD/KHvbFsxRPhuo2pIr/EhnT
-         QZSr/IsMlGIu81Ojotkoo7Dbr9DJZJqnHN8WEp1jhEsWXH8aSUUPhDg/Ga3wZcgYyB/d
-         TmLlk2fukM0Zf9dLgiEYe5Ch9MbTQrFfYE85wKm+8CjlQ7WNqL1clu4kcwcB9Fk2LpJJ
-         KyAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712285101; x=1712889901;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=14/Jmqw/F513fEFD4zyhSbn6EUBGIv7v5bPF2RRkA6k=;
-        b=HgK37wtwffIHCTh9d3LJtsRuW8B0n+TDvrjGrzL43UgYLb112kjGePqk8c/+xu6/+v
-         dTsCDKnt8VX0qDUjWgFwJffqKl56RYHkyjmycy03U7NjxWqgVKzQlwiM4sCAN8SEfQnf
-         S0BZm9YmC5xwFq2v3bicRonyYCddXJAGwMDt7CR5CA8hjKyJRHYYRF/lXdIiW1hmBJzb
-         0ZFqPtRk9KQmNWKJCDAbDCx+7ij27xq00EVtnHX0l2YD/gIfRDgMLmFkk2mn6UjGqIWC
-         ZOmzWjKrOAmOJmYJKqza7WItIW1vTdIWEy8zEu8TtaydRaxiAfat1aVeqS7ktdXHH8qW
-         NKXg==
-X-Forwarded-Encrypted: i=1; AJvYcCVHYjzL+RMXTVeLxRRkb6xGwxRB988SY/GGUZGbHMR9JOs75BcD5zNQYa6cNbuyh3K2FGH1fD9zywG61Z/gNeuynuSUN9RVhQjOnZRw
-X-Gm-Message-State: AOJu0YzvWiWzIXeaE8Af1s/BgmyualYNwy+LgPusiFX5+JFPpUDDFKKv
-	eKvPEf0dWyKqyFeizPIo9iN818XqbciK6fuIiaM23CJDlSczcM2zf2/WkBZt1qs=
-X-Google-Smtp-Source: AGHT+IGavZtnoQPJhG1A86bHtiTFeAPWXXoTPEGfjOceSc3n9e3JOO+zdDrP6qQRqwZUkdkKfBNXnw==
-X-Received: by 2002:ac8:5dd0:0:b0:434:515e:4120 with SMTP id e16-20020ac85dd0000000b00434515e4120mr110174qtx.42.1712285100819;
-        Thu, 04 Apr 2024 19:45:00 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id c12-20020ac86e8c000000b00432cf894d57sm322016qtv.48.2024.04.04.19.45.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 19:45:00 -0700 (PDT)
-Date: Thu, 4 Apr 2024 22:44:59 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Nhat Pham <nphamcs@gmail.com>,
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/5] mm: zswap: refactor limit checking from
- zswap_store()
-Message-ID: <20240405024459.GE641486@cmpxchg.org>
-References: <20240405013547.1859126-1-yosryahmed@google.com>
- <20240405013547.1859126-3-yosryahmed@google.com>
+	s=arc-20240116; t=1712285147; c=relaxed/simple;
+	bh=qqV0FguGCTgmP3Zlqv/SIQDUZMAcngfLSumSuiNyRAw=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oLYW60sQrNpk0fnWYmrZ7RwtzH/m9kvshCjKFMK4pqEjwVlMsNu63PHIGBWNyjXDjy1ZvA4TRqrQWmdxbUc83Pj1q6A9kiJWvCux1CKZiI9oUO+tRU8+c1Wf38eQTj8D5kcGCDlLClVKkY/OSu9+kpDqxSi851rgZu1FcvHaRZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=NyNLyw/v; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4352f5Qh019527;
+	Fri, 5 Apr 2024 02:45:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	date:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=qcppdkim1; bh=bKdudp4O3Z4sw6Qonpwqy
+	Pii2xiamxAolShtYA4Nnmo=; b=NyNLyw/v2Wg8hb/VrTOgpBobmInm/dJyptHzX
+	c1jYEEbMl1V2pDBClQZic+ZyhqX8Ylwh7QR6CqycSAN1Dz00Jti/bxOehwXg4d7j
+	ka7pSSxpkc4LbvNwBDJfjzPnzb1MdsGG17sXaUVjnz8cKHBpNh5zYa6uPvIgIqsV
+	Jl9C5w8DfSq9L9WQC6ad492s0V8f/ZUU/izx6BaZzv0hg5hpSnZ6Prfw6GV0u2fm
+	/J79gI3sAdGaGzRrzJba8kjRP4ZndyGuikRLoHBnP1XJECOfnh7GZSu4DUvGsu6O
+	rJw6zvxpxFbpuxFVStNoOBE1NPA0h14UeAGBovo1IFFJcZblA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa8fc00vt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 02:45:39 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4352jcJG025484
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 5 Apr 2024 02:45:38 GMT
+Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
+ nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.4; Thu, 4 Apr 2024 19:45:38 -0700
+Date: Thu, 4 Apr 2024 19:45:37 -0700
+From: Bjorn Andersson <quic_bjorande@quicinc.com>
+To: jianbin zhang <quic_jianbinz@quicinc.com>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Alexandre Belloni
+	<alexandre.belloni@bootlin.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-rtc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH V4 1/2] rtc-pm8xxx: clear the triggered alarm interrupt
+ during driver probe
+Message-ID: <Zg9l0cTBgoibIaDQ@hu-bjorande-lv.qualcomm.com>
+References: <20240401-fix-rtc-alarm-which-fired-before-driver-probe-not-be-cleard-v1-0-aab2cd6ddab8@quicinc.com>
+ <20240401-fix-rtc-alarm-which-fired-before-driver-probe-not-be-cleard-v1-1-aab2cd6ddab8@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20240405013547.1859126-3-yosryahmed@google.com>
+In-Reply-To: <20240401-fix-rtc-alarm-which-fired-before-driver-probe-not-be-cleard-v1-1-aab2cd6ddab8@quicinc.com>
+X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: Zr8u3Q0b5AUQp6yt-TjDjfG8Py73mOpe
+X-Proofpoint-ORIG-GUID: Zr8u3Q0b5AUQp6yt-TjDjfG8Py73mOpe
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_01,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0 mlxscore=0
+ malwarescore=0 mlxlogscore=999 bulkscore=0 suspectscore=0 clxscore=1015
+ priorityscore=1501 adultscore=0 phishscore=0 impostorscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
+ definitions=main-2404050019
 
-On Fri, Apr 05, 2024 at 01:35:44AM +0000, Yosry Ahmed wrote:
-> Refactor limit and acceptance threshold checking outside of
-> zswap_store(). This code will be moved around in a following patch, so
-> it would be cleaner to move a function call around.
+On Mon, Apr 01, 2024 at 09:56:29AM +0800, jianbin zhang wrote:
+
+Sorry, I think the patch looks good now, but the subject prefix
+(rtc-pm8xxx) does not match other changes to this file.
+
+> If the alarm is triggered before the driver gets probed, the alarm interrupt
+> will be missed and it won't be detected, and the stale alarm settings will
+> be still retained because of not being cleared.
 > 
-> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+> Issue reproduce step:
+> (1) set the alarm and poweroff the device
+> (2) alarm happens and the device boots
+> (3) poweroff the device again
+> (4) alarm irq not be cleard, device boots again
+> 
+> the fixing here is clear the interrupt during the step(3) unconditionally.
+> 
+> Signed-off-by: jianbin zhang <quic_jianbinz@quicinc.com>
 > ---
->  mm/zswap.c | 32 ++++++++++++++++----------------
->  1 file changed, 16 insertions(+), 16 deletions(-)
+> Changes in v4:
+> - add the cover letter
+> - modify the patch to conform to the specification
 > 
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 1cf3ab4b22e64..fba8f3c3596ab 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1391,6 +1391,21 @@ static void zswap_fill_page(void *ptr, unsigned long value)
->  	memset_l(page, value, PAGE_SIZE / sizeof(unsigned long));
+> Changes in v3:
+> - clear the interrupt in driver probe unconditionally
+> - link: https://lore.kernel.org/linux-rtc/20240319191037.GA3796206@hu-bjorande-lv.qualcomm.com/T/#t
+
+These are expected to be links to the previous revisions of your patch,
+not people's answers.
+
+Please consult go/upstream and switch to b4 for the future, which does
+this automatically for you. Please also use the internal review list!
+
+Regards,
+Bjorn
+
+> 
+> Changes in v2:
+> - Adapt the V1 patch according to the newest rtc-pm8xxx
+> - link: https://lore.kernel.org/linux-rtc/20240124024023df15ef6e@mail.local/
+> 
+> Changes in v1:
+> - fixing is as below logic, During driver probe: read ALARM_EN, read ALARM_DATA, read RTC_RDATA,
+>   if (ALARM_DATA < RTC_DATA), Trigger the alarm event and clear the alarm settins
+> - link: https://lore.kernel.org/linux-rtc/20220321090514.4523-1-quic_jianbinz@quicinc.com/
+> 
+> Changes in original:
+> - link to original: https://lore.kernel.org/linux-rtc/YTusgJlMUdXOKQaL@piout.net/
+> ---
+>  drivers/rtc/rtc-pm8xxx.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
+> index f6b779c12ca7..e4e2307445cf 100644
+> --- a/drivers/rtc/rtc-pm8xxx.c
+> +++ b/drivers/rtc/rtc-pm8xxx.c
+> @@ -527,6 +527,11 @@ static int pm8xxx_rtc_probe(struct platform_device *pdev)
+>  	if (rc)
+>  		return rc;
+>  
+> +	rc = regmap_update_bits(rtc_dd->regmap, rtc_dd->regs->alarm_ctrl2,
+> +					  PM8xxx_RTC_ALARM_CLEAR, 1);
+> +	if (rc)
+> +		return rc;
+> +
+>  	return 0;
 >  }
 >  
-> +static bool zswap_check_full(void)
-> +{
-> +	unsigned long cur_pages = zswap_total_pages();
-> +	unsigned long thr = zswap_accept_thr_pages();
-
-I know this looks neater, but it adds an extra division to the very
-common path where the limit hasn't been reached yet. It should really
-stay inside the branch.
-
-Another option could be to precalculate the max and the accept
-threshold in absolute pages whenever their respective module param
-changes. That would eliminate both divisions from the hot path.
-
-> +	unsigned long max_pages = zswap_max_pages();
-> +
-> +	if (cur_pages >= max_pages) {
-> +		zswap_pool_limit_hit++;
-> +		zswap_pool_reached_full = true;
-> +	} else if (zswap_pool_reached_full && cur_pages <= thr) {
-> +		zswap_pool_reached_full = false;
-> +	}
-> +	return zswap_pool_reached_full;
-> +}
-> +
->  bool zswap_store(struct folio *folio)
->  {
->  	swp_entry_t swp = folio->swap;
+> 
+> -- 
+> 2.43.2
+> 
 
