@@ -1,74 +1,79 @@
-Return-Path: <linux-kernel+bounces-132749-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132750-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6500A89999D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:37:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EED489999E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:38:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BEE57B21453
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:37:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4935C2837C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910A4160791;
-	Fri,  5 Apr 2024 09:37:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2700E16079C;
+	Fri,  5 Apr 2024 09:37:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="qnhjw9UC"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WdjB9hOI"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD0BD160787
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07392160792
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:37:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712309850; cv=none; b=Jaa2tMw4ro7L93naIrC2s6M0j3PETIY8Er8Osj3qN9GbA+2fBvpHK194TunEb9sMhf1Q2t6TD4yOqqeBlcMrNox7/UvJJ3NQHlccfbYkfurdJmqmNR0TFqOjDXp+9R5l1B+OodBTx9e9bsUQ9ZYPgLT/vzESS8jd3im9ALymNoI=
+	t=1712309859; cv=none; b=Ov//C3thGgHf8D7n2wX6HgTN4hdXolExwsOoDAXP8vL86n2iqVkHEOKKH5F8Ctryk7YEZ9Zv7JnZvpuGqgW34xy40JEeR3ssINOtCrw3dFOOlCCTYO7vsfbzXGNme6jZIQUkan4RZytPuzWAOiplYxUOtk9nkLqRkKr3NWz6ekg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712309850; c=relaxed/simple;
-	bh=KUNs+rel022u45kMG7rmghp5HlZz04g6K2Ph8/0mXcY=;
+	s=arc-20240116; t=1712309859; c=relaxed/simple;
+	bh=hA6D7fT4sD8jKG9PTwt7L4CrU9WIO8s4oBXtxdTk/M0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JuMvpjf/iR/prcazAkfsNIdFSgEX2C7OQXTsMK+qGPPReSqDMg8a5vCPyoUD6tdDQEg3AxlxZNmv56zKbZmLS6Teruq2/2AFnHSvJDpbHyGXbrGMp8ALpbuoBpWviM/x5DR5jIhA83JLruWo06uDpLrAA0aLLbqp30hf1KZX1+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=qnhjw9UC; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a46ea03c2a5so335015066b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 02:37:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712309847; x=1712914647; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=7iPTG8xgQOObJLs+r2gxxOJcQg6bmDCPKtHB9KQ7ZyM=;
-        b=qnhjw9UC3T5/RbWZJXhNn6Jw+7BxV4uIGTHDOWXl7gn5QRiaiiBSDc6S3dkATh2d03
-         PwdbRUzITi/Yor46EK1qgONTiCHkcKH+53Ux853iSj6mGSSv22D0zHP8DwlJ3t3a2V9j
-         Cmtshapxm5nP+ppXj0HMyCmgXwX9Q4yzTpUwyDd8EilSdDyGvytt7mwhGK67eTxTjf2+
-         pOcxsV7JHQicV/b1CHAq3LD4KSdP0SMRQYvN386GOPCxFIvh6glQi65gsRE480y+9dHu
-         2LsQPlAVe0JE4GK7QD+yWanQvyqUoMJUuPbtsvvDPZVX54z1TNVYajfe+Wgq+rC75Z6s
-         +goA==
+	 In-Reply-To:Content-Type; b=ZMlSL3HZDYqaryu2VVtvtK1CA3Vbn7LV1fGs+VkHd2LoWJ2m61slaDv+yxgSEulaZOFKJzPJmfwPxwMfci1b2HjPP7SEY1oPu4sWcPJJNJwp66rIQkhh/ZfE+8yXNPfH3O9X1r95nB/qXPwvvn5mkSpot8mmPsXhq25bYrYO7kI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WdjB9hOI; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712309857;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7i6B99SnbU2yp2qEccSjOSod/Gd1R34IkiKn/iTeu1U=;
+	b=WdjB9hOIhAzrhL/gI/T6Qdsd8igg7O4jJ8cv28uqR5JWniOJIbBlZMLis5Sgt156jDF5+Z
+	VrmDOo0fosXmDDAIAPu3m64Hn/Q4ZURXHsUSu666YpkEhgAe+04PURhNYsQmaigTLspVE4
+	tjkwE80b4ykkKjMwACucyWNWr1J1PEI=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-624-h3cdVzeiMam5tyuOxYRMfg-1; Fri, 05 Apr 2024 05:37:33 -0400
+X-MC-Unique: h3cdVzeiMam5tyuOxYRMfg-1
+Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a4455ae71fcso129655266b.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 02:37:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712309847; x=1712914647;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7iPTG8xgQOObJLs+r2gxxOJcQg6bmDCPKtHB9KQ7ZyM=;
-        b=DhkuzsE8WhOCteb/R0GVQUzW8i7M4MtvQ43df741AifyPLZmWpgsyf3MogqAJKBxHP
-         IkVH/xZe2QPv+HJaSvLNCvSeoqs9HDjvRqqNgTTkDeoukcf5RHi50YXgZYE0r2CeHA9A
-         QOSU9MeuGaJmsUh+EDO8DGxw0N6X1ml3cR7jgEwnqmiBr1JF84UEn7aT8/IcGAeWTkJB
-         JmSQWt+2tGi8nGoRn/aD6qM/ChOh8iIgBoiUJJR1BPaFL1Fii33BRzDLadpWGn79+ycR
-         wPy73g3pR90FYUAj1qSm7zg7IVBEHXQOuGNPz7HBDIRfSIoyiWndgBNNe4iw1XssU8US
-         F2hA==
-X-Forwarded-Encrypted: i=1; AJvYcCVcM+ha5Q53uqxhvJiiHEfSuq+xE6vxJuqjTSHiOzWgCBZQxagndkjndZmLdlNI0tmQgh0/TgaKgGQ+Xv5Sk7sZUyvE9XBNT8GF9fPg
-X-Gm-Message-State: AOJu0YyP0LjQYFPaq+MQWv6lte+cGR48Vb+vmEEPzwC5Osjghzc8Rigt
-	O2NQyfzXkXJvTuwJVFwXwb3UgySIf4OKC55EB+nVxaBHrqkmCzjq21QvXihEGPY=
-X-Google-Smtp-Source: AGHT+IHS3ACjVk/HxIQbZ9ESwJpkH6sFIMlevxvcTFeFPe/SjcgBgyAlqM6H/Q01jjxlxvxo2OM8Ug==
-X-Received: by 2002:a17:906:5a8b:b0:a51:a9d5:dca8 with SMTP id l11-20020a1709065a8b00b00a51a9d5dca8mr561653ejq.27.1712309847145;
-        Fri, 05 Apr 2024 02:37:27 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id t1-20020a1709067c0100b00a46aac377e8sm633043ejo.54.2024.04.05.02.37.24
+        d=1e100.net; s=20230601; t=1712309852; x=1712914652;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7i6B99SnbU2yp2qEccSjOSod/Gd1R34IkiKn/iTeu1U=;
+        b=Qv/0WqCWzmb4IP40Wn0Ujh40Km+WJXpEufeBp1uZlGia2jPpaAq0p2k609mqryie/e
+         nle5oBblrWZOYoW7uw7hRyqWSGnHzb/ks7iOiKPCrznuuMuGiljTc4He8iRbvf0c1DEk
+         hkXO7qz1+BEONl0kq5wTBWAg2tuLFqUfSmL9MKVcFNCgV1oAbH3TKkn6DYqNZKiG/zTi
+         6oLTfM8nlInQe+EpmOEAADjvR1YuEtFIQT4anQa4RrRohC1PZnYJ9ZSezcd+uK+wmKd9
+         W2SeaSyWFArJHIv0PS/0JQbo1OERmTLSk/VqVPeqfPoCvuj9KV+xJTKIaewjc38KQsuT
+         q2Cw==
+X-Forwarded-Encrypted: i=1; AJvYcCXsLDCSKE0FZ67b7on0badfXWeILrLRgO/x5z4KLrBxoH8vXvH5jPNaIMPshbYeYU445YeST5OXx6TylLbick4OD2bmz4sWS1m8ljdm
+X-Gm-Message-State: AOJu0YxYZ71SNZXh40uu3x5XD7zUIa2Vre2PSTOTFoTLiu36pOicveni
+	9AvKkAGjkyYjYlAZmhWnzP3y4+84cAGhmGQDywsCJmUUrl+XT+g9YA/W7gjI3nyPYKlCZwyWL3B
+	JtL4XdGUdaeGRTm7O+DA66h7C4zxVn+nINVuI8Pp8ICEv2akFwq6EhqQmFrVSHg==
+X-Received: by 2002:a17:907:da5:b0:a51:a995:607a with SMTP id go37-20020a1709070da500b00a51a995607amr693026ejc.25.1712309852555;
+        Fri, 05 Apr 2024 02:37:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG/zBqPPJlyXSz7JApGKIr5oo4tEUzHJuqsMgORqemrsokUF2aZ1kOTRyBPkj+pt6agIKasSQ==
+X-Received: by 2002:a17:907:da5:b0:a51:a995:607a with SMTP id go37-20020a1709070da500b00a51a995607amr693003ejc.25.1712309852226;
+        Fri, 05 Apr 2024 02:37:32 -0700 (PDT)
+Received: from [192.168.0.182] (host-87-2-128-150.retail.telecomitalia.it. [87.2.128.150])
+        by smtp.gmail.com with ESMTPSA id jz8-20020a17090775e800b00a4672fb2a03sm645421ejc.10.2024.04.05.02.37.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 02:37:26 -0700 (PDT)
-Message-ID: <83dccd7e-e690-4803-adb9-aaedcee7dc94@linaro.org>
-Date: Fri, 5 Apr 2024 11:37:23 +0200
+        Fri, 05 Apr 2024 02:37:31 -0700 (PDT)
+Message-ID: <8567127c-c009-4960-a0e9-59f852571b11@redhat.com>
+Date: Fri, 5 Apr 2024 11:37:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,126 +81,59 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 05/16] dt-bindings: net: wireless: describe the ath12k
- PCI module
-To: Kalle Valo <kvalo@kernel.org>, Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Marcel Holtmann <marcel@holtmann.org>,
- Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Liam Girdwood
- <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- Bjorn Helgaas <bhelgaas@google.com>, Saravana Kannan <saravanak@google.com>,
- Geert Uytterhoeven <geert+renesas@glider.be>, Arnd Bergmann <arnd@arndb.de>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Alex Elder <elder@linaro.org>,
- Srini Kandagatla <srinivas.kandagatla@linaro.org>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Abel Vesa <abel.vesa@linaro.org>, Manivannan Sadhasivam <mani@kernel.org>,
- Lukas Wunner <lukas@wunner.de>,
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
- linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-wireless@vger.kernel.org, linux-arm-msm@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
- linux-pm@vger.kernel.org,
- Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-References: <20240325131624.26023-1-brgl@bgdev.pl>
- <20240325131624.26023-6-brgl@bgdev.pl> <87msqm8l6q.fsf@kernel.org>
- <CAMRc=MeCjNn7QdDrcQMuj32JFYoemQ6A8WOYcwKJo1YhDTfY+Q@mail.gmail.com>
- <87cyr440hr.fsf@kernel.org>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <87cyr440hr.fsf@kernel.org>
+Subject: Re: [PATCH v2 04/15] sched/core: Fix picking of tasks for core
+ scheduling with DL server
+Content-Language: en-US, pt-BR, it-IT
+To: "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+ linux-kernel@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>
+Cc: Suleiman Souhlal <suleiman@google.com>,
+ Youssef Esmat <youssefesmat@google.com>, David Vernet <void@manifault.com>,
+ Thomas Gleixner <tglx@linutronix.de>, "Paul E . McKenney"
+ <paulmck@kernel.org>, joseph.salisbury@canonical.com,
+ Luca Abeni <luca.abeni@santannapisa.it>,
+ Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+ Vineeth Pillai <vineeth@bitbyteword.org>,
+ Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>
+References: <20240313012451.1693807-1-joel@joelfernandes.org>
+ <20240313012451.1693807-5-joel@joelfernandes.org>
+From: Daniel Bristot de Oliveira <bristot@redhat.com>
+In-Reply-To: <20240313012451.1693807-5-joel@joelfernandes.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-On 05/04/2024 11:33, Kalle Valo wrote:
-> Bartosz Golaszewski <brgl@bgdev.pl> writes:
+On 3/13/24 02:24, Joel Fernandes (Google) wrote:
+> * Use simple CFS pick_task for DL pick_task
 > 
->> On Mon, Mar 25, 2024 at 3:01 PM Kalle Valo <kvalo@kernel.org> wrote:
->>>
->>> Bartosz Golaszewski <brgl@bgdev.pl> writes:
->>>
->>>> From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>>
->>>> +
->>>> +maintainers:
->>>> +  - Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
->>>
->>> IMHO it would be better to have just driver maintainers listed here.
->>>
->>
->> Why? What's wrong with having the author of the bindings in the Cc list?
+>   DL server's pick_task calls CFS's pick_next_task_fair(), this is wrong
+>   because core scheduling's pick_task only calls CFS's pick_task() for
+>   evaluation / checking of the CFS task (comparing across CPUs), not for
+>   actually affirmatively picking the next task. This causes RB tree corruption
+>   issues in CFS that were found by syzbot.
 > 
-> If you want follow the ath12k development and review patches then you
-> can join the ath12k list. I'm not fond of having too many maintainers,
-> it's not really helping anything and just extra work to periodically
-> cleanup the silent maintainers.
+> * Make pick_task_fair clear DL server
 > 
-> I would ask the opposite question: why add you as the maintainer?
-> There's not even a single ath12k patch from you, nor I haven't seen you
-> doing any patch review or otherwise helping others related to ath12k.
-> Don't get me wrong, I value the work you do with this important powerseq
-> feature and hopefully we get it into the tree soon. But I don't see
-> adding you as a maintainer at this point.
+>   A DL task pick might set ->dl_server, but it is possible the task will
+>   never run (say the other HT has a stop task). If the CFS task is picked
+>   in the future directly (say without DL server), ->dl_server will be
+>   set. So clear it in pick_task_fair().
+> 
+> This fixes the KASAN issue reported by syzbot in set_next_entity().
 
-This is not a maintainer of driver. This is maintainer of bindings, so
-someone who has hardware, datasheets, knowledge and/or interest in
-keeping the bindings accurate.
+These two sched/core patches seem to make sense.... things are working with them.
 
-All your arguments above suggest you talk about the driver. This is not
-the point here.
+But I am not an expert in the CORE_SCHED, so I am adding them on top of the dl
+server series in the v6... it is easier for people to review them...
 
-Best regards,
-Krzysztof
+The only thing I did was to adjust the log to fit into the 75 char that
+checkpatch warns...
+
+Thoughts?
+
+-- Daniel
 
 
