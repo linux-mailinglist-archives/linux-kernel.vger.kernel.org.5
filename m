@@ -1,223 +1,269 @@
-Return-Path: <linux-kernel+bounces-133190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47A3A89A024
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:48:40 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 31CFE89A026
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:48:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB4971F21A17
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:48:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCA9B287649
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:48:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7692516F29F;
-	Fri,  5 Apr 2024 14:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4A916F849;
+	Fri,  5 Apr 2024 14:48:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mCkoDMMQ"
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rp1M/0Gy"
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F23316EC1B;
-	Fri,  5 Apr 2024 14:48:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA27916F829;
+	Fri,  5 Apr 2024 14:48:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712328510; cv=none; b=lONL+vFAlwsDgTIV6a/GYGQIwYAGmyQpbnvQSTNA+i3yBOl9Q1MExJQvTQmSLOxTT9z9sTloppyT7qnhELL8xZJ89YtdZXPeNdRomMvDshPc6UzY7Tdl98hYVeBt7lad8b+YeTrwPOjTmUfATDklXgOedSn6hB0Rf8FJfOg8KkQ=
+	t=1712328513; cv=none; b=YrQwbDC7Sfte2PbVzA5A/SRNKqlOvTzh8MC5Vh8LmRnkYheobdizBxgen9213uIqlkDU4LZuVelZ5H258v8KpfIkkStQ1WWGbAafmq6n5ISvJumWLhpLCcNnFmFJsYfd0F0MSFcu2cM6eSb5Cs1S8c+myMezCh2GYyAUxW02ztE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712328510; c=relaxed/simple;
-	bh=0VQFXtDRSz4M6IrqXt9cEwJScvhuHkihccKjUXmXepU=;
+	s=arc-20240116; t=1712328513; c=relaxed/simple;
+	bh=CDrhixP9RtkKB6cb9jrr6trJZJQjmdYcESp6DiI4FUo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m4DeTF/Z5Z7jS7Gh20kemH5sY6V11pPzDE3yRagwI5svxZ75IKUEs7I+KtFt5BvrBMzffqCinYrV6QoZMYtL/YyxR52sKN5MxR1FwvO1M5A3MHHC75GGKTsoex+SyKaoflfuOHjzfWKiLwHwbPC+u7CS5CYHPg9z4tu96/vDqc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mCkoDMMQ; arc=none smtp.client-ip=209.85.210.48
+	 To:Cc:Content-Type; b=WWrBSw+l3aAQQ3A/8hI9Gq3OEFBfNTySZL5UTSjdSIh3oMatElYfzSkMJ5JFI3wq4X/4D39wzjVs3Q47IJ/xPAfPxUH6o6WVX8G1uPq2Ea6clZMZ33xtZA2/5y6kd/KuzNsGQOsVeyhhxm5hkrBpfr4pvgHP57lt3vkrQESLPa4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rp1M/0Gy; arc=none smtp.client-ip=209.85.208.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e89c87a72eso1553437a34.0;
-        Fri, 05 Apr 2024 07:48:28 -0700 (PDT)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d80baf621eso24168631fa.1;
+        Fri, 05 Apr 2024 07:48:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712328508; x=1712933308; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712328510; x=1712933310; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sKzek6Yxpsl4qXpk5d2XtdtZIpLAzQsbPQmoIKymGH4=;
-        b=mCkoDMMQpL1BCvdQdNCr5ASS68lT2aOA7eVMeH8qnQedHqqMKeeGkW8n3yzH/SfT9W
-         CflUAL5k3U/P6iccdFRLxERXqj6E6MWY7hrgj9syiQdryCz7hmo69/pvXQ6MsEuhMoQc
-         6aBmQ1P0YMIwdZPIL6sqyzX3yIvbc0ZKpAmnE0V/RZ1QTPULaDTsdxSir0brBi6HZyI1
-         jjFbKNXhvrc0tPQlLYsXVvm/oDMvykPXoU5wQsLGBV9QkUcPYCGwpJBUWU7AnsD8/cAZ
-         A2SV5x1QiIn4cE7gBKKTE8KGHt/BPrB3SUwczJuO+cYOmAL+jwS9ozyLGCavoNsq7Y0j
-         +ENQ==
+        bh=cFpu1whkh1nSy8kvvx+5UzrJKjw0DqYLany6m12D6u0=;
+        b=Rp1M/0Gy+e35iEdcsJpov+7Q1sM7JpFK2bhZbzi/7AJgqLa1iRYjBmtTUUQpuvvamj
+         Lno8Y7QOhS0cNqAke6+oggbbiUbLILwgozYC9d0mw00dUuWh0X5P2UdGY1cZbbFLvLSc
+         BHyJtMRGVjG/5siJfDmKWFu9CplLWvt4S99kcgFSSZj3UuEq2ibCCnN5sQmZ8hc/UO92
+         c7ahFDgwjXRwCxpiZFjyuqhzNBpZ0VG7b2FjfIHEVzLLl++blYpw1Z7meMu3NKhsjyD6
+         500ce8adeJBeL/IjwKQFc5hBvtt/c10vGJazo5vHilhpRhB9x6w8uJS7WCUdpsBT81OV
+         T0Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712328508; x=1712933308;
+        d=1e100.net; s=20230601; t=1712328510; x=1712933310;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sKzek6Yxpsl4qXpk5d2XtdtZIpLAzQsbPQmoIKymGH4=;
-        b=pRPlXgZ7MLPCW7iMWS9kxfaEwwNDYpNaWUwYFjo3tar7Ey/iICbgNR+g9/LAwjEWq8
-         t35cpSylZ9DvIvcO+pWT9oEgBqkTxue9XgZao+S8nuZoGykV16X5XlVNOVmdOuOOk7gN
-         7Z32kDwKr4fnV+RbN7sXVMPTqjIf9on1V/DY1Hvb0X9pUYsRPsehVOHXuYVU11MBtLev
-         lZKMMkDoQ7+R9NF4ZJtlIFwvlG0yOrkCGSdYqskB5SUE35osJkQIXBOxdSoh51sdq6nV
-         msjjvtBZ6/sqOuWJm2SIKZnXsf8y8xMlT7pQmcYBCNEAAekMV5wmEFFa5+JSjEvC+8F2
-         XfFg==
-X-Forwarded-Encrypted: i=1; AJvYcCV1Z+omXjlALEaq0eD1C91pmVVVyVAkA2dZ7IX1z/mRFUWZB1k0dzlw0rJSLXb4b6fCB/vxpN4Fh8sk34hZpuwyY1GzJ4L+TXcPwBoHxYUAsjiEVtgYbe4zM4NfaP+8tr2nDuIvTABJtLgv9A==
-X-Gm-Message-State: AOJu0YwoZ8mTPFxaMdm3ekvJKaUTtlYWBCV3Od7xmr7Qt3Da5xlUwqcr
-	Cvdwpr0+0/Mg27KVd36f9PvUygUqVZWdJvJVkJBVYljuQmR8RowjMhCQcWOc3399z35Ha37wdH1
-	rg8KXrLjhT5FPWY/fiMnyUjr+q48=
-X-Google-Smtp-Source: AGHT+IFvfuAhJ3eeyIyRMcKMWX9PCOkhtxWoVIBPUmUnlj7V2N/+mzrWdjY83DsnGQIh08lIzGE0D/n+GUbaWvbe1E8=
-X-Received: by 2002:a9d:7413:0:b0:6e7:548e:271a with SMTP id
- n19-20020a9d7413000000b006e7548e271amr1648002otk.17.1712328507996; Fri, 05
- Apr 2024 07:48:27 -0700 (PDT)
+        bh=cFpu1whkh1nSy8kvvx+5UzrJKjw0DqYLany6m12D6u0=;
+        b=Wx9BVlW2n3Ms7UYILwLnMIco7iiMZ6LlJcUF175LIdnTTY5pj00PMcgeqDKF+yZIjc
+         biaqI2jq3RYxm2G0FA22PjFGQ0M5SsQXQi9uIGUpde6+i6uGnkCcBAOh5PO15iReyOaP
+         4zv61MYdWpB/hwir32giNIr165gkSeZberGFpjRi/B4OMHXPzDmRVWFrCq1+Wk0RcT+z
+         Vf1dIyxw6dfMUX+MZCqMiHMD37JQ3TKHAzPBJ3KOtRS6xDvCDrxjAxBuOoMqM7oiDEbN
+         etpr2CQuBCo+OYQ0zVUBGVQ926l5T2jLMVJuIvLwmanXDKL2jzC8fvoTZIkbLytWFyl/
+         J97w==
+X-Forwarded-Encrypted: i=1; AJvYcCWoJuX6DhnGe5RbH/1eSm0JY/+86uVSWvTuMNwWNWFCsRzz4qW4eUQH9ckGXOX/a4lPwatvXt2xmdmfSCBoHCKXFyWM/6v7Pl7LooxS6X/pOcrjIycs1AOsbqbnSKGpG96stpbU+Aohxg==
+X-Gm-Message-State: AOJu0Yy9APpDD7RHyEgv/DnjzTpFC2deQDMM3P4pfOYSlJmpgr0l/opd
+	FUqakOC+YY6UyrKdcy5a58WN/MHJRv6fJhOlugJ0UKC4RGDAYWg88aC76mexO/JnCo+E5VQvpu/
+	GOfesPffl9obH9Af97Bd+BNOTY9Y=
+X-Google-Smtp-Source: AGHT+IGrg/lFBS2AMqv3GmFvVcFL6woTGN8IKlxDkSWiTeKdq9HfiE5kNbCsRxC8SlKmB2gQiyBs2NPA5UHos4n1BAQ=
+X-Received: by 2002:a2e:a3d2:0:b0:2d6:c4ec:782 with SMTP id
+ w18-20020a2ea3d2000000b002d6c4ec0782mr1273383lje.49.1712328509495; Fri, 05
+ Apr 2024 07:48:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000098f75506153551a1@google.com> <0000000000002f2066061539e54b@google.com>
- <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
- <20240404081122.GQ538574@ZenIV> <20240404082110.GR538574@ZenIV>
- <CAOQ4uximHfK78KFabJA3Hf4R0En6-GfJ3eF96Lzmc94PGuGayA@mail.gmail.com> <20240405-speerwerfen-quetschen-d3de254cf830@brauner>
-In-Reply-To: <20240405-speerwerfen-quetschen-d3de254cf830@brauner>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 5 Apr 2024 17:48:15 +0300
-Message-ID: <CAOQ4uxjydrmgk-z6wu5PtP_4GjWH0n75Cvz6oEUcfSuneA0Hag@mail.gmail.com>
-Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
-To: Christian Brauner <brauner@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>, 
-	syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>, 
-	gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org, 
-	valesini@yandex-team.ru, Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>, 
-	Miklos Szeredi <miklos@szeredi.hu>
+References: <20240404160649.967-1-bavishimithil@gmail.com> <78091796-fd0a-42dd-a4da-f7bed3025bf9@linaro.org>
+In-Reply-To: <78091796-fd0a-42dd-a4da-f7bed3025bf9@linaro.org>
+From: Mithil <bavishimithil@gmail.com>
+Date: Fri, 5 Apr 2024 20:18:17 +0530
+Message-ID: <CAGzNGRnuG_gLUrH1N57WvpKbpiNtFrcsG6nJcacQNJB_yMYNrA@mail.gmail.com>
+Subject: Re: [PATCH v2] dt-bindings: omap-mcpdm: Convert to DT schema
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	alsa-devel@alsa-project.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 5, 2024 at 1:47=E2=80=AFPM Christian Brauner <brauner@kernel.or=
-g> wrote:
+So sorry about the 2nd patch being sent as a new mail, here is a new
+patch with the changes as suggested
+
+> Please use subject prefixes matching the subsystem
+Changed the patch name to match the folder history.
+
+> Is it your full name?
+Fixed it, my apologies.
+
+> Filename like compatible.
+Fixed.
+
+> Please open existing bindings and look how it is done there.
+Changed it, is it fine now?
+
+> Same problem. Drop useless description but provide maxItems.
+Removed descriptions for interrupts and hwmods.
+
+> It does not look like you tested the bindings, at least after quick
+> look. Please run `make dt_binding_check`
+I did run it and it didnt produce any errors henceforth i submitted
+the patch.
+
+> Node names should be generic
+Changed as said.
+
+From c24a42724e870822d50ac6857ba9f32d0dce02ae Mon Sep 17 00:00:00 2001
+From: Mithil Bavishi <bavishimithil@gmail.com>
+Date: Mon, 1 Apr 2024 21:10:15 +0530
+Subject: [PATCH v2] dt-bindings: omap-mcpdm: Convert to DT schema
+
+Convert the OMAP4+ McPDM bindings to DT schema.
+
+Signed-off-by: Mithil Bavishi <bavishimithil@gmail.com>
+---
+ .../devicetree/bindings/sound/omap-mcpdm.txt  | 30 ----------
+ .../bindings/sound/ti,omap-mcpdm.yaml         | 59 +++++++++++++++++++
+ 2 files changed, 59 insertions(+), 30 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/ti,omap-mcpdm.y=
+aml
+
+diff --git a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+b/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
+deleted file mode 100644
+index ff98a0cb5..000000000
+--- a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-* Texas Instruments OMAP4+ McPDM
+-
+-Required properties:
+-- compatible: "ti,omap4-mcpdm"
+-- reg: Register location and size as an array:
+-       <MPU access base address, size>,
+-       <L3 interconnect address, size>;
+-- interrupts: Interrupt number for McPDM
+-- ti,hwmods: Name of the hwmod associated to the McPDM
+-- clocks:  phandle for the pdmclk provider, likely <&twl6040>
+-- clock-names: Must be "pdmclk"
+-
+-Example:
+-
+-mcpdm: mcpdm@40132000 {
+-       compatible =3D "ti,omap4-mcpdm";
+-       reg =3D <0x40132000 0x7f>, /* MPU private access */
+-             <0x49032000 0x7f>; /* L3 Interconnect */
+-       interrupts =3D <0 112 0x4>;
+-       interrupt-parent =3D <&gic>;
+-       ti,hwmods =3D "mcpdm";
+-};
+-
+-In board DTS file the pdmclk needs to be added:
+-
+-&mcpdm {
+-       clocks =3D <&twl6040>;
+-       clock-names =3D "pdmclk";
+-       status =3D "okay";
+-};
+diff --git a/Documentation/devicetree/bindings/sound/ti,omap-mcpdm.yaml
+b/Documentation/devicetree/bindings/sound/ti,omap-mcpdm.yaml
+new file mode 100644
+index 000000000..4d5d37e98
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ti,omap-mcpdm.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/ti,omap-mcpdm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: OMAP McPDM
++
++maintainers:
++  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
++
++description:
++  OMAP ALSA SoC DAI driver using McPDM port used by TWL6040
++
++properties:
++  compatible:
++    const: ti,omap4-mcpdm
++
++  reg:
++    description:
++      Register location and size as an array
++      <MPU access base address, size>,
++      <L3 interconnect address, size>;
++
++  interrupts:
++    maxItems: 1
++
++  ti,hwmods:
++    maxItems: 1
++
++  clocks:
++    description: phandle for the pdmclk provider, likely <&twl6040>
++
++  clock-names:
++    description: Must be "pdmclk"
++
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - ti,hwmods
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    mcpdm@0 {
++      compatible =3D "ti,omap4-mcpdm";
++      reg =3D <0x40132000 0x7f>, /* MPU private access */
++            <0x49032000 0x7f>; /* L3 Interconnect */
++      interrupts =3D <0 112 0x4>;
++      interrupt-parent =3D <&gic>;
++      ti,hwmods =3D "mcpdm";
++      clocks =3D <&twl6040>;
++      clock-names =3D "pdmclk";
++    };
+--
+2.34.1
+
+Best regards,
+Mithil
+
+
+
+On Fri, Apr 5, 2024 at 12:28=E2=80=AFPM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
-> On Thu, Apr 04, 2024 at 12:33:40PM +0300, Amir Goldstein wrote:
-> > On Thu, Apr 4, 2024 at 11:21=E2=80=AFAM Al Viro <viro@zeniv.linux.org.u=
-k> wrote:
-> > >
-> > > On Thu, Apr 04, 2024 at 09:11:22AM +0100, Al Viro wrote:
-> > > > On Thu, Apr 04, 2024 at 09:54:35AM +0300, Amir Goldstein wrote:
-> > > > >
-> > > > > In the lockdep dependency chain, overlayfs inode lock is taken
-> > > > > before kernfs internal of->mutex, where kernfs (sysfs) is the low=
-er
-> > > > > layer of overlayfs, which is sane.
-> > > > >
-> > > > > With /sys/power/resume (and probably other files), sysfs also
-> > > > > behaves as a stacking filesystem, calling vfs helpers, such as
-> > > > > lookup_bdev() -> kern_path(), which is a behavior of a stacked
-> > > > > filesystem, without all the precautions that comes with behaving
-> > > > > as a stacked filesystem.
-> > > >
-> > > > No.  This is far worse than anything stacked filesystems do - it's
-> > > > an arbitrary pathname resolution while holding a lock.
-> > > > It's not local.  Just about anything (including automounts, etc.)
-> > > > can be happening there and it pushes the lock in question outside
-> > > > of *ALL* pathwalk-related locks.  Pathname doesn't have to
-> > > > resolve to anything on overlayfs - it can just go through
-> > > > a symlink on it, or walk into it and traverse a bunch of ..
-> > > > afterwards, etc.
-> > > >
-> > > > Don't confuse that with stacking - it's not even close.
-> > > > You can't use that anywhere near overlayfs layers.
-> > > >
-> > > > Maybe isolate it into a separate filesystem, to be automounted
-> > > > on /sys/power.  And make anyone playing with overlayfs with
-> > > > sysfs as a layer mount the damn thing on top of power/ in your
-> > > > overlayfs.  But using that thing as a part of layer is
-> > > > a non-starter.
+> On 04/04/2024 18:06, Mighty wrote:
+> > From: Mithil Bavishi <bavishimithil@gmail.com>
 > >
-> > I don't follow what you are saying.
-> > Which code is in non-starter violation?
-> > kernfs for calling lookup_bdev() with internal of->mutex held?
-> > Overlayfs for allowing sysfs as a lower layer and calling
-> > vfs_llseek(lower_sysfs_file,...) during copy up while ovl inode is held
-> > for legit reasons (e.g. from ovl_rename())?
+> > Convert the OMAP4+ McPDM bindings to DT schema.
 > >
-> > >
-> > > Incidentally, why do you need to lock overlayfs inode to call
-> > > vfs_llseek() on the underlying file?  It might (or might not)
-> > > need to lock the underlying file (for things like ->i_size,
-> > > etc.), but that will be done by ->llseek() instance and it
-> > > would deal with the inode in the layer, not overlayfs one.
-> >
-> > We do not (anymore) lock ovl inode in ovl_llseek(), see:
-> > b1f9d3858f72 ovl: use ovl_inode_lock in ovl_llseek()
-> > but ovl inode is held in operations (e.g. ovl_rename)
-> > which trigger copy up and call vfs_llseek() on the lower file.
-> >
-> > >
-> > > Similar question applies to ovl_write_iter() - why do you
-> > > need to hold the overlayfs inode locked during the call of
-> > > backing_file_write_iter()?
-> > >
-> >
-> > Not sure. This question I need to defer to Miklos.
-> > I see in several places the pattern:
-> >         inode_lock(inode);
-> >         /* Update mode */
-> >         ovl_copyattr(inode);
-> >         ret =3D file_remove_privs(file);
-> > ...
-> >         /* Update size */
-> >         ovl_file_modified(file);
-> > ...
-> >         inode_unlock(inode);
-> >
-> > so it could be related to atomic remove privs and update mtime,
-> > but possibly we could convert all of those inode_lock() to
-> > ovl_inode_lock() (i.e. internal lock below vfs inode lock).
-> >
-> > [...]
-> > > Consider the scenario when unlink() is called on that sucker
-> > > during the write() that triggers that pathwalk.  We have
-> > >
-> > > unlink: blocked on overlayfs inode of file, while holding the parent =
-directory.
-> > > write: holding the overlayfs inode of file and trying to resolve a pa=
-thname
-> > > that contains .../power/suspend_stats/../../...; blocked on attempt t=
-o lock
-> > > parent so we could do a lookup in it.
-> >
-> > This specifically cannot happen because sysfs is not allowed as an
-> > upper layer only as a lower layer, so overlayfs itself will not be writ=
-ing to
-> > /sys/power/resume.
+> > Signed-off-by: Mighty <bavishimithil@gmail.com>
 >
-> I don't understand that part. If overlayfs uses /sys/power/ as a lower
-> layer it can open and write to /sys/power/resume, no?
+> This does not match SoB. Can you respond to comments you receive?
 >
-> Honestly, why don't you just block /sys/power from appearing in any
-> layer in overlayfs? This seems like such a niche use-case that it's so
-> unlikely that this will be used that I would just try and kill it.
-
-I do not want to special case /sys/power in overlayfs.
-
+> Subject: nothing improved.
 >
-> If you do it like Al suggested and switch it to an automount you get
-
-Not important enough IMO to make this change.
-
-> that for free. But I guess you can also just block it without that.
+> Rest... also did not improve. so you ignored entire feedback?
 >
-> (Frankly, I find it weird that sysfs is allowed as a layer in any case. I
-> completely forgot about this. Imho, both procfs and sysfs should not be
-> usable as a lower layer - procfs is, I know - and then only select parts
-> should be like /sys/fs/cgroup or sm where I can see the container people
-> somehow using this to mess with the cgroup tree or something.)
+> This is a friendly reminder during the review process.
 >
-
-I do not know if using sysfs as a lower layer is an important use case,
-but I have a feeling that people already may do it, so I cannot regress it
-without a good reason.
-
-Al's suggestion to annotate writable kernfs files as a different class from
-readonly kernfs files seems fine by me to silence lockdep false positive.
-
-I will try to feed this solution to syzbot.
-
-Thanks,
-Amir.
+> It seems my or other reviewer's previous comments were not fully
+> addressed. Maybe the feedback got lost between the quotes, maybe you
+> just forgot to apply it. Please go back to the previous discussion and
+> either implement all requested changes or keep discussing them.
+>
+> Thank you.
+>
+> Best regards,
+> Krzysztof
+>
 
