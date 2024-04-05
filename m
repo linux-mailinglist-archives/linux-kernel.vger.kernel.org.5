@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-132548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26C33899681
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:25:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32576899682
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:26:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 49E051C21C49
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:25:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0BB6281E77
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:26:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC0B3527A;
-	Fri,  5 Apr 2024 07:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D013418B;
+	Fri,  5 Apr 2024 07:26:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="bzQigq2V"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ulfv7xEz"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BF8A2E84A
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:25:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E56082E84A
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:26:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712301931; cv=none; b=s85z2WyGFbf4G8NDTSNJyiP5pcHEW6gh/jFkmZ2XBOuBPJJg+jbYTUVbyIGn0yLFTFKQNY20P7oT87hmQtRlwEgMl3fpv0xZzwyLMqpB4RUB1dtVIMQ2nubMf0mNCzontUtXQaFgBW36ZapdkWW3W/B03aUViCuOlezK4nelji0=
+	t=1712301969; cv=none; b=pmJMINMc55NSjdcD0qsLeU/l/TE1XB77ORAbi6LLrXMujEeeSImn85ZCAPR/kQ9D2gtm2zxbno1wr//BJlz4RwiUjjYfUompRJM2Ztc7f0pvUitz6Ev67f3UhcHJtgf5E/nBj4OwmroinwLYdpbq06Y6RgxcAxmHaX2/l+FEwc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712301931; c=relaxed/simple;
-	bh=CJC4uUI0O0fhPXhX1SBfBbQJeLp8u6GlGINuTVi841I=;
+	s=arc-20240116; t=1712301969; c=relaxed/simple;
+	bh=Nm3shNyBzYZPuxzpWxnSFjJcOv8HPO1J6H0nX1l01qQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k3dF4LK2EDzK0HNGnOOBx8N3NUZCgw/7ZS5lm6Xj4NZ/5MndZTIVN16yUnL1mRq6PhAaFHgM8y2siBJBIYr3bvuUpzY25TjLpUegTJWxRZxcVOq6EgyCylG/uDxxwdHPTiA2Z0RHx7diWpckRp/tnwnL+n515S9N808yAxlAciU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=bzQigq2V; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=ga1tscq1YcOaia/S/2vpHryZUnfrzOGKPVkBYs6Kh+g2NfEA/wpzRg6ECmQr18JbbfLPK+G0qXZZAuXcc3wHrnKQTPUsrhz55Ij4tpKJ6kXWMLmdleISqm60FZfy7xP6b1x9TrCwcjnnDZmaFhJ6ujfmZoF+x7FMAHHt6ap0uHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ulfv7xEz; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712301928;
+	s=mimecast20190719; t=1712301966;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lkdM4XQ6M6HZSTepNlp3Gm4K0YAV75X1B0OZtU24JGA=;
-	b=bzQigq2V8OZej1ysCgtphMYVdlW6Z9EKsSmvKMxyhJywI7ba/JZh2vKqOyRKf5jv/kv0yJ
-	XxMHGLFBms7XY3Han5D2cceTdE0HynS84MFI6TCJRIc8j5p6CDn1SvJ+ahmX8BnVJNlwMf
-	of/AnkLnwSwWijLJRuKlQRbRPPmXBac=
+	bh=YYPo6a8b/Dn1eaTm4AbhQo8T7X2EQn/bAkcPOcFyLUY=;
+	b=Ulfv7xEzY/Y5PaVdCwehYO1HAqqrY251dreTNIul6K9y61LqqHOMI+QiHaBjjrnjzh/IB5
+	AEKtSBWalGH1iij8K7IYZ71LcaZprMNUhj22koILEdT58jbp++EyEOE9QhCNU2CQA0KQBv
+	gvI8Y8ZGTfE5j/j+VG6H1tghOkQqLWc=
 Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
  [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-167-oF87AeoqPbqiOQs7Fhy0Yg-1; Fri, 05 Apr 2024 03:25:24 -0400
-X-MC-Unique: oF87AeoqPbqiOQs7Fhy0Yg-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-343e775c794so194575f8f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:25:24 -0700 (PDT)
+ us-mta-662-EHgOUK7AMS2IAzLmrt_fKw-1; Fri, 05 Apr 2024 03:26:03 -0400
+X-MC-Unique: EHgOUK7AMS2IAzLmrt_fKw-1
+Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-343cd240b2dso556900f8f.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:26:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712301923; x=1712906723;
+        d=1e100.net; s=20230601; t=1712301962; x=1712906762;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lkdM4XQ6M6HZSTepNlp3Gm4K0YAV75X1B0OZtU24JGA=;
-        b=dYCQMIUlIKR/++sXGvAa4tNUyF/AIXeBn71QlgkGHo5r8wUJR8hz2uE100q3HmjEEm
-         deC/LaNYpgO6hep1uOFzThU6ELe8FffGwnJeMyszhUXc3gq/IK/74qha7bIS0cmTVVb9
-         fNXEQFqb6oeI+VE8KoYlpUGG3Mpb1ZbaFYBi4cPVNJSIrUylw/xu7IRxAwafTrXtQlSa
-         tK+DsOyWseC4y9qbYTHTqOjnNaJFoLnNONejSM/VgCFIgniNJp8sEKEJ2uFPR61KwWJr
-         0HvD7etYaHfyG+xx4eJ1k45cPqiNXzqz8cw+YFwwu1T6ZFmispAZK/ZOsAZAaw1WSw9G
-         S6aA==
-X-Forwarded-Encrypted: i=1; AJvYcCUBP3sAxWmd+aSWNEWeicoF6la2Tdzqf2X/x6q/dX9oSyXmKljneCeuly4K+ctxpC3cdpTITqA9wxmn+DTAoXmS327/neooGNOW1Ncr
-X-Gm-Message-State: AOJu0Yyll4gMIed8aCREir5Eo6o1DE+s2Hseq/ENi+gXlXIOAL4suH1m
-	2xXWmGBIN/z9bnrg7QIUmBMhv+r0p6MLUJrPWbP/YMPbQZy2PjmHDKKxiDEmQSaynF1lnX9+mel
-	4s6gfHpZSP0MeoKHz7KlbV0rnD795zea6diJoOUpe7KB9fihoha+RToGcVpu+Qg==
-X-Received: by 2002:a5d:5687:0:b0:341:ce05:dba5 with SMTP id f7-20020a5d5687000000b00341ce05dba5mr500772wrv.30.1712301923782;
-        Fri, 05 Apr 2024 00:25:23 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGK8jClUPaXF5KqvriKEiry8p3SLvc62Uf388WNTpbggEOg0dhpzskzC2J4/2x2bnFd87Zgdw==
-X-Received: by 2002:a5d:5687:0:b0:341:ce05:dba5 with SMTP id f7-20020a5d5687000000b00341ce05dba5mr500757wrv.30.1712301923392;
-        Fri, 05 Apr 2024 00:25:23 -0700 (PDT)
+        bh=YYPo6a8b/Dn1eaTm4AbhQo8T7X2EQn/bAkcPOcFyLUY=;
+        b=QGz/X18Nv7AYZtFAMdb9rJJjWkTZaXvnZ0KDbb3mHmPRDy28N4DC9i7GcGM2PwXwTz
+         4Yq9D1SOVxDt/G/uPrCxHHiy8eP4GAx1YCBsezn+eFjJzhClrgrcRatAw45PVBu9MGkX
+         9vrZxP2bt397KfrcrJAKR0pRTcZxwc7z/DaNwUDboeHI03sSB2OlO4GjsV0FMg4cjghE
+         iIE/UYXKPBZ6S/Vy34/jJE5YC8jKs89f43E8tfyslzo2ZgcC+KlgqFk4MvcfkryDjsBj
+         GbMHbsMuQQGSTFZ5Em2vk4SLxoqMicfAFARghQBLb7JMPuTnYqgJXyyd8fGZXMFL8nKt
+         OVnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW3TuZoqpvLxgy8QAVOEY2PRKv7qn0OVxfM0vWZfM84dQmAzXts5rZ5LKwjA9mdGWk3nY/hyHWli74+QseFqeQJoNZ9BTsf4ZL9gGi0
+X-Gm-Message-State: AOJu0YxQ2oem5oF3pTsipbH6DZVwmNvzM3VXCU1poWAuJF4ha+5SUQCK
+	PVWMMIqhIchQXdvc4mFpNOilDGinuCinQWMC0/34kHDwZNPfKzBrw/BzBQc/ZLakQqV7H62XH4c
+	xNc2ucihTIqVD8F7x3OGqIwpehY/sEGxCetJcu66ywQxUOfTPxu4vqnEt48ckwg==
+X-Received: by 2002:a5d:554c:0:b0:343:95b5:d306 with SMTP id g12-20020a5d554c000000b0034395b5d306mr517320wrw.19.1712301962360;
+        Fri, 05 Apr 2024 00:26:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFfmTEE1CYWHKQ9D/UYrvIiJd7rh/IYvVLbqiVU05PjRtqAm/a3almzv0RvQilY/hkN5wgHZw==
+X-Received: by 2002:a5d:554c:0:b0:343:95b5:d306 with SMTP id g12-20020a5d554c000000b0034395b5d306mr517303wrw.19.1712301962023;
+        Fri, 05 Apr 2024 00:26:02 -0700 (PDT)
 Received: from [192.168.3.108] (p4ff2306b.dip0.t-ipconnect.de. [79.242.48.107])
-        by smtp.gmail.com with ESMTPSA id u10-20020adff88a000000b00343e01d3f6dsm1187049wrp.3.2024.04.05.00.25.22
+        by smtp.gmail.com with ESMTPSA id w5-20020a5d5445000000b003439d2a5f99sm1300351wrv.55.2024.04.05.00.26.00
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 00:25:22 -0700 (PDT)
-Message-ID: <0ccd43e9-fde3-4e13-8140-7d344b420e23@redhat.com>
-Date: Fri, 5 Apr 2024 09:25:21 +0200
+        Fri, 05 Apr 2024 00:26:01 -0700 (PDT)
+Message-ID: <38e17cb6-3337-4213-b1a5-297c9c28f27f@redhat.com>
+Date: Fri, 5 Apr 2024 09:26:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,7 +82,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 03/14] mm/ksm: add folio_set_stable_node
+Subject: Re: [PATCH v3 04/14] mm/ksm: use folio in remove_stable_node
 To: alexs@kernel.org, Matthew Wilcox <willy@infradead.org>,
  Andrea Arcangeli <aarcange@redhat.com>,
  Izik Eidus <izik.eidus@ravellosystems.com>,
@@ -90,7 +90,7 @@ To: alexs@kernel.org, Matthew Wilcox <willy@infradead.org>,
  linux-kernel@vger.kernel.org, ryncsn@gmail.com
 Cc: Hugh Dickins <hughd@google.com>, Chris Wright <chrisw@sous-sol.org>
 References: <20240325124904.398913-1-alexs@kernel.org>
- <20240325124904.398913-4-alexs@kernel.org>
+ <20240325124904.398913-5-alexs@kernel.org>
 Content-Language: en-US
 From: David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
@@ -138,16 +138,18 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20240325124904.398913-4-alexs@kernel.org>
+In-Reply-To: <20240325124904.398913-5-alexs@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 25.03.24 13:48, alexs@kernel.org wrote:
 > From: "Alex Shi (tencent)" <alexs@kernel.org>
 > 
-> Turn set_page_stable_node() into a wrapper folio_set_stable_node, and then
-> use it to replace the former. we will merge them together after all
-> place converted to folio.
+> pages in stable tree are all single normal page, so uses ksm_get_folio()
+
+.. "small folios"
+
+> and folio_set_stable_node(), also saves 3 calls to compound_head().
 > 
 > Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
 > Cc: Izik Eidus <izik.eidus@ravellosystems.com>
@@ -156,35 +158,8 @@ On 25.03.24 13:48, alexs@kernel.org wrote:
 > Cc: Hugh Dickins <hughd@google.com>
 > Cc: Chris Wright <chrisw@sous-sol.org>
 > ---
->   mm/ksm.c | 8 +++++++-
->   1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/ksm.c b/mm/ksm.c
-> index ea3dabf71e47..c9b7c5701f22 100644
-> --- a/mm/ksm.c
-> +++ b/mm/ksm.c
-> @@ -1109,6 +1109,12 @@ static inline void set_page_stable_node(struct page *page,
->   	page->mapping = (void *)((unsigned long)stable_node | PAGE_MAPPING_KSM);
->   }
->   
-> +static inline void folio_set_stable_node(struct folio *folio,
-> +					 struct ksm_stable_node *stable_node)
-> +{
-> +	set_page_stable_node(&folio->page, stable_node);
-> +}
-> +
->   #ifdef CONFIG_SYSFS
->   /*
->    * Only called through the sysfs control interface:
-> @@ -3241,7 +3247,7 @@ void folio_migrate_ksm(struct folio *newfolio, struct folio *folio)
->   		 * has gone stale (or that folio_test_swapcache has been cleared).
->   		 */
->   		smp_wmb();
-> -		set_page_stable_node(&folio->page, NULL);
-> +		folio_set_stable_node(folio, NULL);
->   	}
->   }
->   #endif /* CONFIG_MIGRATION */
+
+
 Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
