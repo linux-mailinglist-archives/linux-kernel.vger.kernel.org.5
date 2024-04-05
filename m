@@ -1,170 +1,120 @@
-Return-Path: <linux-kernel+bounces-132947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132948-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A21899C57
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:06:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D593E899C5B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:06:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8AE32839C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:06:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AC29283AF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:06:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27BF316C842;
-	Fri,  5 Apr 2024 12:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C00316C84C;
+	Fri,  5 Apr 2024 12:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jUV6/BWI"
-Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bhVdlC95"
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7146416ABCE;
-	Fri,  5 Apr 2024 12:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05E116ABCE;
+	Fri,  5 Apr 2024 12:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712318766; cv=none; b=KeYlA2+yU8P3QNBnxvFxQfv/kNpz+eezSB6u+4RV5YbJS3NbOc4vwVeWgv5IiIgb6ky3jfymZ0Xll0IqO36FdfaQ5kl/A+nqpeaauE7wWkn3CBqeDkR0KIVZ0jWEPPbPKHhFogIVB38050ycbfF5mwaGQkfJxYqSEbRliINvjz4=
+	t=1712318803; cv=none; b=bIMaLVcdaE2Y2LjjdIerbSvotQFJGHncmb6x9bKxmjEDhq2Z3a4R9+aDzGg1jd6nMcvOD/dT1muAku0OCPzre5SRuChtR8yCYWnv7WpWf3MRWyNVqHxqUG56IJF/eedLApuWWDMAqVIzM2ZTaZiQIEc1yIP3Ey+edRf+FbTxKnw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712318766; c=relaxed/simple;
-	bh=3SOawKf7ShxwVuliq6PEQpm/4ZVoz/cacxEBlBkgzko=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tPCMyYBVbbE+/aw9c6OutP+ep15AL3s9TRXsyujf23pEIQr9aSfWKC5EwARNSB+H26SydkLbbuJHbbOvAThQod4bgjTCuboTx5WsDx60+Pvx1nusMzWlLXmSmoo4HTxqUSccuMmM9rb6aUVNuz3IWf4kMzn4xSKJ8EnCfqsOGYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jUV6/BWI; arc=none smtp.client-ip=217.70.183.195
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id CBB5C60009;
-	Fri,  5 Apr 2024 12:05:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712318755;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=dLx+yQeXl9X7vSpjKyi2n2Z3bqsnNuxCnQzI/RO3bx4=;
-	b=jUV6/BWIzPQt0r3RaYyWkUQFqzRMNk8l0YxD4DVH2/yWPbRsNZ6Bw6J2VKFlY+h96jrT5a
-	ns72dPJFsEjb4hK4iauxpCr9U2/n3infaHmdtGnNjqBzOmT3hEU8w9V/u9cG80nt2OzWBi
-	sl1HwQnsAKA/kw7w35QYh4xx07m7di2Xi16zneYKgE2FvtXTWMX8v+TmCLhwuujZc4qSMH
-	mkudrvXCrgiYVb9ZsQ7//jKwZMmFdBv97JtwBHrMtRzTEXGDC69h2vaY9FmbI1Y0MQbGwd
-	H5oknzmopj66WdEHTcuMNz9rs4OR5L+vkx8Ep7+KC44bCuoL+cvwMn1V9ic3BA==
-From: Bastien Curutchet <bastien.curutchet@bootlin.com>
-To: bastien.curutchet@bootlin.com,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	herve.codina@bootlin.com,
-	christophercordahi@nanometrics.ca
-Subject: [PATCH v2 1/1] serial: 8250_of: Add clock_notifier
-Date: Fri,  5 Apr 2024 14:05:52 +0200
-Message-ID: <20240405120552.35991-1-bastien.curutchet@bootlin.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1712318803; c=relaxed/simple;
+	bh=QRvOuAu53+EArfY0qfpIBAa+WtOG64cUCx3bEohfA+E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fKMPrf4euZqCqaW24k115a8OiCdg7KPidv8c5t7xeJNrUdOst0PFUZPgL4Er1CNh1QdOUCYBVpIkgDVXCYSnIik7zV+Naj46aZhj2yvrRIj1hs1UNLLrQhwJJeUfLvK3Xw4OaGEPmDQbev0TvYHVYenHnUB+nzworKfauRNpvjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bhVdlC95; arc=none smtp.client-ip=209.85.218.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a519e04b142so119057366b.3;
+        Fri, 05 Apr 2024 05:06:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712318800; x=1712923600; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=951nXGkKjtOMWvE593+3+1defoukyWk76h9tCSdYH3U=;
+        b=bhVdlC95N0N8ZKDVL/D4DHZbzh+2X2/L6m58E3yntxQ/mtWR7z8hY+LePEYtyrvHk1
+         kFnJbamnmlTM8s0sg7hWBCaqnJPlGlgmqO/TLWS8bmVU0+IBc0iE1dS/XwIAFcVo1obx
+         rP4kPBN71q4hw1d7gMZZqQTSxD4ujJN4WLzgrgKvJ3wgCBb1IzjjwicvobBOXdNyiqrB
+         HwAj318mZz5qCULex9qugeP3svbvyHiJ6SNiIHn+qm/jhSrUFesJx7ChGYfZ50zNvMUk
+         L2QnVC/RmNweBfPL625r/YBwGLvDk4nVNiKPwhkJhZzRGOPKAzdX7sg66DqtUtomKgGh
+         TGxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712318800; x=1712923600;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=951nXGkKjtOMWvE593+3+1defoukyWk76h9tCSdYH3U=;
+        b=iTLxph84CcuRk5t6vw1WTjzq516Jv6ax2FW6HCE7AyLZH8ujZgcYRMoXh/6+PpIg/N
+         AIzLpeVjMikIQQ3CAA11oW5fP2+n6t1uwMzFxAnHMI3RcVh7ufXehSuSWVPtGZVh3ryZ
+         iRl+YlLT1TqKXbIv0P+2nHyOyR/syjKMjh2aMgQv2/1JmUVTFYiU5j55P0Q6aCN4z81U
+         IGKgcJaPTpjxd1kDMn3CtwzaYsANDw4UHPZxhooG9SFHTQ+ZjPrekvj5s7bO1HBTvU/j
+         AiQq1w9KopjkOfYGrWuqP4yEw5k12lQfwkD8Qdv9UkhlEgF1nMma+tnQJ1Klz8d2ihYW
+         5gDg==
+X-Forwarded-Encrypted: i=1; AJvYcCUAmMQF/SXrHLcos/jwlxfchZo9lX6tc5F8knNpdfKOHljDHEYhlPAajUTF6CbH0hmrC8+paURsAl4cVZAKo+IHSCD7r/NMxPU8ux4gI+VkQFwZMxMcpmlDb7uU8u1IyXADL5f2WULKLdsMfA/H3BEi9NnhDNd2gejKI5w2hSlqrDd1zvzj
+X-Gm-Message-State: AOJu0YzpPcx5EfTaUS5JhT5ZprUQDohOVlStAWQzbUDk0HW8xaSbP6dd
+	h+QkvSSpoz+nP6ZtLx2Gp/veX4mVepa4+pAID7L276Pc2fP+ILlv
+X-Google-Smtp-Source: AGHT+IFM21RPOG0tBkcKSWY7GAr7G2myaGTXDGJk7JBt2SQYunxK5QAwm2BlpDVWn1tZtx9+NzyVsw==
+X-Received: by 2002:a17:906:29d5:b0:a4e:57c5:e736 with SMTP id y21-20020a17090629d500b00a4e57c5e736mr999133eje.25.1712318800025;
+        Fri, 05 Apr 2024 05:06:40 -0700 (PDT)
+Received: from [192.168.42.78] ([163.114.131.193])
+        by smtp.gmail.com with ESMTPSA id lc24-20020a170906f91800b00a4e2d7dd2d8sm753430ejb.182.2024.04.05.05.06.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Apr 2024 05:06:39 -0700 (PDT)
+Message-ID: <e3c0da47-8748-42ba-bd0e-872a5e66090f@gmail.com>
+Date: Fri, 5 Apr 2024 13:06:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: bastien.curutchet@bootlin.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] Add REQ_F_CQE_SKIP support to io_uring zerocopy
+To: Oliver Crumrine <ozlinuxc@gmail.com>, axboe@kernel.dk,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, shuah@kernel.org, leitao@debian.org
+Cc: io-uring@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1712268605.git.ozlinuxc@gmail.com>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <cover.1712268605.git.ozlinuxc@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The UART's input clock rate can change at runtime but this is not
-handled by the driver.
+On 4/4/24 23:16, Oliver Crumrine wrote:
+> This patchset allows for io_uring zerocopy to support REQ_F_CQE_SKIP,
+> skipping the normal completion notification, but not the zerocopy buffer
+> release notification.
 
-Add a clock_notifier callback that updates the divisors when the input
-clock is updated. The serial8250_update_uartclk() is used to do so.
-PRE_RATE_CHANGE and ABORT_RATE_CHANGE notifications are ignored, only
-the POST_RATE_CHANGE is used. Not using PRE_RATE_CHANGE notification can
-result in a few corrupted bytes during frequency transitions but, IMHO,
-it can be acceptable in many use cases.
+It's an io_uring internal change not altering how it operates
+with the net layer, you don't need to CC the net list.
 
-It has been tested on a DAVINCI/OMAP-L138 processor.
+> This patchset also includes a test to test these changes, and a patch to
+> mini_liburing to enable io_uring_peek_cqe, which is needed for the test.
 
-Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
----
-Change log v1 -> v2:
- * Add details in commit log
- * Drop alphabetic order in #include
- * Drop a useless check in notifier callback
+For the same reason tests should be in liburing, where all io_uring tests
+are, and the selftest can be dropped. See liburing/test/send-zerocopy.c
 
-v1 : https://lore.kernel.org/all/20240404074450.42708-1-bastien.curutchet@bootlin.com/
- drivers/tty/serial/8250/8250_of.c | 37 +++++++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
 
-diff --git a/drivers/tty/serial/8250/8250_of.c b/drivers/tty/serial/8250/8250_of.c
-index 5d1dd992d8fb..e14f47ef1172 100644
---- a/drivers/tty/serial/8250/8250_of.c
-+++ b/drivers/tty/serial/8250/8250_of.c
-@@ -18,6 +18,7 @@
- #include <linux/pm_runtime.h>
- #include <linux/clk.h>
- #include <linux/reset.h>
-+#include <linux/notifier.h>
- 
- #include "8250.h"
- 
-@@ -26,6 +27,7 @@ struct of_serial_info {
- 	struct reset_control *rst;
- 	int type;
- 	int line;
-+	struct notifier_block clk_notifier;
- };
- 
- /* Nuvoton NPCM timeout register */
-@@ -58,6 +60,26 @@ static int npcm_setup(struct uart_port *port)
- 	return 0;
- }
- 
-+static inline struct of_serial_info *clk_nb_to_info(struct notifier_block *nb)
-+{
-+	return container_of(nb, struct of_serial_info, clk_notifier);
-+}
-+
-+static int of_platform_serial_clk_notifier_cb(struct notifier_block *nb, unsigned long event,
-+					      void *data)
-+{
-+	struct of_serial_info *info = clk_nb_to_info(nb);
-+	struct uart_8250_port *port8250 = serial8250_get_port(info->line);
-+	struct clk_notifier_data *ndata = data;
-+
-+	if (event == POST_RATE_CHANGE) {
-+		serial8250_update_uartclk(&port8250->port, ndata->new_rate);
-+		return NOTIFY_OK;
-+	}
-+
-+	return NOTIFY_DONE;
-+}
-+
- /*
-  * Fill a struct uart_port for a given device node
-  */
-@@ -218,7 +240,19 @@ static int of_platform_serial_probe(struct platform_device *ofdev)
- 	info->type = port_type;
- 	info->line = ret;
- 	platform_set_drvdata(ofdev, info);
-+
-+	if (info->clk) {
-+		info->clk_notifier.notifier_call = of_platform_serial_clk_notifier_cb;
-+		ret = clk_notifier_register(info->clk, &info->clk_notifier);
-+		if (ret) {
-+			dev_err_probe(port8250.port.dev, ret, "Failed to set the clock notifier\n");
-+			goto err_unregister;
-+		}
-+	}
-+
- 	return 0;
-+err_unregister:
-+	serial8250_unregister_port(info->line);
- err_dispose:
- 	pm_runtime_put_sync(&ofdev->dev);
- 	pm_runtime_disable(&ofdev->dev);
-@@ -234,6 +268,9 @@ static void of_platform_serial_remove(struct platform_device *ofdev)
- {
- 	struct of_serial_info *info = platform_get_drvdata(ofdev);
- 
-+	if (info->clk)
-+		clk_notifier_unregister(info->clk, &info->clk_notifier);
-+
- 	serial8250_unregister_port(info->line);
- 
- 	reset_control_assert(info->rst);
+> Oliver Crumrine (3):
+>    io_uring: Add REQ_F_CQE_SKIP support for io_uring zerocopy
+>    io_uring: Add io_uring_peek_cqe to mini_liburing
+>    io_uring: Support IOSQE_CQE_SKIP_SUCCESS in io_uring zerocopy test
+> 
+>   io_uring/net.c                                |  6 +--
+>   tools/include/io_uring/mini_liburing.h        | 18 +++++++++
+>   .../selftests/net/io_uring_zerocopy_tx.c      | 37 +++++++++++++++++--
+>   .../selftests/net/io_uring_zerocopy_tx.sh     |  7 +++-
+>   4 files changed, 59 insertions(+), 10 deletions(-)
+> 
+
 -- 
-2.44.0
-
+Pavel Begunkov
 
