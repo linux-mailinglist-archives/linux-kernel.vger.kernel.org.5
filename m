@@ -1,140 +1,185 @@
-Return-Path: <linux-kernel+bounces-132312-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132313-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 013848992D6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:36:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98B048992DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:43:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31DA31C2355B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:36:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 061791F26C63
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:43:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C8C01CD2B;
-	Fri,  5 Apr 2024 01:36:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F93BD512;
+	Fri,  5 Apr 2024 01:43:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cp6dUbSb"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="CXxi5cPS"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 708C8DF5B
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 01:35:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32D086FDC
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 01:43:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712280960; cv=none; b=kWPdSouTPAjaHnvOWxSHkrs7SyqPg5WH06YazpN8lAJ0ahQbjNLqyMm1teuqkYo0QGjNwZrpPoVYDfFDoVNzFEaZCoTTrDxKLVGBFKcfitWrF1OiNEtOJbTZiJRhK85kWXgutqc3UhMe5HV5+XmyB6erFADfx908NKqJQsxvm1k=
+	t=1712281404; cv=none; b=TQBerRSEF4qfvZ9a44qaAf+aiNWAxHtNem2aCvaEKqHyHPWPIUw3QX1Dd9hHtScJB3hzi6QSlviN8MC5RiAu/j60U7KxGU7jndSgt4ltGwyRDnJ8MHGVnYJIF4LgJ1pRwRWdF199HTBznoPton3COa/EwiuvIm/szD6eS3kuNxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712280960; c=relaxed/simple;
-	bh=EKrGZSwVFwew2HMPiLb4JaHCc0fDKmV9LIy0S8SK7FM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=oeSNJD6hZubvPqjMyAQIgBPt72W+lVt35J8UWTqimD28sxoLh5z1bGDWsewo0Wewwca509vOxt28VBy6ss3neh2c/Au4MPP/Ifnx0mak6u3lf6u73jF4VrSywBHpEjBOrQomGunU/Lu9sey0iuLQaTpheY63zMHHjDHzxqaimdc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cp6dUbSb; arc=none smtp.client-ip=209.85.219.201
+	s=arc-20240116; t=1712281404; c=relaxed/simple;
+	bh=URaZQzuDjC1y+JWc4rSLFFtEsZXFxrIaWQtmHQtpG64=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=dGmdsPadYGTaEK3T3cxYapy5eAs81jNBAjn8j9Bf/7xlvkLnTFjjkRltz9wcZejjnaWmuA+bvmUNdGFjDQWObLCCQ2WNGmHGRR8N2fI2wpi1TMYG74naWbHsFBzgst0PS2HXnyPIGSRqhx9E/+WkaLZzVyaRfOEQzwANk5u+8t4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saranyamohan.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=CXxi5cPS; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc58cddb50so2641502276.0
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 18:35:59 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saranyamohan.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dbf216080f5so2747111276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 18:43:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712280958; x=1712885758; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=LZ1QXrjwhIal4gIkbl9SlMnvEbBP+lXyDn0RpoWpImY=;
-        b=cp6dUbSbSNHw7ZVlTrAfUK7741QJsSJ0N6uQVXswNL8uzz1QjPSHNn+2VTZT3hc//f
-         Dhm5sdWjZko1pUmWRuVFHU/pFTOGnDzqfG2HlFz7dV+9jFYz/7KF0sNm9aYCwxmKuehj
-         8uFDScG+bFnMP0z0MUBKhqyRuykYzO6KNFe4AM6++Zupw2eXJQ8sH/x0HkQZ5SLSarnn
-         RsTXI5r9Jczb4b/+7CvnPiaDJExwag6rFzU84Jm08yVm1jkzzcbUrP2OQsEgldhopoEn
-         9MW2mbrYiXjYk4Eo5aoUCfXsipvrUawefuTtXv0GDRqVfDdfG8QCuI2N//XdE4HJvJfp
-         ThPQ==
+        d=google.com; s=20230601; t=1712281402; x=1712886202; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=3yhnAORJgGG1KHraVLDZCGL3HZq2R87i+RUHP6rWUSg=;
+        b=CXxi5cPS8ba34z1a5yDAQ9tPNaoj4imfe+/kMhEUraNVjGrGp2C4Gf0GEW3qGCPNih
+         UhWLCWubya1a9UmRS+ry0nv1EG2mQbRQfCLWpJ7mGJ2BeJW9mrMhcGh78lwWuNEn03rV
+         JTvEJ7D9iOvhEnPRFQAybSd9W/t4LrToV+IBlF2DkQ93YB+r1Guogbg+4HHQs/ax1viV
+         2E/J9ywURbrYXkkHw00Q6/FGXmETxABDwHwW/dZcO/qS3ZPrwoe2ZfLlycnkF+ctRPrj
+         12cgs1bBqQPGaWNWIpsV04RdjszQWYkNXbAhiKJr/OtdyRhLdaHjbYkrZOmmdVSfjsGw
+         E6lA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712280958; x=1712885758;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LZ1QXrjwhIal4gIkbl9SlMnvEbBP+lXyDn0RpoWpImY=;
-        b=jzYMbIQrKDqu3L346DkcqzwBxZoXScFg1kv4XkQV0pNhC1DyFtx1NY3xywbR1gDFx6
-         MVCYTwNtQ9yjOh7PqICGgEildVsqu1R6eWW69K5xh8+lUU9gQAjch2aawyNFG/UD0HT5
-         wrwD5wFTTJ2YLq56jRxN5KTC7GynnaLVSlY6w41aqpLhaNZY+igCV7UJPpdWsf0+xKMA
-         ddElXGHYbNBb0CSxtpZQKenF2pcTFSUXtpVS+btGqXELqNz0xpMEZOIcjge75KcPIvA0
-         2/CFSGNcwfZjLGJV5dIyzz5dSBleujMoDiT+YYjnSmuO0gn7ggYpSYhcpTHXspYRpJs6
-         aV/w==
-X-Forwarded-Encrypted: i=1; AJvYcCW3iGopi/XKq5kT8dkTOp/hS/1I5FBh2Qz3IQU4VkQRqwKg7LXxZ2QzSgqR2i06ikFnt4zWnahS73f0ecgltSCQ60V21zcmS5k/nrPF
-X-Gm-Message-State: AOJu0YzcS+2aM5NnxrZCIijJMBvm6Tk+iyInsfX8dZ515lJk94UUEtKZ
-	E4QEucwk7VtSloEGRKBeU/vRLU+unwbUG0GFGfTNsMex/JfaXMeoI/V9I3PoXD+810VQ3T86t89
-	w9uuk+NCqm/35aUKxvA==
-X-Google-Smtp-Source: AGHT+IF08nd+KBQE70LXZSIBvDA4LHuHsKmvLNuPmdBMBqFS4+vTxuqxYNRCiDtgu7m3HgM9JubMSqb0OVDe26Bd
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:2b05:b0:dc6:e1ed:bd1a with
- SMTP id fi5-20020a0569022b0500b00dc6e1edbd1amr351076ybb.2.1712280958518; Thu,
- 04 Apr 2024 18:35:58 -0700 (PDT)
-Date: Fri,  5 Apr 2024 01:35:47 +0000
-In-Reply-To: <20240405013547.1859126-1-yosryahmed@google.com>
+        d=1e100.net; s=20230601; t=1712281402; x=1712886202;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3yhnAORJgGG1KHraVLDZCGL3HZq2R87i+RUHP6rWUSg=;
+        b=AWWI70yzixYtwGhVUxEamY8tX+y+aaOSIXrHEgaCdMIcnnwP8kpOwd/lBhlhpGU/lZ
+         Lufv+t3LhLjGlm97pJVFJeu88NreOgxDJHh2JNsVQHs/odyx0jqeht7Sq1sK+Jhoukzy
+         cv1rQ+GiPmTWF+mIeOTFzzOJeZFFJP0XlMOWJAJcPfOfwz5dFpzftx+IJdzK7Gpymz5Z
+         gG1IFZnXyqUmC+NcD5QHUghnEnDUvwKGPOOKl1dbSLEOezX4FnEOloJmCppHmr80B5fN
+         JRP+rHypxWnEmziJmJ6IUyG6nPB/dNPHZruaqv8tS6n0Z1oKVKiV6Kpua+YtmlIF5qi6
+         rwMw==
+X-Forwarded-Encrypted: i=1; AJvYcCULG2q+yZBYmeFKyuWITfCNifOFCg2pXYJH9IImNgLkLdR0B0jqOB8vGbEsJWFm8/GWkfly1HYBuWMRBNtyt5UYW2Tm1jZihSNQEmPK
+X-Gm-Message-State: AOJu0YxU+EYvVPcNWfxvvYgkkeadrpQH+li4YgjFtgcmm0kSbbtdp52t
+	UXOFRDg0ic3DXI0ABCN+GUFmzW2F+PynYPJas0UwdBhdgSxqXgfqYFKORD7HmJYxWiXeZl3xRDW
+	Chd7rCO4yXqdcZ52X9G97xtgEQg==
+X-Google-Smtp-Source: AGHT+IGuSeucnURFqdpRNkhu5A9mlb9yFfsSaydOKK0WTKBYMa+IRt1tjptLuEyfYnMvrp0t3LRZ5aWiDWX8iAqK5/Q=
+X-Received: from saranyamohan.svl.corp.google.com ([2620:15c:2a3:200:b12b:59df:64f6:cb16])
+ (user=saranyamohan job=sendgmr) by 2002:a05:6902:154d:b0:dda:eee6:8e52 with
+ SMTP id r13-20020a056902154d00b00ddaeee68e52mr352605ybu.7.1712281402308; Thu,
+ 04 Apr 2024 18:43:22 -0700 (PDT)
+Date: Thu,  4 Apr 2024 18:42:53 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <20240405013547.1859126-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240405013547.1859126-6-yosryahmed@google.com>
-Subject: [PATCH v1 5/5] mm: zswap: do not check the global limit for
- same-filled pages
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Yosry Ahmed <yosryahmed@google.com>
+Message-ID: <20240405014253.748627-1-saranyamohan@google.com>
+Subject: [PATCH] block: Fix BLKRRPART regression
+From: Saranya Muruganandam <saranyamohan@google.com>
+To: Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>, 
+	Christoph Hellwig <hch@lst.de>, stable@vger.kernel.org
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Saranya Muruganandam <saranyamohan@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-When storing same-filled pages, there is no point of checking the global
-zswap limit as storing them does not contribute toward the limit Move
-the limit checking after same-filled pages are handled.
+The BLKRRPART ioctl used to report errors such as EIO before we changed
+the blkdev_reread_part() logic.
 
-This avoids having same-filled pages skip zswap and go to disk swap if
-the limit is hit. It also avoids queueing the shrink worker, which may
-end up being unnecessary if the zswap usage goes down on its own before
-another store is attempted.
+Lets add a flag and capture the errors returned by bdev_disk_changed()
+when the flag is set. Setting this flag for the BLKRRPART path when we
+want the errors to be reported when rereading partitions on the disk.
 
-Ignoring the memcg limits as well for same-filled pages is more
-controversial. Those limits are more a matter of per-workload policy.
-Some workloads disable zswap completely by setting memory.zswap.max = 0,
-and those workloads could start observing some zswap activity even after
-disabling zswap. Although harmless, this could cause confusion to
-userspace. Remain conservative and keep respecting those limits.
+Link: https://lore.kernel.org/all/20240320015134.GA14267@lst.de/
+Suggested-by: Christoph Hellwig <hch@lst.de>
+Tested: Tested by simulating failure to the block device and will
+propose a new test to blktests.
+Fixes: 4601b4b130de ("block: reopen the device in blkdev_reread_part")
+Reported-by: Saranya Muruganandam <saranyamohan@google.com>
+Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
 
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Change-Id: Idf3d97390ed78061556f8468d10d6cab24ae20b1
 ---
- mm/zswap.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ block/bdev.c           | 31 +++++++++++++++++++++----------
+ block/ioctl.c          |  3 ++-
+ include/linux/blkdev.h |  3 +++
+ 3 files changed, 26 insertions(+), 11 deletions(-)
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index a85c9235d19d3..8763a1e938441 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1404,6 +1404,7 @@ bool zswap_store(struct folio *folio)
- 	struct zswap_entry *entry, *old;
- 	struct obj_cgroup *objcg = NULL;
- 	struct mem_cgroup *memcg = NULL;
-+	bool same_filled = false;
- 	unsigned long value;
+diff --git a/block/bdev.c b/block/bdev.c
+index 77fa77cd29bee..71478f8865546 100644
+--- a/block/bdev.c
++++ b/block/bdev.c
+@@ -632,6 +632,14 @@ static void blkdev_flush_mapping(struct block_device *bdev)
+ 	bdev_write_inode(bdev);
+ }
  
- 	VM_WARN_ON_ONCE(!folio_test_locked(folio));
-@@ -1427,7 +1428,8 @@ bool zswap_store(struct folio *folio)
- 		mem_cgroup_put(memcg);
- 	}
++static void blkdev_put_whole(struct block_device *bdev)
++{
++	if (atomic_dec_and_test(&bdev->bd_openers))
++		blkdev_flush_mapping(bdev);
++	if (bdev->bd_disk->fops->release)
++		bdev->bd_disk->fops->release(bdev->bd_disk);
++}
++
+ static int blkdev_get_whole(struct block_device *bdev, blk_mode_t mode)
+ {
+ 	struct gendisk *disk = bdev->bd_disk;
+@@ -650,18 +658,21 @@ static int blkdev_get_whole(struct block_device *bdev, blk_mode_t mode)
  
--	if (zswap_check_full())
-+	same_filled = zswap_is_folio_same_filled(folio, &value);
-+	if (!same_filled && zswap_check_full())
- 		goto reject;
+ 	if (!atomic_read(&bdev->bd_openers))
+ 		set_init_blocksize(bdev);
+-	if (test_bit(GD_NEED_PART_SCAN, &disk->state))
+-		bdev_disk_changed(disk, false);
+ 	atomic_inc(&bdev->bd_openers);
+-	return 0;
+-}
  
- 	/* allocate entry */
-@@ -1437,7 +1439,7 @@ bool zswap_store(struct folio *folio)
- 		goto reject;
- 	}
+-static void blkdev_put_whole(struct block_device *bdev)
+-{
+-	if (atomic_dec_and_test(&bdev->bd_openers))
+-		blkdev_flush_mapping(bdev);
+-	if (bdev->bd_disk->fops->release)
+-		bdev->bd_disk->fops->release(bdev->bd_disk);
++	if (test_bit(GD_NEED_PART_SCAN, &disk->state)) {
++		/*
++		 * Only return scanning errors if we are called from contexts
++		 * that explicitly want them, e.g. the BLKRRPART ioctl.
++		 */
++		ret = bdev_disk_changed(disk, false);
++		if (ret && (mode & BLK_OPEN_STRICT_SCAN)) {
++			blkdev_put_whole(bdev);
++			return ret;
++		}
++	}
++
++	return 0;
+ }
  
--	if (zswap_is_folio_same_filled(folio, &value)) {
-+	if (same_filled) {
- 		entry->length = 0;
- 		entry->value = value;
- 		atomic_inc(&zswap_same_filled_pages);
+ static int blkdev_get_part(struct block_device *part, blk_mode_t mode)
+diff --git a/block/ioctl.c b/block/ioctl.c
+index aa46f3761c3ed..e8d72d9f327fd 100644
+--- a/block/ioctl.c
++++ b/block/ioctl.c
+@@ -557,7 +557,8 @@ static int blkdev_common_ioctl(struct block_device *bdev, blk_mode_t mode,
+ 			return -EACCES;
+ 		if (bdev_is_partition(bdev))
+ 			return -EINVAL;
+-		return disk_scan_partitions(bdev->bd_disk, mode);
++		return disk_scan_partitions(bdev->bd_disk,
++				mode | BLK_OPEN_STRICT_SCAN);
+ 	case BLKTRACESTART:
+ 	case BLKTRACESTOP:
+ 	case BLKTRACETEARDOWN:
+diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+index 01983eece8f2a..d0104dc839b0d 100644
+--- a/include/linux/blkdev.h
++++ b/include/linux/blkdev.h
+@@ -151,6 +151,9 @@ struct access_rules_head {
+ 	int max_rules;
+ };
+ 
++/* return partition scanning errors */
++#define BLK_OPEN_STRICT_SCAN	((__force blk_mode_t)(1 << 5))
++
+ struct gendisk {
+ 	/*
+ 	 * major/first_minor/minors should not be set by any new driver, the
 -- 
 2.44.0.478.gd926399ef9-goog
 
