@@ -1,81 +1,90 @@
-Return-Path: <linux-kernel+bounces-133274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33A7A89A186
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:41:00 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7B9D89A192
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:41:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0606284027
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:40:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CBD3F1C237C6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:41:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4619F16FF3B;
-	Fri,  5 Apr 2024 15:40:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A51F816FF30;
+	Fri,  5 Apr 2024 15:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UFKUDwYo"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cIbe4UZc"
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6F751DFE4;
-	Fri,  5 Apr 2024 15:40:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9425F4689;
+	Fri,  5 Apr 2024 15:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712331653; cv=none; b=tPJsIdtVge9tl6eXJW88A0x8R0/SZ3UJKKfJ/Od+h/cn4nIoTRCmFg4Yn/Z8Vo29cEi6pqVMTb71ez9cZH6o//6d8vi84jPFs/W/v/2ukDvwm8d/AH2V91odM7mMkG1Rd8w70yAdC+kPgv6Mn9DtXQ1tDsAO26JS/SMvcpSWWCI=
+	t=1712331695; cv=none; b=rL4J2vHKgpKsDoa6TwnZVrKbZuwMaStLe13jOD2vsRMhakRW3ncGUz2+AUx6rK8jYngp/mEzY/nVhc+ih6lsD/ozkaqdT4NtJgCHigTnJQYA7NuUxvdpAGVUPf6cG0j13S0Cn9IUXNxp3yHXMq42ZkS3Id6RcydylSKEj+SOEVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712331653; c=relaxed/simple;
-	bh=oEGg+zdE+WnyIiCnbzgQ7uRmt3VoH/bWDMJdCz6YnxE=;
+	s=arc-20240116; t=1712331695; c=relaxed/simple;
+	bh=fjFv2oGljsYZ8RlUB2XmSpfbt8CKLn8bKBCjtdk8lZ8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oU8gtY0RTkqe2x7J7vULgIDH5UnyZyBV8PuRnmYL/CupD87KIYBs/+uPSUcs1Pn3f+K43qOrFPeD8DuqKfXFV90sRnAM3eFpd/mnYRt7nmnrHJDzhV7qqiTknCwQmEQEkpuOr/y6MPYgu596pOnx/1vHXn7c+9WBx4RP3hOh4pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UFKUDwYo; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712331652; x=1743867652;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=oEGg+zdE+WnyIiCnbzgQ7uRmt3VoH/bWDMJdCz6YnxE=;
-  b=UFKUDwYorl+ZePM0igE7YL1+EXmeTNtz4QO5/TBJ8wAJJ0dAbFGqjnJz
-   V5ATCQ9/7TBFdgV1KynHSkQ+gFHry0P+xz8H/+r2I+FSxqT3Z9xI+hcNS
-   0PVMDCM9dJIRekZKYK0iYrXa4VltiLvZTQQa1kJyVReZ/dWnYMiXB2ZMl
-   zGkGoWGZnK/wW1UCcCkGyX7vV58O52zPPTpsmo2PQBBRu5N4YIaZhB1KL
-   KO095FJba6PzUJXjkTYK9gZixDDoQyrfJ4WvwZUERIkFi1dbKVEwY2SUB
-   WsN96jI83xI49CGdzXtG9tHrA1nRQCDEEvpsyK2EQBRrKxo11FlrxI3bC
-   Q==;
-X-CSE-ConnectionGUID: AJMlaFpkQvy6XhMjgZFWjw==
-X-CSE-MsgGUID: Bt830bM2T6aPJaNYzfIIBQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="7566076"
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="7566076"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:40:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="915257359"
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="915257359"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:40:48 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rslgM-00000001mwV-05xP;
-	Fri, 05 Apr 2024 18:40:46 +0300
-Date: Fri, 5 Apr 2024 18:40:45 +0300
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Kent Gibson <warthog618@gmail.com>, linux-gpio@vger.kernel.org,
-	linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: Re: [PATCH v1 1/1] gpiolib: Update the kernel documentation - add
- Return sections
-Message-ID: <ZhAbfcGkt-Bjj9NY@smile.fi.intel.com>
-References: <20240404212706.3587456-1-andriy.shevchenko@linux.intel.com>
- <2df0e132-5599-4cb5-93f8-4ed664a5d1cc@infradead.org>
- <ZhAYeMNzHg0x97gN@smile.fi.intel.com>
- <47955de8-dfe5-48c0-bc9b-4e930b8f943e@infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q/j1c/5wLjGanZgTiWa6qNMLVTIpMrlEwF4NiTVHTUYGH/RLawpTj6n/Gs5/CM/7DpuvC4GhF5cTUS6Kja+rtzUmfdCd32o/zhAirJsnfduKzMEuU+2kj+/9zeVWR3hKwY+2w+mM8OvsIrMbYR3JTdJayajkOfYwXtcr6uuRKaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cIbe4UZc; arc=none smtp.client-ip=209.85.215.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-5cfd95130c6so1747687a12.1;
+        Fri, 05 Apr 2024 08:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712331693; x=1712936493; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=tZ5Mwph3/XmYRqypIO/r8wSsIZPfEOkaYE7lglREnJo=;
+        b=cIbe4UZcoD57IsRNUDKdHGwXUip+bwQu//hWtlZgjuodMLdqdicajRGTSfTHI9xcC3
+         zepVR/fK5SzaSrvE4I++rIipXUyZ2FhnkX3d0VKfe5FC+MghHcsf1/dxzDCatZbg5SRl
+         kqqWtONiEf4PCFPl0qTQkOGRlsVXgtZczk3hl/vB5EUSi/FtgGuneyo1G7E7F2CpOD33
+         kf2xAWLJA2xk8mWo1FhwM26CpijYNz0yTTJlKju5SCslgRYBG7uUPolVXEwJHTc/SdRW
+         AnGI70lzHf9PwAUv+jOVqhsuG1MFE/WVBbOqnsNfp5P1/xA8BrRdsWdhLvZHgdAkGot7
+         +Y9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712331693; x=1712936493;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tZ5Mwph3/XmYRqypIO/r8wSsIZPfEOkaYE7lglREnJo=;
+        b=hVx4t6J85f9GXFbbUR6UrmDf3/hH2mMNnQooi8XsCK1fE3N49Qn6D6THYskPDTCia7
+         Kz5EoHLOr4T+45R8BnEFoDy7u5TEAvooVOYyx749brQXMD9a11fmDuhmTUQbJKg4p+Mt
+         o5JRL0qyX3Gnsi2tTIsxYZxVPAqQne649LFVW2wu80KzsCG+gE/bvrmyI4jgJ2TAYw6S
+         gmyrBaZo6au4EKKMlhE0ROR4c9n1ZA9rfwYNQyXWwE6Ui7jcCVIix+pbuvaAvypUaNA0
+         7LnMaHcWdxXiVSgqeJSUR77YMqjiFrXxNhUf+ayUi/41/o+lyqvGx6B6TegO6wtQd2D8
+         xNtA==
+X-Forwarded-Encrypted: i=1; AJvYcCUTVhvVbqUUT1d/eLXNxaBDKDVUsZ0bBoT+qDb5LU18NejVVObxCTUuXuRLhGl+XXZ0okCcLHkZv9FpFTglwf4FSNXr4/aa4fnURZEzqUxcsOE0vSOlCJ8oiDfbuwopR/5RYYJsEuwI7X6t7A==
+X-Gm-Message-State: AOJu0YxHEtOJlHmI3QKd3RpFVIIzXOxl2sm1gURu+Pv90z7eAdYQWexi
+	waGsFkYMU0O6nZOkYKCkVsmKOyetcIzhmaEaDZsT6Yh2naBdyNxg
+X-Google-Smtp-Source: AGHT+IEi5erSHhlEtyUDl4ceLZr3Ogc9RUtr0VOL67S+SNiFqrklx1MYFA8hVBtxvmQQZtaaq/dLLg==
+X-Received: by 2002:a17:90b:4414:b0:2a3:be59:e969 with SMTP id hx20-20020a17090b441400b002a3be59e969mr1447018pjb.47.1712331692857;
+        Fri, 05 Apr 2024 08:41:32 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:400::5:25ab])
+        by smtp.gmail.com with ESMTPSA id d18-20020a17090ac25200b002a219f8079fsm1656244pjx.33.2024.04.05.08.41.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 08:41:32 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date: Fri, 5 Apr 2024 05:41:30 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Amir Goldstein <amir73il@gmail.com>, Al Viro <viro@zeniv.linux.org.uk>,
+	syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>,
+	gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+	valesini@yandex-team.ru, Christian Brauner <brauner@kernel.org>,
+	Jan Kara <jack@suse.cz>, Miklos Szeredi <miklos@szeredi.hu>
+Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
+Message-ID: <ZhAbqvXeeZ0mz2ZX@slm.duckdns.org>
+References: <00000000000098f75506153551a1@google.com>
+ <0000000000002f2066061539e54b@google.com>
+ <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
+ <20240404081122.GQ538574@ZenIV>
+ <20240404082110.GR538574@ZenIV>
+ <CAOQ4uximHfK78KFabJA3Hf4R0En6-GfJ3eF96Lzmc94PGuGayA@mail.gmail.com>
+ <20240405065135.GA3959@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,36 +93,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <47955de8-dfe5-48c0-bc9b-4e930b8f943e@infradead.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20240405065135.GA3959@lst.de>
 
-On Fri, Apr 05, 2024 at 08:33:26AM -0700, Randy Dunlap wrote:
-> On 4/5/24 8:27 AM, Andy Shevchenko wrote:
-> > On Thu, Apr 04, 2024 at 09:10:09PM -0700, Randy Dunlap wrote:
-> >> On 4/4/24 2:27 PM, Andy Shevchenko wrote:
-> >>> $ scripts/kernel-doc -v -none -Wall drivers/gpio/gpiolib* 2>&1 | grep -w warning | wc -l
-> >>> 67
-> >>>
-> >>> Fix these by adding Return sections. While at it, make sure all of
-> >>> Return sections use the same style.
+Hello,
 
-..
-
-> >> I would use %true, %false, %NULL, %0, and %1 in a few places.
-> > 
-> > Why? I specifically removed % from all of them, it's not so useful.
-> > Do we have, btw, generated HTML with these % as an example to see
-> > the difference. Maybe that helps to understand this better?
+On Fri, Apr 05, 2024 at 08:51:35AM +0200, Christoph Hellwig wrote:
+> On Thu, Apr 04, 2024 at 12:33:40PM +0300, Amir Goldstein wrote:
+> > I don't follow what you are saying.
+> > Which code is in non-starter violation?
+> > kernfs for calling lookup_bdev() with internal of->mutex held?
 > 
-> The leading '%' just changes the font style of constants.
-> I don't know of any HTML that compares them.
+> That is a huge problem, and has been causing endless annoying lockdep
+> chains in the block layer for us.  If we have some way to kill this
+> the whole block layer would benefit.
 
-I meant to compare the (HTML) render to see the difference, but you already
-explained that it adds/modifies <font> tag or so.
+of->mutex is mostly there as a convenience to kernfs (here, sysfs) users so
+that they don't have to worry about concurrent invocation of the callbacks.
+It needs more careful look but on cursory observation, it shouldn't be
+difficult to implement a flag or different op type which skips of->mutex if
+this causes a lot of pain.
+
+Thanks.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+tejun
 
