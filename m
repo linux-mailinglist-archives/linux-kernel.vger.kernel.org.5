@@ -1,132 +1,114 @@
-Return-Path: <linux-kernel+bounces-133065-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133067-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3024E899E4F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:30:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 160A4899E57
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:33:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAE701F23228
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:30:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A7D2A1F222E8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A6B016D4E1;
-	Fri,  5 Apr 2024 13:30:38 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4454916D32D
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:30:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7924016D4E4;
+	Fri,  5 Apr 2024 13:33:43 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929C916D338
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:33:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712323837; cv=none; b=j45zvY1VP0p7D/K5O4aWgv5E8LiuGKrVQmgFqbmAD+E6PGlUTCumvYOAkDcPU2CLFYzbSC3Szk3fkfEbq+pEK11dgiiYPBqqeUVaKnnxZwkaVWjwNqA/F+RTCdKfCm49OjZ9a3JwJ/BlST4FA/XM2uBysnycVnVFcJqNFS1i4/A=
+	t=1712324023; cv=none; b=mSDLufUOcgTTrNrBG+Ln40v8SY+OwMRuWLcJpXmAKjIgb6HO9b+UIquSHrb2ia/8Aet3ntqbLbMBLFUd67O82WlRZl1V9j964hfIgS0eX+PEpkhIykVrSjvF6Jn2Doc0R+katckXr8QeLg7VE+Canh3oUofS7vfFt5/MqU89SLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712323837; c=relaxed/simple;
-	bh=EJcW0sZ77+XrV5zGyzG0ZY2MZYMLOhwYkIOwA+cbql8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=PGtgYsE74qCG2Dq2Sdwwie+bGVMMmoZeYINwAMYK7nYwwuxMqTjGKd0lsKRMnZo9qaMn7R7Pp+7XL6xGnbsk2BD48BGjpjA6MEs4N70J0/WhUXPOIZdrNDlyG0GykHEHE6wA4e1j+6haoeO5Jnd5bd/+5WemclJw1bRtWUC/VZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7cc0370e9b0so239552839f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 06:30:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712323835; x=1712928635;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iSSqrMatCEUW1BHeL7+LvxirvHxOF6dEe7+WLCWA82s=;
-        b=CKph0x31naT0Kab9Rr4EqAqnvk+XOyQFYKW7Nvx+SgoOOyzif3ua+OObi8zHgYU1hS
-         7Bd0CQwWrOLkiDvBbMwWkuHwZqsfQa6e2m8bmd5R/D+ucTg6SoGpOVZ6YeE1abDnAL9N
-         zZEkWmiYlBtcWw863VMoht7Yv6ckLkiTVRnZWKMMeVFIXwbg1QDZhobZ27kIxfy14Upw
-         xPFBH+f/1MexJK5y0wNKgkeSjliHIne0KCBLH6SXWQWY0ngjHO4kEo76sre0yBCIHUcb
-         /9N/fER701gsxJPlMCKDwHKGbq9Qt/46D6vhEFvDyPi79aXi3NeRbHIdk8TyTIEY1sL4
-         lIfA==
-X-Gm-Message-State: AOJu0Yz1+yBZd2RMTgOD3+IaCiH1+oo1k2lX2v5vR1kogXz41wLVmK0y
-	W7sTVWEpKvySErXPh8M/03OKD9IYVD5xQbOTV38jV6A7RPhFEWWx3vHYFQX6mmhNMVZSLIsVD0Z
-	fjPIhlMpAs6y4HhZV27g4Z/i8iaq50oyKJF0I+WaATf9aMlfn2s6z65Q=
-X-Google-Smtp-Source: AGHT+IFsEQRfeqa2H7O2024jQT7tS4Gj8WduUTwKRu7NEF08O8r/ZG7bylKfMhWCQHGKuP87hGLXnrFRDKZ4vCGJAnT01fr6oAvO
+	s=arc-20240116; t=1712324023; c=relaxed/simple;
+	bh=LXjGpHiVHp7hjPWruy4/t8/vqKCfVZqBmrey23+vPl8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m41NlILj3mvGws2qvV3MKqwmU9XyivyBwGAx36zhp/ANmHp21K44Y0WGIflwS9VmKaadKKZb80rJqSmWTUOty82TBT+WJxBpSFfoWcOUIXvbqMkJ77bJXPSWR+qVaWug4KEH7Mun6si3wuN/VSbzTRgDfl9vlVhTXRooXanndio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 312F0DA7;
+	Fri,  5 Apr 2024 06:34:10 -0700 (PDT)
+Received: from e125905.cambridge.arm.com (e125905.cambridge.arm.com [10.1.194.73])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 20A2A3F7B4;
+	Fri,  5 Apr 2024 06:33:38 -0700 (PDT)
+From: Beata Michalska <beata.michalska@arm.com>
+To: linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	ionela.voinescu@arm.com,
+	vanshikonda@os.amperecomputing.com
+Cc: sudeep.holla@arm.com,
+	will@kernel.org,
+	catalin.marinas@arm.com,
+	vincent.guittot@linaro.org,
+	sumitg@nvidia.com,
+	yang@os.amperecomputing.com,
+	lihuisong@huawei.com
+Subject: [PATCH v4 0/4] Add support for AArch64 AMUv1-based arch_freq_get_on_cpu
+Date: Fri,  5 Apr 2024 14:33:15 +0100
+Message-Id: <20240405133319.859813-1-beata.michalska@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:13c3:b0:7cc:7112:ea9c with SMTP id
- o3-20020a05660213c300b007cc7112ea9cmr53057iov.2.1712323835436; Fri, 05 Apr
- 2024 06:30:35 -0700 (PDT)
-Date: Fri, 05 Apr 2024 06:30:35 -0700
-In-Reply-To: <20240405133030.21567-1-n.zhandarovich@fintech.ru>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f3b0e906155975f2@google.com>
-Subject: Re: [syzbot] WARNING in vmk80xx_auto_attach/usb_submit_urb
-From: syzbot <syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com>
-To: n.zhandarovich@fintech.ru
-Cc: linux-kernel@vger.kernel.org, n.zhandarovich@fintech.ru, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-> Refactor endpoint checks to ensure there is no ambivalence
-> about endpoint types.
->
-> Try a specific branch to mitigate unrelated issues with boot/build.
->
-> #syz test git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git 4090fa373f0e763c43610853>
+Introducing arm64 specific version of arch_freq_get_on_cpu, cashing on
+existing implementation for FIE and AMUv1 support: the frequency scale
+factor, updated on each sched tick, serves as a base for retrieving
+the frequency for a given CPU, representing an average frequency
+reported between the ticks - thus its accuracy is limited.
 
-"4090fa373f0e763c43610853>" does not look like a valid git branch or commit.
+The changes have been rather lightly (due to some limitations) tested on
+an FVP model. Note that some small discrepancies have been observed while
+testing (on the model) and this is currently being investigated, though it
+should not have any significant impact on the overall results.
 
-> ---
->  drivers/comedi/drivers/vmk80xx.c | 35 ++++++++++++-----------------------
->  1 file changed, 12 insertions(+), 23 deletions(-)
->
-> diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
-> index 4536ed43f65b..476885403c61 100644
-> --- a/drivers/comedi/drivers/vmk80xx.c
-> +++ b/drivers/comedi/drivers/vmk80xx.c
-> @@ -641,33 +641,22 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
->  	struct vmk80xx_private *devpriv = dev->private;
->  	struct usb_interface *intf = comedi_to_usb_interface(dev);
->  	struct usb_host_interface *iface_desc = intf->cur_altsetting;
-> -	struct usb_endpoint_descriptor *ep_desc;
-> -	int i;
-> +	struct usb_endpoint_descriptor *ep_rx_desc, *ep_tx_desc;
-> +	int i, ret;
->  
-> -	if (iface_desc->desc.bNumEndpoints != 2)
-> -		return -ENODEV;
-> -
-> -	for (i = 0; i < iface_desc->desc.bNumEndpoints; i++) {
-> -		ep_desc = &iface_desc->endpoint[i].desc;
-> -
-> -		if (usb_endpoint_is_int_in(ep_desc) ||
-> -		    usb_endpoint_is_bulk_in(ep_desc)) {
-> -			if (!devpriv->ep_rx)
-> -				devpriv->ep_rx = ep_desc;
-> -			continue;
-> -		}
-> -
-> -		if (usb_endpoint_is_int_out(ep_desc) ||
-> -		    usb_endpoint_is_bulk_out(ep_desc)) {
-> -			if (!devpriv->ep_tx)
-> -				devpriv->ep_tx = ep_desc;
-> -			continue;
-> -		}
-> -	}
-> +	if (devpriv->model == VMK8061_MODEL)
-> +		ret = usb_find_common_endpoints(iface_desc, &ep_rx_desc,
-> +						&ep_tx_desc, NULL, NULL);
-> +	else
-> +		ret = usb_find_common_endpoints(iface_desc, NULL, NULL,
-> +						&ep_rx_desc, &ep_tx_desc);
->  
-> -	if (!devpriv->ep_rx || !devpriv->ep_tx)
-> +	if (ret)
->  		return -ENODEV;
->  
-> +	devpriv->ep_rx = ep_rx_desc;
-> +	devpriv->ep_tx = ep_tx_desc;
-> +
->  	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
->  		return -EINVAL;
->  
+Relevant discussions:
+[1] https://lore.kernel.org/all/20240229162520.970986-1-vanshikonda@os.amperecomputing.com/
+[2] https://lore.kernel.org/all/7eozim2xnepacnnkzxlbx34hib4otycnbn4dqymfziqou5lw5u@5xzpv3t7sxo3/
+[3] https://lore.kernel.org/all/20231212072617.14756-1-lihuisong@huawei.com/
+[4] https://lore.kernel.org/lkml/ZIHpd6unkOtYVEqP@e120325.cambridge.arm.com/T/#m4e74cb5a0aaa353c60fedc6cfb95ab7a6e381e3c
+
+v4:
+- dropping seqcount
+- fixing identifying active cpu within given policy
+- skipping full dynticks cpus when retrieving the freq
+- bringing back plugging in arch_freq_get_on_cpu into cpuinfo_cur_freq
+
+v3:
+- dropping changes to cpufreq_verify_current_freq
+- pulling in changes from Ionela initializing capacity_freq_ref to 0
+  (thanks for that!)  and applying suggestions made by her during last review:
+	- switching to arch_scale_freq_capacity and arch_scale_freq_ref when
+	  reversing freq scale factor computation
+	- swapping shift with multiplication
+- adding time limit for considering last scale update as valid
+- updating frequency scale factor upon entering idle
+
+v2:
+- Splitting the patches
+- Adding comment for full dyntick mode
+- Plugging arch_freq_get_on_cpu into cpufreq_verify_current_freq instead
+  of in show_cpuinfo_cur_freq to allow the framework to stay more in sync
+  with potential freq changes
+
+
+Beata Michalska (3):
+  arm64: Provide an AMU-based version of arch_freq_get_on_cpu
+  arm64: Update AMU-based frequency scale factor on entering idle
+  cpufreq: Use arch specific feedback for cpuinfo_cur_freq
+
+Ionela Voinescu (1):
+  arch_topology: init capacity_freq_ref to 0
+
+ arch/arm64/kernel/topology.c | 125 ++++++++++++++++++++++++++++++++---
+ drivers/base/arch_topology.c |   8 ++-
+ drivers/cpufreq/cpufreq.c    |   4 +-
+ 3 files changed, 123 insertions(+), 14 deletions(-)
+
+-- 
+2.25.1
+
 
