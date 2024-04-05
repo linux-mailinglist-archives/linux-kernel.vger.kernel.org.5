@@ -1,123 +1,192 @@
-Return-Path: <linux-kernel+bounces-132333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B1A6899340
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:40:51 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42086899344
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 04:43:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1C644B240FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:40:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C472E1F228A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53125182B5;
-	Fri,  5 Apr 2024 02:40:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LN8Gt42S"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04C6175BE;
+	Fri,  5 Apr 2024 02:43:35 +0000 (UTC)
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88BE912B82;
-	Fri,  5 Apr 2024 02:40:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8EACBE4D
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 02:43:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712284830; cv=none; b=PoutEDg0AvCV7JLjHhd78aBZrqWcCGrii9Rd7IPBvxSdf9zJWHuzjmtKqo23QDxvO3KMWoQTqKSPA27Me6ZcZYQsJyTVqwytaieQ07SXQlD/FnmRgRshqatTz2/mPtmRVkiO/K7MLtJxNNqrhbaJOhrxdfS7HYXB2TYrlcPXBp8=
+	t=1712285015; cv=none; b=QGWJ0VeZbEpHxPj6oLh83Myk6/+ZuMnYsrqwOf3yjk7OJFrV77kjzRjwxg4iQc2bLrFETf2xIP4vaCB2RxvuEcQQUXTq/FdIb4Kk67P9xn/ow+LfieZx2NYm18gkcxMLZpHKaxUogCFfMKQTsDgn9lnGzM1Uy2H3jLU0X4yMKfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712284830; c=relaxed/simple;
-	bh=r8ZTkM09cSWLFtghokToeBai9Q+R9Dq9nyVQm0kxUEo=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=AutORP/wr3hqngtqyhxSeDBFu7BQ+61PFQWcxiXwwokpUQGPCnDEqmfmg12x7FAvaJuatjVAshEa9HXJR9/zEJAo7LYzzzyKI2tajMkwas8rK2pUFFEDORy0bY7c9WUjc98+feA2qMI74118tezlzvGdPF0It3aFAD7MWDhzlaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LN8Gt42S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 22022C433C7;
-	Fri,  5 Apr 2024 02:40:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712284830;
-	bh=r8ZTkM09cSWLFtghokToeBai9Q+R9Dq9nyVQm0kxUEo=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=LN8Gt42SlfX3/7298hMD8WFRCI5/kRgokSvGHTSv6vmTzDT/CVlczNcW46d8UW9LI
-	 X9QEC4SEmI46s8Iw+fz77oABC6Rws1b7Pp61Zwm27oi/2KyWQH86c0xvrqK988Qzyd
-	 eOlDMJkn3iSEIhED4EmDNl02zYoofYHX3819x9pzL/QU/3P/60Cls7mQy0S4K60cVb
-	 XOM3XqMi1ULkYl1s4qmXC3HafXtJuRTMqot27u1RNNjT1keIWzUtHJYhJnbnKqQi56
-	 +gN+0NIjNQ0dRZQB9D/MCrUTLPvZBsWHoMPtdiLXl3ms2yA+TzeUokPyVnyE4BqSHy
-	 tVLOkTGvOjwFQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 0F3FFC395F6;
-	Fri,  5 Apr 2024 02:40:30 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1712285015; c=relaxed/simple;
+	bh=eAPnINuulwva4/WG+mAw8dx+PfgjHUwBTcHaTHqnwlI=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=JWOgjl+6ri6/blSUF7+QWv73Ew14tYIK9jRBspUwE/ph9fxv2/bT58tEOGmMAbHvYW9r3cxVSR70oBPzfrVUPs/dhNw8M3BJDRnqx5jjmfejhlGuj7xpkJps9y/pT1WZ7+mSV7uR2rLz1WiCg7PtplicOGFNYXdZtHuKKVfBAvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cf179c3da4so187658839f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 19:43:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712285013; x=1712889813;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kWzCF7oLLz2o8r549zshwntVI6I7m8Wr8tld17xYk5c=;
+        b=e4UEqUzyKkU+oHKtFvLQyC63D3UOCKdzr6o2pcg20bnNvftpqdP9morDc6+ZQLFnyM
+         Tj/R3pWjdHyru0xAwSrshX57QI+dCUCcWeTPBOwrLzHeCxEgCIg5qzzCz8gj4yiEoJiM
+         gVkaarBEBEdtDlG2BO2DiH1og5ugrvwkJMR5zdIfHIlQ8Mbgn1IGOEGInxm60xSbnn8x
+         EgKbUiYMxCoZjvXcSF21LLr+RKUbz8CWLsEUNcJNiOYAAoVMC29wOSZgg08DWWF5zscI
+         SXeQtPtR9rZHRYpJwyeI79Zjl3QLftYOcMl/JaXh4G1RbiobRr3AwfklJhyHk7snPQzJ
+         85ZA==
+X-Forwarded-Encrypted: i=1; AJvYcCX8F1WXz6SGcyv+SegtVHRvZZCE6GqeTJl5Vq1r0qM6CkwGjqUU/3YTPEsbrdUOdRFtzeFDajND7BwnI0ERpR9mmhelceD5A/NGo+WD
+X-Gm-Message-State: AOJu0YwqAE6CImP5vovugAcpkAStfmxtryFqw0czIEFCy3E4OjnL7TcL
+	7PM2N3TrQqH3Gj3tCzKGTwR1Ag/5k1rcDafuqW+vvHAouX0o3CO0Xi9WLxL/mg1LU9fthX9i3sD
+	6CdTWdzBLpogDgj/Zl7ssF4XH3XDQVP8emMsngHVgzzDNtvv622tIkOI=
+X-Google-Smtp-Source: AGHT+IEmugyoL4Q2wlslLEKgKm8uc6/OAU+oX6OjsJ7Jf5wcT6vkI7I+jowp+riAj8MPNOYunbZ00Cfsl93cgkAZqrUTauqOhuC/
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/8] net: dsa: microchip: ksz8: refactor FDB dump
- path
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171228483005.11871.10405239717596151463.git-patchwork-notify@kernel.org>
-Date: Fri, 05 Apr 2024 02:40:30 +0000
-References: <20240403125039.3414824-1-o.rempel@pengutronix.de>
-In-Reply-To: <20240403125039.3414824-1-o.rempel@pengutronix.de>
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: davem@davemloft.net, andrew@lunn.ch, edumazet@google.com,
- f.fainelli@gmail.com, kuba@kernel.org, pabeni@redhat.com, olteanv@gmail.com,
- woojung.huh@microchip.com, arun.ramadoss@microchip.com,
- kernel@pengutronix.de, linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- UNGLinuxDriver@microchip.com, san@skov.dk
+X-Received: by 2002:a05:6602:489:b0:7d0:ad03:af10 with SMTP id
+ y9-20020a056602048900b007d0ad03af10mr4579iov.1.1712285012980; Thu, 04 Apr
+ 2024 19:43:32 -0700 (PDT)
+Date: Thu, 04 Apr 2024 19:43:32 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f40f0c0615506b93@google.com>
+Subject: [syzbot] [netfs?] divide error in netfs_submit_writethrough
+From: syzbot <syzbot+f3a09670f3d2a55b89b2@syzkaller.appspotmail.com>
+To: dhowells@redhat.com, jlayton@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, netfs@lists.linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hello:
+Hello,
 
-This series was applied to netdev/net-next.git (main)
-by Jakub Kicinski <kuba@kernel.org>:
+syzbot found the following issue on:
 
-On Wed,  3 Apr 2024 14:50:31 +0200 you wrote:
-> Refactor FDB dump code path for Microchip KSZ8xxx series. This series
-> mostly makes some cosmetic reworks and allows to forward errors detected
-> by the regmap.
-> 
-> Change logs are part of patch commit messages.
-> 
-> Oleksij Rempel (8):
->   net: dsa: microchip: Remove unused FDB timestamp support in
->     ksz8_r_dyn_mac_table()
->   net: dsa: microchip: Make ksz8_r_dyn_mac_table() static
->   net: dsa: microchip: ksz8: Refactor ksz8_fdb_dump()
->   net: dsa: microchip: ksz8: Refactor ksz8_r_dyn_mac_table() for
->     readability
->   net: dsa: microchip: ksz8: Unify variable naming in
->     ksz8_r_dyn_mac_table()
->   net: dsa: microchip: ksz8_r_dyn_mac_table(): ksz: do not return EAGAIN
->     on timeout
->   net: dsa: microchip: ksz8_r_dyn_mac_table(): return read/write error
->     if we got any
->   net: dsa: microchip: ksz8_r_dyn_mac_table(): use entries variable to
->     signal 0 entries
-> 
-> [...]
+HEAD commit:    39cd87c4eb2b Linux 6.9-rc2
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=133bffe6180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8c2c72b264636e25
+dashboard link: https://syzkaller.appspot.com/bug?extid=f3a09670f3d2a55b89b2
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-Here is the summary with links:
-  - [net-next,v2,1/8] net: dsa: microchip: Remove unused FDB timestamp support in ksz8_r_dyn_mac_table()
-    https://git.kernel.org/netdev/net-next/c/a4a0306fbe1c
-  - [net-next,v2,2/8] net: dsa: microchip: Make ksz8_r_dyn_mac_table() static
-    https://git.kernel.org/netdev/net-next/c/860cf29eabf1
-  - [net-next,v2,3/8] net: dsa: microchip: ksz8: Refactor ksz8_fdb_dump()
-    https://git.kernel.org/netdev/net-next/c/0499bb09f412
-  - [net-next,v2,4/8] net: dsa: microchip: ksz8: Refactor ksz8_r_dyn_mac_table() for readability
-    https://git.kernel.org/netdev/net-next/c/5f1b7f838f5f
-  - [net-next,v2,5/8] net: dsa: microchip: ksz8: Unify variable naming in ksz8_r_dyn_mac_table()
-    https://git.kernel.org/netdev/net-next/c/08736e083e4b
-  - [net-next,v2,6/8] net: dsa: microchip: ksz8_r_dyn_mac_table(): ksz: do not return EAGAIN on timeout
-    https://git.kernel.org/netdev/net-next/c/081e84f267ad
-  - [net-next,v2,7/8] net: dsa: microchip: ksz8_r_dyn_mac_table(): return read/write error if we got any
-    https://git.kernel.org/netdev/net-next/c/7caed786b374
-  - [net-next,v2,8/8] net: dsa: microchip: ksz8_r_dyn_mac_table(): use entries variable to signal 0 entries
-    https://git.kernel.org/netdev/net-next/c/8d5758120dd2
+Unfortunately, I don't have any reproducer for this issue yet.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-39cd87c4.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9e28c9b1ddc4/vmlinux-39cd87c4.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/17cff5c46535/bzImage-39cd87c4.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f3a09670f3d2a55b89b2@syzkaller.appspotmail.com
+
+divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 2 PID: 7215 Comm: syz-executor.1 Not tainted 6.9.0-rc2-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:netfs_submit_writethrough+0x201/0x280 fs/netfs/output.c:427
+Code: fc ff df 48 89 fa 48 c1 ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 1a 8b 8b 0c 01 00 00 48 89 e8 31 d2 <48> f7 f1 48 89 c5 48 0f af e9 e9 1d ff ff ff e8 6b 1c b9 ff eb df
+RSP: 0018:ffffc90001f1f740 EFLAGS: 00010246
+RAX: 0000000000001000 RBX: ffff88801fd08c00 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff82317e29 RDI: ffff88801fd08d0c
+RBP: 0000000000001000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000003 R12: 0000000000000000
+R13: ffff8880545c2920 R14: ffff88801fd08d20 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88802c400000(0063) knlGS:00000000f5ecab40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 000000002000f000 CR3: 0000000053f7e000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ netfs_advance_writethrough+0x13f/0x170 fs/netfs/output.c:449
+ netfs_perform_write+0x1b9f/0x26b0 fs/netfs/buffered_write.c:385
+ netfs_buffered_write_iter_locked+0x213/0x2c0 fs/netfs/buffered_write.c:454
+ netfs_file_write_iter+0x1e0/0x470 fs/netfs/buffered_write.c:493
+ v9fs_file_write_iter+0xa1/0x100 fs/9p/vfs_file.c:407
+ call_write_iter include/linux/fs.h:2108 [inline]
+ do_iter_readv_writev+0x504/0x780 fs/read_write.c:741
+ vfs_writev+0x36f/0xdb0 fs/read_write.c:971
+ do_pwritev+0x1b2/0x260 fs/read_write.c:1072
+ __do_compat_sys_pwritev2 fs/read_write.c:1218 [inline]
+ __se_compat_sys_pwritev2 fs/read_write.c:1210 [inline]
+ __ia32_compat_sys_pwritev2+0x121/0x1b0 fs/read_write.c:1210
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0x7a/0x120 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
+ entry_SYSENTER_compat_after_hwframe+0x7f/0x89
+RIP: 0023:0xf72d0579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f5eca5ac EFLAGS: 00000292 ORIG_RAX: 000000000000017b
+RAX: ffffffffffffffda RBX: 0000000000000007 RCX: 0000000020000780
+RDX: 0000000000000001 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000016 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:netfs_submit_writethrough+0x201/0x280 fs/netfs/output.c:427
+Code: fc ff df 48 89 fa 48 c1 ea 03 0f b6 14 02 48 89 f8 83 e0 07 83 c0 03 38 d0 7c 04 84 d2 75 1a 8b 8b 0c 01 00 00 48 89 e8 31 d2 <48> f7 f1 48 89 c5 48 0f af e9 e9 1d ff ff ff e8 6b 1c b9 ff eb df
+RSP: 0018:ffffc90001f1f740 EFLAGS: 00010246
+RAX: 0000000000001000 RBX: ffff88801fd08c00 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff82317e29 RDI: ffff88801fd08d0c
+RBP: 0000000000001000 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000003 R12: 0000000000000000
+R13: ffff8880545c2920 R14: ffff88801fd08d20 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff88802c400000(0063) knlGS:00000000f5ecab40
+CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+CR2: 000000002000f000 CR3: 0000000053f7e000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	df 48 89             	fisttps -0x77(%rax)
+   3:	fa                   	cli
+   4:	48 c1 ea 03          	shr    $0x3,%rdx
+   8:	0f b6 14 02          	movzbl (%rdx,%rax,1),%edx
+   c:	48 89 f8             	mov    %rdi,%rax
+   f:	83 e0 07             	and    $0x7,%eax
+  12:	83 c0 03             	add    $0x3,%eax
+  15:	38 d0                	cmp    %dl,%al
+  17:	7c 04                	jl     0x1d
+  19:	84 d2                	test   %dl,%dl
+  1b:	75 1a                	jne    0x37
+  1d:	8b 8b 0c 01 00 00    	mov    0x10c(%rbx),%ecx
+  23:	48 89 e8             	mov    %rbp,%rax
+  26:	31 d2                	xor    %edx,%edx
+* 28:	48 f7 f1             	div    %rcx <-- trapping instruction
+  2b:	48 89 c5             	mov    %rax,%rbp
+  2e:	48 0f af e9          	imul   %rcx,%rbp
+  32:	e9 1d ff ff ff       	jmp    0xffffff54
+  37:	e8 6b 1c b9 ff       	call   0xffb91ca7
+  3c:	eb df                	jmp    0x1d
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
