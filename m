@@ -1,116 +1,223 @@
-Return-Path: <linux-kernel+bounces-133508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ED1C89A4A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:07:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C983489A48D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:04:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ECC7C284EF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:07:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32006B2444A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:04:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46866172BDC;
-	Fri,  5 Apr 2024 19:06:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CE1D172BB8;
+	Fri,  5 Apr 2024 19:04:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V6f1lJI4"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="nzmz8/7C"
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE11F172796;
-	Fri,  5 Apr 2024 19:06:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA74A171E47
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 19:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712343964; cv=none; b=LqW8l36g2kFcC3T20g9GGKG6ytPjdVp0nqnK5RV6i53s4Box6cFF9Hnm7FxVHKXWf4mKfk5dVZ+p3fR2BDU1c46XZVNdfcHgbC22OqkPmOCBXv6OwVeFMNTojTpTJcQp9f23wgA5IOgf6zLAAQNlFu8Am4CeNfnyOfLwiGLEhBs=
+	t=1712343842; cv=none; b=c1PFFvFC1TDRdzO5C6o3qF+1EOkUYUTDa41L8uOi0odkO4gsAPH3kb53TDe95e/FX8ZBig4pOv+1qVeKt1RDIyp+G19gH48LYaynYWhJGkLsoIYksKxCsH/Bl6NSygR+PEZ9biJIorXagvTcsux6f7RcZCIKBb7NXLCqELcrG7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712343964; c=relaxed/simple;
-	bh=zFci7/zQH9wpVuV3O3qwf1utK2Fw0+XCVQcYfefS1Ss=;
-	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
-	 MIME-Version:Content-Type; b=l5sp1XD+ELoKQlwxm72pLFRubjAoYhOlo7V5TAGjNSRaIBn4QYj02Yrm5UPuOZltU9ED4t5cGqAGS/mbQCziEH9OAOcGHDKS/BAVg6yn7Vx4xOwNIHfbFImGZiRswsY2ghZD5AqMI0BvrTHrqomD//5IW8h1GuXgQcGLxY56DNo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V6f1lJI4; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-516d536f6f2so1118186e87.2;
-        Fri, 05 Apr 2024 12:06:02 -0700 (PDT)
+	s=arc-20240116; t=1712343842; c=relaxed/simple;
+	bh=XEKl06sBIFubO4kEIxiME6RWBGOpirneG37fQIFYI+E=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=On2o/1AyYQg9nk7wNSOvXpb6AOv1OP2bzWXwZSowXDamYhVbCaAGDxUBWEJe6W6sIphZqY0U/U7KTr6YmRlm49IounZA9cKTsxOAWNw1aXF8GtqDvvUrM1bgLlgrEYFWHftlSxMtZXwEWF+U7IM3ZFMjK4vjdmYY934LpjwTq8E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=nzmz8/7C; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6ed04c91c46so686296b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 12:04:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712343961; x=1712948761; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:date:references:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=zFci7/zQH9wpVuV3O3qwf1utK2Fw0+XCVQcYfefS1Ss=;
-        b=V6f1lJI4hAWT2U23HDsn7arNZC+g2ZOUXE8+fTs/Ag7RU4KNCWRZgP/ZPklSgx+U5M
-         8nV32R8D2xJrxdC6VW4iruWDKm8lRogAbNfp2s0ziEcoPqc3o6cIKiEoMHCFkQbowkU1
-         truQJcyn0Da4En0NqSbQjFyvQYoyQqhNRC/meSB5tWDrLp8Bloe7ncwp07u6mQ38Mx8D
-         P7WvDzdKRUGn1aaU4LBsef3Ddp16fXSZfm6l22+dxjwpIHMPMQXDwqd0ezJPgWpfKfP/
-         wL5A35Qx4zceQKs3/L2v8aZaAxhNBRXOHFQPa9VT3jABuMxR7tB6QWpDsQuIKD2ETw47
-         I2qQ==
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712343840; x=1712948640; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=m5F1jQjz8GKIvENiKZ18TsL/8/SjOJRyCEoniP0p7LQ=;
+        b=nzmz8/7Cy8PiExcigb6y3g79BjbFNUxVQzk4dk70l25W2LEwMVpSv334Ir4BqC8s47
+         jo0ts6S4jT0yzU8SkEtqDVKgXDSjMBjk6aSyI7f01LTJdPHErnRdHIRM06QlJuwENu4p
+         GM/fgFUskms0QGgxn74OQllslkkQ2ImJcmyII94zw58Msd0rYuAFYG2GFXBVuUOYscz/
+         C3npn+wfT1irPkzG40mXR3Wue8aVKa836zdgJ8WAgokph0lLVEBnXCW0t10mjircurZU
+         0HpTuhPHfaA0elcCal1+imtbXfvMPkURenpLd23qbRzq2bzEbt9yxXa1FHjR3jjvxRX8
+         oVxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712343961; x=1712948761;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:date:references:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zFci7/zQH9wpVuV3O3qwf1utK2Fw0+XCVQcYfefS1Ss=;
-        b=T12aQn8SjiCaMX9DFGCFA3H4xGVS3Ky8N5amQ/ehdQ0Y4pGyNwzaxXVko38qUu2A7F
-         8hRw5gXf4y+tgjwL7uvh78jBgYWEwSbObibYw2WK42g4PrKQxr8YBc7ojwkd5O+KAeXb
-         2XHwvgvFm8qXnj5Vnik3E1dd6IMmvT/em/An1YAkXV9Fao1gQ+jV8yKICJ5FJlBbDgjI
-         zaCm5gjEVJ3arNz7SiCxzg5NoM8hrnwwCJF8KWoJEnIhipcQpriKcvWgLS+QApAfqn7d
-         6FNwnaw4l3tszh3aLs5icnAUHz4Ht/CE6xexAAT+TRwyLrLMCHtkYZSUzeKPeurQxOF+
-         qIdw==
-X-Forwarded-Encrypted: i=1; AJvYcCVe2YMXX6Fs8VsX+99dX9kfjYN1V5es9uWrSjWqEAkGZ18wshvq738jpzsHvax+QcIswmGV55TgU24LNe4071GDH/6Q4zp3gNUBg3HFh3PBxurlLQOgwtqAFb9JWTy+Pw4rATUvuIwMxQCL
-X-Gm-Message-State: AOJu0Yxe7EqC9qEW8dJdg3NY2GtUgUt9YhRxJ/EhCHqpjNYIaRcY5a3o
-	NMWczRMWtjzsL+eg6fkSOXJF2W6NDRtkESCh7DWhGZRgRvwyx1f6
-X-Google-Smtp-Source: AGHT+IF8d6Tm00RPEfua/VpB/UdPM5cBubuR1FNzA5BoxG+5BDk3l4sBzRGKEiGeYtOcwDOUKS8BQQ==
-X-Received: by 2002:a05:6512:ac5:b0:515:d3dc:43e with SMTP id n5-20020a0565120ac500b00515d3dc043emr2267678lfu.51.1712343960384;
-        Fri, 05 Apr 2024 12:06:00 -0700 (PDT)
-Received: from osv.localdomain ([89.175.180.246])
-        by smtp.gmail.com with ESMTPSA id d24-20020a193858000000b00513e466cb0asm268120lfj.5.2024.04.05.12.05.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 12:06:00 -0700 (PDT)
-From: Sergey Organov <sorganov@gmail.com>
-To: Fabio Estevam <festevam@gmail.com>
-Cc: Esben Haabendal <esben@geanix.com>,  Greg Kroah-Hartman
- <gregkh@linuxfoundation.org>,  Jiri Slaby <jirislaby@kernel.org>,  Shawn
- Guo <shawnguo@kernel.org>,  Sascha Hauer <s.hauer@pengutronix.de>,
-  Pengutronix Kernel Team <kernel@pengutronix.de>,  Marc Kleine-Budde
- <mkl@pengutronix.de>,  linux-kernel@vger.kernel.org,
-  linux-serial@vger.kernel.org,  imx@lists.linux.dev,
-  linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 1/2] serial: imx: Introduce timeout when waiting on
- transmitter empty
-References: <76cf9ce9cbf9dcdf78bc00ce7a919db1776ebce1.1712309058.git.esben@geanix.com>
-	<CAOMZO5Axz7un+9H2uEoQtE0=pYNC0hEyZiNobrSi2m0ajj8N+g@mail.gmail.com>
-Date: Fri, 05 Apr 2024 22:05:59 +0300
-In-Reply-To: <CAOMZO5Axz7un+9H2uEoQtE0=pYNC0hEyZiNobrSi2m0ajj8N+g@mail.gmail.com>
-	(Fabio Estevam's message of "Fri, 5 Apr 2024 14:38:48 -0300")
-Message-ID: <87r0fj1vfs.fsf@osv.gnss.ru>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        d=1e100.net; s=20230601; t=1712343840; x=1712948640;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=m5F1jQjz8GKIvENiKZ18TsL/8/SjOJRyCEoniP0p7LQ=;
+        b=GN0ge6PwAx7TbXU8emeeiOdnQK2YiSiOYJUvgscWnd5QHS4f69IaxRKQUabG33tWtc
+         biPW/9NAACgfAWpMz+Ffb4RkNqjjjR0etrS4tijAJJHSPhvTyA9ayzmG75VpMVlcl34f
+         xvPCRFglMqdKiKBNzGGPfhC8Lg4f9XpsnLRHYQQEKcOfSoVudIeNgsIZIy/p4e93gl4a
+         frFoIl9iYaurFyB4R1AgtPrLMtjuZNhVKUI7lGGu8RcTKRlCSixt5f8Ifc/al8qT8uMm
+         Hsp34/SVyoQGBF9WXt+PxwGKTso149Jh4kbepqX16HuD1roF6BOMbI3Zm4wljGYFzjlW
+         nUXA==
+X-Forwarded-Encrypted: i=1; AJvYcCX9eWdalt0rOm0Z/7Qoi4kKHvQ60dzlJV5/KCAbJKys+qz4ZlpWj3VKweV+NiTzUq8UPHTrgfj71p5hV5I3hDyyOtasg1a+4b57gNnT
+X-Gm-Message-State: AOJu0Yw8UY4dyhG+lR1UewfynMlF3wKB6wbdGfYw/gpLe1OZv6cElu0/
+	2aQKSRND1UEjwMeMsx/6VysNZMvAX6v1zNAn8R3Trthz7LN8OeyBrzJ2i8zo9Dg=
+X-Google-Smtp-Source: AGHT+IFAXbDKHeg34rzADfjJc020+AOdjsWUUxei/k5dSo82HE9jteZqnbSLLu9o4twWXBB1GicQAQ==
+X-Received: by 2002:a05:6a00:1489:b0:6ea:ceff:2492 with SMTP id v9-20020a056a00148900b006eaceff2492mr2676124pfu.32.1712343840269;
+        Fri, 05 Apr 2024 12:04:00 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id q29-20020a63751d000000b005f3a8643176sm1791656pgc.44.2024.04.05.12.03.58
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Apr 2024 12:03:59 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <2587135E-3AF4-430A-89CF-5E49D229F2D3@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_9F3BC9E2-9868-456E-9EFC-C29718A65C6D";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v3 03/13] fiemap: add new COMPRESSED extent state
+Date: Fri, 5 Apr 2024 13:06:08 -0600
+In-Reply-To: <2befe2c13065bdf3ca74cb8b701727940310fd2a.1712126039.git.sweettea-kernel@dorminy.me>
+Cc: Jonathan Corbet <corbet@lwn.net>,
+ Kent Overstreet <kent.overstreet@linux.dev>,
+ Brian Foster <bfoster@redhat.com>,
+ Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>,
+ Jaegeuk Kim <jaegeuk@kernel.org>,
+ Chao Yu <chao@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>,
+ Jan Kara <jack@suse.cz>,
+ =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>,
+ linux-doc@vger.kernel.org,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ linux-bcachefs@vger.kernel.org,
+ linux-btrfs <linux-btrfs@vger.kernel.org>,
+ linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ kernel-team@meta.com
+To: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+References: <cover.1712126039.git.sweettea-kernel@dorminy.me>
+ <2befe2c13065bdf3ca74cb8b701727940310fd2a.1712126039.git.sweettea-kernel@dorminy.me>
+X-Mailer: Apple Mail (2.3273)
 
-Fabio Estevam <festevam@gmail.com> writes:
 
-> On Fri, Apr 5, 2024 at 6:25 AM Esben Haabendal <esben@geanix.com> wrote:
->>
->> By waiting at most 1 second for USR2_TXDC to be set, we avoid a potentital
->
-> s/potentital/potential
->
-> Could you elaborate on this deadlock? Have you seen it in practice?
+--Apple-Mail=_9F3BC9E2-9868-456E-9EFC-C29718A65C6D
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-I've stumped upon this piece of code a long time ago, and it's indeed
-broken. However, to actually see a "deadlock", I believe one needs to
-enable hardware RTS/CTS handshake on the port, then, say, not connect
-RS232 cable, and then printk(), if enabled to this port, will soon
-result in the loop to be executed forever, that in turn will hang
-single-CPU machine entirely (provided this code is still executed with
-interrupts disabled, as it was at the time I investigated severe
-printk()-induced ISR delays).
+On Apr 3, 2024, at 1:22 AM, Sweet Tea Dorminy =
+<sweettea-kernel@dorminy.me> wrote:
+>=20
+> This goes closely with the new physical length field in struct
+> fiemap_extent, as when physical length is not equal to logical length
+> the reason is frequently compression.
+>=20
+> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
--- Sergey Organov
+Looks good.
+
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
+> ---
+> Documentation/filesystems/fiemap.rst | 4 ++++
+> fs/ioctl.c                           | 3 ++-
+> include/uapi/linux/fiemap.h          | 2 ++
+> 3 files changed, 8 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/filesystems/fiemap.rst =
+b/Documentation/filesystems/fiemap.rst
+> index c060bb83f5d8..16bd7faba5e0 100644
+> --- a/Documentation/filesystems/fiemap.rst
+> +++ b/Documentation/filesystems/fiemap.rst
+> @@ -162,6 +162,10 @@ FIEMAP_EXTENT_DATA_ENCRYPTED
+>   This will also set FIEMAP_EXTENT_ENCODED
+>   The data in this extent has been encrypted by the file system.
+>=20
+> +FIEMAP_EXTENT_DATA_COMPRESSED
+> +  This will also set FIEMAP_EXTENT_ENCODED
+> +  The data in this extent is compressed by the file system.
+> +
+> FIEMAP_EXTENT_NOT_ALIGNED
+>   Extent offsets and length are not guaranteed to be block aligned.
+>=20
+> diff --git a/fs/ioctl.c b/fs/ioctl.c
+> index 1830baca532b..b47e2da7ec17 100644
+> --- a/fs/ioctl.c
+> +++ b/fs/ioctl.c
+> @@ -126,7 +126,8 @@ int fiemap_fill_next_extent(struct =
+fiemap_extent_info *fieinfo, u64 logical,
+> 		return 1;
+>=20
+> #define SET_UNKNOWN_FLAGS	(FIEMAP_EXTENT_DELALLOC)
+> -#define SET_NO_UNMOUNTED_IO_FLAGS	(FIEMAP_EXTENT_DATA_ENCRYPTED)
+> +#define SET_NO_UNMOUNTED_IO_FLAGS	(FIEMAP_EXTENT_DATA_ENCRYPTED|\
+> +					 FIEMAP_EXTENT_DATA_COMPRESSED)
+> #define SET_NOT_ALIGNED_FLAGS	=
+(FIEMAP_EXTENT_DATA_TAIL|FIEMAP_EXTENT_DATA_INLINE)
+>=20
+> 	if (flags & SET_UNKNOWN_FLAGS)
+> diff --git a/include/uapi/linux/fiemap.h b/include/uapi/linux/fiemap.h
+> index 3079159b8e94..ea97e33ddbb3 100644
+> --- a/include/uapi/linux/fiemap.h
+> +++ b/include/uapi/linux/fiemap.h
+> @@ -67,6 +67,8 @@ struct fiemap {
+> 						    * Sets =
+EXTENT_UNKNOWN. */
+> #define FIEMAP_EXTENT_ENCODED		0x00000008 /* Data can not be =
+read
+> 						    * while fs is =
+unmounted */
+> +#define FIEMAP_EXTENT_DATA_COMPRESSED	0x00000040 /* Data is =
+compressed by fs.
+> +						    * Sets =
+EXTENT_ENCODED. */
+> #define FIEMAP_EXTENT_DATA_ENCRYPTED	0x00000080 /* Data is encrypted =
+by fs.
+> 						    * Sets =
+EXTENT_NO_BYPASS. */
+> #define FIEMAP_EXTENT_NOT_ALIGNED	0x00000100 /* Extent offsets may =
+not be
+> --
+> 2.43.0
+>=20
+>=20
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_9F3BC9E2-9868-456E-9EFC-C29718A65C6D
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYQS6AACgkQcqXauRfM
+H+DZhQ/+N+FTBJl3kN1NsBtQXtsomVevJcR4usUlY6CqAaJaOHn6SST8tvc45maS
+6TzHDvlG9y5RPqk8hjc4xqjlO95zMD/wIGtJjrqMGwhSKUiHj2GQxK6/oF6Ca4US
+n2f2kjIcqQNCsPa2nZ3+KqgEthxUiaBlMBFrOd5/mecaDlsJImrQ+YRMHoADSUnz
+j4AgO/BVE7YTzRb7HKvxWRIuPjHIy9s4Dv/mxv0litYtM3YmWVPMCI+D1lSeXZMt
+ESm1NlJOIXqaLtYu1nKgaT2DlMWwPMOtdyFl4s3m8MPEyCD0Bugvff6F9X3N6DHa
+ZkIUlrdCpZPqZjj8XtckHOa8n2XyigbkhOQLCyT4bwNPgHE3r+3Gop+BmT3Fag5S
+MHOwhgm0NhIkk7cD4s7vTWYNXyaKCnW9nMqmZJWthjGr+X8hL9WMgBHJsjaCpCJd
+MbtQsp7Tm553K5go36SFo0Xj5Fchad7bnmg8wQ1CZspqp2VkpsW/15n4UxoxIRV2
+gyBRDpwLm3sd/jIeZPhms2JQLKnpgd2a2eCiV5nLektk3gG4kt4anIdcdR/9PJJB
+KquxpKDdN6wu1rzGzfWKDzyLpGuc/YAL+oqsNNMSFgk1hBP9V4EkdKz5IuN08bt5
+DPU0w4HHu4d/uj3xT4VCUpVKVFmMrrGweYMBL4B4AvuLiOzjpqc=
+=9xNL
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_9F3BC9E2-9868-456E-9EFC-C29718A65C6D--
 
