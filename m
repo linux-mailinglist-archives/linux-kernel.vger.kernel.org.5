@@ -1,189 +1,98 @@
-Return-Path: <linux-kernel+bounces-132460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132454-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0420899517
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:13:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D7D9C899510
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:12:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2805B1C215A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:13:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 153051C229A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:12:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32326823A2;
-	Fri,  5 Apr 2024 06:09:22 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C61F55E49;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FCA855E55;
 	Fri,  5 Apr 2024 06:09:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="2DxURgT2"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47978288D7;
+	Fri,  5 Apr 2024 06:09:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712297361; cv=none; b=nUOIhIlI7F4Vo70HwqvxnoZKkUVUhKIvSeCX6ZkZf92ly0CYzvoosatDwd39mI+UonUJ+efCTihEMl+6Qu/RsELIP9FnE09fRSfZU/Y02wpTlgnHBE/DxTa3N1PVDDk+RzstMcVfbq+dskozlADvXHTDqLEgpeRTNWjmbJfvjdw=
+	t=1712297356; cv=none; b=V/BQXtHjfOgUvhKgDM+ZpZBYndkpCL0jNKB5OkeW4yA19eyXm/QLHYqZOfsSZUpnCpfm4iIezMefkn7BdybdmTbAMJmGZWr1XK8RlDqqvAHkmNJFZmjgLUnssfQ/jLL6na0x+T1qAmRd8BicGKnOccvasATqardg4C3YI4qRVCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712297361; c=relaxed/simple;
-	bh=XUA4CVfhy0+KcI2uVKXxc554ESRbQuU/raIL43nW8B8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hLlJr/wV51B9yO753qW7Sa17kJ53kxxXSMNXjB9WxsqMX7ieIr8n2tGEAwUqfCeLfU/6QimkvT4/Tc+CEVWl6ilGwVergJZn4ECpS/zQkmUKRX3Y7xHScKcaryTBGQ3JGpN8Lxq6KNxxQ4bbUixBOeEAJWof4ivM7DB6Bz4wkYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d6dff70000001748-e9-660f9587c0c4
-From: Honggyu Kim <honggyu.kim@sk.com>
-To: sj@kernel.org,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org
-Cc: akpm@linux-foundation.org,
-	apopple@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	dave.jiang@intel.com,
-	honggyu.kim@sk.com,
-	hyeongtak.ji@sk.com,
-	kernel_team@skhynix.com,
-	linmiaohe@huawei.com,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	mathieu.desnoyers@efficios.com,
-	mhiramat@kernel.org,
-	rakie.kim@sk.com,
-	rostedt@goodmis.org,
-	surenb@google.com,
-	yangx.jy@fujitsu.com,
-	ying.huang@intel.com,
-	ziy@nvidia.com,
-	42.hyeyoo@gmail.com,
-	art.jeongseob@gmail.com
-Subject: [RFC PATCH v3 7/7] mm/damon: Add "damon_migrate_{hot,cold}" vmstat
-Date: Fri,  5 Apr 2024 15:08:56 +0900
-Message-ID: <20240405060858.2818-8-honggyu.kim@sk.com>
-X-Mailer: git-send-email 2.43.0.windows.1
-In-Reply-To: <20240405060858.2818-1-honggyu.kim@sk.com>
-References: <20240405060858.2818-1-honggyu.kim@sk.com>
+	s=arc-20240116; t=1712297356; c=relaxed/simple;
+	bh=Ax4sJ6lM/7okBNB/kwtUl/CrqrB9SAf0EvUEBFTadgA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Bc9RgnpYlJ1XnfPmK5osm2ysBKujQBcEwqTq4sdfQn860v20gBT+xcuNxtIFynvEgP3wYfuUTVtqlv3TkDN+7c+iTAs5uAHHsrn8lLFtuX1rWw/Wrkzf89rd9UCs5xvhxdIbYmGQj4QGsJbB4NIcrA2HiVEzWxAgO5Ui26+2jMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=2DxURgT2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FED3C43394;
+	Fri,  5 Apr 2024 06:09:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712297356;
+	bh=Ax4sJ6lM/7okBNB/kwtUl/CrqrB9SAf0EvUEBFTadgA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=2DxURgT2rBCom3wbTDMzwKzGgTgPDVe5D2b7G7NxfCNQQ3fCaK6mmf/X+xy9oAt6Q
+	 zk+Y0PoCPYdVT8g2/0OfOHrQE8nseBbcmIF8jZrLDcRI/hnOkO6zd+HHMZ74fx9xe+
+	 SrkaI5YuK6qAH1itk0CtCTT4h9U9RcxVzLw73V/4=
+Date: Fri, 5 Apr 2024 08:09:12 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Arnd Bergmann <arnd@arndb.de>, Luis Chamberlain <mcgrof@kernel.org>,
+	linux-modules@vger.kernel.org,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	"Ricardo B. Marliere" <ricardo@marliere.net>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] [v3] module: don't ignore sysfs_create_link() failures
+Message-ID: <2024040558-animation-express-1ae1@gregkh>
+References: <20240326145733.3413024-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrMIsWRmVeSWpSXmKPExsXC9ZZnkW77VP40g/v3jS0m9hhYzFm/hs1i
-	140Qi/sPXrNb/N97jNHiyf/frBYnbjayWXR+X8picXnXHDaLe2v+s1ocWX+WxWLz2TPMFouX
-	q1ns63jAZHH46xsmi8mXFrBZvJhyhtHi5KzJLBazj95jdxD2WHr6DZvHhiYgsXPWXXaPln23
-	2D0WbCr1aDnyltVj8Z6XTB6bVnWyeWz6NInd48SM3yweOx9aerzYPJPRo7f5HZvH501yAXxR
-	XDYpqTmZZalF+nYJXBknXi5iL+gWqzi65j5TA+NXwS5GTg4JAROJG51nGGHsbfvbmEFsNgE1
-	iSsvJzF1MXJwiAg4SKz6qtDFyMXBLPCfWeJy7y9WkBphAW+J6xuOMoLUsAioSnxbbwsS5hUw
-	k1iz7wU7xEhNicfbf4LZnALmEvMebwCzhYBqPh08xg5RLyhxcuYTFhCbWUBeonnrbGaQXRIC
-	p9glfm1+BnWbpMTBFTdYJjDyz0LSMwtJzwJGplWMQpl5ZbmJmTkmehmVeZkVesn5uZsYgVG3
-	rPZP9A7GTxeCDzEKcDAq8fB6zOVLE2JNLCuuzD3EKMHBrCTC2+3AmybEm5JYWZValB9fVJqT
-	WnyIUZqDRUmc1+hbeYqQQHpiSWp2ampBahFMlomDU6qBsVOshzOZ2dzpVu0tg5VW/auevHjv
-	lv74yKOknQeNZLdk2M0SyAxVPnR3b9MiiUMsG4+4qt5cNJt1O1MnY3bv3MNZT/v/X7zGd6t0
-	xa0yodMLvFNXz3zEe+r2/wB55ddRLDfYdkTkzmyN+znPQa9/4aV4vwcd9SWtFyQPL21K48ru
-	+aJ+/KVqhxJLcUaioRZzUXEiAKaMzZm2AgAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprLIsWRmVeSWpSXmKPExsXCNUNLT7d9Kn+awe31qhYTewws5qxfw2ax
-	60aIxf0Hr9kt/u89xmjx5P9vVosTNxvZLD4/e81s0fnkO6PF4bknWS06vy9lsbi8aw6bxb01
-	/1ktjqw/y2Kx+ewZZovFy9UsDl17zmqxr+MBk8Xhr2+YLCZfWsBm8WLKGUaLk7Mms1jMPnqP
-	3UHcY+npN2weG5qAxM5Zd9k9WvbdYvdYsKnUo+XIW1aPxXteMnlsWtXJ5rHp0yR2jxMzfrN4
-	7Hxo6fFi80xGj97md2we3257eCx+8YHJ4/MmuQCBKC6blNSczLLUIn27BK6MEy8XsRd0i1Uc
-	XXOfqYHxq2AXIyeHhICJxLb9bcwgNpuAmsSVl5OYuhg5OEQEHCRWfVXoYuTiYBb4zyxxufcX
-	K0iNsIC3xPUNRxlBalgEVCW+rbcFCfMKmEms2feCHWKkpsTj7T/BbE4Bc4l5jzeA2UJANZ8O
-	HmOHqBeUODnzCQuIzSwgL9G8dTbzBEaeWUhSs5CkFjAyrWIUycwry03MzDHVK87OqMzLrNBL
-	zs/dxAiMtGW1fybuYPxy2f0QowAHoxIPr8dcvjQh1sSy4srcQ4wSHMxKIrzdDrxpQrwpiZVV
-	qUX58UWlOanFhxilOViUxHm9wlMThATSE0tSs1NTC1KLYLJMHJxSDYxVlz35HuTVFB8uXW0c
-	wjiDP7l55bRvM1lzQlf5/pHbt+Ju/QXuj0VPxP96evh9mLw/5d0spTs+1asmvjH9eumt7E03
-	nak8E/sSe2Orte2YEwusOjnfNhlmTrYItvHXaPi0q+z9eh2mhy+EVF0U9eLb9Ez0tl0rMM9/
-	PfOVi+dvH9Fbn01mGymxFGckGmoxFxUnAgDlDExNsAIAAA==
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240326145733.3413024-1-arnd@kernel.org>
 
-This patch adds "damon_migrate_{hot,cold}" under node specific vmstat
-counters at the following location.
+On Tue, Mar 26, 2024 at 03:57:18PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The sysfs_create_link() return code is marked as __must_check, but the
+> module_add_driver() function tries hard to not care, by assigning the
+> return code to a variable. When building with 'make W=1', gcc still
+> warns because this variable is only assigned but not used:
+> 
+> drivers/base/module.c: In function 'module_add_driver':
+> drivers/base/module.c:36:6: warning: variable 'no_warn' set but not used [-Wunused-but-set-variable]
+> 
+> Rework the code to properly unwind and return the error code to the
+> caller. My reading of the original code was that it tries to
+> not fail when the links already exist, so keep ignoring -EEXIST
+> errors.
+> 
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: linux-modules@vger.kernel.org
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> Fixes: e17e0f51aeea ("Driver core: show drivers in /sys/module/")
+> See-also: 4a7fb6363f2d ("add __must_check to device management code")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+> v3: make error handling stricter, add unwinding,
+>      fix build fail with CONFIG_MODULES=n
+> v2: rework to actually handle the error. I have not tested the
+>     error handling beyond build testing, so please review carefully.
+> ---
+>  drivers/base/base.h   |  9 ++++++---
+>  drivers/base/bus.c    |  9 ++++++++-
+>  drivers/base/module.c | 42 +++++++++++++++++++++++++++++++-----------
+>  3 files changed, 45 insertions(+), 15 deletions(-)
 
-  /sys/devices/system/node/node*/vmstat
-
-The counted values are accumulcated to the global vmstat so it also
-introduces the same counter at /proc/vmstat as well.
-
-Signed-off-by: Honggyu Kim <honggyu.kim@sk.com>
----
- include/linux/mmzone.h |  4 ++++
- mm/damon/paddr.c       | 17 ++++++++++++++++-
- mm/vmstat.c            |  4 ++++
- 3 files changed, 24 insertions(+), 1 deletion(-)
-
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index a497f189d988..0005372c5503 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -214,6 +214,10 @@ enum node_stat_item {
- 	PGDEMOTE_KSWAPD,
- 	PGDEMOTE_DIRECT,
- 	PGDEMOTE_KHUGEPAGED,
-+#ifdef CONFIG_DAMON_PADDR
-+	DAMON_MIGRATE_HOT,
-+	DAMON_MIGRATE_COLD,
-+#endif
- 	NR_VM_NODE_STAT_ITEMS
- };
- 
-diff --git a/mm/damon/paddr.c b/mm/damon/paddr.c
-index fd9d35b5cc83..d559c242d151 100644
---- a/mm/damon/paddr.c
-+++ b/mm/damon/paddr.c
-@@ -235,10 +235,23 @@ enum migration_mode {
- 
- static unsigned int migrate_folio_list(struct list_head *migrate_folios,
- 				       struct pglist_data *pgdat,
-+				       enum migration_mode mm,
- 				       int target_nid)
- {
- 	unsigned int nr_succeeded;
- 	nodemask_t allowed_mask = NODE_MASK_NONE;
-+	enum node_stat_item node_stat;
-+
-+	switch (mm) {
-+	case MIG_MIGRATE_HOT:
-+		node_stat = DAMON_MIGRATE_HOT;
-+		break;
-+	case MIG_MIGRATE_COLD:
-+		node_stat = DAMON_MIGRATE_COLD;
-+		break;
-+	default:
-+		return 0;
-+	}
- 
- 	struct migration_target_control mtc = {
- 		/*
-@@ -263,6 +276,8 @@ static unsigned int migrate_folio_list(struct list_head *migrate_folios,
- 		      (unsigned long)&mtc, MIGRATE_ASYNC, MR_DAMON,
- 		      &nr_succeeded);
- 
-+	mod_node_page_state(pgdat, node_stat, nr_succeeded);
-+
- 	return nr_succeeded;
- }
- 
-@@ -302,7 +317,7 @@ static unsigned int damon_pa_migrate_folio_list(struct list_head *folio_list,
- 	/* 'folio_list' is always empty here */
- 
- 	/* Migrate folios selected for migration */
--	nr_migrated += migrate_folio_list(&migrate_folios, pgdat, target_nid);
-+	nr_migrated += migrate_folio_list(&migrate_folios, pgdat, mm, target_nid);
- 	/* Folios that could not be migrated are still in @migrate_folios */
- 	if (!list_empty(&migrate_folios)) {
- 		/* Folios which weren't migrated go back on @folio_list */
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index db79935e4a54..be9ba89fede1 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1252,6 +1252,10 @@ const char * const vmstat_text[] = {
- 	"pgdemote_kswapd",
- 	"pgdemote_direct",
- 	"pgdemote_khugepaged",
-+#ifdef CONFIG_DAMON_PADDR
-+	"damon_migrate_hot",
-+	"damon_migrate_cold",
-+#endif
- 
- 	/* enum writeback_stat_item counters */
- 	"nr_dirty_threshold",
--- 
-2.34.1
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
