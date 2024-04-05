@@ -1,168 +1,155 @@
-Return-Path: <linux-kernel+bounces-133306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37DF689A20B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:04:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19EC089A20D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:06:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB2711F23753
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:04:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE72F1F233B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:06:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37AC717106A;
-	Fri,  5 Apr 2024 16:04:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VoflRoZi"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6978716FF5E;
-	Fri,  5 Apr 2024 16:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C224517106F;
+	Fri,  5 Apr 2024 16:06:16 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9217D16F82C;
+	Fri,  5 Apr 2024 16:06:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712333067; cv=none; b=ZTwb/4rTKwmpa6jEfrVl5Ec9MpbSE/tlooOBrcvQ0dQwutAOf13W9DsEzhdQMm9pKW7tAwIab7vLi3pymdVhDQloHbA1/8SzXHuAEirb3+KZGhKbtQixVvheXu5DtvSveW91UEKS3TjBXoLAA6N/8yiLyE4FhUnPF51X2fyq/3g=
+	t=1712333176; cv=none; b=ZwbRCX5QI99GTOjTmHWu7RlJFUkLG6Zu5o2wvfyK6xurP6siB+Tg7kFAyi1fIuiVNRoND/AI+ADdMdU85u8liJJpvLUMjAH+RXOToojd7/BpSS4yjVq30626JWSt+O84ihycwMOlxFZqAuVj/v+haACA42cJr/5yLZDjqBRgd6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712333067; c=relaxed/simple;
-	bh=HzlgdWXid2F7YZdfqpX9nxmD4r64rc5rFGKm2mra4Qs=;
+	s=arc-20240116; t=1712333176; c=relaxed/simple;
+	bh=mC+Xp3o7Imrgi+nY1hCo63nyIrzJUrYMwl4q68b1aoM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lSBWVQrAVhnasDE85Xvtrpd1w4/U0i2y8rKWe5jaEvqKyXVArCkP15UD6Kylae718iob09//c4komurx6lhhmGtsS8THCER4MOrkVVN7iEohN/mhSm7KT3FKJbOwNu29sO866m/UyZmmE4KDU2ODoUFoJVpTvXrixMwk52wFGvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VoflRoZi; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712333065; x=1743869065;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=HzlgdWXid2F7YZdfqpX9nxmD4r64rc5rFGKm2mra4Qs=;
-  b=VoflRoZi7DrSDGpgZo3SM/DQ8lfj8oZ+4fAwVH4Sugr9dgVhopPji2a4
-   5mMXH3ApJV6hl2PpF/3vi8dx9wNkZBojCTvYgmRg/JgmW6V+PVjwSM/VW
-   bNvpOl2XBmcunL8pKp0OqVMfzXA2BDM3W3OYY/u59kRcGmoCUhLw65dK5
-   92QeBdoUmOTVv22L4vfZ/TQzsOX7A0f5Prq4HOJsdG+OYuPTfF8qhrT44
-   IS+yAR1H+Wt0ysxy+F1MSeklnNLvL5h+qNA1s1U7TTY4aTGm7uYIqmeak
-   l9wJhHPrIxYbDxwI1lJO5yAPFv+E6jsdYLQmaaTCWNNrj0lf+0+PLrqHJ
-   A==;
-X-CSE-ConnectionGUID: BZdyhfsUQk6H7tU+AFTVpw==
-X-CSE-MsgGUID: s/iO4m//TuO7LPng6T9ZtQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="11487319"
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="11487319"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 09:04:18 -0700
-X-CSE-ConnectionGUID: FjLRRbSXQsuTGigPnwb/0g==
-X-CSE-MsgGUID: ZlE1Ral/SNGMfVPx5SJR5w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="50158048"
-Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.209.66.105])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 09:04:18 -0700
-Date: Fri, 5 Apr 2024 09:04:16 -0700
-From: Alison Schofield <alison.schofield@intel.com>
-To: Kwangjin Ko <kwangjin.ko@sk.com>
-Cc: dave@stgolabs.net, jonathan.cameron@huawei.com, dave.jiang@intel.com,
-	vishal.l.verma@intel.com, ira.weiny@intel.com,
-	dan.j.williams@intel.com, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel_team@skhynix.com
-Subject: Re: [PATCH v2 1/1] cxl/core: Fix initialization of mbox_cmd.size_out
- in get event
-Message-ID: <ZhAhAL/GOaWFrauw@aschofie-mobl2>
-References: <20240402081404.1106-1-kwangjin.ko@sk.com>
- <20240402081404.1106-2-kwangjin.ko@sk.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mhpRxzgbpsYNK5Jm1yZaYp6Vft+oZPyNeK3N7SogASteXxEDWVS00+ND8O3x0SfIqPj4mzI8UMYxQanWttellbMWe84ypHu0ezRj6Vw6j+37pF10uER2I8d2YZktVqKiOEupUrKqCcS6RSdIHdajd/h5e9mggNSih/GN2D/uUBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 447CEFEC;
+	Fri,  5 Apr 2024 09:06:43 -0700 (PDT)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 61F0F3F64C;
+	Fri,  5 Apr 2024 09:06:11 -0700 (PDT)
+Date: Fri, 5 Apr 2024 17:06:08 +0100
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Andy Shevchenko <andriy.shevchenko@intel.com>,
+	Peng Fan <peng.fan@nxp.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	"brgl@bgdev.pl" <brgl@bgdev.pl>,
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] pinctrl: pinconf-generic: check error value EOPNOTSUPP
+Message-ID: <ZhAhcI3g4xJ1ANzu@pluto>
+References: <20240401141031.3106216-1-peng.fan@oss.nxp.com>
+ <CACRpkdZAuNXGyg2wwYcQG4oO9w7jPS6vj4Vt0=kqX5fJ+QpNmw@mail.gmail.com>
+ <Zg7dwcFz5eD7Am2u@smile.fi.intel.com>
+ <DU0PR04MB941777DA29D70013342721A788032@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <ZhAa3NPO19mINYJP@smile.fi.intel.com>
+ <ZhAdB4T7sTa2Z7db@bogus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240402081404.1106-2-kwangjin.ko@sk.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZhAdB4T7sTa2Z7db@bogus>
 
-On Tue, Apr 02, 2024 at 05:14:03PM +0900, Kwangjin Ko wrote:
-> Since mbox_cmd.size_out is overwritten with the actual output size in
-> the function below, it needs to be initialized every time.
+On Fri, Apr 05, 2024 at 04:47:19PM +0100, Sudeep Holla wrote:
+> On Fri, Apr 05, 2024 at 06:38:04PM +0300, Andy Shevchenko wrote:
+> > On Fri, Apr 05, 2024 at 02:13:28AM +0000, Peng Fan wrote:
+> > > > On Thu, Apr 04, 2024 at 01:44:50PM +0200, Linus Walleij wrote:
+> > > > > On Mon, Apr 1, 2024 at 4:02 PM Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > > > wrote:
+> >
+> > ...
+> >
+> > > > > >                         ret = pin_config_get_for_pin(pctldev, pin, &config);
+> > > > > >                 /* These are legal errors */
+> > > > > > -               if (ret == -EINVAL || ret == -ENOTSUPP)
+> > > > > > +               if (ret == -EINVAL || ret == -ENOTSUPP || ret ==
+> > > > > > + -EOPNOTSUPP)
+> > > > >
+> > > > > TBH it's a bit odd to call an in-kernel API such as
+> > > > > pin_config_get_for_pin() and get -EOPNOTSUPP back. But it's not like I care
+> > > > a lot, so patch applied.
+> > > >
+> > > > Hmm... I would like actually to get this being consistent. The documentation
+> > > > explicitly says that in-kernel APIs uses Linux error code and not POSIX one.
+> > >
+> > > Would you please share me the documentation?
+> >
+> > Sure.
+> > https://elixir.bootlin.com/linux/latest/source/include/linux/pinctrl/pinconf.h#L24
+> > https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpiolib.c#L2825
+> > https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpiolib.c#L2845
+> >
+> > I admit that this is not the best documented, feel free to produce a proper
+> > documentation.
+> >
 > 
-> cxl_internal_send_cmd -> __cxl_pci_mbox_send_cmd
+> Ah OK, my bad. I assumed you were referring to the entire kernel tree and
+> not just GPIO/pinux. Sorry for that.
 > 
-> Problem scenario:
+
+.. from this thread, my understanding too was that this forbidden usage of
+POSIX errors for in-kernel API was general to any subsystem...so the ask
+for docs about this...
+
+> > > > This check opens a Pandora box.
+> > > >
+> > > > FWIW, it just like dozen or so drivers that needs to be fixed, I prefer to have
+> > > > them being moved to ENOTSUPP, rather this patch.
+> > >
+> > > I see many patches convert to use EOPNOTSUPP by checking git log.
+> >
+> > How is that related? You mean for GPIO/pin control drivers?
+> >
+> > > And checkpatch.pl reports warning for using ENOTSUPP.
+> >
+> > checkpatch has false-positives, this is just one of them.
+> >
 > 
-> 1) The size_out variable is initially set to the size of the mailbox.
-> 2) Read an event.
->    - size_out is set to 160 bytes(header 32B + one event 128B).
->    - Two event are created while reading.
-> 3) Read the new *two* events.
->    - size_out is still set to 160 bytes.
->    - Although the value of out_len is 288 bytes, only 160 bytes are
->      copied from the mailbox register to the local variable.
->    - record_count is set to 2.
->    - Accessing records[1] will result in reading incorrect data.
-
-Agree with the other comments on need to set .out_size when doing
-cxl_internal_send_cmd() in a loop. Poison list retrieval can hit
-this case if the MORE flag is set and a follow on read of the list
-delivers more records than the previous read. ie. device gives one
-record, sets the _MORE flag, then gives 5.
-
-2 other things appeared to me while looking at this:
-
-First, it seems that there is another cleanup wrt accessing records
-with invalid data.  Still focusing on get_events and get_poison
-since those loop through output data based on a device supplied
-record count. The min_out check means the driver at least gets a
-count of records to expect. That's good. The problem occurs::
-
-if (mbox.size_out != struct_size(payload, records, 'record_count'))
-
-The driver will log garbage trace events, and that could lead to
-bad actions based on bad data. (like a needless scan of device based
-on a false overflow flag). So, checking that size.out is the proper
-multiple of record_count protects driver from bad device behavior.
-
-I think that can be combined w the patch Dan is suggesting to
-reset mbox.size_out on each loop.
-
-Second thing is the pci-driver quiet handling of PAYLOAD LENGTH
-values reported by the device. It seems like at a minimum the
-pci-driver could emit an info or debug message when the device
-is reporting payload lengths that exceed what the driver can
-copy in. I'm referring to the mbox.size_out adjustment in
-__cxl_pci_mbox_send_cmd(). Or, if it's not the pci-drivers job
-to judge, pass that actual payload length value back in the
-mbox structure (new field) so that the cxl-driver can use it.
-The pci driver would still do it's "#8 Sanitize the copy" work,
-but it would allow the cxl-driver to clearly see why it got the
-size_out it got, and squawk about it if needed.
-
---Alison
-
+> Fair enough.
+>
+> > > BTW: is there any issue if using EOPNOTSUPP here?
+> >
+> > Yes. we don't want to be inconsistent. Using both in one subsystem is asking
+> > for troubles. If you want EOPNOTSUPP, please convert *all* users and drop
+> > ENOTSUPP completely (series out of ~100+ patches I believe :-), which probably
+> > will be not welcome).
+> >
 > 
-> Signed-off-by: Kwangjin Ko <kwangjin.ko@sk.com>
-> ---
->  drivers/cxl/core/mbox.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Well, I don't agree with that 100% now since this is GPIO/pinmux sub-system
+> practice only. What if we change the source/root error cause(SCMI) in this
+> case and keep GPIO/pinmux happy today but tomorrow when this needs to be
+> used in some other subsystem which uses EOPNOTSUPP by default/consistently.
+> Now how do we address that then, hence I mentioned I am not 100% in agreement
+> now while I was before knowing that this is GPIO/pinmux strategy.
 > 
-> diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-> index 9adda4795eb7..a38531a055c8 100644
-> --- a/drivers/cxl/core/mbox.c
-> +++ b/drivers/cxl/core/mbox.c
-> @@ -958,13 +958,14 @@ static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
->  		.payload_in = &log_type,
->  		.size_in = sizeof(log_type),
->  		.payload_out = payload,
-> -		.size_out = mds->payload_size,
->  		.min_out = struct_size(payload, records, 0),
->  	};
->  
->  	do {
->  		int rc, i;
->  
-> +		mbox_cmd.size_out = mds->payload_size;
-> +
->  		rc = cxl_internal_send_cmd(mds, &mbox_cmd);
->  		if (rc) {
->  			dev_err_ratelimited(dev,
-> -- 
-> 2.34.1
-> 
+> I don't know how to proceed now 🙁.
+
+from checkpatch.pl:
+
+# ENOTSUPP is not a standard error code and should be avoided in new patches.    
+# Folks usually mean EOPNOTSUPP (also called ENOTSUP), when they type ENOTSUPP.  
+# Similarly to ENOSYS warning a small number of false positives is expected.     
+ 
+..so it seems to me that the this is NOT a false positive BUT Pinctrl/GPIO
+subsystem is an exception in these regards, since this is what is explcitly
+state in checkpatch comments AND there is no generalized doc on this....
+
+...but twe can happily oblige to Pinctrl expectations by remapping to ENOTSUPP
+in the pinctrl protocol layer or driver...just I won't certainly do that at the
+SCMI core layer at all at this point...as Sudeep said ...especially because there
+is NO generalized docs for the above ban of POSIX errors for in-Linux kernel API...
+
+Thanks,
+Cristian
 
