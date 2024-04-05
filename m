@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-133134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA3FA899F56
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:18:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FB6E899F58
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:18:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6A451C226CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:18:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 815611C22063
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:18:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0FD316FF3D;
-	Fri,  5 Apr 2024 14:15:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB3E171659;
+	Fri,  5 Apr 2024 14:15:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ifTDKXB0"
-Received: from mail-wm1-f74.google.com (mail-wm1-f74.google.com [209.85.128.74])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="1NDS4pOq"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87956171073
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:15:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0313C17108B
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:15:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712326529; cv=none; b=MBxmm46zHmxNRlnaNTTkKvcybW/Gy3fvEpbDMEfrbh30U3dXGDllCn1S3vGHK93U8IV+xNgNkueLuhKVrJC0NiS7qgDAtPvbZUyMmK0dl1v1tmeh8CJYInJ8jWFy811PprTSqfEhK+0ac4RTWs3F0AzOziqFgvtVnb1/7gBiG4Y=
+	t=1712326530; cv=none; b=ujB/9HZhiU65fJ2/EI1k1CN7X1LHUQgJRTQkxjMjzCMBycU8Iq8JY8k+FZOWFynslbrTmUwy12+5gUUgnQQG4fRm1fJDXUbgq16uJGlKhbSZTghrtmWesCAz50wXhg7FyZjbYJlp9dZ1Ug8S9XMR7kK7lViLF8K1z9k76Y5iHJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712326529; c=relaxed/simple;
-	bh=mfc1m6KDq5p7GnXUa2OC5+vQdowDmHrvR4jMIquIzew=;
+	s=arc-20240116; t=1712326530; c=relaxed/simple;
+	bh=yvs5ohvMMIVQE6dxuoqe23hp8oOeKkHAZNgJM1b+eKo=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=oxSx50GD1neBrQlAX4ceWVM+Q9OhyHXV2iEN2lWkCQaB+ROEVHQhHSY3FbASmhVNEBgJEBRxH/d3DXwvm6SNj1i+38Kyc+OZhwT7RIzX7aLUnPyAKDgxOPwTj+dtC7+CWlIfMWHgaKjMb3b1l8GSYA9DW3JMlUR8CZd83BJ2RM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ifTDKXB0; arc=none smtp.client-ip=209.85.128.74
+	 To:Cc:Content-Type; b=mCUkyR1iDD/nMrV6wjHk1mJ9WURLZhMn2BfmcEsy9H2mQVzpDedlNyCDsP6t3AUHyJmBmBSlicWJG8OjK63N2OC+zk0bqAdciHCjfxWlL1z6jH0sdoIDA5Dn7pEesPfnhBII4lbwA44F7wyxAYMrkW+1+5SYvVMqNtBs3YuJtzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=1NDS4pOq; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--panikiel.bounces.google.com
-Received: by mail-wm1-f74.google.com with SMTP id 5b1f17b1804b1-41545bc8962so11152515e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:15:27 -0700 (PDT)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dbf618042daso3441917276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:15:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712326526; x=1712931326; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712326528; x=1712931328; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:from:subject:message-id:references
          :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=wugwx+VMt8ynxKvmOS+NYWFgHzSCikAiIg38gbA/J2Y=;
-        b=ifTDKXB0IPsN1TKwwdaZSIgfQoNkhEOnvZkZzg5fnDOGNxgCPUzzU+JdxPp9RMvBii
-         sPZNCCPprlffIp0fm7cbh6ucvJ2nieW20NrJMnUGK5K8tadoiYevaId3Af/MzMuo2HDD
-         NHdPgOqR0lFxer+/mtFEVfISh4nmxFOE7GBdlUG8IJpoYIIjGvs1gY0dluiti9Iwi4c8
-         cQFnH6htFZlOoN3QKYoSzPDIJyPTWth7dq4aGOb3HQLR0dq5lNpLk2U+d/Ejg6icrziz
-         wxzSPsyWoWKLHXWM4yoVEX6Z+VFZot9UBEdaFDTdnCDOuJMcpoDnqIiFGVpWdxgRSRuO
-         odRw==
+        bh=/C3TWz2wSP1NLw9gzEQpvHS/0ZIC1cjOjpTFuVIJ/6s=;
+        b=1NDS4pOqa1MUMC9X9Dt/O2w125FOzhVlpogK4thoUyLctqpGh6i+LY+PxQj3blJ1tX
+         q1HxiQNm/TqaSWQXI4Dhd6Bpc3WbxrFWuHIIVl6NzsrNMeFOhG2pCso9dK6N2Znw2seH
+         Jd0bIfy9dHMziuUc/RoqvpnmHX+uz2oJc7tDVtkB2rzWFhteVVq11SV/70QFLsBn6zPj
+         toaipmG4wLpkq0u4SgM7qehQ/PGOJjAnZ9GzVBbu09qmALdAmIGrTGSjXjJHsk+ATIV6
+         DA34rc44LaLekwFBaTkCRoQX881V9Jl0Y1YgCZwU04oQLTQOEDLb9+av/bVX3fzG7oto
+         m0/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712326526; x=1712931326;
+        d=1e100.net; s=20230601; t=1712326528; x=1712931328;
         h=content-transfer-encoding:cc:to:from:subject:message-id:references
          :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=wugwx+VMt8ynxKvmOS+NYWFgHzSCikAiIg38gbA/J2Y=;
-        b=IXAoQpQQ59LDReAeqAEYOkwbZg1SOrmwcBnSBCHI8ttamRLKaLYJvfztSoU1/KRtgg
-         GPOlnVaHkca3ptW6VYEBKu/eNg0NVVcB3Mch7ErXhnUKPR/9nurEE5VnkceHF3y29/S3
-         ZUFqsHxXjeLHBntYybycIy9TYZ+OA1+blBro2mjjjWkIMHe0owydYfy4eCjImjk/E90n
-         3PY+JfG4D2bZdpRKBCNQjdgKcoOTQ3PiPhTlQO1I4pUhOu7CmPot9ajFs2Fo0glGSHKM
-         o9eYF8Hs38rX8NkZEemKJhplxIdgEpDJhaQwxZPjFBzpc1eOLcDBJjfwVM8VynvjHZOc
-         BOwg==
-X-Forwarded-Encrypted: i=1; AJvYcCWta32cAqorIyjB+ZJY+QWG4c3AjocrGGYe67hfBG60fgjzgiUNqXNq/Lg2db9FoDX60cXkbjgVfloCPDmMTfjJv/POHzoU9qt2UJKX
-X-Gm-Message-State: AOJu0YyQXFnJDzka1AhwGTBHHlmKDKiOCE4eGYta8NygEzcMbgVDEVU0
-	z/blITr7/f+lsp79pxWCJtUL1npnnlcTQHHMUztMHfaRS2pNGarsxxn1VOTUry+Vkju0eBSMfow
-	9ZcFB3xhyOA==
-X-Google-Smtp-Source: AGHT+IEw3A0Uc6NCN5jC8nFV1gniwcXIKQUoVyZzSeSYIjiu5QNMVRGAQCd+P4ZhwXiSptLaQwbbPf4g4bXbXg==
+        bh=/C3TWz2wSP1NLw9gzEQpvHS/0ZIC1cjOjpTFuVIJ/6s=;
+        b=n3vaN7Jkz94/S0WEt4dzwtfnQDeR4jPP0QkJ/9qbfkLxszAN5/FEbFDREDFFJrGOgf
+         PJiWvjTOwEe8TcXGJ+Rjg7bE8CTFVY40JmErnpQOOaj+E7dgsBjAYO0MDgD/yrxWfR3K
+         OVGXNH4np8v0TxFhYQVFZJQP/uPDPeoLol8NwnJ0PgjVEDO+uj1DPoIMdoKt+394UGmr
+         K20ZJmlzKz+FyhLk2GFtzWsQWbqAaynpLG/wXW145pEclGZv/6F6DtaR+Izcavau8l5c
+         FnY4mr9RH2Tqprbizo+iNgD5UeUYK9jfgfJY89HT9L0WAW92Nza2AL/Ytgb8qIfaFBCL
+         bmfw==
+X-Forwarded-Encrypted: i=1; AJvYcCWZYnRk3mvLl1LbjOXzVBQ3qOFEFs7bG7g8RXhHE5eWKilREvUKZts/l3gayJLD9KkJLeZ8lOc5ZgsM2XxjagICRc1B+HNmA6XlWiwQ
+X-Gm-Message-State: AOJu0YzlafOCSE5tmhSPipWuNK4YPmzLZ5k6yD0v8eZYDal62gxRzyD1
+	/Xu+DNURtR9oNNbxJNXuN1J3yXzCyCQ7hEO1cK8rDh1a/owZw9Ia+86ecFjK3ilTCCnhlS48w2l
+	R1Dj08SSLKA==
+X-Google-Smtp-Source: AGHT+IEvp+BsuWIh3iX4/LFegWn3KNCA11AfpYD2+Kk6/aMGIrt5lA5NyDXfFDJdRSyf+ooQiTrgoqyEH/yGTA==
 X-Received: from szatan.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:2d83])
- (user=panikiel job=sendgmr) by 2002:a05:600c:3b8e:b0:414:8933:a617 with SMTP
- id n14-20020a05600c3b8e00b004148933a617mr4543wms.4.1712326525846; Fri, 05 Apr
- 2024 07:15:25 -0700 (PDT)
-Date: Fri,  5 Apr 2024 14:14:07 +0000
+ (user=panikiel job=sendgmr) by 2002:a05:6902:1108:b0:dc7:865b:22c6 with SMTP
+ id o8-20020a056902110800b00dc7865b22c6mr78546ybu.8.1712326528036; Fri, 05 Apr
+ 2024 07:15:28 -0700 (PDT)
+Date: Fri,  5 Apr 2024 14:14:08 +0000
 In-Reply-To: <20240405141411.1807189-1-panikiel@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -75,8 +75,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240405141411.1807189-1-panikiel@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240405141411.1807189-13-panikiel@google.com>
-Subject: [PATCH 12/16] media: cobalt: Use pad variant of dv timing subdev calls
+Message-ID: <20240405141411.1807189-14-panikiel@google.com>
+Subject: [PATCH 13/16] media: rcar-vin: Use pad variant of dv timing subdev calls
 From: "=?UTF-8?q?Pawe=C5=82=20Anikiel?=" <panikiel@google.com>
 To: kieran.bingham@ideasonboard.com, mchehab@kernel.org, 
 	hverkuil-cisco@xs4all.nl, tharvey@gateworks.com, 
@@ -94,74 +94,47 @@ includes a pad argument.
 
 Signed-off-by: Pawe=C5=82 Anikiel <panikiel@google.com>
 ---
- drivers/media/pci/cobalt/cobalt-v4l2.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/media/platform/renesas/rcar-vin/rcar-v4l2.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/media/pci/cobalt/cobalt-v4l2.c b/drivers/media/pci/cob=
-alt/cobalt-v4l2.c
-index 77ba08ace29f..d4d7b264c965 100644
---- a/drivers/media/pci/cobalt/cobalt-v4l2.c
-+++ b/drivers/media/pci/cobalt/cobalt-v4l2.c
-@@ -633,7 +633,7 @@ static int cobalt_s_dv_timings(struct file *file, void =
-*priv_fh,
- 		return -EBUSY;
+diff --git a/drivers/media/platform/renesas/rcar-vin/rcar-v4l2.c b/drivers/=
+media/platform/renesas/rcar-vin/rcar-v4l2.c
+index 073f70c6ac68..bb4b07bed28d 100644
+--- a/drivers/media/platform/renesas/rcar-vin/rcar-v4l2.c
++++ b/drivers/media/platform/renesas/rcar-vin/rcar-v4l2.c
+@@ -730,7 +730,8 @@ static int rvin_s_dv_timings(struct file *file, void *p=
+riv_fh,
+ 	struct v4l2_subdev *sd =3D vin_to_source(vin);
+ 	int ret;
 =20
- 	err =3D v4l2_subdev_call(s->sd,
--			video, s_dv_timings, timings);
-+			pad, s_dv_timings, 0, timings);
- 	if (!err) {
- 		s->timings =3D *timings;
- 		s->width =3D timings->bt.width;
-@@ -653,7 +653,7 @@ static int cobalt_g_dv_timings(struct file *file, void =
-*priv_fh,
- 		return 0;
- 	}
- 	return v4l2_subdev_call(s->sd,
--			video, g_dv_timings, timings);
-+			pad, g_dv_timings, 0, timings);
+-	ret =3D v4l2_subdev_call(sd, video, s_dv_timings, timings);
++	ret =3D v4l2_subdev_call(sd, pad, s_dv_timings,
++			       vin->parallel.sink_pad, timings);
+ 	if (ret)
+ 		return ret;
+=20
+@@ -744,7 +745,8 @@ static int rvin_g_dv_timings(struct file *file, void *p=
+riv_fh,
+ 	struct rvin_dev *vin =3D video_drvdata(file);
+ 	struct v4l2_subdev *sd =3D vin_to_source(vin);
+=20
+-	return v4l2_subdev_call(sd, video, g_dv_timings, timings);
++	return v4l2_subdev_call(sd, pad, g_dv_timings,
++				vin->parallel.sink_pad, timings);
  }
 =20
- static int cobalt_query_dv_timings(struct file *file, void *priv_fh,
-@@ -666,7 +666,7 @@ static int cobalt_query_dv_timings(struct file *file, v=
-oid *priv_fh,
- 		return 0;
- 	}
- 	return v4l2_subdev_call(s->sd,
--			video, query_dv_timings, timings);
-+			pad, query_dv_timings, 0, timings);
+ static int rvin_query_dv_timings(struct file *file, void *priv_fh,
+@@ -753,7 +755,8 @@ static int rvin_query_dv_timings(struct file *file, voi=
+d *priv_fh,
+ 	struct rvin_dev *vin =3D video_drvdata(file);
+ 	struct v4l2_subdev *sd =3D vin_to_source(vin);
+=20
+-	return v4l2_subdev_call(sd, video, query_dv_timings, timings);
++	return v4l2_subdev_call(sd, pad, query_dv_timings,
++				vin->parallel.sink_pad, timings);
  }
 =20
- static int cobalt_dv_timings_cap(struct file *file, void *priv_fh,
-@@ -1080,7 +1080,7 @@ static int cobalt_g_pixelaspect(struct file *file, vo=
-id *fh,
- 	if (s->input =3D=3D 1)
- 		timings =3D cea1080p60;
- 	else
--		err =3D v4l2_subdev_call(s->sd, video, g_dv_timings, &timings);
-+		err =3D v4l2_subdev_call(s->sd, pad, g_dv_timings, 0, &timings);
- 	if (!err)
- 		*f =3D v4l2_dv_timings_aspect_ratio(&timings);
- 	return err;
-@@ -1099,7 +1099,7 @@ static int cobalt_g_selection(struct file *file, void=
- *fh,
- 	if (s->input =3D=3D 1)
- 		timings =3D cea1080p60;
- 	else
--		err =3D v4l2_subdev_call(s->sd, video, g_dv_timings, &timings);
-+		err =3D v4l2_subdev_call(s->sd, pad, g_dv_timings, 0, &timings);
-=20
- 	if (err)
- 		return err;
-@@ -1243,7 +1243,7 @@ static int cobalt_node_register(struct cobalt *cobalt=
-, int node)
- 		if (s->sd)
- 			vdev->ctrl_handler =3D s->sd->ctrl_handler;
- 		s->timings =3D dv1080p60;
--		v4l2_subdev_call(s->sd, video, s_dv_timings, &s->timings);
-+		v4l2_subdev_call(s->sd, pad, s_dv_timings, 0, &s->timings);
- 		if (!s->is_output && s->sd)
- 			cobalt_enable_input(s);
- 		vdev->ioctl_ops =3D s->is_dummy ? &cobalt_ioctl_empty_ops :
+ static int rvin_dv_timings_cap(struct file *file, void *priv_fh,
 --=20
 2.44.0.478.gd926399ef9-goog
 
