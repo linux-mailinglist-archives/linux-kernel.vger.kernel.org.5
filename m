@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-132612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA2FF899745
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:59:27 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D30089974A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:59:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8ED081F22644
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:59:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B04DBB246AA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:59:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5D214534F;
-	Fri,  5 Apr 2024 07:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34E7145B21;
+	Fri,  5 Apr 2024 07:58:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hxjsLwb7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Zs7HW1QD"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D47B143883;
-	Fri,  5 Apr 2024 07:58:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D38DF143872;
+	Fri,  5 Apr 2024 07:58:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712303899; cv=none; b=ZEj2CzAFilNZhGU7+bZMpfBdtMXyfH0Yjv5BGKvVzxbZWBKKsd2U4Cd8vt05/4v0bdEebCgocs2Z4FK+bVq+hizwMYh0L83gt8R0Zyv2LEiWpuXWy0hqkKWylHkHIEWdOt1y8cn7HJk6E8hn9jD9hIRzjPy6Qu5vrwJ59CkHSsg=
+	t=1712303909; cv=none; b=EwEJLIjZ4zr1LojxtrtVgCECr0g4xzkdDapLkGGRrGVG7gQ8ExGzB0NqPnqf7AYy7YJuFzAZeNXpmGBfdkwPDgvrhx2CPC651VafoSthlSpwL3q2G6ZoSqRYxqAiu5NkxdGcvcRQR308aSM0s6HLnGD3TZ1oqVtTKa8DPsEMFaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712303899; c=relaxed/simple;
-	bh=ONtymIOkObhYMYvWNAyP+6x+F196OJJA4CRLyPZi+0s=;
+	s=arc-20240116; t=1712303909; c=relaxed/simple;
+	bh=gnuhmqk+yRoJmBLCbT2nA5MbkL1C5qwi/nuV4aNtmPw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RcVHX0HnqaXT8+JENQOMDlKHU74CkzOLxiTWt/Zd/Ptni3zafJtyrCSEL7Dat4QylgG2f506oI7R2HPlnYXu1tCO1HR46hSQWEicjDHp9kEsQMDfYAvC1Ol2E2fCTuHR5PnbanYaoLH9bMARTOqkS8xujJ0VI87kpoCKX+P3V/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hxjsLwb7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44636C433F1;
-	Fri,  5 Apr 2024 07:58:09 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=tcJf2xAMMfHgWfocr0w7ud+aTFZRk7Wz+to7MtYQbfsminodISch0/lIXlfHDZ+dWWt7SiA6RUhZ1ggPoBHSKW3cr4z1qrcCCTCHqIp/MWsUwpdCXrkPjVbtuIMWg6EeVOVLYtB2/QGF4UHeVDTykQpW4zu08N7c7hcje5QxK9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Zs7HW1QD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A7883C433C7;
+	Fri,  5 Apr 2024 07:58:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712303899;
-	bh=ONtymIOkObhYMYvWNAyP+6x+F196OJJA4CRLyPZi+0s=;
+	s=k20201202; t=1712303908;
+	bh=gnuhmqk+yRoJmBLCbT2nA5MbkL1C5qwi/nuV4aNtmPw=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=hxjsLwb7QOiOEeXFVEDhfA6+8uxdBy+DLE6LfIQXyVDINePAp+ilLrvp+wB+jCX7/
-	 NHhZi+XNiZIObPPGBp5+3UDcxJhmfs7CJNbwPApUsckUbJAvltQBCfbwXinO3vZ2RC
-	 gVJ5EGZDCXkucetCrT3tdN1lKD04PqYJjCVdcH+IiN8zL88QVFEbozkdLga5Sjk1az
-	 JMByWLG9t+YPsEx9yU8Bgxxh/N+WfVJnTH0ka6YlTPIyG1bdDJQ5/DM7AIVW/T42NL
-	 LeXY7WlycQTYBQJkyK4XhUphyjUvMQJY4uNoDPm+Io9e1hW+tOOvycLUMdJ3lQwysP
-	 ECI/3MsbFesSw==
-Message-ID: <29ba6dd6-4983-40c1-ae0d-d21187f84e4c@kernel.org>
-Date: Fri, 5 Apr 2024 09:58:06 +0200
+	b=Zs7HW1QDGoOEqKHHwdD4AwwW3ZlV/TIxfUjbEknmrXjtIZZDUfdrS0sl3d3HuoM1V
+	 +i8HOppC1MZGSQ3tyX8e0fPfBTF+lWTJsFKiY+3ZS5zi3LTkG1V/OkRpzuF2CZ1j3l
+	 8cDGq+HXICQABZEWrH/D1RR0pGPjXyg23znOUryAoRqpqkrvOF6sKSZ/8VcEf/utcK
+	 x+zSCdrDvz4qezCb5mWZL9oKNHgS+1JxgXi8x5iVUxTK4NR2Xnu2fq7mPk6QdH6N5m
+	 Ny6YFylxUjMw86buVXgWweSxlfJ+N1gnwhDqBdqOtVqSh3RkaiAzBI2gVOviZyaFLZ
+	 KFDaEj0r/dQHQ==
+Message-ID: <8d4e1553-e0fe-4be6-952f-163a0d7a88fa@kernel.org>
+Date: Fri, 5 Apr 2024 09:58:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,8 +49,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/17] scsi: ufs: host: ufs-exynos: add
- EXYNOS_UFS_OPT_TIMER_TICK_SELECT option
+Subject: Re: [PATCH 14/17] scsi: ufs: host: ufs-exynos: allow max frequencies
+ up to 267Mhz
 To: Peter Griffin <peter.griffin@linaro.org>, mturquette@baylibre.com,
  sboyd@kernel.org, robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org,
  vkoul@kernel.org, kishon@kernel.org, alim.akhtar@samsung.com,
@@ -63,7 +63,7 @@ Cc: linux-scsi@vger.kernel.org, linux-phy@lists.infradead.org,
  linux-arm-kernel@lists.infradead.org, tudor.ambarus@linaro.org,
  andre.draszik@linaro.org, saravanak@google.com, willmcvicker@google.com
 References: <20240404122559.898930-1-peter.griffin@linaro.org>
- <20240404122559.898930-14-peter.griffin@linaro.org>
+ <20240404122559.898930-15-peter.griffin@linaro.org>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -109,22 +109,19 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
  7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
  5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
-In-Reply-To: <20240404122559.898930-14-peter.griffin@linaro.org>
+In-Reply-To: <20240404122559.898930-15-peter.griffin@linaro.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 04/04/2024 14:25, Peter Griffin wrote:
-> This option is intended to be set for SoCs that have HCI_V2P1_CTRL
-> register and can select their tick source via IA_TICK_SEL bit.
-> 
-> Source clock selection for timer tick
-> 0x0 = Bus clock (aclk)
-> 0x1 = Function clock (mclk)
+> Platforms such as Tensor gs101 the pclk frequency is 267Mhz.
+> Increase PCLK_AVAIL_MAX so we don't fail the frequency check.
 > 
 > Signed-off-by: Peter Griffin <peter.griffin@linaro.org>
 > ---
 
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+
+Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 
 Best regards,
 Krzysztof
