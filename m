@@ -1,164 +1,165 @@
-Return-Path: <linux-kernel+bounces-133161-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A05EC899FC8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:31:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69D16899F72
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:22:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4157B1F2352A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:31:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E1A141F22399
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 738FC16F8FA;
-	Fri,  5 Apr 2024 14:30:53 +0000 (UTC)
-Received: from luna.linkmauve.fr (luna.linkmauve.fr [82.65.109.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3C0216EBEF;
+	Fri,  5 Apr 2024 14:22:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hAxELR+V";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="O3En1L+G";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hAxELR+V";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="O3En1L+G"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BFB016F859;
-	Fri,  5 Apr 2024 14:30:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.65.109.163
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AFA216D4F9
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:22:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712327453; cv=none; b=S+F/FzL3xoEeErcZzhvkKPPuBUKvj6SkrtY4w2S4pmflLvq2vllVj5gw0IfWPlNuBk/L2IRqJjjT9DrkwtuaZEyAJzKLKz+/QqDXRCBHNYbNIrZ30qvCoh7RfQlOWKeToC4Ti/aGHwXx+dnq0VsTDbzx6hzMwDkMglUJpxljyDs=
+	t=1712326951; cv=none; b=aHL/+qs+jtdrNQ7x33JHtN1QFZanBD9JsSL9iMU/DdWnXQ6MfwKRlLXejWEIhyXOCRi9tqtZ0DZlE8k54aczIPm4lKZhrGNPo8U59zyxHOVNNFiH1/xk8v5tqEyT1LsMVt35AmI4k90tEMpaKu2VptAIO0vKxG+87hA9vRBMASg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712327453; c=relaxed/simple;
-	bh=OAIDc5kctipri1hRyW8oc3G7ind5HlKJOPmKLgo/ZtE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L7YDRKzmZn0eaGWoqRomB68i8KwWjYUQ1g54whtA3rs1FVsNkmbeRf03SCEgG56gdzKPSbKt7LBiplDv0b/Hw2gR9Y9ys1pMRHo3NP7gTKNOsi8yXKlK7C32OinRKaShC8W9kYM7A17j7oq/H0U0jiuCmvRjmsH0s3tQSshwjjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linkmauve.fr; spf=pass smtp.mailfrom=linkmauve.fr; arc=none smtp.client-ip=82.65.109.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linkmauve.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linkmauve.fr
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-	id BA81A106966F; Fri,  5 Apr 2024 16:21:30 +0200 (CEST)
-Date: Fri, 5 Apr 2024 16:21:30 +0200
-From: Link Mauve <linkmauve@linkmauve.fr>
-To: Nicolas Dufresne <nicolas@ndufresne.ca>
-Cc: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-	linux-kernel@vger.kernel.org,
-	Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>, Joerg Roedel <joro@8bytes.org>,
-	Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Sebastian Reichel <sebastian.reichel@collabora.com>,
-	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
-	Dragan Simic <dsimic@manjaro.org>,
-	Shreeya Patel <shreeya.patel@collabora.com>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Andy Yan <andy.yan@rock-chips.com>,
-	Nicolas Frattaroli <frattaroli.nicolas@gmail.com>,
-	linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	iommu@lists.linux.dev
-Subject: Re: [PATCH v2 0/2] Enable JPEG encoding on rk3588
-Message-ID: <ZhAI6tQZTD7BTosI@desktop>
-References: <20240327134115.424846-1-linkmauve@linkmauve.fr>
- <bbcb66e9499120a86b367e7abdac2d8e2e704bfb.camel@ndufresne.ca>
+	s=arc-20240116; t=1712326951; c=relaxed/simple;
+	bh=wjOjBr+FtGDvW0yLcrvx74vXWXG3wBlNMlVobfWFVtc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=D0q54xo5CaG+GQl1pI6hhu6BElKC/+CsqUzgnjlgP3iHQd1Y9AiNMzeyzXT2bbAEZdZB4FdxtY61kkeK7Rf0/s6TRsOpgX1zsmoO5vLmk8s6LNAISDwoudH1J4SpK+kp02tdN0Xt5SAXv8Uik5n95uM7Vt9cjFGbTByGqBwb+OU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hAxELR+V; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=O3En1L+G; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=hAxELR+V; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=O3En1L+G; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 809821F7D7;
+	Fri,  5 Apr 2024 14:22:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712326941;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=wjOjBr+FtGDvW0yLcrvx74vXWXG3wBlNMlVobfWFVtc=;
+	b=hAxELR+V1MR1BqqUWh9h5h42MGiIOtreuNal/pzzp/yFnVZ7f6wYKnplPZVVs0lbxhm5NL
+	YpevQglqd94K+kDfiFs9WkuqiWuUgLVWT4fq6E14+SPgu/wNeMGsrgtZf3yoS0zGyxnrte
+	pAC6TJeQFdLABhECDhSfWIthrryERKA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712326941;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=wjOjBr+FtGDvW0yLcrvx74vXWXG3wBlNMlVobfWFVtc=;
+	b=O3En1L+GbVrR/e3Yg6AsqHgr0moOcekfcQiJ8HB2n2xkgk7jorNh2Ym/iijDIlmy4qTEj8
+	MhH3UrM1Fx+PXFAQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712326941;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=wjOjBr+FtGDvW0yLcrvx74vXWXG3wBlNMlVobfWFVtc=;
+	b=hAxELR+V1MR1BqqUWh9h5h42MGiIOtreuNal/pzzp/yFnVZ7f6wYKnplPZVVs0lbxhm5NL
+	YpevQglqd94K+kDfiFs9WkuqiWuUgLVWT4fq6E14+SPgu/wNeMGsrgtZf3yoS0zGyxnrte
+	pAC6TJeQFdLABhECDhSfWIthrryERKA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712326941;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=wjOjBr+FtGDvW0yLcrvx74vXWXG3wBlNMlVobfWFVtc=;
+	b=O3En1L+GbVrR/e3Yg6AsqHgr0moOcekfcQiJ8HB2n2xkgk7jorNh2Ym/iijDIlmy4qTEj8
+	MhH3UrM1Fx+PXFAQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 3277C139E8;
+	Fri,  5 Apr 2024 14:22:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id /pJSCx0JEGanQgAAn2gu4w
+	(envelope-from <pvorel@suse.cz>); Fri, 05 Apr 2024 14:22:21 +0000
+Date: Fri, 5 Apr 2024 16:22:19 +0200
+From: Petr Vorel <pvorel@suse.cz>
+To: Cyril Hrubis <chrubis@suse.cz>, Jan Stancek <jstancek@redhat.com>,
+	Li Wang <liwang@redhat.com>, Xiao Yang <yangx.jy@fujitsu.com>,
+	Yang Xu <xuyang2018.jy@fujitsu.com>,
+	Mike Frysinger <vapier@gentoo.org>,
+	Alexey Kodanev <aleksei.kodanev@bell-sw.com>,
+	Enji Cooper <yaneurabeya@gmail.com>,
+	Andrea Cervesato <andrea.cervesato@suse.de>,
+	Wei Gao <wegao@suse.com>, Avinesh Kumar <akumar@suse.de>
+Cc: ltp@lists.linux.it, automated-testing@lists.yoctoproject.org,
+	linux-kernel@vger.kernel.org, Tim Bird <tim.bird@sony.com>
+Subject: New LTP documentation
+Message-ID: <20240405142219.GA637941@pevik>
+Reply-To: Petr Vorel <pvorel@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bbcb66e9499120a86b367e7abdac2d8e2e704bfb.camel@ndufresne.ca>
-Jabber-ID: linkmauve@linkmauve.fr
+X-Spam-Flag: NO
+X-Spam-Score: -2.71
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.71 / 50.00];
+	BAYES_HAM(-2.21)[96.25%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	HAS_REPLYTO(0.30)[pvorel@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_TO(0.00)[suse.cz,redhat.com,fujitsu.com,gentoo.org,bell-sw.com,gmail.com,suse.de,suse.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_EQ_FROM(0.00)[]
 
-On Thu, Apr 04, 2024 at 01:41:15PM -0400, Nicolas Dufresne wrote:
-> Hi,
+Hi all,
 
-Hi,
+today I merged Andrea's and Cyril's work migrating our GitHub based docs to
+readthedocs.org. Andrea, Cyril, thank you for this work, we're now using for
+docs the same approach as the Linux kernel.
 
-> 
-> Le mercredi 27 mars 2024 à 14:41 +0100, Emmanuel Gil Peyrot a écrit :
-> > Only the JPEG encoder is available for now, although there are patches
-> > for the undocumented VP8 encoder floating around[0].
-> 
-> [0] seems like a broken link. The VP8 encoder RFC is for RK3399 (and Hantro H1
-> posted by ST more recently). The TRM says "VEPU121(JPEG encoder only)", which
-> suggest that the H.264 and VP8 encoders usually found on the VEPU121 are
-> removed. As Rockchip have remove the synthesize register while modifying the H1
-> IP, it is difficult to verify. Confusingly the H.264 specific registers are
-> documented in the TRM around VEPU121.
+Our new documentation is now on https://linux-test-project.readthedocs.io/en/latest/.
 
-Ah, the link became, and was indeed ST’s series:
-https://patchwork.kernel.org/project/linux-rockchip/list/?series=789885&archive=both
+I configured the hook on readthedocs.org, thus any docs update should trigger
+readthedocs.org rebuild.
 
-But the TRM part 1 says the VEPU121 supports H.264 encoding (page 367),
-and it’s likely they didn’t remove just VP8 support since the codec
-features are pretty close to H.264’s.
+I also disabled our wiki on GitHub [2], it redirects to our homepage. It would
+be good to be able to redirect it to our new readthedocs.org docs [1].
 
-> 
-> > 
-> > This has been tested on a rock-5b, resulting in four /dev/video*
-> > encoders.  The userspace program I’ve been using to test them is
-> > Onix[1], using the jpeg-encoder example, it will pick one of these four
-> > at random (but displays the one it picked):
-> > % ffmpeg -i <input image> -pix_fmt yuvj420p temp.yuv
-> > % jpeg-encoder temp.yuv <width> <height> NV12 <quality> output.jpeg
-> 
-> I don't like that we exposing each identical cores a separate video nodes. I
-> think we should aim for 1 device, and then multi-plex and schedule de cores from
-> inside the Linux kernel.
+I also remove (with Cyril's ack) the content of our github.io page [3] to our
+new readthedocs.org docs [1].
 
-I agree, but this should be handled in the driver not in the device
-tree, and it can be done later.
+The docs is mostly done, but some bits are missing (e.g. C Test Network API [4],
+KVM Test API [5], shell API [6]), thus we kept them in doc/old folder. This
+folder will be removed once we finish the migration.
 
-> 
-> Not doing this now means we'll never have an optimal hardware usage
-> distribution. Just consider two userspace software wanting to do jpeg encoding.
-> If they both take a guess, they may endup using a single core. Where with proper
-> scheduling in V4L2, the kernel will be able to properly distribute the load. I
-> insist on this, since if we merge you changes it becomes an ABI and we can't
-> change it anymore.
+Kind regards,
+Petr
 
-Will it really become ABI just like that?  Userspace should always
-discover the video nodes and their capabilities and not hardcode e.g. a
-specific /dev/videoN file for a specific codec.  I would argue that this
-series would let userspace do JPEG encoding right away, even if in a
-less optimal way than if the driver would round-robin them through a
-single video node, but that can always be added in a future version.
-
-> 
-> I understand that this impose a rework of the mem2mem framework so that we can
-> run multiple jobs, but this will be needed anyway on RK3588, since the rkvdec2,
-> which we don't have a driver yet is also multi-core, but you need to use 2 cores
-> when the resolution is close to 8K.
-
-I think the mediatek JPEG driver already supports that, would it be ok
-to do it the same way?
-
-> 
-> Nicolas
-> 
-> > 
-> > [0] https://patchwork.kernel.org/project/linux-rockchip/list/?series=789885
-> > [1] https://crates.io/crates/onix
-> > 
-> > Changes since v1:
-> > - Dropped patches 1 and 4.
-> > - Use the proper compatible form, since this device should be fully
-> >   compatible with the VEPU of rk356x.
-> > - Describe where the VEPU121 name comes from, and list other encoders
-> >   and decoders present in this SoC.
-> > - Properly test the device tree changes, I previously couldn’t since I
-> >   was using a too recent version of python-jsonschema…
-> > 
-> > Emmanuel Gil Peyrot (2):
-> >   media: dt-binding: media: Document rk3588’s VEPU121
-> >   arm64: dts: rockchip: Add VEPU121 to rk3588
-> > 
-> >  .../bindings/media/rockchip,rk3568-vepu.yaml  |  8 +-
-> >  arch/arm64/boot/dts/rockchip/rk3588s.dtsi     | 80 +++++++++++++++++++
-> >  2 files changed, 86 insertions(+), 2 deletions(-)
-> > 
-> 
-
--- 
-Link Mauve
+[1] https://linux-test-project.readthedocs.io/en/latest/
+[2] https://github.com/linux-test-project/ltp/wiki/
+[3] https://linux-test-project.github.io/
+[4] https://github.com/linux-test-project/ltp/blob/master/doc/old/C-Test-Network-API.asciidoc
+[5] https://github.com/linux-test-project/ltp/blob/master/doc/old/KVM-Test-API.asciidoc
+[6] https://github.com/linux-test-project/ltp/blob/master/doc/old/Shell-Test-API.asciidoc
 
