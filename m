@@ -1,101 +1,127 @@
-Return-Path: <linux-kernel+bounces-132390-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132391-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17C318993F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:43:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EBA08993F6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:44:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA36E1F28E95
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:43:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 603371C24DC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C61111C6A8;
-	Fri,  5 Apr 2024 03:43:18 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D739E1B966;
+	Fri,  5 Apr 2024 03:44:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="C81QSD5A"
+Received: from wfout1-smtp.messagingengine.com (wfout1-smtp.messagingengine.com [64.147.123.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E320328E2
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 03:43:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0207128E2;
+	Fri,  5 Apr 2024 03:44:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712288598; cv=none; b=K91ZWo8zMultU0U3VzWcHk7RSRuCm5+3WAsmpXVqGrRPD5X/8O+tTF8U6K/CGXfIc4Soo5czQMRSHOrGML5YooiLbYNs6lpZIS9vflwtuvdq5bgLhfLK6EAlo+M28l7DIPHymVIvi73fhQ/L9OAFJFPkiMlQm7RbtMemOkl4RRs=
+	t=1712288675; cv=none; b=ISC5OVlVOva6kYtzqI+EFfJCqMRzh/yLSXdprwEYpZgCzhcL+/J6adqtzSAJV9HfK4CRcyeluwszNemtGzKOGZO7zNdn1HvHb3SNbq55D+trNpSRS+Gy1mT22T6k0MTmmNnqFRYi9p7pcGx9zw2fj+RtW2kBIWdZHHtNTACivYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712288598; c=relaxed/simple;
-	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=H4kokDHRB9NNKL4e/ojz/h1q0t8ItU9zb28BWUkItdkPbcAgD3rQKXUt57+mdFCfm2FpGDZH6W43q1oCOqTg6dfCWsNsJD5k0O2TpPgjOYa35B8x26N9lKZmyCUwSUtsVqyUbaDFVug+T3bwW9FBXk3cCwPZ3LcegZofOwIREJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-369b59962cfso16847055ab.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 20:43:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712288596; x=1712893396;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-        b=wyZLtgZCGh9YoYPFYTfhQlU9XZz1ALF7Uw0l0Y7Yqre3WveGaW02C+fd13FEUrxyeo
-         ZfIW206gK6f5nN7xKePycoPhT0GGpOeY682OwAYG5QPgGlhzJj4xZGkCSE3R8Kuogjal
-         pfN/lJaN8Tkpcl6OzoK4jfdSj8RtTl/H0UJ2qfj34IGfArwZG/mMDgBCwLJHoWmEmUqc
-         DCUQUIpM1N7B0LPrv9/wk4cZcTFWoFv7ebXqc1LcTQjaXy4HqQvSa6X6QLLse8WerZfl
-         wIW0FkJgRRX45E6+pXneHJqDfREgtltfXBRXjmT+oja+urH7C2zGeab/4q5WZJGnvc8l
-         p9YA==
-X-Forwarded-Encrypted: i=1; AJvYcCVdmsZc3jcER1D1vyVDClMDUt8z5uIEIlZk+bUPmUjiGbvqF6UUNV939psN32H6Ss5kBQmhp71ViY2O7urs2juahA+dgIXeTk5Y4Qhs
-X-Gm-Message-State: AOJu0YyIrEIrS9R/TtklcKEG6PC2uOIlzqY0TOm2DF8k0b1wQUys7IhN
-	TVWc7NQ9c0JCZDLQBkwzjperPZNoSwfHtn+VdWvpYOO15RM/RCNy0qj0tMi3wuqTOZGBNoQ2TgQ
-	1UfW18SFFKgUa2AzQuRWL7JgHTIBJzZRL8tNQRvKjg/F2tmu3mRtppi4=
-X-Google-Smtp-Source: AGHT+IHFjzv8CNoc6/4+S+f/8xeraOyYdzTyewDxgRGtLwR+czgNzeoy4SNazCpVhYvJOMTKJpxR6ioDqjc478Je8Q7mka4bDHJ7
+	s=arc-20240116; t=1712288675; c=relaxed/simple;
+	bh=qsPh5jLsPjqoh7RdHlpwd0IOnjyfFaZnNumgZZVOKso=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=mRoMa9LY/VE7qYwhZchJpmE0vw+3TMZ7HwKIlsDE6VGlQDx686GotBFzqOVgPENc0US3KdMNucJoC6jwx4g+tcRaneYhrtwfyqQAUPp8t0TYAsnjGnCyPiEb/i+3cZfmEU1Bh5pyKae3wDjKM5GukiA0GVisZpSPBFeBrQc5ppI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=none smtp.mailfrom=linux-m68k.org; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=C81QSD5A; arc=none smtp.client-ip=64.147.123.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux-m68k.org
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfout.west.internal (Postfix) with ESMTP id 0977D1C0009E;
+	Thu,  4 Apr 2024 23:44:30 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Thu, 04 Apr 2024 23:44:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712288670; x=1712375070; bh=YYryhgN6k4zAyvC/eOIu42dxlhfu
+	pw+E0NbxOoGoDXg=; b=C81QSD5AN2lgFOxtYWBrXWwhGfRaN1myhcFPEJtsdna1
+	y3KI7ki6k3LoQ6wanvh7ek7OCGqnuk8La/UKj4YzV50mNwatTsKPAYY3wOo9TWkR
+	1TH/PV+rfnVHnNFV9AMr7l1uft7y5+64d8VirT5vgvMi6QUaFOZrxyfsgy2uXTGU
+	5Ii8y1HpotS7x7jrOEpHoBOQ9t4tyFOCI8uhNL6Ny/qryGILHOvLDlwglpjZDkok
+	LBjfXTN/JKNNPYN9jMJ24rKPrLwAZXo9mtbeyw94TQscJQTPAN7y1wCU1+RSp0Bi
+	oRMifHOt66N8dTO6H7oTYyLslz4mZfrvaSvcS4e44Q==
+X-ME-Sender: <xms:nXMPZrWAi09F-2pkasZh3e4LxYUURcYASuu9XXfN5aFte3fVVGHmiQ>
+    <xme:nXMPZjmH2hhl2bjt2RSrZ5CuVgXf-g0weQBhcVpVmrf9Ae-tm5PVWXZZ0XqGcsPAn
+    Ne9GoZrkfW39p9UqXQ>
+X-ME-Received: <xmr:nXMPZnYhdfi4BpVgPnTJsselG-2LMSF68qraFL4CBAf9zqYU5V4rPAdKVXQP0VBN4rAh1iDjrmXlHVJ-7Qp_FE9kkSgneEE-7a0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudefledgjeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevufgjkfhfgggtsehttdertddttddvnecuhfhrohhmpefhihhnnhcu
+    vfhhrghinhcuoehfthhhrghinheslhhinhhugidqmheikehkrdhorhhgqeenucggtffrrg
+    htthgvrhhnpeelueehleehkefgueevtdevteejkefhffekfeffffdtgfejveekgeefvdeu
+    heeuleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    hfthhhrghinheslhhinhhugidqmheikehkrdhorhhg
+X-ME-Proxy: <xmx:nnMPZmWvmndcnC68Z4XcXHk59kNUS7IUTfsRxTvSSJhoPm8cUQW_Kw>
+    <xmx:nnMPZlkw0WmXCIj8Ey7Urnj7JoFoTaODYcuyRudjL79ESfV2E_NIEg>
+    <xmx:nnMPZjcodEDnCWyPaFGcVcUDJsuwW-dAe9V_guzE9DxdrkKXPSZ2EA>
+    <xmx:nnMPZvEa6ASIjTJQYhMcHRfXiODLjWNsgAKvDMHhgA95SSBy43a8pQ>
+    <xmx:nnMPZnn37qv0I34juauWUCcca0SPYmpyQZ3yNtnYZY5ny5gBAYpXi5_L>
+Feedback-ID: i58a146ae:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 4 Apr 2024 23:44:28 -0400 (EDT)
+Date: Fri, 5 Apr 2024 14:46:17 +1100 (AEDT)
+From: Finn Thain <fthain@linux-m68k.org>
+To: Michael Ellerman <mpe@ellerman.id.au>, Jiri Slaby <jirislaby@kernel.org>, 
+    Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+cc: Andy Shevchenko <andy.shevchenko@gmail.com>, 
+    Benjamin Herrenschmidt <benh@kernel.crashing.org>, 
+    Nicholas Piggin <npiggin@gmail.com>, 
+    Christophe Leroy <christophe.leroy@csgroup.eu>, 
+    "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>, 
+    "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>, 
+    linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org, 
+    linux-serial@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] serial/pmac_zilog: Remove flawed mitigation for rx irq
+ flood
+In-Reply-To: <87y19s7bk6.fsf@mail.lhotse>
+Message-ID: <4bddf8ec-97f1-07f6-9c0a-523c102c0a1b@linux-m68k.org>
+References: <dda2187e128bfaaf092351812e4538e2e41c17f6.1711599093.git.fthain@linux-m68k.org> <Zg3YZN-QupyVaTPm@surfacebook.localdomain> <8f234f26-d5e3-66ed-ab0c-86d3c9852b4a@linux-m68k.org> <CAHp75VcxLez_Nm0N8=gpWd7SKGd9JF2QXEOOB_gvX3ZtTzj6HQ@mail.gmail.com>
+ <87y19s7bk6.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3892:b0:36a:a46:69e1 with SMTP id
- cn18-20020a056e02389200b0036a0a4669e1mr8852ilb.6.1712288596096; Thu, 04 Apr
- 2024 20:43:16 -0700 (PDT)
-Date: Thu, 04 Apr 2024 20:43:16 -0700
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000086534706155141d5@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
-From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+On Fri, 5 Apr 2024, Michael Ellerman wrote:
 
-#syz fix: exact-commit-title
+> >> > > ---
+> >> > (here is a good location for Cc:)
+> >>
+> >> Documentation/process/submitting-patches.rst indicats that it should 
+> >> be above the "---" separator together with Acked-by etc. Has this 
+> >> convention changed recently?
+> 
+> The docs don't really say where to put the Cc: tags, although they are 
+> mentioned along with other tags which clearly are intended to go above 
+> the separator.
+> 
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+I see no ambiguity there. What's the point of copying the message headers 
+into the message body unless it was intended that they form part of the 
+commit log?
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+> > I see, I will prepare a patch to discuss this aspect.
+> 
+> FYI there was a discussion about this several years ago, where at least 
+> some maintainers agreed that Cc: tags don't add much value and are 
+> better placed below the --- separator.
+> 
 
----
-[1] I expect the commit to be present in:
-
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+Maintainers who merge patches almost always add tags. And they can use the 
+Cc tags from the message headers if they wish to. Or they can omit them or 
+remove them. I don't mind. And I'd be happy to resubmit the patch with 
+different tags if that's what is needed by the workflow used by Jiri Slaby 
+or Greg Kroah-Hartman.
 
