@@ -1,198 +1,109 @@
-Return-Path: <linux-kernel+bounces-133310-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133311-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B56089A213
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:07:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 154F389A216
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:07:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BAC9DB2523C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:07:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C7FE1C21F9B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:07:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA5D8171078;
-	Fri,  5 Apr 2024 16:07:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EB6F171643;
+	Fri,  5 Apr 2024 16:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cMiRTSns"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RfgX9mWr"
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FE57171066;
-	Fri,  5 Apr 2024 16:07:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D27A0171069;
+	Fri,  5 Apr 2024 16:07:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712333240; cv=none; b=VJWEHMj6WEeJ+nsD1HaLJhPpb2NRqqH5uXttrd0bD6TXxeVx8hmh348G63xJIvEN5PGiubyDeU5P2D3+Cw54EOQ5AN1L5bZkkZjG5Y/XIheMAqUDNgdle3XYGhoucL/b1Hn0D79AGP3/CGW2D+ALvEy2EsJ0OymR2Q8NnjDK0l4=
+	t=1712333248; cv=none; b=l+tzgcDuD+Cm8HJ2CiFzLpC1u93Ir39qK6E9Icqq6Ov6SQ+bBgJ69X/sx9Jz6qEd+HhQMIdJtyHw9Wh5hwB8zYlYeqh6ztXFYAsW21K9hQBIZhDIiThYpExe+nSRnUFaKQb75RTdvTjtlnTF30ycuDuVKPxgUtgO13naRZG/tLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712333240; c=relaxed/simple;
-	bh=5AXlut9OGYv3DSXu2yDWsFFCKzEKKIb9A8Q/EEtoh/I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YETzB/zANq56STkiaZlz4FCt9uCQYnVubUuekziCDxw6jpTPg/CLDdqu9PohzyitRydRrGILs9on/yca3/TknHmsZb9lagPeTKYOK3RypevHXrSvCNZaEsIGswxfguNXKh9uZ1j9MQmRqdoDIQROhB03oc9k1j+Sdik0zBOhyWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cMiRTSns; arc=none smtp.client-ip=209.85.208.48
+	s=arc-20240116; t=1712333248; c=relaxed/simple;
+	bh=/n6EdmNiAaj7jJ9fb7jZrjiJ9kgHzGDjzSEonMO8iBs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CwiKPkhAM1Oa144eyNRf2oLWfZjjeIQnMGSDOBmrGVBUhmWD5D+4jH0MXJjjcr1X/ppY/F07sTW56Zq/QUIyU4cjcqTPkDfmsNTtjst6LFrz3qIqZJzk7Lj6rRVcJ8wHU4/ur+XQYfrmjSTTVyOMQShORS1ViLDZF11v7M8M7zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RfgX9mWr; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56dfb52d10cso2625050a12.2;
-        Fri, 05 Apr 2024 09:07:18 -0700 (PDT)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4162b0e21b0so12292965e9.0;
+        Fri, 05 Apr 2024 09:07:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712333237; x=1712938037; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=SWxWCR4jW+IXngpqL70YJDP0T6vuTGV5ymV1PXN5QL0=;
-        b=cMiRTSnsHBrCufZ7PqWqY0r5YATSlyeoGvjUWLgT+qmCF9R//smFJG3I22+1blGplF
-         DgnOEpEtMF1kyrl3QKMSWPQbS6cfIu9Kr31OY10wCRLdf1CD7+zQCsnqasf7W//XjsHL
-         h1jTVaFn0qdhvt+c+v1a7ir18sCmok7kznxPEePmvnpKLm3vUv0IUYCGHBzWrDa9h8lR
-         zxPcMWkWga5vBoB3oT8/jTrkMBef1FsdFI5I1F7wnfimTYo0WUwRUup0cI6wstZIAcLm
-         oz0WXIyNVyBKUfx9gwzN6Fs0veNb+WNk098tYDFwvnZ6apQKV9tmhjxv+ELTQ8CaWjXq
-         BMTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712333237; x=1712938037;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1712333245; x=1712938045; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=SWxWCR4jW+IXngpqL70YJDP0T6vuTGV5ymV1PXN5QL0=;
-        b=w6xT/ppm3TqufyKfyc4xMXjpwSSoZfOd+R5WVhBxvXgqQX0FjkjVci57fYzkaNn0U5
-         SXYhktqZ5E/awW4GI7mgJB29RBN2R3iA9MNIf2Icyul0GplNP7hNwDEv35MAeLiYTozV
-         KBc/N52Z+bAB7ZkJzgUC4rwZskNn+TvBGSLEVBCyhaoDzm1OolQzTQDgj+K7HQzgpTli
-         K2idIrcBzBJ0WUVKqVCBttQK0MW5R1iP/80N3Wz9gdC8oGdh+zeERUF8Y/40nZsdVYNi
-         q8GBDkmzxO0/fZNJfIJ/hDfp9pRw8oCHZ3l/xPzBezro/RKSDtuUZFw+B3lFaAuykRSb
-         l+PQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUDsJSbIFAzivI9WHheLUgwNZ7A9Hd6LB8wVuE0plF/S7YNBU00SirhcKJtYcBzNJxu29VlSkL4Nkzy5b41FXxGLARy1Qi9QMBcQjd/
-X-Gm-Message-State: AOJu0YyLWzsN3EPphM04oFdyxZv5+qX9kEv1E/lE3XlN2ok62erXbbP7
-	21hxeuWtndJh+f8apAZxXdZpAAoghqaoOt0C6trOO3nG4yUKNKCB
-X-Google-Smtp-Source: AGHT+IF7dy/kq+AATCpv8CUEDkIB1LId8J+Lr4m6BkQtDRqyyk/K+83e4aN/TATArwjdHUCfM1GzUg==
-X-Received: by 2002:a17:906:a86:b0:a51:a4fc:4baf with SMTP id y6-20020a1709060a8600b00a51a4fc4bafmr1217253ejf.25.1712333236356;
-        Fri, 05 Apr 2024 09:07:16 -0700 (PDT)
-Received: from skbuf ([2a02:2f04:d700:2000::b2c])
-        by smtp.gmail.com with ESMTPSA id f8-20020a170906048800b00a4e4de1892fsm979376eja.58.2024.04.05.09.07.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 09:07:15 -0700 (PDT)
-Date: Fri, 5 Apr 2024 19:07:12 +0300
-From: Vladimir Oltean <olteanv@gmail.com>
-To: Pawel Dembicki <paweldembicki@gmail.com>
-Cc: netdev@vger.kernel.org, Linus Walleij <linus.walleij@linaro.org>,
-	Simon Horman <horms@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Claudiu Manoil <claudiu.manoil@nxp.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	UNGLinuxDriver@microchip.com, Russell King <linux@armlinux.org.uk>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next v8 07/16] net: dsa: vsc73xx: Add vlan filtering
-Message-ID: <20240405160712.pfgt7lnutsqvxfob@skbuf>
-References: <20240403103734.3033398-1-paweldembicki@gmail.com>
- <20240403103734.3033398-8-paweldembicki@gmail.com>
+        bh=/n6EdmNiAaj7jJ9fb7jZrjiJ9kgHzGDjzSEonMO8iBs=;
+        b=RfgX9mWr43Y+3XZRcFnHgI14j9KrKgoCF7tr7tCVdIB22tu95THyy6aJRO4/JKlWOW
+         XQbnGdqQoG+O76jjqxmvtvuPy8fHFYcsGw6eHdUn+9b9Z+VfAUNF8DZT+Ws4xJeqCVKL
+         xUR/DymovD9h2Ji9dxE5BHFW64Za87PfHppv0UJ5u89RE8EgvhlnIz/YNKKxe4Y1gqRR
+         9fSWFh6ldWz2nkvjJWndojYUi+8tSX+nIUKXLuFYODIMDUT6uvkXZsn0NNAuv7DjqWNl
+         seGewuzpUfjcIscpYNIw/bWDz9l0yxzPCmC4FowuTrkFS2D2iPlA6cH7dOOsyiHXewBB
+         KvLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712333245; x=1712938045;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/n6EdmNiAaj7jJ9fb7jZrjiJ9kgHzGDjzSEonMO8iBs=;
+        b=Z85b82U+wwYSKx7HAQO/dQal3ma9IvxtcnhYjtJLLe0VGrTU0xbWIZGDKBm5LDEf+H
+         y1w7yhf4VwGE8TwE4gQUMVVJwHMrHWt+Sof2mx9Idg8jWE6QbAnYlXm11rJ8pHTpRulB
+         jCOEgr5+HhP7qOXchzc2ohAODvnXGSe+C3RrrhvBJaUkKp8w+ktsaT4/wo9brblZukTX
+         JXDOFOH/u2NJACmkyJ+Ow1SXQV7uXyzT94VL5tMJSFlKeNyMA/nsEMnVNts8oGE4a1oo
+         Vxt1jxtgUgY+KkO25fwBaRsm1EqjuEQ9eHce/LNA6zTXbhTPSP3gWFfKH8K5CoHUyQUp
+         wFNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVeolWJhwdl1wXc9aJpc9cYVmiAXVKCJ0xqZfldgMfiucU8vGal3KMrOmGg73vSE2JoJjV6jXZ93sghwgtm5oH7vBAD048PCsGeqxjItiERTYxU52vyZj64K9tnAKQnOG9KXdUKTy9ayP6CRANXr8SDIdNQITqeEgb7CzJiZ8pFXvAX
+X-Gm-Message-State: AOJu0YzrZ6i6bKbRCIkZAIq2CaAD5OXk+GY3d25ZbYkJNrrW7pG2GOR5
+	bQ3P4UGtVEpuRIp/3h/R5dPr2s/p/idneS8BftBhE5LZ02eT/JMui02IKwajfvOS4qMvKJdWd2v
+	eX9LP2IlLR043wS7j+g0+LakzfiE=
+X-Google-Smtp-Source: AGHT+IHJa17c/UAjDpaaM4OZ/aa58GujEn4FPNnYug7DLSdv/Q08eVXaiGF1njm/Xbdk+2JyNPc9peKruPCsUnY/uQw=
+X-Received: by 2002:a5d:6184:0:b0:343:e45c:c91d with SMTP id
+ j4-20020a5d6184000000b00343e45cc91dmr1422867wru.41.1712333245021; Fri, 05 Apr
+ 2024 09:07:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403103734.3033398-8-paweldembicki@gmail.com>
+References: <20240322-hid-bpf-sleepable-v5-0-179c7b59eaaa@kernel.org>
+ <20240322-hid-bpf-sleepable-v5-1-179c7b59eaaa@kernel.org> <CAADnVQJdm7+7tbJC8yhPqDUijE0DTD9UG4LOQmNRCWchQ3uGsg@mail.gmail.com>
+ <CAO-hwJKVVjhg6_0tAM75HGJL0WcERotyJc+7oBVvDiTGJAqTfw@mail.gmail.com>
+ <CAADnVQ+5NqjqyeFS3XgDU0OCFgt1Y9bmTbHOPv6ekw1sJasyaA@mail.gmail.com>
+ <CAADnVQJm7bi=iFtWj1XCmEdyDwb64KjxeP5RFo57paG3-zZo_g@mail.gmail.com>
+ <CAADnVQKSwdpfx8EoqURvzFymYNr1evkB3+4dRt_coPOZhW2LTw@mail.gmail.com>
+ <CAO-hwJLDuGHDNLRAJit7+5Dh7MRmwmWNt0+rreMyjf7P6UpAYg@mail.gmail.com>
+ <CAADnVQ+gikPakTuYpD4-oxS6yS5-Dd_HanfqyNnGW-nk7=eXNg@mail.gmail.com>
+ <CAO-hwJLz4ET8Rba-_8icR+7t9T63BPnf97JrSFjviJWG+i8dVQ@mail.gmail.com>
+ <CAADnVQ+MSqf1=FesorSxT63Qh83+4W79HX3HDyOWupajk_rTHg@mail.gmail.com> <CAO-hwJJmb3f7y39YqFrt9K0rUdab8ERvA9sU3kNz1qUj7_=BfA@mail.gmail.com>
+In-Reply-To: <CAO-hwJJmb3f7y39YqFrt9K0rUdab8ERvA9sU3kNz1qUj7_=BfA@mail.gmail.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Fri, 5 Apr 2024 09:07:13 -0700
+Message-ID: <CAADnVQLxKuTDKhN4R_LVnXpO8oS6AWNhQpExtV9+P66giHq=UA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 1/6] bpf/helpers: introduce sleepable bpf_timers
+To: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Cc: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, Shuah Khan <shuah@kernel.org>, 
+	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Apr 03, 2024 at 12:37:23PM +0200, Pawel Dembicki wrote:
-> +static int
-> +vsc73xx_port_vlan_filtering(struct dsa_switch *ds, int port,
-> +			    bool vlan_filtering, struct netlink_ext_ack *extack)
-> +{
-> +	enum vsc73xx_port_vlan_conf port_vlan_conf = VSC73XX_VLAN_IGNORE;
-> +	u16 vid_pvid = 0, vid_untagged = 0;
-> +	struct vsc73xx_portinfo *portinfo;
-> +	struct vsc73xx *vsc = ds->priv;
-> +	bool set_untagged = false;
-> +	bool set_pvid = false;
-> +
-> +	portinfo = &vsc->portinfo[port];
-> +
-> +	/* The swap processed below is required because vsc73xx is using
-> +	 * tag_8021q. When vlan_filtering is disabled, tag_8021q uses
-> +	 * pvid/untagged vlans for port recognition. The values configured for
-> +	 * vlans and pvid/untagged states are stored in portinfo structure.
-> +	 * When vlan_filtering is enabled, we need to restore pvid/untagged from
-> +	 * portinfo structure. Analogic routine is processed when vlan_filtering
+On Fri, Apr 5, 2024 at 8:46=E2=80=AFAM Benjamin Tissoires
+<benjamin.tissoires@redhat.com> wrote:
+>
+> Alright, as of today (and I'm about to be AFK for the weekend), I got
+> your changes in and working (I think). I'll review the series on
+> Monday and send it back so we have a baseline to compare it to with
+> bpf_wq.
 
-Analogous
-
-> +	 * is disabled, but values used for tag_8021q are restored.
-> +	 */
-> +	if (vlan_filtering) {
-> +		struct vsc73xx_vlan_summary summary;
-> +
-> +		/* Use VLAN_N_VID to count all vlans */
-> +		vsc73xx_bridge_vlan_summary(vsc, port, &summary, VLAN_N_VID);
-> +
-> +		port_vlan_conf = (summary.num_untagged > 1) ?
-> +				 VSC73XX_VLAN_FILTER_UNTAG_ALL :
-> +				 VSC73XX_VLAN_FILTER;
-> +
-> +		if (summary.num_untagged == 1) {
-> +			vid_untagged = vsc73xx_find_first_vlan_untagged(vsc,
-> +									port);
-> +			set_untagged = true;
-> +		}
-
-Is there really any functional difference between the above, vs this in
-port_vlan_add():
-
-	port_vlan_conf = VSC73XX_VLAN_FILTER;
-
-	if (summary.num_tagged == 0 && untagged)
-		port_vlan_conf = VSC73XX_VLAN_FILTER_UNTAG_ALL;
-	vsc73xx_set_vlan_conf(vsc, port, port_vlan_conf);
-
-	if (port_vlan_conf == VSC73XX_VLAN_FILTER_UNTAG_ALL)
-		goto update_vlan_table;
-
-vs this in port_vlan_del():
-
-		enum vsc73xx_port_vlan_conf port_vlan_conf =
-							VSC73XX_VLAN_FILTER;
-
-		if (summary.num_tagged == 0)
-			port_vlan_conf = VSC73XX_VLAN_FILTER_UNTAG_ALL;
-		vsc73xx_set_vlan_conf(vsc, port, port_vlan_conf);
-
-		if (summary.num_untagged <= 1) {
-			vid = vsc73xx_find_first_vlan_untagged(vsc, port);
-			vsc73xx_vlan_change_untagged_hw(vsc, port, vid,
-							summary.num_untagged);
-		}
-
-?
-
-If not, I have to agree with Florian that it's dizzying to follow the
-vsc73xx_set_vlan_conf() calls, all with slightly different input.
-Even worse now than before, I think.
-
-I see you've changed the storage variable names, so maybe you are open
-to some more refactoring, to make the code more maintainable.
-
-I would suggest calling a single vsc73xx_update_vlan_conf() from all
-places, which figures out what to do by itself, based on the current
-(updated) state. All ifs and buts are on the inside, not on the outside.
-
-Also, the operate_on_storage variable is not a great name now. Because
-you always operate on storage. It means "operate _just_ on storage", aka
-"don't commit to hardware".
-
-I wanted to avoid requesting you to make more changes to the
-implementation, but you started it, and now it's a confusing mix of
-concepts from old and new patch sets.
-
-I would like to also see the "operate_on_storage" logic rewritten and
-embedded into those functions which must update shared resources (port
-PVID, port untagged VID, etc).
-
-Basically, in the end I would like the driver to be written in the style
-of every other similar function: ocelot_port_manage_port_tag(),
-sja1105_commit_pvid(), mv88e6xxx_commit_pvid() etc. No arguments, except
-the port on which to run. Figure out what to do from the current state,
-and make sure it is called from all places that change that state.
-It also serves very well as self-documenting code, because "how register
-X should be set" is centralized into a single function.
-
-Sorry for making this request so late in the development process. I hope
-it's not discouraging.
+Nice! Looking forward to it.
 
