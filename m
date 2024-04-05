@@ -1,111 +1,108 @@
-Return-Path: <linux-kernel+bounces-133220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B79689A0B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:11:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6534F89A0A7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:06:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C0E11C224B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:11:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11CED1F21F78
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:06:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CF7016F836;
-	Fri,  5 Apr 2024 15:11:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6BD316F848;
+	Fri,  5 Apr 2024 15:06:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b="KAAtwnPj"
-Received: from smtp-out3.simply.com (smtp-out3.simply.com [94.231.106.210])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Gk9nkiYV"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED67F16EBF3;
-	Fri,  5 Apr 2024 15:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.231.106.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B7E16F293
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 15:06:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712329909; cv=none; b=WOXAleSo0wzYr5XT6k6OLpUldrIV6KI+lWvqcq0eV+StQrGXEgXchysBcIPiTEUfSGwT8or5VCDG2lnCsOnSGbGfYEgM+Vg8oR5WFcML7JCK56zcV3e5jYH0da6WY0i8+1dLu9PunhhPpFCS+DOvsnOyOyZTkiKZIS6DtCGYHz4=
+	t=1712329589; cv=none; b=Mk4kCPDrbXslzJ54GLA3Oq+sQHTV1vABZyNp9dB1S0FsZkteH/vqtV7goxzsaJTqdo64GSOkoi9vL+Q29y0f5NbbwjD1kea9IKfZprMRatvrrzmKLbOcghgEKhwYCUQz7vh+AkqEuD9DJOI/Bp2x2tDhZLGI59kabygy4lJ0UVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712329909; c=relaxed/simple;
-	bh=i/FBrmXeRYRAkZo+w8z9IKfnevF7NzMKdBcR5i1GyaM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=F443aVuFKkdkpS12sG8fpctS5fBl3PV0thXZdzFoBFbc4s4fI3OF3vpRKPrpWJhWlDc1clujUyN/b5tXQZCeJZKSxSnyKENfm68UGq7LssYSWYfkDpl3cX9xZuEvXUpeNzT6bRjix9uYasN4GQ26qC+DECIwzMymYQ1gDx4CavM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com; spf=pass smtp.mailfrom=gaisler.com; dkim=pass (1024-bit key) header.d=gaisler.com header.i=@gaisler.com header.b=KAAtwnPj; arc=none smtp.client-ip=94.231.106.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=gaisler.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gaisler.com
-Received: from localhost (localhost [127.0.0.1])
-	by smtp.simply.com (Simply.com) with ESMTP id 4VB1yQ1vzLz6839;
-	Fri,  5 Apr 2024 17:05:50 +0200 (CEST)
-Received: from [10.10.15.20] (h-98-128-223-123.NA.cust.bahnhof.se [98.128.223.123])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(Client did not present a certificate)
-	by smtp.simply.com (Simply.com) with ESMTPSA id 4VB1yP6kvsz680y;
-	Fri,  5 Apr 2024 17:05:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gaisler.com;
-	s=unoeuro; t=1712329550;
-	bh=6CbXOq/C6yEQwlReHz1yEL3Ba6l2jK2jJJv8AXL2LzE=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=KAAtwnPjCFUeznelsBSSFkOTTnV258nZcPC+4Ie3DHVGsOl5E2LGvjPvWv8SY0tAu
-	 beI/vYsBcUWaA8xVC0CbFQCSwViXKnjvaOHG/5byuWOMgNbyGSkc4G5DN9EPfwTJon
-	 3kMOc8fNBTousHgMdaARXBuvBApkqf6cEEQ+cnLY=
-Message-ID: <5f022f30-e1f2-46e3-b75b-0cb4b157448e@gaisler.com>
-Date: Fri, 5 Apr 2024 17:05:49 +0200
+	s=arc-20240116; t=1712329589; c=relaxed/simple;
+	bh=qlwdvOusJure/L1Yv/zKMo5qRCUbM8BhZMF14KYnllA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=trB819HSHk9hXnaYFHpxL6I0HRpwrUUIiIHZHHXF3RHjlB/3KdJNwaZ4bI8Z8X7SaLBioUfEAnAvU3VP8OwnKu5HEugnAjEgjWp8YrIL0ajeEtOIjC/N9Wz8gMCNHgwhXvCUj/wJ/YhMGx8wtS04G8AT5zqh3QzmK2/fVQikPNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Gk9nkiYV; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712329587; x=1743865587;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qlwdvOusJure/L1Yv/zKMo5qRCUbM8BhZMF14KYnllA=;
+  b=Gk9nkiYV7l42BtmfbwsqM0sUEWDnVWPrjtI7nilwUBe1tIGTxKC4b34/
+   VnsS7uy7nB8sGcfmDTS6+k+m/f86O+obBbf30pWG8ba96r8JX2VQ/m2RB
+   Gy7KU2dY16P+gufb9tyjdN2NrROOpektKHG6Tjq38IQMohPrGrEUkclAN
+   fcex3zHswOjngeSmKW3eHJj7BPYes6qKuYIlzbBMnPcwCjOqfTn1il2Vo
+   za1qqDnBuK4iYUBS3SXLztZjAvUy6Irc5ed3w2HBUnJq6c82coHQds1Lp
+   JFbT2+4gfAwJm8qP3odB6Bzhk2PE1xwMaFYGYiMBdl/qvkCE2kaNgXQfp
+   w==;
+X-CSE-ConnectionGUID: OkV1bZ8mSPWWuwJgIt/aPg==
+X-CSE-MsgGUID: xXfvyW3CSs27TYs/qx/K7A==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="18271642"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="18271642"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:06:26 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="915256454"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="915256454"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:06:23 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rsl92-00000001mBS-3ubw;
+	Fri, 05 Apr 2024 18:06:20 +0300
+Date: Fri, 5 Apr 2024 18:06:20 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Rob Herring <robh@kernel.org>, linuxppc-dev@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org, Anatolij Gustschin <agust@denx.de>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH v1 1/1] powerpc/52xx: Replace of_gpio.h by proper one
+Message-ID: <ZhATbD18BhW9vnI8@smile.fi.intel.com>
+References: <20240313135645.2066362-1-andriy.shevchenko@linux.intel.com>
+ <Zg0yTnTswS2je9VG@smile.fi.intel.com>
+ <871q7k8ytc.fsf@mail.lhotse>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: PROBLEM: Only one CPU active on Ultra 60 since ~4.8 (regression)
-To: Linus Torvalds <torvalds@linux-foundation.org>,
- Linux regressions mailing list <regressions@lists.linux.dev>
-Cc: Nick Bowler <nbowler@draconx.ca>, linux-kernel@vger.kernel.org,
- "David S. Miller" <davem@davemloft.net>, sparclinux@vger.kernel.org,
- Sam Ravnborg <sam@ravnborg.org>
-References: <CADyTPEwt=ZNams+1bpMB1F9w_vUdPsGCt92DBQxxq_VtaLoTdw@mail.gmail.com>
- <CADyTPEyAidGgBT3f1VJLHb3ouO-r1UyvFp1PcwXxy0NRG94sbw@mail.gmail.com>
- <1df92fec-7f57-5080-94ed-b149ed384280@leemhuis.info>
- <14dcd743-144a-9f7b-849c-0843d50e4c04@draconx.ca>
- <4dce7447-678d-4e60-b76e-b01988bd6515@leemhuis.info>
- <CAHk-=wgFuoHpMk_Z_R3qMXVDgq0N1592+bABkyGjwwSL4zBtHA@mail.gmail.com>
-Content-Language: en-US
-From: Andreas Larsson <andreas@gaisler.com>
-In-Reply-To: <CAHk-=wgFuoHpMk_Z_R3qMXVDgq0N1592+bABkyGjwwSL4zBtHA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <871q7k8ytc.fsf@mail.lhotse>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-
-
-On 2024-03-28 21:09, Linus Torvalds wrote:
-> On Thu, 28 Mar 2024 at 12:36, Linux regression tracking (Thorsten
-> Leemhuis) <regressions@leemhuis.info> wrote:
->>
->> [CCing Linus, in case I say something to his disliking]
->>
->> On 22.03.24 05:57, Nick Bowler wrote:
->>>
->>> Just a friendly reminder that this issue still happens on Linux 6.8 and
->>> reverting commit 9b2f753ec237 as indicated below is still sufficient to
->>> resolve the problem.
->>
->> FWIW, that commit 9b2f753ec23710 ("sparc64: Fix cpu_possible_mask if
->> nr_cpus is set") is from v4.8. Reverting it after all that time might
->> easily lead to even bigger trouble.
+On Fri, Apr 05, 2024 at 10:58:55AM +1100, Michael Ellerman wrote:
+> Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
+> > On Wed, Mar 13, 2024 at 03:56:45PM +0200, Andy Shevchenko wrote:
+> >> of_gpio.h is deprecated and subject to remove.
+> >> The driver doesn't use it directly, replace it
+> >> with what is really being used.
+> >
+> > Any comments on this?
 > 
-> I'm definitely not reverting a patch from almost a decade ago as a regression.
+> No comment :)
 > 
-> If it took that long to find, it can't be that critical of a regression.
-> 
-> So yes, let's treat it as a regular bug. And let's bring in Andreas to
-> the discussion too (although presumably he has seen it on the
-> sparclinux mailing list).
-Yes, I am aware and I agree we should treat it as a regular bug.
+> I'll take it for 6.10, or do you want me to sneak it in as a fix for 6.9?
 
-Reverting it as a regression fix would lead to followup issues like
-canceling the effect of commit ebb99a4c12e4 ("sparc64: Fix irq stack
-bootmem allocation.") but with misleading comments left in place. 
+Up to you and thank you!
 
-Sam's fix looks like a good solution for me to pick up to my
-for-next branch.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks,
-Andreas
+
 
