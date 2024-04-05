@@ -1,96 +1,173 @@
-Return-Path: <linux-kernel+bounces-132783-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11E1F899A18
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:57:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AA208999DC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:51:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 962FDB23412
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:57:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F0751C20F2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E1BA161914;
-	Fri,  5 Apr 2024 09:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9035F160881;
+	Fri,  5 Apr 2024 09:51:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Et5NeLrd"
-Received: from out203-205-251-36.mail.qq.com (out203-205-251-36.mail.qq.com [203.205.251.36])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JbrVApFv"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A25CA161910
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.36
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB419142E73
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:51:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712310994; cv=none; b=JhbRvwJh5dkfAdNfBsLYz8ZeWe0yLJaVxTrRd+TYF6Sk8dD3wBDynXxsBk8K5gMvfNOA2GOdrgsShtPi/OvK7wX0oD5/NpjYW7T1D027K2JGi7ab/JA0wT9V1COahXpgjldLAfA0y+7XQv/2FzFkLJbgnuATVSI2HExzieFUAYQ=
+	t=1712310710; cv=none; b=kdVe6Swn0IuO8VLjaAey+rRf4x2XJo/sc41JEFJvmRLiJcvjgwwDatcDV3NJvOwREdGRdevnzQLl4wdhK2b6FbisXCwForljUWp1ZYwKG67lpXAJeqJaympEDG2V2fHi37TnQkiYs/WLbvN69ol9aWawWEN0bYphFRnOUfbFsIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712310994; c=relaxed/simple;
-	bh=ZUjt3cn6Jciw9Yzl+9UZycVqc/qXs9Q8GWj5hR5RLZ4=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=gXKiPhu19YtrY5bLKrv+1NPeyrDsYiArMa1LL4B00OEAR7AyBi0PYSd7y2or6wEdY7fzf1JzBR2jha5ORifpgC0R4ul1bKRcxnwWCadqTbkCFTVWGGI+QxujmzUFEvRglXXsPCtySuferwXGj8WjBFLGPVgGFhkOXrj9gM5wLos=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Et5NeLrd; arc=none smtp.client-ip=203.205.251.36
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712310983; bh=37tWAJ0q0mR8nZCkCCUVBIS8KeNb1ZTR/arOTSOcqzo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Et5NeLrdvj2hY+pZBny8nWD2wSW9gS9Tn4t7C9Ia8kcq7s8eQZU3i6+ZPauGanrBm
-	 /tkpBBuCFp0oJQBQZqLUvX3HYV3biAApyIhRqxF8T16Ae6RvUPCezkCZ5JloJWedHC
-	 GVnUrrLQViFL7Z4KMxqOzElO1AKFd70MxgpVYOzk=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszc5-1.qq.com (NewEsmtp) with SMTP
-	id C94000B1; Fri, 05 Apr 2024 17:50:20 +0800
-X-QQ-mid: xmsmtpt1712310620t154w0w6e
-Message-ID: <tencent_C1E376696F23B004491777176886D9D37905@qq.com>
-X-QQ-XMAILINFO: NnIX2CK8LSsJdzqollVvw54F7RWdteg4akgDllpDD41GdwuxkWGpgMHkitHGn6
-	 Ls3l260F4J6G2f0cmrvAfOPBczHa65Ymt3pq5tno9aZLS1i/m2WIW6YUXWkEqS5t8wNxpoCtWqcs
-	 +GloxPYYSjsiH5hQP9ga3gcy7nVkYKoc/8WGDh1X87Ie32oQR7LctFQRWv5xETYmYi9VAMYkMh+T
-	 IUfIlV7v+GxFBtZuArls2qIYeXy76SrWEMg919t4DmcBsKCf22OvikD+srSHP5dzZoPtN2h0RAmo
-	 dG210+e1fiBbASkBuFKIWEPswVBp+mTjQfH9G17qDqEByGWQD+8gATRqJdjQ0JzCBT+lD6q4eeJs
-	 yU7KzwwychGgQT/MT2smIe61B2Iy17ws8nH2fa7/Z/bYGYzUGag5Gi7joVpfRnB2qUmwIxUIEg3b
-	 pNTbQp5dRhq8EgINmqF8henVEI7YBxQZFsvBvG+5xPsQfjZ+iDHpcDuXALVfuK/ea5Pi3SNxT7Qx
-	 O9Lre3XOUMEUYkPtkDmjUElx5KKCb4GucMN9J/IjzKuuLUfbyW2fOGS5J4a8vXZnJys6YNfELiCa
-	 HSWQzPMvIRHtO4GPfyXKWLrkKCMwL9vQD1/w2DFsbPY+Wl3XfyIMBjXs5ON0P/QwV1B7wM8Y0f+o
-	 8D0kE3midU64c4cq2q5/YveFwOGtdlNMMFIRXSoLbsGTQBlaxf5wDJGbTFNHN758oBWlIqBAtpGm
-	 ksIYvKEt44tc1HYjZvtrJxZycdCLbcZ6lTV7kiNWWcgIBVs4vZfH0ZsNOEskvcyFVom3K8l36LrZ
-	 9/+vjfWc/9NI89ySvJHJ9TQkgDBcs7dSeQbAD10NNwyll9qNLNKTWoCTc1LMpX9a7PnJqx7fGwM5
-	 0v4VcS+RhrIV1KWQdKwDZqQkkaQwObr8Ur7a0/1xi57M3E2mhO31wreoLW5bZ95k4G2hiVlvE///
-	 cQeraYKVoypCsnMoxoE1LpoNPD40mJDwuuyELiXF4YGXIDlxJM5XUSnSLelLGN
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+8a1d152fba6b41f760ae@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-out-of-bounds Read in l2cap_sock_setsockopt
-Date: Fri,  5 Apr 2024 17:50:20 +0800
-X-OQ-MSGID: <20240405095019.538520-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000b48cb0061553f087@google.com>
-References: <000000000000b48cb0061553f087@google.com>
+	s=arc-20240116; t=1712310710; c=relaxed/simple;
+	bh=9z7NXciC8Z8/xPDHcNCTcqyOvDYKe+Q//7hKlc2E1fw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=F00LjghQTjMJH0N40TKZJxhjTbIWodk9QEmSMyjyZ2U3LbY7DyfNj8u6XHw3Mt4qkJKxsM2luxTFPZjJ115jhyCsFs0/nqvozQDJOmGjx0+2tZtgbiepiRQSecOSPAqRKXPmcvKD8MBhLyqqqUEZhIZXMhe9F8ubdfLz0NyMtj0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JbrVApFv; arc=none smtp.client-ip=209.85.167.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-516d6e23253so82667e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 02:51:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712310707; x=1712915507; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XznLbi2Z1SKvx8bRj0+Hw75ngrOt6iwbmtsVcIRJxZA=;
+        b=JbrVApFvipQKIx68+/9lcIy+ybhZTcBFyUjgjy2xBmPRu4qMbBzM6rAcCU+E8d5FPo
+         VoUCbGKNK+ADHf0MtrP7kwdtCj4V3MNTMV8zYJonX0uKLekbHAIV+GCQXfix/qeFmSPb
+         YzchkGUk/SJ6/w7o+EPq327QeNW5H/GeuzcYgYB/CYhJ8CJ4Z6gMlp23vJ/rtlcZ864x
+         jEHLOW2EAUekATvZoNevH6dqjWd9B7tIWTJv5OmjVZfqTSdjfzkum7BAQmWKT0QPX4Qs
+         1LijJde4lV6ObRX3g621WBOHxMJJj+DyJVol/10XapQyhtdKqBQQvH8hgEulcsMEMK94
+         eOMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712310707; x=1712915507;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XznLbi2Z1SKvx8bRj0+Hw75ngrOt6iwbmtsVcIRJxZA=;
+        b=WEJB0mQDjM9xs7HFMhbEjBa7Vu/BxqzBsGC3yqA//OAXfuL6QnBL8mJ/fB3Cfp7vhA
+         32NlHbxk2AapvAsk4JGB02Xldw56EOcvHQSrq4pDgOnWWB9X+2G7hnEDocnvNCy1pqQu
+         MV4Dtr62y9IsyFUgH83zk3dqtUUUVu/YdUM6ZL8valp8LqT6U82ioVDJXu7Y6rPFYJDt
+         r52WVcMnoux86a9N0zlghn7Tuu27rB5TMFA/QSjykRyvD8ONh81Gqp96sPtQPaei5e6Z
+         bI/0lleHNmVgJ6PWsBJpPPHqYhhH0lfeKkNdTRA84zVeOKedxGQB7nx+gDPIhvi8gRMc
+         bz3w==
+X-Forwarded-Encrypted: i=1; AJvYcCWYrtA8j2OTahtNHo0xz+noazUfbJvyzjCjSwIGAQ9QxY73xJc3U/f/9AMR6WJy8NQIhRnbSxro//LjMXww55IBPaQqwl+PO7EFoeS/
+X-Gm-Message-State: AOJu0YyWzCSIAiCvLfKVbRvP9+a6I1rTVFGzvjd9MZWtvcoV5W1Ud6L1
+	vateZGd0s910yfrsFQedSu+MR28UPalQjJzmIYUuBbqxQIM94A93VAVUnV9fFZc=
+X-Google-Smtp-Source: AGHT+IFuRBcasfkE1HoHSCQ7OdWv+EtlpW9OQz09tguqfMAKrRd1NUyHNpjIOZuZmN0l9ZISYTgUFw==
+X-Received: by 2002:ac2:5ddb:0:b0:516:d2eb:6edd with SMTP id x27-20020ac25ddb000000b00516d2eb6eddmr735020lfq.26.1712310706830;
+        Fri, 05 Apr 2024 02:51:46 -0700 (PDT)
+Received: from aspen.lan (aztw-34-b2-v4wan-166919-cust780.vm26.cable.virginm.net. [82.37.195.13])
+        by smtp.gmail.com with ESMTPSA id e28-20020adfa45c000000b00343e1c3298asm1428854wra.0.2024.04.05.02.51.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 02:51:46 -0700 (PDT)
+Date: Fri, 5 Apr 2024 10:51:44 +0100
+From: Daniel Thompson <daniel.thompson@linaro.org>
+To: Justin Stitt <justinstitt@google.com>
+Cc: Jason Wessel <jason.wessel@windriver.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	kgdb-bugreport@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2] kdb: replace deprecated strncpy
+Message-ID: <20240405095144.GB2890893@aspen.lan>
+References: <20240405-strncpy-kernel-debug-kdb-kdb_io-c-v2-1-d0bf595ab301@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405-strncpy-kernel-debug-kdb-kdb_io-c-v2-1-d0bf595ab301@google.com>
 
-please test oob in rfcomm_sock_setsockopt
+On Fri, Apr 05, 2024 at 02:33:58AM +0000, Justin Stitt wrote:
+> We should move away from using strncpy because it is deprecated [1].
+>
+> Since these buffers want to be NUL-terminated, let's use strscpy() which
+> guarantees this behavior.
+>
+> The code in question enables the visual autocomplete when using kdb tab
+> completion. After pressing tab a couple times when sitting on a partial
+> symbol it will attempt to fill it in.
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git fe46a7dd189e
+FWIW the code that this patch changes is only executed when tab is
+pressed once.
 
-diff --git a/net/socket.c b/net/socket.c
-index e5f3af49a8b6..d5b2ab6c859c 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2327,6 +2327,9 @@ int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
- 	int err, fput_needed;
- 	struct socket *sock;
- 
-+	if (optlen < 4)
-+		return -EINVAL;
-+
- 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
- 	if (!sock)
- 		return err;
 
+> In my testing, strscpy() provides
+> the exact same autocomplete behavior that strncpy() provides here (i.e:
+> it fills in the same number of characters for the user).
+>
+> You can confirm this by enabling kdb [3] and booting up the kernel. I
+> performed my tests with qemu with this incantation (wow these get long):
+>
+> $ /usr/bin/qemu-system-x86_64 -display none -nodefaults -cpu Nehalem
+> -append 'console=ttyS0,115200 earlycon=uart8250,io,0x3f8 rdinit=/bin/sh
+> kgdboc=ttyS0,115200 nokaslr' -kernel $BUILD_DIR/arch/x86/boot/bzImage
+> -initrd $REPOS/boot-utils/images/x86_64/rootfs.cpio -m 512m -serial
+> mon:stdio
+>
+> ... then you can type some symbols and see that autocomplete still kicks
+> in and performs exactly the same.
+>
+> For example:
+> tes <tab><tab> gives you "test",
+> then "test_ap" <tab><tab> gives you "test_aperfmperf"
+>
+> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+> Link: https://github.com/KSPP/linux/issues/90 [2]
+> Link: https://www.kernel.org/doc/html/v5.0/dev-tools/kgdb.html#using-kdb [3]
+> Cc: linux-hardening@vger.kernel.org
+> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> ---
+> Changes in v2:
+> - use strscpy over memcpy (thanks Daniel T.)
+> - Link to v1: https://lore.kernel.org/r/20240403-strncpy-kernel-debug-kdb-kdb_io-c-v1-1-7f78a08e9ff4@google.com
+> ---
+> ---
+>  kernel/debug/kdb/kdb_io.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/debug/kdb/kdb_io.c b/kernel/debug/kdb/kdb_io.c
+> index 9443bc63c5a2..60be22132020 100644
+> --- a/kernel/debug/kdb/kdb_io.c
+> +++ b/kernel/debug/kdb/kdb_io.c
+> @@ -368,9 +368,9 @@ static char *kdb_read(char *buffer, size_t bufsize)
+>  			kdb_printf("%s", buffer);
+>  		} else if (tab != 2 && count > 0) {
+>  			len_tmp = strlen(p_tmp);
+> -			strncpy(p_tmp+len_tmp, cp, lastchar-cp+1);
+> +			strscpy(p_tmp+len_tmp, cp, lastchar-cp+1);
+
+This still looks like it is reproducing the obvious[1] error in
+the original strncpy() call. The third argument does *not* provide the
+number of characters in the destination buffer.
+
+Just to be really clear, I think this patch and your original memcpy()
+conversion is mechanically correct, in that the new code is equivalent
+to the original strncpy(). The problem is that neither patch acts
+on the warning signs that the original code is broken.
+
+
+[1] I know that this code is hard to read so "obvious" is a relative
+    term. However just looking at one line tells us that the source
+    pointer is part of a two pointer calculation that purports to
+    give the length of the destination string! Such code is almost
+    always going to be wrong.
+
+
+>  			len_tmp = strlen(p_tmp);
+> -			strncpy(cp, p_tmp+len, len_tmp-len + 1);
+> +			strscpy(cp, p_tmp+len, len_tmp-len + 1);
+
+Again, I really don't think the third argument provides the number of
+characters in the destination buffer.
+
+
+Daniel.
 
