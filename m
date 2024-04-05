@@ -1,148 +1,177 @@
-Return-Path: <linux-kernel+bounces-133349-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93AF989A2A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:38:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3821789A2B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:41:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 334571F24680
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:38:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC1301F24DE8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:41:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7C416F275;
-	Fri,  5 Apr 2024 16:38:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NKNsYItO"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7AD17164F;
+	Fri,  5 Apr 2024 16:41:03 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1924A16C871
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 16:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E88616F858;
+	Fri,  5 Apr 2024 16:41:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712335084; cv=none; b=Uo402jcOkoDSoXEbqIgGFwhq9xToyejMXXL0fng1Sh4KmWjts4IaJQbKTND8wbuMH2+k2oEAuaoJ7jCzs+DNvoahaa22584Dw0K9OZ6FbcKRYx+WZfCgxh1S9iEpXee35Bft3YElND60VhyiMT30lb3SDrrlAqF7rKN34Yw3qOI=
+	t=1712335263; cv=none; b=dRJggNSgXps2f98o/PpCfzv8wvMDSGy4vNiQ/7VVxsQ6CPzwcmiNBpIW/Fim88EkpRVqeNNcc+bIf7pOHXJ0OZSpBNP+ZugaXmSXFpDG0pv8fhu0K76l58C1AbMNm/1LmSW1LUOgL43uBjwLZHH6VqZ4W8oP2qR9bgU0/c3TfUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712335084; c=relaxed/simple;
-	bh=BLotXCHXqHDC9O4AKiHbeR7Z5NsPPN4ypYaPcCf605E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XLtspvtKDlIpTWFQLhqTU19yvF1ir4NTXdLvKMIXsrBgGJMAamv02WxfKvru6Zm9OGhzXCLhgic2n+iFoKR177nJRA8Lq7uNygMv2BHxeMh2LBgFTpUGGffaEwcQUg2PWKsJ+MxIUFnCiN5COoIXcpA9vBnyaYyBz35qTcpI/K8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NKNsYItO; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712335082;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fkF4QSWzhf6Nw/44NW74bQyP4bUB/6PnvqawpC9bEv4=;
-	b=NKNsYItOuCy+lMvw2UcnqA5wEEMp0zo/QT4Llw7N5Rx8d8t5wODaoAaCZf3C/wmxFhDF+V
-	AofiYIkPITIaePY18DdQef4AGy5aDC+dV/g902gVN4qMsS3U5JmHJDYwnA5yqng8xyf6WE
-	B55HhmKqOapOZmO8bt6vpM/4tl0tPPU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-424-Xi5Z8WvAOJCcRqPvtyuK8Q-1; Fri, 05 Apr 2024 12:38:00 -0400
-X-MC-Unique: Xi5Z8WvAOJCcRqPvtyuK8Q-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-343d6732721so664902f8f.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 09:38:00 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712335079; x=1712939879;
-        h=content-transfer-encoding:in-reply-to:organization:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fkF4QSWzhf6Nw/44NW74bQyP4bUB/6PnvqawpC9bEv4=;
-        b=uNbCVSk2DBytkuZAodM5hjEYLtc7sTq825ORqKbVuUV4bIs3oZDG6cuPHFlgubyqhN
-         O2GJuGTgdEgeHlxe1BKB4UqGFF26fVA2YCW6vulLhT7CuQf9gmcrGVJPgrXaNxEjvbIp
-         wHYHO6q2xKcoSmcZDiccJdrew+MlJaQqfZyAq8Zji2o7nwMeiO2f06ZZM5oaRZoA7kpn
-         qZXbPu2FGsNW62ZfvaR8yrDXcmb5SW6LI7NoQ6rZhlhxENqsEgb7R8n7F+ju2qvslWsa
-         sretJwAt836URE++cYKEPuuf8V8HyHpq4zpifNAeoPV34aHfO8DrpWt+NvHBHyTzC/e8
-         bDeg==
-X-Forwarded-Encrypted: i=1; AJvYcCV/qtFQ8Nz2XYb8s1mGrYE8W0y/Tn6NdmcMeGyGSD2NAW0HFcsl+B6EeFB/Q6fYB8uNOKl2BHP9s6uJEP7OXO5+WjGOK9HRgMIiP98H
-X-Gm-Message-State: AOJu0YzQI0Tl7mwEuPsX9Fu/itcEeOPRzPrADRvUAjf7e9aQ9tU+TOiA
-	wKBQbaFuw5yyYz4JZbFbCLaYZcux6dK0p7jUMjKQfKiuYBUZNUsY92Akfh/04IL26tJqXWxvcqS
-	CZX9RX1Smt+HF8NEZIp4xSZQ9TIE2neIRr5J1ktX93EorDUt26RlNYBxuGJruBg==
-X-Received: by 2002:adf:e849:0:b0:343:e031:69b8 with SMTP id d9-20020adfe849000000b00343e03169b8mr1687198wrn.41.1712335079586;
-        Fri, 05 Apr 2024 09:37:59 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHZ46bQriV6ycJFTO0VuNynMncgm9/Re4exnqTKKZrOf8MmqZKAujsFuh4iSK3zn2MXU1fy4Q==
-X-Received: by 2002:adf:e849:0:b0:343:e031:69b8 with SMTP id d9-20020adfe849000000b00343e03169b8mr1687176wrn.41.1712335079306;
-        Fri, 05 Apr 2024 09:37:59 -0700 (PDT)
-Received: from ?IPV6:2a02:810d:4b3f:ee94:abf:b8ff:feee:998b? ([2a02:810d:4b3f:ee94:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id q8-20020adfea08000000b00341c6440c36sm2409149wrm.74.2024.04.05.09.37.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 09:37:58 -0700 (PDT)
-Message-ID: <cefb67c2-f5f5-4b54-8ed6-a9cab3718ff5@redhat.com>
-Date: Fri, 5 Apr 2024 18:37:57 +0200
+	s=arc-20240116; t=1712335263; c=relaxed/simple;
+	bh=3Atpy12ZUgPWTseaHFws+5AQqqQErgzz9HigTS5MKvA=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WGkLRVJJaho9uGhXBu+k1GvzoYShzVwNzjVApyGAKVMO6JVJjcL0gJgAR+XhP8B+h2jLPpiWXc6mjdpbzyeXnsZUsM8Sxb+b13KUouv/Z49/KIakjNK8hTHlgse652FK6KcVehSwGSAz3//mzH+LIXNe0p/irZ5XfrQpZzSrYxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.216])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VB42X2RK7z6J9Zb;
+	Sat,  6 Apr 2024 00:39:32 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id C8200140C98;
+	Sat,  6 Apr 2024 00:40:57 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 5 Apr
+ 2024 17:40:57 +0100
+Date: Fri, 5 Apr 2024 17:40:56 +0100
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Alison Schofield <alison.schofield@intel.com>
+CC: Kwangjin Ko <kwangjin.ko@sk.com>, <dave@stgolabs.net>,
+	<dave.jiang@intel.com>, <vishal.l.verma@intel.com>, <ira.weiny@intel.com>,
+	<dan.j.williams@intel.com>, <linux-cxl@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <kernel_team@skhynix.com>
+Subject: Re: [PATCH v2 1/1] cxl/core: Fix initialization of
+ mbox_cmd.size_out in get event
+Message-ID: <20240405174056.00005422@Huawei.com>
+In-Reply-To: <ZhAhAL/GOaWFrauw@aschofie-mobl2>
+References: <20240402081404.1106-1-kwangjin.ko@sk.com>
+	<20240402081404.1106-2-kwangjin.ko@sk.com>
+	<ZhAhAL/GOaWFrauw@aschofie-mobl2>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] [v2] nouveau: fix function cast warning
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, David Airlie <airlied@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>, Nathan Chancellor <nathan@kernel.org>,
- Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling
- <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Ben Skeggs <bskeggs@redhat.com>, dri-devel@lists.freedesktop.org,
- nouveau@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- llvm@lists.linux.dev, Karol Herbst <kherbst@redhat.com>,
- Lyude Paul <lyude@redhat.com>
-References: <20240404160234.2923554-1-arnd@kernel.org>
-Content-Language: en-US
-From: Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <20240404160234.2923554-1-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On 4/4/24 18:02, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Calling a function through an incompatible pointer type causes breaks
-> kcfi, so clang warns about the assignment:
-> 
-> drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c:73:10: error: cast from 'void (*)(const void *)' to 'void (*)(void *)' converts to incompatible function type [-Werror,-Wcast-function-type-strict]
->     73 |         .fini = (void(*)(void *))kfree,
-> 
-> Avoid this with a trivial wrapper.
-> 
-> Fixes: c39f472e9f14 ("drm/nouveau: remove symlinks, move core/ to nvkm/ (no code changes)")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+On Fri, 5 Apr 2024 09:04:16 -0700
+Alison Schofield <alison.schofield@intel.com> wrote:
 
-Applied to drm-misc-fixes, thanks!
-
-> ---
-> v2: avoid 'return kfree()' expression returning a void
-> ---
->   drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
+> On Tue, Apr 02, 2024 at 05:14:03PM +0900, Kwangjin Ko wrote:
+> > Since mbox_cmd.size_out is overwritten with the actual output size in
+> > the function below, it needs to be initialized every time.
+> > 
+> > cxl_internal_send_cmd -> __cxl_pci_mbox_send_cmd
+> > 
+> > Problem scenario:
+> > 
+> > 1) The size_out variable is initially set to the size of the mailbox.
+> > 2) Read an event.
+> >    - size_out is set to 160 bytes(header 32B + one event 128B).
+> >    - Two event are created while reading.
+> > 3) Read the new *two* events.
+> >    - size_out is still set to 160 bytes.
+> >    - Although the value of out_len is 288 bytes, only 160 bytes are
+> >      copied from the mailbox register to the local variable.
+> >    - record_count is set to 2.
+> >    - Accessing records[1] will result in reading incorrect data.  
 > 
-> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c
-> index 4bf486b57101..cb05f7f48a98 100644
-> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c
-> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/bios/shadowof.c
-> @@ -66,11 +66,16 @@ of_init(struct nvkm_bios *bios, const char *name)
->   	return ERR_PTR(-EINVAL);
->   }
->   
-> +static void of_fini(void *p)
-> +{
-> +	kfree(p);
-> +}
-> +
->   const struct nvbios_source
->   nvbios_of = {
->   	.name = "OpenFirmware",
->   	.init = of_init,
-> -	.fini = (void(*)(void *))kfree,
-> +	.fini = of_fini,
->   	.read = of_read,
->   	.size = of_size,
->   	.rw = false,
+> Agree with the other comments on need to set .out_size when doing
+> cxl_internal_send_cmd() in a loop. Poison list retrieval can hit
+> this case if the MORE flag is set and a follow on read of the list
+> delivers more records than the previous read. ie. device gives one
+> record, sets the _MORE flag, then gives 5.
+> 
+> 2 other things appeared to me while looking at this:
+> 
+> First, it seems that there is another cleanup wrt accessing records
+> with invalid data.  Still focusing on get_events and get_poison
+> since those loop through output data based on a device supplied
+> record count. The min_out check means the driver at least gets a
+> count of records to expect. That's good. The problem occurs::
+> 
+> if (mbox.size_out != struct_size(payload, records, 'record_count'))
+> 
+> The driver will log garbage trace events, and that could lead to
+> bad actions based on bad data. (like a needless scan of device based
+> on a false overflow flag). So, checking that size.out is the proper
+> multiple of record_count protects driver from bad device behavior.
+> 
+> I think that can be combined w the patch Dan is suggesting to
+> reset mbox.size_out on each loop.
+Hi Alison,
+
+I'd split it.  Dan's one is a bug fix, this is hardening against
+a device bug. Good to have but not really backport material unless
+we think there are devices like this out there.
+
+> 
+> Second thing is the pci-driver quiet handling of PAYLOAD LENGTH
+> values reported by the device. It seems like at a minimum the
+> pci-driver could emit an info or debug message when the device
+> is reporting payload lengths that exceed what the driver can
+> copy in.
+
+When does this happen?
+1. New fields on end of a fixed length message.
+   Correct to silently eat it as the spec is buggy if we don't
+    have backwards compatibility.
+    I don't think the spec has had that particular type of bug yet,
+    but maybe I'm forgetting one.
+2. Device bug.  Can't tell that is different from 1.
+
+So maybe dev_dbg(). I'm not sure why the cxl-driver would ever want to
+know.
+
+> I'm referring to the mbox.size_out adjustment in
+> __cxl_pci_mbox_send_cmd(). Or, if it's not the pci-drivers job
+> to judge, pass that actual payload length value back in the
+> mbox structure (new field) so that the cxl-driver can use it.
+> The pci driver would still do it's "#8 Sanitize the copy" work,
+> but it would allow the cxl-driver to clearly see why it got the
+> .size_out it got, and squawk about it if needed.
+> 
+> --Alison
+> 
+> > 
+> > Signed-off-by: Kwangjin Ko <kwangjin.ko@sk.com>
+> > ---
+> >  drivers/cxl/core/mbox.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
+> > index 9adda4795eb7..a38531a055c8 100644
+> > --- a/drivers/cxl/core/mbox.c
+> > +++ b/drivers/cxl/core/mbox.c
+> > @@ -958,13 +958,14 @@ static void cxl_mem_get_records_log(struct cxl_memdev_state *mds,
+> >  		.payload_in = &log_type,
+> >  		.size_in = sizeof(log_type),
+> >  		.payload_out = payload,
+> > -		.size_out = mds->payload_size,
+> >  		.min_out = struct_size(payload, records, 0),
+> >  	};
+> >  
+> >  	do {
+> >  		int rc, i;
+> >  
+> > +		mbox_cmd.size_out = mds->payload_size;
+> > +
+> >  		rc = cxl_internal_send_cmd(mds, &mbox_cmd);
+> >  		if (rc) {
+> >  			dev_err_ratelimited(dev,
+> > -- 
+> > 2.34.1
+> >   
 
 
