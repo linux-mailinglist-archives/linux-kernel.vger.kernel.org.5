@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-132428-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132429-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A4EF8994C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:36:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2745D8994C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:36:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CF931C226D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:36:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 922C51F23572
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:36:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4A022C1A8;
-	Fri,  5 Apr 2024 05:35:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581C12C694;
+	Fri,  5 Apr 2024 05:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="K+8uXzf3"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NB+shMKC"
 Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47BE525774
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 05:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBC228E34
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 05:35:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712295322; cv=none; b=pyWZhdiNrWcs2eH3FQGy3tf+Fap93T5eabVgDQeNmtWAeRIy8UflIVdjPMRA+GO6Xd2dPh74VgciGRg21FmClCu3oXHgqZFYL1EQK+B9XmqIHL+ojHeu8LUGHBwBRioLGkAChzp0b7YHHPqS9eMtagVizQBbVWQQ35RFszHyw8w=
+	t=1712295324; cv=none; b=kWLQyXrieUrsUQyLIyl4Ta4rxpHGrYfkFeEtl/pti4z8ShOo8NwumetJTDP6/CHytp1fOWGdmQ/CJpOKdLeeRA5TFS01nXXHgNHGvz4u3CYioPf1DyDXPGmgl5HbBxuHvqEtQs4k3KBGYp+Yxz3klaX12pKiYS6IcubDoas2N2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712295322; c=relaxed/simple;
-	bh=OBu0XPUtNujGfTv9FqY2iHyyiyKuVEz2ju3MZe/grPw=;
+	s=arc-20240116; t=1712295324; c=relaxed/simple;
+	bh=ej6MR+jE0o5Q+Vf9YGysbx/68DDREaEp7teXTicm5SM=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=nbuIBm4GzT7GqxjC23zeExR2oqbgjqO1fXTB5bvLXEntpWuAjtTpnejhyJmt9ohzK4z7pqefYKuEx0qy1Hg6RwIO9c5XdaOVFhb0dYdb5jRPPQSHz6fu/7IGFF4n1PJnYhI1rt1/DvXSlujk0NkB7w1g2l1qVvJpbsiIl82LxM4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=K+8uXzf3; arc=none smtp.client-ip=209.85.219.201
+	 To:Cc:Content-Type; b=O8WKZdAFcHnTOBiqwOlV72uHNagnYGl2qMwiUWVdHrvx+fcEcGpbff1dljljxMXUVtiL0KWOpf96NyqpqJ3/XJI7++RT80Q1k7crosTd+xi/xbqEj0HHgRApmwyszPRH3D2XkwGEajmYJyLE+3nKrkpDgFtEPbsEwULHxI5Q0sA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NB+shMKC; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dce775fa8adso3101494276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 22:35:20 -0700 (PDT)
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc647f65573so3323145276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 22:35:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712295320; x=1712900120; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1712295322; x=1712900122; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=JztYBciZAboPFg0UR8cifQAY1ELGwu5QR/HCIVJgmmg=;
-        b=K+8uXzf3WSy28rVAsNxg+4n9zzs/W8BjIMbOLUpH6fppU9dM5GMHQMO9sJ2cGBOI4J
-         esVT0FXsbjojvrQXuUYk7ZE4jDDO0cFKMIgCUzcRd6B/d96S/A2aPRDDPqP1OytZ9+jJ
-         LjAeX+0iV3iEWVir4P9Aa8QpMJlZT1zQJAPf4X2jA2mwxZhF5KEMJX2BoKdHsZeUQcAD
-         dzyhoeFP/Cl7P2coj3Yg942u0UYh87FfzHdRvRNyCnNviwUBeFnzEgxlHWjgUdrWV4Gy
-         HTfMP4Eb83ZYQrZCQlkZT7ADfKptlrMHY67hESpjV50+4V2CQcNuAk4x2VZ+2z4kSCVi
-         1ucg==
+        bh=lZdonMx397+2pSb+glDTuU5D6tQtRdHssQDj6gK5t2I=;
+        b=NB+shMKCQ+6yvBaUru6SN2XxIBzlxf55phBTD9ETNe5HI0Ych40GsH8Qe0EcVu4WPV
+         ygJxynuON0Dd8dccF7ux5tWzT7LjrpGFz77MfeetVVZDhru/TdhxspLJHl7ndjiE4lPy
+         gNg+2JhZFU7DMlxGuTYjP5RWO2t6U13VTlHCvKvDsGHr64ZX2Wszw7PaN0bMmihoAWE2
+         VeUtDzyHUIJlAUnNlb5JxuP6qSK3F5kENTEx0kI6Cf/2zdzR+HNALpaTzGxfMxsmurto
+         Y+banMkZdnonVn73DHT8ac4NclyvJTUn+x/fZAR7yNQCf+RTC7+18SCDyipWIrey6u1B
+         MHow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712295320; x=1712900120;
+        d=1e100.net; s=20230601; t=1712295322; x=1712900122;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JztYBciZAboPFg0UR8cifQAY1ELGwu5QR/HCIVJgmmg=;
-        b=Fpoowfav/+BwiLpX3Cm/OZ+dI8sLrodwJbt9/NSlziA+NmEHeJB/WZZKMIbtYFgUYA
-         cL2jBUpCsU5GEgHVMjwPGNAiQIg14D6Iy6pXEx5V5ciLZn2EBEIG8f350gvwFwfaZp15
-         N/07UXEBfFxPidppWK4VYM5KTN9QMYusEmHMDVpzViipJ4LbkwN4PS9jh+UVvdPdBdfV
-         r4g+NdzA6Cu0kZHV3ZrsU9943C9mx/XAE4lRMiPX2gIWWXEFiVKyjj6VVOH4U0BMUgI9
-         DS2fu/wDgDodBY+ztAMSguTNaDFRNsYwVgI/LTyRmyeBSTJU7pSmRmcAOJ11ThRh/Vd3
-         lgwg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+Xbj5kfaAjQQY2X46f/MeIcV8XN9Nw3Q8LgTgln+Q+YxgOv8YtPtlYElQ3OOv7BDFbTkjRH9fXUqwlWXsvtKQ92gAj83IRvVMH158
-X-Gm-Message-State: AOJu0YxBjlSaEn79d8wTsmCQP6uccACPJxOemQbCA2K2AhRJ/QlJVXRE
-	T6pmQlKbyaL3Q3/GSP1BBzDdyA4JW/4TiP/Ti2HbTVi2qmAzlPF71Td2avPW0Oa28CccHEJTlRD
-	caJWbnirPHi5e3h3tyA==
-X-Google-Smtp-Source: AGHT+IHCdA/5X8U1gt0bJVEbJvMDtws+40Zw9BGN0s2+vFjCACLLPLTtlCpMI+FJ2Yy+eJlQHuE46wlM5C0M0oGx
+        bh=lZdonMx397+2pSb+glDTuU5D6tQtRdHssQDj6gK5t2I=;
+        b=BdxoHNQljNFkNXhtR0Yn6u8oM4tcOqC/+y2ylaNTefkWS1RjMUwIXhJpm8N2GEEfaq
+         j7+Tx7A/I1WtBl88N29F+2ADCJ0zFvCT4QL0dsX8cs+xtQomn77CP8M6+3oLlqhBbQ7m
+         RjBXLyQgIiIi5kyqL6CyvEZSsjDuMh+oPzGsojp4Nm2nTOvpQw0Dn0gwPCOfg/EpchWm
+         4chszmOdwvvC4Uam9uj9HvzoIQGv90tGiwXUfnDWFxub+4gLeaJjnuQCugOHt5vzTfPS
+         E4pheX+YfrIKhMBsamaMbz6jhVxRfgbiBsuVLXLWO5borTyYejSBUlfLjfyMbjv2PIup
+         zx9w==
+X-Forwarded-Encrypted: i=1; AJvYcCUn9L54l6dy97iHPCfs3F339N2NYGDgm0yXciwGYnkCVeuJnQEJ3GOA7oVXZMoi4SVwr6nbcCZhdaK++HVytg8GvVGcU//r74m9ldOE
+X-Gm-Message-State: AOJu0YzL6Ikhli3sEjkHNIVa1zHUJEa4YrGunpZeI2xwPoRUVWq7bed3
+	XX+UO7Z8llSha0tWV8RGCh389jRVR/5x58z7o4/pG6j/DwGJWnylH4xQ2mlwEO/Eu6jXprXWSGQ
+	BdUx9MCydirpKSqzVlg==
+X-Google-Smtp-Source: AGHT+IETG5LR7hNPprfABruUGpnm2Pwpk94U38LlqopJDrjx8AYajOaTbPkYn8vPcJdFb7ROfhozscrxJuJ96B7L
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a25:f30f:0:b0:dc6:cafd:dce5 with SMTP
- id c15-20020a25f30f000000b00dc6cafddce5mr105083ybs.12.1712295320201; Thu, 04
- Apr 2024 22:35:20 -0700 (PDT)
-Date: Fri,  5 Apr 2024 05:35:09 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a05:6902:1882:b0:dc6:fec4:1c26 with
+ SMTP id cj2-20020a056902188200b00dc6fec41c26mr100165ybb.1.1712295322064; Thu,
+ 04 Apr 2024 22:35:22 -0700 (PDT)
+Date: Fri,  5 Apr 2024 05:35:10 +0000
 In-Reply-To: <20240405053510.1948982-1-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -73,9 +73,8 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240405053510.1948982-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240405053510.1948982-5-yosryahmed@google.com>
-Subject: [PATCH v2 4/5] mm: zswap: move more same-filled pages checks outside
- of zswap_store()
+Message-ID: <20240405053510.1948982-6-yosryahmed@google.com>
+Subject: [PATCH v2 5/5] mm: zswap: remove same_filled module params
 From: Yosry Ahmed <yosryahmed@google.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
@@ -83,110 +82,75 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
 	Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Currently, zswap_store() checks zswap_same_filled_pages_enabled, kmaps
-the folio, then calls zswap_is_page_same_filled() to check the folio
-contents. Move this logic into zswap_is_page_same_filled() as well (and
-rename it to use 'folio' while we are at it).
+These knobs offer more fine-grained control to userspace than needed and
+directly expose/influence kernel implementation; remove them.
 
-This makes zswap_store() cleaner, and makes following changes to that
-logic contained within the helper. While we are at it, rename the
-insert_entry label to store_entry to match xa_store().
+For disabling same_filled handling, there is no logical reason to refuse
+storing same-filled pages more efficiently and opt for compression.
+Scanning pages for patterns may be an argument, but the page contents
+will be read into the CPU cache anyway during compression. Also,
+removing the same_filled handling code does not move the needle
+significantly in terms of performance anyway [1].
 
-No functional change intended.
+For disabling non_same_filled handling, it was added when the compressed
+pages in zswap were not being properly charged to memcgs, as workloads
+could escape the accounting with compression [2]. This is no longer the
+case after commit f4840ccfca25 ("zswap: memcg accounting"), and using
+zswap without compression does not make much sense.
+
+[1]https://lore.kernel.org/lkml/CAJD7tkaySFP2hBQw4pnZHJJwe3bMdjJ1t9VC2VJd=khn1_TXvA@mail.gmail.com/
+[2]https://lore.kernel.org/lkml/19d5cdee-2868-41bd-83d5-6da75d72e940@maciej.szmigiero.name/
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
-Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- mm/zswap.c | 39 +++++++++++++++++++--------------------
- 1 file changed, 19 insertions(+), 20 deletions(-)
+ mm/zswap.c | 19 -------------------
+ 1 file changed, 19 deletions(-)
 
 diff --git a/mm/zswap.c b/mm/zswap.c
-index ab3cd43cdfc9d..13869d18c13bd 100644
+index 13869d18c13bd..b738435215218 100644
 --- a/mm/zswap.c
 +++ b/mm/zswap.c
-@@ -1414,26 +1414,32 @@ static void shrink_worker(struct work_struct *w)
- 	} while (zswap_total_pages() > READ_ONCE(zswap_accept_thr_pages));
- }
+@@ -140,19 +140,6 @@ static const struct kernel_param_ops zswap_accept_thr_param_ops = {
+ module_param_cb(accept_threshold_percent, &zswap_accept_thr_param_ops,
+ 		&zswap_accept_thr_percent, 0644);
  
--static int zswap_is_page_same_filled(void *ptr, unsigned long *value)
-+static bool zswap_is_folio_same_filled(struct folio *folio, unsigned long *value)
- {
- 	unsigned long *page;
- 	unsigned long val;
+-/*
+- * Enable/disable handling same-value filled pages (enabled by default).
+- * If disabled every page is considered non-same-value filled.
+- */
+-static bool zswap_same_filled_pages_enabled = true;
+-module_param_named(same_filled_pages_enabled, zswap_same_filled_pages_enabled,
+-		   bool, 0644);
+-
+-/* Enable/disable handling non-same-value filled pages (enabled by default) */
+-static bool zswap_non_same_filled_pages_enabled = true;
+-module_param_named(non_same_filled_pages_enabled, zswap_non_same_filled_pages_enabled,
+-		   bool, 0644);
+-
+ /* Number of zpools in zswap_pool (empirically determined for scalability) */
+ #define ZSWAP_NR_ZPOOLS 32
+ 
+@@ -1421,9 +1408,6 @@ static bool zswap_is_folio_same_filled(struct folio *folio, unsigned long *value
  	unsigned int pos, last_pos = PAGE_SIZE / sizeof(*page) - 1;
-+	bool ret = false;
+ 	bool ret = false;
  
--	page = (unsigned long *)ptr;
-+	if (!zswap_same_filled_pages_enabled)
-+		return false;
-+
-+	page = kmap_local_folio(folio, 0);
+-	if (!zswap_same_filled_pages_enabled)
+-		return false;
+-
+ 	page = kmap_local_folio(folio, 0);
  	val = page[0];
  
- 	if (val != page[last_pos])
--		return 0;
-+		goto out;
- 
- 	for (pos = 1; pos < last_pos; pos++) {
- 		if (val != page[pos])
--			return 0;
-+			goto out;
+@@ -1512,9 +1496,6 @@ bool zswap_store(struct folio *folio)
+ 		goto store_entry;
  	}
  
- 	*value = val;
+-	if (!zswap_non_same_filled_pages_enabled)
+-		goto freepage;
 -
--	return 1;
-+	ret = true;
-+out:
-+	kunmap_local(page);
-+	return ret;
- }
- 
- static void zswap_fill_page(void *ptr, unsigned long value)
-@@ -1466,6 +1472,7 @@ bool zswap_store(struct folio *folio)
- 	struct zswap_entry *entry, *old;
- 	struct obj_cgroup *objcg = NULL;
- 	struct mem_cgroup *memcg = NULL;
-+	unsigned long value;
- 
- 	VM_WARN_ON_ONCE(!folio_test_locked(folio));
- 	VM_WARN_ON_ONCE(!folio_test_swapcache(folio));
-@@ -1498,19 +1505,11 @@ bool zswap_store(struct folio *folio)
- 		goto reject;
- 	}
- 
--	if (zswap_same_filled_pages_enabled) {
--		unsigned long value;
--		u8 *src;
--
--		src = kmap_local_folio(folio, 0);
--		if (zswap_is_page_same_filled(src, &value)) {
--			kunmap_local(src);
--			entry->length = 0;
--			entry->value = value;
--			atomic_inc(&zswap_same_filled_pages);
--			goto insert_entry;
--		}
--		kunmap_local(src);
-+	if (zswap_is_folio_same_filled(folio, &value)) {
-+		entry->length = 0;
-+		entry->value = value;
-+		atomic_inc(&zswap_same_filled_pages);
-+		goto store_entry;
- 	}
- 
- 	if (!zswap_non_same_filled_pages_enabled)
-@@ -1533,7 +1532,7 @@ bool zswap_store(struct folio *folio)
- 	if (!zswap_compress(folio, entry))
- 		goto put_pool;
- 
--insert_entry:
-+store_entry:
- 	entry->swpentry = swp;
- 	entry->objcg = objcg;
- 
+ 	/* if entry is successfully added, it keeps the reference */
+ 	entry->pool = zswap_pool_current_get();
+ 	if (!entry->pool)
 -- 
 2.44.0.478.gd926399ef9-goog
 
