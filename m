@@ -1,292 +1,178 @@
-Return-Path: <linux-kernel+bounces-133169-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133170-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 085FF899FE0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:36:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43EEA899FE4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:36:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 614CFB2141D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:36:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED4F92849AF
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC8216F27E;
-	Fri,  5 Apr 2024 14:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 139BB16F27E;
+	Fri,  5 Apr 2024 14:36:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="V+huNApY"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b="hgf+kY5K"
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02on2117.outbound.protection.outlook.com [40.107.249.117])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6505F16C85B
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:35:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712327758; cv=none; b=i5JMxQgf/2Cdmd3EkCbOCH9G+CE2F6Z/k+IbYR13dQ/jbF81M8ccxMzdc07J9emwfCWqjOGv3nFoOPd9g49qJIHovlvlf5olOwWGIhdx47/KfwbcH6vlXtQ/SXHt+JeEtpMljmSttvjicfsCICNk4yOtFhjEw3J3yrKKfAdfCaU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712327758; c=relaxed/simple;
-	bh=/Q6/Db3ZiTTuakq2h3fU0MPS7/hvz1fWZrCOtEBhxts=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Zv2h4wYFhRuzpqnu2R5b8qgi9mG1uwXkbcoVZ+4Pv6X9hpk8FAZFteEnxzhZ+ud30XGnpCVlqxTXjoe9qBBzUCPnyg7NeGUZU4hLj0hQ1QQyOONgO3OuXPdiDRYEdp3UB3IlLP+p5h0+nEOEm1qBgvHKfhXGw0CW/gEeESQC9x4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=V+huNApY; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712327755;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7TcNgQvg4OdCvuf7bqaBP0tV40sfjrpulm0TeJndVxI=;
-	b=V+huNApYYVvrEEywi4BNP762QJ9E0yOT2rjsFn7HM4BtMu5u9vWKtPmZkCiGbpotDxHP6T
-	chaORG5VKZBKRJ5WRbEIRC3RB2TQQSUw6xSwB/AGIXWhfM8K0HrlwCFBBgvVoF7TaBYZOs
-	tjjGqD/9WP7mzD/5y+FxfKLPN4tciFo=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-679-VX5mfxgAM56dtTpPeI1z1A-1; Fri, 05 Apr 2024 10:35:54 -0400
-X-MC-Unique: VX5mfxgAM56dtTpPeI1z1A-1
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-a51a6691238so52234966b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:35:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712327752; x=1712932552;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7TcNgQvg4OdCvuf7bqaBP0tV40sfjrpulm0TeJndVxI=;
-        b=lHNdBZkHCSJoFG1kZujEL2VFJ9UAL2OfGQtRqKeuAFbLAZMCFoe3K71vx+S9JONHai
-         csI7YOfH8h98nXvD2XwYw8yYQBO++ts1za3yd9bFyxpB45oyXoCd2RbjJ93BiFanbuUk
-         RO+DVXg7qAP2inHRi0E5OjSr8Pe0ntNjtNigRgZlFmeX64qGuLPpPkEmWiG0l9LxXQBn
-         KTpP2PN13MQ30/5Df8gy6XRGvVP5u+AusjDce4jYGgkIlV8jU9Oe/DN5FNCT2Ypqebu1
-         /EZeydqXaCxNnXMttZJIAhA36rbHsz5okQl7RccwcerD+LC+fObVyCrY1TRYED/WAMvR
-         oIdg==
-X-Forwarded-Encrypted: i=1; AJvYcCVqmE2nRpTrOwiDmb+hJUi7Y/6qC5fNiTgVRR4IZ5eJmylo/bnt02O34bmLcrD6wdntpKumovCHWV/JflGoxugdLbryJ/EFpouIteUJ
-X-Gm-Message-State: AOJu0YzYKMRlrVQctJfgCtuwqnqe/cjPBj3aoOvROugkX+MLHknwBT5n
-	8Gk6XbO7FSKbzG3/zswHDZAXgr6GKdMDVNTGB/ZUZ1v6XQ9LUPAkoRCgI5CMtuK1ktC1gcObicC
-	dulblKOVv6lFU/6MJgbjV6a+F8Axgyf9LzseF28hO6iaVDfHebL4WDhB0IxmEDgKwHhvbPnj1
-X-Received: by 2002:a17:906:e20d:b0:a47:527a:dad0 with SMTP id gf13-20020a170906e20d00b00a47527adad0mr1156885ejb.56.1712327752139;
-        Fri, 05 Apr 2024 07:35:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG9WPmRqfNejdXevZ9XmoKgst6E8PHJfmXUScux7HhZkO2DbiQy+VDtLkME0haK5ReiQUSIDQ==
-X-Received: by 2002:a17:906:e20d:b0:a47:527a:dad0 with SMTP id gf13-20020a170906e20d00b00a47527adad0mr1156869ejb.56.1712327751721;
-        Fri, 05 Apr 2024 07:35:51 -0700 (PDT)
-Received: from [192.168.0.182] (host-87-2-128-150.retail.telecomitalia.it. [87.2.128.150])
-        by smtp.gmail.com with ESMTPSA id h22-20020a1709067cd600b00a4739efd7cesm899902ejp.60.2024.04.05.07.35.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 07:35:51 -0700 (PDT)
-Message-ID: <b5e0dbb8-3aab-4316-85bb-6b7ac3134e07@redhat.com>
-Date: Fri, 5 Apr 2024 16:35:49 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F43816F0FB;
+	Fri,  5 Apr 2024 14:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.249.117
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712327779; cv=fail; b=DeH+NsXOCgFJFaQBfLExEdGStcLDHgQeDdrQPTowIq5UfDhIfCnc77MjhuHKPAnwUW0dNVxns9MszV5vg1wLT1u+91tQUbMFGwuqlSb9G34VwVoay2SORFtmp7Ev21nkORnC57atebTsXgxVAbHY6jhizKpU8DDXknfy+U/hJKY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712327779; c=relaxed/simple;
+	bh=VH30VPdScY4WI97/9vYaTL4da/L8PjX3LQY/VXOKY4A=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Ps7bxTW+fhWgpE53+CMuOzrqxJE0hNDx4IKnWkjnmRtsHg1A8KME7lFbpdQuIxvzz5xF8bhdBN5TqlS/hdynJLFsNYyGaOcpqpzr7OyiAZ3PiK03Esv+Lbbvum/Lpzhtu9/865rWz0DvpXYKcsjAiqsaS9IbcdvS52a1TkSyW6M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com; spf=pass smtp.mailfrom=solid-run.com; dkim=pass (1024-bit key) header.d=solidrn.onmicrosoft.com header.i=@solidrn.onmicrosoft.com header.b=hgf+kY5K; arc=fail smtp.client-ip=40.107.249.117
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=solid-run.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=solid-run.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RAuVigMkvqnlcr/YOLKpQjiViFO1FoYgSHmJLzMOjhRBE0lNHddgxRIg5VzRtDYXdfdg1fxzVsUxVQBoICMeQdJKu/n8jmmPYFfG9Yy+Uc9W64qJCY3fecwKqUUgB+lIF3kL233PpmDvQF4EdsdQqK7YIXOVGsPFwrspySN/bhtcHnTJMY6AEw9eyWhZocZr/yH7qN8CZYO4uBeJ5FqMiIoHvxNVJjahSaxHQs5hH9UPNUP4FNX5ZLWKxlv6XFtVOKtPYIqz6fRlKl63roSIatvHW3JL3tqkn1ztU+9+x3plbbA+Bt6h+v0p67TbxkYn8s2bCeQMfpDaGbjzs7V17g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VH30VPdScY4WI97/9vYaTL4da/L8PjX3LQY/VXOKY4A=;
+ b=hZPi85/3lV72PL35lrE9I6vSfD/iGv2qR3tx4YD5kmaxr3bedMu83spGRoJKS3m5uJLbBRUowhlXphgOzBiHRKilBV6aMdZMDqpo2XXYCGXJxXAGAZ1RFQZy5jr9vG3yYsvBJA8rbIr5kqHFMON9keXmC4oTAxxkwtR0qyufFyLSVWA9KmjxPnXliAruU0eCBl8NRAwQ5qzgl5h+NZrJU3YumVEeUvBM/hhWjLouMFP89WFODIztKnR2Lqil9+pe+gF3bk09kjJL06YzVC6wRKKTUsevi37YOZd+aj0gk2fW0KBnqZ1eJ5bgc1vAc3+QEh4arMlQ7JZ2BclscEz2JA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=solid-run.com; dmarc=pass action=none
+ header.from=solid-run.com; dkim=pass header.d=solid-run.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=solidrn.onmicrosoft.com; s=selector1-solidrn-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VH30VPdScY4WI97/9vYaTL4da/L8PjX3LQY/VXOKY4A=;
+ b=hgf+kY5KbW01hfNbct79nWPt6J9m5KWfxOG7Rdo3e2L/EMWBrsehpK5z2guVUW+W9Trd2u9QmpFDS4gsz6otlMDCOSNDjKDYpF9d6BGvot/fvamJQwGGcNUFyM9ilQIqdC+qTbTy+Y8GXzOD7GA8Az9GWUiXW6yds/y6fY9QAoM=
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com (2603:10a6:20b:2d5::17)
+ by VI1PR04MB7053.eurprd04.prod.outlook.com (2603:10a6:800:12f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.53; Fri, 5 Apr
+ 2024 14:36:13 +0000
+Received: from AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::57e1:e1cb:74e2:2e9d]) by AM9PR04MB7586.eurprd04.prod.outlook.com
+ ([fe80::57e1:e1cb:74e2:2e9d%5]) with mapi id 15.20.7409.042; Fri, 5 Apr 2024
+ 14:36:12 +0000
+From: Josua Mayer <josua@solid-run.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Andrew Lunn
+	<andrew@lunn.ch>, Gregory Clement <gregory.clement@bootlin.com>, Sebastian
+ Hesselbarth <sebastian.hesselbarth@gmail.com>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Rob
+ Herring <robh@kernel.org>
+CC: Yazan Shhady <yazan.shhady@solid-run.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] arm64: dts: add description for solidrun cn9130
+ som and clearfog boards
+Thread-Topic: [PATCH v2 3/3] arm64: dts: add description for solidrun cn9130
+ som and clearfog boards
+Thread-Index: AQHahqWtYMf1T+c6hE2W7MNOxL0MWrFZQeyAgAB9/gA=
+Date: Fri, 5 Apr 2024 14:36:12 +0000
+Message-ID: <7a3c1222-adb2-4daf-a31d-1858eb83ac2c@solid-run.com>
+References: <20240404-cn9130-som-v2-0-3af2229c7d2d@solid-run.com>
+ <20240404-cn9130-som-v2-3-3af2229c7d2d@solid-run.com>
+ <84bf0db5-856a-401b-8225-fd62f381beb6@linaro.org>
+In-Reply-To: <84bf0db5-856a-401b-8225-fd62f381beb6@linaro.org>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: AM9PR04MB7586:EE_|VI1PR04MB7053:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Bh0Ao4bxGZ78BS0wGiOABn1SO2u/g4LIUOfp/weLmW6TA74wSncXRLA111FT7jLG0tr9YBl8NqYL2OTLu08AsFV4n20IJO8TNd3mudsrjsWxEW52ZqAs4Em1EPOyQFk9OKF+NGy27OtcJ6q5Ma7N5VXxtf07dRcIXgJr6qcf8xjGVjTrhTbkAAJkDdoPsR7jcSQuE0xMLyMNp7GvPxZ9alWY/MXg0u/TztPSTzWoK1EeOkU+E3dFrlz/u0ELLTTImx6CSo78FeGrNlrHlG09VUhIOl+mV4OhffDraIJPm7qm58I4SkgHDGmg+ZE2xWhgXR1+VZhUCcXHCAmkfpy7HSmLP/c9Qb5N6hQ4Mxxcv/ewv7lfgghdfdCgO+7U4WqM2wQ5NX+/uvcyJN4xk2CgwBoHPvJssRLvmHX8nW8RjSmWc0RxfzWaHKhZt4cOh9ABpPaw1Iz5kt6TtV9Umcmz+x4gV5d39nodlIqHQ/6WwVCEfrlRkFzQTiOg4kx/ZJvs1dugRKODjoRYwA9dXhGoaXph5z8xl0l1Wr+W/vjITPKNKjy5aq5k5VLpMM7mWt3Tn/MJ6DEVvBCZPCSehODHFGfZ3jsQqisvFIJIcyP6SiHNS8aJqLDvKZ8+YtlYR30d86EQvcT98NGG9DvEIph8W8bFqDKHxFaA4bYRtSvDcwg=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR04MB7586.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?dXBFYzk0ZnJsL3FXbzdjd3kyZGUyc1BDZm9POWY0elpVR211Q25xUEhZMG9a?=
+ =?utf-8?B?SnlDUStXa2h5dUIxeWVMbDFsRUc4SDZNcVR4M2Joakh4OHQ4Q28wUytTZy9I?=
+ =?utf-8?B?RzZrMGlxKzZQazVnUW9WOHQxSEorcUtYODBRRHovSDUvVWFmRkJ6Vk1vR0Ir?=
+ =?utf-8?B?NHNYUTYvT2pkQmVFSUFYYzlPQTc1a2FXRG00QTlVRlk3U0RobFhDQmg1Z3NO?=
+ =?utf-8?B?YzRudDZRZlBNQjZSbVA5NzVjaDZKeGpnZTczUVNCV3pkT01DV01yY1ZVemhP?=
+ =?utf-8?B?T0F4MExqUkduSE5ndmhQUjJNc2RIaDRUdUtaVXpCUDVqRFJldE9HWVpDSU1i?=
+ =?utf-8?B?TU1oTCs1ZHIyTFB0aXFyTUl5alpraTNZSFpoWG9GYmJNTEVBMTY0RGhKRU81?=
+ =?utf-8?B?SGlUSTFZQ1NVUWlYTXVCeXRwaGdlOUgva3Q4Uzh2RDlpWGtrT3dFd1UxbFJh?=
+ =?utf-8?B?dUwrVTlZaTkvMGRoaWVwb01JV2h4eEJVS3REZC9OZGdwdklVVFAzcldlSjU2?=
+ =?utf-8?B?YS8zbFE1a1haTzV5aUtTaVk1K3g5NG9nbDUxRjllV1pIOHpnb1RlV2d5dWxC?=
+ =?utf-8?B?MkFNbXp6WWtMUWczYTM2QUVuZkdNTHhrU3E5eWFHVU1QQ01KVStaam1BRkx1?=
+ =?utf-8?B?dDlDK3J3Y3YrL0s1Sk1pVGxBWjk4ZTMvTFVQU2puQVZlQWIwQ3NsdjQwZHo1?=
+ =?utf-8?B?eFhpWElmNlRDR015WlRhMzgySFltOEdOZUdGa0JPUEl6Y2M0bEtrYU5EZ0t4?=
+ =?utf-8?B?OHM4Ui81ZXVaMU5odTZnSHh0NjZvdHAyT2J5Qkt5MWRENmlsVjZLWk91WUgz?=
+ =?utf-8?B?Nmo3N3RQQy9vZ1RIZk1zN2VPL1BUUW5rQ2NxbXVKOExJd0d3dnZTUW5Yc01h?=
+ =?utf-8?B?QkM3VW9LUnRvV2liNUJWV0tabFRKWTlwaTAvN3E2VWt4L3RpazJyVG00OWs2?=
+ =?utf-8?B?TXRaTEozWkpNL2oyUnI4UjdYbnA3VXlmOWJnZk1PbzdnUkllNCtkVGJOK1li?=
+ =?utf-8?B?K2pLcTdnR2dsdjhqUGhMTU5FdEtVZlIyenZ6bGFzQ0IrMk5HVThLcWp2Wkdi?=
+ =?utf-8?B?eWhxSjFJbGZjVDlxUU5WV0FwbFAybk51L0h5TWN3Rk5paUsxLzZMT1U2YitH?=
+ =?utf-8?B?dTErcFRlNVVBaXNmY0EzNTdNWkYzU2psSkV0RklwWUVZUmRBNytVSkhaeWw1?=
+ =?utf-8?B?LzkzWVdXaTlkRTVvT2pZd2tEeGlGOCtDakpCM0pZMzM2REQyWFM1bjQ4cXJS?=
+ =?utf-8?B?cGV0ckFyUnJ3OFZEbE9MbGV4T3BXb2toR0RlcXVvYTFiK0RzdE1JUldhbEgx?=
+ =?utf-8?B?T3pzeVkrcHVlNWlmREprK2pROGhRdmVMNWl2RHNQSERyc21IQmVwVmhNQVhW?=
+ =?utf-8?B?Wm00a1BzWDhobVlSVVRjQ0VyOEJYTnRQN2tBcnZWbEZzNUwrMEdiZTJnak9m?=
+ =?utf-8?B?MUJudCt1VXVHVlVVYUpiVWRSNVRNL3VTZzJ6Q0Y5VkJNVStRaW1heXZFKzNp?=
+ =?utf-8?B?SXppTXVwZlVUQzJEQWNGMURNWld0T2czQXFXNGFNQnlOQlltZzQ0UHBQUWUy?=
+ =?utf-8?B?Y1owTTBVY010UDl4NU13VFlXTDljNFNTdlp5UmQ5OWFucHV4bUFIY3NyMUZ4?=
+ =?utf-8?B?R0lKVmVLajFCY3dCa3dEODZlbUcwa01kZlNuT1p6WWNYSjFlWHJMdzlQLy95?=
+ =?utf-8?B?MDU0UTVSamVOaVhOZjZjem55RVRHMHZENzlVNU5XT2hDZlI5T0QyS0EwOVMv?=
+ =?utf-8?B?TXJ1OFIrSDNsZ3M0cHh5VUVWb1V5L0Q4TmtJWE5QT1Nvb1hXTlovWnd0Tm1R?=
+ =?utf-8?B?NjZ3TnhmYnFnODJkOGN6UUdpam8yUytZcWZxNFZpNHl3L2pEdTl1a1N0VXBO?=
+ =?utf-8?B?VUR3T0s0bU41RXBpR05sMjRtRXVHSmd1TlExSnlxWVl0MjczZmV0S0NDeU9h?=
+ =?utf-8?B?dVFlbWNnY3ZRczhVWG8xMGxjd2ltWUFOYno3SXFjblVZY0EwSWV1UWdjenZU?=
+ =?utf-8?B?U05KanEvN3lRL1NoV0Z5UklUd0srcUZJTWx4V0gyVm9xTkpmM0JLbHNWcWZv?=
+ =?utf-8?B?Y25wMVpCSUpuNThVcDBrNXNzai95OENtRmgvcTNqbDEzS2JkaDRqMWZkaXp0?=
+ =?utf-8?Q?JD50=3D?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9BB2F8A620BC5B43A868FBA810D07D60@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 6/7] sched/deadline: Deferrable dl server
-To: Joel Fernandes <joel@joelfernandes.org>,
- Daniel Bristot de Oliveira <bristot@kernel.org>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- linux-kernel@vger.kernel.org, Luca Abeni <luca.abeni@santannapisa.it>,
- Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
- Thomas Gleixner <tglx@linutronix.de>,
- Vineeth Pillai <vineeth@bitbyteword.org>,
- Shuah Khan <skhan@linuxfoundation.org>, Phil Auld <pauld@redhat.com>,
- David Vernet <void@manifault.com>
-References: <cover.1699095159.git.bristot@kernel.org>
- <c7b706d30d6316c52853ca056db5beb82ba72863.1699095159.git.bristot@kernel.org>
- <1e26ce6d-5567-477f-847b-445160b2f18c@joelfernandes.org>
- <d7d8540e-c417-41fa-aea9-acb80541a30d@kernel.org>
- <bf4a1255-4f70-4c41-8967-81e86c6c2d7f@joelfernandes.org>
-Content-Language: en-US, pt-BR, it-IT
-From: Daniel Bristot de Oliveira <bristot@redhat.com>
-In-Reply-To: <bf4a1255-4f70-4c41-8967-81e86c6c2d7f@joelfernandes.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: solid-run.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM9PR04MB7586.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 177fa6b9-ac74-4d39-697e-08dc557dbe23
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Apr 2024 14:36:12.8576
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a4a8aaf3-fd27-4e27-add2-604707ce5b82
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 6r5ycPyLPvBkOiOdJs6A/j8tdJBiKBTW7ZnAXua0b2ya+Pzylv1BnyveIgMeZQxSiLMeiX0Pf5yRmGHPz8M+PQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7053
 
-
-
->> There will always be a person reading these emails and echoing the wrong things...
->> using 0-lax/0-laxity term here is a lose-lose.
-> 
-> Agreed, so why not update your patch changelog to correct that (or post a new
-> revision)?
-
-That v6 is the repo was a partial update, that I sent there to sync our work. The v6 that I will
-send already removed that.
-
->>> So, Vineeth and me came up with a patch below to "max cap" the DL server 0-lax
->>> time (max cap is default off keeping the regular behavior). This is needed to
->>> guarantee bandwidth for periodic CFS runners/sleepers.
->>
->> Another point... "guarantee bandwidth"... the bandwith is provided under certain conditions.
->> If the conditions are not respected, the guarantee a dl reservation will provide is that
->> the task will not put a utilization higher than the one requested, so yes, a dl reservation
->> can and will enforce a lower utilization if the task does not respect the conditions.
->> Also, if the reservation is ready, but no task is ready...
-> 
-> Please clarify what conditions you mean? The conditions I am looking for are
-> those given by RT throttling (see below). i.e., if RT takes up all of the CPU in
-> a certain amount of time, then there is a certain amount reserved for CFS.
-> 
->>> The example usecase is:
->>>
->>> Consider DL server params 25ms / 50ms.
->>>
->>> Consider CFS task with duty cycle of 25ms / 76ms (run 25ms sleep 51ms).
->>
->> define duty... like, runtime 25, period 76? sleeps for 51 relative to a starting time
->> or not?
-> 
-> There is no starting time. The CFS task in the quoted example only does run +
-> sleep. Run for 25ms and sleep for 51ms, then run again for 25ms, etc.
-> 
->>
->> there are some holes in your explanation, it is tricky to reply inline for these cases...
->> I am continuing but....
->>
->>>
->>>          run 25ms                    run 25ms
->>>          _______                     _______
->>>         |       | sleep 51          |       |  sleep 51
->>> -|------|-------|---------|---------|-------|----------|--------|------> t
->>>  0     25      50       101        126      151       202      227
->>>                           \ 0-lax /                    \ 0-lax /
-> 
-> So before going into the discussion below, I just want to mention that if the
-> DL-server cannot provide the same bandwidth that the RT throttling provided,
-> then its broken by definition.  And the breakage comes specifically because of
-> this patch and nothing else. There are many breakages with this patch and I will
-> go over some of them with unit tests below. Basically, in my view -- if a test
-> case shows it works with RT throttling, but not with the DL-server, then its
-> broken. Period. And most of those functional "breakages" come about because of
-> this patch (6/7) and not the initial series actually.
-> 
-> Here are some cases to shed some light:
-> 
-> Case 1. Consider a CFS task with runtime 15ms and period 50ms. With the
-> parameters set to 25ms runtime and 50ms period.
-> 
-> The test fails with DL server (because of 6/7), and passes with RT throttling.
-> See results below. For this test's code, see: https://shorturl.at/rwW07
-
-A reproducer always helps. So, your task there is not a periodic task... it is
-a sporadic task because it sleeps for a fixed amount of time after the runtime.
-
-A periodic task with period 76 would wake at 0, 76, 152 - like cyclictest...
-so consuming at a fixed time rate if the scheduler allows it.
-
-In the case of a fixed sleep time at the end of the execution, it will end up
-"throwing away bandwidth" if the runtime is not given at the beginning of the
-period because it will run slower... accumulating error. But that was not the
-main point here...
-
-The problem here was more like: if a fair task goes to sleep in the middle of
-the server activation (for a lock?), and then wakes up again, the code in v5 is
-forcing it to defer... again. Thus, it is getting less bandwidth... notice that
-it does not even need to be at the start of the period. It is the middle of the
-execution.
-
-Intuitively, reducing the deferred time would help there. But the best thing to do is:
-
-If the fair task waited for the defer, and the real-time tasks are still using all
-CPU time, do not defer the activation again, and keep the defer mechanism disabled
-until the real-time tasks allow the fair scheduler to run in the background. So,
-making the defer mode equivalent to the non-defer mode until the RT tasks start
-to behave again.
-
-For that, in the v6, there is a variable (dl_defer_running), once the dl_server
-is enqueued after the defer time, the variable dl_defer_running is set.
-
-If the fair task sleeps in the middle of the period, that variable do not change.
-
-If the fair task wakes up and the dl_defer_running is still set, do not defer.
-Keep running until you consume the reservation.
-
-The variable dl_defer_running is set to 0 only after the fair tasks consume
-its runtime without being in a dl_server... IOW, when the RT tasks start to
-behave.
-
-No interface change.
-
-With that in place, your reproducers are working. I have a periodic version
-of your reproducer, also improving how the task consumes the runtime,.. I
-will send it to you so you can have a look.
-
-> 
-> Specifically, it breaks because of this patch (6/7). If you revert the patch,
-> the issue goes away.
-> 
-> With the patch 6/7:
-> # ./dlserver_test
-> # Runtime of PID 85 is 0.430000 seconds
-> Bail out! Runtime of PID 85 is not within 10% of expected runtime 0.900000
-> 
-> Without the patch 6/7:
-> # ./dlserver_test
-> # Runtime of PID 87 is 0.900000 seconds
-> ok 1 PASS
-> 
-> So basically, because of defer (or whatever you want to call it ;)), it gives
-> less than 50% of the bandwidth that it gave without the defer.
-
-There was a problem with the non-defer mode as well, the dl_server_start() was
-missing a set need resched. Fixed that in v6.
-
-> Further, my impression is this patch (6/7) does not even solve all the issue it
-> intended. For example, consider that a CFS task is in the boosted phase, and now
-> an RT task wakes up. That RT task *will wait* for possibly the whole runtime
-> granted to CFS, so it might not always help. Contrasting that with RT
-> throttling, if an RT task is very well behaved (well behaved defined as not
-> running to the limit that RT throttling should kick in), and it wakes up, it
-> will run right away without any wait time, regardless of what CFS was or was not
-> doing.
-
-
-I fixed that as well.
-
-The problem happens when a DL server has a large runtime (>=~ 50%).
-Let's say 25 ms runtime, 50 ms period.
-
-At time 0, the defer timer will be set at 25 ms (50 - 25).
-
-From 0 to 25, the RT task would consume, for instance, only 2 ms... so
-it is behaving...
-
-At time 25, the defer timer fires... and as the fair task ran for 23 ms
-(25 - 2 ms taken by RT) it still has 2 ms runtime to run... so the server
-is activated... it is not correct.
-
-The change I made in v6 is:
-
-Same case...
-
-At time 25, the defer timer fires...
-	Then, the timer will re-compute the defer time:
-		If the RT tasks are behaving, forward the timer for the
-		new (deadline - runtime).
-		return;
-
-For instance, in the previous case, the new defer timer would be: 50 ms - 2 ms.
-
-CFS will continue working, consuming runtime and resetting the period to avoid
-activating the dl server.
-
-The idea of forwarding the timer was taken from the cfs period timer. It is also
-possible to forward the timer on other points... if necessary...
-
-I did more testing, with different task sets, including tasks that goes to sleep...
-it is working as expected.
-
--- Daniel
-
-
-> thanks,
-> 
->  - Joel
-> 
-
+SGkgS3J6eXN6dG9mLA0KDQpBbSAwNS4wNC4yNCB1bSAwOTowNSBzY2hyaWViIEtyenlzenRvZiBL
+b3psb3dza2k6DQo+IE9uIDA0LzA0LzIwMjQgMTc6MzUsIEpvc3VhIE1heWVyIHdyb3RlOg0KPj4g
+QWRkIGRlc2NyaXB0aW9uIGZvciB0aGUgU29saWRSdW4gQ045MTMwIFNvTSwgYW5kIENsZWFyZm9n
+IEJhc2UgLyBQcm8NCj4+IHJlZmVyZW5jZSBib2FyZHMuDQo+Pg0KPj4gVGhlIFNvTSBoYXMgYmVl
+biBkZXNpZ25lZCBhcyBhIHBpbi1jb21wYXRpYmxlIHJlcGxhY2VtZW50IGZvciB0aGUgb2xkZXIN
+Cj4+IEFybWFkYSAzODggYmFzZWQgU29NLiBUaGVyZWZvcmUgaXQgc3VwcG9ydHMgdGhlIHNhbWUg
+Ym9hcmRzIGFuZCBhDQo+PiBzaW1pbGFyIGZlYXR1cmUgc2V0Lg0KPj4NCj4+IE1vc3Qgbm90YWJs
+ZSB1cGdyYWRlczoNCj4+IC0gNHggQ29ydGV4LUE3Mg0KPj4gLSAxMEdicHMgU0ZQDQo+PiAtIEJv
+dGggZU1NQyBhbmQgU0Qgc3VwcG9ydGVkIGF0IHRoZSBzYW1lIHRpbWUNCj4+DQo+PiBUaGUgZGV2
+ZWxvcGVyIGZpcnN0IHN1cHBvcnRpbmcgdGhpcyBwcm9kdWN0IGF0IFNvbGlkUnVuIGRlY2lkZWQg
+dG8gdXNlDQo+PiBkaWZmZXJlbnQgZmlsZW5hbWVzIGZvciB0aGUgRFRCczogQXJtYWRhIDM4OCB1
+c2VzIHRoZSBmdWxsDQo+PiAiY2xlYXJmb2ciIHN0cmluZyB3aGlsZSBjbjkxMzAgdXNlcyB0aGUg
+YWJicmV2aWF0aW9uICJjZiIuDQo+PiBUaGlzIG5hbWUgaXMgYWxyZWFkeSBoYXJkLWNvZGVkIGlu
+IHByZS1pbnN0YWxsZWQgdmVuZG9yIHUtYm9vdCBhbmQgY2FuDQo+PiBub3QgYmUgY2hhbmdlZCBl
+YXNpbHkuDQo+Pg0KPj4gTk9USUNFIElOIENBU0UgQU5ZQk9EWSBXQU5UUyBUTyBTRUxGLVVQR1JB
+REU6DQo+PiBDTjkxMzAgU29NIGhhcyBhIGRpZmZlcmVudCBmb290cHJpbnQgZnJvbSBBcm1hZGEg
+Mzg4IFNvTS4NCj4+IENvbXBvbmVudHMgb24gdGhlIGNhcnJpZXIgYm9hcmQgYmVsb3cgdGhlIFNv
+TSBtYXkgY29sbGlkZSBjYXVzaW5nDQo+PiBkYW1hZ2UsIHN1Y2ggYXMgb24gQ2xlYXJmb2cgQmFz
+ZS4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBKb3N1YSBNYXllciA8am9zdWFAc29saWQtcnVuLmNv
+bT4NCj4+IC0tLQ0KPiBSZXZpZXdlZC1ieTogS3J6eXN6dG9mIEtvemxvd3NraSA8a3J6eXN6dG9m
+Lmtvemxvd3NraUBsaW5hcm8ub3JnPg0KDQpUaGFua3MhDQoNCk1lYW53aGlsZSBJIGZvdW5kIHR3
+byBpbnN0YW5jZXMgb2Ygc3RhdHVzLXByb3BlcnR5IGluIHdyb25nIHBsYWNlLA0KYW5kIGFsc28g
+c29tZSBzbWFsbCBjaGFuZ2VzIEkgcHJlZmVyIHRvIG1ha2UgZm9yIHYzDQooZGlzY292ZXJlZMKg
+IHdoaWxlIHdvcmtpbmcgb24gY245MTMxIGJvYXJkKS4NCg0KRG8geW91IHByZWZlciBpbiB0aGlz
+IGNhc2UgdG8gZHJvcCB5b3VyIHJldmlldyB0YWcsDQpvciBhbHRlcm5hdGl2ZWx5IHRvIGtlZXAg
+aXQsIGJ1dCBhZGQgc2VwYXJhdGUgcGF0Y2ggaW4gdjM/DQoNCg==
 
