@@ -1,146 +1,118 @@
-Return-Path: <linux-kernel+bounces-133267-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133268-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B344789A178
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:38:36 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCDE589A17A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:38:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E4F0C1C21A46
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:38:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D52E1F21398
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:38:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF54317107F;
-	Fri,  5 Apr 2024 15:38:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F0C16FF48;
+	Fri,  5 Apr 2024 15:38:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PgzLfTYk"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fX4f7mvk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FDED171076;
-	Fri,  5 Apr 2024 15:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BACC21DFE4;
+	Fri,  5 Apr 2024 15:38:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712331492; cv=none; b=ISDP2fIuIXV2JsDNsTqe7nPdtuL3C38C8lQops3KbbpTcerhemFozayoX4P8V+uPnDuxzRfoGWlkRw+0tG9Ud7/oTUCXw+UbYmAkG4P7bfXRkfmK1WpT2BcEeQBf90bzQdNEmz3mFwwdtxtGQTum1BVooS+1TGcvk96Wd1zBGIg=
+	t=1712331509; cv=none; b=kFkY5pHm8D/wbUrvWyrNb+IPH996GimiWjmg+beAIqUP/4f8EU33kvKoyFf6Ax3z9HI/5i8EEgFa3nmc27y5rABgVWTSWMnXR/u9Mz1Aps/PmYy8QjzeTyTKVkGBM8cpZgiQLObLdL5n3zcZ0n+YjJRK4c+0KPzqOtf3axkEec0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712331492; c=relaxed/simple;
-	bh=yEYVeHEInPzW3a9z6mWy7L2Kno4mtCimXz7h7++XBBc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VwYiqoVRnRCAgIiNNA+wWvjX0azLSxPxv3Z/lR0gbBrIRSH++AmrBYOzRAl2gjkqoUJHv00aJxiwrlYhWV9CiD0dx7siEU67DaMpgC871TW+5zYtI3voaH9xF7xGRPUvovioZ6fpW2Zusy8e2DajAT2f0kOkGsqt/TcH7lWa5vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PgzLfTYk; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712331490; x=1743867490;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=yEYVeHEInPzW3a9z6mWy7L2Kno4mtCimXz7h7++XBBc=;
-  b=PgzLfTYkw5kG2DbUkiNBAMMyYGPQx+x2FAd/zyGHwBbDYaGVb/CpuNUn
-   WtRn2WAZtUojcMp4Fsp4zTMaYGZO3VznqX4mFxizEHLEvA3PnWIAUN0RH
-   /WDCWCWr48jdt7UbMc5RvNHhyIXqdOV5QIJ8tswx7NTmBvXJ8kn22Uyom
-   LZO9elyD40U0aimobO030Fjuzh6Q1Hj05uPsSJgsr2oTGXx+V59O+LFfd
-   /m4SG8gNizfhk8moY/bf/h8sMQLOf72Ms4hXaZXP3FPgMqjmavtVQO+ZI
-   s9pNNedJU/Y30+m8y4AtDFVHcqaduZSYf7RyhGayDzafM1H1CJymV71tF
-   A==;
-X-CSE-ConnectionGUID: dEkJQMzfSOa6SIbleYfT6g==
-X-CSE-MsgGUID: 9++S5BVFSja9DNx6xxh8Uw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="7565738"
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="7565738"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:38:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="915257297"
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="915257297"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:38:07 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rsldk-00000001muZ-3UUC;
-	Fri, 05 Apr 2024 18:38:04 +0300
-Date: Fri, 5 Apr 2024 18:38:04 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Peng Fan <peng.fan@nxp.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-	"brgl@bgdev.pl" <brgl@bgdev.pl>,
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"cristian.marussi@arm.com" <cristian.marussi@arm.com>,
-	"sudeep.holla@arm.com" <sudeep.holla@arm.com>
-Subject: Re: [PATCH] pinctrl: pinconf-generic: check error value EOPNOTSUPP
-Message-ID: <ZhAa3NPO19mINYJP@smile.fi.intel.com>
-References: <20240401141031.3106216-1-peng.fan@oss.nxp.com>
- <CACRpkdZAuNXGyg2wwYcQG4oO9w7jPS6vj4Vt0=kqX5fJ+QpNmw@mail.gmail.com>
- <Zg7dwcFz5eD7Am2u@smile.fi.intel.com>
- <DU0PR04MB941777DA29D70013342721A788032@DU0PR04MB9417.eurprd04.prod.outlook.com>
+	s=arc-20240116; t=1712331509; c=relaxed/simple;
+	bh=SLR/RVRSymKoE8wF+rB14kjDMnu4WghtYjbSERDK7kg=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GNUhnZPsZENDWem3dkAftHUK+qcChLE99W4W2u97F8oMbCVf1skXJ5KiflwprwoWlbVIEvIwd6s87DyoqlSRFeFaSKozQgbvemW/rJ8Ax7OZmvYVQHhljAmsRzIYfyhlDxsHQQvtnh0OBU4DIfaIRFnumeTc+ANaK5zooVK2I+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fX4f7mvk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7BD3CC433F1;
+	Fri,  5 Apr 2024 15:38:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712331509;
+	bh=SLR/RVRSymKoE8wF+rB14kjDMnu4WghtYjbSERDK7kg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=fX4f7mvkILOTifgU94c7k7RInvoSeEfBhfb3dTGvIQH773WAHwc68TazUGQBVCaV3
+	 X4019oi99/HUzjvdxnpgiXDkYtJj84lJgEiDl+eEh9eZQWPlgp1CI0u4TR4XhFcwkV
+	 Eoo9QveOFSkplinw+nIOS+CVVcOu7zVdA7kyT7F0TGV8AKtWrj7AICqkyVvmjNdCKI
+	 JkOK1g5NqCyK3rwAPLGC6CZHT6hwU0Mf59t/c45oTDhgwtbcQ5JQEYbAdCbmEgs3As
+	 L5AmSAU+duyTnN/z+huGHv/7f7+csyiCf7loGfbLwfaua3UuDp9kzaQh2OQdAsa4pz
+	 DXTNqPR1LRhmQ==
+Date: Fri, 5 Apr 2024 08:38:27 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: Edward Cree <ecree.xilinx@gmail.com>, David Ahern <dsahern@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Christoph Hellwig
+ <hch@infradead.org>, Saeed Mahameed <saeed@kernel.org>, Arnd Bergmann
+ <arnd@arndb.de>, Leon Romanovsky <leonro@nvidia.com>, Jiri Pirko
+ <jiri@nvidia.com>, Leonid Bloch <lbloch@nvidia.com>, Itay Avraham
+ <itayavr@nvidia.com>, Saeed Mahameed <saeedm@nvidia.com>, Aron Silverton
+ <aron.silverton@oracle.com>, linux-kernel@vger.kernel.org,
+ "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Andy Gospodarek
+ <andrew.gospodarek@broadcom.com>
+Subject: Re: [PATCH V4 0/5] mlx5 ConnectX control misc driver
+Message-ID: <20240405083827.78cc1b20@kernel.org>
+In-Reply-To: <20240405111306.GB5383@nvidia.com>
+References: <e5c61607-4d66-4cd8-bf45-0aac2b3af126@kernel.org>
+	<20240322154027.5555780a@kernel.org>
+	<1cd2a70c-17b8-4421-b70b-3c0199a84a6a@kernel.org>
+	<0ea32dd4-f408-5870-77eb-f18899f1ad44@gmail.com>
+	<20240402184055.GP946323@nvidia.com>
+	<83025203-fefb-d828-724d-259e5df7c1b2@gmail.com>
+	<20240404183305.GM1723999@nvidia.com>
+	<20240404125339.14695f27@kernel.org>
+	<20240404204454.GO1723999@nvidia.com>
+	<20240404143407.64b44a88@kernel.org>
+	<20240405111306.GB5383@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DU0PR04MB941777DA29D70013342721A788032@DU0PR04MB9417.eurprd04.prod.outlook.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 05, 2024 at 02:13:28AM +0000, Peng Fan wrote:
-> > On Thu, Apr 04, 2024 at 01:44:50PM +0200, Linus Walleij wrote:
-> > > On Mon, Apr 1, 2024 at 4:02 PM Peng Fan (OSS) <peng.fan@oss.nxp.com>
-> > wrote:
+On Fri, 5 Apr 2024 08:13:06 -0300 Jason Gunthorpe wrote:
+> As I answered to Anderew, a lot is functional behavior not so much
+> "tunables". The same way many BIOS settings are not all tunables but
+> have functional impacts to the machine. Like enable SRIOV, for
+> instance.
 
-..
+Thanks, SRIOV is a great example:
+https://docs.kernel.org/next/networking/devlink/devlink-params.html#id2
+Literally the first devlink param on the list.
 
-> > > >                         ret = pin_config_get_for_pin(pctldev, pin, &config);
-> > > >                 /* These are legal errors */
-> > > > -               if (ret == -EINVAL || ret == -ENOTSUPP)
-> > > > +               if (ret == -EINVAL || ret == -ENOTSUPP || ret ==
-> > > > + -EOPNOTSUPP)
-> > >
-> > > TBH it's a bit odd to call an in-kernel API such as
-> > > pin_config_get_for_pin() and get -EOPNOTSUPP back. But it's not like I care
-> > a lot, so patch applied.
-> > 
-> > Hmm... I would like actually to get this being consistent. The documentation
-> > explicitly says that in-kernel APIs uses Linux error code and not POSIX one.
-> 
-> Would you please share me the documentation?
+"We will flash it for you" seems to be what vendors like to offer.
 
-Sure.
-https://elixir.bootlin.com/linux/latest/source/include/linux/pinctrl/pinconf.h#L24
-https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpiolib.c#L2825
-https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpiolib.c#L2845
+> Even for dataplane tunables - you know there are micro-architectural
+> performance tunables set in the special Meta NICs that are wired just
+> for Meta's special use case? Apparently that is actually perfectly
+> workable.
 
-I admit that this is not the best documented, feel free to produce a proper
-documentation.
+The only "tunables" I'm aware of were for the OCP Yosemite platform,
+which is an interesting beast with 4 hosts plugged into one NIC,
+and constrained PCIe BW. Which is why I said the "tunables" are really
+about the server platform not being off the shelf. Updating NIC FW
+to fix server compatibility is hardly unusual.
 
-> > This check opens a Pandora box.
-> > 
-> > FWIW, it just like dozen or so drivers that needs to be fixed, I prefer to have
-> > them being moved to ENOTSUPP, rather this patch.
-> 
-> I see many patches convert to use EOPNOTSUPP by checking git log.
+> It is really strange to hear you act like "Meta doesn't need
+> provisioning or tuning" when the NIC Meta uses is *highly* customized
+> specifically for Meta to the point it is an entirely different
+> product. Of course you don't need provisioning, alot of other people
+> did alot of hard work to make it that way.
 
-How is that related? You mean for GPIO/pin control drivers?
+:) When you say *highly* I think I know what you mean :)
+It'd be unprofessional for us to discuss here, and I really doubt 
+you actually want to air that laundry publicly :) :)
 
-> And checkpatch.pl reports warning for using ENOTSUPP.
+> So please don't use that as a justification to pull up the ladder so
+> nobody else can enjoy even a semi-customized device.
 
-checkpatch has false-positives, this is just one of them.
-
-> BTW: is there any issue if using EOPNOTSUPP here?
-
-Yes. we don't want to be inconsistent. Using both in one subsystem is asking
-for troubles. If you want EOPNOTSUPP, please convert *all* users and drop
-ENOTSUPP completely (series out of ~100+ patches I believe :-), which probably
-will be not welcome).
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+So in this thread I'm pulling up the ladder and in the fbnic one I'm
+not (as I hope you'd agree)? One could hopefully be forgiven for
+wondering to what extent your assessment of my intentions is colored
+by whether they align with your particular goals :(
 
