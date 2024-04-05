@@ -1,134 +1,156 @@
-Return-Path: <linux-kernel+bounces-133177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 900E5899FFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:41:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73E7289A003
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:42:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 244A2B2231D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:41:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5DC01C220AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:42:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC1116F28C;
-	Fri,  5 Apr 2024 14:41:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 851D316F82C;
+	Fri,  5 Apr 2024 14:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ceKEAO9U"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="H7brh+Ym"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93E516EBEF
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:41:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 080A016F820
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:41:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712328093; cv=none; b=Nx++qFaPdp6GCvbsWs2lC2/L5VoMnusELQ6XTW+DMcKX7rv38LxaQSavT3RXMpujOfYQr0UaobTK1LHrZk3jnefaF2E42MBqKQWWFRUBfpya9fWvem96ZwiSIPCoL3PUtFCdHVeWjb7498hLd8KEl7j9LfMMlSMOEeSKDoo24Dg=
+	t=1712328110; cv=none; b=ejDN/FDPa0vw4OcrQkJXOSiVSiQvxmNrLBxa2Dv4O5fbmwMQ5qZDVgDq4AnrefaEPEEhwYPMH9BiD3Mog4jwzDP+9DNnY0gXemyAE4V8j2Kjuh4AqtDVAnLwQE0/MZ68xjckgL81osx+p/V9SpHvw9aRGLnBBHPmLJU82Oj8LPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712328093; c=relaxed/simple;
-	bh=Btz/Hmez86EgZIrlgPrZQhuTuSmdGF/ahACcmo7T4Mg=;
-	h=Content-Type:Date:Message-Id:Cc:From:To:Subject:References:
-	 In-Reply-To; b=HDzqi1bYyTI60m2MK3IVT/LIhEy0G6K7eFQn6ckxmuQszaG2E4bic/d7gVgkNgzWMbsj5QlkL3N5n+bnVNcOVbc9Gw6NlXf1kKR7M4YZhtaVd7Gw6oHdVXqqSuiK+RxH/XlRN2zQr5TfWHhQq0w63F/8L9ozOKUvD/yduWHWvMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ceKEAO9U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0203CC433F1;
-	Fri,  5 Apr 2024 14:41:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712328093;
-	bh=Btz/Hmez86EgZIrlgPrZQhuTuSmdGF/ahACcmo7T4Mg=;
-	h=Date:Cc:From:To:Subject:References:In-Reply-To:From;
-	b=ceKEAO9UgifeYaKFh885NRTA4DS7/FeFKKR9QT7dkK3CHRKwAa217pcHGGBK1wM5B
-	 PWe4e1byFUEtobZUDsRGGIZ7eyXWhFGJuvEh3aFxafYxb/A8JrKqq5vWt49qQ1plw7
-	 l6SNs8m/5FcsN4oVBqULt8Z1F2+/v4gDk83WsOFH4Q27thtKChR5qSiCMdZvorsy4x
-	 AND6dENTJMwSssXppAlY1MIp6VKYAwYz6fX0Nbgrk2soTM9T2hDW+EzZpvZZvomjh4
-	 6EShp2Nk6PmavmEDN0f7ey5HV9Zankjufonefl/0S7JnmInABpjRIVKuwKblw97YZK
-	 7rbEPHrqJhpZQ==
-Content-Type: multipart/signed;
- boundary=acb6ba1a78e0ad4c2fe8ee2d551c5ffa69006074ac6e66ab85279d8ddadb;
- micalg=pgp-sha384; protocol="application/pgp-signature"
-Date: Fri, 05 Apr 2024 16:41:29 +0200
-Message-Id: <D0C9NCOMI27O.2VW2U3FNFTSPK@kernel.org>
-Cc: <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-From: "Michael Walle" <mwalle@kernel.org>
-To: "Flavio Suligoi" <f.suligoi@asem.it>, "Tudor Ambarus"
- <tudor.ambarus@linaro.org>, "Pratyush Yadav" <pratyush@kernel.org>, "Miquel
- Raynal" <miquel.raynal@bootlin.com>, "Richard Weinberger" <richard@nod.at>,
- "Vignesh Raghavendra" <vigneshr@ti.com>
-Subject: Re: [PATCH 1/1] mtd: spi-nor: everspin: add em004lxb entry
-X-Mailer: aerc 0.16.0
-References: <20240405100104.480779-1-f.suligoi@asem.it>
- <20240405100104.480779-2-f.suligoi@asem.it>
-In-Reply-To: <20240405100104.480779-2-f.suligoi@asem.it>
+	s=arc-20240116; t=1712328110; c=relaxed/simple;
+	bh=sxY2AEeSba+Q/Kxf5OSL1C7dhwkaGiayEInG3JEg4Go=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rQaB1fZw4GPsoRFsO32U1J6UPN9g50peHCNSE8bPxhxfphmil5U2z7XqaLQofKvVUZoepQ/mBA+Xc3ZGzpF4EgQEWzitc2g+1naO6DA+Tv5ApVzgax53rkXrPG4jyV3bRz3fk1p17nmuVH7w57dBLA+gBIuJnCVTqkTmmMNmA/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=H7brh+Ym; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso2402737a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712328107; x=1712932907; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=JTqiLc0V7BtkLzywEdmRvMeMh3GhRnDflsLTNgiO3NQ=;
+        b=H7brh+YmdpS8KDDdr3d9x/yRYHOcUO9ohLylaqjYwaI5e1R4SXXPqq4G5dF1zjkpUc
+         h2RAPpfx8PJqhNPRLt8zLWB09Y/cSU8/MZma8xMXaMgsmejmt47FDkH0VJ8feHJ2qRTI
+         emtQKIOYVpqJ8k0ACtZN74YqZglFN2MnvxTsiWr48bmX7kH14zT4W3atquMWHP/P6Kns
+         PhhKTPaLsqRI0e82Ogp4HoOrC1/BB0xFalEp7IpTECU6yspdJKYhU0RIse943kYoOM14
+         zpr/GoABjK5TqCZ7qmybH/4xmeQo8F3bQiz+I/4u/Yla3E9+TXKs7wRmai/v/KHDq9qS
+         jCNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712328107; x=1712932907;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JTqiLc0V7BtkLzywEdmRvMeMh3GhRnDflsLTNgiO3NQ=;
+        b=FGcWybs9Mam8OEfZg9t8zR2Ja+Llxi0oB0PINB33xfLOHOybq3wP6yL2kG5QV8VFwS
+         Hc7VYoOmKvUUAJbfZ3S9VX4jV9YHujiXdwdUCKkAlQIz0loQzRFBf2fVa3WQ+KG33u34
+         nyTFEtAqTrwCNajRnwp9BWZynVjCHu36lvH0fVSKxHGGwfRlUDYo0c9ZV7YJA0c9OUwD
+         HgrwF/JCYerbADfC8W0KqNyMkDr4dJOy/OgXcou+vb/NjGca9lXnjS7ArznFtZGLcLyh
+         Od1YkK4prF+owKEF+UTbPjL/XzqjmPa1BFWuAfRoDipmVCrZzH/j13acRag8w7EEQb+M
+         3EUQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXLqgCT18k1F6ZO818J/7bBjSHSraHgF5EPCFK0NiegsR8vvsQiSDgfY1mj1lUr3U8Liz8xjwsDvgm9RImqpdt0SenIXQYldK/0YBZU
+X-Gm-Message-State: AOJu0Ywvqa1GhVyuoXoBp1W/zXrJFtYBEumrgRjRAUzDJ9ZsQ3kME31S
+	YU0Bl0v3juBNdt8vi6bHIyeF8OgyJT7DYWIBR9eDkwgQ1iQ0ybnqGJMesy9qTtE=
+X-Google-Smtp-Source: AGHT+IHh+ZxoCzU1FGg+Ay1sdVh8yffh8/bUZTifdB3YwV0ck6OUItK6hnnakWAv1mKM1jDatQrBDA==
+X-Received: by 2002:a17:906:5ad8:b0:a4e:a204:e699 with SMTP id x24-20020a1709065ad800b00a4ea204e699mr1326916ejs.17.1712328107384;
+        Fri, 05 Apr 2024 07:41:47 -0700 (PDT)
+Received: from krzk-bin.. ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id g15-20020a170906198f00b00a4e2bf2f743sm899183ejd.184.2024.04.05.07.41.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 07:41:46 -0700 (PDT)
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Vinod Koul <vkoul@kernel.org>,
+	Bard Liao <yung-chuan.liao@linux.intel.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Sanyog Kale <sanyog.r.kale@intel.com>,
+	linux-arm-msm@vger.kernel.org,
+	alsa-devel@alsa-project.org,
+	linux-kernel@vger.kernel.org
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Mark Brown <broonie@kernel.org>
+Subject: [PATCH v2] soundwire: qcom: allow multi-link on newer devices
+Date: Fri,  5 Apr 2024 16:41:41 +0200
+Message-Id: <20240405144141.47217-1-krzysztof.kozlowski@linaro.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
---acb6ba1a78e0ad4c2fe8ee2d551c5ffa69006074ac6e66ab85279d8ddadb
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Newer Qualcomm SoCs like X1E80100 might come with four speakers spread
+over two Soundwire controllers, thus they need a multi-link Soundwire
+stream runtime.
 
-Hi Flavio,
+Cc: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-On Fri Apr 5, 2024 at 12:01 PM CEST, Flavio Suligoi wrote:
-> Add the Everspin EM0004LXB 4Mb (512KB) Industrial STT-MRAM Persistent
-> Memory.
-> This device is JEDEC compatible (JESD251 and JESD251-1), but it is not
-> able to provide SFDP information.
+---
 
-Did you try the at25 driver if it will fit your usecase? Judging
-from your last response, it sounds like it will do.
+Changes in v2:
+1. Only rebase (slightly different context)
+---
+ drivers/soundwire/qcom.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
->
-> Link: https://www.everspin.com/file/158244/download
->
-> Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
-> ---
->  drivers/mtd/spi-nor/everspin.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/drivers/mtd/spi-nor/everspin.c b/drivers/mtd/spi-nor/everspi=
-n.c
-> index 5f321e24ae7d..4741930ce9a8 100644
-> --- a/drivers/mtd/spi-nor/everspin.c
-> +++ b/drivers/mtd/spi-nor/everspin.c
-> @@ -31,6 +31,14 @@ static const struct flash_info everspin_nor_parts[] =
-=3D {
->  		.size =3D SZ_512K,
->  		.sector_size =3D SZ_512K,
->  		.flags =3D SPI_NOR_NO_ERASE | SPI_NOR_NO_FR,
-> +	}, {
-> +		.id =3D SNOR_ID(0x6b, 0xbb, 0x13),
-> +		.name =3D "em004lxb",
-> +		.size =3D SZ_512K,
-> +		.sector_size =3D SZ_512K,
-> +		.flags =3D SPI_NOR_NO_ERASE | SPI_NOR_NO_FR | SPI_NOR_HAS_LOCK |
+diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
+index fb70afe64fcc..ce5cf3ecceb5 100644
+--- a/drivers/soundwire/qcom.c
++++ b/drivers/soundwire/qcom.c
+@@ -905,6 +905,18 @@ static int qcom_swrm_init(struct qcom_swrm_ctrl *ctrl)
+ 	return 0;
+ }
+ 
++static int qcom_swrm_read_prop(struct sdw_bus *bus)
++{
++	struct qcom_swrm_ctrl *ctrl = to_qcom_sdw(bus);
++
++	if (ctrl->version >= SWRM_VERSION_2_0_0) {
++		bus->multi_link = true;
++		bus->hw_sync_min_links = 3;
++	}
++
++	return 0;
++}
++
+ static enum sdw_command_response qcom_swrm_xfer_msg(struct sdw_bus *bus,
+ 						    struct sdw_msg *msg)
+ {
+@@ -1056,6 +1068,7 @@ static const struct sdw_master_port_ops qcom_swrm_port_ops = {
+ };
+ 
+ static const struct sdw_master_ops qcom_swrm_ops = {
++	.read_prop = qcom_swrm_read_prop,
+ 	.xfer_msg = qcom_swrm_xfer_msg,
+ 	.pre_bank_switch = qcom_swrm_pre_bank_switch,
+ };
+@@ -1173,6 +1186,15 @@ static int qcom_swrm_stream_alloc_ports(struct qcom_swrm_ctrl *ctrl,
+ 
+ 	mutex_lock(&ctrl->port_lock);
+ 	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
++		/*
++		 * For streams with multiple masters:
++		 * Allocate ports only for devices connected to this master.
++		 * Such devices will have ports allocated by their own master
++		 * and its qcom_swrm_stream_alloc_ports() call.
++		 */
++		if (ctrl->bus.id != m_rt->bus->id)
++			continue;
++
+ 		if (m_rt->direction == SDW_DATA_DIR_RX) {
+ 			maxport = ctrl->num_dout_ports;
+ 			port_mask = &ctrl->dout_port_mask;
+-- 
+2.34.1
 
-Will it also work without SPI_NOR_NO_ERASE? Also, the flash supports
-fast read, so drop NO_FR. Also, please have a look at [1] for the
-testing requirements.
-
-Thanks.
--michael
-
-> +			 SPI_NOR_HAS_TB | SPI_NOR_4BIT_BP | SPI_NOR_BP3_SR_BIT6,
-> +		.no_sfdp_flags =3D SPI_NOR_SKIP_SFDP,
->  	}
->  };
-> =20
-
-[1] https://docs.kernel.org/driver-api/mtd/spi-nor.html
-
---acb6ba1a78e0ad4c2fe8ee2d551c5ffa69006074ac6e66ab85279d8ddadb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iKgEABMJADAWIQTIVZIcOo5wfU/AngkSJzzuPgIf+AUCZhANmRIcbXdhbGxlQGtl
-cm5lbC5vcmcACgkQEic87j4CH/hh6wF/W6ehEKW1KipXS15k6n/JOHz5SNhKHN3B
-vpilSYvkfW+/ZLMZBgGjNTKnOFlePmnOAYCVhLAxPiDYQ1p8FHwGOLNFEjYLw/Lu
-GRDEhq8JnOuyKnFJMv9UO0OaGygMib3W9Xg=
-=bbaR
------END PGP SIGNATURE-----
-
---acb6ba1a78e0ad4c2fe8ee2d551c5ffa69006074ac6e66ab85279d8ddadb--
 
