@@ -1,86 +1,87 @@
-Return-Path: <linux-kernel+bounces-133100-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76C3D899ED9
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A91C899EDB
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:58:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0BDCEB234BB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:56:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF705B2172C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E87D16D4D2;
-	Fri,  5 Apr 2024 13:56:30 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9F8016D9C1;
+	Fri,  5 Apr 2024 13:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="EpuP4K0V"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A5816D4C5;
-	Fri,  5 Apr 2024 13:56:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2E6016D4C5
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712325389; cv=none; b=k8o0kyIXvfT4QFPyu2sru04A/xES+YltT85omRU8E8ArCcLCPfchtLBeV2eZOdrub51L2aB3VdMxeD9RkwwAl5GXM3tfLSPhnwP5vsM8vAw12WECX5cD+ocYbPnZTTk4fY5Q/61SqNk2uPVn3i7ZMNLYqqFz48oIktBYxeT4TuY=
+	t=1712325497; cv=none; b=gz9YfjVHg/8Xapczn5qY2ta2WnQIKUstObRYI7ONUp7Lw2imrBrx1Pzsy4+8P1Q49BXdW6a4Va0x8wNIut08fARn+tWmz7+CQoH3wKviYqcyDV0MzOp5ipvEXg4qWcdWrZZc20QVlKHAmWCiyI7/qTLcM/KiyPt6DefoI1NQGN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712325389; c=relaxed/simple;
-	bh=w+JtL2IWPbD3Av4ZJi5FOYcsvgEQMF3c4SDgRYwLT1g=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Gdf3crJb1k4y1aW7oOCPh3Rh6/4RiNAdflhJXIUDiClbCnHNkNJcx4DdV/FASiBXzHoPWBsCt5rEs/0qJ7j22fCxP6CG0jUo7sb1ZaE9QLUKQCz1s02DFT5KOKBpsYA2mdiQKsv8+VMpW47OX6i0kKg0lii/Ahtz+W8a0X+l7Cc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4VB0Jx1Q6qz67FR3;
-	Fri,  5 Apr 2024 21:51:45 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id D9EF71400D1;
-	Fri,  5 Apr 2024 21:56:25 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Fri, 5 Apr
- 2024 14:56:25 +0100
-Date: Fri, 5 Apr 2024 14:56:24 +0100
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: "Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com>
-CC: "Huang, Ying" <ying.huang@intel.com>, Gregory Price
-	<gourry.memverge@gmail.com>, <aneesh.kumar@linux.ibm.com>, <mhocko@suse.com>,
-	<tj@kernel.org>, <john@jagalactic.com>, Eishan Mirakhur
-	<emirakhur@micron.com>, Vinicius Tavares Petrucci <vtavarespetr@micron.com>,
-	Ravis OpenSrc <Ravis.OpenSrc@micron.com>, Alistair Popple
-	<apopple@nvidia.com>, Srinivasulu Thanneeru <sthanneeru@micron.com>, SeongJae
- Park <sj@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Vishal Verma
-	<vishal.l.verma@intel.com>, "Dave Jiang" <dave.jiang@intel.com>, Andrew
- Morton <akpm@linux-foundation.org>, <nvdimm@lists.linux.dev>,
-	<linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-mm@kvack.org>, "Ho-Ren (Jack) Chuang" <horenc@vt.edu>, "Ho-Ren (Jack)
- Chuang" <horenchuang@gmail.com>, <qemu-devel@nongnu.org>
-Subject: Re: [PATCH v11 1/2] memory tier: dax/kmem: introduce an abstract
- layer for finding, allocating, and putting memory types
-Message-ID: <20240405145624.00000b31@Huawei.com>
-In-Reply-To: <20240405000707.2670063-2-horenchuang@bytedance.com>
-References: <20240405000707.2670063-1-horenchuang@bytedance.com>
-	<20240405000707.2670063-2-horenchuang@bytedance.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1712325497; c=relaxed/simple;
+	bh=sqqgEu6lEH3lsouDnOTSlnsnADaGQFVT5jr/EVD56e8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=QlaO9pTezcCbx9ldC5nUXezwwC/dm5aPelGN45Rd4LXKTCdojhWlpSKOKvP1TKS/HnzIIF4BLvwasXEVkyANK+6sOliqX9YpcSxxH07Y+YYNeARnRrSYA563pbAvLtOgLUdgm/72WTcHKFfgPOyLtEkYU3meNUvfpC19CkVDsKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=EpuP4K0V; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712325494;
+	bh=sqqgEu6lEH3lsouDnOTSlnsnADaGQFVT5jr/EVD56e8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=EpuP4K0VVVnXP5RJwSUsYUvswr0diIrWWZiXQ4o0+HTr0vwZWwJAG4r6kfexwXhn0
+	 wUMCL8EbH1lJVcSvHbsg/2fZMzOLTw4zegmz+OUq8PeiR7ahvtqVNyQJB/wJsXHtHL
+	 NdaUfZk/jhU2HhniGNVEOO2d1EwRTLFqXYeDBD3OW8vrkyeRifSwqB5aStGpElEEJg
+	 EyQFO6/m517ou453WZf4JD82X8x8cR0v/Nm/JS52LGAyk6TOmgwUwQFhOz7uhTyhpN
+	 fs/80Rt+pEeclMJ0YKqVxSmdMic+DuCSwxRlks/uOnAMIIJRIpKuc6voNP7msEeBqh
+	 9v1jE7EZJU92g==
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: laura.nao)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 6949D37813DC;
+	Fri,  5 Apr 2024 13:58:13 +0000 (UTC)
+From: Laura Nao <laura.nao@collabora.com>
+To: tglx@linutronix.de
+Cc: kernel@collabora.com,
+	laura.nao@collabora.com,
+	linux-kernel@vger.kernel.org,
+	regressions@leemhuis.info,
+	regressions@lists.linux.dev,
+	x86@kernel.org
+Subject: Re: [REGRESSION] mainline boot regression on AMD Stoney Ridge Chromebooks
+Date: Fri,  5 Apr 2024 15:58:37 +0200
+Message-Id: <20240405135837.306376-1-laura.nao@collabora.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <87ttkg7wvg.ffs@tglx>
+References: <87ttkg7wvg.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Transfer-Encoding: 8bit
 
-On Fri,  5 Apr 2024 00:07:05 +0000
-"Ho-Ren (Jack) Chuang" <horenchuang@bytedance.com> wrote:
-
-> Since different memory devices require finding, allocating, and putting
-> memory types, these common steps are abstracted in this patch,
-> enhancing the scalability and conciseness of the code.
+On 4/5/24 15:38, Thomas Gleixner wrote:
 > 
-> Signed-off-by: Ho-Ren (Jack) Chuang <horenchuang@bytedance.com>
-> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawie.com>
+> Can you please boot a working kernel and provide the output of:
+> 
+> # rdmsr 0xc0011005
+> 
 
+Sure:
+
+# rdmsr 0xc0011005
+2fabbfff2fd3fbff
+
+Thanks,
+
+Laura
 
