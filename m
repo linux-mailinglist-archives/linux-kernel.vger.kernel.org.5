@@ -1,269 +1,165 @@
-Return-Path: <linux-kernel+bounces-133191-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133192-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31CFE89A026
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:48:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0C8089A02A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:49:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCA9B287649
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:48:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D21EC1C223FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4A916F849;
-	Fri,  5 Apr 2024 14:48:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rp1M/0Gy"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 010EE16F822;
+	Fri,  5 Apr 2024 14:48:54 +0000 (UTC)
+Received: from irl.hu (irl.hu [95.85.9.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA27916F829;
-	Fri,  5 Apr 2024 14:48:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA83C16D9D5;
+	Fri,  5 Apr 2024 14:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712328513; cv=none; b=YrQwbDC7Sfte2PbVzA5A/SRNKqlOvTzh8MC5Vh8LmRnkYheobdizBxgen9213uIqlkDU4LZuVelZ5H258v8KpfIkkStQ1WWGbAafmq6n5ISvJumWLhpLCcNnFmFJsYfd0F0MSFcu2cM6eSb5Cs1S8c+myMezCh2GYyAUxW02ztE=
+	t=1712328533; cv=none; b=CivB5u6HaGyoZ1XlLNUvNR4/ml0KYE6cIXUvmpy438GQ7kivX999GvQbnDmnlKhgZWZgWcAKUwDBunYrzKwAxWCm2Fzm4kbl2Kat3EdEDQgvjzQV89a8KXO25vEF41mflumCEbnM/gnMEpe0gK7ItbX2GYk+iPzH6m8XNxi8eag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712328513; c=relaxed/simple;
-	bh=CDrhixP9RtkKB6cb9jrr6trJZJQjmdYcESp6DiI4FUo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WWrBSw+l3aAQQ3A/8hI9Gq3OEFBfNTySZL5UTSjdSIh3oMatElYfzSkMJ5JFI3wq4X/4D39wzjVs3Q47IJ/xPAfPxUH6o6WVX8G1uPq2Ea6clZMZ33xtZA2/5y6kd/KuzNsGQOsVeyhhxm5hkrBpfr4pvgHP57lt3vkrQESLPa4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rp1M/0Gy; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d80baf621eso24168631fa.1;
-        Fri, 05 Apr 2024 07:48:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712328510; x=1712933310; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cFpu1whkh1nSy8kvvx+5UzrJKjw0DqYLany6m12D6u0=;
-        b=Rp1M/0Gy+e35iEdcsJpov+7Q1sM7JpFK2bhZbzi/7AJgqLa1iRYjBmtTUUQpuvvamj
-         Lno8Y7QOhS0cNqAke6+oggbbiUbLILwgozYC9d0mw00dUuWh0X5P2UdGY1cZbbFLvLSc
-         BHyJtMRGVjG/5siJfDmKWFu9CplLWvt4S99kcgFSSZj3UuEq2ibCCnN5sQmZ8hc/UO92
-         c7ahFDgwjXRwCxpiZFjyuqhzNBpZ0VG7b2FjfIHEVzLLl++blYpw1Z7meMu3NKhsjyD6
-         500ce8adeJBeL/IjwKQFc5hBvtt/c10vGJazo5vHilhpRhB9x6w8uJS7WCUdpsBT81OV
-         T0Lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712328510; x=1712933310;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cFpu1whkh1nSy8kvvx+5UzrJKjw0DqYLany6m12D6u0=;
-        b=Wx9BVlW2n3Ms7UYILwLnMIco7iiMZ6LlJcUF175LIdnTTY5pj00PMcgeqDKF+yZIjc
-         biaqI2jq3RYxm2G0FA22PjFGQ0M5SsQXQi9uIGUpde6+i6uGnkCcBAOh5PO15iReyOaP
-         4zv61MYdWpB/hwir32giNIr165gkSeZberGFpjRi/B4OMHXPzDmRVWFrCq1+Wk0RcT+z
-         Vf1dIyxw6dfMUX+MZCqMiHMD37JQ3TKHAzPBJ3KOtRS6xDvCDrxjAxBuOoMqM7oiDEbN
-         etpr2CQuBCo+OYQ0zVUBGVQ926l5T2jLMVJuIvLwmanXDKL2jzC8fvoTZIkbLytWFyl/
-         J97w==
-X-Forwarded-Encrypted: i=1; AJvYcCWoJuX6DhnGe5RbH/1eSm0JY/+86uVSWvTuMNwWNWFCsRzz4qW4eUQH9ckGXOX/a4lPwatvXt2xmdmfSCBoHCKXFyWM/6v7Pl7LooxS6X/pOcrjIycs1AOsbqbnSKGpG96stpbU+Aohxg==
-X-Gm-Message-State: AOJu0Yy9APpDD7RHyEgv/DnjzTpFC2deQDMM3P4pfOYSlJmpgr0l/opd
-	FUqakOC+YY6UyrKdcy5a58WN/MHJRv6fJhOlugJ0UKC4RGDAYWg88aC76mexO/JnCo+E5VQvpu/
-	GOfesPffl9obH9Af97Bd+BNOTY9Y=
-X-Google-Smtp-Source: AGHT+IGrg/lFBS2AMqv3GmFvVcFL6woTGN8IKlxDkSWiTeKdq9HfiE5kNbCsRxC8SlKmB2gQiyBs2NPA5UHos4n1BAQ=
-X-Received: by 2002:a2e:a3d2:0:b0:2d6:c4ec:782 with SMTP id
- w18-20020a2ea3d2000000b002d6c4ec0782mr1273383lje.49.1712328509495; Fri, 05
- Apr 2024 07:48:29 -0700 (PDT)
+	s=arc-20240116; t=1712328533; c=relaxed/simple;
+	bh=pDZ7GGq8ciXMnPm7K6+Woob0Fc+oq+L2M++ZSsq1Lg0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=aGQV/VAR/bWixX4NrxMLeNR+EOYjWIB0iiZEuaONwQ4/YBMYYwTROeRgHVdPKiyXrhs/ht8WFnDnXoNdmeN6RIPrJOsuqAizyXQjxxPzXSzpBO9GEM4ZgFsiiygq4+ZwdFnsWu2Vv9oaQTN44MZJeKoBa09LQ7m8dr3rjYAWbs4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
+Received: from [192.168.2.4] (51b69f53.dsl.pool.telekom.hu [::ffff:81.182.159.83])
+  (AUTH: CRAM-MD5 soyer@irl.hu, )
+  by irl.hu with ESMTPSA
+  id 000000000006F7E5.0000000066100F51.0025C4B2; Fri, 05 Apr 2024 16:48:49 +0200
+Message-ID: <bf8771c31f282ae31009a1ef5737c03849deebc2.camel@irl.hu>
+Subject: Re: [PATCH v4 1/3] ACPI: platform-profile: add
+ platform_profile_cycle()
+From: Gergo Koteles <soyer@irl.hu>
+To: Daniel Lezcano <daniel.lezcano@linaro.org>,
+  "Rafael J. Wysocki" <rafael@kernel.org>, Len Brown <lenb@kernel.org>,
+  Ike Panhc <ike.pan@canonical.com>,
+  Hans de Goede <hdegoede@redhat.com>,
+  Ilpo =?ISO-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+  Henrique de Moraes Holschuh <hmh@hmh.eng.br>
+Cc: linux-acpi@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net,
+  platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Fri, 05 Apr 2024 16:48:48 +0200
+In-Reply-To: <87d38d4c-14e2-4c64-baba-c9b8bd694339@linaro.org>
+References: <cover.1712282976.git.soyer@irl.hu>
+	 <fdc1b0b9f910753967b7a9b1996e4923cc63124f.1712282976.git.soyer@irl.hu>
+	 <87d38d4c-14e2-4c64-baba-c9b8bd694339@linaro.org>
+Autocrypt: addr=soyer@irl.hu; prefer-encrypt=mutual;
+ keydata=mDMEZgeDQBYJKwYBBAHaRw8BAQdAD5oxV6MHkjzSfQL2O8VsPW3rSUeCHfbx/a6Yfj3NUnS0HEdlcmdvIEtvdGVsZXMgPHNveWVyQGlybC5odT6ImQQTFgoAQRYhBLSYvEYEgjzzEMQCqgtEJzXf/1IRBQJmB4NAAhsDBQkFo5qABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheAAAoJEAtEJzXf/1IRmdYA/0bE1BX7zOGKBgCa1DwzH2UHXawSKLpptADvI/ao6OOtAP4+wYgpR0kWR28lhmkRTpzG/+8GiMWsT60SV2bz9B7sCbg4BGYHg0ASCisGAQQBl1UBBQEBB0CPo8ow/E97WYtaek9EsLXvsvwpBsjWLq5mMOgJL/ukCwMBCAeIfgQYFgoAJhYhBLSYvEYEgjzzEMQCqgtEJzXf/1IRBQJmB4NAAhsMBQkFo5qAAAoJEAtEJzXf/1IRklEA/ipTfAI/onzNwZIp9sCdnt0bLhR5Oz8RD/FpbrJV1v7eAP0c/C6NQPDPWbQpobBR0pf1eTjWXjjr1fj2jxSvWbMRCw==
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404160649.967-1-bavishimithil@gmail.com> <78091796-fd0a-42dd-a4da-f7bed3025bf9@linaro.org>
-In-Reply-To: <78091796-fd0a-42dd-a4da-f7bed3025bf9@linaro.org>
-From: Mithil <bavishimithil@gmail.com>
-Date: Fri, 5 Apr 2024 20:18:17 +0530
-Message-ID: <CAGzNGRnuG_gLUrH1N57WvpKbpiNtFrcsG6nJcacQNJB_yMYNrA@mail.gmail.com>
-Subject: Re: [PATCH v2] dt-bindings: omap-mcpdm: Convert to DT schema
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	alsa-devel@alsa-project.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-So sorry about the 2nd patch being sent as a new mail, here is a new
-patch with the changes as suggested
+Hi Daniel,
 
-> Please use subject prefixes matching the subsystem
-Changed the patch name to match the folder history.
+On Fri, 2024-04-05 at 08:48 +0200, Daniel Lezcano wrote:
+> Hi Gergo,
+>=20
+> please Cc people who commented your changes.
 
-> Is it your full name?
-Fixed it, my apologies.
+Thanks for this info, next time :)
 
-> Filename like compatible.
-Fixed.
+> > +int platform_profile_cycle(void)
+> > +{
+> > +	enum platform_profile_option profile;
+> > +	enum platform_profile_option next;
+> > +	int err;
+> > +
+> > +	err =3D mutex_lock_interruptible(&profile_lock);
+> > +	if (err)
+> > +		return err;
+> > +
+> > +	if (!cur_profile) {
+> > +		mutex_unlock(&profile_lock);
+> > +		return -ENODEV;
+> > +	}
+> > +
+> > +	err =3D cur_profile->profile_get(cur_profile, &profile);
+> > +	if (err) {
+> > +		mutex_unlock(&profile_lock);
+> > +		return err;
+> > +	}
+> > +
+> > +	next =3D ffs(cur_profile->choices[0] >> (profile + 1)) + profile;
+> > +
+> > +	/* current profile is the highest, select the lowest */
+> > +	if (next =3D=3D profile)
+> > +		next =3D ffs(cur_profile->choices[0]) - 1;
+> > +
+> > +	if (WARN_ON((next < 0) || (next >=3D ARRAY_SIZE(profile_names)))) {
+> > +		mutex_unlock(&profile_lock);
+> > +		return -EINVAL;
+> > +	}
+>=20
+> Why do you need to do this?
+>=20
 
-> Please open existing bindings and look how it is done there.
-Changed it, is it fine now?
+Many platform drivers use the platform profile module. They support
+different sets of profiles, not all. They sets the corresponding bits
+in the choices variable.
 
-> Same problem. Drop useless description but provide maxItems.
-Removed descriptions for interrupts and hwmods.
+like this:
+set_bit(PLATFORM_PROFILE_BALANCED, platform_profile_handler.choices);
 
-> It does not look like you tested the bindings, at least after quick
-> look. Please run `make dt_binding_check`
-I did run it and it didnt produce any errors henceforth i submitted
-the patch.
-
-> Node names should be generic
-Changed as said.
-
-From c24a42724e870822d50ac6857ba9f32d0dce02ae Mon Sep 17 00:00:00 2001
-From: Mithil Bavishi <bavishimithil@gmail.com>
-Date: Mon, 1 Apr 2024 21:10:15 +0530
-Subject: [PATCH v2] dt-bindings: omap-mcpdm: Convert to DT schema
-
-Convert the OMAP4+ McPDM bindings to DT schema.
-
-Signed-off-by: Mithil Bavishi <bavishimithil@gmail.com>
----
- .../devicetree/bindings/sound/omap-mcpdm.txt  | 30 ----------
- .../bindings/sound/ti,omap-mcpdm.yaml         | 59 +++++++++++++++++++
- 2 files changed, 59 insertions(+), 30 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/omap-mcpdm.txt
- create mode 100644 Documentation/devicetree/bindings/sound/ti,omap-mcpdm.y=
-aml
-
-diff --git a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
-b/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
-deleted file mode 100644
-index ff98a0cb5..000000000
---- a/Documentation/devicetree/bindings/sound/omap-mcpdm.txt
-+++ /dev/null
-@@ -1,30 +0,0 @@
--* Texas Instruments OMAP4+ McPDM
--
--Required properties:
--- compatible: "ti,omap4-mcpdm"
--- reg: Register location and size as an array:
--       <MPU access base address, size>,
--       <L3 interconnect address, size>;
--- interrupts: Interrupt number for McPDM
--- ti,hwmods: Name of the hwmod associated to the McPDM
--- clocks:  phandle for the pdmclk provider, likely <&twl6040>
--- clock-names: Must be "pdmclk"
--
--Example:
--
--mcpdm: mcpdm@40132000 {
--       compatible =3D "ti,omap4-mcpdm";
--       reg =3D <0x40132000 0x7f>, /* MPU private access */
--             <0x49032000 0x7f>; /* L3 Interconnect */
--       interrupts =3D <0 112 0x4>;
--       interrupt-parent =3D <&gic>;
--       ti,hwmods =3D "mcpdm";
--};
--
--In board DTS file the pdmclk needs to be added:
--
--&mcpdm {
--       clocks =3D <&twl6040>;
--       clock-names =3D "pdmclk";
--       status =3D "okay";
--};
-diff --git a/Documentation/devicetree/bindings/sound/ti,omap-mcpdm.yaml
-b/Documentation/devicetree/bindings/sound/ti,omap-mcpdm.yaml
-new file mode 100644
-index 000000000..4d5d37e98
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ti,omap-mcpdm.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/ti,omap-mcpdm.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: OMAP McPDM
-+
-+maintainers:
-+  - Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-+
-+description:
-+  OMAP ALSA SoC DAI driver using McPDM port used by TWL6040
-+
-+properties:
-+  compatible:
-+    const: ti,omap4-mcpdm
-+
-+  reg:
-+    description:
-+      Register location and size as an array
-+      <MPU access base address, size>,
-+      <L3 interconnect address, size>;
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  ti,hwmods:
-+    maxItems: 1
-+
-+  clocks:
-+    description: phandle for the pdmclk provider, likely <&twl6040>
-+
-+  clock-names:
-+    description: Must be "pdmclk"
-+
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - ti,hwmods
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    mcpdm@0 {
-+      compatible =3D "ti,omap4-mcpdm";
-+      reg =3D <0x40132000 0x7f>, /* MPU private access */
-+            <0x49032000 0x7f>; /* L3 Interconnect */
-+      interrupts =3D <0 112 0x4>;
-+      interrupt-parent =3D <&gic>;
-+      ti,hwmods =3D "mcpdm";
-+      clocks =3D <&twl6040>;
-+      clock-names =3D "pdmclk";
-+    };
---
-2.34.1
+The platform_profile_cycle() cycles through the enabled profiles.
 
 Best regards,
-Mithil
+Gergo
 
+> That can be simplified by:
+>=20
+> 	[ ... ]
+>=20
+> 	err =3D cur_profile->profile_get(cur_profile, &profile);
+> 	if (err)
+> 		goto out;
+>=20
+> 	profile =3D (profile + 1) % ARRAY_SIZE(profile_names);
+>=20
+> 	err =3D cur_profile->profile_set(cur_profile, next);
+> out:
+> 	mutex_unlock(&profile_lock);
+> =09
+> 	[ ... ]
+>=20
+> > +	err =3D cur_profile->profile_set(cur_profile, next);
+> > +	mutex_unlock(&profile_lock);
+> > +
+> > +	if (!err)
+> > +		sysfs_notify(acpi_kobj, NULL, "platform_profile");
+> > +
+> > +	return err;
+> > +}
+> > +EXPORT_SYMBOL_GPL(platform_profile_cycle);
+> > +
+> >   int platform_profile_register(struct platform_profile_handler *pprof)
+> >   {
+> >   	int err;
+> > diff --git a/include/linux/platform_profile.h b/include/linux/platform_=
+profile.h
+> > index e5cbb6841f3a..f5492ed413f3 100644
+> > --- a/include/linux/platform_profile.h
+> > +++ b/include/linux/platform_profile.h
+> > @@ -36,6 +36,7 @@ struct platform_profile_handler {
+> >  =20
+> >   int platform_profile_register(struct platform_profile_handler *pprof)=
+;
+> >   int platform_profile_remove(void);
+> > +int platform_profile_cycle(void);
+> >   void platform_profile_notify(void);
+> >  =20
+> >   #endif  /*_PLATFORM_PROFILE_H_*/
+>=20
 
-
-On Fri, Apr 5, 2024 at 12:28=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 04/04/2024 18:06, Mighty wrote:
-> > From: Mithil Bavishi <bavishimithil@gmail.com>
-> >
-> > Convert the OMAP4+ McPDM bindings to DT schema.
-> >
-> > Signed-off-by: Mighty <bavishimithil@gmail.com>
->
-> This does not match SoB. Can you respond to comments you receive?
->
-> Subject: nothing improved.
->
-> Rest... also did not improve. so you ignored entire feedback?
->
-> This is a friendly reminder during the review process.
->
-> It seems my or other reviewer's previous comments were not fully
-> addressed. Maybe the feedback got lost between the quotes, maybe you
-> just forgot to apply it. Please go back to the previous discussion and
-> either implement all requested changes or keep discussing them.
->
-> Thank you.
->
-> Best regards,
-> Krzysztof
->
 
