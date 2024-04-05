@@ -1,333 +1,131 @@
-Return-Path: <linux-kernel+bounces-132821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66CB9899AB4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:26:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3095D899AB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:26:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E66371F2250E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:26:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30A221C21370
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:26:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F7116ABC6;
-	Fri,  5 Apr 2024 10:26:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D5416ABFD;
+	Fri,  5 Apr 2024 10:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CRX7H4UB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bINCfElL"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48F9316ABD7;
-	Fri,  5 Apr 2024 10:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77F86142E73;
+	Fri,  5 Apr 2024 10:26:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712312772; cv=none; b=ZFEw88wX2Hp5xxHLAyxE3UwN3jfiVvEUAYJTq4N0K0bOXqHCCRiFGrA0/oTKPyfukhLvNOoT5gpkqOTZfG3mYJsP2m4lu5xMdJS1WIpUmAXUhjTGVcXIjbIWm61R2dFzNLftCuJTvU9GN3Clah1I5KdUXhYL6SpJZHkkcrTt8ZE=
+	t=1712312778; cv=none; b=cKNtQ2gu4jcA/mHhae21izyoC2Aw5ET3vR0eW8Ff6uoTDywHd3bf8ln3GyJ9h4JNYLLDqyo+yS3BeY/cCX5/f8KFRRcqTiz9/NGeb3KS48XwOJiWbkIbTX+4CcYC65FfwjusWcRxNaDAhEwOzf1o1UJpudw99z7vlhupB5LkVds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712312772; c=relaxed/simple;
-	bh=HtLpKedjx0y5wps8iP5hKkJRmK1rcWNkMEh1B6of13Q=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LtYL4Kqg7+AAcqDNW8xILVdSjrM8SjtNmzJebyU3XcXdfoHw0cjwGbAj8wpdR+a0JtfHWuP1kWB4B0QqzhCZcvslcubH7+VI/ikBsmpWN+FsPXxf36tJFwuZVdgCEaVV4mL0Trqy0l5Ir0FmWmSYqqpt0iGphbJaETxZ+j2Smg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CRX7H4UB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 856A4C433F1;
-	Fri,  5 Apr 2024 10:26:11 +0000 (UTC)
+	s=arc-20240116; t=1712312778; c=relaxed/simple;
+	bh=qxvSkouKOtVZUfYflXrpgvGiCmviOJRnuWLFOMraY9Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rF8b4CQyg/L+GnNXfJuyc5/WftlZiVkWIdxoqGaL/8hyUDRi7kxdxgaXYsQ4caHQG5UnlPoWktDm+FXflum3b4FFN4HB0yov+UVRjiewJ7CKyYPplnWa86LZywgGgrYjeWX4dJ7UtPQVd5p1eLFWTQn7QRtxyPtlk5AT4SAuVUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bINCfElL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1883C433C7;
+	Fri,  5 Apr 2024 10:26:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712312771;
-	bh=HtLpKedjx0y5wps8iP5hKkJRmK1rcWNkMEh1B6of13Q=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=CRX7H4UBB7kPSUzXnxDKmSNo532TD3YO4D+qrDYw2dW6eOBQYREN4zbANv47di5wi
-	 EDPQM3+HT5pSSvPIh+/KPGDacf5922NfQwxGqvZDFzwnvIzJwna1folgAYE3H+xJuv
-	 /AvFKW1QTLTyU01rXyClNL2GN6CvCQK1HMnIXcweLI5WI75lrxY4oq19XeJ/q6LuUl
-	 ZWnNBp+ailhaRMRsmupdhJN9ID2KpIkT5vmdWeV8qBTPrvQZpFJ5H0cxHbohYLVniO
-	 9YZsqDHaHjO7n8U75wZI+k+GLAQkzSjC11rW0MN7KgGAE5D3166HBBT86txAItg8ql
-	 kRouyou8kMxZA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rsglt-001mIH-64;
-	Fri, 05 Apr 2024 11:26:09 +0100
-Date: Fri, 05 Apr 2024 11:26:08 +0100
-Message-ID: <868r1st8an.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Anshuman Khandual <anshuman.khandual@arm.com>
-Cc: linux-arm-kernel@lists.infradead.org,
-	Jonathan Corbet <corbet@lwn.net>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Brown <broonie@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [RFC 8/8] arm64/hw_breakpoint: Enable FEAT_Debugv8p9
-In-Reply-To: <20240405080008.1225223-9-anshuman.khandual@arm.com>
-References: <20240405080008.1225223-1-anshuman.khandual@arm.com>
-	<20240405080008.1225223-9-anshuman.khandual@arm.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=k20201202; t=1712312778;
+	bh=qxvSkouKOtVZUfYflXrpgvGiCmviOJRnuWLFOMraY9Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bINCfElL0YOkSGUGgBWQU1PYTboFoNjPpGUmdkBGEcNqNV3v3DE8rR8UUBoVjXUKZ
+	 SF3gqSACH3hIVgkBpt7V3YnZNoH5beyWwUNr8Nq5rkP6D9jVf7JyAXA06DbOKRiFaP
+	 U7gqB7jS2VVMEbxMNgQUy66/yy6C+qwiHnB+GvSbRkRIQJhQdtWwzmtHEThe3JaVM2
+	 EG6ZC1RLGavidNg6oLm80JqkS+AwnsNa4KT1En63HEr/HvHvWj+wWEiPysX4pQaFVc
+	 rG0fQXqGdn/eUccA8z41XKZgsx8EWC5GxnIb3Tcp/UWA0H6whhyugJB3UprYeVElyk
+	 dZMOI3E9EM+0w==
+Date: Fri, 5 Apr 2024 12:26:10 +0200
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: kernel test robot <oliver.sang@intel.com>, 
+	syzbot <syzbot+4139435cb1b34cf759c2@syzkaller.appspotmail.com>, Edward Adam Davis <eadavis@qq.com>, 
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>, oe-lkp@lists.linux.dev, lkp@intel.com, 
+	Linux Memory Management List <linux-mm@kvack.org>, linux-fsdevel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	amir73il@gmail.com, chuck.lever@oracle.com, jlayton@kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: [linux-next:master] [fs]  1b43c46297: kernel_BUG_at_mm/usercopy.c
+Message-ID: <20240405-basisarbeit-kohlenkeller-676735d80a89@brauner>
+References: <202404031550.f3de0571-lkp@intel.com>
+ <000000000000f075b9061520cbbe@google.com>
+ <tencent_A7845DD769577306D813742365E976E3A205@qq.com>
+ <20240403-mundgerecht-klopapier-e921ceb787ca@brauner>
+ <20240403110316.qtmypq2rtpueloga@quack3>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: anshuman.khandual@arm.com, linux-arm-kernel@lists.infradead.org, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org, mark.rutland@arm.com, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240403110316.qtmypq2rtpueloga@quack3>
 
-On Fri, 05 Apr 2024 09:00:08 +0100,
-Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+On Wed, Apr 03, 2024 at 01:03:16PM +0200, Jan Kara wrote:
+> On Wed 03-04-24 10:46:19, Christian Brauner wrote:
+> > On Wed, Apr 03, 2024 at 02:54:14PM +0800, Edward Adam Davis wrote:
+> > > [Syzbot reported]
+> > > BUG: KASAN: slab-out-of-bounds in instrument_copy_from_user_before include/linux/instrumented.h:129 [inline]
+> > > BUG: KASAN: slab-out-of-bounds in _copy_from_user+0x7b/0xe0 lib/usercopy.c:22
+> > > Write of size 48 at addr ffff88802b8cbc88 by task syz-executor333/5090
+> > > 
+> > > CPU: 0 PID: 5090 Comm: syz-executor333 Not tainted 6.9.0-rc2-next-20240402-syzkaller #0
+> > > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+> > > Call Trace:
+> > >  <TASK>
+> > >  __dump_stack lib/dump_stack.c:88 [inline]
+> > >  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
+> > >  print_address_description mm/kasan/report.c:377 [inline]
+> > >  print_report+0x169/0x550 mm/kasan/report.c:488
+> > >  kasan_report+0x143/0x180 mm/kasan/report.c:601
+> > >  kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
+> > >  instrument_copy_from_user_before include/linux/instrumented.h:129 [inline]
+> > >  _copy_from_user+0x7b/0xe0 lib/usercopy.c:22
+> > >  copy_from_user include/linux/uaccess.h:183 [inline]
+> > >  handle_to_path fs/fhandle.c:203 [inline]
+> > >  do_handle_open+0x204/0x660 fs/fhandle.c:226
+> > >  do_syscall_64+0xfb/0x240
+> > >  entry_SYSCALL_64_after_hwframe+0x72/0x7a
+> > > [Fix] 
+> > > When copying data to f_handle, the length of the copied data should not include
+> > > the length of "struct file_handle".
+> > > 
+> > > Reported-by: syzbot+4139435cb1b34cf759c2@syzkaller.appspotmail.com
+> > > Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> > > ---
+> > >  fs/fhandle.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/fhandle.c b/fs/fhandle.c
+> > > index 53ed54711cd2..8a7f86c2139a 100644
+> > > --- a/fs/fhandle.c
+> > > +++ b/fs/fhandle.c
+> > > @@ -202,7 +202,7 @@ static int handle_to_path(int mountdirfd, struct file_handle __user *ufh,
+> > >  	*handle = f_handle;
+> > >  	if (copy_from_user(&handle->f_handle,
+> > >  			   &ufh->f_handle,
+> > > -			   struct_size(ufh, f_handle, f_handle.handle_bytes))) {
+> > > +			   f_handle.handle_bytes)) {
+> > 
+> > Groan, of course. What a silly mistake. Thanks for the fix.
+> > I'll fold this into:
+> > Fixes: 1b43c4629756 ("fs: Annotate struct file_handle with __counted_by() and use struct_size()")
+> > because this hasn't hit mainline yet and it doesn't make sense to keep
+> > that bug around.
+> > 
+> > Sorry, that'll mean we drop your patch but I'll give you credit in the
+> > commit log of the original patch.
 > 
-> Currently there can be maximum 16 breakpoints, and 16 watchpoints available
-> on a given platform - as detected from ID_AA64DFR0_EL1.[BRPs|WRPs] register
-> fields. But these breakpoint, and watchpoints can be extended further up to
-> 64 via a new arch feature FEAT_Debugv8p9.
-> 
-> This first enables banked access for the breakpoint and watchpoint register
-> set via MDSELR_EL1, extended exceptions via MDSCR_EL1.EMBWE and determining
-> available breakpoints and watchpoints in the platform from ID_AA64DFR1_EL1,
-> when FEAT_Debugv8p9 is enabled.
-> 
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/arm64/include/asm/debug-monitors.h |  2 +-
->  arch/arm64/include/asm/hw_breakpoint.h  | 46 +++++++++++++++++++------
->  arch/arm64/kernel/debug-monitors.c      | 16 ++++++---
->  arch/arm64/kernel/hw_breakpoint.c       | 33 ++++++++++++++++++
->  4 files changed, 82 insertions(+), 15 deletions(-)
-> 
-> diff --git a/arch/arm64/include/asm/debug-monitors.h b/arch/arm64/include/asm/debug-monitors.h
-> index 13d437bcbf58..75eedba2abbe 100644
-> --- a/arch/arm64/include/asm/debug-monitors.h
-> +++ b/arch/arm64/include/asm/debug-monitors.h
-> @@ -19,7 +19,7 @@
->  /* MDSCR_EL1 enabling bits */
->  #define DBG_MDSCR_KDE		(1 << 13)
->  #define DBG_MDSCR_MDE		(1 << 15)
-> -#define DBG_MDSCR_MASK		~(DBG_MDSCR_KDE | DBG_MDSCR_MDE)
-> +#define DBG_MDSCR_EMBWE		(1UL << 32)
->  
->  #define	DBG_ESR_EVT(x)		(((x) >> 27) & 0x7)
->  
-> diff --git a/arch/arm64/include/asm/hw_breakpoint.h b/arch/arm64/include/asm/hw_breakpoint.h
-> index bd81cf17744a..6b9822140f71 100644
-> --- a/arch/arm64/include/asm/hw_breakpoint.h
-> +++ b/arch/arm64/include/asm/hw_breakpoint.h
-> @@ -79,8 +79,8 @@ static inline void decode_ctrl_reg(u32 reg,
->   * Limits.
->   * Changing these will require modifications to the register accessors.
->   */
-> -#define ARM_MAX_BRP		16
-> -#define ARM_MAX_WRP		16
-> +#define ARM_MAX_BRP		64
-> +#define ARM_MAX_WRP		64
->  
->  /* Virtual debug register bases. */
->  #define AARCH64_DBG_REG_BVR	0
-> @@ -135,22 +135,48 @@ static inline void ptrace_hw_copy_thread(struct task_struct *task)
->  }
->  #endif
->  
-> +static inline bool is_debug_v8p9_enabled(void)
-> +{
-> +	u64 dfr0 = read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1);
-> +	int dver = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_DebugVer_SHIFT);
-> +
-> +	return dver == ID_AA64DFR0_EL1_DebugVer_V8P9;
-> +}
-> +
->  /* Determine number of BRP registers available. */
->  static inline int get_num_brps(void)
->  {
-> -	u64 dfr0 = read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1);
-> -	return 1 +
-> -		cpuid_feature_extract_unsigned_field(dfr0,
-> -						ID_AA64DFR0_EL1_BRPs_SHIFT);
-> +	u64 dfr0, dfr1;
-> +	int dver, brps;
-> +
-> +	dfr0 = read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1);
-> +	dver = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_DebugVer_SHIFT);
-> +	if (dver == ID_AA64DFR0_EL1_DebugVer_V8P9) {
-> +		dfr1 = read_sanitised_ftr_reg(SYS_ID_AA64DFR1_EL1);
-> +		brps = cpuid_feature_extract_unsigned_field_width(dfr1,
-> +								  ID_AA64DFR1_EL1_BRPs_SHIFT, 8);
-> +	} else {
-> +		brps = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_BRPs_SHIFT);
-> +	}
-> +	return 1 + brps;
->  }
->  
->  /* Determine number of WRP registers available. */
->  static inline int get_num_wrps(void)
->  {
-> -	u64 dfr0 = read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1);
-> -	return 1 +
-> -		cpuid_feature_extract_unsigned_field(dfr0,
-> -						ID_AA64DFR0_EL1_WRPs_SHIFT);
-> +	u64 dfr0, dfr1;
-> +	int dver, wrps;
-> +
-> +	dfr0 = read_sanitised_ftr_reg(SYS_ID_AA64DFR0_EL1);
-> +	dver = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_DebugVer_SHIFT);
-> +	if (dver == ID_AA64DFR0_EL1_DebugVer_V8P9) {
-> +		dfr1 = read_sanitised_ftr_reg(SYS_ID_AA64DFR1_EL1);
-> +		wrps = cpuid_feature_extract_unsigned_field_width(dfr1,
-> +								  ID_AA64DFR1_EL1_WRPs_SHIFT, 8);
-> +	} else {
-> +		wrps = cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_WRPs_SHIFT);
-> +	}
-> +	return 1 + wrps;
->  }
->  
->  #ifdef CONFIG_CPU_PM
-> diff --git a/arch/arm64/kernel/debug-monitors.c b/arch/arm64/kernel/debug-monitors.c
-> index 64f2ecbdfe5c..3299d1e8dc61 100644
-> --- a/arch/arm64/kernel/debug-monitors.c
-> +++ b/arch/arm64/kernel/debug-monitors.c
-> @@ -23,6 +23,7 @@
->  #include <asm/debug-monitors.h>
->  #include <asm/system_misc.h>
->  #include <asm/traps.h>
-> +#include <asm/hw_breakpoint.h>
+> Indeed, I should have caught this during review. Sorry for that and thanks
+> for fixing this up quickly.
 
-include order.
-
->  
->  /* Determine debug architecture. */
->  u8 debug_monitors_arch(void)
-> @@ -34,7 +35,7 @@ u8 debug_monitors_arch(void)
->  /*
->   * MDSCR access routines.
->   */
-> -static void mdscr_write(u32 mdscr)
-> +static void mdscr_write(u64 mdscr)
->  {
->  	unsigned long flags;
->  	flags = local_daif_save();
-> @@ -43,7 +44,7 @@ static void mdscr_write(u32 mdscr)
->  }
->  NOKPROBE_SYMBOL(mdscr_write);
->  
-> -static u32 mdscr_read(void)
-> +static u64 mdscr_read(void)
->  {
->  	return read_sysreg(mdscr_el1);
->  }
-> @@ -76,10 +77,11 @@ early_param("nodebugmon", early_debug_disable);
->   */
->  static DEFINE_PER_CPU(int, mde_ref_count);
->  static DEFINE_PER_CPU(int, kde_ref_count);
-> +static DEFINE_PER_CPU(int, embwe_ref_count);
->  
->  void enable_debug_monitors(enum dbg_active_el el)
->  {
-> -	u32 mdscr, enable = 0;
-> +	u64 mdscr, enable = 0;
->  
->  	WARN_ON(preemptible());
->  
-> @@ -90,6 +92,9 @@ void enable_debug_monitors(enum dbg_active_el el)
->  	    this_cpu_inc_return(kde_ref_count) == 1)
->  		enable |= DBG_MDSCR_KDE;
->  
-> +	if (is_debug_v8p9_enabled() && this_cpu_inc_return(embwe_ref_count) == 1)
-> +		enable |= DBG_MDSCR_EMBWE;
-> +
->  	if (enable && debug_enabled) {
->  		mdscr = mdscr_read();
->  		mdscr |= enable;
-> @@ -100,7 +105,7 @@ NOKPROBE_SYMBOL(enable_debug_monitors);
->  
->  void disable_debug_monitors(enum dbg_active_el el)
->  {
-> -	u32 mdscr, disable = 0;
-> +	u64 mdscr, disable = 0;
->  
->  	WARN_ON(preemptible());
->  
-> @@ -111,6 +116,9 @@ void disable_debug_monitors(enum dbg_active_el el)
->  	    this_cpu_dec_return(kde_ref_count) == 0)
->  		disable &= ~DBG_MDSCR_KDE;
->  
-> +	if (is_debug_v8p9_enabled() && this_cpu_dec_return(embwe_ref_count) == 0)
-> +		disable &= ~DBG_MDSCR_EMBWE;
-> +
->  	if (disable) {
->  		mdscr = mdscr_read();
->  		mdscr &= disable;
-> diff --git a/arch/arm64/kernel/hw_breakpoint.c b/arch/arm64/kernel/hw_breakpoint.c
-> index 2f5755192c2b..7b9169535b76 100644
-> --- a/arch/arm64/kernel/hw_breakpoint.c
-> +++ b/arch/arm64/kernel/hw_breakpoint.c
-> @@ -103,10 +103,40 @@ int hw_breakpoint_slots(int type)
->  	WRITE_WB_REG_CASE(OFF, 14, REG, VAL);	\
->  	WRITE_WB_REG_CASE(OFF, 15, REG, VAL)
->  
-> +static int set_bank_index(int n)
-> +{
-> +	int mdsel_bank;
-> +	int bank = n / 16, index = n % 16;
-> +
-> +	switch (bank) {
-> +	case 0:
-> +		mdsel_bank = MDSELR_EL1_BANK_BANK_0;
-> +		break;
-> +	case 1:
-> +		mdsel_bank = MDSELR_EL1_BANK_BANK_1;
-> +		break;
-> +	case 2:
-> +		mdsel_bank = MDSELR_EL1_BANK_BANK_2;
-> +		break;
-> +	case 3:
-> +		mdsel_bank = MDSELR_EL1_BANK_BANK_3;
-> +		break;
-> +	default:
-> +		pr_warn("Unknown register bank %d\n", bank);
-> +		return -EINVAL;
-> +	}
-> +	write_sysreg_s(mdsel_bank << MDSELR_EL1_BANK_SHIFT, SYS_MDSELR_EL1);
-> +	isb();
-> +	return index;
-> +}
-> +
->  static u64 read_wb_reg(int reg, int n)
->  {
->  	u64 val = 0;
->  
-> +	if (is_debug_v8p9_enabled())
-> +		n = set_bank_index(n);
-> +
->  	switch (reg + n) {
->  	GEN_READ_WB_REG_CASES(AARCH64_DBG_REG_BVR, AARCH64_DBG_REG_NAME_BVR, val);
->  	GEN_READ_WB_REG_CASES(AARCH64_DBG_REG_BCR, AARCH64_DBG_REG_NAME_BCR, val);
-> @@ -122,6 +152,9 @@ NOKPROBE_SYMBOL(read_wb_reg);
->  
->  static void write_wb_reg(int reg, int n, u64 val)
->  {
-> +	if (is_debug_v8p9_enabled())
-> +		n = set_bank_index(n);
-> +
->  	switch (reg + n) {
->  	GEN_WRITE_WB_REG_CASES(AARCH64_DBG_REG_BVR, AARCH64_DBG_REG_NAME_BVR, val);
->  	GEN_WRITE_WB_REG_CASES(AARCH64_DBG_REG_BCR, AARCH64_DBG_REG_NAME_BCR, val);
-
-Are these things guaranteed to be only used in contexts where there
-can be no interleaving of such operations? If any interleaving can
-occur, this is broken.
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Fwiw, it wasn't meant that way. I meant it's a silly mistake in the
+sense that it is so easy to miss because the patch looks so benign. The
+fact is that we will have to live with missing things like this once in
+a while and that is why we have testing bots as well. :)
 
