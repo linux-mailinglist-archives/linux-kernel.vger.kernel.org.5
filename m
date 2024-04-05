@@ -1,124 +1,93 @@
-Return-Path: <linux-kernel+bounces-133199-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5590C89A048
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:56:42 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBF0489A069
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:59:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDACB1F2427A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:56:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 28CCF1C221A1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:59:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4902716F29F;
-	Fri,  5 Apr 2024 14:56:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD2216F849;
+	Fri,  5 Apr 2024 14:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="O7LpCr7H"
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Baaiar0l";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="qXPXpHH+"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C752A16DEAB
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BD9916F82C
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 14:59:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712328995; cv=none; b=V4CaVEmzd/l+H/IUd6smA/CFPfM4z6MffNDcb3fV8WmaOiFYhVn9NmRzXjXPAlvu/W6mCoKa1XrFW76F+Nkkxo/dwto9kxOm1fQ+5Sk2Dc0mPBajhIIpsmLa6nzhtX9WsMcPUZ5O/KMpiYiXEGDOqGZOW0Au1mJTHjVN5w6sDCw=
+	t=1712329151; cv=none; b=VlywIP7Jzxni22H+BuNIEr5ehGZnB7FGzb6i6SKa+pCBU1lMPsIW2xAIPsMf0ai8ZFOfcNQexYjRoP4LYPKVkrWJRDc9f/ZwghkV7DoSqKGqVZZScT4AY2/eDq9tvqt2yraJWOUJL+y5yS7zIO6rVDvKxWGU5hjOjebVcaOrPdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712328995; c=relaxed/simple;
-	bh=zTMZhwQ+6oLIfkGA01wNSBzTksqHQBG/2caFP1/JlXY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FQEXW44rljenQ7MoElFm1O9CSm8xvVfQJL5TZz7jB7VNm9gZKSvxdxv9er3WFMidFnyDEeD6csK2aaKO/AboKC0Sb8P0ysTTV0xZ2/MCqK4n3ht8fTbQYvw/n8Sn9vWDlwguVc/V0Nh8kRbT7vMoafGlEHUVg4T34A42ucGxmpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=O7LpCr7H; arc=none smtp.client-ip=209.85.166.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-7cc0e831e11so45833939f.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 07:56:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1712328993; x=1712933793; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eVVvp+398iheOw5gutAtm6G0zLb/uxNorrWUv4KFnio=;
-        b=O7LpCr7HWxXvkHzrM5aMANERAPz/6RjV/hyI1ZZ5SIzoDzonLylgFSBEBKgRkdQ1Zb
-         qz4r8jtYdS5Lwj4JwYxW3egougdpAxVQQ0TsPxJyLPXS8womcmcLl4A6e3VbiLXNvhPT
-         +WJ5CM6HaAWp+DASAIKSrYqHhZgEMpEzZ1f6A=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712328993; x=1712933793;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eVVvp+398iheOw5gutAtm6G0zLb/uxNorrWUv4KFnio=;
-        b=ojHtV2D2ng8zlsaKFOQMzhLNfviVVbUoATVDeUgCf7bZ0uu1Kvc0trYdoQb4KFTXbm
-         hc7kuut5lhr+XA0cjpxcCdZTVnoO/+tkhpMR2X8iitnMOnMPChHFdR4tTYu65m8aqPV6
-         SHcHD5wCRHfEvyjPjgQPKzr/hxp1KMlT1ZzQf44VR56Buf2u1dtTeGd1Krj/Ikn75J2v
-         86KIW1Gt6q8dcuG2uKypG1EsXx5ViJQHYo//bI/ZQBcetA6SeFCcb9XdK8ACsHWOaJ4z
-         gCFxYU6Ya+T9sl32bhrTW738PpEBqIPYXpqqCKm38GBkhwPF0ThtKTJ5iR4BnqMLNN8W
-         ihcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXM1agMbictF0ow6HZw/WpKwSe7HQ9DKmqJNmO5DJe/9cjXEbJ9//hu+BV4A94+DmBDX+rLw47no3KhAqZsCPoMPbg0wtrA79jGb1Jr
-X-Gm-Message-State: AOJu0YxWpyh5XREt8LsBRgADnEwwMdI9fP5YCJf7TBGdbmXr+0/e0lgr
-	I1vNch0LScTvIRn5SyKbpJs0T00VEqzwSrxLq/iegJTd+aV+oiQKTvrPF7OLL94=
-X-Google-Smtp-Source: AGHT+IEkdy1rdEG+rjc30ywKaQ9qlK6/njmx8r/DcDzK1jQaFuF4ReeRun+a1EcXGR4eE0eknNVLJw==
-X-Received: by 2002:a5e:c648:0:b0:7d3:4ff8:7bb1 with SMTP id s8-20020a5ec648000000b007d34ff87bb1mr1694674ioo.1.1712328992992;
-        Fri, 05 Apr 2024 07:56:32 -0700 (PDT)
-Received: from [192.168.1.128] ([38.175.170.29])
-        by smtp.gmail.com with ESMTPSA id j4-20020a05663822c400b0047ad636c705sm601613jat.73.2024.04.05.07.56.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 07:56:32 -0700 (PDT)
-Message-ID: <2a77adeb-ed22-4a9b-a1d9-ac5d29ae696d@linuxfoundation.org>
-Date: Fri, 5 Apr 2024 08:56:31 -0600
+	s=arc-20240116; t=1712329151; c=relaxed/simple;
+	bh=GoD5cDngPo9za+wnO1zqHCoyvjOVhhc2Sev/5MLX6yo=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=nm2uZyKJmqWlMfsB7SQ8pwKfnHBck6FwF5Dy0i2m45x+WL6Fjg7Hj5jIcC3d0tSV12iwwwfC2kxvtMkUqZtPPHbu+3h9UCttibEEdgUu9+U5CJn+ZNjwz+vt35DKSnSUGIy00UTV6BVcM+bDu9tPwND2lxs9cF9W6jIIP77OkR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Baaiar0l; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=qXPXpHH+; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712329148;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7La8PmKGqPZj7+uG421aocfuKn6lduDBmlIV/b+eU1k=;
+	b=Baaiar0lhJoVgsBN2kMiw9yiODR1K0JJ4kWjU5X5+Xofoa9xCjruZyOlhKA5KwncXK/RyI
+	uUZJm2kxMcX3PFQUOdFNyJKDRuAV4d2r2f7JgTL3YmIDb2tJIEy54sVe8TgmwRkJab/y1Y
+	7ZEN+JLcqdKb2g8D9R4vdqjG1e4xI9rbY4x3LQgs+CvAq2mjREA+wGcocyOuURIb8b/fHa
+	+lFyOi+YGpxEKrMp+UrbB7UPkFp7zVhcmE/muCw49ZAPwfH8nqqDwCJSMW+RsAlXS+woYj
+	vuxWrllTLnak/TlBiMX487q2QLNHo2n1hjHvFVdxGmiulvEurLVatZNWOod20g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712329148;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7La8PmKGqPZj7+uG421aocfuKn6lduDBmlIV/b+eU1k=;
+	b=qXPXpHH+AlgUB7J0s2S/abzJFuQMBkbkPJFZ+GSLx3dIG3toXRc2FeVdQIjK9rQt5xevRm
+	hdsJwUXR7UZ8FuCA==
+To: Laura Nao <laura.nao@collabora.com>
+Cc: kernel@collabora.com, laura.nao@collabora.com,
+ linux-kernel@vger.kernel.org, regressions@leemhuis.info,
+ regressions@lists.linux.dev, x86@kernel.org
+Subject: Re: [REGRESSION] mainline boot regression on AMD Stoney Ridge
+ Chromebooks
+In-Reply-To: <20240405135837.306376-1-laura.nao@collabora.com>
+References: <87ttkg7wvg.ffs@tglx>
+ <20240405135837.306376-1-laura.nao@collabora.com>
+Date: Fri, 05 Apr 2024 16:59:08 +0200
+Message-ID: <87msq797pf.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] selftests: Replace "Bail out" with "Error" in
- ksft_exit_fail_msg()
-To: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- Eric Biederman <ebiederm@xmission.com>, Kees Cook <keescook@chromium.org>,
- Shuah Khan <shuah@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: kernel@collabora.com, Shuah Khan <skhan@linuxfoundation.org>
-References: <20240405131748.1582646-1-usama.anjum@collabora.com>
-Content-Language: en-US
-From: Shuah Khan <skhan@linuxfoundation.org>
-In-Reply-To: <20240405131748.1582646-1-usama.anjum@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 
-On 4/5/24 07:17, Muhammad Usama Anjum wrote:
-> "Bail out! " is not descriptive. It rather should be: "Failed: " and
-> then this added prefix doesn't need to be added everywhere. Usually in
-> the logs, we are searching for "Failed" or "Error" instead of "Bail
-> out" so it must be replace.
-> 
-> Remove Error/Failed prefixes from all usages as well.
-> 
-> Muhammad Usama Anjum (2):
->    selftests: Replace "Bail out" with "Error"
->    selftests: Remove Error/Failed prefix from ksft_exit_fail*() usages
-> 
->   tools/testing/selftests/exec/load_address.c   |   8 +-
->   .../testing/selftests/exec/recursion-depth.c  |  10 +-
->   tools/testing/selftests/kselftest.h           |   2 +-
->   .../selftests/mm/map_fixed_noreplace.c        |  24 +--
->   tools/testing/selftests/mm/map_populate.c     |   2 +-
->   tools/testing/selftests/mm/mremap_dontunmap.c |   2 +-
->   tools/testing/selftests/mm/pagemap_ioctl.c    | 166 +++++++++---------
->   .../selftests/mm/split_huge_page_test.c       |   2 +-
->   8 files changed, 108 insertions(+), 108 deletions(-)
-> 
+On Fri, Apr 05 2024 at 15:58, Laura Nao wrote:
+> On 4/5/24 15:38, Thomas Gleixner wrote:
+>> 
+>> Can you please boot a working kernel and provide the output of:
+>> 
+>> # rdmsr 0xc0011005
+>
+> # rdmsr 0xc0011005
+> 2fabbfff2fd3fbff
 
-Andrew, Kees,
+Ok. So the CPU does not advertise FEATURE_TOPOEXT which is consistent
+with CPUID.
 
-I will apply these to linux-kselftest next as a series since these
-changes depend on change to tools/testing/selftests/kselftest.h
-and need to go together.
+Now I'm even more puzzled because then the patch I gave you should make
+a difference. I need to run some errands now, I will provide a debug
+patch later this evening.
 
-Are you okay with that?
+Thanks,
 
-thanks,
--- Shuah
-
+        tglx
 
