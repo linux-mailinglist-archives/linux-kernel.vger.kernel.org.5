@@ -1,84 +1,130 @@
-Return-Path: <linux-kernel+bounces-133365-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133366-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74A7D89A2E1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:48:52 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6609D89A2E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:49:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15AE01F25010
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:48:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E9A7287F1C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209E6171676;
-	Fri,  5 Apr 2024 16:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322F3171652;
+	Fri,  5 Apr 2024 16:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="defkolX2"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eOkWhwsg"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E8E17166A;
-	Fri,  5 Apr 2024 16:48:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165A81CFBC;
+	Fri,  5 Apr 2024 16:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712335712; cv=none; b=TjGM85PEIBxdvNHy4neZ9rH/fiNEaCKXXAhGd70lzdigvOJdECrtbmPeaCFIggOt7WcLkvxIxta0tjGAhvWmZluvjH4i0eLI9zOF4i4zRgKUP4ZhgX6Cqz7vlDQFKgOYKED7mQzjXPB78M2EdhLrEUJBu53mLJI49akMaEsS0Z4=
+	t=1712335767; cv=none; b=NeYHLdCLyzBgmk71lz/R+Od8UBsWMy3U7aiIlPX7wM4E2rn9Xo+nu0TfXd4i6jqT6UKhbZ+tBbmiVaDPfZ5B1rG/1eW8j950a168tpPNMHLJw5iE2vJx6apcd1BgI0R0lFrb4zQdsHgGVCE1zyDZqYbtB4A7fMjzPYspNsFltjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712335712; c=relaxed/simple;
-	bh=Xv13cyEjvsg2QGk7Fwb3W82vEV7OTPf7ypIZZmWM9YA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BpJxw0p3WakIrr1LYcuSw7pASx3gBzN5szQmC8EOnfmnkhLObHBFAbEzgnZhbu62Y3fTDs/bsrtr3isxz4wySKywdUatnkIlie+ylzUjlgJ6WGiD6DkPJnhyzTY8tPG08H4jm0OQZTmHc8u+4atu/Ndph9bJcyY29YXRB+1lLkk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=defkolX2; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id B1C881F8F7;
-	Fri,  5 Apr 2024 18:48:28 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1712335709;
-	bh=il2qU58UHLxy6P7NB6cyRdQntf0V6syrYQfTTjcncvM=; h=From:To:Subject;
-	b=defkolX2cYoGUSNbL402FLL8MAq6f0gyqjQoL8xtSWq12xb+U33fq+ye+MqZBrc8w
-	 jyVjxSGwtUA3oZAVhKe5k8iO+G6c+iQlAFC4iIcjV16PHiXNYJ0L6iZRzedewHMhZd
-	 OKW8TnethTpEqNDOYqNgUCx34SA8xHkGZXOjerypmFoGCUYkX7xxyEQ0ITuxlMLnhQ
-	 CHvim4ftTfE+3V1rKHXOkneQyRgyeywQqh3IlRrSTXkznKxEZPTLcXEUrDwndD9Rp0
-	 VFEGuajX4H8xuUqPVisP+Msh2WfBcN5zYX9C/hf1DEShREbul4EnKi+Ai3FJXeuhyL
-	 euaDJNzNKcxrw==
-Date: Fri, 5 Apr 2024 18:48:27 +0200
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Stefan Eichenberger <eichest@gmail.com>
-Cc: robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, francesco.dolcini@toradex.com,
-	devicetree@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Stefan Eichenberger <stefan.eichenberger@toradex.com>
-Subject: Re: [PATCH v1 4/4] arm64: dts: freescale: imx8mm-verdin-dahlia:
- support sleep-moci
-Message-ID: <20240405164827.GD5994@francesco-nb>
-References: <20240405160720.5977-1-eichest@gmail.com>
- <20240405160720.5977-5-eichest@gmail.com>
+	s=arc-20240116; t=1712335767; c=relaxed/simple;
+	bh=T0g8xyK5uS/p7J8GajjFc1VMqONFTU1lTEm8f8h3bs8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=m0DHHo+FaakVEyLyRoAR96R+DpX6BBwaY7ucuoAaojkSDBjvvGIqJ9wIuRhJFtxtyqwlAEHiIbI8Uw1nrAvTs+0SubxKCWmT0hoEM0+DDLK6Pzrndp/1hAecJVmCsJ4oohpjYORe2ilT3we+LD2pAEpdo8vpQLFRgG0sb9sNwQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eOkWhwsg; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e6ff4e1e97so1353667a34.3;
+        Fri, 05 Apr 2024 09:49:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712335765; x=1712940565; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1Q301Hmu4jkyy54Tck51kniDcTmciVu05IC0+dyM5+M=;
+        b=eOkWhwsgpgjkk+rLAAYLZiSHO83CVPCQykN5qDWUw3DrgsENm5Ilxk4TtoRFXU2EmW
+         OcQPsFNGbD3XuDKtdSJ0wapJBQzJ69z1Y0AW37r20obaXKYg+Nv+vyOj+2l0sucOZvgS
+         4prVhphKfR7BIXgkaXx1MKbP9/oZ2hEGlV2CSfWevUo0dQ7UVDfXHCMcI+YluSTEE4RD
+         8YFHjM2xbRm1TrvK43m9u2FLIC65/9YhUV23loqxQCFq1Y3pJJ+7gQ3YBLtKqum9YfJZ
+         D3l0mUikqotalPQay5h6tdhjStQmKiI3Kvrm4w6PqvzCDa7nkXJwKVfYZKqHotLvzEXs
+         OuPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712335765; x=1712940565;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1Q301Hmu4jkyy54Tck51kniDcTmciVu05IC0+dyM5+M=;
+        b=pNAXt4pemaCU0p48MnVCiYDdQ5I8K+UIElFzrRRHGB0FUMNHK1gwYiPYWjyRav0MtZ
+         /WFAYsbusWCfiYIOhMPdLmGlwlhxpX4xAD9ixAx1TN1Ym1e9hy0VxzpzjII0EobBLE22
+         C1V/sT3nbzCrpKa48KBXzAnea37nGEIN62OYZRI72WvtFRw3RXft4e5Rp5yEeO8JOxOu
+         cMvCzyUDji/COrqBsK/DuTNtZg4Nzaw2gTSFVluOsuc4vTBdZJ7kgF3VdyOZx3qbCrgO
+         SFsmThPtiNNFlNh480hhmIp7dydMo1t/YUygRbYz4h2mKA43aXyW/4IoK/ckKXGPgSiv
+         qyzw==
+X-Forwarded-Encrypted: i=1; AJvYcCVDl8LVF+pvwof9zUNJJda607CmvgO2/6wr1KydE4KblXBNvrZAY4XrCefmBeTB62p+vTP1KChQNIEwI1yh3KcIe/SxJVt7GB6iDY+o8t4vTAV8o9V41cVPdOyHpET2sjwIUx8v3TzM
+X-Gm-Message-State: AOJu0YzdOiCTbjXKnrZAhOEA1m1ykhvZuRomrLHfBr4W7RSRws8nB0I/
+	XXPIwio24HQ78UXvzCDhFtPPhJZ2RbKpnGJ1bgXhAh7RlgSvzPQb
+X-Google-Smtp-Source: AGHT+IEzk99QfVxQGmX333/pp4ac+5cgTfZoHLprBPeFsWR06+FIxuNZhd/TPqokoDumENH73G4qLg==
+X-Received: by 2002:a05:6830:1043:b0:6e9:e688:23eb with SMTP id b3-20020a056830104300b006e9e68823ebmr2026680otp.35.1712335765094;
+        Fri, 05 Apr 2024 09:49:25 -0700 (PDT)
+Received: from localhost.localdomain (024-171-058-032.res.spectrum.com. [24.171.58.32])
+        by smtp.gmail.com with ESMTPSA id d25-20020a05683018f900b006e8aeb6706bsm340376otf.6.2024.04.05.09.49.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 09:49:24 -0700 (PDT)
+From: Matthew Cassell <mcassell411@gmail.com>
+To: corbet@lwn.net,
+	akpm@linux-foundation.org,
+	vbendel@redhat.com,
+	rppt@kernel.org
+Cc: linux-mm@kvack.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mcassell411@gmail.com
+Subject: [PATCH] Documentation/admin-guide/sysctl/vm.rst adding the importance of NUMA-node count to documentation
+Date: Fri,  5 Apr 2024 16:49:20 +0000
+Message-Id: <20240405164920.2844-1-mcassell411@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240405160720.5977-5-eichest@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 05, 2024 at 06:07:20PM +0200, Stefan Eichenberger wrote:
-> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
-> 
-> Previously, we had the sleep-moci pin set to always on. However, the
-> Dahlia carrier board supports disabling the sleep-moci when the system
-> is suspended to power down peripherals that support it. This reduces
-> overall power consumption. This commit adds support for this feature by
-> disabling the reg_force_sleep_moci regulator and adding two new
-> regulators for the USB hub and PCIe that can be turned off when the
-> system is suspended.
-> 
-> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+If any bits are set in node_reclaim_mode (tunable via
+/proc/sys/vm/zone_reclaim_mode) within get_pages_from_freelist(), then
+page allocations start getting early access to reclaim via the
+node_reclaim() code path when memory pressure increases. This behavior
+provides the most optimization for multiple NUMA node machines. The above
+is mentioned in:
 
-Reviewed-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+Commit 9eeff2395e3cfd05c9b2e6 ("[PATCH] Zone reclaim: Reclaim logic")
+states "Zone reclaim is of particular importance for NUMA machines. It
+can be more beneficial to reclaim a page than taking the performance
+penalties that come with allocating a page on a REMOTE zone."
+
+While the pros/cons of staying on node versus allocating remotely are
+mentioned in commit histories and mailing lists. It isn't specifically
+mentioned in Documentation/ and isn't possible with a lone node. Imagine a
+situation where CONFIG_NUMA=y (the default on most major distributions)
+and only a single NUMA node exists. The latter is an oxymoron
+(single-node == uniform memory access). Informing the user via vm.rst that
+the most bang for their buck is when multiple nodes exist seems helpful.
+
+Signed-off-by: Matthew Cassell <mcassell411@gmail.com>
+---
+ Documentation/admin-guide/sysctl/vm.rst | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
+index c59889de122b..10270548af2a 100644
+--- a/Documentation/admin-guide/sysctl/vm.rst
++++ b/Documentation/admin-guide/sysctl/vm.rst
+@@ -1031,7 +1031,8 @@ Consider enabling one or more zone_reclaim mode bits if it's known that the
+ workload is partitioned such that each partition fits within a NUMA node
+ and that accessing remote memory would cause a measurable performance
+ reduction.  The page allocator will take additional actions before
+-allocating off node pages.
++allocating off node pages. Keep in mind enabling bits in zone_reclaim_mode
++makes the most sense for topologies consisting of multiple NUMA nodes.
+ 
+ Allowing zone reclaim to write out pages stops processes that are
+ writing large amounts of data from dirtying pages on other nodes. Zone
+-- 
+2.34.1
 
 
