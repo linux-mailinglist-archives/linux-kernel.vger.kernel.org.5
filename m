@@ -1,192 +1,139 @@
-Return-Path: <linux-kernel+bounces-133011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6774899D5C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:45:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3AE0899D65
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:45:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6AC6228778F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:45:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D512D1C22C8E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6950416D4F0;
-	Fri,  5 Apr 2024 12:44:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="G/6m+4fM"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C23F216D9BF;
+	Fri,  5 Apr 2024 12:44:47 +0000 (UTC)
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0185B16C86E;
-	Fri,  5 Apr 2024 12:44:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E5E816C86D;
+	Fri,  5 Apr 2024 12:44:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712321080; cv=none; b=NnZzwiHKZ/F50Ngt3XGMOaSYscDEw0J5bxHIN6r94eDxG+5ZzfVYXFj+uW9zNEXRDsOrVQ8n79YHuyktP7eJnqIkjgGHE3MxJnBwrBu5HH7KrmUqHhJLUYUne2MbxODbXWwMhLG0f9WWLwEpySxfwoPfYoBpBbs6N2RtBSkbXiU=
+	t=1712321087; cv=none; b=vDagIAu3+Vn+j3Ih6XKo+lRuheMhvGCFWJb+7o2CTxl/TSzGXQR8t7MyrHm0MPCIFOjh1HtveHOzPEH4uJw4765tctwO03tnSqHeot3tL6tvk8s2RXBnLuw/08CqTu7v3jmnsZKmn5xEvOn8j+L6D82v6AuhgdKTAnntIaKzd80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712321080; c=relaxed/simple;
-	bh=TogtJ4Vn6Gy6a4ti9uknKk9nKZOA1/ci5s+DLH+6evg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=bIr7OHincA9PfjCax2+A9IrmsSrA8Dksl6PO4IOg4bm4BFswfeBv9tqzkGTHTKdoPkv965V9MuMoptAtmgEwbXlWBEgomPdC8mbHfPiQO8WDTblHG/sT5qmfXH4iUhmuohJyD5+6w69VeBZ/5V97CwdByk7W/LtgPHn3j3v9EAA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=G/6m+4fM; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 435ADrwG031356;
-	Fri, 5 Apr 2024 12:44:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=zc5ni8QDAeHdiipwqwPSCdrgWjokMHTr3M0/Uql0XH0=; b=G/
-	6m+4fMrPwInyfNgjBmWpg3zx2VRL5LH6qhNJiy07g07PeDghPprZYhPpNQmj3LtG
-	eUthjxo11NMvMaHVVHQYUgeQsshZMj9P+8g3zwEFZyAVoPpFAtFZbdC8Z0WHLuIL
-	+p+cIzEAQATE+WumpagCmocsSo+BKUGdC62zTQ0ihIT9TdIPBgGQkbldkPSlffhX
-	nzpdJfKn4nXhPQuaz3j8kAR2jhyDjxpEL26UQ/X9a/9TWaVBK/OdFGxRaS3JSar4
-	v2or5q5kvk72vHfUOcAVKF9daBv1RzO2VoyG2L7sCQ3+IJ/6Gt9ZOvxOFis23NHp
-	jgie0KQnT4dmv6hsv50A==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xaaj18x42-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 12:44:26 +0000 (GMT)
-Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 435CiOBi018171
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Apr 2024 12:44:24 GMT
-Received: from [10.216.12.56] (10.80.80.8) by nasanex01a.na.qualcomm.com
- (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
- 05:44:19 -0700
-Message-ID: <66492657-3649-3bdb-b7df-0f5196418e06@quicinc.com>
-Date: Fri, 5 Apr 2024 18:14:15 +0530
+	s=arc-20240116; t=1712321087; c=relaxed/simple;
+	bh=gkqjyS2Ov6lQQ+C8YB9XKcwnXXOKnIIdxCTPOpe9BR0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JNElmu26lQuWWrEMBwASMLXp+1rwQXkYeOK+3VfIXtmVDBmwYapuQW5HLICFkOmLcVOck3O71BgPQm5/+U0Uo4yEIolMQGTejU4Sh+azU/RtP6V6whg1t/u1uds3XaREInxi7p9nwGxd9f/BlIZ9B6hq7YQYFEeYroev3HygkiA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-61461580403so22861547b3.2;
+        Fri, 05 Apr 2024 05:44:45 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712321082; x=1712925882;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=73KC80zFmtS9rJCbcCR2ges0599ShCvdMicVyQb7erI=;
+        b=FXLqGkvlbO2d40hhj38qTjj2lDX4dYVV2VKkL+E/qJgnkbACNEserRNV2ZWPlerb2a
+         PqZ1TzANfPyErJnqfDDx/w+bDFtUzKP44FQBwP34v1v1CWehdKy/6raprz9j4Pz1n1RI
+         bDoHrdHdXWRnUuucm5WSoqQ33ZPV0ApI1AS3xZmnWlTm0H99v4MrQb4zRngQ3PHaErtx
+         beHfSWt0lhvhthgR3rulk8XQirWdUDPPSZ/TINapgVPTaFYS3QiUtT5eFKc4P9KnOevS
+         0+7cRYT4auOCwm5gUNOUZ+TKiA3pXn35VlDd+afGack+edwpLswRsn7DuPPvKpUXhAVA
+         P+rw==
+X-Forwarded-Encrypted: i=1; AJvYcCXwhNgk0wJlFz1NKPkqlssbR6+zIL11jrBWs4N7/xQpAp+d9ixK5wX3DfO6m6eUU8J3oq8qP4u1SqloGKOLzUva4iGMQj7tTqe2tYE698SctMrWCyFuCA/iEeeihGzLLQ0lobiej7j5kzB+uRw9gw5Iz0KHEiSVgIzn0tPwV2imDj8vZ+556WB//aDk0AUUlQ3+9b4Muy/KdLwj9yZCwNarTC8f+oHAE1r1CQdLSP1uerLbK0ULhkR36TAsoaXgTpchKgpzc2fefWhMueAyxSe4AlWfEiw5lgIE1f7Rzh+Es7qsfRffrddiBu8olGJDbY7D8tITh3kvwnMYFmm0cVHYlzNE4lSZ/zqchsj8GzyPBvEw2mcqNbs=
+X-Gm-Message-State: AOJu0YxiA4e3nsRu0DKvTE+FjcjoN27Evee4wM4r9pzxuVoXYCHEJsAw
+	Rtux7gIMslfNjMdcMYpr95RYJpi3qnJGX7hQ/iviv0evAN4tMaqgyqDKaj2wMao=
+X-Google-Smtp-Source: AGHT+IFsxDA3em/YH1W9W/xcK3IKpNlOjLDrQXLWwtheoFreB+RdWe1toqtanc+ORkJtBMI14D1bQw==
+X-Received: by 2002:a81:c209:0:b0:615:18f8:d32a with SMTP id z9-20020a81c209000000b0061518f8d32amr1115589ywc.36.1712321082662;
+        Fri, 05 Apr 2024 05:44:42 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id y135-20020a81a18d000000b00609f4170662sm337706ywg.54.2024.04.05.05.44.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Apr 2024 05:44:42 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so2176084276.1;
+        Fri, 05 Apr 2024 05:44:42 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXp4GBqvQvngN9PeqozCuqskOG8yyCJw9bOPcjJ0U/UK5CDPuxv/mp/Qcasm5YnVcBeWsfpWfq/QWMg1bVIM9KSPjLkFndEEum8/N720+9D2lYnDYV6Whr8D2LANIG6HkgcZO43OaQwuggrW9hW5LEeLnMLxau9wFZhTJ4B/T3V1UWq94UJaFb+kcQWgaFuniRtlmiUQHiO89vYunmD5bMRtT5HbhIODiurObY+TFVOBlzkCNfwrlZPRL3/tyCSm+AHfQqn9T1Lh4LydO1lXxyEEUchIKYc5TK1kIMV036dLAqylB1nONqiMr1JTV9VW71dLKg5VOv1G3MIQ3u0xBTYDujLjuU1fzI1+PzFbVTxljm3iX8zlgQ=
+X-Received: by 2002:a25:b049:0:b0:dda:aace:9665 with SMTP id
+ e9-20020a25b049000000b00ddaaace9665mr1048383ybj.60.1712321081791; Fri, 05 Apr
+ 2024 05:44:41 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 03/19] media: venus: pm_helpers: Add kerneldoc to
- venus_clks_get()
-Content-Language: en-US
-To: Dikshita Agarwal <quic_dikshita@quicinc.com>,
-        Konrad Dybcio
-	<konrad.dybcio@linaro.org>,
-        Stanimir Varbanov
-	<stanimir.k.varbanov@gmail.com>,
-        Bryan O'Donoghue
-	<bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        "Philipp
- Zabel" <p.zabel@pengutronix.de>
-CC: Marijn Suijten <marijn.suijten@somainline.org>,
-        Stanimir Varbanov
-	<stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab
-	<mchehab+huawei@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
- <20230911-topic-mars-v3-3-79f23b81c261@linaro.org>
- <80c0ecb3-1157-1d7a-0829-c3b68b65f17f@quicinc.com>
-From: Vikash Garodia <quic_vgarodia@quicinc.com>
-In-Reply-To: <80c0ecb3-1157-1d7a-0829-c3b68b65f17f@quicinc.com>
+References: <cover.1712207606.git.ysato@users.sourceforge.jp> <7cffb0c041744b3c2e324f9908635a912dbb2436.1712207606.git.ysato@users.sourceforge.jp>
+In-Reply-To: <7cffb0c041744b3c2e324f9908635a912dbb2436.1712207606.git.ysato@users.sourceforge.jp>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 5 Apr 2024 14:44:30 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdVBNXJ6ATHYUftB4FFVw_JJ3p-sifZYAb7jUmok10tkbA@mail.gmail.com>
+Message-ID: <CAMuHMdVBNXJ6ATHYUftB4FFVw_JJ3p-sifZYAb7jUmok10tkbA@mail.gmail.com>
+Subject: Re: [RESEND v7 33/37] sh: j2_mimas_v2.dts update
+To: Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-sh@vger.kernel.org, Damien Le Moal <dlemoal@kernel.org>, 
+	Niklas Cassel <cassel@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
+	Thomas Zimmermann <tzimmermann@suse.de>, Thomas Gleixner <tglx@linutronix.de>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Rich Felker <dalias@libc.org>, John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>, 
+	Lee Jones <lee@kernel.org>, Helge Deller <deller@gmx.de>, 
+	Heiko Stuebner <heiko.stuebner@cherry.de>, Shawn Guo <shawnguo@kernel.org>, 
+	Sebastian Reichel <sre@kernel.org>, Chris Morgan <macromorgan@hotmail.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
+	David Rientjes <rientjes@google.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>, 
+	Vlastimil Babka <vbabka@suse.cz>, Baoquan He <bhe@redhat.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Guenter Roeck <linux@roeck-us.net>, 
+	Kefeng Wang <wangkefeng.wang@huawei.com>, Stephen Rothwell <sfr@canb.auug.org.au>, 
+	Javier Martinez Canillas <javierm@redhat.com>, Guo Ren <guoren@kernel.org>, 
+	Azeem Shaikh <azeemshaikh38@gmail.com>, Max Filippov <jcmvbkbc@gmail.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Jacky Huang <ychuang3@nuvoton.com>, 
+	Herve Codina <herve.codina@bootlin.com>, 
+	Manikanta Guntupalli <manikanta.guntupalli@amd.com>, Anup Patel <apatel@ventanamicro.com>, 
+	Biju Das <biju.das.jz@bp.renesas.com>, 
+	=?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Sam Ravnborg <sam@ravnborg.org>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, linux-ide@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org, linux-pci@vger.kernel.org, 
+	linux-serial@vger.kernel.org, linux-fbdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01a.na.qualcomm.com (10.52.223.231)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: foUleAOSXv8jrkBMfYMX_5RrGXcxukIO
-X-Proofpoint-GUID: foUleAOSXv8jrkBMfYMX_5RrGXcxukIO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-05_10,2024-04-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 impostorscore=0 bulkscore=0 clxscore=1015 lowpriorityscore=0
- mlxlogscore=999 suspectscore=0 malwarescore=0 spamscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2404010003 definitions=main-2404050091
+Content-Transfer-Encoding: quoted-printable
 
-Hi Konrad,
+Hi Sato-san,
 
-On 4/5/2024 1:56 PM, Dikshita Agarwal wrote:
-> 
-> 
-> On 3/27/2024 11:38 PM, Konrad Dybcio wrote:
->> To make it easier to understand the various clock requirements within
->> this driver, add kerneldoc to venus_clk_get() explaining the fluff.
->>
->> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
->> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
->> ---
->>  drivers/media/platform/qcom/venus/pm_helpers.c | 28 ++++++++++++++++++++++++++
->>  1 file changed, 28 insertions(+)
->>
->> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
->> index ac7c83404c6e..cf91f50a33aa 100644
->> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
->> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
->> @@ -23,6 +23,34 @@
->>  
->>  static bool legacy_binding;
->>  
->> +/**
->> + * venus_clks_get() - Get Venus clocks that are not bound to a vcodec
->> + * @core: A pointer to the venus core resource
->> + *
->> + * The Venus block (depending on the generation) can be split into a couple
->> + * of clock domains: one for main logic and one for each video core (0-2 instances).
-s/main logic/controller. Applies to below places as well.
+On Thu, Apr 4, 2024 at 7:16=E2=80=AFAM Yoshinori Sato
+<ysato@users.sourceforge.jp> wrote:
+> Signed-off-by: Yoshinori Sato <ysato@users.sourceforge.jp>
 
->> + *
->> + * MSM8916 (and possibly other HFIv1 users) only feature the "main logic"
->> + * domain, so this function is the only kind if clk_get necessary there.
-To be checked, unable to get the clock document to see why only core clock
-(VENUS0_VCODEC0_CLK). Will update.
+From my comments for v6:
 
->> + *
->> + * MSM8996 (and other HFIv3 users) feature two video cores, with core0 being
->> + * statically defined a decoder and core1 an encoder, with both having
->> + * their own clock domains.
->> + *
->> + * SDM845 features two video cores, each one of which may or may not be
-s/two video cores/two identical video cores
->> + * subdivided into two encoder/decoder threads.
-decoder cannot be split into core threads. you can keep it like "each of which
-is capable to do any encode or decode"
+Please enhance the one-line summary, e.g.
 
->> + *
->> + * Other SoCs either feature a single video core (with its own clock domain)
->> + * or one video core and one CVP (Computer Vision Processor) core. In both cases
->> + * we treat it the same way (CVP only happens to live near-by Venus on the SoC).
->> + *
->> + * Due to unfortunate developments in the past, we need to support legacy
-> why unfortunate? please re-phrase this.
->> + * bindings (MSM8996, SDM660, SDM845) that require specifying the clocks and
->> + * power-domains associated with a video core domain in a bogus sub-node,
->> + * which means that additional fluff is necessary.
-Some background:
-It was done that way to support decoder core with specific clocks and similarly
-for encoder. Earlier architectures use to have different clock source for these
-specific decoder/encoder core clocks, now there is a common clock source for
-both the cores. Hence if any one is enabled, others gets enabled as it is
-derived from same source.
-So if we see the later bindings, the clocks were moved out of sub node to main
-venus node.
+    sh: j2_mimas_v2: Update CPU compatible value
 
-Regards,
-Vikash
->> + *
->> + * Return: 0 on success, negative errno on failure.
->> + */
->>  static int venus_clks_get(struct venus_core *core)
->>  {
->>  	const struct venus_resources *res = core->res;
->>
-> 
-> Thanks,
-> Dikshita
+For the actual changes:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
