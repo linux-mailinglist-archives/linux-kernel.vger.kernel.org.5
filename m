@@ -1,520 +1,162 @@
-Return-Path: <linux-kernel+bounces-133424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 733FA89A37C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:29:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D561389A37D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:29:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29519284D00
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:29:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03EAC1C218C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:29:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CDAA171E4A;
-	Fri,  5 Apr 2024 17:28:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B762171670;
+	Fri,  5 Apr 2024 17:29:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iixnUawi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="EXzvZofc"
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D68172761
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63BE116132B
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712338118; cv=none; b=rhVXlqw0Z+Let5EMo027jiGdnClUUkb6aLcApgAy5JWICgFJBfKfOsC+vChdQWLaIWN5s8o9E1UI6O5eIsI4VRZ2xhSNZLXsfeRRwDZwCBJ7L2UtLXLXSC6CDXXBTBdOuSrOXk4K/CRcSwPxhdiKEWKt+AkF6zkbOmiYqRAjP88=
+	t=1712338168; cv=none; b=YXFkzq303/6FPkE2tVwEsaThlUcqAeL+Tr3YKel5uWfwD8w2bdZeZZZIjpT22YasTOV4trbRSkZnRYNQjJBaxoD2O9jta5j2L8KLN5p+YQpTtnegCrdz0HfYDplvz6016fybK3U0GmTyJKNJbjbdrB+Ab8aIAkBwjVVC8bN+J9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712338118; c=relaxed/simple;
-	bh=38MnuOR+fbynRkefesi1jVKTa5oG4c9AUn/MGCJwoM0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h8+Ac+qSlRoUJ6QO5abtxAMgsgaVV1wgllf3COKotwdHdu3tivNAT7P7JnkSAQUFTY0RyZYr+6ZVN0iVURiyKZXORPXSdWPgMSWwEOK47ocTthkeevHm9bfbwWubvm6BOMgCc25E6THP8k+11TRqbRjlaqSqGmckUD65kzakA4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iixnUawi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F141CC433C7;
-	Fri,  5 Apr 2024 17:28:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712338118;
-	bh=38MnuOR+fbynRkefesi1jVKTa5oG4c9AUn/MGCJwoM0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iixnUawi+l4UuT2ebEAecJ9t1WIiUhUWPCRt9du+ckkn7G0HQlW743d6bZ7lpchAK
-	 5cv1VI7D5aea9oka2+rN7B3rlpR8/ce/lDzZcFoeHK3xdGM/YM3MfWdY2rZKXYZ6wx
-	 ttRjswqCaRCH8BOEEVCKfGEXVEVOWspE+opJjsvI9iqRGqy5KuF2C5lcqqNmKaV+Tf
-	 qJ81DKgiLLdF7lUbLD+mYYZke23EN18jBR1N2AVENDRs0Pl5LyVqRAARGTgDRGOGYz
-	 UfgLssrhcup/YUgztCctWDN7Uls+1Idkiwd5CY/KWNv2/QFlVhz8o4SZzjvEByiqCN
-	 8psRrlwpEj78A==
-From: Daniel Bristot de Oliveira <bristot@kernel.org>
-To: Ingo Molnar <mingo@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	Luca Abeni <luca.abeni@santannapisa.it>,
-	Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Vineeth Pillai <vineeth@bitbyteword.org>,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	bristot@kernel.org,
-	Phil Auld <pauld@redhat.com>,
-	Suleiman Souhlal <suleiman@google.com>,
-	Youssef Esmat <youssefesmat@google.com>
-Subject: [PATCH V6 3/6] sched/fair: Fair server interface
-Date: Fri,  5 Apr 2024 19:28:02 +0200
-Message-ID: <1abba9e7f47ad4a5dfd8b2dfb59aa607983cdce4.1712337227.git.bristot@kernel.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1712337227.git.bristot@kernel.org>
-References: <cover.1712337227.git.bristot@kernel.org>
+	s=arc-20240116; t=1712338168; c=relaxed/simple;
+	bh=zoreA7+EyQxV5EiqdfcGtZK0hxIoElLFckq7qdRiMuw=;
+	h=Date:Subject:CC:From:To:Message-ID; b=RqxtzoUu8jpPgGyHNZSXc/qlTT/yFdGTzO1lxkkl2Z8/7CKnZeWPt2A3g4e6T3lh9+tHbxpa6hcvXaH821G8ZVOHcHuxjgtIHwrf4g/cXW28TN/UqDUigchpR5j/infIDNek6DAFCEHlJa7uGvrwynxbbpf0Ru4eOAD7x49yyKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=EXzvZofc; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-6ea9a60f7f5so2137315b3a.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 10:29:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1712338166; x=1712942966; darn=vger.kernel.org;
+        h=message-id:to:from:cc:subject:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YO5f4h758dBNmiDAJhldDYKOhisPvEGqSyQ4iiERmME=;
+        b=EXzvZofcI4hCzwaxDDEfZ3M1u8Z8ff/vBSrz+AC9oqiStce/U7olR15KzFbWEQr82O
+         QhwYsDzGO0M9ycoYu0m4fGV/xlY5AbTfXuNv8Nzd90j9GWk5zyrhXTye1WfWM6WY1hrT
+         43wzKbtthTxks4vNC+04Epx8FA0uNkg3tcHVNFJv6hlI0cCf1EGiZQeTSLl0C1GPeVrb
+         andpF8xlaHBk8tMJ3oi487fhBPboqo3YbRhNlbFy9qvCzArFpQduX4N3ofINmL1vCxRE
+         sIC7rKanfyU9DJFCp4+NDTcIau6ur/URKUnMF9qchMt5tugvb8MSMn/NqbaQwoiO8CMj
+         GqLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712338166; x=1712942966;
+        h=message-id:to:from:cc:subject:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YO5f4h758dBNmiDAJhldDYKOhisPvEGqSyQ4iiERmME=;
+        b=t5aqLtz8uQh/hMpfYZx+XwUu5AEnGMQbhk4JhPkFtsayIlY+PWsF7T+bu/2CCWCOIe
+         +9OIIhyz19fdolgqQOU/MylAs+p+ngQsHgIBAH8+opcJjpV32GpNA8X9+N7z67nIKiYP
+         ifJHZSLt6W99At3goGoTXkAmKOrZUKNqKCrfLoFTjClFM6c3GfKzwo4eNw5wGjjFEtWk
+         TJ58rVPh1fY+liV/H0UOPv/wvjQxTSVHPt+2MBMcHpA3ZWzK1O4pXS6dJnaOif1abMXk
+         V9dCuTXQw4mZcwP3mwVUN6RMrQU3NtHA7GFRWGPm7sxyfwKC4vejkk7proBd7uexNXwr
+         B6jw==
+X-Forwarded-Encrypted: i=1; AJvYcCUOnCS9miJFt9VaknhAm9Xu50wyPep8ac9IlJ8QvbMRFLEKDoC+vtrRKyWmZHkQ6r8tdVuzfQpNJVZ90q+W5I1DRzyI/glvs/TlddZf
+X-Gm-Message-State: AOJu0YyBCuCmEFfS6NbHqQuWpWDTLS1bzeplb264D/iRVnIiwCFDaRXH
+	jFwcH3f5sbrpf+ZA3geYajpVcPD2hUDYKx9Nj4EzPpcx9nIh61Iyl4JMyrCNTRt/FHhdM0AaLZY
+	t
+X-Google-Smtp-Source: AGHT+IE2251VrHWLZ0prAu7SSHn+DVyi5u3CH3BVvNzid0hoXLca2RkLGi9W3l4saSgMej+DT+662w==
+X-Received: by 2002:a05:6a00:22d1:b0:6ec:fdcc:3cce with SMTP id f17-20020a056a0022d100b006ecfdcc3ccemr2388441pfj.5.1712338165463;
+        Fri, 05 Apr 2024 10:29:25 -0700 (PDT)
+Received: from localhost ([50.145.13.30])
+        by smtp.gmail.com with ESMTPSA id x7-20020a056a00188700b006ecfe20d38csm1759033pfh.30.2024.04.05.10.29.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 10:29:24 -0700 (PDT)
+Date: Fri, 05 Apr 2024 10:29:24 -0700 (PDT)
+X-Google-Original-Date: Fri, 05 Apr 2024 10:18:39 PDT (-0700)
+Subject: [GIT PULL] RISC-V Fixes for 6.9-rc3
+CC:         linux-riscv@lists.infradead.org,        linux-kernel@vger.kernel.org
+From: Palmer Dabbelt <palmer@rivosinc.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-28e73e09-0100-4e0e-8c4a-490552b42c6f@palmer-ri-x1c9a>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Add an interface for fair server setup on debugfs.
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
-Each CPU has three files under /debug/sched/fair_server/cpu{ID}:
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
 
- - runtime: set runtime in ns
- - period:  set period in ns
- - defer:   on/off for the defer mechanism
+are available in the Git repository at:
 
-This then leaves /proc/sys/kernel/sched_rt_{period,runtime}_us to set
-bounds on admission control.
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-6.9-rc3
 
-The interface also add the server to the dl bandwidth accounting.
+for you to fetch changes up to d14fa1fcf69db9d070e75f1c4425211fa619dfc8:
 
-Signed-off-by: Daniel Bristot de Oliveira <bristot@kernel.org>
----
- kernel/sched/deadline.c | 111 ++++++++++++++++++----
- kernel/sched/debug.c    | 206 ++++++++++++++++++++++++++++++++++++++++
- kernel/sched/sched.h    |   3 +
- kernel/sched/topology.c |   8 ++
- 4 files changed, 311 insertions(+), 17 deletions(-)
+  riscv: process: Fix kernel gp leakage (2024-04-04 12:35:05 -0700)
 
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 6ea9c05711ce..dd38370aa276 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -321,19 +321,12 @@ void sub_running_bw(struct sched_dl_entity *dl_se, struct dl_rq *dl_rq)
- 		__sub_running_bw(dl_se->dl_bw, dl_rq);
- }
- 
--static void dl_change_utilization(struct task_struct *p, u64 new_bw)
-+static void dl_rq_change_utilization(struct rq *rq, struct sched_dl_entity *dl_se, u64 new_bw)
- {
--	struct rq *rq;
--
--	WARN_ON_ONCE(p->dl.flags & SCHED_FLAG_SUGOV);
--
--	if (task_on_rq_queued(p))
--		return;
-+	if (dl_se->dl_non_contending) {
-+		sub_running_bw(dl_se, &rq->dl);
-+		dl_se->dl_non_contending = 0;
- 
--	rq = task_rq(p);
--	if (p->dl.dl_non_contending) {
--		sub_running_bw(&p->dl, &rq->dl);
--		p->dl.dl_non_contending = 0;
- 		/*
- 		 * If the timer handler is currently running and the
- 		 * timer cannot be canceled, inactive_task_timer()
-@@ -341,13 +334,25 @@ static void dl_change_utilization(struct task_struct *p, u64 new_bw)
- 		 * will not touch the rq's active utilization,
- 		 * so we are still safe.
- 		 */
--		if (hrtimer_try_to_cancel(&p->dl.inactive_timer) == 1)
--			put_task_struct(p);
-+		if (hrtimer_try_to_cancel(&dl_se->inactive_timer) == 1) {
-+			if (!dl_server(dl_se))
-+				put_task_struct(dl_task_of(dl_se));
-+		}
- 	}
--	__sub_rq_bw(p->dl.dl_bw, &rq->dl);
-+	__sub_rq_bw(dl_se->dl_bw, &rq->dl);
- 	__add_rq_bw(new_bw, &rq->dl);
- }
- 
-+static void dl_change_utilization(struct task_struct *p, u64 new_bw)
-+{
-+	WARN_ON_ONCE(p->dl.flags & SCHED_FLAG_SUGOV);
-+
-+	if (task_on_rq_queued(p))
-+		return;
-+
-+	dl_rq_change_utilization(task_rq(p), &p->dl, new_bw);
-+}
-+
- static void __dl_clear_params(struct sched_dl_entity *dl_se);
- 
- /*
-@@ -1191,6 +1196,11 @@ static enum hrtimer_restart dl_server_timer(struct hrtimer *timer, struct sched_
- 	u64 fw;
- 
- 	rq_lock(rq, &rf);
-+
-+	if (!dl_se->dl_runtime) {
-+		goto unlock;
-+	}
-+
- 	if (dl_se->dl_throttled) {
- 		sched_clock_tick();
- 		update_rq_clock(rq);
-@@ -1617,11 +1627,17 @@ void dl_server_start(struct sched_dl_entity *dl_se)
- {
- 	struct rq *rq = dl_se->rq;
- 
-+	/*
-+	 * XXX: the apply do not work fine at the init phase for the
-+	 * fair server because things are not yet set. We need to improve
-+	 * this before getting generic.
-+	 */
- 	if (!dl_server(dl_se)) {
- 		/* Disabled */
--		dl_se->dl_runtime = 0;
--		dl_se->dl_deadline = 1000 * NSEC_PER_MSEC;
--		dl_se->dl_period = 1000 * NSEC_PER_MSEC;
-+		u64 runtime = 0;
-+		u64 period = 1000 * NSEC_PER_MSEC;
-+
-+		dl_server_apply_params(dl_se, runtime, period, 1);
- 
- 		dl_se->dl_server = 1;
- 		dl_se->dl_defer = 1;
-@@ -1656,6 +1672,67 @@ void dl_server_init(struct sched_dl_entity *dl_se, struct rq *rq,
- 	dl_se->server_pick = pick;
- }
- 
-+void __dl_server_attach_root(struct sched_dl_entity *dl_se, struct rq *rq)
-+{
-+	u64 new_bw = dl_se->dl_bw;
-+	struct dl_bw *dl_b;
-+	int cpu = cpu_of(rq);
-+
-+	dl_b = dl_bw_of(cpu_of(rq));
-+	raw_spin_lock(&dl_b->lock);
-+
-+	__dl_add(dl_b, new_bw, dl_bw_cpus(cpu));
-+
-+	raw_spin_unlock(&dl_b->lock);
-+}
-+
-+int dl_server_apply_params(struct sched_dl_entity *dl_se, u64 runtime, u64 period, bool init)
-+{
-+	u64 old_bw = init ? 0 : to_ratio(dl_se->dl_period, dl_se->dl_runtime);
-+	u64 new_bw = to_ratio(period, runtime);
-+	struct rq *rq = dl_se->rq;
-+	int cpu = cpu_of(rq);
-+	struct dl_bw *dl_b;
-+	unsigned long cap;
-+	int retval = 0;
-+	int cpus;
-+
-+	dl_b = dl_bw_of(cpu);
-+	raw_spin_lock(&dl_b->lock);
-+	cpus = dl_bw_cpus(cpu);
-+	cap = dl_bw_capacity(cpu);
-+
-+	if (__dl_overflow(dl_b, cap, old_bw, new_bw)) {
-+		retval = -EBUSY;
-+		goto out;
-+	}
-+
-+	if (init) {
-+		__add_rq_bw(new_bw, &rq->dl);
-+		__dl_add(dl_b, new_bw, cpus);
-+	} else {
-+		__dl_sub(dl_b, dl_se->dl_bw, cpus);
-+		__dl_add(dl_b, new_bw, cpus);
-+
-+		dl_rq_change_utilization(rq, dl_se, new_bw);
-+	}
-+
-+	dl_se->dl_runtime = runtime;
-+	dl_se->dl_deadline = period;
-+	dl_se->dl_period = period;
-+
-+	dl_se->runtime = 0;
-+	dl_se->deadline = 0;
-+
-+	dl_se->dl_bw = to_ratio(dl_se->dl_period, dl_se->dl_runtime);
-+	dl_se->dl_density = to_ratio(dl_se->dl_deadline, dl_se->dl_runtime);
-+
-+out:
-+	raw_spin_unlock(&dl_b->lock);
-+
-+	return retval;
-+}
-+
- /*
-  * Update the current task's runtime statistics (provided it is still
-  * a -deadline task and has not been removed from the dl_rq).
-diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
-index 8d5d98a5834d..5da3297270cd 100644
---- a/kernel/sched/debug.c
-+++ b/kernel/sched/debug.c
-@@ -333,8 +333,212 @@ static const struct file_operations sched_debug_fops = {
- 	.release	= seq_release,
- };
- 
-+enum dl_param {
-+	DL_RUNTIME = 0,
-+	DL_PERIOD,
-+	DL_DEFER
-+};
-+
-+static unsigned long fair_server_period_max = (1 << 22) * NSEC_PER_USEC; /* ~4 seconds */
-+static unsigned long fair_server_period_min = (100) * NSEC_PER_USEC;     /* 100 us */
-+
-+static ssize_t sched_fair_server_write(struct file *filp, const char __user *ubuf,
-+				       size_t cnt, loff_t *ppos, enum dl_param param)
-+{
-+	long cpu = (long) ((struct seq_file *) filp->private_data)->private;
-+	u64 runtime, period, defer;
-+	struct rq *rq = cpu_rq(cpu);
-+	size_t err;
-+	int retval;
-+	u64 value;
-+
-+	err = kstrtoull_from_user(ubuf, cnt, 10, &value);
-+	if (err)
-+		return err;
-+
-+	scoped_guard (rq_lock_irqsave, rq) {
-+
-+		runtime  = rq->fair_server.dl_runtime;
-+		period = rq->fair_server.dl_period;
-+		defer = rq->fair_server.dl_defer;
-+
-+		switch (param) {
-+		case DL_RUNTIME:
-+			if (runtime == value)
-+				goto out;
-+			runtime = value;
-+			break;
-+		case DL_PERIOD:
-+			if (value == period)
-+				goto out;
-+			period = value;
-+			break;
-+		case DL_DEFER:
-+			if (defer == value)
-+				goto out;
-+			defer = value;
-+			break;
-+		}
-+
-+		if (runtime > period ||
-+		    period > fair_server_period_max ||
-+		    period < fair_server_period_min ||
-+		    defer > 1) {
-+			cnt = -EINVAL;
-+			goto out;
-+		}
-+
-+		if (rq->cfs.h_nr_running) {
-+			update_rq_clock(rq);
-+			dl_server_stop(&rq->fair_server);
-+		}
-+
-+		/*
-+		 * The defer does not change utilization, so just
-+		 * setting it is enough.
-+		 */
-+		if (rq->fair_server.dl_defer != defer) {
-+			rq->fair_server.dl_defer = defer;
-+		} else {
-+			retval = dl_server_apply_params(&rq->fair_server, runtime, period, 0);
-+			if (retval)
-+				cnt = retval;
-+		}
-+
-+		if (!runtime)
-+			printk_deferred("Fair server disabled in CPU %d, system may crash due to starvation.\n",
-+					cpu_of(rq));
-+
-+		if (rq->cfs.h_nr_running)
-+			dl_server_start(&rq->fair_server);
-+	}
-+
-+out:
-+	*ppos += cnt;
-+	return cnt;
-+}
-+
-+static size_t sched_fair_server_show(struct seq_file *m, void *v, enum dl_param param)
-+{
-+	unsigned long cpu = (unsigned long) m->private;
-+	struct rq *rq = cpu_rq(cpu);
-+	u64 value;
-+
-+	switch (param) {
-+	case DL_RUNTIME:
-+		value = rq->fair_server.dl_runtime;
-+		break;
-+	case DL_PERIOD:
-+		value = rq->fair_server.dl_period;
-+		break;
-+	case DL_DEFER:
-+		value = rq->fair_server.dl_defer;
-+	}
-+
-+	seq_printf(m, "%llu\n", value);
-+	return 0;
-+
-+}
-+
-+static ssize_t
-+sched_fair_server_runtime_write(struct file *filp, const char __user *ubuf,
-+				size_t cnt, loff_t *ppos)
-+{
-+	return sched_fair_server_write(filp, ubuf, cnt, ppos, DL_RUNTIME);
-+}
-+
-+static int sched_fair_server_runtime_show(struct seq_file *m, void *v)
-+{
-+	return sched_fair_server_show(m, v, DL_RUNTIME);
-+}
-+
-+static int sched_fair_server_runtime_open(struct inode *inode, struct file *filp)
-+{
-+	return single_open(filp, sched_fair_server_runtime_show, inode->i_private);
-+}
-+
-+static const struct file_operations fair_server_runtime_fops = {
-+	.open		= sched_fair_server_runtime_open,
-+	.write		= sched_fair_server_runtime_write,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+};
-+
-+static ssize_t
-+sched_fair_server_period_write(struct file *filp, const char __user *ubuf,
-+			       size_t cnt, loff_t *ppos)
-+{
-+	return sched_fair_server_write(filp, ubuf, cnt, ppos, DL_PERIOD);
-+}
-+
-+static int sched_fair_server_period_show(struct seq_file *m, void *v)
-+{
-+	return sched_fair_server_show(m, v, DL_PERIOD);
-+}
-+
-+static int sched_fair_server_period_open(struct inode *inode, struct file *filp)
-+{
-+	return single_open(filp, sched_fair_server_period_show, inode->i_private);
-+}
-+
-+static const struct file_operations fair_server_period_fops = {
-+	.open		= sched_fair_server_period_open,
-+	.write		= sched_fair_server_period_write,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+};
-+
-+static ssize_t
-+sched_fair_server_defer_write(struct file *filp, const char __user *ubuf,
-+			      size_t cnt, loff_t *ppos)
-+{
-+	return sched_fair_server_write(filp, ubuf, cnt, ppos, DL_DEFER);
-+}
-+
-+static int sched_fair_server_defer_show(struct seq_file *m, void *v)
-+{
-+	return sched_fair_server_show(m, v, DL_DEFER);
-+}
-+
-+static int sched_fair_server_defer_open(struct inode *inode, struct file *filp)
-+{
-+	return single_open(filp, sched_fair_server_defer_show, inode->i_private);
-+}
-+
-+static const struct file_operations fair_server_defer_fops = {
-+	.open		= sched_fair_server_defer_open,
-+	.write		= sched_fair_server_defer_write,
-+	.read		= seq_read,
-+	.llseek		= seq_lseek,
-+	.release	= single_release,
-+};
-+
- static struct dentry *debugfs_sched;
- 
-+static void debugfs_fair_server_init(void)
-+{
-+	struct dentry *d_fair;
-+	unsigned long cpu;
-+
-+	d_fair = debugfs_create_dir("fair_server", debugfs_sched);
-+	if (!d_fair)
-+		return;
-+
-+	for_each_possible_cpu(cpu) {
-+		struct dentry *d_cpu;
-+		char buf[32];
-+
-+		snprintf(buf, sizeof(buf), "cpu%lu", cpu);
-+		d_cpu = debugfs_create_dir(buf, d_fair);
-+
-+		debugfs_create_file("runtime", 0644, d_cpu, (void *) cpu, &fair_server_runtime_fops);
-+		debugfs_create_file("period", 0644, d_cpu, (void *) cpu, &fair_server_period_fops);
-+		debugfs_create_file("defer", 0644, d_cpu, (void *) cpu, &fair_server_defer_fops);
-+	}
-+}
-+
- static __init int sched_init_debug(void)
- {
- 	struct dentry __maybe_unused *numa;
-@@ -374,6 +578,8 @@ static __init int sched_init_debug(void)
- 
- 	debugfs_create_file("debug", 0444, debugfs_sched, NULL, &sched_debug_fops);
- 
-+	debugfs_fair_server_init();
-+
- 	return 0;
- }
- late_initcall(sched_init_debug);
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index e70e17be83c3..a80a236da57c 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -343,6 +343,9 @@ extern void dl_server_init(struct sched_dl_entity *dl_se, struct rq *rq,
- extern void dl_server_update_idle_time(struct rq *rq,
- 		    struct task_struct *p);
- extern void fair_server_init(struct rq *rq);
-+extern void __dl_server_attach_root(struct sched_dl_entity *dl_se, struct rq *rq);
-+extern int dl_server_apply_params(struct sched_dl_entity *dl_se,
-+		    u64 runtime, u64 period, bool init);
- 
- #ifdef CONFIG_CGROUP_SCHED
- 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 99ea5986038c..ecb089c4967f 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -517,6 +517,14 @@ void rq_attach_root(struct rq *rq, struct root_domain *rd)
- 	if (cpumask_test_cpu(rq->cpu, cpu_active_mask))
- 		set_rq_online(rq);
- 
-+	/*
-+	 * Because the rq is not a task, dl_add_task_root_domain() did not
-+	 * move the fair server bw to the rd if it already started.
-+	 * Add it now.
-+	 */
-+	if (rq->fair_server.dl_server)
-+		__dl_server_attach_root(&rq->fair_server, rq);
-+
- 	rq_unlock_irqrestore(rq, &rf);
- 
- 	if (old_rd)
--- 
-2.44.0
+----------------------------------------------------------------
+RISC-V Fixes for 6.9-rc3
 
+* A fix for an __{get,put}_kernel_nofault to avoid an uninitialized
+  value causing spurious failures.
+* compat_vdso.so.dbg is now installed to the standard install location.
+* A fix to avoid initializing PERF_SAMPLE_BRANCH_*-related events, as
+  they aren't supported and will just later fail.
+* A fix to make AT_VECTOR_SIZE_ARCH correct now that we're providing
+  AT_MINSIGSTKSZ.
+* pgprot_nx() is now implemented, which fixes vmap W^X protection.
+* A fix for the vector save/restore code, which at least manifests as
+  corrupted vector state when a signal is taken.
+* A fix for a race condition in instruction patching.
+* A fix to avoid leaking the kernel-mode GP to userspace, which is a
+  kernel pointer leak that can be used to defeat KASLR in various ways.
+* A handful of smaller fixes to build warnings, an overzealous printk,
+  and some missing tracing annotations.
+
+----------------------------------------------------------------
+Alexandre Ghiti (2):
+      riscv: Fix warning by declaring arch_cpu_idle() as noinstr
+      riscv: Disable preemption when using patch_map()
+
+Andreas Schwab (1):
+      riscv: use KERN_INFO in do_trap
+
+Björn Töpel (1):
+      riscv: Fix vector state restore in rt_sigreturn()
+
+Jisheng Zhang (1):
+      riscv: mm: implement pgprot_nx
+
+Masahiro Yamada (2):
+      riscv: compat_vdso: install compat_vdso.so.dbg to /lib/modules/*/vdso/
+      riscv: compat_vdso: align VDSOAS build log
+
+Pu Lehui (1):
+      drivers/perf: riscv: Disable PERF_SAMPLE_BRANCH_* while not supported
+
+Sami Tolvanen (1):
+      riscv: Mark __se_sys_* functions __used
+
+Samuel Holland (2):
+      riscv: mm: Fix prototype to avoid discarding const
+      riscv: Fix spurious errors from __get/put_kernel_nofault
+
+Stefan O'Rear (1):
+      riscv: process: Fix kernel gp leakage
+
+Victor Isaev (1):
+      RISC-V: Update AT_VECTOR_SIZE_ARCH for new AT_MINSIGSTKSZ
+
+Vladimir Isaev (1):
+      riscv: hwprobe: do not produce frtace relocation
+
+ arch/riscv/Makefile                      |  2 +-
+ arch/riscv/include/asm/pgtable.h         |  6 ++++++
+ arch/riscv/include/asm/syscall_wrapper.h |  3 ++-
+ arch/riscv/include/asm/uaccess.h         |  4 ++--
+ arch/riscv/include/uapi/asm/auxvec.h     |  2 +-
+ arch/riscv/kernel/compat_vdso/Makefile   |  2 +-
+ arch/riscv/kernel/patch.c                |  8 ++++++++
+ arch/riscv/kernel/process.c              |  5 +----
+ arch/riscv/kernel/signal.c               | 15 ++++++++-------
+ arch/riscv/kernel/traps.c                |  2 +-
+ arch/riscv/kernel/vdso/Makefile          |  1 +
+ arch/riscv/mm/tlbflush.c                 |  4 ++--
+ drivers/perf/riscv_pmu.c                 |  4 ++++
+ 13 files changed, 38 insertions(+), 20 deletions(-)
 
