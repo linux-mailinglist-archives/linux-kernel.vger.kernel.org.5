@@ -1,166 +1,220 @@
-Return-Path: <linux-kernel+bounces-132649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 121E38997BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:26:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79EF68997C5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:27:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 35E871C2114D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:26:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31322284009
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52A9B146A81;
-	Fri,  5 Apr 2024 08:26:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DE951487C5;
+	Fri,  5 Apr 2024 08:26:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Zuyj1HTx"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ByEbR8sq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yb0DbtiM";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ByEbR8sq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yb0DbtiM"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E64C14535C;
-	Fri,  5 Apr 2024 08:26:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF62414658C
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 08:26:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712305594; cv=none; b=ftbfQN2p6m5CYWmvrb9WZQXNf0AHJ6VdB5G937I7XSzo0LbLM2YFSwVTZJm65UfUKb3wOLjzX5WFtmIyIA3ozLMb75As1g6drbLILWddQnvu3LWRRJ6CTxPpWpjKvjoAGQsrDNjM6G2pcSZVq9nlrAq7Ht13fmqxoTyF5fBjS8o=
+	t=1712305604; cv=none; b=LXzgJpAFM4EEEayx9R2JzF1wGW3qadONy6YxVeE+Pl3lpfiZ+b0j9XZMzXIb3vz98eKNaDXwU2hga3a5ThoxqGjS0n+AVMr1TD9LxsPhNv2y1hH8Ei15W4HusHLjgAB90y/CB1J10oGAwy2OeIoOb6MZF/ZbfiSmnyqp3XsS1E0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712305594; c=relaxed/simple;
-	bh=j9RoPLZmCC7wWzTStv2sVugCxNGztVnkFeyD2s4KlwM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=u2I+4YxTTE04+yBo3OcbxTnxeXhiFRMFcpNCtt96F9UUH78Z5j2Q86osb7UzkEbygCo1V29TUgrLz2FDaxs3HOlGqzCjti9+ElveuTYS/am1DbTjdnzmmq6EQG6glS47d4W2wHkTAYYTAXLL7xQfz2xjKrUSSs/IYUvrPGdHcbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Zuyj1HTx; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 43556DRS003669;
-	Fri, 5 Apr 2024 08:26:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=MXiuHfSkLYp7Elwz53wcV8mv8XCf2+1rKM2cnUVWS7A=; b=Zu
-	yj1HTxHxFVsRVMcbVV7dX+9MKG1UsDCvYC3tiNVrG9RcKd98f+lr7EEjdJnh5RCZ
-	hUGy9lWV0frkj8KlJRmbJ+2lh2YBiBLp30Aufz48/wU3Y7I6olDCfZatl1HNbDUO
-	37GvZ3VlIB4PkfvSnuYBhS+CI97BAyzLQ24Gs/rJWFpkKKZUgNJRlhOW8XGDEM3r
-	quPHFpgKRNH58ZiI4GcJndrrQif4rfNcjAGs73EE7fvpC31GqMs3jpLSDqAm++Pc
-	6PqecxiHMYlt4lqQrM3a3O9Bs/KO0AxLQnxCoklVbku1eHb0kpwmxpL0NpRCMweo
-	Lvq3QIvRrtcgQVJXZuLw==
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa7m5gqds-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 08:26:23 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4358QMOe024730
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 5 Apr 2024 08:26:22 GMT
-Received: from [10.216.11.24] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
- 01:26:17 -0700
-Message-ID: <80c0ecb3-1157-1d7a-0829-c3b68b65f17f@quicinc.com>
-Date: Fri, 5 Apr 2024 13:56:13 +0530
+	s=arc-20240116; t=1712305604; c=relaxed/simple;
+	bh=LiieMc8fF9lLZAb6phrUhY+9DVrLz6MxjX/NU1KcdeA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YDMN6igChm+AXp5pxtYYP3l/l8vDWkXJTdEaWj3aY3zlMQ0dnqlb/HBeGgRaROuO1DQBosw9d92K3uCQ7y8WKDgffo9faNQgJC3ijw0j3BY0Baj+h3x0mVDHTqe6V6bf/nOZNHlMDTqv5Odm73basQAvd/qQYSLHnR10jCMRQoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ByEbR8sq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=yb0DbtiM; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ByEbR8sq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=yb0DbtiM; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BB42921A1C;
+	Fri,  5 Apr 2024 08:26:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712305598; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tmIQZbcZvVbKfKyxrKi2zYlGLTSDxc3jt844Xv4WV3I=;
+	b=ByEbR8sq7P7CRJiMKBVW9n2U3gnopNp/KjYYdv8FBRiHJWSiXxhXSJIJsmo/dGRaudS4dy
+	k5Uzm5eH8DBK0YsSZjBzNw3PRZIToh4KaR/tZbnCggMeYmkuv9QxYavNGQYLiuR+a0F11S
+	WPoKf0AfXzea04kt1JRWWLkx3uTTTJE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712305598;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tmIQZbcZvVbKfKyxrKi2zYlGLTSDxc3jt844Xv4WV3I=;
+	b=yb0DbtiMAKapigkEPdK7HN5h2puvzFTjvKuUghL+O2GtU4OWKHz1eELYrjPdcjrpqLQ5fI
+	8srgvUUUJY8wIqDw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712305598; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tmIQZbcZvVbKfKyxrKi2zYlGLTSDxc3jt844Xv4WV3I=;
+	b=ByEbR8sq7P7CRJiMKBVW9n2U3gnopNp/KjYYdv8FBRiHJWSiXxhXSJIJsmo/dGRaudS4dy
+	k5Uzm5eH8DBK0YsSZjBzNw3PRZIToh4KaR/tZbnCggMeYmkuv9QxYavNGQYLiuR+a0F11S
+	WPoKf0AfXzea04kt1JRWWLkx3uTTTJE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712305598;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=tmIQZbcZvVbKfKyxrKi2zYlGLTSDxc3jt844Xv4WV3I=;
+	b=yb0DbtiMAKapigkEPdK7HN5h2puvzFTjvKuUghL+O2GtU4OWKHz1eELYrjPdcjrpqLQ5fI
+	8srgvUUUJY8wIqDw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 6983C139E8;
+	Fri,  5 Apr 2024 08:26:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id Hsh1GL61D2acQgAAn2gu4w
+	(envelope-from <tzimmermann@suse.de>); Fri, 05 Apr 2024 08:26:38 +0000
+Message-ID: <80a853ac-0756-4d27-975c-35b2532239ed@suse.de>
+Date: Fri, 5 Apr 2024 10:26:38 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH v3 03/19] media: venus: pm_helpers: Add kerneldoc to
- venus_clks_get()
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/ast: Fix soft lockup
+To: Jammy Huang <jammy_huang@aspeedtech.com>, jfalempe@redhat.com,
+ maarten.lankhorst@linux.intel.com, mripard@kernel.org, airlied@redhat.com,
+ airlied@gmail.com, daniel@ffwll.ch
+Cc: dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20240403090246.1495487-1-jammy_huang@aspeedtech.com>
 Content-Language: en-US
-To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Stanimir Varbanov
-	<stanimir.k.varbanov@gmail.com>,
-        Vikash Garodia <quic_vgarodia@quicinc.com>,
-        Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross
-	<agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Mauro Carvalho
- Chehab" <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>
-CC: Marijn Suijten <marijn.suijten@somainline.org>,
-        Stanimir Varbanov
-	<stanimir.varbanov@linaro.org>,
-        Mauro Carvalho Chehab
-	<mchehab+huawei@kernel.org>,
-        <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20230911-topic-mars-v3-0-79f23b81c261@linaro.org>
- <20230911-topic-mars-v3-3-79f23b81c261@linaro.org>
-From: Dikshita Agarwal <quic_dikshita@quicinc.com>
-In-Reply-To: <20230911-topic-mars-v3-3-79f23b81c261@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20240403090246.1495487-1-jammy_huang@aspeedtech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: DdnvdMB5zzqwN8pobNHKJNEHEaOs26ic
-X-Proofpoint-GUID: DdnvdMB5zzqwN8pobNHKJNEHEaOs26ic
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-05_07,2024-04-04_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- spamscore=0 mlxscore=0 bulkscore=0 phishscore=0 adultscore=0
- suspectscore=0 malwarescore=0 impostorscore=0 clxscore=1015
- mlxlogscore=999 priorityscore=1501 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2404010003 definitions=main-2404050061
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.29 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
+	FREEMAIL_TO(0.00)[aspeedtech.com,redhat.com,linux.intel.com,kernel.org,gmail.com,ffwll.ch];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MIME_TRACE(0.00)[0:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
+X-Spam-Score: -4.29
+X-Spam-Flag: NO
 
+Hi,
 
+I've added a Fixes tag and pushed to patch into drm-misc-fixes.
 
-On 3/27/2024 11:38 PM, Konrad Dybcio wrote:
-> To make it easier to understand the various clock requirements within
-> this driver, add kerneldoc to venus_clk_get() explaining the fluff.
-> 
-> Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Best regards
+Thomas
+
+Am 03.04.24 um 11:02 schrieb Jammy Huang:
+> There is a while-loop in ast_dp_set_on_off() that could lead to
+> infinite-loop. This is because the register, VGACRI-Dx, checked in
+> this API is a scratch register actually controlled by a MCU, named
+> DPMCU, in BMC.
+>
+> These scratch registers are protected by scu-lock. If suc-lock is not
+> off, DPMCU can not update these registers and then host will have soft
+> lockup due to never updated status.
+>
+> DPMCU is used to control DP and relative registers to handshake with
+> host's VGA driver. Even the most time-consuming task, DP's link
+> training, is less than 100ms. 200ms should be enough.
+>
+> Signed-off-by: Jammy Huang <jammy_huang@aspeedtech.com>
+> Reviewed-by: Jocelyn Falempe <jfalempe@redhat.com>
 > ---
->  drivers/media/platform/qcom/venus/pm_helpers.c | 28 ++++++++++++++++++++++++++
->  1 file changed, 28 insertions(+)
-> 
-> diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-> index ac7c83404c6e..cf91f50a33aa 100644
-> --- a/drivers/media/platform/qcom/venus/pm_helpers.c
-> +++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-> @@ -23,6 +23,34 @@
->  
->  static bool legacy_binding;
->  
-> +/**
-> + * venus_clks_get() - Get Venus clocks that are not bound to a vcodec
-> + * @core: A pointer to the venus core resource
-> + *
-> + * The Venus block (depending on the generation) can be split into a couple
-> + * of clock domains: one for main logic and one for each video core (0-2 instances).
-> + *
-> + * MSM8916 (and possibly other HFIv1 users) only feature the "main logic"
-> + * domain, so this function is the only kind if clk_get necessary there.
-> + *
-> + * MSM8996 (and other HFIv3 users) feature two video cores, with core0 being
-> + * statically defined a decoder and core1 an encoder, with both having
-> + * their own clock domains.
-> + *
-> + * SDM845 features two video cores, each one of which may or may not be
-> + * subdivided into two encoder/decoder threads.
-> + *
-> + * Other SoCs either feature a single video core (with its own clock domain)
-> + * or one video core and one CVP (Computer Vision Processor) core. In both cases
-> + * we treat it the same way (CVP only happens to live near-by Venus on the SoC).
-> + *
-> + * Due to unfortunate developments in the past, we need to support legacy
-why unfortunate? please re-phrase this.
-> + * bindings (MSM8996, SDM660, SDM845) that require specifying the clocks and
-> + * power-domains associated with a video core domain in a bogus sub-node,
-> + * which means that additional fluff is necessary..
-> + *
-> + * Return: 0 on success, negative errno on failure.
-> + */
->  static int venus_clks_get(struct venus_core *core)
->  {
->  	const struct venus_resources *res = core->res;
-> 
+>   drivers/gpu/drm/ast/ast_dp.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/ast/ast_dp.c b/drivers/gpu/drm/ast/ast_dp.c
+> index ebb6d8ebd44e..1e9259416980 100644
+> --- a/drivers/gpu/drm/ast/ast_dp.c
+> +++ b/drivers/gpu/drm/ast/ast_dp.c
+> @@ -180,6 +180,7 @@ void ast_dp_set_on_off(struct drm_device *dev, bool on)
+>   {
+>   	struct ast_device *ast = to_ast_device(dev);
+>   	u8 video_on_off = on;
+> +	u32 i = 0;
+>   
+>   	// Video On/Off
+>   	ast_set_index_reg_mask(ast, AST_IO_VGACRI, 0xE3, (u8) ~AST_DP_VIDEO_ENABLE, on);
+> @@ -192,6 +193,8 @@ void ast_dp_set_on_off(struct drm_device *dev, bool on)
+>   						ASTDP_MIRROR_VIDEO_ENABLE) != video_on_off) {
+>   			// wait 1 ms
+>   			mdelay(1);
+> +			if (++i > 200)
+> +				break;
+>   		}
+>   	}
+>   }
+>
+> base-commit: b0546776ad3f332e215cebc0b063ba4351971cca
 
-Thanks,
-Dikshita
+-- 
+--
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Frankenstrasse 146, 90461 Nuernberg, Germany
+GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+HRB 36809 (AG Nuernberg)
+
 
