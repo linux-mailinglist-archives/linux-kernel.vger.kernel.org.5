@@ -1,140 +1,102 @@
-Return-Path: <linux-kernel+bounces-132288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C229899287
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:16:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6EE489928D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 02:21:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF7A41C215A8
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:16:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E85D1F22733
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 00:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48020639;
-	Fri,  5 Apr 2024 00:16:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 587B381F;
+	Fri,  5 Apr 2024 00:21:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="i48pVJd6"
-Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="SsZoH800"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D5EB36F
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 00:16:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26E17160
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 00:21:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712276180; cv=none; b=eYZoEZuyAoJV+fsw3PYYLxrA4vdfwlC1XY6qcNI3ZENoRojmx4PWQYTvoz0eG1uRVcs+RzrIjy6RMgHIU1/3W95kAP/TjpulW1R9IKTrRNaG265UlapuiY0DlI8uLSHaX4zC4lVDVN7tv9qv3sRZYfAbhW/fOar/ladDDRdAMeo=
+	t=1712276467; cv=none; b=Qq6QvFyOi4LBI3mE0aClx9KkDHCpXMfE6KMI/sOIiGeKkuz5eQmvbJQtnPlC5dbjdDOpVSWSVdmNVkelo765iT6KbaRg93hHyH/rO3XcNlQDDe/m2zWB4q6CBdk+pSv61JaO/aTHNdEGKR6qv10X/+qCesc+lUnUsqoXViuERS8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712276180; c=relaxed/simple;
-	bh=aM1o8V3WrHwhFLYeSqPkvHH3Xl1NKFUP8KIumzBOTnY=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=CXvAb0D1fBSZA6npWVcaQ1ZMo95t2r5ZtNIKMxF1nBYT649y4O32W3ylD4pNtYJJMIKUaHebbMYKfXuEKPH2AuIEScdMSnXPeebIAnW/fI7rKSOGFL0ALDLQFdnO4he6xSGlkOn8/J0NDr52nTDMYGJKrUsmN+U4f6ROgH4x5mA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=i48pVJd6; arc=none smtp.client-ip=209.85.214.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1e2a5cb5455so15601395ad.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 17:16:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712276178; x=1712880978; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=79L5pbtJWSgta3i9osQOSsFXBxbQE23Z+3gWm67hRDo=;
-        b=i48pVJd6ICfJT67T4bAWD3V9OtsKBf/q7HWEuSxPasLFPuj2l31FT/Ch/S1AGcHdGE
-         zk8oHPpYw4g5uUCA/2BnHSI7W786yzpQpt3W0/Hixqzud9LaZ1V7Y0B8VY59XZ4Kn1mz
-         C0AhdDXi+dCU7kdl2d2R2bI9dNT24UHqUoMjcBe6MXtrdleQnkDHOWeKAUA7IkcAsFjt
-         ockyYbHon6TvdRl2LymAk1QysiC6toVC/uLRot3Y9EI09F1bl1T13xgCZvSIvQTpD0gE
-         saVbhAuU7eVo3+de3cfKKVbRW4ug1G2G2+gLyfyEGKgsC2TxpdGu0JUvP6H317eCoh6N
-         DHQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712276178; x=1712880978;
-        h=cc:to:from:subject:message-id:mime-version:date:reply-to
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=79L5pbtJWSgta3i9osQOSsFXBxbQE23Z+3gWm67hRDo=;
-        b=A/wSLKY24aES/HwxP2n2EP/wDfic5J6YG0Yto8NW08h/MvOCkBiCPaRycvMpvZxqfv
-         66WgI1N+khup6f4/T6wax3fVesF+CPEDqw2f1frKdlACk07ZvDNhdadgapGTYy9G0PtM
-         sx15x9mhw+72eE212d+zEmD6+Qx7jwbbwJhvpWc+2KRjjza1ZvBRGrgy8i3pU4MI2WDF
-         ivOm08FfNFan1qPloWtvZxIpxmXekgKiR5JFDodPDuQOZAkoTpmUsj/fOVHceE1bcM57
-         I8/7yEjYsBc+m9eMc/3pw0YspT6sCHj67SBd78tQMjFsQR3CsOVHM3WL0agI1z4riHlT
-         uCeQ==
-X-Gm-Message-State: AOJu0YyoIViwThIsNZosvFTrr2ss0zSEsfdPjocp+hNiNItDnjPuR+Mu
-	RujfYx+N1/E9rH+na9rGYwkVYe3TaeuUwXL6C96awpw2OiifsmEd2kKjb2Annhcu10NczC2tbSV
-	MiQ==
-X-Google-Smtp-Source: AGHT+IHWXsPOnscb4CEpKuycd8/61hU/RKy2B+DMAKLhC7DgRElrsml3mZA4kp0OH4StC/VpkQ8EtOjhAXY=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:cec3:b0:1e0:b5ef:3993 with SMTP id
- d3-20020a170902cec300b001e0b5ef3993mr44009plg.5.1712276178486; Thu, 04 Apr
- 2024 17:16:18 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Thu,  4 Apr 2024 17:16:14 -0700
+	s=arc-20240116; t=1712276467; c=relaxed/simple;
+	bh=ARNyierJYWHiJ+gzMNK8+x1PijK9/iTWQlxWc4IFxAQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AJJMBJzeFB92jz+6n9MH5dHWrbgtOlvNqZKPurv+TCleFze7xj9pAcZQq9KCFM1i+gE/1vTo6Pc4lSu8/wixGeaBojF0rpVTogfh0juB7sw8HUIeSSr+r6sy23o787ONPYY/outIvKYUYdRl8rc1z67smG96/2C9NZ/U8jZhpDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=SsZoH800 reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id F206F40E0202;
+	Fri,  5 Apr 2024 00:21:03 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+	reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id YKTkZ4tzgMSq; Fri,  5 Apr 2024 00:20:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1712276458; bh=7VD9zpvYiheCzrxIDQHGLpkCEV2A6/HvSxjGeLs4DRw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SsZoH800Aky6hm1FrNRBbMjj/uZl+Udw7J4kUqOGVx9V9lnohy/3egyghipY+sKXv
+	 RR6NEQAThmfNRR18R4VAjIGvAHkv6idaQcpLBSmFiTHtSvRzoOo67yU+UiM1UBKHBt
+	 7rPnR88uNLHNeu175YUHmO9hzKPLFaMTR25BGF/dg5ZbEYJdmfMdlv9wv65Zwx55uJ
+	 QTY4MX0C6XP/O28iDZfA20rMw6hG/oOprGNILmIu4Py3e60kxszxVhROa6jQlQ3HiG
+	 lArc+FofDlKLG0EhLFe7BXJXDho10SXqNdkN6uHrFBzpcI+ifblQ0lDJSvPnIVNQtF
+	 IjKs1eB7DuUbypCOCEB3J7KwARvEtYdSTCUdZU+9yMsihtxD+M/tqwCpjJOoAbLH5N
+	 B0EV4j+KTeU4PaAn60LGdqpsEH9q1L3KAqTloZ3Jj+1uYSfDTtLZGH4rn7cl6lhU2j
+	 8v7FjLXZuLFWVZ5gRSYbxZxOwze7rxRA7BYju1d4Va4tsICFJpprMJEpO85iPiNjR6
+	 n8zmrnXykZvdR31jD7xZuHlE7pT8o0dnRWBuuZIroOzDkyTDp+R841jktH1+nl1yEh
+	 YyHbZKlyYsBXEEXoIaayYQnjmJITelA1u4NXkeBXmkx43HV5S41lPZNBDHiGS5TG1Q
+	 I6gL9a0qnYV1agYh0nI4B/ME=
+Received: from zn.tnic (p5de8ecf7.dip0.t-ipconnect.de [93.232.236.247])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0DA3E40E0192;
+	Fri,  5 Apr 2024 00:20:51 +0000 (UTC)
+Date: Fri, 5 Apr 2024 02:20:51 +0200
+From: Borislav Petkov <bp@alien8.de>
+To: Mateusz =?utf-8?Q?Jo=C5=84czyk?= <mat.jonczyk@o2.pl>
+Cc: Ingo Molnar <mingo@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [REGRESSION] Build failure on 6.9-rc2 with "x86/bugs: Fix the
+ SRSO mitigation on Zen3/4"
+Message-ID: <20240405002051.GHZg9D43hLP8DAm0Ph@fat_crate.local>
+References: <658b2641-1f06-4680-8bf9-87b64ad5241d@o2.pl>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240405001614.924824-1-seanjc@google.com>
-Subject: [PATCH] x86/cpufeatures: Add CPUID_LNX_5 to track recently added
- Linux-defined word
-From: Sean Christopherson <seanjc@google.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>
-Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, 
-	Sandipan Das <sandipan.das@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <658b2641-1f06-4680-8bf9-87b64ad5241d@o2.pl>
+Content-Transfer-Encoding: quoted-printable
 
-Add CPUID_LNX_5 to track cpufeatures' word 21, and add the appropriate
-compile-time assert in KVM to prevent direct lookups on the features in
-CPUID_LNX_5.  KVM uses X86_FEATURE_* flags to manage guest CPUID, and so
-must translate features that are scattered by Linux from the Linux-defined
-bit to the hardware-defined bit, i.e. should never try to directly access
-scattered features in guest CPUID.
+On Thu, Apr 04, 2024 at 11:05:28PM +0200, Mateusz Jo=C5=84czyk wrote:
+> =C2=A0=C2=A0 =C2=A0ERROR: modpost: "srso_alias_untrain_ret" [arch/x86/k=
+vm/kvm-amd.ko] undefined!
+> =C2=A0=C2=A0 =C2=A0make[2]: *** [scripts/Makefile.modpost:145: Module.s=
+ymvers] B=C5=82=C4=85d 1
+> =C2=A0=C2=A0 =C2=A0make[1]: *** [/media/1T-data/linux/linux-6.9-rc2/Mak=
+efile:1871: modpost] B=C5=82=C4=85d 2
+> =C2=A0=C2=A0 =C2=A0make: *** [Makefile:240: __sub-make] B=C5=82=C4=85d =
+2
+> =C2=A0=C2=A0 =C2=A0Command exited with non-zero status 2
 
-Opportunistically add NR_CPUID_WORDS to enum cpuid_leafs, along with a
-compile-time assert in KVM's CPUID infrastructure to ensure that future
-additions update cpuid_leafs along with NCAPINTS.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/?id=3D0e110732473e14d6520e49d75d2c88ef7d46fe67
 
-No functional change intended.
+--=20
+Regards/Gruss,
+    Boris.
 
-Fixes: 7f274e609f3d ("x86/cpufeatures: Add new word for scattered features")
-Cc: Sandipan Das <sandipan.das@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/include/asm/cpufeature.h | 2 ++
- arch/x86/kvm/reverse_cpuid.h      | 2 ++
- 2 files changed, 4 insertions(+)
-
-diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
-index 42157ddcc09d..686e92d2663e 100644
---- a/arch/x86/include/asm/cpufeature.h
-+++ b/arch/x86/include/asm/cpufeature.h
-@@ -33,6 +33,8 @@ enum cpuid_leafs
- 	CPUID_7_EDX,
- 	CPUID_8000_001F_EAX,
- 	CPUID_8000_0021_EAX,
-+	CPUID_LNX_5,
-+	NR_CPUID_WORDS,
- };
- 
- #define X86_CAP_FMT_NUM "%d:%d"
-diff --git a/arch/x86/kvm/reverse_cpuid.h b/arch/x86/kvm/reverse_cpuid.h
-index aadefcaa9561..58ac8d69c94b 100644
---- a/arch/x86/kvm/reverse_cpuid.h
-+++ b/arch/x86/kvm/reverse_cpuid.h
-@@ -102,10 +102,12 @@ static const struct cpuid_reg reverse_cpuid[] = {
-  */
- static __always_inline void reverse_cpuid_check(unsigned int x86_leaf)
- {
-+	BUILD_BUG_ON(NR_CPUID_WORDS != NCAPINTS);
- 	BUILD_BUG_ON(x86_leaf == CPUID_LNX_1);
- 	BUILD_BUG_ON(x86_leaf == CPUID_LNX_2);
- 	BUILD_BUG_ON(x86_leaf == CPUID_LNX_3);
- 	BUILD_BUG_ON(x86_leaf == CPUID_LNX_4);
-+	BUILD_BUG_ON(x86_leaf == CPUID_LNX_5);
- 	BUILD_BUG_ON(x86_leaf >= ARRAY_SIZE(reverse_cpuid));
- 	BUILD_BUG_ON(reverse_cpuid[x86_leaf].function == 0);
- }
-
-base-commit: c85af715cac0a951eea97393378e84bb49384734
--- 
-2.44.0.478.gd926399ef9-goog
-
+https://people.kernel.org/tglx/notes-about-netiquette
 
