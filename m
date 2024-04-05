@@ -1,134 +1,186 @@
-Return-Path: <linux-kernel+bounces-132848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 214A3899B27
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:46:29 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 431DC899B29
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:47:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF58E281118
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:46:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED04B1F216D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 571C416ABC8;
-	Fri,  5 Apr 2024 10:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5794616ABC0;
+	Fri,  5 Apr 2024 10:47:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GGWwebyO"
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+	dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b="YdLFLAO4"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2A6618659
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:46:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDAB18659
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712313981; cv=none; b=uyiGcXXJ6WcaYUv1MOaRHKbFwXP+8hrRxMs1KYxciGtxvJO6CfgHVJAn9mDAUZgtCP8cnZiwiEJ+XxhDrS5KgRVCUd1zPpbVMDOkWAtwU3capg63paSZdzffQdqvhL8u8ei+w7Dyyh0d9CXdBkw7hTjjQOzbYswrX0kiSMd3t/U=
+	t=1712314023; cv=none; b=SnMGOvK4W+keZ0zQfvuBYviKymGQVEyoFSptSDmmOQ0xZWxBQ1Cls+V/hKxhcfOCNM1a0JOTcA2ozgLIo3CakzGezIOHm7gB2zCQoTLqq16iniRBzyPXIaoD8fc++B51mv6hZMJ5RnPpoLA1pdMbTjjvQhuw28z6G8VjAvIMYSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712313981; c=relaxed/simple;
-	bh=L4E8p/GV0Ds3nAyTGC7XhelVlzhjjV+Qy3Ty0PI9xhc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=V/hUV5576zHFcThiEe6DZ7jF+hh1G44Fh6+thWaCDz3d3V1CTz17jzCrbTPDAsMtHw0wCLg04aafrV47AgFZelyKnuNQuD2EV+Ye3mtbtlPC46YUZN9LNAFZ/AbCKaitSB19xeXMRwIrnRXQor1fQFDOZwicIKsbZzlw4CovC1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GGWwebyO; arc=none smtp.client-ip=209.85.219.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc74435c428so2025717276.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 03:46:18 -0700 (PDT)
+	s=arc-20240116; t=1712314023; c=relaxed/simple;
+	bh=SWszhvXa67B7cNMYOtTQ0pmGiq2oS/UZEJSvIsf/7DM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=T6622ShwUzkaUoM5h9VacXYv98Nw1wwWJMJiwRSuTKT10WRQ+iHol0LGiI16yzB1qudUya3+URnjGH6zPSYigp5niyKUmqZcj3xR8C2vgnu/tRxB4H6GbRhohV1groPUwnlW0jF7nqh4L4OCRXtywc/xNcfLQyphokPdsbMUung=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com; spf=pass smtp.mailfrom=tweaklogic.com; dkim=pass (2048-bit key) header.d=tweaklogic.com header.i=@tweaklogic.com header.b=YdLFLAO4; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tweaklogic.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tweaklogic.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e2c725e234so5428985ad.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 03:47:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712313978; x=1712918778; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=q464s0pydIE+zRv4fDUf6M5jc7NXRIaMdUPXgVeAtAQ=;
-        b=GGWwebyODwX1q83KcA6XibR/TAUUryUs9RAXB6qHCP44ebWZzZS5aIXNPQWAxE1AO7
-         gYKsazdPwfBfDJvbTpgXc68DiPMoCz+dqMq9Q0M1hIaJnwpCyA9SrtkIubiAXlCAMcsS
-         78goY38sLNRvBNY95rZKbN0OHqZytgDZd+TFDwzZvnl6+F9Nvu3hDdFSvn/ovsPPgNkm
-         OI6GYMzBW4EXmaee6BavjZ9WetJnuyyzm1Hm4oXdkWhqAlr93wPkIbuAb8bvH9ofV9qt
-         gpwBNontvPPV6cDagbQqe7sMvoItWqAjbq/YWvIHiu5HYF6PabV77Yavag1P+VUnamnX
-         Hadw==
+        d=tweaklogic.com; s=google; t=1712314021; x=1712918821; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=IW8WLsRqELRhGrnpFkB77O+jHrEv6LQ5ewlzXkr+zIU=;
+        b=YdLFLAO4JPsy7gNWRDrojfljWO8vbjR12m/9yVwab1csUwy7XL+kC0B5TbCJoXXWuc
+         LYzN9KhloiJ0GwSKtQ5fcK/Vf3sWAGH/WVKFZqSAsWFTku8TJL0GoCEII3NR4twPs8m+
+         4cS5xsoYeyYVtZ43UqhAeu1PoZ4C6vUXcRfvzJXk6G60UVWz/BcPDFLdWVs74zu18DSp
+         gycit9a2M/WavsIJdy2/F/bERu0wIayLIGW6LStVUfYJEyBM6tER6EAGCuse8JqlqOD8
+         s0t3L1gmLw20U3nWWXzARuIu9Apz6qBb+3lJhHou3XnLf52kGDT0EOhFeviCGvkVYN1h
+         QPTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712313978; x=1712918778;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1712314021; x=1712918821;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=q464s0pydIE+zRv4fDUf6M5jc7NXRIaMdUPXgVeAtAQ=;
-        b=ep2V44qQjr79E9x6WRft+EZCfJ73SAsp2GAcPt3cjqql+7ngIgmzkncQz1vpfQZS/z
-         6YpTKRwTNDQtZZsEJQIxtoWhY5c5IGekGKRGBM+jJK271Iwk64VHJTFB8WB1yrERKrWy
-         Z3DRTJz1p6Y5ifa+RLey6amLqRDBg0+CpV4rHk12Uy/MXG869fPLHbAsLmTYIY+0KiMO
-         iQRphfOx07DX06EhXK81/lGbdbyRyMa9RD/Cdcqyhb4yDZsFZkTCPL4EUItd8fAWYZ7Y
-         G6beyC8TEQr1IPgQ84ZCglxNBeCX/GpirVkaeT658tVlS+I9UZBAvALu/Il8C7EZ8fkR
-         /0Ig==
-X-Forwarded-Encrypted: i=1; AJvYcCXdSroiRGLgOka1viAeeR5ZaChUfirw1hB8SoWNg8jcD6JQHVnrUrhXGp31BPPtl7deaP+qoKrQrT/9wTfPuJzYprr5S3O4/waPxjkG
-X-Gm-Message-State: AOJu0YwGPODI9V7s1FHauuaGa34Jj0NMowM7yc3r2LVNMtMyMFgn2Gjz
-	0rSGiPWEewWd83ioGTgq7kCiavwnlevSQMlpsKVv5Cz7GwQI2juh9ucpmCsxabNKbfxuAysnZll
-	x36uOwyPObVrhw2+Axrwv4FEEDFvsSbT68M3LWA==
-X-Google-Smtp-Source: AGHT+IFD4lOAA6OE545MWaALDTv8kewFB0UhOTHwNBgdOdA/c4Xh5GLbUDrWS+o4QO2az8mbVpwytUQzz3UDkLFdfw8=
-X-Received: by 2002:a25:bc85:0:b0:dcc:44d7:5c7f with SMTP id
- e5-20020a25bc85000000b00dcc44d75c7fmr782319ybk.62.1712313978067; Fri, 05 Apr
- 2024 03:46:18 -0700 (PDT)
+        bh=IW8WLsRqELRhGrnpFkB77O+jHrEv6LQ5ewlzXkr+zIU=;
+        b=Jnc+zJr3UrJG3jsqJZ/CKuV0GvsXaB0fqgPsRclmZh5GJVQw347z15aACQdvVq05O+
+         x/OTKuJy5SnCEzO8SvsC0FQd22VpgUmReRtwEdQADURnbQBniLiNxJaij/y31gTM0ZzG
+         4sv+ob2JFuuGuBwQ1bHE30qpfIogV03ElNmMu8tODEcs6Bbne9OmTIwJpqj6ckFlrWCm
+         bsYOTQeCSfp8H6xsEJhwkY5Mi9dd44ds9ubbKuczROW4QilY8OHdFCjSLigN060sEgcz
+         iyQDbk4zS528OhVI07/ky7d0Vh0blsaSXicJfBFNzHyd+EFwZL8nD/bfTlDEaBSR96NN
+         ZErw==
+X-Forwarded-Encrypted: i=1; AJvYcCXYXt45hGoha7jY37nskmsE+5ifnHDZaZbZ7/SzufS0JjbtNHsCZifGL2jcwqS/WqtfQPpN0Ide5kCkNWpz6ZqjQx+VjEjGplmVZLMF
+X-Gm-Message-State: AOJu0Yy0IPloQVC7GCZSJcq3l4iTi98k1ZoJZNsFPqAuWYWJOct5EzH+
+	e9QdF+HDNxr7WW3RYbaOZCmIaiiGyUofhXy3RotF0JoG6pXXW0vBkhfV1aDl/K2hqpTzZkE9QaK
+	i
+X-Google-Smtp-Source: AGHT+IEFdxo+UkKJYR9DhEbyIb4LCwpePH5hfHpch1oPI/VPdBqWu/Z938189HTj+SyV2nQxc8ZZlw==
+X-Received: by 2002:a17:902:f0cb:b0:1e2:9c52:4757 with SMTP id v11-20020a170902f0cb00b001e29c524757mr2262263pla.14.1712314020854;
+        Fri, 05 Apr 2024 03:47:00 -0700 (PDT)
+Received: from localhost.localdomain ([180.150.112.31])
+        by smtp.gmail.com with ESMTPSA id y20-20020a170903011400b001d8f81ecea1sm1257947plc.172.2024.04.05.03.46.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 03:47:00 -0700 (PDT)
+From: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+To: Jonathan Cameron <jic23@kernel.org>,
+	Lars-Peter Clausen <lars@metafoo.de>,
+	Dan Carpenter <dan.carpenter@linaro.org>
+Cc: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>,
+	linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] iio: light: apds9306: Improve apds9306_write_event_config()
+Date: Fri,  5 Apr 2024 21:16:41 +1030
+Message-Id: <20240405104641.29478-1-subhajit.ghosh@tweaklogic.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240404084631.417779-1-quic_mohs@quicinc.com>
- <20240404084631.417779-2-quic_mohs@quicinc.com> <CAA8EJpqWaYhzPKgTREtJnfdNZ4oSFZaRFM7Jhg+qd3AqadGOkA@mail.gmail.com>
- <797d67b9-9e09-8b84-9abc-dd4a4a2a40f5@quicinc.com>
-In-Reply-To: <797d67b9-9e09-8b84-9abc-dd4a4a2a40f5@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Fri, 5 Apr 2024 13:46:07 +0300
-Message-ID: <CAA8EJpo2__vcpqq1zofyyZ6UwPPn7Ed0R=TPcMZ25+JHwRExwg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ASoC: dt-bindings: qcom,sm8250: Add QCM6490 snd
- QCS6490 sound card
-To: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Banajit Goswami <bgoswami@quicinc.com>, 
-	Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org, 
-	alsa-devel@alsa-project.org, linux-sound@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	quic_rohkumar@quicinc.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Fri, 5 Apr 2024 at 08:56, Mohammad Rafi Shaik <quic_mohs@quicinc.com> wrote:
->
-> On 4/4/2024 2:23 PM, Dmitry Baryshkov wrote:
-> > On Thu, 4 Apr 2024 at 11:48, Mohammad Rafi Shaik <quic_mohs@quicinc.com> wrote:
-> >>
-> >> Document the bindings for the Qualcomm QCM6490 IDP and QCS6490 RB3Gen2
-> >> soc platforms sound card.
-> >>
-> >> The bindings are the same as for other newer Qualcomm ADSP sound cards,
-> >> thus keep them in existing qcom,sm8250.yaml file, even though Linux driver
-> >> is separate.
-> >>
-> >> Signed-off-by: Mohammad Rafi Shaik <quic_mohs@quicinc.com>
-> >> ---
-> >>   Documentation/devicetree/bindings/sound/qcom,sm8250.yaml | 2 ++
-> >>   1 file changed, 2 insertions(+)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> >> index 2ab6871e89e5..ff1a27f26bc2 100644
-> >> --- a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> >> +++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-> >> @@ -29,6 +29,8 @@ properties:
-> >>         - enum:
-> >>             - qcom,apq8016-sbc-sndcard
-> >>             - qcom,msm8916-qdsp6-sndcard
-> >> +          - qcom,qcm6490-sndcard
-> >> +          - qcom,qcs6490-rb3gen2-sndcard
-> >
-> > My 2c: you are adding one soundcard for the SoC family (qcm6490) and
-> > another one for the particular board kind (qcs6490-rb3gen2). That
-> > doesn't seem logical.
->
-> The qcm6490-sndcard compatible for enabling soundcard on
-> qcm6490 IDP boards.
->
-> Will change compatible name as qcom,qcm6490-idp-sndcard.
+Simplify event configuration flow.
 
-Any consistent way is fine with me.
+Suggested-by: Jonathan Cameron <jic23@kernel.org>
+Link: https://lore.kernel.org/all/20240310124237.52fa8a56@jic23-huawei/
+Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+---
+ drivers/iio/light/apds9306.c | 48 ++++++++++++++++++++----------------
+ 1 file changed, 27 insertions(+), 21 deletions(-)
 
+diff --git a/drivers/iio/light/apds9306.c b/drivers/iio/light/apds9306.c
+index 4d8490602cd7..465b6957682b 100644
+--- a/drivers/iio/light/apds9306.c
++++ b/drivers/iio/light/apds9306.c
+@@ -1075,14 +1075,16 @@ static int apds9306_write_event_config(struct iio_dev *indio_dev,
+ {
+ 	struct apds9306_data *data = iio_priv(indio_dev);
+ 	struct apds9306_regfields *rf = &data->rf;
+-	int ret, val;
+-
+-	state = !!state;
++	int ret, enabled;
+ 
+ 	switch (type) {
+ 	case IIO_EV_TYPE_THRESH: {
+ 		guard(mutex)(&data->mutex);
+ 
++		ret = regmap_field_read(rf->int_en, &enabled);
++		if (ret)
++			return ret;
++
+ 		/*
+ 		 * If interrupt is enabled, the channel is set before enabling
+ 		 * the interrupt. In case of disable, no need to switch
+@@ -1091,38 +1093,42 @@ static int apds9306_write_event_config(struct iio_dev *indio_dev,
+ 		 */
+ 		if (state) {
+ 			if (chan->type == IIO_LIGHT)
+-				val = 1;
++				ret = regmap_field_write(rf->int_src, 1);
+ 			else if (chan->type == IIO_INTENSITY)
+-				val = 0;
++				ret = regmap_field_write(rf->int_src, 0);
+ 			else
+ 				return -EINVAL;
+ 
+-			ret = regmap_field_write(rf->int_src, val);
+ 			if (ret)
+ 				return ret;
+-		}
+ 
+-		ret = regmap_field_read(rf->int_en, &val);
+-		if (ret)
+-			return ret;
+-
+-		if (val == state)
+-			return 0;
++			if (enabled)
++				return 0;
+ 
+-		ret = regmap_field_write(rf->int_en, state);
+-		if (ret)
+-			return ret;
++			ret = regmap_field_write(rf->int_en, 1);
++			if (ret)
++				return ret;
+ 
+-		if (state)
+ 			return pm_runtime_resume_and_get(data->dev);
++		} else {
++			if (!enabled)
++				return 0;
+ 
+-		pm_runtime_mark_last_busy(data->dev);
+-		pm_runtime_put_autosuspend(data->dev);
++			ret = regmap_field_write(rf->int_en, 0);
++			if (ret)
++				return ret;
+ 
+-		return 0;
++			pm_runtime_mark_last_busy(data->dev);
++			pm_runtime_put_autosuspend(data->dev);
++
++			return 0;
++		}
+ 	}
+ 	case IIO_EV_TYPE_THRESH_ADAPTIVE:
+-		return regmap_field_write(rf->int_thresh_var_en, state);
++		if (state)
++			return regmap_field_write(rf->int_thresh_var_en, 1);
++		else
++			return regmap_field_write(rf->int_thresh_var_en, 0);
+ 	default:
+ 		return -EINVAL;
+ 	}
 
+base-commit: 526f7f17b651c78ead26fea7cea20948c00e47a5
 -- 
-With best wishes
-Dmitry
+2.34.1
+
 
