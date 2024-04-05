@@ -1,193 +1,187 @@
-Return-Path: <linux-kernel+bounces-133006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB880899D43
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:43:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC807899D4C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:44:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 563E21F22EC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:43:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4473A1F23522
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:44:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAEE716C86E;
-	Fri,  5 Apr 2024 12:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E5716C876;
+	Fri,  5 Apr 2024 12:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="d4FRU/iW"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ct5AtXc5"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53AF422612;
-	Fri,  5 Apr 2024 12:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BECAF1DDD1;
+	Fri,  5 Apr 2024 12:43:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712320973; cv=none; b=H1TtBmkgu2ZI8inXahDLZtJfI20vN6KlHZSXZ0eOkk+zyYqoe1uWtO6CTXkutPuBsOCGWnjZIi2xMRyVHx1LR4z2dwc692iRdlw/vyUYH3n5CwBn8RG/q2OtwOPpS42UHgDKp4gooClfRtcqpB+RrCnuM9Fh9f3yqNrBApk71bI=
+	t=1712321041; cv=none; b=Lasd7qenMqEBs6hMmxN6CzNjs6ckWrkGlkHkeyCPOm9fPxZhXMVAO8MGxJpqmg37Ehr0EZ0Bcy3U4xwsfsmBrwBfNWg/VL6NYnzCqTzlUve0SYGdevY+f7SQxvJHlzZ9W+Nd/YNCKsZVBi2ViowpgnpeoLH+lZ21Wlwyxj1p38s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712320973; c=relaxed/simple;
-	bh=YNNmdYRNqanZLvcIjQATXoAiP9WIZGYmHcxCOhzESo8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KL1x3zUSbvoYv4R0cr6fTenWLAUqTvilz4nWQ/umcnYbi8nA17EB56Y5PhmMRiKk8u0YOyHxhnuRygM4gb3YXxmeXhl111/Y9NjFTt9715AuTQ1C2799aqUcIDS6qd8cS/bxfmGzzKsNQrGQI8uKJR9lrbnMbdRnuXencZAT3+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=d4FRU/iW; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id E66A68E1;
-	Fri,  5 Apr 2024 14:42:09 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1712320931;
-	bh=YNNmdYRNqanZLvcIjQATXoAiP9WIZGYmHcxCOhzESo8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=d4FRU/iWJoGAJ6ws4vk6XGG06yLII+wEQiuYfy7KeVzCTdcqF7+B228PUTmK/VZFz
-	 IrHXGTQ25lPhn3iaDLVvFs3XUqGZVQH0LNLFLXv4zP+zawGfPYd9Y1EPS24W+RYTub
-	 9OMf+kOATEPN5uWzrEtywwDXoCu9I402a6p/WnIA=
-Message-ID: <bf489c6e-8b9e-4e60-8874-1498f183a987@ideasonboard.com>
-Date: Fri, 5 Apr 2024 15:42:45 +0300
+	s=arc-20240116; t=1712321041; c=relaxed/simple;
+	bh=5GYBpqDHl1ruxELv5Dvt6rvSuLuznw5wiX1smMGHpyw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=eE4jmYjljYk6ZrzXFDJ6ejfoQQF0xeIoVuGiEothsPL1uOz02U44Fh10m+5Ene2HJmETpV2Ny+3B+xOPnjh4Vxk5PygZpCYVYWZ1+Ph5F7K3gIRiMgYVAn4R/QYHNbIxRXfn+TrxFfidFR5kveFhjOyK6JwxA/AqIqSYT/ATphA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ct5AtXc5; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4162b74f2a1so11329295e9.3;
+        Fri, 05 Apr 2024 05:43:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712321038; x=1712925838; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pULb2/SEKmMEonTMi0DJm45CRye8jTdoFzr8IafrgxM=;
+        b=ct5AtXc5XiXqbIdF1L2Jx3gVb82WqV0qovX5HCvTQd5VM3PYY00TGX1beSXFeoHTkd
+         QAqAMLKQlI9DinK7LfFkgyPqH3NK/Dh/zOhGLUPHVnm1bwXGTvPT1yux0c/BWvenOobs
+         9UQJUi9162l3VVkWRxYUA/ajBIlov0zK2aT1fX7bptmC/xBwBiaOIwA6I/kNKjwAaglD
+         /KAIhbOHByWJ2IT1BJa187J0LMRi7wLPnJVs9ZJGZGbKwT75T+wA5mf++imkMHv0f6sJ
+         VdJmYAQkMza15MfZQWRU3pfJK7m4uWqNsj7K+EnUUBWVtqS+zumEKzdnaSLuvCeDhHJT
+         HBSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712321038; x=1712925838;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pULb2/SEKmMEonTMi0DJm45CRye8jTdoFzr8IafrgxM=;
+        b=p37zgOPmebPOofkeQitJUKnQiT6DLTtBzh5gXg8SzDqfyfhF+YNPgyxcn1HzHTPZ6v
+         cTeOF/5w8vNFmUkdOmUpbOdYduKTRYLEJBSfeoUWMC6gjEam68dR5M39EwZVLnmjG6EZ
+         oFHO/aWOh2fyeNuWKclu9C9msUaYF5r9MUKZr9pJETb88Er45ZmwXZ9PiLH373ADnSZg
+         9GVdOHWrykMABeK+ZYqzyWQAfRgfZxTO8n9uO0q5G6ktNW+7p3BJjbkM+XQ23dEdPcno
+         G0Y8irXkzf6iyDS0B/+sVgl/Dn5pA3+nPLFE6J0+m7Qfh8LtVG+4601AfQeY8UjJM0Zz
+         j53A==
+X-Forwarded-Encrypted: i=1; AJvYcCVGcI7wQ9CR9kOWhw0AMyJKTsE8Quyo1EJFM6m2oT6w/egFW96M0Hx6slhHBr9QHigkE5f6fN7GIdxfUGGCyGKtGdlC9chc5GkMOWXO04bFnOnXinL6qFb2v79NfDnkQopx
+X-Gm-Message-State: AOJu0Yyo1O5m0CoBtoYo89tmBZm5Dvn2MNnitGHA1VSYgv6k+6KdyHwN
+	tkhBtaJTosrsZwAt5FJO6SkYuP8yPL2AEu3HBFTw3yI4sWDXWff9
+X-Google-Smtp-Source: AGHT+IHUW+bDfIBmn2iekT8yv3sAv6IIGKq2Tu5MgysTRgeCJ5Z1WV+/TuTm7uyrmNDypSyF3mGedA==
+X-Received: by 2002:a05:600c:a0d:b0:416:331f:d3b3 with SMTP id z13-20020a05600c0a0d00b00416331fd3b3mr53944wmp.38.1712321037814;
+        Fri, 05 Apr 2024 05:43:57 -0700 (PDT)
+Received: from localhost (54-240-197-231.amazon.com. [54.240.197.231])
+        by smtp.gmail.com with ESMTPSA id n32-20020a05600c3ba000b00415612e29a1sm2887862wms.30.2024.04.05.05.43.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 05 Apr 2024 05:43:57 -0700 (PDT)
+From: Puranjay Mohan <puranjay12@gmail.com>
+To: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	=?UTF-8?q?Bj=C3=B6rn=20T=C3=B6pel?= <bjorn@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	bpf@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Pu Lehui <pulehui@huawei.com>
+Cc: puranjay12@gmail.com
+Subject: [PATCH bpf-next] riscv, bpf: add internal-only MOV instruction to resolve per-CPU addrs
+Date: Fri,  5 Apr 2024 12:43:48 +0000
+Message-Id: <20240405124348.27644-1-puranjay12@gmail.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/9] drm: xlnx: zynqmp_dpsub: Minimize usage of global
- flag
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Cc: dri-devel@lists.freedesktop.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-media@vger.kernel.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
- Michal Simek <michal.simek@amd.com>, Andrzej Hajda
- <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>,
- Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
- Jernej Skrabec <jernej.skrabec@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20240321-dp-live-fmt-v3-0-d5090d796b7e@amd.com>
- <20240321-dp-live-fmt-v3-5-d5090d796b7e@amd.com>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Content-Language: en-US
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240321-dp-live-fmt-v3-5-d5090d796b7e@amd.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 21/03/2024 22:43, Anatoliy Klymenko wrote:
-> Avoid usage of global zynqmp_dpsub.dma_enabled flag in DPSUB layer
-> context. This flag signals whether the driver runs in DRM CRTC or DRM
-> bridge mode, assuming that all display layers share the same live or
-> non-live mode of operation. Using per-layer mode instead of global flag
-> will simplify future support of the hybrid scenario.
-> 
-> Remove redundant checks in DMA request/release contexts as
-> zynqmp_disp_layer.info is well-defined for all layer types, including the
-> correct number of DMA channels required for each particular layer.
-> 
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-> ---
->   drivers/gpu/drm/xlnx/zynqmp_disp.c | 12 +++---------
->   1 file changed, 3 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> index abdc3971b193..0c2b3f4bffa6 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -980,7 +980,7 @@ void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer)
->   {
->   	unsigned int i;
->   
-> -	if (layer->disp->dpsub->dma_enabled) {
-> +	if (layer->mode == ZYNQMP_DPSUB_LAYER_NONLIVE) {
->   		for (i = 0; i < layer->drm_fmt->num_planes; i++)
->   			dmaengine_terminate_sync(layer->dmas[i].chan);
->   	}
-> @@ -1006,7 +1006,7 @@ void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
->   
->   	zynqmp_disp_avbuf_set_format(layer->disp, layer, layer->disp_fmt);
->   
-> -	if (!layer->disp->dpsub->dma_enabled)
-> +	if (layer->mode == ZYNQMP_DPSUB_LAYER_LIVE)
->   		return;
->   
->   	/*
-> @@ -1044,7 +1044,7 @@ int zynqmp_disp_layer_update(struct zynqmp_disp_layer *layer,
->   	const struct drm_format_info *info = layer->drm_fmt;
->   	unsigned int i;
->   
-> -	if (!layer->disp->dpsub->dma_enabled)
-> +	if (layer->mode == ZYNQMP_DPSUB_LAYER_LIVE)
->   		return 0;
->   
->   	for (i = 0; i < info->num_planes; i++) {
-> @@ -1094,9 +1094,6 @@ static void zynqmp_disp_layer_release_dma(struct zynqmp_disp *disp,
->   {
->   	unsigned int i;
->   
-> -	if (!layer->info || !disp->dpsub->dma_enabled)
-> -		return;
-> -
->   	for (i = 0; i < layer->info->num_channels; i++) {
->   		struct zynqmp_disp_layer_dma *dma = &layer->dmas[i];
->   
-> @@ -1137,9 +1134,6 @@ static int zynqmp_disp_layer_request_dma(struct zynqmp_disp *disp,
->   	unsigned int i;
->   	int ret;
->   
-> -	if (!disp->dpsub->dma_enabled)
-> -		return 0;
-> -
->   	for (i = 0; i < layer->info->num_channels; i++) {
->   		struct zynqmp_disp_layer_dma *dma = &layer->dmas[i];
->   		char dma_channel_name[16];
-> 
+Support an instruction for resolving absolute addresses of per-CPU
+data from their per-CPU offsets. This instruction is internal-only and
+users are not allowed to use them directly. They will only be used for
+internal inlining optimizations for now between BPF verifier and BPF
+JITs.
 
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+RISC-V uses generic per-cpu implementation where the offsets for CPUs
+are kept in an array called __per_cpu_offset[cpu_number]. RISCV stores
+the address of the task_struct in TP register. The first element in
+tast_struct is struct thread_info, and we can get the cpu number by
+reading from the TP register + offsetof(struct thread_info, cpu).
 
-  Tomi
+Once we have the cpu number in a register we read the offset for that
+cpu from address: &__per_cpu_offset + cpu_number << 3. Then we add this
+offset to the destination register.
+
+To measure the improvement from this change, the benchmark in [1] was
+used on Qemu:
+
+Before:
+glob-arr-inc   :    1.127 ± 0.013M/s
+arr-inc        :    1.121 ± 0.004M/s
+hash-inc       :    0.681 ± 0.052M/s
+
+After:
+glob-arr-inc   :    1.138 ± 0.011M/s
+arr-inc        :    1.366 ± 0.006M/s
+hash-inc       :    0.676 ± 0.001M/s
+
+[1] https://github.com/anakryiko/linux/commit/8dec900975ef
+
+Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+---
+ arch/riscv/net/bpf_jit_comp64.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/arch/riscv/net/bpf_jit_comp64.c b/arch/riscv/net/bpf_jit_comp64.c
+index 15e482f2c657..e95bd1d459a4 100644
+--- a/arch/riscv/net/bpf_jit_comp64.c
++++ b/arch/riscv/net/bpf_jit_comp64.c
+@@ -12,6 +12,7 @@
+ #include <linux/stop_machine.h>
+ #include <asm/patch.h>
+ #include <asm/cfi.h>
++#include <asm/percpu.h>
+ #include "bpf_jit.h"
+ 
+ #define RV_FENTRY_NINSNS 2
+@@ -1089,6 +1090,24 @@ int bpf_jit_emit_insn(const struct bpf_insn *insn, struct rv_jit_context *ctx,
+ 			emit_or(RV_REG_T1, rd, RV_REG_T1, ctx);
+ 			emit_mv(rd, RV_REG_T1, ctx);
+ 			break;
++		} else if (insn_is_mov_percpu_addr(insn)) {
++			if (rd != rs)
++				emit_mv(rd, rs, ctx);
++#ifdef CONFIG_SMP
++				/* Load current CPU number in T1 */
++				emit_ld(RV_REG_T1, offsetof(struct thread_info, cpu), RV_REG_TP,
++					ctx);
++				/* << 3 because offsets are 8 bytes */
++				emit_slli(RV_REG_T1, RV_REG_T1, 3, ctx);
++				/* Load address of __per_cpu_offset array in T2 */
++				emit_imm(RV_REG_T2, (u64)&__per_cpu_offset, ctx);
++				/* Add offset of current CPU to  __per_cpu_offset */
++				emit_add(RV_REG_T1, RV_REG_T2, RV_REG_T1, ctx);
++				/* Load __per_cpu_offset[cpu] in T1 */
++				emit_ld(RV_REG_T1, 0, RV_REG_T1, ctx);
++				/* Add the offset to Rd */
++				emit_add(rd, rd, RV_REG_T1, ctx);
++#endif
+ 		}
+ 		if (imm == 1) {
+ 			/* Special mov32 for zext */
+@@ -2038,3 +2057,8 @@ bool bpf_jit_supports_arena(void)
+ {
+ 	return true;
+ }
++
++bool bpf_jit_supports_percpu_insn(void)
++{
++	return true;
++}
+-- 
+2.40.1
 
 
