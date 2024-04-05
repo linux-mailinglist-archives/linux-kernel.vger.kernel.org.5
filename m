@@ -1,54 +1,47 @@
-Return-Path: <linux-kernel+bounces-133071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7593899E5B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:34:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C0E4899E6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:35:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41622B234D4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:34:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD86A1C22389
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:35:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7120616DECB;
-	Fri,  5 Apr 2024 13:33:48 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB10216D9DD
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3221A16E879;
+	Fri,  5 Apr 2024 13:34:16 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85FA32E401
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 13:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712324028; cv=none; b=rJqScwRBm3moj+t5JNYfckQ25/i3mJc9awqabgovTiqgj1g8kXbhJf4QYxLXG3yJOTm/QE36JhILlnzM9q54l/+WcnTPB2xIml5jLVL0WHM1bRh62f269ENwWHqbv7EnXjmCjQfeBGnJEsA6C4UIO+cOmSP2uF7xgYgwt4N4Puk=
+	t=1712324055; cv=none; b=T8YKVQoulxnmfkVIvSjFsh6aRpEWKSAfpCORgZYs6Y2AP/MBh7Wreog0hYhXJnQULXOSwEatoQ3+TLPsqAlskgw6mGb+5iWXWTMhotSvU9IH/cSxdWE/CNHb65mm96Tkm8+MUJDdnimEa32swP0Rm9Yv6Hrisr/aOLMkLz4Zeio=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712324028; c=relaxed/simple;
-	bh=rbd3jknnd/pc9mbUuV7BSlIpgk6c+O5l7EkIsKegyLQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=mG55DTb+MR/iN89h3b0R2KZX0COMZ5xZRQIoK99tiDJ+rJGzb7EWbW3mjKXCAYevJ/d2R/pZNhTrM0qW+0QbK0veiQPIcWB4YX0OWzcSUTqt5PAFLdIo/udvP3r4DxePlDFsZdX0jIF8j57kJJYTKDCevwRwAybFC0zqloaB7Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BAAE916A3;
-	Fri,  5 Apr 2024 06:34:16 -0700 (PDT)
-Received: from e125905.cambridge.arm.com (e125905.cambridge.arm.com [10.1.194.73])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id A65843F7B4;
-	Fri,  5 Apr 2024 06:33:44 -0700 (PDT)
-From: Beata Michalska <beata.michalska@arm.com>
-To: linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	ionela.voinescu@arm.com,
-	vanshikonda@os.amperecomputing.com
-Cc: sudeep.holla@arm.com,
-	will@kernel.org,
-	catalin.marinas@arm.com,
-	vincent.guittot@linaro.org,
-	sumitg@nvidia.com,
-	yang@os.amperecomputing.com,
-	lihuisong@huawei.com
-Subject: [PATCH v4 4/4] cpufreq: Use arch specific feedback for cpuinfo_cur_freq
-Date: Fri,  5 Apr 2024 14:33:19 +0100
-Message-Id: <20240405133319.859813-5-beata.michalska@arm.com>
-In-Reply-To: <20240405133319.859813-1-beata.michalska@arm.com>
-References: <20240405133319.859813-1-beata.michalska@arm.com>
+	s=arc-20240116; t=1712324055; c=relaxed/simple;
+	bh=jjDPRgccya+YcxRuiEm/W6R82uk3vZXxP8oLStL3Gxo=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bUQiFL/5AG7oMUoqx8P3NhXb6V67/W01CTyNGU4yHDhhtNy/oq/BbtKqtqk4QjVCG25tuMFmpzBHU3w6d1xrrOadmrhAvE336f9vNg2ExuBw9vOtvLrtwMPiqCeBfYacTQPd4P9NC+BsyFEEPaNC8Jo6O8TujI32B2J8DTX+VUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Fri, 5 Apr
+ 2024 16:34:09 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 5 Apr 2024
+ 16:34:09 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: <syzbot+5f29dc6a889fc42bd896@syzkaller.appspotmail.com>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	<syzkaller-bugs@googlegroups.com>, <linux-kernel@vger.kernel.org>
+Subject: Re: [syzbot] WARNING in vmk80xx_auto_attach/usb_submit_urb
+Date: Fri, 5 Apr 2024 06:34:04 -0700
+Message-ID: <20240405133404.21621-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,36 +49,68 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-Some architectures provide a way to determine an average frequency over
-a certain period of time based on available performance monitors (AMU on
-ARM or APERF/MPERf on x86). With those at hand, enroll arch_freq_get_on_cpu
-into cpuinfo_cur_freq policy sysfs attribute handler, which is expected to
-represent the current frequency of a given CPU, as obtained by the hardware.
-This is the type of feedback that counters do provide.
+Refactor endpoint checks to ensure there is no ambivalence
+about endpoint types.
 
-Signed-off-by: Beata Michalska <beata.michalska@arm.com>
+Try a specific branch to mitigate unrelated issues with boot/build.
+
+#syz test git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git 4090fa373f0e763c43610853d2774b5979915959
 ---
- drivers/cpufreq/cpufreq.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/comedi/drivers/vmk80xx.c | 35 ++++++++++++-----------------------
+ 1 file changed, 12 insertions(+), 23 deletions(-)
 
-diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-index 66e10a19d76a..603533b2608f 100644
---- a/drivers/cpufreq/cpufreq.c
-+++ b/drivers/cpufreq/cpufreq.c
-@@ -795,8 +795,10 @@ store_one(scaling_max_freq, max);
- static ssize_t show_cpuinfo_cur_freq(struct cpufreq_policy *policy,
- 					char *buf)
- {
--	unsigned int cur_freq = __cpufreq_get(policy);
-+	unsigned int cur_freq = arch_freq_get_on_cpu(policy->cpu);
+diff --git a/drivers/comedi/drivers/vmk80xx.c b/drivers/comedi/drivers/vmk80xx.c
+index 4536ed43f65b..476885403c61 100644
+--- a/drivers/comedi/drivers/vmk80xx.c
++++ b/drivers/comedi/drivers/vmk80xx.c
+@@ -641,33 +641,22 @@ static int vmk80xx_find_usb_endpoints(struct comedi_device *dev)
+ 	struct vmk80xx_private *devpriv = dev->private;
+ 	struct usb_interface *intf = comedi_to_usb_interface(dev);
+ 	struct usb_host_interface *iface_desc = intf->cur_altsetting;
+-	struct usb_endpoint_descriptor *ep_desc;
+-	int i;
++	struct usb_endpoint_descriptor *ep_rx_desc, *ep_tx_desc;
++	int i, ret;
  
-+	if (!cur_freq)
-+		cur_freq = __cpufreq_get(policy);
- 	if (cur_freq)
- 		return sprintf(buf, "%u\n", cur_freq);
+-	if (iface_desc->desc.bNumEndpoints != 2)
+-		return -ENODEV;
+-
+-	for (i = 0; i < iface_desc->desc.bNumEndpoints; i++) {
+-		ep_desc = &iface_desc->endpoint[i].desc;
+-
+-		if (usb_endpoint_is_int_in(ep_desc) ||
+-		    usb_endpoint_is_bulk_in(ep_desc)) {
+-			if (!devpriv->ep_rx)
+-				devpriv->ep_rx = ep_desc;
+-			continue;
+-		}
+-
+-		if (usb_endpoint_is_int_out(ep_desc) ||
+-		    usb_endpoint_is_bulk_out(ep_desc)) {
+-			if (!devpriv->ep_tx)
+-				devpriv->ep_tx = ep_desc;
+-			continue;
+-		}
+-	}
++	if (devpriv->model == VMK8061_MODEL)
++		ret = usb_find_common_endpoints(iface_desc, &ep_rx_desc,
++						&ep_tx_desc, NULL, NULL);
++	else
++		ret = usb_find_common_endpoints(iface_desc, NULL, NULL,
++						&ep_rx_desc, &ep_tx_desc);
  
--- 
-2.25.1
-
+-	if (!devpriv->ep_rx || !devpriv->ep_tx)
++	if (ret)
+ 		return -ENODEV;
+ 
++	devpriv->ep_rx = ep_rx_desc;
++	devpriv->ep_tx = ep_tx_desc;
++
+ 	if (!usb_endpoint_maxp(devpriv->ep_rx) || !usb_endpoint_maxp(devpriv->ep_tx))
+ 		return -EINVAL;
+ 
 
