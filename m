@@ -1,170 +1,148 @@
-Return-Path: <linux-kernel+bounces-132828-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77B8F899ADD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:30:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ABFF899A90
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:18:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A98091C20ED4
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:30:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 259FA1F244D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:18:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22BE216ABC3;
-	Fri,  5 Apr 2024 10:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE2FE161934;
+	Fri,  5 Apr 2024 10:18:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="ilOJSdeQ"
-Received: from out203-205-251-80.mail.qq.com (out203-205-251-80.mail.qq.com [203.205.251.80])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="TbhXudkY"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2694527447;
-	Fri,  5 Apr 2024 10:29:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D2D16190E
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 10:18:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712312992; cv=none; b=gsNJTdD/o0s05z4pXM0T4ZE8wTMqRjrJ0noEf7ex0iKdmYxfhPxgSO9q6XuJkbw0kXji+DffliDkP8hIzV1BszLxIOmwVxySicWuFqxizdN8btaqnzbT+Z8xSw5vMzT3Lcu4kUHrbr4Y3e18RGImfaEuGZGS+0D+bn4ZCS1Njcg=
+	t=1712312323; cv=none; b=tFVXZ94E2Dfgfd9cH0hNGWAFLqKkGR4MMu3tlODLf3N2bLCGPxQDi//MQl82ehKIaBhSpdV1XGuFJJeBhHsmvlrn3DTV/Fjrk16Q42sMQDemtrR5DyCnmlu1KVVuQvc4bu6AHapkST0oA0mwX7Ktn5YtwfIG/1or0xZCjbYBLjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712312992; c=relaxed/simple;
-	bh=BroQavTwVXKhYcOxCeyHgRm5Lf2bnHD/v6yEJjqHO7g=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=p3QsL2uvMTB5aXQZrG9pHanbEu97JZkZc9oWbF+HyqA+UyzcVWdN8AIMPDoYDkK8Smmj+PZdtPOTtQ/uw4lL3LvUeTTzDCB2xMsOc+fScLwvgkKddjJhFoT+pdI/od8SjmuugMJk3C3ieo9Mk+jyMWZnFho0xgzxEyObhmDRFIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=ilOJSdeQ; arc=none smtp.client-ip=203.205.251.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1712312988; bh=WrqgBxPkvI6XXjQlFOMTo2LeveGikRfDs1ScFmq+qNY=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=ilOJSdeQ+emB3vMqr5qPR8E93VPwGQHGOEVANtcmS58R0zAEAOTEXokxCdUyNwn7D
-	 DBBVo2HCCVnZ0F9/hxdYxIiBObueUYpJmixxGPJTTzv/i9IuAyr92LnznCJu07J8Yh
-	 aFDKS4AFs9GI/XzdoBijkhGzONb7rG1ihwjUOAGo=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
-	by newxmesmtplogicsvrszc5-2.qq.com (NewEsmtp) with SMTP
-	id 41D2E06C; Fri, 05 Apr 2024 18:16:29 +0800
-X-QQ-mid: xmsmtpt1712312189tckr4w7xc
-Message-ID: <tencent_7A77E9664E3C953694964A37444AF474AF09@qq.com>
-X-QQ-XMAILINFO: NQR8mRxMnur9EWvzZcbDggbR8qCE1SJg8KGpNB0/q6DjF1HISqr2Nc++sPg2za
-	 ftiQvoaYMJdbjeHxgnBTEYsQUKxEb6rmRItMqjVVvZ2twzLW0iY8mERov1oNDMESxZf45fuxfdPs
-	 pRQjLr+7f53wYeWFK6WNJK2yWDplpMH2hVJomWih0btIp5ISOwHqXIeOMtSTxUR/5/3rlY2qW+t0
-	 b3MWhfgLUVZ3C/dKF3LcaJYnnyrh/NT8aNs4c/ub5uI1UCwtPr1cbVaWJWlKAtCURZUd5tohc/8Q
-	 bcCq4FbSmZTiAE7xK50fz6DBrVYpdkRuhUSiSWzAr90V0zADNwOxV9/JGnEJ494fx7kDkuPAmSRw
-	 QLzCyLxGDr48qSSstY4LLWZ/l2ieZSv6D0TX64C93NTnzu42dzTFocH45vdEH922gSa6Pjh+9OKc
-	 3VEk8sQ7wzHICoyLrfEr3+FOfcAQU0P+iXOFyEbRzuf47dhGY/U7L9a9TKJQJSinaKJv+NE8dMLJ
-	 j6Urh7KyOc6CeUjcwMMR9+XtO84MVUhw16uAUrWJbK36nhy9aRvNJW8CjIHAG0PO5IStjvXrpL9Y
-	 yS7u34rnI6ydcJc0glUJ0fvXGCes867Ij8zcKsGYKGO8xtk3ireWSZekzk/OJs2xCLmywSGzWCYM
-	 i9oEL3emc1bZvEk47dn/XwNrzQMI0U75ZB+8OqhsEzKx+KhZJ8Jrtgai7gwITpSRsI0bJK2qQLbq
-	 S1zsP2UcjD+4Qys3G7D1oqIacaZaQTZXAcuiPaWnV6INR3LtzUAiUrKr0fXI6sLGFrcuyuiUUNq+
-	 J+gl0n/kKB6AGqHA1/5o3/mvrkcqnzTis1v5hAvAc9k4DI+se48FbGBYR6eOgZsjTrjqDbMdIhYj
-	 dZA2S49uxz3C2GCxXs+hRuDfM36VCOygh0Q9MLVvJSlkr2aIrTeoy2waaZeQbqAhh0gYJPL3TL2Y
-	 sMOr14DwDzKwbOnXLOBoMhbjtHNA01b6nFSDhVfxitfkGV2VIz4Oq238OQsSEY
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com
-Cc: johan.hedberg@gmail.com,
-	linux-bluetooth@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	luiz.dentz@gmail.com,
-	marcel@holtmann.org,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] net/socket: the length value of the input socket option parameter is too small
-Date: Fri,  5 Apr 2024 18:16:29 +0800
-X-OQ-MSGID: <20240405101629.562985-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <000000000000b9b20e061553f06e@google.com>
-References: <000000000000b9b20e061553f06e@google.com>
+	s=arc-20240116; t=1712312323; c=relaxed/simple;
+	bh=5fZz+hrMjs1KcvnTZOEbAJMZkLsCTGpJnRmjeSMAJeQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n5/Be8LL3kO1PL5yujXK0E2+H1cYPfwEFcGOElr6lYixYAIbMD1v/nGlZQE3mVKHin/6LRnrkw8/0zl3tUhWC0NEXNB6lquGGYAQ2c/a+GdHng4VIi49gob368pXi7uRnN3XJr93VwAxxlfiAIunav0a0fGrZ+yfNRh7DWGcug8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=TbhXudkY; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=XRZ/
+	7f9TpBVm+EqkcIlzKupPDZE9c/6S0MGx+T9aWhU=; b=TbhXudkYnme5n6iHh1a7
+	RBdhDu2GT6+9PAy8ABhR4DJ4AFeu9vn7KF9NnItdIjxg3lODlyxOWMQzmHvBjUuV
+	6C2iJlxx9lPXa2C8k2zkTkCSAQ80w4ipFFE24BRkYFzXyEK7FP0vMNw5j1O2wMwt
+	rY3DTBf3ZIZFcTyDbCkD+x2BtRIlE2QfpykSPGqfi0fAa4E69G+hgGGV7l0hOuGb
+	eRpF0U2crVKhUWxUBjAZhcKkAmkgy6/e5eOeLvTbIQriGrx9zqcvXZvr+o3oYemF
+	ZV3lsTAHA9m7SGPcs05kwS6QKI/86ISnt7+jeteV6CxjkYrq8U88Su9gL7GEhrTR
+	qA==
+Received: (qmail 4072572 invoked from network); 5 Apr 2024 12:18:37 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Apr 2024 12:18:37 +0200
+X-UD-Smtp-Session: l3s3148p1@a0Brx1YVfIUgAwDPXwEGAANOsN0UmmrN
+Date: Fri, 5 Apr 2024 12:18:37 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>
+Cc: 
+	"open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>, "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>, 
+	open list <linux-kernel@vger.kernel.org>, 
+	"open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS" <intel-gfx@lists.freedesktop.org>, 
+	"open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS" <intel-xe@lists.freedesktop.org>, 
+	"open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" <nouveau@lists.freedesktop.org>, 
+	"open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>, 
+	"open list:BTTV VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>, "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>
+Subject: Re: [PATCH v0 00/14] Make I2C terminology more inclusive for I2C
+ Algobit and consumers
+Message-ID: <ffumcagmzdstcf3qcn3f26555pnu7i6azjppciyd4zvcoit7pv@vu262tsfnqyr>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Easwar Hariharan <eahariha@linux.microsoft.com>, 
+	"open list:RADEON and AMDGPU DRM DRIVERS" <amd-gfx@lists.freedesktop.org>, "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>, 
+	open list <linux-kernel@vger.kernel.org>, 
+	"open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS" <intel-gfx@lists.freedesktop.org>, 
+	"open list:INTEL DRM DISPLAY FOR XE AND I915 DRIVERS" <intel-xe@lists.freedesktop.org>, 
+	"open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" <nouveau@lists.freedesktop.org>, 
+	"open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>, 
+	"open list:BTTV VIDEO4LINUX DRIVER" <linux-media@vger.kernel.org>, "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>
+References: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="wrrai2fidezv42rs"
+Content-Disposition: inline
+In-Reply-To: <20240329170038.3863998-1-eahariha@linux.microsoft.com>
 
-[Syzbot reported]
-BUG: KASAN: slab-out-of-bounds in copy_from_sockptr_offset include/linux/sockptr.h:49 [inline]
-BUG: KASAN: slab-out-of-bounds in copy_from_sockptr include/linux/sockptr.h:55 [inline]
-BUG: KASAN: slab-out-of-bounds in rfcomm_sock_setsockopt_old net/bluetooth/rfcomm/sock.c:632 [inline]
-BUG: KASAN: slab-out-of-bounds in rfcomm_sock_setsockopt+0x893/0xa70 net/bluetooth/rfcomm/sock.c:673
-Read of size 4 at addr ffff8880209a8bc3 by task syz-executor632/5064
 
-CPU: 0 PID: 5064 Comm: syz-executor632 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x169/0x550 mm/kasan/report.c:488
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- copy_from_sockptr_offset include/linux/sockptr.h:49 [inline]
- copy_from_sockptr include/linux/sockptr.h:55 [inline]
- rfcomm_sock_setsockopt_old net/bluetooth/rfcomm/sock.c:632 [inline]
- rfcomm_sock_setsockopt+0x893/0xa70 net/bluetooth/rfcomm/sock.c:673
- do_sock_setsockopt+0x3af/0x720 net/socket.c:2311
- __sys_setsockopt+0x1ae/0x250 net/socket.c:2334
- __do_sys_setsockopt net/socket.c:2343 [inline]
- __se_sys_setsockopt net/socket.c:2340 [inline]
- __x64_sys_setsockopt+0xb5/0xd0 net/socket.c:2340
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f36ff898dc9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 91 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe010c2208 EFLAGS: 00000246 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f36ff898dc9
-RDX: 0000000000000003 RSI: 0000000000000012 RDI: 0000000000000006
-RBP: 0000000000000006 R08: 0000000000000002 R09: 0000000000000000
-R10: 00000000200000c0 R11: 0000000000000246 R12: 0000555567399338
-R13: 000000000000000e R14: 0000000000000000 R15: 0000000000000000
- </TASK>
+--wrrai2fidezv42rs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Allocated by task 5064:
- kasan_save_stack mm/kasan/common.c:47 [inline]
- kasan_save_track+0x3f/0x80 mm/kasan/common.c:68
- poison_kmalloc_redzone mm/kasan/common.c:370 [inline]
- __kasan_kmalloc+0x98/0xb0 mm/kasan/common.c:387
- kasan_kmalloc include/linux/kasan.h:211 [inline]
- __do_kmalloc_node mm/slub.c:3966 [inline]
- __kmalloc+0x233/0x4a0 mm/slub.c:3979
- kmalloc include/linux/slab.h:632 [inline]
- __cgroup_bpf_run_filter_setsockopt+0xd2f/0x1040 kernel/bpf/cgroup.c:1869
- do_sock_setsockopt+0x6b4/0x720 net/socket.c:2293
- __sys_setsockopt+0x1ae/0x250 net/socket.c:2334
- __do_sys_setsockopt net/socket.c:2343 [inline]
- __se_sys_setsockopt net/socket.c:2340 [inline]
- __x64_sys_setsockopt+0xb5/0xd0 net/socket.c:2340
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
+Hello Easwar,
 
-The buggy address belongs to the object at ffff8880209a8bc0
- which belongs to the cache kmalloc-8 of size 8
-The buggy address is located 1 bytes to the right of
- allocated 2-byte region [ffff8880209a8bc0, ffff8880209a8bc2)
-[Fix]
-The optlen value passed by syzbot to _sys_setsockopt() is 2, which results in
-only 2 bytes being allocated when allocating memory to kernel_optval, and the
-optval size passed when calling the function copy_from_sockptr() is 4 bytes.
-Here, optlen is determined uniformly in the entry function __sys_setsockopt(). 
-If its value is less than 4, the parameter is considered invalid.
+On Fri, Mar 29, 2024 at 05:00:24PM +0000, Easwar Hariharan wrote:
+> I2C v7, SMBus 3.2, and I3C specifications have replaced "master/slave"
+> with more appropriate terms. Inspired by and following on to Wolfram's
+> series to fix drivers/i2c/[1], fix the terminology for users of the
+> I2C_ALGOBIT bitbanging interface, now that the approved verbiage exists
+> in the specification.
 
-Reported-by: syzbot+d4ecae01a53fd9b42e7d@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- net/socket.c | 3 +++
- 1 file changed, 3 insertions(+)
+I really appreciate that you want to assist in this task to improve the
+I2C core. I do. I am afraid, however, that you took the second step
+before the first one, though. As I mentioned in my original cover
+letter, this is not only about renaming but also improving the I2C API
+(splitting up header files...). So, drivers are not a priority right
+now. They can be better fixed once the core is ready.
 
-diff --git a/net/socket.c b/net/socket.c
-index e5f3af49a8b6..ac8fd4f6ebfe 100644
---- a/net/socket.c
-+++ b/net/socket.c
-@@ -2327,6 +2327,9 @@ int __sys_setsockopt(int fd, int level, int optname, char __user *user_optval,
- 	int err, fput_needed;
- 	struct socket *sock;
- 
-+	if (optlen < sizeof(int))
-+		return -EINVAL;
-+
- 	sock = sockfd_lookup_light(fd, &err, &fput_needed);
- 	if (!sock)
- 		return err;
--- 
-2.43.0
+It is true that I changed quite some controller drivers within the i2c
+realm. I did this to gain experience. As you also noticed quite some
+questions came up. We need to agree on answers first. And once we are
+happy with the answers we found, then IMO we can go outside of the i2c
+realm and send patches to other subsystems referencing agreed
+precedence. I intentionally did not go outside i2c yet. Since your
+patches are already there, you probably want to foster them until they
+are ready for inclusion. Yet, regarding further patches, my suggestion
+is to wait until the core is ready. That might take a while, though.
+However, there is enough to discuss until the core is ready. So, your
+collaboration there is highly appreciated!
 
+> The last patch updating the .master_xfer method to .xfer depends on
+> patch 1 of Wolfram's series below, but the series is otherwise
+> independent. It may make sense for the last patch to go in with
+
+Please drop the last patch from this series. It will nicely remove the
+dependency. Also, like above, I first want to gain experience with i2c
+before going to other subsystems. That was intended.
+
+All the best and happy hacking,
+
+   Wolfram
+
+
+--wrrai2fidezv42rs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYPz/kACgkQFA3kzBSg
+Kbb2khAArgkbDpks50YTmBYCaMaPYcuR0VEc60/+z8tRAlS4IKaYIXzw2LEXG7Lz
+vJE8MMcWs6lGZjapOyfhFrB/U9Zu8Ffpg1qataFG3ZnRZG6BYb8i2cCTCwK9h4Vk
+KfijUXjmqXMGKRcaUcIYL/IxYZYRP0Y9yYGfBibDtxV7hnMakp6+XXbfM8FVCj1g
+iW3ORBfLYR32dJxnI4unFt15e2aXFDQkJDLqBJ4WGynGPaGr0lmfQpWQDP2aYlN0
+Dyormc+6tCEOAN6PBG0cssZbMUj4ABQYOxxNhQ8hP6gAqkMuqqC1+nHAH3PNQjkf
+VHMYFPogE0LGrCOOVKzgeU3QIfF9MABirrNB8bx+K3tl1te0EWse1u4CXIKrmBZ7
+VS1fVRMUdS25YnzNM5cfZQTGv2JxgebrXUqN1bneFpKmISO66p2hF3/8lsaPO8Rw
+6QOTRpcHay1sESrreLn9gAj/NeddgU7XhI3oGqk6PQyYQrE5LbTh0wuZil02rwjJ
+ea29MTkK7muy5fQT9dDHOk38fjG0jk48Oyk5NBVMboeLKlvPy6OTiXG6Z1lifGga
+xZe0cBBoH5gHPY6ZIVh4HaHfbmzt5jGIpzf8Sx9E9n03K6Njewqu+Wxm24AMr/OR
+79BvBK0rlCVMmck+ZJiW969Q/G9JKFieQnUDqHlMc5nIAHMB0Lw=
+=T3F5
+-----END PGP SIGNATURE-----
+
+--wrrai2fidezv42rs--
 
