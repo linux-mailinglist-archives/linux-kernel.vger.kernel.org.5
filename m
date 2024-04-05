@@ -1,117 +1,143 @@
-Return-Path: <linux-kernel+bounces-132575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 167F38996C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:41:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 492C18996C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:42:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6151FB230A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:41:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F342828203A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B548D13C9C1;
-	Fri,  5 Apr 2024 07:40:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D46613C80C;
+	Fri,  5 Apr 2024 07:41:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OtXa4uRa"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RHrlE0Ny"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D80F13C919
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C51D512CD98
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:40:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712302823; cv=none; b=sBE7O10L2Oo9ibP5RbJmqgt8G4AH3znx5A0jtEkMDWu8jbr+MjD8KUXEk098AI+GVV0NsRtIfVuweoDN4NsT+59033sjnsMVt7NBmB3qSW6AzXKBgjBWv0/HGvXsz7a4KQmlBpnJNHbCNQ2aDMeO7q8S66bm7LMLvhP90FnZIok=
+	t=1712302859; cv=none; b=OlCvYL8+uXh1bKfPWctRzsGeANt4U9OOb3ITkN5bIx+P/0rD+YnJfdB7hBlALXxWXWwhuGdLKAxiFJ2buodJahc6FcK+k7NWo1Ha3+09RmvWLqjKXle67SIJf/mMmItT9iWfAPU4A0fbg14qBXmmwHTCUoeaYBQoOKKQGMQceD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712302823; c=relaxed/simple;
-	bh=6A7E8mEhs3KXYwrM2uDEBEWNmZfL2jIWrfVNakhFg2Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=c6LPOztzwfTTwNuMBM5u11WS4XBEeRMYRqhM2+3u051eZuYH2PVa3DDsq+svsAQtiba3WKBg08dILlG11zN+AeRuzK5x0MDyER2gTlZslVy5cMnO+VKs8Q6KlQEtPMSADUaMFezyKQO8P31rws1bc2KPzfRMawqcjbpE89Jh1ls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OtXa4uRa; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-516be63af88so2082173e87.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:40:21 -0700 (PDT)
+	s=arc-20240116; t=1712302859; c=relaxed/simple;
+	bh=TlV2tfNsy0zEXW78TY+Y9hKkNagEtGiiitnOqeo8Nr0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GDH+VZWe+bXGKGeWXpWhEWY3RJJZsAOQqCB2YdcqCAfwtw1DyVf98J2mbToDZyjLNxCnPbUpYyyObVq7cymZlavyCs43L/mt7grxzpMcHp3rtTbJeNHV7nW/FSIxtf1LCZH13Z2gVFHMkwApNx4FzAvLGy8blc2gb6c/7ckOnig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RHrlE0Ny; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e74aa08d15so1459683b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:40:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712302819; x=1712907619; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ll9cx3RyF2mwcmQbJn6nm/vNnPUvqbUfuPvzuxeiac4=;
-        b=OtXa4uRaxDPt5SD4fyLkyY+xCGNLTOqnps1guK6vJmXGhNhThXWsODXzfBxbMPtb+Y
-         4GGtIq+Qq148IguiL6Na0V+DYDd2Hhf9Q1XRnhVoKQl/p48FqEhIFtb4yZj/Ff+W9A58
-         KOcR0jekjEH5YM1Rfz1t9fvwrYISKaXHbY82ITP76HqmVh+Fet3FcjoSXhwybUltFubV
-         9jfwA2HkD8u3drrdwuSkD/OJpnWK7qMtXP9Wl5ONwBm9eSnEOAW7GO9D0g2TKdvN09gv
-         YXAiDEQKTp5UkC2ggA2Im/fvAMhPxVwswX0ag/O73U4EPaz5MFhm80/1b8XJeXv/4vWR
-         RgrQ==
+        d=linaro.org; s=google; t=1712302855; x=1712907655; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=i1a6gAQh2PhrhPbXculVO9O3NtZn8zLGPDuyjie7Sr0=;
+        b=RHrlE0NyBj9DZq6tajOxAjVnUDk3t2Kjq/T3h7fg6hknd8mVeNu//PpgZrEdiGR7LW
+         /1NdqJmH1sZtfqKdOVSPtDSDsc1nHYnS04SXAFpKW50x3G4npFMfSYxary7bRX6aWROP
+         RIEy93zhapai3yWdwkfIWFc4ur/qUQp2VxhIcw9EonqjosCu0a7cPG/pAqc/FkaEOINF
+         TlrILtZEGaGvoAUPIfze3BtRapD6GX27RE0SGe63KEZrg3u78GyNSZlrPe7NRQIIEDxu
+         IBAQ7hlv+R6hpYqvG/4EqucG/KctvaMZIz9VwKNCsj9piInQcExEFjH+4g1bY0qZSBEn
+         /8ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712302819; x=1712907619;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ll9cx3RyF2mwcmQbJn6nm/vNnPUvqbUfuPvzuxeiac4=;
-        b=U+5/JJwp/z1PyDI760LbLPHOkdWhw48H2Z4WUUj4X18599p6foqDMq09u6VV8Yzahl
-         r7RClcqHaCSgfjpX6AVDglAd/Tj4zWhc54Kncw5RWzrpfJ/r8JuzeKtDMoTohX4roTFc
-         /OkS5KccP8ELkIpk1PryrYImeKurQsUI/V42RILXVtdbPPmVveahSmkW5f8ECeUx3EIj
-         X9XZI5C2c+fs0Q7KnoW+FR2cRIsM1HWuHAaTGU0/ZgDoBlOokY2TuytZhvKEfnQ/wvz4
-         kygKdqrRTINvj2ixKsaEVBA7XNptYSsqRIcU/dAlL1XsSEDdP22tbt0/FHv5gHi6kaEz
-         Ke3g==
-X-Forwarded-Encrypted: i=1; AJvYcCWZeXblVel8uj72aZe06kx/c9L6LHowbzhJhj9DH1QkD/gwmHqBxxEV+LvM/MoNLlx13nXo1i47+J03hpSv4U+6CBOrFS3SXqCR6Y07
-X-Gm-Message-State: AOJu0Ywbb1PsS33cLtTzLf9Azgg9OgNdlQamSwsi0rP3ucRva6rF0vdF
-	O3RqpKqkAluv0qg0g0KHVx52ESopxMKko7sm+BrDbmFpBB4bxMAe
-X-Google-Smtp-Source: AGHT+IFvXxRBKHpmPMp/cqVHJIstyDR+r0Bs5N44IFJVlWHFI8nUvyiKYx/SyYNlgH/fII+G4opQQg==
-X-Received: by 2002:ac2:550d:0:b0:516:a1ce:6a20 with SMTP id j13-20020ac2550d000000b00516a1ce6a20mr394762lfk.24.1712302819247;
-        Fri, 05 Apr 2024 00:40:19 -0700 (PDT)
-Received: from localhost.localdomain ([2a06:c701:737b:ef00:2bdf:f41a:ebd1:fb2c])
-        by smtp.gmail.com with ESMTPSA id l10-20020adfe58a000000b003434f526cb5sm1311643wrm.95.2024.04.05.00.40.17
+        d=1e100.net; s=20230601; t=1712302855; x=1712907655;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=i1a6gAQh2PhrhPbXculVO9O3NtZn8zLGPDuyjie7Sr0=;
+        b=cz+vHs2aQCt843gbUg8sabMMbKXYqip+iuaRPNg3L22ep72VkKacQCMgD9ApY00ayR
+         bXEBQc3XqGO1z0kVOz5zlPuzzo4mihJk3BV3ESxauh9ct1fhG4bZxW3IeLeShdBu0VrH
+         AL/wnjaR6VVI5ob3rl1yTLcrolwZo/U7FTdSdVDgkI0e6dGGdnVBRKc59dLWGYkwQzvK
+         xM9M7AUx/m6rqZQFlpFH57rEslqNszPl0w1Exgh0TGEVo3OWHQroAY/t/tPCG2BjpHrp
+         aX3+bVtOopDNsOn1u6EuUqCWx5YRqdi/0A/0KCzWQ2FAUmLPq4YrxXqcRDbtRPkSXJoC
+         AHGg==
+X-Forwarded-Encrypted: i=1; AJvYcCWg7jq5swPRoDMW0/0GSS2PUge6sS3dlbQCFwAQneHeXZiJ0mBuy2NybgwF1x2Eh4+xKqdlNsmweowVStn7lW5scocQepLJV/rPwkXv
+X-Gm-Message-State: AOJu0YwZGFDsnOpsfyg/gakZ7txF8e3nWr/xoMwcF4Jbk8rzv+XPnKeZ
+	BoCdiRlW31+z0TsNkX1JwcuypTm2v6DmPvFeNOpKt+Dyp7RpQMYw9gO2AJWtZQ==
+X-Google-Smtp-Source: AGHT+IGQzPSdv4xCm9KGESdaqlLSMA46b1EcN3+jKD7raTmoSF2Zx46In/rvazfGN0hikiiMIMSQ5g==
+X-Received: by 2002:a05:6a00:3c8c:b0:6ea:b48a:f971 with SMTP id lm12-20020a056a003c8c00b006eab48af971mr941273pfb.2.1712302854931;
+        Fri, 05 Apr 2024 00:40:54 -0700 (PDT)
+Received: from thinkpad ([120.60.67.119])
+        by smtp.gmail.com with ESMTPSA id q26-20020a63505a000000b005df41b00ee9sm820523pgl.68.2024.04.05.00.40.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 05 Apr 2024 00:40:18 -0700 (PDT)
-From: Shahar Avidar <ikobh7@gmail.com>
-To: gregkh@linuxfoundation.org,
-	hverkuil-cisco@xs4all.nl,
-	andriy.shevchenko@linux.intel.com,
-	robh@kernel.org,
-	felixkimbu1@gmail.com
-Cc: linux-staging@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 7/7] staging: pi433: Reorder pi433_exit cleanup calls.
-Date: Fri,  5 Apr 2024 10:40:00 +0300
-Message-Id: <20240405074000.3481217-8-ikobh7@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240405074000.3481217-1-ikobh7@gmail.com>
-References: <20240405074000.3481217-1-ikobh7@gmail.com>
+        Fri, 05 Apr 2024 00:40:54 -0700 (PDT)
+Date: Fri, 5 Apr 2024 13:10:44 +0530
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Krishna chaitanya chundru <quic_krichai@quicinc.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Brian Masney <bmasney@redhat.com>,
+	Georgi Djakov <djakov@kernel.org>, linux-arm-msm@vger.kernel.org,
+	linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, vireshk@kernel.org,
+	quic_vbadigan@quicinc.com, quic_skananth@quicinc.com,
+	quic_nitegupt@quicinc.com, quic_parass@quicinc.com
+Subject: Re: [PATCH v8 2/7] arm64: dts: qcom: sm8450: Add interconnect path
+ to PCIe node
+Message-ID: <20240405074044.GC2953@thinkpad>
+References: <20240302-opp_support-v8-0-158285b86b10@quicinc.com>
+ <20240302-opp_support-v8-2-158285b86b10@quicinc.com>
+ <4bd2e661-8e1e-41ff-9b7f-917bb92a196d@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <4bd2e661-8e1e-41ff-9b7f-917bb92a196d@linaro.org>
 
-debugfs_remove was called out of order.
-Ensure pi433 init & exit have reverse function calls order.
+On Wed, Mar 06, 2024 at 05:04:54PM +0100, Konrad Dybcio wrote:
+> 
+> 
+> On 3/2/24 04:59, Krishna chaitanya chundru wrote:
+> > Add pcie-mem & cpu-pcie interconnect path to the PCIe nodes.
+> > 
+> > Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+> > ---
+> >   arch/arm64/boot/dts/qcom/sm8450.dtsi | 8 ++++++++
+> >   1 file changed, 8 insertions(+)
+> > 
+> > diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> > index 01e4dfc4babd..6b1d2e0d9d14 100644
+> > --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+> > @@ -1781,6 +1781,10 @@ pcie0: pcie@1c00000 {
+> >   					<0 0 0 3 &intc 0 0 0 151 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
+> >   					<0 0 0 4 &intc 0 0 0 152 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
+> > +			interconnects = <&pcie_noc MASTER_PCIE_0 0 &mc_virt SLAVE_EBI1 0>,
+> 
+> Please use QCOM_ICC_TAG_ALWAYS.
+> 
+> > +					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_0 0>;
+> 
+> And this path could presumably be demoted to QCOM_ICC_TAG_ACTIVE_ONLY?
+> 
 
-Signed-off-by: Shahar Avidar <ikobh7@gmail.com>
----
- drivers/staging/pi433/pi433_if.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I think it should be fine since there would be no register access done while the
+RPMh is put into sleep state. Krishna, can you confirm that by executing the CX
+shutdown with QCOM_ICC_TAG_ACTIVE_ONLY vote for cpu-pcie path on any supported
+platform?
 
-diff --git a/drivers/staging/pi433/pi433_if.c b/drivers/staging/pi433/pi433_if.c
-index 77e37a5bd1a2..67b945a41067 100644
---- a/drivers/staging/pi433/pi433_if.c
-+++ b/drivers/staging/pi433/pi433_if.c
-@@ -1427,9 +1427,9 @@ module_init(pi433_init);
- static void __exit pi433_exit(void)
- {
- 	spi_unregister_driver(&pi433_spi_driver);
-+	debugfs_remove(root_dir);
- 	class_unregister(&pi433_class);
- 	unregister_chrdev(MAJOR(pi433_devt), pi433_spi_driver.driver.name);
--	debugfs_remove(root_dir);
- }
- module_exit(pi433_exit);
- 
+But if we do such change, then it should also be applied to other SoCs.
+
+- Mani
+
 -- 
-2.34.1
-
+மணிவண்ணன் சதாசிவம்
 
