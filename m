@@ -1,148 +1,268 @@
-Return-Path: <linux-kernel+bounces-132535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC543899661
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:17:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22AE88994ED
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:08:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BA65B22568
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:17:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A344D1F223D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:08:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 732D22D05F;
-	Fri,  5 Apr 2024 07:17:24 +0000 (UTC)
-Received: from mo-csw-fb.securemx.jp (mo-csw-fb1122.securemx.jp [210.130.202.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5E422626;
+	Fri,  5 Apr 2024 06:08:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gpGfKh6n"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A29CE2C69F;
-	Fri,  5 Apr 2024 07:17:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.130.202.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 499271EB2B;
+	Fri,  5 Apr 2024 06:08:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712301444; cv=none; b=XC3T8apiow0ZrRCO0unQiSk+yM23QgruI71A5Rp9B5zfqsnk+dvoAPt3Shqq/7YZAcU+nm/g5RmP4au5/2QaTiqkRNGCSBvDNDsduh8haedTtqCOacFjFZxjnEBRq0ZHwcBfg/OPnY2WYJ4/wlaMPfElwxynTlWXnIg8+rT4snc=
+	t=1712297319; cv=none; b=PeSTkjlIbXAb9P3gup/1+F9WfW+n5FsTtKhjOo3IAYc9RAiRlgK/N9gG+OxXBzRgOtrfOADp7cHN6BJ+fPAeIJ2ZxjMVy4EB95upu9brdn0Y1Y59rk8DaJRGFsloaUGvjMPaSfC5lnSZsAecZYGzNNWO97+njFu0UOE5GIy2ANI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712301444; c=relaxed/simple;
-	bh=aWuYLQx3cT3sMqjyLNuhSw0YnpRhPP9iVZTnefmVILg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LVmhkeVTyYE88m5cuZarHKAO5W9cCzmdw0+SnW5z5ODYotmvbPYLljwDSW3c2t5pMck6oCU744j3Fr85lnsol/4Ck4ATAWHnjqTERhhwDSOzXuqFP7DSxRH2f/uLL/CZ6I5u4iwb7pT/HHRkQFtzo3Rpx5x8NOq0Eb5yz9YXJNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kioxia.com; spf=pass smtp.mailfrom=kioxia.com; arc=none smtp.client-ip=210.130.202.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kioxia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kioxia.com
-Received: by mo-csw-fb.securemx.jp (mx-mo-csw-fb1122) id 4355bqJ21399056; Fri, 5 Apr 2024 14:37:52 +0900
-Received: by mo-csw.securemx.jp (mx-mo-csw1121) id 4355bKPr2321699; Fri, 5 Apr 2024 14:37:21 +0900
-X-Iguazu-Qid: 2rWg9o4uj4bd4uUMYT
-X-Iguazu-QSIG: v=2; s=0; t=1712295440; q=2rWg9o4uj4bd4uUMYT; m=qaukDK6/RdB2jfGj6npjkS5B4Zl3dh7LPkYmq44zB1o=
-Received: from CNN1EMTA03.test.kioxia.com ([202.248.33.144])
-	by relay.securemx.jp (mx-mr1120) id 4355bIiq1330523
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Fri, 5 Apr 2024 14:37:19 +0900
-Received: from Switcher-Post_Send (gateway [10.232.20.1])
-	by CNN1EMTA03.test.kioxia.com (Postfix) with ESMTP id 8B45C2F603;
-	Fri,  5 Apr 2024 14:37:18 +0900 (JST)
-Received: from CNN1ESTR04.kioxia.com (localhost [127.0.0.1])
-	by Switcher-Post_Send (Postfix) with ESMTP id 463861900001F6;
-	Fri,  5 Apr 2024 14:24:45 +0900 (JST)
-Received: from localhost [127.0.0.1] 
-	 by CNN1ESTR04.kioxia.com with ESMTP id 0003QAAAAAA01FJ0;
-	 Fri, 5 Apr 2024 14:24:45 +0900
-Received: from CNN1EXMB01.r1.kioxia.com (CNN1EXMB01.r1.kioxia.com [10.232.20.150])
-	by Switcher-Pre_Send (Postfix) with ESMTP id 3A808A2A9BFD5;
-	Fri,  5 Apr 2024 14:24:45 +0900 (JST)
-Received: from CNN1EXMB03.r1.kioxia.com (10.232.20.152) by
- CNN1EXMB01.r1.kioxia.com (10.232.20.150) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 5 Apr 2024 14:37:17 +0900
-Received: from CNN1EXMB03.r1.kioxia.com ([10.13.100.22]) by
- CNN1EXMB03.r1.kioxia.com ([10.13.100.22]) with mapi id 15.01.2507.035; Fri, 5
- Apr 2024 14:37:17 +0900
-From: tada keisuke <keisuke1.tada@kioxia.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>,
-        "oe-kbuild@lists.linux.dev"
-	<oe-kbuild@lists.linux.dev>,
-        "song@kernel.org" <song@kernel.org>,
-        "yukuai3@huawei.com" <yukuai3@huawei.com>
-CC: "lkp@intel.com" <lkp@intel.com>,
-        "oe-kbuild-all@lists.linux.dev"
-	<oe-kbuild-all@lists.linux.dev>,
-        "linux-raid@vger.kernel.org"
-	<linux-raid@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 06/11] md: avoid conflicts in active_aligned_reads
- operations
-Thread-Topic: [PATCH 06/11] md: avoid conflicts in active_aligned_reads
- operations
-Thread-Index: AQHahQix9h4wjYrA/ke63gQzkJ761bFZJ/ew
-Date: Fri, 5 Apr 2024 05:37:17 +0000
-Message-ID: <d843796bc3634fa691685ee63aa68357@kioxia.com>
-References: <ffb112e756514a0eaab891379df0d834@kioxia.com>
- <a35d6b54-8e63-4b0b-be18-bb5ab7d12bdf@moroto.mountain>
-In-Reply-To: <a35d6b54-8e63-4b0b-be18-bb5ab7d12bdf@moroto.mountain>
-Accept-Language: ja-JP, en-US
-Content-Language: ja-JP
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-tm-as-product-ver: ISME-14.0.0.2080-9.0.1002-28298.001
-x-tm-as-result: No-10--23.847800-8.000000
-x-tmase-matchedrid: zwpC2WOSP9WmagT1k9kBpu5i6weAmSDKKQNhMboqZlo02EZLYIEwCyj5
-	3aEB5qDLe+eZU8eiw0YjkzXjqrWT+yK2CVtnYH0ynVTWWiNp+v9uwUsg2ZgJ8QMn8l3DFl4Q8oG
-	xyJMM48B7A20xaD5o5nBKGzyAWTMW9R7dwXny/be7LWwix27pUtOUg7tlBn3vStxxn32stFhjGq
-	ZxQuvF5r2jand2PRF8QjRHotpINbQf0H3tYJmWPU2xVQmDwU6mwMc7ZZ8e7/c0DNPwjqLncPGG5
-	PZMzxFoCpt1CXXJsmrhQDopaw5doU1QH6PUk2DD3QqJN4m15UGuLG21Eb4T8wZZ8N3RvTMxo8WM
-	kQWv6iUDpAZ2/B/Blrew1twePJJB3QfwsVk0UbslCGssfkpInQ==
-x-tm-as-user-approved-sender: No
-x-tm-as-user-blocked-sender: No
-x-tmase-result: 10--23.847800-8.000000
-x-tmase-version: ISME-14.0.0.2080-9.0.1002-28298.001
-x-tm-snts-smtp: B85BA37545B82BF712B2F42B98231C28DF19BF716B56D57B32176A8C34120EBC2000:8
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1712297319; c=relaxed/simple;
+	bh=3a2D8FLQ+zRKWr+dT+h2iE0Z2sanm7uNODeFnm2l0+Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=BZqJI5J8BfqGhXCWnjpQbma41TgAAp+qYteLANOYl3MPvvqVp5R2wo0G8IaRK86Wph9ucVJSlMVp6t2BJ7uzwiqZENiCNvS8wkYyLzLkD0tia+i5zbtJNwcizpcny9tm1DTCk/SBgbzNKv/bIYAlg0e0a2gurBqRPOLIFSIC/3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gpGfKh6n; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AEF8C433F1;
+	Fri,  5 Apr 2024 06:08:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712297319;
+	bh=3a2D8FLQ+zRKWr+dT+h2iE0Z2sanm7uNODeFnm2l0+Y=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gpGfKh6nDc7tcL07n3W/XO8V28YegkSc6XbhqFudjoYAoEcSCW65UXjShFQohkTxJ
+	 NkiOqw/nDvbB/7Wp8V++4rR754zLEnQCcGMJRDCQZkS6sXlochANSJ2qkSpvu3MJ8f
+	 y4pEho6HNQUYBnegAqqNlAWtWmwqqthP7t4QvOrj9dvOwHufEauqpiADXvX44F5c0y
+	 ++d/E1f7AGfsF1/fvL7o4l72BK0/4NRsWrn9Ypb09dKMMkBEfhBmAElQHZArl2523F
+	 A9gXXuQqCULLb5f/umebextqlEBfVsOgazcNMvjXfsBfITmLHpDWCKZMxCYz9u2VDC
+	 py2I1SMgou3Pw==
+From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To: gregkh@linuxfoundation.org
+Cc: linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+	Al Cooper <alcooperx@gmail.com>,
+	Alexander Shiyan <shc_work@mail.ru>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Baruch Siach <baruch@tkos.co.il>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	"David S. Miller" <davem@davemloft.net>,
+	Fabio Estevam <festevam@gmail.com>,
+	Hammer Hsieh <hammerh0314@gmail.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Chunyan Zhang <zhang.lyra@gmail.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>,
+	Laxman Dewangan <ldewangan@nvidia.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <michal.simek@amd.com>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Orson Zhai <orsonzhai@gmail.com>,
+	=?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+	Patrice Chotard <patrice.chotard@foss.st.com>,
+	Peter Korsgaard <jacmet@sunsite.dk>,
+	Richard Genoud <richard.genoud@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Stefani Seibold <stefani@seibold.net>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Taichi Sugaya <sugaya.taichi@socionext.com>,
+	Takao Orito <orito.takao@socionext.com>,
+	Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Timur Tabi <timur@kernel.org>,
+	Vineet Gupta <vgupta@kernel.org>
+Subject: [PATCH 00/15] tty: serial: switch from circ_buf to kfifo
+Date: Fri,  5 Apr 2024 08:08:11 +0200
+Message-ID: <20240405060826.2521-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-CrossPremisesHeadersFilteredBySendConnector: CNN1EXMB01.r1.kioxia.com
-X-OrganizationHeadersPreserved: CNN1EXMB01.r1.kioxia.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-> Hi tada,
->=20
-> kernel test robot noticed the following build warnings:
->=20
-> url:
-> https://github.com/intel-lab-lkp/linux/commits/tada-keisuke/md-add-infra-=
-for-active_aligned_reads-changes/202403
-> 26-201827
-> base:   fcf3f7e2fc8a53a6140beee46ec782a4c88e4744
-> patch link:    https://lore.kernel.org/r/ffb112e756514a0eaab891379df0d834=
-%40kioxia.com
-> patch subject: [PATCH 06/11] md: avoid conflicts in active_aligned_reads =
-operations
-> config: i386-randconfig-141-20240328
-> (https://download.01.org/0day-ci/archive/20240331/202403312116.Sh5vFCWf-l=
-kp@intel.com/config)
-> compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009=
-708b4367171ccdbf4b5905cb6a803753fe18)
->=20
-> If you fix the issue in a separate patch/commit (i.e. not just a new vers=
-ion of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> | Closes: https://lore.kernel.org/r/202403312116.Sh5vFCWf-lkp@intel.com/
->=20
-> New smatch warnings:
-> drivers/md/raid5.c:7680 setup_conf() warn: passing zero to 'ERR_PTR'
->=20
-> vim +/ERR_PTR +7680 drivers/md/raid5.c
+This series switches tty serial layer to use kfifo instead of circ_buf.
 
-Thanks for reporting.
-I forgot to keep the error code.
-I will also fix another issue and submit v2.
-https://marc.info/?l=3Dlinux-raid&m=3D171184328530325
+The reasoning can be found in the switching patch in this series:
+"""
+Switch from struct circ_buf to proper kfifo. kfifo provides much better
+API, esp. when wrap-around of the buffer needs to be taken into account.
+Look at pl011_dma_tx_refill() or cpm_uart_tx_pump() changes for example.
 
-Thanks,
-Keisuke
+Kfifo API can also fill in scatter-gather DMA structures, so it easier
+for that use case too. Look at lpuart_dma_tx() for example. Note that
+not all drivers can be converted to that (like atmel_serial), they
+handle DMA specially.
+
+Note that usb-serial uses kfifo for TX for ages.
+"""
+
+Cc: Al Cooper <alcooperx@gmail.com>
+Cc: Alexander Shiyan <shc_work@mail.ru>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: Baruch Siach <baruch@tkos.co.il>
+Cc: Bjorn Andersson <andersson@kernel.org>
+Cc: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Hammer Hsieh <hammerh0314@gmail.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
+Cc: Kevin Hilman <khilman@baylibre.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>
+Cc: Laxman Dewangan <ldewangan@nvidia.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-arm-msm@vger.kernel.org
+Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Simek <michal.simek@amd.com>
+Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Orson Zhai <orsonzhai@gmail.com>
+Cc: "Pali Rohár" <pali@kernel.org>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Peter Korsgaard <jacmet@sunsite.dk>
+Cc: Richard Genoud <richard.genoud@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Stefani Seibold <stefani@seibold.net>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Taichi Sugaya <sugaya.taichi@socionext.com>
+Cc: Takao Orito <orito.takao@socionext.com>
+Cc: Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Timur Tabi <timur@kernel.org>
+Cc: Vineet Gupta <vgupta@kernel.org>
+
+Jiri Slaby (SUSE) (15):
+  kfifo: drop __kfifo_dma_out_finish_r()
+  kfifo: introduce and use kfifo_skip_count()
+  kfifo: add kfifo_out_linear{,_ptr}()
+  kfifo: remove support for physically non-contiguous memory
+  kfifo: rename l to len_to_end in setup_sgl()
+  kfifo: pass offset to setup_sgl_buf() instead of a pointer
+  kfifo: add kfifo_dma_out_prepare_mapped()
+  kfifo: fix typos in kernel-doc
+  tty: 8250_dma: use dmaengine_prep_slave_sg()
+  tty: 8250_omap: use dmaengine_prep_slave_sg()
+  tty: msm_serial: use dmaengine_prep_slave_sg()
+  tty: serial: switch from circ_buf to kfifo
+  tty: atmel_serial: use single DMA mapping for TX
+  tty: atmel_serial: define macro for RX size
+  tty: atmel_serial: use single DMA mapping for RX
+
+ drivers/tty/serial/8250/8250_bcm7271.c  |  14 +--
+ drivers/tty/serial/8250/8250_core.c     |   3 +-
+ drivers/tty/serial/8250/8250_dma.c      |  31 +++--
+ drivers/tty/serial/8250/8250_exar.c     |   5 +-
+ drivers/tty/serial/8250/8250_mtk.c      |   2 +-
+ drivers/tty/serial/8250/8250_omap.c     |  48 +++++---
+ drivers/tty/serial/8250/8250_pci1xxxx.c |  50 ++++----
+ drivers/tty/serial/8250/8250_port.c     |  22 ++--
+ drivers/tty/serial/amba-pl011.c         |  46 +++-----
+ drivers/tty/serial/ar933x_uart.c        |  15 ++-
+ drivers/tty/serial/arc_uart.c           |   8 +-
+ drivers/tty/serial/atmel_serial.c       | 150 +++++++++++-------------
+ drivers/tty/serial/clps711x.c           |  12 +-
+ drivers/tty/serial/cpm_uart.c           |  20 ++--
+ drivers/tty/serial/digicolor-usart.c    |  12 +-
+ drivers/tty/serial/dz.c                 |  13 +-
+ drivers/tty/serial/fsl_linflexuart.c    |  17 +--
+ drivers/tty/serial/fsl_lpuart.c         |  39 +++---
+ drivers/tty/serial/icom.c               |  25 +---
+ drivers/tty/serial/imx.c                |  54 ++++-----
+ drivers/tty/serial/ip22zilog.c          |  26 ++--
+ drivers/tty/serial/jsm/jsm_cls.c        |  29 ++---
+ drivers/tty/serial/jsm/jsm_neo.c        |  38 ++----
+ drivers/tty/serial/max3100.c            |  14 +--
+ drivers/tty/serial/max310x.c            |  35 +++---
+ drivers/tty/serial/men_z135_uart.c      |  26 ++--
+ drivers/tty/serial/meson_uart.c         |  11 +-
+ drivers/tty/serial/milbeaut_usio.c      |  15 +--
+ drivers/tty/serial/msm_serial.c         | 114 +++++++++---------
+ drivers/tty/serial/mvebu-uart.c         |   8 +-
+ drivers/tty/serial/mxs-auart.c          |  23 +---
+ drivers/tty/serial/pch_uart.c           |  21 ++--
+ drivers/tty/serial/pic32_uart.c         |  15 ++-
+ drivers/tty/serial/pmac_zilog.c         |  24 ++--
+ drivers/tty/serial/qcom_geni_serial.c   |  36 +++---
+ drivers/tty/serial/rda-uart.c           |  17 +--
+ drivers/tty/serial/samsung_tty.c        |  54 +++++----
+ drivers/tty/serial/sb1250-duart.c       |  13 +-
+ drivers/tty/serial/sc16is7xx.c          |  40 +++----
+ drivers/tty/serial/sccnxp.c             |  16 ++-
+ drivers/tty/serial/serial-tegra.c       |  43 ++++---
+ drivers/tty/serial/serial_core.c        |  56 ++++-----
+ drivers/tty/serial/serial_port.c        |   2 +-
+ drivers/tty/serial/sh-sci.c             |  51 ++++----
+ drivers/tty/serial/sprd_serial.c        |  20 ++--
+ drivers/tty/serial/st-asc.c             |   4 +-
+ drivers/tty/serial/stm32-usart.c        |  52 ++++----
+ drivers/tty/serial/sunhv.c              |  35 +++---
+ drivers/tty/serial/sunplus-uart.c       |  16 +--
+ drivers/tty/serial/sunsab.c             |  30 ++---
+ drivers/tty/serial/sunsu.c              |  15 +--
+ drivers/tty/serial/sunzilog.c           |  27 ++---
+ drivers/tty/serial/tegra-tcu.c          |  10 +-
+ drivers/tty/serial/timbuart.c           |  17 ++-
+ drivers/tty/serial/uartlite.c           |  13 +-
+ drivers/tty/serial/ucc_uart.c           |  20 ++--
+ drivers/tty/serial/xilinx_uartps.c      |  20 ++--
+ drivers/tty/serial/zs.c                 |  13 +-
+ include/linux/kfifo.h                   | 143 ++++++++++++++++------
+ include/linux/serial_core.h             |  49 +++++---
+ lib/kfifo.c                             | 107 +++++++++--------
+ 61 files changed, 944 insertions(+), 960 deletions(-)
+
+-- 
+2.44.0
 
 
