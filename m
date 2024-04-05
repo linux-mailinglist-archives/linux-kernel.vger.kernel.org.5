@@ -1,58 +1,58 @@
-Return-Path: <linux-kernel+bounces-132938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09776899C39
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:59:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22FA9899C3B
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:59:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B259A2863D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:59:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E1821F23C14
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3722716C6A7;
-	Fri,  5 Apr 2024 11:58:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D60616D9AD;
+	Fri,  5 Apr 2024 11:58:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WVLN4xfJ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fu+9BIpN"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B35216C69E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 11:58:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B3F16D4DF
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 11:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712318311; cv=none; b=BlL67KGrQ4WZ7y66yd77Wo1aDzsEn1ojaueZkgIL5M9T43heuhBl8W38N745UYo4TEYZbiF7stryz8gVJi2qKzVRG3uy1Pl6tbkFwFbw0iba+5nM5nClpHC7BC/wKmHFWhYjvlVHZya2dFZBRRp5tJLXc0hHAyq5BZOLTK0o168=
+	t=1712318313; cv=none; b=lQUjsCOZtn8sdpioXacAYsfCgPI4g+Yv/jZYYKnJ9RXHlj1OxolgKwI13EMx1/cFvHt21Jbu/TjZiR8XEq+Lh/Ah9URCJFjAuE9kcoMIVHDd0H9jRKcD0rqFbPgWhwCIS5rbkLh8b1rdWUaPEWYKVo/sJflqZu8c/o7PWk0sEcU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712318311; c=relaxed/simple;
-	bh=hH3qcfIlDFNFXcnOAXz5nQZISUR02/h+wK8MXGjdmhw=;
+	s=arc-20240116; t=1712318313; c=relaxed/simple;
+	bh=VOl9mQCZZBeBKTYD0q38JVa+rIW4wA9u/6sOyqn9PV4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QXMxwBc0o/EgoJbvKxHLajathixjCp61fe9N5rlFI/pd2x6OGkgLCf15KXJ0oyOv0Det1jVJ1wNrBT4KrHQfQ6veDRdjwFDSi3xce57CBbym0ru7h2ot5kW3mEQK1zGH1XfCQzCgw96OnUpVZZsWPkWa/QK5wJRoZmWuDW9z5vE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WVLN4xfJ; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=eAV2+tk7obBqelqheTXVsTnH1tFuFQ8bJNis6pvGPqrejlBUfWSC/Pz4B8uLvon6xKb1eQC97aaRZuTivpzVzB6DWes4JYguPiFRs9tVAGStRM6U3hVYrmBxZrp2IAJLsjm1M6ajetA/3k+s67W1YpSlAHFMsp6kd4MKeR9PoBw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fu+9BIpN; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712318308;
+	s=mimecast20190719; t=1712318310;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=54r2v6x4hCqSU9lpxJJX8F9xMdFOFqhWRrFs4bS58g8=;
-	b=WVLN4xfJGrQugzT7z/XipgJJAGHBRyEMfO/DNjGMPoL7h6cMvFArwnM8kC4QqTku2WzF0h
-	kaQNmDLHuRCUC9QGE9cBpsuldaA9VhPLwsLP6kUxTxXD2JRxg3jVOxB/myKq9K0t4UqLMH
-	IJr98imhhsUaMexpuRad1no++RYlNXw=
+	bh=bNbIAMV3AIIh+finZC0kYCtErDA0HoO+gaZWe4mDURE=;
+	b=Fu+9BIpNpMdOLGNEXn4bn3Gm2YHQrppJwRkjUSRvWEmCcJfAjbel/dUfqphkcXtJqlp/Y+
+	6YTHvYV6i3v1QUujUKsqo/+0nglqdlTQf9LXpsqgLozoKJY8T8xSDO6WxKpYvK3p3ocDaI
+	sVRhWp1Pl4gaW+0/w9RJQJNIoaWGz0k=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-653-1T7hKq5gPw2fRM982K2a_w-1; Fri, 05 Apr 2024 07:58:22 -0400
-X-MC-Unique: 1T7hKq5gPw2fRM982K2a_w-1
+ us-mta-216-j7EJIyIYM6OGTJqf_yp9KQ-1; Fri, 05 Apr 2024 07:58:23 -0400
+X-MC-Unique: j7EJIyIYM6OGTJqf_yp9KQ-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C4A2888D0C8;
-	Fri,  5 Apr 2024 11:58:20 +0000 (UTC)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 584B885CF01;
+	Fri,  5 Apr 2024 11:58:22 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 13F6640C6CB3;
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D080D40C6CB5;
 	Fri,  5 Apr 2024 11:58:20 +0000 (UTC)
 From: Paolo Bonzini <pbonzini@redhat.com>
 To: linux-kernel@vger.kernel.org,
@@ -77,9 +77,9 @@ Cc: Marc Zyngier <maz@kernel.org>,
 	linux-mm@kvack.org,
 	linux-trace-kernel@vger.kernel.org,
 	linux-perf-users@vger.kernel.org
-Subject: [PATCH 3/4] mmu_notifier: remove the .change_pte() callback
-Date: Fri,  5 Apr 2024 07:58:14 -0400
-Message-ID: <20240405115815.3226315-4-pbonzini@redhat.com>
+Subject: [PATCH 4/4] mm: replace set_pte_at_notify() with just set_pte_at()
+Date: Fri,  5 Apr 2024 07:58:15 -0400
+Message-ID: <20240405115815.3226315-5-pbonzini@redhat.com>
 In-Reply-To: <20240405115815.3226315-1-pbonzini@redhat.com>
 References: <20240405115815.3226315-1-pbonzini@redhat.com>
 Precedence: bulk
@@ -92,151 +92,115 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
 
-The scope of set_pte_at_notify() has reduced more and more through the
-years.  Initially, it was meant for when the change to the PTE was
-not bracketed by mmu_notifier_invalidate_range_{start,end}().  However,
-that has not been so for over ten years.  During all this period
-the only implementation of .change_pte() was KVM and it
-had no actual functionality, because it was called after
-mmu_notifier_invalidate_range_start() zapped the secondary PTE.
-
-Now that this (nonfunctional) user of the .change_pte() callback is
-gone, the whole callback can be removed.  For now, leave in place
-set_pte_at_notify() even though it is just a synonym for set_pte_at().
+With the demise of the .change_pte() MMU notifier callback, there is no
+notification happening in set_pte_at_notify().  It is a synonym of
+set_pte_at() and can be replaced with it.
 
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- include/linux/mmu_notifier.h | 46 ++----------------------------------
- mm/mmu_notifier.c            | 17 -------------
- 2 files changed, 2 insertions(+), 61 deletions(-)
+ include/linux/mmu_notifier.h | 2 --
+ kernel/events/uprobes.c      | 5 ++---
+ mm/ksm.c                     | 4 ++--
+ mm/memory.c                  | 7 +------
+ mm/migrate_device.c          | 8 ++------
+ 5 files changed, 7 insertions(+), 19 deletions(-)
 
 diff --git a/include/linux/mmu_notifier.h b/include/linux/mmu_notifier.h
-index f349e08a9dfe..8c72bf651606 100644
+index 8c72bf651606..d39ebb10caeb 100644
 --- a/include/linux/mmu_notifier.h
 +++ b/include/linux/mmu_notifier.h
-@@ -122,15 +122,6 @@ struct mmu_notifier_ops {
- 			  struct mm_struct *mm,
- 			  unsigned long address);
- 
--	/*
--	 * change_pte is called in cases that pte mapping to page is changed:
--	 * for example, when ksm remaps pte to point to a new shared page.
--	 */
--	void (*change_pte)(struct mmu_notifier *subscription,
--			   struct mm_struct *mm,
--			   unsigned long address,
--			   pte_t pte);
--
- 	/*
- 	 * invalidate_range_start() and invalidate_range_end() must be
- 	 * paired and are called only when the mmap_lock and/or the
-@@ -392,8 +383,6 @@ extern int __mmu_notifier_clear_young(struct mm_struct *mm,
- 				      unsigned long end);
- extern int __mmu_notifier_test_young(struct mm_struct *mm,
- 				     unsigned long address);
--extern void __mmu_notifier_change_pte(struct mm_struct *mm,
--				      unsigned long address, pte_t pte);
- extern int __mmu_notifier_invalidate_range_start(struct mmu_notifier_range *r);
- extern void __mmu_notifier_invalidate_range_end(struct mmu_notifier_range *r);
- extern void __mmu_notifier_arch_invalidate_secondary_tlbs(struct mm_struct *mm,
-@@ -439,13 +428,6 @@ static inline int mmu_notifier_test_young(struct mm_struct *mm,
- 	return 0;
- }
- 
--static inline void mmu_notifier_change_pte(struct mm_struct *mm,
--					   unsigned long address, pte_t pte)
--{
--	if (mm_has_notifiers(mm))
--		__mmu_notifier_change_pte(mm, address, pte);
--}
--
- static inline void
- mmu_notifier_invalidate_range_start(struct mmu_notifier_range *range)
- {
-@@ -581,26 +563,6 @@ static inline void mmu_notifier_range_init_owner(
- 	__young;							\
- })
- 
--/*
-- * set_pte_at_notify() sets the pte _after_ running the notifier.
-- * This is safe to start by updating the secondary MMUs, because the primary MMU
-- * pte invalidate must have already happened with a ptep_clear_flush() before
-- * set_pte_at_notify() has been invoked.  Updating the secondary MMUs first is
-- * required when we change both the protection of the mapping from read-only to
-- * read-write and the pfn (like during copy on write page faults). Otherwise the
-- * old page would remain mapped readonly in the secondary MMUs after the new
-- * page is already writable by some CPU through the primary MMU.
-- */
--#define set_pte_at_notify(__mm, __address, __ptep, __pte)		\
--({									\
--	struct mm_struct *___mm = __mm;					\
--	unsigned long ___address = __address;				\
--	pte_t ___pte = __pte;						\
--									\
--	mmu_notifier_change_pte(___mm, ___address, ___pte);		\
--	set_pte_at(___mm, ___address, __ptep, ___pte);			\
--})
--
- #else /* CONFIG_MMU_NOTIFIER */
- 
- struct mmu_notifier_range {
-@@ -650,11 +612,6 @@ static inline int mmu_notifier_test_young(struct mm_struct *mm,
- 	return 0;
- }
- 
--static inline void mmu_notifier_change_pte(struct mm_struct *mm,
--					   unsigned long address, pte_t pte)
--{
--}
--
- static inline void
- mmu_notifier_invalidate_range_start(struct mmu_notifier_range *range)
- {
-@@ -693,7 +650,6 @@ static inline void mmu_notifier_subscriptions_destroy(struct mm_struct *mm)
- #define	ptep_clear_flush_notify ptep_clear_flush
- #define pmdp_huge_clear_flush_notify pmdp_huge_clear_flush
- #define pudp_huge_clear_flush_notify pudp_huge_clear_flush
--#define set_pte_at_notify set_pte_at
- 
- static inline void mmu_notifier_synchronize(void)
- {
-@@ -701,4 +657,6 @@ static inline void mmu_notifier_synchronize(void)
+@@ -657,6 +657,4 @@ static inline void mmu_notifier_synchronize(void)
  
  #endif /* CONFIG_MMU_NOTIFIER */
  
-+#define set_pte_at_notify set_pte_at
-+
+-#define set_pte_at_notify set_pte_at
+-
  #endif /* _LINUX_MMU_NOTIFIER_H */
-diff --git a/mm/mmu_notifier.c b/mm/mmu_notifier.c
-index ec3b068cbbe6..8982e6139d07 100644
---- a/mm/mmu_notifier.c
-+++ b/mm/mmu_notifier.c
-@@ -424,23 +424,6 @@ int __mmu_notifier_test_young(struct mm_struct *mm,
- 	return young;
- }
+diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
+index e4834d23e1d1..f4523b95c945 100644
+--- a/kernel/events/uprobes.c
++++ b/kernel/events/uprobes.c
+@@ -18,7 +18,6 @@
+ #include <linux/sched/coredump.h>
+ #include <linux/export.h>
+ #include <linux/rmap.h>		/* anon_vma_prepare */
+-#include <linux/mmu_notifier.h>	/* set_pte_at_notify */
+ #include <linux/swap.h>		/* folio_free_swap */
+ #include <linux/ptrace.h>	/* user_enable_single_step */
+ #include <linux/kdebug.h>	/* notifier mechanism */
+@@ -195,8 +194,8 @@ static int __replace_page(struct vm_area_struct *vma, unsigned long addr,
+ 	flush_cache_page(vma, addr, pte_pfn(ptep_get(pvmw.pte)));
+ 	ptep_clear_flush(vma, addr, pvmw.pte);
+ 	if (new_page)
+-		set_pte_at_notify(mm, addr, pvmw.pte,
+-				  mk_pte(new_page, vma->vm_page_prot));
++		set_pte_at(mm, addr, pvmw.pte,
++			   mk_pte(new_page, vma->vm_page_prot));
  
--void __mmu_notifier_change_pte(struct mm_struct *mm, unsigned long address,
--			       pte_t pte)
--{
--	struct mmu_notifier *subscription;
--	int id;
--
--	id = srcu_read_lock(&srcu);
--	hlist_for_each_entry_rcu(subscription,
--				 &mm->notifier_subscriptions->list, hlist,
--				 srcu_read_lock_held(&srcu)) {
--		if (subscription->ops->change_pte)
--			subscription->ops->change_pte(subscription, mm, address,
--						      pte);
--	}
--	srcu_read_unlock(&srcu, id);
--}
--
- static int mn_itree_invalidate(struct mmu_notifier_subscriptions *subscriptions,
- 			       const struct mmu_notifier_range *range)
- {
+ 	folio_remove_rmap_pte(old_folio, old_page, vma);
+ 	if (!folio_mapped(old_folio))
+diff --git a/mm/ksm.c b/mm/ksm.c
+index 8c001819cf10..108a4d167824 100644
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -1345,7 +1345,7 @@ static int write_protect_page(struct vm_area_struct *vma, struct page *page,
+ 		if (pte_write(entry))
+ 			entry = pte_wrprotect(entry);
+ 
+-		set_pte_at_notify(mm, pvmw.address, pvmw.pte, entry);
++		set_pte_at(mm, pvmw.address, pvmw.pte, entry);
+ 	}
+ 	*orig_pte = entry;
+ 	err = 0;
+@@ -1447,7 +1447,7 @@ static int replace_page(struct vm_area_struct *vma, struct page *page,
+ 	 * See Documentation/mm/mmu_notifier.rst
+ 	 */
+ 	ptep_clear_flush(vma, addr, ptep);
+-	set_pte_at_notify(mm, addr, ptep, newpte);
++	set_pte_at(mm, addr, ptep, newpte);
+ 
+ 	folio = page_folio(page);
+ 	folio_remove_rmap_pte(folio, page, vma);
+diff --git a/mm/memory.c b/mm/memory.c
+index f2bc6dd15eb8..9a6f4d8aa379 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -3327,13 +3327,8 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+ 		ptep_clear_flush(vma, vmf->address, vmf->pte);
+ 		folio_add_new_anon_rmap(new_folio, vma, vmf->address);
+ 		folio_add_lru_vma(new_folio, vma);
+-		/*
+-		 * We call the notify macro here because, when using secondary
+-		 * mmu page tables (such as kvm shadow page tables), we want the
+-		 * new page to be mapped directly into the secondary page table.
+-		 */
+ 		BUG_ON(unshare && pte_write(entry));
+-		set_pte_at_notify(mm, vmf->address, vmf->pte, entry);
++		set_pte_at(mm, vmf->address, vmf->pte, entry);
+ 		update_mmu_cache_range(vmf, vma, vmf->address, vmf->pte, 1);
+ 		if (old_folio) {
+ 			/*
+diff --git a/mm/migrate_device.c b/mm/migrate_device.c
+index b6c27c76e1a0..66206734b1b9 100644
+--- a/mm/migrate_device.c
++++ b/mm/migrate_device.c
+@@ -664,13 +664,9 @@ static void migrate_vma_insert_page(struct migrate_vma *migrate,
+ 	if (flush) {
+ 		flush_cache_page(vma, addr, pte_pfn(orig_pte));
+ 		ptep_clear_flush(vma, addr, ptep);
+-		set_pte_at_notify(mm, addr, ptep, entry);
+-		update_mmu_cache(vma, addr, ptep);
+-	} else {
+-		/* No need to invalidate - it was non-present before */
+-		set_pte_at(mm, addr, ptep, entry);
+-		update_mmu_cache(vma, addr, ptep);
+ 	}
++	set_pte_at(mm, addr, ptep, entry);
++	update_mmu_cache(vma, addr, ptep);
+ 
+ 	pte_unmap_unlock(ptep, ptl);
+ 	*src = MIGRATE_PFN_MIGRATE;
 -- 
 2.43.0
-
 
 
