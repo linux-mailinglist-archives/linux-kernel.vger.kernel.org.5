@@ -1,99 +1,118 @@
-Return-Path: <linux-kernel+bounces-133262-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133234-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A420B89A156
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:36:50 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDDB389A0FC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:25:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F6A82887F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:36:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7CD1AB24F39
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E25516FF38;
-	Fri,  5 Apr 2024 15:36:40 +0000 (UTC)
-Received: from tretyak2.mcst.ru (tretyak2.mcst.ru [212.5.119.215])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9607E16F8FE;
+	Fri,  5 Apr 2024 15:24:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l13UVQis"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFAAA16F90E;
-	Fri,  5 Apr 2024 15:36:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.5.119.215
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89B5B16F8E7;
+	Fri,  5 Apr 2024 15:24:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712331400; cv=none; b=AtMaJVT+CVZ3fM19YGG2E4GPHSYyEh73mLzXinuBjxyKSa//8NWc96zAAW3epPp1o+fehzZSER39LaZWeNZY8SHJSbtf8M3KcutCOlrVCBcWYNtdhQnKRM2o5hZfobxwPN7Yg21iR795VXO0n7IEym2h0ZcMBYqx/U9Au9tOL4M=
+	t=1712330695; cv=none; b=qYMmtMCRgelW85vhBodfBVCE6JlSiKZ3z8Bq3haQ90T9PUIgOsOH9FlQ1EhwAmGb07t0NLLovZVRymwAyhb4L9DdEZd7DLW5IzdE0NdWCD4ecPeRt/VIWnr9cL+CxZo4reKhsN/keoP0xUTv4cPGwCeZLyKU0oPuDIKEvYuzYyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712331400; c=relaxed/simple;
-	bh=zHcMHKvPO78NbKWFx4WJtT4MssjLzx3ZxNF75dmvbvc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g93ZzVx3aUTad9ci3pDWw0sJ7Nlxi/7oGb3qiMh2yKbPZDDES1wvpSXEX90n4UktB1uAsSWkPHV0iLuUaRD0D21hHEeDgHdW2k3fcBeupK9n2+ZKk6hFL5Z4XXXZWkZJmQ5qUB49FgkY/kPJlpztGsvHzbvew98WevrY6Jjei4Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mcst.ru; spf=pass smtp.mailfrom=mcst.ru; arc=none smtp.client-ip=212.5.119.215
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mcst.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mcst.ru
-Received: from tretyak2.mcst.ru (localhost [127.0.0.1])
-	by tretyak2.mcst.ru (Postfix) with ESMTP id 42140102397;
-	Fri,  5 Apr 2024 18:28:28 +0300 (MSK)
-Received: from frog.lab.sun.mcst.ru (frog.lab.sun.mcst.ru [176.16.4.50])
-	by tretyak2.mcst.ru (Postfix) with ESMTP id 381C9102398;
-	Fri,  5 Apr 2024 18:27:43 +0300 (MSK)
-Received: from artemiev-i.lab.sun.mcst.ru (avior-1 [192.168.63.223])
-	by frog.lab.sun.mcst.ru (8.13.4/8.12.11) with ESMTP id 435FRgqo010337;
-	Fri, 5 Apr 2024 18:27:42 +0300
-From: Igor Artemiev <Igor.A.Artemiev@mcst.ru>
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Igor Artemiev <Igor.A.Artemiev@mcst.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: [lvc-project] [PATCH] wifi: cfg80211: fix the order of arguments for trace events of the tx_rx_evt class
-Date: Fri,  5 Apr 2024 18:24:30 +0300
-Message-Id: <20240405152431.270267-1-Igor.A.Artemiev@mcst.ru>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1712330695; c=relaxed/simple;
+	bh=GyDxE2CA81kKBR9d6tCMtIF9rih/K6NKJd4/EhB1CNE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IzXBjZiQZ329PtHIZq60QxbKVxih2JWe7cSXc+sAAhl1GTu69U3gsChd4+0NnSrzeTFhklL+K02qGGgBxnlQtLe1DK8xnruh/SR2npo1wHcX4zztkQLLhVwjPYD+JrpY1QOcjhUN4egJitahNp30EnaKchbExK+hHd3kIknk5xA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l13UVQis; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712330695; x=1743866695;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GyDxE2CA81kKBR9d6tCMtIF9rih/K6NKJd4/EhB1CNE=;
+  b=l13UVQiszEgnkWzs3Ya7fRqvxN3lSXRae1nLPW6bwXs2c1Mz6REegBKJ
+   1Qm5UE5K6ZZx08lH02uCoVhsAa1jWgZK5E34OvU8EP2Y12TLm+xcYJ89J
+   XEt9P83CEt17CMorjS1LI6JCrll5s6baRl/sUgEi1cR4VNhrnZLb4NKWm
+   fWmKyNGImMBWc1npHyuO9A6rcXhjm8l5DfaskO7towSzA9kHSSVV98gfY
+   5oJNFzIhoAZqGde3enacuGZPVak/8YPeYQffcL07nKqF9erGJKnicWqL9
+   uer73xilQnIniNGzw5qsygl2Gt3fAMG5QXTOZSJ/Yf/yn6+2MVrM68zd7
+   g==;
+X-CSE-ConnectionGUID: gn7YmV2nR3apEaGvWLms7w==
+X-CSE-MsgGUID: uGW8Z3lCQmO72K89ReDolw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="18274770"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="18274770"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:24:54 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="915256912"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="915256912"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:24:51 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rslQv-00000001ma2-21xQ;
+	Fri, 05 Apr 2024 18:24:49 +0300
+Date: Fri, 5 Apr 2024 18:24:49 +0300
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
+	Hannes Reinecke <hare@suse.de>, linux-ide@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Niklas Cassel <cassel@kernel.org>
+Subject: Re: [PATCH v1 1/1] ata: libata: Move inclusion to where it belongs
+Message-ID: <ZhAXwWtA8ASDG89x@smile.fi.intel.com>
+References: <20240404192111.3580578-1-andriy.shevchenko@linux.intel.com>
+ <8e37f392-1ddd-4c8e-87df-acb3bb5bdf0b@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
-	 bases: 20111107 #2745587, check: 20240405 notchecked
-X-AV-Checked: ClamAV using ClamSMTP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8e37f392-1ddd-4c8e-87df-acb3bb5bdf0b@kernel.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-The declarations of the tx_rx_evt class and the rdev_set_antenna event
-use the wrong order of arguments in the TP_ARGS macro.
+On Fri, Apr 05, 2024 at 08:16:29AM +0900, Damien Le Moal wrote:
+> On 4/5/24 04:21, Andy Shevchenko wrote:
 
-Fix the order of arguments in the TP_ARGS macro.
+..
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+> >  /* libata-acpi.c */
+> > +
+> > +#include <linux/acpi.h>
+> 
+> I am really not a big fan of including files in the middle of a header file.
 
-Signed-off-by: Igor Artemiev <Igor.A.Artemiev@mcst.ru>
----
- net/wireless/trace.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I'm fine to place it at the top.
 
-diff --git a/net/wireless/trace.h b/net/wireless/trace.h
-index cbbf347c6b2e..df013c98b80d 100644
---- a/net/wireless/trace.h
-+++ b/net/wireless/trace.h
-@@ -1758,7 +1758,7 @@ TRACE_EVENT(rdev_return_void_tx_rx,
- 
- DECLARE_EVENT_CLASS(tx_rx_evt,
- 	TP_PROTO(struct wiphy *wiphy, u32 tx, u32 rx),
--	TP_ARGS(wiphy, rx, tx),
-+	TP_ARGS(wiphy, tx, rx),
- 	TP_STRUCT__entry(
- 		WIPHY_ENTRY
- 		__field(u32, tx)
-@@ -1775,7 +1775,7 @@ DECLARE_EVENT_CLASS(tx_rx_evt,
- 
- DEFINE_EVENT(tx_rx_evt, rdev_set_antenna,
- 	TP_PROTO(struct wiphy *wiphy, u32 tx, u32 rx),
--	TP_ARGS(wiphy, rx, tx)
-+	TP_ARGS(wiphy, tx, rx)
- );
- 
- DECLARE_EVENT_CLASS(wiphy_netdev_id_evt,
+..
+
+> > -#include <linux/acpi.h>
+> 
+> Why not:
+> 
+> #ifdef CONFIG_ATA_ACPI
+> #include <linux/acpi.h>
+> #endif
+> 
+> Which avoids the union forward declaration below.
+
+The point is to reduce dependency hell. The header does NOT dependent on
+ACPI guts, that's why I really prefer forward declaration over including
+a monstrous acpi.h.
+
 -- 
-2.39.2
+With Best Regards,
+Andy Shevchenko
+
 
 
