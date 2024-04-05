@@ -1,140 +1,140 @@
-Return-Path: <linux-kernel+bounces-133271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0DAE89A17E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:39:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33D8389A181
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:40:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6860D1F219CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:39:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 846D9B265BC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:40:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74B6A16FF33;
-	Fri,  5 Apr 2024 15:39:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AAEE16FF30;
+	Fri,  5 Apr 2024 15:40:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JtnnTpbp"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D8m4Jnch"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0548D16F8E7;
-	Fri,  5 Apr 2024 15:39:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32DBF1DFE4;
+	Fri,  5 Apr 2024 15:40:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712331575; cv=none; b=EdQnkxD/z6FyaFyXpGGItlUIURQXhdf0d+9qTjWc3xmduzNheJPXB54ImoelNyiCf4NZvNTCAQxDbOAwssnDBa1M3SxEXPfUIj8ikq4ISOD9qPBCzxmDM/aK8pcK/vmTzHefWuXfkMU2vIlu7KLZXIUuBHf/wi9mxFBTL2lGIBg=
+	t=1712331618; cv=none; b=di4i/MvBc3mFgzeWo4h1+2PSv7X9FOzJHPFHdy5CncGQmYkJqlF9DUQ872pYTVHFh1p45clamp/s/zMf8I/B4SlG2cd8OADCva9hmWrjSDA7fpyGOIkdNDCRCIWfUa9vItfVgr0zBxQpJsYflq8XKcF7XbYyzxAe+bbhOA5u1y0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712331575; c=relaxed/simple;
-	bh=9a5wWcb4/mZbxlW/jWQh98jPjoVQcPSfchAefa9YY+I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TG2Yhx6vahYkNsMWDScrzg5yieJ49Bq9UmMph2ZpPkMSFP/nGMLVCt02U/5s6S5SvGz06jIuep5mnzkoxA5WNi1jItqR2EJb9XqectSWLzQz41mWpwfpCWnxIXhfpjralgHnLqbymJa3td/TxOc04BOcpUs5rJvuatFOTql9nb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JtnnTpbp; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712331574; x=1743867574;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=9a5wWcb4/mZbxlW/jWQh98jPjoVQcPSfchAefa9YY+I=;
-  b=JtnnTpbp5ObqP8r0KiHgmTeQdP0lFywsvQqjmQx7UP5Xj+Zans6DiIXS
-   2mcoN1oV0Lh3qs50Iz98gnJJAG4q7bvQyt582KvtpnKHZvWVmMUl9XYqj
-   N4yWnXI4M1O1Xbz0kc1uTTxnqk3KgNlP/32CQ2gAMIXAYNmzo9rWYl3JY
-   cJJMnlBYXw9uBEJnKJHzcBxwJndv83lB3+AJTFcXP3hAJtgl5gP1CmJkL
-   hIbCS7/Lz9YX+0DLJNgkjdMFctJ11kCfSgrzBBOZi8RvmUSHr52Xg0Jie
-   IreXqg4trtU3SYCh8Okol7jxodqOkG5WQmELv9FjTaAtfITOFH3fp+iYd
-   w==;
-X-CSE-ConnectionGUID: hQCzJQIHTc+4865UYCegVw==
-X-CSE-MsgGUID: 3qRpq0aPT3q/w47JB4dPxw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="7565967"
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="7565967"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:39:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="915257320"
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="915257320"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:39:31 -0700
-Received: from andy by smile with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rslf6-00000001mvK-3A78;
-	Fri, 05 Apr 2024 18:39:28 +0300
-Date: Fri, 5 Apr 2024 18:39:28 +0300
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Sudeep Holla <sudeep.holla@arm.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Peng Fan <peng.fan@nxp.com>,
-	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-	"brgl@bgdev.pl" <brgl@bgdev.pl>,
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"cristian.marussi@arm.com" <cristian.marussi@arm.com>
-Subject: Re: [PATCH] pinctrl: pinconf-generic: check error value EOPNOTSUPP
-Message-ID: <ZhAbMA-ezv4hwBGn@smile.fi.intel.com>
-References: <20240401141031.3106216-1-peng.fan@oss.nxp.com>
- <CACRpkdZAuNXGyg2wwYcQG4oO9w7jPS6vj4Vt0=kqX5fJ+QpNmw@mail.gmail.com>
- <Zg7dwcFz5eD7Am2u@smile.fi.intel.com>
- <DU0PR04MB941777DA29D70013342721A788032@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <Zg_IXLNPakLmbbc7@bogus>
+	s=arc-20240116; t=1712331618; c=relaxed/simple;
+	bh=3LkYbeUb1w/NqnyBxbOoR6oK2HB39Z/ResRRJH1BY+E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HpvubVHvZYEqx+6lRP7b0tC5WeVsIbwtZPd4gCIslXTYPQalGrubdh/v9CLDYI/2ThWT4jqYje3OY45K8vqYmP1NrOlWSk8WEXQ4Ixq67HO5O2RrvGCZ2NDso3vhGtq3FUawuo/TKqZ9JWK/pr2chMQlPKnnjArNaE+lSYaB57U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D8m4Jnch; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6098a20ab22so21565117b3.2;
+        Fri, 05 Apr 2024 08:40:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712331616; x=1712936416; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ogv59Vf9u5J8t0ixBshAYpHXdn+pLcWIJ4jwyLOs3hk=;
+        b=D8m4JnchPWDZw4NX2d548lNQKFFh1DmPSAoyAJrRnTdhQLe9hKjxUXCKn6bJtHIhw4
+         xrbGGChfgycjmNoXvNmp/T9N3xdLcHvJvOUWMHS/bwdmDGTmJnHjYG7lbN69IuqQhTg5
+         +pNQjSWcP49CIP8GAAbnkQ2q1OctCqfUv1eQR20qxRu5EjY08vYenC+MiMRnax5MxikX
+         GDEAPqrBmII0MBjrdNb+2LmQspm2IA/ZbEtMAzyb6At9FscH+3f8irVHdGSby2y+F1Cx
+         oaZDCj4diZvMo8ceoAOTnyODDvq3DnxV8Kp2l/CCPbe0CasDsLEn4uWUBWSYKDrdDBGd
+         Kz9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712331616; x=1712936416;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ogv59Vf9u5J8t0ixBshAYpHXdn+pLcWIJ4jwyLOs3hk=;
+        b=BPrGkwrNtd12gAdGaPRb5QEkbbNyCCZav6Lpe8ssg1rjla9suT8iI2KMownYd8mf21
+         /htNK+LGPdN+6qZ9wVbh9912YJecyxQiU4rRRZpEfo/qOFTp0+Z6Ag4RtfnbW+WJmr2C
+         Aakcn7zTfkZ0+pZUO42Z6YZhE8juQDcuomNnf7QlZxWizZxytWn1r9KkxPB2CgYQa/sE
+         PGHIEUtX9d9c7h+bQ/tbWl7X2dR9P59sqNYWuVE6aM8AS6GuDefnfDg8wBWV4TUqQmQm
+         kPsUXyqfjoYpqOVmBb7tX7tc/cohUXHK6WAnUHaYvxWFGn8VwioK8w52pwKaoXNYGMmC
+         qvGw==
+X-Forwarded-Encrypted: i=1; AJvYcCV1ZbqHWEdADZVvroBi9SoObzBeDunZWInAdafqUyDNRjs0qf5aLzv2O+fa8cib8pq9UU27Z2BMX78DuxVkJhcT6DcHnV845qJ4qrGxeDqOP9MQ1K69qlPsi4gBpVVkv23Z60GRxT9fow==
+X-Gm-Message-State: AOJu0Yxrnr8uWsZ01RxiB9pPIO2cQ2DDHsVkeTwDFIA7tlGMwb28xqzM
+	DiIuqZ0ruQGf0AJwdTRAiyakqOzR3MxjjTjZJDX75dpAGy/7UvlDtYFQcM0Z5UGG8JP80kTGySZ
+	3aM/vImEj3ev7MbxVM5YilBjthKs=
+X-Google-Smtp-Source: AGHT+IGMLYfLt/nzZblhciR4azfPG3X++K/H/tSTaEsWOtc/7p2fTRz7WVsDs3bk0MLnksajj7+32achn/AzNMNvamI=
+X-Received: by 2002:a81:bf50:0:b0:615:11c0:e9c1 with SMTP id
+ s16-20020a81bf50000000b0061511c0e9c1mr1738689ywk.36.1712331616228; Fri, 05
+ Apr 2024 08:40:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Zg_IXLNPakLmbbc7@bogus>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240325210045.153827-1-afd@ti.com> <2024032631-excursion-opposing-be36@gregkh>
+ <CAOCHtYjauA+BAxZJBMTaxxaMGcvipP9=ZPeWe4FiNFs_jpq6dg@mail.gmail.com>
+ <ZgME0qSL3KXCD07I@chinchilla> <ceb391d3-c7f4-4d46-9f97-b651e1f5451c@ti.com>
+In-Reply-To: <ceb391d3-c7f4-4d46-9f97-b651e1f5451c@ti.com>
+From: Robert Nelson <robertcnelson@gmail.com>
+Date: Fri, 5 Apr 2024 10:39:49 -0500
+Message-ID: <CAOCHtYhODiMHWA17EQD7YsZ08Uocy5A=kbjH5vjUUaXAopnxeA@mail.gmail.com>
+Subject: Re: [PATCH] uio: pruss: Deprecate use of this driver
+To: Andrew Davis <afd@ti.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jason Kridner <jkridner@beagleboard.org>, 
+	Drew Fustini <drew@beagleboard.org>, Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Apr 05, 2024 at 10:46:04AM +0100, Sudeep Holla wrote:
-> On Fri, Apr 05, 2024 at 02:13:28AM +0000, Peng Fan wrote:
-> > > On Thu, Apr 04, 2024 at 01:44:50PM +0200, Linus Walleij wrote:
-> > > > On Mon, Apr 1, 2024 at 4:02 PM Peng Fan (OSS) <peng.fan@oss.nxp.com>
-> > > wrote:
-
-..
-
-> > > > > +               if (ret == -EINVAL || ret == -ENOTSUPP || ret ==
-> > > > > + -EOPNOTSUPP)
-> > > >
-> > > > TBH it's a bit odd to call an in-kernel API such as
-> > > > pin_config_get_for_pin() and get -EOPNOTSUPP back. But it's not like I care
-> > > a lot, so patch applied.
-> > >
-> > > Hmm... I would like actually to get this being consistent. The documentation
-> > > explicitly says that in-kernel APIs uses Linux error code and not POSIX one.
+On Tue, Mar 26, 2024 at 12:36=E2=80=AFPM Andrew Davis <afd@ti.com> wrote:
+>
+> On 3/26/24 12:24 PM, Matthijs van Duin wrote:
+> > I'll write a more in-depth reply when I have a moment, but right now I'=
+d
+> > like to point out that the uio-pruss driver in mainline linux is for th=
+e
+> > pru subsystem on the freon/primus family of ARM9-based SoCs (OMAP-L1xx =
+/
+> > AM17xx / AM18xx / TMS320C674x / DA8xx), which is not currently supporte=
+d
+> > by remoteproc-pru.
 > >
-> > Would you please share me the documentation?
-> 
-> +1, I am interested in knowing more about this as I wasn't aware of this.
+>
+> I'll wait for your full reply, but a quick note, for those devices listed
+> this driver isn't usable either after they all moved to DT. As this drive=
+r
+> never got a DT port and relies on platform data (which is gone for those
+> couple devices).
+>
+> Andrew
 
-See my previous reply.
+Andrew, I think we are okay with nuking the whole uio driver in
+mainline, I'll ack it..
 
-> > > This check opens a Pandora box.
-> > >
-> > > FWIW, it just like dozen or so drivers that needs to be fixed, I prefer to have
-> > > them being moved to ENOTSUPP, rather this patch.
-> >
-> > I see many patches convert to use EOPNOTSUPP by checking git log.
-> >
-> > And checkpatch.pl reports warning for using ENOTSUPP.
-> 
-> Exactly, I do remember changing ENOTSUPP to EOPNOTSUPP based on checkpatch
-> suggestion.
+ I figured we'd have more community response..  We gave them a chance..
 
-Sometimes suggestions can be wrong. Checkpatch is famous for false-positives as
-it's a dumb tool, it can't know about everything.
+The only issue I personally have with supporting remoteproc-pruss
 
-> So either the checkpatch.pl or the document you are referring
-> is inconsistent and needs fixing either way.
+We have a few users on 4.19.x-ti, 5.10.x-ti (remoteproc_pruss) can we
+please make sure this project:
 
-True.
+https://git.ti.com/gitweb?p=3Dpru-software-support-package/pru-software-sup=
+port-package.git;a=3Dsummary
 
--- 
-With Best Regards,
-Andy Shevchenko
+actually works on mainline remoteproc_pruss ?
 
+Watching the shortlog, it must break on every single TI LTS release:
 
+https://git.ti.com/gitweb?p=3Dpru-software-support-package/pru-software-sup=
+port-package.git;a=3Dshortlog
+
+Whereas uio... well same firmware from 3.8.x ;)
+
+(i will keep our uio fork alive, but we just use an overlay to switch
+to between remoteproc_pruss and uio)
+
+Regards,
+
+--=20
+Robert Nelson
+https://rcn-ee.com/
 
