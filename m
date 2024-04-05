@@ -1,111 +1,146 @@
-Return-Path: <linux-kernel+bounces-133016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133018-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB598899D7A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:46:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E6B0899D80
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:48:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 825D9288338
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:46:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 37D6D1C21E93
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:48:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511B116D337;
-	Fri,  5 Apr 2024 12:46:23 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82BB516D305;
+	Fri,  5 Apr 2024 12:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="LygshMJa"
+Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52DB11E52C
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 12:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88EA316D304
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 12:48:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712321182; cv=none; b=bvec8gwhKtqKzN/qxir9m9w/iAu77RsPsuhIxLCw7GGv7DpWA8gafB8AGVtKuP8dfRS/bZMkVLNjo0F0qCMQJvK7rf1RLfIeVJNzYJp20EQJXO6blVJIMrmYIIgi/ybULE6e12H3k3t6a9A3ImRN3//5yFzAj4pxNnjuKb5Wm5U=
+	t=1712321300; cv=none; b=H8jnzprNZiX+F6yAaHJvPBJ3AOCGJHXkEQIwjtF3BYdn1HSYOKgxFq8urj28M4+zX5ubrVfb6ZsmFZ8IAP8J6ID651K6CZO0LZdK4PDrdVESqoBpVxip6VV/Ly9NsKtb/Z6/xwQ+13BqW/b1lnsgwAT94JkET6qHrvaePEBRQnc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712321182; c=relaxed/simple;
-	bh=WRsBuSjHUzTQxBfLyZla+hkSSKIsEqFIsaME6OB+fEo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=YtwE9EVVQVDYk41p4r4l6ZRtu0WsTIObDvfXfdLpEf/BbFeXbpOjjjJFxVQKa077vJTOa3av1+jaOBi2jW9bboeUa10o1NCGAkg+WiNTUv0GvhrUjkjVJcBPip7Q/DtGFwjqvkmrjOUukgayuY8+rMJ/FRRSg2QZcXSvAoMBpVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc764c885bso233751939f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 05:46:21 -0700 (PDT)
+	s=arc-20240116; t=1712321300; c=relaxed/simple;
+	bh=BONgaXjClX5aEfbEB3Q+2CYsd4fxx1TEbZSRiK4eotQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IvoAZFPtfgKKAEQL84f6WkJDYPprUwnJCtu1x46GE+p6jcTimuGv6N0TzbNLVEe1SuVLi7i8DSnmIFzWxqFRaMj8cDke9wPfBynvKUC4YM0/XjsY/wT6FF4mMRCBjyJy+NX1InyhlnwtkT/8QZAOS/xaUbObSSHsrfIcSNeHZMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=LygshMJa; arc=none smtp.client-ip=209.85.167.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-516d6e23253so308729e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 05:48:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1712321296; x=1712926096; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1gqJXCFhYHxuGeDzQHXUm6mF/uMGESwP7Rig2uzwTrg=;
+        b=LygshMJaABTCZqCx6+P+EmHvxM1yc6UNRUC35sQIxhDLEK/gGW6rcPXZ5InNIIx3Np
+         jC/H9uymGWyvnBTFyB8R0++8ryBQTNLNWC8lqG30PBaVSTY87HgfH6m5O+87MVxjPljP
+         UefsPmHYAnaf8gUlgS0eb9cVbhV6aOi7xnjUOPIFpHmesGHunlIBrIeEmZgX6mh/irAK
+         r2UWBke4zqMLOyBrYxa2RPTJp09A1V61NL8skX9o/VGlbyN9pcFqg+dxP4q85K338sDr
+         geyJZAre8QylqwSQG22OIRtAHQGfpgADRGuNYid6Nep76eSn5T3nlaNvjSRwqf/2gtoo
+         wcgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712321180; x=1712925980;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=12OUjT4o2BmUoPYzd0RNRensS2gycfoa6iSCUdJDBjA=;
-        b=Bsv9uwiV9BgSled3z8U++2jFy4otMv1q1pNmAT2B/U0zj2gGlAPeVWQT1PUdqZrtkZ
-         O/R/XLNNU4EHgOiKV6mhnpZfzdWJ8zVhCzzbdU3dh/HRq54TlQPONA7rW+grxw/LGjm6
-         Jw8TwUTKluAvhcOxuPhce1pHtGcnpWn8yYCTU6EAfRdOgIA0NAImHwYYAeg4XDB7M/E3
-         MsFb6/yCviFQVFTfexMLe9AreuaNngqT42Bc3kQL/7YmKzYeFe+m5hJdlUCgciYBO4t2
-         e+EDiweiYFvqgFO8xXSqFewd1EOzXTVm7sBnXkHz9MIMeM/z2z/uIM65MtOghtJm6Nt4
-         YSKw==
-X-Gm-Message-State: AOJu0YyQgqgGeMehtdsa4oHxAaV58Tjj0wHkvcjubwU06Ga092N+OqLS
-	d385/1Ra0J2DTwO7giKUr6UhiZleHtmwruw17yTcJMXepvG3bmSbjiGSIjneIcInXWKXnpLCkgN
-	NhPBecgRJdcHzIYMHhxo4jNefVPdfaKbdRq1IyjNeLs9kFoGP0v8guWQy+w==
-X-Google-Smtp-Source: AGHT+IHUSX+UTWlSb1AR/cJOIfpFBOJBQ8I/qjxG90HqOzL/9/H8NsvcgYdPdnTHg42wBEgpmd6txjF7jo0+6QOsy/mwLPFP5/lx
+        d=1e100.net; s=20230601; t=1712321296; x=1712926096;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1gqJXCFhYHxuGeDzQHXUm6mF/uMGESwP7Rig2uzwTrg=;
+        b=JjhxlM/vb3cb/ZxM3WvdgJ52jVvxblEYskZ3bLW3tLNllCazfPY75Ru59d75li/a/7
+         th2gqZaENgONfDQj4WbMUVzDq67M6zIENI2YcC6d1jpqVyrITRLniBrccOJ0UlWeVJus
+         XxT281DFErdHa044QiNcIvNr+RodeqrCmdJaUrrYKK9qErmI08j2tXONHxF7713CgPlk
+         dE4v265aVt6OCELRQxSCWDGowWyAlcvo1jJKRjQXTd2FoeFMBbGqGU0yLFQdwh/6PQ9l
+         /2GfDYdaLcc7KVRJaAcMYEOi/9b4C5alb2Fux2tkU5WwAVUZWhmRkfdNhF8U5Yt9Zm/3
+         0yhw==
+X-Forwarded-Encrypted: i=1; AJvYcCWVuSLq+mB/nSHuai3EfJmQpK/2E5/SpnMUitx1ZhlwZdrDW4X770Ct2QruNy9kuBGMTzQhq4zcyiw16Xe9UjjWQxuzCBIdSfUEF/lO
+X-Gm-Message-State: AOJu0YwpBL+ZpEmXaL7O9mPRh8O6tI04Yv8J5VzLglyEwF39pJRN2T85
+	wHmpS1i+Q9ZzFoxiMeY41aMhK1YrZAHm5ELTtbiCeUjAhCcY2JhVGo+Nk+8kMa4=
+X-Google-Smtp-Source: AGHT+IFEgm+u9cR3VSBSNQtYk5knjRxPrUMvf+kSAsf2mgyfdrQjMfXWeVpxY5HnY8fvu518V/oPuQ==
+X-Received: by 2002:ac2:446d:0:b0:513:eeaa:8f1f with SMTP id y13-20020ac2446d000000b00513eeaa8f1fmr1128144lfl.47.1712321296604;
+        Fri, 05 Apr 2024 05:48:16 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id n20-20020aa7c694000000b0056c56d18d07sm761088edq.48.2024.04.05.05.48.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 05:48:16 -0700 (PDT)
+Date: Fri, 5 Apr 2024 14:48:15 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Atish Patra <atishp@atishpatra.org>
+Cc: Atish Patra <atishp@rivosinc.com>, linux-kernel@vger.kernel.org, 
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Anup Patel <anup@brainfault.org>, Conor Dooley <conor.dooley@microchip.com>, 
+	Guo Ren <guoren@kernel.org>, Icenowy Zheng <uwu@icenowy.me>, kvm-riscv@lists.infradead.org, 
+	kvm@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH v4 13/15] KVM: riscv: selftests: Add SBI PMU selftest
+Message-ID: <20240405-3242460b23ce1daf905242df@orel>
+References: <20240229010130.1380926-1-atishp@rivosinc.com>
+ <20240229010130.1380926-14-atishp@rivosinc.com>
+ <20240302-ed6c516829dc0ed616f39a45@orel>
+ <CAOnJCUK2D6-zP4=DiXRMeFQsMc9iG5nWY-yYHMhg83h_q+OtnQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:27c7:b0:7cc:342:72f9 with SMTP id
- l7-20020a05660227c700b007cc034272f9mr29400ios.2.1712321180474; Fri, 05 Apr
- 2024 05:46:20 -0700 (PDT)
-Date: Fri, 05 Apr 2024 05:46:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b4284f061558d73c@google.com>
-Subject: [syzbot] Monthly wireless report (Apr 2024)
-From: syzbot <syzbot+list390ce5482b806d5e0aeb@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org, 
-	netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOnJCUK2D6-zP4=DiXRMeFQsMc9iG5nWY-yYHMhg83h_q+OtnQ@mail.gmail.com>
 
-Hello wireless maintainers/developers,
+On Tue, Apr 02, 2024 at 01:34:54AM -0700, Atish Patra wrote:
+..
+> > > +static void guest_illegal_exception_handler(struct ex_regs *regs)
+> > > +{
+> > > +     __GUEST_ASSERT(regs->cause == EXC_INST_ILLEGAL,
+> > > +                    "Unexpected exception handler %lx\n", regs->cause);
+> >
+> > Shouldn't we be reporting somehow that we were here? We seem to be using
+> > this handler to skip instructions which don't work, which is fine, if
+> > we have some knowledge we skipped them and then do something else.
+> > Otherwise I don't understand.
+> >
+> 
+> This is only used in test_vm_basic_test to validate that the guest
+> will get an illegal
+> exception if they try to access without configuring first.
 
-This is a 31-day syzbot report for the wireless subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/wireless
+Yeah, that's good. I just don't see how we know we were ever here. We
+either got the exception and then stepped over the CSR read or we did
+the CSR read. Either way, the test progresses the same. Shouldn't this
+induce a test skip or something instead?
 
-During the period, 5 new issues were detected and 0 were fixed.
-In total, 31 issues are still open and 122 have been fixed so far.
+> > > +
+> > > +     counter_value_post = read_counter(counter, ctrinfo_arr[counter]);
+> > > +     __GUEST_ASSERT(counter_value_post > counter_value_pre,
+> > > +                    "counter_value_post %lx counter_value_pre %lx\n",
+> > > +                    counter_value_post, counter_value_pre);
+> > > +
+> > > +     /* Now set the initial value and compare */
+> > > +     start_counter(counter, SBI_PMU_START_FLAG_SET_INIT_VALUE, counter_init_value);
+> >
+> > We should try to confirm that we reset the counter, otherwise the check
+> > below only proves that the value we read is greater than 100, which it
+> > is possible even if the reset doesn't work.
+> >
+> 
+> Hmm. There is no way to just update the counter value without starting
+> it. Reading it without stopping is not reliable.
+> Maybe we can do this.
+> 
+> 1. Reset it to 100. Stop it immediately after and read it. Let's say
+> the value is X
+> 2. Now reset it to counter  X + 1000.
+> 3. Do the validation with the above reset value in #2.
+> 
+> Wdyt ?
 
-Some of the still happening issues:
+OK
 
-Ref  Crashes Repro Title
-<1>  7813    Yes   WARNING in ieee80211_link_info_change_notify (2)
-                   https://syzkaller.appspot.com/bug?extid=de87c09cc7b964ea2e23
-<2>  7129    Yes   WARNING in __ieee80211_beacon_get
-                   https://syzkaller.appspot.com/bug?extid=18c783c5cf6a781e3e2c
-<3>  4419    Yes   WARNING in __cfg80211_ibss_joined (2)
-                   https://syzkaller.appspot.com/bug?extid=7f064ba1704c2466e36d
-<4>  925     No    INFO: task hung in ath9k_hif_usb_firmware_cb (2)
-                   https://syzkaller.appspot.com/bug?extid=d5635158fb0281b27bff
-<5>  862     Yes   WARNING in ar5523_submit_rx_cmd/usb_submit_urb
-                   https://syzkaller.appspot.com/bug?extid=6101b0c732dea13ea55b
-<6>  761     Yes   WARNING in ieee80211_start_next_roc
-                   https://syzkaller.appspot.com/bug?extid=c3a167b5615df4ccd7fb
-<7>  47      Yes   WARNING in carl9170_usb_submit_cmd_urb/usb_submit_urb
-                   https://syzkaller.appspot.com/bug?extid=9468df99cb63a4a4c4e1
-<8>  39      Yes   WARNING in ar5523_cmd/usb_submit_urb
-                   https://syzkaller.appspot.com/bug?extid=1bc2c2afd44f820a669f
-<9>  7       Yes   INFO: task hung in reg_process_self_managed_hints
-                   https://syzkaller.appspot.com/bug?extid=1f16507d9ec05f64210a
-<10> 6       Yes   WARNING in drv_remove_interface
-                   https://syzkaller.appspot.com/bug?extid=2e5c1e55b9e5c28a3da7
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Thanks,
+drew
 
