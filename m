@@ -1,173 +1,257 @@
-Return-Path: <linux-kernel+bounces-132387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BFDB8993EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AD9188993EC
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:41:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B25CC28C721
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:38:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63E5C28B9C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:41:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E95B21B813;
-	Fri,  5 Apr 2024 03:38:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE66512E5B;
+	Fri,  5 Apr 2024 03:41:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j/WmQdPD"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N50Bssy3"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D41D1643D
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 03:38:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC4B125C9
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 03:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712288310; cv=none; b=gNZWxVAeqHCx3Uow/z0i5tB3MEZrvnmDrPLsrsXrS7k6gljayJ0qHMsKfuL5zQD5yndoF+lfz1oL3gVB/rfntTZcjHLv47LL4UO3Mc956bRpXy+GAR/O3sa9tsGL8pNFuGQm/hA+hGKZ2WyNJ2dRDw9OojQH9ihB8DNt9tR1f9E=
+	t=1712288481; cv=none; b=rEaR6F6CgHqJYcGe73RH+nVBd3UMhoanMyOxwxY42aICm2XXoGKwdt9Q0eADcz8AEGO+8qcn6gRTieqpDZVVyF0xzgi1JtgdFk8dVvV83AfCgifL7YjoSOTz33SCTPi7YK5MXx6epvDYeWYDtqNQMh0rmen6nCBtcIinyncgBSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712288310; c=relaxed/simple;
-	bh=Npx8EzspB33EAk75V65R5ZqAorWao9gaOPcjc00K7Ac=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=IgAz7lxrydtLeTEVSaQRtUrHsOxKYPrHRyDygldxpbvKBT7zkrYKxmApEhnKSs9CFaQfUkKLEHPfpp3NRiVUOFWHNZxTrJvVs2cZBzKmy5OicZYfcwoEo3G471w/nuUCU7/63zP3aztk0v0ZJdrVrJejFh7wQEXe2NvgfEa6vPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j/WmQdPD; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712288308; x=1743824308;
-  h=date:from:to:cc:subject:message-id;
-  bh=Npx8EzspB33EAk75V65R5ZqAorWao9gaOPcjc00K7Ac=;
-  b=j/WmQdPDdOYZg41Lm5ztpyl6ke8ZcnicR50xdcThlfZJtu8I8V9tR7B6
-   9/NEeB/L7eVdcCjt+Pwavek8ffzDb7Mnkkr/VFcTsTpEZe09G9oIxwQVQ
-   fzuXKL4Zy5wiv6Pz9NEIcyyCR17iUHAOYWsfzNFdnEwPCYYIfMicIoqUT
-   aKXBv4ZRWj3snVXlOgQfAsLGJZ7WAqiwWwgQkJwP91+fsKse/x5GNZWsm
-   cZL1U30PXAwQZr4MY0WiNQq2ENcCjSvgLnu2kJTk1zu0iFUKg+eJ4hKXd
-   8B5YqdHHQlUJHxEDDyx3QXgu/5Jqc7SbMztg3lw61ITAYoNtotwE4ds4n
-   g==;
-X-CSE-ConnectionGUID: gdcHjqHfSZ++KMoHnO0P/g==
-X-CSE-MsgGUID: hrQn4rxgQn286ZgOCF9VdA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11034"; a="7733850"
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="7733850"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Apr 2024 20:38:28 -0700
-X-CSE-ConnectionGUID: NLZnt1NHRUGDrIVoVgfDJA==
-X-CSE-MsgGUID: jnHf72n4TEGstJvJuCgSSQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,180,1708416000"; 
-   d="scan'208";a="19126240"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 04 Apr 2024 20:38:25 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rsaPG-0001qY-1d;
-	Fri, 05 Apr 2024 03:38:22 +0000
-Date: Fri, 05 Apr 2024 11:38:03 +0800
-From: kernel test robot <lkp@intel.com>
-To: "x86-ml" <x86@kernel.org>
-Cc: linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- cb517619f96718a4c3c2534a3124177633f8998d
-Message-ID: <202404051100.DZX48D53-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1712288481; c=relaxed/simple;
+	bh=nAZaIG0+IFycaBVQKVzCMagviBg5ac+cRa6NS0+Vex0=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=C00XVL1GVPZIlIfn1vL8xMnrsg5VJPoWsB5Yok54DiOpmSu1R9/UmvEUxrkkesnX3NTXkkzz1PszQvrkAl1uCAzTy1Sb6MgA9j5uE9p/UwEgyqapuv/7ag/WabeLL2+OcdcgvmIim/5ZgTfiQrGlQPVlo4Del1Ql9KpkaMvh/vQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N50Bssy3; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4162ec14805so2394415e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 20:41:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712288478; x=1712893278; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=0x+wIM6WDg13r1MwUaNUerQB3emuGuUK8yHL3j0RpYc=;
+        b=N50Bssy351UV36OG3F0eSY6QsD0OP0caqyT9vfB+u3ez8XcDfFWnt+QT1ZfG+cJFcy
+         JRMtEp4+J7LcQfP2dPQZMU60127eHg+xS3Zt5xUTwCOez61dl85ek3iRw4hBO4ZtUbNH
+         iX0JbKnkJ04UOO+iVALOEbcW1LivCqotLX2BMj1PIGFlEozhHfSQILyiApc0ohSl7V4M
+         1PcWh65Qk8E/wYQnjueoTcllmdJUzmUbx773Ny8uUszL4/yE2WDx2VbJFmL3b2olgrGu
+         e5772yFsRQk0A/C3dyX5BKWOeyyaROp1HpGgtXbhsyaoTr1gmrPS90/M/bvCytMYnKEg
+         wvoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712288478; x=1712893278;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0x+wIM6WDg13r1MwUaNUerQB3emuGuUK8yHL3j0RpYc=;
+        b=Ea0i3DihZAtShFH4E4tyth+pLyvCuVG61xhdtrWYxgh06WuEknBv/fm+tbD8mRyPLn
+         xaDsOg66lmpXZJGg9qe3s0UgDTPdoUKF/DnsBuTOfuFl1ZWYimfYBPjQTqvvNRe8gHvD
+         U3v7TBcBge9MHbFDP3GIpMndvRfXbf1EGdHR9+dCB7rVqlsGpHThKg+z0iwQsXLw5cwc
+         TnLlOUB5CaJ42A3VmaK9ZQfL++sr1wuExXDUvcndo2wRDOt+7xkJ5BnDkCLzarhS+Su7
+         3lex+AuhVIHcCbpMWbIHUxPQhr1dYjRZu9MijPJ+3t8wwRzzGcONHom9K9EhswUD+9cy
+         BaOw==
+X-Forwarded-Encrypted: i=1; AJvYcCUprj26cSaCO2ihgCi4xNm8BbFAXSh0L7NGcOngZfXyWy7JuV9J0wqzKvRhUfFyD23dypX1iyFA1u1rT58FDPwcihbLB1FWj7Q+v2/l
+X-Gm-Message-State: AOJu0YwBgNAsr5phwo/q3TbW3iiWj3ddIAo0j1+cf7hdCYLvuuSOt9a4
+	wDZ+2gUQezxjt+dRmkO281Tk3G7ST/SzoVpIoMCEiJDzp7Nd7ulEgfTb2i/ik+9YNP/AWDnEazG
+	FCmsEu9f7Csgn6mmj4HOqA1iLbjXSWKopTYA=
+X-Google-Smtp-Source: AGHT+IGDZkF+6rdqyHx69tLMPPRTw7ItFLr+QlYf2fWNXPJz9sv3gOnsqghIZ38JcYav3r5jtVD7BUqJjBRSvz99KEw=
+X-Received: by 2002:adf:f7c2:0:b0:33d:3566:b5c8 with SMTP id
+ a2-20020adff7c2000000b0033d3566b5c8mr235163wrq.13.1712288477938; Thu, 04 Apr
+ 2024 20:41:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+From: Dave Airlie <airlied@gmail.com>
+Date: Fri, 5 Apr 2024 13:41:06 +1000
+Message-ID: <CAPM=9tzjcdJovUtZWWGG8=Qbv_T6csXfehWrrLr=Lxd0OCsCVA@mail.gmail.com>
+Subject: [git pull] drm fixes for 6.9-rc3
+To: Linus Torvalds <torvalds@linux-foundation.org>, Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: dri-devel <dri-devel@lists.freedesktop.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: cb517619f96718a4c3c2534a3124177633f8998d  x86/extable: Remove unused fixup type EX_TYPE_COPY
+Hi Linus,
 
-elapsed time: 741m
+Weekly fixes, mostly xe and i915, amdgpu on a week off, otherwise a
+nouveau fix for a crash with new vulkan cts tests, and a couple of
+cleanups and misc fixes.
 
-configs tested: 81
-configs skipped: 135
+Dave.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+drm-fixes-2024-04-05:
+drm fixes for v6.9-rc3
 
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                                 defconfig   gcc  
-arm                        neponset_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                                defconfig   gcc  
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-003-20240405   clang
-i386         buildonly-randconfig-005-20240405   clang
-i386         buildonly-randconfig-006-20240405   clang
-i386                                defconfig   clang
-i386                  randconfig-001-20240405   clang
-i386                  randconfig-003-20240405   clang
-i386                  randconfig-004-20240405   clang
-i386                  randconfig-005-20240405   clang
-i386                  randconfig-011-20240405   clang
-i386                  randconfig-016-20240405   clang
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                         amcore_defconfig   gcc  
-m68k                                defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-microblaze                          defconfig   gcc  
-mips                              allnoconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                 decstation_r4k_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                             allnoconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                               defconfig   gcc  
-openrisc                          allnoconfig   gcc  
-openrisc                            defconfig   gcc  
-parisc                            allnoconfig   gcc  
-parisc                              defconfig   gcc  
-parisc64                         alldefconfig   gcc  
-parisc64                            defconfig   gcc  
-powerpc                           allnoconfig   gcc  
-powerpc                          allyesconfig   clang
-powerpc                        cell_defconfig   gcc  
-powerpc                      walnut_defconfig   gcc  
-riscv                            allmodconfig   clang
-riscv                             allnoconfig   gcc  
-riscv                            allyesconfig   clang
-s390                             allyesconfig   gcc  
-sh                               allmodconfig   gcc  
-sh                                allnoconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                                  defconfig   gcc  
-sh                ecovec24-romimage_defconfig   gcc  
-sh                          kfr2r09_defconfig   gcc  
-sh                   rts7751r2dplus_defconfig   gcc  
-sh                           sh2007_defconfig   gcc  
-sh                   sh7770_generic_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc                             allnoconfig   gcc  
-sparc                               defconfig   gcc  
-sparc                       sparc32_defconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64                             defconfig   gcc  
-um                               allyesconfig   gcc  
-um                             i386_defconfig   gcc  
-x86_64                            allnoconfig   clang
-x86_64                           allyesconfig   clang
-x86_64                              defconfig   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-xtensa                            allnoconfig   gcc  
+display:
+- fix typos in kerneldoc
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+prime:
+- unbreak dma-buf export for virt-gpu
+
+nouveau:
+- uvmm: fix remap address calculation
+- minor cleanups
+
+panfrost:
+- fix power-transition timeouts
+
+xe:
+- Stop using system_unbound_wq for preempt fences,
+- Fix saving unordered rebinding fences by attaching
+  them as kernel feces to the vm's resv
+- Fix TLB invalidation fences completing out of order
+- Move rebind TLB invalidation to the ring ops to reduce
+  the latency
+
+i915:
+- A few DisplayPort related fixes
+- eDP PSR fixes
+- Remove some VM space restrictions on older platforms
+- Disable automatic load CCS load balancing
+The following changes since commit 39cd87c4eb2b893354f3b850f916353f2658ae6f=
+:
+
+  Linux 6.9-rc2 (2024-03-31 14:32:39 -0700)
+
+are available in the Git repository at:
+
+  https://gitlab.freedesktop.org/drm/kernel.git tags/drm-fixes-2024-04-05
+
+for you to fetch changes up to 4c8595741b5dd3268d6710545461ee9a7bbde891:
+
+  Merge tag 'drm-intel-fixes-2024-04-04' of
+https://anongit.freedesktop.org/git/drm/drm-intel into drm-fixes
+(2024-04-05 12:32:14 +1000)
+
+----------------------------------------------------------------
+drm fixes for v6.9-rc3
+
+display:
+- fix typos in kerneldoc
+
+prime:
+- unbreak dma-buf export for virt-gpu
+
+nouveau:
+- uvmm: fix remap address calculation
+- minor cleanups
+
+panfrost:
+- fix power-transition timeouts
+
+xe:
+- Stop using system_unbound_wq for preempt fences,
+- Fix saving unordered rebinding fences by attaching
+  them as kernel feces to the vm's resv
+- Fix TLB invalidation fences completing out of order
+- Move rebind TLB invalidation to the ring ops to reduce
+  the latency
+
+i915:
+- A few DisplayPort related fixes
+- eDP PSR fixes
+- Remove some VM space restrictions on older platforms
+- Disable automatic load CCS load balancing
+
+----------------------------------------------------------------
+Andi Shyti (4):
+      drm/i915/gt: Limit the reserved VM space to only the platforms
+that need it
+      drm/i915/gt: Disable HW load balancing for CCS
+      drm/i915/gt: Do not generate the command streamer for all the CCS
+      drm/i915/gt: Enable only one CCS for compute workload
+
+Ankit Nautiyal (1):
+      drm/i915/dp: Fix the computation for compressed_bpp for DISPLAY < 13
+
+Arun R Murthy (1):
+      drm/i915/dp: Remove support for UHBR13.5
+
+Christian Hewitt (1):
+      drm/panfrost: fix power transition timeout warnings
+
+Colin Ian King (1):
+      drm/nouveau/gr/gf100: Remove second semicolon
+
+Dave Airlie (4):
+      nouveau/uvmm: fix addr/range calcs for remap operations
+      Merge tag 'drm-misc-fixes-2024-04-04' of
+https://gitlab.freedesktop.org/drm/misc/kernel into drm-fixes
+      Merge tag 'drm-xe-fixes-2024-04-04' of
+https://gitlab.freedesktop.org/drm/xe/kernel into drm-fixes
+      Merge tag 'drm-intel-fixes-2024-04-04' of
+https://anongit.freedesktop.org/git/drm/drm-intel into drm-fixes
+
+Imre Deak (1):
+      drm/i915/dp: Fix DSC state HW readout for SST connectors
+
+Jouni H=C3=B6gander (3):
+      drm/i915/psr: Calculate PIPE_SRCSZ_ERLY_TPT value
+      drm/i915/psr: Move writing early transport pipe src
+      drm/i915/psr: Fix intel_psr2_sel_fetch_et_alignment usage
+
+Matthew Brost (1):
+      drm/xe: Use ordered wq for preempt fence waiting
+
+Oleksandr Natalenko (1):
+      drm/display: fix typo
+
+Rob Clark (1):
+      drm/prime: Unbreak virtgpu dma-buf export
+
+Thomas Hellstr=C3=B6m (4):
+      drm/xe: Use ring ops TLB invalidation for rebinds
+      drm/xe: Rework rebinding
+      drm/xe: Make TLB invalidation fences unordered
+      drm/xe: Move vma rebinding to the drm_exec locking loop
+
+Ville Syrj=C3=A4l=C3=A4 (2):
+      drm/i915/mst: Limit MST+DSC to TGL+
+      drm/i915/mst: Reject FEC+MST on ICL
+
+ drivers/gpu/drm/display/drm_dp_dual_mode_helper.c  |   4 +-
+ drivers/gpu/drm/drm_prime.c                        |   7 +-
+ drivers/gpu/drm/i915/Makefile                      |   1 +
+ drivers/gpu/drm/i915/display/intel_display.c       |   9 --
+ .../gpu/drm/i915/display/intel_display_device.h    |   1 +
+ drivers/gpu/drm/i915/display/intel_display_types.h |   2 +
+ drivers/gpu/drm/i915/display/intel_dp.c            |  11 ++-
+ drivers/gpu/drm/i915/display/intel_dp_mst.c        |   2 +-
+ drivers/gpu/drm/i915/display/intel_psr.c           |  78 ++++++++++-----
+ drivers/gpu/drm/i915/gt/gen8_ppgtt.c               |   3 +
+ drivers/gpu/drm/i915/gt/intel_engine_cs.c          |  17 ++++
+ drivers/gpu/drm/i915/gt/intel_gt.c                 |   6 ++
+ drivers/gpu/drm/i915/gt/intel_gt.h                 |   9 +-
+ drivers/gpu/drm/i915/gt/intel_gt_ccs_mode.c        |  39 ++++++++
+ drivers/gpu/drm/i915/gt/intel_gt_ccs_mode.h        |  13 +++
+ drivers/gpu/drm/i915/gt/intel_gt_regs.h            |   6 ++
+ drivers/gpu/drm/i915/gt/intel_workarounds.c        |  30 +++++-
+ drivers/gpu/drm/nouveau/nouveau_uvmm.c             |   6 +-
+ drivers/gpu/drm/nouveau/nvkm/engine/gr/gf100.c     |   2 +-
+ drivers/gpu/drm/panfrost/panfrost_gpu.c            |   6 +-
+ drivers/gpu/drm/xe/xe_device.c                     |  11 ++-
+ drivers/gpu/drm/xe/xe_device_types.h               |   3 +
+ drivers/gpu/drm/xe/xe_exec.c                       |  79 ++-------------
+ drivers/gpu/drm/xe/xe_exec_queue_types.h           |   5 +
+ drivers/gpu/drm/xe/xe_gt_pagefault.c               |   3 +-
+ drivers/gpu/drm/xe/xe_gt_tlb_invalidation.c        |   1 -
+ drivers/gpu/drm/xe/xe_gt_types.h                   |   7 --
+ drivers/gpu/drm/xe/xe_preempt_fence.c              |   2 +-
+ drivers/gpu/drm/xe/xe_pt.c                         |  25 ++++-
+ drivers/gpu/drm/xe/xe_ring_ops.c                   |  11 +--
+ drivers/gpu/drm/xe/xe_sched_job.c                  |  10 ++
+ drivers/gpu/drm/xe/xe_sched_job_types.h            |   2 +
+ drivers/gpu/drm/xe/xe_vm.c                         | 110 +++++++++++++----=
+----
+ drivers/gpu/drm/xe/xe_vm.h                         |   8 +-
+ drivers/gpu/drm/xe/xe_vm_types.h                   |   8 +-
+ 35 files changed, 340 insertions(+), 197 deletions(-)
+ create mode 100644 drivers/gpu/drm/i915/gt/intel_gt_ccs_mode.c
+ create mode 100644 drivers/gpu/drm/i915/gt/intel_gt_ccs_mode.h
 
