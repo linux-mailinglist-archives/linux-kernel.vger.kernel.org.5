@@ -1,200 +1,208 @@
-Return-Path: <linux-kernel+bounces-133019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8F06899D86
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:50:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD75B899D8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:50:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5EA68B24A4A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:50:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44AA11F22E9D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 12:50:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1766C16D305;
-	Fri,  5 Apr 2024 12:50:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3895A16D322;
+	Fri,  5 Apr 2024 12:50:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b="ZonYurPI"
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="a8TNQw8f"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A67416078C
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 12:50:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFEEC16C86F
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 12:50:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712321410; cv=none; b=lDWKxav9W9yE6OX1e2Fg1j4ElpRjqJBoiMnlp4MAVqP7PlxmfM572RdwzdkrTLa6/TmwyKZG6q3cE4qaW0w9kCSkNkj8lt8QcET4Cq6FwVhxhaEk4LUhjLIp+xVpcAesp2oyS8urygccjJtfqX+3saNope6rAJiSmYa8lJU0h/4=
+	t=1712321436; cv=none; b=ev62Ct6USxMvUMppY/leosMeGO8cIfFsaNLTCwRG5MGuFtcC29WcgoMErAAA10Tl/7VQtYtuim2lU0U+EP1KoQEIhbT68YNY3oihwItLlSyflraPvdS4wpCSQyoU0VqCKSdZjv20zAmY5uBtBCGdqF0t8XWHbcXXAv34lkynOo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712321410; c=relaxed/simple;
-	bh=flXaqTTYjtw8SdsQR80nuXmvQIQl7Mo0JdSwaqVM7O8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f8Xxz4wQwW8p4+Gr8P22FTfcOiJnt0DGBnAL61T5haHMjC/y9poC5Nt+ldDT6QKd9s+lvPEHHQwM8iPLLYtcO8zIx+4lPE1JSwGCcYRfa9ziPEAJUWj1mOJ4X8LE0TvxxHlYjV7/VPmBLoZY46/0JvYzxN79HEyFM/D72BKjIok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com; spf=pass smtp.mailfrom=cloud.com; dkim=pass (1024-bit key) header.d=citrix.com header.i=@citrix.com header.b=ZonYurPI; arc=none smtp.client-ip=209.85.210.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=citrix.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloud.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6e707210ab9so1009686a34.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 05:50:08 -0700 (PDT)
+	s=arc-20240116; t=1712321436; c=relaxed/simple;
+	bh=Vqv3W2/VCBye3UEJwCHMOm8a0FVjlz+y/cOCepR8BTE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fOXKM1wgTGFEqcdD9++nPJ+E6bIGYix8hvecPhBND1lzHw09WnTT/84MOZT0PjJjSDyxFlhNhpXcsaf9iw/rEWOWBMVto2G5U9CvKU2PLslXeoDHzdetnuwpTqhDMgcHvW92jV1HYKEwhMkt1VrRLrzQOYZxTNAgr5N1plKkNCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=a8TNQw8f; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a47385a4379so587888466b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 05:50:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=citrix.com; s=google; t=1712321407; x=1712926207; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vc588LwOvWyQuDQ7gVUI+/fqZi3n/Nja0mBIe96HMJM=;
-        b=ZonYurPI4K7toqLgUV46hc4iKxp5iy7opK9KU5PC79+GhLiuoB9X/MOnX8PqWo4KhC
-         dVcJ3/lXAWk+ZCa9snbhxe1LVIWvw4zHVP89k3Ramc2EEj5cuxme53+Z2/ncEBMW4b3T
-         jvCd6pO0AILNEDwTCvPnnWVnavDg1d2JIieiY=
+        d=ventanamicro.com; s=google; t=1712321433; x=1712926233; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=d+KZChT2cdzkHkVrpBT1mwN6D5B3F3KpgiaxmMWQvAA=;
+        b=a8TNQw8fKNLDEP9/Dl2mGdotjhamMETYCk6tpjPG7zQr2asSHu3ZUEWiYYmDOXHItS
+         BIYAGR1pzAgk0OXZ+8hL88hsc9kwpZq8ZbR44IpqKVpcuHezI71wjSQGTKVSSfvcZ90o
+         xk5N/VjQ3omwUNnWlcah56qbGg4v5RI0Ot5pNTbapEQ1atBXqYdlcr+BKIRMagYejUIv
+         Rs4geJ85pcT36lvH0EP4ODcE+qAwEBv779SGelazVOeqh8njxOUaXpGKsopHt5EqkYnH
+         9TDNw30NXtHHIbe7NA/lCfxyeyNILlEjeNzZqOYoY8Kd6wJEBNejRMwJayta5LHomx/h
+         4xSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712321407; x=1712926207;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1712321433; x=1712926233;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Vc588LwOvWyQuDQ7gVUI+/fqZi3n/Nja0mBIe96HMJM=;
-        b=NXLzpXqYFHuAFMhO6QG2HUPj12j6xbIfYSx/QCDzvgrfXMgFK77AiHR/d5P3AlhH/3
-         GlshzPGUJ98lZJmi4hCTTSHMAFq51A5euLNthcphArHr9Tu5nYbXInA2KPe8Fe2JMv9C
-         PZCrpF3Xt9nNaam/eIwBi4jwsjL2hGg9SS6aiyyS3MLtDOqDDjnCa/eFj7loIF6aN/Hd
-         y0YrUJPFh1CR/nEsSjLeGp6Y8N4e9h0XYJx3qJqY5uzz7lbuQtZtzjqGjcMs4C/jOCdo
-         rbfuM525RYHYi1XZSqIV4uLAivl1gIVhqFjEHb9hrVLmipO5tZUX4SEn4Jle8mTdFUaI
-         1+xw==
-X-Forwarded-Encrypted: i=1; AJvYcCXCMWOD8hsMXZsUFbpKYFxThR6v77IfDVDrFW+j6rnZfQleJ98KMNuBjyp8+Y6IMpL//KUsLST2Q0SL9W2luiIKJAot0gFsNEOBsUa9
-X-Gm-Message-State: AOJu0Yx24HJv8gzf/IZJNhfbAPGTdXdvQrtAEyrT4K9sTL1NJ5FPqm5o
-	9FeTscQ/ju6OPnKs+HZc6oJCwXvc5vgB08QN5j0wNGfsQv60jc2mVoFt3jgmOZ0=
-X-Google-Smtp-Source: AGHT+IHrY6etqL5vHvjhx/nPlLEoAAdaXnN4cFYl7a5reAGjVR3pfVk9KPbtroU48o5I3za98ihbiA==
-X-Received: by 2002:a05:6830:6b86:b0:6e4:9482:86c3 with SMTP id dd6-20020a0568306b8600b006e4948286c3mr1497907otb.10.1712321407714;
-        Fri, 05 Apr 2024 05:50:07 -0700 (PDT)
-Received: from [10.80.67.139] (default-46-102-197-194.interdsl.co.uk. [46.102.197.194])
-        by smtp.gmail.com with ESMTPSA id du47-20020a05620a47ef00b0078bc4cad726sm594884qkb.72.2024.04.05.05.50.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 05:50:07 -0700 (PDT)
-Message-ID: <f8fb1990-11e8-459d-a365-6dc277f34a6b@citrix.com>
-Date: Fri, 5 Apr 2024 13:50:04 +0100
+        bh=d+KZChT2cdzkHkVrpBT1mwN6D5B3F3KpgiaxmMWQvAA=;
+        b=GqzN5qOnpEL4nU3LTrgmq8zts9LP/gp23Z5ETWVGer2Y0AkZvPctcqsAuEME1rkVdV
+         Qp9xnQFM8zW7aaPH1g99MnewiLA7Rz0UVJsmPeLdrdbEe1I6cFCVxrt1669DXLTl+pYF
+         zs6okiyi1askYhq3QMfClNKkKN9WcLujmi4NzrBDoyH5z1GanhTcaFEyFMxYBKz+Owk2
+         Oe326Gf5IOj4zEs3wt0ST4cybEIFM193G8j9cRImXWOLbNe2HEY/+qwbG44oYkBii9Uw
+         PquD1N2qwiKwnvi87ZudTpOLYvCfNReYiPNhOcXT4W0cG6csOqOXl3LyoDdf3YKmYeGt
+         B9MQ==
+X-Gm-Message-State: AOJu0YwEyRbtY4m9oUMQNGd4PPW0qzJTEEU3cl2qahdRj1isqjmPBEEV
+	h1mVRdx8TYFMNtNcKyDVIoaCQP2oW90+NlDJxKk4Ve32YjPGo8mIoZ+BOoeHNWw=
+X-Google-Smtp-Source: AGHT+IG6XKFR7iCnTYVsn72OcFsqQ/CO3Rz0ggpBtTVg/0txMW6+hBUP+NpuyuP8ULhm5Cq9UuLdpA==
+X-Received: by 2002:a17:907:1711:b0:a51:8a0c:cf39 with SMTP id le17-20020a170907171100b00a518a0ccf39mr1906632ejc.20.1712321432731;
+        Fri, 05 Apr 2024 05:50:32 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id jy5-20020a170907762500b00a466af74ef2sm806704ejc.2.2024.04.05.05.50.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 05:50:32 -0700 (PDT)
+Date: Fri, 5 Apr 2024 14:50:31 +0200
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Atish Patra <atishp@rivosinc.com>
+Cc: linux-kernel@vger.kernel.org, Anup Patel <anup@brainfault.org>, 
+	Ajay Kaher <akaher@vmware.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Alexey Makhalov <amakhalov@vmware.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Juergen Gross <jgross@suse.com>, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-riscv@lists.infradead.org, 
+	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Paolo Bonzini <pbonzini@redhat.com>, Paul Walmsley <paul.walmsley@sifive.com>, 
+	Shuah Khan <shuah@kernel.org>, virtualization@lists.linux.dev, 
+	VMware PV-Drivers Reviewers <pv-drivers@vmware.com>, Will Deacon <will@kernel.org>, x86@kernel.org
+Subject: Re: [PATCH v5 20/22] KVM: riscv: selftests: Add SBI PMU selftest
+Message-ID: <20240405-d1a4cb9a441a05a9d2f8b1c8@orel>
+References: <20240403080452.1007601-1-atishp@rivosinc.com>
+ <20240403080452.1007601-21-atishp@rivosinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] x86/xen: return a sane initial apic id when running
- as PV guest
-To: Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
- x86@kernel.org
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- "H. Peter Anvin" <hpa@zytor.com>, xen-devel@lists.xenproject.org
-References: <20240405123434.24822-1-jgross@suse.com>
- <20240405123434.24822-3-jgross@suse.com>
-Content-Language: en-GB
-From: Andrew Cooper <andrew.cooper3@citrix.com>
-Autocrypt: addr=andrew.cooper3@citrix.com; keydata=
- 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
- 6+ahAA==
-In-Reply-To: <20240405123434.24822-3-jgross@suse.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403080452.1007601-21-atishp@rivosinc.com>
 
-On 05/04/2024 1:34 pm, Juergen Gross wrote:
-> With recent sanity checks for topology information added, there are now
-> warnings issued for APs when running as a Xen PV guest:
+On Wed, Apr 03, 2024 at 01:04:49AM -0700, Atish Patra wrote:
+..
+> +static void test_pmu_basic_sanity(void)
+> +{
+> +	long out_val = 0;
+> +	bool probe;
+> +	struct sbiret ret;
+> +	int num_counters = 0, i;
+> +	union sbi_pmu_ctr_info ctrinfo;
+> +
+> +	probe = guest_sbi_probe_extension(SBI_EXT_PMU, &out_val);
+> +	GUEST_ASSERT(probe && out_val == 1);
+> +
+> +	num_counters = get_num_counters();
+> +
+> +	for (i = 0; i < num_counters; i++) {
+> +		ret = sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_GET_INFO, i,
+> +				0, 0, 0, 0, 0);
+> +
+> +		/* There can be gaps in logical counter indicies*/
+> +		if (ret.error)
+> +			continue;
+> +		GUEST_ASSERT_NE(ret.value, 0);
+> +
+> +		ctrinfo.value = ret.value;
+> +
+> +		/**
+> +		 * Accesibillity check of hardware and read capability of firmware counters.
+
+Accessibility
+
+> +		 * The spec doesn't mandate any initial value. No need to check any value.
+> +		 */
+> +		read_counter(i, ctrinfo);
+> +	}
+> +
+> +	GUEST_DONE();
+> +}
+> +
+> +static void run_vcpu(struct kvm_vcpu *vcpu)
+> +{
+> +	struct ucall uc;
+> +
+> +	vcpu_run(vcpu);
+> +	switch (get_ucall(vcpu, &uc)) {
+> +	case UCALL_ABORT:
+> +		REPORT_GUEST_ASSERT(uc);
+> +		break;
+> +	case UCALL_DONE:
+> +	case UCALL_SYNC:
+> +		break;
+> +	default:
+> +		TEST_FAIL("Unknown ucall %lu", uc.cmd);
+> +		break;
+> +	}
+> +}
+> +
+> +void test_vm_destroy(struct kvm_vm *vm)
+> +{
+> +	memset(ctrinfo_arr, 0, sizeof(union sbi_pmu_ctr_info) * RISCV_MAX_PMU_COUNTERS);
+> +	counter_mask_available = 0;
+> +	kvm_vm_free(vm);
+> +}
+> +
+> +static void test_vm_basic_test(void *guest_code)
+> +{
+> +	struct kvm_vm *vm;
+> +	struct kvm_vcpu *vcpu;
+> +
+> +	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
+> +	__TEST_REQUIRE(__vcpu_has_sbi_ext(vcpu, KVM_RISCV_SBI_EXT_PMU),
+> +				   "SBI PMU not available, skipping test");
+> +	vm_init_vector_tables(vm);
+> +	/* Illegal instruction handler is required to verify read access without configuration */
+> +	vm_install_exception_handler(vm, EXC_INST_ILLEGAL, guest_illegal_exception_handler);
+
+I still don't see where the "verify" part is. The handler doesn't record
+that it had to handle anything.
+
+> +
+> +	vcpu_init_vector_tables(vcpu);
+> +	run_vcpu(vcpu);
+> +
+> +	test_vm_destroy(vm);
+> +}
+> +
+> +static void test_vm_events_test(void *guest_code)
+> +{
+> +	struct kvm_vm *vm = NULL;
+> +	struct kvm_vcpu *vcpu = NULL;
+> +
+> +	vm = vm_create_with_one_vcpu(&vcpu, guest_code);
+> +	__TEST_REQUIRE(__vcpu_has_sbi_ext(vcpu, KVM_RISCV_SBI_EXT_PMU),
+> +				   "SBI PMU not available, skipping test");
+> +	run_vcpu(vcpu);
+> +
+> +	test_vm_destroy(vm);
+> +}
+> +
+> +int main(void)
+> +{
+> +	test_vm_basic_test(test_pmu_basic_sanity);
+> +	pr_info("SBI PMU basic test : PASS\n");
+> +
+> +	test_vm_events_test(test_pmu_events);
+> +	pr_info("SBI PMU event verification test : PASS\n");
+> +
+> +	return 0;
+> +}
+> -- 
+> 2.34.1
 >
->   [Firmware Bug]: CPU   1: APIC ID mismatch. CPUID: 0x0000 APIC: 0x0001
->
-> This is due to the initial APIC ID obtained via CPUID for PV guests is
-> always 0.
 
-/sigh
-
-From Xen:
-
-    switch ( leaf )
-    {
-    case 0x1:
-        /* TODO: Rework topology logic. */
-        res->b &= 0x00ffffffu;
-        if ( is_hvm_domain(d) )
-            res->b |= (v->vcpu_id * 2) << 24;
-
-
-I think there's a very good chance it was random prior to Xen 4.6.  That
-used to come straight out of a CPUID value, so would get the APIC ID of
-whichever pCPU it was scheduled on.
-
-> Avoid the warnings by synthesizing the CPUID data to contain the same
-> initial APIC ID as xen_pv_smp_config() is using for registering the
-> APIC IDs of all CPUs.
->
-> Fixes: 52128a7a21f7 ("86/cpu/topology: Make the APIC mismatch warnings complete")
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
->  arch/x86/xen/enlighten_pv.c | 10 +++++++++-
->  1 file changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-> index ace2eb054053..965e4ca36024 100644
-> --- a/arch/x86/xen/enlighten_pv.c
-> +++ b/arch/x86/xen/enlighten_pv.c
-> @@ -219,13 +219,20 @@ static __read_mostly unsigned int cpuid_leaf5_edx_val;
->  static void xen_cpuid(unsigned int *ax, unsigned int *bx,
->  		      unsigned int *cx, unsigned int *dx)
->  {
-> -	unsigned maskebx = ~0;
-> +	unsigned int maskebx = ~0;
-> +	unsigned int or_ebx = 0;
->  
->  	/*
->  	 * Mask out inconvenient features, to try and disable as many
->  	 * unsupported kernel subsystems as possible.
->  	 */
->  	switch (*ax) {
-> +	case 0x1:
-> +		/* Replace initial APIC ID in bits 24-31 of EBX. */
-> +		maskebx = 0x00ffffff;
-> +		or_ebx = smp_processor_id() << 24;
-
-I think the comment wants to cross-reference explicitly with
-xen_pv_smp_config(), because what we care about here is the two sources
-of information matching.
-
-Also while you're at it, the x2APIC ID in leaf 0xb.
-
-~Andrew
+Thanks,
+drew
 
