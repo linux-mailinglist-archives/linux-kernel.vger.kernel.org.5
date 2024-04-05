@@ -1,133 +1,150 @@
-Return-Path: <linux-kernel+bounces-133292-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133301-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17C6589A1D3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:51:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 009BC89A1F8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:55:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8517A1F214DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:51:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31FE11C21B0F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:55:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04F88171097;
-	Fri,  5 Apr 2024 15:50:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02837171060;
+	Fri,  5 Apr 2024 15:55:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mDejj3ET"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BHl3hekz"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A5F16F28B;
-	Fri,  5 Apr 2024 15:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A2616F82C;
+	Fri,  5 Apr 2024 15:55:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712332231; cv=none; b=Ma+zSv8DXX2U0UQiqfXsJ8cds57f5OSUhOlg+uzWlv9hWuFI/7AF3DSOSpwxLO7SgtzvjyN039vwajIy0OglrU76Ohb/X6phXrQ26d304vgLPME4zca6FypY4TZlDVKB5UMiO+5DGnQO+NU8qAJ1Qhedu0eUbQw7s310Bng9Exo=
+	t=1712332542; cv=none; b=eFoXixmfVvtVDRe2QbAvU04kSak0FNwYNnHsBU1VYJ6yDlhCYTaHfwS67TPZh5zkflA9n0ZmtR91viPCuopWb3dao73vzrbIjYRSsbu84Oc4vZ/QyTaKKEpSnzt0gF01CZvxHKXXO8Hky1IhpwUaZtnE3wsT7U3B0U4cRvbn7YI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712332231; c=relaxed/simple;
-	bh=JuwIBPyywPFitWU0GAYwZuSb8x811YnAxbc/FR7Z6kg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jBU5MY1W6QRh0+Mx+W/ACK6CMe5kHj6J+IatiYganWDrI5TlDM+zFsOSK4JCSUnBhAt8EVm0ANxwnu/kHMPzM5U8WiwJL2+B3wrl4Iuvu87Ft4bYS9pXqJogKrEAG98O+rEnFJ5HkRyQrFUcPgp6gGDxSYE8eJU15voiYKZYavY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mDejj3ET; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+	s=arc-20240116; t=1712332542; c=relaxed/simple;
+	bh=IeVzIxhCDd7OCAhIrOHOjZa0aKtNab8CgE1Nq2v+tZw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VKsv+NF82I91n5xWS3Xv9rtAZTszFTx07T8cCFFLWHMXARm2Bqev+KVAW7Pzw8vT9z3ei74BKOGG7rtdkehvvmfgXPp1ndyB5Yhk10/cjbsyGe61np0iI1gw+jpxPO0oQSP2G2bgaJf/6yz6dllxCHeZChcl+cdrU+Ev6YTwmZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BHl3hekz; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712332229; x=1743868229;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=JuwIBPyywPFitWU0GAYwZuSb8x811YnAxbc/FR7Z6kg=;
-  b=mDejj3ETBMQC3/UBpoaBLyPhW94V8rkm/P03UDmXMLfTpQPQp+is3t2s
-   VIjeBble3YCNSruCKVEp+1PrkGqMS9U1Mx1UpDwonWsEPNHTigC7XIupg
-   EEas9o2WnYkZT9r+Lx7rZiCsfkLsKxz14dvneTgcH1++SsTrDZ/rISp7o
-   EJWdQCBncoiEoqdKTFAoMSY42drhBKfDUWaLbJFVmClcmTaclZTRF+cHM
-   3asCrbsPy0m39UxlaDIRqAFrU2rB1It1mvri/xOkpfkhF1ZaCrgzY+suT
-   e0tc1pYTf0IjvbSjtlw1XULiu3wGfplKm3mjxVozb6G4i9ri7/5Pp4v3l
-   g==;
-X-CSE-ConnectionGUID: xaUgz2DZTJOPoNF5yyEW9Q==
-X-CSE-MsgGUID: n9S30rN/TRqFM6u0dFIVzA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="7830974"
+  t=1712332541; x=1743868541;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=IeVzIxhCDd7OCAhIrOHOjZa0aKtNab8CgE1Nq2v+tZw=;
+  b=BHl3hekzSokXBnfM70zu+gSqWvnbIB20fNVGBzK/oAN1nIkQicXwZ04/
+   9lWIe7jy+cAoMdr1+xsVYJGyl0gk15qkng+28KEfDi90hcNEruWMgBF9u
+   eAUVOUsytETeJcj7M8Y4aFCKQ55Wwfoiw9Ae9gHsTt4V/ji7DJh05sr2R
+   MSpUCDKqEox1GdAcrQD4sYSxOI6htF1Zgjae+BUudLeu8kzwMVwlg+ClB
+   R6tNv+IdGVN2cg55NI5vharzmUbL128Zf68jHPJLl6EZukgAAA24sSnUh
+   zfGKQZfEuGVI/fE1DbIBpUL3GuoYGEv/+G9M7e5fuwnijrQWnKzRRu0TO
+   w==;
+X-CSE-ConnectionGUID: Hw6Q36LQQnGtwM/usVSjJw==
+X-CSE-MsgGUID: SG1P5OhUT/aqlTuWebhBsQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="7568603"
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="7830974"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:50:19 -0700
-X-CSE-ConnectionGUID: b+flWz2dSiyMWDRXybRuQw==
-X-CSE-MsgGUID: xBkY6l/yQaKUhOjf4ieNSA==
+   d="scan'208";a="7568603"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:55:40 -0700
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="915257712"
 X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="23905135"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.54.39.125])
-  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:50:19 -0700
-Date: Fri, 5 Apr 2024 08:54:46 -0700
-From: Jacob Pan <jacob.jun.pan@linux.intel.com>
-To: Robert Hoo <robert.hoo.linux@gmail.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>, Peter
- Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev, Thomas Gleixner
- <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
- kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>, Joerg Roedel
- <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov
- <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>, Paul Luse
- <paul.e.luse@intel.com>, Dan Williams <dan.j.williams@intel.com>, Jens
- Axboe <axboe@kernel.dk>, Raj Ashok <ashok.raj@intel.com>, "Tian, Kevin"
- <kevin.tian@intel.com>, maz@kernel.org, seanjc@google.com, Robin Murphy
- <robin.murphy@arm.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH 04/15] x86/irq: Add a Kconfig option for posted MSI
-Message-ID: <20240405085001.2bb3e8ad@jacob-builder>
-In-Reply-To: <89927174-6ca9-4299-8157-a0404b30b156@gmail.com>
-References: <20240126234237.547278-1-jacob.jun.pan@linux.intel.com>
- <20240126234237.547278-5-jacob.jun.pan@linux.intel.com>
- <89927174-6ca9-4299-8157-a0404b30b156@gmail.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+   d="scan'208";a="915257712"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 08:55:37 -0700
+Received: from andy by smile with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@intel.com>)
+	id 1rslug-00000001n9M-2yqb;
+	Fri, 05 Apr 2024 18:55:34 +0300
+Date: Fri, 5 Apr 2024 18:55:34 +0300
+From: Andy Shevchenko <andriy.shevchenko@intel.com>
+To: Sudeep Holla <sudeep.holla@arm.com>
+Cc: Peng Fan <peng.fan@nxp.com>, Linus Walleij <linus.walleij@linaro.org>,
+	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	"brgl@bgdev.pl" <brgl@bgdev.pl>,
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"cristian.marussi@arm.com" <cristian.marussi@arm.com>
+Subject: Re: [PATCH] pinctrl: pinconf-generic: check error value EOPNOTSUPP
+Message-ID: <ZhAe9oFz9wLQi4de@smile.fi.intel.com>
+References: <20240401141031.3106216-1-peng.fan@oss.nxp.com>
+ <CACRpkdZAuNXGyg2wwYcQG4oO9w7jPS6vj4Vt0=kqX5fJ+QpNmw@mail.gmail.com>
+ <Zg7dwcFz5eD7Am2u@smile.fi.intel.com>
+ <DU0PR04MB941777DA29D70013342721A788032@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <ZhAa3NPO19mINYJP@smile.fi.intel.com>
+ <ZhAdB4T7sTa2Z7db@bogus>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZhAdB4T7sTa2Z7db@bogus>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Hi Robert,
+On Fri, Apr 05, 2024 at 04:47:19PM +0100, Sudeep Holla wrote:
+> On Fri, Apr 05, 2024 at 06:38:04PM +0300, Andy Shevchenko wrote:
+> > On Fri, Apr 05, 2024 at 02:13:28AM +0000, Peng Fan wrote:
+> > > > On Thu, Apr 04, 2024 at 01:44:50PM +0200, Linus Walleij wrote:
+> > > > > On Mon, Apr 1, 2024 at 4:02 PM Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > > > wrote:
 
-On Fri, 5 Apr 2024 10:28:59 +0800, Robert Hoo <robert.hoo.linux@gmail.com>
-wrote:
+..
 
-> On 1/27/2024 7:42 AM, Jacob Pan wrote:
-> > This option will be used to support delivering MSIs as posted
-> > interrupts. Interrupt remapping is required.
-> > 
-> > Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> > ---
-> >   arch/x86/Kconfig | 11 +++++++++++
-> >   1 file changed, 11 insertions(+)
-> > 
-> > diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> > index 5edec175b9bf..79f04ee2b91c 100644
-> > --- a/arch/x86/Kconfig
-> > +++ b/arch/x86/Kconfig
-> > @@ -463,6 +463,17 @@ config X86_X2APIC
-> >   
-> >   	  If you don't know what to do here, say N.
-> >   
-> > +config X86_POSTED_MSI
-> > +	bool "Enable MSI and MSI-x delivery by posted interrupts"
-> > +	depends on X86_X2APIC && X86_64 && IRQ_REMAP  
+> > > > This check opens a Pandora box.
+> > > >
+> > > > FWIW, it just like dozen or so drivers that needs to be fixed, I prefer to have
+> > > > them being moved to ENOTSUPP, rather this patch.
+> > >
+> > > I see many patches convert to use EOPNOTSUPP by checking git log.
+> >
+> > How is that related? You mean for GPIO/pin control drivers?
+> >
+> > > And checkpatch.pl reports warning for using ENOTSUPP.
+> >
+> > checkpatch has false-positives, this is just one of them.
 > 
-> Does posted_msi really depend on x2APIC? PID.NDST encoding supports both
-> xAPIC and x2APIC.
-No, posted_msi works with xAPIC as well. I just fixed a bug in NDST xAPIC
-encoding, will be in v2.
+> Fair enough.
+> 
+> > > BTW: is there any issue if using EOPNOTSUPP here?
+> >
+> > Yes. we don't want to be inconsistent. Using both in one subsystem is asking
+> > for troubles. If you want EOPNOTSUPP, please convert *all* users and drop
+> > ENOTSUPP completely (series out of ~100+ patches I believe :-), which probably
+> > will be not welcome).
+> 
+> Well, I don't agree with that 100% now since this is GPIO/pinmux sub-system
+> practice only.
 
-I was thinking from the performance advantage of x2APIC. But you are right
-they are orthogonal.
+	git grep -lw ENOTSUPP
 
-> If posted_msi posts more stringent requirement, I think it deserves an 
-> explanation in this patch's description.
-> And, X86_X2APIC already depends on IRQ_REMAP, can we just list one of
-> them here?
-Will drop X2APIC dependency.
+utterly disagrees with you.
 
-Thanks,
+> What if we change the source/root error cause(SCMI) in this
+> case and keep GPIO/pinmux happy today but tomorrow when this needs to be
+> used in some other subsystem which uses EOPNOTSUPP by default/consistently.
 
-Jacob
+This is different case. For that we may shadow error codes with explicit
+comments.
+
+> Now how do we address that then, hence I mentioned I am not 100% in agreement
+> now while I was before knowing that this is GPIO/pinmux strategy.
+> 
+> I don't know how to proceed now 🙁.
+
+KISS principle? There are only 10+ drivers to fix (I showed a rough list)
+to use ENOTSUPP instead of 100s+ otherwise.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
 
