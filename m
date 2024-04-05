@@ -1,157 +1,80 @@
-Return-Path: <linux-kernel+bounces-132429-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132430-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2745D8994C5
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:36:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 440388994C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:42:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 922C51F23572
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:36:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CABF92881C9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 05:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 581C12C694;
-	Fri,  5 Apr 2024 05:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3662D22083;
+	Fri,  5 Apr 2024 05:42:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NB+shMKC"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b="Cc76vaP6"
+Received: from mail5.25mail.st (mail5.25mail.st [74.50.62.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBC228E34
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 05:35:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A31B224CC;
+	Fri,  5 Apr 2024 05:42:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.50.62.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712295324; cv=none; b=kWLQyXrieUrsUQyLIyl4Ta4rxpHGrYfkFeEtl/pti4z8ShOo8NwumetJTDP6/CHytp1fOWGdmQ/CJpOKdLeeRA5TFS01nXXHgNHGvz4u3CYioPf1DyDXPGmgl5HbBxuHvqEtQs4k3KBGYp+Yxz3klaX12pKiYS6IcubDoas2N2k=
+	t=1712295768; cv=none; b=DBKQTnI8x1cYQqVqGGfy8ejPDIFaPNtooGuvS6spqzBm1o5vPHS6RePwmn5Ebz2HQ5tThNIjnGvgeUqd2UWDFlnD5i1Lb8tW78SA5AQMM2eG/cgtcbd7UiGfK1BEEcGFqWm4LWye7VXuXi7HXuOO98n7OEOtgqkOWlcl4TZ2ay8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712295324; c=relaxed/simple;
-	bh=ej6MR+jE0o5Q+Vf9YGysbx/68DDREaEp7teXTicm5SM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=O8WKZdAFcHnTOBiqwOlV72uHNagnYGl2qMwiUWVdHrvx+fcEcGpbff1dljljxMXUVtiL0KWOpf96NyqpqJ3/XJI7++RT80Q1k7crosTd+xi/xbqEj0HHgRApmwyszPRH3D2XkwGEajmYJyLE+3nKrkpDgFtEPbsEwULHxI5Q0sA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NB+shMKC; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc647f65573so3323145276.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 22:35:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712295322; x=1712900122; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lZdonMx397+2pSb+glDTuU5D6tQtRdHssQDj6gK5t2I=;
-        b=NB+shMKCQ+6yvBaUru6SN2XxIBzlxf55phBTD9ETNe5HI0Ych40GsH8Qe0EcVu4WPV
-         ygJxynuON0Dd8dccF7ux5tWzT7LjrpGFz77MfeetVVZDhru/TdhxspLJHl7ndjiE4lPy
-         gNg+2JhZFU7DMlxGuTYjP5RWO2t6U13VTlHCvKvDsGHr64ZX2Wszw7PaN0bMmihoAWE2
-         VeUtDzyHUIJlAUnNlb5JxuP6qSK3F5kENTEx0kI6Cf/2zdzR+HNALpaTzGxfMxsmurto
-         Y+banMkZdnonVn73DHT8ac4NclyvJTUn+x/fZAR7yNQCf+RTC7+18SCDyipWIrey6u1B
-         MHow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712295322; x=1712900122;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lZdonMx397+2pSb+glDTuU5D6tQtRdHssQDj6gK5t2I=;
-        b=BdxoHNQljNFkNXhtR0Yn6u8oM4tcOqC/+y2ylaNTefkWS1RjMUwIXhJpm8N2GEEfaq
-         j7+Tx7A/I1WtBl88N29F+2ADCJ0zFvCT4QL0dsX8cs+xtQomn77CP8M6+3oLlqhBbQ7m
-         RjBXLyQgIiIi5kyqL6CyvEZSsjDuMh+oPzGsojp4Nm2nTOvpQw0Dn0gwPCOfg/EpchWm
-         4chszmOdwvvC4Uam9uj9HvzoIQGv90tGiwXUfnDWFxub+4gLeaJjnuQCugOHt5vzTfPS
-         E4pheX+YfrIKhMBsamaMbz6jhVxRfgbiBsuVLXLWO5borTyYejSBUlfLjfyMbjv2PIup
-         zx9w==
-X-Forwarded-Encrypted: i=1; AJvYcCUn9L54l6dy97iHPCfs3F339N2NYGDgm0yXciwGYnkCVeuJnQEJ3GOA7oVXZMoi4SVwr6nbcCZhdaK++HVytg8GvVGcU//r74m9ldOE
-X-Gm-Message-State: AOJu0YzL6Ikhli3sEjkHNIVa1zHUJEa4YrGunpZeI2xwPoRUVWq7bed3
-	XX+UO7Z8llSha0tWV8RGCh389jRVR/5x58z7o4/pG6j/DwGJWnylH4xQ2mlwEO/Eu6jXprXWSGQ
-	BdUx9MCydirpKSqzVlg==
-X-Google-Smtp-Source: AGHT+IETG5LR7hNPprfABruUGpnm2Pwpk94U38LlqopJDrjx8AYajOaTbPkYn8vPcJdFb7ROfhozscrxJuJ96B7L
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:6902:1882:b0:dc6:fec4:1c26 with
- SMTP id cj2-20020a056902188200b00dc6fec41c26mr100165ybb.1.1712295322064; Thu,
- 04 Apr 2024 22:35:22 -0700 (PDT)
-Date: Fri,  5 Apr 2024 05:35:10 +0000
-In-Reply-To: <20240405053510.1948982-1-yosryahmed@google.com>
+	s=arc-20240116; t=1712295768; c=relaxed/simple;
+	bh=AcltF4rXp8Wbpda+aejkh/mnoyPg7d26vErpj50Kt/s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WvMhOun9AMAtLWfmBRleivv/XZ8egeK4aA1RntEYNvuxBti8LDfct+zV/NZ7McGelpsgyc0oUekES3PhO28zAbfwGoST4ckZD+2rWwoeX9rEQnGW3C/LNYEpNqoNTHRompVOzDjjz4P/I9BZcnhfa3zHEU39ieP0BlXCwK9BT/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com; spf=fail smtp.mailfrom=atomide.com; dkim=pass (2048-bit key) header.d=atomide.com header.i=@atomide.com header.b=Cc76vaP6; arc=none smtp.client-ip=74.50.62.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomide.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=atomide.com
+Received: from localhost (91-158-86-216.elisa-laajakaista.fi [91.158.86.216])
+	by mail5.25mail.st (Postfix) with ESMTPSA id 995E860333;
+	Fri,  5 Apr 2024 05:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=atomide.com;
+	s=25mailst; t=1712295759;
+	bh=AcltF4rXp8Wbpda+aejkh/mnoyPg7d26vErpj50Kt/s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Cc76vaP6j3Q9EZW/45vE2uiMyUkrv75nWQEOIhm63C1ZFv56Ki2LAAqUkWQfEvvUB
+	 hX4Tnw21pwCj1NW0AkKOVMMWLeE/t3q8PxmpnjaA7wwi+DqScIfrFIPyxzVu44Lwjj
+	 KZo1kh3Ib+Tczklk+tFWHeXAEZQvt3gIXmnXYjT0avwHooJM80COE2fRKIEyBbNDM/
+	 H+VnCZ5qfLMlMFsrAXobz8bwpd/Ad9FVBaGo3DaTkz06GQgusVuLRow1RDMmX85Zaq
+	 dHbYd4spab87apKDOKy6Aea5O7laVqLahLGP/1VIuEAHIfCg8Lya7iuethjB5RrcGZ
+	 c4DrDyXMBrSeA==
+Date: Fri, 5 Apr 2024 08:42:23 +0300
+From: Tony Lindgren <tony@atomide.com>
+To: Jiri Slaby <jirislaby@kernel.org>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
+	Yicong Yang <yangyicong@hisilicon.com>,
+	kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v1 1/1] serial: core: Clearing the circular buffer before
+ NULLifying it
+Message-ID: <20240405054223.GP5132@atomide.com>
+References: <20240404150034.41648-1-andriy.shevchenko@linux.intel.com>
+ <f0f200b0-34dc-430b-b55e-b133faf4db44@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240405053510.1948982-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240405053510.1948982-6-yosryahmed@google.com>
-Subject: [PATCH v2 5/5] mm: zswap: remove same_filled module params
-From: Yosry Ahmed <yosryahmed@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
-	Chengming Zhou <chengming.zhou@linux.dev>, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f0f200b0-34dc-430b-b55e-b133faf4db44@kernel.org>
 
-These knobs offer more fine-grained control to userspace than needed and
-directly expose/influence kernel implementation; remove them.
+* Jiri Slaby <jirislaby@kernel.org> [240405 05:25]:
+> But again, serial8250_start_tx() should not be called after shutdown().
 
-For disabling same_filled handling, there is no logical reason to refuse
-storing same-filled pages more efficiently and opt for compression.
-Scanning pages for patterns may be an argument, but the page contents
-will be read into the CPU cache anyway during compression. Also,
-removing the same_filled handling code does not move the needle
-significantly in terms of performance anyway [1].
+Sounds like we should add some check in addition to UPF_DEAD to
+serial_port_runtime_suspend() and serial_port_runtime_resume() to
+bail out early on shutdown.
 
-For disabling non_same_filled handling, it was added when the compressed
-pages in zswap were not being properly charged to memcgs, as workloads
-could escape the accounting with compression [2]. This is no longer the
-case after commit f4840ccfca25 ("zswap: memcg accounting"), and using
-zswap without compression does not make much sense.
+Regards,
 
-[1]https://lore.kernel.org/lkml/CAJD7tkaySFP2hBQw4pnZHJJwe3bMdjJ1t9VC2VJd=khn1_TXvA@mail.gmail.com/
-[2]https://lore.kernel.org/lkml/19d5cdee-2868-41bd-83d5-6da75d72e940@maciej.szmigiero.name/
-
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/zswap.c | 19 -------------------
- 1 file changed, 19 deletions(-)
-
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 13869d18c13bd..b738435215218 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -140,19 +140,6 @@ static const struct kernel_param_ops zswap_accept_thr_param_ops = {
- module_param_cb(accept_threshold_percent, &zswap_accept_thr_param_ops,
- 		&zswap_accept_thr_percent, 0644);
- 
--/*
-- * Enable/disable handling same-value filled pages (enabled by default).
-- * If disabled every page is considered non-same-value filled.
-- */
--static bool zswap_same_filled_pages_enabled = true;
--module_param_named(same_filled_pages_enabled, zswap_same_filled_pages_enabled,
--		   bool, 0644);
--
--/* Enable/disable handling non-same-value filled pages (enabled by default) */
--static bool zswap_non_same_filled_pages_enabled = true;
--module_param_named(non_same_filled_pages_enabled, zswap_non_same_filled_pages_enabled,
--		   bool, 0644);
--
- /* Number of zpools in zswap_pool (empirically determined for scalability) */
- #define ZSWAP_NR_ZPOOLS 32
- 
-@@ -1421,9 +1408,6 @@ static bool zswap_is_folio_same_filled(struct folio *folio, unsigned long *value
- 	unsigned int pos, last_pos = PAGE_SIZE / sizeof(*page) - 1;
- 	bool ret = false;
- 
--	if (!zswap_same_filled_pages_enabled)
--		return false;
--
- 	page = kmap_local_folio(folio, 0);
- 	val = page[0];
- 
-@@ -1512,9 +1496,6 @@ bool zswap_store(struct folio *folio)
- 		goto store_entry;
- 	}
- 
--	if (!zswap_non_same_filled_pages_enabled)
--		goto freepage;
--
- 	/* if entry is successfully added, it keeps the reference */
- 	entry->pool = zswap_pool_current_get();
- 	if (!entry->pool)
--- 
-2.44.0.478.gd926399ef9-goog
+Tony
 
 
