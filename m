@@ -1,106 +1,100 @@
-Return-Path: <linux-kernel+bounces-133432-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6CF189A395
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:38:09 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF65389A399
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:39:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 045B81C2189F
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:38:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 843E21F23EA5
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:39:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD92171678;
-	Fri,  5 Apr 2024 17:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DF88171E44;
+	Fri,  5 Apr 2024 17:39:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e6N/FSEA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kgfL5TFa"
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3971DFEB;
-	Fri,  5 Apr 2024 17:38:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB7B171072;
+	Fri,  5 Apr 2024 17:39:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712338685; cv=none; b=p+vo3h9nhilGjSaGL8v2Zj7qYR/w8ibd3eYwuDtLaUPcSPhATdcTJ0pzd8+U2LB8rA/LiPxu9BB1iIRfl+Fh52mMUoREm1LcfmqDmYqXHOO0UqXgzvhTwG3sl1BaCy4PhhiQyoONsT6Cg8d2vuUewy8S6OKoFqTlllVXe9ufW2I=
+	t=1712338743; cv=none; b=fFKdDReROQyXI5yhDg73ar4tNr3CY48GrgHvQgRvYYa2Mv7VvZ2Pxr8QcXWUNAMmEHCfbA3iE5bVh66bWFvB39keNuGOpQjAz2+QQhC4Pjq6KO5GWC6U24a6g3/3wtroaQqi2CXuXtCDV1GNIUzp/KsLFkEEhGKiyDrwhDeYh/k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712338685; c=relaxed/simple;
-	bh=BtFNOGP9wi3ejmbHnY9IlajWZjGrS6wdrz8DT1QXGCw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jOmHjJjPiBuPPoCt3kuJZb6Lh9fJtx5quUPiaWdqZAtQi9OpZBBUgdpZdxoXcVMSGU/opOLq2LCJNJWNeR1MCS8rwVp6cWhBON99xS5f6GJXaosEpzN0aH6b8fm5ieDtMIWuKm4OtFPCcsqlNGUiRKbtp3daRxbX2qz8i6boxIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e6N/FSEA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EA2CC433F1;
-	Fri,  5 Apr 2024 17:38:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712338684;
-	bh=BtFNOGP9wi3ejmbHnY9IlajWZjGrS6wdrz8DT1QXGCw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=e6N/FSEAlFdmII6pv8u5tscDM2rRDa/T4VzSnW7oWHdSiK8h3J5YD75/VzszDDCBg
-	 M2rrxoWleHQ8vNu0lfImacNCpN6SSaE9IGxElF+ynDWQhxFHlxfglhfu7swcJG6h8G
-	 2/qNYakuGvXZQKL/muvAqQNTpMFEmMyWDPr1VuUCzoUua8RIMkmTzfPmV5BYyuAZbo
-	 zvrGj2YqFrt5IdlRZFZO6VpJMikGNvnHemnpXQGfukC7IOiJdefW77DHfd8sNbMcYt
-	 GWjAJIonKjP1da9mr1n885i0REaySl/0qY5w/Or7baxWTLKqPysVCc5YNRltS5zBOB
-	 zXmw5tkWcBZyw==
-Date: Fri, 5 Apr 2024 18:37:59 +0100
-From: Mark Brown <broonie@kernel.org>
-To: Dev Jain <dev.jain@arm.com>
-Cc: shuah@kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Anshuman.Khandual@arm.com, suzuki.poulose@arm.com,
-	ryan.roberts@arm.com, rob.herring@arm.com, Catalin.Marinas@arm.com,
-	will@kernel.org, mark.rutland@arm.com,
-	Russell King <linux@armlinux.org.uk>
-Subject: Re: [PATCH 0/4] A new selftests/ directory for arm compatibility
- testing
-Message-ID: <b891547d-d0cf-412f-bde5-621091127064@sirena.org.uk>
-References: <20240405084410.256788-1-dev.jain@arm.com>
+	s=arc-20240116; t=1712338743; c=relaxed/simple;
+	bh=XkNv1Lje8tREP4a4egM0yUzbQRvo5OybpHj233Dw/9o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=n2ovSSJ7jjiJF2L3fwC7kQSYxc99p36TJo/X1c3Zt2GAAIqLT5AdmeAtOwwW1czQSlu/7kcATb09v5gmcObWdpFnU5OHMGdPtsMNYqNkVTg6iTPXgtkOBGdd3VRz1qj0cNCt7eCKtx15OFr/+zfU1/a54UWHlJqSoyGVsIcCO1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kgfL5TFa; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5d862e8b163so487107a12.1;
+        Fri, 05 Apr 2024 10:39:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712338742; x=1712943542; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XkNv1Lje8tREP4a4egM0yUzbQRvo5OybpHj233Dw/9o=;
+        b=kgfL5TFabPuF+rEuDwCSE63s92ax/yBKgJi+yrvWwbDP/ncHYt7E481YDWBZfbnDoO
+         Bst7Kcs24TAbyaCQ4RNb4vvUHboAzy5TmTzT4uxgV+Tz7c4TRXzuWubEk9841LW6m/8p
+         nuXIW8o70UDQnHPiL5Zr5F8TCODIjm1yeRLnms5QJOpd2Wn6UzxsJ/Tid9Q85OaurJe1
+         SWf5IHAfOB9CQnREkCloGA2yU6i5sUCsQKr7b6BGbnzhA01v8K0VwPx1aZED3GiP4i5I
+         7WmSo4p6tlKIvaK1WnetzfIOc5oBH5NiqKS0iD7a9A/sxv5L9tOwONAaX6f3NucDHrTf
+         CPuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712338742; x=1712943542;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XkNv1Lje8tREP4a4egM0yUzbQRvo5OybpHj233Dw/9o=;
+        b=G0rpP6D9Htwss0oI27Uai63ahfPIHTd3hsrodH/d/GMvKdQGcTwv3z5vJSHABEDEHD
+         7O6QWTkNKvL5LYxWBhia3qLuOjK3Is2wxm/uudmVu+LBadLpqS3CqqhtsApKF6fof/VR
+         8X2d6tbW9At/+rl+tz232MVqs3JH0w18lgn7U0t6Vm5VjUbnc9biZl3gdhzQLzUqUfDj
+         pCI7pC8GN3GZG5HrS4QcckCv7FwG6lwHb9J115RaTtUzKHa6qx99C9Cu2qhxTolFkD5W
+         sE4OjQNKVWfM707//mrSe6nxqUNd6hXJIANNtp7genTnyNrIYpQExWYgZ5W0wmrfSSJY
+         ZiYA==
+X-Forwarded-Encrypted: i=1; AJvYcCXEpUz6Sb2egFLR0izh26ba8IpXx53kCF6jOJgUvwGZS4Yd6eOkCvE9RoPTsccwVbWaUuWniW0+rO92ffed2Qv5tzmA6BEs3Alb3AvjFD072sxMmQ49c7P6ZUf2P2yG9F3NZIiWgy+LNAfs
+X-Gm-Message-State: AOJu0Ywe9TbutLq/vNESdn1ezUOjpE/J8XQEuQ+27cEsx4yPcsuuLq0r
+	kf7iwqEC3R27jJLF+DSmsRKpRRsnRS/3dFmH6pgC3rh2LBL1PRwJo3cyUYzyMBf4RYBbBzPAt9F
+	CbAKw+nM045OFiuYz+VB3b7bvovo=
+X-Google-Smtp-Source: AGHT+IG0fdWiO/DDhWt+ydU2XsAmvp8DjslGdEn7xhs3xLBJ4xyuh09Wa2suF3tZOlzI8PazH3O11cA/0Kf1hRuxMYk=
+X-Received: by 2002:a17:90b:e89:b0:2a2:386e:3921 with SMTP id
+ fv9-20020a17090b0e8900b002a2386e3921mr2035370pjb.3.1712338741681; Fri, 05 Apr
+ 2024 10:39:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="RM+q+5dLtIDrxGi6"
-Content-Disposition: inline
-In-Reply-To: <20240405084410.256788-1-dev.jain@arm.com>
-X-Cookie: Honk if you love peace and quiet.
+References: <76cf9ce9cbf9dcdf78bc00ce7a919db1776ebce1.1712309058.git.esben@geanix.com>
+In-Reply-To: <76cf9ce9cbf9dcdf78bc00ce7a919db1776ebce1.1712309058.git.esben@geanix.com>
+From: Fabio Estevam <festevam@gmail.com>
+Date: Fri, 5 Apr 2024 14:38:48 -0300
+Message-ID: <CAOMZO5Axz7un+9H2uEoQtE0=pYNC0hEyZiNobrSi2m0ajj8N+g@mail.gmail.com>
+Subject: Re: [PATCH 1/2] serial: imx: Introduce timeout when waiting on
+ transmitter empty
+To: Esben Haabendal <esben@geanix.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
+	Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
+	Pengutronix Kernel Team <kernel@pengutronix.de>, Marc Kleine-Budde <mkl@pengutronix.de>, linux-kernel@vger.kernel.org, 
+	linux-serial@vger.kernel.org, imx@lists.linux.dev, 
+	linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Apr 5, 2024 at 6:25=E2=80=AFAM Esben Haabendal <esben@geanix.com> w=
+rote:
+>
+> By waiting at most 1 second for USR2_TXDC to be set, we avoid a potentita=
+l
 
---RM+q+5dLtIDrxGi6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+s/potentital/potential
 
-On Fri, Apr 05, 2024 at 02:14:06PM +0530, Dev Jain wrote:
-> This series introduces the selftests/arm directory, which tests 32 and 64-bit
-> kernel compatibility with 32-bit ELFs running on the Aarch platform.
-> The need for this bucket of tests is that 32 bit applications built on legacy
-> ARM architecture must not break on the new Aarch64 platforms and the 64-bit
-> kernel. The kernel must emulate the data structures, system calls and the
-> registers according to Aarch32, when running a 32-bit process; this directory
-> fills that testing requirement.
+Could you elaborate on this deadlock? Have you seen it in practice?
 
-You should copy Russell King, the 32 bit architeture maintainer, on this
-- I've added him here.
-
-FWIW it was me who suggested this work, like Dev says having some
-coverage of the corners of the 32 bit ABI feels especially sensible for
-arm64 since compat mode could relatively easily get accidentally broken
-making changes for 64 bit.
-
---RM+q+5dLtIDrxGi6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYQNvYACgkQJNaLcl1U
-h9AY7Qf/fZmneiahXy3yC7SDYFvoJlp2py+ZSWp42RePm8K6LEQ33D58Xlffz/Dg
-YrWrrLFiP7LLXYlVIO2lHzESh5gGKOB1vK2gBKuPdTgU6pCt7v89RTVlY/c8Peb4
-SN7iIOTYDQvGvah4ypFZz0OIzeeluv3pvE7VpDLVzqSYNE7RRntyW6cYekip799X
-Av/JFisiPRxUf2J9/DyiQvzX72izgGZwWwK0fdUENN3ZWs2ZYqpOX0T8bcMjf6RK
-zPZD6BxGC98AbtiVksClXst1TfElV7+SO+ANBZg2UBd9wjYQBQEzK3gBUdqFPo4W
-V44csdleGsGHRCGpewmxHX7GvOePzQ==
-=vCT8
------END PGP SIGNATURE-----
-
---RM+q+5dLtIDrxGi6--
+Should a Fixes tag be added?
 
