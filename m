@@ -1,245 +1,102 @@
-Return-Path: <linux-kernel+bounces-132480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132479-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92109899596
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:37:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D7B1899595
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:37:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5FC21C208AF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:37:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D77931F2218E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB0FD249FA;
-	Fri,  5 Apr 2024 06:37:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B85421A19;
+	Fri,  5 Apr 2024 06:37:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="a79eE/aF"
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h5Qgp4RM"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B76D417BB7
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 06:37:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4BCC1CFB5
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 06:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712299062; cv=none; b=RFgqiCdE/PfigH7J4h+kd6Ll18r0FDckQO6yHNI3/sET8zrZBJFRwsxWpCDS9pagn97Rh5e/wGHdIj52qJRu3+au9ujnsBESbBFtsl6BYAqwkPjH6sW6HIRwr7wvOHr0PB7MB/Y8Z921XmmhNFP3opD4ew+TXszZqTSLnO/EUs0=
+	t=1712299061; cv=none; b=IGQHjanFKYnY/T9AQpcIstDSMWNj8LPG7RMnti/svPs/zzSe7iO1WTV5yyYlVuuo0YEXnccY911b4y93EIudGqP+VV0vPxooRJkHeP0XhdYhZvAue3VNu0PsqnmOvXLnNt4hvRX+KTxwvqt1XMW3YE8snxDtARbhC4IuYhjIMJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712299062; c=relaxed/simple;
-	bh=4KKrOAUgtvFzWwEeFckdFEnHHxIs4bk8RNDTh0Z+ew8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=m8bzGT/0quXdjnkU2QgAQtXCT9/GtS/J838uzoXbUGpIFXhZiySguAd6cK4/sQl0GXRkP3WYwbbsV12XFVbd5Mqoaks6ED7J+8ojTtcKsCqQ3hEh+SzSKmRhdMuQx5GFqEAOtgYIOFqSP9a7iHhVVklznCh35ly1DYC5kCaX7zo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=a79eE/aF; arc=none smtp.client-ip=203.254.224.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-	by mailout3.samsung.com (KnoxPortal) with ESMTP id 20240405063732epoutp0321d9df36220d312826952825d12eab82~DTuqMSsDC0974709747epoutp03S
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 06:37:32 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20240405063732epoutp0321d9df36220d312826952825d12eab82~DTuqMSsDC0974709747epoutp03S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1712299052;
-	bh=7gP/5naD++bxmajPl7elEI7F1kgdeQwpQ3HndpQNEEc=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=a79eE/aF3ByXlvQ2cFtQkL1inLTqornHGRBwhJX2e+ex3FeWCK5yurvRqqTyLK9JM
-	 7tOZplEkpNgmS2UOOs5mIHtZA9FlpKGJRF6U8CCU8r+gB+D+7Vzus1Lh/45dBdDGst
-	 FgVxocH5s30uvy3d49nFsvlB85XG/wn7PYsMSM3w=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-	epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-	20240405063732epcas2p2e44664f7aae5fc96fc25ec909c1f51ee~DTupr-nkE0911409114epcas2p2f;
-	Fri,  5 Apr 2024 06:37:32 +0000 (GMT)
-Received: from epsmges2p1.samsung.com (unknown [182.195.36.70]) by
-	epsnrtp3.localdomain (Postfix) with ESMTP id 4V9pgv3Kbzz4x9Pt; Fri,  5 Apr
-	2024 06:37:31 +0000 (GMT)
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-	epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-	34.63.09673.B2C9F066; Fri,  5 Apr 2024 15:37:31 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-	epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240405063731epcas2p160d72b7fd452359a821d6a03de0d53fe~DTuowijPm0900509005epcas2p1w;
-	Fri,  5 Apr 2024 06:37:31 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-	epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240405063731epsmtrp25cbc5ce1d3f2da6b34bcf0144fe4c7f8~DTuovpz8n2705427054epsmtrp2v;
-	Fri,  5 Apr 2024 06:37:31 +0000 (GMT)
-X-AuditID: b6c32a45-82dff700000025c9-ad-660f9c2b3758
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	BD.3C.08924.A2C9F066; Fri,  5 Apr 2024 15:37:30 +0900 (KST)
-Received: from [172.27.222.155] (unknown [10.229.38.76]) by
-	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240405063730epsmtip2464ab5d19c0333d2d1604326a3bc8cd0~DTuojR0pD1227812278epsmtip2G;
-	Fri,  5 Apr 2024 06:37:30 +0000 (GMT)
-Message-ID: <76954c9b-e87a-c530-edb7-a8be4e3327ab@samsung.com>
-Date: Fri, 5 Apr 2024 15:37:30 +0900
+	s=arc-20240116; t=1712299061; c=relaxed/simple;
+	bh=bgDz6g1gPJNOWXZ0pJtwEJayVj0AbYJFB6CCr4Jz4Io=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lJ5YNAZsQr4c0YkX95IRl2lbNNLuWUkgAIETcrk9qqtQv+20vGIJjrhFnQ5p7d0bGA1XANzmLoOmUeS6eugqvA+Y+DOX1xK8skbJ6T3cJDS7CbX+tJNLNJYHpPSW+VTdn+96AZIMuYNGN0I3ystCpGjlpjhbqOMiVJF9qrHH/+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h5Qgp4RM; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56bdf81706aso2424743a12.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 23:37:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712299058; x=1712903858; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XqDAdsVeoyL+xrVeF88k7hXSD8XUa1tRXZUSMSa9TIs=;
+        b=h5Qgp4RMFmnEwFIu1c2PT5qattyjWk3WWcsUw4vN/nd+rYC+VuQ+f9BY2h6XR+zFpJ
+         F6zkW4N4i7XARwih+9AuUfMwnr9QA1v927uPzKjteuffr9soLcDRsXtiNnbOiWf+22uB
+         za7FH1I0AUoQmDWjRKKe2j4S47jzdD3yihbOstyJqW4I9p04nneUaAyV9mJ8Np7gVgCQ
+         S4hZYbDuaneJYVvHq2DGb6lCp4FSEal0nzsU6kkNTErTeGjVmkYO+50JPe9nn+0oFhkl
+         4KzbkU3YtKnkUK6bW2K4VfV/sPNldphA0wbVHcj1Mf40MWXNsB4LuYzusUREIfxHsl/Y
+         Cojw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712299058; x=1712903858;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XqDAdsVeoyL+xrVeF88k7hXSD8XUa1tRXZUSMSa9TIs=;
+        b=SqeloDvRF4QJB/6mxzCgnxhC93ZQXvuF9/MfjdUTtplA6bjPRGCmgS9zMBHzZETBIa
+         z9ZS7SaMBFQnYQ+JFaT5asy9gLeDoDHQS0PjeqyNV0+MB7KajemCg2D+q3C9zJPMevbM
+         2ZRr6kMWZHZytzBYcJz4opI32qMVUdCPnl9g98omZkXoUMPBeXAzEB/yvd8wqtNYG93G
+         v3OmAgPFacryiZSLGInV/Qe/G362oAx2lEhDoyM6CIGL0eeV8X3th47HZJ/DS/JYfGvQ
+         4Ulebb/UC0MFGzNtxzmVk0M29BLt5as/Nm8MrwJ5LYpsmtepfhukmsTxW0CBFX27pR8D
+         FLvw==
+X-Gm-Message-State: AOJu0YyxTsRr8J1tFSYd6Ihs2DB00GQd/ZVDViki91cxAGN099agme18
+	AueCXspjnNjKdpVNvMBxGO5ZMYgirEhuBiIxwjhW3XnZ8Yk+K9iyeeWxTxH/KzO/S7MSwSQgemb
+	d
+X-Google-Smtp-Source: AGHT+IGRBLADwlM/3DSugja9cczPOJ/v278LOwFQQ9RMre415HD7loRF8XDyKXmJQQvheswnKKB18w==
+X-Received: by 2002:a50:d599:0:b0:56c:5990:813e with SMTP id v25-20020a50d599000000b0056c5990813emr364888edi.13.1712299058070;
+        Thu, 04 Apr 2024 23:37:38 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id h13-20020a0564020e0d00b0056e34297cbasm72015edh.80.2024.04.04.23.37.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Apr 2024 23:37:37 -0700 (PDT)
+Date: Fri, 5 Apr 2024 09:37:33 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+	forest@forestbond.com, gregkh@linuxfoundation.org
+Subject: Re: [PATCH] MAINTAINERS: vt665?: Replace Forest with Philipp as
+ maintainer
+Message-ID: <cc0b2d25-e9d3-47f0-b22c-24f748ad8ceb@moroto.mountain>
+References: <20240404202450.GA23408@matrix-ESPRIMO-P710>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
-	Thunderbird/102.15.1
-Subject: Re: [PATCH v2 0/2] Make reader optimistic spinning optional
-Content-Language: en-US
-To: Waiman Long <longman@redhat.com>, John Stultz <jstultz@google.com>
-Cc: peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-	boqun.feng@gmail.com, linux-kernel@vger.kernel.org,
-	gregkh@linuxfoundation.org, bongkyu7.kim@samsung.com
-From: Bongkyu Kim <bongkyu7.kim@samsung.com>
-In-Reply-To: <45ddde77-a5dd-41e8-933f-36ed0f8cf178@redhat.com>
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLJsWRmVeSWpSXmKPExsWy7bCmua72HP40g2U3JCxeN75kslizpZHJ
-	onnxejaLPyc2sllc3jWHzeL0sRMsFpcOLGCyON57gMmi5Y6pA6fHzll32T0WbCr12LxCy2PT
-	qk42j/1z17B7vN93lc2jb8sqRo/Pm+QCOKKybTJSE1NSixRS85LzUzLz0m2VvIPjneNNzQwM
-	dQ0tLcyVFPISc1NtlVx8AnTdMnOAjlNSKEvMKQUKBSQWFyvp29kU5ZeWpCpk5BeX2CqlFqTk
-	FJgX6BUn5haX5qXr5aWWWBkaGBiZAhUmZGccnzibqWCeZkXr+nvsDYzPlLoYOTkkBEwkPq79
-	x9LFyMUhJLCDUWLfi0lMEM4nRonXc66yQjjfGCW2v/0JlOEAa5k2QQAivpdRYtWdvWwQzltG
-	ibNfFrKCzOUVsJN41PqBDcRmEVCR2Lj0HFRcUOLkzCcsILaoQLTEzGkLGUFsYQEXibbv68Fs
-	ZgFxiVtP5jOB2CICbhLLvvSwQsRXMko8mZIEYrMJ6Ej8Xz0DrIYTaNf9w7ehauQlmrfOZgY5
-	SEJgLYdE45dDzBCPukgcmHifDcIWlnh1fAs7hC0l8fndXqh4scTEl1OhmhsYJZpeb2eBSBhL
-	zHrWzgjyPrOApsT6XfqQkFCWOHKLBWIvn0TH4b/sEGFeiY42IYhGNYndz1tZIWwZiYNn1zJB
-	2B4S1w5OZprAqDgLKVRmIfl+FpJvZiHsXcDIsopRLLWgODc9tdiowBAe2cn5uZsYwelWy3UH
-	4+S3H/QOMTJxMB5ilOBgVhLh7XbgTRPiTUmsrEotyo8vKs1JLT7EaAqMm4nMUqLJ+cCEn1cS
-	b2hiaWBiZmZobmRqYK4kznuvdW6KkEB6YklqdmpqQWoRTB8TB6dUA5OU5Ouk+YnMjbfe7uFe
-	LPpKaPrjwraET92qps/XKjg56D2d6bnNzPm3+Lf2ZyvO/t60StuO84bjFqs4jnm3zOr4J+cV
-	qcay8tjFflDVY3g/593LnYVtEbek3+7/eNL0TXNyStbFzPBlEcxalanWby/cXLuM6Q1v8DzR
-	l71Wn6+ZKGvL+84yTtDUe8p4eTLv8ZuSD26//hKau4ApfkWB0CfVe6tiFIuE339aJzlBJSQi
-	7oxTYNxti0VX030m2obffMiZaGA7M1uwlOdIuopbJ5v3Z+eXX5IDdIySDtoevJm8I0ZEpTRj
-	wmMOCctIpZhN/mvynTxs8nmTn/sFXvnCv2f9egHFUMv6tBP/JJ2XKbEUZyQaajEXFScCAEs1
-	B7dABAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmkeLIzCtJLcpLzFFi42LZdlhJXldrDn+awfQJNhavG18yWazZ0shk
-	0bx4PZvFnxMb2Swu75rDZnH62AkWi0sHFjBZHO89wGTRcsfUgdNj56y77B4LNpV6bF6h5bFp
-	VSebx/65a9g93u+7yubRt2UVo8fnTXIBHFFcNimpOZllqUX6dglcGccnzmYqmKdZ0br+HnsD
-	4zOlLkYODgkBE4lpEwS6GLk4hAR2M0p0zfnE2sXICRSXkTj0by0ThC0scb/lCCtE0WtGie57
-	t1hAErwCdhKPWj+wgdgsAioSG5eeY4WIC0qcnPmEBWSBqEC0RNdLY5CwsICLRNv39YwgNrOA
-	uMStJ/PB5osIuEks+9IDNp9ZYCWjxKYnj5ghlr1llujo/gnWwSagI/F/9QywDk6gxfcP32YF
-	WcAsoC6xfp4QxFB5ieats5knMArNQnLGLCT7ZiF0zELSsYCRZRWjZGpBcW56brFhgWFearle
-	cWJucWleul5yfu4mRnB8aWnuYNy+6oPeIUYmDsZDjBIczEoivN0OvGlCvCmJlVWpRfnxRaU5
-	qcWHGKU5WJTEecVf9KYICaQnlqRmp6YWpBbBZJk4OKUamLKbynpOaTZ0be4/YHvzjE4SW0ah
-	0M7dq0Vmhb9o9+Ixn/lj75tt1VGrdqw53/RcVvjlZoU49Rzzecfv1K7VufRJ5kHSxnz5trOV
-	KckSM0WOcMjWTzvza8bdwK1vhXN2Bdg6ZAaGK7Od/Pz1vsi8xMMvqxh7izvDX/CwV2a16i69
-	e6fM7oOTrKxgzM43gmyXWrRUPPNl1l1/fm1P64xz+/y9QnMmir9q/rzr+/Yu2SlhihwHz4Qe
-	2SnQ6DtT7Z/FyoNrLrul1rIX/gnJqG8+VMt2m+nt94tNa1ufrGfY8qNsnUWJ/uyv9mK52gun
-	TFRL1Or+nrhc/Kbz7xnT07mEN6r3bG1d6LKOI7jYzFRdWYmlOCPRUIu5qDgRAJY7KXweAwAA
-X-CMS-MailID: 20240405063731epcas2p160d72b7fd452359a821d6a03de0d53fe
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20230901010734epcas2p4aadced02d68d3db407fda23de34601d2
-References: <CGME20230901010734epcas2p4aadced02d68d3db407fda23de34601d2@epcas2p4.samsung.com>
-	<20230901010704.18493-1-bongkyu7.kim@samsung.com>
-	<CANDhNCoFRr=qizswLm-dzxJK0fHuCx98Z2B1pUspdwGqBEejYg@mail.gmail.com>
-	<20240403012132.GA460@KORCO045595.samsungds.net>
-	<CANDhNCpvKj6Swer-8DtQEotdnOiqfAg43oZLw_HZs6ogwqPwzg@mail.gmail.com>
-	<20240403014207.GA499@KORCO045595.samsungds.net>
-	<23fd78bb-76a7-46e8-9523-5d2cab4186f5@redhat.com>
-	<45ddde77-a5dd-41e8-933f-36ed0f8cf178@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240404202450.GA23408@matrix-ESPRIMO-P710>
 
-On 4/5/24 12:06, Waiman Long wrote:
-> On 4/4/24 13:44, Waiman Long wrote:
->>
->> On 4/2/24 21:42, Bongkyu Kim wrote:
->>> On Tue, Apr 02, 2024 at 06:27:40PM -0700, John Stultz wrote:
->>>> On Tue, Apr 2, 2024 at 6:21 PM Bongkyu Kim
->>>> <bongkyu7.kim@samsung.com> wrote:
->>>>> On Tue, Apr 02, 2024 at 04:46:06PM -0700, John Stultz wrote:
->>>>>> On Thu, Aug 31, 2023 at 6:07 PM Bongkyu Kim
->>>>>> <bongkyu7.kim@samsung.com> wrote:
->>>>>>> This is rework of the following discussed patch.
->>>>>>> https://lore.kernel.org/all/20230613043308.GA1027@KORCO045595.samsungds.net/
->>>>>>>
->>>>>>> Changes from the previous patch
->>>>>>> - Split to revert and modify patches
->>>>>>> - Change according to Waiman Long's review
->>>>>>>      More wording to documentation part
->>>>>>>      Change module_param to early_param
->>>>>>>      Code change by Waiman Long's suggestion
->>>>>>>
->>>>>>> In mobile environment, reader optimistic spinning is still useful
->>>>>>> because there're not many readers. In my test result at android
->>>>>>> device,
->>>>>>> it improves application startup time about 3.8%
->>>>>>> App startup time is most important factor for android user
->>>>>>> expriences.
->>>>>>> So, re-enable reader optimistic spinning by this commit. And,
->>>>>>> make it optional feature by cmdline.
->>>>>>>
->>>>>>> Test result:
->>>>>>> This is 15 application startup performance in our exynos soc.
->>>>>>> - Cortex A78*2 + Cortex A55*6
->>>>>>> - unit: ms (lower is better)
->>>>>>>
->>>>>>> Application             base  opt_rspin  Diff  Diff(%)
->>>>>>> --------------------  ------  ---------  ----  -------
->>>>>>> * Total(geomean)         343        330   -13    +3.8%
->>>>>>> --------------------  ------  ---------  ----  -------
->>>>>>> helloworld               110        108    -2    +1.8%
->>>>>>> Amazon_Seller            397        388    -9    +2.3%
->>>>>>> Whatsapp                 311        304    -7    +2.3%
->>>>>>> Simple_PDF_Reader        500        463   -37    +7.4%
->>>>>>> FaceApp                  330        317   -13    +3.9%
->>>>>>> Timestamp_Camera_Free    451        443    -8    +1.8%
->>>>>>> Kindle                   629        597   -32    +5.1%
->>>>>>> Coinbase                 243        233   -10    +4.1%
->>>>>>> Firefox                  425        399   -26    +6.1%
->>>>>>> Candy_Crush_Soda         552        538   -14    +2.5%
->>>>>>> Hill_Climb_Racing        245        230   -15    +6.1%
->>>>>>> Call_Recorder            437        426   -11    +2.5%
->>>>>>> Color_Fill_3D            190        180   -10    +5.3%
->>>>>>> eToro                    512        505    -7    +1.4%
->>>>>>> GroupMe                  281        266   -15    +5.3%
->>>>>>>
->>>>>> Hey Bongkyu,
->>>>>>    I wanted to reach out to see what the current status of this patch
->>>>>> set? I'm seeing other parties trying to work around the loss of the
->>>>>> optimistic spinning functionality since commit 617f3ef95177
->>>>>> ("locking/rwsem: Remove reader optimistic spinning") as well, with
->>>>>> their own custom variants (providing some substantial gains), and
->>>>>> would really like to have a common solution.
->>>>>>
->>>>> I didn't get an reply, so I've been waiting.
->>>>> Could you let me know about their patch?
->>>> I don't have insight/access to any other implementations, but I have
->>>> nudged folks to test your patch and chime in here.
->>>>
->>>> Mostly I just wanted to share that others are also seeing performance
->>>> trouble from the loss of optimistic spinning, so it would be good to
->>>> get some sort of shared solution upstream.
->>>>
->>>> thanks
->>>> -john
->>>>
->> When this patch series was originally posted last year, we gave some
->> comments and suggestion on how to improve it as well as request for
->> more information on certain area. We were expecting a v2 with the
->> suggested changes, but we never got one and so it just fell off the
->> cliff.
->>
->> Please send a v2 with the requested change and we can continue our
->> discussion.
+On Thu, Apr 04, 2024 at 10:24:50PM +0200, Philipp Hortmann wrote:
+> Remove Forest Bond <forest@alittletooquiet.net> as maintainer as this
+> email address is not reachable anymore. Add me as I want to take care
+> of the driver and I do have vt6655 and vt6656 hardware to test.
 > 
-> The major reason that reader optimistic spinning was taken out is
-> because of reader fragmentation especially now that we essentially wake
-> up all the readers all at once when it is reader's turn to take the read
-> lock. I do admit I am a bit biased toward systems with large number of
-> CPU cores. On smaller systems with just a few CPU cores, reader
-> optimistic spinning may help performance. So one idea that I have is
-> that one of the command line option values is an auto mode (beside on
-> and off) that reader optimistic spinning is enabled for, say, <= 8 CPUs,
-> but disabled with more CPUs.
-> 
-> Anyway, this is just one of my ideas.
-> 
-> Cheers,
-> Longman
-> 
-> 
+> Link: https://lore.kernel.org/linux-staging/d599cd7b-a5d6-4f2d-8744-10254b75f7e5@moroto.mountain/
+> Signed-off-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
 
-Hi Longman,
+Thanks, Philipp!
 
-Including your idea, I will reconsider and resend patch.
+Acked-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Thanks,
-Bongkyu
+regards,
+dan carpenter
+
 
