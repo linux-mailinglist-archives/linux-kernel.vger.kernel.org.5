@@ -1,54 +1,62 @@
-Return-Path: <linux-kernel+bounces-133074-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133076-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62A91899E6C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:35:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00183899E72
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:36:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E0BB287BFC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:35:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95214B221F7
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 13:36:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ECBA16DEA8;
-	Fri,  5 Apr 2024 13:34:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FC2916D9C4;
+	Fri,  5 Apr 2024 13:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="WPouFyde"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="mLVC42jH"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 870132E401;
-	Fri,  5 Apr 2024 13:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6F0716D9B5;
+	Fri,  5 Apr 2024 13:36:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712324074; cv=none; b=P99BbPmPg6L77dQU7Aq2rDybSz0Ud3oKXErdo+e24rpEF+Y9RIBryF3RHcLNoitpuGGwueq/cF+4hsb76zsH2qe0RlRL9lsjVVttDNtX5nXGoML0/FB1BYM5MAHzj+PErvPW3o8pYNQIbQqK1yjr3rGvm9gU+ZnR5nwTwJyDBsk=
+	t=1712324163; cv=none; b=MAl5CqD7c/1GBpPrS/JKJSB1IhbCcp4lJCJDIJgORVni2liWPnjNZ2PQFN/XXHIWuEnKXtDsGYsYHa5lpy3iPoo+Ty8/PF+iVIPSKbJ27ge+IN6963n5EAi7aX6Hroe0NwaEbrfm/LOwptOJnrTqwMLM4/P0qNx4ugLuZ2ia1Ww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712324074; c=relaxed/simple;
-	bh=SHjwBnomV+gF9BLymsPmd0cih8P9zBHkIagsuETR9I4=;
+	s=arc-20240116; t=1712324163; c=relaxed/simple;
+	bh=zAWjA/Wd9iheRIHrVx6Rxm/wZBrKlcg3RAbOX0xiYq0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CniwXBu3DPC1pZNretUZNpxqlogJ1d4bJlhXxrGiWsKTW7OsvD3pqOctZUoHDIJfU2UUfDGuBhZOyrNDMuSgZFNEwQFb/5aROnCpwJM+QwccBM5i8N1mASUcw6yBZWboX+d8PnCvcTOvleqHa6omwPb5vlZceWpVeDTK75xYABE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=WPouFyde; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B89E2C433C7;
-	Fri,  5 Apr 2024 13:34:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1712324074;
-	bh=SHjwBnomV+gF9BLymsPmd0cih8P9zBHkIagsuETR9I4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WPouFydeq4lV+Y0xFxUhvTsLfA8DLxUGy5BJZ137GlWxh5WGH5cUqjTkSlKyrQTxn
-	 4fDzrljELByplixrq++TRfx4p25kZVe1RgtxcrsqfOkd5ClOOlz7QMGVcaMn7FJBvS
-	 oPi/USSpWR6GYkypD/fe5yLtiAjkx8tjfSHgtMk8=
-Date: Fri, 5 Apr 2024 15:34:30 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Martin Steigerwald <martin@lichtvoll.de>
-Cc: linux-pm@vger.kernel.org, regressions@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [regression] 6.8.1 and 6.7.12: fails to hibernate with
- pm_runtime_force_suspend+0x0/0x120 returns -16
-Message-ID: <2024040512-defective-wreckage-f202@gregkh>
-References: <2325246.ElGaqSPkdT@lichtvoll.de>
- <6034738.lOV4Wx5bFT@lichtvoll.de>
- <12413606.O9o76ZdvQC@lichtvoll.de>
- <12414153.O9o76ZdvQC@lichtvoll.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=UR+OQB8Ih3kXnu0a5YZqbsxwgDCM2lIKkYKLn1igjXSle0kHtb7STXWvYUgWmCJZ3uKYyAy7JAFZNdvWJHp9TsPRwo1hNVQ8ifSB9XMLglkWIT02JiEEPhLCsIwsA1OILfnsuYmBZs74i8i65zkXZwKBmAcjLgNh5Bf8RgFcNx0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=mLVC42jH; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=JfzJ8dFNpc+CDghii6YSpfFNaWsdhY3VZxC7E3oluGM=; b=mLVC42jHqinbZk1IrCD0lN6bAx
+	XQ5i7nPhII+j3ww2YGuJgYQ7Hpk+OOVp9LDeuABPxxEzSAka6DNz8NGGEzFVvfhlBjIMuI2AmOIVg
+	+w7kZCRu+WA2fKNTfBQvuP2P+7mx8k1zqkWH7HxOTsC24E3hAFv2cS8neKbsw71pmrbQ=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rsjjU-00CJ3D-Tv; Fri, 05 Apr 2024 15:35:52 +0200
+Date: Fri, 5 Apr 2024 15:35:52 +0200
+From: Andrew Lunn <andrew@lunn.ch>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+	David Jander <david@protonic.nl>
+Subject: Re: [PATCH 2/2] arm64: dts: rockchip: add Protonic MECSBC device-tree
+Message-ID: <1a0de7b4-f0f7-4080-ae48-f5ffa9e76be3@lunn.ch>
+References: <20240404-protonic-mecsbc-v1-0-ad5b42ade6c6@pengutronix.de>
+ <20240404-protonic-mecsbc-v1-2-ad5b42ade6c6@pengutronix.de>
+ <9d325b4e-031c-4f6c-9788-fa5a68470efa@lunn.ch>
+ <Zg_NwfxLhzdCjN87@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -57,41 +65,37 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <12414153.O9o76ZdvQC@lichtvoll.de>
+In-Reply-To: <Zg_NwfxLhzdCjN87@pengutronix.de>
 
-On Fri, Apr 05, 2024 at 02:11:11PM +0200, Martin Steigerwald wrote:
-> Martin Steigerwald - 05.04.24, 13:54:34 CEST:
-> > > Not doing it today or probably the weekend, but now I have some
-> > > actionable git bisect plan without bisecting between major kernel
-> > > releases which as I have been told between 6.7 an 6.8-rc1 can lead to
-> > > non working modeset graphics on AMD Ryzen in between.
-> > > 
-> > > It seems now I only need to git bisect between 6.7.11 and 6.7.12 to
-> > > find the patch that breaks hibernation on 6.8.1 as well. However
-> > > first I will briefly check whether 6.8.4 hibernates okay.
-> > 
-> > 6.8.4 is still affected and fails hibernation with the same error
-> > message.
-> 
-> Both kernels also fail to reboot the machine. Runit says:
-> 
-> - runit: system reboot
-> 
-> And then nothing anymore.
-> 
-> It is not just hibernation.
-> 
-> I think ThinkPad T14 AMD Gen 1 or similar systems with Linux are not that 
-> rare. I am surprised this is not hitting more people. Well maybe it does 
-> and no one reported it here.
-> 
-> Well let's see what happens when 6.7.12 hits distribution kernels.
-> 
-> Anyway, I have an actionable git bisect between 6.7.11 and 6.7.12, just 
-> not today. Maybe beginning of next week.
+> Do you have a pointer why setting the delays in the phy is preferred
+> over setting them in the network driver? In the end this requires us
+> to have the correct phy driver whereas setting them in the network
+> driver would just work for any phy driver?
 
-6.7.y is end-of-life, I wouldn't worry too much about it, there's
-nothing we can do about it anymore, sorry.
+One reason is that nearly every other board does it in the PHY. This
+is something i've been trying to standardize on for years.
 
-greg k-h
+Another point is that when doing it in the MAC, most MAC drivers get
+it wrong. RGMII needs 2ns delays on the clock lines. That delay can be
+provided by the board, making the clock lines longer. Or the MAC or
+the PHY can add the delays. phy-mode in DT tells you about what the
+board requires. Your board does not have extra long clock lines, so
+you need rgmii-id. If the MAC decides to implement the delay, it
+should modify the value passed to the PHY to be rgmii, to indicate it
+has added the delays, and the PHY should not. This is what many MAC
+drivers get wrong, they don't do the masking. By standardizing on the
+PHY doing the delay, we avoid this, keeping the MAC driver simple, and
+probably bug free in this respect.
+
+There is admittedly some historical confusion here. The design is not
+the best. If would of been much better if the design would have both
+phy-mode and mac-mode.
+
+As for using genphy, yes it might work, but there is no real
+guarantee. It is always best you drive the hardware using the driver
+specific to it. Consider genphy as a fallback which might be good
+enough that you can ssh into the board and install the correct
+module. You should not really be using it in production.
+
+	Andrew
 
