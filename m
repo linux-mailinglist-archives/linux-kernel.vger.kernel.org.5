@@ -1,117 +1,103 @@
-Return-Path: <linux-kernel+bounces-133474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42E7989A44A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:40:29 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0992389A44C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:41:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2FA7B21D9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:40:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3AE701C21F7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:41:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D32172795;
-	Fri,  5 Apr 2024 18:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4136E172796;
+	Fri,  5 Apr 2024 18:41:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="bYm0a/XA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SDkz3uD7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25AE017277F;
-	Fri,  5 Apr 2024 18:40:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 800AD1EB36;
+	Fri,  5 Apr 2024 18:41:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712342420; cv=none; b=PfCdsir+DZgLJNWXxGfDiwx2/Qv1lTvhF8foB1An0ErGnc8g01VTVCsnnXJWo7OeMGrkxMvREaXordHLGN1oK8MXB/n3P2QiRJauwtty4MyhLJw1b7fFwxAz6w3a2ZFY7bDcFEN2jXYUAa4kkfTG52QJTSDw1rZa+L7bUcovCJ4=
+	t=1712342461; cv=none; b=rzlTjbE6ngYHOIwtKOXs5XSoIb6htbU+6HwoarslkBExjCCG0Z0ZLssqw5qR1+63ch32Mz/kgaSmpZ09LatEyJd7FmjJotf1sABWJcxr4uFCA7r5xWKRIbXcjQkGqcGpFkQuK5WJI0okRrWuLm/GpQxOfy2JUnB0JczmDlF8GAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712342420; c=relaxed/simple;
-	bh=0GIcYc8gjCqsxaKY7pEmkQXQCbPLf7ON9becUFk7k8U=;
-	h=Date:From:To:Cc:Subject:Message-Id:Mime-Version:Content-Type; b=ZgihKh1Hvsbpixbswqaj4IFrWH7sS5psCpltud4y9KTYtnpH5wfJUrYHSes7xqd80kqbkRr4dDc1C3m0IvJxkXFmUcyhyidNxWeCQ9vIdpZEVPPxZeO/HbHgFpHFOcHzZMFNlR6RHP50GLJbhzxvbZqSyLcQgsEprET/k/Wkc58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=bYm0a/XA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 670A9C433C7;
-	Fri,  5 Apr 2024 18:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1712342419;
-	bh=0GIcYc8gjCqsxaKY7pEmkQXQCbPLf7ON9becUFk7k8U=;
-	h=Date:From:To:Cc:Subject:From;
-	b=bYm0a/XAxkPJJKrAQxnyjwfsskgkv4AwOkL7ifnJJ3yBPovViludhKzDVK1wWAQUt
-	 /BdgEOeYkSyW8IlxDm8qjyIa4vD62t2PF+sAWeKp9Gj+i+uH3Tsr5hIyiREuXb0dT8
-	 wH1fwOPiOeaXo6Zvfcb1IAURoHDbzAcfNVTM2r/8=
-Date: Fri, 5 Apr 2024 11:40:18 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- mm-commits@vger.kernel.org
-Subject: [GIT PULL] hotfixes for 6.9-rc3
-Message-Id: <20240405114018.48d320803e1b3920f68f9f96@linux-foundation.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712342461; c=relaxed/simple;
+	bh=57nNe2p7gcYuo/Kij2flNVNM8RMZMqbqX1psYkWJMAA=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=jWKpnRKs884Ul6UDYOYL4KfLGmtfKlKIZtuABmGZxsG0czUaOBA9rJyx6x0XS/6gHGGVFZybW2q8j8J5pWepqrtgswoHo/Far+6YhLzbbHxOaoE8fCo0PL3onSqD2jXf1zctVGybsg5cAgB3IDjfm8pxhQpgQA1hUr8dGAHOFdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SDkz3uD7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33E8CC433F1;
+	Fri,  5 Apr 2024 18:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712342460;
+	bh=57nNe2p7gcYuo/Kij2flNVNM8RMZMqbqX1psYkWJMAA=;
+	h=From:Subject:Date:To:Cc:From;
+	b=SDkz3uD7u9rieDKAskvbViO3sDGxC/zfe/cVXKRwTiiu9dvLkiUBaIFDn7d+7tinv
+	 tCkFRR+zffKvvYXDxw+VaQe03/kY9gD5QmXryVVlKTfQ7cmZpW0y5TADGv1bnPgeel
+	 1SMD3y47EPPeAiHd4lIHtV7yMq2oun51iZn964r7T6gl1efTLEYWo+afBEU3dEYC1S
+	 L6ZY0fFwgeR56FpRT/1+5/q40heXCKJ60RMnbEnooc8G5A9td8paHK1eYCimR57S86
+	 JhOT7+zXbDY1j75LWReYLER6wgqZIgxUCdkMFQBFBs0Q5eDBaSsCtJOW3GvomuPOSX
+	 cd1eIyXteWPJQ==
+From: Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH 0/3] nfsd: tracepoint cleanups and additions
+Date: Fri, 05 Apr 2024 14:40:48 -0400
+Message-Id: <20240405-nfsd-fixes-v1-0-e017bfe9a783@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALBFEGYC/x2LQQqAIBAAvyJ7bsFEL30lOpiutRcLFyIQ/97Sc
+ ZiZDkKNSWAxHRo9LHxVhXkykM5YD0LOyuCs89bbgLVIxsIvCcacfHA+ktsL6HA3+oX26zbGBwE
+ Z+OlcAAAA
+To: Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, 
+ Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+ Tom Talpey <tom@talpey.com>
+Cc: linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Jeff Layton <jlayton@kernel.org>, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=808; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=57nNe2p7gcYuo/Kij2flNVNM8RMZMqbqX1psYkWJMAA=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBmEEW2Sf5Klhcwetw9holfYAYSSrTeS1isrWdwo
+ tk+W31ijWmJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZhBFtgAKCRAADmhBGVaC
+ FUCXEACIeg/crLsQQAP3CGuJddlHjgXtB3BSqUvz8EBJSQGju1dj5R1B0yc8bN/jOjDXZJKNJ5h
+ ztl00FvivG3ZE0/Fq9phUawd+pN5xl6fx0FeYz15nqbVEqrSjO+wFlxuvqqlzlGvPUmWsastH3M
+ maKKFkFjUGitm2HZmLLknl1e6q75BZVBCVQMEoptwD/X+AmIWI4vy+TkAlAsuxa2qGC8ofGrJGd
+ XRTsDRDirLLRanS5TUZYvXAW48OZw7lAQTdW2OwVncx+WEl0o7uiVbVMbGpy5+aJ6IfSTZE/U82
+ jPemJMUhy99Pu5laNMtkv1tchBP79SHzokxCDN0NwPjoO7/1c6pkbemXNBrFljDX0TQKjoGa7PJ
+ 6pnCH9sOK5ulE/gMXCxfnvlO1BgiY0gUH/sV8cO1dKoCA4oPLapOt+ud6LKBkHd394GSPcG6fVB
+ razVUgbBoedEHM9jvJNEcMUHIjWHoWUB/Po6aKWRW8sgeBlN76PLDMXMxI1Nc75lDcaLFv9VPUi
+ v1a7jgnsz9Y1mWSiVYs9vvggtxsxf/8etJSetmljZeUPfcKQkZ4D//4j4hKRrvcwWfcaGn3tfaw
+ b3bvtjq0vElzmg0kHW8Shdal+E6eUbJTBsaG9tM/QREF+xHs2Y0tC31KvZPAT5tdvGGg++XZxiA
+ SWALZyXiPzNpxCQ==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
+First a patch to remove a few newlines from existing tracepoint string
+formats, and then a couple of new tracepoints to instrument some of the
+activity around CREATE_SESSION and client expiry. Probably reasonable
+for v6.10.
 
-Linus, please merge this batch of hotfixes.
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+Jeff Layton (3):
+      nfsd: drop extraneous newline from nfsd tracepoints
+      nfsd: new tracepoint for check_slot_seqid
+      nfsd: add tracepoint in mark_client_expired_locked
 
-There's a simple conflict in MAINTAINERS.  Please take the changes from
-this tree - use the four broadcom email addresses.
+ fs/nfsd/nfs4state.c | 18 +++++++++------
+ fs/nfsd/trace.h     | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 72 insertions(+), 10 deletions(-)
+---
+base-commit: 10396f4df8b75ff6ab0aa2cd74296565466f2c8d
+change-id: 20240405-nfsd-fixes-adc4524ae2bf
 
-Thanks.
-
-
-The following changes since commit 39cd87c4eb2b893354f3b850f916353f2658ae6f:
-
-  Linux 6.9-rc2 (2024-03-31 14:32:39 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2024-04-05-11-30
-
-for you to fetch changes up to a6c1d9cb9a68bfa4512248419c4f4d880d19fe90:
-
-  stackdepot: rename pool_index to pool_index_plus_1 (2024-04-05 11:21:31 -0700)
-
-----------------------------------------------------------------
-8 hotfixes, 3 are cc:stable
-
-There are a couple of fixups for this cycle's vmalloc changes and one for
-the stackdepot changes.  And a fix for a very old x86 PAT issue which can
-cause a warning splat.
-
-----------------------------------------------------------------
-Alexey Makhalov (1):
-      MAINTAINERS: change vmware.com addresses to broadcom.com
-
-David Hildenbrand (2):
-      mm/secretmem: fix GUP-fast succeeding on secretmem folios
-      x86/mm/pat: fix VM_PAT handling in COW mappings
-
-Edward Liaw (1):
-      selftests/mm: include strings.h for ffsl
-
-John Sperbeck (1):
-      init: open output files from cpio unpacking with O_LARGEFILE
-
-Peter Collingbourne (1):
-      stackdepot: rename pool_index to pool_index_plus_1
-
-Uladzislau Rezki (Sony) (2):
-      mm: vmalloc: bail out early in find_vmap_area() if vmap is not init
-      mm: vmalloc: fix lockdep warning
-
- .mailmap                             |  5 +++
- MAINTAINERS                          | 46 +++++++++++-----------
- arch/x86/mm/pat/memtype.c            | 49 ++++++++++++++++-------
- include/linux/secretmem.h            |  4 +-
- include/linux/stackdepot.h           |  7 ++--
- init/initramfs.c                     |  2 +-
- lib/stackdepot.c                     |  4 +-
- mm/memory.c                          |  4 ++
- mm/vmalloc.c                         | 76 ++++++++++++++++++++++--------------
- tools/testing/selftests/mm/vm_util.h |  2 +-
- 10 files changed, 122 insertions(+), 77 deletions(-)
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
 
 
