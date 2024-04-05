@@ -1,341 +1,220 @@
-Return-Path: <linux-kernel+bounces-132468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 005C089953A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:24:46 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 448D6899550
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:28:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FEDB1F23A9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:24:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9624CB22AF8
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 06:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1216822F08;
-	Fri,  5 Apr 2024 06:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE66E23748;
+	Fri,  5 Apr 2024 06:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="e0D5fKGO"
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="b0eQ6Ojb"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CFE33D76
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 06:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FFF01803D;
+	Fri,  5 Apr 2024 06:28:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712298281; cv=none; b=H7EFjNdwdyRm9MLlD8Uox+PpiboAaqn9z4XJzCaIhpYWJFV/yuHgrPoWs3ifF8Yz3YIec+vwVdb0i9ZclSDr2sXBLNEPu1DWJc1SFyuAyqlX3kOHQbzfUV3ACJ1edm7Ndyg8GIA0449UY2/AawsOtC0gV8Fc7thLvU8Qw83DiPw=
+	t=1712298495; cv=none; b=hNtK3cxAvwWy10MAmIIGZ0zB3zusT8YoPZoZo7XKCwD9kXEaNny30Iy7JCTDb26AAs3QB0eKzcaN17wGj4/VB29mGeyfkS/Rog9c5RUi3x58RYk3tLjT4YqfJfvjXAg2ZoCLCCj08RmAnlI6g1fT8dfus44WJ4yAysvLBM+Dg5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712298281; c=relaxed/simple;
-	bh=Aq5f+aYK1/s+xcoN/qqpESMo30shR6C9ncONP3v7+4E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hnDEM7ACFJ4A0mQtKkE5HV+R68bCTYy872j1UWHHkUdHw5we6DwDL2T6lWR1w1LZduQCx+omy9J8W83t7FhDcDK0DW2HaalbuEY7eOqBqJ6jGaV33KqBjUAnca27cHL0aMXFs9apQREYU9FkeA0h4qVAIjfEcUc6z6HRhI4lXeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=e0D5fKGO; arc=none smtp.client-ip=209.85.210.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6e68d358974so928629a34.3
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 23:24:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712298278; x=1712903078; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=PXnFYj37RdMeiT5FI44eDGaNEFusqkVt94gwHECIUb0=;
-        b=e0D5fKGOyYodY6/NIuvTgZbS/hQ9bToyqq+MDhGPlJG5aF0kWE3dhxmd3cB09uZnEq
-         q3TqmIKZv/PI/i9EoZkoAxo4sEXCxDKDIUZQzLRmvgO+5Jhj0cOD1zL8G4AB7DX5h3i+
-         agYGEOrWFw0ETNXZjvQZ4wqlkINL9wzo/F9uidrb8eTeu3NpCjwTMAWR3uBX4Fu7wgxk
-         SvHbpT2Ztum/LHnC6ESN4YGHAKUYwno6B4Fx+ryMBQj0PhDywKIAqn4mW7g6huhbVoZK
-         Y49ydUuiwd1ADooDEssszjpvmEBOtPA9fLBhL4mwPE3fE5iFuna4fDxrpBMd4cKAhHlM
-         UBag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712298278; x=1712903078;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PXnFYj37RdMeiT5FI44eDGaNEFusqkVt94gwHECIUb0=;
-        b=eXkkCA4CSbzyVLF+4+V3yWJWzkqg0xVpjNhojSuf20TshaQHtUjDImDuwrzlPfwbg5
-         hhTSJpzh60jU5Q1HV4UPEiVd6LYTiFMwZe0bks+HUS1ylxfwNU0+svtsBLHI51ApevSl
-         d2qOVSXaHlRi11/sPolBXnWaQbiOSHVM8ykHfT61es0VUiTcGM3HKW9Ga9osvoUFaD7c
-         mdv7irkQprzjo3T8QoyWXiH62b0vpVmSu3z1p57oEpJ8qcaLbykyrKs1ssFliN/RE1YS
-         bkF1r8Vq3j55fqLa2lArRzQF0Y1wT+omotrq5QaukM8pfk/Gb4nlqzaDR4NO2AAIEWtq
-         wCEA==
-X-Forwarded-Encrypted: i=1; AJvYcCVPOuQUCkpujGuS73pTYti4h/FKawyaWegR7bXex40Bh0/dulZbUlO/5ixGkYH/SfBDy3aZvxoBXeSbhteEJUS6A7dVnlIDFP7iNP9u
-X-Gm-Message-State: AOJu0YyAh77hmZP7BdM8ozO+0Yoftkx5J+tjJAaE/Xo225KBhHD4PK7R
-	beVV2vO5KlMnXND0nThd6XMVcqlOYCPaXXMI8KCe2+R81KoJNkFJ5Nb0AmFzhQ==
-X-Google-Smtp-Source: AGHT+IFk7n+g4rGKZeemR9hbQWDpWanR3vqQNkhNGIq+1un3I3qWXvV7N6omwtvQ7r5dF6NGy/vcDw==
-X-Received: by 2002:a05:6870:8188:b0:220:941d:18b7 with SMTP id k8-20020a056870818800b00220941d18b7mr539768oae.59.1712298278072;
-        Thu, 04 Apr 2024 23:24:38 -0700 (PDT)
-Received: from thinkpad ([120.60.67.119])
-        by smtp.gmail.com with ESMTPSA id r24-20020aa78b98000000b006ecfb733248sm750249pfd.13.2024.04.04.23.24.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Apr 2024 23:24:37 -0700 (PDT)
-Date: Fri, 5 Apr 2024 11:54:26 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Frank Li <Frank.Li@nxp.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, imx@lists.linux.dev,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 5/5] PCI: dwc: Add common send PME_Turn_Off message
- method
-Message-ID: <20240405062426.GB2953@thinkpad>
-References: <20240319-pme_msg-v5-0-af9ffe57f432@nxp.com>
- <20240319-pme_msg-v5-5-af9ffe57f432@nxp.com>
+	s=arc-20240116; t=1712298495; c=relaxed/simple;
+	bh=Fr/JWhHYQKZaaaMibAqgclMGXVbn5QmJWGY3JKy1Nuk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=uehTsl3FHkG21niA6aVYuwGGvdxAIG8qBG7kFKcogQ1mXxp1uKMt9NXQPbua/ACoajcW50VvUkFV/9KCjx577mTmhiejVDaxZULC38oc9xSnXiJmC4TBV9kEYJ2SDTV7rPITc0VFN89fXbxfkOin+SX/vazgy8ftGOaV8AUdVJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=b0eQ6Ojb; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 4354k4wf015129;
+	Fri, 5 Apr 2024 06:27:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=GKQz0B9cR1IxdMzPCrLdK2mRo25+8IENz2R5YewGobc=; b=b0
+	eQ6OjbvQAjVI6Kr4bQHSzIYuWDf3suOZT6iwAMp1KF3VIlFsQXl+rZJ4WG0K28WH
+	75NPq1fWggLheHIoGxZaWkj0bJOosvPulp6sj3Sz8VMVdOadzCUoYrUlhdUcG8Q/
+	8FSEGwGQB1ggZ4F9TIOG5oml+sudbyDnuBAvA5r2rb70CIruTJvqZS21cXf6E99w
+	9nraNyqDGJc4Eg5QIEcoBxefHcKHbkzZmBTVfeDKGNwXZXBoVX4YP+zQUcgGG4K1
+	RkmcPXQtDJbJQ2hwQMb3r/N7nv1ujL5GLo/CPbsTwZbVbRryZQfY70sK2jCaeNVD
+	irhm7zwhtIVV9Ma8E+TA==
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xa7snrf6y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 05 Apr 2024 06:27:41 +0000 (GMT)
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 4356ReEW028251
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 5 Apr 2024 06:27:40 GMT
+Received: from [10.218.19.46] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Thu, 4 Apr 2024
+ 23:27:34 -0700
+Message-ID: <66968793-d0c9-9f31-6616-f67fdadcd6e5@quicinc.com>
+Date: Fri, 5 Apr 2024 11:57:29 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.9.0
+Subject: Re: [PATCH 4/5] clk: qcom: Add camera clock controller driver for
+ SM8150
+Content-Language: en-US
+To: Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Michael
+ Turquette" <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Abhishek Sahu <absahu@codeaurora.org>,
+        Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>
+CC: Stephen Boyd <sboyd@codeaurora.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-clk@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, Ajit Pandey <quic_ajipan@quicinc.com>,
+        "Imran
+ Shaik" <quic_imrashai@quicinc.com>,
+        Taniya Das <quic_tdas@quicinc.com>,
+        Jagadeesh Kona <quic_jkona@quicinc.com>
+References: <20240229-camcc-support-sm8150-v1-0-8c28c6c87990@quicinc.com>
+ <20240229-camcc-support-sm8150-v1-4-8c28c6c87990@quicinc.com>
+ <18567989-fb60-49ae-92e6-94e1bc2fa1c7@linaro.org>
+From: "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
+In-Reply-To: <18567989-fb60-49ae-92e6-94e1bc2fa1c7@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240319-pme_msg-v5-5-af9ffe57f432@nxp.com>
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: pNw5X1uem7L0OqITyo0zV53249yYrE1v
+X-Proofpoint-ORIG-GUID: pNw5X1uem7L0OqITyo0zV53249yYrE1v
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-05_05,2024-04-04_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ lowpriorityscore=0 bulkscore=0 clxscore=1015 mlxscore=0 spamscore=0
+ suspectscore=0 priorityscore=1501 malwarescore=0 mlxlogscore=999
+ adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404050045
 
-On Tue, Mar 19, 2024 at 12:07:15PM -0400, Frank Li wrote:
 
-PCI: dwc: Add generic MSG TLP support for sending PME_Turn_Off during system suspend
+On 3/2/2024 9:43 PM, Bryan O'Donoghue wrote:
+> On 29/02/2024 5:38 a.m., Satya Priya Kakitapalli wrote:
+>> Add support for the camera clock controller for camera clients
+>> to be able to request for camcc clocks on SM8150 platform.
+>>
+>> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
+>> ---
+>
+>> +static int cam_cc_sm8150_probe(struct platform_device *pdev)
+>> +{
+>> +    struct regmap *regmap;
+>> +    int ret;
+>> +
+>> +    ret = devm_pm_runtime_enable(&pdev->dev);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    ret = pm_runtime_resume_and_get(&pdev->dev);
+>> +    if (ret)
+>> +        return ret;
+>> +
+>> +    regmap = qcom_cc_map(pdev, &cam_cc_sm8150_desc);
+>> +    if (IS_ERR(regmap)) {
+>> +        pm_runtime_put(&pdev->dev);
+>> +        return PTR_ERR(regmap);
+>> +    }
+>> +
+>> +    clk_trion_pll_configure(&cam_cc_pll0, regmap, &cam_cc_pll0_config);
+>> +    clk_trion_pll_configure(&cam_cc_pll1, regmap, &cam_cc_pll1_config);
+>> +    clk_regera_pll_configure(&cam_cc_pll2, regmap, 
+>> &cam_cc_pll2_config);
+>> +    clk_trion_pll_configure(&cam_cc_pll3, regmap, &cam_cc_pll3_config);
+>> +    clk_trion_pll_configure(&cam_cc_pll4, regmap, &cam_cc_pll4_config);
+>> +
+>> +    /* Keep the critical clock always-on */
+>> +    qcom_branch_set_clk_en(regmap, 0xc1e4); /* cam_cc_gdsc_clk */
+>
+> Does this clock need to be specified this way ?
+>
+> drivers/clk/qcom/camcc-sc8280xp.c::camcc_gdsc_clk specifies the gdsc 
+> clock as a shared op clock.
+>
+> Actually it looks to be register compatible, please try defining 
+> titan_top_gdsc as per the example in 8280xp.
+>
+>> +
+>> +    ret = qcom_cc_really_probe(pdev, &cam_cc_sm8150_desc, regmap);
+>> +
+>> +    pm_runtime_put(&pdev->dev);
+>> +
+>> +    return ret;
+>> +}
+>
+> So this is a pattern we keep repeating in the clock probe() functions 
+> which I am writing a series to address. There's no need to continue to 
+> replicate the bug in new code though.
+>
+> Only switch on always-on clocks if probe succeeds.
+>
+>     ret = qcom_cc_really_probe(pdev, &cam_cc_sm8150_desc, regmap);
+>     if (ret)
+>         goto probe_err;
+>
+>     qcom_branch_set_clk_en(regmap, 0xc1e4); /* cam_cc_gdsc_clk */
+>
+>     pm_runtime_put(&pdev->dev);
+>
+>     return 0;
+>
+> probe_err:
+>     pm_runtime_put_sync(&pdev->dev);
+>
+> Alternatively switch on the always-on clocks before the really_probe() 
+> but then roll back in a probe_err: goto
+>
+> probe_err:
+>     remap_bits_update(regmap, 0xc1e4, BIT(0), 0);
+>     pm_runtime_put_sync(&pdev->dev);
+>
+> There may be corner cases where always-on has to happen before 
+> really_probe() I suppose but as a general pattern the above should be 
+> how we go.
+>
 
-> Reserve space at end of first IORESOURCE_MEM window as message TLP MMIO
-> window. This space's size is 'region_align'.
-> 
-> Set outbound ATU map memory write to send PCI message. So one MMIO write
-> can trigger a PCI message, such as PME_Turn_Off.
-> 
-> Add common dwc_pme_turn_off() function.
-> 
-> Call dwc_pme_turn_off() to send out PME_Turn_Off message in general
-> dw_pcie_suspend_noirq() if there are not platform callback pme_turn_off()
-> exist.
-> 
+I have rechecked this and see that this clock is PoR ON (i.e BIT(0) is 
+set upon power ON) and it should be kept always ON as per HW 
+recommendation. So even if the probe fails we shouldn't be clearing it 
+against the hw recommendation. We are setting the bit here again to make 
+sure it is set when the driver probes.
 
-How about:
 
-"Instead of relying on the vendor specific implementations to send the
-PME_Turn_Off message, let's introduce a generic way of sending the message using
-the MSG TLP.
-
-This is achieved by reserving a region for MSG TLP of size 'pci->region_align',
-at the end of the first IORESOURCE_MEM window of the host bridge. And then
-sending the PME_Turn_Off message during system suspend with the help of iATU.
-
-It should be noted that this generic implementation is optional for the glue
-drivers and can be overridden by a custom 'pme_turn_off' callback."
-
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> Anyway I suspect the right thing to do is to define a 
+> titan_top_gdsc_clk with shared ops to "park" the GDSC clock to 19.2 
+> MHz instead of turning it off.
+>
+> You can get rid of the hard-coded always-on and indeed represent the 
+> clock in /sysfs - which is preferable IMO to just whacking registers 
+> to keep clocks always-on in probe anyway.
+>
+> Please try to define the titan_top_gdsc_clk as a shared_ops clock 
+> instead of hard coding to always on.
+>
+> If that doesn't work for some reason, then please fix your always-on 
+> logic in probe() to only make the clock fixed on, if really_probe() 
+> succeeds.
+>
 > ---
->  drivers/pci/controller/dwc/pcie-designware-host.c | 94 ++++++++++++++++++++++-
->  drivers/pci/controller/dwc/pcie-designware.h      |  3 +
->  2 files changed, 93 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index 267687ab33cbc..d5723fce7a894 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -393,6 +393,31 @@ static int dw_pcie_msi_host_init(struct dw_pcie_rp *pp)
->  	return 0;
->  }
->  
-> +static void dw_pcie_host_request_msg_tlp_res(struct dw_pcie_rp *pp)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +	struct resource_entry *win;
-> +	struct resource *res;
-> +
-> +	win = resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
-> +	if (win) {
-> +		res = devm_kzalloc(pci->dev, sizeof(*res), GFP_KERNEL);
-> +		if (!res)
-> +			return;
-> +
-> +		/* Reserve last region_align block as message TLP space */
-> +		res->start = win->res->end - pci->region_align + 1;
-> +		res->end = win->res->end;
-
-Don't you need to adjust the host bridge window size and end address?
-
-> +		res->name = "msg";
-> +		res->flags = win->res->flags | IORESOURCE_BUSY;
-> +
-
-Shouldn't this resource be added back to the host bridge?
-
-> +		if (!request_resource(win->res, res))
-
-Why can't you use devm_ helper to manage the resource, since the lifetime of the
-resource is till dw_pcie_host_deinit()?
-
-> +			pp->msg_res = res;
-> +		else
-> +			devm_kfree(pci->dev, res);
-> +	}
-> +}
-> +
->  int dw_pcie_host_init(struct dw_pcie_rp *pp)
->  {
->  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> @@ -479,6 +504,10 @@ int dw_pcie_host_init(struct dw_pcie_rp *pp)
->  
->  	dw_pcie_iatu_detect(pci);
->  
-> +	/* Need call after dw_pcie_iatu_detect() before dw_pcie_setup_rc() */
-
-It'd be better to add the reason also i.,e
-
-	/*
-	 * Allocate the resource for MSG TLP before programming the iATU
-	 * outbound window in dw_pcie_setup_rc(). Since the allocation depends
-	 * on the value of 'region_align', this has to be done after
-	 * dw_pcie_iatu_detect().
-	 */
-
-> +	if (pp->use_atu_msg)
-
-Who is setting this flag?
-
-> +		dw_pcie_host_request_msg_tlp_res(pp);
-> +
->  	ret = dw_pcie_edma_detect(pci);
->  	if (ret)
->  		goto err_free_msi;
-> @@ -536,6 +565,11 @@ void dw_pcie_host_deinit(struct dw_pcie_rp *pp)
->  
->  	dw_pcie_edma_remove(pci);
->  
-> +	if (pp->msg_res) {
-> +		release_resource(pp->msg_res);
-> +		devm_kfree(pci->dev, pp->msg_res);
-> +	}
-> +
->  	if (pp->has_msi_ctrl)
->  		dw_pcie_free_msi(pp);
->  
-> @@ -697,6 +731,10 @@ static int dw_pcie_iatu_setup(struct dw_pcie_rp *pp)
->  		atu.pci_addr = entry->res->start - entry->offset;
->  		atu.size = resource_size(entry->res);
->  
-> +		/* MSG TLB window resource reserve at one of end of IORESOURCE_MEM resource */
-> +		if (pp->msg_res && pp->msg_res->parent == entry->res)
-> +			atu.size -= resource_size(pp->msg_res);
-
-If you adjust the bridge window above, then this won't be needed.
-
-> +
->  		ret = dw_pcie_prog_outbound_atu(pci, &atu);
->  		if (ret) {
->  			dev_err(pci->dev, "Failed to set MEM range %pr\n",
-> @@ -728,6 +766,8 @@ static int dw_pcie_iatu_setup(struct dw_pcie_rp *pp)
->  		dev_warn(pci->dev, "Ranges exceed outbound iATU size (%d)\n",
->  			 pci->num_ob_windows);
->  
-> +	pp->msg_atu_index = i;
-> +
->  	i = 0;
->  	resource_list_for_each_entry(entry, &pp->bridge->dma_ranges) {
->  		if (resource_type(entry->res) != IORESOURCE_MEM)
-> @@ -833,11 +873,54 @@ int dw_pcie_setup_rc(struct dw_pcie_rp *pp)
->  }
->  EXPORT_SYMBOL_GPL(dw_pcie_setup_rc);
->  
-> +/* Using message outbound ATU to send out PME_Turn_Off message for dwc PCIe controller */
-> +static int dw_pcie_pme_turn_off(struct dw_pcie *pci)
-> +{
-> +	struct dw_pcie_ob_atu_cfg atu = { 0 };
-> +	void __iomem *m;
-
-*mem
-
-> +	int ret;
-> +
-> +	if (pci->num_ob_windows <= pci->pp.msg_atu_index)
-> +		return -EINVAL;
-> +
-> +	if (!pci->pp.msg_res)
-> +		return -EINVAL;
-> +
-> +	atu.code = PCIE_MSG_CODE_PME_TURN_OFF;
-> +	atu.routing = PCIE_MSG_TYPE_R_BC;
-> +	atu.type = PCIE_ATU_TYPE_MSG;
-> +	atu.size = resource_size(pci->pp.msg_res);
-> +	atu.index = pci->pp.msg_atu_index;
-> +
-> +	if (!atu.size) {
-> +		dev_dbg(pci->dev,
-> +			"atu memory map windows is zero, please check 'msg' reg in dts\n");
-
-You are already checking the existence of the 'pci->pp.msg_res' region above. So
-shouldn't that be sufficient enough? Can the size be 0, if the region exist?
-
-- Mani
-
-> +		return -ENOMEM;
-> +	}
-> +
-> +	atu.cpu_addr = pci->pp.msg_res->start;
-> +
-> +	ret = dw_pcie_prog_outbound_atu(pci, &atu);
-> +	if (ret)
-> +		return ret;
-> +
-> +	m = ioremap(atu.cpu_addr, pci->region_align);
-> +	if (!m)
-> +		return -ENOMEM;
-> +
-> +	/* A dummy write is converted to a Msg TLP */
-> +	writel(0, m);
-> +
-> +	iounmap(m);
-> +
-> +	return 0;
-> +}
-> +
->  int dw_pcie_suspend_noirq(struct dw_pcie *pci)
->  {
->  	u8 offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
->  	u32 val;
-> -	int ret;
-> +	int ret = 0;
->  
->  	/*
->  	 * If L1SS is supported, then do not put the link into L2 as some
-> @@ -849,10 +932,13 @@ int dw_pcie_suspend_noirq(struct dw_pcie *pci)
->  	if (dw_pcie_get_ltssm(pci) <= DW_PCIE_LTSSM_DETECT_ACT)
->  		return 0;
->  
-> -	if (!pci->pp.ops->pme_turn_off)
-> -		return 0;
-> +	if (pci->pp.ops->pme_turn_off)
-> +		pci->pp.ops->pme_turn_off(&pci->pp);
-> +	else
-> +		ret = dw_pcie_pme_turn_off(pci);
->  
-> -	pci->pp.ops->pme_turn_off(&pci->pp);
-> +	if (ret)
-> +		return ret;
->  
->  	ret = read_poll_timeout(dw_pcie_get_ltssm, val, val == DW_PCIE_LTSSM_L2_IDLE,
->  				PCIE_PME_TO_L2_TIMEOUT_US/10,
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 703b50bc5e0f1..dca5de4c6e877 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -341,6 +341,9 @@ struct dw_pcie_rp {
->  	struct pci_host_bridge  *bridge;
->  	raw_spinlock_t		lock;
->  	DECLARE_BITMAP(msi_irq_in_use, MAX_MSI_IRQS);
-> +	bool			use_atu_msg;
-> +	int			msg_atu_index;
-> +	struct resource		*msg_res;
->  };
->  
->  struct dw_pcie_ep_ops {
-> 
-> -- 
-> 2.34.1
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+> bod
 
