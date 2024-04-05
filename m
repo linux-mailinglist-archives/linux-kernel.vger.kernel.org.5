@@ -1,98 +1,78 @@
-Return-Path: <linux-kernel+bounces-133401-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133402-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B82389A348
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:11:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13F8889A34A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:11:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C639E282DCC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:11:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C224C2815B2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:11:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2864173355;
-	Fri,  5 Apr 2024 17:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D090D171E78;
+	Fri,  5 Apr 2024 17:09:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WYEEQr90"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iHq3ToVw"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0B36AB6;
-	Fri,  5 Apr 2024 17:09:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C314171E65;
+	Fri,  5 Apr 2024 17:09:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712336958; cv=none; b=pej7rIb+duprqoHWTyxMp0Yk2naYoPfICmuUvVxDoujlkeqMv65OuOvbL2/hkAwR5ck+rwfagC2c+rst5YeFENxhhTW5ItWHrl9m7vJWRMFbSPCmq5sGdQD75cnrl/H7DMXs6dWGDh201uB9dnrIMo5wZLGKHqYHDehgSMC/uAg=
+	t=1712336990; cv=none; b=D+lHC3PR59XXSBR/FqAf24eyjaYVouicUeTlXply7DuwSZvQuMiRdk8oF20IS3Jih9S+2y5iihqZsRPJrN9Pf2C3JwYkwC7F0AXX0QyG9jmu70jYcJXpnTpvIdm1dAaMLILbMZseT6GhvYclDok/OZWdg6PhCrvLNYL5bUbrbKA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712336958; c=relaxed/simple;
-	bh=f1kvZGzRe2SXSRDmHY4ReUMQwtDg/dGy62MWDdLbfWk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=PBOSu98iv1TkyZhFm2E5k7tCkxpuq72zMq2tGtlH/veOrCe72CuyjGWmeGe0LZt+2cAounLNdg0OD0TZE5Fl74Z5ZN7jr04M9Wc/mTDk5jm4P+lBPEgx9C5OIOaocsX4kbpeWuGs+3E0Sb4M08eVx1vXqkBtIQsf+FRRZyUA5EY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WYEEQr90; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CD8DC433C7;
-	Fri,  5 Apr 2024 17:09:13 +0000 (UTC)
+	s=arc-20240116; t=1712336990; c=relaxed/simple;
+	bh=nyi9LPRLu+f9gHNnqRO8TiiZrbt1uR929ka6BE145M4=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=isWzQX/+OziBQ+v6auoRMPhs/IvnB7ysL9KWlhMMh+2FE7XS51GtJwYcu5ZuVKY8dUOUzN9odjGc68GuApCUCVfFawbgwoqK2Tl9SdsnUXdlt64VcIsoQTyeaRb1uIylp/0uVTNKEpwlmta+1zVY4mbS6tOHA5uz7BY1q6nZZiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iHq3ToVw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8FBBDC433C7;
+	Fri,  5 Apr 2024 17:09:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712336957;
-	bh=f1kvZGzRe2SXSRDmHY4ReUMQwtDg/dGy62MWDdLbfWk=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=WYEEQr90KrTbu0rcJ2vk3kkx8nQl2+emnZrsljq8sA3FDapGTh+zx1Z2rrR49oiLV
-	 y7DwtCH4DIxhX6XGKABTF4LIyngi5fJWRd/01VPFpst8FRfRJiLoWMtUbrAJgqwa1j
-	 dVdFq8ieqGjTawNwtTgINJZCj3cGzWeLJFkjAelB/svo9PZekKomha8WAdIMP7z40A
-	 Y+MyuHI9N/mxJxye2hiYlKqxR9v8XYQDP+ZOV+Acs18iZ5HzlIQLKX+4LOSFV2bUi4
-	 sM7SbQ9Bb0BYzUfvz4DwUpJ6xIAWNuV2LfNNg6tqzguQ0QM5D3OhS1xC+QAHUKJPxz
-	 S7yT20yE2gl1Q==
-From: Vinod Koul <vkoul@kernel.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Neil Armstrong <neil.armstrong@linaro.org>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-0-3ec0a966d52f@linaro.org>
-References: <20240322-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v2-0-3ec0a966d52f@linaro.org>
-Subject: Re: (subset) [PATCH v2 0/7] arm64: qcom-sm8[456]50: properly
- describe the PCIe Gen4x2 PHY AUX clock
-Message-Id: <171233695315.304553.592159497575428525.b4-ty@kernel.org>
-Date: Fri, 05 Apr 2024 22:39:13 +0530
+	s=k20201202; t=1712336989;
+	bh=nyi9LPRLu+f9gHNnqRO8TiiZrbt1uR929ka6BE145M4=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=iHq3ToVwCnDp71k70oiSNtmEQCQ0g5XW36QjXdlYvmEh9gNtkN4PEBhxYrcfaUOZ+
+	 sY3tEYkShO9LntNOmKSV8mTYhgnd19Lcd/zvlNvl4+21WxLyhMYuXe7KCH7Ti36L+u
+	 bF4VwSqsebVUY74CvpFxfshCzn6k6AFWY53GqTsdYJh2Ev3rN9heUyZQFBlOjjzDeu
+	 k4j/meqZgMy9jTQ9GeGG9BYCxhqwO9ktw4XZ2AC3GzN+Bfoi18rsIQkc4E9rvWrOdb
+	 jkq84FDS9m1KeMDOA/tee3sA/PDrcQdnyoeAbuZKcZsdvO2X83ghQdCXsQahyMpo+S
+	 eWgJmx8ZPMNzg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7C3CEC395F6;
+	Fri,  5 Apr 2024 17:09:49 +0000 (UTC)
+Subject: Re: [GIT PULL] vfs fixes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240405-vfs-fixes-3b957d5fde0f@brauner>
+References: <20240405-vfs-fixes-3b957d5fde0f@brauner>
+X-PR-Tracked-List-Id: <linux-fsdevel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240405-vfs-fixes-3b957d5fde0f@brauner>
+X-PR-Tracked-Remote: git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.9-rc3.fixes
+X-PR-Tracked-Commit-Id: caeb4b0a11b3393e43f7fa8e0a5a18462acc66bd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: fae02687777ad80c1299c684f7f814c542103fa6
+Message-Id: <171233698949.9463.315904001646824846.pr-tracker-bot@kernel.org>
+Date: Fri, 05 Apr 2024 17:09:49 +0000
+To: Christian Brauner <brauner@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
 
+The pull request you sent on Fri,  5 Apr 2024 13:22:56 +0200:
 
-On Fri, 22 Mar 2024 10:42:37 +0100, Neil Armstrong wrote:
-> The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock named
-> "PHY_AUX_CLK" which is an input of the Global Clock Controller (GCC) which
-> is muxed & gated then returned to the PHY as an input.
-> 
-> Document the clock IDs to select the PIPE clock or the AUX clock,
-> also enforce a second clock-output-names and a #clock-cells value of 1
-> for the PCIe Gen4x2 PHY found in the SM8[456]50 SoCs.
-> 
-> [...]
+> git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.9-rc3.fixes
 
-Applied, thanks!
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/fae02687777ad80c1299c684f7f814c542103fa6
 
-[1/7] dt-bindings: phy: qcom,sc8280xp-qmp-pcie-phy: document PHY AUX clock on SM8[456]50 SoCs
-      commit: 72bea132f3680ee51e7ed2cee62892b6f5121909
-[2/7] phy: qcom: qmp-pcie: refactor clock register code
-      commit: 677b45114b4430a43d2602296617efc4d3f2ab7a
-[3/7] phy: qcom: qmp-pcie: register second optional PHY AUX clock
-      commit: 583ca9ccfa806605ae1391aafa3f78a8a2cc0b48
-[4/7] phy: qcom: qmp-pcie: register PHY AUX clock for SM8[456]50 4x2 PCIe PHY
-      commit: 5cee04a8369049b92d52995e320abff18dfeda44
+Thank you!
 
-Best regards,
 -- 
-~Vinod
-
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
