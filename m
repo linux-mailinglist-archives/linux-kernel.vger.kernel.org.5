@@ -1,110 +1,125 @@
-Return-Path: <linux-kernel+bounces-132683-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132684-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20F1489988C
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:53:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCDCD89988F
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 10:53:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C93CB22AAD
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:53:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72C201F2224A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 08:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14882160783;
-	Fri,  5 Apr 2024 08:52:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADA915FA92;
+	Fri,  5 Apr 2024 08:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="caR5pVRU"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="KH/O2kU4"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8A8715FCF1;
-	Fri,  5 Apr 2024 08:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E155B15FA72
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 08:53:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712307150; cv=none; b=Ead+4+3UVHnoLcUlzlQG4kpkrLR0Sbp3jFPfWyZ6RRqslCiGrh/DG4SKqbABnnfoJ/69O9qIxb0NuYb9kZoo/95JOHeeGpd/BzU3xasSo/dTZSjVpc3Do4nueFvTKDbEHr/rcdeAfBIAExfnkCzaXG6Hk/DInmAfwXOLaJbQ52U=
+	t=1712307187; cv=none; b=LInjKOQtYtdbxIG/UPzm1sAJ9zLDeSLUgalTXEM1nZ1IkvWZUIrDuikJGDJY63TaSUAQfJTlQlOttcip8+kWVgRG5PXBOYA7VyqzWmFwV2EyGKxbdQeIp/wDnuCmvU/AzIepUT6HKPDjUO3jRTFo92LViJlGZAF8brLa9g4It4s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712307150; c=relaxed/simple;
-	bh=aQkltj1P8xhIjFm5GPr2ARa9v/hJuwym/eVlFOxnZjI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FEoVFFm0jWkFTz3FheFTAiC0JhpNDdRiiTEVpzRgZJHSTRKgjTL4gFpw/aBuXUBiWwF14amZUeHZsyH+KZNHwQVqcYTP+BKURF2ih+LHVauFevp/lM0J4px27MLA4GrWKP9mQ2PRMFP1XrtYdXHRjGaa3dKWigHRulS0DnPX470=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=caR5pVRU; arc=none smtp.client-ip=198.47.19.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4358qFX4028729;
-	Fri, 5 Apr 2024 03:52:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712307135;
-	bh=vEbouFWGbc4A14TH9HK+KQsmQbC7/2UlOUwHmqgy4mU=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=caR5pVRUXu0YBfZukvfMS4inTjEzIKFRmCyLcfrI0Zrjdge81buLTOjQhED+dsNYA
-	 fG+PUFAbO72rwwgIvo/6b/JgNB1bcozYaE0b4bZKMsyxXN3/6ENM/wfZZWiBM640bO
-	 3FpNteJ/zRkdaGHoU4kznnx1xY1nkzozL1frpPHc=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4358qEpn012764
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Fri, 5 Apr 2024 03:52:15 -0500
-Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 5
- Apr 2024 03:52:14 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 5 Apr 2024 03:52:14 -0500
-Received: from localhost (jayesh-hp-probook-440-g8-notebook-pc.dhcp.ti.com [172.24.227.252])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4358qDaM088455;
-	Fri, 5 Apr 2024 03:52:14 -0500
-From: Jayesh Choudhary <j-choudhary@ti.com>
-To: <nm@ti.com>, <vigneshr@ti.com>, <bb@ti.com>, <devicetree@vger.kernel.org>,
-        <j-choudhary@ti.com>
-CC: <kristo@kernel.org>, <robh@kernel.org>, <krzk+dt@kernel.org>,
-        <conor+dt@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: [PATCH 3/3] arm64: dts: ti: k3-am62p-main: Fix the reg-range for dma-controller
-Date: Fri, 5 Apr 2024 14:22:08 +0530
-Message-ID: <20240405085208.32227-4-j-choudhary@ti.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240405085208.32227-1-j-choudhary@ti.com>
-References: <20240405085208.32227-1-j-choudhary@ti.com>
+	s=arc-20240116; t=1712307187; c=relaxed/simple;
+	bh=b58X/MIMUkzWJKfAi7xukhYyNxm3BVKa9wfMtsb3Sd4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WaIGDLpGH5K+cdNHtt/7+v5nRe0qxXJ8A815OAXVRKP6lZRAq6sEkIumkuIn1emzb5DboGdFzMYwOiz1Xvy0AWXw4TWEOl9Ij+tB96+y/HTx4sGiTfL9NylzsvhqsyDKoZYyHxGpKJv6LtCukVEfP0AGkoUV/fW66X1+LIrlBDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=KH/O2kU4; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=b58X
+	/MIMUkzWJKfAi7xukhYyNxm3BVKa9wfMtsb3Sd4=; b=KH/O2kU4AXBavxNzHugQ
+	Cr0XiXqp/GPDBSk990nWASPmI37jJSCyQb7Lmqf/oL1tdcIHRX8jcmo2vwR2Tob2
+	3MSo8HTQY7A27SYWA+SI/NfQ5pqpmi79n6McsjIcB3WFLNWrOIMRU9rOtunrND10
+	HWjAn9CXhCQ+B9a1mPUM02wRXvB9PLITUPY3IFp4RQdrilkojM5jzuhcnTiEv7VH
+	VYyQIaPUSbCJyxVg+Ps6gEY1GV7GeeCVXIVYwLifWiKRkws+ODNIdvmXrsiBWpB2
+	SNQ1HJX7xrINzXmGee9lezHXjMCnmDNUx7uK3emvEkF2ZwnnAUK7Pn+L+1Q5APd7
+	Jg==
+Received: (qmail 4047676 invoked from network); 5 Apr 2024 10:53:03 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Apr 2024 10:53:03 +0200
+X-UD-Smtp-Session: l3s3148p1@2SRllVUV0pYgAwDPXwEGAANOsN0UmmrN
+Date: Fri, 5 Apr 2024 10:53:02 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Russell King <linux@armlinux.org.uk>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>, 
+	James Clark <james.clark@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Andi Shyti <andi.shyti@kernel.org>, 
+	Olivia Mackall <olivia@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Vinod Koul <vkoul@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Michal Simek <michal.simek@amd.com>, 
+	Eric Auger <eric.auger@redhat.com>, Alex Williamson <alex.williamson@redhat.com>, 
+	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	dmaengine@vger.kernel.org, linux-input@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 14/19] i2c: nomadik: drop owner assignment
+Message-ID: <fgcn3ly4qk726eqv3lleqbrg7odgyklkyd6d7wmpyl73bbt5ir@tjui6nsxrlgk>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Russell King <linux@armlinux.org.uk>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>, 
+	James Clark <james.clark@arm.com>, Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@foss.st.com>, 
+	Linus Walleij <linus.walleij@linaro.org>, Andi Shyti <andi.shyti@kernel.org>, 
+	Olivia Mackall <olivia@selenic.com>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	Vinod Koul <vkoul@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
+	Miquel Raynal <miquel.raynal@bootlin.com>, Michal Simek <michal.simek@amd.com>, 
+	Eric Auger <eric.auger@redhat.com>, Alex Williamson <alex.williamson@redhat.com>, 
+	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org, 
+	linux-stm32@st-md-mailman.stormreply.com, linux-i2c@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	dmaengine@vger.kernel.org, linux-input@vger.kernel.org, kvm@vger.kernel.org
+References: <20240326-module-owner-amba-v1-0-4517b091385b@linaro.org>
+ <20240326-module-owner-amba-v1-14-4517b091385b@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="honofbm32v4z4vxk"
+Content-Disposition: inline
+In-Reply-To: <20240326-module-owner-amba-v1-14-4517b091385b@linaro.org>
 
-The TX Channel Realtime Registers region 'tchanrt' is 128KB and Ring
-Realtime Registers region 'ringrt' is 2MB as shown in memory map in
-the TRM[0]. So fix ranges for those reg-regions.
 
-[0]: <https://www.ti.com/lit/pdf/spruj83>
+--honofbm32v4z4vxk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: b5080c7c1f7e ("arm64: dts: ti: k3-am62p: Add nodes for more IPs")
-Signed-off-by: Jayesh Choudhary <j-choudhary@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am62p-main.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Tue, Mar 26, 2024 at 09:23:44PM +0100, Krzysztof Kozlowski wrote:
+> Amba bus core already sets owner, so driver does not need to.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>=20
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-index 7337a9e13535..514c201bd5c9 100644
---- a/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am62p-main.dtsi
-@@ -123,8 +123,8 @@ main_pktdma: dma-controller@485c0000 {
- 			compatible = "ti,am64-dmss-pktdma";
- 			reg = <0x00 0x485c0000 0x00 0x100>,
- 			      <0x00 0x4a800000 0x00 0x20000>,
--			      <0x00 0x4aa00000 0x00 0x40000>,
--			      <0x00 0x4b800000 0x00 0x400000>,
-+			      <0x00 0x4aa00000 0x00 0x20000>,
-+			      <0x00 0x4b800000 0x00 0x200000>,
- 			      <0x00 0x485e0000 0x00 0x10000>,
- 			      <0x00 0x484a0000 0x00 0x2000>,
- 			      <0x00 0x484c0000 0x00 0x2000>,
--- 
-2.25.1
+Acked-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
+
+--honofbm32v4z4vxk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYPu+4ACgkQFA3kzBSg
+KbY+PhAAmNuSoACChosjYi33qGWzyeoBhz9tLue2x0d13airycgFlY6FyFx1aY+/
+NadTECwyu8TNhXdRAYk/Y1sTo9S+MezhsboJhiL8+5hiOBEZHXt7U5+8k/Pkg499
+9QHeM8PaeBfpoodRPGG7UCxHkjENntyyR4OV1X5eWgGheKFtzw6F2NwEMqTdus5H
+yGju+VYEMeH97wXMkPRPmqIAUfG140PY+fTfOInco1my/ejprCYy+OJdL+uMDBlG
+3MSIMIrLahtlKK6tkhnA9MdGaC3J4v5bzpo7lgDwM6qPcOHY6ftTfz726DpdI68w
+JLoRj/Ne4xKX4Munav7MMDCPGWaSY3fQ6F1xtzq+EdfVQHnSIxpuhH/zvpj7LDEz
+l+yVUvhjs41B3d8QkXmFp0ByjxaiIdO5EAkraw/OguBo6kv3N0TgEG1BZTdVa5+Q
+UfSRHLLAXCksCuADcBcHaRGXp3dlJB2Ywba2iCYBOeBD2DefxfHGcEurJyY3mp1h
+i+RlMmzHBKEoT5/nYkhzVZyQ8cosiJoL0LeK11p10xoexmDJzd7W8oshLhEDaB2L
+5zXqlT0JmawXt/SmDjByPFelFQPhEtWkIo/D65i4EBb0DnglGQSc4frb9FBiVP5U
+vPwuPyzkXVvObtEfHT2TL6wUD2IVZWJv4tCMQel7J/DK7WEJLjM=
+=o9jg
+-----END PGP SIGNATURE-----
+
+--honofbm32v4z4vxk--
 
