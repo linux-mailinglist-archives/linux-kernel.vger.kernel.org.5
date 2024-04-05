@@ -1,125 +1,156 @@
-Return-Path: <linux-kernel+bounces-133381-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133382-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB8B889A309
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id E434389A30A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 19:05:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6644A2887E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:04:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ECCE289379
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:05:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2921171659;
-	Fri,  5 Apr 2024 17:04:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DA16171664;
+	Fri,  5 Apr 2024 17:05:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="p9t3Lldm"
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Yu2jtznq"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D9D17164E
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:04:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62DD0171645
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 17:05:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712336653; cv=none; b=ONJ0E5MuY4zWEOoCFEXoUMnJd3Jq+vANlfubFv5DAoKCfQzHmPbPxH9AjjdTmsS7y1jgxzPOXxL/Gv35KKak8thjlYLL5iqQg3IxIyD88PGHp7DjlyIv2Bjlbn/dFi0C5EhsMgQ+NYcFkEo+a6HFRhzAvmJZvTP3Vynik6SFtT4=
+	t=1712336728; cv=none; b=ZkRPRRCQr8PeDMtgzD+25Sk3qZUcfYvvNCpoztgiz7AnrEtPGu0/BHNYByDu7H5CkJJlHZFj7X/WPYcNlxy9P+O+z4J2GaqeQ353na+8U/vQviX9DZMvG17utNH1cone6+DoFkfGBHa+X/Sn+NuBaM4KRJuu3L3GfhG6rHSlc40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712336653; c=relaxed/simple;
-	bh=OOgEwHqMz/Yvjc2goDeb8uEo8Ux7zxdqL7svhS7VDzM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IcOQzFlvDfS1B0Ui493grvjYZrTXIBHiXV1QLGdhG70c3A3LhjeTYRgggnt4Yf7KEHp7HZTeTLLfRDlbUJLQowB7CHZWOmTxskcVU5pOTa/LMhxtw8hF+RpK6gLhAtXduJ5aU3ogDj4Plvr7t0Tz/S/jzgFtzd9JJr/cPbWsXac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=p9t3Lldm; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-2d87450361fso638891fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 10:04:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1712336648; x=1712941448; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0MbNjbvHvDDOSjIwkj/Strvo+EkSYgqBXUTM9ofNx5w=;
-        b=p9t3LldmW4SOxNOxt9fcY7jPCvtbRUdbD4b63lKA8ata6eWL1uSoX3BPcyjIk8ZMDf
-         NCvYd+Qel99IUgL4/m+2dojPLOj6aIPVkSXd2ZLDBcEQ26DzRpxmBOzOCGArdjWJvt6c
-         OC2qBM6uAIiEvarYCQsOUBo+qvVi5y8Q8vqTPXjr3S6YMZzPuA6grCgMmToM2r4AbL7t
-         fCuyGfop4upSgHQLNDbCkXcA6JNWUmyEeuxOsmD/L6Awc1ZbjKSbdo4V4CAm4KZj4336
-         9AKFg+O4paRIjdIYiQWPo3wboXmuX1c8p2005zWJjbwjfZjYZ+EIILUR0Ew51JIp4bYD
-         frCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712336648; x=1712941448;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0MbNjbvHvDDOSjIwkj/Strvo+EkSYgqBXUTM9ofNx5w=;
-        b=AtJrwnkXRwnbRb2BELGVRdxNQA2cXwNKp1YIUMgL5lyNEkIHr+wzrzvtVGY4dVnCnD
-         i/eUyBBqJRRtqkZxePo3fkfby0BFNJIYpb7otA+I3FB0oVduoxHd1N3Mq0WwcbfDNBpP
-         MLV5xEBfpV5sSfd0dND90QIjsa76Xx/15MzdNfJq+Jk/REUf26CKnFvmE9xd3oS3Q0M3
-         SZ3UvRbLyEv9JJqExvBZqHTqa1HAtvLt0lwGCb2VIJkykZm9Tmb9qTD2gnbxvYJkf4/m
-         YWimDHna5sQslqYq2m3UthELhKhmCE/W6bLWY6a9W5n/KkYcqB2OKMZlX1Mddz1ZLuQ8
-         bN4w==
-X-Forwarded-Encrypted: i=1; AJvYcCVUebugPOm/vgeTtlDWTMEtVWBs3JbPEyAUm8xxiWId1uX5gK2VGloPdpQsK4ufcMkicU2a5sXJcbfOLlNS10y4LKqLFRensLSLrhF5
-X-Gm-Message-State: AOJu0Yz5odjFOUCmYjz823tks5TwjvXKf6iITXMpuq30JuEpI7Rv04Tj
-	okasHV5vj/dJ/gYoSJbIx1Qm4rtTAbB0DEDoJmuI4yauKq1BrlH17hUpkZOxVsEXjXetDzHzjtW
-	ZwPMAeijbUi5DbfxGnPUCV1Sh+1y6TMNP3zKQmw==
-X-Google-Smtp-Source: AGHT+IF/wUgVwYjkQB9QkUlJ3rk/lwdpphCX6bl6Br6T/1h0Jsz8GgHfi7aqte4he6pNM2ldIDRcVp8T/y+psXCWnc4=
-X-Received: by 2002:a2e:be9a:0:b0:2d6:c94d:94c2 with SMTP id
- a26-20020a2ebe9a000000b002d6c94d94c2mr1833000ljr.46.1712336648097; Fri, 05
- Apr 2024 10:04:08 -0700 (PDT)
+	s=arc-20240116; t=1712336728; c=relaxed/simple;
+	bh=/AEsABMgIL9oKeChIdc/eQy55s/yNzx6q1zHRQyyKiI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BfC6S01JSbisraJOQwqNVPNf1jJw+cU7QNSHRSQ+HWWaaqA4373QhEKGpm6/x7GkRpIre7bmuMDQspbJPHhWSz/Pt0OgNGXCCiIHNrk4OlKIJdCVD1QiV0RmkkuQeujgmEm2aBdM3yLuNKK4Q2gDoLxI43pMyeqoxXZKsGXhztw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Yu2jtznq; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712336726; x=1743872726;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=/AEsABMgIL9oKeChIdc/eQy55s/yNzx6q1zHRQyyKiI=;
+  b=Yu2jtznqHUwMkZG96jcpuNusGlgFDV1Hi9US78/DmaegWr/6F6GROIHK
+   OrVpmCNdFHsGEfWQ3w8CxmG2omIHFJVdz/D34pPHcfJwBa4K/1w1iIM8h
+   frS2utrEvBdVICAcsqstEo0NXJJBmhtb4/ynQTJHs4N4HMGPOJcImyxYr
+   QTIKH7KCGdXSxni7E4VImsiLblFf9PoHTu2hyoWK1wh1H9bN6Arf2Q02R
+   wweR921hE+9dlKztT6bfJNC4aEebaauji5DzY7vzJkH/iXkVFMBE311Dj
+   Xhca6njpSFIFIX8PhN8qvlWMxaCfEBU1mQTvSczH3up4JJLvo/4+6zBPG
+   A==;
+X-CSE-ConnectionGUID: G1BlriSRSf+UWGE9W7LNMw==
+X-CSE-MsgGUID: 1SSUMdA+Rp+ar1yvta5dQw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="18284819"
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="18284819"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 10:05:26 -0700
+X-CSE-ConnectionGUID: +MFNCUHzRv2kuSn9OWymFg==
+X-CSE-MsgGUID: prsXshp8Tu6fZbMcXuf3OQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
+   d="scan'208";a="19659692"
+Received: from twwright-mobl1.amr.corp.intel.com (HELO [10.209.65.212]) ([10.209.65.212])
+  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 10:05:25 -0700
+Message-ID: <7cd4b4d5-a7b4-41d9-8bd3-ad41401fec61@linux.intel.com>
+Date: Fri, 5 Apr 2024 10:05:24 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240405003025.739603-1-tgamblin@baylibre.com> <fhrderkiwqzc7fw2hptz2la3aco72wlossqbrr4m42qllcpcpw@vhxflah2ex2a>
-In-Reply-To: <fhrderkiwqzc7fw2hptz2la3aco72wlossqbrr4m42qllcpcpw@vhxflah2ex2a>
-From: David Lechner <dlechner@baylibre.com>
-Date: Fri, 5 Apr 2024 12:03:56 -0500
-Message-ID: <CAMknhBFgXdH63_N738qMt6tzK_zWdB-OWvYTWitmBuQNqrN+LQ@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/3] pwm: add support for duty_offset
-To: =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Trevor Gamblin <tgamblin@baylibre.com>, linux-pwm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, michael.hennerich@analog.com, 
-	nuno.sa@analog.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/4] x86/boot/compressed: Skip Video Memory access in
+ Decompressor for SEV-ES/SNP.
+To: Ashish Kalra <Ashish.Kalra@amd.com>, tglx@linutronix.de,
+ mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org
+Cc: rafael@kernel.org, peterz@infradead.org, adrian.hunter@intel.com,
+ jun.nakajima@intel.com, rick.p.edgecombe@intel.com, thomas.lendacky@amd.com,
+ michael.roth@amd.com, seanjc@google.com, kai.huang@intel.com,
+ bhe@redhat.com, kirill.shutemov@linux.intel.com, bdas@redhat.com,
+ vkuznets@redhat.com, dionnaglaze@google.com, anisinha@redhat.com,
+ jroedel@suse.de, ardb@kernel.org, kexec@lists.infradead.org,
+ linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
+ <cover.1712270975.git.ashish.kalra@amd.com>
+ <1027427fafa350a41234f5061c8c48fc77c58326.1712270976.git.ashish.kalra@amd.com>
+Content-Language: en-US
+From: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <1027427fafa350a41234f5061c8c48fc77c58326.1712270976.git.ashish.kalra@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 5, 2024 at 1:23=E2=80=AFAM Uwe Kleine-K=C3=B6nig
-<u.kleine-koenig@pengutronix.de> wrote:
-> On Thu, Apr 04, 2024 at 08:30:22PM -0400, Trevor Gamblin wrote:
 
-..
-
-> > 2. Should __pwm_apply() explicitly disallow PWM_POLARITY_INVERSED and
-> > duty_offset together?
+On 4/4/24 4:11 PM, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
 >
-> While there is no technical need for that, a configuration with both
-> PWM_POLARITY_INVERSED and duty_offset > 0 is irritating. So I'd say yes,
-> it should be disallowed. When I created the cdev API I even considered
-> dropping .polarity for lowlevel drivers and convert them all to
-> .duty_offset.
+> Accessing guest video memory/RAM during kernel decompressor
+> causes guest termination as boot stage2 #VC handler for
+> SEV-ES/SNP systems does not support MMIO handling.
 >
-> Having said that I don't like the addition of .supports_offset to
-> struct pwm_chip, which only signals a new incomplete evolution of the
-> pwm framework. Better adapt all drivers and then assume all of them
-> support it.
+> This issue is observed with SEV-ES/SNP guest kexec as
+> kexec -c adds screen_info to the boot parameters
+> passed to the kexec kernel, which causes console output to
+> be dumped to both video and serial.
+>
+> As the decompressor output gets cleared really fast, it is
+> preferable to get the console output only on serial, hence,
+> skip accessing video RAM during decompressor stage to
+> prevent guest termination.
+>
+> Serial console output during decompressor stage works as
+> boot stage2 #VC handler already supports handling port I/O.
+>
+> Suggested-by: Thomas Lendacy <thomas.lendacky@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> ---
 
-But not all chips can fully support this feature. I envisioned this
-flag as something consumer drivers would check when they require a
-chip capable of providing a phase offset between two PWM output
-channels. This way, the consumer driver could fail to probe if the PWM
-chip is not up to the task.
+Looks good to me.
 
-For example the consumer driver might require two coordinated signals like =
-this:
-      _                   _
-PWM0 | |_________________| |_________________
-           ___                 ___
-PWM1 _____|   |_______________|   |__________
+Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 
-PWM0: duty_offset =3D 0, duty_cycle =3D 1, period =3D 10
-PWM1: duty_offset =3D 2, duty_cycle =3D 2, period =3D 10
+>  arch/x86/boot/compressed/misc.c | 6 ++++--
+>  arch/x86/boot/compressed/misc.h | 1 +
+>  2 files changed, 5 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/boot/compressed/misc.c b/arch/x86/boot/compressed/misc.c
+> index b70e4a21c15f..47b4db200e1f 100644
+> --- a/arch/x86/boot/compressed/misc.c
+> +++ b/arch/x86/boot/compressed/misc.c
+> @@ -427,8 +427,10 @@ asmlinkage __visible void *extract_kernel(void *rmode, unsigned char *output)
+>  		vidport = 0x3d4;
+>  	}
+>  
+> -	lines = boot_params_ptr->screen_info.orig_video_lines;
+> -	cols = boot_params_ptr->screen_info.orig_video_cols;
+> +	if (!sev_es_enabled()) {
+> +		lines = boot_params_ptr->screen_info.orig_video_lines;
+> +		cols = boot_params_ptr->screen_info.orig_video_cols;
+> +	}
+>  
+>  	init_default_io_ops();
+>  
+> diff --git a/arch/x86/boot/compressed/misc.h b/arch/x86/boot/compressed/misc.h
+> index b353a7be380c..3c12ca987554 100644
+> --- a/arch/x86/boot/compressed/misc.h
+> +++ b/arch/x86/boot/compressed/misc.h
+> @@ -37,6 +37,7 @@
+>  #include <asm/desc_defs.h>
+>  
+>  #include "tdx.h"
+> +#include "sev.h"
+>  
+>  #define BOOT_CTYPE_H
+>  #include <linux/acpi.h>
 
-Do we need to do additional work to support cases like this? Or should
-we just let it fail silently and let it generate incorrect signals if
-someone attempts to use an unsupported hardware configuration?
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
+
 
