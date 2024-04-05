@@ -1,95 +1,95 @@
-Return-Path: <linux-kernel+bounces-132697-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132698-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0A858998F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:05:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FA098998FA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:05:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 500ACB23301
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:05:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A09AE1F25A7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:05:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21A615FA9C;
-	Fri,  5 Apr 2024 09:04:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90DB7146594;
+	Fri,  5 Apr 2024 09:05:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NTHIOwZ+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KToj6Ik8";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NTHIOwZ+";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="KToj6Ik8"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="y/rku7iD";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="j0m+EZfr";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DC20TCWk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gTweOrRI"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 191B317721;
-	Fri,  5 Apr 2024 09:04:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8A6F611E
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712307869; cv=none; b=giC8/D86pp78vwztcvEKYVq/bieXqxL1/GdigGj9CFoRCPR253CA3s8kEzXKEVeq3hUGvqUAJUnO9992sl6gGrrK4Bb5RTauIKJ5xbOxOYUqV8pjZ9Zoehj67PZaYFOS5oo1VLetCncRklUDJGMWCvSi1rh5AThxYRI/WgfH9Ng=
+	t=1712307930; cv=none; b=LTeMlRYB54jBQ1woqNETTFA5Wq1t6m8K9yQLNVVeRSDbYCBUEHNlyWiyF0qoug1PAqMwUshL8LvFH73N5K0zSwEyLroh4qKpvg4yurGJ/z9WMiQCH6VNGHSQvC6s/5nGtmOavanuoC5LonErlwfuk8VzkVL/Ak44z2BVZ6cqXmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712307869; c=relaxed/simple;
-	bh=CZ7sdleduXPFl026NflXweEHKoQ3VxVB/rZ/gonnO14=;
+	s=arc-20240116; t=1712307930; c=relaxed/simple;
+	bh=jRo7vyeZQWnyEFlZbA6H5YxXHllty1+wUIyL7GZlsxc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BRXfKaoUj3UdX3Xh7cexJkp/mGWvubYXAtk0rCmfvq51aSRxEXIvdvec8NF5ZpWam9sLbfvCu4z+U3g3c0v3xn5mAcGiRy44TCZS5z7miPFvrt7O8Ww4KwN2PbmZkFIiMawtoUEBJUys4j8PKEiVpTpy8qs/0hVL8o7WMBEngO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NTHIOwZ+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KToj6Ik8; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NTHIOwZ+; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=KToj6Ik8; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+	 In-Reply-To:Content-Type; b=ahf8/D06rgyJ+rJAI9FuBLrWqgCSpZHheuoiTgX5fWnnPmQUt3OclppHxfctYp0X45/lJN/P25OFjcpdQk7+5ozkss7vpujT1FfkvetzrfoDc3/vVY0+zP8TR0ntiMjwJiHcZ2LK6SisZlRibxAITpi9Acj7OHX4T3p0C65vBHI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=y/rku7iD; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=j0m+EZfr; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DC20TCWk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gTweOrRI; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1491D1F78A;
-	Fri,  5 Apr 2024 09:04:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712307866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DF29D21A23;
+	Fri,  5 Apr 2024 09:05:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712307927; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=q6m7RkFG+I05tVEKqU5D+NUntnuekF2Z+soqECDuzWU=;
-	b=NTHIOwZ+L3b2OUEsvJLD8ClmWEK1V9PGjFmF3hXDlTtwirb0F7vborCm2hzx0SiFnjhbIv
-	zzjmLpjtndDKGRKFQdcMcew0yVU0osvQibX+CHvUnAA8pJZGyIsXDp0AdfGiyaEVYugdhw
-	ZyfnpyppmEFhkJ8JcRJr91khwROWpFk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712307866;
+	bh=uvDqRQyFPGXF7Bz9W7132BzzzPZTW1UfAhl4tRMlQFM=;
+	b=y/rku7iDgyEpyLaitFN447zxRdbp2cMmF8EIdhr4voUDfaBVr7AA+jtHXITSk8LaGfUgHG
+	mcr9huYGel4gQD55UNSe4EvQyroFnf3PKD3G///C/xdzwwSqwUE9L2hrZtdXB3tBMJtVo4
+	GLv0yPl+3zOMtJDYHwbqL5BkowC8huo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712307927;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=q6m7RkFG+I05tVEKqU5D+NUntnuekF2Z+soqECDuzWU=;
-	b=KToj6Ik8dGLGisbepSgkxn4mN2+dzr6QWAUlbfj7teTNyD0Xb003EKLmDQCOQOFBFeFQjI
-	d81wCJIrvTO/D4Bw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=NTHIOwZ+;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=KToj6Ik8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712307866; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	bh=uvDqRQyFPGXF7Bz9W7132BzzzPZTW1UfAhl4tRMlQFM=;
+	b=j0m+EZfrDOiW2/WPnzIPgQ9CUkfKVKvs6iIaa66Ddo8GCLZ8cyz8SJ4tqSTVHJFmeS7w/2
+	ssx55ngTxX8BW9CQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DC20TCWk;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=gTweOrRI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712307926; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=q6m7RkFG+I05tVEKqU5D+NUntnuekF2Z+soqECDuzWU=;
-	b=NTHIOwZ+L3b2OUEsvJLD8ClmWEK1V9PGjFmF3hXDlTtwirb0F7vborCm2hzx0SiFnjhbIv
-	zzjmLpjtndDKGRKFQdcMcew0yVU0osvQibX+CHvUnAA8pJZGyIsXDp0AdfGiyaEVYugdhw
-	ZyfnpyppmEFhkJ8JcRJr91khwROWpFk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712307866;
+	bh=uvDqRQyFPGXF7Bz9W7132BzzzPZTW1UfAhl4tRMlQFM=;
+	b=DC20TCWk1MEZTWzXEnL7oqbq80+RJp2D63I+mf/6TiaGnydUc8EdeHMH4G2zur+s560ZWk
+	bVsdqsNQfF7aa+zsBgNhtqVa+5r1t8fQguW189neTZ2GxGnQTe1p0u4RWQ0zNqjyXzEbPl
+	oXPODtRm2416fq6vLMvqx75xrycp8R0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712307926;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=q6m7RkFG+I05tVEKqU5D+NUntnuekF2Z+soqECDuzWU=;
-	b=KToj6Ik8dGLGisbepSgkxn4mN2+dzr6QWAUlbfj7teTNyD0Xb003EKLmDQCOQOFBFeFQjI
-	d81wCJIrvTO/D4Bw==
+	bh=uvDqRQyFPGXF7Bz9W7132BzzzPZTW1UfAhl4tRMlQFM=;
+	b=gTweOrRIrorxkA+XMFCvvb5T0XWuCRgsWS4hNitY2eI14XA98ycGmMfYLKWrMNJt+kDNTy
+	SyVoGs/WQIefNhBQ==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 98D09139F1;
-	Fri,  5 Apr 2024 09:04:25 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B935C139F1;
+	Fri,  5 Apr 2024 09:05:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id LEQAJJm+D2ZoTwAAn2gu4w
-	(envelope-from <tzimmermann@suse.de>); Fri, 05 Apr 2024 09:04:25 +0000
-Message-ID: <c281bb8e-0719-4b28-a637-56615ad16913@suse.de>
-Date: Fri, 5 Apr 2024 11:04:25 +0200
+	id yJrlLNa+D2a/TwAAn2gu4w
+	(envelope-from <vbabka@suse.cz>); Fri, 05 Apr 2024 09:05:26 +0000
+Message-ID: <9f3466c7-509f-4982-a62b-ca47f1d91664@suse.cz>
+Date: Fri, 5 Apr 2024 11:05:26 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -97,174 +97,120 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/3] arch: Remove fbdev dependency from video helpers
-To: arnd@arndb.de, sam@ravnborg.org, javierm@redhat.com, deller@gmx.de,
- sui.jingfeng@linux.dev
-Cc: linux-arch@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-fbdev@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-sh@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
- linux-arm-kernel@lists.infradead.org, linux-snps-arc@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240329203450.7824-1-tzimmermann@suse.de>
+Subject: Re: [PATCH] slub: fix slub segmentation
+To: "Christoph Lameter (Ampere)" <cl@linux.com>,
+ Ming Yang <yangming73@huawei.com>
+Cc: penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+ akpm@linux-foundation.org, roman.gushchin@linux.dev, 42.hyeyoo@gmail.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, zhangliang5@huawei.com,
+ wangzhigang17@huawei.com, liushixin2@huawei.com, alex.chen@huawei.com,
+ pengyi.pengyi@huawei.com, xiqi2@huawei.com
+References: <20240402031025.1097-1-yangming73@huawei.com>
+ <56193a2c-dadb-108d-4eaf-0a923fc4912b@linux.com>
 Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <20240329203450.7824-1-tzimmermann@suse.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ EP+ylKVEKb0Q2A==
+In-Reply-To: <56193a2c-dadb-108d-4eaf-0a923fc4912b@linux.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -5.50
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 1491D1F78A
 X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-5.50 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_LOW(-1.00)[suse.de:dkim];
+X-Spamd-Result: default: False [-0.12 / 50.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	BAYES_HAM(-0.12)[67.07%];
 	MIME_GOOD(-0.10)[text/plain];
 	XM_UA_NO_VERSION(0.01)[];
 	MX_GOOD(-0.01)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	ARC_NA(0.00)[];
-	FREEMAIL_TO(0.00)[arndb.de,ravnborg.org,redhat.com,gmx.de,linux.dev];
-	FREEMAIL_ENVRCPT(0.00)[gmx.de];
-	DKIM_TRACE(0.00)[suse.de:+];
-	RCPT_COUNT_TWELVE(0.00)[18];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[kernel.org,google.com,lge.com,linux-foundation.org,linux.dev,gmail.com,kvack.org,vger.kernel.org,huawei.com];
+	RCVD_TLS_ALL(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	TO_DN_SOME(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:dkim]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns]
+X-Spam-Flag: NO
+X-Spam-Score: -0.12
+X-Spamd-Bar: /
+X-Rspamd-Queue-Id: DF29D21A23
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
 
-Hi,
+On 4/4/24 9:12 PM, Christoph Lameter (Ampere) wrote:
+> On Tue, 2 Apr 2024, Ming Yang wrote:
+> 
+>> The key point of above allocation flow is: the slab should be alloced
+>> from the partial of other node first, instead of the buddy system of
+>> other node directly.
+> 
+> 
+> If you use GFP_THISNODE then you will trigger a reclaim pass on the remote 
+> node. That could generate a performance regression.
 
-if there are no further comments, can this series be merged through 
-asm-generic?
+Note the alternative approach I merged doesn't have this issue because it
+uses GFP_NOWAIT for that __GFP_THISNODE attempt.
 
-Best regards
-Thomas
+https://lore.kernel.org/all/20240330082335.29710-1-chenjun102@huawei.com/
 
-Am 29.03.24 um 21:32 schrieb Thomas Zimmermann:
-> Make architecture helpers for display functionality depend on general
-> video functionality instead of fbdev. This avoids the dependency on
-> fbdev and makes the functionality available for non-fbdev code.
->
-> Patch 1 replaces the variety of Kconfig options that control the
-> Makefiles with CONFIG_VIDEO. More fine-grained control of the build
-> can then be done within each video/ directory; see parisc for an
-> example.
->
-> Patch 2 replaces fb_is_primary_device() with video_is_primary_device(),
-> which has no dependencies on fbdev. The implementation remains identical
-> on all affected platforms. There's one minor change in fbcon, which is
-> the only caller of fb_is_primary_device().
->
-> Patch 3 renames the source and header files from fbdev to video.
->
-> v3:
-> - arc, arm, arm64, sh, um: generate asm/video.h (Sam, Helge, Arnd)
-> - fix typos (Sam)
-> v2:
-> - improve cover letter
-> - rebase onto v6.9-rc1
->
-> Thomas Zimmermann (3):
->    arch: Select fbdev helpers with CONFIG_VIDEO
->    arch: Remove struct fb_info from video helpers
->    arch: Rename fbdev header and source files
->
->   arch/arc/include/asm/fb.h                    |  8 ------
->   arch/arm/include/asm/fb.h                    |  6 -----
->   arch/arm64/include/asm/fb.h                  | 10 --------
->   arch/loongarch/include/asm/{fb.h => video.h} |  8 +++---
->   arch/m68k/include/asm/{fb.h => video.h}      |  8 +++---
->   arch/mips/include/asm/{fb.h => video.h}      | 12 ++++-----
->   arch/parisc/Makefile                         |  2 +-
->   arch/parisc/include/asm/fb.h                 | 14 -----------
->   arch/parisc/include/asm/video.h              | 16 ++++++++++++
->   arch/parisc/video/Makefile                   |  2 +-
->   arch/parisc/video/{fbdev.c => video-sti.c}   |  9 ++++---
->   arch/powerpc/include/asm/{fb.h => video.h}   |  8 +++---
->   arch/powerpc/kernel/pci-common.c             |  2 +-
->   arch/sh/include/asm/fb.h                     |  7 ------
->   arch/sparc/Makefile                          |  4 +--
->   arch/sparc/include/asm/{fb.h => video.h}     | 15 +++++------
->   arch/sparc/video/Makefile                    |  2 +-
->   arch/sparc/video/fbdev.c                     | 26 --------------------
->   arch/sparc/video/video.c                     | 25 +++++++++++++++++++
->   arch/um/include/asm/Kbuild                   |  2 +-
->   arch/x86/Makefile                            |  2 +-
->   arch/x86/include/asm/fb.h                    | 19 --------------
->   arch/x86/include/asm/video.h                 | 21 ++++++++++++++++
->   arch/x86/video/Makefile                      |  3 ++-
->   arch/x86/video/{fbdev.c => video.c}          | 21 +++++++---------
->   drivers/video/fbdev/core/fbcon.c             |  2 +-
->   include/asm-generic/Kbuild                   |  2 +-
->   include/asm-generic/{fb.h => video.h}        | 17 +++++++------
->   include/linux/fb.h                           |  2 +-
->   29 files changed, 124 insertions(+), 151 deletions(-)
->   delete mode 100644 arch/arc/include/asm/fb.h
->   delete mode 100644 arch/arm/include/asm/fb.h
->   delete mode 100644 arch/arm64/include/asm/fb.h
->   rename arch/loongarch/include/asm/{fb.h => video.h} (86%)
->   rename arch/m68k/include/asm/{fb.h => video.h} (86%)
->   rename arch/mips/include/asm/{fb.h => video.h} (76%)
->   delete mode 100644 arch/parisc/include/asm/fb.h
->   create mode 100644 arch/parisc/include/asm/video.h
->   rename arch/parisc/video/{fbdev.c => video-sti.c} (78%)
->   rename arch/powerpc/include/asm/{fb.h => video.h} (76%)
->   delete mode 100644 arch/sh/include/asm/fb.h
->   rename arch/sparc/include/asm/{fb.h => video.h} (75%)
->   delete mode 100644 arch/sparc/video/fbdev.c
->   create mode 100644 arch/sparc/video/video.c
->   delete mode 100644 arch/x86/include/asm/fb.h
->   create mode 100644 arch/x86/include/asm/video.h
->   rename arch/x86/video/{fbdev.c => video.c} (66%)
->   rename include/asm-generic/{fb.h => video.h} (89%)
->
 
--- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
+> We already support this kind of behavior via the node_reclaim / 
+> zone_reclaiom setting in procfs. Please use that.
+> 
+> The remote buildup of the partial pages can be addressed by changing the 
+> remote_node_defrag_ratio in the slabs. This will make slub scan remote 
+> nodes for partial slabs before going into the page allocator.
+> 
+> 
 
 
