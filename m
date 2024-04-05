@@ -1,133 +1,124 @@
-Return-Path: <linux-kernel+bounces-133164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133158-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD169899FCF
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:32:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E297899FC1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:31:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A22EB237EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:32:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AE4CB23A2D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08C5D16F82C;
-	Fri,  5 Apr 2024 14:31:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Jd4JG8EP"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D91F16F822;
+	Fri,  5 Apr 2024 14:30:47 +0000 (UTC)
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B2A16F28F;
-	Fri,  5 Apr 2024 14:31:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1978C16F280;
+	Fri,  5 Apr 2024 14:30:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712327496; cv=none; b=N86aw0/juGhyg26ouclOvLjH3MnRNg4APYoGApwcGzgDFWtqkOanH7zj+OBG2NBmWg+IrJ9sm9+XFD4wukX6BaahCzrBEDISBbHaJT142jsVP8XPMGcOBrogSVKcSGTkRCGVz0vxBse+6FFM6BwY1C8nwa4DKGWZuuzfTpHjvzY=
+	t=1712327446; cv=none; b=ElazAqEycV8QjvJXf6LHQ8EH6ErlOb2es67Osmx7cA278HZxyUEVwPYbQIJKHfXxilxbOlVEd6De0s5ll9M4OX7gm0or9FjGj36h5dzpVgAf3MXPEYfX6xQkw4w6Y6tEFNh+SeTYxmmDbuVuXnxHUr7HDtVWHd9QS7MlAIgNt34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712327496; c=relaxed/simple;
-	bh=REmT479AFnCCcCTlpWSmaYrzgIUHjpteGLS0bjBDaMI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=ZCMgA97hPphSTyKl1o13HGtbRYZJbWACpr+zo2XblBoc82H5/AEPeve1dyOuNCckWXW5pD5b+BVll3xeXiFseYSMqrSZyh4nHkjJOydZvPgqSBhCuqAu7LuptoOmp0qJj9FNAUdii6Msh2yypn9Aurl26Im1wfdBmCkMGuarbpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Jd4JG8EP; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712327495; x=1743863495;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=REmT479AFnCCcCTlpWSmaYrzgIUHjpteGLS0bjBDaMI=;
-  b=Jd4JG8EP7YHUnLe55tF3hAayLQoqofxADkK7DXC0/9T5TVO2gUtn0iuR
-   1q9hAwqY8IXxJwVYewf1fmrNsOnvtlHYqHp4rtJr1zJoTGERjAV23hcHk
-   /Ry/R6cfUY/jf762CEoXxM7K47LoPS1gC0NJgMLRA0uH9mF9g2jU3neii
-   KO8FuNEF+1Xxdv4d7yuBLFO6nc+EZGTWFQicRZD3MOj4GP/f5s0kSVhdl
-   x+6asxAuaNMtDMp+dB6caBut/ASwfjCn+NFjO6UWCK38LsSquJNOM2Y1A
-   vOdvV7qRin92XsOpFpAhZSp6cj2RiH/DghAph3J+AydA7pbGTSQOcJywo
-   w==;
-X-CSE-ConnectionGUID: xZLblvNlRxGeB8zdggtnjA==
-X-CSE-MsgGUID: RSnP59z6RhC4szRvjBiuKQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="11476450"
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="11476450"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 07:31:34 -0700
-X-CSE-ConnectionGUID: hG8APWZARMy+KffIgepD6w==
-X-CSE-MsgGUID: 7Z8NtXy/R1S6q3/uPejMug==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="23817555"
-Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
-  by fmviesa004.fm.intel.com with ESMTP; 05 Apr 2024 07:31:33 -0700
-From: kan.liang@linux.intel.com
-To: peterz@infradead.org,
-	mingo@redhat.com,
-	acme@kernel.org,
-	namhyung@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	alexander.shishkin@linux.intel.com,
-	linux-kernel@vger.kernel.org
-Cc: Kan Liang <kan.liang@linux.intel.com>,
-	"Bayduraev, Alexey V" <alexey.v.bayduraev@intel.com>,
-	stable@vger.kernel.org
-Subject: [PATCH] perf/x86/intel/ds: Fix non 0 retire latency on Raptorlake
-Date: Fri,  5 Apr 2024 07:30:32 -0700
-Message-Id: <20240405143032.1243201-1-kan.liang@linux.intel.com>
-X-Mailer: git-send-email 2.35.1
+	s=arc-20240116; t=1712327446; c=relaxed/simple;
+	bh=/HpxcC2P7pDjkG9fbL+8qyNpDwFallJn6TXrKQbssl4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=r04iv8MdorcCG5LRYJRn/OTn6sy9xySlBp/OG8RE/Lu5XU7G8pMidwZCOJNx0Fba6w/QD+PQrqNAUKAvrNaOQs78RPhdxk9X87FM8KxAUDNw1pZL2QJRxTV/xBkdhSA55VZXbG11eZi8Uj5Q6lvFgvB+jxauQaBIEWG9q+ZNCGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.166.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=manifault.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-3688effa61bso8354865ab.3;
+        Fri, 05 Apr 2024 07:30:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712327444; x=1712932244;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=JyksYXTvaJcNxcCTpYAv8//t2n0EXQT4+q5rxe3bHUQ=;
+        b=Q4a5YllDCQgGjDXx4pOMz/ufSRyC0Ee2wlVFWNEfKepteOqquGvYvl7Wet3HMj5npH
+         FUamy1XrqNTEqRMFBymTefbuUJKPz+U1rHVZq7XvCAxGPR4AN22Jq0K0e9u/yMGDghrG
+         hzNyTF6wtAaVcv2+bnll3gY14f8mzIjE51DkozWa2xjj3ig+Ad5O81a2idQIIJcaWMTv
+         TCCRBKct3+kaTdc1MM7ZdnjxYsXYnvf237tncDodZ9drw5FB52QJRq2mcH+enqiCQ5aS
+         eDtlsYTv9uuElYGt32inDL8NVYI2ZrphMeVBGooELk/PQ32xsljgs29zXpcnqQy1Ayvi
+         NlFw==
+X-Forwarded-Encrypted: i=1; AJvYcCWPH3/coh2uMJyqD8sEK+sTGl3Lqwg2PqTkAxt0cbto5Km0o8bthEQZBlqf0Ta4ijWpC6UOrz9Z6yObTEtqEALYvtn3T5WyIih1lcVj
+X-Gm-Message-State: AOJu0Yxwt2SEFbqQ9oFhA5KeOTZn+BIl8MsQkHG5Kku1Ai52PA/cnlc5
+	BME8evgAIMu33zTgwQCsVSv1eOpwkVXpkeBvhHNbsiLn3sqa87rlzftCScwi1bo=
+X-Google-Smtp-Source: AGHT+IF1IxyVeBbfk/3ZBFWa25p/tGHzQCdZvBJJ9lA4/ntj3oEi5MwAfQ3gtOcqotxbLIbkEKhxvQ==
+X-Received: by 2002:a05:6e02:20e7:b0:36a:686:b3bf with SMTP id q7-20020a056e0220e700b0036a0686b3bfmr1818656ilv.17.1712327443703;
+        Fri, 05 Apr 2024 07:30:43 -0700 (PDT)
+Received: from localhost (c-76-136-75-40.hsd1.il.comcast.net. [76.136.75.40])
+        by smtp.gmail.com with ESMTPSA id ck17-20020a0566383f1100b0047f14932f9dsm605780jab.54.2024.04.05.07.30.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 07:30:43 -0700 (PDT)
+From: David Vernet <void@manifault.com>
+To: bpf@vger.kernel.org
+Cc: ast@kernel.org,
+	daniel@iogearbox.net,
+	andrii@kernel.org,
+	martin.lau@linux.dev,
+	song@kernel.org,
+	yonghong.song@linux.dev,
+	john.fastabend@gmail.com,
+	kpsingh@kernel.org,
+	sdf@google.com,
+	haoluo@google.com,
+	jolsa@kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: [PATCH bpf-next v2 0/2] bpf: Allow invoking kfuncs from BPF_PROG_TYPE_SYSCALL progs
+Date: Fri,  5 Apr 2024 09:30:39 -0500
+Message-ID: <20240405143041.632519-1-void@manifault.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Kan Liang <kan.liang@linux.intel.com>
+Currently, a set of core BPF kfuncs (e.g. bpf_task_*, bpf_cgroup_*,
+bpf_cpumask_*, etc) cannot be invoked from BPF_PROG_TYPE_SYSCALL
+programs. The whitelist approach taken for enabling kfuncs makes sense:
+it not safe to call these kfuncs from every program type. For example,
+it may not be safe to call bpf_task_acquire() in an fentry to
+free_task().
 
-A non-0 retire latency can be observed on a Raptorlake which doesn't
-support the retire latency feature.
-By design, the retire latency shares the PERF_SAMPLE_WEIGHT_STRUCT
-sample type with other types of latency. That could avoid adding too
-many different sample types to support all kinds of latency. For the
-machine which doesn't support some kind of latency, 0 should be
-returned.
+BPF_PROG_TYPE_SYSCALL, on the other hand, is a perfectly safe program
+type from which to invoke these kfuncs, as it's a very controlled
+environment, and we should never be able to run into any of the typical
+problems such as recursive invoations, acquiring references on freeing
+kptrs, etc. Being able to invoke these kfuncs would be useful, as
+BPF_PROG_TYPE_SYSCALL can be invoked with BPF_PROG_RUN, and would
+therefore enable user space programs to synchronously call into BPF to
+manipulate these kptrs.
 
-Perf doesn’t clear/init all the fields of a sample data for the sake
-of performance. It expects the later perf_{prepare,output}_sample() to
-update the uninitialized field. However, the current implementation
-doesn't touch the field of the retire latency if the feature is not
-supported. The memory garbage is dumped into the perf data.
-
-Clear the retire latency if the feature is not supported.
-
-Fixes: c87a31093c70 ("perf/x86: Support Retire Latency")
-Reported-by: "Bayduraev, Alexey V" <alexey.v.bayduraev@intel.com>
-Tested-by: "Bayduraev, Alexey V" <alexey.v.bayduraev@intel.com>
-Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
-Cc: stable@vger.kernel.org
 ---
- arch/x86/events/intel/ds.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/events/intel/ds.c b/arch/x86/events/intel/ds.c
-index f95cca6b632a..838f3e23bce9 100644
---- a/arch/x86/events/intel/ds.c
-+++ b/arch/x86/events/intel/ds.c
-@@ -1989,8 +1989,12 @@ static void setup_pebs_adaptive_sample_data(struct perf_event *event,
- 	set_linear_ip(regs, basic->ip);
- 	regs->flags = PERF_EFLAGS_EXACT;
- 
--	if ((sample_type & PERF_SAMPLE_WEIGHT_STRUCT) && (x86_pmu.flags & PMU_FL_RETIRE_LATENCY))
--		data->weight.var3_w = format_size >> PEBS_RETIRE_LATENCY_OFFSET & PEBS_LATENCY_MASK;
-+	if (sample_type & PERF_SAMPLE_WEIGHT_STRUCT) {
-+		if (x86_pmu.flags & PMU_FL_RETIRE_LATENCY)
-+			data->weight.var3_w = format_size >> PEBS_RETIRE_LATENCY_OFFSET & PEBS_LATENCY_MASK;
-+		else
-+			data->weight.var3_w = 0;
-+	}
- 
- 	/*
- 	 * The record for MEMINFO is in front of GP
+v1: https://lore.kernel.org/all/20240404010308.334604-1-void@manifault.com/
+v1 -> v2:
+
+- Create new verifier_kfunc_prog_types testcase meant to specifically
+  validate calling core kfuncs from various program types. Remove the
+  macros and testcases that had been added to the task, cgrp, and
+  cpumask kfunc testcases (Andrii and Yonghong)
+
+David Vernet (2):
+  bpf: Allow invoking kfuncs from BPF_PROG_TYPE_SYSCALL progs
+  selftests/bpf: Verify calling core kfuncs from BPF_PROG_TYPE_SYCALL
+
+ kernel/bpf/cpumask.c                          |   1 +
+ kernel/bpf/helpers.c                          |   1 +
+ .../prog_tests/verifier_kfunc_prog_types.c    |  11 ++
+ .../selftests/bpf/progs/cgrp_kfunc_common.h   |   2 +-
+ .../selftests/bpf/progs/task_kfunc_common.h   |   2 +-
+ .../bpf/progs/verifier_kfunc_prog_types.c     | 119 ++++++++++++++++++
+ 6 files changed, 134 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/verifier_kfunc_prog_types.c
+ create mode 100644 tools/testing/selftests/bpf/progs/verifier_kfunc_prog_types.c
+
 -- 
-2.35.1
+2.44.0
 
 
