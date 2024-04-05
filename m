@@ -1,173 +1,101 @@
-Return-Path: <linux-kernel+bounces-133333-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133334-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABA3089A269
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:23:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4986F89A26C
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 368D91F2452A
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:23:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD8741F2436A
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110C617108D;
-	Fri,  5 Apr 2024 16:23:39 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 425C816F82C;
-	Fri,  5 Apr 2024 16:23:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD9D171658;
+	Fri,  5 Apr 2024 16:23:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="arE4UiGD"
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80A5717164E;
+	Fri,  5 Apr 2024 16:23:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712334218; cv=none; b=oBLkx+SoYtKL+rddO42oIbWbGBTOebvLuC58F07IodstxsApjNBs8C/MbFZpuL8dcdzeBkRVaHdRo70m3jvUyEDwxi1mePyf32STJCEF068QGrXs34Ig+2WzO/PWAMPQuBHHgGzQRVuj0tO+ziKmLPN5mTiaD0tBXGMUe9JUtl8=
+	t=1712334226; cv=none; b=T1YlEj7b0DtsDWLDq/1QSGArdO3Nx+Ym/RwPt7RESauZAeShm66CdZmDmfZ4mnbVL7Vjiy9VoWEHf2ZjzT1a5Nifw+QJbwzD/ilwIpV32mdJtfn3gxXMo0oB+X8dAdOCC3RsMJqv/OyYJNe3rA6hwM9iGopCurjvHsadK4Ja4OA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712334218; c=relaxed/simple;
-	bh=UPv37TzvUi6i5rEA4aCj5ObZmslNLTryMSZkqevsCrg=;
+	s=arc-20240116; t=1712334226; c=relaxed/simple;
+	bh=yQwnPJwEQYu9fX0Y+AyQBdUHzuvzjDribddGeoztlJk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=udy+IllJkWQPt9vENKPBBH+ZNqu3ld0gkaox3rHMrozoNnvJv0oJcGA6Cy6vlKF3u2PCcKVoOis1CM6cUr2yxwpro2cvQb/MpmTMP/mW1Bkockv1mH+xPtGr9y4reswZ0bHNSfrsaHEWNLR7CsmCE4by9Vprc7HODLuIm6aZ+Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 097E4FEC;
-	Fri,  5 Apr 2024 09:24:06 -0700 (PDT)
-Received: from pluto (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 209373F64C;
-	Fri,  5 Apr 2024 09:23:34 -0700 (PDT)
-Date: Fri, 5 Apr 2024 17:23:31 +0100
-From: Cristian Marussi <cristian.marussi@arm.com>
-To: Andy Shevchenko <andriy.shevchenko@intel.com>
-Cc: Sudeep Holla <sudeep.holla@arm.com>, Peng Fan <peng.fan@nxp.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	"Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
-	"brgl@bgdev.pl" <brgl@bgdev.pl>,
-	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] pinctrl: pinconf-generic: check error value EOPNOTSUPP
-Message-ID: <ZhAlg0Zu_2uOQMk_@pluto>
-References: <20240401141031.3106216-1-peng.fan@oss.nxp.com>
- <CACRpkdZAuNXGyg2wwYcQG4oO9w7jPS6vj4Vt0=kqX5fJ+QpNmw@mail.gmail.com>
- <Zg7dwcFz5eD7Am2u@smile.fi.intel.com>
- <DU0PR04MB941777DA29D70013342721A788032@DU0PR04MB9417.eurprd04.prod.outlook.com>
- <ZhAa3NPO19mINYJP@smile.fi.intel.com>
- <ZhAdB4T7sTa2Z7db@bogus>
- <ZhAhcI3g4xJ1ANzu@pluto>
- <ZhAj-LZWv4M3vS6F@smile.fi.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=S5mmJn+8JEE8epqXwsRofGdFhvAmkJsQGqiZ8LQeGyTpoR7BUHMNeh+wEd0xbWnxFdSDa2qMMLwA07I2ocEp0oSL5b2SGS4Yq8kvJV1GW9mwCxusFMuwEJPprQVPr0FEUlQL2n62wFPp4NZjc5WVUsscwCajnq6i0yA6ST40pw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=arE4UiGD; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=arvQmQUbCzmXxGsLUTemBamkFbcSe28YZx+4in1OsC4=; b=arE4UiGDJMHJCOuYz0k/QMkQpd
+	v5AAkhjF4BWEFyeh6KI3mtA8rKUqooynRdqNRaLPKKWDlvmhrR0165RWL32l0xtyi/aAG4Q8xPn1E
+	KRfhmzT3rLn6Ski9UFu5pGAydobawe96V9+Rnp157aFiD5XAkPckSbrV7+zJfZObVH+RZ8GrVjs1m
+	cXh+ToZ2kDa5iKHhYJUXwlAvz1MFFMIbhxHG714ZGoBfw5tUMtHpv1McTIjqJazr7y2x5qiA/H/JN
+	nazBYFKbT5AYqPCznOXEE9Ye8wUDJLIzvs8Y4xq3J8vQ5Vvt9Hq0TJVqbgyLasKpsaHDn3chfyI8K
+	TiYzPNvw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rsmLl-006V3K-2H;
+	Fri, 05 Apr 2024 16:23:33 +0000
+Date: Fri, 5 Apr 2024 17:23:33 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>
+Cc: amir73il@gmail.com, brauner@kernel.org, gregkh@linuxfoundation.org,
+	hch@lst.de, jack@suse.cz, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, miklos@szeredi.hu,
+	syzkaller-bugs@googlegroups.com, tj@kernel.org,
+	valesini@yandex-team.ru
+Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
+Message-ID: <20240405162333.GU538574@ZenIV>
+References: <CAOQ4uxhm5m9CvX0y2RcJGuP=vryZLp9M+tS6vH1o_9BGUqxrvg@mail.gmail.com>
+ <00000000000039026a06155b3a12@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZhAj-LZWv4M3vS6F@smile.fi.intel.com>
+In-Reply-To: <00000000000039026a06155b3a12@google.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-On Fri, Apr 05, 2024 at 07:16:56PM +0300, Andy Shevchenko wrote:
-> On Fri, Apr 05, 2024 at 05:06:08PM +0100, Cristian Marussi wrote:
-> > On Fri, Apr 05, 2024 at 04:47:19PM +0100, Sudeep Holla wrote:
-> > > On Fri, Apr 05, 2024 at 06:38:04PM +0300, Andy Shevchenko wrote:
-> > > > On Fri, Apr 05, 2024 at 02:13:28AM +0000, Peng Fan wrote:
-> > > > > > On Thu, Apr 04, 2024 at 01:44:50PM +0200, Linus Walleij wrote:
-> > > > > > > On Mon, Apr 1, 2024 at 4:02 PM Peng Fan (OSS) <peng.fan@oss.nxp.com>
-> > > > > > wrote:
+On Fri, Apr 05, 2024 at 08:37:03AM -0700, syzbot wrote:
+> Hello,
 > 
-> ...
-> 
-> > > > > > > >                         ret = pin_config_get_for_pin(pctldev, pin, &config);
-> > > > > > > >                 /* These are legal errors */
-> > > > > > > > -               if (ret == -EINVAL || ret == -ENOTSUPP)
-> > > > > > > > +               if (ret == -EINVAL || ret == -ENOTSUPP || ret ==
-> > > > > > > > + -EOPNOTSUPP)
-> > > > > > >
-> > > > > > > TBH it's a bit odd to call an in-kernel API such as
-> > > > > > > pin_config_get_for_pin() and get -EOPNOTSUPP back. But it's not like I care
-> > > > > > a lot, so patch applied.
-> > > > > >
-> > > > > > Hmm... I would like actually to get this being consistent. The documentation
-> > > > > > explicitly says that in-kernel APIs uses Linux error code and not POSIX one.
-> > > > >
-> > > > > Would you please share me the documentation?
-> > > >
-> > > > Sure.
-> > > > https://elixir.bootlin.com/linux/latest/source/include/linux/pinctrl/pinconf.h#L24
-> > > > https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpiolib.c#L2825
-> > > > https://elixir.bootlin.com/linux/latest/source/drivers/gpio/gpiolib.c#L2845
-> > > >
-> > > > I admit that this is not the best documented, feel free to produce a proper
-> > > > documentation.
-> > > 
-> > > Ah OK, my bad. I assumed you were referring to the entire kernel tree and
-> > > not just GPIO/pinux. Sorry for that.
-> > 
-> > ... from this thread, my understanding too was that this forbidden usage of
-> > POSIX errors for in-kernel API was general to any subsystem...so the ask
-> > for docs about this...
-> > 
-> > > > > > This check opens a Pandora box.
-> > > > > >
-> > > > > > FWIW, it just like dozen or so drivers that needs to be fixed, I prefer to have
-> > > > > > them being moved to ENOTSUPP, rather this patch.
-> > > > >
-> > > > > I see many patches convert to use EOPNOTSUPP by checking git log.
-> > > >
-> > > > How is that related? You mean for GPIO/pin control drivers?
-> > > >
-> > > > > And checkpatch.pl reports warning for using ENOTSUPP.
-> > > >
-> > > > checkpatch has false-positives, this is just one of them.
-> > > 
-> > > Fair enough.
-> > >
-> > > > > BTW: is there any issue if using EOPNOTSUPP here?
-> > > >
-> > > > Yes. we don't want to be inconsistent. Using both in one subsystem is asking
-> > > > for troubles. If you want EOPNOTSUPP, please convert *all* users and drop
-> > > > ENOTSUPP completely (series out of ~100+ patches I believe :-), which probably
-> > > > will be not welcome).
-> > > 
-> > > Well, I don't agree with that 100% now since this is GPIO/pinmux sub-system
-> > > practice only. What if we change the source/root error cause(SCMI) in this
-> > > case and keep GPIO/pinmux happy today but tomorrow when this needs to be
-> > > used in some other subsystem which uses EOPNOTSUPP by default/consistently.
-> > > Now how do we address that then, hence I mentioned I am not 100% in agreement
-> > > now while I was before knowing that this is GPIO/pinmux strategy.
-> > > 
-> > > I don't know how to proceed now 🙁.
-> > 
-> > from checkpatch.pl:
-> > 
-> > # ENOTSUPP is not a standard error code and should be avoided in new patches.    
-> > # Folks usually mean EOPNOTSUPP (also called ENOTSUP), when they type ENOTSUPP.  
-> > # Similarly to ENOSYS warning a small number of false positives is expected.     
-> >  
-> > ...so it seems to me that the this is NOT a false positive BUT Pinctrl/GPIO
-> > subsystem is an exception in these regards, since this is what is explcitly
-> > state in checkpatch comments AND there is no generalized doc on this....
-> 
-> Checkpatch is false positive _in this case_.
-> And in practice it's not the first and not the last false positive by checkpatch.
-> Again, checkpatch is a recommendation, not a letter of law. Documentation is.
-> 
-> > ....but twe can happily oblige to Pinctrl expectations by remapping to ENOTSUPP
-> > in the pinctrl protocol layer or driver...just I won't certainly do that at the
-> > SCMI core layer at all at this point...as Sudeep said ...especially because there
-> > is NO generalized docs for the above ban of POSIX errors for in-Linux kernel API...
-> 
-> There is no ban, we use POSIX error codes heavily in kernel.
-> 
-> If you think GPIO/pin control has a flaw, send patches. I'm not a maintainer there,
-> perhaps conversion of all GPIO and pin control drivers to POSIX error code will be
-> warmly welcome, who knows.
-> 
-> But before that, we want to have ENOTSUPP from callbacks that are used in
-> GPIO/pin control drivers for the sake of consistency.
-> 
+> syzbot tried to test the proposed patch but the build/boot failed:
 
-Yes, my point was simply to say to fix the retcode of SCMI pinctrl to comply with
-Pinctrl expectations, and definitely NOT to fix and move to ENOTSUPP all the SCMI
-originated errors across all protocols, since it is NOT what is expected in general
-by other susbsystems.
+WTF?  The patch is
 
-Thanks,
-Cristian
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index e9df2f87072c6..8502ef68459b9 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -636,11 +636,18 @@ static int kernfs_fop_open(struct inode *inode, struct file *file)
+ 	 * each file a separate locking class.  Let's differentiate on
+ 	 * whether the file has mmap or not for now.
+ 	 *
+-	 * Both paths of the branch look the same.  They're supposed to
++	 * For similar reasons, writable and readonly files are given different
++	 * lockdep key, because the writable file /sys/power/resume may call vfs
++	 * lookup helpers for arbitrary paths and readonly files can be read by
++	 * overlayfs from vfs helpers when sysfs is a lower layer of overalyfs.
++	 *
++	 * All three cases look the same.  They're supposed to
+ 	 * look that way and give @of->mutex different static lockdep keys.
+ 	 */
+ 	if (has_mmap)
+ 		mutex_init(&of->mutex);
++	else if (file->f_mode & FMODE_WRITE)
++		mutex_init(&of->mutex);
+ 	else
+ 		mutex_init(&of->mutex);
+ 
+How could it possibly trigger boot failure?  Test the parent, perhaps?
 
