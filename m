@@ -1,176 +1,167 @@
-Return-Path: <linux-kernel+bounces-133452-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133453-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 788BF89A3E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:10:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E66089A3E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:11:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0656828926B
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:10:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 133E92898CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C675C172782;
-	Fri,  5 Apr 2024 18:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB6CB171E73;
+	Fri,  5 Apr 2024 18:10:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="U7Qk3/eF"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ewAbd5Fm"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB66F17277A;
-	Fri,  5 Apr 2024 18:09:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B85CB171E40;
+	Fri,  5 Apr 2024 18:10:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712340581; cv=none; b=OhWDG9iFPNf65HesOZMmw1x2lTK3MJdKDKteAOm7dIBawrk0hiBwW5e89kX7t2s3BFAPsERtLpJMW/JcQUMj11oJbbvUsShW3kjr1HlfOs/m9BDmQSKXwOV4hgHZQaF+QbsThNLGAHDfrqJPveEZYkk+1ZLiCkyrvYcb1T9WEvY=
+	t=1712340655; cv=none; b=QT744Eufi7YTYB90l4IT1/qpJrZBYN6Za4JozEyMignVOSraNHahqX5BBQsrTKAWqLKnbX9KeAoJGrJ2nzFT/vT6zHSVkGbUobtZuMsZ3eoJHAr9KY0gKLIv6zhd4nbZ0+Et4NhdXXMuLVO5wmPTQxH3p06jJUmXtVmZguLeL4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712340581; c=relaxed/simple;
-	bh=XEHM2bscJ15DcdykoH5CPf8wc/c3cOkcZOvvQc5/ays=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Vych5CFis3tUw6rtJig/Ix1kgL3ElbYljrN/JDyQ96tVsTuNOQqToYHQ9T55vMvqQGchzwv/TtOApmq1C2ynIRlDcovQZw/nqDzqJ7sHvq6qfNbMPfjun8n7eJfrMtT7ly9g3aEt+VtLbaqEagTQXq44UEynK3KmVBMKAjsHDIM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=U7Qk3/eF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CE36C43394;
-	Fri,  5 Apr 2024 18:09:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1712340581;
-	bh=XEHM2bscJ15DcdykoH5CPf8wc/c3cOkcZOvvQc5/ays=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=U7Qk3/eF8troLYxOnlAkKqT5spZJXknJ4Kdz0KmA5i3nJCXaiL64ZWV+P7fkSqwCV
-	 uhe7F58Wd1bl46TTfl9KmywmUlMhxxsc59/t8RpPqOAwOyO6PI6txR20+3bTq8IjDR
-	 ncECEXJGZY2zrDFrPlRY8k3RlDiBFo26mF3TnUvY=
-Date: Fri, 5 Apr 2024 11:09:40 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: syzbot <syzbot+4372e026c95b0e36d0ee@syzkaller.appspotmail.com>
-Cc: gustavoars@kernel.org, keescook@chromium.org,
- linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, syzkaller-bugs@googlegroups.com, Aneesh Kumar
- <aneesh.kumar@kernel.org>
-Subject: Re: [syzbot] [mm?] [hardening?] BUG: bad usercopy in do_handle_open
-Message-Id: <20240405110940.e787791b7d53aff7f216a168@linux-foundation.org>
-In-Reply-To: <000000000000b8974d06155cf3a2@google.com>
-References: <000000000000b8974d06155cf3a2@google.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712340655; c=relaxed/simple;
+	bh=fWSrOr8f8fr5/BXZ8KkPYzpWRfdNWjXg2YH35wIn7nM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sq1KbRm6Tx/Poy2sMiZrJzhTvhVd1ITBAxEFUUhxck+qVh5FoF1CjNjPxX9376IyzJNRVJljMBku/w+wWcUkj5jQuGFnxhlPsuN2/ifOEjByyFCzt1/Hm8mjHdzpzSCB1FVIXwz7m6lAetSyMAt7PRYuOf4W5Lvm72fCIV5KhXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ewAbd5Fm; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e2232e30f4so22475555ad.2;
+        Fri, 05 Apr 2024 11:10:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712340653; x=1712945453; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oH6LfvKVj4QuobKK/trwqUlflVnFHEvHshhJj8bw+OQ=;
+        b=ewAbd5FmGLP2by/UqDCtSwbwNwkc7RzC7dab7b9ktvZkIhFaSvRrmAGI+ooSiqOnTw
+         Bf6EcSiqhBYK5qcoxvocLEAzQ2mFxqhAAwMu3lhENsiHwDP0cPAmmYv8vFVJN4w+fO9i
+         eKLowYMV4v6JIN9H/RP+ho3HKRmhznWHnuvtE9Lp2IUI0l3ygkQq9pndWEhgkCV8mWau
+         +TIbWij8fCLvUdpaMCxIBbARK8ajHk7cOxEpxxo/MNiCd3uCnU6LTg/JyG2jTpFO4unM
+         nCtQUUdvGxnwpdOfaImdW0lqK2eHd7qPwaFH9vW6+wVT3/bu9Gmya20beVDfunJ6XWpE
+         Eskw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712340653; x=1712945453;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oH6LfvKVj4QuobKK/trwqUlflVnFHEvHshhJj8bw+OQ=;
+        b=KKIBCM5uBDyJesI8iJ/SX+hcmFdgHDWeLnsKngbyO6/IjM3Hmtwks8cPis8f+yGxA5
+         sSbbNvJCIhKCFo4uBquIZwVMr3mPUmR4bRbvjqUW95+GGUzcaZjTc3CWhrYi+LqfNAxg
+         QYgydftgK3U7dqQSCV7pYC6RG/To1qor0Bz5xFfxU6daqv+lYcZCDHOn2WTPxrODx5es
+         34C2lUB9h7g+lL0eV6MHNz28fwZxDayq+PVa94RpQAnXzFiirWvq6IoVACM+DB2BiIQI
+         eyxSzIjBSDpbZqKaoOL56XaiSNY62OT/rpoykadnOs18eVvMKDNfzDJSRleAOmyq15LH
+         6eyw==
+X-Forwarded-Encrypted: i=1; AJvYcCUq/ujsScBqPrEzCmv/CTOOU6KJT7bopMpJjgwPpvbTfgMx4hdK/1cOG2O42trxA6zOtXpNuumQfY8QeCAllymXWwYrHBx0Xts3R2i3PG11X3VEsj9EtxioTBytFFjgfM8f
+X-Gm-Message-State: AOJu0YwlOGm1Qcmk3ulanTeCSk5+aTdmHo3TAMq1yKMGo56QRC7CRMAs
+	8MLnTreb8+J/ECzAuuafss64tw0m/D+uTH+Tz0/7V+rtJUJh5KhiiSg23kxuQWZ+bo5UV90T+9d
+	jDrcCP6YF75r24HTByUuPcAvalQk=
+X-Google-Smtp-Source: AGHT+IHSU/vlOnPJQfb+UGw+U4srnMxgFmGtFDHvbDJ9ofXUq0UTFVaUk/a03n129QN+iSWQwGqVUjSGWMF1OWGjPJ8=
+X-Received: by 2002:a17:902:e751:b0:1de:ffbc:8d95 with SMTP id
+ p17-20020a170902e75100b001deffbc8d95mr2548204plf.67.1712340652945; Fri, 05
+ Apr 2024 11:10:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <20240405091707.66675-1-puranjay12@gmail.com> <CAADnVQ+MRAg2hKJfG_QUjXu8WHLb+7tpPgMOQv8rfCSmKU2w5Q@mail.gmail.com>
+In-Reply-To: <CAADnVQ+MRAg2hKJfG_QUjXu8WHLb+7tpPgMOQv8rfCSmKU2w5Q@mail.gmail.com>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Fri, 5 Apr 2024 11:10:41 -0700
+Message-ID: <CAEf4Bza3s4u5kX3AFDWd6-JGjfkhwfakc8_AKH52L7517Q8QGQ@mail.gmail.com>
+Subject: Re: [PATCH bpf-next] arm64, bpf: add internal-only MOV instruction to
+ resolve per-CPU addrs
+To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc: Puranjay Mohan <puranjay12@gmail.com>, Catalin Marinas <catalin.marinas@arm.com>, 
+	Will Deacon <will@kernel.org>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>, 
+	Florent Revest <revest@chromium.org>, 
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
+	bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 05 Apr 2024 10:40:30 -0700 syzbot <syzbot+4372e026c95b0e36d0ee@syzkaller.appspotmail.com> wrote:
+On Fri, Apr 5, 2024 at 8:48=E2=80=AFAM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+>
+> On Fri, Apr 5, 2024 at 2:17=E2=80=AFAM Puranjay Mohan <puranjay12@gmail.c=
+om> wrote:
+> >
+> > Support an instruction for resolving absolute addresses of per-CPU
+> > data from their per-CPU offsets. This instruction is internal-only and
+> > users are not allowed to use them directly. They will only be used for
+> > internal inlining optimizations for now between BPF verifier and BPF
+> > JITs.
+> >
+> > Since commit 7158627686f0 ("arm64: percpu: implement optimised pcpu
+> > access using tpidr_el1"), the per-cpu offset for the CPU is stored in
+> > the tpidr_el1/2 register of that CPU.
+> >
+> > To support this BPF instruction in the ARM64 JIT, the following ARM64
+> > instructions are emitted:
+> >
+> > mov dst, src            // Move src to dst, if src !=3D dst
+> > mrs tmp, tpidr_el1/2    // Move per-cpu offset of the current cpu in tm=
+p.
+> > add dst, dst, tmp       // Add the per cpu offset to the dst.
+> >
+> > If CONFIG_SMP is not defined, then nothing is emitted if src =3D=3D dst=
+, and
+> > mov dst, src is emitted if dst !=3D src.
+> >
+> > To measure the performance improvement provided by this change, the
+> > benchmark in [1] was used:
+> >
+> > Before:
+> > glob-arr-inc   :   23.597 =C2=B1 0.012M/s
+> > arr-inc        :   23.173 =C2=B1 0.019M/s
+> > hash-inc       :   12.186 =C2=B1 0.028M/s
+> >
+> > After:
+> > glob-arr-inc   :   23.819 =C2=B1 0.034M/s
+> > arr-inc        :   23.285 =C2=B1 0.017M/s
+> > hash-inc       :   12.419 =C2=B1 0.011M/s
+> >
+> > [1] https://github.com/anakryiko/linux/commit/8dec900975ef
+>
+> You don't see as big of a gain, because bpf_get_smp_processor_id()
+> is not inlined yet on arm64.
+>
 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    c0b832517f62 Add linux-next specific files for 20240402
-> git tree:       linux-next
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=13a5c3b1180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=4372e026c95b0e36d0ee
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16ed9d29180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=161ab3c6180000
+yep, would be nice to add ARM64 and RISC-V support there as well.
+Though it feels that supporting this in BPF JIT directly might be
+actually easier for RISC-V/ARM64, not sure?
 
-I'd be suspecting the bounds checking in handle_to_path(), but it looks
-solid to me.
+> But even without it I expected bigger gains.
+> Could you do 'perf report' before/after ?
+> Just want to see what's on top.
 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/0d36ec76edc7/disk-c0b83251.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/6f9bb4e37dd0/vmlinux-c0b83251.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/2349287b14b7/bzImage-c0b83251.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+4372e026c95b0e36d0ee@syzkaller.appspotmail.com
-> 
-> usercopy: Kernel memory overwrite attempt detected to SLUB object 'kmalloc-16' (offset 8, size 9)!
+I also did `bpftool p d x id <progid>` and `bpftool p d j id <progid>`
+to validate expected inlined BPF instructions and jitted code. So it
+might be a good idea to do that as well.
 
-We tried to copy 9 bytes into the f_handle[] array.
+Either way, thanks for working on this!
 
-But from my reading of the reproducer, f_handle.handle_bytes was set to 1.
+>
+> >
+> > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+> > ---
+> >  arch/arm64/include/asm/insn.h |  7 +++++++
+> >  arch/arm64/lib/insn.c         | 11 +++++++++++
+> >  arch/arm64/net/bpf_jit.h      |  6 ++++++
+> >  arch/arm64/net/bpf_jit_comp.c | 16 ++++++++++++++++
+> >  4 files changed, 40 insertions(+)
+> >
 
-Aneesh, any thoughts on this?
-
-
-> ------------[ cut here ]------------
-> kernel BUG at mm/usercopy.c:102!
-> Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-> CPU: 1 PID: 5081 Comm: syz-executor249 Not tainted 6.9.0-rc2-next-20240402-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-> RIP: 0010:usercopy_abort+0x84/0x90 mm/usercopy.c:102
-> Code: 49 89 ce 48 c7 c3 e0 27 d8 8b 48 0f 44 de 48 c7 c7 80 26 d8 8b 4c 89 de 48 89 c1 41 52 41 56 53 e8 b1 6f 75 09 48 83 c4 18 90 <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90 90 90
-> RSP: 0018:ffffc90003dbfd78 EFLAGS: 00010286
-> RAX: 0000000000000062 RBX: ffffffff8bd827e0 RCX: 2b2ecef8eabe4800
-> RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-> RBP: 0000000000000008 R08: ffffffff81760b9c R09: 1ffff920007b7f4c
-> R10: dffffc0000000000 R11: fffff520007b7f4d R12: ffffea00008fe840
-> R13: 0000000000000009 R14: 0000000000000008 R15: 0000000000000009
-> FS:  000055556aa78380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000040 CR3: 0000000076e74000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  <TASK>
->  __check_heap_object+0xb1/0x100 mm/slub.c:5461
->  check_heap_object mm/usercopy.c:196 [inline]
->  __check_object_size+0x1e3/0x900 mm/usercopy.c:251
->  check_object_size include/linux/thread_info.h:215 [inline]
->  check_copy_size include/linux/thread_info.h:251 [inline]
->  copy_from_user include/linux/uaccess.h:182 [inline]
->  handle_to_path fs/fhandle.c:203 [inline]
->  do_handle_open+0x1f6/0x660 fs/fhandle.c:226
->  do_syscall_64+0xfb/0x240
->  entry_SYSCALL_64_after_hwframe+0x72/0x7a
-> RIP: 0033:0x7f27665352a9
-> Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffe7e4589d8 EFLAGS: 00000246 ORIG_RAX: 0000000000000130
-> RAX: ffffffffffffffda RBX: 00007ffe7e458bb8 RCX: 00007f27665352a9
-> RDX: 0000000000000000 RSI: 0000000020000040 RDI: 00000000ffffffff
-> RBP: 00007f27665a8610 R08: 0000000000000000 R09: 0000000000000000
-> R10: 00000000ffffffff R11: 0000000000000246 R12: 0000000000000001
-> R13: 00007ffe7e458ba8 R14: 0000000000000001 R15: 0000000000000001
->  </TASK>
-> Modules linked in:
-> ---[ end trace 0000000000000000 ]---
-> RIP: 0010:usercopy_abort+0x84/0x90 mm/usercopy.c:102
-> Code: 49 89 ce 48 c7 c3 e0 27 d8 8b 48 0f 44 de 48 c7 c7 80 26 d8 8b 4c 89 de 48 89 c1 41 52 41 56 53 e8 b1 6f 75 09 48 83 c4 18 90 <0f> 0b 66 2e 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90 90 90
-> RSP: 0018:ffffc90003dbfd78 EFLAGS: 00010286
-> RAX: 0000000000000062 RBX: ffffffff8bd827e0 RCX: 2b2ecef8eabe4800
-> RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
-> RBP: 0000000000000008 R08: ffffffff81760b9c R09: 1ffff920007b7f4c
-> R10: dffffc0000000000 R11: fffff520007b7f4d R12: ffffea00008fe840
-> R13: 0000000000000009 R14: 0000000000000008 R15: 0000000000000009
-> FS:  000055556aa78380(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000000020000040 CR3: 0000000076e74000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
+[...]
 
