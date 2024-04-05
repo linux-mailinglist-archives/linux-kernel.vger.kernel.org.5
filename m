@@ -1,77 +1,80 @@
-Return-Path: <linux-kernel+bounces-132307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7F628992D1
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:35:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 693138992D2
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 03:36:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 730F31F26D51
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:35:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D684285E45
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 01:36:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8CDEB67E;
-	Fri,  5 Apr 2024 01:35:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF888FC1D;
+	Fri,  5 Apr 2024 01:35:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="N/J2BBGe"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="X/IkkluX"
 Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB1641C02
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 01:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8C3B64B
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 01:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712280952; cv=none; b=b7t11Rpyh+PUVul9OrYzRzdCCzTU0tkEP/ii90o9rUSjgt8JN9ljjd3GfTf4PboGl0EpQ3lk2Z7k1GGXfxBqpmBPuUDdEJkpP0a1berOi+0ZxrmaFeLRsNIrlDEtje4IUpKQl0LifY0DGxGwAnxqXawQ8GbxyvQDY5ndggRQgEg=
+	t=1712280954; cv=none; b=VRRHK6nApzvosCKKmJXMLzCovB/dT1PzgpdxPjTz9VI6VMDnkwwNMrcO7BnoUimD644885GSc0ugUUH5X0pjswZ0d3opXYJ3cPx2wKTQbGlZ24FOmPa3KzcL3Xr2Sui5UKOhWOFsfCUxMCrWYjJ4U2hGrA5gN+vqb7bS4aheMm4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712280952; c=relaxed/simple;
-	bh=o1tFAOQGkW0DbNrZ7sCZTDIeI632kqdvmGXl6Q8/qxk=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=i8FANzuxBYEH1zUkLAnEGR02EWfBlD/0wMRbWEpxssSTSJLLtskEyuaT4G79wAhfJQ280N1Aks4e55aQRfg5nXBpt4cPv4w+/zjkcEtFLxcHOZrVRmr7SkSm4UAaoxcVr4hgF3gk58ffVLhpvsm7Ak6eUkMjS3ug1M9zq4TIJA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=N/J2BBGe; arc=none smtp.client-ip=209.85.128.202
+	s=arc-20240116; t=1712280954; c=relaxed/simple;
+	bh=0EwsJFsFqxelfzk3PZ8b/+zJHvbghrn5+keHiziw9TE=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=tUU0Nz7B8Dmzq57QShiRqCQIG6401ww63lgn7fg2qNWPTe8SnF3GGn0gVw5HDs35BoGgFycGPDO6A9IMrFkHXQVqwaC3s7vs0jVE7QAF5D3f1sOUH2V5iAEma1+A6U4f4nRp+28vlRjPwQivBtkF4Yql9wp5aLGMB9gPeLNx2eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=X/IkkluX; arc=none smtp.client-ip=209.85.128.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--yosryahmed.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-6144244c60cso24774857b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 18:35:50 -0700 (PDT)
+Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-610b96c8ca2so27492427b3.2
+        for <linux-kernel@vger.kernel.org>; Thu, 04 Apr 2024 18:35:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712280949; x=1712885749; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=pgu3p7tHjxQ3lz6MwjVSh+dwW77hGBwLZpXn88zTuiY=;
-        b=N/J2BBGeGqyOxvEgZqiYmqOH6NFpKKVEMX67rRmam2Eemdu6OWLbYq85098Y5YPTqS
-         Pk0juaaE4AaP0l71cf0coEQR6uUfVMii+HfECWh/ezFRnTho+/R7yv7JcGgyPDpUhYTE
-         zp1dFWSDHg8LW40R2KrZblEWNwNVkdlojuaVgq/1dFk5F2daTugIXDidS6v6LojUtCkZ
-         GDHdG207qMjhQYSYnDInF1GcE08Hg5npP4HQtifZmt0/lrnIp8PQc9F2vboFyESFxkzS
-         I0r+weQdPzpur5KHBowmS73v/HT3gRGKESRplpC86RUAS+Nm3psVVSatkX4IDif6i6qn
-         gddQ==
+        d=google.com; s=20230601; t=1712280951; x=1712885751; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=fbFnbwv9ZL9vnT6aD0Y4iZUVe+aMA3yOt75trlF6TiA=;
+        b=X/IkkluXiEVJ5EKk7J0A8+yObqRNvDLo0ep30HXuSpU0+npT3vZt2uJypTJEfJGjJd
+         1SgVawoNeHogbJPS7AMmqdVcxlCg1yCLXpdqnC6uIlDI02bS8N9NfwphPROp9iFAp17g
+         CL/Y4nZrSHQysvn3XQB9sS0CReeDHKJVWoqdK5FSATcH40Wx7rbiPKNradeXNsmTc5o8
+         kSUCA9nsMzw6l9pdrrH1M0dAM4ofoGFqluGil0aR+RG62cLEzc/u7/xbGYs5ogqv2/iR
+         GBnucTFJyvVuMxobpuaxodiL9rPatwrCb34/+3d3Y20V0gLl5e7+uzg2Ej844PyAKNRq
+         IxnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712280949; x=1712885749;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pgu3p7tHjxQ3lz6MwjVSh+dwW77hGBwLZpXn88zTuiY=;
-        b=oi/iS0C1Ua3aHht8SYuNFTM8RsalINlUrRqe+S8fTCycsdnYUS6a4GFNkbSCzjjmtI
-         nERGtX+/6gmFt9BrvcVuwczAB7Xf5+2n/3bsUlMh/KPVG6VaV2e7m5GhckKwW6CzIUp/
-         kOPnf6L3wiyxzllmi3hhpAW1RZLCDo1NjOsqHD8VtlwgglLi5iBSbfw+WKWr/V0/vp+W
-         9n33SPaSZCM6m4Sj23dJ9E8di40UcoWJN2b++QOq03bVjR7ENFUPwH5g1Ke232ZnBecm
-         yZAyLjNGXBCrCvOMAlUBojbXaBrUWHgmitrGDs14XMZLbEU9ekKany3xyb6yDALttCng
-         Gmmw==
-X-Forwarded-Encrypted: i=1; AJvYcCWzTwz1CyH+zTm2/jF8AyoQpfOUHt9+VB3HX4IggV32F/OrLtkp2gXkhDuDP5nrZ+txoVnmZG80FeRPZ8KwU9/PdF5HsF3tnZ01IR9C
-X-Gm-Message-State: AOJu0YwMqpWReccRBMoilQ4+eAKOg17o0pvyQmaKp252Yw/3KqQd0gB3
-	PKtJv44sBrQ9XlyO+vXli6SHoIw4HJb2deQvq86DUGEjyvu7ZcJrgJjMd7+BENShHqvIjrhxSFH
-	I1lQOaPhhMUa2TPMOSg==
-X-Google-Smtp-Source: AGHT+IFmdDVM5iEw5hLAYn2UqtkOKLKmP+POWbEp+oIqY1Yon9Z83GqDagsvAteAyMDek1A3jRsJBS0FPUdfD8oo
+        d=1e100.net; s=20230601; t=1712280951; x=1712885751;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fbFnbwv9ZL9vnT6aD0Y4iZUVe+aMA3yOt75trlF6TiA=;
+        b=qV7Hm82iwDxK78nGGsnxkK7z/S1rMWe4K23dO0smWXy1d4tX+mSCCp/5w10nHAQIhF
+         WoT3VdWFIS5O0XweYnT6ETZN3FEH/fHSxgNdVPhc60OuWuovO5chu+K07Fu4btru/5Eh
+         Gdhi99iDbrEdyLCjs0llSnkzFpMblsMM3LChKDJ0T9IUlGj4sqcMACwB8iFzORNZQK6V
+         iA6F9RS7o8njTnhAV0IUzxlyZ/59f067x2jAbeFItjUCDlJ3rNCJ9h35JVavvd43l4Go
+         MvmVw01aD4jg9b99HbAkrEB3sRu94ms4NHYsfuWsjAjRML7+ow9V7iAbeOk/dsUVqJYn
+         NZCw==
+X-Forwarded-Encrypted: i=1; AJvYcCVYxi4ZO6MLB51+K+HzemvT0GuN2KAGmAYwIPUIxO++Yfm3JhDa/2qNdLr3mVOW/8wAxFc9oAfEK7Hbn1wasbiIZEN8jdOEFsiUskcD
+X-Gm-Message-State: AOJu0Yw0YQL1SWNyoArGTxGO3JYW1CR8VX1dokd4LOBz+JqScCaBTTLD
+	T3DqFIdcQ28q8kos7YbZuHBw7AEndPfgaBPzj6vakht1y2+9HJDlyr4l6wORyEOcTeuObdz5Elw
+	ere7HrxmlKQBfluHbcw==
+X-Google-Smtp-Source: AGHT+IGJTA/i85YTUBVw2cs8xuSEjY+bqpz8Alc8JIdeIpUrh1LGBbhlTI/u/mBkLRKZfoJj4MNZLvSP1tmwvTZh
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a05:690c:f0d:b0:615:fd8:d65f with SMTP
- id dc13-20020a05690c0f0d00b006150fd8d65fmr322595ywb.4.1712280949675; Thu, 04
- Apr 2024 18:35:49 -0700 (PDT)
-Date: Fri,  5 Apr 2024 01:35:42 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a05:690c:dc4:b0:615:102e:7d3b with SMTP
+ id db4-20020a05690c0dc400b00615102e7d3bmr343711ywb.1.1712280951511; Thu, 04
+ Apr 2024 18:35:51 -0700 (PDT)
+Date: Fri,  5 Apr 2024 01:35:43 +0000
+In-Reply-To: <20240405013547.1859126-1-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20240405013547.1859126-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240405013547.1859126-1-yosryahmed@google.com>
-Subject: [PATCH v1 0/5] zswap same-filled and limit checking cleanups
+Message-ID: <20240405013547.1859126-2-yosryahmed@google.com>
+Subject: [PATCH v1 1/5] mm: zswap: always shrink in zswap_store() if zswap_pool_reached_full
 From: Yosry Ahmed <yosryahmed@google.com>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>, 
@@ -79,23 +82,77 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>, Nhat Pham <nphamcs@gmail.com>,
 	Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Miscellaneous cleanups for limit checking and same-filled handling in
-the store path. This series was broken out of the "zswap: store
-zero-filled pages more efficiently" series [1]. It contains the cleanups
-and drops the main functional changes.
+The cleanup code in zswap_store() is not pretty, particularly the
+'shrink' label at the bottom that ends up jumping between cleanup
+labels.
 
-[1]https://lore.kernel.org/lkml/20240325235018.2028408-1-yosryahmed@google.com/
+Instead of having a dedicated label to shrink the pool, just use
+zswap_pool_reached_full directly to figure out if the pool needs
+shrinking. zswap_pool_reached_full should be true if and only if the
+pool needs shrinking.
 
-Yosry Ahmed (5):
-  mm: zswap: always shrink in zswap_store() if zswap_pool_reached_full
-  mm: zswap: refactor limit checking from zswap_store()
-  mm: zswap: move more same-filled pages checks outside of zswap_store()
-  mm: zswap: remove same_filled module params
-  mm: zswap: do not check the global limit for same-filled pages
+The only caveat is that the value of zswap_pool_reached_full may be
+changed by concurrent zswap_store() calls between checking the limit and
+testing zswap_pool_reached_full in the cleanup code. This is fine
+because:
+- If zswap_pool_reached_full was true during limit checking then became
+  false during the cleanup code, then someone else already took care of
+  shrinking the pool and there is no need to queue the worker. That
+  would be a good change.
+- If zswap_pool_reached_full was false during limit checking then became
+  true during the cleanup code, then someone else hit the limit
+  meanwhile. In this case, both threads will try to queue the worker,
+  but it never gets queued more than once anyway. Also, calling
+  queue_work() multiple times when the limit is hit could already happen
+  today, so this isn't a significant change in any way.
 
- mm/zswap.c | 93 +++++++++++++++++++++---------------------------------
- 1 file changed, 36 insertions(+), 57 deletions(-)
+Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/zswap.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
+diff --git a/mm/zswap.c b/mm/zswap.c
+index c4979c76d58e3..1cf3ab4b22e64 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1429,12 +1429,12 @@ bool zswap_store(struct folio *folio)
+ 	if (cur_pages >= max_pages) {
+ 		zswap_pool_limit_hit++;
+ 		zswap_pool_reached_full = true;
+-		goto shrink;
++		goto reject;
+ 	}
+ 
+ 	if (zswap_pool_reached_full) {
+ 		if (cur_pages > zswap_accept_thr_pages())
+-			goto shrink;
++			goto reject;
+ 		else
+ 			zswap_pool_reached_full = false;
+ 	}
+@@ -1540,6 +1540,8 @@ bool zswap_store(struct folio *folio)
+ 	zswap_entry_cache_free(entry);
+ reject:
+ 	obj_cgroup_put(objcg);
++	if (zswap_pool_reached_full)
++		queue_work(shrink_wq, &zswap_shrink_work);
+ check_old:
+ 	/*
+ 	 * If the zswap store fails or zswap is disabled, we must invalidate the
+@@ -1550,10 +1552,6 @@ bool zswap_store(struct folio *folio)
+ 	if (entry)
+ 		zswap_entry_free(entry);
+ 	return false;
+-
+-shrink:
+-	queue_work(shrink_wq, &zswap_shrink_work);
+-	goto reject;
+ }
+ 
+ bool zswap_load(struct folio *folio)
 -- 
 2.44.0.478.gd926399ef9-goog
 
