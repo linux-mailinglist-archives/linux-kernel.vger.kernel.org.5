@@ -1,177 +1,154 @@
-Return-Path: <linux-kernel+bounces-133347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133348-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B16989A29E
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A889589A2A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 18:37:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8E7E91C21756
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:37:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC69C1C22378
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:37:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 421CD16FF5D;
-	Fri,  5 Apr 2024 16:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5189416EC0B;
+	Fri,  5 Apr 2024 16:37:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="W/kTTz5a";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="riYSMPLf";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="W/kTTz5a";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="riYSMPLf"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Rbf24eoC"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879BB50A98;
-	Fri,  5 Apr 2024 16:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F951CFBC
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 16:37:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712335043; cv=none; b=UGiuKnTwTr35EEUIs3X3JS8E8fWvy73pFikU1dA4G02eyyqM+YlbfJmAQk5c+R0sMV6FifzxuMYdS4dCZy1Es+lm6e/zytJNXmBYyC+hHmsXgS7oy+fZ/PdXU1jmBCIxQEVKJxikzFJ9N7QTvRjPOm2FLu7NG1MqLZL9s8/uKiY=
+	t=1712335057; cv=none; b=lxc4Yp6jFR3TGdmeHVC0oGG6HMnion/Skr3t+mgzGDC2P8tKitW6jsQLrhiBy2U/bcCjAjOLkB5bdmvS0LaZMPlRghPy7wVmocwu8dmf3c8b0JPPvlkNZdD7BYkBiHbRUpWOnCkfk2652FEiZX2KxdWqEdXsSQFTFS5kmtrhSfY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712335043; c=relaxed/simple;
-	bh=fbRV8D+g8Pp361DpMzV4d80YR3tASUfH1VeZ1zh+ic4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OPbCvtKiX2OJCOsVHPGyULSOqp8v8LE+EaV3/Y3YtGb3QbMxs3JdB5My8EyHoyq7dANVgfRD/TnPaMltVIj1AODetOXZdgp27N3DNIKe2uWH62mT6GY1caZjAyjfoFcmZG9Bvl6IVQb/I/hZ8ZPmsGEW5WoHPfr2J0XkY6BoCE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=W/kTTz5a; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=riYSMPLf; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=W/kTTz5a; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=riYSMPLf; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 417FD21ABB;
-	Fri,  5 Apr 2024 16:37:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712335034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1712335057; c=relaxed/simple;
+	bh=TwC7u7kRLVrvNcf6B/odAd8Zu0CBkmKdy6vVGMGRGnw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZeP5QUSO8x5CgsSDZVtKElqVm+I97mKQD/ODA5+0jzCGe0FhbMoUnX+9SE7BAHjNncq4i15JeHFRHGLpDJxoWDZulBSihK5VqMb8GeVPYKUuAUsgzxjnbNIyDL5f5+zzgEGIBklZeSXFzUtpDAUfRosfVtELPIEh2RJJvR4W4g0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Rbf24eoC; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1712335054;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9b6bVC5wHtPZFe+lwb/5F0DCN1XHlga3Dp0t9Yx4D6E=;
-	b=W/kTTz5a0vf6qCbYd530AH8Ld3LbgdAvwrl0o7mQRnx++sK7lsXO8cVDnspMF3EtOiFfjQ
-	WLF1c0RrSGfafJ5DK84sZcOqa+r0iDAUUK5jXG/Eaq1O4tbnQKhwe9egaX0XsVi2stjctD
-	S8iinN3fNaL1br9CIG528txeUo1AqHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712335034;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9b6bVC5wHtPZFe+lwb/5F0DCN1XHlga3Dp0t9Yx4D6E=;
-	b=riYSMPLfFTJTaeD9N5m3QqVojPpAR+UoMNiolx4g/5uczTHbCJoXBox2cOjheK1LSwgJ/W
-	pjdwpvQXkjkVpWAQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="W/kTTz5a";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=riYSMPLf
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712335034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9b6bVC5wHtPZFe+lwb/5F0DCN1XHlga3Dp0t9Yx4D6E=;
-	b=W/kTTz5a0vf6qCbYd530AH8Ld3LbgdAvwrl0o7mQRnx++sK7lsXO8cVDnspMF3EtOiFfjQ
-	WLF1c0RrSGfafJ5DK84sZcOqa+r0iDAUUK5jXG/Eaq1O4tbnQKhwe9egaX0XsVi2stjctD
-	S8iinN3fNaL1br9CIG528txeUo1AqHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712335034;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9b6bVC5wHtPZFe+lwb/5F0DCN1XHlga3Dp0t9Yx4D6E=;
-	b=riYSMPLfFTJTaeD9N5m3QqVojPpAR+UoMNiolx4g/5uczTHbCJoXBox2cOjheK1LSwgJ/W
-	pjdwpvQXkjkVpWAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E3926139E8;
-	Fri,  5 Apr 2024 16:37:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id dhBHK7koEGblbwAAn2gu4w
-	(envelope-from <krisman@suse.de>); Fri, 05 Apr 2024 16:37:13 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: Matthew Wilcox <willy@infradead.org>,  tytso@mit.edu,
-  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  kernel@collabora.com,
-  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz,
-  ebiggers@kernel.org
-Subject: Re: [PATCH v16 0/9] Cache insensitive cleanup for ext4/f2fs
-In-Reply-To: <ec3a3946-d6d6-40e1-8645-34b258d8b507@collabora.com> (Eugen
-	Hristev's message of "Fri, 5 Apr 2024 16:02:15 +0300")
-References: <20240405121332.689228-1-eugen.hristev@collabora.com>
-	<Zg_sF1uPG4gdnJxI@casper.infradead.org>
-	<ec3a3946-d6d6-40e1-8645-34b258d8b507@collabora.com>
-Date: Fri, 05 Apr 2024 12:37:12 -0400
-Message-ID: <87le5r3gw7.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	bh=HhqXEsjcQfRnbT+Watd5B6B0qa6OPofOH0VzzxL2RKw=;
+	b=Rbf24eoCLCCZ6vI1g2jlsUNPJriVqLxF6KAAtu4aQEDpwnsW6jXo38qJ6u92J6P3RXrv0S
+	1lp4BIWfwEkMukyuQ5E2ZFzQkbd/qHydz4I0CLuWWrJ2tVpQaVPombg4TPlfKM4nKRFR6z
+	W5Kt8nR0q3p5I7Y1O6SGQP8Gijl/k0E=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-265-D3NFh-wpNHmtY5uJXGlHcg-1; Fri, 05 Apr 2024 12:37:32 -0400
+X-MC-Unique: D3NFh-wpNHmtY5uJXGlHcg-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41545bc8962so12115135e9.2
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 09:37:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712335051; x=1712939851;
+        h=content-transfer-encoding:in-reply-to:organization:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HhqXEsjcQfRnbT+Watd5B6B0qa6OPofOH0VzzxL2RKw=;
+        b=vaho4rDnO/SKhQaXxwrW26dbq85tXxMrJthxgr4lHxKZoH50Mzb3zaKBCxuphvww3y
+         RV2BL5BBrWVwS4RSkZrcUKVnnxbw4fye51XS8c6SRDjwkQcYqfmY8kQyPHLqV2RzJYiO
+         C83TrR6S2MBO3i4DScrWFmJ7Jg8ut3jMuYCXn01KjukQFhXCmGt3RbGCk/I8A4u5WiIW
+         dMTtg8YA23PC3orDhfE/nMuacLzKQzEF0Rz6j2dkTDAqu3NQaBGjQlgocRjl7j9ZulYS
+         7fZYZNfKkDn9Awnm1FpACLu5JXiI+NYr/Q53NtW9PmBqdmFUXHR9UuFBf6EuHj3Abz5u
+         cYdA==
+X-Forwarded-Encrypted: i=1; AJvYcCWurTU87OIKP2YzLUV6azK+M6ciN0uZbgCoOxVa3kIrDGpwgLPfCL1ITgZwu7fZcklkxvbr1EMtITSvuiIkxnFUW5DHzjGoTvltDvgc
+X-Gm-Message-State: AOJu0YzUGeZjk45f8S500Y4Ur3IwJYjEKBkDuu7SFxofO5sbImXHHJzC
+	GgBiXvvcX7wMkNCSMNUSsNYj7R2/IDM8E4G8ymxV5T1IjLQ+8ZkFJCjT7CFyThLnyPlJ+0JcxN0
+	DNwjic4mL0h4D8fWqgtD7IqK3YobqfG/9D52KFY4Ja/JzQX+F4+d3yCzIG2EMcg==
+X-Received: by 2002:a05:600c:4510:b0:414:767e:6e76 with SMTP id t16-20020a05600c451000b00414767e6e76mr1596283wmo.21.1712335051630;
+        Fri, 05 Apr 2024 09:37:31 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEDPCc0VTMBhL7MNqvTz5tlRMoWQPFY1L2zr/0sqh9d3YOQmi5yQiu02UsFqppTmlfZ8bZ/Jg==
+X-Received: by 2002:a05:600c:4510:b0:414:767e:6e76 with SMTP id t16-20020a05600c451000b00414767e6e76mr1596272wmo.21.1712335051297;
+        Fri, 05 Apr 2024 09:37:31 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:4b3f:ee94:abf:b8ff:feee:998b? ([2a02:810d:4b3f:ee94:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id v13-20020a05600c444d00b00416306c17basm2328956wmn.14.2024.04.05.09.37.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 05 Apr 2024 09:37:29 -0700 (PDT)
+Message-ID: <593a8479-741a-44de-a52c-8d34810bfb3e@redhat.com>
+Date: Fri, 5 Apr 2024 18:37:26 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:dkim,wikipedia.org:url];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 417FD21ABB
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] nouveau/gsp: Avoid addressing beyond end of rpc->entries
+To: Kees Cook <keescook@chromium.org>
+Cc: Lyude Paul <lyude@redhat.com>, David Airlie <airlied@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, Dave Airlie <airlied@redhat.com>,
+ Ben Skeggs <bskeggs@redhat.com>, Timur Tabi <ttabi@nvidia.com>,
+ dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+ "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+ Dan Carpenter <dan.carpenter@linaro.org>, linux-kernel@vger.kernel.org,
+ linux-hardening@vger.kernel.org, Karol Herbst <kherbst@redhat.com>
+References: <20240330141159.work.063-kees@kernel.org>
+Content-Language: en-US
+From: Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <20240330141159.work.063-kees@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
+On 3/30/24 15:12, Kees Cook wrote:
+> Using the end of rpc->entries[] for addressing runs into both compile-time
+> and run-time detection of accessing beyond the end of the array. Use the
+> base pointer instead, since was allocated with the additional bytes for
+> storing the strings. Avoids the following warning in future GCC releases
+> with support for __counted_by:
+> 
+> In function 'fortify_memcpy_chk',
+>      inlined from 'r535_gsp_rpc_set_registry' at ../drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c:1123:3:
+> ../include/linux/fortify-string.h:553:25: error: call to '__write_overflow_field' declared with attribute warning: detected write beyond size of field (1st parameter); maybe use struct_group()? [-Werror=attribute-warning]
+>    553 |                         __write_overflow_field(p_size_field, size);
+>        |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> for this code:
+> 
+> 	strings = (char *)&rpc->entries[NV_GSP_REG_NUM_ENTRIES];
+> 	...
+>                  memcpy(strings, r535_registry_entries[i].name, name_len);
+> 
+> Signed-off-by: Kees Cook <keescook@chromium.org>
 
-> On 4/5/24 15:18, Matthew Wilcox wrote:
->> On Fri, Apr 05, 2024 at 03:13:23PM +0300, Eugen Hristev wrote:
->>> Hello,
->>>
->>> I am trying to respin the series here :
->>> https://www.spinics.net/lists/linux-ext4/msg85081.html
->> 
->> The subject here is "Cache insensitive cleanup for ext4/f2fs".
->> Cache insensitive means something entirely different
->> https://en.wikipedia.org/wiki/Cache-oblivious_algorithm
->> 
->> I suspect you mean "Case insensitive".
->
-> You are correct, I apologize for the typo.
+Applied to drm-misc-fixes, thanks!
 
-Heh. I completely missed it in the previous submissions. I guess we both
-just mentally auto-corrected.
+> ---
+> Cc: Karol Herbst <kherbst@redhat.com>
+> Cc: Lyude Paul <lyude@redhat.com>
+> Cc: Danilo Krummrich <dakr@redhat.com>
+> Cc: David Airlie <airlied@gmail.com>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Dave Airlie <airlied@redhat.com>
+> Cc: Ben Skeggs <bskeggs@redhat.com>
+> Cc: Timur Tabi <ttabi@nvidia.com>
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: nouveau@lists.freedesktop.org
+> ---
+>   drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
+> index 9994cbd6f1c4..9858c1438aa7 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/gsp/r535.c
+> @@ -1112,7 +1112,7 @@ r535_gsp_rpc_set_registry(struct nvkm_gsp *gsp)
+>   	rpc->numEntries = NV_GSP_REG_NUM_ENTRIES;
+>   
+>   	str_offset = offsetof(typeof(*rpc), entries[NV_GSP_REG_NUM_ENTRIES]);
+> -	strings = (char *)&rpc->entries[NV_GSP_REG_NUM_ENTRIES];
+> +	strings = (char *)rpc + str_offset;
+>   	for (i = 0; i < NV_GSP_REG_NUM_ENTRIES; i++) {
+>   		int name_len = strlen(r535_registry_entries[i].name) + 1;
+>   
 
-Since we are here, I think I contributed to the typo in the cover letter
-with the summary lines of patch 1 and 2.  Differently from the rest of
-the series, these two are actually working on a "cache of
-casefolded strings".  But their summary lines are misleading.
-
-Can you rename them to:
-
-[PATCH v16 1/9] ext4: Simplify the handling of cached casefolded names
-[PATCH v16 2/9] f2fs: Simplify the handling of cached casefolded names
-
-From a quick look, the series is looking good and the strict mode issue
-pointed in the last iteration seems fixed, though I didn't run it yet.
-I'll take a closer look later today and fully review.
-
--- 
-Gabriel Krisman Bertazi
 
