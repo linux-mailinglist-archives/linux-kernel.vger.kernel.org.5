@@ -1,137 +1,153 @@
-Return-Path: <linux-kernel+bounces-133279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB82589A1A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:43:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6351089A1A9
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 17:45:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8830F1F21A5D
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:43:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 942EA1C23118
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 15:45:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860E416FF44;
-	Fri,  5 Apr 2024 15:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE5F0171069;
+	Fri,  5 Apr 2024 15:45:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="eRp/01Vz"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="WxdcJsFD"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 066DD16EC0B;
-	Fri,  5 Apr 2024 15:43:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D05E16EC0B;
+	Fri,  5 Apr 2024 15:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712331825; cv=none; b=V8nmQ9ikYv0KtoHxUrODyOhiuhCZhYze8pyGEHw7wF+a94rU2yWSTMhu18X4fivmbQR6i3xn2CwL7zSHM/mAadJv7BPertCToAa/dWr/CzJuFB82Ppn+PC3lA7GkS6qNEArvghsFS0XDU+2PmOZAzRrbGESqwUY+HrEwUDGoBNI=
+	t=1712331905; cv=none; b=i9c/foE9T6DuBWbGrLLh0hDzEJ2+0VQdzbUB2x62qoxgHgcCGyzLIS/BwOOwHTjuHOhuWnFcFyArRai6Crz6bUQct8F4YAxnyorE5IhVJdMLXeBaLULa0sSG+evOGYVhgBK8QO0538BW2/xHQcsD0Vstm2awqTdV1nen7uDuRVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712331825; c=relaxed/simple;
-	bh=M0CQlrLbVhNuXuWj2qwS63EPH2Xv+wBnu0ggHAGCHDI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=QMAs+/+rbNb5IaubodFnIfxMq+q6l21CWT0VkkJ6+D4/ZOAlvEi9xzqS6FSPHqVQxH3G4NvA0IRukJjkWo0qzOanhlAnYVkZpLio4WOIXjV1RkYIYTek657/o0pFh1eAeOAcf2GHawE2mZqAaXA3Kwjb+BsnniETlSPsyAlnvXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=eRp/01Vz; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 435FWLis004336;
-	Fri, 5 Apr 2024 15:43:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=rpSXjEhE8oEwfUJNEq7vwit98GJJW3M0TJvFmVqZ9hY=;
- b=eRp/01Vz1Em7n5I0IfC44GOWXg7karaq4g4uzALyvLlMo3i1rqRFREsc8llMqtKOCjbJ
- kAJoL0Qm1ZiVqihqryMRF2vTCPmBXNrptjSVmZJKJKArEBPPpjr3ippRpH5uM41vE0Od
- meTGYVk260hcOPSceX6EuTZAObP8ck4HS1ncFjwwOxUIJ2oRlL+aUfDht+NNKmeAmg/8
- fBxrN0DCMZAe9xWoL0vMDkkeQsN04JcMT1rbvwNzDc+UdsHSi6RHSZ1lY+aTJyM5zVYG
- CcrpBthJXePbYrvS3ndLNZqVDmdT6Ske5dn2OBT85Kd/q7ORfSaMHx772vsdn4PUhghd Ww== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xam1d80t9-1
+	s=arc-20240116; t=1712331905; c=relaxed/simple;
+	bh=aNurIvIombhEP1xBEnb9evF2NRW63iCEPSa4g7owfNA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=cJENER0EsKrNpiGpKbp5pO5rSHKPPa+xHgESocAGOjbcLlYltxgrQkfwQfaR/txYfLF/OJNOX/Vy34+a8NaP2T2y1Ug7UxN1TsnsZvq5DkSJl+Bg0EtjciqHAfp2yBEFjYeUTUWAFC9vmOxVras9Ak6ALHxs8yV5TVasW0Cyzyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=WxdcJsFD; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 435BXit4013624;
+	Fri, 5 Apr 2024 15:44:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=aNurIvIombhEP1xBEnb9evF2NRW63iCEPSa4g7owfNA=; b=Wx
+	dcJsFDCRtNjsx1myJLDZVvdn/7cpgyvGQmKM4gmeN14BiANU61bJDLndqGzyxPt4
+	CZ5ahURTh5dAoHtI7YB679/F8PsF9OnPooNpYBGzAVu2w/r8NIkxLLLplZAheQuk
+	86j2A/VzmlHqbGp586vrAzddTLisJ/OB/XN7ZpmSPSv2HnhSQhsC1w/fBnpXhtni
+	cdTE5lTSKFW68MO8jGrsqWV5cYvQjAShaJy5xfOX5ysRo9um4Dwe2IEWYcYstSDa
+	2n/3dr39zXpcTsjc5YhJUFAJSgINIu71VJB51TwPRLacUWQwTTfGTQ8f96LXEcRW
+	G+8xdHH9r3ObcaokCL6Q==
+Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xad7h10am-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 15:43:39 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 435Fhcug020918;
-	Fri, 5 Apr 2024 15:43:38 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3xam1d80t7-1
+	Fri, 05 Apr 2024 15:44:38 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 435FiaHY013633
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 15:43:38 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 435D3ojf003627;
-	Fri, 5 Apr 2024 15:43:37 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3x9epykbgn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 05 Apr 2024 15:43:37 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 435FhWax30016096
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 5 Apr 2024 15:43:34 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7637E20040;
-	Fri,  5 Apr 2024 15:43:32 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 464A82004B;
-	Fri,  5 Apr 2024 15:43:32 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  5 Apr 2024 15:43:32 +0000 (GMT)
-From: Niklas Schnelle <schnelle@linux.ibm.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helge Deller <deller@gmx.de>
-Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Arnd Bergmann <arnd@kernel.org>, Heiko Carstens <hca@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, Niklas Schnelle <schnelle@linux.ibm.com>
-Subject: [PATCH 1/1] vgacon: add HAS_IOPORT dependencies
-Date: Fri,  5 Apr 2024 17:43:31 +0200
-Message-Id: <20240405154331.292421-2-schnelle@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240405154331.292421-1-schnelle@linux.ibm.com>
-References: <20240405154331.292421-1-schnelle@linux.ibm.com>
+	Fri, 5 Apr 2024 15:44:36 GMT
+Received: from [10.110.127.230] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Fri, 5 Apr 2024
+ 08:44:34 -0700
+Message-ID: <7e23aaea-4840-4fc8-8472-e401a04493b5@quicinc.com>
+Date: Fri, 5 Apr 2024 08:44:34 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0TMJdTtZ_3uD-FGWfHTv2qNoL_rcSg8D
-X-Proofpoint-ORIG-GUID: 74o-_nl4sXO68hUr_eE49IGptbDPah4S
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 05/16] dt-bindings: net: wireless: describe the ath12k
+ PCI module
+Content-Language: en-US
+To: Bartosz Golaszewski <brgl@bgdev.pl>, Kalle Valo <kvalo@kernel.org>
+CC: Marcel Holtmann <marcel@holtmann.org>,
+        Luiz Augusto von Dentz
+	<luiz.dentz@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric
+ Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni
+	<pabeni@redhat.com>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>, Mark Brown
+	<broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon
+	<will@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+        Saravana Kannan
+	<saravanak@google.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Arnd
+ Bergmann <arnd@arndb.de>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Marek
+ Szyprowski <m.szyprowski@samsung.com>,
+        Alex Elder <elder@linaro.org>,
+        Srini
+ Kandagatla <srinivas.kandagatla@linaro.org>,
+        Greg Kroah-Hartman
+	<gregkh@linuxfoundation.org>,
+        Abel Vesa <abel.vesa@linaro.org>,
+        Manivannan
+ Sadhasivam <mani@kernel.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        Dmitry
+ Baryshkov <dmitry.baryshkov@linaro.org>,
+        <linux-bluetooth@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-wireless@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pci@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>,
+        Bartosz Golaszewski
+	<bartosz.golaszewski@linaro.org>
+References: <20240325131624.26023-1-brgl@bgdev.pl>
+ <20240325131624.26023-6-brgl@bgdev.pl> <87msqm8l6q.fsf@kernel.org>
+ <CAMRc=MeCjNn7QdDrcQMuj32JFYoemQ6A8WOYcwKJo1YhDTfY+Q@mail.gmail.com>
+ <87cyr440hr.fsf@kernel.org>
+ <CAMRc=MdzhGxLNcNLWvRfqr0S9pey-iw964=AcYx_yDXgyDDjMA@mail.gmail.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <CAMRc=MdzhGxLNcNLWvRfqr0S9pey-iw964=AcYx_yDXgyDDjMA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: JWcaCRTE3Ipb214CYpQmJ5B-avG_4z9q
+X-Proofpoint-ORIG-GUID: JWcaCRTE3Ipb214CYpQmJ5B-avG_4z9q
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-04-05_16,2024-04-05_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- priorityscore=1501 clxscore=1011 adultscore=0 bulkscore=0 phishscore=0
- mlxscore=0 spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2404010000 definitions=main-2404050112
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ mlxlogscore=770 clxscore=1015 mlxscore=0 bulkscore=0 lowpriorityscore=0
+ suspectscore=0 malwarescore=0 impostorscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404050112
 
-In a future patch HAS_IOPORT=n will disable inb()/outb() and friends at
-compile time. We thus need to add HAS_IOPORT as dependency for
-those drivers using them.
+On 4/5/2024 2:52 AM, Bartosz Golaszewski wrote:
+> In addition to what Krzysztof already said about you seamingly
+> confusing the maintenance of the driver vs maintenance of the
+> device-tree bindings (IOW: structured hardware description) and in
+> response to your question: I don't see any functional change to any
+> dt-bindings neither from you nor from Jeff. Are you convinced you can
+> maintain and properly review any changes?
 
-Co-developed-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Arnd Bergmann <arnd@kernel.org>
-Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
----
-Note: This patch does not depend any not-yet-mainline HAS_IOPORT changes
-and may be merged via subsystem specific trees at your earliest
-convenience.
+Speaking just for myself, I know Bartosz is far more capable in this regard
+than I am, so I'd expect him to be listed as a maintainer before me.
 
- drivers/video/console/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kconfig
-index bc31db6ef7d2..a053a2de4432 100644
---- a/drivers/video/console/Kconfig
-+++ b/drivers/video/console/Kconfig
-@@ -10,6 +10,7 @@ config VGA_CONSOLE
- 	depends on ALPHA || X86 || \
- 		(ARM && ARCH_FOOTBRIDGE) || \
- 		(MIPS && (MIPS_MALTA || SIBYTE_BCM112X || SIBYTE_SB1250 || SIBYTE_BCM1x80 || SNI_RM))
-+	depends on HAS_IOPORT
- 	select APERTURE_HELPERS if (DRM || FB || VFIO_PCI_CORE)
- 	default y
- 	help
--- 
-2.40.1
+/jeff
 
 
