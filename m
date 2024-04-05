@@ -1,154 +1,148 @@
-Return-Path: <linux-kernel+bounces-133567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133568-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5F1189A5B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 22:37:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D83B89A5C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 22:40:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 553A61F21F30
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:37:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D43F1C216B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 20:40:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8D2174ED4;
-	Fri,  5 Apr 2024 20:37:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3FA174EE9;
+	Fri,  5 Apr 2024 20:40:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="qVNO4XF2"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BR84H4YO"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 589C426ACF;
-	Fri,  5 Apr 2024 20:37:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D921327FD;
+	Fri,  5 Apr 2024 20:40:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712349470; cv=none; b=JlcdWqtfRLYOe0gPTLMulcc0TyJaRLmohzfKp5lRY9C56dETKE6tqaTrh5yBTQD/nmBfprS5jQdcOX3MMMxRPK3hdNZC/ryD0V759evioJ8KTCyqiOmDZwI2CNxwMW9GFEvXxapwqxpWg98b+gniECIa4iUWG5tUTBI7gkLcqdk=
+	t=1712349620; cv=none; b=jBH0cIBCTcKCPU7f6I4bGgyjn4FZEn78LL0U0/nPrvJ6toAPBI21YtLcxp7dzATbxeYXGZcwMM0/G7Kyf7UtIfrEquKa7bq9cE4qZqTmJQxuosvGKCU+yLHfJbCRLgFA5RcJm/2g2ca1TtePf3nLMD9AVnj3RXkyErKoo6j8oXE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712349470; c=relaxed/simple;
-	bh=TlGlGuV5AlXVHNKNLj1rE35qkDjG+kSQ0iD+td99z/Q=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=m2PeX0d+SsJs3Px5uofaHCHCKj1G1GQCAPPTBSymlFLouCdZPzxf4sg+mf1ncyRV0SoHp8s6LF53O5ZxYnippOEDG3mITisuvjz7+kuS1fyDqffT2RxlL4uMXf6lnIo/u+NGsh6pX0YSX/5xR3fZkvxvgXkRd0Z4A4aKiYwppxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=qVNO4XF2; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712349466;
-	bh=TlGlGuV5AlXVHNKNLj1rE35qkDjG+kSQ0iD+td99z/Q=;
-	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
-	b=qVNO4XF2L9KqxAGJJaGvGBGCKEVV3bFO4bcRdlwURbu4byJU4Pr+5fIb1uh70Icv0
-	 TBHcro1iPw3pXn5WAwTKwHhbPykPnwrmzqlN/EsL1DosoOD/4KQAUhSFMfWPZfJ16n
-	 TzNCWuwkaUPd7Nht+4qFZTD4rSsYQMbTNQXCg/ku8xWZcc+62VzI2Lo/ZHXpEbz9f1
-	 V3nd16CQCdMDTKlfc1bgWS03OQOaVKaFHxCFXm8AiK8OKOAyGheKPqg2zKYXQ1v3Nk
-	 q2HXHtes5qzm1SQYyaxnFgL3aMIWYaO7bC23qm/3E++nvrqMKt5xy3KotiYUWNEYVw
-	 Pot7kax3OiiBg==
-Received: from [10.193.1.1] (broslavsky.collaboradmins.com [68.183.210.73])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: usama.anjum)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 1ACC737813DC;
-	Fri,  5 Apr 2024 20:37:35 +0000 (UTC)
-Message-ID: <d103fdc2-e7a1-4658-88ab-22929ae48a06@collabora.com>
-Date: Sat, 6 Apr 2024 01:38:06 +0500
+	s=arc-20240116; t=1712349620; c=relaxed/simple;
+	bh=KKHqecoYIY5uSH4kmMdMPzfpUjYXfpRio0vfTLXUmtg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=cJ/39f37sQaZdoOqKrwfL/KKEPTBaYgH7pG/FpvacXanmulYHGefFcVzIm2rxHlWOlaQRYg1o8O3rnDAghsQgliVk6xrJ83jZQY+DpkVhEhBncrbCW+zrD/ScosUxRPn8sLyUwMotO5jvoAAbAIvXVAAoGUgg653UQqRGBJZMcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BR84H4YO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F9F7C433F1;
+	Fri,  5 Apr 2024 20:40:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712349619;
+	bh=KKHqecoYIY5uSH4kmMdMPzfpUjYXfpRio0vfTLXUmtg=;
+	h=Date:From:To:Cc:Subject:From;
+	b=BR84H4YOtVFf1NIe9wK/VVUVfr1EaWQuUUzWfT5ETRH6Uogo1EcxLUgVni9yVfbdI
+	 +1ZsS8I2Uy0YLuz1zEwSb79cltAHUnqBLReuB3oxIOP+OECDN8eMc1jwwed5+ISO+l
+	 eLUnV/Q+YDqUeizEKc+nfRJhQ5i7Js7Gy+NQOOMiAiw9EG4cwLj0OswGFd71v88axT
+	 WXhyh7+LkVUQcnaqWugY0uAOA9htF74tLTm0gujJTPP8h6v3244bQGSmczpz1cMTAh
+	 6+uuNv5uLS30Iq18Y13YzHr7r23sYnmrTVcaZmRxw3oWSpLBlPuImibLNxYs5TGj5i
+	 9xV0cbTOVijPQ==
+Date: Fri, 5 Apr 2024 15:40:17 -0500
+From: Rob Herring <robh@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Saravana Kannan <saravanak@google.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [GIT PULL] Devicetree fixes for v6.9, part 1
+Message-ID: <20240405204017.GA1394619-robh@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
- "kernel@collabora.com" <kernel@collabora.com>, Shuah Khan
- <shuah@kernel.org>,
- "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-mm@kvack.org" <linux-mm@kvack.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Eric Biederman <ebiederm@xmission.com>
-Subject: Re: [PATCH 0/2] selftests: Replace "Bail out" with "Error" in
- ksft_exit_fail_msg()
-To: "Bird, Tim" <Tim.Bird@sony.com>, Shuah Khan <skhan@linuxfoundation.org>,
- Kees Cook <keescook@chromium.org>
-References: <20240405131748.1582646-1-usama.anjum@collabora.com>
- <2a77adeb-ed22-4a9b-a1d9-ac5d29ae696d@linuxfoundation.org>
- <SA3PR13MB6372E672EA40B403EBE588EDFD032@SA3PR13MB6372.namprd13.prod.outlook.com>
-Content-Language: en-US
-From: Muhammad Usama Anjum <usama.anjum@collabora.com>
-In-Reply-To: <SA3PR13MB6372E672EA40B403EBE588EDFD032@SA3PR13MB6372.namprd13.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hi Tim,
+Linus,
 
-On 4/6/24 12:36 AM, Bird, Tim wrote:
-> Sorry I didn't catch this on the original submission.
-> 
->> -----Original Message-----
->> From: Shuah Khan <skhan@linuxfoundation.org>
->>
->> On 4/5/24 07: 17, Muhammad Usama Anjum wrote: > "Bail out! " is not descriptive. It rather should be: "Failed: " and > then this added prefix
->> doesn't need to be added everywhere. Usually in > the logs, we are searching for "Failed"
->> ZjQcmQRYFpfptBannerStart
->> Caution : This email originated from outside of Sony.
->> Do not click links or open any attachments unless you recognize the sender and know the content is safe. Please report phishing if unsure.
->>
->> ZjQcmQRYFpfptBannerEnd
->> On 4/5/24 07:17, Muhammad Usama Anjum wrote:
->>> "Bail out! " is not descriptive. It rather should be: "Failed: " and
->>> then this added prefix doesn't need to be added everywhere. Usually in
->>> the logs, we are searching for "Failed" or "Error" instead of "Bail
->>> out" so it must be replace.
-> 
-> Bail out! is the wording in the original TAP spec.  We should not change
-> it unless we plan to abandon compatibility with that spec. (which I
-> would advise against).
-> 
-> See https://testanything.org/tap-specification.html
-I didn't know that exact words are coming from TAP. Thank you for catching
-it. We don't intend to move away from the spec.
+Please pull DT fixes for v6.9.
 
-> 
-> The reason "Bail out!" is preferred (IMO) is that it is less likely to be emitted
-> in other test output, and is more 'grepable'.
-Makes sense.
+Rob
 
-> 
-> This would get a NAK from me.
-Let's drop this series.
 
->  -- Tim
-> 
->>>
->>> Remove Error/Failed prefixes from all usages as well.
->>>
->>> Muhammad Usama Anjum (2):
->>>    selftests: Replace "Bail out" with "Error"
->>>    selftests: Remove Error/Failed prefix from ksft_exit_fail*() usages
->>>
->>>   tools/testing/selftests/exec/load_address.c   |   8 +-
->>>   .../testing/selftests/exec/recursion-depth.c  |  10 +-
->>>   tools/testing/selftests/kselftest.h           |   2 +-
->>>   .../selftests/mm/map_fixed_noreplace.c        |  24 +--
->>>   tools/testing/selftests/mm/map_populate.c     |   2 +-
->>>   tools/testing/selftests/mm/mremap_dontunmap.c |   2 +-
->>>   tools/testing/selftests/mm/pagemap_ioctl.c    | 166 +++++++++---------
->>>   .../selftests/mm/split_huge_page_test.c       |   2 +-
->>>   8 files changed, 108 insertions(+), 108 deletions(-)
->>>
->>
->> Andrew, Kees,
->>
->> I will apply these to linux-kselftest next as a series since these
->> changes depend on change to tools/testing/selftests/kselftest.h
->> and need to go together.
->>
->> Are you okay with that?
->>
->> thanks,
->> -- Shuah
->>
-> 
+The following changes since commit 4cece764965020c22cff7665b18a012006359095:
 
--- 
-BR,
-Muhammad Usama Anjum
+  Linux 6.9-rc1 (2024-03-24 14:10:05 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-6.9-1
+
+for you to fetch changes up to de164a7f19248fb03229a4af9b0db333d9591e55:
+
+  nios2: Only use built-in devicetree blob if configured to do so (2024-04-03 14:35:53 -0500)
+
+----------------------------------------------------------------
+Devicetree fixes for v6.9, part 1:
+
+- Fix NIOS2 boot with external DTB
+
+- Add missing synchronization needed between fw_devlink and DT overlay
+  removals
+
+- Fix some unit-address regex's to be hex only
+
+- Drop some 10+ year old "unstable binding" statements
+
+- Add new SoCs to QCom UFS binding
+
+- Add TPM bindings to TPM maintainers
+
+----------------------------------------------------------------
+Guenter Roeck (1):
+      nios2: Only use built-in devicetree blob if configured to do so
+
+Herve Codina (2):
+      driver core: Introduce device_link_wait_removal()
+      of: dynamic: Synchronize of_changeset_destroy() with the devlink removals
+
+Krzysztof Kozlowski (9):
+      docs: dt-bindings: add missing address/size-cells to example
+      dt-bindings: ufs: qcom: document SC8180X UFS
+      dt-bindings: ufs: qcom: document SC7180 UFS
+      dt-bindings: ufs: qcom: document SM6125 UFS
+      dt-bindings: clock: keystone: remove unstable remark
+      dt-bindings: clock: ti: remove unstable remark
+      dt-bindings: remoteproc: ti,davinci: remove unstable remark
+      dt-bindings: soc: fsl: narrow regex for unit address to hex numbers
+      dt-bindings: timer: narrow regex for unit address to hex numbers
+
+Rob Herring (1):
+      MAINTAINERS: Add TPM DT bindings to TPM maintainers
+
+Sergey Shtylyov (1):
+      of: module: prevent NULL pointer dereference in vsnprintf()
+
+ .../devicetree/bindings/clock/keystone-gate.txt    |  2 --
+ .../devicetree/bindings/clock/keystone-pll.txt     |  2 --
+ .../devicetree/bindings/clock/ti/adpll.txt         |  2 --
+ .../devicetree/bindings/clock/ti/apll.txt          |  2 --
+ .../devicetree/bindings/clock/ti/autoidle.txt      |  2 --
+ .../devicetree/bindings/clock/ti/clockdomain.txt   |  2 --
+ .../devicetree/bindings/clock/ti/composite.txt     |  2 --
+ .../devicetree/bindings/clock/ti/divider.txt       |  2 --
+ .../devicetree/bindings/clock/ti/dpll.txt          |  2 --
+ .../devicetree/bindings/clock/ti/fapll.txt         |  2 --
+ .../bindings/clock/ti/fixed-factor-clock.txt       |  2 --
+ .../devicetree/bindings/clock/ti/gate.txt          |  2 --
+ .../devicetree/bindings/clock/ti/interface.txt     |  2 --
+ Documentation/devicetree/bindings/clock/ti/mux.txt |  2 --
+ .../devicetree/bindings/dts-coding-style.rst       |  2 ++
+ .../bindings/remoteproc/ti,davinci-rproc.txt       |  3 --
+ .../bindings/soc/fsl/fsl,layerscape-dcfg.yaml      |  2 +-
+ .../bindings/soc/fsl/fsl,layerscape-scfg.yaml      |  2 +-
+ .../bindings/timer/arm,arch_timer_mmio.yaml        |  2 +-
+ .../devicetree/bindings/ufs/qcom,ufs.yaml          | 38 +++++++++++++++++++---
+ MAINTAINERS                                        |  1 +
+ arch/nios2/kernel/prom.c                           |  6 +++-
+ drivers/base/core.c                                | 26 +++++++++++++--
+ drivers/of/dynamic.c                               | 12 +++++++
+ drivers/of/module.c                                |  8 +++++
+ include/linux/device.h                             |  1 +
+ 26 files changed, 89 insertions(+), 42 deletions(-)
 
