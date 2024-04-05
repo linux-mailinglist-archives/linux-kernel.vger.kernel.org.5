@@ -1,165 +1,110 @@
-Return-Path: <linux-kernel+bounces-132550-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132559-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCADD899683
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:28:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C16389969D
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:34:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 35F10B21E09
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:28:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61A091C20B3E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 07:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7856436136;
-	Fri,  5 Apr 2024 07:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A970F481B5;
+	Fri,  5 Apr 2024 07:34:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fiXF/abv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="eagfUzh0"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 219292D61B
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CA0C487A5
+	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 07:34:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712302081; cv=none; b=FTbsln1iAqWq3X5dFKmXyhwx3NLZZ0Gr2sDrruFjkpfCsBBZ4BmW8HBQ+izANWQ6Vwk3old3dhhK2vXynzWdmfgJM0d2DoQpfaRXu4Apo5fKOlDjjQDw1dXmZzus02V0oYXrC3A0k/OTdrF1oR1ouZJCPvkqoj5imeQoGU8Y3BM=
+	t=1712302481; cv=none; b=QjYK+sCBVW2z7I6QZR6+I5nDmActxcsTxwLvaIa6hljyOXb7MpWD0bujH7Ig8mu6+xoowmU/OWZn50AJP90z/AgTnWxlUaqvgWW+vNjixI5g58/Q+2wHyvhOvMmcRHpuZDgupJS3bHKrP7eOESaKXY/U3gyb+qYpEcTXs6789jM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712302081; c=relaxed/simple;
-	bh=vvL7xAUd6OdKrv9NjzPtl39eGm9FToKmQ28dUu5+zC0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OqcBZ9irXr7xb6O95eOLIFcBcZ774HPj0QPuJDj4KrGjx7WzlGLex6EUZVTr5SUr9G7vX5g9Pu7AONdJbspG+tV3/OCCcm0KAH0n0ETECrC5wuDzTq17Hy2ma6oq2PG396XGBkqrRSkh8ykHLHO0yUVO+nlR1S4hTbU9b1V6nGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fiXF/abv; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712302079;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=27V96/hKXnBzyyliZt7tyKHq+2QIDcoruEZql25Wlu8=;
-	b=fiXF/abvimeFRpXGTCKpRPD02A50pUdA9NcbbPu/XZzJT9rYPpwGmrzkyj8hAo9NnaY8Xj
-	nit/bGplCCJN6n3KnjAd0wc1dnCdIwcorH8UQdihE6Pg/A/kGpEmVYqJ1ZtzeMjfxRWB+0
-	tV+3mNtJJ+/z7PAoEz1TRCDLlsw2T2c=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-427-XqVC1TTGN92o-4nL1O7vbg-1; Fri, 05 Apr 2024 03:27:57 -0400
-X-MC-Unique: XqVC1TTGN92o-4nL1O7vbg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41463be093aso8967975e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 00:27:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712302076; x=1712906876;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :content-language:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=27V96/hKXnBzyyliZt7tyKHq+2QIDcoruEZql25Wlu8=;
-        b=H51XoEZHTBVwdvmSuAKHPhZdDEbkhnlRMFHI8JKcDPQJvLwHiOhbkQEK0p7GRasAJe
-         46r4HesV/4YjJygW6SgTUiQ/+xOduHqq/0ytd4lLjZGU3rm4GNXcc6aoocoEHCmMoqlP
-         4ivZ9uyJID9M/39zdt6kk9H2sMcBHzNcwwJ7LspNCBWHl0cDE2IW2h8phlvOFz18pSC1
-         N1f3gp7R4Sr2dwG9otH9NxFvwZK6C34rXMppaNkUSP8SvVH48rWKRQ/Cyjhg1nnBvcyo
-         yD1lzJEEBgzWAsyOGoZC+MEjtfiiT14Mxe5xiUB0fKK0TlTZFRVpt010bfSftJTe55Lh
-         GX4g==
-X-Forwarded-Encrypted: i=1; AJvYcCUF2HcURr5moepbROca+3L4h/uSNhBIlA3Tod//eRzgGkpD0fXV1UX9dqJLKs1w+u/BS+h/EN5hDFS88CgUaLv47+xAJXTlKj2V8O/6
-X-Gm-Message-State: AOJu0Yxm78qPcD5iqsbl8GHvAO2au6pgLJJj78khch+x9rZ0KwxJzCo7
-	778XsggBLxqgwVO1ZZy9yNbw19b63sI0fTPfFj6JCPEvbsGekbkGvbfHM4QMmztIEIrw1OTupfh
-	zNvurbV9WAu0WHwLg3EMcjoxoD/yrZL21FxItI5yMGsD5VXkCMtXSEz3L+oXpQg==
-X-Received: by 2002:a05:600c:4714:b0:415:52e2:64b2 with SMTP id v20-20020a05600c471400b0041552e264b2mr523636wmo.6.1712302076509;
-        Fri, 05 Apr 2024 00:27:56 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEnvdUB+ThnvrA1xwzf88ItsEdGQwLZxZ1uULlcvOjq9uP8YVLwMSAzJXpgqf/EE8LVf9OmTQ==
-X-Received: by 2002:a05:600c:4714:b0:415:52e2:64b2 with SMTP id v20-20020a05600c471400b0041552e264b2mr523623wmo.6.1712302076089;
-        Fri, 05 Apr 2024 00:27:56 -0700 (PDT)
-Received: from [192.168.3.108] (p4ff2306b.dip0.t-ipconnect.de. [79.242.48.107])
-        by smtp.gmail.com with ESMTPSA id p13-20020a05600c468d00b004163059bb53sm733663wmo.16.2024.04.05.00.27.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 00:27:55 -0700 (PDT)
-Message-ID: <20fd4616-5990-486d-83d3-71cc373f06e4@redhat.com>
-Date: Fri, 5 Apr 2024 09:27:54 +0200
+	s=arc-20240116; t=1712302481; c=relaxed/simple;
+	bh=7M3cQvDCPQ15Ipq1SLSpKCIO0TLQHtQq5IMbzaCBwik=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JwQhCMd9TM3NT8//iE0onutSy3uoKfNo5hidqNtY7cEoV8jl2jQEp/cb046MDvkEWKYAt2Mi69Y+j5yD607hsySYmNB5+FH9chxwHetSeVbaY4A/qWN+E3HMt9KqO7LrLWVlznSUvu+0GVvjqmegnpAlXq2pJq2s7u5fAZ90TF0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=eagfUzh0; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=7M3c
+	QvDCPQ15Ipq1SLSpKCIO0TLQHtQq5IMbzaCBwik=; b=eagfUzh0uDDxDrhpbBwG
+	OmiYf5gcuYT3JRsumYOKuFO9554K66T+KvlonARVbDuzqSWPI3Qh40UNqkkOTxfV
+	NVhnEpDDXt/dilJjZWoBO9KbXEWrGwg9mtVP+gLp109lfI2Vh19uDLj4jAwgYSD8
+	O+iIi41BbOlQGW+HGkVsyZuuizFlLCBCqJkn3beYQbiid18qjYQUzFOt1m7I3ggS
+	Bawi99MwbGkqY8DCraWHHI+NSvtomJZDneGVN/USVNi3V6qlB95/ycliz8LaEoSi
+	NMsmd0nwuE/VSz22c3cm9LrotstS7ZgaPC3B1sXYaS5vzNmR2YEXNv6c/AV86tkA
+	tg==
+Received: (qmail 4020841 invoked from network); 5 Apr 2024 09:27:56 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 5 Apr 2024 09:27:56 +0200
+X-UD-Smtp-Session: l3s3148p1@dqX+ZFQVXL8gAwDPXwEGAANOsN0UmmrN
+Date: Fri, 5 Apr 2024 09:27:55 +0200
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: timer: renesas,cmt: Add R-Car V4M support
+Message-ID: <btlrc2vhov7ly7zpyf5zcxqja4xwucs3z3ipjscfaesohbaqyp@kckmgpqo4dc7>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Daniel Lezcano <daniel.lezcano@linaro.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+References: <3e8a7a93261d8ad264dec2fa2784fe1bbfc4a23c.1712068536.git.geert+renesas@glider.be>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 05/14] mm/ksm: use folio in stable_node_dup
-To: alexs@kernel.org, Matthew Wilcox <willy@infradead.org>,
- Andrea Arcangeli <aarcange@redhat.com>,
- Izik Eidus <izik.eidus@ravellosystems.com>,
- Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, ryncsn@gmail.com
-Cc: Hugh Dickins <hughd@google.com>, Chris Wright <chrisw@sous-sol.org>
-References: <20240325124904.398913-1-alexs@kernel.org>
- <20240325124904.398913-6-alexs@kernel.org>
-From: David Hildenbrand <david@redhat.com>
-Content-Language: en-US
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240325124904.398913-6-alexs@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="uvt3z7g2yxj454zw"
+Content-Disposition: inline
+In-Reply-To: <3e8a7a93261d8ad264dec2fa2784fe1bbfc4a23c.1712068536.git.geert+renesas@glider.be>
 
-On 25.03.24 13:48, alexs@kernel.org wrote:
-> From: "Alex Shi (tencent)" <alexs@kernel.org>
-> 
-> Use ksm_get_folio() and save 2 compound_head calls.
-> 
-> Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
-> Cc: Izik Eidus <izik.eidus@ravellosystems.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Chris Wright <chrisw@sous-sol.org>
-> ---
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+--uvt3z7g2yxj454zw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Cheers,
+On Tue, Apr 02, 2024 at 04:36:05PM +0200, Geert Uytterhoeven wrote:
+> Document support for the Compare Match Timer Type0 (CMT0) and Type1
+> (CMT1) in the Renesas R-Car V4M (R8A779H0) SoC.
+>=20
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-David / dhildenb
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
+
+--uvt3z7g2yxj454zw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYPp/gACgkQFA3kzBSg
+KbZfXA/9FpBbMM/HxAeSBJY01GFV6/OTJ1SznEGG5u/3PXZaWiji0dIgcndJH41C
+aAVxRTByKSWuWYRKrVpZLT3Ij3tdz3k5sIOssqwxhSkG6sMPYaJpDLYgMs4gv80q
+peo1X4tmtuxyVFhL0HuK+jVUFdLV4EZMZQcC0817boAsr+yxNIx3noVp4fJyHx6v
+Af+vltXzKLzLHFbm31PHOu0FrhI3Bnqglr7Xp22br/OYX9bJyXRijr71Z02JA2U9
+PLGz+XyF6vogEuxBzLfhO2w5qc4JKd6hW9R2lVlBpTbSYLHd9miX+6v08SDxjgh4
+Opb7r4hb7Z3NnUOtHYlyBmNU1j4ilp7C5LkLNrfk/8zTXAEN8cfmS5ILirFq44/j
+R6HtMzpRWPzwc17hDNYS6DFUmJy3AONHtYmmb8ZrhO+ITv4tcp12IhO+p+IWuCKY
+25vf0tbLSzgHFgbpnGV46v+/+BiIHpsEsCgw5l4TPEP94lFDbBBuIwSEkb28081L
+oD9qypdxjlodwJle+iMx14YHjb8kbximy5robGKszycVdtTcv29X6FdE6d+ekV0+
+aDfP39ask7euSrUWFlhlKz8tM7mEseP7THo/1+BRiOrHnkngESG8FlvUciAVsZrz
+1T8f+VQyA4Z5KppGZBBU57OdPxStfu4CwM6ToxYFQ/TST/1SNQc=
+=bpbZ
+-----END PGP SIGNATURE-----
+
+--uvt3z7g2yxj454zw--
 
