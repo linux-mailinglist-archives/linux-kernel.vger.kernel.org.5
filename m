@@ -1,162 +1,383 @@
-Return-Path: <linux-kernel+bounces-132751-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-132753-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB47C8999A0
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:38:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D873B8999B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 11:39:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22CDD1F22AAC
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:38:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0897D1C21499
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 09:39:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBF031607B8;
-	Fri,  5 Apr 2024 09:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F013816087B;
+	Fri,  5 Apr 2024 09:38:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GdQbSXJE"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=surbannet.onmicrosoft.com header.i=@surbannet.onmicrosoft.com header.b="YIpQS+ou"
+Received: from EUR02-AM0-obe.outbound.protection.outlook.com (mail-am0eur02on2110.outbound.protection.outlook.com [40.107.247.110])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CC6615FA9C
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 09:38:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712309885; cv=none; b=K5rI8A+okPxLaf9pUFvYLzaMExmcrhchw1CvFTyV+51peuOoww4xGIGcmt8whnkapan8NOMO5FjZNwiullMN/1NbtNaOFIj/NEzKGkhLBycy+BtmCS+GEzARbRJf+h7/ZZ7H4r1on0mz3AQWxnA0h/I8n03QrAzkuzNJB08ZDQs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712309885; c=relaxed/simple;
-	bh=GkRFkjj3yHtzdRR99kfcHdzefMolzFxP8TwNQvvTfbw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jZxo26z99OuQ2RU5RWOmvNZ0WZ+QkihJiJyU/yO7GJkLSq8z8RYCS/RoHNqMFakP0mCIPivytJPMMi2XcoFT+hwoJFmXq5GBLyMEAMc1qg27KSnUn7V+4RMOBffgsFCSXHGVzfVHzU6rnLIg5BdIuQeLsH/3RLFeohuksd6xRW4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GdQbSXJE; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712309882;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=V3uuBiJkAylOmO9OjZj3QvZBOcaQFjZAsmRqZXYAPrA=;
-	b=GdQbSXJEUkFe/RN2LZSLBi5Xl5jojThuJonrK8CbKlTOqOiJE6lknDrtISntebLXigO1JF
-	G+HsJ1sTPXbWP881OmWiPZv6drNQgL15/qCdgm5yrIwkRXIKnRedfK205jntbcTyhYlfw1
-	iDoMd5vz2jFVoCEWZ8Wn+4XOe9Kb0RI=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-290-zF76GJ42Nd-RUOLKNimjgw-1; Fri, 05 Apr 2024 05:38:01 -0400
-X-MC-Unique: zF76GJ42Nd-RUOLKNimjgw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4156e6f39c6so9294455e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 02:38:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712309880; x=1712914680;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=V3uuBiJkAylOmO9OjZj3QvZBOcaQFjZAsmRqZXYAPrA=;
-        b=ewZ0T5nijjg0m+iZVp+p+vIZpKXjit5taqKEqSLlwF2neStcNCLGGYvs6C11jf99C2
-         RfkdEyqEZljUlRISmzazYdXU2pwxaik/0ffyQdZ5dX4klUgU3eith2edEQuHww83Taiy
-         80AASQTi22FDJyny/lXwuNs7XryTCbadiFfMXJ3piEjFJCukH8j7WyPJeZhTP2scn6zv
-         l87FTJILRp6MpPa+Md5vWQsImTBuChb+3t/B/PB7xv9wHuZfaysPgTMuWIId7K1du24C
-         Agxl+tqI8xvXL26Q5nsTMHoVdwWONhWTjHkXis3/ML386mx2ckKWmefmvGqWBaPOMkFr
-         awQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV3mkGzMPz/ACQAzCdHLXcwKvevbp6h1YA30or/79Z6NXla2J30yjwfNa/BZL6FyabeuZcPD5gm1s0Ai+rMGUGFYXWoqWrktQbqHRkC
-X-Gm-Message-State: AOJu0YzWdl94GEMI6guF5DerByuZlIZheULft08Lhrq6FEvMZFaqhpcb
-	OSCZ0MJBa9yUkdYumRNNMdeffDSXPYgtZibjM+TUq5TpB99v0lZw4l3xPfzCeIurX7O4oDdXtXB
-	VX1WqjwXq0zZMTrbP1hSOiawkYFKJlm863qSuZem8jjR+doBXqh/+XsOp/wNpE0esd0hc+4YUvo
-	krjh6TLBtSyqjBjcgVb7AOLEbIxsEd8eUEaIH/
-X-Received: by 2002:a5d:474c:0:b0:33e:6d6c:8503 with SMTP id o12-20020a5d474c000000b0033e6d6c8503mr739458wrs.16.1712309880131;
-        Fri, 05 Apr 2024 02:38:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHrW2E4L8dtYMZfT2FVzU8jH+3wWVUZgUPVuxswxS6TVAJ98ONwuEP32ytUfAH2YUgdwoJe+pjiuXTobnp23Ys=
-X-Received: by 2002:a5d:474c:0:b0:33e:6d6c:8503 with SMTP id
- o12-20020a5d474c000000b0033e6d6c8503mr739443wrs.16.1712309879759; Fri, 05 Apr
- 2024 02:37:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25E191FDD;
+	Fri,  5 Apr 2024 09:38:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.247.110
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712309932; cv=fail; b=iXFcmvn3Ojn+0aWk6ZYUHuBeWiIlyLkcHi+L3xFpi5TICsZcJWZ4D/GGtAUTbzpyhE8Hr7hM1vy4Na8HFo1g0OfZTvfqJRjjqZzI9TDOTF3T1MMsk9IRBzBBZf47R0RwTOe6QfNsg5z4pAQBcH+Q9O3ghuU5eJRMAJZOjcxqeNQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712309932; c=relaxed/simple;
+	bh=aEyL+MPQYt5dq+gW5C9V2wJPUcM+yHqaRLEpbo3aAow=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=l0cSYlaYaiyPL1lSB6hBzUdwyi0Zqy9cc0kzgQHlPWQNh3b1VSvscdTvzDCQML4WZH478ANkTnbrTTe2lztV6f9vSJX43X3+yN7NtUYKendIajTKIK1rMDwtMC0RIkUO9ReTZyyhiZs3DhTzCm42cmn2ZbnRXq2kIVCeIvyvmdQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surban.net; spf=pass smtp.mailfrom=surban.net; dkim=pass (1024-bit key) header.d=surbannet.onmicrosoft.com header.i=@surbannet.onmicrosoft.com header.b=YIpQS+ou; arc=fail smtp.client-ip=40.107.247.110
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=surban.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=surban.net
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l5RTADfowayQV0OFiWuZLqMfuGJmoUPzVYpo84SxlH3nwEqA6YjFX0XA4gAR6OIul1OimGBok/BhSJqlSxFuxpjkWN7oGLBd1ZJzOxjI8S76E7Dq+WwVoT8G83fJJf0JT9p2wXA//9J7r8npesTU4jPvVISbVgfC9UtAYf4Vdur8vaMjBkqPnx1N3zTPHhbBSZSQ57lzyU0+/e5MVObAL6ZHrrCOqgyEp7LArDaGBY9xD3KrFW7d4iIC6lw7MRHP1q/x+BA+M81rJ9S6VX+nRYk0eEA+ET28y9VQHa099qt1fDje/xxjmJweiKK6wMT7BmLIvIrC/+fWxuYZ6Y/7xA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eyhKCcFWctkqTiIwqcoZipH5kke9qN4WRefSX0gMqhg=;
+ b=nOmfDSA+0LSGMUiK/m0RizRTBwmQtLl8kkvUaumx79tjz7eNx25EWtlhcwMO01Z2Fv1UNqCJyXNuAp1Wo+v2vK+MH1shNnOd9KcECQdk+317AqGhg3fAvjLZGKPGSA6bSV+NvMmecMhIpYoKwM88kKuRjG2OlU7mWLjOH1HOxxkN6ZznqW1yd5bkLke06m96OmspjObQWqGMn6G1IPIzqd6xb71007iYsc5z8qzKUti3cUwl0SXovJFSh6/0chLGQEf2XjPZw4JHZeqg5Xl6pMqjbJP31SEQe/n9CuzSRq3qG8U7cOg09jvckVjhxrffdkvLJOn1VYBaMeQM/TvhYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=surban.net; dmarc=pass action=none header.from=surban.net;
+ dkim=pass header.d=surban.net; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=surbannet.onmicrosoft.com; s=selector2-surbannet-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eyhKCcFWctkqTiIwqcoZipH5kke9qN4WRefSX0gMqhg=;
+ b=YIpQS+ouIVF6loTT2QeVoHFvh36wGGJQoDPFRiVUymlmrid3LcjM2naw4Amxjys3jsXgDt5YyYx3u4YfFebz0ndQNCq8N61fJAco6V4isSI4IJEgNK7t9VObuzf0KuSiT8PSwi8QQ2li+ZvnRiIaa6zwQ5YBjfORzKMgmGEXT0g=
+Received: from DB9P189MB1978.EURP189.PROD.OUTLOOK.COM (2603:10a6:10:37d::18)
+ by GV2P189MB2405.EURP189.PROD.OUTLOOK.COM (2603:10a6:150:d0::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Fri, 5 Apr
+ 2024 09:38:44 +0000
+Received: from DB9P189MB1978.EURP189.PROD.OUTLOOK.COM
+ ([fe80::7185:1ee3:7e5f:f9b1]) by DB9P189MB1978.EURP189.PROD.OUTLOOK.COM
+ ([fe80::7185:1ee3:7e5f:f9b1%3]) with mapi id 15.20.7409.042; Fri, 5 Apr 2024
+ 09:38:44 +0000
+From: Sebastian Urban <surban@surban.net>
+To:
+Cc: Sebastian Urban <surban@surban.net>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	linux-bluetooth@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] l2cap: do not return LE flow credits when buf full
+Date: Fri,  5 Apr 2024 11:38:34 +0200
+Message-Id: <20240405093834.63666-1-surban@surban.net>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: ZR0P278CA0152.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:41::10) To DB9P189MB1978.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:10:37d::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320005024.3216282-1-seanjc@google.com> <4d04b010-98f3-4eae-b320-a7dd6104b0bf@redhat.com>
- <CALzav=eLH+V_5Y6ZWsRkmnbEb6fxPa55B7xyWxP3o6qsrs_nHA@mail.gmail.com>
- <a2fff462-dfe6-4979-a7b2-131c6e0b5017@redhat.com> <ZgygGmaEuddZGKyX@google.com>
- <ca1f320b-dc06-48e0-b4f5-ce860a72f0e2@redhat.com> <Zg3V-M3iospVUEDU@google.com>
- <42dbf562-5eab-4f82-ad77-5ee5b8c79285@redhat.com> <Zg7j2D6WFqcPaXFB@google.com>
- <b3ea925f-bd47-4f54-bede-3f0d7471e3d7@redhat.com> <Zg8jip0QIBbOCgpz@google.com>
- <36e1592a-e590-48a0-9a79-eeac6b41314b@redhat.com>
-In-Reply-To: <36e1592a-e590-48a0-9a79-eeac6b41314b@redhat.com>
-From: Paolo Bonzini <pbonzini@redhat.com>
-Date: Fri, 5 Apr 2024 11:37:47 +0200
-Message-ID: <CABgObfbykeRXv2r2tULe6_SwD7DkWPaMTdc6PkAUb3JmTodf4w@mail.gmail.com>
-Subject: Re: [RFC PATCH 0/4] KVM: x86/mmu: Rework marking folios dirty/accessed
-To: David Hildenbrand <david@redhat.com>
-Cc: Sean Christopherson <seanjc@google.com>, David Matlack <dmatlack@google.com>, kvm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, David Stevens <stevensd@chromium.org>, 
-	Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DB9P189MB1978:EE_|GV2P189MB2405:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	6PSZuLMc+Epxr+jF4xO7OHHc7PokcRad/ZszGr0DRlUwCE6Xs66ba2YTCMwmSjZbz630M43eR/IaK8NaA9CqJSZTABfMo5QnqUuUCmVFMLxvfKzL+nWBaR++LodrXVPcCIpgMcNahTVE3ee3hLnGmkvd9FnmaUjfv5Sf1uYY5lIFKM9uGRFkvZKrm0FTRnyJvWSU5Vcb74mKhZkKK61ThwajirAJO6g4PWWIHZc1WK9PtE6rvcvJTw4Olvgv9XGLXEwYQ8bZ9dzWid4aNTO1ygGhgeqXYpvXnSgNQGhmZ4rTA4glbREwPOjTm0Or7h79N9sLOkXEEXErk+/qCCn81SEtgt+/VJwKafJ38VaD7/hEulYt8vM+Ce6jJrRLJPVOR5+1uaRLXXkcVCUGhkH4lnxtCGnmHW971XP7uT1BQ/6ugpL5z628VmaSaXsW3ZPq3d7dHoBWdWXE6VJJXKGuGA64gIy+mZEjlxvR3UibaXsHzPdzF/hBKsjKLpv2EY7LIZdXuryaADRnvf5tnXZuZjYWG6isYylf1nRrpyhPxvHRvYMp8C8qPkrIxNpodzBL6ERP2FvpenOeuoy7lhrI0Zk7mosoRJzZS7aTlO4inah9+qdpGLmkqGTNLSlkkdJ92ZfYw/tTo/F0Hes4Og7AzIajiT5Zs3AFIDcQdMr6zNk=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9P189MB1978.EURP189.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(366007)(376005)(52116005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?8/IHAOh3yvQGgvHOxiefgUMevjv8zXMPn05FAulIBU+NvknRJ0uWBjeuaKXj?=
+ =?us-ascii?Q?MhsSktITJD7KkdTJOMABgw7+GmFOSU/FAGTNCYd+213EPTAo5ZuiBYDDrccu?=
+ =?us-ascii?Q?ipPRjfY1gI3CNoqtaC2SZbjSQ5vuo2dzqTLJqp+gW026vOpn9cjd0FJZVAlf?=
+ =?us-ascii?Q?RJgsQIuSLAm96lhn4KEZACX2jm1XGoYDq/XTumEV1GLL6UuuRvQeE6qShUnt?=
+ =?us-ascii?Q?U8rGPr3/+Y8QT5WWp7RhmP5AoOo2G06MxfsAg/jxgDAsMzHJpB15Xefe0HBm?=
+ =?us-ascii?Q?ucPARqBX46n5DY8Z0KceiD7QNFQxG82550EtetFImOMaQYSfso2gmJQ0TiQ/?=
+ =?us-ascii?Q?hyDz6ym16C4Gkodwx8lV21uXbilr+mNfAyQZsDTw7mhpGg/G0u0UMPNwJbng?=
+ =?us-ascii?Q?EuGY5gJ8h8M/xSiXKjbpP0ml09bQIwpbScoqbyYQ9Ftmi3K0nz9R3rYx0Evk?=
+ =?us-ascii?Q?ireL5IjUeBfWiLm+6o019JD56se0RG9UoOf6CGx0XarmBR8imteXEEAcLCB2?=
+ =?us-ascii?Q?BX79S0m0fBQaYxtQS2nk4s7rY8dQKBXpJR4Hvxe9gUHY6kc6u1EtgZT5uHL4?=
+ =?us-ascii?Q?qegHNs4rw9SVJWKe19bS8pr/cfPnEh1HU9hbAWEDEenEMKXH5t+NrGoQhoSa?=
+ =?us-ascii?Q?IT6F/oh9c2ynT31ed/TnXm9UWILIPS9lE8ENQbbkVvCsvbxB4461JUoBsjvu?=
+ =?us-ascii?Q?8QqHlrh8tSalQ4gLO05xWAqWu4iQOjBXIeJYl/OK3O4dzho4OeMt931aerF8?=
+ =?us-ascii?Q?6LrGDvDdly47L1ZROrCCrIY2DzQrnXJlvCUOPVQFzsAa6Njbkl9GKFbrUizJ?=
+ =?us-ascii?Q?w3G1DXU3DBfUMgpcrDYM5ItxDvDp4iAfwu4xHg29q591ghRNre0gG3KrRwu0?=
+ =?us-ascii?Q?T00yoo9YLvpFnOLZHVyvqSIdB+MvVG0NcTxe71VdgSbOju9XbZUFkPNyx3Di?=
+ =?us-ascii?Q?B9RstdwBVM+lugXl1oaFWxmjrVGB+xuvatSqE9v1dRYYZ9RxZDD+vENzyIBM?=
+ =?us-ascii?Q?c74BVL4W718WtUGkXT1vPPjkjAAF0jr9IKVKuK4ywrGhdHvqllpVI24sniUn?=
+ =?us-ascii?Q?7QLxpkVFHdN0n4xYQyAIf4a813f5ytxV3wQ3onQyq2INqjpFjDexxB1jO1OM?=
+ =?us-ascii?Q?hewHrlCg+v5DyFByUWL2hmdNSQKQ9L5DVut6FSmQ3X/Oan14TTGphV7o9laI?=
+ =?us-ascii?Q?Xme78qPBrb7WA4P3g/nmxM9dAPv0C9LvOudabg9sEwbM/G4r9/Kmq/ZqSsIl?=
+ =?us-ascii?Q?bGi3xQblcvOJItCPCU2apU2GQRn1+5Gc4HvHpjbi7pQFMJl2ih272ua23N2S?=
+ =?us-ascii?Q?JflsyV5dSd/AOZq0GHmU5BTTzNS53cluTiGUrm841/zFepPuH4Qn0+e1zpMz?=
+ =?us-ascii?Q?qVKQ6bpfb3i2MizgAxN4WNHuuLWL2NQSp0yhTHyCow4rQ53CKfDoHmie5v8r?=
+ =?us-ascii?Q?XZBbagu39XRWjiJMZT/412qvzzyR6yukjn2gnlPFBWtht5Bza8evNU9MbP87?=
+ =?us-ascii?Q?b3+2IlUPr0DaMZ9KaGyf2q7hGuSaFNsppmm+03s4+fPMCjn7aHVqsCV5gJ3j?=
+ =?us-ascii?Q?NRoz/qKZzeWO8lgfsGQxbaJ+psPl5ABng9gTpl4g4n72WD3ztNlPnd5C06pd?=
+ =?us-ascii?Q?5sWU2Ls8FlMwwLM815ouzlwEql833Qrj4gA1XCs0NLAW?=
+X-OriginatorOrg: surban.net
+X-MS-Exchange-CrossTenant-Network-Message-Id: 347a6022-776a-4abe-1b4a-08dc55542f63
+X-MS-Exchange-CrossTenant-AuthSource: DB9P189MB1978.EURP189.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Apr 2024 09:38:44.1905
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: a27af4ff-c4b3-4dec-be8d-845345d2ab67
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FXYvx+kjHvK4FESGpOMczk0SS9Yfs3LapyZvWC2wl2nv2MW1oFIkp+PpCU3+5smTqhiFv6V/6uOb8WugXbH9Qg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2P189MB2405
 
-On Fri, Apr 5, 2024 at 8:53=E2=80=AFAM David Hildenbrand <david@redhat.com>=
- wrote:
-> >       mmu_notifier_invalidate_range_start(&range);
-> >       tlb_start_vma(&tlb, vma);
-> >       walk_page_range(vma->vm_mm, range.start, range.end,
-> >                       &madvise_free_walk_ops, &tlb);
-> >       tlb_end_vma(&tlb, vma);
-> >       mmu_notifier_invalidate_range_end(&range);
-> >
->
-> Indeed, we do setup the MMU notifier invalidation. We do the start/end
-> ... I was looking for PTE notifications.
->
-> I spotted the set_pte_at(), not a set_pte_at_notify() like we do in
-> other code. Maybe that's not required here (digging through
-> documentation I'm still left clueless). [...]
-> Absolutely unclear to me when we *must* to use it, or if it is. Likely
-> its a pure optimization when we're *changing* a PTE.
+Previously LE flow credits were returned to the
+sender even if the socket's receive buffer was
+full. This meant that no back-pressure
+was applied to the sender, thus it continued to
+send data, resulting in data loss without any
+error being reported.
 
-Yes, .change_pte() is just an optimization. The original point of it
-was for KSM, so that KVM could flip the sPTE to a new location without
-first zapping it. At the time there was also an .invalidate_page()
-callback, and both of them were *not* bracketed by calls to
-mmu_notifier_invalidate_range_{start,end}()
+This is fixed by stopping the return of LE flow
+credits when the receive buffer of an L2CAP socket
+is full. Returning of the credits is resumed, once
+the receive buffer is half-empty.
 
-Later on, both callbacks were changed to occur within an
-invalidate_range_start/end() block.
+Already received data is temporary stored within
+l2cap_pinfo, since Bluetooth LE provides no
+retransmission mechanism once the data has been
+acked by the physical layer.
 
-Commit 6bdb913f0a70 ("mm: wrap calls to set_pte_at_notify with
-invalidate_range_start and invalidate_range_end", 2012-10-09) did so
-for .change_pte(). The reason to do so was a bit roundabout, namely to
-allow sleepable .invalidate_page() hooks (because .change_pte() is not
-sleepable and at the time .invalidate_page() was used as a fallback
-for .change_pte()).
+Signed-off-by: Sebastian Urban <surban@surban.net>
+---
+ include/net/bluetooth/l2cap.h |  7 ++++-
+ net/bluetooth/l2cap_core.c    | 38 ++++++++++++++++++++++---
+ net/bluetooth/l2cap_sock.c    | 53 ++++++++++++++++++++++++++---------
+ 3 files changed, 79 insertions(+), 19 deletions(-)
 
-This however made KVM's usage of the .change_pte() callback completely
-moot, because KVM unmaps the sPTEs during .invalidate_range_start()
-and therefore .change_pte() has no hope of succeeding.
-
-(Commit 369ea8242c0f ("mm/rmap: update to new mmu_notifier semantic
-v2", 2017-08-31) is where the other set of non-bracketed calls to MMU
-notifier callbacks was changed; calls to
-mmu_notifier_invalidate_page() were replaced by calls to
-mmu_notifier_invalidate_range(), bracketed by calls to
-mmu_notifier_invalidate_range_{start,end}()).
-
-Since KVM is the only user of .change_pte(), we can remove
-change_pte() and set_pte_at_notify() completely.
-
-Paolo
-
-> __replace_page() uses it with __replace_page() when replacing the mapped
-> page. And migrate_vma_insert_page() uses it with MMU_NOTIFY_MIGRATE.
->
-> Other code (e.g., khugepaged) doesn't seem to use it as well.
->
-> ... so I guess it's fine? Confusing.
->
-> --
-> Cheers,
->
-> David / dhildenb
->
+diff --git a/include/net/bluetooth/l2cap.h b/include/net/bluetooth/l2cap.h
+index 92d7197f9a56..230c14ea944c 100644
+--- a/include/net/bluetooth/l2cap.h
++++ b/include/net/bluetooth/l2cap.h
+@@ -682,10 +682,15 @@ struct l2cap_user {
+ /* ----- L2CAP socket info ----- */
+ #define l2cap_pi(sk) ((struct l2cap_pinfo *) sk)
+ 
++struct l2cap_rx_busy {
++	struct list_head	list;
++	struct sk_buff		*skb;
++};
++
+ struct l2cap_pinfo {
+ 	struct bt_sock		bt;
+ 	struct l2cap_chan	*chan;
+-	struct sk_buff		*rx_busy_skb;
++	struct list_head	rx_busy;
+ };
+ 
+ enum {
+diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
+index ab5a9d42fae7..c78af7fad255 100644
+--- a/net/bluetooth/l2cap_core.c
++++ b/net/bluetooth/l2cap_core.c
+@@ -63,6 +63,8 @@ static void l2cap_retrans_timeout(struct work_struct *work);
+ static void l2cap_monitor_timeout(struct work_struct *work);
+ static void l2cap_ack_timeout(struct work_struct *work);
+ 
++static void l2cap_chan_le_send_credits(struct l2cap_chan *chan);
++
+ static inline u8 bdaddr_type(u8 link_type, u8 bdaddr_type)
+ {
+ 	if (link_type == LE_LINK) {
+@@ -5714,17 +5716,34 @@ static int l2cap_resegment(struct l2cap_chan *chan)
+ 	return 0;
+ }
+ 
+-void l2cap_chan_busy(struct l2cap_chan *chan, int busy)
++static void l2cap_chan_busy_ertm(struct l2cap_chan *chan, int busy)
+ {
+ 	u8 event;
+ 
+-	if (chan->mode != L2CAP_MODE_ERTM)
+-		return;
+-
+ 	event = busy ? L2CAP_EV_LOCAL_BUSY_DETECTED : L2CAP_EV_LOCAL_BUSY_CLEAR;
+ 	l2cap_tx(chan, NULL, NULL, event);
+ }
+ 
++static void l2cap_chan_busy_le(struct l2cap_chan *chan, int busy)
++{
++	if (busy) {
++		set_bit(CONN_LOCAL_BUSY, &chan->conn_state);
++	} else {
++		clear_bit(CONN_LOCAL_BUSY, &chan->conn_state);
++		l2cap_chan_le_send_credits(chan);
++	}
++}
++
++void l2cap_chan_busy(struct l2cap_chan *chan, int busy)
++{
++	if (chan->mode == L2CAP_MODE_ERTM) {
++		l2cap_chan_busy_ertm(chan, busy);
++	} else if (chan->mode == L2CAP_MODE_LE_FLOWCTL ||
++		   chan->mode == L2CAP_MODE_EXT_FLOWCTL) {
++		l2cap_chan_busy_le(chan, busy);
++	}
++}
++
+ static int l2cap_rx_queued_iframes(struct l2cap_chan *chan)
+ {
+ 	int err = 0;
+@@ -6514,6 +6533,11 @@ static void l2cap_chan_le_send_credits(struct l2cap_chan *chan)
+ 	struct l2cap_le_credits pkt;
+ 	u16 return_credits;
+ 
++	if (test_bit(CONN_LOCAL_BUSY, &chan->conn_state)) {
++		BT_DBG("busy chan %p not returning credits to sender", chan);
++		return;
++	}
++
+ 	return_credits = (chan->imtu / chan->mps) + 1;
+ 
+ 	if (chan->rx_credits >= return_credits)
+@@ -6542,6 +6566,12 @@ static int l2cap_ecred_recv(struct l2cap_chan *chan, struct sk_buff *skb)
+ 	/* Wait recv to confirm reception before updating the credits */
+ 	err = chan->ops->recv(chan, skb);
+ 
++	if (err < 0) {
++		BT_ERR("Queueing received LE L2CAP data failed");
++		l2cap_send_disconn_req(chan, ECONNRESET);
++		return err;
++	}
++
+ 	/* Update credits whenever an SDU is received */
+ 	l2cap_chan_le_send_credits(chan);
+ 
+diff --git a/net/bluetooth/l2cap_sock.c b/net/bluetooth/l2cap_sock.c
+index ee7a41d6994f..3b0fb6e0b61b 100644
+--- a/net/bluetooth/l2cap_sock.c
++++ b/net/bluetooth/l2cap_sock.c
+@@ -1177,7 +1177,9 @@ static int l2cap_sock_recvmsg(struct socket *sock, struct msghdr *msg,
+ 	else
+ 		err = bt_sock_recvmsg(sock, msg, len, flags);
+ 
+-	if (pi->chan->mode != L2CAP_MODE_ERTM)
++	if (pi->chan->mode != L2CAP_MODE_ERTM &&
++	    pi->chan->mode != L2CAP_MODE_LE_FLOWCTL &&
++	    pi->chan->mode != L2CAP_MODE_EXT_FLOWCTL)
+ 		return err;
+ 
+ 	/* Attempt to put pending rx data in the socket buffer */
+@@ -1187,11 +1189,15 @@ static int l2cap_sock_recvmsg(struct socket *sock, struct msghdr *msg,
+ 	if (!test_bit(CONN_LOCAL_BUSY, &pi->chan->conn_state))
+ 		goto done;
+ 
+-	if (pi->rx_busy_skb) {
+-		if (!__sock_queue_rcv_skb(sk, pi->rx_busy_skb))
+-			pi->rx_busy_skb = NULL;
+-		else
++	while (!list_empty(&pi->rx_busy)) {
++		struct l2cap_rx_busy *rx_busy =
++			list_first_entry(&pi->rx_busy,
++					 struct l2cap_rx_busy,
++					 list);
++		if (__sock_queue_rcv_skb(sk, rx_busy->skb) < 0)
+ 			goto done;
++		list_del(&rx_busy->list);
++		kfree(rx_busy);
+ 	}
+ 
+ 	/* Restore data flow when half of the receive buffer is
+@@ -1459,17 +1465,20 @@ static struct l2cap_chan *l2cap_sock_new_connection_cb(struct l2cap_chan *chan)
+ static int l2cap_sock_recv_cb(struct l2cap_chan *chan, struct sk_buff *skb)
+ {
+ 	struct sock *sk = chan->data;
++	struct l2cap_pinfo *pi = l2cap_pi(sk);
+ 	int err;
+ 
+ 	lock_sock(sk);
+ 
+-	if (l2cap_pi(sk)->rx_busy_skb) {
++	if (chan->mode == L2CAP_MODE_ERTM && !list_empty(&pi->rx_busy)) {
+ 		err = -ENOMEM;
+ 		goto done;
+ 	}
+ 
+ 	if (chan->mode != L2CAP_MODE_ERTM &&
+-	    chan->mode != L2CAP_MODE_STREAMING) {
++	    chan->mode != L2CAP_MODE_STREAMING &&
++	    chan->mode != L2CAP_MODE_LE_FLOWCTL &&
++	    chan->mode != L2CAP_MODE_EXT_FLOWCTL) {
+ 		/* Even if no filter is attached, we could potentially
+ 		 * get errors from security modules, etc.
+ 		 */
+@@ -1480,17 +1489,28 @@ static int l2cap_sock_recv_cb(struct l2cap_chan *chan, struct sk_buff *skb)
+ 
+ 	err = __sock_queue_rcv_skb(sk, skb);
+ 
+-	/* For ERTM, handle one skb that doesn't fit into the recv
++	/* For ERTM and LE, handle a skb that doesn't fit into the recv
+ 	 * buffer.  This is important to do because the data frames
+ 	 * have already been acked, so the skb cannot be discarded.
+ 	 *
+ 	 * Notify the l2cap core that the buffer is full, so the
+ 	 * LOCAL_BUSY state is entered and no more frames are
+ 	 * acked and reassembled until there is buffer space
+-	 * available.
++	 * available. In the case of LE this blocks returning of flow
++	 * credits.
+ 	 */
+-	if (err < 0 && chan->mode == L2CAP_MODE_ERTM) {
+-		l2cap_pi(sk)->rx_busy_skb = skb;
++	if (err < 0 &&
++	    (chan->mode == L2CAP_MODE_ERTM ||
++	     chan->mode == L2CAP_MODE_LE_FLOWCTL ||
++	     chan->mode == L2CAP_MODE_EXT_FLOWCTL)) {
++		struct l2cap_rx_busy *rx_busy =
++			kmalloc(sizeof(*rx_busy), GFP_KERNEL);
++		if (!rx_busy) {
++			err = -ENOMEM;
++			goto done;
++		}
++		rx_busy->skb = skb;
++		list_add_tail(&rx_busy->list, &pi->rx_busy);
+ 		l2cap_chan_busy(chan, 1);
+ 		err = 0;
+ 	}
+@@ -1716,6 +1736,8 @@ static const struct l2cap_ops l2cap_chan_ops = {
+ 
+ static void l2cap_sock_destruct(struct sock *sk)
+ {
++	struct l2cap_rx_busy *rx_busy, *next;
++
+ 	BT_DBG("sk %p", sk);
+ 
+ 	if (l2cap_pi(sk)->chan) {
+@@ -1723,9 +1745,10 @@ static void l2cap_sock_destruct(struct sock *sk)
+ 		l2cap_chan_put(l2cap_pi(sk)->chan);
+ 	}
+ 
+-	if (l2cap_pi(sk)->rx_busy_skb) {
+-		kfree_skb(l2cap_pi(sk)->rx_busy_skb);
+-		l2cap_pi(sk)->rx_busy_skb = NULL;
++	list_for_each_entry_safe(rx_busy, next, &l2cap_pi(sk)->rx_busy, list) {
++		kfree_skb(rx_busy->skb);
++		list_del(&rx_busy->list);
++		kfree(rx_busy);
+ 	}
+ 
+ 	skb_queue_purge(&sk->sk_receive_queue);
+@@ -1830,6 +1853,8 @@ static struct sock *l2cap_sock_alloc(struct net *net, struct socket *sock,
+ 	sk->sk_destruct = l2cap_sock_destruct;
+ 	sk->sk_sndtimeo = L2CAP_CONN_TIMEOUT;
+ 
++	INIT_LIST_HEAD(&l2cap_pi(sk)->rx_busy);
++
+ 	chan = l2cap_chan_create();
+ 	if (!chan) {
+ 		sk_free(sk);
+-- 
+2.34.1
 
 
