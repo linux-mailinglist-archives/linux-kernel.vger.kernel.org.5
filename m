@@ -1,138 +1,223 @@
-Return-Path: <linux-kernel+bounces-133189-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133190-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE92289A020
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:48:19 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47A3A89A024
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 16:48:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A684287672
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:48:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB4971F21A17
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 14:48:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CB6E16F82A;
-	Fri,  5 Apr 2024 14:48:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7692516F29F;
+	Fri,  5 Apr 2024 14:48:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Dwol0GCP"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mCkoDMMQ"
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 259D116F280;
-	Fri,  5 Apr 2024 14:48:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F23316EC1B;
+	Fri,  5 Apr 2024 14:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712328491; cv=none; b=LUFsDxlIPRpMyJylD3fmQLddTD+uCdz94Vpv1Z2lMUoeV3zHV0WBNh4cQx59G4MWbCZ9ttVj72o4dJvJW6A77hVXdflkdmObv+ModvsH82kAor28cz5Mu28ODBBs7OU2ZmYm6r/PzvxJh6V897dhwLJSBEwyaH5vZ3B4jNZC9e4=
+	t=1712328510; cv=none; b=lONL+vFAlwsDgTIV6a/GYGQIwYAGmyQpbnvQSTNA+i3yBOl9Q1MExJQvTQmSLOxTT9z9sTloppyT7qnhELL8xZJ89YtdZXPeNdRomMvDshPc6UzY7Tdl98hYVeBt7lad8b+YeTrwPOjTmUfATDklXgOedSn6hB0Rf8FJfOg8KkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712328491; c=relaxed/simple;
-	bh=LreOfBm3nT3gJWEyzyhSzgs3L/UNn7htcugC08IxS+o=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FhgyibBrjJJerqiN/xeELx8ulCCrttsO0ifuLkAQRilvHTt8dc17/78NwwTJnSXQEqrJQ8DisuzIHcFqbHjvPn01zf4LD/EJBHgwdOEMyr7Gr7BsIfFsUNcHoR6ig7bid8SbbcBFr9WiRyN282kf8SRPz1aT+thhXGL6mPaITkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Dwol0GCP; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712328490; x=1743864490;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=LreOfBm3nT3gJWEyzyhSzgs3L/UNn7htcugC08IxS+o=;
-  b=Dwol0GCPWx+Us9Nc1oDUYLAbXkYQJcB5drZ+e/z/NKeBnRPKlHflWqwg
-   Yw4hfY96xZ99qi69FRx5ApTzn4s2dFblzbbBBZNmELoBZmGrLsyqtM1Tt
-   7XjrCxjQMHslh/maB2ZlqYKL/yOQMjvgJRfWGYWnGNV7Vntchhy9rR8TZ
-   Bb2dQ7D0gvEJ7yATUvatm8poVjm9GIXwUZIigfZX2E2sxkH557mmMjsO5
-   rZ7L7bNjJUz2yHE8sx+31QYnqvC2LiTeEdXaUSgSRysjyX39H+VV/136X
-   wLuzAh2SxZvbL9cXjjV9ut1CJiMFoQgDWGkSykGgExg565dSBn0UcBDyS
-   g==;
-X-CSE-ConnectionGUID: pNjzk4eXTSSVd+EE9ISQhg==
-X-CSE-MsgGUID: xKDuxmsPSK60Uth0ervh2Q==
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="11478923"
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="11478923"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 07:48:09 -0700
-X-CSE-ConnectionGUID: H55LyW5ASaqr4vhL9J0MYQ==
-X-CSE-MsgGUID: +963A5O0TASYUpMZv+tuJQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,181,1708416000"; 
-   d="scan'208";a="23821308"
-Received: from dtorrice-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.41.202])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 07:47:59 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Peter Zijlstra <peterz@infradead.org>, Andrzej Hajda
- <andrzej.hajda@intel.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-ia64@vger.kernel.org,
- linux-sh@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
- linux-hexagon@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- intel-gfx@lists.freedesktop.org, linux-xtensa@linux-xtensa.org, Arnd
- Bergmann <arnd@arndb.de>, Boqun Feng <boqun.feng@gmail.com>,
- linux-m68k@lists.linux-m68k.org, openrisc@lists.librecores.org,
- loongarch@lists.linux.dev, Rodrigo Vivi <rodrigo.vivi@intel.com>, Andy
- Shevchenko <andriy.shevchenko@linux.intel.com>,
- linux-arm-kernel@lists.infradead.org, linux-parisc@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-alpha@vger.kernel.org, Andrew Morton
- <akpm@linux-foundation.org>, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [Intel-gfx] [PATCH v5 0/7] Introduce __xchg, non-atomic xchg
-In-Reply-To: <Y/y0/VoPAVCXGKp3@hirez.programming.kicks-ass.net>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20230118153529.57695-1-andrzej.hajda@intel.com>
- <Y/ZLH5F8LA3H10aL@hirez.programming.kicks-ass.net>
- <17f40b7c-f98d-789d-fa19-12ec077b756a@intel.com>
- <Y/y0/VoPAVCXGKp3@hirez.programming.kicks-ass.net>
-Date: Fri, 05 Apr 2024 17:47:56 +0300
-Message-ID: <87r0fjc1cz.fsf@intel.com>
+	s=arc-20240116; t=1712328510; c=relaxed/simple;
+	bh=0VQFXtDRSz4M6IrqXt9cEwJScvhuHkihccKjUXmXepU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=m4DeTF/Z5Z7jS7Gh20kemH5sY6V11pPzDE3yRagwI5svxZ75IKUEs7I+KtFt5BvrBMzffqCinYrV6QoZMYtL/YyxR52sKN5MxR1FwvO1M5A3MHHC75GGKTsoex+SyKaoflfuOHjzfWKiLwHwbPC+u7CS5CYHPg9z4tu96/vDqc0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mCkoDMMQ; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e89c87a72eso1553437a34.0;
+        Fri, 05 Apr 2024 07:48:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712328508; x=1712933308; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sKzek6Yxpsl4qXpk5d2XtdtZIpLAzQsbPQmoIKymGH4=;
+        b=mCkoDMMQpL1BCvdQdNCr5ASS68lT2aOA7eVMeH8qnQedHqqMKeeGkW8n3yzH/SfT9W
+         CflUAL5k3U/P6iccdFRLxERXqj6E6MWY7hrgj9syiQdryCz7hmo69/pvXQ6MsEuhMoQc
+         6aBmQ1P0YMIwdZPIL6sqyzX3yIvbc0ZKpAmnE0V/RZ1QTPULaDTsdxSir0brBi6HZyI1
+         jjFbKNXhvrc0tPQlLYsXVvm/oDMvykPXoU5wQsLGBV9QkUcPYCGwpJBUWU7AnsD8/cAZ
+         A2SV5x1QiIn4cE7gBKKTE8KGHt/BPrB3SUwczJuO+cYOmAL+jwS9ozyLGCavoNsq7Y0j
+         +ENQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712328508; x=1712933308;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sKzek6Yxpsl4qXpk5d2XtdtZIpLAzQsbPQmoIKymGH4=;
+        b=pRPlXgZ7MLPCW7iMWS9kxfaEwwNDYpNaWUwYFjo3tar7Ey/iICbgNR+g9/LAwjEWq8
+         t35cpSylZ9DvIvcO+pWT9oEgBqkTxue9XgZao+S8nuZoGykV16X5XlVNOVmdOuOOk7gN
+         7Z32kDwKr4fnV+RbN7sXVMPTqjIf9on1V/DY1Hvb0X9pUYsRPsehVOHXuYVU11MBtLev
+         lZKMMkDoQ7+R9NF4ZJtlIFwvlG0yOrkCGSdYqskB5SUE35osJkQIXBOxdSoh51sdq6nV
+         msjjvtBZ6/sqOuWJm2SIKZnXsf8y8xMlT7pQmcYBCNEAAekMV5wmEFFa5+JSjEvC+8F2
+         XfFg==
+X-Forwarded-Encrypted: i=1; AJvYcCV1Z+omXjlALEaq0eD1C91pmVVVyVAkA2dZ7IX1z/mRFUWZB1k0dzlw0rJSLXb4b6fCB/vxpN4Fh8sk34hZpuwyY1GzJ4L+TXcPwBoHxYUAsjiEVtgYbe4zM4NfaP+8tr2nDuIvTABJtLgv9A==
+X-Gm-Message-State: AOJu0YwoZ8mTPFxaMdm3ekvJKaUTtlYWBCV3Od7xmr7Qt3Da5xlUwqcr
+	Cvdwpr0+0/Mg27KVd36f9PvUygUqVZWdJvJVkJBVYljuQmR8RowjMhCQcWOc3399z35Ha37wdH1
+	rg8KXrLjhT5FPWY/fiMnyUjr+q48=
+X-Google-Smtp-Source: AGHT+IFvfuAhJ3eeyIyRMcKMWX9PCOkhtxWoVIBPUmUnlj7V2N/+mzrWdjY83DsnGQIh08lIzGE0D/n+GUbaWvbe1E8=
+X-Received: by 2002:a9d:7413:0:b0:6e7:548e:271a with SMTP id
+ n19-20020a9d7413000000b006e7548e271amr1648002otk.17.1712328507996; Fri, 05
+ Apr 2024 07:48:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <00000000000098f75506153551a1@google.com> <0000000000002f2066061539e54b@google.com>
+ <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
+ <20240404081122.GQ538574@ZenIV> <20240404082110.GR538574@ZenIV>
+ <CAOQ4uximHfK78KFabJA3Hf4R0En6-GfJ3eF96Lzmc94PGuGayA@mail.gmail.com> <20240405-speerwerfen-quetschen-d3de254cf830@brauner>
+In-Reply-To: <20240405-speerwerfen-quetschen-d3de254cf830@brauner>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 5 Apr 2024 17:48:15 +0300
+Message-ID: <CAOQ4uxjydrmgk-z6wu5PtP_4GjWH0n75Cvz6oEUcfSuneA0Hag@mail.gmail.com>
+Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
+To: Christian Brauner <brauner@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>, 
+	syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>, 
+	gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org, 
+	valesini@yandex-team.ru, Christoph Hellwig <hch@lst.de>, Jan Kara <jack@suse.cz>, 
+	Miklos Szeredi <miklos@szeredi.hu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 27 Feb 2023, Peter Zijlstra <peterz@infradead.org> wrote:
-> On Thu, Feb 23, 2023 at 10:24:19PM +0100, Andrzej Hajda wrote:
->> On 22.02.2023 18:04, Peter Zijlstra wrote:
->> > On Wed, Jan 18, 2023 at 04:35:22PM +0100, Andrzej Hajda wrote:
->> > 
->> > > Andrzej Hajda (7):
->> > >    arch: rename all internal names __xchg to __arch_xchg
->> > >    linux/include: add non-atomic version of xchg
->> > >    arch/*/uprobes: simplify arch_uretprobe_hijack_return_addr
->> > >    llist: simplify __llist_del_all
->> > >    io_uring: use __xchg if possible
->> > >    qed: use __xchg if possible
->> > >    drm/i915/gt: use __xchg instead of internal helper
->> > 
->> > Nothing crazy in here I suppose, I somewhat wonder why you went through
->> > the trouble, but meh.
->> 
->> If you are asking why I have proposed this patchset, then the answer is
->> simple, 1st I've tried to find a way to move internal i915 helper to core
->> (see patch 7).
->> Then I was looking for possible other users of this helper. And apparently
->> there are many of them, patches 3-7 shows some.
->> 
->> 
->> > 
->> > You want me to take this through te locking tree (for the next cycle,
->> > not this one) where I normally take atomic things or does someone else
->> > want this?
->> 
->> If you could take it I will be happy.
+On Fri, Apr 5, 2024 at 1:47=E2=80=AFPM Christian Brauner <brauner@kernel.or=
+g> wrote:
 >
-> OK, I'll go queue it in tip/locking/core after -rc1. Thanks!
+> On Thu, Apr 04, 2024 at 12:33:40PM +0300, Amir Goldstein wrote:
+> > On Thu, Apr 4, 2024 at 11:21=E2=80=AFAM Al Viro <viro@zeniv.linux.org.u=
+k> wrote:
+> > >
+> > > On Thu, Apr 04, 2024 at 09:11:22AM +0100, Al Viro wrote:
+> > > > On Thu, Apr 04, 2024 at 09:54:35AM +0300, Amir Goldstein wrote:
+> > > > >
+> > > > > In the lockdep dependency chain, overlayfs inode lock is taken
+> > > > > before kernfs internal of->mutex, where kernfs (sysfs) is the low=
+er
+> > > > > layer of overlayfs, which is sane.
+> > > > >
+> > > > > With /sys/power/resume (and probably other files), sysfs also
+> > > > > behaves as a stacking filesystem, calling vfs helpers, such as
+> > > > > lookup_bdev() -> kern_path(), which is a behavior of a stacked
+> > > > > filesystem, without all the precautions that comes with behaving
+> > > > > as a stacked filesystem.
+> > > >
+> > > > No.  This is far worse than anything stacked filesystems do - it's
+> > > > an arbitrary pathname resolution while holding a lock.
+> > > > It's not local.  Just about anything (including automounts, etc.)
+> > > > can be happening there and it pushes the lock in question outside
+> > > > of *ALL* pathwalk-related locks.  Pathname doesn't have to
+> > > > resolve to anything on overlayfs - it can just go through
+> > > > a symlink on it, or walk into it and traverse a bunch of ..
+> > > > afterwards, etc.
+> > > >
+> > > > Don't confuse that with stacking - it's not even close.
+> > > > You can't use that anywhere near overlayfs layers.
+> > > >
+> > > > Maybe isolate it into a separate filesystem, to be automounted
+> > > > on /sys/power.  And make anyone playing with overlayfs with
+> > > > sysfs as a layer mount the damn thing on top of power/ in your
+> > > > overlayfs.  But using that thing as a part of layer is
+> > > > a non-starter.
+> >
+> > I don't follow what you are saying.
+> > Which code is in non-starter violation?
+> > kernfs for calling lookup_bdev() with internal of->mutex held?
+> > Overlayfs for allowing sysfs as a lower layer and calling
+> > vfs_llseek(lower_sysfs_file,...) during copy up while ovl inode is held
+> > for legit reasons (e.g. from ovl_rename())?
+> >
+> > >
+> > > Incidentally, why do you need to lock overlayfs inode to call
+> > > vfs_llseek() on the underlying file?  It might (or might not)
+> > > need to lock the underlying file (for things like ->i_size,
+> > > etc.), but that will be done by ->llseek() instance and it
+> > > would deal with the inode in the layer, not overlayfs one.
+> >
+> > We do not (anymore) lock ovl inode in ovl_llseek(), see:
+> > b1f9d3858f72 ovl: use ovl_inode_lock in ovl_llseek()
+> > but ovl inode is held in operations (e.g. ovl_rename)
+> > which trigger copy up and call vfs_llseek() on the lower file.
+> >
+> > >
+> > > Similar question applies to ovl_write_iter() - why do you
+> > > need to hold the overlayfs inode locked during the call of
+> > > backing_file_write_iter()?
+> > >
+> >
+> > Not sure. This question I need to defer to Miklos.
+> > I see in several places the pattern:
+> >         inode_lock(inode);
+> >         /* Update mode */
+> >         ovl_copyattr(inode);
+> >         ret =3D file_remove_privs(file);
+> > ...
+> >         /* Update size */
+> >         ovl_file_modified(file);
+> > ...
+> >         inode_unlock(inode);
+> >
+> > so it could be related to atomic remove privs and update mtime,
+> > but possibly we could convert all of those inode_lock() to
+> > ovl_inode_lock() (i.e. internal lock below vfs inode lock).
+> >
+> > [...]
+> > > Consider the scenario when unlink() is called on that sucker
+> > > during the write() that triggers that pathwalk.  We have
+> > >
+> > > unlink: blocked on overlayfs inode of file, while holding the parent =
+directory.
+> > > write: holding the overlayfs inode of file and trying to resolve a pa=
+thname
+> > > that contains .../power/suspend_stats/../../...; blocked on attempt t=
+o lock
+> > > parent so we could do a lookup in it.
+> >
+> > This specifically cannot happen because sysfs is not allowed as an
+> > upper layer only as a lower layer, so overlayfs itself will not be writ=
+ing to
+> > /sys/power/resume.
+>
+> I don't understand that part. If overlayfs uses /sys/power/ as a lower
+> layer it can open and write to /sys/power/resume, no?
+>
+> Honestly, why don't you just block /sys/power from appearing in any
+> layer in overlayfs? This seems like such a niche use-case that it's so
+> unlikely that this will be used that I would just try and kill it.
 
-Is this where the series fell between the cracks, or was there some
-follow-up that I missed?
+I do not want to special case /sys/power in overlayfs.
 
-I think this would still be useful. Andrzej, would you mind rebasing and
-resending if there are no objections?
+>
+> If you do it like Al suggested and switch it to an automount you get
 
-BR,
-Jani.
+Not important enough IMO to make this change.
 
+> that for free. But I guess you can also just block it without that.
+>
+> (Frankly, I find it weird that sysfs is allowed as a layer in any case. I
+> completely forgot about this. Imho, both procfs and sysfs should not be
+> usable as a lower layer - procfs is, I know - and then only select parts
+> should be like /sys/fs/cgroup or sm where I can see the container people
+> somehow using this to mess with the cgroup tree or something.)
+>
 
--- 
-Jani Nikula, Intel
+I do not know if using sysfs as a lower layer is an important use case,
+but I have a feeling that people already may do it, so I cannot regress it
+without a good reason.
+
+Al's suggestion to annotate writable kernfs files as a different class from
+readonly kernfs files seems fine by me to silence lockdep false positive.
+
+I will try to feed this solution to syzbot.
+
+Thanks,
+Amir.
 
