@@ -1,159 +1,142 @@
-Return-Path: <linux-kernel+bounces-133590-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBFD289A607
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:23:04 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44DAA89A60E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 23:25:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 401FA1F21241
-	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:23:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F08D2282F0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  5 Apr 2024 21:25:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 541AB175549;
-	Fri,  5 Apr 2024 21:22:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB80A175552;
+	Fri,  5 Apr 2024 21:25:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="pxtPJ3qT"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AjQSSyP9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5E017334F
-	for <linux-kernel@vger.kernel.org>; Fri,  5 Apr 2024 21:22:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED0561C36;
+	Fri,  5 Apr 2024 21:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712352174; cv=none; b=UwkO9HFt1D7nVG9/5vevQOGlSUoCOkbbm1AT2IIgPgM2IEvujf4a5ot6jeSMtBZ973UUzPJVBKgS+P+pYD6I+YrsVdPEz0keZeiCrPlg8Oq1Y5slK3NjY+2rMTyPmqy4iR+Uj37hC08QQUFWGDvQXSfKp2moso8YnnpmILpN2qg=
+	t=1712352344; cv=none; b=Ij1VQ8GgcGL33HR5N67UOD/4AJEPOEJlUpFJG2sCjuZUo2vgD6/DYimjtuD5ax8mRiJ5RptYIpTbi8E5MpDXrW38RC1/uUcw4DNLQnjPXXaig8NeHjNjO9Y2oPNNfR7oduUyNsQRqAY57E531cvLWy0FVCTfmUNB1d/DrLq3AQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712352174; c=relaxed/simple;
-	bh=+XGvr/9UwiEYoJxySupRBV0fX9P8bN9Wu4aGZNBWzG0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tKvW5uAwhBCpXZv8Ni47BbGsyHubq/QlRSYNuOWa6Yg61wOEtFlohIXzPjTCkc+8kEuPHtfHN7cN7wHw/537lrsxN7arcKAXR3CejobIr0r4OK49zcFhFC2t7OLNIPUpdBLOA6bKf/Ykuw79gyqzUWFviOZscqbyJi5aYZSbaH0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=pxtPJ3qT; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-56e2e851794so4220a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 14:22:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712352171; x=1712956971; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2bOittMnFEaGoOVCuwnFtfdUUNfSo5v/D1jXHfwcvf4=;
-        b=pxtPJ3qT4wTIVSuqwhApOuUxV+A8e4pJWttpwvpjSUMq8u8Rm54z96eT6oJwxrKOOL
-         XeXmeVPHBFbBFSdkkKcizZUmtu6GL8GS/rh5SGcnU7VdLvrLEiNeYJTSO0Zu3lKa8CSe
-         +XB+tkJHk3XTzKxSvsllpUlv6O5j8zOHcHBdHrIMMfQm7ZAAKYITSAjhzIjuIONI6Fqu
-         wfQDBy4uIJjmu5P3HAqKBTRmKuWwohVVoaoE43XmL/cqCGV2kjW2mGfOUDTx6D2pZMcP
-         N1S4TZaHIL1bD8nyI3KgyXQf7UpvzptFwuvRRuG8CbjloXzgnvvsfYKlrme1TMTzM9tw
-         v2UQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712352171; x=1712956971;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2bOittMnFEaGoOVCuwnFtfdUUNfSo5v/D1jXHfwcvf4=;
-        b=SucnTRNDDVA3iVPXiLUQ+HxczIZ6jZci8DUEM6iLhUFOlobScvcI/J1Z4Eq8EQnwJY
-         Ce7xJr6jOErYMVMhEP4O+jqL0dAs3oHAeycyo4RiPX+5U8AVnejEVGNCMfYmV8ehu6bl
-         AiQa4LkCMY2pWTGtGUlXC0ESMee0l8k3Ywr5svUoghEr0oKucdopXUYOtDw+zPUfAxxx
-         tFchZUqbl9dw59TlSg26KOVTYM0lhzqQbg7QgTNqduxna1VtRpfTxLzoyWhoFfYs3Hze
-         y6Lb1bgRXJqOXy4PYMBhOaSgqtd7ToYhoKqnUT6tgfV5YHbU9PtSDwmi5OnV4DGRbfNj
-         KLIg==
-X-Forwarded-Encrypted: i=1; AJvYcCUiU1SfgeiUBZ5iQe9l9fKx30wphEl11bajEQaJInPVJP/3u2UP/e9820zpwQOW7e7qOIMOv/vHtfCTqxBvCYbtOgsWH2TSwdSA7y29
-X-Gm-Message-State: AOJu0YysECvKEX941iwIBErHam3BsyMM2IRrBCDkfwc5+v5Uj4wtOk65
-	GC+9hJDwQqTH8lkaiZJS21mkGWJNEAWp5gXRY48qewZwDaAtTzDBo+1QkbZ3NvtZGYgRoY+B2xm
-	W6Rl/3ULEvxhqUAoPRQBAFwNxlxVjyTLZwNp7Dkg+33tGaiVBc172
-X-Google-Smtp-Source: AGHT+IHW+7mf82GixhuIT44gfxUqRfQhYZqSPvI+8Wc67f6b41aoVw8JPchWHJiiUx52XXEGD+SfiIIS/CP4s+sHzXI=
-X-Received: by 2002:a05:6402:c9b:b0:56e:3486:25a3 with SMTP id
- cm27-20020a0564020c9b00b0056e348625a3mr6488edb.1.1712352170998; Fri, 05 Apr
- 2024 14:22:50 -0700 (PDT)
+	s=arc-20240116; t=1712352344; c=relaxed/simple;
+	bh=qtrepOP/++YzudVg2mOAW7Yr5SJM+9y2cmpgD1N/WK8=;
+	h=Message-ID:Content-Type:MIME-Version:In-Reply-To:References:
+	 Subject:From:Cc:To:Date; b=K2l5pwvDbDqN50PYPLokeAKEVV0hn6lajy0hlxMvkw3HI96PrzQywIYCPwohhR1YbfPvUA5K+ru27jQc7Z/rqJQGPiYdzOjO005kv50JfWmg9bAIsGH8woYbLINfcWipXUBP7Gzka6Xf3R43EGI36FLvHMEAvgNZmng1Ob6tJiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AjQSSyP9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E47BC433F1;
+	Fri,  5 Apr 2024 21:25:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712352343;
+	bh=qtrepOP/++YzudVg2mOAW7Yr5SJM+9y2cmpgD1N/WK8=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=AjQSSyP9hOpfox3T1hgMDJ7CFV7RxrxK8yREv/JBVV1RehSGh+ziIrXPFGZg1DJS6
+	 8EWK52CGbPA7vlea/Xa5DjpX3MvN95FE/7dLmPXsouPMzgRl/Hq0WR2WTCnoeE34OO
+	 iKlzMv2MpaOnPeUvP+f0FAx8gIKuvonJKe9QZu6O8SFA0aHrn0pRcnDCjjIYS1n54H
+	 EowcI3w5q93MuNcEaROcjFXPfdQa6flqWmxkMJb0f2CHofm9SIVwkBZBYWsI8dnOKu
+	 wc0letDzZJmFwZSouoJrLVc8yd8FyuwiF18eC9FYGPkNepOGz1GAjjU9lvdrIPk3xv
+	 RmZ5zbvUhQ6Xw==
+Message-ID: <9d738246b5043cd2a3c1dc7609805f0f.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <0000000000002ca935060b5a7682@google.com> <0000000000009c0f98061550a827@google.com>
-In-Reply-To: <0000000000009c0f98061550a827@google.com>
-From: Eric Dumazet <edumazet@google.com>
-Date: Fri, 5 Apr 2024 23:22:40 +0200
-Message-ID: <CANn89iLxVgrd2QoFkv0xS6ppyZTyO5Hnv5+M5gGg99BQ09n5Ng@mail.gmail.com>
-Subject: Re: [syzbot] [net?] WARNING in cleanup_net (3)
-To: syzbot <syzbot+9ada62e1dc03fdc41982@syzkaller.appspotmail.com>
-Cc: davem@davemloft.net, hdanton@sina.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
-	syzkaller-bugs@googlegroups.com, xrivendell7@gmail.com
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <ZgaceJT2FMsQVoPa@hu-varada-blr.qualcomm.com>
+References: <20240328075936.223461-1-quic_varada@quicinc.com> <20240328075936.223461-4-quic_varada@quicinc.com> <80131262978e6e4799864cdfd0784fdf.sboyd@kernel.org> <ZgaceJT2FMsQVoPa@hu-varada-blr.qualcomm.com>
+Subject: Re: [PATCH v5 3/5] clk: qcom: common: Add interconnect clocks support
+From: Stephen Boyd <sboyd@kernel.org>
+Cc: andersson@kernel.org, conor+dt@kernel.org, devicetree@vger.kernel.org, djakov@kernel.org, dmitry.baryshkov@linaro.org, konrad.dybcio@linaro.org, krzysztof.kozlowski+dt@linaro.org, linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, mturquette@baylibre.com, quic_anusha@quicinc.com, robh@kernel.org
+To: Varadarajan Narayanan <quic_varada@quicinc.com>
+Date: Fri, 05 Apr 2024 14:25:41 -0700
+User-Agent: alot/0.10
 
-On Fri, Apr 5, 2024 at 5:00=E2=80=AFAM syzbot
-<syzbot+9ada62e1dc03fdc41982@syzkaller.appspotmail.com> wrote:
->
-> syzbot has found a reproducer for the following issue on:
->
-> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kerne=
-l..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D11fdccc518000=
-0
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dfe78468a74fdc=
-3b7
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3D9ada62e1dc03fdc=
-41982
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
-ian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D16696223180=
-000
->
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/0f7abe4afac7/dis=
-k-fe46a7dd.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/82598d09246c/vmlinu=
-x-fe46a7dd.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/efa23788c875/b=
-zImage-fe46a7dd.xz
->
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+9ada62e1dc03fdc41982@syzkaller.appspotmail.com
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 1 PID: 5236 at lib/ref_tracker.c:179 ref_tracker_dir_exit+0=
-x411/0x550 lib/ref_tracker.c:179
-> Modules linked in:
-> CPU: 1 PID: 5236 Comm: kworker/u8:6 Not tainted 6.8.0-syzkaller-08951-gfe=
-46a7dd189e #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS G=
-oogle 03/27/2024
-> Workqueue: netns cleanup_net
-> RIP: 0010:ref_tracker_dir_exit+0x411/0x550 lib/ref_tracker.c:179
-> Code: 48 8b 1c 24 48 89 df 48 8b 74 24 20 e8 88 e7 9f 06 eb 1a e8 71 d2 b=
-5 fc 48 8b 1c 24 48 89 df 48 8b 74 24 20 e8 70 e7 9f 06 90 <0f> 0b 90 48 83=
- c3 44 48 89 df be 04 00 00 00 e8 db 23 19 fd 48 89
-> RSP: 0018:ffffc9000905f9e0 EFLAGS: 00010246
-> RAX: 717a74f119e84f00 RBX: ffff888021ec9e98 RCX: 0000000000000001
-> RDX: dffffc0000000000 RSI: ffffffff8baac1e0 RDI: 0000000000000001
-> RBP: ffffc9000905fab0 R08: ffffffff92ce55ff R09: 1ffffffff259cabf
-> R10: dffffc0000000000 R11: fffffbfff259cac0 R12: 1ffff1100df19ef8
-> R13: dead000000000100 R14: ffff888021ec9ee8 R15: dffffc0000000000
-> FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000=
-000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f5c604d35c0 CR3: 0000000029078000 CR4: 0000000000350ef0
-> Call Trace:
->  <TASK>
->  net_free net/core/net_namespace.c:462 [inline]
->  cleanup_net+0xbf3/0xcc0 net/core/net_namespace.c:658
->  process_one_work kernel/workqueue.c:3254 [inline]
->  process_scheduled_works+0xa02/0x1770 kernel/workqueue.c:3335
->  worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
->  kthread+0x2f2/0x390 kernel/kthread.c:388
->  ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
->  </TASK>
->
->
-> ---
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
+Quoting Varadarajan Narayanan (2024-03-29 03:48:24)
+> On Thu, Mar 28, 2024 at 02:54:52PM -0700, Stephen Boyd wrote:
+> > Quoting Varadarajan Narayanan (2024-03-28 00:59:34)
+> > > diff --git a/drivers/clk/qcom/common.c b/drivers/clk/qcom/common.c
+> > > index 75f09e6e057e..9fa271812373 100644
+> > > --- a/drivers/clk/qcom/common.c
+> > > +++ b/drivers/clk/qcom/common.c
+> > > @@ -234,6 +236,41 @@ static struct clk_hw *qcom_cc_clk_hw_get(struct =
+of_phandle_args *clkspec,
+> > >         return cc->rclks[idx] ? &cc->rclks[idx]->hw : NULL;
+> > >  }
+> > >
+> > > +#if IS_ENABLED(CONFIG_INTERCONNECT_CLK)
+> > > +static int qcom_cc_icc_register(struct device *dev,
+> > > +                               const struct qcom_cc_desc *desc)
+> > > +{
+> > > +       struct icc_clk_data *icd;
+> > > +       int i;
+> > > +
+> > > +       if (!desc->icc_hws)
+> > > +               return 0;
+> > > +
+> > > +       icd =3D devm_kcalloc(dev, desc->num_icc_hws, sizeof(*icd), GF=
+P_KERNEL);
+> > > +       if (!icd)
+> > > +               return -ENOMEM;
+> > > +
+> > > +       for (i =3D 0; i < desc->num_icc_hws; i++) {
+> > > +               icd[i].clk =3D devm_clk_hw_get_clk(dev, desc->icc_hws=
+[i], "qcom");
+> >
+> > Make the con_id "icc" instead please, so we know the consumer is
+> > icc_clk.
+>=20
+> Ok.
+>=20
+> > Even better would be for the icc_clk device itself to be the
+> > one requesting with devm_clk_hw_get_clk() so that we associate the clk
+> > handle with the consumer device. It would also help us make it so that
+> > drivers defer probe until their clk isn't an orphan.
+>=20
+> Not sure if I understand the comments correctly.
+>=20
+> In one of the previous patches, had
+>         icd[i].clk =3D clks[noc_clks[i]]->hw.clk;
+>=20
+> This was said to be error prone since the clock would not be
+> ref counted. Hence used devm_clk_hw_get_clk before doing
+> icc_clk_register.
+>=20
+> Now, are you suggesting to use the direct clock pointer
+> and do a devm_clk_hw_get_clk from the consumer driver?
+> This will take care of the refcounting. However, we will
+> have to add these clock entries to the consumer DT node.
+> Is this ok?
 
-#syz fix: rds: tcp: Fix use-after-free of net in reqsk_timer_handler().
+Why do they need to be added to the consumer DT node? Why can't the
+icc_clk device driver (icc_clk_driver?) use struct clk_hw instead of
+struct clk in struct icc_clk_data? The answer cannot be that the icc_clk
+driver cannot be changed.
+
+> > > diff --git a/drivers/clk/qcom/common.h b/drivers/clk/qcom/common.h
+> > > index 9c8f7b798d9f..d8ac26d83f3c 100644
+> > > --- a/drivers/clk/qcom/common.h
+> > > +++ b/drivers/clk/qcom/common.h
+> > > @@ -29,6 +29,9 @@ struct qcom_cc_desc {
+> > >         size_t num_gdscs;
+> > >         struct clk_hw **clk_hws;
+> > >         size_t num_clk_hws;
+> > > +       struct clk_hw **icc_hws;
+> > > +       size_t num_icc_hws;
+> > > +       unsigned int first_id;
+> >
+> > 'first_id' is gross.
+>=20
+> will change it to 'icc_id'.
+
+That's not what I meant :) The whole concept of having to pick some
+random number is bad. At the least, hide that in the icc_clk driver so
+that we don't have to put this in every clk provider that is also an
+interconnect provider.
 
