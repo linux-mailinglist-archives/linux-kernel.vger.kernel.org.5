@@ -1,160 +1,130 @@
-Return-Path: <linux-kernel+bounces-133747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E2C5B89A808
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:58:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4879389A80F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 03:04:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5B15A1F23D6F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:58:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 442831C22B12
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 01:04:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7581BC46;
-	Sat,  6 Apr 2024 00:58:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04262CAB;
+	Sat,  6 Apr 2024 01:04:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K1yIZBdG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="KaEjfSMa";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="uf/yfG7e"
+Received: from wfhigh6-smtp.messagingengine.com (wfhigh6-smtp.messagingengine.com [64.147.123.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 997F8EEB3;
-	Sat,  6 Apr 2024 00:58:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954124C81
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 01:04:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712365097; cv=none; b=rXmNcE/SWbdeX81V+qJ754O4cYsWCRLLszTUj6V8x91lqmGm8hwPSM0yzbhgj01IjdwhLECQ0ouVA/HGyJQilaE2IVqAqnzP606Y4x5WGNLizeeFLNUmYw6w/pYc1/HfJ5yvIp/S7dpEX+75xzTbRqwomaM2XJ2/5Apeh3m0fhE=
+	t=1712365468; cv=none; b=Ymhr2c4BYCxd3VNdSN21m7IPAI+Hd+yUyzVG/Q/LDq27VqgUgOSxZrGlHGhsqhvZbgwN6lOKQ95/o5wY/pksTck9OG9ugdQjtR65G5xJgaNMzMe8s28rg0wyQ7nHKu0ZgczWSVhU3tVqoaYuITuaVT1UmanoeCa/CHv5TzJX0H8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712365097; c=relaxed/simple;
-	bh=LvJf7IpSrSk0ODEovUEZymwOVnvp4IWE/x7bmgvJpPE=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=U+fOkC29Vuns77v3UKs5A1flwKDO/R451LNe1iPUmY5ZmkTB4oPXd+GwmC+1j9FRurTmRIi6UNZuhrjHjxM2SqjbeoANxeigV6aqXnKgosyHcxA6MVybIvNHp7bGihVaejROyUNmsVDy0iG7U8ntPiKUAe7joG0Wf6UB9XXVulI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K1yIZBdG; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712365096; x=1743901096;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=LvJf7IpSrSk0ODEovUEZymwOVnvp4IWE/x7bmgvJpPE=;
-  b=K1yIZBdG+7sjaUxlEtCVrl/Jd9PdI9efY/1LbaDTQ28msICnTRK9I3S3
-   wkE8P1uXl8h/xtSg00C8u9h75ff/cIrczBa7bE3AIYEuza5iblNGHaVQM
-   Cr6atgtxrWYPt8ceGjebeUgLVEEvkC4O93hj2VKEHQfkVfMwO0TFIEwQS
-   w3TwPvGKm9YankUjsoRJhtWJbidjiaQ6HgWOC5IZMcPTV3GrPsgVOkUyr
-   DCRIlEu1B7Ci7pOJ8Hhdgu8T6z5RXSdoUz6ipl4b1YSx6TJvUbgenSC6g
-   cfsKneobfK/2NYLhkFSZvjMg8ka2pBhqAzJBPuGXR3eZRnMgpuO/NynFx
-   w==;
-X-CSE-ConnectionGUID: /9cJtAYFSG+8mHGkSNXjRA==
-X-CSE-MsgGUID: m7LQNKegR8aYfHo8NTTxVQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="25153884"
-X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
-   d="scan'208";a="25153884"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 17:58:12 -0700
-X-CSE-ConnectionGUID: pysUpNznTUKUAfBlXx2RyQ==
-X-CSE-MsgGUID: xTKN75TDQoyumuzIHGfrAg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
-   d="scan'208";a="19252369"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by orviesa009.jf.intel.com with ESMTP; 05 Apr 2024 17:58:12 -0700
-From: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Zhang Rui <rui.zhang@intel.com>,
-	Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	linux-pm@vger.kernel.org,
-	linux-hwmon@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Ricardo Neri <ricardo.neri@intel.com>
-Subject: [PATCH 3/3] hwmon: (coretemp) Use a model-specific bitmask to read registers
-Date: Fri,  5 Apr 2024 18:04:16 -0700
-Message-Id: <20240406010416.4821-4-ricardo.neri-calderon@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20240406010416.4821-1-ricardo.neri-calderon@linux.intel.com>
-References: <20240406010416.4821-1-ricardo.neri-calderon@linux.intel.com>
+	s=arc-20240116; t=1712365468; c=relaxed/simple;
+	bh=J/SFrCGV6sqtwMRf+6u6rRAJU2v7VuzQfoSzMbDWQmg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=q+uU3GjfcshLR+M5UvBJWFG4wx7X0dbi71Yk3BsjKcn34aiDfDfGKdHCdVHmIfRUJJFODR2R1rErJknBQsK/lStMlXAMpZie3jflimlP/6JqwcEOQ8cQ3CD8qw9UreXkyVbrrHBVcBgi586QLEEwEBG2t+v202LjkG0ALzhyvG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=KaEjfSMa; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=uf/yfG7e; arc=none smtp.client-ip=64.147.123.157
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfhigh.west.internal (Postfix) with ESMTP id CB0951800101;
+	Fri,  5 Apr 2024 21:04:24 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Fri, 05 Apr 2024 21:04:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm2; t=1712365464; x=1712451864; bh=89U+TdJUj1ZMB4RVMN7/q
+	e49kuN6JsPg2Vp2UH9cvuo=; b=KaEjfSMa158SQqfmpSyJMX8NiwyHm8Kzwt3Rc
+	c6RrysL1DoSgbELtsz6A1p0DhsCAqmZEtmA6uQdaR/Hd6QVT/ZLuwRyr+fO6Am12
+	J3/PllBMLMJP/lrJp+gMTMbeEyMGo3l81SJgDhcCApTWr7tVtAc1QYAbqf10hTYT
+	I0ifv0SmKiZi9UCSPVlQFYAwhT3g7V4v5FX5WOggrffBntKc0qc9WBOO8URST3UE
+	zz5nU24uG0GfPFkqVdHD9vGQdKiWxUpwnUmtu2ru8N61foGhm4ObY+Ttl8T52Srj
+	oXjWVKtZ5lgTe6U1+bv944MUuG24yaP7L73nZkT+UQxgY0eog==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:message-id
+	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1712365464; x=1712451864; bh=89U+TdJUj1ZMB4RVMN7/qe49kuN6JsPg2Vp
+	2UH9cvuo=; b=uf/yfG7eNr9YjWcwedFazqg1JeTdYRD+Ac2vd42pYb5dJuvSqgT
+	6Z6o6f+PhDhKQHlG2RlwP1R6P8E2y7kZz/ZhR6pOBUS8NFywuI+LKRj0JQYw/fdS
+	r79AWL5puTyKXZqehv2Xsx85F6VeW0TglXXyxBh/traFSj94D0MGOnAVe4+BnP6T
+	RmpK/C/A4HS4OyqepxXIB8mCjuHOSI0FBNTCu14NWvDwJXq7ZX5gJtjZjxbcbc6w
+	5DIhwLB7cXCOGVkXSOu5ios0/uWWRC4ZXvhfaWhp6x7ov23iA8EnyrbuspJyREhA
+	bz6x/n4f8VrtFL15c8syFb9N+WEMp0jgNSg==
+X-ME-Sender: <xms:mJ8QZrCStbst69IILut2OlO0TYCh3fJxwMvFEJAxxo_ylv09shrpfA>
+    <xme:mJ8QZhixTzBL0H_nTUgT8XDxQggre-_0V9fWCuP_5JZ6pgHfa13N4z_vcHOIx6iNK
+    nBSQG0kpssTe-QXZho>
+X-ME-Received: <xmr:mJ8QZmlPijTT76pkvMh56lOJ5TsQWHDss670OA4vRVZ2_QUECk6s7HvjGYbrgjZs87kybubJe5ImcaPUOsiUFcvAKh0BFmnoIXc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudeguddggedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfggtggusehttdertd
+    dttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeetfeeiteefve
+    egvdfggeffheetleejkeekleeugeffffdtgfdtteetkeevvddvgfenucffohhmrghinhep
+    khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:mJ8QZtyR6ym9-bUBLGqJZw2EunWE_x4pW0nAKB24yY9fMKQ3ZFJ8EA>
+    <xmx:mJ8QZgSHbPn0pHlZW0sSiSTpywpd1W8stPHgSLK4GmLGMfUOG8Eurw>
+    <xmx:mJ8QZgaxGSW907T8Cs2_RkMNYts87Wc5kNsZFlFDr10pzwjtfbDX-A>
+    <xmx:mJ8QZhRVIbm4a0jVyMs2z6IEaZn3OIVoZ_kiLFhgQ5E1LO0aVPwEfA>
+    <xmx:mJ8QZmfxyPKRojDSyf_tLSpMX2FxnByh8WYEhYZByxrugb-a3tCATI9D>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 5 Apr 2024 21:04:23 -0400 (EDT)
+Date: Sat, 6 Apr 2024 10:04:20 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+Subject: [GIT PULL] firewire fixes for v6.9-rc2
+Message-ID: <20240406010420.GA7197@workstation.local>
+Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+	torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-The Intel Software Development manual defines states the temperature
-digital readout as the bits [22:16] of the IA32_[PACKAGE]_THERM_STATUS
-registers. In recent processor, however, the range is [23:16]. Use a
-model-specific bitmask to extract the temperature readout correctly.
+Hi Linus,
 
-Instead of re-implementing model checks, extract the correct bitmask
-using the intel_tcc library. Add an 'imply' weak reverse dependency on
-CONFIG_INTEL_TCC. This captures the dependency and lets user to unselect
-them if they are so inclined. In such case, the bitmask used for the
-digital readout is [22:16] as specified in the Intel Software Developer's
-manual.
+The following changes since commit 39cd87c4eb2b893354f3b850f916353f2658ae6f:
 
-Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
----
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc: Lukasz Luba <lukasz.luba@arm.com>
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: linux-hwmon@vger.kernel.org
-Cc: linux-pm@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org # v6.7+
----
- drivers/hwmon/Kconfig    | 1 +
- drivers/hwmon/coretemp.c | 6 +++++-
- 2 files changed, 6 insertions(+), 1 deletion(-)
+  Linux 6.9-rc2 (2024-03-31 14:32:39 -0700)
 
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index 83945397b6eb..11d72b3009bf 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -847,6 +847,7 @@ config SENSORS_I5500
- config SENSORS_CORETEMP
- 	tristate "Intel Core/Core2/Atom temperature sensor"
- 	depends on X86
-+	imply INTEL_TCC
- 	help
- 	  If you say yes here you get support for the temperature
- 	  sensor inside your CPU. Most of the family 6 CPUs
-diff --git a/drivers/hwmon/coretemp.c b/drivers/hwmon/coretemp.c
-index 616bd1a5b864..5632e1b1dfb1 100644
---- a/drivers/hwmon/coretemp.c
-+++ b/drivers/hwmon/coretemp.c
-@@ -17,6 +17,7 @@
- #include <linux/sysfs.h>
- #include <linux/hwmon-sysfs.h>
- #include <linux/err.h>
-+#include <linux/intel_tcc.h>
- #include <linux/mutex.h>
- #include <linux/list.h>
- #include <linux/platform_device.h>
-@@ -404,6 +405,8 @@ static ssize_t show_temp(struct device *dev,
- 	tjmax = get_tjmax(tdata, dev);
- 	/* Check whether the time interval has elapsed */
- 	if (time_after(jiffies, tdata->last_updated + HZ)) {
-+		u32 mask = intel_tcc_get_temp_mask(is_pkg_temp_data(tdata));
-+
- 		rdmsr_on_cpu(tdata->cpu, tdata->status_reg, &eax, &edx);
- 		/*
- 		 * Ignore the valid bit. In all observed cases the register
-@@ -411,7 +414,7 @@ static ssize_t show_temp(struct device *dev,
- 		 * Return it instead of reporting an error which doesn't
- 		 * really help at all.
- 		 */
--		tdata->temp = tjmax - ((eax >> 16) & 0x7f) * 1000;
-+		tdata->temp = tjmax - ((eax >> 16) & mask) * 1000;
- 		tdata->last_updated = jiffies;
- 	}
- 
-@@ -838,4 +841,5 @@ module_exit(coretemp_exit)
- 
- MODULE_AUTHOR("Rudolf Marek <r.marek@assembler.cz>");
- MODULE_DESCRIPTION("Intel Core temperature monitor");
-+MODULE_IMPORT_NS(INTEL_TCC);
- MODULE_LICENSE("GPL");
--- 
-2.34.1
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git tags/firewire-fixes-6.9-rc2
+
+for you to fetch changes up to 752e3c53de0fa3b7d817a83050b6699b8e9c6ec9:
+
+  firewire: ohci: mask bus reset interrupts between ISR and bottom half (2024-04-06 09:36:46 +0900)
+
+----------------------------------------------------------------
+firewire fixes for v6.9-rc2
+
+The firewire-ohci kernel module has a parameter for verbose kernel logging.
+It is well-known that it logs the spurious IRQ for bus-reset event due to
+the unmasked register for IRQ event. This update fixes the issue.
+
+----------------------------------------------------------------
+Adam Goldman (1):
+      firewire: ohci: mask bus reset interrupts between ISR and bottom half
+
+ drivers/firewire/ohci.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+
+Regards
+
+Takashi Sakamoto
 
