@@ -1,73 +1,64 @@
-Return-Path: <linux-kernel+bounces-133800-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133801-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AE5989A8DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 06:31:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B6D689A8DF
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 06:35:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D0131F22461
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 04:31:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B3A711C21CA3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 04:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 449B51BF53;
-	Sat,  6 Apr 2024 04:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 006B72901;
+	Sat,  6 Apr 2024 04:35:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="THnhIDQ5"
-Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SYF4bya4"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0528E2901;
-	Sat,  6 Apr 2024 04:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECC6A50
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 04:35:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712377888; cv=none; b=iO0xiKR2CH6AldSrgEHkJJ7JwWEPnXVsZovQMePk/NQp2qzief0oahAobNDGXqFDlZvPYyE+DPKbInvPpPcJG4QtapssVXd6mVoi33cDdQp0nJrgzOdPdCR9KEABnprbCbyE5iRMQmlN4kHqwpX8jioGv52SjCyuq2vREpe64Sk=
+	t=1712378124; cv=none; b=jA/VE58daKJxFWzA66/QPTezkX0aMyEChIjvHVeRdUzwb11fJIddljVAXVpeIanXZoO+vovjxvA8Erj7hUS/PSBifACCzG6NvkkSPfuSnnoY9f/3VM9UMCelVgbt6BwilEF7UZtljBQBS7LCteqvJwIjS4zQDijDXh19+QMFSNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712377888; c=relaxed/simple;
-	bh=Sd9whxFabxqaniLOwdOH3BPEIWVV3eaeOVYlENJ62EM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YyNo1xGCILMDGCT7atCpvP5fg5MX1snSCDX69ujvbtRWoo+Ctgn8V+IaTjdQHBi+lcg/EQQiRz3oQDgCwtKLu/holTbvcmPRX5Na0pO0RVMZLdzKngijzpq6UmFUA4azyFsGbSR0tqMC/mj5Q89IrKymTmjW9w6y+se3uzahPMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=THnhIDQ5; arc=none smtp.client-ip=209.85.160.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-22e8676c670so1516097fac.1;
-        Fri, 05 Apr 2024 21:31:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712377886; x=1712982686; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ANjvDaQnRfWIu1MTyzhHLGRn9JEs7sjvTWyOy3Vox/8=;
-        b=THnhIDQ5xCxgs7Gm4wRqk+8eBnzxH2HOC0L+iV8m1zb9oUb0DFubkKDVU5F4Xe5rXS
-         N5c1pErqIkn5DXpE2MpdENwcNCRoQT+OYJwUNYo7VIet7FA1pTabiChBEkerL3d68/fN
-         ReB1UreiqTu9fdI6d1i4nBQXFpSqmbjMQeUpx4tZvfCmIKkNW8Oy16CIW9cGFEJlWz82
-         q2ge4lATYJF8bDz0jHMhry/Sq+sv8cWMq05D0GbqWHWaVsMeApgAU7iAfqKsfZtvI1//
-         7ZjN9bouC5laxnUkQhFluKmQlSVG5OJuRvtinByNVi6AysGLzp5ngQ0fhkw3km5K6cjo
-         Nepg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712377886; x=1712982686;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ANjvDaQnRfWIu1MTyzhHLGRn9JEs7sjvTWyOy3Vox/8=;
-        b=bSYS5VgXdULl75aek9qcRz6ao8lLq9Zin/Vy9vMBPkRu9054mYH1AsGpK7/PYwDg62
-         NAP1jOBRbKRkutePJ+8v/2FD+tcgcl7At5U4sqwhCe21Bz2bln9uz0tEh6rPGbxXHqRR
-         uAwkuUPAJKWdgbIzctYn4VeilMNwmhjWNA5O0LMq7sCKHZSsKbWk9w2HPTaG8MKgrOjP
-         BU8B7MNfwMnnINT940ObOLc63s+WLnz3Id0Byc4a58KHo3THmi95N03Ghprp8vNjrAlP
-         xnJMvWjxKUwtAoQiepdq03baZbdLM3qyVL0Cmie6s/YhvFd7q01OI3DNHjJUvXIrlUdN
-         k5Fw==
-X-Forwarded-Encrypted: i=1; AJvYcCXymkA+WQSsYXiBLTZ8bRl4iu4zEZErSo2uLiw7XQn6sK6qdFWgjWtITsC4bfPORiNfqYiyo5VfoFd4jUWyIkyAd865AtwhOwWy412QpqqNQOY9vI/fUtwEjEFC0/D8LQCx
-X-Gm-Message-State: AOJu0Yz/XyaxMQ2u6sjQXK3ovWDL/Gzp9pnBdSBn3eUMuc4sFBMAuMGE
-	B134/5nUkzMELwf4/fvUkA+8tFfvWlWKNJCAozWfhIZHqTPd8d01
-X-Google-Smtp-Source: AGHT+IGVHOtE7u5B4TTMjGZWtWpzIDvTdtQMJcIi7qs5jUx2J8vwSZ2djbS/jzaSt5bJWLCBAajOqQ==
-X-Received: by 2002:a05:6870:1609:b0:22e:9aec:e8fe with SMTP id b9-20020a056870160900b0022e9aece8femr3424231oae.47.1712377886107;
-        Fri, 05 Apr 2024 21:31:26 -0700 (PDT)
-Received: from [172.27.237.3] (ec2-16-163-40-128.ap-east-1.compute.amazonaws.com. [16.163.40.128])
-        by smtp.gmail.com with ESMTPSA id c10-20020a056a00008a00b006ecfa91a210sm2332154pfj.100.2024.04.05.21.31.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 21:31:25 -0700 (PDT)
-Message-ID: <8871e541-4991-44f3-aab7-d3a657fc59db@gmail.com>
-Date: Sat, 6 Apr 2024 12:31:14 +0800
+	s=arc-20240116; t=1712378124; c=relaxed/simple;
+	bh=qtmWZt/jxejIJ9PmMzYOhQaTUv0eoZfI7HqYDaoa34s=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=eD3Qz6kfUVarX23Ro5nopxswpcaRdN0ZMN4GGZkonnBWyHvM2sHKxzbo+jHRWOVc0RmUcoMYyDNBmmhx/wLT7dDQt2QnOFYUT1OSkWB718NVItm1C40x0hA2PvSPgTw5xoyISgTSV7OsM50NIMRULEg8DwIKZY/yu5j1+YvYTpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SYF4bya4; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712378123; x=1743914123;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=qtmWZt/jxejIJ9PmMzYOhQaTUv0eoZfI7HqYDaoa34s=;
+  b=SYF4bya4A5BLUdl48EYu7FKz5WorO4cFJ1cxCnk7O02IKuagz+QiKSsA
+   x8BuWwBglTd36XhN3UN4LWH7A4NzT/Sn2BghGcaAV2/NxL9zptaruTQFY
+   XyV/8N3APHffRNgZa1rROc+cjCANFfUkaBNCF+rK5Pd9HVCkfKGcXjfYZ
+   9HIxFZ3NvSCIjNURm1/z6YMgxW9W2DQ+valIE051OX8e0ro/ErkpgWJ6h
+   c7Pc/kp5IbZXywBEfaVbFCBtXQImNFFx+WN/zF1pUKw24oK/KpgyaThjW
+   fEYQQzFuamE1huA5GzeG3LxlxkD+LqnAn59nfBo0vkv5zgJ+Daun5z4Re
+   g==;
+X-CSE-ConnectionGUID: gVJgHCPnTZyz49x4QXIM0A==
+X-CSE-MsgGUID: EGTjZufZRDi6kTYpsBfVcg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="11544634"
+X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
+   d="scan'208";a="11544634"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 21:35:22 -0700
+X-CSE-ConnectionGUID: 4mLoGmmEQf61FPDk4wrB4w==
+X-CSE-MsgGUID: 3A8nclyETq+tLMYeWrZfsw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
+   d="scan'208";a="23986342"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by fmviesa004.fm.intel.com with ESMTP; 05 Apr 2024 21:35:18 -0700
+Message-ID: <3b740988-7fe6-4328-8ce2-d66d9a2ab497@linux.intel.com>
+Date: Sat, 6 Apr 2024 12:34:14 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,97 +66,121 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 11/13] iommu/vt-d: Make posted MSI an opt-in cmdline
- option
-To: Jacob Pan <jacob.jun.pan@linux.intel.com>,
- LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, iommu@lists.linux.dev,
- Thomas Gleixner <tglx@linutronix.de>, Lu Baolu <baolu.lu@linux.intel.com>,
- kvm@vger.kernel.org, Dave Hansen <dave.hansen@intel.com>,
- Joerg Roedel <joro@8bytes.org>, "H. Peter Anvin" <hpa@zytor.com>,
- Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>
-Cc: Paul Luse <paul.e.luse@intel.com>, Dan Williams
- <dan.j.williams@intel.com>, Jens Axboe <axboe@kernel.dk>,
- Raj Ashok <ashok.raj@intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
- maz@kernel.org, seanjc@google.com, Robin Murphy <robin.murphy@arm.com>,
- jim.harris@samsung.com, a.manzanares@samsung.com,
- Bjorn Helgaas <helgaas@kernel.org>, guang.zeng@intel.com
-References: <20240405223110.1609888-1-jacob.jun.pan@linux.intel.com>
- <20240405223110.1609888-12-jacob.jun.pan@linux.intel.com>
+Cc: baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>,
+ Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
+ virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/9] iommu: Introduce domain attachment handle
+To: Jason Gunthorpe <jgg@nvidia.com>
+References: <20240403011519.78512-1-baolu.lu@linux.intel.com>
+ <20240403011519.78512-2-baolu.lu@linux.intel.com>
+ <20240403115851.GA1723999@nvidia.com>
 Content-Language: en-US
-From: Robert Hoo <robert.hoo.linux@gmail.com>
-In-Reply-To: <20240405223110.1609888-12-jacob.jun.pan@linux.intel.com>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240403115851.GA1723999@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 4/6/2024 6:31 AM, Jacob Pan wrote:
-> Add a command line opt-in option for posted MSI if CONFIG_X86_POSTED_MSI=y.
+On 4/3/24 7:58 PM, Jason Gunthorpe wrote:
+> On Wed, Apr 03, 2024 at 09:15:11AM +0800, Lu Baolu wrote:
+>> Currently, when attaching a domain to a device or its PASID, domain is
+>> stored within the iommu group. It could be retrieved for use during the
+>> window between attachment and detachment.
+>>
+>> With new features introduced, there's a need to store more information
+>> than just a domain pointer. This information essentially represents the
+>> association between a domain and a device. For example, the SVA code
+>> already has a custom struct iommu_sva which represents a bond between
+>> sva domain and a PASID of a device. Looking forward, the IOMMUFD needs
+>> a place to store the iommufd_device pointer in the core, so that the
+>> device object ID could be quickly retrieved in the critical fault handling
+>> path.
+>>
+>> Introduce domain attachment handle that explicitly represents the
+>> attachment relationship between a domain and a device or its PASID.
+>> A caller-specific data field can be used by the caller to store additional
+>> information beyond a domain pointer, depending on its specific use case.
+>>
+>> Co-developed-by: Jason Gunthorpe<jgg@nvidia.com>
+>> Signed-off-by: Jason Gunthorpe<jgg@nvidia.com>
+>> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/iommu-priv.h |   9 +++
+>>   drivers/iommu/iommu.c      | 158 +++++++++++++++++++++++++++++++++----
+>>   2 files changed, 153 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/drivers/iommu/iommu-priv.h b/drivers/iommu/iommu-priv.h
+>> index 5f731d994803..08c0667cef54 100644
+>> --- a/drivers/iommu/iommu-priv.h
+>> +++ b/drivers/iommu/iommu-priv.h
+>> @@ -28,4 +28,13 @@ void iommu_device_unregister_bus(struct iommu_device *iommu,
+>>   				 const struct bus_type *bus,
+>>   				 struct notifier_block *nb);
+>>   
+>> +struct iommu_attach_handle {
+>> +	struct iommu_domain		*domain;
+>> +	refcount_t			users;
+> I don't understand how the refcounting can be generally useful. There
+> is no way to free this:
 > 
-> Also introduce a helper function for testing if posted MSI is supported on
-> the platform.
-> 
-> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
-> ---
->   Documentation/admin-guide/kernel-parameters.txt |  1 +
->   arch/x86/include/asm/irq_remapping.h            | 11 +++++++++++
->   drivers/iommu/irq_remapping.c                   | 13 ++++++++++++-
->   3 files changed, 24 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index bb884c14b2f6..e5fd02423c4c 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -2251,6 +2251,7 @@
->   			no_x2apic_optout
->   				BIOS x2APIC opt-out request will be ignored
->   			nopost	disable Interrupt Posting
-> +			posted_msi enable MSIs delivered as posted interrupts
->   
->   	iomem=		Disable strict checking of access to MMIO memory
->   		strict	regions from userspace.
-> diff --git a/arch/x86/include/asm/irq_remapping.h b/arch/x86/include/asm/irq_remapping.h
-> index 7a2ed154a5e1..e46bde61029b 100644
-> --- a/arch/x86/include/asm/irq_remapping.h
-> +++ b/arch/x86/include/asm/irq_remapping.h
-> @@ -50,6 +50,17 @@ static inline struct irq_domain *arch_get_ir_parent_domain(void)
->   	return x86_vector_domain;
->   }
->   
-> +#ifdef CONFIG_X86_POSTED_MSI
-> +extern int enable_posted_msi;
-> +
-> +static inline bool posted_msi_supported(void)
-> +{
-> +	return enable_posted_msi && irq_remapping_cap(IRQ_POSTING_CAP);
-> +}
+>> +	void				*priv;
+> When the refcount goes to zero.
 
-Out of this patch set's scope, but, dropping into irq_remappping_cap(), I'd like 
-to bring this change for discussion:
+This field is set by the caller, so the caller ensures that the pointer
+can only be freed after iommu domain detachment. For iopf, the caller
+should automatically respond to all outstanding iopf's in the domain
+detach path.
 
-diff --git a/drivers/iommu/irq_remapping.c b/drivers/iommu/irq_remapping.c
-index 4047ac396728..ef2de9034897 100644
---- a/drivers/iommu/irq_remapping.c
-+++ b/drivers/iommu/irq_remapping.c
-@@ -98,7 +98,7 @@ void set_irq_remapping_broken(void)
+In the sva case, which uses the workqueue to handle iopf,
+flush_workqueue() is called in the domain detach path to ensure that all
+outstanding iopf's are completed before detach completion.
 
-  bool irq_remapping_cap(enum irq_remap_cap cap)
+For iommufd, perhaps I need to add the following code in the detach (and
+the same to replace) paths:
+
+--- a/drivers/iommu/iommufd/fault.c
++++ b/drivers/iommu/iommufd/fault.c
+@@ -68,14 +68,35 @@ int iommufd_fault_domain_attach_dev(struct 
+iommufd_hw_pagetable *hwpt,
+         return 0;
+  }
+
++static void iommufd_auto_response_handle(struct iommufd_fault *fault,
++                                        struct iommu_attach_handle *handle)
++{
++       struct iommufd_device *idev = handle->priv;
++       struct iopf_group *group;
++       unsigned long index;
++
++       mutex_lock(&fault->mutex);
++       xa_for_each(&idev->faults, index, group) {
++               xa_erase(&idev->faults, index);
++               iopf_group_response(group, IOMMU_PAGE_RESP_INVALID);
++       }
++       mutex_unlock(&fault->mutex);
++}
++
+  void iommufd_fault_domain_detach_dev(struct iommufd_hw_pagetable *hwpt,
+                                      struct iommufd_device *idev)
   {
--       if (!remap_ops || disable_irq_post)
-+       if (!remap_ops || disable_irq_remap)
-                 return false;
++       struct iommufd_fault *fault = hwpt->fault;
++       struct iommu_attach_handle *handle;
++
+         if (WARN_ON(!hwpt->fault_capable))
+                 return;
 
-         return (remap_ops->capability & (1 << cap));
++       handle = iommu_attach_handle_get(idev->igroup->group, 
+IOMMU_NO_PASID);
+         iommu_detach_group(hwpt->domain, idev->igroup->group);
+         iommufd_fault_iopf_disable(idev);
++       iommufd_auto_response_handle(fault, handle);
++       iommu_attach_handle_put(handle);
+  }
 
-
-1. irq_remapping_cap() is to exam some cap, though at present it has only 1 cap, 
-i.e. IRQ_POSTING_CAP, simply return false just because of disable_irq_post isn't 
-good. Instead, IRQ_REMAP is the foundation of all remapping caps.
-2. disable_irq_post is used by Intel iommu code only, here irq_remapping_cap() 
-is common code. e.g. AMD iommu code doesn't use it to judge set cap of irq_post 
-or not.
-
-> +#else
-> +static inline bool posted_msi_supported(void) { return false; };
-> +#endif
-
+Best regards,
+baolu
 
