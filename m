@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-133915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4FB689AAA1
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:37:56 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F13F489AAA4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:38:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4B0FDB21B5E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:37:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 189851C2106E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:38:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE9DB2C84F;
-	Sat,  6 Apr 2024 11:37:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 094142C85D;
+	Sat,  6 Apr 2024 11:38:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jwTBsd+c"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MR1M6YPW"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E43E2B9D7;
-	Sat,  6 Apr 2024 11:37:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717752C6A3
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 11:38:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712403465; cv=none; b=sPEWGV738it91TL/3Gl2RoXUMjquB2WSeNU2df4N/k1VVxMLXDUR+WNU4DBGhq2vIhbuC4Or7cCz0+K7nKoF+2PgMHnyQtXqgWBroiRT5+ApemVR69SDwNmJwpqZj5BYNg9H/VzVaLNjRMPTZU47IoeTEz8Gc5H3C67TpieP0Nw=
+	t=1712403504; cv=none; b=leuWOI1LhPizeoopR8i5uqYq5HaMuwr+Y1NdtPFUPcydtnRrYQNwOLZFFUswHWRS3akzUeMGCD7FRVkWhuTb3DuQ3xKltAnVqrK5XFX3+beNTeHe5VNakvt2xyMgLlh/oSsAclt3EgS22Vn9PwsocTFrVdXGSLXQP9BF3QqEVdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712403465; c=relaxed/simple;
-	bh=qbJRZ1fh3T7KDvTQux8mpTlbcrzgVexcA/Yz47FCB68=;
+	s=arc-20240116; t=1712403504; c=relaxed/simple;
+	bh=Aw5SNTxjZi1tbmtpGGvoJKiNvmpFYMOzWbUQVuMKgho=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Vqz0PjGWxxWXN2jaaMY1fPBdzFslt6i6TufW0Ph7us+t8mfUABJq4UyWKODqE9lLJakTXnPZS4YJ+Y+kk62SREex1vCZ/TBaQmxBZTO3LR74N155g3dpJ/MnAvF/aeQEHyr0ktmJR9XyCZS0oH7l9r4KVXzWBl1KlZbqLBitHQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jwTBsd+c; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-416441b16f6so519095e9.1;
-        Sat, 06 Apr 2024 04:37:43 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=h2xnzikvZ7kU5fLBcGOLjin5k6JZNngYFHLYUI6xa0hzdqqIkq6SBdgY/sB5UYQzTJdFblhIqs/QmFdyuPejdJacMbRs0jL8lWTAGTPCsEDo7KdIyCiRCEwCcMJOXAiKJHFhF3cesKXHDzXPk6DlSKZ873S8R/z7b2kZwY7Jglc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MR1M6YPW; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a51c31f4a08so10028766b.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 04:38:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712403462; x=1713008262; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zk/YuqAdgfC9BxkPvx9YV/xfkfXepnXKE3kC7Wn8SAU=;
-        b=jwTBsd+cKA8HBXqNsmmSbYKMejJgP7E5n0AIykkXxuvueWyU80ArtTn8Et5BoixoGI
-         i+x9//6hetf3glyJOLbcw0+4Q3zz080KIkQoiLTmuTpnjTGqBXuBAYbiFzK3q8ESDaSR
-         sRIoiv60OY29YjoDsSWNbSHf2C5jA50qpQTt4YuhvSWC/It4xFnf3xrtIHPZy32F/bPB
-         86+PPIjgcj5TBJHlEpFCX/IR4rnnYM80c5V456JMwMjRdjDmK3k/elsVaYSpzNZUxoOQ
-         vsYaFTppXPW7knRVx4hTtJFDDoDxVAhPA9aZBdPEwn+qyYqjrsRrXi2WbW9Vd2X1a2ye
-         DF0Q==
+        d=linaro.org; s=google; t=1712403501; x=1713008301; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=xpm6cTC899zJSUU/nsqzotcxta+BcxYRUKrfUu3lXBA=;
+        b=MR1M6YPWDEObSxtKivMIRZrPoVwyMcUaRdqFbwYcvc5YGABHEdOocuEtfbEXTTfVa6
+         OB5mqpUPJIL16hMjeDwo4rMeHBTGn/dvUyxjfLTlGNcZW89CV8NVJOZ4He+WywlNMYZf
+         Ufz1yW2rApEic1ep+ivHh2ZGdJwA92B+DujKDctkkKCyaOQGca5tKJiD42TTp9OHKc4R
+         aRoBQW++QO/3bKH6rms1D6hewrtOlYAJe73/dLm2t9ehZd511ljkD6xF5upyh0WTchEE
+         U5JROicI8Y/3aLk+Y41UjvPmP3lwKjQLvpxxEhlGh/FgTSpwHxE+tlPwiwjsVytYEdLH
+         MPZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712403462; x=1713008262;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zk/YuqAdgfC9BxkPvx9YV/xfkfXepnXKE3kC7Wn8SAU=;
-        b=WRyZhLv2nuGoMPz59ppbSRd/HEylgZfFCySRpdZaHSKYw8qBsmGZFnA4hBZov5sgpL
-         jyz89amrlcuA/AgeNsT5Xr+utKWOXu/SqRn/sFhnfdJmd+Hx4g0UozbYkaFeD9ACdmcv
-         t+/csukJkt2dLNIBazQ18touWVlzP++KdtcyjhBn5aXxZaR6YDBUG+O4bQkmBalq0qL8
-         Vu2vgIa07oK3Lt4nmONoR8NsU5Y1H6DZXyOLkzVewtY7K0jxVYzvGxF99KCH6+n2Dgrs
-         ULpD6ozHdFMPRBBpyZzMF0Vp3trEieOK6vZDAXLTc/bjPlsHKNbQzQPyRdfiyEou375p
-         QVzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUEDpt7NdWjGtlhSE+nbR2fsvhllcgZ6RmfNQltprVtMmcMSz9ZgKfHHA/5gpQicWF0E+OO2sGSbueTiCxnvSuKYed8K0DWuqTuiUUp/uQmdZE7N1Z+fHZ4Q5S20pW4Y2uPmQ9VNfexTPJLcg==
-X-Gm-Message-State: AOJu0YwHV30ZKu7EQ0assocb9TFAB8iqcTeOC38aDEsjfoN7cHNHRtGk
-	52cxZZ7L3pvahazAaW0wkRne5ygrzfeEyBfGalVQADTnguTd1ayK
-X-Google-Smtp-Source: AGHT+IF/b9jy9As4wQJjxtC1N1AHTgnFLGKGjZBXGmSsxUy1gwJaaGRTShMqdM/GLYUlqFy8GpQazw==
-X-Received: by 2002:a05:600c:3b84:b0:416:2454:ad7b with SMTP id n4-20020a05600c3b8400b004162454ad7bmr4732344wms.1.1712403462268;
-        Sat, 06 Apr 2024 04:37:42 -0700 (PDT)
-Received: from ?IPV6:2a02:8071:b783:140:927c:82ba:d32d:99c1? ([2a02:8071:b783:140:927c:82ba:d32d:99c1])
-        by smtp.gmail.com with ESMTPSA id r10-20020a05600c35ca00b0041622c88852sm9781083wmq.16.2024.04.06.04.37.41
+        d=1e100.net; s=20230601; t=1712403501; x=1713008301;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xpm6cTC899zJSUU/nsqzotcxta+BcxYRUKrfUu3lXBA=;
+        b=hxDIz+tZnQydBAkO4DIo+38Q2ASz9nrExrYsyPf6YAfERgBVt1Oz8oB6sgYQuqpTLz
+         VlEFT8Q/O8o+/lcBfT0FVI97qwH7jPP9BIExZYIxuVJ3ZjhcZ897Pj0iViXMoyyHPU8v
+         43lOuWAj6Vme6iTUrS+vh52nd8twB0VNaKFZmupCyuaMMLNSWMbave08XA2hrABk7plD
+         y2mXNenou+OHdaNq4CgTHzZzhx4K/Dye2G2+MPAmPBllyJJpaUKv4xhqkdlWh/FvycQP
+         sdjKvw4/aNQ682NydiK4GooUWK99EgSzv1sS8x77MTw7MmC5csf17Pos/CpVDdVyFr4t
+         oaMA==
+X-Forwarded-Encrypted: i=1; AJvYcCUDuFIWoIU8ivSvg7+f4MghX93gXDvEmbB6Lt4nQA6Mae9bPAsTpCocqc9gFzpUyGG+/nPHYnfHFybVDISgNVjldAWmMnVjK7Ss5bJL
+X-Gm-Message-State: AOJu0Yxhwl19Yi6X3cj4ph4CSr8c4DqBbTPeE7FND/PJV06185TWjquj
+	jsu6j+MKb2SJg366R7YF9pSPDRG9b3nj69ujV6Wp6YHFELsghNCdvmTgeaRqqtw=
+X-Google-Smtp-Source: AGHT+IExalUXo25x4H/1xSjgkbY/UCf9VdNHeCUOsoxJYze0W3UxHho+nZyy10XAsUCuq/Syv4Omgg==
+X-Received: by 2002:a17:906:39b:b0:a51:92df:57c6 with SMTP id b27-20020a170906039b00b00a5192df57c6mr3135926eja.57.1712403500610;
+        Sat, 06 Apr 2024 04:38:20 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.223.16])
+        by smtp.gmail.com with ESMTPSA id a13-20020a170906244d00b00a51be2b75f3sm475104ejb.35.2024.04.06.04.38.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 06 Apr 2024 04:37:41 -0700 (PDT)
-Message-ID: <93d54733-bd83-478c-9e4c-727c3b09396c@gmail.com>
-Date: Sat, 6 Apr 2024 13:37:41 +0200
+        Sat, 06 Apr 2024 04:38:19 -0700 (PDT)
+Message-ID: <c15d2dde-b5d6-438c-929e-99a5e5e2d370@linaro.org>
+Date: Sat, 6 Apr 2024 13:38:17 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,133 +76,84 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] firmware: qcom: uefisecapp: Fix memory related IO errors
- and crashes
-To: Johan Hovold <johan@kernel.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Bartosz Golaszewski
- <brgl@bgdev.pl>, Johan Hovold <johan+linaro@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Guru Das Srinagesh <quic_gurus@quicinc.com>, Ard Biesheuvel
- <ardb@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240329201827.3108093-1-luzmaximilian@gmail.com>
- <Zgv6aJ4byNiujmo-@hovoldconsulting.com>
+Subject: Re: [PATCH v2 02/11] spi: dt-bindings: cdns,qspi-nor: sort
+ compatibles alphabetically
+To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
+ Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Vaishnav Achath <vaishnav.a@ti.com>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Rob Herring <robh@kernel.org>
+Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+ Gregory CLEMENT <gregory.clement@bootlin.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+References: <20240405-cdns-qspi-mbly-v2-0-956679866d6d@bootlin.com>
+ <20240405-cdns-qspi-mbly-v2-2-956679866d6d@bootlin.com>
 Content-Language: en-US
-From: Maximilian Luz <luzmaximilian@gmail.com>
-In-Reply-To: <Zgv6aJ4byNiujmo-@hovoldconsulting.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240405-cdns-qspi-mbly-v2-2-956679866d6d@bootlin.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 4/2/24 2:30 PM, Johan Hovold wrote:
-> On Fri, Mar 29, 2024 at 09:18:25PM +0100, Maximilian Luz wrote:
->> It turns out that while the QSEECOM APP_SEND command has specific fields
->> for request and response buffers, uefisecapp expects them both to be in
->> a single memory region. Failure to adhere to this has (so far) resulted
->> in either no response being written to the response buffer (causing an
->> EIO to be emitted down the line), the SCM call to fail with EINVAL
->> (i.e., directly from TZ/firmware), or the device to be hard-reset.
->>
->> While this issue can be triggered deterministically, in the current form
->> it seems to happen rather sporadically (which is why it has gone
->> unnoticed during earlier testing). This is likely due to the two
->> kzalloc() calls (for request and response) being directly after each
->> other. Which means that those likely return consecutive regions most of
->> the time, especially when not much else is going on in the system.
->>
->> Fix this by allocating a single memory region for both request and
->> response buffers, properly aligning both structs inside it. This
->> unfortunately also means that the qcom_scm_qseecom_app_send() interface
->> needs to be restructured, as it should no longer map the DMA regions
->> separately. Therefore, move the responsibility of DMA allocation (or
->> mapping) to the caller.
->>
->> Fixes: 759e7a2b62eb ("firmware: Add support for Qualcomm UEFI Secure Application")
->> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+On 05/04/2024 17:02, Théo Lebrun wrote:
+> Compatibles are ordered by date of addition.
+> Switch to (deterministic) alphabetical ordering.
 > 
-> Thanks for tracking this down. I can confirm that this fixes the
-> hypervisor reset I can trigger by repeatedly reading an EFI variable on
-> the X13s. Before it triggered within minutes, now I ran it for 3 hours
-> without any issues:
-> 
-> Tested-by: Johan Hovold <johan+linaro@kernel.org>
-> 
-> Even if the patch is a bit large it's straight-forward and fixes a
-> critical bug so I think this needs to go to stable as well:
-> 
-> Cc: stable@vger.kernel.org	# 6.7
-> 
-> A couple of comments below.
-> 
->> @@ -277,10 +296,15 @@ static efi_status_t qsee_uefi_get_variable(struct qcuefi_client *qcuefi, const e
->>   	unsigned long buffer_size = *data_size;
->>   	efi_status_t efi_status = EFI_SUCCESS;
->>   	unsigned long name_length;
->> +	dma_addr_t cmd_buf_phys;
-> 
-> Throughout the patch, could you please refer to DMA addresses as DMA
-> addresses rather than physical addresses, for example, by using a "_dma"
-> rather than "_phys" suffix here?
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> ---
+>  Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-Sure. I've applied this and the changes below (as well as similar ones
-for qcom_qseecom.h) for v2.
-
-Thanks!
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
-Max
+Krzysztof
 
-> 
->> +	size_t cmd_buf_size;
->> +	void *cmd_buf_virt;
-> 
-> I'd also prefer if you dropped the "_virt" suffix from the buffer
-> pointers.
-> 
->> diff --git a/drivers/firmware/qcom/qcom_scm.c b/drivers/firmware/qcom/qcom_scm.c
->> index 49ddbcab06800..fc59688227f43 100644
->> --- a/drivers/firmware/qcom/qcom_scm.c
->> +++ b/drivers/firmware/qcom/qcom_scm.c
->> @@ -1579,46 +1579,26 @@ EXPORT_SYMBOL_GPL(qcom_scm_qseecom_app_get_id);
->>   /**
->>    * qcom_scm_qseecom_app_send() - Send to and receive data from a given QSEE app.
->>    * @app_id:   The ID of the target app.
->> - * @req:      Request buffer sent to the app (must be DMA-mappable).
->> + * @req:      Physical address of the request buffer sent to the app.
-> 
-> DMA address
-> 
->>    * @req_size: Size of the request buffer.
->> - * @rsp:      Response buffer, written to by the app (must be DMA-mappable).
->> + * @rsp:      Physical address of the response buffer, written to by the app.
-> 
-> DMA address
-> 
->>    * @rsp_size: Size of the response buffer.
->>    *
->>    * Sends a request to the QSEE app associated with the given ID and read back
->> - * its response. The caller must provide two DMA memory regions, one for the
->> - * request and one for the response, and fill out the @req region with the
->> + * its response. The caller must provide two physical memory regions, one for
-> 
-> DMA memory
-> 
->> + * the request and one for the response, and fill out the @req region with the
->>    * respective (app-specific) request data. The QSEE app reads this and returns
->>    * its response in the @rsp region.
->>    *
->>    * Return: Zero on success, nonzero on failure.
->>    */
->> -int qcom_scm_qseecom_app_send(u32 app_id, void *req, size_t req_size, void *rsp,
->> -			      size_t rsp_size)
->> +int qcom_scm_qseecom_app_send(u32 app_id, dma_addr_t req, size_t req_size,
->> +			      dma_addr_t rsp, size_t rsp_size)
-> 
-> And similar throughout.
-> 
-> With that fixed, feel free to add:
-> 
-> Reviewed-by: Johan Hovold <johan+linaro@kernel.org>
-> 
-> Johan
 
