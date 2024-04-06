@@ -1,116 +1,138 @@
-Return-Path: <linux-kernel+bounces-133842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133845-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F93489A9A0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:57:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 643A189A9AB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 10:09:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2065B21EA9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:57:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E36681F21B2A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 08:09:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F7A2374E;
-	Sat,  6 Apr 2024 07:57:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C98D422EFD;
+	Sat,  6 Apr 2024 08:09:16 +0000 (UTC)
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280CD22EED;
-	Sat,  6 Apr 2024 07:57:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A00722EED;
+	Sat,  6 Apr 2024 08:09:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712390253; cv=none; b=u7eARA/f9fFccO5xSbD2zSBkp1ybjJuBcQjCijX7SuafK798Z3UDjjdaSaXl/NqwFRAIZXEJ8bFOb4mCFas4kdNVWuSGIp7JDPKAX8IRBEUZ23A4fKxpEA3XWUCw+7SBX/L3b9vjrL2GZATOmtgn635rjJQOkeT5Ky92t448IZA=
+	t=1712390956; cv=none; b=V/khBzUeDxjx56PGSE0oDKdZjeWvs3uW5zg/bIX+VJkfPrkdtqPoBnzbosgzh3h3B08zjTTEVpW4yOpirQRx2xoZn1nwEJlVOf+MAVHDL/Ognct1SH4czoWSeR58aqoDl30h3/W9uvjWSFx+VAqg2necTbj1VcnJncOUjIoGEHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712390253; c=relaxed/simple;
-	bh=THI3tmLsG+soDseJVPejbNFfCFRp6+BOKn+OLvM+bI0=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=VooV4MOxsToHq85Be6v07ejtEzuEMOOQqkxoQTCs98HCVFFurCnfkyKvLtSv5xZq3ewISpDTNFcEuyG+gMr/4qDCLuSyVU2/i5STsrLL65JMU1AmdbeFCKw/BoYJlGe7kLOVL7i0bdHBiEHubKeXlsvTXg7dgk2hUAwJg9AHiDU=
+	s=arc-20240116; t=1712390956; c=relaxed/simple;
+	bh=h0RhV8ibSEdOVAZU/kaIWg6VheFaanRrzHLKmEQKyOc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=W0Ic83v5P7lv3r3ISvAOr2ZAtA2gf3kosnCf9RdHLdqhWEn28qxF8u5jTQuQi+K+ZFxWY5uLFbMxhttSH1SyiBeLnkLE7ak/2ePowkM3O4k+snd1A99rdBT5wz7wczGKx03L5pu6rScHwHTNH6Trn1j3k1gQpP92DBJwlf5b+1s=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VBSPR0yhdz4f3lCm;
-	Sat,  6 Apr 2024 15:57:15 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VBSg51sWrz4f3jpk;
+	Sat,  6 Apr 2024 16:09:05 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 990B11A016E;
-	Sat,  6 Apr 2024 15:57:23 +0800 (CST)
-Received: from [10.174.176.73] (unknown [10.174.176.73])
-	by APP1 (Coremail) with SMTP id cCh0CgAX5g5bABFmRrnjJA--.19824S3;
-	Sat, 06 Apr 2024 15:57:16 +0800 (CST)
-Subject: Re: [PATCH 0/2] block: support to account io_ticks precisely
-To: Yu Kuai <yukuai1@huaweicloud.com>, ming.lei@redhat.com, hch@lst.de,
- bvanassche@acm.org, axboe@kernel.dk, mpatocka@redhat.com, snitzer@redhat.com
-Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
-References: <20240323035959.1397382-1-yukuai1@huaweicloud.com>
+	by mail.maildlp.com (Postfix) with ESMTP id 8F60C1A0175;
+	Sat,  6 Apr 2024 16:09:09 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgDHlxAjAxFmnZTkJA--.2125S4;
+	Sat, 06 Apr 2024 16:09:09 +0800 (CST)
 From: Yu Kuai <yukuai1@huaweicloud.com>
-Message-ID: <513db882-ebe1-7287-99dd-3783c2c9b90f@huaweicloud.com>
-Date: Sat, 6 Apr 2024 15:57:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+To: axboe@kernel.dk,
+	chenhuacai@kernel.org,
+	tj@kernel.org,
+	josef@toxicpanda.com,
+	jhs@mojatatu.com,
+	svenjoac@gmx.de,
+	raven@themaw.net,
+	pctammela@mojatatu.com,
+	yukuai3@huawei.com,
+	qde@naccy.de,
+	zhaotianrui@loongson.cn
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	loongarch@lists.linux.dev,
+	cgroups@vger.kernel.org,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH RFC v2 0/6] blk-throttle: support enable and disable during runtime
+Date: Sat,  6 Apr 2024 16:00:53 +0800
+Message-Id: <20240406080059.2248314-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240323035959.1397382-1-yukuai1@huaweicloud.com>
-Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAX5g5bABFmRrnjJA--.19824S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrZF47JFyUury5Gw45tr47Jwb_yoWkGFc_uF
-	yvyFy8Gr4fXa1fuFnFkFyUJrZ7Kw4UJr9xX34DXFW7Jr97XFyUJr4rtr4DX3sxXan8Ww1r
-	Aws7Zry7Crn2qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUb3kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-	Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-	1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY
-	04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-	1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-	AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
-	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
-	VFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-TRANSID:cCh0CgDHlxAjAxFmnZTkJA--.2125S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw13Kr4UJw1UXFWxXrWrXwb_yoW8Xr47pr
+	Waqr15Gr12gFn09Fn3Cw1SgrW8ta95GrWUJ3s8XF4SyryjkryIvFnYvr18ZayIvFW2yF42
+	vr15GryIkF1Uu37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvF14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+	fUOmhFUUUUU
 X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hi, Jens!
-Hi, Ming!
-Hi, Christoph!
-Hi, Bart!
+From: Yu Kuai <yukuai3@huawei.com>
 
-Friendly ping ...
+Hi, all!
 
-The 'util' reported by iostat is very important for users, they don't
-have much choise to get disk status, while 'util' has been inaccurate
-for a long time unnecessarily. I really think patch 1 is meaningful.
+I'm planning to support build all blk-throttle polices as kernel module,
+this is the first part for blk-throttle:
 
-Patch 2 also tries to fix a problem by our customer that util can
-sometimes be huge. The root cause is that 'inflight' is account from
-blk_mq_start_request() while 'io_ticks' is account from
-blk_account_io_start(), there is a gap. I let 'inflight' to be account
-from blk_account_io_start() as well, please let me know if this is not
-good.
+- patch 1 remove THROTTLE LOW;
+- patch 2 delay initialization from disk initialization to
+configuration;
+- patch 3-5 support to destroy blk-throttle is it's disabled;
+- patch 6 switch blk-throttle to use rq_qos to stop exposing
+blk-throttle internal implementations;
 
-Thanks!
-Kuai
+Changes from RFV v1:
+ - add missing places in patch 1;
+ - add patch 2-6;
 
-ÔÚ 2024/03/23 11:59, Yu Kuai Ð´µÀ:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> Yu Kuai (2):
->    block: support to account io_ticks precisely
->    block: remove blk_mq_in_flight() and blk_mq_in_flight_rw()
-> 
->   block/blk-core.c  |  9 +++++----
->   block/blk-merge.c |  2 ++
->   block/blk-mq.c    | 36 ++++--------------------------------
->   block/blk-mq.h    |  5 -----
->   block/blk.h       |  1 +
->   block/genhd.c     | 20 ++++----------------
->   6 files changed, 16 insertions(+), 57 deletions(-)
-> 
+Yu Kuai (6):
+  blk-throttle: remove CONFIG_BLK_DEV_THROTTLING_LOW
+  blk-throttle: delay initialization until configuration
+  blk-throttle: expand tg_conf_updated() to return if any tg has rules
+  blk-cgroup: add a new helper blkg_conf_exit_blkg()
+  blk-throttle: support to destroy throtl_data when blk-throttle is
+    disabled
+  blk-throtl: switch to use rq_qos
+
+ Documentation/ABI/stable/sysfs-block       |   12 -
+ arch/loongarch/configs/loongson3_defconfig |    1 -
+ block/Kconfig                              |   11 -
+ block/bio.c                                |    1 -
+ block/blk-cgroup.c                         |   25 +-
+ block/blk-cgroup.h                         |    1 +
+ block/blk-core.c                           |    4 +-
+ block/blk-merge.c                          |    2 +-
+ block/blk-mq-debugfs.c                     |    2 +
+ block/blk-rq-qos.c                         |   13 +
+ block/blk-rq-qos.h                         |   11 +
+ block/blk-stat.c                           |    3 -
+ block/blk-sysfs.c                          |    9 -
+ block/blk-throttle.c                       | 1598 ++++++--------------
+ block/blk-throttle.h                       |   76 +-
+ block/blk.h                                |   11 -
+ block/genhd.c                              |    3 -
+ include/linux/blkdev.h                     |    4 -
+ 18 files changed, 495 insertions(+), 1292 deletions(-)
+
+-- 
+2.39.2
 
 
