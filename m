@@ -1,241 +1,164 @@
-Return-Path: <linux-kernel+bounces-133923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133924-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE28B89AAF4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 14:55:59 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D749F89AAF6
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 14:56:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E1121F21ADC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 12:55:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5EB382826D4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 12:56:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D067832C9C;
-	Sat,  6 Apr 2024 12:55:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DFC34545;
+	Sat,  6 Apr 2024 12:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FzIWa8CV"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FlpD9Lv7"
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DF7E652
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 12:55:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4B022323;
+	Sat,  6 Apr 2024 12:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712408151; cv=none; b=EnN2AukfHei+vhwp6LcO/1lefxQ5MBt1qXr4N99X3iKwK2cVoIubEJgx7Mj4D5lKpaBt2BgERPD2jYXv3fAKrbxLO0BgQhN20HqP4kHARLWf7wMPWZ3jb4m67nbcXM6+aoiP7hC/hFmQRHZaHP0mSZ+hggHBRguVK2dGVknaLYc=
+	t=1712408192; cv=none; b=pANywh1+Xwcn8FgBc9nf9ygHtFSbOTXoj+Po+5m8RzzI2j/g4kqS3SmshCwZEwER/J4l2L2ZrS/Zj0ePyS0mnzcyq+CVBIKFwJBFQuUCeC2MuI84dNIeSTAjn+pbuz5ypqrT2PoTeQy379M4KObWUeTy2Cx/UMzSrN9xJQCD1rI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712408151; c=relaxed/simple;
-	bh=0uBq/I9RS48908VoKoeGWXDGV1SpEnf+QHjKl8GwSbA=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=FlDCiWKGaw8weMO6CHSTz3MRcqJU5iBegR5qh6ZLvwFJM7/fZzhc7f/r+5oqwCuM9dKg+92vcARAlC5MyyiSU0xhyulbhzimx1yvoWCZYU3hZl9nsUGDn9pprVeUXe9VqqiLdGLZ2cCwNnj/m/AsPWNc3fV9ab1GlXscCJ1OC30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FzIWa8CV; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712408150; x=1743944150;
-  h=message-id:date:mime-version:from:subject:to:cc:
-   references:in-reply-to:content-transfer-encoding;
-  bh=0uBq/I9RS48908VoKoeGWXDGV1SpEnf+QHjKl8GwSbA=;
-  b=FzIWa8CVczqS4R06DC9PviuCGP3Agx7eppMHwaV93RmaWwcZdGmPT1/X
-   bfrY0swZ2RB5OnWPKfwDv41FWsIVvtSaQGa32JWnxUkrA9MXUD43YEicI
-   himGRd0NupEeq1R4jXADv4cfF1pBWmEgvEjEXh2//PUAXbYRSLJdkt2rd
-   5ow8vcoPYelZ0MeFNCkDGPnnfkHluyIJY3WQui5sMWLi693k6j37N3fPJ
-   YE9WQnirWuDwxQiq9s43/wVrGxUYENO+3HOeP3FCkGR4gGx+tkrBQiwkB
-   Ka0BFCNDUlVfb4PrxpOBq9qIPDffY0xd04RBfeTeC7MAiWrvCZBz4G38i
-   g==;
-X-CSE-ConnectionGUID: StclJKLuSauwjwMb/cBA3g==
-X-CSE-MsgGUID: +DoGSFieSUizHZN0pWvx+w==
-X-IronPort-AV: E=McAfee;i="6600,9927,11036"; a="7828778"
-X-IronPort-AV: E=Sophos;i="6.07,183,1708416000"; 
-   d="scan'208";a="7828778"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2024 05:55:49 -0700
-X-CSE-ConnectionGUID: Ed8uX/PySGuFDLerWXEjsQ==
-X-CSE-MsgGUID: K4es7CR1QTity8fq2mpi/w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,183,1708416000"; 
-   d="scan'208";a="50641083"
-Received: from blu2-mobl.ccr.corp.intel.com (HELO [10.255.29.89]) ([10.255.29.89])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2024 05:55:46 -0700
-Message-ID: <bc76bb64-8304-4fdf-ae16-03f3e545fd67@linux.intel.com>
-Date: Sat, 6 Apr 2024 20:55:44 +0800
+	s=arc-20240116; t=1712408192; c=relaxed/simple;
+	bh=hKd0G2NmbXX8fzdJjXa8jfFvlsc6MojP9+M2XGdWWbw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ru/YrFxQbjjT++/KrBKxwmtbGDBCp5+M7AYYKLYWYCTz5xualGcb///cyTxmfMhFKzJlkn2LbSOndET6AU+Ryoy1dJARwP024Tizjv8n6cehWSPPl4vMGcSyyDTJ021Wz/iShOz/V6UX1u5I43YlpiGzxsQzmJfQzqIPHeG9Lak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FlpD9Lv7; arc=none smtp.client-ip=209.85.215.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5cdbc4334edso2132375a12.3;
+        Sat, 06 Apr 2024 05:56:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712408190; x=1713012990; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=q16J1uts2hdcpjdxl84Ns1YtdGgR8wvA4Zc3e7VQfBg=;
+        b=FlpD9Lv7n3d9Ey7hbV7+uO4WrLpzVk0fhuTjDXNFYlI3xaiNn1q0waq3iENSmg2muX
+         cNA/JgrzUiRPYlHmqvO7gQlSWfBjAN/CVUO5zreUxXW8my++Fl00mqv/2/nuSL7cx8Nm
+         yHDbknrhlmyLu+qR4o93ReDSi7o0ViTzyAcvPv26wtt2972ayhQW05b7J0Zd6+EMT1Ge
+         smEPv+TffP/xHHNXTnb0RGbVyQNdcprRU2ULnRoCMZCvcZfSGIxN9qt1TSwz+PCM2u1F
+         0RmFemfwrD3ICuV13GGZ7vZ3oSQNu+RvKrZnmPuTLcRuIGsUpjZSx+5fYfEXp7ZtCRPV
+         Nf4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712408190; x=1713012990;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q16J1uts2hdcpjdxl84Ns1YtdGgR8wvA4Zc3e7VQfBg=;
+        b=iFM6mc2jY3r2S96DV2gPMDYoMsFQcv+SvUFV/+JlHgCx/Vah+JH1MRNXFBEMKlRLMX
+         840tsL2iPtwScPMsL2AUjr6n29p97KnTOd85bQ5xRatHfi4WBZylaPqBCCj9Y1Es/v5k
+         4E5JpE/4wjBy6ofbjOBsnt7lcf2Bb9ylsqvvn74poORC5PymMio6O3QtNkFeRQ8h+3u7
+         b2qEiWgWvY+Lwi9ujTMv5Bg44tg5+saOErFnw3SzQ48K1rCw/fAJ0e9kocIUW6cSOA7Z
+         xhBw2R14KyCqYO9JTP/F1npwQq8ujOZVp1Y4fD3kzIjhMAxiNnNsI+F/S6IFPj8heK3k
+         uJ+w==
+X-Forwarded-Encrypted: i=1; AJvYcCUC0lc7DGT6/NXu2S3VE2J7MYU/h+IZGfZsz/jcjSQXH/hX0hK7b7vpDxsR9T2uRwymeqBjW3M0qg3d8pph3jUiSl5kIUr5KM4OG/aqCC88YbMr/lpwd44Q/EuZ+5t9hGIvnfUhbDaPAS9N5NA=
+X-Gm-Message-State: AOJu0YxuqCmCdiCbpKYawjKuTD7AjmwZrA8XNHwMxNLW4FMGgUJf1RCF
+	5c0CwTyq12TrOzFizmFMjW++rk93WvzXh/Qwl69wLAAtbG9/OVc1
+X-Google-Smtp-Source: AGHT+IFUnMz2IXRq+TbbkI7ltFpGCLrnKSwdUbjSnwT8VPvqhZAl5L1ZOF3/NoMyrDyj4rZfY3cbRA==
+X-Received: by 2002:a17:90b:400a:b0:29b:c2b3:2712 with SMTP id ie10-20020a17090b400a00b0029bc2b32712mr3959351pjb.26.1712408189882;
+        Sat, 06 Apr 2024 05:56:29 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id z10-20020a17090a1fca00b0029b59bf77b4sm5363282pjz.42.2024.04.06.05.56.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Apr 2024 05:56:28 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sat, 6 Apr 2024 05:56:27 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Judith Mendez <jm@ti.com>
+Cc: Wim Van Sebroeck <wim@linux-watchdog.org>,
+	linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] watchdog: rti_wdt: Set min_hw_heartbeat_ms to
+ accommodate 5% safety margin
+Message-ID: <717195a8-84f7-4bdc-a108-efafd3ef2a46@roeck-us.net>
+References: <20240403212426.582727-1-jm@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Baolu Lu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH 01/12] iommu/vt-d: Add cache tag assignment interface
-To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>
-Cc: baolu.lu@linux.intel.com, "Zhang, Tina" <tina.zhang@intel.com>,
- "Liu, Yi L" <yi.l.liu@intel.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240325021705.249769-1-baolu.lu@linux.intel.com>
- <20240325021705.249769-2-baolu.lu@linux.intel.com>
- <BN9PR11MB5276A6DDE82623A32FF80F4F8C3B2@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Language: en-US
-In-Reply-To: <BN9PR11MB5276A6DDE82623A32FF80F4F8C3B2@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403212426.582727-1-jm@ti.com>
 
-Hi Kevin,
-
-Thanks for your review comments.
-
-On 3/28/24 3:12 PM, Tian, Kevin wrote:
->> From: Lu Baolu <baolu.lu@linux.intel.com>
->> Sent: Monday, March 25, 2024 10:17 AM
->>
->> +enum cache_tag_type {
->> +	CACHE_TAG_TYPE_IOTLB,
->> +	CACHE_TAG_TYPE_DEVTLB,
->> +	CACHE_TAG_TYPE_PARENT_IOTLB,
->> +	CACHE_TAG_TYPE_PARENT_DEVTLB,
->> +};
+On Wed, Apr 03, 2024 at 04:24:26PM -0500, Judith Mendez wrote:
+> On AM62x, the watchdog is pet before the valid window
+> is open. Fix min_hw_heartbeat and accommodate a 5% safety
+> margin with the exception of open window size < 10%,
+> which shall use <5% due to the smaller open window size.
 > 
-> '_TYPE_' can be removed to make it shorter
+> Signed-off-by: Judith Mendez <jm@ti.com>
 
-Okay.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
+> ---
+>  drivers/watchdog/rti_wdt.c | 24 +++++++++++++-----------
+>  1 file changed, 13 insertions(+), 11 deletions(-)
 > 
->> +
->> +/* Checks if an existing cache tag can be reused for a new association. */
->> +static bool cache_tag_reusable(struct cache_tag *tag, u16 domain_id,
->> +			       struct intel_iommu *iommu, struct device *dev,
->> +			       ioasid_t pasid, enum cache_tag_type type)
-> 
-> cache_tage_match()
-
-Okay.
-
-> 
->> +{
->> +	if (tag->type != type)
->> +		return false;
->> +
->> +	if (tag->domain_id != domain_id || tag->pasid != pasid)
->> +		return false;
->> +
->> +	if (type == CACHE_TAG_TYPE_IOTLB)
->> +		return tag->iommu == iommu;
->> +
->> +	if (type == CACHE_TAG_TYPE_DEVTLB)
->> +		return tag->dev == dev;
->> +
->> +	return false;
-> 
-> why do you disallow PARENT_TYPE from reusing? It's not uncommon
-> to have two devices attached to a same nested domain hence with
-> the same parent domain. Disallowing tag reuse implies unnecessarily
-> duplicated cache flushes...
-
-PARENT_TYPE could be reused. The new helper looks like the following:
-
-/* Checks if an existing cache tag can be reused for a new association. */
-static bool cache_tage_match(struct cache_tag *tag, u16 domain_id,
-                                struct intel_iommu *iommu, struct device 
-*dev,
-                                ioasid_t pasid, enum cache_tag_type type)
-{
-         if (tag->type != type)
-                 return false;
-
-         if (tag->domain_id != domain_id || tag->pasid != pasid)
-                 return false;
-
-         if (type == CACHE_TAG_IOTLB || type == CACHE_TAG_PARENT_IOTLB)
-                 return tag->iommu == iommu;
-
-         if (type == CACHE_TAG_DEVTLB || type == CACHE_TAG_PARENT_DEVTLB)
-                 return tag->dev == dev;
-
-         return false;
-}
-
->> +}
->> +
->> +/* Assign a cache tag with specified type to domain. */
->> +static int cache_tag_assign(struct dmar_domain *domain, u16 did,
->> +			    struct device *dev, ioasid_t pasid,
->> +			    enum cache_tag_type type)
->> +{
->> +	struct device_domain_info *info = dev_iommu_priv_get(dev);
->> +	struct intel_iommu *iommu = info->iommu;
->> +	struct cache_tag *tag, *temp;
->> +	unsigned long flags;
->> +
->> +	tag = kzalloc(sizeof(*tag), GFP_KERNEL);
->> +	if (!tag)
->> +		return -ENOMEM;
->> +
->> +	tag->type = type;
->> +	tag->iommu = iommu;
->> +	tag->dev = dev;
-> 
-> should we set tag->dev only for DEVTLB type? It's a bit confusing to set
-> it for IOTLB type which doesn't care about device. Actually doing so
-> is instead misleading as the 1st device creating the tag may have been
-> detached but then it will still show up in the trace when the last device
-> detach destroying the tag.
-
-For IOTLB types, perhaps we could add a struct device pointer for the
-iommu. This way, the tag->dev could more directly indicate the device
-implementing the cache.
-
-> 
->> +static int __cache_tag_assign_parent_domain(struct dmar_domain
->> *domain, u16 did,
->> +					    struct device *dev, ioasid_t pasid)
-> 
-> this pair is similar to the earlier one except the difference on type.
-> 
-> what about keeping just one pair which accepts a 'parent' argument to
-> decide the type internally?
-
-Okay, let try to refine it.
-
+> diff --git a/drivers/watchdog/rti_wdt.c b/drivers/watchdog/rti_wdt.c
+> index 8e1be7ba0103..0b16ada659cc 100644
+> --- a/drivers/watchdog/rti_wdt.c
+> +++ b/drivers/watchdog/rti_wdt.c
+> @@ -92,7 +92,7 @@ static int rti_wdt_start(struct watchdog_device *wdd)
+>  	 * to be 50% or less than that; we obviouly want to configure the open
+>  	 * window as large as possible so we select the 50% option.
+>  	 */
+> -	wdd->min_hw_heartbeat_ms = 500 * wdd->timeout;
+> +	wdd->min_hw_heartbeat_ms = 550 * wdd->timeout;
+>  
+>  	/* Generate NMI when wdt expires */
+>  	writel_relaxed(RTIWWDRX_NMI, wdt->base + RTIWWDRXCTRL);
+> @@ -126,31 +126,33 @@ static int rti_wdt_setup_hw_hb(struct watchdog_device *wdd, u32 wsize)
+>  	 * be petted during the open window; not too early or not too late.
+>  	 * The HW configuration options only allow for the open window size
+>  	 * to be 50% or less than that.
+> +	 * To avoid any glitches, we accommodate 5% safety margin, with the
+> +	 * exception of open window size < 10%.
+>  	 */
+>  	switch (wsize) {
+>  	case RTIWWDSIZE_50P:
+> -		/* 50% open window => 50% min heartbeat */
+> -		wdd->min_hw_heartbeat_ms = 500 * heartbeat;
+> +		/* 50% open window => 55% min heartbeat */
+> +		wdd->min_hw_heartbeat_ms = 550 * heartbeat;
+>  		break;
+>  
+>  	case RTIWWDSIZE_25P:
+> -		/* 25% open window => 75% min heartbeat */
+> -		wdd->min_hw_heartbeat_ms = 750 * heartbeat;
+> +		/* 25% open window => 80% min heartbeat */
+> +		wdd->min_hw_heartbeat_ms = 800 * heartbeat;
+>  		break;
+>  
+>  	case RTIWWDSIZE_12P5:
+> -		/* 12.5% open window => 87.5% min heartbeat */
+> -		wdd->min_hw_heartbeat_ms = 875 * heartbeat;
+> +		/* 12.5% open window => 92.5% min heartbeat */
+> +		wdd->min_hw_heartbeat_ms = 925 * heartbeat;
+>  		break;
+>  
+>  	case RTIWWDSIZE_6P25:
+> -		/* 6.5% open window => 93.5% min heartbeat */
+> -		wdd->min_hw_heartbeat_ms = 935 * heartbeat;
+> +		/* 6.5% open window => 96.5% min heartbeat */
+> +		wdd->min_hw_heartbeat_ms = 965 * heartbeat;
+>  		break;
+>  
+>  	case RTIWWDSIZE_3P125:
+> -		/* 3.125% open window => 96.9% min heartbeat */
+> -		wdd->min_hw_heartbeat_ms = 969 * heartbeat;
+> +		/* 3.125% open window => 97.9% min heartbeat */
+> +		wdd->min_hw_heartbeat_ms = 979 * heartbeat;
+>  		break;
+>  
+>  	default:
+> -- 
+> 2.43.2
 > 
 > 
->> +/*
->> + * Assigns cache tags to a domain when it's associated with a device's
->> + * PASID using a specific domain ID.
-> 
-> s/Assigns/Assign/
-
-Done.
-
-> 
->> +
->> +	did = domain_id_iommu(domain, iommu);
->> +	ret = cache_tag_assign_domain(domain, did, dev,
->> IOMMU_NO_PASID);
-> 
-> there are many occurrences of this pattern. What about passing in
-> a 'iommu' parameter and getting 'did' inside the helper? for svm
-> it can be specialized internally too.
-
-Perhaps, let me try it later and see what the code looks like.
-
-> 
->> @@ -4607,10 +4623,11 @@ static void
->> intel_iommu_remove_dev_pasid(struct device *dev, ioasid_t pasid)
->>   	 */
->>   	if (domain->type == IOMMU_DOMAIN_SVA) {
->>   		intel_svm_remove_dev_pasid(dev, pasid);
->> +		cache_tag_unassign_domain(dmar_domain,
->> +					  FLPT_DEFAULT_DID, dev, pasid);
-> 
-> is it correct to destroy the tag before teardown completes, e.g. iotlb still
-> needs to be flushed in intel_pasid_tear_down_entry()?
-
-You are right. iotlb still needs to be there until the teardown
-completes. I will investigate this more later.
-
-Beset regards,
-baolu
 
