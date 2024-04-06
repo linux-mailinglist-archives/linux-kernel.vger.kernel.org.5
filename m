@@ -1,87 +1,160 @@
-Return-Path: <linux-kernel+bounces-133928-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133929-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCF3989AAFE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:03:11 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE70C89AB03
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:08:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A26D1C2149E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:03:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77C3A2822A4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:08:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACA9334545;
-	Sat,  6 Apr 2024 13:03:05 +0000 (UTC)
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CA736AF6;
+	Sat,  6 Apr 2024 13:08:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ApfK4vaI"
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71134C84
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 13:03:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E89633611E;
+	Sat,  6 Apr 2024 13:08:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712408585; cv=none; b=RN9xfK1iIaEh5Q/137Oy53jzBOrSs8YNmy+SD4r5eyYzaCmY7WzSUPY3dCQjwV3LHRPzP2GmVRUV9EBx82kscbsZfjiOyBHCmeR/uezfPi639Y7j//IcL20809czRYuu97rdsWusqCbdOo5w2Fzq3cDV+KP80Vj2bmA1vNybo6g=
+	t=1712408930; cv=none; b=dQZl9kqdf3mImuNZxbwungue5OrvhuMFO3Se2bZDM1dyppsRwEiGqFBSnVK5LW3yLblIyM3rAJmnzR0WdFMmDoZmQQPVRUq5y3QMrEq3OrXTC+MFYx7kVih2e/I6ViHCnmFIJMCC9Iysqj8jCz4B0WpdfKe2j6SD5pGKi84DNFM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712408585; c=relaxed/simple;
-	bh=akYG5fHbEvlX8+294h3qjWwgq4BmMh3iJIepoFnBBjE=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=CYo8/i/Lurmx5WvTHOK3KitIErqWJNaR+cQSVFjLujB89iEbW2edzSH9PUjrJeMX3R0plAAu54e0D1psH7+0OGSnRv1bXff9DvXMf8NljG8EzDesQKINhmqOfiZJeKnwEndhgRYg42y4XwFdN1y/3jEY7OUn4HXJo5ITqYBZuwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7d34f49058fso262473339f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 06:03:03 -0700 (PDT)
+	s=arc-20240116; t=1712408930; c=relaxed/simple;
+	bh=yYjDFI9ZKghoXrKcIYL6WKRRHeCz9Z9GdEQaHVKWBWQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=O/mWxfwaxMueEYxr0txt3aGSNiPMhHUTmk+aZ0pE33DwNAO74jcHISagWYSuqjooBAgnqPlza6YkaqYLp1R+VOFl1Et5zeeTStveAEZfZVpR7MG0QNOc+n4VBvnVCPmvitkN31l8qU/au8/yLbA+n6eDSnR9RDNJulXkbGj1U0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ApfK4vaI; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-368a663344eso11840505ab.2;
+        Sat, 06 Apr 2024 06:08:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712408928; x=1713013728; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1nJCinrfZBqtHbptgKCevnPkG/FTidl3k5MY9MOWqZA=;
+        b=ApfK4vaIGqRE6r9lc8TqqVUJ4c3H46/lNQJaD1hOrsX7ZqqDvN50pGdoq/kfJI7E80
+         3upOIrsQ2lncj9LG363ZuP+6RL8SZWh9JTrnDL6/B7lzBChreA1MdankF7yDfssqgo9O
+         USsSuBx//4gUf9BgUZ0+ldozYyTxNv1gxrD/+A3bfm1LM4jgrTHWAidfJKq48MLb41r2
+         Q6YcOrLLXpt+/hOl6EfCIFZG6Cjd/5Ww4Db0bvYQxNkQDg3h8+k/lnyi6YVhCDcwEfWN
+         UqyCbV7IDfEhJtKaAdeFBlepHggH3ykjMhEzSUOk9+aHIg6x1So1/5FSUDbxwUNnfMVm
+         pthQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712408583; x=1713013383;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0X82Rj5lWgixirh75cU2m3QA+kML2vq5txDLb/q5rvY=;
-        b=XGLXKNFfWNmNj4GIAuA7NmedfRUJMD27ldIFzO492rVsjcBDxMLlclpoR/D3vPJkZH
-         5YooT64j/YFueFkBEomkjw9PYf7L6kvYdaPA/7kcoijB5o1RNzmed9t2tgZNxPouBFsQ
-         Vgfy+apq43HzpfND7Q0r1qHg9uJFLHvWOUsrabgKbMVFePZdGZaM0ZSX1z+594hAgOGN
-         q0QDMCl2Kebpwj0YRowYWSTYTcIRWG0AbtuLoPNs8QleeT0UwNW/ic3TjrIlPHOyyMi1
-         XuElhU1CKjtCVOrPg3YUnTHCz4CyZnEH4YDFy/TpOAJPbqQAZBsDWkAG3/9RQJDNSdXe
-         08Hw==
-X-Forwarded-Encrypted: i=1; AJvYcCW+pETGiG1Mxvsr1CgorW5+D05byBRaDSQ9OyOMTtoUKbsoMOw1xL0MvTSKpDG97AayWBQxntjZMy2JaezOzYPJlJV6z1X+1djSTZV5
-X-Gm-Message-State: AOJu0YyY8eLhyYGTVeAvzUnPUjh/A/AbWWkTACt3pP65sjR8ietlmwR5
-	Ad7FAH9/E1WU6p9ujAmSW+zw9QtmY7r1vjw0mk3pVlFAa8hWHZI5kRbgH5J0Cwhc/aQaNdeKKtP
-	wx1rhbhqCuO2oBfhRHyQE3/xCODhkWYyFNLdvVRHNBh6tqjtebWqdPE4=
-X-Google-Smtp-Source: AGHT+IFqrXo4VlbIHVm6Ein8B9C375rMoIUlWLWOwpBMW4ETLfF9ZOagc1T9FexfuM2WzuYMCisi99hehnA5s/i0xUxPnCNr/FCt
+        d=1e100.net; s=20230601; t=1712408928; x=1713013728;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1nJCinrfZBqtHbptgKCevnPkG/FTidl3k5MY9MOWqZA=;
+        b=EBjEcv+4WNVeq84R6qQGqaqI+jQh4uf9bRZOHEy0Q2YR3HH8Qha30lm+ZbyTAikx0a
+         eWkkHQlt01H9HMKMC8u3YeRzBW8OHHZ6f23WBjDLmGeOhd1OKJPRtZL4HzMpi5Z0UCXk
+         UJ8eBc/DQe+pp3JY3YN3QvB+Tl+m0L1MA+hp4g/CCM+0ngydqm4ghKb2/uZw/LxQZoPQ
+         CxWD1mc0E6vijFhfpiS1qIrf2yM8IgHpbbKAC9Ea4w+5A5gEduAJRIxUMXWC1Bf8u2rp
+         h9pFl0zto8nyfAjmceyPjqkTavvTcDt0yK3hYpvXwAAr6tMLMQTOZE0C3C4izsb803S7
+         vFow==
+X-Forwarded-Encrypted: i=1; AJvYcCUiI+jkJD7E6G0/s1/iEFgNaPLgcg0cVF8QgbOV3Gb9YyPENoh2E10QiuxMsrhi7JWFg43tzKgcD1fv6baDhYUTrBVz2wjPLJOP9UrI0glJiVzTrSvwtAae1jysydMRwQJZH5tzgaJA+cLy+EbB0TtQ+VgPBDZagMFvyF1azwGwjzcKlTHwgVo=
+X-Gm-Message-State: AOJu0Yz8toUHVZfdARbTo4GF0rmSr6BeIYYWlfKJVk0E6eZNNYmrTs/d
+	//vWUHJejHfpnG5e6xdOsfOzQuys30fcFSR2BVobpJV5QF4a3qSH
+X-Google-Smtp-Source: AGHT+IEq96egabFjIWoJAlpe2kpHjL6Fgq+o/Btb4tyziAwF7UBDedWTRTIsV140sRRlpGQv2Q4ezw==
+X-Received: by 2002:a05:6e02:184d:b0:369:98a3:6f82 with SMTP id b13-20020a056e02184d00b0036998a36f82mr4888675ilv.13.1712408927936;
+        Sat, 06 Apr 2024 06:08:47 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id q29-20020a63751d000000b005f3a8643176sm3146090pgc.44.2024.04.06.06.08.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Apr 2024 06:08:47 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Sat, 6 Apr 2024 06:08:46 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Andi Shyti <andi.shyti@kernel.org>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Heiner Kallweit <hkallweit1@gmail.com>,
+	Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Jean Delvare <jdelvare@suse.de>, linux-i2c@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH] i2c: i801: add I2C_MUX dependency
+Message-ID: <e2d0fdde-ff8b-4851-b18a-89e69dd18d5f@roeck-us.net>
+References: <20240405142823.615609-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2d95:b0:7d0:3aa9:94ee with SMTP id
- k21-20020a0566022d9500b007d03aa994eemr155018iow.3.1712408583140; Sat, 06 Apr
- 2024 06:03:03 -0700 (PDT)
-Date: Sat, 06 Apr 2024 06:03:03 -0700
-In-Reply-To: <tencent_C1E376696F23B004491777176886D9D37905@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004f066e06156d3149@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-out-of-bounds Read in l2cap_sock_setsockopt
-From: syzbot <syzbot+8a1d152fba6b41f760ae@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405142823.615609-1-arnd@kernel.org>
 
-Hello,
+On Fri, Apr 05, 2024 at 04:27:43PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When I2C_MUX is a loadable module but I2C_I801 is built-in, the newly
+> added notifier function causes a link error:
+> 
+> x86_64-linux-ld: drivers/i2c/busses/i2c-i801.o: in function `i801_notifier_call':
+> i2c-i801.c:(.text+0x1f5): undefined reference to `i2c_root_adapter'
+> 
+> This code is only built if I2C_MUX_GPIO is also enabled, so add a
+> conditional dependency that allows building the driver as before if the
+> GPIO part is disabled, but otherwise require the linker dependency at
+> Kconfig level.
+> 
+> With the added dependency, the driver cannot be selected by a builtin
+> ITCO_WDT driver when I2C_MUX_GPIO is a loadable module, so remove
+> the 'select' statement in that driver as well. This was apparently
+> never needed at compile-time, and the watchdog driver just needs either
+> the LPC or the I2C drivers, but never both.
+> 
+> Configurations that rely on the implied 'select' from the watchdog
+> driver now need to enable all three.
+> 
+> Fixes: 71b494e043d2 ("i2c: i801: Call i2c_register_spd for muxed child segments")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  drivers/i2c/busses/Kconfig | 1 +
+>  drivers/watchdog/Kconfig   | 2 --
+>  2 files changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+> index 1872f1995c77..2619018dd756 100644
+> --- a/drivers/i2c/busses/Kconfig
+> +++ b/drivers/i2c/busses/Kconfig
+> @@ -108,6 +108,7 @@ config I2C_HIX5HD2
+>  config I2C_I801
+>  	tristate "Intel 82801 (ICH/PCH)"
+>  	depends on PCI
+> +	depends on I2C_MUX || I2C_MUX_GPIO=n
+>  	select P2SB if X86
+>  	select CHECK_SIGNATURE if X86 && DMI
+>  	select I2C_SMBUS
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 0b0df3fe1efd..4dfb3773e6e2 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -1301,8 +1301,6 @@ config ITCO_WDT
+>  	select WATCHDOG_CORE
+>  	depends on I2C || I2C=n
+>  	depends on MFD_INTEL_PMC_BXT || !MFD_INTEL_PMC_BXT
+> -	select LPC_ICH if !EXPERT
+> -	select I2C_I801 if !EXPERT && I2C
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Sorry, I don't understand why LPC_ICH and I2C_I801 are neither a dependency
+nor need to be selected. What if both LPC_ICH=n and I2C_I801=n, or if one is
+selected but the other is needed to connect to the watchdog ?
 
-Reported-and-tested-by: syzbot+8a1d152fba6b41f760ae@syzkaller.appspotmail.com
+Guenter
 
-Tested on:
-
-commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=11b55605180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=66b62423625ca66a
-dashboard link: https://syzkaller.appspot.com/bug?extid=8a1d152fba6b41f760ae
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=14c06aa9180000
-
-Note: testing is done by a robot and is best-effort only.
+>  	help
+>  	  Hardware driver for the intel TCO timer based watchdog devices.
+>  	  These drivers are included in the Intel 82801 I/O Controller
+> -- 
+> 2.39.2
+> 
 
