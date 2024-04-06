@@ -1,114 +1,119 @@
-Return-Path: <linux-kernel+bounces-133877-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133878-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C1D189AA35
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:32:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15ABD89AA39
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:48:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 22FC9282763
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:32:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A72E01F21BF1
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:48:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 950DF24B2A;
-	Sat,  6 Apr 2024 09:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C5E23767;
+	Sat,  6 Apr 2024 09:48:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="PpKwEYkp"
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CNEA5Z5o"
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34A7722EF4
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 09:32:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5FF225CF
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 09:48:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712395938; cv=none; b=EkLRQQVr7FOqNaXB4PBFvDO5cO/yibSbx3qD2u6Div2m+HzzIoZidd7N/BP5+kmOaV8X5B75aOoR8AA3UvB7BSNm4a7ZkgKGFC/7cy5beUmbS8ZlF92Ne6hC4ik4ITAmMQ4Iwcl/VjPYQy5dQynfErnzdF8rmv/ye/gMSYzTkzg=
+	t=1712396898; cv=none; b=cD9Sw+oPba0loE+t8xLRgUNAssZZDDhMIILeNHnyA/oqT0qHfX8Fw3aY+5GqnpXwkAAq4ijxaATCnTAvCmHXtf4Me+Ok2qoJveg1MV+tS3qdd7uqm++1Me4kb8OYyzGVkXbj8T4KqKHid7wrX9KDAxb4fYC9yIMFwVKdUyZjny0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712395938; c=relaxed/simple;
-	bh=iZ21sUNSOkTasKznuJ0Vp2jCVOSejhc4PJIP39oLhHs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=L9lSx1imNLA1XpZehDbMxqYqpkErscAwAOp2JkbXtRFqAe3kXOvn/Nzk+/nYk9rIaM5oAdQx1y+UT44Rq9T604FafuJvOPxPjsJDAGaaEySaJCpY+0+9zAs8wLIzT6fIdzwNxihHnIkkDE9FAXnVrD2RGhlptWiL0WVj4T+JQk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=PpKwEYkp; arc=none smtp.client-ip=194.117.254.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	sang-engineering.com; h=date:from:to:cc:subject:message-id
-	:references:mime-version:content-type:in-reply-to; s=k1; bh=WNQk
-	/cjO1tN8eNweZiC4vZSaOrtN5+8sXZKa6GSLdXs=; b=PpKwEYkpiOCmRm8kaovR
-	4KnyL9GkdcXTB7Y8YVJfWJWUoTRg27DsCD1uxlWy4EISrE01UauPCqSBlPnsynVu
-	kDUlVTBMEUitKgd6b1A2CBHkaoZ2PAzdbTe5AghoYaU+MTqySMnFUMqPgdpjhVAH
-	9Ua3kJy5WcLWZGpLG4W9ZT0r2VwtvusteoprHkHGYox44LNf2Uv1nbjwH1ePmNYP
-	YWmJLRtaXPfszfo1UM2kSblvq+jc7kCg/gbBcLXslghacVdKwIrkobRlBflBw40h
-	HsdTSPf8DdkgfWuOj7LjrXuDMQ8LICB7exGCSXh2av0/ID/D2P+m17fJ/VxuZXid
-	cA==
-Received: (qmail 175598 invoked from network); 6 Apr 2024 11:32:05 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 6 Apr 2024 11:32:05 +0200
-X-UD-Smtp-Session: l3s3148p1@AP7ZPmoVMoIgAQnoAFjkAKEmXOPl8vkH
-Date: Sat, 6 Apr 2024 11:32:05 +0200
-From: Wolfram Sang <wsa+renesas@sang-engineering.com>
-To: Andi Shyti <andi.shyti@kernel.org>
-Cc: Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@kernel.org>, 
-	linux-i2c <linux-i2c@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL] i2c-host-fixes for v6.9-rc3
-Message-ID: <ujvlqe6k4azkiuaff2mjhvzy7mxb6gofvjywzgizxhweijkj6h@sootztgi4bu7>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>, 
-	Andi Shyti <andi.shyti@kernel.org>, Wolfram Sang <wsa@kernel.org>, Arnd Bergmann <arnd@kernel.org>, 
-	linux-i2c <linux-i2c@vger.kernel.org>, lkml <linux-kernel@vger.kernel.org>
-References: <lv7pvqvuacslbw5uvitzftxrwp73pl5nnl4hxjvr3htrgjtsmd@gvuvd47dgysz>
+	s=arc-20240116; t=1712396898; c=relaxed/simple;
+	bh=/MfpN9okl8H5rFoHIvWq24WtEgguQcP6QqEsBwHAG/o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CjF5mZN0iTq/Nfn3ow1vgUedGqfFfIYqM6Ln68FE/CsLImSnIeQJCHxFL98GRjZbVXsWNkgg+CQ6UAKlm1gdNbtVlMNHEEQPC46fEG9q2/1yxtJpUX085LbN2uf8CyT7BVxYP3bxhMLqddu9k/gswsivDmNl9lMHjSkWVHRIFbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CNEA5Z5o; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ed150119f6so204946b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 02:48:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712396896; x=1713001696; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=48v1DyWIRGHgOWn3r5CxOJNWFsbPTbw0i9C5xk0EDEI=;
+        b=CNEA5Z5ob/fYQd7LGzCAGF9I5kyO3RRpMmLmNVLM3Rpc5vnNDfSKIQyytCTKXmXf7x
+         XBFPveCbxOrKb2wbLO7Kj74u70DtXenXrcHMyH73pG/s155M3t5xMpDtU0rcGKU98TXt
+         6XqFp5TUvJUi6pPQ1B6kcVnkYIO3wnrYCY1W1Kh64V0ULP1uq+Kd/nqQfR7J7L4ebTgD
+         KO4ET6YzvudC8cB/PacHffXkJcH21g8wn9tZ3rq3p3jSqOwZ6wPN6k8MqWSZ6ARh/1Aq
+         rpyqd2kBF99sLtAG6zMC5BikXYrQMutf+Eh0WFBs6V20AAq7PXmIUQ/BF08soSCUsxnH
+         QsjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712396896; x=1713001696;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=48v1DyWIRGHgOWn3r5CxOJNWFsbPTbw0i9C5xk0EDEI=;
+        b=r9h1WXY6Xi4FzYTH+ggRA0Z5XNmMNsZdYE2GYrwxBFUxdY6wynRQXEgq/hXwsnG/Gn
+         lo5wXPIsf4+NK44IFBVmiJbl6/cAxK48sF5mIUNQNY3lUhNxrvMnlDVPenisZlnZfz2J
+         qw3Mmgz1BZLHiOzdzcDQ8NXk7kvXfVFe80sZT/6IMo+x/5uCGvZsB3GduV87DEWxcSgv
+         USF58LnaLqhDETBzq9vNDsTqCtUvagavAFC5YabzNWP1a4iUfO9aAhu5U13XFCCTbW1X
+         D4o9KJ6M2AFP1YRxHcE9iX3Tm25EXvgzHMIGcMtQiOz3ujw8DYngF+vg7hxCin/zTP15
+         OWcQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWFW8iorANH2Hxl5xYWFRJD37Yc44X5PGCiFrSXNO5EuZZE+E6H5IHSZok50sWKm99557V3e+cK/qoumhrpwjBWyKMuKGpsOinjvXXt
+X-Gm-Message-State: AOJu0YyWVTnEC9GcnNeWOwGTX6GlVGzGY1c1C4brUc7wtRHCNvn2hHh/
+	gFRlvicVRi8J04YPE/6EPT2lsOHT9lwh0bfCQmwUEzEjyG1+W+1l
+X-Google-Smtp-Source: AGHT+IGCWcAU2MpP1I6UGGQFKMtNKfCgiiUZSakrZ9PbkmO4OoKTK7qFHCDjW0zqxVNfGpmgqJ2uKw==
+X-Received: by 2002:a05:6a20:8423:b0:1a3:ac20:e204 with SMTP id c35-20020a056a20842300b001a3ac20e204mr4823805pzd.3.1712396895877;
+        Sat, 06 Apr 2024 02:48:15 -0700 (PDT)
+Received: from kernel.. ([2402:e280:214c:86:6906:a9a6:61b7:7791])
+        by smtp.gmail.com with ESMTPSA id it10-20020a056a00458a00b006ece7862035sm2855249pfb.128.2024.04.06.02.47.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Apr 2024 02:48:05 -0700 (PDT)
+From: R SUNDAR <prosunofficial@gmail.com>
+To: airlied@gmail.com,
+	daniel@ffwll.ch,
+	dmitry.baryshkov@linaro.org,
+	ankit.k.nautiyal@intel.com,
+	mripard@kernel.org,
+	jani.nikula@intel.com,
+	quic_abhinavk@quicinc.com,
+	imre.deak@intel.com,
+	dianders@chromium.org,
+	mitulkumar.ajitkumar.golani@intel.com
+Cc: dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	R SUNDAR <prosunofficial@gmail.com>
+Subject: [PATCH] Fix for kernel doc warning
+Date: Sat,  6 Apr 2024 15:17:40 +0530
+Message-Id: <20240406094740.7143-1-prosunofficial@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bl4rkfy7ozg4inmu"
-Content-Disposition: inline
-In-Reply-To: <lv7pvqvuacslbw5uvitzftxrwp73pl5nnl4hxjvr3htrgjtsmd@gvuvd47dgysz>
+Content-Transfer-Encoding: 8bit
 
+[linux-next] Changed enum name to field name to fix kernel doc warning.
 
---bl4rkfy7ozg4inmu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+/include/drm/display/drm_dp_helper.h:126: warning: Function parameter or struct member 'mode' not described in 'drm_dp_as_sdp'
+/include/drm/display/drm_dp_helper.h:126: warning: Excess struct member 'operation_mode' description in 'drm_dp_as_sdp'
 
+Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
+---
+ include/drm/display/drm_dp_helper.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->=20
-> The following changes since commit 39cd87c4eb2b893354f3b850f916353f2658ae=
-6f:
->=20
->   Linux 6.9-rc2 (2024-03-31 14:32:39 -0700)
->=20
-> are available in the Git repository at:
->=20
->   git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux.git tags=
-/i2c-host-fixes-6.9-rc3
->=20
-> for you to fetch changes up to 95197779091166b9ed4b1c630c13600abf94ada7:
->=20
->   i2c: pxa: hide unused icr_bits[] variable (2024-04-04 01:07:57 +0200)
+diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
+index baf9949ff96f..6799f57d635c 100644
+--- a/include/drm/display/drm_dp_helper.h
++++ b/include/drm/display/drm_dp_helper.h
+@@ -112,7 +112,7 @@ struct drm_dp_vsc_sdp {
+  * @target_rr: Target Refresh
+  * @duration_incr_ms: Successive frame duration increase
+  * @duration_decr_ms: Successive frame duration decrease
+- * @operation_mode: Adaptive Sync Operation Mode
++ * @mode: Adaptive Sync Operation Mode
+  */
+ struct drm_dp_as_sdp {
+ 	unsigned char sdp_type;
+-- 
+2.34.1
 
-Thanks, pulled! Enjoy the beach :)
-
-
---bl4rkfy7ozg4inmu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYRFpEACgkQFA3kzBSg
-Kba4jw//Uub9iwZV8zuHhAdXE8Wu5Swjgx/egxEgHVKGlJcEeF5tX3boCWgvfs2S
-nps9pIH+ka8eRNby/Dywk/KvEKoewz11MD6ZinlgYO/tmH0ZfGlEaPQsIHDEwUBf
-NuRDWE7QN5W4vBGYMDgboolxDqUyJBV7M563U51Dmjl3u+5Yl1RuBqVPKGs9LUfF
-5Drz1oo+Gkg1KgWoIotJyX8vnenfGD8mp38CrDiGxVIHxuopW6ipNQD2XU8fnMxn
-3EzjAxBEUgoiBKzC1Ca0dSr8nUEkr2fKFSkAN8F4l9XJLPOPLIk51g3peuG+lkGu
-7XGQ8YWDr/B2DJuZJldYuSNrpH0Vw95h53cLxmloAZvhSxkGuQZY1ianfoTeQT6U
-ssytSHQakTlJbXlzKSDg6tXEGdt6NQ69AIyfrIceXlOWVdkT13ewNBO2Y+5Lp5tC
-X/aAb35gdBqYagfsn31CfT8hkc6fYI/Fyg1sGuuFZAjRT+0YPmgJYl9BxDHh89Ek
-nwHW25ffCyx3tjnaAZd6zH5NfjNGG1ckc5aOUrMZhcfq3hKLVokOCafdLOIU/plu
-uJsabjm9u4gEIYkSpI1+QjisJ6Z/MH0kXc12gME8D+Qe7wqr2l7sd58WI/M3LpBo
-K+X5dvpiV9Nm5x/hmG+pQmCqx62P1UPxtL9Eso51oADW0E7glLU=
-=UHcZ
------END PGP SIGNATURE-----
-
---bl4rkfy7ozg4inmu--
 
