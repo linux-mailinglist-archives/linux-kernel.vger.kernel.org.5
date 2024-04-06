@@ -1,106 +1,120 @@
-Return-Path: <linux-kernel+bounces-133726-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3727389A7CC
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:02:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22C0089A7CD
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:02:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 650D82848DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:02:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C89401F22C61
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5996DA93D;
-	Sat,  6 Apr 2024 00:01:53 +0000 (UTC)
-Received: from irl.hu (irl.hu [95.85.9.111])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B81481C6BD;
+	Sat,  6 Apr 2024 00:02:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zO1SDI7H"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D081E533;
-	Sat,  6 Apr 2024 00:01:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.85.9.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C59317C2
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 00:02:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712361712; cv=none; b=BcbkEXDYb7kEOinlg10PBjQjLTWmLH4rB4hv2Sdr5cpvyDpSq2bQANtSW9Z9S0n8BIUBvMQKy+RwYk3T++Y0+JUG4t0cntTOz+wfAliCEtSF//IvyZF1xgdvhbR1kGDkaF1vNp01OBdrOf4FSwe+IwSjuy4cG/q8KV1TBrbaT9E=
+	t=1712361761; cv=none; b=K5Mm1EIvUNAFmLPNIROn1sC+Rkxn4qy8FAhAog1O/K89jJF7/UFJYHeSTtfOiwuBacyq6M19jYyeYWcWcthM3eJouUCBTGypO1MVac7oHFQaW1KlhkF3lt3/FJyFqyO7HeBOrL/RRZIyAhh4qXBPdE950nbPocCYow5btAKBmy4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712361712; c=relaxed/simple;
-	bh=ReyZ/SK2T9RJMzqGhOr+f/IyAMkYqv/fQkx3qjS6WBI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=TwmICj7IsWCuQ8DFOLtzJlSkA2xXlxyZcD3Veyze+hbxlFKVRSAKvR6RWSSEq9CKGHNop0kn9y9ZWPCN5WI8Adf3irpi8ceMTYAjDopNR9ySFI+KKbUF+kjz+8XjWsxEZnVipg76+bCTOmkisTBhvk8Wcpu1QdY7aJoLrd8lQUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu; spf=pass smtp.mailfrom=irl.hu; arc=none smtp.client-ip=95.85.9.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=irl.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=irl.hu
-Received: from fedori.lan (51b69f53.dsl.pool.telekom.hu [::ffff:81.182.159.83])
-  (AUTH: CRAM-MD5 soyer@irl.hu, )
-  by irl.hu with ESMTPSA
-  id 000000000006F9A2.00000000661090ED.0025D582; Sat, 06 Apr 2024 02:01:48 +0200
-From: Gergo Koteles <soyer@irl.hu>
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
-  Len Brown <lenb@kernel.org>, Ike Panhc <ike.pan@canonical.com>,
-  Hans de Goede <hdegoede@redhat.com>,
-  =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-  Henrique de Moraes Holschuh <hmh@hmh.eng.br>,
-  Daniel Lezcano <daniel.lezcano@linaro.org>,
-  =?UTF-8?q?Barnab=C3=A1s=20P=C5=91cze?= <pobrn@protonmail.com>
-Cc: linux-acpi@vger.kernel.org, ibm-acpi-devel@lists.sourceforge.net,
-  platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-  Gergo Koteles <soyer@irl.hu>
-Subject: [PATCH v5 3/3] platform/x86: thinkpad_acpi: use platform_profile_cycle()
-Date: Sat,  6 Apr 2024 02:01:33 +0200
-Message-ID: <b70f4f1639451965ed76db7c023476ddd80e6241.1712360639.git.soyer@irl.hu>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <cover.1712360639.git.soyer@irl.hu>
-References: <cover.1712360639.git.soyer@irl.hu>
+	s=arc-20240116; t=1712361761; c=relaxed/simple;
+	bh=KpAjSKdrkXBv5fhkmB8UZX/hjLXR4hCJGaSDHH5mrss=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BDxRdGbSKqaQlR2R6aNGzAqZ4qzSqBih1yQ+oTyl8pzv1dDbHHg9YYkYAqoQbhchqq5FcmLrjkCcnhEl4C6dPrAih92QXja4hD/7o+VgxgUWpQGq5b+sk/HcZXxtIg+f9LLrYK0bhCt0iHuJwUebmvTtPZhSC6DDouU24FmwVQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zO1SDI7H; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-432d55b0fa9so77931cf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 17:02:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712361758; x=1712966558; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=aLJYi/uIy6sK2MdDlOJLgbHqv1oRQBKBfPlyT2agfv8=;
+        b=zO1SDI7Hao4uFec5vz5KPhe9XkCtS9MVXqdz1xs50qgPOgAnDxqP5uWfVr+u0Sb/WS
+         Lq+QmVBqoQYtWXYvCjpPH5JsqkRob2xvpaTs8q77Ul29fn2JyVxWqeFHsWUkZt39903k
+         2/mFW9/SVMuofkZOPMYgQOev1AZyM9njhl+G9IEzOc0WL+x3B1a0x/6WPDQzDzsWiFl7
+         i9s8FOPlurNcca/33vXzVp3u9tiD3fpqjJK4ZTI0XdOTC+cGvn/+bGfrFe24pkgukTb/
+         46Z6Xw4Kr3Pyyn4lb0yGlCT9+xqJWOYCSHmFipoMxTIf6om5yDbuYUzrzSyDvHZoOO8G
+         4yEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712361758; x=1712966558;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=aLJYi/uIy6sK2MdDlOJLgbHqv1oRQBKBfPlyT2agfv8=;
+        b=JVmmfnNlsX/SiG5ELx/iOu4c0p88g41NK43+YYXsDc/zYkBoi1Bcspiyshe+e2bh9o
+         ASAl4FJI4mCZX/YgT0W0hNuFMmlriYAW//vTLqPIBYwugOzWouM8juh8yn4IVFTPRmwb
+         mTcbzSRNWsmz34Tl09fX2ZrPkOa3+K4TmKB8e+pGOQgQeNzFfoglNKUP3hMrc+bCslUe
+         SnpWlxEtIczyOa9e8LL5rRCBi6iNbmCNs6DAnhucx32t3dbNWDeAGqU+bEYA1gI96QzS
+         tLK703Vv/nzuiUMMatoQE79b1pQqWmlQflekdV8qM9aJr/mjNmEdv/omA4xvdmSAoRhi
+         QgDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXYe6spUbAdgDVPIkMumh4PAe7YpP3ois2HHMe5nTBUi/eQ344GFcuQqXInN4WiekSBaT3BIr+oXrVYOs8fiounLu2D0yptPwS23owO
+X-Gm-Message-State: AOJu0Yw01VHY14mc7440OnI1u0ag7G3dm5t4v2xg6m+Kmep6JjBWCyc4
+	rGEg1U+dM8/DeZ7vDsOE0xKNhwhspJjJodcCGppenmDv80YTYTESJY0vBvvxIewzZoEotp+DrMS
+	yyuEJB5Q0NqVFilRf+E4uASlbWnSJwO+VjjzM
+X-Google-Smtp-Source: AGHT+IHDwjio3l7mml1EfKtiOH234s8twE/rMYCk/i2c0VPCw0Zx/DnaBqN791dqwnniasoxYJ08IkF6E1rOTp4zMAI=
+X-Received: by 2002:a05:622a:4114:b0:432:c041:462a with SMTP id
+ cc20-20020a05622a411400b00432c041462amr109796qtb.28.1712361755157; Fri, 05
+ Apr 2024 17:02:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mime-Autoconverted: from 8bit to 7bit by courier 1.0
+MIME-Version: 1.0
+References: <20240405211800.1412920-1-namhyung@kernel.org>
+In-Reply-To: <20240405211800.1412920-1-namhyung@kernel.org>
+From: Ian Rogers <irogers@google.com>
+Date: Fri, 5 Apr 2024 17:02:20 -0700
+Message-ID: <CAP-5=fUhngjbL3Q7a3EuBSGdDKg8PFjRzpe5yHTDdeLmz4oWDg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] perf annotate-data: small random fixes and updates
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Kan Liang <kan.liang@linux.intel.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Some Thinkpads have a 'mode' button that switches between platform
-profiles.
+On Fri, Apr 5, 2024 at 2:18=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
+rote:
+>
+> Hello,
+>
+> I found some problems in the data type profiling with perf annotate.
+> The patch 1 should go to perf-tools and others can go to perf-tools-next.
+>
+> Thanks,
+> Namhyung
+>
+>
+> Namhyung Kim (4):
+>   perf annotate: Make sure to call symbol__annotate2() in TUI
+>   perf annotate-data: Fix global variable lookup
+>   perf annotate-data: Do not delete non-asm lines
+>   perf annotate: Get rid of symbol__ensure_annotate()
 
-Use the new platform_module_cycle function instead of the existing
-switch-based one.
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-Signed-off-by: Gergo Koteles <soyer@irl.hu>
----
- drivers/platform/x86/thinkpad_acpi.c | 19 ++-----------------
- 1 file changed, 2 insertions(+), 17 deletions(-)
+Thanks,
+Ian
 
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 82429e59999d..771aaa7ae4cf 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -11190,23 +11190,8 @@ static void tpacpi_driver_event(const unsigned int hkey_event)
- 		else
- 			dytc_control_amt(!dytc_amt_active);
- 	}
--	if (hkey_event == TP_HKEY_EV_PROFILE_TOGGLE) {
--		switch (dytc_current_profile) {
--		case PLATFORM_PROFILE_LOW_POWER:
--			dytc_profile_set(NULL, PLATFORM_PROFILE_BALANCED);
--			break;
--		case PLATFORM_PROFILE_BALANCED:
--			dytc_profile_set(NULL, PLATFORM_PROFILE_PERFORMANCE);
--			break;
--		case PLATFORM_PROFILE_PERFORMANCE:
--			dytc_profile_set(NULL, PLATFORM_PROFILE_LOW_POWER);
--			break;
--		default:
--			pr_warn("Profile HKEY unexpected profile %d", dytc_current_profile);
--		}
--		/* Notify user space the profile changed */
--		platform_profile_notify();
--	}
-+	if (hkey_event == TP_HKEY_EV_PROFILE_TOGGLE)
-+		platform_profile_cycle();
- }
- 
- static void hotkey_driver_event(const unsigned int scancode)
--- 
-2.44.0
-
+>  tools/perf/ui/browsers/annotate.c |   2 +-
+>  tools/perf/util/annotate-data.c   |  10 ++-
+>  tools/perf/util/annotate.c        | 104 ++++++++++++++++++++----------
+>  3 files changed, 80 insertions(+), 36 deletions(-)
+>
+>
+> base-commit: b6347cb5e04e9c1d17342ab46e2ace2d448de727
+> --
+> 2.44.0.478.gd926399ef9-goog
+>
 
