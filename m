@@ -1,44 +1,45 @@
-Return-Path: <linux-kernel+bounces-133907-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133908-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E627089AA98
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:31:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AC5489AA99
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:31:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30DEEB212BF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:31:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 204FD1F21B57
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:31:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A178D2C6AD;
-	Sat,  6 Apr 2024 11:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F10F2DF92;
+	Sat,  6 Apr 2024 11:31:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lpfwm09N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kD+KtTXj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFE87210E6
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 11:31:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B062CCA0
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 11:31:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712403079; cv=none; b=TnGLxozDDoig3itHPp2ruxLQ0KkkDF94tcS4GwP9rSZDtXkP9w0wrI5YZynTvuVz1r/2ibndHt2tAvdkKzXFjNs59pf+yt0gT+Mjszf869mhrB/6KzrMaR8g/6PbwZrsUpdKz+dExaJuSoeTqbuS/f6qdvo1hHZ6Ppw33MI5Gsw=
+	t=1712403081; cv=none; b=N4m8ymYpPfI6KMrYVKoa53xjH5tgIKcPZnb6MwcreameH/YoAx01RmOdD2+hQL9/6XV8P8joqQOCVqMqmERmk6BjQeK7jPJpP1p/nfbONiKSD+y6t+enWo/4w1lqWo1sJblBbntyZky1Hj8I1urLjMOtP3MqYYXSKq5ojcON2vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712403079; c=relaxed/simple;
-	bh=wDFzllJt1FJE4FDnlfzRpGVgIYeyXYPkTcLYBaCpQUs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ptzYNqcst7dn0e/bojHilsaANNLLBqTkPh2INBmrxQ+93lmHOD7vODsIVFjVpGS+wFNujHaJO5CYMVBJVmBnUFaMQlwWquVCXFn22S8upYEhn2w+ZouENvSkhLi+3/5xN7VWBmYvR0xZA+bEdCvJ3j1TPd1IJ9wwMU6gAqdNXgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lpfwm09N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5397C433F1;
-	Sat,  6 Apr 2024 11:31:16 +0000 (UTC)
+	s=arc-20240116; t=1712403081; c=relaxed/simple;
+	bh=kxw8lEOeXnx/duF9z7ST9TT/zC6EoGrvtJe8oJFI1B0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Dqowo22PocrAb6Jrr4hypscv6ZYG13lnYedtfZ6RjUjQscdW4P2+8OzwvfnpZZOsQKGumnOQerFTmO3wwIrNeKmVLx1J3YB/OVjyXDOXaayrOX2GO/TkFp4UbkIm8XWIyVkZrSYt6Ya9Isuu93z1Yt+Aewij/t81enR33OHUB50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kD+KtTXj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D00C9C43390;
+	Sat,  6 Apr 2024 11:31:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712403078;
-	bh=wDFzllJt1FJE4FDnlfzRpGVgIYeyXYPkTcLYBaCpQUs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=lpfwm09N/5GYWxiWujDnkZ6d5Y73y17ztqEJ5hXW5+qBrE3LU62E8KzTsu0zrY1/h
-	 YjmZAIKyezHMC1RxE7nvnmneX2NPHWQNh9PvlwR2+Jm64I/mMBZ8q/TNSiDXi8MdKG
-	 /0nrrcKujf6n6LDftB9eB4i8nBVe87hI5z/qFb5Ajf7HxEHgaJgILj/DP86Bx5B3aH
-	 1DbEkGAszFspl4aCiQ1RgP1P/4dyHB8iH/zsh6YtZ7TCxC67lXQDUxofGfpgIWEDEE
-	 t4oMaq7zMwHnA2nNlVMPmCnE1ktm7IaUvmxim+Ko88FyqVj0pXIXaPDLsOQpu0ko2D
-	 qwWUeErgcvfow==
+	s=k20201202; t=1712403080;
+	bh=kxw8lEOeXnx/duF9z7ST9TT/zC6EoGrvtJe8oJFI1B0=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=kD+KtTXj/GBjQUtr6D1v/myTGzsq973TWGwuzcxWDl6/CjFmbP50gM/JVNX58qrgd
+	 EUcASu06PHK5jfQ3QNBfcSNrsLpU7hjW9xVTzsUQ8BCdx59mBulPvueYfkwwhZh1D3
+	 Ro4Cs/FOBTRN2zGolCo9LGk43zQhmZC/ZB4Rs4/PXyJS0X35Gg8HyttKhBQHaT3erO
+	 PhwZfs16AI77tZ+6Py0jXcj9ZcBwMwW/U+hAbUGaslrA9P4Owjs/jFxLQmXH62SGvh
+	 DOVmIxFb0qf+tnmLIuXObaJkPONg1btiKj9dDq/7L+WYYej7XRoQ4vdH8MUDWbgsXP
+	 +8m3vR/9SczOQ==
 From: Jisheng Zhang <jszhang@kernel.org>
 To: Daniel Lezcano <daniel.lezcano@linaro.org>,
 	Thomas Gleixner <tglx@linutronix.de>,
@@ -48,10 +49,12 @@ To: Daniel Lezcano <daniel.lezcano@linaro.org>,
 	Samuel Holland <samuel.holland@sifive.com>
 Cc: linux-kernel@vger.kernel.org,
 	linux-riscv@lists.infradead.org
-Subject: [PATCH v2 0/3] clocksouce/timer-clint|riscv: some improvements
-Date: Sat,  6 Apr 2024 19:17:54 +0800
-Message-ID: <20240406111757.1597-1-jszhang@kernel.org>
+Subject: [PATCH v2 1/3] clocksource/drivers/timer-riscv: Add set_state_oneshot_stopped
+Date: Sat,  6 Apr 2024 19:17:55 +0800
+Message-ID: <20240406111757.1597-2-jszhang@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240406111757.1597-1-jszhang@kernel.org>
+References: <20240406111757.1597-1-jszhang@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,29 +63,41 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This series is a simple improvement for timer-clint and timer-riscv:
+To avoid spurious timer interrupts when KTIME_MAX is used, we need to
+configure set_state_oneshot_stopped(). Although implementing this is
+optional, it still affects things like power management for the extra
+timer interrupt.
 
-Add set_state_shutdown for timer-clint, this hook is used when
-switching clockevent from timer-clint to another timer.
-
-Add set_state_oneshot_stopped for both timer-clint and timer-riscv,
-this hook is to avoid spurious timer interrupts when KTIME_MAX is
-usd. Check commit 8fff52fd5093 ("clockevents: Introduce
+Check commit 8fff52fd5093 ("clockevents: Introduce
 CLOCK_EVT_STATE_ONESHOT_STOPPED state") for more information.
 
-Since v1:
-  - use U64_MAX instead of ULONG_MAX in clint_clock_shutdown, this is
-    to  "produce a 64-bit value on riscv32" as pointed out by Samuel
-
-Jisheng Zhang (3):
-  clocksource/drivers/timer-riscv: Add set_state_oneshot_stopped
-  clocksource/drivers/timer-clint: Add set_state_shutdown
-  clocksource/drivers/timer-clint: Add set_state_oneshot_stopped
-
- drivers/clocksource/timer-clint.c | 19 +++++++++++++++----
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+---
  drivers/clocksource/timer-riscv.c | 11 ++++++-----
- 2 files changed, 21 insertions(+), 9 deletions(-)
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/clocksource/timer-riscv.c b/drivers/clocksource/timer-riscv.c
+index 48ce50c5f5e6..e661fc037337 100644
+--- a/drivers/clocksource/timer-riscv.c
++++ b/drivers/clocksource/timer-riscv.c
+@@ -69,11 +69,12 @@ static int riscv_clock_shutdown(struct clock_event_device *evt)
+ 
+ static unsigned int riscv_clock_event_irq;
+ static DEFINE_PER_CPU(struct clock_event_device, riscv_clock_event) = {
+-	.name			= "riscv_timer_clockevent",
+-	.features		= CLOCK_EVT_FEAT_ONESHOT,
+-	.rating			= 100,
+-	.set_next_event		= riscv_clock_next_event,
+-	.set_state_shutdown	= riscv_clock_shutdown,
++	.name				= "riscv_timer_clockevent",
++	.features			= CLOCK_EVT_FEAT_ONESHOT,
++	.rating				= 100,
++	.set_next_event			= riscv_clock_next_event,
++	.set_state_shutdown		= riscv_clock_shutdown,
++	.set_state_oneshot_stopped	= riscv_clock_shutdown,
+ };
+ 
+ /*
 -- 
 2.43.0
 
