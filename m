@@ -1,244 +1,106 @@
-Return-Path: <linux-kernel+bounces-133966-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133965-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3ECD89AB8E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 17:11:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1765689AB8A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 17:10:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 71EB61F21E18
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:11:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C80A028219E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41DA39856;
-	Sat,  6 Apr 2024 15:11:50 +0000 (UTC)
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFEC939FE4;
+	Sat,  6 Apr 2024 15:10:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TCifKKj+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FB152BAE3
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 15:11:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E299536AF2;
+	Sat,  6 Apr 2024 15:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712416310; cv=none; b=cVv+apHwH+aRRb8HvDH86XrHSeNiBEey+7DmDGAC/DlBldGPEZewfxgoGljQGqZmMDa0ytX5KPLfcIKEn3PBa2kC7unJxkX0ubOwNFixNhsoVrNY6y+cZRouFmX/wOrpp/rsIdKiwcjKyVScUzXUFR11qDM0EQBWaERfW9RfXsU=
+	t=1712416248; cv=none; b=ZIUz/KBBRB2DYOKCsRIKNiEGFHpJWR9bbYUXS1fbKS+jv8Eg7ahfooDvn7IJR7+jBMRrO6MH0Hw/yFwmAACk7jU/76bNRMWFYulmCnAvX/Vz7IQFnDyFJwx3qUs7YS2RS59hvVrNR3/Sh2VuHyZEQZuMB0ZODa1ClC1szh+mzgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712416310; c=relaxed/simple;
-	bh=m7FZIiwrd7YEBY/n2UxCR55958qoIAOrRTaYULHViHY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sl6Q0b9tv32Wl48H4r4qwPEbyUf+fuUVdkYu22zThPgxJk4uYYem2gfno6zBEIppYgYrxZGJNxIaCdDrHcMjFLO17uKr91CKXL5KD9UwD0yDBK+4tHpFvaE1yJTwdqDMLX1L0g67sSd3nG2wpApJHkxTRYl7A9gRMuHtKCFzcBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-505-8qpYagkzMxSV1T4VL2nekg-1; Sat,
- 06 Apr 2024 11:11:40 -0400
-X-MC-Unique: 8qpYagkzMxSV1T4VL2nekg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id F348128AC1E7;
-	Sat,  6 Apr 2024 15:11:39 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.136])
-	by smtp.corp.redhat.com (Postfix) with SMTP id 0E9593C20;
-	Sat,  6 Apr 2024 15:11:36 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sat,  6 Apr 2024 17:10:15 +0200 (CEST)
-Date: Sat, 6 Apr 2024 17:09:51 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: John Stultz <jstultz@google.com>, Marco Elver <elver@google.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	"Eric W. Biederman" <ebiederm@xmission.com>,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Dmitry Vyukov <dvyukov@google.com>, kasan-dev@googlegroups.com,
-	Edward Liaw <edliaw@google.com>,
-	Carlos Llamas <cmllamas@google.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] selftests/timers/posix_timers: reimplement
- check_timer_distribution()
-Message-ID: <20240406150950.GA3060@redhat.com>
-References: <87sf02bgez.ffs@tglx>
- <87r0fmbe65.ffs@tglx>
- <CANDhNCoGRnXLYRzQWpy2ZzsuAXeraqT4R13tHXmiUtGzZRD3gA@mail.gmail.com>
- <87o7aqb6uw.ffs@tglx>
- <CANDhNCreA6nJp4ZUhgcxNB5Zye1aySDoU99+_GDS57HAF4jZ_Q@mail.gmail.com>
- <87frw2axv0.ffs@tglx>
- <20240404145408.GD7153@redhat.com>
- <87le5t9f14.ffs@tglx>
+	s=arc-20240116; t=1712416248; c=relaxed/simple;
+	bh=5emgxAYuL3Uh/wVc4IUoxs/1/ddCC16VTMbHABngszQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=trxo4XN4dHbWvwLp6ZBbYkAz+toT7So1C3tBl1O/C3UY2+KdHpuhk+EBHfSUgB3nZ0UcqxGMVijwwOmaakEFdw+UzZtoSqnl40N2xv2bXgKGtfH0Y0YJahqpdcKUWJ94Tt9JGwnXga89Uh3zuOHIEXRe+wslEAnmW/wQIee7mgM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TCifKKj+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3BBE9C43390;
+	Sat,  6 Apr 2024 15:10:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712416247;
+	bh=5emgxAYuL3Uh/wVc4IUoxs/1/ddCC16VTMbHABngszQ=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=TCifKKj+aKJ/MmDeAFtT+mOorB2XyOAVUn3j7bmZgBiRjc+OluvfcmM2CPVYab28Y
+	 0A6M7Y3Lc706CoI93wm6BtfNySz4nejDYPvbhBXly7vLzVpNyUwIH4WxoFgNX8uqAf
+	 T/ahL9OyoFiEeDz1CApD9ckc/RpZiZvsfI6a9LYSOvdZXD0SBPyEQMVCJQDQyDKqAc
+	 e5CECFuOdpy2SIOToJ31Mni/rFJ6RtPJMAc+6Rlkuebz0kM3ag0tyGo+riVVfJePes
+	 n23jwl3ZOZwHvskRk4PDUvtV+wc5CNmHQ/CSbVPhbO7npmeKx1ELquCCTaobvm5q5f
+	 Ly/OlQEwYm3/g==
+Date: Sat, 6 Apr 2024 16:10:31 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: David Lechner <dlechner@baylibre.com>
+Cc: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>, dumitru.ceclan@analog.com,
+ Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
+ <Michael.Hennerich@analog.com>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 6/6] iio: adc: ad7173: Add support for AD411x devices
+Message-ID: <20240406161031.6192f4f4@jic23-huawei>
+In-Reply-To: <CAMknhBFZKKim4JyXLpHY=EoyW4ZPp03aHte5xy0ZkDnW16sfeA@mail.gmail.com>
+References: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
+	<20240401-ad4111-v1-6-34618a9cc502@analog.com>
+	<CAMknhBFdtv84E_S4wa4UW0pO2yiUEk9=jn=_i4F=b8VHdR6v+w@mail.gmail.com>
+	<c7c26d36-ab08-420c-b634-8eb6d9cee9b5@gmail.com>
+	<CAMknhBFZKKim4JyXLpHY=EoyW4ZPp03aHte5xy0ZkDnW16sfeA@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87le5t9f14.ffs@tglx>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Thomas says:
 
-	The signal distribution test has a tendency to hang for a long
-	time as the signal delivery is not really evenly distributed. In
-	fact it might never be distributed across all threads ever in
-	the way it is written.
+> >  
+> > >> +               case IIO_CURRENT:
+> > >> +                       *val = ad7173_get_ref_voltage_milli(st, ch->cfg.ref_sel);
+> > >> +                       *val /= AD4111_SHUNT_RESISTOR_OHM;
+> > >> +                       *val2 = chan->scan_type.realbits - !!(ch->cfg.bipolar);  
+> > >
+> > > Static analysis tools like to complain about using bool as int.
+> > > Probably more clear to write it as (ch->cfg.bipolar ? 1 : 0) anyway.
+> > >  
+> > Maybe it does not apply here, but i followed this advice:
+> >
+> > Andy Shevchenko V1 of AD7173 (named initially ad717x)
+> > "  
+> > > +     return (bool)(value & mask);  
+> >
+> > This is weird. You have int which you get from bool, wouldn't be better
+> > to use
+> > !!(...) as other GPIO drivers do?  
+> 
+> As long as the build bots don't complain, there isn't a reason to
+> change it. It is just a matter of personal preference at that point.
+> 
+> I got a sparse warning for something like this recently [1], but maybe
+> that case was just because it was inside of a FIELD_PREP() using it as
+> bit logic instead of addition and we won't get any warnings here.
+> 
+> [1]: https://lore.kernel.org/linux-iio/20240129195611.701611-3-dlechner@baylibre.com/
 
-To me even the
+It was common to use !! for a number of years, but then it got a
+comment from Linus Torvalds making reasonable point that it isn't
+easy to read, so slight preference these days is for a ternary.
 
-	This primarily tests that the kernel does not favour any one.
 
-comment doesn't look right. The kernel does favour a thread which hits
-the timer interrupt when CLOCK_PROCESS_CPUTIME_ID expires.
-
-The new version simply checks that the group leader sleeping in join()
-never receives SIGALRM, cpu_timer_fire() should always send the signal
-to the thread which burns cpu.
-
-Without the commit bcb7ee79029d ("posix-timers: Prefer delivery of signals
-to the current thread") the test-case fails immediately, the very 1st tick
-wakes the leader up. Otherwise it quickly succeeds after 100 ticks.
-
-Signed-off-by: Oleg Nesterov <oleg@redhat.com>
----
- tools/testing/selftests/timers/posix_timers.c | 102 ++++++++----------
- 1 file changed, 46 insertions(+), 56 deletions(-)
-
-diff --git a/tools/testing/selftests/timers/posix_timers.c b/tools/testing/selftests/timers/posix_timers.c
-index d49dd3ffd0d9..2586a6552737 100644
---- a/tools/testing/selftests/timers/posix_timers.c
-+++ b/tools/testing/selftests/timers/posix_timers.c
-@@ -184,80 +184,70 @@ static int check_timer_create(int which)
- 	return 0;
- }
- 
--int remain;
--__thread int got_signal;
-+static pthread_t ctd_thread;
-+static volatile int ctd_count, ctd_failed;
- 
--static void *distribution_thread(void *arg)
-+static void ctd_sighandler(int sig)
- {
--	while (__atomic_load_n(&remain, __ATOMIC_RELAXED));
--	return NULL;
-+	if (pthread_self() != ctd_thread)
-+		ctd_failed = 1;
-+	ctd_count--;
- }
- 
--static void distribution_handler(int nr)
-+static void *ctd_thread_func(void *arg)
- {
--	if (!__atomic_exchange_n(&got_signal, 1, __ATOMIC_RELAXED))
--		__atomic_fetch_sub(&remain, 1, __ATOMIC_RELAXED);
--}
--
--/*
-- * Test that all running threads _eventually_ receive CLOCK_PROCESS_CPUTIME_ID
-- * timer signals. This primarily tests that the kernel does not favour any one.
-- */
--static int check_timer_distribution(void)
--{
--	int err, i;
--	timer_t id;
--	const int nthreads = 10;
--	pthread_t threads[nthreads];
- 	struct itimerspec val = {
- 		.it_value.tv_sec = 0,
- 		.it_value.tv_nsec = 1000 * 1000,
- 		.it_interval.tv_sec = 0,
- 		.it_interval.tv_nsec = 1000 * 1000,
- 	};
-+	timer_t id;
- 
--	remain = nthreads + 1;  /* worker threads + this thread */
--	signal(SIGALRM, distribution_handler);
--	err = timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id);
--	if (err < 0) {
--		ksft_perror("Can't create timer");
--		return -1;
--	}
--	err = timer_settime(id, 0, &val, NULL);
--	if (err < 0) {
--		ksft_perror("Can't set timer");
--		return -1;
--	}
-+	/* 1/10 seconds to ensure the leader sleeps */
-+	usleep(10000);
- 
--	for (i = 0; i < nthreads; i++) {
--		err = pthread_create(&threads[i], NULL, distribution_thread,
--				     NULL);
--		if (err) {
--			ksft_print_msg("Can't create thread: %s (%d)\n",
--				       strerror(errno), errno);
--			return -1;
--		}
--	}
-+	ctd_count = 100;
-+	if (timer_create(CLOCK_PROCESS_CPUTIME_ID, NULL, &id))
-+		return "Can't create timer";
-+	if (timer_settime(id, 0, &val, NULL))
-+		return "Can't set timer";
- 
--	/* Wait for all threads to receive the signal. */
--	while (__atomic_load_n(&remain, __ATOMIC_RELAXED));
-+	while (ctd_count > 0 && !ctd_failed)
-+		;
- 
--	for (i = 0; i < nthreads; i++) {
--		err = pthread_join(threads[i], NULL);
--		if (err) {
--			ksft_print_msg("Can't join thread: %s (%d)\n",
--				       strerror(errno), errno);
--			return -1;
--		}
--	}
-+	if (timer_delete(id))
-+		return "Can't delete timer";
- 
--	if (timer_delete(id)) {
--		ksft_perror("Can't delete timer");
--		return -1;
--	}
-+	return NULL;
-+}
-+
-+/*
-+ * Test that only the running thread receives the timer signal.
-+ */
-+static int check_timer_distribution(void)
-+{
-+	const char *errmsg;
-+
-+	signal(SIGALRM, ctd_sighandler);
-+
-+	errmsg = "Can't create thread";
-+	if (pthread_create(&ctd_thread, NULL, ctd_thread_func, NULL))
-+		goto err;
-+
-+	errmsg = "Can't join thread";
-+	if (pthread_join(ctd_thread, (void **)&errmsg) || errmsg)
-+		goto err;
-+
-+	if (ctd_failed)
-+		ksft_test_result_skip("No signal distribution. Assuming old kernel\n");
-+	else
-+		ksft_test_result_pass("check signal distribution\n");
- 
--	ksft_test_result_pass("check_timer_distribution\n");
- 	return 0;
-+err:
-+	ksft_print_msg(errmsg);
-+	return -1;
- }
- 
- int main(int argc, char **argv)
--- 
-2.25.1.362.g51ebf55
 
 
 
