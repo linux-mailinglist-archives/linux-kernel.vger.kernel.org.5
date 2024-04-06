@@ -1,104 +1,132 @@
-Return-Path: <linux-kernel+bounces-133814-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133810-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6534189A928
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:29:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44D8E89A920
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:25:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1F8D228316F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 05:29:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F349D282E20
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 05:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10715208B0;
-	Sat,  6 Apr 2024 05:29:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D668B200D1;
+	Sat,  6 Apr 2024 05:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b="RU30JmeZ"
-Received: from mail-108-mta3.mxroute.com (mail-108-mta3.mxroute.com [136.175.108.3])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A+DbQkh3"
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D479F18E02
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 05:28:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=136.175.108.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B511419479;
+	Sat,  6 Apr 2024 05:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712381341; cv=none; b=XZjX4RhKm1fQcHD9RjD5bAmHhYzsdrLbw+Xqe6eg2hQSTzne1D8Z60wi/RsCz6uXCg/STCo7SDGWlnSNrXYf5RFCRL1LFqM6VokHj5qZZPUd//m2F1P3lPNH7DiGRdLvnyPsCEQVZdmtw7PvvS0KZzHP2NtkUVHSa1Z4hOrAoeo=
+	t=1712381118; cv=none; b=o4PR8wj3fO7mbsrvVL9yOrKifIhVRVZt4U4QOk8OyY4lRNQ/PviN/RSWq13UgSKMT9ZSBtfzVHJArcftzFVy8ShmRwy7cyAuHyMicVCk/ysN4pUqObnSGZVTvoJvDbevSSQX/H2+FgsxODHSZkGPXqQemCo/LZ9xEM6LzLTGkew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712381341; c=relaxed/simple;
-	bh=XvGGiaKjAp46vAegdWKN0fVnxmrfC1H1J6zN0QKFTrw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=b18wrU10kKIR7ztROAhRGkeO7L7pLnXngdfB4FaI83Cm0HJG6rU/AbffJza9V9LDmCwaPpNfYXOO1ZkpB5CCF0HxRunrrHUTcqAuOFYjPrTnzlvZpxhlya6E/iepBUffQuiMdvGIiO4JslI7CAm6DoAh/aVmBO1349uTBMGWMiY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com; spf=pass smtp.mailfrom=luigi311.com; dkim=pass (2048-bit key) header.d=luigi311.com header.i=@luigi311.com header.b=RU30JmeZ; arc=none smtp.client-ip=136.175.108.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=luigi311.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=luigi311.com
-Received: from filter006.mxroute.com ([136.175.111.2] filter006.mxroute.com)
- (Authenticated sender: mN4UYu2MZsgR)
- by mail-108-mta3.mxroute.com (ZoneMTA) with ESMTPSA id 18eb1dce0660003bea.010
- for <linux-kernel@vger.kernel.org>
- (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
- Sat, 06 Apr 2024 05:23:46 +0000
-X-Zone-Loop: 2c23c9c3f44d8386bff19afe2fabfbe4d319e8d0e977
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=luigi311.com; s=x; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-	From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=ZmuhkTALxM8lf0cfAvP+7dJ0PJ20DaBe8z1ii1wZ960=; b=RU30JmeZw8NfKZujRbkVuhHZc7
-	Wdnson/TB15EBa0BLASqHxyQNxUo4sK/fpaxMJHvihEmZLBTATxOJV2BXo3NfWsttfvLKNJJWHRsE
-	CeKtDYAyQP6Ppj2blTGdGqOtuua7XHqeODzZls2nZUb2ZPnnyrjg5+IiMbLf1veOem4ZcIE6FulIa
-	cFzdxpC9SCQ77SbyAmHMfGhhZKRZBLnK2b3qt+pu5WL3NOdQhoD4Sx3PAD7JyD1tpsiBRFs/Iw5M2
-	WYtRtpD/Nl5uPmjzU7acJ0j6ti7PD2GE0ijqjph2h/9H2Iu3mWHFgIpfSZoj8eNzC+j+RW3r4jlbG
-	IjfS1GLw==;
-Message-ID: <bbf7c8c3-ca67-43a1-88d0-199cc9299c6d@luigi311.com>
-Date: Fri, 5 Apr 2024 23:23:42 -0600
+	s=arc-20240116; t=1712381118; c=relaxed/simple;
+	bh=hzp9HyvmOrTYDuK28GX1kEwaWQcEGAXzI+4hiBrNFOg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=a3s4ELD6e+6UE8Cwc6yYYf8HvxtjHbkkYCkaDyuS3VrR9rJnEH4VO/0VwAQIKkih2AOIchEVLhun+wDKqwVRqoYDIsi+a8k+MZSLxjPNeOaQO491E2hr2aFJsHWYpxlFcA7zWnhRQT9Zhq8S63B3oXy3QGxBAnfcgpfzzcKVxt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A+DbQkh3; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6994bcf7e80so3632886d6.0;
+        Fri, 05 Apr 2024 22:25:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712381115; x=1712985915; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dhLN9cN2qzUox6TTfuotLrtT0I8++ymvJQ3nzVbMdnM=;
+        b=A+DbQkh3IxdiZfEyml0zSCichn4aRAHsp0NtJHiLuaJMoboKuf4hCwtU4GReTX3H4I
+         0QeRV/bOtCV61tBUA0w+SToSvjVDXhLLQRcEBQkd05sO7q/S0d3XsJ1Kd8rx+9bQySzO
+         g7rEtJAPctevLovsbf2UtE1TkCAynuy0hCSxkbkRMhP3tnRbkuLyo5TWJQLcxNnFnD+E
+         1ytfrEXw/YBqpu5lAWYw9mEYFT/thVUrSHLfib1fpdtDvYTbJ9DbN6ZSMmkOjxet6QjG
+         IG36LOes86iRBrdYXv6H8w/VV4tGAOganXBkasD5N5yv+4JHlB3bkiX77AiaAG2k0WKc
+         qQTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712381115; x=1712985915;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dhLN9cN2qzUox6TTfuotLrtT0I8++ymvJQ3nzVbMdnM=;
+        b=GLFRT8LkLDlgb2QlS23wXBw+qrd7qDTovxvG6r7dS9xSwjvb8aAkUxvR2jEw4iKca6
+         UYY3+WSFKN8C3vSOKOsDUIBRXvi2WxuVN+BZRvrf/seS47nLK/FiMn9kkgDj5HU8YuNp
+         MLVt5N2C4ET947xFY/exL5PgcgbECTUXnRM2GEIilqa53uT9fTGQAUm3/E4hF9VugGqg
+         eIwiQl4AooVWLm43h3iVwheH1hUHLdu99akH5XbZgusgInHbxg7t/owGoxi6qPszYIHa
+         JjhimYsrbKjZNEWgQ/u1Sqe6k5I4Bcm3NdaWhUdkZ/dx+VGaRPSBvMRKuPSkhqxOR2+T
+         K1Ug==
+X-Forwarded-Encrypted: i=1; AJvYcCUVPHfGq9cobp3PLkcYDYDlFLUny4xRr4YfA5pY1dDzbGjO+mrH51L+ypnKpSwN8n3rDEibS4VGwv8j+9l8dtUazbeIMPHEOPOxZcV+mdICg5BWBOvqLX+U/sGnowUu6nrq/LcTTXUsfbReOg==
+X-Gm-Message-State: AOJu0YxiZ7Qbkd11siyCrE02dsVwZhcz6hPJ2uRiICKRGkc1lsyqWqd/
+	CwkxLKG9iHT39TZioGygvvPvuh/2IlG14ERPU6OcY0HrtVrr78Yd3OBpgr3N6clElZHJlcfbzCH
+	/ZZrwnR2CexZ00CEJrIlNHHAtZu8=
+X-Google-Smtp-Source: AGHT+IH1+ArLrVcGFURcXfjQBrXzpPFw6/exLPQmegpwxSjV6Ia72nupr6Uwd72ymyhJWddkm+TzzzNT+uWR2j12gGc=
+X-Received: by 2002:a05:6214:5007:b0:699:29e0:10b4 with SMTP id
+ jo7-20020a056214500700b0069929e010b4mr6541922qvb.13.1712381115642; Fri, 05
+ Apr 2024 22:25:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 05/25] media: i2c: imx258: Add regulator control
-To: Pavel Machek <pavel@ucw.cz>
-Cc: linux-media@vger.kernel.org, dave.stevenson@raspberrypi.com,
- jacopo.mondi@ideasonboard.com, mchehab@kernel.org, robh@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, shawnguo@kernel.org,
- s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
- sakari.ailus@linux.intel.com, devicetree@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, phone-devel@vger.kernel.org
-References: <20240403150355.189229-1-git@luigi311.com>
- <20240403150355.189229-6-git@luigi311.com> <Zg2jgmmqw0nXDYcF@duo.ucw.cz>
-Content-Language: en-US
-From: Luis Garcia <git@luigi311.com>
-In-Reply-To: <Zg2jgmmqw0nXDYcF@duo.ucw.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Id: git@luigi311.com
+References: <00000000000098f75506153551a1@google.com> <0000000000002f2066061539e54b@google.com>
+ <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
+ <20240404081122.GQ538574@ZenIV> <20240404082110.GR538574@ZenIV>
+ <CAOQ4uximHfK78KFabJA3Hf4R0En6-GfJ3eF96Lzmc94PGuGayA@mail.gmail.com> <20240406040923.GX538574@ZenIV>
+In-Reply-To: <20240406040923.GX538574@ZenIV>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Sat, 6 Apr 2024 08:25:03 +0300
+Message-ID: <CAOQ4uxikd7HY3gfvLLJp4VRMEhV0NPOExN+UYQ8dDG=p=f-MRQ@mail.gmail.com>
+Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
+To: Al Viro <viro@zeniv.linux.org.uk>, Miklos Szeredi <miklos@szeredi.hu>
+Cc: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>, 
+	gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org, 
+	valesini@yandex-team.ru, Christoph Hellwig <hch@lst.de>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 4/3/24 12:44, Pavel Machek wrote:
-> Hi!
-> 
->> The device tree bindings define the relevant regulators for the
->> sensor, so update the driver to request the regulators and control
->> them at the appropriate times.
-> 
->> @@ -995,9 +1007,19 @@ static int imx258_power_on(struct device *dev)
->>  	struct imx258 *imx258 = to_imx258(sd);
->>  	int ret;
->>  
->> +	ret = regulator_bulk_enable(IMX258_NUM_SUPPLIES,
->> +				    imx258->supplies);
->> +	if (ret) {
-> 
-> Will this make it fail for all current users?
-> 
-> Best regards,
-> 								Pavel
-> 								
+On Sat, Apr 6, 2024 at 7:09=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> wr=
+ote:
+>
+> On Thu, Apr 04, 2024 at 12:33:40PM +0300, Amir Goldstein wrote:
+>
+> > We do not (anymore) lock ovl inode in ovl_llseek(), see:
+> > b1f9d3858f72 ovl: use ovl_inode_lock in ovl_llseek()
+> > but ovl inode is held in operations (e.g. ovl_rename)
+> > which trigger copy up and call vfs_llseek() on the lower file.
+>
+> OK, but why do we bother with ovl_inode_lock() there?
+> Note that serialization on struct file level is provided
+> on syscall level - see call of fdget_pos() in there.
+> IOW, which object are you protecting?  If it's struct file
+> passed your way, you should already have the serialization.
+> If it's underlying file on disk, that's up to vfs_llseek().
 
-It shouldn't affect current users as this was added in by dave for
-a completely different sensor and it still works on my ppp. Looking
-at the dmesg for imx258 it does reference the regulators that the
-ppp doesnt have but it still works.
+You're right.
+
+> Exclusion with copyup by a different operation?
+
+Nah, don't see how this is relevant to file->f_pos.
+
+>
+> I'm not saying it's wrong - it's just that the thing is
+> tricky enough, so some clarification might be a good idea.
+
+I think I just used inode_lock() in
+9e46b840c705 ("ovl: support stacked SEEK_HOLE/SEEK_DATA")
+as a common coding pattern in overlayfs when protecting the
+"master" copy of overlay inode attributes, but it was not needed
+for file->f_pos.
+
+Miklos, please ack that I am not missing anything and that
+ovl_inode_lock() is indeed redundant in ovl_llseek().
+
+Anyway, this lock is not part of the lockdep issue that started this thread=
+.
+
+Thanks,
+Amir.
 
