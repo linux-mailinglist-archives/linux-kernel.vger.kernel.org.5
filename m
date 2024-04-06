@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-133733-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133734-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9E4689A7DB
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:10:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4780F89A7DE
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:10:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8D6F1C2188F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:10:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F04101F22E11
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:10:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEECE1171C;
-	Sat,  6 Apr 2024 00:10:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 850891CAAF;
+	Sat,  6 Apr 2024 00:10:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JvWqmKsD"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dy/QPqxA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC55E3C00;
-	Sat,  6 Apr 2024 00:09:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE26A1B812;
+	Sat,  6 Apr 2024 00:10:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712362200; cv=none; b=Qa1wFJ1q9BtdLQVutLJEjQCg1wcqalu/CP75mjafLBgwbCq8hWeHq7SmL/Kt4g/IUFksaNM6DfGvK6rqASevjhCvjwqShzaGx3tz7zLYG1AxRVogemEEGMcSu5pHUsHPzW3WN/xr10/hqIwGlj70mK7QwZGs/wgEM9HKUQgrWAw=
+	t=1712362205; cv=none; b=aftBzNdUdOyWCrREx0lJgNLOIwRM2F68JQj6n8YEyvZglfXtnlFBs1AK+JRCU1VY0R/8VXHDGUiYrB4VUtfps5Fl1/czklEHFL0mtK/jCB0tQsCJn+UD9oL5KBDBgZ/TWhj4uXUaDPGq606VfjZpWsXeI1Fes4h7/D4HMuE6O34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712362200; c=relaxed/simple;
-	bh=Nb2+B+acJncpp4EjQitV6HHDapj0g3OMSXh6FMxidsU=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=CZZ0S1xq8b0bywxyfxbpaF+wvTgr4RGPaenl4wBf0w9+7XnTRjzRxa3kReLlEOkTwOFZ/nZr0Zp3JjFmR0yX/rgM6oQVoG095fZl0mzPfahDV26CpRwQvTnuKEPLKzeUYK8Ij0J7lrRO047HDirNtRHcIJw49CXJhzsYA3lT6Bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JvWqmKsD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CD406C433C7;
-	Sat,  6 Apr 2024 00:09:59 +0000 (UTC)
+	s=arc-20240116; t=1712362205; c=relaxed/simple;
+	bh=fUQcSTVKaARnTuRgrpsLLyNOizTOrEWuMGHWGyon4dw=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=u1/OkrtnU3WysJx0GVi7psXXxDSxHhryAm+kxGVMIHN6ITutdd1/ayTejv89ylsRrzP0cd5NE6iAWRv9GerOOkeMJzz1g9Q8k0ktF2M+pSx9ANsIcKhxE6P9VqQuQfNdulf7EJtZhiyd3nczQBC9t872ZxGcvkK0j+To97iopEE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dy/QPqxA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4CABDC433C7;
+	Sat,  6 Apr 2024 00:10:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712362199;
-	bh=Nb2+B+acJncpp4EjQitV6HHDapj0g3OMSXh6FMxidsU=;
+	s=k20201202; t=1712362205;
+	bh=fUQcSTVKaARnTuRgrpsLLyNOizTOrEWuMGHWGyon4dw=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=JvWqmKsDTubwKF0dBYyhkU0Vr/1aOjb0xR/YlgFipuK0IAuZtK5hxJFWZx8n8OS8H
-	 h/H6KsV2UHB1O2t2h9I/2mplMxp2sc+3vZhOjndCvFqvJCA3TRRL5Ba4owAcjYzAzO
-	 0Rvy8OcOr5/4husU1Hx83qaoEKEQUUygwpRJxwtmXqwHvQ+BSDofMfHc+Wh44qYp9B
-	 +PsZOxfbOyYZAigihgVexo0hACJgbYwaen1e+yx6ouSDXSnK05ExKZ39DxRJA1ryG8
-	 oK0tIQGOiTp8KMfbPmn2Vw4w7YLJgk4Jo4WXe5Wid60TqfXRrYKWoEqHFjhojURuNF
-	 kVOgAOhBBeOvw==
+	b=Dy/QPqxARyQxKPGBCRLp5YCQdnedLQYdlnov5oSfQORPqaNUjfR54IZxtSumU1lNY
+	 35hhNI4RVBo5NueddOJnvKJWsRISMp6YdJtCHnFgqI0oE4cXl9Y19T+vUnKpTZLw5S
+	 bxkI7QsgieHtTLNqBuU6Womxhv8+vMGd5Qy2cSrWwxKfvufElCCcm8xCz5ME0XCCCY
+	 u0E/VZP6edLrrwShZWvxWVSIriPJjUpXsM8y7Y0XiOOpsG+8pHUvkADKbQCv7qkB0D
+	 K21IJJV3lefhTRDJG8tbHl+7hw/hwqkUgpodIOG8BdSBXTs1yjzWYTw8RpV2PUO1Dn
+	 IzuHLcyJPBM9A==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id C461FD8A100;
-	Sat,  6 Apr 2024 00:09:59 +0000 (UTC)
-Subject: Re: [GIT PULL] SCSI fixes for 6.9-rc2
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 377E8DB1B10;
+	Sat,  6 Apr 2024 00:10:05 +0000 (UTC)
+Subject: Re: [GIT PULL] Devicetree fixes for v6.9, part 1
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <fa81207eef6f94b71de19640dec34fe6199c90d3.camel@HansenPartnership.com>
-References: <fa81207eef6f94b71de19640dec34fe6199c90d3.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <fa81207eef6f94b71de19640dec34fe6199c90d3.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
-X-PR-Tracked-Commit-Id: 2a26a11e9c258b14be6fd98f8a85f20ac1fff66e
+In-Reply-To: <20240405204017.GA1394619-robh@kernel.org>
+References: <20240405204017.GA1394619-robh@kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240405204017.GA1394619-robh@kernel.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-6.9-1
+X-PR-Tracked-Commit-Id: de164a7f19248fb03229a4af9b0db333d9591e55
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4de2ff261f535f2ed6ef56d4acf5f888ed8b95bc
-Message-Id: <171236219979.3482.7216334853638864237.pr-tracker-bot@kernel.org>
-Date: Sat, 06 Apr 2024 00:09:59 +0000
-To: James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Linus Torvalds <torvalds@linux-foundation.org>, linux-scsi <linux-scsi@vger.kernel.org>, linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 84985eb2c084676f974698cb19fb5a166650886a
+Message-Id: <171236220519.3482.4923357444189456542.pr-tracker-bot@kernel.org>
+Date: Sat, 06 Apr 2024 00:10:05 +0000
+To: Rob Herring <robh@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Saravana Kannan <saravanak@google.com>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Fri, 05 Apr 2024 16:46:42 -0400:
+The pull request you sent on Fri, 5 Apr 2024 15:40:17 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-6.9-1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4de2ff261f535f2ed6ef56d4acf5f888ed8b95bc
+https://git.kernel.org/torvalds/c/84985eb2c084676f974698cb19fb5a166650886a
 
 Thank you!
 
