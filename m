@@ -1,231 +1,121 @@
-Return-Path: <linux-kernel+bounces-133895-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133896-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A4C289AA79
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:02:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0458389AA7B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:07:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1DD51F21E26
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:02:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 909861F21B79
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:07:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C912C195;
-	Sat,  6 Apr 2024 11:02:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78C352C183;
+	Sat,  6 Apr 2024 11:07:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OGBSp5mv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="ic36piIz";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="f8fkMR4u"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D4D210E6;
-	Sat,  6 Apr 2024 11:02:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C08810A1A;
+	Sat,  6 Apr 2024 11:07:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712401349; cv=none; b=nm+Ar2N3K8Vmxk3Sh1bfEge+jPTrJAGZxXnR8lGZQ+WFRnArm/wjGr4gTpbquCM/cdiPbzR/9eSjjXF3SjYOAbx7LYnBppWuUiCS4BFpzMY8PksuU7z0u7V86/y+PFyC3olI2kz+rCDfjkJ5wielnSfow3rhLQlnMBmGrhr5bFE=
+	t=1712401646; cv=none; b=DiVMgy9RIxOAsrlUkB3ml79ivlrsVHyImQUMfUEVXhJHnRG1tvv7snAMVw0oqF8AaguypWp/WygcwqbTkQU2HOjwo1Amj6uWro41YwF9phhzhlKY5fJRA4GKpZyd/tp/HgSKBkSuEcnwX54Nng9t72lcT/oGjUcwZOrD4bnudwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712401349; c=relaxed/simple;
-	bh=ZpMrxADaKtuIXlCnRIxLx0NrrHdkrgR6Fbx126OpUO0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IwAjQrNTgitpT0zl6TCpxoc51jCHKqS65s/Ode2koXN4IFUX/FmTCMzk1wGWDaC2ad04kyq9yZcmacxXOAFOD8QZRbVbJedMJwOb6hmiQTVPZijFKlTt0rX3r8Jn/tD6f+DKprZPrvk67+1Da2nIpxkJzKXBoduew98HdaKTOTE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OGBSp5mv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 373C6C433C7;
-	Sat,  6 Apr 2024 11:02:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712401349;
-	bh=ZpMrxADaKtuIXlCnRIxLx0NrrHdkrgR6Fbx126OpUO0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=OGBSp5mv7v2wdUBs6QxDpTnHMH9h1RadzFJbVbEW5sCOWjrDkmPTYm/kZVAMQWZUz
-	 nexpFE0HxrFBlYNET9O+SzYFhqdVnudan30gX/UufdSdDPm1zQWqbN/5vmpjMJXtmi
-	 +3vw0QqvQETlEsTNbmofz7d6hracXoNxc8EE0MGTQE0nJd7vhghxDNCtojGIG8Q9g+
-	 cPUEMDk6VT+y8OIdA/uSa79KuWRydn7WCF8csTGZoLqQtRioMOx9TcT681N5fOvkyT
-	 6+2828psFxvt1G2VWsRTPIokzkhi9MWRZkFmBvK9MeoJGFA+tpYFt8ckQmBGNC3jNe
-	 JuEGoTNZaTDvw==
-Message-ID: <9aab8dab-27c4-40b6-b1d5-0a2babe0700d@kernel.org>
-Date: Sat, 6 Apr 2024 13:02:23 +0200
+	s=arc-20240116; t=1712401646; c=relaxed/simple;
+	bh=1c/uukDs4NViT6Qhnk1duF7tfheo9SWe0nonrRG1Q6c=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=EWnxJSa2cu+AKmYrTz4DB029cRY4fOqii180YcijtfCBJeB6enhot2K8ITZT9uV/mPPuryXNiG2Z8APNtYvesuhvg0TV4MYMGMUGJwCx+r7ET++BGWEbPmLNiMZIuDoYB/O/TOUpjpdXbZUR6tVOHVzNcOWsEIwYDZZUssPTqCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=ic36piIz; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=f8fkMR4u; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Sat, 06 Apr 2024 11:07:21 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712401643;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bAc6loL2aK+HGkCP5gp1UlNwVJYoaUCxX0DydY3JV0w=;
+	b=ic36piIzsbEjeYVE3xBX6wRZGcTJkZhNEIEb5EmrLjtV0ZjdUf84ggL4jtH+DwSXsOFrr0
+	KJz0EGCkmaKPltBN3Ps93F1QHseG3WR4VZOjMzWIdw2Fn5RkVEIvuQCp12a51cGRZ0oMzM
+	GW6v7AD2uEcQEAR9pfj1Fns0F0EEZqJkN0D2JkeVeHXdQIpcuLgVPauPpWm7/vZLt11xRh
+	LH9jK+/5xzvZww5OKGRcwCACX4NemNDKjkM1VvFWf5vpYMuOl70XUFXV5QIucdP5JGRZUi
+	4sL0nUDA4lVVh2JReZLfRzS1lPAYKvlRTC5tXvkd0YXh1qzYsYx1TJn/1VIDdQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712401643;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bAc6loL2aK+HGkCP5gp1UlNwVJYoaUCxX0DydY3JV0w=;
+	b=f8fkMR4ubc3/MIUhSL/3VP7wXgMi8DPINRk7QAJ6bz2DQK3gPorenK4rmR5NTrVegHuCIY
+	wCFdIw/ffmWjebAQ==
+From: "tip-bot2 for Borislav Petkov (AMD)" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/retpoline: Add NOENDBR annotation to the SRSO
+ dummy return thunk
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>, Ingo Molnar <mingo@kernel.org>,
+ Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <20240405144637.17908-1-bp@kernel.org>
+References: <20240405144637.17908-1-bp@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/6] dt-bindings: firmware: add i.MX SCMI Extension
- protocol
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Sudeep Holla <sudeep.holla@arm.com>,
- Cristian Marussi <cristian.marussi@arm.com>
-Cc: Peng Fan <peng.fan@nxp.com>, devicetree@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240405-imx95-bbm-misc-v2-v2-0-9fc9186856c2@nxp.com>
- <20240405-imx95-bbm-misc-v2-v2-2-9fc9186856c2@nxp.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240405-imx95-bbm-misc-v2-v2-2-9fc9186856c2@nxp.com>
-Content-Type: text/plain; charset=UTF-8
+Message-ID: <171240164189.10875.5952709598613963426.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 
-On 05/04/2024 14:39, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> Add i.MX SCMI Extension protocols bindings for:
->  - Battery Backed Secure Module(BBSM)
+The following commit has been merged into the x86/urgent branch of tip:
 
-Which is what?
+Commit-ID:     b377c66ae3509ccea596512d6afb4777711c4870
+Gitweb:        https://git.kernel.org/tip/b377c66ae3509ccea596512d6afb4777711c4870
+Author:        Borislav Petkov (AMD) <bp@alien8.de>
+AuthorDate:    Fri, 05 Apr 2024 16:46:37 +02:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Sat, 06 Apr 2024 13:01:50 +02:00
 
->  - MISC settings such as General Purpose Registers settings.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../devicetree/bindings/firmware/imx,scmi.yaml     | 80 ++++++++++++++++++++++
->  1 file changed, 80 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/firmware/imx,scmi.yaml b/Documentation/devicetree/bindings/firmware/imx,scmi.yaml
-> new file mode 100644
-> index 000000000000..7ee19a661d83
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/firmware/imx,scmi.yaml
-> @@ -0,0 +1,80 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +# Copyright 2024 NXP
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/firmware/imx,scmi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: i.MX System Control and Management Interface(SCMI) Vendor Protocols Extension
-> +
-> +maintainers:
-> +  - Peng Fan <peng.fan@nxp.com>
-> +
-> +allOf:
-> +  - $ref: arm,scmi.yaml#
+x86/retpoline: Add NOENDBR annotation to the SRSO dummy return thunk
 
-Sorry, but arm,scmi is a final schema. Is your plan to define some
-common part?
+srso_alias_untrain_ret() is special code, even if it is a dummy
+which is called in the !SRSO case, so annotate it like its real
+counterpart, to address the following objtool splat:
 
-> +
-> +properties:
-> +  protocol@81:
-> +    $ref: 'arm,scmi.yaml#/$defs/protocol-node'
-> +    unevaluatedProperties: false
-> +    description:
-> +      The BBM Protocol is for managing Battery Backed Secure Module (BBSM) RTC
-> +      and the ON/OFF Key
-> +
-> +    properties:
-> +      reg:
-> +        const: 0x81
-> +
-> +    required:
-> +      - reg
-> +
-> +  protocol@84:
-> +    $ref: 'arm,scmi.yaml#/$defs/protocol-node'
-> +    unevaluatedProperties: false
-> +    description:
-> +      The MISC Protocol is for managing SoC Misc settings, such as GPR settings
+  vmlinux.o: warning: objtool: .export_symbol+0x2b290: data relocation to !ENDBR: srso_alias_untrain_ret+0x0
 
-Genera register is not a setting... this is a pleonasm. Please be more
-specific what is the GPR, MISC protocol etc.
+Fixes: 4535e1a4174c ("x86/bugs: Fix the SRSO mitigation on Zen3/4")
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Link: https://lore.kernel.org/r/20240405144637.17908-1-bp@kernel.org
+---
+ arch/x86/lib/retpoline.S | 1 +
+ 1 file changed, 1 insertion(+)
 
-> +
-> +    properties:
-> +      reg:
-> +        const: 0x84
-> +
-> +      wakeup-sources:
-> +        description:
-> +          Each entry consists of 2 integers, represents the source and electric signal edge
-
-Can you answer questions from reviewers?
-
-> +        items:
-> +          items:
-> +            - description: the wakeup source
-> +            - description: the wakeup electric signal edge
-> +        $ref: /schemas/types.yaml#/definitions/uint32-matrix
-> +
-> +    required:
-> +      - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    firmware {
-> +        scmi {
-> +            compatible = "arm,scmi";
-
-> +            mboxes = <&mu2 5 0>, <&mu2 3 0>, <&mu2 3 1>;
-> +            shmem = <&scmi_buf0>, <&scmi_buf1>;
-> +
-> +            #address-cells = <1>;
-> +            #size-cells = <0>;
-> +
-> +            protocol@81 {
-> +                reg = <0x81>;
-> +            };
-> +
-> +            protocol@84 {
-> +                reg = <0x84>;
-> +                wakeup-sources = <0x8000 1
-> +                                  0x8001 1
-> +                                  0x8002 1
-> +                                  0x8003 1
-> +                                  0x8004 1>;
-
-Nothing improved... If you are going to ignore reviews, then you will
-only get NAKed.
-
-Best regards,
-Krzysztof
-
+diff --git a/arch/x86/lib/retpoline.S b/arch/x86/lib/retpoline.S
+index 0795b34..e674ccf 100644
+--- a/arch/x86/lib/retpoline.S
++++ b/arch/x86/lib/retpoline.S
+@@ -229,6 +229,7 @@ SYM_CODE_END(srso_return_thunk)
+ /* Dummy for the alternative in CALL_UNTRAIN_RET. */
+ SYM_CODE_START(srso_alias_untrain_ret)
+ 	ANNOTATE_UNRET_SAFE
++	ANNOTATE_NOENDBR
+ 	ret
+ 	int3
+ SYM_FUNC_END(srso_alias_untrain_ret)
 
