@@ -1,219 +1,162 @@
-Return-Path: <linux-kernel+bounces-134037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134038-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6660789AC68
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 19:17:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1202589AC6C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 19:19:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BE392821EA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 17:17:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44A361C20C91
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 17:19:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E61EF3FBA5;
-	Sat,  6 Apr 2024 17:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054B940875;
+	Sat,  6 Apr 2024 17:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BA7D2gep"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hZV0VKF/"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3226E3FBB0;
-	Sat,  6 Apr 2024 17:17:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C45B0381C2;
+	Sat,  6 Apr 2024 17:18:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712423839; cv=none; b=E/CZoG29jZVxNFRE5PHYAH86UTNGgQqwaKQphs0qrXN+GV53ulsCbNXZu095owVNhc+5ERBAT4msOXczC8p1oQuNLSwQJv+4UO0DzHpjr7v8J0hpAYkm4Xkl8iMzDOnsiElY2bgDoJ0pfmfLnuOjfxtAWRovx8drPuUblTxqcWw=
+	t=1712423941; cv=none; b=UZwEA9wS5xo392hGgnx3GWmVEOIJqUV9xeJ8IWfukH5V3sY0PHxzuO0WgRd8Q0bBjibvrLgjVebGrOCTZOzBom/vnz/ygUvXxOtpBUV+pM3l0RF0y6ygxBFUrfimQOy4Rtyt91Z8W/9YNMM4DakjjhWExCFdw19ypTpSPUVOdbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712423839; c=relaxed/simple;
-	bh=EqXMvyGb0Uh8hGtYMmGhNvHq0O5FmIgaRTXqqLJhFmI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jy6MveiPERGWMsOJ9qGa4079Uag/UlvYrxXcXFx/4nb7+/cKPIVhbz4XSbbsFbNmguFeS/P4kDmkgKRO4GbPLTwAiraVyau5OeNZoqoKJC1Hf9+p6v6OZopGzLQh6YUsgbgd13TLEWtEopTBsgw+Mri/tGIFH1FvJysnK9cZGVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BA7D2gep; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C27D5C433F1;
-	Sat,  6 Apr 2024 17:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712423838;
-	bh=EqXMvyGb0Uh8hGtYMmGhNvHq0O5FmIgaRTXqqLJhFmI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=BA7D2gepyiEROLhdEcaPAuxXPGYoRqYoo07mlrbWPHJmU2nf3or0wO64SGDWwQq/K
-	 DWPSzHfkLEwYnx2ePsvfRGvsMiT5qjg44yV312cij91X+0FqOmik8V0d4XUjrJZDCP
-	 bbWf8ktid380CU2hB6oDtUGbehE0AaupcHae7xTav3OapZqWrRzLHG/NXvZB0s/+Ue
-	 ftnn5L7RLy5smE1NnljSUH6cSXn4Qyt4JkzPGFu3lFa+6jNDvZ3lf3I5iA71vCYi6L
-	 RiiA4dn0JZkTwm6ffbi5//TKIySX1wg9gQ3Dq3aynf+F/ub1gnkMluDjqkKNpS0HJ4
-	 mqBq008hUIiWQ==
-Date: Sat, 6 Apr 2024 18:17:04 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Saravana Kannan <saravanak@google.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] of: Use scope based of_node_put() cleanups
-Message-ID: <20240406181704.2e48dd17@jic23-huawei>
-In-Reply-To: <20240404-dt-cleanup-free-v1-3-c60e6cba8da9@kernel.org>
-References: <20240404-dt-cleanup-free-v1-0-c60e6cba8da9@kernel.org>
-	<20240404-dt-cleanup-free-v1-3-c60e6cba8da9@kernel.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712423941; c=relaxed/simple;
+	bh=FTrOH0OlOjWrK3A0l8wznAoEtxiq1cIfTifGsp+jt+8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ewa0ZSNRaXn6Beaes6FlCvup3C/145oEoNLnIyCV1A7/O+Idmh7WPac53uSwxroyvgQ3+bd3dPljwP/cLlqs92xrroRImfo5RRg7aBC2SRe4Etw/1fcmS8IMTh34LuUBPPWOIAOeayFT/0eprJBiGiq7xpk4dH5tNiMorB3vwrk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hZV0VKF/; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 436HACiE017060;
+	Sat, 6 Apr 2024 17:18:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=nAEQxXw+XRp9uZGd5HCvDnmTyd3ZDuxqbC75fH5/7VA=; b=hZ
+	V0VKF/XyDc2l6bqY8V4L8Hds+OAqM21wtlU4JMPzzkr3xWmaTP9//vSbhvVB3YF7
+	yN0XQ7jALOZ4vkoVzeXq/YzfRCuowRnkhaARto6YTz2ZPty0YJ4CNaeYuwK9uZHN
+	JzyBzxUcL/iqeN0KhMXjOy+m30OkgNLRjms6HB48iuQJNehBdB3QYHFsIzxHnhNq
+	vugnJ5PcpZol8WnSsHjelG2p4q7bEm3B8SokiJDnED6xW2rtszEhFo7QW3TgZ9pT
+	H5gmoueXYJLU8rcuAmNUk9DkSxWluLTVGCKkk6G2Yh1UsN9hxc21KlGKZsPFNZp+
+	gZxfzEoeHtB/Jv3otrNg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xax04gsrn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 06 Apr 2024 17:18:43 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 436HIg73016124
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 6 Apr 2024 17:18:42 GMT
+Received: from [10.216.54.180] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Sat, 6 Apr 2024
+ 10:18:34 -0700
+Message-ID: <b9b3c698-fbf3-a2d0-3420-4b33016a5560@quicinc.com>
+Date: Sat, 6 Apr 2024 22:48:29 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 04 Apr 2024 09:15:12 -0500
-Rob Herring <robh@kernel.org> wrote:
-
-> Use the relatively new scope based of_node_put() cleanup to simplify
-> function exit handling. Doing so reduces the chances of forgetting an
-> of_node_put() and simplifies error paths by avoiding the need for goto
-> statements.
->=20
-> Signed-off-by: Rob Herring <robh@kernel.org>
-
-Hi Rob,
-
-Looks good in general. A few suggestions inline.
-First one is a little more complex, but I think will give you a better end =
-result
-
-The others are readability improvements enabled by the changes you've made
-that I think you could validly change in this same patch.
-
-Jonathan
-
-> ---
->  drivers/of/address.c  | 60 ++++++++++++++++-----------------------------=
-------
->  drivers/of/property.c | 22 ++++++-------------
->  2 files changed, 26 insertions(+), 56 deletions(-)
->=20
-> diff --git a/drivers/of/address.c b/drivers/of/address.c
-> index ae46a3605904..f7b2d535a6d1 100644
-> --- a/drivers/of/address.c
-> +++ b/drivers/of/address.c
-> @@ -491,7 +491,6 @@ static u64 __of_translate_address(struct device_node =
-*dev,
->  				  const __be32 *in_addr, const char *rprop,
->  				  struct device_node **host)
->  {
-> -	struct device_node *parent =3D NULL;
->  	struct of_bus *bus, *pbus;
->  	__be32 addr[OF_MAX_ADDR_CELLS];
->  	int na, ns, pna, pns;
-> @@ -504,7 +503,7 @@ static u64 __of_translate_address(struct device_node =
-*dev,
-> =20
->  	*host =3D NULL;
->  	/* Get parent & match bus type */
-> -	parent =3D get_parent(dev);
-> +	struct device_node *parent __free(device_node) =3D get_parent(dev);
-
-This is an order change as we'll put this node after dev
-
-Whilst probably fine, I'd call that out in the patch description or just th=
-row
-in an earlier
-struct device_node *dev_node __free(device_node) =3D of_node_get(dev);
-
-
-Obviously the release order doesn't actually matter but a reader has to thi=
-nk
-about it briefly to be sure.
-
-Bonus if you do that is that you get to do direct returns at the error cond=
-ition
-and potentially in the breaks out of the loop. To my eye that's a readabili=
-ty
-advantage.
-
-In at least one place you could also steal the pointer rather than
-getting another reference to dev (taking it to at least 2) then dropping
-one of them in the exit path. Can use no_free_ptr() for that.
-
-=46rom readability point of view you'd only want to do that with a direct ret=
-urn.
- 	=09
-			*host =3D no_free_ptr(dev_node);
-			return result;
-		}
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v8 2/7] arm64: dts: qcom: sm8450: Add interconnect path to
+ PCIe node
+Content-Language: en-US
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>
+CC: Bjorn Andersson <andersson@kernel.org>,
+        Lorenzo Pieralisi
+	<lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?=
+	<kw@linux.com>,
+        Rob Herring <robh@kernel.org>, Bjorn Helgaas
+	<bhelgaas@google.com>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Rob
+ Herring" <robh+dt@kernel.org>,
+        Johan Hovold <johan+linaro@kernel.org>,
+        "Brian
+ Masney" <bmasney@redhat.com>,
+        Georgi Djakov <djakov@kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <vireshk@kernel.org>,
+        <quic_vbadigan@quicinc.com>, <quic_skananth@quicinc.com>,
+        <quic_nitegupt@quicinc.com>, <quic_parass@quicinc.com>
+References: <20240302-opp_support-v8-0-158285b86b10@quicinc.com>
+ <20240302-opp_support-v8-2-158285b86b10@quicinc.com>
+ <4bd2e661-8e1e-41ff-9b7f-917bb92a196d@linaro.org>
+ <20240405074044.GC2953@thinkpad>
+From: Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20240405074044.GC2953@thinkpad>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: szxG_ZrRKvw6_b92RnkY6ajW2_sFXmSw
+X-Proofpoint-ORIG-GUID: szxG_ZrRKvw6_b92RnkY6ajW2_sFXmSw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-04-06_13,2024-04-05_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 phishscore=0 suspectscore=0 malwarescore=0 mlxlogscore=999
+ mlxscore=0 bulkscore=0 impostorscore=0 lowpriorityscore=0 adultscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2404010003 definitions=main-2404060136
 
 
 
+On 4/5/2024 1:10 PM, Manivannan Sadhasivam wrote:
+> On Wed, Mar 06, 2024 at 05:04:54PM +0100, Konrad Dybcio wrote:
+>>
+>>
+>> On 3/2/24 04:59, Krishna chaitanya chundru wrote:
+>>> Add pcie-mem & cpu-pcie interconnect path to the PCIe nodes.
+>>>
+>>> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+>>> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
+>>> ---
+>>>    arch/arm64/boot/dts/qcom/sm8450.dtsi | 8 ++++++++
+>>>    1 file changed, 8 insertions(+)
+>>>
+>>> diff --git a/arch/arm64/boot/dts/qcom/sm8450.dtsi b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+>>> index 01e4dfc4babd..6b1d2e0d9d14 100644
+>>> --- a/arch/arm64/boot/dts/qcom/sm8450.dtsi
+>>> +++ b/arch/arm64/boot/dts/qcom/sm8450.dtsi
+>>> @@ -1781,6 +1781,10 @@ pcie0: pcie@1c00000 {
+>>>    					<0 0 0 3 &intc 0 0 0 151 IRQ_TYPE_LEVEL_HIGH>, /* int_c */
+>>>    					<0 0 0 4 &intc 0 0 0 152 IRQ_TYPE_LEVEL_HIGH>; /* int_d */
+>>> +			interconnects = <&pcie_noc MASTER_PCIE_0 0 &mc_virt SLAVE_EBI1 0>,
+>>
+>> Please use QCOM_ICC_TAG_ALWAYS.
+>>
+>>> +					<&gem_noc MASTER_APPSS_PROC 0 &config_noc SLAVE_PCIE_0 0>;
+>>
+>> And this path could presumably be demoted to QCOM_ICC_TAG_ACTIVE_ONLY?
+>>
+> 
+> I think it should be fine since there would be no register access done while the
+> RPMh is put into sleep state. Krishna, can you confirm that by executing the CX
+> shutdown with QCOM_ICC_TAG_ACTIVE_ONLY vote for cpu-pcie path on any supported
+> platform?
+> 
+> But if we do such change, then it should also be applied to other SoCs.
+> 
+> - Mani
+>
+we don't a have platform to test this now, we will keep
+QCOM_ICC_TAG_ALWAYS for now.
 
->  	if (parent =3D=3D NULL)
->  		goto bail;
->  	bus =3D of_match_bus(parent);
-> @@ -573,7 +572,6 @@ static u64 __of_translate_address(struct device_node =
-*dev,
->  		of_dump_addr("one level translation:", addr, na);
->  	}
->   bail:
-> -	of_node_put(parent);
->  	of_node_put(dev);
-> =20
+- Krishna Chaitanya.
 
-
-> @@ -1016,11 +999,9 @@ phys_addr_t __init of_dma_get_max_cpu_address(struc=
-t device_node *np)
->   */
->  bool of_dma_is_coherent(struct device_node *np)
->  {
-> -	struct device_node *node;
-> +	struct device_node *node __free(device_node) =3D of_node_get(np);
->  	bool is_coherent =3D dma_default_coherent;
-> =20
-> -	node =3D of_node_get(np);
-> -
->  	while (node) {
->  		if (of_property_read_bool(node, "dma-coherent")) {
->  			is_coherent =3D true;
-
-			return true;
-
-and same in the other branch given you break out the loop and return it dir=
-ectly.
-
-
-> @@ -1032,7 +1013,6 @@ bool of_dma_is_coherent(struct device_node *np)
->  		}
->  		node =3D of_get_next_dma_parent(node);
->  	}
-> -	of_node_put(node);
->  	return is_coherent;
-With above early returns
-
-	return dma_default_coherent;
-
-and drop the is_coherent variable as no longer used.
-
-This sort of related cleanup is one reason I really like the cleanup.h magi=
-c.
-
-
->  }
->  EXPORT_SYMBOL_GPL(of_dma_is_coherent);
-> @@ -1049,19 +1029,17 @@ EXPORT_SYMBOL_GPL(of_dma_is_coherent);
->   */
->  static bool of_mmio_is_nonposted(struct device_node *np)
->  {
-> -	struct device_node *parent;
->  	bool nonposted;
-> =20
->  	if (!IS_ENABLED(CONFIG_ARCH_APPLE))
->  		return false;
-> =20
-> -	parent =3D of_get_parent(np);
-> +	struct device_node *parent __free(device_node) =3D of_get_parent(np);
->  	if (!parent)
->  		return false;
-> =20
->  	nonposted =3D of_property_read_bool(parent, "nonposted-mmio");
-> =20
-> -	of_node_put(parent);
->  	return nonposted;
-
-	return of_property_read_bool()
-
->  }
-> =20
 
