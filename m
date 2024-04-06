@@ -1,120 +1,116 @@
-Return-Path: <linux-kernel+bounces-133727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22C0089A7CD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:02:50 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 913E189A7CE
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:03:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C89401F22C61
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:02:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C27651C210BF
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B81481C6BD;
-	Sat,  6 Apr 2024 00:02:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1466EEEC5;
+	Sat,  6 Apr 2024 00:03:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="zO1SDI7H"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CG3TgztX"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C59317C2
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 00:02:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E965816;
+	Sat,  6 Apr 2024 00:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712361761; cv=none; b=K5Mm1EIvUNAFmLPNIROn1sC+Rkxn4qy8FAhAog1O/K89jJF7/UFJYHeSTtfOiwuBacyq6M19jYyeYWcWcthM3eJouUCBTGypO1MVac7oHFQaW1KlhkF3lt3/FJyFqyO7HeBOrL/RRZIyAhh4qXBPdE950nbPocCYow5btAKBmy4=
+	t=1712361786; cv=none; b=SbA3khasmjRZ1Vfg2Fhh06B7Sl2jLSJpvpUWh4Ivg3UEfDjLnE5G1aeeU9cvg+iObwHYzdTmBVYTIThBKwYXO6eqxvWiBlobDyQURhETfEqmZKDbNvROHNh+QADB+evsWFaW2OeBOxdwHsJbzegjOWzbu5fbNcy/NMnKHy6km/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712361761; c=relaxed/simple;
-	bh=KpAjSKdrkXBv5fhkmB8UZX/hjLXR4hCJGaSDHH5mrss=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BDxRdGbSKqaQlR2R6aNGzAqZ4qzSqBih1yQ+oTyl8pzv1dDbHHg9YYkYAqoQbhchqq5FcmLrjkCcnhEl4C6dPrAih92QXja4hD/7o+VgxgUWpQGq5b+sk/HcZXxtIg+f9LLrYK0bhCt0iHuJwUebmvTtPZhSC6DDouU24FmwVQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=zO1SDI7H; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-432d55b0fa9so77931cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 17:02:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712361758; x=1712966558; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aLJYi/uIy6sK2MdDlOJLgbHqv1oRQBKBfPlyT2agfv8=;
-        b=zO1SDI7Hao4uFec5vz5KPhe9XkCtS9MVXqdz1xs50qgPOgAnDxqP5uWfVr+u0Sb/WS
-         Lq+QmVBqoQYtWXYvCjpPH5JsqkRob2xvpaTs8q77Ul29fn2JyVxWqeFHsWUkZt39903k
-         2/mFW9/SVMuofkZOPMYgQOev1AZyM9njhl+G9IEzOc0WL+x3B1a0x/6WPDQzDzsWiFl7
-         i9s8FOPlurNcca/33vXzVp3u9tiD3fpqjJK4ZTI0XdOTC+cGvn/+bGfrFe24pkgukTb/
-         46Z6Xw4Kr3Pyyn4lb0yGlCT9+xqJWOYCSHmFipoMxTIf6om5yDbuYUzrzSyDvHZoOO8G
-         4yEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712361758; x=1712966558;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aLJYi/uIy6sK2MdDlOJLgbHqv1oRQBKBfPlyT2agfv8=;
-        b=JVmmfnNlsX/SiG5ELx/iOu4c0p88g41NK43+YYXsDc/zYkBoi1Bcspiyshe+e2bh9o
-         ASAl4FJI4mCZX/YgT0W0hNuFMmlriYAW//vTLqPIBYwugOzWouM8juh8yn4IVFTPRmwb
-         mTcbzSRNWsmz34Tl09fX2ZrPkOa3+K4TmKB8e+pGOQgQeNzFfoglNKUP3hMrc+bCslUe
-         SnpWlxEtIczyOa9e8LL5rRCBi6iNbmCNs6DAnhucx32t3dbNWDeAGqU+bEYA1gI96QzS
-         tLK703Vv/nzuiUMMatoQE79b1pQqWmlQflekdV8qM9aJr/mjNmEdv/omA4xvdmSAoRhi
-         QgDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXYe6spUbAdgDVPIkMumh4PAe7YpP3ois2HHMe5nTBUi/eQ344GFcuQqXInN4WiekSBaT3BIr+oXrVYOs8fiounLu2D0yptPwS23owO
-X-Gm-Message-State: AOJu0Yw01VHY14mc7440OnI1u0ag7G3dm5t4v2xg6m+Kmep6JjBWCyc4
-	rGEg1U+dM8/DeZ7vDsOE0xKNhwhspJjJodcCGppenmDv80YTYTESJY0vBvvxIewzZoEotp+DrMS
-	yyuEJB5Q0NqVFilRf+E4uASlbWnSJwO+VjjzM
-X-Google-Smtp-Source: AGHT+IHDwjio3l7mml1EfKtiOH234s8twE/rMYCk/i2c0VPCw0Zx/DnaBqN791dqwnniasoxYJ08IkF6E1rOTp4zMAI=
-X-Received: by 2002:a05:622a:4114:b0:432:c041:462a with SMTP id
- cc20-20020a05622a411400b00432c041462amr109796qtb.28.1712361755157; Fri, 05
- Apr 2024 17:02:35 -0700 (PDT)
+	s=arc-20240116; t=1712361786; c=relaxed/simple;
+	bh=5+ttekEZLHQpyaO1iP5vIUkSvn9+MlpWyDlBi1o2uC0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lTJGjBBh+/RNtlzn/F8/5j+fAwN29w6nPtwZ/R8iPIskrls1e5ZTNjWKZlUqnrZkpiJqm/6CTqShD6/yRtetMMCczSdu+L6CrzrueHcyPO95ih3top5LCEQo4oirfXKE7Gx10ESvO0nyumvivmROm1jdXUkWUNX7SHi6ZDMGGoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CG3TgztX; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712361785; x=1743897785;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=5+ttekEZLHQpyaO1iP5vIUkSvn9+MlpWyDlBi1o2uC0=;
+  b=CG3TgztXXawoWUj6a5VqKUbEOBezBAZE2x59mkjtyq87xc/FCFyskK48
+   8ig1KhDTaQem3VX/Cdy96N3rinrzuw2AzOYp765H9IX5P9sRVxb6q32qi
+   1M+L8DKtuDRv42W4oCP8+wRAv8HS/wNP3GBRTtrOpbWBsQZJxsHB0HqAL
+   oTks+AqshnOeiFSnWaG2nuEUsga47aX/fQVd1jnd87gIJGbsXSZxieuvk
+   oWaeyN2a7Y7rV6O4c4Gnx8uAX1ubMmRpL8fqmjCtUZrEgkd+/hV7quY4i
+   vxWuY9Pdti3bnCW6xMzl62MYhXQcG7LZFKsZRgYpjl3eLOHOhnCVEsnJv
+   A==;
+X-CSE-ConnectionGUID: YmEtQnnIQE+FrD7+qVnrmw==
+X-CSE-MsgGUID: T5bxxeTGQ+6PEkeY6Kabwg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="19071442"
+X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
+   d="scan'208";a="19071442"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 17:02:30 -0700
+X-CSE-ConnectionGUID: E/h9uEyaRkSgY+NJKEllqw==
+X-CSE-MsgGUID: ewioc3H7R+CG3K+qX7ZKBA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
+   d="scan'208";a="19381024"
+Received: from djiang5-mobl3.amr.corp.intel.com (HELO [10.212.38.118]) ([10.212.38.118])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2024 17:02:25 -0700
+Message-ID: <6f43f4be-f2da-4bc5-a70c-377599c9ec46@intel.com>
+Date: Fri, 5 Apr 2024 17:02:23 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240405211800.1412920-1-namhyung@kernel.org>
-In-Reply-To: <20240405211800.1412920-1-namhyung@kernel.org>
-From: Ian Rogers <irogers@google.com>
-Date: Fri, 5 Apr 2024 17:02:20 -0700
-Message-ID: <CAP-5=fUhngjbL3Q7a3EuBSGdDKg8PFjRzpe5yHTDdeLmz4oWDg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] perf annotate-data: small random fixes and updates
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Kan Liang <kan.liang@linux.intel.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Adrian Hunter <adrian.hunter@intel.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@kernel.org>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-perf-users@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 05/26] cxl/core: Simplify cxl_dpa_set_mode()
+Content-Language: en-US
+To: Ira Weiny <ira.weiny@intel.com>, Fan Ni <fan.ni@samsung.com>,
+ Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+ Navneet Singh <navneet.singh@intel.com>
+Cc: Dan Williams <dan.j.williams@intel.com>,
+ Davidlohr Bueso <dave@stgolabs.net>,
+ Alison Schofield <alison.schofield@intel.com>,
+ Vishal Verma <vishal.l.verma@intel.com>, linux-btrfs@vger.kernel.org,
+ linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240324-dcd-type2-upstream-v1-0-b7b00d623625@intel.com>
+ <20240324-dcd-type2-upstream-v1-5-b7b00d623625@intel.com>
+ <922007a0-3f85-4a40-80e4-5c906e6dd2c8@intel.com>
+ <66104f505de74_e9f9f294f5@iweiny-mobl.notmuch>
+From: Dave Jiang <dave.jiang@intel.com>
+In-Reply-To: <66104f505de74_e9f9f294f5@iweiny-mobl.notmuch>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Apr 5, 2024 at 2:18=E2=80=AFPM Namhyung Kim <namhyung@kernel.org> w=
-rote:
->
-> Hello,
->
-> I found some problems in the data type profiling with perf annotate.
-> The patch 1 should go to perf-tools and others can go to perf-tools-next.
->
-> Thanks,
-> Namhyung
->
->
-> Namhyung Kim (4):
->   perf annotate: Make sure to call symbol__annotate2() in TUI
->   perf annotate-data: Fix global variable lookup
->   perf annotate-data: Do not delete non-asm lines
->   perf annotate: Get rid of symbol__ensure_annotate()
 
-Reviewed-by: Ian Rogers <irogers@google.com>
 
-Thanks,
-Ian
+On 4/5/24 12:21 PM, Ira Weiny wrote:
+> Dave Jiang wrote:
+>>
+>>
+>> On 3/24/24 4:18 PM, Ira Weiny wrote:
+>>> cxl_dpa_set_mode() checks the mode for validity two times, once outside
+>>> of the DPA RW semaphore and again within.  The function is not in a
+>>> critical path.  Prior to Dynamic Capacity the extra check was not much
+>>> of an issue.  The addition of DC modes increases the complexity of
+>>> the check.
+>>>
+>>> Simplify the mode check before adding the more complex DC modes.
+>>
+>> I would augment this by saying simplify "by using scope-based resource menagement".
+> 
+> However, using the guard cleanup is not really the simplification here.  It is
+> more about checking the mode a single time.
+> 
+> That said I will change this to:
+> 
+> Simplify the mode check and convert to use of a cleanup guard.
 
->  tools/perf/ui/browsers/annotate.c |   2 +-
->  tools/perf/util/annotate-data.c   |  10 ++-
->  tools/perf/util/annotate.c        | 104 ++++++++++++++++++++----------
->  3 files changed, 80 insertions(+), 36 deletions(-)
->
->
-> base-commit: b6347cb5e04e9c1d17342ab46e2ace2d448de727
-> --
-> 2.44.0.478.gd926399ef9-goog
->
+Ok
+
+> 
+> Ira
 
