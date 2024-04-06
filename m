@@ -1,214 +1,168 @@
-Return-Path: <linux-kernel+bounces-133851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32DA689A9BA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 10:12:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E47DB89A9BC
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 10:13:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DCDFC283880
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 08:12:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96C2228151C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 08:13:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A21249FF;
-	Sat,  6 Apr 2024 08:12:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAC2B23765;
+	Sat,  6 Apr 2024 08:13:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="M9jj1B+l"
-Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="jrEZuNYN"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242A81EB40;
-	Sat,  6 Apr 2024 08:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 295BF22F0F
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 08:13:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712391129; cv=none; b=Tz6T+K9bgvWyaWxk//JPfAny1/+zOHqLFBFhylKZA7uvHjGTE4FXb4vLhpAa2WWWmypbFN5GV8c1OBFfdPDW/jlhjLUqToZWN0T2Twh0H+oaH3XvSYdzxwj2MakgnZRgYCzk5jXn+78TSv5hZ4Nf9Zo8bKkg6aGq2biz9/6vPMI=
+	t=1712391227; cv=none; b=JuymwQ6IPX2RtwoIITY8OjS39ldaE8sYLVz9ubi6p7pfldn4yXeXd/4t/018B6gS6SpgGprC8lB9AqdrPt0uTGkmUNUO+HO90F+1oZ/Q/Pq36UXxdkqu+c1Cy4ALH4lA3e6UpjnT0VSfQFuVKeYPB4DqY/BQtLr2tgJ+WIdjIyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712391129; c=relaxed/simple;
-	bh=aWf5pSZLUsdnn16jPhoQuV6DiBeHMtampzsnziXCRVA=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=reETpE163DInVWDtmK2R6PkBfsSj3oxkyr6L6mRD29lSAVQLYe6udJWBkv58/LrwO4SoB5yrHAuXiOKNBB0VK46zQy1VxsrhfrbEeoDlHY4vNVkQvIsrD0uUtxwY2jIIL8GFnjs0QiZg9uLx/jgibnZvh/9q9MMPPFo8XFkF08w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=M9jj1B+l; arc=none smtp.client-ip=37.205.15.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	s=arc-20240116; t=1712391227; c=relaxed/simple;
+	bh=Ok3cHEbOCqoXYq6UqpsUBQYpX66UX3Wh8EvM3EaWyqs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JTGzpz6gv3JkZfxi4N6DYbmm1ioIrNEpLZBlIXLEzXQjdUrICoTWQ/8xpqpoY3eC762pi8sslnKoP+coKtW41HuiVEFufSgDvCvK2nrmAHupB0yfrlbgxXjkhPeKA6SNqnL0HEv54gJTBtPTdNMyu24dMdsIQ1YlLDfEAApj5qY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=jrEZuNYN; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com [209.85.221.72])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id 17E5E1B24BF;
-	Sat,  6 Apr 2024 10:12:05 +0200 (CEST)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1712391125; bh=ZxNgUKAyIwv4+Cogy0VobezkIMJAIKV1c3sCN/kVg+8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=M9jj1B+l+y/zOaBW84NSfFbxs8Yh4JohdWvQi/fzdCRHES5AbuoNrhI+NOZqOqvy1
-	 r9VfMkAa50tYDQmkx8XGEGH4bkAroyDaqZu4G6oH+1bm/Rfh9YWpkxYxCPBcL7TExc
-	 cFWF8lpahQr+v08yC9r9rBLMJF7472dyFmkjpJprhMYwunHt1y+WpFXCJM7yxWeT+S
-	 8GPvWTgUM8d2W4q+ssEtxT6X+XFxjUvIPO8hA7gdCyB0DkcuFn+84WEs/kMtInC4vU
-	 foJU0To0HvAYRFxVLVcRxznZ4lhEiHkOxy0T9rGOTMXEonTUt6jtxgFFLBnrxJYwnL
-	 Z3NIkoDgoRldQ==
-Date: Sat, 6 Apr 2024 10:12:04 +0200
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Simon Horman <horms@kernel.org>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, open list <netdev@vger.kernel.org>, Linux
- regressions mailing list <regressions@lists.linux.dev>, open list
- <linux-kernel@vger.kernel.org>, "Linux regression tracking (Thorsten
- Leemhuis)" <regressions@leemhuis.info>
-Subject: Re: [PATCH net] u64_stats: fix u64_stats_init() for lockdep when
- used repeatedly in one file
-Message-ID: <20240406101204.1f7827ae@meshulam.tesarici.cz>
-In-Reply-To: <20240405195117.GV26556@kernel.org>
-References: <20240404075740.30682-1-petr@tesarici.cz>
-	<20240405195117.GV26556@kernel.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-suse-linux-gnu)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id D9AEA3FB6E
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 08:13:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1712391221;
+	bh=4w5lg7DeOe3LCRsqgZwV7U/9sNfG7JcNUgXKCyuVpSs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To;
+	b=jrEZuNYN4kZNi1/c6+Uw+ENUGn0yEvKbcsKcP+drPKoYJT1fZCEqPtMcWeo/ZM214
+	 2P6o/QpUxZLSTrxrTt9xKyvWtE5/nQIAwwEKT2P1iyXnrxjQgsnrmfvFvBBxubQmvg
+	 ysy318+Dsn5nptHQrZLV0RLBgrCclqoTH4FcLQwLUIti6m3kloR+fe7KQ48cOjyzuf
+	 uT0hCx1XVuHM13tG+6ew5okUnElGJfim04HVxFlNMZs7VJ43pGRw2Ej8BWkXxLOdh1
+	 xv5WlrkBfQFubygJMRzkp89VSOYDZ9s1fb0D4Xyr3i0+aMmQ0NvTrWoSaGCGcfngwR
+	 QMZIjSmulFTPA==
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-343cfa7a9ebso1289794f8f.0
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 01:13:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712391221; x=1712996021;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4w5lg7DeOe3LCRsqgZwV7U/9sNfG7JcNUgXKCyuVpSs=;
+        b=UYCYerKlRumemtftofFGY6LAelhCdoii/pXY7e+8K2qQTnFuIlwhkV+KfAL5XKk2eZ
+         H2o8FLW5wUU+Rrn7DcK2wWDRc0llkzAZUPYEaLO5NSjPek1tZkaTjXEaF4F2zvWKNYHs
+         d1/rEIRnK/yI/gg8YN6EzNazd/ztzUcf/g5GlwsAmlBuCcrd2pd2cwI6uKGRtCv5ZQha
+         GmP1gzK6Dh8N6aKu+BF2bSMeMpMEsWS/7NNndZP8FXhc4tV1CujnJvamOcsvb99GCz4K
+         NBBrCvgCJCIO4oGdrW9KGE3B256Z8UcoEWJ9GHmPtDud8FinqlwirSFRIU/VDsiGeJVi
+         svKg==
+X-Forwarded-Encrypted: i=1; AJvYcCX42d6SXxwnnAKy0kb4Qqg4/UBrz2IJ/Uf0TNFCGYnOTap+UpCdmMdjaWm0NcNQNaf1qBc5GNuSWGTJxMKRVIVZLhs6DBEoUoFg9PhT
+X-Gm-Message-State: AOJu0YwERpeOzB8GT9msDrWPdM2idAVuxWJso9qhhl5yI9ouBHeC9NXn
+	99t0EFxQ8UzYIdSaC39W3ya7N/oWnUK/s6LNpE8NpkCLrnIvM0rIzlg4KbVremN2QtGtwVCy9Dq
+	aKkCc+EU0w7IJqsreui67JP+H21GfmOBmlEo4gH/CWX4t2OFN+riwQrCdwDfzPVqxPFg5ND1CPU
+	s/fw==
+X-Received: by 2002:adf:fccb:0:b0:343:bd44:b8bb with SMTP id f11-20020adffccb000000b00343bd44b8bbmr2556619wrs.12.1712391220859;
+        Sat, 06 Apr 2024 01:13:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGT0iyPV+c5mEtz/7mmX5nHiU4zAbRw6sQgj0CzMiZl4lXnM6HwckvfVU2cBGk8aUQQoY5uEg==
+X-Received: by 2002:adf:fccb:0:b0:343:bd44:b8bb with SMTP id f11-20020adffccb000000b00343bd44b8bbmr2556586wrs.12.1712391219960;
+        Sat, 06 Apr 2024 01:13:39 -0700 (PDT)
+Received: from localhost (net-2-39-142-110.cust.vodafonedsl.it. [2.39.142.110])
+        by smtp.gmail.com with ESMTPSA id q13-20020a056000136d00b00343e3023fbasm3634187wrz.34.2024.04.06.01.13.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Apr 2024 01:13:39 -0700 (PDT)
+Date: Sat, 6 Apr 2024 10:13:37 +0200
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	David Vernet <void@manifault.com>, Tejun Heo <tj@kernel.org>,
+	bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] libbpf: API to partially consume items from
+ ringbuffer
+Message-ID: <ZhEEMU_M2qSISfxB@gpd>
+References: <20240405223556.11142-1-andrea.righi@canonical.com>
+ <CAEf4BzZyd2T_S+46NcKsM-Vv0mMnsgGd_Hzaq7tn4DFkD+GOGw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAEf4BzZyd2T_S+46NcKsM-Vv0mMnsgGd_Hzaq7tn4DFkD+GOGw@mail.gmail.com>
 
-On Fri, 5 Apr 2024 20:51:17 +0100
-Simon Horman <horms@kernel.org> wrote:
-
-> On Thu, Apr 04, 2024 at 09:57:40AM +0200, Petr Tesarik wrote:
-> > Fix bogus lockdep warnings if multiple u64_stats_sync variables are
-> > initialized in the same file.
-> > 
-> > With CONFIG_LOCKDEP, seqcount_init() is a macro which declares:
-> > 
-> > 	static struct lock_class_key __key;
-> > 
-> > Since u64_stats_init() is a function (albeit an inline one), all calls
-> > within the same file end up using the same instance, effectively treating
-> > them all as a single lock-class.
-> > 
-> > Fixes: 9464ca650008 ("net: make u64_stats_init() a function")
-> > Closes: https://lore.kernel.org/netdev/ea1567d9-ce66-45e6-8168-ac40a47d1821@roeck-us.net/
-> > Signed-off-by: Petr Tesarik <petr@tesarici.cz>  
+On Fri, Apr 05, 2024 at 04:16:34PM -0700, Andrii Nakryiko wrote:
+> On Fri, Apr 5, 2024 at 3:36 PM Andrea Righi <andrea.righi@canonical.com> wrote:
+> >
+> > Introduce ring__consume_n() and ring_buffer__consume_n() API to
+> > partially consume items from one (or more) ringbuffer(s).
+> >
+> > This can be useful, for example, to consume just a single item or when
+> > we need to copy multiple items to a limited user-space buffer from the
+> > ringbuffer callback.
+> >
+> > Practical example (where this API can be used):
+> > https://github.com/sched-ext/scx/blob/b7c06b9ed9f72cad83c31e39e9c4e2cfd8683a55/rust/scx_rustland_core/src/bpf.rs#L217
+> >
+> > See also:
+> > https://lore.kernel.org/lkml/20240310154726.734289-1-andrea.righi@canonical.com/T/#u
+> >
+> > [ Note: I haven't implemented the special case of n == 0 as "no limit",
+> > because we still need to add a bunch of extra checks for INT_MAX, making
+> > the code less readable and, from a performance perspective, it seems
+> > that we may get more downsides than benefits, but I can try to look more
+> > at this if you think it's worth it ]
+> >
+> > v3:
+> >  - rename ring__consume_max() -> ring__consume_n() and
+> >    ring_buffer__consume_max() -> ring_buffer__consume_n()
+> >  - add new API to a new 1.5.0 cycle
 > 
-> Reviewed-by: Simon Horman <horms@kernel.org>
+> You also need to update Makefile, CI is failing right now ([0]).
+
+Yep, I wasn't sure if should have bumped up the version as well
+(in libbpf_version.h). I'll add that.
+
 > 
-> Interesting bug. I'm wondering if you also looked over other users of
-> u64_stats_init() to see if any of them can result in unexpected aliasing of
-> lock keys too.
+> Please also add a simple test to BPF selftests using the new API.
+> Other than that the changes look good.
 
-I didn't.
+Ok, will add a selftest.
 
-I have now run `git grep u64_stats_init | sed -e 's/:.*//' | uniq -d`
-and there indeed appears to be some aliasing in other files.
+Thanks,
+-Andrea
 
-block/blk-cgroup.c:
-- struct blkg_iostat_set.sync
-- struct blkg_iostat_set.sync
-
-drivers/net/ethernet/amazon/ena/ena_netdev.c:
-- struct ena_ring.syncp
-  struct ena_adapter.syncp
-
-drivers/net/ethernet/aquantia/atlantic/aq_ring.c:
-- struct aq_ring_stats_tx_s.syncp
-- struct aq_ring_stats_rx_s.syncp
-
-drivers/net/ethernet/emulex/benet/be_main.c:
-- struct be_tx_stats.sync
-  + aliasing between this struct in
-    - struct be_tx_obj
-    - struct be_rx_obj
-- struct be_tx_stats.sync_compl
-
-drivers/net/ethernet/google/gve/gve_main.c:
-- struct gve_priv.rx[].statss
-- struct gve_priv.tx[].statss
-
-drivers/net/ethernet/intel/fm10k/fm10k_netdev.c:
-- tx_ring->syncp
-- rx_ring->syncp
-
-drivers/net/ethernet/intel/i40e/i40e_txrx.c:
-- tx_ring->syncp
-- rx_ring->syncp
-
-drivers/net/ethernet/intel/igb/igb_main.c:
-- struct igb_ring.tx_syncp
-- struct igb_ring.tx_syncp2
-- struct igb_ring.rx_syncp
-
-drivers/net/ethernet/intel/ixgbe/ixgbe_main.c:
-- struct ixgbe_adapter.rx_ring[]->syncp
-- struct ixgbe_adapter.tx_ring[]->syncp
-- struct ixgbe_adapter.xdp_ring[]->syncp
-
-drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c:
-- tx_ring->syncp
-- rx_ring->syncp
-
-drivers/net/ethernet/marvell/sky2.c:
-- struct sky2_port.tx_stats.syncp
-- struct sky2_port.rx_stats.syncp
-
-drivers/net/ethernet/microsoft/mana/mana_en.c:
-- struct mana_txq.stats.syncp
-- struct mana_rxq.stats.syncp
-
-drivers/net/ethernet/netronome/nfp/nfp_net_dp.c:
-- struct nfp_net_tx_ring.r_vec->tx_sync
-- struct nfp_net_rx_ring.r_vec->rx_sync
-
-drivers/net/ethernet/nvidia/forcedeth.c:
-- struct fe_priv.swstats_tx_syncp
-- struct fe_priv.swstats_rx_syncp
-
-drivers/net/ethernet/realtek/8139too.c:
-- struct rtl8139_private.tx_stats.syncp
-- struct rtl8139_private.rx_stats.syncp
-
-drivers/net/ethernet/socionext/sni_ave.c:
-- struct ave_private.stats_tx.syncp
-- struct ave_private.stats_rx.syncp
-
-drivers/net/ethernet/stmicro/stmmac/stmmac_main.c:
-- this was the trigger ;-)
-
-drivers/net/ethernet/ti/netcp_core.c:
-- struct netcp_stats.syncp_tx
-- struct netcp_stats.syncp_rx
-
-drivers/net/ethernet/via/via-rhine.c:
-- struct rhine_private.tx_stats.syncp
-- struct rhine_private.rx_stats.syncp
-
-drivers/net/ethernet/xilinx/xilinx_axienet_main.c:
-- struct axienet_local.tx_stat_sync
-- struct axienet_local.rx_stat_sync
-
-drivers/net/hyperv/netvsc.c:
-- struct netvsc_channel.tx_stats.syncp
-- struct netvsc_channel.rx_stats.syncp
-
-drivers/net/ifb.c:
-- struct ifb_q_private.tx_stats.sync
-- struct ifb_q_private.rx_stats.sync
-
-drivers/net/mhi_net.c:
-- struct mhi_net_stats.tx_syncp
-- struct mhi_net_stats.rx_syncp
-
-drivers/net/virtio_net.c:
-- struct virtnet_info.rq[].stats.syncp
-- struct virtnet_info.sq[].stats.syncp
-
-drivers/net/wwan/mhi_wwan_mbim.c:
-- struct mhi_mbim_link.tx_syncp
-- struct mhi_mbim_link.rx_syncp
-
-drivers/vdpa/vdpa_sim/vdpa_sim_net.c:
-- struct vdpasim_net.tx_stats.syncp
-- struct vdpasim_net.rx_stats.syncp
-- struct vdpasim_net.cq_stats.syncp
-
-HTH
-Petr T
+> 
+>   [0] https://github.com/kernel-patches/bpf/actions/runs/8576515495/job/23507610313#step:11:73
+> 
+> pw-bot: cr
+> 
+> >  - fixed minor nits / comments
+> >
+> > v2:
+> >  - introduce a new API instead of changing the callback's retcode
+> >    behavior
+> >
+> > Andrea Righi (2):
+> >       libbpf: ringbuf: allow to consume up to a certain amount of items
+> >       libbpf: Add ring__consume_n / ring_buffer__consume_n
+> >
+> >  tools/lib/bpf/libbpf.h   | 12 ++++++++++
+> >  tools/lib/bpf/libbpf.map |  6 +++++
+> >  tools/lib/bpf/ringbuf.c  | 59 ++++++++++++++++++++++++++++++++++++++++--------
+> >  3 files changed, 67 insertions(+), 10 deletions(-)
 
