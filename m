@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-133913-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133914-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EFB489AA9E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:35:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 939D589AA9F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:36:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 790731F21D66
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:35:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB4BBB21D38
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA3B8364DA;
-	Sat,  6 Apr 2024 11:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBC4F376E0;
+	Sat,  6 Apr 2024 11:35:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l0ZeV5ZC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GBDDrChk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B58733CF5
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 11:35:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20209374CB
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 11:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712403325; cv=none; b=I0vus0qAkRIUtFMqdJKYAQuOWl7nLMWoTz+vz12rn9BXhiDUBzI7b4Wg5xuSBWMLfriCcggMrylidD3jRX58C/2P3xgr+njj4gqw0wvoZs3tD60jge/xLkZNiNOfTDQTldxFzaTvvQVdccnfcUnNTwaBfX6ARyC3HcO8ymI3AL0=
+	t=1712403327; cv=none; b=iOI1FN4FApQ8H9cJ77kZMS6G9fxwM34bJvREqtpubHJ1qH93UQuBu2xOKyB/gu3lDsGCJjQPi7JpA3kFaiy4YL532Wv9ha16QB0v2FZ1AbQh+Vq4i0K0m4/cvL1OMvynLnVprhRn2/T5aaHulv/3y/36MM2E+yZGoZrfFbik3g4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712403325; c=relaxed/simple;
-	bh=P4a9KYACvIIRNW48O2VQT45jjUsOBcQvvKsYyjPbY5g=;
+	s=arc-20240116; t=1712403327; c=relaxed/simple;
+	bh=R97Q2QZSx04EEg2PLja5HX11nqpX6+6Z/tNLhIWtFfk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jlAVO76PVpID2jAt8+fA33u2pUyMv263EIp/3M24tA0Q9Ti23MRj+D69FRIDtrU29aLXd4dj8HWh5KZOKCaCbLrjZMrR1ckyyMHNZHPffZ/iqcImXr34rjnTXdgEHxpvI6FasbMFDIISp8SQRp2xWxVNrR7Vukt7RHkqEY4oOMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l0ZeV5ZC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0E50C43390;
-	Sat,  6 Apr 2024 11:35:22 +0000 (UTC)
+	 MIME-Version; b=ZMmtgzcYrqr9dzT5WLZWIyAT0R/m/Rhl5fxfH3nZZJcE3AK1OQZVn68pEkuzmEsnHnh13RAI58941RayZDzA0V9xsXGVjbR4YpTZlAZYi+yiYJUIRGUaxtH8fme/kytfUAn+qhkLdw1VMrOeKPQyJl8fXvT7o4ptUYJmX3UsAeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GBDDrChk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DD54C433C7;
+	Sat,  6 Apr 2024 11:35:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712403324;
-	bh=P4a9KYACvIIRNW48O2VQT45jjUsOBcQvvKsYyjPbY5g=;
+	s=k20201202; t=1712403326;
+	bh=R97Q2QZSx04EEg2PLja5HX11nqpX6+6Z/tNLhIWtFfk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l0ZeV5ZCLAozcfubDL9o5rFOQR1+aqsnMrGjnK5RkVMi0AK653WLvHm9FWjD/3bV/
-	 GPIq9K7BruLtMize8NP++CRewTgdCOYYrG1bwdb5C4b7yp2cZWVeKE9IxEW28tF9ks
-	 +9zW/QLnp5L6aGIUzIGEG2u7p6tnOMILYYL6VkJpFjTCw1WIjg1mPnaM5Z8f2dKMEp
-	 jf8yyeH8Tl9kLVRkhzK7zP4/byvejzsoROKUU92Ov8UXN90YAN3QgbsvOkkQ837gMO
-	 wSNXf4iTIpSdqVHhRnZoCNcwayoaG02MA6ydDoLRTKYLIszGRljPd3aksEK7B+EkTz
-	 ADbyryrsZY0yw==
+	b=GBDDrChk1RUq4DtnWONvFCFXv1lrG6pW0ZHR2l8oUKM0hzrs63WR0FLoz0PP9FwEB
+	 fUzdWpR9hmpGQAl/Jc94fGxDJRBr6VNV9g/FVmcXpYcEjVHpXlBOKXGBf2KhgfNbwd
+	 2mGvpKF/07K0hb1i2zLkobtmewHREGYShNg3IfLOUpYI5a0cwPfV0vSBgFg7CO3TLa
+	 5E4HPquhMzxBoAxRlOvzr4A/pHviHN5HPHwaOzxeo1u4ihNyKjf/SNfxHiHEzklIf0
+	 fUlWKp5vYZ9Pbh05QW2A/5xEY1ARe9jicwbtDx43kWjHuNqJnvti9S2skkgT5foVJG
+	 +Ip4WtUlN8iZw==
 From: Jisheng Zhang <jszhang@kernel.org>
 To: Paul Walmsley <paul.walmsley@sifive.com>,
 	Palmer Dabbelt <palmer@dabbelt.com>,
@@ -49,9 +49,9 @@ To: Paul Walmsley <paul.walmsley@sifive.com>,
 	Samuel Holland <samuel.holland@sifive.com>
 Cc: linux-riscv@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/3] clocksource/drivers/timer-clint: Add option to use CSR instead of mtime
-Date: Sat,  6 Apr 2024 19:21:58 +0800
-Message-ID: <20240406112159.1634-3-jszhang@kernel.org>
+Subject: [PATCH v2 3/3] clocksource/drivers/timer-clint: Add T-Head C9xx clint
+Date: Sat,  6 Apr 2024 19:21:59 +0800
+Message-ID: <20240406112159.1634-4-jszhang@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240406112159.1634-1-jszhang@kernel.org>
 References: <20240406112159.1634-1-jszhang@kernel.org>
@@ -63,109 +63,69 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-As pointed out by commit ca7810aecdba ("lib: utils/timer: mtimer: add a
-quirk for lacking mtime register") of opensbi:
-
-"T-Head developers surely have a different understanding of time CSR and
-CLINT's mtime register with SiFive ones, that they did not implement
-the mtime register at all -- as shown in openC906 source code, their
-time CSR value is just exposed at the top of their processor IP block
-and expects an external continous counter, which makes it not
-overrideable, and thus mtime register is not implemented, even not for
-reading. However, if CLINTEE is not enabled in T-Head's MXSTATUS
-extended CSR, these systems still rely on the mtimecmp registers to
-generate timer interrupts. This makes it necessary to implement T-Head
-C9xx CLINT support in OpenSBI MTIMER driver, which skips implementing
-reading mtime register and falls back to default code that reads time
-CSR."
-
-To use the clint in RISCV-M NOMMU env on Milkv Duo little core, we
-need to fall back to read time CSR instead of mtime register. Add the
-option for this purpose.
+The mtimecmp in T-Head C9xx clint only supports 32bit read/write,
+implement such support.
 
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- arch/riscv/include/asm/timex.h    | 6 +++---
- drivers/clocksource/Kconfig       | 9 +++++++++
- drivers/clocksource/timer-clint.c | 7 +++++++
- 3 files changed, 19 insertions(+), 3 deletions(-)
+ drivers/clocksource/timer-clint.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/arch/riscv/include/asm/timex.h b/arch/riscv/include/asm/timex.h
-index a06697846e69..1c3eed4263cd 100644
---- a/arch/riscv/include/asm/timex.h
-+++ b/arch/riscv/include/asm/timex.h
-@@ -10,7 +10,7 @@
- 
- typedef unsigned long cycles_t;
- 
--#ifdef CONFIG_RISCV_M_MODE
-+#if defined(CONFIG_RISCV_M_MODE) && !defined(CONFIG_CLINT_USE_CSR_INSTEADOF_MTIME)
- 
- #include <asm/clint.h>
- 
-@@ -46,7 +46,7 @@ static inline unsigned long random_get_entropy(void)
- }
- #define random_get_entropy()	random_get_entropy()
- 
--#else /* CONFIG_RISCV_M_MODE */
-+#else /* CONFIG_RISCV_M_MODE && !CONFIG_CLINT_USE_CSR_INSTEADOF_MTIME */
- 
- static inline cycles_t get_cycles(void)
- {
-@@ -60,7 +60,7 @@ static inline u32 get_cycles_hi(void)
- }
- #define get_cycles_hi get_cycles_hi
- 
--#endif /* !CONFIG_RISCV_M_MODE */
-+#endif /* !CONFIG_RISCV_M_MODE || CONFIG_CLINT_USE_CSR_INSTEADOF_MTIME */
- 
- #ifdef CONFIG_64BIT
- static inline u64 get_cycles64(void)
-diff --git a/drivers/clocksource/Kconfig b/drivers/clocksource/Kconfig
-index 34faa0320ece..7bbdbf2f96a8 100644
---- a/drivers/clocksource/Kconfig
-+++ b/drivers/clocksource/Kconfig
-@@ -650,6 +650,15 @@ config CLINT_TIMER
- 	  This option enables the CLINT timer for RISC-V systems.  The CLINT
- 	  driver is usually used for NoMMU RISC-V systems.
- 
-+config CLINT_USE_CSR_INSTEADOF_MTIME
-+	bool "Use TIME CSR instead of the mtime register"
-+	depends on CLINT_TIMER
-+	help
-+	  Use TIME CSR instead of mtime register. Enable this option if
-+	  prefer TIME CSR over MTIME register, or if the implementation
-+	  doesn't implement the mtime register in CLINT, so fall back on
-+	  TIME CSR.
-+
- config CSKY_MP_TIMER
- 	bool "SMP Timer for the C-SKY platform" if COMPILE_TEST
- 	depends on CSKY
 diff --git a/drivers/clocksource/timer-clint.c b/drivers/clocksource/timer-clint.c
-index f468fa8bf5f0..0d3890e00b75 100644
+index 0d3890e00b75..655ea81071ff 100644
 --- a/drivers/clocksource/timer-clint.c
 +++ b/drivers/clocksource/timer-clint.c
-@@ -76,6 +76,12 @@ static void clint_ipi_interrupt(struct irq_desc *desc)
- #define clint_get_cycles_hi()	readl_relaxed(((u32 *)clint_timer_val) + 1)
- #endif
+@@ -39,6 +39,7 @@ static u64 __iomem *clint_timer_cmp;
+ static u64 __iomem *clint_timer_val;
+ static unsigned long clint_timer_freq;
+ static unsigned int clint_timer_irq;
++static bool is_c900_clint;
  
-+#ifdef CONFIG_CLINT_USE_CSR_INSTEADOF_MTIME
-+static u64 notrace clint_get_cycles64(void)
-+{
-+	return get_cycles64();
-+}
-+#else
- #ifdef CONFIG_64BIT
- static u64 notrace clint_get_cycles64(void)
- {
-@@ -94,6 +100,7 @@ static u64 notrace clint_get_cycles64(void)
- 	return ((u64)hi << 32) | lo;
+ #ifdef CONFIG_RISCV_M_MODE
+ u64 __iomem *clint_time_val;
+@@ -135,6 +136,19 @@ static int clint_clock_shutdown(struct clock_event_device *evt)
+ 	return 0;
  }
- #endif /* CONFIG_64BIT */
-+#endif /* CONFIG_CLINT_USE_CSR_INSTEADOF_MTIME */
  
- static u64 clint_rdtime(struct clocksource *cs)
++static int c900_clint_clock_next_event(unsigned long delta,
++				       struct clock_event_device *ce)
++{
++	void __iomem *r = clint_timer_cmp +
++			  cpuid_to_hartid_map(smp_processor_id());
++	u64 val = clint_get_cycles64() + delta;
++
++	csr_set(CSR_IE, IE_TIE);
++	writel_relaxed(val, r);
++	writel_relaxed(val >> 32, r + 4);
++	return 0;
++}
++
+ static DEFINE_PER_CPU(struct clock_event_device, clint_clock_event) = {
+ 	.name				= "clint_clockevent",
+ 	.features			= CLOCK_EVT_FEAT_ONESHOT,
+@@ -148,6 +162,9 @@ static int clint_timer_starting_cpu(unsigned int cpu)
  {
+ 	struct clock_event_device *ce = per_cpu_ptr(&clint_clock_event, cpu);
+ 
++	if (is_c900_clint)
++		ce->set_next_event = c900_clint_clock_next_event;
++
+ 	ce->cpumask = cpumask_of(cpu);
+ 	clockevents_config_and_register(ce, clint_timer_freq, 100, ULONG_MAX);
+ 
+@@ -291,5 +308,12 @@ static int __init clint_timer_init_dt(struct device_node *np)
+ 	return rc;
+ }
+ 
++static int __init c900_clint_timer_init_dt(struct device_node *np)
++{
++	is_c900_clint = true;
++	return clint_timer_init_dt(np);
++}
++
+ TIMER_OF_DECLARE(clint_timer, "riscv,clint0", clint_timer_init_dt);
+ TIMER_OF_DECLARE(clint_timer1, "sifive,clint0", clint_timer_init_dt);
++TIMER_OF_DECLARE(clint_timer2, "thead,c900-clint", c900_clint_timer_init_dt);
 -- 
 2.43.0
 
