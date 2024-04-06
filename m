@@ -1,58 +1,63 @@
-Return-Path: <linux-kernel+bounces-133863-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133864-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B834489AA11
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:21:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C24789AA13
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:21:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9C441C2115D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:21:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A3901B22A8D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:21:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1D22B9D5;
-	Sat,  6 Apr 2024 09:18:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C40372C6B7;
+	Sat,  6 Apr 2024 09:18:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g5s7UWv/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IPLRPBoU"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B3F2B9C0
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 09:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E858B2C6AE;
+	Sat,  6 Apr 2024 09:18:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712395124; cv=none; b=HdLEPnoe5ZyM0NolpU7fR9d97wJaNfC1WrR1HvJdafj8enUc8dJJ0HOG528UbkM0ftkRnHx5SnBHzSqrNVG4FvjVCetFUZaYFxlggsJ2oFmCsa4NNZNbU9abiwJWyknLSNZmQ8tkycxcji+R6a76uGIqM342OOeLd6Fhz/Myuu0=
+	t=1712395131; cv=none; b=ZUEcMwVsTqBR8Ku+XoE02/RLxyYVQLpwubpgVODuPgOd5nPRtLNlnYr1CQgdTAOzgZi00hsaCZl5iIEMMPiVbmT2Q893L823cnTRCWAu8PSQxq45ilMAYvShVnN9UM2wCwWqCxvX79XQrZP3IYcvGskouZOvDfEtsp2sMzF3Z2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712395124; c=relaxed/simple;
-	bh=YyCtD5bY6qKKre4mnsu4Pdof0IXCK0AKuOli174B4NU=;
+	s=arc-20240116; t=1712395131; c=relaxed/simple;
+	bh=OUXrlxpdyrcqJqLEifsJYtil4okGD8qGZToyOExWkJo=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=LrIOficCw9AR9oTLqTOtxeQFcT5tRONcEOEAXoC2N3Brr1zUyrRWTHl61+Q2ExhH/Cn+yp8z1epxkORBvzVrWwSIkk4RpnuC6svRuzkhk2zgyAyUgLedSnUod3mk0A5CJgdHa8x8H1ZDqqdo+r+2MT80xOKPuZcL0qmaZC5Q4Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g5s7UWv/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8D55C433C7;
-	Sat,  6 Apr 2024 09:18:40 +0000 (UTC)
+	 MIME-Version:Content-Type; b=EuP0Hp4Dg1xln8OjiTv80xOI/HqUsYhyHvNyQ3r2WuhDM2u44rVtMxyPCKRiEn2TNPgZjW960Dni5KYOFYvknGLNgzrvGD+umpXCKVSA4Nk+uGqLZ/rtpnxWbKPQ6mfhcFkMRAvP3URmkUJ5hkkhrXv+Rhy6lVpi7cDA23G4c3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IPLRPBoU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A2D1C433C7;
+	Sat,  6 Apr 2024 09:18:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712395123;
-	bh=YyCtD5bY6qKKre4mnsu4Pdof0IXCK0AKuOli174B4NU=;
+	s=k20201202; t=1712395130;
+	bh=OUXrlxpdyrcqJqLEifsJYtil4okGD8qGZToyOExWkJo=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=g5s7UWv/UWJVuBFCUSzT+7pId1kAojSHZo0FCo7V6USxrTQLz0CuiwIYRTwWH54GL
-	 X5lgnPM5SP5Z+bkH+Gl/IhL9xmGDXCBouMoxS05J2eyIUDtYKPNsS+jpFgnFazbEdN
-	 Wu6QKmWvuolOK+cgHc0ZgtzgaixUIoavwyYdhXXfRqi3vhY+qlNqknhvqfctmVX1/j
-	 Kzds3NO251uJ3Klv9Y+lbsn4zcYyt0RVSwmevLrmGmR03V5RmRA9SfU/f5i3SpvMeU
-	 KIBpP8qV0zJpbNuVhsN91/AodDkyLkNu18fo4cY/Y0YFvqGQ062v5HgBHOcixkgCex
-	 PTwdVggZwCSNw==
+	b=IPLRPBoUJTIz64lSs0ulj5jKGWUCP3opeZWNl1GU18wdX6jdXieYh4EYwUZhqDr+4
+	 xEiGH4QXOS5BqiNuo0eQK76RJbaGs2l+X3jIESEOUvA94MhhygBaZ4cy2UV3bqMVHs
+	 65VtuyFD2txH7ZDT5rPRACeIraIQmEn8XFTyxKXlDvA3Nu7d/EFn793Nr5RK60AjIw
+	 BCUqzKJOJBmRV+IyK39P0JPbw92FVfa5QlKj9YkJH38Z+M3HZynMP9SL1+BQxEPNCY
+	 dTwv2hGhmmDC1d5/ULOVqE0nmaFbsq9WrHZhdzmuvFZS1kMtXzyqJ43qNpoLr3Qr85
+	 y7eoSicBuEBTA==
 From: Vinod Koul <vkoul@kernel.org>
-To: Miquel Raynal <miquel.raynal@bootlin.com>, 
- Mikhail Kobuk <m.kobuk@ispras.ru>
-Cc: Kishon Vijay Abraham I <kishon@kernel.org>, 
- =?utf-8?q?Pali_Roh=C3=A1r?= <pali@kernel.org>, 
- =?utf-8?q?Marek_Beh=C3=BAn?= <kabel@kernel.org>, 
- linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org, 
- lvc-project@linuxtesting.org, Alexey Khoroshilov <khoroshilov@ispras.ru>
-In-Reply-To: <20240325201254.54445-1-m.kobuk@ispras.ru>
-References: <20240325201254.54445-1-m.kobuk@ispras.ru>
-Subject: Re: [PATCH v2 0/2] phy: marvell: a3700-comphy: Minor fixes
-Message-Id: <171239512055.352254.16901134806366326703.b4-ty@kernel.org>
-Date: Sat, 06 Apr 2024 14:48:40 +0530
+To: linux-phy@lists.infradead.org, Marcel Ziswiler <marcel@ziswiler.com>
+Cc: linux-imx@nxp.com, linux-kernel@vger.kernel.org, kernel@pengutronix.de, 
+ Richard Zhu <hongxing.zhu@nxp.com>, Lucas Stach <l.stach@pengutronix.de>, 
+ linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org, 
+ Marcel Ziswiler <marcel.ziswiler@toradex.com>, 
+ Fabio Estevam <festevam@gmail.com>, Heiko Stuebner <heiko@sntech.de>, 
+ Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Sergio Paracuellos <sergio.paracuellos@gmail.com>, 
+ Shawn Guo <shawnguo@kernel.org>, Tim Harvey <tharvey@gateworks.com>, 
+ Yang Li <yang.lee@linux.alibaba.com>, imx@lists.linux.dev
+In-Reply-To: <20240327071946.8869-1-marcel@ziswiler.com>
+References: <20240327071946.8869-1-marcel@ziswiler.com>
+Subject: Re: [PATCH v2] phy: freescale: imx8m-pcie: fix pcie link-up
+ instability
+Message-Id: <171239512402.352254.17030670986383011631.b4-ty@kernel.org>
+Date: Sat, 06 Apr 2024 14:48:44 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -64,18 +69,34 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.3
 
 
-On Mon, 25 Mar 2024 23:12:48 +0300, Mikhail Kobuk wrote:
-> Changes in v2:
-> - Replace hardcode and ARRAY_SIZE() with definition
-> - Link to v1: https://lore.kernel.org/linux-phy/20240321164734.49273-1-m.kobuk@ispras.ru/
+On Wed, 27 Mar 2024 08:19:37 +0100, Marcel Ziswiler wrote:
+> On the i.MX 8M Mini, the AUX_PLL_REFCLK_SEL has to be left at its reset
+> default of AUX_IN (PLL clock).
 > 
+> Background Information:
+> In our automated testing setup, we use Delock Mini-PCIe SATA cards [1].
+> While this setup has proven very stable overall we noticed upstream on
+> the i.MX 8M Mini fails quite regularly (about 50/50) to bring up the
+> PCIe link while with NXP's downstream BSP 5.15.71_2.2.2 it always works.
+> As that old downstream stuff was quite different, I first also tried
+> NXP's latest downstream BSP 6.1.55_2.2.0 which from a PCIe point of view
+> is fairly vanilla, however, also there the PCIe link-up was not stable.
+> Comparing and debugging I noticed that upstream explicitly configures
+> the AUX_PLL_REFCLK_SEL to I_PLL_REFCLK_FROM_SYSPLL while working
+> downstream [2] leaving it at reset defaults of AUX_IN (PLL clock).
+> Unfortunately, the TRM does not mention any further details about this
+> register (both for the i.MX 8M Mini as well as the Plus).
+> NXP confirmed their validation codes for the i.MX8MM PCIe doesn't
+> configure cmn_reg063 (offset: 0x18C).
+> BTW: On the i.MX 8M Plus we have not seen any issues with PCIe with the
+> exact same setup which is why I left it unchanged.
+> 
+> [...]
 
 Applied, thanks!
 
-[1/2] phy: marvell: a3700-comphy: Fix out of bounds read
-      commit: e4308bc22b9d46cf33165c9dfaeebcf29cd56f04
-[2/2] phy: marvell: a3700-comphy: Fix hardcoded array size
-      commit: 627207703b73615653eea5ab7a841d5b478d961e
+[1/1] phy: freescale: imx8m-pcie: fix pcie link-up instability
+      commit: 3a161017f1de55cc48be81f6156004c151f32677
 
 Best regards,
 -- 
