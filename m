@@ -1,116 +1,71 @@
-Return-Path: <linux-kernel+bounces-133933-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133934-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 380FA89AB0F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:22:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 250D389AB17
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:27:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E24481F215DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:22:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D9AA1C2101D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:27:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B63737141;
-	Sat,  6 Apr 2024 13:21:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9519E3715E;
+	Sat,  6 Apr 2024 13:27:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="rn2nm+5H"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="PUxr/uJ4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3936364CD
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 13:21:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C80364DA;
+	Sat,  6 Apr 2024 13:27:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712409710; cv=none; b=R5SQz2zMqGNZ76hrdGWXN6agCVZvqFEA0Cm5FOJgLkwiSl+uWom9kIe4RuyczgadF4hJO/6T7IcaY60eOAfGKHqEzOfawiSt4HovkDUyfVKSBxQMkZEdrgVEZ875Ia2Z/+8BrGEFUbqSEeT+eRpZ2uyn2C9lXn2p3mHPFaFQH8c=
+	t=1712410069; cv=none; b=JatzLg/k/Qkk/hs01y1mm9chJSdYeQoQCM4cnQTHnLIsUjltzmV9PX8GSN0QIIzzXXFH8sYfftdIbfrxSPjjOTqD9fO4pAPXYJLHVuZmYfIDG23am6Jn9M1tZd18PUMfNLkfGg2QkjRyY1zE1TdsAbFvgcozTtzAYtNAU8tE7/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712409710; c=relaxed/simple;
-	bh=ZMt+t5X0UPIOOA6m/9szrjEDqQbT72VimPT91MbFNiE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=PxJcf2sVI3lA5MPIKZa97x1JjtTZHWdJ7yTAljhSE0LqH4OCnz8MD6oOeTTdwEJw41q33F35j12BoySwUTc/Lp9BsavZa08gHH/cC61l4G1cN9YdusPtAYVi0O97FviwCQt5nXKt2miNxuZSvZtFoCXw5I80dJNJGcmeq/q1q8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=rn2nm+5H; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 436DKIdt109838;
-	Sat, 6 Apr 2024 08:20:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712409618;
-	bh=39x7AmNp8Efzg8sUTGbGQMPThf+ziuu6HzOTHuarGAA=;
-	h=From:To:CC:Subject:Date;
-	b=rn2nm+5H14g7Dmqw4gH1ylBAQ1ZpdmW28jNIIfOH1ujqg9D9A/A/ll58qLg0L8/c3
-	 2COkFVO8l7Mxdj3bjb6OvO6v0hov64YIjoUtKWm06IIPCs8f2xYD5ncPKhiwVSUV0g
-	 Nl+eNAYmFDz4m/6zxs4ckXxfd3vP8TBNK0ylxaGk=
-Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 436DKIlZ012778
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sat, 6 Apr 2024 08:20:18 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE103.ent.ti.com
- (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 6
- Apr 2024 08:20:18 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sat, 6 Apr 2024 08:20:18 -0500
-Received: from LT5CG31242FY.dhcp.ti.com ([10.250.160.249])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 436DKCgl087460;
-	Sat, 6 Apr 2024 08:20:13 -0500
-From: Shenghao Ding <shenghao-ding@ti.com>
-To: <broonie@kernel.org>
-CC: <andriy.shevchenko@linux.intel.com>, <lgirdwood@gmail.com>,
-        <perex@perex.cz>, <pierre-louis.bossart@linux.intel.com>,
-        <13916275206@139.com>, <alsa-devel@alsa-project.org>,
-        <linux-kernel@vger.kernel.org>, <liam.r.girdwood@intel.com>,
-        <bard.liao@intel.com>, <yung-chuan.liao@linux.intel.com>,
-        <kevin-lu@ti.com>, <tiwai@suse.de>, <baojun.xu@ti.com>, <soyer@irl.hu>,
-        <Baojun.Xu@fpt.com>, <navada@ti.com>, <v-po@ti.com>,
-        Shenghao Ding <shenghao-ding@ti.com>
-Subject: [PATCH v3] ALSA: hda/tas2781: correct the register for pow calibrated data
-Date: Sat, 6 Apr 2024 21:20:09 +0800
-Message-ID: <20240406132010.341-1-shenghao-ding@ti.com>
-X-Mailer: git-send-email 2.33.0.windows.2
+	s=arc-20240116; t=1712410069; c=relaxed/simple;
+	bh=uyYhGpzWVAkKGMNMK7FyCYvczFp5qaboPv9extJ+xW0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lRuPPlAUI7zqKJ7OzxcdGVsCwEUGOtQEd5VXRRhXc879rIvWQrjvm11H+WPx/ABMqMZz/CdBovrJWmch79NIbd7YFNySUPG9wp/x67+YlMTl/VIWxSFwk16M58vMzHmhZITAlesryVyLbwXOIXKr6s9tEDkE1bReTcqgv92bHCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=PUxr/uJ4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC66CC433F1;
+	Sat,  6 Apr 2024 13:27:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1712410069;
+	bh=uyYhGpzWVAkKGMNMK7FyCYvczFp5qaboPv9extJ+xW0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PUxr/uJ4T1Vxr8R5pxJrAwXtdYnbGzVOmzR6fLkqVysPW2udXg25cMZjGPII4iYKM
+	 DrKV1iRfEwwQ2R6J7tTUxGyPLDvcXFFC9b8J8NDUx+QaRy2YwIpg6qpubxbLD9pNyT
+	 cDH/3o+zQR87r/7+vzNpWi4oXkpX8sZ0ORQi0z8I=
+Date: Sat, 6 Apr 2024 15:27:45 +0200
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: =?iso-8859-1?Q?Fran=E7ois?= Valenduc <francoisvalenduc@gmail.com>
+Cc: torvalds@linux-foundation.org, lwn@lwn.net, jslaby@suse.cz,
+	linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+	stable@vger.kernel.org
+Subject: Re: Linux 6.8.4
+Message-ID: <2024040629-bullfight-wind-54f0@gregkh>
+References: <2024040409-attentive-raffle-d9bc@gregkh>
+ <2024040409-disliking-mammogram-096d@gregkh>
+ <41c2bdd3-9b66-404a-aecb-8633d4aa98fb@gmail.com>
+ <762f7ace-7fee-4f61-823b-54a1b7d5bdce@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <762f7ace-7fee-4f61-823b-54a1b7d5bdce@gmail.com>
 
-Calibrated data was written into an incorrect register, which cause
-speaker protection sometimes malfuctions
+On Sat, Apr 06, 2024 at 02:42:07PM +0200, François Valenduc wrote:
+> I also get the same problem with kernel 6.9-rc2.
 
-Fixes: 5be27f1e3ec9 ("ALSA: hda/tas2781: Add tas2781 HDA driver")
-Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
+Great, can you run 'git bisect' to find the offending commit?
 
----
-v3:
- - Add a bit more info desciption
- - No blank line between Fixes and Singed-off-by tags
- - https://lore.kernel.org/all/20240404122530.1049-1-shenghao-ding@ti.com/
----
- sound/pci/hda/tas2781_hda_i2c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+thanks,
 
-diff --git a/sound/pci/hda/tas2781_hda_i2c.c b/sound/pci/hda/tas2781_hda_i2c.c
-index 48dae3339305..75f7674c66ee 100644
---- a/sound/pci/hda/tas2781_hda_i2c.c
-+++ b/sound/pci/hda/tas2781_hda_i2c.c
-@@ -514,10 +514,10 @@ static int tas2563_save_calibration(struct tasdevice_priv *tas_priv)
- static void tas2781_apply_calib(struct tasdevice_priv *tas_priv)
- {
- 	static const unsigned char page_array[CALIB_MAX] = {
--		0x17, 0x18, 0x18, 0x0d, 0x18
-+		0x17, 0x18, 0x18, 0x13, 0x18,
- 	};
- 	static const unsigned char rgno_array[CALIB_MAX] = {
--		0x74, 0x0c, 0x14, 0x3c, 0x7c
-+		0x74, 0x0c, 0x14, 0x70, 0x7c,
- 	};
- 	unsigned char *data;
- 	int i, j, rc;
--- 
-2.34.1
-
+greg k-h
 
