@@ -1,112 +1,170 @@
-Return-Path: <linux-kernel+bounces-134091-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134092-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 976CB89AD1A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 23:40:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B2CD89AD21
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 23:43:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5249B2822CF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 21:40:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 025F81F21AF7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 21:43:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FEE84EB54;
-	Sat,  6 Apr 2024 21:40:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA8084F885;
+	Sat,  6 Apr 2024 21:42:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="sQRn45Zl"
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="ArScyxrv"
+Received: from mail-oi1-f177.google.com (mail-oi1-f177.google.com [209.85.167.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3506F4C7B
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 21:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 337814C7B
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 21:42:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712439649; cv=none; b=cPdlof42yQb/mgAxih0O7CfzqiqoCpjMV3Ln6LySYGFazPj6Wki+fOoXivTGhf9nHm4kGJ/RAi2N/En+yx03xFmZ9Y00V6htRwW9vt/+1r+YDIUKCbar+M1uaxpMJuiOTwb2VjOADNF9eT2N7NJ2XJzuqwZGduRDnIHf9nrjN54=
+	t=1712439777; cv=none; b=NRzpD+JqxhKWAGwRIR/0Ga7oFRkDL78PPiCZ+ISwsyoMd453Yd0CXRBqcqoDYOuanSN+KDtJjYbAVN6NfKPq5aIDCrJTQIsxSQz5QL4D7DVdmBaBNBj/AGW/wwytw1YZvceCGCjRHOQzeE8z+1xEfu2dKOgqHEfZae+ZwQsM6Kw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712439649; c=relaxed/simple;
-	bh=WT0Lpk6DhnwYEOjwGkmSGzKWqJTDKx1+lSIGK7/TjPs=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Uss3MKx27zTb2sFw+4FyL+sOHpdiD84SPI8PBVBT2yyqAWeP5CVaSOb58gPokJD2eVNWnuujBnHsdScgCVIP3qu1ETEhzpqsOROD8qClD0dxJlZnSoOdLIP5jJrbLPx8le71LDsScvk9Ilq6EszTF/Xb2x9Qqmi0mzqC4XkXCpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=sQRn45Zl; arc=none smtp.client-ip=209.85.216.74
+	s=arc-20240116; t=1712439777; c=relaxed/simple;
+	bh=fYYeF3MecFw24NiAZ+QMoa0g1C92UzUGo1u5gHhYFXk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=sZfTC2zsT3ndKkzpGNaw7Zl3fdUfSfEH51CT5i4SUFCBTSje1oaFoIzohFFAh8xWY/qTQwP5Gml0/uThj0allyamDjwUbwEE5vbP8uWZrTLEQC9IigyV/bUsKsR5f7cTsgsfFCQU/jZrQLyGXAREQJfteLedRSYSB9N2FFB4Dug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ArScyxrv; arc=none smtp.client-ip=209.85.167.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--surenb.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-2a4b60f8806so481282a91.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 14:40:47 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-oi1-f177.google.com with SMTP id 5614622812f47-3c3d2d0e86dso1549142b6e.2
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 14:42:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712439647; x=1713044447; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=gzw1CQLzEz+aDfQzLSCkUXr+Fy/FJWggtvJK4Br2lok=;
-        b=sQRn45ZlCsMSJ1ctkLimAs4nrg2BHZvp/HwXjEgUTwCC/ufbSLnCZ9bDE6g5+Hy8JI
-         ed/BuAeLFvawyeS9tv7ZsS96XYROlqdDo7VSi3YdPJoV87hjOlgZUUFm14eRfWTm4wSW
-         YW9rlGbMqfaPX6Iee4jjArfl9k4HMPgYzQtVmI6jKD2rjcFwKMoycjsIbhjlt32bWFND
-         e4XZeLF1fWFk4wO8Vc03sFGsOkfOCJsu+tJEws9hGvPE/L/PIlJYya56e2KPbPjVErzw
-         logDGV+4SGuiCT1sMsQkiUATfdVbRIQmkFUGUbZst9CN1tGT8s5vEmGXbiXX9b/D7Qx7
-         vTYA==
+        d=google.com; s=20230601; t=1712439773; x=1713044573; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=m1G9gUrNc9dGzPe7AYM33DPZfjgc9cVYEl/DEKm89Aw=;
+        b=ArScyxrvfDWduVY/F8RejzGRYbuEijxm5/8n92WYtfUl5vp1jQ1vsGr/rGbZpBlBxZ
+         J6kz1YqYIYQ7RCwWhEdKndv6GK/Crx44nF8gZ8xxlCc2q0y8GqRWWgkmTg7YZNDcMdxQ
+         0ckBbVjtgW6qTsxXOKggz9Csb/hW8tx8TEtd8Dws8cG8nErJ5gqkA0pTuYO8yqlVRwOw
+         sqI6UmpY9+CLGPZyCdpTpNkWiJTP4ee0wzqhNPR7KWylbD7V+uyqn01BShAUoRiCQ/qO
+         ui8N+sVN/ptI7J/TNHBcshtflTCbc2H1dw+T81NJOB5eP3I4kRgTWlAlyRZF+a8VyDd/
+         AESg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712439647; x=1713044447;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gzw1CQLzEz+aDfQzLSCkUXr+Fy/FJWggtvJK4Br2lok=;
-        b=SivjkeF7knBCTJIn1+/Ffk/L1buO0mXxJeweFK0PTRz/U4YwQ4V1qtkOjq/PPIBTMf
-         8885lyMSbLXeDpqGc/oTWFd51gyQ0XCas/mUR6oG7yOv2F5K1skNjtUNjCG2kQ0JlNAg
-         +w0NRP1onGMohk5CfcMwc1KgtmvBr+VPAkerj+3ryIRwOCTaTYlSYPT56Ha8AVKdYEQ5
-         mrcLEPloUv9+GjRa9WmdKPSnMJvQdX/sQmVjzVcp4m4zcgyn8VOG5ihcUMVZdNENBaHg
-         +AA3eSlq6EqMnqBAwF8y5Albcg4sYNOwBKUga785caqFRXfKS4qq4h4vZLDJLnXhRZP0
-         Dzjg==
-X-Forwarded-Encrypted: i=1; AJvYcCWFyzUwImEHOt949ZQy/EGgrLRpXWoeWxScHJ50NS1rfeGd0vKLeuHk+3YNEQMvLmh1XC/QrISpPcJ5Vdd2p+pIlboW9zR3WX5j3Zzz
-X-Gm-Message-State: AOJu0YxTrsRMea/6Gpxc9/MCwoyULEQ+a0Q9XENMwkPl2rNEjnSIVV4T
-	v1kqWNM6sHv6ty+Aymd7shTZx2mYO2edQEi8xbB0UP7UFTW14aSBymAD4U7dSNWjAIyAfyM05mJ
-	+Zg==
-X-Google-Smtp-Source: AGHT+IF4axCv/Y8VyLgScmc0G3dc3q7zEXs5J1sN3w3JrohbNqJUZEyft8VJodIQF5zQSpMQGH94DPYTSdA=
-X-Received: from surenb-desktop.mtv.corp.google.com ([2620:15c:211:201:18ca:cd75:e3f2:694])
- (user=surenb job=sendgmr) by 2002:a17:903:228b:b0:1e3:cf83:af70 with SMTP id
- b11-20020a170903228b00b001e3cf83af70mr136646plh.13.1712439647507; Sat, 06 Apr
- 2024 14:40:47 -0700 (PDT)
-Date: Sat,  6 Apr 2024 14:40:43 -0700
+        d=1e100.net; s=20230601; t=1712439773; x=1713044573;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=m1G9gUrNc9dGzPe7AYM33DPZfjgc9cVYEl/DEKm89Aw=;
+        b=ETpJ52BKlPLv5JMVYvB4C2TETKT0SWSI/uOTrjqUHFQFvs8A+sAWC7nomeedmB8Xoy
+         g0erw6LMvOZFPotMhbUkLmvzpa2jdw9bK6M+xTvwQOTVIGKKjGvGNrsyconvfyG/bUKh
+         L96uCf7upoOMwUgE6zMW5YHTrKyrofoYebJHHWG+pFk2LAo6m+UOzXR1Szev5p7/zaYA
+         V0FifGcKt3yw2sx09XwrKPyouY59SiC719ynB1qyKi8GMxFQ6WP87tNOOuKD44HFoXXv
+         vIIMw3/ozMTXsEWH26nbD0Z76tILNHwBlNc4KcKHZbx3q7ywAdeEaeRkKgzqM8wZ25ex
+         yK0w==
+X-Forwarded-Encrypted: i=1; AJvYcCVQxblJAMW61y+m9aWVAPbhgDGbo5jmUmseqd8lAQSlsL7sAB5bbE465P4XY3OkDIylR7zAbbCpul/tH0aoO+FPvWnyJGhfo1lXrNpB
+X-Gm-Message-State: AOJu0Yzo69wTcJfgyRzhwqnMpmB7F992jscQJV837q3i+m9/WaMHC4Xq
+	Lld2bTa7pdFzrQ6hL9tPL+16syFcfMiaiuFTawmVDfMncgUyGd0QZt72HlIaMtJkACcGjnlP/RX
+	baIqgDYjLL9TQz8aeJFqgir3Y53Nvk5i5OzBH
+X-Google-Smtp-Source: AGHT+IEy/KQG2Rqx5HErdblj8QUCCqwueXsecSytEtIs4U2W0lIYmqOxwok485xQsC2WwPFvE/PMCfWXWAWd2KQRtS8=
+X-Received: by 2002:a05:6808:3084:b0:3c3:dcfc:f694 with SMTP id
+ bl4-20020a056808308400b003c3dcfcf694mr5989197oib.47.1712439773006; Sat, 06
+ Apr 2024 14:42:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240406214044.1114406-1-surenb@google.com>
-Subject: [PATCH 1/1] fixup! increase PERCPU_MODULE_RESERVE to accommodate
- allocation tags
+MIME-Version: 1.0
+References: <20240321163705.3067592-1-surenb@google.com> <c14cd89b-c879-4474-a800-d60fc29c1820@gmail.com>
+ <CAJuCfpHEt2n6sA7m5zvc-F+z=3-twVEKfVGCa0+y62bT10b0Bw@mail.gmail.com>
+ <41328d5a-3e41-4936-bcb7-c0a85e6ce332@gmail.com> <CAJuCfpERj52X8DB64b=6+9WLcnuEBkpjnfgYBgvPs0Rq7kxOkw@mail.gmail.com>
+ <3d496797-4173-43de-b597-af3668fd0eca@gmail.com>
+In-Reply-To: <3d496797-4173-43de-b597-af3668fd0eca@gmail.com>
 From: Suren Baghdasaryan <surenb@google.com>
-To: akpm@linux-foundation.org
-Cc: kent.overstreet@linux.dev, klarasmodin@gmail.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, Suren Baghdasaryan <surenb@google.com>
+Date: Sat, 6 Apr 2024 14:42:40 -0700
+Message-ID: <CAJuCfpHXr=183+4AJPC_TwrLsNOn0BZ1jSXipoP0LE+hd7Ehfw@mail.gmail.com>
+Subject: Re: [PATCH v6 00/37] Memory allocation profiling
+To: Klara Modin <klarasmodin@gmail.com>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, willy@infradead.org, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The increase of per-cpu reserved area for modules was not enough to
-accommodate all allocation tags in certain use cases. Increase some
-more to fix the issue.
+On Fri, Apr 5, 2024 at 8:38=E2=80=AFAM Klara Modin <klarasmodin@gmail.com> =
+wrote:
+>
+>
+>
+> On 2024-04-05 17:20, Suren Baghdasaryan wrote:
+> > On Fri, Apr 5, 2024 at 7:30=E2=80=AFAM Klara Modin <klarasmodin@gmail.c=
+om> wrote:
+> >>
+> >> On 2024-04-05 16:14, Suren Baghdasaryan wrote:
+> >>> On Fri, Apr 5, 2024 at 6:37=E2=80=AFAM Klara Modin <klarasmodin@gmail=
+com> wrote:
+> >>>> If I enable this, I consistently get percpu allocation failures. I c=
+an
+> >>>> occasionally reproduce it in qemu. I've attached the logs and my con=
+fig,
+> >>>> please let me know if there's anything else that could be relevant.
+> >>>
+> >>> Thanks for the report!
+> >>> In debug_alloc_profiling.log I see:
+> >>>
+> >>> [    7.445127] percpu: limit reached, disable warning
+> >>>
+> >>> That's probably the reason. I'll take a closer look at the cause of
+> >>> that and how we can fix it.
+> >>
+> >> Thanks!
+> >
+> > In the build that produced debug_alloc_profiling.log I think we are
+> > consuming all the per-cpu memory reserved for the modules. Could you
+> > please try this change and see if that fixes the issue:
+> >
+> >   include/linux/percpu.h | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/percpu.h b/include/linux/percpu.h
+> > index a790afba9386..03053de557cf 100644
+> > --- a/include/linux/percpu.h
+> > +++ b/include/linux/percpu.h
+> > @@ -17,7 +17,7 @@
+> >   /* enough to cover all DEFINE_PER_CPUs in modules */
+> >   #ifdef CONFIG_MODULES
+> >   #ifdef CONFIG_MEM_ALLOC_PROFILING
+> > -#define PERCPU_MODULE_RESERVE (8 << 12)
+> > +#define PERCPU_MODULE_RESERVE (8 << 13)
+> >   #else
+> >   #define PERCPU_MODULE_RESERVE (8 << 10)
+> >   #endif
+> >
+>
+> Yeah, that patch fixes the issue for me.
+>
+> Thanks,
+> Tested-by: Klara Modin
 
-Fixes: a11cb5c8e248 ("mm: percpu: increase PERCPU_MODULE_RESERVE to accommodate allocation tags")
-Reported-by: Klara Modin <klarasmodin@gmail.com>
-Tested-by: Klara Modin <klarasmodin@gmail.com>
-Signed-off-by: Suren Baghdasaryan <surenb@google.com>
----
- include/linux/percpu.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/percpu.h b/include/linux/percpu.h
-index e54921c79c9a..13a82f11e4fd 100644
---- a/include/linux/percpu.h
-+++ b/include/linux/percpu.h
-@@ -17,7 +17,7 @@
- /* enough to cover all DEFINE_PER_CPUs in modules */
- #ifdef CONFIG_MODULES
- #ifdef CONFIG_MEM_ALLOC_PROFILING
--#define PERCPU_MODULE_RESERVE		(8 << 12)
-+#define PERCPU_MODULE_RESERVE		(8 << 13)
- #else
- #define PERCPU_MODULE_RESERVE		(8 << 10)
- #endif
-
-base-commit: f43b3aae94511d62174c3b29239da0dd22d0eeb3
--- 
-2.44.0.478.gd926399ef9-goog
-
+Official fix is posted at
+https://lore.kernel.org/all/20240406214044.1114406-1-surenb@google.com/
+Thanks,
+Suren.
 
