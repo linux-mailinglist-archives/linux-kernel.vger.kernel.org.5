@@ -1,136 +1,315 @@
-Return-Path: <linux-kernel+bounces-133768-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133769-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C60289A862
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 04:10:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 322B089A864
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 04:11:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B6A31F218AD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:10:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1433B1C215E8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D68F4125C1;
-	Sat,  6 Apr 2024 02:10:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185BE12E78;
+	Sat,  6 Apr 2024 02:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="OJ/f+Zky"
-Received: from mail-io1-f51.google.com (mail-io1-f51.google.com [209.85.166.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WTDe2/4V"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC25B1171C
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 02:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1719618C05;
+	Sat,  6 Apr 2024 02:11:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712369412; cv=none; b=QLTvJUN4uoBPtmSK/xgjFTDfa4kiMtRy1AuihQd3Czqe2b5fwsZLyAnjrPgx9p9N7eXOlBKMCVWYFsS3JgSMwGR3Meeqc2+ScibNCycc9gub6GnYGVOo2QBUskLNeOfnqIeDLHWuWtavvHZMRiq0kACuKfKIvavSxMah0CZV+hc=
+	t=1712369473; cv=none; b=q0rIykbrafDmWFZyVWcZTYiXctj+jbjemG6zDUOR3cHEx+r4VSvzJDgfdrkQW7JEWsR4rE8qGVv/36xKnzOXBHqcY3ojBkW4hAL80NluNdp6joG4aCmadILDDwLdZkfjeOSlStcprQPCW1yTiIe8pXFNdbNKFp5sR0hwgqz+sWc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712369412; c=relaxed/simple;
-	bh=iPU1wDle54Dhh2Jag3TFgfIYW2xBm/4/mcjxBC9aWWc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Du63Dech9eHTGqjtOFmVvX+VSoDRUtEPUmBeZJD4OysZwuSFGVlbUTr8HVyhE5m0uKsTHZHW3xDSAt1AnP47jCBysKju6mYHdyilAYuIs5p8c8XbArC3wvSq7wHNkp0MbT0epwslhQlsehcIHyW+TVT0nyPQG5hNeSX2KlWh62E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=OJ/f+Zky; arc=none smtp.client-ip=209.85.166.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f51.google.com with SMTP id ca18e2360f4ac-7d341631262so47507539f.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 19:10:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1712369410; x=1712974210; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1cCv5VcWhStgJ4vCE9L+2KiQe3Q2pQoluor1fRLFK9E=;
-        b=OJ/f+ZkyG3cZl6xcriW+jcc5SzhHLzcRQhi4fk7Wo9GO3OqPAWei4wZJcBu+EYhHgG
-         MFU8hxTWQNk/NWoWVCqwhKqsZPEjT2XPZD9cPzWzWBmTdTlxze0gMBuh01qdzXosDhEL
-         f8z51TZAf1NUyWvujlh9X+B3rq3zj0DJOW5Wi8TyjmmFEJRZ4YJm5LhU3PraFSd/ryPR
-         NIT3sAEFz3Q1LVFDYlYMJqgRqpUxivQaNzHft/4cgtoOMpDhjCcjVSIq08I20raUkyZz
-         JyF2SwSTlylM/0jByHXdj3wCSJ2DE7XHXFwyt9DbZmF/gBO/qqINzFBDNB216HhkTDjh
-         R+dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712369410; x=1712974210;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1cCv5VcWhStgJ4vCE9L+2KiQe3Q2pQoluor1fRLFK9E=;
-        b=wAJeVDZqSr7fXcssI0UpxLYp0/hsRjYbFR28nbQTVNnpsQKWU2Ge5Txl+miujUUA8C
-         q+HqbhPXlGAguJ4pxZIKuRxRr6+5+vV6HKSA3g8C2sqebF3HfW0729flELBeH0eovNFY
-         6dIL2tFWOhy9J8jYSSThEkQ4gReCMo8pR9GfqBkO3ohqT4WnHCQqx41F7DVTjyLQjMCR
-         30inPXzsS4lAQB21zTC0/twUn2o4CaN491apiCiFqXOOZNkkHeBPYblPhc/m79k+z2yq
-         9eh79fEa5+rfert5HSAXy4XaoTIX+kFexBndOm+LQiEH9DqclfTtThjPCC1yUcL+DWqY
-         pFiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWTxzh5tk8U/OfYsSt7Om6kiLDru8zOexoUYaf0the4oHZFPXZ/jFegkXAHaqWQLIskDDhvMegRmUk5cjXKjekSPczDLyuf8njJFMsx
-X-Gm-Message-State: AOJu0YzKiVrlB3dQtLCdKH0PmaQmG6IEhAalilfH7mNcXd0h8BMgham3
-	5mzAqZO/h5fTrKR7FWAxztJiQHwKGaZVtVH1Z76gEVa290Xsntr5oPYI1wMrJzAFQJ2O5NjCiUq
-	H
-X-Google-Smtp-Source: AGHT+IGN8BSnqjv3LU00TTGUDfx8VQfSQp0U3i+zESsBq9d8LHP4DpckfjoiRKtuga7gxqJKeYYQEg==
-X-Received: by 2002:a05:6e02:19cd:b0:368:9b64:fa7a with SMTP id r13-20020a056e0219cd00b003689b64fa7amr3938452ill.0.1712369409735;
-        Fri, 05 Apr 2024 19:10:09 -0700 (PDT)
-Received: from [172.19.0.169] ([99.196.135.167])
-        by smtp.gmail.com with ESMTPSA id s5-20020a92cb05000000b0036a0e23db86sm612548ilo.33.2024.04.05.19.10.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 05 Apr 2024 19:10:09 -0700 (PDT)
-Message-ID: <ef230b61-cee8-4486-831e-ac4993b65a78@kernel.dk>
-Date: Fri, 5 Apr 2024 20:10:02 -0600
+	s=arc-20240116; t=1712369473; c=relaxed/simple;
+	bh=woMNEmi6/hdqBt/ao3V3KF+oBgqA0BZosVdoyoMgMlw=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=EqHtYsrUySSQGjFYqFJBk2bUmPP92PbP7HBEOnimiqjBBz/EWpv2w4FgwtDbslRCC6MJtnLU1BzsEu8HqYueIEWK82NDCAAETfpWkzeBSEIbFHG+CWiq/vMary9YCrBLytE0LclYgzRZaUvApCqPWIGWAwRhRnYI05cZdGJg6C4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WTDe2/4V; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EBADC433F1;
+	Sat,  6 Apr 2024 02:11:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712369472;
+	bh=woMNEmi6/hdqBt/ao3V3KF+oBgqA0BZosVdoyoMgMlw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WTDe2/4VIPUO/C87oUFuAJXVUnZxMdlJm2sSe0GZ7m4sdl0dVFrgQbk1GYjvtdOXR
+	 jAWs43pSwskzmbf60/yAV/VgnozM93x+D+ixfXANyBxy6TyMpBrlNR0HafpJpBSbYT
+	 v4xEJrVrogQphsDM1icApNa6Xi8Qw/vZVqMOc1k+J7rIK0Igz8ioTkwZFQJyaoThQN
+	 GXTBiixQkC3jTo9GyfbbpE0Nda8LP4MyYMTNwwqviS+/lDGPhMf0S0PiDrn/gre7Ve
+	 5XpwC9WIoCyEF+mtAVuOQnaoDcoYOgF2wXBsF9hlxfhELdsKyC9bbUB9nI8LWPd862
+	 yMJeTXKsfTxtw==
+Date: Sat, 6 Apr 2024 11:11:08 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: paulmck@kernel.org
+Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, Zhenhua Huang <quic_zhenhuah@quicinc.com>
+Subject: Re: [PATCH fs/proc/bootconfig] remove redundant comments from
+ /proc/bootconfig
+Message-Id: <20240406111108.e9a8b8c4cb8f44a8fb95b541@kernel.org>
+In-Reply-To: <ef8cf3e7-9684-4495-a70e-c8f13ad188c5@paulmck-laptop>
+References: <f036c5b0-20cc-40c1-85f9-69fa9edd0c95@paulmck-laptop>
+	<20240404085522.63bf8cce6f961c07c8ce3f17@kernel.org>
+	<26d56fa5-2c95-46da-8268-35642f857d6d@paulmck-laptop>
+	<20240405102324.b7bb9fa052754d352cd2708e@kernel.org>
+	<20240405115745.9b95679aa3ac516995d4d885@kernel.org>
+	<ef8cf3e7-9684-4495-a70e-c8f13ad188c5@paulmck-laptop>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.8 015/715] io_uring: remove unconditional looping in
- local task_work handling
-Content-Language: en-US
-To: Jiri Slaby <jirislaby@kernel.org>, Sasha Levin <sashal@kernel.org>,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org
-References: <20240324223455.1342824-1-sashal@kernel.org>
- <20240324223455.1342824-16-sashal@kernel.org>
- <bcf80774-98c2-4c14-a1e7-6efcb79a7fee@kernel.org>
- <2ff5d891-2120-475d-be8e-82bf20a8b7b7@kernel.dk>
- <29df48ef-aafe-4918-b903-0aabda94fd0b@kernel.org>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <29df48ef-aafe-4918-b903-0aabda94fd0b@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On 4/4/24 1:06 AM, Jiri Slaby wrote:
-> On 02. 04. 24, 15:41, Jens Axboe wrote:
->> On 4/2/24 2:12 AM, Jiri Slaby wrote:
->>> On 24. 03. 24, 23:23, Sasha Levin wrote:
->>>> From: Jens Axboe <axboe@kernel.dk>
->>>>
->>>> [ Upstream commit 9fe3eaea4a3530ca34a8d8ff00b1848c528789ca ]
->>>>
->>>> If we have a ton of notifications coming in, we can be looping in here
->>>> for a long time. This can be problematic for various reasons, mostly
->>>> because we can starve userspace. If the application is waiting on N
->>>> events, then only re-run if we need more events.
->>>
->>> This commit breaks test/recv-multishot.c from liburing:
->>> early error: res 4
->>> test stream=1 wait_each=0 recvmsg=0 early_error=0  defer=1 failed
->>>
->>> The behaviour is the same in 6.9-rc2 (which contains the commit too).
->>>
->>> Reverting the commit on the top of 6.8.2 makes it pass again.
->>>
->>> Should the test be updated or is the commit wrong?
->>
->> The commit is fine, it's the test that is buggy. Sometimes test cases
->> make odd assumptions that are just wrong but happen to work, for some
->> definition of work. Eg it would work fine on an idle system, but not
->> necessarily if not. For this one, the fix is in liburing:
->>
->> https://git.kernel.dk/cgit/liburing/commit/test/recv-multishot.c?id=a1d5e4b863a60af93d0cab9d4bbf578733337a90
-> 
-> Thanks, that worked.
-> 
-> Any plans to release 2.6 with the above?
-> 
-> Note that for 2.4->2.5 update I also needed to take 9dc95a03e4a76 from
-> post-2.5.
+On Thu, 4 Apr 2024 21:25:41 -0700
+"Paul E. McKenney" <paulmck@kernel.org> wrote:
 
-Yep, 2.6 should be released very soon.
+> On Fri, Apr 05, 2024 at 11:57:45AM +0900, Masami Hiramatsu wrote:
+> > On Fri, 5 Apr 2024 10:23:24 +0900
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+> > 
+> > > On Thu, 4 Apr 2024 10:43:14 -0700
+> > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > 
+> > > > On Thu, Apr 04, 2024 at 08:55:22AM +0900, Masami Hiramatsu wrote:
+> > > > > On Wed, 3 Apr 2024 12:16:28 -0700
+> > > > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
+> > > > > 
+> > > > > > commit 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to
+> > > > > > /proc/bootconfig") adds bootloader argument comments into /proc/bootconfig.
+> > > > > > 
+> > > > > > /proc/bootconfig shows boot_command_line[] multiple times following
+> > > > > > every xbc key value pair, that's duplicated and not necessary.
+> > > > > > Remove redundant ones.
+> > > > > > 
+> > > > > > Output before and after the fix is like:
+> > > > > > key1 = value1
+> > > > > > *bootloader argument comments*
+> > > > > > key2 = value2
+> > > > > > *bootloader argument comments*
+> > > > > > key3 = value3
+> > > > > > *bootloader argument comments*
+> > > > > > ...
+> > > > > > 
+> > > > > > key1 = value1
+> > > > > > key2 = value2
+> > > > > > key3 = value3
+> > > > > > *bootloader argument comments*
+> > > > > > ...
+> > > > > > 
+> > > > > > Fixes: 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to /proc/bootconfig")
+> > > > > > Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+> > > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > > > > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> > > > > > Cc: <linux-trace-kernel@vger.kernel.org>
+> > > > > > Cc: <linux-fsdevel@vger.kernel.org>
+> > > > > 
+> > > > > OOps, good catch! Let me pick it.
+> > > > > 
+> > > > > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > > 
+> > > > Thank you, and I have applied your ack and pulled this into its own
+> > > > bootconfig.2024.04.04a.
+> > > > 
+> > > > My guess is that you will push this via your own tree, and so I will
+> > > > drop my copy as soon as yours hits -next.
+> > > 
+> > > Thanks! I would like to make PR this soon as bootconfig fixes for v6.9-rc2.
+> > 
+> > Hmm I found that this always shows the command line comment in
+> > /proc/bootconfig even without "bootconfig" option.
+> > I think that is easier for user-tools but changes the behavior and
+> > a bit redundant.
+> > 
+> > We should skip showing this original argument comment if bootconfig is
+> > not initialized (no "bootconfig" in cmdline) as it is now.
+> 
+> So something like this folded into that patch?
+
+Hm, I expected just checking it in the loop as below.
+
+------------------------------------------------------------------------
+diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+index e5635a6b127b..98e0780f7e07 100644
+--- a/fs/proc/bootconfig.c
++++ b/fs/proc/bootconfig.c
+@@ -27,6 +27,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+ {
+ 	struct xbc_node *leaf, *vnode;
+ 	char *key, *end = dst + size;
++	bool empty = true;
+ 	const char *val;
+ 	char q;
+ 	int ret = 0;
+@@ -62,8 +63,9 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+ 				break;
+ 			dst += ret;
+ 		}
++		empty = false;
+ 	}
+-	if (ret >= 0 && boot_command_line[0]) {
++	if (!empty && ret >= 0 && boot_command_line[0]) {
+ 		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+ 			       boot_command_line);
+ 		if (ret > 0)
+
+------------------------------------------------------------------------
+
+The difference is checking "bootconfig" cmdline option or checking
+the "bootconfig" is actually empty. So the behaviors are different
+when the "bootconfig" is specified but there is no bootconfig data.
+
+Another idea is to check whether the cmdline is actually updated by
+bootconfig and show original one only if it is updated.
+(I think this fits the purpose of the original patch better.)
+
+------------------------------------------------------------------------
+diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+index e5635a6b127b..95d6a231210c 100644
+--- a/fs/proc/bootconfig.c
++++ b/fs/proc/bootconfig.c
+@@ -10,6 +10,9 @@
+ #include <linux/bootconfig.h>
+ #include <linux/slab.h>
+ 
++/* defined in main/init.c */
++bool __init cmdline_has_extra_options(void);
++
+ static char *saved_boot_config;
+ 
+ static int boot_config_proc_show(struct seq_file *m, void *v)
+@@ -63,7 +66,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+ 			dst += ret;
+ 		}
+ 	}
+-	if (ret >= 0 && boot_command_line[0]) {
++	if (cmdline_has_extra_options() && ret >= 0 && boot_command_line[0]) {
+ 		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+ 			       boot_command_line);
+ 		if (ret > 0)
+diff --git a/init/main.c b/init/main.c
+index 2ca52474d0c3..881f6230ee59 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -487,6 +487,11 @@ static int __init warn_bootconfig(char *str)
+ 
+ early_param("bootconfig", warn_bootconfig);
+ 
++bool __init cmdline_has_extra_options(void)
++{
++	return extra_command_line || extra_init_args;
++}
++
+ /* Change NUL term back to "=", to make "param" the whole string. */
+ static void __init repair_env_string(char *param, char *val)
+ {
+------------------------------------------------------------------------
+
+Thank you,
+
+> 
+> ------------------------------------------------------------------------
+> 
+> diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+> index e5635a6b127b0..7d2520378f5f2 100644
+> --- a/fs/proc/bootconfig.c
+> +++ b/fs/proc/bootconfig.c
+> @@ -63,7 +63,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+>  			dst += ret;
+>  		}
+>  	}
+> -	if (ret >= 0 && boot_command_line[0]) {
+> +	if (bootconfig_is_present() && ret >= 0 && boot_command_line[0]) {
+>  		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+>  			       boot_command_line);
+>  		if (ret > 0)
+> diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
+> index ca73940e26df8..ef70d1b381421 100644
+> --- a/include/linux/bootconfig.h
+> +++ b/include/linux/bootconfig.h
+> @@ -10,6 +10,7 @@
+>  #ifdef __KERNEL__
+>  #include <linux/kernel.h>
+>  #include <linux/types.h>
+> +int bootconfig_is_present(void);
+>  #else /* !__KERNEL__ */
+>  /*
+>   * NOTE: This is only for tools/bootconfig, because tools/bootconfig will
+> diff --git a/init/main.c b/init/main.c
+> index 2ca52474d0c30..720a669b1493d 100644
+> --- a/init/main.c
+> +++ b/init/main.c
+> @@ -1572,3 +1572,8 @@ static noinline void __init kernel_init_freeable(void)
+>  
+>  	integrity_load_keys();
+>  }
+> +
+> +int bootconfig_is_present(void)
+> +{
+> +	return bootconfig_found || IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE);
+> +}
+> 
+> ------------------------------------------------------------------------
+> 
+> Give or take placement of the bootconfig_is_present() function's
+> declaration and definition.
+> 
+> 							Thanx, Paul
+> 
+> 							Thanx, Paul
+> 
+> > Thank you,
+> > 
+> > 
+> > > Thank you,
+> > > 
+> > > > 
+> > > > 							Thanx, Paul
+> > > > 
+> > > > > Thank you!
+> > > > > 
+> > > > > > 
+> > > > > > diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
+> > > > > > index 902b326e1e560..e5635a6b127b0 100644
+> > > > > > --- a/fs/proc/bootconfig.c
+> > > > > > +++ b/fs/proc/bootconfig.c
+> > > > > > @@ -62,12 +62,12 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
+> > > > > >  				break;
+> > > > > >  			dst += ret;
+> > > > > >  		}
+> > > > > > -		if (ret >= 0 && boot_command_line[0]) {
+> > > > > > -			ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+> > > > > > -				       boot_command_line);
+> > > > > > -			if (ret > 0)
+> > > > > > -				dst += ret;
+> > > > > > -		}
+> > > > > > +	}
+> > > > > > +	if (ret >= 0 && boot_command_line[0]) {
+> > > > > > +		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
+> > > > > > +			       boot_command_line);
+> > > > > > +		if (ret > 0)
+> > > > > > +			dst += ret;
+> > > > > >  	}
+> > > > > >  out:
+> > > > > >  	kfree(key);
+> > > > > 
+> > > > > 
+> > > > > -- 
+> > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > > 
+> > > 
+> > > -- 
+> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > 
+> > 
+> > -- 
+> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
 
 -- 
-Jens Axboe
-
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
