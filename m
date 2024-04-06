@@ -1,195 +1,231 @@
-Return-Path: <linux-kernel+bounces-134072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBC0689ACDF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 22:17:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBB8C89ACE8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 22:33:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2A4AE1F2327E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 20:17:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 96AFA1C22066
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 20:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F294EB42;
-	Sat,  6 Apr 2024 20:17:23 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B22234E1BC;
+	Sat,  6 Apr 2024 20:32:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="XVZqoPTK"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFDC482EA
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 20:17:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBF5184D;
+	Sat,  6 Apr 2024 20:32:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712434642; cv=none; b=trqfrQ6EibDz2wyMuAj4tI+FE0p/xIiz9a8gMHLWpYGWtzbQNfjhsxw6DjrnQ/0/XGxU3ERxlgmY8D7myPC8HoTVj2rL9hAFmYXzm0BiwHBVb25myRUSVW1t9ndKdMJVrCLD8weI3dSjIwttKSpL28D2mEvJEnH4ALRZRyR9dSs=
+	t=1712435578; cv=none; b=BHHr69eIAMSYpQz3Dnk4hfqM4PKqeqMptHVAtfvWc3ehuERAaTJ6sHoyJ5ANfIEZ79qPHmCvPXJtACapRhnvyLD3/Os+8fYYqcMJmMKC1lf+EnAVmnF9mTOhwU9NrrJgpqjI2xAiVr4qkZmRhNeL9LWg5Zxc21SJNKOMGmNr/Y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712434642; c=relaxed/simple;
-	bh=l5PIYq9FbTCxq1f1mZGF0vudjp5WVOOL2Paqpsn7l0s=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ILdGV/i348sQsdx0t7Ss61PAqb/zy1xBL7f5GopQdYZetc07WoolW1Yrt5PLRm4nmOczizDp72xYygbFsriWDqTqzeJHKnxtn56i0gUaP9i3rRIyyd2V3JrV5N3ji0qj4DtN0vtxBZXj3k0vvkusvxgCBae6VvvfmrcHOXZ4oc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7d5dbbc3e9fso14004439f.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 13:17:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712434640; x=1713039440;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ycvPrHEvjrn4zRdk7erEVtCAK7KuU2LMF20y2Gf7rxw=;
-        b=dtu8fsqGtZGlwXSHwo08Ardh4CH6x8JLbmELXf3FBHhkS0Cr7cp8X87K+k6BIsjZhy
-         GckPMA7U5FUYLeNfiQZU40GjzwP3G67YBh8xYRNCvuQNAnADUxjdB+4ofWJyuNvZ8HVE
-         RmKA6+ADjN5InyZZzy3FnwSlK1UWpTQcQ9jllCBtyf/NH8ZA/G6N8VQxDsn7brZ6z+4n
-         LbXf5KmlwIvrTZoUQ5BZSn7pkxFruClpSjGcs3eIbQQPDZdtC9OINAbTBzreaG9e6PQ9
-         bEcJLkSPrvrfYbbIK4DUOZj5cio6qcEPbSEYlj9sORqk2Al7PpYYWiXtj4eczvjVIWvc
-         YSfA==
-X-Forwarded-Encrypted: i=1; AJvYcCXt7MHGvM0AFhRfduHFwqsx6eG9Z9fmRs3DS1sM342OvRCkcj/lCjr+tvTUNiMkdnbv1swiecLKkp4cz90/ohGJq2RDobMekOvDEZtg
-X-Gm-Message-State: AOJu0YzhvaNDpSTSDtqNihuBxUW3Mf0wnfUYZOoP0iMQkx81cQsmBvlK
-	ikqYIJs2/WY5oskN4DV533kYppyWgbcmgXdpW7QH8sRPDsxrnvbRvjoZ8tGbEUbOOhFshDWbx3n
-	+i4cPLUSVBaTfNxGKllDcLLJusrUB6/YjwClk3anyT9KCAWZVpPFRuRs=
-X-Google-Smtp-Source: AGHT+IEZlwJIzLsGHFzp/vi8PSy4ul1ALtE8+7sYQ8ycE9GjtQLPAoqyz+M1ZhapFoobT7VvZWA6KDv7SINUTvqu/HtROMxYpTYv
+	s=arc-20240116; t=1712435578; c=relaxed/simple;
+	bh=LAEg5Ivu9HF4b4fa+ZIoBLhuYmj8ETr3wPzmxKiEkbs=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=oZplvxCmN87/wlJOGuEj7DMlUQw+jKqaZcdL3mM6ZoS4ikXdFAJXuRtz2wdqGIRt3lZBd1YPQiKXby2YzPDlLZUL1l/1aJu4v27h9WdX3B1q1jwBpR8B1zaXHlaeTlJwgf3r49WSxrZYkSd9nrt6GQNgRPJb6L3uZmr8A3m5DhM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=XVZqoPTK; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712435568;
+	bh=LAEg5Ivu9HF4b4fa+ZIoBLhuYmj8ETr3wPzmxKiEkbs=;
+	h=Date:Cc:Subject:To:References:From:In-Reply-To:From;
+	b=XVZqoPTKbgPtCX95A5JD+hPA+TmRg609YYOU4+m1BJc2vwrl2MtpRW2HfuH0HynOZ
+	 oZurHqDTC5tTLiD0fg18tTDxWyHUKlIjyVsTUklIgxH2uoOjNW/GmM3Oox37HvTci/
+	 d29wkDwGTS0fuRjMT4jaYj3tW48eXQ9GJpNVgqNemPbPk04KMQcwjQI+viW7EoTJc8
+	 4EZJei+qUhYf8K1u36DZeOuvET9pQN8eqKQuuTZy9qPNFFb8FQ67eQSqXJcDSEVYkO
+	 8pIEcNjTQKGq+rlRSugYTXPp0EfTZmpE0B09E+OFppZ+DcC9m+6ilaJhyVJDlxq+K1
+	 u8Fxsw2oxifqQ==
+Received: from [100.113.15.66] (ec2-34-240-57-77.eu-west-1.compute.amazonaws.com [34.240.57.77])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: usama.anjum)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7F15D37809D1;
+	Sat,  6 Apr 2024 20:32:43 +0000 (UTC)
+Message-ID: <4123ead2-9071-4ca2-8612-8999ed1140b3@collabora.com>
+Date: Sun, 7 Apr 2024 01:33:16 +0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:4090:b0:47f:cea3:5cf6 with SMTP id
- m16-20020a056638409000b0047fcea35cf6mr159620jam.2.1712434640088; Sat, 06 Apr
- 2024 13:17:20 -0700 (PDT)
-Date: Sat, 06 Apr 2024 13:17:20 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006c85760615734276@google.com>
-Subject: [syzbot] [bpf?] KMSAN: uninit-value in htab_lru_map_delete_elem
-From: syzbot <syzbot+d40ad71c1ba64324d256@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>,
+ io-uring@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] io_uring: Support IOSQE_CQE_SKIP_SUCCESS in io_uring
+ zerocopy test
+To: Oliver Crumrine <ozlinuxc@gmail.com>, axboe@kernel.dk,
+ asml.silence@gmail.com, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, shuah@kernel.org, leitao@debian.org
+References: <cover.1712268605.git.ozlinuxc@gmail.com>
+ <d6d94eafa59055eaec8e554c3078f857c832a38e.1712268605.git.ozlinuxc@gmail.com>
+Content-Language: en-US
+From: Muhammad Usama Anjum <usama.anjum@collabora.com>
+In-Reply-To: <d6d94eafa59055eaec8e554c3078f857c832a38e.1712268605.git.ozlinuxc@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 4/5/24 3:19 AM, Oliver Crumrine wrote:
+> Add support for the IOSQE_CQE_SKIP_SUCCESS flag in the io_uring_zerocopy_tx
+> test, using the "-a" option. Instead of incrementing when
+> IORING_CQE_F_MORE is set, remember how many SQEs are sent and simply
+> wait on notifs instead of regular completions. For non-zc stuff, there
+> won't be notifs or completions, so don't wait on either of those, but
+> check the completion queue for errors at the end to make sure none have
+> popped up.
+> 
+> The changes to the shell script run the tests both with and without the
+> "-a" option.
+> 
+> Signed-off-by: Oliver Crumrine <ozlinuxc@gmail.com>
+Acked-by: Muhammad Usama Anjum <usama.anjum@collabora.com>
 
-syzbot found the following issue on:
+> ---
+>  .../selftests/net/io_uring_zerocopy_tx.c      | 38 +++++++++++++++++--
+>  .../selftests/net/io_uring_zerocopy_tx.sh     |  7 +++-
+>  2 files changed, 39 insertions(+), 6 deletions(-)
+> 
+> diff --git a/tools/testing/selftests/net/io_uring_zerocopy_tx.c b/tools/testing/selftests/net/io_uring_zerocopy_tx.c
+> index 76e604e4810e..11a43594935f 100644
+> --- a/tools/testing/selftests/net/io_uring_zerocopy_tx.c
+> +++ b/tools/testing/selftests/net/io_uring_zerocopy_tx.c
+> @@ -50,8 +50,10 @@ enum {
+>  };
+>  
+>  static bool cfg_cork		= false;
+> +static bool cfg_nocqe		= false;
+>  static int  cfg_mode		= MODE_ZC_FIXED;
+>  static int  cfg_nr_reqs		= 8;
+> +static int  cfg_nr_completions	= 8;
+>  static int  cfg_family		= PF_UNSPEC;
+>  static int  cfg_payload_len;
+>  static int  cfg_port		= 8000;
+> @@ -134,11 +136,21 @@ static void do_tx(int domain, int type, int protocol)
+>  			if (mode == MODE_NONZC) {
+>  				io_uring_prep_send(sqe, fd, payload,
+>  						   cfg_payload_len, msg_flags);
+> +				if (cfg_nocqe) {
+> +					sqe->flags |= IOSQE_CQE_SKIP_SUCCESS;
+> +					cfg_nr_completions--;
+> +				}
+>  				sqe->user_data = NONZC_TAG;
+>  			} else {
+>  				io_uring_prep_sendzc(sqe, fd, payload,
+>  						     cfg_payload_len,
+>  						     msg_flags, zc_flags);
+> +				if (cfg_nocqe) {
+> +					sqe->flags |= IOSQE_CQE_SKIP_SUCCESS;
+> +					packets++;
+> +					compl_cqes++;
+> +					bytes += cfg_payload_len;
+> +				}
+>  				if (mode == MODE_ZC_FIXED) {
+>  					sqe->ioprio |= IORING_RECVSEND_FIXED_BUF;
+>  					sqe->buf_index = buf_idx;
+> @@ -153,7 +165,7 @@ static void do_tx(int domain, int type, int protocol)
+>  
+>  		if (cfg_cork)
+>  			do_setsockopt(fd, IPPROTO_UDP, UDP_CORK, 0);
+> -		for (i = 0; i < cfg_nr_reqs; i++) {
+> +		for (i = 0; i < cfg_nr_completions; i++) {
+>  			ret = io_uring_wait_cqe(&ring, &cqe);
+>  			if (ret)
+>  				error(1, ret, "wait cqe");
+> @@ -168,7 +180,9 @@ static void do_tx(int domain, int type, int protocol)
+>  				if (compl_cqes <= 0)
+>  					error(1, -EINVAL, "notification mismatch");
+>  				compl_cqes--;
+> -				i--;
+> +				if (!cfg_nocqe)
+> +					i--;
+>  				io_uring_cqe_seen(&ring);
+>  				continue;
+>  			}
+> @@ -200,6 +214,17 @@ static void do_tx(int domain, int type, int protocol)
+>  		compl_cqes--;
+>  	}
+>  
+> +	/* The above code does not account for a send error when
+> +	 * IOSQE_CQE_SKIP_SUCCESS is set. This is operating under the
+> +	 * assumption that an error CQE will get put on the ring before
+> +	 * the above code completes:
+> +	 */
+> +	while (!io_uring_peek_cqe(&ring, &cqe)) {
+> +		if (cqe->res == -EAGAIN)
+> +			continue;
+> +		error(1, -EINVAL, "send failed");
+> +	}
+> +
+>  	fprintf(stderr, "tx=%lu (MB=%lu), tx/s=%lu (MB/s=%lu)\n",
+>  			packets, bytes >> 20,
+>  			packets / (cfg_runtime_ms / 1000),
+> @@ -221,7 +246,7 @@ static void do_test(int domain, int type, int protocol)
+>  static void usage(const char *filepath)
+>  {
+>  	error(1, 0, "Usage: %s (-4|-6) (udp|tcp) -D<dst_ip> [-s<payload size>] "
+> -		    "[-t<time s>] [-n<batch>] [-p<port>] [-m<mode>]", filepath);
+> +		    "[-t<time s>] [-n<batch>] [-p<port>] [-m<mode>] [-a]", filepath);
+>  }
+>  
+>  static void parse_opts(int argc, char **argv)
+> @@ -239,7 +264,7 @@ static void parse_opts(int argc, char **argv)
+>  		usage(argv[0]);
+>  	cfg_payload_len = max_payload_len;
+>  
+> -	while ((c = getopt(argc, argv, "46D:p:s:t:n:c:m:")) != -1) {
+> +	while ((c = getopt(argc, argv, "46aD:p:s:t:n:c:m:")) != -1) {
+>  		switch (c) {
+>  		case '4':
+>  			if (cfg_family != PF_UNSPEC)
+> @@ -274,6 +299,9 @@ static void parse_opts(int argc, char **argv)
+>  		case 'm':
+>  			cfg_mode = strtol(optarg, NULL, 0);
+>  			break;
+> +		case 'a':
+> +			cfg_nocqe = true;
+> +			break;
+>  		}
+>  	}
+>  
+> @@ -302,6 +330,8 @@ static void parse_opts(int argc, char **argv)
+>  		error(1, 0, "-s: payload exceeds max (%d)", max_payload_len);
+>  	if (optind != argc - 1)
+>  		usage(argv[0]);
+> +
+> +	cfg_nr_completions = cfg_nr_reqs;
+>  }
+>  
+>  int main(int argc, char **argv)
+> diff --git a/tools/testing/selftests/net/io_uring_zerocopy_tx.sh b/tools/testing/selftests/net/io_uring_zerocopy_tx.sh
+> index 123439545013..aeb4645b7891 100755
+> --- a/tools/testing/selftests/net/io_uring_zerocopy_tx.sh
+> +++ b/tools/testing/selftests/net/io_uring_zerocopy_tx.sh
+> @@ -25,11 +25,14 @@ readonly path_sysctl_mem="net.core.optmem_max"
+>  # No arguments: automated test
+>  if [[ "$#" -eq "0" ]]; then
+>  	IPs=( "4" "6" )
+> +	SKIPCQEs=("" "-a")
+>  
+>  	for IP in "${IPs[@]}"; do
+>  		for mode in $(seq 1 3); do
+> -			$0 "$IP" udp -m "$mode" -t 1 -n 32
+> -			$0 "$IP" tcp -m "$mode" -t 1 -n 1
+> +			for cqe in "${SKIPCQEs[@]}"; do
+> +				$0 "$IP" udp -m "$mode" -t 1 -n 32 "$cqe"
+> +				$0 "$IP" tcp -m "$mode" -t 1 -n 1  "$cqe"
+> +			done
+>  		done
+>  	done
+>  
 
-HEAD commit:    026e680b0a08 Merge tag 'pwm/for-6.9-rc3-fixes' of git://gi..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11b1fee3180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5112b3f484393436
-dashboard link: https://syzkaller.appspot.com/bug?extid=d40ad71c1ba64324d256
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10b539b1180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13e55795180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3b5659d2008c/disk-026e680b.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7fd1552fafde/vmlinux-026e680b.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ba622b1b0ec4/bzImage-026e680b.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d40ad71c1ba64324d256@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in htab_lock_bucket kernel/bpf/hashtab.c:160 [inline]
-BUG: KMSAN: uninit-value in htab_lru_map_delete_elem+0x628/0xb20 kernel/bpf/hashtab.c:1459
- htab_lock_bucket kernel/bpf/hashtab.c:160 [inline]
- htab_lru_map_delete_elem+0x628/0xb20 kernel/bpf/hashtab.c:1459
- ____bpf_map_delete_elem kernel/bpf/helpers.c:77 [inline]
- bpf_map_delete_elem+0x5c/0x80 kernel/bpf/helpers.c:73
- ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
- __bpf_prog_run32+0xb2/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
- __bpf_trace_kfree+0x29/0x40 include/trace/events/kmem.h:94
- trace_kfree include/trace/events/kmem.h:94 [inline]
- kfree+0x6a5/0xa30 mm/slub.c:4377
- kvfree+0x69/0x80 mm/util.c:680
- __bpf_prog_put_rcu+0x37/0xf0 kernel/bpf/syscall.c:2232
- rcu_do_batch kernel/rcu/tree.c:2196 [inline]
- rcu_core+0xa59/0x1e70 kernel/rcu/tree.c:2471
- rcu_core_si+0x12/0x20 kernel/rcu/tree.c:2488
- __do_softirq+0x1c0/0x7d7 kernel/softirq.c:554
- invoke_softirq kernel/softirq.c:428 [inline]
- __irq_exit_rcu kernel/softirq.c:633 [inline]
- irq_exit_rcu+0x6a/0x130 kernel/softirq.c:645
- instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
- sysvec_apic_timer_interrupt+0x83/0x90 arch/x86/kernel/apic/apic.c:1043
- asm_sysvec_apic_timer_interrupt+0x1f/0x30 arch/x86/include/asm/idtentry.h:702
- smap_restore arch/x86/include/asm/smap.h:56 [inline]
- get_shadow_origin_ptr mm/kmsan/instrumentation.c:37 [inline]
- __msan_metadata_ptr_for_load_8+0x2c/0x40 mm/kmsan/instrumentation.c:92
- last_frame arch/x86/kernel/unwind_frame.c:82 [inline]
- is_last_frame arch/x86/kernel/unwind_frame.c:87 [inline]
- is_last_task_frame+0x62/0x420 arch/x86/kernel/unwind_frame.c:156
- unwind_next_frame+0x9d/0x470 arch/x86/kernel/unwind_frame.c:276
- arch_stack_walk+0x1ec/0x2d0 arch/x86/kernel/stacktrace.c:25
- stack_trace_save+0xaa/0xe0 kernel/stacktrace.c:122
- kmsan_save_stack_with_flags mm/kmsan/core.c:74 [inline]
- kmsan_internal_chain_origin+0x57/0xd0 mm/kmsan/core.c:183
- __msan_chain_origin+0xc3/0x150 mm/kmsan/instrumentation.c:251
- __skb_dst_copy include/net/dst.h:282 [inline]
- skb_dst_copy include/net/dst.h:290 [inline]
- __copy_skb_header+0x362/0x850 net/core/skbuff.c:1528
- __skb_clone+0x57/0x650 net/core/skbuff.c:1579
- skb_clone+0x3aa/0x550 net/core/skbuff.c:2070
- __tcp_transmit_skb+0x438/0x4890 net/ipv4/tcp_output.c:1308
- tcp_transmit_skb net/ipv4/tcp_output.c:1480 [inline]
- tcp_write_xmit+0x3ee1/0x8900 net/ipv4/tcp_output.c:2792
- __tcp_push_pending_frames+0xc4/0x380 net/ipv4/tcp_output.c:2977
- tcp_push+0x755/0x7a0 net/ipv4/tcp.c:738
- tcp_sendmsg_locked+0x6079/0x6cb0 net/ipv4/tcp.c:1310
- tcp_sendmsg+0x49/0x90 net/ipv4/tcp.c:1342
- inet_sendmsg+0x142/0x280 net/ipv4/af_inet.c:851
- sock_sendmsg_nosec net/socket.c:730 [inline]
- __sock_sendmsg+0x267/0x380 net/socket.c:745
- sock_write_iter+0x368/0x3d0 net/socket.c:1160
- call_write_iter include/linux/fs.h:2108 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0xb63/0x1520 fs/read_write.c:590
- ksys_write+0x20f/0x4c0 fs/read_write.c:643
- __do_sys_write fs/read_write.c:655 [inline]
- __se_sys_write fs/read_write.c:652 [inline]
- __x64_sys_write+0x93/0xe0 fs/read_write.c:652
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x72/0x7a
-
-Local variable stack created at:
- __bpf_prog_run32+0x43/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
-
-CPU: 1 PID: 5008 Comm: sshd Not tainted 6.9.0-rc2-syzkaller-00002-g026e680b0a08 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+BR,
+Muhammad Usama Anjum
 
