@@ -1,73 +1,58 @@
-Return-Path: <linux-kernel+bounces-133996-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133997-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE4CF89ABDA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 18:02:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D892489ABDD
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 18:04:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68ECC281CB9
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:02:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40112B215D1
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:04:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECCB13BBF0;
-	Sat,  6 Apr 2024 16:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B132A3BBF1;
+	Sat,  6 Apr 2024 16:04:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="ue8lyjQg"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jweD7ZXv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECA622943F;
-	Sat,  6 Apr 2024 16:01:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B7C2943F;
+	Sat,  6 Apr 2024 16:04:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712419318; cv=none; b=IyMjC2GR27WJwyunxfvD3h/hG6T/aIUjxReevTfKTCqA4/2nf2ySa982RNpNe/LXNg9PldkEylXuZXPyLOSBnx0DFsJ2daB4yWJaQlF1f8Ow2NE5q2MsEZ1cI3ZXOSVL69vQ7G11m8Wwn35reG9Dc+oH+uq+TRbhpdv0+C747T0=
+	t=1712419441; cv=none; b=Alz76nlO3r5h7Iu/j/VZB+Bt34CSuCfsi9cFjbsOagWHSbVi8rt4dWdTSxSPrhpxn3l5EXVwbv+Ci2zsfXAFm8fv46Jm3WN1T3xI9rjfbPtPhjXkW8p3z47vwg5DwETGWJW+trRRTU2e/4+kIp3/GvEpEmc79MBmkdsJRFM4ZZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712419318; c=relaxed/simple;
-	bh=AyHzuEKPz2Kr9J6+1n5KMLHmCEbi3OsKML9/ZK8OchU=;
+	s=arc-20240116; t=1712419441; c=relaxed/simple;
+	bh=2INVDo7T/+YeVJ1P5sAhixC0o7iVfIgS+M5BX7Wim/8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LxjXGSTA09am08H7ezjYOAhfyQff6ZtvrVJCBe591W6L7hFArkgQbt7clvUsUFaEff2k3T+jm6wmyIK26+AJjixLk3jc8DhEdDlLdC2gBzoZYiUPPcQUgk8d9pQ+ArfIm7EC3kVVLVkR4rH5NrxMZYyyQmhPRnXPpdPCN0SlYUQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=ue8lyjQg; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=O4zdUA1o6Jy7nsx0eNUKlokKcaIsTYcSmcKAKKOwfzA=; b=ue8lyjQg07uBYxnHElcbbAsNaP
-	rndNrvaW7nJLZGj7Hqvq3Etx0j0gnO09exKODUs3kTFYhi+P4NDVK8icEOzQwQ1npbnt9RkfUwnbG
-	SKG/houjyRD249R+ogqE/m30fQS7qBZ5EWI6vCES5OTl11KNJI/afdVLhdlygtg3XXFA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rt8UM-00CNZz-JA; Sat, 06 Apr 2024 18:01:54 +0200
-Date: Sat, 6 Apr 2024 18:01:54 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	=?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	=?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>,
-	Simon Horman <horms@kernel.org>, mwojtas@chromium.org
-Subject: Re: [PATCH net-next v11 12/13] net: ethtool: strset: Allow querying
- phy stats by index
-Message-ID: <69e78fde-c5bf-4f6c-95c5-bd4c9e264cf1@lunn.ch>
-References: <20240404093004.2552221-1-maxime.chevallier@bootlin.com>
- <20240404093004.2552221-13-maxime.chevallier@bootlin.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=arudpzQiPedH/RB088PwAD/MlIChp9pYdvjILAISEPXuKkhNhFDA3A/n55/edimHYwx/FhVdsCyv8yQNLuZPbCU3kGLs5GHkq/n6eM2pJrNdLQ992gMqDLqTpXA2p4frzNFN4MQSv0f5MonxqN7k1Nf2lKBPYKfIMo2NqciojQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jweD7ZXv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 129E2C433C7;
+	Sat,  6 Apr 2024 16:03:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712419440;
+	bh=2INVDo7T/+YeVJ1P5sAhixC0o7iVfIgS+M5BX7Wim/8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=jweD7ZXv2QxoMo4HV+/UBhjNMw4XKjD1qbw3n6VTeM2TZJWO3iRUpAlnlGy9GwktG
+	 UNZ2HvkIgrKuumLMPr66XuG7TtI72lngK+A+xfyEo4GkAwS3YsMFfPMEZ7Zfk67mE9
+	 epOC2cWFtpSmW0aaoCu9n+kDpyCRprxEgFkKggm2TL3T48lo+HvsoIksV51F8iK5S8
+	 EAMLv7MZrtQteBDkvKfcML6h7XuHBGzSBjd2f8tVK58B1cipo/du4L1JrnnE99raQZ
+	 zXB0VxWJFarVjwfCeiFuQMdS5XW4vuWstyuxfvCtTWBsyerBZ4q7KxE8eI49uQPtd4
+	 VL8jMqM/CHDsg==
+Date: Sat, 6 Apr 2024 17:03:54 +0100
+From: Simon Horman <horms@kernel.org>
+To: Thomas Bogendoerfer <tbogendoerfer@suse.de>
+Cc: Jay Vosburgh <j.vosburgh@gmail.com>,
+	Andy Gospodarek <andy@greyhouse.net>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] bonding: 802.3ad: Avoid packet loss when switching
+ aggregator
+Message-ID: <20240406160354.GW26556@kernel.org>
+References: <20240404114908.134034-1-tbogendoerfer@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,16 +61,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240404093004.2552221-13-maxime.chevallier@bootlin.com>
+In-Reply-To: <20240404114908.134034-1-tbogendoerfer@suse.de>
 
-On Thu, Apr 04, 2024 at 11:30:02AM +0200, Maxime Chevallier wrote:
-> The ETH_SS_PHY_STATS command gets PHY statistics. Use the phydev pointer
-> from the ethnl request to allow query phy stats from each PHY on the
-> link.
+On Thu, Apr 04, 2024 at 01:49:08PM +0200, Thomas Bogendoerfer wrote:
+> If selection logic decides to switch to a new aggregator it disables
+> all ports of the old aggregator, but doesn't enable ports on
+> the new aggregator. These ports will eventually be enabled when
+> the next LACPDU is received, which might take some time and without an
+> active port transmitted frames are dropped. Avoid this by enabling
+> already collected ports of the new aggregator immediately.
 > 
-> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+> Signed-off-by: Thomas Bogendoerfer <tbogendoerfer@suse.de>
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Hi Thomas,
 
-    Andrew
+I will leave the technical review to Jay and others.  But as a fix, I think
+this patch warrants a Fixes tag. It should be sufficient to respond to this
+email thread with an appropriate tag.
+
+> ---
+>  drivers/net/bonding/bond_3ad.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/net/bonding/bond_3ad.c b/drivers/net/bonding/bond_3ad.c
+> index c6807e473ab7..529e2a7c51e2 100644
+> --- a/drivers/net/bonding/bond_3ad.c
+> +++ b/drivers/net/bonding/bond_3ad.c
+> @@ -1876,6 +1876,13 @@ static void ad_agg_selection_logic(struct aggregator *agg,
+>  				__disable_port(port);
+>  			}
+>  		}
+> +
+> +		/* enable ports on new active aggregator */
+> +		for (port = best->lag_ports; port;
+> +			port = port->next_port_in_aggregator) {
+> +			__enable_port(port);
+> +		}
+> +
+>  		/* Slave array needs update. */
+>  		*update_slave_arr = true;
+>  	}
+> -- 
+> 2.35.3
+> 
+> 
 
