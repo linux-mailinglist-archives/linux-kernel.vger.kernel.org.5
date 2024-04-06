@@ -1,95 +1,170 @@
-Return-Path: <linux-kernel+bounces-133990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C48E89ABCD
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 17:52:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3C6789ABCF
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 17:53:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B0DF7B214FA
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:52:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AB41B2101D
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9B243BBD7;
-	Sat,  6 Apr 2024 15:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C853BBDC;
+	Sat,  6 Apr 2024 15:53:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="lJ8iiQfV"
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HTgRRDQ0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB011CFB9;
-	Sat,  6 Apr 2024 15:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 671853B18D;
+	Sat,  6 Apr 2024 15:53:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712418747; cv=none; b=m4LLx5TDMZhAl4xNCjyrzBRQm1TSbJEu7IErkmzCzC54oVrUjKb1jvOO5iy8BhrkCSd6oG3L5FEZOdNuLlS5IOtxXlD0GGPEoBZl+DyJdZW/XIZzTQ5WkcoCTbgpmWT1Z6yECGx79skXww6DtvuQRynNXbyM7L3FbNf/o8oiLgc=
+	t=1712418806; cv=none; b=uj85MfuxcScP/kdVYa8p3CE3PdtOm4qAizdjn2n9ZnERneI2i4/0fB6FDc5jCVTdlp+SwkYcQJnJBEannwOSUUc2/FP4Z2pjzSAHLP5A54ZpMuGbGo6meibQkaa82/zw0pQszJoQrAGDyvCq0IQ1SBJktKHNZcvvar+4u2wlrsY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712418747; c=relaxed/simple;
-	bh=DijJAWy9i/up+jDarXl3HGvDuc5nZ1pLtm25cesA4iA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qGCUUwDOW8iLJG9l4P6Ahd+7gdguzOSFQm5TmqhWYFoiX3W8KraRwaqp7GklwFm0v0cNgF+O2LueT9V0xLiL8i4HVHS3N8rjdz/De3/Pbka82MX798aESdcl4bhPV+Zbb8lvo12VxdGjBBKzRDN0y8atd1p8wjN2q2kyq/TkKqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=lJ8iiQfV; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=MEl8Sy+tCfS2l7mF/OXdN4vincdv+IXBh938c/3Vnqc=; b=lJ8iiQfVAnvqJaBytHQRN4D1YQ
-	yeMHKI5j9PnYO39PT75Axy1RNkaEMWC1PopS9hZ9yVKdwaOGVc266R272RDGtDKALer65EXNH5F/q
-	kn4hauzI68jYrofo2YEm/YwtEakC+bMdV9+Qa4XsCawrCKPdMDTlWXlzVTFQSs19pWv4=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1rt8L8-00CNTV-IQ; Sat, 06 Apr 2024 17:52:22 +0200
-Date: Sat, 6 Apr 2024 17:52:22 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Maxime Chevallier <maxime.chevallier@bootlin.com>
-Cc: davem@davemloft.net, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
-	Jakub Kicinski <kuba@kernel.org>,
-	Eric Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>,
-	Russell King <linux@armlinux.org.uk>,
-	linux-arm-kernel@lists.infradead.org,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Herve Codina <herve.codina@bootlin.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Vladimir Oltean <vladimir.oltean@nxp.com>,
-	=?iso-8859-1?Q?K=F6ry?= Maincent <kory.maincent@bootlin.com>,
-	Jesse Brandeburg <jesse.brandeburg@intel.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-	Piergiorgio Beruto <piergiorgio.beruto@gmail.com>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	=?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>,
-	Simon Horman <horms@kernel.org>, mwojtas@chromium.org
-Subject: Re: [PATCH net-next v11 03/13] net: phy: add helpers to handle sfp
- phy connect/disconnect
-Message-ID: <5561aaf7-b01a-495a-958f-2a07e1ff8cf3@lunn.ch>
-References: <20240404093004.2552221-1-maxime.chevallier@bootlin.com>
- <20240404093004.2552221-4-maxime.chevallier@bootlin.com>
+	s=arc-20240116; t=1712418806; c=relaxed/simple;
+	bh=cA3GkqTWw5E8y/RoN2cAyWjMv+WvEeEnY27Bkl1E75w=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=anMsgzBQiXkvICh34Jodn055XvBseGr1HpdXL5DQ83pUL751EZW5Vv5axqpzBUqK+ubb7ClDbPaTuS3GqYLRpZu7VLzCwJUe3eQPRlqn3XncPC9rfTMbuRTq5aE88MGme9ZpxWFFDYRURNyh9xckTy9TaQxeQV7Y9bVHbvCiflc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HTgRRDQ0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ABB0C433F1;
+	Sat,  6 Apr 2024 15:53:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712418806;
+	bh=cA3GkqTWw5E8y/RoN2cAyWjMv+WvEeEnY27Bkl1E75w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=HTgRRDQ0yraghY/nHAhMzHQ7zi+KZB2WKHEg5AG+nr+lz0RA7EVU1urfNHXEQI19K
+	 QLBxR7/CcOoVIns5OaHcqsbAdS0B4NAXCNZ8wVjjo1aEGGjAWUpisOOqIWfclKCXMj
+	 VPYE/vgftuHA4olpkgqGzozUTmaHmGDvDFsQodLO0NBSOO5f59c57IV2eL4plgjehG
+	 8fGQ9La0YazjM+11omEoySrQjUaZY1JP4QMJ8rJFPI3weh/D5gvQ2Z4GoFxGbU0+FJ
+	 dU2UPjZsdk5ss9FXiVsguY2ZC/NijdvVjmjh4e0Uu/Ji0AMXccK/nQWFfsqMOPm6xG
+	 MHmihy9bzLwLQ==
+Date: Sat, 6 Apr 2024 16:53:14 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+Cc: Lars-Peter Clausen <lars@metafoo.de>, Dan Carpenter
+ <dan.carpenter@linaro.org>, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iio: light: apds9306: Improve
+ apds9306_write_event_config()
+Message-ID: <20240406165314.1b3403df@jic23-huawei>
+In-Reply-To: <20240405104641.29478-1-subhajit.ghosh@tweaklogic.com>
+References: <20240405104641.29478-1-subhajit.ghosh@tweaklogic.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240404093004.2552221-4-maxime.chevallier@bootlin.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, Apr 04, 2024 at 11:29:53AM +0200, Maxime Chevallier wrote:
-> There are a few PHY drivers that can handle SFP modules through their
-> sfp_upstream_ops. Introduce Phylib helpers to keep track of connected
-> SFP PHYs in a netdevice's namespace, by adding the SFP PHY to the
-> upstream PHY's netdev's namespace.
+On Fri,  5 Apr 2024 21:16:41 +1030
+Subhajit Ghosh <subhajit.ghosh@tweaklogic.com> wrote:
+
+> Simplify event configuration flow.
 > 
-> By doing so, these SFP PHYs can be enumerated and exposed to users,
-> which will be able to use their capabilities.
+> Suggested-by: Jonathan Cameron <jic23@kernel.org>
+> Link: https://lore.kernel.org/all/20240310124237.52fa8a56@jic23-huawei/
+> Signed-off-by: Subhajit Ghosh <subhajit.ghosh@tweaklogic.com>
+LGTM
+Applied to the togreg branch of iio.git and pushed out initially as testing
+to let 0-day see if we missed anything.
+
+Jonathan
+
+> ---
+>  drivers/iio/light/apds9306.c | 48 ++++++++++++++++++++----------------
+>  1 file changed, 27 insertions(+), 21 deletions(-)
 > 
-> Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
+> diff --git a/drivers/iio/light/apds9306.c b/drivers/iio/light/apds9306.c
+> index 4d8490602cd7..465b6957682b 100644
+> --- a/drivers/iio/light/apds9306.c
+> +++ b/drivers/iio/light/apds9306.c
+> @@ -1075,14 +1075,16 @@ static int apds9306_write_event_config(struct iio_dev *indio_dev,
+>  {
+>  	struct apds9306_data *data = iio_priv(indio_dev);
+>  	struct apds9306_regfields *rf = &data->rf;
+> -	int ret, val;
+> -
+> -	state = !!state;
+> +	int ret, enabled;
+>  
+>  	switch (type) {
+>  	case IIO_EV_TYPE_THRESH: {
+>  		guard(mutex)(&data->mutex);
+>  
+> +		ret = regmap_field_read(rf->int_en, &enabled);
+> +		if (ret)
+> +			return ret;
+> +
+>  		/*
+>  		 * If interrupt is enabled, the channel is set before enabling
+>  		 * the interrupt. In case of disable, no need to switch
+> @@ -1091,38 +1093,42 @@ static int apds9306_write_event_config(struct iio_dev *indio_dev,
+>  		 */
+>  		if (state) {
+>  			if (chan->type == IIO_LIGHT)
+> -				val = 1;
+> +				ret = regmap_field_write(rf->int_src, 1);
+>  			else if (chan->type == IIO_INTENSITY)
+> -				val = 0;
+> +				ret = regmap_field_write(rf->int_src, 0);
+>  			else
+>  				return -EINVAL;
+>  
+> -			ret = regmap_field_write(rf->int_src, val);
+>  			if (ret)
+>  				return ret;
+> -		}
+>  
+> -		ret = regmap_field_read(rf->int_en, &val);
+> -		if (ret)
+> -			return ret;
+> -
+> -		if (val == state)
+> -			return 0;
+> +			if (enabled)
+> +				return 0;
+>  
+> -		ret = regmap_field_write(rf->int_en, state);
+> -		if (ret)
+> -			return ret;
+> +			ret = regmap_field_write(rf->int_en, 1);
+> +			if (ret)
+> +				return ret;
+>  
+> -		if (state)
+>  			return pm_runtime_resume_and_get(data->dev);
+> +		} else {
+> +			if (!enabled)
+> +				return 0;
+>  
+> -		pm_runtime_mark_last_busy(data->dev);
+> -		pm_runtime_put_autosuspend(data->dev);
+> +			ret = regmap_field_write(rf->int_en, 0);
+> +			if (ret)
+> +				return ret;
+>  
+> -		return 0;
+> +			pm_runtime_mark_last_busy(data->dev);
+> +			pm_runtime_put_autosuspend(data->dev);
+> +
+> +			return 0;
+> +		}
+>  	}
+>  	case IIO_EV_TYPE_THRESH_ADAPTIVE:
+> -		return regmap_field_write(rf->int_thresh_var_en, state);
+> +		if (state)
+> +			return regmap_field_write(rf->int_thresh_var_en, 1);
+> +		else
+> +			return regmap_field_write(rf->int_thresh_var_en, 0);
+>  	default:
+>  		return -EINVAL;
+>  	}
+> 
+> base-commit: 526f7f17b651c78ead26fea7cea20948c00e47a5
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-    Andrew
 
