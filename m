@@ -1,239 +1,191 @@
-Return-Path: <linux-kernel+bounces-134013-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134014-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 810C889AC1C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 18:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61D0589AC1F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 18:47:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35258282268
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:46:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92FDD28229F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 005883FBA5;
-	Sat,  6 Apr 2024 16:46:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFBC1CAAC;
+	Sat,  6 Apr 2024 16:47:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="gizgIDXY"
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03olkn2086.outbound.protection.outlook.com [40.92.59.86])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="duN/bI+M"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781D23A26E;
-	Sat,  6 Apr 2024 16:46:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.59.86
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712421990; cv=fail; b=bdF0UJ0q0i+GKbTISI7ozXuQEbsnlyCTUV1RjXrevvqZtIAgzj4lOVFnsuIzrNS7qiSe4hjpn04i8IOOVGi6qeUVAIFYUfSmwl1/cIuprKIzRL7jbHxa4rQ/Yo5q8+r38UiHcIJ5jExkBJLGBlevBTomJhJCqnV91VENEc4mQ+Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712421990; c=relaxed/simple;
-	bh=+o8xF+c3J0kte/V4G/UjqyN0qZUVccEGPELPS6+xSHc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=OtOUgUuqYUlQKLw/CumO0+PozrZA8I5YVFQv86+NZIHRnThzXf5Ei1Er0B8ZGUrjqinNDpp8d7ZLARCh/lvPYgs79Z9dKQjJi1Y5nLg778aY8q+j4mYf9JaZZNFaFV0WnH0SNcYzx2zWGbJeXra/RlsAlIe6JG+xaw0fQ3F8+ac=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=gizgIDXY; arc=fail smtp.client-ip=40.92.59.86
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VeF766Ckn84p3HE0IKvtwOALsdN+f0za6CDhPFbruUQe0AM6SJcT2yvrbte4o2CjocjIY+ca4XdnlppiyX87/htQ8ua3NK41kMOK5eyhvpaiA86Mv26s54vxhxfqT1Gj2zxBesWi645sqdrs5uaw4GJ+vhgwQ7mxEvV4L0oZjSCrRyWWsONpRoBcwgMbiz7hPRfwqeaoSMskZfyRlqhiO1EaH4UQSkBfmGPaSg8rbcFgggp71LJvUhLSk/bWkcZYO7Te45BzIEL1+Td5qRNDjUKzchIRauMjx05YIvGaG/EQ9wDCKw3v3G/mDMNe2mrKRv90Z8Lsh5PhbkKPXWWCQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UF2zGeEp20pZ+g+ruR/Y/fUPN2XB39IWhALwuoEmqXc=;
- b=MCP38VGA7Ftk5fOF2Tkt0/GMxJdVqXwCuSHx5hTcF1yoLNn3td1OZ8cgEyGEOQ48F9uXvdEvYHKAqLu/+pW26mogGjhO962Wv4XnC6jp+J1eej/FOV4JxgtpgBBDt1KItWqFGVWn2KIW0pOtzwWnGqerrWh7XfQ91y/UCf2gU9+rMNngRUJbfOBDyMdMAqZx4JnlAbsD+0NbPBjTK2y8FN9P8CaXCUisldz/a2o0/GTZaZnP6ggO613QMhAd23drY/nx1BodBrOL39D4fTGhaMIcEEy5xX/OW5utma+GnwhTSOJf7IEWZG2pWQLZbkfmBLMCRisD8R1bj6Speoi1TQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UF2zGeEp20pZ+g+ruR/Y/fUPN2XB39IWhALwuoEmqXc=;
- b=gizgIDXYuFzWm85H/poPtD9rY0lfwRwH9YC968EwYDNw3qeDluwaD/KUjl9a64iOOXXOedJMn9JQzDRh1CqBHfWo6vu4gnf6PJA24neoOaxBflkTxDyzwVwB9rNc7wcXVqdFb/h3IPX2U/R9em9WcvtLGb27zX5CV693OC6Nvk3HYT9eqWQulQpmW9DcMv21VGId0qhT73XtWXip9esmac4UJKhP52469WNLeLjpSatiyQlF80dg2B451FbtI4pKgilRfGvyKBYh7+5I759aZhBVutF0AtndV3VMqArW6lo1ZYcTyqe0EDAY86wTN8K5BQeNjTGcd+jsLzldPNrkgA==
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
- by DB8PR02MB5771.eurprd02.prod.outlook.com (2603:10a6:10:f8::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.54; Sat, 6 Apr
- 2024 16:46:23 +0000
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.049; Sat, 6 Apr 2024
- 16:46:23 +0000
-Date: Sat, 6 Apr 2024 18:46:11 +0200
-From: Erick Archer <erick.archer@outlook.com>
-To: Sven Eckelmann <sven@narfation.org>
-Cc: Marek Lindner <mareklindner@neomailbox.ch>,
-	Simon Wunderlich <sw@simonwunderlich.de>,
-	Antonio Quartulli <a@unstable.cc>,
-	"David S.  Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Erick Archer <erick.archer@outlook.com>,
-	b.a.t.m.a.n@lists.open-mesh.org, linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] batman-adv: Add flex array to struct batadv_tvlv_tt_data
-Message-ID:
- <AS8PR02MB7237161B8D17F83F0A31467F8B022@AS8PR02MB7237.eurprd02.prod.outlook.com>
-References: <AS8PR02MB7237987BF9DFCA030B330F658B3E2@AS8PR02MB7237.eurprd02.prod.outlook.com>
- <5466543.Sb9uPGUboI@sven-l14>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5466543.Sb9uPGUboI@sven-l14>
-X-TMN: [B/2mQTnMSx/9dfbusV7bQx2ESxCQQOMB]
-X-ClientProxiedBy: MA4P292CA0014.ESPP292.PROD.OUTLOOK.COM
- (2603:10a6:250:2d::7) To AS8PR02MB7237.eurprd02.prod.outlook.com
- (2603:10a6:20b:3f1::10)
-X-Microsoft-Original-Message-ID: <20240406164611.GA21322@titan>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B163139E;
+	Sat,  6 Apr 2024 16:47:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712422057; cv=none; b=jbdPobsADR2hBAlsoMzpIuVQP0RQjZ+haMf1Ng9VWnH3tHgKOmIus8t5qkYL8WGLPxJtBHwYU9AZ+RijbUo6KjTbOqeZBHl/jp6n102RGx1VOT7g1owDnKA8ErvuzAupVGQ/ARopOGX9q7kHRrxWj0aom/qkdq9o4UUM3ZcjwXY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712422057; c=relaxed/simple;
+	bh=vTmqSE7wAnAE8+B+Y3yoFSxDSGpnKR+fsqaoPnVYArs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=k/qIAYDLoqIYrt4NnpcsymCwXQRxO3FRqu24myg7TOtdM+TgHRMhEO/iIrRbWT5pSXLYCeuIgMopqIvlCZhgJ9Yeift2ZtDECBty+xBQ4f/BrKRyzkihAJQpC975Ad7S9TdS5v4ibdYWw3TrdZ6GLDH1/Y70tfpDg30UW0OUQe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=duN/bI+M; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2a49986efc0so370987a91.0;
+        Sat, 06 Apr 2024 09:47:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712422056; x=1713026856; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=LXiMDbiB/x5DZ2j0QmK3atJp6egNapD3JM96uIjg2CU=;
+        b=duN/bI+M8c4sQIMkehFtPqcfJ7KjZVBlThQaBd3+KOIack8bLBpBdHxI4YNLiGkIha
+         LHZxY8isXYAZp46tNy85OSUezCYxUZiePG9b9WvbiFZF3aYlMxCujDS25F8zJZ1Dwhke
+         Cxnb4MXeWSqYWzlYW60RBM468MPCuc237DR+XAPJ7Sx3jcfgSBZYnPe9uit0K8/fmhu6
+         OsI1LUTCSiWzFpwuHSO286yzVp/uWaQV3YoTBMXpvTwIWzuZd+Qg2eY7R4w70EKEuJr4
+         mCO72gvfok5+Z5JV/VovKJf+RFSuuQ0WlshwMegEesYQwU5aCMZQ59iheLnRu9zdn4NP
+         fEXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712422056; x=1713026856;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LXiMDbiB/x5DZ2j0QmK3atJp6egNapD3JM96uIjg2CU=;
+        b=K8XN/1j43Ta38Q1yKp5Hrt2DqDFOZculbSCFIwIxWvxw3ubQBMy7fBQHCOeJEfJuji
+         MK/5DKAm4X0x/ZY4+bf7LSZ1jp7qmWwkLmJnPe0PaK54sDa+LOEYVmtJEtzV+L73qKEU
+         A0kVoXZ3KxS/6cGmEEDV4jtL9SqMOepJVrZxXbvu1JrkQ8YOFoXu7p5rUWeGwnf+RlBo
+         +BumiAWjDLRtnp/KWpyI1iEEVWZZLlfRtKaZnJiV6+5OCG7b396HBgoQvOam+1tuKBBp
+         6yDnTAY3vuqHfFlwsrACsc7lnE93/OI2DuTq51ggk9Xl1XtOV5/+wRfm5LgIVJYffadb
+         t9jw==
+X-Forwarded-Encrypted: i=1; AJvYcCXySi4mqsXwKzRncpkcwLBeUSTy5aYHWDPE6VTJFQi7XdfaCyUTRfHSB49oX0qkuizCAWGeytNaR4Xnt6p4hJLt/lXrf8nC32iuv7J/i7t1IUHy9g2Ee5nn6ae/sWyTCWgeyPgoTpFca28XDUu5h+Obg4dEvBM99neNXrJIndW/GU2gsNdfW/GcDWc8DlOINmc6QKkUVRD1G0Q5EHMyDaNRHHOlVOyPyEIzwVM5
+X-Gm-Message-State: AOJu0YzVy79ZnOeEfZfRozZ/2RLy3Fva2tWZ8c9LLFQnRlT/Zo4G8HM7
+	7lXM3K+u0eINSHjTnHzggH8gv2KyGlC3iaRxsUwoOhERvPZGRAMX
+X-Google-Smtp-Source: AGHT+IF5yZWE/nH3lQ/PNSud/5+GtQE8udinS8rRocEV+8yNDQQAuZQpi6knx8jRNKwVpjM48kGkdA==
+X-Received: by 2002:a17:902:e5c1:b0:1e0:c91b:b950 with SMTP id u1-20020a170902e5c100b001e0c91bb950mr5604914plf.5.1712422055551;
+        Sat, 06 Apr 2024 09:47:35 -0700 (PDT)
+Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id q14-20020a170902a3ce00b001e2b8c91f04sm3665068plb.22.2024.04.06.09.47.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Apr 2024 09:47:35 -0700 (PDT)
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: colyli@suse.de,
+	kent.overstreet@linux.dev,
+	msakai@redhat.com,
+	peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	akpm@linux-foundation.org
+Cc: bfoster@redhat.com,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	jserv@ccns.ncku.edu.tw,
+	linux-bcache@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	linux-bcachefs@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH v3 00/17] treewide: Refactor heap related implementation
+Date: Sun,  7 Apr 2024 00:47:10 +0800
+Message-Id: <20240406164727.577914-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|DB8PR02MB5771:EE_
-X-MS-Office365-Filtering-Correlation-Id: db0b8e0a-a757-4698-89bf-08dc565917bb
-X-MS-Exchange-SLBlob-MailProps:
-	vuaKsetfIZkROEo2gJaqbzokFpX8aXM6DNmNUR/0rxwggsJctEeOogq2OeF011FdJL+4eq562zTEHD78Hq1QKoXS46511zfbZfpB0GD/c2AivYT/fY54oa4JzWdSyq83cLKFgcKXjDGMYuYRe1cY3fuRbDIE1gZWJ3xDuyVbe53UwlLU5I33DCnPi+sqQomMLswhaqSa1Cwac39DcZbxmVzQAILkVmmRwasbZff45vGzxOKIgfB1ryyVRxIV6PBySe7TYckH1IZ7MpqSX2wIqJg/wKINUm6m/Wi48++imS0rKds/s9BuHID1V332u6nTR1V8q9fdGfS3RTH9b7xMUuv1M3+9ladkz2L+TOXPzpaZv8Cgomq7ND0gMISGyEYOuH8DKJCXupo7rPLUn1VveRlf16rKNpNLOe5/qaxbzgVIWn0Ywmq68axwj8MFnUcLrAOnwM2Qa4b9VDWHXV0zYtey5uLK4eZdVuIdxGp2/ahqVrzDlDyKiSyNqE6qCegYGHStLejVdPqaj61AkoglP7kaXCGrPzV+Jx1Bw0LMq1U329/TBeC7IOSH9mJQWINlcXyT7MEA8yqZMQf/2PJzH0MdJkAGg0W2gQ2zVqOOxF2rIIOAmzzt2rKpytxwy9PJw1ex5vcFMj6VCmVSJpqqXrM32Qjqa79QhhMUtjbnNULs+sCY5JG2VTVYvEQa2RYODBlM1qp3aZS1rUpBWuEqFuq2yANMMojWd9QRKss0JY8Cn7NjssA7txb48kuPKK2/AeVv2Cs4O0pL3/gPl/kS2OxBXY0dqg5OJJNj/oRH2ALfZcYzbg0c5uNcwYwvJIj0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	VebbSgdsyIe4DVKeU8GpE6fShD4MGDioLQxg8TdFO3astpbzQfPfFtc4wdVh2C2wOjwx9VsQlyvj+NQ2VqO2pge81CdsqoziDVTIpiKtgfHgfGHXN92meA6sNK3+AlXFEMH/v1f6aQtmSB4xEzDsXJVwbAuZZEN3o7WFFXuVuEcTA8Fq40YfXJmIaY14jD89/U/JgKEIjv7fXCIXF01EbDQUgFFUKmsMxAgdd0sCDpFWuQ3C7tkIORLitPiM9SCbkhEyf+sGJrBAYJDCzzy/mHgDos15grU4Jq2Ucr6vp4weJU9aOo6A2hf4qWYdrh7aUk4PQBnch2o9jJEqzndsD+p+bprGlfwPfEqphTh3NVw8nQpWvkEQKZfxpkER8bLnw/2gjfay/XO3pjFPcQN3lKY3VDsLL6QwO0njy9+cEjLe0SgURbl+7sH2GWJyw+I//PtGl8dGWM9Ea4pQudcJM3bZlXdP9qy9EHPfNvl1HjTaEkWGaOtqdLxlVF4IUZk1i7V/IoTxYU7N1DtkqhbN5jqIWJLBgWznHFyDYAMTaBtJ+Zif3t8Ne3N87yInhA4YDzxzuk1Eq1lE4b28S6dcSGXaYSEbFCed5QlQA1Dqns1jSQX7V4EtgbwwLEI9EcX/pnJPsAdGI9AwCvV02XLHlgC6VInxII4lUdoSIqRe486OksDfCXY3inpwifyS1UkgTKOdt4KZwkamA4y4Z9qWag==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?LUFvAlSbFT+eyc7bEa60mJIC0bu8ikvBIUkw0dfp42t9YQufdBHJWGYEsE76?=
- =?us-ascii?Q?+01BPdzhpyLIzn4bQFi6w5WcwauIs35/B3+Kef3JJsbyIkBqfVGpSLwiQR4r?=
- =?us-ascii?Q?VcqiYz61frg2DH2H7lxbOolIoYWqzV+Kl3VVh1oK2zNFUbNp4UeuAcfI8+HV?=
- =?us-ascii?Q?VRNl99I0NThICtz+ptu+HYgGEQYDhLBGYmhbsugmvYhYyc4vykmMoM2fwd04?=
- =?us-ascii?Q?iZfm1TViVHpMejOEMijw3BdqU59rasrrVDEC67XQjYiAHzLsExxCp2QsetB0?=
- =?us-ascii?Q?qGvyd+nlMUQ44bATNEiiEZHBmzrGgxdQNrwrnjH50OxOt+iQK/mbjNjDJliZ?=
- =?us-ascii?Q?SGFf5E5OZuKvhnFDzql0Onv/mYi1fjzvfQ3YDZgvirvdTQpluJZRcy+IHxtJ?=
- =?us-ascii?Q?Uof7Dtyghjr3i+BIO21Kx1qiWKmdk0AVp9AOV46qnTgixp+BXO0RM6h3rsaV?=
- =?us-ascii?Q?6rESR8W8tz8J+lIWCHqESc6/K5xfYMOuvqFT/mAY5QdgJBGbDq+O1vz39KwN?=
- =?us-ascii?Q?DtRE9gKIhdAmxEQiuWYIeqaj+hcccYadAqJHSWvYIABUXszogSou3bokJ+H2?=
- =?us-ascii?Q?zo5Tw779r/PkbuIYoocgkiX/0dHlgFIGc7V8ICyU/8VvBI9efPXdkia4rrvY?=
- =?us-ascii?Q?cfigUwposXW2ZPKtTwr7P9FWh4SK2iqx4UN1Nf7YBaqNa53nbtaWrdFJVXRC?=
- =?us-ascii?Q?uw3PeXJZtavq0D+0INYqFrqF2bs4kh+zwKWrOa+xL1ZqBWVmIFgfvhabj/tE?=
- =?us-ascii?Q?Y9rsQYEaR/wW31oeQ1yaF8w6NvpOqfmyM3rJt743J1C5iUaEuwZB8WtbK7wj?=
- =?us-ascii?Q?WEnVWiWa23NhFVbYt/qlURHkMoghvoqsXGJEH4rZBMheuVMwce2UszvFuFKn?=
- =?us-ascii?Q?gA+YAmsvKkHmuTVpkzuI5ojNF4J5PqEFs7rWp3lx0+kE66yUFqazcRDWmFAC?=
- =?us-ascii?Q?QlC+NZjbLWexLUd9hxXG+cwqMTFjBdL2a1zWUaCbVl85PDRqd52QnFcp1Ful?=
- =?us-ascii?Q?kwiT2dDyRd0HlBYomCy+UwscC2Zm1b15u3Lu72J0q0lt85MLdvo6y/wL+OSN?=
- =?us-ascii?Q?JK6muFnewpXeXkcAboVizLIFZ5feYWATHsJnrYhIxJBzOXb4V3ksjWjdlUlw?=
- =?us-ascii?Q?xPCKxhCXG9VShldPnJAwBMATlvy8nWz3pFxud31BBCKLZPXkKhj3h98P8zgw?=
- =?us-ascii?Q?svwY9rYJ1CjQdBV9H+2ASuLGR9Haidg0kWEjrENnwUFBK0QVX2Lb5ShrGQ3f?=
- =?us-ascii?Q?LSYIumHio8BhUWpGzcF3?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: db0b8e0a-a757-4698-89bf-08dc565917bb
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2024 16:46:23.2362
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR02MB5771
+Content-Transfer-Encoding: 8bit
 
-Hi Sven,
+This patch series focuses on several adjustments related to heap
+implementation. Firstly, a type-safe interface has been added to the
+min_heap, along with the introduction of several new functions to
+enhance its functionality. Additionally, the heap implementation for
+bcache and bcachefs has been replaced with the generic min_heap
+implementation from include/linux. Furthermore, several typos have been
+corrected.
 
-On Tue, Apr 02, 2024 at 09:06:35PM +0200, Sven Eckelmann wrote:
-> On Tuesday, 2 April 2024 19:23:01 CEST Erick Archer wrote:
-> > The "struct batadv_tvlv_tt_data" uses a dynamically sized set of
-> > trailing elements. Specifically, it uses an array of structures of type
-> > "batadv_tvlv_tt_vlan_data". So, use the preferred way in the kernel
-> > declaring a flexible array [1].
-> > 
-> > The order in which the structure batadv_tvlv_tt_data and the structure
-> > batadv_tvlv_tt_vlan_data are defined must be swap to avoid an incomplete
-> > type error.
-> > 
-> > Also, avoid the open-coded arithmetic in memory allocator functions [2]
-> > using the "struct_size" macro and use the "flex_array_size" helper to
-> > clarify some calculations, when possible.
-> > 
-> > Moreover, the new structure member also allow us to avoid the open-coded
-> > arithmetic on pointers in some situations. Take advantage of this.
-> > 
-> > This code was detected with the help of Coccinelle, and audited and
-> > modified manually.
-> > 
-> > Link: https://www.kernel.org/doc/html/next/process/deprecated.html#zero-length-and-one-element-arrays [1]
-> > Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [2]
-> > Signed-off-by: Erick Archer <erick.archer@outlook.com>
-> 
-> > ---
-> > Hi,
-> > 
-> > I would like to add the "__counted_by(num_vlan)" tag to the new flex member
-> > but I don't know if this line can affect it.
-> > 
-> > ntohs(tt_data->num_vlan)
-> 
-> 
-> Yes, num_vlan is a __be16. I could only identify the kernel-doc related 
-> scripts as consumer. But maybe they are more - so I would defer this question 
-> to kernel-hardening.
-
-Thanks for the info.
-> 
-> And with this change, I get a lot of additional warnings (-Wsparse-all)
-> 
-> 
-> cfg: BLA=n DAT=y DEBUG=y TRACING=n NC=y MCAST=n BATMAN_V=n
->     net/batman-adv/translation-table.c:574:21: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:859:25: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:859:25: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:938:25: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:938:25: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:2932:16: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:2932:16: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:3378:21: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:3378:21: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:3982:30: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:3986:27: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:4026:30: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:4030:27: warning: using sizeof on a flexible structure
->     net/batman-adv/translation-table.c:4032:23: warning: cast from restricted __be16
->     net/batman-adv/translation-table.c:4032:23: warning: restricted __be16 degrades to integer
->     net/batman-adv/translation-table.c:4032:23: warning: incorrect type in argument 1 (different base types)
->     net/batman-adv/translation-table.c:4032:23:    expected unsigned long [usertype] factor1
->     net/batman-adv/translation-table.c:4032:23:    got restricted __be16 [usertype] num_vlan
-> 
-> [...]
-
-I will work on this for the next version. Thanks for share these warnings.
-
-> >  	num_vlan = ntohs(tt_data->num_vlan);
-> >  
-> > -	if (tvlv_value_len < sizeof(*tt_vlan) * num_vlan)
-> > +	flex_size = flex_array_size(tt_data, vlan_data, num_vlan);
-> > +	if (tvlv_value_len < flex_size)
-> >  		return;
-> 
-> This helper would need an #include of <linux/overflow.h> in 
-> net/batman-adv/translation-table.c
-
-Understood.
-
-> 
-> [....]
-> >  /**
-> > @@ -4039,8 +4029,7 @@ static int batadv_tt_tvlv_unicast_handler_v1(struct batadv_priv *bat_priv,
-> >  	tt_data = tvlv_value;
-> >  	tvlv_value_len -= sizeof(*tt_data);
-> >  
-> > -	tt_vlan_len = sizeof(struct batadv_tvlv_tt_vlan_data);
-> > -	tt_vlan_len *= ntohs(tt_data->num_vlan);
-> > +	tt_vlan_len = flex_array_size(tt_data, vlan_data, tt_data->num_vlan);
-> 
-> This is definitely wrong on little endian systems. You first need to convert 
-> num_vlan from network (big endian) to host order.
-
-I'm sorry. My bad. I forgot to add the "ntohs".
-I will fix it for the next version.
-
-> 
-> Kind regards,
-> 	Sven
+Previous discussion with Kent Overstreet:
+https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
 
 Regards,
-Erick
+Kuan-Wei
+
+---
+
+You can preview this patch series on the 'refactor-heap-v3' branch of
+the repository at the following link:
+
+https://github.com/visitorckw/linux.git
+
+Changes in v3:
+- Avoid heap->heap.nr to eliminate the nested types.
+- Add MIN_HEAP_PREALLOCATED macro for preallocating some elements.
+- Use min_heap_sift_up() in min_heap_push().
+- Fix a bug in heap_del() where we should copy the last element to
+  'data + idx * element_size' instead of 'data'.
+- Add testcases for heap_del().
+- Fix bugs in bcache/bcachefs patches where the parameter types in
+  some compare functions should have been 'type **', but were
+  mistakenly written as 'type *'.
+
+Changes in v2:
+- Add attribute __always_unused to the compare and swap functions
+  that do not use the args parameter.
+- Rename min_heapify() to min_heap_sift_down().
+- Update lib/test_min_heap.c to use min_heap_init().
+- Refine the commit message for bcache and bcachefs.
+- Adjust the order of patches in the patch series.
+
+Link to v2: https://lore.kernel.org/20240320145417.336208-1-visitorckw@gmail.com
+Link to v1: https://lkml.kernel.org/20240319180005.246930-1-visitorckw@gmail.com
+
+Kuan-Wei Chiu (17):
+  perf/core: Fix several typos
+  bcache: Fix typo
+  bcachefs: Fix typo
+  lib min_heap: Add type safe interface
+  lib min_heap: Add min_heap_init()
+  lib min_heap: Add min_heap_peek()
+  lib min_heap: Add min_heap_full()
+  lib min_heap: Add args for min_heap_callbacks
+  lib min_heap: Add min_heap_sift_up()
+  lib min_heap: Add min_heap_del()
+  lib min_heap: Update min_heap_push() and min_heap_pop() to return bool
+    values
+  lib min_heap: Rename min_heapify() to min_heap_sift_down()
+  lib min_heap: Update min_heap_push() to use min_heap_sift_up()
+  lib/test_min_heap: Use min_heap_init() for initializing
+  lib/test_min_heap: Add test for heap_del()
+  bcache: Remove heap-related macros and switch to generic min_heap
+  bcachefs: Remove heap-related macros and switch to generic min_heap
+
+ drivers/md/bcache/alloc.c      |  64 ++++++++---
+ drivers/md/bcache/bcache.h     |   2 +-
+ drivers/md/bcache/bset.c       |  84 ++++++++++-----
+ drivers/md/bcache/bset.h       |  14 +--
+ drivers/md/bcache/btree.c      |  17 ++-
+ drivers/md/bcache/extents.c    |  53 ++++++----
+ drivers/md/bcache/movinggc.c   |  41 +++++--
+ drivers/md/bcache/sysfs.c      |   2 +
+ drivers/md/bcache/util.c       |   2 +-
+ drivers/md/bcache/util.h       |  67 +-----------
+ drivers/md/bcache/writeback.c  |   3 +
+ drivers/md/dm-vdo/repair.c     |  25 +++--
+ drivers/md/dm-vdo/slab-depot.c |  20 ++--
+ fs/bcachefs/clock.c            |  43 ++++++--
+ fs/bcachefs/clock_types.h      |   2 +-
+ fs/bcachefs/ec.c               |  76 ++++++++-----
+ fs/bcachefs/ec_types.h         |   2 +-
+ fs/bcachefs/util.c             |   2 +-
+ fs/bcachefs/util.h             | 118 +--------------------
+ include/linux/min_heap.h       | 188 +++++++++++++++++++++++++--------
+ kernel/events/core.c           |  41 ++++---
+ lib/test_min_heap.c            |  94 +++++++++++------
+ 22 files changed, 537 insertions(+), 423 deletions(-)
+
+-- 
+2.34.1
 
 
