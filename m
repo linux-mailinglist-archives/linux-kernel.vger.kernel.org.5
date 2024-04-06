@@ -1,109 +1,221 @@
-Return-Path: <linux-kernel+bounces-133880-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133881-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0FA789AA3E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A34CD89AA40
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:59:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A640B21C0A
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:58:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17FC0B21B7F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:59:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A9424A06;
-	Sat,  6 Apr 2024 09:58:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D733524A06;
+	Sat,  6 Apr 2024 09:59:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WCkKDUoA"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ans+EQno"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2BC1E48B
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 09:58:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712397493; cv=none; b=qzdjss1/WskzQf/jmi01NhWqIGG8ijLUq7SP9Q9UjcGHZI3ZZ0Ej2gY+i6ExnNc1MSLoPoAVzyWa2FeQ0R7fz22TbevGyVFic6ECPnueEYFpHB5VeCwDwax/SniD4pUb5gD28n3tHAdaOVoxVuppwGVT2A8rTqtnytGY7p4AmiA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712397493; c=relaxed/simple;
-	bh=8QOjyi5yo48Gc03G0D16O76wbrg04l+eAGY55tGyRSA=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CSE+G2MV9jlQbvW1rNMhGI9kNS/FflZ8ksINKtqPD89d9zoOQkpD+2ZlCOtm9ElXUi94RvMO3komP0iaCcPOAi/uXhi5LhcicIQYlgZpivlhGRIjpaGbtIXU+MpjIHrXgliEVP5NaNDy83kg4yVWcDcdmMd+yPO10Z0z5eNmj+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WCkKDUoA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5980C433F1;
-	Sat,  6 Apr 2024 09:58:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712397492;
-	bh=8QOjyi5yo48Gc03G0D16O76wbrg04l+eAGY55tGyRSA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WCkKDUoAxS1hNUGaSvzPdz2OgUBAYcdgTIVhIbTpjTlKHpT4oiiTjTA0d/5hEjbIw
-	 SaDvW5m9P3E795ro7EQFODrYT5fjjj17ebXlda5cKDnqo+aWnKqFOz3HOUNfGlRXeO
-	 OPE46yAkQNN4By0DGlYpNVWjOAVaY9M6HOnVSSlQX4UFS82YQyVmX6jGgeeIvMNWTq
-	 hYBzpb2HrXqx9yZTmtrr0Xt/VldxNWneHQ6NGQOErVp99A7yR2HbvvUBwnxWXWruV2
-	 5qErzfhTtLOjB4O0+3l4jqYe2nmFvSHN/J/uh+H6KVAedg1/uPzarykMkR8QkCdPrc
-	 +J38PgGCQEmmg==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rt2oM-0023Jb-Jp;
-	Sat, 06 Apr 2024 10:58:10 +0100
-Date: Sat, 06 Apr 2024 10:58:10 +0100
-Message-ID: <87edbisthp.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: Nianyao Tang <tangnianyao@huawei.com>,
-    Thomas Gleixner <tglx@linutronix.de>
-Cc: 	<yuzenghui@huawei.com>,
-	<linux-arm-kernel@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>,
-	<guoyang2@huawei.com>,
-	<wangwudi@hisilicon.com>
-Subject: Re: [RESPIN PATCH] irqchip/gic-v4.1:Fix VSYNC referencing an unmapped VPE
-In-Reply-To: <20240406022737.3898763-1-tangnianyao@huawei.com>
-References: <20240406022737.3898763-1-tangnianyao@huawei.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DFF72561D
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 09:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712397555; cv=fail; b=dxRWySFojuX1Hy3QbNzgGl3pbIl7ecTIyG0kZ9DSMcTzFTV+WAIaDviPF57ZFsBIukNf8AFZMfQPfQ+5WSuJDJ0jo4hsNHOhEm1EmWR7f9R679a2kFgIAUEafTq5Ih21OecvyhRnupISSetIL0SW5IcJbXw770V6WScGZQuqvQU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712397555; c=relaxed/simple;
+	bh=3s2WHPRKrG8/eXi00wjjrdzox1krgVX+acJhICg4xqU=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=NnwdgyykM0qj04AYMLut1SqksSXYZnNxH4zJw2t7kCvgr1IFFSEY+/UPvD6TJzzMGgnA+TCeRz9TlaZGWnA0C3zjKgaKG4lVD8QZ7tU9Uzsai+4p3UB9FDN2lucnVbMFdkmNcBEKOKr/wnqex89uWkFTrYnz/PYZPi5pzgDtbLw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ans+EQno; arc=fail smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712397554; x=1743933554;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=3s2WHPRKrG8/eXi00wjjrdzox1krgVX+acJhICg4xqU=;
+  b=ans+EQno40Cq3wizjnfHYUDOFFRTsuoyS3t4/pdJ02WLj+0zHXTNMBrl
+   9HxCsY7RO1gKRcLte4jXYpjflTdm38aY7Zt6X5xNJJqwt4wPIreIALrX7
+   FdWXZ+UGInP3yut6Cp3tZac+XXdWglkfEYEGWlor9zqWfwUngkYQPz7PX
+   jWR/ciBppBfNdxP1QRCmoVrCUjhEEYY5HgOD8E4y25guKJqzVAv4yRhJk
+   VYLcUti3l1BJhmG4o91omw34L0PsdDm+vftM/gyCXtzx9KbrI7bt3mFtA
+   O6C6+m8pdnu4DuKzbyrRF0GcifHf3N/6aFgEhboXjClUcfxEKws5iy8Au
+   w==;
+X-CSE-ConnectionGUID: RGhgJhGSQ0mSJuCkFmUN5w==
+X-CSE-MsgGUID: 6qa9b6XVQFO2WLCAScqtcQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11035"; a="7823093"
+X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
+   d="scan'208";a="7823093"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2024 02:59:13 -0700
+X-CSE-ConnectionGUID: 2SyurnzeSpe+Vs+c3Kfr7Q==
+X-CSE-MsgGUID: wL3/32voSoGv5Atb7d5FuA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,182,1708416000"; 
+   d="scan'208";a="19317061"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 06 Apr 2024 02:59:12 -0700
+Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 6 Apr 2024 02:59:12 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sat, 6 Apr 2024 02:59:12 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.172)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sat, 6 Apr 2024 02:59:12 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IK+ioH2s8IoZUb6T2+gZSfOIaNp41tW/f9tsMwgDixHUL5O3dWxBlL3d0+0zGcMFd+Ksq9pm4Y/n4pWTbMlVFyu1RmlrlCHb6GSOtDGKiL2nddjwG845+WEPrFzMUSfTB8id6hFqnJh3vlnRWjlCqWVnUWfj/b/arQEoJ1fEVwUjYn52OcCYiUv6yFWbvOS6IsXT/gg8OO/RZFtDDFzglw6apuzjvN21Z14XDQ0ZiUUxIaxByDDMbDgwoBl9fBGWZ7Ptw0Er+Bfs6KGEG1dGDb7r+SuMrWUsYJkCqAr9JdKsvAO61bu4fBsljSwhmOpy0rd8JtshI3YYDN3jWbgKNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hY+RU/QQCHblKZIfWY3mWIsojCWPB13ePA7gfVfh0mk=;
+ b=Kj1D3wAe2CHNxiM/Xppa7f2Ui5NqvXDqVzT8wv44kLmSXdst7afmWmyX2xcIVWKM8ES87RRDJvR68tTT+dZsrJhSkWq0NIB/7PUUnxIrDSzWqvvQqfMLuuA5ihcNKWnPIxhcWe9WNMUKPr4JiUnOblMonFSPI8zOKZRnfymkONkpulr3JxABTzpUxAHZPUaCvhbnmS2zIbdq5kQXMF+i+jpdIht2+aDFPE1yyMdri9VAJ7zhzttyXVznqItgT3EHkVz14V6y0tJ3Rq8gMEaJCe7W3BEiPAzbVzBVYSgGiAvDs768q5w0FuAZc7GSSkQGAFR/gR9/Usxo/r2srR59fQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from IA1PR11MB6348.namprd11.prod.outlook.com (2603:10b6:208:3af::16)
+ by DM6PR11MB4611.namprd11.prod.outlook.com (2603:10b6:5:2a5::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.26; Sat, 6 Apr
+ 2024 09:59:09 +0000
+Received: from IA1PR11MB6348.namprd11.prod.outlook.com
+ ([fe80::e014:f1f0:90ca:359c]) by IA1PR11MB6348.namprd11.prod.outlook.com
+ ([fe80::e014:f1f0:90ca:359c%3]) with mapi id 15.20.7452.019; Sat, 6 Apr 2024
+ 09:59:09 +0000
+From: "Golani, Mitulkumar Ajitkumar" <mitulkumar.ajitkumar.golani@intel.com>
+To: R SUNDAR <prosunofficial@gmail.com>, "airlied@gmail.com"
+	<airlied@gmail.com>, "daniel@ffwll.ch" <daniel@ffwll.ch>,
+	"dmitry.baryshkov@linaro.org" <dmitry.baryshkov@linaro.org>, "Nautiyal, Ankit
+ K" <ankit.k.nautiyal@intel.com>, "mripard@kernel.org" <mripard@kernel.org>,
+	"Nikula, Jani" <jani.nikula@intel.com>, "quic_abhinavk@quicinc.com"
+	<quic_abhinavk@quicinc.com>, "Deak, Imre" <imre.deak@intel.com>,
+	"dianders@chromium.org" <dianders@chromium.org>
+CC: "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] Fix for kernel doc warning
+Thread-Topic: [PATCH] Fix for kernel doc warning
+Thread-Index: AQHaiAeVilKG+DL4HEWKVC5nlpfKZLFbAeDQ
+Date: Sat, 6 Apr 2024 09:59:09 +0000
+Message-ID: <IA1PR11MB6348A4B755CE2AC214833FD1B2022@IA1PR11MB6348.namprd11.prod.outlook.com>
+References: <20240406094740.7143-1-prosunofficial@gmail.com>
+In-Reply-To: <20240406094740.7143-1-prosunofficial@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA1PR11MB6348:EE_|DM6PR11MB4611:EE_
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cEGoWV9mbEAZsKHAr/WTtOpPkjvKNAjdSQ/KcPN/jn/q7nGDk6vcZPwuJczEYOegPnDaoNObgXSjdrO8xrnlL7mIWICAN6cYbQnIp20M4elGq9p/m+tlSM/pjI4/V12CyVcF05jper5pC7f40tstsVVPeJEPVgjWxVQNzuHvvx+3XYAExmvIH8DeHex2yT5KDSCJNiRCIOfqiuHEfYFVIABWUOw9d5YsMgfRjWMjgHXWh2xZi35AEvtsT+K1jFn05U2OK7lfRRHtX/d2joVd1vRPGEqFDs67hXUttWsJiZWVUum9RAhkc8IvvLxf/cO/zny0GI1Ln3PcJy7x0Qgd0TroQaoq9fIKcxcypiPScxUWShkGW3ecDfZXtdaC5hwb+MODblpod8zYQe2ayUsW6OH2IgehvHq51qQTnmZL6FLaawcWo8Mc4xLHXnEzSwFUUOLa1Av2nlwzjJBS50lSV5uJ+X74kyHLBmKkwIip3vCVpQk/LHQgEF+yh35kRFvmcV/Zy3vaZrFmm/FL2o+2nDfdZmqEiBH53PpgGxrAATUKNw8uhNvzmpoENyJcyG9+XxlCkm1JS8WfT95wOhVZx6v2fbGSJbYp2cSpTy/1S5ZPpgIjVYxm8exTgBxK1jPuY4dWT7GMuRxxixGFRTLiPg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6348.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(921011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?35bUvLvWrQVtlswS1UXBBqsjes8cURQHR8Nbdw00Ohc1RpJDVFRRLxAMIdg4?=
+ =?us-ascii?Q?M+bFA/CpOMtj1y6mcCtDoifW/H1eT6jbvkVrOFqTHEq2vmRqsZHYI/9dS+pD?=
+ =?us-ascii?Q?SR919xujAufewH9Vz/vmJg6pyZkjBGEVoi8kIsmx5eg3dXAUpace59myl/y4?=
+ =?us-ascii?Q?u2ZlGVj+kS/SQAuWk8KDi+Xsivpalbeg6K8tWff8lDGnZLBbGvoxtdfMtpbF?=
+ =?us-ascii?Q?4Wfe1wwwxDuFPkZN0migqaybPUg9BH6aahHb3bMp/7zr5HEp++ZK/BJLGwad?=
+ =?us-ascii?Q?hVYEri7XXzDrWhpXDP60nYV+Ri8Z4tryCcqT8Cl5yJSXTfcgM5UBNftwJ01K?=
+ =?us-ascii?Q?g2BuvHxHY5ITkFwoqH9/JRadPLnOcStTUt/6JDJ95xRDD1u0FvZBQO2CYcdB?=
+ =?us-ascii?Q?oQLgMmy04YIuRse+TCQ4mw8IZVvv2lugJL0fcrbw1vd0OHB69QnTwukfOI2u?=
+ =?us-ascii?Q?aAg/+QG5/PQ0+bvsD2l7GgokdCwTrdx14W++07JRqFeC/aUm7KBEND+1F1yz?=
+ =?us-ascii?Q?OyHxpeR2YhXuSl/JJtRAfUYVDDQyf+uXsJuray3SC+g3myRH52AZVfZhKxA7?=
+ =?us-ascii?Q?J3uTt0IbPXuBPGAL8h+ox2QT9wL8L8mDUVnHrgcMEgT9apJqEZWA4A/Asafc?=
+ =?us-ascii?Q?nMMWccbMgk73tIa2vYjPvnIzw+wkzjUnhak6v+KVt1ylCbK5Iv51BoHpB7KP?=
+ =?us-ascii?Q?HqcbyUrOfecDMtLA+NH9sy5Uk00z3++nlysHyKthK3pCIM+cex/pPMjHOwev?=
+ =?us-ascii?Q?egKEmFlZPb3+vd6vqqJNC6ESC338FaEoDiY1Bm+jsNsdLwhnXNhyPerLTPaB?=
+ =?us-ascii?Q?e7DtkOLauXkTlPvAo80VhqF4DRSpribPlAWTN8Eg95hRgzHiUx9WaL1Vjd1m?=
+ =?us-ascii?Q?Y3cbvS/iQ1RofbNELfQVotBvVC/0ISJrIveHYdWcCy3KqZVZ0bzVv2K5c6oC?=
+ =?us-ascii?Q?DhSwlg7LIL50sfmYJlEEp1tqM6U2FNpUv/bsV2XqhZ+YOUyw+tFZXi/moABP?=
+ =?us-ascii?Q?wGHn7t0Lck/2A+bBB3w/AGlvPAGH6SijNyhnguFHcqYvQ8zZmti+t9w53oNN?=
+ =?us-ascii?Q?0V/eqARdQVpiSzuzJ8b3Vqmx6ZXGXUg0AH4PiZK9YAHUnO5DPsnXRcq7l8Zg?=
+ =?us-ascii?Q?2hDLUlAkylUpypPIV85rMbLaaNCmBWh7C1bh9wRY3TeKjOiJD5jq/qpzo31p?=
+ =?us-ascii?Q?NZsX4M7PCpLR0fOibE5yCeYqhzoqxzVDVXRA6KPCh/k0cq+PcOkSSJWPaRCC?=
+ =?us-ascii?Q?04zll3IosO0RzakrhXmOIBfeB9m80JQZocmtM8PcYqwmw2hr/T2eruEkinSY?=
+ =?us-ascii?Q?B+nd7QfwO4IsvXn89XJoPll6MI0KpG6cviusfvY9v5M/AkSIbo5p4Vhe2yiH?=
+ =?us-ascii?Q?H/UcmyJ1D67p2se26JVYdA5KHjQGs/U3IJLgrPuvZP1wWXS2R9+TKXTYLvDl?=
+ =?us-ascii?Q?aLPusqD5oftWDxVrXxWedgZE88jXCYS86MkPYtAZL6yEgmoP2EAnVoD3LFSZ?=
+ =?us-ascii?Q?rV0xJW1XM32VyawLotVhYWZuxupyo6V31Mqu06k6LMoWoMRx1Ls/HTe3fqlx?=
+ =?us-ascii?Q?8CNSQYIkGUHAwKGJ3Z59++IgRa6ABp1qoMcxpWfvnv/UxLPX4M+KNv2AatDQ?=
+ =?us-ascii?Q?MHtJleeZI7+LLeERyTq9YvU=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: tangnianyao@huawei.com, tglx@linutronix.de, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, guoyang2@huawei.com, wangwudi@hisilicon.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6348.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6fbb174d-24e1-4f01-5066-08dc56203474
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Apr 2024 09:59:09.8124
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GhYpXihKVILdpmnlJkEoV74VO5WbqGwjqRGWtr/tLNb9N8o25t2bcZvHUxbrhv2rppPY+AiONQBQTnZjdNEQcYHe9cubyGFJ/EiWiwHygFrILDzNy1yZfuv6yYKPkCGQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4611
+X-OriginatorOrg: intel.com
 
-On Sat, 06 Apr 2024 03:27:37 +0100,
-Nianyao Tang <tangnianyao@huawei.com> wrote:
-> 
-> As per the GICv4.1 spec (Arm IHI 0069H, 5.3.19):
-> 
-> "A VMAPP with {V, Alloc}=={0, x} is self-synchronizing, This means the
-> ITS command queue does not show the command as consumed until all of
-> its effects are completed."
-> 
-> Furthermore, VSYNC is allowed to deliver an SError when referencing a
-> non existent VPE.
-> 
-> By these definitions, a VMAPP followed by a VSYNC is a bug, as the
-> later references a VPE that has been unmapped by the former.
-> 
-> Fix it by eliding the VSYNC in this scenario.
-> 
-> Fixes: 64edfaa9a234 ("irqchip/gic-v4.1: Implement the v4.1 flavour of VMAPP")
-> 
-> Signed-off-by: Nianyao Tang <tangnianyao@huawei.com>
-> Reviewed-by: Marc Zyngier <maz@kernel.org>
+Hi Sundar,
 
-Thanks for having taken my remarks into account, it looks good now.
+Fix is already floated and reviewed. Looking forward for merge.
 
-Thomas, can you please take this as a fix for 6.9?
+https://patchwork.freedesktop.org/series/132061/
 
-Thanks,
+Regards,
+Mitul
 
-	M.
+> -----Original Message-----
+> From: R SUNDAR <prosunofficial@gmail.com>
+> Sent: Saturday, April 6, 2024 3:18 PM
+> To: airlied@gmail.com; daniel@ffwll.ch; dmitry.baryshkov@linaro.org;
+> Nautiyal, Ankit K <ankit.k.nautiyal@intel.com>; mripard@kernel.org; Nikul=
+a,
+> Jani <jani.nikula@intel.com>; quic_abhinavk@quicinc.com; Deak, Imre
+> <imre.deak@intel.com>; dianders@chromium.org; Golani, Mitulkumar
+> Ajitkumar <mitulkumar.ajitkumar.golani@intel.com>
+> Cc: dri-devel@lists.freedesktop.org; linux-kernel@vger.kernel.org; R SUND=
+AR
+> <prosunofficial@gmail.com>
+> Subject: [PATCH] Fix for kernel doc warning
+>=20
+> [linux-next] Changed enum name to field name to fix kernel doc warning.
+>=20
+> ./include/drm/display/drm_dp_helper.h:126: warning: Function parameter or
+> struct member 'mode' not described in 'drm_dp_as_sdp'
+> ./include/drm/display/drm_dp_helper.h:126: warning: Excess struct member
+> 'operation_mode' description in 'drm_dp_as_sdp'
+>=20
+> Signed-off-by: R SUNDAR <prosunofficial@gmail.com>
+> ---
+>  include/drm/display/drm_dp_helper.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/include/drm/display/drm_dp_helper.h
+> b/include/drm/display/drm_dp_helper.h
+> index baf9949ff96f..6799f57d635c 100644
+> --- a/include/drm/display/drm_dp_helper.h
+> +++ b/include/drm/display/drm_dp_helper.h
+> @@ -112,7 +112,7 @@ struct drm_dp_vsc_sdp {
+>   * @target_rr: Target Refresh
+>   * @duration_incr_ms: Successive frame duration increase
+>   * @duration_decr_ms: Successive frame duration decrease
+> - * @operation_mode: Adaptive Sync Operation Mode
+> + * @mode: Adaptive Sync Operation Mode
+>   */
+>  struct drm_dp_as_sdp {
+>  	unsigned char sdp_type;
+> --
+> 2.34.1
 
--- 
-Without deviation from the norm, progress is not possible.
 
