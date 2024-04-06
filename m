@@ -1,161 +1,86 @@
-Return-Path: <linux-kernel+bounces-133804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133805-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D099389A8F4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:08:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42EA089A8F5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:09:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8418D1F223F2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 05:08:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC2DE1F226D3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 05:09:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E85F41CAAC;
-	Sat,  6 Apr 2024 05:08:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WtjcTcBB"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB971BF53;
+	Sat,  6 Apr 2024 05:09:05 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 765BE1FA1;
-	Sat,  6 Apr 2024 05:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C9C208C4
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 05:09:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712380115; cv=none; b=clV63EwwiGILer28FYbE7tiWiQEhlRd+uqPBnBt1OdeeNazKOSOP4zCSfhaLxbThWcr0uAecwDFlLtYMLWqBHEQCfT1MgEmRD3M6iegrC15XlXFGoIUE00+vAezq9I8xp09h7u/2J35RlnyzFDxZOZGP1TWPjBkYRc/G6hOFUsU=
+	t=1712380144; cv=none; b=jck5/v82lUCobusFisTr23tPNPhDwIAesrR+Pbo3YGAxOXH25dCCIUX/1cjQfI9k2IaJe1IDV0vqYRNz+2qZuAtuyb3QKpiBvbho4sGcR/Bp3CL/PQTiZCHiBMXtZzjiHlMJ8Ccq/KQFQAcZpA2Lg4e5xOm2Vt4aai4V1mchV9w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712380115; c=relaxed/simple;
-	bh=ucGI9nf2AqWhkLS3ij0YOnhppH1t7T/usV1ct0ZegkE=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=N7nIcXZRCHHxFI7VPIl54AJuowbz0SUi+bWmhsoz7De/FwtQRH3Uubk0oOQgqlcJIfaYyoR6QdokU4WTd+Mcikf3xYBlAscItpdbGm/HTmHOGVoX17lFm4d16B71YLeDSztvZ5Hz9B5mVhOPQ5iKERKqJgGNw7bEINtBAGPVjcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WtjcTcBB; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-516d0c004b1so2918846e87.2;
-        Fri, 05 Apr 2024 22:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712380111; x=1712984911; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=d26fRpd8+KcGmKIhiw3Xe2m8bbWMWSCQ9BpgQfJxuSg=;
-        b=WtjcTcBBtYB0kXPxaC1XdhNeTsqPm9C9n8I4Prd6a+osOcXLBRnf6F8MiFLRRoQM15
-         /U7Ni6WeM2fEc0GGBLpFnlOKWbqXvA8aFdMvuW9XR6n+AuFQbl5Y64d1QJ3wzZMlXhg4
-         +pn4IZtXrOIU6eVJD1EACsmRoldfl8Jw5ALa4T7F8SxnX6jP2P2j6tBrAvZ8uWgqbZUW
-         TXS1TMSC8D/pcA3ia038+gAoRSvg7d5YKLa8jzlRgF0m8nywuQLNR0IJ3VBqoRPK+5Cy
-         CHPeo4Q9pkFu2VYl0UDLZxAl+OWrYhtaBEG7SYxsHAqP4ZiapNxAP5EjT4sxmFD7lw1S
-         Bq9g==
+	s=arc-20240116; t=1712380144; c=relaxed/simple;
+	bh=itdSvRU32vZ0tVM/xZfb/YoaE6ctlnJgll0P3UDpHJU=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=cjs8tTJibpx7IoMd45pPuM1rQiGNzk17ROHiR+ZLrTVAPQXAL637P4iOmIB26rCSegMzvCtxm/gqT9ld48XYdel2VbIsYjWFKddiH2VEGbxxOYv+H6CcV5VSYKTneXjY78uAZlbvJdiof59Z/q8nAJIhrvyElv0fUzX6Q9u6nfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cc01445f6bso318762139f.3
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 22:09:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712380111; x=1712984911;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=d26fRpd8+KcGmKIhiw3Xe2m8bbWMWSCQ9BpgQfJxuSg=;
-        b=F73JEKRSbJsHqC7bCtnn7hhiVEdeF5ul+EGSSv9MXuXMp29B9M6Nk1bXzFCgQ40jcX
-         BC/Pt8P+zBreKyVhgIrtLp8nIVRp3oK+ZyIf83gxM/KJKZcSGJBYcSJj5F0xpzg7l0rI
-         XAiy6nJDKlzC9BMgOO4fFPWdN4RdKKvTYhO+721AjLq4s4sZGPYi3+w3xErZddEWnqez
-         fxUmUTlS6IL7azJcYNKZ06fWp3ZdCTkltpqXZqmhf5gu/ETmW+Ek7Tzr+MIYywAbrjdf
-         KQjjS/jtA7qw0cDCoZOPZI9DjIZBQFxYm/kyuW6ZGnZKcTd7VKV1n8ZQSoT6ZW6AdRS4
-         j3+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW2kKVsLoiTdDmq98fGlFYT1ot2PWQcJI2ihzn9qWnNftTQSoet1zQXlEI8UxJTUz3DKcjWBfxZf5GW86GaarFzG3R+jdwo6ddLlxR3
-X-Gm-Message-State: AOJu0Yx784UqCwQioCAuaWbFftpAcFFL/QHzjGjy4NVyFcyj+lR7NhTD
-	2V1rqt+kqXy/YQzjKCFCkwVgIS9zWsNgg432bRp1I0guiP1VmScQj2Z9cLw2tWb53cFFABU79Nq
-	DFc8GsljpSayhMElUiFIjgJXKgALQOmMvmaI=
-X-Google-Smtp-Source: AGHT+IFzx1NsO1QkSJZ5DgySohoYd7iBR253TDhiO77dyZKULKuwpx5DUKzF2UVo6vUpZclXmER21KpgsbtpVnaMH+c=
-X-Received: by 2002:a19:f711:0:b0:516:d1af:adc1 with SMTP id
- z17-20020a19f711000000b00516d1afadc1mr2408303lfe.9.1712380111170; Fri, 05 Apr
- 2024 22:08:31 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712380142; x=1712984942;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=KV8SwOnj3w62SIgU4hu/Zw/a+SW4UyN+uMik/TiSHsw=;
+        b=Q7ClOijpmHkHym7xGAPXK64Pf1lfNYUXHx+xrXAThNY1M+we8CKHc9WwH4T4Ymf74f
+         OF01wU27jpRCc9ypUQQhUkSpg67nt9Znakfp92Y4N6jIg+1PKa7teCdpT9nz7FnyTAvc
+         7rFODGZ3Of6WcqSrD9AUU/9qYFJgTm81qU4Up0njAgOUbtefFRK1Bnhg0moWyexv8GCA
+         0eM0zEpMEzCtUtPRXD4h8WqhT2clIvttAJc2YOcpHlf1WBdhD/bglFXiEb+Prz9mRL68
+         zH7kjvdMa3jPEdAzLe2QIV0CzOvUHPA+bTCgAy7NT3LOqivOn+bfzfeZqCE/jvqjSlZQ
+         5lSg==
+X-Forwarded-Encrypted: i=1; AJvYcCWl5SrayPwGgs28lj7r0C/Yu9ER4HbumvjsLLfjAFEeeBmDy7c6WypkmbiwzgnG6zp+P2Yp1H3+NbOIK1nK6A1+UXoxnsZULMyLoXGX
+X-Gm-Message-State: AOJu0Yxz4RnY3KvyBjhwRwj9Skq1a+ZAXWUoSc/iFRqVCCMMQ1DWyEvh
+	fXfu4Cz2rAuL/uEiz3nI8meDUa8p4Ov+Nu2V6369pJmUuz2uQJlpNfGwJjzl7tsIDrsohg9yh/J
+	ybqJkF7l574Ewlte42U2tZWxVpyNetESpGMNZcy+MhyZTNu32/aFDol4=
+X-Google-Smtp-Source: AGHT+IGbRwU/epQK8baEmLsNnzl+MmBJTIHRcES6+lKhSPmBrZIjBuYQ3wDchEEkz1DGuExOgPRJcXgN/DD0ZG/3tT/9xxSiytpB
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Steve French <smfrench@gmail.com>
-Date: Sat, 6 Apr 2024 00:08:19 -0500
-Message-ID: <CAH2r5ms=TTjN5yoGsnEhrvqioM3pG6ANcTwsC8L1q833EPmMtQ@mail.gmail.com>
-Subject: [GIT PULL] smb3 client fixes
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: CIFS <linux-cifs@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+X-Received: by 2002:a05:6602:2d95:b0:7cc:8980:5ae4 with SMTP id
+ k21-20020a0566022d9500b007cc89805ae4mr89738iow.2.1712380142543; Fri, 05 Apr
+ 2024 22:09:02 -0700 (PDT)
+Date: Fri, 05 Apr 2024 22:09:02 -0700
+In-Reply-To: <tencent_1604493766D774A6CD337CA363296C63B305@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000001df6f906156692b8@google.com>
+Subject: Re: [syzbot] [bluetooth?] KASAN: slab-out-of-bounds Read in hci_sock_setsockopt
+From: syzbot <syzbot+837ba09d9db969068367@syzkaller.appspotmail.com>
+To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
-Please pull the following changes since commit
-39cd87c4eb2b893354f3b850f916353f2658ae6f:
+Hello,
 
-  Linux 6.9-rc2 (2024-03-31 14:32:39 -0700)
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-are available in the Git repository at:
+Reported-and-tested-by: syzbot+837ba09d9db969068367@syzkaller.appspotmail.com
 
-  git://git.samba.org/sfrench/cifs-2.6.git tags/6.9-rc2-smb3-client-fixes
+Tested on:
 
-for you to fetch changes up to e0e50401cc3921c9eaf1b0e667db174519ea939f:
+commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=1590d38d180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
+dashboard link: https://syzkaller.appspot.com/bug?extid=837ba09d9db969068367
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=159cfde3180000
 
-  smb: client: fix potential UAF in cifs_signal_cifsd_for_reconnect()
-(2024-04-03 14:45:15 -0500)
-
-----------------------------------------------------------------
-17 cifs.ko changesets, most also for stable
-- fix to retry close to avoid potential handle leaks when server returns EBUSY
-- Three DFS fixes including a fix for potential use after free
-- fscache fix
-- minor strncpy cleanup
-- reconnect race fix
-- series of patches to deal with various possible race conditions
-(UAFs) tearing sessions down
-
-The important fix to support password rotation is not included in this P/R (am
-giving that patch more time for any additional review feedback) but should be
-ready to send next week.
-
-----------------------------------------------------------------
-David Howells (1):
-      cifs: Fix caching to try to do open O_WRONLY as rdwr on server
-
-Justin Stitt (1):
-      smb: client: replace deprecated strncpy with strscpy
-
-Paulo Alcantara (14):
-      smb: client: fix UAF in smb2_reconnect_server()
-      smb: client: guarantee refcounted children from parent session
-      smb: client: refresh referral without acquiring refpath_lock
-      smb: client: handle DFS tcons in cifs_construct_tcon()
-      smb: client: serialise cifs_construct_tcon() with cifs_mount_mutex
-      smb: client: fix potential UAF in cifs_debug_files_proc_show()
-      smb: client: fix potential UAF in cifs_dump_full_key()
-      smb: client: fix potential UAF in cifs_stats_proc_write()
-      smb: client: fix potential UAF in cifs_stats_proc_show()
-      smb: client: fix potential UAF in smb2_is_valid_lease_break()
-      smb: client: fix potential UAF in smb2_is_valid_oplock_break()
-      smb: client: fix potential UAF in is_valid_oplock_break()
-      smb: client: fix potential UAF in smb2_is_network_name_deleted()
-      smb: client: fix potential UAF in cifs_signal_cifsd_for_reconnect()
-
-Ritvik Budhiraja (1):
-      smb3: retrying on failed server close
-
- fs/smb/client/cached_dir.c    |   6 +-
- fs/smb/client/cifs_debug.c    |   6 ++
- fs/smb/client/cifsfs.c        |  11 +++
- fs/smb/client/cifsglob.h      |  19 ++++--
- fs/smb/client/cifsproto.h     |  20 +++---
- fs/smb/client/cifssmb.c       |   6 +-
- fs/smb/client/connect.c       | 153 +++++++++++++++++++++++++++---------------
- fs/smb/client/dfs.c           |  51 +++++++-------
- fs/smb/client/dfs.h           |  33 +++++----
- fs/smb/client/dfs_cache.c     |  53 +++++++--------
- fs/smb/client/dir.c           |  15 +++++
- fs/smb/client/file.c          | 111 +++++++++++++++++++++++++-----
- fs/smb/client/fs_context.c    |   6 +-
- fs/smb/client/fs_context.h    |  12 ++++
- fs/smb/client/fscache.h       |   6 ++
- fs/smb/client/ioctl.c         |   6 +-
- fs/smb/client/misc.c          |   8 +--
- fs/smb/client/smb1ops.c       |   4 +-
- fs/smb/client/smb2misc.c      |   4 ++
- fs/smb/client/smb2ops.c       |  13 ++--
- fs/smb/client/smb2pdu.c       |   2 +-
- fs/smb/client/smb2transport.c |   2 +-
- 22 files changed, 369 insertions(+), 178 deletions(-)
-
-
--- 
-Thanks,
-
-Steve
+Note: testing is done by a robot and is best-effort only.
 
