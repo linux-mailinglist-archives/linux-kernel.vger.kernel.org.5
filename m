@@ -1,107 +1,203 @@
-Return-Path: <linux-kernel+bounces-133772-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133771-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C57789A870
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 04:21:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6384289A86F
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 04:21:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A5F35B229D0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:21:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 840071C2159B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:21:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30CCF11CAF;
-	Sat,  6 Apr 2024 02:21:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1E53134A5;
+	Sat,  6 Apr 2024 02:21:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=efault@gmx.de header.b="aT5HgZEf"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XPx5c4z0"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C9E18C05
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 02:21:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3556CEEC5
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 02:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712370099; cv=none; b=k57tafSFQgY5spu4XL53GCICXc0wVPxv5nTJurerMvFrChBN6tqUrHUmhFn6IRuzx//gMdRy4Z2enFAxBTXzhg6d7QaD8TXlbMNOkrPIB9Fqqz4e+GnLS8nrpgO6i/+TT/lopSbkxOqel5ghdnSoHUyB1cQBnAPWPLPKmd+byJI=
+	t=1712370091; cv=none; b=UmOKAkLHmpfNswlyNfbxyU0ODZWjG5ersPVtt7lNgbfcNGeTRur0w2l52dOs9/6bM/CZow2WJZYZjRe2vjtSe8/67+IkNdyWBXRQhzTnCaQh8k0AKQSMLERXUohVNoCV5pH+vMroYAvK3Wis5WQw0HaALwITaFdFTpWkxeyO/k0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712370099; c=relaxed/simple;
-	bh=MpSNT92oR3LiNiss4k+Y22DfN1U8viezGuGnfE9tE1A=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=NeRVLxAIHWE/zynn0InzO8kddbsK8w+5fIoiexGHuwpNdRxOKEYvcUwA0PacBYhmWQPodxr7gYiZWfMrMmJKgJ4Tta7smFdr21X2gwj54snGJkBpajy8NnzEiojCzL7NrtbuVn/9f5USQOdM6hsZndL2LrI/Xqu8kFxXvDd7VVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=efault@gmx.de header.b=aT5HgZEf; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1712370049; x=1712974849; i=efault@gmx.de;
-	bh=MpSNT92oR3LiNiss4k+Y22DfN1U8viezGuGnfE9tE1A=;
-	h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:
-	 References;
-	b=aT5HgZEfwr8sDtbGFd8y9HlPymhDJ57zzFzF/tRKGTuv05gfeihlTWHFWofOfFU5
-	 B9lN2vPWLPJjcCSqXZ6c2ndnwaBeEDaec/RFw4VrBS5P3GreT+VrhpgDB+5PyXNzN
-	 AOp+eeNfGx7/OUg9mAeJe2rv29QvEoDP1U1JbE8w4X/ttle1hMVzy3qB3Dpp7farJ
-	 FgC+Yb28wodPSw0zV87ToNQBw1Jmth9oV8tmKZC8tvDnOQHCef+gr6KHk/WCD+Qp6
-	 zCKMZ4EtsRioxqJ4s5otXcR2d9zQIzypT/wWxBEil63C9otpVBqz9a52bi17G5xeB
-	 Zv9d/DklqhoDeVEihw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from homer.fritz.box ([185.146.51.26]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1M26rD-1rvPa543o1-002W81; Sat, 06
- Apr 2024 04:20:49 +0200
-Message-ID: <6c1127ff3b1718585bcb6374fb444b15b753cacb.camel@gmx.de>
-Subject: Re: [RFC][PATCH 05/10] sched/fair: Unify pick_{,next_}_task_fair()
-From: Mike Galbraith <efault@gmx.de>
-To: Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com, 
- juri.lelli@redhat.com, vincent.guittot@linaro.org,
- dietmar.eggemann@arm.com,  rostedt@goodmis.org, bsegall@google.com,
- mgorman@suse.de, bristot@redhat.com,  vschneid@redhat.com,
- linux-kernel@vger.kernel.org
-Cc: kprateek.nayak@amd.com, wuyun.abel@bytedance.com, tglx@linutronix.de
-Date: Sat, 06 Apr 2024 04:20:44 +0200
-In-Reply-To: <20240405110010.239280675@infradead.org>
-References: <20240405102754.435410987@infradead.org>
-	 <20240405110010.239280675@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.42.4 
+	s=arc-20240116; t=1712370091; c=relaxed/simple;
+	bh=vaqjKTv70F4pkDalS3mxEEswoun3gV5qA81oMk5KYEc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KoviHiupsyHHctZLf//fEMd/e7EB5iACQk7ZP8BBJLgAgyRr7+HfR+hSWwk+X3KgJbG1rjMkiSGWMv5+eeO43GkHcfij/eiCpmRahO60M8T9B25inT1xS5G8OXIrxQKyRCMNzWueLe846ii8BLXJeUzp0/faaxzZW+fOY6r6hBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XPx5c4z0; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-516db2214e6so273436e87.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 19:21:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712370087; x=1712974887; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=e3RQ6maZdShuVraNYItBn9lrjW9BLdIDbgZu10qFIzM=;
+        b=XPx5c4z0QVw5WelCJ+5lIiesoDHmNdmWK7gZc/xI6URvBNQSmn1BFcTImMICEyAdQn
+         WvDprHhdlcLf6R9RcETcag7TKTP3ExRmXS9ghVkovT7BwhxSUvcmagdtLJfSs0SS50kv
+         PkKPf+CZ3hBfNSm181QDx77rMDhiukOAMdSmSunfX1d7ei6Wt2xtgsUxZ1BgttOWhCF9
+         rIW8RPQrI/t17aNiNxUgEylO68ogpHSFP17X9kxciSJLTk/7eybVc53XDJA+reSZSQFu
+         tqeWvfkAQSseDAdHn54ZGjtTxMXSRQhhfR5ZOQJNvXOErvvWAY07aGV6ow+FRzSx9EHD
+         mEvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712370087; x=1712974887;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=e3RQ6maZdShuVraNYItBn9lrjW9BLdIDbgZu10qFIzM=;
+        b=CURbApbHqWPl2Ui3bOnkKyxtqqQ/WzLPyUQ5ZiZiTyXydaEMm/0DzhOZB5WwqW7xtr
+         AwLtCtj0fFkld/emBk/z7Z104RRG5GvqMpItr2D37DRxo2ZZi9eZDk+YSmM/k9G6kNkb
+         uZ9q5WPz/g5Dnz/5l9wLJ+xNynZ8ScLD06ypVI3ggtziwtkRrf7xWPV4MulXVvwDs+eK
+         87Ur1bdAmyTOk352iJUgc9SiwiMkHSg2kPUfqEE0jWnAoJfxMpnClGFiRLpzTbrn+DIC
+         NAGBCMWTjU131vXK7KLi+j7idlwYiKmIAHbHfC1Szkuv//S5W2xpzWfmEAfT1KlpSRsV
+         KZdg==
+X-Forwarded-Encrypted: i=1; AJvYcCVcMbSdmCEbJZf+WAr2fUIFU+14F9hLr+6pALB0PsLA0JL9Eln3tLpc02bP8Wd0DFK4O4P4WTJKGt95VhvD1wcepZC6tnR16bvt6GCx
+X-Gm-Message-State: AOJu0YzGSxOQhq5Cb95Xqq3L836qMOJ9oufixzTL/vZtD6ZhX+aOSJUM
+	qNNje+RCLfZSFl97Kk5JY25qXop8AslL+07Ju1Za67sJAQjgF66eAU5RK2vzC3M=
+X-Google-Smtp-Source: AGHT+IGCUxPA1x4pPvDKIPymyHQ9MIdDiuKIitgDDF5LRK2zKejYoRo8ce/mKSI+1tszTynrahREJQ==
+X-Received: by 2002:ac2:5b91:0:b0:516:d259:ee5f with SMTP id o17-20020ac25b91000000b00516d259ee5fmr1862751lfn.7.1712370087329;
+        Fri, 05 Apr 2024 19:21:27 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
+        by smtp.gmail.com with ESMTPSA id w1-20020ac25981000000b00516d6924bc6sm234716lfn.175.2024.04.05.19.21.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 19:21:26 -0700 (PDT)
+Date: Sat, 6 Apr 2024 05:21:25 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Andersson <andersson@kernel.org>, 
+	Rob Clark <robdclark@gmail.com>, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	freedreno@lists.freedesktop.org, devicetree@vger.kernel.org, 
+	Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH 2/6] soc: qcom: smem: Add pcode/fcode getters
+Message-ID: <zc5u7ixaser6ekl3sltzxccstu63tpydxybquxz5hcasj4cmfo@csjwfifugeod>
+References: <20240405-topic-smem_speedbin-v1-0-ce2b864251b1@linaro.org>
+ <20240405-topic-smem_speedbin-v1-2-ce2b864251b1@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-X-Provags-ID: V03:K1:E76SBl7P+Sq9GquZFOhwK9bFEh1h5nf54QM1xHfYgS+4PZTETg4
- 8htNfJYaHsD8OVmQNx2FOBzO9vbrHgfVk7bmiH3mJStOBkQeW5JRmaQOcvzSCrTigBvBA61
- fgCv1Q8C9zv30NoXYfXfPfmUXCzb/ulfPZ76unzFuG+VlAoY2J6MadQBd54IIH8RfJqjhGG
- sBP2ivtP2/CBhS1U8jh3w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:aBRqwxBEZKI=;BOdvI+0GGoSHGplP8BAFTdPI99Z
- urgTl/1xXLjiPTO6rxZ64CEv08+4AAh6R5wvc6Z3T9gobCyqEHpBNDjhIsjWDw6H/WH7JZxck
- hJ63sSEmyWT/EM6fQl6o73KBtM0vgDFSwGfPwbxL0PHQ54BEQfGkWpJ4ajvy3AhnRESkcy5rP
- K9sf1C17YD0te9NtHuVJbM16KoHSLA0uC7b9zw/Om47JYRNxwT8tj96dRcU8kX9akjtfmy8Ix
- miI5DQ+dzZOAM46J9xz6U4Mn+Ilhh28gc4Gt4uKOo9VF1YiSLD++mO+0+hq+avO8TER/Pfrkg
- kPZM+yj2gbVcLXBAgg9qhD9aY0Jx2KDh7xveIi21Nyn9Cfof/DzSyGaOCgH89hSryQq/PYefb
- ga3w1irfBmTLljlW7+94c33ejVqvF5lvjl4hICr722T3YQg66ETM57L3i3jOzdCKNt+WpDZGc
- shG8vJc25jzJLUA1dXWNwM5Je9GX+Kmq6xA2ddxALMohRf+F1Ts3wiAkFxvtPWsM3bO5aaCdA
- D5gLC4dO7sQdogc4kJ5Z6ywJdkBs/SFiejwiFmXK4iKvn/N94vB3sVDs4BFIQC9oL0WxCZRum
- yIGYrF3eqzEx2tBLK+HqFlW/708N6QTChagN/lNDUHkymX6uLd+h/3bWAL5q/wjEmkyiCzZd4
- Mv0mI21dA25YYJM0UEMBTzMnQ7uM1qZipFjJHiDPmpyvKcTh8a46LlXyA+N32gXL/CJrXtkFy
- w63shD3XBlgEaRaaFQQMbu2OrPfNIkiIDZJkN/sBF0OhYVMDwd3VheOeMP2IrCKcy9QoWKZcV
- Rn3TdvwxJIGG497h50vzDMBHyFCGTTTP4ApwJeJjRLpkY=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405-topic-smem_speedbin-v1-2-ce2b864251b1@linaro.org>
 
-R3JlZXRpbmdzIChnb29kIHRvIHNlZSB5b3UgYmFjaykuDQoNCk9uIEZyaSwgMjAyNC0wNC0wNSBh
-dCAxMjoyNyArMDIwMCwgUGV0ZXIgWmlqbHN0cmEgd3JvdGU6DQo+IEBAIC04NDQwLDE5ICs4NDM5
-LDIwIEBAIHN0YXRpYyBzdHJ1Y3QgdGFza19zdHJ1Y3QgKnBpY2tfdGFza19mYWkNCj4gwqANCj4g
-wqDCoMKgwqDCoMKgwqDCoHJldHVybiB0YXNrX29mKHNlKTsNCj4gwqB9DQo+IC0jZW5kaWYNCj4g
-wqANCj4gwqBzdHJ1Y3QgdGFza19zdHJ1Y3QgKg0KPiDCoHBpY2tfbmV4dF90YXNrX2ZhaXIoc3Ry
-dWN0IHJxICpycSwgc3RydWN0IHRhc2tfc3RydWN0ICpwcmV2LCBzdHJ1Y3QgcnFfZmxhZ3MgKnJm
-KQ0KPiDCoHsNCj4gLcKgwqDCoMKgwqDCoMKgc3RydWN0IGNmc19ycSAqY2ZzX3JxID0gJnJxLT5j
-ZnM7DQo+IMKgwqDCoMKgwqDCoMKgwqBzdHJ1Y3Qgc2NoZWRfZW50aXR5ICpzZTsNCj4gwqDCoMKg
-wqDCoMKgwqDCoHN0cnVjdCB0YXNrX3N0cnVjdCAqcDsNCj4gK8KgwqDCoMKgwqDCoMKgc3RydWN0
-IGNmc19ycSAqY2ZzX3JxOw0KPiDCoMKgwqDCoMKgwqDCoMKgaW50IG5ld190YXNrczsNCj4gwqAN
-Cj4gwqBhZ2FpbjoNCj4gLcKgwqDCoMKgwqDCoMKgaWYgKCFzY2hlZF9mYWlyX3J1bm5hYmxlKHJx
-KSkNCj4gK8KgwqDCoMKgwqDCoMKgcCA9IHBpY2tfdGFza19mYWlyKHJxKTsNCj4gK8KgwqDCoMKg
-wqDCoMKgaWYgKCFwKQ0KPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gaWRs
-ZTsNCj4gK8KgwqDCoMKgwqDCoMKgc2UgPSAmcC0+c2U7DQo+IMKgDQo+IMKgI2lmZGVmIENPTkZJ
-R19GQUlSX0dST1VQX1NDSEVEDQo+IMKgwqDCoMKgwqDCoMKgwqBpZiAoIXByZXYgfHwgcHJldi0+
-c2NoZWRfY2xhc3MgIT0gJmZhaXJfc2NoZWRfY2xhc3MpDQoNClRob3NlIHdobyBkb2RnZSBHUk9V
-UF9TQ0hFRCBvdmVyaGVhZCByZWNlaXZlIGEgc2hpbnkgbmV3IHVudXNlZCB2YXJpYWJsZSB3YXJu
-aW5nLg0KDQoJLU1pa2UNCg==
+On Fri, Apr 05, 2024 at 10:41:30AM +0200, Konrad Dybcio wrote:
+> Introduce getters for SoC product and feature codes and export them.
+> 
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> ---
+>  drivers/soc/qcom/smem.c       | 66 +++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/soc/qcom/smem.h |  2 ++
+>  2 files changed, 68 insertions(+)
+> 
+> diff --git a/drivers/soc/qcom/smem.c b/drivers/soc/qcom/smem.c
+> index 7191fa0c087f..e89b4d26877a 100644
+> --- a/drivers/soc/qcom/smem.c
+> +++ b/drivers/soc/qcom/smem.c
+> @@ -795,6 +795,72 @@ int qcom_smem_get_soc_id(u32 *id)
+>  }
+>  EXPORT_SYMBOL_GPL(qcom_smem_get_soc_id);
+>  
+> +/**
+> + * qcom_smem_get_feature_code() - return the feature code
+> + * @id:	On success, we return the feature code here.
+> + *
+> + * Look up the feature code identifier from SMEM and return it.
+> + *
+> + * Return: 0 on success, negative errno on failure.
+> + */
+> +int qcom_smem_get_feature_code(u32 *code)
+> +{
+> +	struct socinfo *info;
+> +	u32 raw_code;
+> +
+> +	info = qcom_smem_get(QCOM_SMEM_HOST_ANY, SMEM_HW_SW_BUILD_ID, NULL);
+> +	if (IS_ERR(info))
+> +		return PTR_ERR(info);
+> +
+> +	/* This only makes sense for socinfo >= 16 */
+> +	if (__le32_to_cpu(info->fmt) < SOCINFO_VERSION(0, 16))
+> +		return -EINVAL;
+> +
+> +	raw_code = __le32_to_cpu(info->feature_code);
+> +
+> +	/* Ensure the value makes sense */
+> +	if (raw_code >= SOCINFO_FC_INT_RESERVE)
+> +		raw_code = SOCINFO_FC_UNKNOWN;
+> +
+> +	*code = raw_code;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_smem_get_feature_code);
+> +
+> +/**
+> + * qcom_smem_get_product_code() - return the product code
+> + * @id:	On success, we return the product code here.
+> + *
+> + * Look up feature code identifier from SMEM and return it.
+> + *
+> + * Return: 0 on success, negative errno on failure.
+> + */
+> +int qcom_smem_get_product_code(u32 *code)
+> +{
+> +	struct socinfo *info;
+> +	u32 raw_code;
+> +
+> +	info = qcom_smem_get(QCOM_SMEM_HOST_ANY, SMEM_HW_SW_BUILD_ID, NULL);
+> +	if (IS_ERR(info))
+> +		return PTR_ERR(info);
+> +
+> +	/* This only makes sense for socinfo >= 16 */
+> +	if (__le32_to_cpu(info->fmt) < SOCINFO_VERSION(0, 16))
+> +		return -EINVAL;
+> +
+> +	raw_code = __le32_to_cpu(info->pcode);
+> +
+> +	/* Ensure the value makes sense */
+> +	if (raw_code >= SOCINFO_FC_INT_RESERVE)
+> +		raw_code = SOCINFO_FC_UNKNOWN;
+
+This looks like a c&p from the previous function. Should we be comparing
+the raw_code with a SOCINFO_PC_ constant?
+
+> +
+> +	*code = raw_code;
+> +
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(qcom_smem_get_product_code);
+> +
+>  static int qcom_smem_get_sbl_version(struct qcom_smem *smem)
+>  {
+>  	struct smem_header *header;
+> diff --git a/include/linux/soc/qcom/smem.h b/include/linux/soc/qcom/smem.h
+> index a36a3b9d4929..aef8c9fc6c08 100644
+> --- a/include/linux/soc/qcom/smem.h
+> +++ b/include/linux/soc/qcom/smem.h
+> @@ -13,5 +13,7 @@ int qcom_smem_get_free_space(unsigned host);
+>  phys_addr_t qcom_smem_virt_to_phys(void *p);
+>  
+>  int qcom_smem_get_soc_id(u32 *id);
+> +int qcom_smem_get_feature_code(u32 *code);
+> +int qcom_smem_get_product_code(u32 *code);
+>  
+>  #endif
+> 
+> -- 
+> 2.40.1
+> 
+
+-- 
+With best wishes
+Dmitry
 
