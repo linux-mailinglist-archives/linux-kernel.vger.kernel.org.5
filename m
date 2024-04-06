@@ -1,117 +1,109 @@
-Return-Path: <linux-kernel+bounces-133879-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133880-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6FA989AA3C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:54:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0FA789AA3E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:58:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6508F1F21C61
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:54:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5A640B21C0A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:58:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E56324B4A;
-	Sat,  6 Apr 2024 09:54:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17A9424A06;
+	Sat,  6 Apr 2024 09:58:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gTlxPVzi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WCkKDUoA"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22811EB3F;
-	Sat,  6 Apr 2024 09:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B2BC1E48B
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 09:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712397280; cv=none; b=kDEVUsrAQM8b7m3d39pM9YPAd3VZn7ZnbGF3l21IJpfadicHTqtTbSdbuUbzPSczMgDGW9nRRXCT+ZLI+KoBIxAHXOlgK21MCXcSt8yHUp1x41GvVLBOYtkZYAWmsS/xNqw9+34fYdZqjFM8lytgu+zHVzgqmVAzoLxEIjGuSi8=
+	t=1712397493; cv=none; b=qzdjss1/WskzQf/jmi01NhWqIGG8ijLUq7SP9Q9UjcGHZI3ZZ0Ej2gY+i6ExnNc1MSLoPoAVzyWa2FeQ0R7fz22TbevGyVFic6ECPnueEYFpHB5VeCwDwax/SniD4pUb5gD28n3tHAdaOVoxVuppwGVT2A8rTqtnytGY7p4AmiA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712397280; c=relaxed/simple;
-	bh=CtiTRJU16cbEHxhAXjKhFe3P15kf9+LcvQjsVXNhgkk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=B2nVuSDZRPmgTMGZa+K/k1eIYY7CW372KQTF6bQYV7tIhD9RU36HkS/mt3VSkMxE/5iZUJm8VK93PS5xUTZdJSSN9uqdK50fOal9q3oNpfU4r6xepp+Vz6ScDjSeAkvH4KCtWoswgdv6v0YlEOZXSMq5U14bJniBEmLhXUtHC7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gTlxPVzi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3702C433C7;
-	Sat,  6 Apr 2024 09:54:38 +0000 (UTC)
+	s=arc-20240116; t=1712397493; c=relaxed/simple;
+	bh=8QOjyi5yo48Gc03G0D16O76wbrg04l+eAGY55tGyRSA=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CSE+G2MV9jlQbvW1rNMhGI9kNS/FflZ8ksINKtqPD89d9zoOQkpD+2ZlCOtm9ElXUi94RvMO3komP0iaCcPOAi/uXhi5LhcicIQYlgZpivlhGRIjpaGbtIXU+MpjIHrXgliEVP5NaNDy83kg4yVWcDcdmMd+yPO10Z0z5eNmj+A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WCkKDUoA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5980C433F1;
+	Sat,  6 Apr 2024 09:58:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712397279;
-	bh=CtiTRJU16cbEHxhAXjKhFe3P15kf9+LcvQjsVXNhgkk=;
-	h=Date:From:To:Cc:Subject:From;
-	b=gTlxPVzi5QBcM4Z8pD3uXjMGSfPBK46cGG/Uqh1ZdPTeZoVWf8T21rmcje7vi71qD
-	 qckoRf9jDGJAptFDFUyhJPuvsS09+PgkN8ZLqf5fLFCy7ue2fpqBQ4AZRftt7VuYz4
-	 IzC7ara/MWndIzF5GSfDKIPre0j2fHNBflQqo2ii7+6uz9VCxIYTCGu4gq3z8GW1dl
-	 gtxolD/GYTc+vUBo1xCkhGuN2Ti+SbTvdnHrreiatAN7Vk/3YMud4nUwN9z2VtT6ZW
-	 x21yvj6Qcoyx8taIH5sQaIKOSmSpUu4kHFuq5uiZSMYaBarmaniiyJM9tuke5d33qE
-	 3X3HjlaKGbIgQ==
-Date: Sat, 6 Apr 2024 11:54:35 +0200
-From: Wolfram Sang <wsa@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andi Shyti <andi.shyti@kernel.org>
-Subject: [PULL REQUEST] i2c-for-6.9-rc3
-Message-ID: <ZhEb2zk8J-YCCgaZ@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>,
-	Andi Shyti <andi.shyti@kernel.org>
+	s=k20201202; t=1712397492;
+	bh=8QOjyi5yo48Gc03G0D16O76wbrg04l+eAGY55tGyRSA=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=WCkKDUoAxS1hNUGaSvzPdz2OgUBAYcdgTIVhIbTpjTlKHpT4oiiTjTA0d/5hEjbIw
+	 SaDvW5m9P3E795ro7EQFODrYT5fjjj17ebXlda5cKDnqo+aWnKqFOz3HOUNfGlRXeO
+	 OPE46yAkQNN4By0DGlYpNVWjOAVaY9M6HOnVSSlQX4UFS82YQyVmX6jGgeeIvMNWTq
+	 hYBzpb2HrXqx9yZTmtrr0Xt/VldxNWneHQ6NGQOErVp99A7yR2HbvvUBwnxWXWruV2
+	 5qErzfhTtLOjB4O0+3l4jqYe2nmFvSHN/J/uh+H6KVAedg1/uPzarykMkR8QkCdPrc
+	 +J38PgGCQEmmg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rt2oM-0023Jb-Jp;
+	Sat, 06 Apr 2024 10:58:10 +0100
+Date: Sat, 06 Apr 2024 10:58:10 +0100
+Message-ID: <87edbisthp.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: Nianyao Tang <tangnianyao@huawei.com>,
+    Thomas Gleixner <tglx@linutronix.de>
+Cc: 	<yuzenghui@huawei.com>,
+	<linux-arm-kernel@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>,
+	<guoyang2@huawei.com>,
+	<wangwudi@hisilicon.com>
+Subject: Re: [RESPIN PATCH] irqchip/gic-v4.1:Fix VSYNC referencing an unmapped VPE
+In-Reply-To: <20240406022737.3898763-1-tangnianyao@huawei.com>
+References: <20240406022737.3898763-1-tangnianyao@huawei.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nsxrkpuRpGe1hJWV"
-Content-Disposition: inline
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: tangnianyao@huawei.com, tglx@linutronix.de, yuzenghui@huawei.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, guoyang2@huawei.com, wangwudi@hisilicon.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
+On Sat, 06 Apr 2024 03:27:37 +0100,
+Nianyao Tang <tangnianyao@huawei.com> wrote:
+> 
+> As per the GICv4.1 spec (Arm IHI 0069H, 5.3.19):
+> 
+> "A VMAPP with {V, Alloc}=={0, x} is self-synchronizing, This means the
+> ITS command queue does not show the command as consumed until all of
+> its effects are completed."
+> 
+> Furthermore, VSYNC is allowed to deliver an SError when referencing a
+> non existent VPE.
+> 
+> By these definitions, a VMAPP followed by a VSYNC is a bug, as the
+> later references a VPE that has been unmapped by the former.
+> 
+> Fix it by eliding the VSYNC in this scenario.
+> 
+> Fixes: 64edfaa9a234 ("irqchip/gic-v4.1: Implement the v4.1 flavour of VMAPP")
+> 
+> Signed-off-by: Nianyao Tang <tangnianyao@huawei.com>
+> Reviewed-by: Marc Zyngier <maz@kernel.org>
 
---nsxrkpuRpGe1hJWV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Thanks for having taken my remarks into account, it looks good now.
 
-The following changes since commit 39cd87c4eb2b893354f3b850f916353f2658ae6f:
+Thomas, can you please take this as a fix for 6.9?
 
-  Linux 6.9-rc2 (2024-03-31 14:32:39 -0700)
+Thanks,
 
-are available in the Git repository at:
+	M.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git tags/i2c-for-6.9-rc3
-
-for you to fetch changes up to 5ceeabb0eb2e1982d25c384048735b9da66911f9:
-
-  Merge tag 'i2c-host-fixes-6.9-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux into i2c/for-current (2024-04-06 11:29:15 +0200)
-
-----------------------------------------------------------------
-Passing through a host driver build fix
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      i2c: pxa: hide unused icr_bits[] variable
-
-Wolfram Sang (1):
-      Merge tag 'i2c-host-fixes-6.9-rc3' of git://git.kernel.org/pub/scm/linux/kernel/git/andi.shyti/linux into i2c/for-current
-
- drivers/i2c/busses/i2c-pxa.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
---nsxrkpuRpGe1hJWV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmYRG9sACgkQFA3kzBSg
-KbZEvg//UOZkvQqcJbv8ZzmDQZzKQxCWy2N0zlW3NWvaRW0DYTikAVeSS+u8aVkB
-qJY578dxYc3873bqN7ZoMKAxDxCesv5t8VVDcCSRhoIsNzNY0QjKHy5UaMO9aQdo
-VZwICkTj+swXO9uvxNv82Tnp6w9wKenmL39Ussrt4VBlpRsEN/uJA0f0T3mEab5g
-NuxqqNTzXejneLzsAcHjgz7jXqsIh/mpf1cFxuqFahNZvJx824w1Dly30KMnNqsb
-dQYwZ68zHptbxQFGxfu++t2428sw9+xi2RVuQI9ropHQRCO44SKRWe1Zqg8YeSk3
-zd5WQ/U9E14dWNAhHd22MlHBtRbBCwYQN1BEqNz7d/yCNcmPqmFcDu6YgWD8zQML
-pvizkWyPF26DFzQDRgtr427jJgd1KwyT1PkscqxP9LF+/uxRtil1RJodAM+g6keL
-Qpcha5GzZAgo8qqSE1NBooogvVFDWA8j89HHkRXIaOoLcPAiYwsvu5rXVkuwHsah
-EHb8Sxb2zN6cIaBAmg2j08OXfvTHsGL4qlaevjQSpzBEgBcITthQptkqAuK+v9F/
-xKkxM7HHASRiWVTJsDq+y9K7Wzcjyl0trpU91LULyF5TSB9Cio8RCfbwJjArgNVo
-5zK7KagaPcu2MjlIrqEuxZW0MKZdrL8bi0EV9ju0hgCXSXAjOEk=
-=vGGV
------END PGP SIGNATURE-----
-
---nsxrkpuRpGe1hJWV--
+-- 
+Without deviation from the norm, progress is not possible.
 
