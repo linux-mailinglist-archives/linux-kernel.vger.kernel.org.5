@@ -1,78 +1,106 @@
-Return-Path: <linux-kernel+bounces-134010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D5A989AC16
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 18:42:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97FA589AC18
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 18:45:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA1E71F217FB
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:42:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA6CA1C20431
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:45:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 655A23F9F6;
-	Sat,  6 Apr 2024 16:42:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28F93FB16;
+	Sat,  6 Apr 2024 16:45:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jg4LPtaS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eY2lnDp/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D152137E;
-	Sat,  6 Apr 2024 16:42:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B963839D;
+	Sat,  6 Apr 2024 16:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712421722; cv=none; b=XaJNxwYTrUO6cjcYedrVs6Oqxv/92iKnn2l5UpsbraGwFQEC3vbD3L/tC6jsuIYJ8ss92YdTBucWJlPfevtZSiUFFHHGt6MfA5K5lurNzLgBx36bAGy1jrulVCIIUtf0hgtzjVgz/bsan+WhIbBpnVN9e30Loq9YqMtw4rS/yuY=
+	t=1712421935; cv=none; b=MUGXx0CpOrWn5JMuzyVp4g5C+fNzkff4oKxXHH7SY9PQrUTtTVa4XSEgyX3nSZD59EzgFCV7nKsZhEJWCZSuUnifTwt/Z/SMTzGRTnEfXrsOOwH58IGiAo5SP0GG/C2mkY8UtQdSJv+2ZvLUh1Se5tIMnbwfwOuhy85yqckJ+jA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712421722; c=relaxed/simple;
-	bh=ttTKEBDEIKNl6Rji9qt5QDBkBZVSyncuFn9A8jAEd/s=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=Cw4IAgy3eOzg5AMlsjYKvpBunbF8CFsnhZxo8ErGC9A8sysBXPDHmX2BGvz/DY6rMifQ9pNo7QHAw+qCBr5rqGtRem9+0aU/iuGNu7cPN7lFRhw0y0/KjjaI3YpUFrrxTvyMXJEblg1h6qtRZHpOVN41ZgLmxr6uelIgvz8jUho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jg4LPtaS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 855ABC433C7;
-	Sat,  6 Apr 2024 16:42:02 +0000 (UTC)
+	s=arc-20240116; t=1712421935; c=relaxed/simple;
+	bh=Tnp1inQU7Buh6+yx2ER0/mIIwxvWAJA8D3UAlLEh2uc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Dfr/wCeNUduxAHOnUjLa13zoiixDMrKbFMx/c3x1ia1ZlTBxNC/5bVwTsSEfYq8A4r+79Xgn09tLiPkct57gtU1RG+YXYnPPymS78WF8/5ivSQr892S96Y37CM/6a1eZFKl+TU7RCjHQmqK8t6tveS9tOMZ+guwzYQ5N1rz6e5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eY2lnDp/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4AE5DC433C7;
+	Sat,  6 Apr 2024 16:45:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712421722;
-	bh=ttTKEBDEIKNl6Rji9qt5QDBkBZVSyncuFn9A8jAEd/s=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=jg4LPtaSXIVG3RMECevcxDOWcWh98mdDI7a3k50FGxWbvE29dKdjv/lw/SyWTGx5J
-	 +Ebw8KOvHfQTuLR8M7H84W9YSi4zfce7l3sMngIrOoo/008AabR3ZGqO5T14GtQif2
-	 WssuX984Y48WJJIj9eu2qGoGdqMX84sg0nMPkCq07fhnvrMkuIMNAOxvoXYxjs5zHc
-	 y+IydKaCtmpUi1E+UbEtY2UTV8eXFt9OTgShv+Z1Fcpnn9B133NU++55ZH0nkUqpEH
-	 LIrhcZm73yEWzveYNUFOmwlMlE/RUjc39Fb20hExGIrbBuHFdFJgwuF/YcE+XXpnzd
-	 VH9JJiDOO9rxQ==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 71422D8A103;
-	Sat,  6 Apr 2024 16:42:02 +0000 (UTC)
-Subject: Re: [GIT PULL] 2nd round of NFSD fixes for v6.9-rc
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <ZhF6O/tcbLJYjddw@tissot.1015granger.net>
-References: <ZhF6O/tcbLJYjddw@tissot.1015granger.net>
-X-PR-Tracked-List-Id: <linux-nfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <ZhF6O/tcbLJYjddw@tissot.1015granger.net>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.9-2
-X-PR-Tracked-Commit-Id: 10396f4df8b75ff6ab0aa2cd74296565466f2c8d
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f2f80ac809875855ac843f9e5e7480604b5cbff5
-Message-Id: <171242172245.14146.1185090208878693476.pr-tracker-bot@kernel.org>
-Date: Sat, 06 Apr 2024 16:42:02 +0000
-To: Chuck Lever <chuck.lever@oracle.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+	s=k20201202; t=1712421934;
+	bh=Tnp1inQU7Buh6+yx2ER0/mIIwxvWAJA8D3UAlLEh2uc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=eY2lnDp/Mbw2PeO85q5zSgscHcXApqQ/elAgRadwl2Zb57xKdzKzQ5eIl5Xp67DyF
+	 sZnsSSVAvsWtiMPzEvGZh3PxVoBbOkt2rP7NodV9EXvDHp/rdYcRp/O3veROdnAsju
+	 o7hqhNTn+kPtEuXZZtBriQ4qgK6hoLbaSHjH7cMyI5zicU9Dmb8hFyGmPW8qrwZyVZ
+	 lMQub1IBE/WU1q779r4ZDE/vFg21NOdPkVELuf5M62JROC2WXG53GjnCDRW8dOYWcq
+	 7JXEqutQTHp40q2ovn3wxX9F1RbKQAKTdUOEti4YuFOslhepjtoGoFuuA1dyPPwqZI
+	 HIU4L7x9S+12g==
+Date: Sat, 6 Apr 2024 17:45:21 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Luca Weiss <luca@z3ntu.xyz>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ Lars-Peter Clausen <lars@metafoo.de>, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Documentation: ABI: document in_temp_input file
+Message-ID: <20240406174513.13b4e9e4@jic23-huawei>
+In-Reply-To: <20240406-in_temp_input-v1-1-a1744a4a49e3@z3ntu.xyz>
+References: <20240406-in_temp_input-v1-1-a1744a4a49e3@z3ntu.xyz>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-The pull request you sent on Sat, 6 Apr 2024 12:37:15 -0400:
+On Sat, 06 Apr 2024 17:31:04 +0200
+Luca Weiss <luca@z3ntu.xyz> wrote:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/cel/linux.git tags/nfsd-6.9-2
+> For example the BMP280 barometric pressure sensor on Qualcomm
+> MSM8974-based Nexus 5 smartphone exposes such file in sysfs.
+> Document it.
+> 
+> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f2f80ac809875855ac843f9e5e7480604b5cbff5
+Hi Luca,
 
-Thank you!
+Applied with a note added on fixing the line above to not reuse X.
+A good additional thing but needs mentioning in the commit message.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks,
+
+Jonathan
+
+> ---
+>  Documentation/ABI/testing/sysfs-bus-iio | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+> index 2e6d5ebfd3c7..7cee78ad4108 100644
+> --- a/Documentation/ABI/testing/sysfs-bus-iio
+> +++ b/Documentation/ABI/testing/sysfs-bus-iio
+> @@ -243,7 +243,8 @@ Description:
+>  		less measurements. Units after application of scale and offset
+>  		are milli degrees Celsius.
+>  
+> -What:		/sys/bus/iio/devices/iio:deviceX/in_tempX_input
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_tempY_input
+> +What:		/sys/bus/iio/devices/iio:deviceX/in_temp_input
+>  KernelVersion:	2.6.38
+>  Contact:	linux-iio@vger.kernel.org
+>  Description:
+> 
+> ---
+> base-commit: 8568bb2ccc278f344e6ac44af6ed010a90aa88dc
+> change-id: 20240406-in_temp_input-4505d7fafff8
+> 
+> Best regards,
+
 
