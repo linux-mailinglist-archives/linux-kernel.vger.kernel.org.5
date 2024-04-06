@@ -1,60 +1,58 @@
-Return-Path: <linux-kernel+bounces-133834-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133835-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79F4889A97C
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:11:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0307A89A97E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:13:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 20AE0B21B19
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:11:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB8851C21CDF
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:13:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C22822EE5;
-	Sat,  6 Apr 2024 07:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7682C225CF;
+	Sat,  6 Apr 2024 07:13:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="Shi0azks"
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KpSeMMqt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE0E91EEFC;
-	Sat,  6 Apr 2024 07:11:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC4AC1C697
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 07:13:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712387501; cv=none; b=Loea8vgMEme55srCWRp1AA+ozghxs1Y9qn8tzOm8gZpspeXuFpKVUBPNeyPEv5NtSpNL26CmEEFQA18EwUrBD9AkP4WuY6qK27IZEnHbRJIBFdejRS8c22TQQ1hiOz1Z5AVDreCV56pn0JI0rumM9OcdgtdQIQUhsLzRmHW2QGQ=
+	t=1712387630; cv=none; b=nrUO1cDhqNhaKaxYu8kKjW7ZgFbAmBoau+3bRwuGRcKpditjAZ14OP3mlkY3pPn1mL40pjhTxb8kwbiWz/UGNkw9bTtrwxmm/RWbJfRKP9n+uuoyRPeQbk4NiHxaVGr4HY1l7Tmqkw40U7/h9aFqSo0m66NiLZDFZwaNr8SX1aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712387501; c=relaxed/simple;
-	bh=va5+nVrH2sTYitIpPwPYUS69H/ywqZioHyWNF/sVd3U=;
+	s=arc-20240116; t=1712387630; c=relaxed/simple;
+	bh=otn09rFwqivh/gePwrdoAAH8dH4n60Cf1yo60ZYoNTs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pNTm3NI/RNv8DgEr60UTcZDPwvnSR5mMnGJ/2fTQuarf1llf+/1TS1NjGsHzUF1R+XbI/fdMwTRoT48PJGsavobaeMK0RGa5EHqdDmHwy0yO7XSFc4dvkTs57a43kI92cVI1zmhvTLe/U157Du6Rk/O+OviCP9ySMQ1GxwiUeMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=Shi0azks; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=GNfNtOBQ9mUCSvC61XgRvWAWZ3dPPmGPMc1/GfjrGTo=; b=Shi0azks95Y038eI3QTH1bmTWb
-	wfIcFskYYx/8HAj5FzEqjL2Jys5VQE4o2zM0NYYgm1aiSFbIlEVmE8e2IviqJvYGy3H5J0MPEAkD7
-	CC1lF8eIfwScfjmAfv7BNoBTwXUfXXQMSYBiwwfvo1l67C1TbkfDzwfA1Phxr9WnrMypN9aYZ5+g1
-	haTiSo3BYfaDAZOCnUBj2mrKIDLW173EnzhLBVvMZ0+Uns7uUFrC8M0Ges/7b5QWCSNaeQBL1lcxo
-	+OG9Qx5PQ/RMaWOq3cR7CjtLg6wHH/TtLsVtSn9MU5vKW8los4Dau+/YHwbzhZFFnpkC6uDnfkol8
-	fkJgdJwA==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rt0D4-0070iB-3B;
-	Sat, 06 Apr 2024 07:11:31 +0000
-Date: Sat, 6 Apr 2024 08:11:30 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>
-Cc: amir73il@gmail.com, brauner@kernel.org, gregkh@linuxfoundation.org,
-	hch@lst.de, jack@suse.cz, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, miklos@szeredi.hu,
-	syzkaller-bugs@googlegroups.com, tj@kernel.org,
-	valesini@yandex-team.ru
-Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
-Message-ID: <20240406071130.GB538574@ZenIV>
-References: <CAOQ4uxgJ5URyDG26Ny5Cmg7DceOeG-exNt9N346pq9U0TmcYtg@mail.gmail.com>
- <000000000000107743061568319c@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=H65qxTm24sVHQ+WWFx20Gy+8/kkO1MKpzKGsNWAdj+IMXvoj+JY9hAlE2eo0HjM2siKvlcMmWSXRR9zA479GvnQTAREeJk4/aZycVfOWlvUUVnHxt9D9PN7OMxt7t9C9Jz7MIqOnKdAmLBysaN69Eboc66SBd1jNo6cYNA/5eQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KpSeMMqt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C33C433C7;
+	Sat,  6 Apr 2024 07:13:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712387630;
+	bh=otn09rFwqivh/gePwrdoAAH8dH4n60Cf1yo60ZYoNTs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KpSeMMqtXekcsG94J/slBvoWUl+5dMp2RHKq+hKlf68y0ocrjpg96nnhebCFILdaw
+	 NrunEmaNoL0bpTtvBed9gXy11SlitDKfWN5bYC6S7jyADE0tCYKlKyCcrDkstZqhJ9
+	 yhC9kKf7axU51TcaRiEwaQxe3O+mAXR+YdZjt0V4xZ0WCeiAZSomYn0kQKpd5xLkvV
+	 idaz9bjqnGTz9DytmFiHvYBp1K6MtApeuTC8WUt9HLABYfhpxrqbnmP2VLz5QPyiNP
+	 ylQEd5mJKFp+wTmoxmX93BWo995aAmsvS+LzbZSPn8e2jV41+lNG7UYZbJOYX58snS
+	 Tb5bLFUvVT65w==
+Date: Sat, 6 Apr 2024 12:43:45 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Mikhail Kobuk <m.kobuk@ispras.ru>
+Cc: Miquel Raynal <miquel.raynal@bootlin.com>,
+	Kishon Vijay Abraham I <kishon@kernel.org>,
+	Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+	Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+	linux-phy@lists.infradead.org, linux-kernel@vger.kernel.org,
+	lvc-project@linuxtesting.org,
+	Alexey Khoroshilov <khoroshilov@ispras.ru>
+Subject: Re: [PATCH v2 0/2] phy: marvell: a3700-comphy: Minor fixes
+Message-ID: <ZhD2KTImtCMnglG_@matsya>
+References: <20240325201254.54445-1-m.kobuk@ispras.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,18 +61,27 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <000000000000107743061568319c@google.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20240325201254.54445-1-m.kobuk@ispras.ru>
 
-On Sat, Apr 06, 2024 at 12:05:04AM -0700, syzbot wrote:
+On 25-03-24, 23:12, Mikhail Kobuk wrote:
+> Changes in v2:
+> - Replace hardcode and ARRAY_SIZE() with definition
+> - Link to v1: https://lore.kernel.org/linux-phy/20240321164734.49273-1-m.kobuk@ispras.ru/
 
-> commit:         3398bf34 kernfs: annotate different lockdep class for ..
-> git tree:       https://github.com/amir73il/linux/ vfs-fixes
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=c5cda112a8438056
-> dashboard link: https://syzkaller.appspot.com/bug?extid=9a5b0ced8b1bfb238b56
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+This does not apply for me, pls rebase on phy/fixes
+
 > 
-> Note: no patches were applied.
+> ---
+> Mikhail Kobuk (2):
+>   phy: marvell: a3700-comphy: Fix out of bounds read
+>   phy: marvell: a3700-comphy: Fix hardcoded array size
+> 
+>  drivers/phy/marvell/phy-mvebu-a3700-comphy.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+> 
+> -- 
+> 2.44.0
 
-How about the same test on 6c6e47d69d821047097909288b6d7f1aafb3b9b1?
+-- 
+~Vinod
 
