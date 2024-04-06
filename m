@@ -1,96 +1,168 @@
-Return-Path: <linux-kernel+bounces-133960-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133961-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1FEE89AB76
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:56:39 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E40D89AB79
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:57:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 10176B21CC8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 14:56:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0143FB21646
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 14:57:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 679953839C;
-	Sat,  6 Apr 2024 14:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66773383B2;
+	Sat,  6 Apr 2024 14:57:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DtiQpuZn"
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t7Xaidty"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C111E87C
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 14:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F94A38390;
+	Sat,  6 Apr 2024 14:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712415389; cv=none; b=UHlNmm9P4lwH387SYsKGQD5FHrb1soF/cWTynRZ/On9xlHyOZ/2BARhAAPYflAOy1F0Toths/vEMcCjzk7FKCs8mVUoztTWKiE5V3FaxJ4TlV82taa+JIKehhcvrFAN+uEFBiwdOlEZa0pPh8n1eXZfzVe/ePxYMHQ3+oENSGk0=
+	t=1712415420; cv=none; b=rE5pdsT2nGGJeSRBPe9vcpHowsXVOnHhJUom5gRixR9DN0/6sT15rnVYgbEJwfrF+EwkcANk5ryXR3UcjmELWvIyzfq7ePfIcg50u2nxw53WMirMlEbYywZf82OkWpKx8iiemlNznAPWvJuxlhX2bi407P9AfK49klWdG5J8ieA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712415389; c=relaxed/simple;
-	bh=q8m8OVpGFIgYTKXIELbCybDzJMbWjuqURTJUH55dwEs=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=SvPWyJRn4DQaQ/Een8KrXSbOhAL8qiuXHWGTc1/s5VqvUsYk54DKe0e6oi0rFaOli9qprcvPsr7dTPzFcLUf8qCXNrs2zMhH9XcHltyKxA5REIOAy5Mz0GVnTeegYQUKnyDl1WUsohOlhqrhfpoaaqo82LDO4K23c3WGejPcviE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DtiQpuZn; arc=none smtp.client-ip=209.85.167.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-516e62a2b05so105468e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 07:56:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712415386; x=1713020186; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=aWtJxxCLxr91qNR9cPEfSgYsfFWHGlJqEcVp12GrLIs=;
-        b=DtiQpuZn5tB5V92ydxA8SIr14Hgb7Qt3Czgm70bsqhFZkzSKzXm54ToJAU1U6z1E1/
-         PZVMpCZaHadQ9LPAFVaSr2xapONIOEBsqPI5hh6PxjAEYxzElV9nzaZ7pRKqWkT05dDN
-         3psxHJzx2SpepFmtklxjLf/Fxo8UjUxs8iL57LJf68nXiYDrfU9ihViL5D4NHwAlKJso
-         2gvHgJB60GfWoPou0fQrktu+HmWi9S43Rc5kuUGccgMEAZatdVqOtUWS1JUGSmKLogki
-         BbaJcwRLLtZqmA04YD5PwIcCYjORkag0RhSSpNYLDWNwVHgs54PaawjoRgTihwPVbinG
-         t40Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712415386; x=1713020186;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aWtJxxCLxr91qNR9cPEfSgYsfFWHGlJqEcVp12GrLIs=;
-        b=DciWzm5GVFbUBBnfFP39j993KGsJ1H3wtqMHu6vMz4TW7fQNNuGrlfslaFScTb8rGv
-         x7APWLUJ15BoUNVjyUONFdA4AT2s7YV9pExS3vxpbXL64PWLQQxg6ov9Ap7HX9fgtI8k
-         m4c6jXcWHU36OyMSK17ojeMyo0cJDweciI+GFWQOesLNdIZdHx96j2wh7iNT5m2/zksD
-         7yiEW2yV/Pg5lXyr6/EvWqBzk7woRB2z3JqsJCKNyVlxaLvyffAvrJGGrMNh4Xlf7qCQ
-         jdugX9wwxxPztP0nMird3csvAZI+fW0RDH5HiV8Hn8xrB/DHfZAtddMgD1hd1BD++VfC
-         rTxw==
-X-Gm-Message-State: AOJu0Yydbp2ebiROnYsJ2dUmU/dI0VLQKeeR/L6haSc8AMkYFMv5bo4u
-	FaB1tGyEh//MGdBhE68z8y5zXrfxPHYBIVKghbwwCh1lIxnaDP5G2bE+kp4ocrXiYwrBL0Gu/oG
-	V66TuqTUKIeNs0pA/NoqAxE+a/9n4YyuGwW+LTQ==
-X-Google-Smtp-Source: AGHT+IEyZwQkRe+ImVy6v89+Xgx4SKA3aCXwXqK0MT8N7us1Vx2jD6XbGiA5t6mZPlYV36Cbw2fJ1SPK65ezhS51DLQ=
-X-Received: by 2002:a19:2d0e:0:b0:516:d4c2:5412 with SMTP id
- k14-20020a192d0e000000b00516d4c25412mr2829877lfj.32.1712415385522; Sat, 06
- Apr 2024 07:56:25 -0700 (PDT)
+	s=arc-20240116; t=1712415420; c=relaxed/simple;
+	bh=H7r4BwHYdEAkivbchzdrbMt8uQAr7fq8c2kkzMTjysk=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Iy4QfkxgiYNPRsWE5xf/nspyIG8VsVkXUOEc/YKds07H5EZaWKQcPNeo47N6lASaM+/k5lt84SRM0aSzBgs5m8SCJHS+9bUWwPUSc9IWFwZjnvxyP/zXsT5gOh6Ff8PvycGHa8l96r5AXM8/mroI6WeKvrJztldMSJLB4TWQ4X8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t7Xaidty; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 163CEC433F1;
+	Sat,  6 Apr 2024 14:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712415420;
+	bh=H7r4BwHYdEAkivbchzdrbMt8uQAr7fq8c2kkzMTjysk=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=t7XaidtysS/mL4yRu/ZNJPnY2CXH2LEHOBo8qFRjr1egb4qlFtKO8rrd81+/2cXaA
+	 UrbiEdU9+EMPXyw2pqGWkHWtd8GETehuKheyXQQihZraZld8T7z6OXHV2III0aqaF0
+	 +Ba5bv/mqOqL6Jq/IF+iKX3txDS11I8tLhzjQ+Qi5LHkTyV0kNtM4fk0BAPswBendF
+	 oFJF9eO27YWR/vkb51Q58Mkde3vZJcrUTSGnZ30L87EqjY0z64nuWzMjBebeYC+CsE
+	 XVTbdEmdJdBbi+p6evdJuZJMtDtHoaJphUDqFvkF9skddHdFm44CSsPeqyB3hUwatW
+	 Xk1ZwiQxwrRYA==
+Date: Sat, 6 Apr 2024 15:56:46 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Dumitru Ceclan via B4 Relay
+ <devnull+dumitru.ceclan.analog.com@kernel.org>
+Cc: dumitru.ceclan@analog.com, Lars-Peter Clausen <lars@metafoo.de>, Michael
+ Hennerich <Michael.Hennerich@analog.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, David Lechner <dlechner@baylibre.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Dumitru Ceclan <mitrutzceclan@gmail.com>
+Subject: Re: [PATCH 2/6] iio: adc: ad7173: fix buffers enablement for
+ ad7176-2
+Message-ID: <20240406155646.694f710b@jic23-huawei>
+In-Reply-To: <20240401-ad4111-v1-2-34618a9cc502@analog.com>
+References: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
+	<20240401-ad4111-v1-2-34618a9cc502@analog.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Jarlath <jarla7h@gmail.com>
-Date: Sat, 6 Apr 2024 16:55:49 +0200
-Message-ID: <CAJ2n2MSOg8q1oFYi49oxaBkJPmufXf5GWnUoZXkOcE-N7_Nj5g@mail.gmail.com>
-Subject: [PATCH] Add new PSU: Corsair HX1200i (2023) to corsair-psu.c
-To: linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-It looks like Corsair has updated its power supply portfolio. The
-owned HX1200i is not supported by default. After adding the
-[idProduct] configuration, you can get a correct reading from the
-device. The HX1200i as of 2024-04-04 on the site is marked as a new
-model.
+On Mon, 01 Apr 2024 18:32:20 +0300
+Dumitru Ceclan via B4 Relay <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:
 
-Signed-off-by: Tomasz Gwozdz <jarla7h@gmail.com>
+> From: Dumitru Ceclan <dumitru.ceclan@analog.com>
+> 
+> AD7176-2 does not feature input buffers, enable buffers only on
+>  supported models.
+> 
+> Fixes: cff259bf7274 ("iio: adc: ad7173: fix buffers enablement for ad7176-2")
+> Signed-off-by: Dumitru Ceclan <dumitru.ceclan@analog.com>
 
+How bad is this?  If you can find out if writing those bits does anything
+harmful (they are reserved and datasheet says should be written 0 I think)
+That will help people decide whether to backport the fix?
 
---- drivers/hwmon/corsair-psu.c.orig    2024-04-06 15:49:20.922744536 +0200
-+++ drivers/hwmon/corsair-psu.c 2024-04-06 16:03:27.793762525 +0200
-@@ -883,6 +883,7 @@ static const struct hid_device_id corsai
-       { HID_USB_DEVICE(0x1b1c, 0x1c0c) }, /* Corsair RM850i */
-       { HID_USB_DEVICE(0x1b1c, 0x1c0d) }, /* Corsair RM1000i */
-       { HID_USB_DEVICE(0x1b1c, 0x1c1e) }, /* Corsair HX1000i Series 2023 */
-+       { HID_USB_DEVICE(0x1b1c, 0x1c23) }, /* Corsair HX1200i Series 2023 */
-       { HID_USB_DEVICE(0x1b1c, 0x1c1f) }, /* Corsair HX1500i Series
-2022 and 2023 */
-       { },
-};
+> ---
+>  drivers/iio/adc/ad7173.c | 11 +++++++++--
+>  1 file changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ad7173.c b/drivers/iio/adc/ad7173.c
+> index f6d29abe1d04..8a95b1391826 100644
+> --- a/drivers/iio/adc/ad7173.c
+> +++ b/drivers/iio/adc/ad7173.c
+> @@ -145,6 +145,7 @@ struct ad7173_device_info {
+>  	unsigned int id;
+>  	char *name;
+>  	bool has_temp;
+> +	bool has_input_buf;
+>  	bool has_int_ref;
+>  	bool has_ref2;
+>  	u8 num_gpios;
+> @@ -212,6 +213,7 @@ static const struct ad7173_device_info ad7173_device_info[] = {
+>  		.num_configs = 4,
+>  		.num_gpios = 2,
+>  		.has_temp = true,
+> +		.has_input_buf = true,
+>  		.has_int_ref = true,
+>  		.clock = 2 * HZ_PER_MHZ,
+>  		.sinc5_data_rates = ad7173_sinc5_data_rates,
+> @@ -224,6 +226,7 @@ static const struct ad7173_device_info ad7173_device_info[] = {
+>  		.num_configs = 8,
+>  		.num_gpios = 4,
+>  		.has_temp = false,
+> +		.has_input_buf = true,
+>  		.has_ref2 = true,
+>  		.clock = 2 * HZ_PER_MHZ,
+>  		.sinc5_data_rates = ad7173_sinc5_data_rates,
+> @@ -237,6 +240,7 @@ static const struct ad7173_device_info ad7173_device_info[] = {
+>  		.num_configs = 8,
+>  		.num_gpios = 4,
+>  		.has_temp = true,
+> +		.has_input_buf = true,
+>  		.has_int_ref = true,
+>  		.has_ref2 = true,
+>  		.clock = 2 * HZ_PER_MHZ,
+> @@ -251,6 +255,7 @@ static const struct ad7173_device_info ad7173_device_info[] = {
+>  		.num_configs = 4,
+>  		.num_gpios = 2,
+>  		.has_temp = true,
+> +		.has_input_buf = true,
+>  		.has_int_ref = true,
+>  		.clock = 16 * HZ_PER_MHZ,
+>  		.sinc5_data_rates = ad7175_sinc5_data_rates,
+> @@ -263,6 +268,7 @@ static const struct ad7173_device_info ad7173_device_info[] = {
+>  		.num_configs = 8,
+>  		.num_gpios = 4,
+>  		.has_temp = true,
+> +		.has_input_buf = true,
+>  		.has_int_ref = true,
+>  		.has_ref2 = true,
+>  		.clock = 16 * HZ_PER_MHZ,
+> @@ -289,6 +295,7 @@ static const struct ad7173_device_info ad7173_device_info[] = {
+>  		.num_configs = 4,
+>  		.num_gpios = 2,
+>  		.has_temp = true,
+> +		.has_input_buf = true,
+>  		.has_int_ref = true,
+>  		.clock = 16 * HZ_PER_MHZ,
+>  		.odr_start_value = AD7177_ODR_START_VALUE,
+> @@ -932,7 +939,7 @@ static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
+>  			AD7173_CH_ADDRESS(chan_arr[chan_index].channel,
+>  					  chan_arr[chan_index].channel2);
+>  		chan_st_priv->cfg.bipolar = false;
+> -		chan_st_priv->cfg.input_buf = true;
+> +		chan_st_priv->cfg.input_buf = st->info->has_input_buf;
+>  		chan_st_priv->cfg.ref_sel = AD7173_SETUP_REF_SEL_INT_REF;
+>  		st->adc_mode |= AD7173_ADC_MODE_REF_EN;
+>  
+> @@ -989,7 +996,7 @@ static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
+>  
+>  		chan_st_priv->ain = AD7173_CH_ADDRESS(ain[0], ain[1]);
+>  		chan_st_priv->chan_reg = chan_index;
+> -		chan_st_priv->cfg.input_buf = true;
+> +		chan_st_priv->cfg.input_buf = st->info->has_input_buf;
+>  		chan_st_priv->cfg.odr = 0;
+>  
+>  		chan_st_priv->cfg.bipolar = fwnode_property_read_bool(child, "bipolar");
+> 
+
 
