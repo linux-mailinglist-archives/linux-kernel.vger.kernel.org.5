@@ -1,232 +1,82 @@
-Return-Path: <linux-kernel+bounces-133937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F67589AB1E
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:44:48 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EE0789AB24
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:52:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61F831C20D57
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:44:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2585E1F21CEB
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:52:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24B82376E0;
-	Sat,  6 Apr 2024 13:44:36 +0000 (UTC)
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1736C376E7;
+	Sat,  6 Apr 2024 13:52:13 +0000 (UTC)
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09A0364DA
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 13:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33CC213ACC;
+	Sat,  6 Apr 2024 13:52:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.242.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712411075; cv=none; b=IWoDSmm5I/BZBoZofg64EgxcS54vcUryzUAVjh5FgiM5puXAqz8ZPE/LeooLsz6nQx9D+8A9CKEIHB1FQfhXesUOoE5VgiU0XPE7Gqvn+yEz25QcL5EbN+OhGxF/DfcNhiWYv3FBryyhBJDVFbYP4/M43vRtjtcxO18JDnZgjRM=
+	t=1712411532; cv=none; b=Q33Yu3yflhIdnRXeHSsLWGVTmN+pTiAyCsMO9QWRtyglEfytxZNDLVKeoVXJGUhdWmbeU/eErFjcMdihw1UJAaHIZ2UEGA4Lld1uqMIOy8tHOuYy06aS1RLlVKn12JLNXgpeqcdx1o5iVha9UJIl67WpySVgtg3S7SXul/5XqYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712411075; c=relaxed/simple;
-	bh=Y0I5OOiYLrisb9MHjIy5W/BnEWOKA7BhGwsnPl6CA8E=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=fDZKqOtiLWADV1PljFYjobLMVqAABGaqJCf8BEtUOtCTtQj/bnjBwifNI3yYEb9gitTKTBS6GAvXhuyICETeo3qtqZldgDFfax3GgYMz6ATJWbHnAu47Jf7jw30v3NtS7WHP5q3fFu3+g+C50WpfxMKBzB7CsCwDJrUxXptRo7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cbf1d5d35bso333647239f.0
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 06:44:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712411073; x=1713015873;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=4q0SLtk19wfhTyOo/Bn7vTE4bJX1NRQ4iTKl5rE20uQ=;
-        b=M3gbo8eKmSFfLNvSzYGa98b4M2pbTjfTuSfANkHJbEli/BEMTXWeCFTMooMS9Ca8Ve
-         fMXeHwhCds49VfDUp0Bx5v+kDRihuqJr78Yen4fNHgfl4S1KH1QA1Bpj0jNN/sD98Huc
-         dM8/csukoIclGJwxGCbVjfuF486HXSiBZkEyfLDmqjUnA4T7aaMRRy02VysHJ6xGCrD+
-         fjoTd3K1dsZ1s/rdZE8vgq26f4mLNdQuovQT9ouchZf00Yp65utJQIstRJGhLrzQE9J6
-         cMUJcXpW4T7cmsMN81MRTApuWjIXD0dFjYfQs133DSdPpV3eYIeHbekyDnj7QS5nwz3i
-         3Y9w==
-X-Forwarded-Encrypted: i=1; AJvYcCXzHg4ygQwjydyFaVoVojGtF0pX/CO4AzjmkNMg7T/nDS48nuV/xwk2BQhzbDzGhXLqfhHkkBff8UPDAmoPo1KjwiY2Ij5a8QhBAYTr
-X-Gm-Message-State: AOJu0Yxr+dhCNzIrbBC/L3Q0DpiqZGiHWJiEgVdKqePSK4fYeX3ZfB6b
-	QvA5IW9gXG8I3+CGeGXNfThwR41Yv0pscdh4yqm08XzFwphPm3CbwChMqbiSXE08sVt/+dGxZ5N
-	qiEI6hqLxSmtjr/imZ2ac66WYmiro8Q5gIxkgYwwI9RVe973PkeD8ZDw=
-X-Google-Smtp-Source: AGHT+IHwFFRTUFT4GCJ1uM+6937cBPAwnvNrp8mwKPvygIA2rlZVjp9yqDq0OP+TpMlttf+XDsP7rtsT/+9dzZlFFO41D6k5aZ7U
+	s=arc-20240116; t=1712411532; c=relaxed/simple;
+	bh=c4P6XCqXe/1/PyNm0hEV/fhObLttlXBUccidgoz+KNA=;
+	h=Message-Id:From:Date:Subject:To:Cc; b=mMlODrFL13/cWyvrkYkx65xwMpCoVHsmPZGNQd/w/SVmm3Z9wc5V/f9w9+vV3bds3ENFFIaq/pn8E5nfsdbO1aUPhZgIcBoM8//qjW5aPJ03Kf8XTuspVnsIJFB3d6OVfWNxfVvIy8Q21Zpw2VAQiWcOTw3AaMltZ2Lq+HagSxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=pass smtp.mailfrom=wunner.de; arc=none smtp.client-ip=176.9.242.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wunner.de
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout3.hostsharing.net (Postfix) with ESMTPS id 94813100D943C;
+	Sat,  6 Apr 2024 15:51:59 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 3B10F233389; Sat,  6 Apr 2024 15:51:59 +0200 (CEST)
+Message-Id: <cover.1712410202.git.lukas@wunner.de>
+From: Lukas Wunner <lukas@wunner.de>
+Date: Sat, 6 Apr 2024 15:52:00 +0200
+Subject: [PATCH 0/2] Deduplicate bin_attribute simple read() callbacks
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki" <rafael@kernel.org>, linux-kernel@vger.kernel.org
+Cc: Michael Ellerman <mpe@ellerman.id.au>, linuxppc-dev@lists.ozlabs.org, linux-acpi@vger.kernel.org, Jean Delvare <jdelvare@suse.com>, Ard Biesheuvel <ardb@kernel.org>, linux-efi@vger.kernel.org, Zhenyu Wang <zhenyuw@linux.intel.com>, Zhi Wang <zhi.wang.linux@gmail.com>, intel-gvt-dev@lists.freedesktop.org, Daniel Lezcano <daniel.lezcano@linaro.org>, linux-pm@vger.kernel.org, Luis Chamberlain <mcgrof@kernel.org>, linux-modules@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6638:891c:b0:47d:6a52:4efa with SMTP id
- jc28-20020a056638891c00b0047d6a524efamr285122jab.5.1712411073146; Sat, 06 Apr
- 2024 06:44:33 -0700 (PDT)
-Date: Sat, 06 Apr 2024 06:44:33 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b97fba06156dc57b@google.com>
-Subject: [syzbot] [bpf?] KASAN: stack-out-of-bounds Read in hash
-From: syzbot <syzbot+9459b5d7fab774cf182f@syzkaller.appspotmail.com>
-To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
-Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+For my upcoming PCI device authentication v2 patches, I have the need
+to expose a simple buffer in virtual memory as a bin_attribute.
 
-syzbot found the following issue on:
+It turns out we've duplicated the ->read() callback for such simple
+buffers a fair number of times across the tree.
 
-HEAD commit:    443574b03387 riscv, bpf: Fix kfunc parameters incompatibil..
-git tree:       bpf
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=148ad855180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=9459b5d7fab774cf182f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d86795180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143eff76180000
+So instead of reinventing the wheel, I decided to introduce a common
+helper and eliminate all duplications I could find.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3f355021a085/disk-443574b0.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/44cf4de7472a/vmlinux-443574b0.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a99a36c7ad65/bzImage-443574b0.xz
+I'm open to a bikeshedding discussion on the sysfs_bin_attr_simple_read()
+name. ;)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9459b5d7fab774cf182f@syzkaller.appspotmail.com
+Lukas Wunner (2):
+  sysfs: Add sysfs_bin_attr_simple_read() helper
+  treewide: Use sysfs_bin_attr_simple_read() helper
 
-==================================================================
-BUG: KASAN: stack-out-of-bounds in jhash2 include/linux/jhash.h:128 [inline]
-BUG: KASAN: stack-out-of-bounds in hash+0x1bf/0x410 kernel/bpf/bloom_filter.c:29
-Read of size 4 at addr ffffc900039f7c00 by task syz-executor297/5079
+ arch/powerpc/platforms/powernv/opal.c              | 10 +-------
+ drivers/acpi/bgrt.c                                |  9 +-------
+ drivers/firmware/dmi_scan.c                        | 12 ++--------
+ drivers/firmware/efi/rci2-table.c                  | 10 +-------
+ drivers/gpu/drm/i915/gvt/firmware.c                | 26 +++++----------------
+ .../intel/int340x_thermal/int3400_thermal.c        |  9 +-------
+ fs/sysfs/file.c                                    | 27 ++++++++++++++++++++++
+ include/linux/sysfs.h                              | 15 ++++++++++++
+ init/initramfs.c                                   | 10 +-------
+ kernel/module/sysfs.c                              | 13 +----------
+ 10 files changed, 56 insertions(+), 85 deletions(-)
 
-CPU: 0 PID: 5079 Comm: syz-executor297 Not tainted 6.8.0-syzkaller-05236-g443574b03387 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x169/0x550 mm/kasan/report.c:488
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- jhash2 include/linux/jhash.h:128 [inline]
- hash+0x1bf/0x410 kernel/bpf/bloom_filter.c:29
- bloom_map_peek_elem+0xb2/0x1b0 kernel/bpf/bloom_filter.c:43
- bpf_prog_00798911c748094f+0x42/0x46
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run include/linux/filter.h:664 [inline]
- __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
- bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
- __traceiter_ext4_drop_inode+0x76/0xd0 include/trace/events/ext4.h:265
- trace_ext4_drop_inode include/trace/events/ext4.h:265 [inline]
- ext4_drop_inode+0x20a/0x270 fs/ext4/super.c:1450
- iput_final fs/inode.c:1711 [inline]
- iput+0x45e/0x900 fs/inode.c:1767
- d_delete_notify include/linux/fsnotify.h:301 [inline]
- vfs_rmdir+0x38f/0x4c0 fs/namei.c:4220
- do_rmdir+0x3b5/0x580 fs/namei.c:4266
- __do_sys_rmdir fs/namei.c:4285 [inline]
- __se_sys_rmdir fs/namei.c:4283 [inline]
- __x64_sys_rmdir+0x49/0x60 fs/namei.c:4283
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7fd25730cfb7
-Code: 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 54 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff78ca7198 EFLAGS: 00000207
- ORIG_RAX: 0000000000000054
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007fd25730cfb7
-RDX: fffffffffffff000 RSI: 0000000000000000 RDI: 00007fff78ca82c0
-RBP: 0000000000000065 R08: 0000555571b9a73b R09: 0000000000000000
-R10: 0000000000000100 R11: 0000000000000207 R12: 00007fff78ca82c0
-R13: 0000555571b9a6c0 R14: 00007fff78ca82c0 R15: 0000000000000001
- </TASK>
+-- 
+2.43.0
 
-The buggy address belongs to stack of task syz-executor297/5079
- and is located at offset 0 in frame:
- bpf_trace_run2+0x0/0x420
-
-This frame has 1 object:
- [32, 48) 'args'
-
-The buggy address belongs to the virtual mapping at
- [ffffc900039f0000, ffffc900039f9000) created by:
- copy_process+0x5d1/0x3df0 kernel/fork.c:2219
-
-The buggy address belongs to the physical page:
-page:ffffea00007f36c0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x1fcdb
-flags: 0xfff00000000000(node=0|zone=1|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 00fff00000000000 0000000000000000 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000000000 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 0, migratetype Unmovable, gfp_mask 0x2dc2(GFP_KERNEL|__GFP_HIGHMEM|__GFP_NOWARN|__GFP_ZERO), pid 5077, tgid 5077 (syz-executor297), ts 73887639293, free_ts 73091924927
- set_page_owner include/linux/page_owner.h:31 [inline]
- post_alloc_hook+0x1ea/0x210 mm/page_alloc.c:1533
- prep_new_page mm/page_alloc.c:1540 [inline]
- get_page_from_freelist+0x33ea/0x3580 mm/page_alloc.c:3311
- __alloc_pages+0x256/0x680 mm/page_alloc.c:4569
- alloc_pages_mpol+0x3de/0x650 mm/mempolicy.c:2133
- vm_area_alloc_pages mm/vmalloc.c:3135 [inline]
- __vmalloc_area_node mm/vmalloc.c:3211 [inline]
- __vmalloc_node_range+0x9a4/0x14a0 mm/vmalloc.c:3392
- alloc_thread_stack_node kernel/fork.c:309 [inline]
- dup_task_struct+0x3e9/0x7d0 kernel/fork.c:1114
- copy_process+0x5d1/0x3df0 kernel/fork.c:2219
- kernel_clone+0x21e/0x8d0 kernel/fork.c:2796
- __do_sys_clone kernel/fork.c:2939 [inline]
- __se_sys_clone kernel/fork.c:2923 [inline]
- __x64_sys_clone+0x258/0x2a0 kernel/fork.c:2923
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-page last free pid 5072 tgid 5072 stack trace:
- reset_page_owner include/linux/page_owner.h:24 [inline]
- free_pages_prepare mm/page_alloc.c:1140 [inline]
- free_unref_page_prepare+0x968/0xa90 mm/page_alloc.c:2346
- free_unref_page+0x37/0x3f0 mm/page_alloc.c:2486
- mm_free_pgd kernel/fork.c:803 [inline]
- __mmdrop+0xb9/0x3d0 kernel/fork.c:919
- exec_mmap+0x69d/0x730 fs/exec.c:1051
- begin_new_exec+0x119b/0x1ce0 fs/exec.c:1309
- load_elf_binary+0x961/0x2590 fs/binfmt_elf.c:996
- search_binary_handler fs/exec.c:1777 [inline]
- exec_binprm fs/exec.c:1819 [inline]
- bprm_execve+0xaf8/0x1790 fs/exec.c:1871
- do_execveat_common+0x553/0x700 fs/exec.c:1978
- do_execve fs/exec.c:2052 [inline]
- __do_sys_execve fs/exec.c:2128 [inline]
- __se_sys_execve fs/exec.c:2123 [inline]
- __x64_sys_execve+0x92/0xb0 fs/exec.c:2123
- do_syscall_64+0xfb/0x240
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-Memory state around the buggy address:
- ffffc900039f7b00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffc900039f7b80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->ffffc900039f7c00: f1 f1 f1 f1 00 00 f3 f3 00 00 00 00 00 00 00 00
-                   ^
- ffffc900039f7c80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffffc900039f7d00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
