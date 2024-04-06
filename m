@@ -1,160 +1,201 @@
-Return-Path: <linux-kernel+bounces-133929-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133930-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE70C89AB03
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:08:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE65089AB04
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:09:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77C3A2822A4
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:08:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D192C1C21131
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40CA736AF6;
-	Sat,  6 Apr 2024 13:08:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4701936AE3;
+	Sat,  6 Apr 2024 13:09:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ApfK4vaI"
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AoEM1oss"
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E89633611E;
-	Sat,  6 Apr 2024 13:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07D5736120;
+	Sat,  6 Apr 2024 13:08:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712408930; cv=none; b=dQZl9kqdf3mImuNZxbwungue5OrvhuMFO3Se2bZDM1dyppsRwEiGqFBSnVK5LW3yLblIyM3rAJmnzR0WdFMmDoZmQQPVRUq5y3QMrEq3OrXTC+MFYx7kVih2e/I6ViHCnmFIJMCC9Iysqj8jCz4B0WpdfKe2j6SD5pGKi84DNFM=
+	t=1712408940; cv=none; b=Kq6qUKPulPJ9R642BYROw3DbIcSxEpMujzr3cf9MFNPA7X2NddcHOHATRMcAJTUMjT7QB67w3UU+ZksdEFvNi0CJpbX8qUL1qDGLBJzkj4hGyPIWnwP5cXAKLMP/Q/2uj7c+rRcYMIyaJQv19q9dLADvBwRo5GDkDsxkneprWSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712408930; c=relaxed/simple;
-	bh=yYjDFI9ZKghoXrKcIYL6WKRRHeCz9Z9GdEQaHVKWBWQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O/mWxfwaxMueEYxr0txt3aGSNiPMhHUTmk+aZ0pE33DwNAO74jcHISagWYSuqjooBAgnqPlza6YkaqYLp1R+VOFl1Et5zeeTStveAEZfZVpR7MG0QNOc+n4VBvnVCPmvitkN31l8qU/au8/yLbA+n6eDSnR9RDNJulXkbGj1U0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ApfK4vaI; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+	s=arc-20240116; t=1712408940; c=relaxed/simple;
+	bh=kaUDzIEbecBFBGUdbUAl78HhXM3LqI9CU5IHcy4ZaXE=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=fgAlr7wZzaZVl7qEKiOvAG04ltfW5xzbNRwWC/HU5sUTi8Sj+VmoHNR+p8d93SUTAyK9Q0RJan56YEesbR0Ppl6I6fEKtTu6wyV9s6XkRxSZqcWJ3R2/0TLcM38/neFf786VWUNLrPg+9OMzuGCf1QLIwVxTK802MgqqmbJn6ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AoEM1oss; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-368a663344eso11840505ab.2;
-        Sat, 06 Apr 2024 06:08:48 -0700 (PDT)
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6ed04c91c46so1230143b3a.0;
+        Sat, 06 Apr 2024 06:08:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712408928; x=1713013728; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=1nJCinrfZBqtHbptgKCevnPkG/FTidl3k5MY9MOWqZA=;
-        b=ApfK4vaIGqRE6r9lc8TqqVUJ4c3H46/lNQJaD1hOrsX7ZqqDvN50pGdoq/kfJI7E80
-         3upOIrsQ2lncj9LG363ZuP+6RL8SZWh9JTrnDL6/B7lzBChreA1MdankF7yDfssqgo9O
-         USsSuBx//4gUf9BgUZ0+ldozYyTxNv1gxrD/+A3bfm1LM4jgrTHWAidfJKq48MLb41r2
-         Q6YcOrLLXpt+/hOl6EfCIFZG6Cjd/5Ww4Db0bvYQxNkQDg3h8+k/lnyi6YVhCDcwEfWN
-         UqyCbV7IDfEhJtKaAdeFBlepHggH3ykjMhEzSUOk9+aHIg6x1So1/5FSUDbxwUNnfMVm
-         pthQ==
+        d=gmail.com; s=20230601; t=1712408938; x=1713013738; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VJ8WfPeJwP/hN9b5IyWNxIFJSiglqUGmf6rb1vuLbUI=;
+        b=AoEM1ossJeIbB7VLHRIddNzDKcW9ADaNAWPEsPJg9Gz5urgQXOfDzygkGv4in2KQLt
+         WPYtU5XTumIpsBIEoi5hIiInJ8f2QLvrqB9NmQT6xxXOtW9vMwNmfOAYYYzQ933uCv9O
+         2cbH4X6vfqbnqaRPYON4bWqdHWJePHgaQi7twgqNkXLfP3XdOye8RrcM5UgjR4igtjSt
+         0MkTssy0P/HwpRVXWNTkZLBniGol7F/CcXcxpIJPZcY4OqW2LTW382dvG3TcFlx3YnVF
+         ze/gRQDRDZsJmbfCN64YkiO0yYtggTDnkN3XIiYissuwUaRQPfp/LEEFFTN5s8opzeQg
+         7F/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712408928; x=1713013728;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1nJCinrfZBqtHbptgKCevnPkG/FTidl3k5MY9MOWqZA=;
-        b=EBjEcv+4WNVeq84R6qQGqaqI+jQh4uf9bRZOHEy0Q2YR3HH8Qha30lm+ZbyTAikx0a
-         eWkkHQlt01H9HMKMC8u3YeRzBW8OHHZ6f23WBjDLmGeOhd1OKJPRtZL4HzMpi5Z0UCXk
-         UJ8eBc/DQe+pp3JY3YN3QvB+Tl+m0L1MA+hp4g/CCM+0ngydqm4ghKb2/uZw/LxQZoPQ
-         CxWD1mc0E6vijFhfpiS1qIrf2yM8IgHpbbKAC9Ea4w+5A5gEduAJRIxUMXWC1Bf8u2rp
-         h9pFl0zto8nyfAjmceyPjqkTavvTcDt0yK3hYpvXwAAr6tMLMQTOZE0C3C4izsb803S7
-         vFow==
-X-Forwarded-Encrypted: i=1; AJvYcCUiI+jkJD7E6G0/s1/iEFgNaPLgcg0cVF8QgbOV3Gb9YyPENoh2E10QiuxMsrhi7JWFg43tzKgcD1fv6baDhYUTrBVz2wjPLJOP9UrI0glJiVzTrSvwtAae1jysydMRwQJZH5tzgaJA+cLy+EbB0TtQ+VgPBDZagMFvyF1azwGwjzcKlTHwgVo=
-X-Gm-Message-State: AOJu0Yz8toUHVZfdARbTo4GF0rmSr6BeIYYWlfKJVk0E6eZNNYmrTs/d
-	//vWUHJejHfpnG5e6xdOsfOzQuys30fcFSR2BVobpJV5QF4a3qSH
-X-Google-Smtp-Source: AGHT+IEq96egabFjIWoJAlpe2kpHjL6Fgq+o/Btb4tyziAwF7UBDedWTRTIsV140sRRlpGQv2Q4ezw==
-X-Received: by 2002:a05:6e02:184d:b0:369:98a3:6f82 with SMTP id b13-20020a056e02184d00b0036998a36f82mr4888675ilv.13.1712408927936;
-        Sat, 06 Apr 2024 06:08:47 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id q29-20020a63751d000000b005f3a8643176sm3146090pgc.44.2024.04.06.06.08.47
+        d=1e100.net; s=20230601; t=1712408938; x=1713013738;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VJ8WfPeJwP/hN9b5IyWNxIFJSiglqUGmf6rb1vuLbUI=;
+        b=Tk6c9LP380IVIBB+c5KuIspuIuPssctuvfz0iNnF1qPmcp7cd3rC2z9AobQcLW7T01
+         Lwx3XFM4N1QTIqGNaXPyXGZxVmGHfBrdeuMNhTBAzd6tuntSpzDedL1Qv8K+DaNyv7bz
+         vD1dfrK9heTYk4q0heYHDXf3EXsIvr07DO+0XZRlNS3hYenkb51FRWqwJWZPiL5w0O0e
+         gKcmBGVEv2t7NCzyxDkGcbfU+8eNhDNeo3PPSWwpXL4cDkQ+TIXc7rXiFCyBMbvpAzsF
+         bXfJnx239IDLXIDOyTmHK5YLdChiDj3iLM1TfYz8Jur8CJ3QYQqT2cmCfq2G4RC4B+Uj
+         r+EQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVzPlY6R1DU7CUdolV/34CeQKb4fIjSfCPMt8KJQTAg/s8dI9KtWio+4/cjrgO+GydpkB831+GXyfqPennKGf0QoPc0uo7hoxenBG8=
+X-Gm-Message-State: AOJu0YwwkERtEfnP9bCjxRbC+Mo8Xe8BJ8y84KAgTf/4KWxG3ng2FyeQ
+	8Ce8BT2+/SCwwg7B/wOjJ7gRd2xdDeY2VoDVlNvOPdAXNbO5pgOT
+X-Google-Smtp-Source: AGHT+IGxP6jF9vpvANF2puNlutOZ79gt8X8maKtByPAIHJKls4TeQp6HCDbqkQRi4fwIgO8YzsRC/w==
+X-Received: by 2002:a17:903:2b05:b0:1e3:cd8c:d370 with SMTP id mc5-20020a1709032b0500b001e3cd8cd370mr3977830plb.44.1712408938102;
+        Sat, 06 Apr 2024 06:08:58 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id e5-20020a17090301c500b001e3c972c811sm2688004plh.131.2024.04.06.06.08.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Apr 2024 06:08:47 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Sat, 6 Apr 2024 06:08:46 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Andi Shyti <andi.shyti@kernel.org>,
-	Wim Van Sebroeck <wim@linux-watchdog.org>,
-	Heiner Kallweit <hkallweit1@gmail.com>,
-	Wolfram Sang <wsa+renesas@sang-engineering.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Jean Delvare <jdelvare@suse.de>, linux-i2c@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH] i2c: i801: add I2C_MUX dependency
-Message-ID: <e2d0fdde-ff8b-4851-b18a-89e69dd18d5f@roeck-us.net>
-References: <20240405142823.615609-1-arnd@kernel.org>
+        Sat, 06 Apr 2024 06:08:57 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 266E0186046F9; Sat,  6 Apr 2024 20:08:54 +0700 (WIB)
+Date: Sat, 6 Apr 2024 20:08:54 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Sound System <linux-sound@vger.kernel.org>,
+	Linux Regressions <regressions@lists.linux.dev>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	Cristian Ciocaltea <cristian.ciocaltea@collabora.com>,
+	Emil Velikov <emil.velikov@collabora.com>,
+	Venkata Prasad Potturu <venkataprasad.potturu@amd.com>,
+	Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+	Arun Gopal Kondaveeti <arungopal.kondaveeti@amd.com>,
+	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+	Daniel <dmanlfc@gmail.com>
+Subject: Fwd: Steam Deck OLED 6.8.2 nau8821-max fails
+Message-ID: <ZhFJZoful6nEFskW@archie.me>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="YSxOllt9oMHUTSam"
 Content-Disposition: inline
-In-Reply-To: <20240405142823.615609-1-arnd@kernel.org>
 
-On Fri, Apr 05, 2024 at 04:27:43PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When I2C_MUX is a loadable module but I2C_I801 is built-in, the newly
-> added notifier function causes a link error:
-> 
-> x86_64-linux-ld: drivers/i2c/busses/i2c-i801.o: in function `i801_notifier_call':
-> i2c-i801.c:(.text+0x1f5): undefined reference to `i2c_root_adapter'
-> 
-> This code is only built if I2C_MUX_GPIO is also enabled, so add a
-> conditional dependency that allows building the driver as before if the
-> GPIO part is disabled, but otherwise require the linker dependency at
-> Kconfig level.
-> 
-> With the added dependency, the driver cannot be selected by a builtin
-> ITCO_WDT driver when I2C_MUX_GPIO is a loadable module, so remove
-> the 'select' statement in that driver as well. This was apparently
-> never needed at compile-time, and the watchdog driver just needs either
-> the LPC or the I2C drivers, but never both.
-> 
-> Configurations that rely on the implied 'select' from the watchdog
-> driver now need to enable all three.
-> 
-> Fixes: 71b494e043d2 ("i2c: i801: Call i2c_register_spd for muxed child segments")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/i2c/busses/Kconfig | 1 +
->  drivers/watchdog/Kconfig   | 2 --
->  2 files changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-> index 1872f1995c77..2619018dd756 100644
-> --- a/drivers/i2c/busses/Kconfig
-> +++ b/drivers/i2c/busses/Kconfig
-> @@ -108,6 +108,7 @@ config I2C_HIX5HD2
->  config I2C_I801
->  	tristate "Intel 82801 (ICH/PCH)"
->  	depends on PCI
-> +	depends on I2C_MUX || I2C_MUX_GPIO=n
->  	select P2SB if X86
->  	select CHECK_SIGNATURE if X86 && DMI
->  	select I2C_SMBUS
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index 0b0df3fe1efd..4dfb3773e6e2 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -1301,8 +1301,6 @@ config ITCO_WDT
->  	select WATCHDOG_CORE
->  	depends on I2C || I2C=n
->  	depends on MFD_INTEL_PMC_BXT || !MFD_INTEL_PMC_BXT
-> -	select LPC_ICH if !EXPERT
-> -	select I2C_I801 if !EXPERT && I2C
 
-Sorry, I don't understand why LPC_ICH and I2C_I801 are neither a dependency
-nor need to be selected. What if both LPC_ICH=n and I2C_I801=n, or if one is
-selected but the other is needed to connect to the watchdog ?
+--YSxOllt9oMHUTSam
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Guenter
+Hi,
 
->  	help
->  	  Hardware driver for the intel TCO timer based watchdog devices.
->  	  These drivers are included in the Intel 82801 I/O Controller
-> -- 
-> 2.39.2
-> 
+On Bugzilla, Daniel <dmanlfc@gmail.com> reported topology regression
+on Steam Deck OLED [1]. He wrote:
+
+> I'm adding this here, I hope it's the correct place.
+>=20
+> Currently the Steam Deck OLED fails with Kernel 6.8.2 when trying to init=
+ialise the topology for the device.
+> I'm using the `sof-vangogh-nau8821-max.tplg` file from the Steam Deck OLE=
+D and associated firmware.
+>=20
+> When I manually patched support for the 6.6 or 6.7 mainline kernel it wor=
+ked fine.
+> Now the official implementation fails as per below.
+>=20
+> Do we need an updated topology file?
+>=20
+> dmesg info...
+>=20
+> [   12.844720] snd_hda_intel 0000:04:00.1: enabling device (0000 -> 0002)
+> [   12.846177] snd_hda_intel 0000:04:00.1: Handle vga_switcheroo audio cl=
+ient
+> [   12.853045] max98388 i2c-ADS8388:00: MAX98388 revisionID: 0x41
+> [   12.854798] max98388 i2c-ADS8388:01: MAX98388 revisionID: 0x41
+> [   13.049834] input: HD-Audio Generic HDMI/DP,pcm=3D3 as /devices/pci000=
+0:00/0000:00:08.1/0000:04:00.1/sound/card0/input10
+> [   13.095674] input: FTS3528:00 2808:1015 as /devices/platform/AMDI0010:=
+01/i2c-1/i2c-FTS3528:00/0018:2808:1015.0003/input/input16
+> [   13.114799] input: HD-Audio Generic HDMI/DP,pcm=3D7 as /devices/pci000=
+0:00/0000:00:08.1/0000:04:00.1/sound/card0/input11
+> [   13.115023] input: Valve Software Steam Controller as /devices/pci0000=
+:00/0000:00:08.1/0000:04:00.4/usb1/1-3/1-3:1.0/0003:28DE:1205.0001/input/in=
+put19
+> [   13.120952] snd_sof_amd_vangogh 0000:04:00.5: enabling device (0000 ->=
+ 0002)
+> [   13.167809] snd_sof_amd_vangogh 0000:04:00.5: Firmware paths/files for=
+ ipc type 0:
+> [   13.169329] snd_sof_amd_vangogh 0000:04:00.5:  Topology file:     amd/=
+sof-tplg/sof-vangogh-nau8821-max.tplg
+> [   13.171103] input: FTS3528:00 2808:1015 UNKNOWN as /devices/platform/A=
+MDI0010:01/i2c-1/i2c-FTS3528:00/0018:2808:1015.0003/input/input18
+> [   13.171619] input: HD-Audio Generic HDMI/DP,pcm=3D8 as /devices/pci000=
+0:00/0000:00:08.1/0000:04:00.1/sound/card0/input12
+> [   13.172518] hid-steam 0003:28DE:1205.0001: input,hidraw2: USB HID v1.1=
+0 Mouse [Valve Software Steam Controller] on usb-0000:04:00.4-3/input0
+> [   13.172556] input: HD-Audio Generic HDMI/DP,pcm=3D9 as /devices/pci000=
+0:00/0000:00:08.1/0000:04:00.1/sound/card0/input13
+> [   13.173623] hid-steam 0003:28DE:1205.0004: hiddev0: USB HID v1.10 Devi=
+ce [Valve Software Steam Controller] on usb-0000:04:00.4-3/input2
+> [   13.215330] snd_sof_amd_vangogh 0000:04:00.5: Firmware info: version 0=
+:0:0-7863d
+> [   13.217053] snd_sof_amd_vangogh 0000:04:00.5: Firmware: ABI 3:26:0 Ker=
+nel ABI 3:23:0
+> [   13.234447] hid-steam 0003:28DE:1205.0004: Steam Controller 'FYZZ34102=
+C64' connected
+> [   13.242606] input: Steam Deck as /devices/pci0000:00/0000:00:08.1/0000=
+:04:00.4/usb1/1-3/1-3:1.2/0003:28DE:1205.0004/input/input20
+> [   13.289530] snd_sof_amd_vangogh 0000:04:00.5: Topology: ABI 3:26:0 Ker=
+nel ABI 3:23:0
+> [   13.291262] hid-multitouch 0018:2808:1015.0003: input,hidraw1: I2C HID=
+ v1.00 Device [FTS3528:00 2808:1015] on i2c-FTS3528:00
+> [   13.291402] sof_mach nau8821-max: ASoC: physical link acp-bt-codec (id=
+ 2) not exist
+> [   13.291500] input: Valve Software Steam Controller as /devices/pci0000=
+:00/0000:00:08.1/0000:04:00.4/usb1/1-3/1-3:1.1/0003:28DE:1205.0002/input/in=
+put21
+> [   13.296647] sof_mach nau8821-max: ASoC: topology: could not load heade=
+r: -22
+> [   13.298510] snd_sof_amd_vangogh 0000:04:00.5: error: tplg component lo=
+ad failed -22
+> [   13.300270] snd_sof_amd_vangogh 0000:04:00.5: error: failed to load DS=
+P topology -22
+> [   13.302008] snd_sof_amd_vangogh 0000:04:00.5: ASoC: error at snd_soc_c=
+omponent_probe on 0000:04:00.5: -22
+> [   13.303785] sof_mach nau8821-max: ASoC: failed to instantiate card -22
+> [   13.305586] sof_mach nau8821-max: error -EINVAL: Failed to register ca=
+rd(sof-nau8821-max)
+
+See Bugzilla for the full thread.
+
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D218677
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--YSxOllt9oMHUTSam
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZhFJYQAKCRD2uYlJVVFO
+ozOYAQCjC7dhB6602A9unTbLpzRAaaU92jOL0oZmwdjl1KJciQEArrbM5YcBR87U
+Y525Kboh1Hms20eiwZ28oKuh/ESpEAM=
+=Kj2s
+-----END PGP SIGNATURE-----
+
+--YSxOllt9oMHUTSam--
 
