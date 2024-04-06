@@ -1,99 +1,86 @@
-Return-Path: <linux-kernel+bounces-133740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E14E989A7F3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:31:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7046789A7F6
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:34:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EF781C21270
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:31:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10ED11F2327B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:34:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9973224;
-	Sat,  6 Apr 2024 00:31:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uL/8ZWKv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D45617C2;
+	Sat,  6 Apr 2024 00:34:05 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B7B632;
-	Sat,  6 Apr 2024 00:31:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7534C7C
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 00:34:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712363510; cv=none; b=qho5AiQpK3WQ4aBNTV+iwcpXbG7f00f5xRGz590Ki1uwRMXGBMZnlPJXAV4nITuN6IPvJK8DOEfGIx6zCrpJa/BkNo+FUXQoOOJNMvl5TwtTM5vYqUnVGxDliC8cM2/OueY/RNMV2SKE7PUdnB2oStAEMfTZwYTWw699rTwhkVs=
+	t=1712363644; cv=none; b=kQ6eEtoY+sqjBL8UmCWOHOC4AVFV68AVewS++1BMi9zXxBiER5a8XK8I+hEoha8LoHuBwv9GDfqGrQU15uJS9AVJYMcHbmZHAVVxIdZoCc/ymZ6WyLL5Lzn/dwQA/GHzcY0aXmtGA9NGycomGz/SjB8nRFYag+thAc5aQWnP13I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712363510; c=relaxed/simple;
-	bh=bd9s04wUaLu4Yh59HHU7R0GCVInJamM+pcf+isBLVcQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fnrhtj3u7pgF1VVMf5W5Dr+PuVg36eCmJ7C/wdcvnUSm9RqD6zFtWjRWPQ2Fye7FUijAR9SEyzvyVK3NRD4naRA2uUDYmvjipnx2j2EIN3Krsfxxtv1eDdSl/Fc9wPH/bFoYy+oimSORR10b94kTsvpM+ZZF8vGCJIoBeESlhJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uL/8ZWKv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8876BC433C7;
-	Sat,  6 Apr 2024 00:31:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712363510;
-	bh=bd9s04wUaLu4Yh59HHU7R0GCVInJamM+pcf+isBLVcQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=uL/8ZWKvoDBZLY2DvZV5JDkTFZSm7KAWyfu9+7hcXWQVDKtfX7LpxD3gu31CHVfRy
-	 i3xFX9ROamIugcypLbcMuOgmV92kLyW9wfMq6Ix90OvRhlqL7RUSj22OInkrpfu0aS
-	 QpzeqU8PsrEzJm+Dq1jdWWoeQ2j9aKUUhOXZlqLyVcEvvj1wI9BTcjqyBwYgMle0Hn
-	 AIMeEc8DF0k68qys/JPC83i+r6XqbAAdaTq/fkxGWxdFC1VA8CaFpVTpJ/1+aGJntI
-	 SsY33okiP2B3lv9np65SZwv6BuEz6pLRx81eZSXD1C2mrd1yy93m2f7H9bXkAJYdGJ
-	 eTEUf1ygmD/Dw==
-Date: Sat, 6 Apr 2024 02:31:45 +0200
-From: Andi Shyti <andi.shyti@kernel.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>, 
-	Guenter Roeck <linux@roeck-us.net>, Heiner Kallweit <hkallweit1@gmail.com>, 
-	Wolfram Sang <wsa+renesas@sang-engineering.com>, Arnd Bergmann <arnd@arndb.de>, 
-	Jarkko Nikula <jarkko.nikula@linux.intel.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Jean Delvare <jdelvare@suse.de>, linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-watchdog@vger.kernel.org
-Subject: Re: [PATCH] i2c: i801: add I2C_MUX dependency
-Message-ID: <qghidicjaxiygws4hfme7yfa5kfzg3y7tz4inqnjhwk67hjtwy@apfooo4pplq3>
-References: <20240405142823.615609-1-arnd@kernel.org>
+	s=arc-20240116; t=1712363644; c=relaxed/simple;
+	bh=nxCLcCNTmd8UIMICvGHcN5UPjHEENzSxGDWwXQZisOs=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=CzgyjikEIJsewSba1tCjnjkS6169V8AK96gdQvrwxIQRv38tUScVnvVn/FSUlSZcrOcOuvgP+Xy4ZVeGlIeaDpRL2oVVSYORkG4hYMENxqUBhRkoUnrI0hHco1fxOnCWGmrtzgzq4ZBWAVnjamWgqobvuvYs0sUyd7lTOpgltys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cbf3ec6a96so313309539f.0
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 17:34:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712363642; x=1712968442;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=d8TX7iG9YpCaPmFEMKF2n7TPDi7Rx3R7SjsusnlXPLA=;
+        b=EfgaNuAp3oMblPj6rvZfsmIpWIu02wWypEAemgvOXVqCfIzb2r+KqOvczfCZFpSAy8
+         aKmV7Q+fT5/A9Ne37axw6CjByNGCpJy/CygCb94sshDebnPVn3qUgUl3YVUKnMTORr04
+         4rt8edm3oJGdAXOfuz1r8eqYjTwN2l/l2hNryls36qbkr9AiTKgC5UEw0KFpEduuoYfK
+         M0eU8n6yREezZOo/emu5yxUgwzw8KJVXtRBiqnVLAEVoMWTFHS5H61nl52jYkQbZhI4S
+         Bi8EdHvbiEzlYClN++dDfHauA1Iaf8JWCFo6TtjT20KtEkZWN4PwC1jngPB+H9CP8IPI
+         7pow==
+X-Forwarded-Encrypted: i=1; AJvYcCXcY8brrxGwZUcNT9QQRt2QquUSFv9c6y96FXBC1LExs/4GDow+Zx58kPl/XabGG4/WrRAT41P7JGrnypiGiitJlPBXu+6luagmOCUm
+X-Gm-Message-State: AOJu0YzByC0zZNPMBg4o4l5nmItE8A2ZQ06PmQOc1pLjRKokAub6W5pz
+	IK6nLtRn7tESfAwhpKYQNlAMFFRxDJU0XBJcBZ6jcNZLTFKwK7tSZYO047B2WEQJMNrLHR3y3Is
+	Hz2nO6JlirtPzlTTxg9uTYc+oLIUK8LsUWNPjzal7j2YAroBFe0XrWDc=
+X-Google-Smtp-Source: AGHT+IE2jBmiAwa90CC0FqxPbXhWCQwHdriAJsgDsdlnu8XiLyooWVBwsj4vSXo6BJGwRl8B+l0qZEkqvyWxGi0soIBe2UwgUXvz
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240405142823.615609-1-arnd@kernel.org>
+X-Received: by 2002:a05:6638:2999:b0:480:4e6a:bf00 with SMTP id
+ eh25-20020a056638299900b004804e6abf00mr63785jab.2.1712363642515; Fri, 05 Apr
+ 2024 17:34:02 -0700 (PDT)
+Date: Fri, 05 Apr 2024 17:34:02 -0700
+In-Reply-To: <20240405230243.1067-1-hdanton@sina.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a386f2061562ba6a@google.com>
+Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
+From: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>
+To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Arnd,
+Hello,
 
-On Fri, Apr 05, 2024 at 04:27:43PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> When I2C_MUX is a loadable module but I2C_I801 is built-in, the newly
-> added notifier function causes a link error:
-> 
-> x86_64-linux-ld: drivers/i2c/busses/i2c-i801.o: in function `i801_notifier_call':
-> i2c-i801.c:(.text+0x1f5): undefined reference to `i2c_root_adapter'
-> 
-> This code is only built if I2C_MUX_GPIO is also enabled, so add a
-> conditional dependency that allows building the driver as before if the
-> GPIO part is disabled, but otherwise require the linker dependency at
-> Kconfig level.
-> 
-> With the added dependency, the driver cannot be selected by a builtin
-> ITCO_WDT driver when I2C_MUX_GPIO is a loadable module, so remove
-> the 'select' statement in that driver as well. This was apparently
-> never needed at compile-time, and the watchdog driver just needs either
-> the LPC or the I2C drivers, but never both.
-> 
-> Configurations that rely on the implied 'select' from the watchdog
-> driver now need to enable all three.
-> 
-> Fixes: 71b494e043d2 ("i2c: i801: Call i2c_register_spd for muxed child segments")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-thanks for the proposed fix, but Heiner has already submitted a
-fix for this issue. I'm going to mark this patch as superseeded,
-if that's OK with you.
+Reported-and-tested-by: syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com
 
-Thanks,
-Andi
+Tested on:
+
+commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=137893e3180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
+dashboard link: https://syzkaller.appspot.com/bug?extid=9a5b0ced8b1bfb238b56
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=111f2c05180000
+
+Note: testing is done by a robot and is best-effort only.
 
