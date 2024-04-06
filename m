@@ -1,86 +1,72 @@
-Return-Path: <linux-kernel+bounces-133900-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133901-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD25589AA83
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:12:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BA2D89AA86
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:14:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C9091F21B10
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:12:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFA221F21B3A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF6802C1A3;
-	Sat,  6 Apr 2024 11:12:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833B92C1A7;
+	Sat,  6 Apr 2024 11:14:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="Rrsz1hBG"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="XJK4D9KT"
+Received: from mail-0201.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B27762C182;
-	Sat,  6 Apr 2024 11:12:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2095028DB3
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 11:14:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.77.79.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712401942; cv=none; b=mc9NpyT9QhklRg4h8yR4d1Ylc5P+AZCRZzkU7Gd9vQSwmrTYR7a88mHlEN+nyl9TiniF3X0hQQQLEhN91OO3cY9VTovWxMfj1SVqbSDqfrgHrF3v9rqzD3T6aCjlKoH+BBDqUb2zU6l41DrbwHpjIvm6NH8B9f7scYdJM0DkYDk=
+	t=1712402074; cv=none; b=Xo+CJjde/FrGPlqKu0KFiDdGrCBnkonwdYnJI+oXufJUfyRfgklM8NViPKrmGOKB6TBAzKzskMTJVA7PMsTWZOEzCqMx65w1YbfGUDahBP+NG4YEU557LqW3fofNrWocHTQ5r5QRLNrwU7W1BeZpNQ+Ud5HBVpD/9Mi9Ulj3s6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712401942; c=relaxed/simple;
-	bh=/Na42PaebErLTeUeIhSCBAG010sjkEo4nu6zNSWufjo=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=gM2st2gEK8thPn0c9hl1RfK8A+c7fq3ODiOUTlBP7M0L6nb9FyD1oyzy4yAenJ02ymotllXK1Gi9UNY3MB97amYNtsVc6Uosr2FO1gQNb/FA44P9jS0jplTBHGK75MlHg/z0TuuKUaqUbHl0IFEs4TOCevNzLOLhn3QzC6u9CJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=Rrsz1hBG; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from mail.ispras.ru (unknown [83.149.199.84])
-	by mail.ispras.ru (Postfix) with ESMTPSA id D3F2740762DC;
-	Sat,  6 Apr 2024 11:12:15 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru D3F2740762DC
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1712401935;
-	bh=6wci41eDzOFmYi6xp+siMj+Kcr1MZCDRbXEFul7wU0M=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Rrsz1hBGN6GVTvOyUZEqiDZDuxT3KigQLq8ra24Nv9F7SGP9jGQ8Sj/75ohJ2bg0T
-	 AUS60CW5/zFjLtKEbGmCvkG82SGWh7MLvYOR6fokRnu6GcgxCm4lRYJYteG7/7Hk2X
-	 xcJpCGtDXp07N9xgUexQmCqcEpWSOCaBIbxJKdoM=
+	s=arc-20240116; t=1712402074; c=relaxed/simple;
+	bh=3C7DZftyxSnn0rTfhltm6sKkocVJ5v0xMVJQDYSE0iw=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=B/wieYmM8dBd+4wQCt8nQ7CJfTxDtE/6PEhFqib2X4cetsfSG0Fe0CHFRtJPKk+my8h2K91IYAN3znVNEVlManxjse1/XrXqOn2oSu08ytYwO5s27l72FEuLdkFOe3PpCJEnQOFDq8ltlVA74vToTiE5yYwmnxHo/Rw02iygu6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=XJK4D9KT; arc=none smtp.client-ip=51.77.79.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1712402057; x=1712661257;
+	bh=Zv5ijIXBQXd7ATsnV92LCb66jrANS2OynezQJOtP7D4=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=XJK4D9KTfuKdqX7is1NQ3jGKP9gcT9/BtL0cOhHM5+oXH/xiavon3w5szOgWwNJHV
+	 xjTWeneVsRLpX5KpE5X2eptC+vhndrNVzzvSqNnzbmvW0JB57JDYzDSPqYPhDQZdmj
+	 Un4TIF7vBa/s/IQp0QAD4gQrnnguU57dLcsaInmROGI2tYjnk1vIpu1dfLKZNp1wn4
+	 GuH7Zw+h8WHuU5VH9y0Hi7A1RIV2Rj/kLTAyQoicAQ+K9g29SVDAZPC7Oed44VaATw
+	 LLvARdYGhnI22PvTei+upYAl3YVqHMzaUJI5sB19P25712oBbxrlRkURJ9k1vNpCvZ
+	 vFB9S/FivrZCw==
+Date: Sat, 06 Apr 2024 11:14:12 +0000
+To: linux-kernel@vger.kernel.org
+From: Raymond Hackley <raymondhackley@protonmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Stephan Gerhold <stephan@gerhold.net>, Nikita Travkin <nikita@trvn.ru>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: [PATCH v2 0/3] arm64: dts: qcom: msm8916-samsung-fortuna: Add accelerometer/magnetometer
+Message-ID: <20240406111348.14358-1-raymondhackley@protonmail.com>
+Feedback-ID: 49437091:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Sat, 06 Apr 2024 14:12:15 +0300
-From: Alexey Izbyshev <izbyshev@ispras.ru>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: Pavel Begunkov <asml.silence@gmail.com>, Olivier Langlois
- <olivier@trillion01.com>, io-uring@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] io_uring: Fix io_cqring_wait() not restoring sigmask on
- get_timespec64() failure
-In-Reply-To: <b2e8a3e7-a181-42cd-8963-e407a0aa46c6@kernel.dk>
-References: <20240405125551.237142-1-izbyshev@ispras.ru>
- <b2e8a3e7-a181-42cd-8963-e407a0aa46c6@kernel.dk>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <cefb820ec1805169d18b3109c47408f5@ispras.ru>
-X-Sender: izbyshev@ispras.ru
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-04-06 05:06, Jens Axboe wrote:
-> On 4/5/24 6:55 AM, Alexey Izbyshev wrote:
->> This bug was introduced in commit 950e79dd7313 ("io_uring: minor
->> io_cqring_wait() optimization"), which was made in preparation for
->> adc8682ec690 ("io_uring: Add support for napi_busy_poll"). The latter
->> got reverted in cb3182167325 ("Revert "io_uring: Add support for
->> napi_busy_poll""), so simply undo the former as well.
-> 
-> Thanks - ironically I had to hand apply this one, as some of the
-> commits you mention above are not in the base you used for the
-> patch...
+Some Grand Prime use a Bosch BMC150 accelerometer/magnetometer combo.
+The chip provides two separate I2C devices for the accelerometer
+and magnetometer that are already supported by the bmc150-accel
+and bmc150-magn driver.
+Some Grand Prime use a ST LSM303C accelerometer/magnetometer combo.
+Core Prime LTE uses ST LIS2HH12 accelerometer.
 
-I used v6.8 as the base, and all three commits mentioned above are 
-there. However, the patch indeed doesn't apply to the current tip 
-because of post-v6.8 changes, sorry for that!
+Add support for them.
+---
+v2: fix accelerometer@1d: 'interrupt-names' does not match any of the regex=
+es:
+    'pinctrl-[0-9]+'
 
-Thanks,
-Alexey
 
