@@ -1,158 +1,145 @@
-Return-Path: <linux-kernel+bounces-133861-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08FBC89A9D2
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:09:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 304CB89AA23
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:23:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74B6B1F21C8F
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:09:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D4E171F222DA
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 077DA22F0F;
-	Sat,  6 Apr 2024 09:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08FA2376EB;
+	Sat,  6 Apr 2024 09:20:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cp+0drnx"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="dTTemcW8"
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 667D01EB3F
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 09:09:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5CC23A8E4
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 09:20:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712394554; cv=none; b=uzEXKMa363huDMvzqY4Fu+DUeoNOHgQrlqdGvxOQ5+fJR72ExdhyxVdLpa41tP67tiY51FQgHr8Ps3MS+PexMZNEm4eC7goQjybhOuySPZdpQmXvqlhjtM04crtU2QmHiqLE/Hz2axhk/PZ/kgd3mDvHf5WujZyqJvcN1X8RWwA=
+	t=1712395222; cv=none; b=LL9TvjbVJt2H1S7HaG2FEEW/HpihwX/jet13Jil5gxi+URKPWkubqmQDlbBWdEazcV9r0wxNbbzCi0dpNrDUqKQxWdRRNtGzJGVAsozPU8GMqH2YU3kqZa9dvbTrF0COqc1XOPYT5pv7M/LJvnR/fR0jHWb6zWuQtGNtLExyrVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712394554; c=relaxed/simple;
-	bh=MGHIGmfwFNSNcn0c/t4VWCQduJ8fZ/WlM/mf+rzhQII=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ShzEKCrX4dWAn4OqzxYKsLBaWYocvj1OFldSVHayc8ucbUOTJmVOe9mwQkpnrFh5TF73f/yURGXeyr1fbCtrmHEA348sl5I5b8IhUA1vrauf2R1vJIRG6TGhAEmnHIM25ZSMK4vRTidXC4WrGLGCXJQtlNv4XlZbu7E2MXOq7zg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cp+0drnx; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a468226e135so405879066b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 02:09:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712394550; x=1712999350; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Jsux2xNdM5INUuabTGtcNgAbopGLxo1c/2XpNOGaEWM=;
-        b=cp+0drnx6QYJJexf5+fc5r6RCcrMHdxx99hdBCY/ylBxc6+ctXJ0aVl1DGTqw5fv0q
-         WKe++fjg2V+kBvb1Ac/3ZSu26CdjJ3NApvUH862RRNOqJNO3v8sPRA497xIQCtEUTiE1
-         dTTRrw1u4FH8IADa3F2+HFB45riJ8zEU4e+WCCngoJX6gX0K4Fp3HF8MYcuk0G6lyA42
-         3ggDW8etQPKDn+giWQ19r1oheCKu0RJIeMwPpoE4Yv5m5K2E9f37tWSSpQIi8HBRTyCO
-         C1hAhzjKRrWZlTQgyD/enyrCT19Js7RRJsPlKs+0c/FB+bdqIGm6XmvN4zqH6MFAOHkB
-         qsFA==
+	s=arc-20240116; t=1712395222; c=relaxed/simple;
+	bh=wls7Uj9lvj1C2cR+9fWVS8Sq79ZqlDYd8ckzjVd9vKU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sQBVJeQ/gmN0T56UQWpmu1RDxmDSyGs4cBG6iGhEkxASnTPCO37yK7h3qNvlCi6JZkfcBH9r0bE/qnBwmBUIr/TJ/wk7bzUryJj6toOvvMZLZRT5zTUj/Wc/bJl/gMpons7nPgzsVtIV0W93iZxVrruwTih/kIeYi5q9ZTqir/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=dTTemcW8; arc=none smtp.client-ip=185.125.188.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com [209.85.128.72])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 18AF142491
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 09:20:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1712395216;
+	bh=yx7vpzXIHTYh5j3nTDQp+mlNbiWJAYHc0w9red4g/BM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
+	b=dTTemcW89wPCE3kxSJqUC+M/Rqs9uBto0yzTF+UN4tDLeX2jOrTnyB38xMu/SZOm5
+	 6HmXr2+otfYFvoyS7+fGWESgb4eUJkyA0eECdQWTjbjZu08DPoY8dbMVeN0ODVLIWI
+	 IDPA4uoA8vXs9MDALGlkZZaBmdDWifYGdjH4n5D4Em3DVc5plJGd5gwWdkNbDCQNEw
+	 ceRX3YNwnoI4NU2mgWQlHbDUpPK8lTuGrZ5ONvLLapcb20YBiaNF6ssT80LHSJ6B6o
+	 TKmSeTRmpZiauZUaELT9NhsU0YRyAIwqyBHR2HcR7cZmI7cSGev/KO3Y4s+2hpe4Ud
+	 3GT/vQX5Clp0w==
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-41489c04e3aso13581185e9.0
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 02:20:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712394550; x=1712999350;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Jsux2xNdM5INUuabTGtcNgAbopGLxo1c/2XpNOGaEWM=;
-        b=n2mhZ6POnt60FMdtYBOvktnGs48CHJ81KygF7rb2lAfeB+AAvTeAvb3QNnmtx0tvSu
-         d4voYkVeDE6inKVo5yQUIdFnGb6eZfyC59h4O9c5T6rjlAGHLVfKM6C25J8qANc7DkiU
-         SOa+qbNpnblfFixm7J3OfDjC33tclChaqDvzZakHGKY/qSgdjuoiL5uy9+Rm8eI6uJnM
-         d6Kcwpx3ajF2TzbZInvqOZzBVa5b3fLnG3gWJnb0TC0Zv7aKML/eiid1McUIzfFk1Hj7
-         de30zuBLsP8dgjVGoiZjjNvhKTlNtBNEZc9UjsiJKnWL8F3M3AOV68W4gibGHHc8HA45
-         46qg==
-X-Forwarded-Encrypted: i=1; AJvYcCXlqEhlBxxtSyYD3LK4rbkbRD4zt3cI8T7Ht01dS5uamsdEsogDLpTnuN8Z3OXICEGb/Xab+YZ3w9GL9C4VKQAlHJ0iITKLXvPALQQx
-X-Gm-Message-State: AOJu0YwDwlwT1NAT74qjZ7MBcCvjoMjdMnMCCsuzgjboQh0AyyEdjqeQ
-	MohsOYME8BCFUAQKeO6HqjknAWb1ybe2AjB4v0DLenFx5JpmKjnbdeoXO3/Suho=
-X-Google-Smtp-Source: AGHT+IEePUKy6Exi4dt9+UbvFkTbfuWJlF40HE36cWG7zX6sCHC690fGxSptBYpyD+e0u3AVoM6UgA==
-X-Received: by 2002:a17:906:2e98:b0:a4e:390f:c6ce with SMTP id o24-20020a1709062e9800b00a4e390fc6cemr2533620eji.65.1712394549323;
-        Sat, 06 Apr 2024 02:09:09 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id he8-20020a1709073d8800b00a4e57805d79sm1785409ejc.181.2024.04.06.02.09.07
+        d=1e100.net; s=20230601; t=1712395212; x=1713000012;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yx7vpzXIHTYh5j3nTDQp+mlNbiWJAYHc0w9red4g/BM=;
+        b=n3EPhVtPZ3rpm8cYyHxNa/bE6HRWOyxufBpsc687ljWm/GWW0r2YGg0XA87sNcQ49d
+         oDH7JvRY9r+73fguLU6J5AMgCkls0579dDZdqWHz7oz9eY0hInBK2S8FZ1IWetETyonm
+         gV1uABivDk4oKFhSIwukSa2E33ntuvfsQJAUB4IxwN4IWvpCf0HBQi2p1JL0OSrqRb26
+         JlOfaj2HA6p+29JmMPQ9CEo+3muDtIQA1x6fiFrrNWvpJYwXYC8rGwxRyYwQrPLbC6aC
+         rrRW2LrgpnIqJn1lznZR8i1IuXUJPEVqqWwJqPDXlvhxM0F+NsLpippW4/FKrUaCDXuu
+         fgpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVLVzgczU+C/vf9bpdrp4auEJjRV3mm/k7sGxWekyTd5GCjX6b+X6wm+cgix3II8XBKEpQ5/NP6Zv9fjnTgQJmIfbrM3abpzS63pMb1
+X-Gm-Message-State: AOJu0Yzo5UhARqa4rYtLcWY1S+n2IVKpGtUrpoOma9yhsn2uGWbDHDyv
+	3m8V4f5im4VHxGymuqAoAQ6Wjon9vS1OJeG1C3ZUl7YSXMr2Zyf9tmvluruO31FAS0DgBcHI/0b
+	HlBr+EdVj/hw6ao+CgJb6RkG1wmvuVrqhIBIwZ4/iTJofouvp3T6OempiJJvIUXX452iTvg9wfm
+	favw==
+X-Received: by 2002:a05:600c:4e93:b0:415:691c:f83d with SMTP id f19-20020a05600c4e9300b00415691cf83dmr2852396wmq.33.1712395212471;
+        Sat, 06 Apr 2024 02:20:12 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHit5kOPUjw5jx+vy2tg5jUYvea3lG9TQoPRZVf5aXYZyCaWrS8RAEXac+i+7u4IVkSCPt8Yg==
+X-Received: by 2002:a05:600c:4e93:b0:415:691c:f83d with SMTP id f19-20020a05600c4e9300b00415691cf83dmr2852376wmq.33.1712395211958;
+        Sat, 06 Apr 2024 02:20:11 -0700 (PDT)
+Received: from gpd.station (net-2-39-142-110.cust.vodafonedsl.it. [2.39.142.110])
+        by smtp.gmail.com with ESMTPSA id l23-20020a7bc457000000b00414924f307csm5779993wmi.26.2024.04.06.02.20.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Apr 2024 02:09:08 -0700 (PDT)
-Date: Sat, 6 Apr 2024 12:09:03 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Jackson Chui <jacksonchui.qwerty@gmail.com>
-Cc: Alex Elder <elder@ieee.org>, Johan Hovold <johan@kernel.org>,
-	Alex Elder <elder@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	greybus-dev@lists.linaro.org, linux-staging@lists.linux.dev,
+        Sat, 06 Apr 2024 02:20:11 -0700 (PDT)
+From: Andrea Righi <andrea.righi@canonical.com>
+To: Andrii Nakryiko <andrii@kernel.org>,
+	Eduard Zingerman <eddyz87@gmail.com>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	David Vernet <void@manifault.com>,
+	Tejun Heo <tj@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: greybus: Clear up precedence for gcam logging
- macros
-Message-ID: <5eb3afe2-da7b-4f98-aac2-bff529a02cea@moroto.mountain>
-References: <20240404001627.94858-1-jacksonchui.qwerty@gmail.com>
- <658e1f40-d1eb-4ba7-9ba3-0aa05a1ed06e@ieee.org>
- <ZhBrff8qkkmum4wc@jc-ubuntu-dev-korn-1>
+Subject: [PATCH v4 0/4] libbpf: API to partially consume items from ringbuffer
+Date: Sat,  6 Apr 2024 11:15:40 +0200
+Message-ID: <20240406092005.92399-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZhBrff8qkkmum4wc@jc-ubuntu-dev-korn-1>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Apr 05, 2024 at 02:22:05PM -0700, Jackson Chui wrote:
-> On Thu, Apr 04, 2024 at 05:05:09PM -0500, Alex Elder wrote:
-> > On 4/3/24 7:16 PM, Jackson Chui wrote:
-> > > Reported by checkpatch:
-> > > 
-> > > CHECK: Macro argument 'gcam' may be better as '(gcam)' to avoid
-> > > precedence issues
-> > 
-> > I agree with your argument about the way the macro should be
-> > defined.  But perhaps these gcam_*() functions could just
-> > be eliminated?
-> > 
-> > I see 15 calls to gcam_err(), 1 call to gcam_dbg(), and none
-> > to gcam_info().  It would be a different patch, but maybe
-> > you could do that instead?
-> > 
-> > 					-Alex
-> > 
-> > 
-> > > 
-> > > Disambiguates '&' (address-of) operator and '->' operator precedence,
-> > > accounting for how '(gcam)->bundle->dev' is a 'struct device' and not a
-> > > 'struct device*', which is required by the dev_{dbg,info,err} driver
-> > > model diagnostic macros. Issue found by checkpatch.
-> > > 
-> > > Signed-off-by: Jackson Chui <jacksonchui.qwerty@gmail.com>
-> > > ---
-> > >   drivers/staging/greybus/camera.c | 6 +++---
-> > >   1 file changed, 3 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/staging/greybus/camera.c b/drivers/staging/greybus/camera.c
-> > > index a8173aa3a995..d82a2d2abdca 100644
-> > > --- a/drivers/staging/greybus/camera.c
-> > > +++ b/drivers/staging/greybus/camera.c
-> > > @@ -180,9 +180,9 @@ static const struct gb_camera_fmt_info *gb_camera_get_format_info(u16 gb_fmt)
-> > >   #define GB_CAMERA_MAX_SETTINGS_SIZE	8192
-> > > -#define gcam_dbg(gcam, format...)	dev_dbg(&gcam->bundle->dev, format)
-> > > -#define gcam_info(gcam, format...)	dev_info(&gcam->bundle->dev, format)
-> > > -#define gcam_err(gcam, format...)	dev_err(&gcam->bundle->dev, format)
-> > > +#define gcam_dbg(gcam, format...)	dev_dbg(&((gcam)->bundle->dev), format)
-> > > +#define gcam_info(gcam, format...)	dev_info(&((gcam)->bundle->dev), format)
-> > > +#define gcam_err(gcam, format...)	dev_err(&((gcam)->bundle->dev), format)
-> > >   static int gb_camera_operation_sync_flags(struct gb_connection *connection,
-> > >   					  int type, unsigned int flags,
-> >
-> 
-> Thanks for the feedback, Alex!
-> 
-> I thought about refactoring it, but I feel it is worth keeping
-> the macro around. It acts as an apdater between callers, who 
-> have 'gcam' and want to log and what the dynamic debug macros 
-> expect. Without it, the code gets pretty ugly.
+Introduce ring__consume_n() and ring_buffer__consume_n() API to
+partially consume items from one (or more) ringbuffer(s).
 
-Another idea would be to create a function:
+This can be useful, for example, to consume just a single item or when
+we need to copy multiple items to a limited user-space buffer from the
+ringbuffer callback.
 
-struct device *gcam_dev(struct gb_camera *gcam)
-{
-	return &gcam->bundle->dev;
-}
+Practical example (where this API can be used):
+https://github.com/sched-ext/scx/blob/b7c06b9ed9f72cad83c31e39e9c4e2cfd8683a55/rust/scx_rustland_core/src/bpf.rs#L217
 
-	dev_dbg(gcam_dev(gcam), "received metadata ...
+See also:
+https://lore.kernel.org/lkml/20240310154726.734289-1-andrea.righi@canonical.com/T/#u
 
-(I don't know how to actually compile this code so I haven't tried it).
+v4:
+ - add a selftest to test the new API
+ - open a new 1.5.0 cycle
 
-regards,
-dan carpenter
+v3:
+ - rename ring__consume_max() -> ring__consume_n() and
+   ring_buffer__consume_max() -> ring_buffer__consume_n()
+ - add new API to a new 1.5.0 cycle
+ - fixed minor nits / comments
+
+v2:
+ - introduce a new API instead of changing the callback's retcode
+   behavior
+
+Andrea Righi (4):
+      libbpf: Start v1.5 development cycle
+      libbpf: ringbuf: allow to consume up to a certain amount of items
+      libbpf: Add ring__consume_n / ring_buffer__consume_n
+      selftests/bpf: Add tests for ring__consume_n and ring_buffer__consume_n
+
+ tools/lib/bpf/libbpf.h                           | 12 +++++
+ tools/lib/bpf/libbpf.map                         |  6 +++
+ tools/lib/bpf/libbpf_version.h                   |  2 +-
+ tools/lib/bpf/ringbuf.c                          | 59 ++++++++++++++++++++----
+ tools/testing/selftests/bpf/prog_tests/ringbuf.c |  8 ++++
+ 5 files changed, 76 insertions(+), 11 deletions(-)
 
