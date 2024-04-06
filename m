@@ -1,86 +1,74 @@
-Return-Path: <linux-kernel+bounces-133805-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133806-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42EA089A8F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:09:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34CEA89A8F7
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:15:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC2DE1F226D3
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 05:09:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A456282B5C
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 05:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB971BF53;
-	Sat,  6 Apr 2024 05:09:05 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF531DA21;
+	Sat,  6 Apr 2024 05:15:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HmTecpYr"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53C9C208C4
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 05:09:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28E181FA1;
+	Sat,  6 Apr 2024 05:15:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712380144; cv=none; b=jck5/v82lUCobusFisTr23tPNPhDwIAesrR+Pbo3YGAxOXH25dCCIUX/1cjQfI9k2IaJe1IDV0vqYRNz+2qZuAtuyb3QKpiBvbho4sGcR/Bp3CL/PQTiZCHiBMXtZzjiHlMJ8Ccq/KQFQAcZpA2Lg4e5xOm2Vt4aai4V1mchV9w=
+	t=1712380535; cv=none; b=pdY8AXawrjKbhZAVHHheuFZeOxHhuDOXuXQD6NWMJ1Uo6iv9U+vj5MSsi2UGCKRlnCDvNgTcp6fCIJdFr7i9v9zZJkZ61KooFhqj3FSLyGubSBTBciynoZWGYrF01dqcJwsY5JVfDW5dsxND0Jv52Xk16QCPPW8Wp1KGZK6sqKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712380144; c=relaxed/simple;
-	bh=itdSvRU32vZ0tVM/xZfb/YoaE6ctlnJgll0P3UDpHJU=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=cjs8tTJibpx7IoMd45pPuM1rQiGNzk17ROHiR+ZLrTVAPQXAL637P4iOmIB26rCSegMzvCtxm/gqT9ld48XYdel2VbIsYjWFKddiH2VEGbxxOYv+H6CcV5VSYKTneXjY78uAZlbvJdiof59Z/q8nAJIhrvyElv0fUzX6Q9u6nfQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cc01445f6bso318762139f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 22:09:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712380142; x=1712984942;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KV8SwOnj3w62SIgU4hu/Zw/a+SW4UyN+uMik/TiSHsw=;
-        b=Q7ClOijpmHkHym7xGAPXK64Pf1lfNYUXHx+xrXAThNY1M+we8CKHc9WwH4T4Ymf74f
-         OF01wU27jpRCc9ypUQQhUkSpg67nt9Znakfp92Y4N6jIg+1PKa7teCdpT9nz7FnyTAvc
-         7rFODGZ3Of6WcqSrD9AUU/9qYFJgTm81qU4Up0njAgOUbtefFRK1Bnhg0moWyexv8GCA
-         0eM0zEpMEzCtUtPRXD4h8WqhT2clIvttAJc2YOcpHlf1WBdhD/bglFXiEb+Prz9mRL68
-         zH7kjvdMa3jPEdAzLe2QIV0CzOvUHPA+bTCgAy7NT3LOqivOn+bfzfeZqCE/jvqjSlZQ
-         5lSg==
-X-Forwarded-Encrypted: i=1; AJvYcCWl5SrayPwGgs28lj7r0C/Yu9ER4HbumvjsLLfjAFEeeBmDy7c6WypkmbiwzgnG6zp+P2Yp1H3+NbOIK1nK6A1+UXoxnsZULMyLoXGX
-X-Gm-Message-State: AOJu0Yxz4RnY3KvyBjhwRwj9Skq1a+ZAXWUoSc/iFRqVCCMMQ1DWyEvh
-	fXfu4Cz2rAuL/uEiz3nI8meDUa8p4Ov+Nu2V6369pJmUuz2uQJlpNfGwJjzl7tsIDrsohg9yh/J
-	ybqJkF7l574Ewlte42U2tZWxVpyNetESpGMNZcy+MhyZTNu32/aFDol4=
-X-Google-Smtp-Source: AGHT+IGbRwU/epQK8baEmLsNnzl+MmBJTIHRcES6+lKhSPmBrZIjBuYQ3wDchEEkz1DGuExOgPRJcXgN/DD0ZG/3tT/9xxSiytpB
+	s=arc-20240116; t=1712380535; c=relaxed/simple;
+	bh=oZDIG0cheoYdBflbk/QHSFcJ9PNvJLk8GoHxlQ8BcNU=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tnc/cfCuiqMRCe2DvDBet6Omf+ZpAE9g7WoEeiuQ29nuzh56+jbB0oIt3kjs2sqxJUpC0yyj6fEty0lLLij/dWSBkoUcSH0m/7o/L61uxUe+ueePwGXchsClohovqdlXm3aN/u7/4ZfccvITUtfOZEZx3zQsXVmbryAlsCdSrdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HmTecpYr; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4592FC433C7;
+	Sat,  6 Apr 2024 05:15:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712380534;
+	bh=oZDIG0cheoYdBflbk/QHSFcJ9PNvJLk8GoHxlQ8BcNU=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=HmTecpYrlhsgruh3BBOnWqrFRMvHAMKFTJR3Yg3W8joSchbsKvfedqpblZV7nV6uy
+	 7uTVkppXyw8Tg+6tO3RXzBnTqX2DQGXLQ5H0DYGt9i95gm5lOqw6Aq0gOqUqhxZKpJ
+	 i1QiGZa4uVO/SynKZOmjcKht3XWf0f/egXf3rB7LeMHkVt1vjWhkv6RhC2hkGsnsfe
+	 VoA0lZ+4V4wwq1Q0QCtunYo13yB1gNUdPD8U9O7VnKXfr7t/w+b1xOUV1oYXn4d32p
+	 9MQTpCCPWo9m6XEZWs0NLk8j6lQb8ci2pj7zJO0UF3+kWkqICw5HmaOtTMkTfLTquO
+	 /kxBfTaWyDxHw==
+Date: Fri, 5 Apr 2024 22:15:33 -0700
+From: Jakub Kicinski <kuba@kernel.org>
+To: Min Li <lnimi@hotmail.com>
+Cc: richardcochran@gmail.com, lee@kernel.org, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH net 1/1] ptp: 82p33: move register definitions out of
+ ptp folder
+Message-ID: <20240405221533.56b5774d@kernel.org>
+In-Reply-To: <LV3P220MB12022BEFC410BCBCD52DD891A03D2@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
+References: <LV3P220MB12022BEFC410BCBCD52DD891A03D2@LV3P220MB1202.NAMP220.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2d95:b0:7cc:8980:5ae4 with SMTP id
- k21-20020a0566022d9500b007cc89805ae4mr89738iow.2.1712380142543; Fri, 05 Apr
- 2024 22:09:02 -0700 (PDT)
-Date: Fri, 05 Apr 2024 22:09:02 -0700
-In-Reply-To: <tencent_1604493766D774A6CD337CA363296C63B305@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001df6f906156692b8@google.com>
-Subject: Re: [syzbot] [bluetooth?] KASAN: slab-out-of-bounds Read in hci_sock_setsockopt
-From: syzbot <syzbot+837ba09d9db969068367@syzkaller.appspotmail.com>
-To: eadavis@qq.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On Wed,  3 Apr 2024 16:05:16 -0400 Min Li wrote:
+> Subject: [PATCH net 1/1] ptp: 82p33: move register definitions out of ptp folder
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+nit: if it's not a bug fix the tag should be [PATCH net-next]
 
-Reported-and-tested-by: syzbot+837ba09d9db969068367@syzkaller.appspotmail.com
+> Relocate register definitions so that other multi-functional
+> devices can access.
 
-Tested on:
-
-commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1590d38d180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
-dashboard link: https://syzkaller.appspot.com/bug?extid=837ba09d9db969068367
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=159cfde3180000
-
-Note: testing is done by a robot and is best-effort only.
+Please point out the driver which you have in mind.
+Is it already in the upstream tree?
+-- 
+pw-bot: cr
 
