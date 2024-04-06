@@ -1,228 +1,157 @@
-Return-Path: <linux-kernel+bounces-134006-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133951-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7780889AC06
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 18:24:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E20AA89AB56
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:27:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C659AB21527
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:24:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 553C71F21659
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 14:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58E9A3F9D4;
-	Sat,  6 Apr 2024 16:24:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2216A38397;
+	Sat,  6 Apr 2024 14:26:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="MsGYFUNX"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05olkn2015.outbound.protection.outlook.com [40.92.90.15])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DanSoNxj"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA153C087;
-	Sat,  6 Apr 2024 16:24:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.90.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712420668; cv=fail; b=TFia7+9dvLY/yDa2TRH53b8Lc6InsecpafUMVkRzcMuU5D++FI9NeFVv6CTWQrOJ6UZHBhPaqwkoAZ6BTTCFaFU1Vx7k/zmWOeaTI7YCIXnJDVkWbzG4VugLw3Q1TQpw3DWsdx7FH6ivzfjbQg/R7FKBF+a1mJw4+uLC0XjUYa0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712420668; c=relaxed/simple;
-	bh=em0KuTuS5v17wCYbmf3zMkFaHtwR1H6btaoNK7MFnqo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=f7jjqAf7sNuUx4n2YstigdiNAHTq4IFHZlSgtP0/sykhaHAT0D/tBsXp0DAK+ZcxT5G3wBR5OJEP3yfX5rqXF4I32S16sLPQtONpJOsRBMCriPwQhoxCO7IgYhtSid3IoovD5pErG4ifZDtpzUXQDwpoR83VFycRz+NjBGF1Gf4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=MsGYFUNX; arc=fail smtp.client-ip=40.92.90.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DOAuPUI3GCFvdWS02y8lYX+Btl759fFtLz9XBkXpU6nc1U7x4A2adtJgW2HMOj6BmYHdZ/zzmjtEl/FaMwMYCSA7QNkx4qQYQpBO31bgo/zlpMBn4Iqb1oJxseHBIqioaHkBG4axX1fjF6cbpxlStIy7v6jKr/Qd4JDXA8pE+nV3ArBUVj8M97JU4ZOti2jnnCY/jLsDxBykGE54zkAZcVOVi6M8MvDl5QmDyIsN1MsORsUKgeMmSDB3VZmHi/F9mPPHW39Q/RSpn5Xl6/1G3R5Mo6p79EWsM+gASwIave6BCJ3BmXhawWTeTzHqRN9xyHciWGcEhS1kRtNB/DfPjQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=78EOzeiJpMwIvqdyeb+jNXi711WZpDuzvqqWUG13Uhw=;
- b=YlR+qatxpUXpOsmAAdM8iRuaVnp1mFJ1HjV5gfLL3gzsScaI0zkykG4bEDieel81IvxdTNUkid3KcrCfPaxi+HU1eultff35hBflNmgsMg4tHE94zhKoW/rePopxiazz4XCeCoHM9t91UArZ/1pj46LzPfyu45DMgtKhj3/RSuAb05GGS1l9BvOX6si3n1NbQEhztyQ6h7weXuoofzzl5gx74WdYCxnpoX4SXxPBzNCWmsmmZ9CbaL91YK+k+QarikG4TjYfr9I929p5gjaD5biAduQesJeaLBNkTDBRyU5JnE4IUvAzZVbVyRODHVUS9QRRzFv/40ySnZ+knlpGiw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=78EOzeiJpMwIvqdyeb+jNXi711WZpDuzvqqWUG13Uhw=;
- b=MsGYFUNX9o4ieQ4Qn3OmFt9qnPNd4LxXPzY3+VmYbMiZnQvSGOZu2rQ+Us8GvaETy+RsZ54Do9ZLf6hhfJWwp/uGUArQxv3qG80QLVY4DD0xtV+myToh+uX6aaJxqc243qe44qXb5d7MXTFthsf49k22qOgez7XbU3nZPkIgN5R56E0WnH5LuvG3nCJ2v4e2JwoxvEsoY/1sRcrzWEyLNrxSGb2sshSKEEb/2HdzDdScDxQ6INBs+OoKMSKjdRf2iizhoaHD6hX93eq578gvz/gr5xyGxpObD2t82yaWLBmQ7KghN/WZ+Xbmq3JQp7gLHxx7uI/q1eQbdXR/kFE1Qg==
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com (2603:10a6:20b:3f1::10)
- by DU0PR02MB9121.eurprd02.prod.outlook.com (2603:10a6:10:464::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Sat, 6 Apr
- 2024 16:24:22 +0000
-Received: from AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::9817:eaf5:e2a7:e486]) by AS8PR02MB7237.eurprd02.prod.outlook.com
- ([fe80::9817:eaf5:e2a7:e486%4]) with mapi id 15.20.7409.049; Sat, 6 Apr 2024
- 16:24:22 +0000
-From: Erick Archer <erick.archer@outlook.com>
-To: Long Li <longli@microsoft.com>,
-	Ajay Sharma <sharmaajay@microsoft.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Leon Romanovsky <leon@kernel.org>,
-	Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	Konstantin Taranov <kotaranov@microsoft.com>
-Cc: Erick Archer <erick.archer@outlook.com>,
-	linux-rdma@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	llvm@lists.linux.dev
-Subject: [PATCH v3 3/3] net: mana: Avoid open coded arithmetic
-Date: Sat,  6 Apr 2024 16:23:37 +0200
-Message-ID:
- <AS8PR02MB7237A21355C86EC0DCC0D83B8B022@AS8PR02MB7237.eurprd02.prod.outlook.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240406142337.16241-1-erick.archer@outlook.com>
-References: <20240406142337.16241-1-erick.archer@outlook.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN: [IjmoCuAyloIqhvoUYW9pNGyBpZ9aP3ZY]
-X-ClientProxiedBy: MA4P292CA0011.ESPP292.PROD.OUTLOOK.COM
- (2603:10a6:250:2d::17) To AS8PR02MB7237.eurprd02.prod.outlook.com
- (2603:10a6:20b:3f1::10)
-X-Microsoft-Original-Message-ID:
- <20240406142337.16241-4-erick.archer@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53DB32914;
+	Sat,  6 Apr 2024 14:26:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712413612; cv=none; b=CLFUUNh9cSmCocuBw2DEVFOY2s9BS8WTN3cgnZwQIYiFRxSngmtxYB9Xl9qQ6+UU1BhWDXnomI0JrZ51hG7HJ/nw8R5lrhWZa3DdAymhF23C0U1uAo8Fghwc/fWoi7Ckt6zCpHIIQlVLbjMV6pzctRjaTz3gw6P2uRw7T+qbjrA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712413612; c=relaxed/simple;
+	bh=vB8L9DX/5J7woTCTJf8HqVrEfFR0fvotCf/wHpMo2G8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=RY2GyjZcvtPHMCraz8WRdPNbv9vL+fT1czxNC0Xi0rayCNZbo6bPo1P6GXHnjFJtm6wrwmJIxpgwWbl+OLvJb7k/FzOxa3LRKjQsF1VCJpvxhT7GrmNuj+jBZ2zwV0Ts7vlcW+wR85nrgqRCZjhlWID8sDwIhOb2ShdgZa8ATAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DanSoNxj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1088DC433C7;
+	Sat,  6 Apr 2024 14:26:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712413611;
+	bh=vB8L9DX/5J7woTCTJf8HqVrEfFR0fvotCf/wHpMo2G8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=DanSoNxjaPzyiNCwope2FSm+ymb0DOVSj+HTeJVxpjRAvlMsJW+a8TxwUnhupPNoA
+	 qdxqcU6piuKGHxaxWt68bOw50RRF3nHCbyt1NpPrgXvGE+4XHTn9XS82uQeoBarDwv
+	 sX++3EwvCJD7GvhqSdfk6/86qBKNhjMsDcQuy1rfnOn2LJ48/WLn2Qpdj6VO701KCb
+	 O8iITUNY++qLhuU3nABV7IxgDR83//3Xxp5GFWi1uRNc2HN8q7QXRcK0VRxoBkQpEk
+	 yZiVO3L2vNNTxyJqaDnu1BfBq0Lfmh8nekHebUFls8EHRncLI7DN8y7vhx9IHTB5w1
+	 Te1txfWR2fhgQ==
+Date: Sat, 6 Apr 2024 15:26:37 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: "Ceclan, Dumitru" <mitrutzceclan@gmail.com>
+Cc: David Lechner <dlechner@baylibre.com>, dumitru.ceclan@analog.com,
+ Lars-Peter Clausen <lars@metafoo.de>, Michael Hennerich
+ <Michael.Hennerich@analog.com>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, linux-iio@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/6] dt-bindings: adc: ad7173: add support for ad411x
+Message-ID: <20240406152637.5d53c34f@jic23-huawei>
+In-Reply-To: <aa84a3c5-a3e6-4c76-9b67-624ed8d8c704@gmail.com>
+References: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
+	<20240401-ad4111-v1-1-34618a9cc502@analog.com>
+	<CAMknhBHeKAQ45=5-dL1T1tv-mZcPN+bNo3vxWJYgWpEPE+8p3Q@mail.gmail.com>
+	<CAMknhBGVuMSg+OpS5QTLWi9vA=Xa33AJ+cVS8ZCDyKsAVEe-ww@mail.gmail.com>
+	<0a72de29-6d25-4d2d-9824-ca407af69153@gmail.com>
+	<CAMknhBHhxi7mN88+peU7BGkzSP2vtipCuvM-XfQzgusqKvARsg@mail.gmail.com>
+	<aa84a3c5-a3e6-4c76-9b67-624ed8d8c704@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AS8PR02MB7237:EE_|DU0PR02MB9121:EE_
-X-MS-Office365-Filtering-Correlation-Id: a83463e9-01d5-437c-88e7-08dc5656044e
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	fmAByG4ma+dK8Rj55/hFD4vso/r9uC/2Bz1PS6+SQo77Bb0CnEgVXzR12W+2H2TMK6OvXWfMjf8t9RP0fuPXr8YDA1zzxjiP63yQ18gfRkf7GCSjyBoSUu4z8mCD6JxYudlL0ORmsJ8a27z3bsJxm1LPYfzv3Fhxgz1j1nY1tgQo7GdfDeksB0X4GeoJd+gNV/TU4XRZAZZNdq3BAMNhI+oHfMSu1Vdoywq8DFzkWBNbgN4q0Q1LmKYGbG5JzKaZFOJVi+SyuUhIQ0voWFjSEcFwwbN5hVuLOQT0n00JUXRRw0Gp8SEUNCARAR409DkPcbvUhCRG67gjIB6uAZ7szhafmpLlkvQDawZNzEc4wD6PpxEpziZeOcD2AvOARbOvbcOCsHQHmXCmrbYutYgGtHjqWSuDMrF8Qch5QuQOT6UWWakLqPjUgH71EwSOGVuxN64A+/KnpioHpM2gg++wkgcN/1Um4Vv4gCvYVZpY6CPcqSj639AJYeRHY2iNgee6Rj3gCtVL0rc9htXDFjbnrD6OciIOGhGI/ko1b8Z5L/CxCzUUHn7A3TT2y+tFDaySazPpETdf5oP8n22cskEp0pzCnQiSYOsKTlxWfYZuKY34Hgh9A66oNR2hLGsUTrW2bITX4Yx0WD0m1+Y5Df/8ww77xbbNtWIyuuE4CDXXVsXqMNy27lKGEv5CFjFyoz4XFhP90EtXMmsdOsUaMaPG1w==
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?x+NWygIoX/E7zdR3o15zzkhmyeh9NM3/hLj/sqpX5ZrTznHVy7G0Dd3qWURk?=
- =?us-ascii?Q?Fjrw03gGJ/vUqrk93iB8X1M9OjZd+YZ3FzbEAsN/yNS5HgsJvUkniC+6FUIq?=
- =?us-ascii?Q?VH4e6IYNJMLBWNuvIjkLYB3xRXb9QXIKCN+2rznnE5XiGFSwmnWzDp/ci+PJ?=
- =?us-ascii?Q?YdN4Wu2vDO7tcPGX/1GTkQAQcp03vLEO8jAMF+vOZnFrMR0irMGGfq18+4UI?=
- =?us-ascii?Q?aWYhrCNPqdhddaV9i1pzhkxU3WEyRqxjH4SDIi3YAJ8OQMsfWBfRGFbR/AdB?=
- =?us-ascii?Q?cPx5YsBpSaztOXBGP0JYfsK8oSjcfQsv9ebqpx41l8aI/XV85s/fesTVhoHx?=
- =?us-ascii?Q?i+LQ77LJ0fEMmkumWdWILeQ2i5KztcZENcTvL0zIjN1ICbFA3HdVZu8Hmlf9?=
- =?us-ascii?Q?Sd5x2TzBFMLwiHWd5H04exp383hrdWjc3UJkedDm94sR9CYGbaDqQ+cSSobJ?=
- =?us-ascii?Q?UVBB+Fz/GXSi6rq6+bpIJfJzrw0LwR0HClZlc5IDKWvmLOExfF9y4JKQu6sA?=
- =?us-ascii?Q?ex7QoVZUGekG4wBtyVTFx0PnT3/gAecEE7dY8620K6CABFM7h5AyLogYw/K1?=
- =?us-ascii?Q?g3S1ZgeuviP4Wg8LFAcAIWILZW/6i111xgtvqGXM4in4FoOG3nheijWC2unl?=
- =?us-ascii?Q?rWfJGXgajODKjR4lfzAk7Sdj2/RTNvq+cx9HBTe7jtMOM59N3oiWrgQYDD/D?=
- =?us-ascii?Q?DxPbWkLsmS1ePvbjpEWY0BgbwsdEhDjVmoi4V+cdB7cSDHye+kD6uUl4U47p?=
- =?us-ascii?Q?5Pgc/ivUWRkaeunOCD6L9Qh/ulScSza5LorKy/Fk7ZQULG+LoTOnq5VLnO+V?=
- =?us-ascii?Q?CIZuNz0CkV+Aje//Z6/zu/+CgpXjIJQUxQV/ZPZMU30qf/3Trmlr36jnDV7V?=
- =?us-ascii?Q?9yU8Jtonv+69USUMU4+azbHKKb2Xvbjl4gaHLf80wwCjq9TJaXp0w3bvcMxs?=
- =?us-ascii?Q?YXcw83Z1frjZ+7CVV4xVMqDRdiO5u/h/s41jmILwhRouySm6qrZsJ3akfrSW?=
- =?us-ascii?Q?6hzs2t21fN04u1ZwTFnjs+lONtvLqEY1uj1WCyiVJr8eq+20UXfFIiopgkbY?=
- =?us-ascii?Q?qFv4L3QFfL7xtuBaKNSNS9PsrYR12hqrnMDr6tkv4Qy8Z+ucYM8OAqkFIFMI?=
- =?us-ascii?Q?PjfTm5iqkE1nLAWun9PBjwrA8ZA5WzCozx39uzDit2WWOb1Z/rzIxy9GZVEi?=
- =?us-ascii?Q?gJ8RvR6odiv8/uRyVyun0JY4UJBVyX3BIfFo6MsZGgLKiN3BzK5V9TfQ8exc?=
- =?us-ascii?Q?/9kawPV6I8vrX/j7Z4bA?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a83463e9-01d5-437c-88e7-08dc5656044e
-X-MS-Exchange-CrossTenant-AuthSource: AS8PR02MB7237.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Apr 2024 16:24:22.1362
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR02MB9121
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-This is an effort to get rid of all multiplications from allocation
-functions in order to prevent integer overflows [1][2].
+On Thu, 4 Apr 2024 16:08:56 +0300
+"Ceclan, Dumitru" <mitrutzceclan@gmail.com> wrote:
 
-As the "req" variable is a pointer to "struct mana_cfg_rx_steer_req_v2"
-and this structure ends in a flexible array:
+> On 03/04/2024 18:22, David Lechner wrote:
+> > On Wed, Apr 3, 2024 at 2:50=E2=80=AFAM Ceclan, Dumitru <mitrutzceclan@g=
+mail.com> wrote: =20
+> >> On 02/04/2024 00:16, David Lechner wrote: =20
+> >>> On Mon, Apr 1, 2024 at 2:37=E2=80=AFPM David Lechner <dlechner@baylib=
+re.com> wrote: =20
+> >>>> On Mon, Apr 1, 2024 at 10:10=E2=80=AFAM Dumitru Ceclan via B4 Relay
+> >>>> <devnull+dumitru.ceclan.analog.com@kernel.org> wrote: =20
+> >>>>> From: Dumitru Ceclan <dumitru.ceclan@analog.com>
+> >>>>> =20
+> >> ...
+> >> =20
+> >>>>>      properties:
+> >>>>>        reg:
+> >>>>> +        description:
+> >>>>> +          Reg values 16-19 are only permitted for ad4111/ad4112 cu=
+rrent channels.
+> >>>>>          minimum: 0
+> >>>>> -        maximum: 15
+> >>>>> +        maximum: 19 =20
+> >>>> This looks wrong. Isn't reg describing the number of logical channels
+> >>>> (# of channel config registers)?
+> >>>>
+> >>>> After reviewing the driver, I see that > 16 is used as a way of
+> >>>> flagging current inputs, but still seems like the wrong way to do it.
+> >>>> See suggestion below.
+> >>>> =20
+> >>>>>        diff-channels:
+> >>>>> +        description:
+> >>>>> +          For using current channels specify only the positive cha=
+nnel.
+> >>>>> +            (IIN2+, IIN2=E2=88=92) -> diff-channels =3D <2 0> =20
+> >>>> I find this a bit confusing since 2 is already VIN2 and 0 is already
+> >>>> VIN0. I think it would make more sense to assign unique channel
+> >>>> numbers individually to the negative and positive current inputs.
+> >>>> Also, I think it makes sense to use the same numbers that the
+> >>>> registers in the datasheet use (8 - 11 for negative and 12 to 15 for
+> >>>> positive).
+> >>>>
+> >>>> So: (IIN2+, IIN2=E2=88=92) -> diff-channels =3D <13 10> =20
+> >>> Thinking about this a bit more...
+> >>>
+> >>> Since the current inputs have dedicated pins and aren't mix-and-match
+> >>> with multiple valid wiring configurations like the voltage inputs, do
+> >>> we even need to describe them in the devicetree?
+> >>>
+> >>> In the driver, the current channels would just be hard-coded like the
+> >>> temperature channel since there isn't any application-specific
+> >>> variation. =20
+> >>  Sure, but we still need to offer the user a way to configure which
+> >> current inputs he wants and if they should use bipolar or unipolar cod=
+ing. =20
+> > From the datasheet, it looks like only positive current input is
+> > allowed so I'm not sure bipolar applies here. But, yes, if there is
+> > some other variation in wiring or electrical signal that needs to be
+> > describe here, then it makes sense to allow a channel configuration
+> > node for it. =20
+>=20
+> AD4111 datasheet pg.29:
+> When the ADC is configured for bipolar operation, the output
+> code is offset binary with a negative full-scale voltage resulting
+> in a code of 000 =E2=80=A6 000, a zero differential input voltage resulti=
+ng in
+> a code of 100 =E2=80=A6 000, and a positive full-scale input voltage
+> resulting in a code of 111 =E2=80=A6 111. The output code for any
+> analog input voltage can be represented as
+> Code =3D 2^(N =E2=80=93 1) =C3=97 ((V_IN =C3=97 0.1/V REF) + 1)
+> The output code for any input current is represented as
+> Code =3D 2^(N =E2=88=92 1) =C3=97 ((I_IN =C3=97 50 =CE=A9/V REF) + 1)
+>=20
+> I would say bipolar applies here, not a great idea because of the limitat=
+ion on
+>  the negative side (Input Current Range min:=E2=88=920.5 max:+24 mA) so s=
+till, the option
+>  is available.
+Just to check I am correct in thinking you 'might' use bipolar if you want
+to be able to measure small negative currents, but the range is much larger
+in the positive direction?
 
-struct mana_cfg_rx_steer_req_v2 {
-        [...]
-        mana_handle_t indir_tab[] __counted_by(num_indir_entries);
-};
-
-the preferred way in the kernel is to use the struct_size() helper to
-do the arithmetic instead of the calculation "size + size * count" in
-the kzalloc() function.
-
-Moreover, use the "offsetof" helper to get the indirect table offset
-instead of the "sizeof" operator and avoid the open-coded arithmetic in
-pointers using the new flex member. This new structure member also allow
-us to remove the "req_indir_tab" variable since it is no longer needed.
-
-Now, it is also possible to use the "flex_array_size" helper to compute
-the size of these trailing elements in the "memcpy" function.
-
-This way, the code is more readable and safer.
-
-This code was detected with the help of Coccinelle, and audited and
-modified manually.
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-Link: https://github.com/KSPP/linux/issues/160 [2]
-Signed-off-by: Erick Archer <erick.archer@outlook.com>
----
- drivers/net/ethernet/microsoft/mana/mana_en.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/ethernet/microsoft/mana/mana_en.c b/drivers/net/ethernet/microsoft/mana/mana_en.c
-index d8af5e7e15b4..f2fae659bf3b 100644
---- a/drivers/net/ethernet/microsoft/mana/mana_en.c
-+++ b/drivers/net/ethernet/microsoft/mana/mana_en.c
-@@ -1058,11 +1058,10 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
- 	struct mana_cfg_rx_steer_req_v2 *req;
- 	struct mana_cfg_rx_steer_resp resp = {};
- 	struct net_device *ndev = apc->ndev;
--	mana_handle_t *req_indir_tab;
- 	u32 req_buf_size;
- 	int err;
- 
--	req_buf_size = sizeof(*req) + sizeof(mana_handle_t) * num_entries;
-+	req_buf_size = struct_size(req, indir_tab, num_entries);
- 	req = kzalloc(req_buf_size, GFP_KERNEL);
- 	if (!req)
- 		return -ENOMEM;
-@@ -1074,7 +1073,8 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
- 
- 	req->vport = apc->port_handle;
- 	req->num_indir_entries = num_entries;
--	req->indir_tab_offset = sizeof(*req);
-+	req->indir_tab_offset = offsetof(struct mana_cfg_rx_steer_req_v2,
-+					 indir_tab);
- 	req->rx_enable = rx;
- 	req->rss_enable = apc->rss_state;
- 	req->update_default_rxobj = update_default_rxobj;
-@@ -1086,11 +1086,9 @@ static int mana_cfg_vport_steering(struct mana_port_context *apc,
- 	if (update_key)
- 		memcpy(&req->hashkey, apc->hashkey, MANA_HASH_KEY_SIZE);
- 
--	if (update_tab) {
--		req_indir_tab = (mana_handle_t *)(req + 1);
--		memcpy(req_indir_tab, apc->rxobj_table,
--		       req->num_indir_entries * sizeof(mana_handle_t));
--	}
-+	if (update_tab)
-+		memcpy(req->indir_tab, apc->rxobj_table,
-+		       flex_array_size(req, indir_tab, req->num_indir_entries));
- 
- 	err = mana_send_request(apc->ac, req, req_buf_size, &resp,
- 				sizeof(resp));
--- 
-2.25.1
+J
+>=20
 
 
