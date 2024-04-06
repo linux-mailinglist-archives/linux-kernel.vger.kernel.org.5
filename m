@@ -1,69 +1,69 @@
-Return-Path: <linux-kernel+bounces-133942-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133943-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEFBC89AB40
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:04:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8807489AB42
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:04:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 386B2B21804
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 14:03:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 013351F21A03
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 14:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5E41381A4;
-	Sat,  6 Apr 2024 14:03:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A73863770C;
+	Sat,  6 Apr 2024 14:04:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ragnatech.se header.i=@ragnatech.se header.b="nhpiI5Uh";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="C/PpYlJW"
+	dkim=pass (2048-bit key) header.d=ragnatech.se header.i=@ragnatech.se header.b="XI7Hmtt2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="t8gRcORh"
 Received: from flow7-smtp.messagingengine.com (flow7-smtp.messagingengine.com [103.168.172.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B61026ACA;
-	Sat,  6 Apr 2024 14:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDFC3714C;
+	Sat,  6 Apr 2024 14:04:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712412227; cv=none; b=sZGyUKYaLtcy4qNnsPhpWBPHHYmsrSM/AyK9dTNPN0nfPy/0NxAEwmATJhRBzmU4RXGNPZjBu6WfVkd2CQu1Bd17iB4U+KhW3FxjqZzOYL3wnSATUUIiCP2LqAFEuNOKGeZDBVh/CWXLaWkFulTrQM0ROo09zLqymhORfuZM9p8=
+	t=1712412251; cv=none; b=FPabuC718aI+Nu2BB17sZoPgHfk9RIhg7mwQhtOw2Vu3mGuaors8Qdiv876yUFxDYz13f0nvxRCbW4YF3sLSK93YX5EK0mCvX90eRhCJ3jl/4fuLv8VsTC54R0qPq5uncuKGdOVaaTLb6xciDz1H4i+MYF/eNuYec/6l+wWStxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712412227; c=relaxed/simple;
-	bh=ENTO6UB09qGYIRM+6RLPcHTPSVS4p+i2x0+J7oR4SWQ=;
+	s=arc-20240116; t=1712412251; c=relaxed/simple;
+	bh=3GMEDOspjGEnx9tQo6f8nKMvFoIm2A8BD4lJ9jAtlaE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IjbmZ4rdVg4O9C1Fjni9cbehYqIp3KiFgGEBtjIrhSvmOjmMXStxE7AQZ6FfbYYBGMeftlsUU6xlThBNh4GhNkrCCr2QHAT7t/9u3bZX2fsuFsRhCgGZuJ1tlgdZSrf3hqw7Y3ESeYTErfWmF5laI74LqIA3c6f1EnIuhm7smIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ragnatech.se; spf=pass smtp.mailfrom=ragnatech.se; dkim=pass (2048-bit key) header.d=ragnatech.se header.i=@ragnatech.se header.b=nhpiI5Uh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=C/PpYlJW; arc=none smtp.client-ip=103.168.172.142
+	 Content-Type:Content-Disposition:In-Reply-To; b=LppkUWiqFnOW1/Q4vEZeulDyUoOUrS3yVGnywWnw9f5sIHSN5keiddQXwVjjL2GwAAcDRtg9wNJt0qf+3s9lyGuasINeGI8hka2iuggQJATmk2ureNbBvxLobFwjsV5KH4exQjXpLzefZkmkNJr58rOiX1Gtpu5QSsGrT7Nhrmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ragnatech.se; spf=pass smtp.mailfrom=ragnatech.se; dkim=pass (2048-bit key) header.d=ragnatech.se header.i=@ragnatech.se header.b=XI7Hmtt2; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=t8gRcORh; arc=none smtp.client-ip=103.168.172.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ragnatech.se
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ragnatech.se
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailflow.nyi.internal (Postfix) with ESMTP id 4C7FE20043B;
-	Sat,  6 Apr 2024 10:03:42 -0400 (EDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailflow.nyi.internal (Postfix) with ESMTP id B516D20043D;
+	Sat,  6 Apr 2024 10:04:07 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sat, 06 Apr 2024 10:03:42 -0400
+  by compute2.internal (MEProxy); Sat, 06 Apr 2024 10:04:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ragnatech.se; h=
 	cc:cc:content-transfer-encoding:content-type:content-type:date
 	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1712412222;
-	 x=1712415822; bh=PUh1xzVqpnfSlXumwj/nAAafAm5GRaA7LoifatDtllA=; b=
-	nhpiI5UhCBdd0X1csnzvORn9ocq8aTbSyhI/rXU4z2/HT6L3kxmYWtlwsm+2hniA
-	w2sRTKfrwSUY47T285uwkJpDytum2WvUfV/l4VMIGkUpZCQM8oH5FFllc/HU2hVV
-	mbfXyrfw9yU64JLTGTDJ14DXfOwxmrk0fMV0zXPuWH15uV6Ywd7FbpStfqJhreuF
-	SPGSXDVD7Li+S45bfEz3GkHI1CSr3F7B4qWhjMPg166As22PMMxxJ/qAZFQZxvXw
-	bAzuzMwguh9HlkbyJjsb5Gx5/O6hu65PJPiE/EppIu5L2KcTXkKFY2KnQf97seYF
-	SpZgTErYJBa3x5JCIdr0pw==
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1712412247;
+	 x=1712415847; bh=1M5WlcAIuxUkkwrN7ouvw0OLceBGIcQz5A2HvoNVA5w=; b=
+	XI7Hmtt2hJkqZ6YcB8vccJrkELeKGGzoIOE9yEIiIke3Z5PlbVMWBg2ySTI5pOR6
+	wNFWGNzgBsTDKAGzVdK1n99+xZP7dQNMJULVo/1JGV9riCNXwXHV6A0FuLzZtFgp
+	qD+EXZnpGTHySnZjL42AugLhrb0JLI6jjoFSFQPZfyMdFEGyp6tlEno3AnETU4rF
+	Co12sxP699iMs5YDNTJhtptBnFO27q7aiXgon/vaFrD3OGBHjozUZAV+xm0dTCqc
+	pdbzf55/iK0fD1qedot+OwIhYTaUK41zMi3JPeyfKCwBXB+nK30AqlhuFxE8EH4q
+	+Ab6UjVt94vvNrUcAP27EA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712412222; x=
-	1712415822; bh=PUh1xzVqpnfSlXumwj/nAAafAm5GRaA7LoifatDtllA=; b=C
-	/PpYlJWKhUYgLV4Bk0gbBs5URC8eW6rrj66BLWxEfjxfpanN+NliYT3GoUNd5v0E
-	ODtH3Ox5bt3ZX9SdhJjfPkp0LWXPQUy7eqYbnQPopJYmtrUUazgUrL+v41cVZwKl
-	Rby9hbXS4EWsM8uE9W2pKia10vq9v59JZVmRCN8s2s+zmpAIN/56q8zYjIAr1Coh
-	f09QUbZKxTgiaf/miaxfrs3tCH9euS1VjsFWmpgU94EpXT0Ufo33XTne76Z0DNcb
-	IGdcE8BQkYMdRP8uzjocyBDJl/dN3Hpsjw//NpaROmpPSwQ9qiKMnvpon4b8fphp
-	l2Hzvm6r7wqMZ6lfe89ow==
-X-ME-Sender: <xms:PFYRZrPRMr3peoqhSVFqZgcXj91qT_GBl_8d19Zn-bnnGvCs4aVXHw>
-    <xme:PFYRZl83BApdr1J7SRa38Qk_7HKSPXHvdZy6QWxWAHLNKpgGqbWWpXhDHdeMPz7lU
-    TUDDSnzgiCNPb_b5V8>
-X-ME-Received: <xmr:PFYRZqRFf3IkBGNjOrq7dr3_ZPLO_808yx27UcMcxr2in3AOzWL91mKwEQBHtci3Ws_2sgCE2euGrWZFuFme0lIht1MtGCQ>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1712412247; x=
+	1712415847; bh=1M5WlcAIuxUkkwrN7ouvw0OLceBGIcQz5A2HvoNVA5w=; b=t
+	8gRcORhOnRa4V7F2W4qj9xcWeLYcv/V3v5x+mJ2ETFJkEdDQbPuMSbnfTiqNJKSL
+	mLHketyAtxNum1LvaSZ4TsxpdYlpL+Q5stiaYxwp5ic0VjiQCgupX5LSjz3oiW6X
+	6MAN06AvUqREMOu0P/+l6j/k+vEqMmaQl0QSYr9EHWowrhcTZ8sKA43lH0J9NLLB
+	6on7Md3USl4mX1nVPsfgfoDiTwP57RscYVkt7caMqRaa/IOhi5QVdZlvDzKBVktg
+	v7B/9kEJn/u7SYPfCYlsQ/iqGbUgp4ovU1vpIzQAguL9uouon0YvXMkOTKWif+sn
+	8lPhIUBaa85hiZolnKRdw==
+X-ME-Sender: <xms:V1YRZryj3xBkbi8nTLeB6cZrozHP_I3-GO24AtiZ1az3N7xBB7Kg4w>
+    <xme:V1YRZjS7mV1ZbPuwVwEmFjNjl0inev1uiMKtKqVwy00QzpF-5W-w5t3sUzrDP5Tnl
+    f8itg5mbINdpKBYavw>
+X-ME-Received: <xmr:V1YRZlXF9ZuyK9nNNgFqrhDSj2LDC2V6fbaLvFRWI6wKogTxwGYXXcq6BrjhZMus4CHKvQto4VaU_t6SIFwaxvdtpki4_tU>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegvddgjeefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
@@ -73,15 +73,15 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudegvddgjeefucetufdoteggod
     heetheekkeegfeejudeiudeuleegtdehkeekteenucevlhhushhtvghrufhiiigvpedtne
     curfgrrhgrmhepmhgrihhlfhhrohhmpehnihhklhgrshdrshhouggvrhhluhhnugesrhgr
     ghhnrghtvggthhdrshgv
-X-ME-Proxy: <xmx:PFYRZvtq1cjcK9gy4UPY21vp4k1B8iOMt7v7xupkfC-HgMFtVCYMzA>
-    <xmx:PFYRZjfTo8bDsKxXdf7_Qq9vVcQyCqo0dqwbEw5drkVVRK9C46GbFg>
-    <xmx:PFYRZr30Hq1gNFW-9lZrDbsmNnX_peDut0uBbJcLZHfqSvryz7lnnA>
-    <xmx:PFYRZv-T6XyP8nsg_i3E4hiB3FGe7nOGMJnAEJ5XtqjY_Pu7X62PXw>
-    <xmx:PVYRZh2SruAQsatXPh7b_-iP4YYwzuZ7TFE1bOU0HRrVl1_y1VzWmgrM>
+X-ME-Proxy: <xmx:V1YRZljPLhxglnhf6Bf-R17USPaj7Q4uF0V39KxCGkSqQ9FoU9iJ1Q>
+    <xmx:V1YRZtAcm78li_cDyvHPlCmQ7iFHzWdo-4gOsNG8USeFucmqQbU-uQ>
+    <xmx:V1YRZuLAlGERNy4SfrA-L49xiEqpqYU00oNArC2i5pl9ERaXgqqTyA>
+    <xmx:V1YRZsC9lnAhoITqzw6uuLHiu5DYFn_dp0TfVyA0kTcM7kWahdI2Ww>
+    <xmx:V1YRZh6ubWWkLKHUeMDFLhRlRXs5U-tdCWBVeRVH4jnDJSPb-HlQ5l1e>
 Feedback-ID: i80c9496c:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 6 Apr 2024 10:03:39 -0400 (EDT)
-Date: Sat, 6 Apr 2024 16:03:37 +0200
+ 6 Apr 2024 10:04:06 -0400 (EDT)
+Date: Sat, 6 Apr 2024 16:04:05 +0200
 From: Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>
 To: =?utf-8?B?UGF3ZcWC?= Anikiel <panikiel@google.com>
 Cc: kieran.bingham@ideasonboard.com, mchehab@kernel.org,
@@ -91,11 +91,11 @@ Cc: kieran.bingham@ideasonboard.com, mchehab@kernel.org,
 	skomatineni@nvidia.com, luca.ceresoli@bootlin.com,
 	linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
 	chromeos-krk-upstreaming@google.com
-Subject: Re: [PATCH 13/16] media: rcar-vin: Use pad variant of dv timing
- subdev calls
-Message-ID: <20240406140337.GB2024639@ragnatech.se>
+Subject: Re: [PATCH 02/16] media: i2c: adv748x: Switch dv timing callbacks to
+ pad ops
+Message-ID: <20240406140405.GC2024639@ragnatech.se>
 References: <20240405141411.1807189-1-panikiel@google.com>
- <20240405141411.1807189-14-panikiel@google.com>
+ <20240405141411.1807189-3-panikiel@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -105,58 +105,93 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240405141411.1807189-14-panikiel@google.com>
+In-Reply-To: <20240405141411.1807189-3-panikiel@google.com>
 
 Hi Paweł,
 
 Thanks for your work.
 
-On 2024-04-05 14:14:08 +0000, Paweł Anikiel wrote:
-> Use the pad variant for all (s|g|query)_dv_timings subdev calls, which
-> includes a pad argument.
+On 2024-04-05 14:13:57 +0000, Paweł Anikiel wrote:
+> Change all (s|g|query)_dv_timings subdev callbacks to include
+> a pad argument.
 > 
 > Signed-off-by: Paweł Anikiel <panikiel@google.com>
 
 Tested-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
 
 > ---
->  drivers/media/platform/renesas/rcar-vin/rcar-v4l2.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
+>  drivers/media/i2c/adv748x/adv748x-hdmi.c | 16 ++++++++--------
+>  1 file changed, 8 insertions(+), 8 deletions(-)
 > 
-> diff --git a/drivers/media/platform/renesas/rcar-vin/rcar-v4l2.c b/drivers/media/platform/renesas/rcar-vin/rcar-v4l2.c
-> index 073f70c6ac68..bb4b07bed28d 100644
-> --- a/drivers/media/platform/renesas/rcar-vin/rcar-v4l2.c
-> +++ b/drivers/media/platform/renesas/rcar-vin/rcar-v4l2.c
-> @@ -730,7 +730,8 @@ static int rvin_s_dv_timings(struct file *file, void *priv_fh,
->  	struct v4l2_subdev *sd = vin_to_source(vin);
+> diff --git a/drivers/media/i2c/adv748x/adv748x-hdmi.c b/drivers/media/i2c/adv748x/adv748x-hdmi.c
+> index ec151dc69c23..a4db9bae5f79 100644
+> --- a/drivers/media/i2c/adv748x/adv748x-hdmi.c
+> +++ b/drivers/media/i2c/adv748x/adv748x-hdmi.c
+> @@ -214,7 +214,7 @@ static int adv748x_hdmi_set_video_timings(struct adv748x_state *state,
+>   * v4l2_subdev_video_ops
+>   */
+>  
+> -static int adv748x_hdmi_s_dv_timings(struct v4l2_subdev *sd,
+> +static int adv748x_hdmi_s_dv_timings(struct v4l2_subdev *sd, unsigned int pad,
+>  				     struct v4l2_dv_timings *timings)
+>  {
+>  	struct adv748x_hdmi *hdmi = adv748x_sd_to_hdmi(sd);
+> @@ -254,7 +254,7 @@ static int adv748x_hdmi_s_dv_timings(struct v4l2_subdev *sd,
+>  	return ret;
+>  }
+>  
+> -static int adv748x_hdmi_g_dv_timings(struct v4l2_subdev *sd,
+> +static int adv748x_hdmi_g_dv_timings(struct v4l2_subdev *sd, unsigned int pad,
+>  				     struct v4l2_dv_timings *timings)
+>  {
+>  	struct adv748x_hdmi *hdmi = adv748x_sd_to_hdmi(sd);
+> @@ -269,7 +269,7 @@ static int adv748x_hdmi_g_dv_timings(struct v4l2_subdev *sd,
+>  	return 0;
+>  }
+>  
+> -static int adv748x_hdmi_query_dv_timings(struct v4l2_subdev *sd,
+> +static int adv748x_hdmi_query_dv_timings(struct v4l2_subdev *sd, unsigned int pad,
+>  					 struct v4l2_dv_timings *timings)
+>  {
+>  	struct adv748x_hdmi *hdmi = adv748x_sd_to_hdmi(sd);
+> @@ -392,9 +392,6 @@ static int adv748x_hdmi_g_pixelaspect(struct v4l2_subdev *sd,
+>  }
+>  
+>  static const struct v4l2_subdev_video_ops adv748x_video_ops_hdmi = {
+> -	.s_dv_timings = adv748x_hdmi_s_dv_timings,
+> -	.g_dv_timings = adv748x_hdmi_g_dv_timings,
+> -	.query_dv_timings = adv748x_hdmi_query_dv_timings,
+>  	.g_input_status = adv748x_hdmi_g_input_status,
+>  	.s_stream = adv748x_hdmi_s_stream,
+>  	.g_pixelaspect = adv748x_hdmi_g_pixelaspect,
+> @@ -413,7 +410,7 @@ static int adv748x_hdmi_propagate_pixelrate(struct adv748x_hdmi *hdmi)
+>  	if (!tx)
+>  		return -ENOLINK;
+>  
+> -	adv748x_hdmi_query_dv_timings(&hdmi->sd, &timings);
+> +	adv748x_hdmi_query_dv_timings(&hdmi->sd, 0, &timings);
+>  
+>  	return adv748x_csi2_set_pixelrate(tx, timings.bt.pixelclock);
+>  }
+> @@ -610,6 +607,9 @@ static const struct v4l2_subdev_pad_ops adv748x_pad_ops_hdmi = {
+>  	.get_fmt = adv748x_hdmi_get_format,
+>  	.get_edid = adv748x_hdmi_get_edid,
+>  	.set_edid = adv748x_hdmi_set_edid,
+> +	.s_dv_timings = adv748x_hdmi_s_dv_timings,
+> +	.g_dv_timings = adv748x_hdmi_g_dv_timings,
+> +	.query_dv_timings = adv748x_hdmi_query_dv_timings,
+>  	.dv_timings_cap = adv748x_hdmi_dv_timings_cap,
+>  	.enum_dv_timings = adv748x_hdmi_enum_dv_timings,
+>  };
+> @@ -734,7 +734,7 @@ int adv748x_hdmi_init(struct adv748x_hdmi *hdmi)
+>  	struct v4l2_dv_timings cea1280x720 = V4L2_DV_BT_CEA_1280X720P30;
 >  	int ret;
 >  
-> -	ret = v4l2_subdev_call(sd, video, s_dv_timings, timings);
-> +	ret = v4l2_subdev_call(sd, pad, s_dv_timings,
-> +			       vin->parallel.sink_pad, timings);
->  	if (ret)
->  		return ret;
+> -	adv748x_hdmi_s_dv_timings(&hdmi->sd, &cea1280x720);
+> +	adv748x_hdmi_s_dv_timings(&hdmi->sd, 0, &cea1280x720);
 >  
-> @@ -744,7 +745,8 @@ static int rvin_g_dv_timings(struct file *file, void *priv_fh,
->  	struct rvin_dev *vin = video_drvdata(file);
->  	struct v4l2_subdev *sd = vin_to_source(vin);
->  
-> -	return v4l2_subdev_call(sd, video, g_dv_timings, timings);
-> +	return v4l2_subdev_call(sd, pad, g_dv_timings,
-> +				vin->parallel.sink_pad, timings);
->  }
->  
->  static int rvin_query_dv_timings(struct file *file, void *priv_fh,
-> @@ -753,7 +755,8 @@ static int rvin_query_dv_timings(struct file *file, void *priv_fh,
->  	struct rvin_dev *vin = video_drvdata(file);
->  	struct v4l2_subdev *sd = vin_to_source(vin);
->  
-> -	return v4l2_subdev_call(sd, video, query_dv_timings, timings);
-> +	return v4l2_subdev_call(sd, pad, query_dv_timings,
-> +				vin->parallel.sink_pad, timings);
->  }
->  
->  static int rvin_dv_timings_cap(struct file *file, void *priv_fh,
+>  	/* Initialise a default 16:9 aspect ratio */
+>  	hdmi->aspect_ratio.numerator = 16;
 > -- 
 > 2.44.0.478.gd926399ef9-goog
 > 
