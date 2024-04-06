@@ -1,108 +1,116 @@
-Return-Path: <linux-kernel+bounces-133841-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133842-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 002C189A99B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:45:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F93489A9A0
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:57:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9581A1F22475
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:45:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D2065B21EA9
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:57:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB3B2836D;
-	Sat,  6 Apr 2024 07:45:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="AGXSoiWO"
-Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F7A2374E;
+	Sat,  6 Apr 2024 07:57:34 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 857B222EF4;
-	Sat,  6 Apr 2024 07:44:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 280CD22EED;
+	Sat,  6 Apr 2024 07:57:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712389501; cv=none; b=L0N43fz09ia5MrEOgmBGV0J5FWbsmTuUD5Hitdt0BA2dEINye25uyWdCP8Xdw6I6SVDnRpK+371fSh3q4X9WEZN7aLtXYIKTZWN4SNDNOP8yYKlSjLkQMp6/evjHZGphFwvJNK3Ms4MG9i77KaVnzXaWp7f07ZoZvCoDukYWVVI=
+	t=1712390253; cv=none; b=u7eARA/f9fFccO5xSbD2zSBkp1ybjJuBcQjCijX7SuafK798Z3UDjjdaSaXl/NqwFRAIZXEJ8bFOb4mCFas4kdNVWuSGIp7JDPKAX8IRBEUZ23A4fKxpEA3XWUCw+7SBX/L3b9vjrL2GZATOmtgn635rjJQOkeT5Ky92t448IZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712389501; c=relaxed/simple;
-	bh=bv00TIb4GiZh1yN2UePLDExfIIgWKvhzD46SDHmzgHc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=DdFkGhFNqpkMKJGd+5bVgOzbizWEaUS35t8Q9zuzI9d/fjlePRs2Ws/fFv3jnDJAgR+fYQLxtZ1xTxr7DggBLM30suEMxvY2iTmhoETkOVOVwLxqaP95JaHEMx4/uHq8LaiASq/31UobD9hYXXre6dU0Kd7wODNSAMuIa3ZjxvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=AGXSoiWO; arc=none smtp.client-ip=37.205.15.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id F3FD11B18CE;
-	Sat,  6 Apr 2024 09:44:49 +0200 (CEST)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1712389490; bh=mNp+ImAS7xB+lsKKsyoHRq0t1TQ5mzQI20TvQDfDTZc=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=AGXSoiWOgQ9Z1Q1I65hFjuaFWQTHBWCAF1mH9+oPFb35QTZGCAAgUthWBAGqKGrsD
-	 4BBjDnW0GD35OwDn/fSg9eO5d7vKIgtj7nri26v3gOXGWdBrFTPgCRallgol9sxGsy
-	 hAEwt0nX9vVtCTOMs8F7HsFMBjrowJk3Yr/GOPvcjW/ZjEXL7XFeX7RZBXNVhEn9FT
-	 jGPEyN7mNdhzJKbg65V/HXzZkoMhOg7RcZ8pMC2YozAlxGPpHzZbp4IxEIS/q9DFvj
-	 MgeVpvijPdXbyQx8ScY88IoI31hNXxtpquWkFKIjV8Frql87nYcZTb28fZ9Kc8m1Gl
-	 W4mLkM0pzGLsQ==
-Date: Sat, 6 Apr 2024 09:44:49 +0200
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Eric Dumazet <edumazet@google.com>
-Cc: "David S. Miller" <davem@davemloft.net>, open list
- <netdev@vger.kernel.org>, Linux regressions mailing list
- <regressions@lists.linux.dev>, open list <linux-kernel@vger.kernel.org>,
- "Linux regression tracking (Thorsten Leemhuis)" <regressions@leemhuis.info>
-Subject: Re: [PATCH net] u64_stats: fix u64_stats_init() for lockdep when
- used repeatedly in one file
-Message-ID: <20240406094449.1ac182d0@meshulam.tesarici.cz>
-In-Reply-To: <CANn89iLZ9rkSpT6crP89RV-GPSnSxhUkjPSSh3PmiLNDH103yQ@mail.gmail.com>
-References: <20240404075740.30682-1-petr@tesarici.cz>
-	<CANn89iLZ9rkSpT6crP89RV-GPSnSxhUkjPSSh3PmiLNDH103yQ@mail.gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1712390253; c=relaxed/simple;
+	bh=THI3tmLsG+soDseJVPejbNFfCFRp6+BOKn+OLvM+bI0=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=VooV4MOxsToHq85Be6v07ejtEzuEMOOQqkxoQTCs98HCVFFurCnfkyKvLtSv5xZq3ewISpDTNFcEuyG+gMr/4qDCLuSyVU2/i5STsrLL65JMU1AmdbeFCKw/BoYJlGe7kLOVL7i0bdHBiEHubKeXlsvTXg7dgk2hUAwJg9AHiDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VBSPR0yhdz4f3lCm;
+	Sat,  6 Apr 2024 15:57:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 990B11A016E;
+	Sat,  6 Apr 2024 15:57:23 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP1 (Coremail) with SMTP id cCh0CgAX5g5bABFmRrnjJA--.19824S3;
+	Sat, 06 Apr 2024 15:57:16 +0800 (CST)
+Subject: Re: [PATCH 0/2] block: support to account io_ticks precisely
+To: Yu Kuai <yukuai1@huaweicloud.com>, ming.lei@redhat.com, hch@lst.de,
+ bvanassche@acm.org, axboe@kernel.dk, mpatocka@redhat.com, snitzer@redhat.com
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, "yukuai (C)" <yukuai3@huawei.com>
+References: <20240323035959.1397382-1-yukuai1@huaweicloud.com>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <513db882-ebe1-7287-99dd-3783c2c9b90f@huaweicloud.com>
+Date: Sat, 6 Apr 2024 15:57:14 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240323035959.1397382-1-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX5g5bABFmRrnjJA--.19824S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF47JFyUury5Gw45tr47Jwb_yoWkGFc_uF
+	yvyFy8Gr4fXa1fuFnFkFyUJrZ7Kw4UJr9xX34DXFW7Jr97XFyUJr4rtr4DX3sxXan8Ww1r
+	Aws7Zry7Crn2qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUb3kFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+	Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY
+	04v7Mxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+	1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+	AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0D
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUdHUDUUUUU=
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Fri, 5 Apr 2024 23:08:58 +0200
-Eric Dumazet <edumazet@google.com> wrote:
+Hi, Jens!
+Hi, Ming!
+Hi, Christoph!
+Hi, Bart!
 
-> On Thu, Apr 4, 2024 at 9:58=E2=80=AFAM Petr Tesarik <petr@tesarici.cz> wr=
-ote:
-> >
-> > Fix bogus lockdep warnings if multiple u64_stats_sync variables are
-> > initialized in the same file.
-> >
-> > With CONFIG_LOCKDEP, seqcount_init() is a macro which declares:
-> >
-> >         static struct lock_class_key __key;
-> >
-> > Since u64_stats_init() is a function (albeit an inline one), all calls
-> > within the same file end up using the same instance, effectively treati=
-ng
-> > them all as a single lock-class.
-> >
-> > Fixes: 9464ca650008 ("net: make u64_stats_init() a function")
-> > Closes: https://lore.kernel.org/netdev/ea1567d9-ce66-45e6-8168-ac40a47d=
-1821@roeck-us.net/
-> > Signed-off-by: Petr Tesarik <petr@tesarici.cz> =20
->=20
-> I thought I gave a Reviewed-by: tag already...
+Friendly ping ...
 
-You did, but at that time I didn't know which tree should be used to
-merge the patch, so it appeared as a stranded patch on LKML. Once we
-agreed it should go through net, I sent it again, but the resend didn't
-have it.
+The 'util' reported by iostat is very important for users, they don't
+have much choise to get disk status, while 'util' has been inaccurate
+for a long time unnecessarily. I really think patch 1 is meaningful.
 
-Thanks for your assistance!
+Patch 2 also tries to fix a problem by our customer that util can
+sometimes be huge. The root cause is that 'inflight' is account from
+blk_mq_start_request() while 'io_ticks' is account from
+blk_account_io_start(), there is a gap. I let 'inflight' to be account
+from blk_account_io_start() as well, please let me know if this is not
+good.
 
-Petr T
+Thanks!
+Kuai
 
-> Reviewed-by: Eric Dumazet <edumazet@google.com>
+ÔÚ 2024/03/23 11:59, Yu Kuai Ð´µÀ:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Yu Kuai (2):
+>    block: support to account io_ticks precisely
+>    block: remove blk_mq_in_flight() and blk_mq_in_flight_rw()
+> 
+>   block/blk-core.c  |  9 +++++----
+>   block/blk-merge.c |  2 ++
+>   block/blk-mq.c    | 36 ++++--------------------------------
+>   block/blk-mq.h    |  5 -----
+>   block/blk.h       |  1 +
+>   block/genhd.c     | 20 ++++----------------
+>   6 files changed, 16 insertions(+), 57 deletions(-)
+> 
 
 
