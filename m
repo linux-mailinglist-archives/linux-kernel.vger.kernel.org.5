@@ -1,132 +1,91 @@
-Return-Path: <linux-kernel+bounces-134041-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56B9A89AC76
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 19:31:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6D1A89AC72
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 19:30:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B80792820A5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 17:31:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CF391F218F8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 17:30:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABE6B4D9F7;
-	Sat,  6 Apr 2024 17:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 695A445957;
+	Sat,  6 Apr 2024 17:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="leEwDcI5"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pwxzjX4M"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FBA84D5A2;
-	Sat,  6 Apr 2024 17:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A43D03FE2A;
+	Sat,  6 Apr 2024 17:30:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712424640; cv=none; b=QvB2w+QGpLiDB71Qrym/JXCQSq6mlQp0s9uS8LbfqSJqHVjRTRIcfv8BChQbrGpTGRJCb24vtV/p4NPqjtCNV/zsBfUr4LLITVdqmJOCzUup63OepAl9iTauTQgfc6x5VGDEctKL4Pwf1CbBxUTak/RpsLCns6Pli3IQ2xv8quc=
+	t=1712424629; cv=none; b=hOCQqs4pxp8DrSBdL9DcfB0amrda2dyA4opIeHDDYdsHCrsPxKqvrK69+/6cg8QxtOLx3bjhj46TzvBvgQAs8nrr+EpRwk8I74QN3uxKAN725aGcF4YJLaTpfitk5UrOcpab6q6cIBBzXfbiPNyGvPPJgU67MERXfwppT8AyMv8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712424640; c=relaxed/simple;
-	bh=9blK4OQKj/2lNxw4LOVkLGN3TcMkm+ghLy1JbGfiX4A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BsIyY6S0nRvv3qiwQsc+lRbAnOgn092XKE7CnAs32ASrz4uvbgKEBCZMchZ180YM7cCaN4GO3uQI17xQGFdFADiD/N6ZhFpHrXrJOjGzcDeje3OoD2boEyvGGkMRgPhNTgvCIWYNMVh7MfQptdB08Kl99GkLn535JH/ZxD5xrpQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=leEwDcI5; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=lXE3SxtyN0lJf3smmlCQJcJR+2EbuVxm0dyKikqHdbQ=; b=leEwDcI5iKdXyTGxFyucYD1jhi
-	rdY9JrxHF5z8rvhp85oGDHMCKUETCCUGSRs5uTANJwjQxvS1i4Z+lX9/OM/uKK9dfU+zSQmC+Bgdo
-	EYgrHlB/Hgtpy4XO3+f1PCBiiZFLmr6znjXaCk+Aw9XuxXaEUTtWWAeaphUZQuhwIuHYGI9omkdw4
-	u9o+XfmuDLvVQC5ZoDPvQW2EY2i6PmCw5+oNUnxiXVUdyYsVeCyGmlGs/rDB+v+ghSgVEC0c90Auz
-	mi7A+SCrE719friOfgbwUCmtUZ+Zgfu2C71u5+cTPKuA7Bx3GabsR4snrpMu3M+VxK00CZoe6VBHm
-	Pg2sos6g==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rt9s2-0000000AjdN-2lNl;
-	Sat, 06 Apr 2024 17:30:26 +0000
-Message-ID: <a2df1641-cd13-4516-afa5-546bb9ef8608@infradead.org>
-Date: Sat, 6 Apr 2024 10:30:23 -0700
+	s=arc-20240116; t=1712424629; c=relaxed/simple;
+	bh=yJRmQgFu+F2rTSQx2p6HruWVEHFTJ32xT8BsTnWnSfM=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=RXmHQ8/FahFggCQDMSIYVquCb0Dq0FY3OqEGiLvxYPBF9NsEskeL0ttwH1H64s9uY2NMI5KtFe/0X7dWwtvaG2mMEuHsdRSRjoICIXruEmxzTbhQ9DFmGkz4Hzyb6NuGcycc1gHLpJhQS2tqXUFQ30STuyqGbXqjDPbOMzNzgAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pwxzjX4M; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 51763C43399;
+	Sat,  6 Apr 2024 17:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712424629;
+	bh=yJRmQgFu+F2rTSQx2p6HruWVEHFTJ32xT8BsTnWnSfM=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=pwxzjX4MhCr9p/kaPXVsYBVSdVkA5PRndRdUf0XgxrdGqG/M+ve/JLdyipR7AlyB0
+	 lwlZrhRvdLVRTCWe1fuPLVGBJNIrDJ8gkTuy5zT9SbyAxgWSBCfHq3LehbSisQbizQ
+	 h+/+QLZR1e/nEgxpo5n+S6lV+r0f2a+vQmeUtCa3jc1ikMHRZ8kSQLhCdmrWfwcItk
+	 U5C9b4pwSpmKfg6OTFEg/rNDXvmvF8W3ANV2S5vFrJmiMpzpxLOxNotfQ/ymm8saRf
+	 yTlyTipKHnVuqr/FjhAEoVecPTTZ5KzY6jtWpNUm78i/NQnLKfeymVAPEeB98WvaMh
+	 Hn4UqS6g0BOtg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 3ADA0D8A106;
+	Sat,  6 Apr 2024 17:30:29 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 01/17] perf/core: Fix several typos
-To: Kuan-Wei Chiu <visitorckw@gmail.com>, colyli@suse.de,
- kent.overstreet@linux.dev, msakai@redhat.com, peterz@infradead.org,
- mingo@redhat.com, acme@kernel.org, namhyung@kernel.org,
- akpm@linux-foundation.org
-Cc: bfoster@redhat.com, mark.rutland@arm.com,
- alexander.shishkin@linux.intel.com, jolsa@kernel.org, irogers@google.com,
- adrian.hunter@intel.com, jserv@ccns.ncku.edu.tw,
- linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
- dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org,
- linux-perf-users@vger.kernel.org
-References: <20240406164727.577914-1-visitorckw@gmail.com>
- <20240406164727.577914-2-visitorckw@gmail.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240406164727.577914-2-visitorckw@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next] net: phy: marvell: implement cable test for 88E1111
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171242462923.4000.7668978592915743020.git-patchwork-notify@kernel.org>
+Date: Sat, 06 Apr 2024 17:30:29 +0000
+References: <20240404090726.3059610-1-paweldembicki@gmail.com>
+In-Reply-To: <20240404090726.3059610-1-paweldembicki@gmail.com>
+To: Pawel Dembicki <paweldembicki@gmail.com>
+Cc: netdev@vger.kernel.org, andrew@lunn.ch, hkallweit1@gmail.com,
+ linux@armlinux.org.uk, davem@davemloft.net, edumazet@google.com,
+ kuba@kernel.org, pabeni@redhat.com, linux-kernel@vger.kernel.org
 
+Hello:
 
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-On 4/6/24 9:47 AM, Kuan-Wei Chiu wrote:
-> Replace 'artifically' with 'artificially'.
-> Replace 'irrespecive' with 'irrespective'.
-> Replace 'futher' with 'further'.
-> Replace 'sufficent' with 'sufficient'.
+On Thu,  4 Apr 2024 11:07:26 +0200 you wrote:
+> The same implementation is also valid for 88E1145. VCT in 88E1111 is
+> similar to the 88E609x family. The main difference lies in register
+> organization and required workarounds.
 > 
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> Reviewed-by: Ian Rogers <irogers@google.com>
-
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  kernel/events/core.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+> It utilizes the same fields in registers but requires a simpler
+> implementation.
 > 
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 724e6d7e128f..10ac2db83f14 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -534,7 +534,7 @@ void perf_sample_event_took(u64 sample_len_ns)
->  	__this_cpu_write(running_sample_length, running_len);
->  
->  	/*
-> -	 * Note: this will be biased artifically low until we have
-> +	 * Note: this will be biased artificially low until we have
->  	 * seen NR_ACCUMULATED_SAMPLES. Doing it this way keeps us
->  	 * from having to maintain a count.
->  	 */
-> @@ -596,10 +596,10 @@ static inline u64 perf_event_clock(struct perf_event *event)
->   *
->   * Event groups make things a little more complicated, but not terribly so. The
->   * rules for a group are that if the group leader is OFF the entire group is
-> - * OFF, irrespecive of what the group member states are. This results in
-> + * OFF, irrespective of what the group member states are. This results in
->   * __perf_effective_state().
->   *
-> - * A futher ramification is that when a group leader flips between OFF and
-> + * A further ramification is that when a group leader flips between OFF and
->   * !OFF, we need to update all group member times.
->   *
->   *
-> @@ -891,7 +891,7 @@ static int perf_cgroup_ensure_storage(struct perf_event *event,
->  	int cpu, heap_size, ret = 0;
->  
->  	/*
-> -	 * Allow storage to have sufficent space for an iterator for each
-> +	 * Allow storage to have sufficient space for an iterator for each
->  	 * possibly nested cgroup plus an iterator for events with no cgroup.
->  	 */
->  	for (heap_size = 1; css; css = css->parent)
+> [...]
 
+Here is the summary with links:
+  - [net-next] net: phy: marvell: implement cable test for 88E1111
+    https://git.kernel.org/netdev/net-next/c/d133ef1ee2a2
+
+You are awesome, thank you!
 -- 
-#Randy
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
