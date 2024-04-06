@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-133994-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133995-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB51A89ABD6
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 18:01:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E076289ABD8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 18:01:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90B6D281BF0
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:01:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E2CB1C20C1E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:01:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3041D3BBE1;
-	Sat,  6 Apr 2024 16:00:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 896EA3CF73;
+	Sat,  6 Apr 2024 16:01:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="r4QC+Lcv"
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="AJY2WeF2"
 Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20C6B3D971;
-	Sat,  6 Apr 2024 16:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DE5C38396;
+	Sat,  6 Apr 2024 16:00:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712419247; cv=none; b=FJYMYGq/Gf/8E2MGFn1tlBv2V8OHJATehw8QLem+W8PRWlHtRi3nD4a8jgOqh/RDxgCW1/gK09x5cLHAa5LHh0i+IfVqHL3+jZ7MjkFyNFYot0i5Ooufr4sFBCxaatEJ7C4FSF127dr1icep1tKC55YOZBn/u41bSNiACyr7pIY=
+	t=1712419260; cv=none; b=DXIg0BYSspmDI2q/yZc/daHODixk0zl5CLh+/2t964hv1FoXuDP64ewt8xRJ93wLPmkgFFUpvWtu/AzW+idUXm+57IuM1zDZdoAoi8vBVz9Nz1xhSKlfBlzfWHLMalczoODsLG+UJF23npWowLT8z/YiaHEPLifXSg1cQZTwHNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712419247; c=relaxed/simple;
-	bh=sqN39mACaEMC34n6hRty1c9YRl8kWJxl3ygrgVrCqUU=;
+	s=arc-20240116; t=1712419260; c=relaxed/simple;
+	bh=W7ibIy99moa7c94LlQb8yKxJ8SMMGHAr8swusC9+ITA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FyCMC6XH1gC0yxKj2iHPyBLL364SoZ4I8hunOSTJAaQ1TmPSswklclHt99h6MDcuvMAatfTgzy1K9EG7Vbwx2hWrF9HtzvlhexAiQBEFPN74PfIrIUB10iUPf8ZeTia8dSJvSxY71vLg5OOFe/Pe7zfiRJHK0qdVY1Ggdg5wr0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=r4QC+Lcv; arc=none smtp.client-ip=156.67.10.101
+	 Content-Type:Content-Disposition:In-Reply-To; b=qmhwivD2lVKZw0HxM6EDRqeIL2xP/k2fH+fIAshfR9BYyXt0GoGewNRfHri1h/U57Eg0EAr/0q0fE3Na7biE8zo1dDhI9qMVtn52e083jtdThW4Gv0QHnPKW+HqASXhf7CxhvVrRaUH8p3YOuUcbaF+Jx3oXlDvODXkz0Jje050=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=AJY2WeF2; arc=none smtp.client-ip=156.67.10.101
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
@@ -35,13 +35,13 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
 	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
 	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
 	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=ZrGAtvWMJTVgvdqKgEyxVIUzwoxIXXEpYPO5/OIoXCE=; b=r4QC+Lcvi6uNUhS4xPqVMQHx9r
-	RSjFbGR5H2kCaAtek2qm8GbDrtkiAkQ2AbZms8H5YQxReDObl+TYNadFVUSZ0afmxoelXjwzgzbS2
-	R4RMrEc8I+K6m8UkFUPuNitFG2eGazlgZIGLl/NTiuGx3eDnTfkqLC0+gNh6zsKywE2U=;
+	bh=0rjkgPi2loPfJ44sJGwtAfKw5eXmhNwyXDBE9fqA8to=; b=AJY2WeF28z5VWz9b5njr5FvB+w
+	RuUt+Dj6BO9LBAt3WDg89UgqtkSTf9XRGl60zsRvF1IYk/pzz7/8dy65zMNVzH1j3LZeO+LhHxaxn
+	SqJalFOTGbLVTLzwipQjbI/mQFnbOnB7BX4D0/Ui9BhYB7p37PuWUyYpZjGOnzIINnLU=;
 Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
 	(envelope-from <andrew@lunn.ch>)
-	id 1rt8TE-00CNXL-4W; Sat, 06 Apr 2024 18:00:44 +0200
-Date: Sat, 6 Apr 2024 18:00:44 +0200
+	id 1rt8TR-00CNY3-1S; Sat, 06 Apr 2024 18:00:57 +0200
+Date: Sat, 6 Apr 2024 18:00:57 +0200
 From: Andrew Lunn <andrew@lunn.ch>
 To: Maxime Chevallier <maxime.chevallier@bootlin.com>
 Cc: davem@davemloft.net, netdev@vger.kernel.org,
@@ -63,11 +63,11 @@ Cc: davem@davemloft.net, netdev@vger.kernel.org,
 	Oleksij Rempel <o.rempel@pengutronix.de>,
 	=?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>,
 	Simon Horman <horms@kernel.org>, mwojtas@chromium.org
-Subject: Re: [PATCH net-next v11 10/13] net: ethtool: pse-pd: Target the
+Subject: Re: [PATCH net-next v11 11/13] net: ethtool: cable-test: Target the
  command to the requested PHY
-Message-ID: <b8aff04a-2b5d-44df-aed0-89f5c232893e@lunn.ch>
+Message-ID: <a4de04ca-9a39-43f7-b086-8ec5d190130d@lunn.ch>
 References: <20240404093004.2552221-1-maxime.chevallier@bootlin.com>
- <20240404093004.2552221-11-maxime.chevallier@bootlin.com>
+ <20240404093004.2552221-12-maxime.chevallier@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,12 +76,11 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240404093004.2552221-11-maxime.chevallier@bootlin.com>
+In-Reply-To: <20240404093004.2552221-12-maxime.chevallier@bootlin.com>
 
-On Thu, Apr 04, 2024 at 11:30:00AM +0200, Maxime Chevallier wrote:
-> PSE and PD configuration is a PHY-specific command. Instead of targeting
-> the command towards dev->phydev, use the request to pick the targeted
-> PHY device.
+On Thu, Apr 04, 2024 at 11:30:01AM +0200, Maxime Chevallier wrote:
+> Cable testing is a PHY-specific command. Instead of targeting the command
+> towards dev->phydev, use the request to pick the targeted PHY.
 > 
 > Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
 
