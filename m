@@ -1,188 +1,161 @@
-Return-Path: <linux-kernel+bounces-133803-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133804-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0899D89A8E5
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 06:46:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D099389A8F4
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:08:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 274A71C21D60
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 04:46:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8418D1F223F2
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 05:08:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B271C680;
-	Sat,  6 Apr 2024 04:46:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E85F41CAAC;
+	Sat,  6 Apr 2024 05:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Mnf0g/2R"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WtjcTcBB"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4F91FA1
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 04:46:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 765BE1FA1;
+	Sat,  6 Apr 2024 05:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712378809; cv=none; b=BXsGiU9vUjrXKBX00/9fJ+2a5jfCVtNU7h1NFvGjFlMe6h49F2Q8xRwiL3sFTh/u5JuiDkNqLn2Ry5V+Jzac0vahxAA1soKSoSY/djAJa1Srscow2sg/nLDqb+uyKEWh6ZkiK7BPKb076IBykgdGlEHy9HdWq88gwAaDvnos4fk=
+	t=1712380115; cv=none; b=clV63EwwiGILer28FYbE7tiWiQEhlRd+uqPBnBt1OdeeNazKOSOP4zCSfhaLxbThWcr0uAecwDFlLtYMLWqBHEQCfT1MgEmRD3M6iegrC15XlXFGoIUE00+vAezq9I8xp09h7u/2J35RlnyzFDxZOZGP1TWPjBkYRc/G6hOFUsU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712378809; c=relaxed/simple;
-	bh=Pa+glBIAYGUeYvj4bbkUW/0xQGcg4XhjmjmYm9pBmZA=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=Ii7RS5nGHyp5pNwAnB3jpz3kWoW4RFrrwXZkO5OEtLAl569miO2lARNJ0jrY7Zc/qDiZEtmxQAqSZPI2KXGf3uVldn1who3/rzP+NnvnVg2HTcq9/Uu9HgONkwdJycuf6Hksll6f3aL7ueSTlUo1RiFUO/34sYvwj7DLU9uNqtA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--saranyamohan.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Mnf0g/2R; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--saranyamohan.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60a4ee41269so48079757b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 21:46:47 -0700 (PDT)
+	s=arc-20240116; t=1712380115; c=relaxed/simple;
+	bh=ucGI9nf2AqWhkLS3ij0YOnhppH1t7T/usV1ct0ZegkE=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=N7nIcXZRCHHxFI7VPIl54AJuowbz0SUi+bWmhsoz7De/FwtQRH3Uubk0oOQgqlcJIfaYyoR6QdokU4WTd+Mcikf3xYBlAscItpdbGm/HTmHOGVoX17lFm4d16B71YLeDSztvZ5Hz9B5mVhOPQ5iKERKqJgGNw7bEINtBAGPVjcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WtjcTcBB; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-516d0c004b1so2918846e87.2;
+        Fri, 05 Apr 2024 22:08:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712378806; x=1712983606; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tIhiZai/XuhGKAO7L+OPGtFolltjq5ipvv/SRv/Vr7Q=;
-        b=Mnf0g/2RLooUEyF/mevFn7IKuVAP23dGQzKJDC+4txu8zhFS7YOjqak1eA+Gm1kTj5
-         Mh4u1Y+HRYVdKiCCrfmLcverMZ6khm19uYL5z5isa9j6ytEAdCAsu7wgEVcTPmSBXbjP
-         ChAjNELIEC5vN0QiQ8ctePkPe1AxtL4LeSVQEnuT3Ps7noUYLeRZHB8F3jKQxGLTkNGB
-         iX82Zdn1AH+8gThTIZZNKI9JpsgM7RAkwaBMJAUZiA0TRyUOVwBNYt4qWT6q8Q6G5I87
-         tfry+R/4lC3MizL5DP+DkCBf/MSCF5dLD1S/g3vwhmdFHyaESA4opAbhoNGi1HARgNc2
-         SfWA==
+        d=gmail.com; s=20230601; t=1712380111; x=1712984911; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=d26fRpd8+KcGmKIhiw3Xe2m8bbWMWSCQ9BpgQfJxuSg=;
+        b=WtjcTcBBtYB0kXPxaC1XdhNeTsqPm9C9n8I4Prd6a+osOcXLBRnf6F8MiFLRRoQM15
+         /U7Ni6WeM2fEc0GGBLpFnlOKWbqXvA8aFdMvuW9XR6n+AuFQbl5Y64d1QJ3wzZMlXhg4
+         +pn4IZtXrOIU6eVJD1EACsmRoldfl8Jw5ALa4T7F8SxnX6jP2P2j6tBrAvZ8uWgqbZUW
+         TXS1TMSC8D/pcA3ia038+gAoRSvg7d5YKLa8jzlRgF0m8nywuQLNR0IJ3VBqoRPK+5Cy
+         CHPeo4Q9pkFu2VYl0UDLZxAl+OWrYhtaBEG7SYxsHAqP4ZiapNxAP5EjT4sxmFD7lw1S
+         Bq9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712378806; x=1712983606;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tIhiZai/XuhGKAO7L+OPGtFolltjq5ipvv/SRv/Vr7Q=;
-        b=Qnva/1kUQjrEP87Zs8sGsp2MfETsVapIsxYvCg9SJz7oTruwUDFAIoCf2qAWhl+yXF
-         j2tezysdjBMwMtxyi0QHS8aba1x2Sics00KFngI2enGttmfMApqCL6TJjiv0K3vJpf4a
-         uvwyUH8n0/tL0uYv2qLCxk9GJDPePcC4pno8WdPsmDA/V3qdezgEvKMZZdp+OaXYf3K+
-         vol3C9Lmkag7Fo+ZLcSXpNxKi6ULSy1JJHvyUsWQv/kH63tUzQnk5RFUK5FhrZKDyvA5
-         2/oU8aq/IXxrpUEVwfwBZZoO83fxLUwQQ9gveLUYAid2rQoHTV1JIFAMc9xPHM4sJ3Vc
-         N3gQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV9Y8jTTiDrZ4It07AUoSbM7Dnhz873EaiPp8/b46obeGm5szbGzJDJ3Dxbk2oim9K6m32MLsp1BsrBn7MOPWmnudB/51CAfuZ8jz2I
-X-Gm-Message-State: AOJu0Yzj4M73Om4MD+syEKd9UkE+6k2Ma0Tb+K1qRh8IpFiyEx3lk2qR
-	Iv+9EDzlLHJSuDpKmLdmbmIe27HF82zZ4tsTPBMaWYFFsEgYPBxo5rq/orC8BDEHz/nqTB54sjH
-	rw18uKIRxbGru3p2tdKPlk9OjVw==
-X-Google-Smtp-Source: AGHT+IH8o09JKg5ZtCJKPS59RQeXuArqA/XwGlDrtkB/c4fbBs7RTuImDTcRIF6jeh9pgqyE8L2cGcClE7x9pZPYXz8=
-X-Received: from srnym.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2728])
- (user=saranyamohan job=sendgmr) by 2002:a0d:e251:0:b0:615:134c:7ef3 with SMTP
- id l78-20020a0de251000000b00615134c7ef3mr805341ywe.9.1712378806373; Fri, 05
- Apr 2024 21:46:46 -0700 (PDT)
-Date: Sat,  6 Apr 2024 04:46:43 +0000
-In-Reply-To: <20240405065333.GB4023@lst.de>
+        d=1e100.net; s=20230601; t=1712380111; x=1712984911;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=d26fRpd8+KcGmKIhiw3Xe2m8bbWMWSCQ9BpgQfJxuSg=;
+        b=F73JEKRSbJsHqC7bCtnn7hhiVEdeF5ul+EGSSv9MXuXMp29B9M6Nk1bXzFCgQ40jcX
+         BC/Pt8P+zBreKyVhgIrtLp8nIVRp3oK+ZyIf83gxM/KJKZcSGJBYcSJj5F0xpzg7l0rI
+         XAiy6nJDKlzC9BMgOO4fFPWdN4RdKKvTYhO+721AjLq4s4sZGPYi3+w3xErZddEWnqez
+         fxUmUTlS6IL7azJcYNKZ06fWp3ZdCTkltpqXZqmhf5gu/ETmW+Ek7Tzr+MIYywAbrjdf
+         KQjjS/jtA7qw0cDCoZOPZI9DjIZBQFxYm/kyuW6ZGnZKcTd7VKV1n8ZQSoT6ZW6AdRS4
+         j3+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW2kKVsLoiTdDmq98fGlFYT1ot2PWQcJI2ihzn9qWnNftTQSoet1zQXlEI8UxJTUz3DKcjWBfxZf5GW86GaarFzG3R+jdwo6ddLlxR3
+X-Gm-Message-State: AOJu0Yx784UqCwQioCAuaWbFftpAcFFL/QHzjGjy4NVyFcyj+lR7NhTD
+	2V1rqt+kqXy/YQzjKCFCkwVgIS9zWsNgg432bRp1I0guiP1VmScQj2Z9cLw2tWb53cFFABU79Nq
+	DFc8GsljpSayhMElUiFIjgJXKgALQOmMvmaI=
+X-Google-Smtp-Source: AGHT+IFzx1NsO1QkSJZ5DgySohoYd7iBR253TDhiO77dyZKULKuwpx5DUKzF2UVo6vUpZclXmER21KpgsbtpVnaMH+c=
+X-Received: by 2002:a19:f711:0:b0:516:d1af:adc1 with SMTP id
+ z17-20020a19f711000000b00516d1afadc1mr2408303lfe.9.1712380111170; Fri, 05 Apr
+ 2024 22:08:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240405065333.GB4023@lst.de>
-X-Mailer: git-send-email 2.44.0.478.gd926399ef9-goog
-Message-ID: <20240406044643.2475360-1-saranyamohan@google.com>
-Subject: [PATCH] block: Fix BLKRRPART regression
-From: Saranya Muruganandam <saranyamohan@google.com>
-To: hch@lst.de
-Cc: axboe@kernel.dk, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	saranyamohan@google.com, stable@vger.kernel.org, tj@kernel.org, 
-	yukuai1@huaweicloud.com
+MIME-Version: 1.0
+From: Steve French <smfrench@gmail.com>
+Date: Sat, 6 Apr 2024 00:08:19 -0500
+Message-ID: <CAH2r5ms=TTjN5yoGsnEhrvqioM3pG6ANcTwsC8L1q833EPmMtQ@mail.gmail.com>
+Subject: [GIT PULL] smb3 client fixes
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: CIFS <linux-cifs@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 
-The BLKRRPART ioctl used to report errors such as EIO before we changed
-the blkdev_reread_part() logic.
+Please pull the following changes since commit
+39cd87c4eb2b893354f3b850f916353f2658ae6f:
 
-Lets add a flag and capture the errors returned by bdev_disk_changed()
-when the flag is set. Setting this flag for the BLKRRPART path when we
-want the errors to be reported when rereading partitions on the disk.
+  Linux 6.9-rc2 (2024-03-31 14:32:39 -0700)
 
-Link: https://lore.kernel.org/all/20240320015134.GA14267@lst.de/
-Suggested-by: Christoph Hellwig <hch@lst.de>
-Tested: Tested by simulating failure to the block device and will
-propose a new test to blktests.
-Fixes: 4601b4b130de ("block: reopen the device in blkdev_reread_part")
-Reported-by: Saranya Muruganandam <saranyamohan@google.com>
-Signed-off-by: Saranya Muruganandam <saranyamohan@google.com>
+are available in the Git repository at:
 
-Change-Id: Idf3d97390ed78061556f8468d10d6cab24ae20b1
----
- block/bdev.c           | 29 +++++++++++++++++++----------
- block/ioctl.c          |  3 ++-
- include/linux/blkdev.h |  2 ++
- 3 files changed, 23 insertions(+), 11 deletions(-)
+  git://git.samba.org/sfrench/cifs-2.6.git tags/6.9-rc2-smb3-client-fixes
 
-diff --git a/block/bdev.c b/block/bdev.c
-index 7a5f611c3d2e3..42940bced33bb 100644
---- a/block/bdev.c
-+++ b/block/bdev.c
-@@ -652,6 +652,14 @@ static void blkdev_flush_mapping(struct block_device *bdev)
- 	bdev_write_inode(bdev);
- }
- 
-+static void blkdev_put_whole(struct block_device *bdev)
-+{
-+	if (atomic_dec_and_test(&bdev->bd_openers))
-+		blkdev_flush_mapping(bdev);
-+	if (bdev->bd_disk->fops->release)
-+		bdev->bd_disk->fops->release(bdev->bd_disk);
-+}
-+
- static int blkdev_get_whole(struct block_device *bdev, blk_mode_t mode)
- {
- 	struct gendisk *disk = bdev->bd_disk;
-@@ -670,20 +678,21 @@ static int blkdev_get_whole(struct block_device *bdev, blk_mode_t mode)
- 
- 	if (!atomic_read(&bdev->bd_openers))
- 		set_init_blocksize(bdev);
--	if (test_bit(GD_NEED_PART_SCAN, &disk->state))
--		bdev_disk_changed(disk, false);
- 	atomic_inc(&bdev->bd_openers);
-+	if (test_bit(GD_NEED_PART_SCAN, &disk->state)) {
-+		/*
-+		 * Only return scanning errors if we are called from conexts
-+		 * that explicitly want them, e.g. the BLKRRPART ioctl.
-+		 */
-+		ret = bdev_disk_changed(disk, false);
-+		if (ret && (mode & BLK_OPEN_STRICT_SCAN)) {
-+			blkdev_put_whole(bdev);
-+			return ret;
-+		}
-+	}
- 	return 0;
- }
- 
--static void blkdev_put_whole(struct block_device *bdev)
--{
--	if (atomic_dec_and_test(&bdev->bd_openers))
--		blkdev_flush_mapping(bdev);
--	if (bdev->bd_disk->fops->release)
--		bdev->bd_disk->fops->release(bdev->bd_disk);
--}
--
- static int blkdev_get_part(struct block_device *part, blk_mode_t mode)
- {
- 	struct gendisk *disk = part->bd_disk;
-diff --git a/block/ioctl.c b/block/ioctl.c
-index 0c76137adcaaa..128f503828cee 100644
---- a/block/ioctl.c
-+++ b/block/ioctl.c
-@@ -562,7 +562,8 @@ static int blkdev_common_ioctl(struct block_device *bdev, blk_mode_t mode,
- 			return -EACCES;
- 		if (bdev_is_partition(bdev))
- 			return -EINVAL;
--		return disk_scan_partitions(bdev->bd_disk, mode);
-+		return disk_scan_partitions(bdev->bd_disk,
-+				mode | BLK_OPEN_STRICT_SCAN);
- 	case BLKTRACESTART:
- 	case BLKTRACESTOP:
- 	case BLKTRACETEARDOWN:
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index c3e8f7cf96be9..3ed5e03109c29 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -128,6 +128,8 @@ typedef unsigned int __bitwise blk_mode_t;
- #define BLK_OPEN_WRITE_IOCTL	((__force blk_mode_t)(1 << 4))
- /* open is exclusive wrt all other BLK_OPEN_WRITE opens to the device */
- #define BLK_OPEN_RESTRICT_WRITES	((__force blk_mode_t)(1 << 5))
-+/* return partition scanning errors */
-+#define BLK_OPEN_STRICT_SCAN	((__force blk_mode_t)(1 << 5))
- 
- struct gendisk {
- 	/*
+for you to fetch changes up to e0e50401cc3921c9eaf1b0e667db174519ea939f:
+
+  smb: client: fix potential UAF in cifs_signal_cifsd_for_reconnect()
+(2024-04-03 14:45:15 -0500)
+
+----------------------------------------------------------------
+17 cifs.ko changesets, most also for stable
+- fix to retry close to avoid potential handle leaks when server returns EBUSY
+- Three DFS fixes including a fix for potential use after free
+- fscache fix
+- minor strncpy cleanup
+- reconnect race fix
+- series of patches to deal with various possible race conditions
+(UAFs) tearing sessions down
+
+The important fix to support password rotation is not included in this P/R (am
+giving that patch more time for any additional review feedback) but should be
+ready to send next week.
+
+----------------------------------------------------------------
+David Howells (1):
+      cifs: Fix caching to try to do open O_WRONLY as rdwr on server
+
+Justin Stitt (1):
+      smb: client: replace deprecated strncpy with strscpy
+
+Paulo Alcantara (14):
+      smb: client: fix UAF in smb2_reconnect_server()
+      smb: client: guarantee refcounted children from parent session
+      smb: client: refresh referral without acquiring refpath_lock
+      smb: client: handle DFS tcons in cifs_construct_tcon()
+      smb: client: serialise cifs_construct_tcon() with cifs_mount_mutex
+      smb: client: fix potential UAF in cifs_debug_files_proc_show()
+      smb: client: fix potential UAF in cifs_dump_full_key()
+      smb: client: fix potential UAF in cifs_stats_proc_write()
+      smb: client: fix potential UAF in cifs_stats_proc_show()
+      smb: client: fix potential UAF in smb2_is_valid_lease_break()
+      smb: client: fix potential UAF in smb2_is_valid_oplock_break()
+      smb: client: fix potential UAF in is_valid_oplock_break()
+      smb: client: fix potential UAF in smb2_is_network_name_deleted()
+      smb: client: fix potential UAF in cifs_signal_cifsd_for_reconnect()
+
+Ritvik Budhiraja (1):
+      smb3: retrying on failed server close
+
+ fs/smb/client/cached_dir.c    |   6 +-
+ fs/smb/client/cifs_debug.c    |   6 ++
+ fs/smb/client/cifsfs.c        |  11 +++
+ fs/smb/client/cifsglob.h      |  19 ++++--
+ fs/smb/client/cifsproto.h     |  20 +++---
+ fs/smb/client/cifssmb.c       |   6 +-
+ fs/smb/client/connect.c       | 153 +++++++++++++++++++++++++++---------------
+ fs/smb/client/dfs.c           |  51 +++++++-------
+ fs/smb/client/dfs.h           |  33 +++++----
+ fs/smb/client/dfs_cache.c     |  53 +++++++--------
+ fs/smb/client/dir.c           |  15 +++++
+ fs/smb/client/file.c          | 111 +++++++++++++++++++++++++-----
+ fs/smb/client/fs_context.c    |   6 +-
+ fs/smb/client/fs_context.h    |  12 ++++
+ fs/smb/client/fscache.h       |   6 ++
+ fs/smb/client/ioctl.c         |   6 +-
+ fs/smb/client/misc.c          |   8 +--
+ fs/smb/client/smb1ops.c       |   4 +-
+ fs/smb/client/smb2misc.c      |   4 ++
+ fs/smb/client/smb2ops.c       |  13 ++--
+ fs/smb/client/smb2pdu.c       |   2 +-
+ fs/smb/client/smb2transport.c |   2 +-
+ 22 files changed, 369 insertions(+), 178 deletions(-)
+
+
 -- 
-2.44.0.478.gd926399ef9-goog
+Thanks,
 
+Steve
 
