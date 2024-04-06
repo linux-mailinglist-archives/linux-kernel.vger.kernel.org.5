@@ -1,74 +1,171 @@
-Return-Path: <linux-kernel+bounces-134034-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8294F89AC59
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 18:53:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4507589AC5E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 18:59:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 990691C20CAE
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:53:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6716D1C20D0A
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 16:59:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8718740851;
-	Sat,  6 Apr 2024 16:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iDSyDmJd"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6A13FE2A;
+	Sat,  6 Apr 2024 16:59:20 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBDB6405FF;
-	Sat,  6 Apr 2024 16:52:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EE483BBDC
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 16:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712422324; cv=none; b=b5hho00ZX+bOnG2HM1z8B72M1skyN4yK8F9O3BwaZhya1HOXdNbPGkCC1P/gQSjSNo5o8ToVoOId75SumKdfFE+maxIYTIIBRht6rjeG95SBOu/UtuGrL+9VtGoTve8VDQu6TlLYR8EEbt+l49zKssGFsrJahuTXafg9fPPKUs8=
+	t=1712422760; cv=none; b=FhAmlsBe3Xq3P/ia92bhtdgaa3WyWuqIXse1F89blkpHQm7CBCPrJms0pbNFX0pKyGBipzsrsw0hzjTsBHKkuLIKoSJNPJqpHzZWCdsHEGEqr4Ji3ZUQknZPcp/3ys0Nz2ldOk8QNzmzU1A0M3MDu9Y9/qVMcVUJEX+IomYT4wI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712422324; c=relaxed/simple;
-	bh=I54NXFbkQcPOBxp/oFLSaWT2pCoL0Ch2SA3oANFNikQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eHsOqj5Bzh+V2Qll9P0OjIcuE0bSv1U1bbKFuXMRSA8mFhd3gmysdrv45xsjCxEZHmJZg2cuQ7pVcWcm5EQ3BCriPr6O2sW8RKFRPEjHUvHG9hKwXEM8W06yotugjWxTiEVe7z4aqvuxJRTWhRE+e0FwMkooZKEQ7rveGVENmlA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iDSyDmJd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8207BC433F1;
-	Sat,  6 Apr 2024 16:52:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712422324;
-	bh=I54NXFbkQcPOBxp/oFLSaWT2pCoL0Ch2SA3oANFNikQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=iDSyDmJdaYfvS00zLTR6FC4DwoR5ia7875ndItH4MKQhCFiSUcV+Dvm5XC1GJff1C
-	 AyPyYuCE5mtGcp1dmIeOMS6qfJP+E59IEJMpJceFdQtU6lfSL8WJWh4jUUZYIF8BJZ
-	 PSClN27EkGTX0hgJCT1R9IiuDB1medx2QIPeS8JX/GR5K3BfkOFBV3vtfpIGN8stmN
-	 CDhEwkMsI+Uek5gHxygbDtqbP3NqIciFKas1l64y0CeOeTsmoeRqeJwCIZlD8dm312
-	 Y1uc0VRAlVKDBMcSBjy0ttS0GaTqwEwtr5RorJTyI8ijWjqJ7RQ8+ndaSBJL1FJY60
-	 Pxsm844oRp1Bg==
-Date: Sat, 6 Apr 2024 17:51:51 +0100
-From: Jonathan Cameron <jic23@kernel.org>
-To: Rob Herring <robh@kernel.org>
-Cc: Saravana Kannan <saravanak@google.com>, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] of: Use scope based kfree() cleanups
-Message-ID: <20240406175151.2067c01e@jic23-huawei>
-In-Reply-To: <20240404-dt-cleanup-free-v1-2-c60e6cba8da9@kernel.org>
-References: <20240404-dt-cleanup-free-v1-0-c60e6cba8da9@kernel.org>
-	<20240404-dt-cleanup-free-v1-2-c60e6cba8da9@kernel.org>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712422760; c=relaxed/simple;
+	bh=zsEqWQkVk4Cr2D8uh3GOTtBQ7gjJt79SjsrrYvRgtKs=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=fKjrcHi4R0i6/d37xG2RoD1IAtil9/xUrZDeECdoLAHvYeudgVbdvmNXmK1tUjtA3LQ9SD41NttS5GtsUud2LFeBau5dZ9HEI5TYlEHDI7whj6daKHx7bwPpJ3hynSz0+neRk+AOrnmRkoEKbEv6WEA2UMaDrVStynNXPmfRal4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-36a1c2b7172so1676705ab.1
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 09:59:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712422757; x=1713027557;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Zv9BUdrmcvXndcHhtFT9TLeM3fSy66U/W1eBLLniaVk=;
+        b=cBY54gyhpoJAUn/tklpVvLZ0ALXeGSrDU9LjUAM7btuD9HsdtWjLF3sMBLCPhQYu8z
+         /YeFyUemdpaATAnlS6qvcqL3k8/OSsJPk7qaC6jpKQNsmqtqRwIdQVDKuc6UTzB+717K
+         XiUof9j9GQrLBD2hGJiSt03R4UF1436Xb3J6V2y961kxqD+yUGCyTvuhB0ZTOXDSriyZ
+         8JUV1iBh8iVSQQ+wODtguEG7cdgtB6PansLCSPm+7OdGC4ugkuiu96ny/aDRD/b4gTfp
+         8MXOjkQUdlISrIvwb3UfWeBs1t+e1Jvf+ZVGORHaG6vvVVr3vjLcxmZj3p+boV4cnd4n
+         y6Vw==
+X-Forwarded-Encrypted: i=1; AJvYcCX05SYZFEfImboCgy3rX1GRy+o5xhobPT+A0YmkiWBxwdJAuaKZIggDej5aJJcIcgz3zDabfhgzAa8wuPDafcXKfXOSfwUbgwXUa/fL
+X-Gm-Message-State: AOJu0Yw0L54pCKS1bmYu0EiPThvzbTRdG8/szBYl7hK5I36iMif0mLIW
+	K5jKVvhjMdLBHLNay5D7aaZACveHXWb8TM46UvDesuwTbnpmCcaxogce4ZW3MqoNVf3UXI12CZ/
+	S4IrxherS01zKzxiUtPmNkRHZnTT+socteF4YxusPWNSSir93I99uyG8=
+X-Google-Smtp-Source: AGHT+IHPpnShZ2xt3dJaVBMnP1fvTrl/XrU/ceyS4wYI0yGevfbK7U8UnIkhkiQEacW9760UTxEsY3iwPLM2fcNJ/pNUr7h5tHrS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1c4e:b0:366:b246:2f10 with SMTP id
+ d14-20020a056e021c4e00b00366b2462f10mr359575ilg.2.1712422757733; Sat, 06 Apr
+ 2024 09:59:17 -0700 (PDT)
+Date: Sat, 06 Apr 2024 09:59:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002e2b130615707e3c@google.com>
+Subject: [syzbot] [bpf?] KMSAN: uninit-value in htab_lru_percpu_map_lookup_elem
+From: syzbot <syzbot+b8d77b9bb107fa1bd641@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, 04 Apr 2024 09:15:11 -0500
-Rob Herring <robh@kernel.org> wrote:
+Hello,
 
-> Use the relatively new scope based kfree() cleanup to simplify error
-> handling. Doing so reduces the chances of memory leaks and simplifies
-> error paths by avoiding the need for goto statements.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+syzbot found the following issue on:
+
+HEAD commit:    026e680b0a08 Merge tag 'pwm/for-6.9-rc3-fixes' of git://gi..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=173c55e5180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5112b3f484393436
+dashboard link: https://syzkaller.appspot.com/bug?extid=b8d77b9bb107fa1bd641
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1495512d180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=143c2415180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/3b5659d2008c/disk-026e680b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/7fd1552fafde/vmlinux-026e680b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ba622b1b0ec4/bzImage-026e680b.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b8d77b9bb107fa1bd641@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
+BUG: KMSAN: uninit-value in htab_lru_percpu_map_lookup_elem+0x39a/0x580 kernel/bpf/hashtab.c:2326
+ __htab_map_lookup_elem kernel/bpf/hashtab.c:691 [inline]
+ htab_lru_percpu_map_lookup_elem+0x39a/0x580 kernel/bpf/hashtab.c:2326
+ ____bpf_map_lookup_elem kernel/bpf/helpers.c:42 [inline]
+ bpf_map_lookup_elem+0x5c/0x80 kernel/bpf/helpers.c:38
+ ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+ __bpf_prog_run64+0xb5/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+ __bpf_trace_kfree+0x29/0x40 include/trace/events/kmem.h:94
+ trace_kfree include/trace/events/kmem.h:94 [inline]
+ kfree+0x6a5/0xa30 mm/slub.c:4377
+ kvfree+0x69/0x80 mm/util.c:680
+ __bpf_prog_put_rcu+0x37/0xf0 kernel/bpf/syscall.c:2232
+ rcu_do_batch kernel/rcu/tree.c:2196 [inline]
+ rcu_core+0xa59/0x1e70 kernel/rcu/tree.c:2471
+ rcu_core_si+0x12/0x20 kernel/rcu/tree.c:2488
+ __do_softirq+0x1c0/0x7d7 kernel/softirq.c:554
+ invoke_softirq kernel/softirq.c:428 [inline]
+ __irq_exit_rcu kernel/softirq.c:633 [inline]
+ irq_exit_rcu+0x6a/0x130 kernel/softirq.c:645
+ instr_sysvec_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1043 [inline]
+ sysvec_apic_timer_interrupt+0x83/0x90 arch/x86/kernel/apic/apic.c:1043
+ asm_sysvec_apic_timer_interrupt+0x1f/0x30 arch/x86/include/asm/idtentry.h:702
+ __preempt_count_dec_and_test arch/x86/include/asm/preempt.h:94 [inline]
+ flush_tlb_mm_range+0x294/0x320 arch/x86/mm/tlb.c:1036
+ flush_tlb_page arch/x86/include/asm/tlbflush.h:254 [inline]
+ ptep_clear_flush+0x166/0x1c0 mm/pgtable-generic.c:101
+ wp_page_copy mm/memory.c:3329 [inline]
+ do_wp_page+0x419d/0x66e0 mm/memory.c:3660
+ handle_pte_fault mm/memory.c:5316 [inline]
+ __handle_mm_fault mm/memory.c:5441 [inline]
+ handle_mm_fault+0x5b76/0xce00 mm/memory.c:5606
+ do_user_addr_fault arch/x86/mm/fault.c:1362 [inline]
+ handle_page_fault arch/x86/mm/fault.c:1505 [inline]
+ exc_page_fault+0x419/0x730 arch/x86/mm/fault.c:1563
+ asm_exc_page_fault+0x2b/0x30 arch/x86/include/asm/idtentry.h:623
+
+Local variable stack created at:
+ __bpf_prog_run64+0x45/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x116/0x300 kernel/trace/bpf_trace.c:2420
+
+CPU: 1 PID: 5015 Comm: syz-executor232 Not tainted 6.9.0-rc2-syzkaller-00002-g026e680b0a08 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
