@@ -1,119 +1,108 @@
-Return-Path: <linux-kernel+bounces-133840-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3508289A999
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:45:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 002C189A99B
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 09:45:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2F84B21F51
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:45:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9581A1F22475
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:45:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4063422618;
-	Sat,  6 Apr 2024 07:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB3B2836D;
+	Sat,  6 Apr 2024 07:45:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="vKjWQ0fM"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="AGXSoiWO"
+Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27DD17758
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 07:44:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 857B222EF4;
+	Sat,  6 Apr 2024 07:44:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712389497; cv=none; b=NP3/OUsmqLUwYtwT2tofEq5gNq3TBbmE93IU856bcWNygYQLTduSuhLnCEUbKhWnmE3qKrlUC9UOHEPU65FBjHdI2s5UHfasiVPcBsQ20OsU4jQaCl1xx4aylCOg/KT7zWJp/UaQ1B7L7LCmdQSPo+14AnBUHkJPEYE8xY222+Y=
+	t=1712389501; cv=none; b=L0N43fz09ia5MrEOgmBGV0J5FWbsmTuUD5Hitdt0BA2dEINye25uyWdCP8Xdw6I6SVDnRpK+371fSh3q4X9WEZN7aLtXYIKTZWN4SNDNOP8yYKlSjLkQMp6/evjHZGphFwvJNK3Ms4MG9i77KaVnzXaWp7f07ZoZvCoDukYWVVI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712389497; c=relaxed/simple;
-	bh=ag0L5s0NvNNpnK9VStcd/WfRuosPWnEvzhoE5NBpXEc=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=deCjrJmczYzQGRY5m90CPVwn3jXnXoL+bUCs0HHB9+qr3TIL7HK4jkBVz3o1qXitKkbrVZwi6oW5GBKzCId1xpHfSuyLk0GQMhUCew4P7VfNGMZqbsxtBPvfSUw5iD4eGnujSli7Y5z15lcTmDC/BnsWj4MF2m6YByHx2+0Zrms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=vKjWQ0fM; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4367hjiX079199;
-	Sat, 6 Apr 2024 02:43:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712389425;
-	bh=JdMAmQ5cW5OCZ7m3+RZ4yQphAbO2Q/ZVztgpt0OA790=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To;
-	b=vKjWQ0fMJrsxak/iIrCmuuTc9Npo/S6tpRN2i51yTY+4gRLgadt8H3EZWW7s7fbvS
-	 yv5aiR3LTlpq0ZNpyEdZaEYXHFmETAjuXIgBOHb8NX62A9npFyrD243aGg2FxF++iu
-	 KWf4dSxJUrLygPEgw8LmKCbZwaavZcw1oFdNux3Y=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4367hj5t041997
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sat, 6 Apr 2024 02:43:45 -0500
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 6
- Apr 2024 02:43:44 -0500
-Received: from DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d]) by
- DLEE100.ent.ti.com ([fe80::ad4d:c227:3f85:880d%17]) with mapi id
- 15.01.2507.023; Sat, 6 Apr 2024 02:43:44 -0500
-From: "Xu, Baojun" <baojun.xu@ti.com>
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        "tiwai@suse.de" <tiwai@suse.de>
-CC: "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "perex@perex.cz"
-	<perex@perex.cz>, "Lu, Kevin" <kevin-lu@ti.com>,
-        "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>,
-        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
-        "broonie@kernel.org" <broonie@kernel.org>,
-        "soyer@irl.hu" <soyer@irl.hu>, "Ding, Shenghao" <shenghao-ding@ti.com>
-Subject: Re: [EXTERNAL] Re: [PATCH v1 6/8] ALSA: hda/tas2781: Add tas2781
- SPI-based driver
-Thread-Topic: [EXTERNAL] Re: [PATCH v1 6/8] ALSA: hda/tas2781: Add tas2781
- SPI-based driver
-Thread-Index: AQHafxpNE61C8ldTPEOmQsI0OzAt0LFKc6YAgBB5YUk=
-Date: Sat, 6 Apr 2024 07:43:44 +0000
-Message-ID: <54579b5779bd4493bd4d9cb8d582896c@ti.com>
-References: <20240326010905.2147-1-baojun.xu@ti.com>
- <20240326010905.2147-6-baojun.xu@ti.com>,<b4c5fb89-a43c-4c40-b729-a49a537f6179@linux.intel.com>
-In-Reply-To: <b4c5fb89-a43c-4c40-b729-a49a537f6179@linux.intel.com>
-Accept-Language: en-GB, zh-CN, en-US
-Content-Language: en-GB
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	s=arc-20240116; t=1712389501; c=relaxed/simple;
+	bh=bv00TIb4GiZh1yN2UePLDExfIIgWKvhzD46SDHmzgHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=DdFkGhFNqpkMKJGd+5bVgOzbizWEaUS35t8Q9zuzI9d/fjlePRs2Ws/fFv3jnDJAgR+fYQLxtZ1xTxr7DggBLM30suEMxvY2iTmhoETkOVOVwLxqaP95JaHEMx4/uHq8LaiASq/31UobD9hYXXre6dU0Kd7wODNSAMuIa3ZjxvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=AGXSoiWO; arc=none smtp.client-ip=37.205.15.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id F3FD11B18CE;
+	Sat,  6 Apr 2024 09:44:49 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1712389490; bh=mNp+ImAS7xB+lsKKsyoHRq0t1TQ5mzQI20TvQDfDTZc=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=AGXSoiWOgQ9Z1Q1I65hFjuaFWQTHBWCAF1mH9+oPFb35QTZGCAAgUthWBAGqKGrsD
+	 4BBjDnW0GD35OwDn/fSg9eO5d7vKIgtj7nri26v3gOXGWdBrFTPgCRallgol9sxGsy
+	 hAEwt0nX9vVtCTOMs8F7HsFMBjrowJk3Yr/GOPvcjW/ZjEXL7XFeX7RZBXNVhEn9FT
+	 jGPEyN7mNdhzJKbg65V/HXzZkoMhOg7RcZ8pMC2YozAlxGPpHzZbp4IxEIS/q9DFvj
+	 MgeVpvijPdXbyQx8ScY88IoI31hNXxtpquWkFKIjV8Frql87nYcZTb28fZ9Kc8m1Gl
+	 W4mLkM0pzGLsQ==
+Date: Sat, 6 Apr 2024 09:44:49 +0200
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Eric Dumazet <edumazet@google.com>
+Cc: "David S. Miller" <davem@davemloft.net>, open list
+ <netdev@vger.kernel.org>, Linux regressions mailing list
+ <regressions@lists.linux.dev>, open list <linux-kernel@vger.kernel.org>,
+ "Linux regression tracking (Thorsten Leemhuis)" <regressions@leemhuis.info>
+Subject: Re: [PATCH net] u64_stats: fix u64_stats_init() for lockdep when
+ used repeatedly in one file
+Message-ID: <20240406094449.1ac182d0@meshulam.tesarici.cz>
+In-Reply-To: <CANn89iLZ9rkSpT6crP89RV-GPSnSxhUkjPSSh3PmiLNDH103yQ@mail.gmail.com>
+References: <20240404075740.30682-1-petr@tesarici.cz>
+	<CANn89iLZ9rkSpT6crP89RV-GPSnSxhUkjPSSh3PmiLNDH103yQ@mail.gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-> From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Sent: 26 March 2024 23:05
-> To: Xu, Baojun; tiwai@suse.de
-> Cc: robh+dt@kernel.org; andriy.shevchenko@linux.intel.com; lgirdwood@gmai=
-l.com; perex@perex.cz; Lu, Kevin; 13916275206@139.com; alsa-devel@alsa-proj=
-ect.org; linux-kernel@vger.kernel.org; liam.r.girdwood@intel.com; yung-chua=
-n.liao@linux.intel.com; broonie@kernel.org; soyer@irl.hu
-> Subject: [EXTERNAL] Re: [PATCH v1 6/8] ALSA: hda/tas2781: Add tas2781 SPI=
--based driver
->=20
-> > +enum device_catlog_id {
->=20
-> catalog?
->=20
-> > +     HP =3D 0,
-> > +     OTHERS
-> > +};
->=20
-> Is there not a better way to identify solutions?
-> You have ACPI IDs, no?
+On Fri, 5 Apr 2024 23:08:58 +0200
+Eric Dumazet <edumazet@google.com> wrote:
 
-It support HP platform now only, will add other later.
+> On Thu, Apr 4, 2024 at 9:58=E2=80=AFAM Petr Tesarik <petr@tesarici.cz> wr=
+ote:
+> >
+> > Fix bogus lockdep warnings if multiple u64_stats_sync variables are
+> > initialized in the same file.
+> >
+> > With CONFIG_LOCKDEP, seqcount_init() is a macro which declares:
+> >
+> >         static struct lock_class_key __key;
+> >
+> > Since u64_stats_init() is a function (albeit an inline one), all calls
+> > within the same file end up using the same instance, effectively treati=
+ng
+> > them all as a single lock-class.
+> >
+> > Fixes: 9464ca650008 ("net: make u64_stats_init() a function")
+> > Closes: https://lore.kernel.org/netdev/ea1567d9-ce66-45e6-8168-ac40a47d=
+1821@roeck-us.net/
+> > Signed-off-by: Petr Tesarik <petr@tesarici.cz> =20
+>=20
+> I thought I gave a Reviewed-by: tag already...
 
-Best Regards
-Jim
+You did, but at that time I didn't know which tree should be used to
+merge the patch, so it appeared as a stranded patch on LKML. Once we
+agreed it should go through net, I sent it again, but the resend didn't
+have it.
 
+Thanks for your assistance!
+
+Petr T
+
+> Reviewed-by: Eric Dumazet <edumazet@google.com>
 
 
