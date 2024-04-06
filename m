@@ -1,132 +1,74 @@
-Return-Path: <linux-kernel+bounces-133810-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133811-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44D8E89A920
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:25:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50C0589A922
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 07:25:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F349D282E20
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 05:25:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7D80B1C20ADD
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 05:25:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D668B200D1;
-	Sat,  6 Apr 2024 05:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16C85200DE;
+	Sat,  6 Apr 2024 05:25:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A+DbQkh3"
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KFt4n9CV"
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B511419479;
-	Sat,  6 Apr 2024 05:25:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7CF31DA5F
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 05:25:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712381118; cv=none; b=o4PR8wj3fO7mbsrvVL9yOrKifIhVRVZt4U4QOk8OyY4lRNQ/PviN/RSWq13UgSKMT9ZSBtfzVHJArcftzFVy8ShmRwy7cyAuHyMicVCk/ysN4pUqObnSGZVTvoJvDbevSSQX/H2+FgsxODHSZkGPXqQemCo/LZ9xEM6LzLTGkew=
+	t=1712381134; cv=none; b=X2rsBX3HyH2FJ4nF2NqscQ/9MqS7JXrJYr3PCzx7rCRcCEK/Dkx+ukgIoeZcDTJZvlY98/FAdrmB1sXI6IXkcZDT5F+HqBTt5Ol5afMqXyq57lW32/kceF1fxwPf2QaGsyQnj8hMyYLl2PdB58iVUzEBh0BkKOVeEoWArVxaucU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712381118; c=relaxed/simple;
-	bh=hzp9HyvmOrTYDuK28GX1kEwaWQcEGAXzI+4hiBrNFOg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=a3s4ELD6e+6UE8Cwc6yYYf8HvxtjHbkkYCkaDyuS3VrR9rJnEH4VO/0VwAQIKkih2AOIchEVLhun+wDKqwVRqoYDIsi+a8k+MZSLxjPNeOaQO491E2hr2aFJsHWYpxlFcA7zWnhRQT9Zhq8S63B3oXy3QGxBAnfcgpfzzcKVxt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A+DbQkh3; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-6994bcf7e80so3632886d6.0;
-        Fri, 05 Apr 2024 22:25:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712381115; x=1712985915; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=dhLN9cN2qzUox6TTfuotLrtT0I8++ymvJQ3nzVbMdnM=;
-        b=A+DbQkh3IxdiZfEyml0zSCichn4aRAHsp0NtJHiLuaJMoboKuf4hCwtU4GReTX3H4I
-         0QeRV/bOtCV61tBUA0w+SToSvjVDXhLLQRcEBQkd05sO7q/S0d3XsJ1Kd8rx+9bQySzO
-         g7rEtJAPctevLovsbf2UtE1TkCAynuy0hCSxkbkRMhP3tnRbkuLyo5TWJQLcxNnFnD+E
-         1ytfrEXw/YBqpu5lAWYw9mEYFT/thVUrSHLfib1fpdtDvYTbJ9DbN6ZSMmkOjxet6QjG
-         IG36LOes86iRBrdYXv6H8w/VV4tGAOganXBkasD5N5yv+4JHlB3bkiX77AiaAG2k0WKc
-         qQTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712381115; x=1712985915;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=dhLN9cN2qzUox6TTfuotLrtT0I8++ymvJQ3nzVbMdnM=;
-        b=GLFRT8LkLDlgb2QlS23wXBw+qrd7qDTovxvG6r7dS9xSwjvb8aAkUxvR2jEw4iKca6
-         UYY3+WSFKN8C3vSOKOsDUIBRXvi2WxuVN+BZRvrf/seS47nLK/FiMn9kkgDj5HU8YuNp
-         MLVt5N2C4ET947xFY/exL5PgcgbECTUXnRM2GEIilqa53uT9fTGQAUm3/E4hF9VugGqg
-         eIwiQl4AooVWLm43h3iVwheH1hUHLdu99akH5XbZgusgInHbxg7t/owGoxi6qPszYIHa
-         JjhimYsrbKjZNEWgQ/u1Sqe6k5I4Bcm3NdaWhUdkZ/dx+VGaRPSBvMRKuPSkhqxOR2+T
-         K1Ug==
-X-Forwarded-Encrypted: i=1; AJvYcCUVPHfGq9cobp3PLkcYDYDlFLUny4xRr4YfA5pY1dDzbGjO+mrH51L+ypnKpSwN8n3rDEibS4VGwv8j+9l8dtUazbeIMPHEOPOxZcV+mdICg5BWBOvqLX+U/sGnowUu6nrq/LcTTXUsfbReOg==
-X-Gm-Message-State: AOJu0YxiZ7Qbkd11siyCrE02dsVwZhcz6hPJ2uRiICKRGkc1lsyqWqd/
-	CwkxLKG9iHT39TZioGygvvPvuh/2IlG14ERPU6OcY0HrtVrr78Yd3OBpgr3N6clElZHJlcfbzCH
-	/ZZrwnR2CexZ00CEJrIlNHHAtZu8=
-X-Google-Smtp-Source: AGHT+IH1+ArLrVcGFURcXfjQBrXzpPFw6/exLPQmegpwxSjV6Ia72nupr6Uwd72ymyhJWddkm+TzzzNT+uWR2j12gGc=
-X-Received: by 2002:a05:6214:5007:b0:699:29e0:10b4 with SMTP id
- jo7-20020a056214500700b0069929e010b4mr6541922qvb.13.1712381115642; Fri, 05
- Apr 2024 22:25:15 -0700 (PDT)
+	s=arc-20240116; t=1712381134; c=relaxed/simple;
+	bh=GBJ/4qcyi3hIK6KdFPiWuGa9/vsZlY1k4eIqxJceVYo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cFAH407Z7kxqgOhkgXy8McUuDhFO+GQJK9jJUkeFW/xPSmWqI1lgDKgLAAa5S14vDTiBje1DyHP934YtAIrgOyW9fY+vMcabpFyyYDDLAHPPGpprPffObz3b63Vl5/Elp6a/qXQE2attMEqHGuGtsqd12IS/S/e9fHAOwIf5o2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KFt4n9CV; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sat, 6 Apr 2024 01:25:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712381131;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b0s8OKyEtBCTwct3IXJh6ls/NerCr/sOkNHMDUlOY/0=;
+	b=KFt4n9CViXD9Lsjtq3gepymSsaeClFuhykWaf7PDCD9iY8hs+/ApOLJ1GdO6ucw5/VMjUp
+	zMAuz1umDjT9Bcvl4kZ3tA6RNxPFtbYERb1QIswrs6lXA9IiFMZ19DqxiachfQ6F9Hn/p0
+	wziY0IxFK5cDlUVy6FLQ/xBfNe07dCc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Bagas Sanjaya <bagasdotme@gmail.com>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, 
+	Linux Documentation <linux-doc@vger.kernel.org>, Linux bcachefs <linux-bcachefs@vger.kernel.org>, 
+	Brian Foster <bfoster@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	"Darrick J. Wong" <djwong@kernel.org>, Chandan Babu R <chandanbabu@kernel.org>, 
+	Namjae Jeon <linkinjeon@kernel.org>, Steve French <stfrench@microsoft.com>, 
+	Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH 0/2] toctree fix for bcachefs docs
+Message-ID: <lkexpg6uihcokigp3iy7dmqchxjc7nsyaf6fe3nirizzsxpka7@eseglantc7iz>
+References: <20240405072320.23416-1-bagasdotme@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000098f75506153551a1@google.com> <0000000000002f2066061539e54b@google.com>
- <CAOQ4uxiS5X19OT2MTo_LnLAx2VL9oA1zBSpbuiWMNy_AyGLDrg@mail.gmail.com>
- <20240404081122.GQ538574@ZenIV> <20240404082110.GR538574@ZenIV>
- <CAOQ4uximHfK78KFabJA3Hf4R0En6-GfJ3eF96Lzmc94PGuGayA@mail.gmail.com> <20240406040923.GX538574@ZenIV>
-In-Reply-To: <20240406040923.GX538574@ZenIV>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Sat, 6 Apr 2024 08:25:03 +0300
-Message-ID: <CAOQ4uxikd7HY3gfvLLJp4VRMEhV0NPOExN+UYQ8dDG=p=f-MRQ@mail.gmail.com>
-Subject: Re: [syzbot] [kernfs?] possible deadlock in kernfs_fop_llseek
-To: Al Viro <viro@zeniv.linux.org.uk>, Miklos Szeredi <miklos@szeredi.hu>
-Cc: syzbot <syzbot+9a5b0ced8b1bfb238b56@syzkaller.appspotmail.com>, 
-	gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org, 
-	valesini@yandex-team.ru, Christoph Hellwig <hch@lst.de>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405072320.23416-1-bagasdotme@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Apr 6, 2024 at 7:09=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> wr=
-ote:
->
-> On Thu, Apr 04, 2024 at 12:33:40PM +0300, Amir Goldstein wrote:
->
-> > We do not (anymore) lock ovl inode in ovl_llseek(), see:
-> > b1f9d3858f72 ovl: use ovl_inode_lock in ovl_llseek()
-> > but ovl inode is held in operations (e.g. ovl_rename)
-> > which trigger copy up and call vfs_llseek() on the lower file.
->
-> OK, but why do we bother with ovl_inode_lock() there?
-> Note that serialization on struct file level is provided
-> on syscall level - see call of fdget_pos() in there.
-> IOW, which object are you protecting?  If it's struct file
-> passed your way, you should already have the serialization.
-> If it's underlying file on disk, that's up to vfs_llseek().
+On Fri, Apr 05, 2024 at 02:23:17PM +0700, Bagas Sanjaya wrote:
+> Hi Kent,
+> 
+> Building htmldocs for current Linus's tree triggers a new warning, and
+> that is on your docs (missing toctree). Here's the fix + MAINTAINERS
+> entry for bcachefs docs.
 
-You're right.
-
-> Exclusion with copyup by a different operation?
-
-Nah, don't see how this is relevant to file->f_pos.
-
->
-> I'm not saying it's wrong - it's just that the thing is
-> tricky enough, so some clarification might be a good idea.
-
-I think I just used inode_lock() in
-9e46b840c705 ("ovl: support stacked SEEK_HOLE/SEEK_DATA")
-as a common coding pattern in overlayfs when protecting the
-"master" copy of overlay inode attributes, but it was not needed
-for file->f_pos.
-
-Miklos, please ack that I am not missing anything and that
-ovl_inode_lock() is indeed redundant in ovl_llseek().
-
-Anyway, this lock is not part of the lockdep issue that started this thread=
-.
-
-Thanks,
-Amir.
+Thanks! Applied.
 
