@@ -1,160 +1,178 @@
-Return-Path: <linux-kernel+bounces-133962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D029489AB7D
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 17:03:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F36A89AB80
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 17:04:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1D419B2171B
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:03:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0FEB1C20AA8
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 15:04:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C3E39851;
-	Sat,  6 Apr 2024 15:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB89D39851;
+	Sat,  6 Apr 2024 15:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PFiaeLE/"
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CKXUGwO9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 654F5376E0;
-	Sat,  6 Apr 2024 15:03:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E61531CFB9;
+	Sat,  6 Apr 2024 15:04:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712415797; cv=none; b=Pbmf4vV0o6wOuEBLhac3OATAJIXkyW7h9i2BQbBDPW2M+Xt6tgEs42eIUP/IY6MFUSLiQ2ZOG5PAYiMCIzvkA7DzgZbyODYaO30rANuMTBjOYlCagne69oUqV51QxquU6oS77NSG+bPCb5tI4cYzwpoglJl6yIX9m4GU17QA8Fw=
+	t=1712415846; cv=none; b=damCFc6IQp+lL/j15s2Tl9CO97jWoLbSWypVUjFoqq4biQlCi1S3eKP42eD9pqvQ61vYmp4arrfJPcGL0+cRuiNTroRiEScnBIXErwRro+00kjyzxxidATgs08lMSVEqFqXOQWMuhzgHZkvJYtJIcDfGk6Q46O06KztQG1Eau+s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712415797; c=relaxed/simple;
-	bh=CAq2D4Inwn3Za5vQna+/XQvSndgmRav7iHL7fAy3yyM=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=pZIJsshov0YnYWmT+pQ19+fwUUqPG3Yd7jEvd1UuHhwbEacuJC0OlEpL38k5j0pY2wpdKE1vBqRowIj5TAldQ+h8Sh/4jKnmyx7szmDacuCYOadxZzTqlgA4VNyMc1B+VCXMpCe/uDIqIIsN65D/cy0Sc5ecalD9bRu66tKxTrk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PFiaeLE/; arc=none smtp.client-ip=209.85.160.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-430b7b22b17so18051541cf.2;
-        Sat, 06 Apr 2024 08:03:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712415795; x=1713020595; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a7oZc1r1+1pQl56GfIW2CdrbD4i8j9cKjnw4MtdeYuc=;
-        b=PFiaeLE/RTYRHPtqIkrHGucHcYABPoBZycwxjeaBa+S1DWnGCPvahY9b8Noa75Cvpk
-         j5L+dn39bNY3kGEUzHMEQOp1si2vicTnm6F5bXxQB2UIRDz9OaqopeQZh5WIPx8ucccR
-         t1FIycd6YILBdPOyT6Ay8DjE1mgDXz8W2eHV3CVSk9NlJ6HVvTPLd6Ao5euxoVaQ3W8Y
-         H/Scw1/GOIRnb3vXLKw96Qd7Z1EWeXm2m2l+S/nDeEXOKWV2KKuN+ejLZdT2vO2wA6Jp
-         /PsmidNqciw95XoANF6jJmgCizwRGliErU0FoZ4dzD7UbQA8wxTzURUDh7lRj3BnrMN+
-         5kWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712415795; x=1713020595;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=a7oZc1r1+1pQl56GfIW2CdrbD4i8j9cKjnw4MtdeYuc=;
-        b=eeQ9/qYvK6ywKZJy5wlPoV9Ltxhfqh+Av23LJLXkD2w/Y+e5VraAWxTytSb5xpHfpy
-         3nkic/ewrbBc2iMjer0cVCt1P2lkrxVaE7C6h53ina/OQ+U1awi2g3ge+EteuidyiIIo
-         pVGKSKIkQVGf17g4CJI+JLMfyJnpBkg5uI9YH1bQ5l8DfsNHh9TinzDBndtph25oX92f
-         4Zw2P/4Dn8RdEERGP2/08sce2GWiLRUJ3A9/flot+M6/0z9sd/zV1m7VGbcb32vQZZ6G
-         GIuaHVvbLL15e68IEYiLnEDeMTD4rE1qcffdAf6Rwh7x+LqaeaT5f+hj+RqT47XoxjYJ
-         JX2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVSWsMVm5Mfc76t8FOsdvzVfSo8gx/JKcf3ez/QH9trO4ly/bsgwQYfhy3GjGFZO6L0XYOY7awICKcrfAWoB7ulhcv9DISZQ31n5NpNUvGm8AgdyrTeAWM4wGd8aVyg/l941Eq2wwet7qLEJr6m6CxG44Wdo4FUHKSPa1gDtfTRkr6/0sCM
-X-Gm-Message-State: AOJu0YwmXv+w513LGACEsUE6lm8WJiCAPE/Is3JB4ewZo8JyraDTFGGA
-	fpeF5kHFDiHQg8C01O49ME2U6+Fw1vtwD7yJXkTMJ32SZnc18SaI
-X-Google-Smtp-Source: AGHT+IHxoO6b2MerF1U3CAmgXcBlPetNiGPIdanb85cHChz2yvph3qr1eOxLcgarxaWdzQTe3bNd6Q==
-X-Received: by 2002:ac8:7c44:0:b0:434:7944:bafc with SMTP id o4-20020ac87c44000000b004347944bafcmr1289053qtv.16.1712415795225;
-        Sat, 06 Apr 2024 08:03:15 -0700 (PDT)
-Received: from localhost (73.84.86.34.bc.googleusercontent.com. [34.86.84.73])
-        by smtp.gmail.com with ESMTPSA id w22-20020ac843d6000000b0043146d55f0csm416039qtn.60.2024.04.06.08.03.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 06 Apr 2024 08:03:14 -0700 (PDT)
-Date: Sat, 06 Apr 2024 11:03:14 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: Yuri Benditovich <yuri.benditovich@daynix.com>, 
- willemdebruijn.kernel@gmail.com, 
- davem@davemloft.net, 
- edumazet@google.com, 
- kuba@kernel.org, 
- pabeni@redhat.com, 
- shuah@kernel.org, 
- linux-kernel@vger.kernel.org, 
- netdev@vger.kernel.org, 
- linux-kselftest@vger.kernel.org
-Cc: yan@daynix.com, 
- andrew@daynix.com
-Message-ID: <66116432b55ce_16bd4c2943e@willemb.c.googlers.com.notmuch>
-In-Reply-To: <20240406082513.78692-1-yuri.benditovich@daynix.com>
-References: <20240406082513.78692-1-yuri.benditovich@daynix.com>
-Subject: Re: [PATCH] net: change maximum number of UDP segments to 128
+	s=arc-20240116; t=1712415846; c=relaxed/simple;
+	bh=MmwmhbXSkaRYOLQIxgZS7orKIHrXbyGxfV1A4cAr9nI=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WeHxrse+L/L6QwCO1ukj5FulMu+C/V6oX3uSp39Xo/lMNUlZQ/s4VMuU7WKEV8+gL6R8FUljuheyP+mlU3dwfAXlcorl4tFgurbBi7nWSTlozFfbrc72qpsn3OmriamGUjLBt0toIjgG2g0/xWF6NsPXvz7B4l5zzbAexH+A464=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CKXUGwO9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C34EDC433F1;
+	Sat,  6 Apr 2024 15:04:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712415845;
+	bh=MmwmhbXSkaRYOLQIxgZS7orKIHrXbyGxfV1A4cAr9nI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=CKXUGwO9CRl2f6/YUmp/d+Aue2N0RLDMIwWxjrZQugnV6lDXzlWlY7h0e5akqAWvh
+	 5fg3G4ZkYU7NjAEC0MFguDziH/AFWSIM+hYqT0yjTBClTW6s/UMa9YrA3jrfIAJfrZ
+	 DGBD0V4qATOgjIhGmECcPmH9ZCarAQNLo/qwusuPttjkck2FOWCLOCbNWwO4egnyT5
+	 RSKC8F/FiE9gbm+uS8A1OFmZWFtSOQhHgR3L1D96YJVSsmT2wUJqzPOGGMSN/RbiPn
+	 vwUNHs/wcYKQW4KtvbI0NZaVFV9zs9Ep82jH0nQA9KWGxdOcKBLoyqkocHNsuxbj9m
+	 pc51UVPr4trdw==
+Date: Sat, 6 Apr 2024 16:03:50 +0100
+From: Jonathan Cameron <jic23@kernel.org>
+To: Dumitru Ceclan via B4 Relay
+ <devnull+dumitru.ceclan.analog.com@kernel.org>
+Cc: dumitru.ceclan@analog.com, Lars-Peter Clausen <lars@metafoo.de>, Michael
+ Hennerich <Michael.Hennerich@analog.com>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+ <conor+dt@kernel.org>, David Lechner <dlechner@baylibre.com>,
+ linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Dumitru Ceclan <mitrutzceclan@gmail.com>
+Subject: Re: [PATCH 4/6] iio: adc: ad7173: refactor ain and vref selection
+Message-ID: <20240406160350.751d23ae@jic23-huawei>
+In-Reply-To: <20240401-ad4111-v1-4-34618a9cc502@analog.com>
+References: <20240401-ad4111-v1-0-34618a9cc502@analog.com>
+	<20240401-ad4111-v1-4-34618a9cc502@analog.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-Yuri Benditovich wrote:
-> Earlier commit fc8b2a619469378 ("net: more strict VIRTIO_NET_HDR_GSO_UDP_L4 validation")
-> added check of potential number of UDP segment vs UDP_MAX_SEGMENTS
-> in linux/virtio_net.h.
-> After this change certification test of USO guest-to-guest
-> transmit on Windows driver for virtio-net device fails,
-> for example with packet size of ~64K and mss of 536 bytes.
-> In general the USO should not be more restrictive than TSO.
+On Mon, 01 Apr 2024 18:32:22 +0300
+Dumitru Ceclan via B4 Relay <devnull+dumitru.ceclan.analog.com@kernel.org> wrote:
 
-Ack
-
-> Indeed, in case of unreasonably small mss a lot of segments
-> can cause queue overflow and packet loss on the destination.
-> Limit of 128 segments is good for any practical purpose,
-> with minimal meaningful mss of 536 the maximal UDP packet will
-> be divided to ~120 segments.
+> From: Dumitru Ceclan <dumitru.ceclan@analog.com>
 > 
-> Signed-off-by: Yuri Benditovich <yuri.benditovich@daynix.com>
-
-Please mark fixes as [PATCH net] and include a fixes tag:
-
-Fixes: fc8b2a619469 ("net: more strict VIRTIO_NET_HDR_GSO_UDP_L4 validation")
-
-Otherwise this looks fine to me. UDP_MAX_SEGMENTS exists to block
-egregious examples, such as 64K 1B segments. Doubling to 128 to handle
-536B MSS is well within the reasonable range.
+> Move validation of analog inputs and reference voltage selection to
+> separate functions.
+> 
+> Signed-off-by: Dumitru Ceclan <dumitru.ceclan@analog.com>
+A few line wrapping comments inline. 
 
 > ---
->  include/linux/udp.h                  | 2 +-
->  tools/testing/selftests/net/udpgso.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  drivers/iio/adc/ad7173.c | 59 +++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 41 insertions(+), 18 deletions(-)
 > 
-> diff --git a/include/linux/udp.h b/include/linux/udp.h
-> index 3748e82b627b..7e75ccdf25fe 100644
-> --- a/include/linux/udp.h
-> +++ b/include/linux/udp.h
-> @@ -108,7 +108,7 @@ struct udp_sock {
->  #define udp_assign_bit(nr, sk, val)		\
->  	assign_bit(UDP_FLAGS_##nr, &udp_sk(sk)->udp_flags, val)
+> diff --git a/drivers/iio/adc/ad7173.c b/drivers/iio/adc/ad7173.c
+> index 699bc6970790..bf5a5b384fe2 100644
+> --- a/drivers/iio/adc/ad7173.c
+> +++ b/drivers/iio/adc/ad7173.c
+> @@ -910,6 +910,41 @@ static int ad7173_register_clk_provider(struct iio_dev *indio_dev)
+>  					   &st->int_clk_hw);
+>  }
 >  
-> -#define UDP_MAX_SEGMENTS	(1 << 6UL)
-> +#define UDP_MAX_SEGMENTS	(1 << 7UL)
->  
->  #define udp_sk(ptr) container_of_const(ptr, struct udp_sock, inet.sk)
->  
-> diff --git a/tools/testing/selftests/net/udpgso.c b/tools/testing/selftests/net/udpgso.c
-> index 1d975bf52af3..85b3baa3f7f3 100644
-> --- a/tools/testing/selftests/net/udpgso.c
-> +++ b/tools/testing/selftests/net/udpgso.c
-> @@ -34,7 +34,7 @@
->  #endif
->  
->  #ifndef UDP_MAX_SEGMENTS
-> -#define UDP_MAX_SEGMENTS	(1 << 6UL)
-> +#define UDP_MAX_SEGMENTS	(1 << 7UL)
->  #endif
->  
->  #define CONST_MTU_TEST	1500
-> -- 
-> 2.34.3
-> 
+> +static int ad7173_validate_voltage_ain_inputs(struct ad7173_state *st,
+> +					      unsigned int ain[2])
+> +{
+> +	struct device *dev = &st->sd.spi->dev;
+> +
+> +	if (ain[0] >= st->info->num_inputs ||
+> +	    ain[1] >= st->info->num_inputs)
 
+No need to line wrap the above - its under 80 chars on one line with the
+new reduced indent due to factoring this out.
+
+> +		return dev_err_probe(dev, -EINVAL,
+> +			"Input pin number out of range for pair (%d %d).\n",
+> +			ain[0], ain[1]);
+> +
+> +	return 0;
+> +}
+> +
+> +static int ad7173_validate_reference(struct ad7173_state *st, int ref_sel)
+> +{
+> +	struct device *dev = &st->sd.spi->dev;
+> +	int ret;
+> +
+> +	if (ref_sel == AD7173_SETUP_REF_SEL_INT_REF && !st->info->has_int_ref)
+> +		return dev_err_probe(dev, -EINVAL,
+> +			"Internal reference is not available on current model.\n");
+> +
+> +	if (ref_sel == AD7173_SETUP_REF_SEL_EXT_REF2 && !st->info->has_ref2)
+> +		return dev_err_probe(dev, -EINVAL,
+> +			"External reference 2 is not available on current model.\n");
+> +
+> +	ret = ad7173_get_ref_voltage_milli(st, ref_sel);
+> +	if (ret < 0)
+> +		return dev_err_probe(dev, ret,
+> +			"Cannot use reference %u\n", ref_sel);
+
+Can pull the string to previous line and then align ref_sel just after (
+whilst still remaining under 80 chars and end up a little prettier.
+
+
+> +
+> +	return 0;
+> +}
+> +
+>  static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
+>  {
+>  	struct ad7173_channel *chans_st_arr, *chan_st_priv;
+> @@ -970,11 +1005,9 @@ static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
+>  		if (ret)
+>  			return ret;
+>  
+> -		if (ain[0] >= st->info->num_inputs ||
+> -		    ain[1] >= st->info->num_inputs)
+> -			return dev_err_probe(dev, -EINVAL,
+> -				"Input pin number out of range for pair (%d %d).\n",
+> -				ain[0], ain[1]);
+> +		ret = ad7173_validate_voltage_ain_inputs(st, ain);
+> +		if (ret)
+> +			return ret;
+>  
+>  		ret = fwnode_property_match_property_string(child,
+>  							    "adi,reference-select",
+> @@ -985,19 +1018,9 @@ static int ad7173_fw_parse_channel_config(struct iio_dev *indio_dev)
+>  		else
+>  			ref_sel = ret;
+>  
+> -		if (ref_sel == AD7173_SETUP_REF_SEL_INT_REF &&
+> -		    !st->info->has_int_ref)
+> -			return dev_err_probe(dev, -EINVAL,
+> -				"Internal reference is not available on current model.\n");
+> -
+> -		if (ref_sel == AD7173_SETUP_REF_SEL_EXT_REF2 && !st->info->has_ref2)
+> -			return dev_err_probe(dev, -EINVAL,
+> -				"External reference 2 is not available on current model.\n");
+> -
+> -		ret = ad7173_get_ref_voltage_milli(st, ref_sel);
+> -		if (ret < 0)
+> -			return dev_err_probe(dev, ret,
+> -					     "Cannot use reference %u\n", ref_sel);
+> +		ret = ad7173_validate_reference(st, ref_sel);
+> +		if (ret)
+> +			return ret;
+>  
+>  		if (ref_sel == AD7173_SETUP_REF_SEL_INT_REF)
+>  			st->adc_mode |= AD7173_ADC_MODE_REF_EN;
+> 
 
 
