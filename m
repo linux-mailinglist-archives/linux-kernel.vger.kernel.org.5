@@ -1,78 +1,99 @@
-Return-Path: <linux-kernel+bounces-133739-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133740-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8C4F89A7EF
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:29:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E14E989A7F3
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:31:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59F67B234F8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:29:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EF781C21270
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 00:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F364125DC;
-	Sat,  6 Apr 2024 00:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9973224;
+	Sat,  6 Apr 2024 00:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CZ6z4G2Z"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uL/8ZWKv"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94F51D29E
-	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 00:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8B7B632;
+	Sat,  6 Apr 2024 00:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712363344; cv=none; b=ruNw05wJ/5sRqeepkmN20GQqTeiEpsTZ2LpGWZJpyhT3ldy9UCQui8+eOLY9YFlMfunr2Gn3al0/nCezAXRKRYmxrLrDI5QJLn/zigaZC4kyr1+nlWDjXg+GWARmAVK6kO4sns/ZMexrsdykqQ0l2I/3sb676KDobP1NpC1TJ1A=
+	t=1712363510; cv=none; b=qho5AiQpK3WQ4aBNTV+iwcpXbG7f00f5xRGz590Ki1uwRMXGBMZnlPJXAV4nITuN6IPvJK8DOEfGIx6zCrpJa/BkNo+FUXQoOOJNMvl5TwtTM5vYqUnVGxDliC8cM2/OueY/RNMV2SKE7PUdnB2oStAEMfTZwYTWw699rTwhkVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712363344; c=relaxed/simple;
-	bh=DRWpmJVoz15NjEHzGghpq6C7wN1eW4jIpcQxAO9nTvY=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=mXJ1v5gKh8fIWIgrDciAnLBuGBD2YA9YLqJcjixpQoUkHBE7paA2o6brfBAFzPntotRWR6taBpujTn3f7nrMtU7ayAuooO9bvTDWRT0xdpmsxJcmUR+I93MvURpBj28g244HT/ZfLjrS6nZT+oAvk/C1clSpr6lCa1gbu7ozYHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CZ6z4G2Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 2A930C433C7;
-	Sat,  6 Apr 2024 00:29:04 +0000 (UTC)
+	s=arc-20240116; t=1712363510; c=relaxed/simple;
+	bh=bd9s04wUaLu4Yh59HHU7R0GCVInJamM+pcf+isBLVcQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fnrhtj3u7pgF1VVMf5W5Dr+PuVg36eCmJ7C/wdcvnUSm9RqD6zFtWjRWPQ2Fye7FUijAR9SEyzvyVK3NRD4naRA2uUDYmvjipnx2j2EIN3Krsfxxtv1eDdSl/Fc9wPH/bFoYy+oimSORR10b94kTsvpM+ZZF8vGCJIoBeESlhJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uL/8ZWKv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8876BC433C7;
+	Sat,  6 Apr 2024 00:31:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712363344;
-	bh=DRWpmJVoz15NjEHzGghpq6C7wN1eW4jIpcQxAO9nTvY=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=CZ6z4G2ZsZq0ovy+DkUG7v1a6OHSe0pSoFW9oIQSpF9HZy9WsYGZ1/r1JrE2bFkrE
-	 4c5rgu8iE8insXrAa64oItGIKmQGMcrNm7ZcIFoTAjAYdSTk4uJTfoZmLA4JXDVf6m
-	 ++MdNcb5rpSXqnUoCordWPdrHYAPaSEmux9tnR6e4b03YrmG7NCg0sxCO3ARiv4GRs
-	 BFxDZufjSPiJvTqbm2tjtFMKf9xihzwPqGKhkAakzXP4sWTUZQbgOLmAtnrbUBW9o9
-	 LRFM8ozl25VWZzyRBZ0PzdFuoVtMEu9PFXIYS5IP+2vw7LoXuGv7hnwEYkDOq5XTeB
-	 5zi7d0jxa3Sjg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 19494D8A100;
-	Sat,  6 Apr 2024 00:29:04 +0000 (UTC)
-Subject: Re: [GIT PULL] regmap fixes for v6.9-rc2
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240405222035.306A2C433C7@smtp.kernel.org>
-References: <20240405222035.306A2C433C7@smtp.kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240405222035.306A2C433C7@smtp.kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-fix-v6.9-rc2
-X-PR-Tracked-Commit-Id: eaa03486d932572dfd1c5f64f9dfebe572ad88c0
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a6bec447a82fdc20966b6129fb51bff46a16ef6e
-Message-Id: <171236334410.12657.222142785991687183.pr-tracker-bot@kernel.org>
-Date: Sat, 06 Apr 2024 00:29:04 +0000
-To: Mark Brown <broonie@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+	s=k20201202; t=1712363510;
+	bh=bd9s04wUaLu4Yh59HHU7R0GCVInJamM+pcf+isBLVcQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uL/8ZWKvoDBZLY2DvZV5JDkTFZSm7KAWyfu9+7hcXWQVDKtfX7LpxD3gu31CHVfRy
+	 i3xFX9ROamIugcypLbcMuOgmV92kLyW9wfMq6Ix90OvRhlqL7RUSj22OInkrpfu0aS
+	 QpzeqU8PsrEzJm+Dq1jdWWoeQ2j9aKUUhOXZlqLyVcEvvj1wI9BTcjqyBwYgMle0Hn
+	 AIMeEc8DF0k68qys/JPC83i+r6XqbAAdaTq/fkxGWxdFC1VA8CaFpVTpJ/1+aGJntI
+	 SsY33okiP2B3lv9np65SZwv6BuEz6pLRx81eZSXD1C2mrd1yy93m2f7H9bXkAJYdGJ
+	 eTEUf1ygmD/Dw==
+Date: Sat, 6 Apr 2024 02:31:45 +0200
+From: Andi Shyti <andi.shyti@kernel.org>
+To: Arnd Bergmann <arnd@kernel.org>
+Cc: Wim Van Sebroeck <wim@linux-watchdog.org>, 
+	Guenter Roeck <linux@roeck-us.net>, Heiner Kallweit <hkallweit1@gmail.com>, 
+	Wolfram Sang <wsa+renesas@sang-engineering.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Jarkko Nikula <jarkko.nikula@linux.intel.com>, Geert Uytterhoeven <geert+renesas@glider.be>, 
+	Jean Delvare <jdelvare@suse.de>, linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-watchdog@vger.kernel.org
+Subject: Re: [PATCH] i2c: i801: add I2C_MUX dependency
+Message-ID: <qghidicjaxiygws4hfme7yfa5kfzg3y7tz4inqnjhwk67hjtwy@apfooo4pplq3>
+References: <20240405142823.615609-1-arnd@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405142823.615609-1-arnd@kernel.org>
 
-The pull request you sent on Fri, 05 Apr 2024 23:20:26 +0100:
+Hi Arnd,
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-fix-v6.9-rc2
+On Fri, Apr 05, 2024 at 04:27:43PM +0200, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When I2C_MUX is a loadable module but I2C_I801 is built-in, the newly
+> added notifier function causes a link error:
+> 
+> x86_64-linux-ld: drivers/i2c/busses/i2c-i801.o: in function `i801_notifier_call':
+> i2c-i801.c:(.text+0x1f5): undefined reference to `i2c_root_adapter'
+> 
+> This code is only built if I2C_MUX_GPIO is also enabled, so add a
+> conditional dependency that allows building the driver as before if the
+> GPIO part is disabled, but otherwise require the linker dependency at
+> Kconfig level.
+> 
+> With the added dependency, the driver cannot be selected by a builtin
+> ITCO_WDT driver when I2C_MUX_GPIO is a loadable module, so remove
+> the 'select' statement in that driver as well. This was apparently
+> never needed at compile-time, and the watchdog driver just needs either
+> the LPC or the I2C drivers, but never both.
+> 
+> Configurations that rely on the implied 'select' from the watchdog
+> driver now need to enable all three.
+> 
+> Fixes: 71b494e043d2 ("i2c: i801: Call i2c_register_spd for muxed child segments")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a6bec447a82fdc20966b6129fb51bff46a16ef6e
+thanks for the proposed fix, but Heiner has already submitted a
+fix for this issue. I'm going to mark this patch as superseeded,
+if that's OK with you.
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks,
+Andi
 
