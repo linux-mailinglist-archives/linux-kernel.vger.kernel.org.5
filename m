@@ -1,315 +1,217 @@
-Return-Path: <linux-kernel+bounces-133769-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133770-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 322B089A864
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 04:11:26 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 658CB89A867
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 04:15:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1433B1C215E8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:11:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C5B8282EF5
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 02:15:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 185BE12E78;
-	Sat,  6 Apr 2024 02:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E3DD11CAF;
+	Sat,  6 Apr 2024 02:15:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WTDe2/4V"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vVkSe1Ex"
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1719618C05;
-	Sat,  6 Apr 2024 02:11:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52BA3F4FB
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 02:15:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712369473; cv=none; b=q0rIykbrafDmWFZyVWcZTYiXctj+jbjemG6zDUOR3cHEx+r4VSvzJDgfdrkQW7JEWsR4rE8qGVv/36xKnzOXBHqcY3ojBkW4hAL80NluNdp6joG4aCmadILDDwLdZkfjeOSlStcprQPCW1yTiIe8pXFNdbNKFp5sR0hwgqz+sWc=
+	t=1712369711; cv=none; b=IgNbQWF7fHsxn6RST0xpbDYlLd9cBGFTw+ju/8DCOV88dXrXjbBdpoDhrqMXskA0cddPaXCzrh944R2zhUTgifSwCQzDCUpX4XT43/XD507nO8CLVf6NjDrxoxXHYOCG626WLZV+y7jINOlqbnOTFkosssJOs75YowABHN/Yqec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712369473; c=relaxed/simple;
-	bh=woMNEmi6/hdqBt/ao3V3KF+oBgqA0BZosVdoyoMgMlw=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=EqHtYsrUySSQGjFYqFJBk2bUmPP92PbP7HBEOnimiqjBBz/EWpv2w4FgwtDbslRCC6MJtnLU1BzsEu8HqYueIEWK82NDCAAETfpWkzeBSEIbFHG+CWiq/vMary9YCrBLytE0LclYgzRZaUvApCqPWIGWAwRhRnYI05cZdGJg6C4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WTDe2/4V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EBADC433F1;
-	Sat,  6 Apr 2024 02:11:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712369472;
-	bh=woMNEmi6/hdqBt/ao3V3KF+oBgqA0BZosVdoyoMgMlw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=WTDe2/4VIPUO/C87oUFuAJXVUnZxMdlJm2sSe0GZ7m4sdl0dVFrgQbk1GYjvtdOXR
-	 jAWs43pSwskzmbf60/yAV/VgnozM93x+D+ixfXANyBxy6TyMpBrlNR0HafpJpBSbYT
-	 v4xEJrVrogQphsDM1icApNa6Xi8Qw/vZVqMOc1k+J7rIK0Igz8ioTkwZFQJyaoThQN
-	 GXTBiixQkC3jTo9GyfbbpE0Nda8LP4MyYMTNwwqviS+/lDGPhMf0S0PiDrn/gre7Ve
-	 5XpwC9WIoCyEF+mtAVuOQnaoDcoYOgF2wXBsF9hlxfhELdsKyC9bbUB9nI8LWPd862
-	 yMJeTXKsfTxtw==
-Date: Sat, 6 Apr 2024 11:11:08 +0900
-From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-To: paulmck@kernel.org
-Cc: linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, Zhenhua Huang <quic_zhenhuah@quicinc.com>
-Subject: Re: [PATCH fs/proc/bootconfig] remove redundant comments from
- /proc/bootconfig
-Message-Id: <20240406111108.e9a8b8c4cb8f44a8fb95b541@kernel.org>
-In-Reply-To: <ef8cf3e7-9684-4495-a70e-c8f13ad188c5@paulmck-laptop>
-References: <f036c5b0-20cc-40c1-85f9-69fa9edd0c95@paulmck-laptop>
-	<20240404085522.63bf8cce6f961c07c8ce3f17@kernel.org>
-	<26d56fa5-2c95-46da-8268-35642f857d6d@paulmck-laptop>
-	<20240405102324.b7bb9fa052754d352cd2708e@kernel.org>
-	<20240405115745.9b95679aa3ac516995d4d885@kernel.org>
-	<ef8cf3e7-9684-4495-a70e-c8f13ad188c5@paulmck-laptop>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1712369711; c=relaxed/simple;
+	bh=O4/3HNR38idF4BH2OJeB+ylGTsLaPdApSICTUeXxz8A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M8kB90rthkwnE7jJI341/g8k6MYXWO2gBZcWwqRSKuOSE/5Djk/81RP7Ahbl/+2CxWuU30AGiSjgqgsUsTdGs8x5DCb5JbC9I43AWpHWvAbFbnWPvzWEZ6hpOhLbM0WURlgMzsMht6v7nxmbZuPXVmU/tGDAQJdJNayTfhw3P44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vVkSe1Ex; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2d094bc2244so28779201fa.1
+        for <linux-kernel@vger.kernel.org>; Fri, 05 Apr 2024 19:15:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712369707; x=1712974507; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=XhDrNzBi3oiG43zRalXwXnBhsTSPwZRL2FZ33nSnVdw=;
+        b=vVkSe1ExgSBDXWEjv1pgOhnsCaJaOjAodNHf+3A6nH/eva2zDxhMYfzFqJH/ERxNCT
+         luLcbspMCSCPfgEuTtqBGNacmE7LkM8d0SxfqtDHTaco0ob6iQQyTUcEqTzVn0cAngmX
+         EwpDurmKQqFlUm+3hXbn4vh1LHiEidYMoVacTHv5M8/BtsJe+OeZhEAtFaq2y1Xv8/AL
+         yyeVrflFjsP59FZ+oarcdJgJQetGtXw9cVr3Lnnl9zrW72Y5ELmHdjtysD9YgTGkWKqz
+         dwcKm717YOIRwnXaJ0M+b0tQVEAFkhlQyg9idBBcARpVBs/7xwJdjldNQGUSOLSlllZS
+         OjFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712369707; x=1712974507;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=XhDrNzBi3oiG43zRalXwXnBhsTSPwZRL2FZ33nSnVdw=;
+        b=oellSfLpK6i2/GbyQ3nzZL/1hEAeHL8iZhNEG/CZWTwQUciZ9Bg7OHNdhDZHWn2n04
+         kTs2RDGEX0UDl/1QyIkiMKT0fw4JBylQ+93lr+phNx0qkciXMU9ZbmBUhShX59Xq1Ulz
+         L+Nh9UaMcoXcISCTKR+vBAJ7+KtoxxfANZuN9TL5udiNXVVGZxzLLKSI4zXkmmuG8EDn
+         6aw3wfe4ubT9viuf2vrEHqIhmYEzwTVcAz9HfjjDXj+H8t1IL1I1QJ6rd34qcxa9cz6N
+         cT9la0SeQIatC9TkWFvUCWKSrryft3SSc0l2XjlTQdxLd95u+xs8cNjRN0/Rzwpkvk7e
+         pwQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUqEH1UNoREEZnZ1qolJdAHC/N/MkKWhDoLI/p7wBZMBEODs2yXfh/ceWD5I6dhAqVhf52c++mLBcqr8ujUTCfSwJz9RooE56sv6ICA
+X-Gm-Message-State: AOJu0YyfpN12dsYiuAxJ56T6rfKLnadprJn0XzgDK0IAjeOnEwWf5ZCs
+	2GEMmTRezErIrVbbCIo+C67Zi4rmjQH5xFsiY4f/eH40AZiYVV3CgTJ1jwv38TA=
+X-Google-Smtp-Source: AGHT+IHgbI9drlF/n3E0ht+dUnRhYOaeqMiXPWKHXV7WRm8Zn8FiFB3dp3IVQhdo6PrNO2EoJnOnLw==
+X-Received: by 2002:a2e:7219:0:b0:2d8:6a04:6ac4 with SMTP id n25-20020a2e7219000000b002d86a046ac4mr2399047ljc.28.1712369707253;
+        Fri, 05 Apr 2024 19:15:07 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
+        by smtp.gmail.com with ESMTPSA id f16-20020a2eb5b0000000b002d816c0500asm333494ljn.118.2024.04.05.19.15.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 19:15:06 -0700 (PDT)
+Date: Sat, 6 Apr 2024 05:15:04 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc: freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, 
+	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	Bjorn Andersson <andersson@kernel.org>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
+	dri-devel@lists.freedesktop.org, seanpaul@chromium.org, swboyd@chromium.org, 
+	quic_jesszhan@quicinc.com, quic_bjorande@quicinc.com, johan@kernel.org, 
+	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] drm/msm/dp: call dp_hpd_plug_handle()/unplug_handle()
+ directly for external HPD
+Message-ID: <esbu3omf2dg6h5fj4zmvhvet7k4qe6sewzoob64bmoc7nfktih@3dobc4uav5ay>
+References: <20240406001715.8181-1-quic_abhinavk@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240406001715.8181-1-quic_abhinavk@quicinc.com>
 
-On Thu, 4 Apr 2024 21:25:41 -0700
-"Paul E. McKenney" <paulmck@kernel.org> wrote:
-
-> On Fri, Apr 05, 2024 at 11:57:45AM +0900, Masami Hiramatsu wrote:
-> > On Fri, 5 Apr 2024 10:23:24 +0900
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
-> > 
-> > > On Thu, 4 Apr 2024 10:43:14 -0700
-> > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > > 
-> > > > On Thu, Apr 04, 2024 at 08:55:22AM +0900, Masami Hiramatsu wrote:
-> > > > > On Wed, 3 Apr 2024 12:16:28 -0700
-> > > > > "Paul E. McKenney" <paulmck@kernel.org> wrote:
-> > > > > 
-> > > > > > commit 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to
-> > > > > > /proc/bootconfig") adds bootloader argument comments into /proc/bootconfig.
-> > > > > > 
-> > > > > > /proc/bootconfig shows boot_command_line[] multiple times following
-> > > > > > every xbc key value pair, that's duplicated and not necessary.
-> > > > > > Remove redundant ones.
-> > > > > > 
-> > > > > > Output before and after the fix is like:
-> > > > > > key1 = value1
-> > > > > > *bootloader argument comments*
-> > > > > > key2 = value2
-> > > > > > *bootloader argument comments*
-> > > > > > key3 = value3
-> > > > > > *bootloader argument comments*
-> > > > > > ...
-> > > > > > 
-> > > > > > key1 = value1
-> > > > > > key2 = value2
-> > > > > > key3 = value3
-> > > > > > *bootloader argument comments*
-> > > > > > ...
-> > > > > > 
-> > > > > > Fixes: 717c7c894d4b ("fs/proc: Add boot loader arguments as comment to /proc/bootconfig")
-> > > > > > Signed-off-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
-> > > > > > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> > > > > > Cc: Masami Hiramatsu <mhiramat@kernel.org>
-> > > > > > Cc: <linux-trace-kernel@vger.kernel.org>
-> > > > > > Cc: <linux-fsdevel@vger.kernel.org>
-> > > > > 
-> > > > > OOps, good catch! Let me pick it.
-> > > > > 
-> > > > > Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > > 
-> > > > Thank you, and I have applied your ack and pulled this into its own
-> > > > bootconfig.2024.04.04a.
-> > > > 
-> > > > My guess is that you will push this via your own tree, and so I will
-> > > > drop my copy as soon as yours hits -next.
-> > > 
-> > > Thanks! I would like to make PR this soon as bootconfig fixes for v6.9-rc2.
-> > 
-> > Hmm I found that this always shows the command line comment in
-> > /proc/bootconfig even without "bootconfig" option.
-> > I think that is easier for user-tools but changes the behavior and
-> > a bit redundant.
-> > 
-> > We should skip showing this original argument comment if bootconfig is
-> > not initialized (no "bootconfig" in cmdline) as it is now.
+On Fri, Apr 05, 2024 at 05:17:14PM -0700, Abhinav Kumar wrote:
+> From: Kuogee Hsieh <quic_khsieh@quicinc.com>
 > 
-> So something like this folded into that patch?
+> In the external HPD case, hotplug event is delivered by pmic glink to DP driver
+> using drm_aux_hpd_bridge_notify().
 
-Hm, I expected just checking it in the loop as below.
-
-------------------------------------------------------------------------
-diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
-index e5635a6b127b..98e0780f7e07 100644
---- a/fs/proc/bootconfig.c
-+++ b/fs/proc/bootconfig.c
-@@ -27,6 +27,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
- {
- 	struct xbc_node *leaf, *vnode;
- 	char *key, *end = dst + size;
-+	bool empty = true;
- 	const char *val;
- 	char q;
- 	int ret = 0;
-@@ -62,8 +63,9 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
- 				break;
- 			dst += ret;
- 		}
-+		empty = false;
- 	}
--	if (ret >= 0 && boot_command_line[0]) {
-+	if (!empty && ret >= 0 && boot_command_line[0]) {
- 		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
- 			       boot_command_line);
- 		if (ret > 0)
-
-------------------------------------------------------------------------
-
-The difference is checking "bootconfig" cmdline option or checking
-the "bootconfig" is actually empty. So the behaviors are different
-when the "bootconfig" is specified but there is no bootconfig data.
-
-Another idea is to check whether the cmdline is actually updated by
-bootconfig and show original one only if it is updated.
-(I think this fits the purpose of the original patch better.)
-
-------------------------------------------------------------------------
-diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
-index e5635a6b127b..95d6a231210c 100644
---- a/fs/proc/bootconfig.c
-+++ b/fs/proc/bootconfig.c
-@@ -10,6 +10,9 @@
- #include <linux/bootconfig.h>
- #include <linux/slab.h>
- 
-+/* defined in main/init.c */
-+bool __init cmdline_has_extra_options(void);
-+
- static char *saved_boot_config;
- 
- static int boot_config_proc_show(struct seq_file *m, void *v)
-@@ -63,7 +66,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
- 			dst += ret;
- 		}
- 	}
--	if (ret >= 0 && boot_command_line[0]) {
-+	if (cmdline_has_extra_options() && ret >= 0 && boot_command_line[0]) {
- 		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
- 			       boot_command_line);
- 		if (ret > 0)
-diff --git a/init/main.c b/init/main.c
-index 2ca52474d0c3..881f6230ee59 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -487,6 +487,11 @@ static int __init warn_bootconfig(char *str)
- 
- early_param("bootconfig", warn_bootconfig);
- 
-+bool __init cmdline_has_extra_options(void)
-+{
-+	return extra_command_line || extra_init_args;
-+}
-+
- /* Change NUL term back to "=", to make "param" the whole string. */
- static void __init repair_env_string(char *param, char *val)
- {
-------------------------------------------------------------------------
-
-Thank you,
+There can be other drivers in front of the DP chain. For example,
+altmode driver uses drm_connector_oob_hotplug_event() to deliver HPD
+events.
 
 > 
-> ------------------------------------------------------------------------
+> The stacktrace showing the sequence of events is below:
 > 
-> diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
-> index e5635a6b127b0..7d2520378f5f2 100644
-> --- a/fs/proc/bootconfig.c
-> +++ b/fs/proc/bootconfig.c
-> @@ -63,7 +63,7 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
->  			dst += ret;
->  		}
->  	}
-> -	if (ret >= 0 && boot_command_line[0]) {
-> +	if (bootconfig_is_present() && ret >= 0 && boot_command_line[0]) {
->  		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
->  			       boot_command_line);
->  		if (ret > 0)
-> diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
-> index ca73940e26df8..ef70d1b381421 100644
-> --- a/include/linux/bootconfig.h
-> +++ b/include/linux/bootconfig.h
-> @@ -10,6 +10,7 @@
->  #ifdef __KERNEL__
->  #include <linux/kernel.h>
->  #include <linux/types.h>
-> +int bootconfig_is_present(void);
->  #else /* !__KERNEL__ */
->  /*
->   * NOTE: This is only for tools/bootconfig, because tools/bootconfig will
-> diff --git a/init/main.c b/init/main.c
-> index 2ca52474d0c30..720a669b1493d 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -1572,3 +1572,8 @@ static noinline void __init kernel_init_freeable(void)
+> dp_bridge_hpd_notify+0x18/0x70 [msm]
+> drm_bridge_connector_detect+0x60/0xe8 [drm_kms_helper]
+> drm_helper_probe_detect+0x94/0xc0 [drm_kms_helper]
+> drm_helper_probe_single_connector_modes+0x43c/0x53c [drm_kms_helper]
+> drm_client_modeset_probe+0x240/0x1114 [drm]
+> drm_fb_helper_hotplug_event.part.26+0x9c/0xe8 [drm_kms_helper]
+> drm_fb_helper_hotplug_event+0x24/0x38 [drm_kms_helper]
+> msm_fbdev_client_hotplug+0x24/0xd4 [msm]
+> drm_client_dev_hotplug+0xd8/0x148 [drm]
+> drm_kms_helper_connector_hotplug_event+0x30/0x3c [drm_kms_helper]
+> drm_bridge_connector_handle_hpd+0x84/0x94 [drm_kms_helper]
+> drm_bridge_connector_hpd_cb+0xc/0x14 [drm_kms_helper]
+> drm_bridge_hpd_notify+0x38/0x50 [drm]
+> drm_aux_hpd_bridge_notify+0x14/0x20 [aux_hpd_bridge]
+> pmic_glink_altmode_worker+0xec/0x27c [pmic_glink_altmode]
+> process_scheduled_works+0x17c/0x2cc
+> worker_thread+0x2ac/0x2d0
+> kthread+0xfc/0x120
+> 
+> There are three notifications delivered to DP driver for each notification event.
+> 
+> 1) From the drm_aux_hpd_bridge_notify() itself as shown above
+> 
+> 2) From output_poll_execute() thread which arises due to
+> drm_helper_probe_single_connector_modes() call of the above stacktrace
+> as shown in more detail here.
+> 
+> dp_bridge_hpd_notify+0x18/0x70 [msm]
+> drm_bridge_connector_detect+0x60/0xe8 [drm_kms_helper]
+> drm_helper_probe_detect+0x94/0xc0 [drm_kms_helper]
+> drm_helper_probe_single_connector_modes+0x43c/0x53c [drm_kms_helper]
+> drm_client_modeset_probe+0x240/0x1114 [drm]
+> drm_fb_helper_hotplug_event.part.26+0x9c/0xe8 [drm_kms_helper]
+> drm_fb_helper_hotplug_event+0x24/0x38 [drm_kms_helper]
+> msm_fbdev_client_hotplug+0x24/0xd4 [msm]
+> drm_client_dev_hotplug+0xd8/0x148 [drm]
+> drm_kms_helper_hotplug_event+0x30/0x3c [drm_kms_helper]
+> output_poll_execute+0xe0/0x210 [drm_kms_helper]
+> 
+> 3) From the DP driver as the dp_bridge_hpd_notify() callback today triggers
+> the hpd_event_thread for connect and disconnect events respectively via below stack
+> 
+> dp_bridge_hpd_notify+0x18/0x70 [msm]
+> drm_bridge_connector_detect+0x60/0xe8 [drm_kms_helper]
+> drm_helper_probe_detect_ctx+0x98/0x110 [drm_kms_helper]
+> check_connector_changed+0x4c/0x20c [drm_kms_helper]
+> drm_helper_hpd_irq_event+0x98/0x120 [drm_kms_helper]
+> hpd_event_thread+0x478/0x5bc [msm]
+> 
+> We have to address why we end up with 3 events for every single event so something
+> is broken with how we work with the drm_bridge_connector.
+> 
+> But, the dp_bridge_hpd_notify() delivered from output_poll_execute() thread will
+> return the incorrect HPD status DP driver because the .detect() returns the value
+> of link_ready and not the HPD status currently.
+> 
+> And because the HPD event thread has not run yet and this results in the two complementary
+> events.
+> 
+> To fix this problem lets have dp_bridge_hpd_notify() call
+> dp_hpd_plug_handle/unplug_handle() directly instead of going through the
+> event thread.
+> 
+> Then the following .detect() called by drm_kms_helper_connector_hotplug_event()
+> will return correct value of HPD status since it uses the correct link_ready value.
+> 
+> With this change, the HPD status delivered by both drm_bridge_connector_hpd_notify()
+> and drm_kms_helper_connector_hotplug_event() will match each other consistently.
+
+Please take a look at Documentation/process/submitting-patches.rst
+
+With the commit message fixed, the change LGTM. Thanks a lot for
+describing the call chains leading to this issue.
+
+I must admit, initially I thought that the change should be rejected on
+a basis of being a band-aid, but after studying the call graphs and the
+locking within the DP driver, the change looks correct to me.
+
+> 
+> changes in v2:
+> 	- Fix the commit message to explain the scenario
+> 	- Fix the subject a little as well
+> 
+> Fixes: 542b37efc20e ("drm/msm/dp: Implement hpd_notify()")
+> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
+> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> ---
+>  drivers/gpu/drm/msm/dp/dp_display.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+> index d80f89581760..dfb10584ff97 100644
+> --- a/drivers/gpu/drm/msm/dp/dp_display.c
+> +++ b/drivers/gpu/drm/msm/dp/dp_display.c
+> @@ -1665,7 +1665,8 @@ void dp_bridge_hpd_notify(struct drm_bridge *bridge,
+>  		return;
 >  
->  	integrity_load_keys();
->  }
+>  	if (!dp_display->link_ready && status == connector_status_connected)
+> -		dp_add_event(dp, EV_HPD_PLUG_INT, 0, 0);
+> +		dp_hpd_plug_handle(dp, 0);
+>  	else if (dp_display->link_ready && status == connector_status_disconnected)
+> -		dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
+> +		dp_hpd_unplug_handle(dp, 0);
 > +
-> +int bootconfig_is_present(void)
-> +{
-> +	return bootconfig_found || IS_ENABLED(CONFIG_BOOT_CONFIG_FORCE);
-> +}
+>  }
+> -- 
+> 2.43.2
 > 
-> ------------------------------------------------------------------------
-> 
-> Give or take placement of the bootconfig_is_present() function's
-> declaration and definition.
-> 
-> 							Thanx, Paul
-> 
-> 							Thanx, Paul
-> 
-> > Thank you,
-> > 
-> > 
-> > > Thank you,
-> > > 
-> > > > 
-> > > > 							Thanx, Paul
-> > > > 
-> > > > > Thank you!
-> > > > > 
-> > > > > > 
-> > > > > > diff --git a/fs/proc/bootconfig.c b/fs/proc/bootconfig.c
-> > > > > > index 902b326e1e560..e5635a6b127b0 100644
-> > > > > > --- a/fs/proc/bootconfig.c
-> > > > > > +++ b/fs/proc/bootconfig.c
-> > > > > > @@ -62,12 +62,12 @@ static int __init copy_xbc_key_value_list(char *dst, size_t size)
-> > > > > >  				break;
-> > > > > >  			dst += ret;
-> > > > > >  		}
-> > > > > > -		if (ret >= 0 && boot_command_line[0]) {
-> > > > > > -			ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
-> > > > > > -				       boot_command_line);
-> > > > > > -			if (ret > 0)
-> > > > > > -				dst += ret;
-> > > > > > -		}
-> > > > > > +	}
-> > > > > > +	if (ret >= 0 && boot_command_line[0]) {
-> > > > > > +		ret = snprintf(dst, rest(dst, end), "# Parameters from bootloader:\n# %s\n",
-> > > > > > +			       boot_command_line);
-> > > > > > +		if (ret > 0)
-> > > > > > +			dst += ret;
-> > > > > >  	}
-> > > > > >  out:
-> > > > > >  	kfree(key);
-> > > > > 
-> > > > > 
-> > > > > -- 
-> > > > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > > 
-> > > 
-> > > -- 
-> > > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> > 
-> > 
-> > -- 
-> > Masami Hiramatsu (Google) <mhiramat@kernel.org>
-
 
 -- 
-Masami Hiramatsu (Google) <mhiramat@kernel.org>
+With best wishes
+Dmitry
 
