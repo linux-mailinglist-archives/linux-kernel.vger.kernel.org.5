@@ -1,132 +1,157 @@
-Return-Path: <linux-kernel+bounces-133893-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-133894-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F7C589AA72
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 12:58:08 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B1B3389AA77
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 13:00:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AE2EEB21CA8
-	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 10:58:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 33F0028286E
+	for <lists+linux-kernel@lfdr.de>; Sat,  6 Apr 2024 11:00:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBA892C18F;
-	Sat,  6 Apr 2024 10:57:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EjrUvcke"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925532C1A7;
+	Sat,  6 Apr 2024 11:00:26 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3718A2B9A3;
-	Sat,  6 Apr 2024 10:57:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90A2628DD0
+	for <linux-kernel@vger.kernel.org>; Sat,  6 Apr 2024 11:00:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712401078; cv=none; b=eb70Qb4xWIPcXKCtOjrXgj/67QCSRR+YTlqu7r1vjTHY7pjBs47mx52nzVD+kuJbswkbyAxlUf+uucpY1+eIIgpX1Nt+hz02+d6tKOP3WpmCeSku/AoB2z314CJbS2KdlM04S27Q6dxGOthsdqF/xBub9PVW245BJvbfi/0zl4w=
+	t=1712401226; cv=none; b=GAgfsOuXhLO/m4pC/7/mOwOWtiPNm4YPX3PGVCMHHjfYxTDRygJtjMy76wahkVDihRVXDIPu0IQhUKmLEDCnxNiFex9UErhd59AWl5/s21d+0NXLkeBvV9BymiqCn6xEkXgpe1EkKsu2NsEvME9eQ/zdinNXf88vaecmqVr27fg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712401078; c=relaxed/simple;
-	bh=rqw8Wh5G0Ki5AKvdh2k+6Tf5c9k4JZYkGx3BRm4HyNc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Owi2mZ3d0+cZzqua1tsue5/WPwxwJBXdcAdK1hLowpm7LqpASWstYWFdVsJwprK0xPT7H85OJiSvfopvVroHH6WIuj71QGPm62lSvfWylHxykjRADGO34FuBSdNNQdy7fkyhqYsjO4vcclZIKXDv53Trb0jJvwi4SOPzDj+yTsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EjrUvcke; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44053C433C7;
-	Sat,  6 Apr 2024 10:57:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712401077;
-	bh=rqw8Wh5G0Ki5AKvdh2k+6Tf5c9k4JZYkGx3BRm4HyNc=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=EjrUvckelHV1HjAa/3P8x/lQcVrIlHfbAv6Qnce/PStMK8Vs1DQeJugKu1eT17j55
-	 eojJLifZ5J1Pf03XWdbGJHKOlWBNsQJoyYjbOJbuzKgnqetuy0IykzvAwcJ+Bji22V
-	 KZt7EsoXmTs8VWeY/U1WjR8GZd/yjhbo7WbCX0CCFWqhUK81h3J8Y5dwECWW6mr+5f
-	 G4i1nSkdbV1LhsNQE35t/et5PbLDj6/RNEbIHjdXi2xai1/JZdWmU2W2z9xcvcbzt8
-	 ZnmjJQi2Wa/l9IzYMHlgAr6vb5OsLsOexXLgU2FPdzPqdbw5saCjTf/7SNJN3yD+sI
-	 foM5/4FHXxoDw==
-Message-ID: <614b5107-656d-4d41-99c1-77941c48342c@kernel.org>
-Date: Sat, 6 Apr 2024 12:57:51 +0200
+	s=arc-20240116; t=1712401226; c=relaxed/simple;
+	bh=DKwWOfQnJsZ4Gs+P1eLSemMFo4nUei3Z0dxRU3R6tgI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=AObK/1a96ceBzgbSDl8m2+SEoWh7lO52jMIfFn3q5/KVoW6nFIWAwjjHxV0TqBBz3QXPTo4GNqtOGiE4y0x2w7+9gEykKFHM8skAIyfhO1PqSC8sNhPyRN7IW3+TavezR69VstCTKP7AMzdKRTy5EsOkyskZY/ZeVL9dlMr6y34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cf265cb019so264188339f.3
+        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 04:00:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712401224; x=1713006024;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DcRd1UmCP+fAW8HucEpzYBsLAzTIBczIJoAjaMr1iEA=;
+        b=NGJ1KkXNaOgyULib3bQvCB8bmgYrcUzq5oPRihUQdndpoVqSE1ih4ofkxn94lCGGML
+         vmcQPnv+kWzHuL7Y9CwmHcUWhtu7NvD/SM1UfgBEofU1IJxG/im8KBJtFI25XFF6fzJf
+         aPjrkpKB9f5lLxc7Zj6jFTPQRiNEahL6ihkVjwIxfzEqnlWDMhRV+xpYzBbLSVHQHeXY
+         j3kf9igRq3SeyxgdZ8NGmiS1zAWx3X/pjk5QDwl23RdkRlwTR/j1UEiHH3nKI1JrgiBt
+         vym+GOO10locS5xiQYLdZ7TKbxEJkMR5t87Jd63JV//OTrVbkLSDP3lnuCJVk5udnfhP
+         iUDw==
+X-Forwarded-Encrypted: i=1; AJvYcCX3S9rYWwTjmnwwcGUpyiehNZm/5PmtOKLED74xP3MH2pRZgpyLe44sSU6XESsomrimkqm7BoZP/XFygiS2jbCvUgtloNpLt1t3bc2A
+X-Gm-Message-State: AOJu0YyZONZo0mlJKS2fQP1JkOzZ9Zxb/vWEyxlWAB7O2oc+JVGKuTem
+	QQeEcFPbyhI3xEDo/GpUfrnMTVxd6VybiQF19P8t2UZiOqDp7vhL4u+T37WpJTXKCvoynjtC462
+	O9TverZep70gE7dhdiy1Zz1QOVxZEMfiFGbVpF5rHqV6NJ1oUJp2vA8M=
+X-Google-Smtp-Source: AGHT+IFVi/HxZgkQX+l1l/w+QNB3XCCKyyRMuSGGUQU0Sc9HciSLyp1Tp59ZtwnEp9pO7eM4vgYDwCZfR7sqx9yDjvy2E6wjOmhS
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/6] dt-bindings: firmware: arm,scmi: set
- additionalProperties to true
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
- <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
- Sascha Hauer <s.hauer@pengutronix.de>,
- Pengutronix Kernel Team <kernel@pengutronix.de>,
- Fabio Estevam <festevam@gmail.com>, Sudeep Holla <sudeep.holla@arm.com>,
- Cristian Marussi <cristian.marussi@arm.com>
-Cc: Peng Fan <peng.fan@nxp.com>, devicetree@vger.kernel.org,
- imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org
-References: <20240405-imx95-bbm-misc-v2-v2-0-9fc9186856c2@nxp.com>
- <20240405-imx95-bbm-misc-v2-v2-1-9fc9186856c2@nxp.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <20240405-imx95-bbm-misc-v2-v2-1-9fc9186856c2@nxp.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:2654:b0:47f:3994:c919 with SMTP id
+ n20-20020a056638265400b0047f3994c919mr236894jat.6.1712401223834; Sat, 06 Apr
+ 2024 04:00:23 -0700 (PDT)
+Date: Sat, 06 Apr 2024 04:00:23 -0700
+In-Reply-To: <0000000000000d480b060df43de5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a8f1d606156b7ad9@google.com>
+Subject: Re: [syzbot] [nilfs?] KMSAN: uninit-value in nilfs_add_checksums_on_logs
+ (2)
+From: syzbot <syzbot+47a017c46edb25eff048@syzkaller.appspotmail.com>
+To: konishi.ryusuke@gmail.com, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-nilfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, xrivendell7@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 05/04/2024 14:39, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> When adding vendor extension protocols, there is dt-schema warning:
-> "
-> imx,scmi.example.dtb: scmi: 'protocol@81', 'protocol@84' do not match any
-> of the regexes: 'pinctrl-[0-9]+'
-> "
-> 
-> Set additionalProperties to true to address the issue.
+syzbot has found a reproducer for the following issue on:
 
-I do not see anything addressed here, except making the binding
-accepting anything anywhere...
+HEAD commit:    e8b0ccb2a787 Merge tag '9p-for-6.9-rc3' of https://github...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=115eb623180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5112b3f484393436
+dashboard link: https://syzkaller.appspot.com/bug?extid=47a017c46edb25eff048
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=156679a1180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10f27ef6180000
 
-Best regards,
-Krzysztof
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/cf4b0d1e3b2d/disk-e8b0ccb2.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/422cac6cc940/vmlinux-e8b0ccb2.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/9a4df48e199b/bzImage-e8b0ccb2.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/69e1e69e7522/mount_0.gz
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+47a017c46edb25eff048@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in crc32_body lib/crc32.c:110 [inline]
+BUG: KMSAN: uninit-value in crc32_le_generic lib/crc32.c:179 [inline]
+BUG: KMSAN: uninit-value in crc32_le_base+0x43c/0xd80 lib/crc32.c:197
+ crc32_body lib/crc32.c:110 [inline]
+ crc32_le_generic lib/crc32.c:179 [inline]
+ crc32_le_base+0x43c/0xd80 lib/crc32.c:197
+ nilfs_segbuf_fill_in_data_crc fs/nilfs2/segbuf.c:224 [inline]
+ nilfs_add_checksums_on_logs+0xb80/0xe40 fs/nilfs2/segbuf.c:327
+ nilfs_segctor_do_construct+0x9876/0xdeb0 fs/nilfs2/segment.c:2078
+ nilfs_segctor_construct+0x1eb/0xe30 fs/nilfs2/segment.c:2381
+ nilfs_segctor_thread_construct fs/nilfs2/segment.c:2489 [inline]
+ nilfs_segctor_thread+0xc50/0x11e0 fs/nilfs2/segment.c:2573
+ kthread+0x3e2/0x540 kernel/kthread.c:388
+ ret_from_fork+0x6d/0x90 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+
+Uninit was stored to memory at:
+ memcpy_from_iter lib/iov_iter.c:73 [inline]
+ iterate_bvec include/linux/iov_iter.h:122 [inline]
+ iterate_and_advance2 include/linux/iov_iter.h:249 [inline]
+ iterate_and_advance include/linux/iov_iter.h:271 [inline]
+ __copy_from_iter lib/iov_iter.c:249 [inline]
+ copy_page_from_iter_atomic+0x12b7/0x2b60 lib/iov_iter.c:481
+ generic_perform_write+0x4c1/0xc60 mm/filemap.c:3982
+ __generic_file_write_iter+0x20a/0x460 mm/filemap.c:4069
+ generic_file_write_iter+0x103/0x5b0 mm/filemap.c:4095
+ __kernel_write_iter+0x68b/0xc40 fs/read_write.c:523
+ dump_emit_page fs/coredump.c:890 [inline]
+ dump_user_range+0x8dc/0xee0 fs/coredump.c:951
+ elf_core_dump+0x520f/0x59c0 fs/binfmt_elf.c:2077
+ do_coredump+0x32d5/0x4920 fs/coredump.c:764
+ get_signal+0x267e/0x2d00 kernel/signal.c:2896
+ arch_do_signal_or_restart+0x53/0xcb0 arch/x86/kernel/signal.c:310
+ exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0x5d/0x160 kernel/entry/common.c:218
+ do_syscall_64+0xe4/0x1f0 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+
+Uninit was created at:
+ __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
+ alloc_pages_mpol+0x299/0x990 mm/mempolicy.c:2264
+ alloc_pages+0x1bf/0x1e0 mm/mempolicy.c:2335
+ dump_user_range+0x4a/0xee0 fs/coredump.c:935
+ elf_core_dump+0x520f/0x59c0 fs/binfmt_elf.c:2077
+ do_coredump+0x32d5/0x4920 fs/coredump.c:764
+ get_signal+0x267e/0x2d00 kernel/signal.c:2896
+ arch_do_signal_or_restart+0x53/0xcb0 arch/x86/kernel/signal.c:310
+ exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
+ syscall_exit_to_user_mode+0x5d/0x160 kernel/entry/common.c:218
+ do_syscall_64+0xe4/0x1f0 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x72/0x7a
+
+CPU: 0 PID: 5014 Comm: segctord Not tainted 6.9.0-rc2-syzkaller-00207-ge8b0ccb2a787 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+=====================================================
+
+
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
