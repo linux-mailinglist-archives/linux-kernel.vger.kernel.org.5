@@ -1,64 +1,47 @@
-Return-Path: <linux-kernel+bounces-134223-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134222-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D54F89AF39
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:29:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E6989AF37
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:29:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF59BB2120D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 07:29:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35F9E283D47
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 07:29:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A9A88F72;
-	Sun,  7 Apr 2024 07:29:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FDCCA7A;
+	Sun,  7 Apr 2024 07:29:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SWYtJxKr"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m+es7zhb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0928D10A23
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 07:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E2416AB9
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 07:29:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712474972; cv=none; b=Liocx5fYOkq9Ghbm9J2z/xmVMMpW1Uh3N7hED/7sI+ywNA03ZERkm2XUqAvM0zN5yCUmZRUdWD3u4DsS57E1WLTgaIcw9kl2VP41cogsbKTbruHDw06xWUG4AOSj5HdUM3KjfQThtjJOyIm86Osuzuev312oWRm4B1Qzlm/AGHI=
+	t=1712474966; cv=none; b=qycwoyLDn9Q4j4Hq5ttrJT49aWfvn4OxsjEW/bKxxoJvBWa5mq/r91wTMGPhfiRxKs7ZjmL2b+R1DiLlO4EDluBPdhslMBBdCFtwHWMfwlDKiuMJEc5uz2WGjfuj+E8m7HD/ZVi0kI36dvuMHVMWlIBsyTJk0rmuzXy5bzsiVeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712474972; c=relaxed/simple;
-	bh=oegOZxAKMmIs+FUbmGggNTdmhPzqyGI38fezqk9NBoQ=;
-	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=JILvyw/Ad5s5U/tbP4LeJKxkeC1RSkwv0EAhoUQoo4xvxzVy9eJaQJHqKj0VvoFhGfso5uALkkz3hgTsvdzHRMzUgsXzU5bg0qEHzFy0ET/aIR2vSZolbbJKI6lrtMSPjTRD50uB0hTIDNqVJIvWR68Wdrsyta3x73xX0nAjPco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SWYtJxKr; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712474971; x=1744010971;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=oegOZxAKMmIs+FUbmGggNTdmhPzqyGI38fezqk9NBoQ=;
-  b=SWYtJxKrEgIaylhP+keJqtxaAou8dciwnpBXmYUSNnC9c6olmWElkfzc
-   Re+TiWBnPjbpYJMrH7u8pwD+PKumR82vzGv/f+gdryGoXYdNEWpFzCLsO
-   uLv3kJHCt82dD5e5QeOygKpw6Cy1rAszt668T/CD2LUr+aLbM01XAhHr+
-   57v8WnE+qSKUr6qieLDTaN9U+QQfx+mxjk6y2clSbRwkWchVNajOgSgfo
-   3WHnp1LYNv7FvknKwny8/9MCp2CM1jB6yZUpoYYteV9FiXwTV9R6s6CBP
-   WJN3NpyUrNh5/jCuzsaj4lh9lcd5Yvx8M0G6tkrnC5egVjiUrVlh/zasl
-   w==;
-X-CSE-ConnectionGUID: H9q20hjGS1+ccafG9BUnWw==
-X-CSE-MsgGUID: 2ni9JRriRRWhK8FgeYcvLQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11036"; a="33162970"
-X-IronPort-AV: E=Sophos;i="6.07,184,1708416000"; 
-   d="scan'208";a="33162970"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 00:29:29 -0700
-X-CSE-ConnectionGUID: PHFVHD3kS7mePUJRP+UoNw==
-X-CSE-MsgGUID: yX/4fWnLQS2NZdh97lhW1g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,184,1708416000"; 
-   d="scan'208";a="50544993"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orviesa002.jf.intel.com with ESMTP; 07 Apr 2024 00:29:25 -0700
-Message-ID: <2256b869-d0c2-49b4-b6cc-89e59d40386f@linux.intel.com>
-Date: Sun, 7 Apr 2024 15:28:19 +0800
+	s=arc-20240116; t=1712474966; c=relaxed/simple;
+	bh=29YP5x/Os973Sl32/dIiO+nQ4l2sbAEznxA8GpsSHS8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k/pKgY6FdgyO0DLnhbP8qMGgcd0DWcuxHbmiNr4dnnkmEIDKO+kMpb/MKzg3wTiqhW5ynyr/CFNMwcZzPezP59/PWWQAmSzuZW4Sp3Ibo0HppxG8sqS0H+KeNeyi/Q3OPraWxk8oJ1CIjQvO11SNYFgHoVbIpT5VdXzR9xUeKAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m+es7zhb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B265C433F1;
+	Sun,  7 Apr 2024 07:29:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712474966;
+	bh=29YP5x/Os973Sl32/dIiO+nQ4l2sbAEznxA8GpsSHS8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=m+es7zhb6d8kBBprLCV3fRWapkeqAnZHqpxDTSeZbFtIoUOOlZXIT/Kc/0f55Yl/H
+	 XtRGjpcNfI7X81yaP/o9u0BrfwkoifSpVMke7s6cjaUUPDabSzw4MG+EkHppR+RHLo
+	 5XssEb8U7UZ1y+0NTm15xbxYC+9icWnGuWZVU0AQ5ulUX77GW0HA4I/9gLNF5pq+B0
+	 axw1ck0U4/yJL7s4mlpjX2v0bDEORK/2sktFwaaWKgiCZWPJ/gb6K9MYLx5MGI6xVh
+	 3Z6Ky5fG+7vhym7mITs1cBF6pkUniF6CrC6jGk8aiReOxefYLIYQjywCTkEhPJMEdo
+	 Hi8BywgbNXwMQ==
+Message-ID: <6a50a23e-8975-43cb-9496-38b6a083c703@kernel.org>
+Date: Sun, 7 Apr 2024 15:29:21 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,66 +49,91 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Cc: baolu.lu@linux.intel.com, "Zhang, Tina" <tina.zhang@intel.com>,
- "Liu, Yi L" <yi.l.liu@intel.com>,
- "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/12] Consolidate domain cache invalidation
-To: "Tian, Kevin" <kevin.tian@intel.com>, Joerg Roedel <joro@8bytes.org>,
- Will Deacon <will@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
- Jason Gunthorpe <jgg@ziepe.ca>
-References: <20240325021705.249769-1-baolu.lu@linux.intel.com>
- <BN9PR11MB5276088E9D595A903E9255E48C3B2@BN9PR11MB5276.namprd11.prod.outlook.com>
+Subject: Re: [f2fs-dev] [PATCH 1/2] f2fs: fix to relocate check condition in
+ f2fs_fallocate()
+To: Zhiguo Niu <niuzhiguo84@gmail.com>
+Cc: jaegeuk@kernel.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net
+References: <20240403142420.2042498-1-chao@kernel.org>
+ <CAHJ8P3LdZXLc2rqeYjvymgYHr2+YLuJ0sLG9DdsJZmwO7deuhw@mail.gmail.com>
 Content-Language: en-US
-From: Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB5276088E9D595A903E9255E48C3B2@BN9PR11MB5276.namprd11.prod.outlook.com>
+From: Chao Yu <chao@kernel.org>
+In-Reply-To: <CAHJ8P3LdZXLc2rqeYjvymgYHr2+YLuJ0sLG9DdsJZmwO7deuhw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 3/28/24 3:59 PM, Tian, Kevin wrote:
->> From: Lu Baolu<baolu.lu@linux.intel.com>
->> Sent: Monday, March 25, 2024 10:17 AM
+On 2024/4/7 10:11, Zhiguo Niu wrote:
+> On Wed, Apr 3, 2024 at 10:26 PM Chao Yu <chao@kernel.org> wrote:
 >>
->> The IOMMU hardware cache needs to be invalidated whenever the
->> mappings
->> in the domain are changed. Currently, domain cache invalidation is
->> scattered across different places, causing several issues:
+>> compress and pinfile flag should be checked after inode lock held to
+>> avoid race condition, fix it.
 >>
->> - IOMMU IOTLB Invalidation: This is done by iterating through the domain
->>    IDs of each domain using the following code:
+>> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+>> Fixes: 5fed0be8583f ("f2fs: do not allow partial truncation on pinned file")
+>> Signed-off-by: Chao Yu <chao@kernel.org>
+>> ---
+>>   fs/f2fs/file.c | 20 +++++++++++---------
+>>   1 file changed, 11 insertions(+), 9 deletions(-)
 >>
->>          xa_for_each(&dmar_domain->iommu_array, i, info)
->>                  iommu_flush_iotlb_psi(info->iommu, dmar_domain,
->>                                        start_pfn, nrpages,
->>                                        list_empty(&gather->freelist), 0);
+>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>> index 148bfe3effdf..83a807e25e31 100644
+>> --- a/fs/f2fs/file.c
+>> +++ b/fs/f2fs/file.c
+>> @@ -1820,15 +1820,6 @@ static long f2fs_fallocate(struct file *file, int mode,
+>>                  (mode & (FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_INSERT_RANGE)))
+>>                  return -EOPNOTSUPP;
 >>
->>    This code could theoretically cause a use-after-free problem because
->>    there's no lock to protect the "info" pointer within the loop.
+>> -       /*
+>> -        * Pinned file should not support partial truncation since the block
+>> -        * can be used by applications.
+>> -        */
+>> -       if ((f2fs_compressed_file(inode) || f2fs_is_pinned_file(inode)) &&
+>> -               (mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_COLLAPSE_RANGE |
+>> -                       FALLOC_FL_ZERO_RANGE | FALLOC_FL_INSERT_RANGE)))
+>> -               return -EOPNOTSUPP;
+>> -
+>>          if (mode & ~(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |
+>>                          FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_ZERO_RANGE |
+>>                          FALLOC_FL_INSERT_RANGE))
+>> @@ -1836,6 +1827,17 @@ static long f2fs_fallocate(struct file *file, int mode,
 >>
->> - Inconsistent Invalidation Methods: Different domain types implement
->>    their own cache invalidation methods, making the code difficult to
->>    maintain. For example, the DMA domain, SVA domain, and nested domain
->>    have similar cache invalidation code scattered across different files.
+>>          inode_lock(inode);
 >>
->> - SVA Domain Inconsistency: The SVA domain implementation uses a
->>    completely different data structure to track attached devices compared
->>    to other domains. This creates unnecessary differences and, even
->>    worse, leads to duplicate IOTLB invalidation when an SVA domain is
->>    attached to devices belonging to different IOMMU domains.
-> can you elaborate how duplicated invalidations are caused?
+>> +       /*
+>> +        * Pinned file should not support partial truncation since the block
+>> +        * can be used by applications.
+>> +        */
+>> +       if ((f2fs_compressed_file(inode) || f2fs_is_pinned_file(inode)) &&
+>> +               (mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_COLLAPSE_RANGE |
+>> +                       FALLOC_FL_ZERO_RANGE | FALLOC_FL_INSERT_RANGE))) {
+>> +               ret = -EOPNOTSUPP;
+>> +               goto out;
+>> +       }
+>> +
+> Dear Chao,
+> I see  the judgment code "if(!f2fs_compressed_file(inode))" also is
+> before inode_lock in functions
+> f2fs_ioc_decompress_file/f2fs_ioc_compress_file/f2fs_reserve_compress_blocks/f2fs_release_compress_blocks.
+> should they are changed together?
 
-Yes, sure.
+Zhiguo,
 
-Current Intel SVA implementation keeps the bond between mm and a PASID
-of a device in a list of intel_svm_dev. In the mm notifier callback, it
-iterates all intel_svam_dev in the list and invalidates the IOTLB and
-device TLB sequentially.
+Thanks for noticing that, I've submitted separated patches for fixing
+because those bugs were introduced by separated commits.
 
-If multiple devices belong to a single IOMMU, the IOTLB will be flushed
-multiple times. However, since these devices share the same domain ID
-and PASID, a single IOTLB cache invalidation is sufficient. The
-additional flushes are redundant and negatively impact performance.
+Thanks,
 
-Best regards,
-baolu
+> thanks！
+>>          ret = file_modified(file);
+>>          if (ret)
+>>                  goto out;
+>> --
+>> 2.40.1
+>>
+>>
+>>
+>> _______________________________________________
+>> Linux-f2fs-devel mailing list
+>> Linux-f2fs-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
 
