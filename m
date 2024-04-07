@@ -1,208 +1,113 @@
-Return-Path: <linux-kernel+bounces-134185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3922589AEC2
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 08:04:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84F3489AEC3
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 08:04:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DA33282F36
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 06:04:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 400E2283008
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 06:04:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C0406FC3;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40F57489;
 	Sun,  7 Apr 2024 06:04:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="buK6wkFn"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="I+3HGjKJ"
+Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8687917FF
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 06:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB45184D;
+	Sun,  7 Apr 2024 06:04:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.143.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712469855; cv=none; b=Xn7zcGylacHcmmVxQZJrUUNY8aCnETKmJADFMoFGql+csqlE+WxQjx2s1U6cahKUymV8pnmJlFEh6q0JFHN3g2dRQH+5kyW077Bnz0iDcAvrN49MzeuBEohK33AnYU7U9bZjykWdN37DCpWZsNbFWEOi8T5wSVorgMBWH57NEOE=
+	t=1712469856; cv=none; b=DZO20Owe58BYSe8/28ZDTtemJWumPOEDxb3WqK8hjhT/OfSqY/d1AZ8+Qp0yDshDv6Pph3dLX8V4wspqzUlUP3wfoY1NYqHZGBeD82yMMmkkwF5wTPW3n73SfdifdKKXdMtHV/LI+ocR7XqbHky1+jFKNDo4nlQZV58QZSWFMSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712469855; c=relaxed/simple;
-	bh=9ASREbF5V+W5V2iTmngHkcY+rf4Cr1ccazmdC+nE9Pc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=XsbAXrgcyUFLeuoL1G0KcxRJYrtwyCL+D5dcV2ERehE6h5oOUciuDl/Z3SwNvKO9yfPtktsYMJ1VRoL6DMX21nXHT+3CzmHj7SCDIGnPA1Dtd5QNgfg33ExvlWKcDUZph/WkPw6xb/uXtvLeHsHRIC3LG+ylegQ84M8I9VlUbK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=buK6wkFn; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712469853; x=1744005853;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=9ASREbF5V+W5V2iTmngHkcY+rf4Cr1ccazmdC+nE9Pc=;
-  b=buK6wkFnrJHJXhhXVMbguHyl9IB7s/bf98Q6h4Yst2kTaz7IkWvTeIFy
-   wTsnSuykLoqnuv7g4U286MIZom7KM9XXhg7UHa6sS547Mt4GZoI1BB5Ev
-   tXhGybKPO9DXepyw+fQ5NR3QdRup3f8YIrNytR2Hflu+l2oNSJathWylK
-   IzgfmZLv0liZ0Je3Brf6XmID6McysjYq2/MZioHWUZ8W09ONFfhq2tElz
-   jonIOjFlhoT8kgEeyjKQ9TG3xomNvhO781O88s9cFbAn+nHW9MHWzZbgP
-   OtHWQKMLixw55rZhxvBfWGMRcJlpreMMv9rnPu3usU2yLULDAdf7oc3Tf
-   Q==;
-X-CSE-ConnectionGUID: Ky3gTTOeSLyFX6FYe8UsrA==
-X-CSE-MsgGUID: t6w9zYVHTfWSOcMACKrlow==
-X-IronPort-AV: E=McAfee;i="6600,9927,11036"; a="7944394"
-X-IronPort-AV: E=Sophos;i="6.07,184,1708416000"; 
-   d="scan'208";a="7944394"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2024 23:04:12 -0700
-X-CSE-ConnectionGUID: enoCzR67Q7GqsPFXl1aIDg==
-X-CSE-MsgGUID: /eEN4FILTLOXj5Wgffu5wQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,184,1708416000"; 
-   d="scan'208";a="19611610"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa009-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2024 23:04:09 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: Ryan Roberts <ryan.roberts@arm.com>,  Andrew Morton
- <akpm@linux-foundation.org>,  Matthew Wilcox <willy@infradead.org>,  Gao
- Xiang <xiang@kernel.org>,  Yu Zhao <yuzhao@google.com>,  Yang Shi
- <shy828301@gmail.com>,  Michal Hocko <mhocko@suse.com>,  Kefeng Wang
- <wangkefeng.wang@huawei.com>,  Barry Song <21cnbao@gmail.com>,  Chris Li
- <chrisl@kernel.org>,  Lance Yang <ioworker0@gmail.com>,
-  linux-mm@kvack.org,  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 4/6] mm: swap: Allow storage of all mTHP orders
-In-Reply-To: <c7748c77-b2a3-4b06-aaeb-02793a160aaf@redhat.com> (David
-	Hildenbrand's message of "Fri, 5 Apr 2024 12:38:10 +0200")
-References: <20240403114032.1162100-1-ryan.roberts@arm.com>
-	<20240403114032.1162100-5-ryan.roberts@arm.com>
-	<c7748c77-b2a3-4b06-aaeb-02793a160aaf@redhat.com>
-Date: Sun, 07 Apr 2024 14:02:16 +0800
-Message-ID: <87edbhaexj.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1712469856; c=relaxed/simple;
+	bh=QBPMGzUqywyQjNSFUH3JOgi6/Csu9eiQJ+PVKFyIIJI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pi9hTupBird2TqECzIN2QwTc9IqwLkfG7lpxj7SqcQiJUivBdr/fc07NCV6CTUiVxR64MSw1cZ5greabc/qZhvFZWMXtmcvZsj2Btv/WHn8/aGhpSafvxBtKIEdf7Jm0fMoHfetQQXin40EUHB/MtArnmK7xJ5mAa1iq+24o5IE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=I+3HGjKJ; arc=none smtp.client-ip=68.232.143.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1712469854; x=1744005854;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=QBPMGzUqywyQjNSFUH3JOgi6/Csu9eiQJ+PVKFyIIJI=;
+  b=I+3HGjKJqFWo8yNlgyqJQAUUF3icMbRLJ3lO4C51T1AFfQsyRAQUy26D
+   tICeK2kMDi9EqovIATxUAp8UXiEy0Ayouc3PtOV2fn/+3R3ieeRajDfb8
+   0vh14V9pe8J6VX2QD8c9cRwsnG+hk4GPi/HRVhpVpLcrXF+rmuVeYT+O8
+   KEVKveWZBEbR+lIow4tdHxmBc2GkqBSjn6kGl7usaF+nPT59gOXHvOD8T
+   /ZHXtkImOQwtVGlZJONp4uwR7X3Xi/tcZzkMu6FXAW8R7yo7VAL9WNWb0
+   kti7+enEi8K6NylbN5EwgzqELdfPhIRvU3AQ91zZWKwD3fR3W7J6aqwwy
+   g==;
+X-CSE-ConnectionGUID: Z3RA5XaYRWiViiS4b4giLA==
+X-CSE-MsgGUID: d2Jy5zYzRu+uADE7gaiUew==
+X-IronPort-AV: E=Sophos;i="6.07,184,1708358400"; 
+   d="scan'208";a="13427328"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 07 Apr 2024 14:04:11 +0800
+IronPort-SDR: c8kgfwIGRn7JgPaslLLISagiIHLkFw8slI1yP71vcbgZRq7SFd87skmuReuptHWpox/4bzcVaQ
+ 4U1l6JWUOSqA==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 06 Apr 2024 22:07:02 -0700
+IronPort-SDR: /dEc55hJcUtxtxhC14QGx3f5mG5R6coXL3FBksVOR07ag9g9gzn5zqx9MG1zEyyKlwvEnrjz/h
+ 9DBMCeeCk3OA==
+WDCIronportException: Internal
+Received: from bxygm33.ad.shared ([10.45.31.229])
+  by uls-op-cesaip02.wdc.com with ESMTP; 06 Apr 2024 23:04:10 -0700
+From: Avri Altman <avri.altman@wdc.com>
+To: "James E . J . Bottomley" <jejb@linux.ibm.com>,
+	"Martin K . Petersen" <martin.petersen@oracle.com>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Bean Huo <beanhuo@micron.com>,
+	linux-scsi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH v3 0/1] Remove support for legacy UFS
+Date: Sun,  7 Apr 2024 09:04:09 +0300
+Message-ID: <20240407060412.856-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
 
-David Hildenbrand <david@redhat.com> writes:
+UFS1.0 and UFS1.1, published in the early 2010s, were more of a proof of
+concept rather than a mature functional spec. Toshiba was the only
+device manufacturer with the most accomplished phy team to come up with
+a small UFS1.0 device. Alas, there were no commercial platforms it can
+be paired with. Even UFS2.0 that was published in 2013, didn't really
+make it to the market: too moot to take effect. It's not until UFS2.1
+that was published in 2016, were a myriad of devices and platforms
+flooded the market. Designated to mobile devices, dictates a rapid short
+lives for those platforms. Hence, we can safely remove those pre-UFS2.0
+pieces of code.
 
-> On 03.04.24 13:40, Ryan Roberts wrote:
->> Multi-size THP enables performance improvements by allocating large,
->> pte-mapped folios for anonymous memory. However I've observed that on an
->> arm64 system running a parallel workload (e.g. kernel compilation)
->> across many cores, under high memory pressure, the speed regresses. This
->> is due to bottlenecking on the increased number of TLBIs added due to
->> all the extra folio splitting when the large folios are swapped out.
->> Therefore, solve this regression by adding support for swapping out
->> mTHP
->> without needing to split the folio, just like is already done for
->> PMD-sized THP. This change only applies when CONFIG_THP_SWAP is enabled,
->> and when the swap backing store is a non-rotating block device. These
->> are the same constraints as for the existing PMD-sized THP swap-out
->> support.
->> Note that no attempt is made to swap-in (m)THP here - this is still
->> done
->> page-by-page, like for PMD-sized THP. But swapping-out mTHP is a
->> prerequisite for swapping-in mTHP.
->> The main change here is to improve the swap entry allocator so that
->> it
->> can allocate any power-of-2 number of contiguous entries between [1, (1
->> << PMD_ORDER)]. This is done by allocating a cluster for each distinct
->> order and allocating sequentially from it until the cluster is full.
->> This ensures that we don't need to search the map and we get no
->> fragmentation due to alignment padding for different orders in the
->> cluster. If there is no current cluster for a given order, we attempt to
->> allocate a free cluster from the list. If there are no free clusters, we
->> fail the allocation and the caller can fall back to splitting the folio
->> and allocates individual entries (as per existing PMD-sized THP
->> fallback).
->> The per-order current clusters are maintained per-cpu using the
->> existing
->> infrastructure. This is done to avoid interleving pages from different
->> tasks, which would prevent IO being batched. This is already done for
->> the order-0 allocations so we follow the same pattern.
->> As is done for order-0 per-cpu clusters, the scanner now can steal
->> order-0 entries from any per-cpu-per-order reserved cluster. This
->> ensures that when the swap file is getting full, space doesn't get tied
->> up in the per-cpu reserves.
->> This change only modifies swap to be able to accept any order
->> mTHP. It
->> doesn't change the callers to elide doing the actual split. That will be
->> done in separate changes.
->> Reviewed-by: "Huang, Ying" <ying.huang@intel.com>
->> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
->> ---
->>   include/linux/swap.h |  10 ++-
->>   mm/swap_slots.c      |   6 +-
->>   mm/swapfile.c        | 175 ++++++++++++++++++++++++-------------------
->>   3 files changed, 109 insertions(+), 82 deletions(-)
->> diff --git a/include/linux/swap.h b/include/linux/swap.h
->> index 5e1e4f5bf0cb..11c53692f65f 100644
->> --- a/include/linux/swap.h
->> +++ b/include/linux/swap.h
->> @@ -268,13 +268,19 @@ struct swap_cluster_info {
->>    */
->>   #define SWAP_NEXT_INVALID	0
->>   +#ifdef CONFIG_THP_SWAP
->> +#define SWAP_NR_ORDERS		(PMD_ORDER + 1)
->> +#else
->> +#define SWAP_NR_ORDERS		1
->> +#endif
->> +
->>   /*
->>    * We assign a cluster to each CPU, so each CPU can allocate swap entry from
->>    * its own cluster and swapout sequentially. The purpose is to optimize swapout
->>    * throughput.
->>    */
->>   struct percpu_cluster {
->> -	unsigned int next; /* Likely next allocation offset */
->> +	unsigned int next[SWAP_NR_ORDERS]; /* Likely next allocation offset */
->>   };
->>     struct swap_cluster_list {
->> @@ -471,7 +477,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio);
->>   bool folio_free_swap(struct folio *folio);
->>   void put_swap_folio(struct folio *folio, swp_entry_t entry);
->>   extern swp_entry_t get_swap_page_of_type(int);
->> -extern int get_swap_pages(int n, swp_entry_t swp_entries[], int entry_size);
->> +extern int get_swap_pages(int n, swp_entry_t swp_entries[], int order);
->>   extern int add_swap_count_continuation(swp_entry_t, gfp_t);
->>   extern void swap_shmem_alloc(swp_entry_t);
->>   extern int swap_duplicate(swp_entry_t);
->> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
->> index 53abeaf1371d..13ab3b771409 100644
->> --- a/mm/swap_slots.c
->> +++ b/mm/swap_slots.c
->> @@ -264,7 +264,7 @@ static int refill_swap_slots_cache(struct swap_slots_cache *cache)
->>   	cache->cur = 0;
->>   	if (swap_slot_cache_active)
->>   		cache->nr = get_swap_pages(SWAP_SLOTS_CACHE_SIZE,
->> -					   cache->slots, 1);
->> +					   cache->slots, 0);
->>     	return cache->nr;
->>   }
->> @@ -311,7 +311,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
->>     	if (folio_test_large(folio)) {
->>   		if (IS_ENABLED(CONFIG_THP_SWAP))
->> -			get_swap_pages(1, &entry, folio_nr_pages(folio));
->> +			get_swap_pages(1, &entry, folio_order(folio));
->
-> The only comment I have is that this nr_pages -> order conversion adds
-> a bit of noise to this patch.
->
-> AFAIKS, it's primarily only required for "cluster->next[order]",
-> everything else doesn't really require the order.
->
-> I'd just have split that out into a separate patch, or simply
-> converted nr_pages -> order where required.
->
-> Nothing jumped at me, but I'm not an expert on that code, so I'm
-> mostly trusting the others ;)
+Changes from v2:
+ - leave UFSHCI2.0 out of this change (Bart).
 
-The nr_pages -> order conversion replaces ilog2(nr_pages) with
-(1<<order).  IIUC, "<<" is a little faster than "ilog2()".  And, we
-don't need to worry about whether nr_pages is a power of 2.  Do you
-think that this makes sense?
+Changes from v1:
+ - remove ufshcd_get_local_unipro_ver which practically mean squashing
+   patch 1 & 2 into a single patch (Christoph)
+ - restore an if clause to avoid functional change in
+   ufshcd_compl_one_cqe (Bart)
 
---
-Best Regards,
-Huang, Ying
+Avri Altman (1):
+  scsi: ufs: Remove support for old UFSHCI versions
+
+ drivers/ufs/core/ufshcd.c   | 158 +++---------------------------------
+ drivers/ufs/host/ufs-qcom.c |   3 +-
+ include/ufs/ufshcd.h        |   2 -
+ include/ufs/ufshci.h        |  13 +--
+ 4 files changed, 15 insertions(+), 161 deletions(-)
+
+-- 
+2.42.0
+
 
