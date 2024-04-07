@@ -1,64 +1,45 @@
-Return-Path: <linux-kernel+bounces-134123-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134124-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28AE589ADE7
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:42:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C2A89ADEB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:48:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42AD3B2238E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 01:42:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 703DDB22802
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 01:48:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B950217F0;
-	Sun,  7 Apr 2024 01:42:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mT8W+NiI"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F1E1876;
+	Sun,  7 Apr 2024 01:47:48 +0000 (UTC)
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8618DA47;
-	Sun,  7 Apr 2024 01:42:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E09B95223;
+	Sun,  7 Apr 2024 01:47:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712454151; cv=none; b=KzthdZwp4OkpLuopuFYbQkGnU+3sGAdAOSvhuA6sqnZ0IHSFq30o/Su6abgmL/AW4cW8G6XkisWCBeUWJIHr/N3FE5SNwkhXBzbO7T3akx0seOmpDX+dujfJBKpE8151YKt2T+8vbM46RvStZ1/0cqbMA8AV08k6Y71jMQPDRgs=
+	t=1712454467; cv=none; b=owIs1wSz9uS9p1Mzi068oau78VS9Lo6OfX3ap+kFfOdOKCcURZU0Blk1DV+F5CiNYS+AT6YuS7XVCf+L/EX6DFqM+iIhSWKW5MM5981LPrVrHquntabVKs34kMlgi0QrHo6uK5qWfHUdEeSW9ieE6Yutpid/M3WqO2SXCCT/azk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712454151; c=relaxed/simple;
-	bh=yFSQzAmdtxceEVqM1iibcEA9yqxEDnDRJgDtfWm/MmA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aHOQWfO1oavz5RElJoVBnR1szIs4Ucia2asHXWn/HX+I3nrQwRcy/kduqNoJC+KYRzYsb8uGWF/nq4o7YuSK0bbFPuTq/TapbTHdCTobyM7m5lnQB+4ODo0/vVtaBCY7epGrTCXOtSWeByaS6+8PVrgrKX0k2hNFATLbiUX/JvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mT8W+NiI; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712454149; x=1743990149;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=yFSQzAmdtxceEVqM1iibcEA9yqxEDnDRJgDtfWm/MmA=;
-  b=mT8W+NiIEHBNMPppFFsgJBulkP64D49C2N2nk0DjYR99szTJcYzPfkVx
-   pEOEXylzt36wcSfIEipC9Z3tC2w8+Z+YjYu4aWayTP/NjI4FByfQTq2tf
-   i4NHySCauxppT2R8S+INDktkqXR+WDtsAMMjvdqywmliCmuSCfhbU2ctO
-   DEY2JIO0kde0oDLqG7jg+Ml5No47tIGIIiuKYF85DDl2c8r4FkHr8+Xk1
-   eMPG0skhThOrlc/AbD0EruZXQxNq7j4P4hHrHR5nU+jqlw3li9Z0j5typ
-   QjHc1Fubk5u6o0+h88e0Egrqy9gMIO8hDzP2zhtjW8NENHnt9OxUUFud1
-   Q==;
-X-CSE-ConnectionGUID: IKKBYyrfS/C5T7YQAv0OJA==
-X-CSE-MsgGUID: QqUZrg2CRq6u8Dn8ns3vew==
-X-IronPort-AV: E=McAfee;i="6600,9927,11036"; a="18479756"
-X-IronPort-AV: E=Sophos;i="6.07,184,1708416000"; 
-   d="scan'208";a="18479756"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2024 18:42:28 -0700
-X-CSE-ConnectionGUID: 9qd7h2htTBm6PyE3e/fKOw==
-X-CSE-MsgGUID: Vbb+W9IjSQCE+G8m21pY2w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,184,1708416000"; 
-   d="scan'208";a="42693410"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.236.140]) ([10.124.236.140])
-  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2024 18:42:26 -0700
-Message-ID: <c7c91b24-c7d0-4d82-b2a6-a6e9ff070132@linux.intel.com>
-Date: Sun, 7 Apr 2024 09:42:23 +0800
+	s=arc-20240116; t=1712454467; c=relaxed/simple;
+	bh=3ZcpxR9wsm3F98xCGc2DPxsXXCX+A8HMy5dSk8T23gg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=OCpmuuGYc5GgT65bGIidEFVtBxLDZYGMssq2eVnRlbtLVBKXIv+XlW9EG3OptAFaH7lhq0DpFSVYvjRY3HLo1s9kFy2k7Qahq0YwBCEere56ETC+F6NoMxu5Ldi07GxZMbvyc25hNnWJmRMncqIyToWinDLcPuBRn8U7rZGSP/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4VBw5C23hLz1RBSv;
+	Sun,  7 Apr 2024 09:44:47 +0800 (CST)
+Received: from kwepemd100009.china.huawei.com (unknown [7.221.188.135])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8630E14011F;
+	Sun,  7 Apr 2024 09:47:36 +0800 (CST)
+Received: from [10.67.109.184] (10.67.109.184) by
+ kwepemd100009.china.huawei.com (7.221.188.135) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.28; Sun, 7 Apr 2024 09:47:35 +0800
+Message-ID: <959db176-a79e-4074-a4bb-d9ee5ce19f79@huawei.com>
+Date: Sun, 7 Apr 2024 09:47:35 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -66,52 +47,62 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 078/130] KVM: TDX: Implement TDX vcpu enter/exit path
-To: Sean Christopherson <seanjc@google.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
- linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
- Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
- Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
- chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <dbaa6b1a6c4ebb1400be5f7099b4b9e3b54431bb.1708933498.git.isaku.yamahata@intel.com>
- <ZfSExlemFMKjBtZb@google.com>
-From: Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZfSExlemFMKjBtZb@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH bpf] MAINTAINERS: bpf: Add Lehui and Puranjay as riscv64
+ reviewers
+Content-Language: en-US
+To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>, Puranjay Mohan
+	<puranjay@kernel.org>
+CC: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
+	<daniel@iogearbox.net>, John Fastabend <john.fastabend@gmail.com>,
+	=?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@rivosinc.com>, Paul Walmsley
+	<paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou
+	<aou@eecs.berkeley.edu>, <linux-kernel@vger.kernel.org>,
+	<bpf@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
+	<netdev@vger.kernel.org>
+References: <20240405123352.2852393-1-bjorn@kernel.org>
+From: Pu Lehui <pulehui@huawei.com>
+In-Reply-To: <20240405123352.2852393-1-bjorn@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemd100009.china.huawei.com (7.221.188.135)
 
 
+On 2024/4/5 20:33, Björn Töpel wrote:
+> From: Björn Töpel <bjorn@rivosinc.com>
+> 
+> Lehui and Puranjay have been active RISC-V 64-bit BPF JIT
+> contributors/reviewers for a long time!
+> 
+> Let's make it more official by adding them as reviewers in
+> MAINTAINERS.
 
-On 3/16/2024 1:26 AM, Sean Christopherson wrote:
-> On Mon, Feb 26, 2024, isaku.yamahata@intel.com wrote:
->> +	 */
->> +	struct kvm_vcpu *vcpu = &tdx->vcpu;
->> +
->> +	guest_state_enter_irqoff();
->> +
->> +	/*
->> +	 * TODO: optimization:
->> +	 * - Eliminate copy between args and vcpu->arch.regs.
->> +	 * - copyin/copyout registers only if (tdx->tdvmvall.regs_mask != 0)
->> +	 *   which means TDG.VP.VMCALL.
->> +	 */
->> +	args = (struct tdx_module_args) {
->> +		.rcx = tdx->tdvpr_pa,
->> +#define REG(reg, REG)	.reg = vcpu->arch.regs[VCPU_REGS_ ## REG]
-> Organizing tdx_module_args's registers by volatile vs. non-volatile is asinine.
-> This code should not need to exist.
+It's my honor to take on this responsibility, and delighted to be 
+partnered with you Björn and Puranjay.😀
 
-Did you suggest to align the tdx_module_args with enum kvm_reg for GP 
-registers, so it can be done by a simple mem copy?
+Lehui
 
->
->> +	WARN_ON_ONCE(!kvm_rebooting &&
->> +		     (tdx->exit_reason.full & TDX_SW_ERROR) == TDX_SW_ERROR);
->> +
->> +	guest_state_exit_irqoff();
->> +}
->> +
->>
-
+> 
+> Thank you for your hard work!
+> 
+> Signed-off-by: Björn Töpel <bjorn@kernel.org>
+> ---
+>   MAINTAINERS | 2 ++
+>   1 file changed, 2 insertions(+)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 75381386fe4c..58ab032ad33d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3764,6 +3764,8 @@ X:	arch/riscv/net/bpf_jit_comp64.c
+>   
+>   BPF JIT for RISC-V (64-bit)
+>   M:	Björn Töpel <bjorn@kernel.org>
+> +R:	Pu Lehui <pulehui@huawei.com>
+> +R:	Puranjay Mohan <puranjay@kernel.org>
+>   L:	bpf@vger.kernel.org
+>   S:	Maintained
+>   F:	arch/riscv/net/
+> 
+> base-commit: c88b9b4cde17aec34fb9bfaf69f9f72a1c44f511
 
