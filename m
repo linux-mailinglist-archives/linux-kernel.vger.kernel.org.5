@@ -1,91 +1,122 @@
-Return-Path: <linux-kernel+bounces-134217-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134219-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 955E089AF1B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:21:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21C6089AF27
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:23:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C6AEE1C21C1F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 07:21:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAB741F23A39
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 07:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F390D12B7D;
-	Sun,  7 Apr 2024 07:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093D9E56A;
+	Sun,  7 Apr 2024 07:23:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="m1IQ398S"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OEh0vZom"
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 435F311C92;
-	Sun,  7 Apr 2024 07:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F15C2599;
+	Sun,  7 Apr 2024 07:23:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712474488; cv=none; b=WueGSM6kGvT5lO6XYHh8G/30pKMfqHOcVC+S8M1VuEOuPY3bWMqy6wnzYzoQRO5Jf4jftEkPaARrKsJsILftYrAtAYrVJYu61qjGypfO34pSuJ0CEiAI2VoS5K0Kea2CjvDB0dT26bb4qLY1YbXE42dkXRdFgRVgLmfT7cNY49I=
+	t=1712474620; cv=none; b=GCrAFHUhj82QO+XknBRPtKiqW7KAoBA++W+qcxgnIFCZ/WfS/HKs3a9f3ZcH1URCJqK5eDzYuAPBVKrMb1neBd81mn+5eFLQuBjacCtCTYqMDyI9EaR86KPqIAltfAb5OBAvb3T83oRSDreiZi+eOfHGGF/l3NVAXXTgVsBLUwA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712474488; c=relaxed/simple;
-	bh=N68XWJ5tqs+R4Sb4kX5+JuesEzf3EgGkVGBZSU+ql8I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=juRoYPw1Y3KTViynqbQtlO5NlpE3uhDLuxQZFzYQlTWnvV3UlpIBHo+Pq6wgP/Kb+q+WECzM7GASpmBENW5r6HZcNm/wvChNC8q3BBwqqJsDsLfTAo2IVwVMQ/MzXrcRJl3Dtwbbxo3rDF5LMtWFVCqJ76zZjTmM7R5LY0BQ75A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=m1IQ398S; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23DABC43399;
-	Sun,  7 Apr 2024 07:21:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712474487;
-	bh=N68XWJ5tqs+R4Sb4kX5+JuesEzf3EgGkVGBZSU+ql8I=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=m1IQ398SDjpO7GlcginkHlwEEKzAU6UkjNe+d9WDjSpIgyfZJU3NSyrSjOOLtHnOR
-	 Ou2BKKHyMTcfcLwJeJyulf+IvIlBAAx3qllJ09FGyEUL96vuW9u/s8q8dY8Ba3HMaY
-	 22YGstPkEBoLIUeahMv+/eCwT1qsNjXoiTxl2aJmc3ndb/yRP8wXpDD4plEIv+V2Bk
-	 fH6blNNZgeyzLiVbziNsoMvqi/RFo3u/yUxOH4N3HS6PlHCP9gaQITUfffCuz6AKlQ
-	 3/A4NJ3DsfZIOG8KdaUfyVFYwRZO+peaMWlHKYnBFyKQAWKWvjBRpA95UIiDcHE4XD
-	 ZYNjQbq/8s8Ug==
-From: Vinod Koul <vkoul@kernel.org>
-To: Bjorn Andersson <andersson@kernel.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Kishon Vijay Abraham I <kishon@kernel.org>, 
- Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
- Varadarajan Narayanan <quic_varada@quicinc.com>, 
- Gabor Juhos <j4g8y7@gmail.com>
-Cc: linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20240406-phy-qcom-m31-regulator-fix-v2-1-c8e9795bc071@gmail.com>
-References: <20240406-phy-qcom-m31-regulator-fix-v2-1-c8e9795bc071@gmail.com>
-Subject: Re: [PATCH v2] phy: qcom: m31: match requested regulator name with
- dt schema
-Message-Id: <171247448471.375090.8975261455779796119.b4-ty@kernel.org>
-Date: Sun, 07 Apr 2024 12:51:24 +0530
+	s=arc-20240116; t=1712474620; c=relaxed/simple;
+	bh=7S/El9TdgvijcAglb5agsVUSiJ6mtO5aoRmD48cWGXM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rCQGD7FdT0GITI0Cb4WLgGZONCNe1V6X6VhdoCII6aplaPbp7e1St8zjpinzmA73o18MHvIUyjZ6UdeAjnLHEGuGJp73oTC5UC+jTl3u4End1opHoq2I40/Rx8JFvEkUqH/kURdXqVa0cS7w1LFEhniwt+FyyoickQhCbKPUkFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OEh0vZom; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6ecec796323so3179069b3a.3;
+        Sun, 07 Apr 2024 00:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712474618; x=1713079418; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=xLDjbth16M4GQYJ2I0rnUwmiJmnd3GMQV4Bn9gHO33E=;
+        b=OEh0vZomrSj0L35zSWlI9+mqb/4GbpXFNQ+tRvnrOI5fLjmnnrqWP2NcXIRic6SWGx
+         neDT0R/PGlIkZGlVlf4DUyFFLAO2solkIrhMYoa8K2RbeXGmhvOmaHt+aVw8URfIKOnb
+         0NiR1p1H0MQH1nLSN/rgv2xjEXUD/tgusxX8MAXXRWWUXnGM5uIzMwWSU9iqjCRv6wUk
+         7aHgBjW8TUV73kWFt9sjjoygjUVJlozmqMFv/17JkbkxDL6Sn/0Pd2L+7kOgPTAeDqJ2
+         uOW9Spqyc5mgsFzNnpkwo8zvpW2M8Ya2/WObEEkhW1APfY2vq8PHp7mrumJntCmNoLyX
+         aL6Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712474618; x=1713079418;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xLDjbth16M4GQYJ2I0rnUwmiJmnd3GMQV4Bn9gHO33E=;
+        b=OxlEgUrpmuQJIVYK1d/sJJO/RIPaxMz8HFmJmYqGEzcP134aPGGFIj1QiiXiediOrz
+         sCVgd3tcv2Ejg+7PvvpPdXfz95fDfFQOkeiwczcZD56fZpF7xZdgUXQCQSRMdb1rNQVs
+         wge/T0OBC4UHXaFHAjHkcYXPsw/i0Mh5UNeBcYw7kGsDOQOID0azNUD1FzxuiIPlzYk2
+         RbgU8hgdfDPvso12aYRbie+Y8xZ7Pg04qo3+XNiOkYS1UW6NAwlBNm8dSnbfr5YArnTv
+         RWv0INpaZI6ErkuuoyfjxoGVDA7xA2PfNy0unAoU236mTN2IfsPZhUSHZoE3R3VOyatm
+         M6rw==
+X-Forwarded-Encrypted: i=1; AJvYcCU4GcwOWxctJDFWOqZVBwv2fRv9dJ5t+qBjtXfVQ/yFZ0AOIHQTRHKYER97U5VtYsUiJ7GPHAk3yTsekvQiA96WvNfV+FHGTUcLYWzf96WG8FhxZ5QEVSe+Z/8yLg+7KkvUMAWaoUcbMjfGPg==
+X-Gm-Message-State: AOJu0Ywxh6Thft/JtzFNalwzxUNERrlz4No9x/sGqFtdk5JEn+c26OSj
+	cmnNpRsaNaGZe5swriY2onIfVY1q09k1j4x0oq/chVApefvusacg
+X-Google-Smtp-Source: AGHT+IFLpTvDq6bxCyg9x6iopUE3Doi2HXfYPQ45fUBDiXC8sMvGNZ9w1O21G/b6KOlSW7X0442Ceg==
+X-Received: by 2002:a05:6a00:928e:b0:6ea:c2c7:5d6a with SMTP id jw14-20020a056a00928e00b006eac2c75d6amr9240026pfb.2.1712474618252;
+        Sun, 07 Apr 2024 00:23:38 -0700 (PDT)
+Received: from localhost.localdomain ([27.7.9.61])
+        by smtp.gmail.com with ESMTPSA id x18-20020aa784d2000000b006eadc87233dsm4185497pfn.165.2024.04.07.00.23.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Apr 2024 00:23:37 -0700 (PDT)
+From: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+To: andersson@kernel.org,
+	konrad.dybcio@linaro.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: julia.lawall@inria.fr,
+	javier.carrasco@wolfvision.net,
+	skhan@linuxfoundation.org,
+	Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+Subject: [PATCH next] drivers: soc: qcom: Auto cleanup using __free(device_node)
+Date: Sun,  7 Apr 2024 12:53:30 +0530
+Message-Id: <20240407072330.229076-1-pvkumar5749404@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
+Content-Transfer-Encoding: 8bit
 
+Use automated cleanup to replace of_node_put() in qcom_smem_resolve_mem().
 
-On Sat, 06 Apr 2024 15:37:09 +0200, Gabor Juhos wrote:
-> According to the 'qcom,ipq5332-usb-hsphy.yaml' schema, the 5V
-> supply regulator must be defined via the 'vdd-supply' property.
-> The driver however requests for the 'vdda-phy' regulator which
-> results in the following message when the driver is probed on
-> a IPQ5018 based board with a device tree matching to the schema:
-> 
->   qcom-m31usb-phy 5b000.phy: supply vdda-phy not found, using dummy regulator
->   qcom-m31usb-phy 5b000.phy: Registered M31 USB phy
-> 
-> [...]
+Signed-off-by: Prabhav Kumar Vaish <pvkumar5749404@gmail.com>
+---
+drivers/soc/qcom/smem.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Applied, thanks!
-
-[1/1] phy: qcom: m31: match requested regulator name with dt schema
-      commit: 47b3e2f3914ae5e8d9025d65ae5cffcbb54bc9c3
-
-Best regards,
+diff --git a/drivers/soc/qcom/smem.c b/drivers/soc/qcom/smem.c
+index 7191fa0c087f..ad1cf8dcc6ec 100644
+--- a/drivers/soc/qcom/smem.c
++++ b/drivers/soc/qcom/smem.c
+@@ -1032,18 +1032,16 @@ static int qcom_smem_resolve_mem(struct qcom_smem *smem, const char *name,
+ 				 struct smem_region *region)
+ {
+ 	struct device *dev = smem->dev;
+-	struct device_node *np;
+ 	struct resource r;
+ 	int ret;
++	struct device_node *np __free(device_node) = of_parse_phandle(dev->of_node, name, 0);
+ 
+-	np = of_parse_phandle(dev->of_node, name, 0);
+ 	if (!np) {
+ 		dev_err(dev, "No %s specified\n", name);
+ 		return -EINVAL;
+ 	}
+ 
+ 	ret = of_address_to_resource(np, 0, &r);
+-	of_node_put(np);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
-~Vinod
-
+2.34.1
 
 
