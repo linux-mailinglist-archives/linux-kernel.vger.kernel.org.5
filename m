@@ -1,314 +1,278 @@
-Return-Path: <linux-kernel+bounces-134153-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134154-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 282B489AE51
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 05:38:44 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE20389AE52
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 05:39:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9332BB228FD
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:38:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 573521F225F5
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:39:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E62257483;
-	Sun,  7 Apr 2024 03:38:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 603C21C10;
+	Sun,  7 Apr 2024 03:39:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="F18ZHTop"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OQkMjBv6"
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5378B1C0DDB
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 03:38:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E903217C9;
+	Sun,  7 Apr 2024 03:39:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712461103; cv=none; b=tKaP7xOHeL1bJQocWZxTEywNigkLh37UA2s5m13W6S9UbDj5oxNY92TwOsMvKYwral+K7lMFxmGFV84w5n4QIXBnbT6Nfi9Exh7W/EmpjWk2iLhBdM91NgkFAmnWTDf4Q62mdZsZNiNieFVxBsvDdB/TXTN/um50LP3WH2qV/YA=
+	t=1712461151; cv=none; b=LcSU1CXuiwQWwnfjp7xzxtvKoHc2ZE8bWg3fDuaug7Ika9ssKS8GjWG0I8y4bMygBzV86ddddp7oQsSXDnjGjsm0edX/xrOLRtE/pb3IccUdfWyxhsq2D37ivyPY0kxW6k9prkaaOW38f41ycLLCg3EI/CN8KSAbzWzaF1yCP6k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712461103; c=relaxed/simple;
-	bh=YQxadVvuF0J+SJvGU+MNROeYzSRs1jdUcSSxhujJhzk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZZ8i74HQ6IFp/cPINawPfcs/yQ7CB1jDNDYNskdnbRXzakeQwIBhf5aeuGp/TuNmKPapouCHWED6241LNIs/wgR9WF5dzQKI1x8hcEAop8x4+Mf4iJsGZnuEr0EKtOnxZGh0vtv0lMk6in2juTDz+9dsyLPVdTMDeYYn2YZ6fZc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=F18ZHTop; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712461100;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JzWbsQPfAHE2Fu4sEEMuYyZFoRf+hMudhcgkTJElxG0=;
-	b=F18ZHTopl6YMYzUB3O2/a04e3Aur+RQe59O4K+z5bGGMe2XiAHnSz/iA2gPdW/uQepuiwZ
-	GHg5TktnmKVZiYxeYROI/G787pzR38UF5msrP0PTLhqSzs6AVcWGfqxxe0YBu8QrnEgHVk
-	aoIuIFqX06Y3LuXJgR9igv4Jl4Pt0/E=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-561-QneCxrgoNG2jrujgvjEjFA-1; Sat, 06 Apr 2024 23:38:18 -0400
-X-MC-Unique: QneCxrgoNG2jrujgvjEjFA-1
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-2a090878480so2341961a91.0
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 20:38:18 -0700 (PDT)
+	s=arc-20240116; t=1712461151; c=relaxed/simple;
+	bh=6RM4/wxKDJBV9XWCUmXREWdx4pUVr6VlGvGFWBQmqlg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=hTZwesy5+aPvszrEbYG/ps3dYbvH3z2RCtj5HdvQT/TBSKsc52imBTm3Ck0fSG+d3PPJLWik0GY5vjSRNPoOM8ayHWv+O+Tx17EO1JL8NbvXvc1vAu5j9NLrbVXpZkcFG7pp/uzCaykUdhTYwmUYlmjYEXlODHp5RCzKrWG4vkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OQkMjBv6; arc=none smtp.client-ip=209.85.216.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2a2f2cd61cdso771399a91.1;
+        Sat, 06 Apr 2024 20:39:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712461149; x=1713065949; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1HkK+CaE1oLst0JhVLszLXuWHXlJqM2t7bQ0zDVzsYA=;
+        b=OQkMjBv6d0rpVUP0ySDDGtl1SkuqPx8ZdEggd+9sbm52kcGDEKDHeiyYuGRWVNJLsF
+         yY6H/9n4zeeY5iZ8UAXWb2dJC168WNbfEM0Be3GysUeQNw5C4x1W9zv0+1YYU6laz5+x
+         S/XXAjfkz2xx/tjyAenO3518WoS2uz7c6K7zdbQoz/QYpH48h3t5d36i5KVJpKX03uOG
+         nIFA7w1UOLFvZJ7SK8uaWts2aSfSjGefEmMvZD3ReriEfqfW6capOp1A3w3ErfTwuYQe
+         KvYjI5e/eGnhyQ9BgBE/Ap76brJACgCFQ4ciy9osqiWdleduL3+tQHnjCpOPLR62rrVQ
+         CZlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712461097; x=1713065897;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1712461149; x=1713065949;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JzWbsQPfAHE2Fu4sEEMuYyZFoRf+hMudhcgkTJElxG0=;
-        b=Y3wYfAlMK+OuH48jHlbGMirRFUQWrLq8Xbz6tcn1HDdaIQkkXQFnNwB96bFbNwA/+K
-         Jr6xsealLWaMVwsPFHxxLGEQy99bvoap/RtB5rlNXE2L6HQSQpgk5chku+90xlDWMdAF
-         4nQHW60f2VFCFMKZmEigDcq8ydRKvgsxLUtq8d0Yk71hMN52vNk5R4RaY1/0YWru49cf
-         1ughZtTvZIN3m97LeO4p+JZFRVvY8vs7inhrih/5yTFel9BAtDedsrn1Yxekdv+sbwNG
-         j+1qGfL9OtU5fyOopsxTERSCXNK7VVu3hGdoU4FMWZ2h9kZPTB+S3X7S0MxPxsptQbWZ
-         D3pw==
-X-Forwarded-Encrypted: i=1; AJvYcCUxs4nZzofp+hCPCbAFGGMx3iPAlxlm3wA4zO6hGtY08T97D1KTqYnoaCXSKZh1D5OUGavJZ80LnyV+CSI8KIGm6aJGo0DVhhsMfpLj
-X-Gm-Message-State: AOJu0YxOHeD5tyjoLtKko0vtUgFDc0wLIhPcmrXqqQy40ZQZ7rgMwuSD
-	Ky12TQYHeB5+Hb+NxpEGnlK66wNNkPL8aKvCC8NBurPNR2L7ChFnR8V720CjOkQq3zsetdl9kJ6
-	sp/rPNDV50Cjagu56zfl4ybMIK5kuqgeiE7LuEvp207Ku2qCA0C4eNCOiurfEsXtYveRQF4TOA6
-	2rqK5e9omfJ792zcMkaV5nuzwD5JEE2Rv6qXiA
-X-Received: by 2002:a17:90a:178b:b0:29f:76d4:306a with SMTP id q11-20020a17090a178b00b0029f76d4306amr6710454pja.24.1712461097564;
-        Sat, 06 Apr 2024 20:38:17 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGNALvsPcbitPftgtL8pJI/fSek5yRGrsuflUQovxhWJ3XJKMl1GIzz225ORIag6ldXLxQeiIItvz0/8Do5/DY=
-X-Received: by 2002:a17:90a:178b:b0:29f:76d4:306a with SMTP id
- q11-20020a17090a178b00b0029f76d4306amr6710446pja.24.1712461097235; Sat, 06
- Apr 2024 20:38:17 -0700 (PDT)
+        bh=1HkK+CaE1oLst0JhVLszLXuWHXlJqM2t7bQ0zDVzsYA=;
+        b=hhmq3zicqjLsUmqvSKsZF75oEjRQZiw7x0oNCI+bGQn0R2xQSOlp+84x+Ij3CsJQfi
+         y8BmgwK4hf/JYwIaLaeOEOU1v6kzQkLBTIVpFKvH82s7ol5jGZfXBLMMticZvaOPiv+p
+         P3ni1P9cUSE6lRYh+VicrM8ODEiEHT/uqU1NHj69QFV6QiG7c7+UWUFq7KLihw3qso37
+         np7wHSQaqo9BWmgaS33W+xSY6nwP3xvExXVnZEDjn4SFGAJpQqTbDoHoKgn+vRa7javK
+         SH3iiJoJLtO4B6WlY7wLxY+U8if/wvXyQHsWcMsFGsKY6wFenfXJO8nFpEfNKIEPHXpd
+         oimA==
+X-Forwarded-Encrypted: i=1; AJvYcCUbBjyDqx594TpJmFVdqpepXEUYgGokcA/xCOOQwEq4i31QZPbTo++ukPkcHafGZ5zCqbxgzNv+2GuxHmPRRG0OpYxJ5Q0OJ89qzJUgZxgSpaLNw21Y003A+e/l6xyNWwBt2EFg9sCbdtAJoNc=
+X-Gm-Message-State: AOJu0YwjSpn/zc+1nYstHHXbx0vTVJnd/OXc56gi1EyYeM41oeKkzSQY
+	AUPRAf8IoV36GIZfF6oQxqPyBfspNWKjKCJdMrluedAfm50CSPmo
+X-Google-Smtp-Source: AGHT+IHERZOt7QqvsRnr96Slvqpdaqq5czpYFr5eSCsRsU2B52vkf1OJHawTXF5U7Hp1Vq1IdGMg7w==
+X-Received: by 2002:a05:6a21:6d98:b0:1a7:50b0:6535 with SMTP id wl24-20020a056a216d9800b001a750b06535mr4967100pzb.5.1712461149049;
+        Sat, 06 Apr 2024 20:39:09 -0700 (PDT)
+Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id z6-20020aa79e46000000b006ed059cdf02sm2985170pfq.116.2024.04.06.20.39.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 06 Apr 2024 20:39:08 -0700 (PDT)
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: kent.overstreet@linux.dev
+Cc: bfoster@redhat.com,
+	jserv@ccns.ncku.edu.tw,
+	linux-bcachefs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH v2] bcachefs: Optimize eytzinger0_sort() with bottom-up heapsort
+Date: Sun,  7 Apr 2024 11:39:04 +0800
+Message-Id: <20240407033904.719773-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <2vm32rfcbgy4fap77scebqorlrpaihz3angd6bl2lnpslrcp63@kekiknxt5vup>
+References: <2vm32rfcbgy4fap77scebqorlrpaihz3angd6bl2lnpslrcp63@kekiknxt5vup>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320101912.28210-1-w_angrong@163.com> <20240321025920-mutt-send-email-mst@kernel.org>
- <CACGkMEuHRf0ZfBiAYxyNHB3pxuzz=QCWt5VyHPLz-+-+LM=+bg@mail.gmail.com>
- <20240329051117-mutt-send-email-mst@kernel.org> <CACGkMEsdjdMNqe2OaJcpKGPSs0+BCK-qq6i6QZmJSvt+M5p8QQ@mail.gmail.com>
- <20240329064114-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20240329064114-mutt-send-email-mst@kernel.org>
-From: Jason Wang <jasowang@redhat.com>
-Date: Sun, 7 Apr 2024 11:38:06 +0800
-Message-ID: <CACGkMEtEwe9rMD=3AKP-fZw+aiw5mAHcaqRo0dPnPnAyB-k3jw@mail.gmail.com>
-Subject: Re: [PATCH v3] vhost/vdpa: Add MSI translation tables to iommu for
- software-managed MSI
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Wang Rong <w_angrong@163.com>, kvm@vger.kernel.org, virtualization@lists.linux.dev, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Fri, Mar 29, 2024 at 6:42=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
- wrote:
->
-> On Fri, Mar 29, 2024 at 06:39:33PM +0800, Jason Wang wrote:
-> > On Fri, Mar 29, 2024 at 5:13=E2=80=AFPM Michael S. Tsirkin <mst@redhat.=
-com> wrote:
-> > >
-> > > On Wed, Mar 27, 2024 at 05:08:57PM +0800, Jason Wang wrote:
-> > > > On Thu, Mar 21, 2024 at 3:00=E2=80=AFPM Michael S. Tsirkin <mst@red=
-hat.com> wrote:
-> > > > >
-> > > > > On Wed, Mar 20, 2024 at 06:19:12PM +0800, Wang Rong wrote:
-> > > > > > From: Rong Wang <w_angrong@163.com>
-> > > > > >
-> > > > > > Once enable iommu domain for one device, the MSI
-> > > > > > translation tables have to be there for software-managed MSI.
-> > > > > > Otherwise, platform with software-managed MSI without an
-> > > > > > irq bypass function, can not get a correct memory write event
-> > > > > > from pcie, will not get irqs.
-> > > > > > The solution is to obtain the MSI phy base address from
-> > > > > > iommu reserved region, and set it to iommu MSI cookie,
-> > > > > > then translation tables will be created while request irq.
-> > > > > >
-> > > > > > Change log
-> > > > > > ----------
-> > > > > >
-> > > > > > v1->v2:
-> > > > > > - add resv iotlb to avoid overlap mapping.
-> > > > > > v2->v3:
-> > > > > > - there is no need to export the iommu symbol anymore.
-> > > > > >
-> > > > > > Signed-off-by: Rong Wang <w_angrong@163.com>
-> > > > >
-> > > > > There's in interest to keep extending vhost iotlb -
-> > > > > we should just switch over to iommufd which supports
-> > > > > this already.
-> > > >
-> > > > IOMMUFD is good but VFIO supports this before IOMMUFD.
-> > >
-> > > You mean VFIO migrated to IOMMUFD but of course they keep supporting
-> > > their old UAPI?
-> >
-> > I meant VFIO support software managed MSI before IOMMUFD.
->
-> And then they switched over and stopped adding new IOMMU
-> related features. And so should vdpa?
+This optimization reduces the average number of comparisons required
+from 2*n*log2(n) - 3*n + o(n) to n*log2(n) + 0.37*n + o(n). When n is
+sufficiently large, it results in approximately 50% fewer comparisons.
 
-For some cloud vendors, it means vDPA can't be used until
+Currently, eytzinger0_sort employs the textbook version of heapsort,
+where during the heapify process, each level requires two comparisons
+to determine the maximum among three elements. In contrast, the
+bottom-up heapsort, during heapify, only compares two children at each
+level until reaching a leaf node. Then, it backtracks from the leaf
+node to find the correct position. Since heapify typically continues
+until very close to the leaf node, the standard heapify requires about
+2*log2(n) comparisons, while the bottom-up variant only needs log2(n)
+comparisons.
 
-1) IOMMUFD support for vDPA is supported by upstream
-2) IOMMUFD is backported
+The experimental data presented below is based on an array generated
+by get_random_u32().
 
-1) might be fine but 2) might be impossible.
+|   N   | comparisons(old) | comparisons(new) | time(old) | time(new) |
+|-------|------------------|------------------|-----------|-----------|
+| 10000 |     235381       |     136615       |  25545 us |  20366 us |
+| 20000 |     510694       |     293425       |  31336 us |  18312 us |
+| 30000 |     800384       |     457412       |  35042 us |  27386 us |
+| 40000 |    1101617       |     626831       |  48779 us |  38253 us |
+| 50000 |    1409762       |     799637       |  62238 us |  46950 us |
+| 60000 |    1721191       |     974521       |  75588 us |  58367 us |
+| 70000 |    2038536       |    1152171       |  90823 us |  68778 us |
+| 80000 |    2362958       |    1333472       | 104165 us |  78625 us |
+| 90000 |    2690900       |    1516065       | 116111 us |  89573 us |
+| 100000|    3019413       |    1699879       | 133638 us | 100998 us |
 
-Assuming IOMMUFD hasn't been done for vDPA. Adding small features like
-this seems reasonable (especially considering it is supported by the
-"legacy" VFIO container).
+Refs:
+  BOTTOM-UP-HEAPSORT, a new variant of HEAPSORT beating, on an average,
+  QUICKSORT (if n is not very small)
+  Ingo Wegener
+  Theoretical Computer Science, 118(1); Pages 81-98, 13 September 1993
+  https://doi.org/10.1016/0304-3975(93)90364-Y
 
-Thanks
+Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+---
+Changes in v2:
+- Add the testing code to the source code and wrap it with #if 0.
 
->
->
-> > > OK and point being?
-> > >
-> > > > This patch
-> > > > makes vDPA run without a backporting of full IOMMUFD in the product=
-ion
-> > > > environment. I think it's worth.
-> > >
-> > > Where do we stop? saying no to features is the only tool maintainers
-> > > have to make cleanups happen, otherwise people will just keep piling
-> > > stuff up.
-> >
-> > I think we should not have more features than VFIO without IOMMUFD.
-> >
-> > Thanks
-> >
-> > >
-> > > > If you worry about the extension, we can just use the vhost iotlb
-> > > > existing facility to do this.
-> > > >
-> > > > Thanks
-> > > >
-> > > > >
-> > > > > > ---
-> > > > > >  drivers/vhost/vdpa.c | 59 ++++++++++++++++++++++++++++++++++++=
-+++++---
-> > > > > >  1 file changed, 56 insertions(+), 3 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
-> > > > > > index ba52d128aeb7..28b56b10372b 100644
-> > > > > > --- a/drivers/vhost/vdpa.c
-> > > > > > +++ b/drivers/vhost/vdpa.c
-> > > > > > @@ -49,6 +49,7 @@ struct vhost_vdpa {
-> > > > > >       struct completion completion;
-> > > > > >       struct vdpa_device *vdpa;
-> > > > > >       struct hlist_head as[VHOST_VDPA_IOTLB_BUCKETS];
-> > > > > > +     struct vhost_iotlb resv_iotlb;
-> > > > > >       struct device dev;
-> > > > > >       struct cdev cdev;
-> > > > > >       atomic_t opened;
-> > > > > > @@ -247,6 +248,7 @@ static int _compat_vdpa_reset(struct vhost_=
-vdpa *v)
-> > > > > >  static int vhost_vdpa_reset(struct vhost_vdpa *v)
-> > > > > >  {
-> > > > > >       v->in_batch =3D 0;
-> > > > > > +     vhost_iotlb_reset(&v->resv_iotlb);
-> > > > > >       return _compat_vdpa_reset(v);
-> > > > > >  }
-> > > > > >
-> > > > > > @@ -1219,10 +1221,15 @@ static int vhost_vdpa_process_iotlb_upd=
-ate(struct vhost_vdpa *v,
-> > > > > >           msg->iova + msg->size - 1 > v->range.last)
-> > > > > >               return -EINVAL;
-> > > > > >
-> > > > > > +     if (vhost_iotlb_itree_first(&v->resv_iotlb, msg->iova,
-> > > > > > +                                     msg->iova + msg->size - 1=
-))
-> > > > > > +             return -EINVAL;
-> > > > > > +
-> > > > > >       if (vhost_iotlb_itree_first(iotlb, msg->iova,
-> > > > > >                                   msg->iova + msg->size - 1))
-> > > > > >               return -EEXIST;
-> > > > > >
-> > > > > > +
-> > > > > >       if (vdpa->use_va)
-> > > > > >               return vhost_vdpa_va_map(v, iotlb, msg->iova, msg=
-->size,
-> > > > > >                                        msg->uaddr, msg->perm);
-> > > > > > @@ -1307,6 +1314,45 @@ static ssize_t vhost_vdpa_chr_write_iter=
-(struct kiocb *iocb,
-> > > > > >       return vhost_chr_write_iter(dev, from);
-> > > > > >  }
-> > > > > >
-> > > > > > +static int vhost_vdpa_resv_iommu_region(struct iommu_domain *d=
-omain, struct device *dma_dev,
-> > > > > > +     struct vhost_iotlb *resv_iotlb)
-> > > > > > +{
-> > > > > > +     struct list_head dev_resv_regions;
-> > > > > > +     phys_addr_t resv_msi_base =3D 0;
-> > > > > > +     struct iommu_resv_region *region;
-> > > > > > +     int ret =3D 0;
-> > > > > > +     bool with_sw_msi =3D false;
-> > > > > > +     bool with_hw_msi =3D false;
-> > > > > > +
-> > > > > > +     INIT_LIST_HEAD(&dev_resv_regions);
-> > > > > > +     iommu_get_resv_regions(dma_dev, &dev_resv_regions);
-> > > > > > +
-> > > > > > +     list_for_each_entry(region, &dev_resv_regions, list) {
-> > > > > > +             ret =3D vhost_iotlb_add_range_ctx(resv_iotlb, reg=
-ion->start,
-> > > > > > +                             region->start + region->length - =
-1,
-> > > > > > +                             0, 0, NULL);
-> > > > > > +             if (ret) {
-> > > > > > +                     vhost_iotlb_reset(resv_iotlb);
-> > > > > > +                     break;
-> > > > > > +             }
-> > > > > > +
-> > > > > > +             if (region->type =3D=3D IOMMU_RESV_MSI)
-> > > > > > +                     with_hw_msi =3D true;
-> > > > > > +
-> > > > > > +             if (region->type =3D=3D IOMMU_RESV_SW_MSI) {
-> > > > > > +                     resv_msi_base =3D region->start;
-> > > > > > +                     with_sw_msi =3D true;
-> > > > > > +             }
-> > > > > > +     }
-> > > > > > +
-> > > > > > +     if (!ret && !with_hw_msi && with_sw_msi)
-> > > > > > +             ret =3D iommu_get_msi_cookie(domain, resv_msi_bas=
-e);
-> > > > > > +
-> > > > > > +     iommu_put_resv_regions(dma_dev, &dev_resv_regions);
-> > > > > > +
-> > > > > > +     return ret;
-> > > > > > +}
-> > > > > > +
-> > > > > >  static int vhost_vdpa_alloc_domain(struct vhost_vdpa *v)
-> > > > > >  {
-> > > > > >       struct vdpa_device *vdpa =3D v->vdpa;
-> > > > > > @@ -1335,11 +1381,16 @@ static int vhost_vdpa_alloc_domain(stru=
-ct vhost_vdpa *v)
-> > > > > >
-> > > > > >       ret =3D iommu_attach_device(v->domain, dma_dev);
-> > > > > >       if (ret)
-> > > > > > -             goto err_attach;
-> > > > > > +             goto err_alloc_domain;
-> > > > > >
-> > > > > > -     return 0;
-> > > > > > +     ret =3D vhost_vdpa_resv_iommu_region(v->domain, dma_dev, =
-&v->resv_iotlb);
-> > > > > > +     if (ret)
-> > > > > > +             goto err_attach_device;
-> > > > > >
-> > > > > > -err_attach:
-> > > > > > +     return 0;
-> > > > > > +err_attach_device:
-> > > > > > +     iommu_detach_device(v->domain, dma_dev);
-> > > > > > +err_alloc_domain:
-> > > > > >       iommu_domain_free(v->domain);
-> > > > > >       v->domain =3D NULL;
-> > > > > >       return ret;
-> > > > > > @@ -1595,6 +1646,8 @@ static int vhost_vdpa_probe(struct vdpa_d=
-evice *vdpa)
-> > > > > >               goto err;
-> > > > > >       }
-> > > > > >
-> > > > > > +     vhost_iotlb_init(&v->resv_iotlb, 0, 0);
-> > > > > > +
-> > > > > >       r =3D dev_set_name(&v->dev, "vhost-vdpa-%u", minor);
-> > > > > >       if (r)
-> > > > > >               goto err;
-> > > > > > --
-> > > > > > 2.27.0
-> > > > > >
-> > > > >
-> > >
->
+ fs/bcachefs/eytzinger.c | 105 +++++++++++++++++++++++++++++++++-------
+ 1 file changed, 88 insertions(+), 17 deletions(-)
+
+diff --git a/fs/bcachefs/eytzinger.c b/fs/bcachefs/eytzinger.c
+index 0f955c3c76a7..2eaffe37b5e7 100644
+--- a/fs/bcachefs/eytzinger.c
++++ b/fs/bcachefs/eytzinger.c
+@@ -171,7 +171,7 @@ void eytzinger0_sort_r(void *base, size_t n, size_t size,
+ 		       swap_r_func_t swap_func,
+ 		       const void *priv)
+ {
+-	int i, c, r;
++	int i, j, k;
+ 
+ 	/* called from 'sort' without swap function, let's pick the default */
+ 	if (swap_func == SWAP_WRAPPER && !((struct wrapper *)priv)->swap_func)
+@@ -188,17 +188,22 @@ void eytzinger0_sort_r(void *base, size_t n, size_t size,
+ 
+ 	/* heapify */
+ 	for (i = n / 2 - 1; i >= 0; --i) {
+-		for (r = i; r * 2 + 1 < n; r = c) {
+-			c = r * 2 + 1;
++		/* Find the sift-down path all the way to the leaves. */
++		for (j = i; k = j * 2 + 1, k + 1 < n;)
++			j = eytzinger0_do_cmp(base, n, size, cmp_func, priv, k, k + 1) > 0 ? k : k + 1;
+ 
+-			if (c + 1 < n &&
+-			    eytzinger0_do_cmp(base, n, size, cmp_func, priv, c, c + 1) < 0)
+-				c++;
++		/* Special case for the last leaf with no sibling. */
++		if (j * 2 + 2 == n)
++			j = j * 2 + 1;
+ 
+-			if (eytzinger0_do_cmp(base, n, size, cmp_func, priv, r, c) >= 0)
+-				break;
++		/* Backtrack to the correct location. */
++		while (j != i && eytzinger0_do_cmp(base, n, size, cmp_func, priv, i, j) >= 0)
++			j = (j - 1) / 2;
+ 
+-			eytzinger0_do_swap(base, n, size, swap_func, priv, r, c);
++		/* Shift the element into its correct place. */
++		for (k = j; j != i;) {
++			j = (j - 1) / 2;
++			eytzinger0_do_swap(base, n, size, swap_func, priv, j, k);
+ 		}
+ 	}
+ 
+@@ -206,17 +211,22 @@ void eytzinger0_sort_r(void *base, size_t n, size_t size,
+ 	for (i = n - 1; i > 0; --i) {
+ 		eytzinger0_do_swap(base, n, size, swap_func, priv, 0, i);
+ 
+-		for (r = 0; r * 2 + 1 < i; r = c) {
+-			c = r * 2 + 1;
++		/* Find the sift-down path all the way to the leaves. */
++		for (j = 0; k = j * 2 + 1, k + 1 < i;)
++			j = eytzinger0_do_cmp(base, n, size, cmp_func, priv, k, k + 1) > 0 ? k : k + 1;
+ 
+-			if (c + 1 < i &&
+-			    eytzinger0_do_cmp(base, n, size, cmp_func, priv, c, c + 1) < 0)
+-				c++;
++		/* Special case for the last leaf with no sibling. */
++		if (j * 2 + 2 == i)
++			j = j * 2 + 1;
+ 
+-			if (eytzinger0_do_cmp(base, n, size, cmp_func, priv, r, c) >= 0)
+-				break;
++		/* Backtrack to the correct location. */
++		while (j && eytzinger0_do_cmp(base, n, size, cmp_func, priv, 0, j) >= 0)
++			j = (j - 1) / 2;
+ 
+-			eytzinger0_do_swap(base, n, size, swap_func, priv, r, c);
++		/* Shift the element into its correct place. */
++		for (k = j; j;) {
++			j = (j - 1) / 2;
++			eytzinger0_do_swap(base, n, size, swap_func, priv, j, k);
+ 		}
+ 	}
+ }
+@@ -232,3 +242,64 @@ void eytzinger0_sort(void *base, size_t n, size_t size,
+ 
+ 	return eytzinger0_sort_r(base, n, size, _CMP_WRAPPER, SWAP_WRAPPER, &w);
+ }
++
++#if 0
++#include <linux/slab.h>
++#include <linux/random.h>
++#include <linux/ktime.h>
++
++static u64 cmp_count;
++
++static int mycmp(const void *a, const void *b)
++{
++	u32 _a = *(u32 *)a;
++	u32 _b = *(u32 *)b;
++
++	cmp_count++;
++	if (_a < _b)
++		return -1;
++	else if (_a > _b)
++		return 1;
++	else
++		return 0;
++}
++
++static int test(void)
++{
++	size_t N, i;
++	ktime_t start, end;
++	s64 delta;
++	u32 *arr;
++
++	for (N = 10000; N <= 100000; N += 10000) {
++		arr = kmalloc_array(N, sizeof(u32), GFP_KERNEL);
++		cmp_count = 0;
++
++		for (i = 0; i < N; i++)
++			arr[i] = get_random_u32();
++
++		start = ktime_get();
++		eytzinger0_sort(arr, N, sizeof(u32), mycmp, NULL);
++		end = ktime_get();
++
++		delta = ktime_us_delta(end, start);
++		printk(KERN_INFO "time: %lld\n", delta);
++		printk(KERN_INFO "comparisons: %lld\n", cmp_count);
++
++		u32 prev = 0;
++
++		eytzinger0_for_each(i, N) {
++			if (prev > arr[i])
++				goto err;
++			prev = arr[i];
++		}
++
++		kfree(arr);
++	}
++	return 0;
++
++err:
++	kfree(arr);
++	return -1;
++}
++#endif
+-- 
+2.34.1
 
 
