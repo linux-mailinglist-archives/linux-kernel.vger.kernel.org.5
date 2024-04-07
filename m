@@ -1,189 +1,357 @@
-Return-Path: <linux-kernel+bounces-134150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5187A89AE44
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 05:21:16 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 392DE89AE4A
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 05:25:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9F9AB282695
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:21:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5CDBB1C20CC7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4531A10A14;
-	Sun,  7 Apr 2024 03:21:08 +0000 (UTC)
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 240BA1879;
+	Sun,  7 Apr 2024 03:25:10 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8701C101C6;
-	Sun,  7 Apr 2024 03:21:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D52D71C0DD2;
+	Sun,  7 Apr 2024 03:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712460067; cv=none; b=kbU2gi54RxD81XLwn7Nt2Ij/OAxDFAwVzUBKYKHL36BNQ7oMCWjcAD4QzRV9alu7M3GnVYMk0hCP5a7j4l5Tf2gp006ehIpEvK0LnrgSEWBCkBD4Arf8zP6+fpcSA1ckWx/7/+eNwzwy6DX2cmsNuhBP+dojtYQiTVcibMM/0eM=
+	t=1712460309; cv=none; b=iCgToSAFx1anhbZwUe5aX57+AmkLZdwG5WPa7/FyHj704jVQwXU3/Fbnkwo3x7mfwyU59gRFn0LEz4FiQEKe8Lw225bOYmTaRDFbuSyMbN8eBDZ834HWlKav+TTCDMLgIUGmj3Ea6fuFNXx7MD/CtQgrHsC+X3OePoyOVXQkxmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712460067; c=relaxed/simple;
-	bh=RkAQVz1NwgLuqJBQzheIGUTZ0PnsFJ6BSh0laUYiZGs=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=YhmGKp7kftl/Q/es/sn4h49hzrD8qmr99a5wE0lx7K+e7JoVxtYs+3nCfQGmDuCm/4hHdjZz9iztDBjWgwQ9uO1GHGXsm4uq9WQrU5CKe77sK8ZokwZh1Gpr8bS4zyvCE9EUk3SPImKhArojzlEbxHBLA+wi9MnZ5Wph3ltwhOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VByD55W4mz4f3m76;
-	Sun,  7 Apr 2024 11:20:53 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 49F791A0199;
-	Sun,  7 Apr 2024 11:21:02 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP4 (Coremail) with SMTP id gCh0CgBXqGodERJmm53fJQ--.28680S2;
-	Sun, 07 Apr 2024 11:21:02 +0800 (CST)
-Subject: Re: [PATCH 4/5] ext4: use correct criteria name instead stale integer
- number in comment
-To: Jan Kara <jack@suse.cz>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com, ritesh.list@gmail.com
-References: <20240326213823.528302-1-shikemeng@huaweicloud.com>
- <20240326213823.528302-5-shikemeng@huaweicloud.com>
- <20240404141902.t5ut465q7vxusoa6@quack3>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <564b0dd6-5903-0bb6-39b4-a838c8c54e64@huaweicloud.com>
-Date: Sun, 7 Apr 2024 11:21:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1712460309; c=relaxed/simple;
+	bh=RCw/giiHxgF8h5cPiraGo8muTZHc12ESXyVaUjXcD3g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=qjz/a9qa80hCRMDVAWqeuyMMAMcXjHSCJnSRMbiMizNPG+C+p6Jf5udfKzSqIS9HJOBPhhRrnD5g8pvfmnD6ibZA2ZXTkse9P5DPsxmIPxsg1hU5mDdgQkzxOtYcjUR+YPpDbnAeNSKSAkibm4fAV8OGulHhEMYafbPmwA2wBqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 64432c2cf48e11eeaf09c5092e5928d1-20240407
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:ce72e07d-5b24-4376-b6cf-4784bc6a80ba,IP:-13
+	,URL:0,TC:0,Content:-25,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,A
+	CTION:release,TS:-18
+X-CID-INFO: VERSION:1.1.37,REQID:ce72e07d-5b24-4376-b6cf-4784bc6a80ba,IP:-13,U
+	RL:0,TC:0,Content:-25,EDM:25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:-18
+X-CID-META: VersionHash:6f543d0,CLOUDID:12f5df7d6b639c2dd02030c52d827b5b,BulkI
+	D:240407112451I7G0K7XO,BulkQuantity:0,Recheck:0,SF:66|24|72|19|44|102,TC:n
+	il,Content:0,EDM:5,IP:nil,URL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil
+	,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_ULN,TF_CID_SPAM_SNR,TF_CID_SPAM_FSD
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_MISS
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_DIGIT_LEN, HR_FROM_NAME
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
+	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED, SN_TRUSTED
+	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, UD_TRUSTED
+	CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_C_CI
+	GTI_FG_IT, GTI_RG_INFO, GTI_C_BU, AMN_T1, AMN_GOOD
+	AMN_C_TI, AMN_C_BU, ABX_MISS_RDNS, ZHF_RECV_LOCALHOST
+X-UUID: 64432c2cf48e11eeaf09c5092e5928d1-20240407
+X-User: lijun01@kylinos.cn
+Received: from localhost.localdomain [(39.156.73.14)] by mailgw
+	(envelope-from <lijun01@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 71539736; Sun, 07 Apr 2024 11:24:49 +0800
+From: lijun <lijun01@kylinos.cn>
+To: robert.moore@intel.com
+Cc: linux-acpi@vger.kernel.org,
+	evel@acpica.org,
+	linux-kernel@vger.kernel.org,
+	lenb@kernel.org,
+	rafael.j.wysocki@intel.com,
+	lijun01@kylinos.cn
+Subject: [PATCH] acpi: Modify ACPI_OBJECT_COMMON_HEADER
+Date: Sun,  7 Apr 2024 11:24:56 +0800
+Message-Id: <20240407032456.4079002-1-lijun01@kylinos.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240404141902.t5ut465q7vxusoa6@quack3>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBXqGodERJmm53fJQ--.28680S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWr17CF4UWw18JrWruF1Utrb_yoWrWr1kp3
-	95AF18Kw4SqF1Uu397Wa1UG3W2gw409r1UGr1fur1xCF9agr1kKr95KrWFkFy0yr4kC3Wr
-	XF97XFW8CF4S93DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOyCJDUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Transfer-Encoding: 8bit
 
+modify 4 macros:
+ACPI_OBJECT_COMMON_HEADER,
+ACPI_COMMON_BUFFER_INFO,
+ACPI_COMMON_NOTIFY_INFO,
+ACPI_COMMON_FIELD_INFO
+they  cause  poor readability.so del the last ";"
+and when use them in a single line with the ";"in the end.
 
+Link: https://github.com/acpica/acpica/pull/924
+Signed-off-by: lijun <lijun01@kylinos.cn>
+---
+ drivers/acpi/acpica/acobject.h | 95 +++++++++++++++++++++++-----------
+ 1 file changed, 64 insertions(+), 31 deletions(-)
 
-on 4/4/2024 10:19 PM, Jan Kara wrote:
-> On Wed 27-03-24 05:38:22, Kemeng Shi wrote:
->> Use correct criteria name instead stale integer number in comment
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> 
-> Looks good. But since the symbolic names already have CR prefix, we
-> probably don't have to write e.g.:
-> 
-> /* Large fragment size list lookup succeeded at least once for cr =
->  * CR_POWER2_ALIGNED */
-> 
-> But we can write directly:
-> 
-> /* Large fragment size list lookup succeeded at least once for
->  * CR_POWER2_ALIGNED */
-Sure, will do it in next version. Thanks.
-
-Kemeng
-> 
-> 								Honza
-> 
->> ---
->>  fs/ext4/ext4.h    | 15 ++++++++++++---
->>  fs/ext4/mballoc.c | 14 ++++++++------
->>  fs/ext4/mballoc.h |  4 ++--
->>  3 files changed, 22 insertions(+), 11 deletions(-)
->>
->> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->> index 023571f8dd1b..9b90013c59a3 100644
->> --- a/fs/ext4/ext4.h
->> +++ b/fs/ext4/ext4.h
->> @@ -213,11 +213,20 @@ enum criteria {
->>  #define EXT4_MB_USE_RESERVED		0x2000
->>  /* Do strict check for free blocks while retrying block allocation */
->>  #define EXT4_MB_STRICT_CHECK		0x4000
->> -/* Large fragment size list lookup succeeded at least once for cr = 0 */
->> +/*
->> + * Large fragment size list lookup succeeded at least once for cr =
->> + * CR_POWER2_ALIGNED
->> + */
->>  #define EXT4_MB_CR_POWER2_ALIGNED_OPTIMIZED		0x8000
->> -/* Avg fragment size rb tree lookup succeeded at least once for cr = 1 */
->> +/*
->> + * Avg fragment size rb tree lookup succeeded at least once for cr =
->> + * CR_GOAL_LEN_FAST
->> + */
->>  #define EXT4_MB_CR_GOAL_LEN_FAST_OPTIMIZED		0x00010000
->> -/* Avg fragment size rb tree lookup succeeded at least once for cr = 1.5 */
->> +/*
->> + * Avg fragment size rb tree lookup succeeded at least once for cr =
->> + * CR_BEST_AVAIL_LEN
->> + */
->>  #define EXT4_MB_CR_BEST_AVAIL_LEN_OPTIMIZED		0x00020000
->>  
->>  struct ext4_allocation_request {
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index 62d468379722..0f8a34513bf6 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -1131,8 +1131,9 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
->>  		ext4_mb_choose_next_group_best_avail(ac, new_cr, group);
->>  	} else {
->>  		/*
->> -		 * TODO: For CR=2, we can arrange groups in an rb tree sorted by
->> -		 * bb_free. But until that happens, we should never come here.
->> +		 * TODO: For CR=CR_GOAL_LEN_SLOW, we can arrange groups in an
->> +		 * rb tree sorted by bb_free. But until that happens, we should
->> +		 * never come here.
->>  		 */
->>  		WARN_ON(1);
->>  	}
->> @@ -3444,10 +3445,11 @@ static int ext4_mb_init_backend(struct super_block *sb)
->>  	}
->>  	if (sbi->s_mb_prefetch > ext4_get_groups_count(sb))
->>  		sbi->s_mb_prefetch = ext4_get_groups_count(sb);
->> -	/* now many real IOs to prefetch within a single allocation at cr=0
->> -	 * given cr=0 is an CPU-related optimization we shouldn't try to
->> -	 * load too many groups, at some point we should start to use what
->> -	 * we've got in memory.
->> +	/*
->> +	 * now many real IOs to prefetch within a single allocation at
->> +	 * cr=CR_POWER2_ALIGNED. Given cr=CR_POWER2_ALIGNED is an CPU-related
->> +	 * optimization we shouldn't try to load too many groups, at some point
->> +	 * we should start to use what we've got in memory.
->>  	 * with an average random access time 5ms, it'd take a second to get
->>  	 * 200 groups (* N with flex_bg), so let's make this limit 4
->>  	 */
->> diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
->> index 56938532b4ce..042437d8860f 100644
->> --- a/fs/ext4/mballoc.h
->> +++ b/fs/ext4/mballoc.h
->> @@ -187,8 +187,8 @@ struct ext4_allocation_context {
->>  	struct ext4_free_extent ac_f_ex;
->>  
->>  	/*
->> -	 * goal len can change in CR1.5, so save the original len. This is
->> -	 * used while adjusting the PA window and for accounting.
->> +	 * goal len can change in CR_BEST_AVAIL_LEN, so save the original len.
->> +	 * This is used while adjusting the PA window and for accounting.
->>  	 */
->>  	ext4_grpblk_t	ac_orig_goal_len;
->>  
->> -- 
->> 2.30.0
->>
+diff --git a/drivers/acpi/acpica/acobject.h b/drivers/acpi/acpica/acobject.h
+index 1bdfeee5d7c5..0cd1769022aa 100644
+--- a/drivers/acpi/acpica/acobject.h
++++ b/drivers/acpi/acpica/acobject.h
+@@ -48,7 +48,7 @@
+ 	u8                              descriptor_type;    /* To differentiate various internal objs */\
+ 	u8                              type;               /* acpi_object_type */\
+ 	u16                             reference_count;    /* For object deletion management */\
+-	u8                              flags;
++	u8                              flags
+ 	/*
+ 	 * Note: There are 3 bytes available here before the
+ 	 * next natural alignment boundary (for both 32/64 cases)
+@@ -71,10 +71,12 @@
+  *****************************************************************************/
+ 
+ struct acpi_object_common {
+-ACPI_OBJECT_COMMON_HEADER};
++	ACPI_OBJECT_COMMON_HEADER;
++};
+ 
+ struct acpi_object_integer {
+-	ACPI_OBJECT_COMMON_HEADER u8 fill[3];	/* Prevent warning on some compilers */
++	ACPI_OBJECT_COMMON_HEADER;
++	u8 fill[3];	/* Prevent warning on some compilers */
+ 	u64 value;
+ };
+ 
+@@ -86,23 +88,26 @@ struct acpi_object_integer {
+  */
+ #define ACPI_COMMON_BUFFER_INFO(_type) \
+ 	_type                           *pointer; \
+-	u32                             length;
++	u32                             length
+ 
+ /* Null terminated, ASCII characters only */
+ 
+ struct acpi_object_string {
+-	ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_BUFFER_INFO(char)	/* String in AML stream or allocated string */
++	ACPI_OBJECT_COMMON_HEADER;
++	ACPI_COMMON_BUFFER_INFO(char);	/* String in AML stream or allocated string */
+ };
+ 
+ struct acpi_object_buffer {
+-	ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_BUFFER_INFO(u8)	/* Buffer in AML stream or allocated buffer */
++	ACPI_OBJECT_COMMON_HEADER;
++	ACPI_COMMON_BUFFER_INFO(u8);/* Buffer in AML stream or allocated buffer */
+ 	u32 aml_length;
+ 	u8 *aml_start;
+ 	struct acpi_namespace_node *node;	/* Link back to parent node */
+ };
+ 
+ struct acpi_object_package {
+-	ACPI_OBJECT_COMMON_HEADER struct acpi_namespace_node *node;	/* Link back to parent node */
++	ACPI_OBJECT_COMMON_HEADER;
++	struct acpi_namespace_node *node;	/* Link back to parent node */
+ 	union acpi_operand_object **elements;	/* Array of pointers to acpi_objects */
+ 	u8 *aml_start;
+ 	u32 aml_length;
+@@ -116,11 +121,13 @@ struct acpi_object_package {
+  *****************************************************************************/
+ 
+ struct acpi_object_event {
+-	ACPI_OBJECT_COMMON_HEADER acpi_semaphore os_semaphore;	/* Actual OS synchronization object */
++	ACPI_OBJECT_COMMON_HEADER;
++	acpi_semaphore os_semaphore;	/* Actual OS synchronization object */
+ };
+ 
+ struct acpi_object_mutex {
+-	ACPI_OBJECT_COMMON_HEADER u8 sync_level;	/* 0-15, specified in Mutex() call */
++	ACPI_OBJECT_COMMON_HEADER;
++	u8 sync_level;	/* 0-15, specified in Mutex() call */
+ 	u16 acquisition_depth;	/* Allow multiple Acquires, same thread */
+ 	acpi_mutex os_mutex;	/* Actual OS synchronization object */
+ 	acpi_thread_id thread_id;	/* Current owner of the mutex */
+@@ -132,7 +139,8 @@ struct acpi_object_mutex {
+ };
+ 
+ struct acpi_object_region {
+-	ACPI_OBJECT_COMMON_HEADER u8 space_id;
++	ACPI_OBJECT_COMMON_HEADER;
++	u8 space_id;
+ 	struct acpi_namespace_node *node;	/* Containing namespace node */
+ 	union acpi_operand_object *handler;	/* Handler for region access */
+ 	union acpi_operand_object *next;
+@@ -142,7 +150,8 @@ struct acpi_object_region {
+ };
+ 
+ struct acpi_object_method {
+-	ACPI_OBJECT_COMMON_HEADER u8 info_flags;
++	ACPI_OBJECT_COMMON_HEADER;
++	u8 info_flags;
+ 	u8 param_count;
+ 	u8 sync_level;
+ 	union acpi_operand_object *mutex;
+@@ -178,33 +187,41 @@ struct acpi_object_method {
+  */
+ #define ACPI_COMMON_NOTIFY_INFO \
+ 	union acpi_operand_object       *notify_list[2];    /* Handlers for system/device notifies */\
+-	union acpi_operand_object       *handler;	/* Handler for Address space */
++	union acpi_operand_object       *handler	/* Handler for Address space */
+ 
+ /* COMMON NOTIFY for POWER, PROCESSOR, DEVICE, and THERMAL */
+ 
+ struct acpi_object_notify_common {
+-ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_NOTIFY_INFO};
++	ACPI_OBJECT_COMMON_HEADER;
++	ACPI_COMMON_NOTIFY_INFO;
++};
+ 
+ struct acpi_object_device {
+-	ACPI_OBJECT_COMMON_HEADER
+-	    ACPI_COMMON_NOTIFY_INFO struct acpi_gpe_block_info *gpe_block;
++	ACPI_OBJECT_COMMON_HEADER;
++	ACPI_COMMON_NOTIFY_INFO;
++	struct acpi_gpe_block_info *gpe_block;
+ };
+ 
+ struct acpi_object_power_resource {
+-	ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_NOTIFY_INFO u32 system_level;
++	ACPI_OBJECT_COMMON_HEADER;
++	ACPI_COMMON_NOTIFY_INFO;
++	u32 system_level;
+ 	u32 resource_order;
+ };
+ 
+ struct acpi_object_processor {
+-	ACPI_OBJECT_COMMON_HEADER
++	ACPI_OBJECT_COMMON_HEADER;
+ 	    /* The next two fields take advantage of the 3-byte space before NOTIFY_INFO */
+ 	u8 proc_id;
+ 	u8 length;
+-	ACPI_COMMON_NOTIFY_INFO acpi_io_address address;
++	ACPI_COMMON_NOTIFY_INFO;
++	acpi_io_address address;
+ };
+ 
+ struct acpi_object_thermal_zone {
+-ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_NOTIFY_INFO};
++	ACPI_OBJECT_COMMON_HEADER;
++	ACPI_COMMON_NOTIFY_INFO;
++};
+ 
+ /******************************************************************************
+  *
+@@ -226,17 +243,22 @@ ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_NOTIFY_INFO};
+ 	u32                             base_byte_offset;   /* Byte offset within containing object */\
+ 	u32                             value;              /* Value to store into the Bank or Index register */\
+ 	u8                              start_field_bit_offset;/* Bit offset within first field datum (0-63) */\
+-	u8                              access_length;	/* For serial regions/fields */
++	u8                              access_length	/* For serial regions/fields */
+ 
+ 
+ /* COMMON FIELD (for BUFFER, REGION, BANK, and INDEX fields) */
+ 
+ struct acpi_object_field_common {
+-	ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_FIELD_INFO union acpi_operand_object *region_obj;	/* Parent Operation Region object (REGION/BANK fields only) */
++	ACPI_OBJECT_COMMON_HEADER;
++	ACPI_COMMON_FIELD_INFO;
++	union acpi_operand_object *region_obj;
++	/* Parent Operation Region object (REGION/BANK fields only) */
+ };
+ 
+ struct acpi_object_region_field {
+-	ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_FIELD_INFO u16 resource_length;
++	ACPI_OBJECT_COMMON_HEADER;
++	ACPI_COMMON_FIELD_INFO;
++	u16 resource_length;
+ 	union acpi_operand_object *region_obj;	/* Containing op_region object */
+ 	u8 *resource_buffer;	/* resource_template for serial regions/fields */
+ 	u16 pin_number_index;	/* Index relative to previous Connection/Template */
+@@ -244,12 +266,15 @@ struct acpi_object_region_field {
+ };
+ 
+ struct acpi_object_bank_field {
+-	ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_FIELD_INFO union acpi_operand_object *region_obj;	/* Containing op_region object */
++	ACPI_OBJECT_COMMON_HEADER;
++	ACPI_COMMON_FIELD_INFO;
++	union acpi_operand_object *region_obj;	/* Containing op_region object */
+ 	union acpi_operand_object *bank_obj;	/* bank_select Register object */
+ };
+ 
+ struct acpi_object_index_field {
+-	ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_FIELD_INFO
++	ACPI_OBJECT_COMMON_HEADER;
++	ACPI_COMMON_FIELD_INFO;
+ 	    /*
+ 	     * No "RegionObj" pointer needed since the Index and Data registers
+ 	     * are each field definitions unto themselves.
+@@ -261,7 +286,9 @@ struct acpi_object_index_field {
+ /* The buffer_field is different in that it is part of a Buffer, not an op_region */
+ 
+ struct acpi_object_buffer_field {
+-	ACPI_OBJECT_COMMON_HEADER ACPI_COMMON_FIELD_INFO u8 is_create_field;	/* Special case for objects created by create_field() */
++	ACPI_OBJECT_COMMON_HEADER;
++	ACPI_COMMON_FIELD_INFO;
++	u8 is_create_field;	/* Special case for objects created by create_field() */
+ 	union acpi_operand_object *buffer_obj;	/* Containing Buffer object */
+ };
+ 
+@@ -272,7 +299,8 @@ struct acpi_object_buffer_field {
+  *****************************************************************************/
+ 
+ struct acpi_object_notify_handler {
+-	ACPI_OBJECT_COMMON_HEADER struct acpi_namespace_node *node;	/* Parent device */
++	ACPI_OBJECT_COMMON_HEADER;
++	struct acpi_namespace_node *node;	/* Parent device */
+ 	u32 handler_type;	/* Type: Device/System/Both */
+ 	acpi_notify_handler handler;	/* Handler address */
+ 	void *context;
+@@ -280,7 +308,8 @@ struct acpi_object_notify_handler {
+ };
+ 
+ struct acpi_object_addr_handler {
+-	ACPI_OBJECT_COMMON_HEADER u8 space_id;
++	ACPI_OBJECT_COMMON_HEADER;
++	u8 space_id;
+ 	u8 handler_flags;
+ 	acpi_adr_space_handler handler;
+ 	struct acpi_namespace_node *node;	/* Parent device */
+@@ -307,7 +336,8 @@ struct acpi_object_addr_handler {
+  * The Reference.Class differentiates these types.
+  */
+ struct acpi_object_reference {
+-	ACPI_OBJECT_COMMON_HEADER u8 class;	/* Reference Class */
++	ACPI_OBJECT_COMMON_HEADER;
++	u8 class;	/* Reference Class */
+ 	u8 target_type;		/* Used for Index Op */
+ 	u8 resolved;		/* Reference has been resolved to a value */
+ 	void *object;		/* name_op=>HANDLE to obj, index_op=>union acpi_operand_object */
+@@ -340,7 +370,8 @@ typedef enum {
+  * Currently: Region and field_unit types
+  */
+ struct acpi_object_extra {
+-	ACPI_OBJECT_COMMON_HEADER struct acpi_namespace_node *method_REG;	/* _REG method for this region (if any) */
++	ACPI_OBJECT_COMMON_HEADER;
++	struct acpi_namespace_node *method_REG;	/* _REG method for this region (if any) */
+ 	struct acpi_namespace_node *scope_node;
+ 	void *region_context;	/* Region-specific data */
+ 	u8 *aml_start;
+@@ -350,14 +381,16 @@ struct acpi_object_extra {
+ /* Additional data that can be attached to namespace nodes */
+ 
+ struct acpi_object_data {
+-	ACPI_OBJECT_COMMON_HEADER acpi_object_handler handler;
++	ACPI_OBJECT_COMMON_HEADER;
++	acpi_object_handler handler;
+ 	void *pointer;
+ };
+ 
+ /* Structure used when objects are cached for reuse */
+ 
+ struct acpi_object_cache_list {
+-	ACPI_OBJECT_COMMON_HEADER union acpi_operand_object *next;	/* Link for object cache and internal lists */
++	ACPI_OBJECT_COMMON_HEADER;
++	union acpi_operand_object *next;	/* Link for object cache and internal lists */
+ };
+ 
+ /******************************************************************************
+-- 
+2.34.1
 
 
