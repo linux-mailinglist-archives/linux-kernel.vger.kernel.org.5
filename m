@@ -1,78 +1,84 @@
-Return-Path: <linux-kernel+bounces-134639-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134640-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DC4089B3FD
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 22:22:43 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0BF889B3FF
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 22:32:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E42BF28184E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:22:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E5B221C20D55
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF41744C71;
-	Sun,  7 Apr 2024 20:22:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11F2938DED;
+	Sun,  7 Apr 2024 20:32:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PpslVSHC"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="swrue9iD"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104434437C
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 20:22:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B579848E
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 20:31:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712521354; cv=none; b=TI5Idj8mI8BlTSoe0WK7fIa8pWCgi9f1SKYFjeI3Ln4YBf3U8FjUG5lXBX5vz9bMURdXUwSi6H/ZWXoPvBQ8zSIKAsJf7Vev0vZAqInHbZFqMD1voSW3ybJwKnffsTj68FXUDT2Z8t5inTy/dizWucbYLsMCqfosRncMwesX+xE=
+	t=1712521920; cv=none; b=E0ii+8wuu3br+1MaPt/UdBtqquEIHLW6d+/UIj5IRz/TGcX6Cbo5gOApo6KyMhLOEkox4h9EaYCWxD1MCrckq8KlCPw3pVsjCxIk496ZuweoA2uu5ExdgOfln5wdXEBW7CXY2ovFntrgJu6gtI6xfO9eZDQ9sAV79iVL7IWW0BI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712521354; c=relaxed/simple;
-	bh=A39JcqeuMcbaMXEjgSo1Q8OoByBxpCxVXXnv3GoVRzA=;
+	s=arc-20240116; t=1712521920; c=relaxed/simple;
+	bh=BuhRDogVus1zI9H0XqB1SzKqz+CmrY8+s3e5ZCTcX1Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CzrABoHiuGp5zguoGlmsfOk0f7vnkrOAv4sq23y8bJJXP4FKvZM8FgAFJNYgz+ygJsbklcoEBeltfeXAr2ZvEjNKSgUjvmM27r4NYGjHLhsJBSzFggNyJY/JH0EC/WTnDdYe1xlYoznIAtg4N1rI76IC0TIT7FxckR3RmKLw3r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PpslVSHC; arc=none smtp.client-ip=192.198.163.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712521352; x=1744057352;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=A39JcqeuMcbaMXEjgSo1Q8OoByBxpCxVXXnv3GoVRzA=;
-  b=PpslVSHCbr49B79dfJL7tCgXoHrqpkXjYrUB4f+RdNIl4goUJPBgPdbj
-   +6ooy89d6PRPPmYjLij1x8V2nPFFKTIjbm2XOzbG1QmJjpuC2+w4sZSlk
-   EDK09NaVkh0rUbGOY/QXyqKQN0kRPRRo1obLCpJETQ8VC/HCKprm6AQN9
-   1V5WFXg472rgIy5pQMb8/lmu0QRKe1Va2lwkVcyvuSY2AVAsNwtxwBtvl
-   RAEEr5tZd9DMesfastJ4FNPlbJnQxQD8pCAiLmIpwyvHRDHE6a9D82m+o
-   Ncst44hCBmQy9Fjrz1cWhfjOMfx+g+LgemQduKuEQn/Kfl+bZZOolpm5T
-   Q==;
-X-CSE-ConnectionGUID: WkO5BkaDSQqz6V5YOpOAzw==
-X-CSE-MsgGUID: nBnDEFBhR3WigrJQmVroGQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="19160674"
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="19160674"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 13:22:28 -0700
-X-CSE-ConnectionGUID: lqs7wn7TQE2//drwd+sQhw==
-X-CSE-MsgGUID: VtbaV3g8S7KRE28JKZ4kLQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="50891408"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 07 Apr 2024 13:22:26 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rtZ20-0004ac-0E;
-	Sun, 07 Apr 2024 20:22:24 +0000
-Date: Mon, 8 Apr 2024 04:21:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Peter Zijlstra <peterz@infradead.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH 2/5] sched: Split out kernel/sched/fair_balance.c from
- kernel/sched/fair.c
-Message-ID: <202404080450.8XHvarcZ-lkp@intel.com>
-References: <20240407084319.1462211-3-mingo@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=NXt+Co3UQAjbiRGBbbo1j114VvNbu/Qcj/PNVSKbn8ayooqduC+8s1pAlPCZMRNO8NryFANkpuHmSWltwFYlk37FG/lfUMidLSoqQBNhDXCRlxqeVy6Y0Wn7BQ53BccgqJH4D5CJkNHZdtPZsv3nzxYrF9CRg9an6bxX0dud3kc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=swrue9iD; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-5171a529224so34668e87.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 13:31:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1712521917; x=1713126717; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=BC/Vp9aTo7ncwzcGpzKoHrU+RFhFC5D/RE+BHxHMCVQ=;
+        b=swrue9iDWmOREHB+bMw8mQ/3SElk9YzKXNf3GPTCJ++ZtJKZ36LwIOJHkjLwrkMdYj
+         /ii/syRvRKigaGX0obQaB1EVj7DP1zJsMGo27V/XrWgvSTi7b4mDx28Hfa/uQqJYC/G+
+         DOO6BBwK5SS4J/wkY/eZnhIzbdoy8KKYmNxFelX55fq51WMBLKPiEpkaONWumSU1K6ix
+         FuNGHJDJUlAw4OVs8u0vAepNxJhYasPNQ7JKmr5YUcfnWcfFL2yRi4eYwIfbp4P7OI7C
+         XU1HxuqqTmPxvQAFupw9zX/6Lh18EZ59HCZINgZvSvg/darWYjxyAZXN3g4RKzR/1uzE
+         Uyqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712521917; x=1713126717;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BC/Vp9aTo7ncwzcGpzKoHrU+RFhFC5D/RE+BHxHMCVQ=;
+        b=aZldJ0qj51UPrNzsltqmqgRnpe8k2RIeWe9Pxolq5PKz/HB7uTFlwsQJok4dZwaMBb
+         vKeHC8F914Ot41z9TOX5KJbaRkkby1SRBIetWnjV95qBZ7jx1LA7JpGqDSPqIk3zRNnb
+         CGD45C78yWNwVwCzc/i7mvK61nnm5bvs0Xmll73VIC8mnp+1iMtk2NR5UGVC+G7yi47E
+         kHDTeA9UVNY9sz4WEbEwtL3QccZKIM7SHwTZZI1TNpe5v/wGeHXKD6tbG3JA13iI/4wZ
+         S6B3uS2Ec7WbMFxnIa1TQe3car6GMKtdihTEnCmbXp5lqd//tHog9gdjVowOagWLd+Qo
+         6h+g==
+X-Gm-Message-State: AOJu0YxyvsHqTDDiF54o36Uu6E+e3i6PbFj8iE2ipq+E7B2Z5osxrFAG
+	Hi0pSd8PgbOdfEx3olxNsVr1mbXNL/slvqLj4coC46vpBVEHr3/WL+8AQtESzAE=
+X-Google-Smtp-Source: AGHT+IF4DMVCMB62tkqkfik57o48lX1JfihPhY8NVWkCpw1jpdJU/hGDdnCKUtnIerJssNTIq9AzTA==
+X-Received: by 2002:ac2:53bb:0:b0:513:39a0:1fec with SMTP id j27-20020ac253bb000000b0051339a01fecmr3969120lfh.66.1712521916570;
+        Sun, 07 Apr 2024 13:31:56 -0700 (PDT)
+Received: from eriador.lumag.spb.ru (dzyjmhyyyyyyyyyyyykxt-3.rev.dnainternet.fi. [2001:14ba:a00e:a300::227])
+        by smtp.gmail.com with ESMTPSA id j29-20020ac2551d000000b00513a1fe7767sm919668lfk.209.2024.04.07.13.31.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Apr 2024 13:31:56 -0700 (PDT)
+Date: Sun, 7 Apr 2024 23:31:54 +0300
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+To: Alexandru Ardelean <alex@shruggie.ro>
+Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	devicetree@vger.kernel.org, adrien.grassein@gmail.com, andrzej.hajda@intel.com, 
+	neil.armstrong@linaro.org, rfoss@kernel.org, Laurent.pinchart@ideasonboard.com, 
+	jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@gmail.com, daniel@ffwll.ch, 
+	maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, robh@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, stefan.eichenberger@toradex.com, 
+	francesco.dolcini@toradex.com, marius.muresan@mxt.ro, irina.muresan@mxt.ro
+Subject: Re: [PATCH 2/2] dt-bindings: display: bridge: lt8912b: document
+ 'lontium, pn-swap' property
+Message-ID: <dxm3js6qpcw3n4duid4vmhnkxacmzgq4rnvpbdx62pcn34ybzc@q57pst7lyumf>
+References: <20240402105925.905144-1-alex@shruggie.ro>
+ <20240402105925.905144-2-alex@shruggie.ro>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -81,115 +87,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240407084319.1462211-3-mingo@kernel.org>
+In-Reply-To: <20240402105925.905144-2-alex@shruggie.ro>
 
-Hi Ingo,
+On Tue, Apr 02, 2024 at 01:59:25PM +0300, Alexandru Ardelean wrote:
+> On some HW designs, it's easier for the layout if the P/N pins are swapped.
+> The driver currently has a DT property to do that.
+> 
+> This change documents the 'lontium,pn-swap' property.
+> 
+> Signed-off-by: Alexandru Ardelean <alex@shruggie.ro>
+> ---
+>  .../devicetree/bindings/display/bridge/lontium,lt8912b.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.yaml b/Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.yaml
+> index 2cef252157985..3a804926b288a 100644
+> --- a/Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.yaml
+> +++ b/Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.yaml
+> @@ -24,6 +24,12 @@ properties:
+>      maxItems: 1
+>      description: GPIO connected to active high RESET pin.
+>  
+> +  lontium,pn-swap:
+> +    description: Swap the polarities of the P/N pins in software.
+> +      On some HW designs, the layout is simplified if the P/N pins
+> +      are inverted.
+> +    type: boolean
+> +
 
-kernel test robot noticed the following build warnings:
+I'd like to point out the standard `lane-polarities` property defined at
+Documentation/devicetree/bindings/media/video-interfaces.yaml. You can
+define and use it for the corresponding endpoint in the lt8912b schema.
 
-[auto build test WARNING on tip/sched/core]
-[also build test WARNING on next-20240405]
-[cannot apply to linux/master linus/master peterz-queue/sched/core v6.9-rc2]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Ingo-Molnar/sched-Split-out-kernel-sched-syscalls-c-from-kernel-sched-core-c/20240407-164646
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/20240407084319.1462211-3-mingo%40kernel.org
-patch subject: [PATCH 2/5] sched: Split out kernel/sched/fair_balance.c from kernel/sched/fair.c
-config: i386-randconfig-061-20240408 (https://download.01.org/0day-ci/archive/20240408/202404080450.8XHvarcZ-lkp@intel.com/config)
-compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240408/202404080450.8XHvarcZ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404080450.8XHvarcZ-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> kernel/sched/fair_balance.c:2171:40: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sched_domain *child @@     got struct sched_domain [noderef] __rcu *child @@
-   kernel/sched/fair_balance.c:2171:40: sparse:     expected struct sched_domain *child
-   kernel/sched/fair_balance.c:2171:40: sparse:     got struct sched_domain [noderef] __rcu *child
->> kernel/sched/fair_balance.c:2793:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/fair_balance.c:2793:22: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/fair_balance.c:2793:22: sparse:    struct task_struct *
->> kernel/sched/fair_balance.c:4218:9: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sched_domain *[assigned] sd @@     got struct sched_domain [noderef] __rcu *parent @@
-   kernel/sched/fair_balance.c:4218:9: sparse:     expected struct sched_domain *[assigned] sd
-   kernel/sched/fair_balance.c:4218:9: sparse:     got struct sched_domain [noderef] __rcu *parent
->> kernel/sched/fair_balance.c:3866:44: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct sched_domain *sd_parent @@     got struct sched_domain [noderef] __rcu *parent @@
-   kernel/sched/fair_balance.c:3866:44: sparse:     expected struct sched_domain *sd_parent
-   kernel/sched/fair_balance.c:3866:44: sparse:     got struct sched_domain [noderef] __rcu *parent
-   kernel/sched/fair_balance.c:4327:9: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sched_domain *[assigned] sd @@     got struct sched_domain [noderef] __rcu *parent @@
-   kernel/sched/fair_balance.c:4327:9: sparse:     expected struct sched_domain *[assigned] sd
-   kernel/sched/fair_balance.c:4327:9: sparse:     got struct sched_domain [noderef] __rcu *parent
-   kernel/sched/fair_balance.c:4972:9: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct sched_domain *[assigned] sd @@     got struct sched_domain [noderef] __rcu *parent @@
-   kernel/sched/fair_balance.c:4972:9: sparse:     expected struct sched_domain *[assigned] sd
-   kernel/sched/fair_balance.c:4972:9: sparse:     got struct sched_domain [noderef] __rcu *parent
->> kernel/sched/fair_balance.c:1921:24: sparse: sparse: dereference of noderef expression
-   kernel/sched/fair_balance.c:4050:64: sparse: sparse: dereference of noderef expression
-   kernel/sched/fair_balance.c:4050:64: sparse: sparse: dereference of noderef expression
-
-vim +2171 kernel/sched/fair_balance.c
-
-  2168	
-  2169	void update_group_capacity(struct sched_domain *sd, int cpu)
-  2170	{
-> 2171		struct sched_domain *child = sd->child;
-  2172		struct sched_group *group, *sdg = sd->groups;
-  2173		unsigned long capacity, min_capacity, max_capacity;
-  2174		unsigned long interval;
-  2175	
-  2176		interval = msecs_to_jiffies(sd->balance_interval);
-  2177		interval = clamp(interval, 1UL, max_load_balance_interval);
-  2178		sdg->sgc->next_update = jiffies + interval;
-  2179	
-  2180		if (!child) {
-  2181			update_cpu_capacity(sd, cpu);
-  2182			return;
-  2183		}
-  2184	
-  2185		capacity = 0;
-  2186		min_capacity = ULONG_MAX;
-  2187		max_capacity = 0;
-  2188	
-  2189		if (child->flags & SD_OVERLAP) {
-  2190			/*
-  2191			 * SD_OVERLAP domains cannot assume that child groups
-  2192			 * span the current group.
-  2193			 */
-  2194	
-  2195			for_each_cpu(cpu, sched_group_span(sdg)) {
-  2196				unsigned long cpu_cap = capacity_of(cpu);
-  2197	
-  2198				capacity += cpu_cap;
-  2199				min_capacity = min(cpu_cap, min_capacity);
-  2200				max_capacity = max(cpu_cap, max_capacity);
-  2201			}
-  2202		} else  {
-  2203			/*
-  2204			 * !SD_OVERLAP domains can assume that child groups
-  2205			 * span the current group.
-  2206			 */
-  2207	
-  2208			group = child->groups;
-  2209			do {
-  2210				struct sched_group_capacity *sgc = group->sgc;
-  2211	
-  2212				capacity += sgc->capacity;
-  2213				min_capacity = min(sgc->min_capacity, min_capacity);
-  2214				max_capacity = max(sgc->max_capacity, max_capacity);
-  2215				group = group->next;
-  2216			} while (group != child->groups);
-  2217		}
-  2218	
-  2219		sdg->sgc->capacity = capacity;
-  2220		sdg->sgc->min_capacity = min_capacity;
-  2221		sdg->sgc->max_capacity = max_capacity;
-  2222	}
-  2223	
+>    ports:
+>      $ref: /schemas/graph.yaml#/properties/ports
+>  
+> -- 
+> 2.44.0
+> 
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+With best wishes
+Dmitry
 
