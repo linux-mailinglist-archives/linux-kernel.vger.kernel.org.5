@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-134412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134414-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E742389B130
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:16:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A152689B134
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:16:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 007861C211B3
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:16:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41B59B20CBF
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:16:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3484EB5C;
-	Sun,  7 Apr 2024 13:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4819B50261;
+	Sun,  7 Apr 2024 13:11:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YE8ssZom"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pmqCE6gQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4CEA4DA11;
-	Sun,  7 Apr 2024 13:11:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57A724F213;
+	Sun,  7 Apr 2024 13:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495496; cv=none; b=GBi+x1+3wR799g7PicSjEJV72urcTR2DQznZwC5vcdrHgS2gs4LY92xO63QZ9ldh/0ixCuP8rWsSSIk6qeq+ilUGpaFwrrqNX895E8pLRxilHSK35mC1EEBGkExmbpt4Mq9WVu5lQx8TCM87sBWX0g4kvY0XdGzLGLFT8TiI/WY=
+	t=1712495497; cv=none; b=BZpkm51q4w4NHEbz5rEr1DPEogJrfbvkKcvgZakdpuNZw2pMXeWHRaS99NLoAS5Kk/2ok6RnwmoqmBS5naxzF2WrhQh8rUd+jphMqQX7MRi+MfT0Q6qAt0faaDK26GBGsJRAYrE+ae/gpXo0Vj/8FgU3pvhyfjZt3kWdF1KJbPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495496; c=relaxed/simple;
-	bh=Mg80D3IUFip6k6UW1M+0qUD9cwdyJQ5td5WoAhNUomw=;
+	s=arc-20240116; t=1712495497; c=relaxed/simple;
+	bh=Z3qs+jVDzbjy4F6F96Y6axrHvOpYUWjFxpb0JRDg0ro=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sicjYpLIC7J6puE3/w+jL13FRrl6c9DtfAwNwJrJPjRY/JvzsWzhJHp/vhtuCesUstM7/zjjed+qbHKid8v1yOFlOAbK3YPvvr6v6PWqsGh+uITVS8NW2M0qPCg1HDNuAd47eWau/gyx+bz5jb9ik1RjVyfLAKnv+9i43HS0Z4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YE8ssZom; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 799E2C433B1;
-	Sun,  7 Apr 2024 13:11:34 +0000 (UTC)
+	 MIME-Version; b=c9V0DX3XouUFUo3hU1tKjhz2iPxG2/y5fufTD76GWH6qCl9qbdUgUZxEvvyMYAyY5QX9WnivVCqWyhNGzVfjiIOsHjeJMtbKbpNLQ1kjtriW9y++3q0VLidqTChlHvJOx4/b21F7yJ3alI6WrcbvxnrsTTsU4ZJiEx42UK/I0Kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pmqCE6gQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E43B6C43390;
+	Sun,  7 Apr 2024 13:11:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495495;
-	bh=Mg80D3IUFip6k6UW1M+0qUD9cwdyJQ5td5WoAhNUomw=;
+	s=k20201202; t=1712495496;
+	bh=Z3qs+jVDzbjy4F6F96Y6axrHvOpYUWjFxpb0JRDg0ro=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YE8ssZombIwJv0aVNqrO7rkBE+xCgrpuozP9KgEXdMYx37bYV7+sU9Dy4Sb602lJw
-	 PPNTN0bw5AbEY28ZLgh5QR+SPhXJ8q6Z+Jj7RxOnWN1SICjWgJ0isqIy3YYvF2FLCZ
-	 Qh1d3Vy+L7Qe61luSbcXHlUciJ+u8xHkBgwYjU51y6xe4y2l6jjvebu2KSjV4d4ULc
-	 M1WTA9NwYE2ccmBQWGulpY3fnWrock+Z2Oe43691LmTBFfqxkjwX52QT87M1gtq3Iq
-	 rTsQhnP3lrq/dthiwkqcIVW/2eonkVsYwndkH5qFBC6M62Od+qqDzJQWwAIop1wqHC
-	 wyv/g7Eb4PQCQ==
+	b=pmqCE6gQtO6kzDVnGJjKHyoQBJGl3N6jpa7tSN1HTJ91PnnPiTPXHVMPo7Lmx0TGp
+	 IgcRrsYB5adPmZh9C3/+Wu//q6AcWJkx/YC1O4JngckaFy+dMhl9v0ZPdUKGWLo5YE
+	 znMFhmXZvJfYMXRSlMYXAKlvixlsJlY2UCJjGNzU9M48xAIFmrUkua4UfujcgK/wtb
+	 xqlTuXCjQYWpYDh1Sp5JS7oUDArgapQSt++Wkrg8q7uDad7UDGJ0yKHVpv2zqoATa8
+	 AjQt4vF6gI7OvURAXlRwK/vqoH9K4UaFdZwyBRAp+QHc4aGnkzjnfNI0MDsKLT6tlm
+	 0m1OQvfPyLkuA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,9 +50,9 @@ Cc: Justin Tee <justin.tee@broadcom.com>,
 	dick.kennedy@broadcom.com,
 	jejb@linux.ibm.com,
 	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 03/25] scsi: lpfc: Remove IRQF_ONESHOT flag from threaded IRQ handling
-Date: Sun,  7 Apr 2024 09:10:51 -0400
-Message-ID: <20240407131130.1050321-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.8 04/25] scsi: lpfc: Update lpfc_ramp_down_queue_handler() logic
+Date: Sun,  7 Apr 2024 09:10:52 -0400
+Message-ID: <20240407131130.1050321-4-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131130.1050321-1-sashal@kernel.org>
 References: <20240407131130.1050321-1-sashal@kernel.org>
@@ -69,39 +69,88 @@ Content-Transfer-Encoding: 8bit
 
 From: Justin Tee <justin.tee@broadcom.com>
 
-[ Upstream commit 4623713e7ade46bfc63a3eade836f566ccbcd771 ]
+[ Upstream commit bb011631435c705cdeddca68d5c85fd40a4320f9 ]
 
-IRQF_ONESHOT is found to mask HBA generated interrupts when thread_fn is
-running.  As a result, some EQEs/CQEs miss timely processing resulting in
-SCSI layer attempts to abort commands due to io_timeout.  Abort CQEs are
-also not processed leading to the observations of hangs and spam of "0748
-abort handler timed out waiting for aborting I/O" log messages.
+Typically when an out of resource CQE status is detected, the
+lpfc_ramp_down_queue_handler() logic is called to help reduce I/O load by
+reducing an sdev's queue_depth.
 
-Remove the IRQF_ONESHOT flag.  The cmpxchg and xchg atomic operations on
-lpfc_queue->queue_claimed already protect potential parallel access to an
-EQ/CQ should the thread_fn get interrupted by the primary irq handler.
+However, the current lpfc_rampdown_queue_depth() logic does not help reduce
+queue_depth.  num_cmd_success is never updated and is always zero, which
+means new_queue_depth will always be set to sdev->queue_depth.  So,
+new_queue_depth = sdev->queue_depth - new_queue_depth always sets
+new_queue_depth to zero.  And, scsi_change_queue_depth(sdev, 0) is
+essentially a no-op.
+
+Change the lpfc_ramp_down_queue_handler() logic to set new_queue_depth
+equal to sdev->queue_depth subtracted from number of times num_rsrc_err was
+incremented.  If num_rsrc_err is >= sdev->queue_depth, then set
+new_queue_depth equal to 1.  Eventually, the frequency of Good_Status
+frames will signal SCSI upper layer to auto increase the queue_depth back
+to the driver default of 64 via scsi_handle_queue_ramp_up().
 
 Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Link: https://lore.kernel.org/r/20240305200503.57317-4-justintee8345@gmail.com
+Link: https://lore.kernel.org/r/20240305200503.57317-5-justintee8345@gmail.com
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/lpfc/lpfc_init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/lpfc/lpfc.h      |  1 -
+ drivers/scsi/lpfc/lpfc_scsi.c | 13 ++++---------
+ 2 files changed, 4 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_init.c b/drivers/scsi/lpfc/lpfc_init.c
-index 70bcee64bc8c6..7820a1a7aa6d1 100644
---- a/drivers/scsi/lpfc/lpfc_init.c
-+++ b/drivers/scsi/lpfc/lpfc_init.c
-@@ -13047,7 +13047,7 @@ lpfc_sli4_enable_msix(struct lpfc_hba *phba)
- 		rc = request_threaded_irq(eqhdl->irq,
- 					  &lpfc_sli4_hba_intr_handler,
- 					  &lpfc_sli4_hba_intr_handler_th,
--					  IRQF_ONESHOT, name, eqhdl);
-+					  0, name, eqhdl);
- 		if (rc) {
- 			lpfc_printf_log(phba, KERN_WARNING, LOG_INIT,
- 					"0486 MSI-X fast-path (%d) "
+diff --git a/drivers/scsi/lpfc/lpfc.h b/drivers/scsi/lpfc/lpfc.h
+index 04d608ea91060..be016732ab2ea 100644
+--- a/drivers/scsi/lpfc/lpfc.h
++++ b/drivers/scsi/lpfc/lpfc.h
+@@ -1325,7 +1325,6 @@ struct lpfc_hba {
+ 	struct timer_list fabric_block_timer;
+ 	unsigned long bit_flags;
+ 	atomic_t num_rsrc_err;
+-	atomic_t num_cmd_success;
+ 	unsigned long last_rsrc_error_time;
+ 	unsigned long last_ramp_down_time;
+ #ifdef CONFIG_SCSI_LPFC_DEBUG_FS
+diff --git a/drivers/scsi/lpfc/lpfc_scsi.c b/drivers/scsi/lpfc/lpfc_scsi.c
+index bf879d81846b6..cf506556f3b0b 100644
+--- a/drivers/scsi/lpfc/lpfc_scsi.c
++++ b/drivers/scsi/lpfc/lpfc_scsi.c
+@@ -167,11 +167,10 @@ lpfc_ramp_down_queue_handler(struct lpfc_hba *phba)
+ 	struct Scsi_Host  *shost;
+ 	struct scsi_device *sdev;
+ 	unsigned long new_queue_depth;
+-	unsigned long num_rsrc_err, num_cmd_success;
++	unsigned long num_rsrc_err;
+ 	int i;
+ 
+ 	num_rsrc_err = atomic_read(&phba->num_rsrc_err);
+-	num_cmd_success = atomic_read(&phba->num_cmd_success);
+ 
+ 	/*
+ 	 * The error and success command counters are global per
+@@ -186,20 +185,16 @@ lpfc_ramp_down_queue_handler(struct lpfc_hba *phba)
+ 		for (i = 0; i <= phba->max_vports && vports[i] != NULL; i++) {
+ 			shost = lpfc_shost_from_vport(vports[i]);
+ 			shost_for_each_device(sdev, shost) {
+-				new_queue_depth =
+-					sdev->queue_depth * num_rsrc_err /
+-					(num_rsrc_err + num_cmd_success);
+-				if (!new_queue_depth)
+-					new_queue_depth = sdev->queue_depth - 1;
++				if (num_rsrc_err >= sdev->queue_depth)
++					new_queue_depth = 1;
+ 				else
+ 					new_queue_depth = sdev->queue_depth -
+-								new_queue_depth;
++						num_rsrc_err;
+ 				scsi_change_queue_depth(sdev, new_queue_depth);
+ 			}
+ 		}
+ 	lpfc_destroy_vport_work_array(phba, vports);
+ 	atomic_set(&phba->num_rsrc_err, 0);
+-	atomic_set(&phba->num_cmd_success, 0);
+ }
+ 
+ /**
 -- 
 2.43.0
 
