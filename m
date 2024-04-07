@@ -1,314 +1,143 @@
-Return-Path: <linux-kernel+bounces-134531-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4C1689B29C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:01:10 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CABB089B29E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:05:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D31F1F22196
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:01:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 51509B21AA0
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:05:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2061639FEC;
-	Sun,  7 Apr 2024 15:01:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="e1aIMOHD"
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF0BE39FE5;
+	Sun,  7 Apr 2024 15:05:45 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6ECD22095
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 15:00:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52082381BA;
+	Sun,  7 Apr 2024 15:05:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712502059; cv=none; b=AwvW1E8p99lo7jKmF9Sqxs08eDPBuNVGh9k+MN2fCUxDeh1xkbqqIMJhWCvlgNo9Duo8MFdjdDCNbtyk9u9bpbg9uV5FuBu4tbBqhOF/wFlAHabsiJcCBg2m9CM6ULVLRfevW/xP30Ar09Pu0RR5Hoq0+VlKE/7ABtOBnv+H8zY=
+	t=1712502345; cv=none; b=uqRTjsQ10qaZ8s6CM8gw1FIM39V/mDdDJpruCG3RO9sskHlXPAhbfbgWijCjCKGIjIwe/nnS8ewra7dv6uI8DwyXOAonqEZVMFN2W4B23CGrxCB8f6LFAkVXNC+fNsZYjVd6nLKplsOo27t0/MEWPFCBpFtt7ty7gWWZHKC8ces=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712502059; c=relaxed/simple;
-	bh=bURv5oTWANCH9z9cXPSJn5dd7BobQTawT2S3pufseLM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JVPqOE+8pzGd7RWiKyMYYQ/q+JThPAtxyPgU/s0QWV/XaBqSQO/B2HFQWaSKlmhJECRKfE8nQErmLGgkAeb/z5C9pAwzksR2Ly/fDuoY0Ps7s6vhMApb8SmjYS9p8EaKgb7e2thsL3hRlbUwWJIP4u7NPL3f3Vo6NuU7iiFBmmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=e1aIMOHD; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dff837d674so32498425ad.3
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 08:00:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712502056; x=1713106856; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rg5p2LyDzLnfC2w8OQRGZeAgjaf7e8DN0+jmDo2guKc=;
-        b=e1aIMOHD9maELAKbu7zj0oPJLTPbZwOcnITBSv86Zdt//FwqG8sfny75OLAhlPOg62
-         8BDGuy3oLaxgw0dqERGbXGg3Et2D0JDTpOAob7Xbi+A0b1OGANlBC1kTE0E4jUaTOzVG
-         QjzqcpkVYVl/wF6F4gZW4H40wjT8KVZaS+bJ0gcUnY5AXb+uH7XtXKDCo9kdaH5O4aZW
-         Nj9wRvsTLT+thTG++RF69s80OBFAPNS6yuZWklTMPLeeAjinZ3eQK++ilj8Vsd49BjhK
-         ZniQGyZukTVidN/rU6yUlcM1BX3WsO4q8jyOe+aIG2CfIbfSHtghkbc/40eQa3sRjPxo
-         8qcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712502056; x=1713106856;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rg5p2LyDzLnfC2w8OQRGZeAgjaf7e8DN0+jmDo2guKc=;
-        b=P4cIhsOBxAXBZi+pUF+V4/KRoCYMzpMM4MEPQel/CzDtscnRxVQL+f9B0daapC7efr
-         Dh+gF2gDj1T9+bp/HeT36reXhRuhG6xQPVRXG7EHm3LldiebYP8bra5Av4pvAxoQ916W
-         3QRQWWxafldrzaFs+nwHFTSoZEnnozBtBaOJDAtkMHYjzjFgKqxg/joJZptIRdi8SRP+
-         p6dtrwwRaFlA9o/0T+zQtET7GUZrrgjg+nRqy/K5go48FBUFd1/XdAJxdnkzn863Crn8
-         WuUiC2eDV2cyrxD0Cl/IuQJBV75Hr25bn7VHJGZiO/07TfwF4Q3xlXTwdDtG8Vq/Xkji
-         SICA==
-X-Forwarded-Encrypted: i=1; AJvYcCUekATMaIuqSuZK4e5p5eKwoAmx2YJ18PF+eQLwQriPrpzYqp1BDHs87takwojP1VAfVoIuNKPpzBtEUGnHpEaADNE6xO7UM56qvwWx
-X-Gm-Message-State: AOJu0Yy2mv0qXNjh0UyGPbvEAnpGRfE45zLh0Ep5qp0ql8d1IuhNXH5m
-	bg4UX0KBIAwF3aXanDrYcMpE6uvgt7U5iY4EOjsE+nH/XSjuLa/00Ioke3/peQ==
-X-Google-Smtp-Source: AGHT+IG5a4Q0fNCaOXflnu0RC6Kp/xKoadxVcTH6j2sWeqtXMM88WShKb8CSsaKhrj1rMZ9BcVhqzQ==
-X-Received: by 2002:a17:903:192:b0:1e3:f012:5681 with SMTP id z18-20020a170903019200b001e3f0125681mr2004707plg.23.1712502055935;
-        Sun, 07 Apr 2024 08:00:55 -0700 (PDT)
-Received: from thinkpad ([120.56.192.184])
-        by smtp.gmail.com with ESMTPSA id l5-20020a170902f68500b001e2881c8de5sm5020429plg.82.2024.04.07.08.00.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Apr 2024 08:00:55 -0700 (PDT)
-Date: Sun, 7 Apr 2024 20:30:48 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-Cc: Bjorn Andersson <andersson@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Bjorn Helgaas <bhelgaas@google.com>, johan+linaro@kernel.org,
-	bmasney@redhat.com, djakov@kernel.org,
-	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	vireshk@kernel.org, quic_vbadigan@quicinc.com,
-	quic_skananth@quicinc.com, quic_nitegupt@quicinc.com,
-	quic_parass@quicinc.com, krzysztof.kozlowski@linaro.org
-Subject: Re: [PATCH v9 6/6] PCI: qcom: Add OPP support to scale performance
- state of power domain
-Message-ID: <20240407150048.GE2679@thinkpad>
-References: <20240407-opp_support-v9-0-496184dc45d7@quicinc.com>
- <20240407-opp_support-v9-6-496184dc45d7@quicinc.com>
+	s=arc-20240116; t=1712502345; c=relaxed/simple;
+	bh=LpwZ1iJe3PCZnokbYNZ30ihAT81Wpg3ltK08JbNfQUQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ntF9TxDkyJRegC/S9fihnakPB5ZhxhpOjP9ZFYcfFZyt2VGTHa0MODQKSRt/wlCvw4tA83FomUKTk78+i3+u19LRhChNhRahCSQNrmvqu/JyecEcYzXKdzvAaUTLSJvugtPej95+Tfv+s53pW/2XQnN/xCZ/8rQAG7dycjGQmNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sun, 7 Apr
+ 2024 18:05:38 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sun, 7 Apr 2024
+ 18:05:38 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: Kalle Valo <kvalo@kernel.org>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>, Wu Yunchuan
+	<yunchuan@nfschina.com>, Johannes Berg <johannes.berg@intel.com>, "Breno
+ Leitao" <leitao@debian.org>, <linux-wireless@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>,
+	<syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com>
+Subject: [PATCH] wifi: ar5523: enable proper endpoint verification
+Date: Sun, 7 Apr 2024 08:05:34 -0700
+Message-ID: <20240407150534.26737-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240407-opp_support-v9-6-496184dc45d7@quicinc.com>
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-On Sun, Apr 07, 2024 at 10:07:39AM +0530, Krishna chaitanya chundru wrote:
-> QCOM Resource Power Manager-hardened (RPMh) is a hardware block which
-> maintains hardware state of a regulator by performing max aggregation of
-> the requests made by all of the clients.
-> 
-> PCIe controller can operate on different RPMh performance state of power
-> domain based on the speed of the link. And this performance state varies
-> from target to target, like some controllers support GEN3 in NOM (Nominal)
-> voltage corner, while some other supports GEN3 in low SVS (static voltage
-> scaling).
-> 
-> The SoC can be more power efficient if we scale the performance state
-> based on the aggregate PCIe link bandwidth.
-> 
-> Add Operating Performance Points (OPP) support to vote for RPMh state based
-> on the aggregate link bandwidth.
-> 
-> OPP can handle ICC bw voting also, so move ICC bw voting through OPP
-> framework if OPP entries are present.
-> 
-> Different link configurations may share the same aggregate bandwidth,
-> e.g., a 2.5 GT/s x2 link and a 5.0 GT/s x1 link have the same bandwidth
-> and share the same OPP entry.
-> 
+Syzkaller reports [1] hitting a warning about an endpoint in use
+not having an expected type to it.
 
-This info should be part of the dts change.
+Fix the issue by checking for the existence of all proper
+endpoints with their according types intact.
 
-> As we are moving ICC voting as part of OPP, don't initialize ICC if OPP
-> is supported.
-> 
-> Before PCIe link is initialized vote for highest OPP in the OPP table,
-> so that we are voting for maximum voltage corner for the link to come up
-> in maximum supported speed.
-> 
-> Signed-off-by: Krishna chaitanya chundru <quic_krichai@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 72 +++++++++++++++++++++++++++-------
->  1 file changed, 58 insertions(+), 14 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index b4893214b2d3..4ad5ef3bf8fc 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -22,6 +22,7 @@
->  #include <linux/of.h>
->  #include <linux/of_gpio.h>
->  #include <linux/pci.h>
-> +#include <linux/pm_opp.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/platform_device.h>
->  #include <linux/phy/pcie.h>
-> @@ -1442,15 +1443,13 @@ static int qcom_pcie_icc_init(struct qcom_pcie *pcie)
->  	return 0;
->  }
->  
-> -static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
-> +static void qcom_pcie_icc_opp_update(struct qcom_pcie *pcie)
->  {
->  	struct dw_pcie *pci = pcie->pci;
-> -	u32 offset, status;
-> +	u32 offset, status, freq;
-> +	struct dev_pm_opp *opp;
->  	int speed, width;
-> -	int ret;
-> -
-> -	if (!pcie->icc_mem)
-> -		return;
-> +	int ret, mbps;
->  
->  	offset = dw_pcie_find_capability(pci, PCI_CAP_ID_EXP);
->  	status = readw(pci->dbi_base + offset + PCI_EXP_LNKSTA);
-> @@ -1462,10 +1461,26 @@ static void qcom_pcie_icc_update(struct qcom_pcie *pcie)
->  	speed = FIELD_GET(PCI_EXP_LNKSTA_CLS, status);
->  	width = FIELD_GET(PCI_EXP_LNKSTA_NLW, status);
->  
-> -	ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
-> -	if (ret) {
-> -		dev_err(pci->dev, "failed to set interconnect bandwidth for PCIe-MEM: %d\n",
-> -			ret);
-> +	if (pcie->icc_mem) {
-> +		ret = icc_set_bw(pcie->icc_mem, 0, width * QCOM_PCIE_LINK_SPEED_TO_BW(speed));
-> +		if (ret) {
-> +			dev_err(pci->dev, "failed to set interconnect bandwidth for PCIe-MEM: %d\n",
+Sadly, this patch has not been tested on real hardware.
 
-s/failed/Failed
+[1] Syzkaller report:
+------------[ cut here ]------------
+usb 1-1: BOGUS urb xfer, pipe 3 != type 1
+WARNING: CPU: 0 PID: 3643 at drivers/usb/core/urb.c:504 usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
+..
+Call Trace:
+ <TASK>
+ ar5523_cmd+0x41b/0x780 drivers/net/wireless/ath/ar5523/ar5523.c:275
+ ar5523_cmd_read drivers/net/wireless/ath/ar5523/ar5523.c:302 [inline]
+ ar5523_host_available drivers/net/wireless/ath/ar5523/ar5523.c:1376 [inline]
+ ar5523_probe+0x14b0/0x1d10 drivers/net/wireless/ath/ar5523/ar5523.c:1655
+ usb_probe_interface+0x30f/0x7f0 drivers/usb/core/driver.c:396
+ call_driver_probe drivers/base/dd.c:560 [inline]
+ really_probe+0x249/0xb90 drivers/base/dd.c:639
+ __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:778
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:808
+ __device_attach_driver+0x1d4/0x2e0 drivers/base/dd.c:936
+ bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x1e4/0x530 drivers/base/dd.c:1008
+ bus_probe_device+0x1e8/0x2a0 drivers/base/bus.c:487
+ device_add+0xbd9/0x1e90 drivers/base/core.c:3517
+ usb_set_configuration+0x101d/0x1900 drivers/usb/core/message.c:2170
+ usb_generic_driver_probe+0xbe/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd8/0x2c0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:560 [inline]
+ really_probe+0x249/0xb90 drivers/base/dd.c:639
+ __driver_probe_device+0x1df/0x4d0 drivers/base/dd.c:778
+ driver_probe_device+0x4c/0x1a0 drivers/base/dd.c:808
+ __device_attach_driver+0x1d4/0x2e0 drivers/base/dd.c:936
+ bus_for_each_drv+0x163/0x1e0 drivers/base/bus.c:427
+ __device_attach+0x1e4/0x530 drivers/base/dd.c:1008
+ bus_probe_device+0x1e8/0x2a0 drivers/base/bus.c:487
+ device_add+0xbd9/0x1e90 drivers/base/core.c:3517
+ usb_new_device.cold+0x685/0x10ad drivers/usb/core/hub.c:2573
+ hub_port_connect drivers/usb/core/hub.c:5353 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5497 [inline]
+ port_event drivers/usb/core/hub.c:5653 [inline]
+ hub_event+0x26cb/0x45d0 drivers/usb/core/hub.c:5735
+ process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
+ worker_thread+0x669/0x1090 kernel/workqueue.c:2436
+ kthread+0x2e8/0x3a0 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:306
+ </TASK>
 
-> +				ret);
-> +		}
-> +	} else {
-> +		mbps = pcie_link_speed_to_mbps(pcie_link_speed[speed]);
-> +		if (mbps < 0)
-> +			return;
-> +
-> +		freq = mbps * 1000;
-> +		opp = dev_pm_opp_find_freq_exact(pci->dev, freq * width, true);
+Reported-and-tested-by: syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com
+Fixes: b7d572e1871d ("ar5523: Add new driver")
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+---
+ drivers/net/wireless/ath/ar5523/ar5523.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-As per the API documentation, dev_pm_opp_put() should be called for both success
-and failure case.
-
-> +		if (!IS_ERR(opp)) {
-
-So what is the action if OPP is not found for the freq?
-
-> +			ret = dev_pm_opp_set_opp(pci->dev, opp);
-> +			if (ret)
-> +				dev_err(pci->dev, "Failed to set opp: freq %ld ret %d\n",
-
-'Failed to set OPP for freq (%ld): %d'
-
-> +					dev_pm_opp_get_freq(opp), ret);
-> +			dev_pm_opp_put(opp);
-> +		}
->  	}
->  }
->  
-> @@ -1509,8 +1524,10 @@ static void qcom_pcie_init_debugfs(struct qcom_pcie *pcie)
->  static int qcom_pcie_probe(struct platform_device *pdev)
->  {
->  	const struct qcom_pcie_cfg *pcie_cfg;
-> +	unsigned long max_freq = INT_MAX;
->  	struct device *dev = &pdev->dev;
->  	struct qcom_pcie *pcie;
-> +	struct dev_pm_opp *opp;
->  	struct dw_pcie_rp *pp;
->  	struct resource *res;
->  	struct dw_pcie *pci;
-> @@ -1577,9 +1594,33 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->  		goto err_pm_runtime_put;
->  	}
->  
-> -	ret = qcom_pcie_icc_init(pcie);
-> -	if (ret)
-> +	/* OPP table is optional */
-> +	ret = devm_pm_opp_of_add_table(dev);
-> +	if (ret && ret != -ENODEV) {
-> +		dev_err_probe(dev, ret, "Failed to add OPP table\n");
->  		goto err_pm_runtime_put;
-> +	}
-> +
-> +	/*
-> +	 * Use highest OPP here if the OPP table is present. At the end of
-
-I believe I asked you to add the information justifying why the highest OPP
-should be used.
-
-> +	 * the probe(), OPP will be updated using qcom_pcie_icc_opp_update().
-> +	 */
-> +	if (!ret) {
-> +		opp = dev_pm_opp_find_freq_floor(dev, &max_freq);
-
-Same comment as dev_pm_opp_find_freq_exact(). 
-
-> +		if (!IS_ERR(opp)) {
-> +			ret = dev_pm_opp_set_opp(dev, opp);
-> +			if (ret)
-> +				dev_err_probe(pci->dev, ret,
-> +					      "Failed to set OPP: freq %ld\n",
-
-Same comment as above.
-
-> +					      dev_pm_opp_get_freq(opp));
-> +			dev_pm_opp_put(opp);
-
-So you want to continue even in the case of failure?
-
-- Mani
-
-> +		}
-> +	} else {
-> +		/* Skip ICC init if OPP is supported as it is handled by OPP */
-> +		ret = qcom_pcie_icc_init(pcie);
-> +		if (ret)
-> +			goto err_pm_runtime_put;
-> +	}
->  
->  	ret = pcie->cfg->ops->get_resources(pcie);
->  	if (ret)
-> @@ -1599,7 +1640,7 @@ static int qcom_pcie_probe(struct platform_device *pdev)
->  		goto err_phy_exit;
->  	}
->  
-> -	qcom_pcie_icc_update(pcie);
-> +	qcom_pcie_icc_opp_update(pcie);
->  
->  	if (pcie->mhi)
->  		qcom_pcie_init_debugfs(pcie);
-> @@ -1658,6 +1699,9 @@ static int qcom_pcie_suspend_noirq(struct device *dev)
->  	if (ret)
->  		dev_err(dev, "failed to disable icc path of CPU-PCIe: %d\n", ret);
->  
-> +	if (!pcie->icc_mem)
-> +		dev_pm_opp_set_opp(pcie->pci->dev, NULL);
-> +
->  	return ret;
->  }
->  
-> @@ -1680,7 +1724,7 @@ static int qcom_pcie_resume_noirq(struct device *dev)
->  		pcie->suspended = false;
->  	}
->  
-> -	qcom_pcie_icc_update(pcie);
-> +	qcom_pcie_icc_opp_update(pcie);
->  
->  	return 0;
->  }
-> 
-> -- 
-> 2.42.0
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
+diff --git a/drivers/net/wireless/ath/ar5523/ar5523.c b/drivers/net/wireless/ath/ar5523/ar5523.c
+index 815f8f599f5d..5cac4a6452db 100644
+--- a/drivers/net/wireless/ath/ar5523/ar5523.c
++++ b/drivers/net/wireless/ath/ar5523/ar5523.c
+@@ -1594,6 +1594,20 @@ static int ar5523_probe(struct usb_interface *intf,
+ 	struct ar5523 *ar;
+ 	int error = -ENOMEM;
+ 
++	static u8 bulk_ep_addr[] = {
++		AR5523_CMD_TX_PIPE | USB_DIR_OUT,
++		AR5523_DATA_TX_PIPE | USB_DIR_OUT,
++		AR5523_CMD_RX_PIPE | USB_DIR_IN,
++		AR5523_DATA_RX_PIPE | USB_DIR_IN,
++		0};
++
++	if (!usb_check_bulk_endpoints(intf, bulk_ep_addr)) {
++		dev_err(&dev->dev,
++			"Could not find all expected endpoints\n");
++		error = -ENODEV;
++		goto out;
++	}
++
+ 	/*
+ 	 * Load firmware if the device requires it.  This will return
+ 	 * -ENXIO on success and we'll get called back afer the usb
 
