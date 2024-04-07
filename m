@@ -1,95 +1,118 @@
-Return-Path: <linux-kernel+bounces-134133-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D7AF89AE0E
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:28:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C69789AE12
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:33:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86D641C21435
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 02:28:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C509E1C20C17
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 02:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88DBF184D;
-	Sun,  7 Apr 2024 02:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="LrRHmrMR"
-Received: from out30-110.freemail.mail.aliyun.com (out30-110.freemail.mail.aliyun.com [115.124.30.110])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA83B3D8E;
-	Sun,  7 Apr 2024 02:28:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.110
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F00541C0DC0;
+	Sun,  7 Apr 2024 02:33:45 +0000 (UTC)
+Received: from zg8tmja2lje4os4yms4ymjma.icoremail.net (zg8tmja2lje4os4yms4ymjma.icoremail.net [206.189.21.223])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 324AE368;
+	Sun,  7 Apr 2024 02:33:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.189.21.223
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712456898; cv=none; b=KUQnHOhtbFDStSbcNvp7X0B4XsXK1iZ/SwxldGBe1hYGZK2InF+rvK+jGvwKfVn5+F2BOEaW8K8zc0y5nXzBfGr52FHN8hpr3e3bA38ZhuAzAN0ceJnbDR1STCzxXKXjOFj8C9gUxPDFDfw8Fo/O4BSn3L+Oazt0WMT/BfFMeA0=
+	t=1712457225; cv=none; b=eSVQWw+cs5IDo7yYHQW9GsFfQJ7LzXF17CvQgV/LfrZS3bP/H8QhUdPpnchl8RiHJEuJUQkAjiwaQcZtrayc6kBevfQvAL+ZBJOuEfrOsHoZ2VHPjzixFbPL5fNOLoVTCJswyTZauTSCnalfrLFdP6c/K5hC7zivFxtIwh2GrIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712456898; c=relaxed/simple;
-	bh=5f0Zjyug+xD4ykOosxZAXg2bxN/+a/AUaQR9YyxDaqA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fRWGe5zZrfrQhokOT4WMGBuQTvU6nwhWK5L5BuhO0eRpVkLVq5ak7T4m7/0rw46ZJj12MCC9nBTwiYeV1rLf+7wAm9colrfQhyn0c1f5cL/ZUTGsGlTttsblAFtRnvV2ZZlp3hrSaYFGH8F3jSdOZcyd9gNhMw5iNCL8c8TpPaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=LrRHmrMR; arc=none smtp.client-ip=115.124.30.110
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712456893; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=y/enGtSxuq6kBPcEkUjW0NrmRUA2NEWBWYihlUsxgpM=;
-	b=LrRHmrMRyyuxZLEqR1GXlJerspPaUf6BKjIFrvhgFJlowrKX37ct9ojbRK5i1kpKMiV8ynnc6ROMKz7Hy8gYgxJYWqRMaGxjUeIhD1xkHyZbWXHl4txYrjWA+4osUTZTHulGluruOT1tkT2tEpoQi6mHJdcvvlmylW/feH2a0zM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W4-lTpa_1712456885;
-Received: from localhost(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0W4-lTpa_1712456885)
-          by smtp.aliyun-inc.com;
-          Sun, 07 Apr 2024 10:28:13 +0800
-From: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To: jikos@kernel.org
-Cc: bentiss@kernel.org,
-	linux-input@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-	Abaci Robot <abaci@linux.alibaba.com>
-Subject: [PATCH] HID: Remove the unused variable minor
-Date: Sun,  7 Apr 2024 10:28:04 +0800
-Message-Id: <20240407022804.27081-1-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	s=arc-20240116; t=1712457225; c=relaxed/simple;
+	bh=vvc00YemBHkBGmzAmPgwXj7gzhMI2fSH6tZO1sA3vQ4=;
+	h=Date:From:To:Subject:In-Reply-To:References:Content-Type:
+	 MIME-Version:Message-ID; b=Z/LmBltDCQTOElBsuCk8P0Gv3Ds4XLZKkuL7aO29iBxWji4Uo1Is/yUX5sMMRQEq8+hM8VsXv+5jV6TmSscplWFrxnvp+tN3PhiR75SpzY397wDUY3IUqqAmFd2NxZ2s9T5nF0otQ7zuf9zCN58atZn1ADBfr00ajaL+fv+kKSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eswincomputing.com; spf=pass smtp.mailfrom=eswincomputing.com; arc=none smtp.client-ip=206.189.21.223
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=eswincomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eswincomputing.com
+Received: from liangshenlin$eswincomputing.com ( [10.12.96.90] ) by
+ ajax-webmail-app2 (Coremail) ; Sun, 7 Apr 2024 10:31:34 +0800 (GMT+08:00)
+Date: Sun, 7 Apr 2024 10:31:34 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From: "Shenlin Liang" <liangshenlin@eswincomputing.com>
+To: anup@brainfault.org, atishp@atishpatra.org, paul.walmsley@sifive.com, 
+	palmer@dabbelt.com, aou@eecs.berkeley.edu, kvm@vger.kernel.org, 
+	kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, peterz@infradead.org, mingo@redhat.com, 
+	acme@kernel.org, namhyung@kernel.org, mark.rutland@arm.com, 
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org, 
+	irogers@google.com, adrian.hunter@intel.com, 
+	linux-perf-users@vger.kernel.org, 
+	"Shenlin Liang" <liangshenlin@eswincomputing.com>
+Subject: Re: [PATCH 0/2] perf kvm: Add kvm stat support on riscv
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT6.0.3 build 20220420(169d3f8c)
+ Copyright (c) 2002-2024 www.mailtech.cn
+ mispb-72143050-eaf5-4703-89e0-86624513b4ce-eswincomputing.com
+In-Reply-To: <20240328031220.1287-1-liangshenlin@eswincomputing.com>
+References: <20240328031220.1287-1-liangshenlin@eswincomputing.com>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <71d045ed.2258.18eb6659685.Coremail.liangshenlin@eswincomputing.com>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID:TQJkCgBHWbuGBRJmHT0FAA--.2754W
+X-CM-SenderInfo: xold0whvkh0z1lq6v25zlqu0xpsx3x1qjou0bp/1tbiAgEADGYRGI
+	0ZWwAAsv
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+	CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+	daVFxhVjvjDU=
 
-Variable minor is not effectively used, so delete it.
-
-drivers/hid/hid-winwing.c:123:15: warning: variable 'minor' set but not used.
-
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=8705
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/hid/hid-winwing.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/drivers/hid/hid-winwing.c b/drivers/hid/hid-winwing.c
-index d895c82a541d..0e224d1a6466 100644
---- a/drivers/hid/hid-winwing.c
-+++ b/drivers/hid/hid-winwing.c
-@@ -120,7 +120,6 @@ static int winwing_init_led(struct hid_device *hdev,
- static int winwing_probe(struct hid_device *hdev,
- 		const struct hid_device_id *id)
- {
--	unsigned int minor;
- 	int ret;
- 
- 	ret = hid_parse(hdev);
-@@ -135,8 +134,6 @@ static int winwing_probe(struct hid_device *hdev,
- 		return ret;
- 	}
- 
--	minor = ((struct hidraw *) hdev->hidraw)->minor;
--
- 	return 0;
- }
- 
--- 
-2.20.1.7.g153144c
-
+R2VudGxlIHBpbmcuLi4KCj4gCj4gJ3BlcmYga3ZtIHN0YXQgcmVwb3J0L3JlY29yZCcgZ2VuZXJh
+dGVzIGEgc3RhdGlzdGljYWwgYW5hbHlzaXMgb2YgS1ZNCj4gZXZlbnRzIGFuZCBjYW4gYmUgdXNl
+ZCB0byBhbmFseXplIGd1ZXN0IGV4aXQgcmVhc29ucy4gVGhpcyBwYXRjaCB0cmllcwo+IHRvIGFk
+ZCBzdGF0IHN1cHBvcnQgb24gcmlzY3YuCj4gCj4gTWFwIHRoZSByZXR1cm4gdmFsdWUgb2YgdHJh
+Y2Vfa3ZtX2V4aXQoKSB0byB0aGUgc3BlY2lmaWMgY2F1c2Ugb2YgdGhlIAo+IGV4Y2VwdGlvbiwg
+YW5kIGV4cG9ydCBpdCB0byB1c2Vyc3BhY2UuCj4gCj4gSXQgcmVjb3JkcyBvbiB0d28gYXZhaWxh
+YmxlIEtWTSB0cmFjZXBvaW50cyBmb3IgcmlzY3Y6ICJrdm06a3ZtX2VudHJ5Igo+IGFuZCAia3Zt
+Omt2bV9leGl0IiwgYW5kIHJlcG9ydHMgc3RhdGlzdGljYWwgZGF0YSB3aGljaCBpbmNsdWRlcyBl
+dmVudHMKPiBoYW5kbGVzIHRpbWUsIHNhbXBsZXMsIGFuZCBzbyBvbi4KPiAKPiBTaW1wbGUgdGVz
+dHMgZ28gYmVsb3c6Cj4gCj4gIyAuL3BlcmYga3ZtIHJlY29yZCAtZSAia3ZtOmt2bV9lbnRyeSIg
+LWUgImt2bTprdm1fZXhpdCIKPiBMb3dlcmluZyBkZWZhdWx0IGZyZXF1ZW5jeSByYXRlIGZyb20g
+NDAwMCB0byAyNTAwLgo+IFBsZWFzZSBjb25zaWRlciB0d2Vha2luZyAvcHJvYy9zeXMva2VybmVs
+L3BlcmZfZXZlbnRfbWF4X3NhbXBsZV9yYXRlLgo+IFsgcGVyZiByZWNvcmQ6IFdva2VuIHVwIDE4
+IHRpbWVzIHRvIHdyaXRlIGRhdGEgXQo+IFsgcGVyZiByZWNvcmQ6IENhcHR1cmVkIGFuZCB3cm90
+ZSA1LjQzMyBNQiBwZXJmLmRhdGEuZ3Vlc3QgKDYyNTE5IHNhbXBsZXMpIAo+IAo+ICMgLi9wZXJm
+IGt2bSByZXBvcnQKPiAzMUsga3ZtOmt2bV9lbnRyeQo+IDMxSyBrdm06a3ZtX2V4aXQKPiAKPiAj
+IC4vcGVyZiBrdm0gc3RhdCByZWNvcmQgLWEKPiBbIHBlcmYgcmVjb3JkOiBXb2tlbiB1cCAzIHRp
+bWVzIHRvIHdyaXRlIGRhdGEgXQo+IFsgcGVyZiByZWNvcmQ6IENhcHR1cmVkIGFuZCB3cm90ZSA4
+LjUwMiBNQiBwZXJmLmRhdGEuZ3Vlc3QgKDk5MzM4IHNhbXBsZXMpIF0KPiAKPiAjIC4vcGVyZiBr
+dm0gc3RhdCByZXBvcnQgLS1ldmVudD12bWV4aXQKPiBFdmVudCBuYW1lICAgICAgICAgICAgICAg
+IFNhbXBsZXMgICBTYW1wbGUlICAgIFRpbWUgKG5zKSAgICAgVGltZSUgICBNYXggVGltZSAobnMp
+ICAgTWluIFRpbWUgKG5zKSAgTWVhbiBUaW1lIChucykKPiBTVE9SRV9HVUVTVF9QQUdFX0ZBVUxU
+ICAgICAyNjk2OCAgICAgNTQuMDAlICAgIDIwMDMwMzE4MDAgICAgNDAuMDAlICAgICAzMzYxNDAw
+ICAgICAgICAgMjc2MDAgICAgICAgICAgNzQyNzQKPiBMT0FEX0dVRVNUX1BBR0VfRkFVTFQgICAg
+ICAxNzY0NSAgICAgMzUuMDAlICAgIDExNTMzMzgxMDAgICAgMjMuMDAlICAgICAyNTEzNDAwICAg
+ICAgICAgMzA4MDAgICAgICAgICAgNjUzNjMKPiBWSVJUVUFMX0lOU1RfRkFVTFQgICAgICAgICAx
+MjQ3ICAgICAgMi4wMCUgICAgIDM0MDgyMDgwMCAgICAgNi4wMCUgICAgICAxMTkwODAwICAgICAg
+ICAgNDMzMDAgICAgICAgICAgMjczMzEyCj4gSU5TVF9HVUVTVF9QQUdFX0ZBVUxUICAgICAgMTEy
+OCAgICAgIDIuMDAlICAgICAzNDA2NDU4MDAgICAgIDYuMDAlICAgICAgMjEyMzIwMCAgICAgICAg
+IDMwMjAwICAgICAgICAgIDMwMTk5MAo+IFNVUEVSVklTT1JfU1lTQ0FMTCAgICAgICAgIDEwMTkg
+ICAgICAyLjAwJSAgICAgMjQ1OTg5OTAwICAgICA0LjAwJSAgICAgIDE4NTE1MDAgICAgICAgICAy
+OTMwMCAgICAgICAgICAyNDE0MDMKPiBMT0FEX0FDQ0VTUyAgICAgICAgICAgICAgICA5ODYgICAg
+ICAgMS4wMCUgICAgIDY3MTU1NjIwMCAgICAgMTMuMDAlICAgICA0MTgwMjAwICAgICAgICAgMTAw
+NzAwICAgICAgICAgNjgxMDkxCj4gSU5TVF9BQ0NFU1MgICAgICAgICAgICAgICAgNjU1ICAgICAg
+IDEuMDAlICAgICAxNzAwNTQ4MDAgICAgIDMuMDAlICAgICAgMTgwODMwMCAgICAgICAgIDU0NjAw
+ICAgICAgICAgIDI1OTYyNQo+IEhZUEVSVklTT1JfU1lTQ0FMTCAgICAgICAgIDIxICAgICAgICAw
+LjAwJSAgICAgNDI3NjQwMCAgICAgICAwLjAwJSAgICAgIDcxNjUwMCAgICAgICAgICAxMTYwMDAg
+ICAgICAgICAyMDM2MzggCj4gCj4gU2hlbmxpbiBMaWFuZyAoMik6Cj4gICBSSVNDVjogS1ZNOiBh
+ZGQgdHJhY2Vwb2ludHMgZm9yIGVudHJ5IGFuZCBleGl0IGV2ZW50cwo+ICAgcGVyZiBrdm0vcmlz
+Y3Y6IFBvcnQgcGVyZiBrdm0gc3RhdCB0byBSSVNDLVYKPiAKPiAgYXJjaC9yaXNjdi9rdm0vdHJh
+Y2VfcmlzY3YuaCAgICAgICAgICAgICAgICAgIHwgNjAgKysrKysrKysrKysrKysKPiAgYXJjaC9y
+aXNjdi9rdm0vdmNwdS5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDcgKysKPiAgdG9vbHMv
+cGVyZi9hcmNoL3Jpc2N2L01ha2VmaWxlICAgICAgICAgICAgICAgIHwgIDEgKwo+ICB0b29scy9w
+ZXJmL2FyY2gvcmlzY3YvdXRpbC9CdWlsZCAgICAgICAgICAgICAgfCAgMSArCj4gIHRvb2xzL3Bl
+cmYvYXJjaC9yaXNjdi91dGlsL2t2bS1zdGF0LmMgICAgICAgICB8IDc4ICsrKysrKysrKysrKysr
+KysrKysKPiAgLi4uL2FyY2gvcmlzY3YvdXRpbC9yaXNjdl9leGNlcHRpb25fdHlwZXMuaCAgIHwg
+NDEgKysrKysrKysrKwo+ICA2IGZpbGVzIGNoYW5nZWQsIDE4OCBpbnNlcnRpb25zKCspCj4gIGNy
+ZWF0ZSBtb2RlIDEwMDY0NCBhcmNoL3Jpc2N2L2t2bS90cmFjZV9yaXNjdi5oCj4gIGNyZWF0ZSBt
+b2RlIDEwMDY0NCB0b29scy9wZXJmL2FyY2gvcmlzY3YvdXRpbC9rdm0tc3RhdC5jCj4gIGNyZWF0
+ZSBtb2RlIDEwMDY0NCB0b29scy9wZXJmL2FyY2gvcmlzY3YvdXRpbC9yaXNjdl9leGNlcHRpb25f
+dHlwZXMuaAo+IAo+IC0tIAo+IDIuMzcuMgo=
 
