@@ -1,117 +1,134 @@
-Return-Path: <linux-kernel+bounces-134330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134312-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DCE989B068
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D392B89B02E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 11:54:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 054E4283E2A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:23:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0414D282508
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:54:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEF60182C5;
-	Sun,  7 Apr 2024 10:22:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 390861799B;
+	Sun,  7 Apr 2024 09:54:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="Olvan3Fx"
-Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="loS8/9k4"
+Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95ADA1642B
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 10:22:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9B96125D6
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 09:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712485375; cv=none; b=uiwZdVvFjCVWqRJsmOGUG6lnPvtKFUnBbjVK8GB9iPxkh643yr4zYXJ97rOpLg50/tOFkm7joGtKWnYjdYUfrw053+oowW08RxqyQjLHwDt1j/ed8BS+/SffBSyoGTWXnJWMLu5TEvzP4OBpWUrdaRcpEkTC+xjoFuUE4bz2DD4=
+	t=1712483669; cv=none; b=UjN+l3XfVqzdsUIZmEvAYQ8luUfOpPVsJ19YEUY7CWVlr4jQyzVsUzSevI80znrtUreEdTpTD/BoNyjBpbBeWnY4yoEKLgdDn5ZrB5D8TNnh4yhmPk4rGWHtkT8SCxz0BUukh1xxKwNET/16kTMjNtTKBGc0do7g101JkydbRIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712485375; c=relaxed/simple;
-	bh=Lt2crmJayq9F3vHRkvZNrVEFSduxCuPNpTmHtF5Idpk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QOuAE0dUHjAIOSvI9tRxQkYjt6hywFI9t/IFxJnpM3UNDvalAhCUsW46BNUe+pYeDCKdFATPXGDf/Hm1OovLjTaZ4nep5mUQAdEwj3ElgaCRfoQbR5Y/Brx0Hiu0U1M/98Vg9RQ5n0DHKIgnJ5KUEqVKlBlcadeugfb2YGVP5Qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=Olvan3Fx; arc=none smtp.client-ip=80.12.242.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from [192.168.1.18] ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id tP9trN2AQ7XO5tP9urPag1; Sun, 07 Apr 2024 11:49:55 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1712483395;
-	bh=onjAi5287tQzkMkFd5wR1HMVpRtkvypYb66fooySo48=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=Olvan3FxyorBxQrVC82szkPbGGYAi45ejWmdNXCnNg89AoEoRsD8xTA1YLFEeeidV
-	 ZYoxuFhP/hiQwrvKcsSJ4KP53DTatjYT2WQ3wi8rceAVXpMqkh2mS67vViK0jtp1s3
-	 gGzYh+qYdp2m1iL2DIyObDBA6+pfiT3wbj/jtMDGOHR2elMQU/o6+cNy2cT3VzUxap
-	 AI8ow5tRNAuNrgvRx+p0V7aP7krbuKEiNEihc/vJ+MqsOfz4cIrmYI7t4tQ6dgQYPZ
-	 V0bvQxHVDe3u81+QJhmSDSAKDQ3u95GUhWULrkt1aMMKjOQFVH3sjjhL+16RPKX9ZD
-	 FCFt3buV5eFeQ==
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 07 Apr 2024 11:49:55 +0200
-X-ME-IP: 86.243.17.157
-Message-ID: <559293f8-0291-4059-95ac-99c5c106320a@wanadoo.fr>
-Date: Sun, 7 Apr 2024 11:49:52 +0200
+	s=arc-20240116; t=1712483669; c=relaxed/simple;
+	bh=i8Pf56totbaL2ToXcQKolVxiIZ/TpmMBAZ0t/LCkK3w=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rhonBt7I33DAy3G2CIYqRWZqLmalo0Efb8Fbms11oUw0ShCQrxIQbkl0PX0wGyu2dKkyo3DzVd9zlzAnFoQZSd6tRSSUQ/LcjARqTboBS3+9DgQpZOzdSLJBiFa3ObWu53aaRNER8tJygYStqC5TU5DyeDShvQsOwv2VOijLybA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=loS8/9k4; arc=none smtp.client-ip=185.70.40.134
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1712483664; x=1712742864;
+	bh=FpPOsxrlm7kGglog0YaejIMtnmrT68wmHt8AAfV1foA=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=loS8/9k4aV1FTA3BHgGAukGuWqqeBVljBwDIWzkAUljm/0zq6hSqJ8lBwn2P5rfB7
+	 7hgv5H2yThaIDK4kSj+MbPpjK7d++cHJcljgs/mFixr8gzLtHjkP/88V2kHVawH6js
+	 7P3nOU6SklxAWyFecLxPypNogf82q7zCbK7g2raSQfhM4Ov7Py6moiNoNxkxRwWR2e
+	 MmkVjKt1ESsQQMsKZEFCIQwNNeUCgVQLjaUEB7KskCCP5DUYbizydYKDirxFuoNagl
+	 v4xhZwOUDNXemN2PNDfDaWK9UrfSplCR2bBZk8bxfFt5paquQALAo39ev4FS7oslvb
+	 tv2kLnKfdTylg==
+Date: Sun, 07 Apr 2024 09:54:19 +0000
+To: Viresh Kumar <viresh.kumar@linaro.org>, "Rafael J. Wysocki" <rafael@kernel.org>, Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>, Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>
+From: Benno Lossin <benno.lossin@proton.me>
+Cc: linux-pm@vger.kernel.org, Vincent Guittot <vincent.guittot@linaro.org>, Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>, rust-for-linux@vger.kernel.org, Manos Pitsidianakis <manos.pitsidianakis@linaro.org>, Erik Schilling <erik.schilling@linaro.org>, =?utf-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>, Joakim Bech <joakim.bech@linaro.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 1/3] rust: Add bindings for OPP framework
+Message-ID: <ff6c7d5e-d6e9-4331-b8cc-eab139160e59@proton.me>
+In-Reply-To: <06bb914eae00671a69b393bf86bb01ddec86c16f.1712314032.git.viresh.kumar@linaro.org>
+References: <cover.1712314032.git.viresh.kumar@linaro.org> <06bb914eae00671a69b393bf86bb01ddec86c16f.1712314032.git.viresh.kumar@linaro.org>
+Feedback-ID: 71780778:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2] ppdev: Add an error check in register_device
-To: Huai-Yuan Liu <qq810974084@gmail.com>, sudipm.mukherjee@gmail.com,
- arnd@arndb.de, gregkh@linuxfoundation.org
-Cc: linux-kernel@vger.kernel.org, baijiaju1990@outlook.com
-References: <20240407080358.8635-1-qq810974084@gmail.com>
-Content-Language: en-MW
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-In-Reply-To: <20240407080358.8635-1-qq810974084@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
-Le 07/04/2024 à 10:03, Huai-Yuan Liu a écrit :
-> In register_device, the return value of ida_simple_get is unchecked,
-> in witch ida_simple_get will use an invalid index value.
-> 
-> To address this issue, index should be checked after ida_simple_get. When
-> the index value is abnormal, a warning message should be printed, the port
-> should be dropped, and the value should be recorded, then jump to 'err'.
-> 
-> Fixes: 9a69645dde11 ("ppdev: fix registering same device name")
-> Signed-off-by: Huai-Yuan Liu <qq810974084@gmail.com>
-> ---
-> V2:
-> * In patch V2, we found that parport_find_number implicitly calls
-> parport_get_port(). So when dealing with abnormal index values, we should
-> call parport_put_port() to throw away the reference to the port.
-> ---
->   drivers/char/ppdev.c | 7 +++++++
->   1 file changed, 7 insertions(+)
-> 
-> diff --git a/drivers/char/ppdev.c b/drivers/char/ppdev.c
-> index 4c188e9e477c..ac5a93d39fbd 100644
-> --- a/drivers/char/ppdev.c
-> +++ b/drivers/char/ppdev.c
-> @@ -300,6 +300,13 @@ static int register_device(int minor, struct pp_struct *pp)
->   	}
->   
->   	index = ida_simple_get(&ida_index, 0, 0, GFP_KERNEL);
-> +	if (index < 0) {
-> +		pr_warn("%s: failed to get index!\n", name);
-> +		parport_put_port(port);
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-I think that a new label should be added, just before the 'err' label, 
-and move this parport_put_port() call there, as well as the one just 
-after parport_register_dev_model().
+I took a quick look and left some comments from the Rust side of view.
 
-CJ
+On 05.04.24 13:09, Viresh Kumar wrote:
+> +/// Equivalent to `struct dev_pm_opp_config` in the C Code.
+> +pub struct Config<T: ConfigOps> {
+> +    token: Option<i32>,
+> +    clk_names: Option<Pin<Vec<CString>>>,
 
-> +		rc = index;
-> +		goto err;
-> +	}
+Why are you using `Pin<Vec<_>>`? The vector may reallocate the backing
+storage at any point in time.
+
+> +    prop_name: Option<Pin<CString>>,
+> +    regulator_names: Option<Pin<Vec<CString>>>,
+> +    genpd_names: Option<Pin<Vec<CString>>>,
+> +    supported_hw: Option<Pin<Vec<u32>>>,
+> +    required_devs: Option<Pin<Vec<Device>>>,
+> +    _data: PhantomData<T>,
+> +}
+
+[...]
+
+> +    /// Sets the configuration with the OPP core.
+> +    pub fn set(&mut self, dev: &Device) -> Result<()> {
+> +        // Already configured.
+> +        if self.token.is_some() {
+
+Why does the config hold onto this token? Would it make sense to consume
+the config and return a `Handle` or `Token` abstraction? Then you don't
+need to check if the config has been "used" before.
+
+> +            return Err(EBUSY);
+> +        }
 > +
->   	memset(&ppdev_cb, 0, sizeof(ppdev_cb));
->   	ppdev_cb.irq_func = pp_irq;
->   	ppdev_cb.flags = (pp->flags & PP_EXCL) ? PARPORT_FLAG_EXCL : 0;
+> +        let (_clk_list, clk_names) =3D match &self.clk_names {
+> +            Some(x) =3D> {
+> +                let list =3D to_c_str_array(x)?;
+> +                let ptr =3D list.as_ptr();
+> +                (Some(list), ptr)
+> +            }
+> +            None =3D> (None, ptr::null()),
+> +        };
+
+[...]
+
+> +/// Operating performance point (OPP).
+> +///
+> +/// # Invariants
+> +///
+> +/// `ptr` is valid, non-null, and has a non-zero reference count. One of=
+ the references is owned by
+> +/// `self`, and will be decremented when `self` is dropped.
+> +#[repr(transparent)]
+> +pub struct OPP(*mut bindings::dev_pm_opp);
+
+I think you should use the `ARef` pattern instead:
+
+     #[repr(transparent)]
+     pub struct OPP(Opaque<bindings::dev_pm_opp>);
+
+     unsafe impl AlwaysRefCounted for OPP {
+         // ...
+     }
+
+Then you can use `ARef<OPP>` everywhere you use `OPP` currently.
+
+--=20
+Cheers,
+Benno
 
 
