@@ -1,114 +1,127 @@
-Return-Path: <linux-kernel+bounces-134657-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134658-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A5C689B485
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 00:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B37C789B487
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 00:48:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C5A41C20CDE
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 22:47:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E42301C20C75
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 22:48:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4878E3B2BE;
-	Sun,  7 Apr 2024 22:47:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151CA381BB;
+	Sun,  7 Apr 2024 22:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="crwQIsSr"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mN+8waih"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2147B22318
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 22:47:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E02921379;
+	Sun,  7 Apr 2024 22:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712530042; cv=none; b=CzPNdieIlp6BqjMyGKsILb/SNm64Yg7umQ2TjFPeA1Lcch60soNnk9ZksVNqfMNZE8d7aSj3QcM7zcKkjMlf6pOhcYGd8jY2V7Qu7s/kYUv5xJ5q+Tzczbe3wedlYAP1IDP2ohcAlaVx9XGF/zk/CmnZMIsx8567G57iQ6PhQ+I=
+	t=1712530080; cv=none; b=d2yZ9vwdMXS5FtWE7aj+8CpwR1S3KjudIKSve+4ZnzJ1U4AzG7eZzR6ZibF/Dn6NmvSIZVZ5OIogWs09lUNsv6bPYkuNRrcL0zKGNf3mneJ/J4Bkb1yR9vU3THa5K+pxnkUSAfmgaWWIK8y65QxpveDJezisODvQH4NVJP7RtS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712530042; c=relaxed/simple;
-	bh=cYPJsLS2G4LFo5gdhX3bUtU8WUtFxavLfQpIQuT7eNk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t6I9qnE7TbA2+Tseq2xX22vScVxj7bJPibpobneDEQcAJYIqXFfG40oo06Zt5pJy3S9Q0RrPWGIEKOryMDohpP7Bcja42cb4D8FfE4FUPBkyAj31y7yZZUBmfX6x/djmlnptDjRP9QDKajeVuZBsfi4W2ERjv/fq2ogPnff2OOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=crwQIsSr; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc6d8bd618eso3644868276.3
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 15:47:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712530040; x=1713134840; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=nQNYObhRI+L+iMTgrH55FYC3oUBM9fgxDq9UB6KvUqQ=;
-        b=crwQIsSrlx93WcSP3CtqTwtvaTR5Xttmv0Yl94zKhJtwpZE7/nL5OlYWBFqIjOgoE5
-         F8W2JcxK5g2CsYJmHjFiSi81t1z8MFyIQENQFxOfoAUbi8l7/ARFTuC0ZsJfgn93T0Rw
-         uxBBE1ks3oVwa2qjk1EBkAz2nnuo5Yb4rnmjqOtOPQakLRsuFfnOfNMk5IIIqAwhfzzD
-         E4eC/6w+R6k+WFGNabbtpRcd9bTEgDObSrpW+yx8tY9pw+y+2+5HypTNJ9yMiDc0c0rw
-         ZuSBoYdzo1z6KcI/wI5hxQteWpNVPy7ZX9A3p9G6O7e7dFtqqSSJm/3o+cqcPZmoW/A7
-         tVtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712530040; x=1713134840;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nQNYObhRI+L+iMTgrH55FYC3oUBM9fgxDq9UB6KvUqQ=;
-        b=bGVfj982fL66RhcXEfmiEqwAxqBNhGEBan90zvsliXMgs4hX9KphRO3JLFwnBi8h12
-         qOoSh9iry2NL7MuFARWY3918nX8POJ8otSIxY2We2uzbeCergK/uH8yLORgn3hvQ1d60
-         GNoh5j5+vwntrxVtdSxt2Zhy6zmGYLpyPPPhJpPz1k0iTXyqt0YswX2X2dHb/SANM5Hi
-         oLi1lAktVXzNXnssKNRF1VeRILBkIqPQeiqA75nnTsgZC9ChP8cAXInlx3aGpZEgnYD/
-         gGtuLldUEwYRnSV/CUeyvErjTns8POpaHMs405y3224y0J7SvXVWGDwo+GR3MC2+5Nms
-         ay/A==
-X-Forwarded-Encrypted: i=1; AJvYcCWAgZ25d8csmU+bvfjnF1TmMLU2DVchM+L8uKb3e5bkvVHNM13TD+1WZYycZmE0cmfYYhwEamIgGT6IjT9buWpZ2ue7+s0UdeekLrkV
-X-Gm-Message-State: AOJu0YxmWXzTcC6F41Mfd44hW5DTcjtxLZno061rGinwIHQGPNFnwUAg
-	K77GiBt3zzx6ZEJM6INI+7AUNWcAN1RAL2J/l7Cze5Z/rmloQi/aLN7b1cy5a4Ws44ZQ8B+IFkx
-	zPw+qDN5kszvqEY93JkvJxdTahMGiaBW60SRVVg==
-X-Google-Smtp-Source: AGHT+IHzI3URLtIKHjkgagSJHJwCpeqvakmVzMQtX97IDpfEl/4h04a63N36WTGKHXr1vbYz2M7Lr3rdQ7sA7Q+TPmM=
-X-Received: by 2002:a05:6902:c12:b0:dcc:375:2257 with SMTP id
- fs18-20020a0569020c1200b00dcc03752257mr6845376ybb.0.1712530040073; Sun, 07
- Apr 2024 15:47:20 -0700 (PDT)
+	s=arc-20240116; t=1712530080; c=relaxed/simple;
+	bh=DeNJLuaGaksiPY8qR+F+kPlU5fDPuLp+JSQfBLqtMS8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B3VG9YSobzBhVH2nzgDdILlJMfHKPv78V4oR7Gih82aoStV3bRsw0bsaVDvplECXrx3qj89PVEbwDof6OoYVbn9mUrJeXv7+/NlmyEIiV6UjoA39vrrTXQnXsK+57UjX/VQSXFeUviRyFurh2Mv+Jg8hrMJxQ9ysTM6sx/QSprE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mN+8waih; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84F11C433F1;
+	Sun,  7 Apr 2024 22:47:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712530079;
+	bh=DeNJLuaGaksiPY8qR+F+kPlU5fDPuLp+JSQfBLqtMS8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mN+8waihk+5m/HUeV0HftArL2QhUSfVGH4x3kvJ9jVFo3/dO43cw+JRnFliHrEEtp
+	 M0zdz2NjUnr7lsEdKQSK5EClXKp3nLo9uO6yPhUl8LCBgnvMqTYef5yjdBJS+i7vQJ
+	 3BV6OJWolHBkb0jbFpKqKhJm+AqNHGwTd9zNod7SK6DiJQktFzYLk5Og/1jXupyOn4
+	 0zRpwAy9r75w4/a+hbT4FND4+vcjgudzoF9z7JwF4FYqyuD2oDfUQEt8x9JOOQzdjm
+	 t9Ub4eMTye3SWRb9CF2SAWNihpQ8um+VrGWjxFXDzsV2wlINBPKVQHOIyNYSnKo8V7
+	 nTF00R3wJFLug==
+Date: Sun, 7 Apr 2024 15:52:52 -0700
+From: Bjorn Andersson <andersson@kernel.org>
+To: Linux regressions mailing list <regressions@lists.linux.dev>
+Cc: Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: Bug 218665 - nohz_full=0 prevents kernel from booting
+Message-ID: <enqg6mcuhvff7gujjbapdiclicl3z6f2vnggcsg65pexipyr3o@4men5fhyt3vb>
+References: <5be248c6-cdda-4d2e-8fae-30fc2cc124c0@leemhuis.info>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240405-qc-pmic-typec-hpd-split-v1-1-363daafb3c36@linaro.org>
- <c1899fae-8669-485a-95bd-0e76738a1187@linaro.org> <CAA8EJppBE8xdmc6zQ2VLLPSzmtNq-+03H5skqbnLmLZ8AqSBfw@mail.gmail.com>
- <c9948be1-4700-4aa5-9a63-10dc215fcff7@linaro.org>
-In-Reply-To: <c9948be1-4700-4aa5-9a63-10dc215fcff7@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 8 Apr 2024 01:47:09 +0300
-Message-ID: <CAA8EJprybRaxMGHW+bAm5SriKNJYjWYHAok+je=Q4SjGV0iDfw@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: qcom-pmic-typec: split HPD bridge alloc and registration
-To: "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
-Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
-	linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Caleb Connolly <caleb.connolly@linaro.org>, 
-	Johan Hovold <johan+linaro@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5be248c6-cdda-4d2e-8fae-30fc2cc124c0@leemhuis.info>
 
-On Sun, 7 Apr 2024 at 22:32, Bryan O'Donoghue
-<bryan.odonoghue@linaro.org> wrote:
->
-> On 07/04/2024 16:08, Dmitry Baryshkov wrote:
-> > Basically, if for some reason (e.g. because the TCPM returns an error
-> > to one of the start functions) the drm_bridge is destroyed, the DRM
-> > driver isn't notified about the event. It still keeps the pointer to
-> > the bridge pointer and can access freed memory afterwards.
->
-> Hmm, my concern/question is about the TCPM code triggered by an IRQ
-> firing here, racing with the bridge code.
+On Tue, Apr 02, 2024 at 10:17:16AM +0200, Linux regression tracking (Thorsten Leemhuis) wrote:
+> Hi, Thorsten here, the Linux kernel's regression tracker.
+> 
+> I noticed a regression report in bugzilla.kernel.org. As many (most?)
+> kernel developers don't keep an eye on it, I decided to forward it by mail.
+> 
+> Tejun, apparently it's cause by a change of yours.
+> 
+> Note, you have to use bugzilla to reach the reporter, as I sadly[1] can
+> not CCed them in mails like this.
+> 
+> Quoting from https://bugzilla.kernel.org/show_bug.cgi?id=218665 :
+> 
+> > booting the current kernel (6.9.0-rc1, master/712e1425) on x86_64
+> > with nohz_full=0 cause a page fault and prevents the kernel from
+> > booting.
+> > 
+> > Steps to reproduce:
+> > - make defconfig
+> > - set CONFIG_NO_HZ_FULL=y
+> > - set CONFIG_SUSPEND=n and CONFIG_HIBERNATION=n (to get CONFIG_PM_SLEEP_SMP=n)
+> > - make
+> > - qemu-system-x86_64 -nographic -cpu qemu64 -smp cores=2 -m 1024 -kernel arch/x86/boot/bzImage -append "earlyprintk=ttyS0 console=ttyS0 root=/dev/dummy rootwait nohz_full=0"
+> > 
+> > I have attached the output of a failed nohz_full=0 boot as
+> > nohz_full_0.txt and - for reference - the output of a nohz_full=1
+> > boot as nohz_full_1.txt.
+> > 
+> > Interestingly enough, using the deprecated isolcpus parameter to
+> > enable NO_HZ for cpu0 works. I've attached the output as
+> > isolcpus_nohz_0.txt.
+> > 
+> > Bisecting showed 5797b1c18919cd9c289ded7954383e499f729ce0 as first bad commit.
+> 
+> See the ticket for more details.
+> 
+> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+> --
+> Everything you wanna know about Linux kernel regression tracking:
+> https://linux-regtracking.leemhuis.info/about/#tldr
+> If I did something stupid, please tell me, as explained on that page.
+> 
+> [1] because bugzilla.kernel.org tells users upon registration their
+> "email address will never be displayed to logged out users"
+> 
+> #regzbot introduced: 5797b1c18919cd9c289ded7954383e499f729ce0
+> #regzbot from: Friedrich Oslage
+> #regzbot duplicate https://bugzilla.kernel.org/show_bug.cgi?id=218665
+> #regzbot title: workqueue: nohz_full=0 prevents booting
+> #regzbot ignore-activity
 
-There is no actual race. In the worst case scenario, the TCPM will
-bring up the DP altmode and the altmode driver will send an OOB HPD
-event. However as this is an OOB event, the DRM subsystem correctly
-handles the case if there is no corresponding connector.
+In addition to this report, I have finally bisected another regression
+to the same commit:
 
-> If you're happy you've reasoned about that and it won't happen, then
-> apply the ACK with the commit log fixed alone.
+I start neovim, send SIGSTOP (i.e. ^Z) to it, start another neovim
+instance and upon sending SIGSTOP to that instance all of userspace
+locks up - 100% reproducible.
 
-Thanks!
+The kernel seems to continue to operate, and tapping the power button
+dislodge the lockup and I get a clean shutdown.
 
+This is seen on multiple Arm64 (Qualcomm) machines with upstream
+defconfig since commit '5797b1c18919 ("workqueue: Implement system-wide
+nr_active enforcement for unbound workqueues")'.
 
--- 
-With best wishes
-Dmitry
+Regards,
+Bjorn
 
