@@ -1,167 +1,181 @@
-Return-Path: <linux-kernel+bounces-134143-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134142-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AEF789AE2F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 05:13:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5220D89AE2C
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 05:13:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 272A31F22856
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:13:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D75D91F22904
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:13:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F30EA935;
-	Sun,  7 Apr 2024 03:13:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1281A1C0DCC;
+	Sun,  7 Apr 2024 03:12:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Lq1lBg3j"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nEsTCdnZ"
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A01CB8494
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 03:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7AA81849
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 03:12:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712459580; cv=none; b=I3iy4Ei+9XVjJQZnee4htolG73/i9AP7BP/niQblmBqR+sOzneWgnkaSNxplaRcreGykHN1PDvJcLh+lW5/V4LL8OZsVYtehy6h2bUjWR/xLF34n9rjjCl8B3hN+i/oHAEzeLYMgbVCfwIo5+IL60yklLNu1RPlE2Np0byA//QQ=
+	t=1712459572; cv=none; b=WOdTGCa70MaNZcnA+LiNiw6SkqqWTSKncrjtqbFUS4PvfJWyprdkLJRAwBuIy8h0U2MZI7UIrEOIg++RFpphm5IzWLB9mBYSTLENxDgZRjWYrXy1oRYCnn2shkRKdbtumFI+b1pdL/MPR2GAjlsOWVPkiQT/Lt2NOrEktW0RjCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712459580; c=relaxed/simple;
-	bh=TiIS2U0Z+wfIv7YPyJrbBALHfW6m6U5jca6+YzZuA6Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YDaBd5SP/tr459NMrk+cUyW/aDAsJvI9uHAp93VT//sfcijO3u7X6IetgwnIuP30U2CQIkGi3MdczTJcbDqAcJIZ48P/lfrk6qB7+Ma2But2psUa/S4PQ0pc8EBWTMadt+WTfMh43Z67TQoV9GujBAfUGsqrOWUbm4iPSRr9ikU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Lq1lBg3j; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712459577;
+	s=arc-20240116; t=1712459572; c=relaxed/simple;
+	bh=Rc61LzNdTZPfPgNdAA45w0QSG+0bHjA+F0vyslCayLw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J1bUDluOPr4eh28scaNBr8vX0cOpDy5dF7xQCkznnyldV/yBdj4rLxynUZqXti70L227+E6NVQzIwdmjPjkLvmTDdlbMI96lhmrautPUs0la+/kv8e5v/ImWKJWfXdcLb54mBSt1r8SrPhwAqA1HKF0RHDkhDgVEy/RHuIqgIG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nEsTCdnZ; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sat, 6 Apr 2024 23:12:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712459568;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=MJmu/t6Sirl2odpSd1zSsNcSzxnsR4Ufnqv6dslmQe4=;
-	b=Lq1lBg3jJm4jSUZ/GIybfSzzCE26MTKnCVqw0hSGyOdu24+V6lWeAYxS/TkDmBJ77QmJLZ
-	kpHGTc1SAkhKphabBVWH/1aLJ+lY9Ahi/x13TStguXFh4teN8N2U21QE5+BuDJeSd6f/O+
-	MRsp/dwwQXaBBH1pqoe3/XaPqWl5ih8=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-295-XxLg2od_O12BCC3KCtp72A-1; Sat, 06 Apr 2024 23:12:55 -0400
-X-MC-Unique: XxLg2od_O12BCC3KCtp72A-1
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3c5d97b2950so3432583b6e.1
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 20:12:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712459575; x=1713064375;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MJmu/t6Sirl2odpSd1zSsNcSzxnsR4Ufnqv6dslmQe4=;
-        b=bNeRuaCdpHKH0Sh2ICp0HP27Dyp0D2VGj9gEA8RIhIjVySiWXSKY769f9B0xPXcNiz
-         ASgAFIgvDOA4pzThBKmEqaH1BC03S9t2qGo9R2mskShfQZJPw9e8bBau+UE2cVgT9H/+
-         HbTCmDgqnTlNLvLr3J+hFg/VwkSD+7lyUYGtllALFRe7kyLB6i+6eppYZ037pdm8soPq
-         aXpusiXvqHPfJJ1FbYeewSJJ1P1mVbcuGDAGK9GR/UjAcBxLo2+NBclsLWfzEf/SCTNP
-         gZIRprgo6/t0HdPZmfrzmMziwAAUF1oES7gM0OevW6WGBcSQFFMnbkXE49TQNHhvyitO
-         b9Uw==
-X-Gm-Message-State: AOJu0YwzF1BMsiSGhCn75MDJQEndEluYmz7zrOoCGXg1bf2kSaJnAkgI
-	Ndt6OI0Tef+u1O7719VahhznU1G+guZDt1Uo4CmI2qmLbrm4KpgGgV88gcc1wS8++C8O6dBspdL
-	XB52ztEio7OD37aJYrVB+BSXz6+YQipxxJmZXosyfDEXtWxL8ANfvdZU4sdj57+ktWmJEG1CzdZ
-	KA7lubi2tFoLhHwg5I8n0P0lCJ8dmsk++wtKvo
-X-Received: by 2002:a05:6871:6a5:b0:22e:ae01:db2f with SMTP id l37-20020a05687106a500b0022eae01db2fmr5926305oao.36.1712459575181;
-        Sat, 06 Apr 2024 20:12:55 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFxJaq7stpKgMSraYoLMx3TodA+2coKA76eR/QIAcIB6lXcpj5+7p+9fIFMZ3XBRdEPZlKh8jIwI46m3wMubro=
-X-Received: by 2002:a05:6871:6a5:b0:22e:ae01:db2f with SMTP id
- l37-20020a05687106a500b0022eae01db2fmr5926294oao.36.1712459574910; Sat, 06
- Apr 2024 20:12:54 -0700 (PDT)
+	bh=VGaVxMBPzojr3QEvcEsSTcQ874uMtXte1lfsEYDwdcI=;
+	b=nEsTCdnZCB27a6kMWxaRR+KGaCwwkNWTVVHiOnCP3INe/yOd+NhfZGDMkYjcj5oqaZMaDb
+	ZQX7Puz3FOBEEvNdKWQUjnPmUTo4GeDGTatjvw7eh136k3/LKyog9osYjOCxZ58pExgkFN
+	MXCn7js6CYHAzbqPET86iaGcXNd47eE=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: bfoster@redhat.com, jserv@ccns.ncku.edu.tw, 
+	linux-bcachefs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] bcachefs: Optimize eytzinger0_sort() with bottom-up
+ heapsort
+Message-ID: <2vm32rfcbgy4fap77scebqorlrpaihz3angd6bl2lnpslrcp63@kekiknxt5vup>
+References: <20240407013349.672667-1-visitorckw@gmail.com>
+ <3vvrirq3yljcuhjj5muvuk7quihllyfhzmygbb7rrchbgh7hzj@7psuth5ctxd5>
+ <ZhIK9gcY4ptAHUq6@visitorckw-System-Product-Name>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <41c1c5489688abe5bfef9f7cf15584e3fb872ac5.1712092759.git.mst@redhat.com>
-In-Reply-To: <41c1c5489688abe5bfef9f7cf15584e3fb872ac5.1712092759.git.mst@redhat.com>
-From: Jason Wang <jasowang@redhat.com>
-Date: Sun, 7 Apr 2024 11:12:43 +0800
-Message-ID: <CACGkMEuBt9BvUSr0hhSx4obX9SmiZgze8eK7Omujx1LBDgWz4A@mail.gmail.com>
-Subject: Re: [PATCH] vhost-vdpa: change ioctl # for VDPA_GET_VRING_SIZE
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: linux-kernel@vger.kernel.org, Arnaldo Carvalho de Melo <acme@kernel.org>, 
-	Namhyung Kim <namhyung@kernel.org>, Zhu Lingshan <lingshan.zhu@intel.com>, 
-	=?UTF-8?Q?Eugenio_P=C3=A9rez?= <eperezma@redhat.com>, kvm@vger.kernel.org, 
-	virtualization@lists.linux.dev, netdev@vger.kernel.org, 
-	Adrian Hunter <adrian.hunter@intel.com>, Ian Rogers <irogers@google.com>, 
-	Jiri Olsa <jolsa@kernel.org>, Kan Liang <kan.liang@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZhIK9gcY4ptAHUq6@visitorckw-System-Product-Name>
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Apr 3, 2024 at 5:21=E2=80=AFAM Michael S. Tsirkin <mst@redhat.com> =
-wrote:
->
-> VDPA_GET_VRING_SIZE by mistake uses the already occupied
-> ioctl # 0x80 and we never noticed - it happens to work
-> because the direction and size are different, but confuses
-> tools such as perf which like to look at just the number,
-> and breaks the extra robustness of the ioctl numbering macros.
->
-> To fix, sort the entries and renumber the ioctl - not too late
-> since it wasn't in any released kernels yet.
->
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Reported-by: Namhyung Kim <namhyung@kernel.org>
-> Fixes: x ("vhost-vdpa: uapi to support reporting per vq size")
-> Cc: "Zhu Lingshan" <lingshan.zhu@intel.com>
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+On Sun, Apr 07, 2024 at 10:54:46AM +0800, Kuan-Wei Chiu wrote:
+> On Sat, Apr 06, 2024 at 10:05:44PM -0400, Kent Overstreet wrote:
+> > On Sun, Apr 07, 2024 at 09:33:49AM +0800, Kuan-Wei Chiu wrote:
+> > > This optimization reduces the average number of comparisons required
+> > > from 2*n*log2(n) - 3*n + o(n) to n*log2(n) + 0.37*n + o(n). When n is
+> > > sufficiently large, it results in approximately 50% fewer comparisons.
+> > > 
+> > > Currently, eytzinger0_sort employs the textbook version of heapsort,
+> > > where during the heapify process, each level requires two comparisons
+> > > to determine the maximum among three elements. In contrast, the
+> > > bottom-up heapsort, during heapify, only compares two children at each
+> > > level until reaching a leaf node. Then, it backtracks from the leaf
+> > > node to find the correct position. Since heapify typically continues
+> > > until very close to the leaf node, the standard heapify requires about
+> > > 2*log2(n) comparisons, while the bottom-up variant only needs log2(n)
+> > > comparisons.
+> > > 
+> > > The experimental data presented below is based on an array generated
+> > > by get_random_u32().
+> > > 
+> > > |   N   | comparisons(old) | comparisons(new) | time(old) | time(new) |
+> > > |-------|------------------|------------------|-----------|-----------|
+> > > | 10000 |     235381       |     136615       |  25545 us |  20366 us |
+> > > | 20000 |     510694       |     293425       |  31336 us |  18312 us |
+> > > | 30000 |     800384       |     457412       |  35042 us |  27386 us |
+> > > | 40000 |    1101617       |     626831       |  48779 us |  38253 us |
+> > > | 50000 |    1409762       |     799637       |  62238 us |  46950 us |
+> > > | 60000 |    1721191       |     974521       |  75588 us |  58367 us |
+> > > | 70000 |    2038536       |    1152171       |  90823 us |  68778 us |
+> > > | 80000 |    2362958       |    1333472       | 104165 us |  78625 us |
+> > > | 90000 |    2690900       |    1516065       | 116111 us |  89573 us |
+> > > | 100000|    3019413       |    1699879       | 133638 us | 100998 us |
+> > > 
+> > > Refs:
+> > >   BOTTOM-UP-HEAPSORT, a new variant of HEAPSORT beating, on an average,
+> > >   QUICKSORT (if n is not very small)
+> > >   Ingo Wegener
+> > >   Theoretical Computer Science, 118(1); Pages 81-98, 13 September 1993
+> > >   https://doi.org/10.1016/0304-3975(93)90364-Y
+> > > 
+> > > Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> > > ---
+> > > 
+> > > This is the same as the patch I submitted previously [1]. Since we
+> > > decided not to move eytzinger.h to generic library code, I resubmitted
+> > > this patch.
+> > > 
+> > > This patch has undergone unit testing and micro benchmarking using the
+> > > following code [2].
+> > > 
+> > > [1]: https://lore.kernel.org/lkml/20240121153649.2733274-2-visitorckw@gmail.com/
+> > > [2]:
+> > > static u64 cmp_count = 0;
+> > > 
+> > > static int mycmp(const void *a, const void *b)
+> > > {
+> > > 	u32 _a = *(u32 *)a;
+> > > 	u32 _b = *(u32 *)b;
+> > > 
+> > > 	cmp_count++;
+> > > 	if (_a < _b)
+> > > 		return -1;
+> > > 	else if (_a > _b)
+> > > 		return 1;
+> > > 	else
+> > > 		return 0;
+> > > }
+> > > 
+> > > static int test(void)
+> > > {
+> > > 	size_t N, i, L, R;
+> > > 	ktime_t start, end;
+> > > 	s64 delta;
+> > > 	u32 *arr;
+> > > 
+> > > 	for (N = 10000; N <= 100000; N += 10000) {
+> > > 		arr = kmalloc_array(N, sizeof(u32), GFP_KERNEL);
+> > > 		cmp_count = 0;
+> > > 
+> > > 		for (i = 0; i < N; i++)
+> > > 			arr[i] = get_random_u32();
+> > > 		
+> > > 		start = ktime_get();
+> > > 		eytzinger0_sort(arr, N, sizeof(u32), mycmp, NULL);
+> > > 		end = ktime_get();
+> > > 
+> > > 		delta = ktime_us_delta(end, start);
+> > > 		printk(KERN_INFO "time: %lld\n", delta);
+> > > 		printk(KERN_INFO "comparisons: %lld\n", cmp_count);
+> > > 
+> > > 		for (int i = 0; i < N; i++) {
+> > > 			L = 2 * i + 1;
+> > > 			R = 2 * i + 2;
+> > > 			if (L < N && arr[i] < arr[L])
+> > > 				goto err;
+> > > 			if (R < N && arr[i] > arr[R])
+> > > 				goto err;
+> > > 		}
+> > 
+> > Use eytzinger0_for_each() to just compare every element against the
+> > previous element, and check in the test code.
+> >
+> 
+> I rewrote the testing part as follows:
+> 
+> 	u32 prev = 0;
+> 	eytzinger0_for_each(i, N) {
+> 		if (prev > arr[i])
+> 			goto err;
+> 		prev = arr[i];
+> 	}
+> 
+> And the test still passed.
 
-Acked-by: Jason Wang <jasowang@redhat.com>
-
-Thanks
-
-> ---
->
-> Build tested only - userspace patches using this will have to adjust.
-> I will merge this in a week or so unless I hear otherwise,
-> and afterwards perf can update there header.
->
->  include/uapi/linux/vhost.h | 15 ++++++++-------
->  1 file changed, 8 insertions(+), 7 deletions(-)
->
-> diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
-> index bea697390613..b95dd84eef2d 100644
-> --- a/include/uapi/linux/vhost.h
-> +++ b/include/uapi/linux/vhost.h
-> @@ -179,12 +179,6 @@
->  /* Get the config size */
->  #define VHOST_VDPA_GET_CONFIG_SIZE     _IOR(VHOST_VIRTIO, 0x79, __u32)
->
-> -/* Get the count of all virtqueues */
-> -#define VHOST_VDPA_GET_VQS_COUNT       _IOR(VHOST_VIRTIO, 0x80, __u32)
-> -
-> -/* Get the number of virtqueue groups. */
-> -#define VHOST_VDPA_GET_GROUP_NUM       _IOR(VHOST_VIRTIO, 0x81, __u32)
-> -
->  /* Get the number of address spaces. */
->  #define VHOST_VDPA_GET_AS_NUM          _IOR(VHOST_VIRTIO, 0x7A, unsigned=
- int)
->
-> @@ -228,10 +222,17 @@
->  #define VHOST_VDPA_GET_VRING_DESC_GROUP        _IOWR(VHOST_VIRTIO, 0x7F,=
-       \
->                                               struct vhost_vring_state)
->
-> +
-> +/* Get the count of all virtqueues */
-> +#define VHOST_VDPA_GET_VQS_COUNT       _IOR(VHOST_VIRTIO, 0x80, __u32)
-> +
-> +/* Get the number of virtqueue groups. */
-> +#define VHOST_VDPA_GET_GROUP_NUM       _IOR(VHOST_VIRTIO, 0x81, __u32)
-> +
->  /* Get the queue size of a specific virtqueue.
->   * userspace set the vring index in vhost_vring_state.index
->   * kernel set the queue size in vhost_vring_state.num
->   */
-> -#define VHOST_VDPA_GET_VRING_SIZE      _IOWR(VHOST_VIRTIO, 0x80,       \
-> +#define VHOST_VDPA_GET_VRING_SIZE      _IOWR(VHOST_VIRTIO, 0x82,       \
->                                               struct vhost_vring_state)
->  #endif
-> --
-> MST
->
-
+Great, can you include that? I'd be fine with it #if 0'd out, I just
+want it there.
 
