@@ -1,59 +1,60 @@
-Return-Path: <linux-kernel+bounces-134298-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134303-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C859689B00D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 11:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F2B289B018
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 11:36:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 352471F221F4
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:20:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C16961F21495
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:36:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C29B14A8F;
-	Sun,  7 Apr 2024 09:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD121642B;
+	Sun,  7 Apr 2024 09:36:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ZXScU5+W"
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="NB472Qel"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87C0185E;
-	Sun,  7 Apr 2024 09:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5652156E4;
+	Sun,  7 Apr 2024 09:36:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712481616; cv=none; b=UkIuQ6ejlaHjRfri4ja4Viu0T6gUAn80SE8TwYNe++PzBGtLwSjyhkZxsgpgPRWpT03h4QMm3/g6WZ/cRSFSC9jXy9VYP9JW1gajjIrfHH+abP25P6Hq8b7X6dRfdlwzO5jYq/+AGfJXElxS8XAbuxxaMKzCuwfyuegWKhRKHgE=
+	t=1712482578; cv=none; b=h3BGnoA2+2VjfWT3DX8+pedqBeinrb2PmKHUrttBY7Cb5pwe3r7KyO0oVyQlVLCGuVbmTC3oNxUl9P4vbA06LznqCJ4B25fJKtjKm/nDVL+oRWdkoVz/zCN+quYjc15ZTqMsvgUp8zyRasOfX99pdUus/v6th++jpEObL2kmQ0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712481616; c=relaxed/simple;
-	bh=qwyLL2lkopXXldUtbaJEpS8/YGSSO7mnIlpQcvDLSNU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Qta8eukHoZCr1wLCVeHdEvw6jxDTMgYm/ZmKBybRSYVJvVIZ1+VazStI6Q6iVCaJRV+EgQ3PBTBP2it8dSguwnLPGsJzR6QtZjvLfzhAQ5oIju54dx9WxnR+Yrr9ApSPs67ZEXccbRdb65SzSouUS4e8n0RPcdCf4VbKBPZXuBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ZXScU5+W; arc=none smtp.client-ip=198.47.19.142
+	s=arc-20240116; t=1712482578; c=relaxed/simple;
+	bh=acIsf3YSRBQ7oMljj+k9LYBbNSF78xTAekIs9UJlEMo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Y4xmEtYpwbVWSnjXXX2Qb1ACekZAOednxN9FqulOZ41qACKcYnu7QfYzfiXjC2rZPdQD6AFkDWY1OdN4LeJ05hu4qfYDKcMuQV3Ytcf/HZird8DZrQl5HrDbt2O0i4GeN1b8/KWU0fWkRqorXETD9kJ8YQ220cS/29qvy0dGAeI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=NB472Qel; arc=none smtp.client-ip=198.47.19.141
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4379Ixdt040509;
-	Sun, 7 Apr 2024 04:18:59 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 4379J7aU072912;
+	Sun, 7 Apr 2024 04:19:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1712481539;
-	bh=BXUirUDRwUKvqSotOrO17BUK1Jhx8Pa4Xbxk/9g3eXg=;
-	h=From:To:CC:Subject:Date;
-	b=ZXScU5+WMqpUWsSVOX/TLL2Cx7yhc6jEsZyRxUBAVPd/dRLf8O7y8HMZxz2j3UsqR
-	 MjAAA4ichIIZfCSF2u3EuIfAEBlZcLTplvOxqkTv6IXhSeC00yk/o2WOffJTs/jAv9
-	 nXzaVAyex0sdFAzXXwV7kdLaa8dJCvYc6+MSmQCU=
-Received: from DLEE101.ent.ti.com (dlee101.ent.ti.com [157.170.170.31])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4379Ix7Q115892
+	s=ti-com-17Q1; t=1712481547;
+	bh=P0iL58uH7Cv+FtMVL8Yrb8vtrQkhbahCA3z7DrrekAg=;
+	h=From:To:CC:Subject:Date:In-Reply-To:References;
+	b=NB472QelPA/9bdHOhaFXWkYmXKBSTWkzELr5bqGXbGMB81YLgVPbjXnKsdySxiueK
+	 KfqVimKm+dKJn/Vs3xK6fqtjX9Gyq+gSUZac3cmJ8jkB+6A7klUipeTEhfXfgwSxUR
+	 Bat7qKGVWNDif96cYHybunqJOgnFKRGV8R6+WcsQ=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 4379J78s010114
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sun, 7 Apr 2024 04:18:59 -0500
-Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
+	Sun, 7 Apr 2024 04:19:07 -0500
+Received: from DLEE102.ent.ti.com (157.170.170.32) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sun, 7
- Apr 2024 04:18:58 -0500
+ Apr 2024 04:19:06 -0500
 Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE102.ent.ti.com
  (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Sun, 7 Apr 2024 04:18:58 -0500
+ Frontend Transport; Sun, 7 Apr 2024 04:19:06 -0500
 Received: from LT5CG31242FY.dhcp.ti.com (lt5cg31242fy.dhcp.ti.com [10.85.14.144])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4379IpWl079280;
-	Sun, 7 Apr 2024 04:18:52 -0500
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 4379IpWm079280;
+	Sun, 7 Apr 2024 04:19:00 -0500
 From: Shenghao Ding <shenghao-ding@ti.com>
 To: <linux-kernel@vger.kernel.org>
 CC: <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
@@ -65,10 +66,12 @@ CC: <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>,
         <aviel@ti.com>, <hnagalla@ti.com>, <praneeth@ti.com>,
         <Baojun.Xu@fpt.com>, Shenghao Ding
 	<shenghao-ding@ti.com>
-Subject: [PATCH v9 0/4] ASoc: PCM6240: mixer-test report
-Date: Sun, 7 Apr 2024 17:18:41 +0800
-Message-ID: <20240407091846.1299-1-shenghao-ding@ti.com>
+Subject: [PATCH v9 1/4] ASoc: PCM6240: Create PCM6240 Family driver code
+Date: Sun, 7 Apr 2024 17:18:42 +0800
+Message-ID: <20240407091846.1299-2-shenghao-ding@ti.com>
 X-Mailer: git-send-email 2.33.0.windows.2
+In-Reply-To: <20240407091846.1299-1-shenghao-ding@ti.com>
+References: <20240407091846.1299-1-shenghao-ding@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,559 +82,2256 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-v9:
- - Retest with the code with Volume kcontrol
-v8:
- - use some reasonable format of changelog.
- - fixed the format of subject
- - remove *** BLURB HERE ***
-
-mixer-test report:
- root@am335x-evm:/bin# mixer-test
- TAP version 13
- # Card 0 - TI BeagleBone Black (TI BeagleBone Black)
- 1..455
- ok 1 get_value.0.64
- # 0.64 PCMD3180 i2c2 Profile id
- ok 2 name.0.64
- ok 3 write_default.0.64
- ok 4 write_valid.0.64
- ok 5 write_invalid.0.64
- ok 6 event_missing.0.64
- ok 7 event_spurious.0.64
- ok 8 get_value.0.63
- # 0.63 PCMD3180 i2c2 Dev3 Ch8 Digi Volume
- ok 9 name.0.63
- ok 10 write_default.0.63
- ok 11 write_valid.0.63
- ok 12 write_invalid.0.63
- ok 13 event_missing.0.63
- ok 14 event_spurious.0.63
- ok 15 get_value.0.62
- # 0.62 PCMD3180 i2c2 Dev3 Ch7 Digi Volume
- ok 16 name.0.62
- ok 17 write_default.0.62
- ok 18 write_valid.0.62
- ok 19 write_invalid.0.62
- ok 20 event_missing.0.62
- ok 21 event_spurious.0.62
- ok 22 get_value.0.61
- # 0.61 PCMD3180 i2c2 Dev3 Ch6 Digi Volume
- ok 23 name.0.61
- ok 24 write_default.0.61
- ok 25 write_valid.0.61
- ok 26 write_invalid.0.61
- ok 27 event_missing.0.61
- ok 28 event_spurious.0.61
- ok 29 get_value.0.60
- # 0.60 PCMD3180 i2c2 Dev3 Ch5 Digi Volume
- ok 30 name.0.60
- ok 31 write_default.0.60
- ok 32 write_valid.0.60
- ok 33 write_invalid.0.60
- ok 34 event_missing.0.60
- ok 35 event_spurious.0.60
- ok 36 get_value.0.59
- # 0.59 PCMD3180 i2c2 Dev3 Ch4 Digi Volume
- ok 37 name.0.59
- ok 38 write_default.0.59
- ok 39 write_valid.0.59
- ok 40 write_invalid.0.59
- ok 41 event_missing.0.59
- ok 42 event_spurious.0.59
- ok 43 get_value.0.58
- # 0.58 PCMD3180 i2c2 Dev3 Ch3 Digi Volume
- ok 44 name.0.58
- ok 45 write_default.0.58
- ok 46 write_valid.0.58
- ok 47 write_invalid.0.58
- ok 48 event_missing.0.58
- ok 49 event_spurious.0.58
- ok 50 get_value.0.57
- # 0.57 PCMD3180 i2c2 Dev3 Ch2 Digi Volume
- ok 51 name.0.57
- ok 52 write_default.0.57
- ok 53 write_valid.0.57
- ok 54 write_invalid.0.57
- ok 55 event_missing.0.57
- ok 56 event_spurious.0.57
- ok 57 get_value.0.56
- # 0.56 PCMD3180 i2c2 Dev3 Ch1 Digi Volume
- ok 58 name.0.56
- ok 59 write_default.0.56
- ok 60 write_valid.0.56
- ok 61 write_invalid.0.56
- ok 62 event_missing.0.56
- ok 63 event_spurious.0.56
- ok 64 get_value.0.55
- # 0.55 PCMD3180 i2c2 Dev3 Ch8 Fine Volume
- ok 65 name.0.55
- ok 66 write_default.0.55
- ok 67 write_valid.0.55
- ok 68 write_invalid.0.55
- ok 69 event_missing.0.55
- ok 70 event_spurious.0.55
- ok 71 get_value.0.54
- # 0.54 PCMD3180 i2c2 Dev3 Ch7 Fine Volume
- ok 72 name.0.54
- ok 73 write_default.0.54
- ok 74 write_valid.0.54
- ok 75 write_invalid.0.54
- ok 76 event_missing.0.54
- ok 77 event_spurious.0.54
- ok 78 get_value.0.53
- # 0.53 PCMD3180 i2c2 Dev3 Ch6 Fine Volume
- ok 79 name.0.53
- ok 80 write_default.0.53
- ok 81 write_valid.0.53
- ok 82 write_invalid.0.53
- ok 83 event_missing.0.53
- ok 84 event_spurious.0.53
- ok 85 get_value.0.52
- # 0.52 PCMD3180 i2c2 Dev3 Ch5 Fine Volume
- ok 86 name.0.52
- ok 87 write_default.0.52
- ok 88 write_valid.0.52
- ok 89 write_invalid.0.52
- ok 90 event_missing.0.52
- ok 91 event_spurious.0.52
- ok 92 get_value.0.51
- # 0.51 PCMD3180 i2c2 Dev3 Ch4 Fine Volume
- ok 93 name.0.51
- ok 94 write_default.0.51
- ok 95 write_valid.0.51
- ok 96 write_invalid.0.51
- ok 97 event_missing.0.51
- ok 98 event_spurious.0.51
- ok 99 get_value.0.50
- # 0.50 PCMD3180 i2c2 Dev3 Ch3 Fine Volume
- ok 100 name.0.50
- ok 101 write_default.0.50
- ok 102 write_valid.0.50
- ok 103 write_invalid.0.50
- ok 104 event_missing.0.50
- ok 105 event_spurious.0.50
- ok 106 get_value.0.49
- # 0.49 PCMD3180 i2c2 Dev3 Ch2 Fine Volume
- ok 107 name.0.49
- ok 108 write_default.0.49
- ok 109 write_valid.0.49
- ok 110 write_invalid.0.49
- ok 111 event_missing.0.49
- ok 112 event_spurious.0.49
- ok 113 get_value.0.48
- # 0.48 PCMD3180 i2c2 Dev3 Ch1 Fine Volume
- ok 114 name.0.48
- ok 115 write_default.0.48
- ok 116 write_valid.0.48
- ok 117 write_invalid.0.48
- ok 118 event_missing.0.48
- ok 119 event_spurious.0.48
- ok 120 get_value.0.47
- # 0.47 PCMD3180 i2c2 Dev2 Ch8 Digi Volume
- ok 121 name.0.47
- ok 122 write_default.0.47
- ok 123 write_valid.0.47
- ok 124 write_invalid.0.47
- ok 125 event_missing.0.47
- ok 126 event_spurious.0.47
- ok 127 get_value.0.46
- # 0.46 PCMD3180 i2c2 Dev2 Ch7 Digi Volume
- ok 128 name.0.46
- ok 129 write_default.0.46
- ok 130 write_valid.0.46
- ok 131 write_invalid.0.46
- ok 132 event_missing.0.46
- ok 133 event_spurious.0.46
- ok 134 get_value.0.45
- # 0.45 PCMD3180 i2c2 Dev2 Ch6 Digi Volume
- ok 135 name.0.45
- ok 136 write_default.0.45
- ok 137 write_valid.0.45
- ok 138 write_invalid.0.45
- ok 139 event_missing.0.45
- ok 140 event_spurious.0.45
- ok 141 get_value.0.44
- # 0.44 PCMD3180 i2c2 Dev2 Ch5 Digi Volume
- ok 142 name.0.44
- ok 143 write_default.0.44
- ok 144 write_valid.0.44
- ok 145 write_invalid.0.44
- ok 146 event_missing.0.44
- ok 147 event_spurious.0.44
- ok 148 get_value.0.43
- # 0.43 PCMD3180 i2c2 Dev2 Ch4 Digi Volume
- ok 149 name.0.43
- ok 150 write_default.0.43
- ok 151 write_valid.0.43
- ok 152 write_invalid.0.43
- ok 153 event_missing.0.43
- ok 154 event_spurious.0.43
- ok 155 get_value.0.42
- # 0.42 PCMD3180 i2c2 Dev2 Ch3 Digi Volume
- ok 156 name.0.42
- ok 157 write_default.0.42
- ok 158 write_valid.0.42
- ok 159 write_invalid.0.42
- ok 160 event_missing.0.42
- ok 161 event_spurious.0.42
- ok 162 get_value.0.41
- # 0.41 PCMD3180 i2c2 Dev2 Ch2 Digi Volume
- ok 163 name.0.41
- ok 164 write_default.0.41
- ok 165 write_valid.0.41
- ok 166 write_invalid.0.41
- ok 167 event_missing.0.41
- ok 168 event_spurious.0.41
- ok 169 get_value.0.40
- # 0.40 PCMD3180 i2c2 Dev2 Ch1 Digi Volume
- ok 170 name.0.40
- ok 171 write_default.0.40
- ok 172 write_valid.0.40
- ok 173 write_invalid.0.40
- ok 174 event_missing.0.40
- ok 175 event_spurious.0.40
- ok 176 get_value.0.39
- # 0.39 PCMD3180 i2c2 Dev2 Ch8 Fine Volume
- ok 177 name.0.39
- ok 178 write_default.0.39
- ok 179 write_valid.0.39
- ok 180 write_invalid.0.39
- ok 181 event_missing.0.39
- ok 182 event_spurious.0.39
- ok 183 get_value.0.38
- # 0.38 PCMD3180 i2c2 Dev2 Ch7 Fine Volume
- ok 184 name.0.38
- ok 185 write_default.0.38
- ok 186 write_valid.0.38
- ok 187 write_invalid.0.38
- ok 188 event_missing.0.38
- ok 189 event_spurious.0.38
- ok 190 get_value.0.37
- # 0.37 PCMD3180 i2c2 Dev2 Ch6 Fine Volume
- ok 191 name.0.37
- ok 192 write_default.0.37
- ok 193 write_valid.0.37
- ok 194 write_invalid.0.37
- ok 195 event_missing.0.37
- ok 196 event_spurious.0.37
- ok 197 get_value.0.36
- # 0.36 PCMD3180 i2c2 Dev2 Ch5 Fine Volume
- ok 198 name.0.36
- ok 199 write_default.0.36
- ok 200 write_valid.0.36
- ok 201 write_invalid.0.36
- ok 202 event_missing.0.36
- ok 203 event_spurious.0.36
- ok 204 get_value.0.35
- # 0.35 PCMD3180 i2c2 Dev2 Ch4 Fine Volume
- ok 205 name.0.35
- ok 206 write_default.0.35
- ok 207 write_valid.0.35
- ok 208 write_invalid.0.35
- ok 209 event_missing.0.35
- ok 210 event_spurious.0.35
- ok 211 get_value.0.34
- # 0.34 PCMD3180 i2c2 Dev2 Ch3 Fine Volume
- ok 212 name.0.34
- ok 213 write_default.0.34
- ok 214 write_valid.0.34
- ok 215 write_invalid.0.34
- ok 216 event_missing.0.34
- ok 217 event_spurious.0.34
- ok 218 get_value.0.33
- # 0.33 PCMD3180 i2c2 Dev2 Ch2 Fine Volume
- ok 219 name.0.33
- ok 220 write_default.0.33
- ok 221 write_valid.0.33
- ok 222 write_invalid.0.33
- ok 223 event_missing.0.33
- ok 224 event_spurious.0.33
- ok 225 get_value.0.32
- # 0.32 PCMD3180 i2c2 Dev2 Ch1 Fine Volume
- ok 226 name.0.32
- ok 227 write_default.0.32
- ok 228 write_valid.0.32
- ok 229 write_invalid.0.32
- ok 230 event_missing.0.32
- ok 231 event_spurious.0.32
- ok 232 get_value.0.31
- # 0.31 PCMD3180 i2c2 Dev1 Ch8 Digi Volume
- ok 233 name.0.31
- ok 234 write_default.0.31
- ok 235 write_valid.0.31
- ok 236 write_invalid.0.31
- ok 237 event_missing.0.31
- ok 238 event_spurious.0.31
- ok 239 get_value.0.30
- # 0.30 PCMD3180 i2c2 Dev1 Ch7 Digi Volume
- ok 240 name.0.30
- ok 241 write_default.0.30
- ok 242 write_valid.0.30
- ok 243 write_invalid.0.30
- ok 244 event_missing.0.30
- ok 245 event_spurious.0.30
- ok 246 get_value.0.29
- # 0.29 PCMD3180 i2c2 Dev1 Ch6 Digi Volume
- ok 247 name.0.29
- ok 248 write_default.0.29
- ok 249 write_valid.0.29
- ok 250 write_invalid.0.29
- ok 251 event_missing.0.29
- ok 252 event_spurious.0.29
- ok 253 get_value.0.28
- # 0.28 PCMD3180 i2c2 Dev1 Ch5 Digi Volume
- ok 254 name.0.28
- ok 255 write_default.0.28
- ok 256 write_valid.0.28
- ok 257 write_invalid.0.28
- ok 258 event_missing.0.28
- ok 259 event_spurious.0.28
- ok 260 get_value.0.27
- # 0.27 PCMD3180 i2c2 Dev1 Ch4 Digi Volume
- ok 261 name.0.27
- ok 262 write_default.0.27
- ok 263 write_valid.0.27
- ok 264 write_invalid.0.27
- ok 265 event_missing.0.27
- ok 266 event_spurious.0.27
- ok 267 get_value.0.26
- # 0.26 PCMD3180 i2c2 Dev1 Ch3 Digi Volume
- ok 268 name.0.26
- ok 269 write_default.0.26
- ok 270 write_valid.0.26
- ok 271 write_invalid.0.26
- ok 272 event_missing.0.26
- ok 273 event_spurious.0.26
- ok 274 get_value.0.25
- # 0.25 PCMD3180 i2c2 Dev1 Ch2 Digi Volume
- ok 275 name.0.25
- ok 276 write_default.0.25
- ok 277 write_valid.0.25
- ok 278 write_invalid.0.25
- ok 279 event_missing.0.25
- ok 280 event_spurious.0.25
- ok 281 get_value.0.24
- # 0.24 PCMD3180 i2c2 Dev1 Ch1 Digi Volume
- ok 282 name.0.24
- ok 283 write_default.0.24
- ok 284 write_valid.0.24
- ok 285 write_invalid.0.24
- ok 286 event_missing.0.24
- ok 287 event_spurious.0.24
- ok 288 get_value.0.23
- # 0.23 PCMD3180 i2c2 Dev1 Ch8 Fine Volume
- ok 289 name.0.23
- ok 290 write_default.0.23
- ok 291 write_valid.0.23
- ok 292 write_invalid.0.23
- ok 293 event_missing.0.23
- ok 294 event_spurious.0.23
- ok 295 get_value.0.22
- # 0.22 PCMD3180 i2c2 Dev1 Ch7 Fine Volume
- ok 296 name.0.22
- ok 297 write_default.0.22
- ok 298 write_valid.0.22
- ok 299 write_invalid.0.22
- ok 300 event_missing.0.22
- ok 301 event_spurious.0.22
- ok 302 get_value.0.21
- # 0.21 PCMD3180 i2c2 Dev1 Ch6 Fine Volume
- ok 303 name.0.21
- ok 304 write_default.0.21
- ok 305 write_valid.0.21
- ok 306 write_invalid.0.21
- ok 307 event_missing.0.21
- ok 308 event_spurious.0.21
- ok 309 get_value.0.20
- # 0.20 PCMD3180 i2c2 Dev1 Ch5 Fine Volume
- ok 310 name.0.20
- ok 311 write_default.0.20
- ok 312 write_valid.0.20
- ok 313 write_invalid.0.20
- ok 314 event_missing.0.20
- ok 315 event_spurious.0.20
- ok 316 get_value.0.19
- # 0.19 PCMD3180 i2c2 Dev1 Ch4 Fine Volume
- ok 317 name.0.19
- ok 318 write_default.0.19
- ok 319 write_valid.0.19
- ok 320 write_invalid.0.19
- ok 321 event_missing.0.19
- ok 322 event_spurious.0.19
- ok 323 get_value.0.18
- # 0.18 PCMD3180 i2c2 Dev1 Ch3 Fine Volume
- ok 324 name.0.18
- ok 325 write_default.0.18
- ok 326 write_valid.0.18
- ok 327 write_invalid.0.18
- ok 328 event_missing.0.18
- ok 329 event_spurious.0.18
- ok 330 get_value.0.17
- # 0.17 PCMD3180 i2c2 Dev1 Ch2 Fine Volume
- ok 331 name.0.17
- ok 332 write_default.0.17
- ok 333 write_valid.0.17
- ok 334 write_invalid.0.17
- ok 335 event_missing.0.17
- ok 336 event_spurious.0.17
- ok 337 get_value.0.16
- # 0.16 PCMD3180 i2c2 Dev1 Ch1 Fine Volume
- ok 338 name.0.16
- ok 339 write_default.0.16
- ok 340 write_valid.0.16
- ok 341 write_invalid.0.16
- ok 342 event_missing.0.16
- ok 343 event_spurious.0.16
- ok 344 get_value.0.15
- # 0.15 PCMD3180 i2c2 Dev0 Ch8 Digi Volume
- ok 345 name.0.15
- ok 346 write_default.0.15
- ok 347 write_valid.0.15
- ok 348 write_invalid.0.15
- ok 349 event_missing.0.15
- ok 350 event_spurious.0.15
- ok 351 get_value.0.14
- # 0.14 PCMD3180 i2c2 Dev0 Ch7 Digi Volume
- ok 352 name.0.14
- ok 353 write_default.0.14
- ok 354 write_valid.0.14
- ok 355 write_invalid.0.14
- ok 356 event_missing.0.14
- ok 357 event_spurious.0.14
- ok 358 get_value.0.13
- # 0.13 PCMD3180 i2c2 Dev0 Ch6 Digi Volume
- ok 359 name.0.13
- ok 360 write_default.0.13
- ok 361 write_valid.0.13
- ok 362 write_invalid.0.13
- ok 363 event_missing.0.13
- ok 364 event_spurious.0.13
- ok 365 get_value.0.12
- # 0.12 PCMD3180 i2c2 Dev0 Ch5 Digi Volume
- ok 366 name.0.12
- ok 367 write_default.0.12
- ok 368 write_valid.0.12
- ok 369 write_invalid.0.12
- ok 370 event_missing.0.12
- ok 371 event_spurious.0.12
- ok 372 get_value.0.11
- # 0.11 PCMD3180 i2c2 Dev0 Ch4 Digi Volume
- ok 373 name.0.11
- ok 374 write_default.0.11
- ok 375 write_valid.0.11
- ok 376 write_invalid.0.11
- ok 377 event_missing.0.11
- ok 378 event_spurious.0.11
- ok 379 get_value.0.10
- # 0.10 PCMD3180 i2c2 Dev0 Ch3 Digi Volume
- ok 380 name.0.10
- ok 381 write_default.0.10
- ok 382 write_valid.0.10
- ok 383 write_invalid.0.10
- ok 384 event_missing.0.10
- ok 385 event_spurious.0.10
- ok 386 get_value.0.9
- # 0.9 PCMD3180 i2c2 Dev0 Ch2 Digi Volume
- ok 387 name.0.9
- ok 388 write_default.0.9
- ok 389 write_valid.0.9
- ok 390 write_invalid.0.9
- ok 391 event_missing.0.9
- ok 392 event_spurious.0.9
- ok 393 get_value.0.8
- # 0.8 PCMD3180 i2c2 Dev0 Ch1 Digi Volume
- ok 394 name.0.8
- ok 395 write_default.0.8
- ok 396 write_valid.0.8
- ok 397 write_invalid.0.8
- ok 398 event_missing.0.8
- ok 399 event_spurious.0.8
- ok 400 get_value.0.7
- # 0.7 PCMD3180 i2c2 Dev0 Ch8 Fine Volume
- ok 401 name.0.7
- ok 402 write_default.0.7
- ok 403 write_valid.0.7
- ok 404 write_invalid.0.7
- ok 405 event_missing.0.7
- ok 406 event_spurious.0.7
- ok 407 get_value.0.6
- # 0.6 PCMD3180 i2c2 Dev0 Ch7 Fine Volume
- ok 408 name.0.6
- ok 409 write_default.0.6
- ok 410 write_valid.0.6
- ok 411 write_invalid.0.6
- ok 412 event_missing.0.6
- ok 413 event_spurious.0.6
- ok 414 get_value.0.5
- # 0.5 PCMD3180 i2c2 Dev0 Ch6 Fine Volume
- ok 415 name.0.5
- ok 416 write_default.0.5
- ok 417 write_valid.0.5
- ok 418 write_invalid.0.5
- ok 419 event_missing.0.5
- ok 420 event_spurious.0.5
- ok 421 get_value.0.4
- # 0.4 PCMD3180 i2c2 Dev0 Ch5 Fine Volume
- ok 422 name.0.4
- ok 423 write_default.0.4
- ok 424 write_valid.0.4
- ok 425 write_invalid.0.4
- ok 426 event_missing.0.4
- ok 427 event_spurious.0.4
- ok 428 get_value.0.3
- # 0.3 PCMD3180 i2c2 Dev0 Ch4 Fine Volume
- ok 429 name.0.3
- ok 430 write_default.0.3
- ok 431 write_valid.0.3
- ok 432 write_invalid.0.3
- ok 433 event_missing.0.3
- ok 434 event_spurious.0.3
- ok 435 get_value.0.2
- # 0.2 PCMD3180 i2c2 Dev0 Ch3 Fine Volume
- ok 436 name.0.2
- ok 437 write_default.0.2
- ok 438 write_valid.0.2
- ok 439 write_invalid.0.2
- ok 440 event_missing.0.2
- ok 441 event_spurious.0.2
- ok 442 get_value.0.1
- # 0.1 PCMD3180 i2c2 Dev0 Ch2 Fine Volume
- ok 443 name.0.1
- ok 444 write_default.0.1
- ok 445 write_valid.0.1
- ok 446 write_invalid.0.1
- ok 447 event_missing.0.1
- ok 448 event_spurious.0.1
- ok 449 get_value.0.0
- # 0.0 PCMD3180 i2c2 Dev0 Ch1 Fine Volume
- ok 450 name.0.0
- ok 451 write_default.0.0
- ok 452 write_valid.0.0
- ok 453 write_invalid.0.0
- ok 454 event_missing.0.0
- ok 455 event_spurious.0.0
- # Totals: pass:455 fail:0 xfail:0 xpass:0 skip:0 error:0
- root@am335x-evm:/bin#
+PCM6240 driver implements a flexible and configurable setting for register
+and filter coefficients, to one, two or even multiple PCM6240 Family Audio
+chips.
 
 Signed-off-by: Shenghao Ding <shenghao-ding@ti.com>
 
-Shenghao Ding (4):
-  ASoc: PCM6240: Create PCM6240 Family driver code
-  ASoc: PCM6240: Create header file for PCM6240 Family driver code
-  ASoc: PCM6240: Add compile item for PCM6240 Family driver
-  ASoc: dt-bindings: PCM6240: Add initial DT binding
-
- .../devicetree/bindings/sound/ti,pcm6240.yaml |  177 ++
- sound/soc/codecs/Kconfig                      |   10 +
- sound/soc/codecs/Makefile                     |    2 +
- sound/soc/codecs/pcm6240.c                    | 2217 +++++++++++++++++
- sound/soc/codecs/pcm6240.h                    |  252 ++
- 5 files changed, 2658 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ti,pcm6240.yaml
+---
+v9:
+ - fixed wrong return value in order to report errors to users in
+   pcmdev_put_volsw
+ - fixed indentation in pcmdevice_process_block， each case was
+   encapsulated into a function
+ - Gain kcontrols end with Volume
+ - rename the Gain kcontrol
+ - Add upper_dev_name in pcmdevice_priv for kcontrol complying with alsa
+   naming
+v8:
+ - use some reasonable format of changelog.
+ - | Reported-by: kernel test robot <lkp@intel.com>
+   | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+   | Closes: https://lore.kernel.org/r/202404021225.mx5KlUlV-lkp@intel.com/
+ - Link to v7: https://lore.kernel.org/all/20240331021835.1470-2-shenghao-ding@ti.com/
+---
+ sound/soc/codecs/pcm6240.c | 2217 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 2217 insertions(+)
  create mode 100644 sound/soc/codecs/pcm6240.c
- create mode 100644 sound/soc/codecs/pcm6240.h
 
+diff --git a/sound/soc/codecs/pcm6240.c b/sound/soc/codecs/pcm6240.c
+new file mode 100644
+index 000000000000..93d592dbee66
+--- /dev/null
++++ b/sound/soc/codecs/pcm6240.c
+@@ -0,0 +1,2217 @@
++// SPDX-License-Identifier: GPL-2.0
++//
++// ALSA SoC Texas Instruments PCM6240 Family Audio ADC/DAC Device
++//
++// Copyright (C) 2022 - 2024 Texas Instruments Incorporated
++// https://www.ti.com
++//
++// The PCM6240 driver implements a flexible and configurable
++// algo coefficient setting for one, two, or even multiple
++// PCM6240 Family chips.
++//
++// Author: Shenghao Ding <shenghao-ding@ti.com>
++//
++
++#include <asm/unaligned.h>
++#include <linux/firmware.h>
++#include <linux/gpio.h>
++#include <linux/i2c.h>
++#include <linux/module.h>
++#include <linux/of_irq.h>
++#include <linux/regmap.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/tlv.h>
++
++#include "pcm6240.h"
++
++static const struct i2c_device_id pcmdevice_i2c_id[] = {
++	{ "adc3120",  ADC3120  },
++	{ "adc5120",  ADC5120  },
++	{ "adc6120",  ADC6120  },
++	{ "dix4192",  DIX4192  },
++	{ "pcm1690",  PCM1690  },
++	{ "pcm3120",  PCM3120  },
++	{ "pcm3140",  PCM3140  },
++	{ "pcm5120",  PCM5120  },
++	{ "pcm5140",  PCM5140  },
++	{ "pcm6120",  PCM6120  },
++	{ "pcm6140",  PCM6140  },
++	{ "pcm6240",  PCM6240  },
++	{ "pcm6260",  PCM6260  },
++	{ "pcm9211",  PCM9211  },
++	{ "pcmd3140", PCMD3140 },
++	{ "pcmd3180", PCMD3180 },
++	{ "pcmd512x", PCMD512X },
++	{ "taa5212",  TAA5212  },
++	{ "taa5412",  TAA5412  },
++	{ "tad5212",  TAD5212  },
++	{ "tad5412",  TAD5412  },
++	{}
++};
++MODULE_DEVICE_TABLE(i2c, pcmdevice_i2c_id);
++
++static const char *const pcmdev_ctrl_name[] = {
++	"%s i2c%d Dev%d Ch%d Ana Volume",
++	"%s i2c%d Dev%d Ch%d Digi Volume",
++	"%s i2c%d Dev%d Ch%d Fine Volume",
++};
++
++static const char *const pcmdev_ctrl_name_with_prefix[] = {
++	"%s Dev%d Ch%d Ana Volume",
++	"%s Dev%d Ch%d Digi Volume",
++	"%s Dev%d Ch%d Fine Volume",
++};
++
++static const struct pcmdevice_mixer_control adc5120_analog_gain_ctl[] = {
++	{
++		.shift = 1,
++		.reg = ADC5120_REG_CH1_ANALOG_GAIN,
++		.max = 0x54,
++		.invert = 0,
++	},
++	{
++		.shift = 1,
++		.reg = ADC5120_REG_CH2_ANALOG_GAIN,
++		.max = 0x54,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control adc5120_digi_gain_ctl[] = {
++	{
++		.shift = 0,
++		.reg = ADC5120_REG_CH1_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = ADC5120_REG_CH2_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control pcm1690_digi_gain_ctl[] = {
++	{
++		.shift = 0,
++		.reg = PCM1690_REG_CH1_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM1690_REG_CH2_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM1690_REG_CH3_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM1690_REG_CH4_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM1690_REG_CH5_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM1690_REG_CH6_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM1690_REG_CH7_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM1690_REG_CH8_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control pcm6240_analog_gain_ctl[] = {
++	{
++		.shift = 2,
++		.reg = PCM6240_REG_CH1_ANALOG_GAIN,
++		.max = 0x42,
++		.invert = 0,
++	},
++	{
++		.shift = 2,
++		.reg = PCM6240_REG_CH2_ANALOG_GAIN,
++		.max = 0x42,
++		.invert = 0,
++	},
++	{
++		.shift = 2,
++		.reg = PCM6240_REG_CH3_ANALOG_GAIN,
++		.max = 0x42,
++		.invert = 0,
++	},
++	{
++		.shift = 2,
++		.reg = PCM6240_REG_CH4_ANALOG_GAIN,
++		.max = 0x42,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control pcm6240_digi_gain_ctl[] = {
++	{
++		.shift = 0,
++		.reg = PCM6240_REG_CH1_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM6240_REG_CH2_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM6240_REG_CH3_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM6240_REG_CH4_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control pcm6260_analog_gain_ctl[] = {
++	{
++		.shift = 2,
++		.reg = PCM6260_REG_CH1_ANALOG_GAIN,
++		.max = 0x42,
++		.invert = 0,
++	},
++	{
++		.shift = 2,
++		.reg = PCM6260_REG_CH2_ANALOG_GAIN,
++		.max = 0x42,
++		.invert = 0,
++	},
++	{
++		.shift = 2,
++		.reg = PCM6260_REG_CH3_ANALOG_GAIN,
++		.max = 0x42,
++		.invert = 0,
++	},
++	{
++		.shift = 2,
++		.reg = PCM6260_REG_CH4_ANALOG_GAIN,
++		.max = 0x42,
++		.invert = 0,
++	},
++	{
++		.shift = 2,
++		.reg = PCM6260_REG_CH5_ANALOG_GAIN,
++		.max = 0x42,
++		.invert = 0,
++	},
++	{
++		.shift = 2,
++		.reg = PCM6260_REG_CH6_ANALOG_GAIN,
++		.max = 0x42,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control pcm6260_digi_gain_ctl[] = {
++	{
++		.shift = 0,
++		.reg = PCM6260_REG_CH1_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM6260_REG_CH2_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM6260_REG_CH3_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM6260_REG_CH4_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM6260_REG_CH5_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM6260_REG_CH6_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control pcm9211_digi_gain_ctl[] = {
++	{
++		.shift = 0,
++		.reg = PCM9211_REG_CH1_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCM9211_REG_CH2_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control pcmd3140_digi_gain_ctl[] = {
++	{
++		.shift = 0,
++		.reg = PCMD3140_REG_CH1_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCMD3140_REG_CH2_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCMD3140_REG_CH3_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCMD3140_REG_CH4_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control pcmd3140_fine_gain_ctl[] = {
++	{
++		.shift = 4,
++		.reg = PCMD3140_REG_CH1_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = PCMD3140_REG_CH2_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = PCMD3140_REG_CH3_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = PCMD3140_REG_CH4_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control pcmd3180_digi_gain_ctl[] = {
++	{
++		.shift = 0,
++		.reg = PCMD3180_REG_CH1_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCMD3180_REG_CH2_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCMD3180_REG_CH3_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCMD3180_REG_CH4_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCMD3180_REG_CH5_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCMD3180_REG_CH6_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCMD3180_REG_CH7_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = PCMD3180_REG_CH8_DIGITAL_GAIN,
++		.max = 0xff,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control pcmd3180_fine_gain_ctl[] = {
++	{
++		.shift = 4,
++		.reg = PCMD3180_REG_CH1_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = PCMD3180_REG_CH2_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = PCMD3180_REG_CH3_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = PCMD3180_REG_CH4_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = PCMD3180_REG_CH5_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = PCMD3180_REG_CH6_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = PCMD3180_REG_CH7_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = PCMD3180_REG_CH8_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control taa5412_digi_vol_ctl[] = {
++	{
++		.shift = 0,
++		.reg = TAA5412_REG_CH1_DIGITAL_VOLUME,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = TAA5412_REG_CH2_DIGITAL_VOLUME,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = TAA5412_REG_CH3_DIGITAL_VOLUME,
++		.max = 0xff,
++		.invert = 0,
++	},
++	{
++		.shift = 0,
++		.reg = TAA5412_REG_CH4_DIGITAL_VOLUME,
++		.max = 0xff,
++		.invert = 0,
++	}
++};
++
++static const struct pcmdevice_mixer_control taa5412_fine_gain_ctl[] = {
++	{
++		.shift = 4,
++		.reg = TAA5412_REG_CH1_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = TAA5412_REG_CH2_FINE_GAIN,
++		.max = 0xf,
++		.invert = 0,
++	},
++	{
++		.shift = 4,
++		.reg = TAA5412_REG_CH3_FINE_GAIN,
++		.max = 0xf,
++		.invert = 4,
++	},
++	{
++		.shift = 0,
++		.reg = TAA5412_REG_CH4_FINE_GAIN,
++		.max = 0xf,
++		.invert = 4,
++	}
++};
++
++static const DECLARE_TLV_DB_MINMAX_MUTE(pcmd3140_dig_gain_tlv,
++	-10000, 2700);
++static const DECLARE_TLV_DB_MINMAX_MUTE(pcm1690_fine_dig_gain_tlv,
++	-12750, 0);
++static const DECLARE_TLV_DB_MINMAX_MUTE(pcm1690_dig_gain_tlv,
++	-25500, 0);
++static const DECLARE_TLV_DB_MINMAX_MUTE(pcm9211_dig_gain_tlv,
++	-11450, 2000);
++static const DECLARE_TLV_DB_MINMAX_MUTE(adc5120_fgain_tlv,
++	-10050, 2700);
++static const DECLARE_TLV_DB_LINEAR(adc5120_chgain_tlv, 0, 4200);
++static const DECLARE_TLV_DB_MINMAX_MUTE(pcm6260_fgain_tlv,
++	-10000, 2700);
++static const DECLARE_TLV_DB_LINEAR(pcm6260_chgain_tlv, 0, 4200);
++static const DECLARE_TLV_DB_MINMAX_MUTE(taa5412_dig_vol_tlv,
++	-8050, 4700);
++static const DECLARE_TLV_DB_LINEAR(taa5412_fine_gain_tlv,
++	-80, 70);
++
++static int pcmdev_change_dev(struct pcmdevice_priv *pcm_priv,
++	unsigned short dev_no)
++{
++	struct i2c_client *client = (struct i2c_client *)pcm_priv->client;
++	struct regmap *map = pcm_priv->regmap;
++	int ret;
++
++	if (client->addr == pcm_priv->addr[dev_no])
++		return 0;
++
++	client->addr = pcm_priv->addr[dev_no];
++	/* All pcmdevices share the same regmap, clear the page
++	 * inside regmap once switching to another pcmdevice.
++	 * Register 0 at any pages inside pcmdevice is the same
++	 * one for page-switching.
++	 */
++	ret = regmap_write(map, PCMDEVICE_PAGE_SELECT, 0);
++	if (ret < 0)
++		dev_err(pcm_priv->dev, "%s: err = %d\n", __func__, ret);
++
++	return ret;
++}
++
++static int pcmdev_dev_read(struct pcmdevice_priv *pcm_dev,
++	unsigned int dev_no, unsigned int reg, unsigned int *val)
++{
++	struct regmap *map = pcm_dev->regmap;
++	int ret;
++
++	if (dev_no >= pcm_dev->ndev) {
++		dev_err(pcm_dev->dev, "%s: no such channel(%d)\n", __func__,
++			dev_no);
++		return -EINVAL;
++	}
++
++	ret = pcmdev_change_dev(pcm_dev, dev_no);
++	if (ret < 0) {
++		dev_err(pcm_dev->dev, "%s: chg dev err = %d\n", __func__, ret);
++		return ret;
++	}
++
++	ret = regmap_read(map, reg, val);
++	if (ret < 0)
++		dev_err(pcm_dev->dev, "%s: err = %d\n", __func__, ret);
++
++	return ret;
++}
++
++static int pcmdev_dev_update_bits(struct pcmdevice_priv *pcm_dev,
++	unsigned int dev_no, unsigned int reg, unsigned int mask,
++	unsigned int value)
++{
++	struct regmap *map = pcm_dev->regmap;
++	int ret;
++
++	if (dev_no >= pcm_dev->ndev) {
++		dev_err(pcm_dev->dev, "%s: no such channel(%d)\n", __func__,
++			dev_no);
++		return -EINVAL;
++	}
++
++	ret = pcmdev_change_dev(pcm_dev, dev_no);
++	if (ret < 0) {
++		dev_err(pcm_dev->dev, "%s: chg dev err = %d\n", __func__, ret);
++		return ret;
++	}
++
++	ret = regmap_update_bits(map, reg, mask, value);
++	if (ret < 0)
++		dev_err(pcm_dev->dev, "%s: update_bits err=%d\n",
++			__func__, ret);
++
++	return ret;
++}
++
++static int pcmdev_get_volsw(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol, int vol_ctrl_type)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct pcmdevice_priv *pcm_dev =
++		snd_soc_component_get_drvdata(component);
++	struct pcmdevice_mixer_control *mc =
++		(struct pcmdevice_mixer_control *)kcontrol->private_value;
++	int max = mc->max, ret;
++	unsigned int mask = BIT(fls(max)) - 1;
++	unsigned int dev_no = mc->dev_no;
++	unsigned int shift = mc->shift;
++	unsigned int reg = mc->reg;
++	unsigned int val;
++
++	mutex_lock(&pcm_dev->codec_lock);
++
++	if (pcm_dev->chip_id == PCM1690) {
++		ret = pcmdev_dev_read(pcm_dev, dev_no, PCM1690_REG_MODE_CTRL,
++			&val);
++		if (ret) {
++			dev_err(pcm_dev->dev, "%s: read mode err=%d\n",
++				__func__, ret);
++			goto out;
++		}
++		val &= PCM1690_REG_MODE_CTRL_DAMS_MSK;
++		/* Set to wide-range mode, before using vol ctrl. */
++		if (!val && vol_ctrl_type == PCMDEV_PCM1690_VOL_CTRL) {
++			ucontrol->value.integer.value[0] = -25500;
++			goto out;
++		}
++		/* Set to fine mode, before using fine vol ctrl. */
++		if (val && vol_ctrl_type == PCMDEV_PCM1690_FINE_VOL_CTRL) {
++			ucontrol->value.integer.value[0] = -12750;
++			goto out;
++		}
++	}
++
++	ret = pcmdev_dev_read(pcm_dev, dev_no, reg, &val);
++	if (ret) {
++		dev_err(pcm_dev->dev, "%s: read err=%d\n",
++			__func__, ret);
++		goto out;
++	}
++
++	val = (val >> shift) & mask;
++	val = (val > max) ? max : val;
++	val = mc->invert ? max - val : val;
++	ucontrol->value.integer.value[0] = val;
++out:
++	mutex_unlock(&pcm_dev->codec_lock);
++	return ret;
++}
++
++static int pcmdevice_get_volsw(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	return pcmdev_get_volsw(kcontrol, ucontrol, PCMDEV_GENERIC_VOL_CTRL);
++}
++
++static int pcm1690_get_volsw(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	return pcmdev_get_volsw(kcontrol, ucontrol, PCMDEV_PCM1690_VOL_CTRL);
++}
++
++static int pcm1690_get_finevolsw(struct snd_kcontrol *kcontrol,
++		struct snd_ctl_elem_value *ucontrol)
++{
++	return pcmdev_get_volsw(kcontrol, ucontrol,
++		PCMDEV_PCM1690_FINE_VOL_CTRL);
++}
++
++static int pcmdev_put_volsw(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol, int vol_ctrl_type)
++{
++	struct snd_soc_component *component = snd_kcontrol_chip(kcontrol);
++	struct pcmdevice_priv *pcm_dev =
++		snd_soc_component_get_drvdata(component);
++	struct pcmdevice_mixer_control *mc =
++		(struct pcmdevice_mixer_control *)kcontrol->private_value;
++	int max = mc->max, rc;
++	unsigned int mask = BIT(fls(max)) - 1;
++	unsigned int dev_no = mc->dev_no;
++	unsigned int shift = mc->shift;
++	unsigned int val, val_mask;
++	unsigned int reg = mc->reg;
++
++	mutex_lock(&pcm_dev->codec_lock);
++	val = ucontrol->value.integer.value[0] & mask;
++	val = (val > max) ? max : val;
++	val = mc->invert ? max - val : val;
++	val_mask = mask << shift;
++	val = val << shift;
++
++	switch (vol_ctrl_type) {
++	case PCMDEV_PCM1690_VOL_CTRL:
++		val_mask |= PCM1690_REG_MODE_CTRL_DAMS_MSK;
++		val |= PCM1690_REG_MODE_CTRL_DAMS_WIDE_RANGE;
++		break;
++	case PCMDEV_PCM1690_FINE_VOL_CTRL:
++		val_mask |= PCM1690_REG_MODE_CTRL_DAMS_MSK;
++		val |= PCM1690_REG_MODE_CTRL_DAMS_FINE_STEP;
++		break;
++	}
++
++	rc = pcmdev_dev_update_bits(pcm_dev, dev_no, reg, val_mask, val);
++	if (rc < 0)
++		dev_err(pcm_dev->dev, "%s: update_bits err = %d\n",
++			__func__, rc);
++	else
++		rc = 1;
++	mutex_unlock(&pcm_dev->codec_lock);
++	return rc;
++}
++
++static int pcmdevice_put_volsw(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	return pcmdev_put_volsw(kcontrol, ucontrol, PCMDEV_GENERIC_VOL_CTRL);
++}
++
++static int pcm1690_put_volsw(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	return pcmdev_put_volsw(kcontrol, ucontrol, PCMDEV_PCM1690_VOL_CTRL);
++}
++
++static int pcm1690_put_finevolsw(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	return pcmdev_put_volsw(kcontrol, ucontrol,
++		PCMDEV_PCM1690_FINE_VOL_CTRL);
++}
++
++static const struct pcmdev_ctrl_info pcmdev_gain_ctl_info[][2] = {
++	// ADC3120
++	{
++		{
++			.gain = adc5120_chgain_tlv,
++			.pcmdev_ctrl = adc5120_analog_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 0,
++		},
++		{
++			.gain = adc5120_fgain_tlv,
++			.pcmdev_ctrl = adc5120_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// ADC5120
++	{
++		{
++			.gain = adc5120_chgain_tlv,
++			.pcmdev_ctrl = adc5120_analog_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 0,
++		},
++		{
++			.gain = adc5120_fgain_tlv,
++			.pcmdev_ctrl = adc5120_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// ADC6120
++	{
++		{
++			.gain = adc5120_chgain_tlv,
++			.pcmdev_ctrl = adc5120_analog_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 0,
++		},
++		{
++			.gain = adc5120_fgain_tlv,
++			.pcmdev_ctrl = adc5120_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// DIX4192
++	{
++		{
++			.ctrl_array_size = 0,
++		},
++		{
++			.ctrl_array_size = 0,
++		},
++	},
++	// PCM1690
++	{
++		{
++			.gain = pcm1690_fine_dig_gain_tlv,
++			.pcmdev_ctrl = pcm1690_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm1690_digi_gain_ctl),
++			.get = pcm1690_get_volsw,
++			.put = pcm1690_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++		{
++			.gain = pcm1690_dig_gain_tlv,
++			.pcmdev_ctrl = pcm1690_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm1690_digi_gain_ctl),
++			.get = pcm1690_get_finevolsw,
++			.put = pcm1690_put_finevolsw,
++			.pcmdev_ctrl_name_id = 2,
++		},
++	},
++	// PCM3120
++	{
++		{
++			.gain = adc5120_chgain_tlv,
++			.pcmdev_ctrl = adc5120_analog_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 0,
++		},
++		{
++			.gain = adc5120_fgain_tlv,
++			.pcmdev_ctrl = adc5120_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// PCM3140
++	{
++		{
++			.gain = pcm6260_chgain_tlv,
++			.pcmdev_ctrl = pcm6240_analog_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm6240_analog_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 0,
++		},
++		{
++			.gain = pcm6260_fgain_tlv,
++			.pcmdev_ctrl = pcm6240_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm6240_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// PCM5120
++	{
++		{
++			.gain = adc5120_chgain_tlv,
++			.pcmdev_ctrl = adc5120_analog_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 0,
++		},
++		{
++			.gain = adc5120_fgain_tlv,
++			.pcmdev_ctrl = adc5120_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// PCM5140
++	{
++		{
++			.gain = pcm6260_chgain_tlv,
++			.pcmdev_ctrl = pcm6240_analog_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm6240_analog_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 0,
++		},
++		{
++			.gain = pcm6260_fgain_tlv,
++			.pcmdev_ctrl = pcm6240_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm6240_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// PCM6120
++	{
++		{
++			.gain = adc5120_chgain_tlv,
++			.pcmdev_ctrl = adc5120_analog_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_analog_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 0,
++		},
++		{
++			.gain = adc5120_fgain_tlv,
++			.pcmdev_ctrl = adc5120_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(adc5120_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// PCM6140
++	{
++		{
++			.gain = pcm6260_chgain_tlv,
++			.pcmdev_ctrl = pcm6240_analog_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm6240_analog_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 0,
++		},
++		{
++			.gain = pcm6260_fgain_tlv,
++			.pcmdev_ctrl = pcm6240_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm6240_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// PCM6240
++	{
++		{
++			.gain = pcm6260_chgain_tlv,
++			.pcmdev_ctrl = pcm6240_analog_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm6240_analog_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 0,
++		},
++		{
++			.gain = pcm6260_fgain_tlv,
++			.pcmdev_ctrl = pcm6240_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm6240_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// PCM6260
++	{
++		{
++			.gain = pcm6260_chgain_tlv,
++			.pcmdev_ctrl = pcm6260_analog_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm6260_analog_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 0,
++		},
++		{
++			.gain = pcm6260_fgain_tlv,
++			.pcmdev_ctrl = pcm6260_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm6260_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// PCM9211
++	{
++		{
++			.ctrl_array_size = 0,
++		},
++		{
++			.gain = pcm9211_dig_gain_tlv,
++			.pcmdev_ctrl = pcm9211_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcm9211_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++
++	},
++	// PCMD3140
++	{
++		{
++			.gain = taa5412_fine_gain_tlv,
++			.pcmdev_ctrl = pcmd3140_fine_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcmd3140_fine_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 2,
++		},
++		{
++			.gain = pcmd3140_dig_gain_tlv,
++			.pcmdev_ctrl = pcmd3140_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcmd3140_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// PCMD3180
++	{
++		{
++			.gain = taa5412_fine_gain_tlv,
++			.pcmdev_ctrl = pcmd3180_fine_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcmd3180_fine_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 2,
++		},
++		{
++			.gain = pcmd3140_dig_gain_tlv,
++			.pcmdev_ctrl = pcmd3180_digi_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(pcmd3180_digi_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// PCMD512X
++	{
++		{
++			.ctrl_array_size = 0,
++		},
++		{
++			.ctrl_array_size = 0,
++		},
++	},
++	// TAA5212
++	{
++		{
++			.gain = taa5412_fine_gain_tlv,
++			.pcmdev_ctrl = taa5412_fine_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(taa5412_fine_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 2,
++		},
++		{
++			.gain = taa5412_dig_vol_tlv,
++			.pcmdev_ctrl = taa5412_digi_vol_ctl,
++			.ctrl_array_size = ARRAY_SIZE(taa5412_digi_vol_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// TAA5412
++	{
++		{
++			.gain = taa5412_fine_gain_tlv,
++			.pcmdev_ctrl = taa5412_fine_gain_ctl,
++			.ctrl_array_size = ARRAY_SIZE(taa5412_fine_gain_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 2,
++		},
++		{
++			.gain = taa5412_dig_vol_tlv,
++			.pcmdev_ctrl = taa5412_digi_vol_ctl,
++			.ctrl_array_size = ARRAY_SIZE(taa5412_digi_vol_ctl),
++			.get = pcmdevice_get_volsw,
++			.put = pcmdevice_put_volsw,
++			.pcmdev_ctrl_name_id = 1,
++		},
++	},
++	// TAD5212
++	{
++		{
++			.ctrl_array_size = 0,
++		},
++		{
++			.ctrl_array_size = 0,
++		},
++	},
++	// TAD5412
++	{
++		{
++			.ctrl_array_size = 0,
++		},
++		{
++			.ctrl_array_size = 0,
++		},
++	},
++};
++
++static int pcmdev_dev_bulk_write(struct pcmdevice_priv *pcm_dev,
++	unsigned int dev_no, unsigned int reg, unsigned char *data,
++	unsigned int len)
++{
++	struct regmap *map = pcm_dev->regmap;
++	int ret;
++
++	if (dev_no >= pcm_dev->ndev) {
++		dev_err(pcm_dev->dev, "%s: no such channel(%d)\n", __func__,
++			dev_no);
++		return -EINVAL;
++	}
++
++	ret = pcmdev_change_dev(pcm_dev, dev_no);
++	if (ret < 0) {
++		dev_err(pcm_dev->dev, "%s: chg dev err = %d\n", __func__, ret);
++		return ret;
++	}
++
++	ret = regmap_bulk_write(map, reg, data, len);
++	if (ret < 0)
++		dev_err(pcm_dev->dev, "%s: bulk_write err = %d\n", __func__,
++			ret);
++
++	return ret;
++}
++
++static int pcmdev_dev_write(struct pcmdevice_priv *pcm_dev,
++	unsigned int dev_no, unsigned int reg, unsigned int value)
++{
++	struct regmap *map = pcm_dev->regmap;
++	int ret;
++
++	if (dev_no >= pcm_dev->ndev) {
++		dev_err(pcm_dev->dev, "%s: no such channel(%d)\n", __func__,
++			dev_no);
++		return -EINVAL;
++	}
++
++	ret = pcmdev_change_dev(pcm_dev, dev_no);
++	if (ret < 0) {
++		dev_err(pcm_dev->dev, "%s: chg dev err = %d\n", __func__, ret);
++		return ret;
++	}
++
++	ret = regmap_write(map, reg, value);
++	if (ret < 0)
++		dev_err(pcm_dev->dev, "%s: err = %d\n", __func__, ret);
++
++	return ret;
++}
++
++static int pcmdevice_info_profile(
++	struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_info *uinfo)
++{
++	struct snd_soc_component *codec
++		= snd_soc_kcontrol_component(kcontrol);
++	struct pcmdevice_priv *pcm_dev =
++		snd_soc_component_get_drvdata(codec);
++
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = max(0, pcm_dev->regbin.ncfgs - 1);
++
++	return 0;
++}
++
++static int pcmdevice_get_profile_id(
++	struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec
++		= snd_soc_kcontrol_component(kcontrol);
++	struct pcmdevice_priv *pcm_dev =
++		snd_soc_component_get_drvdata(codec);
++
++	ucontrol->value.integer.value[0] = pcm_dev->cur_conf;
++
++	return 0;
++}
++
++static int pcmdevice_set_profile_id(
++	struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *codec
++		= snd_soc_kcontrol_component(kcontrol);
++	struct pcmdevice_priv *pcm_dev =
++		snd_soc_component_get_drvdata(codec);
++	int nr_profile = ucontrol->value.integer.value[0];
++	int max = pcm_dev->regbin.ncfgs - 1;
++	int ret = 0;
++
++	nr_profile = clamp(nr_profile, 0, max);
++
++	if (pcm_dev->cur_conf != nr_profile) {
++		pcm_dev->cur_conf = nr_profile;
++		ret = 1;
++	}
++
++	return ret;
++}
++
++static int pcmdevice_info_volsw(struct snd_kcontrol *kcontrol,
++	struct snd_ctl_elem_info *uinfo)
++{
++	struct pcmdevice_mixer_control *mc =
++		(struct pcmdevice_mixer_control *)kcontrol->private_value;
++
++	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
++	uinfo->count = 1;
++	uinfo->value.integer.min = 0;
++	uinfo->value.integer.max = mc->max;
++	return 0;
++}
++
++static void pcm9211_sw_rst(struct pcmdevice_priv *pcm_dev)
++{
++	int ret, i;
++
++	for (i = 0; i < pcm_dev->ndev; i++) {
++		ret = pcmdev_dev_update_bits(pcm_dev, i,
++			PCM9211_REG_SW_CTRL, PCM9211_REG_SW_CTRL_MRST_MSK,
++			PCM9211_REG_SW_CTRL_MRST);
++		if (ret < 0)
++			dev_err(pcm_dev->dev, "%s: dev %d swreset fail %d\n",
++				__func__, i, ret);
++	}
++}
++
++static void pcmdevice_sw_rst(struct pcmdevice_priv *pcm_dev)
++{
++	int ret, i;
++
++	for (i = 0; i < pcm_dev->ndev; i++) {
++		ret = pcmdev_dev_write(pcm_dev, i, PCMDEVICE_REG_SWRESET,
++			PCMDEVICE_REG_SWRESET_RESET);
++		if (ret < 0)
++			dev_err(pcm_dev->dev, "%s: dev %d swreset fail %d\n",
++				__func__, i, ret);
++	}
++}
++
++static struct pcmdevice_config_info *pcmdevice_add_config(void *ctxt,
++	const unsigned char *config_data, unsigned int config_size,
++	int *status)
++{
++	struct pcmdevice_priv *pcm_dev = (struct pcmdevice_priv *)ctxt;
++	struct pcmdevice_config_info *cfg_info;
++	struct pcmdevice_block_data **bk_da;
++	unsigned int config_offset = 0, i;
++
++	cfg_info = kzalloc(sizeof(struct pcmdevice_config_info), GFP_KERNEL);
++	if (!cfg_info) {
++		*status = -ENOMEM;
++		goto out;
++	}
++
++	if (pcm_dev->regbin.fw_hdr.binary_version_num >= 0x105) {
++		if (config_offset + 64 > (int)config_size) {
++			*status = -EINVAL;
++			dev_err(pcm_dev->dev,
++				"%s: cfg_name out of boundary\n", __func__);
++			goto out;
++		}
++		memcpy(cfg_info->cfg_name, &config_data[config_offset], 64);
++		config_offset += 64;
++	}
++
++	if (config_offset + 4 > config_size) {
++		*status = -EINVAL;
++		dev_err(pcm_dev->dev, "%s: nblocks out of boundary\n",
++			__func__);
++		goto out;
++	}
++	cfg_info->nblocks =
++		get_unaligned_be32(&config_data[config_offset]);
++	config_offset += 4;
++
++	bk_da = cfg_info->blk_data = kcalloc(cfg_info->nblocks,
++		sizeof(struct pcmdevice_block_data *), GFP_KERNEL);
++	if (!bk_da) {
++		*status = -ENOMEM;
++		goto out;
++	}
++	cfg_info->real_nblocks = 0;
++	for (i = 0; i < cfg_info->nblocks; i++) {
++		if (config_offset + 12 > config_size) {
++			*status = -EINVAL;
++			dev_err(pcm_dev->dev,
++				"%s: out of boundary i = %d nblocks = %u\n",
++				__func__, i, cfg_info->nblocks);
++			break;
++		}
++		bk_da[i] = kzalloc(sizeof(struct pcmdevice_block_data),
++			GFP_KERNEL);
++		if (!bk_da[i]) {
++			*status = -ENOMEM;
++			break;
++		}
++		bk_da[i]->dev_idx = config_data[config_offset];
++		config_offset++;
++
++		bk_da[i]->block_type = config_data[config_offset];
++		config_offset++;
++
++		if (bk_da[i]->block_type == PCMDEVICE_BIN_BLK_PRE_POWER_UP) {
++			if (bk_da[i]->dev_idx == 0)
++				cfg_info->active_dev =
++					(1 << pcm_dev->ndev) - 1;
++			else
++				cfg_info->active_dev =
++					1 << (bk_da[i]->dev_idx - 1);
++		}
++
++		bk_da[i]->yram_checksum =
++			get_unaligned_be16(&config_data[config_offset]);
++		config_offset += 2;
++		bk_da[i]->block_size =
++			get_unaligned_be32(&config_data[config_offset]);
++		config_offset += 4;
++
++		bk_da[i]->n_subblks =
++			get_unaligned_be32(&config_data[config_offset]);
++
++		config_offset += 4;
++
++		if (config_offset + bk_da[i]->block_size > config_size) {
++			*status = -EINVAL;
++			dev_err(pcm_dev->dev,
++				"%s: out of boundary: i = %d blks = %u\n",
++				__func__, i, cfg_info->nblocks);
++			break;
++		}
++
++		bk_da[i]->regdata = kmemdup(&config_data[config_offset],
++			bk_da[i]->block_size, GFP_KERNEL);
++		if (!bk_da[i]->regdata) {
++			*status = -ENOMEM;
++			goto out;
++		}
++		config_offset += bk_da[i]->block_size;
++		cfg_info->real_nblocks += 1;
++	}
++out:
++	return cfg_info;
++}
++
++static int pcmdev_gain_ctrl_add(struct pcmdevice_priv *pcm_dev,
++	int dev_no, int ctl_id)
++{
++	struct i2c_adapter *adap = pcm_dev->client->adapter;
++	struct snd_soc_component *comp = pcm_dev->component;
++	struct pcmdevice_mixer_control *pcmdev_ctrl;
++	struct snd_kcontrol_new *pcmdev_controls;
++	int ret, mix_index = 0, name_id, chn;
++	unsigned int id = pcm_dev->chip_id;
++	const int nr_chn =
++		pcmdev_gain_ctl_info[id][ctl_id].ctrl_array_size;
++	const char *ctrl_name;
++	char *name;
++
++	if (!nr_chn) {
++		dev_dbg(pcm_dev->dev, "%s: no gain ctrl for %s\n", __func__,
++			pcm_dev->dev_name);
++		return 0;
++	}
++
++	pcmdev_controls = devm_kzalloc(pcm_dev->dev,
++		nr_chn * sizeof(struct snd_kcontrol_new), GFP_KERNEL);
++	if (!pcmdev_controls)
++		return -ENOMEM;
++
++	name_id = pcmdev_gain_ctl_info[id][ctl_id].pcmdev_ctrl_name_id;
++
++	if (comp->name_prefix)
++		ctrl_name = pcmdev_ctrl_name_with_prefix[name_id];
++	else
++		ctrl_name = pcmdev_ctrl_name[name_id];
++
++	for (chn = 1; chn <= nr_chn; chn++) {
++		name = devm_kzalloc(pcm_dev->dev,
++			SNDRV_CTL_ELEM_ID_NAME_MAXLEN, GFP_KERNEL);
++		if (!name) {
++			ret = -ENOMEM;
++			goto out;
++		}
++		if (comp->name_prefix)
++			scnprintf(name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
++				ctrl_name, comp->name_prefix, dev_no, chn);
++		else
++			scnprintf(name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
++				ctrl_name, pcm_dev->upper_dev_name, adap->nr,
++				dev_no, chn);
++		pcmdev_controls[mix_index].tlv.p =
++			pcmdev_gain_ctl_info[id][ctl_id].gain;
++		pcmdev_ctrl = devm_kmemdup(pcm_dev->dev,
++			&pcmdev_gain_ctl_info[id][ctl_id].pcmdev_ctrl[chn - 1],
++			sizeof(*pcmdev_ctrl), GFP_KERNEL);
++		if (!pcmdev_ctrl) {
++			ret = -ENOMEM;
++			goto out;
++		}
++		pcmdev_ctrl->dev_no = dev_no;
++		pcmdev_controls[mix_index].private_value =
++			(unsigned long)pcmdev_ctrl;
++		pcmdev_controls[mix_index].name = name;
++		pcmdev_controls[mix_index].access =
++			SNDRV_CTL_ELEM_ACCESS_TLV_READ |
++			SNDRV_CTL_ELEM_ACCESS_READWRITE;
++		pcmdev_controls[mix_index].iface =
++			SNDRV_CTL_ELEM_IFACE_MIXER;
++		pcmdev_controls[mix_index].info = pcmdevice_info_volsw;
++		pcmdev_controls[mix_index].get =
++			pcmdev_gain_ctl_info[id][ctl_id].get;
++		pcmdev_controls[mix_index].put =
++			pcmdev_gain_ctl_info[id][ctl_id].put;
++		mix_index++;
++	}
++
++	ret = snd_soc_add_component_controls(comp, pcmdev_controls, mix_index);
++	if (ret)
++		dev_err(pcm_dev->dev, "%s: add_controls err = %d\n",
++			__func__, ret);
++out:
++	return ret;
++}
++
++static int pcmdev_profile_ctrl_add(struct pcmdevice_priv *pcm_dev)
++{
++	struct snd_soc_component *comp = pcm_dev->component;
++	struct i2c_adapter *adap = pcm_dev->client->adapter;
++	struct snd_kcontrol_new *pcmdev_ctrl;
++	char *name;
++	int ret;
++
++	pcmdev_ctrl = devm_kzalloc(pcm_dev->dev,
++		sizeof(struct snd_kcontrol_new), GFP_KERNEL);
++	if (!pcmdev_ctrl)
++		return -ENOMEM;
++
++	/* Create a mixer item for selecting the active profile */
++	name = devm_kzalloc(pcm_dev->dev, SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
++		GFP_KERNEL);
++	if (!name)
++		return -ENOMEM;
++
++	if (comp->name_prefix)
++		scnprintf(name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
++			"%s Profile id", comp->name_prefix);
++	else
++		scnprintf(name, SNDRV_CTL_ELEM_ID_NAME_MAXLEN,
++			"%s i2c%d Profile id", pcm_dev->upper_dev_name,
++			adap->nr);
++	pcmdev_ctrl->name = name;
++	pcmdev_ctrl->iface = SNDRV_CTL_ELEM_IFACE_MIXER;
++	pcmdev_ctrl->info = pcmdevice_info_profile;
++	pcmdev_ctrl->get = pcmdevice_get_profile_id;
++	pcmdev_ctrl->put = pcmdevice_set_profile_id;
++
++	ret = snd_soc_add_component_controls(comp, pcmdev_ctrl, 1);
++	if (ret)
++		dev_err(pcm_dev->dev, "%s: add_controls err = %d\n",
++			__func__, ret);
++
++	return ret;
++}
++
++static void pcmdevice_config_info_remove(void *ctxt)
++{
++	struct pcmdevice_priv *pcm_dev = (struct pcmdevice_priv *) ctxt;
++	struct pcmdevice_regbin *regbin = &(pcm_dev->regbin);
++	struct pcmdevice_config_info **cfg_info = regbin->cfg_info;
++	int i, j;
++
++	if (!cfg_info)
++		return;
++	for (i = 0; i < regbin->ncfgs; i++) {
++		if (!cfg_info[i])
++			continue;
++		if (cfg_info[i]->blk_data) {
++			for (j = 0; j < (int)cfg_info[i]->real_nblocks; j++) {
++				if (!cfg_info[i]->blk_data[j])
++					continue;
++				kfree(cfg_info[i]->blk_data[j]->regdata);
++				kfree(cfg_info[i]->blk_data[j]);
++			}
++			kfree(cfg_info[i]->blk_data);
++		}
++		kfree(cfg_info[i]);
++	}
++	kfree(cfg_info);
++}
++
++static int pcmdev_regbin_ready(const struct firmware *fmw, void *ctxt)
++{
++	struct pcmdevice_config_info **cfg_info;
++	struct pcmdevice_priv *pcm_dev = ctxt;
++	struct pcmdevice_regbin_hdr *fw_hdr;
++	struct pcmdevice_regbin *regbin;
++	unsigned int total_config_sz = 0;
++	int offset = 0, ret = 0, i;
++	unsigned char *buf;
++
++	regbin = &(pcm_dev->regbin);
++	fw_hdr = &(regbin->fw_hdr);
++	if (!fmw || !fmw->data) {
++		dev_err(pcm_dev->dev, "%s: failed to read %s\n",
++			__func__, pcm_dev->bin_name);
++		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
++		ret = -EINVAL;
++		goto out;
++	}
++	buf = (unsigned char *)fmw->data;
++
++	fw_hdr->img_sz = get_unaligned_be32(&buf[offset]);
++	offset += 4;
++	if (fw_hdr->img_sz != fmw->size) {
++		dev_err(pcm_dev->dev, "%s: file size(%d) not match %u",
++			__func__, (int)fmw->size, fw_hdr->img_sz);
++		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
++		ret = -EINVAL;
++		goto out;
++	}
++
++	fw_hdr->checksum = get_unaligned_be32(&buf[offset]);
++	offset += 4;
++	fw_hdr->binary_version_num = get_unaligned_be32(&buf[offset]);
++	if (fw_hdr->binary_version_num < 0x103) {
++		dev_err(pcm_dev->dev, "%s: bin version 0x%04x is out of date",
++			__func__, fw_hdr->binary_version_num);
++		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
++		ret = -EINVAL;
++		goto out;
++	}
++	offset += 4;
++	fw_hdr->drv_fw_version = get_unaligned_be32(&buf[offset]);
++	offset += 8;
++	fw_hdr->plat_type = buf[offset];
++	offset += 1;
++	fw_hdr->dev_family = buf[offset];
++	offset += 1;
++	fw_hdr->reserve = buf[offset];
++	offset += 1;
++	fw_hdr->ndev = buf[offset];
++	offset += 1;
++	if (fw_hdr->ndev != pcm_dev->ndev) {
++		dev_err(pcm_dev->dev, "%s: invalid ndev(%u)\n", __func__,
++			fw_hdr->ndev);
++		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
++		ret = -EINVAL;
++		goto out;
++	}
++
++	if (offset + PCMDEVICE_MAX_REGBIN_DEVICES > fw_hdr->img_sz) {
++		dev_err(pcm_dev->dev, "%s: devs out of boundary!\n", __func__);
++		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
++		ret = -EINVAL;
++		goto out;
++	}
++
++	for (i = 0; i < PCMDEVICE_MAX_REGBIN_DEVICES; i++, offset++)
++		fw_hdr->devs[i] = buf[offset];
++
++	fw_hdr->nconfig = get_unaligned_be32(&buf[offset]);
++	offset += 4;
++
++	for (i = 0; i < PCMDEVICE_CONFIG_SUM; i++) {
++		fw_hdr->config_size[i] = get_unaligned_be32(&buf[offset]);
++		offset += 4;
++		total_config_sz += fw_hdr->config_size[i];
++	}
++
++	if (fw_hdr->img_sz - total_config_sz != (unsigned int)offset) {
++		dev_err(pcm_dev->dev, "%s: bin file error!\n", __func__);
++		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
++		ret = -EINVAL;
++		goto out;
++	}
++	cfg_info = kcalloc(fw_hdr->nconfig, sizeof(*cfg_info), GFP_KERNEL);
++	if (!cfg_info) {
++		pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
++		ret = -ENOMEM;
++		goto out;
++	}
++	regbin->cfg_info = cfg_info;
++	regbin->ncfgs = 0;
++	for (i = 0; i < (int)fw_hdr->nconfig; i++) {
++		cfg_info[i] = pcmdevice_add_config(ctxt, &buf[offset],
++				fw_hdr->config_size[i], &ret);
++		if (ret) {
++			/* In case the bin file is partially destroyed. */
++			if (regbin->ncfgs == 0)
++				pcm_dev->fw_state = PCMDEVICE_FW_LOAD_FAILED;
++			break;
++		}
++		offset += (int)fw_hdr->config_size[i];
++		regbin->ncfgs += 1;
++	}
++
++out:
++	if (pcm_dev->fw_state == PCMDEVICE_FW_LOAD_FAILED) {
++		dev_err(pcm_dev->dev,
++			"%s: remove config due to fw load error!\n", __func__);
++		pcmdevice_config_info_remove(pcm_dev);
++	}
++
++	return ret;
++}
++
++static int pcmdevice_comp_probe(struct snd_soc_component *comp)
++{
++	struct pcmdevice_priv *pcm_dev = snd_soc_component_get_drvdata(comp);
++	struct i2c_adapter *adap = pcm_dev->client->adapter;
++	const struct firmware *fw_entry = NULL;
++	int ret, i, j;
++
++	mutex_lock(&pcm_dev->codec_lock);
++
++	pcm_dev->component = comp;
++
++	for (i = 0; i < pcm_dev->ndev; i++) {
++		for (j = 0; j < 2; j++) {
++			ret = pcmdev_gain_ctrl_add(pcm_dev, i, j);
++			if (ret < 0)
++				goto out;
++		}
++	}
++
++	if (comp->name_prefix) {
++		/* There's name_prefix defined in DTS. Bin file name will be
++		 * name_prefix.bin stores the firmware including register
++		 * setting and params for different filters inside chips, it
++		 * must be copied into firmware folder. The same types of
++		 * pcmdevices sitting on the same i2c bus will be aggregated as
++		 * one single codec, all of them share the same bin file.
++		 */
++		scnprintf(pcm_dev->bin_name, PCMDEVICE_BIN_FILENAME_LEN,
++			"%s.bin", comp->name_prefix);
++	} else {
++		/* There's NO name_prefix defined in DTS. Bin file name will be
++		 * device-name[defined in pcmdevice_i2c_id]-i2c-bus_id
++		 * [0,1,...,N]-sum[1,...,4]dev.bin stores the firmware
++		 * including register setting and params for different filters
++		 * inside chips, it must be copied into firmware folder. The
++		 * same types of pcmdevices sitting on the same i2c bus will be
++		 * aggregated as one single codec, all of them share the same
++		 * bin file.
++		 */
++		scnprintf(pcm_dev->bin_name, PCMDEVICE_BIN_FILENAME_LEN,
++			"%s-i2c-%d-%udev.bin", pcm_dev->dev_name, adap->nr,
++			pcm_dev->ndev);
++	}
++
++	ret = request_firmware(&fw_entry, pcm_dev->bin_name, pcm_dev->dev);
++	if (ret) {
++		dev_err(pcm_dev->dev, "%s: request %s err = %d\n", __func__,
++			pcm_dev->bin_name, ret);
++		goto out;
++	}
++
++	ret = pcmdev_regbin_ready(fw_entry, pcm_dev);
++	if (ret) {
++		dev_err(pcm_dev->dev, "%s: %s parse err = %d\n", __func__,
++			pcm_dev->bin_name, ret);
++		goto out;
++	}
++	ret = pcmdev_profile_ctrl_add(pcm_dev);
++out:
++	if (fw_entry)
++		release_firmware(fw_entry);
++
++	mutex_unlock(&pcm_dev->codec_lock);
++	return ret;
++}
++
++
++static void pcmdevice_comp_remove(struct snd_soc_component *codec)
++{
++	struct pcmdevice_priv *pcm_dev = snd_soc_component_get_drvdata(codec);
++
++	if (!pcm_dev)
++		return;
++	mutex_lock(&pcm_dev->codec_lock);
++	pcmdevice_config_info_remove(pcm_dev);
++	mutex_unlock(&pcm_dev->codec_lock);
++}
++
++static const struct snd_soc_dapm_widget pcmdevice_dapm_widgets[] = {
++	SND_SOC_DAPM_AIF_IN("ASI", "ASI Playback", 0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_AIF_OUT("ASI1 OUT", "ASI1 Capture",
++		0, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_OUTPUT("OUT"),
++	SND_SOC_DAPM_INPUT("MIC"),
++};
++
++static const struct snd_soc_dapm_route pcmdevice_audio_map[] = {
++	{"OUT", NULL, "ASI"},
++	{"ASI1 OUT", NULL, "MIC"},
++};
++
++static const struct snd_soc_component_driver
++	soc_codec_driver_pcmdevice = {
++	.probe			= pcmdevice_comp_probe,
++	.remove			= pcmdevice_comp_remove,
++	.dapm_widgets		= pcmdevice_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(pcmdevice_dapm_widgets),
++	.dapm_routes		= pcmdevice_audio_map,
++	.num_dapm_routes	= ARRAY_SIZE(pcmdevice_audio_map),
++	.suspend_bias_off	= 1,
++	.idle_bias_on		= 0,
++	.use_pmdown_time	= 1,
++	.endianness		= 1,
++};
++
++static int pcmdev_single_byte_wr(struct pcmdevice_priv *pcm_dev,
++	unsigned char *data, int devn, int sublocksize)
++{
++	unsigned short len = get_unaligned_be16(&data[2]);
++	int offset = 2;
++	int i, ret;
++
++	offset += 2;
++	if (offset + 4 * len > sublocksize) {
++		dev_err(pcm_dev->dev, "%s: dev-%d byt wr out of boundary\n",
++			__func__, devn);
++		return -EINVAL;
++	}
++
++	for (i = 0; i < len; i++) {
++		ret = pcmdev_dev_write(pcm_dev, devn,
++			PCMDEVICE_REG(data[offset + 1], data[offset + 2]),
++			data[offset + 3]);
++		/* skip this error for next operation or next devices */
++		if (ret < 0)
++			dev_err(pcm_dev->dev, "%s: dev-%d single write err\n",
++				__func__, devn);
++
++		offset += 4;
++	}
++
++	return offset;
++}
++
++static int pcmdev_burst_wr(struct pcmdevice_priv *pcm_dev,
++	unsigned char *data, int devn, int sublocksize)
++{
++	unsigned short len = get_unaligned_be16(&data[2]);
++	int offset = 2;
++	int ret;
++
++	offset += 2;
++	if (offset + 4 + len > sublocksize) {
++		dev_err(pcm_dev->dev, "%s: dev-%d burst Out of boundary\n",
++			__func__, devn);
++		return -EINVAL;
++	}
++	if (len % 4) {
++		dev_err(pcm_dev->dev, "%s: dev-%d bst-len(%u) not div by 4\n",
++			__func__, devn, len);
++		return -EINVAL;
++	}
++	ret = pcmdev_dev_bulk_write(pcm_dev, devn,
++		PCMDEVICE_REG(data[offset + 1], data[offset + 2]),
++		&(data[offset + 4]), len);
++	/* skip this error for next devices */
++	if (ret < 0)
++		dev_err(pcm_dev->dev, "%s: dev-%d bulk_write err = %d\n",
++			__func__, devn, ret);
++
++	offset += (len + 4);
++
++	return offset;
++}
++
++static int pcmdev_delay(struct pcmdevice_priv *pcm_dev,
++	unsigned char *data, int devn, int sublocksize)
++{
++	unsigned int delay_time = 0;
++	int offset = 2;
++
++	if (offset + 2 > sublocksize) {
++		dev_err(pcm_dev->dev, "%s: dev-%d deley out of boundary\n",
++			__func__, devn);
++		return -EINVAL;
++	}
++	delay_time = get_unaligned_be16(&data[2]) * 1000;
++	usleep_range(delay_time, delay_time + 50);
++	offset += 2;
++
++	return offset;
++}
++
++static int pcmdev_bits_wr(struct pcmdevice_priv *pcm_dev,
++	unsigned char *data, int devn, int sublocksize)
++{
++	int offset = 2;
++	int ret;
++
++	if (offset + 6 > sublocksize) {
++		dev_err(pcm_dev->dev, "%s: dev-%d bit write out of memory\n",
++			__func__, devn);
++		return -EINVAL;
++	}
++	ret = pcmdev_dev_update_bits(pcm_dev, devn,
++		PCMDEVICE_REG(data[offset + 3], data[offset + 4]),
++		data[offset + 1], data[offset + 5]);
++	/* skip this error for next devices */
++	if (ret < 0)
++		dev_err(pcm_dev->dev, "%s: dev-%d update_bits err = %d\n",
++			__func__, devn, ret);
++
++	offset += 6;
++
++	return offset;
++}
++
++static int pcmdevice_process_block(void *ctxt, unsigned char *data,
++	unsigned char dev_idx, int sublocksize)
++{
++	struct pcmdevice_priv *pcm_dev = (struct pcmdevice_priv *)ctxt;
++	int devn, dev_end, ret = 0;
++	unsigned char subblk_typ = data[1];
++
++	if (dev_idx) {
++		devn = dev_idx - 1;
++		dev_end = dev_idx;
++	} else {
++		devn = 0;
++		dev_end = pcm_dev->ndev;
++	}
++
++	/* loop in case of several devices sharing the same sub-block */
++	for (; devn < dev_end; devn++) {
++		switch (subblk_typ) {
++		case PCMDEVICE_CMD_SING_W:
++		ret = pcmdev_single_byte_wr(pcm_dev, data, devn, sublocksize);
++			break;
++		case PCMDEVICE_CMD_BURST:
++		ret = pcmdev_burst_wr(pcm_dev, data, devn, sublocksize);
++			break;
++		case PCMDEVICE_CMD_DELAY:
++		ret = pcmdev_delay(pcm_dev, data, devn, sublocksize);
++			break;
++		case PCMDEVICE_CMD_FIELD_W:
++		ret = pcmdev_bits_wr(pcm_dev, data, devn, sublocksize);
++			break;
++		default:
++			break;
++		}
++		/*
++		 * In case of sub-block error, break the loop for the rest of
++		 * devices.
++		 */
++		if (ret < 0)
++			break;
++	}
++
++	return ret;
++}
++
++static void pcmdevice_select_cfg_blk(void *ctxt, int conf_no,
++	unsigned char block_type)
++{
++	struct pcmdevice_priv *pcm_dev = (struct pcmdevice_priv *)ctxt;
++	struct pcmdevice_regbin *regbin = &(pcm_dev->regbin);
++	struct pcmdevice_config_info **cfg_info = regbin->cfg_info;
++	struct pcmdevice_block_data **blk_data;
++	int j, k;
++
++	if (conf_no >= regbin->ncfgs || conf_no < 0 || NULL == cfg_info) {
++		dev_err(pcm_dev->dev, "%s: conf_no should be less than %u\n",
++			__func__, regbin->ncfgs);
++		goto out;
++	}
++	blk_data = cfg_info[conf_no]->blk_data;
++
++	for (j = 0; j < (int)cfg_info[conf_no]->real_nblocks; j++) {
++		unsigned int length = 0, ret;
++
++		if (block_type > 5 || block_type < 2) {
++			dev_err(pcm_dev->dev,
++				"%s: block_type should be out of range\n",
++				__func__);
++			goto out;
++		}
++		if (block_type != blk_data[j]->block_type)
++			continue;
++
++		for (k = 0; k < (int)blk_data[j]->n_subblks; k++) {
++			ret = pcmdevice_process_block(pcm_dev,
++				blk_data[j]->regdata + length,
++				blk_data[j]->dev_idx,
++				blk_data[j]->block_size - length);
++			length += ret;
++			if (blk_data[j]->block_size < length) {
++				dev_err(pcm_dev->dev,
++					"%s: %u %u out of boundary\n",
++					__func__, length,
++					blk_data[j]->block_size);
++				break;
++			}
++		}
++		if (length != blk_data[j]->block_size)
++			dev_err(pcm_dev->dev, "%s: %u %u size is not same\n",
++				__func__, length, blk_data[j]->block_size);
++	}
++
++out:
++	return;
++}
++
++static int pcmdevice_mute(struct snd_soc_dai *dai, int mute, int stream)
++{
++	struct snd_soc_component *codec = dai->component;
++	struct pcmdevice_priv *pcm_dev = snd_soc_component_get_drvdata(codec);
++	unsigned char block_type;
++
++	if (pcm_dev->fw_state == PCMDEVICE_FW_LOAD_FAILED) {
++		dev_err(pcm_dev->dev, "%s: bin file not loaded\n", __func__);
++		return -EINVAL;
++	}
++
++	if (mute)
++		block_type = PCMDEVICE_BIN_BLK_PRE_SHUTDOWN;
++	else
++		block_type = PCMDEVICE_BIN_BLK_PRE_POWER_UP;
++
++	mutex_lock(&pcm_dev->codec_lock);
++	pcmdevice_select_cfg_blk(pcm_dev, pcm_dev->cur_conf, block_type);
++	mutex_unlock(&pcm_dev->codec_lock);
++	return 0;
++}
++
++static int pcmdevice_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params, struct snd_soc_dai *dai)
++{
++	struct pcmdevice_priv *pcm_dev = snd_soc_dai_get_drvdata(dai);
++	unsigned int fsrate;
++	unsigned int slot_width;
++	int bclk_rate;
++	int ret = 0;
++
++	fsrate = params_rate(params);
++	switch (fsrate) {
++	case 48000:
++		break;
++	case 44100:
++		break;
++	default:
++		dev_err(pcm_dev->dev, "%s: incorrect sample rate = %u\n",
++			__func__, fsrate);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	slot_width = params_width(params);
++	switch (slot_width) {
++	case 16:
++		break;
++	case 20:
++		break;
++	case 24:
++		break;
++	case 32:
++		break;
++	default:
++		dev_err(pcm_dev->dev, "%s: incorrect slot width = %u\n",
++			__func__, slot_width);
++		ret = -EINVAL;
++		goto out;
++	}
++
++	bclk_rate = snd_soc_params_to_bclk(params);
++	if (bclk_rate < 0) {
++		dev_err(pcm_dev->dev, "%s: incorrect bclk rate = %d\n",
++			__func__, bclk_rate);
++		ret = bclk_rate;
++	}
++
++out:
++	return ret;
++}
++
++static const struct snd_soc_dai_ops pcmdevice_dai_ops = {
++	.mute_stream = pcmdevice_mute,
++	.hw_params = pcmdevice_hw_params,
++};
++
++static struct snd_soc_dai_driver pcmdevice_dai_driver[] = {
++	{
++		.name = "pcmdevice-codec",
++		.capture = {
++			.stream_name	 = "Capture",
++			.channels_min	 = 2,
++			.channels_max	 = PCMDEVICE_MAX_CHANNELS,
++			.rates		 = PCMDEVICE_RATES,
++			.formats	 = PCMDEVICE_FORMATS,
++		},
++		.playback = {
++			.stream_name	 = "Playback",
++			.channels_min	 = 2,
++			.channels_max	 = PCMDEVICE_MAX_CHANNELS,
++			.rates		 = PCMDEVICE_RATES,
++			.formats	 = PCMDEVICE_FORMATS,
++		},
++		.ops = &pcmdevice_dai_ops,
++		.symmetric_rate = 1,
++	}
++};
++
++#ifdef CONFIG_OF
++static const struct of_device_id pcmdevice_of_match[] = {
++	{ .compatible = "ti,adc3120"  },
++	{ .compatible = "ti,adc5120"  },
++	{ .compatible = "ti,adc6120"  },
++	{ .compatible = "ti,dix4192"  },
++	{ .compatible = "ti,pcm1690"  },
++	{ .compatible = "ti,pcm3120"  },
++	{ .compatible = "ti,pcm3140"  },
++	{ .compatible = "ti,pcm5120"  },
++	{ .compatible = "ti,pcm5140"  },
++	{ .compatible = "ti,pcm6120"  },
++	{ .compatible = "ti,pcm6140"  },
++	{ .compatible = "ti,pcm6240"  },
++	{ .compatible = "ti,pcm6260"  },
++	{ .compatible = "ti,pcm9211"  },
++	{ .compatible = "ti,pcmd3140" },
++	{ .compatible = "ti,pcmd3180" },
++	{ .compatible = "ti,pcmd512x" },
++	{ .compatible = "ti,taa5212"  },
++	{ .compatible = "ti,taa5412"  },
++	{ .compatible = "ti,tad5212"  },
++	{ .compatible = "ti,tad5412"  },
++	{},
++};
++MODULE_DEVICE_TABLE(of, pcmdevice_of_match);
++#endif
++
++static const struct regmap_range_cfg pcmdevice_ranges[] = {
++	{
++		.range_min = 0,
++		.range_max = 256 * 128,
++		.selector_reg = PCMDEVICE_PAGE_SELECT,
++		.selector_mask = 0xff,
++		.selector_shift = 0,
++		.window_start = 0,
++		.window_len = 128,
++	},
++};
++
++static const struct regmap_config pcmdevice_i2c_regmap = {
++	.reg_bits = 8,
++	.val_bits = 8,
++	.cache_type = REGCACHE_MAPLE,
++	.ranges = pcmdevice_ranges,
++	.num_ranges = ARRAY_SIZE(pcmdevice_ranges),
++	.max_register = 256 * 128,
++};
++
++static void pcmdevice_remove(struct pcmdevice_priv *pcm_dev)
++{
++	if (gpio_is_valid(pcm_dev->irq_info.gpio)) {
++		gpio_free(pcm_dev->irq_info.gpio);
++		free_irq(pcm_dev->irq_info.nmb, pcm_dev);
++	}
++	mutex_destroy(&pcm_dev->codec_lock);
++}
++
++static char *str_to_upper(char *str)
++{
++	char *orig = str;
++
++	if (!str)
++		return NULL;
++
++	while (*str) {
++		*str = toupper(*str);
++		str++;
++	}
++
++	return orig;
++}
++
++static int pcmdevice_i2c_probe(struct i2c_client *i2c)
++{
++	const struct i2c_device_id *id = i2c_match_id(pcmdevice_i2c_id, i2c);
++	struct pcmdevice_priv *pcm_dev;
++	struct device_node *np;
++	unsigned int dev_addrs[PCMDEVICE_MAX_I2C_DEVICES];
++	int ret = 0, i = 0, ndev = 0;
++#ifdef CONFIG_OF
++	const __be32 *reg, *reg_end;
++	int len, sw, aw;
++#endif
++
++	pcm_dev = devm_kzalloc(&i2c->dev, sizeof(*pcm_dev), GFP_KERNEL);
++	if (!pcm_dev) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	pcm_dev->chip_id = (id != NULL) ? id->driver_data : 0;
++
++	pcm_dev->dev = &i2c->dev;
++	pcm_dev->client = i2c;
++
++	if (pcm_dev->chip_id >= MAX_DEVICE)
++		pcm_dev->chip_id = 0;
++
++	strscpy(pcm_dev->dev_name, pcmdevice_i2c_id[pcm_dev->chip_id].name,
++		sizeof(pcm_dev->dev_name));
++
++	strscpy(pcm_dev->upper_dev_name,
++		pcmdevice_i2c_id[pcm_dev->chip_id].name,
++		sizeof(pcm_dev->upper_dev_name));
++
++	str_to_upper(pcm_dev->upper_dev_name);
++
++	pcm_dev->regmap = devm_regmap_init_i2c(i2c, &pcmdevice_i2c_regmap);
++	if (IS_ERR(pcm_dev->regmap)) {
++		ret = PTR_ERR(pcm_dev->regmap);
++		dev_err(&i2c->dev, "%s: failed to allocate register map: %d\n",
++			__func__, ret);
++		goto out;
++	}
++
++	i2c_set_clientdata(i2c, pcm_dev);
++	mutex_init(&pcm_dev->codec_lock);
++	np = pcm_dev->dev->of_node;
++#ifdef CONFIG_OF
++	aw = of_n_addr_cells(np);
++	sw = of_n_size_cells(np);
++	if (sw == 0) {
++		reg = (const __be32 *)of_get_property(np,
++			"reg", &len);
++		reg_end = reg + len/sizeof(*reg);
++		ndev = 0;
++		do {
++			dev_addrs[ndev] = of_read_number(reg, aw);
++			reg += aw;
++			ndev++;
++		} while (reg < reg_end);
++	} else {
++		ndev = 1;
++		dev_addrs[0] = i2c->addr;
++	}
++#else
++	ndev = 1;
++	dev_addrs[0] = i2c->addr;
++#endif
++	pcm_dev->irq_info.gpio = of_irq_get(np, 0);
++
++	for (i = 0; i < ndev; i++)
++		pcm_dev->addr[i] = dev_addrs[i];
++
++	pcm_dev->ndev = ndev;
++
++	pcm_dev->hw_rst = devm_gpiod_get_optional(&i2c->dev,
++			"reset-gpios", GPIOD_OUT_HIGH);
++	/* No reset GPIO, no side-effect */
++	if (IS_ERR(pcm_dev->hw_rst)) {
++		if (pcm_dev->chip_id == PCM9211 || pcm_dev->chip_id == PCM1690)
++			pcm9211_sw_rst(pcm_dev);
++		else
++			pcmdevice_sw_rst(pcm_dev);
++	} else {
++		gpiod_set_value_cansleep(pcm_dev->hw_rst, 0);
++		usleep_range(500, 1000);
++		gpiod_set_value_cansleep(pcm_dev->hw_rst, 1);
++	}
++
++	if (pcm_dev->chip_id == PCM1690)
++		goto skip_interrupt;
++	if (gpio_is_valid(pcm_dev->irq_info.gpio)) {
++		dev_dbg(pcm_dev->dev, "irq-gpio = %d", pcm_dev->irq_info.gpio);
++
++		ret = gpio_request(pcm_dev->irq_info.gpio, "PCMDEV-IRQ");
++		if (!ret) {
++			int gpio = pcm_dev->irq_info.gpio;
++
++			gpio_direction_input(gpio);
++			pcm_dev->irq_info.nmb = gpio_to_irq(gpio);
++
++		} else
++			dev_err(pcm_dev->dev, "%s: GPIO %d request error\n",
++				__func__, pcm_dev->irq_info.gpio);
++	} else
++		dev_err(pcm_dev->dev, "Looking up irq-gpio failed %d\n",
++			pcm_dev->irq_info.gpio);
++
++skip_interrupt:
++	ret = devm_snd_soc_register_component(&i2c->dev,
++		&soc_codec_driver_pcmdevice, pcmdevice_dai_driver,
++		ARRAY_SIZE(pcmdevice_dai_driver));
++	if (ret < 0)
++		dev_err(&i2c->dev, "probe register comp failed %d\n", ret);
++
++out:
++	if (ret < 0)
++		pcmdevice_remove(pcm_dev);
++	return ret;
++}
++
++static void pcmdevice_i2c_remove(struct i2c_client *i2c)
++{
++	struct pcmdevice_priv *pcm_dev = i2c_get_clientdata(i2c);
++
++	pcmdevice_remove(pcm_dev);
++}
++
++static struct i2c_driver pcmdevice_i2c_driver = {
++	.driver = {
++		.name = "pcmdevice-codec",
++		.of_match_table = of_match_ptr(pcmdevice_of_match),
++	},
++	.probe	= pcmdevice_i2c_probe,
++	.remove = pcmdevice_i2c_remove,
++	.id_table = pcmdevice_i2c_id,
++};
++module_i2c_driver(pcmdevice_i2c_driver);
++
++MODULE_AUTHOR("Shenghao Ding <shenghao-ding@ti.com>");
++MODULE_DESCRIPTION("ASoC PCM6240 Family Audio ADC/DAC Driver");
++MODULE_LICENSE("GPL");
 -- 
 2.35.7
 
