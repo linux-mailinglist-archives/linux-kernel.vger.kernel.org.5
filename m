@@ -1,62 +1,62 @@
-Return-Path: <linux-kernel+bounces-134382-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134383-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C43D89B0DC
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 14:45:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A7B889B0DD
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 14:45:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1F9AB21505
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:45:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE2091C20F24
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:45:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00102C1BC;
-	Sun,  7 Apr 2024 12:45:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F1372D627;
+	Sun,  7 Apr 2024 12:45:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="etDGvSEY"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eJNZJcQc"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F96D2BAE7
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 12:45:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41E892C6BA
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 12:45:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712493918; cv=none; b=Yzw6CCr5RbXtuwNQEWcA1GU/SKkBT+GZEMty30iQx5L1Zfe4HR3V4TRN5HItUY42wfUmKN284aI8LL1mCk5w7xFjv4mr5D0Z7a+foFXD5Xi0hftx7KSdgdsLN1GTb2lUmbpixD1x3lhwRoPgZtf4Szj7ltyqpMxj/R8W89BxSD4=
+	t=1712493922; cv=none; b=dpBFW9hk2la2E/V45NPHkM9PZrS3P9NJM9ivOitOYcXjQyBT0/Pxr+prJPNixYIZYBcremzoIuEOszBK43fUXwsPMH7nkSLpXhWQWwRzonwOtK5ojKSR8V78bJ4flOmvV9Ookx1suaI6BS4zuRvLwIrE3jQVZNGamojzGS6EuWA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712493918; c=relaxed/simple;
-	bh=ZkR1EiJggDNyuzKlUoPpjBGIiqt0tELn3Ew37L5rYo8=;
+	s=arc-20240116; t=1712493922; c=relaxed/simple;
+	bh=V9JifYapbpBofohz95Yw5R+vy9sccP6hFMfQiefdsIE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lFuMBWEjecvJv8krpbceXaCdhyxpr19CaUBimN8M/BQi6+tH2m9J1YkIMD3n0erSOyT0tyy3QWnZwcGgfNPS/UI1s322jZLOZ4U0S0wNdDtpBjcxt0nHrZ8icoNSZ3dyUFz71olujaabZDuaOkLgV98nsx/fn3vHGB6Awdo2/Rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=etDGvSEY; arc=none smtp.client-ip=198.175.65.15
+	 MIME-Version; b=np6zm6AiN3Ee2Ug80qzPqoZQ1AV+sf3Hjmo7LJQgfVshL24OGCXvArj2S3xfRk+gmjKS67+FI4vRp4GkF//G+vdXkkyZQS3iluK0v3zKU5Bsca8Djis6men6jqdnrB/Tdgp8yDmOeIsrBEM927AgAqKHjMsRSEXUjqwn+IzoOu8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eJNZJcQc; arc=none smtp.client-ip=198.175.65.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712493917; x=1744029917;
+  t=1712493922; x=1744029922;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ZkR1EiJggDNyuzKlUoPpjBGIiqt0tELn3Ew37L5rYo8=;
-  b=etDGvSEY1DK4MTbqnRoom5fC5dF6dQRs0rpP1oEc38ra5fcYBi3FPgjm
-   H6I55r6c7gZqIXzF5PB/AtFcWd4RX0KvoEz4UX3khNAY9E9VDc3Z2sTnX
-   /iPFmy7seBhpR8rXHmzGSjLkpDtM5NGG0YxPQ0fYKiCXkn0vxqmgOLSrZ
-   Gle+GSSUoaUQK2IXj3+s/2vkCWXfR7RoOI/UACyZWzVxn4he5L6Ok5iXY
-   KFnVtQMQloPy+oYE5VoCaTsu5lWnG5kmqypJsarNTmzOvHxYRw9d4uXrk
-   B8AueEXw38NIpJ6yhpYPwwyF5NBNsZ8ca3k+OSX0aFCEXtLXseds969E4
-   Q==;
-X-CSE-ConnectionGUID: nyIgkqk5RBKDrv8U8555kg==
-X-CSE-MsgGUID: H5DHvaSZSACOuKfdylu0ZQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11036"; a="11564050"
+  bh=V9JifYapbpBofohz95Yw5R+vy9sccP6hFMfQiefdsIE=;
+  b=eJNZJcQcsXJcjTAhGbDFaBBZOl+CMnU8GGh7NWSfhsledhhCACaX03xE
+   ivXtC3yzor85LsKRngTaA/XSpxagrFPs0Iu0pDnrAerY3I6f7ElD8GpXr
+   hz70sCmFm9UCVtC1qMc6zTlji/oFcupzh09XbKHqeAv8Rr0LzFvglfTDi
+   lMVpYpGqJhdEE6EcTZoChFBus1ag/UHwUdBjgY9RXthhZb74TCp6S2sFC
+   AJrBa/SWpv7hj7SYebdIn8lHOU5wJpTzCOR9kxiHCVO3Z63n9Wx3deu7/
+   Ot1vBvZdsWLSmcyLP7DJVmZEO9e8xUOYpMpSDVBs6DlTVnVWjO4fvWBm1
+   g==;
+X-CSE-ConnectionGUID: dT4N7HDSS2uah2jQS3N9Jg==
+X-CSE-MsgGUID: hKAdgr+TTHqsaFDoebCx6w==
+X-IronPort-AV: E=McAfee;i="6600,9927,11036"; a="11564064"
 X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="11564050"
+   d="scan'208";a="11564064"
 Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 05:45:17 -0700
-X-CSE-ConnectionGUID: RwtkdjYzQo2uNlUaD9AIuw==
-X-CSE-MsgGUID: xQXHZH8kQg6htPdnXZPDqw==
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 05:45:21 -0700
+X-CSE-ConnectionGUID: fQ/sMBkhS0a4+bxYj3wcTQ==
+X-CSE-MsgGUID: 3QdrJ/49SVK9QBfWe/t+Bg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="20185642"
+   d="scan'208";a="20185677"
 Received: from mirtanji-mobl.amr.corp.intel.com (HELO khuang2-desk.gar.corp.intel.com) ([10.251.14.88])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 05:45:13 -0700
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 05:45:17 -0700
 From: Kai Huang <kai.huang@intel.com>
 To: linux-kernel@vger.kernel.org
 Cc: x86@kernel.org,
@@ -76,9 +76,9 @@ Cc: x86@kernel.org,
 	nik.borisov@suse.com,
 	pbonzini@redhat.com,
 	seanjc@google.com
-Subject: [PATCH v3 1/5] x86/kexec: do unconditional WBINVD for bare-metal in stop_this_cpu()
-Date: Mon,  8 Apr 2024 00:44:54 +1200
-Message-ID: <33b985a8f4346f4bcf0944eaf37193a906b11af3.1712493366.git.kai.huang@intel.com>
+Subject: [PATCH v3 2/5] x86/kexec: do unconditional WBINVD for bare-metal in relocate_kernel()
+Date: Mon,  8 Apr 2024 00:44:55 +1200
+Message-ID: <5aca124fe0ca1c97bf4a2e925b3905485bf5b255.1712493366.git.kai.huang@intel.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <cover.1712493366.git.kai.huang@intel.com>
 References: <cover.1712493366.git.kai.huang@intel.com>
@@ -90,81 +90,30 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-TL;DR:
-
-Change to do unconditional WBINVD in stop_this_cpu() for bare metal
-to cover kexec support for both AMD SME and Intel TDX, despite there
-_was_ some issue preventing from doing so but now has it got fixed.
-
-Long version:
-
 Both SME and TDX can leave caches in incoherent state due to memory
 encryption.  During kexec, the caches must be flushed before jumping to
 the second kernel to avoid silent memory corruption to the second kernel.
 
-Currently, for SME the kernel only does WBINVD in stop_this_cpu() when
-the kernel determines the hardware supports SME.  To support TDX, one
-option is to extend that specific check to cover both SME and TDX.
+During kexec, the WBINVD in stop_this_cpu() flushes caches for all
+remote cpus when they are being stopped.  For SME, the WBINVD in
+relocate_kernel() flushes the cache for the last running cpu (which is
+executing the kexec).
 
-However, instead of sprinkling around vendor-specific checks, it's
-better to just do unconditional WBINVD.  Kexec() is a slow path, and it
-is acceptable to have an additional WBINVD in order to have simple
-and easy to maintain code.
+Similarly, to support kexec for TDX host, after stopping all remote cpus
+with cache flushed, the kernel needs to flush cache for the last running
+cpu.
+
+Use the existing WBINVD in relocate_kernel() to cover TDX host as well.
+
+However, instead of sprinkling around vendor-specific checks, just do
+unconditional WBINVD to cover both SME and TDX.  Kexec is not a fast path
+so having one additional WBINVD for platforms w/o SME/TDX is acceptable.
 
 But only do WBINVD for bare-metal because TDX guests and SEV-ES/SEV-SNP
-guests will get unexpected (and yet unnecessary) #VE and may not be able
-to handle (e.g., TDX guest panics when it gets #VE due to WBINVD).
-
-Note:
-
-Historically, there _was_ an issue preventing doing unconditional WBINVD
-but that has been fixed.
-
-When SME kexec() support was initially added in commit
-
-  bba4ed011a52: ("x86/mm, kexec: Allow kexec to be used with SME")
-
-WBINVD was done unconditionally.  However since then some issues were
-reported that different Intel systems would hang or reset due to that
-commit.
-
-To try to fix, a later commit
-
-  f23d74f6c66c: ("x86/mm: Rework wbinvd, hlt operation in stop_this_cpu()")
-
-then changed to only do WBINVD when hardware supports SME.
-
-While this commit made the reported issues go away, it didn't pinpoint
-the root cause.  Also, it didn't handle a corner case[*] correctly, which
-resulted in the reveal of the root cause and the final fix by commit
-
-  1f5e7eb7868e: ("x86/smp: Make stop_other_cpus() more robust")
-
-See [1][2] for more information.
-
-Further testing of doing unconditional WBINVD based on the above fix on
-the problematic machines (that issues were originally reported)
-confirmed the issues couldn't be reproduced.
-
-See [3][4] for more information.
-
-Therefore, it is safe to do unconditional WBINVD now.
-
-[*] The commit didn't check whether the CPUID leaf is available or not.
-Making unsupported CPUID leaf on Intel returns garbage resulting in
-unintended WBINVD which caused some issue (followed by the analysis and
-the reveal of the final root cause).  The corner case was independently
-fixed by commit
-
-  9b040453d444: ("x86/smp: Dont access non-existing CPUID leaf")
-
-[1]: https://lore.kernel.org/lkml/CALu+AoQKmeixJdkO07t7BtttN7v3RM4_aBKi642bQ3fTBbSAVg@mail.gmail.com/T/#m300f3f9790850b5daa20a71abcc200ae8d94a12a
-[2]: https://lore.kernel.org/lkml/CALu+AoQKmeixJdkO07t7BtttN7v3RM4_aBKi642bQ3fTBbSAVg@mail.gmail.com/T/#ma7263a7765483db0dabdeef62a1110940e634846
-[3]: https://lore.kernel.org/lkml/CALu+AoQKmeixJdkO07t7BtttN7v3RM4_aBKi642bQ3fTBbSAVg@mail.gmail.com/T/#mc043191f2ff860d649c8466775dc61ac1e0ae320
-[4]: https://lore.kernel.org/lkml/CALu+AoQKmeixJdkO07t7BtttN7v3RM4_aBKi642bQ3fTBbSAVg@mail.gmail.com/T/#md23f1a8f6afcc59fa2b0ac1967f18e418e24347c
+guests will get unexpected (and yet unnecessary) #VE which the kernel is
+unable to handle at this stage.
 
 Signed-off-by: Kai Huang <kai.huang@intel.com>
-Suggested-by: Borislav Petkov <bp@alien8.de>
 Cc: Tom Lendacky <thomas.lendacky@amd.com>
 Cc: Dave Young <dyoung@redhat.com>
 ---
@@ -173,40 +122,76 @@ v2 -> v3:
  - Change to only do WBINVD for bare metal
 
 ---
- arch/x86/kernel/process.c | 18 ++++++++----------
- 1 file changed, 8 insertions(+), 10 deletions(-)
+ arch/x86/include/asm/kexec.h         |  2 +-
+ arch/x86/kernel/machine_kexec_64.c   |  2 +-
+ arch/x86/kernel/relocate_kernel_64.S | 14 +++++++++-----
+ 3 files changed, 11 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index b8441147eb5e..5ba8a9c1e47a 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -813,18 +813,16 @@ void __noreturn stop_this_cpu(void *dummy)
- 	mcheck_cpu_clear(c);
+diff --git a/arch/x86/include/asm/kexec.h b/arch/x86/include/asm/kexec.h
+index 91ca9a9ee3a2..455f8a6c66a9 100644
+--- a/arch/x86/include/asm/kexec.h
++++ b/arch/x86/include/asm/kexec.h
+@@ -128,7 +128,7 @@ relocate_kernel(unsigned long indirection_page,
+ 		unsigned long page_list,
+ 		unsigned long start_address,
+ 		unsigned int preserve_context,
+-		unsigned int host_mem_enc_active);
++		unsigned int bare_metal);
+ #endif
  
- 	/*
--	 * Use wbinvd on processors that support SME. This provides support
--	 * for performing a successful kexec when going from SME inactive
--	 * to SME active (or vice-versa). The cache must be cleared so that
--	 * if there are entries with the same physical address, both with and
--	 * without the encryption bit, they don't race each other when flushed
--	 * and potentially end up with the wrong entry being committed to
--	 * memory.
-+	 * The kernel could leave caches in incoherent state on SME/TDX
-+	 * capable platforms.  Flush cache to avoid silent memory
-+	 * corruption for these platforms.
- 	 *
--	 * Test the CPUID bit directly because the machine might've cleared
--	 * X86_FEATURE_SME due to cmdline options.
-+	 * stop_this_cpu() is not a fast path, just do unconditional
-+	 * WBINVD for simplicity.  But only do WBINVD for bare-metal
-+	 * as TDX guests and SEV-ES/SEV-SNP guests will get unexpected
-+	 * (and unnecessary) #VE and may unable to handle.
+ #define ARCH_HAS_KIMAGE_ARCH
+diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
+index b180d8e497c3..a454477b7b4c 100644
+--- a/arch/x86/kernel/machine_kexec_64.c
++++ b/arch/x86/kernel/machine_kexec_64.c
+@@ -358,7 +358,7 @@ void machine_kexec(struct kimage *image)
+ 				       (unsigned long)page_list,
+ 				       image->start,
+ 				       image->preserve_context,
+-				       cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT));
++				       !boot_cpu_has(X86_FEATURE_HYPERVISOR));
+ 
+ #ifdef CONFIG_KEXEC_JUMP
+ 	if (image->preserve_context)
+diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
+index 56cab1bb25f5..3e04c5e5687f 100644
+--- a/arch/x86/kernel/relocate_kernel_64.S
++++ b/arch/x86/kernel/relocate_kernel_64.S
+@@ -50,7 +50,7 @@ SYM_CODE_START_NOALIGN(relocate_kernel)
+ 	 * %rsi page_list
+ 	 * %rdx start address
+ 	 * %rcx preserve_context
+-	 * %r8  host_mem_enc_active
++	 * %r8  bare_metal
  	 */
--	if (c->extended_cpuid_level >= 0x8000001f && (cpuid_eax(0x8000001f) & BIT(0)))
-+	if (!boot_cpu_has(X86_FEATURE_HYPERVISOR))
- 		native_wbinvd();
+ 
+ 	/* Save the CPU context, used for jumping back */
+@@ -78,7 +78,7 @@ SYM_CODE_START_NOALIGN(relocate_kernel)
+ 	pushq $0
+ 	popfq
+ 
+-	/* Save SME active flag */
++	/* Save the bare_metal */
+ 	movq	%r8, %r12
  
  	/*
+@@ -160,9 +160,13 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
+ 	movq	%r9, %cr3
+ 
+ 	/*
+-	 * If SME is active, there could be old encrypted cache line
+-	 * entries that will conflict with the now unencrypted memory
+-	 * used by kexec. Flush the caches before copying the kernel.
++	 * The kernel could leave caches in incoherent state on SME/TDX
++	 * capable platforms.  Just do unconditional WBINVD to avoid
++	 * silent memory corruption to the new kernel for these platforms.
++	 *
++	 * But only do WBINVD for bare-metal because TDX guests and
++	 * SEV-ES/SEV-SNP guests will get #VE which the kernel is unable
++	 * to handle at this stage.
+ 	 */
+ 	testq	%r12, %r12
+ 	jz 1f
 -- 
 2.43.2
 
