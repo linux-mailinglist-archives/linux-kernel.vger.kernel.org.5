@@ -1,55 +1,57 @@
-Return-Path: <linux-kernel+bounces-134418-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134419-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F70F89B140
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:17:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B95DD89B142
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:18:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F06CE1F23056
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:17:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 705DB282207
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:18:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0ACA5380F;
-	Sun,  7 Apr 2024 13:11:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93A45464A;
+	Sun,  7 Apr 2024 13:11:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oqu4XBgY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="boM7nXEl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8DB537E5;
-	Sun,  7 Apr 2024 13:11:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F7953E0A;
+	Sun,  7 Apr 2024 13:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495502; cv=none; b=eycf+kLEfOUD5rexKxdABIgon4KT7kcTGg8/FCn9998lH7BlkMeK+mjDRJE8ezoLj0GWC3nLEgj78m14I4rrASUjcUlg7qvffDUoYGa5Gbg6twS/f0oOHqyU6vtDDuwX5s+BRGCjBBEuIV2oHQNOzNAEwI9DkhtdvQcEmyH342M=
+	t=1712495504; cv=none; b=l6KP+TbkkyshHHMpv0CqNb7Cck6D7PtJ2vizvZhbGu1s/vF5f2Gg8eLPZrI06nJVliD5Q1neCSQnlVtIEp+S1mNghn3KY+M3Jq5j1THvJBZQ0VUDTtmE1f+3SoP7iVMYVCeSM0XQ3/gkDOe0ssLRNKStKD+BG6hzxuTuz+BIYqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495502; c=relaxed/simple;
-	bh=G9Fh6PN/UQoZv3MxTEc3PJN9EC4x0hR+8c51ALX/324=;
+	s=arc-20240116; t=1712495504; c=relaxed/simple;
+	bh=GU/bIG34sl0ux4ckOUDhahlO5itK/3HHm/ilLxKhAhc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SbJj6TPTIoMrvWjUv/WcLMGxcb3Fe8d1E1EHNhagBN3XCQoe8mjWykdye+izQcrOf4pdBEH42AHVfDXjvpWzm81e3fAzAF99DAziBVJl53mm7T0UznQWJM5GNrXMLW1G43FrvgH4QJrbONFM2RiUusPkGcaknUEKh2H2f8uVzfk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oqu4XBgY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A93D9C433F1;
-	Sun,  7 Apr 2024 13:11:41 +0000 (UTC)
+	 MIME-Version; b=pLMqqQ4yVKo/++ZiNl/HtSUk2IAZDNhRSRFzwQTbJYMD4iWGAeZmZt9qB5miQDIBDKbzypF5UPf25PsUseITNipKTjQyGI+5nD6qUapUuBp5blWYFGOZqnLCacxgkiH4ODsatYBZpI54zzkF2PHhQzj0hZmQ0QhaksawEzHxexQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=boM7nXEl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C340BC433C7;
+	Sun,  7 Apr 2024 13:11:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495502;
-	bh=G9Fh6PN/UQoZv3MxTEc3PJN9EC4x0hR+8c51ALX/324=;
+	s=k20201202; t=1712495503;
+	bh=GU/bIG34sl0ux4ckOUDhahlO5itK/3HHm/ilLxKhAhc=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=oqu4XBgY91bVEv3tVLlM/b79+/g6B4Vw+HYYk3ZsfIdcnZWpC8MYX6ddw8MZsgwst
-	 AVxpPBXwnbeb1pSHuBmaTq1jSXlo9a1pp+h+tpnIlgVae9GwKRIKDadE7nNwCpgjlM
-	 d3Je7zdQgpnfn2vlufz5IpQElmoPLT33Vxm3ye93wfkF7tx144sET7ECtMxWPkckP+
-	 zN6TizKWLsrsr/1n4wl0g/icYeAYcFQX5DuqIxywacuyCtONru4qaoCDdNs6ZayULx
-	 ZdsuwuFrI+eEm6AtGhsw3CEDkktW03qcg3zHUIbepOjURLp7brhX3FDRv662rcFuyY
-	 yZjaz1da3/wxQ==
+	b=boM7nXElhJLNOXGdC+h+WIbh/zRlr3MgFyKM/wrUIY//fjW8SjI7bvMMpBf5V6u+1
+	 KHZlyqNtC8JM/mTSb85OneqxbuU9FiPeZ/Cq37hokOMeaCP06N0TSyrhsuWXwNJgO2
+	 VjAQLdDbdg1PFjA9sSqcBkIdm+WCCbxn3+8Mf2lAtFsbYRjx3nyVHXRW4Xm/JYI/f4
+	 KQ/CK1MOW7IlyTvasV1TjqbSZ4/9yp6fzUdUoIrA6eU6pm/UFxAD8LTM3k2T2o0Wo7
+	 vN9J8rPj+t+zNxMjbxF/bPySwknq1cHL4VhicA86aEt/XxUGaKrrDfquNvSVCjc4sW
+	 ES9y0TKzJuWMw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrew Price <anprice@redhat.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
+Cc: Eric Van Hensbergen <ericvh@kernel.org>,
+	syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com,
 	Sasha Levin <sashal@kernel.org>,
-	gfs2@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.8 08/25] gfs2: Fix invalid metadata access in punch_hole
-Date: Sun,  7 Apr 2024 09:10:56 -0400
-Message-ID: <20240407131130.1050321-8-sashal@kernel.org>
+	lucho@ionkov.net,
+	asmadeus@codewreck.org,
+	v9fs@lists.linux.dev
+Subject: [PATCH AUTOSEL 6.8 09/25] fs/9p: fix uninitialized values during inode evict
+Date: Sun,  7 Apr 2024 09:10:57 -0400
+Message-ID: <20240407131130.1050321-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131130.1050321-1-sashal@kernel.org>
 References: <20240407131130.1050321-1-sashal@kernel.org>
@@ -64,45 +66,61 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.4
 Content-Transfer-Encoding: 8bit
 
-From: Andrew Price <anprice@redhat.com>
+From: Eric Van Hensbergen <ericvh@kernel.org>
 
-[ Upstream commit c95346ac918c5badf51b9a7ac58a26d3bd5bb224 ]
+[ Upstream commit 6630036b7c228f57c7893ee0403e92c2db2cd21d ]
 
-In punch_hole(), when the offset lies in the final block for a given
-height, there is no hole to punch, but the maximum size check fails to
-detect that.  Consequently, punch_hole() will try to punch a hole beyond
-the end of the metadata and fail.  Fix the maximum size check.
+If an iget fails due to not being able to retrieve information
+from the server then the inode structure is only partially
+initialized.  When the inode gets evicted, references to
+uninitialized structures (like fscache cookies) were being
+made.
 
-Signed-off-by: Andrew Price <anprice@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+This patch checks for a bad_inode before doing anything other
+than clearing the inode from the cache.  Since the inode is
+bad, it shouldn't have any state associated with it that needs
+to be written back (and there really isn't a way to complete
+those anyways).
+
+Reported-by: syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com
+Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/bmap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ fs/9p/vfs_inode.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
-diff --git a/fs/gfs2/bmap.c b/fs/gfs2/bmap.c
-index d9ccfd27e4f11..643175498d1c3 100644
---- a/fs/gfs2/bmap.c
-+++ b/fs/gfs2/bmap.c
-@@ -1718,7 +1718,8 @@ static int punch_hole(struct gfs2_inode *ip, u64 offset, u64 length)
- 	struct buffer_head *dibh, *bh;
- 	struct gfs2_holder rd_gh;
- 	unsigned int bsize_shift = sdp->sd_sb.sb_bsize_shift;
--	u64 lblock = (offset + (1 << bsize_shift) - 1) >> bsize_shift;
-+	unsigned int bsize = 1 << bsize_shift;
-+	u64 lblock = (offset + bsize - 1) >> bsize_shift;
- 	__u16 start_list[GFS2_MAX_META_HEIGHT];
- 	__u16 __end_list[GFS2_MAX_META_HEIGHT], *end_list = NULL;
- 	unsigned int start_aligned, end_aligned;
-@@ -1729,7 +1730,7 @@ static int punch_hole(struct gfs2_inode *ip, u64 offset, u64 length)
- 	u64 prev_bnr = 0;
- 	__be64 *start, *end;
+diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
+index 32572982f72e6..7d42f0c6c644f 100644
+--- a/fs/9p/vfs_inode.c
++++ b/fs/9p/vfs_inode.c
+@@ -371,17 +371,21 @@ void v9fs_evict_inode(struct inode *inode)
+ 	struct v9fs_inode __maybe_unused *v9inode = V9FS_I(inode);
+ 	__le32 __maybe_unused version;
  
--	if (offset >= maxsize) {
-+	if (offset + bsize - 1 >= maxsize) {
- 		/*
- 		 * The starting point lies beyond the allocated metadata;
- 		 * there are no blocks to deallocate.
+-	truncate_inode_pages_final(&inode->i_data);
++	if (!is_bad_inode(inode)) {
++		truncate_inode_pages_final(&inode->i_data);
+ 
+-	version = cpu_to_le32(v9inode->qid.version);
+-	netfs_clear_inode_writeback(inode, &version);
++		version = cpu_to_le32(v9inode->qid.version);
++		netfs_clear_inode_writeback(inode, &version);
+ 
+-	clear_inode(inode);
+-	filemap_fdatawrite(&inode->i_data);
++		clear_inode(inode);
++		filemap_fdatawrite(&inode->i_data);
+ 
+ #ifdef CONFIG_9P_FSCACHE
+-	fscache_relinquish_cookie(v9fs_inode_cookie(v9inode), false);
++		if (v9fs_inode_cookie(v9inode))
++			fscache_relinquish_cookie(v9fs_inode_cookie(v9inode), false);
+ #endif
++	} else
++		clear_inode(inode);
+ }
+ 
+ static int v9fs_test_inode(struct inode *inode, void *data)
 -- 
 2.43.0
 
