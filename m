@@ -1,62 +1,63 @@
-Return-Path: <linux-kernel+bounces-134448-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79D1E89B19F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:27:52 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFAAC89B1A2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:28:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 913401C208EA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:27:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5DC13B22030
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:28:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EEE33D0A4;
-	Sun,  7 Apr 2024 13:12:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E1A53D0C2;
+	Sun,  7 Apr 2024 13:12:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NqKPLFed"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VjqNj0Yj"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE81381720;
-	Sun,  7 Apr 2024 13:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFC7481727;
+	Sun,  7 Apr 2024 13:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495573; cv=none; b=KvlVpnCIg+6Fqx5D7gCID2FGbpp30BllpWWBu+6JtIvqtrgXctp5Bkp2WjYLxa/05We14sgExq2FiHsBl7NfR5asTZ9ideESrs8sYzvd18q4tp8MM+UhD5eY1Muza2j9p2CGvNjBbEUbLDNeLF2yc3N/KuAjoqFvMDEw8gW62/4=
+	t=1712495575; cv=none; b=ieFH3Xl86yUO7zv1th1g0RPRnDMkIgs20yRBcwzp/wC5Z1jSlWYCL2OlbRbTpU+aChWezBC3Ndx36Evh8PMZb4VlSGAP8D+oUEqMbWbH9ko0kBc4HwUaDQE4DCg9OxZlrBrsQL/GGqanH0ygakupSjAplnyc3lZ766jyCUraVes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495573; c=relaxed/simple;
-	bh=Wp16SEaUqiBlbRrODh8PW9//FIKwbH4jF5nuV2QQ+q4=;
+	s=arc-20240116; t=1712495575; c=relaxed/simple;
+	bh=pEWqdY8Nz6RV4vNCPbkG+ZlYIpRQMXl4nyJkcDaaYb4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=aXoq7y6HKIiw3wJAwinOtnewT4pXqXaQQz1pH8wsbJEg1H3qARJOLMmnXHUZdS/mMUIa2yQ18xZzy98yn4wwop+JOX8MaYtY3RHHzEcKGSDn+WEyA52bKUm1r6ZerwxPpZqGF+eOFVgiHCiRCJ+pEa2Ub6dWyHc8yjaJ5XqWq5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NqKPLFed; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E15A8C43394;
-	Sun,  7 Apr 2024 13:12:51 +0000 (UTC)
+	 MIME-Version; b=lJw6FQ9ZHJhvEwLWfJjTZkztLtyYxq7LAWctoBRNxE5gkb6hAlbXukxXaTCZC22+XG1M1kOkG6jI9awbWgUaX0uVSR/DLTHKYYctyFgzkM3h20Q829HELlcrrurVY7nrObeact1zAFJO4yU69e943pZ8rH4jhEuGX+fzqHvrNWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VjqNj0Yj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47B44C433C7;
+	Sun,  7 Apr 2024 13:12:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495573;
-	bh=Wp16SEaUqiBlbRrODh8PW9//FIKwbH4jF5nuV2QQ+q4=;
+	s=k20201202; t=1712495575;
+	bh=pEWqdY8Nz6RV4vNCPbkG+ZlYIpRQMXl4nyJkcDaaYb4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NqKPLFedaTab7X7A6S5rCuUBGVZfz4CpABx9VMfR6qQh4d+cpOPMrdwQxk0ooUEbL
-	 qBY+HbhKI864g+FZxpBZfZxQcLLeX9EBAeVTCTFvYaujV9kQZ44OhSoMVAig5i4MZo
-	 ACkpttIy19MaoJ6eFpoYeDRDUdSzl4RvyuaV6v7fVAMF1gjNg0hqPbQWYnM3zx5rNw
-	 Gdd5+bZGikkBCxCsgBmyiiEAC9yae97yVNQb85rdIWSQvg/WqDLFlCoZIhIQYMMZuk
-	 xAaZpwktvGEN2gAygmKLYj3IywO8Y9xpOlVskGUEzB0iCQufvvdabKXH9D1//FyaGS
-	 FlyBzDGlZ9Iww==
+	b=VjqNj0YjRWuCCq7aJ7rAiluVdmPf0fjuT6hdsTW9mroS7nGgs2tIAc85meJnbQUhR
+	 pu6evz0OFaBh6NMnK4ZZHl7KqSLHYlfW+4LkbCSX///Nz6IijU/3a3wqYRneHdYWw6
+	 cj7U7N+iNZKinVTELHF7W8kQeCgG80NO8W9MewJEZ/st19vnW5BkLsCtCxlqNvamOL
+	 pmdBmFsa/exc73ze1G95wrzJajL88D0+hjre1gDnXk/F8QL37qu/k+mIac24hMWunw
+	 v8nH59sM9kGpBpzEsbkbI/w6QG8ashyrWxF/R/M5UgqwtzhzAheRvhBnRskjv4bxHW
+	 ZJpCRUtX5flEg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Benjamin Berg <benjamin.berg@intel.com>,
-	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
-	Johannes Berg <johannes.berg@intel.com>,
+Cc: linke li <lilinke99@qq.com>,
+	Eric Dumazet <edumazet@google.com>,
+	"David S . Miller" <davem@davemloft.net>,
 	Sasha Levin <sashal@kernel.org>,
-	kvalo@kernel.org,
-	gregory.greenman@intel.com,
-	emmanuel.grumbach@intel.com,
-	avraham.stern@intel.com,
-	dan.carpenter@linaro.org,
-	mukesh.sisodiya@intel.com,
-	linux-wireless@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 13/22] wifi: iwlwifi: mvm: guard against invalid STA ID on removal
-Date: Sun,  7 Apr 2024 09:12:12 -0400
-Message-ID: <20240407131231.1051652-13-sashal@kernel.org>
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	kuniyu@amazon.com,
+	wuyun.abel@bytedance.com,
+	leitao@debian.org,
+	alexander@mihalicyn.com,
+	dhowells@redhat.com,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.6 14/22] net: mark racy access on sk->sk_rcvbuf
+Date: Sun,  7 Apr 2024 09:12:13 -0400
+Message-ID: <20240407131231.1051652-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131231.1051652-1-sashal@kernel.org>
 References: <20240407131231.1051652-1-sashal@kernel.org>
@@ -71,44 +72,46 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.25
 Content-Transfer-Encoding: 8bit
 
-From: Benjamin Berg <benjamin.berg@intel.com>
+From: linke li <lilinke99@qq.com>
 
-[ Upstream commit 17f64517bf5c26af56b6c3566273aad6646c3c4f ]
+[ Upstream commit c2deb2e971f5d9aca941ef13ee05566979e337a4 ]
 
-Guard against invalid station IDs in iwl_mvm_mld_rm_sta_id as that would
-result in out-of-bounds array accesses. This prevents issues should the
-driver get into a bad state during error handling.
+sk->sk_rcvbuf in __sock_queue_rcv_skb() and __sk_receive_skb() can be
+changed by other threads. Mark this as benign using READ_ONCE().
 
-Signed-off-by: Benjamin Berg <benjamin.berg@intel.com>
-Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
-Link: https://msgid.link/20240320232419.d523167bda9c.I1cffd86363805bf86a95d8bdfd4b438bb54baddc@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+This patch is aimed at reducing the number of benign races reported by
+KCSAN in order to focus future debugging effort on harmful races.
+
+Signed-off-by: linke li <lilinke99@qq.com>
+Reviewed-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/intel/iwlwifi/mvm/mld-sta.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ net/core/sock.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/mld-sta.c b/drivers/net/wireless/intel/iwlwifi/mvm/mld-sta.c
-index 1ccbe8c1eeb42..278454c116fee 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/mld-sta.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/mld-sta.c
-@@ -853,10 +853,15 @@ int iwl_mvm_mld_rm_sta(struct iwl_mvm *mvm, struct ieee80211_vif *vif,
+diff --git a/net/core/sock.c b/net/core/sock.c
+index 383e30fe79f41..790e847d86ec3 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -485,7 +485,7 @@ int __sock_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
+ 	unsigned long flags;
+ 	struct sk_buff_head *list = &sk->sk_receive_queue;
  
- int iwl_mvm_mld_rm_sta_id(struct iwl_mvm *mvm, u8 sta_id)
- {
--	int ret = iwl_mvm_mld_rm_sta_from_fw(mvm, sta_id);
-+	int ret;
+-	if (atomic_read(&sk->sk_rmem_alloc) >= sk->sk_rcvbuf) {
++	if (atomic_read(&sk->sk_rmem_alloc) >= READ_ONCE(sk->sk_rcvbuf)) {
+ 		atomic_inc(&sk->sk_drops);
+ 		trace_sock_rcvqueue_full(sk, skb);
+ 		return -ENOMEM;
+@@ -555,7 +555,7 @@ int __sk_receive_skb(struct sock *sk, struct sk_buff *skb,
  
- 	lockdep_assert_held(&mvm->mutex);
+ 	skb->dev = NULL;
  
-+	if (WARN_ON(sta_id == IWL_MVM_INVALID_STA))
-+		return 0;
-+
-+	ret = iwl_mvm_mld_rm_sta_from_fw(mvm, sta_id);
-+
- 	RCU_INIT_POINTER(mvm->fw_id_to_mac_id[sta_id], NULL);
- 	RCU_INIT_POINTER(mvm->fw_id_to_link_sta[sta_id], NULL);
- 	return ret;
+-	if (sk_rcvqueues_full(sk, sk->sk_rcvbuf)) {
++	if (sk_rcvqueues_full(sk, READ_ONCE(sk->sk_rcvbuf))) {
+ 		atomic_inc(&sk->sk_drops);
+ 		goto discard_and_relse;
+ 	}
 -- 
 2.43.0
 
