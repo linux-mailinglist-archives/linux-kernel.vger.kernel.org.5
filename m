@@ -1,55 +1,62 @@
-Return-Path: <linux-kernel+bounces-134474-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134475-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CE3289B1ED
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8454B89B1F1
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:35:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 521C51F2142D
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:35:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 39E761F2142D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:35:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DCD2131198;
-	Sun,  7 Apr 2024 13:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA9C3131186;
+	Sun,  7 Apr 2024 13:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f30phbYj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vEON+mui"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C4A1131181;
-	Sun,  7 Apr 2024 13:13:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0974C1311B1;
+	Sun,  7 Apr 2024 13:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495627; cv=none; b=cbkWtllJ3bD6MpSJEjNfZQ96C1OriioqluNgpInV8JB6f1EgYTUjcvPh6YHVE6jqYmIQAT1Srka2IZRIx/Xxh+QO2VqXW0kY5gjfokygkDZPcwVXqBB09ej2MBx7yY+G3HM4Y3H2olgegJtpPgELwYDQx3Q5MAR88xo4D3r+aBo=
+	t=1712495629; cv=none; b=oxx1qzWtH2nOk05VeCcwcyewNMTu0Zt1zwEWN5sTzIs3d8EDpy1FEDTBdSN2AW7JKTYE+rMT6wbJpfpNNabiXTahCxyRK/GyXLoQWxgwQyVJIhjcpTZ2tfoTORZ+5s5sv62O/V4Xw2pswpGBF6cqVCyYg0Qb0n2CeEhI9+0zVsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495627; c=relaxed/simple;
-	bh=x8Z9ZmyjqSs/YVDXBuClYp/eiiFqnfPjPyNZCrlIjGM=;
+	s=arc-20240116; t=1712495629; c=relaxed/simple;
+	bh=Bd6gFlfmO5nkdeT5wgJIr8HjpSipSkkio4RZukTc9As=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZNdG82vU12o+pfhM0Pj0q6tPyVBjZZrKj9veCSjURH06mmjL9n4hQNMp7zfgqEJoVJ3l1hVSCQd6YoT4CKHJgputjXvMWQtCuzi1kAV8rVUcPZZ58zHDeKcPHlkneaojxuJEnf3adifgIrLJZ79OUMSDIJ/kJ2scf/BTL1Q3qGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f30phbYj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6CA93C43394;
-	Sun,  7 Apr 2024 13:13:46 +0000 (UTC)
+	 MIME-Version; b=p4NA5gedlgRiYkNL7r1IS+6UpxOct5NYZRvPoypEw1S6cWpaNp0y4f1610lnkhlkdG+glyNeueIdqKni2ZiFodne2HDXqyQWD+JKAiSWjqyqTcZ2Dm7dtPKhAVttbfH4yPP0NfiJH/Sy8yLOZSyA58bSnpQjscexcbzIVQLIkTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vEON+mui; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 866C6C433C7;
+	Sun,  7 Apr 2024 13:13:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495627;
-	bh=x8Z9ZmyjqSs/YVDXBuClYp/eiiFqnfPjPyNZCrlIjGM=;
+	s=k20201202; t=1712495628;
+	bh=Bd6gFlfmO5nkdeT5wgJIr8HjpSipSkkio4RZukTc9As=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=f30phbYjOPnybuQ5Zjo0o+c/u9yE7g3u8l2KX9d2GfTc+Xt4ikZkgTsfKS7fkyVdG
-	 fje+FyWt5vBMpFS+GIL5/t5JcFhwg2fmyqVkRffl+zQrF9rBMdWmzSFFRuD4NlphX9
-	 zRQE2C0ddM9ee1/1fJKC/+zVG1Mh625gdbDrVjsJ3jyfusuxO3TjWjcpDIJdLUQOt3
-	 w3t2nwcLOVCt64trTk89f1lbj9WuFB9tkIMeeaSg6qk1uIB63Hs+BwTmfmKlLCkZFY
-	 ujp+vXZkh6IGWCP3AaBXGv29b0CkWpD/esEoeQwmKrNAMS2k1MOoeeaT+XgXpTnTtw
-	 KvWyqdIM9SCIA==
+	b=vEON+muisGVQbEeTXrXBE3dlBeleaXs9Jpo9C5WF1iQYGsg5Le/8JjjH7PvzkgX1H
+	 GN7/v2//rejBL/meSzTtEXYXPOW2pNjp9RiGIi7q4zJWMSV9sZ0yvxsm+SX2L9pQ6z
+	 TDPHs7QTmUEMQsp+Zo60laja5cIw7w+8kOPQd1eNRWBfOt3g63zchbe+tsBADSv+3x
+	 SM40SazKYJM3E/kZ5+qTKEpkmNCsmS4NZH/7f5Y29mWj5U/XlKBvVJtL/SF1TTJFnh
+	 lb6gMnlRpTuvCRNTyaF0rSKNVDOXA5eMGriYjMCqd+MKpTeG1U0k1PQ7mgmJlrX3Mb
+	 Cu8KY9T9dHnFA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrew Price <anprice@redhat.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
+Cc: Jeff Johnson <quic_jjohnson@quicinc.com>,
+	Simon Horman <horms@kernel.org>,
+	Johannes Berg <johannes.berg@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
-	gfs2@lists.linux.dev
-Subject: [PATCH AUTOSEL 5.15 04/10] gfs2: Fix invalid metadata access in punch_hole
-Date: Sun,  7 Apr 2024 09:13:34 -0400
-Message-ID: <20240407131341.1052960-4-sashal@kernel.org>
+	johannes@sipsolutions.net,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com,
+	linux-wireless@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 05/10] wifi: mac80211: fix ieee80211_bss_*_flags kernel-doc
+Date: Sun,  7 Apr 2024 09:13:35 -0400
+Message-ID: <20240407131341.1052960-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131341.1052960-1-sashal@kernel.org>
 References: <20240407131341.1052960-1-sashal@kernel.org>
@@ -64,45 +71,47 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.153
 Content-Transfer-Encoding: 8bit
 
-From: Andrew Price <anprice@redhat.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-[ Upstream commit c95346ac918c5badf51b9a7ac58a26d3bd5bb224 ]
+[ Upstream commit 774f8841f55d7ac4044c79812691649da203584a ]
 
-In punch_hole(), when the offset lies in the final block for a given
-height, there is no hole to punch, but the maximum size check fails to
-detect that.  Consequently, punch_hole() will try to punch a hole beyond
-the end of the metadata and fail.  Fix the maximum size check.
+Running kernel-doc on ieee80211_i.h flagged the following:
+net/mac80211/ieee80211_i.h:145: warning: expecting prototype for enum ieee80211_corrupt_data_flags. Prototype was for enum ieee80211_bss_corrupt_data_flags instead
+net/mac80211/ieee80211_i.h:162: warning: expecting prototype for enum ieee80211_valid_data_flags. Prototype was for enum ieee80211_bss_valid_data_flags instead
 
-Signed-off-by: Andrew Price <anprice@redhat.com>
-Signed-off-by: Andreas Gruenbacher <agruenba@redhat.com>
+Fix these warnings.
+
+Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+Reviewed-by: Simon Horman <horms@kernel.org>
+Link: https://msgid.link/20240314-kdoc-ieee80211_i-v1-1-72b91b55b257@quicinc.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/gfs2/bmap.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ net/mac80211/ieee80211_i.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/gfs2/bmap.c b/fs/gfs2/bmap.c
-index 0ec1eaf338338..d2011c3c33fc2 100644
---- a/fs/gfs2/bmap.c
-+++ b/fs/gfs2/bmap.c
-@@ -1704,7 +1704,8 @@ static int punch_hole(struct gfs2_inode *ip, u64 offset, u64 length)
- 	struct buffer_head *dibh, *bh;
- 	struct gfs2_holder rd_gh;
- 	unsigned int bsize_shift = sdp->sd_sb.sb_bsize_shift;
--	u64 lblock = (offset + (1 << bsize_shift) - 1) >> bsize_shift;
-+	unsigned int bsize = 1 << bsize_shift;
-+	u64 lblock = (offset + bsize - 1) >> bsize_shift;
- 	__u16 start_list[GFS2_MAX_META_HEIGHT];
- 	__u16 __end_list[GFS2_MAX_META_HEIGHT], *end_list = NULL;
- 	unsigned int start_aligned, end_aligned;
-@@ -1715,7 +1716,7 @@ static int punch_hole(struct gfs2_inode *ip, u64 offset, u64 length)
- 	u64 prev_bnr = 0;
- 	__be64 *start, *end;
+diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
+index 21549a440b38c..03f8c8bdab765 100644
+--- a/net/mac80211/ieee80211_i.h
++++ b/net/mac80211/ieee80211_i.h
+@@ -113,7 +113,7 @@ struct ieee80211_bss {
+ };
  
--	if (offset >= maxsize) {
-+	if (offset + bsize - 1 >= maxsize) {
- 		/*
- 		 * The starting point lies beyond the allocated meta-data;
- 		 * there are no blocks do deallocate.
+ /**
+- * enum ieee80211_corrupt_data_flags - BSS data corruption flags
++ * enum ieee80211_bss_corrupt_data_flags - BSS data corruption flags
+  * @IEEE80211_BSS_CORRUPT_BEACON: last beacon frame received was corrupted
+  * @IEEE80211_BSS_CORRUPT_PROBE_RESP: last probe response received was corrupted
+  *
+@@ -126,7 +126,7 @@ enum ieee80211_bss_corrupt_data_flags {
+ };
+ 
+ /**
+- * enum ieee80211_valid_data_flags - BSS valid data flags
++ * enum ieee80211_bss_valid_data_flags - BSS valid data flags
+  * @IEEE80211_BSS_VALID_WMM: WMM/UAPSD data was gathered from non-corrupt IE
+  * @IEEE80211_BSS_VALID_RATES: Supported rates were gathered from non-corrupt IE
+  * @IEEE80211_BSS_VALID_ERP: ERP flag was gathered from non-corrupt IE
 -- 
 2.43.0
 
