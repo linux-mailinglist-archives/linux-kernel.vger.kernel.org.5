@@ -1,112 +1,141 @@
-Return-Path: <linux-kernel+bounces-134431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE71589B166
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:22:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6102089B11E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:14:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 420A4B21C97
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:22:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E31B280F1B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF99A3B785;
-	Sun,  7 Apr 2024 13:12:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uft8BOVT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4147143154;
+	Sun,  7 Apr 2024 13:11:21 +0000 (UTC)
+Received: from exchange.fintech.ru (exchange.fintech.ru [195.54.195.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0F3D3B78E;
-	Sun,  7 Apr 2024 13:12:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E00E3FB16;
+	Sun,  7 Apr 2024 13:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.54.195.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495532; cv=none; b=TdyGjfF7ONYTdJk71mC3TnIyz+T0YgjtGBGes57v4hr04nh9P2fyMucLLlnngZElQzXvT1HUFetVgfhN3oRpCLvrK2+SabnErjW0eQY+k4AIh0O+bwXX1LcFHCP0vxXJ3p8UbLgieeCsp1ZXP8JYrR+cisY2CkmZZuZtBHxD1G0=
+	t=1712495480; cv=none; b=UVQSnaSwVLG1mdHRSS9hWiYoCOe30uJlOq75MgMPAvWA9V20qn541DjnXboWkG8W1DOypYsKt9Si+X0m2rc+wV2oS8aWQel2FIEPguUupLJi00CE3/x9vEUYlgiSA/nEWFV0CI5ON/JPbBiOC7Y0BK21JWpNLU/HN0K1CPhoZNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495532; c=relaxed/simple;
-	bh=6zzbWAyna2YyQAnGbGIAMsDqYnksI8cYUqLblgad2V8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eDT0JE4Glx+tAqUGFWxjDzi7cI/J68BpOOEPk2Ex4CUNKx4LP84cITXcWmU7+CbCSlaFvRvCXwOmJF274sCkjQXNilhrWzFnf6aIWDsvpt0SjcYWzb+dpeqwNmlrc1APRj46HDwACk0aawVylsEBN+tX/k7lHTVD6mvMKWA8cpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uft8BOVT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28269C433F1;
-	Sun,  7 Apr 2024 13:12:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495531;
-	bh=6zzbWAyna2YyQAnGbGIAMsDqYnksI8cYUqLblgad2V8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=uft8BOVTnOyYmSXjAYbxepZXL12TuFL5NKUdLaJ5D4isZxSaISHG4OjVraHlSenHr
-	 DD+wuHWreF6HTf97R5iDFEsdPL/pIXouhrarEfgxMJVO7+mEhYrpzGgk0BvOUYJvFU
-	 97bYxUslbUe7/uxctx1arNa/v1M6yOyVv4QsJsGKRJHRA/UI0YqYBQc/FUQ6WF5C7J
-	 KV4UPYg9ZH9l6hHlIF+0PEl7gl2VdIrb3CQJ+215HfL7s2LkdSWuNfuxXnKvQr8n/8
-	 VrfFBh2RwR7MAUHOLrHUVYn69epKRiwydV70la33M6Q/h4t2vNkm/gHPPpbQfpDKL8
-	 grdKpy6SUP3Kw==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Peyton Lee <peytolee@amd.com>,
-	Lang Yu <lang.yu@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Sasha Levin <sashal@kernel.org>,
-	christian.koenig@amd.com,
-	Xinhui.Pan@amd.com,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	Lang.Yu@amd.com,
-	yifan1.zhang@amd.com,
-	lijo.lazar@amd.com,
-	srinivasan.shanmugam@amd.com,
-	amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.8 21/25] drm/amdgpu/vpe: power on vpe when hw_init
-Date: Sun,  7 Apr 2024 09:11:09 -0400
-Message-ID: <20240407131130.1050321-21-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240407131130.1050321-1-sashal@kernel.org>
-References: <20240407131130.1050321-1-sashal@kernel.org>
+	s=arc-20240116; t=1712495480; c=relaxed/simple;
+	bh=tOK8citKj5coWWGdrUGQDHZ0rmgq5F1rm/dGHe8XHdE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GAEiu0dofjln8s6oh1SwnMIyjT0mNE5sv7Pj0FoGK8rAxZnXAJWzqQD5adR2ZVwWmONDK3p13Z2z/tf7w28xshDP2B+3RsSqmMK9Vxvo5XL0NF+zgFzh6rFG1AqAe/Ytl8DbRhD96hcd6Ts5QViRXFOANCa4RH0kwHdnVfG6AbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru; spf=pass smtp.mailfrom=fintech.ru; arc=none smtp.client-ip=195.54.195.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fintech.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fintech.ru
+Received: from Ex16-01.fintech.ru (10.0.10.18) by exchange.fintech.ru
+ (195.54.195.159) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sun, 7 Apr
+ 2024 16:11:15 +0300
+Received: from localhost (10.0.253.138) by Ex16-01.fintech.ru (10.0.10.18)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Sun, 7 Apr 2024
+ 16:11:15 +0300
+From: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
+To: Christian Lamparter <chunkeey@googlemail.com>, Kalle Valo
+	<kvalo@kernel.org>
+CC: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
+	<linux-wireless@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<syzkaller-bugs@googlegroups.com>, <lvc-project@linuxtesting.org>,
+	<syzbot+0ae4804973be759fa420@syzkaller.appspotmail.com>
+Subject: [PATCH] wifi: carl9170: add a proper sanity check for endpoints
+Date: Sun, 7 Apr 2024 06:11:09 -0700
+Message-ID: <20240407131109.26212-1-n.zhandarovich@fintech.ru>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.8.4
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: Ex16-02.fintech.ru (10.0.10.19) To Ex16-01.fintech.ru
+ (10.0.10.18)
 
-From: Peyton Lee <peytolee@amd.com>
+Syzkaller reports [1] hitting a warning which is caused by presence
+of a wrong endpoint type at the URB sumbitting stage. While there
+was a check for a specific 4th endpoint, since it can switch types
+between bulk and interrupt, other endpoints are trusted implicitly.
+Similar warning is triggered in a couple of other syzbot issues [2].
 
-[ Upstream commit eed14eb48ee176fe0144c6a999d00c855d0b199b ]
+Fix the issue by doing a comprehensive check of all endpoints
+taking into account difference between high- and full-speed
+configuration.
 
-To fix mode2 reset failure.
-Should power on VPE when hw_init.
+This patch has not been tested on real hardware.
 
-Signed-off-by: Peyton Lee <peytolee@amd.com>
-Reviewed-by: Lang Yu <lang.yu@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+[1] Syzkaller report:
+..
+WARNING: CPU: 0 PID: 4721 at drivers/usb/core/urb.c:504 usb_submit_urb+0xed6/0x1880 drivers/usb/core/urb.c:504
+..
+Call Trace:
+ <TASK>
+ carl9170_usb_send_rx_irq_urb+0x273/0x340 drivers/net/wireless/ath/carl9170/usb.c:504
+ carl9170_usb_init_device drivers/net/wireless/ath/carl9170/usb.c:939 [inline]
+ carl9170_usb_firmware_finish drivers/net/wireless/ath/carl9170/usb.c:999 [inline]
+ carl9170_usb_firmware_step2+0x175/0x240 drivers/net/wireless/ath/carl9170/usb.c:1028
+ request_firmware_work_func+0x130/0x240 drivers/base/firmware_loader/main.c:1107
+ process_one_work+0x9bf/0x1710 kernel/workqueue.c:2289
+ worker_thread+0x669/0x1090 kernel/workqueue.c:2436
+ kthread+0x2e8/0x3a0 kernel/kthread.c:376
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:308
+ </TASK>
+
+[2] Related syzkaller crashes:
+Link: https://syzkaller.appspot.com/bug?extid=e394db78ae0b0032cb4d
+Link: https://syzkaller.appspot.com/bug?extid=9468df99cb63a4a4c4e1
+
+Reported-and-tested-by: syzbot+0ae4804973be759fa420@syzkaller.appspotmail.com
+Fixes: a84fab3cbfdc ("carl9170: 802.11 rx/tx processing and usb backend")
+Signed-off-by: Nikita Zhandarovich <n.zhandarovich@fintech.ru>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_vpe.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+P.S. as AR9170_USB_EP_CMD endpoint can switch between bulk and int,
+I failed to find a prettier solution to this problem. Will be glad
+to hear if there is a better option...
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_vpe.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_vpe.c
-index b9a15d51eb5c3..ad44012cc01e2 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vpe.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vpe.c
-@@ -390,6 +390,12 @@ static int vpe_hw_init(void *handle)
- 	struct amdgpu_vpe *vpe = &adev->vpe;
- 	int ret;
+ drivers/net/wireless/ath/carl9170/usb.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+diff --git a/drivers/net/wireless/ath/carl9170/usb.c b/drivers/net/wireless/ath/carl9170/usb.c
+index c4edf8355941..66d2ad561fd3 100644
+--- a/drivers/net/wireless/ath/carl9170/usb.c
++++ b/drivers/net/wireless/ath/carl9170/usb.c
+@@ -1069,6 +1069,33 @@ static int carl9170_usb_probe(struct usb_interface *intf,
+ 			ar->usb_ep_cmd_is_bulk = true;
+ 	}
  
-+	/* Power on VPE */
-+	ret = amdgpu_device_ip_set_powergating_state(adev, AMD_IP_BLOCK_TYPE_VPE,
-+						     AMD_PG_STATE_UNGATE);
-+	if (ret)
-+		return ret;
++	/* Verify that all expected endpoints are present */
++	if (ar->usb_ep_cmd_is_bulk) {
++		u8 bulk_ep_addr[] = {
++			AR9170_USB_EP_RX | USB_DIR_IN,
++			AR9170_USB_EP_TX | USB_DIR_OUT,
++			AR9170_USB_EP_CMD | USB_DIR_OUT,
++			0};
++		u8 int_ep_addr[] = {
++			AR9170_USB_EP_IRQ | USB_DIR_IN,
++			0};
++		if (!usb_check_bulk_endpoints(intf, bulk_ep_addr) ||
++		    !usb_check_int_endpoints(intf, int_ep_addr))
++			return -ENODEV;
++	} else {
++		u8 bulk_ep_addr[] = {
++			AR9170_USB_EP_RX | USB_DIR_IN,
++			AR9170_USB_EP_TX | USB_DIR_OUT,
++			0};
++		u8 int_ep_addr[] = {
++			AR9170_USB_EP_IRQ | USB_DIR_IN,
++			AR9170_USB_EP_CMD | USB_DIR_OUT,
++			0};
++		if (!usb_check_bulk_endpoints(intf, bulk_ep_addr) ||
++		    !usb_check_int_endpoints(intf, int_ep_addr))
++			return -ENODEV;
++	}
 +
- 	ret = vpe_load_microcode(vpe);
- 	if (ret)
- 		return ret;
--- 
-2.43.0
-
+ 	usb_set_intfdata(intf, ar);
+ 	SET_IEEE80211_DEV(ar->hw, &intf->dev);
+ 
 
