@@ -1,175 +1,163 @@
-Return-Path: <linux-kernel+bounces-134127-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134128-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F22C89ADF9
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F27289ADFB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 04:05:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9AC9F1F22527
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 02:04:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 000081F224CF
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 02:05:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD7AE17F0;
-	Sun,  7 Apr 2024 02:04:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="alHsG4c6"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C79F184D;
+	Sun,  7 Apr 2024 02:05:23 +0000 (UTC)
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61036EA4
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 02:04:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D678B8494;
+	Sun,  7 Apr 2024 02:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712455442; cv=none; b=PPwt0ishHYGzmthFDa0EbBeLDwD3a25OhwzWjbOIUR9f/JAw1yS3qH2Ttf+vnVJs1uZPgcluIAxdN/UAJY7SGBBRHQlUcnaDlQRwgn5CQUNNKYILGdUqglQflSBYNBH/4LeIo8C/uM458AiwaAkzcDcSV+rWDUkpFstPrm3guhg=
+	t=1712455522; cv=none; b=sUH696LyMaykKqrLmmcRx1lcpmXvClv5RAebhkzsBCWymkONkyJCJEM5yWAHOf3z1HrCk+XVv5B2ELGndcOCgBo5fGVimP+SDJR3g82tQgXj+sBeJxVXYrgPZdqor5eas66OI5YMVALEjZ8WQOq3HgCBKx8qRh5jt2hWo6uEiEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712455442; c=relaxed/simple;
-	bh=U56H5A/lEPmEDEZ/TGhdwmTeuk3T08HKgselsQ/ZGh0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Gllv57W4i6IBjiGVx5rqVLlOgx93awV0iGaf0j9qMDB6BVuOZBSBptRdoqkAKLcohvjGile0TbF83J4NARdgghcMz5oSZ+pGMxJIZ7UJoi+XVGiuzO9ofa5ZUUJdIXPetix8czUwsj7iU4QpZ3hsAvC65Yok4LvnK8O40u+V9Hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=alHsG4c6; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso3563767276.3
-        for <linux-kernel@vger.kernel.org>; Sat, 06 Apr 2024 19:04:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712455439; x=1713060239; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/EZBl0kCTgMxcq/jZN2+jK2LUFglvi7j7hmZF1Wp3+U=;
-        b=alHsG4c6geKLnfMqUrwCG1qYC4vZPfN7HGfTJD48t7rEbHZWu9FZpu05fyxsj3EmcC
-         z9NFl8W/XJV7pgG0aTdRwcMl0EtlvYFtqbzHy1QwWw69va6+LPiKcNGdFFUnZH7Rn5O7
-         Z0pYoXLXdSdNOAGuYIGb05avGJtMTtDrk+5KAE6pG5HFfA7ta1OZtlXABegTrYSmmKwh
-         zrU8/dinRa2eowNKKG5+lQIj+cAlC4aH4Nb8GMwfLFYh0r751tGtjEpXo1EvvFs+t884
-         rTq8rzCpkpYjHNjtM7kt4k9slVKWEm4wFkTnFVfubkS+Vd4PjauBk2DU2WW1MNLG2OqS
-         S/yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712455439; x=1713060239;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/EZBl0kCTgMxcq/jZN2+jK2LUFglvi7j7hmZF1Wp3+U=;
-        b=Pczn29grlt6pgjorOrX//HcqGH5NR2zUnC+mbbVH1OjgTOTHsNkdD8XifD+62Avsey
-         FWUmFKhzFpPOYR/K0jU0CksXRm/aC/UW6tsz1nn6UePDi9Ji5wiIhbdIkDVPvzcfXmnR
-         cYsICXlb+yVsaverhGYE4m6CQrd+B8JOROIGLx1mwOsNjJZXjIvgWoWXMqEHwP6v7RDs
-         IxsZTOXNtst9w46TafWpfvUIGXiKbeljlAYPLC+Zsw1ZsoN/qhOXxLI8/jUAuN90Uzg5
-         TTK/vS7lIAjPCdDlv64+1QDGNMRw9+1U592vOxbInAeqaraDoRYpaFbzjfkqVOSiUu/k
-         AHtQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVd0Yt4JxiJeUYvtqNcooez6qX2k9iABQ+WZj0MVvSwTtPKtxtMW8SZOZ5MxehIupKFD06qI+G+nsA7OT8V07gqp50l73vYREtmeYBB
-X-Gm-Message-State: AOJu0YweQ2GexTLrXAEawoV7uAzEV5y/FKffDt9v76xWZWPBbuv9RhkT
-	reRh8HnXmuger42Yx6p3UAiy+EKZmZFsJPFpf+xUbSOAFVOA5DRS4Z1cqXSqWR5XXHUAgox86sO
-	nhMvKq8uL/IMebbPjQV3/JN26o0wHmWDA1vtemg==
-X-Google-Smtp-Source: AGHT+IESVmqrBCQSNOIT/MkWy80FprAX2aIJsvoJBlMs+XmRvzK7dLUtQxc4/cWFcP0mJPU8jaki6SnYPrG6VITHuTM=
-X-Received: by 2002:a25:a282:0:b0:dcd:6722:c728 with SMTP id
- c2-20020a25a282000000b00dcd6722c728mr3984209ybi.14.1712455439287; Sat, 06 Apr
- 2024 19:03:59 -0700 (PDT)
+	s=arc-20240116; t=1712455522; c=relaxed/simple;
+	bh=q7avWxTZ18Mq6nKKz2xrkTtQwuh0fsXGBm/jnjmYUEk=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=mMbbwQgu7LNH11TeDXASXsHzSzGQJf+JsKIHbLNFnwccNFuHobZS1ZRlikB09NLZYyDYz0NQFSccZwMyBkpOMLJVRa0cyVfWfcSXXBhL8LpBGEawdqe9A0jl2Q8+Efl1rFhwTI6iKR0JrsQNnurkEei49pnfkCZ4XBr7og8OaMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VBwXg5B76z4f3m73;
+	Sun,  7 Apr 2024 10:05:07 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 3C56E1A0176;
+	Sun,  7 Apr 2024 10:05:16 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP2 (Coremail) with SMTP id Syh0CgCXBQlY_xFmjWn_JQ--.19215S2;
+	Sun, 07 Apr 2024 10:05:14 +0800 (CST)
+Subject: Re: [syzbot] [nilfs?] KASAN: slab-out-of-bounds Read in wb_writeback
+To: Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>
+Cc: gregkh@linuxfoundation.org, konishi.ryusuke@gmail.com,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-nilfs@vger.kernel.org, syzkaller-bugs@googlegroups.com, tj@kernel.org,
+ viro@zeniv.linux.org.uk
+References: <000000000000fd0f2a061506cc93@google.com>
+ <00000000000003b8c406151e0fd1@google.com>
+ <20240403094717.zex45tc2kpkfelny@quack3>
+ <20240405-heilbad-eisbrecher-cd0cbc27f36f@brauner>
+ <20240405132346.bid7gibby3lxxhez@quack3>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <089011b5-63a1-5251-022b-91cf1af95e17@huaweicloud.com>
+Date: Sun, 7 Apr 2024 10:05:12 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240406031548.25829-1-quic_abhinavk@quicinc.com>
-In-Reply-To: <20240406031548.25829-1-quic_abhinavk@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sun, 7 Apr 2024 05:03:48 +0300
-Message-ID: <CAA8EJpo5=t7JUDmq9cbzBgk+MVmwUC=QD3XTtiVY+F9kPyyLwQ@mail.gmail.com>
-Subject: Re: [PATCH v3] drm/msm/dp: call dp_hpd_plug_handle()/unplug_handle()
- directly for external HPD
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>, 
-	Sean Paul <sean@poorly.run>, Marijn Suijten <marijn.suijten@somainline.org>, 
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Bjorn Andersson <andersson@kernel.org>, Kuogee Hsieh <quic_khsieh@quicinc.com>, 
-	dri-devel@lists.freedesktop.org, seanpaul@chromium.org, swboyd@chromium.org, 
-	quic_jesszhan@quicinc.com, quic_bjorande@quicinc.com, johan@kernel.org, 
-	linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20240405132346.bid7gibby3lxxhez@quack3>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgCXBQlY_xFmjWn_JQ--.19215S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFy3tw4rWF17ZF4rXF1UWrg_yoW5tF1Upr
+	Z8tFyIkrZ5tryFyF1kKw1qgr1jvrZ8CFW7Xay8tr1jvan2yrn8tryIyr1UWrWDCr1xAFyj
+	vF45Z34fX3ykZ37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On Sat, 6 Apr 2024 at 06:16, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
-> From: Kuogee Hsieh <quic_khsieh@quicinc.com>
->
-> For HPD events coming from external modules using drm_bridge_hpd_notify(),
-> the sequence of calls leading to dp_bridge_hpd_notify() is like below:
->
-> dp_bridge_hpd_notify+0x18/0x70 [msm]
-> drm_bridge_connector_detect+0x60/0xe8 [drm_kms_helper]
-> drm_helper_probe_detect+0x94/0xc0 [drm_kms_helper]
-> drm_helper_probe_single_connector_modes+0x43c/0x53c [drm_kms_helper]
-> drm_client_modeset_probe+0x240/0x1114 [drm]
-> drm_fb_helper_hotplug_event.part.26+0x9c/0xe8 [drm_kms_helper]
-> drm_fb_helper_hotplug_event+0x24/0x38 [drm_kms_helper]
-> msm_fbdev_client_hotplug+0x24/0xd4 [msm]
-> drm_client_dev_hotplug+0xd8/0x148 [drm]
-> drm_kms_helper_connector_hotplug_event+0x30/0x3c [drm_kms_helper]
-> drm_bridge_connector_handle_hpd+0x84/0x94 [drm_kms_helper]
-> drm_bridge_connector_hpd_cb+0xc/0x14 [drm_kms_helper]
-> drm_bridge_hpd_notify+0x38/0x50 [drm]
-> drm_aux_hpd_bridge_notify+0x14/0x20 [aux_hpd_bridge]
-> pmic_glink_altmode_worker+0xec/0x27c [pmic_glink_altmode]
-> process_scheduled_works+0x17c/0x2cc
-> worker_thread+0x2ac/0x2d0
-> kthread+0xfc/0x120
->
-> There are three notifications delivered to DP driver for each notification event.
->
-> 1) From the drm_aux_hpd_bridge_notify() itself as shown above
->
-> 2) From output_poll_execute() thread which arises due to
-> drm_helper_probe_single_connector_modes() call of the above stacktrace
-> as shown in more detail here.
->
-> dp_bridge_hpd_notify+0x18/0x70 [msm]
-> drm_bridge_connector_detect+0x60/0xe8 [drm_kms_helper]
-> drm_helper_probe_detect+0x94/0xc0 [drm_kms_helper]
-> drm_helper_probe_single_connector_modes+0x43c/0x53c [drm_kms_helper]
-> drm_client_modeset_probe+0x240/0x1114 [drm]
-> drm_fb_helper_hotplug_event.part.26+0x9c/0xe8 [drm_kms_helper]
-> drm_fb_helper_hotplug_event+0x24/0x38 [drm_kms_helper]
-> msm_fbdev_client_hotplug+0x24/0xd4 [msm]
-> drm_client_dev_hotplug+0xd8/0x148 [drm]
-> drm_kms_helper_hotplug_event+0x30/0x3c [drm_kms_helper]
-> output_poll_execute+0xe0/0x210 [drm_kms_helper]
->
-> 3) From the DP driver as the dp_bridge_hpd_notify() callback today triggers
-> the hpd_event_thread for connect and disconnect events respectively via below stack
->
-> dp_bridge_hpd_notify+0x18/0x70 [msm]
-> drm_bridge_connector_detect+0x60/0xe8 [drm_kms_helper]
-> drm_helper_probe_detect_ctx+0x98/0x110 [drm_kms_helper]
-> check_connector_changed+0x4c/0x20c [drm_kms_helper]
-> drm_helper_hpd_irq_event+0x98/0x120 [drm_kms_helper]
-> hpd_event_thread+0x478/0x5bc [msm]
->
-> dp_bridge_hpd_notify() delivered from output_poll_execute() thread
-> returns the incorrect HPD status as the MSM DP driver returns the value
-> of link_ready and not the HPD status currently in the .detect() callback.
->
-> And because the HPD event thread has not run yet, this results in two complementary
-> events.
->
-> To address this, fix dp_bridge_hpd_notify() to call dp_hpd_plug_handle/unplug_handle()
-> directly to return consistent values for the above scenarios.
->
-> changes in v3:
->         - Fix the commit message as per submitting guidelines.
->         - remove extra line added
->
-> changes in v2:
->         - Fix the commit message to explain the scenario
->         - Fix the subject a little as well
->
-> Fixes: 542b37efc20e ("drm/msm/dp: Implement hpd_notify()")
-> Signed-off-by: Kuogee Hsieh <quic_khsieh@quicinc.com>
-> Signed-off-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> ---
->  drivers/gpu/drm/msm/dp/dp_display.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
--- 
-With best wishes
-Dmitry
+on 4/5/2024 9:23 PM, Jan Kara wrote:
+> On Fri 05-04-24 13:05:59, Christian Brauner wrote:
+>> On Wed, Apr 03, 2024 at 11:47:17AM +0200, Jan Kara wrote:
+>>> On Tue 02-04-24 07:38:25, syzbot wrote:
+>>>> syzbot has found a reproducer for the following issue on:
+>>>>
+>>>> HEAD commit:    c0b832517f62 Add linux-next specific files for 20240402
+>>>> git tree:       linux-next
+>>>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=14af7dd9180000
+>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=afcaf46d374cec8c
+>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=7b219b86935220db6dd8
+>>>> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+>>>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1729f003180000
+>>>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17fa4341180000
+>>>>
+>>>> Downloadable assets:
+>>>> disk image: https://storage.googleapis.com/syzbot-assets/0d36ec76edc7/disk-c0b83251.raw.xz
+>>>> vmlinux: https://storage.googleapis.com/syzbot-assets/6f9bb4e37dd0/vmlinux-c0b83251.xz
+>>>> kernel image: https://storage.googleapis.com/syzbot-assets/2349287b14b7/bzImage-c0b83251.xz
+>>>> mounted in repro: https://storage.googleapis.com/syzbot-assets/9760c52a227c/mount_0.gz
+>>>>
+>>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>>>> Reported-by: syzbot+7b219b86935220db6dd8@syzkaller.appspotmail.com
+>>>>
+>>>> ==================================================================
+>>>> BUG: KASAN: slab-out-of-bounds in __lock_acquire+0x78/0x1fd0 kernel/locking/lockdep.c:5005
+>>>> Read of size 8 at addr ffff888020485fa8 by task kworker/u8:2/35
+>>>
+>>> Looks like the writeback cleanups are causing some use-after-free issues.
+>>> The code KASAN is complaining about is:
+>>>
+>>> 		/*
+>>> 		 * Nothing written. Wait for some inode to
+>>> 		 * become available for writeback. Otherwise
+>>> 		 * we'll just busyloop.
+>>> 		 */
+>>> 		trace_writeback_wait(wb, work);
+>>> 		inode = wb_inode(wb->b_more_io.prev);
+>>>>>>>> 		spin_lock(&inode->i_lock); <<<<<<
+>>> 		spin_unlock(&wb->list_lock);
+>>> 		/* This function drops i_lock... */
+>>> 		inode_sleep_on_writeback(inode);
+>>>
+>>> in wb_writeback(). Now looking at the changes indeed the commit
+>>> 167d6693deb ("fs/writeback: bail out if there is no more inodes for IO and
+>>> queued once") is buggy because it will result in trying to fetch 'inode'
+>>> from empty b_more_io list and thus we'll corrupt memory. I think instead of
+>>> modifying the condition:
+>>>
+>>> 		if (list_empty(&wb->b_more_io)) {
+>>>
+>>> we should do:
+>>>
+>>> -		if (progress) {
+>>> +		if (progress || !queued) {
+>>>                         spin_unlock(&wb->list_lock);
+>>>                         continue;
+>>>                 }
+>>>
+>>> Kemeng?
+>>
+>> Fwiw, I observed this on xfstest too the last few days and tracked it
+>> down to this series. Here's the splat I got in case it helps:
+> 
+> OK, since this is apparently causing more issues and Kemeng didn't reply
+> yet, here's a fix in the form of the patch. It has passed some basic
+> testing. Feel free to fold it into Kemeng's patch so that we don't keep
+> linux-next broken longer than necessary. Thanks!
+Sorry for the late reply as I was on vacation these days. Also sorry
+for the bug introduced. The change looks good to me. Thanks a lot
+for helping to fix this in time.
+
+Kemeng
+> 
+> 								Honza
+> 
+
 
