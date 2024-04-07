@@ -1,145 +1,117 @@
-Return-Path: <linux-kernel+bounces-134122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8B3F89ADE6
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:37:48 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28AE589ADE7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 03:42:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F6F428249B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 01:37:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42AD3B2238E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 01:42:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2718017F0;
-	Sun,  7 Apr 2024 01:37:39 +0000 (UTC)
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B950217F0;
+	Sun,  7 Apr 2024 01:42:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mT8W+NiI"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C464A3D;
-	Sun,  7 Apr 2024 01:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8618DA47;
+	Sun,  7 Apr 2024 01:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712453858; cv=none; b=EZflgd4QANDVUSfR9GQmSG7dhDeXq9AKfp4lBTo3sIvYVKFvjXSTSRVC0vMG8B4zX7pQeUaFVRyYQn7kS6aQgvg6/2NAep0YwHhWhUlG87/lmohi2Ex5JXnEfoaSTvlgkWLJOPQAHZNuBXeReulQbEXw52bBdTb8yz2xHF58Fug=
+	t=1712454151; cv=none; b=KzthdZwp4OkpLuopuFYbQkGnU+3sGAdAOSvhuA6sqnZ0IHSFq30o/Su6abgmL/AW4cW8G6XkisWCBeUWJIHr/N3FE5SNwkhXBzbO7T3akx0seOmpDX+dujfJBKpE8151YKt2T+8vbM46RvStZ1/0cqbMA8AV08k6Y71jMQPDRgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712453858; c=relaxed/simple;
-	bh=c1enYxmckCFSDF0gcBrMDou3Ryj6fP6EGhPtfOBUhiQ=;
-	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=PXbXWrV90rumcvl6pv4IosHo4CfWdlx+/8qlLz3SR5FBal/i223C5x7dBlk3qctq/wRsROrBOTiAwR2+VN5rITYvy0gwbZRZ01zEoo63azvTHPyTgOJh/fqoHVT27SbRDWTVDuS4RAa1Ov6mtmN76aQ3NfNemZ4RVKLOAODNvKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VBvt94KdbzNmxs;
-	Sun,  7 Apr 2024 09:35:13 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id 10403140158;
-	Sun,  7 Apr 2024 09:37:26 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 7 Apr 2024 09:37:25 +0800
-Subject: Re: [PATCH] jbd2: avoid mount failed when commit block is partial
- submitted
-To: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>
-References: <20240402090951.527619-1-yebin10@huawei.com>
- <20240402134240.5he4mxei3nvzolb3@quack3> <20240403033742.GE1189142@mit.edu>
- <20240403101122.rmffivvvf4a33qis@quack3>
-CC: <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-From: "yebin (H)" <yebin10@huawei.com>
-Message-ID: <6611F8D5.3030403@huawei.com>
-Date: Sun, 7 Apr 2024 09:37:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+	s=arc-20240116; t=1712454151; c=relaxed/simple;
+	bh=yFSQzAmdtxceEVqM1iibcEA9yqxEDnDRJgDtfWm/MmA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=aHOQWfO1oavz5RElJoVBnR1szIs4Ucia2asHXWn/HX+I3nrQwRcy/kduqNoJC+KYRzYsb8uGWF/nq4o7YuSK0bbFPuTq/TapbTHdCTobyM7m5lnQB+4ODo0/vVtaBCY7epGrTCXOtSWeByaS6+8PVrgrKX0k2hNFATLbiUX/JvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mT8W+NiI; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712454149; x=1743990149;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=yFSQzAmdtxceEVqM1iibcEA9yqxEDnDRJgDtfWm/MmA=;
+  b=mT8W+NiIEHBNMPppFFsgJBulkP64D49C2N2nk0DjYR99szTJcYzPfkVx
+   pEOEXylzt36wcSfIEipC9Z3tC2w8+Z+YjYu4aWayTP/NjI4FByfQTq2tf
+   i4NHySCauxppT2R8S+INDktkqXR+WDtsAMMjvdqywmliCmuSCfhbU2ctO
+   DEY2JIO0kde0oDLqG7jg+Ml5No47tIGIIiuKYF85DDl2c8r4FkHr8+Xk1
+   eMPG0skhThOrlc/AbD0EruZXQxNq7j4P4hHrHR5nU+jqlw3li9Z0j5typ
+   QjHc1Fubk5u6o0+h88e0Egrqy9gMIO8hDzP2zhtjW8NENHnt9OxUUFud1
+   Q==;
+X-CSE-ConnectionGUID: IKKBYyrfS/C5T7YQAv0OJA==
+X-CSE-MsgGUID: QqUZrg2CRq6u8Dn8ns3vew==
+X-IronPort-AV: E=McAfee;i="6600,9927,11036"; a="18479756"
+X-IronPort-AV: E=Sophos;i="6.07,184,1708416000"; 
+   d="scan'208";a="18479756"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2024 18:42:28 -0700
+X-CSE-ConnectionGUID: 9qd7h2htTBm6PyE3e/fKOw==
+X-CSE-MsgGUID: Vbb+W9IjSQCE+G8m21pY2w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,184,1708416000"; 
+   d="scan'208";a="42693410"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.124.236.140]) ([10.124.236.140])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Apr 2024 18:42:26 -0700
+Message-ID: <c7c91b24-c7d0-4d82-b2a6-a6e9ff070132@linux.intel.com>
+Date: Sun, 7 Apr 2024 09:42:23 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240403101122.rmffivvvf4a33qis@quack3>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 078/130] KVM: TDX: Implement TDX vcpu enter/exit path
+To: Sean Christopherson <seanjc@google.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+ linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+ Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+ Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+ chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <dbaa6b1a6c4ebb1400be5f7099b4b9e3b54431bb.1708933498.git.isaku.yamahata@intel.com>
+ <ZfSExlemFMKjBtZb@google.com>
+From: Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <ZfSExlemFMKjBtZb@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- canpemm500010.china.huawei.com (7.192.105.118)
 
 
 
-On 2024/4/3 18:11, Jan Kara wrote:
-> On Tue 02-04-24 23:37:42, Theodore Ts'o wrote:
->> On Tue, Apr 02, 2024 at 03:42:40PM +0200, Jan Kara wrote:
->>> On Tue 02-04-24 17:09:51, Ye Bin wrote:
->>>> We encountered a problem that the file system could not be mounted in
->>>> the power-off scenario. The analysis of the file system mirror shows that
->>>> only part of the data is written to the last commit block.
->>>> To solve above issue, if commit block checksum is incorrect, check the next
->>>> block if has valid magic and transaction ID. If next block hasn't valid
->>>> magic or transaction ID then just drop the last transaction ignore checksum
->>>> error. Theoretically, the transaction ID maybe occur loopback, which may cause
->>>> the mounting failure.
->>>>
->>>> Signed-off-by: Ye Bin <yebin10@huawei.com>
->>> So this is curious. The commit block data is fully within one sector and
->>> the expectation of the journaling is that either full sector or nothing is
->>> written. So what kind of storage were you using that it breaks these
->>> expectations?
->> I suppose if the physical sector size is 512 bytes, and the file
->> system block is 4k, I suppose it's possible that on a crash, that part
->> of the 4k commit block could be written.
-> I was thinking about that as well but the commit block looks like:
+On 3/16/2024 1:26 AM, Sean Christopherson wrote:
+> On Mon, Feb 26, 2024, isaku.yamahata@intel.com wrote:
+>> +	 */
+>> +	struct kvm_vcpu *vcpu = &tdx->vcpu;
+>> +
+>> +	guest_state_enter_irqoff();
+>> +
+>> +	/*
+>> +	 * TODO: optimization:
+>> +	 * - Eliminate copy between args and vcpu->arch.regs.
+>> +	 * - copyin/copyout registers only if (tdx->tdvmvall.regs_mask != 0)
+>> +	 *   which means TDG.VP.VMCALL.
+>> +	 */
+>> +	args = (struct tdx_module_args) {
+>> +		.rcx = tdx->tdvpr_pa,
+>> +#define REG(reg, REG)	.reg = vcpu->arch.regs[VCPU_REGS_ ## REG]
+> Organizing tdx_module_args's registers by volatile vs. non-volatile is asinine.
+> This code should not need to exist.
+
+Did you suggest to align the tdx_module_args with enum kvm_reg for GP 
+registers, so it can be done by a simple mem copy?
+
 >
-> truct commit_header {
->          __be32          h_magic;
->          __be32          h_blocktype;
->          __be32          h_sequence;
->          unsigned char   h_chksum_type;
->          unsigned char   h_chksum_size;
->          unsigned char   h_padding[2];
->          __be32          h_chksum[JBD2_CHECKSUM_BYTES];
->          __be64          h_commit_sec;
->          __be32          h_commit_nsec;
-> };
->
-> where JBD2_CHECKSUM_BYTES is 8. So all the data in the commit block
-> including the checksum is in the first 60 bytes. Hence I would be really
-> surprised if some storage can tear that...
-This issue has been encountered a few times in the context of eMMC 
-devices. The vendor
-has confirmed that only 512-byte atomicity can be ensured in the firmware.
-Although the valid data is only 60 bytes, the entire commit block is 
-used for calculating
-the checksum.
-jbd2_commit_block_csum_verify:
-..
-calculated = jbd2_chksum(j, j->j_csum_seed, buf, j->j_blocksize);
-..
->
-> Hence either Ye Bin is running on some really exotic storage or the storage
-> / CPU in fact flipped bits somewhere so that the checksum didn't match or
-> the commit block was in fact not written now but it was a leftover from
-> previous journal use and h_sequence happened to match. Very unlikely but
-> depending on how exactly they do their powerfail testing I can imagine it
-> would be possible with enough tries...
->
->> In *practice* though, this
->> is super rare.  That's because on many modern HDD's, the physical
->> sector size is 4k (because the ECC overhead is much lower), even if
->> the logical sector size is 512 byte (for Windows 98 compatibility).
->> And even on HDD's where the physical sector size is really 512 bytes,
->> the way the sectors are laid out in a serpentine fashion, it is
->> *highly* likely that 4k write won't get torn.
+>> +	WARN_ON_ONCE(!kvm_rebooting &&
+>> +		     (tdx->exit_reason.full & TDX_SW_ERROR) == TDX_SW_ERROR);
+>> +
+>> +	guest_state_exit_irqoff();
+>> +}
+>> +
 >>
->> And while this is *possible*, it's also possible that some kind of I/O
->> transfer error --- such as some bit flips which breaks the checksum on
->> the commit block, but also trashes the tid of the subsequent block,
->> such that your patch gets tricked into thinking that this is the
->> partial last commit, when in fact it's not the last commit, thus
->> causing the journal replay abort early.  If that's case, it's much
->> safer to force fsck to be run to detect any inconsistency that might
->> result.
-> Yeah, I agree in these cases of a corrupted journal it seems dangerous to
-> just try to continue without fsck based on some heuristics.
->
-> 								Honza
 
 
