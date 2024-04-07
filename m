@@ -1,222 +1,83 @@
-Return-Path: <linux-kernel+bounces-134510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134508-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEEFF89B25F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:50:25 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 562E389B25B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:50:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12DEE1C20924
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:50:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB1261F2147B
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:50:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC8E3B293;
-	Sun,  7 Apr 2024 13:49:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D3CA39AEB;
+	Sun,  7 Apr 2024 13:49:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dcp3aXHP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="XmxrPP5E";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="81qsvsI7"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 351913A268
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 13:49:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B6F38F9A;
+	Sun,  7 Apr 2024 13:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712497790; cv=none; b=cXo3t4WrQWqwUg0ZXZUhrvk1TOHY/Kbu4YXiLWnsImNM2vqFQps1nQJyMHNH5T4SFcs/NcKBHYlmHPcJv0cbzMyk6bgKE+3sWnUg1vtEZHAftzqHToSqkfWR0eeXO/EjZSNpi+VrARCWn2v4MGql16pbVZiymxANwdqaA+UDsxg=
+	t=1712497784; cv=none; b=BXG3jD/IqsmttrACwX+O7qJPOCodOUZn31h9G4VW/3jGOkioyPMhQ8xMt2VLYHZDNWbUA+CfdEOJ5NzbY2ToDlMR0OiDhTQ8FrIqbXJ3vLonXYze81y3RZ8OMDWIkfN6BbrhpDsTOQzNHkcj1/JoLmTEBEMPcjenQHz6dZfPAU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712497790; c=relaxed/simple;
-	bh=xcRpV3twoKsvi8UAsPruAGCIK2HXzx060lBI5tv8958=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YCbJgCB+kns8vZo+IU6VCgkigk6KYG1q86WONSeqJ2HU/+1XodUm26rotzhZXTqj0DzlRUqZVdXPHmLr6EyqEVoUb2O3gOIctLYrPOc0FkyHCFvPblLJ+wZOKX06U6rtzs72ICNjBjDnMvWm2qYd1QEYREkkfikkw/gfvFHpxZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dcp3aXHP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CA25C43390;
-	Sun,  7 Apr 2024 13:49:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712497789;
-	bh=xcRpV3twoKsvi8UAsPruAGCIK2HXzx060lBI5tv8958=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=dcp3aXHPrmJQTfW5fCZyWb476EwkNwP9UAs6wLa0UXpU4fJ19jT5q6SibOH+c3+EU
-	 mJQISCJmRiolg9IXMpQMaqeppYTvIogn/VfRI4wjHwgqY+GLEKNotNzytsje0PrnuT
-	 EdSZFkX/A4u0qlTkB9JKH2QJWsjG1cCH0jf9tBMWUZ4Szwzjj9T4bRsaTvjQ55XQR0
-	 /dHM0lZm83EHKX2GXKWNq1Ji9ivzgxzn+kAOLPeYpeWXCB8yvWvi4FlRH4HyctC/B3
-	 Q2AshRW22zDcFFONfV4SxXDf8CxMcUgXeUvvEgx1RJhMKmBt6iPIbjU3a2LmDcXwCb
-	 iTIaY/m8X1/9w==
-From: Chao Yu <chao@kernel.org>
-To: jaegeuk@kernel.org
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-kernel@vger.kernel.org,
-	Chao Yu <chao@kernel.org>
-Subject: [PATCH v2 2/2] f2fs: introduce written_map to indicate written datas
-Date: Sun,  7 Apr 2024 21:49:34 +0800
-Message-Id: <20240407134934.3635739-2-chao@kernel.org>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240407134934.3635739-1-chao@kernel.org>
-References: <20240407134934.3635739-1-chao@kernel.org>
+	s=arc-20240116; t=1712497784; c=relaxed/simple;
+	bh=v3i75iLJScUhKZfBYfcOQN24IW7bHaC626D7DjAAoPc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=EIfAMuKe/G2ktkvG6pCA4zNFzSmBdkwT8vbFQFJ0+0XFgr9536NOnYGzglJuXeKbc+q1O0T/C4gDR07uhxSjxKHzuNSEVb7tT7RGDXByxgOuXEdu6plxqFQCjXqK3j5yGaBIJlkVJRfmr+JtjOkV7F/PL/NMyFPURokVU9ZyssE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=XmxrPP5E; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=81qsvsI7; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1712497781;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=v3i75iLJScUhKZfBYfcOQN24IW7bHaC626D7DjAAoPc=;
+	b=XmxrPP5EwmxtS63LFefDo0n5JjMRFTZi4spv3XIcauRCiOCFMMzaiX6+tUaMyXw13vTrQS
+	bxu9V1M3vp0OcqDsc+IFxESOoeRZvlj14vSmHzXXl9UQABh6XnXS88Vz+40gnRMQ4ga7bt
+	MRLZB6orCIvdJBJaGGaJ5zSX/Rn9yGvZ7B1tuXIP7QPYDgL4XNGnmRMHwxX7pBmIpuSMHe
+	RAid6DZLf6tiVIkrN8SxxKdgcjFlwRAlqvTOTwAtQZAyO1m2lefCjedmjxnwpuuDonNBHq
+	puDytO5UWqsGzuwdHPr1wANuELTME95+CptzXB5sAJs9zMPTnyOi9W1bPdAhFw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1712497781;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=v3i75iLJScUhKZfBYfcOQN24IW7bHaC626D7DjAAoPc=;
+	b=81qsvsI7t3qDkcxG48dCw2FqgWztUfZyWdgvqVs/zGUukDyxP1s2vdd55phQQbVw4CNyG+
+	+EtKFN2wsieMjPBQ==
+To: Anna-Maria Behnsen <anna-maria@linutronix.de>, linux-kernel@vger.kernel.org
+Cc: "Rafael J . Wysocki" <rafael@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+ Len Brown <len.brown@intel.com>, Ulf Hansson <ulf.hansson@linaro.org>,
+ linux-pm@vger.kernel.org, Frederic Weisbecker <frederic@kernel.org>,
+ x86@kernel.org, Anna-Maria Behnsen <anna-maria@linutronix.de>, Mario
+ Limonciello <mario.limonciello@amd.com>, stable@kernel.org
+Subject: Re: [PATCH] PM: s2idle: Make sure CPUs will wakeup directly on resume
+In-Reply-To: <87jzlb8zov.ffs@tglx>
+References: <20240405083410.4896-1-anna-maria@linutronix.de>
+ <87jzlb8zov.ffs@tglx>
+Date: Sun, 07 Apr 2024 15:49:40 +0200
+Message-ID: <875xwt8eq3.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Currently, __exchange_data_block() will check checkpointed state of data,
-if it is not checkpointed, it will try to exchange blkaddrs directly in
-dnode.
+On Fri, Apr 05 2024 at 19:52, Thomas Gleixner wrote:
+> On Fri, Apr 05 2024 at 10:34, Anna-Maria Behnsen wrote:
+>> queued on those CPUs and should expire directly after resume, are
+>> handled. Also timer list timers which are remotely queued to one of those
+>> CPUs after resume will not result in a reporgramming IPI as the tick is
+>
+> s/reporgramming/reprogamming/
 
-However, after commit 899fee36fac0 ("f2fs: fix to avoid data corruption
-by forbidding SSR overwrite"), in order to disallow SSR allocator to
-reuse all written data/node type blocks, all written blocks were set as
-checkpointed.
-
-In order to reenable metadata exchange functionality, let's introduce
-written_map to indicate all written blocks including checkpointed one,
-or newly written and invalidated one, and use it for SSR allocation,
-and then ckpt_valid_bitmap can indicate real checkpointed status, and
-we can use it correctly in __exchange_data_block().
-
-[testcase]
-xfs_io -f /mnt/f2fs/src -c "pwrite 0 2m"
-xfs_io -f /mnt/f2fs/dst -c "pwrite 0 2m"
-xfs_io /mnt/f2fs/src -c "fiemap -v"
-xfs_io /mnt/f2fs/dst -c "fiemap -v"
-f2fs_io move_range /mnt/f2fs/src /mnt/f2fs/dst 0 0 2097152
-xfs_io /mnt/f2fs/src -c "fiemap -v"
-xfs_io /mnt/f2fs/dst -c "fiemap -v"
-
-[before]
-/mnt/f2fs/src:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..4095]:       8445952..8450047  4096 0x1001
-/mnt/f2fs/dst:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..4095]:       143360..147455    4096 0x1001
-
-/mnt/f2fs/src:
-/mnt/f2fs/dst:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..4095]:       4284416..4288511  4096 0x1001
-
-[after]
-/mnt/f2fs/src:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..4095]:       147456..151551    4096 0x1001
-/mnt/f2fs/dst:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..4095]:       151552..155647    4096 0x1001
-
-/mnt/f2fs/src:
-/mnt/f2fs/dst:
- EXT: FILE-OFFSET      BLOCK-RANGE      TOTAL FLAGS
-   0: [0..4095]:       147456..151551    4096 0x1001
-
-Signed-off-by: Chao Yu <chao@kernel.org>
----
-v2:
-- rebase to last dev-test branch
- fs/f2fs/segment.c | 24 ++++++++++++------------
- fs/f2fs/segment.h |  6 ++++++
- 2 files changed, 18 insertions(+), 12 deletions(-)
-
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 9039d60c989d..86436033c730 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -2456,13 +2456,12 @@ static void update_sit_entry(struct f2fs_sb_info *sbi, block_t blkaddr, int del)
- 			sbi->discard_blks--;
- 
- 		/*
--		 * SSR should never reuse block which is checkpointed
--		 * or newly invalidated.
-+		 * if CP disabling is enable, it allows SSR to reuse newly
-+		 * invalidated block, otherwise forbidding it to pretect fsyned
-+		 * datas.
- 		 */
--		if (!is_sbi_flag_set(sbi, SBI_CP_DISABLED)) {
--			if (!f2fs_test_and_set_bit(offset, se->ckpt_valid_map))
--				se->ckpt_valid_blocks++;
--		}
-+		if (!is_sbi_flag_set(sbi, SBI_CP_DISABLED))
-+			f2fs_set_bit(offset, se->written_map);
- 	} else {
- 		exist = f2fs_test_and_clear_bit(offset, se->cur_valid_map);
- #ifdef CONFIG_F2FS_CHECK_FS
-@@ -2498,8 +2497,6 @@ static void update_sit_entry(struct f2fs_sb_info *sbi, block_t blkaddr, int del)
- 			f2fs_test_and_clear_bit(offset, se->discard_map))
- 			sbi->discard_blks++;
- 	}
--	if (!f2fs_test_bit(offset, se->ckpt_valid_map))
--		se->ckpt_valid_blocks += del;
- 
- 	__mark_sit_entry_dirty(sbi, segno);
- 
-@@ -2847,11 +2844,11 @@ static void __get_segment_bitmap(struct f2fs_sb_info *sbi,
- 	struct seg_entry *se = get_seg_entry(sbi, segno);
- 	int entries = SIT_VBLOCK_MAP_SIZE / sizeof(unsigned long);
- 	unsigned long *ckpt_map = (unsigned long *)se->ckpt_valid_map;
--	unsigned long *cur_map = (unsigned long *)se->cur_valid_map;
-+	unsigned long *written_map = (unsigned long *)se->written_map;
- 	int i;
- 
- 	for (i = 0; i < entries; i++)
--		target_map[i] = ckpt_map[i] | cur_map[i];
-+		target_map[i] = ckpt_map[i] | written_map[i];
- }
- 
- static int __next_free_blkoff(struct f2fs_sb_info *sbi, unsigned long *bitmap,
-@@ -4510,9 +4507,9 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
- 		return -ENOMEM;
- 
- #ifdef CONFIG_F2FS_CHECK_FS
--	bitmap_size = MAIN_SEGS(sbi) * SIT_VBLOCK_MAP_SIZE * (3 + discard_map);
-+	bitmap_size = MAIN_SEGS(sbi) * SIT_VBLOCK_MAP_SIZE * (4 + discard_map);
- #else
--	bitmap_size = MAIN_SEGS(sbi) * SIT_VBLOCK_MAP_SIZE * (2 + discard_map);
-+	bitmap_size = MAIN_SEGS(sbi) * SIT_VBLOCK_MAP_SIZE * (3 + discard_map);
- #endif
- 	sit_i->bitmap = f2fs_kvzalloc(sbi, bitmap_size, GFP_KERNEL);
- 	if (!sit_i->bitmap)
-@@ -4527,6 +4524,9 @@ static int build_sit_info(struct f2fs_sb_info *sbi)
- 		sit_i->sentries[start].ckpt_valid_map = bitmap;
- 		bitmap += SIT_VBLOCK_MAP_SIZE;
- 
-+		sit_i->sentries[start].written_map = bitmap;
-+		bitmap += SIT_VBLOCK_MAP_SIZE;
-+
- #ifdef CONFIG_F2FS_CHECK_FS
- 		sit_i->sentries[start].cur_valid_map_mir = bitmap;
- 		bitmap += SIT_VBLOCK_MAP_SIZE;
-diff --git a/fs/f2fs/segment.h b/fs/f2fs/segment.h
-index 10f3e44f036f..38385c371f0f 100644
---- a/fs/f2fs/segment.h
-+++ b/fs/f2fs/segment.h
-@@ -204,6 +204,10 @@ struct seg_entry {
- 	 * checkpoint pack. This information is used by the SSR mode.
- 	 */
- 	unsigned char *ckpt_valid_map;	/* validity bitmap of blocks last cp */
-+	unsigned char *written_map;	/*
-+					 * blocks were written, including newly
-+					 * invalidated data
-+					 */
- 	unsigned char *discard_map;
- 	unsigned long long mtime;	/* modification time of the segment */
- };
-@@ -369,6 +373,7 @@ static inline void seg_info_from_raw_sit(struct seg_entry *se,
- 	se->ckpt_valid_blocks = GET_SIT_VBLOCKS(rs);
- 	memcpy(se->cur_valid_map, rs->valid_map, SIT_VBLOCK_MAP_SIZE);
- 	memcpy(se->ckpt_valid_map, rs->valid_map, SIT_VBLOCK_MAP_SIZE);
-+	memcpy(se->written_map, rs->valid_map, SIT_VBLOCK_MAP_SIZE);
- #ifdef CONFIG_F2FS_CHECK_FS
- 	memcpy(se->cur_valid_map_mir, rs->valid_map, SIT_VBLOCK_MAP_SIZE);
- #endif
-@@ -411,6 +416,7 @@ static inline void seg_info_to_raw_sit(struct seg_entry *se,
- 	__seg_info_to_raw_sit(se, rs);
- 
- 	memcpy(se->ckpt_valid_map, rs->valid_map, SIT_VBLOCK_MAP_SIZE);
-+	memcpy(se->written_map, rs->valid_map, SIT_VBLOCK_MAP_SIZE);
- 	se->ckpt_valid_blocks = se->valid_blocks;
- }
- 
--- 
-2.40.1
-
+Haha. I can't spell either. reprogramming obviously.
 
