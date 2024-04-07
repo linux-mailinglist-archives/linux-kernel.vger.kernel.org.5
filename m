@@ -1,169 +1,244 @@
-Return-Path: <linux-kernel+bounces-134194-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 897B889AEDD
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 08:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6410B89AEDC
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 08:31:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6165B1C21DFA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 06:31:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 86CE91C21CD2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 06:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACBB310A3D;
-	Sun,  7 Apr 2024 06:31:25 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180E38F72;
+	Sun,  7 Apr 2024 06:31:23 +0000 (UTC)
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC7A463B8
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 06:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C9A1C0DF9;
+	Sun,  7 Apr 2024 06:31:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712471485; cv=none; b=uiPZoOEEEcOj68IJ1SZbiPBZKz63o6ajlNiUk9SSSumviVSP1MfJXrFRe4amqq5OwQEVdAxgF0aIiMhwScEydCPwxUIHIbvIKXL/Z11hw2RDkONIniPwATIE/qHzB+dLXI8LV5SVlFLEAFJT56I0ioUiNfCzM3kGRViJZLAXAd4=
+	t=1712471482; cv=none; b=JQ8qNmz0rmtQmH38vJ/CX7RDun/nvU09qLTGgcZch6b2LRZjIHtvWH+NmEMiXF4AaxkJV5/k37F6wB1nXMyMhjj7jNqo6QDGhXFJMGnINDhRa3ec07VnlbJYgzy9ASCFgzl3vgMJ6m6JKG3YHmXMeleOJDI3j32MjUMVcEvGk1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712471485; c=relaxed/simple;
-	bh=HTesZXcUjNNyvUlnldogO3iPcKdf0x2QsJL2/7qoPFM=;
-	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=T5sqLvHEtmTgOc9wMY74J/UmfGAr75ZWNd1+H9PdppkMN+pBsHjPTGzNdotHC7WzlympCLiDLoPpSRYat+aglgVaPcoZo5A56MYitRrQ8ri4zdd62UIv/l2EFemcFXBtV9C4yWU2M3FkOeiyFf+qR5C4DDROPnPTYPntF+krOl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VC2NZ1KWrz1h5tn;
-	Sun,  7 Apr 2024 14:28:30 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 190871A0172;
-	Sun,  7 Apr 2024 14:31:19 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 7 Apr 2024 14:31:18 +0800
-Subject: Re: [syzbot] [mtd?] WARNING: zero-size vmalloc in
- ubi_read_volume_table
-To: syzbot <syzbot+f516089d7815b10197c9@syzkaller.appspotmail.com>,
-	<linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
-	<miquel.raynal@bootlin.com>, <richard@nod.at>,
-	<syzkaller-bugs@googlegroups.com>, <vigneshr@ti.com>
-References: <000000000000a7f84306150bc9d5@google.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <7badad88-406f-c76b-81d1-acf56b199d5a@huawei.com>
-Date: Sun, 7 Apr 2024 14:31:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1712471482; c=relaxed/simple;
+	bh=3JWEWAeIVJ459wbNNlX3ilFIm7zaw0kMCtuDrp3HQqs=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=YCZhd72hpBq4DsdkRNyMSfRg9Ecx5qYU6Xfg2KNlZOAPqXi+bjmcNfH5hx+mg1a/pmWkEFgOUmqq8PpFuvWjUxWovHitD1chJePPDfjyan6f70tAitQ/9XMV7SgwCLLt1XDkdwbH9pgItDhwNfbJTHFTSPfFzaaGrqcxX72UqA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VC2Rc6Gshz4f3kp7;
+	Sun,  7 Apr 2024 14:31:08 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 8FE6E1A0175;
+	Sun,  7 Apr 2024 14:31:15 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP1 (Coremail) with SMTP id cCh0CgDXpg+yPRJmqZJGJQ--.52650S2;
+	Sun, 07 Apr 2024 14:31:15 +0800 (CST)
+Subject: Re: [PATCH 3/5] ext4: call ext4_mb_mark_free_simple in mb_mark_used
+ to clear bits
+To: Jan Kara <jack@suse.cz>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com, ritesh.list@gmail.com
+References: <20240326213823.528302-1-shikemeng@huaweicloud.com>
+ <20240326213823.528302-4-shikemeng@huaweicloud.com>
+ <20240404141619.xrgtjhtpcae3kqk6@quack3>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <c213a5ca-87c9-76ae-2c0d-a80e13491ac1@huaweicloud.com>
+Date: Sun, 7 Apr 2024 14:31:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <000000000000a7f84306150bc9d5@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+In-Reply-To: <20240404141619.xrgtjhtpcae3kqk6@quack3>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgDXpg+yPRJmqZJGJQ--.52650S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3AF1ruw18tFW3Aw4xtryUtrb_yoW7uw48pF
+	W2gFWfGr4vqryv9F4DWw1jq34xtw4xtFW7CryrG3W5JwnxAr9a9r48Kry5Z3WkZrs3CryI
+	yF4Uu398Grs7KFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-在 2024/4/2 0:50, syzbot 写道:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-> git tree:       upstream
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=10223ae5180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=aef2a55903e5791c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=f516089d7815b10197c9
-> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13668b21180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10a6e21d180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/089e25869df5/disk-fe46a7dd.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/423b1787914f/vmlinux-fe46a7dd.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/4c043e30c07d/bzImage-fe46a7dd.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+f516089d7815b10197c9@syzkaller.appspotmail.com
-> 
-> ubi0: scanning is finished
-> ubi0: empty MTD device detected
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 5062 at mm/vmalloc.c:3319 __vmalloc_node_range+0x1065/0x1540 mm/vmalloc.c:3319
-> Modules linked in:
-> CPU: 0 PID: 5062 Comm: syz-executor167 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-> RIP: 0010:__vmalloc_node_range+0x1065/0x1540 mm/vmalloc.c:3319
-> Code: 48 8b 7d 08 e8 bc db ff ff 48 39 c5 0f 85 f3 02 00 00 e8 5e 9e b2 ff 48 89 ef e8 26 8f 02 00 e9 c2 f9 ff ff e8 4c 9e b2 ff 90 <0f> 0b 90 31 db e8 41 9e b2 ff 48 b8 00 00 00 00 00 fc ff df 4d 8d
-> RSP: 0018:ffffc900033df918 EFLAGS: 00010293
-> RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffff81da4ac2
-> RDX: ffff88801976da00 RSI: ffffffff81da5a64 RDI: 0000000000000007
-> RBP: ffffffff85f10bf9 R08: 0000000000000007 R09: 0000000000000000
-> R10: 0000000000000000 R11: ffffffff8ae00126 R12: 0000000000000000
-> R13: 1ffff9200067bf3e R14: 0000000000000000 R15: ffff88802ef1a600
-> FS:  000055556b89e380(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 000000000045e620 CR3: 0000000022954000 CR4: 00000000003506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->   <TASK>
->   __vmalloc_node mm/vmalloc.c:3457 [inline]
->   vzalloc+0x6b/0x90 mm/vmalloc.c:3530
->   create_empty_lvol drivers/mtd/ubi/vtbl.c:490 [inline]
->   ubi_read_volume_table+0x639/0x2a30 drivers/mtd/ubi/vtbl.c:812
->   ubi_attach+0x1a2f/0x4af0 drivers/mtd/ubi/attach.c:1601
->   ubi_attach_mtd_dev+0x1659/0x3950 drivers/mtd/ubi/build.c:1000
->   ctrl_cdev_ioctl+0x339/0x3d0 drivers/mtd/ubi/cdev.c:1043
->   vfs_ioctl fs/ioctl.c:51 [inline]
->   __do_sys_ioctl fs/ioctl.c:904 [inline]
->   __se_sys_ioctl fs/ioctl.c:890 [inline]
->   __x64_sys_ioctl+0x193/0x220 fs/ioctl.c:890
->   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
->   do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
->   entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> RIP: 0033:0x7fbab2531369
-> Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-> RSP: 002b:00007ffcb56bd0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-> RAX: ffffffffffffffda RBX: 00007ffcb56bd298 RCX: 00007fbab2531369
-> RDX: 0000000020000504 RSI: 0000000040186f40 RDI: 0000000000000003
-> RBP: 00007fbab25a4610 R08: 0000000000000000 R09: 00007ffcb56bd298
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-> R13: 00007ffcb56bd288 R14: 0000000000000001 R15: 0000000000000001
->   </TASK>
-> 
-> 
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> #syz test: git://repo/address.git branch-or-commit-hash
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite report's subsystems, reply with:
-> #syz set subsystems: new-subsystem
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> #syz undup
-> .
-> 
 
-It's weird, commit fe46a7dd189e2("Merge tag 'sound-6.9-rc1' of ..") is 
-ahead of commit 68a24aba7c593eaf("ubi: Check for too small LEB size in 
-VTBL code") according to 'git log', but 68a24aba7c593eaf("ubi: Check for 
-too small LEB size in VTBL code") is not applied after reseting to 
-fe46a7dd189e2("Merge tag 'sound-6.9-rc1' of ..").
-Whatever, the problem has been fixed by 68a24aba7c593eaf("ubi: Check for 
-too small LEB size in VTBL code").
+
+on 4/4/2024 10:16 PM, Jan Kara wrote:
+> On Wed 27-03-24 05:38:21, Kemeng Shi wrote:
+>> Function ext4_mb_mark_free_simple could search order for bit clearing in
+>> O(1) cost while mb_mark_used will search order in O(distance from chunk
+>> order to target order) and introduce unnecessary bit flips.
+> 
+> Let me see if I understand you right. I agree that mb_mark_used() is
+> actually O(log(bitmap_size)^2) because each call to
+> mb_find_order_for_block() is O(log(bitmap_size)). Do I understand your
+> concern right?
+Sorry for the confusion. Actually it's times to do bit clear after
+mb_find_order_for_block to mark partial part of block chunk free.
+
+In mb_mark_used, we will find free chunk and mark it in use. For chunk
+in mid of passed range, we could simply mark whole chunk in use. For chunk
+in end of range, we need to mark partial part of chunk inuse. To only mark
+partial part of chunk inuse, we firstly mark whole chunk inuse and then
+do serveral times of bit clear work by "mb_find_buddy(...);
+mb_clear_bit(...); ..." mark partial part of chunk free. The times to call
+"mb_find_buddy(); ..." is [order of free chunk] - [last order to free partial
+part of chunk], which is what I mean "distance from chunk order to target order"
+in changelog.
+
+The repeat "mb_find_buddy(...); ..." aims to mark continuous range blocks
+free which is excat the work ext4_mb_mark_free_simple has done and
+ext4_mb_mark_free_simple does in a more effective way than code to free
+blocks in mb_mark_used. So we can simply find the range need to set free in
+chunk at end of range and call ext4_mb_mark_free_simple to use the effective
+and exsiting code to free a continuous range of blocks.
+
+> 
+>> Consider we have 4 continuous free bits and going to mark bit 0-2 inuse.
+>> initial state of buddy bitmap:
+>> order 2 |           0           |
+>> order 1 |     1     |     1     |
+>> order 0 |  1  |  1  |  1  |  1  |
+>>
+>> mark whole chunk inuse
+>> order 2 |           1           |
+>> order 1 |     1     |     1     |
+>> order 0 |  1  |  1  |  1  |  1  |
+>>
+>> split chunk to order 1
+>> order 2 |           1           |
+>> order 1 |     0     |     0     |
+>> order 0 |  1  |  1  |  1  |  1  |
+>>
+>> set the first bit in order 1 to mark bit 0-1 inuse
+>> set the second bit in order 1 for split
+>> order 2 |           1           |
+>> order 1 |     1     |     1     |
+>> order 0 |  1  |  1  |  1  |  1  |
+>>
+>> step 3: split the second bit in order 1 to order 0
+>> order 2 |           1           |
+>> order 1 |     1     |     1     |
+>> order 0 |  1  |  1  |  0  |  0  |
+>>
+>> step 4: set the third bit in order 0 to mark bit 2 inuse.
+>> order 2 |           1           |
+>> order 1 |     1     |     1     |
+>> order 0 |  1  |  1  |  1  |  0  |
+>> There are two unnecessary splits and three unnecessary bit flips.
+>>
+>> With ext4_mb_mark_free_simple, we will clear the 4th bit in order 0
+>> with O(1) search and no extra bit flip.
+> 
+> However this looks like a bit ugly way to speed it up, I'm not even sure
+> this would result in practical speedups and asymptotically, I think the
+> complexity is still O(log^2). Also the extra bit flips are not really a
+> concern I'd say as they are in the same cacheline anyway. The unnecessary
+> overhead (if at all measurable) comes from the O(log^2) behavior. And there
+> I agree we could do better by not starting the block order search from 1 in
+> all the cases - we know the found order will be first increasing for some
+> time and then decreasing again so with some effort we could amortize all
+> block order searches to O(log) time. But it makes the code more complex and
+> I'm not conviced this is all worth it. So if you want to go this direction,
+> then please provide (micro-)benchmarks from real hardware (not just
+> theoretical cost estimations) showing the benefit. Thanks.
+> 
+> 								Honza
+> 
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index a61fc52956b2..62d468379722 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -2040,13 +2040,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>>  	int ord;
+>>  	int mlen = 0;
+>>  	int max = 0;
+>> -	int cur;
+>>  	int start = ex->fe_start;
+>>  	int len = ex->fe_len;
+>>  	unsigned ret = 0;
+>>  	int len0 = len;
+>>  	void *buddy;
+>> -	bool split = false;
+>> +	int ord_start, ord_end;
+>>  
+>>  	BUG_ON(start + len > (e4b->bd_sb->s_blocksize << 3));
+>>  	BUG_ON(e4b->bd_group != ex->fe_group);
+>> @@ -2071,16 +2070,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>>  
+>>  	/* let's maintain buddy itself */
+>>  	while (len) {
+>> -		if (!split)
+>> -			ord = mb_find_order_for_block(e4b, start);
+>> +		ord = mb_find_order_for_block(e4b, start);
+>>  
+>>  		if (((start >> ord) << ord) == start && len >= (1 << ord)) {
+>>  			/* the whole chunk may be allocated at once! */
+>>  			mlen = 1 << ord;
+>> -			if (!split)
+>> -				buddy = mb_find_buddy(e4b, ord, &max);
+>> -			else
+>> -				split = false;
+>> +			buddy = mb_find_buddy(e4b, ord, &max);
+>>  			BUG_ON((start >> ord) >= max);
+>>  			mb_set_bit(start >> ord, buddy);
+>>  			e4b->bd_info->bb_counters[ord]--;
+>> @@ -2094,20 +2089,28 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>>  		if (ret == 0)
+>>  			ret = len | (ord << 16);
+>>  
+>> -		/* we have to split large buddy */
+>>  		BUG_ON(ord <= 0);
+>>  		buddy = mb_find_buddy(e4b, ord, &max);
+>>  		mb_set_bit(start >> ord, buddy);
+>>  		e4b->bd_info->bb_counters[ord]--;
+>>  
+>> -		ord--;
+>> -		cur = (start >> ord) & ~1U;
+>> -		buddy = mb_find_buddy(e4b, ord, &max);
+>> -		mb_clear_bit(cur, buddy);
+>> -		mb_clear_bit(cur + 1, buddy);
+>> -		e4b->bd_info->bb_counters[ord]++;
+>> -		e4b->bd_info->bb_counters[ord]++;
+>> -		split = true;
+>> +		ord_start = (start >> ord) << ord;
+>> +		ord_end = ord_start + (1 << ord);
+>> +		if (start > ord_start)
+>> +			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
+>> +						 ord_start, start - ord_start,
+>> +						 e4b->bd_info);
+>> +
+>> +		if (start + len < ord_end) {
+>> +			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
+>> +						 start + len,
+>> +						 ord_end - (start + len),
+>> +						 e4b->bd_info);
+>> +			break;
+>> +		}
+>> +
+>> +		len = start + len - ord_end;
+>> +		start = ord_end;
+>>  	}
+>>  	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
+>>  
+>> -- 
+>> 2.30.0
+>>
 
 
