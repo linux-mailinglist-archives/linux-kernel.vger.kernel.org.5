@@ -1,153 +1,147 @@
-Return-Path: <linux-kernel+bounces-134619-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134620-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A756189B3BD
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 21:09:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25E1E89B3C0
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 21:11:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CCA01F211B0
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 19:09:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 129581C21490
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 19:11:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621DD3D0C2;
-	Sun,  7 Apr 2024 19:09:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC463D0AF;
+	Sun,  7 Apr 2024 19:10:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lX2c2muy"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="twdFLsYO"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 870533E46D
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 19:09:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 464303D0AD
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 19:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712516969; cv=none; b=T+5uYcBYEWEU3QHAfczohOa9QIntv+uzYSEka9y5cSd/XoHyc3oT6E1uP2WRRXk2D2yhDoA9oCUa17wNQ4ZUw3lBms5xrNsejQ7rm+c+fXsrFC+IHJg7SkgmPHulC+dftLeqnXS5l4ldrlEo47gwT4acb6jgFrk2L2Ch4JpAUrc=
+	t=1712517055; cv=none; b=Yaabbp84tUlA58BQZOrxH5tCqexmldZ7jlucOjHbWTzC7vLFhG5WD+Kmnec+slaG/3Hzzbmb8Ma+fXq88zHUeonVTd+mcEflbJO5n/ogdgok2+P0BGUz6fnZV28ABUZScWmp5ULKZ1KrsUSd0PZLPNCdeE+YNctz/L+O/Jx9b8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712516969; c=relaxed/simple;
-	bh=m92H+RqfQ9mb3vbd1IC/3x+9MfBepslHSeyETYln7fk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TbyI83Axark7nVJosGX9fQ6kussp+5ileKj5XhJqpmDtYRVbZMyiITIVIAwGZNEmdIoLcZiEaRafOhzLqiLzNcoheHo8OoE9llL836P+6WsKfbvi4fL248KPakCh4vvSupZi6UVeGWLebl/j6avjJihecaP0qFjnidl7/fjHAQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lX2c2muy; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712516967; x=1744052967;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=m92H+RqfQ9mb3vbd1IC/3x+9MfBepslHSeyETYln7fk=;
-  b=lX2c2muyADub6meOqwOvoxOV5a9x16m0wyUhJYXve1P8uBW8dmq40PvW
-   oDm0SzPl7Do+CRdZ3KTOU+/Xrb4dEqzBjha0cb7c2oO0xjBHQ5iKvKXpx
-   giqjJOigoxANy/s+R3IXipF8XC5mh7dv2IfPMI4jtS/gGE3+wgb1xL2PU
-   ObCdKbor0GGOb0Z2OIpviKiF+kkAoYIQXSWAiR1VKTiDupvKzr/sdC5Y5
-   YKzjU6l5HgX77zj9zmULzR2xutI89rv+ptifOhiq+v9fM4cuB1c3eD0b6
-   CBMMXrp04LmNO0Ce7k70H+IK2HgYdydIslbmMkKcvWFPBuRhsgTotEkqE
-   A==;
-X-CSE-ConnectionGUID: eo4ANJR4R7+OGz1yO7vsnA==
-X-CSE-MsgGUID: 3g0a83I1SMCd70KY8HyTWg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="7696569"
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="7696569"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 12:09:26 -0700
-X-CSE-ConnectionGUID: t+GayMmgS4qRNwRIJpmK7w==
-X-CSE-MsgGUID: QnGy3/ugQraVpknPRD9rtQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="19539680"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 07 Apr 2024 12:09:24 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rtXtJ-0004YU-0m;
-	Sun, 07 Apr 2024 19:09:21 +0000
-Date: Mon, 8 Apr 2024 03:09:20 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Peter Zijlstra <peterz@infradead.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH 1/5] sched: Split out kernel/sched/syscalls.c from
- kernel/sched/core.c
-Message-ID: <202404080226.2qQ925j2-lkp@intel.com>
-References: <20240407084319.1462211-2-mingo@kernel.org>
+	s=arc-20240116; t=1712517055; c=relaxed/simple;
+	bh=70HHBEd6cxrXlLkgbwjfvu3LYrWt/mT4YkQDDZ2MPi0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HKO+uU1sg1ZjopsIBD7QWydAENv2Zvhwf33210yTAZiwv2pac52A3u6zongRSlLr+fnFhbzQ3XF/1+IK/oupqNZ1eVDGFVFnxLWniSN23yfB6M/+bB+AWQYG5QbQf4J7vrIj0Bus83u1f1XF0KIEXzKkImYO6Osz5IaeZWhKeuc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=twdFLsYO; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1e42a6158d5so14235ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 12:10:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712517053; x=1713121853; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=x6EUWLXyMd/QrPrA543Vnpb+tkAZZfWHn9rSEQeDI00=;
+        b=twdFLsYOYbDEG5VMd/NJt3yra0CScuu6rLvDlvzD0/UcM3ccsSLLWrFRme5S+Qw4tc
+         4AY8PNP5cS4iwCjKeWSUZvUbK4MwXP6J37sY0+2ec0UvZFPji/4xxe/VoNNkX6mhwJLC
+         hu1+sVaI9v8ro30Kh9TSdyJCvVyrAnB4tSZd6oDpmHx+P1UgL64ssFvTGjV6VdDe3Bwl
+         NIIrwkY261Swzjqh5E3Jxh64m+RJzck+Y3HdCqlFgX+7BqC7cVE8eB5tnujEwkgKkqEG
+         wOJ+UEfcVumZZ8F5KdDvPayNoa3ekqecmz9NsZiJeQ4n/MsY3l99qQ8MMohBqtBzuUby
+         QHfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712517053; x=1713121853;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=x6EUWLXyMd/QrPrA543Vnpb+tkAZZfWHn9rSEQeDI00=;
+        b=LB8t//+8dgM7uAU2H6dVFgkcZuvIVyzH71PASSwTuR/zehfBSYac8RdMhdfCLixR78
+         OapGKjxqB78EsWmNmR8tZ/8alDj8WmU2uqW87IGjNGZkWEt4wrZo6X8vZ2E8lyE/m7Jk
+         ZNBB4d3Nl7BTa1kG+BI2ZrQsWRhEe65nmY+dVNHoTNm15qz46HGs7+YaimbJk/tyYAvM
+         ZSPWia26COJOopdfhunx46uIIYCLF835lH8q2Do8Igr+hD0R+/yJ/Lmw33Am9dZYCmUk
+         AapdWuamapWXNf65xtMZdHU+ZPQerWcfBnU4se7KzYLgAhCwn2qrKvg+fSz84CrM4Us2
+         R9pA==
+X-Forwarded-Encrypted: i=1; AJvYcCW/i7s7LL7zU88SDbVmgTpCipMJMuh9RETNOm3d06rtlikryGqjGe67GL51MlRv0za8PEEhPaf6Iu9yDndATqriSErBkupU5LiOxvRd
+X-Gm-Message-State: AOJu0YzpVuMmKmmVo2dzd7MB1L0qC0nEgckf5KTWJbT/B6OaiI31a1Rh
+	y98SM/PgDHCdSkpwXHlyVUjcBOtycuifs09Kk7PgAFX/2mhy7FLTvtUH+VpCQvAbclMDiuVixEf
+	NkW3unHZIbdu2ima/mVLPPke0nH4LZZPhXA56
+X-Google-Smtp-Source: AGHT+IF3K6r9xbBJkilZy6HGKb6dlLXRf6FqatUAZbCIWOQ+wDqVm5LXVF61yEKWVnLToUGV3EtmibzNbcvolpkp1/g=
+X-Received: by 2002:a17:903:32c9:b0:1e3:c1a9:ed7e with SMTP id
+ i9-20020a17090332c900b001e3c1a9ed7emr176673plr.25.1712517053266; Sun, 07 Apr
+ 2024 12:10:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240407084319.1462211-2-mingo@kernel.org>
+References: <20240406164727.577914-1-visitorckw@gmail.com> <20240406164727.577914-10-visitorckw@gmail.com>
+In-Reply-To: <20240406164727.577914-10-visitorckw@gmail.com>
+From: Ian Rogers <irogers@google.com>
+Date: Sun, 7 Apr 2024 12:10:42 -0700
+Message-ID: <CAP-5=fWb3eNe3mufRJjPAc=jcHFiHYpPqLuK2H8YiijHu0rLZw@mail.gmail.com>
+Subject: Re: [PATCH v3 09/17] lib min_heap: Add min_heap_sift_up()
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
+	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
+	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
+	alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, 
+	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, dm-devel@lists.linux.dev, 
+	linux-bcachefs@vger.kernel.org, linux-perf-users@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Ingo,
+On Sat, Apr 6, 2024 at 9:48=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.com>=
+ wrote:
+>
+> Add min_heap_sift_up() to sift up the element at index 'idx' in the
+> heap.
+>
+> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
 
-kernel test robot noticed the following build warnings:
+Reviewed-by: Ian Rogers <irogers@google.com>
 
-[auto build test WARNING on tip/sched/core]
-[also build test WARNING on linux/master linus/master peterz-queue/sched/core v6.9-rc2 next-20240405]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Thanks,
+Ian
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ingo-Molnar/sched-Split-out-kernel-sched-syscalls-c-from-kernel-sched-core-c/20240407-164646
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/20240407084319.1462211-2-mingo%40kernel.org
-patch subject: [PATCH 1/5] sched: Split out kernel/sched/syscalls.c from kernel/sched/core.c
-config: i386-randconfig-061-20240408 (https://download.01.org/0day-ci/archive/20240408/202404080226.2qQ925j2-lkp@intel.com/config)
-compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240408/202404080226.2qQ925j2-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404080226.2qQ925j2-lkp@intel.com/
-
-sparse warnings: (new ones prefixed by >>)
->> kernel/sched/syscalls.c:197:22: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/syscalls.c:197:22: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/syscalls.c:197:22: sparse:    struct task_struct *
-   kernel/sched/syscalls.c: note: in included file:
-   kernel/sched/sched.h:2172:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2172:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2172:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2344:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2344:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2344:9: sparse:    struct task_struct *
-   kernel/sched/sched.h:2172:25: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2172:25: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2172:25: sparse:    struct task_struct *
-   kernel/sched/sched.h:2344:9: sparse: sparse: incompatible types in comparison expression (different address spaces):
-   kernel/sched/sched.h:2344:9: sparse:    struct task_struct [noderef] __rcu *
-   kernel/sched/sched.h:2344:9: sparse:    struct task_struct *
-   kernel/sched/syscalls.c:1228:5: sparse: sparse: context imbalance in 'dl_task_check_affinity' - wrong count at exit
-   kernel/sched/syscalls.c:1331:9: sparse: sparse: context imbalance in 'sched_setaffinity' - different lock contexts for basic block
-   kernel/sched/syscalls.c:1393:6: sparse: sparse: context imbalance in 'sched_getaffinity' - wrong count at exit
-
-vim +197 kernel/sched/syscalls.c
-
-   186	
-   187	/**
-   188	 * idle_cpu - is a given CPU idle currently?
-   189	 * @cpu: the processor in question.
-   190	 *
-   191	 * Return: 1 if the CPU is currently idle. 0 otherwise.
-   192	 */
-   193	int idle_cpu(int cpu)
-   194	{
-   195		struct rq *rq = cpu_rq(cpu);
-   196	
- > 197		if (rq->curr != rq->idle)
-   198			return 0;
-   199	
-   200		if (rq->nr_running)
-   201			return 0;
-   202	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> ---
+>  include/linux/min_heap.h | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+>
+> diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
+> index 9391f7cc9da9..201f59cb3558 100644
+> --- a/include/linux/min_heap.h
+> +++ b/include/linux/min_heap.h
+> @@ -111,6 +111,26 @@ void __min_heapify(min_heap_char *heap, int pos, siz=
+e_t elem_size,
+>  #define min_heapify(_heap, _pos, _func, _args) \
+>         __min_heapify((min_heap_char *)_heap, _pos, __minheap_obj_size(_h=
+eap), _func, _args)
+>
+> +/* Sift up ith element from the heap, O(log2(nr)). */
+> +static __always_inline
+> +void __min_heap_sift_up(min_heap_char *heap, size_t elem_size, size_t id=
+x,
+> +               const struct min_heap_callbacks *func, void *args)
+> +{
+> +       void *data =3D heap->data;
+> +       size_t parent;
+> +
+> +       while (idx) {
+> +               parent =3D (idx - 1) / 2;
+> +               if (func->less(data + parent * elem_size, data + idx * el=
+em_size, args))
+> +                       break;
+> +               func->swp(data + parent * elem_size, data + idx * elem_si=
+ze, args);
+> +               idx =3D parent;
+> +       }
+> +}
+> +
+> +#define min_heap_sift_up(_heap, _idx, _func, _args)    \
+> +       __min_heap_sift_up((min_heap_char *)_heap, __minheap_obj_size(_he=
+ap), _idx, _func, _args)
+> +
+>  /* Floyd's approach to heapification that is O(nr). */
+>  static __always_inline
+>  void __min_heapify_all(min_heap_char *heap, size_t elem_size,
+> --
+> 2.34.1
+>
 
