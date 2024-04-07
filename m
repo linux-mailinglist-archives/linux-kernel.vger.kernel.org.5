@@ -1,134 +1,149 @@
-Return-Path: <linux-kernel+bounces-134321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134320-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F99689B04A
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B474589B049
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:05:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFAEE282739
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:05:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F633282632
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:05:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF02718AE4;
-	Sun,  7 Apr 2024 10:05:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85A7F1799B;
+	Sun,  7 Apr 2024 10:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VH557s+/"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b="nAaYYL/v"
+Received: from prime.voidband.net (prime.voidband.net [199.247.17.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CF231F93E
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 10:05:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 379FC1CAA4;
+	Sun,  7 Apr 2024 10:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=199.247.17.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712484311; cv=none; b=trU/lJQp94H7oDTIS/AaAnct3yI/y+YqyHnB/+KEppWqc/ftq44npBkiC66gZZa+okNfrCQrZuhTPyYvhFZOz02OqgV3t3aRv12WRkBon2GoK3RidAMzLMAdX4mGa3o5Ab/6CwTLfNLTGg+6riDLClNzlu3803dSRImoWxZDbpQ=
+	t=1712484301; cv=none; b=Lcpsztq65HNcpJKM8OSkjr9tBw9+78QkKDrN9ckMaM+nh9q/q4zZJWn7ONRxav838wRlSRf9BWoArCzybI7JBuSytfnvpU8uKoNEiUKzlkEoro55YxYiv+u+LqZgNgWmws6YP/efuNnVP0hWSIBmuMPzIx2OcIO7l1Ibpv21y54=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712484311; c=relaxed/simple;
-	bh=05dYJTMnQ4oT/t4pv3P+UXvDhDRfMYze25dERHYk1jM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iZEuSHMdpjns2nyZvCIJsum+uBXZYwI6MHXb2Ye9zALNmNCavprBXc4WOT73/0CwQtV2JSek1Zus92Qdj3KQpKK3PLZIlJMbjY+aStWfGnn9yF28GQ+mPoEYALk32di8nal54EcTU4oftXBQ/SvK4xJBZihcV5s1fyA4CIQd8NI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VH557s+/; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712484309; x=1744020309;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=05dYJTMnQ4oT/t4pv3P+UXvDhDRfMYze25dERHYk1jM=;
-  b=VH557s+//rndqFoD1oGErozjaxVWY5IEVrQtenC/8WatFMqZmO7PMdGn
-   nR8VNHETpN5kepX7FkzmzGy3R8nZWjwDrghDJlvxpSu2hIwmloWHqYVmJ
-   Q6j196Mg8mv/ZlRb7pzq8fzt0OaUtVz0fGvGCw+2CaP5rhCUPuG1thZRg
-   oVuME0xMlGTmHHM7/6hcMNusKWPAFrphwhk48R7HrWg22+GyOwuf3vISX
-   zle/Sl07yVaPUn/HaMvrH+tfh8rG1v8glL9nX4BMXdXX/oLFr5ceYon2B
-   V3DbHl9SSxF50uI7KIaKnH316MrpkA/AAXIbiuSDJGpXRfbLGLGWcGJnC
-   w==;
-X-CSE-ConnectionGUID: UCE1KqjnSfOw2J2M6u7a7w==
-X-CSE-MsgGUID: mqFkmVWeSimS2NAZh+kANQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11036"; a="7869608"
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="7869608"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 03:05:08 -0700
-X-CSE-ConnectionGUID: xjxJ2CRxTzWNJrV8m1q6Ng==
-X-CSE-MsgGUID: +mlLl4wBTxSdKAHl6nKxKA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="19719057"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by fmviesa008.fm.intel.com with ESMTP; 07 Apr 2024 03:05:06 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rtPOZ-0004GM-1D;
-	Sun, 07 Apr 2024 10:05:03 +0000
-Date: Sun, 7 Apr 2024 18:04:40 +0800
-From: kernel test robot <lkp@intel.com>
-To: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, Peter Zijlstra <peterz@infradead.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Shrikanth Hegde <sshegde@linux.ibm.com>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>
-Subject: Re: [PATCH 2/5] sched: Split out kernel/sched/fair_balance.c from
- kernel/sched/fair.c
-Message-ID: <202404071704.0xE8telk-lkp@intel.com>
-References: <20240407084319.1462211-3-mingo@kernel.org>
+	s=arc-20240116; t=1712484301; c=relaxed/simple;
+	bh=0/fsqKxh1+aNH1t77VnNzkt/bNMfuWtuasepnvlsS9c=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bDQMtimjE1Apt8prh7DhhngmTKxb6qc4kbKJGJhDqyy/pL65ZW5fabiDqHXjizGTXmYotbc+WJN4+eg8lI9thHnOf6L+ZG0N5nrNKDKKg1mCOULbg+Xlwk+88m2D0yYsPa7sSDkAdccaY6TUKHx1b7+mJ77z/iZ0NoVBEXsoPv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name; spf=pass smtp.mailfrom=natalenko.name; dkim=pass (1024-bit key) header.d=natalenko.name header.i=@natalenko.name header.b=nAaYYL/v; arc=none smtp.client-ip=199.247.17.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=natalenko.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=natalenko.name
+Received: from spock.localnet (unknown [94.142.239.106])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by prime.voidband.net (Postfix) with ESMTPSA id 6AC60635B065;
+	Sun,  7 Apr 2024 12:04:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=natalenko.name;
+	s=dkim-20170712; t=1712484295;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0/fsqKxh1+aNH1t77VnNzkt/bNMfuWtuasepnvlsS9c=;
+	b=nAaYYL/va6lpBS/v+xG/GnL2ZQ4lRDmPOZDX9vtkYE4Ny1tIx2d4t8bHvSODT3pSXl2eEu
+	BAVrBdNrcDw5mhxUtJ8lX9ZjeydirwpGnRNgh9oxDnZjb56lhFzOd8wK7CsUzuWTC9tL/x
+	mljgB3sT0SO2sz3pp7mG9+dtHm5jejo=
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: Pasi =?ISO-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
+Cc: linux-kernel@vger.kernel.org, Norbert Preining <norbert@preining.info>,
+ stable@vger.kernel.org, regressions@leemhuis.info
+Subject: Re: Regression in kernel 6.8.2 fails in various ways (USB, BT, ...)
+Date: Sun, 07 Apr 2024 12:04:44 +0200
+Message-ID: <4908864.31r3eYUQgx@natalenko.name>
+In-Reply-To: <20240407094458.GB28090@reaktio.net>
+References:
+ <ZgvkIZFN23rkYhtS@burischnitzel> <20240407093931.GA28090@reaktio.net>
+ <20240407094458.GB28090@reaktio.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240407084319.1462211-3-mingo@kernel.org>
+Content-Type: multipart/signed; boundary="nextPart4556512.LvFx2qVVIh";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
 
-Hi Ingo,
+--nextPart4556512.LvFx2qVVIh
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; protected-headers="v1"
+From: Oleksandr Natalenko <oleksandr@natalenko.name>
+To: Pasi =?ISO-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
+Date: Sun, 07 Apr 2024 12:04:44 +0200
+Message-ID: <4908864.31r3eYUQgx@natalenko.name>
+In-Reply-To: <20240407094458.GB28090@reaktio.net>
+MIME-Version: 1.0
 
-kernel test robot noticed the following build errors:
+On ned=C4=9Ble 7. dubna 2024 11:44:58, CEST Pasi K=C3=A4rkk=C3=A4inen wrote:
+> On Sun, Apr 07, 2024 at 12:39:31PM +0300, Pasi K=C3=A4rkk=C3=A4inen wrote:
+> > > >=20
+> > > > I noticed possible related USB problem/regression also with Linux 6=
+=2E7.11, eg. my USB headset is not detected at all anymore when running Lin=
+ux 6.7.11. USB headset works OK with Linux 6.7.9, so the regression is incl=
+uded/backported to also either in 6.7.10 or in 6.7.11.
+> > >=20
+> > > It wound be nice to narrow this range down even further with bisectio=
+n because there are too many changes between v6.7.9 and v6.7.11 that could =
+cause this.
+> > >=20
+> >=20
+> > I just tested more Fedora kernel rpms, and it seems Linux 6.7.10 still =
+works OK,
+> > but 6.7.11 has the regression (eg. USB devices not detected, laptop doe=
+s not reboot=20
+> > as it gets stuck before resetting the machine).
+> >=20
+> > So the regression was backported to Linux 6.7.11.
+> >=20
+>=20
+> And with more testing interestingly it seems Linux 6.7.12 already fixes t=
+he problem.
+>=20
+> I tried multiple times: 6.7.10 works, 6.7.11 doesn't, and 6.7.12 again wo=
+rks.
 
-[auto build test ERROR on tip/sched/core]
-[cannot apply to linux/master linus/master peterz-queue/sched/core v6.9-rc2]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Again, hard to tell given the amount of backported patches.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Ingo-Molnar/sched-Split-out-kernel-sched-syscalls-c-from-kernel-sched-core-c/20240407-164646
-base:   tip/sched/core
-patch link:    https://lore.kernel.org/r/20240407084319.1462211-3-mingo%40kernel.org
-patch subject: [PATCH 2/5] sched: Split out kernel/sched/fair_balance.c from kernel/sched/fair.c
-config: arc-defconfig (https://download.01.org/0day-ci/archive/20240407/202404071704.0xE8telk-lkp@intel.com/config)
-compiler: arc-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240407/202404071704.0xE8telk-lkp@intel.com/reproduce)
+Maybe you were affected by [1] as the offending commit got into v6.7.11, an=
+d the fix was picked in v6.7.12. If so, v6.8.4 should work for you as well.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404071704.0xE8telk-lkp@intel.com/
+[1] https://lore.kernel.org/lkml/84da1f26-0457-451c-b4fd-128cb9bd860d@leemh=
+uis.info/
 
-All error/warnings (new ones prefixed by >>):
+>=20
+>=20
+> -- Pasi
+>=20
+>=20
 
-   In file included from kernel/sched/core.c:87:
->> kernel/sched/sched.h:3611:22: warning: 'task_h_load' defined but not used [-Wunused-function]
-    3611 | static unsigned long task_h_load(struct task_struct *p)
-         |                      ^~~~~~~~~~~
---
-   arc-elf-ld: kernel/sched/fair.o: in function `switched_from_fair':
->> fair.c:(.text+0x1f0): undefined reference to `update_tg_load_avg'
->> arc-elf-ld: fair.c:(.text+0x1f0): undefined reference to `update_tg_load_avg'
-   arc-elf-ld: kernel/sched/fair.o: in function `rq_offline_fair':
->> fair.c:(.text+0x766): undefined reference to `clear_tg_offline_cfs_rqs'
->> arc-elf-ld: fair.c:(.text+0x766): undefined reference to `clear_tg_offline_cfs_rqs'
-   arc-elf-ld: fair.c:(.text+0x774): undefined reference to `clear_tg_offline_cfs_rqs'
-   arc-elf-ld: fair.c:(.text+0x774): undefined reference to `clear_tg_offline_cfs_rqs'
-   arc-elf-ld: kernel/sched/fair.o: in function `switched_to_fair':
-   fair.c:(.text+0x158a): undefined reference to `update_tg_load_avg'
-   arc-elf-ld: fair.c:(.text+0x158a): undefined reference to `update_tg_load_avg'
-   arc-elf-ld: kernel/sched/fair_balance.o: in function `update_load_avg':
->> fair_balance.c:(.text+0x12c8): undefined reference to `update_tg_load_avg'
->> arc-elf-ld: fair_balance.c:(.text+0x12c8): undefined reference to `update_tg_load_avg'
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+=2D-=20
+Oleksandr Natalenko (post-factum)
+--nextPart4556512.LvFx2qVVIh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEZUOOw5ESFLHZZtOKil/iNcg8M0sFAmYSb7wACgkQil/iNcg8
+M0tj8RAArdVhR8UJFoGC9v8bKyiYBuLEhiUB35S7Gu3d5PRM5seriS4+pJaGJmY4
+VOc8+uEpPE5NUwRbDeEbKd+Gs6vepgHFa5MevH3d8bxohdRuWslOJqn7xF5DG6Ss
+to/tktEUX+kPX1t72FjtBZhGZ0ytOZsPLvlI8fbEa+U/4UH3dLDRDNF24KZqkvXS
+EVs4CCocobUmJUoYxz2Y4F3E5yoULXfwz4SlkaElGxQ3ViWoZBunRYcf7h0/3V1Y
++POHPUWt3icyqti//7jA/GhHUsfqq70V6ZbGCvrRYr9jTkT3e04gE9RrUh6s/len
+3eRU6VUh/kXpBucQQcChyqKRN08QhAHKK1y/RSAhfINSWPipeF1sX5n9Lj9c1yKq
+FXIMNkJB8lwZWJts7cPMoj85JMjyW15vKx85+UfTxTC+AcNkcNgEZs5pJg93jyEj
+v8AayNA/DFcqTQ/ers1dAsCeOQLfa8XeRnFacjeir6SOSqREyUqScLl9+lX5AMQx
+kTPXCNmObdSCes2Z4RMO+VdyiDMeca+5P1Gr8QR/YQeteFa6LWi5EJ87dFIs3UIu
+31xA+G3Rl4hKMDu0tWZWjeSiERok5/iaGxFnWZGsCLOMEut4RHVWV93qZiZpOwb5
+aDtW86RIvFIQ1dhREg13TuOKVh1Qu+q7Y9Yq6SssMHeYpirPJ24=
+=ftVy
+-----END PGP SIGNATURE-----
+
+--nextPart4556512.LvFx2qVVIh--
+
+
+
 
