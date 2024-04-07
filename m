@@ -1,97 +1,84 @@
-Return-Path: <linux-kernel+bounces-134283-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134284-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5E6B89AFEA
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 11:05:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5E4489AFEB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 11:06:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B04F2835C6
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:05:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D22F1F22BCB
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 09:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1ED2D627;
-	Sun,  7 Apr 2024 09:04:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C9E23612C;
+	Sun,  7 Apr 2024 09:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ImjrK7vQ"
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VB6XghBs"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31B5717577;
-	Sun,  7 Apr 2024 09:03:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F9133CF5;
+	Sun,  7 Apr 2024 09:04:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712480639; cv=none; b=Vb9Mr5iVQZhmAW5gPQzcd2l8nySg1DlxiA6YYNne7DJVeBZNObcCcJ5w5DN5CnavQ4ZgVOmYW3UmOGFfKdPkDJ6VXWJTQOD8Taww2+IEuIbdCOmJNAuk3ymhwpDkMmNRDPkxcWq8JrgzcmmImDsi+x/72MSXWxs5yAk4tBo/C/g=
+	t=1712480645; cv=none; b=HNlxf5EX0LqkmnBEpwD/elOlcKSyXKaj2PhrfD+vi28sYNkcqZbzsuOT8UKGRiKKAkfAA4LQbJthF7418KaranIVw7EMH7bG+oO/exb9nEvztKo6kwv1aB3lNhdwwksVlsz6z5YFb7IykKiNNvG206v2U6RRdGwDgzu7Y+SqqCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712480639; c=relaxed/simple;
-	bh=WZdyr+NknpomhAuRPc/9gTXcGeciCnFG1T1UfMulHtw=;
+	s=arc-20240116; t=1712480645; c=relaxed/simple;
+	bh=FJ4sCFu41FqELkYNcQeO9GHd0HS+4qyW6t8CF+WAzbc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=EjTrCYLaRPpyjMOIQP+aA9i9AmyuI91mmwAEUa4ZU738RC/uaJIcdgLQKyA8CvUaESKtY7rK3oSVqMRIIPUxHp/4BYx6ixkFSXW05TEyHT94tbJelFzVT4N8A6lYrWUzWqIn7Bmy63IbwncOeNJcdRD8bKz0ddg8EM11hjM4J+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ImjrK7vQ; arc=none smtp.client-ip=209.85.210.171
+	 MIME-Version; b=UT473uI7wRtiNuaJQDd/LCP0NpYUH7s+I5ssCHlT1zNoopMFVhB70g4GXfamISfNKAI56E6pb97RUfw8b7tPa3caVWNEpWqw2ISbiyP+DdZCbP2GdNkgP6cz+cl44vr9PaW1+q2KAFdHr+qcmCeFmhXfaapp9YSa55DDzDIM8M4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VB6XghBs; arc=none smtp.client-ip=209.85.214.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6ed2dbf3c92so10756b3a.2;
-        Sun, 07 Apr 2024 02:03:58 -0700 (PDT)
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e2bbc2048eso28541015ad.3;
+        Sun, 07 Apr 2024 02:04:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712480637; x=1713085437; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1712480643; x=1713085443; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GpTyCyqlk6BGMCLifNqvgRTCltbDUUo/xKTC4G72UYQ=;
-        b=ImjrK7vQ3SpazvjiazZjJRRR8QJGBogDhVeLV9OQeFoVn9OasdnrdXUXiInFZOljk4
-         UqZ4yt4gbev8jAjk4lnOg+S6asstT1zVdAoq9RgSTfgbHTCKiQ/D8JkADyhHXFMRcQDU
-         AGKNMyeKmCupZxANYFv272VUFccusZlgeV7UwF8BqzxZ0swq+EpIawZXe/vIfeDExfSy
-         hPXSRUs4bWeh9ykPjdteY24+0rlIMuhHic0JTGSBIFoQ4m+FCEgB8AXlJdGfvALWa1f8
-         A5VQagrCH+rPfGm9XLgFZk2UPSO/QgI18mafYq7uBqKQGOFTA12w/I9/KDYO81lTv80D
-         jkvw==
+        bh=P6Ao7lt8bYptuXYSouvezeqYjGeG+t4ZB0d0AMHEq3o=;
+        b=VB6XghBs0CEh3lGFxzG0vfzU8XnskjjBc28EmlAfLDDEXxW3PeFMTJ+gpys3sCptsc
+         vfp9QKaa97BQQKS5ZtxeZzl+89HYuRz4bCQZLOQHvKrAGRF4CpfaLBg6dl7Yy6TgN+Fv
+         J4x2RBEjhVrfeWZTnVpLLcRB3Qd+DuLleDAOlrP0i6stfWXf3TqCo3UoV4ugpC3t8YiM
+         VSnjiaQpuhx4owipL6RIFc1kOlN8Yi1xgiE3dxwHC16TrJmtzgL/7lD1El3DPOBB+bT9
+         jBlAXVqp4opNQkk+LQaVbgfAU0tnAFew5TMtpCeyXVNrNwlhXKIwyljCxIH4wNbf9jQr
+         62Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712480637; x=1713085437;
+        d=1e100.net; s=20230601; t=1712480643; x=1713085443;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GpTyCyqlk6BGMCLifNqvgRTCltbDUUo/xKTC4G72UYQ=;
-        b=Aa4N5fv3wb1cDfObTghe/mtIEtISN5O+DVHxsftPitI3VCv47g1jgXpmmlSbJ/0a/F
-         9Rh5IGxt+IC5svdWnQJy8Qsw0wIl9cRM4i+XCGQjYVXZG1kn6THMQQgG8kl1zJhQg35W
-         P0rghSBz1YsNUGXs2H2k+iHgbQ2fyAnY3Ook0WUSgLWOP4scrqFxWuDZlKUqg68/4ZYD
-         SQLCBPOAnOQSF75wgSVTPMmAuefK0JMW7dC4Z3wwiv0FVutB9EGEeQzYnzRabJ1baDIU
-         QfGVDoS3dgimrQTLuJ6NXs7LahgeRsLlprFDiaieubvldEZVy0/8nDpqzQINxVe1Tpxv
-         NZRA==
-X-Gm-Message-State: AOJu0YzCbkcDlBf1ZobgZL67MNN9x5DoyrxxmMdFvifBpXep6Xv2trbe
-	a33jXybuzXj+Wqq7WQdo6jkWQ5rrZgXYu+rqnPvxg3iVBlMQZAzvSUzdgM80
-X-Google-Smtp-Source: AGHT+IGt7lhWPbhDk/feHJIC0p6YENAzxvvr8u7QkT8swnrmIKOUIBIf8sPv6ly2Voskt8dfuV6jvg==
-X-Received: by 2002:a05:6a20:ce4b:b0:1a1:8312:6dfb with SMTP id id11-20020a056a20ce4b00b001a183126dfbmr6281164pzb.58.1712480637225;
-        Sun, 07 Apr 2024 02:03:57 -0700 (PDT)
-Received: from localhost ([47.89.225.180])
-        by smtp.gmail.com with ESMTPSA id s35-20020a17090a2f2600b0029baf24ee51sm6648516pjd.48.2024.04.07.02.03.56
+        bh=P6Ao7lt8bYptuXYSouvezeqYjGeG+t4ZB0d0AMHEq3o=;
+        b=qxgggXfNMe9YSzqoc/toYMzeDM3YhZWATbGUBy97kTWDs8kaIQpkaaOw1t3Akkd2+p
+         yEBl6V8wOEyyMeDWSOLFlqLrya4Cep9VWtHHPV9aAcz5LP5dwPiF5pUrUHX+Ahp12Ixc
+         +fvodOIDsxWnfWdhMsPOec4P7JBsNt/F/BcGd5kG4fQhR7fJ6w0O55ISXYN+p9Yb0h+g
+         hnSSzWqM74IYKxMx6gyo556c6pAagvP8vePEJKvLocxr/aLPZ0BofSDbLAvYJSSRZ9EB
+         mmUk1tTETnRVoaTB6AF09FqBEKNDmvAZtUtg12PWXnzu0EPSZLhMCucuTaQTXToRs26Y
+         ewMg==
+X-Gm-Message-State: AOJu0YwMgvjVJjkLtcqqYpazOumXYBQqEOF/jOD7JMPG6sGjzY+8laR0
+	Uo/jdnAXNc6M7rRw8sI/qoUKmKqB9Gqk/75I3m84r8Dj3CfEztqzeRD/P8yK
+X-Google-Smtp-Source: AGHT+IFkaG5AT1Vcbcxhl+vZNr+Yss32Phiw8WSKNjNbCK2mZPlpEBzEAmEdTwic4cfsu/0SJkgRvw==
+X-Received: by 2002:a17:902:ce03:b0:1e4:43f:64d4 with SMTP id k3-20020a170902ce0300b001e4043f64d4mr940632plg.49.1712480643183;
+        Sun, 07 Apr 2024 02:04:03 -0700 (PDT)
+Received: from localhost ([47.254.32.37])
+        by smtp.gmail.com with ESMTPSA id w26-20020a63161a000000b005f0a1a46f08sm3743660pgl.11.2024.04.07.02.04.02
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 07 Apr 2024 02:03:56 -0700 (PDT)
+        Sun, 07 Apr 2024 02:04:02 -0700 (PDT)
 From: Lai Jiangshan <jiangshanlai@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: rcu@vger.kernel.org,
 	x86@kernel.org,
 	Lai Jiangshan <jiangshan.ljs@antgroup.com>,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Neeraj Upadhyay <quic_neeraju@quicinc.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
 	Ingo Molnar <mingo@redhat.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
-	Daniel Bristot de Oliveira <bristot@redhat.com>,
-	Valentin Schneider <vschneid@redhat.com>
-Subject: [PATCH V2 07/11] sched/core: Add rcu_preempt_switch()
-Date: Sun,  7 Apr 2024 17:05:54 +0800
-Message-Id: <20240407090558.3395-8-jiangshanlai@gmail.com>
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>
+Subject: [PATCH V2 08/11] x86/entry: Merge thunk_64.S and thunk_32.S into thunk.S
+Date: Sun,  7 Apr 2024 17:05:55 +0800
+Message-Id: <20240407090558.3395-9-jiangshanlai@gmail.com>
 X-Mailer: git-send-email 2.19.1.6.gb485710b
 In-Reply-To: <20240407090558.3395-1-jiangshanlai@gmail.com>
 References: <20240407090558.3395-1-jiangshanlai@gmail.com>
@@ -105,54 +92,62 @@ Content-Transfer-Encoding: 8bit
 
 From: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 
-When the per-cpu rcu_preempt_count is used, it has to be switched too
-on context-switching.  And the instructions to switch the per-cpu
-rcu_preempt_count are few, so it is inlined to avoid the overhead
-in the scheduler.
+The code in thunk_64.S and thunk_32.S are exactly the same except for
+the comments. Merge them in to thunk.S.
 
-Cc: "Paul E. McKenney" <paulmck@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>
+And since thunk_32.S was originated from thunk_64.S, the new merged
+thunk.S is actually renamed from thunk_64.S.
+
 Signed-off-by: Lai Jiangshan <jiangshan.ljs@antgroup.com>
 ---
- kernel/rcu/rcu.h    | 5 +++++
- kernel/sched/core.c | 2 ++
- 2 files changed, 7 insertions(+)
+ arch/x86/entry/Makefile                |  2 +-
+ arch/x86/entry/{thunk_64.S => thunk.S} |  0
+ arch/x86/entry/thunk_32.S              | 18 ------------------
+ 3 files changed, 1 insertion(+), 19 deletions(-)
+ rename arch/x86/entry/{thunk_64.S => thunk.S} (100%)
+ delete mode 100644 arch/x86/entry/thunk_32.S
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index b17b2ed657fc..ea5ae957c687 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -668,4 +668,9 @@ int rcu_stall_notifier_call_chain(unsigned long val, void *v);
- static inline int rcu_stall_notifier_call_chain(unsigned long val, void *v) { return NOTIFY_DONE; }
- #endif // #else // #if defined(CONFIG_RCU_STALL_COMMON) && defined(CONFIG_RCU_CPU_STALL_NOTIFIER)
+diff --git a/arch/x86/entry/Makefile b/arch/x86/entry/Makefile
+index c93e7f5c2a06..ce1cc1622385 100644
+--- a/arch/x86/entry/Makefile
++++ b/arch/x86/entry/Makefile
+@@ -17,7 +17,7 @@ obj-y				+= common.o
+ obj-y				+= vdso/
+ obj-y				+= vsyscall/
  
-+static inline void
-+rcu_preempt_switch(struct task_struct *prev, struct task_struct *next)
-+{
-+}
-+
- #endif /* __KERNEL_RCU_H */
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 7019a40457a6..1d9e3c51c913 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -95,6 +95,7 @@
- #include "../workqueue_internal.h"
- #include "../../io_uring/io-wq.h"
- #include "../smpboot.h"
-+#include "../rcu/rcu.h"
- 
- EXPORT_TRACEPOINT_SYMBOL_GPL(ipi_send_cpu);
- EXPORT_TRACEPOINT_SYMBOL_GPL(ipi_send_cpumask);
-@@ -6737,6 +6738,7 @@ static void __sched notrace __schedule(unsigned int sched_mode)
- 		 */
- 		++*switch_count;
- 
-+		rcu_preempt_switch(prev, next);
- 		migrate_disable_switch(rq, prev);
- 		psi_sched_switch(prev, next, !task_on_rq_queued(prev));
- 
+-obj-$(CONFIG_PREEMPTION)	+= thunk_$(BITS).o
++obj-$(CONFIG_PREEMPTION)	+= thunk.o
+ CFLAGS_entry_fred.o		+= -fno-stack-protector
+ CFLAGS_REMOVE_entry_fred.o	+= -pg $(CC_FLAGS_FTRACE)
+ obj-$(CONFIG_X86_FRED)		+= entry_64_fred.o entry_fred.o
+diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk.S
+similarity index 100%
+rename from arch/x86/entry/thunk_64.S
+rename to arch/x86/entry/thunk.S
+diff --git a/arch/x86/entry/thunk_32.S b/arch/x86/entry/thunk_32.S
+deleted file mode 100644
+index da37f42f4549..000000000000
+--- a/arch/x86/entry/thunk_32.S
++++ /dev/null
+@@ -1,18 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-only */
+-/*
+- * Trampoline to trace irqs off. (otherwise CALLER_ADDR1 might crash)
+- * Copyright 2008 by Steven Rostedt, Red Hat, Inc
+- *  (inspired by Andi Kleen's thunk_64.S)
+- */
+-
+-#include <linux/export.h>
+-#include <linux/linkage.h>
+-#include <asm/asm.h>
+-
+-#include "calling.h"
+-
+-THUNK preempt_schedule_thunk, preempt_schedule
+-THUNK preempt_schedule_notrace_thunk, preempt_schedule_notrace
+-EXPORT_SYMBOL(preempt_schedule_thunk)
+-EXPORT_SYMBOL(preempt_schedule_notrace_thunk)
+-
 -- 
 2.19.1.6.gb485710b
 
