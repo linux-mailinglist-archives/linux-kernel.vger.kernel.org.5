@@ -1,67 +1,59 @@
-Return-Path: <linux-kernel+bounces-134565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4ED1E89B310
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 18:40:02 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A75D689B314
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 18:40:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7E5A31C220A3
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 16:40:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 67B4B1F23005
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 16:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77173D0A3;
-	Sun,  7 Apr 2024 16:39:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6593D549;
+	Sun,  7 Apr 2024 16:39:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GZ5KRPHH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ENfS9PPn"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02E5F3F9D2;
-	Sun,  7 Apr 2024 16:39:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD76D3FB80;
+	Sun,  7 Apr 2024 16:39:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712507951; cv=none; b=ZZvscEHmqKSwo5R62HxRRc+C9q2eaDfEoaImR+kibydowrxjtSuaysCCXE4uPHA/r3oj8UEUQW9qyDlLAqCucQr7B+eR+bdGXveUIKzUfszeq/Qe9C3fa6GgWBgItjz4S2JSW9Y7JpEt8h884TB2fwxQ6de+7FxeVPQb/FXcvq0=
+	t=1712507955; cv=none; b=hfC5qUaS5apxmDf+X9Nd74PoYVSgpvkwoCcjX74qA0QDR5pe4jKeXNJ4/L5cyCY3WDtffHuesGEJiLMXxqK+/rAbRqj+o3ueZcIRTg/AaZ3Fzjb3MmmPue1/FmDkc3r/QlfF6CSeABgX4ZOEciwGQudl8S00Y2hw+7Pto7NBm+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712507951; c=relaxed/simple;
-	bh=OTmsimQJwp7aDqopRUkhzqXDLl0VnyoKAPtMX+wk7vg=;
+	s=arc-20240116; t=1712507955; c=relaxed/simple;
+	bh=XaBryDkvhvrJ0iAr0vu8h9+rnsoJrJYQ6BI3wRhu9YI=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=qUe8ZWDwPxvlryQX4VCjTkLStZh41GiBhZSW/8hog5z+dfSgZId4ulYT4gSNek6N6jxyfTwPoWS8NBqby9W7vwqT0veaygklJow6W/xQOqWFeNYvhGWiDmO6e9U+lCCMQiWpWpFVJXp40whJbhvhAWUGAVBh4ffqmUOs2eKux2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GZ5KRPHH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F345C433F1;
-	Sun,  7 Apr 2024 16:39:02 +0000 (UTC)
+	 MIME-Version:Content-Type; b=jPMd9iXfZ365F+uEe/V0eOV25wEowx3xfhR3GIY2rQ3oK0dHLSmBfHoif551185X/B2gdPUtKRkP7tkqYtqig7xSyvTBNIL8XvLXoew0GmxoKD0gOuROAytEGtdxG5DePcHfgQgruCv//6QZ3Ld5WSE/Uxwajq9I2VVNtyWtaXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ENfS9PPn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4600DC43601;
+	Sun,  7 Apr 2024 16:39:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712507949;
-	bh=OTmsimQJwp7aDqopRUkhzqXDLl0VnyoKAPtMX+wk7vg=;
+	s=k20201202; t=1712507955;
+	bh=XaBryDkvhvrJ0iAr0vu8h9+rnsoJrJYQ6BI3wRhu9YI=;
 	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=GZ5KRPHHDq4gJhIPL58t/oLTlxjm8qJ7ce2ITyGMz44i5CunDqCso6+Yd0VgEBBqB
-	 rp3ZRt7sc17sHlrkTof92WlAklQTEp6PZeuhMnJmnThjifb2XxuIZgBjH82dz7bW/1
-	 VVX9Nx0AEKK3wEOOzcoVb+bTow/BKgugJi75fWCV+i3yd7vt3eJUEEfh/k+rXHDoP7
-	 iQiwIdC/Zv7Y6xcVS3MUx99RQrkT8v0Zu55DTzwvLyV+SSNwxj8K23zqA/FX+vUUGq
-	 qFgrRShJou80QA0gBQtiRa/X2ef+4wo6e8lZHOu98Rzm9KoY4Mzxwc9MgD4vCLtWWI
-	 6z8ts0aOv6Gjw==
+	b=ENfS9PPnl5prd1sxrSGaPpwJkCJ4e9ckw/e4XdH7A3odErO1vFhrZ+KSIl3oyu4Kg
+	 j6rtmrnRjJRnPh/0O7CbyCVWUFGljVD4jQyyd54dyali9plSmsSoGnF+eKG2DGK66T
+	 4jxPfSA0q6f3FesfePHOpKWYv1HdnmElsYjjU4k3cwNKk1pckJV4T+hVMDEnlY4McN
+	 3iOdI7n/Scc4FbIUC8Q+UA3ssJrYrTCJ+rTJ/cqmVbkJUD/zmKXbf69iiih7cLtfqC
+	 Vg3E7lWM1TJNT2aEYmBb13iFAbUsPIMnrYN4Kb/c+7vRGH2dWlUX4mMLn4l/VIuIRH
+	 EGRub5LxYLjeA==
 From: Vinod Koul <vkoul@kernel.org>
-To: Shawn Guo <shawnguo@kernel.org>, Sascha Hauer <s.hauer@pengutronix.de>, 
- Pengutronix Kernel Team <kernel@pengutronix.de>, 
- Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
+To: Eugeniy Paltsev <Eugeniy.Paltsev@synopsys.com>, 
  Rob Herring <robh@kernel.org>, 
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Joy Zou <joy.zou@nxp.com>, 
- Frank Li <Frank.Li@nxp.com>
-Cc: dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
- imx@lists.linux.dev, Nicolin Chen <b42378@freescale.com>, 
- Shengjiu Wang <shengjiu.wang@nxp.com>, 
- Daniel Baluta <daniel.baluta@nxp.com>, Vipul Kumar <vipul_kumar@mentor.com>, 
- Srikanth Krishnakar <Srikanth_Krishnakar@mentor.com>, 
- Robin Gong <yibin.gong@nxp.com>, Iuliana Prodan <iuliana.prodan@nxp.com>, 
- Clark Wang <xiaoning.wang@nxp.com>
-In-Reply-To: <20240329-sdma_upstream-v4-0-daeb3067dea7@nxp.com>
-References: <20240329-sdma_upstream-v4-0-daeb3067dea7@nxp.com>
-Subject: Re: [PATCH v4 0/5] dmaengine: fsl-sdma: Some improvement for
- fsl-sdma
-Message-Id: <171250794199.435322.8811454483252846455.b4-ty@kernel.org>
-Date: Sun, 07 Apr 2024 22:09:01 +0530
+ Conor Dooley <conor+dt@kernel.org>, 
+ Tan Chun Hau <chunhau.tan@starfivetech.com>
+Cc: Ley Foon Tan <leyfoon.tan@starfivetech.com>, 
+ Jee Heng Sia <jeeheng.sia@starfivetech.com>, dmaengine@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20240327025126.229475-1-chunhau.tan@starfivetech.com>
+References: <20240327025126.229475-1-chunhau.tan@starfivetech.com>
+Subject: Re: [PATCH v2 0/2] Add JH8100 support for snps,dw-axi-dmac
+Message-Id: <171250795189.435322.14096618223992641771.b4-ty@kernel.org>
+Date: Sun, 07 Apr 2024 22:09:11 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,37 +65,24 @@ Content-Transfer-Encoding: 7bit
 X-Mailer: b4 0.12.3
 
 
-On Fri, 29 Mar 2024 10:34:40 -0400, Frank Li wrote:
-> To: Vinod Koul <vkoul@kernel.org>
-> To: Shawn Guo <shawnguo@kernel.org>
-> To: Sascha Hauer <s.hauer@pengutronix.de>
-> To: Pengutronix Kernel Team <kernel@pengutronix.de>
-> To: Fabio Estevam <festevam@gmail.com>
-> To: NXP Linux Team <linux-imx@nxp.com>
-> To: Rob Herring <robh@kernel.org>
-> To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-> To: Conor Dooley <conor+dt@kernel.org>
-> To: Joy Zou <joy.zou@nxp.com>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Cc: imx@lists.linux.dev
+On Tue, 26 Mar 2024 19:51:24 -0700, Tan Chun Hau wrote:
+> Add StarFive JH8100 DMA support.
+> 
+> Changes in v2:
+> - Amended commit message according to feedback.
+> 
+> Tan Chun Hau (2):
+>   dt-bindings: dma: snps,dw-axi-dmac: Add JH8100 support
+>   dmaengine: dw-axi-dmac: Add support for StarFive JH8100 DMA
 > 
 > [...]
 
 Applied, thanks!
 
-[1/5] dmaengine: imx-sdma: Support allocate memory from internal SRAM (iram)
-      commit: 802ef223101fec83d92e045f89000b228904a580
-[2/5] dmaengine: imx-sdma: Support 24bit/3bytes for sg mode
-      commit: 288109387becd8abadca5c063c70a07ae0dd7716
-[3/5] dmaengine: imx-sdma: support dual fifo for DEV_TO_DEV
-      commit: a20f10d6accb9f5096fa7a7296e5ae34f4562440
-[4/5] dt-bindings: fsl-imx-sdma: Add I2C peripheral types ID
-      (no commit info)
-[5/5] dmaengine: imx-sdma: Add i2c dma support
-      (no commit info)
+[1/2] dt-bindings: dma: snps,dw-axi-dmac: Add JH8100 support
+      commit: 9bcf929ba1879887e0464d06cbf9b33839572af7
+[2/2] dmaengine: dw-axi-dmac: Add support for StarFive JH8100 DMA
+      commit: 559a6690187ee0ab7875f7c560d3d19e35423fb3
 
 Best regards,
 -- 
