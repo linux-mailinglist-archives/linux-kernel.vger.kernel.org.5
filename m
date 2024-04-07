@@ -1,134 +1,118 @@
-Return-Path: <linux-kernel+bounces-134372-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134380-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6618389B0C8
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 14:36:35 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5348E89B0DA
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 14:41:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19D28281D87
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:36:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09613281D17
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:41:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07C025622;
-	Sun,  7 Apr 2024 12:36:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3993F2A1B2;
+	Sun,  7 Apr 2024 12:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mAW8MwwQ"
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="VT8r9rV8";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="OfK2rVOc"
+Received: from fallback3.i.mail.ru (fallback3.i.mail.ru [79.137.243.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E55717999;
-	Sun,  7 Apr 2024 12:36:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3301C288DF
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 12:41:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712493382; cv=none; b=AcIc31k1ZXpIOK3n+Nw5dTF5+rdz4lvKF3s4m2EF8wC7Zd6m9UVqKVxoDG7DzjXX2Gy1//kn+yOFtMM05CSp5XD73OTHoLSkjRlsFsSkz1RcYGUat9PhOefvZ1OnJ+ABN9MZTfMLHhok3wFVlLo7vFdrGUFIUFwHSUXbIlCh6hg=
+	t=1712493694; cv=none; b=k0kJtC6nSTH6s/NuCGNSGYrYYpWjSAkOqZw1zvjNHHfEmNJCqKsKM88MFEuJF5EGCAf9gU9nN8+XDdl+DZ0XPL97FXh/ruJfEVPyJq6kPy/pd1kEgJOx9Yw5aA0VvKuUWQA6Exu9UAPjFFR8c2Wf+B63nfjiMgcqEcJoU9DzHiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712493382; c=relaxed/simple;
-	bh=VhtheWqyCFUO49/ez9JKbY6OihTjwk/bQeNzjLVwE5Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nKWwcSFCyVMdAloaO8bXBlFv6XKi2OEaE7PFmYiP3gUOgZGDKkYjaAa4jbsFlhcrJhrqsRuK92e3OeWIwcP7vhDTc5b47rI2tYnJXZphI8QhSqkn9X5goNoIMQWsmZaJfnaB6JCl31BhFyj3x7qqVvvgoBtw7gYeIwFKHPBGNr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mAW8MwwQ; arc=none smtp.client-ip=209.85.160.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-22963f0e12cso1965141fac.1;
-        Sun, 07 Apr 2024 05:36:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712493380; x=1713098180; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HTpah3z9nxK4+QUIUhM/zsRbPjioxiMre0R2YErPMBI=;
-        b=mAW8MwwQF4Cppw7sPkIDH2UWhumaRBaYtRAKrnKQkgIhNjYITfNEgvALQCJh9uKtzf
-         E/gOAMTi5d10RPy6LMT0GayeIbSqDle0fOiPVO+3zuPv9mXqlm+nRO9R1MXZuMbspCCZ
-         oQbvOLo/GDWOb4PZ+QgNFLkAfkreEcSHbanyN+IEBcwhdtsxgYg9hug9N3D8i2X83RMl
-         rtASvYLRORe2Gw6tz65zNPkRJkwDQMmG+0hkfuw7QlLxGhJLOgzAY4q1hDJc4uBYRHdD
-         g5uufeYavrLOF1rBush3a0xE078loalDyPZ15s1Huip0kSlI0PcbTAC4JnRyi93KXFYU
-         Nw4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712493380; x=1713098180;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HTpah3z9nxK4+QUIUhM/zsRbPjioxiMre0R2YErPMBI=;
-        b=fQrQ43p+68VcOxQiwv4BCfTqcY4vBNGh2K5xMv32JayWV4XlcVO7F5P85wpa2xedYa
-         Nh/pnJIRLhaevNE9PTCPBwT1Z0XGD+VC5W/xIPh7hio14KuDpJMEnG/hFBo5j2B1nbI2
-         3biHoOoFvR3RPQahbgOxjij8bwmgTJrDCADI/i3ouoAvrsmKuJvcxncp0S4QiENZP8Og
-         JK385pLSjq6ggS3VO+u1B2pF5tOn6pDljQQWnpkHPrIuM58VXZngJcf46RTY8iYm4FeF
-         xNiJehduwxwEa1Gi2tgRyTRcqf+sWwl0jzTh9KO7DJUCVysb/x5zbq5EA2+VZgGqBA7Z
-         13gw==
-X-Forwarded-Encrypted: i=1; AJvYcCVATKiOVDej0tNk7VWyEk6fYH2iPbHHG9jngl/vOqJWuh/FZCtpP3mqfKwoWIodEpk35BTIoCGs92Qkn8c1eIw19Ux3BbetN8pCG37x5KF5InG+dPQv3PU+geSBiVxBEX6IvjRIveFeZsy4f/K/JJX6tnWTIny7vjAor3AsB/sklbn1buMID+xtn0dXNxfVcnDrdunEy2CfJz4vUoFrzxfzFdX1fCI9ln+HEIjn23NQ4OoeEocRVUOwh+0F8Zqm8GKvU48zSg==
-X-Gm-Message-State: AOJu0YxQ31x8+7bSQdLP1c0g7tJ2aqEOCkffA16a5hJqFgktuX7sUeJy
-	zYpFoGt8wxx06SeycGM8ynpD+u5EkpZWOfjdV3P7PrkAO5rHQn314LvOJUBHvxOZoTEg+rbFVwR
-	I46mUevIHk1rrEWI4DQXQA1vcQ0w=
-X-Google-Smtp-Source: AGHT+IHCRJwJiztaVGgYDsbvhsWKurdYA7ka/A/XrCbAAgdQQF3HjScy5xiyJE6CEank6R3QWX9EeoxlvmFNctyZZ+w=
-X-Received: by 2002:a05:6870:d622:b0:229:f9fa:df52 with SMTP id
- a34-20020a056870d62200b00229f9fadf52mr7031792oaq.12.1712493380515; Sun, 07
- Apr 2024 05:36:20 -0700 (PDT)
+	s=arc-20240116; t=1712493694; c=relaxed/simple;
+	bh=fRgtLU64VmPj1RO8aNoSSRiD5pgeaJ/c24+Azmvwe5w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nEWa8ji1WTv3QNruwg89lsQPopkT+jHKs1vE+U4sigxvnhnx4ivpiClEW6CHkuaNwntswUzYkH3p/gCfwwpdsZUQ3xJJU5rgK1hkmvgQfeJcdwCTssAQ+7vQJ31OkEpvT2UXGxoAfG1vOF24gA+RsezBzSrMncnrFRdGjShi2mc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru; spf=pass smtp.mailfrom=mail.ru; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=VT8r9rV8; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=OfK2rVOc; arc=none smtp.client-ip=79.137.243.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.ru
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail4;
+	h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=pS0J51qkDW3l6yHbMntKpzwzWZ1OozH3qDAmrSmG5EM=;
+	t=1712493690;x=1712583690; 
+	b=VT8r9rV8wLPkP8O6rKLNv50zd3DZ9eJiMDjXGZqV/cNerHjiy62C31MR9+uewk7jToowjbbMSvY9lwY+JwXlTh4uT9RiX2MBvvZKfQbF9putkxWZe5Y2t9Z0UeAJCCUBwL21sVQC1Lg6nKkV/I1mtofKIMPqEV1oBXWOz5CTybpBYb3/VDahAxAUvUk66NCcIyjZ3V4uHiCS1YZ5LLZDdf81rnzvHhy6rDQnuB735bHzo7RXRxyTofZbE3VPj9Ud/TCkW88FlfIBKrZxmwkCJE4vdc6WG5W0hobsRkVllSTXu6DEI+ZzZEcUgCTxEnA/FHQzwxbbrRK3clWTFTgzeQ==;
+Received: from [10.12.4.36] (port=41840 helo=smtp59.i.mail.ru)
+	by fallback3.i.mail.ru with esmtp (envelope-from <end.to.start@mail.ru>)
+	id 1rtRm3-000j89-Ta; Sun, 07 Apr 2024 15:37:28 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru;
+	s=mail4; h=Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:Cc:
+	To:From:From:Sender:Reply-To:To:Cc:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
+	X-Cloud-Ids:Disposition-Notification-To;
+	bh=pS0J51qkDW3l6yHbMntKpzwzWZ1OozH3qDAmrSmG5EM=; t=1712493447; x=1712583447; 
+	b=OfK2rVOc0rLX9Lux6peSOa2BbMXjpfzpLQd0ZoloVF0ck886UYzw6+IsF8yuo4xx6WeL+LLEByX
+	1QdeutkRfDlVNOWQvcp1Q50xJqu2v8JXdj4SzDKvPNhbF7vGJyRaqHqt900vPwY+CEFsRu7yfLCUJ
+	rqVDrmVCVVL1XmPaILyDPZib4TQ/Ot43tt88i14DJA1h0HV4RYBJW5SLfXNRS8bIXluIhUE0tcJw8
+	ZAejRwB7zUSXn9leiAlXJQzQ3X288G5aoJ+k8Kadu9VZlSdJ+yyUOqUckDmNEcVR4r2wwoRhgZd0K
+	kABV+wNyV2t/LASNqwt3LrhWJzv5zD5KPOGA==;
+Received: by smtp59.i.mail.ru with esmtpa (envelope-from <end.to.start@mail.ru>)
+	id 1rtRlp-00000007I2h-3JMb; Sun, 07 Apr 2024 15:37:14 +0300
+From: Dendi777 <end.to.start@mail.ru>
+To: broonie@kernel.org
+Cc: lgirdwood@gmail.com,
+	linux-sound@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Dendi777 <starrynightowl2@gmail.com>
+Subject: [PATCH] Add support microphone for Acer-315-24p
+Date: Sun,  7 Apr 2024 15:37:08 +0300
+Message-ID: <20240407123708.11711-1-end.to.start@mail.ru>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240407102000.37213-1-krzysztof.kozlowski@linaro.org> <20240407102000.37213-2-krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20240407102000.37213-2-krzysztof.kozlowski@linaro.org>
-From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date: Sun, 7 Apr 2024 14:36:10 +0200
-Message-ID: <CAMhs-H8jjPpoFfUngpCckAq+hix65VN4rNWMJb=Rrtkzq6nEKA@mail.gmail.com>
-Subject: Re: [PATCH 2/3] dt-bindings: PCI: mediatek,mt7621: add missing child
- node reg
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
-	=?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Hector Martin <marcan@marcan.st>, Sven Peter <sven@svenpeter.dev>, 
-	Alyssa Rosenzweig <alyssa@rosenzweig.io>, Ray Jui <rjui@broadcom.com>, 
-	Scott Branden <sbranden@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>, Jim Quinlan <jim2101024@gmail.com>, 
-	Nicolas Saenz Julienne <nsaenz@kernel.org>, Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Will Deacon <will@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
-	Srikanth Thokala <srikanth.thokala@intel.com>, Ryder Lee <ryder.lee@mediatek.com>, 
-	Jianjun Wang <jianjun.wang@mediatek.com>, Matthias Brugger <matthias.bgg@gmail.com>, 
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, 
-	Daire McNamara <daire.mcnamara@microchip.com>, Bjorn Andersson <andersson@kernel.org>, 
-	Konrad Dybcio <konrad.dybcio@linaro.org>, Marek Vasut <marek.vasut+renesas@gmail.com>, 
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Shawn Lin <shawn.lin@rock-chips.com>, 
-	Heiko Stuebner <heiko@sntech.de>, Jingoo Han <jingoohan1@gmail.com>, 
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>, 
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>, 
-	Bharat Kumar Gogada <bharat.kumar.gogada@amd.com>, Michal Simek <michal.simek@amd.com>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Mark Kettenis <kettenis@openbsd.org>, 
-	Tom Joseph <tjoseph@cadence.com>, Ahmad Zainie <wan.ahmad.zainie.wan.mohamad@intel.com>, 
-	Jiaxun Yang <jiaxun.yang@flygoat.com>, Kishon Vijay Abraham I <kishon@kernel.org>, 
-	Thippeswamy Havalige <thippeswamy.havalige@amd.com>, linux-pci@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-rockchip@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Mailru-Src: smtp
+X-4EC0790: 1
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD9517FD34F787F37912125E25EEC01EB21C392840CC940D142182A05F538085040DEDC7F3FCAFEBBB491417EB218679B82F0E2F1F536CAA48A098812AEB9E207D5BCD1920673F9FD49
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE78044725E6B9C7F2CEA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637F91103FA893F53AB8638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8F7F057EAFEA888A64A51B625B318CA68A4E9862C0D948A5920879F7C8C5043D14489FFFB0AA5F4BFA417C69337E82CC2CC7F00164DA146DAFE8445B8C89999728AA50765F7900637FBF931FEADDDACF0389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8A7DFDF579AB090EFF6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA73AA81AA40904B5D9A18204E546F3947CE3786DD2C77EBDAABA3038C0950A5D36C8A9BA7A39EFB766D91E3A1F190DE8FDBA3038C0950A5D36D5E8D9A59859A8B65218A6880B2A9D023AA81AA40904B5D99C9F4D5AE37F343AD1F44FA8B9022EA23BBE47FD9DD3FB595F5C1EE8F4F765FCD215BE4436AF2686E2021AF6380DFAD18AA50765F79006378A4BC95AACA28A5322CA9DD8327EE493D1AC325EA934333D3946EFC6A664F553C4224003CC83647689D4C264860C145E
+X-C1DE0DAB: 0D63561A33F958A5184982995C294F365002B1117B3ED6962E552F56C4FF55A2361FAC1196A180DE823CB91A9FED034534781492E4B8EEAD303003AC7AA20DD0C79554A2A72441328621D336A7BC284946AD531847A6065A17B107DEF921CE79BDAD6C7F3747799A
+X-C8649E89: 1C3962B70DF3F0AD93B9BA3C444D644977DD89D51EBB7742D3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFD287DE0BDB1282B5033B63303960A1008E972AF00D9D2DC332D73DB2867940FB4905B00F5DFE93A21CFDFDFCAF5E4A4B4D446B11C510E2B76781B6748A9801D9D1F142497979342F9F49EEF1215E7BEC913E6812662D5F2A65982B5FD154E7DC8F0ECD54AF826900C3981EEBE9DB10F943082AE146A756F3
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojbL9S8ysBdXiY/CdR5KJX9+YP1JNfYyuY
+X-Mailru-Sender: F34414D909EE10BD7829694AFAC1E9591977A2C26515A0C9B951B70A5BD4BD8E1358432E7FF7EB32FCE6092CAFFEA8A5C773E5EF782A67EF9314192DE98EED7FA9800083D4B72A528C9769C13AF3BBAE440A67913D6ED084D7A14DD9E34ECE7467EA787935ED9F1B
+X-Mras: Ok
+X-4EC0790: 1
+X-7564579A: 646B95376F6C166E
+X-77F55803: 6242723A09DB00B4391B3D424BB050C88CA47C6C7B6271788641987756A17BB9049FFFDB7839CE9ECE99CBBB6ECAA327C8146FC688DEE5F0B2F503B31D9C400E86F2EF6A562CE637
+X-7FA49CB5: 0D63561A33F958A5356A1CE935D219807DF8C9CF79639937052FCECB064A9487CACD7DF95DA8FC8BD5E8D9A59859A8B64071617579528AACCC7F00164DA146DAFE8445B8C89999728AA50765F79006378E5B25976F539216389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC8C824672CB62AFFF2F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA775ECD9A6C639B01B78DA827A17800CE793809DDD77344E68731C566533BA786AA5CC5B56E945C8DA
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2bioj+HQIBMt8ajWTHGsk+jUUBQ==
+X-Mailru-MI: 8002000000000800
+X-Mras: Ok
 
-On Sun, Apr 7, 2024 at 12:20=E2=80=AFPM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> MT7621 PCI host bridge has children which apparently are also PCI host
-> bridges, at least that's what the binding suggest.  The children have
-> "reg" property, but do not explicitly define it.  Instead they rely on
-> pci-bus.yaml schema, but that one has "reg" without any constraints.
->
-> Define the "reg" for the children, so the binding will be more specific
-> and later will allow dropping reference to deprecated pci-bus.yaml
-> schema.
->
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
->  .../devicetree/bindings/pci/mediatek,mt7621-pcie.yaml          | 3 +++
->  1 file changed, 3 insertions(+)
+From: Dendi777 <starrynightowl2@gmail.com>
 
-Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Signed-off-by: Dendi777 <starrynightowl2@gmail.com>
+---
+ sound/soc/amd/yc/acp6x-mach.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Thanks,
-    Sergio Paracuellos
+diff --git a/sound/soc/amd/yc/acp6x-mach.c b/sound/soc/amd/yc/acp6x-mach.c
+index 69c68d8e7..9b1ae0314 100644
+--- a/sound/soc/amd/yc/acp6x-mach.c
++++ b/sound/soc/amd/yc/acp6x-mach.c
+@@ -430,6 +430,13 @@ static const struct dmi_system_id yc_acp_quirk_table[] = {
+ 			DMI_MATCH(DMI_BOARD_NAME, "MRID6"),
+ 		}
+ 	},
++	{
++		.driver_data = &acp6x_card,
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "MDC"),
++			DMI_MATCH(DMI_BOARD_NAME, "Herbag_MDU"),
++		}
++ },
+ 	{
+ 		.driver_data = &acp6x_card,
+ 		.matches = {
+-- 
+2.44.0
+
 
