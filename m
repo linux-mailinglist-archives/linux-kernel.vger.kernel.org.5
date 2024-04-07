@@ -1,151 +1,158 @@
-Return-Path: <linux-kernel+bounces-134535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCCB589B2B0
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:21:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F47789B2B1
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:27:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E88101C21296
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:21:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DB63E1F21C89
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:27:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C38139FD6;
-	Sun,  7 Apr 2024 15:21:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8105E39FC3;
+	Sun,  7 Apr 2024 15:27:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kmsuqKaB"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cEBsYuHx"
+Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95CDF38DD3
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 15:21:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1717F1EF03
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 15:27:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712503275; cv=none; b=eITvbE+ihLKzUEIXpNzyyZuyWRDQnGds3VMc0QWmN/Z0WIgqupUfrjZQNS3TFLXz8gMpikTjCHbcpzQWuf9Ksl227NqYxEmde1iHzqxpxx83WKBAyqGrlili+ducUNjafPz0KkIrw69NGbxEb31736HiWCSnjdNwXDZqm69BgDs=
+	t=1712503633; cv=none; b=PxJb2BmGKSi1ZgaVYHCVo44l056Cc9AE31riM7IrjvjenN8YRo9MJHr4k4VpTFTYtHsm9LYbFpYyCC3yvtnB1t6XY0pF7+h6iB/Uopa7BPH6/nvow6SonZc5lcpPAxDMX6EFLd/4FXTu3prJSiLaccfIbcm72/QLMpcdJCDPwis=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712503275; c=relaxed/simple;
-	bh=wat1R7DZ6VZuQ7VIDgkqfyRCviEmcJNKK93KLgPTrVc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=nYtMQU84YTGTdm6VupJdvmrBuMFv0s3lyu3Jh4GYlHGlUp32SUj8+JG7S1QhU4xUFtVlnQKzgjJm5tO1S/bnF4oynCVaCwKS9J87uvfZ0VOyFs5zp7uA8MXV9SE3Mhjho4Wy78CjMkjGFE8w8gHrts634HTLEBUXevv8faN8/7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kmsuqKaB; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712503274; x=1744039274;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=wat1R7DZ6VZuQ7VIDgkqfyRCviEmcJNKK93KLgPTrVc=;
-  b=kmsuqKaBOVpnpVyW6nCrDsClD7/I3czEB2dTXZwXduTpLJOo81BCsgWc
-   LS2HFsF7WAcrbAxOhO3TwptcLcjfsWaO/OXcPJwd8ge7JdgALnGs/X0m9
-   paDr0W0+jfiGUbUQbZP8Mm2JS/DcGqmP4r0rcNU+CAoO4Qf9PEte+HOHY
-   nfMfLiRZwmaZU8jXFVKCjNMjoscTbkxiDAcYPR82aFUKjzCgpQ7JQ1w1z
-   JoTLKceA5ukiRqjEAsrM+D5OUbdgKEdzCIkRHupzpfyjnwnPjWBcGIG3z
-   SKAiJqo7yku3pw8ozvKUffpLJ6FwE6CM6Czinm2G+0td46M03I0p6qXkC
-   g==;
-X-CSE-ConnectionGUID: m2bBRAvIR/eJNKIgmHoGwQ==
-X-CSE-MsgGUID: DMOT2D1jRBuJE/xyxzU2nQ==
-X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="7907139"
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="7907139"
-Received: from fmviesa009.fm.intel.com ([10.60.135.149])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 08:21:13 -0700
-X-CSE-ConnectionGUID: AWHfP/q1Rd2mW6fItzofTQ==
-X-CSE-MsgGUID: boxD/Y99RyuS4VV/BVhF1A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="19703031"
-Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
-  by fmviesa009.fm.intel.com with ESMTP; 07 Apr 2024 08:21:11 -0700
-Received: from kbuild by e61807b1d151 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rtUKT-0004QQ-1P;
-	Sun, 07 Apr 2024 15:21:09 +0000
-Date: Sun, 7 Apr 2024 23:20:42 +0800
-From: kernel test robot <lkp@intel.com>
-To: Shayne Chen <shayne.chen@mediatek.com>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	Felix Fietkau <nbd@nbd.name>
-Subject: include/linux/compiler_types.h:397:45: error: call to
- '__compiletime_assert_405' declared with attribute error: BUILD_BUG_ON
- failed: sizeof(mstat) > sizeof(skb->cb)
-Message-ID: <202404072357.9jgMQDqd-lkp@intel.com>
+	s=arc-20240116; t=1712503633; c=relaxed/simple;
+	bh=FURRWrHSgX80uBiDSafgZNT2fkaTyb3bovkxas4UjKQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eGkJVv4GEpoC9GZopxk1zcF5ykfqeBGzZYDeQKKyBepehZiTgYongq2/X0RQUVqnWF5W4aQmsrQ0ykZNIS/j0BGnjIutffVf8UnYC8FLL/vgN4g+RR/1+KMh+3AoZH0wVRBv3/7Q4Qskpdy0ttH6ltPLjuILkDnXjh6InUjH69o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cEBsYuHx; arc=none smtp.client-ip=209.85.218.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a51c35a1b7eso104837466b.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 08:27:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712503630; x=1713108430; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SuBrWZuzMdfV2ubuf1lp4gVv+r9cyyPK0cIRWvRywLk=;
+        b=cEBsYuHx8M+7Kr0D28ZuDpsKwq/DLtPtbTUZiDfp5SIEv0r9jfwnROiPHwj22rV2go
+         3urzwppgOq072HOc4y1tiaa9liIa/NQ1n97zODvns89vfg/EbLDMGxnAzn1y8Vau6d/f
+         PGY4ucLSO5KmcBGq3S6+MRmBEo+AV13dmog4XjE2YuX1JGt8QJF7vAtnoeAda3nQPcw/
+         s6bd74qBQThaAiiAsbQeHa8zSslGApZfjgiZbXfSclDtEQNfAkZ3X0tvtt35KWCiySA0
+         P2nqJ0ynWQV/DSe2OZCkFfLLJJnGu/k1EB4qUZS/+tcf6dtJv0VvdpcNIMs1sL1yTTeb
+         Vofg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712503630; x=1713108430;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SuBrWZuzMdfV2ubuf1lp4gVv+r9cyyPK0cIRWvRywLk=;
+        b=XTsDuVs7exWl3/+yTPjWfq89kw+ovtwBiFiP3ntmWkhIONXvGC+EXelZPWzNvrmJNu
+         c5IZiIVN3/UlcyQ0oKWUzeIuJVdwM0oG6TtQDvTc0F9aGRNNPtYjExfY89UITRgAkLtI
+         rJOv+abSlwmyHjuFN2nvXt+Uqh1MF+slQAqNgHa2j4vmfF9qLsPLSHTN+nxGu7XcCehq
+         OT9NUXUFFKxU2DK+zQyvuWJxwMvLQXmqD+wvWrwAh8HANSE1ZdpHGEXjb+5Z7ybyjk50
+         miivVIIyMLb2+HKJyokCaAupWhJlXPwjGc8A1oageA/1BJmYBVWP/QOu07hQ0/9WVIwi
+         bA8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUx6RbXoqw5Y8WsRXuN3XG5kyOnLOrzX59Z1JlH+yZd6JG++QBkunoHemXYW4nK+j1u8+V6zH1AVWew9VpjFpEg7RFqsznvbvpJBaf0
+X-Gm-Message-State: AOJu0YzeToxNyNNOB5B2/xReQqt4CYRuNJbgabWEcmrOk5Bt7jLZfiVG
+	q+Ic+V5CkKe8XFUWryM4mEV1i38XKWye2EpKU1AG7jG9VYqb3+Y=
+X-Google-Smtp-Source: AGHT+IE7X7pS0UU+V/gQ4l3LEd34xTkYN3rspMbVlnt1E+AbKxN89MiOyng+4a3NNquz7xbZaLT6gw==
+X-Received: by 2002:a17:906:4a81:b0:a51:885a:c0a with SMTP id x1-20020a1709064a8100b00a51885a0c0amr4253599eju.61.1712503630102;
+        Sun, 07 Apr 2024 08:27:10 -0700 (PDT)
+Received: from localhost.localdomain ([46.53.251.6])
+        by smtp.gmail.com with ESMTPSA id sd15-20020a170906ce2f00b00a518debfd49sm3269440ejb.116.2024.04.07.08.27.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 07 Apr 2024 08:27:09 -0700 (PDT)
+From: Alexey Dobriyan <adobriyan@gmail.com>
+To: tglx@linutronix.de
+Cc: adobriyan@gmail.com,
+	mingo@redhat.com,
+	bp@alien8.de,
+	dave.hansen@linux.intel.com,
+	x86@kernel.org,
+	hpa@zytor.com,
+	linux-kernel@vger.kernel.org,
+	peterz@infradead.org,
+	Jonathan.Cameron@huawei.com,
+	linuxarm@huawei.com,
+	linux@roeck-us.net,
+	Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Subject: [PATCH 1/2] x86/cpu/topology: don't write to immutable cpu_present_mask
+Date: Sun,  7 Apr 2024 18:26:43 +0300
+Message-ID: <20240407152643.3245-1-adobriyan@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Hi Shayne,
+Workaround the following oops:
 
-FYI, the error/warning still remains.
+	topology_hotplug_apic
+	topo_set_cpuids
+		set_cpu_possible(cpu, true);
+		// write to __ro_after_init section after init
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   f2f80ac809875855ac843f9e5e7480604b5cbff5
-commit: 021af945997ffaeaa37c9673d71afad7cde6bdef wifi: mt76: mt7996: add eht rx rate support
-date:   12 months ago
-config: arm-randconfig-r132-20240407 (https://download.01.org/0day-ci/archive/20240407/202404072357.9jgMQDqd-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20240407/202404072357.9jgMQDqd-lkp@intel.com/reproduce)
+adobriyan: I'm not sure what's going on, can it set unset bit here?
+If not, then why does it repeat the job and set already set bits.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202404072357.9jgMQDqd-lkp@intel.com/
+Anyhow, let's not oops peoples' machines for now.
 
-All errors (new ones prefixed by >>):
+Reported-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Suggested-by: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+---
+ arch/x86/kernel/cpu/topology.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-   In file included from <command-line>:
-   In function 'mt76_rx_convert',
-       inlined from 'mt76_rx_complete' at drivers/net/wireless/mediatek/mt76/mac80211.c:1334:3:
->> include/linux/compiler_types.h:397:45: error: call to '__compiletime_assert_405' declared with attribute error: BUILD_BUG_ON failed: sizeof(mstat) > sizeof(skb->cb)
-     397 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:378:25: note: in definition of macro '__compiletime_assert'
-     378 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:397:9: note: in expansion of macro '_compiletime_assert'
-     397 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   drivers/net/wireless/mediatek/mt76/mac80211.c:1094:9: note: in expansion of macro 'BUILD_BUG_ON'
-    1094 |         BUILD_BUG_ON(sizeof(mstat) > sizeof(skb->cb));
-         |         ^~~~~~~~~~~~
-
-
-vim +/__compiletime_assert_405 +397 include/linux/compiler_types.h
-
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  383  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  384  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  385  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  386  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  387  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  388   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  389   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  390   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  391   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  392   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  393   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  394   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  395   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  396  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @397  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  398  
-
-:::::: The code at line 397 was first introduced by commit
-:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
-
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
-
+diff --git a/arch/x86/kernel/cpu/topology.c b/arch/x86/kernel/cpu/topology.c
+index aaca8d235dc2..42f4a17f8019 100644
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -117,13 +117,18 @@ static __init int topo_get_cpunr(u32 apic_id)
+ 	return topo_info.nr_assigned_cpus++;
+ }
+ 
+-static void topo_set_cpuids(unsigned int cpu, u32 apic_id, u32 acpi_id)
++static void topo_set_cpuids(unsigned int cpu, u32 apic_id, u32 acpi_id, bool from_init)
+ {
+ #if defined(CONFIG_SMP) || defined(CONFIG_X86_64)
+ 	early_per_cpu(x86_cpu_to_apicid, cpu) = apic_id;
+ 	early_per_cpu(x86_cpu_to_acpiid, cpu) = acpi_id;
+ #endif
+-	set_cpu_possible(cpu, true);
++	if (from_init) {
++		set_cpu_possible(cpu, true);
++	} else {
++		/* cpu_possible_mask is supposed to be fixed by now. */
++		WARN_ON(!cpumask_test_cpu(cpu, cpu_possible_mask));
++	}
+ 	set_cpu_present(cpu, true);
+ }
+ 
+@@ -191,7 +196,7 @@ static __init void topo_register_apic(u32 apic_id, u32 acpi_id, bool present)
+ 			cpu = topo_get_cpunr(apic_id);
+ 
+ 		cpuid_to_apicid[cpu] = apic_id;
+-		topo_set_cpuids(cpu, apic_id, acpi_id);
++		topo_set_cpuids(cpu, apic_id, acpi_id, true);
+ 	} else {
+ 		u32 pkgid = topo_apicid(apic_id, TOPO_PKG_DOMAIN);
+ 
+@@ -343,7 +348,7 @@ int topology_hotplug_apic(u32 apic_id, u32 acpi_id)
+ 		return -ENOSPC;
+ 
+ 	set_bit(apic_id, phys_cpu_present_map);
+-	topo_set_cpuids(cpu, apic_id, acpi_id);
++	topo_set_cpuids(cpu, apic_id, acpi_id, false);
+ 	cpu_mark_primary_thread(cpu, apic_id);
+ 	return cpu;
+ }
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.43.2
+
 
