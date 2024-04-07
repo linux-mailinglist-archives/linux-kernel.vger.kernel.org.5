@@ -1,130 +1,162 @@
-Return-Path: <linux-kernel+bounces-134606-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134607-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CBF789B386
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:32:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDF2989B387
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:33:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AAD7D1F20F5F
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 18:32:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 25DCF1C21472
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 18:33:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D798C3C48E;
-	Sun,  7 Apr 2024 18:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 798843DB8C;
+	Sun,  7 Apr 2024 18:32:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="iUzvG9FV"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="N0ws60Lq"
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2DE1C0DC5;
-	Sun,  7 Apr 2024 18:32:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E5433D541
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 18:32:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712514764; cv=none; b=mvr8Y1HBqIvSwNG8Yz5FJK+F7BeY24RQsMlO0N7uXsr4pu1wzHMiLoqgcbPxWtAxXVxbcBaxFYqMqe0PoGWwSKwkctHmTkmMASTfCIEgH1M+PFIY/CaRRZLbbvps5HyhzE/7DbyiQTwnInxVSOLYW3xPp3vQIA1BfQvuQ86oWNk=
+	t=1712514767; cv=none; b=Cr42S5c3WBCjExu2xpWv4wR4reqUIplUnwbYJhoVg4BGzqXKgzikY1HU0xBcYwEeqh/XpzkzBlWYVnhzFZkzL3TUkorbfEXOb+nAUOrU33KzsBpvRESZRa5CsOJ8CryjtaQJdoPsmxVCjTs6AVDLsSazdYHxbgNupSw/Xg1iDwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712514764; c=relaxed/simple;
-	bh=HzkQQBG/yfRkSTo9hzDayTg2cP+FfBYSPRYBXPzw3Uw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=eYvY/I99lkTl+k+lR7yJ3bEN72lEqMFHPF5VYMjg+C6jnk6R7mMR6ABiaA6yCp5wl3ee9m3/px875e4nl3zdcylPVwqIOI8CGa6uO3/ogefZPmRibpoerVHMRfTIenWxFIMZ0LQkPPhgDzE8lgOOsOHF31OHZZEGbUeOC00/ATA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=iUzvG9FV; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 437IPF23019112;
-	Sun, 7 Apr 2024 18:29:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=vHN8aIPA4MWCXD6GTXJBjjbsC8NMxInK844BR7pqhAk=; b=iU
-	zvG9FVA/+9Y8VLJULLu6XJ66IyNy0VL9fe2/TShFJmqz+CGxVR1slczZ/Br+6rVR
-	SHNFG9Zy5QMhKFDdbvx+bzdAwSmecu6jr3SrCs/Ubce950CdvjBovWBzf8cnQQYK
-	JXlKp39px0iA038Gi/kePSx/IurQKfKDRSzqrhLUGNEgzPcH9X5tf7yZPbNk24w/
-	HLvZWTmFemE5zfWwWVr0jv0iwwzk76iyITCVSGPZfi5YiiBRW25QysW09M9POS6h
-	PTm3e4vA+Xuzr1SlbR7C5PTeeEcCxnjkmcbhuugt/AcyD1GLU8kw7uOFIEyVLpyN
-	tndiMqCNpigWAjS1WunQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3xawbv25jf-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 07 Apr 2024 18:29:22 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 437IT11R017900
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 7 Apr 2024 18:29:01 GMT
-Received: from [10.110.80.194] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.4; Sun, 7 Apr 2024
- 11:29:01 -0700
-Message-ID: <d409c77b-f4fa-4c12-9467-1a9916f697ef@quicinc.com>
-Date: Sun, 7 Apr 2024 11:29:00 -0700
+	s=arc-20240116; t=1712514767; c=relaxed/simple;
+	bh=ztHnNx/SQUL/wwuwHRpMPiRVSAVPrQTfiIVmDy7B+jk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q7cBeoB7L1lTx+qr2NjxIyWsSNy8NlxKGq5aBPm1slNSy0b55Nlyj7TuSPi7kx9SKBhEPsQm05drqkPRYnMi9GXhCZURc2zXT32QjWvxj3DF6kFxl6yfO/mE6D7RLKElxT7N6oM5nKzbbZDWP0u06Z+vhW5kYydJDBHUWadANVA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=N0ws60Lq; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1e3c89f3d32so156265ad.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 11:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712514765; x=1713119565; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gLqjjjy5BIBpzS1nANECMi7hVdMwuO/IpZycBkQpgS0=;
+        b=N0ws60LqS/uXI5sgK/zPm6o1eyGkFkIQs2EwwM8woaIKJgGWGbVJ5OV3JMKVP3BXey
+         FHJ5iwLE5Egvb2xAYyu2LqutK5O2hYy9/IYAcx0I6hjIZZxLypcmu4b9IaRf4CvbUwu9
+         YVI5qWpnqMmTfPXwJfHqmRTyElYdBqJwCSGSnLtPWnbkpjsqC8bJxukjkSDFNGxEDF0X
+         n1vkgeNYEiYzG1pFVb2juCvoGutIU7aL9A2Um+8VNH5IWT6RPMFFfYP9+A4JgPbF2RtK
+         XXDC0TkLWIoWsaYkNx8pjmszep0gIsJOsOaQVr59lf2vCxpPvsslh7zZir7YI+aYpHBE
+         yT2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712514765; x=1713119565;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gLqjjjy5BIBpzS1nANECMi7hVdMwuO/IpZycBkQpgS0=;
+        b=c/v2D0yTg2c4M3a2hBjQsC5u0YUiSPNXizJIW9vYQ5SzdHwVEsFL5+9W/89OAZQM6V
+         2FQYSevNiSw7e4mlvx4e1t9pColEybFoPX+8KuSBrihqlM3hdDQWi4WLrE8UkEE7ItME
+         ZmbdknWb0GSucHeaGQRBWUi9Tb9p97r+jrj1jR9fj7ZMEvVnWjyHtBWfAm68VPusn25s
+         elxyrP8r9hGOBIe8Ht3m2CLbXmxXZTMVq99hRXkrejh7hlj6BzytFeyP3FhjaCGkd+GC
+         m462rRAMPE81k5suyI2RurptDunUU6V0ef5iQ0VF9AIrIqwNimE43Pp80lgxnNJltt19
+         kGMw==
+X-Forwarded-Encrypted: i=1; AJvYcCU5ZpEYwmhh+f2rdApP4kl6YW0sTdabQMH2wH0j0uhA3LFp9i36CXvu9w5SoWo6E37wz4xL4139OqaggMbLcxuHx9Y/u5BfA/SaKC8z
+X-Gm-Message-State: AOJu0Yy448USAqbIEIXvXWgyXVBXMMjSSlZENSyfiDVfFMHHzSGuug/e
+	rF12bx8F6Sk+XjEpK4aC/mIJ+W4VRqTlye2pXvCFZk2VYbnh3xsJ00NFxpCGPdO4odZDDrwaBuI
+	HxIgnVdERGiu3cgbOzEtcs8g+W64zLqJIpwOJ
+X-Google-Smtp-Source: AGHT+IFJVydgcdM1xx89HGIXg/sm7hAU4b3TmyPgCj29iXcoepIXFDZtzFe8jWiNvQAUJAbfsMrh/qPjYSNKJohaHgk=
+X-Received: by 2002:a17:902:d2c1:b0:1e2:29f3:aff1 with SMTP id
+ n1-20020a170902d2c100b001e229f3aff1mr178307plc.25.1712514765171; Sun, 07 Apr
+ 2024 11:32:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] wifi: ar5523: enable proper endpoint verification
-Content-Language: en-US
-To: Nikita Zhandarovich <n.zhandarovich@fintech.ru>,
-        Kalle Valo
-	<kvalo@kernel.org>
-CC: Wu Yunchuan <yunchuan@nfschina.com>,
-        Johannes Berg
-	<johannes.berg@intel.com>,
-        Breno Leitao <leitao@debian.org>, <linux-wireless@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>,
-        <syzbot+1bc2c2afd44f820a669f@syzkaller.appspotmail.com>
-References: <20240407150534.26737-1-n.zhandarovich@fintech.ru>
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240407150534.26737-1-n.zhandarovich@fintech.ru>
+References: <20240407-perf_digit-v1-0-57ec37c63394@codewreck.org>
+ <20240407-perf_digit-v1-3-57ec37c63394@codewreck.org> <ZhKTrUPbUnBviQYK@codewreck.org>
+In-Reply-To: <ZhKTrUPbUnBviQYK@codewreck.org>
+From: Ian Rogers <irogers@google.com>
+Date: Sun, 7 Apr 2024 11:32:31 -0700
+Message-ID: <CAP-5=fWT4=yT9rxKmR4ing9i-EffRQnjTP355wU-fFN1Mfnezg@mail.gmail.com>
+Subject: Re: [PATCH 3/3] perf parse: Allow names to start with digits
+To: Dominique Martinet <asmadeus@codewreck.org>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>, Jiri Olsa <jolsa@kernel.org>, 
+	Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>, 
+	Namhyung Kim <namhyung@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, 
+	Adrian Hunter <adrian.hunter@intel.com>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: 4gMZI9ZllN1XgdEtB3bxT8meZ-ajjSuB
-X-Proofpoint-GUID: 4gMZI9ZllN1XgdEtB3bxT8meZ-ajjSuB
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-04-07_12,2024-04-05_02,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
- suspectscore=0 priorityscore=1501 mlxscore=0 malwarescore=0 spamscore=0
- bulkscore=0 adultscore=0 mlxlogscore=877 phishscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2404010003
- definitions=main-2404070150
+Content-Transfer-Encoding: quoted-printable
 
-On 4/7/2024 8:05 AM, Nikita Zhandarovich wrote:
-[...]
-> diff --git a/drivers/net/wireless/ath/ar5523/ar5523.c b/drivers/net/wireless/ath/ar5523/ar5523.c
-> index 815f8f599f5d..5cac4a6452db 100644
-> --- a/drivers/net/wireless/ath/ar5523/ar5523.c
-> +++ b/drivers/net/wireless/ath/ar5523/ar5523.c
-> @@ -1594,6 +1594,20 @@ static int ar5523_probe(struct usb_interface *intf,
->  	struct ar5523 *ar;
->  	int error = -ENOMEM;
->  
-> +	static u8 bulk_ep_addr[] = {
+On Sun, Apr 7, 2024 at 5:38=E2=80=AFAM Dominique Martinet
+<asmadeus@codewreck.org> wrote:
+>
+> Dominique Martinet wrote on Sun, Apr 07, 2024 at 09:18:21PM +0900:
+> > diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-eve=
+nts.l
+> > index e86c45675e1d..41c30ff29783 100644
+> > --- a/tools/perf/util/parse-events.l
+> > +++ b/tools/perf/util/parse-events.l
+> > @@ -158,7 +158,7 @@ event             [^,{}/]+
+> >  num_dec              [0-9]+
+> >  num_hex              0x[a-fA-F0-9]{1,16}
+> >  num_raw_hex  [a-fA-F0-9]{1,16}
+> > -name         [a-zA-Z_*?\[\]][a-zA-Z0-9_*?.\[\]!\-]*
+> > +name         [a-zA-Z0-9_*?\[\]][a-zA-Z0-9_*?.\[\]!\-]*
+>
+> grmbl sorry I guess I didn't actually test this two years ago (?!), or
+> used it differently (commit message is weird and also needs fixing,
+> perf probe -e 9p:* does not make sense) or something changed but
+> that's not enough:
+>
+> ----
+> $ sudo ./perf trace -e 9p:9p_fid_ref
+> event syntax error: '9p:9p_fid_ref'
+>                      \___ parser error
+> Run 'perf list' for a list of valid events
+> ----
+>
+> Adding 0-9 to name_tag as well makes perf trace works.
+>
+> I'm not sure what name_minus is for but I did't need to add that one in
+> my test.
+>
+> That also highlights that the test I added isn't sufficient, if someone
+> familiar with the code could hint at a better place to test please tell!
+> Otherwise I'll have a look next weekend, I need to get back to my 9p
+> bugs now I've got a working perf command..
+>
+> >  name_tag     [\'][a-zA-Z_*?\[\]][a-zA-Z0-9_*?\-,\.\[\]:=3D]*[\']
+> >  name_minus   [a-zA-Z_*?][a-zA-Z0-9\-_*?.:]*
+> >  drv_cfg_term [a-zA-Z0-9_\.]+(=3D[a-zA-Z0-9_*?\.:]+)?
+> >
 
-add 'const' qualifier
+Try adding PARSER_DEBUG=3D1 to your command line, I need to do the followin=
+g:
+```
+$ make EXTRA_CFLAGS=3D"-Wno-error=3Dredundant-decls" PARSER_DEBUG=3D1
+```
+For your example it seems to parse with the changes, but I see (which
+should be expected):
+```
+event syntax error: '9p:9p_fid_ref'
+                    \___ unknown tracepoint
 
-> +		AR5523_CMD_TX_PIPE | USB_DIR_OUT,
-> +		AR5523_DATA_TX_PIPE | USB_DIR_OUT,
-> +		AR5523_CMD_RX_PIPE | USB_DIR_IN,
-> +		AR5523_DATA_RX_PIPE | USB_DIR_IN,
-> +		0};
-> +
-> +	if (!usb_check_bulk_endpoints(intf, bulk_ep_addr)) {
-> +		dev_err(&dev->dev,
-> +			"Could not find all expected endpoints\n");
-> +		error = -ENODEV;
-> +		goto out;
-> +	}
-> +
->  	/*
->  	 * Load firmware if the device requires it.  This will return
->  	 * -ENXIO on success and we'll get called back afer the usb
-> 
+Error:  File /sys/kernel/tracing//events/9p/9p_fid_ref not found.
+Hint:   Perhaps this kernel misses some CONFIG_ setting to enable this feat=
+ure?.
 
+Run 'perf list' for a list of valid events
+
+Usage: perf stat [<options>] [<command>]
+
+   -e, --event <event>   event selector. use 'perf list' to list
+available events
+```
+I think Jiri's e-mail should be jolsa@kernel.org.
+
+Thanks,
+Ian
+
+> --
+> Dominique Martinet | Asmadeus
 
