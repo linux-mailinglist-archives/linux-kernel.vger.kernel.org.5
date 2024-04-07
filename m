@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-134335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134336-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7391089B072
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:29:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A45789B074
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 12:29:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 294F41F21986
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:29:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF6C11F21966
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 10:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380E022F14;
-	Sun,  7 Apr 2024 10:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE942562E;
+	Sun,  7 Apr 2024 10:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="enp0ZUL/"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="aHyMTzj/"
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C718F1BC40
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 10:29:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117A521103
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 10:29:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712485744; cv=none; b=kuURfyE2adLFTomKPRYE3eOnmIKkCnJ3AWlVORl3pskHtU0DWk/RqffkIKcPOI496oTrk00WxGNmrc/N9w0mLPZB5qYjFlL1RP7tQDGXdbFCI43f9grhraGBdlgUNsMy3O0KMIdteyNy72Tcxd5gkp9If8MU4q5Q7Xcnx6GqobM=
+	t=1712485745; cv=none; b=bC4bTwQiWoqomiAlrFTRhziyEDyd276ZoiB3HvWM6d5OxmiefVPGUDR5tTYTWj/HT2L+ZCLjM7Fdy5XQtlXKx7OFtZ3xVRb3zVjmO01dL+nNf2vMKMBd0h8AsLLOWiPc47Gw4Ja0X/ofCv/TD6FwzWpU/oznj0DBj95rru4WIDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712485744; c=relaxed/simple;
-	bh=nfBQLNmk1DwAiu5sz3SzWx0/VlIc5TFM2FdoKUlJRmQ=;
+	s=arc-20240116; t=1712485745; c=relaxed/simple;
+	bh=l4QhM+IxjSm6mQ2XW24RcVpAKYRrWpvED2zUuzV8TE0=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=BnCozUCzXZZ3uX3jctlx9veDwVEImKAUw/5jU1Pimnn67yk0+SuBpM/AYB/ZRfoDmMdnwtxcoSsHmrtCaJYwSd5IcGtu+2k0UMs5YeaQWePqY9dFlI7/JfBwvBonr3efkQLlgFMX96FuYDx1Q2eqr8XSv+tMQ+V6C0A+XCyn/dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=enp0ZUL/; arc=none smtp.client-ip=209.85.128.42
+	 MIME-Version; b=hMlWbn4hDugYHgNdoOaE5b84LgBWN8T5RHuKmSlFnELwxuWmeXZJELYf7/jOBkBeUd8DssqXw2RXRDxRlTVdm5wdz+16P323bwYvZzo1AxfxOi86G4kKjvPr7bjEdE5Not2TPmKFPGlM25nTbF8JZBykpvyzdv4afMaecvZZZWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=aHyMTzj/; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4166d6dab3dso62745e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 03:29:02 -0700 (PDT)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4162ad8ddd0so20021185e9.0
+        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 03:29:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1712485741; x=1713090541; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1712485742; x=1713090542; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KwDleUEWZ7wz0Ygnf5oQ1EseNSyfLcLEk9Kc6xn4S48=;
-        b=enp0ZUL/820CmUnkl/65pLZY5Ewan7ezYLtqeBcTkq2O8FCm1R/Xy6J4LwFw1z3F2e
-         gRWw0+HjLjOtYTq+0KimyuNlD0MA1hqUdLk2HRs2hr+ikM99tJOsLpBYETBRkHRJ3a4m
-         ERvoGANxBwDkNwzZmJF4SsOJu3j3U3tSEUzSMf3AWm2yHE2VR4rZpg0SOlzaR5plWynC
-         qbZFtSuknzfoEBL7DCTD7f8Gn/j6B7YjXknQNdh+x2MbzHvO7X01Qjud/i2y3x7+GtGu
-         8eRbQM1xoskyx8WP5J1vUjq89QkN7nitnkeF5z+edG5lSVLTOzIrbXgVhzcKK2QGggpH
-         fjYA==
+        bh=w85wUQFFRwhr768wNwa60mAcNSboWTs5qbhFvFElJwo=;
+        b=aHyMTzj/SFN/QrpzCqPbLEtLQjD8drHr27GBHAQq4F5bMP0wQQdn+aIIi+iGOzYGP4
+         q8gAUEESkmoicwUJRg89IlYPuzJftpKotxKRnsq9umdb1opCxJEC+B47Cr2L8SJJgxir
+         30fjpqBxV502zGP1bhexx/oiSF6Qrm2vIFRMk9OKzWOYzlVCh4vwUhbsZUdTqkAwc+il
+         Fh6RiIF3yLqieatCu1MSi3y3vkYTh3TC6mwamkKbwMurwk9SCW1575g8AGNfdYdSBQ41
+         svd3wKzRZemt9hEHQXzfBKKJ37M/BE55Cq6wIojJduzuYTbOgHDwFj6UQzt6rZ46FT2K
+         DK3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712485741; x=1713090541;
+        d=1e100.net; s=20230601; t=1712485742; x=1713090542;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KwDleUEWZ7wz0Ygnf5oQ1EseNSyfLcLEk9Kc6xn4S48=;
-        b=vdvBnsva3YUCzxQgSnxotVPaV3DHA34p/WDTNn8FYt3/9qzXqf63lN9mBmdZPWgIoi
-         ntGaMwFfXJqlBBrtN+bRnm2kLlUAIaO++5YzunbS1oeUWOWaBYKyW4RISEH4q3JaCgVz
-         RKm4IMhF+iZEkL+uBop8UZDRwQZVybBwoQYAAynWXe8KFhOEWcdcRld8WVYr/6/pWMT8
-         mKbO76DyCmih1Ou4TPUsqNTdcNP7R8Ze07fYkprKPAsZIOAZDooRw+RhMOTCZgurRu0M
-         qI9Le56z0AFwY+26Ke+3XmGqGMOJMxPtSCc7Vv9dGvTs5DIepf1cuHDSoQfD7BcwApIJ
-         8A6w==
-X-Forwarded-Encrypted: i=1; AJvYcCUnAtIp64UVDgyxMSjaCDon+cwa4djXwknTjUFD/yb3EBC27rZqi5hPnL6KW3KA0zCqxN6fjSL8Oa71qCpn9qsrP65my6HaQKS3xTVC
-X-Gm-Message-State: AOJu0Yz7ZUWO09WGqsbeT258uQLoVqWqu+vVYjlnxFT+APuXmBAFCZXi
-	6Q5PzVbgvjPshvT/AAO8KPMZKxrm6h/SJ48Cy5OZLN4NvffmE+MN6CjPSUNmU9U=
-X-Google-Smtp-Source: AGHT+IFsUHJqYHtPKagNrFCK5cXUbUz4V0d8dUnN5mPnLnT4HxN/3uE4BigWEyT+5flKRdcH8N/Rpw==
-X-Received: by 2002:a05:600c:4590:b0:415:54d2:155a with SMTP id r16-20020a05600c459000b0041554d2155amr4646141wmo.10.1712485741199;
-        Sun, 07 Apr 2024 03:29:01 -0700 (PDT)
+        bh=w85wUQFFRwhr768wNwa60mAcNSboWTs5qbhFvFElJwo=;
+        b=GbSFPdCuxHM1mMComhSyuWI6TVZfcov6XVqqse1P090eaSHD5OZS17enh0SQSJydRJ
+         gkGNaDtNxZfIEkHxeMnV+ddkI40sKPudWGCykKeq9wRvRm9e9I40GLdj1k9Cs3umO4Pz
+         7LsDcRiVLTp9XrQj3FXIr3xI2M3E9TI0/Jj7jIkUOjiCzRAFHyQX1ZznhllUD3jGpD0J
+         D4KW1iH2dxHFxI0ZBgg5NNxihZJcMeCoe74YVN5MQbhm3nEtRgoAtwuOil7f3Ds2vTvw
+         Zj4Xg17S8f/zdTVfXxWqrB8kN7SbqCogvGAaDJVp+PNmnCbQrmqiWmrW3E1l9WThrcvo
+         qMXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW9iYDgZqGYMtm7tpsmajQA9o2kc/n/HW+5lBGc2Km9fWlACanZvU2lKmiWmK3wBKAVl6HGV3HCOosDXbykYAksTVrME8MV55zzRdl2
+X-Gm-Message-State: AOJu0YyKE3vM1DxJHjapZIHEAcB9JkyKhcehaGNKylEnL+QSHuRG4/lr
+	r0tIyjUK8xMSFQ+HHAvpsclyocMASQGBauHw/p4/IWZju7Y8RsGetrve3iNUQqg=
+X-Google-Smtp-Source: AGHT+IEQe5/Bsm/TQKB4qX1qxV3uy3cg/WeLuTUZ62g74IaNk/xxpRT2tJ2alsoOZP+5w8I13D0dUA==
+X-Received: by 2002:a05:600c:35c3:b0:415:540e:760d with SMTP id r3-20020a05600c35c300b00415540e760dmr4728605wmq.5.1712485742523;
+        Sun, 07 Apr 2024 03:29:02 -0700 (PDT)
 Received: from krzk-bin.. ([178.197.223.16])
-        by smtp.gmail.com with ESMTPSA id m37-20020a05600c3b2500b00416665d3e09sm675487wms.9.2024.04.07.03.28.59
+        by smtp.gmail.com with ESMTPSA id m37-20020a05600c3b2500b00416665d3e09sm675487wms.9.2024.04.07.03.29.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Apr 2024 03:29:00 -0700 (PDT)
+        Sun, 07 Apr 2024 03:29:02 -0700 (PDT)
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzk+dt@kernel.org>,
@@ -76,9 +76,9 @@ To: Rob Herring <robh@kernel.org>,
 	linux-rockchip@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH 3/4] arm64: dts: rockchip: drop redundant disable-gpios in Lubancat 1
-Date: Sun,  7 Apr 2024 12:28:53 +0200
-Message-Id: <20240407102854.38672-3-krzysztof.kozlowski@linaro.org>
+Subject: [PATCH 4/4] arm64: dts: rockchip: drop redundant disable-gpios in Lubancat 2
+Date: Sun,  7 Apr 2024 12:28:54 +0200
+Message-Id: <20240407102854.38672-4-krzysztof.kozlowski@linaro.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240407102854.38672-1-krzysztof.kozlowski@linaro.org>
 References: <20240407102854.38672-1-krzysztof.kozlowski@linaro.org>
@@ -99,23 +99,23 @@ real property for this GPIO.
 
 This fixes dtbs_check warning:
 
-  rk3566-lubancat-1.dtb: pcie@fe260000: Unevaluated properties are not allowed ('disable-gpios' was unexpected)
+  rk3568-lubancat-2.dtb: pcie@fe260000: Unevaluated properties are not allowed ('disable-gpios' was unexpected)
 
 Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
- arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts | 1 -
+ arch/arm64/boot/dts/rockchip/rk3568-lubancat-2.dts | 1 -
  1 file changed, 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts b/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts
-index 6ecdf5d28339..c1194d1e438d 100644
---- a/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3566-lubancat-1.dts
-@@ -447,7 +447,6 @@ rgmii_phy1: phy@0 {
+diff --git a/arch/arm64/boot/dts/rockchip/rk3568-lubancat-2.dts b/arch/arm64/boot/dts/rockchip/rk3568-lubancat-2.dts
+index a8a4cc190eb3..a3112d5df200 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3568-lubancat-2.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3568-lubancat-2.dts
+@@ -523,7 +523,6 @@ &pcie3x2 {
  
  &pcie2x1 {
- 	reset-gpios = <&gpio0 RK_PB6 GPIO_ACTIVE_HIGH>;
--	disable-gpios = <&gpio0 RK_PA6 GPIO_ACTIVE_HIGH>;
- 	vpcie3v3-supply = <&vcc3v3_pcie>;
+ 	reset-gpios = <&gpio3 RK_PC1 GPIO_ACTIVE_HIGH>;
+-	disable-gpios = <&gpio3 RK_PC2 GPIO_ACTIVE_HIGH>;
+ 	vpcie3v3-supply = <&vcc3v3_mini_pcie>;
  	status = "okay";
  };
 -- 
