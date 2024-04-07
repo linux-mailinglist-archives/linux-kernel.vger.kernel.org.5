@@ -1,97 +1,75 @@
-Return-Path: <linux-kernel+bounces-134540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01EBA89B2C1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 17:55:41 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 477DB89B2CE
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 18:10:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA8002816B5
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:55:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81D31282262
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 16:10:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BA6239FF3;
-	Sun,  7 Apr 2024 15:55:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A6643A1B5;
+	Sun,  7 Apr 2024 16:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="l3c/UYLL"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b="CeTS4FKg"
+Received: from mail.toke.dk (mail.toke.dk [45.145.95.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688361EEE9
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 15:55:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5043B37149;
+	Sun,  7 Apr 2024 16:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.95.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712505334; cv=none; b=l91VSrgCex7AlO3KdMV7yu/pzvqqEfRqfmdABNj/5AznuEQKphTNN5Kb4Bq0R+Nq8PMw+rF8QWl7pN+dFw+NEUmqh2EuD/GYi4KIUD2ylXrjbOrIzKLPm1o1fJjVlorF77YDfp/9UwzY61J/jVHUAgqYBJS5/YbrRIXchV0Wvs4=
+	t=1712506219; cv=none; b=kvDedg7a6zKedRPzCsbuaFMaBOvVyQZUR8oILkKlSOvN9JGklHkRhi52X0uOAh07EN7WUI9p4q8/KXxbZm/0GRMtFEaHC85CZllS5xtFSkG4Qot+PHUkNvEszx1mjPARsCMgMiqR2hT3OUvhjb8zymQnrEqbKgwpTHi5sO+zIa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712505334; c=relaxed/simple;
-	bh=6kkPJdu5raGq+lO4qJBmb+P54LbJQkkF985xzuXyRbo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HH9kggHbpctthiiORugUjdLnPrlcZZ/T7LOx7BzMa192PmYXEUKlNhxeQMknauA4Du7VRRfx0i07tksUKFht0ahccVXnIQXMXBm0wlmL9nz6nBzk91ecvqHgHS/Vid4N6J29rfRg2My+u3LpZBhBOPDawzGPE26YU7WJfuNaPlk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=l3c/UYLL; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1712505333; x=1744041333;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=6kkPJdu5raGq+lO4qJBmb+P54LbJQkkF985xzuXyRbo=;
-  b=l3c/UYLLpPtWMcrABbHo96I+eUcX+PPpe0JujCCQZ2sHs7urs+F92LAm
-   rMwxA0tGZmx3dx0fstrI0o4VfA79T6VHdAHMUznyU9FAZaxmbVBnOdQQp
-   MK9u6RheBowuCmJSJTMIF/wkUxxhzASZCxeYARc1K5e8m/xTAykkzvLzc
-   42PdSMwTbPOSdcuUK0H84m1aDgaJDn/Tn1xSV20gAPSOgmmIK7G6Sq9TF
-   g5yH7S55iYdM3Ll2YhFkZx7/8yZ3RBd+ON2VSusVMTAKAXrPN5VVcChdU
-   t8aTGmOHxPErwf5tXoIp2OaS0+q8ME+z0xvOlsSuvj9e21Yl/7MIh87A9
-   Q==;
-X-CSE-ConnectionGUID: bX2802nGSSmQ9xyonZ0lNQ==
-X-CSE-MsgGUID: a9m9aotXTXKEh/GAXWvKNg==
-X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="30271189"
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="30271189"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 08:55:33 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="937090007"
-X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
-   d="scan'208";a="937090007"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 07 Apr 2024 08:55:28 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id 2E8AF1CB; Sun,  7 Apr 2024 18:55:27 +0300 (EEST)
-Date: Sun, 7 Apr 2024 18:55:27 +0300
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: "Kalra, Ashish" <ashish.kalra@amd.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, 
-	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"Rafael J. Wysocki" <rafael@kernel.org>, Peter Zijlstra <peterz@infradead.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, 
-	Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>, Elena Reshetova <elena.reshetova@intel.com>, 
-	Jun Nakajima <jun.nakajima@intel.com>, Rick Edgecombe <rick.p.edgecombe@intel.com>, 
-	Tom Lendacky <thomas.lendacky@amd.com>, Sean Christopherson <seanjc@google.com>, 
-	"Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>, kexec@lists.infradead.org, 
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv9 00/17] x86/tdx: Add kexec support
-Message-ID: <da7hfavumtb4nyp6se2pwwkq3idxgzpehnn67qsjdgigh6xq7f@lk4w5o7o6ama>
-References: <20240325103911.2651793-1-kirill.shutemov@linux.intel.com>
- <bdeda1f9-b7d2-4bc3-ad20-342478be464b@amd.com>
+	s=arc-20240116; t=1712506219; c=relaxed/simple;
+	bh=jRHmiYZioEwTqHzvjz9ABYHfiTrjg7+dvZ5R454o5LU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=PHKQjb5rZlNc7O0UZRQu41pyHpBXO3oXq5ON2QbsVTszfZ8I9kKapq7ow9NTwRuL/TnKLCcIWru2YmBL1mxifZMo/s9WL/XnCOG+pIvbSNzyTnrl4zp0DICpK37ZRlgf058rlFdDzSqDbD+WZcQBpWgsCozNOWsGQFrO4Z3LZZg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk; spf=pass smtp.mailfrom=toke.dk; dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b=CeTS4FKg; arc=none smtp.client-ip=45.145.95.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toke.dk
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
+	t=1712506205; bh=jRHmiYZioEwTqHzvjz9ABYHfiTrjg7+dvZ5R454o5LU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=CeTS4FKglAx+piMHVKigJkdCDiiM1bokhQAM9Q5pZWIb4AZP+M8uh0y3zUBI2swey
+	 1Y5rmf+F3PYKcb9ngrPTadUwe4m0mcsAZwO5BFsGhxXgr1473SlczVyX3X5UnHfDJJ
+	 FXDPz2t98/zRjgjTMPNDtQZAdA1PX7RidonG7j1GvTXUETxWSBWweovpu7gzxd6I63
+	 1nGtkjqQoyWImhDp3OTfoVGhybpPro2b0nSgpM+GzeWtMzEOau/1QrpHHIyj5ftP6b
+	 rQk3oes8bDqLriOLkddTTpQ8gr+NIVy38njV5/ZB06gQKu/hg44FZR6kQtVDAHwUA0
+	 hqdD0pk/c5FWA==
+To: Kuan-Wei Chiu <visitorckw@gmail.com>
+Cc: jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
+ davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+ pabeni@redhat.com, jserv@ccns.ncku.edu.tw, cake@lists.bufferbloat.net,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Kuan-Wei Chiu
+ <visitorckw@gmail.com>
+Subject: Re: [PATCH net-next] net: sched: cake: Optimize number of calls to
+ cake_heapify()
+In-Reply-To: <20240406235532.613696-1-visitorckw@gmail.com>
+References: <20240406235532.613696-1-visitorckw@gmail.com>
+Date: Sun, 07 Apr 2024 18:10:04 +0200
+X-Clacks-Overhead: GNU Terry Pratchett
+Message-ID: <87frvxgnmr.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bdeda1f9-b7d2-4bc3-ad20-342478be464b@amd.com>
+Content-Type: text/plain
 
-On Thu, Apr 04, 2024 at 01:27:47PM -0500, Kalra, Ashish wrote:
-> The cover letter mention the inclusion of the following patch - Keep page
-> tables that maps E820_TYPE_ACPI (Ashish)
-> 
-> But i don't this patch included in your patch-set.
+Kuan-Wei Chiu <visitorckw@gmail.com> writes:
 
-Ouch. My bad. Will fix in v10.
+> Improve the max-heap construction process by reducing unnecessary
+> heapify operations. Specifically, adjust the starting condition from
+> n / 2 to n / 2 - 1 in the loop that iterates over all non-leaf
+> elements.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+Please add an explanation for why this change is correct, and why it is
+beneficial. "Improve" and "unnecessary" is way too implicit.
+
+pw-bot: cr
 
