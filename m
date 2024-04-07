@@ -1,60 +1,58 @@
-Return-Path: <linux-kernel+bounces-134469-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134470-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA3BA89B1DF
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:34:01 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F6AC89B1E2
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:34:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 71885B22691
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:33:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A718C1C20E1F
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:34:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A2C1304B5;
-	Sun,  7 Apr 2024 13:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FE7B130A5C;
+	Sun,  7 Apr 2024 13:13:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgngkJMr"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D4+ckiN1"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523F212FF9C;
-	Sun,  7 Apr 2024 13:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C113130A4C;
+	Sun,  7 Apr 2024 13:13:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495617; cv=none; b=KD2XgNGj7H4Y4784/6pgr1vnOHHQvIrWrnPSwpliCfVoQ79VuIcrPre4oyesywQmpWtqtxCP5fBV1qNPB9FgIHMGibOwY1OlowdFelEWvUx9ZYD40jmM/Y913KdFSC+VvlwUtSf/JEcX/So4tyzwxutFa/2m3qpYFA7Vn3AfTCE=
+	t=1712495619; cv=none; b=UUiXkTrYODJLrxXNCdNDkCXY61KAbNXjwtO7cymBkThp4tJehDEchHmy7v+kpMDxKnh30QoM/BGZ+RrK+Fpv1fELtT0qbiePWdlnXb+97IpkPM2EY6FJlpjtU3GzUDjYxj5UagtiNewKOxbJP4l3frmXCTH8WtFfHej8beiAIvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495617; c=relaxed/simple;
-	bh=c8XQeQwtEltbFX6HkBYB9bg5rHyG3/SpOdtdE31OSls=;
+	s=arc-20240116; t=1712495619; c=relaxed/simple;
+	bh=pWY5KBPRHC/DMNF2eOT2XhEVxqzLGgWzS978Y/5K94k=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cdKV7rqup8XEZY9DwAiG5Pf7UkuSmF3YmZWHHCDGQ9o3YTdu7PTfwA+Mad0gTxKxhtQjQdfvdre0gAQlP90KuSMvWlybnxYii8T2s5QLPQ55N8Gf0fgbXqpafpHlJDQmCz1Rw0OSzsZsjY35/NSA2t4/iWRV+DCLLpfwjxbR7DE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sgngkJMr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C0E7C433F1;
-	Sun,  7 Apr 2024 13:13:35 +0000 (UTC)
+	 MIME-Version; b=HNLEtfPxt5JDbVUHityE6VdroFsVtauwLhMwiJ7+QGT9K7Pjg5vXybKPu4sLEdXUoHD1GIx7pd8n1kM6Zb++kHNi90DeWAtmuy0JeOSxNRg+wvtegYLgWpklEdrfuY1Ee7bdF6iuS8E9KNk0xByPh79lvQNKzJH/Cl/+3Iq/4uQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D4+ckiN1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96B2FC433B1;
+	Sun,  7 Apr 2024 13:13:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495617;
-	bh=c8XQeQwtEltbFX6HkBYB9bg5rHyG3/SpOdtdE31OSls=;
+	s=k20201202; t=1712495618;
+	bh=pWY5KBPRHC/DMNF2eOT2XhEVxqzLGgWzS978Y/5K94k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sgngkJMrLMz3SCoa0HajWFAbNyv6O8uOr3bYSQMxs4it+J68qDyvLBLZ4rgEKMSjZ
-	 wyVZJB9d3ZTBQTlM3EYFUG6hN55fJxJVohCESczt3kfEED1C8oMYvHAJqlK9PQBr84
-	 Jf5ZTgHAfqt9y02DrbZDOeByDKM8FgrNyIeey96erk1z73QVqieAiJ/nU56TedVBqw
-	 xrNtHN08riQGjIJwye6I3ki4bMWtaARZKCTyZ80kTetojoVyzq73y2qC1/TIkBo+Q1
-	 p1p24jK/yM2SPAmOmvPwZ0Wn0d5+jzFuF4mkpRnjfeXK0JODsAo8w2dCA0IiZVYaId
-	 m2+EE8lxuiLWw==
+	b=D4+ckiN1N/bfTEC8vwDBFD7Ep+viWetfGdarXXdgoIOAOR1bodpSl7ZzC1/6V5z8b
+	 F0YARMp2bIfRDGWmXwUxvg40Zl64Fmn5vhUATn/QYULm4BhAF6ypmbxkMPjluiAPQt
+	 n5hkFMjMUim6H6Ila6N8aMz7/edYShrBiTiLt05O2HdLtMMWRfIMjw3mST4ZABWSkE
+	 eilFIAbRjWJx/vdv6+4k1yIy4Vs5yfzf7WVUHDD23bObCalY/tUdbpUIuEeNa5StHX
+	 uJWInX7jTJmxLF1OqoLrCbrUWIaVnv0FQwx2CAU1Bz6f/uhjyFDqh9xqd3LvmjvP7P
+	 yek+NHh+sTZ/w==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Andrei Matei <andreimatei1@gmail.com>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Alexei Starovoitov <ast@kernel.org>,
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>,
+	Paul Menzel <pmenzel@molgen.mpg.de>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	Marco Elver <elver@google.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
 	Sasha Levin <sashal@kernel.org>,
-	daniel@iogearbox.net,
-	shuah@kernel.org,
-	jolsa@kernel.org,
-	bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 12/13] bpf: Check bloom filter map value size
-Date: Sun,  7 Apr 2024 09:13:11 -0400
-Message-ID: <20240407131316.1052393-12-sashal@kernel.org>
+	linux-kbuild@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 13/13] kbuild: Disable KCSAN for autogenerated *.mod.c intermediaries
+Date: Sun,  7 Apr 2024 09:13:12 -0400
+Message-ID: <20240407131316.1052393-13-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131316.1052393-1-sashal@kernel.org>
 References: <20240407131316.1052393-1-sashal@kernel.org>
@@ -69,83 +67,98 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.1.84
 Content-Transfer-Encoding: 8bit
 
-From: Andrei Matei <andreimatei1@gmail.com>
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
-[ Upstream commit a8d89feba7e54e691ca7c4efc2a6264fa83f3687 ]
+[ Upstream commit 54babdc0343fff2f32dfaafaaa9e42c4db278204 ]
 
-This patch adds a missing check to bloom filter creating, rejecting
-values above KMALLOC_MAX_SIZE. This brings the bloom map in line with
-many other map types.
+When KCSAN and CONSTRUCTORS are enabled, one can trigger the
 
-The lack of this protection can cause kernel crashes for value sizes
-that overflow int's. Such a crash was caught by syzkaller. The next
-patch adds more guard-rails at a lower level.
+  "Unpatched return thunk in use. This should not happen!"
 
-Signed-off-by: Andrei Matei <andreimatei1@gmail.com>
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
-Link: https://lore.kernel.org/r/20240327024245.318299-2-andreimatei1@gmail.com
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+catch-all warning.
+
+Usually, when objtool runs on the .o objects, it does generate a section
+return_sites which contains all offsets in the objects to the return
+thunks of the functions present there. Those return thunks then get
+patched at runtime by the alternatives.
+
+KCSAN and CONSTRUCTORS add this to the object file's .text.startup
+section:
+
+  -------------------
+  Disassembly of section .text.startup:
+
+  ...
+
+  0000000000000010 <_sub_I_00099_0>:
+    10:   f3 0f 1e fa             endbr64
+    14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+                          15: R_X86_64_PLT32      __tsan_init-0x4
+    19:   e9 00 00 00 00          jmp    1e <__UNIQUE_ID___addressable_cryptd_alloc_aead349+0x6>
+                          1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+  -------------------
+
+which, if it is built as a module goes through the intermediary stage of
+creating a <module>.mod.c file which, when translated, receives a second
+constructor:
+
+  -------------------
+  Disassembly of section .text.startup:
+
+  0000000000000010 <_sub_I_00099_0>:
+    10:   f3 0f 1e fa             endbr64
+    14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+                          15: R_X86_64_PLT32      __tsan_init-0x4
+    19:   e9 00 00 00 00          jmp    1e <_sub_I_00099_0+0xe>
+                          1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+
+  ...
+
+  0000000000000030 <_sub_I_00099_0>:
+    30:   f3 0f 1e fa             endbr64
+    34:   e8 00 00 00 00          call   39 <_sub_I_00099_0+0x9>
+                          35: R_X86_64_PLT32      __tsan_init-0x4
+    39:   e9 00 00 00 00          jmp    3e <__ksymtab_cryptd_alloc_ahash+0x2>
+                          3a: R_X86_64_PLT32      __x86_return_thunk-0x4
+  -------------------
+
+in the .ko file.
+
+Objtool has run already so that second constructor's return thunk cannot
+be added to the .return_sites section and thus the return thunk remains
+unpatched and the warning rightfully fires.
+
+Drop KCSAN flags from the mod.c generation stage as those constructors
+do not contain data races one would be interested about.
+
+Debugged together with David Kaplan <David.Kaplan@amd.com> and Nikolay
+Borisov <nik.borisov@suse.com>.
+
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Closes: https://lore.kernel.org/r/0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Tested-by: Paul Menzel <pmenzel@molgen.mpg.de> # Dell XPS 13
+Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/bloom_filter.c                           | 13 +++++++++++++
- .../selftests/bpf/prog_tests/bloom_filter_map.c     |  6 ++++++
- 2 files changed, 19 insertions(+)
+ scripts/Makefile.modfinal | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/kernel/bpf/bloom_filter.c b/kernel/bpf/bloom_filter.c
-index 48ee750849f25..78e810f49c445 100644
---- a/kernel/bpf/bloom_filter.c
-+++ b/kernel/bpf/bloom_filter.c
-@@ -88,6 +88,18 @@ static int bloom_map_get_next_key(struct bpf_map *map, void *key, void *next_key
- 	return -EOPNOTSUPP;
- }
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index 3af5e5807983a..650d59388336f 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -23,7 +23,7 @@ modname = $(notdir $(@:.mod.o=))
+ part-of-module = y
  
-+/* Called from syscall */
-+static int bloom_map_alloc_check(union bpf_attr *attr)
-+{
-+	if (attr->value_size > KMALLOC_MAX_SIZE)
-+		/* if value_size is bigger, the user space won't be able to
-+		 * access the elements.
-+		 */
-+		return -E2BIG;
-+
-+	return 0;
-+}
-+
- static struct bpf_map *bloom_map_alloc(union bpf_attr *attr)
- {
- 	u32 bitset_bytes, bitset_mask, nr_hash_funcs, nr_bits;
-@@ -196,6 +208,7 @@ static int bloom_map_check_btf(const struct bpf_map *map,
- BTF_ID_LIST_SINGLE(bpf_bloom_map_btf_ids, struct, bpf_bloom_filter)
- const struct bpf_map_ops bloom_filter_map_ops = {
- 	.map_meta_equal = bpf_map_meta_equal,
-+	.map_alloc_check = bloom_map_alloc_check,
- 	.map_alloc = bloom_map_alloc,
- 	.map_free = bloom_map_free,
- 	.map_get_next_key = bloom_map_get_next_key,
-diff --git a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c b/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
-index d2d9e965eba59..f79815b7e951b 100644
---- a/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
-+++ b/tools/testing/selftests/bpf/prog_tests/bloom_filter_map.c
-@@ -2,6 +2,7 @@
- /* Copyright (c) 2021 Facebook */
+ quiet_cmd_cc_o_c = CC [M]  $@
+-      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV), $(c_flags)) -c -o $@ $<
++      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV) $(CFLAGS_KCSAN), $(c_flags)) -c -o $@ $<
  
- #include <sys/syscall.h>
-+#include <limits.h>
- #include <test_progs.h>
- #include "bloom_filter_map.skel.h"
- 
-@@ -21,6 +22,11 @@ static void test_fail_cases(void)
- 	if (!ASSERT_LT(fd, 0, "bpf_map_create bloom filter invalid value size 0"))
- 		close(fd);
- 
-+	/* Invalid value size: too big */
-+	fd = bpf_map_create(BPF_MAP_TYPE_BLOOM_FILTER, NULL, 0, INT32_MAX, 100, NULL);
-+	if (!ASSERT_LT(fd, 0, "bpf_map_create bloom filter invalid value too large"))
-+		close(fd);
-+
- 	/* Invalid max entries size */
- 	fd = bpf_map_create(BPF_MAP_TYPE_BLOOM_FILTER, NULL, 0, sizeof(value), 0, NULL);
- 	if (!ASSERT_LT(fd, 0, "bpf_map_create bloom filter invalid max entries size"))
+ %.mod.o: %.mod.c FORCE
+ 	$(call if_changed_dep,cc_o_c)
 -- 
 2.43.0
 
