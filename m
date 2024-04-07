@@ -1,214 +1,149 @@
-Return-Path: <linux-kernel+bounces-134511-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134512-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CB6B89B260
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:54:37 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEBEB89B261
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:55:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 87F1AB20CF3
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:54:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 71AEF28173D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:55:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4C16381DE;
-	Sun,  7 Apr 2024 13:54:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBE1D381DE;
+	Sun,  7 Apr 2024 13:55:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UNEuwH7k"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="E0PCYMw/"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 474F011720
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 13:54:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E8039AC1
+	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 13:55:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712498068; cv=none; b=BJKmPUc41i2JS+0IteRvF4vZQ/6lh2V2QE6cq6pbFgSvNyDgNKT+XajLHQy1hYNAmIiswB9JaLNv+Q6uGxAwLVJweLjSdMoLD0pmRqVe/l/lfDuAWWozhIRHyCuNyqkcYWaPpdfKWxd1WzifX5mCVp8XEx5Fjw8MYb9dL8PcMAs=
+	t=1712498114; cv=none; b=Pd1qLW5KH65P2KaxtiGMHkmAifGN3RaUAsSg30WeAv4baAEdwQ4E3WgqqEXxUWSRbKjKDljfrWiTEFCeuvDx0zPDvVHiKzM2TyQOd7oeNzezhrNOEdjejKaYrRADcX2dGYwV6CJFopyIgKNJeF2nbEkwHu9XklH+S5AWARSa4RY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712498068; c=relaxed/simple;
-	bh=jxBqjjbPajszaEdq2fwpE6x+8A0oeppI3j2mrb+v9n4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KHnIyXCBSTh1ysOeNLSNimBiuswPHIN2oGAWkPC8ERCJXy2COlaON9RvYpRXx+IZm4MNJNo/5TVyfLPI9cFDs8BPhvFBSFnezOgsDOICFqiFjtyZ93f7mGo3uUA0lT/wP1FTVNhohPyXZkRf+d48Q5AG7qFTCMHq+WvVXv84r/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UNEuwH7k; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1712498065;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=88iwLBU2e6djTkjvz8Wf+ZEeZw4XISzU7qQzK/TLfNA=;
-	b=UNEuwH7kSvj89Z+q0/HDLUbYf07g5yLb8+SJXmNcHtpaZr3mlEMZxyBErV60uUaRTyuKuk
-	30hI6OL7EZswthPcy4yElqEvIvwfbCE0LoOWOtn+YgmaT9gGqf4QZfUmhNTuizTL0MAm3f
-	7ktMEwjLf3ZAUH2ZQMIVRAKHpjITEpk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-66-upORUUgENOS-LCzNvktl5Q-1; Sun, 07 Apr 2024 09:54:23 -0400
-X-MC-Unique: upORUUgENOS-LCzNvktl5Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C692A104457C;
-	Sun,  7 Apr 2024 13:54:22 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.79])
-	by smtp.corp.redhat.com (Postfix) with SMTP id B63031C21915;
-	Sun,  7 Apr 2024 13:54:18 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-	oleg@redhat.com; Sun,  7 Apr 2024 15:52:57 +0200 (CEST)
-Date: Sun, 7 Apr 2024 15:52:48 +0200
-From: Oleg Nesterov <oleg@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Nick Piggin <npiggin@gmail.com>, Tejun Heo <tj@kernel.org>,
-	Leonardo Bras <leobras@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	linux-kernel@vger.kernel.org, Junyao Zhao <junzhao@redhat.com>,
-	Chris von Recklinghausen <crecklin@redhat.com>
-Subject: Re: Nohz_full on boot CPU is broken (was: Re: [PATCH v2 1/1] wq:
- Avoid using isolated cpus' timers on queue_delayed_work)
-Message-ID: <20240407135248.GB10796@redhat.com>
-References: <20240130010046.2730139-2-leobras@redhat.com>
- <20240402105847.GA24832@redhat.com>
- <Zg2qFinSkAOmRHcM@slm.duckdns.org>
- <20240403203814.GD31764@redhat.com>
- <20240405140449.GB22839@redhat.com>
- <ZhByg-xQv6_PC3Pd@localhost.localdomain>
- <20240407130914.GA10796@redhat.com>
+	s=arc-20240116; t=1712498114; c=relaxed/simple;
+	bh=888uh1bwRSf18AZDAo3aKr7KkxhTamJG75bi1SMo3X4=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=dJGT7awqIONLxUykVu3RdDOuA+9mwMx2hXDQbg3qrWJdmqK97GQ4GLdh/kb3A/R9Ydv4F1QKcSCuvOb6eOVbh0PeAId6BIp82VnIVvaJe+yr2YLKhJm76vehrdRsaIMoNzlga5IUNb8vqSRyxXNf7LR9ZPtijfb4TbimTqwAHDQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=E0PCYMw/; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712498112; x=1744034112;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=888uh1bwRSf18AZDAo3aKr7KkxhTamJG75bi1SMo3X4=;
+  b=E0PCYMw/rMROV8KIKFE9fKlDjahV1UhGXPrA0xz6sexXKF8Wj/u9ffZb
+   CUjR3ROvDRKKWSTwu2i8O41WD0IKYZdiTpe6bu0pSprlhWSneeUpvY+nu
+   G03GJ7mAwWzJGmA/AoTvac64vB09G1ZOuK6wKXf82Li/bJ7Hm1Ie2ElPI
+   ul3BFiS/VJJJYXFi/g96+EpN7oH35fMlo1Ui80Hf9r1YVPWDqblSmDC54
+   fjAlq8L/69/rnwlrnqvVbMQcXFZmSo5TZHhu4PiCZXwXLt/wS0nAwOImu
+   rXBtgNi6wlzEwcn768HXWYhcqvrOq0gWL1YmXC1G0bUpcsTknNe1/itVf
+   A==;
+X-CSE-ConnectionGUID: YJPbR5vGRTKqcWUxgiZz5Q==
+X-CSE-MsgGUID: bxNzl+KQQiqROMBAKS1/kw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11037"; a="7683911"
+X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
+   d="scan'208";a="7683911"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2024 06:55:11 -0700
+X-CSE-ConnectionGUID: Mf4YHTh2TSSAHxAVT0J5ug==
+X-CSE-MsgGUID: U5wXGk/TTOyvb5oiuPZodA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,185,1708416000"; 
+   d="scan'208";a="57097428"
+Received: from lkp-server01.sh.intel.com (HELO e61807b1d151) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 07 Apr 2024 06:55:11 -0700
+Received: from kbuild by e61807b1d151 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rtSzE-0004OQ-04;
+	Sun, 07 Apr 2024 13:55:08 +0000
+Date: Sun, 7 Apr 2024 21:54:36 +0800
+From: kernel test robot <lkp@intel.com>
+To: Johannes Berg <johannes.berg@intel.com>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: include/linux/compiler_types.h:358:45: error: call to
+ '__compiletime_assert_969' declared with attribute error: BUILD_BUG_ON
+ failed: sizeof(struct ieee80211_rx_status) > sizeof(skb->cb)
+Message-ID: <202404072115.AWjHM1sP-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240407130914.GA10796@redhat.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 
-On 04/07, Oleg Nesterov wrote:
->
-> On 04/05, Frederic Weisbecker wrote:
-> >
-> > +Cc Nick
-> >
-> > Le Fri, Apr 05, 2024 at 04:04:49PM +0200, Oleg Nesterov a écrit :
-> > > On 04/03, Oleg Nesterov wrote:
-> > > >
-> > > > > > OTOH, Documentation/timers/no_hz.rst says
-> > > > > >
-> > > > > > 	Therefore, the
-> > > > > > 	boot CPU is prohibited from entering adaptive-ticks mode.  Specifying a
-> > > > > > 	"nohz_full=" mask that includes the boot CPU will result in a boot-time
-> > > > > > 	error message, and the boot CPU will be removed from the mask.
-> > > > > >
-> > > > > > and this doesn't match the reality.
-> > > > >
-> > > > > Don't some archs allow the boot CPU to go down too tho? If so, this doesn't
-> > > > > really solve the problem, right?
-> > > >
-> > > > I do not know. But I thought about this too.
-> > > >
-> > > > In the context of this discussion we do not care if the boot CPU goes down.
-> > > > But we need at least one housekeeping CPU after cpu_down(). The comment in
-> > > > cpu_down_maps_locked() says
-> > > >
-> > > > 	Also keep at least one housekeeping cpu onlined
-> > > >
-> > > > but it checks HK_TYPE_DOMAIN, and I do not know (and it is too late for me
-> > > > to try to read the code ;) if housekeeping.cpumasks[HK_TYPE_TIMER] can get
-> > > > empty or not.
-> > >
-> > > This nearly killed me, but I managed to convince myself we shouldn't worry
-> > > about cpu_down().
-> > >
-> > > HK_FLAG_TIMER implies HK_FLAG_TICK.
-> > >
-> > > HK_FLAG_TICK implies tick_nohz_full_setup() which sets
-> > > tick_nohz_full_mask = non_housekeeping_mask.
-> > >
-> > > When tick_setup_device() is called on a housekeeping CPU it does
-> > >
-> > > 	else if (tick_do_timer_boot_cpu != -1 &&
-> > > 					!tick_nohz_full_cpu(cpu)) {
-> > > 		tick_take_do_timer_from_boot();
-> > > 		tick_do_timer_boot_cpu = -1;
-> > >
-> > >
-> > > 	and this sets tick_do_timer_cpu = first-housekeeping-cpu.
-> > >
-> > > cpu_down(tick_do_timer_cpu) will fail, tick_nohz_cpu_down() will nack it.
-> > >
-> > > So cpu_down() can't make housekeeping.cpumasks[HK_FLAG_TIMER] empty and I
-> > > still think that the change below is the right approach.
-> > >
-> > > But probably WARN_ON() in housekeeping_any_cpu() makes sense anyway.
-> > >
-> > > What do you think?
-> >
-> > Good analysis on this nasty housekeeping VS tick code. I promised so many
-> > times to cleanup this mess but things keep piling up.
-> >
-> > It is indeed possible for the boot CPU to be a nohz_full CPU and as
-> > you can see, it's only half-working. This is so ever since:
-> >
-> >     08ae95f4fd3b (nohz_full: Allow the boot CPU to be nohz_full)
->
-> Thanks... So this is intentional. I was confused by
->
-> 	Therefore, the
-> 	boot CPU is prohibited from entering adaptive-ticks mode.  Specifying a
-> 	"nohz_full=" mask that includes the boot CPU will result in a boot-time
-> 	error message, and the boot CPU will be removed from the mask.
->
-> from Documentation/timers/no_hz.rst
->
-> > I would love
-> > to revert that now but I don't know if anyone uses this and have it working
-> > by chance somewhere... Should we continue to support a broken feature? Can we
-> > break user ABI if it's already half-broken?
->
-> Well, the changelog says
->
->     nohz_full has been trialed at a large supercomputer site and found to
->     significantly reduce jitter. In order to deploy it in production, they
->     need CPU0 to be nohz_full
->
-> so I guess this feature has users.
->
-> But after the commit aae17ebb53cd3da ("workqueue: Avoid using isolated cpus'
-> timers on queue_delayed_work") the kernel will crash at boot time if the boot
-> CPU is nohz_full.
->
-> So we need a workaround at least. I am starting to think I will send a trivial
-> patch which changes __queue_delayed_work() to validate the cpu returned by
-> housekeeping_any_cpu(HK_TYPE_TIMER).
->
-> But perhaps something like below makes more sense as a (stupid) workaround?
+Hi Johannes,
 
-Or simply
+FYI, the error/warning still remains.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   f2f80ac809875855ac843f9e5e7480604b5cbff5
+commit: f66c48af7a110c0d694c4ac4a1257affb272a2ea mac80211: support minimal EHT rate reporting on RX
+date:   1 year, 3 months ago
+config: arm-randconfig-r132-20240407 (https://download.01.org/0day-ci/archive/20240407/202404072115.AWjHM1sP-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240407/202404072115.AWjHM1sP-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202404072115.AWjHM1sP-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from <command-line>:
+   net/mac80211/rx.c: In function 'ieee80211_rx_irqsafe':
+>> include/linux/compiler_types.h:358:45: error: call to '__compiletime_assert_969' declared with attribute error: BUILD_BUG_ON failed: sizeof(struct ieee80211_rx_status) > sizeof(skb->cb)
+     358 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                                             ^
+   include/linux/compiler_types.h:339:25: note: in definition of macro '__compiletime_assert'
+     339 |                         prefix ## suffix();                             \
+         |                         ^~~~~~
+   include/linux/compiler_types.h:358:9: note: in expansion of macro '_compiletime_assert'
+     358 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |         ^~~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
+      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
+         |                                     ^~~~~~~~~~~~~~~~~~
+   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
+      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
+         |         ^~~~~~~~~~~~~~~~
+   net/mac80211/rx.c:5283:9: note: in expansion of macro 'BUILD_BUG_ON'
+    5283 |         BUILD_BUG_ON(sizeof(struct ieee80211_rx_status) > sizeof(skb->cb));
+         |         ^~~~~~~~~~~~
 
 
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 373d42c707bc..e912555c6fc8 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -46,7 +46,11 @@ int housekeeping_any_cpu(enum hk_type type)
- 			if (cpu < nr_cpu_ids)
- 				return cpu;
- 
--			return cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
-+			cpu = cpumask_any_and(housekeeping.cpumasks[type], cpu_online_mask);
-+			if (cpu < nr_cpu_ids)
-+				return cpu;
-+
-+			WARN_ON_ONCE(system_state == SYSTEM_RUNNING);
- 		}
- 	}
- 	return smp_processor_id();
+vim +/__compiletime_assert_969 +358 include/linux/compiler_types.h
 
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  344  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  345  #define _compiletime_assert(condition, msg, prefix, suffix) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  346  	__compiletime_assert(condition, msg, prefix, suffix)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  347  
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  348  /**
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  349   * compiletime_assert - break build and emit msg if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  350   * @condition: a compile-time constant condition to check
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  351   * @msg:       a message to emit if condition is false
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  352   *
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  353   * In tradition of POSIX assert, this macro will break the build if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  354   * supplied condition is *false*, emitting the supplied error message if the
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  355   * compiler has support to do so.
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  356   */
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  357  #define compiletime_assert(condition, msg) \
+eb5c2d4b45e3d2 Will Deacon 2020-07-21 @358  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+eb5c2d4b45e3d2 Will Deacon 2020-07-21  359  
+
+:::::: The code at line 358 was first introduced by commit
+:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
+
+:::::: TO: Will Deacon <will@kernel.org>
+:::::: CC: Will Deacon <will@kernel.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
