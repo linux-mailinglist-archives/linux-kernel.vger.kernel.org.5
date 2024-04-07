@@ -1,145 +1,121 @@
-Return-Path: <linux-kernel+bounces-134631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F4A889B3E1
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 22:03:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C634889B3E3
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 22:03:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AD83281B03
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:03:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D5151F213C7
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:03:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F7BB3FB80;
-	Sun,  7 Apr 2024 20:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C6D3FE36;
+	Sun,  7 Apr 2024 20:03:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="qvs10VBO"
-Received: from smtp.smtpout.orange.fr (smtp-27.smtpout.orange.fr [80.12.242.27])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VKnuCAY2"
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165F03EA93;
-	Sun,  7 Apr 2024 20:03:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D29F53FBA6;
+	Sun,  7 Apr 2024 20:03:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712520197; cv=none; b=WAGJKuXX1EgYrOmV8WJrVrAvcZbyeJTDO1INGnOnkKMW5imnoB1lNV2zNdS387gbRCsXnASEV0k3e5OefHyXDl5/4wYnw5S5lmUd2YQsHDYehTfSO1xMkFEoyZRYmpi+bRrL2n8ltzNkPl5BRb+IYYbkkitIdMCZRZkFSnyVDCM=
+	t=1712520201; cv=none; b=cuFDWZmLvXzfdQIvopMnc/boMoQcbRSVerfUF9xWmn7RRIduwd2OELtSZuSxZG1G0CMEuM126r2jFPlhNTqO8gSpgeMj4HvQwpmQ4cW+Ehcpau7T62rTnT1yN4zu/8k8zv6mPBj/XklzsA6GX7C3arzoDUKV3BkoudI46Tf9Gpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712520197; c=relaxed/simple;
-	bh=lHqg1QJCxrsNhs4z4v/Y14TlaLQ598KsjsJ/Pyg4uMA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JbN5LdtnGNPjXGHspKLjWAvo7vpXEX3OscEDdkoqVzvfLJTwqo6ZK/q01sNzd0dDr1LJCUHnKUUgrCNHI138JLv2fqJtzlXa8o+MLSTsWyTZcbc1mGTVdyTYoYtQfzVjAhMmojIzU/jbJp0FYGvMB2oqbBX06KviMXTUTB/sH4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=qvs10VBO; arc=none smtp.client-ip=80.12.242.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
-Received: from fedora.home ([86.243.17.157])
-	by smtp.orange.fr with ESMTPA
-	id tYiBrICUDz1OZtYiJrfStr; Sun, 07 Apr 2024 22:02:05 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
-	s=t20230301; t=1712520125;
-	bh=yDBPh3Zd5MPQHTnfbxFeCnae77YFIui58j4SxgeMCkQ=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=qvs10VBOaOJ7o7KEE3sCJ1qbBrUcBXVDTAqkSfuaumV8kz1YI/wUFqQCBed3AqJ4R
-	 WW9w1d1LT+Pa1WfjBHBOiD5W9T6ozKlp2uYEujckaXwRLcePiUBTE/qa2cLxOh3qhj
-	 S7bk4U7p9jur8kb5szZBdHfstJ6yS/P5BUUAvG2da6/reJuu/Uu7TVbpLYSZ8hIhED
-	 X2Y6+UD2jq7xgj6B6xCuzalrhTepBK/dHLHCu5ml/p+pEvUl53XJ5MtceIdCU6/fTY
-	 iQUdYdBqAnyNKl4jajCq1mMvX3alsRr4vn5jBA9D7wIYD3ocMw2HwzPf4hnenOfz6l
-	 IPjEMwU4liSHA==
-X-ME-Helo: fedora.home
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 07 Apr 2024 22:02:05 +0200
-X-ME-IP: 86.243.17.157
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Zhang Rui <rui.zhang@intel.com>,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	linux-pm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: [PATCH 2/2] thermal/drivers/mediatek/lvts_thermal: Improve some memory allocation
-Date: Sun,  7 Apr 2024 22:01:49 +0200
-Message-ID: <8cb69f245311a348164b0b5ca3dbc59386746035.1712520052.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <42a87fb9837f1760d1ad4eb7162a7536785dc6f5.1712520052.git.christophe.jaillet@wanadoo.fr>
-References: <42a87fb9837f1760d1ad4eb7162a7536785dc6f5.1712520052.git.christophe.jaillet@wanadoo.fr>
+	s=arc-20240116; t=1712520201; c=relaxed/simple;
+	bh=nkz3V1KnJRU4OVxZTLpNwOjleUUcWRpMJl+ozZfP2W8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ShuCEoXGh/Srln99OkztnSD4c8FTX4qIVvd7SSA7UoM/cc4WAZYwvwfA49GrcQoSsOmTgwTryT6TRPnwedTy34nBfIdRbr0g93zff3Ny4b6ROczwWbmTvyTK6rBICSqjqv0+sw3ufSWxzAaEN/Axf+slsxHtOA/1k2I+mRenVrQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VKnuCAY2; arc=none smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-5ce07cf1e5dso2691050a12.2;
+        Sun, 07 Apr 2024 13:03:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712520199; x=1713124999; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VB+pCgMJeT4HJ3tkJqRN6FhCakVW1xLtQCZILiBA4o0=;
+        b=VKnuCAY265HIr1RkUS0OPWh77AE3bZXqKsOOu10bg4khDnF22cvuHOEJcH0qxHNZYA
+         GzufhCCPy0WpOXWMpFVoV8/x6RMjVeQrC8rhgTWaWFaz5GxPE0/KJPt/nAjhgzPrQlfo
+         L1yfyH6j4EeqC5gTqNOobjZHGlC4o7+HS2Q7YrojoPIF2ht2X0UOKzxCNXbW4M6qLWIp
+         HHIhmSEUTAvjDd9JN6ZGxXyCJp/L82BfXsBybijpiSPXtuMHE4sxAsLxoBysyPAXK8UW
+         /gJSltCIpTLFlvxRgZP8SUq/79ZhhgOimV3HKoVfSRDoUeWUaZIvlJOXY5402zdCx307
+         KZzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712520199; x=1713124999;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VB+pCgMJeT4HJ3tkJqRN6FhCakVW1xLtQCZILiBA4o0=;
+        b=CRsJLzFKD0eeFpGhDuYik6uAlwAM0BVoScdjcNbBheT7OlRF8Zu9XRrcZsvL97NB4t
+         3GRDWfgecNKvgzYU2GaJYv4z0NsRBZt+LqcJKX6jyvoAWsSxLzWvAtIqm6mJ3QZ+pTjY
+         kzG80OXy5HaJSz2PhgJb/vZqdY+p+kc6bDGVpPz/gXgQOzUQ8N+s/Gl8RDZBuHzu8qZi
+         OGIKPTKOpXKZipAn+JPhsgB8kEWLchZNMU7GPNBMRRpIqqck8ZgbVX9V7XuE/NS7Mj9T
+         nwbu/LFO2gxZ00T4qepf8Iay0HlgYXntz8q5zAHCBfy7M7mimZZgTAp5nhbsDRNx8gXA
+         selg==
+X-Forwarded-Encrypted: i=1; AJvYcCXtA64UgK9vxJ/54/aI5XYHvDv1r+pVuQvfu5cCqNJ8L65n4Amk1gVdEIJlZDpQ9TF4qUmpzAhGCw38AN11rBD3SFAqbSOtOQNr2dNFXrrvcmrRwtzGXqd35w9rh3CWqWMHHLEij08lNtyoUDf5HDQ9Nzt4GX/eyz4G2DEwRiNBZSrT5iE=
+X-Gm-Message-State: AOJu0Yyvo6eDVcavE++qpajp4Tv29q4L5BTWmvAXKyX28+J7cv4HdzpR
+	kwmGlLQ5QakPqM9X3HbmQNMTzOUTKsT0hXDFuUb5OezBbEoSA2b5JNZK5LQWsiLC9oLKpqAh1qT
+	yOy3j/tUuLpkl7jcmlAgEwiZeO+w=
+X-Google-Smtp-Source: AGHT+IF7TZyQOhtPwpbAJHeWULkLO56UWnBYQO7dp+kN2Xtnf2cGiSkKTtgaF3dO0S0E9x8sBshO5W1GD0QnNBZ5j1w=
+X-Received: by 2002:a17:90a:fb4c:b0:2a4:8706:ed44 with SMTP id
+ iq12-20020a17090afb4c00b002a48706ed44mr4614220pjb.19.1712520199108; Sun, 07
+ Apr 2024 13:03:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240401185222.12015-1-benno.lossin@proton.me>
+In-Reply-To: <20240401185222.12015-1-benno.lossin@proton.me>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sun, 7 Apr 2024 22:02:35 +0200
+Message-ID: <CANiq72=M0L+RG6v701ThedXgYj4SUgotx-BcVoWbMxOcKY5--w@mail.gmail.com>
+Subject: Re: [PATCH v2] rust: macros: fix soundness issue in `module!` macro
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Asahi Lina <lina@asahilina.net>, 
+	Sumera Priyadarsini <sylphrenadin@gmail.com>, Neal Gompa <neal@gompa.dev>, 
+	Thomas Bertschinger <tahbertschinger@gmail.com>, Andrea Righi <andrea.righi@canonical.com>, 
+	Matthew Bakhtiari <dev@mtbk.me>, Adam Bratschi-Kaye <ark.email@gmail.com>, stable@vger.kernel.org, 
+	Masahiro Yamada <masahiroy@kernel.org>, Wedson Almeida Filho <wedsonaf@google.com>, Finn Behrens <me@kloenk.dev>, 
+	rust-for-linux@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-lvts_debugfs_init() is called with lvts_td->num_lvts_ctrl being 2, 3 or 4.
-sizeof(struct debugfs_regset32) is small. 32 byres on a x86_64.
+On Mon, Apr 1, 2024 at 8:53=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
+> wrote:
+>
+> The `module!` macro creates glue code that are called by C to initialize
+> the Rust modules using the `Module::init` function. Part of this glue
+> code are the local functions `__init` and `__exit` that are used to
+> initialize/destroy the Rust module.
+> These functions are safe and also visible to the Rust mod in which the
+> `module!` macro is invoked. This means that they can be called by other
+> safe Rust code. But since they contain `unsafe` blocks that rely on only
+> being called at the right time, this is a soundness issue.
+>
+> Wrap these generated functions inside of two private modules, this
+> guarantees that the public functions cannot be called from the outside.
+> Make the safe functions `unsafe` and add SAFETY comments.
+>
+> Cc: stable@vger.kernel.org
+> Closes: https://github.com/Rust-for-Linux/linux/issues/629
+> Fixes: 1fbde52bde73 ("rust: add `macros` crate")
+> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 
-So, given the overhead of devm_kzalloc(), it is better to allocate all
-needed regset at once.
+[ Capitalized comments, avoided newline in non-list SAFETY comments
+  and reworded to add Reported-by and newline. ]
 
-The overhead of devm_kzalloc() is 40 bytes on a x86_64, and because of
-rounding in memory allocation, it leads to:
- 2 * (32 + 40) = 2 * 72	--> 2 96 bytes allocations for a total of 192 bytes
- 3 * (32 + 40) = 3 * 72	--> 3 96 bytes allocations for a total of 288 bytes
- 4 * (32 + 40) = 4 * 72	--> 4 96 bytes allocations for a total of 384 bytes
+Applied to `rust-fixes` -- thanks everyone!
 
-using a single devm_kcalloc():
- 2 * 32 + 40 = 104	--> 1 allocation for a total of 128
- 3 * 32 + 40 = 136	--> 1 allocation for a total of 192
- 4 * 32 + 40 = 168	--> 1 allocation for a total of 192
-
-So, this saves both a few bytes and reduce memory fragmentation.
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Compile tested-only
----
- drivers/thermal/mediatek/lvts_thermal.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/thermal/mediatek/lvts_thermal.c b/drivers/thermal/mediatek/lvts_thermal.c
-index 3003dc350766..b133f731c5ba 100644
---- a/drivers/thermal/mediatek/lvts_thermal.c
-+++ b/drivers/thermal/mediatek/lvts_thermal.c
-@@ -204,7 +204,7 @@ static const struct debugfs_reg32 lvts_regs[] = {
- 
- static int lvts_debugfs_init(struct device *dev, struct lvts_domain *lvts_td)
- {
--	struct debugfs_regset32 *regset;
-+	struct debugfs_regset32 *regsets;
- 	struct lvts_ctrl *lvts_ctrl;
- 	struct dentry *dentry;
- 	char name[64];
-@@ -214,8 +214,14 @@ static int lvts_debugfs_init(struct device *dev, struct lvts_domain *lvts_td)
- 	if (IS_ERR(lvts_td->dom_dentry))
- 		return 0;
- 
-+	regsets = devm_kcalloc(dev, lvts_td->num_lvts_ctrl,
-+			       sizeof(*regsets), GFP_KERNEL);
-+	if (!regsets)
-+		return 0;
-+
- 	for (i = 0; i < lvts_td->num_lvts_ctrl; i++) {
- 
-+		struct debugfs_regset32 *regset = &regsets[i];
- 		lvts_ctrl = &lvts_td->lvts_ctrl[i];
- 
- 		sprintf(name, "controller%d", i);
-@@ -223,10 +229,6 @@ static int lvts_debugfs_init(struct device *dev, struct lvts_domain *lvts_td)
- 		if (IS_ERR(dentry))
- 			continue;
- 
--		regset = devm_kzalloc(dev, sizeof(*regset), GFP_KERNEL);
--		if (!regset)
--			continue;
--
- 		regset->base = lvts_ctrl->base;
- 		regset->regs = lvts_regs;
- 		regset->nregs = ARRAY_SIZE(lvts_regs);
--- 
-2.44.0
-
+Cheers,
+Miguel
 
