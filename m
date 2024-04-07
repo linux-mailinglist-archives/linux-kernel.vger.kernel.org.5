@@ -1,130 +1,115 @@
-Return-Path: <linux-kernel+bounces-134659-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134660-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1A5489B48E
-	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 01:14:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC3C989B490
+	for <lists+linux-kernel@lfdr.de>; Mon,  8 Apr 2024 01:15:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 576AD2811DF
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 23:14:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B6EC1F213CC
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 23:15:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09920433C4;
-	Sun,  7 Apr 2024 23:14:39 +0000 (UTC)
-Received: from mail115-76.sinamail.sina.com.cn (mail115-76.sinamail.sina.com.cn [218.30.115.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D671D42073;
+	Sun,  7 Apr 2024 23:15:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="AtUhHuIy"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 210263C082
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 23:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24A3038F9C;
+	Sun,  7 Apr 2024 23:15:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712531678; cv=none; b=A7HviHzaJ0OTgRFcigZhb4IbwGhF+q7qvDXv13kFxj1vI5qfatERYzKgdpPdgH3O/2HfEfgy8bWncNwklZf+6btzoPl93wjBKYsWa2kHZUdkbQo0SHBGYQu/zxD+l9GBZ1UcXLOqm21gGlx62qPkQ7AFV3tWpgTwyl7/v3YU6qQ=
+	t=1712531737; cv=none; b=s0oL3NSnq3sLAPBpKxyYPDln9O7IIdLqq6wwVtXraCLH4kXFy+drHRXTMTU16l1Ve7QCcsfM5NKOx1B/jMPIq0XvIOAublM+kghp8DPApsgpi4kEB7oGFBsEZsM52tL8Xam+AmVikn6pOF+k4IVjZIFZLAn9hyjXNOpp/iHvycA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712531678; c=relaxed/simple;
-	bh=rGNxiYu9623nkOVlm/CHilWFaJtBntC4ZWb8wmpUzfg=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=D2ZTpddH4A2eY6NsSAr/5GI3XCjMkiEp83NZn1hUrbDHFGuIiD4ATrk3M6wGiXmTQYZ5j43KIHgA/mnRxgnV4T4ZR1vgdwBF6Q8SGDfu52n7fJPb2UKZSeV4hRlSiH/9OB4d0pC5y69sMZKYDBjA+q3EoHxqzr3jBzlkF5cba/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([113.88.51.52])
-	by sina.com (10.75.12.45) with ESMTP
-	id 661328CD0000354F; Sun, 8 Apr 2024 07:14:24 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 26141931457857
-X-SMAIL-UIID: F196EB0C01EB4835BDE4FB578B7D6778-20240408-071424-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+2fb0835e0c9cefc34614@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bluetooth?] BUG: sleeping function called from invalid context in hci_le_create_big_complete_evt
-Date: Mon,  8 Apr 2024 07:14:14 +0800
-Message-Id: <20240407231414.1496-1-hdanton@sina.com>
-In-Reply-To: <000000000000dd84650615800e67@google.com>
-References: 
+	s=arc-20240116; t=1712531737; c=relaxed/simple;
+	bh=J12MOgEY8a+3bmhya1dTFLRjK77jrBUR2Fkr92yMHkg=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=t40E1eTkBYJdVWajRLF8DcfVEGx4Hb8wPw0kqKCmCrJ9dlDuThFWBV3xOcySOAkitngVW2ZQ2XUBl4Z7j0XCVILtu7JFBgGsTMF72QvEu8EgcRFC8fVh1eNC9wF9HU5VDKXFdn8TkjCTjwmZVOnbGU7lyVjFgA1WfMcKD+F96Ik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=AtUhHuIy; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1712531729;
+	bh=zcn+XVfd3MWVQszLLcpWvD4qpTxFdGiCrd5YkSCNqMc=;
+	h=Date:From:To:Cc:Subject:From;
+	b=AtUhHuIyshI0v4HylDYtmplViiPmNrsVts3ZCmbQqDy4UZdf1ZoaBxrtiro/UKPWN
+	 sy/VzbA6hrQmdzdE0Hi4Ib/yvEN4PzNod5UJmgdwYoD9T3jpoSoLaZVQwxYqUhBsEl
+	 7alt/lWVbmVa01DkV7+VHir7VKJP1eKbu5vYMZoAWE5f703SczJMvEET44dDf2FBtF
+	 Mzve32sL4noGrUULkpZb5AnL2I9SY7Uny2U/GIUTFtZWRDxOeK7Nd6I9k5j9lkuxPI
+	 pkyyFWfII0KEQqXVsFuIz619iFx0JjNu9cyU5iqdcmPaEN1j5Rzw22g/P5HSh17KMt
+	 6USvc5xYqedxg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4VCSkS6fNcz4wjF;
+	Mon,  8 Apr 2024 09:15:28 +1000 (AEST)
+Date: Mon, 8 Apr 2024 09:15:26 +1000
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Barry Song <v-songbaohua@oppo.com>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the mm tree
+Message-ID: <20240408091526.562c30e1@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/1boJlDeg2tOlPJ9PAbAo0aX";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Sun, 07 Apr 2024 04:33:29 -0700
-> syzbot found the following issue on:
-> 
-> HEAD commit:    480e035fc4c7 Merge tag 'drm-next-2024-03-13' of https://gi..
-> git tree:       upstream
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11ee2e75180000
+--Sig_/1boJlDeg2tOlPJ9PAbAo0aX
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  480e035fc4c7
+Hi all,
 
---- x/net/bluetooth/hci_event.c
-+++ y/net/bluetooth/hci_event.c
-@@ -6902,7 +6902,7 @@ static void hci_le_create_big_complete_e
- 					   struct sk_buff *skb)
- {
- 	struct hci_evt_le_create_big_complete *ev = data;
--	struct hci_conn *conn;
-+	struct hci_conn *conn, *next;
- 	__u8 i = 0;
- 
- 	BT_DBG("%s status 0x%2.2x", hdev->name, ev->status);
-@@ -6912,38 +6912,29 @@ static void hci_le_create_big_complete_e
- 		return;
- 
- 	hci_dev_lock(hdev);
--	rcu_read_lock();
--
- 	/* Connect all BISes that are bound to the BIG */
--	list_for_each_entry_rcu(conn, &hdev->conn_hash.list, list) {
-+	list_for_each_entry_safe(conn, next, &hdev->conn_hash.list, list) {
- 		if (bacmp(&conn->dst, BDADDR_ANY) ||
- 		    conn->type != ISO_LINK ||
- 		    conn->iso_qos.bcast.big != ev->handle)
- 			continue;
- 
--		if (hci_conn_set_handle(conn,
--					__le16_to_cpu(ev->bis_handle[i++])))
-+		if (hci_conn_set_handle(conn, __le16_to_cpu(ev->bis_handle[i++])))
- 			continue;
- 
- 		if (!ev->status) {
- 			conn->state = BT_CONNECTED;
- 			set_bit(HCI_CONN_BIG_CREATED, &conn->flags);
--			rcu_read_unlock();
- 			hci_debugfs_create_conn(conn);
- 			hci_conn_add_sysfs(conn);
- 			hci_iso_setup_path(conn);
--			rcu_read_lock();
- 			continue;
- 		}
- 
- 		hci_connect_cfm(conn, ev->status);
--		rcu_read_unlock();
- 		hci_conn_del(conn);
--		rcu_read_lock();
- 	}
- 
--	rcu_read_unlock();
--
- 	if (!ev->status && !i)
- 		/* If no BISes have been connected for the BIG,
- 		 * terminate. This is in case all bound connections
-@@ -6952,7 +6943,6 @@ static void hci_le_create_big_complete_e
- 		 */
- 		hci_cmd_sync_queue(hdev, hci_iso_term_big_sync,
- 				   UINT_PTR(ev->handle), NULL);
--
- 	hci_dev_unlock(hdev);
- }
- 
---
+After merging the mm tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
+
+In file included from include/linux/mm.h:1115,
+                 from include/linux/mman.h:5,
+                 from arch/powerpc/kernel/asm-offsets.c:19:
+include/linux/huge_mm.h:276:23: error: variably modified 'stats' at file sc=
+ope
+  276 |         unsigned long stats[PMD_ORDER + 1][__MTHP_STAT_COUNT];
+      |                       ^~~~~
+
+Caused by commit
+
+  d4358ee0a075 ("mm: add per-order mTHP anon_alloc and anon_alloc_fallback =
+counters")
+
+from the mm-unstable branch of the mm tree.
+
+PMD_ORDER is not necessarily constant on PowerPC (since it depends on
+PTE_INDEX_SIZE).
+
+I have reverted that commit (and the following one) for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/1boJlDeg2tOlPJ9PAbAo0aX
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmYTKQ4ACgkQAVBC80lX
+0GzgsAf/bwPry6OrXEcvi7DTSMPh/cRl/1HfvbPykZM4r6quhE3L4rEXYmjR38zy
+kcaENe1h9GmnpyoRJ1sI/smdSDT7Ak7wSQaoMTafq3STjr5C+yrN/cAdne1V+8lQ
+jwToZ/H/mSFv9jkqNQnd8ga5DLlMySewzqEMdIXh4G5F/mC8GRiDlgAtssHNI1rQ
+EMYyPCi1d0GamwmoNmrGDtDKytyzC14KW+yY/ChmwGfioTkt1dJfNx8J0KqldN7k
+hs63Kn1ubQ4P1pJxVx7zmBEM8jcT22X6le7ssBkepSaJ7IbzVWSw+rcDR40FL8jD
+dHLppQy/fKC89FNkoAWUypSYxWMEeg==
+=UaaD
+-----END PGP SIGNATURE-----
+
+--Sig_/1boJlDeg2tOlPJ9PAbAo0aX--
 
