@@ -1,111 +1,150 @@
-Return-Path: <linux-kernel+bounces-134634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EACBF89B3F2
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 22:08:35 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C87E089B3F4
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 22:15:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A00F1281141
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:08:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 32A941F21439
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 20:15:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F071F3D988;
-	Sun,  7 Apr 2024 20:08:28 +0000 (UTC)
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ABDA4086F;
+	Sun,  7 Apr 2024 20:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ws3dNtOv"
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 016443D3BA
-	for <linux-kernel@vger.kernel.org>; Sun,  7 Apr 2024 20:08:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A65F405FF;
+	Sun,  7 Apr 2024 20:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712520508; cv=none; b=K/n3mON9T8dCHpaFT+x44LI5QNA0d7yZWPCmPLCP/BYLh+ie1r3XyQAyD7cJ0B6NG8/9E3ZceOs60lKR0LU4r+j6hke/G2ZKf5ruSNgupguwi17OvPuh7dWXxCLdK9rHNrwHjUWJYa5O4JyoJsXrKTuawNfBpNVSm6w9ppMsLgU=
+	t=1712520945; cv=none; b=VpFG3HyzkGxvZXdZC47/QZGtmfMHfVkx2Xwd//hENhfYeU0RLaC15iZ/7K9egX3E0rzDDBBKkRmswJqve1PMlTVs1b1WSC8H05W0R75pT/crhB+sBrN5c28D79y62XFqhJ0ZfM1HvEuiQJ5ExOtnjkm+/8h4HM61NuLXhgV5rkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712520508; c=relaxed/simple;
-	bh=GbnSwLmnptyRkcjn6p8Yi9zoYP+iIoTU6qIYYZ2FN0A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WO01qjAU0I+q4IX1+nAjb2P2Fs2leSKSirWBqiFq+aw5mB5tyVVFkCfc73EUG0dbje9nl2F4EcMdfMFOHog1OrHORQ0Fj3j9G87UkAqO7y3NgzQRs6oPBBBo86Q4qlK1mPBGJTGKMf4/YrNxb6dJJ1EMIQGF9p0EWenNwsidR/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=grimberg.me
+	s=arc-20240116; t=1712520945; c=relaxed/simple;
+	bh=I5ZKo+3mZRhbiLdn+T4f7m57VZu1rJ059WV8i4DH3uI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ASaIZsk5TM8tKt323HHyCa5dF+MJtllpjewWXA1yKpkjUngF3PkIrfhdSMT6U2iJU/X5x5Wi5qEfTC94nG//FJDN+K97tWHwdQTJdXGp3fPR9mH1bLak++Ha+vTrl4HAe/SArDaSloQUnlaILxme8EkQzGoMuQv9l5z+Oq6uR/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ws3dNtOv; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-4167082dabdso181245e9.0
-        for <linux-kernel@vger.kernel.org>; Sun, 07 Apr 2024 13:08:26 -0700 (PDT)
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-29b7164eef6so3084156a91.2;
+        Sun, 07 Apr 2024 13:15:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712520943; x=1713125743; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G4MVq0Ml1b3or0ua0UTIbRspNGgQTqV2giV4okTyNok=;
+        b=Ws3dNtOvqAlry0b95aGkt3BknbOrOLcxTKGCRdibtw6j4FKdumhQUH5DfAPcP1h40G
+         dp3NqbwL13VSDLHLBOqPt0FERc4tpK67lzK+jDnmpS+s+ZcOPsIudQKRBa5gJgOsCSnQ
+         MxSyAurzH+OXLf+ziFotV+xtPIaqnZZI70hig/BYM8cx9LOb4wIXF9dARPfSvfBVKYc6
+         9M0VaHx8CSkswQqBYiJ3VLrg/F4ojQozl/EV3I//iX1KQsDf9hS3VFOM2nDtAgxxm8fD
+         xsKb1zzkoVtFC8KAYD+Gc9HrBy/IUAiD+bcz7SjNjD5bl7QeR25EVOsKUxlqXS24WtG2
+         n6bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712520505; x=1713125305;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z59eKGisbG/GVwZ41NOAkympydkJlAvl6JclA5ptAW4=;
-        b=a09b+QbmkXDCH888aIX1eWi6aTDmYdJvubBZU7Nh+hqGF6IfBXmlc7WfHW/hqf4Rms
-         xGLFkzqCXB8YjZjJ4Rx553dNmssUHuliJ8/jGISVFA0FSbVBC+kO24gcS4br4huzFOWH
-         b01vBoJN8R4HQxEGD8K0LJ0XceLMq/e4iJyLqI/9yp8KDRg03kinuSoyE6hHzgJF4l64
-         K32tjtlFESLLtJza8aIqlXJMxxTK0tSKsV73jmMQqp9e55MCoAUnXjBiIf7xHIk4Z2Su
-         NyzYFyyCMwAj5cpOH+tGgrYYlPITJhzxUnCtQGZ8CeHy5D8vlpDyz1rlPHdazh1vl4hg
-         oqJg==
-X-Forwarded-Encrypted: i=1; AJvYcCV+DP4+metKeziK7iWohgQbIXpfMcIlLVM3snpYgn88mg3em/cuzpHkGtPCsfGM5+J0gBld15S8iFrHpBYSQRgLJotQb9hcZ04waxjz
-X-Gm-Message-State: AOJu0YwMiYcNw7x+7Bq4DLm3aSm4V7e+vVZRazwj7xBWNtPN+x8ySrB7
-	5gel3IvD6Q5SCc/PFPi205mdIzWjxVYk3FXJ06yOAlalnCGA1EMm
-X-Google-Smtp-Source: AGHT+IFbPIOq5EP4wvRPLUOjCwF64ufM0/+5/bxWBDsG82CRtuWR0RyEFHCnmSXszVXn3J9JBlOD7Q==
-X-Received: by 2002:a05:600c:3b26:b0:416:3de5:1367 with SMTP id m38-20020a05600c3b2600b004163de51367mr3432106wms.3.1712520505315;
-        Sun, 07 Apr 2024 13:08:25 -0700 (PDT)
-Received: from [10.100.102.74] (85.65.192.64.dynamic.barak-online.net. [85.65.192.64])
-        by smtp.gmail.com with ESMTPSA id fc9-20020a05600c524900b004162a9f03a6sm14000449wmb.7.2024.04.07.13.08.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 07 Apr 2024 13:08:25 -0700 (PDT)
-Message-ID: <f5d57e3b-8168-41af-8e36-c7a21ef3a475@grimberg.me>
-Date: Sun, 7 Apr 2024 23:08:23 +0300
+        d=1e100.net; s=20230601; t=1712520943; x=1713125743;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G4MVq0Ml1b3or0ua0UTIbRspNGgQTqV2giV4okTyNok=;
+        b=HmkxjkvJtjQQaiXu/dtDzWBCSc/oerL+Ok6gHjf0d3sU4q0McwL6Xz2Alj1mppeIom
+         MIlWcuVtSq53nZxo5boLTGzm6gEnVvL4X/FGMZ6c3odJD+KiWVXXC954RiezPGpZublu
+         8oVTEAogxDCPnslxpKLYBA8OREzgrKIy3N/PpeN8cKMXKWmQbS4r6rwbFO6yoh7XMebY
+         AHhLy0UBzrRCYU3wW8nQGrKL/iKeYq491oGoP7onc+NzbPAZfBkE/S7dURFmeXkp4vS0
+         LFag9z6QyLdTZn7piQKRB7UFGOqtlwdOjeuxX4ZrMqtufdSco+ISM9t46zw1tiszYgQG
+         J3bA==
+X-Forwarded-Encrypted: i=1; AJvYcCVqiVh9ms0T8GrlxsGxYEF0s/n2GVHe3DLVfTW3RLKMEp1nu1JgYNwU1EvVFMwgUU1wuwXOuaEPA9dIdMyu+Oyp6zWl1C7wwZlAmsD4CV10EtyqZo/Brh0r36LgQJ+IFq4G3dE2j3WpOnzZLKk=
+X-Gm-Message-State: AOJu0Yx1SR9eJ3mmXIXpfcCBq/PKpf58Rd/FIoSWvpdgC8cYc6WN36kS
+	79XRYaKytzCcma0sZKm9Pf3oOn80wuamYsm2BVVXjJxvSCJVs6O0BSKrXbfA9Fl3UJ6UvtrRocx
+	D+xUsKDA94SwFIUuAza+AsxjuN6o=
+X-Google-Smtp-Source: AGHT+IGFnwzxcGlpNltHX6ySVFvgxFS4P1qHLfiIuJCj5kuiYAueNQ1y21322FatkqziP4Nen/68trmWEXYR2YLEbAY=
+X-Received: by 2002:a17:90b:3ecb:b0:29f:7672:7fee with SMTP id
+ rm11-20020a17090b3ecb00b0029f76727feemr6403942pjb.31.1712520943403; Sun, 07
+ Apr 2024 13:15:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: WQ_UNBOUND workqueue warnings from multiple drivers
-To: Kamaljit Singh <Kamaljit.Singh1@wdc.com>,
- Chaitanya Kulkarni <chaitanyak@nvidia.com>
-Cc: "kbusch@kernel.org" <kbusch@kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
-References: <BYAPR04MB41513F04DB2ECDC3601CC36ABC2D2@BYAPR04MB4151.namprd04.prod.outlook.com>
- <c4057654-97bd-4721-9bed-9dd5ef8b3f8d@grimberg.me>
- <6d3af8dd-30c3-48d4-9083-7f00ea21ff8c@nvidia.com>
- <BYAPR04MB415196EC84756BA1876463DABC3E2@BYAPR04MB4151.namprd04.prod.outlook.com>
-Content-Language: he-IL, en-US
-From: Sagi Grimberg <sagi@grimberg.me>
-In-Reply-To: <BYAPR04MB415196EC84756BA1876463DABC3E2@BYAPR04MB4151.namprd04.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240309155243.482334-1-benno.lossin@proton.me>
+In-Reply-To: <20240309155243.482334-1-benno.lossin@proton.me>
+From: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date: Sun, 7 Apr 2024 22:15:00 +0200
+Message-ID: <CANiq72=6=BCCoeb9_bzXT+PKiS97sxSWpOu9jh9T1yD8V4S+9w@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] rust: macros: add `decl_generics` to `parse_generics()`
+To: Benno Lossin <benno.lossin@proton.me>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Alex Gaynor <alex.gaynor@gmail.com>, 
+	Wedson Almeida Filho <wedsonaf@gmail.com>, Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>, 
+	=?UTF-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>, 
+	Andreas Hindborg <a.hindborg@samsung.com>, Alice Ryhl <aliceryhl@google.com>, 
+	Martin Rodriguez Reboredo <yakoyoku@gmail.com>, Asahi Lina <lina@asahilina.net>, rust-for-linux@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-
-On 03/04/2024 2:50, Kamaljit Singh wrote:
-> Sagi, Chaitanya,
->   
-> Sorry for the delay, found your replies in the junk folder :(
->   
->>   Was the test you were running read-heavy?
-> No, most of the failing fio tests were doing heavy writes. All were with 8 Controllers and 32 NS each. io-specs are below.
+On Sat, Mar 9, 2024 at 4:53=E2=80=AFPM Benno Lossin <benno.lossin@proton.me=
+> wrote:
 >
-> [1] bs=16k, iodepth=16, rwmixread=0, numjobs=16
-> Failed in ~1 min
+> The generic parameters on a type definition can specify default values.
+> Currently `parse_generics()` cannot handle this though. For example when
+> parsing the following generics:
 >
-> Some others were:
-> [2] bs=8k, iodepth=16, rwmixread=5, numjobs=16
-> [3] bs=8k, iodepth=16, rwmixread=50, numjobs=16
+>     <T: Clone, const N: usize =3D 0>
+>
+> The `impl_generics` will be set to `T: Clone, const N: usize =3D 0` and
+> `ty_generics` will be set to `T, N`. Now using the `impl_generics` on an
+> impl block:
+>
+>     impl<$($impl_generics)*> Foo {}
+>
+> will result in invalid Rust code, because default values are only
+> available on type definitions.
+>
+> Therefore add parsing support for generic parameter default values using
+> a new kind of generics called `decl_generics` and change the old
+> behavior of `impl_generics` to not contain the generic parameter default
+> values.
+>
+> Now `Generics` has three fields:
+> - `impl_generics`: the generics with bounds
+>   (e.g. `T: Clone, const N: usize`)
+> - `decl_generics`: the generics with bounds and default values
+>   (e.g. `T: Clone, const N: usize =3D 0`)
+> - `ty_generics`:  contains the generics without bounds and without
+>   default values (e.g. `T, N`)
+>
+> `impl_generics` is designed to be used on `impl<$impl_generics>`,
+> `decl_generics` for the type definition, so `struct Foo<$decl_generics>`
+> and `ty_generics` whenever you use the type, so `Foo<$ty_generics>`.
+>
+> Here is an example that uses all three different types of generics:
+>
+>     let (Generics { decl_generics, impl_generics, ty_generics }, rest) =
+=3D parse_generics(input);
+>     quote! {
+>         struct Foo<$($decl_generics)*> {
+>             // ...
+>         }
+>
+>         impl<$impl_generics> Foo<$ty_generics> {
+>             fn foo() {
+>                 // ...
+>             }
+>         }
+>     }
+>
+> The next commit contains a fix to the `#[pin_data]` macro making it
+> compatible with generic parameter default values by relying on this new
+> behavior.
+>
+> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
 
-Interesting, that is the opposite of what I would suspect (I thought that
-the workload would be read-only or read-mostly).
+Applied series to `rust-next` -- thanks everyone!
 
-Does this happen with a 90-%100% read workload?
-
-If we look at nvme_tcp_io_work() it is essentially looping
-doing send() and recv() and every iteration checks if a 1ms
-deadline elapsed. The fact that it happens on a 100% write
-workload leads me to conclude that the only way this can
-happen if sending a single 16K request to a controller on its
-own takes more than 10ms, which is unexpected...
-
-Question, are you working with a Linux controller? what
-is the ctrl ioccsz?
+Cheers,
+Miguel
 
