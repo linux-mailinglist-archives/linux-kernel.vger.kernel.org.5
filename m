@@ -1,50 +1,50 @@
-Return-Path: <linux-kernel+bounces-134445-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134446-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC46889B195
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:26:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3326589B199
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:27:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E22E281820
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:26:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C91CA28198D
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DE47F7EE;
-	Sun,  7 Apr 2024 13:12:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F3EE80028;
+	Sun,  7 Apr 2024 13:12:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EiJLtH2C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NxSeF1gI"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 177417F496;
-	Sun,  7 Apr 2024 13:12:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645147FBB1;
+	Sun,  7 Apr 2024 13:12:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495567; cv=none; b=DR1a8TpQA/FKhDg9YyAhMWGJEpls5eCNtzoBn5Ly9qC+jtCFbsa3VZ+ptpCDpeCdWblNhO/FwO028hSsXuczeRsctDt3ML4xz2AbspTW6PAVKEYdiaqNneujZJr5jQ266ggY4JpzXgSB5QDQ/JreECNajBuPaWW6QCMilpJWqXI=
+	t=1712495568; cv=none; b=Vs1xugn0CxRFvW5zz126Odd8wGWaXOkFgAWBMOEAJi96x1G48GQgcCxkfITdtQYCrtlwd4aj3PEiX2lyozmd1cS9urDY5g7XD7tchff9zgiz7qvUhYvfB0TPy78HZCn7r+ksva1eqW5dnZyA09ULjvrc9x3WZXJNX432KXZzdYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495567; c=relaxed/simple;
-	bh=WcsQACYYUtYW0h5qqJxVzk4nOl+SikibxTkjw63AQIE=;
+	s=arc-20240116; t=1712495568; c=relaxed/simple;
+	bh=Jf7feS/UB0VznT++N82lhjZNjXkq0Yt9Nk+Ij4Oo4gU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ljVoVzCl0zkNZK1qmqBfGfnTyOzSnhRJDrKQZeDv2mjz56RstspyzguvvLU7YBSbRDx0QDyyw3szaDGrr05WKgcN3W6VXEaIcysUZa0Bz6HeZ3bzeyFc5CIZhLYzQVbcWyu7CdVr0vWBCJKh2xANTf10fYE7DckLc3M0hmlu2uQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EiJLtH2C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 684C2C433B2;
-	Sun,  7 Apr 2024 13:12:45 +0000 (UTC)
+	 MIME-Version; b=pks8a9SexUGbfiDYR+5GFgQKNUzNSzE1hO2MF8J3DAukFM91Fsa41ovUrso4374LqaqKU6LVfo9hFNzMxiLrxt50IDizSzXwgmDhHbyhvNGLzqitDVsza9yMZ9cbb4b/5U2na/3OuahMg7WhxfrWPDQSnTCYTEBfGnJR1E/KihE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NxSeF1gI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0CEB2C43390;
+	Sun,  7 Apr 2024 13:12:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495566;
-	bh=WcsQACYYUtYW0h5qqJxVzk4nOl+SikibxTkjw63AQIE=;
+	s=k20201202; t=1712495568;
+	bh=Jf7feS/UB0VznT++N82lhjZNjXkq0Yt9Nk+Ij4Oo4gU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=EiJLtH2CgMfxTdi5pYTfwJ8tz/sOAi7Fxg3YyHJAJOpLEU2cqJApwJcYmUI+x31ru
-	 56zBdD0KYptSf6Hzt1emjM1JHs5PXWQ6ZpgD18uiAN4lZTA+TAMQtsRb16dVJxus37
-	 W2cLy2+YP91lHhQTjG2Sv+BQ6hD9SLq8qAa36cBeCLwhn81NiaFynCOpOzMP5euBPh
-	 dofvejAJFm/0IbIqHo9ELYOMBIC1TUeNfcBcRr0YbAkocy1f8Jd1HQrn7fdR201yJn
-	 ytKZA/4Kv9mlY01pxj5QXWyo4ccS6U7bi88lwNdUAJ0co5eIaOIX7MZJeRsPJpYCi+
-	 WK7v77QVKY97Q==
+	b=NxSeF1gI/3ac1uqKsCMrYUyUcB0V9pKTGuW2tlpckCgkqIU9knU0Qlaw8CmAzFC7h
+	 UOb4sJMavo43STbi2lxA4caOg5L25E/9vqmF46DRvuX10XkiZHHmFMjvGJdFVRxQXc
+	 iz5vYPG4mKp86RFyXtf1oxXt9Q/TDWkr07mdxBW0A+WR85S1McbF/EySyzZkUH7dm/
+	 cVXx+ALNa28NGsIGIjuKwgNOYyhOO4+tyKw1476oNTm8DRwump9Un8MkK8NjBNAC42
+	 t0ASfUf/duH6ylt5TNV7zom6ZXAxzs/sUQ1TshzIoEVVmjje17ucQW0WpYwnLYk6Zh
+	 /MW0vUP0+oNRw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Igor Artemiev <Igor.A.Artemiev@mcst.ru>,
-	Johannes Berg <johannes.berg@intel.com>,
+Cc: Johannes Berg <johannes.berg@intel.com>,
+	Miri Korenblit <miriam.rachel.korenblit@intel.com>,
 	Sasha Levin <sashal@kernel.org>,
 	johannes@sipsolutions.net,
 	davem@davemloft.net,
@@ -53,9 +53,9 @@ Cc: Igor Artemiev <Igor.A.Artemiev@mcst.ru>,
 	pabeni@redhat.com,
 	linux-wireless@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 10/22] wifi: cfg80211: fix rdev_dump_mpp() arguments order
-Date: Sun,  7 Apr 2024 09:12:09 -0400
-Message-ID: <20240407131231.1051652-10-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 11/22] wifi: mac80211: fix prep_connection error path
+Date: Sun,  7 Apr 2024 09:12:10 -0400
+Message-ID: <20240407131231.1051652-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131231.1051652-1-sashal@kernel.org>
 References: <20240407131231.1051652-1-sashal@kernel.org>
@@ -70,36 +70,49 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.25
 Content-Transfer-Encoding: 8bit
 
-From: Igor Artemiev <Igor.A.Artemiev@mcst.ru>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit ec50f3114e55406a1aad24b7dfaa1c3f4336d8eb ]
+[ Upstream commit 2e6bd24339a6ff04413b2e49c0f2672d6f0edfa5 ]
 
-Fix the order of arguments in the TP_ARGS macro
-for the rdev_dump_mpp tracepoint event.
+If prep_channel fails in prep_connection, the code releases
+the deflink's chanctx, which is wrong since we may be using
+a different link. It's already wrong to even do that always
+though, since we might still have the station. Remove it
+only if prep_channel succeeded and later updates fail.
 
-Found by Linux Verification Center (linuxtesting.org).
-
-Signed-off-by: Igor Artemiev <Igor.A.Artemiev@mcst.ru>
-Link: https://msgid.link/20240311164519.118398-1-Igor.A.Artemiev@mcst.ru
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Miri Korenblit <miriam.rachel.korenblit@intel.com>
+Link: https://msgid.link/20240318184907.2780c1f08c3d.I033c9b15483933088f32a2c0789612a33dd33d82@changeid
 Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/wireless/trace.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/mac80211/mlme.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/net/wireless/trace.h b/net/wireless/trace.h
-index 617c0d0dfa963..e89443173c7b4 100644
---- a/net/wireless/trace.h
-+++ b/net/wireless/trace.h
-@@ -1015,7 +1015,7 @@ TRACE_EVENT(rdev_get_mpp,
- TRACE_EVENT(rdev_dump_mpp,
- 	TP_PROTO(struct wiphy *wiphy, struct net_device *netdev, int _idx,
- 		 u8 *dst, u8 *mpp),
--	TP_ARGS(wiphy, netdev, _idx, mpp, dst),
-+	TP_ARGS(wiphy, netdev, _idx, dst, mpp),
- 	TP_STRUCT__entry(
- 		WIPHY_ENTRY
- 		NETDEV_ENTRY
+diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
+index c6044ab4e7fc1..5739556443833 100644
+--- a/net/mac80211/mlme.c
++++ b/net/mac80211/mlme.c
+@@ -7077,7 +7077,7 @@ static int ieee80211_prep_connection(struct ieee80211_sub_if_data *sdata,
+ 			sdata_info(sdata,
+ 				   "failed to insert STA entry for the AP (error %d)\n",
+ 				   err);
+-			goto out_err;
++			goto out_release_chan;
+ 		}
+ 	} else
+ 		WARN_ON_ONCE(!ether_addr_equal(link->u.mgd.bssid, cbss->bssid));
+@@ -7088,8 +7088,9 @@ static int ieee80211_prep_connection(struct ieee80211_sub_if_data *sdata,
+ 
+ 	return 0;
+ 
++out_release_chan:
++	ieee80211_link_release_channel(link);
+ out_err:
+-	ieee80211_link_release_channel(&sdata->deflink);
+ 	ieee80211_vif_set_links(sdata, 0, 0);
+ 	return err;
+ }
 -- 
 2.43.0
 
