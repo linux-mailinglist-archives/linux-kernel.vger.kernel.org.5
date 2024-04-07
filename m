@@ -1,61 +1,58 @@
-Return-Path: <linux-kernel+bounces-134434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6EB089B172
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:23:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98C9589B175
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:23:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF34CB22563
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:23:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 11CD81F20FD6
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B163C745EF;
-	Sun,  7 Apr 2024 13:12:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8EC57B3E5;
+	Sun,  7 Apr 2024 13:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NkigIZh0"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NTXiaR6A"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E105D71727;
-	Sun,  7 Apr 2024 13:12:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07DB73B78B;
+	Sun,  7 Apr 2024 13:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495539; cv=none; b=lFP/IC4RLbfS0kaE1AUPAPclr2JIZ1RXgQRH6wVhNEqAApGS3vQzdlZ/L7oL8bYp/f9ZwVAiQDCZ3na3sg1XUP/NnOZRLev01KFRG0/QPL7inSpIV2DHi+LpC6cTQinBjscuQqM1vprerbwcIc0Y+4ObXTCZb/hmZHJqHnU69Lg=
+	t=1712495540; cv=none; b=aCZKH5azsg+Q3O9buKtDEI/H0kUdRlDqbQisrACwAkLIkRSlqpeGWMC1RSHc7wqOCsJNwa3MldJLW73QBd9sje+ayDSXsCNtrBtptiNUrPZ7+ZdGyCkk5yNzkEpwgV19vNh+4MCguTNtYT/KmWXl4RG30bKZQu3h2zvEpt/FUTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495539; c=relaxed/simple;
-	bh=qfumTN75Biop/xeKFRs0/EeNWjogEzXi25BSL9mRoAE=;
+	s=arc-20240116; t=1712495540; c=relaxed/simple;
+	bh=TKrbT9tNh+Cth6uiEmEbqcwA8ZiYM6BdFCvsDAr1m6s=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=D1eIfKBuGnTY085uvOaOKgPcE2e7pjTPuxbbeeGbtg32mUePzg5D6WCwtqyB52zrGvH2SmvKAi6CMppYGwiLnKaC+F4rR7MCzCgvzs+Hq/oxuHC/3hZT9zP86dty1SXzoJzwfl5INojMNha/5r7ft9iODTOad91+eD9V2STw69M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NkigIZh0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35651C433C7;
-	Sun,  7 Apr 2024 13:12:17 +0000 (UTC)
+	 MIME-Version; b=smpsgr7i+EzCxc36zXj7xKo4FTJZtS2LGDmKBAq/aOfALDJ4e1/kOmoXnNbIi2VFXMVpQVHNJB/iLcKx9/BQX1thPfKFA9V7Cmu3HRw2w9Sgxj/p2T6U+8QTNuRoeaaFoGgtxCDcjnO6ee78b4BCjcG6+N8uvEe15U2Bti+zWCU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NTXiaR6A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC692C433F1;
+	Sun,  7 Apr 2024 13:12:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495538;
-	bh=qfumTN75Biop/xeKFRs0/EeNWjogEzXi25BSL9mRoAE=;
+	s=k20201202; t=1712495539;
+	bh=TKrbT9tNh+Cth6uiEmEbqcwA8ZiYM6BdFCvsDAr1m6s=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NkigIZh0KBwBxqsOmdmTQ25ClH+PGg2QhyltZZvOF6AhrB5PGrCsxsIoc9zmql83y
-	 359nGpTRBdZV0vQkTQWV/240LH5PL3fIf+ZB55nmuWNYppqkeHToOIXdpcRwPmSn2F
-	 0a9aPtnWcQK438dwLHvdz0aop3O8uqDt6oNsSgCVJiigYT26UQUlh1+cuLg6XVax8d
-	 lXiFVRCcBIzJJBgCKmwDBiY43Y7Nv1xME/CMdsZdPMp5hMWXAhYKaulMDAwy97ybhf
-	 PGLN9XpM0qP5Rx8V8BsNb92nJCbpVtbQMJLzOdSX9mjqXzi+5zdQIPEt3cWkLcuoGP
-	 ewOWxLYbJDc2A==
+	b=NTXiaR6Adn+cCuXJNCuY1dw28VqIloMT5ahNIrttRAwneYrvkslzesTLerwJPXK8f
+	 eHCxGbtymRiRa+o+YhLJmaoiSPR3TY9ur3QrQOtMBxifra3lq5QjAmmek8z6ahOF2y
+	 aASpaX5YpDn1Tb2oMqq/APA663KK+VhXh15peNHhUHkj0mUc6I1sovM5B6Nt4faNYc
+	 pYkdHgtNHz5oTlumsRWUMdwTOsObUUCY1+WfrTLmxJ9SaDFexoJZ+0rgnQ+X/zjz+Q
+	 HuaLQSSFeET4qmN4x1s/ElOtOMGIhCqTHxAhAgkX1r3XhE7tAjWQXPs8MzlqxhjbVc
+	 rHt1KQ7h6eIfw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>,
-	Aishwarya TCV <aishwarya.tcv@arm.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	linux-kselftest@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Shuah Khan <skhan@linuxfoundation.org>,
-	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 6.8 24/25] selftests/ftrace: Fix event filter target_func selection
-Date: Sun,  7 Apr 2024 09:11:12 -0400
-Message-ID: <20240407131130.1050321-24-sashal@kernel.org>
+Cc: "Borislav Petkov (AMD)" <bp@alien8.de>,
+	Paul Menzel <pmenzel@molgen.mpg.de>,
+	Nikolay Borisov <nik.borisov@suse.com>,
+	Marco Elver <elver@google.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Sasha Levin <sashal@kernel.org>,
+	linux-kbuild@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 25/25] kbuild: Disable KCSAN for autogenerated *.mod.c intermediaries
+Date: Sun,  7 Apr 2024 09:11:13 -0400
+Message-ID: <20240407131130.1050321-25-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240407131130.1050321-1-sashal@kernel.org>
 References: <20240407131130.1050321-1-sashal@kernel.org>
@@ -70,91 +67,98 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.8.4
 Content-Transfer-Encoding: 8bit
 
-From: Mark Rutland <mark.rutland@arm.com>
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
-[ Upstream commit 8ecab2e64572f1aecdfc5a8feae748abda6e3347 ]
+[ Upstream commit 54babdc0343fff2f32dfaafaaa9e42c4db278204 ]
 
-The event filter function test has been failing in our internal test
-farm:
+When KCSAN and CONSTRUCTORS are enabled, one can trigger the
 
-| # not ok 33 event filter function - test event filtering on functions
+  "Unpatched return thunk in use. This should not happen!"
 
-Running the test in verbose mode indicates that this is because the test
-erroneously determines that kmem_cache_free() is the most common caller
-of kmem_cache_free():
+catch-all warning.
 
-  # # + cut -d: -f3 trace
-  # # + sed s/call_site=([^+]*)+0x.*/1/
-  # # + sort
-  # # + uniq -c
-  # # + sort
-  # # + tail -n 1
-  # # + sed s/^[ 0-9]*//
-  # # + target_func=kmem_cache_free
+Usually, when objtool runs on the .o objects, it does generate a section
+return_sites which contains all offsets in the objects to the return
+thunks of the functions present there. Those return thunks then get
+patched at runtime by the alternatives.
 
-.. and as kmem_cache_free() doesn't call itself, setting this as the
-filter function for kmem_cache_free() results in no hits, and
-consequently the test fails:
+KCSAN and CONSTRUCTORS add this to the object file's .text.startup
+section:
 
-  # # + grep kmem_cache_free trace
-  # # + grep kmem_cache_free
-  # # + wc -l
-  # # + hitcnt=0
-  # # + grep kmem_cache_free trace
-  # # + grep -v kmem_cache_free
-  # # + wc -l
-  # # + misscnt=0
-  # # + [ 0 -eq 0 ]
-  # # + exit_fail
+  -------------------
+  Disassembly of section .text.startup:
 
-This seems to be because the system in question has tasks with ':' in
-their name (which a number of kernel worker threads have). These show up
-in the trace, e.g.
+  ...
 
-  test:.sh-1299    [004] .....  2886.040608: kmem_cache_free: call_site=putname+0xa4/0xc8 ptr=000000000f4d22f4 name=names_cache
+  0000000000000010 <_sub_I_00099_0>:
+    10:   f3 0f 1e fa             endbr64
+    14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+                          15: R_X86_64_PLT32      __tsan_init-0x4
+    19:   e9 00 00 00 00          jmp    1e <__UNIQUE_ID___addressable_cryptd_alloc_aead349+0x6>
+                          1a: R_X86_64_PLT32      __x86_return_thunk-0x4
+  -------------------
 
-.. and so when we try to extact the call_site with:
+which, if it is built as a module goes through the intermediary stage of
+creating a <module>.mod.c file which, when translated, receives a second
+constructor:
 
-  cut -d: -f3 trace | sed 's/call_site=\([^+]*\)+0x.*/\1/'
+  -------------------
+  Disassembly of section .text.startup:
 
-.. the 'cut' command will extrace the column containing
-'kmem_cache_free' rather than the column containing 'call_site=...', and
-the 'sed' command will leave this unchanged. Consequently, the test will
-decide to use 'kmem_cache_free' as the filter function, resulting in the
-failure seen above.
+  0000000000000010 <_sub_I_00099_0>:
+    10:   f3 0f 1e fa             endbr64
+    14:   e8 00 00 00 00          call   19 <_sub_I_00099_0+0x9>
+                          15: R_X86_64_PLT32      __tsan_init-0x4
+    19:   e9 00 00 00 00          jmp    1e <_sub_I_00099_0+0xe>
+                          1a: R_X86_64_PLT32      __x86_return_thunk-0x4
 
-Fix this by matching the 'call_site=<func>' part specifically to extract
-the function name.
+  ...
 
-Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-Reported-by: Aishwarya TCV <aishwarya.tcv@arm.com>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Shuah Khan <shuah@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
-Cc: linux-trace-kernel@vger.kernel.org
-Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
+  0000000000000030 <_sub_I_00099_0>:
+    30:   f3 0f 1e fa             endbr64
+    34:   e8 00 00 00 00          call   39 <_sub_I_00099_0+0x9>
+                          35: R_X86_64_PLT32      __tsan_init-0x4
+    39:   e9 00 00 00 00          jmp    3e <__ksymtab_cryptd_alloc_ahash+0x2>
+                          3a: R_X86_64_PLT32      __x86_return_thunk-0x4
+  -------------------
+
+in the .ko file.
+
+Objtool has run already so that second constructor's return thunk cannot
+be added to the .return_sites section and thus the return thunk remains
+unpatched and the warning rightfully fires.
+
+Drop KCSAN flags from the mod.c generation stage as those constructors
+do not contain data races one would be interested about.
+
+Debugged together with David Kaplan <David.Kaplan@amd.com> and Nikolay
+Borisov <nik.borisov@suse.com>.
+
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Closes: https://lore.kernel.org/r/0851a207-7143-417e-be31-8bf2b3afb57d@molgen.mpg.de
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Tested-by: Paul Menzel <pmenzel@molgen.mpg.de> # Dell XPS 13
+Reviewed-by: Nikolay Borisov <nik.borisov@suse.com>
+Reviewed-by: Marco Elver <elver@google.com>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../selftests/ftrace/test.d/filter/event-filter-function.tc     | 2 +-
+ scripts/Makefile.modfinal | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/filter/event-filter-function.tc b/tools/testing/selftests/ftrace/test.d/filter/event-filter-function.tc
-index 2de7c61d1ae30..3f74c09c56b62 100644
---- a/tools/testing/selftests/ftrace/test.d/filter/event-filter-function.tc
-+++ b/tools/testing/selftests/ftrace/test.d/filter/event-filter-function.tc
-@@ -24,7 +24,7 @@ echo 0 > events/enable
- echo "Get the most frequently calling function"
- sample_events
+diff --git a/scripts/Makefile.modfinal b/scripts/Makefile.modfinal
+index 8568d256d6fbf..79fcf27316864 100644
+--- a/scripts/Makefile.modfinal
++++ b/scripts/Makefile.modfinal
+@@ -23,7 +23,7 @@ modname = $(notdir $(@:.mod.o=))
+ part-of-module = y
  
--target_func=`cut -d: -f3 trace | sed 's/call_site=\([^+]*\)+0x.*/\1/' | sort | uniq -c | sort | tail -n 1 | sed 's/^[ 0-9]*//'`
-+target_func=`cat trace | grep -o 'call_site=\([^+]*\)' | sed 's/call_site=//' | sort | uniq -c | sort | tail -n 1 | sed 's/^[ 0-9]*//'`
- if [ -z "$target_func" ]; then
-     exit_fail
- fi
+ quiet_cmd_cc_o_c = CC [M]  $@
+-      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV), $(c_flags)) -c -o $@ $<
++      cmd_cc_o_c = $(CC) $(filter-out $(CC_FLAGS_CFI) $(CFLAGS_GCOV) $(CFLAGS_KCSAN), $(c_flags)) -c -o $@ $<
+ 
+ %.mod.o: %.mod.c FORCE
+ 	$(call if_changed_dep,cc_o_c)
 -- 
 2.43.0
 
