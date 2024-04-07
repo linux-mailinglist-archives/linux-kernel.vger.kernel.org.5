@@ -1,182 +1,165 @@
-Return-Path: <linux-kernel+bounces-134499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-134500-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D1B089B23B
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:42:03 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0254D89B23E
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 15:42:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1285628742C
-	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:42:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB8AE287813
+	for <lists+linux-kernel@lfdr.de>; Sun,  7 Apr 2024 13:42:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB1438DF2;
-	Sun,  7 Apr 2024 13:14:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B966639AE7;
+	Sun,  7 Apr 2024 13:19:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="naCTr6V9"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="O8nKS2BP"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2126.outbound.protection.outlook.com [40.107.101.126])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE8713B29D;
-	Sun,  7 Apr 2024 13:14:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712495675; cv=none; b=RCRr0rfOxGH23O8L6xtGRMPEG9RZRZBU0Cx7fhwVnbszOz/Qw2NOBci1HQ+1nrgSrvMOL0g3gIMoF3EpND0lajZk9/wjvjBrjMhVqVP/pUqukoQpwJylJkVcDCP54gyjD+b895A5Xxp5GkiTT0qvq7UUXl63jw5bfO4xODBRpeI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712495675; c=relaxed/simple;
-	bh=qn1vLds62PDgaGFwp8BUiBVbDYEwhVc3XEFa4QUsOFg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IE/e+gZ5irqaVMYesXAsr6eFhObx8ClX3/c+HN5EORGaylUh+SA7S8UDnzd0XADAXpdn4I9iGadSUE1covcM2r02lPyAd6MLylhiu4xNm09jVmnk6kvYcyvKLGvyc3nYgkdjajaNUf7ocX+ubS5aa++A5VCHzJsT9zg8fHZb6HE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=naCTr6V9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F0535C43394;
-	Sun,  7 Apr 2024 13:14:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712495675;
-	bh=qn1vLds62PDgaGFwp8BUiBVbDYEwhVc3XEFa4QUsOFg=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=naCTr6V9+7SZ9sbBnjmV9Q6Pz18VO5GviZ9jn+O1NW1oCOXSxCBiWMqx54NGnIVFV
-	 oDjAV4QsYqR0+MsB6SyuRqqZSK/5f25lZLdeVHPpVKXfA/q6OcE6ixID+oiy4UoQ2C
-	 uZCMRf8uzXjcAj9uACgdgFq+JITTxBxa35MCHbbVU2rWakpoZ5wUNba+vWZoNiZevj
-	 /sp+qjlJGmnynvoUgdo5E4jKWUBClCMpxAV39i9jKFWMVLT9IjhMDdZTiKU9kJpbIs
-	 rJKh12HcXVLsntmeOX/UcqtOrPlhP3sCDJrDQXVuQhPGWeFkueOWK3A9PLK26ScDBF
-	 mNh2GYzM66wew==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Saurav Kashyap <skashyap@marvell.com>,
-	Guangwu Zhang <guazhang@redhat.com>,
-	Nilesh Javali <njavali@marvell.com>,
-	"Martin K . Petersen" <martin.petersen@oracle.com>,
-	Sasha Levin <sashal@kernel.org>,
-	jhasan@marvell.com,
-	GR-QLogic-Storage-Upstream@marvell.com,
-	jejb@linux.ibm.com,
-	linux-scsi@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 5/5] scsi: bnx2fc: Remove spin_lock_bh while releasing resources after upload
-Date: Sun,  7 Apr 2024 09:14:25 -0400
-Message-ID: <20240407131426.1053736-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240407131426.1053736-1-sashal@kernel.org>
-References: <20240407131426.1053736-1-sashal@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCF0C374F2;
+	Sun,  7 Apr 2024 13:19:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.126
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712495992; cv=fail; b=UuOuoLXmiG0BPjplyFvfu4dtgqFCf+26ZZAZu5ryDwIEfYOiqd2euNunPVx5NYlnw6zr4RvjPo9nWt+0npflHw5zKfDAbeKCDp6r8BdmqmUzCyoV4K3MVbQCDTPbOjKYItlzsd69TXFf2UE4VCVGA9yH3M/DjGarZVIKR8kDvNE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712495992; c=relaxed/simple;
+	bh=n7RqdipiJUJ+K/ELEdN5SxFel6JO/q+clIn2ET8EDTg=;
+	h=Message-ID:Date:Cc:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=EzTexKleRn+gDz9KY0R0UpIx8jtJ4r4yj9TOC7H9pH6VjylMHyeeVJQ9YSOqWiBwwUUr2kuqyTWJ0fAMkKaYTZV9D08hgQxbh9Uv29wfnuTJM4g5WlgMy7UhuLVFFMQU1futVMAtSSjUsyVmUH2AmhnHC5ZJVNaY0mdKiKFCMPU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=O8nKS2BP; arc=fail smtp.client-ip=40.107.101.126
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=I8l/WdPjxc7rBTSzuZ3saT3L3MC2OSlb0Z8HCxJuG0e9R6ewzrBnZy630443C9e3u+5f5orQq5ad+arVHoduG2hQms79KmA+1Bm8CFiCIV17tfm5cii8nE7lbh4psmlgcK5k0fPlIukJzGX9bObY6aWbyy22Lg2fynZDNL3zBBlHhm8N+RQEfyIujGY4DaHe7TyyCcyjWHYQDYrclw12Z8rMSGKLwe+yTS3ecuqjiXLaYCDw/1TvR2ZCq3OBntrU56AFjehu+Z0dRzRchKBShXYsP+qx029Ugygj2vZwKmk5z0ROUI5iprnfGW6BDorhNTnmtXPxxy1OE/IFPly/yg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uVPCsTGheuHWIqJqF0WMcK/rzrPAQAylLgc2xfIk1Mk=;
+ b=bT1OdZuznalNnsBeawACwFcW29xQQDCjjfHSR6m5WvdtCjtkn0cVn9UT6EcfFqph5h6kQ2aVa/L49cJkQyYEPuttoGI4bjKKUOm+DEbvPAYW/OTEzDTp97fzHLhAXAlZWQ3uBCWer1CmE+/t8RzglHsJbqhkHAwYQq3ySplLj+YsRYOJVXbE6PcLgir/YxF5LjYrtRUw92v9JNM+jS21bCGInrO4P5HxeJ19EnAj5HdH09WU9mbTp7zAsws69pvFp1UduK6gQNR9YFKhV9fnfCinYPeKQGRwPsbNqNNt2lzb/QTSqIp6BDCXsQx31B/opcab2FnfTJeyx2MbbJBlCQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uVPCsTGheuHWIqJqF0WMcK/rzrPAQAylLgc2xfIk1Mk=;
+ b=O8nKS2BPqT0IhCChWbtTfwHy1f3e7ECx3+/7HDhad+kOkSdgIVsvMO3PwAOFwI5OlraL0shVWBwB/yKygWiCI9fbLqDmc7f2ulWdEf5gN1eac6t/kaVL3K+MGca/L+wDgry6LGflcjXs6rD+RM1IvidedsxWZeWMRH6HoKxTU80=
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com (2603:10b6:408:40::20)
+ by DS0PR12MB6415.namprd12.prod.outlook.com (2603:10b6:8:cc::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Sun, 7 Apr
+ 2024 13:19:48 +0000
+Received: from BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::43a5:ed10:64c2:aba3]) by BN8PR12MB3108.namprd12.prod.outlook.com
+ ([fe80::43a5:ed10:64c2:aba3%6]) with mapi id 15.20.7409.042; Sun, 7 Apr 2024
+ 13:19:48 +0000
+Message-ID: <0bab8b6e-c7e8-47e3-a42c-c8798ba4b6fe@amd.com>
+Date: Sun, 7 Apr 2024 09:19:44 -0400
+User-Agent: Mozilla Thunderbird
+Cc: yazen.ghannam@amd.com,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "x86@kernel.org" <x86@kernel.org>,
+ "Avadhut.Naik@amd.com" <Avadhut.Naik@amd.com>,
+ "John.Allen@amd.com" <John.Allen@amd.com>
+Subject: Re: [PATCH v2 16/16] EDAC/mce_amd: Add support for FRU Text in MCA
+To: "Luck, Tony" <tony.luck@intel.com>,
+ "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>
+References: <20240404151359.47970-1-yazen.ghannam@amd.com>
+ <20240404151359.47970-17-yazen.ghannam@amd.com>
+ <SJ1PR11MB6083683CAEA79F935BFA1B31FC032@SJ1PR11MB6083.namprd11.prod.outlook.com>
+Content-Language: en-US
+From: Yazen Ghannam <yazen.ghannam@amd.com>
+In-Reply-To: <SJ1PR11MB6083683CAEA79F935BFA1B31FC032@SJ1PR11MB6083.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: BN9PR03CA0464.namprd03.prod.outlook.com
+ (2603:10b6:408:139::19) To BN8PR12MB3108.namprd12.prod.outlook.com
+ (2603:10b6:408:40::20)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.311
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3108:EE_|DS0PR12MB6415:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	FzFWh/eqrQd/kmF5wJRxmz5f3XnS1zXUqFBibcfsNSh0PSzRkT04XufODqiXp6W1SetvmnuZcmV3UTu9goy2eiT5mc1ELCf6PIyTv3HQqgg/msG+1QU7DB/sRvp1dqJHJKMRsBeT7tCdayMIPfLthqXMkwp4AUvljzpzza6ZHjRrE8HgJwI3XfoXA+O5vVxW8zszcHxgvmK/TlRLG3/LvlzG6UrMz7hxw7OB22gU7+89KKVQKPQTZ2xljw+VLt2NSQm41CcMsU6O1QF9WbXvEcw253v1IB80DFFv1r8v4jLBs4uA4AWwotyJC6if6EI64mfmLkWaNmqFWNMDsOUXcKZiV+sH+jbWosd2O4wxXmIVU+5h01EKbKYgIr5LWO3y1m623LkhyPl98EWsBlQxGeirwTQEsiCSX+xG8Wd5z/vOl4is7AKYtNZfopIjay3ujZuc3aPVV1wSxocaa96nylwyMFWmXFRyL66wVlUWpd668EWbiFz3YFXI2ixzx70JZg1mDpW36NCkahL+Yjzwv9yQSaohYtmUpWgJMc+s/HRBChAnEojs/ALimwpSZtJSpD5mj3mknQbK8eyITLGLxGWh8u6Bza2e7UWfNZgWF51hE5Rq/u9h20+FLudS0PcJSv1V12hHJe6cYAOuLdR2N6tJ4lqwuZeAnTIFj2AeSwI=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3108.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RHVpbm9kSnM1UDFqTXo4bG5nUk1zWEoyK1RMT1MxZ0JIOStrTlpnYjlqR05U?=
+ =?utf-8?B?RDVnNWd5cjZpc1MzVEVuZWpsdmtmV0V3YTFFLzZGZ05yN0Jac3JUbThYWDQv?=
+ =?utf-8?B?c0xhZ3VLVjVIVUNyQ2JodDBwMHJtWnlXM2FMamsrVStqeGExcmk4NGhJTllk?=
+ =?utf-8?B?azNyOXRDWG5GQTRMeFF4TXJHTVZUYUx2MzZJdkFtWlRYTTU3SUZJU3NIVzl6?=
+ =?utf-8?B?MDJ2SGFOWTZUOGxEYlViS2Y3K3RGcXd0VlMxWVlYK0xXc2JZZ3ZVZFdZMGtt?=
+ =?utf-8?B?K3dyaEZHaTZ0Ui8rUlBxYjlINkp4OWp0d1l0b2pORVVkY00yYjNqMzB1SGxz?=
+ =?utf-8?B?LzIzN28rU3gwMVhrQzZnd2RQbXEzR0prNmlXaUltQnRjZi9VR2dXWllDS2dy?=
+ =?utf-8?B?YVFBYVQzTXJWclhMWkJHKzVzM3prUE43QzNXS3d5dkFmUDlFRkJxODRIM0xJ?=
+ =?utf-8?B?aHJlVTV6Vjl0cFd3WHhrWExWcGppQXI2bEZRaityYlIxVS9aY1JUUTBuY1M2?=
+ =?utf-8?B?SmlyRFdVY1VFVFZLZExKbDBQRkEwUWc4MGR0c0FOTEw3VXF2dU83RC9Xbks1?=
+ =?utf-8?B?L3JDMlpmSUQ0dzNZK21BVGNiTGp0cXpreUUrVkNueVJ0Rlh0Z0dVRnNSQ0hO?=
+ =?utf-8?B?QXhDbnFtUmJUdklhSUljeENrQWpqa3oxTUt3OEFWYkQwZ09hZ0t5QVNqNmt5?=
+ =?utf-8?B?bmtzWFNPOTVFRnRyd0dueWp4Q1poQ1gvZ2xkUHMvckVscEJHanhoWUFwZVI0?=
+ =?utf-8?B?eUFWWlFhRFZRVExYc0FyN2lzMEJyeEdHMHY1dEZSdnlnay9md1E5alo4dUMr?=
+ =?utf-8?B?T0F3SlE1VzBITGduRVdMZXhyeDFvR0ZmT2dxaHlFMzBzK3JRWkxOSkNqVGZY?=
+ =?utf-8?B?RUZoaTUyOWppSXdoM01IWnFzbnlUQkQ1aGVUMmRSdG5QUVRRdno0WDc1OHRj?=
+ =?utf-8?B?N3RveHVOT2ZkVThpVWNIT0N0ZWNjdW81TGtQckVVemYveDJHa0NFMFF0bUFE?=
+ =?utf-8?B?blowZFhuRXBvOVVIRnRsbyt2cW93V2ROS3dVdERBMkU4Y1RydVBqbk81YStS?=
+ =?utf-8?B?SldLTWpXUzlBQ3QxRHFOOE5WMUxOeE14N0txSE00aVZPUVNsZVF0TXZMV1BD?=
+ =?utf-8?B?YTROV1VUaWorbW5taER6SFcvY3Y3L0V0eXJWWlNMSjBOQ2JwdXltZUNXTmxI?=
+ =?utf-8?B?OFdNcVZuU1JUNU1zVzJoei85YWh3d20weWpUUUg0b09meXJUZXJMS0NydWZZ?=
+ =?utf-8?B?L3NQV1haaUc2YVRnejhrZ0JmMHhRbFd4SGYrVWFGNFRlb21aODZ1amF6UklQ?=
+ =?utf-8?B?Y0ZiZ0JWWmdoRGkzTWxiT1FNellaUHc5SGNBZlhYMEppbGw4cmtvbGMxS2I5?=
+ =?utf-8?B?QTZuSng3MFBLd1YrL01LYWg0R2luQk5FMmhHQ256aEo3NVdXK0g4U2YvTWE2?=
+ =?utf-8?B?ZkF4RFFwUENwMktzem4wdXlIckZTejgxUktnaHR0aFJUKzZKcldXSzBNbU41?=
+ =?utf-8?B?N3MwTHF0eXUwTjF4M0FsZzgzKyt0c1ZzWEV1aEZ6bGFLQmhQcEZRUW5mc2V4?=
+ =?utf-8?B?ekZtcWpMbXBLU3FOd3BLWFBJTFFkSnFSb0M4Tllkaytxb2w3MFJhQkFFWFBH?=
+ =?utf-8?B?cCtOajF3N2dsUHNvS0gyQUNqWi91SXJ2VXhGRUpYckMxY3VCZG11OHY2QitM?=
+ =?utf-8?B?NHJRVjZvaUdvdnVXcHdzaHZTeXFlSDdLZGljblcvVmt6dzhVUXQ4OEV5TlFy?=
+ =?utf-8?B?aXdXVmhZQW05WTQ3UlFrK0Z6dmd0TnVRZzAxOGducmc5Wm5UcFpQNFRIeHJU?=
+ =?utf-8?B?M0FsTFRWSnZwZmF1WlhVZnk3ZmdVa3FKZWVaYkl3SEtHWHYzRVhzZW5Jb3FI?=
+ =?utf-8?B?WUdBZVZlcHJ1eUlFRXRjRUFIZ0xQTzRqcENZU3VQSHpPT0NtNWdlTlcxMzdS?=
+ =?utf-8?B?ZWV4ZGlzYXVPM0E3dzUxb3krVnBlanZTS3l4K3RUWjhobWJsb3JKN05xK05B?=
+ =?utf-8?B?QmM4QlpXTUEyQ0lZY2J1bW9nNFFYUVFvbE56NUM5eHM2czcwdC9VNXM0bHI4?=
+ =?utf-8?B?MEoyZXVmVEpXd2U4RUtsM0cyVm9UOVNNTDhLZ2x2SFNhZEt2Qm9uSzFKZnBj?=
+ =?utf-8?Q?yB3sCZcPz+Gyk5GEdTAHJY2fB?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 434d3073-13c2-4477-7ec2-08dc57056604
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3108.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Apr 2024 13:19:47.9760
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fvKA77wE3c0CV1CvZ6xcj28PRJ4pEuIv/UlVcfzDMfqY34V/7Ztm1FdljEYxjg+CNSXvgzMkianDqOCYnlTxtA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR12MB6415
 
-From: Saurav Kashyap <skashyap@marvell.com>
 
-[ Upstream commit c214ed2a4dda35b308b0b28eed804d7ae66401f9 ]
 
-The session resources are used by FW and driver when session is offloaded,
-once session is uploaded these resources are not used. The lock is not
-required as these fields won't be used any longer. The offload and upload
-calls are sequential, hence lock is not required.
+On 4/5/24 12:06, Luck, Tony wrote:
+>> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+>> index aa27729f7899..a4d09dda5fae 100644
+>> --- a/arch/x86/kernel/cpu/mce/core.c
+>> +++ b/arch/x86/kernel/cpu/mce/core.c
+>> @@ -207,6 +207,8 @@ static void __print_mce(struct mce_hw_err *err)
+>>                        pr_cont("SYND2 %llx ", err->vi.amd.synd2);
+>>                if (m->ipid)
+>>                        pr_cont("IPID %llx ", m->ipid);
+>> +             if (err->vi.amd.config)
+> 
+> This is in common code. If other vendors start adding their own stuff to the
+> "vi" union you might incorrectly print this.  Add a vendor check before looking
+> at values inside "m->vi".
+>
 
-This will suppress following BUG_ON():
+Yes, agreed. Will do.
 
-[  449.843143] ------------[ cut here ]------------
-[  449.848302] kernel BUG at mm/vmalloc.c:2727!
-[  449.853072] invalid opcode: 0000 [#1] PREEMPT SMP PTI
-[  449.858712] CPU: 5 PID: 1996 Comm: kworker/u24:2 Not tainted 5.14.0-118.=
-el9.x86_64 #1
-Rebooting.
-[  449.867454] Hardware name: Dell Inc. PowerEdge R730/0WCJNT, BIOS 2.3.4 1=
-1/08/2016
-[  449.876966] Workqueue: fc_rport_eq fc_rport_work [libfc]
-[  449.882910] RIP: 0010:vunmap+0x2e/0x30
-[  449.887098] Code: 00 65 8b 05 14 a2 f0 4a a9 00 ff ff 00 75 1b 55 48 89 =
-fd e8 34 36 79 00 48 85 ed 74 0b 48 89 ef 31 f6 5d e9 14 fc ff ff 5d c3 <0f=
-> 0b 0f 1f 44 00 00 41 57 41 56 49 89 ce 41 55 49 89 fd 41 54 41
-[  449.908054] RSP: 0018:ffffb83d878b3d68 EFLAGS: 00010206
-[  449.913887] RAX: 0000000080000201 RBX: ffff8f4355133550 RCX: 000000000d4=
-00005
-[  449.921843] RDX: 0000000000000001 RSI: 0000000000001000 RDI: ffffb83da53=
-f5000
-[  449.929808] RBP: ffff8f4ac6675800 R08: ffffb83d878b3d30 R09: 00000000000=
-efbdf
-[  449.937774] R10: 0000000000000003 R11: ffff8f434573e000 R12: 00000000000=
-01000
-[  449.945736] R13: 0000000000001000 R14: ffffb83da53f5000 R15: ffff8f43d4e=
-a3ae0
-[  449.953701] FS:  0000000000000000(0000) GS:ffff8f529fc80000(0000) knlGS:=
-0000000000000000
-[  449.962732] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  449.969138] CR2: 00007f8cf993e150 CR3: 0000000efbe10003 CR4: 00000000003=
-706e0
-[  449.977102] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 00000000000=
-00000
-[  449.985065] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 00000000000=
-00400
-[  449.993028] Call Trace:
-[  449.995756]  __iommu_dma_free+0x96/0x100
-[  450.000139]  bnx2fc_free_session_resc+0x67/0x240 [bnx2fc]
-[  450.006171]  bnx2fc_upload_session+0xce/0x100 [bnx2fc]
-[  450.011910]  bnx2fc_rport_event_handler+0x9f/0x240 [bnx2fc]
-[  450.018136]  fc_rport_work+0x103/0x5b0 [libfc]
-[  450.023103]  process_one_work+0x1e8/0x3c0
-[  450.027581]  worker_thread+0x50/0x3b0
-[  450.031669]  ? rescuer_thread+0x370/0x370
-[  450.036143]  kthread+0x149/0x170
-[  450.039744]  ? set_kthread_struct+0x40/0x40
-[  450.044411]  ret_from_fork+0x22/0x30
-[  450.048404] Modules linked in: vfat msdos fat xfs nfs_layout_nfsv41_file=
-s rpcsec_gss_krb5 auth_rpcgss nfsv4 dns_resolver dm_service_time qedf qed c=
-rc8 bnx2fc libfcoe libfc scsi_transport_fc intel_rapl_msr intel_rapl_common=
- x86_pkg_temp_thermal intel_powerclamp dcdbas rapl intel_cstate intel_uncor=
-e mei_me pcspkr mei ipmi_ssif lpc_ich ipmi_si fuse zram ext4 mbcache jbd2 l=
-oop nfsv3 nfs_acl nfs lockd grace fscache netfs irdma ice sd_mod t10_pi sg =
-ib_uverbs ib_core 8021q garp mrp stp llc mgag200 i2c_algo_bit drm_kms_helpe=
-r syscopyarea sysfillrect sysimgblt mxm_wmi fb_sys_fops cec crct10dif_pclmu=
-l ahci crc32_pclmul bnx2x drm ghash_clmulni_intel libahci rfkill i40e libat=
-a megaraid_sas mdio wmi sunrpc lrw dm_crypt dm_round_robin dm_multipath dm_=
-snapshot dm_bufio dm_mirror dm_region_hash dm_log dm_zero dm_mod linear rai=
-d10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx raid=
-6_pq libcrc32c crc32c_intel raid1 raid0 iscsi_ibft squashfs be2iscsi bnx2i =
-cnic uio cxgb4i cxgb4 tls
-[  450.048497]  libcxgbi libcxgb qla4xxx iscsi_boot_sysfs iscsi_tcp libiscs=
-i_tcp libiscsi scsi_transport_iscsi edd ipmi_devintf ipmi_msghandler
-[  450.159753] ---[ end trace 712de2c57c64abc8 ]---
-
-Reported-by: Guangwu Zhang <guazhang@redhat.com>
-Signed-off-by: Saurav Kashyap <skashyap@marvell.com>
-Signed-off-by: Nilesh Javali <njavali@marvell.com>
-Link: https://lore.kernel.org/r/20240315071427.31842-1-skashyap@marvell.com
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/scsi/bnx2fc/bnx2fc_tgt.c | 2 --
- 1 file changed, 2 deletions(-)
-
-diff --git a/drivers/scsi/bnx2fc/bnx2fc_tgt.c b/drivers/scsi/bnx2fc/bnx2fc_=
-tgt.c
-index e3d1c7c440c8c..c7d6842b293da 100644
---- a/drivers/scsi/bnx2fc/bnx2fc_tgt.c
-+++ b/drivers/scsi/bnx2fc/bnx2fc_tgt.c
-@@ -834,7 +834,6 @@ static void bnx2fc_free_session_resc(struct bnx2fc_hba =
-*hba,
-=20
- 	BNX2FC_TGT_DBG(tgt, "Freeing up session resources\n");
-=20
--	spin_lock_bh(&tgt->cq_lock);
- 	ctx_base_ptr =3D tgt->ctx_base;
- 	tgt->ctx_base =3D NULL;
-=20
-@@ -890,7 +889,6 @@ static void bnx2fc_free_session_resc(struct bnx2fc_hba =
-*hba,
- 				    tgt->sq, tgt->sq_dma);
- 		tgt->sq =3D NULL;
- 	}
--	spin_unlock_bh(&tgt->cq_lock);
-=20
- 	if (ctx_base_ptr)
- 		iounmap(ctx_base_ptr);
---=20
-2.43.0
-
+Thanks,
+Yazen
 
